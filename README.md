@@ -1,1 +1,0 @@
-# qwordly-app
