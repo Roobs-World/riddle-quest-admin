@@ -17,6 +17,8 @@
   - [x] `babel.config.js` configured for NativeWind.
   - [x] `tailwind.config.js` configured with content paths and custom project colors (`primary-orange`, `cream-light`).
   - [x] TypeScript type definitions for NativeWind (`src/types/nativewind.d.ts`) added.
+- **App.tsx Styling Migration:**
+  - [x] Moved initial container styles from `StyleSheet` to NativeWind classes.
 
 ## 2. What's Left to Build (MVP Focus - 2 Weeks Timeline)
 

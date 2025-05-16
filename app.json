@@ -12,6 +12,11 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "expo": {
+      "web": {
+        "bundler": "metro"
+      }
+    },
     "ios": {
       "supportsTablet": true
     },

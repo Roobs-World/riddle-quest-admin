@@ -11,7 +11,7 @@
 - **Architectural Outline:** Client-server architecture using React Native and Firebase confirmed.
 - **Authentication Screens UI Created:** `LandingScreen.tsx`, `LoginScreen.tsx`, and `SignUpScreen.tsx` created in `src/screens/auth/` with basic UI structure matching screenshots.
 - **NativeWind Setup Complete:** Successfully installed and configured NativeWind, `babel.config.js`, `tailwind.config.js` (with custom colors: `primary-orange` and `cream-light`), and TypeScript typings (`src/types/nativewind.d.ts`).
-- **Styling Approach Confirmed:** Using direct `className` props with NativeWind (v4 style) for styling React Native components.
+- **App.tsx Styling Migrated:** Moved initial container styles from `StyleSheet` in `App.tsx` to NativeWind classes.
 - **Discovered Discrepancy:** Noted that "Continue with Microsoft" option in screenshots is not in the original `projectbrief.md`. This needs clarification for MVP scope.
 
 ## 3. Next Steps & Immediate Goals
@@ -20,6 +20,7 @@
     - Install `react-navigation` and its dependencies.
     - Create a basic navigation structure (e.g., an Auth stack for these new screens and a placeholder for the main app stack).
     - Integrate `LandingScreen`, `LoginScreen`, and `SignUpScreen` into the Auth navigation stack.
+    - **Address Linter Error:** Resolve the `navigation` prop requirement on `LandingScreen` by integrating it into a navigation container.
 2.  **Icon Implementation:** Replace placeholder text/view icons in auth screens with actual vector icons (e.g., using `react-native-vector-icons` or SVGs).
 3.  **Firebase SDK Setup:** Ensure Firebase SDK is correctly initialized in the React Native project.
 4.  **Email/Password Authentication:**
