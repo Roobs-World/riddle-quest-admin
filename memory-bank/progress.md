@@ -1,6 +1,6 @@
 # Progress: Riddle Wordle Clone
 
-## Current Date: {{YYYY-MM-DD}} (Update this with each significant progress entry)
+## Current Date: 2024-07-27 (Update this with each significant progress entry)
 
 ## 1. What Works / Completed Features
 
@@ -8,6 +8,15 @@
   - Memory Bank documents created (`projectbrief.md`, `productContext.md`, `techContext.md`, `systemPatterns.md`, `activeContext.md`, `progress.md`).
   - Initial project requirements and scope defined.
   - High-level architecture and technology stack choices outlined.
+- **Basic Authentication Screens UI:**
+  - [x] Landing Screen (`src/screens/auth/LandingScreen.tsx`) UI structure created.
+  - [x] Login Screen (`src/screens/auth/LoginScreen.tsx`) UI structure created.
+  - [x] Sign Up Screen (`src/screens/auth/SignUpScreen.tsx`) UI structure created.
+- **NativeWind Setup:**
+  - [x] `nativewind` and `tailwindcss` dependencies installed.
+  - [x] `babel.config.js` configured for NativeWind.
+  - [x] `tailwind.config.js` configured with content paths and custom project colors (`primary-orange`, `cream-light`).
+  - [x] TypeScript type definitions for NativeWind (`src/types/nativewind.d.ts`) added.
 
 ## 2. What's Left to Build (MVP Focus - 2 Weeks Timeline)
 
@@ -40,10 +49,11 @@
   - [ ] Firestore: Define and implement security rules.
   - [ ] Firebase Storage: Define and implement security rules for avatars.
 - **Authentication:**
-  - [ ] Firebase Auth: Email/Password (sign-up, login, password reset).
-  - [ ] Firebase Auth: Google Sign-In.
-  - [ ] Firebase Auth: Anonymous login (optional, confirm necessity for MVP).
-  - [ ] Auth state management in-app.
+  - [ ] Integrate Auth Screens with Navigation (e.g., React Navigation).
+  - [ ] Implement Firebase Auth: Email/Password (sign-up, login, password reset) logic in screens.
+  - [ ] Implement Firebase Auth: Google Sign-In logic.
+  - [ ] Implement Firebase Auth: Microsoft Sign-In logic (Note: Project brief mentions Google and Email/Password. Microsoft is a new addition from the screenshot, confirm if it's in scope for MVP).
+  - [ ] Implement Firebase Auth: Anonymous login (optional, confirm necessity for MVP).
 - **Riddle Management:**
   - [ ] Google Sheet: Initial 100+ riddle levels prepared.
   - [ ] Google Apps Script: Sync riddles from Sheets to Firestore (initial manual sync).
@@ -113,18 +123,24 @@
 
 ## 3. Current Project Status
 
-- **Phase:** Project Initiation & Planning.
-- **Overall Progress:** ~5% (Memory Bank setup).
-- **Next Milestone:** Basic environment setup, Firebase project creation, and start of Authentication module.
+- **Phase:** Initial UI Development for Authentication.
+- **Overall Progress:** ~10% (Auth screen UIs, NativeWind setup).
+- **Next Milestone:** Integrate authentication screens with navigation, implement Firebase email/password authentication.
 
 ## 4. Known Issues & Blockers
 
-- None at this initial stage.
+- Placeholder icons and navigation logic in auth screens need replacement.
+- Microsoft Sign-In was present in the UI mockups but not explicitly in the `projectbrief.md` authentication methods. Scope for MVP needs clarification if it's a hard requirement.
 
 ## 5. Evolution of Project Decisions & Learnings Log
 
 - **{{YYYY-MM-DD}}:** Initial Memory Bank created. Project scope and core technologies documented.
   - _Decision:_ Proceed with React Context for initial global state management due to simplicity for MVP; re-evaluate for Zustand if complexity increases.
   - _Decision:_ AsyncStorage for initial client-side caching; re-evaluate for MMKV if performance issues arise.
+- **2024-07-27:** Created basic UI for Landing, Login, and Sign Up screens based on provided screenshots.
+  - Set up NativeWind, including `babel.config.js`, `tailwind.config.js`, and TypeScript typings.
+  - Identified custom colors `primary-orange` (#FDBA74) and `cream-light` (#FAF3E0) from screenshots and added to Tailwind config.
+  - _Note:_ Used direct `className` prop for NativeWind styling (v4 approach) instead of `styled` HOC after encountering linter issues.
+  - _Observation:_ Screenshots include "Continue with Microsoft" which was not in the original brief. This needs to be clarified for MVP scope.
 
 _(This section will be updated with dates and summaries of key decisions, changes in direction, or significant learnings as the project progresses.)_

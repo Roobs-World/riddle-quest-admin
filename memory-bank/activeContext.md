@@ -2,44 +2,51 @@
 
 ## 1. Current Work Focus
 
-- **Project Initiation:** Setting up the initial project structure, development environment, and core Memory Bank documentation.
-- **Technology Stack Confirmation:** Finalizing choices for state management (Context vs. Zustand) and client-side caching (AsyncStorage vs. MMKV) if not already implicitly decided by common practice or ease of initial setup.
-- **Firebase Project Setup:** Creating and configuring the Firebase project, including enabling Authentication, Firestore, Storage, and setting up initial security rules.
+- **Authentication UI Implementation:** Building the user interface for Landing, Login, and Sign Up screens based on provided designs.
+- **NativeWind Integration:** Ensuring NativeWind is correctly configured for styling across the application, including TypeScript support and custom theme elements.
 
 ## 2. Recent Changes & Decisions
 
-- **Memory Bank Established:** Core documentation (`projectbrief.md`, `productContext.md`, `techContext.md`, `systemPatterns.md`, `activeContext.md`, `progress.md`) has been created based on the initial project requirements.
-- **Architectural Outline:** A client-server architecture using React Native and Firebase has been defined.
-- **Feature Prioritization (Implicit):** The MVP scope is defined by the project brief, focusing on core gameplay, auth, IAP, profile, and settings within a 2-week timeline.
+- **Memory Bank Established:** Core documentation remains up-to-date.
+- **Architectural Outline:** Client-server architecture using React Native and Firebase confirmed.
+- **Authentication Screens UI Created:** `LandingScreen.tsx`, `LoginScreen.tsx`, and `SignUpScreen.tsx` created in `src/screens/auth/` with basic UI structure matching screenshots.
+- **NativeWind Setup Complete:** Successfully installed and configured NativeWind, `babel.config.js`, `tailwind.config.js` (with custom colors: `primary-orange` and `cream-light`), and TypeScript typings (`src/types/nativewind.d.ts`).
+- **Styling Approach Confirmed:** Using direct `className` props with NativeWind (v4 style) for styling React Native components.
+- **Discovered Discrepancy:** Noted that "Continue with Microsoft" option in screenshots is not in the original `projectbrief.md`. This needs clarification for MVP scope.
 
 ## 3. Next Steps & Immediate Goals
 
-1.  **Detailed MVP Feature Breakdown:** Further break down MVP features into smaller, manageable tasks.
-2.  **Environment Setup:**
-    - Initialize React Native project with TypeScript.
-    - Install and configure NativeWind.
-    - Set up Firebase SDK in the React Native project.
-    - Configure navigation (e.g., React Navigation).
-3.  **Authentication Module:** Implement basic email/password and Google Sign-In.
-4.  **Core Game Screen UI:** Develop the static UI for the main game screen (riddle display, guess grid, keyboard).
-5.  **Basic Game Logic (Client-Side):** Implement letter evaluation and feedback for guesses (without backend persistence initially for rapid prototyping).
-6.  **Google Sheets & Apps Script:**
-    - Set up the Google Sheet for the initial 100+ riddles.
-    - Develop the initial Apps Script for one-way sync to Firestore (manual trigger initially).
+1.  **Navigation Setup:**
+    - Install `react-navigation` and its dependencies.
+    - Create a basic navigation structure (e.g., an Auth stack for these new screens and a placeholder for the main app stack).
+    - Integrate `LandingScreen`, `LoginScreen`, and `SignUpScreen` into the Auth navigation stack.
+2.  **Icon Implementation:** Replace placeholder text/view icons in auth screens with actual vector icons (e.g., using `react-native-vector-icons` or SVGs).
+3.  **Firebase SDK Setup:** Ensure Firebase SDK is correctly initialized in the React Native project.
+4.  **Email/Password Authentication:**
+    - Implement Firebase email/password sign-up logic in `SignUpScreen.tsx`.
+    - Implement Firebase email/password login logic in `LoginScreen.tsx`.
+    - Implement password reset functionality (potentially a new screen or modal, link from `LoginScreen.tsx`).
+5.  **Google Sign-In:** Implement Firebase Google Sign-In logic on `LandingScreen.tsx`.
+6.  **Microsoft Sign-In (Pending Clarification):** If confirmed for MVP, implement Firebase Microsoft Sign-In logic on `LandingScreen.tsx`.
+7.  **Form Validation:** Add basic client-side validation to input fields in Login and Sign Up screens.
+8.  **Auth State Management:** Set up basic auth state management (e.g., using React Context) to handle user login/logout status and navigate accordingly.
 
 ## 4. Active Decisions & Considerations
 
-- **State Management Choice:** While both React Context and Zustand are options, for the MVP, React Context might be simpler to start with for global states like auth status and user profile. If complexity grows significantly, migrate parts to Zustand.
-- **Client-Side Caching:** AsyncStorage is generally simpler to integrate. MMKV could be considered later if performance with AsyncStorage becomes an issue for specific data (e.g., large lists of riddles if fetched in bulk for offline classic mode).
-- **Error Handling Strategy:** Define a consistent approach for handling and displaying errors (API errors, validation errors, etc.).
-- **Testing Strategy - Initial Focus:** Start with Jest unit tests for utility functions and core game logic. Detox E2E tests will be set up once basic navigation and core screens are in place.
+- **State Management Choice:** Still leaning towards React Context for MVP for simplicity, especially for auth state.
+- **Client-Side Caching:** AsyncStorage remains the initial choice.
+- **Error Handling Strategy:** Begin implementing basic error display for authentication attempts (e.g., invalid credentials, email already in use).
+- **Microsoft Sign-In Scope:** Awaiting clarification on whether Microsoft Sign-In is part of the MVP. If so, will need to ensure Firebase project is configured for it and necessary SDKs/logic are added.
+- **Icon Library:** Decide on a specific icon library (e.g., `react-native-vector-icons` مجموعه MaterialCommunityIcons or Feather) for consistency, or prepare SVGs for custom icons if needed.
 
 ## 5. Key Patterns & Preferences (Emerging)
 
-- **Modular Development:** Features will be developed in a modular fashion (auth, game, profile, etc.).
-- **Iterative Approach:** Build core functionality first, then layer on enhancements and additional features.
-- **Clear Communication:** Regular updates to `progress.md` and `activeContext.md` to track status and decisions.
+- **Modular Development:** Auth screens are grouped in `src/screens/auth/`.
+- **Iterative Approach:** UI first, then navigation, then logic.
+- **Configuration Files:** Centralized configuration for NativeWind (`tailwind.config.js`, `babel.config.js`, `nativewind.d.ts`).
+- **Clear Communication:** Updates to `progress.md` and `activeContext.md` reflect current status and next steps.
 
-## 6. Learnings & Project Insights (To be populated as project progresses)
+## 6. Learnings & Project Insights
 
-- _(This section will capture insights gained during development, challenges faced, and solutions implemented.)_
+- NativeWind v4 styling primarily uses the `className` prop directly, and the `styled` HOC might be deprecated or less common. Ensuring correct TypeScript typings (`nativewind/types`) and Babel plugin (`nativewind/babel`) is crucial.
+- Visual designs (screenshots) can sometimes introduce elements not in initial textual briefs (e.g., Microsoft login). Regular reconciliation is important.
