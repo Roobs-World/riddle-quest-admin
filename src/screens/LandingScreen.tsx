@@ -50,14 +50,14 @@ const LandingScreen = ({ navigation }: { navigation: any }) => {
       />
 
       <View className="flex-row items-center mt-4 mb-8">
-        <View className="flex-1 h-px bg-gray-300 mr-2" />
+        <View className="flex-1 h-px bg-gray-400 mr-2" />
         <Text
-          className="text-sm text-gray-500"
-          style={{ fontFamily: "PoppinsLight" }}
+          className="text-sm text-black-400"
+          style={{ fontFamily: "Poppins" }}
         >
           {AppStrings.AuthStrings.Landing.OR_SIGN_IN_WITH}
         </Text>
-        <View className="flex-1 h-px bg-gray-300 ml-2" />
+        <View className="flex-1 h-px bg-gray-400 ml-2" />
       </View>
 
       <GoogleSignInButton onPress={() => console.log("Continue with Google")} />
@@ -67,14 +67,14 @@ const LandingScreen = ({ navigation }: { navigation: any }) => {
       />
 
       <View className="flex-row items-center mt-8">
-        <View className="flex-1 h-px bg-gray-300 mr-2" />
+        <View className="flex-1 h-px bg-gray-400 mr-2" />
         <Text
-          className="text-sm text-gray-600"
-          style={{ fontFamily: "PoppinsLight" }}
+          className="text-sm text-black-400"
+          style={{ fontFamily: "Poppins" }}
         >
           {AppStrings.AuthStrings.Landing.NO_ACCOUNT_PROMPT}{" "}
         </Text>
-        <View className="flex-1 h-px bg-gray-300 ml-2" />
+        <View className="flex-1 h-px bg-gray-400 ml-2" />
       </View>
 
       <SignUpButton
