@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from "react";
+import React, { useReducer, useState, useMemo } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import ProgressBar from "../../components/shared/ProgressBar";
 import BackIcon from "../../components/icons/BackIcon";
@@ -75,6 +75,43 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
   const [email, setEmail] = useState("");
   const [agreedToTerms, setAgreedToTerms] = useState(true);
 
+  const stepColors = useMemo(() => {
+    const totalSteps = 3;
+    const colors = Array(totalSteps).fill("bg-gray-300"); // Default gray color
+
+    // Step 1 is complete if username, email, and password have input
+    const isStep1InputComplete =
+      username.length > 0 &&
+      email.length > 0 &&
+      passwordState.password.length > 0;
+
+    // Step 2 is complete if step 1 input is complete AND passwords match
+    const isStep2InputComplete =
+      isStep1InputComplete && passwordState.passwordsMatch;
+
+    // Step 3 is complete if step 2 input is complete AND terms are agreed
+    const isStep3Complete = isStep2InputComplete && agreedToTerms;
+
+    // Color Step 1: Always orange as it's the current/first step
+    colors[0] = "bg-primary-orange";
+
+    // Color Step 2: primary-orange if Step 1 input is complete, otherwise gray
+    if (isStep1InputComplete) {
+      colors[1] = "bg-primary-orange";
+    } else {
+      colors[1] = "bg-gray-300";
+    }
+
+    // Color Step 3: primary-orange if all steps are complete, otherwise gray
+    if (isStep3Complete) {
+      colors[2] = "bg-primary-orange";
+    } else {
+      colors[2] = "bg-gray-300";
+    }
+
+    return colors;
+  }, [username, email, passwordState, agreedToTerms]);
+
   return (
     <CustomSafeAreaView>
       <View className="flex-row items-center mt-8">
@@ -83,7 +120,7 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
         </TouchableOpacity>
 
         <View className="flex-1 self-center">
-          <ProgressBar activeStep={1} totalSteps={3} />
+          <ProgressBar activeStep={1} totalSteps={3} stepColors={stepColors} />
         </View>
       </View>
 

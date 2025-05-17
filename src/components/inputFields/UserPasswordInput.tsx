@@ -23,9 +23,9 @@ export default function UserPasswordInput({
     placeholder || AppStrings.AuthStrings.Login.PASSWORD_PLACEHOLDER;
 
   return (
-    <View className="w-full py-2">
+    <View className="w-full">
       <Text
-        className="text-sm text-gray-600 mb-2 text-left mt-4"
+        className="text-sm text-gray-600 mb-2 text-left mt-2"
         style={{ fontFamily: "PoppinsSemiBold" }}
       >
         {passwordLabel}
