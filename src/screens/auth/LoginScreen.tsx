@@ -30,7 +30,10 @@ const LoginScreen = ({ navigation }: { navigation: any }) => {
             navigation.navigate(AppStrings.Navigation.FORGOT_PASSWORD)
           }
         >
-          <Text className="text-sm text-gray-500 font-medium">
+          <Text
+            className="text-sm text-gray-500"
+            style={{ fontFamily: "Poppins" }}
+          >
             {AppStrings.AuthStrings.Login.FORGOT_PASSWORD}
           </Text>
         </TouchableOpacity>
