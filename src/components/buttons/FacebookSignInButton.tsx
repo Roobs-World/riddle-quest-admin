@@ -17,7 +17,7 @@ const FacebookSignInButton: React.FC<FacebookSignInButtonProps> = ({
       <FacebookIcon width={24} height={24} />
       <Text
         className="text-gray-700 text-base font-medium ml-2"
-        style={{ fontFamily: "PoppinsSemiBold" }}
+        style={{ fontFamily: "PoppinsSemiBold", lineHeight: 24 }}
       >
         Continue with Facebook
       </Text>

@@ -13,6 +13,7 @@ import FacebookSignInButton from "../../components/buttons/FacebookSignInButton"
 import WideButton from "../../components/buttons/WideButton";
 import HomeBgSvg from "../../../assets/images/home-bg.svg";
 import SignUpButton from "../../components/buttons/SignUpButton";
+import { AppStrings } from "../../constants/AppStrings";
 
 const LandingScreen = ({ navigation }: { navigation: any }) => {
   return (
@@ -44,7 +45,7 @@ const LandingScreen = ({ navigation }: { navigation: any }) => {
           letterSpacing: -0.104,
         }}
       >
-        Join millions of people to play QWORDLY.
+        {AppStrings.AuthStrings.Landing.TAGLINE_1}
       </Text>
       <Text
         className="text-base text-gray-400 text-center mb-8"
@@ -57,12 +58,12 @@ const LandingScreen = ({ navigation }: { navigation: any }) => {
           letterSpacing: -0.104,
         }}
       >
-        Ready to have fun while training your mind?
+        {AppStrings.AuthStrings.Landing.TAGLINE_2}
       </Text>
 
       <WideButton
-        buttonText="Sign in"
-        onPress={() => navigation.navigate("Login")}
+        buttonText={AppStrings.AuthStrings.Landing.SIGN_IN_BUTTON}
+        onPress={() => navigation.navigate(AppStrings.Navigation.LOGIN)}
       />
 
       <View className="flex-row items-center mt-4 mb-8">
@@ -71,7 +72,7 @@ const LandingScreen = ({ navigation }: { navigation: any }) => {
           className="text-sm text-gray-500"
           style={{ fontFamily: "PoppinsLight" }}
         >
-          or Sign in with
+          {AppStrings.AuthStrings.Landing.OR_SIGN_IN_WITH}
         </Text>
         <View className="flex-1 h-px bg-gray-300 ml-2" />
       </View>
@@ -88,12 +89,14 @@ const LandingScreen = ({ navigation }: { navigation: any }) => {
           className="text-sm text-gray-600"
           style={{ fontFamily: "PoppinsLight" }}
         >
-          Don't have an account?{" "}
+          {AppStrings.AuthStrings.Landing.NO_ACCOUNT_PROMPT}{" "}
         </Text>
         <View className="flex-1 h-px bg-gray-300 ml-2" />
       </View>
 
-      <SignUpButton onPress={() => console.log("Sign up")} />
+      <SignUpButton
+        onPress={() => navigation.navigate(AppStrings.Navigation.SIGN_UP)}
+      />
     </CustomSafeAreaView>
   );
 };

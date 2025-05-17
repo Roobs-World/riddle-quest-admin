@@ -15,7 +15,7 @@ const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({ onPress }) => {
       <GoogleIcon width={24} height={24} />
       <Text
         className="text-gray-700 text-base font-medium ml-2"
-        style={{ fontFamily: "PoppinsSemiBold" }}
+        style={{ fontFamily: "PoppinsSemiBold", lineHeight: 24 }}
       >
         Continue with Google
       </Text>
