@@ -1,10 +1,8 @@
 import React from "react";
-import { Text } from "react-native";
+import Logo from "@images/main-logo.svg";
 
-const QwordlyLogo = () => (
-  <Text className="text-5xl font-bold text-purple-600 text-center my-8">
-    QWORDLY
-  </Text>
-);
+const QwordlyLogo = () => {
+  return <Logo style={{ width: 288, height: 70 }} />;
+};
 
 export default QwordlyLogo;

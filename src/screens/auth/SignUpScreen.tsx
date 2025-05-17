@@ -13,15 +13,6 @@ import BackIcon from "../../components/icons/BackIcon";
 import PasswordVisibilityIcon from "../../components/icons/PasswordVisibilityIcon";
 import CheckboxIcon from "../../components/icons/CheckboxIcon";
 
-// Assuming you have an icon component, e.g., from react-native-vector-icons
-// import Icon from 'react-native-vector-icons/MaterialIcons';
-
-// Placeholder for icons
-// const PasswordVisibilityIcon = ({ visible }: { visible: boolean }) => (
-//   // Replace with an actual eye icon, this is a placeholder
-//   <Text className="text-gray-500 text-lg">{visible ? "Show" : "Hide"}</Text>
-// );
-
 const SignUpScreen = ({ navigation }: { navigation: any }) => {
   const [username, setUsername] = useState("Jane Doe");
   const [email, setEmail] = useState("janDoe@gmail.com");

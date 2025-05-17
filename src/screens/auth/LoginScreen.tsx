@@ -10,15 +10,6 @@ import {
 import BackIcon from "../../components/icons/BackIcon";
 import PasswordVisibilityIcon from "../../components/icons/PasswordVisibilityIcon";
 
-// Assuming you have an icon component, e.g., from react-native-vector-icons
-// import Icon from 'react-native-vector-icons/MaterialIcons';
-
-// Placeholder for icons
-// const BackIcon = () => <Text className="text-gray-700 text-2xl">{"<"}</Text>; // Replace with actual icon
-// const PasswordVisibilityIcon = ({ visible }: { visible: boolean }) => (
-//   <Text className="text-gray-500 text-lg">{visible ? "Show" : "Hide"}</Text> // Replace with actual icon
-// );
-
 const LoginScreen = ({ navigation }: { navigation: any }) => {
   const [email, setEmail] = useState("JaneDoe@gmail.com");
   const [password, setPassword] = useState("************");
@@ -89,8 +80,5 @@ const LoginScreen = ({ navigation }: { navigation: any }) => {
     </SafeAreaView>
   );
 };
-
-// Ensure primary-orange and cream-light are defined in your tailwind.config.js
-// e.g., primary-orange: '#FDBA74', cream-light: '#FAF3E0'
 
 export default LoginScreen;

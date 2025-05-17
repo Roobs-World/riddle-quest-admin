@@ -1,6 +1,14 @@
 import React from "react";
-import { View } from "react-native";
+// Import the SVG file directly - requires react-native-svg-transformer configuration
+import GoogleSvg from "@images/google.svg";
 
-const GoogleIcon = () => <View className="w-6 h-6 bg-red-500 mr-3 rounded" />;
+interface GoogleIconProps {
+  width?: number | string;
+  height?: number | string;
+}
+
+const GoogleIcon = ({ width, height }: GoogleIconProps) => {
+  return <GoogleSvg width={width} height={height} />;
+};
 
 export default GoogleIcon;

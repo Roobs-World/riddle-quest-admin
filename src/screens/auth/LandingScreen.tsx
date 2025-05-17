@@ -8,14 +8,6 @@ import {
 } from "react-native";
 import QwordlyLogo from "../../components/logos/QwordlyLogo";
 import GoogleIcon from "../../components/icons/GoogleIcon";
-import MicrosoftIcon from "../../components/icons/MicrosoftIcon";
-
-// Placeholder for Google and Microsoft icons
-// You should replace these with actual icons, e.g., from react-native-vector-icons or SVGs
-// const GoogleIcon = () => <View className="w-6 h-6 bg-red-500 mr-3 rounded" />; // Placeholder
-// const MicrosoftIcon = () => (
-//   <View className="w-6 h-6 bg-blue-500 mr-3 rounded" />
-// ); // Placeholder
 
 const LandingScreen = ({ navigation }: { navigation: any }) => {
   return (
@@ -46,19 +38,9 @@ const LandingScreen = ({ navigation }: { navigation: any }) => {
         className="bg-white border border-gray-300 w-full py-3 rounded-lg shadow-sm mb-4 flex-row items-center justify-center"
         onPress={() => console.log("Continue with Google")} // Replace with actual Google sign-in logic
       >
-        <GoogleIcon />
+        <GoogleIcon width={24} height={24} />
         <Text className="text-gray-700 text-base font-medium">
           Continue with google
-        </Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        className="bg-white border border-gray-300 w-full py-3 rounded-lg shadow-sm mb-8 flex-row items-center justify-center"
-        onPress={() => console.log("Continue with Microsoft")} // Replace with actual Microsoft sign-in logic
-      >
-        <MicrosoftIcon />
-        <Text className="text-gray-700 text-base font-medium">
-          Continue with Microsoft
         </Text>
       </TouchableOpacity>
 
@@ -73,8 +55,5 @@ const LandingScreen = ({ navigation }: { navigation: any }) => {
     </SafeAreaView>
   );
 };
-
-// Define placeholder colors in tailwind.config.js or directly if not using a theme
-// For example, primary-orange could be '#FDBA74' (orange-300) and cream-light '#FAF3E0'
 
 export default LandingScreen;
