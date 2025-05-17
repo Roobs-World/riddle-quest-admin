@@ -1,5 +1,5 @@
 import auth, {
-  type UserCredential,
+  type FirebaseAuthTypes,
   GoogleAuthProvider,
   FacebookAuthProvider,
 } from "@react-native-firebase/auth";
@@ -7,11 +7,17 @@ import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { AccessToken, LoginManager } from "react-native-fbsdk-next";
 
 export const AuthService = {
-  // TODO: Implement Firebase email/password sign-up
+  /**
+   * Signs up a user with email and password.
+   *
+   * @param email The user's email address.
+   * @param password The user's password.
+   * @returns A Promise resolving to the UserCredential.
+   */
   async signUpWithEmail(
     email: string,
     password: string
-  ): Promise<UserCredential> {
+  ): Promise<FirebaseAuthTypes.UserCredential> {
     try {
       const userCredential = await auth().createUserWithEmailAndPassword(
         email,
@@ -24,11 +30,17 @@ export const AuthService = {
     }
   },
 
-  // TODO: Implement Firebase email/password login
+  /**
+   * Logs in a user with email and password.
+   *
+   * @param email The user's email address.
+   * @param password The user's password.
+   * @returns A Promise resolving to the UserCredential.
+   */
   async loginWithEmail(
     email: string,
     password: string
-  ): Promise<UserCredential> {
+  ): Promise<FirebaseAuthTypes.UserCredential> {
     try {
       const userCredential = await auth().signInWithEmailAndPassword(
         email,
@@ -41,7 +53,12 @@ export const AuthService = {
     }
   },
 
-  // TODO: Implement Firebase password reset
+  /**
+   * Sends a password reset email to the user.
+   *
+   * @param email The user's email address.
+   * @returns A Promise that resolves when the email is sent.
+   */
   async sendPasswordResetEmail(email: string): Promise<void> {
     try {
       await auth().sendPasswordResetEmail(email);
@@ -52,8 +69,12 @@ export const AuthService = {
     }
   },
 
-  // TODO: Implement Firebase Google Sign-In
-  async signInWithGoogle(): Promise<UserCredential> {
+  /**
+   * Signs in a user using Google.
+   *
+   * @returns A Promise resolving to the UserCredential.
+   */
+  async signInWithGoogle(): Promise<FirebaseAuthTypes.UserCredential> {
     try {
       // Ensure the device supports Google Play services
       await GoogleSignin.hasPlayServices({
@@ -76,8 +97,12 @@ export const AuthService = {
     }
   },
 
-  // TODO: Implement Firebase Facebook Sign-In
-  async signInWithFacebook(): Promise<UserCredential> {
+  /**
+   * Signs in a user using Facebook.
+   *
+   * @returns A Promise resolving to the UserCredential.
+   */
+  async signInWithFacebook(): Promise<FirebaseAuthTypes.UserCredential> {
     try {
       // Attempt a login using the Facebook SDK. Show the results of the login
       const result = await LoginManager.logInWithPermissions([
@@ -112,7 +137,11 @@ export const AuthService = {
     }
   },
 
-  // TODO: Implement user logout
+  /**
+   * Logs out the current user.
+   *
+   * @returns A Promise that resolves when the user is logged out.
+   */
   async logout(): Promise<void> {
     try {
       await auth().signOut();
