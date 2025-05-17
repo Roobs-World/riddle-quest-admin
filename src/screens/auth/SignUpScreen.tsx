@@ -12,6 +12,7 @@ import ReusableTextInput from "../../components/ReusableTextInput";
 import UserEmailInput from "../../components/inputFields/UserEmailInput";
 import UserPasswordInput from "../../components/inputFields/UserPasswordInput";
 import UserUsernameInput from "../../components/inputFields/UserUsernameInput";
+import PasswordMatch from "../../components/text/PasswordMatch";
 
 const SignUpScreen = ({ navigation }: { navigation: any }) => {
   const [username, setUsername] = useState("Jane Doe");
@@ -49,9 +50,7 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
           setPassword={setConfirmPassword}
         />
 
-        <Text className="text-xs text-green-600 ml-1 mb-4 text-right">
-          {AppStrings.AuthStrings.SignUp.PASSWORD_VALIDATION_GOOD}
-        </Text>
+        <PasswordMatch />
 
         <TouchableOpacity
           className="flex-row items-center mb-6"
