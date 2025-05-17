@@ -62,7 +62,7 @@
   - [ ] Firestore: Define and implement security rules.
   - [ ] Firebase Storage: Define and implement security rules for avatars.
 - **Authentication:**
-  - [ ] Integrate Auth Screens with Navigation (e.g., React Navigation).
+  - [ ] Integrate Auth Screens with Navigation (using a stack navigator for the auth flow).
   - [ ] Implement Firebase Auth: Email/Password (sign-up, login) logic in screens.
   - [ ] Implement Firebase Auth: Google Sign-In logic.
   - [ ] Implement Firebase Auth: Microsoft Sign-In logic (Note: Project brief mentions Google and Email/Password. Microsoft is a new addition from the screenshot, confirm if it's in scope for MVP).
@@ -117,11 +117,11 @@
 
 ### UI & UX General
 
-- **Bottom Navigation (Home, Play, Profile icons).**
-- [ ] Create Bottom Navigation component.
-  - [ ] Implement Settings tab component.
-  - [ ] Implement Level Selector tab component.
-  - [ ] Implement Profile tab component.
+- **Bottom Overlays/Modals (for Home, Play, Profile).**
+- [ ] Design and implement overlay/modal components for Home, Play, and Profile.
+- [ ] Implement logic to trigger the correct overlay/modal from the bottom bar icons.
+- [ ] Create a persistent bottom bar UI component with Home, Play, and Profile icons.
+- [ ] Ensure overlays/modals provide quick access and do not fully transition away from the main game context.
 - [ ] Overall app styling (clean cards, bold headings, rounded toggles) per screenshot hints.
 - [ ] Basic animations with Reanimated & Gesture Handler.
 - [ ] Sound effects with `expo-av`.
@@ -167,5 +167,6 @@
 - **2024-07-28:** Attempted to switch to pnpm but encountered a persistent "Invalid package.json in package.json" error specifically within the project directory, preventing dependency installation. The cause of this error is currently unknown and requires further investigation outside the scope of available tools.
 - **2024-07-28:** Successfully transitioned to using pnpm for package management.
 - **2024-07-29:** Implemented Firebase email/password sign-up, login, password reset, Google Sign-In, and logout functions in `src/services/AuthService.ts`. Encountered persistent linter error on `UserCredential` import and missing `@react-native-google-signin/google-signin` dependency.
+- **2024-07-30:** Decided that the bottom navigation icons (Home, Play, Profile) should open overlays/modals instead of navigating to new screens to provide quick access to these features without leaving the main game context. This changes the approach from a traditional bottom tab navigator to a persistent bottom bar triggering modal views.
 
 _(This section will be updated with dates and summaries of key decisions, changes in direction, or significant learnings as the project progresses.)_

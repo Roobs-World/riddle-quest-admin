@@ -25,9 +25,10 @@
 
 1.  **Navigation Setup:**
     - Install `react-navigation` and its dependencies.
-    - Create a basic navigation structure (e.g., an Auth stack for these new screens and a placeholder for the main app stack).
+    - Create a basic navigation structure (e.g., an Auth stack for these new screens).
     - Integrate `LandingScreen`, `LoginScreen`, `SignUpScreen`, and `ForgotPasswordScreen` into the Auth navigation stack.
-    - **Address Linter Error:** Resolve the `navigation` prop requirement on `LandingScreen` by integrating it into a navigation container.
+    - **Navigation:** The bottom navigation (Home, Play, Profile) should open overlays/modals, not navigate to full screens.
+    - **Address Linter Error:** Resolve the `navigation` prop requirement on `LandingScreen` by integrating it into a navigation container (for the Auth flow).
 2.  **Icon Implementation:** Replace placeholder text/view icons in auth screens with actual vector icons (e.g., using `react-native-vector-icons` or SVGs).
 3.  **Firebase SDK Setup:** Ensure Firebase SDK is correctly initialized in the React Native project.
 4.  **Address Persistent Linter Error:** Investigate and resolve the `UserCredential` import error in `src/services/AuthService.ts` (line 1).
@@ -45,6 +46,7 @@
 - **Microsoft Sign-In Scope:** Awaiting clarification on whether Microsoft Sign-In is part of the MVP. If so, will need to ensure Firebase project is configured for it and necessary SDKs/logic are added.
 - **Icon Library:** Decide on a specific icon library (e.g., `react-native-vector-icons` مجموعه MaterialCommunityIcons or Feather) for consistency, or prepare SVGs for custom icons if needed.
 - **UserCredential Import Error:** The persistent linter error on the `UserCredential` import contradicts the official `@react-native-firebase/auth` documentation. This needs further investigation or potentially a manual override/suppression if the linter is misinterpreting the library.
+- **Navigation Pattern:** Bottom navigation will trigger overlays/modals for Home, Play, and Profile, rather than full screen transitions.
 
 ## 5. Key Patterns & Preferences (Emerging)
 
@@ -52,6 +54,7 @@
 - **Iterative Approach:** UI first, then navigation, then logic.
 - **Configuration Files:** Centralized configuration for NativeWind (`tailwind.config.js`, `babel.config.js`, `nativewind.d.ts`).
 - **Clear Communication:** Updates to `progress.md` and `activeContext.md` reflect current status and next steps.
+- **2024-07-30:** Updated navigation plan: Bottom navigation will open overlays/modals for Home, Play, and Profile instead of full screen navigation.
 - **2024-07-27:** Created basic UI for Landing, Login, and Sign Up screens based on provided screenshots.
   - Set up NativeWind, including `babel.config.js`, `tailwind.config.js`, and TypeScript typings.
   - Identified custom colors `primary-orange` (#FDBA74) and `cream-light` (#FAF3E0) from screenshots and added to Tailwind config.

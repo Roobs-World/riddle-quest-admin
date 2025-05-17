@@ -67,7 +67,7 @@ Build a riddle-based Wordle-clone mobile game using React Native, NativeWind, an
 ### 2.7. UI & UX
 
 - Clean card-based design, bold headings, rounded toggles (mimic screenshot styling).
-- Bottom navigation with home, play, profile icons.
+- Bottom navigation with home, play, profile icons. Tapping these icons will open corresponding overlays/modals.
 - **Main Game Screen:** Riddle text, 6x5 guess grid, on-screen keyboard, header (Level, Score, Coins, Hint & Skip buttons).
 - **Store Screen:** List coin packs with "Buy"/"Restore Purchases" buttons.
 - **Victory/Loss Screens:** Attempts, score, coins earned, shareable emoji summary, Next/Retry/Home buttons.

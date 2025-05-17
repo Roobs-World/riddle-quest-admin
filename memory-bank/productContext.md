@@ -30,10 +30,10 @@ This project aims to create an engaging mobile game that combines the popular Wo
 
 ### 3.2. User Interaction & Navigation
 
-- **Bottom Navigation:** Easy access to Home, Play (game modes), and Profile.
+- **Bottom Navigation:** Easy access to Home, Play (game modes), and Profile. These options will open as overlays or modals, providing quick access without leaving the main context entirely.
 - **On-Screen Keyboard:** For entering guesses.
 - **Intuitive Buttons:** For actions like submitting guesses, using hints, skipping levels, buying coins, and navigating menus.
-- **Overlays:** For Profile and Settings, providing quick access without leaving the main context entirely.
+- **Overlays:** For Profile and Settings, providing quick access without leaving the main context entirely. The bottom navigation items (Home, Play, Profile) will now also utilize overlays/modals.
 
 ### 3.3. Monetization & Rewards
 
