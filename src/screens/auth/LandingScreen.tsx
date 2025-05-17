@@ -8,9 +8,9 @@ import {
 } from "react-native";
 import CustomSafeAreaView from "../../components/CustomSafeAreaView";
 import QwordlyLogo from "../../components/logos/QwordlyLogo";
-import GoogleSignInButton from "../../components/GoogleSignInButton";
-import FacebookSignInButton from "../../components/FacebookSignInButton";
-import WideButton from "../../components/WideButton";
+import GoogleSignInButton from "../../components/buttons/GoogleSignInButton";
+import FacebookSignInButton from "../../components/buttons/FacebookSignInButton";
+import WideButton from "../../components/buttons/WideButton";
 import HomeBgSvg from "../../../assets/images/home-bg.svg";
 
 const LandingScreen = ({ navigation }: { navigation: any }) => {

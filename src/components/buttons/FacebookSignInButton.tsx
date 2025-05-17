@@ -1,23 +1,25 @@
 import React from "react";
 import { TouchableOpacity, Text } from "react-native";
-import GoogleIcon from "./icons/GoogleIcon";
+import FacebookIcon from "../icons/FacebookIcon";
 
-interface GoogleSignInButtonProps {
+interface FacebookSignInButtonProps {
   onPress: () => void;
 }
 
-const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({ onPress }) => {
+const FacebookSignInButton: React.FC<FacebookSignInButtonProps> = ({
+  onPress,
+}) => {
   return (
     <TouchableOpacity
       className="bg-white border border-gray-300 w-full py-3 rounded-lg shadow-sm mb-4 flex-row items-center justify-center"
       onPress={onPress}
     >
-      <GoogleIcon width={24} height={24} />
+      <FacebookIcon width={24} height={24} />
       <Text className="text-gray-700 text-base font-medium ml-2">
-        Continue with Google
+        Continue with Facebook
       </Text>
     </TouchableOpacity>
   );
 };
 
-export default GoogleSignInButton;
+export default FacebookSignInButton;
