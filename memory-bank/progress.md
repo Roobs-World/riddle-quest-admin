@@ -12,6 +12,7 @@
   - [x] Landing Screen (`src/screens/auth/LandingScreen.tsx`) UI structure created.
   - [x] Login Screen (`src/screens/auth/LoginScreen.tsx`) UI structure created.
   - [x] Sign Up Screen (`src/screens/auth/SignUpScreen.tsx`) UI structure created.
+  - [x] Forgot Password Screen (`src/screens/auth/ForgotPasswordScreen.tsx`) UI structure created with padlock icon, email input, and reset button.
 - **NativeWind Setup:**
   - [x] `nativewind` and `tailwindcss` dependencies installed.
   - [x] `babel.config.js` configured for NativeWind.
@@ -57,10 +58,11 @@
   - [ ] Firebase Storage: Define and implement security rules for avatars.
 - **Authentication:**
   - [ ] Integrate Auth Screens with Navigation (e.g., React Navigation).
-  - [ ] Implement Firebase Auth: Email/Password (sign-up, login, password reset) logic in screens.
+  - [ ] Implement Firebase Auth: Email/Password (sign-up, login) logic in screens.
   - [ ] Implement Firebase Auth: Google Sign-In logic.
   - [ ] Implement Firebase Auth: Microsoft Sign-In logic (Note: Project brief mentions Google and Email/Password. Microsoft is a new addition from the screenshot, confirm if it's in scope for MVP).
   - [ ] Implement Firebase Auth: Anonymous login (optional, confirm necessity for MVP).
+  - [ ] Implement Firebase Auth: Password reset logic in `ForgotPasswordScreen.tsx`.
 - **Riddle Management:**
   - [ ] Google Sheet: Initial 100+ riddle levels prepared.
   - [ ] Google Apps Script: Sync riddles from Sheets to Firestore (initial manual sync).

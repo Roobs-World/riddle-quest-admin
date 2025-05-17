@@ -14,6 +14,8 @@
 - **App.tsx Styling Migrated:** Moved initial container styles from `StyleSheet` in `App.tsx` to NativeWind classes.
 - **Discovered Discrepancy:** Noted that "Continue with Microsoft" option in screenshots is not in the original `projectbrief.md`. This needs clarification for MVP scope.
 - \*\*Added a "Confirm Password" field to `SignUpScreen.tsx` and updated `src/constants/AppStrings.ts`.
+- \*\*Created basic UI for Forgot Password Screen (`src/screens/auth/ForgotPasswordScreen.tsx`) with padlock icon, email input, and reset button.
+- \*\*Implement password reset functionality (link from `LoginScreen.tsx` to `ForgotPasswordScreen.tsx`).
 
 ## 3. Next Steps & Immediate Goals
 
@@ -54,6 +56,8 @@
   - _Observation:_ Screenshots include "Continue with Microsoft" which was not in the original brief. This needs to be clarified for MVP scope.
   - _Decision:_ Created a `ReusableTextInput` component and integrated it into `LoginScreen.tsx` and `SignUpScreen.tsx` to follow component-based UI patterns and improve reusability.
 - **2024-07-27:** Added the "Confirm Password" field to the `SignUpScreen.tsx` and updated `src/constants/AppStrings.ts` to include the necessary strings (`CONFIRM_PASSWORD_LABEL` and `CONFIRM_PASSWORD_PLACEHOLDER`).
+- **2024-07-27:** Created basic UI for Forgot Password Screen (`src/screens/auth/ForgotPasswordScreen.tsx`) with padlock icon, email input, and reset button.
+- **2024-07-27:** Implemented password reset functionality (link from `LoginScreen.tsx` to `ForgotPasswordScreen.tsx`).
 
 ## 6. Learnings & Project Insights
 
