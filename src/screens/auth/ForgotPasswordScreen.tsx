@@ -29,13 +29,15 @@ const ForgotPasswordScreen = () => {
         </Text>
 
         <UserEmailInput email={email} setEmail={setEmail} />
-
-        <WideButton onPress={handleResetPassword} buttonText="Reset Password" />
-
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text className="text-primary-orange underline">Back to Login</Text>
-        </TouchableOpacity>
       </AuthLayout>
+
+      <WideButton onPress={handleResetPassword} buttonText="Reset Password" />
+
+      <TouchableOpacity onPress={() => navigation.goBack()}>
+        <Text className="text-primary-orange underline text-center">
+          Back to Login
+        </Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
