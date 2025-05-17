@@ -1,6 +1,6 @@
 import { View, Text } from "react-native";
 import { AppStrings } from "../../constants/AppStrings";
-import ReusableTextInput from "../ReusableTextInput";
+import ReusableTextInput from "../shared/ReusableTextInput";
 import { useState } from "react";
 import Error from "../text/Error";
 import { validateEmail } from "../../utils/emailValidation";

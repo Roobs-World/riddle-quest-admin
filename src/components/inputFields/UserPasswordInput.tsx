@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import { AppStrings } from "../../constants/AppStrings";
-import ReusableTextInput from "../ReusableTextInput";
+import ReusableTextInput from "../shared/ReusableTextInput";
 import PasswordVisibilityIcon from "../icons/PasswordVisibilityIcon";
 import { useState } from "react";
 
