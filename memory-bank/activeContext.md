@@ -13,6 +13,7 @@
 - **NativeWind Setup Complete:** Successfully installed and configured NativeWind, `babel.config.js`, `tailwind.config.js` (with custom colors: `primary-orange` and `cream-light`), and TypeScript typings (`src/types/nativewind.d.ts`).
 - **App.tsx Styling Migrated:** Moved initial container styles from `StyleSheet` in `App.tsx` to NativeWind classes.
 - **Discovered Discrepancy:** Noted that "Continue with Microsoft" option in screenshots is not in the original `projectbrief.md`. This needs clarification for MVP scope.
+- \*\*Added a "Confirm Password" field to `SignUpScreen.tsx` and updated `src/constants/AppStrings.ts`.
 
 ## 3. Next Steps & Immediate Goals
 
@@ -52,6 +53,7 @@
   - _Note:_ Used direct `className` prop for NativeWind styling (v4 approach) instead of `styled` HOC after encountering linter issues.
   - _Observation:_ Screenshots include "Continue with Microsoft" which was not in the original brief. This needs to be clarified for MVP scope.
   - _Decision:_ Created a `ReusableTextInput` component and integrated it into `LoginScreen.tsx` and `SignUpScreen.tsx` to follow component-based UI patterns and improve reusability.
+- **2024-07-27:** Added the "Confirm Password" field to the `SignUpScreen.tsx` and updated `src/constants/AppStrings.ts` to include the necessary strings (`CONFIRM_PASSWORD_LABEL` and `CONFIRM_PASSWORD_PLACEHOLDER`).
 
 ## 6. Learnings & Project Insights
 

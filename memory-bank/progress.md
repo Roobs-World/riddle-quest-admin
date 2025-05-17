@@ -23,6 +23,7 @@
   - [x] Created `ReusableTextInput.tsx` component.
   - [x] Integrated `ReusableTextInput` into `LoginScreen.tsx`.
   - [x] Integrated `ReusableTextInput` into `SignUpScreen.tsx`.
+  - [x] Added "Confirm Password" field to `SignUpScreen.tsx` and updated `AppStrings.ts` with necessary strings.
 
 ## 2. What's Left to Build (MVP Focus - 2 Weeks Timeline)
 
@@ -149,5 +150,6 @@
   - _Note:_ Used direct `className` prop for NativeWind styling (v4 approach) instead of `styled` HOC after encountering linter issues.
   - _Observation:_ Screenshots include "Continue with Microsoft" which was not in the original brief. This needs to be clarified for MVP scope.
 - **2024-07-27:** Created `ReusableTextInput` component and integrated it into `LoginScreen.tsx` and `SignUpScreen.tsx` to promote modularity and reusability in UI elements.
+- **2024-07-27:** Added the "Confirm Password" field to the `SignUpScreen.tsx` and updated `src/constants/AppStrings.ts` to include the necessary strings (`CONFIRM_PASSWORD_LABEL` and `CONFIRM_PASSWORD_PLACEHOLDER`) to match the new field.
 
 _(This section will be updated with dates and summaries of key decisions, changes in direction, or significant learnings as the project progresses.)_
