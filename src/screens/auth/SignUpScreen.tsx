@@ -14,6 +14,7 @@ import PasswordVisibilityIcon from "../../components/icons/PasswordVisibilityIco
 import CheckboxIcon from "../../components/icons/CheckboxIcon";
 import CustomSafeAreaView from "../../components/CustomSafeAreaView";
 import { AppStrings } from "../../constants/AppStrings";
+import ScreenTitle from "../../components/shared/ScreenTitle";
 
 const SignUpScreen = ({ navigation }: { navigation: any }) => {
   const [username, setUsername] = useState("Jane Doe");
@@ -35,9 +36,7 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
 
         <ProgressBar activeStep={1} totalSteps={3} />
 
-        <Text className="text-3xl font-bold text-gray-800 mb-8">
-          {AppStrings.AuthStrings.SignUp.TITLE}
-        </Text>
+        <ScreenTitle title={AppStrings.AuthStrings.SignUp.TITLE} />
 
         <Text className="text-sm text-gray-600 mb-1">
           {AppStrings.AuthStrings.SignUp.USERNAME_LABEL}

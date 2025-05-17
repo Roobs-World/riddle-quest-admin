@@ -12,6 +12,7 @@ import PasswordVisibilityIcon from "../../components/icons/PasswordVisibilityIco
 import CustomSafeAreaView from "../../components/CustomSafeAreaView";
 import { AppStrings } from "../../constants/AppStrings";
 import WideButton from "../../components/buttons/WideButton";
+import ScreenTitle from "../../components/shared/ScreenTitle";
 
 const LoginScreen = ({ navigation }: { navigation: any }) => {
   const [email, setEmail] = useState("");
@@ -29,9 +30,7 @@ const LoginScreen = ({ navigation }: { navigation: any }) => {
       </TouchableOpacity>
 
       <View className="flex-1 justify-center items-center w-full py-8">
-        <Text className="text-3xl font-bold text-gray-800 mb-8 ">
-          {AppStrings.AuthStrings.Login.TITLE}
-        </Text>
+        <ScreenTitle title={AppStrings.AuthStrings.Login.TITLE} />
 
         <View className="w-full">
           <Text
