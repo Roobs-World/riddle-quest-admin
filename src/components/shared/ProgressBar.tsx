@@ -8,7 +8,7 @@ const ProgressBar = ({
   activeStep: number;
   totalSteps: number;
 }) => (
-  <View className="flex-row items-center">
+  <View className="flex-row items-center mx-auto mt-4">
     {Array.from({ length: totalSteps }).map((_, index) => (
       <View
         key={index}

@@ -77,7 +77,7 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
 
   return (
     <CustomSafeAreaView>
-      <View className="flex-row items-center mt-8 px-4">
+      <View className="flex-row items-center mt-8">
         <TouchableOpacity onPress={() => navigation.goBack()} className="">
           <BackIcon />
         </TouchableOpacity>
