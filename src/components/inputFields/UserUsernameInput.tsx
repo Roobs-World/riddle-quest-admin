@@ -10,7 +10,7 @@ export default function UserUsernameInput({
   setUsername: (email: string) => void;
 }) {
   return (
-    <View className="w-full">
+    <View className="w-full mb-2">
       <Text
         className="text-sm text-gray-600 mb-2 text-left"
         style={{ fontFamily: "PoppinsSemiBold" }}

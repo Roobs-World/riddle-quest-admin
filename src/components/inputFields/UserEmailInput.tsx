@@ -25,7 +25,7 @@ export default function UserEmailInput({
   };
 
   return (
-    <View className="w-full py-2">
+    <View className="w-full">
       <Text
         className="text-sm text-gray-600 mb-2 text-left"
         style={{ fontFamily: "PoppinsSemiBold" }}
