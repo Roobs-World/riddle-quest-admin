@@ -12,6 +12,7 @@ import GoogleSignInButton from "../../components/buttons/GoogleSignInButton";
 import FacebookSignInButton from "../../components/buttons/FacebookSignInButton";
 import WideButton from "../../components/buttons/WideButton";
 import HomeBgSvg from "../../../assets/images/home-bg.svg";
+import SignUpButton from "../../components/buttons/SignUpButton";
 
 const LandingScreen = ({ navigation }: { navigation: any }) => {
   return (
@@ -64,7 +65,7 @@ const LandingScreen = ({ navigation }: { navigation: any }) => {
         onPress={() => navigation.navigate("Login")}
       />
 
-      <Text className="text-sm text-gray-500 mt-6 mb-10">or Sign in with</Text>
+      <Text className="text-sm text-gray-500 mt-4 mb-8">or Sign in with</Text>
 
       <GoogleSignInButton onPress={() => console.log("Continue with Google")} />
 
@@ -72,14 +73,11 @@ const LandingScreen = ({ navigation }: { navigation: any }) => {
         onPress={() => console.log("Continue with Facebook")}
       />
 
-      <View className="flex-row items-center mt-12">
+      <View className="flex-row items-center mt-8">
         <Text className="text-sm text-gray-600">Don't have an account? </Text>
-        <TouchableOpacity onPress={() => console.log("Sign up")}>
-          <Text className="text-sm text-primary-orange font-semibold">
-            Sign up
-          </Text>
-        </TouchableOpacity>
       </View>
+
+      <SignUpButton onPress={() => console.log("Sign up")} />
     </CustomSafeAreaView>
   );
 };
