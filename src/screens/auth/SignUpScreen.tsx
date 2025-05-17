@@ -20,8 +20,8 @@ import AuthLayout from "../../components/layouts/AuthLayout";
 
 const SignUpScreen = ({ navigation }: { navigation: any }) => {
   const [username, setUsername] = useState("Jane Doe");
-  const [email, setEmail] = useState("janDoe@gmail.com");
-  const [password, setPassword] = useState("************");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(true);
 
