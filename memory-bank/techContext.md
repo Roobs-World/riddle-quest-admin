@@ -12,7 +12,7 @@
 ## 2. Backend & Cloud Services
 
 - **Backend-as-a-Service (BaaS):** Firebase
-  - **Authentication:** Firebase Authentication (Google Sign-In, Email/Password, Password Reset, Anonymous Auth)
+  - **Authentication:** Firebase Authentication (Google Sign-In, Facebook Login, Email/Password, Password Reset, Anonymous Auth)
   - **Database:** Firestore (for user stats, game progress, coin balances, avatar URLs, riddle levels)
   - **Storage:** Firebase Storage (for user-uploaded avatars)
   - **Serverless Functions:** Firebase Cloud Functions (for generating new riddles)
@@ -32,7 +32,7 @@
 
 ## 4. Development Setup & Environment
 
-- **Node.js & npm/yarn:** For JavaScript runtime and package management.
+- **Node.js & npm:** Use npm for package management.
 - **React Native CLI:** For project initialization and management.
 - **IDE:** (User's choice, e.g., VS Code with relevant extensions for React Native, TypeScript, ESLint, Prettier).
 - **Emulators/Simulators:** Android Studio Emulator & iOS Simulator (Xcode).

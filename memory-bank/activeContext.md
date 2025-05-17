@@ -31,9 +31,10 @@
     - Implement Firebase email/password login logic in `LoginScreen.tsx`.
     - Implement password reset functionality (potentially a new screen or modal, link from `LoginScreen.tsx`).
 5.  **Google Sign-In:** Implement Firebase Google Sign-In logic on `LandingScreen.tsx`.
-6.  **Microsoft Sign-In (Pending Clarification):** If confirmed for MVP, implement Firebase Microsoft Sign-In logic on `LandingScreen.tsx`.
-7.  **Form Validation:** Add basic client-side validation to input fields in Login and Sign Up screens.
-8.  **Auth State Management:** Set up basic auth state management (e.g., using React Context) to handle user login/logout status and navigate accordingly.
+6.  **Facebook Sign-In:** Implement Firebase Facebook Sign-In logic on `LandingScreen.tsx`.
+7.  **Microsoft Sign-In (Pending Clarification):** If confirmed for MVP, implement Firebase Microsoft Sign-In logic on `LandingScreen.tsx`.
+8.  **Form Validation:** Add basic client-side validation to input fields in Login and Sign Up screens.
+9.  **Auth State Management:** Set up basic auth state management (e.g., using React Context) to handle user login/logout status and navigate accordingly.
 
 ## 4. Active Decisions & Considerations
 

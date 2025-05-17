@@ -45,6 +45,11 @@
   - [ ] 6x5 guess grid UI.
   - [ ] On-screen keyboard UI and input handling.
   - [ ] Header: Level, Score (TBD if part of MVP game screen or just profile), Coins, Hint & Skip buttons.
+  - [ ] Create Coins component.
+  - [ ] Create Level icon component.
+  - [ ] Create Questions component for the riddle.
+  - [ ] Create Grid component for guesses.
+  - [ ] Create Controls component (Hint, Submit, Next buttons).
 - **Victory/Loss Screens:**
   - [ ] Display attempts, score (if applicable), coins earned.
   - [ ] Shareable emoji summary.
@@ -63,6 +68,7 @@
   - [ ] Implement Firebase Auth: Microsoft Sign-In logic (Note: Project brief mentions Google and Email/Password. Microsoft is a new addition from the screenshot, confirm if it's in scope for MVP).
   - [ ] Implement Firebase Auth: Anonymous login (optional, confirm necessity for MVP).
   - [ ] Implement Firebase Auth: Password reset logic in `ForgotPasswordScreen.tsx`.
+  - [ ] Implement Firebase Auth: Facebook Sign-In logic.
 - **Riddle Management:**
   - [ ] Google Sheet: Initial 100+ riddle levels prepared.
   - [ ] Google Apps Script: Sync riddles from Sheets to Firestore (initial manual sync).
@@ -111,7 +117,11 @@
 
 ### UI & UX General
 
-- [ ] Bottom Navigation (Home, Play, Profile icons).
+- **Bottom Navigation (Home, Play, Profile icons).**
+- [ ] Create Bottom Navigation component.
+  - [ ] Implement Settings tab component.
+  - [ ] Implement Level Selector tab component.
+  - [ ] Implement Profile tab component.
 - [ ] Overall app styling (clean cards, bold headings, rounded toggles) per screenshot hints.
 - [ ] Basic animations with Reanimated & Gesture Handler.
 - [ ] Sound effects with `expo-av`.
@@ -153,5 +163,6 @@
   - _Observation:_ Screenshots include "Continue with Microsoft" which was not in the original brief. This needs to be clarified for MVP scope.
 - **2024-07-27:** Created `ReusableTextInput` component and integrated it into `LoginScreen.tsx` and `SignUpScreen.tsx` to promote modularity and reusability in UI elements.
 - **2024-07-27:** Added the "Confirm Password" field to the `SignUpScreen.tsx` and updated `src/constants/AppStrings.ts` to include the necessary strings (`CONFIRM_PASSWORD_LABEL` and `CONFIRM_PASSWORD_PLACEHOLDER`) to match the new field.
+- **2024-07-28:** Confirmed use of `npm` for package management.
 
 _(This section will be updated with dates and summaries of key decisions, changes in direction, or significant learnings as the project progresses.)_

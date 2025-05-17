@@ -18,7 +18,7 @@ Build a riddle-based Wordle-clone mobile game using React Native, NativeWind, an
 
 ### 2.2. Backend & Authentication
 
-- **Authentication:** Firebase Auth (Google, email/password, password reset, optional anonymous)
+- **Authentication:** Firebase Auth (Google, Facebook, email/password, password reset, optional anonymous)
 - **Database:** Firestore (user stats, progress, coin balances, avatar URLs, riddle levels)
 - **Storage:** Firebase Storage (user-uploaded avatars)
 - **Level Management:**
