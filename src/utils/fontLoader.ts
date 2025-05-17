@@ -7,6 +7,7 @@ export const loadFonts = async () => {
     Poppins: require("@fonts/Poppins-Regular.ttf"),
     PoppinsBold: require("@fonts/Poppins-Bold.ttf"),
     PoppinsSemiBold: require("@fonts/Poppins-SemiBold.ttf"),
+    PoppinsLight: require("@fonts/Poppins-Light.ttf"),
   });
   console.log("Fonts loaded successfully!");
 };

@@ -15,7 +15,10 @@ const FacebookSignInButton: React.FC<FacebookSignInButtonProps> = ({
       onPress={onPress}
     >
       <FacebookIcon width={24} height={24} />
-      <Text className="text-gray-700 text-base font-medium ml-2">
+      <Text
+        className="text-gray-700 text-base font-medium ml-2"
+        style={{ fontFamily: "PoppinsSemiBold" }}
+      >
         Continue with Facebook
       </Text>
     </TouchableOpacity>

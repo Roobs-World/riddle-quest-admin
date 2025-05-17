@@ -35,7 +35,7 @@ const LandingScreen = ({ navigation }: { navigation: any }) => {
       </View>
 
       <Text
-        className="text-2xl font-bold text-gray-800 text-center mb-4"
+        className="text-2xl font-bold text-gray-800 text-center mb-8"
         style={{
           fontFamily: "PoetsenOne",
           fontWeight: "400",
@@ -47,7 +47,7 @@ const LandingScreen = ({ navigation }: { navigation: any }) => {
         Join millions of people to play QWORDLY.
       </Text>
       <Text
-        className="text-base text-gray-400 text-center mb-12"
+        className="text-base text-gray-400 text-center mb-8"
         style={{
           paddingHorizontal: 24,
           fontFamily: "Poppins",
@@ -65,7 +65,16 @@ const LandingScreen = ({ navigation }: { navigation: any }) => {
         onPress={() => navigation.navigate("Login")}
       />
 
-      <Text className="text-sm text-gray-500 mt-4 mb-8">or Sign in with</Text>
+      <View className="flex-row items-center mt-4 mb-8">
+        <View className="flex-1 h-px bg-gray-300 mr-2" />
+        <Text
+          className="text-sm text-gray-500"
+          style={{ fontFamily: "PoppinsLight" }}
+        >
+          or Sign in with
+        </Text>
+        <View className="flex-1 h-px bg-gray-300 ml-2" />
+      </View>
 
       <GoogleSignInButton onPress={() => console.log("Continue with Google")} />
 
@@ -74,7 +83,14 @@ const LandingScreen = ({ navigation }: { navigation: any }) => {
       />
 
       <View className="flex-row items-center mt-8">
-        <Text className="text-sm text-gray-600">Don't have an account? </Text>
+        <View className="flex-1 h-px bg-gray-300 mr-2" />
+        <Text
+          className="text-sm text-gray-600"
+          style={{ fontFamily: "PoppinsLight" }}
+        >
+          Don't have an account?{" "}
+        </Text>
+        <View className="flex-1 h-px bg-gray-300 ml-2" />
       </View>
 
       <SignUpButton onPress={() => console.log("Sign up")} />
