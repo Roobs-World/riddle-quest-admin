@@ -8,7 +8,7 @@ interface ReusableTextInputProps extends TextInputProps {
 const ReusableTextInput: React.FC<ReusableTextInputProps> = ({ ...props }) => {
   return (
     <TextInput
-      className="flex-1 text-gray-700 p-3 text-base font-poppins-regular h-12"
+      className="flex-1 bg-[#F8F5EE] text-gray-700 p-3 text-base font-poppins-regular h-12"
       {...props}
     />
   );

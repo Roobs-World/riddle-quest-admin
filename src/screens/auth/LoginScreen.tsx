@@ -41,7 +41,7 @@ const LoginScreen = ({ navigation }: { navigation: any }) => {
             {AppStrings.AuthStrings.Login.EMAIL_LABEL}
           </Text>
         </View>
-        <View className="flex-row items-center bg-[#F8F5EE] border border-gray-300 rounded-lg mb-2 overflow-hidden">
+        <View className="flex-row items-center border border-gray-300 rounded-lg mb-2 overflow-hidden">
           <ReusableTextInput
             value={email}
             onChangeText={setEmail}
@@ -60,7 +60,7 @@ const LoginScreen = ({ navigation }: { navigation: any }) => {
           </Text>
         </View>
         <View
-          className={`flex-row items-center bg-[#F8F5EE] border ${
+          className={`flex-row items-center border ${
             isPasswordFocused ? "border-red-500" : "border-gray-300"
           } rounded-lg mb-2 overflow-hidden`}
         >

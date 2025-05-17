@@ -43,24 +43,28 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
         <Text className="text-sm text-gray-600 mb-1">
           {AppStrings.AuthStrings.SignUp.USERNAME_LABEL}
         </Text>
-        <ReusableTextInput
-          className="bg-white border border-gray-300 text-gray-700 p-3 rounded-lg mb-4 text-base"
-          value={username}
-          onChangeText={setUsername}
-          placeholder={AppStrings.AuthStrings.SignUp.USERNAME_PLACEHOLDER}
-        />
+        <View className="bg-white border border-gray-300 rounded-lg mb-4 overflow-hidden">
+          <ReusableTextInput
+            className="w-full text-gray-700 p-3 text-base"
+            value={username}
+            onChangeText={setUsername}
+            placeholder={AppStrings.AuthStrings.SignUp.USERNAME_PLACEHOLDER}
+          />
+        </View>
 
         <Text className="text-sm text-gray-600 mb-1">
           {AppStrings.AuthStrings.SignUp.EMAIL_LABEL}
         </Text>
-        <ReusableTextInput
-          className="bg-white border border-gray-300 text-gray-700 p-3 rounded-lg mb-4 text-base"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
-          placeholder={AppStrings.AuthStrings.SignUp.EMAIL_PLACEHOLDER}
-        />
+        <View className="bg-white border border-gray-300 rounded-lg mb-4 overflow-hidden">
+          <ReusableTextInput
+            className="w-full text-gray-700 p-3 text-base"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            placeholder={AppStrings.AuthStrings.SignUp.EMAIL_PLACEHOLDER}
+          />
+        </View>
 
         <Text className="text-sm text-gray-600 mb-1">
           {AppStrings.AuthStrings.SignUp.PASSWORD_LABEL}
