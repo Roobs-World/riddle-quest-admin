@@ -7,7 +7,7 @@ interface AuthLayoutProps {
 
 const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
   return (
-    <View className="flex-1 justify-center items-center w-full py-8">
+    <View className="flex-1 justify-center items-stretch w-full py-8">
       {children}
     </View>
   );
