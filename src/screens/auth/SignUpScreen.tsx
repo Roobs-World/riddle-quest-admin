@@ -43,6 +43,9 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
         <UserPasswordInput
           label={AppStrings.AuthStrings.SignUp.CONFIRM_PASSWORD_LABEL}
           password={confirmPassword}
+          placeholder={
+            AppStrings.AuthStrings.SignUp.CONFIRM_PASSWORD_PLACEHOLDER
+          }
           setPassword={setConfirmPassword}
         />
 
