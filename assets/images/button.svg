@@ -1,0 +1,17 @@
+<svg width="335" height="56" viewBox="0 0 335 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3494_3804)">
+<rect width="335" height="56" rx="12" fill="#FEC880"/>
+<path d="M5 19.7636L20.3507 10.809C60.9894 -12.8969 111.241 -12.8969 151.88 10.809L167.231 19.7636L182.582 28.7182C223.22 52.4241 273.472 52.4241 314.111 28.7182L329.462 19.7636" stroke="#FCC070" stroke-width="2.46923" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M5 3.53996L20.3507 -5.41464C60.9894 -29.1205 111.241 -29.1205 151.88 -5.41465L167.231 3.53996L182.582 12.4946C223.22 36.2004 273.472 36.2004 314.111 12.4946L329.462 3.53996" stroke="#FCC070" stroke-width="2.46923" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M5 -12.6827L20.3507 -21.6373C60.9894 -45.3432 111.241 -45.3432 151.88 -21.6373L167.231 -12.6827L182.582 -3.7281C223.22 19.9778 273.472 19.9778 314.111 -3.72809L329.462 -12.6827" stroke="#FCC070" stroke-width="2.46923" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M5 35.9862L20.3507 27.0316C60.9894 3.32577 111.241 3.32576 151.88 27.0316L167.231 35.9862L182.582 44.9408C223.22 68.6467 273.472 68.6467 314.111 44.9409L329.462 35.9862" stroke="#FCC070" stroke-width="2.46923" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M5 52.2099L20.3507 43.2553C60.9894 19.5494 111.241 19.5494 151.88 43.2553L167.231 52.2099L182.582 61.1645C223.22 84.8704 273.472 84.8704 314.111 61.1645L329.462 52.2099" stroke="#FCC070" stroke-width="2.46923" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M5 68.4325L20.3507 59.4779C60.9894 35.7721 111.241 35.772 151.88 59.4779L167.231 68.4325L182.582 77.3871C223.22 101.093 273.472 101.093 314.111 77.3871L329.462 68.4325" stroke="#FCC070" stroke-width="2.46923" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<rect x="0.75" y="0.75" width="333.5" height="54.5" rx="11.25" stroke="#E2DCC7" stroke-width="1.5"/>
+<defs>
+<clipPath id="clip0_3494_3804">
+<rect width="335" height="56" rx="12" fill="white"/>
+</clipPath>
+</defs>
+</svg>

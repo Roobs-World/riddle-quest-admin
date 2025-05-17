@@ -1,6 +1,6 @@
 import React from "react";
 import { TouchableOpacity, Text, View } from "react-native";
-import ButtonBackground from "@images/button-overlay.svg";
+import ButtonBackground from "@images/button.svg";
 
 interface WideButtonProps {
   onPress: () => void;
@@ -9,10 +9,7 @@ interface WideButtonProps {
 
 const WideButton: React.FC<WideButtonProps> = ({ onPress, buttonText }) => {
   return (
-    <TouchableOpacity
-      className="bg-[#FCC070] w-full mb-4 rounded-lg"
-      onPress={onPress}
-    >
+    <TouchableOpacity className="w-full mb-4 rounded-lg" onPress={onPress}>
       <View className="relative">
         {/* SVG Background */}
         <View className="absolute top-0 left-0 right-0 bottom-0">
