@@ -112,11 +112,11 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
           <CheckboxIcon checked={agreedToTerms} />
           <Text className="text-sm text-gray-600 flex-1">
             {AppStrings.AuthStrings.SignUp.TERMS_AGREEMENT_PART1}
-            <Text className="text-primary-orange font-semibold">
+            <Text className="text-red-500 font-semibold">
               {AppStrings.AuthStrings.SignUp.TERMS_USER_AGREEMENT}
             </Text>{" "}
             {AppStrings.AuthStrings.SignUp.TERMS_AGREEMENT_PART2}
-            <Text className="text-primary-orange font-semibold">
+            <Text className="text-red-500 font-semibold">
               {AppStrings.AuthStrings.SignUp.TERMS_PRIVACY_POLICY}
             </Text>
           </Text>
