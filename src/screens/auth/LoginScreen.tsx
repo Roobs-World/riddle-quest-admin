@@ -9,6 +9,7 @@ import ScreenTitle from "../../components/shared/ScreenTitle";
 import AuthLayout from "../../components/layouts/AuthLayout";
 import ReusableTextInput from "../../components/ReusableTextInput";
 import UserEmailInput from "../../components/inputFields/UserEmailInput";
+import UserPasswordInput from "../../components/inputFields/UserPasswordInput";
 
 const LoginScreen = ({ navigation }: { navigation: any }) => {
   const [email, setEmail] = useState("");
@@ -30,34 +31,8 @@ const LoginScreen = ({ navigation }: { navigation: any }) => {
 
         <UserEmailInput email={email} setEmail={setEmail} />
 
-        <View className="w-full">
-          <Text
-            className="text-sm text-gray-600 mb-2 text-left mt-4"
-            style={{ fontFamily: "PoppinsSemiBold" }}
-          >
-            {AppStrings.AuthStrings.Login.PASSWORD_LABEL}
-          </Text>
-        </View>
-        <View
-          className={`flex-row items-center border ${
-            isPasswordFocused ? "border-red-500" : "border-gray-300"
-          } rounded-lg mb-2 overflow-hidden`}
-        >
-          <ReusableTextInput
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry={!isPasswordVisible}
-            placeholder={AppStrings.AuthStrings.Login.PASSWORD_PLACEHOLDER}
-            onFocus={() => setIsPasswordFocused(true)}
-            onBlur={() => setIsPasswordFocused(false)}
-          />
-          <TouchableOpacity
-            onPress={() => setIsPasswordVisible(!isPasswordVisible)}
-            className="p-3"
-          >
-            <PasswordVisibilityIcon visible={isPasswordVisible} />
-          </TouchableOpacity>
-        </View>
+        <UserPasswordInput password={password} setPassword={setPassword} />
+
         <TouchableOpacity className="self-end mb-8">
           <Text className="text-sm text-gray-500 font-medium">
             {AppStrings.AuthStrings.Login.FORGOT_PASSWORD}

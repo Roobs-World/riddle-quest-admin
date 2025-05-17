@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import ProgressBar from "../../components/shared/ProgressBar";
 import BackIcon from "../../components/icons/BackIcon";
-import PasswordVisibilityIcon from "../../components/icons/PasswordVisibilityIcon";
 import CheckboxIcon from "../../components/icons/CheckboxIcon";
 import CustomSafeAreaView from "../../components/CustomSafeAreaView";
 import { AppStrings } from "../../constants/AppStrings";
@@ -11,13 +10,14 @@ import WideButton from "../../components/buttons/WideButton";
 import AuthLayout from "../../components/layouts/AuthLayout";
 import ReusableTextInput from "../../components/ReusableTextInput";
 import UserEmailInput from "../../components/inputFields/UserEmailInput";
+import UserPasswordInput from "../../components/inputFields/UserPasswordInput";
+import UserUsernameInput from "../../components/inputFields/UserUsernameInput";
 
 const SignUpScreen = ({ navigation }: { navigation: any }) => {
   const [username, setUsername] = useState("Jane Doe");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(true);
 
   return (
@@ -34,59 +34,18 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
 
         <ScreenTitle title={AppStrings.AuthStrings.SignUp.TITLE} />
 
-        <Text className="text-sm text-gray-600 mb-1">
-          {AppStrings.AuthStrings.SignUp.USERNAME_LABEL}
-        </Text>
-        <View className=" border border-gray-300 rounded-lg mb-4 overflow-hidden">
-          <ReusableTextInput
-            className="w-full text-gray-700 p-3 text-base"
-            value={username}
-            onChangeText={setUsername}
-            placeholder={AppStrings.AuthStrings.SignUp.USERNAME_PLACEHOLDER}
-          />
-        </View>
+        <UserUsernameInput username={username} setUsername={setUsername} />
 
         <UserEmailInput email={email} setEmail={setEmail} />
 
-        <Text className="text-sm text-gray-600 mb-1">
-          {AppStrings.AuthStrings.SignUp.PASSWORD_LABEL}
-        </Text>
-        <View className="flex-row items-center border border-gray-300 rounded-lg mb-1 overflow-hidden">
-          <ReusableTextInput
-            className="flex-1 text-gray-700 p-3 text-base"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry={!isPasswordVisible}
-            placeholder={AppStrings.AuthStrings.SignUp.PASSWORD_PLACEHOLDER}
-          />
-          <TouchableOpacity
-            onPress={() => setIsPasswordVisible(!isPasswordVisible)}
-            className="p-3"
-          >
-            <PasswordVisibilityIcon visible={isPasswordVisible} />
-          </TouchableOpacity>
-        </View>
+        <UserPasswordInput password={password} setPassword={setPassword} />
 
-        <Text className="text-sm text-gray-600 mb-1">
-          {AppStrings.AuthStrings.SignUp.CONFIRM_PASSWORD_LABEL}
-        </Text>
-        <View className="flex-row items-center border border-gray-300 rounded-lg mb-1 overflow-hidden">
-          <ReusableTextInput
-            className="flex-1 text-gray-700 p-3 text-base"
-            value={confirmPassword}
-            onChangeText={setConfirmPassword}
-            secureTextEntry={!isPasswordVisible}
-            placeholder={
-              AppStrings.AuthStrings.SignUp.CONFIRM_PASSWORD_PLACEHOLDER
-            }
-          />
-          <TouchableOpacity
-            onPress={() => setIsPasswordVisible(!isPasswordVisible)}
-            className="p-3"
-          >
-            <PasswordVisibilityIcon visible={isPasswordVisible} />
-          </TouchableOpacity>
-        </View>
+        <UserPasswordInput
+          label={AppStrings.AuthStrings.SignUp.CONFIRM_PASSWORD_LABEL}
+          password={confirmPassword}
+          setPassword={setConfirmPassword}
+        />
+
         <Text className="text-xs text-green-600 ml-1 mb-4">
           {AppStrings.AuthStrings.SignUp.PASSWORD_VALIDATION_GOOD}
         </Text>
