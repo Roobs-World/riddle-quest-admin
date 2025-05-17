@@ -15,10 +15,12 @@ import WideButton from "../../components/WideButton";
 const LandingScreen = ({ navigation }: { navigation: any }) => {
   return (
     <CustomSafeAreaView>
-      <QwordlyLogo />
+      <View className="mb-10">
+        <QwordlyLogo />
+      </View>
 
       <Text
-        className="text-2xl font-bold text-gray-800 text-center mb-2"
+        className="text-2xl font-bold text-gray-800 text-center mb-4"
         style={{
           fontFamily: "PoetsenOne",
           fontWeight: "400",
@@ -29,7 +31,17 @@ const LandingScreen = ({ navigation }: { navigation: any }) => {
       >
         Join millions of people to play QWORDLY.
       </Text>
-      <Text className="text-base text-gray-600 text-center mb-10">
+      <Text
+        className="text-base text-gray-400 text-center mb-12"
+        style={{
+          paddingHorizontal: 24,
+          fontFamily: "Poppins",
+          fontWeight: "400",
+          fontSize: 16,
+          lineHeight: 24,
+          letterSpacing: -0.104,
+        }}
+      >
         Ready to have fun while training your mind?
       </Text>
 
@@ -38,7 +50,7 @@ const LandingScreen = ({ navigation }: { navigation: any }) => {
         onPress={() => navigation.navigate("Login")}
       />
 
-      <Text className="text-sm text-gray-500 my-4">or Sign in with</Text>
+      <Text className="text-sm text-gray-500 mt-6 mb-10">or Sign in with</Text>
 
       <GoogleSignInButton onPress={() => console.log("Continue with Google")} />
 
@@ -46,7 +58,7 @@ const LandingScreen = ({ navigation }: { navigation: any }) => {
         onPress={() => console.log("Continue with Facebook")}
       />
 
-      <View className="flex-row items-center">
+      <View className="flex-row items-center mt-12">
         <Text className="text-sm text-gray-600">Don't have an account? </Text>
         <TouchableOpacity onPress={() => console.log("Sign up")}>
           <Text className="text-sm text-primary-orange font-semibold">
