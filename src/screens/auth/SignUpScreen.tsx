@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useReducer, useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import ProgressBar from "../../components/shared/ProgressBar";
 import BackIcon from "../../components/icons/BackIcon";
@@ -8,17 +8,64 @@ import { AppStrings } from "../../constants/AppStrings";
 import ScreenTitle from "../../components/shared/ScreenTitle";
 import WideButton from "../../components/buttons/WideButton";
 import AuthLayout from "../../components/layouts/AuthLayout";
-import ReusableTextInput from "../../components/ReusableTextInput";
 import UserEmailInput from "../../components/inputFields/UserEmailInput";
 import UserPasswordInput from "../../components/inputFields/UserPasswordInput";
 import UserUsernameInput from "../../components/inputFields/UserUsernameInput";
 import PasswordMatch from "../../components/text/PasswordMatch";
+import PasswordError from "../../components/text/PasswordError";
+
+// Define types for the password state and actions
+interface PasswordState {
+  password: string;
+  confirmPassword: string;
+  passwordsMatch: boolean;
+  confirmPasswordHasInput: boolean;
+}
+
+type PasswordAction =
+  | { type: "SET_PASSWORD"; payload: string }
+  | { type: "SET_CONFIRM_PASSWORD"; payload: string };
+
+// Define the initial state for the password reducer
+const initialPasswordState: PasswordState = {
+  password: "",
+  confirmPassword: "",
+  passwordsMatch: false,
+  confirmPasswordHasInput: false,
+};
+
+// Define the reducer function
+function passwordReducer(
+  state: PasswordState,
+  action: PasswordAction
+): PasswordState {
+  switch (action.type) {
+    case "SET_PASSWORD":
+      return {
+        ...state,
+        password: action.payload,
+        passwordsMatch: action.payload === state.confirmPassword,
+      };
+    case "SET_CONFIRM_PASSWORD":
+      return {
+        ...state,
+        confirmPassword: action.payload,
+        passwordsMatch: state.password === action.payload,
+        confirmPasswordHasInput: action.payload.length > 0,
+      };
+    default:
+      return state;
+  }
+}
 
 const SignUpScreen = ({ navigation }: { navigation: any }) => {
   const [username, setUsername] = useState("Jane Doe");
+  // Use the reducer for password state
+  const [passwordState, dispatch] = useReducer(
+    passwordReducer,
+    initialPasswordState
+  );
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [agreedToTerms, setAgreedToTerms] = useState(true);
 
   return (
@@ -39,18 +86,30 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
 
         <UserEmailInput email={email} setEmail={setEmail} />
 
-        <UserPasswordInput password={password} setPassword={setPassword} />
+        <UserPasswordInput
+          password={passwordState.password}
+          setPassword={(text) =>
+            dispatch({ type: "SET_PASSWORD", payload: text })
+          }
+        />
 
         <UserPasswordInput
           label={AppStrings.AuthStrings.SignUp.CONFIRM_PASSWORD_LABEL}
-          password={confirmPassword}
+          password={passwordState.confirmPassword}
           placeholder={
             AppStrings.AuthStrings.SignUp.CONFIRM_PASSWORD_PLACEHOLDER
           }
-          setPassword={setConfirmPassword}
+          setPassword={(text) =>
+            dispatch({ type: "SET_CONFIRM_PASSWORD", payload: text })
+          }
         />
 
-        <PasswordMatch />
+        {passwordState.confirmPasswordHasInput &&
+          (passwordState.passwordsMatch ? (
+            <PasswordMatch />
+          ) : (
+            <PasswordError />
+          ))}
 
         <TouchableOpacity
           className="flex-row items-center mb-6"
@@ -70,7 +129,16 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
         </TouchableOpacity>
 
         <WideButton
-          onPress={() => console.log("Sign up pressed")} // Replace with actual sign up logic
+          onPress={() => {
+            // Use the state from the reducer
+            if (passwordState.passwordsMatch) {
+              console.log("Sign up pressed"); // Replace with actual sign up logic
+            } else {
+              console.log(
+                "Passwords do not match or confirm password is empty"
+              );
+            }
+          }}
           buttonText={AppStrings.AuthStrings.SignUp.NEXT_BUTTON}
         />
 
