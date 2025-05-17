@@ -17,11 +17,7 @@ const CustomSafeAreaView: React.FC<CustomSafeAreaViewProps> = ({
   }`;
 
   return (
-    <SafeAreaView
-      className={combinedClassName}
-      style={[{ backgroundColor: "#fcfaf4" }, style]}
-      {...rest}
-    >
+    <SafeAreaView className={combinedClassName} style={[style]} {...rest}>
       {children}
     </SafeAreaView>
   );

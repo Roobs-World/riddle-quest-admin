@@ -11,10 +11,24 @@ import QwordlyLogo from "../../components/logos/QwordlyLogo";
 import GoogleSignInButton from "../../components/GoogleSignInButton";
 import FacebookSignInButton from "../../components/FacebookSignInButton";
 import WideButton from "../../components/WideButton";
+import HomeBgSvg from "../../../assets/images/home-bg.svg";
 
 const LandingScreen = ({ navigation }: { navigation: any }) => {
   return (
     <CustomSafeAreaView>
+      <HomeBgSvg
+        width="120%"
+        height="100%"
+        style={{
+          position: "absolute",
+          top: "-5%",
+          left: 0,
+          bottom: 0,
+          right: 0,
+          zIndex: -1,
+        }}
+      />
+
       <View className="mb-10">
         <QwordlyLogo />
       </View>
