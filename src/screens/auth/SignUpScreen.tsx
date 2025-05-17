@@ -88,7 +88,10 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
       </View>
 
       <AuthLayout>
-        <ScreenTitle title={AppStrings.AuthStrings.SignUp.TITLE} />
+        <ScreenTitle
+          title={AppStrings.AuthStrings.SignUp.TITLE}
+          className="-mt-4"
+        />
         <UserUsernameInput username={username} setUsername={setUsername} />
 
         <UserEmailInput email={email} setEmail={setEmail} />
