@@ -1,8 +1,7 @@
-import { View, Text, TouchableOpacity, Image } from "react-native";
+import { Text } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
-import ReusableTextInput from "../../components/ReusableTextInput";
 import ScreenTitle from "../../components/text/ScreenTitle";
 import PadlockIcon from "../../../assets/images/padlock.svg";
 import WideButton from "../../components/buttons/WideButton";
