@@ -73,7 +73,7 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
     initialPasswordState
   );
   const [email, setEmail] = useState("");
-  const [agreedToTerms, setAgreedToTerms] = useState(true);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
 
   const stepColors = useMemo(() => {
     const totalSteps = 3;
