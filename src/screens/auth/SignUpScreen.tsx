@@ -27,14 +27,13 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
 
   return (
     <CustomSafeAreaView>
-      <View className="w-full px-6">
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          className="mb-6 self-start"
-        >
-          <BackIcon />
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        className="self-start"
+      >
+        <BackIcon />
+      </TouchableOpacity>
+
       <AuthLayout>
         <ProgressBar activeStep={1} totalSteps={3} />
 
