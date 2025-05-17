@@ -6,7 +6,7 @@ interface AuthLayoutProps {
 }
 
 const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
-  return <View className="flex-1 items-stretch w-full">{children}</View>;
+  return <View className="flex-1 items-center w-full">{children}</View>;
 };
 
 export default AuthLayout;

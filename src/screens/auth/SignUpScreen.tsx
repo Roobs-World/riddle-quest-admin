@@ -13,6 +13,7 @@ import UserPasswordInput from "../../components/inputFields/UserPasswordInput";
 import UserUsernameInput from "../../components/inputFields/UserUsernameInput";
 import PasswordMatch from "../../components/text/PasswordMatch";
 import Error from "../../components/text/Error";
+import BackButton from "../../components/buttons/BackButton";
 
 // Define types for the password state and actions
 interface PasswordState {
@@ -115,9 +116,7 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
   return (
     <CustomSafeAreaView>
       <View className="flex-row items-center mt-8">
-        <TouchableOpacity onPress={() => navigation.goBack()} className="">
-          <BackIcon />
-        </TouchableOpacity>
+        <BackButton navigation={navigation} />
 
         <View className="flex-1 self-center">
           <ProgressBar activeStep={1} totalSteps={3} stepColors={stepColors} />

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
-import BackIcon from "../../components/icons/BackIcon";
 import CustomSafeAreaView from "../../components/CustomSafeAreaView";
 import { AppStrings } from "../../constants/AppStrings";
 import WideButton from "../../components/buttons/WideButton";
@@ -8,6 +7,7 @@ import ScreenTitle from "../../components/text/ScreenTitle";
 import AuthLayout from "../../components/layouts/AuthLayout";
 import UserEmailInput from "../../components/inputFields/UserEmailInput";
 import UserPasswordInput from "../../components/inputFields/UserPasswordInput";
+import BackButton from "../../components/buttons/BackButton";
 
 const LoginScreen = ({ navigation }: { navigation: any }) => {
   const [email, setEmail] = useState("");
@@ -15,12 +15,7 @@ const LoginScreen = ({ navigation }: { navigation: any }) => {
 
   return (
     <CustomSafeAreaView>
-      <TouchableOpacity
-        onPress={() => navigation.goBack()}
-        className="self-start"
-      >
-        <BackIcon />
-      </TouchableOpacity>
+      <BackButton navigation={navigation} />
 
       <AuthLayout>
         <ScreenTitle title={AppStrings.AuthStrings.Login.TITLE} />

@@ -6,6 +6,9 @@ import ReusableTextInput from "../../components/ReusableTextInput";
 import ScreenTitle from "../../components/text/ScreenTitle";
 import PadlockIcon from "../../../assets/images/padlock.svg";
 import WideButton from "../../components/buttons/WideButton";
+import BackButton from "../../components/buttons/BackButton";
+import AuthLayout from "../../components/layouts/AuthLayout";
+import UserEmailInput from "../../components/inputFields/UserEmailInput";
 
 const ForgotPasswordScreen = () => {
   const navigation = useNavigation();
@@ -17,29 +20,22 @@ const ForgotPasswordScreen = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-cream-light p-6">
-      <View className="flex-1 justify-center items-center">
-        <PadlockIcon className="w-24 h-24 mb-8" />
-        <ScreenTitle title="Forgot Password" />
-        <Text className="text-center text-gray-700 mb-8">
+      <BackButton navigation={navigation} />
+      <AuthLayout>
+        <PadlockIcon className="w-24 h-24 mb-8 mx-auto" />
+        <ScreenTitle title="Forgot Password?" className="text-center" />
+        <Text className="text-left text-gray-700 mb-8">
           Enter your email address to receive a password reset link.
         </Text>
 
-        <View className="w-full mb-4">
-          <ReusableTextInput
-            placeholder="Enter your email"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-          />
-        </View>
+        <UserEmailInput email={email} setEmail={setEmail} />
 
         <WideButton onPress={handleResetPassword} buttonText="Reset Password" />
 
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Text className="text-primary-orange underline">Back to Login</Text>
         </TouchableOpacity>
-      </View>
+      </AuthLayout>
     </SafeAreaView>
   );
 };
