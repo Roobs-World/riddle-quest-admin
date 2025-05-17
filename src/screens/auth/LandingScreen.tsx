@@ -16,7 +16,16 @@ const LandingScreen = ({ navigation }: { navigation: any }) => {
     <SafeAreaView className="flex-1 bg-cream-light justify-center items-center p-6">
       <QwordlyLogo />
 
-      <Text className="text-2xl font-bold text-gray-800 text-center mb-2">
+      <Text
+        className="text-2xl font-bold text-gray-800 text-center mb-2"
+        style={{
+          fontFamily: "PoetsenOne",
+          fontWeight: "400",
+          fontSize: 26,
+          lineHeight: 34.32,
+          letterSpacing: -0.104,
+        }}
+      >
         Join millions of people to play QWORDLY.
       </Text>
       <Text className="text-base text-gray-600 text-center mb-10">

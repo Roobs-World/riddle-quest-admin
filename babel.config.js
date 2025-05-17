@@ -11,6 +11,7 @@ module.exports = function (api) {
         {
           alias: {
             "@images": "./assets/images",
+            "@fonts": "./assets/fonts",
           },
         },
       ],

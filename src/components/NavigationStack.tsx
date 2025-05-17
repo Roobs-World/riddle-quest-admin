@@ -8,6 +8,7 @@ import SignUpScreen from "../screens/auth/SignUpScreen";
 const Stack = createNativeStackNavigator();
 
 export const Navigation = () => {
+  console.log("Navigation component rendering...");
   return (
     <NavigationContainer>
       <Stack.Navigator>
