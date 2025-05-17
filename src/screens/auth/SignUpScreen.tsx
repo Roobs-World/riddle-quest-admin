@@ -170,13 +170,22 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
           onPress={() => setAgreedToTerms(!agreedToTerms)}
         >
           <CheckboxIcon checked={agreedToTerms} />
-          <Text className="text-sm text-gray-600 flex-1">
+          <Text
+            className="text-sm text-black-400 flex-1"
+            style={{ fontFamily: "PoppinsSemiBold" }}
+          >
             {AppStrings.AuthStrings.SignUp.TERMS_AGREEMENT_PART1}
-            <Text className="text-red-500 font-semibold">
+            <Text
+              className="text-red-500 font-semibold"
+              style={{ fontFamily: "PoppinsSemiBold" }}
+            >
               {AppStrings.AuthStrings.SignUp.TERMS_USER_AGREEMENT}
             </Text>{" "}
             {AppStrings.AuthStrings.SignUp.TERMS_AGREEMENT_PART2}
-            <Text className="text-red-500 font-semibold">
+            <Text
+              className="text-red-500 font-semibold"
+              style={{ fontFamily: "PoppinsSemiBold" }}
+            >
               {AppStrings.AuthStrings.SignUp.TERMS_PRIVACY_POLICY}
             </Text>
           </Text>
@@ -195,13 +204,19 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
       />
 
       <View className="flex-row items-center justify-center mt-4">
-        <Text className="text-sm text-gray-600">
+        <Text
+          className="text-sm text-black-400"
+          style={{ fontFamily: "PoppinsSemiBold" }}
+        >
           {AppStrings.AuthStrings.SignUp.HAS_ACCOUNT_PROMPT}{" "}
         </Text>
         <TouchableOpacity
           onPress={() => navigation.navigate(AppStrings.Navigation.LOGIN)}
         >
-          <Text className="text-sm text-red-500 font-semibold">
+          <Text
+            className="text-sm text-red-500 font-semibold"
+            style={{ fontFamily: "PoppinsSemiBold" }}
+          >
             {AppStrings.AuthStrings.SignUp.LOGIN_NOW}
           </Text>
         </TouchableOpacity>
