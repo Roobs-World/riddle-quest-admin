@@ -15,6 +15,7 @@ import CheckboxIcon from "../../components/icons/CheckboxIcon";
 import CustomSafeAreaView from "../../components/CustomSafeAreaView";
 import { AppStrings } from "../../constants/AppStrings";
 import ScreenTitle from "../../components/shared/ScreenTitle";
+import WideButton from "../../components/buttons/WideButton";
 
 const SignUpScreen = ({ navigation }: { navigation: any }) => {
   const [username, setUsername] = useState("Jane Doe");
@@ -26,7 +27,7 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
   return (
     <CustomSafeAreaView>
       <StatusBar barStyle="dark-content" />
-      <ScrollView contentContainerClassName="p-6 grow">
+      <ScrollView contentContainerClassName="px-10 grow">
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           className="mb-6 self-start"
@@ -100,19 +101,10 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          className="bg-primary-orange w-full py-4 rounded-lg shadow-md mb-8"
-          onPress={() => console.log("Next pressed")} // Replace with actual sign-up logic
-          disabled={!agreedToTerms}
-        >
-          <Text
-            className={`text-lg font-semibold text-center ${
-              agreedToTerms ? "text-white" : "text-gray-300"
-            }`}
-          >
-            {AppStrings.AuthStrings.SignUp.NEXT_BUTTON}
-          </Text>
-        </TouchableOpacity>
+        <WideButton
+          onPress={() => console.log("Sign up pressed")} // Replace with actual sign up logic
+          buttonText={AppStrings.AuthStrings.SignUp.NEXT_BUTTON}
+        />
 
         <View className="flex-row items-center justify-center">
           <Text className="text-sm text-gray-600">
