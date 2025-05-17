@@ -1,9 +1,9 @@
 import { Text } from "react-native";
 import React from "react";
+import PadlockIcon from "@images/padlock.svg";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import ScreenTitle from "../../components/text/ScreenTitle";
-import PadlockIcon from "../../../assets/images/padlock.svg";
 import WideButton from "../../components/buttons/WideButton";
 import BackButton from "../../components/buttons/BackButton";
 import AuthLayout from "../../components/layouts/AuthLayout";

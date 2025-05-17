@@ -40,11 +40,22 @@ export const AppStrings = {
       HAS_ACCOUNT_PROMPT: "Do you have an account? ",
       LOGIN_NOW: "Log in now",
     },
+    NewPassword: {
+      TITLE: "Set New Password",
+      NEW_PASSWORD_DESCRIPTION:
+        "Reset your password to recovery & login to your account.",
+      NEW_PASSWORD_LABEL: "New Password",
+      NEW_PASSWORD_PLACEHOLDER: "Enter your new password",
+      CONFIRM_PASSWORD_LABEL: "Confirm New Password",
+      CONFIRM_PASSWORD_PLACEHOLDER: "Confirm your new password",
+      SET_PASSWORD_BUTTON: "Confirm",
+    },
   },
   Navigation: {
     LOGIN: "Login",
     SIGN_UP: "SignUp",
     LANDING: "Landing",
     FORGOT_PASSWORD: "ForgotPassword",
+    NEW_PASSWORD: "NewPassword",
   },
 } as const;

@@ -8,6 +8,7 @@ import WideButton from "../components/buttons/WideButton";
 import HomeBgSvg from "../../assets/images/home-bg.svg";
 import SignUpButton from "../components/buttons/SignUpButton";
 import { AppStrings } from "../constants/AppStrings";
+import Subtitle from "../components/text/Subtitle";
 
 const LandingScreen = ({ navigation }: { navigation: any }) => {
   return (
@@ -41,19 +42,7 @@ const LandingScreen = ({ navigation }: { navigation: any }) => {
       >
         {AppStrings.AuthStrings.Landing.TAGLINE_1}
       </Text>
-      <Text
-        className="text-base text-gray-400 text-center mb-8"
-        style={{
-          paddingHorizontal: 24,
-          fontFamily: "Poppins",
-          fontWeight: "400",
-          fontSize: 16,
-          lineHeight: 24,
-          letterSpacing: -0.104,
-        }}
-      >
-        {AppStrings.AuthStrings.Landing.TAGLINE_2}
-      </Text>
+      <Subtitle text={AppStrings.AuthStrings.Landing.TAGLINE_2} />
 
       <WideButton
         buttonText={AppStrings.AuthStrings.Landing.SIGN_IN_BUTTON}
