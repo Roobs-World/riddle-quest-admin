@@ -5,7 +5,7 @@ import BackIcon from "../../components/icons/BackIcon";
 import CheckboxIcon from "../../components/icons/CheckboxIcon";
 import CustomSafeAreaView from "../../components/CustomSafeAreaView";
 import { AppStrings } from "../../constants/AppStrings";
-import ScreenTitle from "../../components/shared/ScreenTitle";
+import ScreenTitle from "../../components/text/ScreenTitle";
 import WideButton from "../../components/buttons/WideButton";
 import AuthLayout from "../../components/layouts/AuthLayout";
 import UserEmailInput from "../../components/inputFields/UserEmailInput";
@@ -77,18 +77,19 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
 
   return (
     <CustomSafeAreaView>
-      <TouchableOpacity
-        onPress={() => navigation.goBack()}
-        className="self-start"
-      >
-        <BackIcon />
-      </TouchableOpacity>
+      <View className="flex-row items-center mt-8 px-4">
+        <TouchableOpacity onPress={() => navigation.goBack()} className="">
+          <BackIcon />
+        </TouchableOpacity>
+
+        <View className="flex-1 self-center">
+          <ProgressBar activeStep={1} totalSteps={3} />
+        </View>
+      </View>
+
+      <ScreenTitle title={AppStrings.AuthStrings.SignUp.TITLE} />
 
       <AuthLayout>
-        <ProgressBar activeStep={1} totalSteps={3} />
-
-        <ScreenTitle title={AppStrings.AuthStrings.SignUp.TITLE} />
-
         <UserUsernameInput username={username} setUsername={setUsername} />
 
         <UserEmailInput email={email} setEmail={setEmail} />

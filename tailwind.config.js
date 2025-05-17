@@ -8,7 +8,12 @@ module.exports = {
   ],
   presets: [require("nativewind/preset")],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        "primary-orange": "#FF8C00", // Example hex for a vibrant orange
+        "input-background": "#F8F5EE",
+      },
+    },
   },
   plugins: [],
 };

@@ -5,7 +5,7 @@ import PasswordVisibilityIcon from "../../components/icons/PasswordVisibilityIco
 import CustomSafeAreaView from "../../components/CustomSafeAreaView";
 import { AppStrings } from "../../constants/AppStrings";
 import WideButton from "../../components/buttons/WideButton";
-import ScreenTitle from "../../components/shared/ScreenTitle";
+import ScreenTitle from "../../components/text/ScreenTitle";
 import AuthLayout from "../../components/layouts/AuthLayout";
 import ReusableTextInput from "../../components/ReusableTextInput";
 import UserEmailInput from "../../components/inputFields/UserEmailInput";
