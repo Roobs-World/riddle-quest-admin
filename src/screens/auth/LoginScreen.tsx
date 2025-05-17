@@ -34,25 +34,24 @@ const LoginScreen = ({ navigation }: { navigation: any }) => {
             {AppStrings.AuthStrings.Login.FORGOT_PASSWORD}
           </Text>
         </TouchableOpacity>
-
-        <WideButton
-          onPress={() => console.log("Log in pressed")} // Replace with actual login logic
-          buttonText={AppStrings.AuthStrings.Login.LOGIN_BUTTON}
-        />
-
-        <View className="flex-row items-center justify-center mt-6">
-          <Text className="text-sm text-gray-600">
-            {AppStrings.AuthStrings.Login.NO_ACCOUNT_PROMPT}
-          </Text>
-          <TouchableOpacity
-            onPress={() => navigation.navigate(AppStrings.Navigation.SIGN_UP)}
-          >
-            <Text className="text-sm text-red-500 font-semibold">
-              {AppStrings.AuthStrings.Login.REGISTER_NOW}
-            </Text>
-          </TouchableOpacity>
-        </View>
       </AuthLayout>
+      <WideButton
+        onPress={() => console.log("Log in pressed")} // Replace with actual login logic
+        buttonText={AppStrings.AuthStrings.Login.LOGIN_BUTTON}
+      />
+
+      <View className="flex-row items-center justify-center mt-6">
+        <Text className="text-sm text-gray-600">
+          {AppStrings.AuthStrings.Login.NO_ACCOUNT_PROMPT}
+        </Text>
+        <TouchableOpacity
+          onPress={() => navigation.navigate(AppStrings.Navigation.SIGN_UP)}
+        >
+          <Text className="text-sm text-red-500 font-semibold">
+            {AppStrings.AuthStrings.Login.REGISTER_NOW}
+          </Text>
+        </TouchableOpacity>
+      </View>
     </CustomSafeAreaView>
   );
 };
