@@ -20,6 +20,7 @@ interface PasswordState {
   confirmPassword: string;
   passwordsMatch: boolean;
   confirmPasswordHasInput: boolean;
+  isPasswordLongEnough: boolean;
 }
 
 type PasswordAction =
@@ -32,6 +33,7 @@ const initialPasswordState: PasswordState = {
   confirmPassword: "",
   passwordsMatch: false,
   confirmPasswordHasInput: false,
+  isPasswordLongEnough: true,
 };
 
 // Define the reducer function
@@ -41,17 +43,22 @@ function passwordReducer(
 ): PasswordState {
   switch (action.type) {
     case "SET_PASSWORD":
+      const isPasswordLongEnough = action.payload.length >= 6;
       return {
         ...state,
         password: action.payload,
-        passwordsMatch: action.payload === state.confirmPassword,
+        passwordsMatch:
+          action.payload === state.confirmPassword && isPasswordLongEnough,
+        isPasswordLongEnough: isPasswordLongEnough,
       };
     case "SET_CONFIRM_PASSWORD":
+      const confirmPasswordHasInput = action.payload.length > 0;
       return {
         ...state,
         confirmPassword: action.payload,
-        passwordsMatch: state.password === action.payload,
-        confirmPasswordHasInput: action.payload.length > 0,
+        passwordsMatch:
+          state.password === action.payload && state.isPasswordLongEnough,
+        confirmPasswordHasInput: confirmPasswordHasInput,
       };
     default:
       return state;
@@ -104,12 +111,23 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
           }
         />
 
-        {passwordState.confirmPasswordHasInput &&
-          (passwordState.passwordsMatch ? (
-            <PasswordMatch />
-          ) : (
-            <PasswordError />
-          ))}
+        {/* Display password validation feedback */}
+        {passwordState.password.length > 0 &&
+        !passwordState.isPasswordLongEnough ? (
+          <PasswordError
+            message={
+              AppStrings.AuthStrings.SignUp.PASSWORD_DOES_NOT_LONG_ENOUGH
+            }
+          />
+        ) : passwordState.confirmPasswordHasInput &&
+          !passwordState.passwordsMatch ? (
+          <PasswordError
+            message={AppStrings.AuthStrings.SignUp.PASSWORD_DOES_NOT_MATCH}
+          />
+        ) : passwordState.confirmPasswordHasInput &&
+          passwordState.passwordsMatch ? (
+          <PasswordMatch />
+        ) : null}
 
         <TouchableOpacity
           className="flex-row items-center mb-6"
