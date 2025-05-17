@@ -166,7 +166,7 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
         ) : null}
 
         <TouchableOpacity
-          className="flex-row items-center mt-6 mb-10"
+          className="flex-row items-center px-8"
           onPress={() => setAgreedToTerms(!agreedToTerms)}
         >
           <CheckboxIcon checked={agreedToTerms} />
@@ -181,34 +181,31 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
             </Text>
           </Text>
         </TouchableOpacity>
-
-        <WideButton
-          onPress={() => {
-            // Use the state from the reducer
-            if (passwordState.passwordsMatch) {
-              console.log("Sign up pressed"); // Replace with actual sign up logic
-            } else {
-              console.log(
-                "Passwords do not match or confirm password is empty"
-              );
-            }
-          }}
-          buttonText={AppStrings.AuthStrings.SignUp.NEXT_BUTTON}
-        />
-
-        <View className="flex-row items-center justify-center mt-4">
-          <Text className="text-sm text-gray-600">
-            {AppStrings.AuthStrings.SignUp.HAS_ACCOUNT_PROMPT}{" "}
-          </Text>
-          <TouchableOpacity
-            onPress={() => navigation.navigate(AppStrings.Navigation.LOGIN)}
-          >
-            <Text className="text-sm text-red-500 font-semibold">
-              {AppStrings.AuthStrings.SignUp.LOGIN_NOW}
-            </Text>
-          </TouchableOpacity>
-        </View>
       </AuthLayout>
+      <WideButton
+        onPress={() => {
+          // Use the state from the reducer
+          if (passwordState.passwordsMatch) {
+            console.log("Sign up pressed"); // Replace with actual sign up logic
+          } else {
+            console.log("Passwords do not match or confirm password is empty");
+          }
+        }}
+        buttonText={AppStrings.AuthStrings.SignUp.NEXT_BUTTON}
+      />
+
+      <View className="flex-row items-center justify-center mt-4">
+        <Text className="text-sm text-gray-600">
+          {AppStrings.AuthStrings.SignUp.HAS_ACCOUNT_PROMPT}{" "}
+        </Text>
+        <TouchableOpacity
+          onPress={() => navigation.navigate(AppStrings.Navigation.LOGIN)}
+        >
+          <Text className="text-sm text-red-500 font-semibold">
+            {AppStrings.AuthStrings.SignUp.LOGIN_NOW}
+          </Text>
+        </TouchableOpacity>
+      </View>
     </CustomSafeAreaView>
   );
 };

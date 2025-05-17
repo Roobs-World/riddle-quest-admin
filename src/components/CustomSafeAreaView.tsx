@@ -12,7 +12,7 @@ const CustomSafeAreaView: React.FC<CustomSafeAreaViewProps> = ({
   className,
   ...rest
 }) => {
-  const combinedClassName = `bg-[#FCFAF4] flex-1 justify-center items-center p-6 ${
+  const combinedClassName = `bg-[#FCFAF4] flex-1 justify-center items-center p-6 my-12 ${
     className || ""
   }`;
 
