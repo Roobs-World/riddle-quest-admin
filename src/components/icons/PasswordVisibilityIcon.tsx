@@ -1,8 +1,20 @@
 import React from "react";
 import { Text } from "react-native";
+import EyeSvg from "@images/eye.svg";
+import EyeOpenSvg from "@images/eye-open.svg";
 
-const PasswordVisibilityIcon = ({ visible }: { visible: boolean }) => (
-  <Text className="text-gray-500 text-lg">{visible ? "Show" : "Hide"}</Text>
-);
+interface PasswordVisibilityIconProps {
+  visible: boolean;
+}
+
+const PasswordVisibilityIcon: React.FC<PasswordVisibilityIconProps> = ({
+  visible,
+}) => {
+  return visible ? (
+    <EyeOpenSvg width={18} height={16} />
+  ) : (
+    <EyeSvg width={18} height={16} />
+  );
+};
 
 export default PasswordVisibilityIcon;

@@ -1,6 +1,9 @@
 declare module "*.svg" {
   import React from "react";
   import { SvgProps } from "react-native-svg";
-  const content: React.FC<SvgProps>;
+  interface CustomSvgProps extends SvgProps {
+    showStrikeThrough?: boolean;
+  }
+  const content: React.FC<CustomSvgProps>;
   export default content;
 }

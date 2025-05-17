@@ -11,10 +11,11 @@ import BackIcon from "../../components/icons/BackIcon";
 import PasswordVisibilityIcon from "../../components/icons/PasswordVisibilityIcon";
 import CustomSafeAreaView from "../../components/CustomSafeAreaView";
 import { AppStrings } from "../../constants/AppStrings";
+import WideButton from "../../components/buttons/WideButton";
 
 const LoginScreen = ({ navigation }: { navigation: any }) => {
-  const [email, setEmail] = useState("JaneDoe@gmail.com");
-  const [password, setPassword] = useState("************");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   return (
@@ -34,7 +35,7 @@ const LoginScreen = ({ navigation }: { navigation: any }) => {
         {AppStrings.AuthStrings.Login.EMAIL_LABEL}
       </Text>
       <TextInput
-        className="bg-white border border-gray-300 text-gray-700 p-3 rounded-lg mb-4 text-base"
+        className="bg-[#F8F5EE] border border-gray-300 text-gray-700 p-3 rounded-lg mb-4 text-base"
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
@@ -61,19 +62,15 @@ const LoginScreen = ({ navigation }: { navigation: any }) => {
         </TouchableOpacity>
       </View>
       <TouchableOpacity className="self-end mb-8">
-        <Text className="text-sm text-primary-orange font-medium">
+        <Text className="text-sm text-gray-500 font-medium">
           {AppStrings.AuthStrings.Login.FORGOT_PASSWORD}
         </Text>
       </TouchableOpacity>
 
-      <TouchableOpacity
-        className="bg-primary-orange w-full py-4 rounded-lg shadow-md mb-8"
+      <WideButton
         onPress={() => console.log("Log in pressed")} // Replace with actual login logic
-      >
-        <Text className="text-white text-lg font-semibold text-center">
-          {AppStrings.AuthStrings.Login.LOGIN_BUTTON}
-        </Text>
-      </TouchableOpacity>
+        buttonText={AppStrings.AuthStrings.Login.LOGIN_BUTTON}
+      />
 
       <View className="flex-row items-center justify-center">
         <Text className="text-sm text-gray-600">
