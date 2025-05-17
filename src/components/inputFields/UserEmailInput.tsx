@@ -1,0 +1,31 @@
+import { View, Text } from "react-native";
+import { AppStrings } from "../../constants/AppStrings";
+import ReusableTextInput from "../ReusableTextInput";
+
+export default function UserEmailInput({
+  email,
+  setEmail,
+}: {
+  email: string;
+  setEmail: (email: string) => void;
+}) {
+  return (
+    <View className="w-full py-2">
+      <Text
+        className="text-sm text-gray-600 mb-2 text-left"
+        style={{ fontFamily: "PoppinsSemiBold" }}
+      >
+        {AppStrings.AuthStrings.Login.EMAIL_LABEL}
+      </Text>
+      <View className="flex-row items-center border border-gray-300 rounded-lg mb-2">
+        <ReusableTextInput
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
+          placeholder={AppStrings.AuthStrings.Login.EMAIL_PLACEHOLDER}
+        />
+      </View>
+    </View>
+  );
+}

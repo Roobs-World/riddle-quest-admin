@@ -8,6 +8,7 @@ import WideButton from "../../components/buttons/WideButton";
 import ScreenTitle from "../../components/shared/ScreenTitle";
 import AuthLayout from "../../components/layouts/AuthLayout";
 import ReusableTextInput from "../../components/ReusableTextInput";
+import UserEmailInput from "../../components/inputFields/UserEmailInput";
 
 const LoginScreen = ({ navigation }: { navigation: any }) => {
   const [email, setEmail] = useState("");
@@ -27,23 +28,7 @@ const LoginScreen = ({ navigation }: { navigation: any }) => {
       <AuthLayout>
         <ScreenTitle title={AppStrings.AuthStrings.Login.TITLE} />
 
-        <View className="w-full">
-          <Text
-            className="text-sm text-gray-600 mb-2 text-left"
-            style={{ fontFamily: "PoppinsSemiBold" }}
-          >
-            {AppStrings.AuthStrings.Login.EMAIL_LABEL}
-          </Text>
-        </View>
-        <View className="flex-row items-center border border-gray-300 rounded-lg mb-2 overflow-hidden">
-          <ReusableTextInput
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            placeholder={AppStrings.AuthStrings.Login.EMAIL_PLACEHOLDER}
-          />
-        </View>
+        <UserEmailInput email={email} setEmail={setEmail} />
 
         <View className="w-full">
           <Text

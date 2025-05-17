@@ -10,6 +10,7 @@ import ScreenTitle from "../../components/shared/ScreenTitle";
 import WideButton from "../../components/buttons/WideButton";
 import AuthLayout from "../../components/layouts/AuthLayout";
 import ReusableTextInput from "../../components/ReusableTextInput";
+import UserEmailInput from "../../components/inputFields/UserEmailInput";
 
 const SignUpScreen = ({ navigation }: { navigation: any }) => {
   const [username, setUsername] = useState("Jane Doe");
@@ -45,19 +46,7 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
           />
         </View>
 
-        <Text className="text-sm text-gray-600 mb-1">
-          {AppStrings.AuthStrings.SignUp.EMAIL_LABEL}
-        </Text>
-        <View className=" border border-gray-300 rounded-lg mb-4 overflow-hidden">
-          <ReusableTextInput
-            className="w-full text-gray-700 p-3 text-base"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            placeholder={AppStrings.AuthStrings.SignUp.EMAIL_PLACEHOLDER}
-          />
-        </View>
+        <UserEmailInput email={email} setEmail={setEmail} />
 
         <Text className="text-sm text-gray-600 mb-1">
           {AppStrings.AuthStrings.SignUp.PASSWORD_LABEL}
