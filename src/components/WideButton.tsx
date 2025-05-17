@@ -1,21 +1,22 @@
 import React from "react";
 import { TouchableOpacity, Text } from "react-native";
 
-interface SignInButtonProps {
+interface WideButtonProps {
   onPress: () => void;
+  buttonText: string;
 }
 
-const SignInButton: React.FC<SignInButtonProps> = ({ onPress }) => {
+const WideButton: React.FC<WideButtonProps> = ({ onPress, buttonText }) => {
   return (
     <TouchableOpacity
-      className="bg-primary-orange w-full py-4 rounded-lg shadow-md mb-4"
+      className="bg-[#FCC070] w-full py-4 rounded-lg shadow-md mb-4"
       onPress={onPress}
     >
       <Text className="text-white text-lg font-semibold text-center">
-        Sign In
+        {buttonText}
       </Text>
     </TouchableOpacity>
   );
 };
 
-export default SignInButton;
+export default WideButton;

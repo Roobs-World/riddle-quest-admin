@@ -9,7 +9,7 @@ import {
 import QwordlyLogo from "../../components/logos/QwordlyLogo";
 import GoogleSignInButton from "../../components/GoogleSignInButton";
 import FacebookSignInButton from "../../components/FacebookSignInButton";
-import SignInButton from "../../components/SignInButton";
+import WideButton from "../../components/WideButton";
 
 const LandingScreen = ({ navigation }: { navigation: any }) => {
   return (
@@ -23,7 +23,10 @@ const LandingScreen = ({ navigation }: { navigation: any }) => {
         Ready to have fun while training your mind?
       </Text>
 
-      <SignInButton onPress={() => navigation.navigate("Login")} />
+      <WideButton
+        buttonText="Sign In"
+        onPress={() => navigation.navigate("Login")}
+      />
 
       <Text className="text-sm text-gray-500 my-4">or Sign in with</Text>
 
