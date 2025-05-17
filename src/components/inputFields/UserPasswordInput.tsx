@@ -25,7 +25,7 @@ export default function UserPasswordInput({
   return (
     <View className="w-full mb-2">
       <Text
-        className="text-sm text-gray-600 mb-2 text-left mt-2"
+        className="text-sm text-gray-600 my-2 text-left"
         style={{ fontFamily: "PoppinsSemiBold" }}
       >
         {passwordLabel}

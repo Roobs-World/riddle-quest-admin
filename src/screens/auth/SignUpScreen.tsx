@@ -167,7 +167,7 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
         ) : null}
 
         <TouchableOpacity
-          className="flex-row items-center mb-6"
+          className="flex-row items-center mt-6 mb-10"
           onPress={() => setAgreedToTerms(!agreedToTerms)}
         >
           <CheckboxIcon checked={agreedToTerms} />
