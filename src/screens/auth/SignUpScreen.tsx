@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   SafeAreaView,
   StatusBar,
@@ -17,11 +16,13 @@ import { AppStrings } from "../../constants/AppStrings";
 import ScreenTitle from "../../components/shared/ScreenTitle";
 import WideButton from "../../components/buttons/WideButton";
 import AuthLayout from "../../components/layouts/AuthLayout";
+import ReusableTextInput from "../../components/ReusableTextInput";
 
 const SignUpScreen = ({ navigation }: { navigation: any }) => {
   const [username, setUsername] = useState("Jane Doe");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(true);
 
@@ -42,7 +43,7 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
         <Text className="text-sm text-gray-600 mb-1">
           {AppStrings.AuthStrings.SignUp.USERNAME_LABEL}
         </Text>
-        <TextInput
+        <ReusableTextInput
           className="bg-white border border-gray-300 text-gray-700 p-3 rounded-lg mb-4 text-base"
           value={username}
           onChangeText={setUsername}
@@ -52,7 +53,7 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
         <Text className="text-sm text-gray-600 mb-1">
           {AppStrings.AuthStrings.SignUp.EMAIL_LABEL}
         </Text>
-        <TextInput
+        <ReusableTextInput
           className="bg-white border border-gray-300 text-gray-700 p-3 rounded-lg mb-4 text-base"
           value={email}
           onChangeText={setEmail}
@@ -65,7 +66,7 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
           {AppStrings.AuthStrings.SignUp.PASSWORD_LABEL}
         </Text>
         <View className="flex-row items-center bg-white border border-gray-300 rounded-lg mb-1 overflow-hidden">
-          <TextInput
+          <ReusableTextInput
             className="flex-1 text-gray-700 p-3 text-base"
             value={password}
             onChangeText={setPassword}
@@ -79,7 +80,27 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
             <PasswordVisibilityIcon visible={isPasswordVisible} />
           </TouchableOpacity>
         </View>
-        {/* "Looks Good" validation message - logic to be added */}
+
+        <Text className="text-sm text-gray-600 mb-1">
+          {AppStrings.AuthStrings.SignUp.CONFIRM_PASSWORD_LABEL}
+        </Text>
+        <View className="flex-row items-center bg-white border border-gray-300 rounded-lg mb-1 overflow-hidden">
+          <ReusableTextInput
+            className="flex-1 text-gray-700 p-3 text-base"
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            secureTextEntry={!isPasswordVisible}
+            placeholder={
+              AppStrings.AuthStrings.SignUp.CONFIRM_PASSWORD_PLACEHOLDER
+            }
+          />
+          <TouchableOpacity
+            onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+            className="p-3"
+          >
+            <PasswordVisibilityIcon visible={isPasswordVisible} />
+          </TouchableOpacity>
+        </View>
         <Text className="text-xs text-green-600 ml-1 mb-4">
           {AppStrings.AuthStrings.SignUp.PASSWORD_VALIDATION_GOOD}
         </Text>
@@ -122,8 +143,5 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
     </CustomSafeAreaView>
   );
 };
-
-// Ensure primary-orange and cream-light are defined in your tailwind.config.js
-// e.g., primary-orange: '#FDBA74', cream-light: '#FAF3E0'
 
 export default SignUpScreen;

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   SafeAreaView,
   StatusBar,
@@ -14,6 +13,7 @@ import { AppStrings } from "../../constants/AppStrings";
 import WideButton from "../../components/buttons/WideButton";
 import ScreenTitle from "../../components/shared/ScreenTitle";
 import AuthLayout from "../../components/layouts/AuthLayout";
+import ReusableTextInput from "../../components/ReusableTextInput";
 
 const LoginScreen = ({ navigation }: { navigation: any }) => {
   const [email, setEmail] = useState("");
@@ -42,8 +42,7 @@ const LoginScreen = ({ navigation }: { navigation: any }) => {
           </Text>
         </View>
         <View className="flex-row items-center bg-[#F8F5EE] border border-gray-300 rounded-lg mb-2 overflow-hidden">
-          <TextInput
-            className="flex-1 text-gray-700 p-3 text-base font-poppins-regular h-12"
+          <ReusableTextInput
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
@@ -65,8 +64,7 @@ const LoginScreen = ({ navigation }: { navigation: any }) => {
             isPasswordFocused ? "border-red-500" : "border-gray-300"
           } rounded-lg mb-2 overflow-hidden`}
         >
-          <TextInput
-            className="flex-1 text-gray-700 p-3 text-base font-poppins-regular h-12"
+          <ReusableTextInput
             value={password}
             onChangeText={setPassword}
             secureTextEntry={!isPasswordVisible}
