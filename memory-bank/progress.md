@@ -164,5 +164,7 @@
 - **2024-07-27:** Created `ReusableTextInput` component and integrated it into `LoginScreen.tsx` and `SignUpScreen.tsx` to promote modularity and reusability in UI elements.
 - **2024-07-27:** Added the "Confirm Password" field to the `SignUpScreen.tsx` and updated `src/constants/AppStrings.ts` to include the necessary strings (`CONFIRM_PASSWORD_LABEL` and `CONFIRM_PASSWORD_PLACEHOLDER`) to match the new field.
 - **2024-07-28:** Confirmed use of `npm` for package management.
+- **2024-07-28:** Attempted to switch to pnpm but encountered a persistent "Invalid package.json in package.json" error specifically within the project directory, preventing dependency installation. The cause of this error is currently unknown and requires further investigation outside the scope of available tools.
+- **2024-07-28:** Successfully transitioned to using pnpm for package management.
 
 _(This section will be updated with dates and summaries of key decisions, changes in direction, or significant learnings as the project progresses.)_

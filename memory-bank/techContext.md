@@ -32,7 +32,7 @@
 
 ## 4. Development Setup & Environment
 
-- **Node.js & npm:** Use npm for package management.
+- **Node.js & npm:** Use pnpm for package management.
 - **React Native CLI:** For project initialization and management.
 - **IDE:** (User's choice, e.g., VS Code with relevant extensions for React Native, TypeScript, ESLint, Prettier).
 - **Emulators/Simulators:** Android Studio Emulator & iOS Simulator (Xcode).
