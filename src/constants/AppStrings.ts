@@ -17,6 +17,7 @@ export const AppStrings = {
       LOGIN_BUTTON: "Log In",
       NO_ACCOUNT_PROMPT: "Don't have an account? ",
       REGISTER_NOW: "Register Now",
+      INVALID_EMAIL_FORMAT_ERROR: "Invalid email format ✗",
     },
     SignUp: {
       TITLE: "Create your account",

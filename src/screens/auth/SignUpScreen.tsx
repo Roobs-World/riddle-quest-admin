@@ -12,7 +12,7 @@ import UserEmailInput from "../../components/inputFields/UserEmailInput";
 import UserPasswordInput from "../../components/inputFields/UserPasswordInput";
 import UserUsernameInput from "../../components/inputFields/UserUsernameInput";
 import PasswordMatch from "../../components/text/PasswordMatch";
-import PasswordError from "../../components/text/PasswordError";
+import Error from "../../components/text/Error";
 
 // Define types for the password state and actions
 interface PasswordState {
@@ -114,14 +114,14 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
         {/* Display password validation feedback */}
         {passwordState.password.length > 0 &&
         !passwordState.isPasswordLongEnough ? (
-          <PasswordError
+          <Error
             message={
               AppStrings.AuthStrings.SignUp.PASSWORD_DOES_NOT_LONG_ENOUGH
             }
           />
         ) : passwordState.confirmPasswordHasInput &&
           !passwordState.passwordsMatch ? (
-          <PasswordError
+          <Error
             message={AppStrings.AuthStrings.SignUp.PASSWORD_DOES_NOT_MATCH}
           />
         ) : passwordState.confirmPasswordHasInput &&
