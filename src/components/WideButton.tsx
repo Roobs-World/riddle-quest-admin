@@ -19,7 +19,7 @@ const WideButton: React.FC<WideButtonProps> = ({ onPress, buttonText }) => {
         <View className="py-4 rounded-lg">
           <Text
             className="text-black text-lg font-semibold text-center"
-            style={{ fontFamily: "PoppinsBold" }}
+            style={{ fontFamily: "PoppinsSemiBold" }}
           >
             {buttonText}
           </Text>

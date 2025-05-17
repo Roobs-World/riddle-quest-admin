@@ -34,7 +34,7 @@ const LandingScreen = ({ navigation }: { navigation: any }) => {
       </Text>
 
       <WideButton
-        buttonText="Sign In"
+        buttonText="Sign in"
         onPress={() => navigation.navigate("Login")}
       />
 
