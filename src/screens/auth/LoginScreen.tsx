@@ -1,11 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  SafeAreaView,
-  StatusBar,
-} from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import BackIcon from "../../components/icons/BackIcon";
 import PasswordVisibilityIcon from "../../components/icons/PasswordVisibilityIcon";
 import CustomSafeAreaView from "../../components/CustomSafeAreaView";

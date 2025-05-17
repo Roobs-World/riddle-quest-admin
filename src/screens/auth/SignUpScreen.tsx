@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  SafeAreaView,
-  StatusBar,
-  ScrollView,
-} from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import ProgressBar from "../../components/shared/ProgressBar";
 import BackIcon from "../../components/icons/BackIcon";
 import PasswordVisibilityIcon from "../../components/icons/PasswordVisibilityIcon";
@@ -43,7 +36,7 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
         <Text className="text-sm text-gray-600 mb-1">
           {AppStrings.AuthStrings.SignUp.USERNAME_LABEL}
         </Text>
-        <View className="bg-white border border-gray-300 rounded-lg mb-4 overflow-hidden">
+        <View className=" border border-gray-300 rounded-lg mb-4 overflow-hidden">
           <ReusableTextInput
             className="w-full text-gray-700 p-3 text-base"
             value={username}
@@ -55,7 +48,7 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
         <Text className="text-sm text-gray-600 mb-1">
           {AppStrings.AuthStrings.SignUp.EMAIL_LABEL}
         </Text>
-        <View className="bg-white border border-gray-300 rounded-lg mb-4 overflow-hidden">
+        <View className=" border border-gray-300 rounded-lg mb-4 overflow-hidden">
           <ReusableTextInput
             className="w-full text-gray-700 p-3 text-base"
             value={email}
@@ -69,7 +62,7 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
         <Text className="text-sm text-gray-600 mb-1">
           {AppStrings.AuthStrings.SignUp.PASSWORD_LABEL}
         </Text>
-        <View className="flex-row items-center bg-white border border-gray-300 rounded-lg mb-1 overflow-hidden">
+        <View className="flex-row items-center border border-gray-300 rounded-lg mb-1 overflow-hidden">
           <ReusableTextInput
             className="flex-1 text-gray-700 p-3 text-base"
             value={password}
@@ -88,7 +81,7 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
         <Text className="text-sm text-gray-600 mb-1">
           {AppStrings.AuthStrings.SignUp.CONFIRM_PASSWORD_LABEL}
         </Text>
-        <View className="flex-row items-center bg-white border border-gray-300 rounded-lg mb-1 overflow-hidden">
+        <View className="flex-row items-center border border-gray-300 rounded-lg mb-1 overflow-hidden">
           <ReusableTextInput
             className="flex-1 text-gray-700 p-3 text-base"
             value={confirmPassword}
