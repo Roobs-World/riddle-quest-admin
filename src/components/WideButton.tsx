@@ -1,5 +1,6 @@
 import React from "react";
-import { TouchableOpacity, Text } from "react-native";
+import { TouchableOpacity, Text, View } from "react-native";
+import ButtonBackground from "@images/button-overlay.svg";
 
 interface WideButtonProps {
   onPress: () => void;
@@ -9,12 +10,24 @@ interface WideButtonProps {
 const WideButton: React.FC<WideButtonProps> = ({ onPress, buttonText }) => {
   return (
     <TouchableOpacity
-      className="bg-[#FCC070] w-full py-4 rounded-lg shadow-md mb-4"
+      className="bg-[#FCC070] w-full mb-4 rounded-lg"
       onPress={onPress}
     >
-      <Text className="text-white text-lg font-semibold text-center">
-        {buttonText}
-      </Text>
+      <View className="relative">
+        {/* SVG Background */}
+        <View className="absolute top-0 left-0 right-0 bottom-0">
+          <ButtonBackground width="100%" height="100%" />
+        </View>
+        {/* Button Text */}
+        <View className="py-4 rounded-lg">
+          <Text
+            className="text-black text-lg font-semibold text-center"
+            style={{ fontFamily: "PoppinsBold" }}
+          >
+            {buttonText}
+          </Text>
+        </View>
+      </View>
     </TouchableOpacity>
   );
 };
