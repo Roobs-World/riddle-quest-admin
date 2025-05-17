@@ -19,6 +19,10 @@
   - [x] TypeScript type definitions for NativeWind (`src/types/nativewind.d.ts`) added.
 - **App.tsx Styling Migration:**
   - [x] Moved initial container styles from `StyleSheet` to NativeWind classes.
+- **Reusable Components:**
+  - [x] Created `ReusableTextInput.tsx` component.
+  - [x] Integrated `ReusableTextInput` into `LoginScreen.tsx`.
+  - [x] Integrated `ReusableTextInput` into `SignUpScreen.tsx`.
 
 ## 2. What's Left to Build (MVP Focus - 2 Weeks Timeline)
 
@@ -125,7 +129,7 @@
 
 ## 3. Current Project Status
 
-- **Phase:** Initial UI Development for Authentication.
+- **Phase:** Initial UI Development for Authentication and foundational component creation.
 - **Overall Progress:** ~10% (Auth screen UIs, NativeWind setup).
 - **Next Milestone:** Integrate authentication screens with navigation, implement Firebase email/password authentication.
 
@@ -144,5 +148,6 @@
   - Identified custom colors `primary-orange` (#FDBA74) and `cream-light` (#FAF3E0) from screenshots and added to Tailwind config.
   - _Note:_ Used direct `className` prop for NativeWind styling (v4 approach) instead of `styled` HOC after encountering linter issues.
   - _Observation:_ Screenshots include "Continue with Microsoft" which was not in the original brief. This needs to be clarified for MVP scope.
+- **2024-07-27:** Created `ReusableTextInput` component and integrated it into `LoginScreen.tsx` and `SignUpScreen.tsx` to promote modularity and reusability in UI elements.
 
 _(This section will be updated with dates and summaries of key decisions, changes in direction, or significant learnings as the project progresses.)_

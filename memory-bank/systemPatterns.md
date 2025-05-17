@@ -47,7 +47,7 @@ graph TD
 
 - **Cross-Platform Development:** React Native is chosen for its ability to target both iOS and Android with a single codebase, accelerating development.
 - **Serverless Backend:** Firebase is adopted to minimize backend infrastructure management, leveraging its PaaS/BaaS capabilities for auth, DB, storage, and functions.
-- **Component-Based UI:** React Native promotes a component-based architecture for the UI, enhancing reusability and maintainability.
+- **Component-Based UI:** React Native promotes a component-based architecture for the UI, enhancing reusability and maintainability. We are actively creating reusable components, starting with `ReusableTextInput`.
 - **Styling with Utility Classes:** NativeWind (Tailwind CSS) will be used for styling, promoting rapid UI development and consistency through utility-first classes.
 - **State Management:**
   - **Local/Component State:** React's built-in `useState` and `useReducer` for component-level state.
@@ -60,7 +60,7 @@ graph TD
 
 - **App Navigator:** Manages overall screen navigation (e.g., Auth stack, Main App stack with bottom tabs).
 - **Screen Components:** Represent individual screens (e.g., `HomeScreen`, `GameScreen`, `ProfileScreen`, `SettingsScreen`, `StoreScreen`).
-- **Shared Components:** Reusable UI elements (e.g., `Button`, `Card`, `Input`, `Modal`, `GuessGrid`, `Keyboard`).
+- **Shared Components:** Reusable UI elements (e.g., `Button`, `Card`, `Input`, `Modal`, `GuessGrid`, `Keyboard`). `ReusableTextInput` has been created as the first of these shared input components.
 - **Service Modules:** Encapsulate logic for interacting with Firebase (e.g., `AuthService`, `FirestoreService`, `StorageService`).
 - **State Management Contexts/Stores:** Provide global state and actions to components that need them.
 

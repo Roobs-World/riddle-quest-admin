@@ -9,7 +9,7 @@
 
 - **Memory Bank Established:** Core documentation remains up-to-date.
 - **Architectural Outline:** Client-server architecture using React Native and Firebase confirmed.
-- **Authentication Screens UI Created:** `LandingScreen.tsx`, `LoginScreen.tsx`, and `SignUpScreen.tsx` created in `src/screens/auth/` with basic UI structure matching screenshots.
+- **Authentication Screens UI Created:** `LandingScreen.tsx`, `LoginScreen.tsx`, and `SignUpScreen.tsx` created in `src/screens/auth/` with basic UI structure matching screenshots. Replaced specific `TextInput` uses with a new `ReusableTextInput` component for better modularity.
 - **NativeWind Setup Complete:** Successfully installed and configured NativeWind, `babel.config.js`, `tailwind.config.js` (with custom colors: `primary-orange` and `cream-light`), and TypeScript typings (`src/types/nativewind.d.ts`).
 - **App.tsx Styling Migrated:** Moved initial container styles from `StyleSheet` in `App.tsx` to NativeWind classes.
 - **Discovered Discrepancy:** Noted that "Continue with Microsoft" option in screenshots is not in the original `projectbrief.md`. This needs clarification for MVP scope.
@@ -42,10 +42,16 @@
 
 ## 5. Key Patterns & Preferences (Emerging)
 
-- **Modular Development:** Auth screens are grouped in `src/screens/auth/`.
+- **Modular Development:** Auth screens are grouped in `src/screens/auth/`. Reusable UI components (like `ReusableTextInput`) are being created and placed in `src/components/`.
 - **Iterative Approach:** UI first, then navigation, then logic.
 - **Configuration Files:** Centralized configuration for NativeWind (`tailwind.config.js`, `babel.config.js`, `nativewind.d.ts`).
 - **Clear Communication:** Updates to `progress.md` and `activeContext.md` reflect current status and next steps.
+- **2024-07-27:** Created basic UI for Landing, Login, and Sign Up screens based on provided screenshots.
+  - Set up NativeWind, including `babel.config.js`, `tailwind.config.js`, and TypeScript typings.
+  - Identified custom colors `primary-orange` (#FDBA74) and `cream-light` (#FAF3E0) from screenshots and added to Tailwind config.
+  - _Note:_ Used direct `className` prop for NativeWind styling (v4 approach) instead of `styled` HOC after encountering linter issues.
+  - _Observation:_ Screenshots include "Continue with Microsoft" which was not in the original brief. This needs to be clarified for MVP scope.
+  - _Decision:_ Created a `ReusableTextInput` component and integrated it into `LoginScreen.tsx` and `SignUpScreen.tsx` to follow component-based UI patterns and improve reusability.
 
 ## 6. Learnings & Project Insights
 
