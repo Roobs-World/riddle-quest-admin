@@ -1,21 +1,17 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import BackIcon from "../../components/icons/BackIcon";
-import PasswordVisibilityIcon from "../../components/icons/PasswordVisibilityIcon";
 import CustomSafeAreaView from "../../components/CustomSafeAreaView";
 import { AppStrings } from "../../constants/AppStrings";
 import WideButton from "../../components/buttons/WideButton";
 import ScreenTitle from "../../components/text/ScreenTitle";
 import AuthLayout from "../../components/layouts/AuthLayout";
-import ReusableTextInput from "../../components/ReusableTextInput";
 import UserEmailInput from "../../components/inputFields/UserEmailInput";
 import UserPasswordInput from "../../components/inputFields/UserPasswordInput";
 
 const LoginScreen = ({ navigation }: { navigation: any }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [isPasswordFocused, setIsPasswordFocused] = useState(false);
 
   return (
     <CustomSafeAreaView>
@@ -33,7 +29,12 @@ const LoginScreen = ({ navigation }: { navigation: any }) => {
 
         <UserPasswordInput password={password} setPassword={setPassword} />
 
-        <TouchableOpacity className="self-end mb-8">
+        <TouchableOpacity
+          className="self-end mb-8"
+          onPress={() =>
+            navigation.navigate(AppStrings.Navigation.FORGOT_PASSWORD)
+          }
+        >
           <Text className="text-sm text-gray-500 font-medium">
             {AppStrings.AuthStrings.Login.FORGOT_PASSWORD}
           </Text>

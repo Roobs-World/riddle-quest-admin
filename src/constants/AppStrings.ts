@@ -45,5 +45,6 @@ export const AppStrings = {
     LOGIN: "Login",
     SIGN_UP: "SignUp",
     LANDING: "Landing",
+    FORGOT_PASSWORD: "ForgotPassword",
   },
 } as const;

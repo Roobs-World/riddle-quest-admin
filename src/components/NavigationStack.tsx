@@ -5,6 +5,7 @@ import LandingScreen from "../screens/LandingScreen";
 import LoginScreen from "../screens/auth/LoginScreen";
 import SignUpScreen from "../screens/auth/SignUpScreen";
 import { AppStrings } from "../constants/AppStrings";
+import ForgotPasswordScreen from "../screens/auth/ForgotPasswordScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -26,6 +27,12 @@ export const Navigation = () => {
         <Stack.Screen
           name={AppStrings.Navigation.SIGN_UP}
           component={SignUpScreen}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name={AppStrings.Navigation.FORGOT_PASSWORD}
+          component={ForgotPasswordScreen}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

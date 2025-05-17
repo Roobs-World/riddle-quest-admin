@@ -5,6 +5,7 @@ import { useNavigation } from "@react-navigation/native";
 import ReusableTextInput from "../../components/ReusableTextInput";
 import ScreenTitle from "../../components/text/ScreenTitle";
 import PadlockIcon from "../../../assets/images/padlock.svg";
+import WideButton from "../../components/buttons/WideButton";
 
 const ForgotPasswordScreen = () => {
   const navigation = useNavigation();
@@ -33,14 +34,7 @@ const ForgotPasswordScreen = () => {
           />
         </View>
 
-        <TouchableOpacity
-          className="w-full bg-primary-orange p-3 rounded-md items-center mb-4"
-          onPress={handleResetPassword}
-        >
-          <Text className="text-white text-lg font-semibold">
-            Reset Password
-          </Text>
-        </TouchableOpacity>
+        <WideButton onPress={handleResetPassword} buttonText="Reset Password" />
 
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Text className="text-primary-orange underline">Back to Login</Text>
