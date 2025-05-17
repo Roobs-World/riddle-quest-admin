@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import BackIcon from "../../components/icons/BackIcon";
 import PasswordVisibilityIcon from "../../components/icons/PasswordVisibilityIcon";
+import CustomSafeAreaView from "../../components/CustomSafeAreaView";
 
 const LoginScreen = ({ navigation }: { navigation: any }) => {
   const [email, setEmail] = useState("JaneDoe@gmail.com");
@@ -16,9 +17,7 @@ const LoginScreen = ({ navigation }: { navigation: any }) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   return (
-    <SafeAreaView className="flex-1 bg-cream-light p-6">
-      <StatusBar barStyle="dark-content" backgroundColor="#FAF3E0" />
-
+    <CustomSafeAreaView>
       <TouchableOpacity
         onPress={() => navigation.goBack()}
         className="mb-8 self-start"
@@ -77,7 +76,7 @@ const LoginScreen = ({ navigation }: { navigation: any }) => {
           </Text>
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </CustomSafeAreaView>
   );
 };
 

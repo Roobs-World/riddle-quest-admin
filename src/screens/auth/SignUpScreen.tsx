@@ -12,6 +12,7 @@ import ProgressBar from "../../components/shared/ProgressBar";
 import BackIcon from "../../components/icons/BackIcon";
 import PasswordVisibilityIcon from "../../components/icons/PasswordVisibilityIcon";
 import CheckboxIcon from "../../components/icons/CheckboxIcon";
+import CustomSafeAreaView from "../../components/CustomSafeAreaView";
 
 const SignUpScreen = ({ navigation }: { navigation: any }) => {
   const [username, setUsername] = useState("Jane Doe");
@@ -21,8 +22,8 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
   const [agreedToTerms, setAgreedToTerms] = useState(true);
 
   return (
-    <SafeAreaView className="flex-1 bg-cream-light">
-      <StatusBar barStyle="dark-content" backgroundColor="#FAF3E0" />
+    <CustomSafeAreaView>
+      <StatusBar barStyle="dark-content" />
       <ScrollView contentContainerClassName="p-6 grow">
         <TouchableOpacity
           onPress={() => navigation.goBack()}
@@ -116,7 +117,7 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
           </TouchableOpacity>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </CustomSafeAreaView>
   );
 };
 

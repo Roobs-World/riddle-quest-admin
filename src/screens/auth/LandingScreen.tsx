@@ -3,9 +3,10 @@ import {
   View,
   Text,
   TouchableOpacity,
-  SafeAreaView,
+  // SafeAreaView,
   StatusBar,
 } from "react-native";
+import CustomSafeAreaView from "../../components/CustomSafeAreaView";
 import QwordlyLogo from "../../components/logos/QwordlyLogo";
 import GoogleSignInButton from "../../components/GoogleSignInButton";
 import FacebookSignInButton from "../../components/FacebookSignInButton";
@@ -13,7 +14,7 @@ import WideButton from "../../components/WideButton";
 
 const LandingScreen = ({ navigation }: { navigation: any }) => {
   return (
-    <SafeAreaView className="flex-1 bg-cream-light justify-center items-center p-6">
+    <CustomSafeAreaView>
       <QwordlyLogo />
 
       <Text
@@ -53,7 +54,7 @@ const LandingScreen = ({ navigation }: { navigation: any }) => {
           </Text>
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </CustomSafeAreaView>
   );
 };
 

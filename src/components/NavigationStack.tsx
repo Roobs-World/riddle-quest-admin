@@ -12,23 +12,9 @@ export const Navigation = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen
-          name="Landing"
-          component={LandingScreen}
-          options={{ title: "Welcome" }}
-        />
-
-        <Stack.Screen
-          name="Login"
-          component={LoginScreen}
-          options={{ title: "Login" }}
-        />
-
-        <Stack.Screen
-          name="Sign Up"
-          component={SignUpScreen}
-          options={{ title: "Sign Up" }}
-        />
+        <Stack.Screen name="Landing" component={LandingScreen} />
+        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Sign Up" component={SignUpScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

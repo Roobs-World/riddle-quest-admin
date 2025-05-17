@@ -22,7 +22,12 @@ export default function App() {
   }, []);
 
   return (
-    <View style={{ flex: 1 }}>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: "#fcfaf4",
+      }}
+    >
       {!fontsLoaded ? (
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
