@@ -166,5 +166,6 @@
 - **2024-07-28:** Confirmed use of `npm` for package management.
 - **2024-07-28:** Attempted to switch to pnpm but encountered a persistent "Invalid package.json in package.json" error specifically within the project directory, preventing dependency installation. The cause of this error is currently unknown and requires further investigation outside the scope of available tools.
 - **2024-07-28:** Successfully transitioned to using pnpm for package management.
+- **2024-07-29:** Implemented Firebase email/password sign-up, login, password reset, Google Sign-In, and logout functions in `src/services/AuthService.ts`. Encountered persistent linter error on `UserCredential` import and missing `@react-native-google-signin/google-signin` dependency.
 
 _(This section will be updated with dates and summaries of key decisions, changes in direction, or significant learnings as the project progresses.)_
