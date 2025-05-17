@@ -13,6 +13,7 @@ import CustomSafeAreaView from "../../components/CustomSafeAreaView";
 import { AppStrings } from "../../constants/AppStrings";
 import WideButton from "../../components/buttons/WideButton";
 import ScreenTitle from "../../components/shared/ScreenTitle";
+import AuthLayout from "../../components/layouts/AuthLayout";
 
 const LoginScreen = ({ navigation }: { navigation: any }) => {
   const [email, setEmail] = useState("");
@@ -29,7 +30,7 @@ const LoginScreen = ({ navigation }: { navigation: any }) => {
         <BackIcon />
       </TouchableOpacity>
 
-      <View className="flex-1 justify-center items-center w-full py-8">
+      <AuthLayout>
         <ScreenTitle title={AppStrings.AuthStrings.Login.TITLE} />
 
         <View className="w-full">
@@ -103,7 +104,7 @@ const LoginScreen = ({ navigation }: { navigation: any }) => {
             </Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </AuthLayout>
     </CustomSafeAreaView>
   );
 };

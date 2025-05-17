@@ -16,6 +16,7 @@ import CustomSafeAreaView from "../../components/CustomSafeAreaView";
 import { AppStrings } from "../../constants/AppStrings";
 import ScreenTitle from "../../components/shared/ScreenTitle";
 import WideButton from "../../components/buttons/WideButton";
+import AuthLayout from "../../components/layouts/AuthLayout";
 
 const SignUpScreen = ({ navigation }: { navigation: any }) => {
   const [username, setUsername] = useState("Jane Doe");
@@ -26,15 +27,15 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
 
   return (
     <CustomSafeAreaView>
-      <StatusBar barStyle="dark-content" />
-      <ScrollView contentContainerClassName="px-10 grow">
+      <View className="w-full px-6">
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           className="mb-6 self-start"
         >
           <BackIcon />
         </TouchableOpacity>
-
+      </View>
+      <AuthLayout>
         <ProgressBar activeStep={1} totalSteps={3} />
 
         <ScreenTitle title={AppStrings.AuthStrings.SignUp.TITLE} />
@@ -118,7 +119,7 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
             </Text>
           </TouchableOpacity>
         </View>
-      </ScrollView>
+      </AuthLayout>
     </CustomSafeAreaView>
   );
 };
