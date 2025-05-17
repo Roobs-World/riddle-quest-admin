@@ -66,7 +66,7 @@ function passwordReducer(
 }
 
 const SignUpScreen = ({ navigation }: { navigation: any }) => {
-  const [username, setUsername] = useState("Jane Doe");
+  const [username, setUsername] = useState("");
   // Use the reducer for password state
   const [passwordState, dispatch] = useReducer(
     passwordReducer,
