@@ -197,7 +197,7 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
           buttonText={AppStrings.AuthStrings.SignUp.NEXT_BUTTON}
         />
 
-        <View className="flex-row items-center justify-center">
+        <View className="flex-row items-center justify-center mt-4">
           <Text className="text-sm text-gray-600">
             {AppStrings.AuthStrings.SignUp.HAS_ACCOUNT_PROMPT}{" "}
           </Text>
