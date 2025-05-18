@@ -22,7 +22,7 @@ Build a riddle-based Wordle-clone mobile game using React Native, NativeWind, an
 - **Database:** Firestore (user stats, progress, coin balances, avatar URLs, riddle levels)
 - **Storage:** Firebase Storage (user-uploaded avatars)
 - **Level Management:**
-  - Initial 100+ riddle levels synced from Google Sheets (via Apps Script).
+  - Initial 100+ riddle levels synced from Google Sheets (via Apps Script). Source: [https://docs.google.com/spreadsheets/d/1TIbc2oef3xZ_8s30mX3eDn6jbe6SKBnqmjXLa1kmzXA/edit?gid=0#gid=0](https://docs.google.com/spreadsheets/d/1TIbc2oef3xZ_8s30mX3eDn6jbe6SKBnqmjXLa1kmzXA/edit?gid=0#gid=0) (Tabs: Daily, Tutorial, Classic).
   - Firebase Cloud Function to generate new 5-letter riddles when levels run out (updating Firestore & Sheets).
 
 ### 2.3. Game Modes

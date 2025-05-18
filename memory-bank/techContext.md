@@ -17,6 +17,7 @@
   - **Storage:** Firebase Storage (for user-uploaded avatars)
   - **Serverless Functions:** Firebase Cloud Functions (for generating new riddles)
 - **Initial Data Source:** Google Sheets (for the first 100+ riddle levels)
+- **Google Sheets Data Fetching:** Implement a dedicated service or module to fetch riddle data from the Google Sheet ([https://docs.google.com/spreadsheets/d/1TIbc2oef3xZ_8s30mX3eDn6jbe6SKBnqmjXLa1kmzXA/edit?gid=0#gid=0]) based on game mode (Daily, Tutorial, Classic) and load one riddle at a time as needed.
 - **Scripting for Sheets Integration:** Google Apps Script (to sync riddles from Sheets to Firestore)
 
 ## 3. Key Libraries & Dependencies

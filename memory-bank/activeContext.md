@@ -37,6 +37,7 @@
 7.  **Microsoft Sign-In (Pending Clarification):** If confirmed for MVP, implement Firebase Microsoft Sign-In logic on `LandingScreen.tsx`.
 8.  **Form Validation:** Add basic client-side validation to input fields in Login and Sign Up screens.
 9.  **Auth State Management:** Set up basic auth state management (e.g., using React Context) to handle user login/logout status and navigate accordingly.
+10. **Implement First-Time User Instructions:** Create and display an instructions panel on the initial game launch for new users.
 
 ## 4. Active Decisions & Considerations
 

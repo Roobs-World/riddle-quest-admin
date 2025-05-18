@@ -41,15 +41,15 @@
   - [ ] Unlock next level logic.
   - [ ] Skip level with coins (50 coins) functionality.
 - **Main Game Screen UI:**
-  - [ ] Riddle text display.
-  - [ ] 6x5 guess grid UI.
-  - [ ] On-screen keyboard UI and input handling.
-  - [ ] Header: Level, Score (TBD if part of MVP game screen or just profile), Coins, Hint & Skip buttons.
-  - [ ] Create Coins component.
-  - [ ] Create Level icon component.
-  - [ ] Create Questions component for the riddle.
-  - [ ] Create Grid component for guesses.
-  - [ ] Create Controls component (Hint, Submit, Next buttons).
+  - [x] Riddle text display (Integrated `RiddleText.tsx`).
+  - [x] 6x5 guess grid UI (Integrated `GuessGrid.tsx` and updated to display current guess and submitted guesses with feedback).
+  - [x] On-screen keyboard UI and input handling (Integrated `Keyboard.tsx`, added `onKeyPress` prop, and implemented basic letter adding/deleting/enter handling).
+  - [x] Header: Level, Score (TBD if part of MVP game screen or just profile), Coins, Hint & Skip buttons (Integrated `Header.tsx`).
+  - [ ] Create Coins component (Needed for Header - UI in place, logic pending).
+  - [ ] Create Level icon component (Needed for Header - UI in place, logic pending).
+  - [x] Create Questions component for the riddle (Integrated `RiddleText.tsx`).
+  - [x] Create Grid component for guesses (Integrated `GuessGrid.tsx`).
+  - [x] Create Controls component (Hint, Submit, Next buttons - Needed for Header or separate controls area - UI in Header component, hint/skip logic partially implemented).
 - **Victory/Loss Screens:**
   - [ ] Display attempts, score (if applicable), coins earned.
   - [ ] Shareable emoji summary.
@@ -75,6 +75,7 @@
   - [ ] Firebase Cloud Function: Generate new 5-letter riddles (design and implement v1).
     - [ ] Update Firestore with new riddles.
     - [ ] Update Google Sheets with new riddles.
+    - [ ] **Implement Google Sheets Riddle Service:** Create a dedicated service to fetch riddles from the specified Google Sheet tabs (Daily, Tutorial, Classic) one at a time as needed by the game.
 
 ### In-App Purchases & Coin System
 
@@ -120,12 +121,16 @@
 - **Bottom Overlays/Modals (for Home, Play, Profile).**
 - [ ] Design and implement overlay/modal components for Home, Play, and Profile.
 - [ ] Implement logic to trigger the correct overlay/modal from the bottom bar icons.
-- [ ] Create a persistent bottom bar UI component with Home, Play, and Profile icons.
+- **Bottom Navigation Bar:**
+  - [x] Create a persistent bottom bar UI component with Home, Play, and Profile icons (Integrated `BottomNavigationBar.tsx`).
+  - [ ] Implement logic to trigger the correct overlay/modal from the bottom bar icons.
+  - [ ] Design and implement overlay/modal components for Home, Play, and Profile.
 - [ ] Ensure overlays/modals provide quick access and do not fully transition away from the main game context.
 - [ ] Overall app styling (clean cards, bold headings, rounded toggles) per screenshot hints.
 - [ ] Basic animations with Reanimated & Gesture Handler.
 - [ ] Sound effects with `expo-av`.
 - [ ] Haptic feedback with `react-native-haptic-feedback`.
+- [ ] Implement a first-time user instructions panel to guide new users.
 
 ### Quality & Technical
 
@@ -143,13 +148,44 @@
 ## 3. Current Project Status
 
 - **Phase:** Initial UI Development for Authentication and foundational component creation.
-- **Overall Progress:** ~10% (Auth screen UIs, NativeWind setup).
-- **Next Milestone:** Integrate authentication screens with navigation, implement Firebase email/password authentication.
+- **Overall Progress:** ~20% (Auth screen UIs, NativeWind setup, GameScreen UI components integrated, initial game logic for input handling and display).
+- **Next Milestone:** Implement core game logic (guess validation, feedback, win/loss conditions) and integrate with state management.
+
+- **Phase:** Core Gameplay and UI Integration.
+- **Overall Progress:** ~25% (Auth screen UIs, NativeWind setup, GameScreen UI components and overlays integrated, core game logic for input, feedback, win/loss checks, hints, and skips implemented, modal button logic for retry/home/next implemented).
+- **Next Milestone:** Integrate actual riddle data and coin logic, and implement bottom navigation overlay/modal logic.
 
 ## 4. Known Issues & Blockers
 
 - Placeholder icons and navigation logic in auth screens need replacement.
 - Microsoft Sign-In was present in the UI mockups but not explicitly in the `projectbrief.md` authentication methods. Scope for MVP needs clarification if it's a hard requirement.
+- TODO: Implement actual guess validation logic (check against `correctAnswer` and update feedback).
+- TODO: Implement win/loss conditions and display appropriate screens/modals.
+- TODO: Implement visual feedback for invalid guesses (e.g., shake animation for guess row).
+- TODO: Replace placeholder colors in GuessGrid with defined Tailwind colors.
+- TODO: Implement logic for Hint and Skip buttons in the Header.
+- TODO: Implement logic to open overlays/modals from the Bottom Navigation Bar.
+- TODO: Integrate actual riddle fetching logic from backend/data source.
+- TODO: Implement actual coin earning logic on winning a level.
+- TODO: Implement logic for the Bottom Navigation Bar buttons to open appropriate overlays/modals.
+
+**Gameplay Visuals & Feedback:**
+
+- [ ] Ensure Guess Grid cell colors reflect feedback:
+  - Red: Incorrect character.
+  - Orange: Correct character, wrong position (use `primary-orange`).
+  - Green: Correct character, correct position.
+- [ ] Implement visual feedback for invalid guesses (e.g., a subtle animation or message).
+
+**Core Game Logic & Data:**
+
+- [ ] Integrate actual riddle fetching logic from backend/data source.
+- [ ] Implement actual coin earning logic on winning a level.
+
+**Navigation & Overlays:**
+
+- [ ] Implement logic for the Bottom Navigation Bar buttons to open appropriate overlays/modals.
+- [ ] Implement logic for Hint and Skip buttons in the Header.
 
 ## 5. Evolution of Project Decisions & Learnings Log
 
@@ -168,5 +204,15 @@
 - **2024-07-28:** Successfully transitioned to using pnpm for package management.
 - **2024-07-29:** Implemented Firebase email/password sign-up, login, password reset, Google Sign-In, and logout functions in `src/services/AuthService.ts`. Encountered persistent linter error on `UserCredential` import and missing `@react-native-google-signin/google-signin` dependency.
 - **2024-07-30:** Decided that the bottom navigation icons (Home, Play, Profile) should open overlays/modals instead of navigating to new screens to provide quick access to these features without leaving the main game context. This changes the approach from a traditional bottom tab navigator to a persistent bottom bar triggering modal views.
+- **2024-07-31:** Integrated `Keyboard.tsx` component into `GameScreen.tsx` and added a basic `handleKeyPress` function placeholder. Updated `Keyboard.tsx` to accept and use the `onKeyPress` prop, resolving a linter error and enabling communication between the screen and the keyboard component.
+- **2024-08-01:** Created and integrated `Header.tsx`, `RiddleText.tsx`, and `GuessGrid.tsx` components into `GameScreen.tsx`. Added state (`guesses` and `currentGuess`) to `GameScreen.tsx` to manage game progress. Updated `handleKeyPress` in `GameScreen.tsx` to handle adding/deleting letters and a basic ENTER key press. Updated `GuessGrid.tsx` to accept `currentGuess` and display both submitted and current guesses, including basic color styling based on placeholder feedback.
+- **2024-08-01:** Created and integrated `BottomNavigationBar.tsx` component into `GameScreen.tsx` with placeholder buttons for Home, Play, and Profile, and added placeholder press handlers.
+- **2024-08-01:** Updated `handleKeyPress` in `GameScreen.tsx` to include basic guess validation (length check) and placeholder feedback generation logic for the 'ENTER' key. Also added basic win/loss console logs based on placeholder logic. Updated `guesses` state structure to include feedback.
+- **2024-08-01:** Updated `GuessGrid.tsx` to correctly handle the new `SubmittedGuess[]` state structure, display submitted guesses with their associated feedback colors, and continue to display the `currentGuess` in the active row.
+- **2024-08-02:** Created and integrated `HintOverlay.tsx` and `SkipOverlay.tsx` components into `GameScreen.tsx`. Added state for their visibility and updated the `handleHintPress` and `handleSkipPress` functions to show these overlays.
+- **2024-08-02:** Implemented basic logic within `handleShowHint` to deduct coins and update the `currentGuess` state with a revealed letter from the `correctAnswer`. Implemented basic logic within `handleConfirmSkip` to deduct coins, set game over, and show the loss modal.
+- **2024-08-02:** Implemented logic for the `handleRetryPress` function in `GameScreen.tsx` to reset the game state.
+- **2024-08-02:** Implemented logic for the `handleModalHomePress` function in `GameScreen.tsx` to reset the game state and hide the victory/loss modals.
+- **2024-08-02:** Implemented logic for the `handleNextLevelPress` function in `GameScreen.tsx` to reset the game state and hide the victory modal, preparing for the next level.
 
 _(This section will be updated with dates and summaries of key decisions, changes in direction, or significant learnings as the project progresses.)_

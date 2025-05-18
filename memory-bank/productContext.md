@@ -56,3 +56,6 @@ This project aims to create an engaging mobile game that combines the popular Wo
 - **Accessible:** The game should be usable by a wide range of players, including those with disabilities (VoiceOver/TalkBack support, color-blind friendly patterns, adjustable text size).
 - **Seamless Onboarding:** Optional anonymous play to allow users to try the game before committing to full registration.
 - **Non-Intrusive Monetization:** IAP should be optional and not detract from the core enjoyment for non-paying users.
+- **First-Time User Instructions:** Display an interactive instructions panel on the first game launch to guide new users through the gameplay mechanics and UI.
+
+## 5. Technical Constraints & Considerations
