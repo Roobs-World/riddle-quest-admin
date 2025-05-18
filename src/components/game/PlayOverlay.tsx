@@ -1,12 +1,24 @@
 import React from "react";
 import { View, Text, Modal, TouchableOpacity } from "react-native";
 
+/**
+ * Props for the PlayOverlay component.
+ * @property {boolean} isVisible - Controls the visibility of the play overlay.
+ * @property {() => void} onClose - Function to call when the overlay is closed.
+ * // TODO: Add props for selecting game mode if needed
+ */
 interface PlayOverlayProps {
   isVisible: boolean;
   onClose: () => void;
   // TODO: Add props for selecting game mode if needed
 }
 
+/**
+ * Overlay component for selecting game modes or starting a new game.
+ * It shows available play options and provides a way to close the overlay.
+ * @param {PlayOverlayProps} props - The props for the component.
+ * @returns {React.FC<PlayOverlayProps>} The rendered PlayOverlay component.
+ */
 const PlayOverlay: React.FC<PlayOverlayProps> = ({ isVisible, onClose }) => {
   return (
     <Modal

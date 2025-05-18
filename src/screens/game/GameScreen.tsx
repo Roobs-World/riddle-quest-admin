@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text } from "react-native";
+import { View } from "react-native";
 import Keyboard from "../../components/game/Keyboard";
 import Header from "../../components/game/Header";
 import RiddleText from "../../components/game/RiddleText";
@@ -12,205 +12,157 @@ import SkipOverlay from "../../components/game/SkipOverlay";
 import PlayOverlay from "../../components/game/PlayOverlay";
 import ProfileOverlay from "../../components/game/ProfileOverlay";
 import SettingsOverlay from "../../components/game/SettingsOverlay";
-
-// Define the structure for a single guess row (5 letters)
-// type GuessRow = (string | null)[]; // Old type
-
-// Define the feedback types for each letter
-type Feedback = "green" | "yellow" | "gray" | null;
-
-// Define the structure for a submitted guess with feedback
-interface SubmittedGuess {
-  guess: string[]; // The 5 letters of the guess
-  feedback: Feedback[]; // Feedback for each letter
+import { Player } from "../../types/Player";
+import { SoundManager } from "../../services/SoundManager";
+import useGameLogic from "../../hooks/useGameLogic";
+import { checkAnyOverlayVisible } from "../../utils/overlayUtils";
+import {
+  GameScreenOverlayState,
+  GameScreenOverlayActions,
+} from "../../types/OverlayTypes";
+interface GameScreenProps {
+  correctAnswer: string[];
+  riddleText: string;
+  userCoins: number;
+  hintCost: number;
+  skipCost: number;
+  onGameWin: (attempts: number, coinsEarned: number) => void;
+  onGameLoss: (correctAnswer: string) => void;
+  onHintUsed: (cost: number) => void;
+  onSkipUsed: (cost: number) => void;
+  onNextLevel: () => void; // For Victory modal
+  onRetry: () => void; // For Loss modal
+  overlayState: GameScreenOverlayState;
+  overlayActions: GameScreenOverlayActions;
 }
 
-const GameScreen = () => {
-  // State for the list of submitted guesses (now includes feedback)
-  const [guesses, setGuesses] = useState<SubmittedGuess[]>([]);
-  // State for the current guess being typed
-  const [currentGuess, setCurrentGuess] = useState<string[]>([]);
-  // Placeholder for the correct answer
-  const correctAnswer = "WINDY".split(""); // Example answer for the placeholder riddle
-  // State to track game over status
-  const [gameOver, setGameOver] = useState(false);
-  // State to control modal visibility
-  const [isVictoryModalVisible, setIsVictoryModalVisible] = useState(false);
-  const [isLossModalVisible, setIsLossModalVisible] = useState(false);
-  // State to control hint/skip overlay visibility
-  const [isHintOverlayVisible, setIsHintOverlayVisible] = useState(false);
-  const [isSkipOverlayVisible, setIsSkipOverlayVisible] = useState(false);
-  const [isHomeOverlayVisible, setIsHomeOverlayVisible] = useState(false);
-  const [isPlayOverlayVisible, setIsPlayOverlayVisible] = useState(false);
-  const [isProfileOverlayVisible, setIsProfileOverlayVisible] = useState(false);
-  const [isSettingsOverlayVisible, setIsSettingsOverlayVisible] =
-    useState(false);
-  // Placeholder state for user's coins
-  const [userCoins, setUserCoins] = useState(100);
-  const hintCost = 50; // Define hint cost
-  const skipCost = 50; // Define skip cost
+// Accept props in the component signature, including overlay state and actions
+const GameScreen = ({
+  correctAnswer,
+  riddleText,
+  userCoins,
+  hintCost,
+  skipCost,
+  onGameWin,
+  onGameLoss,
+  onHintUsed,
+  onSkipUsed,
+  onNextLevel,
+  onRetry,
+  overlayState,
+  overlayActions,
+}: GameScreenProps) => {
+  // Remove state variables moved to the hook
+  // const [guesses, setGuesses] = useState<SubmittedGuess[]>([]);
+  // const [currentGuess, setCurrentGuess] = useState<string[]>([]);
+  // const [gameOver, setGameOver] = useState(false);
 
-  // Function to generate feedback for a submitted guess
-  const generateFeedback = (guess: string[], answer: string[]): Feedback[] => {
-    const feedback: Feedback[] = Array(5).fill(null);
-    const answerLetterCounts: { [key: string]: number } = {};
-    answer.forEach((letter) => {
-      answerLetterCounts[letter] = (answerLetterCounts[letter] || 0) + 1;
-    });
+  // State for player data (remains in component if needed for UI, otherwise move out)
+  const [playerData, setPlayerData] = useState<Player | null>(null);
 
-    // First pass: Check for green (correct letter and position)
-    const usedIndices: boolean[] = Array(5).fill(false);
-    guess.forEach((letter, index) => {
-      if (letter === answer[index]) {
-        feedback[index] = "green";
-        answerLetterCounts[letter] = --answerLetterCounts[letter];
-        usedIndices[index] = true;
-      }
-    });
+  // Placeholder for the correct answer (will now come from props)
+  // const correctAnswer = "WINDY".split(""); // Example answer for the placeholder riddle
 
-    // Second pass: Check for yellow (correct letter wrong position) and gray (not in word)
-    guess.forEach((letter, index) => {
-      if (!usedIndices[index]) {
-        if (answerLetterCounts[letter] && answerLetterCounts[letter] > 0) {
-          feedback[index] = "yellow";
-          answerLetterCounts[letter] = --answerLetterCounts[letter];
-        } else {
-          feedback[index] = "gray";
-        }
-      }
-    });
+  // Use the new game logic hook, passing the correctAnswer from props
+  const {
+    guesses,
+    currentGuess,
+    gameOver,
+    setCurrentGuess,
+    processGuess,
+    resetGame,
+  } = useGameLogic({ correctAnswer });
 
-    return feedback;
-  };
+  // Derived state to check if any overlay/modal is visible using the utility function and state from props
+  const isAnyOverlayVisible = checkAnyOverlayVisible(
+    overlayState.isVictoryModalVisible,
+    overlayState.isLossModalVisible,
+    overlayState.isHintOverlayVisible,
+    overlayState.isSkipOverlayVisible,
+    overlayState.isHomeOverlayVisible,
+    overlayState.isPlayOverlayVisible,
+    overlayState.isProfileOverlayVisible,
+    overlayState.isSettingsOverlayVisible
+  );
 
-  // Basic function to handle key presses from the keyboard
+  // Update handleKeyPress to use the hook's functions and call callbacks
   const handleKeyPress = (key: string) => {
     // Do nothing if the game is over or a modal/overlay is visible
-    if (
-      gameOver ||
-      isVictoryModalVisible ||
-      isLossModalVisible ||
-      isHintOverlayVisible ||
-      isSkipOverlayVisible ||
-      isHomeOverlayVisible ||
-      isPlayOverlayVisible ||
-      isProfileOverlayVisible ||
-      isSettingsOverlayVisible
-    )
-      return;
+    if (gameOver || isAnyOverlayVisible) return;
 
     if (key === "DELETE") {
-      // Remove the last letter from the current guess
+      // Remove the last letter from the current guess using the hook's setCurrentGuess
       setCurrentGuess((prevGuess) => prevGuess.slice(0, -1));
     } else if (key === "ENTER") {
-      // Only process if the current guess is 5 letters long and we have less than 6 guesses
-      if (currentGuess.length === 5 && guesses.length < 6) {
-        const currentGuessString = currentGuess.join("");
-        const correctAnswerString = correctAnswer.join("");
+      // Only process if the current guess is 5 letters long (hook handles guess count)
+      if (currentGuess.length === 5) {
+        // Use the processGuess function from the hook
+        const result = processGuess(currentGuess);
 
-        // Generate feedback using the new function
-        const feedback = generateFeedback(currentGuess, correctAnswer);
-
-        // Create a new submitted guess object
-        const newSubmittedGuess: SubmittedGuess = {
-          guess: currentGuess,
-          feedback: feedback,
-        };
-
-        // Add the new submitted guess to the list of guesses
-        setGuesses((prevGuesses) => [...prevGuesses, newSubmittedGuess]);
-        // Clear the current guess
-        setCurrentGuess([]);
-
-        // Check for win/loss conditions
-        if (currentGuessString === correctAnswerString) {
-          console.log("You won!");
-          setGameOver(true); // Set game over on win
-          setIsVictoryModalVisible(true); // Show victory modal
-          // TODO: Implement win logic (e.g., update stats, award coins)
-        } else if (guesses.length + 1 === 6) {
-          console.log("You lost! The answer was:", correctAnswerString);
-          setGameOver(true); // Set game over on loss
-          setIsLossModalVisible(true); // Show loss modal
-          // TODO: Implement loss logic (e.g., show loss modal, reveal answer)
+        // Handle outcomes based on the result from the hook and call callbacks
+        if (result.outcome === "win") {
+          SoundManager.playSuccess(); // Play success sound (can also be moved to callback)
+          overlayActions.setIsVictoryModalVisible(true); // Show victory modal using action from props
+          onGameWin(guesses.length + 1, 0); // Call the win callback (TODO: calculate coins earned)
+        } else if (result.outcome === "loss") {
+          SoundManager.playNegative(); // Play negative sound (can also be moved to callback)
+          overlayActions.setIsLossModalVisible(true); // Show loss modal using action from props
+          onGameLoss(correctAnswer.join("")); // Call the loss callback
         }
 
         console.log(
           "Submitted guess:",
-          currentGuessString,
+          currentGuess.join(""),
           "Feedback:",
-          feedback
+          result.feedback
         );
       } else if (currentGuess.length < 5) {
         console.log("Guess must be 5 letters long.");
         // TODO: Provide visual feedback to the user that the guess is too short (e.g., shake animation)
       }
-      // If guesses.length is 6 or more, do nothing on ENTER
+      // The hook's processGuess handles the guess count limit, so we don't need the explicit check here
     } else if (currentGuess.length < 5 && guesses.length < 6) {
-      // Add the letter to the current guess if it's less than 5 letters long
-      // and we haven't exceeded the maximum number of guesses
+      // Keep guess count check for adding letters
+      // Add the letter to the current guess using the hook's setCurrentGuess
       setCurrentGuess((prevGuess) => [...prevGuess, key.toUpperCase()]); // Store letters as uppercase
     }
     console.log(`Key pressed: ${key}`);
   };
 
-  // Placeholder functions for header button actions
+  // Placeholder functions for header button actions (remain in component, call callbacks and use overlay actions)
   const handleHintPress = () => {
-    if (
-      gameOver ||
-      isHintOverlayVisible ||
-      isSkipOverlayVisible ||
-      isHomeOverlayVisible ||
-      isPlayOverlayVisible ||
-      isProfileOverlayVisible ||
-      isSettingsOverlayVisible
-    )
-      return; // Do nothing if game is over or any overlay is visible
+    if (gameOver || isAnyOverlayVisible) return; // Do nothing if game is over or any overlay is visible
     console.log("Hint button pressed");
-    setIsHintOverlayVisible(true); // Show hint overlay
+    overlayActions.setIsHintOverlayVisible(true); // Show hint overlay using action from props
   };
 
   const handleSkipPress = () => {
-    if (
-      gameOver ||
-      isHintOverlayVisible ||
-      isSkipOverlayVisible ||
-      isHomeOverlayVisible ||
-      isPlayOverlayVisible ||
-      isProfileOverlayVisible ||
-      isSettingsOverlayVisible
-    )
-      return; // Do nothing if game is over or any overlay is visible
+    if (gameOver || isAnyOverlayVisible) return; // Do nothing if game is over or any overlay is visible
     console.log("Skip button pressed");
-    setIsSkipOverlayVisible(true); // Show skip overlay
+    overlayActions.setIsSkipOverlayVisible(true); // Show skip overlay using action from props
   };
 
-  // Placeholder functions for modal button actions
+  // Update modal button actions to call callbacks and manage local modal state using overlay actions
   const handleNextLevelPress = () => {
     console.log("Next Level button pressed");
-    // Reset game state for the next level
-    setGuesses([]);
-    setCurrentGuess([]);
-    setGameOver(false);
-    setIsVictoryModalVisible(false); // Hide modal
-    // TODO: Implement logic to load the next level riddle and update level in Header
+    overlayActions.setIsVictoryModalVisible(false); // Hide modal using action from props
+    resetGame(); // Reset game state using the hook
+    onNextLevel(); // Call the next level callback
   };
 
   const handleRetryPress = () => {
     console.log("Retry button pressed");
-    // Reset game state to start over
-    setGuesses([]);
-    setCurrentGuess([]);
-    setGameOver(false);
-    setIsLossModalVisible(false); // Hide modal
-    // TODO: Potentially reload the same riddle or fetch a new one if game mode requires
+    overlayActions.setIsLossModalVisible(false); // Hide modal using action from props
+    resetGame(); // Reset game state using the hook
+    onRetry(); // Call the retry callback
   };
 
-  // Handler for showing hint
+  // Handler for showing hint (remains in component, calls callback and uses overlay actions)
   const handleShowHint = () => {
     if (userCoins >= hintCost) {
-      setUserCoins((prevCoins) => prevCoins - hintCost); // Deduct coins
-      setIsHintOverlayVisible(false); // Hide overlay
+      //setUserCoins((prevCoins) => prevCoins - hintCost); // Coin deduction handled by callback
+      overlayActions.setIsHintOverlayVisible(false); // Hide overlay using action from props
+      onHintUsed(hintCost); // Call the hint used callback
 
       // Find an unrevealed letter in the correct answer and display it
       const hintIndex = correctAnswer.findIndex(
@@ -219,6 +171,7 @@ const GameScreen = () => {
 
       if (hintIndex !== -1 && currentGuess.length < 5) {
         // Add the hint letter to the current guess at the hintIndex if the spot is empty or doesn't match
+        // Use the hook's setCurrentGuess
         setCurrentGuess((prevGuess) => {
           const newGuess = [...prevGuess];
           // If the current guess is shorter, fill with nulls to the hint index
@@ -232,6 +185,7 @@ const GameScreen = () => {
         console.log("Hint used: Revealed letter at position", hintIndex + 1);
       } else if (currentGuess.length === 5 && hintIndex !== -1) {
         // If the current guess is already 5 letters, replace the letter at the hint index
+        // Use the hook's setCurrentGuess
         setCurrentGuess((prevGuess) => {
           const newGuess = [...prevGuess];
           newGuess[hintIndex] = correctAnswer[hintIndex];
@@ -244,7 +198,7 @@ const GameScreen = () => {
         // TODO: Provide feedback to the user if a hint cannot be provided
       }
 
-      console.log("Coins remaining:", userCoins - hintCost);
+      //console.log("Coins remaining:", userCoins - hintCost); // Coin deduction handled by callback
     } else {
       console.log("Not enough coins for a hint.");
       // The button is disabled in the overlay, so this case might not be strictly necessary,
@@ -252,21 +206,21 @@ const GameScreen = () => {
     }
   };
 
-  // Handler for closing hint overlay
+  // Handler for closing hint overlay (remains in component, uses overlay actions)
   const handleCloseHintOverlay = () => {
-    setIsHintOverlayVisible(false); // Hide overlay
+    overlayActions.setIsHintOverlayVisible(false); // Hide overlay using action from props
   };
 
-  // Handler for confirming skip
+  // Handler for confirming skip (remains in component, calls callback and uses overlay actions)
   const handleConfirmSkip = () => {
     if (userCoins >= skipCost) {
-      setUserCoins((prevCoins) => prevCoins - skipCost); // Deduct coins
-      setIsSkipOverlayVisible(false); // Hide overlay
-      setGameOver(true); // End the game (as skipping means not solving)
-      setIsLossModalVisible(true); // Show loss modal (or a specific skip modal if needed later)
+      //setUserCoins((prevCoins) => prevCoins - skipCost); // Coin deduction handled by callback
+      overlayActions.setIsSkipOverlayVisible(false); // Hide overlay using action from props
+      overlayActions.setIsLossModalVisible(true); // Show loss modal (or a specific skip modal if needed later) using action from props
+      onSkipUsed(skipCost); // Call the skip used callback
 
       // TODO: Implement logic to load the next level or move on after skipping
-      console.log("Level skipped. Coins remaining:", userCoins - skipCost);
+      //console.log("Level skipped. Coins remaining:", userCoins - skipCost); // Coin deduction handled by callback
     } else {
       console.log("Not enough coins to skip.");
       // The button is disabled in the overlay, so this case might not be strictly necessary,
@@ -274,91 +228,58 @@ const GameScreen = () => {
     }
   };
 
-  // Handler for closing skip overlay
+  // Handler for closing skip overlay (remains in component, uses overlay actions)
   const handleCloseSkipOverlay = () => {
-    setIsSkipOverlayVisible(false); // Hide overlay
+    overlayActions.setIsSkipOverlayVisible(false); // Hide overlay using action from props
   };
 
-  // Handlers for bottom navigation overlay buttons
+  // Handlers for bottom navigation overlay buttons (remain in component, uses overlay actions)
   const handlePlayPress = () => {
     console.log("Play button pressed (Bottom Nav)");
-    if (
-      gameOver ||
-      isVictoryModalVisible ||
-      isLossModalVisible ||
-      isHintOverlayVisible ||
-      isSkipOverlayVisible ||
-      isHomeOverlayVisible ||
-      isPlayOverlayVisible ||
-      isProfileOverlayVisible ||
-      isSettingsOverlayVisible
-    )
-      return; // Do nothing if any overlay is visible
-    setIsPlayOverlayVisible(true); // Show Play overlay
+    if (gameOver || isAnyOverlayVisible) return; // Do nothing if any overlay is visible
+    overlayActions.setIsPlayOverlayVisible(true); // Show Play overlay using action from props
   };
 
   const handleProfilePress = () => {
     console.log("Profile button pressed (Bottom Nav)");
-    if (
-      gameOver ||
-      isVictoryModalVisible ||
-      isLossModalVisible ||
-      isHintOverlayVisible ||
-      isSkipOverlayVisible ||
-      isHomeOverlayVisible ||
-      isPlayOverlayVisible ||
-      isProfileOverlayVisible ||
-      isSettingsOverlayVisible
-    )
-      return; // Do nothing if any overlay is visible
-    setIsProfileOverlayVisible(true); // Show Profile overlay
+    if (gameOver || isAnyOverlayVisible) return; // Do nothing if any overlay is visible
+    overlayActions.setIsProfileOverlayVisible(true); // Show Profile overlay using action from props
   };
 
   const handleSettingsPress = () => {
     console.log("Settings button pressed (Bottom Nav)");
-    if (
-      gameOver ||
-      isVictoryModalVisible ||
-      isLossModalVisible ||
-      isHintOverlayVisible ||
-      isSkipOverlayVisible ||
-      isHomeOverlayVisible ||
-      isPlayOverlayVisible ||
-      isProfileOverlayVisible ||
-      isSettingsOverlayVisible
-    )
-      return; // Do nothing if any overlay is visible
-    setIsSettingsOverlayVisible(true); // Show Settings overlay
+    if (gameOver || isAnyOverlayVisible) return; // Do nothing if any overlay is visible
+    overlayActions.setIsSettingsOverlayVisible(true); // Show Settings overlay using action from props
   };
 
-  // Handlers for closing bottom navigation overlays
+  // Handlers for closing bottom navigation overlays (remain in component, uses overlay actions)
   const handleCloseHomeOverlay = () => {
-    setIsHomeOverlayVisible(false); // Hide Home overlay
+    overlayActions.setIsHomeOverlayVisible(false); // Hide Home overlay using action from props
   };
 
   const handleClosePlayOverlay = () => {
-    setIsPlayOverlayVisible(false); // Hide Play overlay
+    overlayActions.setIsPlayOverlayVisible(false); // Hide Play overlay using action from props
   };
 
   const handleCloseProfileOverlay = () => {
-    setIsProfileOverlayVisible(false); // Hide Profile overlay
+    overlayActions.setIsProfileOverlayVisible(false); // Hide Profile overlay using action from props
   };
 
   const handleCloseSettingsOverlay = () => {
-    setIsSettingsOverlayVisible(false); // Hide Settings overlay
+    overlayActions.setIsSettingsOverlayVisible(false); // Hide Settings overlay using action from props
   };
 
-  // Placeholder riddle text
-  const currentRiddle =
-    "I speak without a mouth and hear without ears. I have no body, but I come alive with wind. What am I?";
+  // Placeholder riddle text (will come from props)
+  // const currentRiddle =
+  //   "I speak without a mouth and hear without ears. I have no body, but I come alive with wind. What am I?";
 
   return (
     <View className="flex-1 items-center justify-between bg-cream-light">
       {/* Integrated Header Component */}
       <Header
-        level={1}
-        score={0}
-        coins={userCoins}
+        level={1} // TODO: Level should come from props
+        score={0} // TODO: Score should come from props
+        coins={userCoins} // Coins come from props
         onHintPress={handleHintPress}
         onSkipPress={handleSkipPress}
       />
@@ -366,7 +287,8 @@ const GameScreen = () => {
       {/* Main content area */}
       <View className="flex-1 items-center justify-center w-full">
         {/* Integrated RiddleText Component */}
-        <RiddleText riddle={currentRiddle} />
+        <RiddleText riddle={riddleText} />
+        {/* Riddle text comes from props */}
 
         {/* Integrated GuessGrid Component */}
         {/* Pass the submitted guesses (with feedback) and the current guess to GuessGrid */}
@@ -375,17 +297,9 @@ const GameScreen = () => {
 
       {/* Integrated Keyboard Component */}
       {/* Disable keyboard input if game is over or a modal/overlay is visible */}
-      {!(
-        gameOver ||
-        isVictoryModalVisible ||
-        isLossModalVisible ||
-        isHintOverlayVisible ||
-        isSkipOverlayVisible ||
-        isHomeOverlayVisible ||
-        isPlayOverlayVisible ||
-        isProfileOverlayVisible ||
-        isSettingsOverlayVisible
-      ) && <Keyboard onKeyPress={handleKeyPress} />}
+      {!(gameOver || isAnyOverlayVisible) && (
+        <Keyboard onKeyPress={handleKeyPress} />
+      )}
 
       {/* Integrated BottomNavigationBar Component */}
       <BottomNavigationBar
@@ -395,48 +309,52 @@ const GameScreen = () => {
       />
 
       {/* Victory and Loss Modals */}
+      {/* Modals remain here but trigger external callbacks and use overlay state/actions */}
       <VictoryModal
-        isVisible={isVictoryModalVisible}
-        attempts={guesses.length} // Pass the number of attempts
-        coinsEarned={0} // TODO: Calculate and pass actual coins earned
+        isVisible={overlayState.isVictoryModalVisible} // Use state from props
+        attempts={guesses.length} // Pass the number of attempts from hook
+        coinsEarned={0} // TODO: Calculate and pass actual coins earned (via callback/props)
         onNextLevelPress={handleNextLevelPress}
       />
 
       <LossModal
-        isVisible={isLossModalVisible}
-        correctAnswer={correctAnswer.join("")} // Pass the correct answer string
+        isVisible={overlayState.isLossModalVisible} // Use state from props
+        correctAnswer={correctAnswer.join("")} // Pass the correct answer string from props
         onRetryPress={handleRetryPress}
       />
 
       {/* Hint Overlay */}
+      {/* Overlay remains here but triggers external callback and uses overlay state/actions */}
       <HintOverlay
-        isVisible={isHintOverlayVisible}
-        currentCoins={userCoins}
-        hintCost={hintCost}
+        isVisible={overlayState.isHintOverlayVisible} // Use state from props
+        currentCoins={userCoins} // Coins come from props
+        hintCost={hintCost} // Hint cost comes from props
         onShowHintPress={handleShowHint}
         onClose={handleCloseHintOverlay}
       />
 
       {/* Skip Overlay */}
+      {/* Overlay remains here but triggers external callback and uses overlay state/actions */}
       <SkipOverlay
-        isVisible={isSkipOverlayVisible}
-        currentCoins={userCoins}
-        skipCost={skipCost}
+        isVisible={overlayState.isSkipOverlayVisible} // Use state from props
+        currentCoins={userCoins} // Coins come from props
+        skipCost={skipCost} // Skip cost comes from props
         onConfirmSkipPress={handleConfirmSkip}
         onClose={handleCloseSkipOverlay}
       />
 
       {/* Bottom Navigation Overlays */}
+      {/* These overlays remain in the component for now, using overlay state/actions */}
       <PlayOverlay
-        isVisible={isPlayOverlayVisible}
+        isVisible={overlayState.isPlayOverlayVisible} // Use state from props
         onClose={handleClosePlayOverlay}
       />
       <ProfileOverlay
-        isVisible={isProfileOverlayVisible}
+        isVisible={overlayState.isProfileOverlayVisible} // Use state from props
         onClose={handleCloseProfileOverlay}
       />
       <SettingsOverlay
-        isVisible={isSettingsOverlayVisible}
+        isVisible={overlayState.isSettingsOverlayVisible} // Use state from props
         onClose={handleCloseSettingsOverlay}
       />
     </View>

@@ -1,12 +1,23 @@
 import React from "react";
 import { View, Text, Modal, TouchableOpacity } from "react-native";
 
+/**
+ * Props for the ProfileOverlay component.
+ * @property {boolean} isVisible - Controls the visibility of the profile overlay.
+ * @property {() => void} onClose - Function to call when the overlay is closed.
+ * // TODO: Add props for user profile data
+ */
 interface ProfileOverlayProps {
   isVisible: boolean;
   onClose: () => void;
-  // TODO: Add props for user profile data
 }
 
+/**
+ * Overlay component for displaying the user's profile information and stats.
+ * It shows profile details and provides a way to close the overlay.
+ * @param {ProfileOverlayProps} props - The props for the component.
+ * @returns {React.FC<ProfileOverlayProps>} The rendered ProfileOverlay component.
+ */
 const ProfileOverlay: React.FC<ProfileOverlayProps> = ({
   isVisible,
   onClose,

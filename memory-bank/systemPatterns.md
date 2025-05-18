@@ -100,13 +100,14 @@ graph TD
   - `status` ("unlocked", "solved", "skipped")
   - `attempts` (if solved)
   - `solvedAt`
-- **`dailyChallenge` collection (stores the current daily challenge):**
+- **`dailyChallenge` collection (stores the daily challenges for a given date):**
   - `date` (e.g., "YYYY-MM-DD", doc ID)
-  - `riddleId` (references `riddles` collection)
-- **`userDailyChallengeAttempts` collection:**
+  - `riddleIds` (array of strings, each referencing a `riddleId` from the `riddles` collection, in order)
+- **`userDailyChallengeAttempts` collection (tracks user progress for daily challenges):**
   - `userId_challengeDate` (doc ID)
-  - `guesses` (array of guessed words)
-  - `isSolved`
-  - `coinsEarned`
+  - `guesses` (array of guessed words) - _Note: This might need refinement to track guesses per riddle if multiple attempts are allowed per riddle within the daily set._
+  - `isSolved` (boolean, indicates if the _entire_ daily challenge set for the day is completed)
+  - `coinsEarned` (number, total coins earned for the daily challenge set)
+  - `completedIndex` (number, the index of the next riddle to be attempted in the `riddleIds` array for the day)
 
 These data models are initial and will be refined as development progresses.

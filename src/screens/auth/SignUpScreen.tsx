@@ -15,7 +15,14 @@ import PasswordMatch from "../../components/text/PasswordMatch";
 import Error from "../../components/text/Error";
 import BackButton from "../../components/buttons/BackButton";
 
-// Define types for the password state and actions
+/**
+ * Defines the structure of the password state managed by the reducer.
+ * @property {string} password - The user's entered password.
+ * @property {string} confirmPassword - The user's entered confirm password.
+ * @property {boolean} passwordsMatch - Indicates if the password and confirm password match and the password is long enough.
+ * @property {boolean} confirmPasswordHasInput - Indicates if the confirm password field has any input.
+ * @property {boolean} isPasswordLongEnough - Indicates if the password meets the minimum length requirement.
+ */
 interface PasswordState {
   password: string;
   confirmPassword: string;
@@ -24,11 +31,20 @@ interface PasswordState {
   isPasswordLongEnough: boolean;
 }
 
+/**
+ * Defines the types of actions that can be dispatched to the password reducer.
+ * @property {'SET_PASSWORD'} type - Action type for setting the password.
+ * @property {string} payload - The password string.
+ * @property {'SET_CONFIRM_PASSWORD'} type - Action type for setting the confirm password.
+ * @property {string} payload - The confirm password string.
+ */
 type PasswordAction =
   | { type: "SET_PASSWORD"; payload: string }
   | { type: "SET_CONFIRM_PASSWORD"; payload: string };
 
-// Define the initial state for the password reducer
+/**
+ * The initial state for the password reducer.
+ */
 const initialPasswordState: PasswordState = {
   password: "",
   confirmPassword: "",
@@ -37,7 +53,14 @@ const initialPasswordState: PasswordState = {
   isPasswordLongEnough: true,
 };
 
-// Define the reducer function
+/**
+ * Reducer function to manage the password state for sign-up.
+ * Handles setting password and confirm password, and updating related validation flags.
+ *
+ * @param {PasswordState} state - The current password state.
+ * @param {PasswordAction} action - The dispatched action.
+ * @returns {PasswordState} The new password state.
+ */
 function passwordReducer(
   state: PasswordState,
   action: PasswordAction
@@ -66,6 +89,12 @@ function passwordReducer(
   }
 }
 
+/**
+ * Sign Up screen for the authentication flow.
+ * Allows users to create a new account with username, email, and password.
+ *
+ * @param {object} navigation - The navigation prop from React Navigation.
+ */
 const SignUpScreen = ({ navigation }: { navigation: any }) => {
   const [username, setUsername] = useState("");
   // Use the reducer for password state

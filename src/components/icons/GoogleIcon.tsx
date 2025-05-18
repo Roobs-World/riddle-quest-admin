@@ -1,5 +1,4 @@
 import React from "react";
-// Import the SVG file directly - requires react-native-svg-transformer configuration
 import GoogleSvg from "@images/google.svg";
 
 interface GoogleIconProps {

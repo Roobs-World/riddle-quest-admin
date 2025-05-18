@@ -10,6 +10,12 @@ import SignUpButton from "../components/buttons/SignUpButton";
 import { AppStrings } from "../constants/AppStrings";
 import Subtitle from "../components/text/Subtitle";
 
+/**
+ * Landing screen for the authentication flow.
+ * Allows users to navigate to sign in or sign up, or sign in with social providers.
+ *
+ * @param {object} navigation - The navigation prop from React Navigation.
+ */
 const LandingScreen = ({ navigation }: { navigation: any }) => {
   return (
     <CustomSafeAreaView>

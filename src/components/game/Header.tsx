@@ -3,6 +3,14 @@ import { View, Text, TouchableOpacity } from "react-native";
 import CoinsDisplay from "./CoinsDisplay";
 import LevelDisplay from "./LevelDisplay";
 
+/**
+ * Props for the Header component.
+ * @property {number} level - The current game level.
+ * @property {number} score - The current player score (may be optional or TBD for display).
+ * @property {number} coins - The current player coin balance.
+ * @property {() => void} onHintPress - Function to call when the Hint button is pressed.
+ * @property {() => void} onSkipPress - Function to call when the Skip button is pressed.
+ */
 interface HeaderProps {
   level: number;
   score: number; // Assuming score will be displayed in the header eventually
@@ -11,6 +19,13 @@ interface HeaderProps {
   onSkipPress: () => void;
 }
 
+/**
+ * The header component for the game screen.
+ * Displays the current level, coins, and provides buttons for hints and skipping.
+ *
+ * @param {HeaderProps} props - The props for the component.
+ * @returns {React.FC<HeaderProps>} The rendered Header component.
+ */
 const Header: React.FC<HeaderProps> = ({
   level,
   score,

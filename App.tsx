@@ -6,6 +6,9 @@ import GameScreen from "./src/screens/game/GameScreen";
 import { loadFonts } from "./src/utils/fontLoader";
 import DottedSpinner from "./src/components/DottedSpinner";
 import { Navigation } from "./src/components/NavigationStack";
+import { SoundManager } from "./src/services/SoundManager";
+import { loadUserProgressFromFirestore } from "./src/services/FirestoreService";
+import { Player } from "./src/types/Player";
 
 // Placeholder for authentication state
 // In a real app, this would come from your auth service (e.g., Firebase)
@@ -24,23 +27,39 @@ const useAuth = () => {
 
 export default function App() {
   const { isAuthenticated } = useAuth();
-  const [fontsLoaded, setFontsLoaded] = useState(false);
+  const [resourcesLoaded, setResourcesLoaded] = useState(false);
 
   useEffect(() => {
     async function loadResources() {
       try {
-        await loadFonts();
-        setFontsLoaded(true);
+        const userId = isAuthenticated ? "placeholder_user_id" : null;
+
+        const resourcePromises: (Promise<void> | Promise<Player | null>)[] = [
+          loadFonts(),
+        ];
+        if (userId) {
+          resourcePromises.push(loadUserProgressFromFirestore(userId));
+        }
+
+        await Promise.all(resourcePromises);
+        setResourcesLoaded(true);
       } catch (e: any) {
         console.error("App load error:", e);
       }
     }
 
     loadResources();
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    SoundManager.init();
+
+    return () => {
+      SoundManager.unload();
+    };
   }, []);
 
-  if (!fontsLoaded) {
-    // Display DottedSpinner while fonts are loading
+  if (!resourcesLoaded) {
     return (
       <View
         style={{

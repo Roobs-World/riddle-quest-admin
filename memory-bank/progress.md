@@ -54,6 +54,11 @@
   - [ ] Display attempts, score (if applicable), coins earned.
   - [ ] Shareable emoji summary.
   - [ ] Next/Retry/Home buttons.
+- **Sound Implementation:**
+  - [ ] Implement `SoundManager.ts` to control audio playback.
+  - [ ] Play `Neutral.wav` continuously in the background.
+  - [ ] Play `Success.wav` on correct answer (Game screen only).
+  - [ ] Play `Negative.wav` on incorrect answer (Game screen only).
 
 ### Backend & Authentication
 
@@ -75,7 +80,7 @@
   - [ ] Firebase Cloud Function: Generate new 5-letter riddles (design and implement v1).
     - [ ] Update Firestore with new riddles.
     - [ ] Update Google Sheets with new riddles.
-    - [ ] **Implement Google Sheets Riddle Service:** Create a dedicated service to fetch riddles from the specified Google Sheet tabs (Daily, Tutorial, Classic) one at a time as needed by the game.
+    - [x] **Implement Google Sheets Riddle Service:** Implemented riddle fetching logic in `src/services/RiddleService.ts` for daily and classic modes from Firestore.
 
 ### In-App Purchases & Coin System
 
@@ -211,8 +216,11 @@
 - **2024-08-01:** Updated `GuessGrid.tsx` to correctly handle the new `SubmittedGuess[]` state structure, display submitted guesses with their associated feedback colors, and continue to display the `currentGuess` in the active row.
 - **2024-08-02:** Created and integrated `HintOverlay.tsx` and `SkipOverlay.tsx` components into `GameScreen.tsx`. Added state for their visibility and updated the `handleHintPress` and `handleSkipPress` functions to show these overlays.
 - **2024-08-02:** Implemented basic logic within `handleShowHint` to deduct coins and update the `currentGuess` state with a revealed letter from the `correctAnswer`. Implemented basic logic within `handleConfirmSkip` to deduct coins, set game over, and show the loss modal.
-- **2024-08-02:** Implemented logic for the `handleRetryPress` function in `GameScreen.tsx` to reset the game state.
-- **2024-08-02:** Implemented logic for the `handleModalHomePress` function in `GameScreen.tsx` to reset the game state and hide the victory/loss modals.
-- **2024-08-02:** Implemented logic for the `handleNextLevelPress` function in `GameScreen.tsx` to reset the game state and hide the victory modal, preparing for the next level.
+- **2024-08-02:** Implemented logic for the `
 
-_(This section will be updated with dates and summaries of key decisions, changes in direction, or significant learnings as the project progresses.)_
+* **2024-08-03:** Refactored `GameScreen.tsx` to improve reusability.
+  - Extracted core game logic into `useGameLogic.ts` hook.
+  - Extracted overlay/modal visibility state management into `useGameScreenOverlays.ts` hook.
+  - Created `overlayUtils.ts` with `checkAnyOverlayVisible` utility function.
+  - Defined overlay types in `OverlayTypes.ts`.
+  - Updated `GameScreen.tsx` to accept game data and event callbacks via props and consume the new hooks and utility function.

@@ -1,12 +1,24 @@
 import React from "react";
 import { View, Text, Modal, TouchableOpacity } from "react-native";
 
+/**
+ * Props for the LossModal component.
+ * @property {boolean} isVisible - Controls the visibility of the modal.
+ * @property {string} correctAnswer - The correct answer to display in the modal.
+ * @property {() => void} onRetryPress - Function to call when the Retry button is pressed.
+ */
 interface LossModalProps {
   isVisible: boolean;
   correctAnswer: string;
   onRetryPress: () => void;
 }
 
+/**
+ * Modal component displayed when the player loses the game.
+ * It shows the correct answer and provides an option to retry.
+ * @param {LossModalProps} props - The props for the component.
+ * @returns {React.FC<LossModalProps>} The rendered LossModal component.
+ */
 const LossModal: React.FC<LossModalProps> = ({
   isVisible,
   correctAnswer,

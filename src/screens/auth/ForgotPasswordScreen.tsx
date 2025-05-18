@@ -9,10 +9,18 @@ import BackButton from "../../components/buttons/BackButton";
 import AuthLayout from "../../components/layouts/AuthLayout";
 import UserEmailInput from "../../components/inputFields/UserEmailInput";
 
+/**
+ * Forgot password screen for the authentication flow.
+ * Allows users to request a password reset link via email.
+ */
 const ForgotPasswordScreen = () => {
   const navigation = useNavigation();
   const [email, setEmail] = React.useState("");
 
+  /**
+   * Handles the action of resetting the password.
+   * Logs the email for which the password reset was requested.
+   */
   const handleResetPassword = () => {
     console.log("Reset password for:", email);
   };

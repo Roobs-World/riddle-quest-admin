@@ -1,24 +1,43 @@
 import React from "react";
 import { View, Text } from "react-native";
 
-// Define the feedback types for each letter
+/**
+ * Define the feedback types for each letter.
+ */
 type Feedback = "green" | "yellow" | "gray" | null;
 
-// Define the structure for a submitted guess with feedback
+/**
+ * Define the structure for a submitted guess with feedback.
+ * @property {string[]} guess - The 5 letters of the guess.
+ * @property {Feedback[]} feedback - Feedback for each letter.
+ */
 interface SubmittedGuess {
   guess: string[]; // The 5 letters of the guess
   feedback: Feedback[]; // Feedback for each letter
 }
 
-// Define the structure for a single guess row (5 letters or null for empty cells)
+/**
+ * Define the structure for a single guess row (5 letters or null for empty cells).
+ */
 type GuessRow = (string | null)[];
 
-// Define the structure for the entire guess grid
+/**
+ * Define the structure for the entire guess grid.
+ * @property {SubmittedGuess[]} guesses - An array of submitted guesses with their feedback.
+ * @property {string[]} currentGuess - The letters of the current guess being entered by the user.
+ */
 type GuessGridProps = {
   guesses: SubmittedGuess[]; // Now accepts SubmittedGuess[]
   currentGuess: string[];
 };
 
+/**
+ * The component that displays the guess grid for the Wordle-style game.
+ * It shows submitted guesses with feedback and the current guess being entered.
+ *
+ * @param {GuessGridProps} props - The props for the component.
+ * @returns {React.FC<GuessGridProps>} The rendered GuessGrid component.
+ */
 const GuessGrid: React.FC<GuessGridProps> = ({ guesses, currentGuess }) => {
   // Combine submitted guesses and the current guess for display
   const displayRows: { letters: (string | null)[]; feedback: Feedback[] }[] =
@@ -46,7 +65,11 @@ const GuessGrid: React.FC<GuessGridProps> = ({ guesses, currentGuess }) => {
     });
   }
 
-  // Function to determine cell background color based on feedback
+  /**
+   * Function to determine cell background color based on feedback.
+   * @param {Feedback} feedback - The feedback for a specific letter cell.
+   * @returns {string} The Tailwind CSS class string for the background color.
+   */
   const getCellBackgroundColor = (feedback: Feedback) => {
     switch (feedback) {
       case "green":
@@ -60,7 +83,13 @@ const GuessGrid: React.FC<GuessGridProps> = ({ guesses, currentGuess }) => {
     }
   };
 
-  // Function to determine cell border color
+  /**
+   * Function to determine cell border color.
+   * @param {Feedback} feedback - The feedback for a specific letter cell.
+   * @param {string | null} letter - The letter in the cell.
+   * @param {boolean} isCurrentGuessRow - Indicates if the cell is in the current guess row.
+   * @returns {string} The Tailwind CSS class string for the border color.
+   */
   const getCellBorderColor = (
     feedback: Feedback,
     letter: string | null,
@@ -71,7 +100,12 @@ const GuessGrid: React.FC<GuessGridProps> = ({ guesses, currentGuess }) => {
     return "border-gray-400"; // Default border for empty cells or submitted without feedback yet
   };
 
-  // Function to determine text color based on feedback
+  /**
+   * Function to determine text color based on feedback.
+   * @param {Feedback} feedback - The feedback for a specific letter cell.
+   * @param {string | null} letter - The letter in the cell.
+   * @returns {string} The Tailwind CSS class string for the text color.
+   */
   const getCellTextColor = (feedback: Feedback, letter: string | null) => {
     if (feedback) return "text-white"; // White text for colored feedback cells
     if (letter !== null) return "text-gray-800"; // Dark text for letters in current guess

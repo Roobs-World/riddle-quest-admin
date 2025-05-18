@@ -1,12 +1,24 @@
 import React from "react";
 import { View, Text, Modal, TouchableOpacity } from "react-native";
 
+/**
+ * Props for the SettingsOverlay component.
+ * @property {boolean} isVisible - Controls the visibility of the settings overlay.
+ * @property {() => void} onClose - Function to call when the overlay is closed.
+ * // TODO: Add props for settings options (Sound, Haptics, Help, Logout, Reset Stats)
+ */
 interface SettingsOverlayProps {
   isVisible: boolean;
   onClose: () => void;
   // TODO: Add props for settings options (Sound, Haptics, Help, Logout, Reset Stats)
 }
 
+/**
+ * Overlay component for displaying application settings.
+ * It shows various settings options and provides a way to close the overlay.
+ * @param {SettingsOverlayProps} props - The props for the component.
+ * @returns {React.FC<SettingsOverlayProps>} The rendered SettingsOverlay component.
+ */
 const SettingsOverlay: React.FC<SettingsOverlayProps> = ({
   isVisible,
   onClose,

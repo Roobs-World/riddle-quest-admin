@@ -20,6 +20,11 @@
 - **Implemented Firebase Email/Password Auth:** Added `signUpWithEmail`, `loginWithEmail`, and `sendPasswordResetEmail` functions in `src/services/AuthService.ts`.
 - **Implemented Firebase Google Sign-In:** Added `signInWithGoogle` function in `src/services/AuthService.ts`, requiring the `@react-native-google-signin/google-signin` package.
 - **Implemented Firebase Logout:** Added `logout` function in `src/services/AuthService.ts`.
+- **Refactored GameScreen Component:** Extracted core game logic into `useGameLogic` hook and overlay/modal visibility state into `useGameScreenOverlays` hook. `GameScreen.tsx` now accepts game data and event callbacks via props, making it more reusable across game modes.
+- **Created `useGameLogic` Hook:** Implemented `src/hooks/useGameLogic.ts` to manage game state (guesses, current guess, game over) and core logic (guess processing, feedback generation, game reset).
+- **Created `useGameScreenOverlays` Hook:** Implemented `src/hooks/useGameScreenOverlays.ts` to manage the boolean visibility state of various modals and overlays in the GameScreen.
+- **Created `overlayUtils.ts` Utility:** Added `src/utils/overlayUtils.ts` with `checkAnyOverlayVisible` function to consolidate the logic for checking if any overlay or modal is currently visible.
+- **Created `OverlayTypes.ts`:** Defined interfaces `GameScreenOverlayState` and `GameScreenOverlayActions` in `src/types/OverlayTypes.ts` to provide type safety for the overlay state and actions managed by `useGameScreenOverlays`.
 
 ## 3. Next Steps & Immediate Goals
 
@@ -38,6 +43,7 @@
 8.  **Form Validation:** Add basic client-side validation to input fields in Login and Sign Up screens.
 9.  **Auth State Management:** Set up basic auth state management (e.g., using React Context) to handle user login/logout status and navigate accordingly.
 10. **Implement First-Time User Instructions:** Create and display an instructions panel on the initial game launch for new users.
+11. **Sound Manager Implementation:** Create a dedicated service or utility for managing background music (`Neutral.wav`) and sound effects (`Success.wav`, `Negative.wav`) using `expo-av`.
 
 ## 4. Active Decisions & Considerations
 
@@ -48,6 +54,7 @@
 - **Icon Library:** Decide on a specific icon library (e.g., `react-native-vector-icons` مجموعه MaterialCommunityIcons or Feather) for consistency, or prepare SVGs for custom icons if needed.
 - **UserCredential Import Error:** The persistent linter error on the `UserCredential` import contradicts the official `@react-native-firebase/auth` documentation. This needs further investigation or potentially a manual override/suppression if the linter is misinterpreting the library.
 - **Navigation Pattern:** Bottom navigation will trigger overlays/modals for Home, Play, and Profile, rather than full screen transitions.
+- **Sound Manager Design:** A dedicated `SoundManager` file will be created. `Neutral.wav` will play continuously in the background across all screens. `Success.wav` and `Negative.wav` will play as one-off sound effects over the background music, specifically on the game screen.
 
 ## 5. Key Patterns & Preferences (Emerging)
 

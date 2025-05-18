@@ -5,15 +5,24 @@ import WideButton from "../../components/buttons/WideButton";
 import { AppStrings } from "../../constants/AppStrings";
 import PadlockIcon from "@images/padlock.svg";
 import CustomSafeAreaView from "../../components/CustomSafeAreaView";
-import BackButton from "../../components/buttons/BackButton";
 import AuthLayout from "../../components/layouts/AuthLayout";
 import ScreenTitle from "../../components/text/ScreenTitle";
 import Subtitle from "../../components/text/Subtitle";
 
+/**
+ * Screen for setting a new password.
+ * Allows users to enter and confirm a new password after a password reset.
+ *
+ * @param {object} navigation - The navigation prop from React Navigation.
+ */
 export default function NewPasswordScreen({ navigation }: { navigation: any }) {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  /**
+   * Handles the action of setting the new password.
+   * Navigates the user back to the Landing screen upon successful password reset.
+   */
   const handleSetNewPassword = () => {
     navigation.navigate(AppStrings.Navigation.LANDING);
   };

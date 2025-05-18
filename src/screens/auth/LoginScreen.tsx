@@ -9,6 +9,12 @@ import UserEmailInput from "../../components/inputFields/UserEmailInput";
 import UserPasswordInput from "../../components/inputFields/UserPasswordInput";
 import BackButton from "../../components/buttons/BackButton";
 
+/**
+ * Login screen for the authentication flow.
+ * Allows users to sign in with their email and password.
+ *
+ * @param {object} navigation - The navigation prop from React Navigation.
+ */
 const LoginScreen = ({ navigation }: { navigation: any }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
