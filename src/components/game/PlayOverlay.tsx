@@ -11,6 +11,9 @@ interface PlayOverlayProps {
   isVisible: boolean;
   onClose: () => void;
   // TODO: Add props for selecting game mode if needed
+  // Placeholder props for game mode selection
+  onSelectChallenge?: () => void;
+  onSelectClassic?: () => void;
 }
 
 /**
@@ -35,6 +38,8 @@ const PlayOverlay: React.FC<PlayOverlayProps> = ({ isVisible, onClose }) => {
           <Text className="text-lg text-gray-700 mb-4">
             Placeholder for Play Options (e.g., Challenge, Classic)
           </Text>
+          {/* Placeholder: Challenge Mode Button will go here */}
+          {/* Placeholder: Classic Mode Button will go here */}
           <TouchableOpacity
             onPress={onClose}
             className="bg-gray-500 px-4 py-2 rounded"

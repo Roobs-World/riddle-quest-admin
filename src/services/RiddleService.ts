@@ -1,31 +1,65 @@
 import firestore from "@react-native-firebase/firestore";
 import auth from "@react-native-firebase/auth";
+import functions from "@react-native-firebase/functions";
+import { z, ZodError } from "zod";
+import {
+  GenerateClassicRiddlesInputSchema,
+  GenerateClassicRiddlesOutputSchema,
+  SubmitGuessInputSchema,
+  SubmitGuessOutputSchema,
+  GuessFeedbackSchema,
+} from "../validation/cloudFunctionsSchemas";
+import { performance } from "perf_hooks";
+
+export const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
 export const RiddleService = {
   /**
    * Fetches the current daily riddle for the authenticated user.
    * It checks the user's progress for the day and returns the next uncompleted riddle.
-   * @returns A Promise resolving to the daily riddle data, or null if no riddle is available or all daily riddles are completed.
+   * Also checks if the daily challenge for the current UTC day has already been completed.
+   * @returns A Promise resolving to the daily riddle data, or null if no riddle is available, all daily riddles are completed, or the daily challenge for today is already completed.
    */
   async fetchDailyRiddle() {
-    // Implement logic to fetch the next daily riddle from Firestore based on user's progress
     console.log("Fetching daily riddle from Firestore");
     const userId = auth().currentUser?.uid;
     if (!userId) {
       console.error("No authenticated user found.");
-      return null; // Or throw an error, depending on desired behavior
+      return null;
     }
 
     const today = new Date().toISOString().slice(0, 10);
 
     try {
-      // Fetch the daily challenge document for today
+      const userDoc = await firestore().collection("users").doc(userId).get();
+
+      if (userDoc.exists) {
+        const userData = userDoc.data();
+        if (userData) {
+          const lastCompletedDateStr =
+            userData.lastCompletedDailyChallengeDate as string | undefined;
+          if (lastCompletedDateStr) {
+            const lastCompletedDate = new Date(lastCompletedDateStr);
+            const lastCompletedDateUTC = lastCompletedDate
+              .toISOString()
+              .slice(0, 10);
+
+            if (lastCompletedDateUTC === today) {
+              console.log(
+                `User ${userId} has already completed the daily challenge for today (${today}).`
+              );
+              return { completedToday: true };
+            }
+          }
+        }
+      }
+
       const dailyChallengeDoc = await firestore()
         .collection("dailyChallenge")
         .doc(today)
         .get();
 
-      if (!dailyChallengeDoc.exists()) {
+      if (!dailyChallengeDoc.exists) {
         console.log(`No daily challenge found for date: ${today}`);
         return null;
       }
@@ -40,37 +74,52 @@ export const RiddleService = {
         return null;
       }
 
-      // Fetch user's progress for today's daily challenge
       const userAttemptsDoc = await firestore()
         .collection("userDailyChallengeAttempts")
         .doc(`${userId}_${today}`)
         .get();
 
       const userAttemptsData = userAttemptsDoc.data();
-      const completedIndex = (userAttemptsData?.completedIndex as number) || 0;
+      const completedIndex = (userAttemptsData?.completedIndex as number) ?? 0;
 
-      // Check if there is a next riddle to fetch
       if (completedIndex < riddleIds.length) {
         const nextRiddleId = riddleIds[completedIndex];
 
-        // Fetch the actual riddle document
         const riddleDoc = await firestore()
           .collection("riddles")
           .doc(nextRiddleId)
           .get();
 
-        if (riddleDoc.exists()) {
-          console.log(
-            `Fetched daily riddle ID: ${nextRiddleId} at index ${completedIndex}`
-          );
-          return { ...riddleDoc.data(), riddleId: riddleDoc.id };
+        if (riddleDoc.exists) {
+          const riddleData = riddleDoc.data();
+          if (riddleData && riddleData.answer !== undefined) {
+            console.log(
+              `Fetched daily riddle ID: ${nextRiddleId} at index ${completedIndex}`
+            );
+            return {
+              ...riddleData,
+              riddleId: riddleDoc.id,
+              completedToday: false,
+              answerLength: riddleData.answer.length,
+            };
+          } else {
+            console.error(
+              `Riddle data or answer missing for ID: ${nextRiddleId}. Data:`,
+              riddleData
+            );
+            return null;
+          }
         } else {
           console.log(`Riddle document not found for ID: ${nextRiddleId}`);
           return null;
         }
       } else {
         console.log(`User has completed all daily riddles for date: ${today}`);
-        return null; // All riddles for today are completed
+        const userRef = firestore().collection("users").doc(userId);
+        await userRef.update({
+          lastCompletedDailyChallengeDate: new Date().toISOString(),
+        });
+        return { completedToday: true };
       }
     } catch (error) {
       console.error("Error fetching daily riddle:", error);
@@ -84,26 +133,95 @@ export const RiddleService = {
    * @returns A Promise resolving to the classic riddle data, or null if not found.
    */
   async fetchClassicRiddle(level: number) {
-    // Implement logic to fetch a specific classic riddle by level from Firestore
     console.log(`Fetching classic riddle for level ${level} from Firestore`);
-    try {
-      const snapshot = await firestore()
-        .collection("riddles")
-        .where("mode", "==", "classic")
-        .where("level", "==", level)
-        .limit(1)
-        .get();
+    const maxRetries = 3;
+    const retryDelayMs = 5000;
 
-      if (!snapshot.empty) {
-        return snapshot.docs[0].data();
-      } else {
-        console.log(`No classic riddle found for level: ${level}`);
-        return null;
+    for (let retry = 0; retry <= maxRetries; retry++) {
+      try {
+        const snapshot = await firestore()
+          .collection("riddles")
+          .where("classicIndex", "==", level)
+          .limit(1)
+          .get();
+
+        if (!snapshot.empty) {
+          console.log(`Classic riddle found for level: ${level}`);
+          const riddleData = snapshot.docs[0].data();
+          if (riddleData && riddleData.answer !== undefined) {
+            return {
+              ...riddleData,
+              riddleId: snapshot.docs[0].id,
+              answerLength: riddleData.answer.length,
+            };
+          } else {
+            console.error(
+              `Riddle data or answer missing for level: ${level}. Data:`,
+              riddleData
+            );
+            return null;
+          }
+        } else if (retry < maxRetries) {
+          console.log(
+            `No classic riddle found for level: ${level}. Attempting to generate new riddles (Attempt ${
+              retry + 1
+            }/${maxRetries + 1})...`
+          );
+          const generateRiddlesCallable = functions().httpsCallable(
+            "generateClassicRiddles"
+          );
+          const inputData = {};
+          try {
+            GenerateClassicRiddlesInputSchema.parse(inputData);
+          } catch (zodError) {
+            console.error(
+              "Zod validation error for generateClassicRiddles input:",
+              zodError
+            );
+            throw zodError;
+          }
+
+          const result = await generateRiddlesCallable(inputData);
+          try {
+            const validatedResult = GenerateClassicRiddlesOutputSchema.parse(
+              result.data
+            );
+            console.log(
+              "generateClassicRiddles function output validated.",
+              validatedResult
+            );
+          } catch (zodError) {
+            console.error(
+              "Zod validation error for generateClassicRiddles output:",
+              zodError
+            );
+          }
+
+          await delay(retryDelayMs);
+        } else {
+          console.log(
+            `No classic riddle found for level: ${level} after ${
+              maxRetries + 1
+            } attempts.`
+          );
+          return null;
+        }
+      } catch (error) {
+        console.error(
+          `Error fetching or generating classic riddle for level ${level}:`,
+          error
+        );
+        if (retry < maxRetries) {
+          console.log(
+            `Retrying fetch/generation for level ${level} after delay...`
+          );
+          await delay(retryDelayMs);
+        } else {
+          throw error;
+        }
       }
-    } catch (error) {
-      console.error("Error fetching classic riddle:", error);
-      throw error;
     }
+    return null;
   },
 
   /**
@@ -112,18 +230,30 @@ export const RiddleService = {
    * @returns A Promise resolving to the tutorial riddle data, or null if not found.
    */
   async fetchTutorialRiddle(level: number) {
-    // Implement logic to fetch a specific tutorial riddle by level from Firestore
     console.log(`Fetching tutorial riddle for level ${level} from Firestore`);
     try {
       const snapshot = await firestore()
         .collection("riddles")
-        .where("mode", "==", "tutorial")
-        .where("level", "==", level)
+        .where("category", "==", "tutorial")
+        .where("tutorialIndex", "==", level)
         .limit(1)
         .get();
 
       if (!snapshot.empty) {
-        return snapshot.docs[0].data();
+        const riddleData = snapshot.docs[0].data();
+        if (riddleData && riddleData.answer !== undefined) {
+          return {
+            ...riddleData,
+            riddleId: snapshot.docs[0].id,
+            answerLength: riddleData.answer.length,
+          };
+        } else {
+          console.error(
+            `Riddle data or answer missing for level: ${level}. Data:`,
+            riddleData
+          );
+          return null;
+        }
       } else {
         console.log(`No tutorial riddle found for level: ${level}`);
         return null;
@@ -131,6 +261,39 @@ export const RiddleService = {
     } catch (error) {
       console.error("Error fetching tutorial riddle:", error);
       throw error;
+    }
+  },
+
+  /**
+   * Submits a user's guess for a riddle to the backend for validation.
+   * @param {z.infer<typeof SubmitGuessInputSchema>} guessData - The guess data to submit.
+   * @returns A Promise resolving to the validation result from the backend.
+   */
+  async submitGuess(guessData: z.infer<typeof SubmitGuessInputSchema>) {
+    console.log("Submitting guess for validation:", guessData);
+    try {
+      SubmitGuessInputSchema.parse(guessData);
+
+      const submitGuessCallable = functions().httpsCallable("submitGuess");
+      const result = await submitGuessCallable(guessData);
+
+      const validatedResult = SubmitGuessOutputSchema.parse(result.data);
+      console.log(
+        "Guess validation result received and validated:",
+        validatedResult
+      );
+      return validatedResult;
+    } catch (error) {
+      if (error instanceof ZodError) {
+        console.error(
+          "Zod validation error for guess submission:",
+          error.issues
+        );
+        throw new Error("Invalid guess data provided.");
+      } else {
+        console.error("Error submitting guess to Cloud Function:", error);
+        throw new Error("Failed to submit guess.");
+      }
     }
   },
 };

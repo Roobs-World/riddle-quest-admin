@@ -2,22 +2,31 @@
 const { getDefaultConfig } = require("expo/metro-config");
 const { withNativeWind } = require("nativewind/metro");
 
-module.exports = (() => {
-  // Load default Expo Metro config
-  const config = getDefaultConfig(__dirname);
-  const { transformer, resolver } = config;
+// Load default Expo Metro config
+const config = getDefaultConfig(__dirname);
 
-  // Configure SVG support via react-native-svg-transformer
-  transformer.babelTransformerPath = require.resolve(
-    "react-native-svg-transformer"
-  );
+// Ensure that we use `withNativeWind` to wrap the base config first,
+// then apply other custom transformations.
+const windConfig = withNativeWind(config, {
+  input: "./global.css",
+});
 
-  // Treat .svg files as source, not assets
-  resolver.assetExts = resolver.assetExts.filter((ext) => ext !== "svg");
-  resolver.sourceExts = [...resolver.sourceExts, "svg"];
+// Configure SVG support via react-native-svg-transformer on the wrapped config
+windConfig.transformer.babelTransformerPath = require.resolve(
+  "react-native-svg-transformer"
+);
 
-  // Wrap with NativeWind to enable Tailwind support
-  return withNativeWind(config, {
-    input: "./global.css",
-  });
-})();
+// Treat .svg files as source, not assets on the wrapped config
+windConfig.resolver.assetExts = windConfig.resolver.assetExts.filter(
+  (ext) => ext !== "svg"
+);
+windConfig.resolver.sourceExts = [
+  ...windConfig.resolver.sourceExts,
+  "svg",
+  "ts",
+  "tsx",
+  "mts",
+];
+
+// Export the final configured object
+module.exports = windConfig;

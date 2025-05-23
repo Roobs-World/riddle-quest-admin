@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text } from "react-native";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 /**
  * Props for the CoinsDisplay component.
@@ -18,7 +19,7 @@ interface CoinsDisplayProps {
 const CoinsDisplay: React.FC<CoinsDisplayProps> = ({ coins }) => {
   return (
     <View className="flex-row items-center">
-      {/* TODO: Add Coin Icon */}
+      <Icon name="attach-money" size={24} color="#FDBA74" />
       <Text className="text-lg font-bold text-gray-800">{coins}</Text>
     </View>
   );

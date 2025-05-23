@@ -1,6 +1,5 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  // NOTE: Update this to include the paths to all of your component files.
   content: [
     "./App.tsx",
     "./components/**/*.{js,jsx,ts,tsx}",
@@ -10,7 +9,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        "primary-orange": "#FF8C00", // Example hex for a vibrant orange
+        "primary-orange": "#FF8C00",
         "input-background": "#F8F5EE",
       },
     },

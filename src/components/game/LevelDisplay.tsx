@@ -18,7 +18,7 @@ interface LevelDisplayProps {
 const LevelDisplay: React.FC<LevelDisplayProps> = ({ level }) => {
   return (
     <View className="flex-row items-center">
-      {/* TODO: Add Level Icon if needed */}
+      {/* Placeholder: Level Icon will go here */}
       <Text className="text-lg font-bold text-gray-800">Level: {level}</Text>
     </View>
   );

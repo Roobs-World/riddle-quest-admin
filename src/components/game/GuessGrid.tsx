@@ -1,23 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Text } from "react-native";
+import Animated, {
+  useSharedValue,
+  withSequence,
+  withTiming,
+  withSpring,
+} from "react-native-reanimated";
+
+import type { SubmittedGuess, Feedback } from "../../hooks/types"; // Import Feedback type from types.ts
 
 /**
- * Define the feedback types for each letter.
- */
-type Feedback = "green" | "yellow" | "gray" | null;
-
-/**
- * Define the structure for a submitted guess with feedback.
- * @property {string[]} guess - The 5 letters of the guess.
- * @property {Feedback[]} feedback - Feedback for each letter.
- */
-interface SubmittedGuess {
-  guess: string[]; // The 5 letters of the guess
-  feedback: Feedback[]; // Feedback for each letter
-}
-
-/**
- * Define the structure for a single guess row (5 letters or null for empty cells).
+ * Define the structure for a single guess row (letters or null for empty cells).
  */
 type GuessRow = (string | null)[];
 
@@ -25,10 +18,13 @@ type GuessRow = (string | null)[];
  * Define the structure for the entire guess grid.
  * @property {SubmittedGuess[]} guesses - An array of submitted guesses with their feedback.
  * @property {string[]} currentGuess - The letters of the current guess being entered by the user.
+ * @property {number} answerLength - The length of the answer.
  */
 type GuessGridProps = {
   guesses: SubmittedGuess[]; // Now accepts SubmittedGuess[]
   currentGuess: string[];
+  shakeKey: number; // Added shakeKey prop
+  answerLength: number; // Add answerLength prop
 };
 
 /**
@@ -38,19 +34,24 @@ type GuessGridProps = {
  * @param {GuessGridProps} props - The props for the component.
  * @returns {React.FC<GuessGridProps>} The rendered GuessGrid component.
  */
-const GuessGrid: React.FC<GuessGridProps> = ({ guesses, currentGuess }) => {
+const GuessGrid: React.FC<GuessGridProps> = ({
+  guesses,
+  currentGuess,
+  shakeKey,
+  answerLength,
+}) => {
   // Combine submitted guesses and the current guess for display
   const displayRows: { letters: (string | null)[]; feedback: Feedback[] }[] =
     guesses.map((sg) => ({ letters: sg.guess, feedback: sg.feedback }));
 
   // Add the current guess to the next available row if there are less than 6 submitted guesses
   if (displayRows.length < 6) {
-    const currentRowLetters: (string | null)[] = Array(5).fill(null);
+    const currentRowLetters: (string | null)[] = Array(answerLength).fill(null);
     currentGuess.forEach((letter, index) => {
       currentRowLetters[index] = letter;
     });
     // For the current guess row, feedback is null for all cells initially
-    const currentRowFeedback: Feedback[] = Array(5).fill(null);
+    const currentRowFeedback: Feedback[] = Array(answerLength).fill(null);
     displayRows.push({
       letters: currentRowLetters,
       feedback: currentRowFeedback,
@@ -60,10 +61,23 @@ const GuessGrid: React.FC<GuessGridProps> = ({ guesses, currentGuess }) => {
   // Fill the remaining rows with empty cells up to 6 rows
   while (displayRows.length < 6) {
     displayRows.push({
-      letters: Array(5).fill(null),
-      feedback: Array(5).fill(null),
+      letters: Array(answerLength).fill(null),
+      feedback: Array(answerLength).fill(null),
     });
   }
+
+  // Animation shared value for shaking
+  const shakeAnimation = useSharedValue(0);
+
+  // Effect to trigger shake animation when shakeKey changes
+  useEffect(() => {
+    shakeAnimation.value = withSequence(
+      withTiming(-10, { duration: 50 }),
+      withSpring(10, { damping: 8, stiffness: 100 }),
+      withSpring(-10, { damping: 8, stiffness: 100 }),
+      withSpring(0, { damping: 8, stiffness: 100 })
+    );
+  }, [shakeKey, shakeAnimation]); // Depend on shakeKey and shakeAnimation
 
   /**
    * Function to determine cell background color based on feedback.
@@ -76,8 +90,8 @@ const GuessGrid: React.FC<GuessGridProps> = ({ guesses, currentGuess }) => {
         return "bg-green-500"; // Green for correct letter and position
       case "yellow":
         return "bg-primary-orange"; // Primary Orange for correct letter wrong position
-      case "gray":
-        return "bg-gray-500"; // Gray for incorrect letter
+      case "red":
+        return "bg-red-500"; // Red for incorrect letter
       default:
         return "bg-transparent"; // Default background for empty or current cells
     }
@@ -117,8 +131,18 @@ const GuessGrid: React.FC<GuessGridProps> = ({ guesses, currentGuess }) => {
       {displayRows.map((row, rowIndex) => {
         const isCurrentGuessRow =
           rowIndex === guesses.length && guesses.length < 6;
+
+        // Apply animation style only to the current guess row
+        const animatedStyle = isCurrentGuessRow
+          ? { transform: [{ translateX: shakeAnimation }] }
+          : {};
+
         return (
-          <View key={rowIndex} className="flex-row justify-center mb-1">
+          <Animated.View
+            key={rowIndex}
+            className="flex-row justify-center mb-1"
+            style={animatedStyle}
+          >
             {row.letters.map((letter, cellIndex) => {
               const feedback = row.feedback[cellIndex];
               const backgroundColor = getCellBackgroundColor(feedback);
@@ -139,7 +163,7 @@ const GuessGrid: React.FC<GuessGridProps> = ({ guesses, currentGuess }) => {
                 </View>
               );
             })}
-          </View>
+          </Animated.View>
         );
       })}
     </View>

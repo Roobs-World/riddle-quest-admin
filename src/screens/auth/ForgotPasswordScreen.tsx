@@ -1,5 +1,5 @@
 import { Text } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import PadlockIcon from "@images/padlock.svg";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
@@ -8,6 +8,10 @@ import WideButton from "../../components/buttons/WideButton";
 import BackButton from "../../components/buttons/BackButton";
 import AuthLayout from "../../components/layouts/AuthLayout";
 import UserEmailInput from "../../components/inputFields/UserEmailInput";
+import { validateEmail } from "../../utils/emailValidation";
+import { AuthService } from "../../services/AuthService";
+import { AppStrings } from "../../constants/AppStrings";
+import Error from "../../components/text/Error";
 
 /**
  * Forgot password screen for the authentication flow.
@@ -15,14 +19,46 @@ import UserEmailInput from "../../components/inputFields/UserEmailInput";
  */
 const ForgotPasswordScreen = () => {
   const navigation = useNavigation();
-  const [email, setEmail] = React.useState("");
+  const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState<string>("");
+  const [successMessage, setSuccessMessage] = useState<string>("");
+  const [generalError, setGeneralError] = useState<string>("");
 
   /**
    * Handles the action of resetting the password.
    * Logs the email for which the password reset was requested.
    */
-  const handleResetPassword = () => {
-    console.log("Reset password for:", email);
+  const handleResetPassword = async () => {
+    setEmailError("");
+    setSuccessMessage("");
+    setGeneralError("");
+
+    const emailValidationError = validateEmail(email);
+    setEmailError(emailValidationError);
+
+    if (emailValidationError) {
+      return;
+    }
+
+    try {
+      await AuthService.sendPasswordResetEmail(email);
+      console.log("Password reset email sent successfully to:", email);
+      setSuccessMessage("Password reset link sent successfully to your email.");
+    } catch (error: any) {
+      console.error("Password reset email error:", error);
+      switch (error.code) {
+        case "auth/user-not-found":
+          setEmailError(AppStrings.AuthStrings.Login.USER_NOT_FOUND_ERROR);
+          break;
+        case "auth/invalid-email":
+          setEmailError(
+            AppStrings.AuthStrings.Login.INVALID_EMAIL_FORMAT_ERROR
+          );
+          break;
+        default:
+          setGeneralError(error.message || "An unexpected error occurred.");
+      }
+    }
   };
 
   return (
@@ -35,7 +71,23 @@ const ForgotPasswordScreen = () => {
           Enter your email address to receive a password reset link.
         </Text>
 
-        <UserEmailInput email={email} setEmail={setEmail} />
+        <UserEmailInput
+          email={email}
+          setEmail={(text) => {
+            setEmail(text);
+            setEmailError("");
+            setSuccessMessage("");
+            setGeneralError("");
+          }}
+          errorMessage={emailError}
+        />
+
+        {successMessage ? (
+          <Text className="text-green-600 mt-4 text-center">
+            {successMessage}
+          </Text>
+        ) : null}
+        {generalError ? <Error message={generalError} /> : null}
       </AuthLayout>
 
       <WideButton onPress={handleResetPassword} buttonText="Reset Password" />

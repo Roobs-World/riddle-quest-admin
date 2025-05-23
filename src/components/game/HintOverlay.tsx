@@ -3,20 +3,20 @@ import { View, Text, Modal, TouchableOpacity } from "react-native";
 
 interface HintOverlayProps {
   isVisible: boolean;
-  currentCoins: number;
+  userCoins: number;
   hintCost: number;
-  onShowHintPress: () => void;
+  onShowHint: () => void;
   onClose: () => void;
 }
 
 const HintOverlay: React.FC<HintOverlayProps> = ({
   isVisible,
-  currentCoins,
+  userCoins,
   hintCost,
-  onShowHintPress,
+  onShowHint,
   onClose,
 }) => {
-  const canAffordHint = currentCoins >= hintCost;
+  const canAffordHint = userCoins >= hintCost;
 
   return (
     <Modal
@@ -31,7 +31,7 @@ const HintOverlay: React.FC<HintOverlayProps> = ({
             Use a Hint?
           </Text>
           <Text className="text-md text-gray-700 mb-4">
-            Cost: {hintCost} Coins. You have: {currentCoins} Coins.
+            Cost: {hintCost} Coins. You have: {userCoins} Coins.
           </Text>
           {!canAffordHint && (
             <Text className="text-red-500 mb-4">
@@ -40,7 +40,7 @@ const HintOverlay: React.FC<HintOverlayProps> = ({
           )}
           <View className="flex-row mt-4">
             <TouchableOpacity
-              onPress={onShowHintPress}
+              onPress={onShowHint}
               className={`px-4 py-2 rounded mr-4 ${
                 canAffordHint ? "bg-yellow-500" : "bg-gray-400"
               }`}

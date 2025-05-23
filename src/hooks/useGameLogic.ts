@@ -1,91 +1,89 @@
 import { useState } from "react";
+import type { SubmittedGuess } from "./types"; // Assuming you will create a types file for this
+import functions from "@react-native-firebase/functions";
 
-// Define the feedback types for each letter
-type Feedback = "green" | "yellow" | "gray" | null;
-
-// Define the structure for a submitted guess with feedback
-interface SubmittedGuess {
-  guess: string[]; // The 5 letters of the guess
-  feedback: Feedback[]; // Feedback for each letter
-}
+export type Feedback = "green" | "yellow" | "red";
 
 interface UseGameLogicProps {
-  correctAnswer: string[];
+  riddleId: string;
+  gameMode: "challenge" | "classic";
 }
 
-const useGameLogic = ({ correctAnswer }: UseGameLogicProps) => {
-  // State for the list of submitted guesses (now includes feedback)
+const useGameLogic = ({ riddleId, gameMode }: UseGameLogicProps) => {
   const [guesses, setGuesses] = useState<SubmittedGuess[]>([]);
-  // State for the current guess being typed
   const [currentGuess, setCurrentGuess] = useState<string[]>([]);
-  // State to track game over status
   const [gameOver, setGameOver] = useState(false);
 
-  // Function to generate feedback for a submitted guess
-  const generateFeedback = (guess: string[], answer: string[]): Feedback[] => {
-    const feedback: Feedback[] = Array(5).fill(null);
-    const answerLetterCounts: { [key: string]: number } = {};
-    answer.forEach((letter) => {
-      answerLetterCounts[letter] = (answerLetterCounts[letter] || 0) + 1;
-    });
-
-    // First pass: Check for green (correct letter and position)
-    const usedIndices: boolean[] = Array(5).fill(false);
-    guess.forEach((letter, index) => {
-      if (letter === answer[index]) {
-        feedback[index] = "green";
-        answerLetterCounts[letter] = --answerLetterCounts[letter];
-        usedIndices[index] = true;
-      }
-    });
-
-    // Second pass: Check for yellow (correct letter wrong position) and gray (not in word)
-    guess.forEach((letter, index) => {
-      if (!usedIndices[index]) {
-        if (answerLetterCounts[letter] && answerLetterCounts[letter] > 0) {
-          feedback[index] = "yellow";
-          answerLetterCounts[letter] = --answerLetterCounts[letter];
-        } else {
-          feedback[index] = "gray";
-        }
-      }
-    });
-
-    return feedback;
-  };
-
-  // Logic to handle processing a submitted guess (extracted from handleKeyPress)
-  const processGuess = (guess: string[]) => {
+  const processGuess = async (guess: string[]) => {
     const currentGuessString = guess.join("");
-    const correctAnswerString = correctAnswer.join("");
 
-    // Generate feedback using the new function
-    const feedback = generateFeedback(guess, correctAnswer);
+    const maxGuesses = gameMode === "challenge" ? 6 : 5;
 
-    // Create a new submitted guess object
-    const newSubmittedGuess: SubmittedGuess = {
-      guess: guess,
-      feedback: feedback,
-    };
+    try {
+      const submitGuessCallable = functions().httpsCallable("submitGuess");
+      const result = await submitGuessCallable({
+        guess: currentGuessString,
+        riddleId,
+        gameMode,
+        attempts: guesses.length + 1,
+      });
+      const {
+        feedback: serverFeedback,
+        isCorrect,
+        correctAnswer,
+        coinsEarned,
+      } = result.data as {
+        feedback: { letter: string; status: Feedback }[]; // Corrected server feedback type
+        isCorrect: boolean;
+        correctAnswer?: string;
+        coinsEarned?: number;
+      };
 
-    // Add the new submitted guess to the list of guesses
-    setGuesses((prevGuesses) => [...prevGuesses, newSubmittedGuess]);
-    // Clear the current guess
-    setCurrentGuess([]);
+      // Transform serverFeedback to the client-side Feedback[] type
+      const clientFeedback: Feedback[] = serverFeedback.map(
+        (item) => item.status
+      );
 
-    // Check for win/loss conditions
-    if (currentGuessString === correctAnswerString) {
-      console.log("You won!");
-      setGameOver(true); // Set game over on win
-      return { outcome: "win", feedback: feedback };
-    } else if (guesses.length + 1 === 6) {
-      console.log("You lost! The answer was:", correctAnswerString);
-      setGameOver(true); // Set game over on loss
-      return { outcome: "loss", feedback: feedback };
+      const newSubmittedGuess: SubmittedGuess = {
+        guess: guess,
+        feedback: clientFeedback, // Use transformed feedback
+      };
+
+      setGuesses((prevGuesses) => [...prevGuesses, newSubmittedGuess]);
+      setCurrentGuess([]);
+
+      if (isCorrect) {
+        console.log("You won!");
+        setGameOver(true);
+        return {
+          outcome: "win",
+          feedback: clientFeedback, // Use transformed feedback
+          coinsEarned: coinsEarned,
+          correctAnswer: correctAnswer,
+        };
+      } else if (guesses.length + 1 >= maxGuesses) {
+        console.log("You lost!");
+        setGameOver(true);
+        return {
+          outcome: "loss",
+          feedback: clientFeedback, // Use transformed feedback
+          correctAnswer: correctAnswer,
+          coinsEarned: coinsEarned, // Typically 0 on loss, but pass if backend sends it
+          canOfferRewardedAd: true, // Added flag
+        };
+      }
+
+      console.log(
+        "Submitted guess:",
+        currentGuessString,
+        "Feedback:",
+        clientFeedback // Use transformed feedback
+      );
+      return { outcome: "continue", feedback: clientFeedback }; // Use transformed feedback
+    } catch (error) {
+      console.error("Error submitting guess:", error);
+      throw error;
     }
-
-    console.log("Submitted guess:", currentGuessString, "Feedback:", feedback);
-    return { outcome: "continue", feedback: feedback };
   };
 
   // Function to reset the game state
@@ -102,8 +100,8 @@ const useGameLogic = ({ correctAnswer }: UseGameLogicProps) => {
     gameOver,
     setCurrentGuess,
     processGuess,
-    generateFeedback, // Keeping this for now, might remove later if not needed directly by UI
-    resetGame, // Expose the reset function
+    resetGame,
+    // removed isWin, // Assuming isWin is returned by useGameLogic now
   };
 };
 

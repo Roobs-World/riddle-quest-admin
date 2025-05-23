@@ -1,28 +1,77 @@
-import React, { useState } from "react";
-import { View } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, SafeAreaView, Alert, Button } from "react-native";
 import Keyboard from "../../components/game/Keyboard";
 import Header from "../../components/game/Header";
 import RiddleText from "../../components/game/RiddleText";
 import GuessGrid from "../../components/game/GuessGrid";
 import BottomNavigationBar from "../../components/game/BottomNavigationBar";
-import VictoryModal from "../../components/game/VictoryModal";
-import LossModal from "../../components/game/LossModal";
 import HintOverlay from "../../components/game/HintOverlay";
 import SkipOverlay from "../../components/game/SkipOverlay";
 import PlayOverlay from "../../components/game/PlayOverlay";
 import ProfileOverlay from "../../components/game/ProfileOverlay";
 import SettingsOverlay from "../../components/game/SettingsOverlay";
-import { Player } from "../../types/Player";
+import InstructionsOverlay from "../../components/game/InstructionsOverlay";
+import HomeOverlay from "../../components/game/HomeOverlay";
+import Controls from "../../components/game/Controls";
+import { Player } from "../../validation/firestoreSchemas";
 import { SoundManager } from "../../services/SoundManager";
 import useGameLogic from "../../hooks/useGameLogic";
 import { checkAnyOverlayVisible } from "../../utils/overlayUtils";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Animated, {
+  useSharedValue,
+  withSequence,
+  withTiming,
+  withSpring,
+  useAnimatedStyle,
+  interpolate,
+  Extrapolate,
+} from "react-native-reanimated";
+import functions from "@react-native-firebase/functions";
+import VictoryLossOverlay from "../../components/game/VictoryLossOverlay";
 import {
   GameScreenOverlayState,
   GameScreenOverlayActions,
 } from "../../types/OverlayTypes";
+import { useAuth } from "../../contexts/AuthContext";
+import FullProfileDetailsOverlay from "../../screens/main/FullProfileDetailsOverlay";
+import CoinShopModal from "../../components/shop/CoinShopModal";
+import { FirestoreRiddle } from "../../validation/firestoreSchemas";
+import { GameMode } from "../../contexts/AuthContext";
+import ReactNativeHapticFeedback from "react-native-haptic-feedback";
+import { IapService } from "../../services/IapService";
+import * as RNIap from "react-native-iap";
+import { useInterstitialAds } from "../../hooks/useInterstitialAds";
+import WatchAdForChanceModal from "../../components/modals/WatchAdForChanceModal";
+import useRewardedAds from "../../hooks/useRewardedAds";
+import {
+  GetHintInputSchema,
+  GetHintOutputSchema,
+  SkipRiddleInputSchema,
+  SkipRiddleOutputSchema,
+  ResetStatsOutputSchema,
+} from "../../validation/cloudFunctionsSchemas";
+
+interface GuessResult {
+  outcome: "win" | "loss" | string;
+  coinsEarned?: number;
+  correctAnswer?: string;
+  canOfferRewardedAd?: boolean;
+}
+
+const SOUND_ENABLED_STORAGE_KEY = "isSoundEnabled";
+const HAPTICS_ENABLED_STORAGE_KEY = "isHapticsEnabled";
+
+// Configuration for haptic feedback (optional)
+const hapticOptions = {
+  enableVibrateFallback: true, // Use vibration on Android if haptics are not supported
+  ignoreAndroidSystemSettings: false,
+};
+
 interface GameScreenProps {
-  correctAnswer: string[];
+  riddleId: string;
   riddleText: string;
+  answerLength: number;
   userCoins: number;
   hintCost: number;
   skipCost: number;
@@ -30,16 +79,18 @@ interface GameScreenProps {
   onGameLoss: (correctAnswer: string) => void;
   onHintUsed: (cost: number) => void;
   onSkipUsed: (cost: number) => void;
-  onNextLevel: () => void; // For Victory modal
-  onRetry: () => void; // For Loss modal
+  onNextLevel: () => void;
+  onRetry: () => void;
   overlayState: GameScreenOverlayState;
   overlayActions: GameScreenOverlayActions;
+  skippedAnswer: string | null;
+  gameMode: GameMode;
 }
 
-// Accept props in the component signature, including overlay state and actions
-const GameScreen = ({
-  correctAnswer,
+const GameScreen: React.FC<GameScreenProps> = ({
+  riddleId,
   riddleText,
+  answerLength,
   userCoins,
   hintCost,
   skipCost,
@@ -51,19 +102,47 @@ const GameScreen = ({
   onRetry,
   overlayState,
   overlayActions,
-}: GameScreenProps) => {
-  // Remove state variables moved to the hook
-  // const [guesses, setGuesses] = useState<SubmittedGuess[]>([]);
-  // const [currentGuess, setCurrentGuess] = useState<string[]>([]);
-  // const [gameOver, setGameOver] = useState(false);
+  skippedAnswer,
+  gameMode,
+}) => {
+  const { setCurrentRiddle, updatePlayerData, playerData, logout } = useAuth();
+  const [winAttempts, setWinAttempts] = useState(0);
+  const [winCoinsEarned, setWinCoinsEarned] = useState(0);
+  const [correctAnswerOnLoss, setCorrectAnswerOnLoss] = useState<string>("");
+  const [isVictoryLossOverlayVisible, setIsVictoryLossOverlayVisible] =
+    useState(false);
+  const [overlayOutcome, setOverlayOutcome] = useState<"win" | "loss" | null>(
+    null
+  );
+  const [overlayAttempts, setOverlayAttempts] = useState(0);
+  const [overlayCorrectAnswer, setOverlayCorrectAnswer] = useState<
+    string | null
+  >(null);
+  const [overlayCoinsEarned, setOverlayCoinsEarned] = useState<number | null>(
+    null
+  );
+  const [isInstructionsVisible, setIsInstructionsVisible] = useState(false);
+  const [shakeKey, setShakeKey] = useState(0);
+  const [
+    isFullProfileDetailsOverlayVisible,
+    setIsFullProfileDetailsOverlayVisible,
+  ] = useState(false);
+  const [isCoinShopModalVisible, setIsCoinShopModalVisible] = useState(false);
+  const [isWatchAdModalVisible, setIsWatchAdModalVisible] = useState(false);
+  const [lastGuessResult, setLastGuessResult] = useState<GuessResult | null>(
+    null
+  );
 
-  // State for player data (remains in component if needed for UI, otherwise move out)
-  const [playerData, setPlayerData] = useState<Player | null>(null);
+  // Animation value for shaking the GuessGrid
+  const shakeAnimation = useSharedValue(0);
 
-  // Placeholder for the correct answer (will now come from props)
-  // const correctAnswer = "WINDY".split(""); // Example answer for the placeholder riddle
+  const [isSoundEnabled, setIsSoundEnabled] = useState(true);
+  const [isHapticsEnabled, setIsHapticsEnabled] = useState(true);
 
-  // Use the new game logic hook, passing the correctAnswer from props
+  const [coinProducts, setCoinProducts] = useState<RNIap.Product[]>([]);
+  const [loadingProducts, setLoadingProducts] = useState(false);
+  const [productError, setProductError] = useState<string | null>(null);
+
   const {
     guesses,
     currentGuess,
@@ -71,293 +150,680 @@ const GameScreen = ({
     setCurrentGuess,
     processGuess,
     resetGame,
-  } = useGameLogic({ correctAnswer });
+  } = useGameLogic({
+    riddleId,
+    gameMode:
+      gameMode === "daily"
+        ? "challenge"
+        : (gameMode as "challenge" | "classic"),
+  });
 
-  // Derived state to check if any overlay/modal is visible using the utility function and state from props
+  const isWin = gameOver && overlayOutcome === "win";
+
   const isAnyOverlayVisible = checkAnyOverlayVisible(
-    overlayState.isVictoryModalVisible,
-    overlayState.isLossModalVisible,
+    isVictoryLossOverlayVisible,
     overlayState.isHintOverlayVisible,
     overlayState.isSkipOverlayVisible,
     overlayState.isHomeOverlayVisible,
     overlayState.isPlayOverlayVisible,
     overlayState.isProfileOverlayVisible,
-    overlayState.isSettingsOverlayVisible
+    overlayState.isSettingsOverlayVisible,
+    isInstructionsVisible,
+    isFullProfileDetailsOverlayVisible,
+    isCoinShopModalVisible,
+    isWatchAdModalVisible
   );
 
-  // Update handleKeyPress to use the hook's functions and call callbacks
-  const handleKeyPress = (key: string) => {
-    // Do nothing if the game is over or a modal/overlay is visible
-    if (gameOver || isAnyOverlayVisible) return;
+  const { playerData: authPlayerData } = useAuth();
+  const userHasPurchasedApp = authPlayerData?.hasPurchasedApp || false;
 
-    if (key === "DELETE") {
-      // Remove the last letter from the current guess using the hook's setCurrentGuess
-      setCurrentGuess((prevGuess) => prevGuess.slice(0, -1));
-    } else if (key === "ENTER") {
-      // Only process if the current guess is 5 letters long (hook handles guess count)
-      if (currentGuess.length === 5) {
-        // Use the processGuess function from the hook
-        const result = processGuess(currentGuess);
+  const {
+    isAdLoading: isInterstitialLoading,
+    isAdShowing: isInterstitialShowing,
+    loadInterstitialAd,
+    showInterstitialAd,
+    wasAdDisplayed: wasInterstitialAdDisplayed,
+  } = useInterstitialAds();
 
-        // Handle outcomes based on the result from the hook and call callbacks
-        if (result.outcome === "win") {
-          SoundManager.playSuccess(); // Play success sound (can also be moved to callback)
-          overlayActions.setIsVictoryModalVisible(true); // Show victory modal using action from props
-          onGameWin(guesses.length + 1, 0); // Call the win callback (TODO: calculate coins earned)
-        } else if (result.outcome === "loss") {
-          SoundManager.playNegative(); // Play negative sound (can also be moved to callback)
-          overlayActions.setIsLossModalVisible(true); // Show loss modal using action from props
-          onGameLoss(correctAnswer.join("")); // Call the loss callback
+  const { isRewardedAdReady, loadRewardedAd, showRewardedAd } =
+    useRewardedAds();
+
+  useEffect(() => {
+    const checkIfFirstTimeUser = async () => {
+      try {
+        const hasSeenInstructions = await AsyncStorage.getItem(
+          "hasSeenInstructions"
+        );
+        if (hasSeenInstructions === null) {
+          setIsInstructionsVisible(true);
+          await AsyncStorage.setItem("hasSeenInstructions", "true");
+        }
+      } catch (error) {
+        console.error("Error checking AsyncStorage:", error);
+      }
+    };
+
+    checkIfFirstTimeUser();
+  }, []);
+
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const soundEnabled = await AsyncStorage.getItem(
+          SOUND_ENABLED_STORAGE_KEY
+        );
+        if (soundEnabled !== null) {
+          setIsSoundEnabled(JSON.parse(soundEnabled));
         }
 
-        console.log(
-          "Submitted guess:",
-          currentGuess.join(""),
-          "Feedback:",
-          result.feedback
+        const hapticsEnabled = await AsyncStorage.getItem(
+          HAPTICS_ENABLED_STORAGE_KEY
         );
-      } else if (currentGuess.length < 5) {
-        console.log("Guess must be 5 letters long.");
-        // TODO: Provide visual feedback to the user that the guess is too short (e.g., shake animation)
+        if (hapticsEnabled !== null) {
+          setIsHapticsEnabled(JSON.parse(hapticsEnabled));
+        }
+      } catch (error) {
+        console.error("Error loading settings from AsyncStorage:", error);
       }
-      // The hook's processGuess handles the guess count limit, so we don't need the explicit check here
-    } else if (currentGuess.length < 5 && guesses.length < 6) {
-      // Keep guess count check for adding letters
-      // Add the letter to the current guess using the hook's setCurrentGuess
-      setCurrentGuess((prevGuess) => [...prevGuess, key.toUpperCase()]); // Store letters as uppercase
+    };
+
+    loadSettings();
+  }, []);
+
+  useEffect(() => {
+    AsyncStorage.setItem(
+      SOUND_ENABLED_STORAGE_KEY,
+      JSON.stringify(isSoundEnabled)
+    ).catch((error: any) =>
+      console.error("Error saving sound setting to AsyncStorage:", error)
+    );
+  }, [isSoundEnabled]);
+
+  useEffect(() => {
+    AsyncStorage.setItem(
+      HAPTICS_ENABLED_STORAGE_KEY,
+      JSON.stringify(isHapticsEnabled)
+    ).catch((error: any) =>
+      console.error("Error saving haptics setting to AsyncStorage:", error)
+    );
+  }, [isHapticsEnabled]);
+
+  useEffect(() => {
+    if (gameOver && lastGuessResult) {
+      if (lastGuessResult.outcome === "win") {
+        SoundManager.playSuccess();
+        if (isHapticsEnabled) {
+          ReactNativeHapticFeedback.trigger("impactHeavy", hapticOptions);
+        }
+        setOverlayOutcome("win");
+        setOverlayAttempts(guesses.length);
+        setOverlayCoinsEarned(lastGuessResult.coinsEarned || 0);
+        setIsVictoryLossOverlayVisible(true);
+        onGameWin(guesses.length, lastGuessResult.coinsEarned || 0);
+      } else if (lastGuessResult.outcome === "loss") {
+        if (lastGuessResult.canOfferRewardedAd) {
+          setIsWatchAdModalVisible(true);
+        } else {
+          SoundManager.playNegative();
+          if (isHapticsEnabled) {
+            ReactNativeHapticFeedback.trigger(
+              "notificationError",
+              hapticOptions
+            );
+          }
+          setOverlayOutcome("loss");
+          setOverlayCorrectAnswer(lastGuessResult.correctAnswer || null);
+          setIsVictoryLossOverlayVisible(true);
+          if (lastGuessResult.correctAnswer) {
+            onGameLoss(lastGuessResult.correctAnswer);
+          }
+        }
+      }
     }
-    console.log(`Key pressed: ${key}`);
+  }, [
+    gameOver,
+    lastGuessResult,
+    guesses.length,
+    onGameWin,
+    onGameLoss,
+    isHapticsEnabled,
+  ]);
+
+  const handleKeyPress = async (key: string) => {
+    if (
+      gameOver ||
+      isAnyOverlayVisible ||
+      (currentGuess.length >= answerLength &&
+        key !== "ENTER" &&
+        key !== "BACKSPACE")
+    )
+      return;
+
+    if (key === "ENTER") {
+      if (currentGuess.length === answerLength) {
+        try {
+          const result = await processGuess(currentGuess);
+          setLastGuessResult(result);
+        } catch (error) {
+          console.error("Error processing guess in GameScreen:", error);
+          Alert.alert("Error", "Could not submit guess. Please try again.");
+        }
+      } else {
+        setShakeKey((prev: number) => prev + 1);
+        if (isHapticsEnabled) {
+          ReactNativeHapticFeedback.trigger(
+            "notificationWarning",
+            hapticOptions
+          );
+        }
+      }
+    } else if (key === "BACKSPACE") {
+      setCurrentGuess((prev: string[]) => prev.slice(0, -1));
+    } else if (currentGuess.length < answerLength) {
+      setCurrentGuess((prev: string[]) => [...prev, key]);
+    }
   };
 
-  // Placeholder functions for header button actions (remain in component, call callbacks and use overlay actions)
   const handleHintPress = () => {
-    if (gameOver || isAnyOverlayVisible) return; // Do nothing if game is over or any overlay is visible
+    if (gameOver || isAnyOverlayVisible || isInstructionsVisible) return;
     console.log("Hint button pressed");
-    overlayActions.setIsHintOverlayVisible(true); // Show hint overlay using action from props
+    overlayActions.setIsHintOverlayVisible(true);
   };
 
   const handleSkipPress = () => {
-    if (gameOver || isAnyOverlayVisible) return; // Do nothing if game is over or any overlay is visible
+    if (gameOver || isAnyOverlayVisible || isInstructionsVisible) return;
     console.log("Skip button pressed");
-    overlayActions.setIsSkipOverlayVisible(true); // Show skip overlay using action from props
+    overlayActions.setIsSkipOverlayVisible(true);
   };
 
-  // Update modal button actions to call callbacks and manage local modal state using overlay actions
-  const handleNextLevelPress = () => {
-    console.log("Next Level button pressed");
-    overlayActions.setIsVictoryModalVisible(false); // Hide modal using action from props
-    resetGame(); // Reset game state using the hook
-    onNextLevel(); // Call the next level callback
+  const handleOverlayNext = () => {
+    console.log("VictoryLossOverlay Next Level button pressed");
+    setIsVictoryLossOverlayVisible(false);
+    resetGame();
+    onNextLevel();
   };
 
-  const handleRetryPress = () => {
-    console.log("Retry button pressed");
-    overlayActions.setIsLossModalVisible(false); // Hide modal using action from props
-    resetGame(); // Reset game state using the hook
-    onRetry(); // Call the retry callback
+  const handleOverlayRetry = () => {
+    console.log("VictoryLossOverlay Retry button pressed");
+    setIsVictoryLossOverlayVisible(false);
+    resetGame();
+    onRetry();
   };
 
-  // Handler for showing hint (remains in component, calls callback and uses overlay actions)
-  const handleShowHint = () => {
-    if (userCoins >= hintCost) {
-      //setUserCoins((prevCoins) => prevCoins - hintCost); // Coin deduction handled by callback
-      overlayActions.setIsHintOverlayVisible(false); // Hide overlay using action from props
-      onHintUsed(hintCost); // Call the hint used callback
-
-      // Find an unrevealed letter in the correct answer and display it
-      const hintIndex = correctAnswer.findIndex(
-        (letter, index) => currentGuess[index] !== letter // Find a position where the current guess doesn't match the answer
-      );
-
-      if (hintIndex !== -1 && currentGuess.length < 5) {
-        // Add the hint letter to the current guess at the hintIndex if the spot is empty or doesn't match
-        // Use the hook's setCurrentGuess
-        setCurrentGuess((prevGuess) => {
-          const newGuess = [...prevGuess];
-          // If the current guess is shorter, fill with nulls to the hint index
-          while (newGuess.length < hintIndex) {
-            newGuess.push(null as any); // Use null as any to match string | null type if needed
-          }
-          newGuess[hintIndex] = correctAnswer[hintIndex];
-          // Ensure the guess length doesn't exceed 5 after adding the hint
-          return newGuess.slice(0, 5);
-        });
-        console.log("Hint used: Revealed letter at position", hintIndex + 1);
-      } else if (currentGuess.length === 5 && hintIndex !== -1) {
-        // If the current guess is already 5 letters, replace the letter at the hint index
-        // Use the hook's setCurrentGuess
-        setCurrentGuess((prevGuess) => {
-          const newGuess = [...prevGuess];
-          newGuess[hintIndex] = correctAnswer[hintIndex];
-          return newGuess;
-        });
-        console.log("Hint used: Replaced letter at position", hintIndex + 1);
-      } else {
-        console.log("Hint not needed or not possible.");
-        // This might happen if the guess is already correct or full with correct letters
-        // TODO: Provide feedback to the user if a hint cannot be provided
-      }
-
-      //console.log("Coins remaining:", userCoins - hintCost); // Coin deduction handled by callback
-    } else {
-      console.log("Not enough coins for a hint.");
-      // The button is disabled in the overlay, so this case might not be strictly necessary,
-      // but it's good for robustness.
-    }
+  const handleOverlayHome = () => {
+    console.log("VictoryLossOverlay Home button pressed");
+    setIsVictoryLossOverlayVisible(false);
+    resetGame();
   };
 
-  // Handler for closing hint overlay (remains in component, uses overlay actions)
-  const handleCloseHintOverlay = () => {
-    overlayActions.setIsHintOverlayVisible(false); // Hide overlay using action from props
-  };
-
-  // Handler for confirming skip (remains in component, calls callback and uses overlay actions)
-  const handleConfirmSkip = () => {
-    if (userCoins >= skipCost) {
-      //setUserCoins((prevCoins) => prevCoins - skipCost); // Coin deduction handled by callback
-      overlayActions.setIsSkipOverlayVisible(false); // Hide overlay using action from props
-      overlayActions.setIsLossModalVisible(true); // Show loss modal (or a specific skip modal if needed later) using action from props
-      onSkipUsed(skipCost); // Call the skip used callback
-
-      // TODO: Implement logic to load the next level or move on after skipping
-      //console.log("Level skipped. Coins remaining:", userCoins - skipCost); // Coin deduction handled by callback
-    } else {
-      console.log("Not enough coins to skip.");
-      // The button is disabled in the overlay, so this case might not be strictly necessary,
-      // but it's good for robustness.
-    }
-  };
-
-  // Handler for closing skip overlay (remains in component, uses overlay actions)
-  const handleCloseSkipOverlay = () => {
-    overlayActions.setIsSkipOverlayVisible(false); // Hide overlay using action from props
-  };
-
-  // Handlers for bottom navigation overlay buttons (remain in component, uses overlay actions)
   const handlePlayPress = () => {
-    console.log("Play button pressed (Bottom Nav)");
-    if (gameOver || isAnyOverlayVisible) return; // Do nothing if any overlay is visible
-    overlayActions.setIsPlayOverlayVisible(true); // Show Play overlay using action from props
+    console.log("Play button pressed");
+    overlayActions.setIsPlayOverlayVisible(true);
   };
 
   const handleProfilePress = () => {
-    console.log("Profile button pressed (Bottom Nav)");
-    if (gameOver || isAnyOverlayVisible) return; // Do nothing if any overlay is visible
-    overlayActions.setIsProfileOverlayVisible(true); // Show Profile overlay using action from props
+    console.log("Profile button pressed");
+    overlayActions.setIsProfileOverlayVisible(true);
   };
 
   const handleSettingsPress = () => {
-    console.log("Settings button pressed (Bottom Nav)");
-    if (gameOver || isAnyOverlayVisible) return; // Do nothing if any overlay is visible
-    overlayActions.setIsSettingsOverlayVisible(true); // Show Settings overlay using action from props
+    console.log("Settings button pressed");
+    overlayActions.setIsSettingsOverlayVisible(true);
   };
 
-  // Handlers for closing bottom navigation overlays (remain in component, uses overlay actions)
   const handleCloseHomeOverlay = () => {
-    overlayActions.setIsHomeOverlayVisible(false); // Hide Home overlay using action from props
+    overlayActions.setIsHomeOverlayVisible(false);
   };
 
   const handleClosePlayOverlay = () => {
-    overlayActions.setIsPlayOverlayVisible(false); // Hide Play overlay using action from props
+    overlayActions.setIsPlayOverlayVisible(false);
   };
 
   const handleCloseProfileOverlay = () => {
-    overlayActions.setIsProfileOverlayVisible(false); // Hide Profile overlay using action from props
+    overlayActions.setIsProfileOverlayVisible(false);
   };
 
   const handleCloseSettingsOverlay = () => {
-    overlayActions.setIsSettingsOverlayVisible(false); // Hide Settings overlay using action from props
+    overlayActions.setIsSettingsOverlayVisible(false);
   };
 
-  // Placeholder riddle text (will come from props)
-  // const currentRiddle =
-  //   "I speak without a mouth and hear without ears. I have no body, but I come alive with wind. What am I?";
+  const handleCloseInstructions = () => {
+    setIsInstructionsVisible(false);
+  };
+
+  const handleCloseHintOverlay = () => {
+    overlayActions.setIsHintOverlayVisible(false);
+  };
+
+  const handleCloseSkipOverlay = () => {
+    overlayActions.setIsSkipOverlayVisible(false);
+  };
+
+  const handleHomeNavigationPress = () => {
+    overlayActions.setIsHomeOverlayVisible(true);
+  };
+
+  const handleShowFullProfileDetails = () => {
+    overlayActions.setIsProfileOverlayVisible(false);
+    setIsFullProfileDetailsOverlayVisible(true);
+  };
+
+  const handleCloseFullProfileDetailsOverlay = () => {
+    setIsFullProfileDetailsOverlayVisible(false);
+  };
+
+  const handleOpenCoinShopModal = async () => {
+    setIsCoinShopModalVisible(true);
+    setLoadingProducts(true);
+    setProductError(null);
+    try {
+      const products = await IapService.getProducts();
+      setCoinProducts(products);
+    } catch (error: any) {
+      console.error("Error fetching products:", error);
+      setProductError("Failed to load coin packs. Please try again.");
+    } finally {
+      setLoadingProducts(false);
+    }
+  };
+
+  const handleCloseCoinShopModal = () => {
+    setIsCoinShopModalVisible(false);
+    setCoinProducts([]);
+    setProductError(null);
+  };
+
+  const handlePurchaseProduct = async (productId: string) => {
+    setLoadingProducts(true);
+    setProductError(null);
+    try {
+      console.log(`Attempting to purchase product: ${productId}`);
+      const purchase = await IapService.purchaseProduct(productId);
+
+      if (purchase) {
+        console.log("Purchase successful and validated.");
+        Alert.alert(
+          "Purchase Successful",
+          "Coins have been added to your account!"
+        );
+      } else {
+        console.warn("Purchase did not return a purchase object.");
+        setProductError("Purchase process did not complete.");
+      }
+    } catch (error: any) {
+      console.error("Error during purchase:", error);
+      setProductError(
+        error.message || "An unexpected error occurred during purchase."
+      );
+    } finally {
+      setLoadingProducts(false);
+    }
+  };
+
+  const handleResetStats = async () => {
+    try {
+      console.log("Calling backend to reset stats...");
+      const resetStatsCallable = functions().httpsCallable("resetStats");
+      const result = await resetStatsCallable();
+      const responseData = ResetStatsOutputSchema.parse(result.data);
+
+      if (responseData.success) {
+        console.log("Stats reset successfully on backend.");
+        updatePlayerData({
+          stats: {
+            dailyPuzzlesCompleted: 0,
+            bestStreak: 0,
+            totalWordsGuessed: 0,
+            winRate: 0,
+            averageGuesses: 0,
+            totalScore: 0,
+            highestLevelClassic: 0,
+            gamesPlayed: 0,
+            wins: 0,
+            challengeWins: 0,
+            winStreak: 0,
+            totalWins: 0,
+            totalGuessesInWins: 0,
+          },
+        });
+        Alert.alert(
+          "Success",
+          responseData.message || "Your stats have been reset."
+        );
+      } else {
+        console.error(
+          "Backend reported failure resetting stats:",
+          responseData.message
+        );
+        Alert.alert("Error", responseData.message || "Failed to reset stats.");
+      }
+    } catch (error: any) {
+      console.error("Error calling resetStats backend function:", error);
+      let errorMessage = "An error occurred while resetting stats.";
+      if (error.name === "FirebaseFunctionsError") {
+        errorMessage = error.message;
+      } else if (error.name === "ZodError") {
+        errorMessage =
+          "Received invalid data from server after resetting stats.";
+        console.error(
+          "Zod validation error for resetStats output:",
+          error.issues
+        );
+      }
+      Alert.alert("Error", errorMessage);
+    }
+    overlayActions.setIsSettingsOverlayVisible(false);
+  };
+
+  const toggleSoundEnabled = (isEnabled: boolean) => {
+    setIsSoundEnabled(isEnabled);
+    if (isEnabled) {
+      SoundManager.playBackgroundMusic();
+    } else {
+      SoundManager.pauseBackgroundMusic();
+    }
+  };
+
+  const toggleHapticsEnabled = (isEnabled: boolean) => {
+    setIsHapticsEnabled(isEnabled);
+  };
+
+  const handleLevelComplete = () => {
+    console.log("Level Completed!");
+
+    if (!userHasPurchasedApp) {
+      showInterstitialAd();
+    } else {
+      console.log("User has purchased, no interstitial ad.");
+      onNextLevel();
+    }
+  };
+
+  const handleShowHint = async () => {
+    if (!playerData?.userId) return;
+    if (userCoins < hintCost) {
+      Alert.alert("Not enough coins", "You need more coins to use a hint.");
+      return;
+    }
+    console.log("Showing hint for riddle:", riddleId);
+    overlayActions.setIsHintOverlayVisible(false);
+
+    const hintRequestData = {
+      currentAttempt: currentGuess,
+      riddleId: riddleId,
+    };
+
+    try {
+      GetHintInputSchema.parse(hintRequestData);
+
+      const getHintCallable = functions().httpsCallable("getHint");
+      const result = await getHintCallable(hintRequestData);
+
+      const hintData = GetHintOutputSchema.parse(result.data);
+
+      if (hintData) {
+        Alert.alert(
+          "Hint",
+          `The letter '${hintData.revealedLetter}' is at position ${
+            hintData.index + 1
+          }.`
+        );
+        onHintUsed(hintData.coinsCost);
+      } else {
+        Alert.alert(
+          "Hint Not Available",
+          "No more hints can be revealed for this riddle."
+        );
+      }
+    } catch (error: any) {
+      console.error("Error getting hint:", error);
+      let errorMessage = "An error occurred while getting a hint.";
+      if (error.message) {
+        errorMessage = error.message;
+      }
+      Alert.alert("Error", errorMessage);
+    }
+  };
+
+  const handleConfirmSkip = async () => {
+    if (!playerData?.userId) return;
+    if (userCoins < skipCost) {
+      Alert.alert(
+        "Not enough coins",
+        "You need more coins to skip this riddle."
+      );
+      return;
+    }
+    console.log("Confirm skipping riddle:", riddleId);
+    overlayActions.setIsSkipOverlayVisible(false);
+
+    const skipRequestData = {
+      gameMode: gameMode,
+      riddleId: riddleId,
+    };
+
+    try {
+      SkipRiddleInputSchema.parse(skipRequestData);
+
+      const skipRiddleCallable = functions().httpsCallable("skipRiddle");
+      const result = await skipRiddleCallable(skipRequestData);
+
+      const skipData = SkipRiddleOutputSchema.parse(result.data);
+
+      Alert.alert("Skipped", "Riddle skipped successfully.");
+      onSkipUsed(skipData.coinsCost);
+    } catch (error: any) {
+      console.error("Error skipping riddle:", error);
+      let errorMessage = "An error occurred while skipping the riddle.";
+      if (error.name === "FirebaseFunctionsError") {
+        errorMessage = error.message;
+      } else if (error.name === "ZodError") {
+        errorMessage = "Received invalid data from server after skipping.";
+        console.error(
+          "Zod validation error for skipRiddle output:",
+          error.issues
+        );
+      }
+      Alert.alert("Error", errorMessage);
+    }
+  };
+
+  const handleWatchAdAccepted = async () => {
+    setIsWatchAdModalVisible(false);
+    try {
+      await loadRewardedAd();
+      if (isRewardedAdReady) {
+        await showRewardedAd();
+        console.log("Rewarded ad shown (or attempt to show finished).");
+      } else {
+        console.warn("Rewarded ad was not ready to be shown.");
+        Alert.alert(
+          "Ad Not Ready",
+          "The rewarded ad couldn't be loaded at this time. Please try again later."
+        );
+      }
+    } catch (adError: any) {
+      console.error("Error showing rewarded ad:", adError);
+      Alert.alert(
+        "Ad Error",
+        "An error occurred while trying to show the rewarded ad."
+      );
+    }
+    SoundManager.playNegative();
+    if (isHapticsEnabled) {
+      ReactNativeHapticFeedback.trigger("notificationError", hapticOptions);
+    }
+    setOverlayOutcome("loss");
+    setOverlayCorrectAnswer(lastGuessResult?.correctAnswer || null);
+    setIsVictoryLossOverlayVisible(true);
+    if (lastGuessResult?.correctAnswer) {
+      onGameLoss(lastGuessResult.correctAnswer);
+    }
+  };
+
+  const handleWatchAdDeclined = () => {
+    setIsWatchAdModalVisible(false);
+    SoundManager.playNegative();
+    if (isHapticsEnabled) {
+      ReactNativeHapticFeedback.trigger("notificationError", hapticOptions);
+    }
+    setOverlayOutcome("loss");
+    setOverlayCorrectAnswer(lastGuessResult?.correctAnswer || null);
+    setIsVictoryLossOverlayVisible(true);
+    if (lastGuessResult?.correctAnswer) {
+      onGameLoss(lastGuessResult.correctAnswer);
+    }
+  };
+
+  // Trigger shake animation when shakeKey changes
+  useEffect(() => {
+    if (shakeKey > 0) {
+      shakeAnimation.value = withSequence(
+        withTiming(-10, { duration: 50 }),
+        withTiming(10, { duration: 50 }),
+        withTiming(-10, { duration: 50 }),
+        withTiming(10, { duration: 50 }),
+        withTiming(0, { duration: 50 })
+      );
+    }
+  }, [shakeKey, shakeAnimation]);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateX: shakeAnimation.value }],
+    };
+  });
 
   return (
-    <View className="flex-1 items-center justify-between bg-cream-light">
-      {/* Integrated Header Component */}
-      <Header
-        level={1} // TODO: Level should come from props
-        score={0} // TODO: Score should come from props
-        coins={userCoins} // Coins come from props
-        onHintPress={handleHintPress}
-        onSkipPress={handleSkipPress}
-      />
+    <SafeAreaView className="flex-1 bg-cream-light">
+      <View className="flex-1 p-4">
+        <Header
+          level={playerData?.progress?.classicIndex ?? 0}
+          userCoins={playerData?.coins ?? 0}
+        />
 
-      {/* Main content area */}
-      <View className="flex-1 items-center justify-center w-full">
-        {/* Integrated RiddleText Component */}
-        <RiddleText riddle={riddleText} />
-        {/* Riddle text comes from props */}
+        <RiddleText riddleText={riddleText} />
+        <Animated.View style={animatedStyle}>
+          <GuessGrid
+            guesses={guesses}
+            currentGuess={currentGuess}
+            answerLength={answerLength}
+            shakeKey={shakeKey}
+          />
+        </Animated.View>
+        {!isAnyOverlayVisible && <Keyboard onKeyPress={handleKeyPress} />}
 
-        {/* Integrated GuessGrid Component */}
-        {/* Pass the submitted guesses (with feedback) and the current guess to GuessGrid */}
-        <GuessGrid guesses={guesses} currentGuess={currentGuess} />
+        {isVictoryLossOverlayVisible && (
+          <VictoryLossOverlay
+            isVisible={isVictoryLossOverlayVisible}
+            outcome={overlayOutcome}
+            attempts={overlayAttempts}
+            correctAnswer={overlayCorrectAnswer}
+            coinsEarned={overlayCoinsEarned}
+            onNext={handleOverlayNext}
+            onRetry={handleOverlayRetry}
+            onHome={handleOverlayHome}
+            guesses={guesses}
+          />
+        )}
+
+        <HintOverlay
+          isVisible={overlayState.isHintOverlayVisible}
+          onClose={handleCloseHintOverlay}
+          onShowHint={handleShowHint}
+          hintCost={hintCost}
+          userCoins={userCoins}
+        />
+
+        <SkipOverlay
+          isVisible={overlayState.isSkipOverlayVisible}
+          onClose={handleCloseSkipOverlay}
+          onConfirmSkip={handleConfirmSkip}
+          skipCost={skipCost}
+          userCoins={userCoins}
+        />
+
+        <HomeOverlay
+          isVisible={overlayState.isHomeOverlayVisible}
+          onClose={handleCloseHomeOverlay}
+        />
+        <PlayOverlay
+          isVisible={overlayState.isPlayOverlayVisible}
+          onClose={handleClosePlayOverlay}
+        />
+        <ProfileOverlay
+          isVisible={overlayState.isProfileOverlayVisible}
+          onClose={handleCloseProfileOverlay}
+          playerData={playerData}
+          onShowFullProfile={handleShowFullProfileDetails}
+        />
+        <SettingsOverlay
+          isVisible={overlayState.isSettingsOverlayVisible}
+          onClose={handleCloseSettingsOverlay}
+          isSoundEnabled={isSoundEnabled}
+          isHapticsEnabled={isHapticsEnabled}
+          onToggleSound={toggleSoundEnabled}
+          onToggleHaptics={toggleHapticsEnabled}
+          onPressResetStats={handleResetStats}
+          onPressLogout={logout}
+          onPressHelp={() => {
+            overlayActions.setIsSettingsOverlayVisible(false);
+            setIsInstructionsVisible(true);
+          }}
+        />
+
+        <InstructionsOverlay
+          isVisible={isInstructionsVisible}
+          onClose={handleCloseInstructions}
+        />
+
+        <FullProfileDetailsOverlay
+          isVisible={isFullProfileDetailsOverlayVisible}
+          onClose={handleCloseFullProfileDetailsOverlay}
+          playerData={playerData}
+        />
+
+        <CoinShopModal
+          isVisible={isCoinShopModalVisible}
+          onClose={handleCloseCoinShopModal}
+          products={coinProducts}
+          loading={loadingProducts}
+          error={productError}
+          onPurchaseProduct={handlePurchaseProduct}
+        />
+
+        <Controls
+          onHintPress={handleHintPress}
+          onSkipPress={handleSkipPress}
+          onSubmitPress={() => handleKeyPress("ENTER")}
+          onNextPress={handleOverlayNext}
+          currentGuess={currentGuess}
+          answerLength={answerLength}
+          gameOver={gameOver}
+          isWin={isWin}
+        />
+
+        <BottomNavigationBar
+          onHomePress={handleHomeNavigationPress}
+          onPlayPress={handlePlayPress}
+          onProfilePress={handleProfilePress}
+          onSettingsPress={handleSettingsPress}
+          activeOverlay={
+            Object.keys(overlayState).find(
+              (key: string) => overlayState[key as keyof GameScreenOverlayState]
+            ) as keyof GameScreenOverlayState | undefined
+          }
+        />
+
+        <Button title="Complete Level" onPress={handleLevelComplete} />
+
+        <WatchAdForChanceModal
+          visible={isWatchAdModalVisible}
+          onClose={handleWatchAdDeclined}
+          onWatchAd={handleWatchAdAccepted}
+        />
       </View>
-
-      {/* Integrated Keyboard Component */}
-      {/* Disable keyboard input if game is over or a modal/overlay is visible */}
-      {!(gameOver || isAnyOverlayVisible) && (
-        <Keyboard onKeyPress={handleKeyPress} />
-      )}
-
-      {/* Integrated BottomNavigationBar Component */}
-      <BottomNavigationBar
-        onPlayPress={handlePlayPress}
-        onProfilePress={handleProfilePress}
-        onSettingsPress={handleSettingsPress}
-      />
-
-      {/* Victory and Loss Modals */}
-      {/* Modals remain here but trigger external callbacks and use overlay state/actions */}
-      <VictoryModal
-        isVisible={overlayState.isVictoryModalVisible} // Use state from props
-        attempts={guesses.length} // Pass the number of attempts from hook
-        coinsEarned={0} // TODO: Calculate and pass actual coins earned (via callback/props)
-        onNextLevelPress={handleNextLevelPress}
-      />
-
-      <LossModal
-        isVisible={overlayState.isLossModalVisible} // Use state from props
-        correctAnswer={correctAnswer.join("")} // Pass the correct answer string from props
-        onRetryPress={handleRetryPress}
-      />
-
-      {/* Hint Overlay */}
-      {/* Overlay remains here but triggers external callback and uses overlay state/actions */}
-      <HintOverlay
-        isVisible={overlayState.isHintOverlayVisible} // Use state from props
-        currentCoins={userCoins} // Coins come from props
-        hintCost={hintCost} // Hint cost comes from props
-        onShowHintPress={handleShowHint}
-        onClose={handleCloseHintOverlay}
-      />
-
-      {/* Skip Overlay */}
-      {/* Overlay remains here but triggers external callback and uses overlay state/actions */}
-      <SkipOverlay
-        isVisible={overlayState.isSkipOverlayVisible} // Use state from props
-        currentCoins={userCoins} // Coins come from props
-        skipCost={skipCost} // Skip cost comes from props
-        onConfirmSkipPress={handleConfirmSkip}
-        onClose={handleCloseSkipOverlay}
-      />
-
-      {/* Bottom Navigation Overlays */}
-      {/* These overlays remain in the component for now, using overlay state/actions */}
-      <PlayOverlay
-        isVisible={overlayState.isPlayOverlayVisible} // Use state from props
-        onClose={handleClosePlayOverlay}
-      />
-      <ProfileOverlay
-        isVisible={overlayState.isProfileOverlayVisible} // Use state from props
-        onClose={handleCloseProfileOverlay}
-      />
-      <SettingsOverlay
-        isVisible={overlayState.isSettingsOverlayVisible} // Use state from props
-        onClose={handleCloseSettingsOverlay}
-      />
-    </View>
+    </SafeAreaView>
   );
 };
 

@@ -1,4 +1,4 @@
-# Riddle Wordle Clone
+npx eas-cli build --profile development --platform android
 
 ## Project Overview
 

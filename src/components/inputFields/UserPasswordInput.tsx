@@ -3,17 +3,20 @@ import { AppStrings } from "../../constants/AppStrings";
 import ReusableTextInput from "../shared/ReusableTextInput";
 import PasswordVisibilityIcon from "../icons/PasswordVisibilityIcon";
 import { useState } from "react";
+import Error from "../text/Error";
 
 export default function UserPasswordInput({
   password,
   setPassword,
   label,
   placeholder,
+  errorMessage,
 }: {
   password: string;
   setPassword: (password: string) => void;
   label?: string;
   placeholder?: string;
+  errorMessage?: string | null;
 }) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
@@ -51,6 +54,7 @@ export default function UserPasswordInput({
           <PasswordVisibilityIcon visible={isPasswordVisible} />
         </TouchableOpacity>
       </View>
+      {errorMessage && <Error message={errorMessage} />}
     </View>
   );
 }

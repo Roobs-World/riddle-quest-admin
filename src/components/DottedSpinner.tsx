@@ -10,7 +10,7 @@ export default function PulsingSpinner({
   dotCount = 8, // number of dots around the ring
   dotRadius = 30, // base radius of each dot
   duration = 1000, // total loop time (ms)
-  color = "#555", // dot color
+  color = "#555",
 }) {
   // create one Animated.Value per dot
   const animValues = useRef(

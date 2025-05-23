@@ -76,17 +76,13 @@ export const AuthService = {
    */
   async signInWithGoogle(): Promise<FirebaseAuthTypes.UserCredential> {
     try {
-      // Ensure the device supports Google Play services
       await GoogleSignin.hasPlayServices({
         showPlayServicesUpdateDialog: true,
       });
-      // Obtain the user's ID token
       const { idToken } = await GoogleSignin.signIn();
 
-      // Create a Google credential with the token
       const googleCredential = GoogleAuthProvider.credential(idToken);
 
-      // Sign-in the user with the credential
       const userCredential = await auth().signInWithCredential(
         googleCredential
       );
@@ -104,7 +100,6 @@ export const AuthService = {
    */
   async signInWithFacebook(): Promise<FirebaseAuthTypes.UserCredential> {
     try {
-      // Attempt a login using the Facebook SDK. Show the results of the login
       const result = await LoginManager.logInWithPermissions([
         "public_profile",
         "email",
@@ -114,26 +109,37 @@ export const AuthService = {
         throw new Error("User cancelled the login process");
       }
 
-      // Once signed in, get the access token
       const data = await AccessToken.getCurrentAccessToken();
 
       if (!data) {
         throw new Error("Something went wrong obtaining access token");
       }
 
-      // Create a Firebase credential with the AccessToken
       const facebookCredential = FacebookAuthProvider.credential(
         data.accessToken
       );
 
-      // Sign-in the user with the credential
       const userCredential = await auth().signInWithCredential(
         facebookCredential
       );
       return userCredential;
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error signing in with Facebook:", error);
-      throw error;
+      switch (error.code) {
+        case "auth/account-exists-with-different-credential":
+          throw new Error(
+            "Account exists with different credential. Please use a different login method."
+          );
+        case "auth/auth-popup-closed-by-user":
+          console.log("Facebook auth popup closed by user.");
+          throw new Error("Facebook login cancelled.");
+        case "auth/operation-not-supported-in-this-environment":
+          throw new Error(
+            "Facebook login is not supported in this environment."
+          );
+        default:
+          throw error;
+      }
     }
   },
 

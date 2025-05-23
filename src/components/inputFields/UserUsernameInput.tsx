@@ -1,13 +1,16 @@
 import { View, Text } from "react-native";
 import { AppStrings } from "../../constants/AppStrings";
 import ReusableTextInput from "../shared/ReusableTextInput";
+import Error from "../text/Error";
 
 export default function UserUsernameInput({
   username,
   setUsername,
+  errorMessage,
 }: {
   username: string;
   setUsername: (email: string) => void;
+  errorMessage?: string | null;
 }) {
   return (
     <View className="w-full mb-2">
@@ -25,6 +28,7 @@ export default function UserUsernameInput({
           placeholder={AppStrings.AuthStrings.SignUp.USERNAME_PLACEHOLDER}
         />
       </View>
+      {errorMessage && <Error message={errorMessage} />}
     </View>
   );
 }

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "26666910831",
+    "project_id": "qwordly-6ba44",
+    "storage_bucket": "qwordly-6ba44.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:26666910831:android:38c5f64b1df8df7168799a",
+        "android_client_info": {
+          "package_name": "com.grindhead.qwordly"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "26666910831-20c5akqranakimukl895h7bpdc9pf5c5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBkITuVnEdumFu4MenqKZ7iLDVO3Y3Bo2w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "26666910831-20c5akqranakimukl895h7bpdc9pf5c5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

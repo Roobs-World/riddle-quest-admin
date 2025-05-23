@@ -1,5 +1,5 @@
 import React, { useReducer, useState, useMemo } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import ProgressBar from "../../components/shared/ProgressBar";
 import BackIcon from "../../components/icons/BackIcon";
 import CheckboxIcon from "../../components/icons/CheckboxIcon";
@@ -14,6 +14,10 @@ import UserUsernameInput from "../../components/inputFields/UserUsernameInput";
 import PasswordMatch from "../../components/text/PasswordMatch";
 import Error from "../../components/text/Error";
 import BackButton from "../../components/buttons/BackButton";
+import { AuthService } from "../../services/AuthService";
+import { useAuth } from "../../contexts/AuthContext";
+import { signUpSchema, SignUpFormData } from "../../validation/authSchemas";
+import { ZodError, ZodFormattedError } from "zod";
 
 /**
  * Defines the structure of the password state managed by the reducer.
@@ -97,7 +101,6 @@ function passwordReducer(
  */
 const SignUpScreen = ({ navigation }: { navigation: any }) => {
   const [username, setUsername] = useState("");
-  // Use the reducer for password state
   const [passwordState, dispatch] = useReducer(
     passwordReducer,
     initialPasswordState
@@ -105,151 +108,251 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
   const [email, setEmail] = useState("");
   const [agreedToTerms, setAgreedToTerms] = useState(false);
 
-  const stepColors = useMemo(() => {
-    const totalSteps = 3;
-    const colors = Array(totalSteps).fill("bg-gray-300"); // Default gray color
+  const [usernameError, setUsernameError] = useState<string | null>(null);
+  const [emailError, setEmailError] = useState<string | null>(null);
+  const [authError, setAuthError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-    // Step 1 is complete if username, email, and password have input
-    const isStep1InputComplete =
-      username.length > 0 &&
-      email.length > 0 &&
-      passwordState.password.length > 0;
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [confirmPasswordError, setConfirmPasswordError] = useState<
+    string | null
+  >(null);
 
-    // Step 2 is complete if step 1 input is complete AND passwords match
-    const isStep2InputComplete =
-      isStep1InputComplete && passwordState.passwordsMatch;
+  const { login } = useAuth();
 
-    // Step 3 is complete if step 2 input is complete AND terms are agreed
-    const isStep3Complete = isStep2InputComplete && agreedToTerms;
+  const handleNextPress = async () => {
+    setIsLoading(true);
+    setUsernameError(null);
+    setEmailError(null);
+    setPasswordError(null);
+    setConfirmPasswordError(null);
+    setAuthError(null);
 
-    // Color Step 1: Always orange as it's the current/first step
-    colors[0] = "bg-primary-orange";
+    try {
+      const formData: SignUpFormData = {
+        username: username,
+        email: email,
+        password: passwordState.password,
+        confirmPassword: passwordState.confirmPassword,
+      };
+      signUpSchema.parse(formData);
 
-    // Color Step 2: primary-orange if Step 1 input is complete, otherwise gray
-    if (isStep1InputComplete) {
-      colors[1] = "bg-primary-orange";
-    } else {
-      colors[1] = "bg-gray-300";
+      if (!agreedToTerms) {
+        setAuthError("Please agree to the terms and privacy policy.");
+        setIsLoading(false);
+        return;
+      }
+
+      console.log("Validation successful. Attempting sign up...");
+
+      await AuthService.signUpWithEmail(email, passwordState.password);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const formattedErrors: ZodFormattedError<SignUpFormData> =
+          error.format();
+        if (formattedErrors.username?._errors) {
+          setUsernameError(formattedErrors.username._errors[0]);
+        }
+        if (formattedErrors.email?._errors) {
+          setEmailError(formattedErrors.email._errors[0]);
+        }
+        if (formattedErrors.password?._errors) {
+          setPasswordError(formattedErrors.password._errors[0]);
+        }
+        if (formattedErrors.confirmPassword?._errors) {
+          setConfirmPasswordError(formattedErrors.confirmPassword._errors[0]);
+        }
+      } else if (error && typeof error === "object" && "code" in error) {
+        const firebaseError = error as any;
+        console.error("Sign up error:", firebaseError);
+        switch (firebaseError.code) {
+          case "auth/email-already-in-use":
+            setEmailError(
+              AppStrings.AuthStrings.SignUp.EMAIL_ALREADY_IN_USE_ERROR
+            );
+            break;
+          case "auth/invalid-email":
+            setEmailError(AppStrings.AuthStrings.SignUp.INVALID_EMAIL_ERROR);
+            break;
+          case "auth/operation-not-allowed":
+            setAuthError(
+              AppStrings.AuthStrings.SignUp.OPERATION_NOT_ALLOWED_ERROR
+            );
+            break;
+          case "auth/weak-password":
+            setAuthError(AppStrings.AuthStrings.SignUp.WEAK_PASSWORD_ERROR);
+            break;
+          default:
+            setAuthError(
+              firebaseError.message ||
+                "An unexpected error occurred during sign up."
+            );
+        }
+      } else {
+        console.error("Unexpected sign up error:", error);
+        setAuthError("An unexpected error occurred during sign up.");
+      }
+    } finally {
+      setIsLoading(false);
     }
+  };
 
-    // Color Step 3: primary-orange if all steps are complete, otherwise gray
-    if (isStep3Complete) {
-      colors[2] = "bg-primary-orange";
+  const activeStep = useMemo(() => {
+    if (
+      agreedToTerms &&
+      passwordState.passwordsMatch &&
+      passwordState.isPasswordLongEnough &&
+      username.trim().length > 0 &&
+      email.trim().length > 0
+    ) {
+      return 3;
+    } else if (
+      passwordState.passwordsMatch &&
+      passwordState.isPasswordLongEnough &&
+      username.trim().length > 0 &&
+      email.trim().length > 0
+    ) {
+      return 2;
+    } else if (
+      username.trim().length > 0 &&
+      email.trim().length > 0 &&
+      passwordState.password.length > 0
+    ) {
+      return 1;
     } else {
-      colors[2] = "bg-gray-300";
+      return 0;
     }
+  }, [
+    username,
+    email,
+    passwordState.password,
+    passwordState.passwordsMatch,
+    passwordState.isPasswordLongEnough,
+    agreedToTerms,
+  ]);
 
-    return colors;
-  }, [username, email, passwordState, agreedToTerms]);
+  const isSignUpButtonDisabled = useMemo(() => {
+    const isFormValid = signUpSchema.safeParse({
+      username: username,
+      email: email,
+      password: passwordState.password,
+      confirmPassword: passwordState.confirmPassword,
+    }).success;
+
+    return isLoading || !isFormValid || !agreedToTerms;
+  }, [
+    username,
+    email,
+    passwordState.password,
+    passwordState.confirmPassword,
+    agreedToTerms,
+    isLoading,
+  ]);
 
   return (
     <CustomSafeAreaView>
-      <View className="flex-row items-center mt-8">
-        <BackButton navigation={navigation} />
-
-        <View className="flex-1 self-center">
-          <ProgressBar activeStep={1} totalSteps={3} stepColors={stepColors} />
-        </View>
-      </View>
-
       <AuthLayout>
-        <ScreenTitle title={AppStrings.AuthStrings.SignUp.TITLE} />
-        <UserUsernameInput username={username} setUsername={setUsername} />
+        <View className="flex-row items-center justify-between w-full mb-8">
+          <BackButton navigation={navigation} />
+          <ScreenTitle title={AppStrings.AuthStrings.SignUp.TITLE} />
+          <View className="w-8" />
+        </View>
 
-        <UserEmailInput email={email} setEmail={setEmail} />
+        <ScrollView
+          className="w-full px-4"
+          showsVerticalScrollIndicator={false}
+        >
+          <ProgressBar activeStep={activeStep} totalSteps={3} />
 
-        <UserPasswordInput
-          password={passwordState.password}
-          setPassword={(text) =>
-            dispatch({ type: "SET_PASSWORD", payload: text })
-          }
-        />
-
-        <UserPasswordInput
-          label={AppStrings.AuthStrings.SignUp.CONFIRM_PASSWORD_LABEL}
-          password={passwordState.confirmPassword}
-          placeholder={
-            AppStrings.AuthStrings.SignUp.CONFIRM_PASSWORD_PLACEHOLDER
-          }
-          setPassword={(text) =>
-            dispatch({ type: "SET_CONFIRM_PASSWORD", payload: text })
-          }
-        />
-
-        {/* Display password validation feedback */}
-        {passwordState.password.length > 0 &&
-        !passwordState.isPasswordLongEnough ? (
-          <Error
-            message={
-              AppStrings.AuthStrings.SignUp.PASSWORD_DOES_NOT_LONG_ENOUGH
+          <UserUsernameInput
+            username={username}
+            setUsername={setUsername}
+            errorMessage={usernameError}
+          />
+          <UserEmailInput
+            email={email}
+            setEmail={setEmail}
+            errorMessage={emailError}
+          />
+          <UserPasswordInput
+            password={passwordState.password}
+            setPassword={(text) =>
+              dispatch({ type: "SET_PASSWORD", payload: text })
             }
+            errorMessage={passwordError}
           />
-        ) : passwordState.confirmPasswordHasInput &&
-          !passwordState.passwordsMatch ? (
-          <Error
-            message={AppStrings.AuthStrings.SignUp.PASSWORD_DOES_NOT_MATCH}
+          <UserPasswordInput
+            password={passwordState.confirmPassword}
+            setPassword={(text) =>
+              dispatch({ type: "SET_CONFIRM_PASSWORD", payload: text })
+            }
+            placeholder={
+              AppStrings.AuthStrings.SignUp.CONFIRM_PASSWORD_PLACEHOLDER
+            }
+            label={AppStrings.AuthStrings.SignUp.CONFIRM_PASSWORD_LABEL}
+            errorMessage={confirmPasswordError}
           />
-        ) : passwordState.confirmPasswordHasInput &&
-          passwordState.passwordsMatch ? (
-          <PasswordMatch />
-        ) : null}
 
-        <TouchableOpacity
-          className="flex-row items-center px-8"
-          onPress={() => setAgreedToTerms(!agreedToTerms)}
-        >
-          <CheckboxIcon checked={agreedToTerms} />
-          <Text
-            className="text-sm text-black-400 flex-1"
-            style={{ fontFamily: "PoppinsSemiBold" }}
+          {passwordState.confirmPasswordHasInput && (
+            <PasswordMatch
+              passwordsMatch={passwordState.passwordsMatch}
+              isPasswordLongEnough={passwordState.isPasswordLongEnough}
+            />
+          )}
+
+          <TouchableOpacity
+            className="flex-row items-center my-4"
+            onPress={() => setAgreedToTerms(!agreedToTerms)}
           >
-            {AppStrings.AuthStrings.SignUp.TERMS_AGREEMENT_PART1}
-            <Text
-              className="text-red-500 font-semibold"
-              style={{ fontFamily: "PoppinsSemiBold" }}
-            >
-              {AppStrings.AuthStrings.SignUp.TERMS_USER_AGREEMENT}
-            </Text>{" "}
-            {AppStrings.AuthStrings.SignUp.TERMS_AGREEMENT_PART2}
-            <Text
-              className="text-red-500 font-semibold"
-              style={{ fontFamily: "PoppinsSemiBold" }}
-            >
-              {AppStrings.AuthStrings.SignUp.TERMS_PRIVACY_POLICY}
+            <CheckboxIcon checked={agreedToTerms} />
+            <View className="flex-row flex-wrap ml-2">
+              <Text>{AppStrings.AuthStrings.SignUp.TERMS_AGREEMENT_PART1}</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  console.log("Navigate to terms - Placeholder");
+                  // TODO: Implement actual navigation to terms page
+                }}
+              >
+                <Text className="text-blue-600 underline">
+                  {AppStrings.AuthStrings.SignUp.TERMS_USER_AGREEMENT}
+                </Text>
+              </TouchableOpacity>
+              <Text>{AppStrings.AuthStrings.SignUp.TERMS_AGREEMENT_PART2}</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  console.log("Navigate to privacy policy - Placeholder");
+                  // TODO: Implement actual navigation to privacy policy page
+                }}
+              >
+                <Text className="text-blue-600 underline">
+                  {AppStrings.AuthStrings.SignUp.TERMS_PRIVACY_POLICY}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
+
+          {authError && <Error message={authError} />}
+        </ScrollView>
+
+        <View className="w-full px-4 mt-auto">
+          <WideButton
+            buttonText={AppStrings.AuthStrings.SignUp.NEXT_BUTTON}
+            onPress={handleNextPress}
+            disabled={isSignUpButtonDisabled || isLoading}
+          />
+          <TouchableOpacity
+            onPress={() => navigation.navigate(AppStrings.Navigation.LOGIN)}
+            className="mb-4"
+          >
+            <Text className="text-center text-black">
+              {AppStrings.AuthStrings.SignUp.HAS_ACCOUNT_PROMPT}
+              <Text className="text-blue-600 font-semibold">
+                {AppStrings.AuthStrings.SignUp.LOGIN_NOW}
+              </Text>
             </Text>
-          </Text>
-        </TouchableOpacity>
+          </TouchableOpacity>
+        </View>
       </AuthLayout>
-      <WideButton
-        onPress={() => {
-          // Use the state from the reducer
-          if (passwordState.passwordsMatch) {
-            console.log("Sign up pressed"); // Replace with actual sign up logic
-          } else {
-            console.log("Passwords do not match or confirm password is empty");
-          }
-        }}
-        buttonText={AppStrings.AuthStrings.SignUp.NEXT_BUTTON}
-      />
-
-      <View className="flex-row items-center justify-center mt-4">
-        <Text
-          className="text-sm text-black-400"
-          style={{ fontFamily: "PoppinsSemiBold" }}
-        >
-          {AppStrings.AuthStrings.SignUp.HAS_ACCOUNT_PROMPT}{" "}
-        </Text>
-        <TouchableOpacity
-          onPress={() => navigation.navigate(AppStrings.Navigation.LOGIN)}
-        >
-          <Text
-            className="text-sm text-red-500 font-semibold"
-            style={{ fontFamily: "PoppinsSemiBold" }}
-          >
-            {AppStrings.AuthStrings.SignUp.LOGIN_NOW}
-          </Text>
-        </TouchableOpacity>
-      </View>
     </CustomSafeAreaView>
   );
 };

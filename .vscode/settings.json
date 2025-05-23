@@ -1,3 +1,4 @@
 {
-  "markdownlint.ignore": ["memory-bank/**"]
+  "markdownlint.ignore": ["memory-bank/**"],
+  "java.compile.nullAnalysis.mode": "automatic"
 }

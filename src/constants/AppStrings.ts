@@ -18,6 +18,18 @@ export const AppStrings = {
       NO_ACCOUNT_PROMPT: "Don't have an account? ",
       REGISTER_NOW: "Register Now",
       INVALID_EMAIL_FORMAT_ERROR: "Invalid email format ✗",
+      OR_LOGIN_WITH: "Or login with",
+      CONTINUE_WITH_GOOGLE: "Continue with Google",
+      CONTINUE_WITH_FACEBOOK: "Continue with Facebook",
+      PASSWORD_CANNOT_BE_EMPTY: "Password cannot be empty",
+      USER_NOT_FOUND_ERROR: "User not found. Please check your email.",
+      WRONG_PASSWORD_ERROR: "Incorrect password. Please try again.",
+      USER_DISABLED_ERROR: "This account has been disabled.",
+      ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL:
+        "Account exists with different credential. Please use a different login method.",
+      OPERATION_NOT_SUPPORTED_ERROR:
+        "Operation not supported in this environment.",
+      LOGIN_FAILED_GENERIC: "Login failed. Please check your credentials.",
     },
     SignUp: {
       TITLE: "Create your account",
@@ -39,6 +51,11 @@ export const AppStrings = {
       NEXT_BUTTON: "Next",
       HAS_ACCOUNT_PROMPT: "Do you have an account? ",
       LOGIN_NOW: "Log in now",
+      USERNAME_CANNOT_BE_EMPTY: "Username cannot be empty",
+      EMAIL_ALREADY_IN_USE_ERROR: "This email address is already in use.",
+      INVALID_EMAIL_ERROR: "The email address is invalid.",
+      OPERATION_NOT_ALLOWED_ERROR: "Email and password sign-up is not enabled.",
+      WEAK_PASSWORD_ERROR: "The password is too weak.",
     },
     NewPassword: {
       TITLE: "Set New Password",
@@ -58,5 +75,11 @@ export const AppStrings = {
     FORGOT_PASSWORD: "ForgotPassword",
     NEW_PASSWORD: "NewPassword",
     GAME: "Game",
+  },
+  RewardedAdPrompts: {
+    OUT_OF_GUESSES_PROMPT:
+      "You're out of guesses! Watch an ad to earn some coins?",
+    WATCH_AD_BUTTON: "Watch Ad",
+    NO_THANKS_BUTTON: "No Thanks",
   },
 } as const;

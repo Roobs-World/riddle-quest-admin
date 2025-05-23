@@ -7,8 +7,11 @@
     "target": "ESNext",
     "jsx": "react-native",
     "allowJs": true,
+    "allowImportingTsExtensions": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "types": ["react", "react-native", "jest", "node"],
     "paths": {
       "@images/*": ["./assets/images/*"],
       "@fonts/*": ["./assets/fonts/*"]

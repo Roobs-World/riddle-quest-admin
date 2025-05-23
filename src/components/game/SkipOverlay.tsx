@@ -3,20 +3,20 @@ import { View, Text, Modal, TouchableOpacity } from "react-native";
 
 interface SkipOverlayProps {
   isVisible: boolean;
-  currentCoins: number;
+  userCoins: number;
   skipCost: number;
-  onConfirmSkipPress: () => void;
+  onConfirmSkip: () => void;
   onClose: () => void;
 }
 
 const SkipOverlay: React.FC<SkipOverlayProps> = ({
   isVisible,
-  currentCoins,
+  userCoins,
   skipCost,
-  onConfirmSkipPress,
+  onConfirmSkip,
   onClose,
 }) => {
-  const canAffordSkip = currentCoins >= skipCost;
+  const canAffordSkip = userCoins >= skipCost;
 
   return (
     <Modal
@@ -31,7 +31,7 @@ const SkipOverlay: React.FC<SkipOverlayProps> = ({
             Skip Level?
           </Text>
           <Text className="text-md text-gray-700 mb-4">
-            Cost: {skipCost} Coins. You have: {currentCoins} Coins.
+            Cost: {skipCost} Coins. You have: {userCoins} Coins.
           </Text>
           {!canAffordSkip && (
             <Text className="text-red-500 mb-4">
@@ -40,7 +40,7 @@ const SkipOverlay: React.FC<SkipOverlayProps> = ({
           )}
           <View className="flex-row mt-4">
             <TouchableOpacity
-              onPress={onConfirmSkipPress}
+              onPress={onConfirmSkip}
               className={`px-4 py-2 rounded mr-4 ${
                 canAffordSkip ? "bg-red-500" : "bg-gray-400"
               }`}

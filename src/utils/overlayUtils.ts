@@ -1,4 +1,3 @@
-// Utility function to check if any of the specified overlays or modals are visible
 export const checkAnyOverlayVisible = (
   isVictoryModalVisible: boolean,
   isLossModalVisible: boolean,
@@ -7,7 +6,10 @@ export const checkAnyOverlayVisible = (
   isHomeOverlayVisible: boolean,
   isPlayOverlayVisible: boolean,
   isProfileOverlayVisible: boolean,
-  isSettingsOverlayVisible: boolean
+  isSettingsOverlayVisible: boolean,
+  isInstructionsVisible: boolean,
+  isFullProfileDetailsOverlayVisible: boolean,
+  isCoinShopModalVisible: boolean
 ): boolean => {
   return (
     isVictoryModalVisible ||
@@ -17,6 +19,9 @@ export const checkAnyOverlayVisible = (
     isHomeOverlayVisible ||
     isPlayOverlayVisible ||
     isProfileOverlayVisible ||
-    isSettingsOverlayVisible
+    isSettingsOverlayVisible ||
+    isInstructionsVisible ||
+    isFullProfileDetailsOverlayVisible ||
+    isCoinShopModalVisible
   );
 };
