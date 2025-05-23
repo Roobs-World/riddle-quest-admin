@@ -18,11 +18,14 @@
   - Added `jest.setTimeout(30000)` at the beginning of `iapValidation.it.test.ts` and `gameLogic.it.test.ts`.
   - Added console warnings in test files if `GOOGLE_APPLICATION_CREDENTIALS` is not set.
 - **Reverted Timeout Changes**: The above timeout adjustments did not resolve the issues. All timeout-related changes in `package.json`, `iapValidation.it.test.ts`, and `gameLogic.it.test.ts` have been reverted.
-- **Configure Firebase Functions Tests for Live Environment**: Mandated that all Firebase Functions integration tests run exclusively against the live Firebase project (`qwordly-6ba44`). Emulator-based testing is no longer to be used for these tests.
+- **Configure Firebase Functions Tests for Live Environment using .env**: Mandated that all Firebase Functions integration tests run exclusively against the live Firebase project (`qwordly-6ba44`). Emulator-based testing is no longer used.
+  - Installed `dotenv` package in `firebase-functions`.
   - Updated `iapValidation.it.test.ts` and `gameLogic.it.test.ts` to:
-    - Explicitly initialize `admin.initializeApp({ projectId: "qwordly-6ba44" })`.
-    - Remove any checks or configurations related to `FIRESTORE_EMULATOR_HOST`.
-    - Added prominent error logging if `GOOGLE_APPLICATION_CREDENTIALS` is not set during initialization, as this is critical for live testing.
+    - Load `.env` file (expected to be in `firebase-functions/.env`).
+    - Read `GOOGLE_APPLICATION_CREDENTIALS_PATH` from `process.env`.
+    - Initialize `admin.initializeApp({ credential: admin.credential.cert(serviceAccountPath), projectId: "qwordly-6ba44" })`.
+    - Removed previous direct checks for `GOOGLE_APPLICATION_CREDENTIALS` environment variable, now relying on the path from `.env`.
+    - Added prominent error logging if `GOOGLE_APPLICATION_CREDENTIALS_PATH` is not set or if SDK initialization fails.
 
 ## 2. Recent Changes
 
@@ -65,58 +68,38 @@
   - Strengthened warnings/errors if `GOOGLE_APPLICATION_CREDENTIALS` is not set, emphasizing its necessity.
 - Reverted previous Jest timeout adjustments in `package.json` and test files.
 - The `test` script in `firebase-functions/package.json` remains configured to target the real server (no emulators).
+- **Switched to .env for Service Account Path**:
+  - Installed `dotenv` in `firebase-functions`.
+  - Modified Firebase Admin SDK initialization in `iapValidation.it.test.ts` and `gameLogic.it.test.ts` to load the service account key path from `GOOGLE_APPLICATION_CREDENTIALS_PATH` in `firebase-functions/.env`.
+  - This approach replaces the direct reliance on the `GOOGLE_APPLICATION_CREDENTIALS` environment variable for test file configuration, centralizing it into the `.env` file.
+- Ensured `admin.initializeApp()` is called with `projectId: "qwordly-6ba44"` and the credential from the specified path.
+- Removed all logic pertaining to Firestore emulator detection.
 
 ## 3. Next Steps
 
-- **Run Tests**: Execute `pnpm run test` within the `qwordly` root directory (which should trigger tests in `firebase-functions` via the root `package.json` if configured, or run tests directly in `firebase-functions` if that's the current setup based on previous logs).
-  - **Crucial Prerequisite**: Ensure the `GOOGLE_APPLICATION_CREDENTIALS` environment variable is correctly set in the testing environment, pointing to a valid service account key JSON file with necessary permissions for the `qwordly-6ba44` Firebase project.
-- If tests still fail:
-  - Analyze `console.error` output for credential issues.
-  - If timeouts persist despite correct credentials, investigate Firestore operations in `beforeEach` hooks for `iapValidation.it.test.ts` and `gameLogic.it.test.ts`. These might need optimization or a different strategy for managing test data in a live environment (e.g., more targeted cleanup, using unique collections/documents for test runs to avoid interference).
-- **Expand Test Coverage**: Once integration tests are stable against the live environment, continue expanding unit and integration test coverage for remaining Firebase functions (`adCallbacks.ts`, `openaiService.ts`, etc.).
+- **User Action: Verify `firebase-functions/.env` file**:
+  - Ensure `firebase-functions/.env` exists.
+  - Ensure it contains the line `GOOGLE_APPLICATION_CREDENTIALS_PATH="/actual/path/to/your/qwordly-admin-sdk.json"`, replacing the example path with the correct full path to the service account key file.
+- **Run Tests**: Execute `pnpm run test` (likely from `firebase-functions` directory as per last successful `dotenv` install, or from root `J:\qwordly` if the root `package.json` script handles it).
+  - The tests will now attempt to initialize Firebase Admin SDK using the path specified in `firebase-functions/.env`.
+- If tests fail:
+  - Check console output for errors related to `GOOGLE_APPLICATION_CREDENTIALS_PATH` not being found or SDK initialization failure (the new error logs should make this clear).
+  - Verify the path in `.env` is correct and the JSON file is valid and has necessary permissions.
+  - If timeouts persist with correct credentials, investigate Firestore operations in `beforeEach` hooks.
 
 ## 4. Active Decisions & Considerations
 
-- **TypeScript Compilation Fixed**: Missing test files issue resolved - no further tsconfig changes needed.
-- **Firebase Configuration**: Confirmed production setup is correct - no changes needed.
-- React Native app connects to live Firebase project "qwordly-6ba44" as intended.
-- Emulator configurations were previously isolated to Firebase Functions testing but are now entirely removed from the testing process for Firebase Functions.
-- Prioritizing comprehensive test coverage for all Firebase functions to ensure reliability.
-- Using union types for mock data to maintain type safety while supporting different document types.
-- Implementing deterministic testing patterns using spies for date/time dependent functions.
-- Running integration tests against a live Firebase environment requires careful credential management (`GOOGLE_APPLICATION_CREDENTIALS`).
-- Firestore operations in `beforeEach` (cleanup and setup) can be slow when run against a live environment, leading to hook timeouts if not handled correctly.
-- The decision to switch from emulator-based testing to live-service testing for Firebase Functions needs to be re-evaluated if credential and timeout issues cannot be easily resolved.
-- **Live Testing Only**: All Firebase Functions integration tests will target the live Firebase project (`qwordly-6ba44`). Emulators will not be used for these tests.
-- **Credential Management**: Successful live testing is entirely dependent on the correct setup of `GOOGLE_APPLICATION_CREDENTIALS`.
-- **Test Data Management**: Strategies for creating and cleaning up test data in the live Firestore instance need to be robust to prevent interference and ensure test idempotency. Current `beforeEach` hooks perform deletions; their performance against a live database is a factor.
+- **Live Testing Only with .env Configuration**: All Firebase Functions integration tests target the live Firebase project (`qwordly-6ba44`), with service account credentials managed via `GOOGLE_APPLICATION_CREDENTIALS_PATH` in `firebase-functions/.env`.
+- **Credential Path Management**: The `.env` file in `firebase-functions` is now the source of truth for the service account key file path for tests.
+- **Test Data Management**: Strategies for creating and cleaning up test data in the live Firestore instance remain important.
 
 ## 5. Important Patterns & Preferences
 
-- Firebase configuration properly separated between production (React Native) and testing (Firebase Functions).
-- Adherence to the instructions provided in the user's custom instructions regarding workflow and documentation.
-- Test files correctly use `import { describe, expect, it, jest } from "@jest/globals";`
-- Using union types instead of `any` for better type safety in mocks.
-- Comprehensive edge case testing including error handling, null/undefined data, and missing documents.
-- Proper file naming convention: `.test.ts` for unit tests, `.it.test.ts` for integration tests.
-- Explicit Firebase Admin SDK initialization for the target project ID in test files.
-- Clear error reporting for missing critical environment variables like `GOOGLE_APPLICATION_CREDENTIALS`.
+- Using `dotenv` for managing environment-specific configurations like credential paths in test environments.
+- Explicit Firebase Admin SDK initialization using `admin.credential.cert()` with a file path for tests.
+- Clear error reporting for missing critical configurations.
 
 ## 6. Learnings & Project Insights
 
-- **TypeScript Module Resolution**: Missing test files can cause compilation errors even with proper exclude patterns if compiled output exists in lib directory.
-- **Firebase Setup**: React Native Firebase automatically connects to production services when configured with `google-services.json` - no additional configuration needed.
-- The presence of emulator configurations in Firebase Functions directory does not affect React Native app connectivity.
-- Expo development server (port 8082) is separate from Firebase emulators (ports 9101, 8097, 5101, 4100).
-- Firebase v1 and v2 functions have different call signatures that need to be handled correctly in tests.
-- Mock type safety is crucial for maintaining code quality and catching potential issues early.
-- Deterministic testing using spies for date/time functions provides more reliable test results.
-- Union types provide a good balance between type safety and flexibility for mock data.
-- Cleaning build artifacts (lib directory) is necessary when source files are renamed or removed.
-- Increasing Jest timeouts via `package.json` (`--timeout` flag), hook parameters, or `jest.setTimeout()` might not always resolve hook-specific timeouts, especially if the underlying operations (like live Firestore calls) are consistently slow or failing.
-- Credential errors (`Could not load the default credentials`) are critical and will block any tests interacting with live Firebase services.
-- Switching Firebase Functions tests from emulators to a live environment introduces complexities related to credentials, network latency, and data management.
-- The `firebase-functions-test` library might behave differently or require different configurations when targeting live services versus emulators.
-- `firebase-functions-test` does not automatically initialize `admin.initializeApp()` when running tests against a live project; manual initialization is required.
-- Testing against a live Firebase environment necessitates a shift in focus from emulator configurations to robust credential management and potentially more optimized test data setup/teardown procedures.
-- Explicitly checking and erroring for `GOOGLE_APPLICATION_CREDENTIALS` early can save debugging time.
+- Using `dotenv` allows for more flexible and project-contained configuration of sensitive paths like service account keys, rather than relying solely on globally set environment variables for local testing.
+- `admin.credential.cert()` is the method to use when initializing Firebase Admin SDK with a service account key file path.

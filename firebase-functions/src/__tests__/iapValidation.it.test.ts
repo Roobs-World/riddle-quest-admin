@@ -1,3 +1,6 @@
+import * as dotenv from "dotenv";
+dotenv.config({path: ".env"}); // Load .env file from firebase-functions directory
+
 // / <reference types="jest" />
 
 // Mock in-app-purchase to prevent errors from iapConfig.ts's top-level iap.config() call
@@ -55,20 +58,25 @@ const testEnv = functionsTest();
 
 // Manually initialize Firebase Admin SDK for testing against the live project
 if (!admin.apps.length) {
-  // Check if GOOGLE_APPLICATION_CREDENTIALS is set, as it's required for live testing
-  if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+  const serviceAccountPath = process.env.GOOGLE_APPLICATION_CREDENTIALS_PATH;
+  if (!serviceAccountPath) {
     console.error(
-      "\n🚨 GOOGLE_APPLICATION_CREDENTIALS environment variable is not set. " +
+      "\n🚨 GOOGLE_APPLICATION_CREDENTIALS_PATH environment variable is not set in .env file. " +
         "This is required for tests connecting to live Firebase services. " +
-        "Please set it to the path of your service account key file.🚨\n",
+        "Please set it in firebase-functions/.env to the path of your service account key file.🚨\n",
     );
     // Optionally, throw to prevent tests from running without credentials
-    // throw new Error("GOOGLE_APPLICATION_CREDENTIALS is not set.");
+    // throw new Error("GOOGLE_APPLICATION_CREDENTIALS_PATH is not set in .env.");
   }
-  admin.initializeApp({
-    projectId: FIREBASE_PROJECT_ID,
-    // The SDK will use GOOGLE_APPLICATION_CREDENTIALS if set, for auth
-  });
+  try {
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccountPath as string),
+      projectId: FIREBASE_PROJECT_ID,
+    });
+  } catch (error) {
+    console.error("🚨 Firebase Admin SDK initialization failed. Path used: ", serviceAccountPath, "Error: ", error);
+    throw error; // Re-throw the error to fail the test run if initialization fails
+  }
 }
 
 // const firestore = admin.firestore(); // Moved to beforeAll
@@ -82,10 +90,10 @@ describe("validatePurchase - Integration Tests", () => {
   beforeAll(async () => {
     // Initialize Firestore instance after admin app is initialized.
     firestore = admin.firestore();
-    // Optional: Verify GOOGLE_APPLICATION_CREDENTIALS are set for clarity during test runs
-    if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+    // Optional: Verify GOOGLE_APPLICATION_CREDENTIALS_PATH is set for clarity during test runs
+    if (!process.env.GOOGLE_APPLICATION_CREDENTIALS_PATH) {
       console.warn(
-        "\n⚠️ GOOGLE_APPLICATION_CREDENTIALS is not set. Tests will likely fail to connect to live Firestore. ⚠️\n",
+        "\n⚠️ GOOGLE_APPLICATION_CREDENTIALS_PATH is not set in .env. Tests will likely fail to connect to live Firestore. ⚠️\n",
       );
     }
   });
