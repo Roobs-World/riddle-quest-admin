@@ -2,13 +2,8 @@ import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import {onCall, CallableRequest, HttpsError} from "firebase-functions/v2/https";
 import {getUser, updateUserCoins, updateUserStats, getRiddle} from "./firestoreService";
-import type {Player, PlayerStats} from "./validation/firestoreSchemas";
-import type {
-  SubmitGuessRequestData,
-  SubmitGuessResponseData,
-  FeedbackItem,
-  SubmitGuessAuthContext,
-} from "./validation/requestSchemas";
+import type {Player, PlayerStats, PlayerStatsUpdate, PlayerProgressUpdate} from "./validation/firestoreSchemas";
+import type {FeedbackItem} from "./validation/requestSchemas";
 
 // Type for feedback
 export type FeedbackColor = "green" | "yellow" | "red";
@@ -135,9 +130,7 @@ export async function handleGuessLogic(
       totalGuessesInWins: 0,
     };
 
-    const statsUpdate: {
-      [key in keyof PlayerStats]?: PlayerStats[key] | admin.firestore.FieldValue;
-    } = {
+    const statsUpdate: PlayerStatsUpdate = {
       gamesPlayed: admin.firestore.FieldValue.increment(1),
     };
 
@@ -190,6 +183,14 @@ export async function handleGuessLogic(
     }
 
     await updateUserStats(userId, statsUpdate);
+
+    if (isCorrect && gameMode === "classic") {
+      const userRef = admin.firestore().collection("users").doc(userId);
+      await userRef.update({
+        "progress.classicIndex": admin.firestore.FieldValue.increment(1),
+      });
+      console.log(`User ${userId} solved Classic riddle ${riddleId}. Incremented classicIndex.`);
+    }
 
     return {
       feedback,

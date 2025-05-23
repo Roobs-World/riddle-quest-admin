@@ -248,73 +248,119 @@ describe("validatePurchase - Integration Tests", () => {
 
   describe("Validation Failures and Edge Cases", () => {
     it("should throw if performPlatformValidation fails", async () => {
-      const purchaseToken = "platformValidationFailsToken";
-      const productId = NO_ADS_PRODUCT_ID;
-      (mockPerformPlatformValidation as jest.Mock).mockRejectedValue(
-        new Error("Simulated platform validation network error"), // Test actual error thrown by service
-      );
+      const purchaseToken = "token";
+      const productId = "prod";
+      const platform = "ios";
+      const platformError = new Error("Platform validation failed");
 
-      const data = {purchaseToken, productId, platform: "ios"};
-      // Expect the higher-level handler in validatePurchase to catch this and throw an HttpsError
+      (mockPerformPlatformValidation as jest.Mock).mockRejectedValue(platformError);
+
+      const data = {purchaseToken, productId, platform};
       await expect(wrappedValidatePurchase(constructOnCallRequest(data))).rejects.toThrowError(
         new https.HttpsError("internal", "An unexpected error occurred during purchase processing."),
       );
+      expect(mockPerformPlatformValidation).toHaveBeenCalledWith(platform, purchaseToken, productId);
+      // Verify that subsequent steps were not called
+      expect(mockIapIsValidated).not.toHaveBeenCalled();
+      expect(mockIapGetPurchaseData).not.toHaveBeenCalled();
+      // Note: We cannot easily verify that Firestore/iapReceiptService functions were not called
+      // without mocking them, which we are avoiding in integration tests.
+      // We rely on the function's internal logic and the error being thrown early.
     });
 
-    it("should throw if iap.isValidated returns false", async () => {
-      const purchaseToken = "isValidatedFalseToken";
-      const productId = NO_ADS_PRODUCT_ID;
-      (mockPerformPlatformValidation as jest.Mock).mockResolvedValue({isValid: true}); // Assume platform validation passes
-      mockIapIsValidated.mockReturnValue(false); // This is the case being tested
-      // mockIapGetPurchaseData doesn't need to be set up if isValidated is false
+    it("should throw failed-precondition if iap.isValidated returns false", async () => {
+      const purchaseToken = "token";
+      const productId = "prod";
+      const platform = "ios";
 
-      const data = {purchaseToken, productId, platform: "ios"};
+      (mockPerformPlatformValidation as jest.Mock).mockResolvedValue({}); // Simulate successful platform call
+      mockIapIsValidated.mockReturnValue(false); // Simulate invalid purchase
+
+      const data = {purchaseToken, productId, platform};
       await expect(wrappedValidatePurchase(constructOnCallRequest(data))).rejects.toThrowError(
         new https.HttpsError("failed-precondition", "Purchase validation failed or product ID mismatch."),
       );
+      expect(mockPerformPlatformValidation).toHaveBeenCalledWith(platform, purchaseToken, productId);
+      expect(mockIapIsValidated).toHaveBeenCalledTimes(1);
+      expect(mockIapGetPurchaseData).not.toHaveBeenCalled();
     });
 
-    it("should throw if iap.getPurchaseData returns no matching product", async () => {
-      const purchaseToken = "noMatchingProductToken";
-      const requestedProductId = "requestedProdId";
-      const validatedProductId = "validatedDifferentProdId";
+    it("should throw internal error if iap.getPurchaseData returns null or undefined", async () => {
+      const purchaseToken = "token";
+      const productId = "prod";
+      const platform = "ios";
 
-      (mockPerformPlatformValidation as jest.Mock).mockResolvedValue({isValid: true});
-      mockIapIsValidated.mockReturnValue(true); // Assume validation and isValidated pass
-      mockIapGetPurchaseData.mockReturnValue([{productId: validatedProductId, transactionId: purchaseToken}]); // Data with mismatching product ID
-
-      const data = {purchaseToken, productId: requestedProductId, platform: "ios"};
-      await expect(wrappedValidatePurchase(constructOnCallRequest(data))).rejects.toThrowError(
-        new https.HttpsError("failed-precondition", "Purchase validation failed or product ID mismatch."),
-      );
-    });
-
-    it("should throw if iap.getPurchaseData returns an empty array", async () => {
-      const purchaseToken = "emptyPurchaseDataToken";
-      const productId = NO_ADS_PRODUCT_ID;
-
-      (mockPerformPlatformValidation as jest.Mock).mockResolvedValue({isValid: true});
+      (mockPerformPlatformValidation as jest.Mock).mockResolvedValue({});
       mockIapIsValidated.mockReturnValue(true);
-      mockIapGetPurchaseData.mockReturnValue([]); // Empty array is the case being tested
+      mockIapGetPurchaseData.mockReturnValue(null); // Simulate invalid data
 
-      const data = {purchaseToken, productId, platform: "ios"};
+      const data = {purchaseToken, productId, platform};
       await expect(wrappedValidatePurchase(constructOnCallRequest(data))).rejects.toThrowError(
         new https.HttpsError("internal", "Could not extract purchase data from validation response."),
       );
+      expect(mockIapGetPurchaseData).toHaveBeenCalledTimes(1);
     });
 
-    it("should throw if backend product config is missing for a validated coin pack ID", async () => {
-      const purchaseToken = "missingBackendConfigToken";
-      const unknownProductId = "com.qwordly.coins.unknown_pack";
+    it("should throw internal error if iap.getPurchaseData returns non-array", async () => {
+      const purchaseToken = "token";
+      const productId = "prod";
+      const platform = "ios";
 
-      (mockPerformPlatformValidation as jest.Mock).mockResolvedValue({isValid: true});
+      (mockPerformPlatformValidation as jest.Mock).mockResolvedValue({});
       mockIapIsValidated.mockReturnValue(true);
-      mockIapGetPurchaseData.mockReturnValue([{productId: unknownProductId, transactionId: purchaseToken}]); // Validated but unknown product
+      mockIapGetPurchaseData.mockReturnValue({}); // Simulate non-array data
 
-      const data = {purchaseToken, productId: unknownProductId, platform: "android"};
+      const data = {purchaseToken, productId, platform};
+      await expect(wrappedValidatePurchase(constructOnCallRequest(data))).rejects.toThrowError(
+        new https.HttpsError("internal", "Could not extract purchase data from validation response."),
+      );
+      expect(mockIapGetPurchaseData).toHaveBeenCalledTimes(1);
+    });
+
+    it("should throw failed-precondition if product ID from receipt does not match requested product ID", async () => {
+      const purchaseToken = "token";
+      const requestedProductId = "requested.prod.id";
+      const receiptProductId = "different.prod.id"; // Mismatched product ID
+      const platform = "ios";
+
+      (mockPerformPlatformValidation as jest.Mock).mockResolvedValue({});
+      mockIapIsValidated.mockReturnValue(true);
+      mockIapGetPurchaseData.mockReturnValue([{productId: receiptProductId, transactionId: purchaseToken}]);
+
+      const data = {purchaseToken, productId: requestedProductId, platform};
+      await expect(wrappedValidatePurchase(constructOnCallRequest(data))).rejects.toThrowError(
+        new https.HttpsError("failed-precondition", "Purchase validation failed or product ID mismatch."),
+      );
+      expect(mockIapGetPurchaseData).toHaveBeenCalledTimes(1);
+    });
+
+    it("should throw internal error if backend product config is missing for coin pack", async () => {
+      const purchaseToken = "token";
+      // Use a product ID that exists in the receipt but not in BACKEND_COIN_PRODUCT_DETAILS
+      const unknownProductId = "com.qwordly.coins.unknown";
+      const platform = "android";
+
+      (mockPerformPlatformValidation as jest.Mock).mockResolvedValue({});
+      mockIapIsValidated.mockReturnValue(true);
+      mockIapGetPurchaseData.mockReturnValue([
+        {productId: unknownProductId, quantity: 1, transactionId: purchaseToken},
+      ]);
+
+      const data = {purchaseToken, productId: unknownProductId, platform};
+
+      // We need to mock iapConfig or use isolateModules here to control BACKEND_COIN_PRODUCT_DETAILS,
+      // but since this is an integration test, we are relying on the actual iapConfig.ts.
+      // We need to ensure that iapConfig.ts *does not* contain unknownProductId.
+      // The current iapConfig.ts should not contain this, so the test should pass without mocking iapConfig itself.
+
       await expect(wrappedValidatePurchase(constructOnCallRequest(data))).rejects.toThrowError(
         new https.HttpsError("internal", "Product configuration error on backend."),
       );
+      expect(mockIapGetPurchaseData).toHaveBeenCalledTimes(1);
     });
+
+    // TODO: Add tests for failures in Firestore/iapReceiptService operations if necessary
+    // (e.g., errors during updateUserCoins, markPurchaseTokenAsProcessed).
+    // These might require more advanced Firestore mocking within the test or ensuring emulator errors are handled correctly.
   });
 });

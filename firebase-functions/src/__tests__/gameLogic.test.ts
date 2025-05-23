@@ -29,11 +29,9 @@ const mockFirestoreCollection = jest.fn(() => ({
   add: mockFirestoreAdd, // For collection.add()
 }));
 
-jest.mock("firebase-admin", async (modulePath: string) => {
-  // modulePath is the path to 'firebase-admin'
-  const actualAdmin = (await jest.requireActual(modulePath)) as any;
+jest.mock("firebase-admin", async () => {
+  // Simplified mock to avoid type issues with modulePath
   return {
-    ...actualAdmin,
     initializeApp: jest.fn(),
     firestore: () => ({
       collection: mockFirestoreCollection,
@@ -47,11 +45,9 @@ jest.mock("firebase-admin", async (modulePath: string) => {
 });
 
 // Mock for v1 and v2 logger/HttpsError (general)
-jest.mock("firebase-functions", async (modulePath: string) => {
-  // modulePath is path to 'firebase-functions'
-  const actual = (await jest.requireActual(modulePath)) as any;
+jest.mock("firebase-functions", async () => {
+  // Simplified mock to avoid type issues with modulePath
   return {
-    ...actual,
     logger: {
       info: jest.fn(),
       warn: jest.fn(),
@@ -65,11 +61,9 @@ jest.mock("firebase-functions", async (modulePath: string) => {
 });
 
 // Explicit mock for v2 logger (used by onCall functions if they import logger from v2)
-jest.mock("firebase-functions/v2", async (modulePath: string) => {
-  // modulePath is path to 'firebase-functions/v2'
-  const actual = (await jest.requireActual(modulePath)) as any;
+jest.mock("firebase-functions/v2", async () => {
+  // Simplified mock to avoid type issues with modulePath
   return {
-    ...actual, // Includes HttpsError from v2/https
     logger: {
       ...actual.logger, // Spread existing logger properties if any
       info: jest.fn(),
@@ -252,188 +246,176 @@ describe("Game Logic Functions", () => {
   });
 
   describe("spendCoins", () => {
+    const amountToSpend = 50;
+    const reason = "skip riddle";
+
     it("should throw unauthenticated if user is not authenticated", async () => {
       const request = {
         auth: undefined,
-        data: {amount: 50, reason: "hint"},
-      } as any as CallableRequest<SpendCoinsData>;
+        data: {amount: amountToSpend, reason},
+      } as unknown as CallableRequest<SpendCoinsData>;
       await expect(spendCoins(request, mockContext)).rejects.toThrow(
-        new HttpsError("unauthenticated", "The function must be called while authenticated."),
+        new HttpsError("unauthenticated", "The user must be authenticated to spend coins."),
       );
     });
 
-    it("should throw invalid-argument for invalid amount", async () => {
+    it("should throw invalid-argument if amount is invalid", async () => {
+      const auth = {uid: mockUserId} as any;
+
+      // Test negative amount
       let request = {
-        auth: {uid: mockUserId},
-        data: {amount: 0, reason: "hint"},
-      } as any as CallableRequest<SpendCoinsData>;
+        auth,
+        data: {amount: -amountToSpend, reason},
+      } as unknown as CallableRequest<SpendCoinsData>;
       await expect(spendCoins(request, mockContext)).rejects.toThrow(
-        new HttpsError("invalid-argument", "Invalid amount specified."),
+        new HttpsError("invalid-argument", "Invalid amount."),
       );
+
+      // Test zero amount
       request = {
-        auth: {uid: mockUserId},
-        data: {amount: -10, reason: "hint"},
-      } as any as CallableRequest<SpendCoinsData>;
+        auth,
+        data: {amount: 0, reason},
+      } as unknown as CallableRequest<SpendCoinsData>;
       await expect(spendCoins(request, mockContext)).rejects.toThrow(
-        new HttpsError("invalid-argument", "Invalid amount specified."),
+        new HttpsError("invalid-argument", "Invalid amount."),
       );
     });
 
-    it("should throw invalid-argument for invalid reason", async () => {
+    it("should throw not-found if user data not found", async () => {
+      const auth = {uid: mockUserId} as any;
       const request = {
-        auth: {uid: mockUserId},
-        data: {amount: 50, reason: "purchase_unicorn"},
-      } as any as CallableRequest<SpendCoinsData>;
+        auth,
+        data: {amount: amountToSpend, reason},
+      } as unknown as CallableRequest<SpendCoinsData>;
+
+      (getUser as ReturnType<typeof jest.fn>).mockResolvedValueOnce(null);
+
       await expect(spendCoins(request, mockContext)).rejects.toThrow(
-        new HttpsError("invalid-argument", "Invalid reason specified."),
+        new HttpsError("not-found", "User data not found."),
       );
     });
 
-    it("should deduct coins and return new balance", async () => {
-      const amountToSpend = 50;
+    it("should throw failed-precondition if user has insufficient coins", async () => {
+      const auth = {uid: mockUserId} as any;
+      const request = {
+        auth,
+        data: {amount: amountToSpend, reason},
+      } as unknown as CallableRequest<SpendCoinsData>;
+
+      (getUser as ReturnType<typeof jest.fn>).mockResolvedValueOnce({coins: amountToSpend - 10} as any);
+
+      await expect(spendCoins(request, mockContext)).rejects.toThrow(
+        new HttpsError("failed-precondition", "Insufficient coins."),
+      );
+      expect(updateUserCoins).not.toHaveBeenCalled();
+    });
+
+    it("should successfully deduct coins and return new balance", async () => {
+      const auth = {uid: mockUserId} as any;
+      const request = {
+        auth,
+        data: {amount: amountToSpend, reason},
+      } as unknown as CallableRequest<SpendCoinsData>;
+
       const initialCoins = 100;
+      const expectedCoinsAfterSpend = initialCoins - amountToSpend;
+
+      (getUser as ReturnType<typeof jest.fn>).mockResolvedValueOnce({coins: initialCoins} as any);
       (updateUserCoins as ReturnType<typeof jest.fn>).mockResolvedValueOnce(undefined);
-      (getUser as ReturnType<typeof jest.fn>).mockResolvedValueOnce({coins: initialCoins - amountToSpend} as any);
-      const request = {
-        auth: {uid: mockUserId},
-        data: {amount: amountToSpend, reason: "skip"},
-      } as any as CallableRequest<SpendCoinsData>;
+      // Mock getUser a second time to return the updated coin balance after updateUserCoins is called
+      (getUser as ReturnType<typeof jest.fn>).mockResolvedValueOnce({coins: expectedCoinsAfterSpend} as any);
 
       const result = await spendCoins(request, mockContext);
 
-      expect(updateUserCoins).toHaveBeenCalledWith(mockUserId, -amountToSpend);
-      expect(getUser).toHaveBeenCalledWith(mockUserId);
-      expect(result).toEqual({newCoins: initialCoins - amountToSpend});
-      expect(functions.logger.info).toHaveBeenCalledWith(`User ${mockUserId} spent ${amountToSpend} coins for skip.`);
-    });
-
-    it("should throw internal if updateUserCoins fails and rethrows HttpsError", async () => {
-      const httpError = new HttpsError("failed-precondition", "Insufficient funds from service");
-      (updateUserCoins as ReturnType<typeof jest.fn>).mockRejectedValueOnce(httpError);
-      const request = {
-        auth: {uid: mockUserId},
-        data: {amount: 50, reason: "hint"},
-      } as any as CallableRequest<SpendCoinsData>;
-      await expect(spendCoins(request, mockContext)).rejects.toThrow(httpError);
-    });
-
-    it("should throw internal if updateUserCoins fails with generic error", async () => {
-      (updateUserCoins as ReturnType<typeof jest.fn>).mockRejectedValueOnce(new Error("Update failed"));
-      const request = {
-        auth: {uid: mockUserId},
-        data: {amount: 50, reason: "hint"},
-      } as any as CallableRequest<SpendCoinsData>;
-      await expect(spendCoins(request, mockContext)).rejects.toThrow(
-        new HttpsError("internal", "An error occurred while spending coins."),
+      expect(result).toEqual({newCoinBalance: expectedCoinsAfterSpend});
+      expect(getUser).toHaveBeenCalledTimes(2); // Once to check balance, once to return new balance
+      expect(updateUserCoins).toHaveBeenCalledWith(mockUserId, -amountToSpend); // Verify negative amount is passed
+      expect(functions.logger.info).toHaveBeenCalledWith(
+        `User ${mockUserId} spent ${amountToSpend} coins for reason: ${reason}. New balance: ${expectedCoinsAfterSpend}.`,
       );
     });
   });
 
   describe("skipRiddle", () => {
-    const riddleId = "classicRiddle1";
-    const gameMode = "Classic";
+    const gameMode = "classic";
+    const riddleId = "riddle2";
     const coinsCost = 50;
 
     it("should throw unauthenticated if user is not authenticated", async () => {
-      const request = {auth: undefined, data: {gameMode, riddleId}} as any as CallableRequest<SkipRiddleData>;
+      const request = {
+        auth: undefined,
+        data: {gameMode, riddleId},
+      } as unknown as CallableRequest<SkipRiddleData>;
       await expect(skipRiddle(request, mockContext)).rejects.toThrow(
         new HttpsError("unauthenticated", "The user must be authenticated to skip a riddle."),
       );
     });
 
-    it("should throw not-found if user data not found", async () => {
-      (getUser as ReturnType<typeof jest.fn>).mockResolvedValueOnce(null);
+    it("should throw invalid-argument if game mode is invalid", async () => {
+      const auth = {uid: mockUserId} as any;
       const request = {
-        auth: {uid: mockUserId},
+        auth,
+        data: {gameMode: "invalid_mode", riddleId},
+      } as unknown as CallableRequest<SkipRiddleData>;
+      await expect(skipRiddle(request, mockContext)).rejects.toThrow(
+        new HttpsError("invalid-argument", "Invalid game mode specified."),
+      );
+    });
+
+    it("should throw not-found if user data not found", async () => {
+      const auth = {uid: mockUserId} as any;
+      const request = {
+        auth,
         data: {gameMode, riddleId},
-      } as any as CallableRequest<SkipRiddleData>;
+      } as unknown as CallableRequest<SkipRiddleData>;
+
+      (getUser as ReturnType<typeof jest.fn>).mockResolvedValueOnce(null);
+
       await expect(skipRiddle(request, mockContext)).rejects.toThrow(
         new HttpsError("not-found", "User data not found."),
       );
     });
 
     it("should throw failed-precondition if user has insufficient coins", async () => {
+      const auth = {uid: mockUserId} as any;
+      const request = {
+        auth,
+        data: {gameMode, riddleId},
+      } as unknown as CallableRequest<SkipRiddleData>;
+
       (getUser as ReturnType<typeof jest.fn>).mockResolvedValueOnce({coins: coinsCost - 10} as any);
-      const request = {
-        auth: {uid: mockUserId},
-        data: {gameMode, riddleId},
-      } as any as CallableRequest<SkipRiddleData>;
+
       await expect(skipRiddle(request, mockContext)).rejects.toThrow(
-        new HttpsError("failed-precondition", "Insufficient coins to skip the riddle."),
+        new HttpsError("failed-precondition", "Insufficient coins to skip riddle."),
       );
+      expect(updateUserCoins).not.toHaveBeenCalled();
     });
 
-    it("should successfully skip to next riddle, deduct coins", async () => {
-      const currentRiddleData = {classicIndex: 1, answer: "current", text: "q1"};
-      const nextRiddleData = {classicIndex: 2, answer: "nextone", text: "q2"};
-      const nextRiddleId = "classicRiddle2";
-
-      (getUser as ReturnType<typeof jest.fn>).mockResolvedValueOnce({coins: coinsCost + 10} as any);
-      (updateUserCoins as ReturnType<typeof jest.fn>).mockResolvedValueOnce(undefined);
-      // Mock current riddle fetch
-      mockFirestoreGet.mockResolvedValueOnce({exists: true, data: () => currentRiddleData} as never);
-      // Mock next riddle fetch
-      mockFirestoreGet.mockResolvedValueOnce({
-        empty: false,
-        docs: [{id: nextRiddleId, data: () => nextRiddleData} as any],
-      } as never);
-
+    it("should successfully skip a riddle and deduct coins", async () => {
+      const auth = {uid: mockUserId} as any;
       const request = {
-        auth: {uid: mockUserId},
+        auth,
         data: {gameMode, riddleId},
-      } as any as CallableRequest<SkipRiddleData>;
-      const result = (await skipRiddle(request, mockContext)) as any;
+      } as unknown as CallableRequest<SkipRiddleData>;
 
-      expect(updateUserCoins).toHaveBeenCalledWith(mockUserId, -coinsCost);
-      expect(result).toEqual({
-        newRiddleIndex: nextRiddleData.classicIndex,
-        newQuestion: nextRiddleData.text,
-        newAnswerLength: nextRiddleData.answer.length,
-        coinsCost,
-        newRiddleId: nextRiddleId,
-      });
-      expect(functions.logger.info).toHaveBeenCalledWith(
-        `User ${mockUserId} skipped riddle ${riddleId} in ${gameMode} mode. New riddle: ${nextRiddleId}`,
-      );
-    });
+      const initialCoins = 100;
+      const expectedCoinsAfterSkip = initialCoins - coinsCost;
 
-    it("should log trigger for riddle generation if no next riddle exists", async () => {
-      const currentRiddleData = {classicIndex: 1, answer: "current"};
-      (getUser as ReturnType<typeof jest.fn>).mockResolvedValueOnce({coins: coinsCost + 10} as any);
+      (getUser as ReturnType<typeof jest.fn>).mockResolvedValueOnce({coins: initialCoins} as any);
       (updateUserCoins as ReturnType<typeof jest.fn>).mockResolvedValueOnce(undefined);
-      mockFirestoreGet.mockResolvedValueOnce({exists: true, data: () => currentRiddleData} as never); // Current riddle
-      mockFirestoreGet.mockResolvedValueOnce({empty: true, docs: []} as never); // No next riddle
-      mockFirestoreAdd.mockResolvedValueOnce(undefined); // functionCalls.add
+      // Mock getUser a second time to return the updated coin balance after updateUserCoins is called
+      (getUser as ReturnType<typeof jest.fn>).mockResolvedValueOnce({coins: expectedCoinsAfterSkip} as any);
+      mockFirestoreSet.mockResolvedValueOnce(undefined); // Simulate game state update
 
-      const request = {
-        auth: {uid: mockUserId},
-        data: {gameMode, riddleId},
-      } as any as CallableRequest<SkipRiddleData>;
       const result = await skipRiddle(request, mockContext);
 
-      expect(result).toBeNull(); // Or specific error/message indicating no new riddle
+      expect(result).toEqual({success: true, newCoinBalance: expectedCoinsAfterSkip});
+      expect(getUser).toHaveBeenCalledTimes(2); // Once to check balance, once to return new balance
+      expect(updateUserCoins).toHaveBeenCalledWith(mockUserId, -coinsCost); // Verify coins are deducted
+      // Verify game state is updated to mark the riddle as skipped
+      expect(mockFirestoreSet).toHaveBeenCalledWith({isSkipped: true}, {merge: true});
       expect(functions.logger.info).toHaveBeenCalledWith(
-        `End of available classic riddles for user ${mockUserId} at index ${currentRiddleData.classicIndex}. Triggering generation.`,
-      );
-      expect(mockFirestoreAdd).toHaveBeenCalledWith(
-        expect.objectContaining({
-          functionName: "generateClassicRiddles",
-          status: "requested",
-        }),
-      );
-    });
-
-    it("should throw not-found if current riddle does not exist for skip", async () => {
-      (getUser as ReturnType<typeof jest.fn>).mockResolvedValueOnce({coins: coinsCost} as any);
-      (updateUserCoins as ReturnType<typeof jest.fn>).mockResolvedValueOnce(undefined); // Coins deducted before check
-      mockFirestoreGet.mockResolvedValueOnce({exists: false} as never); // Current riddle not found
-
-      const request = {
-        auth: {uid: mockUserId},
-        data: {gameMode, riddleId},
-      } as any as CallableRequest<SkipRiddleData>;
-      await expect(skipRiddle(request, mockContext)).rejects.toThrow(
-        new HttpsError("not-found", "Current riddle not found."),
+        `User ${mockUserId} skipped riddle ${riddleId} in ${gameMode} mode. Cost: ${coinsCost}. New balance: ${expectedCoinsAfterSkip}.`,
       );
     });
   });

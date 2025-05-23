@@ -5,12 +5,23 @@
 ### Firebase Functions
 
 - **Test Infrastructure**: Jest testing framework properly configured with TypeScript support
+- **Unit Test Coverage**: Comprehensive unit tests added/reviewed for:
+  - `firestoreService.ts`
+  - `dailyChallenge.ts`
+  - `gameLogic.ts`
+  - `generateRiddles.ts` (with added error handling tests)
+  - `iapValidation.ts` (unit test file created with initial tests)
+  - `adCallbacks.ts`
+  - `openaiService.ts`
 - **Core Services**:
   - `firestoreService.ts` - User data management functions (getUser, updateUserCoins, updateUserStats, updateUserProfile, getRiddle)
   - `gameLogic.ts` - Game mechanics (getHint, spendCoins, skipRiddle)
   - `openaiService.ts` - AI riddle generation service
   - `riddleGeneration.ts` - Riddle generation orchestration
   - `iapConfig.ts` - In-app purchase configuration
+  - `submitGuessLogic.ts` - Includes server-side guess validation, feedback, user stats/coin updates, and Classic mode level unlocking upon solve.
+  - `profile.ts` - Includes function to reset stats and update avatar URL.
+  - `dailyScheduler.ts` - Scheduled function to set the daily challenge.
 - **Linting Progress**: Reduced linting errors from 136 to 70 by:
   - Fixed all spacing/formatting issues in `firestoreService.test.ts`
   - Replaced `any` types with proper TypeScript types in `firestoreService.ts`, `gameLogic.ts`, `iapConfig.ts`, and `openaiService.ts`
@@ -23,6 +34,7 @@
   - Fixed complex mock type issues in `submitGuessLogic.test.ts`
   - Cleaned up `riddleGeneration.test.ts` and `index.test.ts` with proper types
   - Replaced `require()` with dynamic `import()` statements
+  - Resolved `@jest/globals` type resolution issue after switching to pnpm and removing `typeRoots`.
 
 ### React Native App
 
@@ -34,25 +46,19 @@
 
 ## 2. What's Left to Build
 
-### Remaining Linting Issues (70 errors)
+### Remaining Linting Issues (Still need to verify the exact number after recent changes)
 
-- Complex mock type issues in remaining test files (profile.test.ts, generateRiddles.test.ts)
-- Some test files with sophisticated mocking setups
-- Mock function compatibility issues in edge cases
-
-### Next Steps
-
-1. Focus on simpler linting fixes first (quotes, unused variables, basic type issues)
-2. Address complex mock typing issues in test files
-3. Ensure all imports use proper `.js` extensions
-4. Replace remaining `any` types with proper TypeScript types
+- Complex mock type issues in some test files (`generateRiddles.test.ts`, `iapValidation.test.ts`)
+- Potential lingering formatting/linting issues.
 
 ### Firebase Functions
 
 - **Missing Functions**:
-  - Complete IAP validation logic
+  - Complete IAP validation logic (core logic is in `iapValidation.ts`, but related functions might be missing)
   - Daily challenge scheduling
-  - User profile management endpoints
+- **Needs Completion/Verification:**
+  - Complete IAP validation logic (core logic is in `iapValidation.ts`, but related functions might be missing) - Primarily requires more comprehensive testing.
+  - Full server-side implementation and testing of Advertising (rewarded ad callbacks, coin granting) - Primarily requires more comprehensive testing.
 
 ### React Native App
 
@@ -68,23 +74,19 @@
 - **API Integration**: Connect React Native app to Firebase Functions
 - **Real-time Updates**: Firestore listeners for live data
 - **Error Handling**: Comprehensive error handling and user feedback
-- **Testing**: End-to-end testing between app and backend
+- **Testing**: Implement comprehensive integration tests and end-to-end tests.
 
 ## 3. Current Status
 
-**Phase**: Backend Development - Linting and Code Quality
-**Next Priority**: Complete Firebase Functions linting fixes and implement missing core functions
-**Blockers**: Complex type compatibility issues in game logic functions
+**Phase**: Backend Development - Test Coverage Expansion and Missing Functionality Implementation
+**Next Priority**: Implement integration and end-to-end tests. Address remaining linting/typing issues in test files.
+**Blockers**: Complex type compatibility issues in some test mocks.
 
 ## 4. Known Issues
 
-- Critical Linter error: `Cannot find module '@jest/globals' or its corresponding type declarations.` in all Jest test files within `firebase-functions`.
-- Secondary TypeScript errors: "Expected 2 arguments, but got 1." in several Jest test files calling Firebase v2 `onCall` functions (likely masked by or related to the primary Jest globals issue).
-- Formatting Linter errors: Line endings (CRLF vs LF), spacing issues in multiple test files.
+- Complex mock type issues in some test files (`generateRiddles.test.ts`, `iapValidation.test.ts`) causing linter errors.
+- Potential lingering formatting Linter errors.
 - IAP Warning: "Missing Apple Shared Secret or Google Service Account environment variables for IAP validation" noted in previous deployment output (separate from current test fixes).
-- Some test files have complex mocking setups that require careful type handling
-- Mock functions need proper typing to avoid `never` type assignments
-- Dynamic imports in tests need proper async handling
 
 ## 5. Evolution of Project Decisions
 
@@ -92,6 +94,11 @@
 - Moved from `any` types to proper TypeScript typing for better type safety
 - Standardized on double quotes for string literals
 - Implemented proper error handling with typed catch blocks
+- Standardized Jest imports and mock usage.
+- Improved test type safety by using union types for mock data instead of `any`.
+- Enhanced test coverage for Firebase functions with edge cases and error handling.
+- Added deterministic date testing using spies for better test reliability.
+- Switched to pnpm for package management, which resolved `@jest/globals` type resolution issues.
 
 ## Recent Achievements
 
@@ -99,36 +106,10 @@
 - ✅ Improved type safety by removing `any` types from core service files
 - ✅ Cleaned up unused imports and functions
 - ✅ Maintained existing functionality while improving code quality
-
-- Firebase project setup.
-- `package.json` scripts for linting, building, testing, and deploying Firebase Functions.
-- General structure of `sheetsService.test.ts` (Vitest-based) for testing main functions is okay.
-- Unit tests in `sheetsService.test.ts` related to environment variable checks have been addressed.
-- Added comprehensive unit tests for `sheetsService.ts` including JWT initialization with private key formatting.
-- Added unit tests for `getRiddle` function in `firestoreService.test.ts` with comprehensive coverage.
-- Improved `dailyChallenge.test.ts` with more deterministic date testing for `setCompletedDailyChallenge`.
-
-## 2. What's Left to Build/Verify
-
-- Continue expanding unit test coverage for other Firebase functions.
-- Verification that all tests pass once the setup is stable.
-- Adding comprehensive tests for all Firebase functions once the setup is stable.
-
-## 3. Current Status
-
-- Successfully added unit tests for multiple Firebase functions.
-- Enhanced existing test suites with better coverage and type safety.
-- Fixed TypeScript issues in test files by improving mock types and function call patterns.
-- Test files now use proper union types for mock data to handle different document types.
-
-## 4. Known Issues
-
-- Minor linter warnings in `dailyChallenge.test.ts` related to spread types and require() usage (non-blocking).
-- IAP Warning: "Missing Apple Shared Secret or Google Service Account environment variables for IAP validation" noted in previous deployment output (separate from current test fixes).
-
-## 5. Evolution of Project Decisions
-
-- Standardized Jest imports and mock usage (preferring `jest` over `vi` for Jest tests, and using `import { ... } from "@jest/globals";`).
-- Improved test type safety by using union types for mock data instead of `any`.
-- Enhanced test coverage for Firebase functions with edge cases and error handling.
-- Added deterministic date testing using spies for better test reliability.
+- ✅ Added unit tests for `generateRiddles.ts` error handling.
+- ✅ Created unit test file for `iapValidation.ts` with initial tests.
+- ✅ Resolved `@jest/globals` type resolution issue.
+- ✅ Implemented Classic mode level unlocking upon solving a riddle.
+- ✅ Added function to update user avatar URL.
+- ✅ Addressed linter errors related to Firebase FieldValue type compatibility and scheduled function context typing (using `any` temporarily).
+- ✅ Implemented daily challenge scheduling (basic random selection and storage).

@@ -1,6 +1,6 @@
 import * as admin from "firebase-admin";
 // Removed unused import: import { getFirestore, FieldValue, Timestamp } from "firebase-admin/firestore";
-import type {Player, PlayerStats} from "./validation/firestoreSchemas.js";
+import type {Player, PlayerStats, PlayerStatsUpdate} from "./validation/firestoreSchemas.js";
 // Removed import for non-existent models.js: import type { GameState } from "./models.js";
 import * as functions from "firebase-functions";
 
@@ -125,7 +125,7 @@ export async function updateUserCoins(
  */
 export async function updateUserStats(
   userId: string,
-  statsUpdate: Partial<PlayerStats>,
+  statsUpdate: PlayerStatsUpdate,
   transaction?: admin.firestore.Transaction,
 ): Promise<void> {
   const userRef = getDb().collection("users").doc(userId);

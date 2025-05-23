@@ -1,4 +1,5 @@
 import {z} from "zod";
+import * as admin from "firebase-admin";
 
 export const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -62,6 +63,14 @@ export const PlayerSchema = z.object({
 });
 
 export type Player = z.infer<typeof PlayerSchema>;
+
+export type PlayerStatsUpdate = {
+  [key in keyof PlayerStats]?: PlayerStats[key] | admin.firestore.FieldValue;
+};
+
+export type PlayerProgressUpdate = {
+  [key in keyof PlayerProgress]?: PlayerProgress[key] | admin.firestore.FieldValue;
+};
 
 export const FirestoreRiddleSchema = z.object({
   riddleId: z.string(),

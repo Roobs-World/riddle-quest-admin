@@ -17,15 +17,15 @@ jest.mock("firebase-functions", () => ({
   }),
 }));
 
-// Mock sheetsService
+// Mock sheetsService with explicit return types
 jest.mock("../sheetsService.js", () => ({
-  getExistingRiddles: jest.fn(),
-  appendRiddlesToSheet: jest.fn(),
+  getExistingRiddles: jest.fn<() => Promise<{questions: string[]; answers: string[]}>>(),
+  appendRiddlesToSheet: jest.fn<() => Promise<void>>(),
 }));
 
-// Mock openaiService
+// Mock openaiService with explicit return types
 jest.mock("../openaiService.js", () => ({
-  generateUniqueRiddle: jest.fn(),
+  generateUniqueRiddle: jest.fn<() => Promise<[string, string] | null>>(),
 }));
 
 describe("generateAndAppendRiddles", () => {
@@ -51,13 +51,15 @@ describe("generateAndAppendRiddles", () => {
 
   test("should generate and append the specified number of unique riddles", async () => {
     const numberOfRiddles = 2;
-    (sheetsService.getExistingRiddles as jest.Mock).mockResolvedValue({
-      questions: ["existing question 1"],
-      answers: ["existing answer 1"],
-    });
+    (sheetsService.getExistingRiddles as jest.Mock).mockResolvedValue(
+      Promise.resolve({
+        questions: ["existing question 1"],
+        answers: ["existing answer 1"],
+      }),
+    );
     (openaiService.generateUniqueRiddle as jest.Mock)
-      .mockResolvedValueOnce(["new question 1", "new answer 1"])
-      .mockResolvedValueOnce(["new question 2", "new answer 2"]);
+      .mockResolvedValueOnce(Promise.resolve(["new question 1", "new answer 1"]))
+      .mockResolvedValueOnce(Promise.resolve(["new question 2", "new answer 2"]));
 
     await generateAndAppendRiddles(numberOfRiddles);
 
@@ -71,17 +73,19 @@ describe("generateAndAppendRiddles", () => {
 
   test("should handle duplicate riddles and retry generation", async () => {
     const numberOfRiddles = 1;
-    (sheetsService.getExistingRiddles as jest.Mock).mockResolvedValue({
-      questions: ["existing q"],
-      answers: ["existing a"],
-    });
+    (sheetsService.getExistingRiddles as jest.Mock).mockResolvedValue(
+      Promise.resolve({
+        questions: ["existing q"],
+        answers: ["existing a"],
+      }),
+    );
     (openaiService.generateUniqueRiddle as jest.Mock)
-      .mockResolvedValueOnce(["existing q", "existing a"]) // First attempt is a duplicate
-      .mockResolvedValueOnce(["new unique q", "new unique a"]); // Second attempt is unique
+      .mockResolvedValueOnce(Promise.resolve(["existing q", "existing a"]))
+      .mockResolvedValueOnce(Promise.resolve(["new unique q", "new unique a"]));
 
     await generateAndAppendRiddles(numberOfRiddles);
 
-    expect(openaiService.generateUniqueRiddle).toHaveBeenCalledTimes(2); // Called twice
+    expect(openaiService.generateUniqueRiddle).toHaveBeenCalledTimes(2);
     expect(sheetsService.appendRiddlesToSheet).toHaveBeenCalledWith([
       {question: "new unique q", answer: "new unique a"},
     ]);
@@ -89,43 +93,46 @@ describe("generateAndAppendRiddles", () => {
 
   test("should throw an error if MAX_GENERATION_ATTEMPTS is reached", async () => {
     const numberOfRiddles = 1;
-    (sheetsService.getExistingRiddles as jest.Mock).mockResolvedValue({
-      questions: ["q1"],
-      answers: ["a1"],
-    });
-    // Consistently return duplicates
-    (openaiService.generateUniqueRiddle as jest.Mock).mockResolvedValue(["q1", "a1"]);
+    (sheetsService.getExistingRiddles as jest.Mock).mockResolvedValue(
+      Promise.resolve({
+        questions: ["q1"],
+        answers: ["a1"],
+      }),
+    );
+    (openaiService.generateUniqueRiddle as jest.Mock).mockResolvedValue(Promise.resolve(["q1", "a1"]));
 
     await expect(generateAndAppendRiddles(numberOfRiddles)).rejects.toThrow(
       "Failed to generate enough unique riddles due to excessive duplicates or generation failures.",
     );
-    expect(openaiService.generateUniqueRiddle).toHaveBeenCalledTimes(numberOfRiddles * 5); // MAX_GENERATION_ATTEMPTS
+    expect(openaiService.generateUniqueRiddle).toHaveBeenCalledTimes(numberOfRiddles * 5);
     expect(sheetsService.appendRiddlesToSheet).not.toHaveBeenCalled();
   });
 
   test("should not append if no new unique riddles were generated but MAX_ATTEMPTS not reached", async () => {
     const numberOfRiddles = 1;
-    (sheetsService.getExistingRiddles as jest.Mock).mockResolvedValue({
-      questions: ["q1"],
-      answers: ["a1"],
-    });
-    // Simulate generation failure by returning null/undefined
-    (openaiService.generateUniqueRiddle as jest.Mock).mockResolvedValue(null);
+    (sheetsService.getExistingRiddles as jest.Mock).mockResolvedValue(
+      Promise.resolve({
+        questions: ["q1"],
+        answers: ["a1"],
+      }),
+    );
+    (openaiService.generateUniqueRiddle as jest.Mock).mockResolvedValue(Promise.resolve(null));
 
     await generateAndAppendRiddles(numberOfRiddles);
 
-    // MAX_GENERATION_ATTEMPTS, because it will keep trying if generateUniqueRiddle returns null
     expect(openaiService.generateUniqueRiddle).toHaveBeenCalledTimes(numberOfRiddles * 5);
     expect(sheetsService.appendRiddlesToSheet).not.toHaveBeenCalled();
   });
 
   test("should correctly handle empty existing riddles", async () => {
     const numberOfRiddles = 1;
-    (sheetsService.getExistingRiddles as jest.Mock).mockResolvedValue({
-      questions: [],
-      answers: [],
-    });
-    (openaiService.generateUniqueRiddle as jest.Mock).mockResolvedValueOnce(["new q", "new a"]);
+    (sheetsService.getExistingRiddles as jest.Mock).mockResolvedValue(
+      Promise.resolve({
+        questions: [],
+        answers: [],
+      }),
+    );
+    (openaiService.generateUniqueRiddle as jest.Mock).mockResolvedValueOnce(Promise.resolve(["new q", "new a"]));
 
     await generateAndAppendRiddles(numberOfRiddles);
 
@@ -135,13 +142,15 @@ describe("generateAndAppendRiddles", () => {
 
   test("should handle case insensitivity for duplicate checking", async () => {
     const numberOfRiddles = 1;
-    (sheetsService.getExistingRiddles as jest.Mock).mockResolvedValue({
-      questions: ["Existing Question"],
-      answers: ["Existing Answer"],
-    });
+    (sheetsService.getExistingRiddles as jest.Mock).mockResolvedValue(
+      Promise.resolve({
+        questions: ["Existing Question"],
+        answers: ["Existing Answer"],
+      }),
+    );
     (openaiService.generateUniqueRiddle as jest.Mock)
-      .mockResolvedValueOnce(["existing question", "existing answer"]) // Duplicate (case-insensitive)
-      .mockResolvedValueOnce(["New Unique Q", "New Unique A"]); // Unique
+      .mockResolvedValueOnce(Promise.resolve(["existing question", "existing answer"]))
+      .mockResolvedValueOnce(Promise.resolve(["New Unique Q", "New Unique A"]));
 
     await generateAndAppendRiddles(numberOfRiddles);
 
@@ -149,6 +158,44 @@ describe("generateAndAppendRiddles", () => {
     expect(sheetsService.appendRiddlesToSheet).toHaveBeenCalledWith([
       {question: "New Unique Q", answer: "New Unique A"},
     ]);
+  });
+
+  test("should throw an error if getExistingRiddles fails", async () => {
+    const numberOfRiddles = 1;
+    const sheetsError = new Error("Failed to get existing riddles");
+    (sheetsService.getExistingRiddles as jest.Mock).mockRejectedValue(sheetsError);
+
+    await expect(generateAndAppendRiddles(numberOfRiddles)).rejects.toThrow(sheetsError);
+    expect(sheetsService.getExistingRiddles).toHaveBeenCalledWith("test-spreadsheet-id", "classic!A:B");
+    expect(openaiService.generateUniqueRiddle).not.toHaveBeenCalled();
+    expect(sheetsService.appendRiddlesToSheet).not.toHaveBeenCalled();
+  });
+
+  test("should throw an error if generateUniqueRiddle consistently throws errors", async () => {
+    const numberOfRiddles = 1;
+    const openaiError = new Error("OpenAI API error");
+    (sheetsService.getExistingRiddles as jest.Mock).mockResolvedValue(Promise.resolve({questions: [], answers: []}));
+    (openaiService.generateUniqueRiddle as jest.Mock).mockRejectedValue(Promise.reject(openaiError));
+
+    await expect(generateAndAppendRiddles(numberOfRiddles)).rejects.toThrow(
+      "Failed to generate enough unique riddles due to excessive duplicates or generation failures.",
+    );
+    expect(sheetsService.getExistingRiddles).toHaveBeenCalledTimes(1);
+    expect(openaiService.generateUniqueRiddle).toHaveBeenCalledTimes(numberOfRiddles * 5);
+    expect(sheetsService.appendRiddlesToSheet).not.toHaveBeenCalled();
+  });
+
+  test("should throw an error if appendRiddlesToSheet fails", async () => {
+    const numberOfRiddles = 1;
+    const appendError = new Error("Failed to append riddles");
+    (sheetsService.getExistingRiddles as jest.Mock).mockResolvedValue(Promise.resolve({questions: [], answers: []}));
+    (openaiService.generateUniqueRiddle as jest.Mock).mockResolvedValueOnce(Promise.resolve(["new q", "new a"]));
+    (sheetsService.appendRiddlesToSheet as jest.Mock).mockRejectedValue(Promise.reject(appendError));
+
+    await expect(generateAndAppendRiddles(numberOfRiddles)).rejects.toThrow(appendError);
+    expect(sheetsService.getExistingRiddles).toHaveBeenCalledTimes(1);
+    expect(openaiService.generateUniqueRiddle).toHaveBeenCalledTimes(1);
+    expect(sheetsService.appendRiddlesToSheet).toHaveBeenCalledWith([{question: "new q", answer: "new a"}]);
   });
 });
 
