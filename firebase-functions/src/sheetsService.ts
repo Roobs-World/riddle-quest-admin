@@ -1,30 +1,46 @@
 import {sheets_v4 as sheetsV4, google} from "googleapis";
 import * as functions from "firebase-functions";
 
-// Use Firebase function configuration for sensitive information
-const sheetsConfig = functions.config().sheets;
+// Lazy initialization variables
+let sheetsClient: sheetsV4.Sheets | null = null;
+let spreadsheetId: string | null = null;
 
-const spreadsheetId = sheetsConfig?.spreadsheet_id;
-const clientEmail = sheetsConfig?.google_sheets_client_email;
-const privateKey = sheetsConfig?.google_sheets_private_key;
+/**
+ * Initializes the Google Sheets client if not already initialized.
+ * @returns {sheetsV4.Sheets} The initialized Google Sheets client.
+ */
+function initializeSheetsClient(): sheetsV4.Sheets {
+  if (sheetsClient && spreadsheetId) {
+    return sheetsClient;
+  }
 
-// Ensure required environment variables are set
-if (!spreadsheetId || !clientEmail || !privateKey) {
-  throw new Error("Missing required environment variables for Google Sheets.");
+  // Use Firebase function configuration for sensitive information
+  const sheetsConfig = functions.config().sheets;
+
+  spreadsheetId = sheetsConfig?.spreadsheet_id;
+  const clientEmail = sheetsConfig?.google_sheets_client_email;
+  const privateKey = sheetsConfig?.google_sheets_private_key;
+
+  // Ensure required environment variables are set
+  if (!spreadsheetId || !clientEmail || !privateKey) {
+    throw new Error("Missing required environment variables for Google Sheets.");
+  }
+
+  const jwtClient = new google.auth.JWT(
+    clientEmail,
+    undefined,
+    // Replace \n with actual newline characters
+    privateKey.replace(/\\n/g, "\n"),
+    ["https://www.googleapis.com/auth/spreadsheets"],
+  );
+
+  sheetsClient = google.sheets({
+    version: "v4",
+    auth: jwtClient,
+  });
+
+  return sheetsClient;
 }
-
-const jwtClient = new google.auth.JWT(
-  clientEmail,
-  undefined,
-  // Replace \n with actual newline characters
-  privateKey.replace(/\\n/g, "\n"),
-  ["https://www.googleapis.com/auth/spreadsheets"],
-);
-
-const sheets: sheetsV4.Sheets = google.sheets({
-  version: "v4",
-  auth: jwtClient,
-});
 
 /**
  * Fetches existing riddles from the Google Sheet.
@@ -34,12 +50,14 @@ const sheets: sheetsV4.Sheets = google.sheets({
  * with an object containing arrays of questions and answers.
  */
 export async function getExistingRiddles(
-  spreadsheetId: string,
+  spreadsheetIdParam: string,
   range: string,
 ): Promise<{questions: string[]; answers: string[]}> {
+  const sheets = initializeSheetsClient();
+
   try {
     const response = await sheets.spreadsheets.values.get({
-      spreadsheetId,
+      spreadsheetId: spreadsheetIdParam,
       range,
     });
 
@@ -65,6 +83,8 @@ export async function getExistingRiddles(
  * @returns {Promise<void>} A promise that resolves when the riddles are appended.
  */
 export async function appendRiddlesToSheet(riddles: {question: string; answer: string}[]): Promise<void> {
+  const sheets = initializeSheetsClient();
+
   const values = riddles.map((riddle) => [riddle.question, riddle.answer]);
 
   const resource = {
@@ -72,8 +92,6 @@ export async function appendRiddlesToSheet(riddles: {question: string; answer: s
   };
 
   try {
-    // Use non-null assertion for spreadsheetId as it's checked on
-    // initialization
     const result = await sheets.spreadsheets.values.append({
       spreadsheetId: spreadsheetId!,
       range: "classic!A:B", // TODO: Make range configurable if needed
@@ -103,11 +121,11 @@ export async function getRiddleDataFromSheetGoogleApis(
   gameMode: string,
   index: number,
 ): Promise<[string, string] | null> {
+  const sheets = initializeSheetsClient();
+
   const sheetRange = `${gameMode}!A${index}:B${index}`; // e.g., 'Classic!A2:B2'
 
   try {
-    // Use non-null assertion for spreadsheetId as it's checked on
-    // initialization
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: spreadsheetId!,
       range: sheetRange,

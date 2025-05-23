@@ -1,14 +1,20 @@
 module.exports = {
+  rootDir: ".",
+  roots: ["<rootDir>"],
   preset: "ts-jest",
   testEnvironment: "node",
   testMatch: ["**/__tests__/**/*.test.ts"],
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
   transform: {
-    "^.+.tsx?$": [
+    "^.+\\.(t|j)sx?$": [
       "ts-jest",
       {
         tsconfig: "tsconfig.json",
-        isolatedModules: false,
+        babelConfig: {
+          babelrc: false,
+          configFile: false,
+          presets: [["@babel/preset-env", {targets: {node: "current"}}]],
+        },
       },
     ],
   },
@@ -20,7 +26,8 @@ module.exports = {
   // information should be collected
   collectCoverageFrom: ["src/**/*.{ts,tsx}", "!src/**/*.d.ts"],
   moduleNameMapper: {
-    // Handle .js extensions in imports from .ts files
-    "^(../.*|./.*).js$": "$1",
+    "^(\.{1,2}/.*)\.js$": "$1.ts",
   },
+  transformIgnorePatterns: ["/node_modules/(?!(@firebase/.*|firebase/.*|other-esm-package)/)"],
+  testTimeout: 30000,
 };

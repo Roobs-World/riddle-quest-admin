@@ -65,12 +65,12 @@ jest.spyOn(admin, "auth").mockReturnValue(mockAuth as unknown as admin.auth.Auth
 
 // Mocking firebase-functions config and logger
 jest.mock("firebase-functions", () => {
-  const original = jest.requireActual("firebase-functions") as Record<string, unknown>;
-  const originalV1Module = jest.requireActual("firebase-functions/v1") as any; // Cast to any
+  const original = jest.requireActual("firebase-functions") as typeof import("firebase-functions");
+  const originalV1Module = jest.requireActual("firebase-functions/v1") as any; // Cast to any for simplicity
   const originalV1Https = originalV1Module.https; // Access https property
 
   return {
-    ...original, // Spread original module to keep non-mocked parts
+    ...original,
     config: () => ({
       sheets: {
         spreadsheet_id: "test-spreadsheet-id",
@@ -89,7 +89,6 @@ jest.mock("firebase-functions", () => {
         interstitial_ad_unit_id: "test-interstitial-id",
         rewarded_ad_unit_id: "test-rewarded-id",
       },
-      // Add any other config your functions might need
     }),
     logger: {
       info: jest.fn(),
@@ -97,22 +96,62 @@ jest.mock("firebase-functions", () => {
       warn: jest.fn(),
       debug: jest.fn(),
     },
-    // Mock any other firebase-functions exports your index file might use directly
-    // For example, if you use https.HttpsError:
     https: {
-      ...(original.https as Record<string, unknown> | undefined), // Allow undefined if not present
-      HttpsError: originalV1Https.HttpsError, // Use the actual HttpsError for the mock implementation
+      ...(original.https as object),
+      HttpsError: originalV1Https.HttpsError,
     },
     params: {
-      // Mock params if it's accessed
       defineString: jest.fn((name: string) => ({value: () => `mock-${name}`})),
       defineSecret: jest.fn((name: string) => ({value: () => `mock-secret-${name}`})),
     },
   };
 });
 
+// Add mock for firebase-functions/v2
+jest.mock("firebase-functions/v2", () => {
+  const actualV2 = jest.requireActual("firebase-functions/v2") as typeof import("firebase-functions/v2");
+  return {
+    ...actualV2, // Spread actual v2 to keep non-mocked parts
+    logger: {
+      // Mock logger if imported from v2 directly
+      ...(actualV2.logger as object),
+      info: jest.fn(),
+      error: jest.fn(),
+      warn: jest.fn(),
+      debug: jest.fn(),
+    },
+    https: {
+      // Mock https if imported from v2 directly
+      ...(actualV2.https as object),
+      onCall: jest.fn((optsOrHandler: any, handler?: any) => {
+        if (typeof optsOrHandler === "function") {
+          return jest.fn(optsOrHandler); // If only handler is provided
+        }
+        return jest.fn(handler); // If opts and handler are provided
+      }),
+      HttpsError: actualV2.https.HttpsError, // v2 HttpsError
+    },
+    params: {
+      // Mock params if imported from v2
+      ...(actualV2.params as object),
+      defineString: jest.fn((name: string) => ({value: () => `mock-${name}`})),
+      defineSecret: jest.fn((name: string) => ({value: () => `mock-secret-${name}`})),
+    },
+    // Mock other v2 services if necessary (e.g., eventarc, tasks)
+  };
+});
+
+// Mock sheetsService to prevent its config loading logic during index.test.ts
+jest.mock("../sheetsService", () => ({
+  // Add mocks for any functions from sheetsService that might be called during index.ts import, if any.
+  // For now, an empty mock might suffice if index.ts doesn't directly invoke sheetsService functions at the module level.
+  getGoogleSheetsClient: jest.fn(),
+  getSpreadsheetData: jest.fn(),
+  appendSpreadsheetData: jest.fn(),
+}));
+
 // Import the index file AFTER all mocks are set up
-import * as myFunctions from "../index.js";
+import * as myFunctions from "../index";
 
 describe("Firebase Functions", () => {
   let testEnv: ReturnType<typeof functionsTest>;

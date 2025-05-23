@@ -6,78 +6,93 @@ import path from "path";
 const appleSharedSecret = functions.config().apple?.shared_secret;
 let finalGoogleServiceAccountForIap: Record<string, unknown> | undefined;
 
-const isTestEnvironment = process.env.FUNCTIONS_EMULATOR === "true" || process.env.NODE_ENV === "test";
+// Check for emulator environment (set by `firebase emulators:exec`)
+// and specific test environment variable set by our test script.
+const isEmulatorRunning = process.env.FUNCTIONS_EMULATOR === "true";
+const isJestTestEnv = process.env.IS_FIREBASE_FUNCTIONS_TEST === "true"; // From jest:with-env
+const isTestEnvironment = isEmulatorRunning && isJestTestEnv;
+
 const serviceAccountPathFromEnv = process.env.GOOGLE_SERVICE_ACCOUNT_JSON_PATH;
 
+console.error(
+  `[iapConfig Pre-check] isEmulatorRunning: ${isEmulatorRunning}, isJestTestEnv: ${isJestTestEnv}, isTestEnvironment: ${isTestEnvironment}`,
+);
+console.error(`[iapConfig Pre-check] serviceAccountPathFromEnv: ${serviceAccountPathFromEnv}`);
+console.error(`[iapConfig Pre-check] GOOGLE_APPLICATION_CREDENTIALS: ${process.env.GOOGLE_APPLICATION_CREDENTIALS}`);
+
 if (isTestEnvironment && serviceAccountPathFromEnv) {
+  console.error(`[iapConfig Test Env] Attempting to load service account from: ${serviceAccountPathFromEnv}`);
   try {
-    // Attempt to resolve the path relative to the functions directory if it's a relative path
-    const fullPath = path.resolve(__dirname, "..", serviceAccountPathFromEnv); // Assumes iapConfig.ts is in src/
+    // Assume serviceAccountPathFromEnv is relative to the CWD of the test script,
+    // which should be the 'firebase-functions' directory.
+    const fullPath = path.resolve(process.cwd(), serviceAccountPathFromEnv);
+    console.error(`[iapConfig Test Env] Resolved fullPath: ${fullPath}`);
+    console.error(`[iapConfig Test Env] Current CWD (process.cwd()): ${process.cwd()}`);
 
     if (fs.existsSync(fullPath)) {
       const fileContents = fs.readFileSync(fullPath, "utf8");
       finalGoogleServiceAccountForIap = JSON.parse(fileContents);
-      functions.logger.info(
-        `Successfully loaded service account from ${fullPath} in test environment via GOOGLE_SERVICE_ACCOUNT_JSON_PATH.`,
+      console.error(
+        `[iapConfig Test Env] Successfully loaded and parsed service account from ${fullPath}. Client email: ${finalGoogleServiceAccountForIap?.client_email}`,
       );
     } else {
-      // Fallback if path.resolve doesn't work as expected or if path is truly wrong
-      const directPath = serviceAccountPathFromEnv; // Try direct path
-      if (fs.existsSync(directPath)) {
-        const fileContents = fs.readFileSync(directPath, "utf8");
-        finalGoogleServiceAccountForIap = JSON.parse(fileContents);
-        functions.logger.info(
-          `Successfully loaded service account from ${directPath} (direct path) in test environment via GOOGLE_SERVICE_ACCOUNT_JSON_PATH.`,
-        );
-      } else {
-        functions.logger.error(
-          `Service account file not found at resolved path: ${fullPath} or direct path: ${directPath} (from env var ${serviceAccountPathFromEnv}).`,
-        );
-        finalGoogleServiceAccountForIap = {
-          clientEmail: "test-file-not-found@example.com",
-          privateKey: "-----BEGIN PRIVATE KEY-----\nTEST_KEY_FILE_NOT_FOUND\n-----END PRIVATE KEY-----\n",
-        };
-        functions.logger.warn("Using placeholder Google config due to file not found in test env.");
-      }
+      console.error(
+        `[iapConfig Test Env] Service account file NOT FOUND at resolved path: ${fullPath}. GOOGLE_SERVICE_ACCOUNT_JSON_PATH was ${serviceAccountPathFromEnv}. CWD: ${process.cwd()}`,
+      );
+      // Use a clearly identifiable placeholder that would cause iap.config to fail if clientEmail is essential
+      finalGoogleServiceAccountForIap = {
+        // No clientEmail here to force a failure if this path is taken
+        privateKey: "-----BEGIN PRIVATE KEY-----\\nTEST_KEY_FILE_NOT_FOUND\\n-----END PRIVATE KEY-----\\n",
+      };
+      console.error("[iapConfig Test Env] Using placeholder Google config (file not found).");
     }
   } catch (e: unknown) {
     const errorMessage = e instanceof Error ? e.message : "Unknown error";
-    functions.logger.error(
-      `Error reading/parsing service account from GOOGLE_SERVICE_ACCOUNT_JSON_PATH (${serviceAccountPathFromEnv}) in test: ${errorMessage}`,
+    console.error(
+      `[iapConfig Test Env] Error reading/parsing service account from GOOGLE_SERVICE_ACCOUNT_JSON_PATH (${serviceAccountPathFromEnv}): ${errorMessage}`,
     );
     finalGoogleServiceAccountForIap = {
-      clientEmail: "test-parse-error@example.com",
-      privateKey: "-----BEGIN PRIVATE KEY-----\nTEST_KEY_PARSE_ERROR\n-----END PRIVATE KEY-----\n",
+      // No clientEmail here
+      privateKey: "-----BEGIN PRIVATE KEY-----\\nTEST_KEY_PARSE_ERROR\\n-----END PRIVATE KEY-----\\n",
     };
-    functions.logger.warn("Using placeholder Google config due to error reading/parsing file in test env.");
+    console.error("[iapConfig Test Env] Using placeholder Google config (error reading/parsing).");
   }
-} else {
-  // In non-test environments, or if GOOGLE_SERVICE_ACCOUNT_JSON_PATH is not set, rely on functions.config()
+} else if (!isTestEnvironment) {
+  // In non-test environments, rely on functions.config()
+  console.error("[iapConfig Prod Env] Using functions.config() for service account.");
   finalGoogleServiceAccountForIap = functions.config().google?.service_account;
   if (!finalGoogleServiceAccountForIap?.client_email || !finalGoogleServiceAccountForIap?.private_key) {
-    functions.logger.warn(
-      "Google Service Account details missing/incomplete from functions.config(). Attempting to use placeholder for testing if applicable.",
+    console.error(
+      "[iapConfig Prod Env] Google Service Account details missing/incomplete from functions.config(). This is a critical error for production.",
     );
-    if (isTestEnvironment) {
-      finalGoogleServiceAccountForIap = {
-        clientEmail: "test-no-path-or-config-issue@example.com",
-        privateKey: "-----BEGIN PRIVATE KEY-----\nTEST_KEY_NO_PATH_OR_CONFIG_ISSUE\n-----END PRIVATE KEY-----\n",
-      };
-      functions.logger.warn(
-        "Using placeholder Google config in test env (GOOGLE_SERVICE_ACCOUNT_JSON_PATH not set or functions.config() load failed).",
-      );
-    }
+    // For production, this is a critical failure.
+    // For safety, do not proceed with a faulty config.
+    finalGoogleServiceAccountForIap = undefined;
+  } else {
+    console.error("[iapConfig Prod Env] Loaded service account from functions.config().");
   }
+} else {
+  // This case means isTestEnvironment is true BUT serviceAccountPathFromEnv is NOT set.
+  console.error(
+    "[iapConfig Test Env] Test environment detected, but GOOGLE_SERVICE_ACCOUNT_JSON_PATH is not set. This is an error for tests requiring IAP.",
+  );
+  finalGoogleServiceAccountForIap = {
+    // No clientEmail
+    privateKey: "-----BEGIN PRIVATE KEY-----\\nTEST_KEY_NO_ENV_PATH\\n-----END PRIVATE KEY-----\\n",
+  };
+  console.error("[iapConfig Test Env] Using placeholder due to missing GOOGLE_SERVICE_ACCOUNT_JSON_PATH.");
 }
 
 if (!appleSharedSecret && isTestEnvironment) {
-  // Only warn if missing in test env, as it's optional
-  functions.logger.warn("Missing Apple Shared Secret. IAP validation for Apple might not be fully testable.");
+  console.error(
+    "[iapConfig Shared] Missing Apple Shared Secret. IAP validation for Apple might not be fully testable.",
+  );
 }
 
 let processedPrivateKey = finalGoogleServiceAccountForIap?.privateKey;
 if (processedPrivateKey && typeof processedPrivateKey === "string") {
-  processedPrivateKey = processedPrivateKey.replace(/\\n/g, "\n");
+  processedPrivateKey = processedPrivateKey.replace(/\\\\n/g, "\\n");
+  console.error("[iapConfig Shared] Processed private key (replaced \\\\n with \\n).");
 }
 
 const iapGoogleCredentials =
@@ -88,32 +103,41 @@ const iapGoogleCredentials =
       }
     : undefined;
 
-if (isTestEnvironment && !iapGoogleCredentials && finalGoogleServiceAccountForIap) {
-  // This condition means we parsed/got a service account, but it was still incomplete for iapGoogleCredentials
-  functions.logger.warn(
-    "Constructed iapGoogleCredentials object is undefined in test environment despite having a service account object. This implies missing client_email or private_key in the parsed/retrieved object.",
+if (!iapGoogleCredentials) {
+  console.error(
+    "[iapConfig Shared] iapGoogleCredentials object is UNDEFINED. This will likely cause iap.config to fail for Google Play.",
   );
-} else if (isTestEnvironment && !finalGoogleServiceAccountForIap) {
-  functions.logger.warn(
-    "finalGoogleServiceAccountForIap was undefined before constructing iapGoogleCredentials. No dummy file loaded and no config from functions.config().",
+  if (finalGoogleServiceAccountForIap) {
+    console.error(
+      `[iapConfig Shared] Details of finalGoogleServiceAccountForIap: client_email exists? ${!!finalGoogleServiceAccountForIap.client_email}, privateKey exists? ${!!finalGoogleServiceAccountForIap.privateKey}`,
+    );
+  } else {
+    console.error("[iapConfig Shared] finalGoogleServiceAccountForIap was also undefined.");
+  }
+} else {
+  console.error(
+    `[iapConfig Shared] iapGoogleCredentials CONSTRUCTED. Client Email: ${iapGoogleCredentials.clientEmail}`,
   );
 }
 
 try {
+  console.error("[iapConfig Shared] Attempting to call iap.config(). Test mode: ", isTestEnvironment);
   iap.config({
-    test: isTestEnvironment,
-    applePassword: appleSharedSecret,
-    googleServiceAccount: iapGoogleCredentials,
+    test: isTestEnvironment, // Important for tests
+    applePassword: appleSharedSecret, // from functions.config() or undefined
+    googleServiceAccount: iapGoogleCredentials, // from file or functions.config() or undefined
+    // verbose: true, // some iap libraries support this
   });
-  if (isTestEnvironment) {
-    functions.logger.info("iap.config() called successfully in iapConfig.ts (test environment).");
-  }
+  console.error(
+    "[iapConfig Shared] iap.config() called successfully. This is unexpected if there were prior credential errors.",
+  );
 } catch (error: unknown) {
   const errorMessage = error instanceof Error ? error.message : "Unknown error";
-  functions.logger.error(
-    `Error calling iap.config() in iapConfig.ts: ${errorMessage}. This might be acceptable in a test environment if in-app-purchase is mocked for tests.`,
+  console.error(
+    `[iapConfig Shared] CRITICAL: Error calling iap.config(): ${errorMessage}. Stack: ${error instanceof Error ? error.stack : "N/A"}`,
   );
-  // Do not re-throw; allow module to load so tests can use mocks.
+  // Do not re-throw in a library file; allow the importing module to handle or fail.
+  // However, this error is the likely source of "Failed to load function definition".
 }
 
 // Product Definitions

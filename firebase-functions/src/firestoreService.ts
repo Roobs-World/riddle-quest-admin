@@ -1,6 +1,6 @@
 import * as admin from "firebase-admin";
 // Removed unused import: import { getFirestore, FieldValue, Timestamp } from "firebase-admin/firestore";
-import type {Player, PlayerStats, PlayerStatsUpdate} from "./validation/firestoreSchemas.js";
+import type {Player, PlayerStatsUpdate} from "./validation/firestoreSchemas.js";
 // Removed import for non-existent models.js: import type { GameState } from "./models.js";
 import * as functions from "firebase-functions";
 

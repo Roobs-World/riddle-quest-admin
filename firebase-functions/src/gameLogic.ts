@@ -1,6 +1,6 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import {onCall} from "firebase-functions/v2/https";
+import {onCall, HttpsError as HttpsErrorV2, CallableRequest as CallableRequestV2} from "firebase-functions/v2/https";
 import {updateUserCoins, getUser} from "./firestoreService.js";
 import type {FirestoreRiddle} from "./validation/firestoreSchemas.js";
 
@@ -19,11 +19,11 @@ import type {FirestoreRiddle} from "./validation/firestoreSchemas.js";
 export const getHint = onCall(
   {},
   async (
-    request: functions.https.CallableRequest<{currentAttempt: string[]; riddleId: string}>,
+    request: CallableRequestV2<{currentAttempt: string[]; riddleId: string}>,
   ): Promise<{revealedLetter: string; index: number; coinsCost: number} | null> => {
     try {
       if (!request.auth) {
-        throw new functions.https.HttpsError("unauthenticated", "The user must be authenticated to get a hint.");
+        throw new HttpsErrorV2("unauthenticated", "The user must be authenticated to get a hint.");
       }
 
       const currentUserId = request.auth.uid;
@@ -32,12 +32,12 @@ export const getHint = onCall(
       const riddleDoc = await admin.firestore().collection("riddles").doc(riddleId).get();
 
       if (!riddleDoc.exists) {
-        throw new functions.https.HttpsError("not-found", `Riddle with ID ${riddleId} not found.`);
+        throw new HttpsErrorV2("not-found", `Riddle with ID ${riddleId} not found.`);
       }
       const riddleData = riddleDoc.data();
 
       if (!riddleData || !riddleData.answer) {
-        throw new functions.https.HttpsError("internal", `Answer not found for riddle ID ${riddleId}.`);
+        throw new HttpsErrorV2("internal", `Answer not found for riddle ID ${riddleId}.`);
       }
 
       const answer: string = riddleData.answer.toLowerCase();
@@ -46,11 +46,11 @@ export const getHint = onCall(
       const user = await getUser(currentUserId);
 
       if (!user) {
-        throw new functions.https.HttpsError("not-found", "User data not found.");
+        throw new HttpsErrorV2("not-found", "User data not found.");
       }
 
       if (user.coins < coinsCost) {
-        throw new functions.https.HttpsError("failed-precondition", "Insufficient coins to get a hint.");
+        throw new HttpsErrorV2("failed-precondition", "Insufficient coins to get a hint.");
       }
 
       const gameStateRef = admin
@@ -66,7 +66,7 @@ export const getHint = onCall(
 
       if (isGameCompleted) {
         functions.logger.warn(`User ${currentUserId} requested hint for completed riddle ${riddleId}.`);
-        throw new functions.https.HttpsError("failed-precondition", "Game is already completed.");
+        throw new HttpsErrorV2("failed-precondition", "Game is already completed.");
       }
 
       const guessedLetters: string[] = currentAttempt.map((letter: string) => letter.toLowerCase());
@@ -112,10 +112,10 @@ export const getHint = onCall(
       };
     } catch (error) {
       functions.logger.error("Error getting hint:", error);
-      if (error instanceof functions.https.HttpsError) {
+      if (error instanceof HttpsErrorV2) {
         throw error;
       }
-      throw new functions.https.HttpsError("internal", "An error occurred while getting a hint.", error);
+      throw new HttpsErrorV2("internal", "An error occurred while getting a hint.", error);
     }
   },
 );
@@ -131,20 +131,20 @@ export const getHint = onCall(
  */
 export const spendCoins = onCall(
   {},
-  async (request: functions.https.CallableRequest<{amount: number; reason: string}>): Promise<{newCoins: number}> => {
+  async (request: CallableRequestV2<{amount: number; reason: string}>): Promise<{newCoins: number}> => {
     if (!request.auth) {
-      throw new functions.https.HttpsError("unauthenticated", "The function must be called while authenticated.");
+      throw new HttpsErrorV2("unauthenticated", "The function must be called while authenticated.");
     }
 
     const {amount, reason} = request.data;
     const userId = request.auth.uid;
 
     if (typeof amount !== "number" || amount <= 0) {
-      throw new functions.https.HttpsError("invalid-argument", "Invalid amount specified.");
+      throw new HttpsErrorV2("invalid-argument", "Invalid amount specified.");
     }
 
     if (reason !== "hint" && reason !== "skip") {
-      throw new functions.https.HttpsError("invalid-argument", "Invalid reason specified.");
+      throw new HttpsErrorV2("invalid-argument", "Invalid reason specified.");
     }
 
     try {
@@ -153,17 +153,17 @@ export const spendCoins = onCall(
       const updatedUser = await getUser(userId);
 
       if (!updatedUser) {
-        throw new functions.https.HttpsError("internal", "Could not retrieve updated user data after spending coins.");
+        throw new HttpsErrorV2("internal", "Could not retrieve updated user data after spending coins.");
       }
 
       functions.logger.info(`User ${userId} spent ${amount} coins for ${reason}.`);
       return {newCoins: updatedUser.coins};
     } catch (error: unknown) {
       console.error("Error spending coins:", error);
-      if (error instanceof functions.https.HttpsError) {
+      if (error instanceof HttpsErrorV2) {
         throw error;
       }
-      throw new functions.https.HttpsError("internal", "An error occurred while spending coins.", error);
+      throw new HttpsErrorV2("internal", "An error occurred while spending coins.", error);
     }
   },
 );
@@ -180,14 +180,14 @@ export const spendCoins = onCall(
 export const skipRiddle = onCall(
   {},
   async (
-    request: functions.https.CallableRequest<{gameMode: string; riddleId: string}>,
+    request: CallableRequestV2<{gameMode: string; riddleId: string}>,
   ): Promise<
     | {newRiddleIndex: number; newQuestion: string; newAnswerLength: number; coinsCost: number; newRiddleId: string}
-    | functions.https.HttpsError
+    | HttpsErrorV2
   > => {
     try {
       if (!request.auth) {
-        throw new functions.https.HttpsError("unauthenticated", "The user must be authenticated to skip a riddle.");
+        throw new HttpsErrorV2("unauthenticated", "The user must be authenticated to skip a riddle.");
       }
 
       const currentUserId = request.auth.uid;
@@ -196,13 +196,13 @@ export const skipRiddle = onCall(
       const user = await getUser(currentUserId);
 
       if (!user) {
-        throw new functions.https.HttpsError("not-found", "User data not found.");
+        throw new HttpsErrorV2("not-found", "User data not found.");
       }
 
       const coinsCost = 50;
 
       if (user.coins < coinsCost) {
-        throw new functions.https.HttpsError("failed-precondition", "Insufficient coins to skip the riddle.");
+        throw new HttpsErrorV2("failed-precondition", "Insufficient coins to skip the riddle.");
       }
 
       await updateUserCoins(currentUserId, -coinsCost);
@@ -214,13 +214,13 @@ export const skipRiddle = onCall(
         const currentRiddleDoc = await admin.firestore().collection("riddles").doc(riddleId).get();
 
         if (!currentRiddleDoc.exists) {
-          throw new functions.https.HttpsError("not-found", "Current riddle not found.");
+          throw new HttpsErrorV2("not-found", "Current riddle not found.");
         }
 
         const currentRiddle = currentRiddleDoc.data() as FirestoreRiddle;
 
         if (currentRiddle.classicIndex === undefined) {
-          throw new functions.https.HttpsError("failed-precondition", "Current riddle does not have a classic index.");
+          throw new HttpsErrorV2("failed-precondition", "Current riddle does not have a classic index.");
         }
 
         newRiddleIndex = currentRiddle.classicIndex + 1;
@@ -248,13 +248,13 @@ export const skipRiddle = onCall(
             functions.logger.error("Failed to trigger generateClassicRiddles:", genError);
           }
 
-          throw new functions.https.HttpsError(
+          throw new HttpsErrorV2(
             "not-found",
             "No more classic riddles available. More are being generated. Please try again soon.",
           );
         }
       } else {
-        throw new functions.https.HttpsError("failed-precondition", "Skipping is only allowed in Classic mode.");
+        throw new HttpsErrorV2("failed-precondition", "Skipping is only allowed in Classic mode.");
       }
 
       await admin.firestore().collection("users").doc(currentUserId).update({
@@ -262,7 +262,7 @@ export const skipRiddle = onCall(
       });
 
       if (!newRiddleData) {
-        throw new functions.https.HttpsError("internal", "Failed to load next riddle data after fetching.");
+        throw new HttpsErrorV2("internal", "Failed to load next riddle data after fetching.");
       }
 
       return {
@@ -274,10 +274,10 @@ export const skipRiddle = onCall(
       };
     } catch (error) {
       functions.logger.error("Error skipping riddle:", error);
-      if (error instanceof functions.https.HttpsError) {
+      if (error instanceof HttpsErrorV2) {
         throw error;
       }
-      throw new functions.https.HttpsError("internal", "An error occurred while skipping the riddle.", error);
+      throw new HttpsErrorV2("internal", "An error occurred while skipping the riddle.", error);
     }
   },
 );

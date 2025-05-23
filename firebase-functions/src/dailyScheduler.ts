@@ -1,8 +1,5 @@
-import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-// You might need to import other services here, e.g., firestoreService or riddle generation logic
 import {onSchedule} from "firebase-functions/v2/scheduler";
-import {getRiddle} from "./firestoreService"; // Assuming getRiddle can fetch any riddle by ID
 
 /**
  * Scheduled function to set the daily challenge.

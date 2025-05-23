@@ -1,5 +1,11 @@
 import { useEffect, useState, useCallback } from "react";
-import applovin, { AppLovinMAX } from "react-native-applovin-max";
+import applovin, {
+  AppLovinMAXType,
+  AdInfo,
+  AdLoadFailedInfo,
+  AdDisplayFailedInfo,
+  InterstitialAdListener,
+} from "react-native-applovin-max";
 import Config from "react-native-dotenv";
 
 const INTERSTITIAL_AD_UNIT_ID = Config.APPLOVIN_INTERSTITIAL_AD_UNIT_ID;
@@ -31,7 +37,7 @@ export const useInterstitialAds = (): InterstitialAdHook => {
   useEffect(() => {
     initializeInterstitialAds();
 
-    const listeners: AppLovinMAX.InterstitialAdListener[] = [
+    const listeners: InterstitialAdListener[] = [
       {
         onAdLoaded: (adInfo) => {
           setIsAdLoaded(true);

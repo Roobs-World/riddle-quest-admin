@@ -22,14 +22,14 @@ export type LoginFormData = z.infer<typeof loginSchema>;
 export type SignUpFormData = z.infer<typeof signUpSchema>;
 
 // Define the structure for player progress
-const PlayerProgressSchema = z.object({
+export const PlayerProgressSchema = z.object({
   classicIndex: z.number().int().nonnegative().default(0),
   dailyChallengeIndex: z.number().int().nonnegative().default(0),
   tutorialIndex: z.number().int().nonnegative().default(0),
 });
 
 // Define the structure for player stats
-const PlayerStatsSchema = z.object({
+export const PlayerStatsSchema = z.object({
   dailyPuzzlesCompleted: z.number().int().nonnegative().default(0),
   bestStreak: z.number().int().nonnegative().default(0),
   totalWordsGuessed: z.number().int().nonnegative().default(0),

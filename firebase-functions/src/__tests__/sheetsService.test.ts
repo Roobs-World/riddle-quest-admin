@@ -1,10 +1,10 @@
-import {vi, describe, it, expect, beforeEach, afterEach} from "vitest";
+import {describe, it, expect, beforeEach, afterEach, jest} from "@jest/globals";
 import {getExistingRiddles, appendRiddlesToSheet, getRiddleDataFromSheetGoogleApis} from "../sheetsService";
 import * as functions from "firebase-functions";
 import {google} from "googleapis";
 
 // Mock firebase-functions
-vi.mock("firebase-functions", () => ({
+jest.mock("firebase-functions", () => ({
   config: () => ({
     sheets: {
       spreadsheet_id: "test-spreadsheet-id",
@@ -14,17 +14,17 @@ vi.mock("firebase-functions", () => ({
   }),
 }));
 
-const mockJWTConstructor = vi.fn();
+const mockJWTConstructor = jest.fn();
 
 // Mock googleapis
-const mockGet = vi.fn();
-const mockAppend = vi.fn();
-vi.mock("googleapis", () => ({
+const mockGet = jest.fn<() => Promise<{ data: { values: (((string | null | undefined)[] | null)[] | null) } }>>();
+const mockAppend = jest.fn<() => Promise<{ data: { updates?: { updatedCells?: number } } }>>();
+jest.mock("googleapis", () => ({
   google: {
     auth: {
       JWT: mockJWTConstructor.mockImplementation(() => ({})),
     },
-    sheets: vi.fn(() => ({
+    sheets: jest.fn(() => ({
       spreadsheets: {
         values: {
           get: mockGet,
@@ -39,10 +39,10 @@ describe("sheetsService", () => {
   let originalConsole: Console;
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     mockJWTConstructor.mockClear();
     originalConsole = global.console;
-    global.console = {log: vi.fn(), warn: vi.fn(), error: vi.fn()} as unknown as Console;
+    global.console = {log: jest.fn(), warn: jest.fn(), error: jest.fn()} as unknown as Console;
   });
 
   afterEach(() => {
@@ -216,19 +216,19 @@ describe("sheetsService - Environment Variable Checks", () => {
   const originalConfig = functions.config(); // Store the original config
 
   beforeEach(() => {
-    vi.resetModules(); // Crucial to re-evaluate module top-level code for env var checks
+    jest.resetModules(); // Crucial to re-evaluate module top-level code for env var checks
     originalConsole = global.console;
-    global.console = {log: vi.fn(), warn: vi.fn(), error: vi.fn()} as unknown as Console;
+    global.console = {log: jest.fn(), warn: jest.fn(), error: jest.fn()} as unknown as Console;
   });
 
   afterEach(() => {
     // Restore the original config mock after each test in this describe block
-    vi.doMock("firebase-functions", () => ({config: () => originalConfig}));
+    jest.doMock("firebase-functions", () => ({config: () => originalConfig}));
     global.console = originalConsole;
   });
 
   it("should throw error if SPREADSHEET_ID is missing", async () => {
-    vi.doMock("firebase-functions", () => ({
+    jest.doMock("firebase-functions", () => ({
       config: () => ({
         sheets: {
           // spreadsheet_id is missing
@@ -244,7 +244,7 @@ describe("sheetsService - Environment Variable Checks", () => {
   });
 
   it("should throw error if GOOGLE_SHEETS_CLIENT_EMAIL is missing", async () => {
-    vi.doMock("firebase-functions", () => ({
+    jest.doMock("firebase-functions", () => ({
       config: () => ({
         sheets: {
           spreadsheet_id: "test-id",
@@ -260,7 +260,7 @@ describe("sheetsService - Environment Variable Checks", () => {
   });
 
   it("should throw error if GOOGLE_SHEETS_PRIVATE_KEY is missing", async () => {
-    vi.doMock("firebase-functions", () => ({
+    jest.doMock("firebase-functions", () => ({
       config: () => ({
         sheets: {
           spreadsheet_id: "test-id",
@@ -276,7 +276,7 @@ describe("sheetsService - Environment Variable Checks", () => {
   });
 
   it("should throw error if sheets config itself is missing", async () => {
-    vi.doMock("firebase-functions", () => ({
+    jest.doMock("firebase-functions", () => ({
       config: () => ({}), // sheets object is missing
     }));
     // @ts-expect-error TS(2307) Current tools cannot infer type for dynamically imported JS

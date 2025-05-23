@@ -6,18 +6,6 @@ import type {Response} from "express"; // Express types are often used for mocks
 // Import the function to test
 import {notifyRewardedAdCompleted} from "../adClientCallbacks"; // Adjust path
 
-interface AdClientCallbackTestData {
-  adDetails: Record<string, unknown>;
-}
-
-// Define a type for the mock callable context (simplified)
-interface MockCallableContext {
-  // Add properties used by your function if any, e.g., instanceIdToken
-}
-
-// Extend CallableRequest for proper typing
-interface MockCallableRequest<TData = unknown> extends CallableRequest<TData> {}
-
 // --- Mocks Start ---
 // jest.mock("firebase-functions/v2", ... ) // Already mocked by user, ensure logger is covered
 // --- Mocks End ---
@@ -29,6 +17,8 @@ describe("notifyRewardedAdCompleted HTTP Trigger", () => {
     send: jest.MockedFunction<(body?: any) => Response>;
     json: jest.MockedFunction<(body?: any) => Response>;
     end: jest.MockedFunction<() => Response>;
+    on: jest.MockedFunction<() => Response>;
+    setHeader: jest.MockedFunction<() => Response>;
     // Add other Express.Response methods if needed by the function
   } & Partial<Response>; // Use Partial<Response> for other optional properties
 
@@ -45,12 +35,16 @@ describe("notifyRewardedAdCompleted HTTP Trigger", () => {
     const resSend = jest.fn<() => Response>();
     const resJson = jest.fn<() => Response>();
     const resEnd = jest.fn<() => Response>();
+    const resOn = jest.fn<() => Response>(); // Mock for 'on' method
+    const resSetHeader = jest.fn<() => Response>(); // Mock for setHeader
 
     mockRes = {
-      status: resStatus.mockReturnThis(), // Use mockReturnThis for chaining
+      status: resStatus.mockReturnThis(),
       send: resSend.mockReturnThis(),
       json: resJson.mockReturnThis(),
       end: resEnd.mockReturnThis(),
+      on: resOn.mockReturnThis(), // Add 'on' to the mock response
+      setHeader: resSetHeader.mockReturnThis(), // Add setHeader
     } as unknown as typeof mockRes; // Cast to its own type for internal consistency
   });
 

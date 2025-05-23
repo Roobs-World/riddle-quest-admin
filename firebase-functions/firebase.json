@@ -23,7 +23,8 @@
       "port": 5101
     },
     "firestore": {
-      "port": 8106
+      "host": "127.0.0.1",
+      "port": 8099
     },
     "ui": {
       "enabled": true,

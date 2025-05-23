@@ -30,7 +30,7 @@ type MockDocumentData = Partial<Player> | {answer: string; text: string; riddleI
 let mockGet: jest.Mock<() => Promise<{exists: boolean; data?: () => MockDocumentData}>>; // More specific union type
 let mockUpdate: jest.Mock<() => Promise<void>>; // Typed mockUpdate
 let mockRunTransaction: jest.MockedFunction<
-  (updateFunction: (transaction: admin.firestore.Transaction) => Promise<unknown>) => Promise<unknown>
+  (TTransactionCallback: (transaction: admin.firestore.Transaction) => Promise<unknown>) => Promise<unknown>
 >;
 let mockSet: jest.Mock<() => Promise<void>>; // Typed mockSet
 
@@ -51,7 +51,7 @@ jest.mock("firebase-admin", async () => {
     doc: mockDoc,
   }));
   mockRunTransaction = jest
-    .fn<(updateFunction: (transaction: admin.firestore.Transaction) => Promise<unknown>) => Promise<unknown>>() // Typed jest.fn()
+    .fn<(TTransactionCallback: (transaction: admin.firestore.Transaction) => Promise<unknown>) => Promise<unknown>>() // Renamed type param
     .mockImplementation(async (updateFunction: (transaction: admin.firestore.Transaction) => Promise<unknown>) => {
       const mockTransaction = {
         get: mockGet,
@@ -113,7 +113,7 @@ describe("Firestore Service", () => {
       doc: mockDoc,
     }));
     mockRunTransaction = jest
-      .fn<(updateFunction: (transaction: admin.firestore.Transaction) => Promise<unknown>) => Promise<unknown>>() // Typed jest.fn()
+      .fn<(TTransactionCallback: (transaction: admin.firestore.Transaction) => Promise<unknown>) => Promise<unknown>>() // Renamed type param
       .mockImplementation(async (updateFunction: (transaction: admin.firestore.Transaction) => Promise<unknown>) => {
         const mockTransactionInternal = {
           get: mockGet,

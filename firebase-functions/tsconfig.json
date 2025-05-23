@@ -11,12 +11,12 @@
     "rootDir": "src",
     "sourceMap": true,
     "strict": true,
-    "lib": ["esnext"],
+    "lib": ["esnext", "dom"],
     "types": ["node", "jest"],
     "forceConsistentCasingInFileNames": true
   },
   "compileOnSave": true,
   "include": ["src", "jest.config.js"],
-  "exclude": ["node_modules", "node_modules/call-bind-apply-helpers"],
+  "exclude": ["node_modules", "node_modules/call-bind-apply-helpers", "**/*.bak", "**/*.skip"],
   "skipLibCheck": true
 }

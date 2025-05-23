@@ -6,26 +6,44 @@ Qwordly (inferred from workspace path)
 
 ## 2. Project Goals
 
-- To be defined.
+- To build a fully functional riddle-based Wordle-clone mobile game, Qwordly.
+- Implement all core features including user authentication, persistent backend, multiple game modes, in-app purchases, and customizable user profiles.
+- Ensure successful deployment and operation of Firebase Functions for backend logic.
+- Achieve comprehensive test coverage for both client and server-side code.
 
 ## 3. Target Audience
 
-- To be defined.
+- Mobile gamers who enjoy word puzzles and riddle-based challenges.
+- Users looking for engaging daily and progressive puzzle experiences.
 
 ## 4. Scope
 
 ### In Scope:
 
 - Firebase Functions deployment.
+- Development of iOS (16+) and Android (10+) application.
+- User authentication (Google, Facebook, email/password).
+- Firestore database for user data, game levels (synced from Google Sheets).
+- Firebase Storage for user avatars.
+- Server-side riddle generation and guess validation.
+- Two primary game modes: Daily Challenge and Classic Mode.
+- In-app purchase system for coins and ad removal.
+- AppLovin MAX integration for rewarded and interstitial ads.
+- User profiles with statistics and customizable avatars.
 
 ### Out of Scope:
 
-- To be defined.
+- Anonymous login.
+- Real-time multiplayer features beyond individual progression.
+- Social features like friend lists or direct messaging (unless specified later).
+- Web-based version of the game.
 
 ## 5. Success Metrics
 
-- Successful deployment of Firebase Functions.
-- To be defined.
+- Successful deployment and stable operation of Firebase Functions and the mobile application.
+- Positive user engagement metrics (e.g., daily active users, session length) post-launch.
+- High test coverage for critical game logic and backend services.
+- Successful implementation of all features outlined in the core requirements.
 
 ## Project Overview
 
@@ -67,7 +85,12 @@ Build a riddle-based Wordle-clone mobile game using React Native, NativeWind, an
 
 ### 2.4. In-App Purchases & Coin System
 
-- **IAP:** `
+- **IAP:** (Details to be defined, e.g., specific coin pack amounts, pricing, no-ads purchase option details)
+  - Purchase `react-native-iap` or equivalent for managing IAPs.
+  - Server-side validation of purchases with Firebase Functions.
+- **Coin System:**
+  - Coins for hints (Classic Mode), skipping levels (Classic Mode).
+  - Earn coins via daily challenges and rewarded ads.
 
 ### 2.5. Advertising
 
@@ -77,7 +100,9 @@ Build a riddle-based Wordle-clone mobile game using React Native, NativeWind, an
 
 ### 2.6. User Profiles & Stats
 
-// ... existing code ...
+- User accounts with persistent data (stats, progress, coins, avatar).
+- Ability for users to upload and change their avatar (stored in Firebase Storage).
+- Display of game statistics (e.g., win rate, current streak, games played).
 
 ### 2.8. Quality & Performance
 

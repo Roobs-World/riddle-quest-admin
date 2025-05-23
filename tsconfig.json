@@ -16,5 +16,12 @@
       "@images/*": ["./assets/images/*"],
       "@fonts/*": ["./assets/fonts/*"]
     }
-  }
+  },
+  "exclude": [
+    "node_modules",
+    "babel.config.js",
+    "metro.config.js",
+    "jest.setup.js",
+    "firebase-functions"
+  ]
 }

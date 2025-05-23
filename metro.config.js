@@ -1,6 +1,7 @@
 // metro.config.js
 const { getDefaultConfig } = require("expo/metro-config");
 const { withNativeWind } = require("nativewind/metro");
+const path = require("path");
 
 // Load default Expo Metro config
 const config = getDefaultConfig(__dirname);
@@ -27,6 +28,31 @@ windConfig.resolver.sourceExts = [
   "tsx",
   "mts",
 ];
+
+// Add this to shim 'fs'
+windConfig.resolver.extraNodeModules = {
+  fs: false,
+  // You can add other Node.js core modules here if needed, e.g.:
+  // path: false,
+  // os: false,
+};
+
+// --- New blockList approach ---
+const firebaseNodeModulesPath = path.resolve(
+  __dirname,
+  "firebase-functions/node_modules"
+);
+// Escape special characters for regex
+const escapedFirebasePath = firebaseNodeModulesPath.replace(
+  /[.*+?^${}()|[\\]\\]/g,
+  "\\$&"
+);
+
+windConfig.resolver.blockList = [
+  new RegExp(/(\/__tests__\/.*)$/.source), // Keep the __tests__ pattern
+  new RegExp(escapedFirebasePath + "/.*"), // Our new rule as RegExp
+];
+// --- End new blockList approach ---
 
 // Export the final configured object
 module.exports = windConfig;

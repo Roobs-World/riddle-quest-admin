@@ -47,20 +47,29 @@ jest.mock("../iapPlatformValidator", () => ({
 }));
 import {performPlatformValidation as mockPerformPlatformValidation} from "../iapPlatformValidator";
 
-// Initialize firebase-functions-test in offline mode.
+const FIREBASE_PROJECT_ID = "qwordly-6ba44";
+
+// Initialize firebase-functions-test. This DOES NOT initialize admin.initializeApp()
+// when used with a live project. We must do that manually.
 const testEnv = functionsTest();
 
-// Ensure Firebase app is initialized before tests run, if not already.
-// This is crucial because functionsTest() in offline mode might not initialize a default app
-// in a way that admin.firestore() can immediately use, especially if other modules
-// (like iapConfig through iapValidation) are loaded.
+// Manually initialize Firebase Admin SDK for testing against the live project
 if (!admin.apps.length) {
-  admin.initializeApp();
+  // Check if GOOGLE_APPLICATION_CREDENTIALS is set, as it's required for live testing
+  if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+    console.error(
+      "\n🚨 GOOGLE_APPLICATION_CREDENTIALS environment variable is not set. " +
+        "This is required for tests connecting to live Firebase services. " +
+        "Please set it to the path of your service account key file.🚨\n",
+    );
+    // Optionally, throw to prevent tests from running without credentials
+    // throw new Error("GOOGLE_APPLICATION_CREDENTIALS is not set.");
+  }
+  admin.initializeApp({
+    projectId: FIREBASE_PROJECT_ID,
+    // The SDK will use GOOGLE_APPLICATION_CREDENTIALS if set, for auth
+  });
 }
-
-// Mock Firestore operations from firestoreService for some specific error cases if needed,
-// but generally, we want to test the real Firestore interaction via emulators.
-// For now, we rely on the real service for most cases.
 
 // const firestore = admin.firestore(); // Moved to beforeAll
 
@@ -71,16 +80,14 @@ describe("validatePurchase - Integration Tests", () => {
   let firestore: admin.firestore.Firestore;
 
   beforeAll(async () => {
-    // Check if Firestore emulator is configured
-    if (!process.env.FIRESTORE_EMULATOR_HOST) {
-      console.error(
-        "\n🔥🔥🔥 FIRESTORE_EMULATOR_HOST is not set. Integration tests will likely time out or hit live Firestore. 🔥🔥🔥\n",
-      );
-      // Optionally, throw an error to halt tests if emulator is strictly required
-      // throw new Error("FIRESTORE_EMULATOR_HOST not set. Ensure emulators are running and configured.");
-    }
-    // Initialize Firestore after testEnv is set up and admin app is ensured.
+    // Initialize Firestore instance after admin app is initialized.
     firestore = admin.firestore();
+    // Optional: Verify GOOGLE_APPLICATION_CREDENTIALS are set for clarity during test runs
+    if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+      console.warn(
+        "\n⚠️ GOOGLE_APPLICATION_CREDENTIALS is not set. Tests will likely fail to connect to live Firestore. ⚠️\n",
+      );
+    }
   });
 
   beforeEach(async () => {

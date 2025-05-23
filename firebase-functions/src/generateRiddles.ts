@@ -5,35 +5,6 @@ import {getExistingRiddles, appendRiddlesToSheet} from "./sheetsService.js";
 import {generateUniqueRiddle} from "./openaiService.js";
 import * as functions from "firebase-functions"; // Import firebase-functions
 
-// Access Firebase function configuration
-const envConfig = functions.config();
-
-const spreadsheetId = envConfig.sheets?.spreadsheet_id;
-// Assuming sheets.google_sheets_client_email
-const clientEmail = envConfig.sheets?.google_sheets_client_email;
-// Assuming sheets.google_sheets_private_key
-const privateKey = envConfig.sheets?.google_sheets_private_key;
-// Assuming openai.api_key
-const openAIKey = envConfig.openai?.api_key;
-
-// Ensure required environment variables are set
-if (!spreadsheetId || !clientEmail || !privateKey || !openAIKey) {
-  const missing: string[] = [];
-  if (!spreadsheetId) {
-    missing.push("SPREADSHEET_ID (via functions.config().sheets.spreadsheet_id)");
-  }
-  if (!clientEmail) {
-    missing.push("GOOGLE_SHEETS_CLIENT_EMAIL (via functions.config().sheets" + ".google_sheets_client_email)");
-  }
-  if (!privateKey) {
-    missing.push("GOOGLE_SHEETS_PRIVATE_KEY (via functions.config().sheets" + ".google_sheets_private_key)");
-  }
-  if (!openAIKey) {
-    missing.push("OPENAI_API_KEY (via functions.config().openai.api_key)");
-  }
-  throw new Error(`Missing required environment variables: ${missing.join(", ")}`);
-}
-
 /**
  * Checks if a riddle already exists in the provided lists of questions and
  * answers.
@@ -63,9 +34,38 @@ function riddleExists(
 export async function generateAndAppendRiddles(numberOfRiddles: number): Promise<void> {
   console.log(`Generating ${numberOfRiddles} new riddles...`);
 
+  // Access Firebase function configuration
+  const envConfig = functions.config();
+
+  const spreadsheetId = envConfig.sheets?.spreadsheet_id;
+  // Assuming sheets.google_sheets_client_email
+  const clientEmail = envConfig.sheets?.google_sheets_client_email;
+  // Assuming sheets.google_sheets_private_key
+  const privateKey = envConfig.sheets?.google_sheets_private_key;
+  // Assuming openai.api_key
+  const openAIKey = envConfig.openai?.api_key;
+
+  // Ensure required environment variables are set
+  if (!spreadsheetId || !clientEmail || !privateKey || !openAIKey) {
+    const missing: string[] = [];
+    if (!spreadsheetId) {
+      missing.push("SPREADSHEET_ID (via functions.config().sheets.spreadsheet_id)");
+    }
+    if (!clientEmail) {
+      missing.push("GOOGLE_SHEETS_CLIENT_EMAIL (via functions.config().sheets" + ".google_sheets_client_email)");
+    }
+    if (!privateKey) {
+      missing.push("GOOGLE_SHEETS_PRIVATE_KEY (via functions.config().sheets" + ".google_sheets_private_key)");
+    }
+    if (!openAIKey) {
+      missing.push("OPENAI_API_KEY (via functions.config().openai.api_key)");
+    }
+    throw new Error(`Missing required environment variables: ${missing.join(", ")}`);
+  }
+
   const sheetRange = "classic!A:B";
   // Use the configured spreadsheetId
-  const existing = await getExistingRiddles(spreadsheetId!, sheetRange);
+  const existing = await getExistingRiddles(spreadsheetId, sheetRange);
 
   const newRiddles: {question: string; answer: string}[] = [];
   const generatedAttempts: {question: string; answer: string}[] = [];
@@ -74,7 +74,7 @@ export async function generateAndAppendRiddles(numberOfRiddles: number): Promise
 
   while (newRiddles.length < numberOfRiddles && generatedAttempts.length < MAX_GENERATION_ATTEMPTS) {
     // Generate a riddle using the OpenAI service
-    const riddle = await generateUniqueRiddle(existing.questions, existing.answers);
+    const riddle = await generateUniqueRiddle();
 
     if (riddle) {
       const newRiddle = {

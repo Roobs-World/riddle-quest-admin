@@ -1,5 +1,6 @@
 // Import necessary testing libraries and modules
 import {describe, it, beforeAll, afterAll, beforeEach} from "@jest/globals";
+
 import * as admin from "firebase-admin";
 import functionsTest from "firebase-functions-test";
 import {HttpsError, CallableRequest} from "firebase-functions/v2/https"; // Import HttpsError and CallableRequest
@@ -8,12 +9,28 @@ import {HttpsError, CallableRequest} from "firebase-functions/v2/https"; // Impo
 import {getHint, spendCoins, skipRiddle} from "../gameLogic";
 import {createUser} from "./testUtils.js"; // Import createUser from testUtils with .js extension
 
-// Initialize firebase-functions-test in offline mode
+const FIREBASE_PROJECT_ID = "qwordly-6ba44";
+
+// Initialize firebase-functions-test. This DOES NOT initialize admin.initializeApp()
+// when used with a live project. We must do that manually.
 const testEnv = functionsTest();
 
-// Ensure Firebase app is initialized before tests run
+// Manually initialize Firebase Admin SDK for testing against the live project
 if (!admin.apps.length) {
-  admin.initializeApp();
+  // Check if GOOGLE_APPLICATION_CREDENTIALS is set, as it's required for live testing
+  if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+    console.error(
+      "\n🚨 GOOGLE_APPLICATION_CREDENTIALS environment variable is not set. " +
+        "This is required for tests connecting to live Firebase services. " +
+        "Please set it to the path of your service account key file.🚨\n",
+    );
+    // Optionally, throw to prevent tests from running without credentials
+    // throw new Error("GOOGLE_APPLICATION_CREDENTIALS is not set.");
+  }
+  admin.initializeApp({
+    projectId: FIREBASE_PROJECT_ID,
+    // The SDK will use GOOGLE_APPLICATION_CREDENTIALS if set, for auth
+  });
 }
 
 let firestore: admin.firestore.Firestore;
@@ -27,16 +44,14 @@ describe("Game Logic - Integration Tests", () => {
   const testUserId = "testUserGameLogic";
 
   beforeAll(async () => {
-    // Check if Firestore emulator is configured
-    if (!process.env.FIRESTORE_EMULATOR_HOST) {
-      console.error(
-        "\n🔥🔥🔥 FIRESTORE_EMULATOR_HOST is not set. Integration tests will likely time out or hit live Firestore. 🔥🔥🔥\n",
-      );
-      // Optionally, throw an error to halt tests if emulator is strictly required
-      // throw new Error("FIRESTORE_EMULATOR_HOST not set. Ensure emulators are running and configured.");
-    }
-    // Initialize Firestore after testEnv is set up
+    // Initialize Firestore instance after admin app is initialized.
     firestore = admin.firestore();
+    // Optional: Verify GOOGLE_APPLICATION_CREDENTIALS are set for clarity during test runs
+    if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+      console.warn(
+        "\n⚠️ GOOGLE_APPLICATION_CREDENTIALS is not set. Tests will likely fail to connect to live Firestore. ⚠️\n",
+      );
+    }
   });
 
   beforeEach(async () => {
@@ -246,8 +261,6 @@ describe("Game Logic - Integration Tests", () => {
     });
 
     it("should throw invalid-argument for invalid amount", async () => {
-      const auth = {uid: testUserId} as any;
-
       let request = constructOnCallRequest({amount: 0, reason: "skip"});
       await expect(wrappedSpendCoins(request)).rejects.toThrow(
         new HttpsError("invalid-argument", "Invalid amount specified."),
@@ -316,7 +329,6 @@ describe("Game Logic - Integration Tests", () => {
 
     it("should log trigger for riddle generation if no next riddle exists in Classic mode", async () => {
       const currentRiddleId = "testRiddle3"; // This is the last riddle in our setup with classicIndex 2
-      const initialCoins = 100;
 
       // Set user's classic progress to match the last riddle's index
       await firestore

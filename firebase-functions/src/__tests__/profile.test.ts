@@ -1,8 +1,7 @@
 import {jest, describe, it, expect, beforeEach, afterEach} from "@jest/globals";
 import * as admin from "firebase-admin";
-import * as functions from "firebase-functions";
 import {PlayerSchema} from "../validation/firestoreSchemas.js"; // Adjust path as needed
-import {https} from "firebase-functions"; // For HttpsError
+import {HttpsError as HttpsErrorV2, CallableRequest} from "firebase-functions/v2/https";
 
 // Initialize Firebase Admin SDK for testing, if not already done
 // This might be done in a global setup file for all tests
@@ -27,44 +26,46 @@ jest.mock("firebase-admin", () => ({
 }));
 
 // Global mock for firebase-functions/v2/https
-// This will capture the handler passed to onCall
-let actualOnCallHandler: ((request: functions.https.CallableRequest) => unknown) | null = null;
-const mockCallableFunction = jest.fn(async (dataOrRequest?: unknown) => {
-  if (actualOnCallHandler) {
-    const request =
-      dataOrRequest && typeof (dataOrRequest as {auth?: unknown}).auth !== "undefined"
-        ? dataOrRequest
-        : {data: dataOrRequest, auth: undefined};
-    return actualOnCallHandler(request as functions.https.CallableRequest);
-  }
-  throw new Error("onCall handler not captured by mock");
-});
-jest.mock("firebase-functions/v2/https", () => ({
-  onCall: (handler: (request: functions.https.CallableRequest) => unknown) => {
-    actualOnCallHandler = handler; // Capture the handler
-    // The function returned by onCall is what Firebase invokes.
-    // So, our mock for onCall should return a function that, when called by Firebase (or our tests),
-    // executes the `handler` with the request.
-    // The `mockCallableFunction` above already does this if we ensure it uses the latest `actualOnCallHandler`.
-    // For simplicity and directness in testing the handler, we can also just grab `actualOnCallHandler`.
-    return mockCallableFunction; // Tests can call this, or `actualOnCallHandler` directly.
-  },
-}));
+let capturedResetStatsHandler: ((request: CallableRequest<any>) => Promise<any>) | null = null;
 
-// Import the resetStats function after mocks are set up - this will trigger onCall and populate actualOnCallHandler
-import "../profile.js";
+jest.mock("firebase-functions/v2/https", () => {
+  const actualV2Https = jest.requireActual(
+    "firebase-functions/v2/https",
+  ) as typeof import("firebase-functions/v2/https");
+  return {
+    onCall: (handler: (request: CallableRequest<any>) => Promise<any>) => {
+      if (!capturedResetStatsHandler) {
+        // Capture the first handler (resetStats)
+        capturedResetStatsHandler = handler;
+      }
+      // Return a structure that resembles a Firebase HttpsFunction but isn't necessarily invoked by these tests
+      return jest.fn(async (request?: any) => {
+        if (capturedResetStatsHandler && request) {
+          // Ensure handler and request exist
+          return capturedResetStatsHandler(request);
+        }
+        // This path shouldn't ideally be hit if tests use capturedResetStatsHandler directly
+        // console.warn("Mocked HttpsFunction called without captured handler or request");
+        // return Promise.resolve({});
+      });
+    },
+    HttpsError: actualV2Https.HttpsError,
+  };
+});
+
+// Import the SUT to trigger the onCall mock.
+// resetStats itself is not directly used from this import in tests, capturedResetStatsHandler is.
+import "../profile";
 
 describe("resetStats", () => {
   let originalConsole: Console;
 
   beforeEach(() => {
-    jest.clearAllMocks(); // Clears mockCallableFunction as well
+    jest.clearAllMocks();
     originalConsole = global.console;
     global.console = {log: jest.fn(), warn: jest.fn(), error: jest.fn()} as unknown as Console;
-    // mockCallableFunction.mockClear(); // Already cleared by jest.clearAllMocks()
     (admin.firestore as unknown as jest.Mock).mockClear();
 
-    // Re-initialize mock with proper typing
     mockUpdate = jest.fn<() => Promise<void>>();
     mockUpdate.mockResolvedValue(undefined);
 
@@ -73,27 +74,28 @@ describe("resetStats", () => {
       doc: jest.fn().mockReturnValue({update: mockUpdate}),
     });
 
-    // jest.spyOn(console, "log").mockImplementation(() => {}); // These are covered by global.console mock
-    // jest.spyOn(console, "error").mockImplementation(() => {});
+    // Crucially, ensure capturedResetStatsHandler is reset if necessary or that it's correctly set by the import
+    // For this setup, it's captured once at module load time. If tests interfere, use jest.resetModules().
+    if (!capturedResetStatsHandler) {
+      throw new Error("resetStats handler was not captured by the mock. Check module import and mock order.");
+    }
   });
 
   afterEach(() => {
     global.console = originalConsole;
     jest.restoreAllMocks();
-    actualOnCallHandler = null; // Reset for subsequent describe blocks if any
+    // capturedResetStatsHandler = null; // No! This would break subsequent tests if not re-imported.
+    // It's okay for it to persist as it's the correct handler.
   });
 
   it("should reset user stats successfully when authenticated", async () => {
     const mockRequest = {
       auth: {uid: "test-user-id"},
       data: {},
-    } as functions.https.CallableRequest;
+    } as CallableRequest;
 
-    if (!actualOnCallHandler) {
-      throw new Error("onCall handler was not captured properly");
-    }
-
-    await actualOnCallHandler(mockRequest);
+    const result = await capturedResetStatsHandler!(mockRequest);
+    expect(result).toEqual({success: true, message: "Stats reset successfully."});
 
     expect(admin.firestore().collection("users").doc).toHaveBeenCalledWith("test-user-id");
     expect(mockUpdate).toHaveBeenCalledWith({stats: PlayerSchema.parse({})});
@@ -103,16 +105,12 @@ describe("resetStats", () => {
 
   it("should throw unauthenticated error if not authenticated", async () => {
     const mockRequest = {
-      auth: undefined, // Not authenticated
+      auth: undefined,
       data: {},
-    } as functions.https.CallableRequest;
+    } as CallableRequest;
 
-    if (!actualOnCallHandler) {
-      throw new Error("onCall handler was not captured properly");
-    }
-
-    await expect(actualOnCallHandler(mockRequest)).rejects.toThrow(
-      new https.HttpsError("unauthenticated", "The function must be called while authenticated."),
+    await expect(capturedResetStatsHandler!(mockRequest)).rejects.toThrow(
+      new HttpsErrorV2("unauthenticated", "The function must be called while authenticated."),
     );
     expect(mockUpdate).not.toHaveBeenCalled();
   });
@@ -121,16 +119,12 @@ describe("resetStats", () => {
     const mockRequest = {
       auth: {uid: "test-user-id"},
       data: {},
-    } as functions.https.CallableRequest;
+    } as CallableRequest;
     const firestoreError = new Error("Firestore update failed");
     mockUpdate.mockRejectedValue(firestoreError);
 
-    if (!actualOnCallHandler) {
-      throw new Error("onCall handler was not captured properly");
-    }
-
-    await expect(actualOnCallHandler(mockRequest)).rejects.toThrow(
-      new https.HttpsError("internal", "An error occurred while resetting stats.", firestoreError),
+    await expect(capturedResetStatsHandler!(mockRequest)).rejects.toThrow(
+      new HttpsErrorV2("internal", "An error occurred while resetting stats.", firestoreError),
     );
     expect(console.error).toHaveBeenCalledWith("Error resetting stats for user test-user-id:", firestoreError);
   });

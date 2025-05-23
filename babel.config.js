@@ -1,10 +1,24 @@
 module.exports = function (api) {
   api.cache(true);
+
+  // Check for the environment variable
+  if (process.env.IS_FIREBASE_FUNCTIONS_TEST === "true") {
+    // Return a minimal config for Firebase Functions tests
+    // This ensures ts-jest handles everything and no React Native presets are loaded.
+    return {
+      presets: [], // No presets from here
+      plugins: [], // No plugins from here
+    };
+  }
+
+  // Original React Native config
   return {
     presets: [
-      ["babel-preset-expo", { jsxImportSource: "nativewind" }],
+      [
+        "module:metro-react-native-babel-preset",
+        { jsxImportSource: "nativewind" },
+      ],
       "nativewind/babel",
-      "@babel/preset-flow",
     ],
     plugins: [
       [

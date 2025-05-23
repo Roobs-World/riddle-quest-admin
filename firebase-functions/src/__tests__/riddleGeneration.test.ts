@@ -33,8 +33,7 @@ jest.mock("firebase-functions/v2/https", async () => {
 });
 
 // Import the function to test AFTER mocks are set up
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import {generateClassicRiddles} from "../riddleGeneration.js";
+import "../riddleGeneration.js";
 
 describe("generateClassicRiddles Cloud Function", () => {
   beforeEach(() => {

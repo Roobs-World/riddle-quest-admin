@@ -33,7 +33,7 @@ export const RiddleService = {
     try {
       const userDoc = await firestore().collection("users").doc(userId).get();
 
-      if (userDoc.exists) {
+      if (userDoc.exists()) {
         const userData = userDoc.data();
         if (userData) {
           const lastCompletedDateStr =
@@ -59,7 +59,7 @@ export const RiddleService = {
         .doc(today)
         .get();
 
-      if (!dailyChallengeDoc.exists) {
+      if (!dailyChallengeDoc.exists()) {
         console.log(`No daily challenge found for date: ${today}`);
         return null;
       }
@@ -90,7 +90,7 @@ export const RiddleService = {
           .doc(nextRiddleId)
           .get();
 
-        if (riddleDoc.exists) {
+        if (riddleDoc.exists()) {
           const riddleData = riddleDoc.data();
           if (riddleData && riddleData.answer !== undefined) {
             console.log(

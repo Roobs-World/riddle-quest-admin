@@ -1,16 +1,30 @@
 import OpenAI from "openai";
 import * as functions from "firebase-functions"; // Import firebase-functions
 
-// Use Firebase function configuration for sensitive information
-const openaiConfig = functions.config().openai;
-const openAIKey = openaiConfig?.api_key; // Accessing openai.api_key
+// Lazy initialization variable
+let openaiClient: OpenAI | null = null;
 
-// Ensure environment variables are set
-if (!openAIKey) {
-  throw new Error("Missing required environment variable: OPENAI_API_KEY from Firebase " + "config (openai.api_key)");
+/**
+ * Initializes the OpenAI client if not already initialized.
+ * @returns {OpenAI} The initialized OpenAI client.
+ */
+function initializeOpenAIClient(): OpenAI {
+  if (openaiClient) {
+    return openaiClient;
+  }
+
+  // Use Firebase function configuration for sensitive information
+  const openaiConfig = functions.config().openai;
+  const openAIKey = openaiConfig?.api_key; // Accessing openai.api_key
+
+  // Ensure environment variables are set
+  if (!openAIKey) {
+    throw new Error("Missing required environment variable: OPENAI_API_KEY from Firebase " + "config (openai.api_key)");
+  }
+
+  openaiClient = new OpenAI({apiKey: openAIKey});
+  return openaiClient;
 }
-
-const openai = new OpenAI({apiKey: openAIKey});
 
 /**
  * Generates a single unique riddle using OpenAI.
@@ -18,6 +32,8 @@ const openai = new OpenAI({apiKey: openAIKey});
  *   riddle [question, answer] or null if generation fails or is a duplicate.
  */
 export async function generateUniqueRiddle(): Promise<[string, string] | null> {
+  const openai = initializeOpenAIClient();
+
   try {
     const completion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",

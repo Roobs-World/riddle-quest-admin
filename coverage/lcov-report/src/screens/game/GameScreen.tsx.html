@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/301</span>
+                <span class='fraction'>0/302</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/111</span>
+                <span class='fraction'>0/119</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/294</span>
+                <span class='fraction'>0/295</span>
             </div>
         
             
@@ -882,7 +882,18 @@
 <a name='L817'></a><a href='#L817'>817</a>
 <a name='L818'></a><a href='#L818'>818</a>
 <a name='L819'></a><a href='#L819'>819</a>
-<a name='L820'></a><a href='#L820'>820</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L820'></a><a href='#L820'>820</a>
+<a name='L821'></a><a href='#L821'>821</a>
+<a name='L822'></a><a href='#L822'>822</a>
+<a name='L823'></a><a href='#L823'>823</a>
+<a name='L824'></a><a href='#L824'>824</a>
+<a name='L825'></a><a href='#L825'>825</a>
+<a name='L826'></a><a href='#L826'>826</a>
+<a name='L827'></a><a href='#L827'>827</a>
+<a name='L828'></a><a href='#L828'>828</a>
+<a name='L829'></a><a href='#L829'>829</a>
+<a name='L830'></a><a href='#L830'>830</a>
+<a name='L831'></a><a href='#L831'>831</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -936,6 +947,13 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1007,8 +1025,10 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1150,6 +1170,8 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1755,6 +1777,13 @@ import {
   ResetStatsOutputSchema,
 } from "../../validation/cloudFunctionsSchemas";
 &nbsp;
+interface GuessResult {
+  outcome: "win" | "loss" | string;
+  coinsEarned?: number;
+  correctAnswer?: string;
+  canOfferRewardedAd?: boolean;
+}
+&nbsp;
 const SOUND_ENABLED_STORAGE_KEY = <span class="cstat-no" title="statement not covered" >"isSoundEnabled";</span>
 const HAPTICS_ENABLED_STORAGE_KEY = <span class="cstat-no" title="statement not covered" >"isHapticsEnabled";</span>
 &nbsp;
@@ -1825,7 +1854,9 @@ const GameScreen: React.FC&lt;GameScreenProps&gt; = <span class="cstat-no" title
   ] = <span class="cstat-no" title="statement not covered" >useState(false);</span>
   const [isCoinShopModalVisible, setIsCoinShopModalVisible] = <span class="cstat-no" title="statement not covered" >useState(false);</span>
   const [isWatchAdModalVisible, setIsWatchAdModalVisible] = <span class="cstat-no" title="statement not covered" >useState(false);</span>
-  const [lastGuessResult, setLastGuessResult] = <span class="cstat-no" title="statement not covered" >useState&lt;any&gt;(null);</span>
+  const [lastGuessResult, setLastGuessResult] = <span class="cstat-no" title="statement not covered" >useState&lt;GuessResult | null&gt;(</span>
+    null
+  );
 &nbsp;
   // Animation value for shaking the GuessGrid
   const shakeAnimation = <span class="cstat-no" title="statement not covered" >useSharedValue(0);</span>
@@ -1928,7 +1959,7 @@ const GameScreen: React.FC&lt;GameScreenProps&gt; = <span class="cstat-no" title
 <span class="cstat-no" title="statement not covered" >    AsyncStorage.setItem(</span>
       SOUND_ENABLED_STORAGE_KEY,
       JSON.stringify(isSoundEnabled)
-    ).catch(<span class="fstat-no" title="function not covered" >(e</span>rror) =&gt;
+    ).catch(<span class="fstat-no" title="function not covered" >(e</span>rror: any) =&gt;
 <span class="cstat-no" title="statement not covered" >      console.error("Error saving sound setting to AsyncStorage:", error)</span>
     );
   }, [isSoundEnabled]);
@@ -1937,7 +1968,7 @@ const GameScreen: React.FC&lt;GameScreenProps&gt; = <span class="cstat-no" title
 <span class="cstat-no" title="statement not covered" >    AsyncStorage.setItem(</span>
       HAPTICS_ENABLED_STORAGE_KEY,
       JSON.stringify(isHapticsEnabled)
-    ).catch(<span class="fstat-no" title="function not covered" >(e</span>rror) =&gt;
+    ).catch(<span class="fstat-no" title="function not covered" >(e</span>rror: any) =&gt;
 <span class="cstat-no" title="statement not covered" >      console.error("Error saving haptics setting to AsyncStorage:", error)</span>
     );
   }, [isHapticsEnabled]);
@@ -1966,9 +1997,11 @@ const GameScreen: React.FC&lt;GameScreenProps&gt; = <span class="cstat-no" title
             );
           }
 <span class="cstat-no" title="statement not covered" >          setOverlayOutcome("loss");</span>
-<span class="cstat-no" title="statement not covered" >          setOverlayCorrectAnswer(lastGuessResult.correctAnswer);</span>
+<span class="cstat-no" title="statement not covered" >          setOverlayCorrectAnswer(lastGuessResult.correctAnswer || null);</span>
 <span class="cstat-no" title="statement not covered" >          setIsVictoryLossOverlayVisible(true);</span>
-<span class="cstat-no" title="statement not covered" >          onGameLoss(lastGuessResult.correctAnswer);</span>
+<span class="cstat-no" title="statement not covered" >          if (lastGuessResult.correctAnswer) {</span>
+<span class="cstat-no" title="statement not covered" >            onGameLoss(lastGuessResult.correctAnswer);</span>
+          }
         }
       }
     }
@@ -2001,7 +2034,7 @@ const GameScreen: React.FC&lt;GameScreenProps&gt; = <span class="cstat-no" title
 <span class="cstat-no" title="statement not covered" >          Alert.alert("Error", "Could not submit guess. Please try again.");</span>
         }
       } else {
-<span class="cstat-no" title="statement not covered" >        setShakeKey(<span class="fstat-no" title="function not covered" >(p</span>rev) =&gt; <span class="cstat-no" title="statement not covered" >prev + 1)</span>;</span>
+<span class="cstat-no" title="statement not covered" >        setShakeKey(<span class="fstat-no" title="function not covered" >(p</span>rev: number) =&gt; <span class="cstat-no" title="statement not covered" >prev + 1)</span>;</span>
 <span class="cstat-no" title="statement not covered" >        if (isHapticsEnabled) {</span>
 <span class="cstat-no" title="statement not covered" >          ReactNativeHapticFeedback.trigger(</span>
             "notificationWarning",
@@ -2010,9 +2043,9 @@ const GameScreen: React.FC&lt;GameScreenProps&gt; = <span class="cstat-no" title
         }
       }
     } else <span class="cstat-no" title="statement not covered" >if (key === "BACKSPACE") {</span>
-<span class="cstat-no" title="statement not covered" >      setCurrentGuess(<span class="fstat-no" title="function not covered" >(p</span>rev) =&gt; <span class="cstat-no" title="statement not covered" >prev.slice(0, -1))</span>;</span>
+<span class="cstat-no" title="statement not covered" >      setCurrentGuess(<span class="fstat-no" title="function not covered" >(p</span>rev: string[]) =&gt; <span class="cstat-no" title="statement not covered" >prev.slice(0, -1))</span>;</span>
     } else <span class="cstat-no" title="statement not covered" >if (currentGuess.length &lt; answerLength) {</span>
-<span class="cstat-no" title="statement not covered" >      setCurrentGuess(<span class="fstat-no" title="function not covered" >(p</span>rev) =&gt; <span class="cstat-no" title="statement not covered" >[...prev, key])</span>;</span>
+<span class="cstat-no" title="statement not covered" >      setCurrentGuess(<span class="fstat-no" title="function not covered" >(p</span>rev: string[]) =&gt; <span class="cstat-no" title="statement not covered" >[...prev, key])</span>;</span>
     }
   };
 &nbsp;
@@ -2334,7 +2367,7 @@ const GameScreen: React.FC&lt;GameScreenProps&gt; = <span class="cstat-no" title
           "The rewarded ad couldn't be loaded at this time. Please try again later."
         );
       }
-    } catch (adError) {
+    } catch (adError: any) {
 <span class="cstat-no" title="statement not covered" >      console.error("Error showing rewarded ad:", adError);</span>
 <span class="cstat-no" title="statement not covered" >      Alert.alert(</span>
         "Ad Error",
@@ -2346,7 +2379,7 @@ const GameScreen: React.FC&lt;GameScreenProps&gt; = <span class="cstat-no" title
 <span class="cstat-no" title="statement not covered" >      ReactNativeHapticFeedback.trigger("notificationError", hapticOptions);</span>
     }
 <span class="cstat-no" title="statement not covered" >    setOverlayOutcome("loss");</span>
-<span class="cstat-no" title="statement not covered" >    setOverlayCorrectAnswer(lastGuessResult?.correctAnswer);</span>
+<span class="cstat-no" title="statement not covered" >    setOverlayCorrectAnswer(lastGuessResult?.correctAnswer || null);</span>
 <span class="cstat-no" title="statement not covered" >    setIsVictoryLossOverlayVisible(true);</span>
 <span class="cstat-no" title="statement not covered" >    if (lastGuessResult?.correctAnswer) {</span>
 <span class="cstat-no" title="statement not covered" >      onGameLoss(lastGuessResult.correctAnswer);</span>
@@ -2360,7 +2393,7 @@ const GameScreen: React.FC&lt;GameScreenProps&gt; = <span class="cstat-no" title
 <span class="cstat-no" title="statement not covered" >      ReactNativeHapticFeedback.trigger("notificationError", hapticOptions);</span>
     }
 <span class="cstat-no" title="statement not covered" >    setOverlayOutcome("loss");</span>
-<span class="cstat-no" title="statement not covered" >    setOverlayCorrectAnswer(lastGuessResult?.correctAnswer);</span>
+<span class="cstat-no" title="statement not covered" >    setOverlayCorrectAnswer(lastGuessResult?.correctAnswer || null);</span>
 <span class="cstat-no" title="statement not covered" >    setIsVictoryLossOverlayVisible(true);</span>
 <span class="cstat-no" title="statement not covered" >    if (lastGuessResult?.correctAnswer) {</span>
 <span class="cstat-no" title="statement not covered" >      onGameLoss(lastGuessResult.correctAnswer);</span>
@@ -2502,7 +2535,7 @@ const GameScreen: React.FC&lt;GameScreenProps&gt; = <span class="cstat-no" title
           onSettingsPress={handleSettingsPress}
           activeOverlay={
             Object.keys(overlayState).find(
-<span class="fstat-no" title="function not covered" >              (k</span>ey) =&gt; <span class="cstat-no" title="statement not covered" >overlayState[key as keyof GameScreenOverlayState]</span>
+<span class="fstat-no" title="function not covered" >              (k</span>ey: string) =&gt; <span class="cstat-no" title="statement not covered" >overlayState[key as keyof GameScreenOverlayState]</span>
             ) as keyof GameScreenOverlayState | undefined
           }
         /&gt;
@@ -2527,7 +2560,7 @@ export default GameScreen;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-05-22T21:56:42.760Z
+                at 2025-05-23T19:22:17.136Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

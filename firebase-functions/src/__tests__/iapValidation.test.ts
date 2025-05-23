@@ -11,7 +11,7 @@ const validatePurchase: (
 ) => Promise<{success: boolean; newCoins: number | undefined}> = originalValidatePurchase as any;
 
 // Mock external dependencies
-const mockGetUser = jest.fn<() => Promise<any>>(); // Use any for flexibility in testing different user states
+const mockGetUser = jest.fn<() => Promise<any>>();
 const mockUpdateUserCoins = jest.fn<() => Promise<void>>();
 jest.mock("../firestoreService.js", () => ({
   getUser: mockGetUser,
@@ -25,29 +25,13 @@ jest.mock("../iapReceiptService.js", () => ({
   markPurchaseTokenAsProcessed: mockMarkPurchaseTokenAsProcessed,
 }));
 
-const mockPerformPlatformValidation = jest.fn<() => Promise<any>>(); // Use any for flexibility with validation response structure
+const mockPerformPlatformValidation = jest.fn<() => Promise<any>>();
 jest.mock("../iapPlatformValidator.js", () => ({
   performPlatformValidation: mockPerformPlatformValidation,
 }));
 
-const mockIapIsValidated = jest.fn<() => boolean>();
-const mockIapGetPurchaseData = jest.fn<() => any>(); // Use any as the structure can vary
-// Mock the in-app-purchase library
-jest.mock("in-app-purchase", () => ({
-  // Mock the default export object
-  default: {
-    // config is called on import, mock it to prevent errors
-    config: jest.fn(),
-    isValidated: mockIapIsValidated,
-    getPurchaseData: mockIapGetPurchaseData,
-    // Include constants if they are accessed via iap.CONSTANT
-    APPLE: "apple",
-    GOOGLE: "google",
-  },
-  // Include constants if they are imported directly { CONSTANT } from 'in-app-purchase'
-  APPLE: "apple",
-  GOOGLE: "google",
-}));
+// Instead, import the globally mocked functions if needed for assertions/resetting
+import {mockIapIsValidated, mockIapGetPurchaseData} from "../__mocks__/in-app-purchase";
 
 // Mock firebase-admin for Firestore interactions
 const mockFirestoreUpdate = jest.fn<() => Promise<void>>();
@@ -252,6 +236,35 @@ describe("validatePurchase - Unit Tests", () => {
       `IAP validation process failed for user ${testUserId}, product prod:`,
       platformError,
     );
+  });
+
+  it("should throw failed-precondition if iap.getPurchaseData returns data for a different product ID", async () => {
+    const auth = {uid: testUserId} as any;
+    const requestData = {purchaseToken: "token", productId: "requested.product.id", platform: "ios"};
+    const request: CallableRequest<ValidatePurchaseData> = {
+      auth,
+      data: requestData,
+      rawRequest: {} as any,
+      acceptsStreaming: false,
+    };
+
+    mockIapIsValidated.mockReturnValue(true);
+    // Simulate getPurchaseData returning details for a *different* product
+    mockIapGetPurchaseData.mockReturnValue([{productId: "validated.different.product.id", transactionId: "mockTxId"}]);
+
+    await expect(validatePurchase(request)).rejects.toThrow(
+      new HttpsError("failed-precondition", "Purchase validation failed or product ID mismatch."),
+    );
+
+    expect(mockPerformPlatformValidation).toHaveBeenCalledWith("ios", "token", "requested.product.id");
+    expect(mockIapIsValidated).toHaveBeenCalledWith(expect.any(Object)); // Assuming it's called with the response from performPlatformValidation
+    expect(mockIapGetPurchaseData).toHaveBeenCalledWith(expect.any(Object));
+    expect(functions.logger.error).toHaveBeenCalledWith(
+      expect.stringContaining("Purchase validation failed or product ID mismatch for user testUser123."),
+      expect.any(String), // Second argument to logger.error is the stringified response
+    );
+    expect(mockUpdateUserCoins).not.toHaveBeenCalled();
+    expect(mockMarkPurchaseTokenAsProcessed).not.toHaveBeenCalled();
   });
 
   it("should throw failed-precondition if iap.isValidated returns false", async () => {
@@ -501,6 +514,156 @@ describe("validatePurchase - Unit Tests", () => {
     expect(mockMarkPurchaseTokenAsProcessed).toHaveBeenCalledWith(testUserId, "newToken");
     expect(functions.logger.info).toHaveBeenCalledWith(
       `Purchase validated and processed for user ${testUserId}. Product ID: com.qwordly.coins.100.`,
+    );
+  });
+
+  it("should throw internal error if iap.getPurchaseData returns empty or no matching product", async () => {
+    const auth = {uid: testUserId} as any;
+    const requestData = {purchaseToken: "token", productId: "requested.product.id", platform: "ios"};
+    const request: CallableRequest<ValidatePurchaseData> = {
+      auth,
+      data: requestData,
+      rawRequest: {} as any,
+      acceptsStreaming: false,
+    };
+
+    mockIapIsValidated.mockReturnValue(true);
+    // Simulate getPurchaseData returning an empty array or no matching product
+    mockIapGetPurchaseData.mockReturnValue([]);
+
+    await expect(validatePurchase(request)).rejects.toThrow(
+      new HttpsError("internal", "Could not extract purchase data from validation response."),
+    );
+
+    expect(mockPerformPlatformValidation).toHaveBeenCalledWith("ios", "token", "requested.product.id");
+    expect(mockIapIsValidated).toHaveBeenCalledWith(expect.any(Object)); // Assuming it's called with the response from performPlatformValidation
+    expect(mockIapGetPurchaseData).toHaveBeenCalledWith(expect.any(Object));
+    expect(functions.logger.error).toHaveBeenCalledWith(
+      expect.stringContaining("iap.getPurchaseData did not return valid array"),
+    );
+    expect(mockUpdateUserCoins).not.toHaveBeenCalled();
+    expect(mockMarkPurchaseTokenAsProcessed).not.toHaveBeenCalled();
+  });
+
+  it("should throw internal error if markPurchaseTokenAsProcessed fails", async () => {
+    const auth = {uid: testUserId} as any;
+    const productId = "com.qwordly.coins.small";
+    const coinsToAward = 50;
+    const request: CallableRequest<ValidatePurchaseData> = {
+      auth,
+      data: {purchaseToken: "token", productId, platform: "android"},
+      rawRequest: {} as any,
+      acceptsStreaming: false,
+    };
+    const markProcessedError = new Error("Failed to mark token as processed");
+
+    mockIapIsValidated.mockReturnValue(true);
+    mockIapGetPurchaseData.mockReturnValue([{productId, quantity: 1, transactionId: "token"}]);
+    mockUpdateUserCoins.mockResolvedValue(undefined);
+    mockGetUser.mockResolvedValueOnce({coins: 100, hasPurchasedApp: false}); // Initial user data
+    mockGetUser.mockResolvedValueOnce({coins: 100 + coinsToAward, hasPurchasedApp: false}); // User data after coin update for log
+    mockGetUser.mockResolvedValueOnce({coins: 100 + coinsToAward, hasPurchasedApp: false}); // User data for final return
+    mockMarkPurchaseTokenAsProcessed.mockRejectedValue(markProcessedError);
+
+    // Temporarily mock iapConfig to ensure product details are found
+    const iapValidationModule = (await jest.isolateModules(async () => {
+      jest.mock("../iapConfig.js", () => ({
+        NO_ADS_PRODUCT_ID: "com.qwordly.noads",
+        BACKEND_COIN_PRODUCT_DETAILS: {
+          small: {id: "com.qwordly.coins.small", coins: 50},
+        },
+      }));
+      return import("../iapValidation.js");
+    })) as any;
+    const validatePurchaseWithMockConfig = iapValidationModule.validatePurchase as any;
+
+    await expect(validatePurchaseWithMockConfig(request)).rejects.toThrow(
+      new HttpsError("internal", "An unexpected error occurred during purchase processing."),
+    );
+
+    expect(mockMarkPurchaseTokenAsProcessed).toHaveBeenCalledWith(testUserId, "token", productId);
+    expect(functions.logger.error).toHaveBeenCalledWith(
+      `IAP validation process failed for user ${testUserId}, product ${productId}:`,
+      markProcessedError,
+    );
+  });
+
+  it("should throw internal error if updateUserCoins fails during coin pack purchase", async () => {
+    const auth = {uid: testUserId} as any;
+    const productId = "com.qwordly.coins.small";
+    const coinsToAward = 50;
+    const request: CallableRequest<ValidatePurchaseData> = {
+      auth,
+      data: {purchaseToken: "token", productId, platform: "android"},
+      rawRequest: {} as any,
+      acceptsStreaming: false,
+    };
+    const updateUserCoinsError = new Error("Failed to update user coins");
+
+    mockIapIsValidated.mockReturnValue(true);
+    mockIapGetPurchaseData.mockReturnValue([{productId, quantity: 1, transactionId: "token"}]);
+    mockGetUser.mockResolvedValueOnce({coins: 100, hasPurchasedApp: false}); // Initial user data for awarding coins path
+    mockUpdateUserCoins.mockRejectedValue(updateUserCoinsError);
+
+    // Temporarily mock iapConfig to ensure product details are found
+    const iapValidationModule = (await jest.isolateModules(async () => {
+      jest.mock("../iapConfig.js", () => ({
+        NO_ADS_PRODUCT_ID: "com.qwordly.noads",
+        BACKEND_COIN_PRODUCT_DETAILS: {
+          small: {id: "com.qwordly.coins.small", coins: 50},
+        },
+      }));
+      return import("../iapValidation.js");
+    })) as any;
+    const validatePurchaseWithMockConfig = iapValidationModule.validatePurchase as any;
+
+    await expect(validatePurchaseWithMockConfig(request)).rejects.toThrow(
+      new HttpsError("internal", "An unexpected error occurred during purchase processing."),
+    );
+
+    expect(mockUpdateUserCoins).toHaveBeenCalledWith(testUserId, coinsToAward);
+    expect(mockMarkPurchaseTokenAsProcessed).not.toHaveBeenCalled(); // Should not be called if item award fails
+    expect(functions.logger.error).toHaveBeenCalledWith(
+      `IAP validation process failed for user ${testUserId}, product ${productId}:`,
+      updateUserCoinsError,
+    );
+  });
+
+  it("should throw internal error if Firestore update fails for NO_ADS purchase", async () => {
+    const auth = {uid: testUserId} as any;
+    const productId = "com.qwordly.noads"; // From iapConfig.NO_ADS_PRODUCT_ID
+    const request: CallableRequest<ValidatePurchaseData> = {
+      auth,
+      data: {purchaseToken: "token", productId, platform: "ios"},
+      rawRequest: {} as any,
+      acceptsStreaming: false,
+    };
+    const firestoreUpdateError = new Error("Firestore update failed");
+
+    mockIapIsValidated.mockReturnValue(true);
+    mockIapGetPurchaseData.mockReturnValue([{productId, transactionId: "token"}]);
+    // mockGetUser.mockResolvedValueOnce({coins: 100, hasPurchasedApp: false }); // Initial user for NO_ADS path
+    mockFirestoreUpdate.mockRejectedValue(firestoreUpdateError); // Simulate failure in userRef.update()
+
+    // Temporarily mock iapConfig to ensure NO_ADS_PRODUCT_ID is correctly used
+    const iapValidationModule = (await jest.isolateModules(async () => {
+      jest.mock("../iapConfig.js", () => ({
+        NO_ADS_PRODUCT_ID: "com.qwordly.noads", // Ensure this matches productId
+        BACKEND_COIN_PRODUCT_DETAILS: {},
+      }));
+      return import("../iapValidation.js");
+    })) as any;
+    const validatePurchaseWithMockConfig = iapValidationModule.validatePurchase as any;
+
+    await expect(validatePurchaseWithMockConfig(request)).rejects.toThrow(
+      new HttpsError("internal", "An unexpected error occurred during purchase processing."),
+    );
+
+    expect(mockFirestoreUpdate).toHaveBeenCalledWith({hasPurchasedApp: true});
+    expect(mockMarkPurchaseTokenAsProcessed).not.toHaveBeenCalled(); // Should not be called if item award fails
+    expect(functions.logger.error).toHaveBeenCalledWith(
+      `IAP validation process failed for user ${testUserId}, product ${productId}:`,
+      firestoreUpdateError,
     );
   });
 });

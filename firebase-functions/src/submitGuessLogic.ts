@@ -2,7 +2,7 @@ import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import {onCall, CallableRequest, HttpsError} from "firebase-functions/v2/https";
 import {getUser, updateUserCoins, updateUserStats, getRiddle} from "./firestoreService";
-import type {Player, PlayerStats, PlayerStatsUpdate, PlayerProgressUpdate} from "./validation/firestoreSchemas";
+import type {PlayerStats, PlayerStatsUpdate} from "./validation/firestoreSchemas";
 import type {FeedbackItem} from "./validation/requestSchemas";
 
 // Type for feedback
@@ -143,13 +143,12 @@ export async function handleGuessLogic(
       statsUpdate.winStreak = admin.firestore.FieldValue.increment(1);
       statsUpdate.totalGuessesInWins = admin.firestore.FieldValue.increment(attempts);
 
-      const playerProfileUpdate: Partial<Player> = {};
+      const playerProfileUpdate: Record<string, any> = {};
 
       if (gameMode === "challenge") {
         statsUpdate.challengeWins = admin.firestore.FieldValue.increment(1);
         coinsEarned = Math.max(0, 20 - (attempts - 1) * 5);
-        playerProfileUpdate.lastDailyChallengeCompletedAt =
-          admin.firestore.FieldValue.serverTimestamp() as admin.firestore.FieldValue;
+        playerProfileUpdate.lastDailyChallengeCompletedAt = admin.firestore.FieldValue.serverTimestamp();
       } else {
         coinsEarned = 10;
       }

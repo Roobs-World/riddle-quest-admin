@@ -1,5 +1,4 @@
 import * as functions from "firebase-functions";
-import iap from "in-app-purchase";
 
 /**
  * Performs platform-specific IAP validation using the 'in-app-purchase' library.
@@ -17,6 +16,8 @@ export async function performPlatformValidation(
   purchaseToken: string,
   productId: string,
 ): Promise<any> {
+  const iap = (await import("in-app-purchase")).default;
+
   // Handle unsupported platform first, outside the main try-catch for iap.validate
   if (platform !== "ios" && platform !== "android") {
     functions.logger.error("Unsupported platform for IAP validation:", platform);

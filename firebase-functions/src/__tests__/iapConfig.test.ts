@@ -1,12 +1,10 @@
-// This is the mock function that will be used for iap.config and for assertions
-const theMockConfigFunction = jest.fn();
+// Mock configuration setup for iap.config testing
 
 // / <reference types="jest" />
 
 import * as functions from "firebase-functions";
 // Constants are imported for type checking if needed, and to assert their actual values.
 // REMOVED: import { NO_ADS_PRODUCT_ID, BACKEND_COIN_PRODUCT_DETAILS } from "../iapConfig";
-import {initializeApp} from "firebase-admin/app";
 
 const iapConfigModulePath = "../iapConfig"; // Path to the module under test
 
@@ -130,9 +128,6 @@ describe("iapConfig", () => {
   // Add a test for a different environment if really needed, by nesting a describe
   // block that also calls jest.resetModules() in its own beforeAll, but this adds complexity.
   // For now, testing one consistent environment for iap.config call is more robust.
-
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const iapConfigModule = require("../iapConfig"); // Dynamic import for mock testing
 
   test("should throw error if APPLE_SHARED_SECRET is missing when platform is ios", () => {
     // ... existing code ...

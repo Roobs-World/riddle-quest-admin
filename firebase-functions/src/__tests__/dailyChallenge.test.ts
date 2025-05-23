@@ -1,11 +1,17 @@
 import {afterEach, beforeEach, describe, expect, it, jest} from "@jest/globals";
 import * as functions from "firebase-functions";
-import {HttpsError, CallableRequest, HttpsOptions} from "firebase-functions/v2/https"; // For onCall
-import {logger as functionsLogger} from "firebase-functions/v2"; // For onCall logger
+import {HttpsError, CallableRequest, HttpsOptions} from "firebase-functions/v2/https";
+// import {logger as functionsLogger} from "firebase-functions/v2"; // Not used in this file's current state
 
-// Import the functions to test
-import {setCompletedDailyChallenge /* hasCompletedDailyChallenge - removed */} from "../dailyChallenge"; // Adjust path
-import {updateUserLastCompletedDailyChallengeDate, getUser} from "../firestoreService"; // Mocked
+// Original imports from SUT needed for typing the dynamically imported versions
+import type * as OriginalDailyChallenge from "../dailyChallenge";
+
+// Original imports from mocked services for typing
+import type {
+  updateUserLastCompletedDailyChallengeDate as originalUpdateUserDate,
+  getUser as originalGetUser,
+} from "../firestoreService";
+import {PlayerSchema, PlayerStatsSchema, PlayerProgressSchema, Player} from "../validation/firestoreSchemas"; // Import Zod schemas AND Player type
 
 // --- Mocks Start ---
 jest.mock("../firestoreService", () => ({
@@ -13,45 +19,85 @@ jest.mock("../firestoreService", () => ({
   getUser: jest.fn(),
 }));
 
-// Mock for v1 functions (setCompletedDailyChallenge)
-jest.mock("firebase-functions", async () => {
-  const actual = await jest.requireActual<typeof functions>("firebase-functions");
+jest.mock("firebase-functions", () => {
+  const actual = jest.requireActual("firebase-functions") as typeof functions;
   return {
     ...actual,
-    logger: {
-      info: jest.fn(),
-      warn: jest.fn(),
-      error: jest.fn(),
-    },
-    https: {
-      ...actual.https,
-      HttpsError: actual.https.HttpsError, // Ensure HttpsError is available for v1
-    },
+    logger: {info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn()},
+    https: {...actual.https, HttpsError: actual.https.HttpsError}, // Ensure HttpsError is from v1 for v1 functions
+    config: () => ({}),
   };
 });
 
-// Mock for v2 logger (hasCompletedDailyChallenge)
 jest.mock("firebase-functions/v2", async () => {
-  const actual = await jest.requireActual<typeof import("firebase-functions/v2")>("firebase-functions/v2");
+  const actualV2 = await jest.requireActual<typeof import("firebase-functions/v2")>("firebase-functions/v2");
+  // Provide a more complete mock for v2 https if hasCompletedDailyChallenge uses HttpsErrorV2 or other v2 features
+  const actualV2Https =
+    await jest.requireActual<typeof import("firebase-functions/v2/https")>("firebase-functions/v2/https");
   return {
-    ...actual,
-    logger: {
-      info: jest.fn(),
-      warn: jest.fn(),
-      error: jest.fn(),
+    ...actualV2,
+    logger: {info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn()}, // v2 logger
+    https: {
+      // Mock for v2 https
+      ...actualV2Https,
+      onCall: jest.fn(), // Placeholder, will be refined in describe block for hasCompletedDailyChallenge
+      HttpsError: actualV2Https.HttpsError, // v2 HttpsError
     },
-    // onCall will be tested by directly invoking the handler
   };
 });
 // --- Mocks End ---
 
-// Define a type for the v2 mock request data
 interface MockHasCompletedDailyChallengeData {
   id: string;
 }
 
+let setCompletedDailyChallenge: typeof OriginalDailyChallenge.setCompletedDailyChallenge;
+
+const getDefaultPlayer = (userId: string, overrides: Partial<Player> = {}): Player => {
+  const now = Date.now();
+  return PlayerSchema.parse({
+    userId,
+    email: `${userId}@example.com`,
+    username: userId,
+    displayName: userId,
+    avatarUrl: `http://example.com/avatar/${userId}.png`,
+    xp: 0,
+    coins: 100,
+    createdAt: now,
+    registeredAt: now,
+    lastLogin: now,
+    lastDailyChallengeCompletedAt: undefined,
+    stats: PlayerStatsSchema.parse({}), // Use Zod schema to get defaults
+    progress: PlayerProgressSchema.parse({}), // Use Zod schema to get defaults
+    ...overrides,
+  });
+};
+
 describe("Daily Challenge Functions", () => {
+  let mockUpdateUserLastCompletedDailyChallengeDate: jest.MockedFunction<typeof originalUpdateUserDate>;
+  let mockGetUser: jest.MockedFunction<typeof originalGetUser>;
+  let mockFirebaseFunctionsV1: {
+    logger: {error: jest.MockedFunction<(message?: any, ...optionalParams: any[]) => void>};
+    https: {HttpsError: typeof functions.https.HttpsError};
+  };
+
   beforeEach(() => {
+    jest.resetModules();
+    const dailyChallengeModule = require("../dailyChallenge") as typeof OriginalDailyChallenge;
+    setCompletedDailyChallenge = dailyChallengeModule.setCompletedDailyChallenge;
+
+    const mockFsService = jest.requireMock("../firestoreService") as {
+      updateUserLastCompletedDailyChallengeDate: jest.MockedFunction<typeof originalUpdateUserDate>;
+      getUser: jest.MockedFunction<typeof originalGetUser>;
+    };
+    mockUpdateUserLastCompletedDailyChallengeDate = mockFsService.updateUserLastCompletedDailyChallengeDate;
+    mockGetUser = mockFsService.getUser;
+
+    mockFirebaseFunctionsV1 = jest.requireMock("firebase-functions") as {
+      logger: {error: jest.MockedFunction<(message?: any, ...optionalParams: any[]) => void>};
+      https: {HttpsError: typeof functions.https.HttpsError};
+    };
+
     jest.clearAllMocks();
   });
 
@@ -59,79 +105,61 @@ describe("Daily Challenge Functions", () => {
     jest.restoreAllMocks();
   });
 
-  describe("setCompletedDailyChallenge", () => {
+  describe("setCompletedDailyChallenge (v1)", () => {
     it("should throw HttpsError if not authenticated", async () => {
-      const mockRequest = {
-        auth: undefined,
-        data: {},
-      } as functions.https.CallableRequest;
+      const mockRequest = {auth: undefined, data: {}} as functions.https.CallableRequest;
       await expect(setCompletedDailyChallenge(mockRequest)).rejects.toThrow(
-        new functions.https.HttpsError(
+        new mockFirebaseFunctionsV1.https.HttpsError(
           "unauthenticated",
           "The user must be authenticated to set completed daily challenge.",
         ),
       );
-      expect(updateUserLastCompletedDailyChallengeDate).not.toHaveBeenCalled();
+      expect(mockUpdateUserLastCompletedDailyChallengeDate).not.toHaveBeenCalled();
     });
 
     it("should call updateUserLastCompletedDailyChallengeDate and return success if authenticated", async () => {
       const mockUserId = "testUser123";
-      const mockRequest = {
-        auth: {uid: mockUserId},
-        data: {},
-      } as functions.https.CallableRequest;
-      (updateUserLastCompletedDailyChallengeDate as ReturnType<typeof jest.fn>).mockResolvedValue(undefined);
+      const mockRequest = {auth: {uid: mockUserId}, data: {}} as functions.https.CallableRequest;
+      mockUpdateUserLastCompletedDailyChallengeDate.mockResolvedValue(undefined);
       const expectedIsoDate = "2023-01-01T12:00:00.000Z";
-      // Keep the original Date spy for now, address 'any' in a later step if needed
-      const dateSpy = jest.spyOn(global, "Date").mockImplementation(
-        () =>
-          ({
-            toISOString: () => expectedIsoDate,
-          }) as Date,
-      );
-
+      const dateSpy = jest
+        .spyOn(global, "Date")
+        .mockImplementation(() => ({toISOString: () => expectedIsoDate}) as Date);
       const result = await setCompletedDailyChallenge(mockRequest);
-
-      expect(updateUserLastCompletedDailyChallengeDate).toHaveBeenCalledWith(
-        mockUserId,
-        expectedIsoDate, // Verify specific date string
-      );
+      expect(mockUpdateUserLastCompletedDailyChallengeDate).toHaveBeenCalledWith(mockUserId, expectedIsoDate);
       expect(result).toEqual({message: "Last completed daily challenge date set successfully."});
-      dateSpy.mockRestore(); // Clean up the spy
+      dateSpy.mockRestore();
     });
 
     it("should throw internal HttpsError if updateUserLastCompletedDailyChallengeDate fails", async () => {
       const mockUserId = "testUser123";
-      const mockRequest = {
-        auth: {uid: mockUserId},
-        data: {},
-      } as functions.https.CallableRequest;
+      const mockRequest = {auth: {uid: mockUserId}, data: {}} as functions.https.CallableRequest;
       const dbError = new Error("Database update failed");
-      (updateUserLastCompletedDailyChallengeDate as ReturnType<typeof jest.fn>).mockRejectedValue(dbError);
-
+      mockUpdateUserLastCompletedDailyChallengeDate.mockRejectedValue(dbError);
       await expect(setCompletedDailyChallenge(mockRequest)).rejects.toThrow(
-        new functions.https.HttpsError(
+        new mockFirebaseFunctionsV1.https.HttpsError(
           "internal",
           "An error occurred while setting completed daily challenge.",
-          // dbError // HttpsError v1 doesn't seem to propagate the third arg like this in tests
         ),
       );
-      // Check if the original error was logged
-      expect(functions.logger.error).toHaveBeenCalledWith("Error setting completed daily challenge:", dbError);
+      expect(mockFirebaseFunctionsV1.logger.error).toHaveBeenCalledWith(
+        "Error setting completed daily challenge:",
+        dbError,
+      );
     });
   });
 
-  describe("hasCompletedDailyChallenge", () => {
+  describe("hasCompletedDailyChallenge (v2)", () => {
     let actualV2OnCallHandler:
       | ((request: CallableRequest<MockHasCompletedDailyChallengeData>) => Promise<boolean>)
       | null = null;
-
     beforeEach(() => {
-      jest.resetModules(); // Reset modules before re-requiring
-      const httpsV2 = jest.requireActual("firebase-functions/v2/https") as Record<string, unknown>;
-
+      jest.resetModules(); // Reset again for v2 specific mock setup
+      const actualV2Https = jest.requireActual(
+        "firebase-functions/v2/https",
+      ) as typeof import("firebase-functions/v2/https");
       jest.mock("firebase-functions/v2/https", () => ({
-        ...httpsV2,
+        ...actualV2Https,
         onCall: (
           optionsOrHandler:
             | HttpsOptions
@@ -139,108 +167,75 @@ describe("Daily Challenge Functions", () => {
           handler?: (request: CallableRequest<MockHasCompletedDailyChallengeData>) => Promise<boolean>,
         ) => {
           actualV2OnCallHandler = typeof optionsOrHandler === "function" ? optionsOrHandler : handler!;
+          // Return a jest.fn that calls the captured handler to simulate Firebase execution
           return jest.fn(async (request: CallableRequest<MockHasCompletedDailyChallengeData>) =>
             actualV2OnCallHandler!(request),
           );
         },
+        HttpsError: actualV2Https.HttpsError, // Ensure v2 HttpsError is used
       }));
-      // Re-require dailyChallenge to apply the new mock for onCall
-      // The specific function is extracted from the module after it's loaded with mocks.
-      void import("../dailyChallenge.js");
-      // Note: hasCompletedDailyChallenge itself is an HttpsFunction.
-      // The actual handler is captured by actualV2OnCallHandler.
+      // Re-require the SUT and mocked dependencies as resetModules clears them
+      require("../dailyChallenge") as typeof OriginalDailyChallenge;
+      const mockFsService = jest.requireMock("../firestoreService") as {
+        updateUserLastCompletedDailyChallengeDate: jest.MockedFunction<typeof originalUpdateUserDate>;
+        getUser: jest.MockedFunction<typeof originalGetUser>;
+      };
+      mockUpdateUserLastCompletedDailyChallengeDate = mockFsService.updateUserLastCompletedDailyChallengeDate;
+      mockGetUser = mockFsService.getUser;
     });
 
     it("should return true if user completed challenge today", async () => {
       const mockUserId = "testUserToday";
       const today = new Date();
-      (getUser as ReturnType<typeof jest.fn>).mockResolvedValue({
-        userId: mockUserId,
-        lastDailyChallengeCompletedAt: today.toISOString(),
-        // Add other required Player fields if getUser returns a full Player object
-        username: "test",
-        xp: 0,
-        coins: 0,
-        progress: {},
-        stats: {},
-      });
-      const mockRequest = {
-        data: {id: mockUserId},
-      } as CallableRequest<MockHasCompletedDailyChallengeData>;
-
+      const todayTimestamp = Math.floor(today.getTime() / 1000);
+      mockGetUser.mockResolvedValue(getDefaultPlayer(mockUserId, {lastDailyChallengeCompletedAt: todayTimestamp}));
+      const mockRequest = {data: {id: mockUserId}} as CallableRequest<MockHasCompletedDailyChallengeData>;
       expect(actualV2OnCallHandler).not.toBeNull();
       const result = await actualV2OnCallHandler!(mockRequest);
       expect(result).toBe(true);
-      expect(getUser).toHaveBeenCalledWith(mockUserId);
+      expect(mockGetUser).toHaveBeenCalledWith(mockUserId);
     });
 
-    it("should return false if user completed challenge on a different day", async () => {
+    it("should return false if user completed challenge yesterday", async () => {
       const mockUserId = "testUserYesterday";
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
-      (getUser as ReturnType<typeof jest.fn>).mockResolvedValue({
-        userId: mockUserId,
-        lastDailyChallengeCompletedAt: yesterday.toISOString(),
-        username: "test",
-        xp: 0,
-        coins: 0,
-        progress: {},
-        stats: {},
-      });
-      const mockRequest = {
-        data: {id: mockUserId},
-      } as CallableRequest<MockHasCompletedDailyChallengeData>;
-
+      const yesterdayTimestamp = Math.floor(yesterday.getTime() / 1000);
+      mockGetUser.mockResolvedValue(getDefaultPlayer(mockUserId, {lastDailyChallengeCompletedAt: yesterdayTimestamp}));
+      const mockRequest = {data: {id: mockUserId}} as CallableRequest<MockHasCompletedDailyChallengeData>;
+      expect(actualV2OnCallHandler).not.toBeNull();
       const result = await actualV2OnCallHandler!(mockRequest);
       expect(result).toBe(false);
     });
 
     it("should return false if user has no lastDailyChallengeCompletedAt", async () => {
       const mockUserId = "testUserNever";
-      (getUser as ReturnType<typeof jest.fn>).mockResolvedValue({
-        userId: mockUserId,
-        lastDailyChallengeCompletedAt: null, // or undefined
-        username: "test",
-        xp: 0,
-        coins: 0,
-        progress: {},
-        stats: {},
-      });
-      const mockRequest = {
-        data: {id: mockUserId},
-      } as CallableRequest<MockHasCompletedDailyChallengeData>;
-
+      mockGetUser.mockResolvedValue(getDefaultPlayer(mockUserId, {lastDailyChallengeCompletedAt: undefined}));
+      const mockRequest = {data: {id: mockUserId}} as CallableRequest<MockHasCompletedDailyChallengeData>;
+      expect(actualV2OnCallHandler).not.toBeNull();
       const result = await actualV2OnCallHandler!(mockRequest);
       expect(result).toBe(false);
     });
 
     it("should return false if user is not found", async () => {
       const mockUserId = "testUserNotFound";
-      (getUser as ReturnType<typeof jest.fn>).mockResolvedValue(undefined);
-      const mockRequest = {
-        data: {id: mockUserId},
-      } as CallableRequest<MockHasCompletedDailyChallengeData>;
-
-      const result = await actualV2OnCallHandler!(mockRequest);
-      expect(result).toBe(false);
-    });
-
-    it("should throw HttpsError (v2) if getUser fails", async () => {
-      const mockUserId = "testUserError";
-      const dbError = new Error("DB fetch failed");
-      (getUser as ReturnType<typeof jest.fn>).mockRejectedValue(dbError);
-      const mockRequest = {
-        data: {id: mockUserId},
-      } as CallableRequest<MockHasCompletedDailyChallengeData>;
-      // const mockV2Context = {}; // Ensured removed
-
+      mockGetUser.mockResolvedValue(null as any); // Simulate user not found
+      const mockRequest = {data: {id: mockUserId}} as CallableRequest<MockHasCompletedDailyChallengeData>;
       expect(actualV2OnCallHandler).not.toBeNull();
       await expect(actualV2OnCallHandler!(mockRequest)).rejects.toThrow(
-        new HttpsError("internal", "An error occurred while checking daily challenge status."),
+        new HttpsError("not-found", `User ${mockUserId} not found.`),
       );
-      // Check if the original error was logged using the v2 logger mock
-      // This requires functionsLogger to be mocked correctly for v2 calls
-      expect(functionsLogger.error).toHaveBeenCalledWith("Error checking daily challenge status:", dbError);
+    });
+
+    it("should throw internal error if getUser fails", async () => {
+      const mockUserId = "testUserError";
+      const dbError = new Error("DB fetch failed");
+      mockGetUser.mockRejectedValue(dbError);
+      const mockRequest = {data: {id: mockUserId}} as CallableRequest<MockHasCompletedDailyChallengeData>;
+      expect(actualV2OnCallHandler).not.toBeNull();
+      await expect(actualV2OnCallHandler!(mockRequest)).rejects.toThrow(
+        new HttpsError("internal", "An error occurred while fetching user data."),
+      );
     });
   });
 });

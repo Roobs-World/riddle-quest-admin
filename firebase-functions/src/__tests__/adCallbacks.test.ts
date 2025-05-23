@@ -24,11 +24,11 @@ jest.mock("firebase-functions", () => ({
 }));
 
 jest.mock("../firestoreService", () => ({
-  updateUserCoins: jest.fn(),
+  updateUserCoins: jest.fn<() => Promise<void>>(),
 }));
 
-const mockGet = jest.fn();
-const mockSet = jest.fn();
+const mockGet = jest.fn<() => Promise<{exists: boolean}>>();
+const mockSet = jest.fn<() => Promise<void>>();
 const mockDoc = jest.fn(() => ({
   get: mockGet,
   set: mockSet,
@@ -48,11 +48,11 @@ jest.mock("firebase-admin", () => ({
   }),
 }));
 
-const mockUpdate = jest.fn();
-const mockDigest = jest.fn();
+const mockUpdate = jest.fn<(...args: any[]) => any>();
+const mockDigest = jest.fn<(...args: any[]) => string>();
 jest.mock("crypto", () => ({
   createHash: jest.fn(() => ({
-    update: mockUpdate.mockReturnThis(), // Return `this` for chaining
+    update: mockUpdate.mockReturnThis(),
     digest: mockDigest,
   })),
 }));
@@ -83,22 +83,24 @@ describe("awardedAdCallback", () => {
 
     // Default mock implementations
     mockGet.mockResolvedValue({exists: false}); // Default: transaction not processed
-    mockSet.mockResolvedValue({});
-    (updateUserCoins as ReturnType<typeof jest.fn>).mockResolvedValue(undefined);
+    mockSet.mockResolvedValue(undefined);
+    (updateUserCoins as jest.Mock<() => Promise<void>>).mockResolvedValue(undefined);
 
     // Setup crypto mocks for a valid signature by default
     // Hashed SDK Key: sha256("test_sdk_key")
     // Let's assume this is "hashed_sdk_key_value"
-    mockDigest.mockImplementation((format: crypto.BinaryToTextEncoding) => {
+    mockDigest.mockImplementation((format?: crypto.BinaryToTextEncoding): string => {
       if (format === "hex") {
         // The first call to digest is for sdkKey, the second for the final signature
-        if (mockUpdate.mock.calls[mockUpdate.mock.calls.length - 1][0] === "test_sdk_key") {
+        // Check the argument of the most recent call to 'update'
+        const lastUpdateCall = mockUpdate.mock.calls[mockUpdate.mock.calls.length - 1];
+        if (lastUpdateCall && lastUpdateCall[0] === "test_sdk_key") {
           return "hashed_sdk_key_value";
         }
-        // This will be the expected signature
+        // This will be the expected signature for default valid cases
         return "valid_signature";
       }
-      return "";
+      return ""; // Should not happen in these tests if format is always 'hex'
     });
   });
 
@@ -128,11 +130,13 @@ describe("awardedAdCallback", () => {
   });
 
   it("should return 401 if signature verification fails", async () => {
-    mockDigest.mockImplementation((format: crypto.BinaryToTextEncoding) => {
+    mockDigest.mockImplementation((format?: crypto.BinaryToTextEncoding): string => {
       if (format === "hex") {
-        if (mockUpdate.mock.calls[mockUpdate.mock.calls.length - 1][0] === "test_sdk_key") {
+        const lastUpdateCall = mockUpdate.mock.calls[mockUpdate.mock.calls.length - 1];
+        if (lastUpdateCall && lastUpdateCall[0] === "test_sdk_key") {
           return "hashed_sdk_key_value";
         }
+        // This will be the expected signature
         return "invalid_signature_calculated_by_mock";
       }
       return "";
@@ -223,7 +227,7 @@ describe("awardedAdCallback", () => {
   });
 
   it("should return 500 if updateUserCoins fails", async () => {
-    (updateUserCoins as ReturnType<typeof jest.fn>).mockRejectedValue(new Error("Coin update failed"));
+    (updateUserCoins as jest.Mock<() => Promise<void>>).mockRejectedValue(new Error("Coin update failed"));
     mockReq.body.signature = mockValidSignature(mockReq.body); // Valid signature
 
     await awardedAdCallback(mockReq, mockRes);
@@ -281,5 +285,33 @@ describe("awardedAdCallback", () => {
     expect(mockRes.status).toHaveBeenCalledWith(200);
     expect(mockRes.send).toHaveBeenCalledWith("OK");
     expect(updateUserCoins).toHaveBeenCalledWith(mockReq.body.user_id, 50);
+  });
+
+  it("should return 500 if APPLOVIN_SDK_KEY is not configured", async () => {
+    // Temporarily unmock and re-mock functions.config to return undefined for sdk_key
+    jest.isolateModules(async () => {
+      jest.unmock("firebase-functions");
+      jest.doMock("firebase-functions", () => ({
+        config: () => ({applovin: {}}), // sdk_key is missing
+        logger: {
+          info: jest.fn(),
+          warn: jest.fn(),
+          error: jest.fn(),
+        },
+        https: {
+          onRequest: (handler: any) => handler,
+        },
+      }));
+      const {awardedAdCallback: callbackWithMissingSdkKey} = await import("../adCallbacks.js");
+
+      await callbackWithMissingSdkKey(mockReq, mockRes);
+
+      expect(mockRes.status).toHaveBeenCalledWith(500);
+      expect(mockRes.send).toHaveBeenCalledWith({message: "Server configuration error."});
+      const functionsLogger = require("firebase-functions").logger;
+      expect(functionsLogger.error).toHaveBeenCalledWith(
+        "Missing required environment variable: APPLOVIN_SDK_KEY (from Firebase config)",
+      );
+    });
   });
 });
