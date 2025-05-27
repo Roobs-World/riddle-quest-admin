@@ -1,13 +1,12 @@
 import * as functions from "firebase-functions";
-import * as admin from "firebase-admin";
 import {onCall} from "firebase-functions/v2/https";
 import iap from "in-app-purchase"; // Keep for iap.isValidated and iap.getPurchaseData
 
-import {getUser, updateUserCoins} from "./firestoreService.js";
+import {getUser, updateUserCoins, updateUserProfile} from "./firestoreService";
 // Import configurations, receipt service functions, and platform validator
-import {NO_ADS_PRODUCT_ID, BACKEND_COIN_PRODUCT_DETAILS} from "./iapConfig.js";
-import {isPurchaseTokenAlreadyProcessed, markPurchaseTokenAsProcessed} from "./iapReceiptService.js";
-import {performPlatformValidation} from "./iapPlatformValidator.js";
+import {NO_ADS_PRODUCT_ID, BACKEND_COIN_PRODUCT_DETAILS} from "./iapConfig";
+import {isPurchaseTokenAlreadyProcessed, markPurchaseTokenAsProcessed} from "./iapReceiptService";
+import {performPlatformValidation} from "./iapPlatformValidator";
 
 // TODO: Configure these environment variables securely in Firebase Functions settings using `firebase functions:config:set`
 // The iap.config() and related env var checks are now handled in iapConfig.ts
@@ -31,6 +30,10 @@ export const validatePurchase = onCall(
   ): Promise<{success: boolean; newCoins: number | undefined}> => {
     if (!request.auth) {
       throw new functions.https.HttpsError("unauthenticated", "The function must be called while authenticated.");
+    }
+
+    if (!request.data) {
+      throw new functions.https.HttpsError("invalid-argument", "Invalid purchase token, product ID, or platform.");
     }
 
     const {purchaseToken, productId, platform} = request.data;
@@ -74,7 +77,7 @@ export const validatePurchase = onCall(
           throw new functions.https.HttpsError("internal", "Could not extract purchase data from validation response.");
         }
 
-        const purchaseDetails = purchaseDataList.find((item: any) => item.productId === productId);
+        const purchaseDetails = purchaseDataList.find((item) => (item as {productId: string}).productId === productId);
 
         if (purchaseDetails) {
           isPurchaseValid = true;
@@ -86,13 +89,12 @@ export const validatePurchase = onCall(
         functions.logger.info(`Purchase validated and product ID matched for user ${userId}: ${productId}`);
 
         let awardedCoins: number | undefined;
-        const userRef = admin.firestore().collection("users").doc(userId);
 
         if (validatedProductIdFromReceipt === NO_ADS_PRODUCT_ID) {
-          await userRef.update({hasPurchasedApp: true});
+          await updateUserProfile(userId, {hasPurchasedApp: true});
           functions.logger.info(`User ${userId} has purchased ad removal.`);
-          const userDoc = await userRef.get();
-          awardedCoins = userDoc.data()?.coins as number | undefined;
+          const updatedUser = await getUser(userId);
+          awardedCoins = updatedUser?.coins;
         } else {
           const productInfo = Object.values(BACKEND_COIN_PRODUCT_DETAILS).find(
             (p) => p.id === validatedProductIdFromReceipt,
@@ -132,7 +134,7 @@ export const validatePurchase = onCall(
           "Purchase validation failed or product ID mismatch.",
         );
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       functions.logger.error(`IAP validation process failed for user ${userId}, product ${productId}:`, error);
       if (error instanceof functions.https.HttpsError) {
         throw error;

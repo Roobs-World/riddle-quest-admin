@@ -3,7 +3,7 @@ import * as admin from "firebase-admin";
 import {onRequest} from "firebase-functions/v2/https";
 import {Request, Response} from "express";
 import * as crypto from "crypto";
-import {updateUserCoins} from "./firestoreService.js";
+import {updateUserCoins} from "./firestoreService";
 
 /**
  * Function to verify ad network signature (AppLovin MAX Postback Validation)
@@ -27,13 +27,13 @@ async function verifyAdNetworkSignature(
   adToken: string,
   sdkKey: string,
 ): Promise<boolean> {
-  console.log("Performing AppLovin MAX signature verification.");
+  functions.logger.info("Performing AppLovin MAX signature verification.");
 
   try {
     // 1. Check for replay attacks first to fail fast on duplicates
     const isProcessed = await isAdTransactionAlreadyProcessed(userId, token);
     if (isProcessed) {
-      console.warn(
+      functions.logger.warn(
         `AppLovin transaction token ${token} already processed for user ${userId}. Potential replay attack.`,
       );
       return false;
@@ -48,14 +48,14 @@ async function verifyAdNetworkSignature(
     const isValidSignature = expectedSignature === signature;
 
     if (!isValidSignature) {
-      console.error(
+      functions.logger.error(
         `AppLovin signature verification failed for user ${userId}, token ${token}. Expected: ${expectedSignature}, Received: ${signature}`,
       );
     }
 
     return isValidSignature && !isProcessed;
   } catch (error) {
-    console.error("Error during AppLovin signature verification:", error);
+    functions.logger.error("Error during AppLovin signature verification:", error);
     return false;
   }
 }
@@ -80,7 +80,7 @@ async function isAdTransactionAlreadyProcessed(userId: string, token: string): P
       .get();
     return transactionDoc.exists;
   } catch (error) {
-    console.error("Error checking if ad transaction was processed:", error);
+    functions.logger.error("Error checking if ad transaction was processed:", error);
     return true;
   }
 }
@@ -104,7 +104,7 @@ async function markAdTransactionAsProcessed(userId: string, token: string): Prom
       .doc(token)
       .set({processedAt: admin.firestore.FieldValue.serverTimestamp()});
   } catch (error) {
-    console.error("Error marking ad transaction as processed:", error);
+    functions.logger.error("Error marking ad transaction as processed:", error);
     throw error;
   }
 }
@@ -118,9 +118,10 @@ async function markAdTransactionAsProcessed(userId: string, token: string): Prom
  * @return A promise that resolves once the operation is completed.
  */
 export const awardedAdCallback = onRequest(async (req: Request, res: Response): Promise<void> => {
-  const applovinSdkKey = functions.config().applovin?.sdk_key;
+  // const applovinSdkKey = functions.config().applovin?.sdk_key;
+  const applovinSdkKey = process.env.APPLOVIN_SDK_KEY;
   if (!applovinSdkKey) {
-    functions.logger.error("Missing required environment variable: APPLOVIN_SDK_KEY (from Firebase config)");
+    functions.logger.error("Missing required environment variable: APPLOVIN_SDK_KEY (from process.env)");
     res.status(500).send({message: "Server configuration error."});
     return;
   }

@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import AppLovinMAX, {
+import {
   AdInfo,
   RewardedAd,
   AdLoadFailedInfo,
@@ -9,6 +9,15 @@ import AppLovinMAX, {
 import functions from "@react-native-firebase/functions";
 import { useAuth } from "../contexts/AuthContext";
 import Constants from "expo-constants";
+
+// Extend AdRewardInfo type to include native methods not present in JS typings
+interface ExtendedAdRewardInfo extends AdRewardInfo {
+  getAmount(): number;
+  getLabel(): string;
+  getAdUnitId(): string;
+  getPlacement(): string | null;
+  getNetworkName(): string;
+}
 
 // Access the Ad Unit ID from app.config.js extras
 const REWARDED_AD_UNIT_ID = Constants.expoConfig?.extra
@@ -102,16 +111,12 @@ const useRewardedAds = (): UseRewardedAds => {
     loadRewardedAd();
   };
 
-  const onUserRewarded = async (rewardInfo: AdRewardInfo) => {
+  const onUserRewarded = async (rewardInfo: ExtendedAdRewardInfo) => {
     // Access amount and label using methods based on common patterns in native SDKs
     // The type definition might not reflect these methods directly.
     // Using 'any' and checking for method existence to bypass strict type checking.
-    const amount = (rewardInfo as any).getAmount
-      ? (rewardInfo as any).getAmount()
-      : 0;
-    const label = (rewardInfo as any).getLabel
-      ? (rewardInfo as any).getLabel()
-      : "";
+    const amount = rewardInfo.getAmount();
+    const label = rewardInfo.getLabel();
     console.log("User rewarded: " + amount + " " + label);
 
     // IMPORTANT: Do NOT award coins directly on the client side.
@@ -123,15 +128,9 @@ const useRewardedAds = (): UseRewardedAds => {
     // Notify the backend that the user was rewarded.
     if (playerData?.userId) {
       try {
-        const adUnitId = (rewardInfo as any).getAdUnitId
-          ? (rewardInfo as any).getAdUnitId()
-          : REWARDED_AD_UNIT_ID;
-        const placement = (rewardInfo as any).getPlacement
-          ? (rewardInfo as any).getPlacement()
-          : null;
-        const networkName = (rewardInfo as any).getNetworkName
-          ? (rewardInfo as any).getNetworkName()
-          : null;
+        const adUnitId = rewardInfo.getAdUnitId();
+        const placement = rewardInfo.getPlacement();
+        const networkName = rewardInfo.getNetworkName();
 
         console.log(
           `Calling rewardedAdCallback with userId: ${playerData.userId}, adUnitId: ${adUnitId}, placement: ${placement}, network: ${networkName}`
@@ -221,7 +220,7 @@ const useRewardedAds = (): UseRewardedAds => {
     // This will attempt to load the ad assuming the SDK is initialized early in the app lifecycle.
     // A more robust approach might involve waiting for the SDK initialization confirmation.
     loadRewardedAd();
-  }, []); // Empty dependency array to run only once
+  }, [loadRewardedAd]); // Added loadRewardedAd to dependencies
 
   return {
     isRewardedAdReady,

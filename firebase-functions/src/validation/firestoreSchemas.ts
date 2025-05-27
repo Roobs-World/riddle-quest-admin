@@ -53,6 +53,7 @@ export const PlayerSchema = z.object({
   avatarUrl: z.string().url().optional(),
   xp: z.number().int().nonnegative().default(0),
   coins: z.number().int().nonnegative().default(0),
+  hasPurchasedApp: z.boolean().optional().default(false), // Added hasPurchasedApp for IAP functionality
   createdAt: z.number().optional(), // Assuming timestamp is stored as a number
   registeredAt: z.number().optional(), // Assuming timestamp is stored as a number
   lastLogin: z.number().optional(), // Assuming timestamp is stored as a number

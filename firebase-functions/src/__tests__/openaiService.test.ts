@@ -12,29 +12,26 @@ jest.mock("openai", () => {
   }));
 });
 
-// 3. Mock firebase-functions
-// This mock will be used by default. Tests for env variables will override it.
-jest.mock("firebase-functions", () => ({
-  config: () => ({
-    openai: {
-      api_key: "test-openai-key",
-    },
-  }),
-}));
-
-// 4. Finally, import the module under test.
-import {generateUniqueRiddle} from "../openaiService.js";
+// 3. Import the module under test.
+import {generateUniqueRiddle, resetOpenAIClient} from "../openaiService";
 
 describe("generateUniqueRiddles", () => {
+  const originalEnv = process.env;
+
   beforeEach(() => {
     jest.clearAllMocks();
     jest.spyOn(console, "log").mockImplementation(() => {});
     jest.spyOn(console, "warn").mockImplementation(() => {});
     jest.spyOn(console, "error").mockImplementation(() => {});
+    // Set up environment variable for tests
+    process.env = {...originalEnv, OPENAI_API_KEY: "test-openai-key"};
+    resetOpenAIClient();
   });
 
   afterEach(() => {
     jest.restoreAllMocks();
+    process.env = originalEnv;
+    resetOpenAIClient();
   });
 
   test("should return a parsed riddle on successful API response", async () => {
@@ -111,43 +108,39 @@ describe("generateUniqueRiddles", () => {
 });
 
 describe("OpenAI Service - Environment Variable Check", () => {
-  let openAIServiceModule: {generateUniqueRiddle: () => Promise<[string, string] | null>} | undefined;
+  const originalEnv = process.env;
 
   beforeEach(() => {
-    jest.resetModules();
+    jest.clearAllMocks();
     jest.spyOn(console, "error").mockImplementation(() => {});
+    resetOpenAIClient();
   });
 
   afterEach(() => {
     jest.restoreAllMocks();
+    process.env = originalEnv;
+    resetOpenAIClient();
   });
-
-  const loadModuleWithMockConfig = async (mockConfigData: Record<string, unknown>) => {
-    jest.doMock("firebase-functions", () => ({
-      config: () => mockConfigData,
-    }));
-    openAIServiceModule = await import("../openaiService.js");
-  };
 
   test("should throw error if OPENAI_API_KEY is missing", async () => {
-    await expect(loadModuleWithMockConfig({openai: {}})).rejects.toThrow(
-      "Missing required environment variable: OPENAI_API_KEY from Firebase config (openai.api_key)",
-    );
-  });
+    // Remove the environment variable
+    process.env = {...originalEnv};
+    delete process.env.OPENAI_API_KEY;
 
-  test("should throw error if openai config section is missing", async () => {
-    await expect(loadModuleWithMockConfig({})).rejects.toThrow(
-      "Missing required environment variable: OPENAI_API_KEY from Firebase config (openai.api_key)",
-    );
+    await expect(generateUniqueRiddle()).rejects.toThrow("Missing required environment variable: OPENAI_API_KEY");
   });
 
   test("should not throw if OPENAI_API_KEY is present", async () => {
-    await expect(
-      loadModuleWithMockConfig({
-        openai: {api_key: "a-real-key"},
-      }),
-    ).resolves.not.toThrow();
-    expect(openAIServiceModule).toBeDefined();
-    expect(typeof openAIServiceModule?.generateUniqueRiddle).toBe("function");
+    // Set the environment variable
+    process.env = {...originalEnv, OPENAI_API_KEY: "a-real-key"};
+
+    // Mock the OpenAI call to avoid actual API call
+    mockCreateCompletions.mockResolvedValue({
+      choices: [{message: {content: "Question: Test?\n\nAnswer: test"}}],
+    });
+
+    await expect(generateUniqueRiddle()).resolves.not.toThrow();
+    const result = await generateUniqueRiddle();
+    expect(result).toEqual(["Test?", "test"]);
   });
 });

@@ -7,16 +7,10 @@ import * as admin from "firebase-admin";
 // Removed unused imports and types
 // import type { FirestoreRiddle } from "../../src/validation/firestoreSchemas";
 
-// Removed environment variable definitions - these should ideally be accessed within the modules that need them
-// Or manage them centrally if necessary
-// const spreadsheetId = process.env.SPREADSHEET_ID;
-// const accessToken = process.env.ACCESS_TOKEN;
-// const applovinSdkKey = process.env.APPLOVIN_SDK_KEY;
+// Environment variables are now accessed within the modules that need them
 
-// Ensure environment variables are set - moved check to adCallbacks.ts
-// if (!spreadsheetId || !accessToken || !applovinSdkKey) {
-//   throw new Error("Missing required environment variables: SPREADSHEET_ID, ACCESS_TOKEN, and APPLOVIN_SDK_KEY");
-// }
+console.log(`[ENV_TEST] MY_TEST_VARIABLE: ${process.env.MY_TEST_VARIABLE}`);
+console.log(`[ENV_TEST] APPLE_SHARED_SECRET: ${process.env.APPLE_SHARED_SECRET}`);
 
 admin.initializeApp();
 
@@ -29,13 +23,13 @@ admin.initializeApp();
 // export * from "./profile.js";
 
 // Explicitly import and export functions from sub-modules
-import {awardedAdCallback} from "./adCallbacks.js";
-import {validatePurchase} from "./iapValidation.js";
-import {getHint, spendCoins, skipRiddle} from "./gameLogic.js";
-import {setCompletedDailyChallenge, hasCompletedDailyChallenge} from "./dailyChallenge.js";
-import {generateClassicRiddles} from "./riddleGeneration.js";
-import {resetStats} from "./profile.js";
-import {submitGuess} from "./submitGuessLogic.js";
+import {awardedAdCallback} from "./adCallbacks";
+import {validatePurchase} from "./iapValidation";
+import {getHint, spendCoins, skipRiddle} from "./gameLogic";
+import {setCompletedDailyChallenge, hasCompletedDailyChallenge, getCurrentDailyChallenge} from "./dailyChallenge";
+import {generateClassicRiddles} from "./riddleGeneration";
+import {resetStats, updateAvatar} from "./profile";
+import {submitGuess} from "./submitGuessLogic";
 
 export {
   awardedAdCallback,
@@ -45,8 +39,10 @@ export {
   skipRiddle,
   setCompletedDailyChallenge,
   hasCompletedDailyChallenge,
+  getCurrentDailyChallenge,
   generateClassicRiddles,
   resetStats,
+  updateAvatar,
   submitGuess,
 };
 

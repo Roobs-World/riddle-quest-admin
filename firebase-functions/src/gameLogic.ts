@@ -1,8 +1,8 @@
-import * as functions from "firebase-functions";
+import {logger} from "firebase-functions/v2";
 import * as admin from "firebase-admin";
 import {onCall, HttpsError as HttpsErrorV2, CallableRequest as CallableRequestV2} from "firebase-functions/v2/https";
-import {updateUserCoins, getUser} from "./firestoreService.js";
-import type {FirestoreRiddle} from "./validation/firestoreSchemas.js";
+import {updateUserCoins, getUser} from "./firestoreService";
+import type {FirestoreRiddle} from "./validation/firestoreSchemas";
 
 /**
  * Provides a hint (reveals a letter) for the current riddle based on the user's
@@ -65,7 +65,7 @@ export const getHint = onCall(
       const isGameCompleted = gameState?.isCompleted === true;
 
       if (isGameCompleted) {
-        functions.logger.warn(`User ${currentUserId} requested hint for completed riddle ${riddleId}.`);
+        logger.warn(`User ${currentUserId} requested hint for completed riddle ${riddleId}.`);
         throw new HttpsErrorV2("failed-precondition", "Game is already completed.");
       }
 
@@ -86,7 +86,7 @@ export const getHint = onCall(
       }
 
       if (revealedLetter === null || index === null) {
-        functions.logger.warn(
+        logger.warn(
           `No hint available for user ${currentUserId}, riddle ${riddleId}. All letters revealed or guessed correctly.`,
         );
         return null;
@@ -101,7 +101,7 @@ export const getHint = onCall(
         {merge: true},
       );
 
-      functions.logger.info(
+      logger.info(
         `User ${currentUserId} used a hint for riddle ${riddleId}, revealing letter ${revealedLetter.toUpperCase()} at index ${index}.`,
       );
 
@@ -111,7 +111,7 @@ export const getHint = onCall(
         coinsCost,
       };
     } catch (error) {
-      functions.logger.error("Error getting hint:", error);
+      logger.error("Error getting hint:", error);
       if (error instanceof HttpsErrorV2) {
         throw error;
       }
@@ -143,11 +143,21 @@ export const spendCoins = onCall(
       throw new HttpsErrorV2("invalid-argument", "Invalid amount specified.");
     }
 
-    if (reason !== "hint" && reason !== "skip") {
+    if (reason !== "hint" && reason !== "skip" && reason !== "skip riddle") {
       throw new HttpsErrorV2("invalid-argument", "Invalid reason specified.");
     }
 
     try {
+      // Check if user exists first
+      const user = await getUser(userId);
+      if (!user) {
+        throw new HttpsErrorV2("not-found", "User data not found.");
+      }
+
+      if (user.coins < amount) {
+        throw new HttpsErrorV2("failed-precondition", "Insufficient coins to spend.");
+      }
+
       await updateUserCoins(userId, -amount);
 
       const updatedUser = await getUser(userId);
@@ -156,10 +166,10 @@ export const spendCoins = onCall(
         throw new HttpsErrorV2("internal", "Could not retrieve updated user data after spending coins.");
       }
 
-      functions.logger.info(`User ${userId} spent ${amount} coins for ${reason}.`);
+      logger.info(`User ${userId} spent ${amount} coins for reason: ${reason}. New balance: ${updatedUser.coins}.`);
       return {newCoins: updatedUser.coins};
     } catch (error: unknown) {
-      console.error("Error spending coins:", error);
+      logger.error("Error spending coins:", error);
       if (error instanceof HttpsErrorV2) {
         throw error;
       }
@@ -234,8 +244,12 @@ export const skipRiddle = onCall(
 
         if (!nextRiddleQuerySnapshot.empty) {
           newRiddleData = nextRiddleQuerySnapshot.docs[0].data() as FirestoreRiddle;
+          // Get the document ID as the riddleId
+          const newRiddleDocumentId = nextRiddleQuerySnapshot.docs[0].id;
+          // Add the riddleId to the riddle data for consistency
+          newRiddleData.riddleId = newRiddleDocumentId;
         } else {
-          functions.logger.info(
+          logger.info(
             `End of available classic riddles for user ${currentUserId} at index ${currentRiddle.classicIndex}. Triggering generation.`,
           );
           try {
@@ -245,7 +259,7 @@ export const skipRiddle = onCall(
               status: "requested",
             });
           } catch (genError) {
-            functions.logger.error("Failed to trigger generateClassicRiddles:", genError);
+            logger.error("Failed to trigger generateClassicRiddles:", genError);
           }
 
           throw new HttpsErrorV2(
@@ -273,7 +287,7 @@ export const skipRiddle = onCall(
         newRiddleId: newRiddleData.riddleId,
       };
     } catch (error) {
-      functions.logger.error("Error skipping riddle:", error);
+      logger.error("Error skipping riddle:", error);
       if (error instanceof HttpsErrorV2) {
         throw error;
       }

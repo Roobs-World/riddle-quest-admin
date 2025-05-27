@@ -1,5 +1,10 @@
 import * as admin from "firebase-admin";
 
+interface RiddleIdObject {
+  // Define a local interface
+  id?: string;
+}
+
 /**
  * Retrieves the IDs of existing riddles for a user.
  * @param {string} userId - The ID of the user.
@@ -15,13 +20,13 @@ async function getExistingRiddleIds(userId: string): Promise<Set<string>> {
     const existingRiddles = userData?.riddles || [];
     // Assuming each riddle object has a unique 'id' property
     // If not, you might need a different way to identify uniqueness
-    return new Set(
-      existingRiddles
-        .map((riddle: any) => riddle.id)
-        .filter((id: string | undefined) => id !== undefined)
+    return new Set<string>(
+      (existingRiddles as RiddleIdObject[]) // Cast to the new interface array
+        .map((riddle) => riddle.id)
+        .filter((id): id is string => id !== undefined)
     );
   } else {
-    return new Set();
+    return new Set<string>();
   }
 }
 
@@ -108,7 +113,13 @@ export async function generateAndAppendRiddles(
     }
 
     if (newRiddles.length > 0) {
-      await appendRiddlesToUserDocument(userId, newRiddles);
+      // Need to pass an array that matches the expected type in appendRiddlesToUserDocument
+      // which is Array<{ riddle: string, answer: string }>
+      const riddlesToAppend = newRiddles.map((riddle) => ({
+        riddle: riddle.riddle,
+        answer: riddle.answer,
+      }));
+      await appendRiddlesToUserDocument(userId, riddlesToAppend);
       console.log(
         `Successfully generated and appended ${newRiddles.length} riddles for user ${userId}.`
       );

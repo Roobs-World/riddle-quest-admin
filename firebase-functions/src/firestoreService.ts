@@ -1,6 +1,6 @@
 import * as admin from "firebase-admin";
 // Removed unused import: import { getFirestore, FieldValue, Timestamp } from "firebase-admin/firestore";
-import type {Player, PlayerStatsUpdate} from "./validation/firestoreSchemas.js";
+import type {Player, PlayerStatsUpdate, FirestoreRiddle} from "./validation/firestoreSchemas";
 // Removed import for non-existent models.js: import type { GameState } from "./models.js";
 import * as functions from "firebase-functions";
 
@@ -66,7 +66,7 @@ export async function updateUserLastCompletedDailyChallengeDate(userId: string, 
   try {
     await getDb().collection("users").doc(userId).update({lastDailyChallengeCompletedAt: date});
   } catch (error) {
-    console.error(`Error updating last completed daily challenge date for user ${userId}:`, error);
+    functions.logger.error(`Error updating last completed daily challenge date for user ${userId}:`, error);
     throw error;
   }
 }
@@ -90,6 +90,8 @@ export async function updateUserCoins(
     const userDoc = await txn.get(userRef);
 
     if (!userDoc.exists) {
+      const errorMessage = `User with ID ${userId} not found during transaction for updateUserCoins.`;
+      functions.logger.error(errorMessage, new Error(errorMessage));
       throw new Error(`User with ID ${userId} not found.`);
     }
 
@@ -97,9 +99,9 @@ export async function updateUserCoins(
     const newCoins = currentCoins + coinsToAdd;
 
     if (newCoins < 0) {
-      throw new Error(
-        `Insufficient coins for user ${userId}. Current: ${currentCoins}, Attempted to spend: ${-coinsToAdd}.`,
-      );
+      const errorMessage = `Insufficient coins for user ${userId}. Current: ${currentCoins}, Attempted to spend: ${-coinsToAdd}.`;
+      functions.logger.error(errorMessage, new Error(errorMessage));
+      throw new Error(errorMessage);
     }
 
     txn.update(userRef, {coins: newCoins});
@@ -134,6 +136,8 @@ export async function updateUserStats(
     // Fetch the current stats within the transaction to merge updates
     const userDoc = await txn.get(userRef);
     if (!userDoc.exists) {
+      const errorMessage = `User with ID ${userId} not found during transaction for updateUserStats.`;
+      functions.logger.error(errorMessage, new Error(errorMessage));
       throw new Error(`User with ID ${userId} not found.`);
     }
     const currentStats = userDoc.data()?.stats || {};
@@ -162,7 +166,7 @@ export async function updateUserProfile(userId: string, profileUpdate: Partial<P
   try {
     await getDb().collection("users").doc(userId).update(profileUpdate);
   } catch (error) {
-    console.error(`Error updating profile for user ${userId}:`, error);
+    functions.logger.error(`Error updating profile for user ${userId}:`, error);
     throw error;
   }
 }
@@ -173,9 +177,7 @@ export async function updateUserProfile(userId: string, profileUpdate: Partial<P
  * @param riddleId - The ID of the riddle.
  * @return A promise that resolves with the riddle document data, or undefined if not found.
  */
-export async function getRiddle(
-  riddleId: string,
-): Promise<{answer: string; text: string; riddleId: string} | undefined> {
+export async function getRiddle(riddleId: string): Promise<FirestoreRiddle | undefined> {
   const riddleRef = getDb().collection("riddles").doc(riddleId);
   const riddleDoc = await riddleRef.get();
 
@@ -186,12 +188,14 @@ export async function getRiddle(
 
   const data = riddleDoc.data();
   if (!data) {
+    functions.logger.info(`Riddle data is null for ID ${riddleId}`);
     return undefined;
   }
 
+  // Ensure riddleId is included in the returned object
+  const riddleData = data as FirestoreRiddle;
   return {
-    answer: data.answer,
-    text: data.text,
-    riddleId: data.riddleId || riddleId,
+    ...riddleData,
+    riddleId: riddleData.riddleId || riddleId, // Use riddleId from data if available, otherwise use provided riddleId
   };
 }

@@ -1,14 +1,9 @@
 import { useEffect, useState, useCallback } from "react";
-import applovin, {
-  AppLovinMAXType,
-  AdInfo,
-  AdLoadFailedInfo,
-  AdDisplayFailedInfo,
-  InterstitialAdListener,
-} from "react-native-applovin-max";
-import Config from "react-native-dotenv";
+import applovin, { InterstitialAdListener } from "react-native-applovin-max";
+import Constants from "expo-constants";
 
-const INTERSTITIAL_AD_UNIT_ID = Config.APPLOVIN_INTERSTITIAL_AD_UNIT_ID;
+const INTERSTITIAL_AD_UNIT_ID =
+  Constants.expoConfig?.extra?.APPLOVIN_INTERSTITIAL_AD_UNIT_ID;
 
 interface InterstitialAdHook {
   isAdLoading: boolean;

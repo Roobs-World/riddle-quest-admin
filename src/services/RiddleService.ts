@@ -7,9 +7,7 @@ import {
   GenerateClassicRiddlesOutputSchema,
   SubmitGuessInputSchema,
   SubmitGuessOutputSchema,
-  GuessFeedbackSchema,
 } from "../validation/cloudFunctionsSchemas";
-import { performance } from "perf_hooks";
 
 export const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
@@ -33,7 +31,7 @@ export const RiddleService = {
     try {
       const userDoc = await firestore().collection("users").doc(userId).get();
 
-      if (userDoc.exists()) {
+      if (userDoc.exists) {
         const userData = userDoc.data();
         if (userData) {
           const lastCompletedDateStr =

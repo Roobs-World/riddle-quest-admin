@@ -1,20 +1,36 @@
 // Import necessary testing libraries and modules
 import {describe, it, expect, beforeAll, afterAll, beforeEach, jest} from "@jest/globals";
+import * as dotenv from "dotenv";
+dotenv.config({path: ".env"}); // Load .env file from firebase-functions directory
+
 import * as admin from "firebase-admin";
 import functionsTest from "firebase-functions-test";
 import {HttpsError, CallableRequest as CallableRequestV2} from "firebase-functions/v2/https"; // For V2 onCall
 import * as functions from "firebase-functions"; // For V1 CallableRequest
 
-// Import the functions to test
-import {setCompletedDailyChallenge, hasCompletedDailyChallenge} from "../dailyChallenge.js";
-import {createUser} from "./testUtils.js";
+// Mock the firestoreService module
+jest.mock("../firestoreService");
 
-// Initialize firebase-functions-test
+// Import the functions to test
+import {setCompletedDailyChallenge, hasCompletedDailyChallenge} from "../dailyChallenge";
+import {createUser} from "./testUtils";
+
+const FIREBASE_PROJECT_ID = "qwordly-6ba44";
+
+// Initialize firebase-functions-test. This DOES NOT initialize admin.initializeApp()
+// when used with a live project. We must do that manually.
 const testEnv = functionsTest();
 
-// Ensure Firebase app is initialized before tests run
+// Manually initialize Firebase Admin SDK for testing against the live project
 if (!admin.apps.length) {
-  admin.initializeApp();
+  try {
+    admin.initializeApp({
+      projectId: FIREBASE_PROJECT_ID,
+    });
+  } catch (error) {
+    console.error("🚨 Firebase Admin SDK initialization failed. Error: ", error);
+    throw error;
+  }
 }
 
 let firestore: admin.firestore.Firestore;
@@ -31,22 +47,40 @@ const getTodayISOString = () => {
 };
 
 describe("Daily Challenge Functions - Integration Tests", () => {
-  const wrappedSetCompletedDailyChallenge = testEnv.wrap(setCompletedDailyChallenge as any);
+  const wrappedSetCompletedDailyChallenge = testEnv.wrap(setCompletedDailyChallenge);
   const wrappedHasCompletedDailyChallenge = testEnv.wrap(hasCompletedDailyChallenge);
   const testUserId = "testUserDailyChallenge";
   const initialUserData = {
     email: "daily@example.com",
     coins: 50,
     progress: {classicIndex: 1, dailyChallengeIndex: 0, tutorialIndex: 0},
-    stats: {gamesWon: 1},
-    lastDailyChallengeCompletedAt: null, // Initially not completed
+    stats: {
+      gamesPlayed: 1,
+      wins: 0,
+      totalWins: 0,
+      winStreak: 0,
+      bestStreak: 0,
+      averageGuesses: 0,
+      winRate: 0,
+      challengeWins: 0,
+      totalGuessesInWins: 0,
+      dailyPuzzlesCompleted: 0,
+      totalWordsGuessed: 0,
+      totalScore: 0,
+      highestLevelClassic: 0,
+    },
+    lastDailyChallengeCompletedAt: undefined, // Use undefined instead of null
   };
 
   beforeAll(async () => {
-    if (!process.env.FIRESTORE_EMULATOR_HOST) {
-      console.error("\n🔥🔥🔥 FIRESTORE_EMULATOR_HOST is not set. Integration tests will likely time out. 🔥🔥🔥\n");
-    }
+    // Initialize Firestore instance after admin app is initialized.
     firestore = admin.firestore();
+    // Optional: Verify GOOGLE_APPLICATION_CREDENTIALS_PATH is set for clarity during test runs
+    if (!process.env.GOOGLE_APPLICATION_CREDENTIALS_PATH) {
+      console.warn(
+        "\n⚠️ GOOGLE_APPLICATION_CREDENTIALS_PATH is not set in .env. Tests will likely fail to connect to live Firestore. ⚠️\n",
+      );
+    }
   });
 
   beforeEach(async () => {
@@ -55,9 +89,9 @@ describe("Daily Challenge Functions - Integration Tests", () => {
     await createUser(firestore, testUserId, initialUserData);
     // Reset a field that might be set by tests to ensure clean state
     await firestore.collection("users").doc(testUserId).update({
-      lastDailyChallengeCompletedAt: null,
+      lastDailyChallengeCompletedAt: admin.firestore.FieldValue.delete(),
     });
-  });
+  }, 60000);
 
   afterAll(() => {
     testEnv.cleanup();
@@ -146,7 +180,8 @@ describe("Daily Challenge Functions - Integration Tests", () => {
     });
 
     it("should throw internal error if firestoreService.getUser fails unexpectedly", async () => {
-      const mockGetUser = jest.spyOn(require("../firestoreService.js"), "getUser");
+      // eslint-disable-next-line
+      const mockGetUser = jest.spyOn(require("../firestoreService"), "getUser");
       mockGetUser.mockRejectedValue(new Error("Firestore kaboom!"));
 
       const request = constructV2Request({id: testUserId});

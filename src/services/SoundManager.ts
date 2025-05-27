@@ -1,5 +1,9 @@
 import { Audio } from "expo-av";
 
+import neutralWav from "../../assets/audio/Neutral.wav";
+import successWav from "../../assets/audio/Success.wav";
+import negativeWav from "../../assets/audio/Negative.wav";
+
 const neutralSound = new Audio.Sound();
 const successSound = new Audio.Sound();
 const negativeSound = new Audio.Sound();
@@ -11,11 +15,11 @@ const negativeSound = new Audio.Sound();
 export const SoundManager = {
   init: async () => {
     try {
-      await neutralSound.loadAsync(require("../../assets/audio/Neutral.wav"), {
+      await neutralSound.loadAsync(neutralWav, {
         isLooping: true,
       });
-      await successSound.loadAsync(require("../../assets/audio/Success.wav"));
-      await negativeSound.loadAsync(require("../../assets/audio/Negative.wav"));
+      await successSound.loadAsync(successWav);
+      await negativeSound.loadAsync(negativeWav);
 
       await neutralSound.playAsync();
     } catch (error) {

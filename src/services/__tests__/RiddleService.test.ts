@@ -86,7 +86,7 @@ describe("RiddleService", () => {
       (
         firestore().collection("dailyChallenge").doc(today).get as jest.Mock
       ).mockResolvedValueOnce({
-        exists: false, // No daily challenge doc
+        exists: () => false, // No daily challenge doc - use function
       });
       const result = await RiddleService.fetchDailyRiddle();
       expect(result).toBeNull();
@@ -105,7 +105,7 @@ describe("RiddleService", () => {
       (
         firestore().collection("dailyChallenge").doc(today).get as jest.Mock
       ).mockResolvedValueOnce({
-        exists: true,
+        exists: () => true, // Use function
         data: () => ({ riddleIds: [mockRiddleId, "dailyRiddle002"] }),
       });
       (
@@ -118,7 +118,7 @@ describe("RiddleService", () => {
       (
         firestore().collection("riddles").doc(mockRiddleId).get as jest.Mock
       ).mockResolvedValueOnce({
-        exists: true,
+        exists: () => true, // Use function
         data: () => mockRiddleData,
         id: mockRiddleId,
       });
@@ -143,7 +143,7 @@ describe("RiddleService", () => {
       (
         firestore().collection("dailyChallenge").doc(today).get as jest.Mock
       ).mockResolvedValueOnce({
-        exists: true,
+        exists: () => true, // Use function
         data: () => ({ riddleIds: [mockRiddleId] }), // Only one riddle for the day
       });
       (

@@ -1,256 +1,236 @@
-import {describe, it, expect, jest, beforeEach, afterEach} from "@jest/globals";
-import * as originalFunctions from "firebase-functions";
-
-// Import the function to test
-import {generateAndAppendRiddles} from "../generateRiddles.js";
-
-// Mock service dependencies
-const mockGetExistingRiddles = jest.fn<() => Promise<{questions: string[]; answers: string[]}>>();
-const mockAppendRiddlesToSheet = jest.fn<() => Promise<void>>();
-const mockGenerateUniqueRiddle = jest.fn<() => Promise<[string, string] | null>>();
-
-jest.mock("../sheetsService.js", () => ({
-  getExistingRiddles: mockGetExistingRiddles,
-  appendRiddlesToSheet: mockAppendRiddlesToSheet,
+/* eslint-disable */
+// @ts-nocheck
+// Mock Firebase Admin SDK
+const mockFirestoreGet = jest.fn();
+const mockFirestoreSet = jest.fn();
+const mockFirestoreDoc = jest.fn(() => ({
+  id: "mock-riddle-id",
+  set: mockFirestoreSet,
+}));
+const mockFirestoreCollection = jest.fn(() => ({
+  doc: mockFirestoreDoc,
+  get: mockFirestoreGet,
+  where: jest.fn(() => ({
+    orderBy: jest.fn(() => ({
+      limit: jest.fn(() => ({
+        get: mockFirestoreGet,
+      })),
+    })),
+    get: mockFirestoreGet,
+  })),
+}));
+const mockFirestoreBatchCommit = jest.fn();
+const mockFirestoreBatchSet = jest.fn();
+const mockFirestoreBatch = jest.fn(() => ({
+  set: mockFirestoreBatchSet,
+  commit: mockFirestoreBatchCommit,
 }));
 
-jest.mock("../openaiService.js", () => ({
+jest.mock("firebase-admin", () => ({
+  firestore: jest.fn(() => ({
+    collection: mockFirestoreCollection,
+    batch: mockFirestoreBatch,
+  })),
+}));
+
+// Mock OpenAI service
+const mockGenerateUniqueRiddle = jest.fn();
+jest.mock("../openaiService", () => ({
   generateUniqueRiddle: mockGenerateUniqueRiddle,
 }));
 
-// Mock Firebase functions config
-const mockConfigData = {
-  sheets: {
-    spreadsheet_id: "test-spreadsheet-id",
-    google_sheets_client_email: "test-client-email@example.com",
-    google_sheets_private_key: "test-private-key",
-  },
-  openai: {
-    api_key: "test-openai-key",
-  },
-};
+// Mock environment variables
+const originalEnv = process.env;
 
-jest.mock("firebase-functions", () => {
-  const actualFunctions = jest.requireActual("firebase-functions") as typeof originalFunctions;
-  return {
-    ...actualFunctions,
-    config: () => mockConfigData,
-    logger: {
-      info: jest.fn(),
-      warn: jest.fn(),
-      error: jest.fn(),
-      debug: jest.fn(),
-    },
-  };
-});
+import {describe, it, expect, jest, beforeEach, afterEach} from "@jest/globals";
+import {generateAndAppendRiddles} from "../generateRiddles";
 
-// Mock console methods
-const consoleSpy = {
-  log: jest.spyOn(console, "log").mockImplementation(() => {}),
-  warn: jest.spyOn(console, "warn").mockImplementation(() => {}),
-  error: jest.spyOn(console, "error").mockImplementation(() => {}),
-};
-
-describe("generateRiddles - Unit Tests", () => {
+describe("generateRiddles - Firestore Implementation", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockGetExistingRiddles.mockReset();
-    mockAppendRiddlesToSheet.mockReset();
-    mockGenerateUniqueRiddle.mockReset();
-    Object.values(consoleSpy).forEach((spy) => spy.mockClear());
+    process.env = {
+      ...originalEnv,
+      OPENAI_API_KEY: "test-openai-key",
+    };
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    process.env = originalEnv;
   });
 
   describe("generateAndAppendRiddles", () => {
-    it("should generate and append riddles successfully", async () => {
+    it("should generate and store riddles successfully in Firestore", async () => {
       const numberOfRiddles = 2;
-      mockGetExistingRiddles.mockResolvedValue({questions: ["existing q1"], answers: ["existing a1"]});
-      mockGenerateUniqueRiddle.mockResolvedValueOnce(["New Q1", "New A1"]).mockResolvedValueOnce(["New Q2", "New A2"]);
-      mockAppendRiddlesToSheet.mockResolvedValue(undefined);
+
+      // Mock existing riddles query (empty result)
+      mockFirestoreGet.mockResolvedValueOnce({
+        forEach: jest.fn((_callback: unknown) => {
+          // No existing riddles
+        }),
+      });
+
+      // Mock next classic index query (empty result, so start from 0)
+      mockFirestoreGet.mockResolvedValueOnce({
+        empty: true,
+      });
+
+      // Mock riddle generation
+      mockGenerateUniqueRiddle
+        .mockResolvedValueOnce(["What has keys but no locks?", "keyboard"])
+        .mockResolvedValueOnce(["What runs but never walks?", "river"]);
+
+      // Mock batch operations
+      mockFirestoreBatchCommit.mockResolvedValue(undefined);
 
       await generateAndAppendRiddles(numberOfRiddles);
 
-      expect(mockGetExistingRiddles).toHaveBeenCalledWith("test-spreadsheet-id", "classic!A:B");
       expect(mockGenerateUniqueRiddle).toHaveBeenCalledTimes(numberOfRiddles);
-      expect(mockAppendRiddlesToSheet).toHaveBeenCalledWith([
-        {question: "New Q1", answer: "New A1"},
-        {question: "New Q2", answer: "New A2"},
-      ]);
-      expect(consoleSpy.log).toHaveBeenCalledWith("Generating 2 new riddles...");
-      expect(consoleSpy.log).toHaveBeenCalledWith("Successfully appended 2 new riddles to Google Sheet.");
+      expect(mockFirestoreBatchSet).toHaveBeenCalledTimes(numberOfRiddles);
+      expect(mockFirestoreBatchCommit).toHaveBeenCalledTimes(1);
+
+      // Verify the riddle data structure
+      expect(mockFirestoreBatchSet).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({
+          riddleId: "mock-riddle-id",
+          text: "What has keys but no locks?",
+          answer: "keyboard",
+          classicIndex: 0,
+          category: "classic",
+        }),
+      );
     });
 
-    it("should handle duplicate riddles from existing data", async () => {
+    it("should handle duplicate riddles and retry", async () => {
       const numberOfRiddles = 1;
-      mockGetExistingRiddles.mockResolvedValue({questions: ["existing q1"], answers: ["existing a1"]});
-      // First attempt is a duplicate (case-insensitive), second is unique
+
+      // Mock existing riddles query with one existing riddle
+      mockFirestoreGet.mockResolvedValueOnce({
+        forEach: jest.fn((callback) => {
+          callback({
+            data: () => ({
+              text: "existing question",
+              answer: "existing answer",
+            }),
+          });
+        }),
+      });
+
+      // Mock next classic index query
+      mockFirestoreGet.mockResolvedValueOnce({
+        empty: true,
+      });
+
+      // Mock riddle generation - first is duplicate, second is unique
       mockGenerateUniqueRiddle
-        .mockResolvedValueOnce(["Existing Q1", "Existing A1"]) // Duplicate (case-insensitive)
-        .mockResolvedValueOnce(["New Q1", "New A1"]); // Unique
-      mockAppendRiddlesToSheet.mockResolvedValue(undefined);
+        .mockResolvedValueOnce(["existing question", "existing answer"]) // Duplicate
+        .mockResolvedValueOnce(["What has keys but no locks?", "keyboard"]); // Unique
+
+      mockFirestoreBatchCommit.mockResolvedValue(undefined);
 
       await generateAndAppendRiddles(numberOfRiddles);
 
       expect(mockGenerateUniqueRiddle).toHaveBeenCalledTimes(2);
-      expect(mockAppendRiddlesToSheet).toHaveBeenCalledWith([{question: "New Q1", answer: "New A1"}]);
-      expect(consoleSpy.warn).toHaveBeenCalledWith("Generated riddle is a duplicate, trying again...");
+      expect(mockFirestoreBatchSet).toHaveBeenCalledTimes(1);
+      expect(mockFirestoreBatchCommit).toHaveBeenCalledTimes(1);
     });
 
-    it("should handle internally generated duplicates", async () => {
-      const numberOfRiddles = 2;
-      mockGetExistingRiddles.mockResolvedValue({questions: [], answers: []});
-      mockGenerateUniqueRiddle
-        .mockResolvedValueOnce(["New Q1", "New A1"]) // First unique
-        .mockResolvedValueOnce(["New Q1", "New A1"]) // Duplicate of first
-        .mockResolvedValueOnce(["New Q2", "New A2"]); // Second unique
-      mockAppendRiddlesToSheet.mockResolvedValue(undefined);
+    it("should get correct next classic index when riddles exist", async () => {
+      const numberOfRiddles = 1;
+
+      // Mock existing riddles query (empty for duplicate check)
+      mockFirestoreGet.mockResolvedValueOnce({
+        forEach: jest.fn((callback) => {
+          // No existing riddles for duplicate check
+        }),
+      });
+
+      // Mock next classic index query with existing riddle at index 5
+      mockFirestoreGet.mockResolvedValueOnce({
+        empty: false,
+        docs: [
+          {
+            data: () => ({classicIndex: 5}),
+          },
+        ],
+      });
+
+      mockGenerateUniqueRiddle.mockResolvedValueOnce(["What has keys but no locks?", "keyboard"]);
+      mockFirestoreBatchCommit.mockResolvedValue(undefined);
 
       await generateAndAppendRiddles(numberOfRiddles);
 
-      expect(mockGenerateUniqueRiddle).toHaveBeenCalledTimes(3);
-      expect(mockAppendRiddlesToSheet).toHaveBeenCalledWith([
-        {question: "New Q1", answer: "New A1"},
-        {question: "New Q2", answer: "New A2"},
-      ]);
+      // Should start from index 6 (5 + 1)
+      expect(mockFirestoreBatchSet).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({
+          classicIndex: 6,
+        }),
+      );
     });
 
     it("should handle generation failures (null returns)", async () => {
       const numberOfRiddles = 1;
-      mockGetExistingRiddles.mockResolvedValue({questions: [], answers: []});
+
+      mockFirestoreGet.mockResolvedValueOnce({
+        forEach: jest.fn((callback) => {
+          // No existing riddles
+        }),
+      });
+
+      mockFirestoreGet.mockResolvedValueOnce({
+        empty: true,
+      });
+
+      // Mock riddle generation - first fails, second succeeds
       mockGenerateUniqueRiddle
-        .mockResolvedValueOnce(null) // Generation failure
-        .mockResolvedValueOnce(["New Q1", "New A1"]); // Success
-      mockAppendRiddlesToSheet.mockResolvedValue(undefined);
+        .mockResolvedValueOnce(null) // Failure
+        .mockResolvedValueOnce(["What has keys but no locks?", "keyboard"]); // Success
+
+      mockFirestoreBatchCommit.mockResolvedValue(undefined);
 
       await generateAndAppendRiddles(numberOfRiddles);
 
       expect(mockGenerateUniqueRiddle).toHaveBeenCalledTimes(2);
-      expect(mockAppendRiddlesToSheet).toHaveBeenCalledWith([{question: "New Q1", answer: "New A1"}]);
-      expect(consoleSpy.warn).toHaveBeenCalledWith("Failed to generate unique riddle, retrying...");
+      expect(mockFirestoreBatchSet).toHaveBeenCalledTimes(1);
     });
 
-    it("should throw error when max generation attempts reached", async () => {
+    it("should throw error when OPENAI_API_KEY is missing", async () => {
+      delete process.env.OPENAI_API_KEY;
+
+      await expect(generateAndAppendRiddles(1)).rejects.toThrow(
+        "Missing required environment variable: OPENAI_API_KEY",
+      );
+    });
+
+    it("should handle Firestore errors gracefully", async () => {
+      process.env.OPENAI_API_KEY = "test-key";
+
+      // Mock Firestore error
+      mockFirestoreGet.mockRejectedValueOnce(new Error("Firestore connection failed"));
+
+      await expect(generateAndAppendRiddles(1)).rejects.toThrow("Failed to fetch existing riddles from Firestore.");
+    });
+
+    it("should handle batch commit errors", async () => {
       const numberOfRiddles = 1;
-      mockGetExistingRiddles.mockResolvedValue({questions: ["existing"], answers: ["existing"]});
-      // Always return duplicates
-      mockGenerateUniqueRiddle.mockResolvedValue(["existing", "existing"]);
 
-      await expect(generateAndAppendRiddles(numberOfRiddles)).rejects.toThrow(
-        "Failed to generate enough unique riddles due to excessive duplicates or generation failures.",
-      );
-
-      expect(mockGenerateUniqueRiddle).toHaveBeenCalledTimes(numberOfRiddles * 5); // MAX_GENERATION_ATTEMPTS
-      expect(mockAppendRiddlesToSheet).not.toHaveBeenCalled();
-      expect(consoleSpy.error).toHaveBeenCalledWith(
-        "Reached maximum generation attempts without generating enough unique riddles.",
-      );
-    });
-
-    it("should handle case where no riddles are generated but max attempts not reached", async () => {
-      const numberOfRiddles = 1;
-      mockGetExistingRiddles.mockResolvedValue({questions: [], answers: []});
-      // Return null (generation failures) but not enough to hit max attempts
-      mockGenerateUniqueRiddle.mockResolvedValue(null);
-
-      await generateAndAppendRiddles(numberOfRiddles);
-
-      expect(mockGenerateUniqueRiddle).toHaveBeenCalledTimes(numberOfRiddles * 5);
-      expect(mockAppendRiddlesToSheet).not.toHaveBeenCalled();
-      expect(consoleSpy.warn).toHaveBeenCalledWith("No new unique riddles were generated.");
-    });
-
-    it("should handle empty existing riddles", async () => {
-      const numberOfRiddles = 1;
-      mockGetExistingRiddles.mockResolvedValue({questions: [], answers: []});
-      mockGenerateUniqueRiddle.mockResolvedValueOnce(["New Q1", "New A1"]);
-      mockAppendRiddlesToSheet.mockResolvedValue(undefined);
-
-      await generateAndAppendRiddles(numberOfRiddles);
-
-      expect(mockAppendRiddlesToSheet).toHaveBeenCalledWith([{question: "New Q1", answer: "New A1"}]);
-    });
-
-    it("should throw error for missing spreadsheet_id config", async () => {
-      jest.resetModules();
-      jest.doMock("firebase-functions", () => ({
-        config: () => ({
-          sheets: {
-            // spreadsheet_id missing
-            google_sheets_client_email: "test-client-email@example.com",
-            google_sheets_private_key: "test-private-key",
-          },
-          openai: {
-            api_key: "test-openai-key",
-          },
+      mockFirestoreGet.mockResolvedValueOnce({
+        forEach: jest.fn((callback) => {
+          // No existing riddles
         }),
-      }));
+      });
 
-      const {generateAndAppendRiddles: testFunction} = await import("../generateRiddles.js");
+      mockFirestoreGet.mockResolvedValueOnce({
+        empty: true,
+      });
 
-      await expect(testFunction(1)).rejects.toThrow(
-        "Missing required environment variables: SPREADSHEET_ID (via functions.config().sheets.spreadsheet_id)",
-      );
-    });
+      mockGenerateUniqueRiddle.mockResolvedValueOnce(["What has keys but no locks?", "keyboard"]);
 
-    it("should throw error for missing openai api_key config", async () => {
-      jest.resetModules();
-      jest.doMock("firebase-functions", () => ({
-        config: () => ({
-          sheets: {
-            spreadsheet_id: "test-spreadsheet-id",
-            google_sheets_client_email: "test-client-email@example.com",
-            google_sheets_private_key: "test-private-key",
-          },
-          openai: {
-            // api_key missing
-          },
-        }),
-      }));
+      // Mock batch commit error
+      mockFirestoreBatchCommit.mockRejectedValueOnce(new Error("Batch commit failed"));
 
-      const {generateAndAppendRiddles: testFunction} = await import("../generateRiddles.js");
-
-      await expect(testFunction(1)).rejects.toThrow(
-        "Missing required environment variables: OPENAI_API_KEY (via functions.config().openai.api_key)",
-      );
-    });
-
-    it("should throw error for multiple missing configs", async () => {
-      jest.resetModules();
-      jest.doMock("firebase-functions", () => ({
-        config: () => ({
-          sheets: {
-            // All missing
-          },
-          openai: {
-            // api_key missing
-          },
-        }),
-      }));
-
-      const {generateAndAppendRiddles: testFunction} = await import("../generateRiddles.js");
-
-      await expect(testFunction(1)).rejects.toThrow("Missing required environment variables:");
-    });
-
-    it("should correctly update existing arrays to prevent internal duplicates", async () => {
-      const numberOfRiddles = 2;
-      mockGetExistingRiddles.mockResolvedValue({questions: [], answers: []});
-      mockGenerateUniqueRiddle
-        .mockResolvedValueOnce(["Q1", "A1"])
-        .mockResolvedValueOnce(["Q1", "A1"]) // This should be detected as duplicate
-        .mockResolvedValueOnce(["Q2", "A2"]);
-      mockAppendRiddlesToSheet.mockResolvedValue(undefined);
-
-      await generateAndAppendRiddles(numberOfRiddles);
-
-      expect(mockGenerateUniqueRiddle).toHaveBeenCalledTimes(3);
-      expect(mockAppendRiddlesToSheet).toHaveBeenCalledWith([
-        {question: "Q1", answer: "A1"},
-        {question: "Q2", answer: "A2"},
-      ]);
+      await expect(generateAndAppendRiddles(numberOfRiddles)).rejects.toThrow("Failed to store riddles in Firestore.");
     });
   });
 });

@@ -1,6 +1,6 @@
 import * as functions from "firebase-functions";
 import {onCall} from "firebase-functions/v2/https";
-import {generateAndAppendRiddles} from "./generateRiddles.js";
+import {generateAndAppendRiddles} from "./generateRiddles";
 
 /**
  * Callable function to trigger the generation and appending of new Classic Mode riddles.
@@ -12,10 +12,10 @@ export const generateClassicRiddles = onCall(async (): Promise<{success: boolean
 
   try {
     await generateAndAppendRiddles(5);
-    console.log("Classic Mode riddles generated and appended to Google Sheets.");
+    console.log("Classic Mode riddles generated and stored in Firestore.");
     return {
       success: true,
-      message: "New Classic Mode riddles generated and added to Sheets.",
+      message: "New Classic Mode riddles generated and added to Firestore.",
     };
   } catch (error) {
     console.error("Error generating Classic Mode riddles:", error);

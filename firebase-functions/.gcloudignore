@@ -1,0 +1,43 @@
+# Node.js dependencies
+node_modules/
+
+# Source files (if deploying 'lib' and 'main' in package.json is 'lib/index.js')
+src/
+# If you only deploy the 'lib' directory (common for compiled TypeScript),
+# ensure your firebase.json 'source' points to 'firebase-functions' (or the directory containing 'lib')
+# and 'main' in package.json is 'lib/index.js'.
+
+# Test files and directories
+__tests__/
+*.test.js
+*.spec.js
+*.test.ts
+*.spec.ts
+*.test.js.map
+*.spec.js.map
+*.test.mjs
+*.spec.mjs
+
+# TypeScript configuration and cache files
+tsconfig.json
+tsconfig.*.json
+*.tsbuildinfo
+
+# Local environment files
+.env
+.env.*
+*.env
+
+# Logs and other common files
+*.log
+.DS_Store
+.eslintcache
+
+# Babel and Jest config unless specifically needed by runtime
+babel.config.cjs
+jest.config.js
+jest.env.setup.js
+
+# If your main entry point in package.json (e.g., "main": "lib/index.js")
+# and firebase.json functions source points to a directory containing 'lib',
+# then 'lib' itself should NOT be in .gcloudignore. 

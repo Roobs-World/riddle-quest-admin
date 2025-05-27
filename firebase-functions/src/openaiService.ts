@@ -1,8 +1,15 @@
+import "openai/shims/node";
 import OpenAI from "openai";
-import * as functions from "firebase-functions"; // Import firebase-functions
 
 // Lazy initialization variable
 let openaiClient: OpenAI | null = null;
+
+/**
+ * Resets the OpenAI client cache. Used for testing.
+ */
+export function resetOpenAIClient(): void {
+  openaiClient = null;
+}
 
 /**
  * Initializes the OpenAI client if not already initialized.
@@ -14,12 +21,13 @@ function initializeOpenAIClient(): OpenAI {
   }
 
   // Use Firebase function configuration for sensitive information
-  const openaiConfig = functions.config().openai;
-  const openAIKey = openaiConfig?.api_key; // Accessing openai.api_key
+  // const openaiConfig = functions.config().openai;
+  // const openAIKey = openaiConfig?.api_key; // Accessing openai.api_key
+  const openAIKey = process.env.OPENAI_API_KEY;
 
   // Ensure environment variables are set
   if (!openAIKey) {
-    throw new Error("Missing required environment variable: OPENAI_API_KEY from Firebase " + "config (openai.api_key)");
+    throw new Error("Missing required environment variable: OPENAI_API_KEY");
   }
 
   openaiClient = new OpenAI({apiKey: openAIKey});

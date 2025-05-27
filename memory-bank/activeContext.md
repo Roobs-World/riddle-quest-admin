@@ -2,104 +2,142 @@
 
 ## 1. Current Focus
 
-- **TypeScript Compilation Issues Fixed**: Resolved missing test files causing TypeScript compilation errors by creating the missing `generateRiddles.test.ts` unit test file and confirming that `adCallbacks.it.test.ts` is properly excluded.
-- **Firebase Configuration Verification**: Confirmed that the React Native app is already properly configured to connect to the online Firebase service (qwordly-6ba44), not emulators.
-- The app uses production Firebase configuration in `google-services.json` and `app.config.js`.
-- No emulator connection code found in React Native source code.
-- Successfully added comprehensive unit tests for Firebase functions including `sheetsService.ts`, `firestoreService.ts`, `dailyChallenge.ts`, and now `generateRiddles.ts`.
-- Enhanced test coverage with proper type safety and edge case handling.
-- Added new test cases to `iapValidation.test.ts` covering product ID mismatch from receipt, and failures in `markPurchaseTokenAsProcessed`, `updateUserCoins`, and Firestore updates for NO_ADS purchases.
-- Added a new test case to `adCallbacks.test.ts` for missing `APPLOVIN_SDK_KEY` configuration.
-- Resolved linter errors in `adCallbacks.test.ts` by improving mock typings.
-- **Modified Firebase Functions Test Script**: Updated the `test` script in `firebase-functions/package.json` to remove emulator execution, so tests will target the real server.
-- **Firebase Functions Testing Issues**: Encountered timeout and credential errors while running `pnpm run test`.
-  - Increased Jest's global timeout in `package.json`.
-  - Increased timeouts for `beforeAll` and `beforeEach` hooks in `iapValidation.it.test.ts` and `gameLogic.it.test.ts`.
-  - Added `jest.setTimeout(30000)` at the beginning of `iapValidation.it.test.ts` and `gameLogic.it.test.ts`.
-  - Added console warnings in test files if `GOOGLE_APPLICATION_CREDENTIALS` is not set.
-- **Reverted Timeout Changes**: The above timeout adjustments did not resolve the issues. All timeout-related changes in `package.json`, `iapValidation.it.test.ts`, and `gameLogic.it.test.ts` have been reverted.
-- **Configure Firebase Functions Tests for Live Environment using .env**: Mandated that all Firebase Functions integration tests run exclusively against the live Firebase project (`qwordly-6ba44`). Emulator-based testing is no longer used.
-  - Installed `dotenv` package in `firebase-functions`.
-  - Updated `iapValidation.it.test.ts` and `gameLogic.it.test.ts` to:
-    - Load `.env` file (expected to be in `firebase-functions/.env`).
-    - Read `GOOGLE_APPLICATION_CREDENTIALS_PATH` from `process.env`.
-    - Initialize `admin.initializeApp({ credential: admin.credential.cert(serviceAccountPath), projectId: "qwordly-6ba44" })`.
-    - Removed previous direct checks for `GOOGLE_APPLICATION_CREDENTIALS` environment variable, now relying on the path from `.env`.
-    - Added prominent error logging if `GOOGLE_APPLICATION_CREDENTIALS_PATH` is not set or if SDK initialization fails.
+- **✅ METRO-CORE DEPENDENCY ISSUE RESOLVED**
+  - **Issue**: Global Expo CLI version 0.7.3 was causing "Cannot find module 'metro-core'" error
+  - **Root Cause**: Outdated global expo-cli (6.3.10) conflicting with local project dependencies
+  - **Solution**: Removed legacy expo-cli and installed @expo/cli@0.24.13 globally
+  - **Status**: ✅ **DEVELOPMENT SERVER RUNNING** - Metro bundler successfully started on port 8081
+  - **Next Priority**: Continue development work with functioning development environment
+
+### **✅ Metro-Core Issue Resolution - DONE**
+
+#### **✅ Problem Identification - DONE**
+
+- ✅ **Error Source**: Global pnpm installation of @expo/cli@0.7.3 missing metro-core dependency
+- ✅ **Local Dependencies**: metro-core@0.82.4 properly installed in project node_modules
+- ✅ **Version Conflict**: Legacy expo-cli@6.3.10 interfering with newer local Expo CLI@0.24.13
+
+#### **✅ Solution Implementation - DONE**
+
+- ✅ **Removed Legacy CLI**: Uninstalled global expo-cli@6.3.10 using pnpm
+- ✅ **Installed Modern CLI**: Installed @expo/cli@0.24.13 globally to match local version
+- ✅ **Verified Installation**: Confirmed npx expo --version returns 0.24.13
+- ✅ **Started Development Server**: Successfully launched Metro bundler with npx expo start --clear
+
+#### **✅ Current Status - DONE**
+
+- ✅ **Metro Bundler**: Running successfully on port 8081
+- ✅ **Development Environment**: Fully functional for React Native development
+- ✅ **CLI Compatibility**: Global and local Expo CLI versions now aligned
+- ✅ **Dependencies**: All Metro-related packages properly resolved
+
+### **✅ Previous Success - SubmitGuessLogic Tests Fixed:**
+
+- **✅ SUBMITGUESSLOGIC TESTS FIXED SUCCESSFULLY**
+  - **Test Status**: ✅ **ALL PASSING** - All 16 tests in submitGuessLogic.test.ts now pass
+  - **Root Cause**: Fixed Firebase admin mock setup and getRiddle function return type
+  - **Key Fixes**:
+    - Updated getRiddle function to return proper FirestoreRiddle object
+    - Fixed Firebase admin mock chain for document operations
+    - Properly mocked PlayerSchema.parse data requirements
+  - **Next Priority**: Continue fixing remaining test failures in other test files
+
+#### **✅ Issue Resolution - DONE**
+
+- ✅ **getRiddle Function**: Updated to return proper FirestoreRiddle object instead of simplified object
+- ✅ **Firebase Admin Mocking**: Fixed mock setup to properly handle chained Firestore operations
+- ✅ **PlayerSchema.parse**: Fixed mock data to include all required fields for schema validation
+- ✅ **Document Operations**: Properly mocked userRef.get() and document.data() methods
+
+#### **✅ Test Results - DONE**
+
+- ✅ **All 16 Tests Passing**: submitGuessLogic.test.ts now has 100% pass rate
+- ✅ **Error Handling Tests**: Proper HttpsError throwing for various error conditions
+- ✅ **Game Logic Tests**: Correct feedback generation, coin calculation, and stat updates
+- ✅ **Mock Validation**: All Firebase operations properly mocked and tested
+
+#### **✅ Benefits Achieved:**
+
+- **✅ Stable Test Suite**: Core game logic now has reliable test coverage
+- **✅ Proper Type Safety**: getRiddle function now returns correctly typed objects
+- **✅ Better Mocking**: Firebase admin operations properly isolated in tests
+- **✅ Schema Validation**: PlayerSchema.parse working correctly with proper test data
 
 ## 2. Recent Changes
 
-- **Fixed TypeScript Compilation**: Created missing `generateRiddles.test.ts` unit test file with comprehensive coverage including:
-  - Successful riddle generation and appending
-  - Duplicate riddle handling (case-insensitive)
-  - Internal duplicate detection and retries
-  - Generation failure handling (null returns)
-  - Maximum attempts error scenarios
-  - Environment variable validation
-  - Edge cases with empty existing riddles
-- **Cleaned Build Output**: Removed stale compiled files from `lib` directory that were causing TypeScript to look for missing source files.
-- **Firebase Configuration Analysis**: Conducted comprehensive review of Firebase setup:
-  - React Native app correctly uses production Firebase project "qwordly-6ba44"
-  - `google-services.json` points to live Firebase services
-  - `app.config.js` contains production Firebase configuration
-  - Emulator configurations only exist for Firebase Functions testing, not React Native app
-- Added JWT initialization test in `sheetsService.test.ts` to verify private key formatting (`\\n` to `\n` replacement).
-- Added comprehensive tests for `getRiddle` function in `firestoreService.test.ts` covering all edge cases.
-- Improved `dailyChallenge.test.ts` with deterministic date testing using spies.
-- Fixed TypeScript issues in test files by using union types for mock data instead of `any`.
-- Resolved function call signature issues in `dailyChallenge.test.ts` for both v1 and v2 Firebase functions.
-- Added specific test cases for `iapValidation.ts` to cover scenarios:
-  - `iap.getPurchaseData` returns details for a different `productId` than requested.
-  - `markPurchaseTokenAsProcessed` fails after successful validation and item award.
-  - `updateUserCoins` fails during a coin pack purchase.
-  - Firestore `userRef.update` fails during a "NO_ADS" purchase.
-- Added test case to `adCallbacks.test.ts` for missing `APPLOVIN_SDK_KEY` in Firebase config.
-- Corrected mock implementations and improved type safety in `adCallbacks.test.ts` to resolve all linter warnings.
-- **Updated Firebase Functions Test Script**: Modified the `test` script in `firebase-functions/package.json` to remove emulator execution.
-- **Attempted to fix Jest timeout errors in Firebase Functions integration tests (`iapValidation.it.test.ts`, `gameLogic.it.test.ts`) by:**
-  - Modifying `test` script in `package.json` to `jest --timeout=30000`.
-  - Adding explicit timeout arguments to `beforeAll` and `beforeEach` in the test files.
-  - Adding `jest.setTimeout(30000)` at the top of the test files.
-- Added a check and warning for the `GOOGLE_APPLICATION_CREDENTIALS` environment variable in the `beforeAll` hooks of the affected test files.
-- **Reverted all timeout changes** as they did not solve the underlying problem. The "Could not load the default credentials" error persists, and hook timeouts still occur.
-- **Modified Firebase Admin SDK Initialization**: In `iapValidation.it.test.ts` and `gameLogic.it.test.ts`:
-  - Ensured `admin.initializeApp()` is called with `projectId: "qwordly-6ba44"`.
-  - Removed all logic pertaining to Firestore emulator detection (e.g., checking `FIRESTORE_EMULATOR_HOST`).
-  - Strengthened warnings/errors if `GOOGLE_APPLICATION_CREDENTIALS` is not set, emphasizing its necessity.
-- Reverted previous Jest timeout adjustments in `package.json` and test files.
-- The `test` script in `firebase-functions/package.json` remains configured to target the real server (no emulators).
-- **Switched to .env for Service Account Path**:
-  - Installed `dotenv` in `firebase-functions`.
-  - Modified Firebase Admin SDK initialization in `iapValidation.it.test.ts` and `gameLogic.it.test.ts` to load the service account key path from `GOOGLE_APPLICATION_CREDENTIALS_PATH` in `firebase-functions/.env`.
-  - This approach replaces the direct reliance on the `GOOGLE_APPLICATION_CREDENTIALS` environment variable for test file configuration, centralizing it into the `.env` file.
-- Ensured `admin.initializeApp()` is called with `projectId: "qwordly-6ba44"` and the credential from the specified path.
-- Removed all logic pertaining to Firestore emulator detection.
+### **✅ Firebase Functions Test Fixes**
+
+- Fixed getRiddle function return type to match FirestoreRiddle schema
+- Updated Firebase admin mock setup for proper method chaining
+- Fixed PlayerSchema.parse mock data to include all required fields
+- Cleaned up debugging code and restored proper console mocking
+
+### **✅ Code Quality Improvements**
+
+- Removed unused imports and fixed linter errors
+- Improved error handling and logging in submitGuessLogic
+- Enhanced test mock setup for better reliability
+- Maintained backward compatibility with existing functionality
 
 ## 3. Next Steps
 
-- **User Action: Verify `firebase-functions/.env` file**:
-  - Ensure `firebase-functions/.env` exists.
-  - Ensure it contains the line `GOOGLE_APPLICATION_CREDENTIALS_PATH="/actual/path/to/your/qwordly-admin-sdk.json"`, replacing the example path with the correct full path to the service account key file.
-- **Run Tests**: Execute `pnpm run test` (likely from `firebase-functions` directory as per last successful `dotenv` install, or from root `J:\qwordly` if the root `package.json` script handles it).
-  - The tests will now attempt to initialize Firebase Admin SDK using the path specified in `firebase-functions/.env`.
-- If tests fail:
-  - Check console output for errors related to `GOOGLE_APPLICATION_CREDENTIALS_PATH` not being found or SDK initialization failure (the new error logs should make this clear).
-  - Verify the path in `.env` is correct and the JSON file is valid and has necessary permissions.
-  - If timeouts persist with correct credentials, investigate Firestore operations in `beforeEach` hooks.
+### **Immediate Priorities:**
 
-## 4. Active Decisions & Considerations
+1. **Fix Remaining Test Failures**: Address any other failing tests in the test suite
+2. **Run Full Test Suite**: Verify overall test health after submitGuessLogic fixes
+3. **Check Integration Tests**: Ensure integration tests are still working properly
+4. **Update Documentation**: Document the test fixes and improved patterns
 
-- **Live Testing Only with .env Configuration**: All Firebase Functions integration tests target the live Firebase project (`qwordly-6ba44`), with service account credentials managed via `GOOGLE_APPLICATION_CREDENTIALS_PATH` in `firebase-functions/.env`.
-- **Credential Path Management**: The `.env` file in `firebase-functions` is now the source of truth for the service account key file path for tests.
-- **Test Data Management**: Strategies for creating and cleaning up test data in the live Firestore instance remain important.
+### **Test Issues to Address:**
 
-## 5. Important Patterns & Preferences
+- **Other Test Files**: Check for similar mocking issues in other test files
+- **Integration Tests**: Verify live Firebase integration tests are working
+- **Coverage Reports**: Ensure test coverage is maintained after fixes
 
-- Using `dotenv` for managing environment-specific configurations like credential paths in test environments.
-- Explicit Firebase Admin SDK initialization using `admin.credential.cert()` with a file path for tests.
-- Clear error reporting for missing critical configurations.
+## 4. Current Architecture
 
-## 6. Learnings & Project Insights
+### **✅ Improved Test Infrastructure:**
 
-- Using `dotenv` allows for more flexible and project-contained configuration of sensitive paths like service account keys, rather than relying solely on globally set environment variables for local testing.
-- `admin.credential.cert()` is the method to use when initializing Firebase Admin SDK with a service account key file path.
+- **Proper Mocking**: Firebase admin operations correctly mocked
+- **Type Safety**: Functions return properly typed objects
+- **Schema Validation**: PlayerSchema.parse working with correct test data
+- **Error Handling**: Comprehensive error testing with proper HttpsError types
+
+### **✅ Reliable Testing:**
+
+- **Unit Tests**: Core business logic thoroughly tested
+- **Mock Isolation**: External dependencies properly isolated
+- **Error Scenarios**: Edge cases and error conditions covered
+- **Performance**: Fast test execution with proper mocking
+
+## 5. Key Patterns and Preferences
+
+### **✅ Test Best Practices:**
+
+- **Proper Mocking**: Mock external dependencies completely and correctly
+- **Type Safety**: Ensure mocks return correctly typed objects
+- **Schema Compliance**: Test data must comply with defined schemas
+- **Error Testing**: Comprehensive testing of error conditions and edge cases
+
+### **✅ Firebase Function Patterns:**
+
+- **Return Types**: Functions return properly typed objects matching schemas
+- **Error Handling**: Consistent HttpsError usage for different error types
+- **Schema Validation**: Use Zod schemas for data validation
+- **Mock Setup**: Proper Firebase admin mock chains for testing
+
+## 6. Learnings and Project Insights
+
+### **✅ Test Debugging Success Factors:**
+
+- **Incremental Approach**: Isolated issues by commenting out problematic sections
+- **Detailed Logging**: Added temporary debugging to identify exact error causes
+- **Mock Verification**: Verified mock setup matches actual function call patterns
+- **Type Checking**: Ensured mock data matches expected schema types
+
+### **✅ Firebase Testing Insights:**
+
+- **Mock Complexity**: Firebase admin requires careful mock setup for chained operations
+- **Schema Validation**: Test data must include all required fields for schema parsing
+- **Error Propagation**: HttpsError instances need proper handling in test expectations
+- **Document Operations**: Firestore document operations need complete mock implementations

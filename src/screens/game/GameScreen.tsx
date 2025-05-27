@@ -51,6 +51,7 @@ import {
   SkipRiddleOutputSchema,
   ResetStatsOutputSchema,
 } from "../../validation/cloudFunctionsSchemas";
+import ShatteringTitle from "../../components/animations/ShatteringTitle";
 
 interface GuessResult {
   outcome: "win" | "loss" | string;
@@ -132,6 +133,7 @@ const GameScreen: React.FC<GameScreenProps> = ({
   const [lastGuessResult, setLastGuessResult] = useState<GuessResult | null>(
     null
   );
+  const [startShatterAnimation, setStartShatterAnimation] = useState(false);
 
   // Animation value for shaking the GuessGrid
   const shakeAnimation = useSharedValue(0);
@@ -260,6 +262,7 @@ const GameScreen: React.FC<GameScreenProps> = ({
         setOverlayCoinsEarned(lastGuessResult.coinsEarned || 0);
         setIsVictoryLossOverlayVisible(true);
         onGameWin(guesses.length, lastGuessResult.coinsEarned || 0);
+        setStartShatterAnimation(true);
       } else if (lastGuessResult.outcome === "loss") {
         if (lastGuessResult.canOfferRewardedAd) {
           setIsWatchAdModalVisible(true);
@@ -699,19 +702,33 @@ const GameScreen: React.FC<GameScreenProps> = ({
       <View className="flex-1 p-4">
         <Header
           level={playerData?.progress?.classicIndex ?? 0}
-          userCoins={playerData?.coins ?? 0}
+          userCoins={userCoins}
         />
 
-        <RiddleText riddleText={riddleText} />
-        <Animated.View style={animatedStyle}>
-          <GuessGrid
-            guesses={guesses}
-            currentGuess={currentGuess}
-            answerLength={answerLength}
-            shakeKey={shakeKey}
+        <View style={{ flex: 1, opacity: isAnyOverlayVisible ? 0.3 : 1 }}>
+          <Header
+            level={playerData?.progress?.classicIndex ?? 0}
+            userCoins={userCoins}
           />
-        </Animated.View>
-        {!isAnyOverlayVisible && <Keyboard onKeyPress={handleKeyPress} />}
+          {isWin && (
+            <ShatteringTitle
+              title="YOU WON!"
+              startAnimation={startShatterAnimation}
+            />
+          )}
+          <RiddleText riddleText={riddleText} />
+          <View style={{ flex: 1, justifyContent: "center" }}>
+            <Animated.View style={animatedStyle}>
+              <GuessGrid
+                guesses={guesses}
+                currentGuess={currentGuess}
+                answerLength={answerLength}
+                shakeKey={shakeKey}
+              />
+            </Animated.View>
+          </View>
+          {!isAnyOverlayVisible && <Keyboard onKeyPress={handleKeyPress} />}
+        </View>
 
         {isVictoryLossOverlayVisible && (
           <VictoryLossOverlay
@@ -817,11 +834,13 @@ const GameScreen: React.FC<GameScreenProps> = ({
 
         <Button title="Complete Level" onPress={handleLevelComplete} />
 
-        <WatchAdForChanceModal
-          visible={isWatchAdModalVisible}
-          onClose={handleWatchAdDeclined}
-          onWatchAd={handleWatchAdAccepted}
-        />
+        {isWatchAdModalVisible && (
+          <WatchAdForChanceModal
+            visible={isWatchAdModalVisible}
+            onWatchAd={handleWatchAdAccepted}
+            onClose={handleWatchAdDeclined}
+          />
+        )}
       </View>
     </SafeAreaView>
   );

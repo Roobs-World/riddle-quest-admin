@@ -3,10 +3,6 @@
     "sdk_key": "YOUR_APPLOVIN_SDK_KEY"
   },
   "openai": {
-    "key": "YnDnl1dSucAApjYEN019-6hGt2ufiedaq4HsP-h7"
-  },
-  "sheets": {
-    "access_token": "AIzaSyDjnILvEvKu_dhFkN_qSFhLQaKXqguAvQw",
-    "id": "1SgsMqvbLx7n0FO6LlswzW9duEHfbs4V2-A43p8mP-uw"
+    "api_key": "YnDnl1dSucAApjYEN019-6hGt2ufiedaq4HsP-h7"
   }
 }

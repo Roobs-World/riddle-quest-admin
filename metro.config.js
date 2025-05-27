@@ -1,23 +1,27 @@
-// metro.config.js
+// metro.config.js - Minimal config to bypass Metro dependency issues
 const { getDefaultConfig } = require("expo/metro-config");
 const { withNativeWind } = require("nativewind/metro");
 const path = require("path");
 
 // Load default Expo Metro config
-const config = getDefaultConfig(__dirname);
+const config = getDefaultConfig(__dirname, {
+  // Disable problematic features that cause importLocationsPlugin errors
+  isCSSEnabled: true,
+});
 
-// Ensure that we use `withNativeWind` to wrap the base config first,
-// then apply other custom transformations.
+// Disable package exports to prevent module resolution issues
+config.resolver.unstable_enablePackageExports = false;
+
+// Apply NativeWind configuration
 const windConfig = withNativeWind(config, {
   input: "./global.css",
 });
 
-// Configure SVG support via react-native-svg-transformer on the wrapped config
+// Configure SVG support
 windConfig.transformer.babelTransformerPath = require.resolve(
   "react-native-svg-transformer"
 );
 
-// Treat .svg files as source, not assets on the wrapped config
 windConfig.resolver.assetExts = windConfig.resolver.assetExts.filter(
   (ext) => ext !== "svg"
 );
@@ -29,30 +33,24 @@ windConfig.resolver.sourceExts = [
   "mts",
 ];
 
-// Add this to shim 'fs'
+// Add Node.js core module shims
 windConfig.resolver.extraNodeModules = {
   fs: false,
-  // You can add other Node.js core modules here if needed, e.g.:
-  // path: false,
-  // os: false,
 };
 
-// --- New blockList approach ---
+// Block Firebase Functions node_modules
 const firebaseNodeModulesPath = path.resolve(
   __dirname,
   "firebase-functions/node_modules"
 );
-// Escape special characters for regex
 const escapedFirebasePath = firebaseNodeModulesPath.replace(
   /[.*+?^${}()|[\\]\\]/g,
   "\\$&"
 );
 
 windConfig.resolver.blockList = [
-  new RegExp(/(\/__tests__\/.*)$/.source), // Keep the __tests__ pattern
-  new RegExp(escapedFirebasePath + "/.*"), // Our new rule as RegExp
+  new RegExp(/(\/__tests__\/.*)$/.source),
+  new RegExp(escapedFirebasePath + "/.*"),
 ];
-// --- End new blockList approach ---
 
-// Export the final configured object
 module.exports = windConfig;

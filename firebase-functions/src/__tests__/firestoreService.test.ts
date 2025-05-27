@@ -1,4 +1,98 @@
-import {describe, expect, it, jest, beforeAll, afterAll, beforeEach} from "@jest/globals"; // Added import
+import * as dotenv from "dotenv";
+dotenv.config({path: ".env"}); // Load .env file from firebase-functions directory
+
+// Import necessary testing libraries and modules
+import * as functions from "firebase-functions";
+import {Transaction} from "firebase-admin/firestore";
+import * as admin from "firebase-admin";
+
+// Initialize mock variables outside the factory
+const mockGet = jest.fn();
+const mockUpdate = jest.fn();
+const mockSet = jest.fn();
+const mockAdd = jest.fn();
+const mockWhere = jest.fn();
+const mockOrderBy = jest.fn();
+const mockLimit = jest.fn();
+const mockOnSnapshot = jest.fn();
+const mockDelete = jest.fn();
+const mockCreate = jest.fn();
+const mockGetAll = jest.fn();
+
+// Define the structure of the mocked DocumentReference
+const mockDocumentRef = {
+  get: mockGet,
+  update: mockUpdate,
+  set: mockSet,
+  delete: mockDelete,
+  collection: jest.fn(() => mockCollectionRef),
+  doc: jest.fn(() => mockDocumentRef),
+};
+
+// Define the structure of the mocked CollectionReference
+const mockCollectionRef = {
+  doc: jest.fn(() => mockDocumentRef),
+  add: mockAdd,
+  where: mockWhere,
+  orderBy: mockOrderBy,
+  limit: mockLimit,
+  get: mockGet, // Collection.get() can return a QuerySnapshot
+  onSnapshot: mockOnSnapshot,
+  collection: jest.fn(() => mockCollectionRef),
+};
+
+const mockRunTransaction = jest
+  .fn()
+  .mockImplementation(async (updateFunction: (transaction: admin.firestore.Transaction) => Promise<unknown>) => {
+    const mockTransaction = {
+      get: mockGet,
+      update: mockUpdate,
+      set: mockSet,
+      create: mockCreate,
+      delete: mockDelete,
+      getAll: mockGetAll,
+    } as unknown as Transaction; // Cast to unknown as Transaction due to partial mock
+    return updateFunction(mockTransaction);
+  });
+
+// Mock firebase-functions specifically for logger
+jest.mock("firebase-functions", () => ({
+  logger: {
+    info: jest.fn(),
+    error: jest.fn(),
+    warn: jest.fn(),
+    debug: jest.fn(),
+    write: jest.fn(),
+  },
+}));
+
+// Mock firebase-admin with simplified setup, referencing the variables defined above
+jest.mock("firebase-admin", () => {
+  const mockFirestoreInstance = {
+    collection: jest.fn(() => mockCollectionRef), // firestore.collection() returns a CollectionRef
+    doc: jest.fn(() => mockDocumentRef), // firestore.doc() returns a DocumentRef
+    runTransaction: (updateFunction: (transaction: admin.firestore.Transaction) => Promise<unknown>) =>
+      mockRunTransaction(updateFunction),
+    FieldValue: {
+      increment: jest.fn((val: number) => `increment(${val})`),
+      arrayUnion: jest.fn((...args: unknown[]) => `arrayUnion(${args.join(", ")})`), // Use unknown[]
+      arrayRemove: jest.fn((...args: unknown[]) => `arrayRemove(${args.join(", ")})`), // Use unknown[]
+      delete: jest.fn(() => "FieldValue.delete()"),
+    },
+    Timestamp: {
+      now: jest.fn(() => new Date()),
+      fromDate: jest.fn((date: Date) => date),
+      fromMillis: jest.fn((milliseconds: number) => new Date(milliseconds)),
+    },
+  };
+
+  return {
+    initializeApp: jest.fn(),
+    firestore: jest.fn(() => mockFirestoreInstance), // firebase-admin.firestore() returns the firestore instance
+    apps: [{options: {}}],
+  };
+});
+
 // Import the functions to be tested
 import {
   getUser,
@@ -7,124 +101,21 @@ import {
   updateUserStats,
   updateUserProfile,
   getRiddle,
-} from "../firestoreService"; // Adjust path as needed
-import type {Player, PlayerStats} from "../validation/firestoreSchemas"; // Adjust path as needed
-import * as admin from "firebase-admin"; // Added import
-import {initializeTestEnvironment, RulesTestEnvironment} from "@firebase/rules-unit-testing"; // Added import
-import * as functions from "firebase-functions"; // Added import for logger
-
-// Mock Firebase functions logger
-jest.mock("firebase-functions", () => ({
-  logger: {
-    info: jest.fn(),
-    error: jest.fn(),
-    warn: jest.fn(), // Added warn for completeness
-  },
-}));
-
-// Mock Firestore admin SDK
-let mockCollection: jest.Mock;
-let mockDoc: jest.Mock;
-// Define a union type for mock data that can be either Player or riddle data
-type MockDocumentData = Partial<Player> | {answer: string; text: string; riddleId?: string} | null | undefined;
-let mockGet: jest.Mock<() => Promise<{exists: boolean; data?: () => MockDocumentData}>>; // More specific union type
-let mockUpdate: jest.Mock<() => Promise<void>>; // Typed mockUpdate
-let mockRunTransaction: jest.MockedFunction<
-  (TTransactionCallback: (transaction: admin.firestore.Transaction) => Promise<unknown>) => Promise<unknown>
->;
-let mockSet: jest.Mock<() => Promise<void>>; // Typed mockSet
-
-// Vitest's vi.hoisted can be used if more complex hoisting is needed
-// For this case, direct mocking is simpler.
-jest.mock("firebase-admin", async () => {
-  const actualAdmin = await jest.requireActual<typeof admin>("firebase-admin");
-  mockGet = jest.fn<() => Promise<{exists: boolean; data?: () => MockDocumentData}>>(); // Use union type
-  mockUpdate = jest.fn<() => Promise<void>>(); // Initialize with type
-  mockSet = jest.fn<() => Promise<void>>(); // Initialize with type
-
-  mockDoc = jest.fn(() => ({
-    get: mockGet,
-    update: mockUpdate,
-    set: mockSet, // Add set to mockDoc
-  }));
-  mockCollection = jest.fn(() => ({
-    doc: mockDoc,
-  }));
-  mockRunTransaction = jest
-    .fn<(TTransactionCallback: (transaction: admin.firestore.Transaction) => Promise<unknown>) => Promise<unknown>>() // Renamed type param
-    .mockImplementation(async (updateFunction: (transaction: admin.firestore.Transaction) => Promise<unknown>) => {
-      const mockTransaction = {
-        get: mockGet,
-        update: mockUpdate,
-        set: mockSet,
-        create: jest.fn(),
-        delete: jest.fn(),
-        getAll: jest.fn(),
-      } as unknown as admin.firestore.Transaction;
-      return updateFunction(mockTransaction);
-    });
-
-  return {
-    ...actualAdmin,
-    initializeApp: jest.fn(),
-    firestore: () => ({
-      collection: mockCollection,
-      doc: mockDoc, // Also mock top-level doc if used, though usually it's collection().doc()
-      runTransaction: mockRunTransaction,
-      FieldValue: actualAdmin.firestore.FieldValue, // Ensure FieldValue is available
-      Timestamp: actualAdmin.firestore.Timestamp, // Ensure Timestamp is available
-    }),
-  };
-});
+} from "../firestoreService";
+import {Player, PlayerStats} from "../validation/firestoreSchemas";
 
 describe("Firestore Service", () => {
-  let testEnv: RulesTestEnvironment;
-
   beforeAll(async () => {
-    // Using a unique projectId for each test suite run can prevent interference.
-    testEnv = await initializeTestEnvironment({
-      projectId: `test-firestore-service-${Date.now()}`,
-      firestore: {
-        host: "localhost", // Ensure this matches your emulator settings
-        port: 8080, // Ensure this matches your emulator settings
-      },
-    });
+    // Simplified setup without Firebase rules testing environment
   });
 
   afterAll(async () => {
-    await testEnv.cleanup();
+    // No cleanup needed for unit tests
   });
 
   beforeEach(async () => {
     // Clear all mock implementations and call history before each test
     jest.clearAllMocks();
-
-    // Re-initialize mocks to ensure correct typing for mockResolvedValue/mockRejectedValue
-    mockGet = jest.fn<() => Promise<{exists: boolean; data?: () => MockDocumentData}>>(); // Use union type
-    mockUpdate = jest.fn<() => Promise<void>>();
-    mockSet = jest.fn<() => Promise<void>>();
-
-    mockDoc = jest.fn().mockImplementation(() => ({
-      get: mockGet,
-      update: mockUpdate,
-      set: mockSet,
-    }));
-    mockCollection = jest.fn().mockImplementation(() => ({
-      doc: mockDoc,
-    }));
-    mockRunTransaction = jest
-      .fn<(TTransactionCallback: (transaction: admin.firestore.Transaction) => Promise<unknown>) => Promise<unknown>>() // Renamed type param
-      .mockImplementation(async (updateFunction: (transaction: admin.firestore.Transaction) => Promise<unknown>) => {
-        const mockTransactionInternal = {
-          get: mockGet,
-          update: mockUpdate,
-          set: mockSet,
-          create: jest.fn(),
-          delete: jest.fn(),
-          getAll: jest.fn(),
-        } as unknown as admin.firestore.Transaction;
-        return updateFunction(mockTransactionInternal);
-      });
   });
 
   describe("getUser", () => {
@@ -135,6 +126,7 @@ describe("Firestore Service", () => {
         username: "tester",
         xp: 0,
         coins: 100,
+        hasPurchasedApp: false,
         progress: {classicIndex: 1, dailyChallengeIndex: 1, tutorialIndex: 0},
         stats: {
           gamesPlayed: 0,
@@ -151,20 +143,20 @@ describe("Firestore Service", () => {
           totalScore: 0,
           highestLevelClassic: 0,
         },
-        registeredAt: Date.now(), // Changed to numeric timestamp
-        lastLogin: Date.now(), // Changed to numeric timestamp
+        registeredAt: Date.now(),
+        lastLogin: Date.now(),
       };
       mockGet.mockResolvedValue({exists: true, data: () => mockUserData});
 
       const user = await getUser("testUser");
       expect(user).toEqual(mockUserData);
-      expect(mockCollection).toHaveBeenCalledWith("users");
-      expect(mockDoc).toHaveBeenCalledWith("testUser");
+      expect(admin.firestore().collection).toHaveBeenCalledWith("users");
+      expect(mockCollectionRef.doc).toHaveBeenCalledWith("testUser");
       expect(mockGet).toHaveBeenCalledTimes(1);
     });
 
-    it("should return undefined if user does not exist", async () => {
-      mockGet.mockResolvedValue({exists: false});
+    it("should return undefined if user does not exist and log info", async () => {
+      mockGet.mockResolvedValue({exists: false, data: () => undefined});
 
       const user = await getUser("nonExistentUser");
       expect(user).toBeUndefined();
@@ -174,40 +166,58 @@ describe("Firestore Service", () => {
 
   describe("updateUserLastCompletedDailyChallengeDate", () => {
     it("should update the last daily challenge completed date", async () => {
-      mockUpdate.mockResolvedValue(undefined); // Simulate successful update
-
+      mockUpdate.mockResolvedValue(undefined);
       const userId = "testUser";
       const date = "2023-10-26";
       await updateUserLastCompletedDailyChallengeDate(userId, date);
-
-      expect(mockCollection).toHaveBeenCalledWith("users");
-      expect(mockDoc).toHaveBeenCalledWith(userId);
+      expect(admin.firestore().collection).toHaveBeenCalledWith("users");
+      expect(mockCollectionRef.doc).toHaveBeenCalledWith(userId);
       expect(mockUpdate).toHaveBeenCalledWith({lastDailyChallengeCompletedAt: date});
     });
 
-    it("should throw an error if update fails", async () => {
+    it("should log an error if update fails", async () => {
       const error = new Error("Update failed");
-      mockUpdate.mockRejectedValue(error);
+      mockUpdate.mockRejectedValue(error); // Simulate Firestore update failure
 
       const userId = "testUser";
       const date = "2023-10-26";
-      await expect(updateUserLastCompletedDailyChallengeDate(userId, date)).rejects.toThrow("Update failed");
-      // console.error is expected to be called by the original function
+
+      // Expect the function to log the error and reject when the update fails.
+      await expect(updateUserLastCompletedDailyChallengeDate(userId, date)).rejects.toThrow(error);
+
+      expect(functions.logger.error).toHaveBeenCalledWith(
+        `Error updating last completed daily challenge date for user ${userId}:`,
+        error,
+      );
     });
   });
 
   describe("updateUserCoins", () => {
+    beforeEach(async () => {
+      // Clear all mock implementations and call history before each test
+      jest.clearAllMocks();
+      // Ensure mockUpdate is reset to resolve successfully
+      mockUpdate.mockResolvedValue(undefined);
+    });
+
     it("should update user coins within a transaction", async () => {
       const userId = "testUser";
       const initialCoins = 100;
       const coinsToAdd = 50;
 
-      mockGet.mockResolvedValue({exists: true, data: () => ({coins: initialCoins})});
+      mockGet.mockResolvedValue({exists: true, data: () => ({coins: initialCoins}) as Player});
       await updateUserCoins(userId, coinsToAdd);
 
       expect(mockRunTransaction).toHaveBeenCalledTimes(1);
-      expect(mockGet).toHaveBeenCalledTimes(1); // Called by transaction.get
-      expect(mockUpdate).toHaveBeenCalledWith({coins: initialCoins + coinsToAdd});
+      expect(mockGet).toHaveBeenCalledTimes(1);
+      expect(mockUpdate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          get: mockGet,
+          update: mockUpdate,
+          set: mockSet,
+        }),
+        {coins: initialCoins + coinsToAdd},
+      );
     });
 
     it("should use provided transaction if available", async () => {
@@ -217,34 +227,45 @@ describe("Firestore Service", () => {
       const mockTransactionExt = {
         get: mockGet,
         update: mockUpdate,
-        set: jest.fn(),
+        set: mockSet,
         create: jest.fn(),
         delete: jest.fn(),
         getAll: jest.fn(),
-      } as unknown as admin.firestore.Transaction;
+      } as unknown as Transaction;
 
-      mockGet.mockResolvedValue({exists: true, data: () => ({coins: initialCoins})});
+      mockGet.mockResolvedValue({exists: true, data: () => ({coins: initialCoins}) as Player});
 
       await updateUserCoins(userId, coinsToAdd, mockTransactionExt);
 
       expect(mockRunTransaction).not.toHaveBeenCalled();
-      expect(mockGet).toHaveBeenCalledTimes(1); // Called by transaction.get
-      expect(mockUpdate).toHaveBeenCalledWith({coins: initialCoins + coinsToAdd});
+      expect(mockGet).toHaveBeenCalledTimes(1);
+      expect(mockUpdate).toHaveBeenCalledWith(
+        expect.objectContaining({get: mockGet, update: mockUpdate, set: mockSet}),
+        {coins: initialCoins + coinsToAdd},
+      );
     });
 
-    it("should throw error if user does not exist", async () => {
+    it("should throw error and log if user does not exist in transaction", async () => {
       const userId = "nonExistentUser";
-      mockGet.mockResolvedValue({exists: false}); // User does not exist
+      mockGet.mockResolvedValue({exists: false, data: () => undefined});
       await expect(updateUserCoins(userId, 50)).rejects.toThrow(`User with ID ${userId} not found.`);
+      expect(functions.logger.error).toHaveBeenCalledWith(
+        expect.stringContaining(`User with ID ${userId} not found during transaction for updateUserCoins.`),
+        expect.any(Error),
+      );
     });
 
-    it("should throw error for insufficient coins", async () => {
+    it("should throw error and log for insufficient coins in transaction", async () => {
       const userId = "testUser";
       const initialCoins = 10;
-      mockGet.mockResolvedValue({exists: true, data: () => ({coins: initialCoins})});
+      mockGet.mockResolvedValue({exists: true, data: () => ({coins: initialCoins}) as Player});
 
       await expect(updateUserCoins(userId, -50)).rejects.toThrow(
         `Insufficient coins for user ${userId}. Current: ${initialCoins}, Attempted to spend: 50.`,
+      );
+      expect(functions.logger.error).toHaveBeenCalledWith(
+        expect.stringContaining(`Insufficient coins for user ${userId}`),
+        expect.any(Error),
       );
     });
   });
@@ -269,48 +290,62 @@ describe("Firestore Service", () => {
     const statsUpdate: Partial<PlayerStats> = {wins: 3, winStreak: 2};
 
     it("should update user stats within a transaction, merging with existing stats", async () => {
-      mockGet.mockResolvedValue({exists: true, data: () => ({stats: initialStats})});
+      mockGet.mockResolvedValue({exists: true, data: () => ({stats: initialStats}) as Player});
+      mockUpdate.mockResolvedValue(undefined);
 
       await updateUserStats(userId, statsUpdate);
 
       expect(mockRunTransaction).toHaveBeenCalledTimes(1);
       expect(mockGet).toHaveBeenCalledTimes(1);
-      expect(mockUpdate).toHaveBeenCalledWith({
-        stats: {...initialStats, ...statsUpdate},
-      });
+      expect(mockUpdate).toHaveBeenCalledWith(
+        expect.objectContaining({get: mockGet, update: mockUpdate, set: mockSet}),
+        {
+          stats: {...initialStats, ...statsUpdate},
+        },
+      );
     });
 
     it("should use provided transaction if available for stats update", async () => {
       const mockTransactionExt = {
         get: mockGet,
         update: mockUpdate,
-        set: jest.fn(),
+        set: mockSet,
         create: jest.fn(),
         delete: jest.fn(),
         getAll: jest.fn(),
-      } as unknown as admin.firestore.Transaction;
-      mockGet.mockResolvedValue({exists: true, data: () => ({stats: initialStats})});
+      } as unknown as Transaction;
+      mockGet.mockResolvedValue({exists: true, data: () => ({stats: initialStats}) as Player});
 
       await updateUserStats(userId, statsUpdate, mockTransactionExt);
 
       expect(mockRunTransaction).not.toHaveBeenCalled();
       expect(mockGet).toHaveBeenCalledTimes(1);
-      expect(mockUpdate).toHaveBeenCalledWith({
-        stats: {...initialStats, ...statsUpdate},
-      });
+      expect(mockUpdate).toHaveBeenCalledWith(
+        expect.objectContaining({get: mockGet, update: mockUpdate, set: mockSet}),
+        {
+          stats: {...initialStats, ...statsUpdate},
+        },
+      );
     });
 
-    it("should initialize stats if they don't exist", async () => {
-      mockGet.mockResolvedValue({exists: true, data: () => ({})}); // No initial stats
+    it("should initialize stats if they don't exist in transaction", async () => {
+      mockGet.mockResolvedValue({exists: true, data: () => ({}) as Player});
 
       await updateUserStats(userId, statsUpdate);
-      expect(mockUpdate).toHaveBeenCalledWith({stats: {...statsUpdate}});
+      expect(mockUpdate).toHaveBeenCalledWith(
+        expect.objectContaining({get: mockGet, update: mockUpdate, set: mockSet}),
+        {stats: {...statsUpdate}},
+      );
     });
 
-    it("should throw error if user does not exist for stats update", async () => {
-      mockGet.mockResolvedValue({exists: false});
+    it("should throw error and log if user does not exist for stats update in transaction", async () => {
+      mockGet.mockResolvedValue({exists: false, data: () => undefined});
       await expect(updateUserStats("nonExistentUser", statsUpdate)).rejects.toThrow(
         "User with ID nonExistentUser not found.",
+      );
+      expect(functions.logger.error).toHaveBeenCalledWith(
+        expect.stringContaining("User with ID nonExistentUser not found during transaction for updateUserStats."),
+        expect.any(Error),
       );
     });
   });
@@ -323,18 +358,19 @@ describe("Firestore Service", () => {
 
       await updateUserProfile(userId, profileUpdate);
 
-      expect(mockCollection).toHaveBeenCalledWith("users");
-      expect(mockDoc).toHaveBeenCalledWith(userId);
+      expect(admin.firestore().collection).toHaveBeenCalledWith("users");
+      expect(mockCollectionRef.doc).toHaveBeenCalledWith(userId);
       expect(mockUpdate).toHaveBeenCalledWith(profileUpdate);
     });
 
-    it("should throw an error if profile update fails", async () => {
+    it("should log an error and rethrow if profile update fails", async () => {
       const error = new Error("Profile update failed");
       mockUpdate.mockRejectedValue(error);
       const userId = "testUser";
       const profileUpdate = {username: "newUsername"};
 
       await expect(updateUserProfile(userId, profileUpdate)).rejects.toThrow("Profile update failed");
+      expect(functions.logger.error).toHaveBeenCalledWith(`Error updating profile for user ${userId}:`, error);
     });
   });
 
@@ -353,31 +389,31 @@ describe("Firestore Service", () => {
         text: "A greeting word",
         riddleId: "riddle123",
       });
-      expect(mockCollection).toHaveBeenCalledWith("riddles");
-      expect(mockDoc).toHaveBeenCalledWith("riddle123");
+      expect(admin.firestore().collection).toHaveBeenCalledWith("riddles");
+      expect(mockCollectionRef.doc).toHaveBeenCalledWith("riddle123");
       expect(mockGet).toHaveBeenCalledTimes(1);
     });
 
-    it("should return undefined if riddle does not exist", async () => {
-      mockGet.mockResolvedValue({exists: false});
+    it("should return undefined and log info if riddle does not exist", async () => {
+      mockGet.mockResolvedValue({exists: false, data: () => undefined});
 
       const riddle = await getRiddle("nonExistentRiddle");
       expect(riddle).toBeUndefined();
       expect(functions.logger.info).toHaveBeenCalledWith("Riddle document not found for ID nonExistentRiddle");
     });
 
-    it("should return undefined if riddle data is null", async () => {
+    it("should return undefined and log info if riddle data is null", async () => {
       mockGet.mockResolvedValue({exists: true, data: () => null});
 
       const riddle = await getRiddle("riddleWithNullData");
       expect(riddle).toBeUndefined();
+      expect(functions.logger.info).toHaveBeenCalledWith("Riddle data is null for ID riddleWithNullData");
     });
 
     it("should use riddleId from data if available, otherwise use provided riddleId", async () => {
       const mockRiddleDataWithoutId = {
         answer: "WORLD",
         text: "The planet we live on",
-        // riddleId is missing from data
       };
       mockGet.mockResolvedValue({exists: true, data: () => mockRiddleDataWithoutId});
 
@@ -385,7 +421,7 @@ describe("Firestore Service", () => {
       expect(riddle).toEqual({
         answer: "WORLD",
         text: "The planet we live on",
-        riddleId: "riddle456", // Should use the provided riddleId
+        riddleId: "riddle456",
       });
     });
 
@@ -401,7 +437,7 @@ describe("Firestore Service", () => {
       expect(riddle).toEqual({
         answer: "EARTH",
         text: "Our home planet",
-        riddleId: "dataRiddleId", // Should use the riddleId from data
+        riddleId: "dataRiddleId",
       });
     });
   });

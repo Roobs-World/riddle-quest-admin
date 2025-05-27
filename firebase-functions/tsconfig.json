@@ -17,6 +17,6 @@
   },
   "compileOnSave": true,
   "include": ["src", "jest.config.js"],
-  "exclude": ["node_modules", "node_modules/call-bind-apply-helpers", "**/*.bak", "**/*.skip"],
+  "exclude": ["node_modules", "node_modules/call-bind-apply-helpers", "src/__tests__", "src/__mocks__", "**/*.bak", "**/*.skip"],
   "skipLibCheck": true
 }

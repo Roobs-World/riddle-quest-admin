@@ -1,35 +1,6 @@
 {
-  "functions": [
-    {
-      "source": ".",
-      "codebase": "default",
-      "ignore": ["node_modules", ".git", "firebase-debug.log", "firebase-debug.*.log", "*.local"]
-    }
-  ],
-  "firestore": {
-    "rules": "firestore.rules",
-    "indexes": "firestore.indexes.json"
-  },
-  "auth": {
-    "passwordPolicy": {
-      "forceUpgradeOnSignin": false
-    }
-  },
-  "emulators": {
-    "auth": {
-      "port": 9101
-    },
-    "functions": {
-      "port": 5101
-    },
-    "firestore": {
-      "host": "127.0.0.1",
-      "port": 8099
-    },
-    "ui": {
-      "enabled": true,
-      "port": 4100
-    },
-    "singleProjectMode": true
+  "functions": {
+    "source": ".",
+    "runtime": "nodejs22"
   }
 }

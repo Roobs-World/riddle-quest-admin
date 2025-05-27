@@ -1,73 +1,74 @@
 import {afterEach, beforeEach, describe, expect, it, jest} from "@jest/globals";
-import {Request} from "firebase-functions/v2/https";
-import {logger} from "firebase-functions/v2";
-import type {Response} from "express"; // Express types are often used for mocks
+import {CallableRequest, HttpsError, HttpsOptions} from "firebase-functions/v2/https";
 
-// Import the function to test
-import {notifyRewardedAdCompleted} from "../adClientCallbacks"; // Adjust path
+// Original imports from SUT needed for typing
+import type * as OriginalAdClientCallbacks from "../adClientCallbacks";
 
-// --- Mocks Start ---
-// jest.mock("firebase-functions/v2", ... ) // Already mocked by user, ensure logger is covered
-// --- Mocks End ---
+// Initialize all mock functions before any imports to ensure proper hoisting
+const mockLoggerInfo = jest.fn();
+const mockLoggerWarn = jest.fn();
+const mockLoggerError = jest.fn();
 
-describe("notifyRewardedAdCompleted HTTP Trigger", () => {
-  let mockReq: Partial<Request>;
-  let mockRes: {
-    status: jest.MockedFunction<(code: number) => Response>;
-    send: jest.MockedFunction<(body?: any) => Response>;
-    json: jest.MockedFunction<(body?: any) => Response>;
-    end: jest.MockedFunction<() => Response>;
-    on: jest.MockedFunction<() => Response>;
-    setHeader: jest.MockedFunction<() => Response>;
-    // Add other Express.Response methods if needed by the function
-  } & Partial<Response>; // Use Partial<Response> for other optional properties
+// Mock firebase-functions/v2 for logger
+jest.mock("firebase-functions/v2", () => ({
+  logger: {
+    info: mockLoggerInfo,
+    warn: mockLoggerWarn,
+    error: mockLoggerError,
+  },
+}));
 
-  beforeEach(() => {
+// Also mock the https module to make sure onCall works correctly
+jest.mock("firebase-functions/v2/https", () => {
+  const actualHttps = jest.requireActual("firebase-functions/v2/https") as typeof import("firebase-functions/v2/https");
+  return {
+    ...actualHttps,
+    onCall: jest.fn((handler) => handler), // Simple passthrough for testing
+  };
+});
+
+interface RewardedAdCompletionData {
+  adDetails?: {
+    placementId?: string;
+    creativeId?: string;
+    networkName?: string;
+    [key: string]: any;
+  };
+}
+
+describe("notifyRewardedAdCompleted Callable Function", () => {
+  let notifyRewardedAdCompleted: any;
+
+  beforeEach(async () => {
+    // Clear all mocks
     jest.clearAllMocks();
 
-    mockReq = {
-      headers: {},
-      body: {},
-    };
-
-    // A more robust way to mock Express Response for Jest
-    const resStatus = jest.fn<() => Response>();
-    const resSend = jest.fn<() => Response>();
-    const resJson = jest.fn<() => Response>();
-    const resEnd = jest.fn<() => Response>();
-    const resOn = jest.fn<() => Response>(); // Mock for 'on' method
-    const resSetHeader = jest.fn<() => Response>(); // Mock for setHeader
-
-    mockRes = {
-      status: resStatus.mockReturnThis(),
-      send: resSend.mockReturnThis(),
-      json: resJson.mockReturnThis(),
-      end: resEnd.mockReturnThis(),
-      on: resOn.mockReturnThis(), // Add 'on' to the mock response
-      setHeader: resSetHeader.mockReturnThis(), // Add setHeader
-    } as unknown as typeof mockRes; // Cast to its own type for internal consistency
+    // Import the function after mocks are set up
+    const adClientCallbacks = await import("../adClientCallbacks");
+    notifyRewardedAdCompleted = adClientCallbacks.notifyRewardedAdCompleted;
   });
 
   afterEach(() => {
     jest.restoreAllMocks();
   });
 
-  it("should send 401/403 if authentication is missing/fails (HTTP style)", async () => {
-    mockReq.headers = {}; // No auth header, or an invalid one
-    mockReq.body = {adDetails: {placementId: "testPlacement"}};
+  it("should throw HttpsError if called unauthenticated", async () => {
+    const mockRequest = {
+      auth: undefined,
+      data: {
+        adDetails: {
+          placementId: "defaultPlacement",
+        },
+      },
+    } as unknown as CallableRequest<RewardedAdCompletionData>;
 
-    await notifyRewardedAdCompleted(mockReq as Request, mockRes as Response);
-
-    // Check if status was called, indicating an error was (likely) handled.
-    // The specific status code (401, 403, or even 500 if auth error isn't caught gracefully)
-    // depends on the function's internal logic.
-    expect(mockRes.status).toHaveBeenCalled();
-    // Optionally, check if send or json was also called to complete the response:
-    // expect(mockRes.send).toHaveBeenCalled() or expect(mockRes.json).toHaveBeenCalled();
-    expect(logger.info).not.toHaveBeenCalled();
+    await expect(notifyRewardedAdCompleted(mockRequest)).rejects.toThrow(
+      new HttpsError("unauthenticated", "The function must be called while authenticated."),
+    );
+    expect(mockLoggerInfo).not.toHaveBeenCalled();
   });
 
-  it("should log ad completion and send success response if authenticated (HTTP style)", async () => {
+  it("should log ad completion and return success if authenticated with adDetails", async () => {
     const mockUserId = "testUser123";
     const mockAdDetails = {
       placementId: "rewardedVideoPlacement",
@@ -75,64 +76,75 @@ describe("notifyRewardedAdCompleted HTTP Trigger", () => {
       networkName: "AppLovin",
     };
 
-    mockReq.body = {
-      adDetails: mockAdDetails,
-    };
-    // Simulate successful authentication by providing necessary headers/body items
-    // For example, if using bearer tokens:
-    mockReq.headers = {authorization: "Bearer valid-token-for-testUser123"};
-    // The function notifyRewardedAdCompleted would internally verify this token and extract userId.
+    const mockRequest = {
+      auth: {uid: mockUserId, token: {} as any},
+      data: {adDetails: mockAdDetails},
+    } as unknown as CallableRequest<RewardedAdCompletionData>;
 
-    await notifyRewardedAdCompleted(mockReq as Request, mockRes as Response);
+    const result = await notifyRewardedAdCompleted(mockRequest);
 
-    expect(logger.info).toHaveBeenCalledWith(
-      // The user ID in the log should be what the function extracts after auth
+    expect(mockLoggerInfo).toHaveBeenCalledWith(
       `Rewarded ad completed client-side for user ${mockUserId}. Details: ${JSON.stringify(mockAdDetails)}`,
     );
-    expect(mockRes.status).toHaveBeenCalledWith(200);
-    expect(mockRes.json).toHaveBeenCalledWith({
+    expect(result).toEqual({
       success: true,
       message: "Rewarded ad completion notification received.",
     });
   });
 
-  it("should handle empty adDetails gracefully (HTTP style)", async () => {
+  it("should handle empty adDetails gracefully if authenticated", async () => {
     const mockUserId = "testUser456";
-    mockReq.body = {
-      adDetails: {},
-    };
-    mockReq.headers = {authorization: "Bearer valid-token-for-testUser456"};
+    const mockRequest = {
+      auth: {uid: mockUserId, token: {} as any},
+      data: {adDetails: {}},
+    } as unknown as CallableRequest<RewardedAdCompletionData>;
 
-    await notifyRewardedAdCompleted(mockReq as Request, mockRes as Response);
+    const result = await notifyRewardedAdCompleted(mockRequest);
 
-    expect(logger.info).toHaveBeenCalledWith(
+    expect(mockLoggerInfo).toHaveBeenCalledWith(
       `Rewarded ad completed client-side for user ${mockUserId}. Details: ${JSON.stringify({})}`,
     );
-    expect(mockRes.status).toHaveBeenCalledWith(200);
-    expect(mockRes.json).toHaveBeenCalledWith({
+    expect(result).toEqual({
       success: true,
       message: "Rewarded ad completion notification received.",
     });
   });
 
-  it("should log specific ad details when provided (HTTP style)", async () => {
+  it("should log specific ad details when provided if authenticated", async () => {
     const mockUserId = "testUser789";
     const specificAdDetails = {
       placementId: "specificPlacement",
       someOtherDetail: "value123",
     };
-    mockReq.body = {
-      adDetails: specificAdDetails,
-    };
-    mockReq.headers = {authorization: "Bearer valid-token-for-testUser789"};
 
-    await notifyRewardedAdCompleted(mockReq as Request, mockRes as Response);
+    const mockRequest = {
+      auth: {uid: mockUserId, token: {} as any},
+      data: {adDetails: specificAdDetails},
+    } as unknown as CallableRequest<RewardedAdCompletionData>;
 
-    expect(logger.info).toHaveBeenCalledWith(
+    const result = await notifyRewardedAdCompleted(mockRequest);
+
+    expect(mockLoggerInfo).toHaveBeenCalledWith(
       `Rewarded ad completed client-side for user ${mockUserId}. Details: ${JSON.stringify(specificAdDetails)}`,
     );
-    expect(mockRes.status).toHaveBeenCalledWith(200);
-    expect(mockRes.json).toHaveBeenCalledWith({
+    expect(result).toEqual({
+      success: true,
+      message: "Rewarded ad completion notification received.",
+    });
+  });
+
+  it("should process successfully if adDetails are missing in request.data and auth is present", async () => {
+    const mockRequest = {
+      auth: {uid: "testUserNoDetails", token: {} as any},
+      data: {},
+    } as unknown as CallableRequest<RewardedAdCompletionData>;
+
+    const result = await notifyRewardedAdCompleted(mockRequest);
+
+    expect(mockLoggerInfo).toHaveBeenCalledWith(
+      `Rewarded ad completed client-side for user testUserNoDetails. Details: undefined`,
+    );
+    expect(result).toEqual({
       success: true,
       message: "Rewarded ad completion notification received.",
     });

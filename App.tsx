@@ -6,7 +6,8 @@ import GameScreen from "./src/screens/game/GameScreen";
 import { loadFonts } from "./src/utils/fontLoader";
 import DottedSpinner from "./src/components/DottedSpinner";
 import { SoundManager } from "./src/services/SoundManager";
-import { APPLOVIN_SDK_KEY } from "@env";
+import Constants from "expo-constants";
+import { Settings } from "react-native-fbsdk-next";
 
 import {
   GameScreenOverlayState,
@@ -123,7 +124,7 @@ function AppContent() {
   // Effect to initialize AppLovin SDK
   useEffect(() => {
     const initializeAppLovin = async () => {
-      const applovinSdkKey = APPLOVIN_SDK_KEY;
+      const applovinSdkKey = Constants.expoConfig?.extra?.APPLOVIN_SDK_KEY;
 
       if (!applovinSdkKey || applovinSdkKey === "YOUR_APPLOVIN_SDK_KEY") {
         console.error("AppLovin SDK Key not set. Ads will not initialize.");
@@ -144,6 +145,36 @@ function AppContent() {
     };
 
     initializeAppLovin();
+  }, []);
+
+  // Effect to initialize Facebook SDK
+  useEffect(() => {
+    const initializeFacebookSDK = async () => {
+      const facebookAppId = Constants.expoConfig?.extra?.FACEBOOK_APP_ID;
+
+      if (!facebookAppId || facebookAppId === "YOUR_FACEBOOK_APP_ID") {
+        console.error(
+          "Facebook App ID not set. Facebook features will not work."
+        );
+        return;
+      }
+
+      console.log("Initializing Facebook SDK...");
+
+      try {
+        // Set the Facebook App ID
+        Settings.setAppID(facebookAppId);
+
+        // Initialize the Facebook SDK
+        Settings.initializeSDK();
+
+        console.log("Facebook SDK initialized successfully!");
+      } catch (error) {
+        console.error("Facebook SDK failed to initialize:", error);
+      }
+    };
+
+    initializeFacebookSDK();
   }, []);
 
   // Effect to load the initial riddle based on game mode when authenticated and player data is available
@@ -263,7 +294,7 @@ function AppContent() {
         );
         await generateRiddlesCallable();
 
-        // TODO: Implement a mechanism to wait for Google Sheets to Firestore sync
+        // Note: Riddles are now stored directly in Firestore (no Google Sheets sync needed)
 
         await new Promise((resolve) => setTimeout(resolve, 5000));
         const refetchedRiddle = await fetchClassicRiddleFromFirestore(

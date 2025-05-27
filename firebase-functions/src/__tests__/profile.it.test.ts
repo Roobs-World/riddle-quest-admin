@@ -1,3 +1,6 @@
+import * as dotenv from "dotenv";
+dotenv.config({path: ".env"}); // Load .env file from firebase-functions directory
+
 // Import necessary testing libraries and modules
 import {describe, it, expect, beforeAll, afterAll, beforeEach} from "@jest/globals";
 import * as admin from "firebase-admin";
@@ -5,21 +8,31 @@ import functionsTest from "firebase-functions-test";
 import {HttpsError, CallableRequest} from "firebase-functions/v2/https";
 
 // Import the functions to test
-import {resetStats, updateAvatar} from "../profile.js";
-import {PlayerSchema} from "../validation/firestoreSchemas.js";
-import {createUser} from "./testUtils.js";
+import {resetStats, updateAvatar} from "../profile";
+import {PlayerSchema} from "../validation/firestoreSchemas";
+import {createUser} from "./testUtils";
+
+const FIREBASE_PROJECT_ID = "qwordly-6ba44";
 
 // Initialize firebase-functions-test
 const testEnv = functionsTest();
 
-// Ensure Firebase app is initialized before tests run
+// Manually initialize Firebase Admin SDK for testing against the live project
 if (!admin.apps.length) {
-  admin.initializeApp();
+  try {
+    admin.initializeApp({
+      projectId: FIREBASE_PROJECT_ID,
+    });
+  } catch (error) {
+    console.error("🚨 Firebase Admin SDK initialization failed. Error: ", error);
+    throw error;
+  }
 }
 
 let firestore: admin.firestore.Firestore;
 
 describe("Profile Functions - Integration Tests", () => {
+  jest.setTimeout(30000);
   const wrappedResetStats = testEnv.wrap(resetStats);
   const wrappedUpdateAvatar = testEnv.wrap(updateAvatar);
   const testUserId = "testUserProfile";
@@ -34,14 +47,32 @@ describe("Profile Functions - Integration Tests", () => {
       riddlesSkipped: 3,
       classicRiddlesSolved: 15,
       dailyChallengesCompleted: 2,
+      dailyPuzzlesCompleted: 0,
+      bestStreak: 0,
+      totalWordsGuessed: 0,
+      winRate: 0,
+      averageGuesses: 0,
+      totalScore: 0,
+      highestLevelClassic: 0,
+      gamesPlayed: 0,
+      wins: 0,
+      challengeWins: 0,
+      winStreak: 0,
+      totalWins: 0,
+      totalGuessesInWins: 0,
     },
     avatarUrl: "initial_avatar.png",
+    userId: testUserId,
+    username: "testUserProfile",
+    xp: 0,
+    createdAt: undefined,
+    registeredAt: undefined,
+    lastLogin: undefined,
+    lastDailyChallengeCompletedAt: undefined,
+    displayName: undefined,
   };
 
   beforeAll(async () => {
-    if (!process.env.FIRESTORE_EMULATOR_HOST) {
-      console.error("\n🔥🔥🔥 FIRESTORE_EMULATOR_HOST is not set. Integration tests will likely time out. 🔥🔥🔥\n");
-    }
     firestore = admin.firestore();
   });
 
@@ -50,7 +81,7 @@ describe("Profile Functions - Integration Tests", () => {
     const userRef = firestore.collection("users").doc(testUserId);
     await userRef.delete().catch(() => {}); // Ignore error if doc doesn't exist
     await createUser(firestore, testUserId, initialUserData);
-  });
+  }, 60000);
 
   afterAll(() => {
     testEnv.cleanup();
@@ -120,14 +151,14 @@ describe("Profile Functions - Integration Tests", () => {
     });
 
     it("should throw invalid-argument for missing avatarUrl", async () => {
-      const request = constructOnCallRequest({} as {avatarUrl: string}); // Cast to satisfy type, but data is missing
+      const request = constructOnCallRequest({}); // Cast to satisfy type, but data is missing
       await expect(wrappedUpdateAvatar(request)).rejects.toThrow(
         new HttpsError("invalid-argument", "Invalid or missing avatar URL."),
       );
     });
 
     it("should throw invalid-argument for non-string avatarUrl", async () => {
-      const request = constructOnCallRequest({avatarUrl: 123 as any}); // Invalid type
+      const request = constructOnCallRequest({avatarUrl: 123}); // Invalid type
       await expect(wrappedUpdateAvatar(request)).rejects.toThrow(
         new HttpsError("invalid-argument", "Invalid or missing avatar URL."),
       );

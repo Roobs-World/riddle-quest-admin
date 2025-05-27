@@ -1,9 +1,17 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import {onCall, CallableRequest, HttpsError} from "firebase-functions/v2/https";
+import {onCall, HttpsError} from "firebase-functions/v2/https";
 import {getUser, updateUserCoins, updateUserStats, getRiddle} from "./firestoreService";
 import type {PlayerStats, PlayerStatsUpdate} from "./validation/firestoreSchemas";
+import {PlayerSchema} from "./validation/firestoreSchemas";
 import type {FeedbackItem} from "./validation/requestSchemas";
+import {generateAndAppendRiddles} from "./generateRiddles";
+
+// Define a type for potential top-level updates to the Player document
+type PlayerTopLevelUpdate = {
+  lastDailyChallengeCompletedAt?: number | admin.firestore.FieldValue;
+  // Add other top-level fields here if they are updated similarly
+};
 
 // Type for feedback
 export type FeedbackColor = "green" | "yellow" | "red";
@@ -143,7 +151,7 @@ export async function handleGuessLogic(
       statsUpdate.winStreak = admin.firestore.FieldValue.increment(1);
       statsUpdate.totalGuessesInWins = admin.firestore.FieldValue.increment(attempts);
 
-      const playerProfileUpdate: Record<string, any> = {};
+      const playerProfileUpdate: PlayerTopLevelUpdate = {};
 
       if (gameMode === "challenge") {
         statsUpdate.challengeWins = admin.firestore.FieldValue.increment(1);
@@ -189,34 +197,62 @@ export async function handleGuessLogic(
         "progress.classicIndex": admin.firestore.FieldValue.increment(1),
       });
       console.log(`User ${userId} solved Classic riddle ${riddleId}. Incremented classicIndex.`);
+
+      // Check if new riddles need to be generated
+      const updatedUserDoc = await userRef.get();
+      const updatedPlayerData = PlayerSchema.parse(updatedUserDoc.data());
+      const currentClassicIndex = updatedPlayerData.progress?.classicIndex || 0;
+
+      try {
+        // Count total classic riddles in Firestore
+        const classicRiddlesSnapshot = await admin
+          .firestore()
+          .collection("riddles")
+          .where("classicIndex", ">=", 0)
+          .get();
+
+        const totalClassicRiddles = classicRiddlesSnapshot.size;
+
+        console.log(
+          `User ${userId} currentClassicIndex: ${currentClassicIndex}, totalClassicRiddles: ${totalClassicRiddles}`,
+        );
+
+        if (totalClassicRiddles - currentClassicIndex <= 10) {
+          console.log(`User ${userId} has <= 10 classic riddles remaining. Triggering generation of 25 new riddles.`);
+          try {
+            await generateAndAppendRiddles(25);
+            console.log("Successfully triggered generation of 25 new classic riddles.");
+          } catch (error) {
+            console.error("Error triggering generation of new classic riddles:", error);
+            // Decide if this error should be surfaced to the client or just logged
+          }
+        }
+      } catch (error) {
+        console.error("Error checking classic riddle count:", error);
+      }
     }
 
     return {
       feedback,
       isCorrect,
-      correctAnswer: gameOver ? riddle.answer : undefined,
-      coinsEarned: isCorrect ? coinsEarned : 0,
+      correctAnswer: gameOver || isCorrect ? riddle.answer : undefined,
+      coinsEarned,
     };
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Error in handleGuessLogic:", error);
     if (error instanceof HttpsError) {
       throw error;
     }
-    // It's good practice to throw HttpsError from the core logic too if it's meant to be directly callable by other cloud functions
-    // or if you want consistent error types.
     throw new HttpsError("internal", "An unexpected error occurred in handleGuessLogic.", error);
   }
 }
 
-// The onCall wrapper remains, now calling the core logic
-export const submitGuess = onCall(
-  {region: "us-central1"},
-  async (request: CallableRequest<SubmitGuessRequestData>): Promise<SubmitGuessResponseData> => {
-    if (!request.auth) {
-      throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
-    }
-    // Pass request.data and a simplified auth context to the core logic function
-    // The return type of handleGuessLogic matches SubmitGuessResponseData which expects FeedbackItem[] for feedback
-    return handleGuessLogic(request.data, {uid: request.auth.uid});
-  },
-);
+// This is the callable function wrapper
+export const submitGuess = onCall<SubmitGuessRequestData, Promise<SubmitGuessResponseData>>(async (request) => {
+  if (!request.auth) {
+    throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
+  }
+  // Validate data if necessary (using Zod or similar)
+  // e.g., const validatedData = SubmitGuessRequestDataSchema.parse(request.data);
+  return handleGuessLogic(request.data, request.auth);
+});

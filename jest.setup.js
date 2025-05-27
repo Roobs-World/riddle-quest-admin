@@ -1,103 +1,44 @@
-import "@testing-library/react-native/extend-expect";
+// NOTE: Removed @testing-library/react-native/extend-expect import
+// since we're using custom Jest config with jsdom environment
 
 // Mock AsyncStorage
-jest.mock("@react-native-async-storage/async-storage", () =>
-  require("@react-native-async-storage/async-storage/jest/async-storage-mock")
-);
+jest.mock("@react-native-async-storage/async-storage", function () {
+  return {};
+}); // Simplified mock
 
 // Mock Firebase services
-// --- Helper Mocks for Firestore ---
-const mockFirestoreDocumentSnapshot = (
-  exists = true,
-  data = { defaultMockField: "defaultDocValue" }
-) => ({
-  exists,
-  data: () => (exists ? data : undefined),
-  id: "mockDocId",
-});
-
-const mockFirestoreQuerySnapshot = (
-  docs = [mockFirestoreDocumentSnapshot()]
-) => ({
-  empty: docs.length === 0,
-  docs,
-  forEach: (callback) => docs.forEach(callback),
-  size: docs.length,
-});
-
-const mockFirestoreGet = jest.fn().mockImplementation((options) => {
-  //This default can be overridden by specific tests using mockResolvedValueOnce etc.
-  // It tries to intelligently return a doc or query snapshot based on typical usage.
-  // For simplicity, let's assume most unqualified .get() calls expect a DocumentSnapshot that exists.
-  // Queries (after .where() or .limit()) would also call .get(), and they expect a QuerySnapshot.
-  // It's hard to distinguish here without more context, so we provide a plausible default for both.
-  return Promise.resolve(
-    mockFirestoreDocumentSnapshot(true, { fromGet: "default" })
-  );
-  // If this causes issues, a more complex mock might be needed or tests must be more specific.
-});
-
-const mockFirestoreCollectionRef = {
-  doc: jest.fn().mockReturnThis(), // returns DocumentReference-like object
-  where: jest.fn().mockReturnThis(), // returns Query-like object
-  orderBy: jest.fn().mockReturnThis(),
-  limit: jest.fn().mockReturnThis(),
-  get: jest.fn(() => Promise.resolve(mockFirestoreQuerySnapshot())), // .collection(...).get()
-  onSnapshot: jest.fn(() => jest.fn()), // Returns an unsubscribe function
-  add: jest
-    .fn()
-    .mockResolvedValue(
-      mockFirestoreDocumentSnapshot(true, { newlyAdded: true })
-    ), // mock for .add()
-};
-
-const mockFirestoreDocumentRef = {
-  collection: jest.fn(() => mockFirestoreCollectionRef), // .doc(...).collection()
-  get: mockFirestoreGet, // .doc(...).get()
-  set: jest.fn().mockResolvedValue(undefined),
-  update: jest.fn().mockResolvedValue(undefined),
-  delete: jest.fn().mockResolvedValue(undefined),
-  onSnapshot: jest.fn(() => jest.fn()), // Returns an unsubscribe function
-};
-
-// Overwrite doc to return the full DocumentReference mock
-mockFirestoreCollectionRef.doc = jest.fn(() => mockFirestoreDocumentRef);
-
-// --- End Helper Mocks for Firestore ---
-
-jest.mock("@react-native-firebase/app", () => {
-  const appMock = {
+jest.mock("@react-native-firebase/app", function () {
+  var appMock = {
     name: "[DEFAULT]",
     options: {},
-    // Add any other app instance methods you use
   };
   return {
-    __esModule: true, // Ensure ES module interop
+    __esModule: true,
     default: {
-      app: jest.fn(() => appMock),
+      app: jest.fn(function () {
+        return appMock;
+      }),
       apps: [appMock],
       SDK_VERSION: "mockSDKVersion",
       initializeApp: jest.fn().mockReturnValue(appMock),
-      // Mock the NativeModules part that often causes 'RNFBAppModule not found'
       NativeModules: {
         RNFBAppModule: {
           NATIVE_FIREBASE_APPS: JSON.stringify([
             { name: "[DEFAULT]", options: {} },
-          ]), // Stringified JSON array
-          FIREBASE_RAW_JSON: "{}", // Stringified JSON object for raw config
+          ]),
+          FIREBASE_RAW_JSON: "{}",
           addListener: jest.fn(),
           removeListeners: jest.fn(),
-          // Add other constants/methods from RNFBAppModule if needed by other modules
         },
       },
     },
-    // Also export named things if they are imported like `import { app } from ...`
-    app: jest.fn(() => appMock),
+    app: jest.fn(function () {
+      return appMock;
+    }),
     apps: [appMock],
     SDK_VERSION: "mockSDKVersion",
     initializeApp: jest.fn().mockReturnValue(appMock),
     NativeModules: {
-      // Repeat NativeModules for named exports if necessary
       RNFBAppModule: {
         NATIVE_FIREBASE_APPS: JSON.stringify([
           { name: "[DEFAULT]", options: {} },
@@ -110,81 +51,90 @@ jest.mock("@react-native-firebase/app", () => {
   };
 });
 
-let mockCurrentAuthUser = null; // Shared state for the mock auth user
-const mockOnAuthStateChangedListeners = new Set();
+var mockCurrentAuthUser = null;
+var mockOnAuthStateChangedListeners = new Set();
 
-jest.mock("@react-native-firebase/auth", () => {
-  const mockAuthSingleton = {
+jest.mock("@react-native-firebase/auth", function () {
+  var mockAuthSingleton = {
     signInWithEmailAndPassword: jest
       .fn()
-      .mockImplementation(async (email, password) => {
-        // Simulate successful login, set user, and notify listeners
-        const user = { uid: "test-uid-from-email", email };
-        mockCurrentAuthUser = user;
-        mockOnAuthStateChangedListeners.forEach((cb) =>
-          cb(mockCurrentAuthUser)
-        );
-        return { user };
+      .mockImplementation(function (email, password) {
+        return Promise.resolve().then(function () {
+          var user = { uid: "test-uid-from-email", email: email };
+          mockCurrentAuthUser = user;
+          mockOnAuthStateChangedListeners.forEach(function (cb) {
+            cb(mockCurrentAuthUser);
+          });
+          return { user: user };
+        });
       }),
     createUserWithEmailAndPassword: jest
       .fn()
-      .mockImplementation(async (email, password) => {
-        const user = { uid: "new-user-uid", email };
-        mockCurrentAuthUser = user;
-        mockOnAuthStateChangedListeners.forEach((cb) =>
-          cb(mockCurrentAuthUser)
-        );
-        return { user };
+      .mockImplementation(function (email, password) {
+        return Promise.resolve().then(function () {
+          var user = { uid: "new-user-uid", email: email };
+          mockCurrentAuthUser = user;
+          mockOnAuthStateChangedListeners.forEach(function (cb) {
+            cb(mockCurrentAuthUser);
+          });
+          return { user: user };
+        });
       }),
     sendPasswordResetEmail: jest.fn().mockResolvedValue(undefined),
-    signInWithCredential: jest.fn().mockImplementation(async (credential) => {
-      // Simulate successful login with credential
-      const user = { uid: "cred-user-uid", email: "cred@example.com" };
-      mockCurrentAuthUser = user;
-      mockOnAuthStateChangedListeners.forEach((cb) => cb(mockCurrentAuthUser));
-      return { user };
+    signInWithCredential: jest.fn().mockImplementation(function (credential) {
+      return Promise.resolve().then(function () {
+        var user = { uid: "cred-user-uid", email: "cred@example.com" };
+        mockCurrentAuthUser = user;
+        mockOnAuthStateChangedListeners.forEach(function (cb) {
+          cb(mockCurrentAuthUser);
+        });
+        return { user: user };
+      });
     }),
-    signOut: jest.fn().mockImplementation(async () => {
+    signOut: jest.fn().mockImplementation(function () {
       mockCurrentAuthUser = null;
-      mockOnAuthStateChangedListeners.forEach((cb) => cb(mockCurrentAuthUser));
+      mockOnAuthStateChangedListeners.forEach(function (cb) {
+        cb(mockCurrentAuthUser);
+      });
       return Promise.resolve(undefined);
     }),
-    onAuthStateChanged: jest.fn((callback) => {
+    onAuthStateChanged: jest.fn(function (callback) {
       if (typeof callback === "function") {
         mockOnAuthStateChangedListeners.add(callback);
-        // Simulate initial call with current state
-        Promise.resolve().then(() => callback(mockCurrentAuthUser));
+        Promise.resolve().then(function () {
+          callback(mockCurrentAuthUser);
+        });
       }
-      return () => {
+      return function () {
         mockOnAuthStateChangedListeners.delete(callback);
-      }; // Returns an unsubscribe function
+      };
     }),
     get currentUser() {
       return mockCurrentAuthUser;
     },
-    // Test helpers to manipulate the mock state from tests
-    __setMockUser: (user) => {
+    __setMockUser: function (user) {
       mockCurrentAuthUser = user;
-      // Manually trigger listeners if needed for immediate effect in tests,
-      // or rely on onAuthStateChanged initial call / subsequent events
-      mockOnAuthStateChangedListeners.forEach((cb) => cb(mockCurrentAuthUser));
+      mockOnAuthStateChangedListeners.forEach(function (cb) {
+        cb(mockCurrentAuthUser);
+      });
     },
-    __clearMockUser: () => {
+    __clearMockUser: function () {
       mockCurrentAuthUser = null;
-      mockOnAuthStateChangedListeners.forEach((cb) => cb(mockCurrentAuthUser));
+      mockOnAuthStateChangedListeners.forEach(function (cb) {
+        cb(mockCurrentAuthUser);
+      });
     },
-    // Add other methods as needed by your services or components
   };
 
-  // The factory function for the module
-  const mockAuthModule = () => mockAuthSingleton; // This is for auth()
+  var mockAuthModule = function () {
+    return mockAuthSingleton;
+  };
 
-  // Add static properties like GoogleAuthProvider to the module itself
   mockAuthModule.GoogleAuthProvider = {
     credential: jest
       .fn()
       .mockReturnValue({ type: "google.com-mock-credential" }),
-    PROVIDER_ID: "google.com", // Add other static props if needed
+    PROVIDER_ID: "google.com",
   };
   mockAuthModule.FacebookAuthProvider = {
     credential: jest
@@ -192,117 +142,258 @@ jest.mock("@react-native-firebase/auth", () => {
       .mockReturnValue({ type: "facebook.com-mock-credential" }),
     PROVIDER_ID: "facebook.com",
   };
-  // Add any other static providers if used (e.g., AppleAuthProvider)
 
   return mockAuthModule;
 });
 
-jest.mock("@react-native-firebase/firestore", () => {
-  // Return a function that returns the top-level Firestore instance mock
-  return () => ({
-    collection: jest.fn(() => mockFirestoreCollectionRef),
-    doc: jest.fn(() => mockFirestoreDocumentRef),
-    // Add any other top-level Firestore methods if used directly, e.g., batch, runTransaction
-    // For now, assume most interactions start with .collection() or .doc()
-    batch: jest.fn(() => ({
-      set: jest.fn().mockReturnThis(),
-      update: jest.fn().mockReturnThis(),
-      delete: jest.fn().mockReturnThis(),
-      commit: jest.fn().mockResolvedValue(undefined),
-    })),
-    runTransaction: jest.fn(async (updateFunction) => {
-      // A basic mock for transactions: execute the updateFunction with a mock transaction object
-      const mockTransaction = {
-        get: jest.fn().mockResolvedValue(mockFirestoreDocumentSnapshot()), // Mock transaction.get
-        set: jest.fn(), // Mock transaction.set
-        update: jest.fn(), // Mock transaction.update
-        delete: jest.fn(), // Mock transaction.delete
-      };
-      // warning: this is a simplified transaction mock and may not cover all scenarios
-      await updateFunction(mockTransaction);
-      return Promise.resolve(); // Transactions usually return a Promise for the result of the update function
-    }),
-    settings: jest.fn(), // Mock for firestore().settings()
-  });
-});
+jest.mock("@react-native-firebase/firestore", function () {
+  // --- Helper Mocks for Firestore ---
+  function createMockFirestoreDocumentSnapshot(exists, data) {
+    if (exists === undefined) exists = true;
+    if (data === undefined) data = { defaultMockField: "defaultDocValue" };
 
-jest.mock("@react-native-firebase/functions", () => {
-  return () => ({
-    httpsCallable: jest.fn((functionName) => {
-      // Return a mock function that simulates a callable Cloud Function
-      return jest.fn().mockImplementation(async (data) => {
-        // console.log(`Mocked Cloud Function '${functionName}' called with:`, data);
-        // Default successful response, can be overridden in specific tests
-        if (functionName === "submitGuess") {
-          return {
-            data: {
-              feedback: [], // Empty array is fine by schema
-              isCorrect: false, // Default value, satisfies schema
-              // newStats: {}, // Not in SubmitGuessOutputSchema, remove or make optional if kept
-              coinsEarned: 0, // Optional, fine
-              // message: "Mock success", // Not in SubmitGuessOutputSchema
-            },
-          };
-        }
-        if (functionName === "validatePurchase") {
-          return { data: { success: true, newCoins: 100 } };
-        }
-        if (functionName === "generateClassicRiddles") {
-          return { data: { success: true, newRiddlesAdded: 1 } };
-        }
-        return { data: { success: true } }; // Generic success
-      });
-    }),
-    // Add other Firebase Functions mocks if necessary
-  });
-});
+    return {
+      exists: exists,
+      data: function () {
+        return exists ? data : undefined;
+      },
+      id: "mockDocId",
+    };
+  }
 
-jest.mock("@react-native-firebase/storage", () => {
-  // This is the original storage mock, ensure it's correct and not mixed with Firestore.
-  const mockStorageRef = {
-    child: jest.fn().mockReturnThis(),
-    putFile: jest.fn(() =>
-      Promise.resolve({ metadata: { fullPath: "mock/path.jpg" } })
-    ),
-    getDownloadURL: jest.fn(() =>
-      Promise.resolve("https://mockurl.com/image.jpg")
-    ),
-    delete: jest.fn(() => Promise.resolve()),
-    // listAll, etc. if needed
+  function createMockFirestoreQuerySnapshot(docs) {
+    if (docs === undefined) docs = [createMockFirestoreDocumentSnapshot()];
+
+    return {
+      empty: docs.length === 0,
+      docs: docs,
+      forEach: function (callback) {
+        docs.forEach(callback);
+      },
+      size: docs.length,
+    };
+  }
+
+  var mockFirestoreGet = jest.fn().mockImplementation(function (options) {
+    return Promise.resolve(
+      createMockFirestoreDocumentSnapshot(true, { fromGet: "default" })
+    );
+  });
+
+  var mockFirestoreCollectionRef = {
+    doc: jest.fn().mockReturnThis(),
+    where: jest.fn().mockReturnThis(),
+    orderBy: jest.fn().mockReturnThis(),
+    limit: jest.fn().mockReturnThis(),
+    get: jest.fn(function () {
+      return Promise.resolve(createMockFirestoreQuerySnapshot());
+    }),
+    onSnapshot: jest.fn(function () {
+      return jest.fn();
+    }),
+    add: jest
+      .fn()
+      .mockResolvedValue(
+        createMockFirestoreDocumentSnapshot(true, { newlyAdded: true })
+      ),
   };
-  return () => ({
-    ref: jest.fn((path) => mockStorageRef), // ref() should return the mockStorageRef
-    // Add other top-level storage methods if used, e.g. setMaxUploadRetryTime
+
+  var mockFirestoreDocumentRef = {
+    collection: jest.fn(function () {
+      return mockFirestoreCollectionRef;
+    }),
+    get: mockFirestoreGet,
+    set: jest.fn().mockResolvedValue(undefined),
+    update: jest.fn().mockResolvedValue(undefined),
+    delete: jest.fn().mockResolvedValue(undefined),
+    onSnapshot: jest.fn(function () {
+      return jest.fn();
+    }),
+  };
+
+  // Overwrite doc to return the full DocumentReference mock
+  mockFirestoreCollectionRef.doc = jest.fn(function () {
+    return mockFirestoreDocumentRef;
   });
+
+  // --- End Helper Mocks for Firestore ---
+
+  return function () {
+    return {
+      collection: jest.fn(function () {
+        return mockFirestoreCollectionRef;
+      }),
+      doc: jest.fn(function () {
+        return mockFirestoreDocumentRef;
+      }),
+      batch: jest.fn(function () {
+        return {
+          set: jest.fn().mockReturnThis(),
+          update: jest.fn().mockReturnThis(),
+          delete: jest.fn().mockReturnThis(),
+          commit: jest.fn().mockResolvedValue(undefined),
+        };
+      }),
+      runTransaction: jest.fn(function (updateFunction) {
+        return Promise.resolve()
+          .then(function () {
+            var mockTransaction = {
+              get: jest
+                .fn()
+                .mockResolvedValue(createMockFirestoreDocumentSnapshot()),
+              set: jest.fn(),
+              update: jest.fn(),
+              delete: jest.fn(),
+            };
+            return updateFunction(mockTransaction);
+          })
+          .then(function () {
+            return undefined; // Transactions typically return undefined on success
+          })
+          .catch(function (error) {
+            throw error;
+          });
+      }),
+      FieldValue: {
+        increment: jest.fn(function (value) {
+          return value;
+        }),
+        serverTimestamp: jest.fn(function () {
+          return "mockServerTimestamp";
+        }),
+        arrayUnion: jest.fn(function () {
+          for (
+            var _len = arguments.length, elements = new Array(_len), _key = 0;
+            _key < _len;
+            _key++
+          ) {
+            elements[_key] = arguments[_key];
+          }
+          return elements;
+        }),
+        arrayRemove: jest.fn(function () {
+          for (
+            var _len2 = arguments.length,
+              elements = new Array(_len2),
+              _key2 = 0;
+            _key2 < _len2;
+            _key2++
+          ) {
+            elements[_key2] = arguments[_key2];
+          }
+          return elements;
+        }),
+        delete: jest.fn(function () {
+          return "mockDeleteFieldValue";
+        }),
+      },
+      Filter: {
+        where: jest.fn(function (fieldPath, opStr, value) {
+          return { fieldPath: fieldPath, opStr: opStr, value: value };
+        }),
+      },
+      mockCollection: function (collectionPath) {
+        return mockFirestoreCollectionRef;
+      },
+      mockDocument: function (documentPath) {
+        return mockFirestoreDocumentRef;
+      },
+      mockGet: mockFirestoreGet,
+      mockQuerySnapshot: createMockFirestoreQuerySnapshot,
+      mockDocumentSnapshot: createMockFirestoreDocumentSnapshot,
+    };
+  };
+});
+
+jest.mock("@react-native-firebase/functions", function () {
+  return function () {
+    return {
+      httpsCallable: jest.fn(function (functionName) {
+        return jest.fn().mockImplementation(function (data) {
+          return Promise.resolve().then(function () {
+            if (functionName === "submitGuess") {
+              return {
+                data: {
+                  feedback: [],
+                  isCorrect: false,
+                  coinsEarned: 0,
+                },
+              };
+            }
+            if (functionName === "validatePurchase") {
+              return { data: { success: true, newCoins: 100 } };
+            }
+            if (functionName === "generateClassicRiddles") {
+              return { data: { success: true, newRiddlesAdded: 1 } };
+            }
+            return { data: { success: true } };
+          });
+        });
+      }),
+    };
+  };
+});
+
+jest.mock("@react-native-firebase/storage", function () {
+  var mockStorageRef = {
+    child: jest.fn().mockReturnThis(),
+    putFile: jest.fn(function () {
+      return Promise.resolve({ metadata: { fullPath: "mock/path.jpg" } });
+    }),
+    getDownloadURL: jest.fn(function () {
+      return Promise.resolve("https://mockurl.com/image.jpg");
+    }),
+    delete: jest.fn(function () {
+      return Promise.resolve();
+    }),
+  };
+  return function () {
+    return {
+      ref: jest.fn(function (path) {
+        return mockStorageRef;
+      }),
+    };
+  };
 });
 
 // Mock React Navigation
 
 // First, mock the specific navigators and hooks used
-jest.mock("@react-navigation/native-stack", () => ({
-  createNativeStackNavigator: jest.fn(() => ({
-    Navigator: ({ children }) => children,
-    Screen: ({ children }) => children,
-  })),
-}));
-
-jest.mock("@react-navigation/native", () => {
-  const actualNav = jest.requireActual("@react-navigation/native");
+jest.mock("@react-navigation/native-stack", function () {
   return {
-    ...actualNav,
-    useNavigation: () => ({
-      navigate: jest.fn(),
-      goBack: jest.fn(),
-      dispatch: jest.fn(),
-      setOptions: jest.fn(),
-      // Add any other navigation methods you use
+    createNativeStackNavigator: jest.fn(function () {
+      return {
+        Navigator: function (props) {
+          return props.children;
+        },
+        Screen: function (props) {
+          return props.children;
+        },
+      };
     }),
-    useRoute: () => ({
-      params: {},
-      // Add other route properties you use
-    }),
-    NavigationContainer: ({ children }) => children, // Simplistic mock
   };
+});
+
+jest.mock("@react-navigation/native", function () {
+  var actualNav = jest.requireActual("@react-navigation/native");
+  return Object.assign({}, actualNav, {
+    useNavigation: function () {
+      return {
+        navigate: jest.fn(),
+        goBack: jest.fn(),
+        dispatch: jest.fn(),
+        setOptions: jest.fn(),
+      };
+    },
+    useRoute: function () {
+      return {
+        params: {},
+      };
+    },
+    NavigationContainer: function (props) {
+      return props.children;
+    },
+  });
 });
 
 // Mock NativeWind's styled HOC if it causes issues in tests
@@ -311,147 +402,361 @@ jest.mock("@react-navigation/native", () => {
 //   styled: (Component) => Component, // Pass-through mock
 // }));
 
-// Mock react-native-haptic-feedback
-jest.mock("react-native-haptic-feedback", () => ({
-  trigger: jest.fn(),
-}));
+// Mock React Native modules potentially used by React Navigation
+jest.mock("react-native", function () {
+  var reactNative = jest.requireActual("react-native");
+  return Object.defineProperty(reactNative, "NativeModules", {
+    enumerable: true,
+    get: function () {
+      var nativeModules = {};
+      for (var key in reactNative.NativeModules) {
+        if (
+          Object.prototype.hasOwnProperty.call(reactNative.NativeModules, key)
+        ) {
+          nativeModules[key] = reactNative.NativeModules[key];
+        }
+      }
 
-// Mock expo-av for SoundManager
-jest.mock("expo-av", () => ({
-  Audio: {
-    Sound: {
-      createAsync: jest.fn().mockResolvedValue({
-        sound: {
-          playAsync: jest.fn().mockResolvedValue(undefined),
-          stopAsync: jest.fn().mockResolvedValue(undefined),
-          unloadAsync: jest.fn().mockResolvedValue(undefined),
-          setOnPlaybackStatusUpdate: jest.fn(),
-          getStatusAsync: jest.fn().mockResolvedValue({
-            isLoaded: true,
-            durationMillis: 1000,
-            positionMillis: 0,
-          }),
+      // Add specific mocks
+      nativeModules.UIManager = {
+        getViewManagerConfig: jest.fn(function () {
+          return {};
+        }),
+      };
+      nativeModules.RNGestureHandlerModule = {
+        attachGestureHandler: jest.fn(),
+        createGestureHandler: jest.fn(),
+        dropGestureHandler: jest.fn(),
+        updateGestureHandler: jest.fn(),
+        State: {
+          UNDETERMINED: 0,
+          BEGAN: 2,
+          ACTIVE: 4,
+          END: 5,
+          FAILED: 1,
+          CANCELLED: 3,
         },
-        status: {
-          /* mock status object */
-        },
-      }),
-      // You might need to mock other static methods of Audio.Sound if used
+        Directions: { RIGHT: 1, LEFT: 2, UP: 4, DOWN: 8 },
+      };
+      nativeModules.PlatformConstants = {
+        forceTouchAvailable: false,
+      };
+      nativeModules.RNPermissions = {
+        checkPermission: jest.fn(),
+        requestPermission: jest.fn(),
+        checkMultiplePermissions: jest.fn(),
+        requestMultiplePermissions: jest.fn(),
+      };
+      nativeModules.RNCNetInfo = {
+        getCurrentState: jest
+          .fn()
+          .mockResolvedValue({ type: "wifi", isConnected: true }),
+        addListener: jest.fn(),
+        removeListeners: jest.fn(),
+      };
+      nativeModules.LottieAnimationView = {
+        play: jest.fn(),
+        reset: jest.fn(),
+        pause: jest.fn(),
+        resume: jest.fn(),
+        setSpeed: jest.fn(),
+        setProgress: jest.fn(),
+        setLoop: jest.fn(),
+        setSourceDotlottie: jest.fn(),
+        setSourceURL: jest.fn(),
+        setSourceDir: jest.fn(),
+        setSourceName: jest.fn(),
+        cancelAnimation: jest.fn(),
+        getConstants: jest.fn(function () {
+          return {};
+        }),
+      };
+
+      return nativeModules;
     },
-    setAudioModeAsync: jest.fn().mockResolvedValue(undefined), // Mock if used
-  },
-}));
+  });
+});
 
-// Mock react-native-image-picker
-jest.mock("react-native-image-picker", () => ({
-  launchImageLibrary: jest.fn().mockResolvedValue({
-    didCancel: false,
-    assets: [
-      {
-        uri: "file:///mock/image.jpg",
-        type: "image/jpeg",
-        fileName: "mock.jpg",
-      },
-    ],
-  }),
-  launchCamera: jest.fn().mockResolvedValue({
-    didCancel: false,
-    assets: [
-      {
-        uri: "file:///mock/camera_image.jpg",
-        type: "image/jpeg",
-        fileName: "camera_mock.jpg",
-      },
-    ],
-  }),
-}));
+// Mock react-native-safe-area-context
+jest.mock("react-native-safe-area-context", function () {
+  var inset = { top: 0, right: 0, bottom: 0, left: 0 };
+  return {
+    __esModule: true,
+    SafeAreaProvider: function (_ref) {
+      var children = _ref.children;
+      return children;
+    },
+    SafeAreaView: function (_ref2) {
+      var children = _ref2.children;
+      return children;
+    },
+    useSafeAreaInsets: function () {
+      return inset;
+    },
+    useSafeAreaFrame: function () {
+      return { x: 0, y: 0, width: 320, height: 640 };
+    },
+    withSafeAreaInsets: function (Component) {
+      return function (props) {
+        var combinedProps = Object.assign({}, props, { insets: inset });
+        return Component(combinedProps);
+      };
+    },
+  };
+});
 
-// Mock @react-native-google-signin/google-signin
-jest.mock("@react-native-google-signin/google-signin", () => ({
-  GoogleSignin: {
-    configure: jest.fn(),
-    hasPlayServices: jest.fn().mockResolvedValue(true),
-    signIn: jest.fn().mockResolvedValue({
-      idToken: "mock-google-id-token",
-      user: { email: "googleuser@example.com" },
+// Mock react-native-haptic-feedback
+jest.mock("react-native-haptic-feedback", function () {
+  return {
+    __esModule: true,
+    default: {
+      trigger: jest.fn(),
+      isSupported: jest.fn().mockResolvedValue(true),
+    },
+  };
+});
+
+// Mock react-native-vector-icons
+jest.mock("react-native-vector-icons/MaterialCommunityIcons", function () {
+  return "MaterialCommunityIcons"; // Mocked component name
+});
+jest.mock("react-native-vector-icons/MaterialIcons", function () {
+  return "MaterialIcons"; // Mocked component name
+});
+jest.mock("react-native-vector-icons/FontAwesome5", function () {
+  return "FontAwesome5"; // Mocked component name
+});
+
+// Mock react-native-reanimated
+jest.mock("react-native-reanimated", function () {
+  var Reanimated = jest.requireActual("react-native-reanimated");
+  return {
+    ...Object.assign({}, Reanimated),
+    useSharedValue: jest.fn(Reanimated.useSharedValue),
+    useAnimatedStyle: jest.fn(Reanimated.useAnimatedStyle),
+    withTiming: jest.fn(Reanimated.withTiming),
+    withSpring: jest.fn(Reanimated.withSpring),
+    runOnUI: jest.fn(function (fn) {
+      return fn;
     }),
-    signOut: jest.fn().mockResolvedValue(undefined),
-  },
-  statusCodes: {
-    SIGN_IN_CANCELLED: "SIGN_IN_CANCELLED",
-    IN_PROGRESS: "IN_PROGRESS",
-    PLAY_SERVICES_NOT_AVAILABLE: "PLAY_SERVICES_NOT_AVAILABLE",
-    SIGN_IN_REQUIRED: "SIGN_IN_REQUIRED",
-  },
-}));
-
-// Mock react-native-fbsdk-next
-jest.mock("react-native-fbsdk-next", () => ({
-  LoginManager: {
-    logInWithPermissions: jest.fn().mockResolvedValue({
-      isCancelled: false,
-      grantedPermissions: ["public_profile", "email"],
+    createAnimatedPropAdapter: jest.fn().mockImplementation(function (adapter) {
+      return adapter;
     }),
-    logOut: jest.fn(),
-  },
-  AccessToken: {
-    getCurrentAccessToken: jest.fn().mockResolvedValue({
-      accessToken: "mock-fb-access-token",
+  };
+});
+
+// Mock expo-av
+jest.mock("expo-av", function () {
+  return {
+    __esModule: true,
+    Audio: {
+      Sound: jest.fn(function () {
+        return {
+          loadAsync: jest.fn().mockResolvedValue({}),
+          playAsync: jest.fn().mockResolvedValue({}),
+          pauseAsync: jest.fn().mockResolvedValue({}),
+          stopAsync: jest.fn().mockResolvedValue({}),
+          unloadAsync: jest.fn().mockResolvedValue({}),
+          getStatusAsync: jest
+            .fn()
+            .mockResolvedValue({ isLoaded: true, isPlaying: false }),
+          setOnPlaybackStatusUpdate: jest.fn(),
+        };
+      }),
+    },
+  };
+});
+
+// Mock zustand
+jest.mock("zustand", function () {
+  return function (creator) {
+    var store = creator(function () {});
+    return function () {
+      return store;
+    };
+  };
+});
+
+// Mock react-native-gesture-handler
+jest.mock("react-native-gesture-handler", function () {
+  var View = jest.requireActual("react-native").View;
+  return {
+    __esModule: true,
+    GestureHandlerRootView: View,
+    // Add other mocks as needed for specific handlers
+    TapGestureHandler: "TapGestureHandler",
+    State: {
+      UNDETERMINED: 0,
+      BEGAN: 2,
+      ACTIVE: 4,
+      END: 5,
+      FAILED: 1,
+      CANCELLED: 3,
+    },
+    Directions: { RIGHT: 1, LEFT: 2, UP: 4, DOWN: 8 },
+  };
+});
+
+// Mock react-native-code-push
+jest.mock("react-native-code-push", function () {
+  return {
+    __esModule: true,
+    default: jest.fn(function () {
+      return function (App) {
+        return App;
+      };
     }),
-  },
-  GraphRequest: jest.fn((path, config, callback) => {
-    // Simulate a graph request callback with mock user data
-    if (path === "/me" && callback) {
-      callback(null, {
-        id: "fb-user-id",
-        email: "fbuser@example.com",
-        name: "FB User",
-      });
-    }
-  }),
-  GraphRequestManager: jest.fn(() => ({
-    addRequest: jest.fn().mockReturnThis(),
-    start: jest.fn(),
-  })),
-}));
+    CheckFrequency: { ON_APP_START: 0, EACH_APP_RESUME: 1, MANUAL: 2 },
+    InstallMode: { IMMEDIATE: 0, ON_NEXT_RESTART: 1, ON_NEXT_RESUME: 2 },
+    SyncStatus: {
+      UP_TO_DATE: 0,
+      UPDATE_INSTALLED: 1,
+      UPDATE_AVAILABLE: 2,
+      SYNC_IN_PROGRESS: 3,
+      CHECKING_FOR_UPDATE: 4,
+      AWAITING_USER_ACTION: 5,
+      DOWNLOADING_PACKAGE: 6,
+      INSTALLING_UPDATE: 7,
+    },
+    DeploymentKey: "mock-deployment-key",
+  };
+});
 
-// Mock react-native-applovin-max
-jest.mock("react-native-applovin-max", () => ({
-  initialize: jest.fn().mockResolvedValue(undefined),
-  InterstitialAd: jest.fn(() => ({
-    loadAd: jest.fn(),
-    isAdReady: jest.fn(() => false),
-    showAd: jest.fn(),
-    addAdLoadedEventListener: jest.fn(),
-    addAdLoadFailedEventListener: jest.fn(),
-    addAdDisplayFailedEventListener: jest.fn(),
-    addAdClickedEventListener: jest.fn(),
-    addAdHiddenEventListener: jest.fn(),
-    removeAllListeners: jest.fn(),
-  })),
-  RewardedAd: jest.fn(() => ({
-    loadAd: jest.fn(),
-    isAdReady: jest.fn(() => false),
-    showAd: jest.fn(),
-    addAdLoadedEventListener: jest.fn(),
-    addAdLoadFailedEventListener: jest.fn(),
-    addAdDisplayFailedEventListener: jest.fn(),
-    addAdClickedEventListener: jest.fn(),
-    addAdHiddenEventListener: jest.fn(),
-    addAdRewardEventListener: jest.fn(),
-    removeAllListeners: jest.fn(),
-  })),
-  addEventListener: jest.fn(),
-  removeEventListener: jest.fn(),
-  isInitialized: jest.fn(() => true),
-  showMediationDebugger: jest.fn(),
-  setVerboseLogging: jest.fn(),
-  setMuted: jest.fn(),
-}));
+// Mock react-native-iap
+jest.mock("react-native-iap", function () {
+  return {
+    initConnection: jest.fn().mockResolvedValue(true),
+    endConnection: jest.fn().mockResolvedValue(true),
+    getProducts: jest.fn().mockResolvedValue([]),
+    getSubscriptions: jest.fn().mockResolvedValue([]),
+    getAvailablePurchases: jest.fn().mockResolvedValue([]),
+    getPurchaseHistory: jest.fn().mockResolvedValue([]),
+    consumePurchase: jest.fn().mockResolvedValue(true),
+    requestSubscription: jest.fn().mockResolvedValue({}),
+    requestPurchase: jest.fn().mockResolvedValue({}),
+    RNIap: {
+      buyProduct: jest.fn().mockResolvedValue({}),
+      buySubscription: jest.fn().mockResolvedValue({}),
+      consumeProduct: jest.fn().mockResolvedValue({}),
+      getProducts: jest.fn().mockResolvedValue([]),
+      getSubscriptions: jest.fn().mockResolvedValue([]),
+      getPurchaseHistory: jest.fn().mockResolvedValue([]),
+      getAvailablePurchases: jest.fn().mockResolvedValue([]),
+      syncPurchases: jest.fn().mockResolvedValue({}),
+      initConnection: jest.fn().mockResolvedValue({}),
+      endConnection: jest.fn().mockResolvedValue({}),
+      clearProducts: jest.fn().mockResolvedValue({}),
+      clearTransaction: jest.fn().mockResolvedValue({}),
+      // Add any other methods you use from RNIap
+    },
+    PurchaseError: {
+      ASYNC_EXECUTION_ERROR: "ASYNC_EXECUTION_ERROR",
+      E_AD_METHOD_NOT_AVAILABLE: "E_AD_METHOD_NOT_AVAILABLE",
+      E_ALREADY_OWNED: "E_ALREADY_OWNED",
+      E_DEVELOPER_ERROR: "E_DEVELOPER_ERROR",
+      E_ITEM_UNAVAILABLE: "E_ITEM_UNAVAILABLE",
+      E_NETWORK_ERROR: "E_NETWORK_ERROR",
+      E_PLAY_STORE_ERROR: "E_PLAY_STORE_ERROR",
+      E_SERVICE_ERROR: "E_SERVICE_ERROR",
+      E_UNKNOWN: "E_UNKNOWN",
+      E_USER_CANCELLED: "E_USER_CANCELLED",
+    },
+    // Add any other exports you use from react-native-iap
+  };
+});
 
-// Mock for react-native-iap
-// ... existing code ...
+// Mock react-native-device-info
+jest.mock("react-native-device-info", function () {
+  return {
+    __esModule: true,
+    default: {
+      getUniqueId: jest.fn().mockResolvedValue("mock-device-id"),
+      getDeviceId: jest.fn().mockResolvedValue("mock-device-id"),
+      getManufacturer: jest.fn().mockResolvedValue("mock-manufacturer"),
+      getModel: jest.fn().mockResolvedValue("mock-model"),
+      getSystemName: jest.fn().mockResolvedValue("mock-system-name"),
+      getSystemVersion: jest.fn().mockResolvedValue("mock-system-version"),
+      getBundleId: jest.fn().mockResolvedValue("mock-bundle-id"),
+      getApplicationName: jest.fn().mockResolvedValue("mock-app-name"),
+      getVersion: jest.fn().mockResolvedValue("mock-version"),
+      getReadableVersion: jest.fn().mockResolvedValue("mock-readable-version"),
+      getBuildNumber: jest.fn().mockResolvedValue("mock-build-number"),
+      getDeviceName: jest.fn().mockResolvedValue("mock-device-name"),
+      getCarrier: jest.fn().mockResolvedValue("mock-carrier"),
+      getTimezone: jest.fn().mockResolvedValue("mock-timezone"),
+      getInstanceId: jest.fn().mockResolvedValue("mock-instance-id"),
+      getInstallReferrer: jest.fn().mockResolvedValue("mock-install-referrer"),
+      isEmulator: jest.fn().mockResolvedValue(false),
+      isTablet: jest.fn().mockResolvedValue(false),
+      getFontScale: jest.fn().mockResolvedValue(1),
+      hasNotch: jest.fn().mockResolvedValue(false),
+      getFirstInstallTime: jest.fn().mockResolvedValue(Date.now()),
+      getLastUpdateTime: jest.fn().mockResolvedValue(Date.now()),
+      getSerialNumber: jest.fn().mockResolvedValue("mock-serial-number"),
+      getAPILevel: jest.fn().mockResolvedValue(30),
+      getBaseOs: jest.fn().mockResolvedValue("mock-base-os"),
+      getPreviewSdkInt: jest.fn().mockResolvedValue(30),
+      getSecurityPatch: jest.fn().mockResolvedValue("mock-security-patch"),
+      getTags: jest.fn().mockResolvedValue("mock-tags"),
+      getType: jest.fn().mockResolvedValue("mock-type"),
+      getFingerprint: jest.fn().mockResolvedValue("mock-fingerprint"),
+      getBrand: jest.fn().mockResolvedValue("mock-brand"),
+      getSystemAvailableFeatures: jest.fn().mockResolvedValue([]),
+      getIncremental: jest.fn().mockResolvedValue("mock-incremental"),
+      getCodename: jest.fn().mockResolvedValue("mock-codename"),
+      getInstallerPackageName: jest
+        .fn()
+        .mockResolvedValue("mock-installer-package-name"),
+      isCameraPresent: jest.fn().mockResolvedValue(true),
+      supported32BitAbis: jest.fn().mockResolvedValue([]),
+      supported64BitAbis: jest.fn().mockResolvedValue([]),
+      supportedAbis: jest.fn().mockResolvedValue([]),
+      isLandscape: jest.fn().mockResolvedValue(false),
+      isPortrait: jest.fn().mockResolvedValue(true),
+      getIpAddress: jest.fn().mockResolvedValue("192.168.1.1"),
+      getMacAddress: jest.fn().mockResolvedValue("00:00:00:00:00:00"),
+      getPhoneNumber: jest.fn().mockResolvedValue("mock-phone-number"),
+      getFreeDiskStorage: jest.fn().mockResolvedValue(1000000000),
+      getTotalDiskCapacity: jest.fn().mockResolvedValue(1000000000),
+      getBatteryLevel: jest.fn().mockResolvedValue(0.9),
+      getPowerState: jest.fn().mockResolvedValue({
+        batteryLevel: 0.9,
+        lowPowerMode: false,
+        batteryState: "full",
+      }),
+      isBatteryCharging: jest.fn().mockResolvedValue(false),
+      isAirplaneMode: jest.fn().mockResolvedValue(false),
+      getCarrierContentShortIdentifier: jest
+        .fn()
+        .mockResolvedValue("mock-identifier"),
+      getBuildId: jest.fn().mockResolvedValue("mock-build-id"),
+      getAppleDeviceIdentificationGroup: jest
+        .fn()
+        .mockResolvedValue("mock-group"),
+      getAppleDeviceName: jest.fn().mockResolvedValue("mock-device-name"),
+      getAppleLocalizedModel: jest
+        .fn()
+        .mockResolvedValue("mock-localized-model"),
+      getAppleMarketingName: jest.fn().mockResolvedValue("mock-marketing-name"),
+      getAppleModelId: jest.fn().mockResolvedValue("mock-model-id"),
+      getAppleMobileCountryCode: jest.fn().mockResolvedValue("mock-mcc"),
+      getAppleMobileNetworkCode: jest.fn().mockResolvedValue("mock-mnc"),
+      getAppleCarrierName: jest.fn().mockResolvedValue("mock-carrier-name"),
+      getAppleTimeZone: jest.fn().mockResolvedValue("mock-timezone"),
+      getAndroidId: jest.fn().mockResolvedValue("mock-android-id"),
+      getActionPerformed: jest.fn().mockResolvedValue("mock-action-performed"),
+      supportedRsaAlgorithms: jest.fn().mockResolvedValue([]),
+      supportedEcAlgorithms: jest.fn().mockResolvedValue([]),
+      isDisplayZoomEnabled: jest.fn().mockResolvedValue(false),
+      isHeadphonesConnected: jest.fn().mockResolvedValue(false),
+      getUsedMemory: jest.fn().mockResolvedValue(500000),
+      syncUniqueId: jest.fn().mockResolvedValue("mock-sync-id"),
+      getSystemSecurityPatch: jest
+        .fn()
+        .mockResolvedValue("mock-security-patch"),
+      // ... existing code ...
+    },
+  };
+});
 
-console.log(
-  "jest.setup.js loaded with corrected Firestore, Storage, and Auth mocks (listener prefixed)"
-);
+console.log("Jest setup file loaded successfully with all mocks configured");

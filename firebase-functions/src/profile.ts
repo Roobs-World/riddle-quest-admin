@@ -1,7 +1,7 @@
 import * as admin from "firebase-admin";
 import {onCall, CallableRequest, HttpsError} from "firebase-functions/v2/https";
-import {PlayerSchema} from "./validation/firestoreSchemas.js";
-import {updateUserProfile} from "./firestoreService.js"; // Assuming firestoreService has updateUserProfile
+import {PlayerStatsSchema} from "./validation/firestoreSchemas";
+import {updateUserProfile} from "./firestoreService";
 
 /**
  * Resets the authenticated user's game statistics in Firestore.
@@ -19,7 +19,7 @@ export const resetStats = onCall(async (request: CallableRequest) => {
 
   try {
     // Get the default stats from the schema to ensure all stats are reset
-    const defaultStats = PlayerSchema.parse({});
+    const defaultStats = PlayerStatsSchema.parse({});
 
     // Update the user's document with the default stats
     await userRef.update({

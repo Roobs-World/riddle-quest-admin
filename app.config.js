@@ -11,7 +11,7 @@ module.exports = {
   orientation: "portrait",
   icon: "./assets/images/icon.png",
   userInterfaceStyle: "light",
-  newArchEnabled: true,
+  newArchEnabled: false,
   splash: {
     image: "./assets/images/splash-icon.png",
     resizeMode: "contain",
@@ -36,8 +36,32 @@ module.exports = {
   },
   plugins: [
     "@react-native-firebase/app",
-    "@react-native-google-signin/google-signin",
+    // "@react-native-google-signin/google-signin",  // Temporarily disabled due to ES module syntax error
+    [
+      "react-native-fbsdk-next",
+      {
+        appID: "1568112680678349",
+        clientToken: "your_facebook_client_token_here",
+        displayName: "Qwordly",
+        scheme: "fb1568112680678349",
+        advertiserIDCollectionEnabled: false,
+        autoLogAppEventsEnabled: false,
+        isAutoInitEnabled: true,
+      },
+    ],
     "./plugins/withAndroidIapStoreSelection.js",
+    [
+      "expo-build-properties",
+      {
+        android: {
+          minSdkVersion: 24,
+          compileSdkVersion: 34,
+          targetSdkVersion: 34,
+          buildToolsVersion: "34.0.0",
+          kotlinVersion: "2.0.21",
+        },
+      },
+    ],
   ],
   extra: {
     eas: {
@@ -54,6 +78,7 @@ module.exports = {
     FIREBASE_STORAGE_BUCKET: "qwordly-6ba44.firebaseystorage.app",
     FACEBOOK_APP_ID: "1568112680678349",
     FACEBOOK_APP_SECRET: "eb2331d7805417d6b366408d2db245de",
+    FACEBOOK_CLIENT_TOKEN: "your_facebook_client_token_here",
     APPLOVIN_INTERSTITIAL_AD_UNIT_ID: "YOUR_INTERSTITIAL_AD_UNIT_ID_HERE",
     APPLOVIN_REWARDED_AD_UNIT_ID: "YOUR_REWARDED_AD_UNIT_ID_HERE",
     APPLOVIN_SDK_KEY:

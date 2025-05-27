@@ -23,13 +23,14 @@ Qwordly (inferred from workspace path)
 - Firebase Functions deployment.
 - Development of iOS (16+) and Android (10+) application.
 - User authentication (Google, Facebook, email/password).
-- Firestore database for user data, game levels (synced from Google Sheets).
+- Firestore database for user data and riddle levels (primary storage).
 - Firebase Storage for user avatars.
 - Server-side riddle generation and guess validation.
 - Two primary game modes: Daily Challenge and Classic Mode.
 - In-app purchase system for coins and ad removal.
 - AppLovin MAX integration for rewarded and interstitial ads.
 - User profiles with statistics and customizable avatars.
+- Game win 'shattering title' animation.
 
 ### Out of Scope:
 
@@ -57,18 +58,18 @@ Build a riddle-based Wordle-clone mobile game using React Native, NativeWind, an
 - **Frontend:** React Native (0.75+), NativeWind, TypeScript
 - **State Management:** React Context or Zustand
 - **Caching:** AsyncStorage or MMKV
-- **Animations:** Reanimated & Gesture Handler
+- **Animations:** Reanimated & Gesture Handler, Matter.js (for physics-based animations)
 - **Sound:** expo-av
 - **Haptics:** react-native-haptic-feedback
 
 ### 2.2. Backend & Authentication
 
 - **Authentication:** Firebase Auth (Google, Facebook, email/password, password reset). Anonymous login will not be implemented.
-- **Database:** Firestore (user stats, progress, coin balances, avatar URLs, riddle levels - **primary source: Google Sheets, Firestore is a synced mirror for client access**)
+- **Database:** Firestore (user stats, progress, coin balances, avatar URLs, riddle levels - **primary and only source**)
 - **Storage:** Firebase Storage (user-uploaded avatars)
 - **Level Management:**
-  - Initial 100+ riddle levels synced from Google Sheets (via Apps Script). Source: [https://docs.google.com/spreadsheets.com/spreadsheets/d/1TIbc2oef3xZ_8s30mX3eDn6jbe6SKBnqmjXLa1kmzXA/edit?gid=0#gid=0](https://docs.google.com/spreadsheets.com/spreadsheets/d/1TIbc2oef3xZ_8s30mX3eDn6jbe6SKBnqmjXLa1kmzXA/edit?gid=0#gid=0) (Tabs: Daily, Tutorial, Classic).
-  - Firebase Cloud Function to generate new riddles continuously for Classic Mode (current implementation allows for variable answer lengths, not strictly 5-letter), adding them directly to Google Sheets. This function is triggered by the client when a user reaches the end of currently available Classic levels, ensuring an unlimited supply of puzzles. The client will then fetch the new levels from Firestore, which is synced from the Sheets.
+  - Riddle levels stored directly in Firestore with automatic generation.
+  - Firebase Cloud Function to generate new riddles continuously for Classic Mode (current implementation allows for variable answer lengths, not strictly 5-letter), storing them directly in Firestore. This function is triggered by the client when a user reaches the end of currently available Classic levels, ensuring an unlimited supply of puzzles.
 
 ### 2.3. Game Modes
 
@@ -96,7 +97,7 @@ Build a riddle-based Wordle-clone mobile game using React Native, NativeWind, an
 
 - **Ad Network:** AppLovin MAX
 - **Types:** Rewarded Ads (for coins/hints), Interstitial Ads (shown between levels if the user has not purchased the app).
-- **Environment Variables:** `APPLOVIN_SDK_KEY`, `APPLOVIN_INTERSTITIAL_AD_UNIT_ID`, `APPLOVIN_REWARDED_AD_UNIT_ID`.
+- **Environment Variables:** `APPLOVIN_SDK_KEY`, `APPLOVIN_INTERSTITIAL_AD_UNIT_ID`, `APPLOVIN_REWARDED_AD_UNIT_ID`, `APPLE_SHARED_SECRET`, `GOOGLE_SERVICE_ACCOUNT` (JSON string for IAP), `OPENAI_API_KEY`, `FIREBASE_API_KEY`, `FIREBASE_APP_ID`, `FIREBASE_AUTH_DOMAIN`, `FIREBASE_MESSAGING_SENDER_ID`, `FIREBASE_PROJECT_ID`, `FIREBASE_STORAGE_BUCKET`, `FACEBOOK_APP_ID`, `FACEBOOK_APP_SECRET`, `FACEBOOK_CLIENT_TOKEN`.
 
 ### 2.6. User Profiles & Stats
 
@@ -107,4 +108,4 @@ Build a riddle-based Wordle-clone mobile game using React Native, NativeWind, an
 ### 2.8. Quality & Performance
 
 - **Code:** Secure, documented, modular. **Core game logic, including guess validation and win/loss conditions, is implemented server-side for security and authority.**
-- **Testing:** Comprehensive unit and integration tests for both client-side (React Native) and server-side (Firebase Functions) code to ensure reliability and maintainability.
+- **Testing:** Comprehensive unit and integration tests for both client-side (React Native) and server-side (Firebase Functions) code to ensure reliability and maintainability. Integration tests connect directly to the live Firebase project, not the emulator.

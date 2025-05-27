@@ -1,5 +1,9 @@
 npx eas-cli build --profile development --platform android
 
+expo run:android
+
+use firebase functions:config:get to return the config settings used
+
 ## Project Overview
 
 This is a mobile game that combines the popular Wordle-style gameplay with challenging riddles. Built using React Native and Firebase, the game features user authentication, multiple game modes, in-app purchases for a coin system, and customizable user profiles.
@@ -25,7 +29,7 @@ This is a mobile game that combines the popular Wordle-style gameplay with chall
 - **Sound:** expo-av
 - **Haptics:** react-native-haptic-feedback
 - **Backend:** Firebase (Authentication, Firestore, Storage, Cloud Functions)
-- **Data Sync:** Google Sheets, Google Apps Script
+- **Data Storage:** Firestore (riddles, user data, game state)
 - **IAP:** `react-native-iap`
 - **Image Picker:** `react-native-image-picker`
 - **Testing:** Jest (Unit), Detox (E2E)

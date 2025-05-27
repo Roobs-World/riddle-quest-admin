@@ -1,12 +1,16 @@
 import * as admin from "firebase-admin";
 import {HttpsError} from "firebase-functions/v2/https";
-import {handleGuessLogic} from "../submitGuessLogic.js";
-import * as firestoreService from "../firestoreService.js";
-import type {Player, FirestoreRiddle} from "../validation/firestoreSchemas.js";
-import type {SubmitGuessRequestData, SubmitGuessAuthContext} from "../validation/requestSchemas.js";
+import {handleGuessLogic} from "../submitGuessLogic";
+import * as firestoreService from "../firestoreService";
+import * as generateRiddles from "../generateRiddles";
+import type {Player, FirestoreRiddle} from "../validation/firestoreSchemas";
+import type {SubmitGuessRequestData, SubmitGuessAuthContext} from "../validation/requestSchemas";
 
 // Mock firebase-admin
 const mockAdminFirestoreUpdate = jest.fn().mockResolvedValue(undefined);
+const mockAdminFirestoreGet = jest.fn();
+const mockAdminFirestoreWhere = jest.fn();
+const mockAdminFirestoreCollection = jest.fn();
 const mockIncrement = jest.fn();
 const mockServerTimestamp = jest.fn();
 
@@ -17,6 +21,9 @@ jest.mock("firebase-admin", () => ({
     collection: jest.fn().mockReturnThis(),
     doc: jest.fn().mockReturnThis(),
     update: mockAdminFirestoreUpdate,
+    get: mockAdminFirestoreGet,
+    where: mockAdminFirestoreWhere.mockReturnThis(),
+    runTransaction: jest.fn(),
   })),
 }));
 
@@ -27,11 +34,16 @@ jest.mock("firebase-admin", () => ({
 };
 
 // Mock firestoreService
-jest.mock("../firestoreService.js", () => ({
+jest.mock("../firestoreService", () => ({
   getUser: jest.fn(),
   updateUserCoins: jest.fn(),
   updateUserStats: jest.fn(),
   getRiddle: jest.fn(),
+}));
+
+// Mock generateRiddles
+jest.mock("../generateRiddles", () => ({
+  generateAndAppendRiddles: jest.fn(),
 }));
 
 const mockUser: Player = {
@@ -79,8 +91,43 @@ describe("handleGuessLogic", () => {
     (firestoreService.getRiddle as jest.Mock).mockResolvedValue(JSON.parse(JSON.stringify(mockRiddle)));
     (firestoreService.updateUserCoins as jest.Mock).mockResolvedValue(undefined);
     (firestoreService.updateUserStats as jest.Mock).mockResolvedValue(undefined);
+    (generateRiddles.generateAndAppendRiddles as jest.Mock).mockResolvedValue(undefined);
 
     mockAdminFirestoreUpdate.mockResolvedValue(undefined);
+
+    // Mock for user document get
+    const mockUserDocGet = jest.fn().mockResolvedValue({
+      data: () => ({
+        ...mockUser,
+        progress: {...mockUser.progress, classicIndex: 6},
+        // Ensure all required fields are present for PlayerSchema.parse
+        userId: mockUser.userId,
+        username: mockUser.username,
+        coins: mockUser.coins,
+        xp: mockUser.xp,
+        stats: mockUser.stats,
+        registeredAt: mockUser.registeredAt,
+        lastLogin: mockUser.lastLogin,
+      }),
+    });
+
+    // Mock for riddles collection query
+    const mockRiddlesQueryGet = jest.fn().mockResolvedValue({
+      size: 100, // Mock that there are plenty of riddles
+    });
+
+    // Set up the firestore mock chain
+    mockAdminFirestoreGet.mockImplementation(() => {
+      // Always return the user document mock for .get() calls
+      return mockUserDocGet();
+    });
+
+    // Set up the collection/where chain for riddles query
+    mockAdminFirestoreWhere.mockImplementation(() => ({
+      get: mockRiddlesQueryGet,
+    }));
+
+    mockAdminFirestoreCollection.mockReturnThis();
 
     mockIncrement.mockImplementation((val) => `increment(${val})`);
     mockServerTimestamp.mockReturnValue("server_timestamp_value");
@@ -247,13 +294,12 @@ describe("handleGuessLogic", () => {
       expect(result.correctAnswer).toBeUndefined();
     });
 
-    test("should update gamesPlayed and winRate, reset winStreak to 0", async () => {
+    test("should update gamesPlayed and winRate for incorrect guess (not game over)", async () => {
       const userWithStreak = {...mockUser, stats: {...mockUser.stats, winStreak: 1}};
       (firestoreService.getUser as jest.Mock).mockResolvedValue(userWithStreak);
       await handleGuessLogic(requestData, authContext);
       const expectedStatsUpdate = {
         gamesPlayed: "increment(1)",
-        winStreak: 0,
         winRate: parseFloat(
           ((userWithStreak.stats.totalWins! / (userWithStreak.stats.gamesPlayed! + 1)) * 100).toFixed(2),
         ),

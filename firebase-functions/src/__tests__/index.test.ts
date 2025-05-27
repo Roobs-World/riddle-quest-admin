@@ -1,7 +1,7 @@
 import {describe, test, expect, jest, beforeAll, afterAll} from "@jest/globals";
 import * as admin from "firebase-admin";
 import functionsTest from "firebase-functions-test";
-import {CallableContextOptions} from "firebase-functions-test/lib/main";
+import {initializeIapConfig} from "../iapConfig";
 
 // Mock firebase-admin to prevent initializeApp from running multiple times
 if (admin.apps.length === 0) {
@@ -11,7 +11,7 @@ if (admin.apps.length === 0) {
         // Return a mock App instance properties if needed
         name: "[DEFAULT]",
         options: {projectId: "test-project"},
-        delete: jest.fn().mockResolvedValue(undefined as never),
+        delete: jest.fn(),
         // Add other App properties your code might use, with mock implementations
         appCheck: jest.fn(),
         auth: jest.fn(),
@@ -66,17 +66,13 @@ jest.spyOn(admin, "auth").mockReturnValue(mockAuth as unknown as admin.auth.Auth
 // Mocking firebase-functions config and logger
 jest.mock("firebase-functions", () => {
   const original = jest.requireActual("firebase-functions") as typeof import("firebase-functions");
-  const originalV1Module = jest.requireActual("firebase-functions/v1") as any; // Cast to any for simplicity
+  const originalV1Module = jest.requireActual("firebase-functions/v1") as typeof import("firebase-functions/v1"); // Cast to more specific type
   const originalV1Https = originalV1Module.https; // Access https property
 
   return {
     ...original,
     config: () => ({
-      sheets: {
-        spreadsheet_id: "test-spreadsheet-id",
-        google_sheets_client_email: "test-client-email",
-        google_sheets_private_key: "test-private-key",
-      },
+      // Note: sheets config removed as part of migration to Firestore-only storage
       openai: {
         api_key: "test-openai-key",
       },
@@ -123,11 +119,22 @@ jest.mock("firebase-functions/v2", () => {
     https: {
       // Mock https if imported from v2 directly
       ...(actualV2.https as object),
+      // Mock onCall to return a function that can be wrapped by testEnv.wrap
       onCall: jest.fn((optsOrHandler: any, handler?: any) => {
+        let actualHandler: any;
         if (typeof optsOrHandler === "function") {
-          return jest.fn(optsOrHandler); // If only handler is provided
+          actualHandler = optsOrHandler;
+        } else {
+          actualHandler = handler;
         }
-        return jest.fn(handler); // If opts and handler are provided
+        // Return an object that mimics a CloudFunction for testEnv.wrap
+        return {
+          // Provide the function that testEnv.wrap will execute
+          // The type assertion 'as any' is needed here because the mock doesn't fully satisfy CloudFunction type
+          run: jest.fn(actualHandler) as any,
+          // You might need to add other properties that testEnv.wrap expects or uses
+          // For a simple callable function mock, 'run' might be sufficient.
+        } as any; // Cast the returned object to any for compatibility with testEnv.wrap
       }),
       HttpsError: actualV2.https.HttpsError, // v2 HttpsError
     },
@@ -141,15 +148,6 @@ jest.mock("firebase-functions/v2", () => {
   };
 });
 
-// Mock sheetsService to prevent its config loading logic during index.test.ts
-jest.mock("../sheetsService", () => ({
-  // Add mocks for any functions from sheetsService that might be called during index.ts import, if any.
-  // For now, an empty mock might suffice if index.ts doesn't directly invoke sheetsService functions at the module level.
-  getGoogleSheetsClient: jest.fn(),
-  getSpreadsheetData: jest.fn(),
-  appendSpreadsheetData: jest.fn(),
-}));
-
 // Import the index file AFTER all mocks are set up
 import * as myFunctions from "../index";
 
@@ -158,22 +156,21 @@ describe("Firebase Functions", () => {
 
   beforeAll(() => {
     testEnv = functionsTest();
+    initializeIapConfig();
   });
 
   describe("Exported Functions Existence", () => {
     const expectedCallableFunctions = [
-      "recordAdImpression",
-      "rewardUser",
-      "getDailyChallenge",
-      "submitDailyChallengeGuess",
-      "skipClassicLevel",
-      "submitClassicGuess",
+      "awardedAdCallback",
+      "validatePurchase",
+      "getHint",
+      "spendCoins",
+      "skipRiddle",
+      "setCompletedDailyChallenge",
+      "hasCompletedDailyChallenge",
       "generateClassicRiddles",
-      "getUserProfile",
-      "updateUserProfile",
-      "verifyAndroidReceipt",
-      "verifyAppleReceipt",
-      "deleteUserData",
+      "resetStats",
+      "submitGuess",
     ];
 
     expectedCallableFunctions.forEach((funcName) => {
@@ -194,97 +191,65 @@ describe("Firebase Functions", () => {
     // });
   });
 
-  // Example test for a callable function (getUserProfile)
-  describe("getUserProfile", () => {
-    // Correctly type the wrapped function
-    let wrappedGetUserProfile: (data: Record<string, unknown>, context?: CallableContextOptions) => Promise<unknown>;
+  // Example test for a callable function (resetStats)
+  describe("resetStats", () => {
+    // Correctly type the wrapped function for v2 onCall
+    let wrappedResetStats: (request: {
+      data: Record<string, unknown>;
+      auth?: {uid: string} | null;
+      rawRequest: {headers: object; body: object};
+    }) => Promise<unknown>;
 
     beforeAll(() => {
-      const getUserProfileFunction = (myFunctions as Record<string, unknown>)["getUserProfile"];
-      if (getUserProfileFunction && typeof getUserProfileFunction === "function") {
+      const resetStatsFunction = (myFunctions as Record<string, unknown>)["resetStats"];
+      if (resetStatsFunction && typeof resetStatsFunction === "function") {
         // Check if the function exists on the import
         // Wrap the function directly
-        wrappedGetUserProfile = testEnv.wrap(getUserProfileFunction as any) as (
-          data: Record<string, unknown>,
-          context?: CallableContextOptions,
-        ) => Promise<unknown>; // Explicitly type the wrapped function result
+        // The function exported from index is expected to be the CloudFunction object returned by the mocked onCall
+        wrappedResetStats = testEnv.wrap(resetStatsFunction as any) as (request: {
+          data: Record<string, unknown>;
+          auth?: {uid: string} | null;
+          rawRequest: {headers: object; body: object};
+        }) => Promise<unknown>; // Explicitly type the wrapped function result
       }
     });
 
-    test("should return user profile for authenticated request", async () => {
-      if (!wrappedGetUserProfile) {
+    test("should reset user stats for authenticated request", async () => {
+      if (!wrappedResetStats) {
         // eslint-disable-next-line no-console
-        console.warn("getUserProfile function not found or not wrapped, skipping test.");
+        console.warn("resetStats function not found or not wrapped, skipping test.");
         return;
       }
 
       const mockUserId = "test-user-123";
-      const mockUserData = {displayName: "Test User", email: "test@example.com"};
 
-      // Mock Firestore get method for this specific test
-      mockFirestore.get.mockResolvedValueOnce({
-        exists: true,
-        data: () => mockUserData,
-        id: "test-user-123",
-        ref: {} as admin.firestore.DocumentReference<admin.firestore.DocumentData>,
-        readTime: admin.firestore.Timestamp.now(),
-        createTime: admin.firestore.Timestamp.now(),
-        updateTime: admin.firestore.Timestamp.now(),
-        isEqual: (other: admin.firestore.DocumentSnapshot<admin.firestore.DocumentData>) =>
-          other.id === "test-user-123",
-        get: jest.fn((fieldPath: string | admin.firestore.FieldPath) => undefined), // Added mock get
-      } as unknown as admin.firestore.DocumentSnapshot<admin.firestore.DocumentData>);
+      // Mock Firestore update method for this specific test
+      mockFirestore.update.mockResolvedValueOnce(undefined as never);
 
-      const context: CallableContextOptions = {
-        auth: {
-          uid: mockUserId,
-          token: {uid: mockUserId, firebase: {sign_in_provider: "custom"} as Record<string, unknown>},
-        },
+      const request = {
+        data: {},
+        auth: {uid: mockUserId},
+        rawRequest: {headers: {}, body: {}},
       };
 
-      const result = await wrappedGetUserProfile({}, context);
+      const result = await wrappedResetStats(request);
 
-      expect(result).toEqual(mockUserData);
+      expect(result).toEqual({success: true, message: "Stats reset successfully."});
       expect(mockFirestore.collection).toHaveBeenCalledWith("users");
       expect(mockFirestore.doc).toHaveBeenCalledWith(mockUserId);
-      expect(mockFirestore.get).toHaveBeenCalled(); // Verify get on the specific doc was called
+      expect(mockFirestore.update).toHaveBeenCalled(); // Verify update on the specific doc was called
     });
 
     test("should throw error if user is not authenticated", async () => {
-      if (!wrappedGetUserProfile) return; // Skip if not available
+      if (!wrappedResetStats) return; // Skip if not available
 
-      const context: CallableContextOptions = {}; // No auth context
-
-      await expect(wrappedGetUserProfile({}, context)).rejects.toThrow(/authentication/i);
-    });
-
-    test("should return null or error if user profile does not exist", async () => {
-      if (!wrappedGetUserProfile) return;
-
-      const mockUserId = "non-existent-user-456";
-      mockFirestore.get.mockResolvedValueOnce({
-        exists: false,
-        id: "non-existent-user-456",
-        ref: {} as admin.firestore.DocumentReference<admin.firestore.DocumentData>,
-        readTime: admin.firestore.Timestamp.now(),
-        createTime: admin.firestore.Timestamp.now(),
-        updateTime: admin.firestore.Timestamp.now(),
-        isEqual: (other: admin.firestore.DocumentSnapshot<admin.firestore.DocumentData>) =>
-          other.id === "non-existent-user-456",
-        data: () => undefined,
-        get: jest.fn((fieldPath: string | admin.firestore.FieldPath) => undefined), // Added mock get
-      } as unknown as admin.firestore.DocumentSnapshot<admin.firestore.DocumentData>);
-
-      const context: CallableContextOptions = {
-        auth: {
-          uid: mockUserId,
-          token: {uid: mockUserId, firebase: {sign_in_provider: "custom"} as Record<string, unknown>},
-        },
+      const request = {
+        data: {},
+        auth: null, // No auth context
+        rawRequest: {headers: {}, body: {}},
       };
-      // Depending on your function's implementation, it might throw or return null/empty
-      // Adjust the expectation accordingly.
-      // For this example, let's assume it throws an error.
-      await expect(wrappedGetUserProfile({}, context)).rejects.toThrow(/not found/i);
+
+      await expect(wrappedResetStats(request)).rejects.toThrow(/authenticated/i);
     });
   });
 
