@@ -1,4 +1,4 @@
-import type { SubmittedGuess, Feedback } from "../hooks/types";
+import type { SubmittedGuess } from "../hooks/types";
 
 export const generateFeedbackEmojiGrid = (
   submittedGuesses: SubmittedGuess[]

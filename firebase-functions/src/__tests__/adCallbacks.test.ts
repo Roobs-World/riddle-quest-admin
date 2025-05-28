@@ -22,8 +22,7 @@ const mockDigest = jest.fn<(...args: any[]) => string>(); // Used by crypto mock
 const mockUpdateUserCoins = jest.fn<(userId: string, amount: number, transaction?: any) => Promise<void>>(); // For firestoreService mock
 
 // 2. ALL import statements for types and Jest globals
-import {afterEach, beforeEach, describe, expect, it, jest} from "@jest/globals";
-import * as functionsTypes from "firebase-functions"; // For types
+import {describe, expect, jest, beforeEach, afterEach} from "@jest/globals";
 import * as cryptoTypes from "crypto"; // For types
 
 // 3. ALL jest.mock calls
@@ -88,16 +87,15 @@ import {awardedAdCallback} from "../adCallbacks";
 describe("awardedAdCallback", () => {
   let mockReq: any;
   let mockRes: any;
-  let functionsLogger: {info: jest.Mock; error: jest.Mock; warn: jest.Mock};
   // let cryptoModule: { createHash: jest.Mock }; // cryptoModule not used directly for assertions, createHash is used
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    // Reset all mocks before each test
     jest.clearAllMocks();
 
     // Set environment variable for APPLOVIN_SDK_KEY
     process.env.APPLOVIN_SDK_KEY = "test_sdk_key";
 
-    functionsLogger = require("firebase-functions").logger;
     // cryptoModule = require("crypto"); // Not strictly needed as we don't assert on cryptoModule itself
 
     mockReq = {

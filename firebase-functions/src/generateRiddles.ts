@@ -1,9 +1,9 @@
-// import type { FirestoreRiddle } from "../../src/validation/firestoreSchemas";
-// import { google } from "googleapis";
-// import { OpenAI } from "openai";
 import * as admin from "firebase-admin";
 import {generateUniqueRiddle} from "./openaiService";
 import type {FirestoreRiddle} from "./validation/firestoreSchemas";
+import {RiddleSchema} from "./firestoreSchemas";
+import type {ZodFirestoreRiddle} from "./firestoreSchemas";
+import {z} from "zod";
 // import * as functions from "firebase-functions"; // No longer using functions.config()
 
 /**

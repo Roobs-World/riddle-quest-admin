@@ -19,6 +19,7 @@ import {
   fetchClassicRiddleFromFirestore,
   fetchDailyRiddleForDate,
 } from "../services/FirestoreService";
+import { FirestoreRiddle } from "../validation/firestoreSchemas";
 import { getFunctions } from "@react-native-firebase/functions";
 import { getApp } from "@react-native-firebase/app";
 import { useState, useEffect } from "react";
@@ -36,6 +37,15 @@ const GameScreenWrapper = () => {
     gameMode,
     setCurrentRiddle,
   } = useAuth();
+
+  console.log("🎮 GameScreenWrapper rendering:", {
+    isAuthenticated,
+    hasPlayerData: !!playerData,
+    isLoading,
+    hasCurrentRiddle: !!currentRiddle,
+    isDailyChallengeAvailable,
+    gameMode,
+  });
 
   // State for managing GameScreen overlays
   const [overlayState, setOverlayState] = useState<GameScreenOverlayState>({
@@ -102,12 +112,13 @@ const GameScreenWrapper = () => {
       }
 
       try {
+        let fetchedRiddle: FirestoreRiddle | null = null;
+
         if (gameMode === "classic") {
           console.log("Loading Classic Mode riddle...");
           const classicIndex = playerData.progress?.classicIndex || 0;
-          const riddle = await fetchClassicRiddleFromFirestore(classicIndex);
-          setCurrentRiddle(riddle);
-        } else if (gameMode === "challenge") {
+          fetchedRiddle = await fetchClassicRiddleFromFirestore(classicIndex);
+        } else if (gameMode === "challenge" || gameMode === "daily") {
           console.log("Loading Daily Challenge riddle...");
           if (isDailyChallengeAvailable) {
             const today = new Date();
@@ -116,22 +127,43 @@ const GameScreenWrapper = () => {
             const day = today.getDate().toString().padStart(2, "0");
             const dateString = `${year}-${month}-${day}`;
 
-            const dailyRiddle = await fetchDailyRiddleForDate(dateString);
+            fetchedRiddle = await fetchDailyRiddleForDate(dateString);
 
-            if (dailyRiddle) {
-              setCurrentRiddle(dailyRiddle);
-            } else {
+            if (!fetchedRiddle) {
               console.warn(`No daily riddle found for date: ${dateString}`);
-              setCurrentRiddle(null);
             }
           } else {
             console.log("Daily Challenge already completed for today.");
-            setCurrentRiddle(null);
+          }
+
+          // If no daily riddle available, fall back to classic mode
+          if (!fetchedRiddle) {
+            console.log("Falling back to classic mode riddle...");
+            const classicIndex = playerData.progress?.classicIndex || 0;
+            fetchedRiddle = await fetchClassicRiddleFromFirestore(classicIndex);
           }
         }
+
+        setCurrentRiddle(fetchedRiddle);
       } catch (error) {
         console.error("Error loading riddle based on game mode:", error);
-        setCurrentRiddle(null);
+        // Even on error, try to load a classic riddle as fallback
+        try {
+          console.log(
+            "Error occurred, attempting to load classic riddle as fallback..."
+          );
+          const classicIndex = playerData.progress?.classicIndex || 0;
+          const fallbackRiddle = await fetchClassicRiddleFromFirestore(
+            classicIndex
+          );
+          setCurrentRiddle(fallbackRiddle);
+        } catch (fallbackError) {
+          console.error(
+            "Failed to load fallback classic riddle:",
+            fallbackError
+          );
+          setCurrentRiddle(null);
+        }
       }
     };
 
@@ -142,8 +174,6 @@ const GameScreenWrapper = () => {
     gameMode,
     isDailyChallengeAvailable,
     setCurrentRiddle,
-    fetchClassicRiddleFromFirestore,
-    fetchDailyRiddleForDate,
   ]);
 
   const handleNextLevel = async () => {
@@ -192,14 +222,18 @@ const GameScreenWrapper = () => {
     }
   };
 
-  // Show loading overlay while auth status, player data, and current riddle are loading
+  // Show loading overlay while auth status, player data, and daily challenge availability are loading
   if (
     isLoading ||
     (isAuthenticated &&
-      (!playerData ||
-        !currentRiddle ||
-        isDailyChallengeAvailable === undefined))
+      (!playerData || isDailyChallengeAvailable === undefined))
   ) {
+    console.log("🎮 GameScreenWrapper showing loading spinner:", {
+      isLoading,
+      isAuthenticated,
+      hasPlayerData: !!playerData,
+      isDailyChallengeAvailable,
+    });
     return <PulsingSpinner visible={true} size={150} />;
   }
 
@@ -208,32 +242,29 @@ const GameScreenWrapper = () => {
     return null;
   }
 
-  // If currentRiddle is null and not loading, handle different scenarios
+  // Since we now always fall back to classic riddles, we should always have a riddle
+  // Only show error if riddle is truly null after all fallback attempts
   if (!currentRiddle && !isLoading) {
-    if (gameMode === "challenge" && !isDailyChallengeAvailable) {
-      return (
-        <View
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        >
-          <Text>
-            You have already completed today&apos;s daily challenge. Check back
-            tomorrow!
-          </Text>
-        </View>
-      );
-    } else if (gameMode === "classic") {
-      console.error("Classic mode started but no riddle loaded.");
-      return (
-        <View
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        >
-          <Text>Error loading Classic mode riddle.</Text>
-        </View>
-      );
-    }
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text>Error loading riddle.</Text>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          padding: 20,
+        }}
+      >
+        <Text
+          style={{
+            textAlign: "center",
+            fontSize: 16,
+            lineHeight: 24,
+            color: "#333",
+          }}
+        >
+          Unable to load any riddles. Please check your connection and try
+          again.
+        </Text>
       </View>
     );
   }
@@ -291,12 +322,31 @@ const GameScreenWrapper = () => {
 export const Navigation = () => {
   const { isAuthenticated, isLoading } = useAuth();
 
-  console.log("Navigation component rendering...");
+  console.log(
+    "🧭 Navigation rendering - isAuthenticated:",
+    isAuthenticated,
+    "isLoading:",
+    isLoading,
+    "timestamp:",
+    new Date().toISOString()
+  );
 
   // Show loading overlay while authentication state is being determined
   if (isLoading) {
+    console.log(
+      "⏳ Showing loading spinner - authentication state being determined",
+      "timestamp:",
+      new Date().toISOString()
+    );
     return <PulsingSpinner visible={true} size={150} />;
   }
+
+  console.log(
+    "🎯 Showing navigation stack - initialRoute:",
+    isAuthenticated ? "GAME" : "LANDING",
+    "timestamp:",
+    new Date().toISOString()
+  );
 
   return (
     <Stack.Navigator

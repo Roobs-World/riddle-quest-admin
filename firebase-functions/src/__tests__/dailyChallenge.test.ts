@@ -40,7 +40,6 @@ jest.mock("firebase-functions/v2/https", () => {
 
 import * as functions from "firebase-functions";
 import {HttpsError, CallableRequest} from "firebase-functions/v2/https";
-import * as admin from "firebase-admin";
 
 // Original imports from mocked services for typing
 import type {

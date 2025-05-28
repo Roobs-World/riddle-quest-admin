@@ -156,8 +156,6 @@ const ProfileScreen: React.FC = () => {
       {/* Avatar Section */}
       <View className="items-center mb-8">
         <TouchableOpacity onPress={() => setShowAvatarOptions(true)}>
-          {" "}
-          {/* Show avatar options */}
           {playerData.avatarUrl ? (
             <Image
               source={{ uri: playerData.avatarUrl }}

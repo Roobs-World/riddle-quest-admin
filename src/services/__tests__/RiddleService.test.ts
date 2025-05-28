@@ -3,11 +3,9 @@ import auth from "@react-native-firebase/auth";
 // Remove the direct import of 'functions' here if the mock is comprehensive
 // import functions from "@react-native-firebase/functions";
 import * as RiddleServiceModule from "../RiddleService"; // Import all exports from the module
-const { RiddleService, delay } = RiddleServiceModule; // Destructure for use, delay is now the actual function
+const { RiddleService } = RiddleServiceModule; // Destructure for use
 import {
   // GenerateClassicRiddlesOutputSchema, // Not used if mock is simpler
-  SubmitGuessOutputSchema,
-  GuessFeedbackSchema,
   SubmitGuessInputSchema,
 } from "../../validation/cloudFunctionsSchemas";
 import { z } from "zod";

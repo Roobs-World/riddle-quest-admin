@@ -49,10 +49,10 @@ const styles = StyleSheet.create({
     justifyContent: "center", // Semi-transparent background
   },
   modalText: {
+    color: "#333", // Darker text color for readability
+    fontSize: 16, // Adjusted font size
     marginBottom: 20, // Increased margin for better spacing
     textAlign: "center",
-    fontSize: 16, // Adjusted font size
-    color: "#333", // Darker text color for readability
   },
   modalView: {
     alignItems: "center",

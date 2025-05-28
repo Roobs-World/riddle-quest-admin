@@ -2,6 +2,62 @@
 
 ## 1. Current Focus
 
+### **✅ FUNCTIONS.CONFIG() CLEANUP - COMPLETED**
+
+- **Issue**: Error "functions.config() is no longer available in Cloud Functions for Firebase v2" when using deprecated Firebase Functions configuration API
+- **Root Cause**: Project was using deprecated `functions.config()` method which is not supported in Firebase Functions v2
+- **Solution**: Removed all remaining references to `functions.config()` from Firebase Functions codebase
+- **Status**: ✅ **COMPLETED** - All `functions.config()` usage eliminated from the project
+- **Result**:
+  - ✅ Removed commented `functions.config()` lines from `openaiService.ts`
+  - ✅ Removed commented `functions.config()` import and usage from `iapConfig.ts`
+  - ✅ Removed commented `functions.config()` line from `adCallbacks.ts`
+  - ✅ Removed commented `functions.config()` import from `generateRiddles.ts`
+  - ✅ All Firebase Functions now use `process.env` environment variables exclusively
+  - ✅ Project is fully compatible with Firebase Functions v2
+- **Technical Details**:
+  - All services already properly migrated to use `process.env.VARIABLE_NAME` pattern
+  - Only test files retain `functions.config()` mocks for testing purposes (which is correct)
+  - No functional changes needed - cleanup was removal of dead code comments
+  - Environment variables are properly configured and working in production
+- **Files Updated**:
+  - `firebase-functions/src/openaiService.ts` - Removed commented config line
+  - `firebase-functions/src/iapConfig.ts` - Removed commented import and config usage
+  - `firebase-functions/src/adCallbacks.ts` - Removed commented config line
+  - `firebase-functions/src/generateRiddles.ts` - Removed commented import line
+
+### **✅ FIRESTORE UNDEFINED FIELD ERROR - FIXED**
+
+- **Issue**: New user creation failing with "Error: Unsupported field value: undefined" when trying to save user documents to Firestore
+- **Error Message**: `❌ Error creating user document in Firestore: [Error: Unsupported field value: undefined]`
+- **Root Cause**: The `createUserDocumentInFirestore` function was explicitly setting `lastDailyChallengeCompletedAt: undefined`, but Firestore doesn't support `undefined` values
+- **Technical Details**:
+  - Firestore requires fields to either have a value or be omitted entirely
+  - Setting fields to `undefined` explicitly causes the "Unsupported field value" error
+  - Optional fields in Zod schemas (like `z.number().optional()`) mean the field can be omitted, not set to `undefined`
+- **Solution**: Modified the user creation logic to omit undefined fields rather than explicitly setting them
+- **Status**: ✅ **FIXED** - New users can now be created successfully in Firestore
+- **Result**:
+  - ✅ Removed explicit `lastDailyChallengeCompletedAt: undefined` from user creation
+  - ✅ Used conditional object spreading to include `displayName` only when defined
+  - ✅ Fixed TypeScript typing issues with proper conditional object construction
+  - ✅ New user documents now save successfully without undefined field errors
+  - ✅ User authentication flow now works properly for new users
+- **Files Updated**:
+  - `src/services/FirestoreService.ts` - Fixed `createUserDocumentInFirestore` function
+- **Key Technical Fix**:
+
+  ```typescript
+  // Before (broken):
+  lastDailyChallengeCompletedAt: undefined,
+
+  // After (working):
+  // Omit the field entirely when undefined
+  const defaultUserData: Player = displayName
+    ? { ...baseUserData, displayName }
+    : baseUserData;
+  ```
+
 ### **✅ FIREBASE V22 MIGRATION - COMPLETED**
 
 - **Issue**: React Native Firebase deprecation warning about namespaced API usage that will be removed in v22
@@ -475,3 +531,70 @@
 - **GameScreenWrapper**: Manages overlay state, riddle loading, next level logic
 - **Authentication Flow**: Landing → Login/SignUp → Game (automatic based on auth state)
 - **Loading Management**: Consistent loading states across authentication and game initialization
+
+### **✅ RIDDLE FALLBACK SYSTEM - IMPLEMENTED**
+
+- **Issue**: User requested that the game should always have a riddle available, with classic mode as fallback when daily challenges are completed
+- **Implementation**: Enhanced riddle loading logic to always fall back to classic mode riddles when daily riddles are unavailable
+- **Solution**:
+  - ✅ Modified `fetchCurrentRiddle` in AuthContext to load classic riddle when daily riddle is not available
+  - ✅ Updated NavigationStack riddle loading to implement the same fallback logic
+  - ✅ Added comprehensive error handling with classic riddle fallback on any loading failure
+  - ✅ Removed error scenarios that showed "no riddle available" messages
+  - ✅ Ensured classic mode riddles are always available since new riddles are generated automatically
+- **Status**: ✅ **IMPLEMENTED** - Game now guarantees a riddle is always available for the user
+- **Result**:
+  - ✅ **Daily mode**: Loads daily riddle if available, falls back to classic riddle if completed
+  - ✅ **Challenge mode**: Loads daily riddle if available, falls back to classic riddle if not
+  - ✅ **Classic mode**: Always loads classic riddle at current progress index
+  - ✅ **Error handling**: Falls back to classic riddle even on network/loading errors
+  - ✅ **User experience**: No more "no riddle available" states - always something to play
+- **Technical Details**:
+  - Both AuthContext and NavigationStack implement consistent fallback logic
+  - Classic riddles are fetched using `player.progress.classicIndex`
+  - Fallback triggers when daily riddle is null, completed, or fails to load
+  - Comprehensive error handling ensures riddle availability even on failures
+  - Maintains game mode context while providing fallback content
+
+### **✅ PULSINGSPINNER STUCK LOADING ISSUE - FIXED**
+
+- **Issue**: After Google Sign-In, new users were stuck seeing PulsingSpinner instead of the game screen
+- **Root Cause**: New users who sign in with Google don't have a user document in Firestore, so `loadUserProgressFromFirestore` returns `null`, causing the app to stay in loading state
+- **Navigation Logic**: GameScreenWrapper shows PulsingSpinner when `isAuthenticated: true` but `playerData: null`
+- **Solution**: Added automatic user document creation for new users
+- **Status**: ✅ **FIXED** - New users now get a user document created automatically
+- **Implementation**:
+  - ✅ Created `createUserDocumentInFirestore` function in FirestoreService
+  - ✅ Updated AuthContext to detect when user data doesn't exist
+  - ✅ Automatically creates user document with default values for new users
+  - ✅ Uses correct PlayerSchema field names (dailyPuzzlesCompleted, gamesPlayed, etc.)
+  - ✅ Sets appropriate default values (100 coins, 0 XP, starting progress indexes)
+- **Technical Details**:
+  - New user documents include all required fields from PlayerSchema
+  - Default values: 100 coins, 0 XP, all progress indexes at 0
+  - Uses email prefix as default username if no displayName available
+  - Validates data with PlayerSchema before saving to Firestore
+- **Result**: New Google Sign-In users now seamlessly transition from authentication to game screen
+
+### **✅ AUTOMATIC RIDDLE GENERATION - IMPLEMENTED**
+
+- **Issue**: User requested that the app should create riddles if none can be found by triggering the Firebase function to create them
+- **Root Cause**: The `fetchClassicRiddleFromFirestore` and `fetchDailyRiddleFromFirestore` functions in FirestoreService only returned `null` when no riddles were found, unlike RiddleService which had automatic generation
+- **Solution**: Enhanced both FirestoreService riddle fetching functions with automatic riddle generation and retry logic
+- **Status**: ✅ **IMPLEMENTED** - App now automatically generates riddles when none are found
+- **Result**:
+  - ✅ Enhanced `fetchClassicRiddleFromFirestore` with automatic generation and 3-retry logic
+  - ✅ Enhanced `fetchDailyRiddleFromFirestore` with automatic generation and 3-retry logic
+  - ✅ Both functions now call `generateClassicRiddles` Firebase function when no riddles found
+  - ✅ Added proper error handling and validation for Firebase function calls
+  - ✅ Implemented 5-second delays between retries to allow riddle generation to complete
+  - ✅ Maintains consistency with existing RiddleService.fetchClassicRiddle implementation
+- **Technical Details**:
+  - Uses `functions(getApp()).httpsCallable("generateClassicRiddles")` to trigger generation
+  - Validates input/output with `GenerateClassicRiddlesInputSchema` and `GenerateClassicRiddlesOutputSchema`
+  - Generates 5 new riddles per call (as defined in Firebase function)
+  - Retries up to 3 times with 5-second delays between attempts
+  - Falls back to `null` only after all retry attempts are exhausted
+- **Files Updated**:
+  - `src/services/FirestoreService.ts` - Enhanced both riddle fetching functions
+- **User Experience**: Users will never see "no riddle available" states - the app automatically generates new content when needed

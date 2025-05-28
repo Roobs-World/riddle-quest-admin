@@ -10,7 +10,7 @@ export const dailyChallengeScheduler = onSchedule(
     schedule: "0 0 * * *", // Runs daily at 00:00 UTC
     timeZone: "UTC", // Users can choose any timeZone - typically choose ones that makes sense for your user
   },
-  async (context: any) => {
+  async (_context: any) => {
     console.log("Daily challenge scheduler started.");
 
     try {

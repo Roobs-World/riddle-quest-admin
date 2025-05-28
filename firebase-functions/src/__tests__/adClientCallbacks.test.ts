@@ -1,8 +1,8 @@
-import {afterEach, beforeEach, describe, expect, it, jest} from "@jest/globals";
-import {CallableRequest, HttpsError, HttpsOptions} from "firebase-functions/v2/https";
-
-// Original imports from SUT needed for typing
-import type * as OriginalAdClientCallbacks from "../adClientCallbacks";
+import {describe, expect, jest, beforeEach, afterEach} from "@jest/globals";
+import {CallableRequest, HttpsError} from "firebase-functions/v2/https";
+// import {HttpsOptions} from "firebase-functions/v2/https"; - Not used
+// import * as functionsModuleWilde from "firebase-functions"; // For types and mocks
+// import {adClientCallbacks as OriginalAdClientCallbacks} from "../adClientCallbacks"; - Not used
 
 // Initialize all mock functions before any imports to ensure proper hoisting
 const mockLoggerInfo = jest.fn();

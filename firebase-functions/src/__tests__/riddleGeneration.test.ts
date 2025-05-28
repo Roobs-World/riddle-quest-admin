@@ -1,4 +1,4 @@
-import {describe, expect, it, jest, beforeEach, afterEach} from "@jest/globals";
+import {describe, expect, jest, beforeEach, afterEach} from "@jest/globals";
 import * as functions from "firebase-functions"; // For types like CallableRequest
 import * as generateRiddlesModuleKey from "../generateRiddles"; // SUT dependency
 
@@ -41,10 +41,8 @@ jest.doMock("firebase-functions/v2/https", () => {
   };
 });
 
-import {HttpsError as HttpsErrorV2} from "firebase-functions/v2/https"; // Import HttpsError for use in tests
-
 // Import SUT after mocks are defined. Its 'onCall' will be the one from the factory.
-const {generateClassicRiddles} = require("../riddleGeneration");
+// const {generateClassicRiddles} = require("../riddleGeneration");
 
 describe("generateClassicRiddles Cloud Function", () => {
   let actualHandlerToTest: any;
@@ -104,8 +102,8 @@ describe("generateClassicRiddles Cloud Function", () => {
     const SUT_MODULE = require("../riddleGeneration");
     actualHandlerToTest = SUT_MODULE.generateClassicRiddles;
 
-    jest.spyOn(console, "log").mockImplementation((...args: any[]): void => {});
-    jest.spyOn(console, "error").mockImplementation((...args: any[]): void => {});
+    jest.spyOn(console, "log").mockImplementation((..._args: any[]): void => {});
+    jest.spyOn(console, "error").mockImplementation((..._args: any[]): void => {});
   });
 
   afterEach(() => {

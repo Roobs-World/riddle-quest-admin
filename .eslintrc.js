@@ -47,5 +47,32 @@ module.exports = {
         node: true,
       },
     },
+    {
+      files: [
+        "**/__tests__/**/*",
+        "**/*.test.ts",
+        "**/*.test.tsx",
+        "**/*.spec.ts",
+        "**/*.spec.tsx",
+        "**/jest.setup.js",
+      ],
+      rules: {
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-unused-vars": "off",
+        "@typescript-eslint/no-require-imports": "off",
+        "prefer-const": "off",
+        "@typescript-eslint/no-empty-object-type": "off",
+      },
+    },
+    {
+      files: ["firebase-functions/src/**/*"],
+      rules: {
+        "@typescript-eslint/no-explicit-any": "warn",
+        "@typescript-eslint/no-unused-vars": [
+          "error",
+          { argsIgnorePattern: "^_" },
+        ],
+      },
+    },
   ],
 };

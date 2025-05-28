@@ -1,7 +1,6 @@
 import iap from "in-app-purchase";
 import fs from "fs";
 import path from "path";
-// import * as functions from "firebase-functions"; // Removed functions.config() usage
 
 let appleSharedSecret: string | undefined;
 let finalGoogleServiceAccountForIap: Record<string, unknown> | undefined; // This will be populated from process.env
@@ -24,8 +23,6 @@ export function initializeIapConfig(): void {
   const isEmulatorRunning = process.env.FUNCTIONS_EMULATOR === "true";
   const isFirebaseFunctionsTestEnv = process.env.IS_FIREBASE_FUNCTIONS_TEST === "true";
   const serviceAccountPathFromEnv = process.env.GOOGLE_SERVICE_ACCOUNT_JSON_PATH; // For local tests primarily
-
-  // Removed loading from functions.config()
 
   console.error(
     `[iapConfig Initialize] isEmulatorRunning: ${isEmulatorRunning}, isJestEnvironment: ${isJestEnvironment}, isFirebaseFunctionsTestEnv: ${isFirebaseFunctionsTestEnv}`,

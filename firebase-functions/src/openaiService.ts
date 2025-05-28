@@ -20,9 +20,7 @@ function initializeOpenAIClient(): OpenAI {
     return openaiClient;
   }
 
-  // Use Firebase function configuration for sensitive information
-  // const openaiConfig = functions.config().openai;
-  // const openAIKey = openaiConfig?.api_key; // Accessing openai.api_key
+  // Use environment variables for sensitive information
   const openAIKey = process.env.OPENAI_API_KEY;
 
   // Ensure environment variables are set

@@ -1,5 +1,5 @@
 import * as admin from "firebase-admin";
-import {Player, PlayerStats, PlayerProgress} from "../validation/firestoreSchemas";
+import {Player} from "../validation/firestoreSchemas";
 
 /**
  * Creates a test user in Firestore with default values
@@ -19,6 +19,7 @@ export async function createUser(
     username: `User${userId}`,
     xp: 0,
     coins: 100,
+    hasPurchasedApp: false,
     progress: {
       classicIndex: 1,
       dailyChallengeIndex: 1,

@@ -118,7 +118,6 @@ async function markAdTransactionAsProcessed(userId: string, token: string): Prom
  * @return A promise that resolves once the operation is completed.
  */
 export const awardedAdCallback = onRequest(async (req: Request, res: Response): Promise<void> => {
-  // const applovinSdkKey = functions.config().applovin?.sdk_key;
   const applovinSdkKey = process.env.APPLOVIN_SDK_KEY;
   if (!applovinSdkKey) {
     functions.logger.error("Missing required environment variable: APPLOVIN_SDK_KEY (from process.env)");

@@ -7,7 +7,6 @@ const mockServerTimestampFn = jest.fn(() => "SENTINEL_SERVER_TIMESTAMP_VALUE");
 
 // 2. Jest/type imports
 import {describe, expect, it, jest, beforeEach} from "@jest/globals";
-import * as adminTypes from "firebase-admin"; // For type annotations, esp. for admin.firestore.FieldValue
 
 // 3. jest.mock calls
 jest.mock("firebase-admin", () => {

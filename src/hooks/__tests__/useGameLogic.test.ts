@@ -1,7 +1,6 @@
 import { renderHook, act } from "@testing-library/react-native";
 // import functions from "@react-native-firebase/functions"; // Will be mocked directly
 import useGameLogic, { Feedback } from "../useGameLogic";
-import { SubmittedGuess } from "../types"; // Make sure this path is correct
 
 jest.mock("@react-native-firebase/app", () => ({
   __esModule: true,
@@ -207,7 +206,6 @@ describe("useGameLogic", () => {
     });
 
     it("should handle a losing guess (classic mode - 5 attempts)", async () => {
-      const lastGuessChars = ["G", "U", "E", "S", "S"]; // For the final guess
       const feedbackStrings: Feedback[] = ["red", "red", "red", "red", "red"];
 
       // Mock for all 5 calls. The SUT will call this 5 times.
@@ -278,7 +276,6 @@ describe("useGameLogic", () => {
         gameMode: "challenge" as "classic" | "challenge",
         correctAnswerLength: 5,
       };
-      const lastGuessChars = ["G", "U", "E", "S", "S"];
       const feedbackStrings: Feedback[] = ["red", "red", "red", "red", "red"];
 
       mockSubmitGuessCallable.mockImplementation(async (callData) => {

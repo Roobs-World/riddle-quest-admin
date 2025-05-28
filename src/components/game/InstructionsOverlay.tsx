@@ -27,18 +27,20 @@ const InstructionsOverlay: React.FC<InstructionsOverlayProps> = ({
             After each guess, the color of the letters will change to show how
             close your guess was.
           </Text>
-          <Text className="text-base mb-4">Here's what the colors mean:</Text>
+          <Text className="text-base mb-4">
+            Here&apos;s what the colors mean:
+          </Text>
           <Text className="text-base mb-2 font-semibold">Examples:</Text>
           <Text className="text-base mb-2">
-            - <Text style={{ color: "green" }}>GREEN</Text>: The letter is in
+            - <Text className="text-green-600">GREEN</Text>: The letter is in
             the word and in the correct spot.
           </Text>
           <Text className="text-base mb-2">
-            - <Text style={{ color: "yellow" }}>YELLOW</Text>: The letter is in
+            - <Text className="text-yellow-600">YELLOW</Text>: The letter is in
             the word but in the wrong spot.
           </Text>
           <Text className="text-base mb-4">
-            - <Text style={{ color: "gray" }}>GRAY</Text>: The letter is not in
+            - <Text className="text-gray-600">GRAY</Text>: The letter is not in
             the word in any spot.
           </Text>
           <TouchableOpacity
