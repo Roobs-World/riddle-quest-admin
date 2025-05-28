@@ -67,8 +67,6 @@ module.exports = {
     eas: {
       projectId: "c587e97f-f71b-4258-a34c-98a2df4a6508",
     },
-    SPREADSHEET_ID: "1SgsMqvbLx7n0FO6LlswzW9duEHfbs4V2-A43p8mP-uw",
-    ACCESS_TOKEN: "AIzaSyDjnILvEvKu_dhFkN_qSFhLQaKXqguAvQw",
     OPEN_AI_KEY: "YnDnl1dSucAApjYEN019-6hGt2ufiedaq4HsP-h7",
     FIREBASE_API_KEY: "AIzaSyBNjLrkvGibqctZ30YIktDYUBGf1WMhUBs",
     FIREBASE_APP_ID: "1:26666910831:android:38c5f64b1df8df7168799a",

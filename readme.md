@@ -1,6 +1,6 @@
 npx eas-cli build --profile development --platform android
 
-expo run:android
+expo run:android --clear
 
 use firebase functions:config:get to return the config settings used
 

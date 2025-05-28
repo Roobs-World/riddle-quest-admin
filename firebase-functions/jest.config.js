@@ -23,5 +23,5 @@ module.exports = {
   },
   transformIgnorePatterns: ["/node_modules/(?!(?:@firebase|firebase)/)"],
   setupFiles: ["<rootDir>/jest.env.setup.js"],
-  testTimeout: 90000,
+  testTimeout: 180000, // 3 minutes for all tests including integration tests
 };

@@ -32,7 +32,6 @@ if (!admin.apps.length) {
 let firestore: admin.firestore.Firestore;
 
 describe("Profile Functions - Integration Tests", () => {
-  jest.setTimeout(30000);
   const wrappedResetStats = testEnv.wrap(resetStats);
   const wrappedUpdateAvatar = testEnv.wrap(updateAvatar);
   const testUserId = "testUserProfile";
@@ -73,19 +72,45 @@ describe("Profile Functions - Integration Tests", () => {
   };
 
   beforeAll(async () => {
-    firestore = admin.firestore();
-  });
+    try {
+      firestore = admin.firestore();
+
+      // Test Firebase connection
+      await firestore.collection("_test").doc("connection").set({timestamp: new Date()});
+      await firestore.collection("_test").doc("connection").delete();
+
+      console.log("✅ Firebase connection successful for Profile integration tests");
+    } catch (error) {
+      console.error("❌ Firebase connection failed for Profile integration tests:", error);
+      throw new Error("Firebase connection failed. Check credentials and network.");
+    }
+  }, 30000);
 
   beforeEach(async () => {
-    // Clear and create fresh test user data
-    const userRef = firestore.collection("users").doc(testUserId);
-    await userRef.delete().catch(() => {}); // Ignore error if doc doesn't exist
-    await createUser(firestore, testUserId, initialUserData);
-  }, 60000);
+    try {
+      // Clear and create fresh test user data
+      const userRef = firestore.collection("users").doc(testUserId);
+      await userRef.delete().catch(() => {}); // Ignore error if doc doesn't exist
+      await createUser(firestore, testUserId, initialUserData);
+    } catch (error) {
+      console.error("❌ Setup failed in beforeEach:", error);
+      throw error;
+    }
+  }, 30000);
 
-  afterAll(() => {
-    testEnv.cleanup();
-  });
+  afterAll(async () => {
+    try {
+      // Clean up test data
+      await firestore
+        .collection("users")
+        .doc(testUserId)
+        .delete()
+        .catch(() => {});
+      testEnv.cleanup();
+    } catch (error) {
+      console.warn("⚠️ Cleanup warning:", error);
+    }
+  }, 15000);
 
   // Helper to construct the request object
   const constructOnCallRequest = <T = unknown>(data: T, authContextArg?: {uid: string} | null): CallableRequest<T> => {
@@ -113,20 +138,14 @@ describe("Profile Functions - Integration Tests", () => {
       expect(userData?.coins).toBe(initialUserData.coins);
       expect(userData?.progress).toEqual(initialUserData.progress);
       expect(userData?.avatarUrl).toBe(initialUserData.avatarUrl);
-    });
+    }, 15000);
 
     it("should throw unauthenticated if called without authentication", async () => {
       const request = constructOnCallRequest({}, null);
       await expect(wrappedResetStats(request)).rejects.toThrow(
         new HttpsError("unauthenticated", "The function must be called while authenticated."),
       );
-    });
-
-    // Test for non-existent user is tricky as Firestore update would create the doc path
-    // but the function targets a specific user doc based on auth.uid.
-    // If auth.uid doesn't exist, the update will simply create a new doc with reset stats,
-    // which might not be an "error" from Firestore's perspective but a no-op for an intended user.
-    // The function itself doesn't explicitly check if the user doc exists before updating.
+    }, 10000);
   });
 
   describe("updateAvatar", () => {
@@ -141,27 +160,27 @@ describe("Profile Functions - Integration Tests", () => {
       expect(userDoc.data()?.avatarUrl).toBe(newAvatarUrl);
       // Ensure other fields are not affected
       expect(userDoc.data()?.coins).toBe(initialUserData.coins);
-    });
+    }, 15000);
 
     it("should throw unauthenticated if called without authentication", async () => {
       const request = constructOnCallRequest({avatarUrl: "any_url.png"}, null);
       await expect(wrappedUpdateAvatar(request)).rejects.toThrow(
         new HttpsError("unauthenticated", "The function must be called while authenticated."),
       );
-    });
+    }, 10000);
 
     it("should throw invalid-argument for missing avatarUrl", async () => {
       const request = constructOnCallRequest({}); // Cast to satisfy type, but data is missing
       await expect(wrappedUpdateAvatar(request)).rejects.toThrow(
         new HttpsError("invalid-argument", "Invalid or missing avatar URL."),
       );
-    });
+    }, 10000);
 
     it("should throw invalid-argument for non-string avatarUrl", async () => {
       const request = constructOnCallRequest({avatarUrl: 123}); // Invalid type
       await expect(wrappedUpdateAvatar(request)).rejects.toThrow(
         new HttpsError("invalid-argument", "Invalid or missing avatar URL."),
       );
-    });
+    }, 10000);
   });
 });

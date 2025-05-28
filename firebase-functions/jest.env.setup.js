@@ -1,6 +1,20 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 require("dotenv").config({path: __dirname + "/.env", override: true});
 
-process.env.FIRESTORE_EMULATOR_HOST = process.env.FIRESTORE_EMULATOR_HOST;
+// Ensure Jest environment is properly detected by iapConfig
+process.env.JEST_WORKER_ID = process.env.JEST_WORKER_ID || "1";
+process.env.NODE_ENV = "test";
+
+// Set up Firebase credentials for integration tests
+if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+  // Use the existing service account file for integration tests
+  process.env.GOOGLE_APPLICATION_CREDENTIALS = __dirname + "/qwordly-admin-sdk.json";
+}
+
+// Set Firebase project for integration tests
+if (!process.env.FIREBASE_PROJECT_ID) {
+  process.env.FIREBASE_PROJECT_ID = "qwordly-6ba44";
+}
 
 // Disable OpenTelemetry tracing in tests to avoid Firestore tracing issues
 process.env.OTEL_SDK_DISABLED = "true";

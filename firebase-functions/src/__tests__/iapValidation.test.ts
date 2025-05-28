@@ -19,7 +19,9 @@ jest.mock("../iapConfig", () => {
     __esModule: true,
     NO_ADS_PRODUCT_ID: "com.qwordly.noads.unitmock.v4",
     BACKEND_COIN_PRODUCT_DETAILS: {
-      small: {id: "com.qwordly.coins.small.unitmock.v4", coins: 50},
+      COIN_PACK_SMALL: {id: "com.qwordly.coins.small.unitmock.v4", coins: 50},
+      COIN_PACK_MEDIUM: {id: "com.qwordly.coins.medium.unitmock.v4", coins: 250},
+      COIN_PACK_LARGE: {id: "com.qwordly.coins.large.unitmock.v4", coins: 600},
     },
     initializeIapConfig: jest.fn(),
   };
@@ -28,6 +30,7 @@ jest.mock("../iapConfig", () => {
 // 3. Define other top-level mock consts
 const mockGetUser = jest.fn<(...args: unknown[]) => Promise<{coins: number; hasPurchasedApp: boolean} | null>>();
 const mockUpdateUserCoins = jest.fn<(...args: unknown[]) => Promise<void>>();
+const mockUpdateUserProfile = jest.fn<(...args: unknown[]) => Promise<void>>();
 const mockMarkPurchaseTokenAsProcessed = jest.fn<(...args: unknown[]) => Promise<void>>();
 const mockIsPurchaseTokenAlreadyProcessed = jest.fn<(...args: unknown[]) => Promise<boolean>>();
 const mockPerformPlatformValidation = jest.fn<(...args: unknown[]) => Promise<{valid: boolean; data?: unknown}>>();
@@ -140,6 +143,7 @@ jest.mock("firebase-functions/v2/https", () => {
 jest.mock("../firestoreService", () => ({
   getUser: (...args: unknown[]) => mockGetUser(...args),
   updateUserCoins: (...args: unknown[]) => mockUpdateUserCoins(...args),
+  updateUserProfile: (...args: unknown[]) => mockUpdateUserProfile(...args),
 }));
 
 jest.mock("../iapReceiptService", () => ({
@@ -191,6 +195,7 @@ describe("validatePurchase - Unit Tests", () => {
 
     mockGetUser.mockReset();
     mockUpdateUserCoins.mockReset();
+    mockUpdateUserProfile.mockReset();
     mockIsPurchaseTokenAlreadyProcessed.mockReset();
     mockMarkPurchaseTokenAsProcessed.mockReset();
     mockPerformPlatformValidation.mockReset();
@@ -219,6 +224,7 @@ describe("validatePurchase - Unit Tests", () => {
 
     // Default mock implementations
     mockGetUser.mockResolvedValue({coins: 100, hasPurchasedApp: false});
+    mockUpdateUserProfile.mockResolvedValue(undefined);
     mockIsPurchaseTokenAlreadyProcessed.mockResolvedValue(false);
     mockPerformPlatformValidation.mockResolvedValue({valid: true, data: "platform_validation_response"});
 
@@ -262,12 +268,10 @@ describe("validatePurchase - Unit Tests", () => {
     expect(result).toEqual({success: true, newCoins: 100});
     expect(mockIsPurchaseTokenAlreadyProcessed).toHaveBeenCalledWith(testUserId, "token_noads");
     expect(mockPerformPlatformValidation).toHaveBeenCalledWith("ios", "token_noads", NO_ADS_PRODUCT_ID);
-    expect(mockFsCollection).toHaveBeenCalledWith("users");
-    expect(mockFsDoc).toHaveBeenCalledWith(testUserId);
-    expect(mockFsUpdate).toHaveBeenCalledWith({hasPurchasedApp: true});
+    expect(mockUpdateUserProfile).toHaveBeenCalledWith(testUserId, {hasPurchasedApp: true});
     expect(mockUpdateUserCoins).not.toHaveBeenCalled();
     expect(mockMarkPurchaseTokenAsProcessed).toHaveBeenCalledWith(testUserId, "token_noads", NO_ADS_PRODUCT_ID);
-    expect(mockGetUser).toHaveBeenCalledTimes(1);
+    expect(mockGetUser).toHaveBeenCalledTimes(2);
     expect(mockLoggerInfo).toHaveBeenCalledWith(
       `Purchase validated and product ID matched for user ${testUserId}: ${NO_ADS_PRODUCT_ID}`,
     );

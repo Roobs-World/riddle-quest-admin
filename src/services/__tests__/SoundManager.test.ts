@@ -1,4 +1,4 @@
-import { AVPlaybackStatus } from "expo-av";
+import { AVPlaybackStatus, Audio } from "expo-av";
 
 // Define a type for the mock sound instances with only the mocked members used by SoundManager
 interface MockSoundInstance {
@@ -27,45 +27,42 @@ interface MockSoundInstance {
 
 // File-level mock for expo-av
 const mockSoundInstances: MockSoundInstance[] = [];
-const MockAudioSound = jest.fn().mockImplementation(() => {
-  const instance: MockSoundInstance = {
-    loadAsync: jest.fn().mockResolvedValue(undefined),
-    playAsync: jest.fn().mockResolvedValue(undefined),
-    replayAsync: jest.fn().mockResolvedValue(undefined),
-    getStatusAsync: jest.fn().mockResolvedValue({
-      isLoaded: true,
-      isPlaying: false,
-      durationMillis: 1000,
-      positionMillis: 0,
-      didJustFinish: false,
-      isLooping: false,
-      shouldPlay: false,
-      progressUpdateIntervalMillis: 500,
-      uri: "test-uri", // Add required properties for AVPlaybackStatus
-      // Add other required properties of AVPlaybackStatus if any are used in tests
-    } as AVPlaybackStatus), // Explicitly cast to AVPlaybackStatus
-    pauseAsync: jest.fn().mockResolvedValue(undefined),
-    unloadAsync: jest.fn().mockResolvedValue(undefined),
-    // StopAsync, setOnPlaybackStatusUpdate, setVolumeAsync, setIsLoopingAsync mocks removed
-
-    // Include optional properties with mock values or as undefined
-    _loaded: false,
-    _loading: false,
-    _key: Math.random(),
-    _lastStatusUpdate: null,
-    _lastStatusUpdateTime: null,
-    _subscriptions: [],
-    _eventEmitter: { addListener: jest.fn(), removeListener: jest.fn() },
-    _coalesceStatusUpdatesInMillis: 0,
-    _onPlaybackStatusUpdate: null,
-  };
-  mockSoundInstances.push(instance);
-  return instance;
-});
 
 jest.mock("expo-av", () => ({
   Audio: {
-    Sound: MockAudioSound,
+    Sound: {
+      createAsync: jest.fn().mockImplementation(() => {
+        const instance: MockSoundInstance = {
+          loadAsync: jest.fn().mockResolvedValue(undefined),
+          playAsync: jest.fn().mockResolvedValue(undefined),
+          replayAsync: jest.fn().mockResolvedValue(undefined),
+          getStatusAsync: jest.fn().mockResolvedValue({
+            isLoaded: true,
+            isPlaying: false,
+            durationMillis: 1000,
+            positionMillis: 0,
+            didJustFinish: false,
+            isLooping: false,
+            shouldPlay: false,
+            progressUpdateIntervalMillis: 500,
+            uri: "test-uri",
+          } as AVPlaybackStatus),
+          pauseAsync: jest.fn().mockResolvedValue(undefined),
+          unloadAsync: jest.fn().mockResolvedValue(undefined),
+          _loaded: false,
+          _loading: false,
+          _key: Math.random(),
+          _lastStatusUpdate: null,
+          _lastStatusUpdateTime: null,
+          _subscriptions: [],
+          _eventEmitter: { addListener: jest.fn(), removeListener: jest.fn() },
+          _coalesceStatusUpdatesInMillis: 0,
+          _onPlaybackStatusUpdate: null,
+        };
+        mockSoundInstances.push(instance);
+        return Promise.resolve({ sound: instance });
+      }),
+    },
     setAudioModeAsync: jest.fn().mockResolvedValue(undefined),
     InterruptionModeIOS: {},
     InterruptionModeAndroid: {},
@@ -73,105 +70,99 @@ jest.mock("expo-av", () => ({
   },
 }));
 
-// Helper to get the last created sound instance, useful for simple cases
-// where sounds are created sequentially in SoundManager
-// const getLastMockSoundInstance = () =>
-//   mockSoundInstances[mockSoundInstances.length - 1]; // Removed unused function
+// Mock the audio files
+jest.mock("../../../assets/audio/Neutral.wav", () => "test-file-stub");
+jest.mock("../../../assets/audio/Success.wav", () => "test-file-stub");
+jest.mock("../../../assets/audio/Negative.wav", () => "test-file-stub");
 
-import { SoundManager as ActualSoundManager } from "../SoundManager"; // Import the actual SoundManager
+import { SoundManager as ActualSoundManager } from "../SoundManager";
+
+interface SoundManagerType {
+  init: () => Promise<void>;
+  playSuccess: () => Promise<void>;
+  playNegative: () => Promise<void>;
+  playBackgroundMusic: () => Promise<void>;
+  pauseBackgroundMusic: () => Promise<void>;
+  unload: () => Promise<void>;
+}
 
 describe("SoundManager", () => {
-  let SoundManager: typeof ActualSoundManager; // Use the actual type
+  let SoundManager: SoundManagerType;
 
-  // General beforeEach for resetting console spy and clearing general mock states
   beforeEach(() => {
-    // Clear general mock state that might persist if not handled by specific test setups
-    MockAudioSound.mockClear();
-    mockSoundInstances.length = 0;
-    jest.spyOn(console, "error").mockImplementation(() => {});
-    SoundManager = ActualSoundManager; // Assign the actual SoundManager before each test
-  });
+    // Clear mock calls and instances before each test
+    jest.clearAllMocks();
+    mockSoundInstances.length = 0; // Clear the instances array
+    console.error = jest.fn(); // Mock console.error to avoid noise in tests
+    console.warn = jest.fn(); // Mock console.warn to avoid noise in tests
 
-  afterEach(() => {
-    (console.error as jest.Mock).mockRestore();
-    jest.resetModules(); // Reset modules after each test to ensure a clean slate for the next
-  });
-
-  // Test to ensure module loading works as expected with the default mock
-  it("should create 3 sound instances when SoundManager module is loaded", () => {
-    // SoundManager is assigned in beforeEach, no need for require here
-    expect(MockAudioSound).toHaveBeenCalledTimes(3); // Mocks are created when the module is first evaluated/imported
-    expect(mockSoundInstances.length).toBe(3);
+    // Assign SoundManager for each test
+    SoundManager = ActualSoundManager;
   });
 
   describe("init", () => {
-    beforeEach(() => {
-      // Default mock behavior for Audio.Sound for most init tests
-      // (cleared by general beforeEach, specific implementations will be set by tests if needed)
-      // SoundManager is assigned in the outer beforeEach
-    });
-
-    it("should create 3 sound instances, load all, and play neutral sound", async () => {
-      // SoundManager is assigned in beforeEach
+    it("should set audio mode, create 3 sound instances, and play neutral sound", async () => {
       await SoundManager.init();
-      // MockAudioSound already called 3 times during import/evaluation
+
+      // Verify audio mode was set
+      expect(Audio.setAudioModeAsync).toHaveBeenCalledWith({
+        allowsRecordingIOS: false,
+        staysActiveInBackground: false,
+        playsInSilentModeIOS: true,
+        shouldDuckAndroid: true,
+      });
+
+      // Audio.Sound.createAsync should be called 3 times during init
+      expect(Audio.Sound.createAsync).toHaveBeenCalledTimes(3);
       expect(mockSoundInstances.length).toBe(3);
-      expect(mockSoundInstances[0].loadAsync).toHaveBeenCalledWith(
-        "test-file-stub", // Comes from the fileMock.js via moduleNameMapper
-        { isLooping: true }
+
+      // Check the createAsync calls were made with correct parameters
+      expect(Audio.Sound.createAsync).toHaveBeenNthCalledWith(
+        1,
+        "test-file-stub",
+        {
+          isLooping: true,
+          shouldPlay: false,
+        }
       );
-      expect(mockSoundInstances[1].loadAsync).toHaveBeenCalledWith(
-        "test-file-stub"
+      expect(Audio.Sound.createAsync).toHaveBeenNthCalledWith(
+        2,
+        "test-file-stub",
+        {
+          shouldPlay: false,
+        }
       );
-      expect(mockSoundInstances[2].loadAsync).toHaveBeenCalledWith(
-        "test-file-stub"
+      expect(Audio.Sound.createAsync).toHaveBeenNthCalledWith(
+        3,
+        "test-file-stub",
+        {
+          shouldPlay: false,
+        }
       );
+
+      // Verify neutral sound starts playing
       expect(mockSoundInstances[0].playAsync).toHaveBeenCalledTimes(1);
     });
 
-    it("should log error if loading sounds fails", async () => {
-      // Setup specific mock behavior *before* SoundManager is accessed in init
-      MockAudioSound.mockImplementationOnce(() => {
-        // For neutralSound
-        const instance: MockSoundInstance = {
-          loadAsync: jest.fn().mockRejectedValueOnce(new Error("Load failed")),
-          playAsync: jest.fn(),
-          replayAsync: jest.fn(),
-          getStatusAsync: jest.fn().mockResolvedValue({} as AVPlaybackStatus), // Mock minimal status
-          pauseAsync: jest.fn(),
-          unloadAsync: jest.fn(),
-        };
-        mockSoundInstances.push(instance);
-        return instance;
-      })
-        .mockImplementationOnce(() => {
-          // For successSound (to allow init to continue)
-          const instance: MockSoundInstance = {
-            loadAsync: jest.fn().mockResolvedValue(undefined),
-            playAsync: jest.fn(),
-            replayAsync: jest.fn(),
-            getStatusAsync: jest.fn().mockResolvedValue({} as AVPlaybackStatus), // Mock minimal status
-            pauseAsync: jest.fn(),
-            unloadAsync: jest.fn(),
-          };
-          mockSoundInstances.push(instance);
-          return instance;
-        })
-        .mockImplementationOnce(() => {
-          // For negativeSound
-          const instance: MockSoundInstance = {
-            loadAsync: jest.fn().mockResolvedValue(undefined),
-            playAsync: jest.fn(),
-            replayAsync: jest.fn(),
-            getStatusAsync: jest.fn().mockResolvedValue({} as AVPlaybackStatus), // Mock minimal status
-            pauseAsync: jest.fn(),
-            unloadAsync: jest.fn(),
-          };
-          mockSoundInstances.push(instance);
-          return instance;
-        });
+    it("should log error if setting audio mode fails", async () => {
+      // Setup specific mock behavior for setAudioModeAsync to fail
+      (Audio.setAudioModeAsync as jest.Mock).mockRejectedValueOnce(
+        new Error("Audio mode failed")
+      );
 
-      // SoundManager is assigned in the outer beforeEach
+      await SoundManager.init();
+      expect(console.error).toHaveBeenCalledWith(
+        "Error loading sounds:",
+        expect.any(Error)
+      );
+    });
+
+    it("should log error if creating sounds fails", async () => {
+      // Setup specific mock behavior for createAsync to fail
+      (Audio.Sound.createAsync as jest.Mock).mockRejectedValueOnce(
+        new Error("Create sound failed")
+      );
+
       await SoundManager.init();
       expect(console.error).toHaveBeenCalledWith(
         "Error loading sounds:",
@@ -183,7 +174,6 @@ describe("SoundManager", () => {
   describe("playSuccess", () => {
     beforeEach(async () => {
       // Ensure a fresh SoundManager with sounds loaded for these tests
-      SoundManager = ActualSoundManager; // Assign the actual SoundManager
       await SoundManager.init();
       // Clear calls from init itself
       if (mockSoundInstances[1]) mockSoundInstances[1].replayAsync.mockClear();
@@ -192,6 +182,15 @@ describe("SoundManager", () => {
     it("should replay success sound", async () => {
       await SoundManager.playSuccess();
       expect(mockSoundInstances[1].replayAsync).toHaveBeenCalledTimes(1);
+    });
+
+    it("should warn if success sound not initialized", async () => {
+      // Don't call init, so sounds are not initialized
+      // SoundManager is already assigned in main beforeEach
+      await SoundManager.playSuccess();
+      expect(console.warn).toHaveBeenCalledWith(
+        "Success sound not initialized"
+      );
     });
 
     it("should log error if playing success sound fails", async () => {
@@ -208,7 +207,6 @@ describe("SoundManager", () => {
 
   describe("playNegative", () => {
     beforeEach(async () => {
-      SoundManager = ActualSoundManager; // Assign the actual SoundManager
       await SoundManager.init();
       if (mockSoundInstances[2]) mockSoundInstances[2].replayAsync.mockClear();
     });
@@ -216,6 +214,15 @@ describe("SoundManager", () => {
     it("should replay negative sound", async () => {
       await SoundManager.playNegative();
       expect(mockSoundInstances[2].replayAsync).toHaveBeenCalledTimes(1);
+    });
+
+    it("should warn if negative sound not initialized", async () => {
+      // Don't call init, so sounds are not initialized
+      // SoundManager is already assigned in main beforeEach
+      await SoundManager.playNegative();
+      expect(console.warn).toHaveBeenCalledWith(
+        "Negative sound not initialized"
+      );
     });
 
     it("should log error if playing negative sound fails", async () => {
@@ -232,7 +239,6 @@ describe("SoundManager", () => {
 
   describe("playBackgroundMusic", () => {
     beforeEach(async () => {
-      SoundManager = ActualSoundManager; // Assign the actual SoundManager
       await SoundManager.init();
       // Clear specific mocks if init calls them
       if (mockSoundInstances[0]) {
@@ -261,6 +267,15 @@ describe("SoundManager", () => {
       expect(mockSoundInstances[0].playAsync).not.toHaveBeenCalled();
     });
 
+    it("should warn if neutral sound not initialized", async () => {
+      // Don't call init, so sounds are not initialized
+      // SoundManager is already assigned in main beforeEach
+      await SoundManager.playBackgroundMusic();
+      expect(console.warn).toHaveBeenCalledWith(
+        "Neutral sound not initialized"
+      );
+    });
+
     it("should log error if getStatusAsync fails", async () => {
       mockSoundInstances[0].getStatusAsync.mockRejectedValueOnce(
         new Error("Get status failed")
@@ -275,7 +290,6 @@ describe("SoundManager", () => {
 
   describe("pauseBackgroundMusic", () => {
     beforeEach(async () => {
-      SoundManager = ActualSoundManager; // Assign the actual SoundManager
       await SoundManager.init();
       if (mockSoundInstances[0]) {
         mockSoundInstances[0].getStatusAsync.mockClear();
@@ -293,6 +307,15 @@ describe("SoundManager", () => {
       expect(mockSoundInstances[0].pauseAsync).toHaveBeenCalledTimes(1);
     });
 
+    it("should warn if neutral sound not initialized for pause", async () => {
+      // Don't call init, so sounds are not initialized
+      // SoundManager is already assigned in main beforeEach
+      await SoundManager.pauseBackgroundMusic();
+      expect(console.warn).toHaveBeenCalledWith(
+        "Neutral sound not initialized"
+      );
+    });
+
     it("should log error if getStatusAsync fails for pause", async () => {
       mockSoundInstances[0].getStatusAsync.mockRejectedValueOnce(
         new Error("Get status failed")
@@ -308,7 +331,6 @@ describe("SoundManager", () => {
   // Corrected test description and method call to match actual SoundManager.unload
   describe("unload", () => {
     beforeEach(async () => {
-      SoundManager = ActualSoundManager; // Assign the actual SoundManager
       await SoundManager.init();
       if (mockSoundInstances[0]) mockSoundInstances[0].unloadAsync.mockClear();
       if (mockSoundInstances[1]) mockSoundInstances[1].unloadAsync.mockClear();

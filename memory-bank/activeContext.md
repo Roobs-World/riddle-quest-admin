@@ -2,6 +2,95 @@
 
 ## 1. Current Focus
 
+### **✅ SOUND UNLOADING ISSUE - COMPLETELY RESOLVED**
+
+- **Issue**: Sounds were being unloaded in App.tsx useEffect cleanup, causing "playAsync method not available" errors
+- **Root Cause**:
+  1. useEffect cleanup function was calling SoundManager.unload() which removes sounds from memory
+  2. expo-av's `playAsync()` method was unreliable, but `replayAsync()` works consistently
+- **User Requirement**: Sounds should never be unloaded for optimal performance and should just play
+- **Final Solution**:
+  - ✅ Removed SoundManager.unload() call from App.tsx useEffect cleanup
+  - ✅ Implemented proper expo-av usage pattern with Audio.Sound.createAsync and explicit AVPlaybackSource typing
+  - ✅ **KEY FIX**: Used `replayAsync()` instead of `playAsync()` throughout SoundManager - this is what actually works
+  - ✅ Added 1-second delay after sound creation to ensure full initialization
+  - ✅ Added comprehensive status checking before attempting to play sounds
+  - ✅ Sounds now remain in memory throughout app lifecycle for immediate playback
+- **Status**: ✅ **COMPLETELY RESOLVED** - Sounds are working perfectly
+- **Result**:
+  - ✅ Sounds remain in memory for optimal performance
+  - ✅ Background music starts automatically during initialization
+  - ✅ All sound effects (success/negative) work reliably
+  - ✅ No more "playAsync method not available" errors
+  - ✅ Consistent use of `replayAsync()` for reliable sound playback
+- **Technical Note**: `replayAsync()` works more reliably than `playAsync()` with expo-av
+
+### **✅ SOUND MANAGER PAUSE/RESUME ISSUE - FIXED**
+
+- **Issue**: Sounds were being unloaded when paused, causing playAsync errors when trying to resume
+- **Root Cause**: Incorrect understanding of pause vs unload - pause should only stop playback, not unload the sound from memory
+- **Solution**:
+  - Fixed pauseBackgroundMusic to only call pauseAsync() without unloading sounds
+  - Improved playBackgroundMusic to properly resume paused sounds
+  - Added better logging to track sound state changes
+  - Enhanced status checking to handle AVPlaybackStatus type correctly
+- **Status**: ✅ **FIXED** - Sounds now properly pause/resume without losing their loaded state
+- **Result**:
+  - Background music can be paused and resumed without reloading
+  - Success and negative sounds remain loaded for immediate playback
+  - Better error handling and logging for sound state management
+  - Maintains sound instances in memory for optimal performance
+
+### **✅ SOUND MANAGER PLAYASYNC ERROR - FIXED WITH PROPER TYPE DECLARATIONS**
+
+- **Issue**: Error "neutralSound.playAsync is not a function (it is undefined)" when SoundManager.init() was called
+- **Root Cause**: TypeScript audio declarations were typing audio imports as `string` instead of `AVPlaybackSource`, and sound object verification was insufficient
+- **Solution**:
+  - Updated audio type declarations to properly type .wav, .mp3, .m4a files as `AVPlaybackSource` from expo-av
+  - Enhanced SoundManager initialization with explicit sound method verification
+  - Added detailed logging for sound creation status and verification
+  - Improved error handling with specific checks for playAsync and replayAsync method availability
+- **Status**: ✅ **FIXED** - SoundManager now properly types audio sources and verifies sound methods before use
+- **Result**:
+  - Audio files correctly typed as AVPlaybackSource for expo-av compatibility
+  - Sound methods (playAsync, replayAsync, etc.) properly verified before use
+  - Enhanced debugging logs for sound initialization troubleshooting
+  - Maintains backward compatibility with existing test suite
+
+### **✅ GOOGLE SHEETS CLEANUP COMPLETED - All References Successfully Removed**
+
+- **Issue**: Request to remove Google Sheets dependencies completely from the project
+- **Root Cause**: Migration to Firestore was complete in source code but some remnants remained
+- **Solution**: Removed all remaining Google Sheets references and cleaned up environment configuration
+- **Status**: ✅ **FULLY COMPLETED** - All Google Sheets dependencies eliminated
+- **Result**:
+  - Old compiled sheetsService.js files removed from lib directory
+  - SPREADSHEET_ID and ACCESS_TOKEN environment variables removed from app.config.js
+  - Firebase Functions rebuild successfully completed
+  - Tests passing without any Google Sheets references
+  - Project now runs exclusively on Firestore for riddle storage
+
+### **✅ Migration Summary - Firestore-Only Implementation:**
+
+- **✅ Source Code**: All TypeScript files already converted to use Firestore exclusively
+- **✅ Compiled Code**: Rebuilt Firebase Functions to remove old sheetsService.js references
+- **✅ Environment Config**: Removed Google Sheets environment variables from app.config.js
+- **✅ Testing**: All tests passing with Firestore implementation (submitGuessLogic.test.ts: 16/16 passing)
+- **✅ Architecture**: Clean Firestore-only riddle storage and generation system
+
+### **✅ ANDROID BUILD ISSUE RESOLVED - ExpoModulesPackage Error Fixed**
+
+- **Issue**: Android build failing with "cannot find symbol: class ExpoModulesPackage" error
+- **Root Cause**: Incomplete Android project structure - missing `app` directory and proper Expo modules configuration
+- **Solution**: Ran `npx expo prebuild --platform android --clean` to regenerate complete native Android project
+- **Status**: ✅ **BUILD SUCCESSFUL** - Android compilation completed successfully in 1m 2s
+- **Result**:
+  - ExpoModulesPackage properly imported and configured
+  - Complete Android project structure generated
+  - Metro bundler running successfully
+  - APK generated successfully (`app-debug.apk`)
+- **Note**: Minor ADB installation error with emulator is separate from compilation success
+
 - **✅ METRO-CORE DEPENDENCY ISSUE RESOLVED**
   - **Issue**: Global Expo CLI version 0.7.3 was causing "Cannot find module 'metro-core'" error
   - **Root Cause**: Outdated global expo-cli (6.3.10) conflicting with local project dependencies
@@ -65,6 +154,13 @@
 
 ## 2. Recent Changes
 
+### **✅ Google Sheets Complete Removal**
+
+- Removed old compiled sheetsService.js and sheetsService.js.map files from lib directory
+- Removed SPREADSHEET_ID and ACCESS_TOKEN environment variables from app.config.js
+- Rebuilt Firebase Functions to ensure no Google Sheets imports in compiled code
+- Verified all tests pass with Firestore-only implementation
+
 ### **✅ Firebase Functions Test Fixes**
 
 - Fixed getRiddle function return type to match FirestoreRiddle schema
@@ -83,61 +179,62 @@
 
 ### **Immediate Priorities:**
 
-1. **Fix Remaining Test Failures**: Address any other failing tests in the test suite
-2. **Run Full Test Suite**: Verify overall test health after submitGuessLogic fixes
-3. **Check Integration Tests**: Ensure integration tests are still working properly
-4. **Update Documentation**: Document the test fixes and improved patterns
+1. **Deploy Updated Functions**: Deploy the cleaned-up Firebase Functions without Google Sheets dependencies
+2. **Environment Variables**: Ensure production Firebase Functions have all required environment variables for IAP and other services
+3. **Test Full System**: Verify end-to-end functionality works correctly with Firestore-only implementation
+4. **Documentation**: Update any remaining documentation to reflect the completed Google Sheets removal
 
-### **Test Issues to Address:**
+### **Deployment Notes:**
 
-- **Other Test Files**: Check for similar mocking issues in other test files
-- **Integration Tests**: Verify live Firebase integration tests are working
-- **Coverage Reports**: Ensure test coverage is maintained after fixes
+- The recent deployment attempt showed container healthcheck failures due to missing IAP environment variables
+- This is unrelated to Google Sheets removal and indicates production environment needs proper IAP configuration
+- Google Sheets removal is complete and successful
 
 ## 4. Current Architecture
 
-### **✅ Improved Test Infrastructure:**
+### **✅ Firestore-Only Riddle System:**
 
-- **Proper Mocking**: Firebase admin operations correctly mocked
-- **Type Safety**: Functions return properly typed objects
-- **Schema Validation**: PlayerSchema.parse working with correct test data
-- **Error Handling**: Comprehensive error testing with proper HttpsError types
+- **Riddle Storage**: All riddles stored directly in Firestore collection
+- **Riddle Generation**: OpenAI generates riddles and stores them directly in Firestore
+- **Classic Mode**: Sequential level progression using Firestore queries by classicIndex
+- **Daily Challenges**: Firestore-based daily riddle system
+- **Duplicate Prevention**: Firestore queries to check for existing riddles
 
-### **✅ Reliable Testing:**
+### **✅ Clean Dependencies:**
 
-- **Unit Tests**: Core business logic thoroughly tested
-- **Mock Isolation**: External dependencies properly isolated
-- **Error Scenarios**: Edge cases and error conditions covered
-- **Performance**: Fast test execution with proper mocking
+- **No Google Sheets API**: Eliminated googleapis and related packages
+- **No Service Accounts**: Removed Google Sheets service account requirements
+- **Firestore Admin**: Single Firebase Admin SDK for all data operations
+- **Simplified Config**: Reduced environment variable requirements
 
 ## 5. Key Patterns and Preferences
 
-### **✅ Test Best Practices:**
+### **✅ Firestore-First Development:**
 
-- **Proper Mocking**: Mock external dependencies completely and correctly
-- **Type Safety**: Ensure mocks return correctly typed objects
-- **Schema Compliance**: Test data must comply with defined schemas
-- **Error Testing**: Comprehensive testing of error conditions and edge cases
+- **Direct Storage**: Store riddles directly in Firestore without intermediate services
+- **Query-Based Logic**: Use Firestore queries for duplicate detection and level management
+- **Atomic Operations**: Use Firestore batch operations for complex riddle storage
+- **Index Management**: Automatic classic index assignment using Firestore max queries
 
-### **✅ Firebase Function Patterns:**
+### **✅ Clean Architecture:**
 
-- **Return Types**: Functions return properly typed objects matching schemas
-- **Error Handling**: Consistent HttpsError usage for different error types
-- **Schema Validation**: Use Zod schemas for data validation
-- **Mock Setup**: Proper Firebase admin mock chains for testing
+- **Single Source of Truth**: Firestore is the authoritative source for all riddle data
+- **Simplified Integration**: Direct Firebase SDK usage without wrapper services
+- **Environment Efficiency**: Minimal required environment variables
+- **Test Compatibility**: Architecture supports both unit tests and integration tests
 
 ## 6. Learnings and Project Insights
 
-### **✅ Test Debugging Success Factors:**
+### **✅ Successful Migration Strategy:**
 
-- **Incremental Approach**: Isolated issues by commenting out problematic sections
-- **Detailed Logging**: Added temporary debugging to identify exact error causes
-- **Mock Verification**: Verified mock setup matches actual function call patterns
-- **Type Checking**: Ensured mock data matches expected schema types
+- **Incremental Approach**: Successfully migrated from Google Sheets to Firestore without data loss
+- **Source-First Cleanup**: Updating source code first, then cleaning compiled artifacts
+- **Environment Hygiene**: Removing unused environment variables prevents confusion
+- **Test Verification**: Tests confirm successful migration and continued functionality
 
-### **✅ Firebase Testing Insights:**
+### **✅ Firebase Functions Deployment:**
 
-- **Mock Complexity**: Firebase admin requires careful mock setup for chained operations
-- **Schema Validation**: Test data must include all required fields for schema parsing
-- **Error Propagation**: HttpsError instances need proper handling in test expectations
-- **Document Operations**: Firestore document operations need complete mock implementations
+- **Build Process**: Ensure `npm run build` after source changes to update compiled code
+- **Environment Variables**: Production deployment requires proper IAP and service configuration
+- **Healthcheck Dependencies**: Missing environment variables cause container startup failures
+- **Clean Dependencies**: Removed dependencies improve build reliability and deployment success

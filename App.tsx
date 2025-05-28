@@ -49,11 +49,6 @@ function AppContent() {
     isSettingsOverlayVisible: false,
   });
 
-  // State to hold the correct answer when a level is skipped
-  const [skippedRiddleAnswer, setSkippedRiddleAnswer] = useState<string | null>(
-    null
-  );
-
   // Actions to update overlay state
   const overlayActions: GameScreenOverlayActions = {
     setIsVictoryModalVisible: (isVisible) =>
@@ -112,13 +107,11 @@ function AppContent() {
     loadStaticResources();
   }, []);
 
-  // Effect to initialize and clean up SoundManager
+  // Effect to initialize SoundManager
   useEffect(() => {
     SoundManager.init();
-
-    return () => {
-      SoundManager.unload();
-    };
+    // Note: We no longer unload sounds in cleanup to maintain optimal performance
+    // Sounds should remain in memory throughout the app lifecycle
   }, []);
 
   // Effect to initialize AppLovin SDK

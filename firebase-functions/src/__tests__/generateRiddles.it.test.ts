@@ -36,7 +36,7 @@ jest.mock("firebase-functions", () => {
 });
 
 // Import necessary testing libraries and modules
-import {describe, it, expect, jest, beforeEach, afterEach, afterAll} from "@jest/globals";
+import {describe, it, expect, jest, beforeEach, afterEach, afterAll, beforeAll} from "@jest/globals";
 import * as dotenv from "dotenv";
 dotenv.config({path: ".env"}); // Load .env file from firebase-functions directory
 
@@ -45,10 +45,6 @@ import functionsTest from "firebase-functions-test";
 
 // Import the function to test AFTER mocks are set up
 import {generateAndAppendRiddles} from "../generateRiddles";
-
-// Get the mocked functions for use in tests
-
-// const mockGenerateUniqueRiddle = jest.mocked(require("../openaiService").generateUniqueRiddle); // Removed
 
 const FIREBASE_PROJECT_ID = "qwordly-6ba44";
 
@@ -67,10 +63,33 @@ if (!admin.apps.length) {
   }
 }
 
+let firestore: admin.firestore.Firestore;
+
 describe("generateAndAppendRiddles - Firestore Integration Tests", () => {
+  beforeAll(async () => {
+    try {
+      firestore = admin.firestore();
+
+      // Test Firebase connection
+      await firestore.collection("_test").doc("connection").set({timestamp: new Date()});
+      await firestore.collection("_test").doc("connection").delete();
+
+      console.log("✅ Firebase connection successful for GenerateRiddles integration tests");
+
+      // Optional: Verify GOOGLE_APPLICATION_CREDENTIALS is set for clarity during test runs
+      if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+        console.warn(
+          "\n⚠️ GOOGLE_APPLICATION_CREDENTIALS not set. Tests will likely fail to connect to live Firestore. ⚠️\n",
+        );
+      }
+    } catch (error) {
+      console.error("❌ Firebase connection failed for GenerateRiddles integration tests:", error);
+      throw new Error("Firebase connection failed. Check credentials and network.");
+    }
+  }, 30000);
+
   beforeEach(() => {
     jest.clearAllMocks();
-
     mockGenerateUniqueRiddle.mockReset();
 
     // Set up environment variables for tests
@@ -81,9 +100,13 @@ describe("generateAndAppendRiddles - Firestore Integration Tests", () => {
     jest.restoreAllMocks();
   });
 
-  afterAll(() => {
-    testEnv.cleanup();
-  });
+  afterAll(async () => {
+    try {
+      testEnv.cleanup();
+    } catch (error) {
+      console.warn("⚠️ Cleanup warning:", error);
+    }
+  }, 15000);
 
   it("should generate and store riddles in Firestore successfully", async () => {
     const numberOfRiddles = 2;
@@ -117,7 +140,7 @@ describe("generateAndAppendRiddles - Firestore Integration Tests", () => {
     expect(riverRiddle.text).toBe("What runs but never walks?");
     expect(riverRiddle.category).toBe("classic");
     expect(riverRiddle.classicIndex).toBeGreaterThanOrEqual(0);
-  });
+  }, 30000);
 
   it("should handle duplicate riddles and retry", async () => {
     const numberOfRiddles = 1;
@@ -151,7 +174,7 @@ describe("generateAndAppendRiddles - Firestore Integration Tests", () => {
     if (!riddlesSnapshot.empty) {
       await riddlesSnapshot.docs[0].ref.delete();
     }
-  });
+  }, 30000);
 
   it("should assign correct classic indices", async () => {
     const numberOfRiddles = 2;
@@ -193,11 +216,11 @@ describe("generateAndAppendRiddles - Firestore Integration Tests", () => {
     for (const doc of newRiddlesSnapshot.docs) {
       await doc.ref.delete();
     }
-  });
+  }, 30000);
 
   it("should throw error when OPENAI_API_KEY is missing", async () => {
     delete process.env.OPENAI_API_KEY;
 
-    await expect(generateAndAppendRiddles(1)).rejects.toThrow("Missing required environment variable: OPENAI_API_KEY");
-  });
+    await expect(generateAndAppendRiddles(1)).rejects.toThrow("OPENAI_API_KEY environment variable is required");
+  }, 15000);
 });

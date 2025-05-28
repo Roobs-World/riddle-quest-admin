@@ -2,6 +2,7 @@ import {describe, test, expect, jest, beforeAll, afterAll} from "@jest/globals";
 import * as admin from "firebase-admin";
 import functionsTest from "firebase-functions-test";
 import {initializeIapConfig} from "../iapConfig";
+import {resetStats} from "../profile";
 
 // Mock firebase-admin to prevent initializeApp from running multiple times
 if (admin.apps.length === 0) {
@@ -63,6 +64,30 @@ jest.spyOn(admin, "auth").mockReturnValue(mockAuth as unknown as admin.auth.Auth
 // If you use other services like storage, pubsub, etc., mock them similarly
 // jest.spyOn(admin, "storage").mockReturnValue(mockStorage as unknown as admin.storage.Storage);
 
+// Define types for Firebase Functions v2 mocking
+type CallableOptions = {
+  cors?: boolean | string | string[];
+  enforceAppCheck?: boolean;
+  memory?: string;
+  timeoutSeconds?: number;
+  maxInstances?: number;
+  minInstances?: number;
+  concurrency?: number;
+  labels?: Record<string, string>;
+  secrets?: string[];
+  invoker?: string | string[];
+};
+
+type CallableHandler<T = unknown, R = unknown> = (request: {
+  data: T;
+  auth?: {uid: string} | null;
+  rawRequest: {headers: Record<string, string>; body: Record<string, unknown>};
+}) => Promise<R>;
+
+type CloudFunction = {
+  run: jest.MockedFunction<CallableHandler>;
+};
+
 // Mocking firebase-functions config and logger
 jest.mock("firebase-functions", () => {
   const original = jest.requireActual("firebase-functions") as typeof import("firebase-functions");
@@ -106,6 +131,7 @@ jest.mock("firebase-functions", () => {
 // Add mock for firebase-functions/v2
 jest.mock("firebase-functions/v2", () => {
   const actualV2 = jest.requireActual("firebase-functions/v2") as typeof import("firebase-functions/v2");
+
   return {
     ...actualV2, // Spread actual v2 to keep non-mocked parts
     logger: {
@@ -120,21 +146,20 @@ jest.mock("firebase-functions/v2", () => {
       // Mock https if imported from v2 directly
       ...(actualV2.https as object),
       // Mock onCall to return a function that can be wrapped by testEnv.wrap
-      onCall: jest.fn((optsOrHandler: any, handler?: any) => {
-        let actualHandler: any;
+      onCall: jest.fn((optsOrHandler: CallableOptions | CallableHandler, handler?: CallableHandler): CloudFunction => {
+        let actualHandler: CallableHandler;
         if (typeof optsOrHandler === "function") {
           actualHandler = optsOrHandler;
         } else {
-          actualHandler = handler;
+          actualHandler = handler!;
         }
         // Return an object that mimics a CloudFunction for testEnv.wrap
         return {
           // Provide the function that testEnv.wrap will execute
-          // The type assertion 'as any' is needed here because the mock doesn't fully satisfy CloudFunction type
-          run: jest.fn(actualHandler) as any,
+          run: jest.fn(actualHandler) as jest.MockedFunction<CallableHandler>,
           // You might need to add other properties that testEnv.wrap expects or uses
           // For a simple callable function mock, 'run' might be sufficient.
-        } as any; // Cast the returned object to any for compatibility with testEnv.wrap
+        } as CloudFunction;
       }),
       HttpsError: actualV2.https.HttpsError, // v2 HttpsError
     },
@@ -160,20 +185,21 @@ describe("Firebase Functions", () => {
   });
 
   describe("Exported Functions Existence", () => {
-    const expectedCallableFunctions = [
+    const expectedFunctions = [
       "awardedAdCallback",
       "validatePurchase",
       "getHint",
       "spendCoins",
-      "skipRiddle",
       "setCompletedDailyChallenge",
       "hasCompletedDailyChallenge",
+      "getCurrentDailyChallenge",
       "generateClassicRiddles",
       "resetStats",
+      "updateAvatar",
       "submitGuess",
     ];
 
-    expectedCallableFunctions.forEach((funcName) => {
+    expectedFunctions.forEach((funcName) => {
       test(`should have callable function ${funcName} exported`, () => {
         expect((myFunctions as Record<string, unknown>)[funcName]).toBeDefined();
         expect(typeof (myFunctions as Record<string, unknown>)[funcName]).toBe("function");
@@ -193,25 +219,12 @@ describe("Firebase Functions", () => {
 
   // Example test for a callable function (resetStats)
   describe("resetStats", () => {
-    // Correctly type the wrapped function for v2 onCall
-    let wrappedResetStats: (request: {
-      data: Record<string, unknown>;
-      auth?: {uid: string} | null;
-      rawRequest: {headers: object; body: object};
-    }) => Promise<unknown>;
+    // Let TypeScript infer the type automatically - no explicit type needed
+    let wrappedResetStats;
 
     beforeAll(() => {
-      const resetStatsFunction = (myFunctions as Record<string, unknown>)["resetStats"];
-      if (resetStatsFunction && typeof resetStatsFunction === "function") {
-        // Check if the function exists on the import
-        // Wrap the function directly
-        // The function exported from index is expected to be the CloudFunction object returned by the mocked onCall
-        wrappedResetStats = testEnv.wrap(resetStatsFunction as any) as (request: {
-          data: Record<string, unknown>;
-          auth?: {uid: string} | null;
-          rawRequest: {headers: object; body: object};
-        }) => Promise<unknown>; // Explicitly type the wrapped function result
-      }
+      // Use the directly imported function instead of accessing from the exports object
+      wrappedResetStats = testEnv.wrap(resetStats);
     });
 
     test("should reset user stats for authenticated request", async () => {

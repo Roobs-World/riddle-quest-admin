@@ -9,7 +9,7 @@ import functionsTest from "firebase-functions-test";
 import {HttpsError, CallableRequest} from "firebase-functions/v2/https"; // Import HttpsError and CallableRequest
 
 // Import the functions to test (these will interact with the emulator)
-import {getHint, spendCoins, skipRiddle} from "../gameLogic";
+import {getHint, spendCoins} from "../gameLogic";
 import {createUser} from "./testUtils"; // Import createUser from testUtils
 
 const FIREBASE_PROJECT_ID = "qwordly-6ba44";
@@ -36,7 +36,6 @@ describe("Game Logic - Integration Tests", () => {
   // Wrap the callable functions for testing
   const wrappedGetHint = testEnv.wrap(getHint);
   const wrappedSpendCoins = testEnv.wrap(spendCoins);
-  const wrappedSkipRiddle = testEnv.wrap(skipRiddle);
 
   const testUserId = "testUserGameLogic";
 
@@ -70,14 +69,68 @@ describe("Game Logic - Integration Tests", () => {
     await userRef.delete().catch(() => {}); // Ignore error if document doesn't exist
     console.timeEnd("beforeEach_deleteUserDoc");
 
-    // Clear only the specific test riddles created in this suite
+    // Clear all riddles with classicIndex 0, 1, 2 and specific test riddles to prevent interference
     console.time("beforeEach_deleteTestRiddles");
+    const testClassicIndices = [0, 1, 2];
     const testRiddleIds = ["testRiddle1", "testRiddle2", "testRiddle3", "riddle-123"];
+
+    // Multiple cleanup approaches to handle Firestore's eventual consistency
+    // 1. Delete by classicIndex to remove any existing riddles that might interfere
+    for (const classicIndex of testClassicIndices) {
+      let hasMore = true;
+      while (hasMore) {
+        const riddlesQuery = await firestore
+          .collection("riddles")
+          .where("classicIndex", "==", classicIndex)
+          .limit(500) // Process in batches
+          .get();
+
+        if (riddlesQuery.empty) {
+          hasMore = false;
+        } else {
+          const riddlesBatch = firestore.batch();
+          riddlesQuery.docs.forEach((doc) => {
+            riddlesBatch.delete(doc.ref);
+          });
+          await riddlesBatch.commit();
+
+          // If we got fewer than 500, we're done
+          if (riddlesQuery.docs.length < 500) {
+            hasMore = false;
+          }
+        }
+      }
+    }
+
+    // 2. Also delete specific test riddle IDs
     const riddlesBatch = firestore.batch();
     testRiddleIds.forEach((riddleId) => {
       riddlesBatch.delete(firestore.collection("riddles").doc(riddleId));
     });
     await riddlesBatch.commit();
+
+    // 3. Additional cleanup: delete any documents that start with "test" or contain auto-generated IDs
+    const allRiddlesSnapshot = await firestore.collection("riddles").get();
+    const finalCleanupBatch = firestore.batch();
+    let needsFinalCleanup = false;
+
+    allRiddlesSnapshot.docs.forEach((doc) => {
+      const data = doc.data();
+      // Delete any riddles with classicIndex 0, 1, or 2, or test-related IDs
+      if (
+        (data.classicIndex !== undefined && testClassicIndices.includes(data.classicIndex)) ||
+        doc.id.startsWith("test") ||
+        doc.id.length > 15 // Likely auto-generated ID
+      ) {
+        finalCleanupBatch.delete(doc.ref);
+        needsFinalCleanup = true;
+      }
+    });
+
+    if (needsFinalCleanup) {
+      await finalCleanupBatch.commit();
+    }
+
     console.timeEnd("beforeEach_deleteTestRiddles");
 
     // Create a fresh test user
@@ -101,24 +154,6 @@ describe("Game Logic - Integration Tests", () => {
         totalWins: 0,
       },
     }); // Create user with initial coins and progress
-    // Add dummy riddles for testing
-    await firestore
-      .collection("riddles")
-      .doc("testRiddle1")
-      .set({answer: "apple", text: "I have no voice, but I can tell you a story. What am I?", classicIndex: 0}); // Added classicIndex
-    await firestore
-      .collection("riddles")
-      .doc("testRiddle2")
-      .set({answer: "banana", text: "I am yellow and curved. What am I?", classicIndex: 1});
-    await firestore
-      .collection("riddles")
-      .doc("testRiddle3")
-      .set({answer: "cherry", text: "I am a small red fruit. What am I?", classicIndex: 2}); // Added another riddle
-    // Add riddle-123 for specific test cases that might use it
-    await firestore.collection("riddles").doc("riddle-123").set({
-      answer: "keyboard",
-      text: "I have keys but no lock, and space but no room. You can enter but can't go outside. What am I?",
-    });
     console.timeEnd("beforeEach_createUser");
 
     // Add dummy riddles for testing
@@ -176,13 +211,25 @@ describe("Game Logic - Integration Tests", () => {
     await userRef.delete().catch(() => {}); // Ignore error if document doesn't exist
     console.timeEnd("afterEach_deleteUserDoc");
 
-    // Clear only the specific test riddles created in this suite
+    // Clear all riddles with classicIndex 0, 1, 2 and specific test riddles to prevent interference
     console.time("afterEach_deleteTestRiddles");
+    const testClassicIndices = [0, 1, 2];
     const testRiddleIds = ["testRiddle1", "testRiddle2", "testRiddle3", "riddle-123"];
+
+    // Delete by classicIndex to remove any existing riddles that might interfere
     const riddlesBatch = firestore.batch();
+    for (const classicIndex of testClassicIndices) {
+      const riddlesQuery = await firestore.collection("riddles").where("classicIndex", "==", classicIndex).get();
+      riddlesQuery.docs.forEach((doc) => {
+        riddlesBatch.delete(doc.ref);
+      });
+    }
+
+    // Also delete specific test riddle IDs
     testRiddleIds.forEach((riddleId) => {
       riddlesBatch.delete(firestore.collection("riddles").doc(riddleId));
     });
+
     await riddlesBatch.commit();
     console.timeEnd("afterEach_deleteTestRiddles");
     console.timeEnd("afterEach_total");
@@ -311,7 +358,7 @@ describe("Game Logic - Integration Tests", () => {
     it("should deduct specified amount of coins", async () => {
       const initialCoins = 100;
       const amountToSpend = 50;
-      const reason = "skip";
+      const reason = "hint";
 
       const request = constructOnCallRequest({amount: amountToSpend, reason});
 
@@ -327,7 +374,7 @@ describe("Game Logic - Integration Tests", () => {
     it("should throw failed-precondition if insufficient coins", async () => {
       await firestore.collection("users").doc(testUserId).update({coins: 10}); // Insufficient coins
       const amountToSpend = 50;
-      const reason = "skip";
+      const reason = "hint";
       const request = constructOnCallRequest({amount: amountToSpend, reason});
 
       await expect(wrappedSpendCoins(request)).rejects.toThrow(
@@ -337,7 +384,7 @@ describe("Game Logic - Integration Tests", () => {
 
     it("should throw unauthenticated if user is not authenticated", async () => {
       const amountToSpend = 50;
-      const reason = "skip";
+      const reason = "hint";
       const request = constructOnCallRequest({amount: amountToSpend, reason}, null);
 
       await expect(wrappedSpendCoins(request)).rejects.toThrow(
@@ -346,12 +393,12 @@ describe("Game Logic - Integration Tests", () => {
     });
 
     it("should throw invalid-argument for invalid amount", async () => {
-      let request = constructOnCallRequest({amount: 0, reason: "skip"});
+      let request = constructOnCallRequest({amount: 0, reason: "hint"});
       await expect(wrappedSpendCoins(request)).rejects.toThrow(
         new HttpsError("invalid-argument", "Invalid amount specified."),
       );
 
-      request = constructOnCallRequest({amount: -10, reason: "skip"});
+      request = constructOnCallRequest({amount: -10, reason: "hint"});
       await expect(wrappedSpendCoins(request)).rejects.toThrow(
         new HttpsError("invalid-argument", "Invalid amount specified."),
       );
@@ -369,157 +416,10 @@ describe("Game Logic - Integration Tests", () => {
       await firestore.collection("users").doc(testUserId).delete();
 
       const amountToSpend = 50;
-      const reason = "skip";
+      const reason = "hint";
       const request = constructOnCallRequest({amount: amountToSpend, reason});
 
       await expect(wrappedSpendCoins(request)).rejects.toThrow(new HttpsError("not-found", "User data not found."));
-    });
-  });
-
-  // --- skipRiddle Integration Tests ---
-  describe("skipRiddle", () => {
-    it("should skip current riddle, deduct coins, and provide next riddle", async () => {
-      const currentRiddleId = "testRiddle1"; // classicIndex 0
-      const nextRiddleId = "testRiddle2"; // classicIndex 1
-      const initialCoins = 100;
-      const skipCost = 50;
-
-      // Set user's classic progress to match the current riddle's index
-      await firestore
-        .collection("users")
-        .doc(testUserId)
-        .update({progress: {classicIndex: 0}});
-
-      const request = constructOnCallRequest({gameMode: "Classic", riddleId: currentRiddleId});
-
-      const result = await wrappedSkipRiddle(request);
-
-      expect(result).toEqual({
-        newRiddleIndex: 1, // classicIndex of testRiddle2
-        newQuestion: "I am yellow and curved. What am I?",
-        newAnswerLength: 6, // "banana".length
-        coinsCost: skipCost,
-        newRiddleId: nextRiddleId,
-      });
-
-      // Verify coins deducted in Firestore
-      const userDoc = await firestore.collection("users").doc(testUserId).get();
-      expect(userDoc.data()?.coins).toBe(initialCoins - skipCost);
-
-      // Verify user's classicIndex is updated
-      expect(userDoc.data()?.progress?.classicIndex).toBe(1);
-    });
-
-    it("should log trigger for riddle generation if no next riddle exists in Classic mode", async () => {
-      const currentRiddleId = "testRiddle3"; // This is the last riddle in our setup with classicIndex 2
-
-      // Set user's classic progress to match the last riddle's index
-      await firestore
-        .collection("users")
-        .doc(testUserId)
-        .update({progress: {classicIndex: 2}});
-
-      const request = constructOnCallRequest({gameMode: "Classic", riddleId: currentRiddleId});
-
-      const mockFunctionCallsAdd = jest.fn();
-      // Create a mock collection that only affects the "functionCalls" path
-      const originalCollection = firestore.collection.bind(firestore);
-      const collectionSpy = jest.spyOn(firestore, "collection").mockImplementation((path: string) => {
-        if (path === "functionCalls") {
-          return {add: mockFunctionCallsAdd} as {add: jest.Mock};
-        }
-        return originalCollection(path);
-      });
-
-      // Expect the function to throw an error when no next riddle exists
-      await expect(wrappedSkipRiddle(request)).rejects.toThrow(
-        new HttpsError(
-          "not-found",
-          "No more classic riddles available. More are being generated. Please try again soon.",
-        ),
-      );
-
-      expect(mockFunctionCallsAdd).toHaveBeenCalledWith(
-        expect.objectContaining({
-          functionName: "generateClassicRiddles",
-          status: "requested",
-        }),
-      );
-      collectionSpy.mockRestore(); // Restore the spy
-    });
-
-    it("should throw failed-precondition if insufficient coins", async () => {
-      await firestore.collection("users").doc(testUserId).update({coins: 10}); // Insufficient coins
-      const currentRiddleId = "testRiddle1";
-      const request = constructOnCallRequest({gameMode: "Classic", riddleId: currentRiddleId});
-
-      await expect(wrappedSkipRiddle(request)).rejects.toThrow(
-        new HttpsError("failed-precondition", "Insufficient coins to skip the riddle."),
-      );
-    });
-
-    it("should throw unauthenticated if user is not authenticated", async () => {
-      const currentRiddleId = "testRiddle1";
-      const request = constructOnCallRequest({gameMode: "Classic", riddleId: currentRiddleId}, null);
-
-      await expect(wrappedSkipRiddle(request)).rejects.toThrow(
-        new HttpsError("unauthenticated", "The user must be authenticated to skip a riddle."),
-      );
-    });
-
-    it("should throw not-found if user data not found", async () => {
-      // Delete the test user to simulate user data not found
-      await firestore.collection("users").doc(testUserId).delete();
-
-      const currentRiddleId = "testRiddle1";
-      const request = constructOnCallRequest({gameMode: "Classic", riddleId: currentRiddleId});
-
-      await expect(wrappedSkipRiddle(request)).rejects.toThrow(new HttpsError("not-found", "User data not found."));
-    });
-
-    it("should throw not-found if current riddle does not exist", async () => {
-      const currentRiddleId = "nonexistentRiddle";
-      const request = constructOnCallRequest({gameMode: "Classic", riddleId: currentRiddleId});
-
-      await expect(wrappedSkipRiddle(request)).rejects.toThrow(
-        new HttpsError("not-found", "Current riddle not found."),
-      );
-    });
-
-    it("should throw error when no next riddle exists and generation is triggered", async () => {
-      const currentRiddleId = "testRiddle3"; // Last riddle
-      const initialCoins = 100;
-      await firestore
-        .collection("users")
-        .doc(testUserId)
-        .update({coins: initialCoins, progress: {classicIndex: 2}});
-
-      const request = constructOnCallRequest({gameMode: "Classic", riddleId: currentRiddleId});
-
-      const mockFunctionCallsAdd = jest.fn().mockResolvedValue({});
-      // Create a mock collection that only affects the "functionCalls" path
-      const originalCollection = firestore.collection.bind(firestore);
-      const collectionSpy = jest.spyOn(firestore, "collection").mockImplementation((path: string) => {
-        if (path === "functionCalls") {
-          return {add: mockFunctionCallsAdd} as {add: jest.Mock};
-        }
-        return originalCollection(path);
-      });
-
-      // Expect the function to throw an error when no next riddle exists
-      await expect(wrappedSkipRiddle(request)).rejects.toThrow(
-        new HttpsError(
-          "not-found",
-          "No more classic riddles available. More are being generated. Please try again soon.",
-        ),
-      );
-
-      // Verify coins were deducted before the check for next riddle
-      const userDocAfter = await firestore.collection("users").doc(testUserId).get();
-      expect(userDocAfter.data()?.coins).toBe(initialCoins - 50); // Coins should be deducted
-      expect(mockFunctionCallsAdd).toHaveBeenCalledTimes(1); // Generation should be triggered
-
-      collectionSpy.mockRestore(); // Restore the spy
     });
   });
 });

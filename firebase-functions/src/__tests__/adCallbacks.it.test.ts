@@ -2,38 +2,29 @@ import * as dotenv from "dotenv";
 dotenv.config({path: ".env"}); // Load .env file from firebase-functions directory
 
 // Import necessary testing libraries and modules
-import {describe, it, beforeAll, afterAll, beforeEach} from "@jest/globals";
+import {describe, it, expect, beforeAll, afterAll, beforeEach, afterEach} from "@jest/globals";
 import * as admin from "firebase-admin";
 import functionsTest from "firebase-functions-test";
 import {HttpsError, CallableRequest} from "firebase-functions/v2/https";
 
-// Import the function to test
+// Import the functions to test
 import {notifyRewardedAdCompleted} from "../adClientCallbacks";
-
-// Import test utilities
 import {createUser} from "./testUtils";
 
 const FIREBASE_PROJECT_ID = "qwordly-6ba44";
 
-// NOTE: To run these tests against the Firebase Emulator, set the FIRESTORE_EMULATOR_HOST
-// environment variable before running the tests. For example:
-// FIRESTORE_EMULATOR_HOST="localhost:8080" npm test
-
-// Initialize firebase-functions-test. This DOES NOT initialize admin.initializeApp()
-// when used with a live project. We must do that manually.
+// Initialize firebase-functions-test
 const testEnv = functionsTest();
 
-// Initialize Firebase Admin manually for testing against live project
-let options;
+// Manually initialize Firebase Admin SDK for testing against the live project
 if (!admin.apps.length) {
   try {
-    options = {
+    admin.initializeApp({
       projectId: FIREBASE_PROJECT_ID,
-    };
+    });
     console.log("Connecting to live Firestore project.");
-    admin.initializeApp(options);
   } catch (error) {
-    console.error("🚨 Firebase Admin SDK initialization failed:", error);
+    console.error("🚨 Firebase Admin SDK initialization failed. Error: ", error);
     throw error;
   }
 }
@@ -42,67 +33,90 @@ let firestore: admin.firestore.Firestore;
 
 describe("Rewarded Ad Client Callbacks - Integration Tests", () => {
   const wrappedNotifyRewardedAdCompleted = testEnv.wrap(notifyRewardedAdCompleted);
-  const testUserId = "testUserAdClientCallbacks";
+  const testUserId = "testUserAdCallbacks";
+  const initialUserData = {
+    email: "ad@example.com",
+    coins: 100,
+    progress: {classicIndex: 1, dailyChallengeIndex: 0, tutorialIndex: 0},
+    stats: {
+      gamesPlayed: 1,
+      wins: 0,
+      totalWins: 0,
+      winStreak: 0,
+      bestStreak: 0,
+      averageGuesses: 0,
+      winRate: 0,
+      challengeWins: 0,
+      totalGuessesInWins: 0,
+      dailyPuzzlesCompleted: 0,
+      totalWordsGuessed: 0,
+      totalScore: 0,
+      highestLevelClassic: 0,
+    },
+  };
 
   beforeAll(async () => {
-    // Initialize Firestore instance after admin app is initialized.
-    firestore = admin.firestore();
-    // Optional: Verify GOOGLE_APPLICATION_CREDENTIALS_PATH is set for clarity during test runs
-    if (!process.env.GOOGLE_APPLICATION_CREDENTIALS_PATH) {
-      console.warn(
-        "\n⚠️ GOOGLE_APPLICATION_CREDENTIALS_PATH is not set in .env. Tests will likely fail to connect to live Firestore. ⚠️\n",
-      );
+    try {
+      firestore = admin.firestore();
+
+      // Test Firebase connection
+      await firestore.collection("_test").doc("connection").set({timestamp: new Date()});
+      await firestore.collection("_test").doc("connection").delete();
+
+      console.log("✅ Firebase connection successful for Ad Callbacks integration tests");
+
+      // Optional: Verify GOOGLE_APPLICATION_CREDENTIALS is set for clarity during test runs
+      if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+        console.warn(
+          "\n⚠️ GOOGLE_APPLICATION_CREDENTIALS not set. Tests will likely fail to connect to live Firestore. ⚠️\n",
+        );
+      }
+    } catch (error) {
+      console.error("❌ Firebase connection failed for Ad Callbacks integration tests:", error);
+      throw new Error("Firebase connection failed. Check credentials and network.");
     }
-  });
+  }, 30000);
 
   beforeEach(async () => {
-    // Clear Firestore data for the test user before each test
-    const userRef = firestore.collection("users").doc(testUserId);
-    await userRef.delete().catch(() => {}); // Ignore error if document doesn't exist
+    try {
+      // Clear Firestore data for the test user before each test
+      const userRef = firestore.collection("users").doc(testUserId);
+      await userRef.delete().catch(() => {}); // Ignore error if document doesn't exist
 
-    // Create a fresh test user with initial coins and proper stats structure
-    await createUser(firestore, testUserId, {
-      coins: 50,
-      progress: {classicIndex: 0, dailyChallengeIndex: 0, tutorialIndex: 0},
-      stats: {
-        gamesPlayed: 0,
-        wins: 0,
-        totalWins: 0,
-        winStreak: 0,
-        bestStreak: 0,
-        averageGuesses: 0,
-        winRate: 0,
-        challengeWins: 0,
-        totalGuessesInWins: 0,
-        dailyPuzzlesCompleted: 0,
-        totalWordsGuessed: 0,
-        totalScore: 0,
-        highestLevelClassic: 0,
-      },
-    });
-  }, 60000);
-
-  afterAll(() => {
-    testEnv.cleanup(); // Clean up firebase-functions-test
-  });
+      // Create a fresh test user with initial data
+      await createUser(firestore, testUserId, initialUserData);
+    } catch (error) {
+      console.error("❌ Setup failed in beforeEach:", error);
+      throw error;
+    }
+  }, 30000);
 
   afterEach(async () => {
-    // Clear Firestore data for the test user after each test
-    const userRef = firestore.collection("users").doc(testUserId);
-    await userRef.delete().catch(() => {}); // Ignore error if document doesn't exist
-  }, 60000);
+    try {
+      // Clear Firestore data for the test user after each test
+      const userRef = firestore.collection("users").doc(testUserId);
+      await userRef.delete().catch(() => {}); // Ignore error if document doesn't exist
+    } catch (error) {
+      console.warn("⚠️ Cleanup warning in afterEach:", error);
+    }
+  }, 15000);
 
-  // Helper to construct the request object for onCall v2 functions
-  const constructOnCallRequest = (
-    data: Record<string, unknown>,
-    authContextArg?: {uid: string} | null,
-  ): CallableRequest<Record<string, unknown>> => {
+  afterAll(async () => {
+    try {
+      testEnv.cleanup();
+    } catch (error) {
+      console.warn("⚠️ Final cleanup warning:", error);
+    }
+  }, 15000);
+
+  // Helper to construct the request object
+  const constructOnCallRequest = <T = unknown>(data: T, authContextArg?: {uid: string} | null): CallableRequest<T> => {
     const auth = authContextArg === undefined ? {uid: testUserId} : authContextArg;
     return {
       data: data,
       auth: auth,
       rawRequest: {headers: {}, body: {}},
-    } as CallableRequest<Record<string, unknown>>;
+    } as CallableRequest<T>;
   };
 
   it("should successfully notify rewarded ad completion for authenticated user", async () => {
@@ -112,18 +126,20 @@ describe("Rewarded Ad Client Callbacks - Integration Tests", () => {
       networkName: "AppLovin",
     };
 
-    const request = constructOnCallRequest({
-      adDetails: adDetails,
-    });
+    const request = constructOnCallRequest({adDetails});
 
     const result = await wrappedNotifyRewardedAdCompleted(request);
 
-    // Expect a success response
+    // Should return success message (function only logs, doesn't award coins)
     expect(result).toEqual({
       success: true,
       message: "Rewarded ad completion notification received.",
     });
-  });
+
+    // Verify coins were NOT changed (this function only logs)
+    const userDoc = await firestore.collection("users").doc(testUserId).get();
+    expect(userDoc.data()?.coins).toBe(initialUserData.coins);
+  }, 15000);
 
   it("should throw unauthenticated error if user is not authenticated", async () => {
     const adDetails = {
@@ -132,24 +148,17 @@ describe("Rewarded Ad Client Callbacks - Integration Tests", () => {
       networkName: "AppLovin",
     };
 
-    const request = constructOnCallRequest(
-      {
-        adDetails: adDetails,
-      },
-      null,
-    ); // Explicitly unauthenticated
+    const request = constructOnCallRequest({adDetails}, null); // No authentication
 
     await expect(wrappedNotifyRewardedAdCompleted(request)).rejects.toThrow(
       new HttpsError("unauthenticated", "The function must be called while authenticated."),
     );
-  });
+  }, 10000);
 
   it("should handle minimal ad details", async () => {
     const adDetails = {}; // Minimal ad details
 
-    const request = constructOnCallRequest({
-      adDetails: adDetails,
-    });
+    const request = constructOnCallRequest({adDetails});
 
     const result = await wrappedNotifyRewardedAdCompleted(request);
 
@@ -157,10 +166,14 @@ describe("Rewarded Ad Client Callbacks - Integration Tests", () => {
       success: true,
       message: "Rewarded ad completion notification received.",
     });
-  });
+
+    // Verify coins were NOT changed
+    const userDoc = await firestore.collection("users").doc(testUserId).get();
+    expect(userDoc.data()?.coins).toBe(initialUserData.coins);
+  }, 15000);
 
   it("should handle missing adDetails field", async () => {
-    const request = constructOnCallRequest({}); // Missing adDetails
+    const request = constructOnCallRequest({}); // No adDetails
 
     const result = await wrappedNotifyRewardedAdCompleted(request);
 
@@ -168,5 +181,5 @@ describe("Rewarded Ad Client Callbacks - Integration Tests", () => {
       success: true,
       message: "Rewarded ad completion notification received.",
     });
-  });
+  }, 10000);
 });

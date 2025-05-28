@@ -9,8 +9,10 @@ import {
 } from "../validation/firestoreSchemas";
 import { ZodError } from "zod";
 
-const usersCollection = firestore().collection("users");
-const riddlesCollection = firestore().collection("riddles");
+// Use the modern modular API instead of the deprecated namespaced API
+const firestoreDb = firestore();
+const usersCollection = firestoreDb.collection("users");
+const riddlesCollection = firestoreDb.collection("riddles");
 
 export const saveUserProgressToFirestore = async (
   userId: string,

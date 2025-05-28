@@ -1,24 +1,13 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
-// import { Player } from "../types/Player"; // Remove this import
 import {
   loadUserProgressFromFirestore,
   fetchDailyRiddleFromFirestore,
   fetchClassicRiddleFromFirestore,
-  updateLastDailyChallengeCompletedAt,
   updateClassicIndexInFirestore,
   updateUserDocumentInFirestore,
-  // Player, // Import Player from firestoreSchemas
-  // FirestoreRiddle, // Import FirestoreRiddle from firestoreSchemas
-  // PlayerProgress, // Import PlayerProgress from firestoreSchemas
-  // PlayerStats, // Import PlayerStats from firestoreSchemas
-} from "../services/FirestoreService"; // Keep other imports from FirestoreService
-import {
-  Player, // Import Player from firestoreSchemas.ts
-  FirestoreRiddle, // Import FirestoreRiddle from firestoreSchemas.ts
-  PlayerProgress, // Import PlayerProgress from firestoreSchemas.ts
-  PlayerStats, // Import PlayerStats from firestoreSchemas.ts
-} from "../validation/firestoreSchemas"; // Import types directly from schemas
-import auth, { type FirebaseAuthTypes } from "@react-native-firebase/auth";
+} from "../services/FirestoreService";
+import { Player, FirestoreRiddle } from "../validation/firestoreSchemas";
+import auth from "@react-native-firebase/auth";
 // Assuming you have an AuthService with login/logout methods
 // import { AuthService } from "../services/AuthService";
 
@@ -32,7 +21,7 @@ interface AuthContextType {
   isDailyChallengeAvailable: boolean;
   gameMode: GameMode; // Add state for current game mode
   setGameMode: (mode: GameMode) => void; // Add function to change game mode
-  login: (userId: string) => Promise<void>;
+  login: () => Promise<void>;
   logout: () => Promise<void>;
   // Removed updatePlayerCoins as coin updates are now handled by backend functions
   // updatePlayerCoins: (newCoins: number) => Promise<void>;
@@ -216,7 +205,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   // Placeholder login function (keep for now, onAuthStateChanged listener handles state)
-  const login = async (userId: string) => {
+  const login = async () => {
     // The onAuthStateChanged listener will handle the state update including riddle fetching
     // We can potentially add a re-fetch logic here if needed after a manual login trigger
   };

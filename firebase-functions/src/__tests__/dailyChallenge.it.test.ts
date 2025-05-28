@@ -73,29 +73,56 @@ describe("Daily Challenge Functions - Integration Tests", () => {
   };
 
   beforeAll(async () => {
-    // Initialize Firestore instance after admin app is initialized.
-    firestore = admin.firestore();
-    // Optional: Verify GOOGLE_APPLICATION_CREDENTIALS_PATH is set for clarity during test runs
-    if (!process.env.GOOGLE_APPLICATION_CREDENTIALS_PATH) {
-      console.warn(
-        "\n⚠️ GOOGLE_APPLICATION_CREDENTIALS_PATH is not set in .env. Tests will likely fail to connect to live Firestore. ⚠️\n",
-      );
+    try {
+      // Initialize Firestore instance after admin app is initialized.
+      firestore = admin.firestore();
+
+      // Test Firebase connection
+      await firestore.collection("_test").doc("connection").set({timestamp: new Date()});
+      await firestore.collection("_test").doc("connection").delete();
+
+      console.log("✅ Firebase connection successful for Daily Challenge integration tests");
+
+      // Optional: Verify GOOGLE_APPLICATION_CREDENTIALS is set for clarity during test runs
+      if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+        console.warn(
+          "\n⚠️ GOOGLE_APPLICATION_CREDENTIALS not set. Tests will likely fail to connect to live Firestore. ⚠️\n",
+        );
+      }
+    } catch (error) {
+      console.error("❌ Firebase connection failed for Daily Challenge integration tests:", error);
+      throw new Error("Firebase connection failed. Check credentials and network.");
     }
-  });
+  }, 30000);
 
   beforeEach(async () => {
-    const userRef = firestore.collection("users").doc(testUserId);
-    await userRef.delete().catch(() => {});
-    await createUser(firestore, testUserId, initialUserData);
-    // Reset a field that might be set by tests to ensure clean state
-    await firestore.collection("users").doc(testUserId).update({
-      lastDailyChallengeCompletedAt: admin.firestore.FieldValue.delete(),
-    });
-  }, 60000);
+    try {
+      const userRef = firestore.collection("users").doc(testUserId);
+      await userRef.delete().catch(() => {});
+      await createUser(firestore, testUserId, initialUserData);
+      // Reset a field that might be set by tests to ensure clean state
+      await firestore.collection("users").doc(testUserId).update({
+        lastDailyChallengeCompletedAt: admin.firestore.FieldValue.delete(),
+      });
+    } catch (error) {
+      console.error("❌ Setup failed in beforeEach:", error);
+      throw error;
+    }
+  }, 30000);
 
-  afterAll(() => {
-    testEnv.cleanup();
-  });
+  afterAll(async () => {
+    try {
+      // Clean up test data
+      await firestore
+        .collection("users")
+        .doc(testUserId)
+        .delete()
+        .catch(() => {});
+      testEnv.cleanup();
+    } catch (error) {
+      console.warn("⚠️ Cleanup warning:", error);
+    }
+  }, 15000);
 
   // Helper for V1 CallableRequest
   const constructV1Request = (
@@ -133,7 +160,7 @@ describe("Daily Challenge Functions - Integration Tests", () => {
       const completedDate = new Date(userData?.lastDailyChallengeCompletedAt as string).toDateString();
       const todayDate = new Date().toDateString();
       expect(completedDate).toBe(todayDate);
-    });
+    }, 15000);
 
     it("should throw unauthenticated if called without authentication", async () => {
       const request = constructV1Request({}, undefined); // No auth
@@ -143,7 +170,7 @@ describe("Daily Challenge Functions - Integration Tests", () => {
           "The user must be authenticated to set completed daily challenge.",
         ),
       );
-    });
+    }, 10000);
   });
 
   describe("hasCompletedDailyChallenge (V2)", () => {
@@ -155,7 +182,7 @@ describe("Daily Challenge Functions - Integration Tests", () => {
       const request = constructV2Request({id: testUserId});
       const result = await wrappedHasCompletedDailyChallenge(request);
       expect(result).toBe(true);
-    });
+    }, 15000);
 
     it("should return false if user completed daily challenge yesterday", async () => {
       await firestore.collection("users").doc(testUserId).update({
@@ -164,20 +191,20 @@ describe("Daily Challenge Functions - Integration Tests", () => {
       const request = constructV2Request({id: testUserId});
       const result = await wrappedHasCompletedDailyChallenge(request);
       expect(result).toBe(false);
-    });
+    }, 15000);
 
     it("should return false if user has never completed a daily challenge", async () => {
       // Ensure lastDailyChallengeCompletedAt is null (set in beforeEach)
       const request = constructV2Request({id: testUserId});
       const result = await wrappedHasCompletedDailyChallenge(request);
       expect(result).toBe(false);
-    });
+    }, 15000);
 
     it("should return false if user does not exist", async () => {
       const request = constructV2Request({id: "nonExistentUser"});
       const result = await wrappedHasCompletedDailyChallenge(request);
       expect(result).toBe(false);
-    });
+    }, 15000);
 
     it("should throw internal error if firestoreService.getUser fails unexpectedly", async () => {
       // eslint-disable-next-line
@@ -189,6 +216,6 @@ describe("Daily Challenge Functions - Integration Tests", () => {
         new HttpsError("internal", "An error occurred while checking daily challenge status."),
       );
       mockGetUser.mockRestore();
-    });
+    }, 15000);
   });
 });

@@ -25,7 +25,7 @@ admin.initializeApp();
 // Explicitly import and export functions from sub-modules
 import {awardedAdCallback} from "./adCallbacks";
 import {validatePurchase} from "./iapValidation";
-import {getHint, spendCoins, skipRiddle} from "./gameLogic";
+import {getHint, spendCoins} from "./gameLogic";
 import {setCompletedDailyChallenge, hasCompletedDailyChallenge, getCurrentDailyChallenge} from "./dailyChallenge";
 import {generateClassicRiddles} from "./riddleGeneration";
 import {resetStats, updateAvatar} from "./profile";
@@ -36,7 +36,6 @@ export {
   validatePurchase,
   getHint,
   spendCoins,
-  skipRiddle,
   setCompletedDailyChallenge,
   hasCompletedDailyChallenge,
   getCurrentDailyChallenge,

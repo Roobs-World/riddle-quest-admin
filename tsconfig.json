@@ -11,12 +11,28 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
-    "types": ["react", "react-native", "jest", "node"],
+    "types": [
+      "react",
+      "react-native",
+      "jest",
+      "node"
+    ],
     "paths": {
-      "@images/*": ["./assets/images/*"],
-      "@fonts/*": ["./assets/fonts/*"]
+      "@images/*": [
+        "./assets/images/*"
+      ],
+      "@fonts/*": [
+        "./assets/fonts/*"
+      ]
     }
   },
+  "include": [
+    "src/**/*",
+    "src/types/**/*",
+    "App.tsx",
+    "global.css",
+    "nativewind-env.d.ts"
+  ],
   "exclude": [
     "node_modules",
     "babel.config.js",
