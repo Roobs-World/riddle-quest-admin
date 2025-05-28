@@ -251,7 +251,7 @@ const LoginScreen = ({
         <TouchableOpacity
           onPress={() => navigation.navigate(AppStrings.Navigation.SIGN_UP)}
         >
-          <Text className="text-sm text-red-500 font-semibold">
+          <Text className="text-sm text-blue-600 font-semibold">
             {AppStrings.AuthStrings.Login.REGISTER_NOW}
           </Text>
         </TouchableOpacity>

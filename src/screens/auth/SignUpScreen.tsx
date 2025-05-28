@@ -278,9 +278,11 @@ const SignUpScreen = ({ navigation }: { navigation: NavigationProp }) => {
       />
       <CustomSafeAreaView style={{ backgroundColor: "transparent" }}>
         <AuthLayout>
-          <View className="flex-row items-center justify-between w-full">
+          <View className="flex-row items-center w-full mb-8">
             <BackButton navigation={navigation} />
-            <ScreenTitle title={AppStrings.AuthStrings.SignUp.TITLE} />
+            <View className="flex-1 ml-4">
+              <ScreenTitle title={AppStrings.AuthStrings.SignUp.TITLE} />
+            </View>
           </View>
 
           <ScrollView
@@ -373,9 +375,9 @@ const SignUpScreen = ({ navigation }: { navigation: NavigationProp }) => {
               onPress={() => navigation.navigate(AppStrings.Navigation.LOGIN)}
               className="mb-4"
             >
-              <Text className="text-center text-black">
+              <Text className="text-center  text-sm text-gray-600">
                 {AppStrings.AuthStrings.SignUp.HAS_ACCOUNT_PROMPT}
-                <Text className="text-blue-600 font-semibold">
+                <Text className="text-sm text-blue-600 font-semibold">
                   {AppStrings.AuthStrings.SignUp.LOGIN_NOW}
                 </Text>
               </Text>
