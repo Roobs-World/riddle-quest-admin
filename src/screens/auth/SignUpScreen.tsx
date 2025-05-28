@@ -263,121 +263,127 @@ const SignUpScreen = ({ navigation }: { navigation: NavigationProp }) => {
   ]);
 
   return (
-    <CustomSafeAreaView>
+    <View style={{ flex: 1 }}>
       <HomeBgSvg
         width="120%"
         height="100%"
         style={{
           position: "absolute",
-          top: "-5%",
+          top: 0,
           left: 0,
-          bottom: 0,
           right: 0,
+          bottom: 0,
           zIndex: -1,
         }}
       />
-      <AuthLayout>
-        <View className="flex-row items-center justify-between w-full mb-8">
-          <BackButton navigation={navigation} />
-          <ScreenTitle title={AppStrings.AuthStrings.SignUp.TITLE} />
-        </View>
+      <CustomSafeAreaView style={{ backgroundColor: "transparent" }}>
+        <AuthLayout>
+          <View className="flex-row items-center justify-between w-full">
+            <BackButton navigation={navigation} />
+            <ScreenTitle title={AppStrings.AuthStrings.SignUp.TITLE} />
+          </View>
 
-        <ScrollView
-          className="w-full px-4"
-          showsVerticalScrollIndicator={false}
-        >
-          <ProgressBar activeStep={activeStep} totalSteps={3} />
+          <ScrollView
+            className="w-full px-4"
+            showsVerticalScrollIndicator={false}
+          >
+            <ProgressBar activeStep={activeStep} totalSteps={3} />
 
-          <UserUsernameInput
-            username={username}
-            setUsername={setUsername}
-            errorMessage={usernameError}
-          />
-          <UserEmailInput
-            email={email}
-            setEmail={setEmail}
-            errorMessage={emailError}
-          />
-          <UserPasswordInput
-            password={passwordState.password}
-            setPassword={(text) =>
-              dispatch({ type: "SET_PASSWORD", payload: text })
-            }
-            errorMessage={passwordError}
-          />
-          <UserPasswordInput
-            password={passwordState.confirmPassword}
-            setPassword={(text) =>
-              dispatch({ type: "SET_CONFIRM_PASSWORD", payload: text })
-            }
-            placeholder={
-              AppStrings.AuthStrings.SignUp.CONFIRM_PASSWORD_PLACEHOLDER
-            }
-            label={AppStrings.AuthStrings.SignUp.CONFIRM_PASSWORD_LABEL}
-            errorMessage={confirmPasswordError}
-          />
-
-          {passwordState.confirmPasswordHasInput && (
-            <PasswordMatch
-              passwordsMatch={passwordState.passwordsMatch}
-              isPasswordLongEnough={passwordState.isPasswordLongEnough}
+            <UserUsernameInput
+              username={username}
+              setUsername={setUsername}
+              errorMessage={usernameError}
             />
-          )}
+            <UserEmailInput
+              email={email}
+              setEmail={setEmail}
+              errorMessage={emailError}
+            />
+            <UserPasswordInput
+              password={passwordState.password}
+              setPassword={(text) =>
+                dispatch({ type: "SET_PASSWORD", payload: text })
+              }
+              errorMessage={passwordError}
+            />
+            <UserPasswordInput
+              password={passwordState.confirmPassword}
+              setPassword={(text) =>
+                dispatch({ type: "SET_CONFIRM_PASSWORD", payload: text })
+              }
+              placeholder={
+                AppStrings.AuthStrings.SignUp.CONFIRM_PASSWORD_PLACEHOLDER
+              }
+              label={AppStrings.AuthStrings.SignUp.CONFIRM_PASSWORD_LABEL}
+              errorMessage={confirmPasswordError}
+            />
 
-          <TouchableOpacity
-            className="flex-row items-center my-4"
-            onPress={() => setAgreedToTerms(!agreedToTerms)}
-          >
-            <CheckboxIcon checked={agreedToTerms} />
-            <View className="flex-row flex-wrap ml-2">
-              <Text>{AppStrings.AuthStrings.SignUp.TERMS_AGREEMENT_PART1}</Text>
-              <TouchableOpacity
-                onPress={() => {
-                  console.log("Navigate to terms - Placeholder");
-                  // TODO: Implement actual navigation to terms page
-                }}
-              >
-                <Text className="text-blue-600 underline">
-                  {AppStrings.AuthStrings.SignUp.TERMS_USER_AGREEMENT}
+            {passwordState.confirmPasswordHasInput && (
+              <PasswordMatch
+                passwordsMatch={passwordState.passwordsMatch}
+                isPasswordLongEnough={passwordState.isPasswordLongEnough}
+              />
+            )}
+
+            <TouchableOpacity
+              className="flex-row items-center my-4"
+              onPress={() => setAgreedToTerms(!agreedToTerms)}
+            >
+              <CheckboxIcon checked={agreedToTerms} />
+              <View className="flex-row flex-wrap ml-2">
+                <Text>
+                  {AppStrings.AuthStrings.SignUp.TERMS_AGREEMENT_PART1}
                 </Text>
-              </TouchableOpacity>
-              <Text>{AppStrings.AuthStrings.SignUp.TERMS_AGREEMENT_PART2}</Text>
-              <TouchableOpacity
-                onPress={() => {
-                  console.log("Navigate to privacy policy - Placeholder");
-                  // TODO: Implement actual navigation to privacy policy page
-                }}
-              >
-                <Text className="text-blue-600 underline">
-                  {AppStrings.AuthStrings.SignUp.TERMS_PRIVACY_POLICY}
+                <TouchableOpacity
+                  onPress={() => {
+                    console.log("Navigate to terms - Placeholder");
+                    // TODO: Implement actual navigation to terms page
+                  }}
+                >
+                  <Text className="text-blue-600 underline">
+                    {AppStrings.AuthStrings.SignUp.TERMS_USER_AGREEMENT}
+                  </Text>
+                </TouchableOpacity>
+                <Text>
+                  {AppStrings.AuthStrings.SignUp.TERMS_AGREEMENT_PART2}
                 </Text>
-              </TouchableOpacity>
-            </View>
-          </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    console.log("Navigate to privacy policy - Placeholder");
+                    // TODO: Implement actual navigation to privacy policy page
+                  }}
+                >
+                  <Text className="text-blue-600 underline">
+                    {AppStrings.AuthStrings.SignUp.TERMS_PRIVACY_POLICY}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </TouchableOpacity>
 
-          {authError && <Error message={authError} />}
-        </ScrollView>
+            {authError && <Error message={authError} />}
+          </ScrollView>
 
-        <View className="w-full px-4 mt-auto">
-          <WideButton
-            buttonText={AppStrings.AuthStrings.SignUp.NEXT_BUTTON}
-            onPress={handleNextPress}
-            disabled={isSignUpButtonDisabled || isLoading}
-          />
-          <TouchableOpacity
-            onPress={() => navigation.navigate(AppStrings.Navigation.LOGIN)}
-            className="mb-4"
-          >
-            <Text className="text-center text-black">
-              {AppStrings.AuthStrings.SignUp.HAS_ACCOUNT_PROMPT}
-              <Text className="text-blue-600 font-semibold">
-                {AppStrings.AuthStrings.SignUp.LOGIN_NOW}
+          <View className="w-full px-4 mt-auto">
+            <WideButton
+              buttonText={AppStrings.AuthStrings.SignUp.NEXT_BUTTON}
+              onPress={handleNextPress}
+              disabled={isSignUpButtonDisabled || isLoading}
+            />
+            <TouchableOpacity
+              onPress={() => navigation.navigate(AppStrings.Navigation.LOGIN)}
+              className="mb-4"
+            >
+              <Text className="text-center text-black">
+                {AppStrings.AuthStrings.SignUp.HAS_ACCOUNT_PROMPT}
+                <Text className="text-blue-600 font-semibold">
+                  {AppStrings.AuthStrings.SignUp.LOGIN_NOW}
+                </Text>
               </Text>
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </AuthLayout>
-    </CustomSafeAreaView>
+            </TouchableOpacity>
+          </View>
+        </AuthLayout>
+      </CustomSafeAreaView>
+    </View>
   );
 };
 
