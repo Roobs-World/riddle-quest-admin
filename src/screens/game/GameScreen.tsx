@@ -13,7 +13,6 @@ import SettingsOverlay from "../../components/game/SettingsOverlay";
 import InstructionsOverlay from "../../components/game/InstructionsOverlay";
 import HomeOverlay from "../../components/game/HomeOverlay";
 import Controls from "../../components/game/Controls";
-import { Player } from "../../validation/firestoreSchemas";
 import { SoundManager } from "../../services/SoundManager";
 import useGameLogic from "../../hooks/useGameLogic";
 import { checkAnyOverlayVisible } from "../../utils/overlayUtils";
@@ -22,12 +21,10 @@ import Animated, {
   useSharedValue,
   withSequence,
   withTiming,
-  withSpring,
   useAnimatedStyle,
-  interpolate,
-  Extrapolate,
 } from "react-native-reanimated";
 import functions from "@react-native-firebase/functions";
+import { getApp } from "@react-native-firebase/app";
 import VictoryLossOverlay from "../../components/game/VictoryLossOverlay";
 import {
   GameScreenOverlayState,
@@ -36,7 +33,6 @@ import {
 import { useAuth } from "../../contexts/AuthContext";
 import FullProfileDetailsOverlay from "../../screens/main/FullProfileDetailsOverlay";
 import CoinShopModal from "../../components/shop/CoinShopModal";
-import { FirestoreRiddle } from "../../validation/firestoreSchemas";
 import { GameMode } from "../../contexts/AuthContext";
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 import { IapService } from "../../services/IapService";
@@ -84,9 +80,28 @@ interface GameScreenProps {
   onRetry: () => void;
   overlayState: GameScreenOverlayState;
   overlayActions: GameScreenOverlayActions;
-  skippedAnswer: string | null;
   gameMode: GameMode;
 }
+
+// Define proper error interfaces for Firebase and Zod errors
+interface FirebaseError extends Error {
+  code?: string;
+  name: "FirebaseFunctionsError";
+}
+
+interface ZodError extends Error {
+  name: "ZodError";
+  issues: Array<{ message: string; path: string[] }>;
+}
+
+// Type guard functions
+const isFirebaseError = (error: unknown): error is FirebaseError => {
+  return (error as FirebaseError)?.name === "FirebaseFunctionsError";
+};
+
+const isZodError = (error: unknown): error is ZodError => {
+  return (error as ZodError)?.name === "ZodError";
+};
 
 const GameScreen: React.FC<GameScreenProps> = ({
   riddleId,
@@ -103,13 +118,9 @@ const GameScreen: React.FC<GameScreenProps> = ({
   onRetry,
   overlayState,
   overlayActions,
-  skippedAnswer,
   gameMode,
 }) => {
-  const { setCurrentRiddle, updatePlayerData, playerData, logout } = useAuth();
-  const [winAttempts, setWinAttempts] = useState(0);
-  const [winCoinsEarned, setWinCoinsEarned] = useState(0);
-  const [correctAnswerOnLoss, setCorrectAnswerOnLoss] = useState<string>("");
+  const { updatePlayerData, playerData, logout } = useAuth();
   const [isVictoryLossOverlayVisible, setIsVictoryLossOverlayVisible] =
     useState(false);
   const [overlayOutcome, setOverlayOutcome] = useState<"win" | "loss" | null>(
@@ -179,13 +190,7 @@ const GameScreen: React.FC<GameScreenProps> = ({
   const { playerData: authPlayerData } = useAuth();
   const userHasPurchasedApp = authPlayerData?.hasPurchasedApp || false;
 
-  const {
-    isAdLoading: isInterstitialLoading,
-    isAdShowing: isInterstitialShowing,
-    loadInterstitialAd,
-    showInterstitialAd,
-    wasAdDisplayed: wasInterstitialAdDisplayed,
-  } = useInterstitialAds();
+  const { showInterstitialAd } = useInterstitialAds();
 
   const { isRewardedAdReady, loadRewardedAd, showRewardedAd } =
     useRewardedAds();
@@ -236,7 +241,7 @@ const GameScreen: React.FC<GameScreenProps> = ({
     AsyncStorage.setItem(
       SOUND_ENABLED_STORAGE_KEY,
       JSON.stringify(isSoundEnabled)
-    ).catch((error: any) =>
+    ).catch((error: unknown) =>
       console.error("Error saving sound setting to AsyncStorage:", error)
     );
   }, [isSoundEnabled]);
@@ -245,7 +250,7 @@ const GameScreen: React.FC<GameScreenProps> = ({
     AsyncStorage.setItem(
       HAPTICS_ENABLED_STORAGE_KEY,
       JSON.stringify(isHapticsEnabled)
-    ).catch((error: any) =>
+    ).catch((error: unknown) =>
       console.error("Error saving haptics setting to AsyncStorage:", error)
     );
   }, [isHapticsEnabled]);
@@ -415,21 +420,6 @@ const GameScreen: React.FC<GameScreenProps> = ({
     setIsFullProfileDetailsOverlayVisible(false);
   };
 
-  const handleOpenCoinShopModal = async () => {
-    setIsCoinShopModalVisible(true);
-    setLoadingProducts(true);
-    setProductError(null);
-    try {
-      const products = await IapService.getProducts();
-      setCoinProducts(products);
-    } catch (error: any) {
-      console.error("Error fetching products:", error);
-      setProductError("Failed to load coin packs. Please try again.");
-    } finally {
-      setLoadingProducts(false);
-    }
-  };
-
   const handleCloseCoinShopModal = () => {
     setIsCoinShopModalVisible(false);
     setCoinProducts([]);
@@ -453,10 +443,11 @@ const GameScreen: React.FC<GameScreenProps> = ({
         console.warn("Purchase did not return a purchase object.");
         setProductError("Purchase process did not complete.");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error during purchase:", error);
       setProductError(
-        error.message || "An unexpected error occurred during purchase."
+        (error as Error).message ||
+          "An unexpected error occurred during purchase."
       );
     } finally {
       setLoadingProducts(false);
@@ -466,7 +457,9 @@ const GameScreen: React.FC<GameScreenProps> = ({
   const handleResetStats = async () => {
     try {
       console.log("Calling backend to reset stats...");
-      const resetStatsCallable = functions().httpsCallable("resetStats");
+      const resetStatsCallable = functions(getApp()).httpsCallable(
+        "resetStats"
+      );
       const result = await resetStatsCallable();
       const responseData = ResetStatsOutputSchema.parse(result.data);
 
@@ -500,12 +493,12 @@ const GameScreen: React.FC<GameScreenProps> = ({
         );
         Alert.alert("Error", responseData.message || "Failed to reset stats.");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error calling resetStats backend function:", error);
       let errorMessage = "An error occurred while resetting stats.";
-      if (error.name === "FirebaseFunctionsError") {
+      if (isFirebaseError(error)) {
         errorMessage = error.message;
-      } else if (error.name === "ZodError") {
+      } else if (isZodError(error)) {
         errorMessage =
           "Received invalid data from server after resetting stats.";
         console.error(
@@ -559,7 +552,7 @@ const GameScreen: React.FC<GameScreenProps> = ({
     try {
       GetHintInputSchema.parse(hintRequestData);
 
-      const getHintCallable = functions().httpsCallable("getHint");
+      const getHintCallable = functions(getApp()).httpsCallable("getHint");
       const result = await getHintCallable(hintRequestData);
 
       const hintData = GetHintOutputSchema.parse(result.data);
@@ -578,11 +571,14 @@ const GameScreen: React.FC<GameScreenProps> = ({
           "No more hints can be revealed for this riddle."
         );
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error getting hint:", error);
       let errorMessage = "An error occurred while getting a hint.";
-      if (error.message) {
+      if (isFirebaseError(error)) {
         errorMessage = error.message;
+      } else if (isZodError(error)) {
+        errorMessage = "Received invalid data from server after getting hint.";
+        console.error("Zod validation error for getHint output:", error.issues);
       }
       Alert.alert("Error", errorMessage);
     }
@@ -608,19 +604,21 @@ const GameScreen: React.FC<GameScreenProps> = ({
     try {
       SkipRiddleInputSchema.parse(skipRequestData);
 
-      const skipRiddleCallable = functions().httpsCallable("skipRiddle");
+      const skipRiddleCallable = functions(getApp()).httpsCallable(
+        "skipRiddle"
+      );
       const result = await skipRiddleCallable(skipRequestData);
 
       const skipData = SkipRiddleOutputSchema.parse(result.data);
 
       Alert.alert("Skipped", "Riddle skipped successfully.");
       onSkipUsed(skipData.coinsCost);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error skipping riddle:", error);
       let errorMessage = "An error occurred while skipping the riddle.";
-      if (error.name === "FirebaseFunctionsError") {
+      if (isFirebaseError(error)) {
         errorMessage = error.message;
-      } else if (error.name === "ZodError") {
+      } else if (isZodError(error)) {
         errorMessage = "Received invalid data from server after skipping.";
         console.error(
           "Zod validation error for skipRiddle output:",
@@ -645,7 +643,7 @@ const GameScreen: React.FC<GameScreenProps> = ({
           "The rewarded ad couldn't be loaded at this time. Please try again later."
         );
       }
-    } catch (adError: any) {
+    } catch (adError: unknown) {
       console.error("Error showing rewarded ad:", adError);
       Alert.alert(
         "Ad Error",
@@ -772,7 +770,7 @@ const GameScreen: React.FC<GameScreenProps> = ({
           isVisible={overlayState.isProfileOverlayVisible}
           onClose={handleCloseProfileOverlay}
           playerData={playerData}
-          onShowFullProfile={handleShowFullProfileDetails}
+          onFullProfilePress={handleShowFullProfileDetails}
         />
         <SettingsOverlay
           isVisible={overlayState.isSettingsOverlayVisible}

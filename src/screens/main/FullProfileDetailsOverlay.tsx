@@ -15,6 +15,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import * as ImagePicker from "react-native-image-picker";
 import storage, { FirebaseStorageTypes } from "@react-native-firebase/storage";
 import functions from "@react-native-firebase/functions";
+import { getApp } from "@react-native-firebase/app";
 import auth from "@react-native-firebase/auth"; // Import auth module
 import { GoogleSignin } from "@react-native-google-signin/google-signin"; // Import Google Sign-In
 import { LoginManager, AccessToken } from "react-native-fbsdk-next"; // Import Facebook SDK
@@ -40,6 +41,13 @@ interface FullProfileDetailsOverlayProps {
   playerData: Player | null;
 }
 
+// Define proper error interface for Firebase errors
+interface FirebaseError {
+  code: string;
+  message: string;
+  email?: string;
+}
+
 /**
  * Overlay component for displaying comprehensive user profile details and settings.
  * Accessible from the basic Profile Overlay.
@@ -49,17 +57,11 @@ const FullProfileDetailsOverlay: React.FC<FullProfileDetailsOverlayProps> = ({
   onClose,
   playerData,
 }) => {
-  if (!playerData) {
-    return null; // Or render a loading/error state
-  }
-
-  // Access stats directly from playerData.stats, ensuring they are treated as numbers
-  const { stats } = playerData;
-
+  // Move all hooks to the top, before any conditional returns
   const { updatePlayerData } = useAuth(); // Get updatePlayerData from auth context
 
   const [isUsernameModalVisible, setIsUsernameModalVisible] = useState(false);
-  const [newUsername, setNewUsername] = useState(playerData.username || "");
+  const [newUsername, setNewUsername] = useState(playerData?.username || "");
   const [isPasswordModalVisible, setIsPasswordModalVisible] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -70,6 +72,14 @@ const FullProfileDetailsOverlay: React.FC<FullProfileDetailsOverlayProps> = ({
     useState(false); // State for preloaded avatars modal
   const [isAvatarOptionsModalVisible, setIsAvatarOptionsModalVisible] = // State for avatar options modal
     useState(false);
+
+  // Now handle the conditional return after all hooks are called
+  if (!playerData) {
+    return null; // Or render a loading/error state
+  }
+
+  // Access stats directly from playerData.stats, ensuring they are treated as numbers
+  const { stats } = playerData;
 
   // Function to get Facebook photo URL from provider data
   const getFacebookPhotoUrl = () => {
@@ -189,7 +199,7 @@ const FullProfileDetailsOverlay: React.FC<FullProfileDetailsOverlayProps> = ({
     }
 
     try {
-      const processFormSubmissionCallable = functions().httpsCallable(
+      const processFormSubmissionCallable = functions(getApp()).httpsCallable(
         "processFormSubmission"
       );
       const result = await processFormSubmissionCallable({
@@ -212,16 +222,17 @@ const FullProfileDetailsOverlay: React.FC<FullProfileDetailsOverlayProps> = ({
         // This else block might not be reached if backend throws HttpsError
         Alert.alert("Error", responseData.message || "Username update failed.");
       }
-    } catch (error: any) {
-      console.error("Error updating username:", error);
+    } catch (error) {
+      const firebaseError = error as FirebaseError;
+      console.error("Error updating username:", firebaseError);
       let errorMessage = "An error occurred.";
-      if (error.code === "invalid-argument") {
+      if (firebaseError.code === "invalid-argument") {
         errorMessage = "Invalid username data provided.";
-      } else if (error.code === "internal") {
+      } else if (firebaseError.code === "internal") {
         errorMessage = "Server error updating username.";
-      } else if (error.message) {
+      } else if (firebaseError.message) {
         // Catch other potential errors with a message
-        errorMessage = error.message;
+        errorMessage = firebaseError.message;
       }
       Alert.alert("Error", errorMessage);
     }
@@ -267,18 +278,19 @@ const FullProfileDetailsOverlay: React.FC<FullProfileDetailsOverlayProps> = ({
       setCurrentPassword("");
       setNewPassword("");
       setConfirmNewPassword("");
-    } catch (error: any) {
-      console.error("Error changing password:", error);
+    } catch (error) {
+      const firebaseError = error as FirebaseError;
+      console.error("Error changing password:", firebaseError);
       let errorMessage = "An error occurred while changing password.";
 
-      if (error.code === "auth/requires-recent-login") {
+      if (firebaseError.code === "auth/requires-recent-login") {
         errorMessage = "Please log in again to change your password.";
-      } else if (error.code === "auth/invalid-credential") {
+      } else if (firebaseError.code === "auth/invalid-credential") {
         errorMessage = "Invalid current password.";
-      } else if (error.code === "auth/weak-password") {
+      } else if (firebaseError.code === "auth/weak-password") {
         errorMessage = "New password is too weak.";
-      } else if (error.message) {
-        errorMessage = error.message;
+      } else if (firebaseError.message) {
+        errorMessage = firebaseError.message;
       }
 
       Alert.alert("Error", errorMessage);
@@ -345,14 +357,18 @@ const FullProfileDetailsOverlay: React.FC<FullProfileDetailsOverlayProps> = ({
           }
         }
       }
-    } catch (error: any) {
-      console.error(`Error linking ${provider} account:`, error);
+    } catch (error) {
+      const firebaseError = error as FirebaseError;
+      console.error(`Error linking ${provider} account:`, firebaseError);
       let errorMessage = `An error occurred while linking your ${provider} account.`;
 
-      if (error.code === "auth/credential-already-in-use" && error.email) {
-        errorMessage = `This ${provider} account is already linked to another user (${error.email}).`;
-      } else if (error.message) {
-        errorMessage = error.message;
+      if (
+        firebaseError.code === "auth/credential-already-in-use" &&
+        firebaseError.email
+      ) {
+        errorMessage = `This ${provider} account is already linked to another user (${firebaseError.email}).`;
+      } else if (firebaseError.message) {
+        errorMessage = firebaseError.message;
       }
 
       Alert.alert("Error", errorMessage);

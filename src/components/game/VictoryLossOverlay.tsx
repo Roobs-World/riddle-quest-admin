@@ -1,6 +1,6 @@
 import React from "react";
-import { View, Text, Modal, TouchableOpacity } from "react-native";
-import type { SubmittedGuess, Feedback, GameOutcome } from "../../hooks/types";
+import { View, Text, Modal } from "react-native";
+import type { SubmittedGuess, GameOutcome } from "../../hooks/types";
 import { generateFeedbackEmojiGrid } from "../../utils/gameUtils";
 import WideButton from "../buttons/WideButton";
 

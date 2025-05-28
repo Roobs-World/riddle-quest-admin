@@ -1,6 +1,6 @@
 import {logger} from "firebase-functions/v2";
 import * as admin from "firebase-admin";
-import {onCall, HttpsError as HttpsErrorV2, CallableRequest as CallableRequestV2} from "firebase-functions/v2/https";
+import {onCall, HttpsError, CallableRequest} from "firebase-functions/v2/https";
 import {updateUserCoins, getUser} from "./firestoreService";
 
 /**
@@ -18,11 +18,11 @@ import {updateUserCoins, getUser} from "./firestoreService";
 export const getHint = onCall(
   {},
   async (
-    request: CallableRequestV2<{currentAttempt: string[]; riddleId: string}>,
+    request: CallableRequest<{currentAttempt: string[]; riddleId: string}>,
   ): Promise<{revealedLetter: string; index: number; coinsCost: number} | null> => {
     try {
       if (!request.auth) {
-        throw new HttpsErrorV2("unauthenticated", "The user must be authenticated to get a hint.");
+        throw new HttpsError("unauthenticated", "The user must be authenticated to get a hint.");
       }
 
       const currentUserId = request.auth.uid;
@@ -31,12 +31,12 @@ export const getHint = onCall(
       const riddleDoc = await admin.firestore().collection("riddles").doc(riddleId).get();
 
       if (!riddleDoc.exists) {
-        throw new HttpsErrorV2("not-found", `Riddle with ID ${riddleId} not found.`);
+        throw new HttpsError("not-found", `Riddle with ID ${riddleId} not found.`);
       }
       const riddleData = riddleDoc.data();
 
       if (!riddleData || !riddleData.answer) {
-        throw new HttpsErrorV2("internal", `Answer not found for riddle ID ${riddleId}.`);
+        throw new HttpsError("internal", `Answer not found for riddle ID ${riddleId}.`);
       }
 
       const answer: string = riddleData.answer.toLowerCase();
@@ -45,11 +45,11 @@ export const getHint = onCall(
       const user = await getUser(currentUserId);
 
       if (!user) {
-        throw new HttpsErrorV2("not-found", "User data not found.");
+        throw new HttpsError("not-found", "User data not found.");
       }
 
       if (user.coins < coinsCost) {
-        throw new HttpsErrorV2("failed-precondition", "Insufficient coins to get a hint.");
+        throw new HttpsError("failed-precondition", "Insufficient coins to get a hint.");
       }
 
       const gameStateRef = admin
@@ -65,7 +65,7 @@ export const getHint = onCall(
 
       if (isGameCompleted) {
         logger.warn(`User ${currentUserId} requested hint for completed riddle ${riddleId}.`);
-        throw new HttpsErrorV2("failed-precondition", "Game is already completed.");
+        throw new HttpsError("failed-precondition", "Game is already completed.");
       }
 
       const guessedLetters: string[] = currentAttempt.map((letter: string) => letter.toLowerCase());
@@ -110,11 +110,15 @@ export const getHint = onCall(
         coinsCost,
       };
     } catch (error) {
-      logger.error("Error getting hint:", error);
-      if (error instanceof HttpsErrorV2) {
+      // Only log unexpected errors, not expected business logic errors
+      if (error instanceof HttpsError) {
+        // These are expected errors (authentication, validation, business logic)
+        // Don't log them as errors since they're part of normal operation
         throw error;
       }
-      throw new HttpsErrorV2("internal", "An error occurred while getting a hint.", error);
+      // Log unexpected errors (system errors, database errors, etc.)
+      logger.error("Unexpected error getting hint:", error);
+      throw new HttpsError("internal", "An error occurred while getting a hint.", error);
     }
   },
 );
@@ -130,31 +134,31 @@ export const getHint = onCall(
  */
 export const spendCoins = onCall(
   {},
-  async (request: CallableRequestV2<{amount: number; reason: string}>): Promise<{newCoins: number}> => {
+  async (request: CallableRequest<{amount: number; reason: string}>): Promise<{newCoins: number}> => {
     if (!request.auth) {
-      throw new HttpsErrorV2("unauthenticated", "The function must be called while authenticated.");
+      throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
     }
 
     const {amount, reason} = request.data;
     const userId = request.auth.uid;
 
     if (typeof amount !== "number" || amount <= 0) {
-      throw new HttpsErrorV2("invalid-argument", "Invalid amount specified.");
+      throw new HttpsError("invalid-argument", "Invalid amount specified.");
     }
 
     if (reason !== "hint") {
-      throw new HttpsErrorV2("invalid-argument", "Invalid reason specified.");
+      throw new HttpsError("invalid-argument", "Invalid reason specified.");
     }
 
     try {
       // Check if user exists first
       const user = await getUser(userId);
       if (!user) {
-        throw new HttpsErrorV2("not-found", "User data not found.");
+        throw new HttpsError("not-found", "User data not found.");
       }
 
       if (user.coins < amount) {
-        throw new HttpsErrorV2("failed-precondition", "Insufficient coins to spend.");
+        throw new HttpsError("failed-precondition", "Insufficient coins to spend.");
       }
 
       await updateUserCoins(userId, -amount);
@@ -162,17 +166,21 @@ export const spendCoins = onCall(
       const updatedUser = await getUser(userId);
 
       if (!updatedUser) {
-        throw new HttpsErrorV2("internal", "Could not retrieve updated user data after spending coins.");
+        throw new HttpsError("internal", "Could not retrieve updated user data after spending coins.");
       }
 
       logger.info(`User ${userId} spent ${amount} coins for reason: ${reason}. New balance: ${updatedUser.coins}.`);
       return {newCoins: updatedUser.coins};
     } catch (error: unknown) {
-      logger.error("Error spending coins:", error);
-      if (error instanceof HttpsErrorV2) {
+      // Only log unexpected errors, not expected business logic errors
+      if (error instanceof HttpsError) {
+        // These are expected errors (authentication, validation, business logic)
+        // Don't log them as errors since they're part of normal operation
         throw error;
       }
-      throw new HttpsErrorV2("internal", "An error occurred while spending coins.", error);
+      // Log unexpected errors (system errors, database errors, etc.)
+      logger.error("Unexpected error spending coins:", error);
+      throw new HttpsError("internal", "An error occurred while spending coins.", error);
     }
   },
 );

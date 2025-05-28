@@ -1,6 +1,7 @@
 import firestore from "@react-native-firebase/firestore";
 import auth from "@react-native-firebase/auth";
 import functions from "@react-native-firebase/functions";
+import { getApp } from "@react-native-firebase/app";
 import { z, ZodError } from "zod";
 import {
   GenerateClassicRiddlesInputSchema,
@@ -31,7 +32,7 @@ export const RiddleService = {
     try {
       const userDoc = await firestore().collection("users").doc(userId).get();
 
-      if (userDoc.exists) {
+      if (userDoc.exists()) {
         const userData = userDoc.data();
         if (userData) {
           const lastCompletedDateStr =
@@ -165,7 +166,7 @@ export const RiddleService = {
               retry + 1
             }/${maxRetries + 1})...`
           );
-          const generateRiddlesCallable = functions().httpsCallable(
+          const generateRiddlesCallable = functions(getApp()).httpsCallable(
             "generateClassicRiddles"
           );
           const inputData = {};
@@ -272,7 +273,9 @@ export const RiddleService = {
     try {
       SubmitGuessInputSchema.parse(guessData);
 
-      const submitGuessCallable = functions().httpsCallable("submitGuess");
+      const submitGuessCallable = functions(getApp()).httpsCallable(
+        "submitGuess"
+      );
       const result = await submitGuessCallable(guessData);
 
       const validatedResult = SubmitGuessOutputSchema.parse(result.data);

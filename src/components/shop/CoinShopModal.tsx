@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   SafeAreaView,
   ScrollView,
-  Image, // Assuming we might need images for coin packs
   ActivityIndicator, // Import ActivityIndicator
 } from "react-native";
 

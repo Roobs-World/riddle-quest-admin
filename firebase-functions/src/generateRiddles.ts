@@ -125,7 +125,7 @@ export async function generateAndAppendRiddles(numberOfRiddles: number): Promise
   // Check for required environment variables
   const openAIKey = process.env.OPENAI_API_KEY;
   if (!openAIKey) {
-    throw new Error("Missing required environment variable: OPENAI_API_KEY");
+    throw new Error("OPENAI_API_KEY environment variable is required");
   }
 
   // Get existing riddles for duplicate checking

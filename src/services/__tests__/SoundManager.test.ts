@@ -1,5 +1,14 @@
 import { AVPlaybackStatus, Audio } from "expo-av";
 
+// Mock AppState
+const mockAppStateSubscription = { remove: jest.fn() };
+jest.mock("react-native", () => ({
+  AppState: {
+    currentState: "active",
+    addEventListener: jest.fn(() => mockAppStateSubscription),
+  },
+}));
+
 // Define a type for the mock sound instances with only the mocked members used by SoundManager
 interface MockSoundInstance {
   loadAsync: jest.Mock;
@@ -141,7 +150,7 @@ describe("SoundManager", () => {
       );
 
       // Verify neutral sound starts playing
-      expect(mockSoundInstances[0].playAsync).toHaveBeenCalledTimes(1);
+      expect(mockSoundInstances[0].replayAsync).toHaveBeenCalledTimes(1);
     });
 
     it("should log error if setting audio mode fails", async () => {
@@ -243,7 +252,7 @@ describe("SoundManager", () => {
       // Clear specific mocks if init calls them
       if (mockSoundInstances[0]) {
         mockSoundInstances[0].getStatusAsync.mockClear();
-        mockSoundInstances[0].playAsync.mockClear();
+        mockSoundInstances[0].replayAsync.mockClear();
       }
     });
 
@@ -254,7 +263,7 @@ describe("SoundManager", () => {
       } as AVPlaybackStatus); // Use AVPlaybackStatus
       await SoundManager.playBackgroundMusic();
       expect(mockSoundInstances[0].getStatusAsync).toHaveBeenCalledTimes(1);
-      expect(mockSoundInstances[0].playAsync).toHaveBeenCalledTimes(1);
+      expect(mockSoundInstances[0].replayAsync).toHaveBeenCalledTimes(1);
     });
 
     it("should not play background music if already playing", async () => {
@@ -264,7 +273,7 @@ describe("SoundManager", () => {
       } as AVPlaybackStatus); // Use AVPlaybackStatus
       await SoundManager.playBackgroundMusic();
       expect(mockSoundInstances[0].getStatusAsync).toHaveBeenCalledTimes(1);
-      expect(mockSoundInstances[0].playAsync).not.toHaveBeenCalled();
+      expect(mockSoundInstances[0].replayAsync).not.toHaveBeenCalled();
     });
 
     it("should warn if neutral sound not initialized", async () => {

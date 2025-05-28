@@ -5,6 +5,23 @@ import auth, {
 } from "@react-native-firebase/auth";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { AccessToken, LoginManager } from "react-native-fbsdk-next";
+import { InteractionManager } from "react-native";
+
+/**
+ * Ensures the function runs on the main thread to avoid threading issues with Google Play Services
+ */
+const runOnMainThread = <T>(fn: () => Promise<T>): Promise<T> => {
+  return new Promise((resolve, reject) => {
+    InteractionManager.runAfterInteractions(async () => {
+      try {
+        const result = await fn();
+        resolve(result);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  });
+};
 
 export const AuthService = {
   /**
@@ -75,22 +92,32 @@ export const AuthService = {
    * @returns A Promise resolving to the UserCredential.
    */
   async signInWithGoogle(): Promise<FirebaseAuthTypes.UserCredential> {
-    try {
-      await GoogleSignin.hasPlayServices({
-        showPlayServicesUpdateDialog: true,
-      });
-      const { idToken } = await GoogleSignin.signIn();
+    return runOnMainThread(async () => {
+      try {
+        await GoogleSignin.hasPlayServices({
+          showPlayServicesUpdateDialog: true,
+        });
 
-      const googleCredential = GoogleAuthProvider.credential(idToken);
+        const signInResult = await GoogleSignin.signIn();
 
-      const userCredential = await auth().signInWithCredential(
-        googleCredential
-      );
-      return userCredential;
-    } catch (error) {
-      console.error("Error signing in with Google:", error);
-      throw error;
-    }
+        // For Google Sign-In version 14.x, idToken is in signInResult.data.idToken
+        const idToken = signInResult.data?.idToken;
+
+        if (!idToken) {
+          throw new Error("No ID token received from Google Sign-In");
+        }
+
+        const googleCredential = GoogleAuthProvider.credential(idToken);
+
+        const userCredential = await auth().signInWithCredential(
+          googleCredential
+        );
+        return userCredential;
+      } catch (error) {
+        console.error("Error signing in with Google:", error);
+        throw error;
+      }
+    });
   },
 
   /**
@@ -123,23 +150,28 @@ export const AuthService = {
         facebookCredential
       );
       return userCredential;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error signing in with Facebook:", error);
-      switch (error.code) {
-        case "auth/account-exists-with-different-credential":
-          throw new Error(
-            "Account exists with different credential. Please use a different login method."
-          );
-        case "auth/auth-popup-closed-by-user":
-          console.log("Facebook auth popup closed by user.");
-          throw new Error("Facebook login cancelled.");
-        case "auth/operation-not-supported-in-this-environment":
-          throw new Error(
-            "Facebook login is not supported in this environment."
-          );
-        default:
-          throw error;
+      if (error && typeof error === "object" && "code" in error) {
+        const firebaseError =
+          error as FirebaseAuthTypes.NativeFirebaseAuthError;
+        switch (firebaseError.code) {
+          case "auth/account-exists-with-different-credential":
+            throw new Error(
+              "Account exists with different credential. Please use a different login method."
+            );
+          case "auth/auth-popup-closed-by-user":
+            console.log("Facebook auth popup closed by user.");
+            throw new Error("Facebook login cancelled.");
+          case "auth/operation-not-supported-in-this-environment":
+            throw new Error(
+              "Facebook login is not supported in this environment."
+            );
+          default:
+            throw error;
+        }
       }
+      throw error;
     }
   },
 

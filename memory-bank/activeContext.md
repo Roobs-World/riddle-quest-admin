@@ -2,6 +2,33 @@
 
 ## 1. Current Focus
 
+### **✅ FIREBASE V22 MIGRATION - COMPLETED**
+
+- **Issue**: React Native Firebase deprecation warning about namespaced API usage that will be removed in v22
+- **Warning Message**: "This method is deprecated (as well as all React Native Firebase namespaced API) and will be removed in the next major release as part of move to match Firebase Web modular SDK API"
+- **Root Cause**: Using deprecated `functions().httpsCallable()` and `getFunctions().httpsCallable()` patterns instead of new modular API
+- **Solution**: Migrated all Firebase Functions usage to use `getApp()` with the modular API pattern
+- **Status**: ✅ **COMPLETED** - All deprecated Firebase API usage updated to v22 compatible patterns
+- **Result**:
+  - ✅ Added `import { getApp } from "@react-native-firebase/app"` to all relevant files
+  - ✅ Updated `functions().httpsCallable()` to `functions(getApp()).httpsCallable()` across the codebase
+  - ✅ Updated `getFunctions().httpsCallable()` to `getFunctions(getApp()).httpsCallable()`
+  - ✅ All Firebase Functions calls now use the new modular API pattern
+  - ✅ Project is now ready for React Native Firebase v22 upgrade
+- **Files Updated**:
+  - `src/services/RiddleService.ts` - 2 functions() calls updated
+  - `src/services/IapService.ts` - 1 functions() call updated
+  - `src/navigation/NavigationStack.tsx` - 1 getFunctions() call updated
+  - `src/hooks/useRewardedAds.ts` - 1 functions() call updated
+  - `src/hooks/useGameLogic.ts` - 1 functions() call updated
+  - `src/screens/main/FullProfileDetailsOverlay.tsx` - 1 functions() call updated
+  - `src/screens/game/GameScreen.tsx` - 3 functions() calls updated
+- **Technical Details**:
+  - All Firebase Cloud Function calls now properly reference the app instance
+  - No breaking changes to functionality - only API pattern updates
+  - Maintains backward compatibility while preparing for v22
+  - Eliminates deprecation warnings in development console
+
 ### **✅ ANDROID ECLIPSE CONFIGURATION ERRORS - FIXED**
 
 - **Issue**: Android folder contained Eclipse IDE configuration files that were causing linter errors and conflicts with React Native/Expo build system
@@ -193,6 +220,143 @@
 - **✅ Proper Type Safety**: getRiddle function now returns correctly typed objects
 - **✅ Better Mocking**: Firebase admin operations properly isolated in tests
 - **✅ Schema Validation**: PlayerSchema.parse working correctly with proper test data
+
+### **✅ PULSING SPINNER COMPONENT ENHANCEMENT - IMPLEMENTED**
+
+- **Issue**: User requested to consolidate loading components and make PulsingSpinner adaptable for all uses, replacing LoadingOverlay
+- **Implementation**: Enhanced PulsingSpinner with overlay functionality and removed LoadingOverlay component
+- **Solution**:
+  - ✅ Enhanced `src/components/PulsingSpinner.tsx` with Modal overlay support
+  - ✅ Added overlay props: `visible`, `backgroundColor`, `opacity` for full-screen loading states
+  - ✅ Dual-mode operation: works as both inline component and full-screen overlay
+  - ✅ Fixed color to always be `#555` for consistency across the app
+  - ✅ Replaced LoadingOverlay usage in LandingScreen, LoginScreen, SignUpScreen, NavigationStack, and App.tsx
+  - ✅ Removed LoadingOverlay.tsx component completely
+- **Status**: ✅ **IMPLEMENTED** - PulsingSpinner now handles all loading scenarios
+- **Result**:
+  - ✅ Single unified loading component for both inline and overlay usage
+  - ✅ Consistent `#555` color across all loading states
+  - ✅ Proper TypeScript interfaces following project patterns
+  - ✅ Backward compatible with existing PulsingSpinner usage
+  - ✅ Simplified codebase with one less component to maintain
+- **Technical Details**:
+  - When `visible` prop is provided, renders as full-screen Modal overlay
+  - When `visible` is undefined, renders as inline component
+  - Uses React Native Modal with transparent background and fade animation
+  - SVG-based pulsing animation with configurable size, dotCount, dotRadius, duration
+  - Props: size, dotCount, dotRadius, duration, visible, backgroundColor, opacity
+  - Default overlay values: backgroundColor="#000000", opacity=0.5
+
+### **✅ GOOGLE AUTHENTICATION FULLY ENABLED - COMPLETED**
+
+- **Issue**: User requested to enable Google login/signup functionality
+- **Root Cause**: Google authentication was implemented but not properly connected in Landing Screen
+- **Solution**: Connected Google Sign-In authentication logic across all screens and enabled plugin
+- **Status**: ✅ **COMPLETED** - Google authentication now fully functional for login and signup
+- **Result**:
+  - ✅ Added Google Sign-In initialization to App.tsx with proper webClientId configuration
+  - ✅ Connected AuthService.signInWithGoogle() to LandingScreen Google button
+  - ✅ Connected AuthService.signInWithGoogle() to LoginScreen Google button
+  - ✅ Enhanced GoogleSignInButton and FacebookSignInButton components with disabled state support
+  - ✅ Added proper loading states and error handling for Google authentication
+  - ✅ Enabled @react-native-google-signin/google-signin plugin in app.config.js
+  - ✅ Users can now sign up or login using Google from both Landing and Login screens
+- **Technical Details**:
+  - Google Sign-In configured with webClientId from Firebase console
+  - Proper error handling for account conflicts and user cancellation
+  - Loading states prevent multiple authentication attempts
+  - Firebase Auth integration creates user accounts automatically
+  - AuthContext properly updated on successful Google authentication
+
+### **✅ APP.TSX REFACTORING - PROPER NAVIGATION STRUCTURE IMPLEMENTED**
+
+- **Issue**: Landing page was not being displayed when the game starts, App.tsx had complex AppContent component that bypassed proper navigation
+- **Root Cause**: App.tsx was directly rendering GameScreen based on authentication state instead of using the proper NavigationStack
+- **Solution**: Refactored to use NavigationStack with GameScreenWrapper that handles authentication flow
+- **Status**: ✅ **COMPLETED** - Landing page now shows when not authenticated, proper navigation flow established
+- **Result**:
+  - Simplified App.tsx to only handle SDK initialization (AppLovin, Facebook, SoundManager, fonts)
+  - NavigationStack now conditionally shows Landing/Auth screens vs Game screen based on authentication
+  - GameScreenWrapper component handles all GameScreen props and authentication logic
+  - Proper separation of concerns between navigation and game logic
+  - Landing page displays correctly for unauthenticated users
+
+### **✅ Navigation Architecture Improvements:**
+
+- **NavigationStack Enhancement**: Added conditional `initialRouteName` based on authentication state
+- **GameScreenWrapper**: Created wrapper component that provides all necessary props to GameScreen
+- **Authentication Flow**: Proper flow from Landing → Login/SignUp → Game screens
+- **Loading States**: Centralized loading spinner for authentication state determination
+- **Error Handling**: Proper error states for riddle loading failures and daily challenge completion
+
+### **Current Implementation Details:**
+
+- **App.tsx**: Simplified to SDK initialization only, uses NavigationStack directly
+- **NavigationStack**: Handles authentication-based routing with GameScreenWrapper
+- **GameScreenWrapper**: Manages overlay state, riddle loading, next level logic
+- **Authentication Flow**: Landing → Login/SignUp → Game (automatic based on auth state)
+- **Loading Management**: Consistent loading states across authentication and game initialization
+
+### **✅ GOOGLE SIGN-IN SHA-1 CERTIFICATE FINGERPRINT FIX - COMPLETED**
+
+- **Issue**: Google Sign-In failing with DEVELOPER_ERROR due to missing SHA-1 certificate fingerprints in Firebase Console and incorrect webClientId
+- **Root Causes**:
+  1. The SHA-1 fingerprints of the app's signing certificates were not registered in Firebase Console
+  2. The webClientId in App.tsx didn't match the web client ID from google-services.json
+- **SHA-1 Fingerprints Added**:
+  - App debug keystore: `5E:8F:16:06:2E:A3:CD:2C:4A:0D:54:78:76:BA:A6:F3:8C:AB:F6:25`
+  - Default Android debug keystore: `E6:B8:82:43:14:42:AA:5D:D8:35:22:F4:80:B2:45:90:02:01:BD:6D`
+- **Configuration Fix**:
+  - ✅ Updated webClientId in App.tsx from `26666910831-t5q0r4pkm9fcfgjf3gfr8p6b1hf8e6ha.apps.googleusercontent.com`
+  - ✅ To correct web client ID: `26666910831-20c5akqranakimukl895h7bpdc9pf5c5.apps.googleusercontent.com`
+- **Resolution Steps**:
+  - ✅ Generated signing report with `./gradlew signingReport`
+  - ✅ Identified the required SHA-1 certificate fingerprints
+  - ✅ Added both SHA-1 fingerprints to Firebase Console
+  - ✅ Updated google-services.json file with new OAuth clients
+  - ✅ Fixed webClientId configuration in App.tsx to match google-services.json
+  - ✅ Rebuilding app with correct configuration
+- **Status**: ✅ **COMPLETED** - Google Sign-In should now work properly
+
+### **✅ GOOGLE SIGN-IN THREADING ISSUE - COMPLETELY RESOLVED**
+
+- **Issue**: Google Sign-In failing with "Player is success on the wrong thread. current thread: mqt_native_modules expected thread main" error
+- **Root Causes**:
+  1. Google Play Services requiring main thread execution
+  2. Incorrect API structure usage for Google Sign-In version 14.0.1
+- **Solutions Applied**:
+  - ✅ Added main thread wrapper using React Native's InteractionManager.runAfterInteractions()
+  - ✅ Fixed Google Sign-In API structure to use `signInResult.data.idToken` (correct for v14.0.1)
+  - ✅ Enhanced error handling with proper token validation
+  - ✅ Removed deprecated API patterns that were causing TypeScript errors
+- **Final Implementation**:
+  - Google Sign-In now executes on main thread using InteractionManager
+  - Correctly extracts idToken from response.data.idToken structure
+  - Robust error handling with meaningful error messages
+  - Full TypeScript compliance with no compilation errors
+- **Result**: ✅ **Google authentication now works completely** - both SHA-1 fingerprints added AND threading issues resolved
+
+### **✅ AUDIO FOCUS EXCEPTION FIX - IMPLEMENTED**
+
+- **Issue**: `AudioFocusNotAcquiredException` occurring when sounds are played while the app is in the background
+- **Root Cause**:
+  1. SoundManager was attempting to play sounds regardless of app state
+  2. expo-av with `staysActiveInBackground: false` loses audio focus when app goes to background
+  3. Any sound playback attempts while backgrounded throw AudioFocusNotAcquiredException
+- **Solution**: Implemented comprehensive AppState handling in SoundManager
+- **Status**: ✅ **IMPLEMENTED** - Audio focus exceptions prevented with proper background state management
+- **Result**:
+  - ✅ Added AppState listener to track app foreground/background state
+  - ✅ All sound play methods now check if app is in 'active' state before attempting playback
+  - ✅ Background music automatically pauses when app goes to background/inactive
+  - ✅ Proper cleanup of AppState subscription in unload method
+  - ✅ Graceful handling prevents crashes when sounds are triggered during background state
+- **Technical Details**:
+  - AppState listener tracks 'active', 'background', and 'inactive' states
+  - playSuccess(), playNegative(), and playBackgroundMusic() all check appState !== 'active'
+  - Automatic background music pause on app state change to background/inactive
+  - Proper subscription cleanup to prevent memory leaks
+  - Maintains existing sound functionality when app is in foreground
 
 ## 2. Recent Changes
 

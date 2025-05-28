@@ -1,7 +1,13 @@
 import * as RNIap from "react-native-iap";
 import { Platform } from "react-native";
 import functions from "@react-native-firebase/functions";
+import { getApp } from "@react-native-firebase/app";
 import { PurchaseValidationResponse } from "../types/Player";
+
+// Interface for IAP error objects that have error codes
+interface IapError extends Error {
+  code?: string;
+}
 
 const coinProductIds = [
   "com.yourgame.coinpack1",
@@ -15,10 +21,6 @@ export const COIN_PRODUCT_DETAILS: {
   COIN_PACK_SMALL: { id: "com.yourgame.coinpack1", coins: 100 },
   COIN_PACK_MEDIUM: { id: "com.yourgame.coinpack2", coins: 500 },
   COIN_PACK_LARGE: { id: "com.yourgame.coinpack3", coins: 1200 },
-};
-
-export const COIN_PRODUCT_IDS = {
-  // ... existing code ...
 };
 
 export const IapService = {
@@ -108,47 +110,47 @@ export const IapService = {
           "Could not process purchase token. Please try purchasing again."
         );
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error purchasing product:", error);
       // Refer to RNIap documentation for error codes.
       let userFriendlyMessage =
         "An unexpected error occurred during the purchase process. Please try again.";
 
-      if (error.code === "E_USER_CANCELLED") {
+      if ((error as IapError).code === "E_USER_CANCELLED") {
         console.log("Purchase cancelled by user.");
         userFriendlyMessage = "Purchase cancelled.";
-      } else if (error.code === "E_ALREADY_OWNED") {
+      } else if ((error as IapError).code === "E_ALREADY_OWNED") {
         console.log("Item already owned.");
         userFriendlyMessage = "You already own this item.";
-      } else if (error.code === "E_DEVELOPER_ERROR") {
+      } else if ((error as IapError).code === "E_DEVELOPER_ERROR") {
         console.log("Developer error.");
         userFriendlyMessage =
           "A system error occurred. Please contact support if this persists.";
-      } else if (error.code === "E_ITEM_UNAVAILABLE") {
+      } else if ((error as IapError).code === "E_ITEM_UNAVAILABLE") {
         console.log("Item unavailable.");
         userFriendlyMessage = "This item is currently unavailable.";
-      } else if (error.code === "E_NETWORK_ERROR") {
+      } else if ((error as IapError).code === "E_NETWORK_ERROR") {
         console.log("Network error during purchase.");
         userFriendlyMessage =
           "Network error. Please check your connection and try again.";
       } else if (
-        error.message ===
+        (error as Error).message ===
         "Your purchase could not be validated. Please try again or contact support."
       ) {
         // This is an error from the validation catch block, re-thrown.
-        userFriendlyMessage = error.message;
+        userFriendlyMessage = (error as Error).message;
       } else if (
-        error.message ===
+        (error as Error).message ===
         "A network error occurred during purchase validation. Please check your internet connection."
       ) {
         // This is an error from the validation catch block, re-thrown.
-        userFriendlyMessage = error.message;
+        userFriendlyMessage = (error as Error).message;
       } else if (
-        error.message ===
+        (error as Error).message ===
         "Could not process purchase token. Please try purchasing again."
       ) {
         // This is an error from the missing purchase token catch block, re-thrown.
-        userFriendlyMessage = error.message;
+        userFriendlyMessage = (error as Error).message;
       }
 
       // Rethrow a new Error with a user-friendly message
@@ -173,8 +175,8 @@ export const IapService = {
 
     // Call the Firebase Cloud Function for validation
     try {
-      const result = await functions().httpsCallable<
-        any,
+      const result = await functions(getApp()).httpsCallable<
+        { purchaseToken: string; productId: string; platform: string },
         PurchaseValidationResponse
       >("validatePurchase")({
         purchaseToken,

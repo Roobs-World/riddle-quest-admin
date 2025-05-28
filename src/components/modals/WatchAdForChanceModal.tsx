@@ -43,17 +43,24 @@ const WatchAdForChanceModal: React.FC<WatchAdForChanceModalProps> = ({
 
 const styles = StyleSheet.create({
   centeredView: {
-    flex: 1,
-    justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.5)", // Semi-transparent background
+    backgroundColor: "rgba(0,0,0,0.5)",
+    flex: 1,
+    justifyContent: "center", // Semi-transparent background
+  },
+  modalText: {
+    marginBottom: 20, // Increased margin for better spacing
+    textAlign: "center",
+    fontSize: 16, // Adjusted font size
+    color: "#333", // Darker text color for readability
   },
   modalView: {
-    margin: 20,
+    alignItems: "center",
     backgroundColor: "white",
     borderRadius: 20,
+    elevation: 5,
+    margin: 20,
     padding: 35,
-    alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -61,14 +68,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 5,
     width: "80%", // Set a width for the modal
-  },
-  modalText: {
-    marginBottom: 20, // Increased margin for better spacing
-    textAlign: "center",
-    fontSize: 16, // Adjusted font size
-    color: "#333", // Darker text color for readability
   },
 });
 

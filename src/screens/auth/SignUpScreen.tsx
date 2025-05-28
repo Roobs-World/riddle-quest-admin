@@ -13,6 +13,7 @@ import UserUsernameInput from "../../components/inputFields/UserUsernameInput";
 import PasswordMatch from "../../components/text/PasswordMatch";
 import Error from "../../components/text/Error";
 import BackButton from "../../components/buttons/BackButton";
+import PulsingSpinner from "../../components/PulsingSpinner";
 import { AuthService } from "../../services/AuthService";
 import { signUpSchema, SignUpFormData } from "../../validation/authSchemas";
 import { ZodError, ZodFormattedError } from "zod";
@@ -386,6 +387,8 @@ const SignUpScreen = ({ navigation }: { navigation: NavigationProp }) => {
           </View>
         </AuthLayout>
       </CustomSafeAreaView>
+
+      <PulsingSpinner visible={isLoading} size={120} />
     </View>
   );
 };

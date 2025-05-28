@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, Modal, TouchableOpacity } from "react-native";
-import { SubmittedGuess, Feedback } from "../../hooks/types";
+import type { SubmittedGuess } from "../../hooks/types";
 import { generateFeedbackEmojiGrid } from "../../utils/gameUtils"; // Import the utility function
 
 /**

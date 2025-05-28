@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text } from "react-native";
 import CustomSafeAreaView from "../components/CustomSafeAreaView";
 import QwordlyLogo from "../components/logos/QwordlyLogo";
@@ -7,9 +7,14 @@ import FacebookSignInButton from "../components/buttons/FacebookSignInButton";
 import WideButton from "../components/buttons/WideButton";
 import HomeBgSvg from "../../assets/images/home-bg.svg";
 import SignUpButton from "../components/buttons/SignUpButton";
+import PulsingSpinner from "../components/PulsingSpinner";
 import { AppStrings } from "../constants/AppStrings";
 import Subtitle from "../components/text/Subtitle";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { AuthService } from "../services/AuthService";
+import { useAuth } from "../contexts/AuthContext";
+import Error from "../components/text/Error";
+import { type FirebaseAuthTypes } from "@react-native-firebase/auth";
 
 type RootStackParamList = {
   Landing: undefined;
@@ -36,6 +41,79 @@ const LandingScreen = ({
 }: {
   navigation: LandingScreenNavigationProp;
 }) => {
+  const [authError, setAuthError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const { login } = useAuth();
+
+  const handleGoogleSignIn = async () => {
+    setIsLoading(true);
+    setAuthError(null);
+
+    try {
+      const userCredential = await AuthService.signInWithGoogle();
+      console.log("Google login success:", userCredential);
+      if (userCredential.user?.uid) {
+        login();
+      }
+    } catch (error) {
+      const firebaseError = error as FirebaseAuthTypes.NativeFirebaseAuthError;
+      console.error("Google login error:", firebaseError);
+      switch (firebaseError.code) {
+        case "auth/account-exists-with-different-credential":
+          setAuthError(
+            "Account exists with different credential. Please use a different login method."
+          );
+          break;
+        case "auth/auth-popup-closed-by-user":
+          console.log("Auth popup closed by user.");
+          break;
+        default:
+          setAuthError(
+            firebaseError.message ||
+              "An unexpected error occurred during Google login."
+          );
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleFacebookSignIn = async () => {
+    setIsLoading(true);
+    setAuthError(null);
+
+    try {
+      const userCredential = await AuthService.signInWithFacebook();
+      console.log("Facebook login success:", userCredential);
+      if (userCredential.user?.uid) {
+        login();
+      }
+    } catch (error) {
+      const firebaseError = error as FirebaseAuthTypes.NativeFirebaseAuthError;
+      console.error("Facebook login error:", firebaseError);
+      switch (firebaseError.code) {
+        case "auth/account-exists-with-different-credential":
+          setAuthError(
+            "Account exists with different credential. Please use a different login method."
+          );
+          break;
+        case "auth/auth-popup-closed-by-user":
+          console.log("Auth popup closed by user.");
+          break;
+        case "auth/operation-not-supported-in-this-environment":
+          setAuthError("Facebook login is not supported in this environment.");
+          break;
+        default:
+          setAuthError(
+            firebaseError.message ||
+              "An unexpected error occurred during Facebook login."
+          );
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <CustomSafeAreaView>
       <HomeBgSvg
@@ -72,6 +150,7 @@ const LandingScreen = ({
       <WideButton
         buttonText={AppStrings.AuthStrings.Landing.SIGN_IN_BUTTON}
         onPress={() => navigation.navigate(AppStrings.Navigation.LOGIN)}
+        disabled={isLoading}
       />
 
       <View className="flex-row items-center mt-4 mb-8">
@@ -85,11 +164,14 @@ const LandingScreen = ({
         <View className="flex-1 h-px bg-gray-400 ml-2" />
       </View>
 
-      <GoogleSignInButton onPress={() => console.log("Continue with Google")} />
+      <GoogleSignInButton onPress={handleGoogleSignIn} disabled={isLoading} />
 
       <FacebookSignInButton
-        onPress={() => console.log("Continue with Facebook")}
+        onPress={handleFacebookSignIn}
+        disabled={isLoading}
       />
+
+      {authError && <Error message={authError} />}
 
       <View className="flex-row items-center mt-8">
         <View className="flex-1 h-px bg-gray-400 mr-2" />
@@ -105,6 +187,8 @@ const LandingScreen = ({
       <SignUpButton
         onPress={() => navigation.navigate(AppStrings.Navigation.SIGN_UP)}
       />
+
+      <PulsingSpinner visible={isLoading} size={120} />
     </CustomSafeAreaView>
   );
 };

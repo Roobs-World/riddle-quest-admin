@@ -8,6 +8,7 @@ import AuthLayout from "../../components/layouts/AuthLayout";
 import UserEmailInput from "../../components/inputFields/UserEmailInput";
 import UserPasswordInput from "../../components/inputFields/UserPasswordInput";
 import BackButton from "../../components/buttons/BackButton";
+import PulsingSpinner from "../../components/PulsingSpinner";
 import { AuthService } from "../../services/AuthService";
 import { useAuth } from "../../contexts/AuthContext";
 import Error from "../../components/text/Error";
@@ -51,6 +52,83 @@ const LoginScreen = ({
 
   const [authError, setAuthError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const handleGoogleSignIn = async () => {
+    setIsLoading(true);
+    setAuthError("");
+    setEmailError("");
+    setPasswordError("");
+
+    try {
+      const userCredential = await AuthService.signInWithGoogle();
+      console.log("Google login success:", userCredential);
+      if (userCredential.user?.uid) {
+        login();
+      }
+    } catch (error) {
+      const firebaseError = error as FirebaseAuthTypes.NativeFirebaseAuthError;
+      console.error("Google login error:", firebaseError);
+      switch (firebaseError.code) {
+        case "auth/account-exists-with-different-credential":
+          setAuthError(
+            AppStrings.AuthStrings.Login
+              .ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL
+          );
+          break;
+        case "auth/auth-popup-closed-by-user":
+          console.log("Auth popup closed by user.");
+          break;
+        default:
+          setAuthError(
+            firebaseError.message ||
+              "An unexpected error occurred during Google login."
+          );
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleFacebookSignIn = async () => {
+    setIsLoading(true);
+    setAuthError("");
+    setEmailError("");
+    setPasswordError("");
+
+    try {
+      const userCredential = await AuthService.signInWithFacebook();
+      console.log("Facebook login success:", userCredential);
+      if (userCredential.user?.uid) {
+        login();
+      }
+    } catch (error) {
+      const firebaseError = error as FirebaseAuthTypes.NativeFirebaseAuthError;
+      console.error("Facebook login error:", firebaseError);
+      switch (firebaseError.code) {
+        case "auth/account-exists-with-different-credential":
+          setAuthError(
+            AppStrings.AuthStrings.Login
+              .ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL
+          );
+          break;
+        case "auth/auth-popup-closed-by-user":
+          console.log("Auth popup closed by user.");
+          break;
+        case "auth/operation-not-supported-in-this-environment":
+          setAuthError(
+            AppStrings.AuthStrings.Login.OPERATION_NOT_SUPPORTED_ERROR
+          );
+          break;
+        default:
+          setAuthError(
+            firebaseError.message ||
+              "An unexpected error occurred during Facebook login."
+          );
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleLogin = async () => {
     setIsLoading(true);
@@ -174,78 +252,10 @@ const LoginScreen = ({
         <Text className="text-center text-gray-500 mb-4">
           {AppStrings.AuthStrings.Login.OR_LOGIN_WITH}
         </Text>
-        <GoogleSignInButton
-          onPress={async () => {
-            setAuthError("");
-            setEmailError("");
-            setPasswordError("");
-            try {
-              const userCredential = await AuthService.signInWithGoogle();
-              console.log("Google login success:", userCredential);
-              if (userCredential.user?.uid) {
-                login();
-              }
-            } catch (error) {
-              const firebaseError =
-                error as FirebaseAuthTypes.NativeFirebaseAuthError;
-              console.error("Google login error:", firebaseError);
-              switch (firebaseError.code) {
-                case "auth/account-exists-with-different-credential":
-                  setAuthError(
-                    AppStrings.AuthStrings.Login
-                      .ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL
-                  );
-                  break;
-                case "auth/auth-popup-closed-by-user":
-                  console.log("Auth popup closed by user.");
-                  break;
-                default:
-                  setAuthError(
-                    firebaseError.message ||
-                      "An unexpected error occurred during Google login."
-                  );
-              }
-            }
-          }}
-        />
+        <GoogleSignInButton onPress={handleGoogleSignIn} disabled={isLoading} />
         <FacebookSignInButton
-          onPress={async () => {
-            setAuthError("");
-            setEmailError("");
-            setPasswordError("");
-            try {
-              const userCredential = await AuthService.signInWithFacebook();
-              console.log("Facebook login success:", userCredential);
-              if (userCredential.user?.uid) {
-                login();
-              }
-            } catch (error) {
-              const firebaseError =
-                error as FirebaseAuthTypes.NativeFirebaseAuthError;
-              console.error("Facebook login error:", firebaseError);
-              switch (firebaseError.code) {
-                case "auth/account-exists-with-different-credential":
-                  setAuthError(
-                    AppStrings.AuthStrings.Login
-                      .ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL
-                  );
-                  break;
-                case "auth/auth-popup-closed-by-user":
-                  console.log("Auth popup closed by user.");
-                  break;
-                case "auth/operation-not-supported-in-this-environment":
-                  setAuthError(
-                    AppStrings.AuthStrings.Login.OPERATION_NOT_SUPPORTED_ERROR
-                  );
-                  break;
-                default:
-                  setAuthError(
-                    firebaseError.message ||
-                      "An unexpected error occurred during Facebook login."
-                  );
-              }
-            }
-          }}
+          onPress={handleFacebookSignIn}
+          disabled={isLoading}
         />
       </View>
 
@@ -261,6 +271,8 @@ const LoginScreen = ({
           </Text>
         </TouchableOpacity>
       </View>
+
+      <PulsingSpinner visible={isLoading} size={120} />
     </CustomSafeAreaView>
   );
 };

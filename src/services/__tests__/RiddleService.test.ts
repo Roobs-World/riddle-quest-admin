@@ -231,7 +231,7 @@ describe("RiddleService", () => {
 
       // mockGenerateClassicRiddlesCallable is set in beforeEach to add 1 riddle
 
-      let resultPromise = RiddleService.fetchClassicRiddle(classicLevel);
+      const resultPromise = RiddleService.fetchClassicRiddle(classicLevel);
 
       // Allow microtasks to run (e.g., the first firestore().get())
       await act(async () => {

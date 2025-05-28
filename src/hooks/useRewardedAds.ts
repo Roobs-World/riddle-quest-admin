@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import {
   AdInfo,
   RewardedAd,
@@ -7,6 +7,7 @@ import {
   AdRewardInfo,
 } from "react-native-applovin-max";
 import functions from "@react-native-firebase/functions";
+import { getApp } from "@react-native-firebase/app";
 import { useAuth } from "../contexts/AuthContext";
 import Constants from "expo-constants";
 
@@ -46,119 +47,163 @@ const useRewardedAds = (): UseRewardedAds => {
   const retryAttempt = useRef(0);
   const { playerData } = useAuth();
 
+  // --- Ad Loading Function (wrapped in useCallback) ---
+
+  const loadRewardedAd = useCallback(() => {
+    if (!REWARDED_AD_UNIT_ID) {
+      console.error(
+        "Cannot load rewarded ad: APPLOVIN_REWARDED_AD_UNIT_ID is not set."
+      );
+      return;
+    }
+    console.log("Loading rewarded ad...");
+    // Check if SDK is initialized before loading ads, potentially add a state for SDK initialized status
+    // if (AppLovinMAX.isInitialized()) { // Check SDK initialization status if available/needed
+    RewardedAd.loadAd(REWARDED_AD_UNIT_ID);
+    // } else {
+    //    console.warn("AppLovin SDK not initialized. Cannot load rewarded ad.");
+    // }
+  }, []);
+
   // --- Event Listeners for Rewarded Ads ---
 
-  const onRewardedAdLoaded = (adInfo: AdInfo) => {
+  const onRewardedAdLoaded = useCallback((adInfo: AdInfo) => {
     console.log("Rewarded ad loaded from " + adInfo.networkName);
     setIsRewardedAdReady(true);
     retryAttempt.current = 0; // Reset retry attempt
-  };
+  }, []);
 
-  const onRewardedAdLoadFailed = (errorInfo: AdLoadFailedInfo) => {
-    console.log(
-      "Rewarded ad failed to load with code " +
-        errorInfo.code +
-        " and message: " +
-        errorInfo.message
-    );
-    setIsRewardedAdReady(false);
+  const onRewardedAdLoadFailed = useCallback(
+    (errorInfo: AdLoadFailedInfo) => {
+      console.log(
+        "Rewarded ad failed to load with code " +
+          errorInfo.code +
+          " and message: " +
+          errorInfo.message
+      );
+      setIsRewardedAdReady(false);
 
-    // AppLovin recommends retrying with exponentially higher delays
-    retryAttempt.current++;
-    if (retryAttempt.current > MAX_EXPONENTIAL_RETRY_COUNT) {
-      console.warn("Rewarded ad load retry limit reached.");
-      return;
-    }
-
-    const retryDelay = Math.pow(
-      2,
-      Math.min(MAX_EXPONENTIAL_RETRY_COUNT, retryAttempt.current)
-    );
-
-    console.log(
-      `Retrying rewarded ad load in ${retryDelay}s (attempt ${retryAttempt.current})...`
-    );
-
-    setTimeout(() => {
-      loadRewardedAd();
-    }, retryDelay * 1000);
-  };
-
-  const onRewardedAdDisplayFailed = (adInfo: AdDisplayFailedInfo) => {
-    console.log(
-      "Rewarded ad failed to display with code " +
-        adInfo.code +
-        " and message: " +
-        adInfo.message
-    );
-    setIsRewardedAdReady(false); // Ad failed to display, so it's no longer ready
-    // AppLovin recommends loading the next ad if one fails to display
-    loadRewardedAd();
-  };
-
-  const onRewardedAdDisplayed = (adInfo: AdInfo) => {
-    console.log("Rewarded ad displayed");
-  };
-
-  const onRewardedAdClicked = (adInfo: AdInfo) => {
-    console.log("Rewarded ad clicked");
-  };
-
-  const onRewardedAdHidden = (adInfo: AdInfo) => {
-    console.log("Rewarded ad hidden");
-    setIsRewardedAdReady(false); // Ad is hidden, so it's no longer ready
-    // Pre-load the next ad
-    loadRewardedAd();
-  };
-
-  const onUserRewarded = async (rewardInfo: ExtendedAdRewardInfo) => {
-    // Access amount and label using methods based on common patterns in native SDKs
-    // The type definition might not reflect these methods directly.
-    // Using 'any' and checking for method existence to bypass strict type checking.
-    const amount = rewardInfo.getAmount();
-    const label = rewardInfo.getLabel();
-    console.log("User rewarded: " + amount + " " + label);
-
-    // IMPORTANT: Do NOT award coins directly on the client side.
-    // The actual coin awarding should happen server-side AFTER AppLovin sends
-    // the S2S rewarded callback to your backend and you validate it.
-    // The client-side onUserRewarded event can be used for immediate UI feedback,
-    // but the server is the authority for awarding the reward based on its S2S callback.
-
-    // Notify the backend that the user was rewarded.
-    if (playerData?.userId) {
-      try {
-        const adUnitId = rewardInfo.getAdUnitId();
-        const placement = rewardInfo.getPlacement();
-        const networkName = rewardInfo.getNetworkName();
-
-        console.log(
-          `Calling rewardedAdCallback with userId: ${playerData.userId}, adUnitId: ${adUnitId}, placement: ${placement}, network: ${networkName}`
-        );
-
-        // Placement for the Firebase function can be the adUnitId or a custom string
-        // Using adUnitId if available, otherwise null or a default string if necessary
-        const firebasePlacement =
-          adUnitId || placement || networkName || "rewarded_ad";
-
-        await functions().httpsCallable("awardedAdCallback")({
-          userId: playerData.userId,
-          placement: firebasePlacement, // Send ad unit ID or placement string
-          // You could also send amount and label if your backend wants to verify them, though S2S is more reliable
-          // amount: amount,
-          // label: label,
-        });
-        console.log("Successfully notified server of rewarded ad completion.");
-      } catch (error) {
-        console.error(
-          "Error calling rewardedAdCallback Firebase function:",
-          error
-        );
+      // AppLovin recommends retrying with exponentially higher delays
+      retryAttempt.current++;
+      if (retryAttempt.current > MAX_EXPONENTIAL_RETRY_COUNT) {
+        console.warn("Rewarded ad load retry limit reached.");
+        return;
       }
-    } else {
-      console.warn("Cannot notify server: User ID not available.");
-    }
-  };
+
+      const retryDelay = Math.pow(
+        2,
+        Math.min(MAX_EXPONENTIAL_RETRY_COUNT, retryAttempt.current)
+      );
+
+      console.log(
+        `Retrying rewarded ad load in ${retryDelay}s (attempt ${retryAttempt.current})...`
+      );
+
+      setTimeout(() => {
+        loadRewardedAd();
+      }, retryDelay * 1000);
+    },
+    [loadRewardedAd]
+  );
+
+  const onRewardedAdDisplayFailed = useCallback(
+    (adInfo: AdDisplayFailedInfo) => {
+      console.log(
+        "Rewarded ad failed to display with code " +
+          adInfo.code +
+          " and message: " +
+          adInfo.message
+      );
+      setIsRewardedAdReady(false); // Ad failed to display, so it's no longer ready
+      // AppLovin recommends loading the next ad if one fails to display
+      loadRewardedAd();
+    },
+    [loadRewardedAd]
+  );
+
+  const onRewardedAdDisplayed = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    (_adInfo: AdInfo) => {
+      console.log("Rewarded ad displayed");
+    },
+    []
+  );
+
+  const onRewardedAdClicked = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    (_adInfo: AdInfo) => {
+      console.log("Rewarded ad clicked");
+    },
+    []
+  );
+
+  const onRewardedAdHidden = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    (_adInfo: AdInfo) => {
+      console.log("Rewarded ad hidden");
+      setIsRewardedAdReady(false); // Ad is hidden, so it's no longer ready
+      // Pre-load the next ad
+      loadRewardedAd();
+    },
+    [loadRewardedAd]
+  );
+
+  const onUserRewarded = useCallback(
+    async (rewardInfo: AdRewardInfo) => {
+      // Cast to ExtendedAdRewardInfo to access native methods
+      const extendedRewardInfo = rewardInfo as ExtendedAdRewardInfo;
+
+      // Access amount and label using methods based on common patterns in native SDKs
+      // The type definition might not reflect these methods directly.
+      // Using 'any' and checking for method existence to bypass strict type checking.
+      const amount = extendedRewardInfo.getAmount();
+      const label = extendedRewardInfo.getLabel();
+      console.log("User rewarded: " + amount + " " + label);
+
+      // IMPORTANT: Do NOT award coins directly on the client side.
+      // The actual coin awarding should happen server-side AFTER AppLovin sends
+      // the S2S rewarded callback to your backend and you validate it.
+      // The client-side onUserRewarded event can be used for immediate UI feedback,
+      // but the server is the authority for awarding the reward based on its S2S callback.
+
+      // Notify the backend that the user was rewarded.
+      if (playerData?.userId) {
+        try {
+          const adUnitId = extendedRewardInfo.getAdUnitId();
+          const placement = extendedRewardInfo.getPlacement();
+          const networkName = extendedRewardInfo.getNetworkName();
+
+          console.log(
+            `Calling rewardedAdCallback with userId: ${playerData.userId}, adUnitId: ${adUnitId}, placement: ${placement}, network: ${networkName}`
+          );
+
+          // Placement for the Firebase function can be the adUnitId or a custom string
+          // Using adUnitId if available, otherwise null or a default string if necessary
+          const firebasePlacement =
+            adUnitId || placement || networkName || "rewarded_ad";
+
+          await functions(getApp()).httpsCallable("awardedAdCallback")({
+            userId: playerData.userId,
+            placement: firebasePlacement, // Send ad unit ID or placement string
+            // You could also send amount and label if your backend wants to verify them, though S2S is more reliable
+            // amount: amount,
+            // label: label,
+          });
+          console.log(
+            "Successfully notified server of rewarded ad completion."
+          );
+        } catch (error) {
+          console.error(
+            "Error calling rewardedAdCallback Firebase function:",
+            error
+          );
+        }
+      } else {
+        console.warn("Cannot notify server: User ID not available.");
+      }
+    },
+    [playerData?.userId]
+  );
 
   // --- Hook Lifecycle ---
 
@@ -176,27 +221,17 @@ const useRewardedAds = (): UseRewardedAds => {
 
     // No explicit listener removal here based on observed documentation patterns.
     // The listeners will persist for the lifetime of the hook instance.
-  }, []); // Empty dependency array means this runs once on mount
+  }, [
+    onRewardedAdLoaded,
+    onRewardedAdLoadFailed,
+    onRewardedAdDisplayFailed,
+    onRewardedAdDisplayed,
+    onRewardedAdClicked,
+    onRewardedAdHidden,
+    onUserRewarded,
+  ]); // Fixed dependency array
 
-  // --- Ad Loading and Showing Functions ---
-
-  const loadRewardedAd = () => {
-    if (!REWARDED_AD_UNIT_ID) {
-      console.error(
-        "Cannot load rewarded ad: APPLOVIN_REWARDED_AD_UNIT_ID is not set."
-      );
-      return;
-    }
-    console.log("Loading rewarded ad...");
-    // Check if SDK is initialized before loading ads, potentially add a state for SDK initialized status
-    // if (AppLovinMAX.isInitialized()) { // Check SDK initialization status if available/needed
-    RewardedAd.loadAd(REWARDED_AD_UNIT_ID);
-    // } else {
-    //    console.warn("AppLovin SDK not initialized. Cannot load rewarded ad.");
-    // }
-  };
-
-  const showRewardedAd = () => {
+  const showRewardedAd = useCallback(() => {
     if (!REWARDED_AD_UNIT_ID) {
       console.error(
         "Cannot show rewarded ad: APPLOVIN_REWARDED_AD_UNIT_ID is not set."
@@ -211,7 +246,7 @@ const useRewardedAds = (): UseRewardedAds => {
       // Optionally, load the ad if it's not ready
       loadRewardedAd();
     }
-  };
+  }, [isRewardedAdReady, loadRewardedAd]);
 
   // --- Initial Ad Load ---
 
@@ -220,7 +255,7 @@ const useRewardedAds = (): UseRewardedAds => {
     // This will attempt to load the ad assuming the SDK is initialized early in the app lifecycle.
     // A more robust approach might involve waiting for the SDK initialization confirmation.
     loadRewardedAd();
-  }, [loadRewardedAd]); // Added loadRewardedAd to dependencies
+  }, [loadRewardedAd]); // Fixed dependency
 
   return {
     isRewardedAdReady,

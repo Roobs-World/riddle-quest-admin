@@ -8,8 +8,8 @@ import { AppStrings } from "../constants/AppStrings";
 import ForgotPasswordScreen from "../screens/auth/ForgotPasswordScreen";
 import NewPasswordScreen from "../screens/auth/NewPasswordScreen";
 import GameScreen from "../screens/game/GameScreen";
-import DottedSpinner from "../components/DottedSpinner";
 import { useAuth } from "../contexts/AuthContext";
+import PulsingSpinner from "../components/PulsingSpinner";
 import {
   GameScreenOverlayState,
   GameScreenOverlayActions,
@@ -20,6 +20,7 @@ import {
   fetchDailyRiddleForDate,
 } from "../services/FirestoreService";
 import { getFunctions } from "@react-native-firebase/functions";
+import { getApp } from "@react-native-firebase/app";
 import { useState, useEffect } from "react";
 
 const Stack = createNativeStackNavigator();
@@ -161,7 +162,7 @@ const GameScreenWrapper = () => {
         console.log(
           "End of available classic riddles, triggering generation..."
         );
-        const generateRiddlesCallable = getFunctions().httpsCallable(
+        const generateRiddlesCallable = getFunctions(getApp()).httpsCallable(
           "generateClassicRiddles"
         );
         await generateRiddlesCallable();
@@ -191,7 +192,7 @@ const GameScreenWrapper = () => {
     }
   };
 
-  // Show loading spinner while auth status, player data, and current riddle are loading
+  // Show loading overlay while auth status, player data, and current riddle are loading
   if (
     isLoading ||
     (isAuthenticated &&
@@ -199,18 +200,7 @@ const GameScreenWrapper = () => {
         !currentRiddle ||
         isDailyChallengeAvailable === undefined))
   ) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "#FAF3E0",
-        }}
-      >
-        <DottedSpinner size={150} color="#FDBA74" />
-      </View>
-    );
+    return <PulsingSpinner visible={true} size={150} />;
   }
 
   // If not authenticated, this should not render (handled by navigation)
@@ -286,7 +276,6 @@ const GameScreenWrapper = () => {
         }}
         overlayState={overlayState}
         overlayActions={overlayActions}
-        skippedAnswer={null}
         gameMode={gameMode}
       />
     );
@@ -304,20 +293,9 @@ export const Navigation = () => {
 
   console.log("Navigation component rendering...");
 
-  // Show loading while authentication state is being determined
+  // Show loading overlay while authentication state is being determined
   if (isLoading) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "#FAF3E0",
-        }}
-      >
-        <DottedSpinner size={150} color="#FDBA74" />
-      </View>
-    );
+    return <PulsingSpinner visible={true} size={150} />;
   }
 
   return (

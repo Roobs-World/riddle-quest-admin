@@ -10,11 +10,6 @@ import Animated, {
 import type { SubmittedGuess, Feedback } from "../../hooks/types"; // Import Feedback type from types.ts
 
 /**
- * Define the structure for a single guess row (letters or null for empty cells).
- */
-type GuessRow = (string | null)[];
-
-/**
  * Define the structure for the entire guess grid.
  * @property {SubmittedGuess[]} guesses - An array of submitted guesses with their feedback.
  * @property {string[]} currentGuess - The letters of the current guess being entered by the user.

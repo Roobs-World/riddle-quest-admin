@@ -6,10 +6,6 @@ dotenv.config({path: ".env"}); // Load .env file from firebase-functions directo
 import * as admin from "firebase-admin";
 import functionsTest from "firebase-functions-test";
 import {HttpsError, CallableRequest as CallableRequestV2} from "firebase-functions/v2/https"; // For V2 onCall
-import * as functions from "firebase-functions"; // For V1 CallableRequest
-
-// Mock the firestoreService module
-jest.mock("../firestoreService");
 
 // Import the functions to test
 import {setCompletedDailyChallenge, hasCompletedDailyChallenge} from "../dailyChallenge";
@@ -124,18 +120,6 @@ describe("Daily Challenge Functions - Integration Tests", () => {
     }
   }, 15000);
 
-  // Helper for V1 CallableRequest
-  const constructV1Request = (
-    data: unknown, // V1 data can be anything
-    auth?: {uid: string},
-  ): functions.https.CallableRequest => {
-    return {
-      data: data,
-      auth: auth,
-      rawRequest: {headers: {}, body: {data: data}}, // Simplified rawRequest for V1
-    } as functions.https.CallableRequest;
-  };
-
   // Helper for V2 CallableRequest
   const constructV2Request = <T = unknown>(data: T, authContextArg?: {uid: string} | null): CallableRequestV2<T> => {
     const auth = authContextArg === undefined ? {uid: testUserId} : authContextArg;
@@ -146,9 +130,9 @@ describe("Daily Challenge Functions - Integration Tests", () => {
     } as CallableRequestV2<T>;
   };
 
-  describe("setCompletedDailyChallenge (V1 style)", () => {
+  describe("setCompletedDailyChallenge (V2 style)", () => {
     it("should set lastDailyChallengeCompletedAt to the current date", async () => {
-      const request = constructV1Request({}, {uid: testUserId});
+      const request = constructV2Request({});
 
       const result = await wrappedSetCompletedDailyChallenge(request);
       expect(result).toEqual({message: "Last completed daily challenge date set successfully."});
@@ -163,12 +147,9 @@ describe("Daily Challenge Functions - Integration Tests", () => {
     }, 15000);
 
     it("should throw unauthenticated if called without authentication", async () => {
-      const request = constructV1Request({}, undefined); // No auth
+      const request = constructV2Request({}, null); // No auth
       await expect(wrappedSetCompletedDailyChallenge(request)).rejects.toThrow(
-        new functions.https.HttpsError(
-          "unauthenticated",
-          "The user must be authenticated to set completed daily challenge.",
-        ),
+        new HttpsError("unauthenticated", "The user must be authenticated to set completed daily challenge."),
       );
     }, 10000);
   });

@@ -9,7 +9,6 @@ import {
   Modal,
 } from "react-native";
 import { useAuth } from "../contexts/AuthContext";
-import { Player, PlayerStats } from "../types/Player";
 import * as ImagePicker from "react-native-image-picker";
 import storage from "@react-native-firebase/storage";
 import { FirebaseStorageTypes } from "@react-native-firebase/storage";

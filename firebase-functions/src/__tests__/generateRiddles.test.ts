@@ -198,9 +198,7 @@ describe("generateRiddles - Firestore Implementation", () => {
     it("should throw error when OPENAI_API_KEY is missing", async () => {
       delete process.env.OPENAI_API_KEY;
 
-      await expect(generateAndAppendRiddles(1)).rejects.toThrow(
-        "Missing required environment variable: OPENAI_API_KEY",
-      );
+      await expect(generateAndAppendRiddles(1)).rejects.toThrow("OPENAI_API_KEY environment variable is required");
     });
 
     it("should handle Firestore errors gracefully", async () => {

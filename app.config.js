@@ -36,7 +36,7 @@ module.exports = {
   },
   plugins: [
     "@react-native-firebase/app",
-    // "@react-native-google-signin/google-signin",  // Temporarily disabled due to ES module syntax error
+    "@react-native-google-signin/google-signin",
     [
       "react-native-fbsdk-next",
       {

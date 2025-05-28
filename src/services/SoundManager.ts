@@ -1,4 +1,5 @@
 import { Audio, AVPlaybackSource } from "expo-av";
+import { AppState, AppStateStatus } from "react-native";
 
 import neutralWav from "../../assets/audio/Neutral.wav";
 import successWav from "../../assets/audio/Success.wav";
@@ -12,6 +13,10 @@ let negativeSound: Audio.Sound | null = null;
 // Track initialization state
 let isInitialized = false;
 
+// Track app state to prevent audio focus exceptions when in background
+let appState: AppStateStatus = AppState.currentState;
+let appStateSubscription: { remove: () => void } | null = null;
+
 // Assume isSoundEnabled state is managed elsewhere (e.g., in App.tsx or Context)
 // and can be accessed or passed here if needed for conditional playback.
 // For now, we will assume the check is done at the call site.
@@ -20,6 +25,27 @@ export const SoundManager = {
   init: async () => {
     try {
       console.log("SoundManager: Starting initialization...");
+
+      // Set up AppState listener to track background/foreground state
+      const handleAppStateChange = (nextAppState: AppStateStatus) => {
+        console.log(
+          "SoundManager: App state changed from",
+          appState,
+          "to",
+          nextAppState
+        );
+        appState = nextAppState;
+
+        // Pause background music when app goes to background to prevent audio focus issues
+        if (nextAppState === "background" || nextAppState === "inactive") {
+          SoundManager.pauseBackgroundMusic();
+        }
+      };
+
+      appStateSubscription = AppState.addEventListener(
+        "change",
+        handleAppStateChange
+      );
 
       // Set up audio mode first
       console.log("SoundManager: Setting audio mode...");
@@ -107,6 +133,16 @@ export const SoundManager = {
 
   playSuccess: async () => {
     try {
+      // Don't attempt to play sounds when app is in background to prevent AudioFocusNotAcquiredException
+      if (appState !== "active") {
+        console.log(
+          "SoundManager: Skipping success sound - app not in foreground (state:",
+          appState,
+          ")"
+        );
+        return;
+      }
+
       if (!isInitialized || !successSound) {
         console.warn("Success sound not initialized");
         return;
@@ -128,6 +164,16 @@ export const SoundManager = {
 
   playNegative: async () => {
     try {
+      // Don't attempt to play sounds when app is in background to prevent AudioFocusNotAcquiredException
+      if (appState !== "active") {
+        console.log(
+          "SoundManager: Skipping negative sound - app not in foreground (state:",
+          appState,
+          ")"
+        );
+        return;
+      }
+
       if (!isInitialized || !negativeSound) {
         console.warn("Negative sound not initialized");
         return;
@@ -149,6 +195,16 @@ export const SoundManager = {
 
   playBackgroundMusic: async () => {
     try {
+      // Don't attempt to play sounds when app is in background to prevent AudioFocusNotAcquiredException
+      if (appState !== "active") {
+        console.log(
+          "SoundManager: Skipping background music - app not in foreground (state:",
+          appState,
+          ")"
+        );
+        return;
+      }
+
       if (!isInitialized || !neutralSound) {
         console.warn("Neutral sound not initialized");
         return;
@@ -187,6 +243,12 @@ export const SoundManager = {
     // NOTE: This method should only be used for cleanup during initialization failures.
     // During normal app operation, sounds should remain in memory for optimal performance.
     try {
+      // Remove AppState listener to prevent memory leaks
+      if (appStateSubscription) {
+        appStateSubscription.remove();
+        appStateSubscription = null;
+      }
+
       if (neutralSound) {
         await neutralSound.unloadAsync();
         neutralSound = null;
