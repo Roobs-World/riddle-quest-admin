@@ -9,7 +9,7 @@ interface ScreenTitleProps {
 const ScreenTitle: React.FC<ScreenTitleProps> = ({ title, className }) => {
   return (
     <Text
-      className={`text-2xl font-semibold text-gray-800 my-8 text-left w-full ${className}`}
+      className={`text-2xl font-semibold w-full text-gray-800 text-center ${className}`}
       style={{ fontFamily: "PoppinsSemiBold" }}
     >
       {title}

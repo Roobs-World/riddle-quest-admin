@@ -120,10 +120,15 @@ const LoginScreen = ({
           zIndex: -1,
         }}
       />
-      <BackButton navigation={navigation} />
 
       <AuthLayout>
-        <ScreenTitle title={AppStrings.AuthStrings.Login.TITLE} />
+        <View className="relative w-full mb-8">
+          <BackButton navigation={navigation} />
+          <ScreenTitle
+            title={AppStrings.AuthStrings.Login.TITLE}
+            className="mt-7"
+          />
+        </View>
 
         <UserEmailInput
           email={email}

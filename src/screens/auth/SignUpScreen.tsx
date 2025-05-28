@@ -278,11 +278,12 @@ const SignUpScreen = ({ navigation }: { navigation: NavigationProp }) => {
       />
       <CustomSafeAreaView style={{ backgroundColor: "transparent" }}>
         <AuthLayout>
-          <View className="flex-row items-center w-full mb-8">
+          <View className="relative w-full mb-8">
             <BackButton navigation={navigation} />
-            <View className="flex-1 ml-4">
-              <ScreenTitle title={AppStrings.AuthStrings.SignUp.TITLE} />
-            </View>
+            <ScreenTitle
+              title={AppStrings.AuthStrings.SignUp.TITLE}
+              className="mt-7"
+            />
           </View>
 
           <ScrollView
