@@ -1,7 +1,6 @@
 import React, { useReducer, useState, useMemo } from "react";
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import ProgressBar from "../../components/shared/ProgressBar";
-import BackIcon from "../../components/icons/BackIcon";
 import CheckboxIcon from "../../components/icons/CheckboxIcon";
 import CustomSafeAreaView from "../../components/CustomSafeAreaView";
 import { AppStrings } from "../../constants/AppStrings";
@@ -15,10 +14,9 @@ import PasswordMatch from "../../components/text/PasswordMatch";
 import Error from "../../components/text/Error";
 import BackButton from "../../components/buttons/BackButton";
 import { AuthService } from "../../services/AuthService";
-import { useAuth } from "../../contexts/AuthContext";
 import { signUpSchema, SignUpFormData } from "../../validation/authSchemas";
 import { ZodError, ZodFormattedError } from "zod";
-
+import HomeBgSvg from "../../../assets/images/home-bg.svg";
 /**
  * Defines the structure of the password state managed by the reducer.
  * @property {string} password - The user's entered password.
@@ -58,6 +56,21 @@ const initialPasswordState: PasswordState = {
 };
 
 /**
+ * Defines the structure of Firebase error objects
+ */
+interface FirebaseError {
+  code: string;
+  message: string;
+}
+
+/**
+ * Navigation prop type for React Navigation
+ */
+interface NavigationProp {
+  navigate: (screen: string) => void;
+}
+
+/**
  * Reducer function to manage the password state for sign-up.
  * Handles setting password and confirm password, and updating related validation flags.
  *
@@ -70,7 +83,7 @@ function passwordReducer(
   action: PasswordAction
 ): PasswordState {
   switch (action.type) {
-    case "SET_PASSWORD":
+    case "SET_PASSWORD": {
       const isPasswordLongEnough = action.payload.length >= 6;
       return {
         ...state,
@@ -79,7 +92,8 @@ function passwordReducer(
           action.payload === state.confirmPassword && isPasswordLongEnough,
         isPasswordLongEnough: isPasswordLongEnough,
       };
-    case "SET_CONFIRM_PASSWORD":
+    }
+    case "SET_CONFIRM_PASSWORD": {
       const confirmPasswordHasInput = action.payload.length > 0;
       return {
         ...state,
@@ -88,6 +102,7 @@ function passwordReducer(
           state.password === action.payload && state.isPasswordLongEnough,
         confirmPasswordHasInput: confirmPasswordHasInput,
       };
+    }
     default:
       return state;
   }
@@ -99,7 +114,7 @@ function passwordReducer(
  *
  * @param {object} navigation - The navigation prop from React Navigation.
  */
-const SignUpScreen = ({ navigation }: { navigation: any }) => {
+const SignUpScreen = ({ navigation }: { navigation: NavigationProp }) => {
   const [username, setUsername] = useState("");
   const [passwordState, dispatch] = useReducer(
     passwordReducer,
@@ -117,8 +132,6 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
   const [confirmPasswordError, setConfirmPasswordError] = useState<
     string | null
   >(null);
-
-  const { login } = useAuth();
 
   const handleNextPress = async () => {
     setIsLoading(true);
@@ -163,7 +176,7 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
           setConfirmPasswordError(formattedErrors.confirmPassword._errors[0]);
         }
       } else if (error && typeof error === "object" && "code" in error) {
-        const firebaseError = error as any;
+        const firebaseError = error as FirebaseError;
         console.error("Sign up error:", firebaseError);
         switch (firebaseError.code) {
           case "auth/email-already-in-use":
@@ -251,11 +264,22 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
 
   return (
     <CustomSafeAreaView>
+      <HomeBgSvg
+        width="120%"
+        height="100%"
+        style={{
+          position: "absolute",
+          top: "-5%",
+          left: 0,
+          bottom: 0,
+          right: 0,
+          zIndex: -1,
+        }}
+      />
       <AuthLayout>
         <View className="flex-row items-center justify-between w-full mb-8">
           <BackButton navigation={navigation} />
           <ScreenTitle title={AppStrings.AuthStrings.SignUp.TITLE} />
-          <View className="w-8" />
         </View>
 
         <ScrollView

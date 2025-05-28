@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, Image, ScrollView } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import CustomSafeAreaView from "../../components/CustomSafeAreaView";
 import { AppStrings } from "../../constants/AppStrings";
 import WideButton from "../../components/buttons/WideButton";
@@ -16,6 +16,21 @@ import GoogleSignInButton from "../../components/buttons/GoogleSignInButton";
 import FacebookSignInButton from "../../components/buttons/FacebookSignInButton";
 import { loginSchema, LoginFormData } from "../../validation/authSchemas";
 import { ZodError, ZodFormattedError } from "zod";
+import { type FirebaseAuthTypes } from "@react-native-firebase/auth";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import HomeBgSvg from "../../../assets/images/home-bg.svg";
+
+type AuthStackParamList = {
+  Login: undefined;
+  SignUp: undefined;
+  ForgotPassword: undefined;
+  Landing: undefined;
+};
+
+type LoginScreenNavigationProp = NativeStackNavigationProp<
+  AuthStackParamList,
+  "Login"
+>;
 
 /**
  * Login screen for the authentication flow.
@@ -23,7 +38,11 @@ import { ZodError, ZodFormattedError } from "zod";
  *
  * @param {object} navigation - The navigation prop from React Navigation.
  */
-const LoginScreen = ({ navigation }: { navigation: any }) => {
+const LoginScreen = ({
+  navigation,
+}: {
+  navigation: LoginScreenNavigationProp;
+}) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState<string | null>(null);
@@ -54,7 +73,8 @@ const LoginScreen = ({ navigation }: { navigation: any }) => {
           setPasswordError(formattedErrors.password._errors[0]);
         }
       } else if (error && typeof error === "object" && "code" in error) {
-        const firebaseError = error as any;
+        const firebaseError =
+          error as FirebaseAuthTypes.NativeFirebaseAuthError;
         console.error("Firebase login error:", firebaseError);
         switch (firebaseError.code) {
           case "auth/user-not-found":
@@ -88,6 +108,18 @@ const LoginScreen = ({ navigation }: { navigation: any }) => {
 
   return (
     <CustomSafeAreaView>
+      <HomeBgSvg
+        width="120%"
+        height="100%"
+        style={{
+          position: "absolute",
+          top: "-5%",
+          left: 0,
+          bottom: 0,
+          right: 0,
+          zIndex: -1,
+        }}
+      />
       <BackButton navigation={navigation} />
 
       <AuthLayout>
@@ -146,11 +178,13 @@ const LoginScreen = ({ navigation }: { navigation: any }) => {
               const userCredential = await AuthService.signInWithGoogle();
               console.log("Google login success:", userCredential);
               if (userCredential.user?.uid) {
-                login(userCredential.user.uid);
+                login();
               }
-            } catch (error: any) {
-              console.error("Google login error:", error);
-              switch (error.code) {
+            } catch (error) {
+              const firebaseError =
+                error as FirebaseAuthTypes.NativeFirebaseAuthError;
+              console.error("Google login error:", firebaseError);
+              switch (firebaseError.code) {
                 case "auth/account-exists-with-different-credential":
                   setAuthError(
                     AppStrings.AuthStrings.Login
@@ -162,7 +196,7 @@ const LoginScreen = ({ navigation }: { navigation: any }) => {
                   break;
                 default:
                   setAuthError(
-                    error.message ||
+                    firebaseError.message ||
                       "An unexpected error occurred during Google login."
                   );
               }
@@ -178,11 +212,13 @@ const LoginScreen = ({ navigation }: { navigation: any }) => {
               const userCredential = await AuthService.signInWithFacebook();
               console.log("Facebook login success:", userCredential);
               if (userCredential.user?.uid) {
-                login(userCredential.user.uid);
+                login();
               }
-            } catch (error: any) {
-              console.error("Facebook login error:", error);
-              switch (error.code) {
+            } catch (error) {
+              const firebaseError =
+                error as FirebaseAuthTypes.NativeFirebaseAuthError;
+              console.error("Facebook login error:", firebaseError);
+              switch (firebaseError.code) {
                 case "auth/account-exists-with-different-credential":
                   setAuthError(
                     AppStrings.AuthStrings.Login
@@ -199,7 +235,7 @@ const LoginScreen = ({ navigation }: { navigation: any }) => {
                   break;
                 default:
                   setAuthError(
-                    error.message ||
+                    firebaseError.message ||
                       "An unexpected error occurred during Facebook login."
                   );
               }

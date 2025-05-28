@@ -1,5 +1,6 @@
 import {z} from "zod";
 import * as admin from "firebase-admin";
+import {validateUsernameForProfanity} from "../utils/profanityFilter";
 
 export const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -8,7 +9,18 @@ export const loginSchema = z.object({
 
 export const signUpSchema = z
   .object({
-    username: z.string().min(1, "Username is required"),
+    username: z
+      .string()
+      .min(1, "Username is required")
+      .refine(
+        (username) => {
+          const profanityError = validateUsernameForProfanity(username);
+          return profanityError === "";
+        },
+        {
+          message: "Username contains inappropriate language. Please choose a different username.",
+        },
+      ),
     email: z.string().email("Invalid email address"),
     password: z.string().min(6, "Password must be at least 6 characters long"),
     confirmPassword: z.string(),
@@ -48,7 +60,15 @@ export const PlayerStatsSchema = z.object({
 export const PlayerSchema = z.object({
   userId: z.string(),
   email: z.string().email().optional(),
-  username: z.string(),
+  username: z.string().refine(
+    (username) => {
+      const profanityError = validateUsernameForProfanity(username);
+      return profanityError === "";
+    },
+    {
+      message: "Username contains inappropriate language. Please choose a different username.",
+    },
+  ),
   displayName: z.string().optional(), // Added displayName as per AuthContext usage
   avatarUrl: z.string().url().optional(),
   xp: z.number().int().nonnegative().default(0),

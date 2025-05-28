@@ -1,4 +1,3 @@
-import { Text } from "react-native";
 import { useState } from "react";
 import UserPasswordInput from "../../components/inputFields/UserPasswordInput";
 import WideButton from "../../components/buttons/WideButton";
@@ -8,6 +7,21 @@ import CustomSafeAreaView from "../../components/CustomSafeAreaView";
 import AuthLayout from "../../components/layouts/AuthLayout";
 import ScreenTitle from "../../components/text/ScreenTitle";
 import Subtitle from "../../components/text/Subtitle";
+import HomeBgSvg from "../../../assets/images/home-bg.svg";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+
+type AuthStackParamList = {
+  Login: undefined;
+  SignUp: undefined;
+  ForgotPassword: undefined;
+  NewPassword: undefined;
+  Landing: undefined;
+};
+
+type NewPasswordScreenNavigationProp = NativeStackNavigationProp<
+  AuthStackParamList,
+  "NewPassword"
+>;
 
 /**
  * Screen for setting a new password.
@@ -15,7 +29,11 @@ import Subtitle from "../../components/text/Subtitle";
  *
  * @param {object} navigation - The navigation prop from React Navigation.
  */
-export default function NewPasswordScreen({ navigation }: { navigation: any }) {
+export default function NewPasswordScreen({
+  navigation,
+}: {
+  navigation: NewPasswordScreenNavigationProp;
+}) {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
@@ -29,6 +47,18 @@ export default function NewPasswordScreen({ navigation }: { navigation: any }) {
 
   return (
     <CustomSafeAreaView>
+      <HomeBgSvg
+        width="120%"
+        height="100%"
+        style={{
+          position: "absolute",
+          top: "-5%",
+          left: 0,
+          bottom: 0,
+          right: 0,
+          zIndex: -1,
+        }}
+      />
       <AuthLayout>
         <PadlockIcon className="w-24 h-24 mb-8 mx-auto" />
         <ScreenTitle title={AppStrings.AuthStrings.NewPassword.TITLE} />

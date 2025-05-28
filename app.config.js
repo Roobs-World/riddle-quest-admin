@@ -26,7 +26,7 @@ module.exports = {
       foregroundImage: "./assets/images/adaptive-icon.png",
       backgroundColor: "#ffffff",
     },
-    edgeToEdgeEnabled: true,
+    edgeToEdgeEnabled: false,
     package: "com.grindhead.qwordly",
     googleServicesFile: "./google-services.json",
   },
@@ -55,9 +55,9 @@ module.exports = {
       {
         android: {
           minSdkVersion: 24,
-          compileSdkVersion: 34,
-          targetSdkVersion: 34,
-          buildToolsVersion: "34.0.0",
+          compileSdkVersion: 35,
+          targetSdkVersion: 35,
+          buildToolsVersion: "35.0.0",
           kotlinVersion: "2.0.21",
         },
       },

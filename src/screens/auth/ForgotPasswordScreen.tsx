@@ -12,7 +12,8 @@ import { validateEmail } from "../../utils/emailValidation";
 import { AuthService } from "../../services/AuthService";
 import { AppStrings } from "../../constants/AppStrings";
 import Error from "../../components/text/Error";
-
+import { type FirebaseAuthTypes } from "@react-native-firebase/auth";
+import HomeBgSvg from "../../../assets/images/home-bg.svg";
 /**
  * Forgot password screen for the authentication flow.
  * Allows users to request a password reset link via email.
@@ -44,9 +45,10 @@ const ForgotPasswordScreen = () => {
       await AuthService.sendPasswordResetEmail(email);
       console.log("Password reset email sent successfully to:", email);
       setSuccessMessage("Password reset link sent successfully to your email.");
-    } catch (error: any) {
-      console.error("Password reset email error:", error);
-      switch (error.code) {
+    } catch (error) {
+      const firebaseError = error as FirebaseAuthTypes.NativeFirebaseAuthError;
+      console.error("Password reset email error:", firebaseError);
+      switch (firebaseError.code) {
         case "auth/user-not-found":
           setEmailError(AppStrings.AuthStrings.Login.USER_NOT_FOUND_ERROR);
           break;
@@ -56,13 +58,27 @@ const ForgotPasswordScreen = () => {
           );
           break;
         default:
-          setGeneralError(error.message || "An unexpected error occurred.");
+          setGeneralError(
+            firebaseError.message || "An unexpected error occurred."
+          );
       }
     }
   };
 
   return (
     <SafeAreaView className="flex-1 bg-cream-light p-6">
+      <HomeBgSvg
+        width="120%"
+        height="100%"
+        style={{
+          position: "absolute",
+          top: "-5%",
+          left: 0,
+          bottom: 0,
+          right: 0,
+          zIndex: -1,
+        }}
+      />
       <BackButton navigation={navigation} />
       <AuthLayout>
         <PadlockIcon className="w-24 h-24 mb-8 mx-auto" />

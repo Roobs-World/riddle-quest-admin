@@ -9,6 +9,21 @@ import HomeBgSvg from "../../assets/images/home-bg.svg";
 import SignUpButton from "../components/buttons/SignUpButton";
 import { AppStrings } from "../constants/AppStrings";
 import Subtitle from "../components/text/Subtitle";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+
+type RootStackParamList = {
+  Landing: undefined;
+  Login: undefined;
+  SignUp: undefined;
+  ForgotPassword: undefined;
+  NewPassword: undefined;
+  Game: undefined;
+};
+
+type LandingScreenNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  "Landing"
+>;
 
 /**
  * Landing screen for the authentication flow.
@@ -16,7 +31,11 @@ import Subtitle from "../components/text/Subtitle";
  *
  * @param {object} navigation - The navigation prop from React Navigation.
  */
-const LandingScreen = ({ navigation }: { navigation: any }) => {
+const LandingScreen = ({
+  navigation,
+}: {
+  navigation: LandingScreenNavigationProp;
+}) => {
   return (
     <CustomSafeAreaView>
       <HomeBgSvg

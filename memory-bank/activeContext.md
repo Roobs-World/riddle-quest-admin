@@ -2,6 +2,27 @@
 
 ## 1. Current Focus
 
+### **✅ USERNAME PROFANITY FILTERING - IMPLEMENTED**
+
+- **Issue**: User requested that usernames should not contain profanity in the SignUp screen
+- **Implementation**: Complete profanity filtering system implemented across client and server
+- **Solution**:
+  - ✅ Created profanity filter utility (`src/utils/profanityFilter.ts` and `firebase-functions/src/utils/profanityFilter.ts`)
+  - ✅ Updated validation schemas in both client and server (`authSchemas.ts` and `firestoreSchemas.ts`)
+  - ✅ Added profanity validation to username fields in signUpSchema and PlayerSchema
+  - ✅ Created comprehensive test suite (`src/utils/__tests__/profanityFilter.test.ts`)
+- **Status**: ✅ **IMPLEMENTED** - Profanity filtering active in SignUp screen and profile updates
+- **Result**:
+  - ✅ Username validation now includes profanity checking on both client and server side
+  - ✅ Inappropriate usernames are rejected with clear error message
+  - ✅ Validation applies to both sign-up and profile update processes
+  - ✅ Consistent validation across React Native app and Firebase Functions
+- **Technical Details**:
+  - Uses Zod schema validation with custom refine functions
+  - Validates against a comprehensive list of inappropriate words
+  - Includes both exact matches and substring matches for variations
+  - Case-insensitive validation to catch all variations
+
 ### **✅ SOUND UNLOADING ISSUE - COMPLETELY RESOLVED**
 
 - **Issue**: Sounds were being unloaded in App.tsx useEffect cleanup, causing "playAsync method not available" errors
@@ -238,3 +259,34 @@
 - **Environment Variables**: Production deployment requires proper IAP and service configuration
 - **Healthcheck Dependencies**: Missing environment variables cause container startup failures
 - **Clean Dependencies**: Removed dependencies improve build reliability and deployment success
+
+## 1. Current Work Focus
+
+### **✅ APP.TSX REFACTORING - PROPER NAVIGATION STRUCTURE IMPLEMENTED**
+
+- **Issue**: Landing page was not being displayed when the game starts, App.tsx had complex AppContent component that bypassed proper navigation
+- **Root Cause**: App.tsx was directly rendering GameScreen based on authentication state instead of using the proper NavigationStack
+- **Solution**: Refactored to use NavigationStack with GameScreenWrapper that handles authentication flow
+- **Status**: ✅ **COMPLETED** - Landing page now shows when not authenticated, proper navigation flow established
+- **Result**:
+  - Simplified App.tsx to only handle SDK initialization (AppLovin, Facebook, SoundManager, fonts)
+  - NavigationStack now conditionally shows Landing/Auth screens vs Game screen based on authentication
+  - GameScreenWrapper component handles all GameScreen props and authentication logic
+  - Proper separation of concerns between navigation and game logic
+  - Landing page displays correctly for unauthenticated users
+
+### **✅ Navigation Architecture Improvements:**
+
+- **NavigationStack Enhancement**: Added conditional `initialRouteName` based on authentication state
+- **GameScreenWrapper**: Created wrapper component that provides all necessary props to GameScreen
+- **Authentication Flow**: Proper flow from Landing → Login/SignUp → Game screens
+- **Loading States**: Centralized loading spinner for authentication state determination
+- **Error Handling**: Proper error states for riddle loading failures and daily challenge completion
+
+### **Current Implementation Details:**
+
+- **App.tsx**: Simplified to SDK initialization only, uses NavigationStack directly
+- **NavigationStack**: Handles authentication-based routing with GameScreenWrapper
+- **GameScreenWrapper**: Manages overlay state, riddle loading, next level logic
+- **Authentication Flow**: Landing → Login/SignUp → Game (automatic based on auth state)
+- **Loading Management**: Consistent loading states across authentication and game initialization
