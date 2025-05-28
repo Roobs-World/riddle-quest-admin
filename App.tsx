@@ -31,8 +31,6 @@ function AppContent() {
     currentRiddle,
     isDailyChallengeAvailable,
     gameMode,
-    setGameMode,
-    updatePlayerClassicIndex,
     setCurrentRiddle,
   } = useAuth();
   const [resourcesLoaded, setResourcesLoaded] = useState(false);
@@ -99,8 +97,8 @@ function AppContent() {
       try {
         await loadFonts();
         setResourcesLoaded(true);
-      } catch (e: any) {
-        console.error("App load error:", e);
+      } catch (error: unknown) {
+        console.error("App load error:", error);
       }
     }
 
@@ -246,26 +244,6 @@ function AppContent() {
     );
   }
 
-  // Simple function to calculate coin rewards based on attempts
-  const calculateCoinReward = (attempts: number): number => {
-    switch (attempts) {
-      case 1:
-        return 50;
-      case 2:
-        return 40;
-      case 3:
-        return 30;
-      case 4:
-        return 20;
-      case 5:
-        return 10;
-      case 6:
-        return 5;
-      default:
-        return 0;
-    }
-  };
-
   const handleNextLevel = async () => {
     if (!playerData) return;
 
@@ -315,31 +293,6 @@ function AppContent() {
     }
   };
 
-  // Placeholder for actual onGameWin implementation
-  const handleGameWin = (attempts: number, coinsEarned: number) => {
-    console.log(
-      `Game won in ${attempts} attempts! Coins earned: ${coinsEarned}`
-    );
-  };
-
-  // Placeholder for actual onGameLoss implementation
-  const handleGameLoss = (correctAnswer: string) => {
-    console.log(`Game lost. Correct answer was: ${correctAnswer}`);
-  };
-
-  const handleHintUsed = (cost: number) => {
-    console.log(`Hint used! Cost: ${cost} coins.`);
-  };
-
-  const handleSkipUsed = (cost: number) => {
-    console.log(`Riddle skipped! Cost: ${cost} coins.`);
-    handleNextLevel();
-  };
-
-  const handleRetry = () => {
-    console.log("Retrying current riddle...");
-  };
-
   // Determine which screen to render based on authentication state, player data, current riddle, game mode, and daily challenge availability
   const renderContent = () => {
     // If not authenticated, or auth/player data is still loading, render AuthNavigator
@@ -357,8 +310,8 @@ function AppContent() {
             style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
           >
             <Text>
-              You have already completed today's daily challenge. Check back
-              tomorrow!
+              You have already completed today&apos;s daily challenge. Check
+              back tomorrow!
             </Text>
           </View>
         );
@@ -402,11 +355,8 @@ function AppContent() {
             console.log(`Coins Earned: ${coinsEarned}`);
 
             if (playerData?.userId) {
-              const newTotalCoins = (playerData.coins || 0) + coinsEarned;
-
               if (gameMode === "challenge") {
                 updateLastDailyChallengeCompletedAt(playerData.userId);
-              } else if (gameMode === "classic") {
               }
             }
 
@@ -429,7 +379,7 @@ function AppContent() {
           }}
           overlayState={overlayState}
           overlayActions={overlayActions}
-          skippedAnswer={skippedRiddleAnswer}
+          skippedAnswer={null}
           gameMode={gameMode}
         />
       );
