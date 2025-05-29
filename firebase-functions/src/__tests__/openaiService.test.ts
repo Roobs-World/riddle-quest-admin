@@ -36,12 +36,10 @@ describe("generateUniqueRiddles", () => {
 
   test("should return a parsed riddle on successful API response", async () => {
     mockCreateCompletions.mockResolvedValue({
-      choices: [
-        {message: {content: "Question: Why did the chicken cross the road?\n\nAnswer: to get to the other side"}},
-      ],
+      choices: [{message: {content: "Question: why did the chicken cross the road?\nAnswer: escape"}}],
     });
     const result = await generateUniqueRiddle();
-    expect(result).toEqual(["Why did the chicken cross the road?", "to get to the other side"]);
+    expect(result).toEqual(["why did the chicken cross the road?", "escape"]);
     expect(mockCreateCompletions).toHaveBeenCalledTimes(1);
     expect(mockCreateCompletions).toHaveBeenCalledWith({
       model: "gpt-3.5-turbo",
@@ -51,20 +49,18 @@ describe("generateUniqueRiddles", () => {
 
   test("should handle alternative answer format \nAnswer:", async () => {
     mockCreateCompletions.mockResolvedValue({
-      choices: [
-        {message: {content: "Question: What is always in front of you but can't be seen?\nAnswer: the future"}},
-      ],
+      choices: [{message: {content: "Question: what is always in front of you but cannot be seen?\nAnswer: future"}}],
     });
     const result = await generateUniqueRiddle();
-    expect(result).toEqual(["What is always in front of you but can't be seen?", "the future"]);
+    expect(result).toEqual(["what is always in front of you but cannot be seen?", "future"]);
   });
 
   test("should remove asterisks from question and answer", async () => {
     mockCreateCompletions.mockResolvedValue({
-      choices: [{message: {content: "**Question:** I speak without a mouth. Who am I?\n\n**Answer:** an echo"}}],
+      choices: [{message: {content: "**Question: i speak without a mouth, who am i?\n\n**Answer: echo"}}],
     });
     const result = await generateUniqueRiddle();
-    expect(result).toEqual(["I speak without a mouth. Who am I?", "an echo"]);
+    expect(result).toEqual(["i speak without a mouth, who am i?", "echo"]);
   });
 
   test("should return null if API response content is null", async () => {
@@ -74,29 +70,33 @@ describe("generateUniqueRiddles", () => {
     expect(console.warn).toHaveBeenCalledWith("OpenAI returned empty content.");
   });
 
-  test("should return null if output format is missing \n\n separator", async () => {
+  test("should return null if output format is missing Answer: separator", async () => {
     mockCreateCompletions.mockResolvedValue({
-      choices: [{message: {content: "Question: No separator Answer: nope"}}],
+      choices: [{message: {content: "Question: no separator nope"}}],
     });
     const result = await generateUniqueRiddle();
     expect(result).toBeNull();
-    expect(console.warn).toHaveBeenCalledWith("Could not find separator in OpenAI output.");
+    expect(console.warn).toHaveBeenCalledWith(
+      "Could not parse question or answer from OpenAI output using standard format.",
+    );
   });
 
   test("should return null if answer format is missing the colon", async () => {
     mockCreateCompletions.mockResolvedValue({
-      choices: [{message: {content: "Question: Test\n\nAnswer nope"}}],
+      choices: [{message: {content: "Question: test\nAnswer nope"}}],
     });
     const result = await generateUniqueRiddle();
     expect(result).toBeNull();
-    expect(console.warn).toHaveBeenCalledWith("Could not find answer separator in OpenAI output.");
+    expect(console.warn).toHaveBeenCalledWith(
+      "Could not parse question or answer from OpenAI output using standard format.",
+    );
   });
 
   test("should return null if question or answer is empty after parsing", async () => {
-    mockCreateCompletions.mockResolvedValue({choices: [{message: {content: "Question: \n\nAnswer: "}}]});
+    mockCreateCompletions.mockResolvedValue({choices: [{message: {content: "Question: \nAnswer: "}}]});
     const result = await generateUniqueRiddle();
     expect(result).toBeNull();
-    expect(console.warn).toHaveBeenCalledWith("Could not parse question or answer from OpenAI output.");
+    expect(console.warn).toHaveBeenCalledWith("Question or answer is empty after parsing.");
   });
 
   test("should return null and log error on API call failure", async () => {
@@ -104,6 +104,61 @@ describe("generateUniqueRiddles", () => {
     const result = await generateUniqueRiddle();
     expect(result).toBeNull();
     expect(console.error).toHaveBeenCalledWith("Error generating riddle with OpenAI:", expect.any(Error));
+  });
+
+  test("should return null if answer is too long", async () => {
+    mockCreateCompletions.mockResolvedValue({
+      choices: [{message: {content: "Question: test?\nAnswer: toolonganswerhere"}}],
+    });
+    const result = await generateUniqueRiddle();
+    expect(result).toBeNull();
+    expect(console.warn).toHaveBeenCalledWith(
+      'Answer too long: "toolonganswerhere" (17 characters). Must be 7 or fewer.',
+    );
+  });
+
+  test("should return null if answer contains invalid characters", async () => {
+    mockCreateCompletions.mockResolvedValue({
+      choices: [{message: {content: "Question: test?\nAnswer: test123"}}],
+    });
+    const result = await generateUniqueRiddle();
+    expect(result).toBeNull();
+    expect(console.warn).toHaveBeenCalledWith(
+      'Answer contains invalid characters: "test123". Must be only lowercase letters.',
+    );
+  });
+
+  test("should return null if answer contains punctuation", async () => {
+    mockCreateCompletions.mockResolvedValue({
+      choices: [{message: {content: "Question: test?\nAnswer: test!"}}],
+    });
+    const result = await generateUniqueRiddle();
+    expect(result).toBeNull();
+    expect(console.warn).toHaveBeenCalledWith(
+      'Answer contains invalid characters: "test!". Must be only lowercase letters.',
+    );
+  });
+
+  test("should return null if answer contains apostrophes", async () => {
+    mockCreateCompletions.mockResolvedValue({
+      choices: [{message: {content: "Question: test?\nAnswer: don't"}}],
+    });
+    const result = await generateUniqueRiddle();
+    expect(result).toBeNull();
+    expect(console.warn).toHaveBeenCalledWith(
+      'Answer contains invalid characters: "don\'t". Must be only lowercase letters.',
+    );
+  });
+
+  test("should return null if question contains invalid characters", async () => {
+    mockCreateCompletions.mockResolvedValue({
+      choices: [{message: {content: "Question: Test With CAPS!\nAnswer: test"}}],
+    });
+    const result = await generateUniqueRiddle();
+    expect(result).toBeNull();
+    expect(console.warn).toHaveBeenCalledWith(
+      'Question contains invalid characters: "Test With CAPS!". Must be only lowercase letters, commas, and question marks.',
+    );
   });
 });
 
@@ -136,11 +191,11 @@ describe("OpenAI Service - Environment Variable Check", () => {
 
     // Mock the OpenAI call to avoid actual API call
     mockCreateCompletions.mockResolvedValue({
-      choices: [{message: {content: "Question: Test?\n\nAnswer: test"}}],
+      choices: [{message: {content: "Question: test?\nAnswer: test"}}],
     });
 
     await expect(generateUniqueRiddle()).resolves.not.toThrow();
     const result = await generateUniqueRiddle();
-    expect(result).toEqual(["Test?", "test"]);
+    expect(result).toEqual(["test?", "test"]);
   });
 });

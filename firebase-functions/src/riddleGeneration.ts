@@ -14,15 +14,6 @@ export const generateClassicRiddles = onCall(
     console.log("Client requested Classic Mode riddle generation.");
 
     try {
-      // Set the environment variable from functions config as fallback
-      if (!process.env.OPEN_AI_KEY) {
-        const config = functions.config();
-        if (config.openai && config.openai.api_key) {
-          process.env.OPEN_AI_KEY = config.openai.api_key;
-          console.log("Set OPEN_AI_KEY from functions config");
-        }
-      }
-
       await generateAndAppendRiddles(5);
       console.log("Classic Mode riddles generated and stored in Firestore.");
       return {
@@ -47,15 +38,6 @@ export const initializeRiddleDatabase = onCall(
     console.log("Client requested riddle database initialization.");
 
     try {
-      // Set the environment variable from functions config as fallback
-      if (!process.env.OPEN_AI_KEY) {
-        const config = functions.config();
-        if (config.openai && config.openai.api_key) {
-          process.env.OPEN_AI_KEY = config.openai.api_key;
-          console.log("Set OPEN_AI_KEY from functions config");
-        }
-      }
-
       // Check if any classic riddles already exist
       const existingRiddlesSnapshot = await admin
         .firestore()

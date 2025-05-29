@@ -16,6 +16,11 @@ if (!process.env.FIREBASE_PROJECT_ID) {
   process.env.FIREBASE_PROJECT_ID = "qwordly-6ba44";
 }
 
+// Set OpenAI API key for tests
+if (!process.env.OPENAI_API_KEY) {
+  process.env.OPENAI_API_KEY = "YnDnl1dSucAApjYEN019-6hGt2ufiedaq4HsP-h7";
+}
+
 // Disable OpenTelemetry tracing in tests to avoid Firestore tracing issues
 process.env.OTEL_SDK_DISABLED = "true";
 process.env.GOOGLE_CLOUD_OPENTELEMETRY_ENABLED = "false";

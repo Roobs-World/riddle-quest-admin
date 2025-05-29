@@ -119,9 +119,9 @@ export async function generateAndAppendRiddles(numberOfRiddles: number): Promise
   console.log(`Generating ${numberOfRiddles} new riddles...`);
 
   // Check for required environment variables
-  const openAIKey = process.env.OPEN_AI_KEY;
+  const openAIKey = process.env.OPENAI_API_KEY;
   if (!openAIKey) {
-    throw new Error("OPEN_AI_KEY environment variable is required");
+    throw new Error("OPENAI_API_KEY environment variable is required");
   }
 
   // Get existing riddles for duplicate checking

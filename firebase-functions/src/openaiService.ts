@@ -21,11 +21,11 @@ function initializeOpenAIClient(): OpenAI {
   }
 
   // Use environment variables for sensitive information
-  const openAIKey = process.env.OPEN_AI_KEY;
+  const openAIKey = process.env.OPENAI_API_KEY;
 
   // Ensure environment variables are set
   if (!openAIKey) {
-    throw new Error("Missing required environment variable: OPEN_AI_KEY");
+    throw new Error("Missing required environment variable: OPENAI_API_KEY");
   }
 
   openaiClient = new OpenAI({apiKey: openAIKey});
@@ -60,11 +60,11 @@ export async function generateUniqueRiddle(): Promise<[string, string] | null> {
             "Answer: [your answer here]\n\n" +
             "Requirements:\n" +
             "- Question: 10-90 characters, use only lowercase letters (a-z), commas, and question marks\n" +
-            "- Answer: MAXIMUM 7 characters, use only lowercase letters (a-z), no punctuation, numbers, or special characters\n" +
+            "- Answer: MAXIMUM 7 characters, use ONLY lowercase letters (a-z), absolutely NO punctuation, NO numbers, NO special characters, NO apostrophes, NO hyphens\n" +
             "- Content: Engaging and suitable for mobile game players of all ages\n" +
             "- Style: Creative, fun, and not overly difficult\n" +
             "- Originality: Must be completely unique, not a common or well-known riddle\n\n" +
-            "The answer length is critical - it must never exceed 7 characters.",
+            "The answer length is critical - it must never exceed 7 characters and must contain only lowercase letters.",
         },
       ],
     });
