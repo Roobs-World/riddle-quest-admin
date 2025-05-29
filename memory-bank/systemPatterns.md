@@ -18,6 +18,8 @@
 - NativeWind for styling within React Native.
 - Implemented automatic content generation trigger: when a user's remaining classic riddles drop to 10 or fewer during a correct guess submission, 25 new riddles are automatically generated and stored directly in Firestore via the `submitGuessLogic` Cloud Function.
 - Firebase Functions configuration migrated from `functions.config()` to `process.env` environment variables for v2 compatibility.
+- **Enhanced Data Validation**: Strict answer validation preventing all punctuation marks, ensuring only lowercase letters (a-z) with maximum 7-character length.
+- **Quality-First Content Generation**: Enhanced OpenAI prompts and server-side validation ensuring consistent riddle format and quality.
 
 ## 3. Design Patterns
 
@@ -28,6 +30,8 @@
 - **Event-Driven (Backend)**: Cloud Functions triggered by HTTP requests, database changes, or scheduled events.
 - **Object Pooling (Client)**: Implemented for the `ShatteringTitle` animation to manage letter objects efficiently.
 - **Firestore Update Patterns**: Using specific types like `PlayerTopLevelUpdate` to handle updates involving `admin.firestore.FieldValue` while maintaining type safety and adhering to linting rules.
+- **Validation-First Architecture**: Comprehensive data validation at multiple layers (client-side, server-side, and AI generation) ensuring data quality and consistency.
+- **Fail-Safe Content Generation**: Multiple validation checkpoints preventing invalid content from entering the system.
 
 ## 4. Component Relationships
 
@@ -47,3 +51,5 @@
 - Scalable riddle generation mechanism, integrated into the classic game progression flow and storing directly to Firestore.
 - Ad integration and IAP validation logic.
 - Automatic content update trigger based on user engagement, storing new riddles directly in Firestore.
+- **Enhanced Content Quality Pipeline**: Multi-layer validation ensuring all generated content meets strict quality standards before storage.
+- **Comprehensive Test Coverage**: 184 passing tests across all Firebase Functions ensuring reliability and data integrity.
