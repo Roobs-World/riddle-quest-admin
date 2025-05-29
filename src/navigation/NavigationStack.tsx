@@ -20,6 +20,10 @@ import {
   fetchDailyRiddleForDate,
 } from "../services/FirestoreService";
 import { FirestoreRiddle } from "../validation/firestoreSchemas";
+import {
+  InitializeRiddleDatabaseInputSchema,
+  InitializeRiddleDatabaseOutputSchema,
+} from "../validation/cloudFunctionsSchemas";
 import { getFunctions } from "@react-native-firebase/functions";
 import { getApp } from "@react-native-firebase/app";
 import { useState, useEffect } from "react";
@@ -38,10 +42,14 @@ const GameScreenWrapper = () => {
     setCurrentRiddle,
   } = useAuth();
 
+  // Add local loading state for riddle generation
+  const [isRiddleLoading, setIsRiddleLoading] = useState(false);
+
   console.log("🎮 GameScreenWrapper rendering:", {
     isAuthenticated,
     hasPlayerData: !!playerData,
     isLoading,
+    isRiddleLoading,
     hasCurrentRiddle: !!currentRiddle,
     isDailyChallengeAvailable,
     gameMode,
@@ -108,8 +116,12 @@ const GameScreenWrapper = () => {
     const loadRiddle = async () => {
       if (!isAuthenticated || !playerData) {
         setCurrentRiddle(null);
+        setIsRiddleLoading(false);
         return;
       }
+
+      console.log("🧩 Starting riddle loading process...");
+      setIsRiddleLoading(true);
 
       try {
         let fetchedRiddle: FirestoreRiddle | null = null;
@@ -118,6 +130,78 @@ const GameScreenWrapper = () => {
           console.log("Loading Classic Mode riddle...");
           const classicIndex = playerData.progress?.classicIndex || 0;
           fetchedRiddle = await fetchClassicRiddleFromFirestore(classicIndex);
+
+          // If no classic riddle found, trigger generation
+          if (!fetchedRiddle) {
+            console.log("🔄 No classic riddle found, generating riddles...");
+            try {
+              // Check if this is the very first riddle (index 0) - if so, initialize the database
+              if (classicIndex === 0) {
+                console.log(
+                  "🚀 No riddles found at index 0, initializing riddle database..."
+                );
+                const initializeRiddlesCallable = getFunctions(
+                  getApp()
+                ).httpsCallable("initializeRiddleDatabase");
+
+                const inputData = {};
+                try {
+                  InitializeRiddleDatabaseInputSchema.parse(inputData);
+                } catch (zodError) {
+                  console.error(
+                    "Zod validation error for initializeRiddleDatabase input:",
+                    zodError
+                  );
+                  throw zodError;
+                }
+
+                const initResult = await initializeRiddlesCallable(inputData);
+
+                try {
+                  const validatedResult =
+                    InitializeRiddleDatabaseOutputSchema.parse(initResult.data);
+                  console.log(
+                    "Database initialization result:",
+                    validatedResult
+                  );
+                } catch (zodError) {
+                  console.error(
+                    "Zod validation error for initializeRiddleDatabase output:",
+                    zodError
+                  );
+                }
+              } else {
+                // For other indices, just generate a small batch
+                console.log("🔄 Generating additional riddles...");
+                const generateRiddlesCallable = getFunctions(
+                  getApp()
+                ).httpsCallable("generateClassicRiddles");
+                await generateRiddlesCallable();
+              }
+
+              // Wait for generation to complete and retry
+              console.log("⏳ Waiting for riddle generation to complete...");
+              await new Promise((resolve) => setTimeout(resolve, 5000));
+              fetchedRiddle = await fetchClassicRiddleFromFirestore(
+                classicIndex
+              );
+
+              if (fetchedRiddle) {
+                console.log(
+                  `✅ Successfully loaded classic riddle after generation at index ${classicIndex}.`
+                );
+              } else {
+                console.warn(
+                  `⚠️ Could not load classic riddle at index ${classicIndex} even after generation.`
+                );
+              }
+            } catch (generationError) {
+              console.error(
+                "❌ Error generating initial classic riddles:",
+                generationError
+              );
+            }
+          }
         } else if (gameMode === "challenge" || gameMode === "daily") {
           console.log("Loading Daily Challenge riddle...");
           if (isDailyChallengeAvailable) {
@@ -138,43 +222,197 @@ const GameScreenWrapper = () => {
 
           // If no daily riddle available, fall back to classic mode
           if (!fetchedRiddle) {
-            console.log("Falling back to classic mode riddle...");
+            console.log("🔄 Falling back to classic mode riddle...");
             const classicIndex = playerData.progress?.classicIndex || 0;
             fetchedRiddle = await fetchClassicRiddleFromFirestore(classicIndex);
+
+            // If no classic riddle found during fallback, trigger generation
+            if (!fetchedRiddle) {
+              console.log(
+                "🔄 No classic riddle found during fallback, generating riddles..."
+              );
+              try {
+                // Check if this is the very first riddle (index 0) - if so, initialize the database
+                if (classicIndex === 0) {
+                  console.log(
+                    "🚀 No riddles found at index 0 during fallback, initializing riddle database..."
+                  );
+                  const initializeRiddlesCallable = getFunctions(
+                    getApp()
+                  ).httpsCallable("initializeRiddleDatabase");
+
+                  const inputData = {};
+                  try {
+                    InitializeRiddleDatabaseInputSchema.parse(inputData);
+                  } catch (zodError) {
+                    console.error(
+                      "Zod validation error for initializeRiddleDatabase input:",
+                      zodError
+                    );
+                    throw zodError;
+                  }
+
+                  const initResult = await initializeRiddlesCallable(inputData);
+
+                  try {
+                    const validatedResult =
+                      InitializeRiddleDatabaseOutputSchema.parse(
+                        initResult.data
+                      );
+                    console.log(
+                      "Database initialization result:",
+                      validatedResult
+                    );
+                  } catch (zodError) {
+                    console.error(
+                      "Zod validation error for initializeRiddleDatabase output:",
+                      zodError
+                    );
+                  }
+                } else {
+                  // For other indices, just generate a small batch
+                  console.log(
+                    "🔄 Generating additional riddles for fallback..."
+                  );
+                  const generateRiddlesCallable = getFunctions(
+                    getApp()
+                  ).httpsCallable("generateClassicRiddles");
+                  await generateRiddlesCallable();
+                }
+
+                // Wait for generation to complete and retry
+                console.log(
+                  "⏳ Waiting for fallback riddle generation to complete..."
+                );
+                await new Promise((resolve) => setTimeout(resolve, 5000));
+                fetchedRiddle = await fetchClassicRiddleFromFirestore(
+                  classicIndex
+                );
+
+                if (fetchedRiddle) {
+                  console.log(
+                    `✅ Successfully loaded fallback classic riddle after generation at index ${classicIndex}.`
+                  );
+                } else {
+                  console.warn(
+                    `⚠️ Could not load fallback classic riddle at index ${classicIndex} even after generation.`
+                  );
+                }
+              } catch (generationError) {
+                console.error(
+                  "❌ Error generating fallback classic riddles:",
+                  generationError
+                );
+              }
+            }
           }
         }
 
         setCurrentRiddle(fetchedRiddle);
+        console.log("✅ Riddle loading process completed");
       } catch (error) {
-        console.error("Error loading riddle based on game mode:", error);
+        console.error("❌ Error loading riddle based on game mode:", error);
         // Even on error, try to load a classic riddle as fallback
         try {
           console.log(
-            "Error occurred, attempting to load classic riddle as fallback..."
+            "🔄 Error occurred, attempting to load classic riddle as fallback..."
           );
           const classicIndex = playerData.progress?.classicIndex || 0;
-          const fallbackRiddle = await fetchClassicRiddleFromFirestore(
+          let fallbackRiddle = await fetchClassicRiddleFromFirestore(
             classicIndex
           );
+
+          // If fallback also fails, try generation
+          if (!fallbackRiddle) {
+            console.log(
+              "🔄 Fallback classic riddle not found, generating riddles..."
+            );
+            try {
+              // Check if this is the very first riddle (index 0) - if so, initialize the database
+              if (classicIndex === 0) {
+                console.log(
+                  "🚀 No riddles found at index 0 in final fallback, initializing riddle database..."
+                );
+                const initializeRiddlesCallable = getFunctions(
+                  getApp()
+                ).httpsCallable("initializeRiddleDatabase");
+
+                const inputData = {};
+                try {
+                  InitializeRiddleDatabaseInputSchema.parse(inputData);
+                } catch (zodError) {
+                  console.error(
+                    "Zod validation error for initializeRiddleDatabase input:",
+                    zodError
+                  );
+                  throw zodError;
+                }
+
+                const initResult = await initializeRiddlesCallable(inputData);
+
+                try {
+                  const validatedResult =
+                    InitializeRiddleDatabaseOutputSchema.parse(initResult.data);
+                  console.log(
+                    "Database initialization result:",
+                    validatedResult
+                  );
+                } catch (zodError) {
+                  console.error(
+                    "Zod validation error for initializeRiddleDatabase output:",
+                    zodError
+                  );
+                }
+              } else {
+                // For other indices, just generate a small batch
+                console.log(
+                  "🔄 Generating additional riddles for final fallback..."
+                );
+                const generateRiddlesCallable = getFunctions(
+                  getApp()
+                ).httpsCallable("generateClassicRiddles");
+                await generateRiddlesCallable();
+              }
+
+              // Wait for generation to complete and retry
+              console.log(
+                "⏳ Waiting for final fallback riddle generation to complete..."
+              );
+              await new Promise((resolve) => setTimeout(resolve, 5000));
+              fallbackRiddle = await fetchClassicRiddleFromFirestore(
+                classicIndex
+              );
+
+              if (fallbackRiddle) {
+                console.log(
+                  `✅ Successfully loaded fallback riddle after generation at index ${classicIndex}.`
+                );
+              } else {
+                console.warn(
+                  `⚠️ Could not load fallback riddle at index ${classicIndex} even after generation.`
+                );
+              }
+            } catch (generationError) {
+              console.error(
+                "❌ Error generating final fallback riddles:",
+                generationError
+              );
+            }
+          }
+
           setCurrentRiddle(fallbackRiddle);
         } catch (fallbackError) {
-          console.error(
-            "Failed to load fallback classic riddle:",
-            fallbackError
-          );
+          console.error("❌ Error in fallback riddle loading:", fallbackError);
           setCurrentRiddle(null);
         }
+      } finally {
+        console.log("🏁 Setting riddle loading to false");
+        setIsRiddleLoading(false);
       }
     };
 
     loadRiddle();
-  }, [
-    isAuthenticated,
-    playerData,
-    gameMode,
-    isDailyChallengeAvailable,
-    setCurrentRiddle,
-  ]);
+  }, [isAuthenticated, playerData, gameMode, isDailyChallengeAvailable]);
 
   const handleNextLevel = async () => {
     if (!playerData) return;
@@ -222,19 +460,21 @@ const GameScreenWrapper = () => {
     }
   };
 
-  // Show loading overlay while auth status, player data, and daily challenge availability are loading
-  if (
-    isLoading ||
-    (isAuthenticated &&
-      (!playerData || isDailyChallengeAvailable === undefined))
-  ) {
-    console.log("🎮 GameScreenWrapper showing loading spinner:", {
-      isLoading,
-      isAuthenticated,
-      hasPlayerData: !!playerData,
-      isDailyChallengeAvailable,
-    });
-    return <PulsingSpinner visible={true} size={150} />;
+  // Show loading spinner while authentication is in progress OR while riddles are being generated
+  if (isLoading || isRiddleLoading) {
+    const loadingMessage = isLoading
+      ? "Loading user data..."
+      : isRiddleLoading
+      ? "Generating riddles..."
+      : "Loading...";
+
+    console.log(
+      "⏳ Showing loading spinner -",
+      loadingMessage,
+      "timestamp:",
+      new Date().toISOString()
+    );
+    return <PulsingSpinner visible={true} opacity={0.7} />;
   }
 
   // If not authenticated, this should not render (handled by navigation)

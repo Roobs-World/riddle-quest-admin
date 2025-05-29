@@ -21,7 +21,7 @@ export const RiddleService = {
    */
   async fetchDailyRiddle() {
     console.log("Fetching daily riddle from Firestore");
-    const userId = auth().currentUser?.uid;
+    const userId = auth(getApp()).currentUser?.uid;
     if (!userId) {
       console.error("No authenticated user found.");
       return null;
@@ -30,7 +30,10 @@ export const RiddleService = {
     const today = new Date().toISOString().slice(0, 10);
 
     try {
-      const userDoc = await firestore().collection("users").doc(userId).get();
+      const userDoc = await firestore(getApp())
+        .collection("users")
+        .doc(userId)
+        .get();
 
       if (userDoc.exists()) {
         const userData = userDoc.data();
@@ -53,7 +56,7 @@ export const RiddleService = {
         }
       }
 
-      const dailyChallengeDoc = await firestore()
+      const dailyChallengeDoc = await firestore(getApp())
         .collection("dailyChallenge")
         .doc(today)
         .get();
@@ -73,7 +76,7 @@ export const RiddleService = {
         return null;
       }
 
-      const userAttemptsDoc = await firestore()
+      const userAttemptsDoc = await firestore(getApp())
         .collection("userDailyChallengeAttempts")
         .doc(`${userId}_${today}`)
         .get();
@@ -84,7 +87,7 @@ export const RiddleService = {
       if (completedIndex < riddleIds.length) {
         const nextRiddleId = riddleIds[completedIndex];
 
-        const riddleDoc = await firestore()
+        const riddleDoc = await firestore(getApp())
           .collection("riddles")
           .doc(nextRiddleId)
           .get();
@@ -114,7 +117,7 @@ export const RiddleService = {
         }
       } else {
         console.log(`User has completed all daily riddles for date: ${today}`);
-        const userRef = firestore().collection("users").doc(userId);
+        const userRef = firestore(getApp()).collection("users").doc(userId);
         await userRef.update({
           lastCompletedDailyChallengeDate: new Date().toISOString(),
         });
@@ -138,7 +141,7 @@ export const RiddleService = {
 
     for (let retry = 0; retry <= maxRetries; retry++) {
       try {
-        const snapshot = await firestore()
+        const snapshot = await firestore(getApp())
           .collection("riddles")
           .where("classicIndex", "==", level)
           .limit(1)
@@ -231,7 +234,7 @@ export const RiddleService = {
   async fetchTutorialRiddle(level: number) {
     console.log(`Fetching tutorial riddle for level ${level} from Firestore`);
     try {
-      const snapshot = await firestore()
+      const snapshot = await firestore(getApp())
         .collection("riddles")
         .where("category", "==", "tutorial")
         .where("tutorialIndex", "==", level)

@@ -27,7 +27,7 @@ import {awardedAdCallback} from "./adCallbacks";
 import {validatePurchase} from "./iapValidation";
 import {getHint, spendCoins} from "./gameLogic";
 import {setCompletedDailyChallenge, hasCompletedDailyChallenge, getCurrentDailyChallenge} from "./dailyChallenge";
-import {generateClassicRiddles} from "./riddleGeneration";
+import {generateClassicRiddles, initializeRiddleDatabase} from "./riddleGeneration";
 import {resetStats, updateAvatar} from "./profile";
 import {submitGuess} from "./submitGuessLogic";
 
@@ -40,6 +40,7 @@ export {
   hasCompletedDailyChallenge,
   getCurrentDailyChallenge,
   generateClassicRiddles,
+  initializeRiddleDatabase,
   resetStats,
   updateAvatar,
   submitGuess,

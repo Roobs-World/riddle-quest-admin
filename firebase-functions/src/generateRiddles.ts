@@ -1,10 +1,6 @@
 import * as admin from "firebase-admin";
 import {generateUniqueRiddle} from "./openaiService";
 import type {FirestoreRiddle} from "./validation/firestoreSchemas";
-import {RiddleSchema} from "./firestoreSchemas";
-import type {ZodFirestoreRiddle} from "./firestoreSchemas";
-import {z} from "zod";
-// import * as functions from "firebase-functions"; // No longer using functions.config()
 
 /**
  * Checks if a riddle already exists in the provided lists of questions and
@@ -123,9 +119,9 @@ export async function generateAndAppendRiddles(numberOfRiddles: number): Promise
   console.log(`Generating ${numberOfRiddles} new riddles...`);
 
   // Check for required environment variables
-  const openAIKey = process.env.OPENAI_API_KEY;
+  const openAIKey = process.env.OPEN_AI_KEY;
   if (!openAIKey) {
-    throw new Error("OPENAI_API_KEY environment variable is required");
+    throw new Error("OPEN_AI_KEY environment variable is required");
   }
 
   // Get existing riddles for duplicate checking

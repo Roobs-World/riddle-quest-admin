@@ -21,11 +21,11 @@ function initializeOpenAIClient(): OpenAI {
   }
 
   // Use environment variables for sensitive information
-  const openAIKey = process.env.OPENAI_API_KEY;
+  const openAIKey = process.env.OPEN_AI_KEY;
 
   // Ensure environment variables are set
   if (!openAIKey) {
-    throw new Error("Missing required environment variable: OPENAI_API_KEY");
+    throw new Error("Missing required environment variable: OPEN_AI_KEY");
   }
 
   openaiClient = new OpenAI({apiKey: openAIKey});
@@ -47,27 +47,24 @@ export async function generateUniqueRiddle(): Promise<[string, string] | null> {
         {
           role: "system",
           content:
-            "You are a creative assistant quiz master tasked with generating " +
-            "unique riddles. Each riddle must be novel, not repeating any " +
-            "previously generated riddles or answers. Try avoid using What " +
-            "am I? for 5% of answers. Be more inventive. Use common " +
-            "culture art history gaming geography music film or anything " +
-            "used in a popular culture to generate a riddle",
+            "You are a creative riddle master for a mobile word game. Generate unique, engaging riddles that are fun and accessible to a wide audience. " +
+            "Each riddle must be completely original and not repeat any previously generated content. " +
+            "Avoid overusing 'What am I?' format - be creative with question styles. " +
+            "Draw inspiration from popular culture, art, history, geography, music, film, gaming, and general knowledge to create interesting riddles.",
         },
         {
           role: "user",
           content:
-            "Generate a unique riddle with a question and answer format. " +
-            "Ensure the answer only includes lowercase letters (a-z) and " +
-            "does not contain any punctuation, numbers, or special " +
-            "characters. Ensure the question only includes lowercase " +
-            "letters (a-z) a comma or a question mark. The question " +
-            "should be engaging and suitable for a wide audience, with a " +
-            "length of 10-90 characters, and the answer should be " +
-            "concise. Aim for light-hearted content suitable for a wide " +
-            "mobile game audience. The riddle must be entirely new, not " +
-            "repeating or closely resembling any previously created " +
-            "riddles or common riddles known widely.",
+            "Generate a unique riddle in this exact format:\n\n" +
+            "Question: [your riddle question here]\n" +
+            "Answer: [your answer here]\n\n" +
+            "Requirements:\n" +
+            "- Question: 10-90 characters, use only lowercase letters (a-z), commas, and question marks\n" +
+            "- Answer: MAXIMUM 7 characters, use only lowercase letters (a-z), no punctuation, numbers, or special characters\n" +
+            "- Content: Engaging and suitable for mobile game players of all ages\n" +
+            "- Style: Creative, fun, and not overly difficult\n" +
+            "- Originality: Must be completely unique, not a common or well-known riddle\n\n" +
+            "The answer length is critical - it must never exceed 7 characters.",
         },
       ],
     });
@@ -80,34 +77,44 @@ export async function generateUniqueRiddle(): Promise<[string, string] | null> {
 
     const cleanedOutput = output.replace(/\*\*/g, "");
 
-    let splitIndex = cleanedOutput.lastIndexOf("\n\n");
-    if (splitIndex === -1) {
-      splitIndex = cleanedOutput.indexOf("\nAnswer:");
-    }
+    // Look for the standard format: "Question:" and "Answer:"
+    const questionMatch = cleanedOutput.match(/Question:\s*(.+?)(?=\nAnswer:)/s);
+    const answerMatch = cleanedOutput.match(/Answer:\s*(.+?)(?:\n|$)/s);
 
-    if (splitIndex === -1) {
-      console.warn("Could not find separator in OpenAI output.");
+    if (!questionMatch || !answerMatch) {
+      console.warn("Could not parse question or answer from OpenAI output using standard format.");
       return null;
     }
 
-    const question = cleanedOutput.substring(0, splitIndex).trim().replace("Question: ", "");
-    const answerPart = cleanedOutput.substring(splitIndex);
-
-    if (!answerPart.includes(":")) {
-      console.warn("Could not find answer separator in OpenAI output.");
-      return null;
-    }
-    const answer = answerPart.split(":")[1]?.trim();
+    const question = questionMatch[1].trim();
+    const answer = answerMatch[1].trim();
 
     if (!question || !answer) {
-      console.warn("Could not parse question or answer from OpenAI output.");
+      console.warn("Question or answer is empty after parsing.");
       return null;
     }
 
-    // Check for duplicates against existing riddles (This check will be moved
-    // outside this service)
-    // For now, just return the generated riddle
-    console.log(`Generated potential riddle: ${question} (${answer.length} letters)`);
+    // Validate answer length (critical requirement)
+    if (answer.length > 7) {
+      console.warn(`Answer too long: "${answer}" (${answer.length} characters). Must be 7 or fewer.`);
+      return null;
+    }
+
+    // Validate answer format (only lowercase letters)
+    if (!/^[a-z]+$/.test(answer)) {
+      console.warn(`Answer contains invalid characters: "${answer}". Must be only lowercase letters.`);
+      return null;
+    }
+
+    // Validate question format (lowercase letters, commas, question marks only)
+    if (!/^[a-z,? ]+$/.test(question)) {
+      console.warn(
+        `Question contains invalid characters: "${question}". Must be only lowercase letters, commas, and question marks.`,
+      );
+      return null;
+    }
+
+    console.log(`Generated valid riddle: "${question}" → "${answer}" (${answer.length} chars)`);
     return [question, answer];
   } catch (error) {
     console.error("Error generating riddle with OpenAI:", error);

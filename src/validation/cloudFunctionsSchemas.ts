@@ -125,3 +125,11 @@ export const ResetStatsOutputSchema = z.object({
   success: z.boolean(),
   message: z.string(),
 });
+
+// initializeRiddleDatabase
+export const InitializeRiddleDatabaseInputSchema = z.object({});
+export const InitializeRiddleDatabaseOutputSchema = z.object({
+  success: z.boolean(),
+  message: z.string(),
+  riddlesGenerated: z.number().int().nonnegative(),
+});

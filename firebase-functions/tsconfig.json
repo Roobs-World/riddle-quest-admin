@@ -9,14 +9,18 @@
     "noUnusedLocals": true,
     "outDir": "lib",
     "rootDir": "src",
+    "baseUrl": ".",
     "sourceMap": true,
     "strict": true,
     "lib": ["esnext", "dom"],
     "types": ["node", "jest"],
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "noEmit": false
   },
   "compileOnSave": true,
-  "include": ["src", "jest.config.js"],
-  "exclude": ["node_modules", "node_modules/call-bind-apply-helpers", "src/__tests__", "src/__mocks__", "**/*.bak", "**/*.skip"],
-  "skipLibCheck": true
+  "include": ["src/**/*.ts", "src/**/*.js", "jest.config.js"],
+  "exclude": ["node_modules", "lib", "src/__tests__", "src/__mocks__", "**/*.bak", "**/*.skip"]
 }

@@ -1,28 +1,20 @@
 import firestore, {
   FirebaseFirestoreTypes,
 } from "@react-native-firebase/firestore";
-import functions from "@react-native-firebase/functions";
 import { getApp } from "@react-native-firebase/app";
+import { Player, PlayerSchema } from "../validation/firestoreSchemas";
 import {
-  Player,
-  PlayerSchema,
   FirestoreRiddle,
   FirestoreRiddleSchema,
 } from "../validation/firestoreSchemas";
-import {
-  GenerateClassicRiddlesInputSchema,
-  GenerateClassicRiddlesOutputSchema,
-} from "../validation/cloudFunctionsSchemas";
 import { ZodError } from "zod";
 
-// Use the modern modular API instead of the deprecated namespaced API
-const firestoreDb = firestore();
-const usersCollection = firestoreDb.collection("users");
-const riddlesCollection = firestoreDb.collection("riddles");
-
-// Helper function for delays during retry logic
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
+/**
+ * Saves the user's progress to Firestore.
+ *
+ * @param userId The user's unique identifier.
+ * @param progress The progress data to save.
+ */
 export const saveUserProgressToFirestore = async (
   userId: string,
   progress: Player["progress"]
@@ -32,7 +24,7 @@ export const saveUserProgressToFirestore = async (
     return;
   }
   try {
-    await usersCollection.doc(userId).set(
+    await firestore(getApp()).collection("users").doc(userId).set(
       {
         progress: progress,
       },
@@ -56,7 +48,10 @@ export const loadUserProgressFromFirestore = async (
     return null;
   }
   try {
-    const userDoc = await usersCollection.doc(userId).get();
+    const userDoc = await firestore(getApp())
+      .collection("users")
+      .doc(userId)
+      .get();
     if (userDoc.exists()) {
       const userData = userDoc.data();
       if (userData) {
@@ -90,126 +85,67 @@ export const loadUserProgressFromFirestore = async (
 };
 
 /**
- * Fetches the daily riddle from Firestore based on the user's daily challenge index.
- * If no riddle is found, automatically triggers riddle generation and retries.
+ * Fetches a daily riddle from Firestore based on the daily index.
+ * This function only fetches riddles and does not trigger generation.
  *
  * @param dailyIndex The daily challenge index from the player's progress.
- * @returns A Promise resolving to the FirestoreRiddle data or null if not found after retries.
+ * @returns A Promise resolving to the FirestoreRiddle data or null if not found.
  */
 export const fetchDailyRiddleFromFirestore = async (
   dailyIndex: number
 ): Promise<FirestoreRiddle | null> => {
   console.log(`Fetching daily riddle for index ${dailyIndex} from Firestore`);
-  const maxRetries = 3;
-  const retryDelayMs = 5000;
 
-  for (let retry = 0; retry <= maxRetries; retry++) {
-    try {
-      const riddleQuerySnapshot = await riddlesCollection
-        .where("dailyIndex", "==", dailyIndex)
-        .limit(1)
-        .get();
+  try {
+    const riddleQuerySnapshot = await firestore(getApp())
+      .collection("riddles")
+      .where("dailyIndex", "==", dailyIndex)
+      .limit(1)
+      .get();
 
-      if (!riddleQuerySnapshot.empty) {
-        const riddleDoc = riddleQuerySnapshot.docs[0];
-        const riddleData = riddleDoc.data();
-        if (riddleData) {
-          try {
-            const validatedRiddle = FirestoreRiddleSchema.parse(riddleData);
-            console.log(
-              "Daily riddle fetched and validated successfully:",
-              validatedRiddle
-            );
-            return validatedRiddle;
-          } catch (zodError) {
-            if (zodError instanceof ZodError) {
-              console.error(
-                "Zod validation error for daily riddle data:",
-                zodError.issues
-              );
-            } else {
-              console.error(
-                "Unexpected error during daily riddle data validation:",
-                zodError
-              );
-            }
-            return null;
-          }
-        }
-      } else if (retry < maxRetries) {
-        console.log(
-          `No daily riddle found for index: ${dailyIndex}. Attempting to generate new riddles (Attempt ${
-            retry + 1
-          }/${maxRetries + 1})...`
-        );
-
-        // Trigger automatic riddle generation (using classic riddle generation since no specific daily generation exists)
-        const generateRiddlesCallable = functions(getApp()).httpsCallable(
-          "generateClassicRiddles"
-        );
-        const inputData = {};
-
+    if (!riddleQuerySnapshot.empty) {
+      const riddleDoc = riddleQuerySnapshot.docs[0];
+      const riddleData = riddleDoc.data();
+      if (riddleData) {
         try {
-          GenerateClassicRiddlesInputSchema.parse(inputData);
-        } catch (zodError) {
-          console.error(
-            "Zod validation error for generateClassicRiddles input:",
-            zodError
-          );
-          throw zodError;
-        }
-
-        const result = await generateRiddlesCallable(inputData);
-        try {
-          const validatedResult = GenerateClassicRiddlesOutputSchema.parse(
-            result.data
-          );
+          const validatedRiddle = FirestoreRiddleSchema.parse(riddleData);
           console.log(
-            "generateClassicRiddles function output validated.",
-            validatedResult
+            "Daily riddle fetched and validated successfully:",
+            validatedRiddle
           );
+          return validatedRiddle;
         } catch (zodError) {
-          console.error(
-            "Zod validation error for generateClassicRiddles output:",
-            zodError
-          );
+          if (zodError instanceof ZodError) {
+            console.error(
+              "Zod validation error for daily riddle data:",
+              zodError.issues
+            );
+          } else {
+            console.error(
+              "Unexpected error during daily riddle data validation:",
+              zodError
+            );
+          }
+          return null;
         }
-
-        // Wait before retrying to allow riddles to be generated
-        await delay(retryDelayMs);
-      } else {
-        console.log(
-          `No daily riddle found for index: ${dailyIndex} after ${
-            maxRetries + 1
-          } attempts.`
-        );
-        return null;
       }
-    } catch (error) {
-      console.error(
-        `Error fetching or generating daily riddle for index ${dailyIndex}:`,
-        error
-      );
-      if (retry < maxRetries) {
-        console.log(
-          `Retrying fetch/generation for index ${dailyIndex} after delay...`
-        );
-        await delay(retryDelayMs);
-      } else {
-        console.error("Error fetching daily riddle from Firestore:", error);
-        throw error;
-      }
+    } else {
+      console.log(`No daily riddle found for index: ${dailyIndex}`);
+      return null;
     }
+  } catch (error) {
+    console.error("Error fetching daily riddle from Firestore:", error);
+    throw error;
   }
   return null;
 };
 
 /**
  * Fetches a classic mode riddle from Firestore based on the user's classic index.
- * If no riddle is found, automatically triggers riddle generation and retries.
+ * This function only fetches riddles and does not trigger generation.
  *
  * @param classicIndex The classic challenge index from the player's progress.
- * @returns A Promise resolving to the FirestoreRiddle data or null if not found after retries.
+ * @returns A Promise resolving to the FirestoreRiddle data or null if not found.
  */
 export const fetchClassicRiddleFromFirestore = async (
   classicIndex: number
@@ -217,106 +153,47 @@ export const fetchClassicRiddleFromFirestore = async (
   console.log(
     `Fetching classic riddle for index ${classicIndex} from Firestore`
   );
-  const maxRetries = 3;
-  const retryDelayMs = 5000;
 
-  for (let retry = 0; retry <= maxRetries; retry++) {
-    try {
-      const riddleQuerySnapshot = await riddlesCollection
-        .where("classicIndex", "==", classicIndex)
-        .limit(1)
-        .get();
+  try {
+    const riddleQuerySnapshot = await firestore(getApp())
+      .collection("riddles")
+      .where("classicIndex", "==", classicIndex)
+      .limit(1)
+      .get();
 
-      if (!riddleQuerySnapshot.empty) {
-        const riddleDoc = riddleQuerySnapshot.docs[0];
-        const riddleData = riddleDoc.data();
-        if (riddleData) {
-          try {
-            const validatedRiddle = FirestoreRiddleSchema.parse(riddleData);
-            console.log(
-              "Classic riddle fetched and validated successfully:",
-              validatedRiddle
-            );
-            return validatedRiddle;
-          } catch (zodError) {
-            if (zodError instanceof ZodError) {
-              console.error(
-                "Zod validation error for classic riddle data:",
-                zodError.issues
-              );
-            } else {
-              console.error(
-                "Unexpected error during classic riddle data validation:",
-                zodError
-              );
-            }
-            return null;
-          }
-        }
-      } else if (retry < maxRetries) {
-        console.log(
-          `No classic riddle found for index: ${classicIndex}. Attempting to generate new riddles (Attempt ${
-            retry + 1
-          }/${maxRetries + 1})...`
-        );
-
-        // Trigger automatic riddle generation
-        const generateRiddlesCallable = functions(getApp()).httpsCallable(
-          "generateClassicRiddles"
-        );
-        const inputData = {};
-
+    if (!riddleQuerySnapshot.empty) {
+      const riddleDoc = riddleQuerySnapshot.docs[0];
+      const riddleData = riddleDoc.data();
+      if (riddleData) {
         try {
-          GenerateClassicRiddlesInputSchema.parse(inputData);
-        } catch (zodError) {
-          console.error(
-            "Zod validation error for generateClassicRiddles input:",
-            zodError
-          );
-          throw zodError;
-        }
-
-        const result = await generateRiddlesCallable(inputData);
-        try {
-          const validatedResult = GenerateClassicRiddlesOutputSchema.parse(
-            result.data
-          );
+          const validatedRiddle = FirestoreRiddleSchema.parse(riddleData);
           console.log(
-            "generateClassicRiddles function output validated.",
-            validatedResult
+            "Classic riddle fetched and validated successfully:",
+            validatedRiddle
           );
+          return validatedRiddle;
         } catch (zodError) {
-          console.error(
-            "Zod validation error for generateClassicRiddles output:",
-            zodError
-          );
+          if (zodError instanceof ZodError) {
+            console.error(
+              "Zod validation error for classic riddle data:",
+              zodError.issues
+            );
+          } else {
+            console.error(
+              "Unexpected error during classic riddle data validation:",
+              zodError
+            );
+          }
+          return null;
         }
-
-        // Wait before retrying to allow riddles to be generated
-        await delay(retryDelayMs);
-      } else {
-        console.log(
-          `No classic riddle found for index: ${classicIndex} after ${
-            maxRetries + 1
-          } attempts.`
-        );
-        return null;
       }
-    } catch (error) {
-      console.error(
-        `Error fetching or generating classic riddle for index ${classicIndex}:`,
-        error
-      );
-      if (retry < maxRetries) {
-        console.log(
-          `Retrying fetch/generation for index ${classicIndex} after delay...`
-        );
-        await delay(retryDelayMs);
-      } else {
-        console.error("Error fetching classic riddle from Firestore:", error);
-        throw error;
-      }
+    } else {
+      console.log(`No classic riddle found for index: ${classicIndex}`);
+      return null;
     }
+  } catch (error) {
+    console.error("Error fetching classic riddle from Firestore:", error);
+    throw error;
   }
   return null;
 };
@@ -333,7 +210,8 @@ export const fetchDailyRiddleForDate = async (
   try {
     // Assuming daily riddles are stored in a subcollection or have a field referencing the date
     // For now, let's assume they are in the 'riddles' collection with a 'date' field.
-    const riddleQuerySnapshot = await riddlesCollection
+    const riddleQuerySnapshot = await firestore(getApp())
+      .collection("riddles")
       .where("date", "==", dateString)
       .limit(1)
       .get();
@@ -395,7 +273,7 @@ export const updateLastDailyChallengeCompletedAt = async (
     return;
   }
   try {
-    await usersCollection.doc(userId).update({
+    await firestore(getApp()).collection("users").doc(userId).update({
       lastDailyChallengeCompletedAt: firestore.FieldValue.serverTimestamp(),
     });
     console.log(
@@ -421,7 +299,8 @@ export const fetchTutorialRiddleFromFirestore = async (
   tutorialIndex: number
 ): Promise<FirestoreRiddle | null> => {
   try {
-    const riddleQuerySnapshot = await riddlesCollection
+    const riddleQuerySnapshot = await firestore(getApp())
+      .collection("riddles")
       .where("tutorialIndex", "==", tutorialIndex)
       .limit(1)
       .get();
@@ -480,7 +359,7 @@ export const updateClassicIndexInFirestore = async (
     return;
   }
   try {
-    await usersCollection.doc(userId).update({
+    await firestore(getApp()).collection("users").doc(userId).update({
       "progress.classicIndex": classicIndex,
     });
     console.log(
@@ -513,7 +392,7 @@ export const updateDailyChallengeIndexInFirestore = async (
     return;
   }
   try {
-    await usersCollection.doc(userId).update({
+    await firestore(getApp()).collection("users").doc(userId).update({
       "progress.dailyChallengeIndex": dailyChallengeIndex,
     });
     console.log(
@@ -546,7 +425,7 @@ export const updateTutorialIndexInFirestore = async (
     return;
   }
   try {
-    await usersCollection.doc(userId).update({
+    await firestore(getApp()).collection("users").doc(userId).update({
       "progress.tutorialIndex": tutorialIndex,
     });
     console.log(
@@ -582,7 +461,7 @@ export const updateUserDocumentInFirestore = async (
     // No Zod validation here as FieldValue is not directly parsable by Zod
     // PlayerSchema.partial().parse(updates); // Remove Zod parse
 
-    await usersCollection.doc(userId).update(updates);
+    await firestore(getApp()).collection("users").doc(userId).update(updates);
     console.log("User document updated successfully for user:", userId);
   } catch (error) {
     if (error instanceof ZodError) {
@@ -616,7 +495,7 @@ export const updateUserStats = async (
     console.warn("Attempted to update user stats without a userId.");
     return;
   }
-  const userRef = usersCollection.doc(userId);
+  const userRef = firestore(getApp()).collection("users").doc(userId);
 
   try {
     await (transaction
@@ -702,7 +581,10 @@ export const createUserDocumentInFirestore = async (
 
     // Save to Firestore
     console.log("💾 Saving user document to Firestore...");
-    await usersCollection.doc(userId).set(validatedUserData);
+    await firestore(getApp())
+      .collection("users")
+      .doc(userId)
+      .set(validatedUserData);
     console.log("✅ User document saved to Firestore successfully");
 
     console.log("New user document created successfully for user:", userId);
