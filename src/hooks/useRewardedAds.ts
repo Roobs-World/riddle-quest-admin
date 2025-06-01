@@ -250,12 +250,13 @@ const useRewardedAds = (): UseRewardedAds => {
 
   // --- Initial Ad Load ---
 
-  useEffect(() => {
-    // Initial load when the hook is first used.
-    // This will attempt to load the ad assuming the SDK is initialized early in the app lifecycle.
-    // A more robust approach might involve waiting for the SDK initialization confirmation.
-    loadRewardedAd();
-  }, [loadRewardedAd]); // Fixed dependency
+  // Removed automatic loading - ads should only load when explicitly requested
+  // useEffect(() => {
+  //   // Initial load when the hook is first used.
+  //   // This will attempt to load the ad assuming the SDK is initialized early in the app lifecycle.
+  //   // A more robust approach might involve waiting for the SDK initialization confirmation.
+  //   loadRewardedAd();
+  // }, [loadRewardedAd]); // Fixed dependency
 
   return {
     isRewardedAdReady,

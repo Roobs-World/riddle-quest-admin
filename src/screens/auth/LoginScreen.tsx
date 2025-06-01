@@ -1,25 +1,24 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import CustomSafeAreaView from "../../components/CustomSafeAreaView";
 import { AppStrings } from "../../constants/AppStrings";
-import WideButton from "../../components/buttons/WideButton";
 import ScreenTitle from "../../components/text/ScreenTitle";
 import AuthLayout from "../../components/layouts/AuthLayout";
+import BackButton from "../../components/buttons/BackButton";
 import UserEmailInput from "../../components/inputFields/UserEmailInput";
 import UserPasswordInput from "../../components/inputFields/UserPasswordInput";
-import BackButton from "../../components/buttons/BackButton";
-import PulsingSpinner from "../../components/PulsingSpinner";
-import { AuthService } from "../../services/AuthService";
-import { useAuth } from "../../contexts/AuthContext";
-import Error from "../../components/text/Error";
-
+import WideButton from "../../components/buttons/WideButton";
 import GoogleSignInButton from "../../components/buttons/GoogleSignInButton";
 import FacebookSignInButton from "../../components/buttons/FacebookSignInButton";
+import Error from "../../components/text/Error";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { AuthService } from "../../services/AuthService";
+import { useAuth } from "../../contexts/AuthContext";
+import PulsingSpinner from "../../components/PulsingSpinner";
+import { type FirebaseAuthTypes } from "@react-native-firebase/auth";
+import HomeBgSvg from "../../../assets/images/home-bg.svg";
 import { loginSchema, LoginFormData } from "../../validation/authSchemas";
 import { ZodError, ZodFormattedError } from "zod";
-import { type FirebaseAuthTypes } from "@react-native-firebase/auth";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import HomeBgSvg from "../../../assets/images/home-bg.svg";
 
 type AuthStackParamList = {
   Login: undefined;
@@ -186,18 +185,7 @@ const LoginScreen = ({
 
   return (
     <CustomSafeAreaView>
-      <HomeBgSvg
-        width="120%"
-        height="100%"
-        style={{
-          position: "absolute",
-          top: "-5%",
-          left: 0,
-          bottom: 0,
-          right: 0,
-          zIndex: -1,
-        }}
-      />
+      <HomeBgSvg width="120%" height="100%" style={styles.backgroundImage} />
 
       <AuthLayout>
         <View className="relative w-full mb-8">
@@ -234,12 +222,13 @@ const LoginScreen = ({
         >
           <Text
             className="text-sm text-gray-500"
-            style={{ fontFamily: "Poppins" }}
+            style={styles.forgotPasswordText}
           >
             {AppStrings.AuthStrings.Login.FORGOT_PASSWORD}
           </Text>
         </TouchableOpacity>
       </AuthLayout>
+
       <WideButton
         buttonText={AppStrings.AuthStrings.Login.LOGIN_BUTTON}
         onPress={handleLogin}
@@ -276,5 +265,19 @@ const LoginScreen = ({
     </CustomSafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  backgroundImage: {
+    bottom: 0,
+    left: 0,
+    position: "absolute",
+    right: 0,
+    top: "-5%",
+    zIndex: -1,
+  },
+  forgotPasswordText: {
+    fontFamily: "Poppins",
+  },
+});
 
 export default LoginScreen;

@@ -1,4 +1,4 @@
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, StyleSheet } from "react-native";
 import BackIcon from "../icons/BackIcon";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { AppStrings } from "../../constants/AppStrings";
@@ -27,16 +27,20 @@ export default function BackButton({
     <TouchableOpacity
       onPress={handlePress}
       className="p-4"
-      style={{
-        position: "absolute",
-        left: 0,
-        top: 2,
-        justifyContent: "center",
-        alignItems: "center",
-        zIndex: 10,
-      }}
+      style={styles.backButton}
     >
       <BackIcon />
     </TouchableOpacity>
   );
 }
+
+const styles = StyleSheet.create({
+  backButton: {
+    alignItems: "center",
+    justifyContent: "center",
+    left: 0,
+    position: "absolute",
+    top: 2,
+    zIndex: 10,
+  },
+});

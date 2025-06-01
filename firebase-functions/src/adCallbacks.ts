@@ -1,6 +1,6 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import {onRequest} from "firebase-functions/v2/https";
+// import {onRequest} from "firebase-functions/v2/https";
 import {Request, Response} from "express";
 import * as crypto from "crypto";
 import {updateUserCoins} from "./firestoreService";
@@ -117,7 +117,7 @@ async function markAdTransactionAsProcessed(userId: string, token: string): Prom
  * @param res - The Express response object.
  * @return A promise that resolves once the operation is completed.
  */
-export const awardedAdCallback = onRequest(async (req: Request, res: Response): Promise<void> => {
+export const awardedAdCallback = functions.https.onRequest(async (req: Request, res: Response): Promise<void> => {
   const applovinSdkKey = process.env.APPLOVIN_SDK_KEY;
   if (!applovinSdkKey) {
     functions.logger.error("Missing required environment variable: APPLOVIN_SDK_KEY (from process.env)");

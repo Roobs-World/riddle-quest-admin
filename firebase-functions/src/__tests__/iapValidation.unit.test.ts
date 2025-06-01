@@ -2,6 +2,9 @@
 import * as dotenv from "dotenv";
 dotenv.config({path: ".env"});
 
+// Jest/type imports - move to top before using jest.fn()
+import {jest, beforeAll, beforeEach, afterAll, describe, it, expect} from "@jest/globals";
+
 // Import Firebase Functions Test for proper function testing
 import functionsTest from "firebase-functions-test";
 
@@ -18,12 +21,6 @@ const mockIAPGetProducts_IT = jest.fn<() => Promise<any[]>>();
 const mockIAPGetSubscriptions_IT = jest.fn<() => Promise<any[]>>();
 const mockIAPFinishTransaction_IT = jest.fn<() => Promise<void>>();
 
-const mockPerformPlatformValidationInternal =
-  jest.fn<(platform: string, token: string, productId: string) => Promise<{isValid: boolean; [key: string]: any}>>();
-
-// 2. Jest/type imports
-import {jest, beforeAll, beforeEach, afterAll, describe, it, expect} from "@jest/globals";
-
 // 3. Mock all external dependencies BEFORE importing the function
 jest.mock("../firestoreService", () => ({
   getUser: jest.fn(),
@@ -37,8 +34,8 @@ jest.mock("../iapReceiptService", () => ({
 }));
 
 // Mock Firebase Admin SDK
-const mockUserDocUpdate = jest.fn();
-const mockUserDocGet = jest.fn();
+const mockUserDocUpdate = jest.fn<() => Promise<void>>();
+const mockUserDocGet = jest.fn<() => Promise<any>>();
 const mockUserDocRef = {
   update: mockUserDocUpdate,
   get: mockUserDocGet,
@@ -91,10 +88,6 @@ jest.doMock("in-app-purchase", () => {
     GOOGLE: "google",
   };
 });
-
-jest.doMock("../iapPlatformValidator", () => ({
-  performPlatformValidation: mockPerformPlatformValidationInternal,
-}));
 
 // 4. Import the function to test after mocks are set up
 import {validatePurchase} from "../iapValidation";
@@ -165,7 +158,36 @@ describe("validatePurchase - Unit Tests", () => {
     // Set default mock returns
     mockIAPIsValidated_IT.mockReturnValue(true);
     mockIAPGetPurchaseData_IT.mockReturnValue([]);
-    mockPerformPlatformValidationInternal.mockResolvedValue({isValid: true});
+
+    // Mock iap.validate to return success responses
+    mockIAPValidate_IT.mockImplementation((platform: any, tokenOrData: any, callback: any) => {
+      if (typeof tokenOrData === "string") {
+        // iOS
+        callback(null, {
+          status: 0,
+          receipt: {},
+          transactionId: "test-transaction",
+          productId: "test-product",
+          platform: "apple",
+          environment: "sandbox",
+        });
+      } else {
+        // Android
+        callback(null, {
+          receipt: {
+            kind: "androidpublisher#productPurchase",
+            purchaseTimeMillis: Date.now().toString(),
+            purchaseState: 0,
+            consumptionState: 0,
+            developerPayload: "",
+          },
+          transactionId: "test-transaction",
+          productId: tokenOrData.productId || "test-product",
+          platform: "google",
+        });
+      }
+    });
+
     mockGetUser.mockResolvedValue({coins: 100, hasPurchasedApp: false});
     mockIsPurchaseTokenAlreadyProcessed.mockResolvedValue(false);
     mockUpdateUserCoins.mockResolvedValue(undefined);
@@ -173,8 +195,8 @@ describe("validatePurchase - Unit Tests", () => {
     mockMarkPurchaseTokenAsProcessed.mockResolvedValue(undefined);
 
     // Set up Firebase admin mocks
-    (mockUserDocUpdate as jest.Mock).mockResolvedValue(undefined);
-    (mockUserDocGet as jest.Mock).mockResolvedValue({
+    mockUserDocUpdate.mockResolvedValue(undefined);
+    mockUserDocGet.mockResolvedValue({
       data: () => ({coins: 100, hasPurchasedApp: true}),
     });
   });
@@ -321,7 +343,6 @@ describe("validatePurchase - Unit Tests", () => {
       const productId = NO_ADS_PRODUCT_ID;
       const platform = "ios";
 
-      mockPerformPlatformValidationInternal.mockResolvedValue({isValid: true});
       mockIAPIsValidated_IT.mockReturnValue(true);
       mockIAPGetPurchaseData_IT.mockReturnValue([{productId, transactionId: purchaseToken}]);
 
@@ -330,7 +351,7 @@ describe("validatePurchase - Unit Tests", () => {
 
       const result = await wrappedValidatePurchase(request);
 
-      expect(mockPerformPlatformValidationInternal).toHaveBeenCalledWith(platform, purchaseToken, productId);
+      expect(mockIAPValidate_IT).toHaveBeenCalled();
       expect(result.success).toBe(true);
     }, 60000);
 
@@ -340,15 +361,17 @@ describe("validatePurchase - Unit Tests", () => {
       const platform = "ios";
       const platformError = new Error("Platform validation failed");
 
-      mockPerformPlatformValidationInternal.mockRejectedValue(platformError);
+      mockIAPValidate_IT.mockImplementation((platform: any, token: any, callback: any) => {
+        callback(platformError, null);
+      });
 
       const data = {purchaseToken, productId, platform};
       const request = constructMockRequestArgs(data);
 
       await expect(() => wrappedValidatePurchase(request)).rejects.toThrow(
-        "An unexpected error occurred during purchase processing.",
+        "An error occurred during app store validation.",
       );
-      expect(mockPerformPlatformValidationInternal).toHaveBeenCalledWith(platform, purchaseToken, productId);
+      expect(mockIAPValidate_IT).toHaveBeenCalled();
     }, 60000);
 
     it("should handle iap.isValidated returning false", async () => {
@@ -357,7 +380,6 @@ describe("validatePurchase - Unit Tests", () => {
       const productId = "prod";
       const platform = "ios";
 
-      mockPerformPlatformValidationInternal.mockResolvedValue({isValid: true});
       mockIAPIsValidated_IT.mockReturnValue(false);
 
       const data = {purchaseToken, productId, platform};
@@ -366,7 +388,7 @@ describe("validatePurchase - Unit Tests", () => {
       await expect(() => wrappedValidatePurchase(request)).rejects.toThrow(
         "Purchase validation failed or product ID mismatch.",
       );
-      expect(mockPerformPlatformValidationInternal).toHaveBeenCalledWith(platform, purchaseToken, productId);
+      expect(mockIAPValidate_IT).toHaveBeenCalled();
       expect(mockIAPIsValidated_IT).toHaveBeenCalled();
     }, 60000);
 
@@ -376,7 +398,6 @@ describe("validatePurchase - Unit Tests", () => {
       const productId = "prod";
       const platform = "ios";
 
-      mockPerformPlatformValidationInternal.mockResolvedValue({isValid: true});
       mockIAPIsValidated_IT.mockReturnValue(true);
       mockIAPGetPurchaseData_IT.mockReturnValue(null);
 
@@ -395,7 +416,6 @@ describe("validatePurchase - Unit Tests", () => {
       const productId = "prod";
       const platform = "ios";
 
-      mockPerformPlatformValidationInternal.mockResolvedValue({isValid: true});
       mockIAPIsValidated_IT.mockReturnValue(true);
       mockIAPGetPurchaseData_IT.mockReturnValue({} as any);
 
@@ -415,7 +435,6 @@ describe("validatePurchase - Unit Tests", () => {
       const receiptProductId = "different.prod.id";
       const platform = "ios";
 
-      mockPerformPlatformValidationInternal.mockResolvedValue({isValid: true});
       mockIAPIsValidated_IT.mockReturnValue(true);
       mockIAPGetPurchaseData_IT.mockReturnValue([{productId: receiptProductId, transactionId: purchaseToken}]);
 
@@ -434,7 +453,6 @@ describe("validatePurchase - Unit Tests", () => {
       const unknownProductId = "com.qwordly.coins.unknown";
       const platform = "android";
 
-      mockPerformPlatformValidationInternal.mockResolvedValue({isValid: true});
       mockIAPIsValidated_IT.mockReturnValue(true);
       mockIAPGetPurchaseData_IT.mockReturnValue([
         {productId: unknownProductId, quantity: 1, transactionId: purchaseToken},
@@ -455,7 +473,6 @@ describe("validatePurchase - Unit Tests", () => {
       const productId = NO_ADS_PRODUCT_ID;
       const platform = "ios";
 
-      mockPerformPlatformValidationInternal.mockResolvedValue({isValid: true});
       mockIAPIsValidated_IT.mockReturnValue(true);
       mockIAPGetPurchaseData_IT.mockReturnValue([{productId: productId, transactionId: purchaseToken}]);
 
@@ -476,7 +493,6 @@ describe("validatePurchase - Unit Tests", () => {
       const productId = productInfo.id;
       const platform = "android";
 
-      mockPerformPlatformValidationInternal.mockResolvedValue({isValid: true});
       mockIAPIsValidated_IT.mockReturnValue(true);
       mockIAPGetPurchaseData_IT.mockReturnValue([{productId, quantity: 1, transactionId: purchaseToken}]);
 

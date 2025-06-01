@@ -1,201 +1,491 @@
-// 1. Declare and initialize the mock function variable
-const mockCreateCompletions = jest.fn();
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import {describe, expect, test, beforeEach, afterEach, jest} from "@jest/globals";
 
-// 2. Mock "openai" and use the initialized mockCreateCompletions
-jest.mock("openai", () => {
-  return jest.fn().mockImplementation(() => ({
-    chat: {
-      completions: {
-        create: mockCreateCompletions,
-      },
+// Mock OpenAI
+const mockCreate = jest.fn();
+const mockOpenAI = jest.fn().mockImplementation(() => ({
+  chat: {
+    completions: {
+      create: mockCreate,
     },
-  }));
-});
+  },
+}));
 
-// 3. Import the module under test.
+jest.mock("openai", () => ({
+  __esModule: true,
+  default: mockOpenAI,
+}));
+
+// Import the module after mocking
 import {generateUniqueRiddle, resetOpenAIClient} from "../openaiService";
 
-describe("generateUniqueRiddles", () => {
+describe("OpenAI Service", () => {
   const originalEnv = process.env;
 
   beforeEach(() => {
+    // Reset all mocks before each test
     jest.clearAllMocks();
-    jest.spyOn(console, "log").mockImplementation(() => {});
-    jest.spyOn(console, "warn").mockImplementation(() => {});
-    jest.spyOn(console, "error").mockImplementation(() => {});
-    // Set up environment variable for tests
-    process.env = {...originalEnv, OPENAI_API_KEY: "test-openai-key"};
+
+    // Reset the OpenAI client cache
     resetOpenAIClient();
+
+    // Set up environment variables
+    process.env = {
+      ...originalEnv,
+      OPENAI_API_KEY: "test-api-key",
+    };
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    // Restore original environment
     process.env = originalEnv;
-    resetOpenAIClient();
-  });
 
-  test("should return a parsed riddle on successful API response", async () => {
-    mockCreateCompletions.mockResolvedValue({
-      choices: [{message: {content: "Question: why did the chicken cross the road?\nAnswer: escape"}}],
-    });
-    const result = await generateUniqueRiddle();
-    expect(result).toEqual(["why did the chicken cross the road?", "escape"]);
-    expect(mockCreateCompletions).toHaveBeenCalledTimes(1);
-    expect(mockCreateCompletions).toHaveBeenCalledWith({
-      model: "gpt-3.5-turbo",
-      messages: expect.any(Array),
-    });
-  });
-
-  test("should handle alternative answer format \nAnswer:", async () => {
-    mockCreateCompletions.mockResolvedValue({
-      choices: [{message: {content: "Question: what is always in front of you but cannot be seen?\nAnswer: future"}}],
-    });
-    const result = await generateUniqueRiddle();
-    expect(result).toEqual(["what is always in front of you but cannot be seen?", "future"]);
-  });
-
-  test("should remove asterisks from question and answer", async () => {
-    mockCreateCompletions.mockResolvedValue({
-      choices: [{message: {content: "**Question: i speak without a mouth, who am i?\n\n**Answer: echo"}}],
-    });
-    const result = await generateUniqueRiddle();
-    expect(result).toEqual(["i speak without a mouth, who am i?", "echo"]);
-  });
-
-  test("should return null if API response content is null", async () => {
-    mockCreateCompletions.mockResolvedValue({choices: [{message: {content: null}}]});
-    const result = await generateUniqueRiddle();
-    expect(result).toBeNull();
-    expect(console.warn).toHaveBeenCalledWith("OpenAI returned empty content.");
-  });
-
-  test("should return null if output format is missing Answer: separator", async () => {
-    mockCreateCompletions.mockResolvedValue({
-      choices: [{message: {content: "Question: no separator nope"}}],
-    });
-    const result = await generateUniqueRiddle();
-    expect(result).toBeNull();
-    expect(console.warn).toHaveBeenCalledWith(
-      "Could not parse question or answer from OpenAI output using standard format.",
-    );
-  });
-
-  test("should return null if answer format is missing the colon", async () => {
-    mockCreateCompletions.mockResolvedValue({
-      choices: [{message: {content: "Question: test\nAnswer nope"}}],
-    });
-    const result = await generateUniqueRiddle();
-    expect(result).toBeNull();
-    expect(console.warn).toHaveBeenCalledWith(
-      "Could not parse question or answer from OpenAI output using standard format.",
-    );
-  });
-
-  test("should return null if question or answer is empty after parsing", async () => {
-    mockCreateCompletions.mockResolvedValue({choices: [{message: {content: "Question: \nAnswer: "}}]});
-    const result = await generateUniqueRiddle();
-    expect(result).toBeNull();
-    expect(console.warn).toHaveBeenCalledWith("Question or answer is empty after parsing.");
-  });
-
-  test("should return null and log error on API call failure", async () => {
-    mockCreateCompletions.mockRejectedValue(new Error("API Error"));
-    const result = await generateUniqueRiddle();
-    expect(result).toBeNull();
-    expect(console.error).toHaveBeenCalledWith("Error generating riddle with OpenAI:", expect.any(Error));
-  });
-
-  test("should return null if answer is too long", async () => {
-    mockCreateCompletions.mockResolvedValue({
-      choices: [{message: {content: "Question: test?\nAnswer: toolonganswerhere"}}],
-    });
-    const result = await generateUniqueRiddle();
-    expect(result).toBeNull();
-    expect(console.warn).toHaveBeenCalledWith(
-      'Answer too long: "toolonganswerhere" (17 characters). Must be 7 or fewer.',
-    );
-  });
-
-  test("should return null if answer contains invalid characters", async () => {
-    mockCreateCompletions.mockResolvedValue({
-      choices: [{message: {content: "Question: test?\nAnswer: test123"}}],
-    });
-    const result = await generateUniqueRiddle();
-    expect(result).toBeNull();
-    expect(console.warn).toHaveBeenCalledWith(
-      'Answer contains invalid characters: "test123". Must be only lowercase letters.',
-    );
-  });
-
-  test("should return null if answer contains punctuation", async () => {
-    mockCreateCompletions.mockResolvedValue({
-      choices: [{message: {content: "Question: test?\nAnswer: test!"}}],
-    });
-    const result = await generateUniqueRiddle();
-    expect(result).toBeNull();
-    expect(console.warn).toHaveBeenCalledWith(
-      'Answer contains invalid characters: "test!". Must be only lowercase letters.',
-    );
-  });
-
-  test("should return null if answer contains apostrophes", async () => {
-    mockCreateCompletions.mockResolvedValue({
-      choices: [{message: {content: "Question: test?\nAnswer: don't"}}],
-    });
-    const result = await generateUniqueRiddle();
-    expect(result).toBeNull();
-    expect(console.warn).toHaveBeenCalledWith(
-      'Answer contains invalid characters: "don\'t". Must be only lowercase letters.',
-    );
-  });
-
-  test("should return null if question contains invalid characters", async () => {
-    mockCreateCompletions.mockResolvedValue({
-      choices: [{message: {content: "Question: Test With CAPS!\nAnswer: test"}}],
-    });
-    const result = await generateUniqueRiddle();
-    expect(result).toBeNull();
-    expect(console.warn).toHaveBeenCalledWith(
-      'Question contains invalid characters: "Test With CAPS!". Must be only lowercase letters, commas, and question marks.',
-    );
-  });
-});
-
-describe("OpenAI Service - Environment Variable Check", () => {
-  const originalEnv = process.env;
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-    jest.spyOn(console, "error").mockImplementation(() => {});
-    resetOpenAIClient();
-  });
-
-  afterEach(() => {
+    // Reset console spies
     jest.restoreAllMocks();
-    process.env = originalEnv;
-    resetOpenAIClient();
   });
 
-  test("should throw error if OPENAI_API_KEY is missing", async () => {
-    // Remove the environment variable
-    process.env = {...originalEnv};
-    delete process.env.OPENAI_API_KEY;
+  describe("generateUniqueRiddle", () => {
+    test("should generate a valid riddle successfully", async () => {
+      const mockResponse = {
+        choices: [
+          {
+            message: {
+              content: "Question: What flies without wings?\nAnswer: time",
+            },
+          },
+        ],
+      };
 
-    await expect(generateUniqueRiddle()).rejects.toThrow("Missing required environment variable: OPENAI_API_KEY");
-  });
+      (mockCreate as jest.MockedFunction<any>).mockResolvedValue(mockResponse);
 
-  test("should not throw if OPENAI_API_KEY is present", async () => {
-    // Set the environment variable
-    process.env = {...originalEnv, OPENAI_API_KEY: "a-real-key"};
+      const consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {});
 
-    // Mock the OpenAI call to avoid actual API call
-    mockCreateCompletions.mockResolvedValue({
-      choices: [{message: {content: "Question: test?\nAnswer: test"}}],
+      const result = await generateUniqueRiddle();
+
+      expect(result).toEqual(["What flies without wings?", "time"]);
+      expect(mockOpenAI).toHaveBeenCalledWith({apiKey: "test-api-key"});
+      expect(mockCreate).toHaveBeenCalledWith({
+        model: "gpt-3.5-turbo",
+        messages: expect.arrayContaining([
+          expect.objectContaining({role: "system"}),
+          expect.objectContaining({role: "user"}),
+        ]),
+      });
+      expect(consoleSpy).toHaveBeenCalledWith('Generated valid riddle: "What flies without wings?" → "time" (4 chars)');
+
+      consoleSpy.mockRestore();
     });
 
-    await expect(generateUniqueRiddle()).resolves.not.toThrow();
-    const result = await generateUniqueRiddle();
-    expect(result).toEqual(["test?", "test"]);
+    test("should handle riddle with maximum answer length (7 characters)", async () => {
+      const mockResponse = {
+        choices: [
+          {
+            message: {
+              content: "Question: What has seven letters?\nAnswer: rainbow",
+            },
+          },
+        ],
+      };
+
+      (mockCreate as jest.MockedFunction<any>).mockResolvedValue(mockResponse);
+
+      const consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+
+      const result = await generateUniqueRiddle();
+
+      expect(result).toEqual(["What has seven letters?", "rainbow"]);
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Generated valid riddle: "What has seven letters?" → "rainbow" (7 chars)',
+      );
+
+      consoleSpy.mockRestore();
+    });
+
+    test("should reject answer that is too long", async () => {
+      const mockResponse = {
+        choices: [
+          {
+            message: {
+              content: "Question: What is very long?\nAnswer: verylongword",
+            },
+          },
+        ],
+      };
+
+      (mockCreate as jest.MockedFunction<any>).mockResolvedValue(mockResponse);
+
+      const consoleSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
+
+      const result = await generateUniqueRiddle();
+
+      expect(result).toBeNull();
+      expect(consoleSpy).toHaveBeenCalledWith('Answer too long: "verylongword" (12 characters). Must be 7 or fewer.');
+
+      consoleSpy.mockRestore();
+    });
+
+    test("should reject answer with invalid characters (uppercase)", async () => {
+      const mockResponse = {
+        choices: [
+          {
+            message: {
+              content: "Question: What is uppercase?\nAnswer: WORD",
+            },
+          },
+        ],
+      };
+
+      (mockCreate as jest.MockedFunction<any>).mockResolvedValue(mockResponse);
+
+      const consoleSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
+
+      const result = await generateUniqueRiddle();
+
+      expect(result).toBeNull();
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Answer contains invalid characters: "WORD". Must be only lowercase letters.',
+      );
+
+      consoleSpy.mockRestore();
+    });
+
+    test("should reject answer with numbers", async () => {
+      const mockResponse = {
+        choices: [
+          {
+            message: {
+              content: "Question: What has numbers?\nAnswer: word123",
+            },
+          },
+        ],
+      };
+
+      (mockCreate as jest.MockedFunction<any>).mockResolvedValue(mockResponse);
+
+      const consoleSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
+
+      const result = await generateUniqueRiddle();
+
+      expect(result).toBeNull();
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Answer contains invalid characters: "word123". Must be only lowercase letters.',
+      );
+
+      consoleSpy.mockRestore();
+    });
+
+    test("should reject answer with special characters", async () => {
+      const mockResponse = {
+        choices: [
+          {
+            message: {
+              content: "Question: What has punctuation?\nAnswer: word!",
+            },
+          },
+        ],
+      };
+
+      (mockCreate as jest.MockedFunction<any>).mockResolvedValue(mockResponse);
+
+      const consoleSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
+
+      const result = await generateUniqueRiddle();
+
+      expect(result).toBeNull();
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Answer contains invalid characters: "word!". Must be only lowercase letters.',
+      );
+
+      consoleSpy.mockRestore();
+    });
+
+    test("should handle OpenAI response with bold formatting", async () => {
+      const mockResponse = {
+        choices: [
+          {
+            message: {
+              content: "**Question:** What is bold?\n**Answer:** bold",
+            },
+          },
+        ],
+      };
+
+      (mockCreate as jest.MockedFunction<any>).mockResolvedValue(mockResponse);
+
+      const consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+
+      const result = await generateUniqueRiddle();
+
+      expect(result).toEqual(["What is bold?", "bold"]);
+
+      consoleSpy.mockRestore();
+    });
+
+    test("should return null when OpenAI returns empty content", async () => {
+      const mockResponse = {
+        choices: [
+          {
+            message: {
+              content: null,
+            },
+          },
+        ],
+      };
+
+      (mockCreate as jest.MockedFunction<any>).mockResolvedValue(mockResponse);
+
+      const consoleSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
+
+      const result = await generateUniqueRiddle();
+
+      expect(result).toBeNull();
+      expect(consoleSpy).toHaveBeenCalledWith("OpenAI returned empty content.");
+
+      consoleSpy.mockRestore();
+    });
+
+    test("should return null when question format is invalid", async () => {
+      const mockResponse = {
+        choices: [
+          {
+            message: {
+              content: "Invalid format without proper question and answer",
+            },
+          },
+        ],
+      };
+
+      (mockCreate as jest.MockedFunction<any>).mockResolvedValue(mockResponse);
+
+      const consoleSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
+
+      const result = await generateUniqueRiddle();
+
+      expect(result).toBeNull();
+      expect(consoleSpy).toHaveBeenCalledWith(
+        "Could not parse question or answer from OpenAI output using standard format.",
+      );
+
+      consoleSpy.mockRestore();
+    });
+
+    test("should return null when question is empty", async () => {
+      const mockResponse = {
+        choices: [
+          {
+            message: {
+              content: "Question: \nAnswer: word",
+            },
+          },
+        ],
+      };
+
+      (mockCreate as jest.MockedFunction<any>).mockResolvedValue(mockResponse);
+
+      const consoleSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
+
+      const result = await generateUniqueRiddle();
+
+      expect(result).toBeNull();
+      expect(consoleSpy).toHaveBeenCalledWith("Question or answer is empty after parsing.");
+
+      consoleSpy.mockRestore();
+    });
+
+    test("should return null when answer is empty", async () => {
+      const mockResponse = {
+        choices: [
+          {
+            message: {
+              content: "Question: What is empty?\nAnswer: ",
+            },
+          },
+        ],
+      };
+
+      (mockCreate as jest.MockedFunction<any>).mockResolvedValue(mockResponse);
+
+      const consoleSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
+
+      const result = await generateUniqueRiddle();
+
+      expect(result).toBeNull();
+      expect(consoleSpy).toHaveBeenCalledWith("Question or answer is empty after parsing.");
+
+      consoleSpy.mockRestore();
+    });
+
+    test("should handle OpenAI API errors gracefully", async () => {
+      const apiError = new Error("OpenAI API rate limit exceeded");
+      (mockCreate as jest.MockedFunction<any>).mockRejectedValue(apiError);
+
+      const consoleSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+
+      const result = await generateUniqueRiddle();
+
+      expect(result).toBeNull();
+      expect(consoleSpy).toHaveBeenCalledWith("Error generating riddle with OpenAI:", apiError);
+
+      consoleSpy.mockRestore();
+    });
+
+    test("should throw error when OPENAI_API_KEY is missing", async () => {
+      delete process.env.OPENAI_API_KEY;
+
+      await expect(generateUniqueRiddle()).rejects.toThrow("Missing required environment variable: OPENAI_API_KEY");
+    });
+
+    test("should reuse OpenAI client on subsequent calls", async () => {
+      const mockResponse = {
+        choices: [
+          {
+            message: {
+              content: "Question: What is reused?\nAnswer: client",
+            },
+          },
+        ],
+      };
+
+      (mockCreate as jest.MockedFunction<any>).mockResolvedValue(mockResponse);
+
+      const consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+
+      // First call
+      await generateUniqueRiddle();
+
+      // Second call
+      await generateUniqueRiddle();
+
+      // OpenAI constructor should only be called once
+      expect(mockOpenAI).toHaveBeenCalledTimes(1);
+      expect(mockCreate).toHaveBeenCalledTimes(2);
+
+      consoleSpy.mockRestore();
+    });
+
+    test("should handle question with valid special characters", async () => {
+      const mockResponse = {
+        choices: [
+          {
+            message: {
+              content: "Question: What's the answer, isn't it?\nAnswer: yes",
+            },
+          },
+        ],
+      };
+
+      (mockCreate as jest.MockedFunction<any>).mockResolvedValue(mockResponse);
+
+      const consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+
+      const result = await generateUniqueRiddle();
+
+      expect(result).toEqual(["What's the answer, isn't it?", "yes"]);
+
+      consoleSpy.mockRestore();
+    });
+
+    test("should reject question with invalid characters", async () => {
+      const mockResponse = {
+        choices: [
+          {
+            message: {
+              content: "Question: What has @#$%^&*()?\nAnswer: symbols",
+            },
+          },
+        ],
+      };
+
+      (mockCreate as jest.MockedFunction<any>).mockResolvedValue(mockResponse);
+
+      const consoleSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
+
+      const result = await generateUniqueRiddle();
+
+      expect(result).toBeNull();
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Question contains invalid characters: "What has @#$%^&*()?". Must contain only letters, numbers, spaces, and basic punctuation.',
+      );
+
+      consoleSpy.mockRestore();
+    });
+
+    test("should handle multiline OpenAI response", async () => {
+      const mockResponse = {
+        choices: [
+          {
+            message: {
+              content: "Question: What spans\nmultiple lines?\nAnswer: text",
+            },
+          },
+        ],
+      };
+
+      (mockCreate as jest.MockedFunction<any>).mockResolvedValue(mockResponse);
+
+      const consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+
+      const result = await generateUniqueRiddle();
+
+      expect(result).toEqual(["What spans\nmultiple lines?", "text"]);
+
+      consoleSpy.mockRestore();
+    });
+
+    test("should handle edge case with exactly 7 character answer", async () => {
+      const mockResponse = {
+        choices: [
+          {
+            message: {
+              content: "Question: What has exactly seven letters?\nAnswer: exactly",
+            },
+          },
+        ],
+      };
+
+      (mockCreate as jest.MockedFunction<any>).mockResolvedValue(mockResponse);
+
+      const consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+
+      const result = await generateUniqueRiddle();
+
+      expect(result).toEqual(["What has exactly seven letters?", "exactly"]);
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Generated valid riddle: "What has exactly seven letters?" → "exactly" (7 chars)',
+      );
+
+      consoleSpy.mockRestore();
+    });
+  });
+
+  describe("resetOpenAIClient", () => {
+    test("should reset the OpenAI client cache", async () => {
+      const mockResponse = {
+        choices: [
+          {
+            message: {
+              content: "Question: What is reset?\nAnswer: cache",
+            },
+          },
+        ],
+      };
+
+      (mockCreate as jest.MockedFunction<any>).mockResolvedValue(mockResponse);
+
+      const consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+
+      // First call to initialize client
+      await generateUniqueRiddle();
+      expect(mockOpenAI).toHaveBeenCalledTimes(1);
+
+      // Reset client
+      resetOpenAIClient();
+
+      // Second call should create new client
+      await generateUniqueRiddle();
+      expect(mockOpenAI).toHaveBeenCalledTimes(2);
+
+      consoleSpy.mockRestore();
+    });
   });
 });

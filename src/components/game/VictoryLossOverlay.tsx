@@ -3,6 +3,7 @@ import { View, Text, Modal } from "react-native";
 import type { SubmittedGuess, GameOutcome } from "../../hooks/types";
 import { generateFeedbackEmojiGrid } from "../../utils/gameUtils";
 import WideButton from "../buttons/WideButton";
+import CloseButton from "../buttons/CloseButton";
 
 interface VictoryLossOverlayProps {
   isVisible: boolean;
@@ -45,7 +46,12 @@ const VictoryLossOverlay: React.FC<VictoryLossOverlayProps> = ({
       onRequestClose={() => {}}
     >
       <View className="flex-1 justify-center items-center bg-black/50">
-        <View className="bg-cream-light p-6 rounded-lg w-11/12 max-w-sm items-center">
+        <View className="bg-cream-light p-6 rounded-lg w-11/12 max-w-sm items-center relative">
+          {/* Close Button in top-right corner */}
+          <View className="absolute top-2 right-2 z-10">
+            <CloseButton onPress={onHome} size={20} />
+          </View>
+
           <Text className={`text-3xl font-bold mb-4 ${titleColor}`}>
             {title}
           </Text>

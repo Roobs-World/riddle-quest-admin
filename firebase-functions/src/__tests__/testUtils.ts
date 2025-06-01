@@ -1,3 +1,4 @@
+// Test utilities for common Firebase Functions testing patterns
 import * as admin from "firebase-admin";
 import {Player} from "../validation/firestoreSchemas";
 
@@ -47,9 +48,9 @@ export async function createUser(
   // Filter out undefined values from overrides to prevent Firestore validation errors
   const filteredOverrides: Partial<Player> = {};
   Object.keys(overrides).forEach((key) => {
-    const value = (overrides as any)[key];
+    const value = (overrides as Record<string, unknown>)[key];
     if (value !== undefined) {
-      (filteredOverrides as any)[key] = value;
+      (filteredOverrides as Record<string, unknown>)[key] = value;
     }
   });
 

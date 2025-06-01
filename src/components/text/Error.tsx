@@ -1,4 +1,4 @@
-import { Text } from "react-native";
+import { Text, StyleSheet } from "react-native";
 
 // Define props for the PasswordError component
 interface ErrorProps {
@@ -10,9 +10,15 @@ export default function Error({ message }: ErrorProps) {
   return (
     <Text
       className="text-xs text-red-600 ml-1 mb-4 text-right"
-      style={{ fontFamily: "Poppins" }}
+      style={styles.text}
     >
       {message}
     </Text>
   );
 }
+
+const styles = StyleSheet.create({
+  text: {
+    fontFamily: "Poppins",
+  },
+});

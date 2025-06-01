@@ -115,8 +115,8 @@ export const useInterstitialAds = (): InterstitialAdHook => {
     InterstitialAd.addAdClickedEventListener(onInterstitialAdClicked);
     InterstitialAd.addAdHiddenEventListener(onInterstitialAdHidden);
 
-    // Initial load
-    loadInterstitialAd();
+    // Removed automatic loading - ads should only load when explicitly requested
+    // loadInterstitialAd();
 
     // No explicit listener removal here based on observed documentation patterns.
     // The listeners will persist for the lifetime of the hook instance.
@@ -127,7 +127,7 @@ export const useInterstitialAds = (): InterstitialAdHook => {
     onInterstitialAdDisplayed,
     onInterstitialAdClicked,
     onInterstitialAdHidden,
-    loadInterstitialAd,
+    // Removed loadInterstitialAd from dependencies to prevent issues
   ]);
 
   const showInterstitialAd = useCallback(() => {

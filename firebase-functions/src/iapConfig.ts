@@ -9,12 +9,12 @@ let isIapInitialized = false;
 
 export function initializeIapConfig(): void {
   const scriptVersion = "iapConfig_v1.0.1_env_vars"; // Added version log
-  console.error(`[iapConfig Initialize] scriptVersion: ${scriptVersion}`); // Added version log
+  console.log(`[iapConfig Initialize] scriptVersion: ${scriptVersion}`); // Changed to console.log
 
   const isJestEnvironment = !!process.env.JEST_WORKER_ID;
 
   if (isIapInitialized && !isJestEnvironment) {
-    console.error("[iapConfig] Already initialized. Skipping re-initialization.");
+    console.log("[iapConfig] Already initialized. Skipping re-initialization."); // Changed to console.log
     return;
   }
 
@@ -24,18 +24,18 @@ export function initializeIapConfig(): void {
   const isFirebaseFunctionsTestEnv = process.env.IS_FIREBASE_FUNCTIONS_TEST === "true";
   const serviceAccountPathFromEnv = process.env.GOOGLE_SERVICE_ACCOUNT_JSON_PATH; // For local tests primarily
 
-  console.error(
+  console.log(
     `[iapConfig Initialize] isEmulatorRunning: ${isEmulatorRunning}, isJestEnvironment: ${isJestEnvironment}, isFirebaseFunctionsTestEnv: ${isFirebaseFunctionsTestEnv}`,
-  );
-  console.error(`[iapConfig Initialize] serviceAccountPathFromEnv: ${serviceAccountPathFromEnv}`);
-  console.error(`[iapConfig Initialize] GOOGLE_APPLICATION_CREDENTIALS: ${process.env.GOOGLE_APPLICATION_CREDENTIALS}`);
+  ); // Changed to console.log
+  console.log(`[iapConfig Initialize] serviceAccountPathFromEnv: ${serviceAccountPathFromEnv}`); // Changed to console.log
+  console.log(`[iapConfig Initialize] GOOGLE_APPLICATION_CREDENTIALS: ${process.env.GOOGLE_APPLICATION_CREDENTIALS}`); // Changed to console.log
 
   // Logic for loading Google Service Account
   if (isFirebaseFunctionsTestEnv && serviceAccountPathFromEnv) {
     // This path is for firebase-functions-test integration tests if a local JSON file is preferred
-    console.error(
+    console.log(
       `[iapConfig Firebase Functions Test Env] Attempting to load service account from local path: ${serviceAccountPathFromEnv}`,
-    );
+    ); // Changed to console.log
     try {
       const fullPath = path.resolve(process.cwd(), serviceAccountPathFromEnv);
       if (fs.existsSync(fullPath)) {
@@ -46,26 +46,26 @@ export function initializeIapConfig(): void {
           client_email: parsedFile.client_email,
           private_key: parsedFile.private_key, // Raw private key from file
         };
-        console.error(
+        console.log(
           `[iapConfig Firebase Functions Test Env] Successfully loaded and parsed service account from ${fullPath}.`,
-        );
+        ); // Changed to console.log
       } else {
         console.error(
           `[iapConfig Firebase Functions Test Env] Service account file NOT FOUND at resolved path: ${fullPath}.`,
-        );
+        ); // Keep as error - actual problem
         finalGoogleServiceAccountForIap = {privateKey: "TEST_KEY_FILE_NOT_FOUND"}; // Indicate error
       }
     } catch (e: unknown) {
       const errorMessage = e instanceof Error ? e.message : "Unknown error";
       console.error(
         `[iapConfig Firebase Functions Test Env] Error reading/parsing service account from file: ${errorMessage}`,
-      );
+      ); // Keep as error - actual problem
       finalGoogleServiceAccountForIap = {privateKey: "TEST_KEY_PARSE_ERROR"}; // Indicate error
     }
   } else if (!isJestEnvironment) {
     // Deployed/production environment or emulator without local file path override
     // Attempt to parse GOOGLE_SERVICE_ACCOUNT from process.env, which should contain the JSON string.
-    console.error("[iapConfig Prod/Deployed Env] Attempting to parse GOOGLE_SERVICE_ACCOUNT from process.env.");
+    console.log("[iapConfig Prod/Deployed Env] Attempting to parse GOOGLE_SERVICE_ACCOUNT from process.env."); // Changed to console.log
     const googleServiceAccountJsonString = process.env.GOOGLE_SERVICE_ACCOUNT;
 
     if (googleServiceAccountJsonString) {
@@ -76,29 +76,29 @@ export function initializeIapConfig(): void {
             client_email: parsedServiceAccount.client_email,
             private_key: parsedServiceAccount.private_key, // Will be processed below
           };
-          console.error("[iapConfig Prod/Deployed Env] Successfully parsed GOOGLE_SERVICE_ACCOUNT from process.env.");
+          console.log("[iapConfig Prod/Deployed Env] Successfully parsed GOOGLE_SERVICE_ACCOUNT from process.env."); // Changed to console.log
         } else {
           console.error(
             "[iapConfig Prod/Deployed Env] Parsed GOOGLE_SERVICE_ACCOUNT is missing client_email or private_key.",
-          );
+          ); // Keep as error - actual problem
           finalGoogleServiceAccountForIap = undefined;
         }
       } catch (e: unknown) {
         const errorMessage = e instanceof Error ? e.message : "Unknown error";
         console.error(
           `[iapConfig Prod/Deployed Env] Error parsing GOOGLE_SERVICE_ACCOUNT JSON string: ${errorMessage}`,
-        );
+        ); // Keep as error - actual problem
         finalGoogleServiceAccountForIap = undefined;
       }
     } else {
-      console.error("[iapConfig Prod/Deployed Env] GOOGLE_SERVICE_ACCOUNT is missing in process.env.");
+      console.log("[iapConfig Prod/Deployed Env] GOOGLE_SERVICE_ACCOUNT is missing in process.env."); // Changed to console.log - expected in Jest
       finalGoogleServiceAccountForIap = undefined;
     }
   } else if (isJestEnvironment && !serviceAccountPathFromEnv) {
     // Jest unit tests - iap.config() will be skipped/mocked.
-    console.error(
+    console.log(
       "[iapConfig Jest Unit Test] GOOGLE_SERVICE_ACCOUNT_JSON_PATH not set. This is okay for unit tests as iap.config() is skipped.",
-    );
+    ); // Changed to console.log
     finalGoogleServiceAccountForIap = {privateKey: "JEST_UNIT_TEST_PLACEHOLDER_KEY"};
   }
 
@@ -118,7 +118,7 @@ export function initializeIapConfig(): void {
     // This processing step standardizes it.
     // If already processed (e.g. from a file read for tests), this might be redundant but harmless.
     processedPrivateKey = String(processedPrivateKey).replace(/\\n/g, "\n");
-    console.error("[iapConfig Shared] Processed private key (standardized newlines).");
+    console.log("[iapConfig Shared] Processed private key (standardized newlines)."); // Changed to console.log
   }
 
   iapGoogleCredentials =
@@ -130,41 +130,41 @@ export function initializeIapConfig(): void {
       : undefined;
 
   if (!iapGoogleCredentials) {
-    console.error(
+    console.log(
       "[iapConfig Shared] iapGoogleCredentials object is UNDEFINED. This will likely cause iap.config to fail for Google Play.",
-    );
+    ); // Changed to console.log - expected in Jest environment
     if (finalGoogleServiceAccountForIap) {
-      console.error(
+      console.log(
         `[iapConfig Shared] Details of finalGoogleServiceAccountForIap: client_email exists? ${!!finalGoogleServiceAccountForIap.client_email}, privateKey exists? ${!!finalGoogleServiceAccountForIap.private_key}`,
-      );
+      ); // Changed to console.log
     } else {
-      console.error(
+      console.log(
         "[iapConfig Shared] finalGoogleServiceAccountForIap was also undefined (no env vars or test file found).",
-      );
+      ); // Changed to console.log
     }
   } else {
-    console.error(
+    console.log(
       `[iapConfig Shared] iapGoogleCredentials CONSTRUCTED. Client Email: ${iapGoogleCredentials.clientEmail}`,
-    );
+    ); // Changed to console.log
   }
 
   if (!isJestEnvironment) {
     try {
-      console.error("[iapConfig Attempting iap.config()] Test mode for iap.config: ", isFirebaseFunctionsTestEnv);
+      console.log("[iapConfig Attempting iap.config()] Test mode for iap.config: ", isFirebaseFunctionsTestEnv); // Changed to console.log
       iap.config({
         test: isFirebaseFunctionsTestEnv,
         applePassword: appleSharedSecret, // from process.env
         googleServiceAccount: iapGoogleCredentials, // from process.env or test file
       });
-      console.error("[iapConfig] iap.config() called successfully.");
+      console.log("[iapConfig] iap.config() called successfully."); // Changed to console.log
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
       console.error(
         `[iapConfig] CRITICAL: Error calling iap.config(): ${errorMessage}. Stack: ${error instanceof Error ? error.stack : "N/A"}`,
-      );
+      ); // Keep as error - actual problem
     }
   } else {
-    console.error("[iapConfig Jest Unit Test] SKIPPING iap.config() call as module should be mocked by test.");
+    console.log("[iapConfig Jest Unit Test] SKIPPING iap.config() call as module should be mocked by test."); // Changed to console.log
   }
 
   isIapInitialized = true;
@@ -182,14 +182,14 @@ export const BACKEND_COIN_PRODUCT_DETAILS: {
 
 // Automatically initialize if not in a Jest test environment
 if (process.env.JEST_WORKER_ID === undefined) {
-  console.error("[iapConfig] Not in Jest environment, auto-initializing.");
+  console.log("[iapConfig] Not in Jest environment, auto-initializing."); // Changed to console.log
   initializeIapConfig();
 } else {
   // For Jest, initialization is expected to be called explicitly by test setup if needed,
   // but iap.config() itself will be skipped as per logic above / mocked by tests.
-  console.error(
+  console.log(
     "[iapConfig] In Jest environment, explicit initializeIapConfig() call needed by tests (iap.config() will be skipped/mocked).",
-  );
+  ); // Changed to console.log
 }
 
 // Export a getter for iapGoogleCredentials if other modules need it after init

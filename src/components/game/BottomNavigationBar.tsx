@@ -1,6 +1,11 @@
 import React from "react";
-import { View, TouchableOpacity, Text } from "react-native";
-import { GameScreenOverlayState } from "../../types/OverlayTypes";
+import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
+import Icon from "react-native-vector-icons/MaterialIcons";
+import { AppStrings } from "../../constants/AppStrings";
+
+const ACTIVE_TEXT_COLOR = "#222"; // Define constant for active text color
+
+export type OverlayType = "home" | "play" | "profile" | "settings";
 
 /**
  * Props for the BottomNavigationBar component.
@@ -8,14 +13,12 @@ import { GameScreenOverlayState } from "../../types/OverlayTypes";
  * @property {() => void} onPlayPress - Function to call when the Play icon is pressed.
  * @property {() => void} onProfilePress - Function to call when the Profile icon is pressed.
  * @property {() => void} onSettingsPress - Function to call when the Settings icon is pressed.
- * @property {keyof GameScreenOverlayState | undefined} activeOverlay - The key of the currently active overlay, or undefined.
  */
 interface BottomNavigationBarProps {
   onHomePress: () => void;
   onPlayPress: () => void;
   onProfilePress: () => void;
   onSettingsPress: () => void;
-  activeOverlay: keyof GameScreenOverlayState | undefined;
 }
 
 /**
@@ -25,26 +28,62 @@ interface BottomNavigationBarProps {
  * @returns {React.FC<BottomNavigationBarProps>} The rendered BottomNavigationBar component.
  */
 const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
+  onHomePress,
   onPlayPress,
   onProfilePress,
   onSettingsPress,
 }) => {
   return (
-    <View className="w-full flex-row justify-around items-center bg-gray-300 p-2">
-      <TouchableOpacity onPress={onPlayPress} className="items-center">
-        {/* Placeholder: Play Icon will go here */}
-        <Text>Play</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={onProfilePress} className="items-center">
-        {/* Placeholder: Profile Icon will go here */}
-        <Text>Profile</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={onSettingsPress} className="items-center">
-        {/* Placeholder: Settings Icon will go here */}
-        <Text>Settings</Text>
-      </TouchableOpacity>
+    <View className="bg-white border-t border-gray-200 px-4 py-2">
+      <View className="flex-row justify-around items-center">
+        <TouchableOpacity
+          onPress={onHomePress}
+          className="flex-1 items-center py-2"
+        >
+          <Icon name="home" size={24} style={styles.iconColor} />
+          <Text className="text-xs mt-1" style={styles.iconColor}>
+            Home
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={onPlayPress}
+          className="flex-1 items-center py-2"
+        >
+          <Icon name="play-arrow" size={24} style={styles.iconColor} />
+          <Text className="text-xs mt-1" style={styles.iconColor}>
+            {AppStrings.Navigation.PLAY_BUTTON}
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={onProfilePress}
+          className="flex-1 items-center py-2"
+        >
+          <Icon name="person" size={24} style={styles.iconColor} />
+          <Text className="text-xs mt-1" style={styles.iconColor}>
+            {AppStrings.Navigation.PROFILE_BUTTON}
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={onSettingsPress}
+          className="flex-1 items-center py-2"
+        >
+          <Icon name="settings" size={24} style={styles.iconColor} />
+          <Text className="text-xs mt-1" style={styles.iconColor}>
+            {AppStrings.Navigation.SETTINGS_BUTTON}
+          </Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  iconColor: {
+    color: ACTIVE_TEXT_COLOR,
+  },
+});
 
 export default BottomNavigationBar;

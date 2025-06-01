@@ -1,5 +1,38 @@
 # Product Context
 
+## Why Qwordly Exists
+
+Qwordly addresses the gap in mobile puzzle gaming by combining traditional word games with engaging riddle mechanics. While standard word games can become repetitive, Qwordly adds contextual clues that make each puzzle feel like a mini-mystery to solve.
+
+## Core Problems It Solves
+
+1. **Puzzle Fatigue**: Traditional word games can become monotonous. Qwordly's riddle format keeps each puzzle fresh and engaging.
+
+2. **Lack of Progressive Challenge**: Many word games have flat difficulty curves. Qwordly's classic mode provides structured progression through increasingly challenging levels.
+
+3. **Limited Engagement Models**: Most word games rely solely on intrinsic motivation. Qwordly combines this with extrinsic rewards (coins, stats, daily challenges) to maintain long-term engagement.
+
+## How It Should Work
+
+### Core Game Loop
+
+1. **Daily Ritual**: Users start each day with a fresh daily challenge
+2. **Progressive Journey**: Classic mode provides structured advancement through levels
+3. **Strategic Decisions**: Coin management for hints creates meaningful choices
+4. **Achievement Satisfaction**: Clear progression metrics and statistics provide accomplishment
+
+### User Experience Goals
+
+- **Accessibility**: Anyone should be able to pick up and play immediately
+- **Depth**: Strategic elements (coin management, hint usage) reward thoughtful play
+- **Monetization:** Optional coin purchases for hints, with rewarded ads as an alternative.
+- **Social Proof**: Statistics and achievements provide shareable moments
+- **Retention**: Daily challenges and progressive unlocks encourage return visits
+
+## Target Experience
+
+Users should feel they're not just playing a word game, but solving interesting puzzles that challenge both their vocabulary and reasoning skills. The game should feel rewarding whether they play for 5 minutes (daily challenge) or longer sessions (classic progression).
+
 ## 1. What is Qwordly?
 
 Qwordly is a riddle-based Wordle-clone mobile game that challenges players to solve engaging riddles instead of guessing random words. The game combines the addictive mechanics of Wordle with the intellectual satisfaction of solving riddles.
@@ -17,7 +50,7 @@ Qwordly is a riddle-based Wordle-clone mobile game that challenges players to so
 - **Accessibility:** Easy to pick up for casual players, challenging enough for puzzle enthusiasts.
 - **Social Sharing:** Players can share their daily challenge results (similar to Wordle's grid sharing).
 - **Progression:** Clear sense of advancement through classic mode levels and statistics.
-- **Monetization:** Optional coin purchases for hints and level skips, with rewarded ads as an alternative.
+- **Monetization:** Optional coin purchases for hints, with rewarded ads as an alternative.
 
 ## 4. Key Differentiators
 
@@ -61,4 +94,5 @@ Qwordly is a riddle-based Wordle-clone mobile game that challenges players to so
 - Motivating reward system (coins) and fair IAP options.
 - Uninterrupted gameplay with new content regularly available.
 - Visually appealing interface with smooth animations and haptic feedback.
+- Dynamic and immersive audio experience with fading based on user progress or game state.
 - Stable and performant application on both iOS and Android.

@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, Modal, TouchableOpacity } from "react-native";
 import type { SubmittedGuess } from "../../hooks/types";
 import { generateFeedbackEmojiGrid } from "../../utils/gameUtils"; // Import the utility function
+import CloseButton from "../buttons/CloseButton";
 
 /**
  * Props for the VictoryModal component.
@@ -45,7 +46,12 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
       onRequestClose={() => {}}
     >
       <View className="flex-1 justify-center items-center bg-black/50">
-        <View className="bg-cream-light p-6 rounded-lg w-11/12 max-w-sm items-center">
+        <View className="bg-cream-light p-6 rounded-lg w-11/12 max-w-sm items-center relative">
+          {/* Close Button in top-right corner */}
+          <View className="absolute top-2 right-2 z-10">
+            <CloseButton onPress={onHome} size={20} />
+          </View>
+
           <Text className="text-3xl font-bold mb-4 text-green-500">
             Victory!
           </Text>

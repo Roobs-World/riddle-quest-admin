@@ -1,0 +1,88 @@
+56353d026a014a3b8bb6788acb3c31da
+"use strict";
+// Simple profanity filter for usernames
+// This is a basic implementation that can be enhanced with more sophisticated filtering
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.containsProfanity = containsProfanity;
+exports.validateUsernameForProfanity = validateUsernameForProfanity;
+/**
+ * List of common profane words to filter out from usernames.
+ * This is a basic list - in production, you might want to use a more comprehensive list
+ * or an external service for profanity detection.
+ */
+const PROFANE_WORDS = [
+    "fuck",
+    "shit",
+    "bitch",
+    "asshole",
+    "damn",
+    "hell",
+    "crap",
+    "piss",
+    "bastard",
+    "whore",
+    "slut",
+    "retard",
+    "faggot",
+    "nigger",
+    "chink",
+    "spic",
+    "kike",
+    "gook",
+    "wetback",
+    "raghead",
+    "towelhead",
+    "nazi",
+    "hitler",
+    "kill",
+    "die",
+    "suicide",
+    "rape",
+    "murder",
+    "drugs",
+    "cocaine",
+    "heroin",
+    "meth",
+    "weed",
+    "marijuana",
+    "porn",
+    "sex",
+    "xxx",
+    "adult",
+    "nude",
+    "naked",
+    "strip",
+    "escort",
+    "prostitute",
+];
+/**
+ * Checks if the given username contains profanity or inappropriate content.
+ * @param username - The username to check
+ * @returns true if the username contains profanity, false otherwise
+ */
+function containsProfanity(username) {
+    if (!username || typeof username !== "string") {
+        return false;
+    }
+    const cleanUsername = username.toLowerCase().trim();
+    // Check for exact matches and partial matches
+    return PROFANE_WORDS.some((word) => {
+        // Check for exact word match (with word boundaries)
+        const exactMatch = new RegExp(`\\b${word}\\b`, "i").test(cleanUsername);
+        // Check for the word as substring (to catch variations like "fck" for "fuck")
+        const substringMatch = cleanUsername.includes(word.toLowerCase());
+        return exactMatch || substringMatch;
+    });
+}
+/**
+ * Validates that a username doesn't contain profanity.
+ * @param username - The username to validate
+ * @returns An error message if profanity is detected, empty string otherwise
+ */
+function validateUsernameForProfanity(username) {
+    if (containsProfanity(username)) {
+        return "Username contains inappropriate language. Please choose a different username.";
+    }
+    return "";
+}
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJmaWxlIjoiSjpcXHF3b3JkbHlcXHNyY1xcdXRpbHNcXHByb2Zhbml0eUZpbHRlci50cyIsIm1hcHBpbmdzIjoiO0FBQUEsd0NBQXdDO0FBQ3hDLHdGQUF3Rjs7QUEwRHhGLDhDQWlCQztBQU9ELG9FQUtDO0FBckZEOzs7O0dBSUc7QUFDSCxNQUFNLGFBQWEsR0FBRztJQUNwQixNQUFNO0lBQ04sTUFBTTtJQUNOLE9BQU87SUFDUCxTQUFTO0lBQ1QsTUFBTTtJQUNOLE1BQU07SUFDTixNQUFNO0lBQ04sTUFBTTtJQUNOLFNBQVM7SUFDVCxPQUFPO0lBQ1AsTUFBTTtJQUNOLFFBQVE7SUFDUixRQUFRO0lBQ1IsUUFBUTtJQUNSLE9BQU87SUFDUCxNQUFNO0lBQ04sTUFBTTtJQUNOLE1BQU07SUFDTixTQUFTO0lBQ1QsU0FBUztJQUNULFdBQVc7SUFDWCxNQUFNO0lBQ04sUUFBUTtJQUNSLE1BQU07SUFDTixLQUFLO0lBQ0wsU0FBUztJQUNULE1BQU07SUFDTixRQUFRO0lBQ1IsT0FBTztJQUNQLFNBQVM7SUFDVCxRQUFRO0lBQ1IsTUFBTTtJQUNOLE1BQU07SUFDTixXQUFXO0lBQ1gsTUFBTTtJQUNOLEtBQUs7SUFDTCxLQUFLO0lBQ0wsT0FBTztJQUNQLE1BQU07SUFDTixPQUFPO0lBQ1AsT0FBTztJQUNQLFFBQVE7SUFDUixZQUFZO0NBQ2IsQ0FBQztBQUVGOzs7O0dBSUc7QUFDSCxTQUFnQixpQkFBaUIsQ0FBQyxRQUFnQjtJQUNoRCxJQUFJLENBQUMsUUFBUSxJQUFJLE9BQU8sUUFBUSxLQUFLLFFBQVEsRUFBRSxDQUFDO1FBQzlDLE9BQU8sS0FBSyxDQUFDO0lBQ2YsQ0FBQztJQUVELE1BQU0sYUFBYSxHQUFHLFFBQVEsQ0FBQyxXQUFXLEVBQUUsQ0FBQyxJQUFJLEVBQUUsQ0FBQztJQUVwRCw4Q0FBOEM7SUFDOUMsT0FBTyxhQUFhLENBQUMsSUFBSSxDQUFDLENBQUMsSUFBSSxFQUFFLEVBQUU7UUFDakMsb0RBQW9EO1FBQ3BELE1BQU0sVUFBVSxHQUFHLElBQUksTUFBTSxDQUFDLE1BQU0sSUFBSSxLQUFLLEVBQUUsR0FBRyxDQUFDLENBQUMsSUFBSSxDQUFDLGFBQWEsQ0FBQyxDQUFDO1FBRXhFLDhFQUE4RTtRQUM5RSxNQUFNLGNBQWMsR0FBRyxhQUFhLENBQUMsUUFBUSxDQUFDLElBQUksQ0FBQyxXQUFXLEVBQUUsQ0FBQyxDQUFDO1FBRWxFLE9BQU8sVUFBVSxJQUFJLGNBQWMsQ0FBQztJQUN0QyxDQUFDLENBQUMsQ0FBQztBQUNMLENBQUM7QUFFRDs7OztHQUlHO0FBQ0gsU0FBZ0IsNEJBQTRCLENBQUMsUUFBZ0I7SUFDM0QsSUFBSSxpQkFBaUIsQ0FBQyxRQUFRLENBQUMsRUFBRSxDQUFDO1FBQ2hDLE9BQU8sK0VBQStFLENBQUM7SUFDekYsQ0FBQztJQUNELE9BQU8sRUFBRSxDQUFDO0FBQ1osQ0FBQyIsIm5hbWVzIjpbXSwic291cmNlcyI6WyJKOlxccXdvcmRseVxcc3JjXFx1dGlsc1xccHJvZmFuaXR5RmlsdGVyLnRzIl0sInNvdXJjZXNDb250ZW50IjpbIi8vIFNpbXBsZSBwcm9mYW5pdHkgZmlsdGVyIGZvciB1c2VybmFtZXNcclxuLy8gVGhpcyBpcyBhIGJhc2ljIGltcGxlbWVudGF0aW9uIHRoYXQgY2FuIGJlIGVuaGFuY2VkIHdpdGggbW9yZSBzb3BoaXN0aWNhdGVkIGZpbHRlcmluZ1xyXG5cclxuLyoqXHJcbiAqIExpc3Qgb2YgY29tbW9uIHByb2ZhbmUgd29yZHMgdG8gZmlsdGVyIG91dCBmcm9tIHVzZXJuYW1lcy5cclxuICogVGhpcyBpcyBhIGJhc2ljIGxpc3QgLSBpbiBwcm9kdWN0aW9uLCB5b3UgbWlnaHQgd2FudCB0byB1c2UgYSBtb3JlIGNvbXByZWhlbnNpdmUgbGlzdFxyXG4gKiBvciBhbiBleHRlcm5hbCBzZXJ2aWNlIGZvciBwcm9mYW5pdHkgZGV0ZWN0aW9uLlxyXG4gKi9cclxuY29uc3QgUFJPRkFORV9XT1JEUyA9IFtcclxuICBcImZ1Y2tcIixcclxuICBcInNoaXRcIixcclxuICBcImJpdGNoXCIsXHJcbiAgXCJhc3Nob2xlXCIsXHJcbiAgXCJkYW1uXCIsXHJcbiAgXCJoZWxsXCIsXHJcbiAgXCJjcmFwXCIsXHJcbiAgXCJwaXNzXCIsXHJcbiAgXCJiYXN0YXJkXCIsXHJcbiAgXCJ3aG9yZVwiLFxyXG4gIFwic2x1dFwiLFxyXG4gIFwicmV0YXJkXCIsXHJcbiAgXCJmYWdnb3RcIixcclxuICBcIm5pZ2dlclwiLFxyXG4gIFwiY2hpbmtcIixcclxuICBcInNwaWNcIixcclxuICBcImtpa2VcIixcclxuICBcImdvb2tcIixcclxuICBcIndldGJhY2tcIixcclxuICBcInJhZ2hlYWRcIixcclxuICBcInRvd2VsaGVhZFwiLFxyXG4gIFwibmF6aVwiLFxyXG4gIFwiaGl0bGVyXCIsXHJcbiAgXCJraWxsXCIsXHJcbiAgXCJkaWVcIixcclxuICBcInN1aWNpZGVcIixcclxuICBcInJhcGVcIixcclxuICBcIm11cmRlclwiLFxyXG4gIFwiZHJ1Z3NcIixcclxuICBcImNvY2FpbmVcIixcclxuICBcImhlcm9pblwiLFxyXG4gIFwibWV0aFwiLFxyXG4gIFwid2VlZFwiLFxyXG4gIFwibWFyaWp1YW5hXCIsXHJcbiAgXCJwb3JuXCIsXHJcbiAgXCJzZXhcIixcclxuICBcInh4eFwiLFxyXG4gIFwiYWR1bHRcIixcclxuICBcIm51ZGVcIixcclxuICBcIm5ha2VkXCIsXHJcbiAgXCJzdHJpcFwiLFxyXG4gIFwiZXNjb3J0XCIsXHJcbiAgXCJwcm9zdGl0dXRlXCIsXHJcbl07XHJcblxyXG4vKipcclxuICogQ2hlY2tzIGlmIHRoZSBnaXZlbiB1c2VybmFtZSBjb250YWlucyBwcm9mYW5pdHkgb3IgaW5hcHByb3ByaWF0ZSBjb250ZW50LlxyXG4gKiBAcGFyYW0gdXNlcm5hbWUgLSBUaGUgdXNlcm5hbWUgdG8gY2hlY2tcclxuICogQHJldHVybnMgdHJ1ZSBpZiB0aGUgdXNlcm5hbWUgY29udGFpbnMgcHJvZmFuaXR5LCBmYWxzZSBvdGhlcndpc2VcclxuICovXHJcbmV4cG9ydCBmdW5jdGlvbiBjb250YWluc1Byb2Zhbml0eSh1c2VybmFtZTogc3RyaW5nKTogYm9vbGVhbiB7XHJcbiAgaWYgKCF1c2VybmFtZSB8fCB0eXBlb2YgdXNlcm5hbWUgIT09IFwic3RyaW5nXCIpIHtcclxuICAgIHJldHVybiBmYWxzZTtcclxuICB9XHJcblxyXG4gIGNvbnN0IGNsZWFuVXNlcm5hbWUgPSB1c2VybmFtZS50b0xvd2VyQ2FzZSgpLnRyaW0oKTtcclxuXHJcbiAgLy8gQ2hlY2sgZm9yIGV4YWN0IG1hdGNoZXMgYW5kIHBhcnRpYWwgbWF0Y2hlc1xyXG4gIHJldHVybiBQUk9GQU5FX1dPUkRTLnNvbWUoKHdvcmQpID0+IHtcclxuICAgIC8vIENoZWNrIGZvciBleGFjdCB3b3JkIG1hdGNoICh3aXRoIHdvcmQgYm91bmRhcmllcylcclxuICAgIGNvbnN0IGV4YWN0TWF0Y2ggPSBuZXcgUmVnRXhwKGBcXFxcYiR7d29yZH1cXFxcYmAsIFwiaVwiKS50ZXN0KGNsZWFuVXNlcm5hbWUpO1xyXG5cclxuICAgIC8vIENoZWNrIGZvciB0aGUgd29yZCBhcyBzdWJzdHJpbmcgKHRvIGNhdGNoIHZhcmlhdGlvbnMgbGlrZSBcImZja1wiIGZvciBcImZ1Y2tcIilcclxuICAgIGNvbnN0IHN1YnN0cmluZ01hdGNoID0gY2xlYW5Vc2VybmFtZS5pbmNsdWRlcyh3b3JkLnRvTG93ZXJDYXNlKCkpO1xyXG5cclxuICAgIHJldHVybiBleGFjdE1hdGNoIHx8IHN1YnN0cmluZ01hdGNoO1xyXG4gIH0pO1xyXG59XHJcblxyXG4vKipcclxuICogVmFsaWRhdGVzIHRoYXQgYSB1c2VybmFtZSBkb2Vzbid0IGNvbnRhaW4gcHJvZmFuaXR5LlxyXG4gKiBAcGFyYW0gdXNlcm5hbWUgLSBUaGUgdXNlcm5hbWUgdG8gdmFsaWRhdGVcclxuICogQHJldHVybnMgQW4gZXJyb3IgbWVzc2FnZSBpZiBwcm9mYW5pdHkgaXMgZGV0ZWN0ZWQsIGVtcHR5IHN0cmluZyBvdGhlcndpc2VcclxuICovXHJcbmV4cG9ydCBmdW5jdGlvbiB2YWxpZGF0ZVVzZXJuYW1lRm9yUHJvZmFuaXR5KHVzZXJuYW1lOiBzdHJpbmcpOiBzdHJpbmcge1xyXG4gIGlmIChjb250YWluc1Byb2Zhbml0eSh1c2VybmFtZSkpIHtcclxuICAgIHJldHVybiBcIlVzZXJuYW1lIGNvbnRhaW5zIGluYXBwcm9wcmlhdGUgbGFuZ3VhZ2UuIFBsZWFzZSBjaG9vc2UgYSBkaWZmZXJlbnQgdXNlcm5hbWUuXCI7XHJcbiAgfVxyXG4gIHJldHVybiBcIlwiO1xyXG59XHJcbiJdLCJ2ZXJzaW9uIjozfQ==

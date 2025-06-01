@@ -1,57 +1,13 @@
+// Import first since we're not overriding the global mocks
 import { renderHook, act } from "@testing-library/react-native";
-// import functions from "@react-native-firebase/functions"; // Will be mocked directly
 import useGameLogic, { Feedback } from "../useGameLogic";
+import functions from "@react-native-firebase/functions";
 
-jest.mock("@react-native-firebase/app", () => ({
-  __esModule: true,
-  default: {
-    app: jest.fn(() => ({
-      name: "[DEFAULT]",
-      options: {},
-    })),
-    apps: [
-      {
-        name: "[DEFAULT]",
-        options: {},
-      },
-    ],
-    SDK_VERSION: "mockSDKVersion",
-    initializeApp: jest.fn().mockReturnValue({
-      name: "[DEFAULT]",
-      options: {},
-    }),
-    NativeModules: {
-      RNFBAppModule: {
-        NATIVE_FIREBASE_APPS: JSON.stringify([
-          { name: "[DEFAULT]", options: {} },
-        ]),
-        FIREBASE_RAW_JSON: "{}",
-        addListener: jest.fn(),
-        removeListeners: jest.fn(),
-      },
-    },
-  },
-}));
+// Get the mocked functions module
+const mockFunctions = functions as jest.MockedFunction<typeof functions>;
 
-// Define the mock callable function that tests will interact with
+// Create a mock callable function that we'll use for submitGuess
 const mockSubmitGuessCallable = jest.fn();
-
-// Mock @react-native-firebase/functions specifically for this test file
-jest.mock("@react-native-firebase/functions", () => {
-  // This is the factory for the entire module
-  return () => ({
-    // This is the object returned by functions()
-    httpsCallable: jest.fn((functionName: string) => {
-      if (functionName === "submitGuess") {
-        return mockSubmitGuessCallable; // Crucially, return the test-scoped mock
-      }
-      // Fallback for any other function name, if necessary
-      return jest
-        .fn()
-        .mockResolvedValue({ data: { message: "Default mock response" } });
-    }),
-  });
-});
 
 describe("useGameLogic", () => {
   const defaultProps = {
@@ -61,6 +17,18 @@ describe("useGameLogic", () => {
   };
 
   beforeEach(() => {
+    jest.clearAllMocks();
+
+    // Configure the global mock to return our specific callable
+    mockFunctions.mockReturnValue({
+      httpsCallable: jest.fn((functionName: string) => {
+        if (functionName === "submitGuess") {
+          return mockSubmitGuessCallable;
+        }
+        return jest.fn().mockResolvedValue({ data: {} });
+      }),
+    } as any);
+
     mockSubmitGuessCallable.mockReset();
   });
 
@@ -211,26 +179,33 @@ describe("useGameLogic", () => {
       // Mock for all 5 calls. The SUT will call this 5 times.
       // For simplicity in this mock, we assume the server always returns a similar structure for incorrect guesses.
       // The important part is the final `isCorrect: false` and potentially `correctAnswer`.
-      mockSubmitGuessCallable.mockImplementation(async (callData) => {
-        // Determine the guess characters for this specific call to form structured feedback
-        // This is a bit simplified; in reality, the SUT sends the string, and the server forms this.
-        // For the mock, we just need to ensure the `status` part is right.
-        const currentGuessString = callData.guess as string;
-        const currentGuessChars = currentGuessString.split("");
+      mockSubmitGuessCallable.mockImplementation(
+        async (callData: {
+          guess: string;
+          riddleId: string;
+          gameMode: string;
+          attempts: number;
+        }) => {
+          // Determine the guess characters for this specific call to form structured feedback
+          // This is a bit simplified; in reality, the SUT sends the string, and the server forms this.
+          // For the mock, we just need to ensure the `status` part is right.
+          const currentGuessString = callData.guess as string;
+          const currentGuessChars = currentGuessString.split("");
 
-        return {
-          data: {
-            feedback: feedbackStrings.map((status, index) => ({
-              // Structured feedback
-              letter: currentGuessChars[index] || "", // Handle potential length mismatches gracefully for the mock
-              status,
-            })),
-            isCorrect: false, // All these calls are incorrect
-            correctAnswer: "ANSWER", // Only relevant on the last call from the SUT's perspective
-            coinsEarned: 0,
-          },
-        };
-      });
+          return {
+            data: {
+              feedback: feedbackStrings.map((status, index) => ({
+                // Structured feedback
+                letter: currentGuessChars[index] || "", // Handle potential length mismatches gracefully for the mock
+                status,
+              })),
+              isCorrect: false, // All these calls are incorrect
+              correctAnswer: "ANSWER", // Only relevant on the last call from the SUT's perspective
+              coinsEarned: 0,
+            },
+          };
+        }
+      );
 
       const { result } = renderHook(() => useGameLogic(defaultProps));
       const incorrectGuessBase = ["F", "A", "I", "L"];
@@ -278,21 +253,28 @@ describe("useGameLogic", () => {
       };
       const feedbackStrings: Feedback[] = ["red", "red", "red", "red", "red"];
 
-      mockSubmitGuessCallable.mockImplementation(async (callData) => {
-        const currentGuessString = callData.guess as string;
-        const currentGuessChars = currentGuessString.split("");
-        return {
-          data: {
-            feedback: feedbackStrings.map((status, index) => ({
-              letter: currentGuessChars[index] || "",
-              status,
-            })),
-            isCorrect: false,
-            correctAnswer: "ANSWER",
-            coinsEarned: 0,
-          },
-        };
-      });
+      mockSubmitGuessCallable.mockImplementation(
+        async (callData: {
+          guess: string;
+          riddleId: string;
+          gameMode: string;
+          attempts: number;
+        }) => {
+          const currentGuessString = callData.guess as string;
+          const currentGuessChars = currentGuessString.split("");
+          return {
+            data: {
+              feedback: feedbackStrings.map((status, index) => ({
+                letter: currentGuessChars[index] || "",
+                status,
+              })),
+              isCorrect: false,
+              correctAnswer: "ANSWER",
+              coinsEarned: 0,
+            },
+          };
+        }
+      );
 
       const { result } = renderHook(() => useGameLogic(challengeProps));
       const incorrectGuessBase = ["F", "A", "I", "L"];

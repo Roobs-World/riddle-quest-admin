@@ -25,4 +25,8 @@ nativewind-env.d.ts
 pnpm-lock.yaml
 google-services.json
 readme.md
-implementation-plan.mdc 
+implementation-plan.mdc
+firebase-functions/lib/
+
+# Scripts (Node.js scripts that use require)
+scripts/ 

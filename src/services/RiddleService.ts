@@ -4,8 +4,6 @@ import functions from "@react-native-firebase/functions";
 import { getApp } from "@react-native-firebase/app";
 import { z, ZodError } from "zod";
 import {
-  GenerateClassicRiddlesInputSchema,
-  GenerateClassicRiddlesOutputSchema,
   SubmitGuessInputSchema,
   SubmitGuessOutputSchema,
 } from "../validation/cloudFunctionsSchemas";
@@ -131,99 +129,46 @@ export const RiddleService = {
 
   /**
    * Fetches a specific classic mode riddle by its level.
+   * Riddles are now generated automatically server-side when needed.
    * @param {number} level - The level of the classic riddle to fetch.
    * @returns A Promise resolving to the classic riddle data, or null if not found.
    */
   async fetchClassicRiddle(level: number) {
     console.log(`Fetching classic riddle for level ${level} from Firestore`);
-    const maxRetries = 3;
-    const retryDelayMs = 5000;
 
-    for (let retry = 0; retry <= maxRetries; retry++) {
-      try {
-        const snapshot = await firestore(getApp())
-          .collection("riddles")
-          .where("classicIndex", "==", level)
-          .limit(1)
-          .get();
+    try {
+      const snapshot = await firestore(getApp())
+        .collection("riddles")
+        .where("classicIndex", "==", level)
+        .limit(1)
+        .get();
 
-        if (!snapshot.empty) {
-          console.log(`Classic riddle found for level: ${level}`);
-          const riddleData = snapshot.docs[0].data();
-          if (riddleData && riddleData.answer !== undefined) {
-            return {
-              ...riddleData,
-              riddleId: snapshot.docs[0].id,
-              answerLength: riddleData.answer.length,
-            };
-          } else {
-            console.error(
-              `Riddle data or answer missing for level: ${level}. Data:`,
-              riddleData
-            );
-            return null;
-          }
-        } else if (retry < maxRetries) {
-          console.log(
-            `No classic riddle found for level: ${level}. Attempting to generate new riddles (Attempt ${
-              retry + 1
-            }/${maxRetries + 1})...`
-          );
-          const generateRiddlesCallable = functions(getApp()).httpsCallable(
-            "generateClassicRiddles"
-          );
-          const inputData = {};
-          try {
-            GenerateClassicRiddlesInputSchema.parse(inputData);
-          } catch (zodError) {
-            console.error(
-              "Zod validation error for generateClassicRiddles input:",
-              zodError
-            );
-            throw zodError;
-          }
-
-          const result = await generateRiddlesCallable(inputData);
-          try {
-            const validatedResult = GenerateClassicRiddlesOutputSchema.parse(
-              result.data
-            );
-            console.log(
-              "generateClassicRiddles function output validated.",
-              validatedResult
-            );
-          } catch (zodError) {
-            console.error(
-              "Zod validation error for generateClassicRiddles output:",
-              zodError
-            );
-          }
-
-          await delay(retryDelayMs);
+      if (!snapshot.empty) {
+        console.log(`Classic riddle found for level: ${level}`);
+        const riddleData = snapshot.docs[0].data();
+        if (riddleData && riddleData.answer !== undefined) {
+          return {
+            ...riddleData,
+            riddleId: snapshot.docs[0].id,
+            answerLength: riddleData.answer.length,
+          };
         } else {
-          console.log(
-            `No classic riddle found for level: ${level} after ${
-              maxRetries + 1
-            } attempts.`
+          console.error(
+            `Riddle data or answer missing for level: ${level}. Data:`,
+            riddleData
           );
           return null;
         }
-      } catch (error) {
-        console.error(
-          `Error fetching or generating classic riddle for level ${level}:`,
-          error
+      } else {
+        console.log(
+          `No classic riddle found for level: ${level}. Riddles will be generated automatically on the server when needed.`
         );
-        if (retry < maxRetries) {
-          console.log(
-            `Retrying fetch/generation for level ${level} after delay...`
-          );
-          await delay(retryDelayMs);
-        } else {
-          throw error;
-        }
+        return null;
       }
+    } catch (error) {
+      console.error(`Error fetching classic riddle for level ${level}:`, error);
+      throw error;
     }
-    return null;
   },
 
   /**

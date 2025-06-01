@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import {describe, expect, jest, beforeEach} from "@jest/globals";
+
 // Mock configuration setup for iap.config testing
 
 // / <reference types="jest" />

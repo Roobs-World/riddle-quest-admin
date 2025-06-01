@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-undef
 module.exports = function (api) {
   api.cache(true);
 
@@ -21,17 +22,18 @@ module.exports = function (api) {
       "nativewind/babel",
     ],
     plugins: [
+      "@babel/plugin-transform-flow-strip-types",
       [
         "module-resolver",
         {
+          root: ["./"],
           alias: {
+            "@": "./src",
             "@images": "./assets/images",
             "@fonts": "./assets/fonts",
           },
         },
       ],
-      // The following transform plugins might be covered by babel-preset-expo or metro-react-native-babel-preset (which expo's preset wraps)
-      // If issues arise, they might need to be re-evaluated or removed if redundant.
       ["@babel/plugin-transform-class-properties", { loose: true }],
       ["@babel/plugin-transform-private-methods", { loose: true }],
       ["@babel/plugin-transform-private-property-in-object", { loose: true }],

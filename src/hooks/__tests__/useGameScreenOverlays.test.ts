@@ -7,7 +7,6 @@ describe("useGameScreenOverlays", () => {
     expect(result.current.isVictoryModalVisible).toBe(false);
     expect(result.current.isLossModalVisible).toBe(false);
     expect(result.current.isHintOverlayVisible).toBe(false);
-    expect(result.current.isSkipOverlayVisible).toBe(false);
     expect(result.current.isHomeOverlayVisible).toBe(false);
     expect(result.current.isPlayOverlayVisible).toBe(false);
     expect(result.current.isProfileOverlayVisible).toBe(false);
@@ -40,14 +39,6 @@ describe("useGameScreenOverlays", () => {
       result.current.setIsHintOverlayVisible(true);
     });
     expect(result.current.isHintOverlayVisible).toBe(true);
-  });
-
-  it("should update isSkipOverlayVisible", () => {
-    const { result } = renderHook(() => useGameScreenOverlays());
-    act(() => {
-      result.current.setIsSkipOverlayVisible(true);
-    });
-    expect(result.current.isSkipOverlayVisible).toBe(true);
   });
 
   it("should update isHomeOverlayVisible", () => {

@@ -1,8 +1,5 @@
 import {describe, expect, jest, beforeEach, afterEach} from "@jest/globals";
 import {CallableRequest, HttpsError} from "firebase-functions/v2/https";
-// import {HttpsOptions} from "firebase-functions/v2/https"; - Not used
-// import * as functionsModuleWilde from "firebase-functions"; // For types and mocks
-// import {adClientCallbacks as OriginalAdClientCallbacks} from "../adClientCallbacks"; - Not used
 
 // Initialize all mock functions before any imports to ensure proper hoisting
 const mockLoggerInfo = jest.fn();
@@ -18,34 +15,35 @@ jest.mock("firebase-functions/v2", () => ({
   },
 }));
 
+interface MockOnCallHandler {
+  (handler: unknown): unknown;
+}
+
 // Also mock the https module to make sure onCall works correctly
 jest.mock("firebase-functions/v2/https", () => {
   const actualHttps = jest.requireActual("firebase-functions/v2/https") as typeof import("firebase-functions/v2/https");
   return {
     ...actualHttps,
-    onCall: jest.fn((handler) => handler), // Simple passthrough for testing
+    onCall: jest.fn((handler: unknown) => handler) as MockOnCallHandler, // Simple passthrough for testing
   };
 });
+
+// Import after mocks are set up
+const {notifyRewardedAdCompleted} = require("../adClientCallbacks");
 
 interface RewardedAdCompletionData {
   adDetails?: {
     placementId?: string;
     creativeId?: string;
     networkName?: string;
-    [key: string]: any;
+    [key: string]: unknown;
   };
 }
 
 describe("notifyRewardedAdCompleted Callable Function", () => {
-  let notifyRewardedAdCompleted: any;
-
   beforeEach(async () => {
     // Clear all mocks
     jest.clearAllMocks();
-
-    // Import the function after mocks are set up
-    const adClientCallbacks = await import("../adClientCallbacks");
-    notifyRewardedAdCompleted = adClientCallbacks.notifyRewardedAdCompleted;
   });
 
   afterEach(() => {
@@ -77,7 +75,7 @@ describe("notifyRewardedAdCompleted Callable Function", () => {
     };
 
     const mockRequest = {
-      auth: {uid: mockUserId, token: {} as any},
+      auth: {uid: mockUserId, token: {} as Record<string, unknown>},
       data: {adDetails: mockAdDetails},
     } as unknown as CallableRequest<RewardedAdCompletionData>;
 
@@ -95,7 +93,7 @@ describe("notifyRewardedAdCompleted Callable Function", () => {
   it("should handle empty adDetails gracefully if authenticated", async () => {
     const mockUserId = "testUser456";
     const mockRequest = {
-      auth: {uid: mockUserId, token: {} as any},
+      auth: {uid: mockUserId, token: {} as Record<string, unknown>},
       data: {adDetails: {}},
     } as unknown as CallableRequest<RewardedAdCompletionData>;
 
@@ -118,7 +116,7 @@ describe("notifyRewardedAdCompleted Callable Function", () => {
     };
 
     const mockRequest = {
-      auth: {uid: mockUserId, token: {} as any},
+      auth: {uid: mockUserId, token: {} as Record<string, unknown>},
       data: {adDetails: specificAdDetails},
     } as unknown as CallableRequest<RewardedAdCompletionData>;
 
@@ -135,7 +133,7 @@ describe("notifyRewardedAdCompleted Callable Function", () => {
 
   it("should process successfully if adDetails are missing in request.data and auth is present", async () => {
     const mockRequest = {
-      auth: {uid: "testUserNoDetails", token: {} as any},
+      auth: {uid: "testUserNoDetails", token: {} as Record<string, unknown>},
       data: {},
     } as unknown as CallableRequest<RewardedAdCompletionData>;
 

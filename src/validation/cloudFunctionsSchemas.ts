@@ -58,11 +58,10 @@ export const CheckLetterIsInCorrectPlaceOutputSchema = z.boolean();
 
 // generateClassicRiddles (assuming minimal input and a success output based on RiddleService usage)
 export const GenerateClassicRiddlesInputSchema = z.object({});
-export const GenerateClassicRiddlesOutputSchema = z
-  .object({
-    success: z.boolean(),
-  })
-  .optional();
+export const GenerateClassicRiddlesOutputSchema = z.object({
+  success: z.boolean(),
+  message: z.string(),
+});
 
 // Define a schema for guess feedback (green, yellow, red)
 export const GuessFeedbackSchema = z.union([
@@ -71,24 +70,28 @@ export const GuessFeedbackSchema = z.union([
   z.literal("red"),
 ]);
 
+// submitGuess
 export const SubmitGuessInputSchema = z.object({
-  gameMode: GameModeSchema,
-  riddleId: z.string(),
-  guess: z.string().min(1),
-  attempts: z.number().int().positive(),
+  guess: z.string().min(1, "Guess cannot be empty"),
+  riddleId: z.string().min(1, "Riddle ID is required"),
+  gameMode: z.enum(["challenge", "classic"]),
 });
 
 export const SubmitGuessOutputSchema = z.object({
   feedback: z.array(
     z.object({
       letter: z.string(),
-      status: GuessFeedbackSchema,
+      status: z.enum(["green", "yellow", "red"]),
     })
   ),
   isCorrect: z.boolean(),
+  gameOver: z.boolean(),
   correctAnswer: z.string().optional(),
-  coinsEarned: z.number().int().nonnegative().optional(),
+  coinsEarned: z.number().default(0),
 });
+
+export type SubmitGuessInput = z.infer<typeof SubmitGuessInputSchema>;
+export type SubmitGuessOutput = z.infer<typeof SubmitGuessOutputSchema>;
 
 // getHint
 export const GetHintInputSchema = z.object({
@@ -103,28 +106,6 @@ export const GetHintOutputSchema = z
     coinsCost: z.number().int().positive(),
   })
   .nullable();
-
-// skipRiddle
-export const SkipRiddleInputSchema = z.object({
-  gameMode: GameModeSchema, // Use existing GameModeSchema
-  riddleId: z.string(),
-});
-
-export const SkipRiddleOutputSchema = z.object({
-  newRiddleIndex: z.number().int(),
-  newQuestion: z.string(),
-  newAnswerLength: z.number().int().nonnegative(),
-  coinsCost: z.number().int().positive(),
-  newRiddleId: z.string(),
-});
-
-// resetStats
-export const ResetStatsInputSchema = z.object({}); // No input data from client
-
-export const ResetStatsOutputSchema = z.object({
-  success: z.boolean(),
-  message: z.string(),
-});
 
 // initializeRiddleDatabase
 export const InitializeRiddleDatabaseInputSchema = z.object({});

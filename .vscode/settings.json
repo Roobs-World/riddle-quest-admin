@@ -1,4 +1,56 @@
 {
   "markdownlint.ignore": ["memory-bank/**"],
-  "java.compile.nullAnalysis.mode": "automatic"
+  "java.compile.nullAnalysis.mode": "automatic",
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "java.import.gradle.enabled": true,
+  "java.server.launchMode": "Standard",
+  "typescript.preferences.includePackageJsonAutoImports": "on",
+  "typescript.suggest.autoImports": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "eslint.workingDirectories": ["./", "firebase-functions"],
+  "files.exclude": {
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/node_modules": true,
+    "**/.expo": true,
+    "**/build": true,
+    "**/dist": true,
+    "**/*.class": true,
+    "**/*.jar": true,
+    "**/*.war": true,
+    "**/*.ear": true,
+    ".settings": true,
+    ".project": true,
+    ".classpath": true,
+    "node_modules/**/.settings": true,
+    "node_modules/**/.project": true,
+    "node_modules/**/.classpath": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/.expo": true,
+    "**/build": true,
+    "**/dist": true,
+    "android/.gradle": true,
+    "android/build": true,
+    "android/app/build": true
+  },
+  "emmet.includeLanguages": {
+    "typescript": "typescriptreact",
+    "javascript": "javascriptreact"
+  },
+  "typescript.preferences.jsxAttributeCompletionStyle": "auto",
+  "react-native.ios.runArguments": ["--simulator", "iPhone 15"],
+  "react-native.android.runArguments": ["--device"],
+  "files.associations": {
+    "*.tsx": "typescriptreact",
+    "*.ts": "typescript",
+    "*.js": "javascript",
+    "*.jsx": "javascriptreact"
+  },
+  "java.configuration.workspaceFolders": ["android"],
+  "java.project.sourcePaths": ["android/app/src/main/java"],
+  "java.project.referencedLibraries": ["android/app/libs/**/*.jar"]
 }

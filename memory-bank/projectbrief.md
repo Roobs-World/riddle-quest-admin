@@ -10,6 +10,7 @@ Qwordly (inferred from workspace path)
 - Implement all core features including user authentication, persistent backend, multiple game modes, in-app purchases, and customizable user profiles.
 - Ensure successful deployment and operation of Firebase Functions for backend logic.
 - Achieve comprehensive test coverage for both client and server-side code.
+- Implement audio fading for background music and sound effects based on user progress or game state.
 
 ## 3. Target Audience
 
@@ -81,7 +82,6 @@ Build a riddle-based Wordle-clone mobile game using React Native, NativeWind, an
 - **Classic Mode:**
   - Sequential levels from Sheets/Firestore.
   - Solve to unlock the next level.
-  - Option to spend 50 coins to skip a level.
     Same 5-guess grid and feedback. **Guess validation and feedback are handled server-side.**
 
 ### 2.4. In-App Purchases & Coin System
@@ -90,7 +90,7 @@ Build a riddle-based Wordle-clone mobile game using React Native, NativeWind, an
   - Purchase `react-native-iap` or equivalent for managing IAPs.
   - Server-side validation of purchases with Firebase Functions.
 - **Coin System:**
-  - Coins for hints (Classic Mode), skipping levels (Classic Mode).
+  - Coins for hints (Classic Mode).
   - Earn coins via daily challenges and rewarded ads.
 
 ### 2.5. Advertising

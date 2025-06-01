@@ -9,7 +9,6 @@ const useGameScreenOverlays = (): GameScreenOverlayState &
   const [isVictoryModalVisible, setIsVictoryModalVisible] = useState(false);
   const [isLossModalVisible, setIsLossModalVisible] = useState(false);
   const [isHintOverlayVisible, setIsHintOverlayVisible] = useState(false);
-  const [isSkipOverlayVisible, setIsSkipOverlayVisible] = useState(false);
   const [isHomeOverlayVisible, setIsHomeOverlayVisible] = useState(false);
   const [isPlayOverlayVisible, setIsPlayOverlayVisible] = useState(false);
   const [isProfileOverlayVisible, setIsProfileOverlayVisible] = useState(false);
@@ -23,8 +22,6 @@ const useGameScreenOverlays = (): GameScreenOverlayState &
     setIsLossModalVisible,
     isHintOverlayVisible,
     setIsHintOverlayVisible,
-    isSkipOverlayVisible,
-    setIsSkipOverlayVisible,
     isHomeOverlayVisible,
     setIsHomeOverlayVisible,
     isPlayOverlayVisible,

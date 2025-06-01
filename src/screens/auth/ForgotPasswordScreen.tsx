@@ -1,114 +1,141 @@
-import { Text } from "react-native";
+import { Text, StyleSheet, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import PadlockIcon from "@images/padlock.svg";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation } from "@react-navigation/native";
-import ScreenTitle from "../../components/text/ScreenTitle";
-import WideButton from "../../components/buttons/WideButton";
-import BackButton from "../../components/buttons/BackButton";
+import SafeAreaView from "../../components/CustomSafeAreaView";
 import AuthLayout from "../../components/layouts/AuthLayout";
-import UserEmailInput from "../../components/inputFields/UserEmailInput";
-import { validateEmail } from "../../utils/emailValidation";
 import { AuthService } from "../../services/AuthService";
+import { validateEmail } from "../../utils/emailValidation";
+import BackButton from "../../components/buttons/BackButton";
+import ScreenTitle from "../../components/text/ScreenTitle";
+import UserEmailInput from "../../components/inputFields/UserEmailInput";
+import WideButton from "../../components/buttons/WideButton";
 import { AppStrings } from "../../constants/AppStrings";
 import Error from "../../components/text/Error";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { type FirebaseAuthTypes } from "@react-native-firebase/auth";
 import HomeBgSvg from "../../../assets/images/home-bg.svg";
+import PulsingSpinner from "../../components/PulsingSpinner";
+
 /**
  * Forgot password screen for the authentication flow.
- * Allows users to request a password reset link via email.
  */
-const ForgotPasswordScreen = () => {
-  const navigation = useNavigation();
+
+type RootStackParamList = {
+  Landing: undefined;
+  Login: undefined;
+  SignUp: undefined;
+  ForgotPassword: undefined;
+  NewPassword: undefined;
+  Game: undefined;
+  Credits: undefined;
+};
+
+type ForgotPasswordScreenNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  "ForgotPassword"
+>;
+
+const ForgotPasswordScreen = ({
+  navigation,
+}: {
+  navigation: ForgotPasswordScreenNavigationProp;
+}) => {
   const [email, setEmail] = useState("");
-  const [emailError, setEmailError] = useState<string>("");
+  const [emailError, setEmailError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string>("");
   const [generalError, setGeneralError] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(false);
 
   /**
-   * Handles the action of resetting the password.
-   * Logs the email for which the password reset was requested.
+   * Handles the password reset flow.
    */
   const handleResetPassword = async () => {
-    setEmailError("");
+    console.log("Password reset requested for email:", email);
+
+    setEmailError(null);
     setSuccessMessage("");
     setGeneralError("");
+    setIsLoading(true);
 
     const emailValidationError = validateEmail(email);
     setEmailError(emailValidationError);
 
     if (emailValidationError) {
+      setIsLoading(false);
       return;
     }
 
     try {
       await AuthService.sendPasswordResetEmail(email);
-      console.log("Password reset email sent successfully to:", email);
-      setSuccessMessage("Password reset link sent successfully to your email.");
+      setSuccessMessage("Password reset email sent! Check your inbox.");
+      console.log("Password reset email sent successfully.");
     } catch (error) {
       const firebaseError = error as FirebaseAuthTypes.NativeFirebaseAuthError;
-      console.error("Password reset email error:", firebaseError);
-      switch (firebaseError.code) {
-        case "auth/user-not-found":
-          setEmailError(AppStrings.AuthStrings.Login.USER_NOT_FOUND_ERROR);
-          break;
-        case "auth/invalid-email":
-          setEmailError(
-            AppStrings.AuthStrings.Login.INVALID_EMAIL_FORMAT_ERROR
-          );
-          break;
-        default:
-          setGeneralError(
-            firebaseError.message || "An unexpected error occurred."
-          );
+      console.error("Password reset error:", firebaseError);
+
+      // Handle specific Firebase errors
+      if (firebaseError.code === "auth/user-not-found") {
+        setGeneralError(
+          "No account found with this email address. Please check your email or sign up for a new account."
+        );
+      } else {
+        setGeneralError(
+          firebaseError.message ||
+            "An error occurred while sending the reset email. Please try again."
+        );
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <SafeAreaView className="flex-1 bg-cream-light p-6">
-      <HomeBgSvg
-        width="120%"
-        height="100%"
-        style={{
-          position: "absolute",
-          top: "-5%",
-          left: 0,
-          bottom: 0,
-          right: 0,
-          zIndex: -1,
-        }}
-      />
+      <HomeBgSvg width="120%" height="100%" style={styles.backgroundImage} />
       <BackButton navigation={navigation} />
       <AuthLayout>
-        <PadlockIcon className="w-24 h-24 mb-8 mx-auto" />
-        <ScreenTitle title="Forgot Password?" className="text-center" />
-        <Text className="text-left text-gray-700 mb-8">
-          Enter your email address to receive a password reset link.
-        </Text>
-
+        <PadlockIcon width={80} height={80} />
+        <ScreenTitle title="Reset Password" />
         <UserEmailInput
           email={email}
-          setEmail={(text) => {
-            setEmail(text);
-            setEmailError("");
-            setSuccessMessage("");
-            setGeneralError("");
-          }}
+          setEmail={setEmail}
           errorMessage={emailError}
         />
-
-        {successMessage ? (
-          <Text className="text-green-600 mt-4 text-center">
-            {successMessage}
-          </Text>
-        ) : null}
-        {generalError ? <Error message={generalError} /> : null}
+        {successMessage && (
+          <Text className="text-green-500 text-center">{successMessage}</Text>
+        )}
+        {generalError && <Error message={generalError} />}
       </AuthLayout>
 
-      <WideButton onPress={handleResetPassword} buttonText="Reset Password" />
+      <WideButton
+        buttonText="Reset Password"
+        onPress={handleResetPassword}
+        disabled={isLoading}
+      />
+
+      <TouchableOpacity
+        onPress={() => navigation.navigate(AppStrings.Navigation.LOGIN)}
+        className="mt-4"
+      >
+        <Text className="text-center text-blue-500 underline">
+          Back to Login
+        </Text>
+      </TouchableOpacity>
+
+      <PulsingSpinner visible={isLoading} size={120} />
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  backgroundImage: {
+    bottom: 0,
+    left: 0,
+    position: "absolute",
+    right: 0,
+    top: "-5%",
+    zIndex: -1,
+  },
+});
 
 export default ForgotPasswordScreen;

@@ -12,6 +12,7 @@ import { useAuth } from "../contexts/AuthContext";
 import * as ImagePicker from "react-native-image-picker";
 import storage from "@react-native-firebase/storage";
 import { FirebaseStorageTypes } from "@react-native-firebase/storage";
+import { AppStrings } from "../constants/AppStrings";
 
 // Define the structure for preloaded avatars (can be moved to a separate file later)
 const preloadedAvatars = [
@@ -39,7 +40,7 @@ const ProfileScreen: React.FC = () => {
   if (!playerData) {
     return (
       <View>
-        <Text>Loading profile data...</Text>
+        <Text>{AppStrings.Profile.LOADING_MESSAGE}</Text>
       </View>
     ); // Or a loading indicator
   }
@@ -48,7 +49,10 @@ const ProfileScreen: React.FC = () => {
 
   const handleUpdateUsername = async () => {
     if (newUsername.trim() === "") {
-      Alert.alert("Error", "Username cannot be empty.");
+      Alert.alert(
+        AppStrings.Profile.ALERT_ERROR_TITLE,
+        AppStrings.Profile.ALERT_USERNAME_EMPTY
+      );
       return;
     }
     if (newUsername === playerData.username) {
@@ -57,11 +61,17 @@ const ProfileScreen: React.FC = () => {
     }
     try {
       await updatePlayerData({ username: newUsername.trim() });
-      Alert.alert("Success", "Username updated successfully!");
+      Alert.alert(
+        AppStrings.Profile.ALERT_SUCCESS_TITLE,
+        AppStrings.Profile.ALERT_USERNAME_UPDATE_SUCCESS
+      );
       setEditingUsername(false);
     } catch (error) {
       console.error("Error updating username:", error);
-      Alert.alert("Error", "Failed to update username. Please try again.");
+      Alert.alert(
+        AppStrings.Profile.ALERT_ERROR_TITLE,
+        AppStrings.Profile.ALERT_USERNAME_UPDATE_FAIL
+      );
     }
   };
 
@@ -124,34 +134,45 @@ const ProfileScreen: React.FC = () => {
             await updatePlayerData({ avatarUrl: downloadURL });
 
             console.log("Avatar URL updated successfully.");
-            Alert.alert("Success", "Avatar updated successfully!");
+            Alert.alert(
+              AppStrings.Profile.ALERT_SUCCESS_TITLE,
+              AppStrings.Profile.ALERT_AVATAR_UPDATE_SUCCESS
+            );
             setShowAvatarOptions(false); // Close options after upload
           });
         }
       }
     } catch (error) {
       console.error("Avatar selection error:", error);
-      Alert.alert("Error", "Could not select avatar. Please try again.");
+      Alert.alert(
+        AppStrings.Profile.ALERT_ERROR_TITLE,
+        AppStrings.Profile.ALERT_AVATAR_SELECT_FAIL
+      );
     }
   };
 
   const handleSelectPreloadedAvatar = async (avatarUrl: string) => {
     try {
       await updatePlayerData({ avatarUrl: avatarUrl });
-      Alert.alert("Success", "Avatar updated successfully!");
+      Alert.alert(
+        AppStrings.Profile.ALERT_SUCCESS_TITLE,
+        AppStrings.Profile.ALERT_AVATAR_UPDATE_SUCCESS
+      );
       setShowAvatarOptions(false); // Close options after selection
     } catch (error) {
       console.error("Error selecting preloaded avatar:", error);
       Alert.alert(
-        "Error",
-        "Failed to select preloaded avatar. Please try again."
+        AppStrings.Profile.ALERT_ERROR_TITLE,
+        AppStrings.Profile.ALERT_PRELOADED_AVATAR_SELECT_FAIL
       );
     }
   };
 
   return (
     <View className="flex-1 p-6 bg-cream-light">
-      <Text className="text-2xl font-bold text-gray-800 mb-6">Profile</Text>
+      <Text className="text-2xl font-bold text-gray-800 mb-6">
+        {AppStrings.Profile.TITLE}
+      </Text>
 
       {/* Avatar Section */}
       <View className="items-center mb-8">
@@ -181,12 +202,12 @@ const ProfileScreen: React.FC = () => {
           <View className="flex-1 justify-center items-center bg-black/50">
             <View className="bg-white p-6 rounded-lg m-4 w-11/12 max-w-sm">
               <Text className="text-xl font-bold text-gray-800 mb-4">
-                Change Avatar
+                {AppStrings.Profile.CHANGE_AVATAR_TITLE}
               </Text>
 
               {/* Preloaded Avatars */}
               <Text className="text-lg font-bold text-gray-800 mb-3">
-                Select a Preloaded Avatar:
+                {AppStrings.Profile.SELECT_PRELOADED_AVATAR_SUBTITLE}
               </Text>
               <View className="flex-row flex-wrap justify-center mb-4">
                 {preloadedAvatars.map((avatar, index) => (
@@ -205,14 +226,14 @@ const ProfileScreen: React.FC = () => {
 
               {/* Upload Custom Avatar */}
               <Text className="text-lg font-bold text-gray-800 mb-3">
-                Or Upload Your Own:
+                {AppStrings.Profile.UPLOAD_CUSTOM_AVATAR_SUBTITLE}
               </Text>
               <TouchableOpacity
                 className="bg-gray-200 px-4 py-3 rounded-md w-full items-center mb-4"
                 onPress={handleAvatarSelect} // This now specifically triggers the image picker
               >
                 <Text className="text-gray-800 font-semibold">
-                  Choose from Gallery
+                  {AppStrings.Profile.CHOOSE_FROM_GALLERY_BUTTON}
                 </Text>
               </TouchableOpacity>
 
@@ -221,7 +242,9 @@ const ProfileScreen: React.FC = () => {
                 className="bg-red-500 px-4 py-3 rounded-md w-full items-center"
                 onPress={() => setShowAvatarOptions(false)}
               >
-                <Text className="text-white font-semibold">Cancel</Text>
+                <Text className="text-white font-semibold">
+                  {AppStrings.Profile.CANCEL_BUTTON}
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -230,7 +253,9 @@ const ProfileScreen: React.FC = () => {
 
       {/* Username Section */}
       <View className="mb-6">
-        <Text className="text-lg font-bold text-gray-800 mb-2">Username:</Text>
+        <Text className="text-lg font-bold text-gray-800 mb-2">
+          {AppStrings.Profile.USERNAME_LABEL}
+        </Text>
         {editingUsername ? (
           <View className="flex-row items-center">
             <TextInput
@@ -243,7 +268,9 @@ const ProfileScreen: React.FC = () => {
               onPress={handleUpdateUsername}
               className="bg-primary-orange px-4 py-2 rounded-md"
             >
-              <Text className="text-white font-semibold">Save</Text>
+              <Text className="text-white font-semibold">
+                {AppStrings.Profile.SAVE_BUTTON}
+              </Text>
             </TouchableOpacity>
           </View>
         ) : (
@@ -255,7 +282,9 @@ const ProfileScreen: React.FC = () => {
               onPress={() => setEditingUsername(true)}
               className="bg-gray-200 px-4 py-2 rounded-md"
             >
-              <Text className="text-gray-800 font-semibold">Edit</Text>
+              <Text className="text-gray-800 font-semibold">
+                {AppStrings.Profile.EDIT_BUTTON}
+              </Text>
             </TouchableOpacity>
           </View>
         )}
@@ -264,79 +293,103 @@ const ProfileScreen: React.FC = () => {
       {/* Account Settings Buttons */}
       <View className="w-full border-t border-gray-200 pt-6 mb-6">
         <Text className="text-lg font-bold text-gray-800 mb-4">
-          Account Settings
+          {AppStrings.Profile.ACCOUNT_SETTINGS_TITLE}
         </Text>
         <TouchableOpacity
           className="bg-gray-200 px-4 py-3 rounded-md mb-3 w-full items-center"
           onPress={handleChangePassword}
         >
-          <Text className="text-gray-800 font-semibold">Change Password</Text>
+          <Text className="text-gray-800 font-semibold">
+            {AppStrings.Profile.CHANGE_PASSWORD_BUTTON}
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity
           className="bg-gray-200 px-4 py-3 rounded-md w-full items-center"
           onPress={handleLinkAccounts}
         >
-          <Text className="text-gray-800 font-semibold">Link Accounts</Text>
+          <Text className="text-gray-800 font-semibold">
+            {AppStrings.Profile.LINK_ACCOUNTS_BUTTON}
+          </Text>
         </TouchableOpacity>
       </View>
 
       {/* Stats Display */}
       <View className="w-full border-t border-gray-200 pt-6">
-        <Text className="text-lg font-bold text-gray-800 mb-4">Stats</Text>
+        <Text className="text-lg font-bold text-gray-800 mb-4">
+          {AppStrings.Profile.STATS_TITLE}
+        </Text>
         <View className="grid grid-cols-2 gap-4">
           <View className="items-center">
             <Text className="text-2xl font-bold text-gray-800">
               {currentStats.dailyPuzzlesCompleted || 0}
             </Text>
-            <Text className="text-sm text-gray-600">Daily Puzzles</Text>
+            <Text className="text-sm text-gray-600">
+              {AppStrings.Profile.DAILY_PUZZLES_STAT}
+            </Text>
           </View>
           <View className="items-center">
             <Text className="text-2xl font-bold text-gray-800">
               {currentStats.bestStreak || 0}
             </Text>
-            <Text className="text-sm text-gray-600">Best Streak</Text>
+            <Text className="text-sm text-gray-600">
+              {AppStrings.Profile.BEST_STREAK_STAT}
+            </Text>
           </View>
           <View className="items-center">
             <Text className="text-2xl font-bold text-gray-800">
               {currentStats.totalWordsGuessed || 0}
             </Text>
-            <Text className="text-sm text-gray-600">Words Guessed</Text>
+            <Text className="text-sm text-gray-600">
+              {AppStrings.Profile.WORDS_GUESSED_STAT}
+            </Text>
           </View>
           <View className="items-center">
             <Text className="text-2xl font-bold text-gray-800">{`${
               currentStats.winRate || 0
             }%`}</Text>
-            <Text className="text-sm text-gray-600">Win Rate</Text>
+            <Text className="text-sm text-gray-600">
+              {AppStrings.Profile.WIN_RATE_STAT}
+            </Text>
           </View>
           <View className="items-center">
             <Text className="text-2xl font-bold text-gray-800">
               {currentStats.averageGuesses || 0}
             </Text>
-            <Text className="text-sm text-gray-600">Avg. Guesses</Text>
+            <Text className="text-sm text-gray-600">
+              {AppStrings.Profile.AVG_GUESSES_STAT}
+            </Text>
           </View>
           <View className="items-center">
             <Text className="text-2xl font-bold text-gray-800">
               {currentStats.totalScore || 0}
             </Text>
-            <Text className="text-sm text-gray-600">Total Score</Text>
+            <Text className="text-sm text-gray-600">
+              {AppStrings.Profile.TOTAL_SCORE_STAT}
+            </Text>
           </View>
           <View className="items-center">
             <Text className="text-2xl font-bold text-gray-800">
               {currentStats.highestLevelClassic || 0}
             </Text>
-            <Text className="text-sm text-gray-600">Highest Classic Level</Text>
+            <Text className="text-sm text-gray-600">
+              {AppStrings.Profile.HIGHEST_CLASSIC_LEVEL_STAT}
+            </Text>
           </View>
           <View className="items-center">
             <Text className="text-2xl font-bold text-gray-800">
               {currentStats.gamesPlayed || 0}
             </Text>
-            <Text className="text-sm text-gray-600">Games Played</Text>
+            <Text className="text-sm text-gray-600">
+              {AppStrings.Profile.GAMES_PLAYED_STAT}
+            </Text>
           </View>
           <View className="items-center">
             <Text className="text-2xl font-bold text-gray-800">
               {currentStats.totalWins || 0}
             </Text>
-            <Text className="text-sm text-gray-600">Total Wins</Text>
+            <Text className="text-sm text-gray-600">
+              {AppStrings.Profile.TOTAL_WINS_STAT}
+            </Text>
           </View>
         </View>
       </View>

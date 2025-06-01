@@ -11,6 +11,7 @@ const LETTER_SIZE = 40;
 const MAX_POOL_SIZE = 20; // Reduced to a reasonable number for individual shared values
 const FIXED_DELTA = 16.67; // ~60 FPS
 const OFF_SCREEN_THRESHOLD = 200; // How far off-screen before recycling
+const LETTER_TEXT_COLOR = "#333"; // Letter text color constant
 
 interface ShatteringTitleProps {
   title: string;
@@ -276,7 +277,7 @@ const ShatteringTitle: React.FC<ShatteringTitleProps> = ({
       engineRef.current = null;
       letterPoolRef.current = [];
     };
-  }, []); // Runs once on mount
+  }, [startAnimation, onAnimationComplete]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Effect to activate/deactivate letters based on title prop
   useEffect(() => {
@@ -409,7 +410,7 @@ const styles = StyleSheet.create({
     // backgroundColor: 'rgba(200, 200, 200, 0.1)', // For debugging view bounds
   },
   letterText: {
-    color: "#333", // Example color
+    color: LETTER_TEXT_COLOR,
     fontSize: LETTER_SIZE * 0.8, // Adjust to fit well within the view
     fontWeight: "bold",
   },

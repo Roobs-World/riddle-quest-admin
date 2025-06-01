@@ -4,6 +4,38 @@ dotenv.config({path: ".env"}); // Load .env file from firebase-functions directo
 // Import necessary testing libraries and modules
 import {describe, it, beforeAll, afterAll, beforeEach} from "@jest/globals";
 
+// 🚨 CRITICAL SAFETY CHECK - PREVENT PRODUCTION DATA DESTRUCTION 🚨
+const FIREBASE_PROJECT_ID = "qwordly-6ba44";
+const FIRESTORE_EMULATOR_HOST = process.env.FIRESTORE_EMULATOR_HOST;
+
+// 🚨 ABSOLUTE SAFETY: This test MUST NEVER run against production
+// This test deletes riddles with classicIndex 0, 1, 2 - destroying essential game data!
+if (FIREBASE_PROJECT_ID === "qwordly-6ba44" && !FIRESTORE_EMULATOR_HOST) {
+  throw new Error(`
+🚨🚨🚨 CRITICAL SAFETY VIOLATION 🚨🚨🚨
+
+This test is ABSOLUTELY FORBIDDEN from running against production!
+
+PROJECT ID: ${FIREBASE_PROJECT_ID} (PRODUCTION)
+EMULATOR: ${FIRESTORE_EMULATOR_HOST || "NOT SET"}
+
+This test DELETES essential riddles (classicIndex 0, 1, 2) that new users need to play!
+Running this test against production DESTROYS USER DATA and breaks the game!
+
+TO FIX:
+1. Change FIREBASE_PROJECT_ID to a test project (NOT qwordly-6ba44)
+2. Use a dedicated test Firebase project
+3. NEVER run integration tests against production
+
+PRODUCTION DATA PROTECTION: This test is BLOCKED for safety.
+  `);
+}
+
+// If using emulators, log it for clarity
+if (FIRESTORE_EMULATOR_HOST) {
+  console.log(`🧪 Running tests with Firestore emulator at ${FIRESTORE_EMULATOR_HOST}`);
+}
+
 import * as admin from "firebase-admin";
 import functionsTest from "firebase-functions-test";
 import {HttpsError, CallableRequest} from "firebase-functions/v2/https"; // Import HttpsError and CallableRequest
@@ -11,8 +43,6 @@ import {HttpsError, CallableRequest} from "firebase-functions/v2/https"; // Impo
 // Import the functions to test (these will interact with the emulator)
 import {getHint, spendCoins} from "../gameLogic";
 import {createUser} from "./testUtils"; // Import createUser from testUtils
-
-const FIREBASE_PROJECT_ID = "qwordly-6ba44";
 
 // Initialize firebase-functions-test. This DOES NOT initialize admin.initializeApp()
 // when used with a live project. We must do that manually.

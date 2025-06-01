@@ -1,4 +1,5 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import { StyleSheet } from "react-native";
 import UserPasswordInput from "../../components/inputFields/UserPasswordInput";
 import WideButton from "../../components/buttons/WideButton";
 import { AppStrings } from "../../constants/AppStrings";
@@ -46,19 +47,8 @@ export default function NewPasswordScreen({
   };
 
   return (
-    <CustomSafeAreaView>
-      <HomeBgSvg
-        width="120%"
-        height="100%"
-        style={{
-          position: "absolute",
-          top: "-5%",
-          left: 0,
-          bottom: 0,
-          right: 0,
-          zIndex: -1,
-        }}
-      />
+    <CustomSafeAreaView className="flex-1 bg-cream-light p-6">
+      <HomeBgSvg width="120%" height="100%" style={styles.backgroundImage} />
       <AuthLayout>
         <PadlockIcon className="w-24 h-24 mb-8 mx-auto" />
         <ScreenTitle title={AppStrings.AuthStrings.NewPassword.TITLE} />
@@ -93,3 +83,14 @@ export default function NewPasswordScreen({
     </CustomSafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  backgroundImage: {
+    bottom: 0,
+    left: 0,
+    position: "absolute",
+    right: 0,
+    top: "-5%",
+    zIndex: -1,
+  },
+});

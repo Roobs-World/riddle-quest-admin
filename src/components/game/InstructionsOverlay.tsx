@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, Modal, TouchableOpacity } from "react-native";
+import CloseButton from "../buttons/CloseButton";
 
 interface InstructionsOverlayProps {
   isVisible: boolean;
@@ -18,7 +19,12 @@ const InstructionsOverlay: React.FC<InstructionsOverlayProps> = ({
       onRequestClose={onClose}
     >
       <View className="flex-1 justify-center items-center bg-black bg-opacity-50">
-        <View className="bg-white p-6 rounded-lg m-4">
+        <View className="bg-white p-6 rounded-lg m-4 relative">
+          {/* Close Button in top-right corner */}
+          <View className="absolute top-2 right-2 z-10">
+            <CloseButton onPress={onClose} size={20} />
+          </View>
+
           <Text className="text-xl font-bold mb-4">How to Play</Text>
           <Text className="text-base mb-4">
             Guess the hidden riddle in 6 tries.

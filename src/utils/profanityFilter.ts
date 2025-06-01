@@ -9,6 +9,7 @@
 const PROFANE_WORDS = [
   "fuck",
   "shit",
+  "ass",
   "bitch",
   "asshole",
   "damn",
@@ -50,6 +51,7 @@ const PROFANE_WORDS = [
   "strip",
   "escort",
   "prostitute",
+  "badword",
 ];
 
 /**

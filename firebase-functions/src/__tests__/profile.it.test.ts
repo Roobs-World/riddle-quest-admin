@@ -8,11 +8,39 @@ import functionsTest from "firebase-functions-test";
 import {HttpsError, CallableRequest} from "firebase-functions/v2/https";
 
 // Import the functions to test
-import {resetStats, updateAvatar} from "../profile";
-import {PlayerSchema} from "../validation/firestoreSchemas";
+import {updateAvatar} from "../profile";
 import {createUser} from "./testUtils";
 
+// 🚨 CRITICAL SAFETY CHECK - PREVENT PRODUCTION DATA DESTRUCTION 🚨
 const FIREBASE_PROJECT_ID = "qwordly-6ba44";
+const FIRESTORE_EMULATOR_HOST = process.env.FIRESTORE_EMULATOR_HOST;
+
+// 🚨 ABSOLUTE SAFETY: This test MUST NEVER run against production
+if (FIREBASE_PROJECT_ID === "qwordly-6ba44" && !FIRESTORE_EMULATOR_HOST) {
+  throw new Error(`
+🚨🚨🚨 CRITICAL SAFETY VIOLATION 🚨🚨🚨
+
+This test is ABSOLUTELY FORBIDDEN from running against production!
+
+PROJECT ID: ${FIREBASE_PROJECT_ID} (PRODUCTION)
+EMULATOR: ${FIRESTORE_EMULATOR_HOST || "NOT SET"}
+
+Integration tests can modify or delete production data!
+Running this test against production DESTROYS USER DATA!
+
+TO FIX:
+1. Change FIREBASE_PROJECT_ID to a test project (NOT qwordly-6ba44)
+2. Use a dedicated test Firebase project
+3. NEVER run integration tests against production
+
+PRODUCTION DATA PROTECTION: This test is BLOCKED for safety.
+  `);
+}
+
+// If using emulators, log it for clarity
+if (FIRESTORE_EMULATOR_HOST) {
+  console.log(`🧪 Running tests with Firestore emulator at ${FIRESTORE_EMULATOR_HOST}`);
+}
 
 // Initialize firebase-functions-test
 const testEnv = functionsTest();
@@ -32,7 +60,6 @@ if (!admin.apps.length) {
 let firestore: admin.firestore.Firestore;
 
 describe("Profile Functions - Integration Tests", () => {
-  const wrappedResetStats = testEnv.wrap(resetStats);
   const wrappedUpdateAvatar = testEnv.wrap(updateAvatar);
   const testUserId = "testUserProfile";
   const initialUserData = {
@@ -121,32 +148,6 @@ describe("Profile Functions - Integration Tests", () => {
       rawRequest: {headers: {}, body: {}},
     } as CallableRequest<T>;
   };
-
-  describe("resetStats", () => {
-    it("should reset user stats to default values", async () => {
-      const request = constructOnCallRequest({}); // No data needed for resetStats
-
-      const result = await wrappedResetStats(request);
-      expect(result).toEqual({success: true, message: "Stats reset successfully."});
-
-      const userDoc = await firestore.collection("users").doc(testUserId).get();
-      const userData = userDoc.data();
-
-      const defaultStats = PlayerSchema.shape.stats.parse({});
-      expect(userData?.stats).toEqual(defaultStats);
-      // Ensure other fields are not reset by this specific function
-      expect(userData?.coins).toBe(initialUserData.coins);
-      expect(userData?.progress).toEqual(initialUserData.progress);
-      expect(userData?.avatarUrl).toBe(initialUserData.avatarUrl);
-    }, 15000);
-
-    it("should throw unauthenticated if called without authentication", async () => {
-      const request = constructOnCallRequest({}, null);
-      await expect(wrappedResetStats(request)).rejects.toThrow(
-        new HttpsError("unauthenticated", "The function must be called while authenticated."),
-      );
-    }, 10000);
-  });
 
   describe("updateAvatar", () => {
     it("should update the user avatar URL", async () => {

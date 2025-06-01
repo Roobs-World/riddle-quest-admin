@@ -1,5 +1,11 @@
 import React, { useReducer, useState, useMemo } from "react";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  StyleSheet,
+} from "react-native";
 import ProgressBar from "../../components/shared/ProgressBar";
 import CheckboxIcon from "../../components/icons/CheckboxIcon";
 import CustomSafeAreaView from "../../components/CustomSafeAreaView";
@@ -18,6 +24,10 @@ import { AuthService } from "../../services/AuthService";
 import { signUpSchema, SignUpFormData } from "../../validation/authSchemas";
 import { ZodError, ZodFormattedError } from "zod";
 import HomeBgSvg from "../../../assets/images/home-bg.svg";
+
+// Color constants
+const COLOR_TRANSPARENT = "transparent";
+
 /**
  * Defines the structure of the password state managed by the reducer.
  * @property {string} password - The user's entered password.
@@ -264,20 +274,9 @@ const SignUpScreen = ({ navigation }: { navigation: NavigationProp }) => {
   ]);
 
   return (
-    <View style={{ flex: 1 }}>
-      <HomeBgSvg
-        width="120%"
-        height="100%"
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          zIndex: -1,
-        }}
-      />
-      <CustomSafeAreaView style={{ backgroundColor: "transparent" }}>
+    <View style={styles.container}>
+      <HomeBgSvg width="120%" height="100%" style={styles.backgroundSvg} />
+      <CustomSafeAreaView style={styles.safeArea}>
         <AuthLayout>
           <View className="relative w-full mb-8">
             <BackButton navigation={navigation} />
@@ -392,5 +391,22 @@ const SignUpScreen = ({ navigation }: { navigation: NavigationProp }) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  backgroundSvg: {
+    bottom: 0,
+    left: 0,
+    position: "absolute",
+    right: 0,
+    top: 0,
+    zIndex: -1,
+  },
+  container: {
+    flex: 1,
+  },
+  safeArea: {
+    backgroundColor: COLOR_TRANSPARENT,
+  },
+});
 
 export default SignUpScreen;

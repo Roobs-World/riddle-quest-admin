@@ -1,5 +1,12 @@
-import React, { useRef, useEffect } from "react";
-import { Animated, Easing, View, Modal, Dimensions } from "react-native";
+import React, { useRef, useEffect, useMemo } from "react";
+import {
+  Animated,
+  Easing,
+  View,
+  Modal,
+  Dimensions,
+  StyleSheet,
+} from "react-native";
 import Svg, { Circle } from "react-native-svg";
 
 // Turn the SVG <Circle> into an Animated component
@@ -15,7 +22,7 @@ interface PulsingSpinnerProps {
   opacity?: number; // overlay opacity
 }
 
-export default function PulsingSpinner({
+const PulsingSpinner = React.memo(function PulsingSpinner({
   size = 200, // overall spinner size
   dotCount = 8, // number of dots around the ring
   dotRadius = 15, // base radius of each dot
@@ -24,13 +31,44 @@ export default function PulsingSpinner({
   visible,
   opacity = 0.5,
 }: PulsingSpinnerProps) {
-  // create one Animated.Value per dot
+  // Create stable animated values that don't change between renders
   const animValues = useRef(
     Array.from({ length: dotCount }, () => new Animated.Value(0))
   ).current;
 
+  // Memoize expensive calculations to prevent recalculation on every render
+  const calculations = useMemo(() => {
+    const center = size / 2;
+    const ringRadius = center - dotRadius;
+
+    // Pre-calculate all dot positions to avoid recalculation during render
+    const dotPositions = Array.from({ length: dotCount }, (_, i) => {
+      const angle = (2 * Math.PI * i) / dotCount - Math.PI / 2;
+      return {
+        cx: center + ringRadius * Math.cos(angle),
+        cy: center + ringRadius * Math.sin(angle),
+      };
+    });
+
+    return { center, ringRadius, dotPositions };
+  }, [size, dotCount, dotRadius]);
+
+  // Memoize interpolated values to prevent recreation on every render
+  const interpolatedValues = useMemo(() => {
+    return animValues.map((val) => ({
+      radius: val.interpolate({
+        inputRange: [0, 1],
+        outputRange: [dotRadius, dotRadius * 0.5],
+      }),
+      opacity: val.interpolate({
+        inputRange: [0, 1],
+        outputRange: [1, 0.2],
+      }),
+    }));
+  }, [animValues, dotRadius]);
+
   useEffect(() => {
-    // slow individual pulses by doubling their duration
+    // Only recreate animation if dependencies actually change
     const dotAnimationDuration = (duration * 2) / dotCount;
     const staggerDelay = duration / dotCount;
 
@@ -67,47 +105,49 @@ export default function PulsingSpinner({
     return () => loopAnimation.stop();
   }, [animValues, duration, dotCount]);
 
-  const center = size / 2;
-  const ringRadius = center - dotRadius;
-
-  const spinnerContent = (
-    <View style={{ width: size, height: size }}>
-      <Svg width={size} height={size}>
-        {animValues.map((val, i) => {
-          const angle = (2 * Math.PI * i) / dotCount - Math.PI / 2;
-          const cx = center + ringRadius * Math.cos(angle);
-          const cy = center + ringRadius * Math.sin(angle);
-
-          // radius interpolates from full → half
-          const radius = val.interpolate({
-            inputRange: [0, 1],
-            outputRange: [dotRadius, dotRadius * 0.5],
-          });
-          // opacity interpolates from full → faint
-          const dotOpacity = val.interpolate({
-            inputRange: [0, 1],
-            outputRange: [1, 0.2],
-          });
-
-          return (
+  // Memoize spinner content to prevent recreation unless dependencies change
+  const spinnerContent = useMemo(
+    () => (
+      <View
+        style={[
+          styles.spinnerContainer,
+          {
+            width: size,
+            height: size,
+            minWidth: size,
+            minHeight: size,
+            maxWidth: size,
+            maxHeight: size,
+          },
+        ]}
+      >
+        <Svg
+          width={size}
+          height={size}
+          viewBox={`0 0 ${size} ${size}`}
+          style={[styles.svgContainer, { width: size, height: size }]}
+        >
+          {calculations.dotPositions.map((position, i) => (
             <AnimatedCircle
               key={i}
-              cx={cx}
-              cy={cy}
-              r={radius}
+              cx={position.cx}
+              cy={position.cy}
+              r={interpolatedValues[i].radius}
               fill="#FEC880"
-              opacity={dotOpacity}
+              opacity={interpolatedValues[i].opacity}
             />
-          );
-        })}
-      </Svg>
-    </View>
+          ))}
+        </Svg>
+      </View>
+    ),
+    [size, calculations.dotPositions, interpolatedValues]
   );
+
+  // Memoize screen dimensions to prevent recalculation (always called, not conditionally)
+  const screenData = useMemo(() => Dimensions.get("screen"), []);
 
   // If visible prop is provided, render as overlay
   if (visible !== undefined) {
-    const screenData = Dimensions.get("screen");
-
     if (!visible) {
       return null;
     }
@@ -120,19 +160,14 @@ export default function PulsingSpinner({
         statusBarTranslucent={true}
       >
         <View
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            width: screenData.width,
-            height: screenData.height,
-            backgroundColor: `rgba(0, 0, 0, ${opacity})`,
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 9999,
-          }}
+          style={[
+            styles.overlayContainer,
+            {
+              backgroundColor: `rgba(0, 0, 0, ${opacity})`,
+              width: screenData.width,
+              height: screenData.height,
+            },
+          ]}
         >
           {spinnerContent}
         </View>
@@ -142,4 +177,27 @@ export default function PulsingSpinner({
 
   // Otherwise, render as inline component
   return spinnerContent;
-}
+});
+
+const styles = StyleSheet.create({
+  overlayContainer: {
+    alignItems: "center",
+    bottom: 0,
+    justifyContent: "center",
+    left: 0,
+    position: "absolute",
+    right: 0,
+    top: 0,
+    zIndex: 9999,
+  },
+  spinnerContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+  },
+  svgContainer: {
+    position: "absolute",
+  },
+});
+
+export default PulsingSpinner;

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import CustomSafeAreaView from "../components/CustomSafeAreaView";
 import QwordlyLogo from "../components/logos/QwordlyLogo";
 import GoogleSignInButton from "../components/buttons/GoogleSignInButton";
@@ -23,6 +23,7 @@ type RootStackParamList = {
   ForgotPassword: undefined;
   NewPassword: undefined;
   Game: undefined;
+  Credits: undefined;
 };
 
 type LandingScreenNavigationProp = NativeStackNavigationProp<
@@ -116,18 +117,7 @@ const LandingScreen = ({
 
   return (
     <CustomSafeAreaView>
-      <HomeBgSvg
-        width="120%"
-        height="100%"
-        style={{
-          position: "absolute",
-          top: "-5%",
-          left: 0,
-          bottom: 0,
-          right: 0,
-          zIndex: -1,
-        }}
-      />
+      <HomeBgSvg width="120%" height="100%" style={styles.backgroundImage} />
 
       <View className="mb-10">
         <QwordlyLogo />
@@ -135,13 +125,7 @@ const LandingScreen = ({
 
       <Text
         className="text-2xl font-bold text-gray-800 text-center mb-8"
-        style={{
-          fontFamily: "PoetsenOne",
-          fontWeight: "400",
-          fontSize: 26,
-          lineHeight: 34.32,
-          letterSpacing: -0.104,
-        }}
+        style={styles.title}
       >
         {AppStrings.AuthStrings.Landing.TAGLINE_1}
       </Text>
@@ -155,10 +139,7 @@ const LandingScreen = ({
 
       <View className="flex-row items-center mt-4 mb-8">
         <View className="flex-1 h-px bg-gray-400 mr-2" />
-        <Text
-          className="text-sm text-black-400"
-          style={{ fontFamily: "Poppins" }}
-        >
+        <Text className="text-sm text-black-400" style={styles.separatorText}>
           {AppStrings.AuthStrings.Landing.OR_SIGN_IN_WITH}
         </Text>
         <View className="flex-1 h-px bg-gray-400 ml-2" />
@@ -175,10 +156,7 @@ const LandingScreen = ({
 
       <View className="flex-row items-center mt-8">
         <View className="flex-1 h-px bg-gray-400 mr-2" />
-        <Text
-          className="text-sm text-black-400"
-          style={{ fontFamily: "Poppins" }}
-        >
+        <Text className="text-sm text-black-400" style={styles.separatorText}>
           {AppStrings.AuthStrings.Landing.NO_ACCOUNT_PROMPT}{" "}
         </Text>
         <View className="flex-1 h-px bg-gray-400 ml-2" />
@@ -188,9 +166,45 @@ const LandingScreen = ({
         onPress={() => navigation.navigate(AppStrings.Navigation.SIGN_UP)}
       />
 
+      <TouchableOpacity
+        onPress={() => navigation.navigate(AppStrings.Navigation.CREDITS)}
+        className="mt-6 mb-4"
+      >
+        <Text
+          className="text-center text-sm text-gray-500 underline"
+          style={styles.creditsLink}
+        >
+          Credits
+        </Text>
+      </TouchableOpacity>
+
       <PulsingSpinner visible={isLoading} size={120} />
     </CustomSafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  backgroundImage: {
+    bottom: 0,
+    left: 0,
+    position: "absolute",
+    right: 0,
+    top: "-5%",
+    zIndex: -1,
+  },
+  creditsLink: {
+    fontFamily: "Poppins",
+  },
+  separatorText: {
+    fontFamily: "Poppins",
+  },
+  title: {
+    fontFamily: "PoetsenOne",
+    fontSize: 26,
+    fontWeight: "400",
+    letterSpacing: -0.104,
+    lineHeight: 34.32,
+  },
+});
 
 export default LandingScreen;

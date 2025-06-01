@@ -68,6 +68,7 @@ export const hasCompletedDailyChallenge = onCall(
 interface DailyChallengeData {
   riddleId: string;
   text: string;
+  date: string; // YYYY-MM-DD format to track which day this challenge is for
   // Add other non-sensitive fields that might be in dailyChallenge/current if needed
 }
 
@@ -79,32 +80,40 @@ interface GetCurrentDailyChallengeResponse {
 
 /**
  * Gets the current daily challenge riddle data (excluding the answer).
+ * Returns the single daily challenge that's available for today.
  * Optionally includes the user's completion status if authenticated.
  */
 export const getCurrentDailyChallenge = onCall(
   {},
   async (request: CallableRequest<unknown>): Promise<GetCurrentDailyChallengeResponse> => {
     try {
+      const currentDate = new Date();
+      const todayDateString = currentDate.toISOString().split("T")[0]; // YYYY-MM-DD format
+
       const dailyChallengeRef = admin.firestore().collection("dailyChallenge").doc("current");
       const dailyChallengeDoc = await dailyChallengeRef.get();
 
       if (!dailyChallengeDoc.exists) {
-        functions.logger.warn("Current daily challenge document not found.");
+        functions.logger.warn("No daily challenge document found.");
         return {error: "No daily challenge available at the moment."};
       }
 
       const allData = dailyChallengeDoc.data();
       if (!allData || !allData.riddleId || !allData.text) {
-        functions.logger.error(
-          "Current daily challenge document is missing required fields (riddleId, text).",
-          allData,
-        );
+        functions.logger.error("Daily challenge document is missing required fields (riddleId, text).", allData);
         return {error: "Daily challenge data is incomplete."};
+      }
+
+      // Check if the challenge is for today (optional validation)
+      if (allData.date && allData.date !== todayDateString) {
+        functions.logger.warn(`Daily challenge date mismatch. Expected: ${todayDateString}, Found: ${allData.date}`);
+        // Still return the challenge as the scheduler will update it
       }
 
       const challengeData: DailyChallengeData = {
         riddleId: allData.riddleId,
         text: allData.text,
+        date: allData.date || todayDateString, // Use today's date as fallback
         // Map other expected non-sensitive fields here
       };
 
@@ -121,17 +130,13 @@ export const getCurrentDailyChallenge = onCall(
         }
       }
 
+      console.log(`Returning daily challenge for ${challengeData.date}: ${challengeData.riddleId}`);
       return {
         challenge: challengeData,
         hasCompletedToday: hasCompletedToday,
       };
     } catch (error) {
       functions.logger.error("Error getting current daily challenge:", error);
-      // Do not re-throw HttpsError if it's from getUser, instead return a generic error response
-      // because the primary purpose (fetching challenge) might succeed even if user check fails.
-      // However, if Firestore read for dailyChallenge/current fails, it's an internal error.
-      // For simplicity here, just returning a generic error.
-      // A more nuanced approach would check the type of error.
       return {error: "An error occurred while fetching the daily challenge."};
     }
   },

@@ -1,10 +1,17 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {afterEach, beforeEach, describe, expect, it, jest} from "@jest/globals";
 
 // --- Mocks Start (must be before imports) ---
 const mockLogger = {info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn()};
 
+interface MockFirebaseFunctions {
+  logger: typeof mockLogger;
+  https: {HttpsError: unknown};
+  config: () => Record<string, unknown>;
+}
+
 jest.mock("firebase-functions", () => {
-  const actual = jest.requireActual("firebase-functions") as any;
+  const actual = jest.requireActual("firebase-functions") as MockFirebaseFunctions;
   return {
     ...actual,
     logger: mockLogger,
@@ -25,15 +32,19 @@ jest.mock("firebase-admin", () => ({
   })),
 }));
 
+interface MockOnCallHandler {
+  (options: unknown, handler: unknown): unknown;
+}
+
 // Simple mock for firebase-functions/v2/https that returns the handler directly
 jest.mock("firebase-functions/v2/https", () => {
-  const actualHttps = jest.requireActual("firebase-functions/v2/https") as any;
+  const actualHttps = jest.requireActual("firebase-functions/v2/https") as {HttpsError: unknown};
   return {
     HttpsError: actualHttps.HttpsError,
-    onCall: jest.fn((options: any, handler: any) => {
+    onCall: jest.fn(((options: unknown, handler: unknown) => {
       // Return the handler directly so we can test it
       return handler;
-    }),
+    }) as MockOnCallHandler),
   };
 });
 // --- Mocks End ---

@@ -1,58 +1,77 @@
 import * as admin from "firebase-admin";
 import {onSchedule} from "firebase-functions/v2/scheduler";
+import {ScheduledEvent} from "firebase-functions/v2/scheduler";
+import {generateUniqueRiddle} from "./openaiService";
 
 /**
  * Scheduled function to set the daily challenge.
- * Runs once every day at a specific time (e.g., midnight UTC).
+ * Runs once every day at 00:00 UTC.
+ * Creates exactly ONE daily challenge per day based on the current date.
+ * Uses OpenAI to generate a fresh riddle for each day.
  */
 export const dailyChallengeScheduler = onSchedule(
   {
     schedule: "0 0 * * *", // Runs daily at 00:00 UTC
-    timeZone: "UTC", // Users can choose any timeZone - typically choose ones that makes sense for your user
+    timeZone: "UTC",
+    secrets: ["OPENAI_API_KEY"],
   },
-  async (_context: any) => {
+  async (_context: ScheduledEvent) => {
     console.log("Daily challenge scheduler started.");
 
     try {
-      // 1. Select or generate the daily riddle.
-      // For simplicity, let's fetch a random riddle from the 'riddles' collection.
-      // In a real application, you'd have more sophisticated logic here.
-      const riddlesRef = admin.firestore().collection("riddles");
-      const snapshot = await riddlesRef.get();
+      const currentDate = new Date();
+      const dateString = currentDate.toISOString().split("T")[0]; // YYYY-MM-DD format
 
-      if (snapshot.empty) {
-        console.warn("No riddles found to set as daily challenge.");
+      console.log(`Generating daily challenge for date: ${dateString}`);
+
+      // 1. Check if a daily challenge already exists for today
+      const dailyChallengeRef = admin.firestore().collection("dailyChallenge").doc("current");
+      const existingChallenge = await dailyChallengeRef.get();
+
+      if (existingChallenge.exists) {
+        const existingData = existingChallenge.data();
+        if (existingData && existingData.date === dateString) {
+          console.log(`Daily challenge already exists for ${dateString}. Skipping generation.`);
+          return;
+        }
+      }
+
+      // 2. Check for required environment variables
+      const openAIKey = process.env.OPENAI_API_KEY;
+      if (!openAIKey) {
+        console.error("OPENAI_API_KEY environment variable is required for daily challenge generation");
         return;
       }
 
-      // Select a random riddle from the snapshot
-      const randomIndex = Math.floor(Math.random() * snapshot.size);
-      const dailyRiddleDoc = snapshot.docs[randomIndex];
-      const dailyRiddleData = dailyRiddleDoc.data();
+      // 3. Generate a fresh riddle using OpenAI specifically for today's challenge
+      console.log(`Generating fresh riddle using OpenAI for ${dateString}...`);
+      const generatedRiddle = await generateUniqueRiddle();
 
-      if (!dailyRiddleData || !dailyRiddleData.answer || !dailyRiddleData.text) {
-        console.error("Selected daily riddle is missing data:", dailyRiddleDoc.id);
+      if (!generatedRiddle) {
+        console.error("Failed to generate riddle using OpenAI for daily challenge");
         return;
       }
 
-      const dailyRiddleId = dailyRiddleDoc.id;
-      const dailyRiddle = {
-        riddleId: dailyRiddleId,
-        text: dailyRiddleData.text,
-        answer: dailyRiddleData.answer,
-        // Include other relevant fields if needed by the client
+      const [riddleText, riddleAnswer] = generatedRiddle;
+      console.log(`Successfully generated daily riddle: "${riddleText}" → "${riddleAnswer}"`);
+
+      // 4. Create the single daily challenge for today with the fresh riddle
+      const dailyChallenge = {
+        riddleId: `daily_${dateString}`, // Unique ID for this daily challenge
+        text: riddleText,
+        answer: riddleAnswer,
+        date: dateString, // Track which date this challenge is for
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        generatedBy: "openai", // Track that this was freshly generated
       };
 
-      // 2. Store the daily riddle information in Firestore for clients to access.
-      const dailyChallengeRef = admin.firestore().collection("dailyChallenge").doc("current");
-      await dailyChallengeRef.set(dailyRiddle);
+      // 5. Store the daily challenge (replaces any existing challenge)
+      await dailyChallengeRef.set(dailyChallenge);
 
-      console.log(`Daily challenge set to riddle: ${dailyRiddleId}`);
-
-      console.log("Daily challenge scheduler finished.");
+      console.log(`Daily challenge set for ${dateString}: "${riddleText}"`);
+      console.log("Daily challenge scheduler finished successfully.");
     } catch (error) {
       console.error("Error running daily challenge scheduler:", error);
-      // Depending on your error handling strategy, you might want to log to a dedicated error collection
     }
   },
 );

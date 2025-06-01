@@ -11,7 +11,36 @@ import {HttpsError, CallableRequest} from "firebase-functions/v2/https";
 import {notifyRewardedAdCompleted} from "../adClientCallbacks";
 import {createUser} from "./testUtils";
 
+// 🚨 CRITICAL SAFETY CHECK - PREVENT PRODUCTION DATA DESTRUCTION 🚨
 const FIREBASE_PROJECT_ID = "qwordly-6ba44";
+const FIRESTORE_EMULATOR_HOST = process.env.FIRESTORE_EMULATOR_HOST;
+
+// 🚨 ABSOLUTE SAFETY: This test MUST NEVER run against production
+if (FIREBASE_PROJECT_ID === "qwordly-6ba44" && !FIRESTORE_EMULATOR_HOST) {
+  throw new Error(`
+🚨🚨🚨 CRITICAL SAFETY VIOLATION 🚨🚨🚨
+
+This test is ABSOLUTELY FORBIDDEN from running against production!
+
+PROJECT ID: ${FIREBASE_PROJECT_ID} (PRODUCTION)
+EMULATOR: ${FIRESTORE_EMULATOR_HOST || "NOT SET"}
+
+Integration tests can modify or delete production data!
+Running this test against production DESTROYS USER DATA!
+
+TO FIX:
+1. Change FIREBASE_PROJECT_ID to a test project (NOT qwordly-6ba44)
+2. Use a dedicated test Firebase project
+3. NEVER run integration tests against production
+
+PRODUCTION DATA PROTECTION: This test is BLOCKED for safety.
+  `);
+}
+
+// If using emulators, log it for clarity
+if (FIRESTORE_EMULATOR_HOST) {
+  console.log(`🧪 Running tests with Firestore emulator at ${FIRESTORE_EMULATOR_HOST}`);
+}
 
 // Initialize firebase-functions-test
 const testEnv = functionsTest();

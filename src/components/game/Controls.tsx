@@ -3,24 +3,24 @@ import { View, TouchableOpacity, Text } from "react-native";
 
 interface ControlsProps {
   onHintPress: () => void;
-  onSkipPress: () => void;
   onSubmitPress: () => void;
   onNextPress: () => void;
   currentGuess: string[];
   gameOver: boolean;
   isWin: boolean;
+  answerLength: number;
 }
 
 const Controls: React.FC<ControlsProps> = ({
   onHintPress,
-  onSkipPress,
   onSubmitPress,
   onNextPress,
   currentGuess,
   gameOver,
   isWin,
+  answerLength,
 }) => {
-  const isSubmitDisabled = currentGuess.length === 0;
+  const isSubmitDisabled = currentGuess.length !== answerLength;
   const isNextVisible = isWin;
 
   return (
@@ -32,15 +32,6 @@ const Controls: React.FC<ControlsProps> = ({
         disabled={gameOver}
       >
         <Text className="text-white">Hint</Text>
-      </TouchableOpacity>
-
-      {/* Skip Button */}
-      <TouchableOpacity
-        className="p-2 bg-red-500 rounded mr-2"
-        onPress={onSkipPress}
-        disabled={gameOver}
-      >
-        <Text className="text-white">Skip</Text>
       </TouchableOpacity>
 
       {/* Submit Button */}

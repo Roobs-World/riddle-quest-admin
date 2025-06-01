@@ -42,3 +42,19 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
+
+# Eclipse & Java IDE files at ROOT level (this is a React Native project)
+# Note: android/ folder may need these files for Java compilation
+/.project
+/.classpath
+/.settings/
+node_modules/**/.project
+node_modules/**/.classpath
+node_modules/**/.settings/
+*.class
+*.jar
+*.war
+*.ear
+.factorypath
+.apt_generated
+.apt_generated_test

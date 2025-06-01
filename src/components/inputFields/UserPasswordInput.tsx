@@ -1,60 +1,64 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { AppStrings } from "../../constants/AppStrings";
 import ReusableTextInput from "../shared/ReusableTextInput";
 import PasswordVisibilityIcon from "../icons/PasswordVisibilityIcon";
-import { useState } from "react";
 import Error from "../text/Error";
 
-export default function UserPasswordInput({
-  password,
-  setPassword,
-  label,
-  placeholder,
-  errorMessage,
-}: {
+interface UserPasswordInputProps {
   password: string;
   setPassword: (password: string) => void;
+  errorMessage?: string | null;
   label?: string;
   placeholder?: string;
-  errorMessage?: string | null;
-}) {
+}
+
+const UserPasswordInput: React.FC<UserPasswordInputProps> = ({
+  password,
+  setPassword,
+  errorMessage,
+  label,
+  placeholder,
+}) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [isPasswordFocused, setIsPasswordFocused] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setIsPasswordVisible(!isPasswordVisible);
+  };
 
   const passwordLabel = label || AppStrings.AuthStrings.Login.PASSWORD_LABEL;
   const passwordPlaceholder =
     placeholder || AppStrings.AuthStrings.Login.PASSWORD_PLACEHOLDER;
 
   return (
-    <View className="w-full mb-2">
+    <View className="w-full">
       <Text
-        className="text-sm text-gray-600 my-2 text-left"
-        style={{ fontFamily: "PoppinsSemiBold" }}
+        className="text-sm text-gray-600 mb-2 text-left"
+        style={styles.labelText}
       >
         {passwordLabel}
       </Text>
-
-      <View
-        className={`flex-row items-center border ${
-          isPasswordFocused ? "border-red-500" : "border-gray-300"
-        } rounded-lg mb-2`}
-      >
+      <View className="flex-row items-center bg-input-background rounded-lg border border-gray-300">
         <ReusableTextInput
           value={password}
           onChangeText={setPassword}
-          secureTextEntry={!isPasswordVisible}
           placeholder={passwordPlaceholder}
-          onFocus={() => setIsPasswordFocused(true)}
-          onBlur={() => setIsPasswordFocused(false)}
+          secureTextEntry={!isPasswordVisible}
         />
-        <TouchableOpacity
-          onPress={() => setIsPasswordVisible(!isPasswordVisible)}
-          className="p-3"
-        >
+        <TouchableOpacity onPress={togglePasswordVisibility} className="p-3">
           <PasswordVisibilityIcon visible={isPasswordVisible} />
         </TouchableOpacity>
       </View>
       {errorMessage && <Error message={errorMessage} />}
     </View>
   );
-}
+};
+
+const styles = StyleSheet.create({
+  labelText: {
+    fontFamily: "PoppinsSemiBold",
+    textAlignVertical: "center",
+  },
+});
+
+export default UserPasswordInput;

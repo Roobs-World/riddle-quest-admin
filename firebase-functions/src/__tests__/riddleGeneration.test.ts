@@ -1,22 +1,26 @@
 import {describe, expect, jest, beforeEach, afterEach} from "@jest/globals";
-import * as generateRiddlesModuleKey from "../generateRiddles";
+import * as riddleGenerationModuleKey from "../riddleGeneration";
 
-// Mock the generateRiddles module
-jest.mock("../generateRiddles", () => ({
-  generateAndAppendRiddles: jest.fn<(numberOfRiddles: number) => Promise<void>>(),
+// Mock the riddleGeneration module
+jest.mock("../riddleGeneration", () => ({
+  generateAndAppendRiddles: jest.fn(),
 }));
+
+interface MockHttpsError {
+  (code: string, message: string, details?: unknown): Error;
+}
 
 // Mock Firebase Functions
 jest.mock("firebase-functions", () => ({
   https: {
-    HttpsError: jest.fn((code: string, message: string, details?: any) => {
+    HttpsError: jest.fn(((code: string, message: string, details?: unknown) => {
       const error = new Error(message);
-      (error as any).code = code;
+      (error as Error & {code: string}).code = code;
       if (details !== undefined) {
-        (error as any).details = details;
+        (error as Error & {details: unknown}).details = details;
       }
       return error;
-    }),
+    }) as MockHttpsError),
   },
 }));
 
@@ -45,26 +49,26 @@ describe("generateClassicRiddles Cloud Function", () => {
   });
 
   test("should call generateAndAppendRiddles with 5 and return success", async () => {
-    const mockFn = generateRiddlesModuleKey.generateAndAppendRiddles as jest.MockedFunction<
+    const mockFn = riddleGenerationModuleKey.generateAndAppendRiddles as jest.MockedFunction<
       (numberOfRiddles: number) => Promise<void>
     >;
     mockFn.mockResolvedValue();
 
     // For testing purposes, we'll test the logic by calling generateAndAppendRiddles directly
-    await generateRiddlesModuleKey.generateAndAppendRiddles(5);
+    await riddleGenerationModuleKey.generateAndAppendRiddles(5);
 
-    expect(generateRiddlesModuleKey.generateAndAppendRiddles).toHaveBeenCalledWith(5);
+    expect(riddleGenerationModuleKey.generateAndAppendRiddles).toHaveBeenCalledWith(5);
   });
 
   test("should throw error if generateAndAppendRiddles fails", async () => {
     const errorMessage = "Failed to append to sheet";
     const originalError = new Error(errorMessage);
-    const mockFn = generateRiddlesModuleKey.generateAndAppendRiddles as jest.MockedFunction<
+    const mockFn = riddleGenerationModuleKey.generateAndAppendRiddles as jest.MockedFunction<
       (numberOfRiddles: number) => Promise<void>
     >;
     mockFn.mockRejectedValue(originalError);
 
-    await expect(generateRiddlesModuleKey.generateAndAppendRiddles(5)).rejects.toThrow(errorMessage);
-    expect(generateRiddlesModuleKey.generateAndAppendRiddles).toHaveBeenCalledWith(5);
+    await expect(riddleGenerationModuleKey.generateAndAppendRiddles(5)).rejects.toThrow(errorMessage);
+    expect(riddleGenerationModuleKey.generateAndAppendRiddles).toHaveBeenCalledWith(5);
   });
 });

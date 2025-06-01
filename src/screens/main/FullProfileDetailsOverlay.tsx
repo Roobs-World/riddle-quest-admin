@@ -20,6 +20,7 @@ import auth from "@react-native-firebase/auth"; // Import auth module
 import { GoogleSignin } from "@react-native-google-signin/google-signin"; // Import Google Sign-In
 import { LoginManager, AccessToken } from "react-native-fbsdk-next"; // Import Facebook SDK
 import WideButton from "../../components/buttons/WideButton";
+import CloseButton from "../../components/buttons/CloseButton";
 
 // Placeholder array of preloaded avatar URLs
 const preloadedAvatars = [
@@ -383,7 +384,12 @@ const FullProfileDetailsOverlay: React.FC<FullProfileDetailsOverlayProps> = ({
       onRequestClose={onClose}
     >
       <View className="flex-1 justify-center items-center bg-black/50">
-        <View className="bg-white p-6 rounded-lg m-4 w-11/12 max-w-sm">
+        <View className="bg-white p-6 rounded-lg m-4 w-11/12 max-w-sm relative">
+          {/* Close Button in top-right corner */}
+          <View className="absolute top-2 right-2 z-10">
+            <CloseButton onPress={onClose} size={20} />
+          </View>
+
           <Text className="text-2xl font-bold text-gray-800 mb-4">
             Full Profile
           </Text>
@@ -535,7 +541,15 @@ const FullProfileDetailsOverlay: React.FC<FullProfileDetailsOverlayProps> = ({
         onRequestClose={() => setIsLinkAccountModalVisible(false)}
       >
         <View className="flex-1 justify-center items-center bg-black/50">
-          <View className="bg-white p-6 rounded-lg m-4 w-11/12 max-w-sm">
+          <View className="bg-white p-6 rounded-lg m-4 w-11/12 max-w-sm relative">
+            {/* Close Button in top-right corner */}
+            <View className="absolute top-2 right-2 z-10">
+              <CloseButton
+                onPress={() => setIsLinkAccountModalVisible(false)}
+                size={20}
+              />
+            </View>
+
             <Text className="text-lg font-bold text-gray-800 mb-4">
               Link Accounts
             </Text>
@@ -576,7 +590,15 @@ const FullProfileDetailsOverlay: React.FC<FullProfileDetailsOverlayProps> = ({
         onRequestClose={() => setIsPasswordModalVisible(false)}
       >
         <View className="flex-1 justify-center items-center bg-black/50">
-          <View className="bg-white p-6 rounded-lg m-4 w-11/12 max-w-sm">
+          <View className="bg-white p-6 rounded-lg m-4 w-11/12 max-w-sm relative">
+            {/* Close Button in top-right corner */}
+            <View className="absolute top-2 right-2 z-10">
+              <CloseButton
+                onPress={() => setIsPasswordModalVisible(false)}
+                size={20}
+              />
+            </View>
+
             <Text className="text-lg font-bold text-gray-800 mb-4">
               Change Password
             </Text>
@@ -625,7 +647,15 @@ const FullProfileDetailsOverlay: React.FC<FullProfileDetailsOverlayProps> = ({
         onRequestClose={() => setIsUsernameModalVisible(false)}
       >
         <View className="flex-1 justify-center items-center bg-black/50">
-          <View className="bg-white p-6 rounded-lg m-4 w-11/12 max-w-sm">
+          <View className="bg-white p-6 rounded-lg m-4 w-11/12 max-w-sm relative">
+            {/* Close Button in top-right corner */}
+            <View className="absolute top-2 right-2 z-10">
+              <CloseButton
+                onPress={() => setIsUsernameModalVisible(false)}
+                size={20}
+              />
+            </View>
+
             <Text className="text-lg font-bold text-gray-800 mb-4">
               Update Username
             </Text>
@@ -708,7 +738,15 @@ const FullProfileDetailsOverlay: React.FC<FullProfileDetailsOverlayProps> = ({
         onRequestClose={() => setIsPreloadedAvatarsModalVisible(false)}
       >
         <View className="flex-1 justify-center items-center bg-black/50">
-          <View className="bg-white p-6 rounded-lg m-4 w-11/12 max-w-sm">
+          <View className="bg-white p-6 rounded-lg m-4 w-11/12 max-w-sm relative">
+            {/* Close Button in top-right corner */}
+            <View className="absolute top-2 right-2 z-10">
+              <CloseButton
+                onPress={() => setIsPreloadedAvatarsModalVisible(false)}
+                size={20}
+              />
+            </View>
+
             <Text className="text-lg font-bold text-gray-800 mb-4">
               Select Avatar
             </Text>

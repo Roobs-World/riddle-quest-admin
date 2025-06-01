@@ -1,4 +1,10 @@
-import React, { createContext, useState, useEffect, useContext } from "react";
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  useContext,
+  useCallback,
+} from "react";
 import {
   loadUserProgressFromFirestore,
   fetchDailyRiddleFromFirestore,
@@ -9,6 +15,7 @@ import {
 } from "../services/FirestoreService";
 import { Player, FirestoreRiddle } from "../validation/firestoreSchemas";
 import auth from "@react-native-firebase/auth";
+import { RiddleInitializationService } from "../services/RiddleInitializationService";
 // Assuming you have an AuthService with login/logout methods
 // import { AuthService } from "../services/AuthService";
 
@@ -18,6 +25,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   playerData: Player | null;
   isLoading: boolean;
+  isRiddlesInitializing: boolean; // Add this to track riddle initialization
   currentRiddle: FirestoreRiddle | null; // Use a single state for the current riddle regardless of mode
   isDailyChallengeAvailable: boolean | undefined;
   gameMode: GameMode; // Add state for current game mode
@@ -50,6 +58,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     boolean | undefined
   >(undefined); // Initialize as undefined to indicate not yet determined
   const [gameMode, setGameMode] = useState<GameMode>("daily"); // Add state for game mode, default to daily
+  const [isRiddlesInitializing, setIsRiddlesInitializing] = useState(false); // Track riddle initialization
 
   // Helper function to check if the last completed date was today in UTC
   const isTodayUTC = (date?: Date | null): boolean => {
@@ -62,108 +71,170 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   // Function to fetch riddle based on current game mode and player data
-  const fetchCurrentRiddle = async (player: Player | null, mode: GameMode) => {
-    if (!player) {
-      setCurrentRiddle(null);
-      setIsDailyChallengeAvailable(undefined); // Set to undefined when no player data
-      return;
-    }
-
-    let fetchedRiddle: FirestoreRiddle | null = null;
-
-    // Check daily challenge availability
-    // The lastDailyChallengeCompletedAt is stored as a number timestamp, convert to Date for isTodayUTC
-    const lastCompletedDate = player.lastDailyChallengeCompletedAt
-      ? new Date(player.lastDailyChallengeCompletedAt)
-      : null;
-    const dailyAvailable = isTodayUTC(lastCompletedDate);
-    setIsDailyChallengeAvailable(dailyAvailable); // Update availability state
-
-    if (mode === "daily") {
-      if (dailyAvailable) {
-        // If daily challenge is available and index is defined, fetch it
-        // Access dailyChallengeIndex from the nested progress object
-        if (player.progress?.dailyChallengeIndex !== undefined) {
-          fetchedRiddle = await fetchDailyRiddleFromFirestore(
-            player.progress.dailyChallengeIndex
-          );
-        } else {
-          // Handle case where dailyIndex is undefined for daily mode (shouldn't happen if user data is initialized correctly)
-          console.warn("Daily challenge index is undefined for daily mode.");
-        }
+  const fetchCurrentRiddle = useCallback(
+    async (player: Player | null, mode: GameMode) => {
+      if (!player) {
+        setCurrentRiddle(null);
+        setIsDailyChallengeAvailable(undefined); // Set to undefined when no player data
+        return;
       }
 
-      // If no daily riddle available (completed or failed to fetch), fall back to classic mode
+      let fetchedRiddle: FirestoreRiddle | null = null;
+      let attemptCount = 0;
+      const maxAttempts = 20; // Try for up to 1 minute (20 * 3 seconds)
+
+      // Check daily challenge availability
+      // The lastDailyChallengeCompletedAt is stored as a number timestamp, convert to Date for isTodayUTC
+      const lastCompletedDate = player.lastDailyChallengeCompletedAt
+        ? new Date(player.lastDailyChallengeCompletedAt)
+        : null;
+      const dailyAvailable = isTodayUTC(lastCompletedDate);
+      setIsDailyChallengeAvailable(dailyAvailable); // Update availability state
+
+      // Helper function to attempt riddle fetch
+      const attemptFetchRiddle = async (): Promise<FirestoreRiddle | null> => {
+        if (mode === "daily") {
+          if (dailyAvailable) {
+            // If daily challenge is available and index is defined, fetch it
+            // Access dailyChallengeIndex from the nested progress object
+            if (player.progress?.dailyChallengeIndex !== undefined) {
+              fetchedRiddle = await fetchDailyRiddleFromFirestore(
+                player.progress.dailyChallengeIndex
+              );
+            } else {
+              // Handle case where dailyIndex is undefined for daily mode (shouldn't happen if user data is initialized correctly)
+              console.warn(
+                "Daily challenge index is undefined for daily mode."
+              );
+            }
+          }
+
+          // If no daily riddle available (completed or failed to fetch), fall back to classic mode
+          if (!fetchedRiddle) {
+            console.log(
+              "No daily riddle available, falling back to classic mode riddle."
+            );
+            if (player.progress?.classicIndex !== undefined) {
+              fetchedRiddle = await fetchClassicRiddleFromFirestore(
+                player.progress.classicIndex
+              );
+            } else {
+              console.warn(
+                "Classic index is undefined, cannot load fallback riddle."
+              );
+            }
+          }
+        } else if (mode === "classic") {
+          // For classic mode, fetch the riddle based on classicIndex
+          // Access classicIndex from the nested progress object
+          if (player.progress?.classicIndex !== undefined) {
+            fetchedRiddle = await fetchClassicRiddleFromFirestore(
+              player.progress.classicIndex
+            );
+          } else {
+            // Handle case where classicIndex is undefined for classic mode
+            console.warn("Classic index is undefined for classic mode.");
+          }
+        } else if (mode === "challenge") {
+          // For challenge mode, try to fetch daily riddle first
+          if (dailyAvailable) {
+            if (player.progress?.dailyChallengeIndex !== undefined) {
+              fetchedRiddle = await fetchDailyRiddleFromFirestore(
+                player.progress.dailyChallengeIndex
+              );
+            }
+          }
+
+          // If no daily riddle available, fall back to classic mode
+          if (!fetchedRiddle) {
+            console.log(
+              "No daily challenge riddle available, falling back to classic mode riddle."
+            );
+            if (player.progress?.classicIndex !== undefined) {
+              fetchedRiddle = await fetchClassicRiddleFromFirestore(
+                player.progress.classicIndex
+              );
+            }
+          }
+        }
+
+        return fetchedRiddle;
+      };
+
+      // First attempt to fetch riddle
+      fetchedRiddle = await attemptFetchRiddle();
+
+      // If no riddle found and riddles might still be initializing, poll for riddles
       if (!fetchedRiddle) {
-        console.log(
-          "No daily riddle available, falling back to classic mode riddle."
-        );
-        if (player.progress?.classicIndex !== undefined) {
-          fetchedRiddle = await fetchClassicRiddleFromFirestore(
-            player.progress.classicIndex
+        const initStatus =
+          RiddleInitializationService.getInitializationStatus();
+
+        // Only poll if initialization hasn't failed
+        if (!initStatus.initializationFailed) {
+          console.log(
+            "📊 No riddle found, checking if riddles are still being generated..."
           );
-        } else {
-          console.warn(
-            "Classic index is undefined, cannot load fallback riddle."
-          );
-        }
-      }
-    } else if (mode === "classic") {
-      // For classic mode, fetch the riddle based on classicIndex
-      // Access classicIndex from the nested progress object
-      if (player.progress?.classicIndex !== undefined) {
-        fetchedRiddle = await fetchClassicRiddleFromFirestore(
-          player.progress.classicIndex
-        );
-      } else {
-        // Handle case where classicIndex is undefined for classic mode
-        console.warn("Classic index is undefined for classic mode.");
-      }
-    } else if (mode === "challenge") {
-      // For challenge mode, try to fetch daily riddle first
-      if (dailyAvailable) {
-        if (player.progress?.dailyChallengeIndex !== undefined) {
-          fetchedRiddle = await fetchDailyRiddleFromFirestore(
-            player.progress.dailyChallengeIndex
-          );
+          setIsRiddlesInitializing(true);
+
+          // Poll for riddles
+          while (!fetchedRiddle && attemptCount < maxAttempts) {
+            attemptCount++;
+            console.log(
+              `🔄 Polling for riddles... Attempt ${attemptCount}/${maxAttempts}`
+            );
+
+            // Wait 3 seconds before next attempt
+            await new Promise((resolve) => setTimeout(resolve, 3000));
+
+            // Try fetching again
+            fetchedRiddle = await attemptFetchRiddle();
+
+            // Check if initialization completed or failed
+            const currentStatus =
+              RiddleInitializationService.getInitializationStatus();
+            if (
+              currentStatus.initializationFailed ||
+              currentStatus.hasInitialized
+            ) {
+              break;
+            }
+          }
+
+          setIsRiddlesInitializing(false);
         }
       }
 
-      // If no daily riddle available, fall back to classic mode
+      setCurrentRiddle(fetchedRiddle);
+
       if (!fetchedRiddle) {
-        console.log(
-          "No daily challenge riddle available, falling back to classic mode riddle."
-        );
-        if (player.progress?.classicIndex !== undefined) {
-          fetchedRiddle = await fetchClassicRiddleFromFirestore(
-            player.progress.classicIndex
-          );
-        }
+        console.error("❌ Failed to load any riddle after all attempts");
       }
-    }
+    },
+    [setIsRiddlesInitializing]
+  );
 
-    setCurrentRiddle(fetchedRiddle);
-  };
-
-  // Handle user state changes using Firebase auth listener
+  // Effect to set up Firebase auth state listener
   useEffect(() => {
     console.log("🔧 Setting up Firebase auth listener...");
 
     const subscriber = auth().onAuthStateChanged(async (user) => {
       console.log(
-        "🔐 Auth state changed:",
-        user ? `authenticated (${user.uid})` : "not authenticated"
+        "🔔 Firebase auth state changed. User:",
+        user ? user.uid : "null"
       );
-      console.log("📊 Current loading state before processing:", isLoading);
-      setIsLoading(true);
 
       if (user) {
         // User is signed in
-        console.log("👤 Loading user data for:", user.uid);
-        console.log("📧 User email:", user.email);
-        console.log("👤 User display name:", user.displayName);
+        console.log("🔐 User authenticated, loading user data...");
         setIsAuthenticated(true);
+
         try {
+          // Check and initialize riddles if needed (do this early so riddles are ready)
+          console.log("🎲 Checking riddle database...");
+          setIsRiddlesInitializing(true);
+          await RiddleInitializationService.checkAndInitializeRiddles();
+          setIsRiddlesInitializing(false);
+
           // Load user data from Firestore
           console.log("🔍 Checking for existing user document...");
           let data = await loadUserProgressFromFirestore(user.uid);
@@ -206,12 +277,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           console.log("🧩 Loading riddle for game mode:", gameMode);
           await fetchCurrentRiddle(data, gameMode);
           console.log("✅ Riddle loading completed");
+
+          // Only set loading to false after everything is complete
+          console.log(
+            "🏁 Setting isLoading to false - initialization complete"
+          );
+          setIsLoading(false);
         } catch (error) {
           console.error("❌ Error loading user data or riddle:", error);
           console.error("❌ Error details:", JSON.stringify(error, null, 2));
           setPlayerData(null);
           setCurrentRiddle(null);
           setIsDailyChallengeAvailable(undefined);
+          // Set loading to false even on error so user isn't stuck
+          setIsLoading(false);
         }
       } else {
         // User is signed out - no need to load riddles
@@ -220,10 +299,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         setPlayerData(null);
         setCurrentRiddle(null);
         setIsDailyChallengeAvailable(undefined);
+        console.log("🏁 Setting isLoading to false");
+        setIsLoading(false);
       }
 
-      console.log("🏁 Setting isLoading to false");
-      setIsLoading(false);
       console.log("✅ Auth state processing completed");
     });
 
@@ -231,7 +310,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
     // Unsubscribe on unmount
     return subscriber;
-  }, [gameMode]);
+  }, [gameMode, fetchCurrentRiddle]);
 
   // Function to update player classic index and context state
   const updatePlayerClassicIndex = async (newIndex: number): Promise<void> => {
@@ -312,6 +391,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         isAuthenticated,
         playerData,
         isLoading,
+        isRiddlesInitializing,
         currentRiddle,
         isDailyChallengeAvailable,
         gameMode,

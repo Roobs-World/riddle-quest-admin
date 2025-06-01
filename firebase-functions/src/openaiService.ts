@@ -1,4 +1,3 @@
-import "openai/shims/node";
 import OpenAI from "openai";
 
 // Lazy initialization variable
@@ -59,7 +58,7 @@ export async function generateUniqueRiddle(): Promise<[string, string] | null> {
             "Question: [your riddle question here]\n" +
             "Answer: [your answer here]\n\n" +
             "Requirements:\n" +
-            "- Question: 10-90 characters, use only lowercase letters (a-z), commas, and question marks\n" +
+            "- Question: 10-90 characters, use natural language with proper grammar and punctuation\n" +
             "- Answer: MAXIMUM 7 characters, use ONLY lowercase letters (a-z), absolutely NO punctuation, NO numbers, NO special characters, NO apostrophes, NO hyphens\n" +
             "- Content: Engaging and suitable for mobile game players of all ages\n" +
             "- Style: Creative, fun, and not overly difficult\n" +
@@ -106,10 +105,10 @@ export async function generateUniqueRiddle(): Promise<[string, string] | null> {
       return null;
     }
 
-    // Validate question format (lowercase letters, commas, question marks only)
-    if (!/^[a-z,? ]+$/.test(question)) {
+    // Validate question format (allow natural language but keep it reasonable)
+    if (!/^[a-zA-Z0-9\s,.'?!-]+$/.test(question)) {
       console.warn(
-        `Question contains invalid characters: "${question}". Must be only lowercase letters, commas, and question marks.`,
+        `Question contains invalid characters: "${question}". Must contain only letters, numbers, spaces, and basic punctuation.`,
       );
       return null;
     }

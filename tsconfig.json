@@ -2,28 +2,19 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "target": "ESNext",
     "jsx": "react-native",
     "allowJs": true,
-    "allowImportingTsExtensions": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
-    "types": [
-      "react",
-      "react-native",
-      "jest",
-      "node"
-    ],
+    "isolatedModules": true,
+    "types": ["react", "react-native", "jest", "node"],
     "paths": {
-      "@images/*": [
-        "./assets/images/*"
-      ],
-      "@fonts/*": [
-        "./assets/fonts/*"
-      ]
+      "@images/*": ["./assets/images/*"],
+      "@fonts/*": ["./assets/fonts/*"]
     }
   },
   "include": [

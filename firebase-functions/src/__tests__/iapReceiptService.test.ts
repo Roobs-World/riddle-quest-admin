@@ -1,12 +1,9 @@
-// / <reference types="jest" />
+import {describe, expect, it, jest, beforeEach} from "@jest/globals";
 
 // 1. All mock const declarations
-const mockSet = jest.fn<(...args: any[]) => Promise<any>>();
-const mockGet = jest.fn<(...args: any[]) => Promise<any>>();
+const mockSet = jest.fn<(...args: unknown[]) => Promise<unknown>>();
+const mockGet = jest.fn<(...args: unknown[]) => Promise<unknown>>();
 const mockServerTimestampFn = jest.fn(() => "SENTINEL_SERVER_TIMESTAMP_VALUE");
-
-// 2. Jest/type imports
-import {describe, expect, it, jest, beforeEach} from "@jest/globals";
 
 // 3. jest.mock calls
 jest.mock("firebase-admin", () => {
@@ -15,8 +12,8 @@ jest.mock("firebase-admin", () => {
   const firestoreInstanceMock = {
     collection: jest.fn().mockReturnThis(),
     doc: jest.fn().mockReturnThis(),
-    set: (...args: any[]) => mockSet(...args),
-    get: (...args: any[]) => mockGet(...args),
+    set: (...args: unknown[]) => mockSet(...args),
+    get: (...args: unknown[]) => mockGet(...args),
   };
 
   return {

@@ -1,0 +1,277 @@
+--------- beginning of main
+05-31 07:33:48.615 19614 22508 I IPCThreadState: oneway function results for code 2 on binder at 0xb400006f2e117b30 will be dropped but finished with status UNKNOWN_TRANSACTION
+05-31 07:33:48.671  3511  3511 I EPDG -- SIM0 [SMARTCELLULAR]: onSignalStrengthsChanged: SignalStrength:{mCdma=Invalid,mGsm=Invalid,mWcdma=CellSignalStrengthWcdma: ss=-101 ber=2147483647 rscp=-102 ecno=-17 level=1,mTdscdma=Invalid,mLte=Invalid,mNr=Invalid,SignalBarInfo{ wcdmaLevel=2 },rat=3,primary=CellSignalStrengthWcdma}
+05-31 07:33:48.672  3511  4873 I EPDG -- SIM0 [SMARTCELLULAR]: lastWcdmaRssi: -99 currentWcdmaRssi: -101
+05-31 07:33:48.799  3473  3911 D ApfFilter: (wlan0): Adding RA fe80::7297:41ff:fe63:2d81 -> ff02::1 180s 2a00:23c6:ebf0:e01::/64 300s/120s 
+05-31 07:33:48.801  3511  3511 I EPDG -- SIM0 [EpdgIntfCont]: Not Mobile Interface. Ignoring Event
+05-31 07:33:48.801  3511  3511 I EPDG -- SIM1 [EpdgIntfCont]: Not Mobile Interface. Ignoring Event
+05-31 07:33:48.803  3511  3511 I EPDG -- SIM1 [EpdgIntfCont]: Not Mobile Interface. Ignoring Event
+05-31 07:33:48.803  3511  3511 I EPDG -- SIM0 [EpdgIntfCont]: Not Mobile Interface. Ignoring Event
+05-31 07:33:48.804  2541  3096 D WifiVendorHal: installPacketFilter filter length 541
+05-31 07:33:48.808  2541  3096 D WifiClientModeImpl[53340:wlan0]:  ClientModeImpl$ConnectableState screen=on len=541
+05-31 07:33:48.887  2541  3222 I WifiService: getConnectionInfo uid=1000
+05-31 07:33:48.888  2541  3222 V WifiService: Clearing REDACT_FOR_LOCAL_MAC_ADDRESS for android(uid=1000)
+05-31 07:33:48.888  2541  3222 V WifiService: Clearing REDACT_FOR_NETWORK_SETTINGS for android(uid=1000)
+05-31 07:33:48.888  2541  3222 V WifiService: Clearing REDACT_FOR_ACCESS_FINE_LOCATION for android(uid=1000)
+--------- beginning of system
+05-31 07:33:49.365  2541  4334 D FreecessController: com.touchtype.swiftkey(10440) is important[11]
+05-31 07:33:49.533  3849  3849 I wpa_supplicant: Heartbeat 4167
+05-31 07:33:49.536  1079  1079 D io_stats: !@   8,0 r 2602067 71177017 w 1090409 17567120 d 328175 30327096 f 0 100743 iot 1581836 0 th 0 0 0 pt 0 inp 0 0 34566.423
+05-31 07:33:49.872  1468 15316 I sensors-hal: handle_sns_std_sensor_event:311, [SSC_LIGHT] P: 45(45),m:7,c:1,b:9,c0:1792,l:45,f(r):87,u(bl):100,j:42
+05-31 07:33:49.872  1468 17983 I sensors-hal: handle_sns_client_event:550, [0][4056] accel_sample [ 0.038, -0.200,  9.756] 59294650714300
+05-31 07:33:49.873  1468 17983 I sensors-hal: handle_sns_client_event:550, [0][4160] accel_sample [ 0.029, -0.191,  9.757] 59296655853675
+05-31 07:33:50.030  2541  3096 D WifiClientModeImpl[53340:wlan0]: updateLinkLayerStatsRssiSpeedFrequencyCapabilities rssi=-19 TxLinkspeed=866 freq=5220 RxLinkSpeed=866
+05-31 07:33:50.031  2541  3096 D WifiDataStall: tx tput in kbps: 774494
+05-31 07:33:50.031  2541  3096 D WifiDataStall: rx tput in kbps: 815257
+05-31 07:33:50.031  2541  3096 V WifiConfigManager: Updating scan detail cache freq=5220 BSSID=70:97:41:63:2d:84 RSSI=-19 for "Grindhead"WPA_PSK
+05-31 07:33:50.032  2541  5265 D SemWifiUsabilityStatsMonitor: onWifiUsabilityStats - seqNum 10792, isSameBssidAndFreq true
+05-31 07:33:50.032  2541  3096 D WifiDataStall:  ccaLevel = 15
+05-31 07:33:50.032  2541  3096 D WifiDataStall: L2 txTputKbps: 774494, rxTputKbps: 815257, L3 txTputKbps: 0, rxTputKbps: 0, TxTrafficHigh: false, RxTrafficHigh: false, Throughput Sufficient: true
+05-31 07:33:50.033  2541  3096 D WifiScoreCard: BSSID update SIGNAL_POLL ID: 1401952975 SSID: "Grindhead", BSSID: 70:97:41:63:2d:84, MAC: fe:0a:6a:e2:44:11, IP: /192.168.1.197, Security type: 2, Supplicant state: COMPLETED, Wi-Fi standard: 11ac, RSSI: -19, Link speed: 866Mbps, Tx Link speed: 866Mbps, Max Supported Tx Link speed: 866Mbps, Rx Link speed: 866Mbps, Max Supported Rx Link speed: 866Mbps, Frequency: 5220MHz, Net ID: 5, Metered hint: false, score: 60, isUsable: true, CarrierMerged: false, SubscriptionId: -1, IsPrimary: 1, Trusted: true, Restricted: false, Ephemeral: false, OEM paid: false, OEM private: false, OSU AP: false, FQDN: <none>, Provider friendly name: <none>, Requesting package name: <none>"Grindhead"wpa2-pskMLO Information: , Is TID-To-Link negotiation supported by the AP: false, AP MLD Address: <none>, AP MLO Link Id: <none>, AP MLO Affiliated links: <none>, Vendor Data: <none>
+05-31 07:33:50.033  2541  3096 D WifiScoreCard: txRate: 1 txSpeed: 866
+05-31 07:33:50.034  2541  3096 D WifiScoreCard: network update SIGNAL_POLL "Grindhead" ID: 1194280491 RSSI -19 txSpeed -1
+05-31 07:33:50.036  2541  3096 D WifiClientModeImpl[53340:wlan0]:  ClientModeImpl$L2ConnectedState screen=on 37 0 "Grindhead" 70:97:41:63:2d:84 rssi=-19 f=5220 sc=60 link=866 tx=0.3, 0.0, 0.0 rx=0.3 bcn=23199 [on:371 tx:0 rx:2 period:3058] from screen [on:30752 period:515445] score=60
+05-31 07:33:50.036  3303  4280 V WifiManager: TrafficStateCallbackProxy: onStateChanged state=3
+05-31 07:33:50.038  3303  4269 V WifiManager: TrafficStateCallbackProxy: onStateChanged state=3
+05-31 07:33:50.040  3303  3419 D Tile.WifiTile: handleUpdateState isTransient=false transientEnabling =false cb.isTransient=false state.state = 2 mStateBeforeClick.value =false enabled =true
+05-31 07:33:50.853  1504 24302 I QC2Comp : [vp9D_61] Stats: Pending(4) i/p-done(0) Works: Q: 30/Done 27|Work-Rate: Q(0.0/s Avg=0.0/s) Done(0.000/s Avg=0.002/s)| Stream: 30.30fps 69.3Kbps
+05-31 07:33:50.854  1504 24302 I QC2Comp : [vp9D_61] Mem-usage:  [In-1D: 5 bufs 18.691 MB] [1D-85: 4 bufs 0.062 MB] [2D-86: 25 bufs 9.180 MB] [1D-85: 17 bufs 0.266 MB] | Total: 28.199 MB
+05-31 07:33:51.088  2541  5613 I WifiService: getConnectionInfo uid=1000
+05-31 07:33:51.088  2541  5613 V WifiService: Clearing REDACT_FOR_LOCAL_MAC_ADDRESS for com.sec.android.sdhms(uid=1000)
+05-31 07:33:51.088  2541  5613 V WifiService: Clearing REDACT_FOR_NETWORK_SETTINGS for com.sec.android.sdhms(uid=1000)
+05-31 07:33:51.089  2541  5613 V WifiService: Clearing REDACT_FOR_ACCESS_FINE_LOCATION for com.sec.android.sdhms(uid=1000)
+05-31 07:33:51.538  1079  1079 D io_stats: !@   8,0 r 2602067 71177017 w 1090505 17567616 d 328274 30330156 f 0 100747 iot 1581896 0 th 0 0 0 pt 0 inp 0 0 34568.424
+05-31 07:33:51.539  1079  1079 D io_stats: !@ Read_top(KB): logcat(18291) 392 hbox:interactor(5702) 56 system_server(2541) 20
+05-31 07:33:51.539  1079  1079 D io_stats: !@ Write_top(KB): kworker/u16:6(5925) 1284 f2fs_ckpt-254:5(4190) 196 init(1) 24
+05-31 07:33:51.756  2541  9139 I AfterimageCompensationService: AfcThread mLuminance : 8 , AfpcPeriodCount : 1083 , rotation : 0 , AOD : false
+05-31 07:33:51.766  1601  1789 D RenderEngine: [SEC_SF_EFFECTS] drawLayersInternal,1299, Rendering layer  at index 0
+05-31 07:33:51.767  1601  1789 D RenderEngine: [SEC_SF_EFFECTS] drawLayersInternal,1299, Rendering layer Wallpaper BBQ wrapper 5_system#75 at index 1
+05-31 07:33:51.767  1601  1789 D RenderEngine: [SEC_SF_EFFECTS] drawLayersInternal,1299, Rendering layer com.sec.android.app.launcher/com.sec.android.app.launcher.activities.LauncherActivity$_3850#3276 at index 2
+05-31 07:33:51.768  1601  1789 D RenderEngine: [SEC_SF_EFFECTS] drawLayersInternal,1299, Rendering layer StatusBar$_3303#93 at index 3
+05-31 07:33:51.768  1601  1789 D RenderEngine: [SEC_SF_EFFECTS] drawLayersInternal,1299, Rendering layer NavigationBar0$_3303#89 at index 4
+05-31 07:33:51.779  2541  9139 D system_server: mAFPC_Read - w = 1080, h = 2340, s = 8, f = 4, s_size = 10183680, luminance = 8, count = 1083, captureOrientation = 0
+05-31 07:33:51.788  1468 17983 I sensors-hal: handle_sns_client_event:550, [0][4264] accel_sample [ 0.043, -0.198,  9.762] 59298660990758
+05-31 07:33:51.893  2541  3222 I WifiService: getConnectionInfo uid=1000
+05-31 07:33:51.894  2541  3222 V WifiService: Clearing REDACT_FOR_LOCAL_MAC_ADDRESS for android(uid=1000)
+05-31 07:33:51.894  2541  3222 V WifiService: Clearing REDACT_FOR_NETWORK_SETTINGS for android(uid=1000)
+05-31 07:33:51.894  2541  3222 V WifiService: Clearing REDACT_FOR_ACCESS_FINE_LOCATION for android(uid=1000)
+05-31 07:33:51.909  4715  4715 D BoundBrokerSvc: onUnbind: Intent { act=com.google.android.gms.auth.aang.events.services.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiService }
+05-31 07:33:52.840  3303  3303 D AiAgentEffect: onPrivacyItemsChanged privacyItems.size = 2
+05-31 07:33:52.841  3303  3303 D AiAgentEffect: onPrivacyItemsChanged privacyItems isEmpty or found item is null
+05-31 07:33:52.842  3303  3303 D AiAgentEffect: displayEffect animState = HIDING
+05-31 07:33:52.842  3303  3303 I HeaderPrivacyIconsController: keepShowingItem  PrivacyItem(privacyType=TYPE_LOCATION, application=PrivacyApplication(packageName=com.samsung.android.mcfds, uid=10088), timeStampElapsed=59295015, paused=false, timeStampRemoved=59300039)
+05-31 07:33:52.842  3303  3303 I HeaderPrivacyIconsController: update recentLocationPrivacyList  [PrivacyItem(privacyType=TYPE_LOCATION, application=PrivacyApplication(packageName=com.android.phone, uid=1001), timeStampElapsed=59284768, paused=false, timeStampRemoved=59292373), PrivacyItem(privacyType=TYPE_LOCATION, application=PrivacyApplication(packageName=com.samsung.android.mcfds, uid=10088), timeStampElapsed=59284802, paused=false, timeStampRemoved=59292373), PrivacyItem(privacyType=TYPE_LOCATION, application=PrivacyApplication(packageName=com.samsung.android.mcfds, uid=10088), timeStampElapsed=59295015, paused=false, timeStampRemoved=59300039)]
+05-31 07:33:52.848  1601  1916 I VSyncReactor: Current= 60, Period= 60, hwcPeriod= 60
+05-31 07:33:52.850  3303  3303 D AiAgentEffect: hiding isVisibleView = false, isStartAnimating = false, isAnimating = false, isShowRunning = null
+05-31 07:33:52.861  3303  3303 W View    : requestLayout() improperly called by com.android.systemui.qs.SecQSGradationDrawableView{d9d46e1 V.E...... ......ID 0,0-1080,354 #7f0a0977 app:id/qs_gradation_view} during layout: running second layout pass
+05-31 07:33:52.862  3303  3303 W View    : requestLayout() improperly called by android.widget.FrameLayout{a95ec06 V.E...... ......ID 0,153-1080,2196 #7f0a0975 app:id/qs_frame} during layout: running second layout pass
+05-31 07:33:52.867  3303  3303 D AiAgentEffect: onPrivacyItemsChanged privacyItems.size = 1
+05-31 07:33:52.867  3303  3303 D AiAgentEffect: onPrivacyItemsChanged privacyItems isEmpty or found item is null
+05-31 07:33:52.867  3303  3303 D AiAgentEffect: displayEffect animState = HIDING
+05-31 07:33:52.868  3303  3303 I HeaderPrivacyIconsController: keepShowingItem  PrivacyItem(privacyType=TYPE_LOCATION, application=PrivacyApplication(packageName=com.android.phone, uid=1001), timeStampElapsed=59295014, paused=false, timeStampRemoved=59300064)
+05-31 07:33:52.868  3303  3303 I HeaderPrivacyIconsController: update recentLocationPrivacyList  [PrivacyItem(privacyType=TYPE_LOCATION, application=PrivacyApplication(packageName=com.android.phone, uid=1001), timeStampElapsed=59284768, paused=false, timeStampRemoved=59292373), PrivacyItem(privacyType=TYPE_LOCATION, application=PrivacyApplication(packageName=com.samsung.android.mcfds, uid=10088), timeStampElapsed=59284802, paused=false, timeStampRemoved=59292373), PrivacyItem(privacyType=TYPE_LOCATION, application=PrivacyApplication(packageName=com.samsung.android.mcfds, uid=10088), timeStampElapsed=59295015, paused=false, timeStampRemoved=59300039), PrivacyItem(privacyType=TYPE_LOCATION, application=PrivacyApplication(packageName=com.android.phone, uid=1001), timeStampElapsed=59295014, paused=false, timeStampRemoved=59300064)]
+05-31 07:33:52.879  3303  3303 W View    : requestLayout() improperly called by com.android.systemui.qs.SecQSGradationDrawableView{d9d46e1 V.E...... ......ID 0,0-1080,354 #7f0a0977 app:id/qs_gradation_view} during layout: running second layout pass
+05-31 07:33:52.879  3303  3303 W View    : requestLayout() improperly called by android.widget.FrameLayout{a95ec06 V.E...... ......ID 0,153-1080,2196 #7f0a0975 app:id/qs_frame} during layout: running second layout pass
+05-31 07:33:52.883  3303  3303 D AiAgentEffect: hiding isVisibleView = false, isStartAnimating = false, isAnimating = false, isShowRunning = null
+05-31 07:33:53.090  2541  3096 D WifiClientModeImpl[53340:wlan0]: updateLinkLayerStatsRssiSpeedFrequencyCapabilities rssi=-19 TxLinkspeed=866 freq=5220 RxLinkSpeed=866
+05-31 07:33:53.091  2541  3096 D WifiDataStall: tx tput in kbps: 774494
+05-31 07:33:53.091  2541  3096 D WifiDataStall: rx tput in kbps: 815257
+05-31 07:33:53.091  2541  3096 V WifiConfigManager: Updating scan detail cache freq=5220 BSSID=70:97:41:63:2d:84 RSSI=-19 for "Grindhead"WPA_PSK
+05-31 07:33:53.092  2541  5265 D SemWifiUsabilityStatsMonitor: onWifiUsabilityStats - seqNum 10793, isSameBssidAndFreq true
+05-31 07:33:53.093  2541  3096 D WifiDataStall:  ccaLevel = 15
+05-31 07:33:53.093  2541  3096 D WifiDataStall: L2 txTputKbps: 774494, rxTputKbps: 815257, L3 txTputKbps: 0, rxTputKbps: 0, TxTrafficHigh: false, RxTrafficHigh: false, Throughput Sufficient: true
+05-31 07:33:53.094  2541  3096 D WifiScoreCard: BSSID update SIGNAL_POLL ID: 1401952975 SSID: "Grindhead", BSSID: 70:97:41:63:2d:84, MAC: fe:0a:6a:e2:44:11, IP: /192.168.1.197, Security type: 2, Supplicant state: COMPLETED, Wi-Fi standard: 11ac, RSSI: -19, Link speed: 866Mbps, Tx Link speed: 866Mbps, Max Supported Tx Link speed: 866Mbps, Rx Link speed: 866Mbps, Max Supported Rx Link speed: 866Mbps, Frequency: 5220MHz, Net ID: 5, Metered hint: false, score: 60, isUsable: true, CarrierMerged: false, SubscriptionId: -1, IsPrimary: 1, Trusted: true, Restricted: false, Ephemeral: false, OEM paid: false, OEM private: false, OSU AP: false, FQDN: <none>, Provider friendly name: <none>, Requesting package name: <none>"Grindhead"wpa2-pskMLO Information: , Is TID-To-Link negotiation supported by the AP: false, AP MLD Address: <none>, AP MLO Link Id: <none>, AP MLO Affiliated links: <none>, Vendor Data: <none>
+05-31 07:33:53.094  2541  3096 D WifiScoreCard: txRate: 1 txSpeed: 866
+05-31 07:33:53.094  2541  3096 D WifiScoreCard: network update SIGNAL_POLL "Grindhead" ID: 1194280491 RSSI -19 txSpeed -1
+05-31 07:33:53.095  3303  4269 V WifiManager: TrafficStateCallbackProxy: onStateChanged state=0
+05-31 07:33:53.095  3303  4280 V WifiManager: TrafficStateCallbackProxy: onStateChanged state=0
+05-31 07:33:53.095  2541  3096 D WifiClientModeImpl[53340:wlan0]:  ClientModeImpl$L2ConnectedState screen=on 37 0 "Grindhead" 70:97:41:63:2d:84 rssi=-19 f=5220 sc=60 link=866 tx=0.1, 0.0, 0.0 rx=0.1 bcn=23228 [on:0 tx:0 rx:0 period:3058] from screen [on:30752 period:518504] score=60
+05-31 07:33:53.098  3303  3419 D Tile.WifiTile: handleUpdateState isTransient=false transientEnabling =false cb.isTransient=false state.state = 2 mStateBeforeClick.value =false enabled =true
+05-31 07:33:54.367  2541  4334 D FreecessController: com.touchtype.swiftkey(10440) is important[11]
+05-31 07:33:54.899  2541  3222 I WifiService: getConnectionInfo uid=1000
+05-31 07:33:54.899  2541  3222 V WifiService: Clearing REDACT_FOR_LOCAL_MAC_ADDRESS for android(uid=1000)
+05-31 07:33:54.899  2541  3222 V WifiService: Clearing REDACT_FOR_NETWORK_SETTINGS for android(uid=1000)
+05-31 07:33:54.899  2541  3222 V WifiService: Clearing REDACT_FOR_ACCESS_FINE_LOCATION for android(uid=1000)
+05-31 07:33:55.542  1079  1079 D io_stats: !@   8,0 r 2602067 71177017 w 1090514 17568152 d 328274 30330156 f 0 100747 iot 1581908 0 th 0 0 0 pt 0 inp 0 0 34572.428
+05-31 07:33:55.542  1079  1079 D io_stats: !@ Write_top(KB): kworker/u16:9(5933) 536
+05-31 07:33:55.684  1468 15341 I sensors-hal: handle_sns_client_event:185, auto_rotation_debug_2 mode,255, type,1,0 acc,0.043,-0.177,9.748, ar,0, ver,12, pedo,1,e,0,i,3
+05-31 07:33:55.685  1468 17983 I sensors-hal: handle_sns_client_event:550, [0][4368] accel_sample [ 0.042, -0.199,  9.746] 59300666125654
+05-31 07:33:55.687  1468 17983 I sensors-hal: handle_sns_client_event:550, [0][4472] accel_sample [ 0.050, -0.192,  9.764] 59302671257945
+05-31 07:33:55.810  1465  1465 I android.hardware.health@2.1-service-samsung: updateLrpSysfs: write: 312
+05-31 07:33:55.812  2541  3440 D [SS]BattFunctions: [sendRemainingChargingTimeChangedIntent]remainingChargingTime:4898 ,mLastRemainingChargingTime:4905
+05-31 07:33:55.816  2541 10465 V [SS]SleepChargingTimeController: [isActivated]mSleepChargingStatus Confident False => false
+05-31 07:33:55.820  3303  3303 I AODBatteryManager: updateBatteryData: ACTION_BATTERY_CHANGED
+05-31 07:33:55.821  3303  3303 I ChargingInfoManager: updateChargingInfo: newState = AOD ChargingInfo [mState=BATTERY_AND_REMAIN_TIME, mIsCharging=true, mIsPlugged=true, mIsFullyCharged=false, mIsBatteryProtectMode=false, mBetteryLevel=50, mBetteryProtectModeType4, mIsSlowChargingfalse], oldState = AOD ChargingInfo [mState=BATTERY_AND_REMAIN_TIME, mIsCharging=true, mIsPlugged=true, mIsFullyCharged=false, mIsBatteryProtectMode=false, mBetteryLevel=50, mBetteryProtectModeType4, mIsSlowChargingfalse]
+05-31 07:33:55.821  3303  3303 D PowerUI : Charging time is changed, check charging notification
+05-31 07:33:55.825  3303  3303 D PowerUI.Notification: showChargingNotice - oldBatteryLevel : 49 , BatteryLevel : 50 / oldChargingType : 11 , ChargingType : 11 / oldChargingTime : 4905, ChargingTime : 4898 / oldMaximumEnabled : false , MaximumEnabled : false / oldMaximumThreshold : 80 , MaximumThreshold : 80
+05-31 07:33:55.828  3303  3303 I NotificationManager: com.android.systemui: notify(2131363874, charging_state, Notification(channel=CHR shortcut=null contentView=null vibrate=null sound=null defaults=0 flags=ONGOING_EVENT|ONLY_ALERT_ONCE color=0x00000000 category=sys groupKey=CHARGING vis=PUBLIC semFlags=0x0 semPriority=0 semMissedCount=0)) as user
+05-31 07:33:55.836  2541  5613 W PermissionService: getPermissionFlags: Unknown user -1
+05-31 07:33:55.836  2541  5613 W PermissionService: getPermissionFlags: Unknown user -1
+05-31 07:33:55.855  1504 24302 I QC2Comp : [vp9D_61] Stats: Pending(4) i/p-done(0) Works: Q: 30/Done 27|Work-Rate: Q(0.0/s Avg=0.0/s) Done(0.000/s Avg=0.002/s)| Stream: 30.30fps 69.3Kbps
+05-31 07:33:55.855  1504 24302 I QC2Comp : [vp9D_61] Mem-usage:  [In-1D: 5 bufs 18.691 MB] [1D-85: 4 bufs 0.062 MB] [2D-86: 25 bufs 9.180 MB] [1D-85: 17 bufs 0.266 MB] | Total: 28.199 MB
+05-31 07:33:55.921  1465  1521 E BatteryDump: !@new_battery_dump : 3970,1216,1200,3150,50,306,303,331,306,0,313,319,0,Charging,NO_CHARGING,Normal,Good,USB,1,Normal,0,0,9597,0x8000,0x10000,0x0,0,0,0000,0000,00000000,0,0,0,0,319,3845,4977,990,0,
+05-31 07:33:56.047  2541  2541 I Telecom : SamsungTelecomServiceImpl : isInManagedCall - callingPackage : android / callingUser : UserHandle{0} / hasCrossUserAccess : true
+05-31 07:33:56.066  2541  4309 D ActivityManager: unpendingScheduleServiceRestart: u=10079, drop=false
+05-31 07:33:56.071  2541  4305 D FreecessController: UFZ : com.samsung.android.game.gamehome(10079) [6837] reason: Binder(1)-android.service.notification.INotificatio
+05-31 07:33:56.073  2541  4334 W LocationManagerService: onFreezeStateChanged, uid[10079]=false
+05-31 07:33:56.074  2541  4334 I PowerManagerService: [PWL] SetWakeLockEnableDisable uid = 10079 , disable= false
+05-31 07:33:56.074  2541  4334 I PowerManagerService: [PWL] can not change uid =  10079
+05-31 07:33:56.075  3850  7271 I HoneySpace.NotificationListener: onNotificationPosted com.android.systemui: -1|com.android.systemui|2131363874|charging_state|10046: 0
+05-31 07:33:56.075  3850  7271 I HoneySpace.NotificationListener: invalid notification: com.android.systemui UserHandle{-1}: canShowBadge is false
+05-31 07:33:56.091  1601  1916 I VSyncReactor: Current= 60, Period= 60, hwcPeriod= 60
+05-31 07:33:56.102  3303  3303 D SubscreenNotificationListCoordinator: onAfterRenderList() isSubScreen = false, pluginLockMode = 0, doNotShowOnCover = false
+05-31 07:33:56.104  3303  3303 I LockscreenNotificationIconsOnlyController: onNotificationInfoUpdated 0
+05-31 07:33:56.104  3303  3303 I AODNotificationManager: updateNotification() 
+05-31 07:33:56.105  1468 15316 I sensors-hal: handle_sns_std_sensor_event:311, [SSC_LIGHT] P: 46(46),m:7,c:1,b:9,c0:1824,l:46,f(r):87,u(bl):100,j:42
+05-31 07:33:56.125  1601  1601 I SurfaceFlinger: SFWD update time=34573011577383
+05-31 07:33:56.126  1601  1601 W Layer   : gatherBufferInfo: Received unknown dataspace from gralloc
+05-31 07:33:56.139  2541  3096 D WifiClientModeImpl[53340:wlan0]: updateLinkLayerStatsRssiSpeedFrequencyCapabilities rssi=-19 TxLinkspeed=866 freq=5220 RxLinkSpeed=866
+05-31 07:33:56.140  2541  3096 D WifiDataStall: tx tput in kbps: 774494
+05-31 07:33:56.140  2541  3096 D WifiDataStall: rx tput in kbps: 815257
+05-31 07:33:56.140  2541  3096 V WifiConfigManager: Updating scan detail cache freq=5220 BSSID=70:97:41:63:2d:84 RSSI=-19 for "Grindhead"WPA_PSK
+05-31 07:33:56.141  2541  5265 D SemWifiUsabilityStatsMonitor: onWifiUsabilityStats - seqNum 10794, isSameBssidAndFreq true
+05-31 07:33:56.142  2541  3096 D WifiDataStall:  ccaLevel = 15
+05-31 07:33:56.142  2541  3096 D WifiDataStall: L2 txTputKbps: 774494, rxTputKbps: 815257, L3 txTputKbps: 0, rxTputKbps: 0, TxTrafficHigh: false, RxTrafficHigh: false, Throughput Sufficient: true
+05-31 07:33:56.143  2541  3096 D WifiScoreCard: BSSID update SIGNAL_POLL ID: 1401952975 SSID: "Grindhead", BSSID: 70:97:41:63:2d:84, MAC: fe:0a:6a:e2:44:11, IP: /192.168.1.197, Security type: 2, Supplicant state: COMPLETED, Wi-Fi standard: 11ac, RSSI: -19, Link speed: 866Mbps, Tx Link speed: 866Mbps, Max Supported Tx Link speed: 866Mbps, Rx Link speed: 866Mbps, Max Supported Rx Link speed: 866Mbps, Frequency: 5220MHz, Net ID: 5, Metered hint: false, score: 60, isUsable: true, CarrierMerged: false, SubscriptionId: -1, IsPrimary: 1, Trusted: true, Restricted: false, Ephemeral: false, OEM paid: false, OEM private: false, OSU AP: false, FQDN: <none>, Provider friendly name: <none>, Requesting package name: <none>"Grindhead"wpa2-pskMLO Information: , Is TID-To-Link negotiation supported by the AP: false, AP MLD Address: <none>, AP MLO Link Id: <none>, AP MLO Affiliated links: <none>, Vendor Data: <none>
+05-31 07:33:56.143  2541  3096 D WifiScoreCard: txRate: 1 txSpeed: 866
+05-31 07:33:56.143  2541  3096 D WifiScoreCard: network update SIGNAL_POLL "Grindhead" ID: 1194280491 RSSI -19 txSpeed -1
+05-31 07:33:56.144  3303  4280 V WifiManager: TrafficStateCallbackProxy: onStateChanged state=3
+05-31 07:33:56.144  2541  3096 D WifiClientModeImpl[53340:wlan0]:  ClientModeImpl$L2ConnectedState screen=on 37 0 "Grindhead" 70:97:41:63:2d:84 rssi=-19 f=5220 sc=60 link=866 tx=0.2, 0.0, 0.0 rx=0.2 bcn=23258 [on:200 tx:1 rx:1 period:3049] from screen [on:30952 period:521553] score=60
+05-31 07:33:56.144  3303  4269 V WifiManager: TrafficStateCallbackProxy: onStateChanged state=3
+05-31 07:33:56.146  3303  3419 D Tile.WifiTile: handleUpdateState isTransient=false transientEnabling =false cb.isTransient=false state.state = 2 mStateBeforeClick.value =false enabled =true
+05-31 07:33:56.287  3303  3303 D Bubbles : onEntryUpdated : shouldBubbleUp=false ,key=-1|com.android.systemui|2131363874|charging_state|10046
+05-31 07:33:56.289  3303  3303 D InterruptionStateProvider:  no Heads up : edgelighting enabled app. -1|com.android.systemui|2131363874|charging_state|10046
+05-31 07:33:56.300  3303  3303 D SubscreenNotificationListCoordinator: onAfterRenderList() isSubScreen = false, pluginLockMode = 0, doNotShowOnCover = false
+05-31 07:33:56.314  3303  3303 I LockscreenNotificationIconsOnlyController: onNotificationInfoUpdated 0
+05-31 07:33:56.315  3303  3303 I AODNotificationManager: updateNotification() 
+05-31 07:33:56.322  3303  3912 D LocalImageResolver: Couldn't use ImageDecoder for drawable, falling back to non-resized load.
+05-31 07:33:56.324  3303  3912 D LocalImageResolver: Couldn't use ImageDecoder for drawable, falling back to non-resized load.
+05-31 07:33:56.327  1601  1601 W Layer   : gatherBufferInfo: Received unknown dataspace from gralloc
+05-31 07:33:56.327  3303  3303 D LocalImageResolver: Couldn't use ImageDecoder for drawable, falling back to non-resized load.
+05-31 07:33:56.353  3303  3303 D S.S.N.  : entryViewBound parent :-1|com.android.systemui|2131363874|charging_state|10046
+05-31 07:33:56.355  3303  3303 D LocalImageResolver: Couldn't use ImageDecoder for drawable, falling back to non-resized load.
+05-31 07:33:56.362  3303  3303 D SubscreenNotificationListCoordinator: onAfterRenderList() isSubScreen = false, pluginLockMode = 0, doNotShowOnCover = false
+05-31 07:33:56.368  3303  3303 I LockscreenNotificationIconsOnlyController: onNotificationInfoUpdated 0
+05-31 07:33:56.368  3303  3303 I AODNotificationManager: updateNotification() 
+05-31 07:33:56.378  1601  1601 W Layer   : gatherBufferInfo: Received unknown dataspace from gralloc
+05-31 07:33:56.627  1601  1948 I RefreshRateSelector: Can't find idle refresh rate by policy with the same mode group as the current mode {id=2, hwcId=2, resolution=1080x2340, vsyncRate=60.00 Hz, dpi=428.62x424.54, group=1080, vrrConfig=N/A} (idle : 24 fps)
+05-31 07:33:56.980  4715 16881 I NearbyPresence: (REDACTED) [NP_EVENT] %s
+05-31 07:33:57.546  1079  1079 D io_stats: !@   8,0 r 2602088 71177201 w 1090519 17568176 d 328274 30330156 f 0 100747 iot 1581932 0 th 0 0 0 pt 0 inp 0 0 34574.433
+05-31 07:33:57.904  2541  3222 I WifiService: getConnectionInfo uid=1000
+05-31 07:33:57.904  2541  3222 V WifiService: Clearing REDACT_FOR_LOCAL_MAC_ADDRESS for android(uid=1000)
+05-31 07:33:57.904  2541  3222 V WifiService: Clearing REDACT_FOR_NETWORK_SETTINGS for android(uid=1000)
+05-31 07:33:57.904  2541  3222 V WifiService: Clearing REDACT_FOR_ACCESS_FINE_LOCATION for android(uid=1000)
+05-31 07:33:59.119  3511  3511 I EPDG -- SIM0 [SMARTCELLULAR]: onSignalStrengthsChanged: SignalStrength:{mCdma=Invalid,mGsm=Invalid,mWcdma=CellSignalStrengthWcdma: ss=-105 ber=2147483647 rscp=-105 ecno=-17 level=1,mTdscdma=Invalid,mLte=Invalid,mNr=Invalid,SignalBarInfo{ wcdmaLevel=1 },rat=3,primary=CellSignalStrengthWcdma}
+05-31 07:33:59.119  3303  3303 D MobileSignalTransitionManager: updateSignalTransition
+05-31 07:33:59.119  3511  4873 I EPDG -- SIM0 [SMARTCELLULAR]: lastWcdmaRssi: -101 currentWcdmaRssi: -105
+05-31 07:33:59.136  1601  1916 I VSyncReactor: Current= 60, Period= 60, hwcPeriod= 60
+05-31 07:33:59.144  1601  1601 W Layer   : gatherBufferInfo: Received unknown dataspace from gralloc
+05-31 07:33:59.191  2541  3096 D WifiClientModeImpl[53340:wlan0]: updateLinkLayerStatsRssiSpeedFrequencyCapabilities rssi=-19 TxLinkspeed=866 freq=5220 RxLinkSpeed=866
+05-31 07:33:59.192  2541  3096 D WifiDataStall: tx tput in kbps: 774494
+05-31 07:33:59.193  2541  3096 D WifiDataStall: rx tput in kbps: 815257
+05-31 07:33:59.193  2541  3096 V WifiConfigManager: Updating scan detail cache freq=5220 BSSID=70:97:41:63:2d:84 RSSI=-19 for "Grindhead"WPA_PSK
+05-31 07:33:59.194  2541  5265 D SemWifiUsabilityStatsMonitor: onWifiUsabilityStats - seqNum 10795, isSameBssidAndFreq true
+05-31 07:33:59.195  2541  3096 D WifiDataStall:  ccaLevel = 15
+05-31 07:33:59.195  2541  3096 D WifiDataStall: L2 txTputKbps: 774494, rxTputKbps: 815257, L3 txTputKbps: 0, rxTputKbps: 0, TxTrafficHigh: false, RxTrafficHigh: false, Throughput Sufficient: true
+05-31 07:33:59.196  2541  3096 D WifiScoreCard: BSSID update SIGNAL_POLL ID: 1401952975 SSID: "Grindhead", BSSID: 70:97:41:63:2d:84, MAC: fe:0a:6a:e2:44:11, IP: /192.168.1.197, Security type: 2, Supplicant state: COMPLETED, Wi-Fi standard: 11ac, RSSI: -19, Link speed: 866Mbps, Tx Link speed: 866Mbps, Max Supported Tx Link speed: 866Mbps, Rx Link speed: 866Mbps, Max Supported Rx Link speed: 866Mbps, Frequency: 5220MHz, Net ID: 5, Metered hint: false, score: 60, isUsable: true, CarrierMerged: false, SubscriptionId: -1, IsPrimary: 1, Trusted: true, Restricted: false, Ephemeral: false, OEM paid: false, OEM private: false, OSU AP: false, FQDN: <none>, Provider friendly name: <none>, Requesting package name: <none>"Grindhead"wpa2-pskMLO Information: , Is TID-To-Link negotiation supported by the AP: false, AP MLD Address: <none>, AP MLO Link Id: <none>, AP MLO Affiliated links: <none>, Vendor Data: <none>
+05-31 07:33:59.196  2541  3096 D WifiScoreCard: txRate: 1 txSpeed: 866
+05-31 07:33:59.196  2541  3096 D WifiScoreCard: network update SIGNAL_POLL "Grindhead" ID: 1194280491 RSSI -19 txSpeed -1
+05-31 07:33:59.197  3303  4280 V WifiManager: TrafficStateCallbackProxy: onStateChanged state=0
+05-31 07:33:59.197  3303  4269 V WifiManager: TrafficStateCallbackProxy: onStateChanged state=0
+05-31 07:33:59.197  2541  3096 D WifiClientModeImpl[53340:wlan0]:  ClientModeImpl$L2ConnectedState screen=on 37 0 "Grindhead" 70:97:41:63:2d:84 rssi=-19 f=5220 sc=60 link=866 tx=0.0, 0.0, 0.0 rx=0.0 bcn=23288 [on:0 tx:0 rx:0 period:3052] from screen [on:30952 period:524606] score=60
+05-31 07:33:59.199  3303  3419 D Tile.WifiTile: handleUpdateState isTransient=false transientEnabling =false cb.isTransient=false state.state = 2 mStateBeforeClick.value =false enabled =true
+05-31 07:33:59.373  2541  4334 D FreecessController: com.touchtype.swiftkey(10440) is important[11]
+05-31 07:33:59.387  1601  1948 I RefreshRateSelector: Can't find idle refresh rate by policy with the same mode group as the current mode {id=2, hwcId=2, resolution=1080x2340, vsyncRate=60.00 Hz, dpi=428.62x424.54, group=1080, vrrConfig=N/A} (idle : 24 fps)
+05-31 07:33:59.546  3849  3849 I wpa_supplicant: Heartbeat 4168
+05-31 07:33:59.548  1079  1079 D io_stats: !@   8,0 r 2602100 71177341 w 1090527 17568276 d 328274 30330156 f 0 100747 iot 1581956 0 th 0 0 0 pt 0 inp 0 0 34576.434
+05-31 07:33:59.548  1079  1079 D io_stats: !@ Read_top(KB): .gms.persistent(4715) 184 loop9(1241) 140
+05-31 07:33:59.548  1079  1079 D io_stats: !@ Write_top(KB): kworker/u16:9(5933) 100 sait.sohservice(10678) 16 android.hardwar(1465) 8
+05-31 07:33:59.799  1456  4140 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+05-31 07:33:59.799  1456  4140 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+05-31 07:33:59.802  1456  4140 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+05-31 07:33:59.802  1456  4140 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+05-31 07:33:59.814  3532  4149 I BtGatt.ScanHelper: onScanResult to scannerId: 2- eventType=0x1b, addressType=0, address=XX:XX:XX:XX:1F:9C, primaryPhy=1, secondaryPhy=0, advertisingSid=0xff, txPower=127, rssi=-80, periodicAdvInt=0x0
+05-31 07:33:59.857  1456  4140 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+05-31 07:33:59.857  1456  4140 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+05-31 07:34:00.008  1456  3806 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+05-31 07:34:00.011  3303  3894 I DateTimeView: updateAll - getTimeFormat
+05-31 07:34:00.013  2541  2541 I EyeComfortSolutionService: action  :  android.intent.action.TIME_TICK
+05-31 07:34:00.013  3303  3894 D QSClockBellTower: onReceive(android.intent.action.TIME_TICK) mTimeZoneString:Europe/London
+05-31 07:34:00.013  3303  3303 D FaceWidgetPagesController: onTimeChanged()
+05-31 07:34:00.015  2541  3126 I EyeComfortSolutionService: Week : Sat , Hour : 07 , Minute : 34 , TimeValue : 454 , wakeup state, defaultBedTime : 0 , start sleep : -360
+05-31 07:34:00.015  2541  3126 I EyeComfortSolutionService: currentWakeupStep : 0
+05-31 07:34:00.019  3303  3303 D QSClockBellTower: He is ready to ring the bell. (((QSClockBellSound - TimeText:07:34, TimeContentDescription:07:34, DateText:Sat, May 31, ShortDateText:Sat, May 31, Demo:false)))
+05-31 07:34:00.021  3303  3303 D QSClock : StatusBar clock=07:34 notifyTimeChanged(QSClockBellSound - TimeText:07:34, TimeContentDescription:07:34, DateText:Sat, May 31, ShortDateText:Sat, May 31, Demo:false) clockVisibleByPolicy=true, clockVisibleByUser=true, visible=true, parent=android.widget.LinearLayout{739bdb V.E...... ......ID 0,0-107,58 #7f0a061e app:id/left_clock_container} caller=com.android.systemui.statusbar.phone.fragment.CollapsedStatusBarFragment.animateShow:47 com.android.systemui.statusbar.phone.fragment.CollapsedStatusBarFragment.updateStatusBarVisibilitiesInner:207 com.android.systemui.statusbar.phone.fragment.CollapsedStatusBarFragment$$ExternalSyntheticLambda3.run:5 com.android.systemui.statusbar.phone.fragment.CollapsedStatusBarFragment.updateStatusBarVisibilities:47 com.android.systemui.statusbar.phone.ongoingactivity.OngoingActivityController.updateParentViewVisibility:99  
+05-31 07:34:00.022  3303  3303 D QSClockBellTower: Everyone heard the bell. run(currentTime:1748673240018, getTime():Sat May 31 07:34:00 GMT+01:00 2025, getTimeZone():libcore.util.ZoneInfo[mDstSavings=3600000,mUseDst=true,mDelegate=[id="Europe/London",mRawOffset=0,mEarliestRawOffset=-75000,transitions=366]])
+05-31 07:34:00.038  1601  1916 I VSyncReactor: Current= 60, Period= 60, hwcPeriod= 60
+05-31 07:34:00.056  1601  1601 W Layer   : gatherBufferInfo: Received unknown dataspace from gralloc
+05-31 07:34:00.303  1601  1948 I RefreshRateSelector: Can't find idle refresh rate by policy with the same mode group as the current mode {id=2, hwcId=2, resolution=1080x2340, vsyncRate=60.00 Hz, dpi=428.62x424.54, group=1080, vrrConfig=N/A} (idle : 24 fps)
+05-31 07:34:00.430  1468 15316 I sensors-hal: handle_sns_std_sensor_event:311, [SSC_LIGHT] P: 46(46),m:7,c:1,b:9,c0:1824,l:46,f(r):87,u(bl):100,j:43
+05-31 07:34:00.431  1468 17983 I sensors-hal: handle_sns_client_event:550, [0][4576] accel_sample [ 0.045, -0.195,  9.744] 59304676387216
+05-31 07:34:00.432  1468 17983 I sensors-hal: handle_sns_client_event:550, [0][4680] accel_sample [ 0.031, -0.206,  9.751] 59306681513675
+05-31 07:34:00.856  1504 24302 I QC2Comp : [vp9D_61] Stats: Pending(4) i/p-done(0) Works: Q: 30/Done 27|Work-Rate: Q(0.0/s Avg=0.0/s) Done(0.000/s Avg=0.002/s)| Stream: 30.30fps 69.3Kbps
+05-31 07:34:00.856  1504 24302 I QC2Comp : [vp9D_61] Mem-usage:  [In-1D: 5 bufs 18.691 MB] [1D-85: 4 bufs 0.062 MB] [2D-86: 25 bufs 9.180 MB] [1D-85: 17 bufs 0.266 MB] | Total: 28.199 MB
+05-31 07:34:00.911  2541  3222 I WifiService: getConnectionInfo uid=1000
+05-31 07:34:00.912  2541  3222 V WifiService: Clearing REDACT_FOR_LOCAL_MAC_ADDRESS for android(uid=1000)
+05-31 07:34:00.913  2541  3222 V WifiService: Clearing REDACT_FOR_NETWORK_SETTINGS for android(uid=1000)
+05-31 07:34:00.913  2541  3222 V WifiService: Clearing REDACT_FOR_ACCESS_FINE_LOCATION for android(uid=1000)
+05-31 07:34:01.004  3850 28594 I HoneySpace.LiveIconSupplier: time tick - 53, CLOCK, 07:34 - 07:33, view: #93a2b6d, parent: ApplistCellLayout#c4f887e
+05-31 07:34:01.008  3850 28594 I LauncherActivityInfo: Trying to load live icon for com.sec.android.app.clockpackage
+05-31 07:34:01.011  3850 28594 I ApplicationPackageManager: package : com.sec.android.app.clockpackage, useAppIconResources : false
+05-31 07:34:01.011  3850 28594 I LiveIconUtil: getLiveIcon was called in ClockPackage
+05-31 07:34:01.012  3850 28594 I LiveIconUtil: getLiveIcon res = com.sec.android.app.clockpackage
+05-31 07:34:01.018  3850 28594 I LiveIconUtil: stdIconSize : 144 , targetIconSize : 174
+05-31 07:34:01.018  3850 28594 I LiveIconUtil: iconDpi : 640 , mTargetIconDpi : 480
+05-31 07:34:01.028  5821  6150 I SDHMS:x : SIOP:: AP:313 BAT:306 USB:303 CHG:329 PA:338 WIFI:309 CF:302 BLK:0 SUBBAT:0 SKIN:311 SKINF:309 SKINB:311 LRP:311 LRP2:311 LRF2:309 LRB2:311 AP2:311 CHG2:310 WIFI2:311 UANT2:308 DANT2:307 RCV2:307 SPK2:310 FCAM:304 UPSPK:305 DNSPK:305 AMB:256 AVGCUR:1150 AVGSYS:153 POWER:4562
+05-31 07:34:01.072  3850 28594 E AppIconSolution: Couldn't get theme package resources, package is null
+05-31 07:34:01.072  3850 28594 I AppIconSolution: load= live icon for com.sec.android.app.clockpackage, from overlay = false
+05-31 07:34:01.072  3850 28594 I LauncherActivityInfo: packageName: com.sec.android.app.clockpackage, useThemeIcon: false, height: 288, width: 288, density: 640
+05-31 07:34:01.076  3850 28594 I HoneySpace.LiveIconSupplier: updateIcon - 53, CLOCK, true - 07:34, view: #93a2b6d, parent: ApplistCellLayout#c4f887e
+05-31 07:34:01.091  1601  1916 I VSyncReactor: Current= 60, Period= 60, hwcPeriod= 60
+05-31 07:34:01.098  2541  6227 I WifiService: getConnectionInfo uid=1000
+05-31 07:34:01.098  2541  6227 V WifiService: Clearing REDACT_FOR_LOCAL_MAC_ADDRESS for com.sec.android.sdhms(uid=1000)
+05-31 07:34:01.098  2541  6227 V WifiService: Clearing REDACT_FOR_NETWORK_SETTINGS for com.sec.android.sdhms(uid=1000)
+05-31 07:34:01.098  2541  6227 V WifiService: Clearing REDACT_FOR_ACCESS_FINE_LOCATION for com.sec.android.sdhms(uid=1000)
+05-31 07:34:01.552  1079  1079 D io_stats: !@   8,0 r 2602100 71177341 w 1090575 17568488 d 328310 30330624 f 0 100753 iot 1581980 0 th 0 0 0 pt 0 inp 0 0 34578.439
+05-31 07:34:02.074  2541  4334 I NSLocationMonitor: getGPSUsingApps() called
+05-31 07:34:02.075  4303  4345 I NSLocationManager_FLP: getGPSUsingApps, No change
+05-31 07:34:02.094  2541  4334 D FreecessController: com.samsung.android.game.gamehome(state: Initial -> Frozen, Reason: Binder(1)-android.service.notification.INotificatio)
+05-31 07:34:02.108  2541  4334 D FreecessController: FZ : com.samsung.android.game.gamehome(10079) [6837] reason: Bg
+05-31 07:34:02.108  2541  4334 W LocationManagerService: onFreezeStateChanged, uid[10079]=true
+05-31 07:34:02.109  2541  4334 I PowerManagerService: [PWL] SetWakeLockEnableDisable uid = 10079 , disable= true
+05-31 07:34:02.109  2541  4334 I PowerManagerService: [PWL] can not change uid =  10079
+05-31 07:34:02.235  2541  3149 D UsbStatsMonitor: 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 70841190580250
+05-31 07:34:02.249  2541  3096 D WifiClientModeImpl[53340:wlan0]: updateLinkLayerStatsRssiSpeedFrequencyCapabilities rssi=-19 TxLinkspeed=866 freq=5220 RxLinkSpeed=866
+05-31 07:34:02.250  2541  3096 D WifiDataStall: tx tput in kbps: 774494
+05-31 07:34:02.250  2541  3096 D WifiDataStall: rx tput in kbps: 815257
+05-31 07:34:02.251  2541  3096 V WifiConfigManager: Updating scan detail cache freq=5220 BSSID=70:97:41:63:2d:84 RSSI=-19 for "Grindhead"WPA_PSK
+05-31 07:34:02.252  2541  5265 D SemWifiUsabilityStatsMonitor: onWifiUsabilityStats - seqNum 10796, isSameBssidAndFreq true
+05-31 07:34:02.252  2541  3096 D WifiDataStall:  ccaLevel = 15
+05-31 07:34:02.252  2541  3096 D WifiDataStall: L2 txTputKbps: 774494, rxTputKbps: 815257, L3 txTputKbps: 0, rxTputKbps: 0, TxTrafficHigh: false, RxTrafficHigh: false, Throughput Sufficient: true
+05-31 07:34:02.253  2541  3096 D WifiScoreCard: BSSID update SIGNAL_POLL ID: 1401952975 SSID: "Grindhead", BSSID: 70:97:41:63:2d:84, MAC: fe:0a:6a:e2:44:11, IP: /192.168.1.197, Security type: 2, Supplicant state: COMPLETED, Wi-Fi standard: 11ac, RSSI: -19, Link speed: 866Mbps, Tx Link speed: 866Mbps, Max Supported Tx Link speed: 866Mbps, Rx Link speed: 866Mbps, Max Supported Rx Link speed: 866Mbps, Frequency: 5220MHz, Net ID: 5, Metered hint: false, score: 60, isUsable: true, CarrierMerged: false, SubscriptionId: -1, IsPrimary: 1, Trusted: true, Restricted: false, Ephemeral: false, OEM paid: false, OEM private: false, OSU AP: false, FQDN: <none>, Provider friendly name: <none>, Requesting package name: <none>"Grindhead"wpa2-pskMLO Information: , Is TID-To-Link negotiation supported by the AP: false, AP MLD Address: <none>, AP MLO Link Id: <none>, AP MLO Affiliated links: <none>, Vendor Data: <none>
+05-31 07:34:02.254  2541  3096 D WifiScoreCard: txRate: 1 txSpeed: 866
+05-31 07:34:02.254  2541  3096 D WifiScoreCard: network update SIGNAL_POLL "Grindhead" ID: 1194280491 RSSI -19 txSpeed -1
+05-31 07:34:02.255  2541  3096 D WifiClientModeImpl[53340:wlan0]:  ClientModeImpl$L2ConnectedState screen=on 37 0 "Grindhead" 70:97:41:63:2d:84 rssi=-19 f=5220 sc=60 link=866 tx=0.0, 0.0, 0.0 rx=0.0 bcn=23318 [on:0 tx:0 rx:0 period:3057] from screen [on:30952 period:527664] score=60
+05-31 07:34:02.955  3511  3511 I EPDG -- SIM0 [SMARTCELLULAR]: onSignalStrengthsChanged: SignalStrength:{mCdma=Invalid,mGsm=Invalid,mWcdma=CellSignalStrengthWcdma: ss=-105 ber=2147483647 rscp=-106 ecno=-17 level=1,mTdscdma=Invalid,mLte=Invalid,mNr=Invalid,SignalBarInfo{ wcdmaLevel=1 },rat=3,primary=CellSignalStrengthWcdma}
+05-31 07:34:02.955  3511  4873 I EPDG -- SIM0 [SMARTCELLULAR]: lastWcdmaRssi: -105 currentWcdmaRssi: -105
+05-31 07:34:03.046  2541  2875 D BatteryExternalStatsWorker: update stats : procstate-change (10)
+05-31 07:34:03.047  2541  2875 I WifiService: getSupportedFeatures uid=1000 returns 180f81defca995dd
+05-31 07:34:03.048  2541  2875 I WifiService: getWifiActivityEnergyInfoAsync uid=1000
+05-31 07:34:03.048  2541  2875 D BatteryExternalStatsWorker: Fetch WiFi data
+05-31 07:34:03.049  2541  2875 D BatteryExternalStatsWorker: Update Rail Energy data
+05-31 07:34:03.050  2541  2875 D BatteryExternalStatsWorker: Fetch Bluetooth data
+05-31 07:34:03.054  1456  1456 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+05-31 07:34:03.056  1456  1456 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+05-31 07:34:03.056  1456  1456 I vendor.qti.bluetooth@1.0-ibs_handler: DeviceWakeUp: Writing IBS_WAKE_IND
+05-31 07:34:03.062  1456  4140 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_ACK: 0xFC
+05-31 07:34:03.062  1456  4140 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Signal wack_cond_
+05-31 07:34:03.063  1456  1456 D vendor.qti.bluetooth@1.0-ibs_handler: DeviceWakeUp: Unblocked from waiting for FC, pthread_cond_timedwait ret = 0
+05-31 07:34:03.064  1456  4140 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+05-31 07:34:03.064  1456  4140 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+05-31 07:34:03.091  2541  2875 D BatteryExternalStatsWorker: Update bluetooth state
+05-31 07:34:03.092  2541  2875 D BatteryExternalStatsWorker: mStats lock released
+05-31 07:34:03.108  2541  2875 D BatteryStatsImpl: NetworkStats size(wifi): 337
+05-31 07:34:03.112  1456  4140 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+05-31 07:34:03.114  2541  2875 D BatteryExternalStatsWorker: Update wifi state
+05-31 07:34:03.115  2541  2875 D BatteryExternalStatsWorker: done updateExternalStatsLocked
+05-31 07:34:03.556  1079  1079 D io_stats: !@ Write_top(KB): f2fs_ckpt-254:5(4190) 48 init(1) 24

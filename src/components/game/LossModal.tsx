@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, Modal, TouchableOpacity } from "react-native";
+import CloseButton from "../buttons/CloseButton";
 
 /**
  * Props for the LossModal component.
@@ -35,7 +36,12 @@ const LossModal: React.FC<LossModalProps> = ({
       // onRequestClose={onHome} // Optional: close modal on back press
     >
       <View className="flex-1 justify-center items-center bg-black bg-opacity-50">
-        <View className="bg-white p-6 rounded-lg m-4 items-center">
+        <View className="bg-white p-6 rounded-lg m-4 items-center relative">
+          {/* Close Button in top-right corner */}
+          <View className="absolute top-2 right-2 z-10">
+            <CloseButton onPress={onHome} size={20} />
+          </View>
+
           <Text className="text-2xl font-bold mb-4 text-red-600">Loss!</Text>
           <Text className="text-base mb-4">
             Correct Answer: {correctAnswer}

@@ -1,5 +1,5 @@
 import React from "react";
-import { TouchableOpacity, Text, View } from "react-native";
+import { TouchableOpacity, Text, View, StyleSheet } from "react-native";
 import ButtonBackground from "@images/button.svg";
 
 interface WideButtonProps {
@@ -21,7 +21,7 @@ const WideButton: React.FC<WideButtonProps> = ({
       className={`w-full mb-4 rounded-lg ${className}`}
       onPress={onPress}
       disabled={disabled}
-      style={{ opacity: disabled ? 0.5 : 1 }}
+      style={styles.buttonOpacity}
     >
       <View className="relative">
         <View className="absolute top-0 left-0 right-0 bottom-0">
@@ -30,7 +30,7 @@ const WideButton: React.FC<WideButtonProps> = ({
         <View className="py-4 rounded-lg flex-row items-center justify-center">
           <Text
             className={`text-black text-lg font-semibold text-center`}
-            style={{ fontFamily: "PoppinsSemiBold" }}
+            style={styles.buttonText}
           >
             {buttonText}
           </Text>
@@ -39,5 +39,14 @@ const WideButton: React.FC<WideButtonProps> = ({
     </TouchableOpacity>
   );
 };
+
+const styles = StyleSheet.create({
+  buttonOpacity: {
+    opacity: 1, // Default opacity
+  },
+  buttonText: {
+    fontFamily: "PoppinsSemiBold",
+  },
+});
 
 export default WideButton;

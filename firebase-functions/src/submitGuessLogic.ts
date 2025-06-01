@@ -5,7 +5,7 @@ import {getUser, updateUserCoins, updateUserStats, getRiddle} from "./firestoreS
 import type {PlayerStats, PlayerStatsUpdate} from "./validation/firestoreSchemas";
 import {PlayerSchema} from "./validation/firestoreSchemas";
 import type {FeedbackItem} from "./validation/requestSchemas";
-import {generateAndAppendRiddles} from "./generateRiddles";
+import {generateAndAppendRiddles, initializeRiddleDatabaseIfEmpty} from "./riddleGeneration";
 
 // Define a type for potential top-level updates to the Player document
 type PlayerTopLevelUpdate = {
@@ -52,6 +52,9 @@ export async function handleGuessLogic(
   }
 
   try {
+    // Initialize database if empty (for new deployments)
+    await initializeRiddleDatabaseIfEmpty();
+
     const riddle = await getRiddle(riddleId);
     console.log("handleGuessLogic - Fetched riddle:", JSON.stringify(riddle));
 

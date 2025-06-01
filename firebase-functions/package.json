@@ -5,8 +5,9 @@
     "build": "tsc -p tsconfig.json && rimraf lib/__tests__ lib/__mocks__",
     "deploy": "firebase deploy --only functions",
     "format": "prettier --write \"src/**/*.ts\"",
-    "test": "cross-env NODE_OPTIONS=\"--experimental-vm-modules\" pnpm jest --config jest.config.js",
-    "test:emulator": "cross-env FIRESTORE_EMULATOR_HOST=127.0.0.1:8099 pnpm jest --config jest.config.js"
+    "test": "cross-env NODE_OPTIONS=\"--experimental-vm-modules\" FIRESTORE_EMULATOR_HOST=127.0.0.1:8099 pnpm jest --config jest.config.js",
+    "emulators:start": "firebase emulators:start --only firestore,auth --import=./.emulator-data --export-on-exit=./.emulator-data",
+    "emulators:kill": "firebase emulators:exec --only firestore,auth \"echo 'Stopping emulators'\""
   },
   "engines": {
     "node": "22"

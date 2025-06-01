@@ -13,6 +13,7 @@ import {
 import { COIN_PRODUCT_DETAILS } from "../../services/IapService";
 import * as RNIap from "react-native-iap"; // Import RNIap types for Product
 import WideButton from "../buttons/WideButton";
+import CloseButton from "../buttons/CloseButton";
 
 /**
  * Props for the CoinShopModal component.
@@ -54,7 +55,12 @@ const CoinShopModal: React.FC<CoinShopModalProps> = ({
       onRequestClose={onClose}
     >
       <SafeAreaView className="flex-1 justify-center items-center bg-black/50">
-        <View className="bg-white p-6 rounded-lg m-4 w-11/12 max-w-sm">
+        <View className="bg-white p-6 rounded-lg m-4 w-11/12 max-w-sm relative">
+          {/* Close Button in top-right corner */}
+          <View className="absolute top-2 right-2 z-10">
+            <CloseButton onPress={onClose} size={20} />
+          </View>
+
           <Text className="text-2xl font-bold text-gray-800 mb-6 text-center">
             Coin Shop
           </Text>

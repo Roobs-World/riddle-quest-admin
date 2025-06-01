@@ -9,9 +9,6 @@ import * as admin from "firebase-admin";
 
 // Environment variables are now accessed within the modules that need them
 
-console.log(`[ENV_TEST] MY_TEST_VARIABLE: ${process.env.MY_TEST_VARIABLE}`);
-console.log(`[ENV_TEST] APPLE_SHARED_SECRET: ${process.env.APPLE_SHARED_SECRET}`);
-
 admin.initializeApp();
 
 // game logic
@@ -27,9 +24,10 @@ import {awardedAdCallback} from "./adCallbacks";
 import {validatePurchase} from "./iapValidation";
 import {getHint, spendCoins} from "./gameLogic";
 import {setCompletedDailyChallenge, hasCompletedDailyChallenge, getCurrentDailyChallenge} from "./dailyChallenge";
-import {generateClassicRiddles, initializeRiddleDatabase} from "./riddleGeneration";
-import {resetStats, updateAvatar} from "./profile";
+import {generateClassicRiddles, initializeRiddleDatabase, generateDailyRiddles} from "./riddleGeneration";
+import {updateAvatar} from "./profile";
 import {submitGuess} from "./submitGuessLogic";
+import {dailyChallengeScheduler} from "./dailyScheduler";
 
 export {
   awardedAdCallback,
@@ -41,9 +39,10 @@ export {
   getCurrentDailyChallenge,
   generateClassicRiddles,
   initializeRiddleDatabase,
-  resetStats,
+  generateDailyRiddles,
   updateAvatar,
   submitGuess,
+  dailyChallengeScheduler,
 };
 
 // Removed all individual function definitions and exports from here

@@ -2,7 +2,6 @@ import {describe, test, expect, jest, beforeAll, afterAll} from "@jest/globals";
 import * as admin from "firebase-admin";
 import functionsTest from "firebase-functions-test";
 import {initializeIapConfig} from "../iapConfig";
-import {resetStats} from "../profile";
 
 // Mock firebase-admin to prevent initializeApp from running multiple times
 if (admin.apps.length === 0) {
@@ -194,7 +193,6 @@ describe("Firebase Functions", () => {
       "hasCompletedDailyChallenge",
       "getCurrentDailyChallenge",
       "generateClassicRiddles",
-      "resetStats",
       "updateAvatar",
       "submitGuess",
     ];
@@ -215,55 +213,6 @@ describe("Firebase Functions", () => {
     // test("should have Firestore trigger onUserCreate exported", () => {
     //   expect(myFunctions.onUserCreate).toBeDefined();
     // });
-  });
-
-  // Example test for a callable function (resetStats)
-  describe("resetStats", () => {
-    // Let TypeScript infer the type automatically - no explicit type needed
-    let wrappedResetStats;
-
-    beforeAll(() => {
-      // Use the directly imported function instead of accessing from the exports object
-      wrappedResetStats = testEnv.wrap(resetStats);
-    });
-
-    test("should reset user stats for authenticated request", async () => {
-      if (!wrappedResetStats) {
-        // eslint-disable-next-line no-console
-        console.warn("resetStats function not found or not wrapped, skipping test.");
-        return;
-      }
-
-      const mockUserId = "test-user-123";
-
-      // Mock Firestore update method for this specific test
-      mockFirestore.update.mockResolvedValueOnce(undefined as never);
-
-      const request = {
-        data: {},
-        auth: {uid: mockUserId},
-        rawRequest: {headers: {}, body: {}},
-      };
-
-      const result = await wrappedResetStats(request);
-
-      expect(result).toEqual({success: true, message: "Stats reset successfully."});
-      expect(mockFirestore.collection).toHaveBeenCalledWith("users");
-      expect(mockFirestore.doc).toHaveBeenCalledWith(mockUserId);
-      expect(mockFirestore.update).toHaveBeenCalled(); // Verify update on the specific doc was called
-    });
-
-    test("should throw error if user is not authenticated", async () => {
-      if (!wrappedResetStats) return; // Skip if not available
-
-      const request = {
-        data: {},
-        auth: null, // No auth context
-        rawRequest: {headers: {}, body: {}},
-      };
-
-      await expect(wrappedResetStats(request)).rejects.toThrow(/authenticated/i);
-    });
   });
 
   // Add more describe blocks for other functions...

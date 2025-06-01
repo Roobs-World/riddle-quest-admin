@@ -1,5 +1,5 @@
 import React from "react";
-import { TouchableOpacity, Text } from "react-native";
+import { TouchableOpacity, Text, StyleSheet } from "react-native";
 import GoogleIcon from "../icons/GoogleIcon";
 
 interface GoogleSignInButtonProps {
@@ -24,12 +24,19 @@ const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({
         className={`text-base font-medium ml-2 ${
           disabled ? "text-gray-400" : "text-gray-700"
         }`}
-        style={{ fontFamily: "PoppinsSemiBold", lineHeight: 24 }}
+        style={styles.buttonText}
       >
         Continue with Google
       </Text>
     </TouchableOpacity>
   );
 };
+
+const styles = StyleSheet.create({
+  buttonText: {
+    fontFamily: "PoppinsSemiBold",
+    lineHeight: 24,
+  },
+});
 
 export default GoogleSignInButton;

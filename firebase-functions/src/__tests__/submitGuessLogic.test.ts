@@ -2,7 +2,7 @@ import * as admin from "firebase-admin";
 import {HttpsError} from "firebase-functions/v2/https";
 import {handleGuessLogic} from "../submitGuessLogic";
 import * as firestoreService from "../firestoreService";
-import * as generateRiddles from "../generateRiddles";
+import * as riddleGeneration from "../riddleGeneration";
 import type {Player, FirestoreRiddle} from "../validation/firestoreSchemas";
 import type {SubmitGuessRequestData, SubmitGuessAuthContext} from "../validation/requestSchemas";
 
@@ -41,9 +41,10 @@ jest.mock("../firestoreService", () => ({
   getRiddle: jest.fn(),
 }));
 
-// Mock generateRiddles
-jest.mock("../generateRiddles", () => ({
+// Mock riddleGeneration
+jest.mock("../riddleGeneration", () => ({
   generateAndAppendRiddles: jest.fn(),
+  initializeRiddleDatabaseIfEmpty: jest.fn(),
 }));
 
 const mockUser: Player = {
@@ -52,6 +53,7 @@ const mockUser: Player = {
   username: "tester",
   coins: 100,
   xp: 0,
+  hasPurchasedApp: false,
   stats: {
     gamesPlayed: 10,
     wins: 5,
@@ -91,7 +93,7 @@ describe("handleGuessLogic", () => {
     (firestoreService.getRiddle as jest.Mock).mockResolvedValue(JSON.parse(JSON.stringify(mockRiddle)));
     (firestoreService.updateUserCoins as jest.Mock).mockResolvedValue(undefined);
     (firestoreService.updateUserStats as jest.Mock).mockResolvedValue(undefined);
-    (generateRiddles.generateAndAppendRiddles as jest.Mock).mockResolvedValue(undefined);
+    (riddleGeneration.generateAndAppendRiddles as jest.Mock).mockResolvedValue(undefined);
 
     mockAdminFirestoreUpdate.mockResolvedValue(undefined);
 

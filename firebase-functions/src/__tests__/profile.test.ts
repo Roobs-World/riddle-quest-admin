@@ -1,22 +1,24 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import {afterEach, beforeEach, describe, expect, it, jest} from "@jest/globals";
+
 // 1. Mock const declarations
-const mockUpdateUserProfile = jest.fn<(userId: string, profileData: any) => Promise<void>>(); // For firestoreService mock
+const mockUpdateUserProfile = jest.fn<(userId: string, profileData: Record<string, unknown>) => Promise<void>>();
 const mockAdminFirestoreUpdate = jest.fn<() => Promise<void>>();
 const mockAdminFirestoreDoc = jest.fn((_id?: string) => ({update: mockAdminFirestoreUpdate}));
 const mockAdminFirestoreCollection = jest.fn((_path?: string) => ({doc: mockAdminFirestoreDoc}));
 
 // Mock for console methods (these are the jest.fn() implementations)
-const mockConsoleLogInternal = jest.fn<(...args: any[]) => void>();
-const mockConsoleErrorInternal = jest.fn<(...args: any[]) => void>();
+const mockConsoleLogInternal = jest.fn<(...args: unknown[]) => void>();
+const mockConsoleErrorInternal = jest.fn<(...args: unknown[]) => void>();
 
 // 2. Jest/type imports
-import {describe, expect, jest, beforeEach, afterEach} from "@jest/globals";
 import {CallableRequest, HttpsError} from "firebase-functions/v2/https";
 
 // 3. jest.mock() calls
 jest.mock("../firestoreService", () => ({
   // This ensures that when firestoreService.updateUserProfile is called,
   // it delegates to the mockUpdateUserProfile defined in the outer scope.
-  updateUserProfile: (...args: [string, any]) => mockUpdateUserProfile(...args),
+  updateUserProfile: (...args: [string, Record<string, unknown>]) => mockUpdateUserProfile(...args),
 }));
 
 jest.mock("firebase-admin", () => ({
@@ -24,30 +26,30 @@ jest.mock("firebase-admin", () => ({
   firestore: () => ({
     collection: (path: string) => mockAdminFirestoreCollection(path),
   }),
-  // Mock FieldValue if resetStats uses it directly (e.g. for timestamps)
-  // If PlayerStatsSchema.parse({}) provides all defaults, this might not be needed here.
-  // However, if server timestamps were used in reset, it would be:
-  // FieldValue: { serverTimestamp: jest.fn() }
 }));
+
+interface MockOnCallHandler {
+  (optionsOrHandler: unknown, handler?: unknown): unknown;
+}
 
 jest.mock("firebase-functions/v2/https", () => {
   const actualV2Https = jest.requireActual(
     "firebase-functions/v2/https",
   ) as typeof import("firebase-functions/v2/https");
   return {
-    onCall: jest.fn((optionsOrHandler: any, handler?: any) => {
+    onCall: jest.fn(((optionsOrHandler: unknown, handler?: unknown) => {
       // Handle both signatures: onCall(handler) and onCall(options, handler)
       if (typeof optionsOrHandler === "function") {
         return optionsOrHandler; // Single argument: onCall(handler)
       }
       return handler; // Two arguments: onCall(options, handler)
-    }),
+    }) as MockOnCallHandler),
     HttpsError: actualV2Https.HttpsError,
   };
 });
 
 // 4. Import the module under test
-import {resetStats, updateAvatar} from "../profile";
+import {updateAvatar} from "../profile";
 
 // 5. Describe block
 describe("Profile Cloud Functions", () => {
@@ -68,55 +70,6 @@ describe("Profile Cloud Functions", () => {
     consoleErrorSpy.mockRestore();
   });
 
-  describe("resetStats", () => {
-    const mockAuth = {uid: "testUserId123"};
-
-    it("should successfully reset user stats", async () => {
-      mockAdminFirestoreUpdate.mockResolvedValue(undefined);
-      const request = {auth: mockAuth, data: {}} as CallableRequest<{}>;
-      const result = await (resetStats as any)(request);
-      expect(mockAdminFirestoreCollection).toHaveBeenCalledWith("users");
-      expect(mockAdminFirestoreDoc).toHaveBeenCalledWith(mockAuth.uid);
-      expect(mockAdminFirestoreUpdate).toHaveBeenCalledWith({
-        stats: {
-          gamesPlayed: 0,
-          wins: 0,
-          totalWins: 0,
-          winStreak: 0,
-          bestStreak: 0,
-          averageGuesses: 0,
-          winRate: 0,
-          challengeWins: 0,
-          totalGuessesInWins: 0,
-          dailyPuzzlesCompleted: 0,
-          totalWordsGuessed: 0,
-          totalScore: 0,
-          highestLevelClassic: 0,
-        },
-      });
-      expect(result).toEqual({success: true, message: "Stats reset successfully."});
-      expect(consoleLogSpy).toHaveBeenCalledWith(`Resetting stats for user: ${mockAuth.uid}`);
-      expect(consoleLogSpy).toHaveBeenCalledWith(`User ${mockAuth.uid} stats reset successfully.`);
-    });
-
-    it("should throw HttpsError if not authenticated", async () => {
-      const request = {auth: undefined, data: {}} as CallableRequest<{}>;
-      await expect((resetStats as any)(request)).rejects.toThrow(
-        new HttpsError("unauthenticated", "The function must be called while authenticated."),
-      );
-    });
-
-    it("should throw HttpsError and log error if Firestore update fails", async () => {
-      const firestoreError = new Error("Firestore update failed");
-      mockAdminFirestoreUpdate.mockRejectedValue(firestoreError);
-      const request = {auth: mockAuth, data: {}} as CallableRequest<{}>;
-      await expect((resetStats as any)(request)).rejects.toThrow(
-        new HttpsError("internal", "An error occurred while resetting stats.", firestoreError),
-      );
-      expect(consoleErrorSpy).toHaveBeenCalledWith(`Error resetting stats for user ${mockAuth.uid}:`, firestoreError);
-    });
-  });
-
   describe("updateAvatar", () => {
     const mockAuth = {uid: "testUserId456"};
     const validAvatarUrl = "https://example.com/avatar.png";
@@ -127,6 +80,7 @@ describe("Profile Cloud Functions", () => {
         auth: mockAuth,
         data: {avatarUrl: validAvatarUrl},
       } as CallableRequest<{avatarUrl: string}>;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const result = await (updateAvatar as any)(request);
       expect(mockUpdateUserProfile).toHaveBeenCalledWith(mockAuth.uid, {avatarUrl: validAvatarUrl});
       expect(result).toEqual({success: true, message: "Avatar URL updated successfully."});
@@ -141,6 +95,7 @@ describe("Profile Cloud Functions", () => {
         auth: undefined,
         data: {avatarUrl: validAvatarUrl},
       } as CallableRequest<{avatarUrl: string}>;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await expect((updateAvatar as any)(request)).rejects.toThrow(
         new HttpsError("unauthenticated", "The function must be called while authenticated."),
       );
@@ -149,8 +104,10 @@ describe("Profile Cloud Functions", () => {
     it("should throw HttpsError for invalid avatar URL (missing)", async () => {
       const request = {
         auth: mockAuth,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         data: {avatarUrl: undefined as any},
       } as CallableRequest<{avatarUrl: string}>;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await expect((updateAvatar as any)(request)).rejects.toThrow(
         new HttpsError("invalid-argument", "Invalid or missing avatar URL."),
       );
@@ -159,8 +116,10 @@ describe("Profile Cloud Functions", () => {
     it("should throw HttpsError for invalid avatar URL (not a string)", async () => {
       const request = {
         auth: mockAuth,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         data: {avatarUrl: 123 as any},
       } as CallableRequest<{avatarUrl: string}>;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await expect((updateAvatar as any)(request)).rejects.toThrow(
         new HttpsError("invalid-argument", "Invalid or missing avatar URL."),
       );
@@ -173,6 +132,7 @@ describe("Profile Cloud Functions", () => {
         auth: mockAuth,
         data: {avatarUrl: validAvatarUrl},
       } as CallableRequest<{avatarUrl: string}>;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await expect((updateAvatar as any)(request)).rejects.toThrow(
         new HttpsError("internal", "An error occurred while updating avatar URL.", serviceError),
       );

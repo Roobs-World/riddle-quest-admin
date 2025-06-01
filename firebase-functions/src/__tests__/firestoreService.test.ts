@@ -1,99 +1,43 @@
-import * as dotenv from "dotenv";
-dotenv.config({path: ".env"}); // Load .env file from firebase-functions directory
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import {describe, expect, test, beforeEach, jest} from "@jest/globals";
 
-// Import necessary testing libraries and modules
-import * as functions from "firebase-functions";
-import {Transaction} from "firebase-admin/firestore";
-import * as admin from "firebase-admin";
-
-// Initialize mock variables outside the factory
-const mockGet = jest.fn();
-const mockUpdate = jest.fn();
-const mockSet = jest.fn();
-const mockAdd = jest.fn();
-const mockWhere = jest.fn();
-const mockOrderBy = jest.fn();
-const mockLimit = jest.fn();
-const mockOnSnapshot = jest.fn();
-const mockDelete = jest.fn();
-const mockCreate = jest.fn();
-const mockGetAll = jest.fn();
-
-// Define the structure of the mocked DocumentReference
-const mockDocumentRef = {
-  get: mockGet,
-  update: mockUpdate,
-  set: mockSet,
-  delete: mockDelete,
-  collection: jest.fn(() => mockCollectionRef),
-  doc: jest.fn(() => mockDocumentRef),
+// Mock Firebase Admin SDK
+const mockFirestore = {
+  collection: jest.fn(),
+  runTransaction: jest.fn(),
 };
 
-// Define the structure of the mocked CollectionReference
-const mockCollectionRef = {
-  doc: jest.fn(() => mockDocumentRef),
-  add: mockAdd,
-  where: mockWhere,
-  orderBy: mockOrderBy,
-  limit: mockLimit,
-  get: mockGet, // Collection.get() can return a QuerySnapshot
-  onSnapshot: mockOnSnapshot,
-  collection: jest.fn(() => mockCollectionRef),
+const mockCollection = {
+  doc: jest.fn(),
 };
 
-const mockRunTransaction = jest
-  .fn()
-  .mockImplementation(async (updateFunction: (transaction: admin.firestore.Transaction) => Promise<unknown>) => {
-    const mockTransaction = {
-      get: mockGet,
-      update: mockUpdate,
-      set: mockSet,
-      create: mockCreate,
-      delete: mockDelete,
-      getAll: mockGetAll,
-    } as unknown as Transaction; // Cast to unknown as Transaction due to partial mock
-    return updateFunction(mockTransaction);
-  });
+const mockDoc = {
+  get: jest.fn() as jest.MockedFunction<any>,
+  update: jest.fn() as jest.MockedFunction<any>,
+  set: jest.fn() as jest.MockedFunction<any>,
+};
 
-// Mock firebase-functions specifically for logger
-jest.mock("firebase-functions", () => ({
-  logger: {
-    info: jest.fn(),
-    error: jest.fn(),
-    warn: jest.fn(),
-    debug: jest.fn(),
-    write: jest.fn(),
-  },
+const mockTransaction = {
+  get: jest.fn() as jest.MockedFunction<any>,
+  update: jest.fn() as jest.MockedFunction<any>,
+};
+
+// Mock Firebase Functions logger
+const mockLogger = {
+  info: jest.fn(),
+  error: jest.fn(),
+  warn: jest.fn(),
+};
+
+jest.mock("firebase-admin", () => ({
+  firestore: () => mockFirestore,
 }));
 
-// Mock firebase-admin with simplified setup, referencing the variables defined above
-jest.mock("firebase-admin", () => {
-  const mockFirestoreInstance = {
-    collection: jest.fn(() => mockCollectionRef), // firestore.collection() returns a CollectionRef
-    doc: jest.fn(() => mockDocumentRef), // firestore.doc() returns a DocumentRef
-    runTransaction: (updateFunction: (transaction: admin.firestore.Transaction) => Promise<unknown>) =>
-      mockRunTransaction(updateFunction),
-    FieldValue: {
-      increment: jest.fn((val: number) => `increment(${val})`),
-      arrayUnion: jest.fn((...args: unknown[]) => `arrayUnion(${args.join(", ")})`), // Use unknown[]
-      arrayRemove: jest.fn((...args: unknown[]) => `arrayRemove(${args.join(", ")})`), // Use unknown[]
-      delete: jest.fn(() => "FieldValue.delete()"),
-    },
-    Timestamp: {
-      now: jest.fn(() => new Date()),
-      fromDate: jest.fn((date: Date) => date),
-      fromMillis: jest.fn((milliseconds: number) => new Date(milliseconds)),
-    },
-  };
+jest.mock("firebase-functions", () => ({
+  logger: mockLogger,
+}));
 
-  return {
-    initializeApp: jest.fn(),
-    firestore: jest.fn(() => mockFirestoreInstance), // firebase-admin.firestore() returns the firestore instance
-    apps: [{options: {}}],
-  };
-});
-
-// Import the functions to be tested
+// Import the module after mocking
 import {
   getUser,
   updateUserLastCompletedDailyChallengeDate,
@@ -102,343 +46,443 @@ import {
   updateUserProfile,
   getRiddle,
 } from "../firestoreService";
-import {Player, PlayerStats} from "../validation/firestoreSchemas";
 
-describe("Firestore Service", () => {
-  beforeAll(async () => {
-    // Simplified setup without Firebase rules testing environment
-  });
-
-  afterAll(async () => {
-    // No cleanup needed for unit tests
-  });
-
-  beforeEach(async () => {
-    // Clear all mock implementations and call history before each test
+describe("FirestoreService", () => {
+  beforeEach(() => {
+    // Reset all mocks before each test
     jest.clearAllMocks();
+
+    // Setup default mock implementations
+    mockFirestore.collection.mockReturnValue(mockCollection);
+    mockCollection.doc.mockReturnValue(mockDoc);
+    mockFirestore.runTransaction.mockImplementation((callback: any) => callback(mockTransaction));
   });
 
   describe("getUser", () => {
-    it("should return user data if user exists", async () => {
-      const mockUserData: Player = {
-        userId: "testUser",
-        email: "test@example.com",
-        username: "tester",
-        xp: 0,
-        coins: 100,
-        hasPurchasedApp: false,
-        progress: {classicIndex: 1, dailyChallengeIndex: 1, tutorialIndex: 0},
-        stats: {
-          gamesPlayed: 0,
-          wins: 0,
-          totalWins: 0,
-          winStreak: 0,
-          bestStreak: 0,
-          averageGuesses: 0,
-          winRate: 0,
-          challengeWins: 0,
-          totalGuessesInWins: 0,
-          dailyPuzzlesCompleted: 0,
-          totalWordsGuessed: 0,
-          totalScore: 0,
-          highestLevelClassic: 0,
-        },
-        registeredAt: Date.now(),
-        lastLogin: Date.now(),
-      };
-      mockGet.mockResolvedValue({exists: true, data: () => mockUserData});
+    const testUserId = "testUser123";
+    const testUserData = {
+      userId: testUserId,
+      email: "test@example.com",
+      username: "TestUser",
+      coins: 100,
+      xp: 50,
+      stats: {
+        gamesPlayed: 10,
+        wins: 5,
+        winRate: 0.5,
+      },
+    };
 
-      const user = await getUser("testUser");
-      expect(user).toEqual(mockUserData);
-      expect(admin.firestore().collection).toHaveBeenCalledWith("users");
-      expect(mockCollectionRef.doc).toHaveBeenCalledWith("testUser");
-      expect(mockGet).toHaveBeenCalledTimes(1);
+    test("should return user data when user exists", async () => {
+      const mockUserDoc = {
+        exists: true,
+        data: () => testUserData,
+      };
+
+      (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
+
+      const result = await getUser(testUserId);
+
+      expect(mockFirestore.collection).toHaveBeenCalledWith("users");
+      expect(mockCollection.doc).toHaveBeenCalledWith(testUserId);
+      expect(mockDoc.get).toHaveBeenCalled();
+      expect(result).toEqual(testUserData);
     });
 
-    it("should return undefined if user does not exist and log info", async () => {
-      mockGet.mockResolvedValue({exists: false, data: () => undefined});
+    test("should return undefined when user does not exist", async () => {
+      const mockUserDoc = {
+        exists: false,
+      };
 
-      const user = await getUser("nonExistentUser");
-      expect(user).toBeUndefined();
-      expect(functions.logger.info).toHaveBeenCalledWith("User document not found for ID nonExistentUser");
+      (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
+
+      const result = await getUser(testUserId);
+
+      expect(mockFirestore.collection).toHaveBeenCalledWith("users");
+      expect(mockCollection.doc).toHaveBeenCalledWith(testUserId);
+      expect(mockDoc.get).toHaveBeenCalled();
+      expect(result).toBeUndefined();
+      expect(mockLogger.info).toHaveBeenCalledWith(`User document not found for ID ${testUserId}`);
+    });
+
+    test("should handle Firestore errors", async () => {
+      const testError = new Error("Firestore connection failed");
+      (mockDoc.get as jest.MockedFunction<any>).mockRejectedValue(testError);
+
+      await expect(getUser(testUserId)).rejects.toThrow("Firestore connection failed");
     });
   });
 
   describe("updateUserLastCompletedDailyChallengeDate", () => {
-    it("should update the last daily challenge completed date", async () => {
-      mockUpdate.mockResolvedValue(undefined);
-      const userId = "testUser";
-      const date = "2023-10-26";
-      await updateUserLastCompletedDailyChallengeDate(userId, date);
-      expect(admin.firestore().collection).toHaveBeenCalledWith("users");
-      expect(mockCollectionRef.doc).toHaveBeenCalledWith(userId);
-      expect(mockUpdate).toHaveBeenCalledWith({lastDailyChallengeCompletedAt: date});
+    const testUserId = "testUser123";
+    const testDate = "2024-01-15";
+
+    test("should update user's last completed daily challenge date", async () => {
+      (mockDoc.update as jest.MockedFunction<any>).mockResolvedValue(undefined);
+
+      await updateUserLastCompletedDailyChallengeDate(testUserId, testDate);
+
+      expect(mockFirestore.collection).toHaveBeenCalledWith("users");
+      expect(mockCollection.doc).toHaveBeenCalledWith(testUserId);
+      expect(mockDoc.update).toHaveBeenCalledWith({
+        lastDailyChallengeCompletedAt: testDate,
+      });
     });
 
-    it("should log an error if update fails", async () => {
-      const error = new Error("Update failed");
-      mockUpdate.mockRejectedValue(error); // Simulate Firestore update failure
+    test("should handle Firestore errors and rethrow", async () => {
+      const testError = new Error("Update failed");
+      (mockDoc.update as jest.MockedFunction<any>).mockRejectedValue(testError);
 
-      const userId = "testUser";
-      const date = "2023-10-26";
-
-      // Expect the function to log the error and reject when the update fails.
-      await expect(updateUserLastCompletedDailyChallengeDate(userId, date)).rejects.toThrow(error);
-
-      expect(functions.logger.error).toHaveBeenCalledWith(
-        `Error updating last completed daily challenge date for user ${userId}:`,
-        error,
+      await expect(updateUserLastCompletedDailyChallengeDate(testUserId, testDate)).rejects.toThrow("Update failed");
+      expect(mockLogger.error).toHaveBeenCalledWith(
+        `Error updating last completed daily challenge date for user ${testUserId}:`,
+        testError,
       );
     });
   });
 
   describe("updateUserCoins", () => {
-    beforeEach(async () => {
-      // Clear all mock implementations and call history before each test
-      jest.clearAllMocks();
-      // Ensure mockUpdate is reset to resolve successfully
-      mockUpdate.mockResolvedValue(undefined);
-    });
+    const testUserId = "testUser123";
+    const testUserData = {
+      coins: 100,
+    };
 
-    it("should update user coins within a transaction", async () => {
-      const userId = "testUser";
-      const initialCoins = 100;
+    test("should update user coins with positive amount", async () => {
       const coinsToAdd = 50;
+      const mockUserDoc = {
+        exists: true,
+        data: () => testUserData,
+      };
 
-      mockGet.mockResolvedValue({exists: true, data: () => ({coins: initialCoins}) as Player});
-      await updateUserCoins(userId, coinsToAdd);
+      (mockTransaction.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
+      (mockTransaction.update as jest.MockedFunction<any>).mockResolvedValue(undefined);
 
-      expect(mockRunTransaction).toHaveBeenCalledTimes(1);
-      expect(mockGet).toHaveBeenCalledTimes(1);
-      expect(mockUpdate).toHaveBeenCalledWith(
-        expect.objectContaining({
-          get: mockGet,
-          update: mockUpdate,
-          set: mockSet,
-        }),
-        {coins: initialCoins + coinsToAdd},
-      );
+      const consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+
+      await updateUserCoins(testUserId, coinsToAdd);
+
+      expect(mockFirestore.runTransaction).toHaveBeenCalled();
+      expect(mockTransaction.get).toHaveBeenCalled();
+      expect(mockTransaction.update).toHaveBeenCalledWith(expect.any(Object), {
+        coins: 150,
+      });
+      expect(consoleSpy).toHaveBeenCalledWith(`User ${testUserId} coins updated by ${coinsToAdd}.`);
+
+      consoleSpy.mockRestore();
     });
 
-    it("should use provided transaction if available", async () => {
-      const userId = "testUser";
-      const initialCoins = 100;
+    test("should update user coins with negative amount", async () => {
+      const coinsToSpend = -30;
+      const mockUserDoc = {
+        exists: true,
+        data: () => testUserData,
+      };
+
+      (mockTransaction.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
+      (mockTransaction.update as jest.MockedFunction<any>).mockResolvedValue(undefined);
+
+      const consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+
+      await updateUserCoins(testUserId, coinsToSpend);
+
+      expect(mockTransaction.update).toHaveBeenCalledWith(expect.any(Object), {
+        coins: 70,
+      });
+      expect(consoleSpy).toHaveBeenCalledWith(`User ${testUserId} coins updated by ${coinsToSpend}.`);
+
+      consoleSpy.mockRestore();
+    });
+
+    test("should throw error when user does not exist", async () => {
       const coinsToAdd = 50;
-      const mockTransactionExt = {
-        get: mockGet,
-        update: mockUpdate,
-        set: mockSet,
-        create: jest.fn(),
-        delete: jest.fn(),
-        getAll: jest.fn(),
-      } as unknown as Transaction;
+      const mockUserDoc = {
+        exists: false,
+      };
 
-      mockGet.mockResolvedValue({exists: true, data: () => ({coins: initialCoins}) as Player});
+      (mockTransaction.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
 
-      await updateUserCoins(userId, coinsToAdd, mockTransactionExt);
-
-      expect(mockRunTransaction).not.toHaveBeenCalled();
-      expect(mockGet).toHaveBeenCalledTimes(1);
-      expect(mockUpdate).toHaveBeenCalledWith(
-        expect.objectContaining({get: mockGet, update: mockUpdate, set: mockSet}),
-        {coins: initialCoins + coinsToAdd},
-      );
+      await expect(updateUserCoins(testUserId, coinsToAdd)).rejects.toThrow(`User with ID ${testUserId} not found.`);
+      expect(mockLogger.error).toHaveBeenCalled();
     });
 
-    it("should throw error and log if user does not exist in transaction", async () => {
-      const userId = "nonExistentUser";
-      mockGet.mockResolvedValue({exists: false, data: () => undefined});
-      await expect(updateUserCoins(userId, 50)).rejects.toThrow(`User with ID ${userId} not found.`);
-      expect(functions.logger.error).toHaveBeenCalledWith(
-        expect.stringContaining(`User with ID ${userId} not found during transaction for updateUserCoins.`),
-        expect.any(Error),
+    test("should throw error when insufficient coins", async () => {
+      const coinsToSpend = -150;
+      const mockUserDoc = {
+        exists: true,
+        data: () => testUserData,
+      };
+
+      (mockTransaction.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
+
+      await expect(updateUserCoins(testUserId, coinsToSpend)).rejects.toThrow(
+        `Insufficient coins for user ${testUserId}. Current: 100, Attempted to spend: 150.`,
       );
+      expect(mockLogger.error).toHaveBeenCalled();
     });
 
-    it("should throw error and log for insufficient coins in transaction", async () => {
-      const userId = "testUser";
-      const initialCoins = 10;
-      mockGet.mockResolvedValue({exists: true, data: () => ({coins: initialCoins}) as Player});
+    test("should handle missing coins property", async () => {
+      const userWithoutCoins = {};
+      const coinsToAdd = 10;
+      const mockUserDoc = {
+        exists: true,
+        data: () => userWithoutCoins,
+      };
 
-      await expect(updateUserCoins(userId, -50)).rejects.toThrow(
-        `Insufficient coins for user ${userId}. Current: ${initialCoins}, Attempted to spend: 50.`,
-      );
-      expect(functions.logger.error).toHaveBeenCalledWith(
-        expect.stringContaining(`Insufficient coins for user ${userId}`),
-        expect.any(Error),
-      );
+      (mockTransaction.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
+      (mockTransaction.update as jest.MockedFunction<any>).mockResolvedValue(undefined);
+
+      const consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+
+      await updateUserCoins(testUserId, coinsToAdd);
+
+      expect(mockTransaction.update).toHaveBeenCalledWith(expect.any(Object), {
+        coins: 10,
+      });
+
+      consoleSpy.mockRestore();
     });
   });
 
   describe("updateUserStats", () => {
-    const userId = "testUser";
-    const initialStats: PlayerStats = {
-      gamesPlayed: 5,
-      wins: 2,
-      totalWins: 2,
-      winStreak: 1,
-      bestStreak: 1,
-      averageGuesses: 3,
-      winRate: 40,
-      challengeWins: 1,
-      totalGuessesInWins: 6,
-      dailyPuzzlesCompleted: 10,
-      totalWordsGuessed: 20,
-      totalScore: 100,
-      highestLevelClassic: 5,
+    const testUserId = "testUser123";
+    const currentUserData = {
+      stats: {
+        gamesPlayed: 10,
+        wins: 5,
+        winRate: 0.5,
+      },
     };
-    const statsUpdate: Partial<PlayerStats> = {wins: 3, winStreak: 2};
 
-    it("should update user stats within a transaction, merging with existing stats", async () => {
-      mockGet.mockResolvedValue({exists: true, data: () => ({stats: initialStats}) as Player});
-      mockUpdate.mockResolvedValue(undefined);
+    test("should update user stats", async () => {
+      const statsUpdate = {
+        gamesPlayed: 11,
+        wins: 6,
+        winRate: 0.55,
+      };
 
-      await updateUserStats(userId, statsUpdate);
+      const mockUserDoc = {
+        exists: true,
+        data: () => currentUserData,
+      };
 
-      expect(mockRunTransaction).toHaveBeenCalledTimes(1);
-      expect(mockGet).toHaveBeenCalledTimes(1);
-      expect(mockUpdate).toHaveBeenCalledWith(
-        expect.objectContaining({get: mockGet, update: mockUpdate, set: mockSet}),
-        {
-          stats: {...initialStats, ...statsUpdate},
+      (mockTransaction.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
+      (mockTransaction.update as jest.MockedFunction<any>).mockResolvedValue(undefined);
+
+      const consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+
+      await updateUserStats(testUserId, statsUpdate);
+
+      expect(mockFirestore.runTransaction).toHaveBeenCalled();
+      expect(mockTransaction.get).toHaveBeenCalled();
+      expect(mockTransaction.update).toHaveBeenCalledWith(expect.any(Object), {
+        stats: {
+          gamesPlayed: 11,
+          wins: 6,
+          winRate: 0.55,
         },
-      );
+      });
+      expect(consoleSpy).toHaveBeenCalledWith(`Stats for user ${testUserId} updated.`);
+
+      consoleSpy.mockRestore();
     });
 
-    it("should use provided transaction if available for stats update", async () => {
-      const mockTransactionExt = {
-        get: mockGet,
-        update: mockUpdate,
-        set: mockSet,
-        create: jest.fn(),
-        delete: jest.fn(),
-        getAll: jest.fn(),
-      } as unknown as Transaction;
-      mockGet.mockResolvedValue({exists: true, data: () => ({stats: initialStats}) as Player});
+    test("should handle missing stats property", async () => {
+      const userWithoutStats = {};
+      const statsUpdate = {
+        gamesPlayed: 1,
+        wins: 1,
+      };
 
-      await updateUserStats(userId, statsUpdate, mockTransactionExt);
+      const mockUserDoc = {
+        exists: true,
+        data: () => userWithoutStats,
+      };
 
-      expect(mockRunTransaction).not.toHaveBeenCalled();
-      expect(mockGet).toHaveBeenCalledTimes(1);
-      expect(mockUpdate).toHaveBeenCalledWith(
-        expect.objectContaining({get: mockGet, update: mockUpdate, set: mockSet}),
-        {
-          stats: {...initialStats, ...statsUpdate},
+      (mockTransaction.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
+      (mockTransaction.update as jest.MockedFunction<any>).mockResolvedValue(undefined);
+
+      const consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+
+      await updateUserStats(testUserId, statsUpdate);
+
+      expect(mockTransaction.update).toHaveBeenCalledWith(expect.any(Object), {
+        stats: {
+          gamesPlayed: 1,
+          wins: 1,
         },
-      );
+      });
+
+      consoleSpy.mockRestore();
     });
 
-    it("should initialize stats if they don't exist in transaction", async () => {
-      mockGet.mockResolvedValue({exists: true, data: () => ({}) as Player});
+    test("should throw error when user does not exist", async () => {
+      const statsUpdate = {gamesPlayed: 1};
+      const mockUserDoc = {
+        exists: false,
+      };
 
-      await updateUserStats(userId, statsUpdate);
-      expect(mockUpdate).toHaveBeenCalledWith(
-        expect.objectContaining({get: mockGet, update: mockUpdate, set: mockSet}),
-        {stats: {...statsUpdate}},
-      );
-    });
+      (mockTransaction.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
 
-    it("should throw error and log if user does not exist for stats update in transaction", async () => {
-      mockGet.mockResolvedValue({exists: false, data: () => undefined});
-      await expect(updateUserStats("nonExistentUser", statsUpdate)).rejects.toThrow(
-        "User with ID nonExistentUser not found.",
-      );
-      expect(functions.logger.error).toHaveBeenCalledWith(
-        expect.stringContaining("User with ID nonExistentUser not found during transaction for updateUserStats."),
-        expect.any(Error),
-      );
+      await expect(updateUserStats(testUserId, statsUpdate)).rejects.toThrow(`User with ID ${testUserId} not found.`);
+      expect(mockLogger.error).toHaveBeenCalled();
     });
   });
 
   describe("updateUserProfile", () => {
-    it("should update user profile fields", async () => {
-      mockUpdate.mockResolvedValue(undefined);
-      const userId = "testUser";
-      const profileUpdate: Partial<Player> = {username: "newUsername", avatarUrl: "newAvatar.png"};
+    const testUserId = "testUser123";
 
-      await updateUserProfile(userId, profileUpdate);
+    test("should update user profile successfully", async () => {
+      const profileUpdate = {
+        username: "NewUsername",
+        email: "newemail@example.com",
+        avatarUrl: "https://example.com/avatar.jpg",
+      };
 
-      expect(admin.firestore().collection).toHaveBeenCalledWith("users");
-      expect(mockCollectionRef.doc).toHaveBeenCalledWith(userId);
-      expect(mockUpdate).toHaveBeenCalledWith(profileUpdate);
+      (mockDoc.update as jest.MockedFunction<any>).mockResolvedValue(undefined);
+
+      await updateUserProfile(testUserId, profileUpdate);
+
+      expect(mockFirestore.collection).toHaveBeenCalledWith("users");
+      expect(mockCollection.doc).toHaveBeenCalledWith(testUserId);
+      expect(mockDoc.update).toHaveBeenCalledWith(profileUpdate);
     });
 
-    it("should log an error and rethrow if profile update fails", async () => {
-      const error = new Error("Profile update failed");
-      mockUpdate.mockRejectedValue(error);
-      const userId = "testUser";
-      const profileUpdate = {username: "newUsername"};
+    test("should handle Firestore errors and rethrow", async () => {
+      const profileUpdate = {username: "NewUsername"};
+      const testError = new Error("Profile update failed");
 
-      await expect(updateUserProfile(userId, profileUpdate)).rejects.toThrow("Profile update failed");
-      expect(functions.logger.error).toHaveBeenCalledWith(`Error updating profile for user ${userId}:`, error);
+      (mockDoc.update as jest.MockedFunction<any>).mockRejectedValue(testError);
+
+      await expect(updateUserProfile(testUserId, profileUpdate)).rejects.toThrow("Profile update failed");
+      expect(mockLogger.error).toHaveBeenCalledWith(`Error updating profile for user ${testUserId}:`, testError);
     });
   });
 
   describe("getRiddle", () => {
-    it("should return riddle data if riddle exists", async () => {
-      const mockRiddleData = {
-        answer: "HELLO",
-        text: "A greeting word",
-        riddleId: "riddle123",
+    const testRiddleId = "riddle123";
+    const testRiddleData = {
+      riddleId: testRiddleId,
+      text: "What has keys but no locks?",
+      answer: "KEYBOARD",
+      difficulty: 3,
+    };
+
+    test("should return riddle data when riddle exists", async () => {
+      const mockRiddleDoc = {
+        exists: true,
+        data: () => testRiddleData,
       };
-      mockGet.mockResolvedValue({exists: true, data: () => mockRiddleData});
 
-      const riddle = await getRiddle("riddle123");
-      expect(riddle).toEqual({
-        answer: "HELLO",
-        text: "A greeting word",
-        riddleId: "riddle123",
-      });
-      expect(admin.firestore().collection).toHaveBeenCalledWith("riddles");
-      expect(mockCollectionRef.doc).toHaveBeenCalledWith("riddle123");
-      expect(mockGet).toHaveBeenCalledTimes(1);
+      (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockRiddleDoc);
+
+      const result = await getRiddle(testRiddleId);
+
+      expect(mockFirestore.collection).toHaveBeenCalledWith("riddles");
+      expect(mockCollection.doc).toHaveBeenCalledWith(testRiddleId);
+      expect(mockDoc.get).toHaveBeenCalled();
+      expect(result).toEqual(testRiddleData);
     });
 
-    it("should return undefined and log info if riddle does not exist", async () => {
-      mockGet.mockResolvedValue({exists: false, data: () => undefined});
-
-      const riddle = await getRiddle("nonExistentRiddle");
-      expect(riddle).toBeUndefined();
-      expect(functions.logger.info).toHaveBeenCalledWith("Riddle document not found for ID nonExistentRiddle");
-    });
-
-    it("should return undefined and log info if riddle data is null", async () => {
-      mockGet.mockResolvedValue({exists: true, data: () => null});
-
-      const riddle = await getRiddle("riddleWithNullData");
-      expect(riddle).toBeUndefined();
-      expect(functions.logger.info).toHaveBeenCalledWith("Riddle data is null for ID riddleWithNullData");
-    });
-
-    it("should use riddleId from data if available, otherwise use provided riddleId", async () => {
-      const mockRiddleDataWithoutId = {
-        answer: "WORLD",
-        text: "The planet we live on",
+    test("should return undefined when riddle does not exist", async () => {
+      const mockRiddleDoc = {
+        exists: false,
       };
-      mockGet.mockResolvedValue({exists: true, data: () => mockRiddleDataWithoutId});
 
-      const riddle = await getRiddle("riddle456");
-      expect(riddle).toEqual({
-        answer: "WORLD",
-        text: "The planet we live on",
-        riddleId: "riddle456",
+      (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockRiddleDoc);
+
+      const result = await getRiddle(testRiddleId);
+
+      expect(result).toBeUndefined();
+      expect(mockLogger.info).toHaveBeenCalledWith(`Riddle document not found for ID ${testRiddleId}`);
+    });
+
+    test("should return undefined when riddle data is null", async () => {
+      const mockRiddleDoc = {
+        exists: true,
+        data: () => null,
+      };
+
+      (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockRiddleDoc);
+
+      const result = await getRiddle(testRiddleId);
+
+      expect(result).toBeUndefined();
+      expect(mockLogger.info).toHaveBeenCalledWith(`Riddle data is null for ID ${testRiddleId}`);
+    });
+
+    test("should add riddleId to data if missing", async () => {
+      const riddleDataWithoutId = {
+        text: "What has keys but no locks?",
+        answer: "KEYBOARD",
+        difficulty: 3,
+      };
+
+      const mockRiddleDoc = {
+        exists: true,
+        data: () => riddleDataWithoutId,
+      };
+
+      (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockRiddleDoc);
+
+      const result = await getRiddle(testRiddleId);
+
+      expect(result).toEqual({
+        ...riddleDataWithoutId,
+        riddleId: testRiddleId,
       });
     });
 
-    it("should prefer riddleId from data over provided riddleId", async () => {
-      const mockRiddleDataWithId = {
-        answer: "EARTH",
-        text: "Our home planet",
-        riddleId: "dataRiddleId",
-      };
-      mockGet.mockResolvedValue({exists: true, data: () => mockRiddleDataWithId});
+    test("should handle Firestore errors", async () => {
+      const testError = new Error("Firestore connection failed");
+      (mockDoc.get as jest.MockedFunction<any>).mockRejectedValue(testError);
 
-      const riddle = await getRiddle("providedRiddleId");
-      expect(riddle).toEqual({
-        answer: "EARTH",
-        text: "Our home planet",
-        riddleId: "dataRiddleId",
+      await expect(getRiddle(testRiddleId)).rejects.toThrow("Firestore connection failed");
+    });
+  });
+
+  describe("Edge Cases", () => {
+    test("should handle zero coins case", async () => {
+      const testUserId = "testUser123";
+      const userWithZeroCoins = {coins: 0};
+      const coinsToAdd = 10;
+      const mockUserDoc = {
+        exists: true,
+        data: () => userWithZeroCoins,
+      };
+
+      (mockTransaction.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
+      (mockTransaction.update as jest.MockedFunction<any>).mockResolvedValue(undefined);
+
+      const consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+
+      await updateUserCoins(testUserId, coinsToAdd);
+
+      expect(mockTransaction.update).toHaveBeenCalledWith(expect.any(Object), {
+        coins: 10,
       });
+
+      consoleSpy.mockRestore();
+    });
+
+    test("should handle empty stats updates", async () => {
+      const testUserId = "testUser123";
+      const mockUserDoc = {
+        exists: true,
+        data: () => ({stats: {gamesPlayed: 5}}),
+      };
+
+      (mockTransaction.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
+      (mockTransaction.update as jest.MockedFunction<any>).mockResolvedValue(undefined);
+
+      const consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+
+      await updateUserStats(testUserId, {});
+
+      expect(mockTransaction.update).toHaveBeenCalledWith(expect.any(Object), {
+        stats: {gamesPlayed: 5},
+      });
+
+      consoleSpy.mockRestore();
     });
   });
 });

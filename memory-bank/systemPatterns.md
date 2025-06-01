@@ -1,55 +1,142 @@
 # System Patterns
 
-## 1. Architecture Overview
+## Architecture Overview
 
-- **Client-Server Architecture**:
-  - **Client**: React Native mobile application (iOS and Android).
-  - **Server**: Firebase services (Firebase Authentication, Firestore, Firebase Cloud Functions, Firebase Storage).
+```
+Client (React Native)
+├── Authentication Layer (Firebase Auth)
+├── State Management (React Context)
+├── UI Components (React Native + NativeWind)
+├── Services Layer
+│   ├── FirestoreService (Database operations)
+│   ├── SoundManager (Audio management)
+│   └── RiddleService (Game logic via Firebase Functions)
+└── Navigation (React Navigation)
+```
 
-## 2. Key Technical Decisions
+## Core Services
 
-- Use Firebase as the comprehensive backend-as-a-service (BaaS) platform.
-- Implement server-side logic, including game validation and riddle generation, using Firebase Cloud Functions written in TypeScript.
-- Store user data, game state, and riddle levels directly in Firestore.
-- **MIGRATED**: Riddles are now stored directly in Firestore instead of using Google Sheets as the primary source. This eliminates the need for Google Sheets API integration and service account authentication.
-- Employ Firebase Authentication for user management.
-- Utilize Firebase Storage for user-uploaded content (avatars).
-- React Native for cross-platform mobile development.
-- NativeWind for styling within React Native.
-- Implemented automatic content generation trigger: when a user's remaining classic riddles drop to 10 or fewer during a correct guess submission, 25 new riddles are automatically generated and stored directly in Firestore via the `submitGuessLogic` Cloud Function.
-- Firebase Functions configuration migrated from `functions.config()` to `process.env` environment variables for v2 compatibility.
-- **Enhanced Data Validation**: Strict answer validation preventing all punctuation marks, ensuring only lowercase letters (a-z) with maximum 7-character length.
-- **Quality-First Content Generation**: Enhanced OpenAI prompts and server-side validation ensuring consistent riddle format and quality.
+### FirestoreService
 
-## 3. Design Patterns
+- User data management
+- Riddle storage and retrieval
+- Progress tracking
+- Statistics management
 
-- **Serverless Functions**: For backend logic, leveraging Firebase Cloud Functions.
-- **Direct Database Storage**: Riddles stored directly in Firestore as the single source of truth, eliminating sync complexity.
-- **State Management (Client)**: React Context or Zustand (as per project brief).
-- **Asynchronous Operations**: For API calls, IAP, and background tasks.
-- **Event-Driven (Backend)**: Cloud Functions triggered by HTTP requests, database changes, or scheduled events.
-- **Object Pooling (Client)**: Implemented for the `ShatteringTitle` animation to manage letter objects efficiently.
-- **Firestore Update Patterns**: Using specific types like `PlayerTopLevelUpdate` to handle updates involving `admin.firestore.FieldValue` while maintaining type safety and adhering to linting rules.
-- **Validation-First Architecture**: Comprehensive data validation at multiple layers (client-side, server-side, and AI generation) ensuring data quality and consistency.
-- **Fail-Safe Content Generation**: Multiple validation checkpoints preventing invalid content from entering the system.
+### RiddleService
 
-## 4. Component Relationships
+- Server-side game logic via Firebase Functions
+- Guess validation and feedback
+- Hint system
+- Coin management
 
-- **React Native App (Client)**: Interacts with Firebase Auth for login, Firestore for data, Cloud Functions for game logic/validation, and Firebase Storage for avatars.
-  - Includes UI components like `GameScreen` which incorporates advanced animations (e.g., `ShatteringTitle` using Matter.js and Reanimated) for enhanced user feedback.
-- **Firebase Cloud Functions**: Access Firestore to read/write game data, user stats, and riddles. Generate new riddles using OpenAI API and store them directly in Firestore. May call external APIs (e.g., OpenAI for riddle generation).
-- **Firestore**: Stores user profiles, game progress, riddle levels (as primary source), IAP transaction records.
-- **Firebase Authentication**: Manages user identities and sessions.
-- **Firebase Storage**: Stores user avatar images.
+## Firebase Functions Pattern
 
-## 5. Critical Implementation Paths
+All game logic is server-authoritative:
 
-- Secure and reliable user authentication flow.
-- Robust Firebase Functions deployment and versioning strategy.
-- Direct riddle storage and retrieval from Firestore without external dependencies.
-- Server-side validation of all game actions and in-app purchases.
-- Scalable riddle generation mechanism, integrated into the classic game progression flow and storing directly to Firestore.
-- Ad integration and IAP validation logic.
-- Automatic content update trigger based on user engagement, storing new riddles directly in Firestore.
-- **Enhanced Content Quality Pipeline**: Multi-layer validation ensuring all generated content meets strict quality standards before storage.
-- **Comprehensive Test Coverage**: 184 passing tests across all Firebase Functions ensuring reliability and data integrity.
+1. **Submit Guess Function**
+
+```typescript
+export const submitGuess = onCall(async (request) => {
+  // Validate user authentication
+  // Process guess against riddle
+  // Return feedback and game state
+  // Award coins based on performance
+});
+```
+
+2. **Get Hint Function**
+
+```typescript
+export const getHint = onCall(async (request) => {
+  // Validate user has sufficient coins
+  // Reveal hint for current riddle
+  // Deduct coin cost
+  // Track hint usage
+});
+```
+
+3. **Spend Coins Function**
+
+```typescript
+export const spendCoins = onCall(async (request) => {
+  // Validate coin balance
+  // Execute transaction atomically
+  // Update user document
+  // Return new balance
+});
+```
+
+## Data Models
+
+### User Document
+
+```typescript
+interface UserData {
+  userId: string;
+  username: string;
+  email: string;
+  coins: number;
+  progress: {
+    classicIndex: number;
+    completedDailyChallenges: string[];
+  };
+  statistics: {
+    gamesPlayed: number;
+    gamesWon: number;
+    totalScore: number;
+    // ... other stats
+  };
+}
+```
+
+### Riddle Document
+
+```typescript
+interface Riddle {
+  riddleId: string;
+  text: string;
+  answer: string;
+  hints: string[];
+  difficulty: number;
+  type: "daily" | "classic" | "tutorial";
+}
+```
+
+## Security Patterns
+
+- Server-side validation for all game actions
+- Atomic Firestore transactions for coin operations
+- User authentication required for all game functions
+- Input validation using Zod schemas
+- Rate limiting on expensive operations
+
+## Error Handling
+
+- Graceful degradation when services are unavailable
+- User-friendly error messages
+- Comprehensive logging for debugging
+- Fallback mechanisms for critical functionality
+
+## State Management
+
+- React Context for global app state
+- Local component state for UI interactions
+- AsyncStorage for user preferences
+- Firestore as single source of truth for game data
+
+### Testing
+
+- **Unified Test Command**: `pnpm run test`
+  - Single command runs all tests
+  - Automatic Firebase emulator management
+  - **Firestore initialization with test data**
+  - Runs Firebase Functions tests first
+  - Then runs React Native tests
+  - Graceful failure handling
+  - Custom script at `scripts/test-all.js`
+- **Test Data**: Automatic population of test riddles and users
+- **Firebase Functions**: 218 tests - all passing
+- **React Native**: 172 tests - running (46 failing due to test logic, not infrastructure)
+- **Total Test Coverage**: 390 tests, 344 passing
+- **Infrastructure**: Both test suites working with proper transformations

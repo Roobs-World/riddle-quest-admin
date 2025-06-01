@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, TouchableOpacity, Modal, Image } from "react-native";
 import { Player } from "../../validation/firestoreSchemas"; // Assuming Player type is available
 import { useAuth } from "../../contexts/AuthContext";
+import CloseButton from "../buttons/CloseButton";
 
 /**
  * Props for the ProfileOverlay component.
@@ -53,7 +54,12 @@ const ProfileOverlay: React.FC<ProfileOverlayProps> = ({
       onRequestClose={onClose}
     >
       <View className="flex-1 justify-center items-center bg-black/50">
-        <View className="bg-white p-6 rounded-lg m-4 w-11/12 max-w-sm">
+        <View className="bg-white p-6 rounded-lg m-4 w-11/12 max-w-sm relative">
+          {/* Close Button in top-right corner */}
+          <View className="absolute top-2 right-2 z-10">
+            <CloseButton onPress={onClose} size={20} />
+          </View>
+
           <Text className="text-2xl font-bold text-gray-800 mb-4">Profile</Text>
 
           {/* Basic Info */}
