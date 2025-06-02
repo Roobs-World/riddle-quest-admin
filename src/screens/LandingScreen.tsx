@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import CustomSafeAreaView from "../components/CustomSafeAreaView";
 import QwordlyLogo from "../components/logos/QwordlyLogo";
 import GoogleSignInButton from "../components/buttons/GoogleSignInButton";
@@ -15,6 +15,7 @@ import { AuthService } from "../services/AuthService";
 import { useAuth } from "../contexts/AuthContext";
 import Error from "../components/text/Error";
 import { type FirebaseAuthTypes } from "@react-native-firebase/auth";
+import { styles } from "../styles/styles";
 
 type RootStackParamList = {
   Landing: undefined;
@@ -182,29 +183,5 @@ const LandingScreen = ({
     </CustomSafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  backgroundImage: {
-    bottom: 0,
-    left: 0,
-    position: "absolute",
-    right: 0,
-    top: "-5%",
-    zIndex: -1,
-  },
-  creditsLink: {
-    fontFamily: "Poppins",
-  },
-  separatorText: {
-    fontFamily: "Poppins",
-  },
-  title: {
-    fontFamily: "PoetsenOne",
-    fontSize: 26,
-    fontWeight: "400",
-    letterSpacing: -0.104,
-    lineHeight: 34.32,
-  },
-});
 
 export default LandingScreen;

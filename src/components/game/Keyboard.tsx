@@ -24,6 +24,65 @@ interface PulseAnimation {
   id: string;
 }
 
+interface PulseCircleProps {
+  pulse: PulseAnimation;
+  pulseSize: number;
+  onRemove: (id: string) => void;
+}
+
+const PulseCircle: React.FC<PulseCircleProps> = ({
+  pulse,
+  pulseSize,
+  onRemove,
+}) => {
+  const scaleValue = useSharedValue(0.3);
+  const opacity = useSharedValue(0.6);
+  const animationCompleted = useRef(false);
+
+  const removePulse = React.useCallback(() => {
+    if (!animationCompleted.current) {
+      animationCompleted.current = true;
+      onRemove(pulse.id);
+    }
+  }, [pulse.id, onRemove]);
+
+  React.useEffect(() => {
+    // Start animations with improved timing
+    scaleValue.value = withTiming(2, { duration: 400 }, (finished) => {
+      if (finished) {
+        runOnJS(removePulse)();
+      }
+    });
+
+    opacity.value = withTiming(0, { duration: 400 });
+
+    return () => {
+      animationCompleted.current = true;
+    };
+  }, [scaleValue, opacity, removePulse]);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scaleValue.value }],
+    opacity: opacity.value,
+  }));
+
+  return (
+    <Animated.View
+      style={[
+        styles.pulseCircle,
+        {
+          left: pulse.x - pulseSize / 2,
+          top: pulse.y - pulseSize / 2,
+          width: pulseSize,
+          height: pulseSize,
+          borderRadius: pulseSize / 2,
+        },
+        animatedStyle,
+      ]}
+    />
+  );
+};
+
 const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress }) => {
   const topRow = ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"];
   const midRow = ["a", "s", "d", "f", "g", "h", "j", "k", "l"];
@@ -32,13 +91,14 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress }) => {
   const [pulses, setPulses] = useState<PulseAnimation[]>([]);
   const keyboardRef = useRef<View>(null);
   const keyRefs = useRef<{ [key: string]: View | null }>({});
-  const pulseIdCounter = useRef(0); // Add counter for truly unique IDs
+  const pulseIdCounter = useRef(0);
 
   // Responsive styles
   const keyHeight = scale(48);
   const keyMargin = scale(1);
   const fontSize = moderateScale(18);
   const containerPadding = isTablet ? scale(16) : scale(8);
+  const pulseSize = scale(60); // Larger pulse for better visibility
 
   const createPulse = (key: string) => {
     const keyRef = keyRefs.current[key];
@@ -48,7 +108,6 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress }) => {
     keyRef.measureLayout(
       keyboardRef.current,
       (x: number, y: number, width: number, height: number) => {
-        // Create truly unique ID with counter and timestamp
         const pulseId = `pulse_${Date.now()}_${++pulseIdCounter.current}`;
 
         // Calculate center of the key
@@ -65,7 +124,7 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress }) => {
         setPulses((prev) => [...prev, newPulse]);
       },
       () => {
-        console.error("Failed to measure key position");
+        console.error("Failed to measure key position for:", key);
       }
     );
   };
@@ -75,60 +134,14 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress }) => {
     onKeyPress(key);
   };
 
-  const PulseCircle: React.FC<{ pulse: PulseAnimation }> = ({ pulse }) => {
-    const scaleValue = useSharedValue(0);
-    const opacity = useSharedValue(0.8);
-    const animationCompleted = useRef(false);
-
-    const removePulse = React.useCallback(() => {
-      if (!animationCompleted.current) {
-        animationCompleted.current = true;
-        setPulses((prev) => prev.filter((p) => p.id !== pulse.id));
-      }
-    }, [pulse.id]);
-
-    React.useEffect(() => {
-      // Start both animations immediately when component mounts
-      // Only the scale animation needs the completion callback since they run simultaneously
-      scaleValue.value = withTiming(1.5, { duration: 600 }, (finished) => {
-        if (finished) {
-          runOnJS(removePulse)();
-        }
-      });
-
-      // Opacity animation runs in parallel
-      opacity.value = withTiming(0, { duration: 600 });
-
-      // Cleanup function to prevent memory leaks
-      return () => {
-        animationCompleted.current = true;
-      };
-    }, [scaleValue, opacity, removePulse]); // Include all dependencies used in the effect
-
-    const animatedStyle = useAnimatedStyle(() => ({
-      transform: [{ scale: scaleValue.value }],
-      opacity: opacity.value,
-    }));
-
-    return (
-      <Animated.View
-        style={[
-          styles.pulseCircle,
-          {
-            left: pulse.x - 20, // Center the pulse on the key
-            top: pulse.y - 20, // Center the pulse on the key
-          },
-          animatedStyle,
-        ]}
-      />
-    );
-  };
+  const handleRemovePulse = React.useCallback((id: string) => {
+    setPulses((prev) => prev.filter((p) => p.id !== id));
+  }, []);
 
   return (
     <View
       ref={keyboardRef}
-      className="items-center relative"
-      style={{ padding: containerPadding }}
+      style={[styles.keyboardContainer, { padding: containerPadding }]}
     >
       {/* Top row */}
       <View className="flex-row mb-1">
@@ -144,6 +157,7 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress }) => {
               margin: keyMargin,
             }}
             onPress={() => handleKeyPress(key)}
+            activeOpacity={0.7}
           >
             <Text
               className="font-bold uppercase text-black"
@@ -169,6 +183,7 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress }) => {
               margin: keyMargin,
             }}
             onPress={() => handleKeyPress(key)}
+            activeOpacity={0.7}
           >
             <Text
               className="font-bold uppercase text-black"
@@ -194,6 +209,7 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress }) => {
               margin: keyMargin,
             }}
             onPress={() => handleKeyPress(key)}
+            activeOpacity={0.7}
           >
             <Text
               className="font-bold uppercase text-black"
@@ -214,28 +230,47 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress }) => {
             margin: keyMargin,
           }}
           onPress={() => handleKeyPress("DELETE")}
+          activeOpacity={0.7}
         >
           <BackspaceIcon width={scale(20)} height={scale(20)} color="#fcfaf4" />
         </TouchableOpacity>
       </View>
 
-      {/* Pulse animations */}
-      {pulses.map((pulse) => (
-        // eslint-disable-next-line react/prop-types
-        <PulseCircle key={pulse.id} pulse={pulse} />
-      ))}
+      {/* Pulse animations overlay */}
+      <View style={styles.pulseContainer} pointerEvents="none">
+        {pulses.map((pulse) => (
+          <PulseCircle
+            key={pulse.id}
+            pulse={pulse}
+            pulseSize={pulseSize}
+            onRemove={handleRemovePulse}
+          />
+        ))}
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  keyboardContainer: {
+    alignItems: "center",
+    position: "relative",
+  },
   pulseCircle: {
     backgroundColor: COLORS.primaryOrange,
-    borderRadius: 20,
-    height: 40,
-    pointerEvents: "none",
+    elevation: 5,
     position: "absolute",
-    width: 40,
+    shadowColor: COLORS.primaryOrange,
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+  },
+  pulseContainer: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 10,
   },
 });
 

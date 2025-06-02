@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, SafeAreaView, Alert, StyleSheet, Text } from "react-native";
+import { View, SafeAreaView, Alert, Text } from "react-native";
 import Header from "../../components/game/Header";
 import Controls from "../../components/game/Controls";
 import BottomNavigationBar from "../../components/game/BottomNavigationBar";
@@ -10,12 +10,7 @@ import { SoundManager } from "../../services/SoundManager";
 import useGameLogic from "../../hooks/useGameLogic";
 import { checkAnyOverlayVisible } from "../../utils/overlayUtils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  useSharedValue,
-  withSequence,
-  withTiming,
-  useAnimatedStyle,
-} from "react-native-reanimated";
+import { useSharedValue, useAnimatedStyle } from "react-native-reanimated";
 import functions from "@react-native-firebase/functions";
 import { getApp } from "@react-native-firebase/app";
 import { GameMode } from "../../contexts/AuthContext";
@@ -32,6 +27,8 @@ import { AppStrings } from "../../constants/AppStrings";
 import { isTablet } from "../../utils/responsive";
 import PulsingSpinner from "../../components/PulsingSpinner";
 import OutOfAttemptsModal from "../../components/modals/OutOfAttemptsModal";
+import HomeBgSvg from "../../../assets/images/home-bg.svg";
+import { styles } from "../../styles/styles";
 
 interface GuessResult {
   outcome: "win" | "loss" | "continue" | "attemptLimitReached";
@@ -843,19 +840,6 @@ const GameScreen: React.FC<GameScreenProps> = ({
     }));
   };
 
-  // Trigger shake animation when shakeKey changes
-  useEffect(() => {
-    if (overlayState.shakeKey > 0) {
-      shakeAnimation.value = withSequence(
-        withTiming(-10, { duration: 50 }),
-        withTiming(10, { duration: 50 }),
-        withTiming(-10, { duration: 50 }),
-        withTiming(10, { duration: 50 }),
-        withTiming(0, { duration: 50 })
-      );
-    }
-  }, [overlayState.shakeKey, shakeAnimation]);
-
   const animatedStyle = useAnimatedStyle(() => {
     return {
       transform: [{ translateX: shakeAnimation.value }],
@@ -864,6 +848,7 @@ const GameScreen: React.FC<GameScreenProps> = ({
 
   return (
     <SafeAreaView className="flex-1 bg-cream-light">
+      <HomeBgSvg width="120%" height="100%" style={styles.backgroundImage} />
       <View
         style={[
           styles.gameContainer,
@@ -1012,17 +997,5 @@ const GameScreen: React.FC<GameScreenProps> = ({
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  gameContainer: {
-    flex: 1,
-  },
-  gameContainerTablet: {
-    paddingHorizontal: 20,
-  },
-  overlayVisible: {
-    opacity: 0.3,
-  },
-});
 
 export default GameScreen;
