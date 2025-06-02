@@ -1,8 +1,9 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text } from "react-native";
 import { AppStrings } from "../../constants/AppStrings";
 import ReusableTextInput from "../shared/ReusableTextInput";
 import Error from "../text/Error";
+import { styles } from "../../styles/styles";
 
 interface UserUsernameInputProps {
   username: string;
@@ -35,12 +36,5 @@ const UserUsernameInput: React.FC<UserUsernameInputProps> = ({
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  labelText: {
-    fontFamily: "PoppinsSemiBold",
-    textAlignVertical: "center",
-  },
-});
 
 export default UserUsernameInput;

@@ -1,7 +1,6 @@
 import React from "react";
+import { View } from "react-native";
 import HintOverlay from "./HintOverlay";
-import HomeOverlay from "./HomeOverlay";
-import PlayOverlay from "./PlayOverlay";
 import ProfileOverlay from "./ProfileOverlay";
 import SettingsOverlay from "./SettingsOverlay";
 import InstructionsOverlay from "./InstructionsOverlay";
@@ -10,7 +9,9 @@ import VictoryLossOverlay from "./VictoryLossOverlay";
 import FullProfileDetailsOverlay from "../../screens/main/FullProfileDetailsOverlay";
 import CoinShopModal from "../shop/CoinShopModal";
 import WatchAdForChanceModal from "../modals/WatchAdForChanceModal";
-import { StyleSheet, View } from "react-native";
+import HomeOverlay from "./HomeOverlay";
+import PlayOverlay from "./PlayOverlay";
+import { styles } from "../../styles/styles";
 
 interface SubmittedGuess {
   guess: string[];
@@ -241,12 +242,5 @@ const GameOverlays: React.FC<GameOverlaysProps> = ({
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  overlayContainer: {
-    flex: 1,
-    justifyContent: "center",
-  },
-});
 
 export default GameOverlays;

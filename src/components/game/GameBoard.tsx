@@ -1,11 +1,12 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View } from "react-native";
 import Animated from "react-native-reanimated";
 import RiddleText from "./RiddleText";
 import GuessGrid from "./GuessGrid";
 import Keyboard from "./Keyboard";
 import QuestionsBackground from "@images/questions.svg";
 import { isTablet } from "../../utils/responsive";
+import { styles } from "../../styles/styles";
 
 interface SubmittedGuess {
   guess: string[];
@@ -73,34 +74,5 @@ const GameBoard: React.FC<GameBoardProps> = ({
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  centerContainer: {
-    flex: 1,
-    justifyContent: "center",
-  },
-  centerContainerTablet: {
-    alignSelf: "center",
-    marginHorizontal: 40,
-    maxWidth: 600,
-    width: "100%",
-  },
-  questionsBackground: {
-    height: 150,
-    opacity: 0.5,
-    position: "absolute",
-    top: -10,
-    width: 335,
-  },
-  riddleContainer: {
-    alignItems: "center",
-    marginVertical: 16,
-    position: "relative",
-  },
-  riddleContainerTablet: {
-    marginVertical: 24,
-    paddingHorizontal: 20,
-  },
-});
 
 export default GameBoard;

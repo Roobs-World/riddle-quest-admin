@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -8,10 +8,7 @@ import Animated, {
 } from "react-native-reanimated";
 import BackspaceIcon from "../icons/BackspaceIcon";
 import { scale, moderateScale, isTablet } from "../../utils/responsive";
-
-const COLORS = {
-  primaryOrange: "#FF8C00",
-};
+import { styles } from "../../styles/styles";
 
 interface KeyboardProps {
   onKeyPress: (key: string) => void;
@@ -250,28 +247,5 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress }) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  keyboardContainer: {
-    alignItems: "center",
-    position: "relative",
-  },
-  pulseCircle: {
-    backgroundColor: COLORS.primaryOrange,
-    elevation: 5,
-    position: "absolute",
-    shadowColor: COLORS.primaryOrange,
-    shadowOffset: {
-      width: 0,
-      height: 0,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
-  },
-  pulseContainer: {
-    ...StyleSheet.absoluteFillObject,
-    zIndex: 10,
-  },
-});
 
 export default Keyboard;

@@ -1,34 +1,22 @@
-import { StyleSheet } from "react-native";
+/**
+ * Qwordly Styles (Legacy Compatibility)
+ *
+ * This file maintains backward compatibility with existing imports while
+ * using the new modular design system architecture.
+ *
+ * The actual implementation is now split across:
+ * - src/styles/tokens/ (design tokens)
+ * - src/styles/components/ (component styles)
+ * - src/styles/utils/ (utility functions)
+ *
+ * For new development, prefer importing directly from the modular system:
+ * - import { COLORS, TYPOGRAPHY } from "../styles"
+ * - import { layoutStyles, buttonStyles } from "../styles"
+ * - import { createButtonStyle } from "../styles"
+ */
 
-export const styles = StyleSheet.create({
-  backgroundImage: {
-    bottom: 0,
-    left: 0,
-    position: "absolute",
-    right: 0,
-    top: "-5%",
-    zIndex: -1,
-  },
-  creditsLink: {
-    fontFamily: "Poppins",
-  },
-  gameContainer: {
-    flex: 1,
-  },
-  gameContainerTablet: {
-    paddingHorizontal: 20,
-  },
-  overlayVisible: {
-    opacity: 0.3,
-  },
-  separatorText: {
-    fontFamily: "Poppins",
-  },
-  title: {
-    fontFamily: "PoetsenOne",
-    fontSize: 26,
-    fontWeight: "400",
-    letterSpacing: -0.104,
-    lineHeight: 34.32,
-  },
-});
+// Re-export everything from the modular design system
+export * from "./index";
+
+// Ensure specific exports are available for backward compatibility
+export { styles, COLORS } from "./index";

@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
-import CustomSafeAreaView from "../components/CustomSafeAreaView";
+import CustomSafeAreaView from "../components/layouts/CustomSafeAreaView";
 import QwordlyLogo from "../components/logos/QwordlyLogo";
 import GoogleSignInButton from "../components/buttons/GoogleSignInButton";
 import FacebookSignInButton from "../components/buttons/FacebookSignInButton";
 import WideButton from "../components/buttons/WideButton";
 import HomeBgSvg from "../../assets/images/home-bg.svg";
 import SignUpButton from "../components/buttons/SignUpButton";
-import PulsingSpinner from "../components/PulsingSpinner";
+import PulsingSpinner from "../components/loading/PulsingSpinner";
 import { AppStrings } from "../constants/AppStrings";
 import Subtitle from "../components/text/Subtitle";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";

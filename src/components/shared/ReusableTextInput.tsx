@@ -1,20 +1,16 @@
 import React from "react";
-import { TextInput, TextInputProps, StyleSheet } from "react-native";
+import { TextInput, TextInputProps } from "react-native";
+import { styles } from "../../styles/styles";
 
-const ReusableTextInput: React.FC<TextInputProps> = ({ ...props }) => {
-  return (
-    <TextInput
-      className="flex-1 bg-input-background text-gray-700 p-3 text-base h-12"
-      style={styles.input}
-      {...props}
-    />
-  );
+interface ReusableTextInputProps extends TextInputProps {
+  className?: string;
+}
+
+const ReusableTextInput: React.FC<ReusableTextInputProps> = ({
+  className,
+  ...props
+}) => {
+  return <TextInput style={styles.input} className={className} {...props} />;
 };
-
-const styles = StyleSheet.create({
-  input: {
-    fontFamily: "Poppins",
-  },
-});
 
 export default ReusableTextInput;

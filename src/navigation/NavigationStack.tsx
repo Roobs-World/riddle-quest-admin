@@ -7,16 +7,14 @@ import ForgotPasswordScreen from "../screens/auth/ForgotPasswordScreen";
 import NewPasswordScreen from "../screens/auth/NewPasswordScreen";
 import GameScreen from "../screens/game/GameScreen";
 import CreditsScreen from "../screens/CreditsScreen";
-import PulsingSpinner from "../components/PulsingSpinner";
+import PulsingSpinner from "../components/loading/PulsingSpinner";
 import { useAuth } from "../contexts/AuthContext";
 import { AppStrings } from "../constants/AppStrings";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text } from "react-native";
 import { fetchClassicRiddleFromFirestore } from "../services/FirestoreService";
+import { styles } from "../styles/styles";
 
 const Stack = createNativeStackNavigator();
-
-// Define a constant for the color #333
-const TEXT_COLOR_DARK_GREY = "#333";
 
 // Wrapper component to handle authentication and data loading for the GameScreen
 const GameScreenWrapper = () => {
@@ -144,21 +142,6 @@ const GameScreenWrapper = () => {
   return <View style={styles.errorContainer} />;
 };
 
-const styles = StyleSheet.create({
-  errorContainer: {
-    alignItems: "center",
-    flex: 1,
-    justifyContent: "center",
-    padding: 20,
-  },
-  errorMessage: {
-    color: TEXT_COLOR_DARK_GREY,
-    fontSize: 16,
-    lineHeight: 24,
-    textAlign: "center",
-  },
-});
-
 /**
  * Component responsible for setting up the main application navigation stack.
  * It defines the different screens available in the authentication and main application flows.
@@ -248,3 +231,5 @@ export const Navigation = () => {
     </Stack.Navigator>
   );
 };
+
+export default Navigation;

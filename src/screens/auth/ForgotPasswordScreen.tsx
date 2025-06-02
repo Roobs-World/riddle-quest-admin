@@ -1,4 +1,4 @@
-import { Text, StyleSheet, TouchableOpacity } from "react-native";
+import { Text, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import PadlockIcon from "@images/padlock.svg";
 import SafeAreaView from "../../components/CustomSafeAreaView";
@@ -15,6 +15,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { type FirebaseAuthTypes } from "@react-native-firebase/auth";
 import HomeBgSvg from "../../../assets/images/home-bg.svg";
 import PulsingSpinner from "../../components/PulsingSpinner";
+import { styles } from "../../styles/styles";
 
 /**
  * Forgot password screen for the authentication flow.
@@ -126,16 +127,5 @@ const ForgotPasswordScreen = ({
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  backgroundImage: {
-    bottom: 0,
-    left: 0,
-    position: "absolute",
-    right: 0,
-    top: "-5%",
-    zIndex: -1,
-  },
-});
 
 export default ForgotPasswordScreen;

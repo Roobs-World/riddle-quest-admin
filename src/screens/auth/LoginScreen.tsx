@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import CustomSafeAreaView from "../../components/CustomSafeAreaView";
 import { AppStrings } from "../../constants/AppStrings";
 import ScreenTitle from "../../components/text/ScreenTitle";
@@ -19,6 +19,7 @@ import { type FirebaseAuthTypes } from "@react-native-firebase/auth";
 import HomeBgSvg from "../../../assets/images/home-bg.svg";
 import { loginSchema, LoginFormData } from "../../validation/authSchemas";
 import { ZodError, ZodFormattedError } from "zod";
+import { styles } from "../../styles/styles";
 
 type AuthStackParamList = {
   Login: undefined;
@@ -215,13 +216,13 @@ const LoginScreen = ({
         />
 
         <TouchableOpacity
-          className="self-end mb-8"
+          className="self-center"
           onPress={() =>
             navigation.navigate(AppStrings.Navigation.FORGOT_PASSWORD)
           }
         >
           <Text
-            className="text-sm text-gray-500"
+            className="text-sm text-black"
             style={styles.forgotPasswordText}
           >
             {AppStrings.AuthStrings.Login.FORGOT_PASSWORD}
@@ -265,19 +266,5 @@ const LoginScreen = ({
     </CustomSafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  backgroundImage: {
-    bottom: 0,
-    left: 0,
-    position: "absolute",
-    right: 0,
-    top: "-5%",
-    zIndex: -1,
-  },
-  forgotPasswordText: {
-    fontFamily: "Poppins",
-  },
-});
 
 export default LoginScreen;

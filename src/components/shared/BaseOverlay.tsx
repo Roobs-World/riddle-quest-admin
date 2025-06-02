@@ -1,6 +1,7 @@
 import React from "react";
-import { View, Modal, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Modal, TouchableOpacity } from "react-native";
 import CloseButton from "../buttons/CloseButton";
+import { styles } from "../../styles/styles";
 
 interface BaseOverlayProps {
   visible: boolean;
@@ -12,8 +13,6 @@ interface BaseOverlayProps {
   overlayStyle?: object;
   contentStyle?: object;
 }
-
-const OVERLAY_BACKGROUND_COLOR = "#2a2a2a";
 
 const BaseOverlay: React.FC<BaseOverlayProps> = ({
   visible,
@@ -45,7 +44,7 @@ const BaseOverlay: React.FC<BaseOverlayProps> = ({
           {showCloseButton && (
             <View
               style={[
-                styles.closeButtonContainer,
+                styles.baseOverlayCloseButtonContainer,
                 closeButtonPosition === "top-left"
                   ? styles.topLeft
                   : styles.topRight,
@@ -60,33 +59,5 @@ const BaseOverlay: React.FC<BaseOverlayProps> = ({
     </Modal>
   );
 };
-
-const styles = StyleSheet.create({
-  closeButtonContainer: {
-    position: "absolute",
-    top: 8,
-    zIndex: 10,
-  },
-  content: {
-    backgroundColor: OVERLAY_BACKGROUND_COLOR,
-    borderRadius: 20,
-    margin: 20,
-    maxHeight: "80%",
-    maxWidth: "90%",
-    padding: 20,
-    position: "relative",
-  },
-  overlay: {
-    alignItems: "center",
-    flex: 1,
-    justifyContent: "center",
-  },
-  topLeft: {
-    left: 8,
-  },
-  topRight: {
-    right: 8,
-  },
-});
 
 export default BaseOverlay;

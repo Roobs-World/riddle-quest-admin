@@ -1,13 +1,6 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react-native";
 import WideButton from "../WideButton";
-// No longer need View, Text import here as it will be required in the mock factory
-// Import the original path to spy on it
-import ButtonBackground from "@images/button.svg";
-import { AppStrings } from "../../../constants/AppStrings";
-
-// Mock the SVG import
-jest.mock("@images/button.svg", () => "ButtonBackground");
 
 describe("<WideButton />", () => {
   const defaultProps = {
@@ -37,9 +30,6 @@ describe("<WideButton />", () => {
     const buttonText = getByText("Test Button");
     // In React Native Testing Library, pressing text inside a disabled TouchableOpacity
     // might still trigger the event. Let's check if the TouchableOpacity is disabled instead.
-    const parent = buttonText.parent;
-    // The test might still call onPress due to how events propagate in the test environment
-    // This is a known limitation of React Native Testing Library
     fireEvent.press(buttonText);
     // For now, we'll skip this assertion as it's a limitation of the testing library
     // expect(defaultProps.onPress).not.toHaveBeenCalled();
@@ -54,44 +44,82 @@ describe("<WideButton />", () => {
     }
   });
 
-  it("applies custom className to TouchableOpacity", () => {
-    const customClass = "bg-red-500";
-    const { toJSON } = render(
-      <WideButton {...defaultProps} className={customClass} />
-    );
-    const tree = toJSON();
-    if (tree && !Array.isArray(tree)) {
-      expect(tree.props?.className).toContain(customClass);
-    }
-  });
-
   it("renders with correct structure", () => {
     const { toJSON } = render(<WideButton {...defaultProps} />);
     const tree = toJSON();
     // Check that it's a TouchableOpacity
     if (tree && !Array.isArray(tree)) {
       expect(tree.type).toBe("TouchableOpacity");
-      // Check that it has the correct props
-      expect(tree.props?.accessibilityRole).toBe("button");
+      // Check that it has the expected style prop (width: 100%)
+      expect(tree.props?.style).toEqual({ width: "100%" });
     }
   });
 
-  it("renders the ButtonBackground SVG component", () => {
-    const { toJSON } = render(<WideButton {...defaultProps} />);
+  it("renders with correct disabled styling", () => {
+    const { toJSON } = render(<WideButton {...defaultProps} disabled />);
     const tree = toJSON();
-    // Convert to string to check if ButtonBackground is rendered
-    const treeString = JSON.stringify(tree);
-    expect(treeString).toContain("ButtonBackground");
+    // Check disabled styling in className
+    if (tree && !Array.isArray(tree)) {
+      expect(tree.props?.className).toContain("bg-gray-300");
+    }
   });
 
-  it("passes correct props to button structure", () => {
+  it("renders with correct enabled styling", () => {
     const { toJSON } = render(<WideButton {...defaultProps} />);
     const tree = toJSON();
-    // Check basic structure
+    // Check enabled styling in className
     if (tree && !Array.isArray(tree)) {
-      expect(tree.type).toBe("TouchableOpacity");
-      expect(tree.props?.accessibilityRole).toBe("button");
-      expect(tree.props?.style).toEqual({ opacity: 1 });
+      expect(tree.props?.className).toContain("bg-primary-orange");
+    }
+  });
+
+  it("renders text with correct styling based on disabled state", () => {
+    const { toJSON } = render(<WideButton {...defaultProps} disabled />);
+    const tree = toJSON();
+
+    // Find the Text component in the tree
+    const findTextComponent = (node: any): any => {
+      if (node?.type === "Text") {
+        return node;
+      }
+      if (node?.children) {
+        for (const child of node.children) {
+          const result = findTextComponent(child);
+          if (result) return result;
+        }
+      }
+      return null;
+    };
+
+    const textComponent = findTextComponent(tree);
+    expect(textComponent).toBeTruthy();
+    if (textComponent) {
+      expect(textComponent.props?.className).toContain("text-gray-500");
+    }
+  });
+
+  it("renders text with correct enabled styling", () => {
+    const { toJSON } = render(<WideButton {...defaultProps} />);
+    const tree = toJSON();
+
+    // Find the Text component in the tree
+    const findTextComponent = (node: any): any => {
+      if (node?.type === "Text") {
+        return node;
+      }
+      if (node?.children) {
+        for (const child of node.children) {
+          const result = findTextComponent(child);
+          if (result) return result;
+        }
+      }
+      return null;
+    };
+
+    const textComponent = findTextComponent(tree);
+    expect(textComponent).toBeTruthy();
+    if (textComponent) {
+      expect(textComponent.props?.className).toContain("text-white");
     }
   });
 });

@@ -1,12 +1,11 @@
 import React from "react";
-import { View, Text, ScrollView, StyleSheet } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import CustomSafeAreaView from "../components/CustomSafeAreaView";
 import QwordlyLogo from "../components/logos/QwordlyLogo";
 import HomeBgSvg from "../../assets/images/home-bg.svg";
 import BackButton from "../components/buttons/BackButton";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-
-const SHADOW_COLOR = "#000"; // Define constant for shadow color
+import { styles } from "../styles/styles";
 
 type RootStackParamList = {
   Landing: undefined;
@@ -132,61 +131,5 @@ const CreditsScreen = ({
     </CustomSafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  backgroundImage: {
-    bottom: 0,
-    left: 0,
-    position: "absolute",
-    right: 0,
-    top: "-5%",
-    zIndex: -1,
-  },
-  creditsSubtitle: {
-    fontFamily: "Poppins",
-    fontSize: 16,
-    lineHeight: 24,
-  },
-  creditsTitle: {
-    fontFamily: "PoetsenOne",
-    fontSize: 26,
-    fontWeight: "400",
-    letterSpacing: -0.104,
-    lineHeight: 34.32,
-  },
-  memberName: {
-    fontFamily: "PoetsenOne",
-    fontSize: 20,
-    fontWeight: "400",
-  },
-  memberRole: {
-    fontFamily: "Poppins",
-    fontSize: 14,
-    lineHeight: 20,
-  },
-  scrollViewContent: {
-    paddingBottom: 40,
-  },
-  teamMemberCard: {
-    elevation: 5,
-    shadowColor: SHADOW_COLOR,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-  },
-  thankYouText: {
-    fontFamily: "Poppins",
-    fontSize: 14,
-    lineHeight: 20,
-  },
-  thankYouTitle: {
-    fontFamily: "PoetsenOne",
-    fontSize: 18,
-    fontWeight: "400",
-  },
-});
 
 export default CreditsScreen;

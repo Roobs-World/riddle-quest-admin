@@ -88,13 +88,13 @@ describe("BottomNavigationBar", () => {
       expect(profileIcon.props.style).toMatchObject({
         width: 24,
         height: 24,
-        backgroundColor: "#222",
+        backgroundColor: "#222222",
       });
 
       expect(settingsIcon.props.style).toMatchObject({
         width: 24,
         height: 24,
-        backgroundColor: "#222",
+        backgroundColor: "#222222",
       });
     });
   });

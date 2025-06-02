@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, StyleSheet, Text, Dimensions } from "react-native";
-import Matter from "matter-js";
+import { View, Text, Dimensions } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
-  runOnJS,
   withTiming,
+  runOnJS,
 } from "react-native-reanimated";
+import Matter from "matter-js";
+import { styles } from "../../styles/styles";
 
 const TILE_SIZE = 56; // 14 * 4 (w-14 from GuessGrid)
 const MAX_POOL_SIZE = 21; // Max tiles we might need (3 rows × 7 columns = 21)
@@ -480,7 +481,11 @@ const ShatteringTiles: React.FC<ShatteringTilesProps> = ({
   };
 
   return (
-    <View ref={sceneRef} style={styles.container} pointerEvents="none">
+    <View
+      ref={sceneRef}
+      style={styles.shatteringTilesContainer}
+      pointerEvents="none"
+    >
       {tilePoolRef.current.map((tile) => {
         // eslint-disable-next-line react-hooks/rules-of-hooks
         const animatedStyle = useAnimatedStyle(() => {
@@ -519,27 +524,5 @@ const ShatteringTiles: React.FC<ShatteringTilesProps> = ({
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    ...StyleSheet.absoluteFillObject,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  tileText: {
-    fontSize: TILE_SIZE * 0.4,
-    fontWeight: "bold",
-  },
-  tileView: {
-    alignItems: "center",
-    borderColor: GRAY_400,
-    borderRadius: 4,
-    borderWidth: 1,
-    height: TILE_SIZE,
-    justifyContent: "center",
-    position: "absolute",
-    width: TILE_SIZE,
-  },
-});
 
 export default ShatteringTiles;

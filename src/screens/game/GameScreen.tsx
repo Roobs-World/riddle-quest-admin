@@ -25,7 +25,7 @@ import { useTileCapture } from "../../hooks/useTileCapture";
 import { useAuth } from "../../contexts/AuthContext";
 import { AppStrings } from "../../constants/AppStrings";
 import { isTablet } from "../../utils/responsive";
-import PulsingSpinner from "../../components/PulsingSpinner";
+import PulsingSpinner from "../../components/loading/PulsingSpinner";
 import OutOfAttemptsModal from "../../components/modals/OutOfAttemptsModal";
 import HomeBgSvg from "../../../assets/images/home-bg.svg";
 import { styles } from "../../styles/styles";
@@ -194,12 +194,7 @@ const GameScreen: React.FC<GameScreenProps> = ({
   const { isRewardedAdReady, loadRewardedAd, showRewardedAd } =
     useRewardedAds();
 
-  const {
-    isAdLoading,
-    loadInterstitialAd,
-    showInterstitialAd,
-    wasAdDisplayed,
-  } = useInterstitialAds();
+  const { loadInterstitialAd, showInterstitialAd } = useInterstitialAds();
 
   // Constants for continue system
   const CONTINUE_COST = 50; // Cost in coins to continue after 3 attempts
@@ -982,18 +977,6 @@ const GameScreen: React.FC<GameScreenProps> = ({
         size={80}
         opacity={0.7}
       />
-
-      {/* Debug info for development */}
-      {__DEV__ && (
-        <View className="absolute bottom-20 left-4 bg-black/70 p-2 rounded">
-          <Text className="text-white text-xs">
-            Ad Loading: {isAdLoading ? "Yes" : "No"}
-          </Text>
-          <Text className="text-white text-xs">
-            Ad Displayed: {wasAdDisplayed ? "Yes" : "No"}
-          </Text>
-        </View>
-      )}
     </SafeAreaView>
   );
 };

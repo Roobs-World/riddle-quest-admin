@@ -1,10 +1,9 @@
 import React from "react";
-import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
+import { View, TouchableOpacity, Text } from "react-native";
 import ProfileIcon from "../icons/ProfileIcon";
 import SettingsIcon from "../icons/SettingsIcon";
 import { AppStrings } from "../../constants/AppStrings";
-
-const ACTIVE_TEXT_COLOR = "#222"; // Define constant for active text color
+import { styles, COLORS } from "../../styles/styles";
 
 export type OverlayType = "profile" | "settings";
 
@@ -59,7 +58,7 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
           <ProfileIcon
             width={24}
             height={24}
-            color={ACTIVE_TEXT_COLOR}
+            color={COLORS.activeTextColor}
             testID="profile-icon"
           />
           <Text className="text-xs mt-1" style={styles.iconColor}>
@@ -97,7 +96,7 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
           <SettingsIcon
             width={24}
             height={24}
-            color={ACTIVE_TEXT_COLOR}
+            color={COLORS.activeTextColor}
             testID="settings-icon"
           />
           <Text className="text-xs mt-1" style={styles.iconColor}>
@@ -108,11 +107,5 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  iconColor: {
-    color: ACTIVE_TEXT_COLOR,
-  },
-});
 
 export default BottomNavigationBar;

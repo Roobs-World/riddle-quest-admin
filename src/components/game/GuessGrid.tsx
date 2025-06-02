@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text } from "react-native";
 import Animated, {
   useSharedValue,
   withSequence,
@@ -11,6 +11,7 @@ import type { SubmittedGuess, Feedback } from "../../hooks/types"; // Import Fee
 import { useTileCapture } from "../../hooks/useTileCapture";
 import ShatteringTiles from "../animations/ShatteringTiles";
 import { scale } from "../../utils/responsive";
+import { styles } from "../../styles/styles";
 
 // Define TileData interface to match the one used in ShatteringTiles
 interface TileData {
@@ -389,12 +390,5 @@ const GuessGrid: React.FC<GuessGridProps> = ({
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  maskingContainer: {
-    minHeight: scale(56) * 3 + scale(2) * 6 + scale(4) * 3,
-    overflow: "hidden", // ROW_HEIGHT * 3
-  },
-});
 
 export default GuessGrid;

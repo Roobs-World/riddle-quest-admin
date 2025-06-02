@@ -1,13 +1,7 @@
 import React, { useRef, useEffect, useMemo } from "react";
-import {
-  Animated,
-  Easing,
-  View,
-  Modal,
-  Dimensions,
-  StyleSheet,
-} from "react-native";
+import { Animated, Easing, View, Modal, Dimensions } from "react-native";
 import Svg, { Circle } from "react-native-svg";
+import { styles } from "../styles/styles";
 
 // Turn the SVG <Circle> into an Animated component
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
@@ -177,27 +171,6 @@ const PulsingSpinner = React.memo(function PulsingSpinner({
 
   // Otherwise, render as inline component
   return spinnerContent;
-});
-
-const styles = StyleSheet.create({
-  overlayContainer: {
-    alignItems: "center",
-    bottom: 0,
-    justifyContent: "center",
-    left: 0,
-    position: "absolute",
-    right: 0,
-    top: 0,
-    zIndex: 9999,
-  },
-  spinnerContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-    overflow: "hidden",
-  },
-  svgContainer: {
-    position: "absolute",
-  },
 });
 
 export default PulsingSpinner;

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { View, TouchableOpacity, Text, Alert, StyleSheet } from "react-native";
+import { View, TouchableOpacity, Text, Alert } from "react-native";
 import { createMissingRiddles } from "../../utils/createMissingRiddles";
+import { styles } from "../../styles/styles";
 
 const COLORS = {
   lightGray: "#f0f0f0",
@@ -34,44 +35,22 @@ export const RiddleRegenerationButton: React.FC = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Debug: Riddle Regeneration</Text>
+    <View style={styles.riddleRegenerationContainer}>
+      <Text style={styles.riddleRegenerationTitle}>
+        Debug: Riddle Regeneration
+      </Text>
       <TouchableOpacity
         style={[
-          styles.button,
+          styles.riddleRegenerationButton,
           { backgroundColor: isLoading ? COLORS.darkGray : COLORS.blue },
         ]}
         onPress={handleRegenerateRiddles}
         disabled={isLoading}
       >
-        <Text style={styles.buttonText}>
+        <Text style={styles.riddleRegenerationButtonText}>
           {isLoading ? "Creating Riddles..." : "Create Missing Riddles"}
         </Text>
       </TouchableOpacity>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  button: {
-    alignItems: "center",
-    borderRadius: 8,
-    padding: 15,
-  },
-  buttonText: {
-    color: COLORS.white,
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  container: {
-    backgroundColor: COLORS.lightGray,
-    borderRadius: 8,
-    margin: 10,
-    padding: 20,
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
-});

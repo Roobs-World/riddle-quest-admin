@@ -9,7 +9,7 @@ import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { AuthProvider } from "./src/contexts/AuthContext";
 import { Navigation } from "./src/navigation/NavigationStack";
 import AppLovinMAX, { Configuration } from "react-native-applovin-max";
-import PulsingSpinner from "./src/components/PulsingSpinner";
+import PulsingSpinner from "./src/components/loading/PulsingSpinner";
 
 export default function App() {
   const [isInitialized, setIsInitialized] = useState(false);

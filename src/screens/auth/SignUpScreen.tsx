@@ -1,14 +1,8 @@
 import React, { useReducer, useState, useMemo } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  StyleSheet,
-} from "react-native";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import ProgressBar from "../../components/shared/ProgressBar";
 import CheckboxIcon from "../../components/icons/CheckboxIcon";
-import CustomSafeAreaView from "../../components/CustomSafeAreaView";
+import CustomSafeAreaView from "../../components/layouts/CustomSafeAreaView";
 import { AppStrings } from "../../constants/AppStrings";
 import ScreenTitle from "../../components/text/ScreenTitle";
 import WideButton from "../../components/buttons/WideButton";
@@ -19,15 +13,13 @@ import UserUsernameInput from "../../components/inputFields/UserUsernameInput";
 import PasswordMatch from "../../components/text/PasswordMatch";
 import Error from "../../components/text/Error";
 import BackButton from "../../components/buttons/BackButton";
-import PulsingSpinner from "../../components/PulsingSpinner";
+import PulsingSpinner from "../../components/loading/PulsingSpinner";
 import { AuthService } from "../../services/AuthService";
 import { signUpSchema, SignUpFormData } from "../../validation/authSchemas";
 import { ZodError, ZodFormattedError } from "zod";
 import HomeBgSvg from "../../../assets/images/home-bg.svg";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-
-// Color constants
-const COLOR_TRANSPARENT = "transparent";
+import { styles } from "../../styles/styles";
 
 /**
  * Defines the structure of the password state managed by the reducer.
@@ -275,9 +267,13 @@ const SignUpScreen = ({ navigation }: { navigation: NavigationProp }) => {
   ]);
 
   return (
-    <View style={styles.container}>
-      <HomeBgSvg width="120%" height="100%" style={styles.backgroundSvg} />
-      <CustomSafeAreaView style={styles.safeArea}>
+    <View style={styles.signUpContainer}>
+      <HomeBgSvg
+        width="120%"
+        height="100%"
+        style={styles.signUpBackgroundSvg}
+      />
+      <CustomSafeAreaView style={styles.signUpSafeArea}>
         <AuthLayout>
           <View className="relative w-full mb-8">
             <BackButton navigation={navigation} />
@@ -392,22 +388,5 @@ const SignUpScreen = ({ navigation }: { navigation: NavigationProp }) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  backgroundSvg: {
-    bottom: 0,
-    left: 0,
-    position: "absolute",
-    right: 0,
-    top: 0,
-    zIndex: -1,
-  },
-  container: {
-    flex: 1,
-  },
-  safeArea: {
-    backgroundColor: COLOR_TRANSPARENT,
-  },
-});
 
 export default SignUpScreen;

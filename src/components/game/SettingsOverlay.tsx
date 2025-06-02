@@ -7,7 +7,6 @@ import {
   SafeAreaView,
   Switch, // Import Switch component for toggles
   Alert, // Import Alert component
-  StyleSheet, // Import StyleSheet
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import auth from "@react-native-firebase/auth"; // Correct import for auth module
@@ -15,6 +14,7 @@ import crashlytics from "@react-native-firebase/crashlytics"; // Import Firebase
 import Constants from "expo-constants"; // Import Constants for environment variables
 import { AppStrings } from "../..//constants/AppStrings";
 import CloseButton from "../buttons/CloseButton";
+import { styles } from "../../styles/styles";
 
 /**
  * Props for the SettingsOverlay component.
@@ -181,11 +181,5 @@ const SettingsOverlay: React.FC<SettingsOverlayProps> = ({
     </Modal>
   );
 };
-
-const styles = StyleSheet.create({
-  iconSpacing: {
-    marginRight: 8,
-  },
-});
 
 export default SettingsOverlay;

@@ -1,17 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, StyleSheet, Text, Dimensions } from "react-native";
-import Matter from "matter-js";
+import { View, Text, Dimensions } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   runOnJS,
 } from "react-native-reanimated";
+import Matter from "matter-js";
+import { styles } from "../../styles/styles";
 
 const LETTER_SIZE = 40;
 const MAX_POOL_SIZE = 20; // Reduced to a reasonable number for individual shared values
 const FIXED_DELTA = 16.67; // ~60 FPS
 const OFF_SCREEN_THRESHOLD = 200; // How far off-screen before recycling
-const LETTER_TEXT_COLOR = "#333"; // Letter text color constant
 
 interface ShatteringTitleProps {
   title: string;
@@ -376,7 +376,11 @@ const ShatteringTitle: React.FC<ShatteringTitleProps> = ({
   if (!isMounted) return null; // Don't render until pool is initialized
 
   return (
-    <View ref={sceneRef} style={styles.container} pointerEvents="none">
+    <View
+      ref={sceneRef}
+      style={styles.shatteringContainer}
+      pointerEvents="none"
+    >
       {letterPoolRef.current.map((letter) => {
         // eslint-disable-next-line react-hooks/rules-of-hooks
         const animatedStyle = useAnimatedStyle(() => {
@@ -401,26 +405,5 @@ const ShatteringTitle: React.FC<ShatteringTitleProps> = ({
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    ...StyleSheet.absoluteFillObject, // Fill parent and allow clicks to pass through
-    alignItems: "center",
-    justifyContent: "center",
-    // backgroundColor: 'rgba(200, 200, 200, 0.1)', // For debugging view bounds
-  },
-  letterText: {
-    color: LETTER_TEXT_COLOR,
-    fontSize: LETTER_SIZE * 0.8, // Adjust to fit well within the view
-    fontWeight: "bold",
-  },
-  letterView: {
-    alignItems: "center",
-    height: LETTER_SIZE,
-    justifyContent: "center",
-    position: "absolute", // Important for positioning with transform
-    width: LETTER_SIZE,
-  },
-});
 
 export default ShatteringTitle;

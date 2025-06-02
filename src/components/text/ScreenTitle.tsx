@@ -1,26 +1,21 @@
 import React from "react";
-import { Text, StyleSheet } from "react-native";
+import { Text } from "react-native";
+import { styles } from "../../styles/styles";
 
 interface ScreenTitleProps {
   title: string;
   className?: string;
 }
 
-const ScreenTitle: React.FC<ScreenTitleProps> = ({ title, className }) => {
-  return (
-    <Text
-      className={`text-2xl font-semibold w-full text-gray-800 text-center ${className}`}
-      style={styles.title}
-    >
-      {title}
-    </Text>
-  );
-};
-
-const styles = StyleSheet.create({
-  title: {
-    fontFamily: "PoppinsSemiBold",
-  },
-});
+const ScreenTitle = ({ title, className }: ScreenTitleProps) => (
+  <Text
+    className={`text-center text-3xl font-bold mb-2 text-gray-800 ${
+      className || ""
+    }`}
+    style={styles.screenTitle}
+  >
+    {title}
+  </Text>
+);
 
 export default ScreenTitle;

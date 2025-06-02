@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { StyleSheet } from "react-native";
 import UserPasswordInput from "../../components/inputFields/UserPasswordInput";
 import WideButton from "../../components/buttons/WideButton";
 import { AppStrings } from "../../constants/AppStrings";
@@ -10,6 +9,7 @@ import ScreenTitle from "../../components/text/ScreenTitle";
 import Subtitle from "../../components/text/Subtitle";
 import HomeBgSvg from "../../../assets/images/home-bg.svg";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { styles } from "../../styles/styles";
 
 type AuthStackParamList = {
   Login: undefined;
@@ -83,14 +83,3 @@ export default function NewPasswordScreen({
     </CustomSafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  backgroundImage: {
-    bottom: 0,
-    left: 0,
-    position: "absolute",
-    right: 0,
-    top: "-5%",
-    zIndex: -1,
-  },
-});

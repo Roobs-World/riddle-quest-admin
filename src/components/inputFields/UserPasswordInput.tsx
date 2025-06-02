@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import { AppStrings } from "../../constants/AppStrings";
 import ReusableTextInput from "../shared/ReusableTextInput";
 import PasswordVisibilityIcon from "../icons/PasswordVisibilityIcon";
 import Error from "../text/Error";
+import { styles } from "../../styles/styles";
 
 interface UserPasswordInputProps {
   password: string;
@@ -53,12 +54,5 @@ const UserPasswordInput: React.FC<UserPasswordInputProps> = ({
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  labelText: {
-    fontFamily: "PoppinsSemiBold",
-    textAlignVertical: "center",
-  },
-});
 
 export default UserPasswordInput;
