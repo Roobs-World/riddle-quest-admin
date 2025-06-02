@@ -14,7 +14,7 @@ import crashlytics from "@react-native-firebase/crashlytics"; // Import Firebase
 import Constants from "expo-constants"; // Import Constants for environment variables
 import { AppStrings } from "../..//constants/AppStrings";
 import CloseButton from "../buttons/CloseButton";
-import { styles } from "../../styles/styles";
+import { COLORS } from "../../styles";
 
 /**
  * Props for the SettingsOverlay component.
@@ -75,9 +75,9 @@ const SettingsOverlay: React.FC<SettingsOverlayProps> = ({
               {AppStrings.Settings.SOUND_TOGGLE}
             </Text>
             <Switch
-              trackColor={{ false: "#767577", true: "#81b0ff" }}
-              thumbColor={isSoundEnabled ? "#f5dd4b" : "#f4f3f4"}
-              ios_backgroundColor="#3e3e3e"
+              trackColor={{ false: COLORS.gray500, true: COLORS.info }}
+              thumbColor={isSoundEnabled ? COLORS.warning : COLORS.gray200}
+              ios_backgroundColor={COLORS.gray700}
               onValueChange={onToggleSound}
               value={isSoundEnabled}
             />
@@ -89,9 +89,9 @@ const SettingsOverlay: React.FC<SettingsOverlayProps> = ({
               {AppStrings.Settings.HAPTICS_TOGGLE}
             </Text>
             <Switch
-              trackColor={{ false: "#767577", true: "#81b0ff" }}
-              thumbColor={isHapticsEnabled ? "#f5dd4b" : "#f4f3f4"}
-              ios_backgroundColor="#3e3e3e"
+              trackColor={{ false: COLORS.gray500, true: COLORS.info }}
+              thumbColor={isHapticsEnabled ? COLORS.warning : COLORS.gray200}
+              ios_backgroundColor={COLORS.gray700}
               onValueChange={onToggleHaptics}
               value={isHapticsEnabled}
             />
@@ -102,13 +102,8 @@ const SettingsOverlay: React.FC<SettingsOverlayProps> = ({
             className="bg-gray-200 px-4 py-3 rounded-md mb-3 w-full items-center flex-row justify-center"
             onPress={onPressHelp}
           >
-            <Icon
-              name="help-outline"
-              size={20}
-              color="#4b5563"
-              style={styles.iconSpacing}
-            />
-            <Text className="text-gray-800 font-semibold">
+            <Icon name="help-outline" size={20} color={COLORS.gray600} />
+            <Text className="text-gray-800 font-semibold ml-2">
               {AppStrings.Settings.HELP_BUTTON}
             </Text>
           </TouchableOpacity>
@@ -129,13 +124,8 @@ const SettingsOverlay: React.FC<SettingsOverlayProps> = ({
               }
             }}
           >
-            <Icon
-              name="logout"
-              size={20}
-              color="#ffffff"
-              style={styles.iconSpacing}
-            />
-            <Text className="text-white font-semibold">
+            <Icon name="logout" size={20} color={COLORS.white} />
+            <Text className="text-white font-semibold ml-2">
               {AppStrings.Settings.LOGOUT_BUTTON}
             </Text>
           </TouchableOpacity>
@@ -165,13 +155,8 @@ const SettingsOverlay: React.FC<SettingsOverlayProps> = ({
                 );
               }}
             >
-              <Icon
-                name="bug-report"
-                size={20}
-                color="#ffffff"
-                style={styles.iconSpacing}
-              />
-              <Text className="text-white font-semibold">
+              <Icon name="bug-report" size={20} color={COLORS.white} />
+              <Text className="text-white font-semibold ml-2">
                 {AppStrings.Settings.TEST_CRASH_BUTTON}
               </Text>
             </TouchableOpacity>

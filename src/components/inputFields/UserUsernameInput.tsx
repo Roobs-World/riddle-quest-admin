@@ -3,7 +3,7 @@ import { View, Text } from "react-native";
 import { AppStrings } from "../../constants/AppStrings";
 import ReusableTextInput from "../shared/ReusableTextInput";
 import Error from "../text/Error";
-import { styles } from "../../styles/styles";
+import { styles } from "../../styles";
 
 interface UserUsernameInputProps {
   username: string;

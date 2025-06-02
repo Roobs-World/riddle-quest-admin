@@ -4,7 +4,7 @@ import { AppStrings } from "../../constants/AppStrings";
 import ReusableTextInput from "../shared/ReusableTextInput";
 import PasswordVisibilityIcon from "../icons/PasswordVisibilityIcon";
 import Error from "../text/Error";
-import { styles } from "../../styles/styles";
+import { styles } from "../../styles";
 
 interface UserPasswordInputProps {
   password: string;

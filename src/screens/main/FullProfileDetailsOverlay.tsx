@@ -715,7 +715,6 @@ const FullProfileDetailsOverlay: React.FC<FullProfileDetailsOverlayProps> = ({
                 setIsAvatarOptionsModalVisible(false);
                 setIsPreloadedAvatarsModalVisible(true);
               }}
-              className="mt-3"
             />
 
             {/* Option: Use Facebook Photo (Conditional) */}
@@ -723,7 +722,6 @@ const FullProfileDetailsOverlay: React.FC<FullProfileDetailsOverlayProps> = ({
               <WideButton
                 buttonText="Use Facebook Photo"
                 onPress={handleUseFacebookAvatar}
-                className="mt-3"
               />
             )}
 
@@ -731,7 +729,6 @@ const FullProfileDetailsOverlay: React.FC<FullProfileDetailsOverlayProps> = ({
             <WideButton
               buttonText="Cancel"
               onPress={handleCloseAvatarOptionsModal}
-              className="mt-6 bg-red-500"
             />
           </View>
         </SafeAreaView>

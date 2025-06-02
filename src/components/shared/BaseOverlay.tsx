@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Modal, TouchableOpacity } from "react-native";
 import CloseButton from "../buttons/CloseButton";
-import { styles } from "../../styles/styles";
+import { styles } from "../../styles";
 
 interface BaseOverlayProps {
   visible: boolean;

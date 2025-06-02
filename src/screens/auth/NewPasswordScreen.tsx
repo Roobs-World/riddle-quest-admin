@@ -3,20 +3,20 @@ import UserPasswordInput from "../../components/inputFields/UserPasswordInput";
 import WideButton from "../../components/buttons/WideButton";
 import { AppStrings } from "../../constants/AppStrings";
 import PadlockIcon from "@images/padlock.svg";
-import CustomSafeAreaView from "../../components/CustomSafeAreaView";
+import CustomSafeAreaView from "../../components/layouts/CustomSafeAreaView";
 import AuthLayout from "../../components/layouts/AuthLayout";
 import ScreenTitle from "../../components/text/ScreenTitle";
 import Subtitle from "../../components/text/Subtitle";
 import HomeBgSvg from "../../../assets/images/home-bg.svg";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { styles } from "../../styles/styles";
+import { styles } from "../../styles";
 
 type AuthStackParamList = {
-  Login: undefined;
-  SignUp: undefined;
-  ForgotPassword: undefined;
-  NewPassword: undefined;
-  Landing: undefined;
+  Login: object | undefined;
+  SignUp: object | undefined;
+  ForgotPassword: object | undefined;
+  NewPassword: object | undefined;
+  Landing: object | undefined;
 };
 
 type NewPasswordScreenNavigationProp = NativeStackNavigationProp<

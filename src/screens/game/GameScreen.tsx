@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { View, SafeAreaView, Alert, Text } from "react-native";
+import {
+  SafeAreaView,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import Header from "../../components/game/Header";
 import Controls from "../../components/game/Controls";
 import BottomNavigationBar from "../../components/game/BottomNavigationBar";
@@ -28,7 +33,7 @@ import { isTablet } from "../../utils/responsive";
 import PulsingSpinner from "../../components/loading/PulsingSpinner";
 import OutOfAttemptsModal from "../../components/modals/OutOfAttemptsModal";
 import HomeBgSvg from "../../../assets/images/home-bg.svg";
-import { styles } from "../../styles/styles";
+import { styles } from "../../styles";
 
 interface GuessResult {
   outcome: "win" | "loss" | "continue" | "attemptLimitReached";
@@ -164,9 +169,6 @@ const GameScreen: React.FC<GameScreenProps> = ({
     guesses,
     currentGuess,
     gameOver,
-    attemptsUsed,
-    attemptsRemaining,
-    hasUsedContinue,
     setCurrentGuess,
     processGuess,
     continueGame,
@@ -844,12 +846,13 @@ const GameScreen: React.FC<GameScreenProps> = ({
   return (
     <SafeAreaView className="flex-1 bg-cream-light">
       <HomeBgSvg width="120%" height="100%" style={styles.backgroundImage} />
-      <View
+      <KeyboardAvoidingView
         style={[
           styles.gameContainer,
           isAnyOverlayVisible && styles.overlayVisible,
           isTablet && styles.gameContainerTablet,
         ]}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <Header
           userCoins={userCoins}
@@ -875,19 +878,7 @@ const GameScreen: React.FC<GameScreenProps> = ({
           onKeyPress={handleKeyPress}
           isAnyOverlayVisible={isAnyOverlayVisible}
         />
-      </View>
-
-      {/* Game Info - Show attempts remaining */}
-      {!isAnyOverlayVisible && !gameOver && (
-        <View className="px-4 py-2">
-          <Text className="text-center text-gray-600">
-            Attempts: {attemptsUsed}/3 {hasUsedContinue && "(+3)"}
-          </Text>
-          <Text className="text-center text-gray-500 text-sm">
-            {attemptsRemaining} remaining
-          </Text>
-        </View>
-      )}
+      </KeyboardAvoidingView>
 
       <GameOverlays
         // Hint Overlay

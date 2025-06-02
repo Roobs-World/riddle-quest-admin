@@ -1,7 +1,7 @@
 import React from "react";
 import { TouchableOpacity, Text } from "react-native";
 import FacebookIcon from "../icons/FacebookIcon";
-import { styles } from "../../styles/styles";
+import { styles } from "../../styles";
 
 interface FacebookSignInButtonProps {
   onPress: () => void;

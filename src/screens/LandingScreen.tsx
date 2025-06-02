@@ -15,7 +15,7 @@ import { AuthService } from "../services/AuthService";
 import { useAuth } from "../contexts/AuthContext";
 import Error from "../components/text/Error";
 import { type FirebaseAuthTypes } from "@react-native-firebase/auth";
-import { styles } from "../styles/styles";
+import { styles } from "../styles";
 
 type RootStackParamList = {
   Landing: undefined;

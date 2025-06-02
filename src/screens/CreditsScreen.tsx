@@ -1,20 +1,20 @@
 import React from "react";
 import { View, Text, ScrollView } from "react-native";
-import CustomSafeAreaView from "../components/CustomSafeAreaView";
+import CustomSafeAreaView from "../components/layouts/CustomSafeAreaView";
 import QwordlyLogo from "../components/logos/QwordlyLogo";
 import HomeBgSvg from "../../assets/images/home-bg.svg";
 import BackButton from "../components/buttons/BackButton";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { styles } from "../styles/styles";
+import { styles } from "../styles";
 
 type RootStackParamList = {
-  Landing: undefined;
-  Login: undefined;
-  SignUp: undefined;
-  ForgotPassword: undefined;
-  NewPassword: undefined;
-  Game: undefined;
-  Credits: undefined;
+  Landing: object | undefined;
+  Login: object | undefined;
+  SignUp: object | undefined;
+  ForgotPassword: object | undefined;
+  NewPassword: object | undefined;
+  Game: object | undefined;
+  Credits: object | undefined;
 };
 
 type CreditsScreenNavigationProp = NativeStackNavigationProp<

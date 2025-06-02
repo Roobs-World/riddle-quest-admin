@@ -1,7 +1,7 @@
 import { Text, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import PadlockIcon from "@images/padlock.svg";
-import SafeAreaView from "../../components/CustomSafeAreaView";
+import SafeAreaView from "../../components/layouts/CustomSafeAreaView";
 import AuthLayout from "../../components/layouts/AuthLayout";
 import { AuthService } from "../../services/AuthService";
 import { validateEmail } from "../../utils/emailValidation";
@@ -14,33 +14,28 @@ import Error from "../../components/text/Error";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { type FirebaseAuthTypes } from "@react-native-firebase/auth";
 import HomeBgSvg from "../../../assets/images/home-bg.svg";
-import PulsingSpinner from "../../components/PulsingSpinner";
-import { styles } from "../../styles/styles";
+import PulsingSpinner from "../../components/loading/PulsingSpinner";
+import { styles } from "../../styles";
 
 /**
  * Forgot password screen for the authentication flow.
  */
 
 type RootStackParamList = {
-  Landing: undefined;
-  Login: undefined;
-  SignUp: undefined;
-  ForgotPassword: undefined;
-  NewPassword: undefined;
-  Game: undefined;
-  Credits: undefined;
+  Landing: object | undefined;
+  Login: object | undefined;
+  SignUp: object | undefined;
+  ForgotPassword: object | undefined;
+  NewPassword: object | undefined;
+  Game: object | undefined;
+  Credits: object | undefined;
 };
 
-type ForgotPasswordScreenNavigationProp = NativeStackNavigationProp<
-  RootStackParamList,
-  "ForgotPassword"
->;
+interface ForgotPasswordScreenProps {
+  navigation: NativeStackNavigationProp<RootStackParamList>;
+}
 
-const ForgotPasswordScreen = ({
-  navigation,
-}: {
-  navigation: ForgotPasswordScreenNavigationProp;
-}) => {
+const ForgotPasswordScreen = ({ navigation }: ForgotPasswordScreenProps) => {
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string>("");

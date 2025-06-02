@@ -11,7 +11,7 @@ import CoinShopModal from "../shop/CoinShopModal";
 import WatchAdForChanceModal from "../modals/WatchAdForChanceModal";
 import HomeOverlay from "./HomeOverlay";
 import PlayOverlay from "./PlayOverlay";
-import { styles } from "../../styles/styles";
+import { styles } from "../../styles";
 
 interface SubmittedGuess {
   guess: string[];

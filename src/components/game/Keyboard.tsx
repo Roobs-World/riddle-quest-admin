@@ -8,7 +8,7 @@ import Animated, {
 } from "react-native-reanimated";
 import BackspaceIcon from "../icons/BackspaceIcon";
 import { scale, moderateScale, isTablet } from "../../utils/responsive";
-import { styles } from "../../styles/styles";
+import { styles } from "../../styles";
 
 interface KeyboardProps {
   onKeyPress: (key: string) => void;

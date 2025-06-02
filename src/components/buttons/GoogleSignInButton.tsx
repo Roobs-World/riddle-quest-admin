@@ -1,7 +1,7 @@
 import React from "react";
 import { TouchableOpacity, Text } from "react-native";
 import GoogleIcon from "../icons/GoogleIcon";
-import { styles } from "../../styles/styles";
+import { styles } from "../../styles";
 
 interface GoogleSignInButtonProps {
   onPress: () => void;

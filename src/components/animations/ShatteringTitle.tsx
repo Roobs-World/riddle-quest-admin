@@ -6,7 +6,7 @@ import Animated, {
   runOnJS,
 } from "react-native-reanimated";
 import Matter from "matter-js";
-import { styles } from "../../styles/styles";
+import { styles } from "../../styles";
 
 const LETTER_SIZE = 40;
 const MAX_POOL_SIZE = 20; // Reduced to a reasonable number for individual shared values

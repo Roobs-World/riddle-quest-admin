@@ -3,7 +3,7 @@ import { View, TouchableOpacity, Text } from "react-native";
 import ProfileIcon from "../icons/ProfileIcon";
 import SettingsIcon from "../icons/SettingsIcon";
 import { AppStrings } from "../../constants/AppStrings";
-import { styles, COLORS } from "../../styles/styles";
+import { styles, COLORS } from "../../styles";
 
 export type OverlayType = "profile" | "settings";
 

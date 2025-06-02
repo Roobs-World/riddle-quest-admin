@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, TouchableOpacity, Text, Alert } from "react-native";
 import { createMissingRiddles } from "../../utils/createMissingRiddles";
-import { styles } from "../../styles/styles";
+import { styles } from "../../styles";
 
 const COLORS = {
   lightGray: "#f0f0f0",

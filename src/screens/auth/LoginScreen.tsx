@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
-import CustomSafeAreaView from "../../components/CustomSafeAreaView";
+import CustomSafeAreaView from "../../components/layouts/CustomSafeAreaView";
 import { AppStrings } from "../../constants/AppStrings";
 import ScreenTitle from "../../components/text/ScreenTitle";
 import AuthLayout from "../../components/layouts/AuthLayout";
@@ -14,18 +14,18 @@ import Error from "../../components/text/Error";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { AuthService } from "../../services/AuthService";
 import { useAuth } from "../../contexts/AuthContext";
-import PulsingSpinner from "../../components/PulsingSpinner";
+import PulsingSpinner from "../../components/loading/PulsingSpinner";
 import { type FirebaseAuthTypes } from "@react-native-firebase/auth";
 import HomeBgSvg from "../../../assets/images/home-bg.svg";
 import { loginSchema, LoginFormData } from "../../validation/authSchemas";
 import { ZodError, ZodFormattedError } from "zod";
-import { styles } from "../../styles/styles";
+import { styles } from "../../styles";
 
 type AuthStackParamList = {
-  Login: undefined;
-  SignUp: undefined;
-  ForgotPassword: undefined;
-  Landing: undefined;
+  Login: object | undefined;
+  SignUp: object | undefined;
+  ForgotPassword: object | undefined;
+  Landing: object | undefined;
 };
 
 type LoginScreenNavigationProp = NativeStackNavigationProp<

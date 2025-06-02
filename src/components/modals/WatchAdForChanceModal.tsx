@@ -3,7 +3,7 @@ import { View, Text, Modal, TouchableOpacity } from "react-native";
 import WideButton from "../buttons/WideButton";
 import { AppStrings } from "../../constants/AppStrings";
 import Icon from "react-native-vector-icons/Ionicons";
-import { styles } from "../../styles/styles";
+import { styles } from "../../styles";
 
 interface WatchAdForChanceModalProps {
   visible: boolean;

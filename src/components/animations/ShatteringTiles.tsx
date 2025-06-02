@@ -7,14 +7,13 @@ import Animated, {
   runOnJS,
 } from "react-native-reanimated";
 import Matter from "matter-js";
-import { styles } from "../../styles/styles";
+import { styles, COLORS } from "../../styles";
 
 const TILE_SIZE = 56; // 14 * 4 (w-14 from GuessGrid)
 const MAX_POOL_SIZE = 21; // Max tiles we might need (3 rows × 7 columns = 21)
 const FIXED_DELTA = 16.67; // ~60 FPS
 const OFF_SCREEN_THRESHOLD = 200;
 const FADE_DURATION = 2000; // 2 seconds fade out
-const GRAY_400 = "#9ca3af";
 
 interface TileData {
   letter: string | null;
@@ -448,11 +447,11 @@ const ShatteringTiles: React.FC<ShatteringTilesProps> = ({
   const getBackgroundStyle = (backgroundColor: string) => {
     switch (backgroundColor) {
       case "bg-green-500":
-        return { backgroundColor: "#10b981" };
+        return { backgroundColor: COLORS.tileCorrect };
       case "bg-primary-orange":
-        return { backgroundColor: "#f97316" };
+        return { backgroundColor: COLORS.tilePartial };
       case "bg-red-500":
-        return { backgroundColor: "#ef4444" };
+        return { backgroundColor: COLORS.tileIncorrect };
       default:
         return { backgroundColor: "transparent" };
     }
@@ -462,7 +461,7 @@ const ShatteringTiles: React.FC<ShatteringTilesProps> = ({
   const getBorderStyle = (borderColor: string) => {
     switch (borderColor) {
       case "gray-400":
-        return { borderColor: GRAY_400 };
+        return { borderColor: COLORS.gray400 };
       default:
         return { borderColor: "transparent" };
     }
@@ -472,11 +471,11 @@ const ShatteringTiles: React.FC<ShatteringTilesProps> = ({
   const getTextColor = (textColor: string) => {
     switch (textColor) {
       case "text-white":
-        return "#ffffff";
+        return COLORS.white;
       case "text-gray-800":
-        return "#1f2937";
+        return COLORS.gray800;
       default:
-        return "#1f2937";
+        return COLORS.gray800;
     }
   };
 

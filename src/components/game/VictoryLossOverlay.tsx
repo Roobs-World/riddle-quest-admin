@@ -82,7 +82,6 @@ const VictoryLossOverlay: React.FC<VictoryLossOverlayProps> = ({
           <WideButton
             buttonText={isWin ? "Next Level" : "Retry"}
             onPress={isWin ? onNext : onRetry}
-            className="mb-3"
           />
           <WideButton buttonText="Home" onPress={onHome} />
         </View>

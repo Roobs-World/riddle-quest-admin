@@ -112,7 +112,6 @@ const CoinShopModal: React.FC<CoinShopModalProps> = ({
                     <WideButton
                       buttonText="Buy"
                       onPress={() => onPurchaseProduct(product.productId)}
-                      className="ml-4 bg-green-500 px-4 py-2 text-sm"
                       disabled={loading}
                     />
                   </View>

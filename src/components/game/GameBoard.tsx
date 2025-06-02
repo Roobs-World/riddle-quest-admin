@@ -6,7 +6,7 @@ import GuessGrid from "./GuessGrid";
 import Keyboard from "./Keyboard";
 import QuestionsBackground from "@images/questions.svg";
 import { isTablet } from "../../utils/responsive";
-import { styles } from "../../styles/styles";
+import { styles } from "../../styles";
 
 interface SubmittedGuess {
   guess: string[];

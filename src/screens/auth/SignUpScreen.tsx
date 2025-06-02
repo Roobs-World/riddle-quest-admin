@@ -19,7 +19,7 @@ import { signUpSchema, SignUpFormData } from "../../validation/authSchemas";
 import { ZodError, ZodFormattedError } from "zod";
 import HomeBgSvg from "../../../assets/images/home-bg.svg";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { styles } from "../../styles/styles";
+import { styles } from "../../styles";
 
 /**
  * Defines the structure of the password state managed by the reducer.

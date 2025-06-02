@@ -12,7 +12,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { AppStrings } from "../constants/AppStrings";
 import { View, Text } from "react-native";
 import { fetchClassicRiddleFromFirestore } from "../services/FirestoreService";
-import { styles } from "../styles/styles";
+import { styles } from "../styles";
 
 const Stack = createNativeStackNavigator();
 

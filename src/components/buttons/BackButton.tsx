@@ -2,7 +2,7 @@ import React from "react";
 import { TouchableOpacity } from "react-native";
 import BackIcon from "@images/back-icon.svg";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { styles } from "../../styles/styles";
+import { styles } from "../../styles";
 
 /**
  * Props for the BackButton component.

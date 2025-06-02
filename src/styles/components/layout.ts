@@ -24,8 +24,7 @@ export const layoutStyles = StyleSheet.create({
   } as ImageStyle,
 
   centerContainer: {
-    flex: 1,
-    justifyContent: "center",
+    justifyContent: "flex-start",
   } as ViewStyle,
 
   centerContainerTablet: {
@@ -68,6 +67,8 @@ export const layoutStyles = StyleSheet.create({
     alignItems: "center",
     marginVertical: SPACING.md,
     position: "relative",
+    paddingTop: scale(95 + 12),
+    paddingBottom: SPACING.md,
   } as ViewStyle,
 
   riddleContainerTablet: {

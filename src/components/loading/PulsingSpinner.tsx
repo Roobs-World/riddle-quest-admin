@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useMemo } from "react";
-import { Animated, Easing, View, Modal, Dimensions } from "react-native";
+import { Animated, Easing, View, Modal } from "react-native";
 import Svg, { Circle } from "react-native-svg";
-import { styles } from "../styles/styles";
+import { styles, COLORS } from "../../styles";
 
 // Turn the SVG <Circle> into an Animated component
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
@@ -127,7 +127,7 @@ const PulsingSpinner = React.memo(function PulsingSpinner({
               cx={position.cx}
               cy={position.cy}
               r={interpolatedValues[i].radius}
-              fill="#FEC880"
+              fill={COLORS.primaryOrangeLight}
               opacity={interpolatedValues[i].opacity}
             />
           ))}
@@ -136,9 +136,6 @@ const PulsingSpinner = React.memo(function PulsingSpinner({
     ),
     [size, calculations.dotPositions, interpolatedValues]
   );
-
-  // Memoize screen dimensions to prevent recalculation (always called, not conditionally)
-  const screenData = useMemo(() => Dimensions.get("screen"), []);
 
   // If visible prop is provided, render as overlay
   if (visible !== undefined) {
@@ -154,14 +151,10 @@ const PulsingSpinner = React.memo(function PulsingSpinner({
         statusBarTranslucent={true}
       >
         <View
-          style={[
-            styles.overlayContainer,
-            {
-              backgroundColor: `rgba(0, 0, 0, ${opacity})`,
-              width: screenData.width,
-              height: screenData.height,
-            },
-          ]}
+          style={{
+            backgroundColor: `rgba(0, 0, 0, ${opacity})`,
+            ...styles.modalContainer,
+          }}
         >
           {spinnerContent}
         </View>

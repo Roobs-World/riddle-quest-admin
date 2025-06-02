@@ -1,5 +1,172 @@
 # Active Context
 
+## Current Focus: Asset Resolution Complete ✅
+
+**Status:** ✅ **COMPLETED** - Successfully resolved all missing asset issues and got Expo server running
+
+### Recently Completed Tasks (January 2025)
+
+1. **TypeScript Navigation Fix** ✅ (Just Completed)
+
+   - ✅ **Fixed ForgotPasswordScreen Navigation Types**:
+     - Resolved `Type 'ForgotPasswordScreenNavigationProp' is not assignable to type 'NativeStackNavigationProp<RootStackParamList>'` error
+     - Updated `RootStackParamList` to use `object | undefined` instead of `undefined` for all routes
+     - Made navigation prop compatible with BackButton component's generic constraint
+     - ESLint now passes without errors on ForgotPasswordScreen.tsx
+
+2. **Asset Resolution Fixes** ✅
+
+   - ✅ **Created Missing SVG Assets**:
+
+     - `qwordly-logo.svg` for QwordlyLogo component with brand-consistent design
+     - `back-icon.svg` for BackButton component using proper arrow iconography
+
+   - ✅ **Created Missing App Icons**:
+
+     - `icon.png`, `splash-icon.png`, `favicon.png` by copying existing `adaptive-icon.png`
+     - Ensures consistent branding across all platforms (iOS/Android/Web)
+
+   - ✅ **Fixed Firebase Configuration**:
+
+     - Created `GoogleService-Info.plist` with proper project configuration
+     - Configured with project ID `qwordly-6ba44` and all required Firebase service keys
+
+   - ✅ **Resolved Port Conflicts**:
+     - Identified and killed process blocking port 8081
+     - Successfully started Expo development server
+
+3. **Development Environment Restored** ✅
+
+   - ✅ **Expo Server Running**: Development server operational on port 8081
+   - ✅ **Asset Path Mappings**: All `@images/*` imports working correctly
+   - ✅ **Metro Bundler**: SVG transformation and bundling functioning properly
+   - ✅ **TypeScript Resolution**: Path aliases working in development and build
+
+### Previous Context: Design System Cleanup and Token Usage
+
+**Status:** ✅ **COMPLETED** - Successfully cleaned up and validated design tokens usage
+
+### Recently Completed Tasks
+
+1. **Design Tokens Audit** ✅
+
+   - Reviewed all 6 token files in `src/styles/tokens/`
+   - Verified tokens are properly exported from `src/styles/index.ts`
+   - Found tokens are being used in utility functions and component styles
+
+2. **Hardcoded Values Cleanup** ✅
+
+   - Updated `ShatteringTiles.tsx` to use `COLORS` tokens instead of hardcoded hex values
+   - Updated `SettingsOverlay.tsx` to use design tokens for Switch colors and Icon colors
+   - Updated `PulsingSpinner.tsx` to use `COLORS.primaryOrangeLight` instead of hardcoded fill color
+   - Removed unused imports and variables during cleanup
+
+3. **Style Import Standardization** ✅
+   - All components now import from `"../../styles"` (using index.ts)
+   - Legacy `styles.ts` file was successfully removed
+   - No more direct imports from the old compatibility layer
+
+### Design Tokens Architecture
+
+The tokens are well-structured and being used appropriately:
+
+**Token Categories:**
+
+- `colors.ts` - Full color palette with semantic naming (✅ WELL USED)
+- `typography.ts` - Font families, sizes, line heights with responsive scaling (✅ WELL USED)
+- `spacing.ts` - Consistent spacing values using responsive utilities (✅ USED)
+- `sizing.ts` - Component sizing standards for buttons, inputs, tiles, icons (✅ USED)
+- `borderRadius.ts` - Consistent border radius values (✅ USED)
+- `shadows.ts` - Elevation and shadow definitions (✅ USED)
+
+**Usage Patterns:**
+
+- Primary usage: Utility functions (`createButtonStyle`, `createResponsivePadding`)
+- Component styles: Heavy usage in `text.ts` for typography
+- Direct imports: Being adopted in components for specific token access
+- Legacy compatibility: Maintained through index.ts exports
+
+### Key Findings
+
+✅ **Tokens are justified and well-used:**
+
+- All 6 token files serve specific purposes
+- Properly integrated into the design system architecture
+- Used extensively in utility functions and component styles
+- Provide consistency and maintainability benefits
+
+✅ **Recent improvements:**
+
+- Eliminated hardcoded colors in favor of token usage
+- Standardized import patterns across components
+- Improved type safety by fixing style prop mismatches
+
+### Next Steps
+
+1. **Continue token adoption** - Look for remaining hardcoded values that could use tokens
+2. **Monitor new components** - Ensure new code uses tokens from the start
+3. **Documentation** - Consider adding JSDoc examples showing token usage patterns
+
+### Pattern Guidelines
+
+**Preferred import pattern:**
+
+```typescript
+import { COLORS, TYPOGRAPHY, SPACING } from "../../styles";
+```
+
+**For comprehensive styling:**
+
+```typescript
+import { styles, COLORS } from "../../styles";
+```
+
+**Token usage examples:**
+
+```typescript
+// Colors
+backgroundColor: COLORS.primaryOrange;
+color: COLORS.gray600;
+
+// Typography
+fontFamily: TYPOGRAPHY.fontPrimary;
+fontSize: TYPOGRAPHY.fontSize.lg;
+
+// Spacing & Sizing
+paddingHorizontal: SPACING.lg;
+minHeight: SIZING.button.height;
+```
+
+## Project Architecture Insights
+
+### Styles System Maturity
+
+The modular styles architecture is working well:
+
+- Token-based design system provides consistency
+- Utility functions reduce code duplication
+- Component-specific styles maintain organization
+- Responsive scaling integrated throughout
+
+### Component Patterns
+
+- Most components properly use the design system
+- Some legacy hardcoded values still exist but being cleaned up
+- Import standardization improves maintainability
+- Type safety being maintained during refactors
+
+### Development Workflow
+
+- Design tokens enable rapid iteration on visual design
+- Centralized color/typography management
+- Consistent spacing and sizing across components
+- Easy theme switching capabilities (future benefit)
+
+---
+
+**Last Updated:** December 2024
+**Status:** Design tokens are well-implemented and actively used ✅
+
 ## 1. Current Focus
 
 ### **✅ STYLES.TS COMPREHENSIVE IMPROVEMENT - COMPLETED**
@@ -441,3 +608,40 @@ onPress={() => callback && callback()}
 - **Deployment Safety**: All features verified through comprehensive testing
 - **Maintenance Ease**: Clear test patterns established for future development
 - **Performance**: Fast test execution maintains development velocity
+
+## Current Focus: Build Errors Fixed ✅
+
+**Status:** ✅ **COMPLETED** - Successfully resolved all TypeScript and build errors
+
+### Recently Completed Tasks (January 2025)
+
+1. **Build Errors Resolution** ✅ (Just Completed)
+
+   - ✅ **Fixed WideButton Component Usage**:
+
+     - Removed invalid `className` prop from WideButton in VictoryLossOverlay and CoinShopModal
+     - WideButton component only accepts `buttonText`, `onPress`, and optional `disabled` props
+
+   - ✅ **Fixed Import Path Errors**:
+
+     - Fixed CustomSafeAreaView imports in LoginScreen and NewPasswordScreen (moved to layouts/)
+     - Fixed PulsingSpinner import in LoginScreen (moved to loading/)
+     - Updated all affected auth screens with correct component paths
+
+   - ✅ **Fixed Navigation Type Errors**:
+
+     - Updated all navigation types to use `object | undefined` instead of `undefined`
+     - Applied consistent navigation typing across LoginScreen, NewPasswordScreen, CreditsScreen
+     - Removed `as any` type assertion in CreditsScreen navigation prop
+
+   - ✅ **Added SVG Module Declarations**:
+
+     - Added SVG module declaration to global.d.ts for proper TypeScript support
+     - SVG imports now properly typed with SvgProps interface
+
+   - ✅ **Build Verification**:
+     - TypeScript compilation: ✅ No errors in src/ directory
+     - ESLint: ✅ No linting errors or warnings
+     - Expo server: ✅ Successfully starts and runs on port 8081
+
+2. **TypeScript Navigation Fix** ✅ (Previously Completed)
