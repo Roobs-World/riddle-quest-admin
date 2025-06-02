@@ -30,7 +30,7 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
   return (
     <View
-      className="w-full flex-row items-center justify-between p-4 bg-gray-200"
+      className="w-full flex-row items-center justify-between p-4"
       testID="header"
       accessible={true}
       accessibilityRole="none"
@@ -49,8 +49,8 @@ const Header: React.FC<HeaderProps> = ({
           accessibilityRole="button"
           accessibilityLabel="Get hint for current riddle"
         >
-          <HintIcon width={24} height={24} color="#222" />
-          <Text className="text-xs mt-1 text-gray-800">
+          <HintIcon width={24} height={24} color="#ffffff" />
+          <Text className="text-xs mt-1 text-white">
             {AppStrings.Navigation.HINT_BUTTON}
           </Text>
         </TouchableOpacity>

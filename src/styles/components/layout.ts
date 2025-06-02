@@ -67,8 +67,10 @@ export const layoutStyles = StyleSheet.create({
     alignItems: "center",
     marginVertical: SPACING.md,
     position: "relative",
-    paddingTop: scale(95 + 12),
-    paddingBottom: SPACING.md,
+    paddingTop: scale(20),
+    paddingBottom: SPACING.sm,
+    minHeight: scale(120),
+    justifyContent: "center",
   } as ViewStyle,
 
   riddleContainerTablet: {

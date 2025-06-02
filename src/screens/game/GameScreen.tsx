@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from "react";
-import {
-  SafeAreaView,
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-} from "react-native";
+import { Alert, KeyboardAvoidingView, Platform } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../../components/game/Header";
 import Controls from "../../components/game/Controls";
 import BottomNavigationBar from "../../components/game/BottomNavigationBar";
@@ -32,7 +28,7 @@ import { AppStrings } from "../../constants/AppStrings";
 import { isTablet } from "../../utils/responsive";
 import PulsingSpinner from "../../components/loading/PulsingSpinner";
 import OutOfAttemptsModal from "../../components/modals/OutOfAttemptsModal";
-import HomeBgSvg from "../../../assets/images/home-bg.svg";
+import StarryBackground from "../../components/background/StarryBackground";
 import { styles } from "../../styles";
 
 interface GuessResult {
@@ -845,7 +841,7 @@ const GameScreen: React.FC<GameScreenProps> = ({
 
   return (
     <SafeAreaView className="flex-1 bg-cream-light">
-      <HomeBgSvg width="120%" height="100%" style={styles.backgroundImage} />
+      <StarryBackground />
       <KeyboardAvoidingView
         style={[
           styles.gameContainer,
@@ -877,6 +873,15 @@ const GameScreen: React.FC<GameScreenProps> = ({
           animatedStyle={animatedStyle}
           onKeyPress={handleKeyPress}
           isAnyOverlayVisible={isAnyOverlayVisible}
+        />
+
+        <BottomNavigationBar
+          onProfilePress={handleProfilePress}
+          onSettingsPress={handleSettingsPress}
+          onSubmitPress={() => handleKeyPress("ENTER")}
+          currentGuess={currentGuess}
+          answerLength={answerLength}
+          gameOver={gameOver}
         />
       </KeyboardAvoidingView>
 
@@ -952,15 +957,6 @@ const GameScreen: React.FC<GameScreenProps> = ({
       <Controls
         onNextPress={handleOverlayNext}
         isWin={gameOver && overlayState.overlayOutcome === "win"}
-      />
-
-      <BottomNavigationBar
-        onProfilePress={handleProfilePress}
-        onSettingsPress={handleSettingsPress}
-        onSubmitPress={() => handleKeyPress("ENTER")}
-        currentGuess={currentGuess}
-        answerLength={answerLength}
-        gameOver={gameOver}
       />
 
       <PulsingSpinner

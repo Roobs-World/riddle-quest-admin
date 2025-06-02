@@ -18,13 +18,20 @@ type RiddleTextProps = {
  */
 const RiddleText: React.FC<RiddleTextProps> = ({ riddleText }) => {
   return (
-    <View className="px-4 py-2 mb-2 items-center z-10">
+    <View className="px-6 py-4 mb-2 items-center z-10">
       <Text
-        className="text-center text-gray-800 font-semibold"
+        className="text-center text-white font-bold"
         style={{
-          fontSize: moderateScale(16),
-          lineHeight: moderateScale(24),
+          fontSize: moderateScale(24),
+          lineHeight: moderateScale(32),
+          textShadowColor: "rgba(0, 0, 0, 0.75)",
+          textShadowOffset: { width: 1, height: 1 },
+          textShadowRadius: 2,
+          maxWidth: moderateScale(300),
         }}
+        numberOfLines={3}
+        adjustsFontSizeToFit
+        minimumFontScale={0.8}
       >
         {riddleText}
       </Text>

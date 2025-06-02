@@ -22,7 +22,8 @@
     "src/types/**/*",
     "App.tsx",
     "global.css",
-    "nativewind-env.d.ts"
+    "nativewind-env.d.ts",
+    "global.d.ts"
   ],
   "exclude": [
     "node_modules",

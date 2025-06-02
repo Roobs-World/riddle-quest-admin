@@ -8,6 +8,7 @@ import {
   Switch, // Import Switch component for toggles
   Alert, // Import Alert component
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage"; // Add AsyncStorage import
 import Icon from "react-native-vector-icons/MaterialIcons";
 import auth from "@react-native-firebase/auth"; // Correct import for auth module
 import crashlytics from "@react-native-firebase/crashlytics"; // Import Firebase Crashlytics
@@ -51,6 +52,22 @@ const SettingsOverlay: React.FC<SettingsOverlayProps> = ({
   onPressHelp,
   onPressLogout,
 }) => {
+  // Function to reset welcome panel
+  const resetWelcomePanel = async () => {
+    try {
+      await AsyncStorage.removeItem("hasSeenWelcome");
+      await AsyncStorage.removeItem("hasSeenInstructions");
+      Alert.alert(
+        "Reset Complete",
+        "Welcome panel has been reset. Close settings and restart the game to see it again.",
+        [{ text: "OK", onPress: onClose }]
+      );
+    } catch (error) {
+      console.error("Error resetting welcome panel:", error);
+      Alert.alert("Error", "Could not reset welcome panel. Please try again.");
+    }
+  };
+
   return (
     <Modal
       visible={isVisible}
@@ -158,6 +175,35 @@ const SettingsOverlay: React.FC<SettingsOverlayProps> = ({
               <Icon name="bug-report" size={20} color={COLORS.white} />
               <Text className="text-white font-semibold ml-2">
                 {AppStrings.Settings.TEST_CRASH_BUTTON}
+              </Text>
+            </TouchableOpacity>
+          )}
+
+          {/* Reset Welcome Panel Button - Development Only */}
+          {__DEV__ && (
+            <TouchableOpacity
+              className="bg-blue-500 px-4 py-3 rounded-md mb-3 w-full items-center flex-row justify-center mt-3"
+              onPress={() => {
+                Alert.alert(
+                  "Reset Welcome Panel",
+                  "This will reset the welcome panel so it appears again on next game load. Continue?",
+                  [
+                    {
+                      text: "Cancel",
+                      style: "cancel",
+                    },
+                    {
+                      text: "Reset",
+                      style: "default",
+                      onPress: resetWelcomePanel,
+                    },
+                  ]
+                );
+              }}
+            >
+              <Icon name="refresh" size={20} color={COLORS.white} />
+              <Text className="text-white font-semibold ml-2">
+                Reset Welcome Panel
               </Text>
             </TouchableOpacity>
           )}

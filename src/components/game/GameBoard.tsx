@@ -4,7 +4,6 @@ import Animated from "react-native-reanimated";
 import RiddleText from "./RiddleText";
 import GuessGrid from "./GuessGrid";
 import Keyboard from "./Keyboard";
-import QuestionsBackground from "@images/questions.svg";
 import { isTablet } from "../../utils/responsive";
 import { styles } from "../../styles";
 
@@ -49,7 +48,6 @@ const GameBoard: React.FC<GameBoardProps> = ({
           isTablet && styles.riddleContainerTablet,
         ]}
       >
-        <QuestionsBackground style={styles.questionsBackground} />
         <RiddleText riddleText={riddleText} />
       </View>
 

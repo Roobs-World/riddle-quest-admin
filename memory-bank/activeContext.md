@@ -1,10 +1,110 @@
 # Active Context
 
-## Current Focus: Asset Resolution Complete ✅
+## Current Focus: TypeScript and Linting Fixes ✅
 
-**Status:** ✅ **COMPLETED** - Successfully resolved all missing asset issues and got Expo server running
+**Status:** ✅ **COMPLETED** - Fixed all TypeScript and ESLint issues
 
 ### Recently Completed Tasks (January 2025)
+
+1. **Header Text Visibility Fix** ✅ (Just Completed - January 31, 2025)
+
+   - ✅ **Fixed Text Color Against Dark Background**:
+
+     - Changed hint button text from `text-gray-800` to `text-white`
+     - Updated HintIcon color from `#222` to `#ffffff`
+     - Changed CoinsDisplay coin amount text to `text-white`
+
+   - ✅ **Root Cause Identified**:
+
+     - StarryBackground component creates dark background (#0a0a2e)
+     - Dark gray text was unreadable against this background
+
+   - ✅ **Result**:
+     - All header text now clearly visible
+     - Improved user experience and accessibility
+     - Consistent white text across header components
+
+2. **TypeScript and Linting Error Resolution** ✅ (Previously Completed)
+
+   - ✅ **Fixed TypeScript Configuration**:
+
+     - Added `global.d.ts` to tsconfig.json include array
+     - Module declarations for SVG and audio files now properly recognized
+     - All TypeScript compilation errors resolved
+
+   - ✅ **ESLint Warning Fixes**:
+
+     - Moved inline styles to StyleSheet in BottomNavigationBar
+     - Added new color constants to design tokens:
+       - `navBarBackground: "rgba(252, 250, 244, 0.8)"`
+       - `navBarBorder: "rgba(0, 0, 0, 0.05)"`
+     - No more color literal or inline style warnings
+
+   - ✅ **Code Quality**:
+     - Zero TypeScript errors
+     - Zero ESLint errors or warnings
+     - Clean, maintainable code following project standards
+
+3. **Android Navigation Bar Compatibility Fix** ✅ (Previously Completed)
+
+   - ✅ **Added Safe Area Handling**:
+
+     - Imported `useSafeAreaInsets` from react-native-safe-area-context
+     - Added dynamic bottom padding based on device safe area insets
+     - Ensures bottom bar is always visible above native Android navigation
+
+   - ✅ **Updated SafeAreaView Configuration**:
+
+     - Changed to SafeAreaView from react-native-safe-area-context
+     - Added `edges={['top', 'left', 'right']}` to exclude bottom edge
+     - Manual bottom padding control in BottomNavigationBar component
+
+   - ✅ **Enhanced Visibility**:
+
+     - Added semi-transparent background (rgba(252, 250, 244, 0.8))
+     - Subtle border for better visual separation
+     - Maintains aesthetic while ensuring visibility
+
+   - ✅ **KeyboardAvoidingView Improvements**:
+     - Added `keyboardVerticalOffset` for better Android keyboard handling
+     - Works seamlessly with safe area insets
+
+4. **Navigation Bar Transparency and Keyboard Fix** ✅ (Previously Completed)
+
+5. **Riddle Text Formatting Fix** ✅ (Just Completed - January 31, 2025)
+
+   - ✅ **Increased Text Size**:
+
+     - Changed font size from `moderateScale(16)` to `moderateScale(24)` - 50% increase
+     - Increased line height from `moderateScale(24)` to `moderateScale(32)`
+     - Changed font weight from `font-semibold` to `font-bold`
+
+   - ✅ **Improved Visibility**:
+
+     - Changed text color from `text-gray-800` to `text-white` for better contrast
+     - Added text shadow for readability on complex backgrounds
+     - Shadow properties: color rgba(0,0,0,0.75), offset (1,1), radius 2
+
+   - ✅ **Better Text Bounds**:
+
+     - Added `maxWidth: moderateScale(300)` to keep text within background
+     - Added `numberOfLines={3}` to limit text to 3 lines
+     - Added `adjustsFontSizeToFit` with `minimumFontScale={0.8}` for dynamic sizing
+     - Increased padding from `px-4 py-2` to `px-6 py-4`
+
+   - ✅ **Container Adjustments**:
+
+     - Updated riddleContainer padding for better centering
+     - Added `minHeight: scale(120)` for consistent container size
+     - Added `justifyContent: "center"` for vertical centering
+
+   - ✅ **Result**:
+     - Riddle text is now prominently displayed and easily readable
+     - Text properly formatted within background bounds
+     - Long riddles wrap and scale appropriately
+     - Improved user experience with clear, accessible riddle display
+
+### Previously Completed Tasks
 
 1. **TypeScript Navigation Fix** ✅ (Just Completed)
 
@@ -609,39 +709,35 @@ onPress={() => callback && callback()}
 - **Maintenance Ease**: Clear test patterns established for future development
 - **Performance**: Fast test execution maintains development velocity
 
-## Current Focus: Build Errors Fixed ✅
+## Current Focus: Bottom Navigation Bar Icon Fix ✅
 
-**Status:** ✅ **COMPLETED** - Successfully resolved all TypeScript and build errors
+**Status:** ✅ **COMPLETED** - Fixed SVG icon visibility in bottom navigation bar
 
 ### Recently Completed Tasks (January 2025)
 
-1. **Build Errors Resolution** ✅ (Just Completed)
+1. **Bottom Navigation Bar Icon Visibility Fix** ✅ (Just Completed - January 31, 2025)
 
-   - ✅ **Fixed WideButton Component Usage**:
+   - ✅ **Fixed Icon Color Passing**:
 
-     - Removed invalid `className` prop from WideButton in VictoryLossOverlay and CoinShopModal
-     - WideButton component only accepts `buttonText`, `onPress`, and optional `disabled` props
+     - Added `color="#FFFFFF"` prop to ProfileIcon and SettingsIcon in BottomNavigationBar
+     - Updated icon components to accept and use color prop
+     - Changed SVG files from hardcoded `fill="white"` to `fill="currentColor"`
 
-   - ✅ **Fixed Import Path Errors**:
+   - ✅ **Component Updates**:
 
-     - Fixed CustomSafeAreaView imports in LoginScreen and NewPasswordScreen (moved to layouts/)
-     - Fixed PulsingSpinner import in LoginScreen (moved to loading/)
-     - Updated all affected auth screens with correct component paths
+     - ProfileIcon: Added color prop with default "#FFFFFF"
+     - SettingsIcon: Added color prop with default "#FFFFFF"
+     - Both components now pass fill={color} to their SVG components
 
-   - ✅ **Fixed Navigation Type Errors**:
+   - ✅ **SVG File Updates**:
 
-     - Updated all navigation types to use `object | undefined` instead of `undefined`
-     - Applied consistent navigation typing across LoginScreen, NewPasswordScreen, CreditsScreen
-     - Removed `as any` type assertion in CreditsScreen navigation prop
+     - profile-icon.svg: Changed fill from "white" to "currentColor"
+     - settings-icon.svg: Changed fill from "white" to "currentColor"
+     - Enables dynamic color changes via component props
 
-   - ✅ **Added SVG Module Declarations**:
+   - ✅ **Result**:
+     - Icons are now visible with white color in the bottom navigation bar
+     - Icons can accept color changes dynamically if needed
+     - Improved component flexibility and reusability
 
-     - Added SVG module declaration to global.d.ts for proper TypeScript support
-     - SVG imports now properly typed with SvgProps interface
-
-   - ✅ **Build Verification**:
-     - TypeScript compilation: ✅ No errors in src/ directory
-     - ESLint: ✅ No linting errors or warnings
-     - Expo server: ✅ Successfully starts and runs on port 8081
-
-2. **TypeScript Navigation Fix** ✅ (Previously Completed)
+2. **Riddle Text Formatting Fix** ✅ (Previously Completed - January 31, 2025)

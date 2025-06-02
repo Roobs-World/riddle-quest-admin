@@ -49,4 +49,8 @@ export const COLORS = {
   activeTextColor: "#222222",
   shadowColor: "#000000",
   transparent: "transparent",
+
+  // Navigation bar colors
+  navBarBackground: "rgba(252, 250, 244, 0.8)",
+  navBarBorder: "rgba(0, 0, 0, 0.05)",
 } as const;

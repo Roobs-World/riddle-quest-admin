@@ -1,9 +1,9 @@
 import React from "react";
 import { View, TouchableOpacity, Text } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import ProfileIcon from "../icons/ProfileIcon";
 import SettingsIcon from "../icons/SettingsIcon";
 import { AppStrings } from "../../constants/AppStrings";
-import { styles, COLORS } from "../../styles";
 
 export type OverlayType = "profile" | "settings";
 
@@ -40,10 +40,12 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
   gameOver,
 }) => {
   const isSubmitDisabled = currentGuess.length !== answerLength;
+  const insets = useSafeAreaInsets();
 
   return (
     <View
-      className="bg-white border-t border-gray-200 px-4 py-2"
+      className="px-4 py-2"
+      style={{ paddingBottom: insets.bottom + 8 }}
       testID="bottom-navigation-bar"
     >
       <View className="flex-row justify-between items-center">
@@ -58,10 +60,10 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
           <ProfileIcon
             width={24}
             height={24}
-            color={COLORS.activeTextColor}
+            color="#FFFFFF"
             testID="profile-icon"
           />
-          <Text className="text-xs mt-1" style={styles.iconColor}>
+          <Text className="text-xs mt-1 text-white">
             {AppStrings.Navigation.PROFILE_BUTTON}
           </Text>
         </TouchableOpacity>
@@ -96,10 +98,10 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
           <SettingsIcon
             width={24}
             height={24}
-            color={COLORS.activeTextColor}
+            color="#FFFFFF"
             testID="settings-icon"
           />
-          <Text className="text-xs mt-1" style={styles.iconColor}>
+          <Text className="text-xs mt-1 text-white">
             {AppStrings.Navigation.SETTINGS_BUTTON}
           </Text>
         </TouchableOpacity>
