@@ -33,6 +33,7 @@ interface AppleValidationResponse {
   platform: "apple";
   environment: string;
   status: number; // Add status field from documentation
+  service: typeof iap.APPLE; // Required by in-app-purchase library
 }
 
 interface GooglePurchaseReceipt {
@@ -50,7 +51,8 @@ interface GoogleValidationResponse {
   productId: string;
   platform: "google";
   // Add other potential fields if needed
-  status?: number; // Add status field as seen in some examples
+  status: number; // Required by in-app-purchase library (changed from optional)
+  service: typeof iap.GOOGLE; // Required by in-app-purchase library
 }
 
 type ValidationResponse = AppleValidationResponse | GoogleValidationResponse;
@@ -87,7 +89,14 @@ export async function performPlatformValidation(
       const response: AppleValidationResponse = await new Promise((resolve, reject) => {
         iap.validate(iap.APPLE, purchaseToken, (err: Error | null, res: unknown) => {
           if (err) reject(err);
-          else resolve(res as AppleValidationResponse);
+          else {
+            const appleResponse = res as Omit<AppleValidationResponse, "service">;
+            // Ensure the service property is included for library compatibility
+            resolve({
+              ...appleResponse,
+              service: iap.APPLE,
+            });
+          }
         });
       });
       // Perform basic validation check for Apple
@@ -108,7 +117,16 @@ export async function performPlatformValidation(
           },
           (err: Error | null, res: unknown) => {
             if (err) reject(err);
-            else resolve(res as GoogleValidationResponse);
+            else {
+              const googleResponse = res as Omit<GoogleValidationResponse, "service" | "status">;
+              // Ensure the service property is included for library compatibility
+              // Google responses may not always have a status, so default to 0 (success)
+              resolve({
+                ...googleResponse,
+                service: iap.GOOGLE,
+                status: (googleResponse as any).status ?? 0,
+              });
+            }
           },
         );
       });

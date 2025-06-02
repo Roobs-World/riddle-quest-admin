@@ -2,13 +2,20 @@ import { Audio, AVPlaybackSource } from "expo-av";
 import { AppState, AppStateStatus } from "react-native";
 
 import neutralWav from "../../assets/audio/Neutral.wav";
-import successWav from "../../assets/audio/Success.wav";
-import negativeWav from "../../assets/audio/Negative.wav";
+import positiveWav from "../../assets/audio/Success.wav"; // Repurposed as positive music
+import negativeWav from "../../assets/audio/Negative.wav"; // Repurposed as negative music
 
-// Sound instances will be created after audio setup
-let neutralSound: Audio.Sound | null = null;
-let successSound: Audio.Sound | null = null;
-let negativeSound: Audio.Sound | null = null;
+// Music mode definitions
+type MusicMode = "neutral" | "positive" | "negative";
+
+// Music instances (separate from sound effects)
+let neutralMusic: Audio.Sound | null = null;
+let positiveMusic: Audio.Sound | null = null;
+let negativeMusic: Audio.Sound | null = null;
+
+// Current music state
+let currentMusicMode: MusicMode = "neutral";
+let isChangingMode = false; // Prevents multiple mode changes at once
 
 // Track initialization state
 let isInitialized = false;
@@ -31,6 +38,13 @@ const DEFAULT_FADE_OPTIONS: Required<FadeOptions> = {
   steps: 20,
 };
 
+// Music mode transition options
+const DEFAULT_MUSIC_TRANSITION_OPTIONS: Required<FadeOptions> = {
+  duration: 2000, // 2 seconds for smooth music transitions
+  curve: "exponential",
+  steps: 40, // More steps for smoother music transitions
+};
+
 // Track active fade operations to prevent conflicts
 const activeFades = new Set<Audio.Sound>();
 
@@ -46,6 +60,45 @@ const calculateFadeValue = (
   return progress; // Linear
 };
 
+// Helper function to get music instance by mode
+const getMusicByMode = (mode: MusicMode): Audio.Sound | null => {
+  switch (mode) {
+    case "neutral":
+      return neutralMusic;
+    case "positive":
+      return positiveMusic;
+    case "negative":
+      return negativeMusic;
+    default:
+      return null;
+  }
+};
+
+// Enhanced audio quality configuration
+const HIGH_QUALITY_AUDIO_CONFIG = {
+  // High-fidelity audio mode optimized for music playback
+  allowsRecordingIOS: false,
+  staysActiveInBackground: false,
+  playsInSilentModeIOS: true,
+  shouldDuckAndroid: false,
+  // Use speakers for better quality
+  playThroughEarpieceAndroid: false,
+};
+
+// High-quality sound creation options
+const HIGH_QUALITY_SOUND_OPTIONS = {
+  // Disable pitch correction for better quality
+  shouldCorrectPitch: false,
+  // Maximum volume for best dynamic range
+  volume: 1.0,
+  // Standard playback rate
+  rate: 1.0,
+  // Use high-quality pitch correction when rate changes (if available)
+  ...(Audio.PitchCorrectionQuality?.High && {
+    pitchCorrectionQuality: Audio.PitchCorrectionQuality.High,
+  }),
+};
+
 // Assume isSoundEnabled state is managed elsewhere (e.g., in App.tsx or Context)
 // and can be accessed or passed here if needed for conditional playback.
 // For now, we will assume the check is done at the call site.
@@ -53,7 +106,9 @@ const calculateFadeValue = (
 export const SoundManager = {
   init: async () => {
     try {
-      console.log("SoundManager: Starting initialization...");
+      console.log(
+        "SoundManager: Starting high-fidelity music system initialization..."
+      );
 
       // Set up AppState listener to track background/foreground state
       const handleAppStateChange = (nextAppState: AppStateStatus) => {
@@ -65,9 +120,12 @@ export const SoundManager = {
         );
         appState = nextAppState;
 
-        // Pause background music when app goes to background to prevent audio focus issues
+        // Pause current music when app goes to background
         if (nextAppState === "background" || nextAppState === "inactive") {
-          SoundManager.pauseBackgroundMusic();
+          SoundManager.pauseCurrentMusic();
+        } else if (nextAppState === "active" && isInitialized) {
+          // Resume music when app becomes active again
+          SoundManager.resumeCurrentMusic();
         }
       };
 
@@ -76,126 +134,301 @@ export const SoundManager = {
         handleAppStateChange
       );
 
-      // Set up audio mode optimized for high-quality playback
-      console.log("SoundManager: Setting optimized audio mode...");
-      await Audio.setAudioModeAsync({
-        allowsRecordingIOS: false,
-        staysActiveInBackground: false,
-        playsInSilentModeIOS: true,
-        shouldDuckAndroid: false, // Disable ducking for full volume playback
-      });
-      console.log("SoundManager: Optimized audio mode set successfully");
+      // Set up high-fidelity audio mode
+      console.log("SoundManager: Setting high-quality audio mode...");
+      await Audio.setAudioModeAsync(HIGH_QUALITY_AUDIO_CONFIG);
+      console.log("SoundManager: High-quality audio mode set successfully");
 
-      // Create sound instances using createAsync with high-quality settings
-      console.log("SoundManager: Creating high-quality sound instances...");
+      // Create music instances for all 3 modes with enhanced quality
+      console.log("SoundManager: Creating high-fidelity music instances...");
 
-      // Create neutral sound (background music) with high-quality settings
-      console.log("SoundManager: Loading neutral sound with high quality...");
-      console.log("Neutral wav source:", neutralWav);
-
-      const { sound: neutralSoundInstance } = await Audio.Sound.createAsync(
+      // Create neutral music (default background music)
+      console.log("SoundManager: Loading neutral music with high quality...");
+      const { sound: neutralMusicInstance } = await Audio.Sound.createAsync(
         neutralWav as AVPlaybackSource,
         {
           isLooping: true,
           shouldPlay: false,
-          // High-quality playback settings
-          volume: 1.0,
-          rate: 1.0,
-          shouldCorrectPitch: false, // Disable pitch correction for better quality
+          ...HIGH_QUALITY_SOUND_OPTIONS,
         },
-        // Audio session status callback for quality monitoring
         (status) => {
           if (status.isLoaded && !status.didJustFinish) {
-            console.log(
-              "SoundManager: Neutral sound status - Quality:",
-              status
-            );
+            console.log("SoundManager: Neutral music high-quality status:", {
+              uri: status.uri,
+              duration: status.durationMillis,
+              shouldCorrectPitch: status.shouldCorrectPitch,
+              volume: status.volume,
+              rate: status.rate,
+            });
           }
         }
       );
-      neutralSound = neutralSoundInstance;
-      console.log(
-        "SoundManager: Neutral sound loaded with high quality successfully"
-      );
+      neutralMusic = neutralMusicInstance;
+      console.log("SoundManager: Neutral music loaded with high quality");
 
-      // Create success sound with high-quality settings
-      console.log("SoundManager: Loading success sound with high quality...");
-      const { sound: successSoundInstance } = await Audio.Sound.createAsync(
-        successWav as AVPlaybackSource,
+      // Create positive music (for correct answers)
+      console.log("SoundManager: Loading positive music with high quality...");
+      const { sound: positiveMusicInstance } = await Audio.Sound.createAsync(
+        positiveWav as AVPlaybackSource,
         {
+          isLooping: true,
           shouldPlay: false,
-          volume: 1.0,
-          rate: 1.0,
-          shouldCorrectPitch: false, // Disable pitch correction for better quality
+          volume: 0, // Start at 0 volume since it's not the default mode
+          // Use high-quality settings except for volume
+          shouldCorrectPitch: HIGH_QUALITY_SOUND_OPTIONS.shouldCorrectPitch,
+          rate: HIGH_QUALITY_SOUND_OPTIONS.rate,
+          pitchCorrectionQuality:
+            HIGH_QUALITY_SOUND_OPTIONS.pitchCorrectionQuality,
         }
       );
-      successSound = successSoundInstance;
-      console.log(
-        "SoundManager: Success sound loaded with high quality successfully"
-      );
+      positiveMusic = positiveMusicInstance;
+      console.log("SoundManager: Positive music loaded with high quality");
 
-      // Create negative sound with high-quality settings
-      console.log("SoundManager: Loading negative sound with high quality...");
-      const { sound: negativeSoundInstance } = await Audio.Sound.createAsync(
+      // Create negative music (for wrong answers)
+      console.log("SoundManager: Loading negative music with high quality...");
+      const { sound: negativeMusicInstance } = await Audio.Sound.createAsync(
         negativeWav as AVPlaybackSource,
         {
+          isLooping: true,
           shouldPlay: false,
-          volume: 1.0,
-          rate: 1.0,
-          shouldCorrectPitch: false, // Disable pitch correction for better quality
+          volume: 0, // Start at 0 volume since it's not the default mode
+          // Use high-quality settings except for volume
+          shouldCorrectPitch: HIGH_QUALITY_SOUND_OPTIONS.shouldCorrectPitch,
+          rate: HIGH_QUALITY_SOUND_OPTIONS.rate,
+          pitchCorrectionQuality:
+            HIGH_QUALITY_SOUND_OPTIONS.pitchCorrectionQuality,
         }
       );
-      negativeSound = negativeSoundInstance;
-      console.log(
-        "SoundManager: Negative sound loaded with high quality successfully"
-      );
+      negativeMusic = negativeMusicInstance;
+      console.log("SoundManager: Negative music loaded with high quality");
 
-      console.log(
-        "SoundManager: All sounds loaded with high quality successfully"
-      );
+      console.log("SoundManager: All music modes loaded with enhanced quality");
 
-      // Wait for the sound to be fully ready and check status
-      console.log("SoundManager: Waiting for sound to be ready...");
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      if (neutralSound) {
-        const status = await neutralSound.getStatusAsync();
-        console.log("SoundManager: Neutral sound high-quality status:", status);
-
-        if (status.isLoaded) {
-          console.log(
-            "SoundManager: High-quality sound is loaded, starting playback..."
-          );
-          // Use replayAsync as it works reliably with expo-av
-          await neutralSound.replayAsync();
-          console.log(
-            "SoundManager: High-quality neutral sound playback started successfully"
-          );
-        } else {
-          console.error("SoundManager: Sound is not loaded, status:", status);
-        }
-      } else {
-        console.error("SoundManager: neutralSound is null");
-      }
+      // Start with neutral music mode
+      await SoundManager.setMusicMode("neutral", { duration: 0 }); // No fade for initial start
 
       isInitialized = true;
       console.log(
-        "SoundManager: High-quality initialization completed successfully"
+        "SoundManager: High-fidelity music system initialization completed"
       );
     } catch (error) {
-      console.error("Error loading high-quality sounds:", error);
+      console.error("Error loading high-fidelity music system:", error);
       console.error("Error details:", {
         message: (error as Error).message,
         stack: (error as Error).stack,
-        neutralSoundState: neutralSound ? "created" : "null",
-        successSoundState: successSound ? "created" : "null",
-        negativeSoundState: negativeSound ? "created" : "null",
+        neutralMusicState: neutralMusic ? "created" : "null",
+        positiveMusicState: positiveMusic ? "created" : "null",
+        negativeMusicState: negativeMusic ? "created" : "null",
       });
 
       // Clean up any partially created sounds
       await SoundManager.unload();
       isInitialized = false;
     }
+  },
+
+  /**
+   * Set the music mode with crossfading
+   */
+  setMusicMode: async (
+    mode: MusicMode,
+    options: FadeOptions = {}
+  ): Promise<void> => {
+    try {
+      if (!isInitialized) {
+        console.warn("SoundManager: Not initialized, cannot set music mode");
+        return;
+      }
+
+      if (appState !== "active") {
+        console.log("SoundManager: App not active, skipping music mode change");
+        return;
+      }
+
+      if (isChangingMode) {
+        console.log("SoundManager: Already changing music mode, skipping");
+        return;
+      }
+
+      if (currentMusicMode === mode) {
+        console.log(`SoundManager: Already in ${mode} mode`);
+        return;
+      }
+
+      isChangingMode = true;
+      const config = { ...DEFAULT_MUSIC_TRANSITION_OPTIONS, ...options };
+
+      console.log(
+        `SoundManager: Transitioning from ${currentMusicMode} to ${mode} mode`
+      );
+
+      const currentMusic = getMusicByMode(currentMusicMode);
+      const newMusic = getMusicByMode(mode);
+
+      if (!newMusic) {
+        console.warn(`SoundManager: Music for mode ${mode} not available`);
+        isChangingMode = false;
+        return;
+      }
+
+      // Start the new music at volume 0 and begin playing
+      await newMusic.setVolumeAsync(0);
+      await newMusic.playAsync();
+
+      if (currentMusic && config.duration > 0) {
+        // Crossfade between current and new music
+        await SoundManager.crossfade(currentMusic, newMusic, config);
+      } else {
+        // No crossfade, just start new music immediately
+        await newMusic.setVolumeAsync(1.0);
+        if (currentMusic) {
+          await currentMusic.pauseAsync();
+        }
+      }
+
+      currentMusicMode = mode;
+      isChangingMode = false;
+
+      console.log(`SoundManager: Successfully transitioned to ${mode} mode`);
+    } catch (error) {
+      console.error("Error setting music mode:", error);
+      isChangingMode = false;
+    }
+  },
+
+  /**
+   * Get the current music mode
+   */
+  getCurrentMusicMode: (): MusicMode => {
+    return currentMusicMode;
+  },
+
+  /**
+   * Pause the currently playing music
+   */
+  pauseCurrentMusic: async (): Promise<void> => {
+    try {
+      if (!isInitialized) {
+        console.warn("SoundManager: Not initialized");
+        return;
+      }
+
+      const currentMusic = getMusicByMode(currentMusicMode);
+      if (currentMusic) {
+        const status = await currentMusic.getStatusAsync();
+        if (status.isLoaded && status.isPlaying) {
+          await currentMusic.pauseAsync();
+          console.log(`SoundManager: Paused ${currentMusicMode} music`);
+        }
+      }
+    } catch (error) {
+      console.error("Error pausing current music:", error);
+    }
+  },
+
+  /**
+   * Resume the current music mode
+   */
+  resumeCurrentMusic: async (): Promise<void> => {
+    try {
+      if (!isInitialized || appState !== "active") {
+        return;
+      }
+
+      const currentMusic = getMusicByMode(currentMusicMode);
+      if (currentMusic) {
+        const status = await currentMusic.getStatusAsync();
+        if (status.isLoaded && !status.isPlaying) {
+          await currentMusic.playAsync();
+          console.log(
+            `SoundManager: Resumed ${currentMusicMode} music in high quality`
+          );
+        }
+      }
+    } catch (error) {
+      console.error("Error resuming music:", error);
+    }
+  },
+
+  // Legacy methods for backward compatibility
+  playBackgroundMusic: async () => {
+    await SoundManager.resumeCurrentMusic();
+  },
+
+  pauseBackgroundMusic: async () => {
+    await SoundManager.pauseCurrentMusic();
+  },
+
+  fadeInBackgroundMusic: async (options: FadeOptions = {}) => {
+    const currentMusic = getMusicByMode(currentMusicMode);
+    if (currentMusic) {
+      await SoundManager.fadeIn(currentMusic, options);
+    }
+  },
+
+  fadeOutBackgroundMusic: async (options: FadeOptions = {}) => {
+    const currentMusic = getMusicByMode(currentMusicMode);
+    if (currentMusic) {
+      await SoundManager.fadeOut(currentMusic, options);
+    }
+  },
+
+  /**
+   * Play a sound effect - separate from music system
+   * Note: Sound effects are now handled differently from music modes
+   * These methods are maintained for backwards compatibility but may be deprecated
+   */
+  playSuccess: async () => {
+    // Transition to positive music mode for success
+    await SoundManager.setMusicMode("positive", {
+      duration: 1500,
+      curve: "exponential",
+    });
+
+    // After a delay, return to neutral mode
+    setTimeout(async () => {
+      await SoundManager.setMusicMode("neutral", {
+        duration: 2000,
+        curve: "exponential",
+      });
+    }, 3000); // Stay in positive mode for 3 seconds
+  },
+
+  playNegative: async () => {
+    // Transition to negative music mode for failure
+    await SoundManager.setMusicMode("negative", {
+      duration: 1000,
+      curve: "exponential",
+    });
+
+    // After a delay, return to neutral mode
+    setTimeout(async () => {
+      await SoundManager.setMusicMode("neutral", {
+        duration: 2000,
+        curve: "exponential",
+      });
+    }, 4000); // Stay in negative mode for 4 seconds
+  },
+
+  /**
+   * Play negative music with fade-in for wrong guesses
+   */
+  playNegativeWithFadeIn: async (options: FadeOptions = {}) => {
+    const config = {
+      duration: 1500,
+      curve: "exponential" as const,
+      ...options,
+    };
+
+    await SoundManager.setMusicMode("negative", config);
+
+    // Return to neutral after a delay
+    setTimeout(async () => {
+      await SoundManager.setMusicMode("neutral", {
+        duration: 2000,
+        curve: "exponential",
+      });
+    }, 4000);
   },
 
   /**
@@ -384,188 +617,6 @@ export const SoundManager = {
     console.log("SoundManager: Fade operation cancelled");
   },
 
-  /**
-   * Fade in background music with configurable options
-   */
-  fadeInBackgroundMusic: async (options: FadeOptions = {}) => {
-    if (!neutralSound) {
-      console.warn("Background music not initialized");
-      return;
-    }
-    await SoundManager.fadeIn(neutralSound, options);
-  },
-
-  /**
-   * Fade out background music with configurable options
-   */
-  fadeOutBackgroundMusic: async (options: FadeOptions = {}) => {
-    if (!neutralSound) {
-      console.warn("Background music not initialized");
-      return;
-    }
-    await SoundManager.fadeOut(neutralSound, options);
-  },
-
-  /**
-   * Play negative sound with slow fade-in for wrong guesses
-   */
-  playNegativeWithFadeIn: async (options: FadeOptions = {}) => {
-    try {
-      if (appState !== "active") {
-        console.log(
-          "SoundManager: Skipping negative sound playback - app not active (" +
-            appState +
-            ")"
-        );
-        return;
-      }
-
-      if (!isInitialized || !negativeSound) {
-        console.warn("Negative sound not initialized");
-        return;
-      }
-
-      const status = await negativeSound.getStatusAsync();
-      if (status.isLoaded) {
-        // Set volume to 0 before starting playback
-        await negativeSound.setVolumeAsync(0);
-
-        // Start playing the sound
-        await negativeSound.replayAsync();
-
-        // Fade in with custom options (default to slow fade)
-        const fadeConfig = {
-          duration: 1500, // 1.5 seconds for slow fade
-          curve: "exponential" as const,
-          ...options,
-        };
-
-        await SoundManager.fadeIn(negativeSound, fadeConfig);
-
-        console.log("Negative sound played with fade-in successfully");
-      }
-    } catch (error) {
-      console.error("Error playing negative sound with fade-in:", error);
-    }
-  },
-
-  playSuccess: async () => {
-    try {
-      // Don't attempt to play sounds when app is in background to prevent AudioFocusNotAcquiredException
-      if (appState !== "active") {
-        console.log(
-          "SoundManager: Skipping success sound - app not in foreground (state:",
-          appState,
-          ")"
-        );
-        return;
-      }
-
-      if (!isInitialized || !successSound) {
-        console.warn("Success sound not initialized");
-        return;
-      }
-
-      // Verify the sound is still loaded before playing
-      const status = await successSound.getStatusAsync();
-      if (!status.isLoaded) {
-        console.warn("Success sound is not loaded");
-        return;
-      }
-
-      // Stop any currently playing instance and restart to ensure single instance
-      if (status.isPlaying) {
-        await successSound.stopAsync();
-      }
-      await successSound.replayAsync();
-      console.log("Success sound played successfully");
-    } catch (error) {
-      console.error("Error playing success sound:", error);
-    }
-  },
-
-  playNegative: async () => {
-    try {
-      // Don't attempt to play sounds when app is in background to prevent AudioFocusNotAcquiredException
-      if (appState !== "active") {
-        console.log(
-          "SoundManager: Skipping negative sound - app not in foreground (state:",
-          appState,
-          ")"
-        );
-        return;
-      }
-
-      if (!isInitialized || !negativeSound) {
-        console.warn("Negative sound not initialized");
-        return;
-      }
-
-      // Verify the sound is still loaded before playing
-      const status = await negativeSound.getStatusAsync();
-      if (!status.isLoaded) {
-        console.warn("Negative sound is not loaded");
-        return;
-      }
-
-      // Stop any currently playing instance and restart to ensure single instance
-      if (status.isPlaying) {
-        await negativeSound.stopAsync();
-      }
-      await negativeSound.replayAsync();
-      console.log("Negative sound played successfully");
-    } catch (error) {
-      console.error("Error playing negative sound:", error);
-    }
-  },
-
-  playBackgroundMusic: async () => {
-    try {
-      // Don't attempt to play sounds when app is in background to prevent AudioFocusNotAcquiredException
-      if (appState !== "active") {
-        console.log(
-          "SoundManager: Skipping background music - app not in foreground (state:",
-          appState,
-          ")"
-        );
-        return;
-      }
-
-      if (!isInitialized || !neutralSound) {
-        console.warn("Neutral sound not initialized");
-        return;
-      }
-
-      const status = await neutralSound.getStatusAsync();
-      if (status.isLoaded && !status.isPlaying) {
-        // Use playAsync instead of replayAsync to preserve looping behavior
-        await neutralSound.playAsync();
-        console.log("Background music started/resumed successfully");
-      } else if (status.isLoaded && status.isPlaying) {
-        console.log("Background music is already playing");
-      }
-    } catch (error) {
-      console.error("Error playing background music:", error);
-    }
-  },
-
-  pauseBackgroundMusic: async () => {
-    try {
-      if (!isInitialized || !neutralSound) {
-        console.warn("Neutral sound not initialized");
-        return;
-      }
-
-      const status = await neutralSound.getStatusAsync();
-      if (status.isLoaded && status.isPlaying) {
-        await neutralSound.pauseAsync();
-        console.log("Background music paused successfully");
-      }
-    } catch (error) {
-      console.error("Error pausing background music:", error);
-    }
-  },
-
   unload: async () => {
     // NOTE: This method should only be used for cleanup during initialization failures.
     // During normal app operation, sounds should remain in memory for optimal performance.
@@ -579,22 +630,24 @@ export const SoundManager = {
         appStateSubscription = null;
       }
 
-      if (neutralSound) {
-        await neutralSound.unloadAsync();
-        neutralSound = null;
+      if (neutralMusic) {
+        await neutralMusic.unloadAsync();
+        neutralMusic = null;
       }
-      if (successSound) {
-        await successSound.unloadAsync();
-        successSound = null;
+      if (positiveMusic) {
+        await positiveMusic.unloadAsync();
+        positiveMusic = null;
       }
-      if (negativeSound) {
-        await negativeSound.unloadAsync();
-        negativeSound = null;
+      if (negativeMusic) {
+        await negativeMusic.unloadAsync();
+        negativeMusic = null;
       }
       isInitialized = false;
-      console.log("SoundManager: All sounds unloaded successfully");
+      currentMusicMode = "neutral";
+      isChangingMode = false;
+      console.log("SoundManager: All music unloaded successfully");
     } catch (error) {
-      console.error("Error unloading sounds:", error);
+      console.error("Error unloading music:", error);
     }
   },
 };

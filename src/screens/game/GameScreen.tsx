@@ -1,22 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { View, SafeAreaView, Alert, StyleSheet } from "react-native";
-import Keyboard from "../../components/game/Keyboard";
+import { View, SafeAreaView, Alert, StyleSheet, Text } from "react-native";
 import Header from "../../components/game/Header";
-import RiddleText from "../../components/game/RiddleText";
-import GuessGrid from "../../components/game/GuessGrid";
-import BottomNavigationBar from "../../components/game/BottomNavigationBar";
-import HintOverlay from "../../components/game/HintOverlay";
-import PlayOverlay from "../../components/game/PlayOverlay";
-import ProfileOverlay from "../../components/game/ProfileOverlay";
-import SettingsOverlay from "../../components/game/SettingsOverlay";
-import InstructionsOverlay from "../../components/game/InstructionsOverlay";
-import HomeOverlay from "../../components/game/HomeOverlay";
 import Controls from "../../components/game/Controls";
+import BottomNavigationBar from "../../components/game/BottomNavigationBar";
+import GameAnimations from "../../components/game/GameAnimations";
+import GameOverlays from "../../components/game/GameOverlays";
+import GameBoard from "../../components/game/GameBoard";
 import { SoundManager } from "../../services/SoundManager";
 import useGameLogic from "../../hooks/useGameLogic";
 import { checkAnyOverlayVisible } from "../../utils/overlayUtils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Animated, {
+import {
   useSharedValue,
   withSequence,
   withTiming,
@@ -24,29 +18,29 @@ import Animated, {
 } from "react-native-reanimated";
 import functions from "@react-native-firebase/functions";
 import { getApp } from "@react-native-firebase/app";
-import VictoryLossOverlay from "../../components/game/VictoryLossOverlay";
 import { GameMode } from "../../contexts/AuthContext";
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
-import WatchAdForChanceModal from "../../components/modals/WatchAdForChanceModal";
 import useRewardedAds from "../../hooks/useRewardedAds";
+import { useInterstitialAds } from "../../hooks/useInterstitialAds";
 import {
   GetHintInputSchema,
   GetHintOutputSchema,
 } from "../../validation/cloudFunctionsSchemas";
-import ShatteringTitle from "../../components/animations/ShatteringTitle";
-import ShatteringTiles from "../../components/animations/ShatteringTiles";
 import { useTileCapture } from "../../hooks/useTileCapture";
 import { useAuth } from "../../contexts/AuthContext";
-import FullProfileDetailsOverlay from "../../screens/main/FullProfileDetailsOverlay";
-import CoinShopModal from "../../components/shop/CoinShopModal";
 import { AppStrings } from "../../constants/AppStrings";
+import { isTablet } from "../../utils/responsive";
+import PulsingSpinner from "../../components/PulsingSpinner";
+import OutOfAttemptsModal from "../../components/modals/OutOfAttemptsModal";
 
 interface GuessResult {
-  outcome: "win" | "loss" | "continue";
+  outcome: "win" | "loss" | "continue" | "attemptLimitReached";
   feedback?: ("green" | "yellow" | "red")[];
   correctAnswer?: string;
   coinsEarned?: number;
   canOfferRewardedAd?: boolean;
+  canOfferCoinContinue?: boolean;
+  attemptsRemaining?: number;
 }
 
 const SOUND_ENABLED_STORAGE_KEY = "isSoundEnabled";
@@ -82,12 +76,15 @@ interface GameScreenState {
   isFullProfileDetailsOverlayVisible: boolean;
   isCoinShopModalVisible: boolean;
   isWatchAdModalVisible: boolean;
+  isOutOfAttemptsModalVisible: boolean;
   lastGuessResult: GuessResult | null;
   startShatterAnimation: boolean;
   startTileShatterAnimation: boolean;
   isHintOverlayVisible: boolean;
   isProfileOverlayVisible: boolean;
   isSettingsOverlayVisible: boolean;
+  isWelcomeOverlayVisible: boolean;
+  isLoading: boolean;
 }
 
 // Type guards for error handling
@@ -149,12 +146,15 @@ const GameScreen: React.FC<GameScreenProps> = ({
     isFullProfileDetailsOverlayVisible: false,
     isCoinShopModalVisible: false,
     isWatchAdModalVisible: false,
+    isOutOfAttemptsModalVisible: false,
     lastGuessResult: null,
     startShatterAnimation: false,
     startTileShatterAnimation: false,
     isHintOverlayVisible: false,
     isProfileOverlayVisible: false,
     isSettingsOverlayVisible: false,
+    isWelcomeOverlayVisible: false,
+    isLoading: false,
   });
 
   // Animation value for shaking the GuessGrid
@@ -167,8 +167,12 @@ const GameScreen: React.FC<GameScreenProps> = ({
     guesses,
     currentGuess,
     gameOver,
+    attemptsUsed,
+    attemptsRemaining,
+    hasUsedContinue,
     setCurrentGuess,
     processGuess,
+    continueGame,
     resetGame,
   } = useGameLogic({
     riddleId,
@@ -185,24 +189,45 @@ const GameScreen: React.FC<GameScreenProps> = ({
     overlayState.isInstructionsVisible,
     overlayState.isFullProfileDetailsOverlayVisible,
     overlayState.isCoinShopModalVisible,
-    overlayState.isWatchAdModalVisible
+    overlayState.isWatchAdModalVisible,
+    overlayState.isWelcomeOverlayVisible,
+    overlayState.isOutOfAttemptsModalVisible
   );
 
   const { isRewardedAdReady, loadRewardedAd, showRewardedAd } =
     useRewardedAds();
 
+  const {
+    isAdLoading,
+    loadInterstitialAd,
+    showInterstitialAd,
+    wasAdDisplayed,
+  } = useInterstitialAds();
+
+  // Constants for continue system
+  const CONTINUE_COST = 50; // Cost in coins to continue after 3 attempts
+
   useEffect(() => {
     const checkIfFirstTimeUser = async () => {
       try {
-        const hasSeenInstructions = await AsyncStorage.getItem(
-          "hasSeenInstructions"
-        );
-        if (hasSeenInstructions === null) {
+        const hasSeenWelcome = await AsyncStorage.getItem("hasSeenWelcome");
+        if (hasSeenWelcome === null) {
           setOverlayState((prev) => ({
             ...prev,
-            isInstructionsVisible: true,
+            isWelcomeOverlayVisible: true,
           }));
-          await AsyncStorage.setItem("hasSeenInstructions", "true");
+          await AsyncStorage.setItem("hasSeenWelcome", "true");
+        } else {
+          const hasSeenInstructions = await AsyncStorage.getItem(
+            "hasSeenInstructions"
+          );
+          if (hasSeenInstructions === null) {
+            setOverlayState((prev) => ({
+              ...prev,
+              isInstructionsVisible: true,
+            }));
+            await AsyncStorage.setItem("hasSeenInstructions", "true");
+          }
         }
       } catch (error) {
         console.error("Error checking AsyncStorage:", error);
@@ -271,13 +296,16 @@ const GameScreen: React.FC<GameScreenProps> = ({
 
   useEffect(() => {
     if (gameOver && overlayState.lastGuessResult) {
-      if (overlayState.lastGuessResult.outcome === "win") {
-        // Capture tiles before starting animations
-        captureTiles(guesses, currentGuess, answerLength).then(
-          (capturedTiles) => {
-            setTilesData(capturedTiles);
+      const result = overlayState.lastGuessResult;
 
-            // Start tile shattering animation first
+      if (result.outcome === "win") {
+        // Capture tiles for shattering animation
+        const captureAndShatter = async () => {
+          try {
+            // Use the last submitted guess instead of currentGuess (which is already cleared)
+            const lastGuess = guesses[guesses.length - 1]?.guess || [];
+            const tiles = await captureTiles(guesses, lastGuess, answerLength);
+            setTilesData(tiles);
             setOverlayState((prev) => ({
               ...prev,
               startTileShatterAnimation: true,
@@ -290,8 +318,12 @@ const GameScreen: React.FC<GameScreenProps> = ({
                 startShatterAnimation: true,
               }));
             }, 300);
+          } catch (error) {
+            console.warn("Failed to capture tiles for shattering:", error);
           }
-        );
+        };
+
+        captureAndShatter();
 
         // Fade out background music before playing success sound for dramatic effect
         SoundManager.fadeOutBackgroundMusic({
@@ -317,33 +349,29 @@ const GameScreen: React.FC<GameScreenProps> = ({
           ...prev,
           overlayOutcome: "win",
           overlayAttempts: guesses.length,
-          overlayCoinsEarned: overlayState.lastGuessResult?.coinsEarned || 0,
+          overlayCoinsEarned: result.coinsEarned || 0,
           victoryLossOverlayVisible: true,
         }));
-        onGameWin(
-          guesses.length,
-          overlayState.lastGuessResult?.coinsEarned || 0
-        );
-      } else if (overlayState.lastGuessResult.outcome === "loss") {
-        if (overlayState.lastGuessResult.canOfferRewardedAd) {
+        onGameWin(guesses.length, result.coinsEarned || 0);
+      } else if (result.outcome === "attemptLimitReached") {
+        // User has reached 3 attempts, offer continue options
+        setOverlayState((prev) => ({
+          ...prev,
+          isOutOfAttemptsModalVisible: true,
+        }));
+      } else if (result.outcome === "loss") {
+        // Final loss after using continue option
+        if (result.canOfferRewardedAd) {
           setOverlayState((prev) => ({
             ...prev,
             isWatchAdModalVisible: true,
           }));
         } else {
-          // Fade out background music before playing negative sound with slow fade-in
-          SoundManager.fadeOutBackgroundMusic({
-            duration: 300,
+          // Use slow fade-in for negative sound on final loss
+          SoundManager.playNegativeWithFadeIn({
+            duration: 2000,
             curve: "exponential",
           });
-
-          setTimeout(() => {
-            // Use slow fade-in for negative sound on wrong guesses
-            SoundManager.playNegativeWithFadeIn({
-              duration: 2000, // 2 seconds for a slow, dramatic fade-in
-              curve: "exponential",
-            });
-          }, 300);
 
           if (isHapticsEnabled) {
             ReactNativeHapticFeedback.trigger(
@@ -354,32 +382,23 @@ const GameScreen: React.FC<GameScreenProps> = ({
           setOverlayState((prev) => ({
             ...prev,
             overlayOutcome: "loss",
-            overlayCorrectAnswer:
-              overlayState.lastGuessResult?.correctAnswer || null,
+            overlayCorrectAnswer: result.correctAnswer || null,
             victoryLossOverlayVisible: true,
           }));
-          if (overlayState.lastGuessResult?.correctAnswer) {
-            onGameLoss(overlayState.lastGuessResult.correctAnswer);
+          if (result.correctAnswer) {
+            onGameLoss(result.correctAnswer);
           }
         }
       }
     }
-  }, [
-    gameOver,
-    overlayState.lastGuessResult,
-    guesses.length,
-    currentGuess,
-    answerLength,
-    captureTiles,
-    onGameWin,
-    onGameLoss,
-    isHapticsEnabled,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameOver, overlayState.lastGuessResult]);
 
   const handleKeyPress = async (key: string) => {
     if (
       gameOver ||
       isAnyOverlayVisible ||
+      overlayState.isLoading ||
       (currentGuess.length >= answerLength &&
         key !== "ENTER" &&
         key !== "BACKSPACE")
@@ -388,14 +407,25 @@ const GameScreen: React.FC<GameScreenProps> = ({
 
     if (key === "ENTER") {
       if (currentGuess.length === answerLength) {
+        // Show loading spinner while processing guess
+        setOverlayState((prev) => ({
+          ...prev,
+          isLoading: true,
+        }));
+
         try {
-          const result = await processGuess(currentGuess);
+          const result = (await processGuess(currentGuess)) as GuessResult;
           setOverlayState((prev) => ({
             ...prev,
             lastGuessResult: result,
+            isLoading: false,
           }));
         } catch (error) {
           console.error("Error processing guess in GameScreen:", error);
+          setOverlayState((prev) => ({
+            ...prev,
+            isLoading: false,
+          }));
           Alert.alert(
             AppStrings.GameScreenAlerts.SUBMIT_GUESS_ERROR_TITLE,
             AppStrings.GameScreenAlerts.SUBMIT_GUESS_ERROR_MESSAGE
@@ -425,8 +455,6 @@ const GameScreen: React.FC<GameScreenProps> = ({
       ...prev,
       isHintOverlayVisible: true,
     }));
-    // Slightly fade background music when opening hint overlay
-    SoundManager.fadeOutBackgroundMusic({ duration: 300, curve: "linear" });
   };
 
   const handleHintClose = () => {
@@ -434,8 +462,6 @@ const GameScreen: React.FC<GameScreenProps> = ({
       ...prev,
       isHintOverlayVisible: false,
     }));
-    // Restore background music when closing hint overlay
-    SoundManager.fadeInBackgroundMusic({ duration: 400, curve: "linear" });
   };
 
   const handleOverlayNext = () => {
@@ -467,7 +493,7 @@ const GameScreen: React.FC<GameScreenProps> = ({
   const handleProfileClose = () => {
     setOverlayState((prev) => ({
       ...prev,
-      profileOverlayVisible: false,
+      isProfileOverlayVisible: false,
     }));
     // Fade in background music when closing profile overlay
     SoundManager.fadeInBackgroundMusic({ duration: 600, curve: "linear" });
@@ -476,7 +502,7 @@ const GameScreen: React.FC<GameScreenProps> = ({
   const handleSettingsPress = () => {
     setOverlayState((prev) => ({
       ...prev,
-      settingsOverlayVisible: true,
+      isSettingsOverlayVisible: true,
     }));
     // Fade out background music when opening settings overlay
     SoundManager.fadeOutBackgroundMusic({
@@ -488,20 +514,16 @@ const GameScreen: React.FC<GameScreenProps> = ({
   const handleSettingsClose = () => {
     setOverlayState((prev) => ({
       ...prev,
-      settingsOverlayVisible: false,
+      isSettingsOverlayVisible: false,
     }));
     // Fade in background music when closing settings overlay
     SoundManager.fadeInBackgroundMusic({ duration: 600, curve: "linear" });
   };
 
-  const handlePlayPress = () => {
-    console.log("Play button pressed");
-  };
-
   const handleProfilePress = () => {
     setOverlayState((prev) => ({
       ...prev,
-      profileOverlayVisible: true,
+      isProfileOverlayVisible: true,
     }));
     // Fade out background music when opening profile overlay
     SoundManager.fadeOutBackgroundMusic({
@@ -535,13 +557,27 @@ const GameScreen: React.FC<GameScreenProps> = ({
     }));
   };
 
-  const handleHomeNavigationPress = () => {
-    console.log("VictoryLossOverlay Home button pressed");
+  const handleWelcomeClose = async () => {
     setOverlayState((prev) => ({
       ...prev,
-      victoryLossOverlayVisible: false,
+      isWelcomeOverlayVisible: false,
     }));
-    resetGame();
+
+    // After closing welcome, check if we should show instructions
+    try {
+      const hasSeenInstructions = await AsyncStorage.getItem(
+        "hasSeenInstructions"
+      );
+      if (hasSeenInstructions === null) {
+        setOverlayState((prev) => ({
+          ...prev,
+          isInstructionsVisible: true,
+        }));
+        await AsyncStorage.setItem("hasSeenInstructions", "true");
+      }
+    } catch (error) {
+      console.error("Error checking instructions AsyncStorage:", error);
+    }
   };
 
   const handleShowFullProfileDetails = () => {
@@ -707,6 +743,106 @@ const GameScreen: React.FC<GameScreenProps> = ({
     }
   };
 
+  // Handler for when user chooses to watch interstitial ad to continue
+  const handleWatchAdToContinue = async () => {
+    setOverlayState((prev) => ({
+      ...prev,
+      isOutOfAttemptsModalVisible: false,
+    }));
+
+    try {
+      await loadInterstitialAd();
+      showInterstitialAd();
+
+      // Continue the game after ad (assuming ad was shown successfully)
+      continueGame();
+      console.log("User continued game after watching interstitial ad");
+    } catch (error) {
+      console.error("Error showing interstitial ad:", error);
+      Alert.alert(
+        "Ad Error",
+        "An error occurred while trying to show the ad. You can try spending coins instead."
+      );
+      // Reopen the attempts modal since ad failed
+      setOverlayState((prev) => ({
+        ...prev,
+        isOutOfAttemptsModalVisible: true,
+      }));
+    }
+  };
+
+  // Handler for when user chooses to spend coins to continue
+  const handleSpendCoinsToContinue = async () => {
+    if (userCoins < CONTINUE_COST) {
+      Alert.alert(
+        "Not Enough Coins",
+        `You need ${CONTINUE_COST} coins to continue. You have ${userCoins} coins.`
+      );
+      return;
+    }
+
+    setOverlayState((prev) => ({
+      ...prev,
+      isOutOfAttemptsModalVisible: false,
+    }));
+
+    try {
+      // Call backend to spend coins
+      const spendCoinsCallable = functions(getApp()).httpsCallable(
+        "spendCoins"
+      );
+      await spendCoinsCallable({
+        amount: CONTINUE_COST,
+        reason: "continue_attempts",
+      });
+
+      // Continue the game
+      continueGame();
+      console.log(`User spent ${CONTINUE_COST} coins to continue game`);
+    } catch (error) {
+      console.error("Error spending coins:", error);
+      Alert.alert("Error", "Failed to spend coins. Please try again.");
+      // Reopen the attempts modal since coin spending failed
+      setOverlayState((prev) => ({
+        ...prev,
+        isOutOfAttemptsModalVisible: true,
+      }));
+    }
+  };
+
+  // Handler for when user chooses to give up
+  const handleGiveUpAttempts = () => {
+    setOverlayState((prev) => ({
+      ...prev,
+      isOutOfAttemptsModalVisible: false,
+      overlayOutcome: "loss",
+      overlayCorrectAnswer: overlayState.lastGuessResult?.correctAnswer || null,
+      victoryLossOverlayVisible: true,
+    }));
+
+    // Play negative sound for giving up
+    SoundManager.playNegativeWithFadeIn({
+      duration: 1500,
+      curve: "exponential",
+    });
+
+    if (isHapticsEnabled) {
+      ReactNativeHapticFeedback.trigger("notificationError", hapticOptions);
+    }
+
+    if (overlayState.lastGuessResult?.correctAnswer) {
+      onGameLoss(overlayState.lastGuessResult.correctAnswer);
+    }
+  };
+
+  // Handler for opening coin shop when coins are pressed
+  const handleCoinsPress = () => {
+    setOverlayState((prev) => ({
+      ...prev,
+      isCoinShopModalVisible: true,
+    }));
+  };
+
   // Trigger shake animation when shakeKey changes
   useEffect(() => {
     if (overlayState.shakeKey > 0) {
@@ -732,93 +868,62 @@ const GameScreen: React.FC<GameScreenProps> = ({
         style={[
           styles.gameContainer,
           isAnyOverlayVisible && styles.overlayVisible,
+          isTablet && styles.gameContainerTablet,
         ]}
       >
         <Header
-          level={playerData?.progress?.classicIndex ?? 0}
           userCoins={userCoins}
+          onHintPress={handleHintPress}
+          onCoinsPress={handleCoinsPress}
         />
-        {isWin && (
-          <ShatteringTitle
-            title="YOU WON!"
-            startAnimation={overlayState.startShatterAnimation}
-          />
-        )}
-        {isWin && tilesData.length > 0 && (
-          <ShatteringTiles
-            tiles={tilesData}
-            startAnimation={overlayState.startTileShatterAnimation}
-            onAnimationComplete={() => {
-              console.log("Tile shattering animation completed");
-            }}
-          />
-        )}
-        <RiddleText riddleText={riddleText} />
-        <View style={styles.centerContainer}>
-          <Animated.View style={animatedStyle}>
-            <GuessGrid
-              guesses={guesses}
-              currentGuess={currentGuess}
-              answerLength={answerLength}
-              shakeKey={overlayState.shakeKey}
-              setTileRef={setTileRef}
-            />
-          </Animated.View>
-        </View>
-        {!isAnyOverlayVisible && <Keyboard onKeyPress={handleKeyPress} />}
+
+        <GameAnimations
+          isWin={isWin}
+          tilesData={tilesData}
+          startShatterAnimation={overlayState.startShatterAnimation}
+          startTileShatterAnimation={overlayState.startTileShatterAnimation}
+        />
+
+        <GameBoard
+          riddleText={riddleText}
+          guesses={guesses}
+          currentGuess={currentGuess}
+          answerLength={answerLength}
+          shakeKey={overlayState.shakeKey}
+          setTileRef={setTileRef}
+          animatedStyle={animatedStyle}
+          onKeyPress={handleKeyPress}
+          isAnyOverlayVisible={isAnyOverlayVisible}
+        />
       </View>
 
-      {gameOver && overlayState.overlayOutcome === "win" && (
-        <View style={styles.overlayContainer}>
-          <VictoryLossOverlay
-            isVisible={gameOver && overlayState.overlayOutcome === "win"}
-            outcome="win"
-            attempts={overlayState.overlayAttempts}
-            correctAnswer={overlayState.overlayCorrectAnswer}
-            coinsEarned={overlayState.overlayCoinsEarned || 0}
-            guesses={guesses}
-            onNext={handleOverlayNext}
-            onRetry={handleOverlayRetry}
-            onHome={() => {}}
-          />
+      {/* Game Info - Show attempts remaining */}
+      {!isAnyOverlayVisible && !gameOver && (
+        <View className="px-4 py-2">
+          <Text className="text-center text-gray-600">
+            Attempts: {attemptsUsed}/3 {hasUsedContinue && "(+3)"}
+          </Text>
+          <Text className="text-center text-gray-500 text-sm">
+            {attemptsRemaining} remaining
+          </Text>
         </View>
       )}
 
-      {gameOver && overlayState.overlayOutcome === "loss" && (
-        <View style={styles.overlayContainer}>
-          <VictoryLossOverlay
-            isVisible={gameOver && overlayState.overlayOutcome === "loss"}
-            outcome="loss"
-            attempts={overlayState.overlayAttempts}
-            correctAnswer={overlayState.overlayCorrectAnswer}
-            coinsEarned={0}
-            guesses={guesses}
-            onNext={handleOverlayNext}
-            onRetry={handleOverlayRetry}
-            onHome={() => {}}
-          />
-        </View>
-      )}
-
-      <HintOverlay
-        isVisible={overlayState.isHintOverlayVisible}
-        onClose={handleHintClose}
+      <GameOverlays
+        // Hint Overlay
+        isHintOverlayVisible={overlayState.isHintOverlayVisible}
+        onHintClose={handleHintClose}
         onShowHint={handleShowHint}
         hintCost={hintCost}
         userCoins={userCoins}
-      />
-
-      <HomeOverlay isVisible={false} onClose={handleCloseHomeOverlay} />
-      <PlayOverlay isVisible={false} onClose={handleClosePlayOverlay} />
-      <ProfileOverlay
-        isVisible={overlayState.isProfileOverlayVisible}
-        onClose={handleProfileClose}
+        // Profile Overlay
+        isProfileOverlayVisible={overlayState.isProfileOverlayVisible}
+        onProfileClose={handleProfileClose}
         playerData={playerData}
         onFullProfilePress={handleShowFullProfileDetails}
-      />
-      <SettingsOverlay
-        isVisible={overlayState.isSettingsOverlayVisible}
-        onClose={handleSettingsClose}
+        // Settings Overlay
+        isSettingsOverlayVisible={overlayState.isSettingsOverlayVisible}
+        onSettingsClose={handleSettingsClose}
         isSoundEnabled={isSoundEnabled}
         isHapticsEnabled={isHapticsEnabled}
         onToggleSound={toggleSoundEnabled}
@@ -830,67 +935,90 @@ const GameScreen: React.FC<GameScreenProps> = ({
             isInstructionsVisible: true,
           }));
         }}
-      />
-
-      <InstructionsOverlay
-        isVisible={overlayState.isInstructionsVisible}
-        onClose={handleCloseInstructions}
-      />
-
-      <FullProfileDetailsOverlay
-        isVisible={overlayState.isFullProfileDetailsOverlayVisible}
-        onClose={handleCloseFullProfileDetailsOverlay}
-        playerData={playerData}
-      />
-
-      <CoinShopModal
-        isVisible={overlayState.isCoinShopModalVisible}
-        onClose={handleCloseCoinShopModal}
-        products={[]}
-        loading={false}
-        error={null}
+        // Instructions Overlay
+        isInstructionsVisible={overlayState.isInstructionsVisible}
+        onCloseInstructions={handleCloseInstructions}
+        // Welcome Overlay
+        isWelcomeOverlayVisible={overlayState.isWelcomeOverlayVisible}
+        onWelcomeClose={handleWelcomeClose}
+        // Victory/Loss Overlay
+        gameOver={gameOver}
+        overlayOutcome={overlayState.overlayOutcome}
+        overlayAttempts={overlayState.overlayAttempts}
+        overlayCorrectAnswer={overlayState.overlayCorrectAnswer}
+        overlayCoinsEarned={overlayState.overlayCoinsEarned}
+        guesses={guesses}
+        onOverlayNext={handleOverlayNext}
+        onOverlayRetry={handleOverlayRetry}
+        // Full Profile Details Overlay
+        isFullProfileDetailsOverlayVisible={
+          overlayState.isFullProfileDetailsOverlayVisible
+        }
+        onCloseFullProfileDetailsOverlay={handleCloseFullProfileDetailsOverlay}
+        // Coin Shop Modal
+        isCoinShopModalVisible={overlayState.isCoinShopModalVisible}
+        onCloseCoinShopModal={handleCloseCoinShopModal}
         onPurchaseProduct={handlePurchaseProduct}
+        // Watch Ad Modal
+        isWatchAdModalVisible={overlayState.isWatchAdModalVisible}
+        onWatchAdAccepted={handleWatchAdAccepted}
+        onWatchAdDeclined={handleWatchAdDeclined}
+        // Home/Play Overlays
+        onCloseHomeOverlay={handleCloseHomeOverlay}
+        onClosePlayOverlay={handleClosePlayOverlay}
+      />
+
+      {/* Out of Attempts Modal */}
+      <OutOfAttemptsModal
+        isVisible={overlayState.isOutOfAttemptsModalVisible}
+        userCoins={userCoins}
+        continueCost={CONTINUE_COST}
+        onWatchAd={handleWatchAdToContinue}
+        onSpendCoins={handleSpendCoinsToContinue}
+        onClose={handleGiveUpAttempts}
       />
 
       <Controls
-        onHintPress={handleHintPress}
-        onSubmitPress={() => handleKeyPress("ENTER")}
         onNextPress={handleOverlayNext}
-        currentGuess={currentGuess}
-        gameOver={gameOver}
         isWin={gameOver && overlayState.overlayOutcome === "win"}
-        answerLength={answerLength}
       />
 
       <BottomNavigationBar
-        onHomePress={handleHomeNavigationPress}
-        onPlayPress={handlePlayPress}
         onProfilePress={handleProfilePress}
         onSettingsPress={handleSettingsPress}
+        onSubmitPress={() => handleKeyPress("ENTER")}
+        currentGuess={currentGuess}
+        answerLength={answerLength}
+        gameOver={gameOver}
       />
 
-      {overlayState.isWatchAdModalVisible && (
-        <WatchAdForChanceModal
-          visible={overlayState.isWatchAdModalVisible}
-          onWatchAd={handleWatchAdAccepted}
-          onClose={handleWatchAdDeclined}
-        />
+      <PulsingSpinner
+        visible={overlayState.isLoading}
+        size={80}
+        opacity={0.7}
+      />
+
+      {/* Debug info for development */}
+      {__DEV__ && (
+        <View className="absolute bottom-20 left-4 bg-black/70 p-2 rounded">
+          <Text className="text-white text-xs">
+            Ad Loading: {isAdLoading ? "Yes" : "No"}
+          </Text>
+          <Text className="text-white text-xs">
+            Ad Displayed: {wasAdDisplayed ? "Yes" : "No"}
+          </Text>
+        </View>
       )}
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  centerContainer: {
-    flex: 1,
-    justifyContent: "center",
-  },
   gameContainer: {
     flex: 1,
   },
-  overlayContainer: {
-    flex: 1,
-    justifyContent: "center",
+  gameContainerTablet: {
+    paddingHorizontal: 20,
   },
   overlayVisible: {
     opacity: 0.3,

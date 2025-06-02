@@ -1,76 +1,105 @@
 import React from "react";
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
-import Icon from "react-native-vector-icons/MaterialIcons";
+import ProfileIcon from "../icons/ProfileIcon";
+import SettingsIcon from "../icons/SettingsIcon";
 import { AppStrings } from "../../constants/AppStrings";
 
 const ACTIVE_TEXT_COLOR = "#222"; // Define constant for active text color
 
-export type OverlayType = "home" | "play" | "profile" | "settings";
+export type OverlayType = "profile" | "settings";
 
 /**
  * Props for the BottomNavigationBar component.
- * @property {() => void} onHomePress - Function to call when the Home icon is pressed.
- * @property {() => void} onPlayPress - Function to call when the Play icon is pressed.
  * @property {() => void} onProfilePress - Function to call when the Profile icon is pressed.
  * @property {() => void} onSettingsPress - Function to call when the Settings icon is pressed.
+ * @property {() => void} onSubmitPress - Function to call when the Submit button is pressed.
+ * @property {string[]} currentGuess - Current guess array to determine submit button state.
+ * @property {number} answerLength - Expected answer length to validate submit button.
+ * @property {boolean} gameOver - Whether the game is over to disable submit button.
  */
 interface BottomNavigationBarProps {
-  onHomePress: () => void;
-  onPlayPress: () => void;
   onProfilePress: () => void;
   onSettingsPress: () => void;
+  onSubmitPress: () => void;
+  currentGuess: string[];
+  answerLength: number;
+  gameOver: boolean;
 }
 
 /**
  * A navigation bar component displayed at the bottom of the screen.
- * It provides navigation links to different sections of the application.
+ * It provides navigation links to profile and settings sections, plus a submit button for gameplay.
  * @param {BottomNavigationBarProps} props - The props for the component.
  * @returns {React.FC<BottomNavigationBarProps>} The rendered BottomNavigationBar component.
  */
 const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
-  onHomePress,
-  onPlayPress,
   onProfilePress,
   onSettingsPress,
+  onSubmitPress,
+  currentGuess,
+  answerLength,
+  gameOver,
 }) => {
+  const isSubmitDisabled = currentGuess.length !== answerLength;
+
   return (
-    <View className="bg-white border-t border-gray-200 px-4 py-2">
-      <View className="flex-row justify-around items-center">
+    <View
+      className="bg-white border-t border-gray-200 px-4 py-2"
+      testID="bottom-navigation-bar"
+    >
+      <View className="flex-row justify-between items-center">
         <TouchableOpacity
-          onPress={onHomePress}
-          className="flex-1 items-center py-2"
+          onPress={() => onProfilePress && onProfilePress()}
+          className="items-center py-2 px-6"
+          testID="profile-button"
+          accessible={true}
+          accessibilityRole="button"
+          accessibilityLabel="Open profile"
         >
-          <Icon name="home" size={24} style={styles.iconColor} />
-          <Text className="text-xs mt-1" style={styles.iconColor}>
-            Home
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={onPlayPress}
-          className="flex-1 items-center py-2"
-        >
-          <Icon name="play-arrow" size={24} style={styles.iconColor} />
-          <Text className="text-xs mt-1" style={styles.iconColor}>
-            {AppStrings.Navigation.PLAY_BUTTON}
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={onProfilePress}
-          className="flex-1 items-center py-2"
-        >
-          <Icon name="person" size={24} style={styles.iconColor} />
+          <ProfileIcon
+            width={24}
+            height={24}
+            color={ACTIVE_TEXT_COLOR}
+            testID="profile-icon"
+          />
           <Text className="text-xs mt-1" style={styles.iconColor}>
             {AppStrings.Navigation.PROFILE_BUTTON}
           </Text>
         </TouchableOpacity>
 
+        {/* Submit Button */}
         <TouchableOpacity
-          onPress={onSettingsPress}
-          className="flex-1 items-center py-2"
+          className={`px-6 py-3 rounded-lg ${
+            isSubmitDisabled || gameOver ? "bg-gray-400" : "bg-blue-500"
+          }`}
+          onPress={() => {
+            if (!isSubmitDisabled && !gameOver && onSubmitPress) {
+              onSubmitPress();
+            }
+          }}
+          disabled={isSubmitDisabled || gameOver}
+          testID="submit-button"
+          accessible={true}
+          accessibilityRole="button"
+          accessibilityLabel="Submit current guess"
         >
-          <Icon name="settings" size={24} style={styles.iconColor} />
+          <Text className="text-white font-bold">Submit</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => onSettingsPress && onSettingsPress()}
+          className="items-center py-2 px-6"
+          testID="settings-button"
+          accessible={true}
+          accessibilityRole="button"
+          accessibilityLabel="Open settings"
+        >
+          <SettingsIcon
+            width={24}
+            height={24}
+            color={ACTIVE_TEXT_COLOR}
+            testID="settings-icon"
+          />
           <Text className="text-xs mt-1" style={styles.iconColor}>
             {AppStrings.Navigation.SETTINGS_BUTTON}
           </Text>

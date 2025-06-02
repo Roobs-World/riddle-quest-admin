@@ -1,14 +1,33 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { Text, View } from "react-native";
+import { moderateScale } from "../../utils/responsive";
 
-interface RiddleTextProps {
+/**
+ * Define the props for the RiddleText component.
+ * @property {string} riddleText - The text of the riddle to display.
+ */
+type RiddleTextProps = {
   riddleText: string;
-}
+};
 
+/**
+ * The component that displays the riddle text for the Wordle-style game.
+ *
+ * @param {RiddleTextProps} props - The props for the component.
+ * @returns {React.FC<RiddleTextProps>} The rendered RiddleText component.
+ */
 const RiddleText: React.FC<RiddleTextProps> = ({ riddleText }) => {
   return (
-    <View className="w-full p-4 items-center justify-center">
-      <Text className="text-lg text-gray-700 text-center">{riddleText}</Text>
+    <View className="px-4 py-2 mb-2 items-center z-10">
+      <Text
+        className="text-center text-gray-800 font-semibold"
+        style={{
+          fontSize: moderateScale(16),
+          lineHeight: moderateScale(24),
+        }}
+      >
+        {riddleText}
+      </Text>
     </View>
   );
 };

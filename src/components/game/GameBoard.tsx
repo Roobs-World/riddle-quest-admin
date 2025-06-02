@@ -1,16 +1,28 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
+import Animated from "react-native-reanimated";
 import RiddleText from "./RiddleText";
 import GuessGrid from "./GuessGrid";
-import { SubmittedGuess, Feedback } from "../../hooks/types";
+import Keyboard from "./Keyboard";
+import QuestionsBackground from "@images/questions.svg";
+import { isTablet } from "../../utils/responsive";
+
+interface SubmittedGuess {
+  guess: string[];
+  feedback: ("green" | "yellow" | "red")[];
+}
 
 interface GameBoardProps {
   riddleText: string;
-  guesses: string[];
-  currentGuess: string;
-  feedback: { letter: string; status: "green" | "yellow" | "red" }[][];
+  guesses: SubmittedGuess[];
+  currentGuess: string[];
   answerLength: number;
-  shakeKey?: number;
+  shakeKey: number;
+  setTileRef: (rowIndex: number, cellIndex: number, ref: View | null) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  animatedStyle: any;
+  onKeyPress: (key: string) => void;
+  isAnyOverlayVisible: boolean;
 }
 
 /**
@@ -21,54 +33,73 @@ const GameBoard: React.FC<GameBoardProps> = ({
   riddleText,
   guesses,
   currentGuess,
-  feedback,
   answerLength,
-  shakeKey = 0,
+  shakeKey,
+  setTileRef,
+  animatedStyle,
+  onKeyPress,
+  isAnyOverlayVisible,
 }) => {
-  // Transform guesses and feedback into SubmittedGuess format expected by GuessGrid
-  const submittedGuesses: SubmittedGuess[] = guesses.map((guess, index) => ({
-    guess: guess.split(""), // Convert string to array of letters
-    feedback:
-      feedback[index]?.map((f) => {
-        // Map our feedback format to GuessGrid's expected format
-        return f.status as Feedback; // Cast to Feedback type since we know it's valid
-      }) || [],
-  }));
-
-  // Convert currentGuess string to array of letters
-  const currentGuessArray = currentGuess.split("");
-
   return (
-    <View style={styles.container}>
-      <View style={styles.riddleContainer}>
+    <>
+      <View
+        style={[
+          styles.riddleContainer,
+          isTablet && styles.riddleContainerTablet,
+        ]}
+      >
+        <QuestionsBackground style={styles.questionsBackground} />
         <RiddleText riddleText={riddleText} />
       </View>
 
-      <View style={styles.gridContainer}>
-        <GuessGrid
-          guesses={submittedGuesses}
-          currentGuess={currentGuessArray}
-          shakeKey={shakeKey}
-          answerLength={answerLength}
-        />
+      <View
+        style={[
+          styles.centerContainer,
+          isTablet && styles.centerContainerTablet,
+        ]}
+      >
+        <Animated.View style={animatedStyle}>
+          <GuessGrid
+            guesses={guesses}
+            currentGuess={currentGuess}
+            answerLength={answerLength}
+            shakeKey={shakeKey}
+            setTileRef={setTileRef}
+          />
+        </Animated.View>
       </View>
-    </View>
+
+      {!isAnyOverlayVisible && <Keyboard onKeyPress={onKeyPress} />}
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-  },
-  gridContainer: {
+  centerContainer: {
     flex: 1,
     justifyContent: "center",
   },
+  centerContainerTablet: {
+    alignSelf: "center",
+    marginHorizontal: 40,
+    maxWidth: 600,
+    width: "100%",
+  },
+  questionsBackground: {
+    height: 150,
+    opacity: 0.5,
+    position: "absolute",
+    top: -10,
+    width: 335,
+  },
   riddleContainer: {
-    marginBottom: 20,
-    minHeight: 80,
+    alignItems: "center",
+    marginVertical: 16,
+    position: "relative",
+  },
+  riddleContainerTablet: {
+    marginVertical: 24,
+    paddingHorizontal: 20,
   },
 });
 

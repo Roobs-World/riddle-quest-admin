@@ -2,54 +2,22 @@ import React from "react";
 import { View, TouchableOpacity, Text } from "react-native";
 
 interface ControlsProps {
-  onHintPress: () => void;
-  onSubmitPress: () => void;
   onNextPress: () => void;
-  currentGuess: string[];
-  gameOver: boolean;
   isWin: boolean;
-  answerLength: number;
 }
 
-const Controls: React.FC<ControlsProps> = ({
-  onHintPress,
-  onSubmitPress,
-  onNextPress,
-  currentGuess,
-  gameOver,
-  isWin,
-  answerLength,
-}) => {
-  const isSubmitDisabled = currentGuess.length !== answerLength;
+const Controls: React.FC<ControlsProps> = ({ onNextPress, isWin }) => {
   const isNextVisible = isWin;
 
   return (
-    <View className="flex-row justify-around w-full mt-4">
-      {/* Hint Button */}
-      <TouchableOpacity
-        className="p-2 bg-yellow-500 rounded mr-2"
-        onPress={onHintPress}
-        disabled={gameOver}
-      >
-        <Text className="text-white">Hint</Text>
-      </TouchableOpacity>
-
-      {/* Submit Button */}
-      <TouchableOpacity
-        className="p-2 bg-blue-500 rounded"
-        onPress={onSubmitPress}
-        disabled={isSubmitDisabled || gameOver}
-      >
-        <Text className="text-white">Submit</Text>
-      </TouchableOpacity>
-
-      {/* Next Button (initially hidden or disabled until win) */}
+    <View className="flex-row justify-center w-full mt-4">
+      {/* Next Button (only visible after win) */}
       {isNextVisible && (
         <TouchableOpacity
-          className="p-2 bg-green-500 rounded ml-2"
+          className="p-3 bg-green-500 rounded-lg"
           onPress={onNextPress}
         >
-          <Text className="text-white">Next</Text>
+          <Text className="text-white font-bold">Next Level</Text>
         </TouchableOpacity>
       )}
     </View>

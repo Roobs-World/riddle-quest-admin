@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-const {spawn, exec} = require("child_process");
-const net = require("net");
+import {spawn, exec} from "child_process";
+import net from "net";
 
 // Configuration
 const FIRESTORE_PORT = 8099;

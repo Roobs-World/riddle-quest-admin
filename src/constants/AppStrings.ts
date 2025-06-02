@@ -79,6 +79,7 @@ export const AppStrings = {
     PLAY_BUTTON: "Play",
     PROFILE_BUTTON: "Profile",
     SETTINGS_BUTTON: "Settings",
+    HINT_BUTTON: "Hint",
   },
   NavigationMessages: {
     NO_CLASSIC_RIDDLE_FOUND: "⚠️ No classic riddle found at index ",

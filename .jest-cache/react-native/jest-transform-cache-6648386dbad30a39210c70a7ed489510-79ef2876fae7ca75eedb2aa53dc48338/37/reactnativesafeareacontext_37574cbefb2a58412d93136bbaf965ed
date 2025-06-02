@@ -1,0 +1,11 @@
+9f5dc4d98c3a31867ca7cf704129ea30
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.maybeHijackSafeAreaProvider = maybeHijackSafeAreaProvider;
+function maybeHijackSafeAreaProvider(type) {
+  return type;
+}
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJleHBvcnRzIiwibWF5YmVIaWphY2tTYWZlQXJlYVByb3ZpZGVyIiwidHlwZSJdLCJzb3VyY2VzIjpbIi4uLy4uLy4uL3NyYy9ydW50aW1lL3RoaXJkLXBhcnR5LWxpYnMvcmVhY3QtbmF0aXZlLXNhZmUtYXJlYS1jb250ZXh0LnRzeCJdLCJzb3VyY2VzQ29udGVudCI6W251bGxdLCJtYXBwaW5ncyI6Ijs7Ozs7QUFFQUEsT0FBQSxDQUFBQywyQkFBQSxHQUFBQSwyQkFBQTtBQUFBLFNBQWdCQSwyQkFBMkJBLENBQUNDLElBQXdCO0VBQ2xFLE9BQU9BLElBQUk7QUFDYiIsImlnbm9yZUxpc3QiOltdfQ==

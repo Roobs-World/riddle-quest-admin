@@ -20,6 +20,22 @@ module.exports = {
   ios: {
     supportsTablet: true,
     bundleIdentifier: "com.grindhead.qwordly",
+    googleServicesFile: "./GoogleService-Info.plist",
+    infoPlist: {
+      NSUserTrackingUsageDescription:
+        "This identifier will be used to deliver personalized ads to you.",
+      NSCameraUsageDescription:
+        "This app needs access to camera to capture profile photos.",
+      NSPhotoLibraryUsageDescription:
+        "This app needs access to photo library to select profile photos.",
+      // Enhanced audio session configuration for high-quality playback
+      UIBackgroundModes: ["audio"],
+      AVAudioSessionCategoryOptions: [
+        "AVAudioSessionCategoryOptionMixWithOthers",
+        "AVAudioSessionCategoryOptionAllowBluetooth",
+        "AVAudioSessionCategoryOptionDefaultToSpeaker",
+      ],
+    },
   },
   android: {
     adaptiveIcon: {
@@ -29,6 +45,12 @@ module.exports = {
     edgeToEdgeEnabled: false,
     package: "com.grindhead.qwordly",
     googleServicesFile: "./google-services.json",
+    // Audio quality permissions and settings
+    permissions: [
+      "android.permission.RECORD_AUDIO",
+      "android.permission.MODIFY_AUDIO_SETTINGS",
+      "android.permission.WRITE_EXTERNAL_STORAGE",
+    ],
   },
   web: {
     favicon: "./assets/images/favicon.png",
@@ -59,7 +81,21 @@ module.exports = {
           targetSdkVersion: 35,
           buildToolsVersion: "35.0.0",
           kotlinVersion: "2.0.21",
+          // Enhanced audio processing
+          proguardMinifyEnabled: false, // Disable minification to preserve audio quality
         },
+        ios: {
+          // Enhanced audio configuration for iOS
+          deploymentTarget: "16.0",
+        },
+      },
+    ],
+    // Add expo-av plugin with audio optimization
+    [
+      "expo-av",
+      {
+        microphonePermission:
+          "Allow $(PRODUCT_NAME) to access your microphone for enhanced audio features.",
       },
     ],
   ],
@@ -83,4 +119,6 @@ module.exports = {
     APPLOVIN_SDK_KEY:
       "l0DW3tQICL3wzDHvHp2_94_T9l9RTheo_ETqTv9wek0c2BLUG17QClOTHhLNUB_3SusS4e8PEfmokc9ymTO0px",
   },
+  // Asset optimization to preserve audio quality
+  assetBundlePatterns: ["**/*"],
 };

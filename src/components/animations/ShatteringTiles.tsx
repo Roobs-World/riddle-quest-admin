@@ -9,10 +9,11 @@ import Animated, {
 } from "react-native-reanimated";
 
 const TILE_SIZE = 56; // 14 * 4 (w-14 from GuessGrid)
-const MAX_POOL_SIZE = 30; // Max tiles we might need (6 rows × 5 columns = 30)
+const MAX_POOL_SIZE = 21; // Max tiles we might need (3 rows × 7 columns = 21)
 const FIXED_DELTA = 16.67; // ~60 FPS
 const OFF_SCREEN_THRESHOLD = 200;
 const FADE_DURATION = 2000; // 2 seconds fade out
+const GRAY_400 = "#9ca3af";
 
 interface TileData {
   letter: string | null;
@@ -52,62 +53,9 @@ const ShatteringTiles: React.FC<ShatteringTilesProps> = ({
   const activeTilesForCompletionRef = useRef<number>(0);
   const [isMounted, setIsMounted] = useState(false);
 
-  // Create individual shared values for the pool (pre-create all 30)
+  // Create individual shared values for the pool (pre-create all 21)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const sharedValues = [
-    {
-      x: useSharedValue(-1000),
-      y: useSharedValue(-1000),
-      angle: useSharedValue(0),
-      opacity: useSharedValue(0),
-    },
-    {
-      x: useSharedValue(-1000),
-      y: useSharedValue(-1000),
-      angle: useSharedValue(0),
-      opacity: useSharedValue(0),
-    },
-    {
-      x: useSharedValue(-1000),
-      y: useSharedValue(-1000),
-      angle: useSharedValue(0),
-      opacity: useSharedValue(0),
-    },
-    {
-      x: useSharedValue(-1000),
-      y: useSharedValue(-1000),
-      angle: useSharedValue(0),
-      opacity: useSharedValue(0),
-    },
-    {
-      x: useSharedValue(-1000),
-      y: useSharedValue(-1000),
-      angle: useSharedValue(0),
-      opacity: useSharedValue(0),
-    },
-    {
-      x: useSharedValue(-1000),
-      y: useSharedValue(-1000),
-      angle: useSharedValue(0),
-      opacity: useSharedValue(0),
-    },
-    {
-      x: useSharedValue(-1000),
-      y: useSharedValue(-1000),
-      angle: useSharedValue(0),
-      opacity: useSharedValue(0),
-    },
-    {
-      x: useSharedValue(-1000),
-      y: useSharedValue(-1000),
-      angle: useSharedValue(0),
-      opacity: useSharedValue(0),
-    },
-    {
-      x: useSharedValue(-1000),
-      y: useSharedValue(-1000),
-      angle: useSharedValue(0),
-      opacity: useSharedValue(0),
-    },
     {
       x: useSharedValue(-1000),
       y: useSharedValue(-1000),
@@ -238,6 +186,10 @@ const ShatteringTiles: React.FC<ShatteringTilesProps> = ({
 
   // Initialize Matter.js engine and tile pool
   useEffect(() => {
+    if (!isMounted) return;
+
+    console.log("Initializing Matter.js engine and tile pool");
+
     engineRef.current = Matter.Engine.create({ enableSleeping: true });
     const world = engineRef.current.world;
     world.gravity.y = 0.8; // Slightly stronger gravity than letters
@@ -364,6 +316,7 @@ const ShatteringTiles: React.FC<ShatteringTilesProps> = ({
 
       animationFrameIdRef.current = requestAnimationFrame(updateMatter);
     };
+
     animationFrameIdRef.current = requestAnimationFrame(updateMatter);
 
     return () => {
@@ -377,7 +330,8 @@ const ShatteringTiles: React.FC<ShatteringTilesProps> = ({
       engineRef.current = null;
       tilePoolRef.current = [];
     };
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMounted, startAnimation, onAnimationComplete]);
 
   // Effect to set up tiles based on tiles prop
   useEffect(() => {
@@ -421,6 +375,7 @@ const ShatteringTiles: React.FC<ShatteringTilesProps> = ({
       }
     }
     activeTilesForCompletionRef.current = activatedCount;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tiles, isMounted]);
 
   // Effect to start shattering animation
@@ -483,7 +438,8 @@ const ShatteringTiles: React.FC<ShatteringTilesProps> = ({
         activeTilesForCompletionRef.current = 0;
       }
     }
-  }, [startAnimation, isMounted]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [startAnimation, isMounted, tilePoolRef, engineRef, onAnimationComplete]);
 
   if (!isMounted) return null;
 
@@ -498,6 +454,16 @@ const ShatteringTiles: React.FC<ShatteringTilesProps> = ({
         return { backgroundColor: "#ef4444" };
       default:
         return { backgroundColor: "transparent" };
+    }
+  };
+
+  // Helper function to get border color
+  const getBorderStyle = (borderColor: string) => {
+    switch (borderColor) {
+      case "gray-400":
+        return { borderColor: GRAY_400 };
+      default:
+        return { borderColor: "transparent" };
     }
   };
 
@@ -531,12 +497,18 @@ const ShatteringTiles: React.FC<ShatteringTilesProps> = ({
         if (!tile.isActive) return null;
 
         const backgroundStyle = getBackgroundStyle(tile.data.backgroundColor);
+        const borderStyle = getBorderStyle(tile.data.borderColor);
         const textColor = getTextColor(tile.data.textColor);
 
         return (
           <Animated.View
             key={tile.id}
-            style={[styles.tileView, backgroundStyle, animatedStyle]}
+            style={[
+              styles.tileView,
+              backgroundStyle,
+              borderStyle,
+              animatedStyle,
+            ]}
           >
             <Text style={[styles.tileText, { color: textColor }]}>
               {tile.data.letter?.toUpperCase()}
@@ -560,7 +532,7 @@ const styles = StyleSheet.create({
   },
   tileView: {
     alignItems: "center",
-    borderColor: "#9ca3af",
+    borderColor: GRAY_400,
     borderRadius: 4,
     borderWidth: 1,
     height: TILE_SIZE,

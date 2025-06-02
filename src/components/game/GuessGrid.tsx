@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import { View, Text } from "react-native";
+import React, { useEffect, useRef, useState, useCallback } from "react";
+import { View, Text, StyleSheet } from "react-native";
 import Animated, {
   useSharedValue,
   withSequence,
@@ -10,6 +10,7 @@ import Animated, {
 import type { SubmittedGuess, Feedback } from "../../hooks/types"; // Import Feedback type from types.ts
 import { useTileCapture } from "../../hooks/useTileCapture";
 import ShatteringTiles from "../animations/ShatteringTiles";
+import { scale } from "../../utils/responsive";
 
 // Define TileData interface to match the one used in ShatteringTiles
 interface TileData {
@@ -52,7 +53,11 @@ const GuessGrid: React.FC<GuessGridProps> = ({
   setTileRef,
 }) => {
   const previousGuessCountRef = useRef(guesses.length);
-  const ROW_HEIGHT = 60; // Height of each row including margin
+
+  // Responsive sizes
+  const TILE_SIZE = scale(56); // Base size 56px
+  const TILE_MARGIN = scale(2); // Base margin 2px
+  const ROW_HEIGHT = TILE_SIZE + TILE_MARGIN * 2 + scale(4); // Tile + margins + mb-1 (4px)
   const SLIDE_DISTANCE = ROW_HEIGHT * 2; // Distance to slide rows up
   const ANIMATION_DURATION = 800; // Duration of slide animation
   const SHATTER_THRESHOLD = -40; // Y position where top row should shatter (when going under question)
@@ -70,28 +75,19 @@ const GuessGrid: React.FC<GuessGridProps> = ({
   const row1Opacity = useSharedValue(1);
   const row2TranslateY = useSharedValue(0);
   const row2Opacity = useSharedValue(1);
-  const row3TranslateY = useSharedValue(0);
-  const row3Opacity = useSharedValue(1);
-  const row4TranslateY = useSharedValue(0);
-  const row4Opacity = useSharedValue(1);
-  const row5TranslateY = useSharedValue(0);
-  const row5Opacity = useSharedValue(1);
 
   const rowAnimations = useRef([
     { translateY: row0TranslateY, opacity: row0Opacity },
     { translateY: row1TranslateY, opacity: row1Opacity },
     { translateY: row2TranslateY, opacity: row2Opacity },
-    { translateY: row3TranslateY, opacity: row3Opacity },
-    { translateY: row4TranslateY, opacity: row4Opacity },
-    { translateY: row5TranslateY, opacity: row5Opacity },
   ]).current;
 
   // Combine submitted guesses and the current guess for display
   const displayRows: { letters: (string | null)[]; feedback: Feedback[] }[] =
     guesses.map((sg) => ({ letters: sg.guess, feedback: sg.feedback }));
 
-  // Add the current guess to the next available row if there are less than 6 submitted guesses
-  if (displayRows.length < 6) {
+  // Add the current guess to the next available row if there are less than 3 submitted guesses
+  if (displayRows.length < 3) {
     const currentRowLetters: (string | null)[] = Array(answerLength).fill(null);
     currentGuess.forEach((letter, index) => {
       currentRowLetters[index] = letter;
@@ -104,8 +100,8 @@ const GuessGrid: React.FC<GuessGridProps> = ({
     });
   }
 
-  // Fill the remaining rows with empty cells up to 6 rows
-  while (displayRows.length < 6) {
+  // Fill the remaining rows with empty cells up to 3 rows
+  while (displayRows.length < 3) {
     displayRows.push({
       letters: Array(answerLength).fill(null),
       feedback: Array(answerLength).fill(null),
@@ -116,7 +112,7 @@ const GuessGrid: React.FC<GuessGridProps> = ({
   const shakeAnimation = useSharedValue(0);
 
   // Function to capture top row tiles for shattering
-  const captureTopRowForShattering = async () => {
+  const captureTopRowForShattering = useCallback(async () => {
     try {
       // Only capture if top row has content and has feedback (completed guess)
       const topRow = displayRows[0];
@@ -147,7 +143,14 @@ const GuessGrid: React.FC<GuessGridProps> = ({
     } catch (error) {
       console.warn("⚠️ Failed to capture top row tiles for shattering:", error);
     }
-  };
+  }, [
+    displayRows,
+    captureTiles,
+    guesses,
+    currentGuess,
+    answerLength,
+    rowAnimations,
+  ]);
 
   // Effect to trigger slide animation when new guess is submitted
   useEffect(() => {
@@ -189,7 +192,7 @@ const GuessGrid: React.FC<GuessGridProps> = ({
       }
 
       // Reset animation for the current guess row (ensure it's visible)
-      if (currentGuessCount < 6) {
+      if (currentGuessCount < 3) {
         rowAnimations[currentGuessCount].translateY.value = withTiming(0, {
           duration: ANIMATION_DURATION,
         });
@@ -199,7 +202,7 @@ const GuessGrid: React.FC<GuessGridProps> = ({
       }
 
       // Reset any rows below current guess to normal state
-      for (let i = currentGuessCount + 1; i < 6; i++) {
+      for (let i = currentGuessCount + 1; i < 3; i++) {
         rowAnimations[i].translateY.value = withTiming(0, {
           duration: ANIMATION_DURATION,
         });
@@ -211,7 +214,15 @@ const GuessGrid: React.FC<GuessGridProps> = ({
 
     // Update the previous guess count
     previousGuessCountRef.current = currentGuessCount;
-  }, [guesses.length, rowAnimations, answerLength, topRowShattering]);
+  }, [
+    guesses.length,
+    rowAnimations,
+    answerLength,
+    topRowShattering,
+    SHATTER_THRESHOLD,
+    SLIDE_DISTANCE,
+    captureTopRowForShattering,
+  ]);
 
   // Effect to trigger shake animation when shakeKey changes
   useEffect(() => {
@@ -305,16 +316,10 @@ const GuessGrid: React.FC<GuessGridProps> = ({
   return (
     <View className="w-full items-center py-4 flex-grow">
       {/* Masking container that clips content sliding upward */}
-      <View
-        className="w-full relative"
-        style={{
-          overflow: "hidden",
-          minHeight: ROW_HEIGHT * 6, // Ensure container is tall enough for all rows
-        }}
-      >
+      <View className="w-full relative" style={styles.maskingContainer}>
         {displayRows.map((row, rowIndex) => {
           const isCurrentGuessRow =
-            rowIndex === guesses.length && guesses.length < 6;
+            rowIndex === guesses.length && guesses.length < 3;
 
           // Hide top row if it's shattering
           const shouldHideRow = rowIndex === 0 && topRowShattering;
@@ -350,10 +355,18 @@ const GuessGrid: React.FC<GuessGridProps> = ({
                   <View
                     key={cellIndex}
                     ref={(ref) => handleTileRef(rowIndex, cellIndex, ref)}
-                    className={`w-14 h-14 m-[2px] border ${borderColor} items-center justify-center rounded ${backgroundColor}`}
+                    className={`border ${borderColor} items-center justify-center rounded ${backgroundColor}`}
+                    style={{
+                      width: TILE_SIZE,
+                      height: TILE_SIZE,
+                      margin: TILE_MARGIN,
+                    }}
                   >
                     <Text
-                      className={`text-2xl font-bold uppercase ${textColor}`}
+                      className={`font-bold uppercase ${textColor}`}
+                      style={{
+                        fontSize: scale(24), // Responsive font size
+                      }}
                     >
                       {letter}
                     </Text>
@@ -376,5 +389,12 @@ const GuessGrid: React.FC<GuessGridProps> = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  maskingContainer: {
+    minHeight: scale(56) * 3 + scale(2) * 6 + scale(4) * 3,
+    overflow: "hidden", // ROW_HEIGHT * 3
+  },
+});
 
 export default GuessGrid;

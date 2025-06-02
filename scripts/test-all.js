@@ -104,6 +104,13 @@ function initializeFirestore() {
 
     // Create a simple initialization script that adds test data
     const initScript = `
+      const path = require('path');
+      const { createRequire } = require('module');
+      
+      // Create require from the project root to resolve firebase-admin
+      const projectRoot = path.resolve(__dirname, '../..');
+      const require = createRequire(path.join(projectRoot, 'package.json'));
+      
       const admin = require('firebase-admin');
       
       if (!admin.apps.length) {
@@ -156,7 +163,7 @@ function initializeFirestore() {
     // Write init script to temporary file and execute it
     const fs = require("fs");
     const path = require("path");
-    const tempFile = path.join(os.tmpdir(), "firestore-init.js");
+    const tempFile = path.join(process.cwd(), "temp-firestore-init.js");
 
     fs.writeFileSync(tempFile, initScript);
 
@@ -165,6 +172,7 @@ function initializeFirestore() {
       env: {
         ...process.env,
         FIRESTORE_EMULATOR_HOST: "127.0.0.1:8099",
+        NODE_PATH: path.join(process.cwd(), "node_modules"),
       },
       cwd: process.cwd(),
       shell: isWindows,
@@ -183,7 +191,9 @@ function initializeFirestore() {
 
     initProcess.on("close", (code) => {
       // Clean up temp file
-      fs.unlinkSync(tempFile);
+      if (fs.existsSync(tempFile)) {
+        fs.unlinkSync(tempFile);
+      }
 
       if (code === 0) {
         log("✅ Firestore initialized with test data!", colors.green);

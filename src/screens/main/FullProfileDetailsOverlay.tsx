@@ -309,7 +309,14 @@ const FullProfileDetailsOverlay: React.FC<FullProfileDetailsOverlayProps> = ({
     try {
       if (provider === "google") {
         // Google Linking Logic
-        const { idToken } = await GoogleSignin.signIn();
+        const signInResult = await GoogleSignin.signIn();
+        const idToken = signInResult.data?.idToken;
+
+        if (!idToken) {
+          Alert.alert("Error", "No ID token received from Google Sign-In");
+          return;
+        }
+
         const googleCredential = auth.GoogleAuthProvider.credential(idToken);
 
         // Check if the account is already linked

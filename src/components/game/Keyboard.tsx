@@ -1,16 +1,17 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  GestureResponderEvent,
-} from "react-native";
+import React, { useState, useRef } from "react";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
+  runOnJS,
 } from "react-native-reanimated";
 import BackspaceIcon from "../icons/BackspaceIcon";
+import { scale, moderateScale, isTablet } from "../../utils/responsive";
+
+const COLORS = {
+  primaryOrange: "#FF8C00",
+};
 
 interface KeyboardProps {
   onKeyPress: (key: string) => void;
@@ -20,7 +21,7 @@ interface PulseAnimation {
   key: string;
   x: number;
   y: number;
-  id: number;
+  id: string;
 }
 
 const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress }) => {
@@ -29,57 +30,93 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress }) => {
   const bottomRow = ["z", "x", "c", "v", "b", "n", "m"];
 
   const [pulses, setPulses] = useState<PulseAnimation[]>([]);
+  const keyboardRef = useRef<View>(null);
+  const keyRefs = useRef<{ [key: string]: View | null }>({});
+  const pulseIdCounter = useRef(0); // Add counter for truly unique IDs
 
-  const createPulse = (key: string, event: GestureResponderEvent) => {
-    const { locationX, locationY } = event.nativeEvent;
-    const pulseId = Date.now();
+  // Responsive styles
+  const keyHeight = scale(48);
+  const keyMargin = scale(1);
+  const fontSize = moderateScale(18);
+  const containerPadding = isTablet ? scale(16) : scale(8);
 
-    const newPulse: PulseAnimation = {
-      key,
-      x: locationX,
-      y: locationY,
-      id: pulseId,
-    };
+  const createPulse = (key: string) => {
+    const keyRef = keyRefs.current[key];
+    if (!keyRef || !keyboardRef.current) return;
 
-    setPulses((prev) => [...prev, newPulse]);
+    // Measure the key position relative to the keyboard container
+    keyRef.measureLayout(
+      keyboardRef.current,
+      (x: number, y: number, width: number, height: number) => {
+        // Create truly unique ID with counter and timestamp
+        const pulseId = `pulse_${Date.now()}_${++pulseIdCounter.current}`;
 
-    // Remove pulse after animation completes
-    setTimeout(() => {
-      setPulses((prev) => prev.filter((p) => p.id !== pulseId));
-    }, 600);
+        // Calculate center of the key
+        const centerX = x + width / 2;
+        const centerY = y + height / 2;
+
+        const newPulse: PulseAnimation = {
+          key,
+          x: centerX,
+          y: centerY,
+          id: pulseId,
+        };
+
+        setPulses((prev) => [...prev, newPulse]);
+      },
+      () => {
+        console.error("Failed to measure key position");
+      }
+    );
   };
 
-  const handleKeyPress = (key: string, event: GestureResponderEvent) => {
-    createPulse(key, event);
+  const handleKeyPress = (key: string) => {
+    createPulse(key);
     onKeyPress(key);
   };
 
   const PulseCircle: React.FC<{ pulse: PulseAnimation }> = ({ pulse }) => {
-    const scale = useSharedValue(0);
+    const scaleValue = useSharedValue(0);
     const opacity = useSharedValue(0.8);
+    const animationCompleted = useRef(false);
+
+    const removePulse = React.useCallback(() => {
+      if (!animationCompleted.current) {
+        animationCompleted.current = true;
+        setPulses((prev) => prev.filter((p) => p.id !== pulse.id));
+      }
+    }, [pulse.id]);
 
     React.useEffect(() => {
-      scale.value = withTiming(1.5, { duration: 600 });
+      // Start both animations immediately when component mounts
+      // Only the scale animation needs the completion callback since they run simultaneously
+      scaleValue.value = withTiming(1.5, { duration: 600 }, (finished) => {
+        if (finished) {
+          runOnJS(removePulse)();
+        }
+      });
+
+      // Opacity animation runs in parallel
       opacity.value = withTiming(0, { duration: 600 });
-    }, [scale, opacity]);
+
+      // Cleanup function to prevent memory leaks
+      return () => {
+        animationCompleted.current = true;
+      };
+    }, [scaleValue, opacity, removePulse]); // Include all dependencies used in the effect
 
     const animatedStyle = useAnimatedStyle(() => ({
-      transform: [{ scale: scale.value }],
+      transform: [{ scale: scaleValue.value }],
       opacity: opacity.value,
     }));
 
     return (
       <Animated.View
         style={[
+          styles.pulseCircle,
           {
-            position: "absolute",
-            width: 40,
-            height: 40,
-            borderRadius: 20,
-            backgroundColor: "#FF8C00", // Primary orange color to match game theme
-            left: pulse.x - 20,
-            top: pulse.y - 20,
-            pointerEvents: "none",
+            left: pulse.x - 20, // Center the pulse on the key
+            top: pulse.y - 20, // Center the pulse on the key
           },
           animatedStyle,
         ]}
@@ -88,16 +125,30 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress }) => {
   };
 
   return (
-    <View className="items-center p-2 relative">
+    <View
+      ref={keyboardRef}
+      className="items-center relative"
+      style={{ padding: containerPadding }}
+    >
       {/* Top row */}
       <View className="flex-row mb-1">
         {topRow.map((key) => (
           <TouchableOpacity
             key={key}
-            className="flex-1 m-[1px] items-center justify-center rounded bg-gray-300 h-12"
-            onPress={(event) => handleKeyPress(key, event)}
+            ref={(ref) => {
+              keyRefs.current[key] = ref;
+            }}
+            className="flex-1 items-center justify-center rounded bg-gray-300"
+            style={{
+              height: keyHeight,
+              margin: keyMargin,
+            }}
+            onPress={() => handleKeyPress(key)}
           >
-            <Text className="text-lg font-bold uppercase text-black">
+            <Text
+              className="font-bold uppercase text-black"
+              style={{ fontSize }}
+            >
               {key}
             </Text>
           </TouchableOpacity>
@@ -109,10 +160,20 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress }) => {
         {midRow.map((key) => (
           <TouchableOpacity
             key={key}
-            className="flex-1 m-[1px] items-center justify-center rounded bg-gray-300 h-12"
-            onPress={(event) => handleKeyPress(key, event)}
+            ref={(ref) => {
+              keyRefs.current[key] = ref;
+            }}
+            className="flex-1 items-center justify-center rounded bg-gray-300"
+            style={{
+              height: keyHeight,
+              margin: keyMargin,
+            }}
+            onPress={() => handleKeyPress(key)}
           >
-            <Text className="text-lg font-bold uppercase text-black">
+            <Text
+              className="font-bold uppercase text-black"
+              style={{ fontSize }}
+            >
               {key}
             </Text>
           </TouchableOpacity>
@@ -124,20 +185,37 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress }) => {
         {bottomRow.map((key) => (
           <TouchableOpacity
             key={key}
-            className="flex-1 m-[1px] items-center justify-center rounded bg-gray-300 h-12"
-            onPress={(event) => handleKeyPress(key, event)}
+            ref={(ref) => {
+              keyRefs.current[key] = ref;
+            }}
+            className="flex-1 items-center justify-center rounded bg-gray-300"
+            style={{
+              height: keyHeight,
+              margin: keyMargin,
+            }}
+            onPress={() => handleKeyPress(key)}
           >
-            <Text className="text-lg font-bold uppercase text-black">
+            <Text
+              className="font-bold uppercase text-black"
+              style={{ fontSize }}
+            >
               {key}
             </Text>
           </TouchableOpacity>
         ))}
         <TouchableOpacity
           key="delete"
-          className="flex-1 m-[1px] items-center justify-center rounded bg-black h-12"
-          onPress={(event) => handleKeyPress("DELETE", event)}
+          ref={(ref) => {
+            keyRefs.current["DELETE"] = ref;
+          }}
+          className="flex-1 items-center justify-center rounded bg-black"
+          style={{
+            height: keyHeight,
+            margin: keyMargin,
+          }}
+          onPress={() => handleKeyPress("DELETE")}
         >
-          <BackspaceIcon width={20} height={20} color="#fcfaf4" />
+          <BackspaceIcon width={scale(20)} height={scale(20)} color="#fcfaf4" />
         </TouchableOpacity>
       </View>
 
@@ -149,5 +227,16 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress }) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  pulseCircle: {
+    backgroundColor: COLORS.primaryOrange,
+    borderRadius: 20,
+    height: 40,
+    pointerEvents: "none",
+    position: "absolute",
+    width: 40,
+  },
+});
 
 export default Keyboard;

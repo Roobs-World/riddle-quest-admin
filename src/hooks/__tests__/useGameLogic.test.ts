@@ -170,15 +170,14 @@ describe("useGameLogic", () => {
       expect(processResult).toEqual({
         outcome: "continue",
         feedback: feedbackStrings,
+        attemptsRemaining: 2,
       });
     });
 
-    it("should handle a losing guess (classic mode - 5 attempts)", async () => {
+    it("should handle a losing guess (classic mode - 3 attempts)", async () => {
       const feedbackStrings: Feedback[] = ["red", "red", "red", "red", "red"];
 
-      // Mock for all 5 calls. The SUT will call this 5 times.
-      // For simplicity in this mock, we assume the server always returns a similar structure for incorrect guesses.
-      // The important part is the final `isCorrect: false` and potentially `correctAnswer`.
+      // Mock for all 3 calls (updated from 5 to 3 for new attempt system)
       mockSubmitGuessCallable.mockImplementation(
         async (callData: {
           guess: string;
@@ -186,9 +185,6 @@ describe("useGameLogic", () => {
           gameMode: string;
           attempts: number;
         }) => {
-          // Determine the guess characters for this specific call to form structured feedback
-          // This is a bit simplified; in reality, the SUT sends the string, and the server forms this.
-          // For the mock, we just need to ensure the `status` part is right.
           const currentGuessString = callData.guess as string;
           const currentGuessChars = currentGuessString.split("");
 
@@ -209,11 +205,12 @@ describe("useGameLogic", () => {
 
       const { result } = renderHook(() => useGameLogic(defaultProps));
       const incorrectGuessBase = ["F", "A", "I", "L"];
-      for (let i = 0; i < 4; i++) {
+      // Updated to only 2 loops for 3-attempt system
+      for (let i = 0; i < 2; i++) {
         await act(async () => {
           await result.current.processGuess([
             ...incorrectGuessBase,
-            (i + 1).toString() as "1" | "2" | "3" | "4",
+            (i + 1).toString() as "1" | "2",
           ]);
         });
       }
@@ -222,30 +219,32 @@ describe("useGameLogic", () => {
         processResult = await result.current.processGuess(guessWord); // guessWord is ['G','U','E','S','S']
       });
 
-      expect(mockSubmitGuessCallable).toHaveBeenCalledTimes(5);
+      expect(mockSubmitGuessCallable).toHaveBeenCalledTimes(3); // Updated from 5 to 3
       expect(mockSubmitGuessCallable).toHaveBeenLastCalledWith({
         guess: guessString, // last guess
         riddleId: defaultProps.riddleId,
         gameMode: defaultProps.gameMode,
-        attempts: 5,
+        attempts: 3, // Updated from 5 to 3
       });
 
-      expect(result.current.guesses.length).toBe(5);
-      expect(result.current.guesses[4]).toEqual({
+      expect(result.current.guesses.length).toBe(3); // Updated from 5 to 3
+      expect(result.current.guesses[2]).toEqual({
+        // Updated from guesses[4] to guesses[2]
         guess: guessWord,
         feedback: feedbackStrings,
       }); // Check last guess feedback
       expect(result.current.gameOver).toBe(true);
       expect(processResult).toEqual({
-        outcome: "loss",
+        outcome: "attemptLimitReached", // Updated from "loss"
         feedback: feedbackStrings, // Assert against transformed strings
         correctAnswer: "ANSWER",
         coinsEarned: 0,
         canOfferRewardedAd: true,
+        canOfferCoinContinue: true, // New field for 3-attempt system
       });
     });
 
-    it("should handle a losing guess in challenge mode (6 attempts)", async () => {
+    it("should handle a losing guess in challenge mode (3 attempts)", async () => {
       const challengeProps = {
         riddleId: "challengeRiddle456",
         gameMode: "challenge" as "classic" | "challenge",
@@ -278,11 +277,12 @@ describe("useGameLogic", () => {
 
       const { result } = renderHook(() => useGameLogic(challengeProps));
       const incorrectGuessBase = ["F", "A", "I", "L"];
-      for (let i = 0; i < 5; i++) {
+      // Updated to only 2 loops for 3-attempt system (same for both classic and challenge now)
+      for (let i = 0; i < 2; i++) {
         await act(async () => {
           await result.current.processGuess([
             ...incorrectGuessBase,
-            (i + 1).toString() as "1" | "2" | "3" | "4" | "5",
+            (i + 1).toString() as "1" | "2",
           ]);
         });
       }
@@ -291,26 +291,28 @@ describe("useGameLogic", () => {
         processResult = await result.current.processGuess(guessWord);
       });
 
-      expect(mockSubmitGuessCallable).toHaveBeenCalledTimes(6);
+      expect(mockSubmitGuessCallable).toHaveBeenCalledTimes(3); // Updated from 6 to 3
       expect(mockSubmitGuessCallable).toHaveBeenLastCalledWith({
         guess: guessString,
         riddleId: challengeProps.riddleId,
         gameMode: challengeProps.gameMode,
-        attempts: 6,
+        attempts: 3, // Updated from 6 to 3
       });
 
-      expect(result.current.guesses.length).toBe(6);
-      expect(result.current.guesses[5]).toEqual({
+      expect(result.current.guesses.length).toBe(3); // Updated from 6 to 3
+      expect(result.current.guesses[2]).toEqual({
+        // Updated from guesses[5] to guesses[2]
         guess: guessWord,
         feedback: feedbackStrings,
       });
       expect(result.current.gameOver).toBe(true);
       expect(processResult).toEqual({
-        outcome: "loss",
+        outcome: "attemptLimitReached", // Updated from "loss"
         feedback: feedbackStrings,
         correctAnswer: "ANSWER",
         coinsEarned: 0,
         canOfferRewardedAd: true,
+        canOfferCoinContinue: true, // New field for 3-attempt system
       });
     });
 

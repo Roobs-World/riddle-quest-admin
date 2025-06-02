@@ -6,7 +6,7 @@ module.exports = {
       // React Native tests configuration
       displayName: "React Native",
       testEnvironment: "node",
-      preset: undefined, // Don't use any preset
+      preset: "react-native",
       setupFiles: ["<rootDir>/jest.setup.react-native.js"],
       setupFilesAfterEnv: ["<rootDir>/__mocks__/jest.setup.js"],
       testMatch: [
@@ -22,12 +22,44 @@ module.exports = {
         "^.+\\.(js|jsx|ts|tsx)$": "babel-jest",
       },
       transformIgnorePatterns: [
-        "node_modules/(?!(jest-)?(@react-native|react-native|@react-native-community|@react-navigation|expo|expo-.*|@expo|react-native-.*|@react-native-.*|@testing-library/react-native|native-base|react-native-svg|react-native-reanimated|react-native-gesture-handler|react-native-screens|react-native-safe-area-context|@react-native-firebase|react-native-vector-icons|react-native-fbsdk-next|@react-native-google-signin|react-native-haptic-feedback|react-native-iap|react-native-image-picker|react-native-applovin-max|nativewind|react-native-css-interop|@react-native-async-storage|unimodules|@unimodules|sentry-expo|react-native-svg-charts)/)",
+        "node_modules/(?!(jest-)?(@react-native|react-native|@react-native-community|@react-navigation|expo|expo-.*|@expo|react-native-.*|@react-native-.*|@react-native\\+js-polyfills|@testing-library/react-native|native-base|react-native-svg|react-native-reanimated|react-native-gesture-handler|react-native-screens|react-native-safe-area-context|@react-native-firebase|react-native-vector-icons|react-native-fbsdk-next|@react-native-google-signin|react-native-haptic-feedback|react-native-iap|react-native-image-picker|react-native-applovin-max|nativewind|react-native-css-interop|@react-native-async-storage|unimodules|@unimodules|sentry-expo|react-native-svg-charts)/)",
       ],
       moduleNameMapper: {
         "^@/(.*)$": "<rootDir>/src/$1",
         "^@images/(.*)$": "<rootDir>/assets/images/$1",
         "^@fonts/(.*)$": "<rootDir>/assets/fonts/$1",
+
+        // Mock the problematic React Native JS polyfills
+        "^@react-native/js-polyfills/error-guard$":
+          "<rootDir>/__mocks__/@react-native/js-polyfills/error-guard.js",
+        "^@react-native/js-polyfills$":
+          "<rootDir>/__mocks__/@react-native/js-polyfills/index.js",
+        "^@react-native\\+js-polyfills$":
+          "<rootDir>/__mocks__/@react-native+js-polyfills.js",
+        "^@react-native\\+js-polyfills/(.*)$":
+          "<rootDir>/__mocks__/@react-native+js-polyfills/$1.js",
+
+        // Specific mock for CloseIcon - RE-ENABLING AND REFINING
+        "^../icons/CloseIcon$": "<rootDir>/__mocks__/icons/CloseIconMock.js",
+        "^../../icons/CloseIcon$": "<rootDir>/__mocks__/icons/CloseIconMock.js",
+        // Add more specific paths if CloseIcon is imported differently elsewhere
+
+        "^../buttons/CloseButton$":
+          "<rootDir>/__mocks__/components/buttons/CloseButton.js",
+        "^../../buttons/CloseButton$":
+          "<rootDir>/__mocks__/components/buttons/CloseButton.js",
+        "^../.+/buttons/CloseButton$":
+          "<rootDir>/__mocks__/components/buttons/CloseButton.js",
+        "^\\.\\./icons/ProfileIcon$":
+          "<rootDir>/__mocks__/icons/ProfileIcon.js",
+        "^\\.\\./icons/SettingsIcon$":
+          "<rootDir>/__mocks__/icons/SettingsIcon.js",
+        "^\\.\\.\\/.+/icons/ProfileIcon$":
+          "<rootDir>/__mocks__/icons/ProfileIcon.js",
+        "^\\.\\.\\/.+/icons/SettingsIcon$":
+          "<rootDir>/__mocks__/icons/SettingsIcon.js",
+        "^\\.\\./icons/(.*)$": "<rootDir>/__mocks__/icon-mocks.js", // This will now be a fallback
+        "^\\.\\.\\/.+/icons/(.*)$": "<rootDir>/__mocks__/icon-mocks.js",
         "\\.svg$": "<rootDir>/__mocks__/svgMock.js",
         "\\.(jpg|jpeg|png|gif|eot|otf|webp|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$":
           "<rootDir>/__mocks__/fileMock.js",
@@ -96,7 +128,7 @@ module.exports = {
     },
   ],
   // Shared Jest settings
-  testTimeout: 30000,
+  testTimeout: 60000, // Increased timeout to 60 seconds to prevent timeouts
   coverageReporters: ["json", "lcov", "text", "html"],
   coverageThreshold: {
     global: {

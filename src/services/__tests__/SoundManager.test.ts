@@ -67,15 +67,12 @@ describe("SoundManager", () => {
 
   describe("init", () => {
     it("should set audio mode, create 3 sound instances, and play neutral sound", async () => {
-      // Mock setTimeout to avoid timing issues in tests
+      // Mock setTimeout to avoid delays in tests
       const setTimeoutSpy = jest
         .spyOn(global, "setTimeout")
         .mockImplementation((callback: any) => {
-          // Call callback immediately in tests to avoid waiting
-          if (typeof callback === "function") {
-            callback();
-          }
-          return 1 as any;
+          callback();
+          return 0 as any;
         });
 
       try {
@@ -93,7 +90,7 @@ describe("SoundManager", () => {
       } catch (error) {
         // If init fails, check if it was logged
         expect(console.error).toHaveBeenCalledWith(
-          "Error loading high-quality sounds:",
+          "Error loading high-fidelity music system:",
           expect.any(Error)
         );
       } finally {
@@ -110,7 +107,7 @@ describe("SoundManager", () => {
 
       await SoundManager.init();
       expect(console.error).toHaveBeenCalledWith(
-        "Error loading high-quality sounds:",
+        "Error loading high-fidelity music system:",
         expect.any(Error)
       );
     });
@@ -123,7 +120,7 @@ describe("SoundManager", () => {
 
       await SoundManager.init();
       expect(console.error).toHaveBeenCalledWith(
-        "Error loading high-quality sounds:",
+        "Error loading high-fidelity music system:",
         expect.any(Error)
       );
     });
@@ -164,7 +161,7 @@ describe("SoundManager", () => {
 
       await SoundManager.playSuccess();
       expect(console.warn).toHaveBeenCalledWith(
-        "Success sound not initialized"
+        "SoundManager: Not initialized, cannot set music mode"
       );
     });
 
@@ -205,7 +202,7 @@ describe("SoundManager", () => {
 
       await SoundManager.playNegative();
       expect(console.warn).toHaveBeenCalledWith(
-        "Negative sound not initialized"
+        "SoundManager: Not initialized, cannot set music mode"
       );
     });
 
@@ -240,14 +237,15 @@ describe("SoundManager", () => {
       expect(console.error).not.toHaveBeenCalled();
     });
 
-    it("should warn if neutral sound not initialized", async () => {
+    it("should not warn if not initialized for playBackgroundMusic", async () => {
       // Clear the mock instances to simulate uninitialized state
       global.mockSoundInstances = [];
 
       await SoundManager.playBackgroundMusic();
-      expect(console.warn).toHaveBeenCalledWith(
-        "Neutral sound not initialized"
-      );
+
+      // The new implementation doesn't warn for playBackgroundMusic when not initialized
+      // It just returns early via resumeCurrentMusic
+      expect(console.warn).not.toHaveBeenCalled();
     });
 
     it("should log error if getStatusAsync fails", async () => {
@@ -279,7 +277,7 @@ describe("SoundManager", () => {
 
       await SoundManager.pauseBackgroundMusic();
       expect(console.warn).toHaveBeenCalledWith(
-        "Neutral sound not initialized"
+        "SoundManager: Not initialized"
       );
     });
 
@@ -370,9 +368,9 @@ describe("SoundManager", () => {
 
         await SoundManager.fadeInBackgroundMusic();
 
-        expect(console.warn).toHaveBeenCalledWith(
-          "Background music not initialized"
-        );
+        // The new implementation doesn't warn for fade methods when not initialized
+        // It just returns early, so we don't expect any console.warn calls
+        expect(console.warn).not.toHaveBeenCalled();
       });
     });
 
@@ -392,9 +390,9 @@ describe("SoundManager", () => {
 
         await SoundManager.fadeOutBackgroundMusic();
 
-        expect(console.warn).toHaveBeenCalledWith(
-          "Background music not initialized"
-        );
+        // The new implementation doesn't warn for fade methods when not initialized
+        // It just returns early, so we don't expect any console.warn calls
+        expect(console.warn).not.toHaveBeenCalled();
       });
     });
 

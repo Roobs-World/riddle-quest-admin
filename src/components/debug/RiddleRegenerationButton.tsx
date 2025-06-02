@@ -1,6 +1,13 @@
 import React, { useState } from "react";
-import { View, TouchableOpacity, Text, Alert } from "react-native";
+import { View, TouchableOpacity, Text, Alert, StyleSheet } from "react-native";
 import { createMissingRiddles } from "../../utils/createMissingRiddles";
+
+const COLORS = {
+  lightGray: "#f0f0f0",
+  white: "#FFFFFF",
+  darkGray: "#888", // For disabled button
+  blue: "#007AFF", // For enabled button
+};
 
 export const RiddleRegenerationButton: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -27,31 +34,44 @@ export const RiddleRegenerationButton: React.FC = () => {
   };
 
   return (
-    <View
-      style={{
-        padding: 20,
-        backgroundColor: "#f0f0f0",
-        margin: 10,
-        borderRadius: 8,
-      }}
-    >
-      <Text style={{ marginBottom: 10, fontSize: 16, fontWeight: "bold" }}>
-        Debug: Riddle Regeneration
-      </Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>Debug: Riddle Regeneration</Text>
       <TouchableOpacity
-        style={{
-          backgroundColor: isLoading ? "#888" : "#007AFF",
-          padding: 15,
-          borderRadius: 8,
-          alignItems: "center",
-        }}
+        style={[
+          styles.button,
+          { backgroundColor: isLoading ? COLORS.darkGray : COLORS.blue },
+        ]}
         onPress={handleRegenerateRiddles}
         disabled={isLoading}
       >
-        <Text style={{ color: "white", fontSize: 16, fontWeight: "bold" }}>
+        <Text style={styles.buttonText}>
           {isLoading ? "Creating Riddles..." : "Create Missing Riddles"}
         </Text>
       </TouchableOpacity>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  button: {
+    alignItems: "center",
+    borderRadius: 8,
+    padding: 15,
+  },
+  buttonText: {
+    color: COLORS.white,
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  container: {
+    backgroundColor: COLORS.lightGray,
+    borderRadius: 8,
+    margin: 10,
+    padding: 20,
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+});

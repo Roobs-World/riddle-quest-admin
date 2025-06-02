@@ -24,6 +24,7 @@ import { AuthService } from "../../services/AuthService";
 import { signUpSchema, SignUpFormData } from "../../validation/authSchemas";
 import { ZodError, ZodFormattedError } from "zod";
 import HomeBgSvg from "../../../assets/images/home-bg.svg";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 // Color constants
 const COLOR_TRANSPARENT = "transparent";
@@ -77,9 +78,9 @@ interface FirebaseError {
 /**
  * Navigation prop type for React Navigation
  */
-interface NavigationProp {
-  navigate: (screen: string) => void;
-}
+type NavigationProp = NativeStackNavigationProp<
+  Record<string, object | undefined>
+>;
 
 /**
  * Reducer function to manage the password state for sign-up.

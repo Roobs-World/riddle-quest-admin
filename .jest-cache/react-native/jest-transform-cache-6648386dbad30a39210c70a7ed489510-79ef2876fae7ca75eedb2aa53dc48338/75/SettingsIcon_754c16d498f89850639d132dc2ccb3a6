@@ -1,0 +1,24 @@
+d320ac8cfb3ce2fe7b4ceac90082ff82
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+var _objectWithoutProperties2 = _interopRequireDefault(require("@babel/runtime/helpers/objectWithoutProperties"));
+var _ReactNativeCSSInterop = _interopRequireWildcard(require("react-native-css-interop"));
+var _excluded = ["testID"];
+function _interopRequireWildcard(e, t) { if ("function" == typeof WeakMap) var r = new WeakMap(), n = new WeakMap(); return (_interopRequireWildcard = function _interopRequireWildcard(e, t) { if (!t && e && e.__esModule) return e; var o, i, f = { __proto__: null, default: e }; if (null === e || "object" != typeof e && "function" != typeof e) return f; if (o = t ? n : r) { if (o.has(e)) return o.get(e); o.set(e, f); } for (var _t in e) "default" !== _t && {}.hasOwnProperty.call(e, _t) && ((i = (o = Object.defineProperty) && Object.getOwnPropertyDescriptor(e, _t)) && (i.get || i.set) ? o(f, _t, i) : f[_t] = e[_t]); return f; })(e, t); }
+var React = require("react");
+var _require = require("react-native"),
+  View = _require.View;
+var MockSettingsIcon = function MockSettingsIcon(props) {
+  var testID = props.testID,
+    otherProps = (0, _objectWithoutProperties2.default)(props, _excluded);
+  return _ReactNativeCSSInterop.createInteropElement(View, Object.assign({
+    testID: testID || "settings-icon",
+    style: {
+      width: props.width || 24,
+      height: props.height || 24,
+      backgroundColor: props.color || "transparent"
+    }
+  }, otherProps));
+};
+MockSettingsIcon.displayName = "MockSettingsIcon";
+module.exports = MockSettingsIcon;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJSZWFjdCIsInJlcXVpcmUiLCJfcmVxdWlyZSIsIlZpZXciLCJNb2NrU2V0dGluZ3NJY29uIiwicHJvcHMiLCJ0ZXN0SUQiLCJvdGhlclByb3BzIiwiX29iamVjdFdpdGhvdXRQcm9wZXJ0aWVzMiIsImRlZmF1bHQiLCJfZXhjbHVkZWQiLCJfUmVhY3ROYXRpdmVDU1NJbnRlcm9wIiwiY3JlYXRlSW50ZXJvcEVsZW1lbnQiLCJPYmplY3QiLCJhc3NpZ24iLCJzdHlsZSIsIndpZHRoIiwiaGVpZ2h0IiwiYmFja2dyb3VuZENvbG9yIiwiY29sb3IiLCJkaXNwbGF5TmFtZSIsIm1vZHVsZSIsImV4cG9ydHMiXSwic291cmNlcyI6WyJTZXR0aW5nc0ljb24uanMiXSwic291cmNlc0NvbnRlbnQiOlsiY29uc3QgUmVhY3QgPSByZXF1aXJlKFwicmVhY3RcIik7XHJcbmNvbnN0IHsgVmlldyB9ID0gcmVxdWlyZShcInJlYWN0LW5hdGl2ZVwiKTtcclxuXHJcbmNvbnN0IE1vY2tTZXR0aW5nc0ljb24gPSAocHJvcHMpID0+IHtcclxuICBjb25zdCB7IHRlc3RJRCwgLi4ub3RoZXJQcm9wcyB9ID0gcHJvcHM7XHJcbiAgcmV0dXJuIFJlYWN0LmNyZWF0ZUVsZW1lbnQoVmlldywge1xyXG4gICAgdGVzdElEOiB0ZXN0SUQgfHwgXCJzZXR0aW5ncy1pY29uXCIsXHJcbiAgICBzdHlsZToge1xyXG4gICAgICB3aWR0aDogcHJvcHMud2lkdGggfHwgMjQsXHJcbiAgICAgIGhlaWdodDogcHJvcHMuaGVpZ2h0IHx8IDI0LFxyXG4gICAgICBiYWNrZ3JvdW5kQ29sb3I6IHByb3BzLmNvbG9yIHx8IFwidHJhbnNwYXJlbnRcIixcclxuICAgIH0sXHJcbiAgICAuLi5vdGhlclByb3BzLFxyXG4gIH0pO1xyXG59O1xyXG5cclxuTW9ja1NldHRpbmdzSWNvbi5kaXNwbGF5TmFtZSA9IFwiTW9ja1NldHRpbmdzSWNvblwiO1xyXG5cclxubW9kdWxlLmV4cG9ydHMgPSBNb2NrU2V0dGluZ3NJY29uO1xyXG4iXSwibWFwcGluZ3MiOiI7Ozs7O0FBQUEsSUFBTUEsS0FBSyxHQUFHQyxPQUFPLENBQUMsT0FBTyxDQUFDO0FBQzlCLElBQUFDLFFBQUEsR0FBaUJELE9BQU8sQ0FBQyxjQUFjLENBQUM7RUFBaENFLElBQUksR0FBQUQsUUFBQSxDQUFKQyxJQUFJO0FBRVosSUFBTUMsZ0JBQWdCLEdBQUcsU0FBbkJBLGdCQUFnQkEsQ0FBSUMsS0FBSyxFQUFLO0VBQ2xDLElBQVFDLE1BQU0sR0FBb0JELEtBQUssQ0FBL0JDLE1BQU07SUFBS0MsVUFBVSxPQUFBQyx5QkFBQSxDQUFBQyxPQUFBLEVBQUtKLEtBQUssRUFBQUssU0FBQTtFQUN2QyxPQUFPQyxzQkFBQSxDQUFBQyxvQkFBQSxDQUFvQlQsSUFBSSxFQUFBVSxNQUFBLENBQUFDLE1BQUE7SUFDN0JSLE1BQU0sRUFBRUEsTUFBTSxJQUFJLGVBQWU7SUFDakNTLEtBQUssRUFBRTtNQUNMQyxLQUFLLEVBQUVYLEtBQUssQ0FBQ1csS0FBSyxJQUFJLEVBQUU7TUFDeEJDLE1BQU0sRUFBRVosS0FBSyxDQUFDWSxNQUFNLElBQUksRUFBRTtNQUMxQkMsZUFBZSxFQUFFYixLQUFLLENBQUNjLEtBQUssSUFBSTtJQUNsQztFQUFDLEdBQ0VaLFVBQVUsQ0FDZCxDQUFDO0FBQ0osQ0FBQztBQUVESCxnQkFBZ0IsQ0FBQ2dCLFdBQVcsR0FBRyxrQkFBa0I7QUFFakRDLE1BQU0sQ0FBQ0MsT0FBTyxHQUFHbEIsZ0JBQWdCIiwiaWdub3JlTGlzdCI6W119

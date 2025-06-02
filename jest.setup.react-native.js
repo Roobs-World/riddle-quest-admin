@@ -1,17 +1,55 @@
 /* eslint-disable */
 
+// Global getColorScheme mock to prevent undefined errors
+global.getColorScheme = jest.fn(() => "light");
+
+// Mock the problematic React Native JS polyfills that contain Flow syntax
+jest.mock("@react-native/js-polyfills/error-guard", () => ({}));
+jest.mock("@react-native/js-polyfills", () => ({}));
+
 // Mock SVG imports
 jest.mock(".svg", () => "SvgMock");
 
-// Mock react-native-css-interop with all possible exports
-jest.mock("react-native-css-interop", () => ({
+// Mock React Native Appearance module to fix getColorScheme issues
+jest.mock("react-native/Libraries/Utilities/Appearance", () => ({
   getColorScheme: jest.fn(() => "light"),
-  NativeWindStyleSheet: {
-    create: (styles) => styles,
-  },
-  unstable_styled: jest.fn((Component) => Component),
-  withExpoSnack: jest.fn((Component) => Component),
+  addChangeListener: jest.fn(),
+  removeChangeListener: jest.fn(),
 }));
+
+// Mock react-native-css-interop with all possible exports
+jest.mock("react-native-css-interop", () => {
+  // Create a comprehensive mock that covers all possible exports
+  const mockCSSInterop = jest.fn();
+  const mockStyleSheet = {
+    create: (styles) => styles,
+    resolve: (styles) => styles,
+    flatten: (style) =>
+      Array.isArray(style)
+        ? Object.assign({}, ...style.filter((s) => s))
+        : style,
+  };
+
+  return {
+    __esModule: true,
+    default: mockCSSInterop,
+    getColorScheme: jest.fn(() => "light"),
+    NativeWindStyleSheet: mockStyleSheet,
+    StyleSheet: mockStyleSheet,
+    unstable_styled: jest.fn((Component) => Component),
+    withExpoSnack: jest.fn((Component) => Component),
+    useTailwindFn: jest.fn(() => jest.fn()),
+    useColorScheme: jest.fn(() => "light"),
+    cssInterop: jest.fn(),
+    rem: jest.fn((value) => value * 16),
+    vars: jest.fn(() => ({})),
+    createInteropElement: jest.fn(),
+    interopComponents: {},
+    // Add any other exports that might be needed
+    remapProps: jest.fn(),
+    createRemapProps: jest.fn(),
+  };
+});
 
 // Also mock the specific modules that might import getColorScheme
 jest.mock("react-native-css-interop/src/runtime/web/color-scheme", () => ({
@@ -53,11 +91,25 @@ jest.mock("react-native", () => ({
     addEventListener: jest.fn(),
     removeEventListener: jest.fn(),
   },
+  Appearance: {
+    getColorScheme: jest.fn(() => "light"),
+    addChangeListener: jest.fn(),
+    removeChangeListener: jest.fn(),
+  },
+  AccessibilityInfo: {
+    isReduceMotionEnabled: jest.fn(() => Promise.resolve(false)),
+    isScreenReaderEnabled: jest.fn(() => Promise.resolve(false)),
+    addEventListener: jest.fn(),
+    removeEventListener: jest.fn(),
+    announceForAccessibility: jest.fn(),
+    setAccessibilityFocus: jest.fn(),
+  },
   View: "View",
   Text: "Text",
   TouchableOpacity: "TouchableOpacity",
   Image: "Image",
   ScrollView: "ScrollView",
+  Modal: "Modal",
   StyleSheet: {
     create: (styles) => styles,
     flatten: (style) => {
@@ -296,3 +348,23 @@ global.__reanimatedWorkletInit = jest.fn();
 global.ReanimatedDataMock = {
   now: jest.fn(),
 };
+
+// Mock react-native-svg
+jest.mock("react-native-svg", () => ({
+  SvgXml: "SvgXml",
+  Svg: "Svg",
+  Path: "Path",
+  Circle: "Circle",
+  Rect: "Rect",
+  G: "G",
+  Text: "Text",
+  TSpan: "TSpan",
+  TextPath: "TextPath",
+  Defs: "Defs",
+  LinearGradient: "LinearGradient",
+  RadialGradient: "RadialGradient",
+  Stop: "Stop",
+  ClipPath: "ClipPath",
+  Pattern: "Pattern",
+  Mask: "Mask",
+}));

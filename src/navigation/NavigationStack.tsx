@@ -77,6 +77,7 @@ const GameScreenWrapper = () => {
     }
   };
 
+  // Always render something to avoid conditional returns that can cause hooks violations
   // Show loading spinner while authentication is in progress or riddles are being initialized
   if (isLoading || isRiddlesInitializing) {
     console.log(
@@ -93,7 +94,7 @@ const GameScreenWrapper = () => {
 
   // If not authenticated, this should not render (handled by navigation)
   if (!isAuthenticated || !playerData) {
-    return null;
+    return <View style={styles.errorContainer} />;
   }
 
   // Since we now always fall back to classic riddles, we should always have a riddle
@@ -108,7 +109,7 @@ const GameScreenWrapper = () => {
     );
   }
 
-  // Render GameScreen with all necessary props
+  // Render GameScreen with all necessary props only when we have current riddle
   if (currentRiddle) {
     return (
       <GameScreen
@@ -139,7 +140,8 @@ const GameScreenWrapper = () => {
     );
   }
 
-  return null;
+  // Fallback - return an empty view instead of null to maintain consistent rendering
+  return <View style={styles.errorContainer} />;
 };
 
 const styles = StyleSheet.create({

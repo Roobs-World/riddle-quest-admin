@@ -91,7 +91,7 @@ export const useTileCapture = () => {
           feedback: sg.feedback,
         }));
 
-        if (displayRows.length < 6) {
+        if (displayRows.length < 3) {
           const currentRowLetters: (string | null)[] =
             Array(answerLength).fill(null);
           currentGuess.forEach((letter, index) => {
@@ -104,7 +104,7 @@ export const useTileCapture = () => {
           });
         }
 
-        while (displayRows.length < 6) {
+        while (displayRows.length < 3) {
           displayRows.push({
             letters: Array(answerLength).fill(null),
             feedback: Array(answerLength).fill(null),
@@ -123,7 +123,7 @@ export const useTileCapture = () => {
                 const measurePromise = new Promise<void>((resolveMeasure) => {
                   tileRef.measure((x, y, width, height, pageX, pageY) => {
                     const isCurrentGuessRow =
-                      rowIndex === guesses.length && guesses.length < 6;
+                      rowIndex === guesses.length && guesses.length < 3;
                     const feedback = row.feedback[cellIndex];
 
                     tiles.push({
