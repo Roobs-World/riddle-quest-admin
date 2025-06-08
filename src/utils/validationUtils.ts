@@ -73,6 +73,11 @@ export class ValidationUtils {
       return false;
     }
 
+    // Check for dot immediately before @ symbol
+    if (email.includes(".@")) {
+      return false;
+    }
+
     // Domain must have at least one dot after @
     const [, domain] = email.split("@");
     if (

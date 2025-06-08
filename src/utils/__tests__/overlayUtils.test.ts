@@ -9,28 +9,13 @@ describe("overlayUtils", () => {
         false,
         false,
         false,
-        false,
         false
       );
       expect(result).toBe(false);
     });
 
-    it("should return true when isVictoryModalVisible is true", () => {
+    it("should return true when instructions overlay is visible", () => {
       const result = checkAnyOverlayVisible(
-        true,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false
-      );
-      expect(result).toBe(true);
-    });
-
-    it("should return true when isInstructionsVisible is true", () => {
-      const result = checkAnyOverlayVisible(
-        false,
         true,
         false,
         false,
@@ -41,9 +26,8 @@ describe("overlayUtils", () => {
       expect(result).toBe(true);
     });
 
-    it("should return true when isFullProfileDetailsOverlayVisible is true", () => {
+    it("should return true when full profile details overlay is visible", () => {
       const result = checkAnyOverlayVisible(
-        false,
         false,
         true,
         false,
@@ -54,9 +38,8 @@ describe("overlayUtils", () => {
       expect(result).toBe(true);
     });
 
-    it("should return true when isCoinShopModalVisible is true", () => {
+    it("should return true when coin shop modal is visible", () => {
       const result = checkAnyOverlayVisible(
-        false,
         false,
         false,
         true,
@@ -67,9 +50,8 @@ describe("overlayUtils", () => {
       expect(result).toBe(true);
     });
 
-    it("should return true when isWatchAdModalVisible is true", () => {
+    it("should return true when watch ad modal is visible", () => {
       const result = checkAnyOverlayVisible(
-        false,
         false,
         false,
         false,
@@ -80,9 +62,8 @@ describe("overlayUtils", () => {
       expect(result).toBe(true);
     });
 
-    it("should return true when isWelcomeOverlayVisible is true", () => {
+    it("should return true when welcome overlay is visible", () => {
       const result = checkAnyOverlayVisible(
-        false,
         false,
         false,
         false,
@@ -93,9 +74,8 @@ describe("overlayUtils", () => {
       expect(result).toBe(true);
     });
 
-    it("should return true when isOutOfAttemptsModalVisible is true", () => {
+    it("should return true when out of attempts modal is visible", () => {
       const result = checkAnyOverlayVisible(
-        false,
         false,
         false,
         false,
@@ -113,10 +93,52 @@ describe("overlayUtils", () => {
         false,
         false,
         false,
-        false,
         false
       );
       expect(result).toBe(true);
+    });
+
+    it("should return true when all overlays are visible", () => {
+      const result = checkAnyOverlayVisible(true, true, true, true, true, true);
+      expect(result).toBe(true);
+    });
+
+    it("should handle mixed boolean values correctly", () => {
+      expect(
+        checkAnyOverlayVisible(true, false, false, false, false, false)
+      ).toBe(true);
+      expect(
+        checkAnyOverlayVisible(false, true, false, false, false, false)
+      ).toBe(true);
+      expect(
+        checkAnyOverlayVisible(false, false, true, false, false, false)
+      ).toBe(true);
+      expect(
+        checkAnyOverlayVisible(false, false, false, true, false, false)
+      ).toBe(true);
+      expect(
+        checkAnyOverlayVisible(false, false, false, false, true, false)
+      ).toBe(true);
+      expect(
+        checkAnyOverlayVisible(false, false, false, false, false, true)
+      ).toBe(true);
+      expect(
+        checkAnyOverlayVisible(false, false, false, false, false, false)
+      ).toBe(false);
+    });
+
+    it("should work with edge case combinations", () => {
+      const edgeCases = [
+        [true, true, true, false, false, false],
+        [false, false, false, true, true, true],
+        [true, false, true, false, true, false],
+        [false, true, false, true, false, true],
+      ];
+
+      edgeCases.forEach(([a, b, c, d, e, f]) => {
+        const result = checkAnyOverlayVisible(a, b, c, d, e, f);
+        expect(result).toBe(true);
+      });
     });
   });
 });

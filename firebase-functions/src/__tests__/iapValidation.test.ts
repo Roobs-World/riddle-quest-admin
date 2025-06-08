@@ -310,5 +310,122 @@ describe("validatePurchase - Unit Tests", () => {
       `Awarded ${coinsToAward} coins to user ${testUserId}. New balance: ${initialUserCoins + coinsToAward}`,
     );
   });
-  // ... (rest of the tests, ensure NO_ADS_PRODUCT_ID and BACKEND_COIN_PRODUCT_DETAILS are correctly sourced if used)
+
+  // New tests to cover missing lines
+  it("should throw invalid-argument error if request.data is missing", async () => {
+    const auth = {uid: testUserId} as CallableRequest<ValidatePurchaseData>["auth"];
+    const request = {
+      auth,
+      data: undefined, // This covers line 28
+    } as unknown as CallableRequest<ValidatePurchaseData>;
+
+    await expect(validatePurchase(request)).rejects.toThrow(
+      new functions.https.HttpsError("invalid-argument", "Invalid purchase token, product ID, or platform."),
+    );
+  });
+
+  it("should throw already-exists error if purchase token was already processed", async () => {
+    const auth = {uid: testUserId} as CallableRequest<ValidatePurchaseData>["auth"];
+    const request = {
+      auth,
+      data: {purchaseToken: "duplicate_token", productId: "test_product", platform: "ios"},
+    } as CallableRequest<ValidatePurchaseData>;
+
+    mockIsPurchaseTokenAlreadyProcessed.mockResolvedValue(true); // This covers line 52
+
+    await expect(validatePurchase(request)).rejects.toThrow(
+      new functions.https.HttpsError("already-exists", "This purchase has already been processed."),
+    );
+    expect(mockLoggerWarn).toHaveBeenCalledWith(
+      `IAP purchase token duplicate_token already processed for user ${testUserId}.`,
+    );
+  });
+
+  it("should throw internal error if purchase data array is empty or invalid", async () => {
+    const auth = {uid: testUserId} as CallableRequest<ValidatePurchaseData>["auth"];
+    const request = {
+      auth,
+      data: {purchaseToken: "token_empty", productId: "test_product", platform: "ios"},
+    } as CallableRequest<ValidatePurchaseData>;
+
+    iapController.isValidated.mockReturnValue(true);
+    iapController.getPurchaseData.mockReturnValue([]); // Empty array covers lines 59-60
+
+    await expect(validatePurchase(request)).rejects.toThrow(
+      new functions.https.HttpsError("internal", "Could not extract purchase data from validation response."),
+    );
+    expect(mockLoggerError).toHaveBeenCalledWith(
+      expect.stringContaining("iap.getPurchaseData did not return valid array"),
+    );
+  });
+
+  it("should throw internal error if purchase data is not an array", async () => {
+    const auth = {uid: testUserId} as CallableRequest<ValidatePurchaseData>["auth"];
+    const request = {
+      auth,
+      data: {purchaseToken: "token_not_array", productId: "test_product", platform: "ios"},
+    } as CallableRequest<ValidatePurchaseData>;
+
+    iapController.isValidated.mockReturnValue(true);
+    iapController.getPurchaseData.mockReturnValue(null); // Not an array covers lines 59-60
+
+    await expect(validatePurchase(request)).rejects.toThrow(
+      new functions.https.HttpsError("internal", "Could not extract purchase data from validation response."),
+    );
+  });
+
+  it("should throw failed-precondition error if product ID validation fails", async () => {
+    const auth = {uid: testUserId} as CallableRequest<ValidatePurchaseData>["auth"];
+    const request = {
+      auth,
+      data: {purchaseToken: "token_mismatch", productId: "expected_product", platform: "ios"},
+    } as CallableRequest<ValidatePurchaseData>;
+
+    iapController.isValidated.mockReturnValue(true);
+    iapController.getPurchaseData.mockReturnValue([{productId: "different_product"}]); // Mismatch covers lines 72-77
+
+    await expect(validatePurchase(request)).rejects.toThrow(
+      new functions.https.HttpsError("failed-precondition", "Purchase validation failed or product ID mismatch."),
+    );
+    expect(mockLoggerError).toHaveBeenCalledWith(
+      expect.stringContaining("Purchase validation failed or product ID mismatch"),
+    );
+  });
+
+  it("should throw internal error if validated product is not found in backend configuration", async () => {
+    const auth = {uid: testUserId} as CallableRequest<ValidatePurchaseData>["auth"];
+    const unknownProductId = "com.unknown.product.id";
+    const request = {
+      auth,
+      data: {purchaseToken: "token_unknown", productId: unknownProductId, platform: "ios"},
+    } as CallableRequest<ValidatePurchaseData>;
+
+    iapController.isValidated.mockReturnValue(true);
+    iapController.getPurchaseData.mockReturnValue([{productId: unknownProductId}]); // Product not in BACKEND_COIN_PRODUCT_DETAILS covers lines 104-108
+
+    await expect(validatePurchase(request)).rejects.toThrow(
+      new functions.https.HttpsError("internal", "Product configuration error on backend."),
+    );
+    expect(mockLoggerError).toHaveBeenCalledWith(
+      expect.stringContaining("Product details not found on backend for validated product ID"),
+    );
+  });
+
+  it("should map a generic error from iap.validate to a default HttpsError", async () => {
+    const auth = {uid: testUserId} as CallableRequest<ValidatePurchaseData>["auth"];
+    const request = {
+      auth,
+      data: {purchaseToken: "token_error", productId: "test_product", platform: "ios"},
+    } as CallableRequest<ValidatePurchaseData>;
+
+    mockPerformPlatformValidation.mockRejectedValue(new Error("Network timeout")); // Generic error covers lines 126-142
+
+    await expect(validatePurchase(request)).rejects.toThrow(
+      new functions.https.HttpsError("internal", "An unexpected error occurred during purchase processing."),
+    );
+    expect(mockLoggerError).toHaveBeenCalledWith(
+      expect.stringContaining("IAP validation process failed"),
+      expect.any(Error),
+    );
+  });
 });

@@ -149,7 +149,7 @@ export class RiddleDataService implements IRiddleDataService {
    * Fetches a riddle by its ID.
    */
   async fetchRiddleById(riddleId: string): Promise<FirestoreRiddle | null> {
-    if (!riddleId) {
+    if (!riddleId || !riddleId.trim()) {
       throw new Error("Riddle ID is required");
     }
 

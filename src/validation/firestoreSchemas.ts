@@ -59,7 +59,7 @@ const PlayerStatsSchema = z.object({
 
 export const PlayerSchema = z.object({
   userId: z.string(),
-  email: z.string().email().optional(),
+  email: z.string().email(),
   username: z.string().refine(
     (username) => {
       const profanityError = validateUsernameForProfanity(username);

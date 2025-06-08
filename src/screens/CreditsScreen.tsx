@@ -1,7 +1,6 @@
 import React from "react";
 import { View, Text, ScrollView } from "react-native";
 import CustomSafeAreaView from "../components/layouts/CustomSafeAreaView";
-import QwordlyLogo from "../components/logos/QwordlyLogo";
 import HomeBgSvg from "../../assets/images/home-bg.svg";
 import BackButton from "../components/buttons/BackButton";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -59,6 +58,11 @@ const CreditsScreen = ({
       role: "Design",
       website: "", // TODO: Add website link
     },
+    {
+      name: "Mr Ben",
+      role: "Design",
+      website: "", // TODO: Add website link
+    },
   ];
 
   return (
@@ -66,10 +70,6 @@ const CreditsScreen = ({
       <HomeBgSvg width="120%" height="100%" style={styles.backgroundImage} />
 
       <BackButton navigation={navigation} targetScreen="Landing" />
-
-      <View className="mb-10">
-        <QwordlyLogo />
-      </View>
 
       <Text
         className="text-2xl font-bold text-gray-800 text-center mb-4"

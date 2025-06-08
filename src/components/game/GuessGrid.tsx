@@ -15,14 +15,14 @@ import { styles } from "../../styles";
 /**
  * Define the structure for the entire guess grid.
  * @property {SubmittedGuess[]} guesses - An array of submitted guesses with their feedback.
- * @property {string[]} currentGuess - The letters of the current guess being entered by the user.
+ * @property {string[]} currentGuess - The current guess being typed by the user.
  * @property {number} answerLength - The length of the answer.
  * @property {number} shakeKey - Added shakeKey prop
  * @property {(rowIndex: number, cellIndex: number, ref: View | null) => void} setTileRef - Optional callback to set tile refs for animation capture
  */
 type GuessGridProps = {
   guesses: SubmittedGuess[]; // Now accepts SubmittedGuess[]
-  currentGuess: string[];
+  currentGuess: string[]; // Add currentGuess prop
   shakeKey: number; // Added shakeKey prop
   answerLength: number; // Add answerLength prop
   setTileRef?: (rowIndex: number, cellIndex: number, ref: View | null) => void; // Optional tile ref setter
@@ -57,17 +57,16 @@ const GuessGrid: React.FC<GuessGridProps> = ({
   const displayRows: { letters: (string | null)[]; feedback: Feedback[] }[] =
     guesses.map((sg) => ({ letters: sg.guess, feedback: sg.feedback }));
 
-  // Add the current guess to the next available row if there are less than 3 submitted guesses
-  if (displayRows.length < 3) {
-    const currentRowLetters: (string | null)[] = Array(answerLength).fill(null);
-    currentGuess.forEach((letter, index) => {
-      currentRowLetters[index] = letter;
-    });
-    // For the current guess row, feedback is null for all cells initially
-    const currentRowFeedback: Feedback[] = Array(answerLength).fill(null);
+  // Add the current guess being typed to the next row if there's space and it's not empty
+  if (displayRows.length < 3 && currentGuess.length > 0) {
+    const currentGuessRow: (string | null)[] = [...currentGuess];
+    // Fill remaining slots with null to match answerLength
+    while (currentGuessRow.length < answerLength) {
+      currentGuessRow.push(null);
+    }
     displayRows.push({
-      letters: currentRowLetters,
-      feedback: currentRowFeedback,
+      letters: currentGuessRow,
+      feedback: Array(answerLength).fill(null),
     });
   }
 
@@ -106,7 +105,7 @@ const GuessGrid: React.FC<GuessGridProps> = ({
       case "green":
         return "bg-green-500"; // Green for correct letter and position
       case "yellow":
-        return "bg-primary-orange"; // Primary Orange for correct letter wrong position
+        return "bg-yellow-500"; // Yellow for correct letter wrong position
       case "red":
         return "bg-red-500"; // Red for incorrect letter
       default:
@@ -117,18 +116,11 @@ const GuessGrid: React.FC<GuessGridProps> = ({
   /**
    * Function to determine cell border color.
    * @param {Feedback} feedback - The feedback for a specific letter cell.
-   * @param {string | null} letter - The letter in the cell.
-   * @param {boolean} isCurrentGuessRow - Indicates if the cell is in the current guess row.
    * @returns {string} The Tailwind CSS class string for the border color.
    */
-  const getCellBorderColor = (
-    feedback: Feedback,
-    letter: string | null,
-    isCurrentGuessRow: boolean
-  ) => {
+  const getCellBorderColor = (feedback: Feedback) => {
     if (feedback) return "border-transparent"; // No border if there's feedback
-    if (isCurrentGuessRow && letter !== null) return "border-gray-600"; // Darker border for cells with letters in current guess
-    return "border-gray-400"; // Default border for empty cells or submitted without feedback yet
+    return "border-gray-400"; // Default border for empty cells
   };
 
   /**
@@ -138,9 +130,9 @@ const GuessGrid: React.FC<GuessGridProps> = ({
    * @returns {string} The Tailwind CSS class string for the text color.
    */
   const getCellTextColor = (feedback: Feedback, letter: string | null) => {
-    if (feedback) return "text-white"; // White text for colored feedback cells
-    if (letter !== null) return "text-gray-800"; // Dark text for letters in current guess
-    return "text-gray-800"; // Default text color for empty cells (shouldn't be visible)
+    if (feedback) return "text-white"; // White text for colored feedback cells (submitted)
+    if (letter !== null) return "text-white"; // White text for letters being typed
+    return "text-transparent"; // Transparent for empty cells (no letters shown)
   };
 
   // Handle both internal tile refs and external setTileRef prop
@@ -163,11 +155,12 @@ const GuessGrid: React.FC<GuessGridProps> = ({
       {/* Masking container that clips content sliding upward */}
       <View className="w-full relative" style={styles.maskingContainer}>
         {displayRows.map((row, rowIndex) => {
-          const isCurrentGuessRow =
-            rowIndex === guesses.length && guesses.length < 3;
+          // Apply shake animation to the most recent submitted guess
+          const isLastSubmittedRow =
+            rowIndex === guesses.length - 1 && guesses.length > 0;
 
-          // Apply shake animation only to current guess row
-          const animatedStyle = isCurrentGuessRow
+          // Apply shake animation only to last submitted row
+          const animatedStyle = isLastSubmittedRow
             ? { transform: [{ translateX: shakeAnimation }] }
             : {};
 
@@ -183,11 +176,7 @@ const GuessGrid: React.FC<GuessGridProps> = ({
               {row.letters.map((letter, cellIndex) => {
                 const feedback = row.feedback[cellIndex];
                 const backgroundColor = getCellBackgroundColor(feedback);
-                const borderColor = getCellBorderColor(
-                  feedback,
-                  letter,
-                  isCurrentGuessRow
-                );
+                const borderColor = getCellBorderColor(feedback);
                 const textColor = getCellTextColor(feedback, letter);
                 return (
                   <View

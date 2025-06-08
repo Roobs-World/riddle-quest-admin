@@ -411,4 +411,60 @@ describe("awardedAdCallback", () => {
       );
     });
   });
+
+  describe("Error Handling in Helper Functions", () => {
+    it("should handle errors when checking if transaction is already processed", async () => {
+      // Make the get() call throw an error to test the catch block in isAdTransactionAlreadyProcessed
+      mockGet.mockRejectedValue(new Error("Firestore get failed"));
+      const expectedSig = calculateExpectedSignature(mockReq.body, "hashed_sdk_key_value");
+      mockReq.body.signature = expectedSig;
+      mockDigest.mockImplementation((format?: string) => {
+        if (format === "hex") {
+          const lastUpdateCallArgs = mockUpdate.mock.calls[mockUpdate.mock.calls.length - 1];
+          if (lastUpdateCallArgs && lastUpdateCallArgs.length > 0 && lastUpdateCallArgs[0] === "test_sdk_key") {
+            return "hashed_sdk_key_value";
+          }
+          return expectedSig;
+        }
+        return "";
+      });
+
+      await awardedAdCallback(mockReq as any, mockRes as any);
+
+      // Should still fail validation (return 401) because isAdTransactionAlreadyProcessed returns true on error
+      expect(mockRes.status).toHaveBeenCalledWith(401);
+      expect(mockRes.send).toHaveBeenCalledWith({message: "Validation failed."});
+      expect(mockLoggerError).toHaveBeenCalledWith(
+        "Error checking if ad transaction was processed:",
+        expect.objectContaining({message: "Firestore get failed"}),
+      );
+    });
+
+    it("should handle errors during signature verification process", async () => {
+      // Make the isAdTransactionAlreadyProcessed function throw an error during verification
+      mockGet.mockRejectedValue(new Error("Database connection failed"));
+      const expectedSig = calculateExpectedSignature(mockReq.body, "hashed_sdk_key_value");
+      mockReq.body.signature = expectedSig;
+      mockDigest.mockImplementation((format?: string) => {
+        if (format === "hex") {
+          const lastUpdateCallArgs = mockUpdate.mock.calls[mockUpdate.mock.calls.length - 1];
+          if (lastUpdateCallArgs && lastUpdateCallArgs.length > 0 && lastUpdateCallArgs[0] === "test_sdk_key") {
+            return "hashed_sdk_key_value";
+          }
+          return expectedSig;
+        }
+        return "";
+      });
+
+      await awardedAdCallback(mockReq as any, mockRes as any);
+
+      // Should return 401 because verifyAdNetworkSignature catches the error and returns false
+      expect(mockRes.status).toHaveBeenCalledWith(401);
+      expect(mockRes.send).toHaveBeenCalledWith({message: "Validation failed."});
+      expect(mockLoggerError).toHaveBeenCalledWith(
+        "Error checking if ad transaction was processed:",
+        expect.objectContaining({message: "Database connection failed"}),
+      );
+    });
+  });
 });

@@ -1,134 +1,355 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import {describe, expect, jest, beforeEach} from "@jest/globals";
+import {describe, expect} from "@jest/globals";
 
-// Mock configuration setup for iap.config testing
-
-// / <reference types="jest" />
-
-import * as functions from "firebase-functions";
-// Constants are imported for type checking if needed, and to assert their actual values.
-// REMOVED: import { NO_ADS_PRODUCT_ID, BACKEND_COIN_PRODUCT_DETAILS } from "../iapConfig";
-
-const iapConfigModulePath = "../iapConfig"; // Path to the module under test
-
-// Define a single, consistent mock for functions.config() for all tests in this file
-// This avoids issues with jest.resetModules() not fully isolating dynamic changes to this mock
-// for module-level code in iapConfig.ts.
-const MOCK_FUNCTIONS_CONFIG = {
-  apple: {shared_secret: "test_apple_secret"},
-  google: {
-    service_account: {
-      client_email: "test_google_email@example.com",
-      private_key: "test_google_private_key\\nnewline_here", // Ensure double backslash for \n
-    },
-  },
-};
-
-jest.mock("firebase-functions", () => ({
-  config: jest.fn(() => MOCK_FUNCTIONS_CONFIG), // Always return the same mock config
-  logger: {
-    warn: jest.fn(), // We can still check if it's NOT called, or called for other reasons
-    error: jest.fn(),
-  },
-}));
-
-// Simplest mock for in-app-purchase, ensuring `config` exists
-const mockIapLibConfig = jest.fn(); // This is what we will assert
-jest.mock("in-app-purchase", () => ({
-  __esModule: true,
-  default: {
-    config: mockIapLibConfig, // Use the specific mock function here
-    setup: jest.fn().mockResolvedValue(undefined),
-    // Provide other necessary constants if iapConfig.ts uses them from iap.default
-    APPLE: "apple",
-    GOOGLE: "google",
-  },
-}));
-
-// Mock Firebase admin initialization (though iapConfig.ts doesn't seem to use it directly)
-jest.mock("firebase-admin/app", () => ({
-  initializeApp: jest.fn(),
-}));
+// Import the module
+import * as iapConfig from "../iapConfig";
 
 describe("iapConfig", () => {
-  let originalNodeEnv: string | undefined;
-  let originalFunctionsEmulator: string | undefined;
-  let iapConfigActual: any; // To store the loaded module
-
-  beforeAll(() => {
-    // Set a consistent environment for all tests in this suite for NODE_ENV related logic
-    originalNodeEnv = process.env.NODE_ENV;
-    originalFunctionsEmulator = process.env.FUNCTIONS_EMULATOR;
-
-    // Example: Test as if in production without emulator by default for iap.config's `test` flag
-    process.env.NODE_ENV = "production";
-    delete process.env.FUNCTIONS_EMULATOR; // Or set to 'false' or other non-'true' value
-
-    // IMPORTANT: Reset modules ONCE after setting the desired consistent environment
-    // and functions.config mock, so iapConfig.ts loads with this state.
-    jest.resetModules();
-
-    // Require the module once here to ensure top-level code runs with the mocks
-    iapConfigActual = require(iapConfigModulePath);
-    // Add a check to see what iapConfigActual is
-    // console.log("DEBUG: Loaded iapConfigActual:", iapConfigActual);
-    // Add a check to see if iap.config (the mock) is present on the *actual* iap object used by SUT
-    // This is tricky because we can't easily access the `iap` variable *inside* iapConfig.ts
-  });
-
-  afterAll(() => {
-    // Restore original environment variables after all tests in the suite are done
-    process.env.NODE_ENV = originalNodeEnv;
-    process.env.FUNCTIONS_EMULATOR = originalFunctionsEmulator;
-  });
-
+  // Add beforeEach to reset module state
   beforeEach(() => {
-    // Clear mocks before each test, but currentFunctionsConfigData is now fixed via MOCK_FUNCTIONS_CONFIG
-    mockIapLibConfig.mockClear();
-    (functions.logger.warn as jest.Mock).mockClear();
-    (functions.logger.error as jest.Mock).mockClear();
-    (functions.config as jest.Mock).mockClear(); // Still clear to check calls to the fixed mock
-    // No need to call jest.resetModules() here as config is static for the suite
+    // Reset the module state before each test
+    iapConfig.resetIapConfig();
   });
 
-  it("should load the iapConfig module and have expected exports", () => {
-    expect(iapConfigActual).toBeDefined();
-    expect(iapConfigActual.NO_ADS_PRODUCT_ID).toBeDefined();
-    expect(iapConfigActual.BACKEND_COIN_PRODUCT_DETAILS).toBeDefined();
-  });
+  describe("Constants", () => {
+    test("should export NO_ADS_PRODUCT_ID", () => {
+      expect(iapConfig.NO_ADS_PRODUCT_ID).toBe("com.qwordly.no_ads");
+    });
 
-  it("should define NO_ADS_PRODUCT_ID with the correct hardcoded value", () => {
-    // Access NO_ADS_PRODUCT_ID from the loaded module
-    expect(iapConfigActual.NO_ADS_PRODUCT_ID).toBe("com.qwordly.no_ads");
-  });
-
-  it("should define BACKEND_COIN_PRODUCT_DETAILS with the correct hardcoded values", () => {
-    // Access BACKEND_COIN_PRODUCT_DETAILS from the loaded module
-    expect(iapConfigActual.BACKEND_COIN_PRODUCT_DETAILS).toEqual({
-      COIN_PACK_SMALL: {id: "com.qwordly.coinpack.small", coins: 100},
-      COIN_PACK_MEDIUM: {id: "com.qwordly.coinpack.medium", coins: 500},
-      COIN_PACK_LARGE: {id: "com.qwordly.coinpack.large", coins: 1200},
+    test("should export BACKEND_COIN_PRODUCT_DETAILS", () => {
+      expect(iapConfig.BACKEND_COIN_PRODUCT_DETAILS).toEqual({
+        COIN_PACK_SMALL: {id: "com.qwordly.coinpack.small", coins: 100},
+        COIN_PACK_MEDIUM: {id: "com.qwordly.coinpack.medium", coins: 500},
+        COIN_PACK_LARGE: {id: "com.qwordly.coinpack.large", coins: 1200},
+      });
     });
   });
 
-  // Skipping this test as it's proving too difficult to get the iap.config() mock call to register reliably
-  // when iapConfig.ts is loaded, despite various Jest strategies.
-  // This needs further investigation into Jest's module mocking for top-level calls in this specific environment.
-  it("should call iap.config with correct parameters based on MOCK_FUNCTIONS_CONFIG and production environment", () => {
-    // This assertion relies on iap.config being called when iapConfigActual was required in beforeAll
-    // Note: The mock may not register the call due to Jest module loading timing issues
-    // We'll verify that the mock exists and the config was potentially called
-    expect(mockIapLibConfig).toBeDefined();
-    // Since timing issues prevent reliable call counting, we'll just verify the mock setup is correct
-    expect(MOCK_FUNCTIONS_CONFIG.apple.shared_secret).toBe("test_apple_secret");
-    expect(MOCK_FUNCTIONS_CONFIG.google.service_account.client_email).toBe("test_google_email@example.com");
+  describe("Functions", () => {
+    test("should export initializeIapConfig function", () => {
+      expect(typeof iapConfig.initializeIapConfig).toBe("function");
+    });
+
+    test("should export getIapGoogleCredentials function", () => {
+      expect(typeof iapConfig.getIapGoogleCredentials).toBe("function");
+    });
+
+    test("should export getAppleSharedSecret function", () => {
+      expect(typeof iapConfig.getAppleSharedSecret).toBe("function");
+    });
   });
 
-  // Add a test for a different environment if really needed, by nesting a describe
-  // block that also calls jest.resetModules() in its own beforeAll, but this adds complexity.
-  // For now, testing one consistent environment for iap.config call is more robust.
+  describe("Basic functionality", () => {
+    it("should warn when getter functions are called before initialization", () => {
+      const consoleWarnSpy = jest.spyOn(console, "warn").mockImplementation();
 
-  test("should throw error if APPLE_SHARED_SECRET is missing when platform is ios", () => {
-    // ... existing code ...
+      // These should warn because module is not initialized
+      iapConfig.getIapGoogleCredentials();
+      iapConfig.getAppleSharedSecret();
+
+      expect(consoleWarnSpy).toHaveBeenCalledWith("[iapConfig] getIapGoogleCredentials called before initialization!");
+      expect(consoleWarnSpy).toHaveBeenCalledWith("[iapConfig] getAppleSharedSecret called before initialization!");
+
+      consoleWarnSpy.mockRestore();
+    });
+  });
+
+  // New comprehensive tests for missing coverage
+  describe("Initialization Scenarios", () => {
+    beforeEach(() => {
+      // Reset environment variables for each test
+      delete process.env.APPLE_SHARED_SECRET;
+      delete process.env.GOOGLE_SERVICE_ACCOUNT;
+      delete process.env.GOOGLE_SERVICE_ACCOUNT_JSON_PATH;
+      delete process.env.FUNCTIONS_EMULATOR;
+      delete process.env.IS_FIREBASE_FUNCTIONS_TEST;
+      // Don't delete JEST_WORKER_ID as we need it for Jest environment detection
+      jest.clearAllMocks();
+      // Reset the module state
+      iapConfig.resetIapConfig();
+    });
+
+    it("should handle Firebase Functions Test environment with valid service account file", () => {
+      // Set up Firebase Functions test environment
+      process.env.IS_FIREBASE_FUNCTIONS_TEST = "true";
+      process.env.GOOGLE_SERVICE_ACCOUNT_JSON_PATH = "test-service-account.json";
+
+      // Override Jest detection temporarily
+      const originalJestWorker = process.env.JEST_WORKER_ID;
+      delete process.env.JEST_WORKER_ID;
+
+      // Mock file system operations
+      const mockExistsSync = jest.spyOn(require("fs"), "existsSync").mockReturnValue(true);
+      const mockReadFileSync = jest.spyOn(require("fs"), "readFileSync").mockReturnValue(
+        JSON.stringify({
+          client_email: "test@serviceaccount.com",
+          private_key: "-----BEGIN PRIVATE KEY-----\nTEST_KEY\n-----END PRIVATE KEY-----",
+        }),
+      );
+
+      const consoleLogSpy = jest.spyOn(console, "log").mockImplementation();
+
+      iapConfig.initializeIapConfig();
+
+      expect(mockExistsSync).toHaveBeenCalled();
+      expect(mockReadFileSync).toHaveBeenCalled();
+      expect(consoleLogSpy).toHaveBeenCalledWith(
+        expect.stringContaining("Successfully loaded and parsed service account"),
+      );
+
+      // Restore Jest environment
+      if (originalJestWorker) {
+        process.env.JEST_WORKER_ID = originalJestWorker;
+      }
+      mockExistsSync.mockRestore();
+      mockReadFileSync.mockRestore();
+      consoleLogSpy.mockRestore();
+    });
+
+    it("should handle missing service account file in Firebase Functions test environment", () => {
+      process.env.IS_FIREBASE_FUNCTIONS_TEST = "true";
+      process.env.GOOGLE_SERVICE_ACCOUNT_JSON_PATH = "missing-file.json";
+
+      // Override Jest detection temporarily
+      const originalJestWorker = process.env.JEST_WORKER_ID;
+      delete process.env.JEST_WORKER_ID;
+
+      const mockExistsSync = jest.spyOn(require("fs"), "existsSync").mockReturnValue(false);
+      const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
+
+      iapConfig.initializeIapConfig();
+
+      expect(consoleErrorSpy).toHaveBeenCalledWith(expect.stringContaining("Service account file NOT FOUND"));
+
+      // Restore Jest environment
+      if (originalJestWorker) {
+        process.env.JEST_WORKER_ID = originalJestWorker;
+      }
+      mockExistsSync.mockRestore();
+      consoleErrorSpy.mockRestore();
+    });
+
+    it("should handle JSON parse error when reading service account file", () => {
+      process.env.IS_FIREBASE_FUNCTIONS_TEST = "true";
+      process.env.GOOGLE_SERVICE_ACCOUNT_JSON_PATH = "invalid.json";
+
+      // Override Jest detection temporarily
+      const originalJestWorker = process.env.JEST_WORKER_ID;
+      delete process.env.JEST_WORKER_ID;
+
+      const mockExistsSync = jest.spyOn(require("fs"), "existsSync").mockReturnValue(true);
+      const mockReadFileSync = jest.spyOn(require("fs"), "readFileSync").mockReturnValue("invalid json");
+      const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
+
+      iapConfig.initializeIapConfig();
+
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        expect.stringContaining("Error reading/parsing service account from file"),
+      );
+
+      // Restore Jest environment
+      if (originalJestWorker) {
+        process.env.JEST_WORKER_ID = originalJestWorker;
+      }
+      mockExistsSync.mockRestore();
+      mockReadFileSync.mockRestore();
+      consoleErrorSpy.mockRestore();
+    });
+
+    it("should handle production environment with valid GOOGLE_SERVICE_ACCOUNT", () => {
+      // Override Jest detection temporarily
+      const originalJestWorker = process.env.JEST_WORKER_ID;
+      delete process.env.JEST_WORKER_ID;
+
+      process.env.GOOGLE_SERVICE_ACCOUNT = JSON.stringify({
+        client_email: "prod@serviceaccount.com",
+        private_key: "-----BEGIN PRIVATE KEY-----\\nPROD_KEY\\n-----END PRIVATE KEY-----",
+      });
+
+      const consoleLogSpy = jest.spyOn(console, "log").mockImplementation();
+
+      iapConfig.initializeIapConfig();
+
+      expect(consoleLogSpy).toHaveBeenCalledWith(
+        expect.stringContaining("Successfully parsed GOOGLE_SERVICE_ACCOUNT from process.env"),
+      );
+      expect(consoleLogSpy).toHaveBeenCalledWith(
+        expect.stringContaining("Processed private key (standardized newlines)"),
+      );
+      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining("iapGoogleCredentials CONSTRUCTED"));
+
+      // Restore Jest environment
+      if (originalJestWorker) {
+        process.env.JEST_WORKER_ID = originalJestWorker;
+      }
+      consoleLogSpy.mockRestore();
+    });
+
+    it("should handle production environment with invalid GOOGLE_SERVICE_ACCOUNT JSON", () => {
+      // Override Jest detection temporarily
+      const originalJestWorker = process.env.JEST_WORKER_ID;
+      delete process.env.JEST_WORKER_ID;
+
+      process.env.GOOGLE_SERVICE_ACCOUNT = "invalid json string";
+
+      const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
+
+      iapConfig.initializeIapConfig();
+
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        expect.stringContaining("Error parsing GOOGLE_SERVICE_ACCOUNT JSON string"),
+      );
+
+      // Restore Jest environment
+      if (originalJestWorker) {
+        process.env.JEST_WORKER_ID = originalJestWorker;
+      }
+      consoleErrorSpy.mockRestore();
+    });
+
+    it("should handle production environment with missing client_email or private_key", () => {
+      // Override Jest detection temporarily
+      const originalJestWorker = process.env.JEST_WORKER_ID;
+      delete process.env.JEST_WORKER_ID;
+
+      process.env.GOOGLE_SERVICE_ACCOUNT = JSON.stringify({
+        client_email: "test@serviceaccount.com",
+        // Missing private_key
+      });
+
+      const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
+
+      iapConfig.initializeIapConfig();
+
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        expect.stringContaining("Parsed GOOGLE_SERVICE_ACCOUNT is missing client_email or private_key"),
+      );
+
+      // Restore Jest environment
+      if (originalJestWorker) {
+        process.env.JEST_WORKER_ID = originalJestWorker;
+      }
+      consoleErrorSpy.mockRestore();
+    });
+
+    it("should handle production environment with missing GOOGLE_SERVICE_ACCOUNT", () => {
+      // Override Jest detection temporarily
+      const originalJestWorker = process.env.JEST_WORKER_ID;
+      delete process.env.JEST_WORKER_ID;
+
+      // Don't set GOOGLE_SERVICE_ACCOUNT
+
+      const consoleLogSpy = jest.spyOn(console, "log").mockImplementation();
+
+      iapConfig.initializeIapConfig();
+
+      expect(consoleLogSpy).toHaveBeenCalledWith(
+        expect.stringContaining("GOOGLE_SERVICE_ACCOUNT is missing in process.env"),
+      );
+      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining("iapGoogleCredentials object is UNDEFINED"));
+      expect(consoleLogSpy).toHaveBeenCalledWith(
+        expect.stringContaining("finalGoogleServiceAccountForIap was also undefined"),
+      );
+
+      // Restore Jest environment
+      if (originalJestWorker) {
+        process.env.JEST_WORKER_ID = originalJestWorker;
+      }
+      consoleLogSpy.mockRestore();
+    });
+
+    it("should handle missing APPLE_SHARED_SECRET in non-Jest environment", () => {
+      // Temporarily override Jest detection
+      const originalJestWorker = process.env.JEST_WORKER_ID;
+      delete process.env.JEST_WORKER_ID;
+
+      const consoleWarnSpy = jest.spyOn(console, "warn").mockImplementation();
+      const consoleLogSpy = jest.spyOn(console, "log").mockImplementation();
+
+      iapConfig.initializeIapConfig();
+
+      expect(consoleWarnSpy).toHaveBeenCalledWith(expect.stringContaining("[iapConfig] Missing APPLE_SHARED_SECRET"));
+
+      // Restore Jest environment
+      if (originalJestWorker) {
+        process.env.JEST_WORKER_ID = originalJestWorker;
+      }
+      consoleWarnSpy.mockRestore();
+      consoleLogSpy.mockRestore();
+    });
+
+    it("should handle Jest environment without service account path", () => {
+      // Ensure we're in Jest environment
+      process.env.JEST_WORKER_ID = "1";
+
+      const consoleLogSpy = jest.spyOn(console, "log").mockImplementation();
+
+      iapConfig.initializeIapConfig();
+
+      expect(consoleLogSpy).toHaveBeenCalledWith(
+        expect.stringContaining("GOOGLE_SERVICE_ACCOUNT_JSON_PATH not set. This is okay for unit tests"),
+      );
+
+      consoleLogSpy.mockRestore();
+    });
+
+    it("should skip re-initialization when already initialized in non-Jest environment", () => {
+      // Temporarily override Jest detection
+      const originalJestWorker = process.env.JEST_WORKER_ID;
+      delete process.env.JEST_WORKER_ID;
+
+      const consoleLogSpy = jest.spyOn(console, "log").mockImplementation();
+
+      // First initialization
+      iapConfig.initializeIapConfig();
+
+      // Clear the spy to check only the second call
+      consoleLogSpy.mockClear();
+
+      // Second initialization should be skipped
+      iapConfig.initializeIapConfig();
+
+      expect(consoleLogSpy).toHaveBeenCalledWith(
+        expect.stringContaining("Already initialized. Skipping re-initialization"),
+      );
+
+      // Restore Jest environment
+      if (originalJestWorker) {
+        process.env.JEST_WORKER_ID = originalJestWorker;
+      }
+      consoleLogSpy.mockRestore();
+    });
+
+    it("should handle credentials with partial configuration", () => {
+      // Override Jest detection temporarily
+      const originalJestWorker = process.env.JEST_WORKER_ID;
+      delete process.env.JEST_WORKER_ID;
+
+      process.env.GOOGLE_SERVICE_ACCOUNT = JSON.stringify({
+        client_email: "partial@serviceaccount.com",
+        // Missing private_key to test the undefined credentials path
+      });
+
+      const consoleLogSpy = jest.spyOn(console, "log").mockImplementation();
+      const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
+
+      iapConfig.initializeIapConfig();
+
+      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining("iapGoogleCredentials object is UNDEFINED"));
+      // The specific log message may vary based on the exact configuration
+      const logMessages = consoleLogSpy.mock.calls.map((call) => call[0]);
+      const hasExpectedMessage = logMessages.some(
+        (msg) =>
+          msg?.toString().includes("Details of finalGoogleServiceAccountForIap") ||
+          msg?.toString().includes("finalGoogleServiceAccountForIap was also undefined"),
+      );
+      expect(hasExpectedMessage).toBe(true);
+
+      // Restore Jest environment
+      if (originalJestWorker) {
+        process.env.JEST_WORKER_ID = originalJestWorker;
+      }
+      consoleLogSpy.mockRestore();
+      consoleErrorSpy.mockRestore();
+    });
   });
 });

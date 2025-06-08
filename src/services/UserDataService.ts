@@ -17,7 +17,7 @@ export class UserDataService implements IUserDataService {
     userId: string,
     progress: Player["progress"]
   ): Promise<void> {
-    if (!userId) {
+    if (!userId || !userId.trim()) {
       console.warn("Attempted to save progress to Firestore without a userId.");
       return;
     }
@@ -42,7 +42,7 @@ export class UserDataService implements IUserDataService {
    * Loads user progress from Firestore.
    */
   async loadUserProgress(userId: string): Promise<Player | null> {
-    if (!userId) {
+    if (!userId || !userId.trim()) {
       console.warn(
         "Attempted to load progress from Firestore without a userId."
       );
@@ -87,7 +87,7 @@ export class UserDataService implements IUserDataService {
    * Creates a new user document in Firestore.
    */
   async createUserDocument(userId: string, userData: Player): Promise<void> {
-    if (!userId) {
+    if (!userId || !userId.trim()) {
       throw new Error("User ID is required to create user document");
     }
 
@@ -121,7 +121,7 @@ export class UserDataService implements IUserDataService {
     userId: string,
     updates: Partial<Player>
   ): Promise<void> {
-    if (!userId) {
+    if (!userId || !userId.trim()) {
       throw new Error("User ID is required to update user document");
     }
 
@@ -142,7 +142,7 @@ export class UserDataService implements IUserDataService {
    * Updates the classic index for a user.
    */
   async updateClassicIndex(userId: string, newIndex: number): Promise<void> {
-    if (!userId) {
+    if (!userId || !userId.trim()) {
       throw new Error("User ID is required to update classic index");
     }
 
@@ -165,7 +165,7 @@ export class UserDataService implements IUserDataService {
    * Updates user coins.
    */
   async updateUserCoins(userId: string, newCoinAmount: number): Promise<void> {
-    if (!userId) {
+    if (!userId || !userId.trim()) {
       throw new Error("User ID is required to update coins");
     }
 
@@ -178,7 +178,7 @@ export class UserDataService implements IUserDataService {
         .collection(UserDataService.USERS_COLLECTION)
         .doc(userId)
         .update({
-          "progress.coins": newCoinAmount,
+          coins: newCoinAmount,
         });
 
       console.log(`Coins updated to ${newCoinAmount} for user:`, userId);
@@ -192,7 +192,7 @@ export class UserDataService implements IUserDataService {
    * Checks if a user document exists.
    */
   async userExists(userId: string): Promise<boolean> {
-    if (!userId) {
+    if (!userId || !userId.trim()) {
       return false;
     }
 

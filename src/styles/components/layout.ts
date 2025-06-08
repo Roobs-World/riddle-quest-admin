@@ -40,6 +40,10 @@ export const layoutStyles = StyleSheet.create({
     justifyContent: "center",
   } as ViewStyle,
 
+  fill: {
+    flex: 1,
+  } as ViewStyle,
+
   gameContainer: {
     flex: 1,
   } as ViewStyle,

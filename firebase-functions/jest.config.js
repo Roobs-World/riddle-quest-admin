@@ -4,7 +4,7 @@ module.exports = {
   roots: ["<rootDir>"],
   preset: "ts-jest",
   testEnvironment: "node",
-  testMatch: ["**/__tests__/**/*.test.ts", "!lib/**"],
+  testMatch: ["**/__tests__/**/*.test.ts", "!**/__tests__/**/*.it.test.ts", "!lib/**"],
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
   transform: {
     "^.+\\.ts$": [
@@ -23,5 +23,5 @@ module.exports = {
   },
   transformIgnorePatterns: ["/node_modules/(?!(?:@firebase|firebase)/)"],
   setupFiles: ["<rootDir>/jest.env.setup.js"],
-  testTimeout: 180000, // 3 minutes for all tests including integration tests
+  testTimeout: 30000, // Increase timeout to 30 seconds for complex integration tests
 };

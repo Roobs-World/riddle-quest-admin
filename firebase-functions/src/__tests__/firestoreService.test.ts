@@ -484,5 +484,41 @@ describe("FirestoreService", () => {
 
       consoleSpy.mockRestore();
     });
+
+    test("should log specific error for insufficient coins with exact error message", async () => {
+      const testUserId = "testUser123";
+      const currentCoins = 50;
+      const coinsToSpend = -75; // More than available
+      const mockUserDoc = {
+        exists: true,
+        data: () => ({coins: currentCoins}),
+      };
+
+      (mockTransaction.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
+
+      const expectedErrorMessage = `Insufficient coins for user ${testUserId}. Current: ${currentCoins}, Attempted to spend: ${-coinsToSpend}.`;
+
+      await expect(updateUserCoins(testUserId, coinsToSpend)).rejects.toThrow(expectedErrorMessage);
+
+      // Verify the specific error logging call (line 111)
+      expect(mockLogger.error).toHaveBeenCalledWith(expectedErrorMessage, expect.any(Error));
+    });
+
+    test("should log specific error for user not found in stats with exact error message", async () => {
+      const testUserId = "testUser123";
+      const statsUpdate = {gamesPlayed: 1};
+      const mockUserDoc = {
+        exists: false,
+      };
+
+      (mockTransaction.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
+
+      const expectedErrorMessage = `User with ID ${testUserId} not found during transaction for updateUserStats.`;
+
+      await expect(updateUserStats(testUserId, statsUpdate)).rejects.toThrow(`User with ID ${testUserId} not found.`);
+
+      // Verify the specific error logging call (line 149)
+      expect(mockLogger.error).toHaveBeenCalledWith(expectedErrorMessage, expect.any(Error));
+    });
   });
 });

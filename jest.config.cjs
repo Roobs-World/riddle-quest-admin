@@ -29,6 +29,10 @@ module.exports = {
         "^@images/(.*)$": "<rootDir>/assets/images/$1",
         "^@fonts/(.*)$": "<rootDir>/assets/fonts/$1",
 
+        // Completely redirect react-native-css-interop to avoid Babel scoping issues
+        "^react-native-css-interop$": "<rootDir>/__mocks__/empty-mock.js",
+        "^react-native-css-interop/(.*)$": "<rootDir>/__mocks__/empty-mock.js",
+
         // Mock the problematic React Native JS polyfills
         "^@react-native/js-polyfills/error-guard$":
           "<rootDir>/__mocks__/@react-native/js-polyfills/error-guard.js",
@@ -68,6 +72,7 @@ module.exports = {
       moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
       coverageDirectory: "<rootDir>/coverage/react-native",
       collectCoverageFrom: [
+        "src/screens/LandingScreen.tsx",
         "src/**/*.{js,ts,tsx}",
         "!src/**/*.d.ts",
         "!src/**/*.test.{js,ts,tsx}",
@@ -97,7 +102,7 @@ module.exports = {
         "/node_modules/",
         "/lib/",
         "\\.snap$",
-        "\\.it\\.test\\.", // Exclude integration tests by default
+        // Integration tests are now enabled for better coverage
       ],
       transform: {
         "^.+\\.ts$": [
@@ -130,6 +135,9 @@ module.exports = {
   // Shared Jest settings
   testTimeout: 60000, // Increased timeout to 60 seconds to prevent timeouts
   coverageReporters: ["json", "lcov", "text", "html"],
+  silent: false, // Allow some output but reduce noise
+  verbose: false, // Reduce verbose test output
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.quiet.js"], // Add quiet setup
   coverageThreshold: {
     global: {
       branches: 70,

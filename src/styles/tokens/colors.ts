@@ -53,4 +53,13 @@ export const COLORS = {
   // Navigation bar colors
   navBarBackground: "rgba(252, 250, 244, 0.8)",
   navBarBorder: "rgba(0, 0, 0, 0.05)",
+
+  // Starry background colors
+  starryBackgroundMain: "#0a0a2e",
+  starryBackgroundTop: "#000033",
+  starryBackgroundBottom: "#000000",
+  starColor: "#ffffff",
+
+  // Text shadow colors
+  textShadowDark: "rgba(0, 0, 0, 0.75)",
 } as const;

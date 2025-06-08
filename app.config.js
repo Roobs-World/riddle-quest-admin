@@ -62,10 +62,10 @@ module.exports = {
     [
       "react-native-fbsdk-next",
       {
-        appID: "1568112680678349",
-        clientToken: "eb2331d7805417d6b366408d2db245de",
+        appID: "1249521063516632",
+        clientToken: "3b513e77a89b821d83a13d0847a16afe",
         displayName: "Qwordly",
-        scheme: "fb1568112680678349",
+        scheme: "fb1249521063516632",
         advertiserIDCollectionEnabled: false,
         autoLogAppEventsEnabled: false,
         isAutoInitEnabled: true,
@@ -111,9 +111,9 @@ module.exports = {
     FIREBASE_MESSAGING_SENDER_ID: "26666910831",
     FIREBASE_PROJECT_ID: "qwordly-6ba44",
     FIREBASE_STORAGE_BUCKET: "qwordly-6ba44.firebasestorage.app",
-    FACEBOOK_APP_ID: "1568112680678349",
-    FACEBOOK_APP_SECRET: "eb2331d7805417d6b366408d2db245de",
-    FACEBOOK_CLIENT_TOKEN: "eb2331d7805417d6b366408d2db245de",
+    FACEBOOK_APP_ID: "1249521063516632",
+    FACEBOOK_APP_SECRET: "5e3500f7fade64706c26f3a26af4b28d",
+    FACEBOOK_CLIENT_TOKEN: "3b513e77a89b821d83a13d0847a16afe",
     APPLOVIN_INTERSTITIAL_AD_UNIT_ID: "YOUR_INTERSTITIAL_AD_UNIT_ID_HERE",
     APPLOVIN_REWARDED_AD_UNIT_ID: "YOUR_REWARDED_AD_UNIT_ID_HERE",
     APPLOVIN_SDK_KEY:

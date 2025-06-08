@@ -1,6 +1,7 @@
 import React from "react";
-import { Text, View } from "react-native";
+import { Text, View, StyleSheet } from "react-native";
 import { moderateScale } from "../../utils/responsive";
+import { COLORS } from "../../styles";
 
 /**
  * Define the props for the RiddleText component.
@@ -9,6 +10,17 @@ import { moderateScale } from "../../utils/responsive";
 type RiddleTextProps = {
   riddleText: string;
 };
+
+const styles = StyleSheet.create({
+  riddleText: {
+    fontSize: moderateScale(24),
+    lineHeight: moderateScale(32),
+    maxWidth: moderateScale(300),
+    textShadowColor: COLORS.textShadowDark,
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
+  },
+});
 
 /**
  * The component that displays the riddle text for the Wordle-style game.
@@ -21,14 +33,7 @@ const RiddleText: React.FC<RiddleTextProps> = ({ riddleText }) => {
     <View className="px-6 py-4 mb-2 items-center z-10">
       <Text
         className="text-center text-white font-bold"
-        style={{
-          fontSize: moderateScale(24),
-          lineHeight: moderateScale(32),
-          textShadowColor: "rgba(0, 0, 0, 0.75)",
-          textShadowOffset: { width: 1, height: 1 },
-          textShadowRadius: 2,
-          maxWidth: moderateScale(300),
-        }}
+        style={styles.riddleText}
         numberOfLines={3}
         adjustsFontSizeToFit
         minimumFontScale={0.8}

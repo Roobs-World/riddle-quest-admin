@@ -366,6 +366,33 @@ describe("Game Logic Functions", () => {
       expect(updateUserCoins).not.toHaveBeenCalled();
       expect(mockFirestoreSet).not.toHaveBeenCalled();
     });
+
+    it("should reveal a hint and create game state if it does not exist", async () => {
+      const riddleDoc: MockDocumentSnapshot = {exists: true, data: () => mockRiddle};
+      const nonExistentGameStateDoc: MockDocumentSnapshot = {exists: false, data: () => undefined}; // Game state does not exist
+      mockFirestoreGet.mockResolvedValueOnce(riddleDoc); // Riddle
+      (getUser as ReturnType<typeof jest.fn>).mockResolvedValueOnce({coins: coinsCost + 10} as MockUser); // User
+      mockFirestoreGet.mockResolvedValueOnce(nonExistentGameStateDoc); // Game state (riddleStates)
+      (updateUserCoins as ReturnType<typeof jest.fn>).mockResolvedValueOnce(undefined);
+      mockFirestoreSet.mockResolvedValueOnce(undefined); // Game state creation/update
+
+      const currentAttempt = ["", "", "", "", ""]; // All blank for 'apple'
+      const request = createMockCallableRequest({currentAttempt, riddleId}, createMockAuth(mockUserId));
+
+      const result = await getHint(request);
+
+      expect(result).toEqual({
+        revealedLetter: "A", // First letter of apple
+        index: 0,
+        coinsCost,
+      });
+      expect(updateUserCoins).toHaveBeenCalledWith(mockUserId, -coinsCost);
+      // Should be called to create/update the hintRevealedIndices
+      expect(mockFirestoreSet).toHaveBeenCalledWith({hintRevealedIndices: [0]}, {merge: true});
+      expect(logger.info).toHaveBeenCalledWith(
+        `User ${mockUserId} used a hint for riddle ${riddleId}, revealing letter A at index 0.`,
+      );
+    });
   });
 
   describe("spendCoins", () => {
@@ -482,6 +509,176 @@ describe("Game Logic Functions", () => {
       expect(updateUserCoins).toHaveBeenCalledWith(mockUserId, -amountToSpend); // Verify negative amount is passed
       expect(logger.info).toHaveBeenCalledWith(
         `User ${mockUserId} spent ${amountToSpend} coins for reason: ${reason}. New balance: ${expectedCoinsAfterSpend}.`,
+      );
+    });
+
+    it("should throw invalid-argument if reason is invalid", async () => {
+      const auth = createMockAuth(mockUserId);
+      const request = createMockCallableRequest({amount: amountToSpend, reason: "invalid_reason"}, auth);
+      try {
+        await spendCoins(request);
+        throw new Error("Test failed: Expected HttpsErrorV2 to be thrown.");
+      } catch (e: unknown) {
+        if (e instanceof HttpsErrorV2) {
+          expect(e).toBeInstanceOf(HttpsErrorV2);
+          expect(e.code).toBe("invalid-argument");
+          expect(e.message).toBe("Invalid reason specified.");
+        } else {
+          throw e;
+        }
+      }
+    });
+
+    it("should throw invalid-argument if amount is not a number", async () => {
+      const auth = createMockAuth(mockUserId);
+      const request = createMockCallableRequest({amount: "not-a-number" as any, reason}, auth);
+      try {
+        await spendCoins(request);
+        throw new Error("Test failed: Expected HttpsErrorV2 to be thrown.");
+      } catch (e: unknown) {
+        if (e instanceof HttpsErrorV2) {
+          expect(e).toBeInstanceOf(HttpsErrorV2);
+          expect(e.code).toBe("invalid-argument");
+          expect(e.message).toBe("Invalid amount specified.");
+        } else {
+          throw e;
+        }
+      }
+    });
+
+    it("should throw internal error if cannot retrieve updated user data after spending coins", async () => {
+      const auth = createMockAuth(mockUserId);
+      const request = createMockCallableRequest({amount: amountToSpend, reason}, auth);
+
+      (getUser as ReturnType<typeof jest.fn>).mockResolvedValueOnce({coins: 100}); // Initial check
+      (updateUserCoins as ReturnType<typeof jest.fn>).mockResolvedValueOnce(undefined); // Successful update
+      (getUser as ReturnType<typeof jest.fn>).mockResolvedValueOnce(null); // Failed to retrieve updated data
+
+      try {
+        await spendCoins(request);
+        throw new Error("Test failed: Expected HttpsErrorV2 to be thrown.");
+      } catch (e: unknown) {
+        if (e instanceof HttpsErrorV2) {
+          expect(e).toBeInstanceOf(HttpsErrorV2);
+          expect(e.code).toBe("internal");
+          expect(e.message).toBe("Could not retrieve updated user data after spending coins.");
+        } else {
+          throw e;
+        }
+      }
+    });
+  });
+
+  describe("Error Handling Edge Cases", () => {
+    it("should properly log warning when requesting hint for completed game", async () => {
+      // This test specifically targets the logger.warn call on lines 120-121
+      const riddleId = "riddle1";
+      const mockRiddle = {answer: "apple"};
+      const coinsCost = 50;
+
+      const riddleDoc: MockDocumentSnapshot = {exists: true, data: () => mockRiddle};
+      const gameStateDoc: MockDocumentSnapshot = {
+        exists: true,
+        data: () => ({isCompleted: true, hintRevealedIndices: []}),
+      };
+
+      mockFirestoreGet.mockResolvedValueOnce(riddleDoc); // Riddle
+      (getUser as ReturnType<typeof jest.fn>).mockResolvedValueOnce({coins: coinsCost}); // User
+      mockFirestoreGet.mockResolvedValueOnce(gameStateDoc); // Game state
+
+      const request = createMockCallableRequest(
+        {currentAttempt: Array(5).fill(""), riddleId},
+        createMockAuth(mockUserId),
+      );
+
+      try {
+        await getHint(request);
+        throw new Error("Test failed: Expected HttpsErrorV2 to be thrown.");
+      } catch (e: unknown) {
+        if (e instanceof HttpsErrorV2) {
+          expect(e.code).toBe("failed-precondition");
+          expect(e.message).toBe("Game is already completed.");
+          // Verify that the warning log was called with the expected message
+          expect(logger.warn).toHaveBeenCalledWith(
+            `User ${mockUserId} requested hint for completed riddle ${riddleId}.`,
+          );
+        } else {
+          throw e;
+        }
+      }
+    });
+
+    it("should handle unexpected errors in getHint and throw internal HttpsError", async () => {
+      // This test specifically targets lines 182-183 - unexpected error handling path
+      const riddleId = "riddle1";
+
+      // Mock a non-HttpsError (e.g., TypeError, database connection error, etc.)
+      mockFirestoreGet.mockRejectedValueOnce(new TypeError("Unexpected database error"));
+
+      const request = createMockCallableRequest(
+        {currentAttempt: ["", "", "", "", ""], riddleId},
+        createMockAuth(mockUserId),
+      );
+
+      try {
+        await getHint(request);
+        throw new Error("Test failed: Expected HttpsErrorV2 to be thrown.");
+      } catch (e: unknown) {
+        if (e instanceof HttpsErrorV2) {
+          expect(e.code).toBe("internal");
+          expect(e.message).toBe("An error occurred while getting a hint.");
+          // Verify that the unexpected error was logged
+          expect(logger.error).toHaveBeenCalledWith("Unexpected error getting hint:", expect.any(TypeError));
+        } else {
+          throw e;
+        }
+      }
+    });
+
+    it("should handle unexpected errors in spendCoins and throw internal HttpsError", async () => {
+      // This test specifically targets lines 182-183 equivalent in spendCoins - unexpected error handling path
+      const auth = createMockAuth(mockUserId);
+      const request = createMockCallableRequest({amount: 50, reason: "hint"}, auth);
+
+      // Mock a non-HttpsError (e.g., database connection error, TypeError, etc.)
+      (getUser as ReturnType<typeof jest.fn>).mockRejectedValueOnce(new Error("Database connection failed"));
+
+      try {
+        await spendCoins(request);
+        throw new Error("Test failed: Expected HttpsErrorV2 to be thrown.");
+      } catch (e: unknown) {
+        if (e instanceof HttpsErrorV2) {
+          expect(e.code).toBe("internal");
+          expect(e.message).toBe("An error occurred while spending coins.");
+          // Verify that the unexpected error was logged
+          expect(logger.error).toHaveBeenCalledWith("Unexpected error spending coins:", expect.any(Error));
+        } else {
+          throw e;
+        }
+      }
+    });
+
+    it("should log warning when no hint is available due to all letters revealed/guessed", async () => {
+      // This test targets the logger.warn call when no hint is available
+      const riddleId = "riddle1";
+      const mockRiddle = {answer: "abc"}; // Short word for easier testing
+      const coinsCost = 50;
+
+      const riddleDoc: MockDocumentSnapshot = {exists: true, data: () => mockRiddle};
+      const gameStateDoc: MockDocumentSnapshot = {exists: true, data: () => ({hintRevealedIndices: [1, 2]})};
+
+      mockFirestoreGet.mockResolvedValueOnce(riddleDoc); // Riddle
+      (getUser as ReturnType<typeof jest.fn>).mockResolvedValueOnce({coins: coinsCost}); // User
+      mockFirestoreGet.mockResolvedValueOnce(gameStateDoc); // Game state
+
+      const currentAttempt = ["a", "b", "c"]; // All letters guessed correctly
+      const request = createMockCallableRequest({currentAttempt, riddleId}, createMockAuth(mockUserId));
+
+      const result = await getHint(request);
+
+      expect(result).toBeNull();
+      expect(logger.warn).toHaveBeenCalledWith(
+        `No hint available for user ${mockUserId}, riddle ${riddleId}. All letters revealed or guessed correctly.`,
       );
     });
   });

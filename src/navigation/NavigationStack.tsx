@@ -87,7 +87,7 @@ const GameScreenWrapper = () => {
       AppStrings.LogMessages.TIMESTAMP,
       new Date().toISOString()
     );
-    return <PulsingSpinner visible={true} opacity={0.7} />;
+    return <PulsingSpinner visible={true} size={120} opacity={0.7} />;
   }
 
   // If not authenticated, this should not render (handled by navigation)
@@ -171,7 +171,7 @@ export const Navigation = () => {
       AppStrings.LogMessages.TIMESTAMP,
       new Date().toISOString()
     );
-    return <PulsingSpinner visible={true} size={150} />;
+    return <PulsingSpinner visible={true} size={120} opacity={0.8} />;
   }
 
   console.log(

@@ -119,7 +119,7 @@ export const validatePurchase = onCall(
         await markPurchaseTokenAsProcessed(userId, purchaseToken, validatedProductIdFromReceipt);
 
         const finalUser = await getUser(userId);
-        const finalNewCoins = finalUser?.coins;
+        const finalNewCoins = finalUser ? finalUser.coins : undefined;
 
         return {success: true, newCoins: finalNewCoins};
       } else {

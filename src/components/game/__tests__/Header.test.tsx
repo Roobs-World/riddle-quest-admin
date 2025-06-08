@@ -107,7 +107,6 @@ describe("Header", () => {
       expect(header.props.className).toContain("items-center");
       expect(header.props.className).toContain("justify-between");
       expect(header.props.className).toContain("p-4");
-      expect(header.props.className).toContain("bg-gray-200");
     });
   });
 
@@ -133,7 +132,7 @@ describe("Header", () => {
       expect(hintIcon.props.style).toMatchObject({
         width: 24,
         height: 24,
-        backgroundColor: "#222",
+        backgroundColor: "#ffffff",
       });
     });
 

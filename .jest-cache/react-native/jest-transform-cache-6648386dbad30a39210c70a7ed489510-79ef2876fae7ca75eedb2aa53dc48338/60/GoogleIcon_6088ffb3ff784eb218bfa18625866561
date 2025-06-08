@@ -1,0 +1,19 @@
+04b6eb1d61dd6ac31016698043b6c323
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _google = _interopRequireDefault(require("../../../assets/images/google.svg"));
+var _jsxRuntime = require("react/jsx-runtime");
+var GoogleIcon = function GoogleIcon(_ref) {
+  var width = _ref.width,
+    height = _ref.height;
+  return (0, _jsxRuntime.jsx)(_google.default, {
+    width: width,
+    height: height
+  });
+};
+var _default = exports.default = GoogleIcon;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJfcmVhY3QiLCJfaW50ZXJvcFJlcXVpcmVEZWZhdWx0IiwicmVxdWlyZSIsIl9nb29nbGUiLCJfanN4UnVudGltZSIsIkdvb2dsZUljb24iLCJfcmVmIiwid2lkdGgiLCJoZWlnaHQiLCJqc3giLCJkZWZhdWx0IiwiX2RlZmF1bHQiLCJleHBvcnRzIl0sInNvdXJjZXMiOlsiR29vZ2xlSWNvbi50c3giXSwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IFJlYWN0IGZyb20gXCJyZWFjdFwiO1xyXG5pbXBvcnQgR29vZ2xlU3ZnIGZyb20gXCJAaW1hZ2VzL2dvb2dsZS5zdmdcIjtcclxuXHJcbmludGVyZmFjZSBHb29nbGVJY29uUHJvcHMge1xyXG4gIHdpZHRoPzogbnVtYmVyIHwgc3RyaW5nO1xyXG4gIGhlaWdodD86IG51bWJlciB8IHN0cmluZztcclxufVxyXG5cclxuY29uc3QgR29vZ2xlSWNvbiA9ICh7IHdpZHRoLCBoZWlnaHQgfTogR29vZ2xlSWNvblByb3BzKSA9PiB7XHJcbiAgcmV0dXJuIDxHb29nbGVTdmcgd2lkdGg9e3dpZHRofSBoZWlnaHQ9e2hlaWdodH0gLz47XHJcbn07XHJcblxyXG5leHBvcnQgZGVmYXVsdCBHb29nbGVJY29uO1xyXG4iXSwibWFwcGluZ3MiOiI7Ozs7O0FBQUEsSUFBQUEsTUFBQSxHQUFBQyxzQkFBQSxDQUFBQyxPQUFBO0FBQ0EsSUFBQUMsT0FBQSxHQUFBRixzQkFBQSxDQUFBQyxPQUFBO0FBQTJDLElBQUFFLFdBQUEsR0FBQUYsT0FBQTtBQU8zQyxJQUFNRyxVQUFVLEdBQUcsU0FBYkEsVUFBVUEsQ0FBQUMsSUFBQSxFQUEyQztFQUFBLElBQXJDQyxLQUFLLEdBQUFELElBQUEsQ0FBTEMsS0FBSztJQUFFQyxNQUFNLEdBQUFGLElBQUEsQ0FBTkUsTUFBTTtFQUNqQyxPQUFPLElBQUFKLFdBQUEsQ0FBQUssR0FBQSxFQUFDTixPQUFBLENBQUFPLE9BQVM7SUFBQ0gsS0FBSyxFQUFFQSxLQUFNO0lBQUNDLE1BQU0sRUFBRUE7RUFBTyxDQUFFLENBQUM7QUFDcEQsQ0FBQztBQUFDLElBQUFHLFFBQUEsR0FBQUMsT0FBQSxDQUFBRixPQUFBLEdBRWFMLFVBQVUiLCJpZ25vcmVMaXN0IjpbXX0=

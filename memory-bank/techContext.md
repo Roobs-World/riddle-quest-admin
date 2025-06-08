@@ -1,8 +1,8 @@
 # Tech Context
 
-## 1. Technologies Used
+This document details the technologies, development setup, technical constraints, dependencies, and tool usage patterns for the Qwordly project.
 
-### Frontend Technologies
+## Technologies Used:
 
 - **React Native**: 0.75.4 - Core mobile framework for iOS and Android
 - **Expo**: SDK 53.0.9 - Development platform and toolchain
@@ -63,7 +63,7 @@
 - **Sound:** expo-av (Will be extended to include audio fading capabilities)
 - **Haptics:** react-native-haptic-feedback
 
-## 2. Development Environment Setup
+## Development Setup:
 
 - **Node.js**: Compatible version installed
 - **PNPM**: Package manager configured
@@ -72,7 +72,7 @@
 - **TypeScript**: Configured for both client and server development
 - **Metro Bundler**: Configured with custom transformers for SVG and NativeWind
 
-## 3. Technical Constraints
+## Technical Constraints:
 
 - **Expo SDK 53**: Stricter package.json exports enforcement affecting some third-party libraries
 - **Metro Bundler**: Module resolution changes requiring compatibility adjustments
@@ -82,34 +82,33 @@
 - **Android Edge-to-Edge**: Enabled for future Android 16+ compatibility (targetSdkVersion 36+)
 - **TypeScript Module Resolution**: Using "bundler" resolution for Metro compatibility
 
-## 4. Dependencies
+## Dependencies:
 
 - **Frontend**: Refer to main `package.json` for React Native app dependencies
 - **Backend**: Refer to `firebase-functions/package.json` for server-side dependencies
 - **Development**: Comprehensive DevDependencies for TypeScript, testing, and build tools
 
-## 5. Tool Usage Patterns
+## Tool Usage Patterns:
 
-### Development Commands
+- **Development Commands**:
 
-- `npx expo start` - Start development server (currently blocked by Metro issue)
-- `npx expo start --clear` - Start with cache clearing
-- `pnpm install` - Install dependencies
-- `npx expo customize metro.config.js` - Generate/customize Metro config
+  - `npx expo start` - Start development server (currently blocked by Metro issue)
+  - `npx expo start --clear` - Start with cache clearing
+  - `pnpm install` - Install dependencies
+  - `npx expo customize metro.config.js` - Generate/customize Metro config
 
-### Testing Commands
+- **Testing Commands**:
 
-- `npm run test` - Run Jest tests for React Native app
-- `npm run lint` - ESLint code quality checks
-- Firebase Functions testing via separate Jest configuration
+  - `npm run test` - Run Jest tests for React Native app
+  - `npm run lint` - ESLint code quality checks
+  - Firebase Functions testing via separate Jest configuration
 
-### Build & Deploy Commands
+- **Build & Deploy Commands**:
+  - `npx expo build:android` - Build Android APK
+  - `npx expo build:ios` - Build iOS app
+  - `npm run deploy` - Deploy Firebase Functions (in firebase-functions directory)
 
-- `npx expo build:android` - Build Android APK
-- `npx expo build:ios` - Build iOS app
-- `npm run deploy` - Deploy Firebase Functions (in firebase-functions directory)
-
-## 6. Configuration Files
+## Configuration Files:
 
 - **metro.config.js**: Metro bundler configuration with NativeWind and SVG support
 - **babel.config.js**: Babel transpilation configuration
@@ -119,15 +118,15 @@
 - **firebase.json**: Firebase services configuration
 - **.env files (recommended)**: For managing Firebase Functions environment variables locally (e.g., `.env.local`, `.env.dev`, `.env.prod`). Ensure these are gitignored. Environment variables include `OPENAI_API_KEY`, `GOOGLE_SERVICE_ACCOUNT` (JSON string for IAP), `APPLE_SHARED_SECRET`, `APPLOVIN_SDK_KEY`, `APPLOVIN_INTERSTITIAL_AD_UNIT_ID`, `APPLOVIN_REWARDED_AD_UNIT_ID`, `FIREBASE_API_KEY`, `FIREBASE_APP_ID`, `FIREBASE_AUTH_DOMAIN`, `FIREBASE_MESSAGING_SENDER_ID`, `FIREBASE_PROJECT_ID`, `FIREBASE_STORAGE_BUCKET`, `FACEBOOK_APP_ID`, `FACEBOOK_APP_SECRET`, `FACEBOOK_CLIENT_TOKEN`.
 
-### **✅ Configuration Fixes - Recently Completed**
+### **✅ Configuration Fixes - Recently Completed**:
 
 - **TypeScript Configuration**: Fixed module resolution compatibility by changing from "node" to "bundler" in tsconfig.json
 - **Android Edge-to-Edge**: Enabled for modern Android experience and future Android 16+ compatibility
 - **Build Environment**: Cleaned Gradle caches and resolved React Native Gradle plugin dependency issues
 
-## Core Technologies
+## Core Technologies:
 
-### **✅ Testing Infrastructure - FULLY COMPLETED**
+### **✅ Testing Infrastructure - FULLY COMPLETED**:
 
 **Framework**: Jest with TypeScript support  
 **Configuration**: Single-project focus on Firebase Functions  
@@ -156,4 +155,4 @@
 - **Maintainable**: Simple Jest configuration focused on critical functionality
 - **Scalable**: Test infrastructure supports continued development
 
-### **Development Environment**
+### **Development Environment**:

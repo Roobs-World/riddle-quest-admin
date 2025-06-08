@@ -1,25 +1,16 @@
 # Project Brief
 
-## 1. Project Name
+This document outlines the core requirements and goals for the project.
+
+## Project Name:
 
 Qwordly (inferred from workspace path)
 
-## 2. Project Goals
+## Project Description:
 
-- To build a fully functional riddle-based Wordle-clone mobile game, Qwordly.
-- Implement all core features including user authentication, persistent backend, multiple game modes, in-app purchases, and customizable user profiles.
-- Ensure successful deployment and operation of Firebase Functions for backend logic.
-- Achieve comprehensive test coverage for both client and server-side code.
-- Implement audio fading for background music and sound effects based on user progress or game state.
+Build a riddle-based Wordle-clone mobile game using React Native, NativeWind, and TypeScript. The game will feature user authentication, a persistent backend for user data and game levels, multiple game modes, in-app purchases for a coin system, and customizable user profiles.
 
-## 3. Target Audience
-
-- Mobile gamers who enjoy word puzzles and riddle-based challenges.
-- Users looking for engaging daily and progressive puzzle experiences.
-
-## 4. Scope
-
-### In Scope:
+## Core Requirements:
 
 - Firebase Functions deployment.
 - Development of iOS (16+) and Android (10+) application.
@@ -33,19 +24,38 @@ Qwordly (inferred from workspace path)
 - User profiles with statistics and customizable avatars.
 - Game win 'shattering title' animation.
 
-### Out of Scope:
+## Goals:
 
-- Anonymous login.
-- Real-time multiplayer features beyond individual progression.
-- Social features like friend lists or direct messaging (unless specified later).
-- Web-based version of the game.
+- To build a fully functional riddle-based Wordle-clone mobile game, Qwordly.
+- Implement all core features including user authentication, persistent backend, multiple game modes, in-app purchases, and customizable user profiles.
+- Ensure successful deployment and operation of Firebase Functions for backend logic.
+- Achieve comprehensive test coverage for both client and server-side code.
+- Implement audio fading for background music and sound effects based on user progress or game state.
 
-## 5. Success Metrics
+## Stakeholders:
 
-- Successful deployment and stable operation of Firebase Functions and the mobile application.
-- Positive user engagement metrics (e.g., daily active users, session length) post-launch.
-- High test coverage for critical game logic and backend services.
-- Successful implementation of all features outlined in the core requirements.
+- Mobile gamers who enjoy word puzzles and riddle-based challenges.
+- Users looking for engaging daily and progressive puzzle experiences.
+
+## Key Assumptions:
+
+- The project will be developed using React Native, NativeWind, and TypeScript.
+- The game will feature user authentication, a persistent backend for user data and game levels, multiple game modes, in-app purchases for a coin system, and customizable user profiles.
+- The game will be deployed on iOS (16+) and Android (10+) platforms.
+
+## Constraints:
+
+- The project will not include anonymous login.
+- The game will not include real-time multiplayer features beyond individual progression.
+- The game will not include social features like friend lists or direct messaging.
+- The project will not include a web-based version of the game.
+
+## Definition of Done:
+
+- The project will be successfully deployed and stable in operation.
+- Positive user engagement metrics (e.g., daily active users, session length) will be achieved post-launch.
+- High test coverage for critical game logic and backend services will be achieved.
+- All features outlined in the core requirements will be successfully implemented.
 
 ## Project Overview
 

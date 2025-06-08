@@ -1,10 +1,12 @@
 # Product Context
 
-## Why Qwordly Exists
+This document describes the 'why' behind the Qwordly project, the problems it solves, how it should work from a user perspective, and key user experience goals.
+
+## Why Qwordly Exists:
 
 Qwordly addresses the gap in mobile puzzle gaming by combining traditional word games with engaging riddle mechanics. While standard word games can become repetitive, Qwordly adds contextual clues that make each puzzle feel like a mini-mystery to solve.
 
-## Core Problems It Solves
+## Problems Solved:
 
 1. **Puzzle Fatigue**: Traditional word games can become monotonous. Qwordly's riddle format keeps each puzzle fresh and engaging.
 
@@ -14,34 +16,11 @@ Qwordly addresses the gap in mobile puzzle gaming by combining traditional word 
 
 4. **Monetization Balance**: Finding the right balance between free gameplay and revenue generation. Qwordly's 3-attempt system with optional continues provides choice without forcing spending.
 
-## How It Should Work
+## How Qwordly Should Work (User Flow):n
 
-### Core Game Loop
+[Outline the basic user flow, e.g., App Launch -> Main Menu -> Choose Game Mode -> Play Game -> View Stats/Profile.]
 
-1. **Daily Ritual**: Users start each day with a fresh daily challenge
-2. **Progressive Journey**: Classic mode provides structured advancement through levels
-3. **Strategic Decisions**: Coin management for hints creates meaningful choices
-4. **Attempt Management**: 3-attempt limit with optional continues (ads or coins) adds tension
-5. **Achievement Satisfaction**: Clear progression metrics and statistics provide accomplishment
-
-### Core Game Mechanics
-
-#### **3-Attempt System**
-
-- **Initial Phase**: Players get 3 attempts to solve each riddle
-- **Continue Options**: After 3 failed attempts, players can:
-  - Watch an interstitial ad for 3 more attempts (free)
-  - Spend 50 coins for 3 more attempts
-  - Give up and see the answer
-- **Final Phase**: After using continue option, no further continues available
-
-#### **Monetization Strategy**
-
-- **Balanced Approach**: Free ad option prevents pay-to-play feeling
-- **Optional Spending**: Coin purchases for hints and continues
-- **User Choice**: Multiple paths for progression without forced transactions
-
-### User Experience Goals
+## User Experience (UX) Goals:
 
 - **Accessibility**: Anyone should be able to pick up and play immediately
 - **Depth**: Strategic elements (coin management, hint usage, continue decisions) reward thoughtful play
@@ -50,11 +29,9 @@ Qwordly addresses the gap in mobile puzzle gaming by combining traditional word 
 - **Retention**: Daily challenges and progressive unlocks encourage return visits
 - **Tension & Release**: 3-attempt limit creates engagement, continue options provide relief
 
-## Target Experience
+## Target Audience:
 
-Users should feel they're not just playing a word game, but solving interesting puzzles that challenge both their vocabulary and reasoning skills. The 3-attempt system should create just enough pressure to make solving feel rewarding, while continue options prevent frustration from ending progress.
-
-The game should feel rewarding whether they play for 5 minutes (daily challenge) or longer sessions (classic progression), with natural break points that don't feel punishing.
+[Describe the ideal user for Qwordly in more detail.]
 
 ## Updated Core Features
 

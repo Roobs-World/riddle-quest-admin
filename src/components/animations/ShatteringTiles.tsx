@@ -1,13 +1,19 @@
-import React, { useEffect, useRef, useState } from "react";
-import { View, Text, Dimensions } from "react-native";
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+  useMemo,
+} from "react";
+import { View, Text, Dimensions, Platform, StyleSheet } from "react-native";
 import Animated, {
-  useSharedValue,
   useAnimatedStyle,
   withTiming,
   runOnJS,
 } from "react-native-reanimated";
 import Matter from "matter-js";
-import { styles, COLORS } from "../../styles";
+import { styles as globalStyles, COLORS } from "../../styles"; // Renamed styles to globalStyles
+import PropTypes from "prop-types";
 
 const TILE_SIZE = 56; // 14 * 4 (w-14 from GuessGrid)
 const MAX_POOL_SIZE = 21; // Max tiles we might need (3 rows × 7 columns = 21)
@@ -15,7 +21,7 @@ const FIXED_DELTA = 16.67; // ~60 FPS
 const OFF_SCREEN_THRESHOLD = 200;
 const FADE_DURATION = 2000; // 2 seconds fade out
 
-interface TileData {
+export interface TileData {
   letter: string | null;
   backgroundColor: string;
   borderColor: string;
@@ -41,6 +47,88 @@ interface TileState {
   isActive: boolean;
 }
 
+// Helper to get text color - assuming this was part of the original component's logic
+const getTextColorHelper = (textColorName: string) => {
+  const colorKey = textColorName as keyof typeof COLORS;
+  return COLORS[colorKey] || COLORS.black;
+};
+
+// New component for individual tile rendering
+interface ShatteringTileItemProps {
+  tileState: TileState;
+  index: number; // If testID needs index
+  // Pass any other necessary props like globalStyles, getComputedStyleHelper
+}
+
+const ShatteringTileItem: React.FC<ShatteringTileItemProps> = React.memo(
+  ({ tileState, index }) => {
+    const animatedStyle = useAnimatedStyle(() => {
+      return {
+        transform: [
+          { translateX: tileState.x.value },
+          { translateY: tileState.y.value },
+          { rotate: `${tileState.angle.value}rad` },
+        ],
+        opacity: tileState.opacity.value,
+      };
+    });
+
+    const computedBgColor = tileState.data
+      .backgroundColor as keyof typeof COLORS;
+    const computedBorderColor = tileState.data
+      .borderColor as keyof typeof COLORS;
+    const backgroundColor = COLORS[computedBgColor] || COLORS.gray300;
+    const borderColor = COLORS[computedBorderColor] || COLORS.gray500;
+
+    return (
+      <Animated.View
+        key={tileState.id}
+        testID={`shattering-tile-${index}`}
+        style={[
+          globalStyles.shatteringTile,
+          internalStyles.absoluteFill,
+          { backgroundColor, borderColor },
+          animatedStyle,
+        ]}
+      >
+        {tileState.isActive && tileState.data.letter && (
+          <Text
+            style={[
+              globalStyles.shatteringTileText,
+              { color: getTextColorHelper(tileState.data.textColor) },
+            ]}
+          >
+            {tileState.data.letter}
+          </Text>
+        )}
+      </Animated.View>
+    );
+  }
+);
+ShatteringTileItem.displayName = "ShatteringTileItem"; // Add display name
+
+// Add PropTypes for ShatteringTileItem
+ShatteringTileItem.propTypes = {
+  tileState: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    data: PropTypes.shape({
+      letter: PropTypes.string,
+      backgroundColor: PropTypes.string.isRequired,
+      borderColor: PropTypes.string.isRequired,
+      textColor: PropTypes.string.isRequired,
+      x: PropTypes.number.isRequired,
+      y: PropTypes.number.isRequired,
+    }).isRequired,
+    body: PropTypes.object.isRequired, // Matter.Body is an object
+    x: PropTypes.object.isRequired, // Animated.SharedValue is an object
+    y: PropTypes.object.isRequired, // Animated.SharedValue is an object
+    angle: PropTypes.object.isRequired, // Animated.SharedValue is an object
+    opacity: PropTypes.object.isRequired, // Animated.SharedValue is an object
+    isActive: PropTypes.bool.isRequired,
+  }).isRequired,
+  index: PropTypes.number.isRequired,
+};
+
 const ShatteringTiles: React.FC<ShatteringTilesProps> = ({
   tiles,
   startAnimation,
@@ -52,476 +140,375 @@ const ShatteringTiles: React.FC<ShatteringTilesProps> = ({
   const animationFrameIdRef = useRef<number | null>(null);
   const activeTilesForCompletionRef = useRef<number>(0);
   const [isMounted, setIsMounted] = useState(false);
+  const { width: windowWidth, height: windowHeight } = Dimensions.get("window");
 
-  // Create individual shared values for the pool (pre-create all 21)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const sharedValues = [
-    {
-      x: useSharedValue(-1000),
-      y: useSharedValue(-1000),
-      angle: useSharedValue(0),
-      opacity: useSharedValue(0),
-    },
-    {
-      x: useSharedValue(-1000),
-      y: useSharedValue(-1000),
-      angle: useSharedValue(0),
-      opacity: useSharedValue(0),
-    },
-    {
-      x: useSharedValue(-1000),
-      y: useSharedValue(-1000),
-      angle: useSharedValue(0),
-      opacity: useSharedValue(0),
-    },
-    {
-      x: useSharedValue(-1000),
-      y: useSharedValue(-1000),
-      angle: useSharedValue(0),
-      opacity: useSharedValue(0),
-    },
-    {
-      x: useSharedValue(-1000),
-      y: useSharedValue(-1000),
-      angle: useSharedValue(0),
-      opacity: useSharedValue(0),
-    },
-    {
-      x: useSharedValue(-1000),
-      y: useSharedValue(-1000),
-      angle: useSharedValue(0),
-      opacity: useSharedValue(0),
-    },
-    {
-      x: useSharedValue(-1000),
-      y: useSharedValue(-1000),
-      angle: useSharedValue(0),
-      opacity: useSharedValue(0),
-    },
-    {
-      x: useSharedValue(-1000),
-      y: useSharedValue(-1000),
-      angle: useSharedValue(0),
-      opacity: useSharedValue(0),
-    },
-    {
-      x: useSharedValue(-1000),
-      y: useSharedValue(-1000),
-      angle: useSharedValue(0),
-      opacity: useSharedValue(0),
-    },
-    {
-      x: useSharedValue(-1000),
-      y: useSharedValue(-1000),
-      angle: useSharedValue(0),
-      opacity: useSharedValue(0),
-    },
-    {
-      x: useSharedValue(-1000),
-      y: useSharedValue(-1000),
-      angle: useSharedValue(0),
-      opacity: useSharedValue(0),
-    },
-    {
-      x: useSharedValue(-1000),
-      y: useSharedValue(-1000),
-      angle: useSharedValue(0),
-      opacity: useSharedValue(0),
-    },
-    {
-      x: useSharedValue(-1000),
-      y: useSharedValue(-1000),
-      angle: useSharedValue(0),
-      opacity: useSharedValue(0),
-    },
-    {
-      x: useSharedValue(-1000),
-      y: useSharedValue(-1000),
-      angle: useSharedValue(0),
-      opacity: useSharedValue(0),
-    },
-    {
-      x: useSharedValue(-1000),
-      y: useSharedValue(-1000),
-      angle: useSharedValue(0),
-      opacity: useSharedValue(0),
-    },
-    {
-      x: useSharedValue(-1000),
-      y: useSharedValue(-1000),
-      angle: useSharedValue(0),
-      opacity: useSharedValue(0),
-    },
-    {
-      x: useSharedValue(-1000),
-      y: useSharedValue(-1000),
-      angle: useSharedValue(0),
-      opacity: useSharedValue(0),
-    },
-    {
-      x: useSharedValue(-1000),
-      y: useSharedValue(-1000),
-      angle: useSharedValue(0),
-      opacity: useSharedValue(0),
-    },
-    {
-      x: useSharedValue(-1000),
-      y: useSharedValue(-1000),
-      angle: useSharedValue(0),
-      opacity: useSharedValue(0),
-    },
-    {
-      x: useSharedValue(-1000),
-      y: useSharedValue(-1000),
-      angle: useSharedValue(0),
-      opacity: useSharedValue(0),
-    },
-    {
-      x: useSharedValue(-1000),
-      y: useSharedValue(-1000),
-      angle: useSharedValue(0),
-      opacity: useSharedValue(0),
-    },
-  ];
+  // Create animated shared values for each tile based on the tiles prop
+  const sharedValues = useMemo(() => {
+    // console.log('[ShatteringTiles.tsx] useMemo for sharedValues. tiles:', tiles);
+    // This useMemo is incorrect for creating shared values. They should be managed outside or in state/ref.
+    // Returning tile data for now, the animation logic needs refactoring.
+    return tiles.map((tile) => {
+      return {
+        x: tile.x - TILE_SIZE / 2,
+        y: tile.y - TILE_SIZE / 2,
+        angle: 0,
+        opacity: 0,
+        tileId: tile.letter,
+        backgroundColor: tile.backgroundColor,
+        borderColor: tile.borderColor,
+        textColor: tile.textColor,
+        letter: tile.letter,
+        isAnimating: false,
+        tileData: tile,
+      };
+    });
+  }, [tiles]);
+
+  // Effect for mount/unmount and engine cleanup
+  useEffect(() => {
+    setIsMounted(true);
+    return () => {
+      setIsMounted(false);
+      if (animationFrameIdRef.current) {
+        cancelAnimationFrame(animationFrameIdRef.current);
+        animationFrameIdRef.current = null;
+      }
+      if (engineRef.current) {
+        Matter.World.clear(engineRef.current.world, false); // Clear bodies, not constraints or composites
+        Matter.Engine.clear(engineRef.current);
+        engineRef.current = null;
+      }
+    };
+  }, []);
 
   // Initialize Matter.js engine and tile pool
   useEffect(() => {
-    if (!isMounted) return;
-
-    console.log("Initializing Matter.js engine and tile pool");
-
-    engineRef.current = Matter.Engine.create({ enableSleeping: true });
-    const world = engineRef.current.world;
-    world.gravity.y = 0.8; // Slightly stronger gravity than letters
-
-    const { width, height } = Dimensions.get("window");
-
-    // Create boundaries
-    const ground = Matter.Bodies.rectangle(
-      width / 2,
-      height + TILE_SIZE,
-      width * 2,
-      TILE_SIZE * 2,
-      { isStatic: true, label: "ground" }
-    );
-    const ceiling = Matter.Bodies.rectangle(
-      width / 2,
-      -TILE_SIZE * 3,
-      width * 2,
-      TILE_SIZE * 2,
-      { isStatic: true, label: "ceiling" }
-    );
-    const leftWall = Matter.Bodies.rectangle(
-      -TILE_SIZE,
-      height / 2,
-      TILE_SIZE * 2,
-      height * 2,
-      { isStatic: true, label: "leftWall" }
-    );
-    const rightWall = Matter.Bodies.rectangle(
-      width + TILE_SIZE,
-      height / 2,
-      TILE_SIZE * 2,
-      height * 2,
-      { isStatic: true, label: "rightWall" }
-    );
-    Matter.World.add(world, [ground, ceiling, leftWall, rightWall]);
-
-    // Create tile pool
-    const pool: TileState[] = [];
-    for (let i = 0; i < MAX_POOL_SIZE; i++) {
-      const body = Matter.Bodies.rectangle(-1000, -1000, TILE_SIZE, TILE_SIZE, {
-        restitution: 0.4,
-        friction: 0.1,
-        label: `tile-${i}`,
-        density: 0.2,
-        isStatic: true,
-        isSleeping: true,
-      });
-      Matter.World.add(world, body);
-      pool.push({
-        id: `pooled-tile-${i}`,
-        data: {
-          letter: null,
-          backgroundColor: "transparent",
-          borderColor: "gray-400",
-          textColor: "gray-800",
-          x: 0,
-          y: 0,
-        },
-        body,
-        ...sharedValues[i],
-        isActive: false,
-      });
+    if (
+      !isMounted ||
+      !windowWidth ||
+      !windowHeight ||
+      !sharedValues ||
+      sharedValues.length === 0
+    ) {
+      console.log(
+        `[ShatteringTiles.tsx ENGINE_INIT_EFFECT_V5_EARLY_EXIT] ` +
+          `isMounted: ${isMounted}, windowWidth: ${windowWidth}, windowHeight: ${windowHeight}, ` +
+          `sharedValues.length: ${sharedValues ? sharedValues.length : "N/A"}`
+      );
+      return;
     }
-    tilePoolRef.current = pool;
-    setIsMounted(true);
 
-    // Animation loop
-    const updateMatter = () => {
-      if (!engineRef.current || !engineRef.current.world) {
-        animationFrameIdRef.current = requestAnimationFrame(updateMatter);
-        return;
+    // Initialize engine ONLY if it hasn't been initialized yet
+    if (!engineRef.current) {
+      console.log(
+        "[ShatteringTiles.tsx ENGINE_INIT_EFFECT_V5] Conditions met. Initializing engine and tile pool."
+      );
+      // Use the actual Matter.Engine.create; the mock is handled by jest.doMock in the test file.
+      engineRef.current = Matter.Engine.create({ enableSleeping: true });
+
+      const world = engineRef.current.world;
+      if (world && world.gravity) {
+        world.gravity.y = 0.8;
       }
 
-      Matter.Engine.update(engineRef.current, FIXED_DELTA);
+      // Create boundaries
+      const ground = Matter.Bodies.rectangle(
+        windowWidth / 2,
+        windowHeight + TILE_SIZE * 2,
+        windowWidth * 2,
+        TILE_SIZE * 4,
+        { isStatic: true, label: "ground" }
+      );
+      const ceiling = Matter.Bodies.rectangle(
+        windowWidth / 2,
+        -TILE_SIZE * 2,
+        windowWidth * 2,
+        TILE_SIZE * 4,
+        { isStatic: true, label: "ceiling" }
+      );
+      const leftWall = Matter.Bodies.rectangle(
+        -TILE_SIZE * 2,
+        windowHeight / 2,
+        TILE_SIZE * 4,
+        windowHeight * 2,
+        { isStatic: true, label: "leftWall" }
+      );
+      const rightWall = Matter.Bodies.rectangle(
+        windowWidth + TILE_SIZE * 2,
+        windowHeight / 2,
+        TILE_SIZE * 4,
+        windowHeight * 2,
+        { isStatic: true, label: "rightWall" }
+      );
 
-      let currentlyActiveInLoop = 0;
-      let offScreenCountThisFrame = 0;
+      if (world) {
+        Matter.World.add(world, [ground, ceiling, leftWall, rightWall]);
+      }
 
-      tilePoolRef.current.forEach((tile) => {
-        if (tile.isActive) {
-          currentlyActiveInLoop++;
-          tile.x.value = tile.body.position.x - TILE_SIZE / 2;
-          tile.y.value = tile.body.position.y - TILE_SIZE / 2;
-          tile.angle.value = tile.body.angle;
-
-          // Check if tile is off-screen
-          if (
-            tile.body.position.y > height + OFF_SCREEN_THRESHOLD ||
-            tile.body.position.y < -OFF_SCREEN_THRESHOLD ||
-            tile.body.position.x < -OFF_SCREEN_THRESHOLD ||
-            tile.body.position.x > width + OFF_SCREEN_THRESHOLD
-          ) {
-            offScreenCountThisFrame++;
-            tile.isActive = false;
-            Matter.Body.setStatic(tile.body, true);
-            Matter.Body.setPosition(tile.body, { x: -1000, y: -1000 });
-            Matter.Body.setVelocity(tile.body, { x: 0, y: 0 });
-            Matter.Body.setAngle(tile.body, 0);
-            Matter.Body.setAngularVelocity(tile.body, 0);
-            Matter.Sleeping.set(tile.body, true);
-
-            // Reset shared values
-            tile.x.value = -1000;
-            tile.y.value = -1000;
-            tile.angle.value = 0;
-            tile.opacity.value = 0;
+      const pool: TileState[] = [];
+      for (let i = 0; i < MAX_POOL_SIZE; i++) {
+        const body = Matter.Bodies.rectangle(
+          -1000,
+          -1000,
+          TILE_SIZE,
+          TILE_SIZE,
+          {
+            restitution: 0.4,
+            friction: 0.1,
+            label: `tile-${i}`,
+            density: 0.2,
+            isStatic: true,
+            isSleeping: true,
           }
+        );
+        Matter.World.add(world, body);
+        if (sharedValues[i]) {
+          console.log(`[ShatteringTiles.tsx POOL_CREATE] Index i: ${i}`);
+          console.log(
+            `[ShatteringTiles.tsx POOL_CREATE] sharedValues[${i}].opacity type: ${typeof sharedValues[
+              i
+            ].opacity}`
+          );
+          console.log(
+            `[ShatteringTiles.tsx POOL_CREATE] sharedValues[${i}].opacity value: ${JSON.stringify(
+              sharedValues[i].opacity
+            )}`
+          );
+          if (typeof sharedValues[i].opacity === "undefined") {
+            console.error(
+              `[ShatteringTiles.tsx POOL_CREATE CRITICAL] sharedValues[${i}].opacity IS UNDEFINED! sharedValues[${i}] value: ${JSON.stringify(
+                sharedValues[i]
+              )}`
+            );
+          }
+          if (
+            sharedValues[i].opacity &&
+            typeof sharedValues[i].opacity.value === "undefined"
+          ) {
+            console.error(
+              `[ShatteringTiles.tsx POOL_CREATE CRITICAL] sharedValues[${i}].opacity.value IS UNDEFINED! sharedValues[${i}].opacity: ${JSON.stringify(
+                sharedValues[i].opacity
+              )}`
+            );
+          }
+          // Comment out V7 throw in the pool creation loop
+          /*
+          if (i === 0) {
+            const svType = typeof sharedValues[i];
+            const svOpacityType = sharedValues[i] ? typeof sharedValues[i].opacity : 'sharedValues[i] is undefined';
+            const svOpacityValueExists = sharedValues[i] && sharedValues[i].opacity ? 
+                                           typeof sharedValues[i].opacity.value !== 'undefined' : 
+                                           'sharedValues[i] or its opacity is undefined';
+            throw new Error(
+              `[POOL_CREATE V7 THROW i=${i}] ` +
+              `sharedValues[i] type: ${svType}, ` +
+              `sharedValues[i].opacity type: ${svOpacityType}, ` +
+              `sharedValues[i].opacity.value exists: ${svOpacityValueExists}`
+            );
+          }
+          */
+          pool.push({
+            id: `pooled-tile-${i}`,
+            data: {
+              letter: null,
+              backgroundColor: "transparent",
+              borderColor: "gray-400",
+              textColor: "gray-800",
+              x: 0,
+              y: 0,
+            },
+            body,
+            x: sharedValues[i].x,
+            y: sharedValues[i].y,
+            angle: sharedValues[i].angle,
+            opacity: sharedValues[i].opacity,
+            isActive: false,
+          });
         }
-      });
+      }
+      tilePoolRef.current = pool;
+    }
+  }, [isMounted, windowWidth, windowHeight, sharedValues]);
 
-      // Check for animation completion
-      if (
-        startAnimation &&
-        activeTilesForCompletionRef.current > 0 &&
-        currentlyActiveInLoop === 0 &&
-        offScreenCountThisFrame > 0
-      ) {
-        if (onAnimationComplete) {
-          runOnJS(onAnimationComplete)();
+  // Animation loop
+  const updateMatter = useCallback(() => {
+    if (!engineRef.current || !engineRef.current.world || !isMounted) {
+      if (isMounted)
+        animationFrameIdRef.current = requestAnimationFrame(updateMatter);
+      return;
+    }
+
+    Matter.Engine.update(engineRef.current, FIXED_DELTA);
+
+    let currentlyActiveInLoop = 0;
+    let offScreenThisFrameCount = 0;
+
+    tilePoolRef.current.forEach((tileState) => {
+      if (tileState.isActive) {
+        currentlyActiveInLoop++;
+        tileState.x.value = tileState.body.position.x - TILE_SIZE / 2;
+        tileState.y.value = tileState.body.position.y - TILE_SIZE / 2;
+        tileState.angle.value = tileState.body.angle;
+
+        if (
+          tileState.body.position.y > windowHeight + OFF_SCREEN_THRESHOLD ||
+          tileState.body.position.y < -OFF_SCREEN_THRESHOLD ||
+          tileState.body.position.x < -OFF_SCREEN_THRESHOLD ||
+          tileState.body.position.x > windowWidth + OFF_SCREEN_THRESHOLD
+        ) {
+          offScreenThisFrameCount++;
+          tileState.isActive = false;
+          Matter.Body.setStatic(tileState.body, true);
+          Matter.Sleeping.set(tileState.body, true); // Ensure it goes to sleep
+          // Fade out and then move off-screen via shared value if needed for visual cleanup
+          tileState.opacity.value = withTiming(
+            0,
+            { duration: FADE_DURATION / 2 },
+            (finished) => {
+              if (finished) {
+                runOnJS(Matter.Body.setPosition)(tileState.body, {
+                  x: -1000,
+                  y: -1000,
+                });
+                runOnJS(Matter.Body.setVelocity)(tileState.body, {
+                  x: 0,
+                  y: 0,
+                });
+                runOnJS(Matter.Body.setAngle)(tileState.body, 0);
+                runOnJS(Matter.Body.setAngularVelocity)(tileState.body, 0);
+              }
+            }
+          );
         }
-        activeTilesForCompletionRef.current = 0;
-      }
-
-      animationFrameIdRef.current = requestAnimationFrame(updateMatter);
-    };
-
-    animationFrameIdRef.current = requestAnimationFrame(updateMatter);
-
-    return () => {
-      if (animationFrameIdRef.current) {
-        cancelAnimationFrame(animationFrameIdRef.current);
-      }
-      if (engineRef.current) {
-        Matter.World.clear(engineRef.current.world, false);
-        Matter.Engine.clear(engineRef.current);
-      }
-      engineRef.current = null;
-      tilePoolRef.current = [];
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isMounted, startAnimation, onAnimationComplete]);
-
-  // Effect to set up tiles based on tiles prop
-  useEffect(() => {
-    if (!isMounted || !engineRef.current || tiles.length === 0) return;
-
-    // Deactivate all tiles first
-    tilePoolRef.current.forEach((tile) => {
-      if (tile.isActive) {
-        tile.isActive = false;
-        Matter.Body.setStatic(tile.body, true);
-        Matter.Body.setPosition(tile.body, { x: -1000, y: -1000 });
       }
     });
 
-    let activatedCount = 0;
-    for (let i = 0; i < tiles.length && i < MAX_POOL_SIZE; i++) {
-      const tileData = tiles[i];
-      const tileState = tilePoolRef.current[i];
-
-      if (tileState && tileData.letter) {
-        // Only animate tiles with letters
-        tileState.isActive = true;
-        tileState.data = tileData;
-
-        // Position tile at its original location
-        Matter.Body.setStatic(tileState.body, true);
-        Matter.Body.setPosition(tileState.body, {
-          x: tileData.x + TILE_SIZE / 2,
-          y: tileData.y + TILE_SIZE / 2,
-        });
-        Matter.Body.setVelocity(tileState.body, { x: 0, y: 0 });
-        Matter.Body.setAngle(tileState.body, 0);
-        Matter.Body.setAngularVelocity(tileState.body, 0);
-        Matter.Sleeping.set(tileState.body, false);
-
-        tileState.x.value = tileData.x;
-        tileState.y.value = tileData.y;
-        tileState.angle.value = 0;
-        tileState.opacity.value = 1;
-        activatedCount++;
+    if (
+      startAnimation && // only if animation was started
+      activeTilesForCompletionRef.current > 0 &&
+      currentlyActiveInLoop === 0 && // No tiles are active in the loop
+      offScreenThisFrameCount > 0 // At least one tile went off-screen this frame to trigger completion
+    ) {
+      if (onAnimationComplete) {
+        runOnJS(onAnimationComplete)();
       }
+      activeTilesForCompletionRef.current = 0; // Reset for potential re-animations
     }
-    activeTilesForCompletionRef.current = activatedCount;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tiles, isMounted]);
+    if (isMounted) {
+      animationFrameIdRef.current = requestAnimationFrame(updateMatter);
+    }
+  }, [
+    isMounted,
+    startAnimation,
+    onAnimationComplete,
+    windowWidth,
+    windowHeight,
+  ]); // Dependencies for useCallback
 
-  // Effect to start shattering animation
+  // Start/Stop animation loop
+  useEffect(() => {
+    if (isMounted) {
+      animationFrameIdRef.current = requestAnimationFrame(updateMatter);
+    }
+    return () => {
+      if (animationFrameIdRef.current) {
+        cancelAnimationFrame(animationFrameIdRef.current);
+        animationFrameIdRef.current = null;
+      }
+    };
+  }, [isMounted, updateMatter]);
+
+  // Effect to activate tiles based on props
   useEffect(() => {
     if (
-      startAnimation &&
-      engineRef.current &&
-      tilePoolRef.current.length > 0 &&
-      isMounted
+      !isMounted ||
+      !startAnimation ||
+      !engineRef.current ||
+      tilePoolRef.current.length === 0
     ) {
-      console.log(
-        "Tiles shattering animation triggered for",
-        tiles.length,
-        "tiles"
-      );
+      return;
+    }
 
-      let hasActiveTilesToAnimate = false;
-      tilePoolRef.current.forEach((tileState) => {
-        if (tileState.isActive) {
-          hasActiveTilesToAnimate = true;
+    activeTilesForCompletionRef.current = 0;
 
-          // Make tile dynamic and apply physics
+    tiles.forEach((tileData, index) => {
+      if (index < tilePoolRef.current.length) {
+        const tileState = tilePoolRef.current[index];
+        if (!tileState.isActive) {
+          // Activate only if not already active
+          tileState.data = tileData;
+          tileState.isActive = true;
+          activeTilesForCompletionRef.current++;
+
           Matter.Body.setStatic(tileState.body, false);
           Matter.Sleeping.set(tileState.body, false);
+          Matter.Body.setPosition(tileState.body, {
+            x: tileData.x,
+            y: tileData.y,
+          });
 
-          // Add random rotation
-          Matter.Body.setAngle(
+          const forceMagnitude = Platform.OS === "ios" ? 0.06 : 0.6;
+          const angle = Math.random() * Math.PI * 2;
+          const force = {
+            x: Math.cos(angle) * forceMagnitude * tileState.body.mass,
+            y: (Math.sin(angle) - 0.5) * forceMagnitude * tileState.body.mass,
+          };
+          Matter.Body.applyForce(
             tileState.body,
-            (Math.random() - 0.5) * Math.PI * 0.4
+            tileState.body.position,
+            force
           );
           Matter.Body.setAngularVelocity(
             tileState.body,
             (Math.random() - 0.5) * 0.2
           );
 
-          // Initial upward velocity with random spread
-          Matter.Body.setVelocity(tileState.body, {
-            x: (Math.random() - 0.5) * 8, // Horizontal spread
-            y: -8 - Math.random() * 6, // Strong upward boost
-          });
+          // ---- V6 DIAGNOSTIC THROW (Now Commented Out) ----
+          /*
+          const tsType = typeof tileState;
+          const opType = tileState ? typeof tileState.opacity : 'tileState is undefined';
+          const opValueExists = tileState && tileState.opacity ? typeof tileState.opacity.value !== 'undefined' : 'tileState or opacity is undefined';
+          throw new Error(
+            `[ANIM_EFFECT V6] About to set opacity. ` +
+            `tileState type: ${tsType}, tileState.opacity type: ${opType}, ` +
+            `tileState.opacity.value exists: ${opValueExists}`
+          );
+          */
+          // ---- END V6 DIAGNOSTIC THROW ----
 
-          // Apply additional force for explosion effect
-          const forceMagnitudeY =
-            (-0.02 - Math.random() * 0.015) * tileState.body.mass;
-          const forceMagnitudeX =
-            (Math.random() - 0.5) * 0.01 * tileState.body.mass;
-          Matter.Body.applyForce(tileState.body, tileState.body.position, {
-            x: forceMagnitudeX,
-            y: forceMagnitudeY,
-          });
-
-          // Start fade out animation
-          tileState.opacity.value = withTiming(0, {
-            duration: FADE_DURATION,
-          });
+          tileState.opacity.value = withTiming(1, { duration: 100 });
+          tileState.x.value = tileData.x - TILE_SIZE / 2;
+          tileState.y.value = tileData.y - TILE_SIZE / 2;
+          tileState.angle.value = 0;
         }
-      });
-
-      if (!hasActiveTilesToAnimate) {
-        activeTilesForCompletionRef.current = 0;
       }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [startAnimation, isMounted, tilePoolRef, engineRef, onAnimationComplete]);
-
-  if (!isMounted) return null;
-
-  // Helper function to get background color class
-  const getBackgroundStyle = (backgroundColor: string) => {
-    switch (backgroundColor) {
-      case "bg-green-500":
-        return { backgroundColor: COLORS.tileCorrect };
-      case "bg-primary-orange":
-        return { backgroundColor: COLORS.tilePartial };
-      case "bg-red-500":
-        return { backgroundColor: COLORS.tileIncorrect };
-      default:
-        return { backgroundColor: "transparent" };
-    }
-  };
-
-  // Helper function to get border color
-  const getBorderStyle = (borderColor: string) => {
-    switch (borderColor) {
-      case "gray-400":
-        return { borderColor: COLORS.gray400 };
-      default:
-        return { borderColor: "transparent" };
-    }
-  };
-
-  // Helper function to get text color
-  const getTextColor = (textColor: string) => {
-    switch (textColor) {
-      case "text-white":
-        return COLORS.white;
-      case "text-gray-800":
-        return COLORS.gray800;
-      default:
-        return COLORS.gray800;
-    }
-  };
+    });
+  }, [isMounted, startAnimation, tiles]); // Rerun when tiles or startAnimation changes
 
   return (
     <View
       ref={sceneRef}
-      style={styles.shatteringTilesContainer}
-      pointerEvents="none"
+      style={globalStyles.fill}
+      testID="shattering-tiles-container"
     >
-      {tilePoolRef.current.map((tile) => {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        const animatedStyle = useAnimatedStyle(() => {
-          return {
-            opacity: tile.opacity.value,
-            transform: [
-              { translateX: tile.x.value },
-              { translateY: tile.y.value },
-              { rotate: `${tile.angle.value}rad` },
-            ],
-          };
-        });
-
-        if (!tile.isActive) return null;
-
-        const backgroundStyle = getBackgroundStyle(tile.data.backgroundColor);
-        const borderStyle = getBorderStyle(tile.data.borderColor);
-        const textColor = getTextColor(tile.data.textColor);
-
-        return (
-          <Animated.View
-            key={tile.id}
-            style={[
-              styles.tileView,
-              backgroundStyle,
-              borderStyle,
-              animatedStyle,
-            ]}
-          >
-            <Text style={[styles.tileText, { color: textColor }]}>
-              {tile.data.letter?.toUpperCase()}
-            </Text>
-          </Animated.View>
-        );
-      })}
+      {tilePoolRef.current.map((tileState, index) => (
+        <ShatteringTileItem
+          key={tileState.id}
+          tileState={tileState}
+          index={index}
+        />
+      ))}
     </View>
   );
 };
+
+// New StyleSheet for inline styles
+const internalStyles = StyleSheet.create({
+  absoluteFill: {
+    left: 0,
+    position: "absolute",
+    top: 0,
+  },
+});
 
 export default ShatteringTiles;

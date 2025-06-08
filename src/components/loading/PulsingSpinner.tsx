@@ -151,10 +151,12 @@ const PulsingSpinner = React.memo(function PulsingSpinner({
         statusBarTranslucent={true}
       >
         <View
-          style={{
-            backgroundColor: `rgba(0, 0, 0, ${opacity})`,
-            ...styles.modalContainer,
-          }}
+          style={[
+            styles.spinnerWrapper,
+            {
+              backgroundColor: `rgba(0, 0, 0, ${opacity})`,
+            },
+          ]}
         >
           {spinnerContent}
         </View>

@@ -1,248 +1,196 @@
-import React, { useState, useRef } from "react";
+import React, { useRef } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-  runOnJS,
-} from "react-native-reanimated";
 import BackspaceIcon from "../icons/BackspaceIcon";
 import { scale, moderateScale, isTablet } from "../../utils/responsive";
-import { styles } from "../../styles";
+import { gameStyles } from "../../styles";
 
 interface KeyboardProps {
   onKeyPress: (key: string) => void;
+  isVisible: boolean;
 }
 
-interface PulseAnimation {
-  key: string;
-  x: number;
-  y: number;
-  id: string;
-}
-
-interface PulseCircleProps {
-  pulse: PulseAnimation;
-  pulseSize: number;
-  onRemove: (id: string) => void;
-}
-
-const PulseCircle: React.FC<PulseCircleProps> = ({
-  pulse,
-  pulseSize,
-  onRemove,
-}) => {
-  const scaleValue = useSharedValue(0.3);
-  const opacity = useSharedValue(0.6);
-  const animationCompleted = useRef(false);
-
-  const removePulse = React.useCallback(() => {
-    if (!animationCompleted.current) {
-      animationCompleted.current = true;
-      onRemove(pulse.id);
-    }
-  }, [pulse.id, onRemove]);
-
-  React.useEffect(() => {
-    // Start animations with improved timing
-    scaleValue.value = withTiming(2, { duration: 400 }, (finished) => {
-      if (finished) {
-        runOnJS(removePulse)();
-      }
-    });
-
-    opacity.value = withTiming(0, { duration: 400 });
-
-    return () => {
-      animationCompleted.current = true;
-    };
-  }, [scaleValue, opacity, removePulse]);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scaleValue.value }],
-    opacity: opacity.value,
-  }));
-
-  return (
-    <Animated.View
-      style={[
-        styles.pulseCircle,
-        {
-          left: pulse.x - pulseSize / 2,
-          top: pulse.y - pulseSize / 2,
-          width: pulseSize,
-          height: pulseSize,
-          borderRadius: pulseSize / 2,
-        },
-        animatedStyle,
-      ]}
-    />
-  );
-};
-
-const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress }) => {
+const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, isVisible }) => {
   const topRow = ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"];
   const midRow = ["a", "s", "d", "f", "g", "h", "j", "k", "l"];
   const bottomRow = ["z", "x", "c", "v", "b", "n", "m"];
 
-  const [pulses, setPulses] = useState<PulseAnimation[]>([]);
   const keyboardRef = useRef<View>(null);
   const keyRefs = useRef<{ [key: string]: View | null }>({});
-  const pulseIdCounter = useRef(0);
 
   // Responsive styles
   const keyHeight = scale(48);
+  const keyWidth = scale(38); // Wider keys
   const keyMargin = scale(1);
   const fontSize = moderateScale(18);
-  const containerPadding = isTablet ? scale(16) : scale(8);
-  const pulseSize = scale(60); // Larger pulse for better visibility
-
-  const createPulse = (key: string) => {
-    const keyRef = keyRefs.current[key];
-    if (!keyRef || !keyboardRef.current) return;
-
-    // Measure the key position relative to the keyboard container
-    keyRef.measureLayout(
-      keyboardRef.current,
-      (x: number, y: number, width: number, height: number) => {
-        const pulseId = `pulse_${Date.now()}_${++pulseIdCounter.current}`;
-
-        // Calculate center of the key
-        const centerX = x + width / 2;
-        const centerY = y + height / 2;
-
-        const newPulse: PulseAnimation = {
-          key,
-          x: centerX,
-          y: centerY,
-          id: pulseId,
-        };
-
-        setPulses((prev) => [...prev, newPulse]);
-      },
-      () => {
-        console.error("Failed to measure key position for:", key);
-      }
-    );
-  };
+  const containerPadding = isTablet ? scale(16) : scale(12); // Reduced padding
 
   const handleKeyPress = (key: string) => {
-    createPulse(key);
     onKeyPress(key);
   };
-
-  const handleRemovePulse = React.useCallback((id: string) => {
-    setPulses((prev) => prev.filter((p) => p.id !== id));
-  }, []);
 
   return (
     <View
       ref={keyboardRef}
-      style={[styles.keyboardContainer, { padding: containerPadding }]}
+      style={[
+        gameStyles.keyboardContainer,
+        {
+          padding: containerPadding,
+          minHeight: scale(160), // Reduced from 200 to fit bottom bar
+          opacity: isVisible ? 1 : 0,
+          pointerEvents: isVisible ? "auto" : "none",
+        },
+      ]}
     >
-      {/* Top row */}
-      <View className="flex-row mb-1">
-        {topRow.map((key) => (
-          <TouchableOpacity
-            key={key}
-            ref={(ref) => {
-              keyRefs.current[key] = ref;
-            }}
-            className="flex-1 items-center justify-center rounded bg-gray-300"
-            style={{
-              height: keyHeight,
-              margin: keyMargin,
-            }}
-            onPress={() => handleKeyPress(key)}
-            activeOpacity={0.7}
-          >
-            <Text
-              className="font-bold uppercase text-black"
-              style={{ fontSize }}
-            >
-              {key}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-
-      {/* Middle row */}
-      <View className="flex-row mb-1">
-        {midRow.map((key) => (
-          <TouchableOpacity
-            key={key}
-            ref={(ref) => {
-              keyRefs.current[key] = ref;
-            }}
-            className="flex-1 items-center justify-center rounded bg-gray-300"
-            style={{
-              height: keyHeight,
-              margin: keyMargin,
-            }}
-            onPress={() => handleKeyPress(key)}
-            activeOpacity={0.7}
-          >
-            <Text
-              className="font-bold uppercase text-black"
-              style={{ fontSize }}
-            >
-              {key}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-
-      {/* Bottom row */}
-      <View className="flex-row">
-        {bottomRow.map((key) => (
-          <TouchableOpacity
-            key={key}
-            ref={(ref) => {
-              keyRefs.current[key] = ref;
-            }}
-            className="flex-1 items-center justify-center rounded bg-gray-300"
-            style={{
-              height: keyHeight,
-              margin: keyMargin,
-            }}
-            onPress={() => handleKeyPress(key)}
-            activeOpacity={0.7}
-          >
-            <Text
-              className="font-bold uppercase text-black"
-              style={{ fontSize }}
-            >
-              {key}
-            </Text>
-          </TouchableOpacity>
-        ))}
-        <TouchableOpacity
-          key="delete"
-          ref={(ref) => {
-            keyRefs.current["DELETE"] = ref;
-          }}
-          className="flex-1 items-center justify-center rounded bg-black"
-          style={{
-            height: keyHeight,
-            margin: keyMargin,
-          }}
-          onPress={() => handleKeyPress("DELETE")}
-          activeOpacity={0.7}
+      {/* Keyboard keys layer */}
+      <View
+        style={[
+          gameStyles.keyboardLayer,
+          {
+            paddingVertical: scale(8), // Reduced from 10
+          },
+        ]}
+      >
+        {/* Top row - QWERTYUIOP */}
+        <View
+          style={[
+            gameStyles.keyboardRow,
+            {
+              marginBottom: scale(5), // Reduced from 6
+            },
+          ]}
         >
-          <BackspaceIcon width={scale(20)} height={scale(20)} color="#fcfaf4" />
-        </TouchableOpacity>
-      </View>
+          {topRow.map((key) => (
+            <TouchableOpacity
+              key={key}
+              ref={(ref) => {
+                keyRefs.current[key] = ref;
+              }}
+              style={[
+                gameStyles.keyButton,
+                {
+                  borderRadius: scale(6),
+                  height: keyHeight,
+                  width: keyWidth, // Use wider key width
+                  margin: keyMargin,
+                },
+              ]}
+              onPress={() => handleKeyPress(key)}
+              activeOpacity={0.7}
+            >
+              <Text
+                style={[
+                  gameStyles.keyText,
+                  {
+                    fontSize,
+                  },
+                ]}
+              >
+                {key}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
 
-      {/* Pulse animations overlay */}
-      <View style={styles.pulseContainer} pointerEvents="none">
-        {pulses.map((pulse) => (
-          <PulseCircle
-            key={pulse.id}
-            pulse={pulse}
-            pulseSize={pulseSize}
-            onRemove={handleRemovePulse}
-          />
-        ))}
+        {/* Middle row - ASDFGHJKL with half-key offset */}
+        <View
+          style={[
+            gameStyles.keyboardRow,
+            {
+              marginBottom: scale(5), // Reduced from 6
+            },
+          ]}
+        >
+          <View style={{ width: scale(19) }} />
+          {midRow.map((key) => (
+            <TouchableOpacity
+              key={key}
+              ref={(ref) => {
+                keyRefs.current[key] = ref;
+              }}
+              style={[
+                gameStyles.keyButton,
+                {
+                  borderRadius: scale(6),
+                  height: keyHeight,
+                  width: keyWidth, // Use wider key width
+                  margin: keyMargin,
+                },
+              ]}
+              onPress={() => handleKeyPress(key)}
+              activeOpacity={0.7}
+            >
+              <Text
+                style={[
+                  gameStyles.keyText,
+                  {
+                    fontSize,
+                  },
+                ]}
+              >
+                {key}
+              </Text>
+            </TouchableOpacity>
+          ))}
+          <View style={{ width: scale(19) }} />
+        </View>
+
+        {/* Bottom row - ZXCVBNM + DELETE */}
+        <View style={gameStyles.keyboardRow}>
+          <View style={{ width: scale(57) }} />
+          {bottomRow.map((key) => (
+            <TouchableOpacity
+              key={key}
+              ref={(ref) => {
+                keyRefs.current[key] = ref;
+              }}
+              style={[
+                gameStyles.keyButton,
+                {
+                  borderRadius: scale(6),
+                  height: keyHeight,
+                  width: keyWidth, // Use wider key width
+                  margin: keyMargin,
+                },
+              ]}
+              onPress={() => handleKeyPress(key)}
+              activeOpacity={0.7}
+            >
+              <Text
+                style={[
+                  gameStyles.keyText,
+                  {
+                    fontSize,
+                  },
+                ]}
+              >
+                {key}
+              </Text>
+            </TouchableOpacity>
+          ))}
+          <TouchableOpacity
+            key="delete"
+            ref={(ref) => {
+              keyRefs.current["DELETE"] = ref;
+            }}
+            style={[
+              gameStyles.backspaceKey,
+              {
+                borderRadius: scale(6),
+                height: keyHeight,
+                width: scale(57), // Wider delete button
+                margin: keyMargin,
+              },
+            ]}
+            onPress={() => handleKeyPress("BACKSPACE")}
+            activeOpacity={0.7}
+          >
+            <BackspaceIcon
+              width={scale(20)}
+              height={scale(20)}
+              color="#fcfaf4"
+            />
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );

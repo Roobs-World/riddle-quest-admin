@@ -27,8 +27,8 @@ import { useAuth } from "../../contexts/AuthContext";
 import { AppStrings } from "../../constants/AppStrings";
 import { isTablet } from "../../utils/responsive";
 import PulsingSpinner from "../../components/loading/PulsingSpinner";
-import OutOfAttemptsModal from "../../components/modals/OutOfAttemptsModal";
-import StarryBackground from "../../components/background/StarryBackground";
+import OutOfAttemptsModal from "../../components/modals/game/OutOfAttemptsModal";
+import SolarSystemBackground from "../../components/background/StarryBackground";
 import { styles } from "../../styles";
 
 interface GuessResult {
@@ -64,11 +64,6 @@ interface GameScreenProps {
 }
 
 interface GameScreenState {
-  victoryLossOverlayVisible: boolean;
-  overlayOutcome: "win" | "loss" | null;
-  overlayAttempts: number;
-  overlayCorrectAnswer: string | null;
-  overlayCoinsEarned: number | null;
   isInstructionsVisible: boolean;
   shakeKey: number;
   isFullProfileDetailsOverlayVisible: boolean;
@@ -134,11 +129,6 @@ const GameScreen: React.FC<GameScreenProps> = ({
   >([]);
 
   const [overlayState, setOverlayState] = useState<GameScreenState>({
-    victoryLossOverlayVisible: false,
-    overlayOutcome: null,
-    overlayAttempts: 0,
-    overlayCorrectAnswer: null,
-    overlayCoinsEarned: null,
     isInstructionsVisible: false,
     shakeKey: 0,
     isFullProfileDetailsOverlayVisible: false,
@@ -177,10 +167,9 @@ const GameScreen: React.FC<GameScreenProps> = ({
         : (gameMode as "challenge" | "classic"),
   });
 
-  const isWin = gameOver && overlayState.overlayOutcome === "win";
+  const isWin = gameOver && overlayState.lastGuessResult?.outcome === "win";
 
   const isAnyOverlayVisible = checkAnyOverlayVisible(
-    overlayState.victoryLossOverlayVisible,
     overlayState.isInstructionsVisible,
     overlayState.isFullProfileDetailsOverlayVisible,
     overlayState.isCoinShopModalVisible,
@@ -292,9 +281,7 @@ const GameScreen: React.FC<GameScreenProps> = ({
         // Capture tiles for shattering animation
         const captureAndShatter = async () => {
           try {
-            // Use the last submitted guess instead of currentGuess (which is already cleared)
-            const lastGuess = guesses[guesses.length - 1]?.guess || [];
-            const tiles = await captureTiles(guesses, lastGuess, answerLength);
+            const tiles = await captureTiles(guesses, answerLength);
             setTilesData(tiles);
             setOverlayState((prev) => ({
               ...prev,
@@ -337,14 +324,13 @@ const GameScreen: React.FC<GameScreenProps> = ({
         }
         setOverlayState((prev) => ({
           ...prev,
-          overlayOutcome: "win",
-          overlayAttempts: guesses.length,
-          overlayCoinsEarned: result.coinsEarned || 0,
-          victoryLossOverlayVisible: true,
+          lastGuessResult: result,
+          startShatterAnimation: true,
         }));
         onGameWin(guesses.length, result.coinsEarned || 0);
       } else if (result.outcome === "attemptLimitReached") {
         // User has reached 3 attempts, offer continue options
+        // Ensure music stays in neutral mode when showing modal
         setOverlayState((prev) => ({
           ...prev,
           isOutOfAttemptsModalVisible: true,
@@ -371,14 +357,15 @@ const GameScreen: React.FC<GameScreenProps> = ({
           }
           setOverlayState((prev) => ({
             ...prev,
-            overlayOutcome: "loss",
-            overlayCorrectAnswer: result.correctAnswer || null,
-            victoryLossOverlayVisible: true,
+            lastGuessResult: result,
           }));
           if (result.correctAnswer) {
             onGameLoss(result.correctAnswer);
           }
         }
+      } else if (result.outcome === "continue") {
+        // Wrong guess but game continues - no audio feedback to keep music neutral
+        // Just update the UI state (guesses are already updated by useGameLogic)
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -456,28 +443,8 @@ const GameScreen: React.FC<GameScreenProps> = ({
 
   const handleOverlayNext = () => {
     console.log("VictoryLossOverlay Next Level button pressed");
-    setOverlayState((prev) => ({
-      ...prev,
-      victoryLossOverlayVisible: false,
-    }));
-
-    // Fade in background music when returning to gameplay
-    SoundManager.fadeInBackgroundMusic({ duration: 800, curve: "linear" });
-
     resetGame();
     onNextLevel();
-  };
-
-  const handleOverlayRetry = () => {
-    setOverlayState((prev) => ({
-      ...prev,
-      victoryLossOverlayVisible: false,
-    }));
-
-    // Fade in background music when returning to gameplay
-    SoundManager.fadeInBackgroundMusic({ duration: 800, curve: "linear" });
-
-    resetGame();
   };
 
   const handleProfileClose = () => {
@@ -524,19 +491,11 @@ const GameScreen: React.FC<GameScreenProps> = ({
 
   const handleCloseHomeOverlay = () => {
     console.log("VictoryLossOverlay Home button pressed");
-    setOverlayState((prev) => ({
-      ...prev,
-      victoryLossOverlayVisible: false,
-    }));
     resetGame();
   };
 
   const handleClosePlayOverlay = () => {
     console.log("VictoryLossOverlay Play button pressed");
-    setOverlayState((prev) => ({
-      ...prev,
-      victoryLossOverlayVisible: false,
-    }));
     resetGame();
   };
 
@@ -620,10 +579,6 @@ const GameScreen: React.FC<GameScreenProps> = ({
       return;
     }
     console.log("Showing hint for riddle:", riddleId);
-    setOverlayState((prev) => ({
-      ...prev,
-      victoryLossOverlayVisible: false,
-    }));
     resetGame();
 
     const hintRequestData = {
@@ -700,13 +655,8 @@ const GameScreen: React.FC<GameScreenProps> = ({
     }
     setOverlayState((prev) => ({
       ...prev,
-      overlayOutcome: "loss",
-      overlayCorrectAnswer: overlayState.lastGuessResult?.correctAnswer || null,
-      victoryLossOverlayVisible: true,
+      isOutOfAttemptsModalVisible: false,
     }));
-    if (overlayState.lastGuessResult?.correctAnswer) {
-      onGameLoss(overlayState.lastGuessResult.correctAnswer);
-    }
   };
 
   const handleWatchAdDeclined = () => {
@@ -724,13 +674,8 @@ const GameScreen: React.FC<GameScreenProps> = ({
     }
     setOverlayState((prev) => ({
       ...prev,
-      overlayOutcome: "loss",
-      overlayCorrectAnswer: overlayState.lastGuessResult?.correctAnswer || null,
-      victoryLossOverlayVisible: true,
+      isOutOfAttemptsModalVisible: false,
     }));
-    if (overlayState.lastGuessResult?.correctAnswer) {
-      onGameLoss(overlayState.lastGuessResult.correctAnswer);
-    }
   };
 
   // Handler for when user chooses to watch interstitial ad to continue
@@ -805,9 +750,6 @@ const GameScreen: React.FC<GameScreenProps> = ({
     setOverlayState((prev) => ({
       ...prev,
       isOutOfAttemptsModalVisible: false,
-      overlayOutcome: "loss",
-      overlayCorrectAnswer: overlayState.lastGuessResult?.correctAnswer || null,
-      victoryLossOverlayVisible: true,
     }));
 
     // Play negative sound for giving up
@@ -841,7 +783,7 @@ const GameScreen: React.FC<GameScreenProps> = ({
 
   return (
     <SafeAreaView className="flex-1 bg-cream-light">
-      <StarryBackground />
+      <SolarSystemBackground />
       <KeyboardAvoidingView
         style={[
           styles.gameContainer,
@@ -917,15 +859,6 @@ const GameScreen: React.FC<GameScreenProps> = ({
         // Welcome Overlay
         isWelcomeOverlayVisible={overlayState.isWelcomeOverlayVisible}
         onWelcomeClose={handleWelcomeClose}
-        // Victory/Loss Overlay
-        gameOver={gameOver}
-        overlayOutcome={overlayState.overlayOutcome}
-        overlayAttempts={overlayState.overlayAttempts}
-        overlayCorrectAnswer={overlayState.overlayCorrectAnswer}
-        overlayCoinsEarned={overlayState.overlayCoinsEarned}
-        guesses={guesses}
-        onOverlayNext={handleOverlayNext}
-        onOverlayRetry={handleOverlayRetry}
         // Full Profile Details Overlay
         isFullProfileDetailsOverlayVisible={
           overlayState.isFullProfileDetailsOverlayVisible
@@ -956,12 +889,12 @@ const GameScreen: React.FC<GameScreenProps> = ({
 
       <Controls
         onNextPress={handleOverlayNext}
-        isWin={gameOver && overlayState.overlayOutcome === "win"}
+        isWin={gameOver && overlayState.lastGuessResult?.outcome === "win"}
       />
 
       <PulsingSpinner
         visible={overlayState.isLoading}
-        size={80}
+        size={120}
         opacity={0.7}
       />
     </SafeAreaView>

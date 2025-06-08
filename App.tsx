@@ -10,6 +10,7 @@ import { AuthProvider } from "./src/contexts/AuthContext";
 import { Navigation } from "./src/navigation/NavigationStack";
 import AppLovinMAX, { Configuration } from "react-native-applovin-max";
 import PulsingSpinner from "./src/components/loading/PulsingSpinner";
+import { AuthService } from "./src/services/AuthService";
 
 export default function App() {
   const [isInitialized, setIsInitialized] = useState(false);
@@ -51,16 +52,74 @@ export default function App() {
 
         // Initialize Facebook SDK
         const facebookAppId = Constants.expoConfig?.extra?.FACEBOOK_APP_ID;
+        const facebookClientToken =
+          Constants.expoConfig?.extra?.FACEBOOK_CLIENT_TOKEN;
+
         if (facebookAppId && facebookAppId !== "YOUR_FACEBOOK_APP_ID") {
           console.log("📘 Initializing Facebook SDK...");
-          // Set the Facebook App ID
-          Settings.setAppID(facebookAppId);
-          // Initialize the Facebook SDK
-          Settings.initializeSDK();
-          console.log("✅ Facebook SDK initialized successfully!");
+          console.log("📘 Facebook App ID:", facebookAppId);
+          console.log(
+            "📘 Facebook Client Token:",
+            facebookClientToken ? "✅ Present" : "❌ Missing"
+          );
+
+          try {
+            // Set the Facebook App ID
+            Settings.setAppID(facebookAppId);
+
+            // Set Client Token if available
+            if (
+              facebookClientToken &&
+              facebookClientToken !== "YOUR_FACEBOOK_CLIENT_TOKEN"
+            ) {
+              Settings.setClientToken(facebookClientToken);
+              console.log("✅ Facebook Client Token set successfully");
+            } else {
+              console.warn(
+                "⚠️ Facebook Client Token not set - this may cause authentication issues"
+              );
+            }
+
+            // Initialize the Facebook SDK
+            Settings.initializeSDK();
+
+            // Verify SDK initialization
+            console.log("✅ Facebook SDK initialized successfully!");
+            console.log("📊 Facebook SDK Configuration:");
+            console.log("  - App ID: " + facebookAppId);
+            console.log(
+              "  - Client Token: " + (facebookClientToken ? "Set" : "Not Set")
+            );
+            console.log("  - SDK Initialized: ✅");
+
+            // Run Facebook diagnostic
+            console.log("🔍 Running Facebook diagnostic...");
+            try {
+              const troubleshoot =
+                await AuthService.troubleshootFacebookLogin();
+              console.log("📋 Facebook Troubleshooting Report:");
+              console.log("Status:", troubleshoot.configurationStatus);
+              console.log("\n🔧 Common Issues:");
+              troubleshoot.commonIssues.forEach((issue) => console.log(issue));
+              console.log("\n📝 Troubleshooting Steps:");
+              troubleshoot.troubleshootingSteps.forEach((step) =>
+                console.log(step)
+              );
+              console.log("\n🔑 Key Hash Information:");
+              console.log(troubleshoot.keyHashInfo);
+            } catch (error) {
+              console.error("❌ Facebook troubleshooting failed:", error);
+            }
+          } catch (error) {
+            console.error("❌ Facebook SDK initialization error:", error);
+            console.warn("⚠️ Facebook login may not work properly");
+          }
         } else {
           console.warn(
             "⚠️ Facebook App ID not set. Facebook features will not work."
+          );
+          console.warn(
+            "⚠️ Check app.config.js and ensure FACEBOOK_APP_ID is properly configured"
           );
         }
 
@@ -82,7 +141,7 @@ export default function App() {
   // Show loading overlay while initializing
   if (!isInitialized) {
     console.log("⏳ App not initialized yet, showing loading spinner");
-    return <PulsingSpinner visible={true} size={120} />;
+    return <PulsingSpinner visible={true} size={120} opacity={0.8} />;
   }
 
   console.log("🎯 App initialized, rendering AuthProvider and Navigation");

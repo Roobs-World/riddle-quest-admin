@@ -40,11 +40,7 @@ export const useTileCapture = () => {
   );
 
   const captureTiles = useCallback(
-    (
-      guesses: SubmittedGuess[],
-      currentGuess: string[],
-      answerLength: number
-    ): Promise<TileData[]> => {
+    (guesses: SubmittedGuess[], answerLength: number): Promise<TileData[]> => {
       return new Promise((resolve) => {
         const tiles: TileData[] = [];
         const measurePromises: Promise<void>[] = [];
@@ -63,13 +59,8 @@ export const useTileCapture = () => {
           }
         };
 
-        const getCellBorderColor = (
-          feedback: Feedback,
-          letter: string | null,
-          isCurrentGuessRow: boolean
-        ) => {
+        const getCellBorderColor = (feedback: Feedback) => {
           if (feedback) return "border-transparent";
-          if (isCurrentGuessRow && letter !== null) return "border-gray-600";
           return "border-gray-400";
         };
 
@@ -91,19 +82,6 @@ export const useTileCapture = () => {
           feedback: sg.feedback,
         }));
 
-        if (displayRows.length < 3) {
-          const currentRowLetters: (string | null)[] =
-            Array(answerLength).fill(null);
-          currentGuess.forEach((letter, index) => {
-            currentRowLetters[index] = letter;
-          });
-          const currentRowFeedback: Feedback[] = Array(answerLength).fill(null);
-          displayRows.push({
-            letters: currentRowLetters,
-            feedback: currentRowFeedback,
-          });
-        }
-
         while (displayRows.length < 3) {
           displayRows.push({
             letters: Array(answerLength).fill(null),
@@ -122,18 +100,12 @@ export const useTileCapture = () => {
               if (tileRef) {
                 const measurePromise = new Promise<void>((resolveMeasure) => {
                   tileRef.measure((x, y, width, height, pageX, pageY) => {
-                    const isCurrentGuessRow =
-                      rowIndex === guesses.length && guesses.length < 3;
                     const feedback = row.feedback[cellIndex];
 
                     tiles.push({
                       letter,
                       backgroundColor: getCellBackgroundColor(feedback),
-                      borderColor: getCellBorderColor(
-                        feedback,
-                        letter,
-                        isCurrentGuessRow
-                      ),
+                      borderColor: getCellBorderColor(feedback),
                       textColor: getCellTextColor(feedback, letter),
                       x: pageX,
                       y: pageY,

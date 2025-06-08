@@ -1,22 +1,14 @@
 import React from "react";
-import { View } from "react-native";
-import HintOverlay from "./HintOverlay";
-import ProfileOverlay from "./ProfileOverlay";
-import SettingsOverlay from "./SettingsOverlay";
-import InstructionsOverlay from "./InstructionsOverlay";
-import WelcomeOverlay from "./WelcomeOverlay";
-import VictoryLossOverlay from "./VictoryLossOverlay";
-import FullProfileDetailsOverlay from "../../screens/main/FullProfileDetailsOverlay";
+import {
+  HintModal,
+  ProfileModal,
+  SettingsModal,
+  InstructionsModal,
+  WelcomeModal,
+  FullProfileDetailsModal,
+  WatchAdForChanceModal,
+} from "../modals";
 import CoinShopModal from "../shop/CoinShopModal";
-import WatchAdForChanceModal from "../modals/WatchAdForChanceModal";
-import HomeOverlay from "./HomeOverlay";
-import PlayOverlay from "./PlayOverlay";
-import { styles } from "../../styles";
-
-interface SubmittedGuess {
-  guess: string[];
-  feedback: ("green" | "yellow" | "red")[];
-}
 
 interface GameOverlaysProps {
   // Hint Overlay
@@ -50,16 +42,6 @@ interface GameOverlaysProps {
   // Welcome Overlay
   isWelcomeOverlayVisible: boolean;
   onWelcomeClose: () => void;
-
-  // Victory/Loss Overlay
-  gameOver: boolean;
-  overlayOutcome: "win" | "loss" | null;
-  overlayAttempts: number;
-  overlayCorrectAnswer: string | null;
-  overlayCoinsEarned: number | null;
-  guesses: SubmittedGuess[];
-  onOverlayNext: () => void;
-  onOverlayRetry: () => void;
 
   // Full Profile Details Overlay
   isFullProfileDetailsOverlayVisible: boolean;
@@ -112,16 +94,6 @@ const GameOverlays: React.FC<GameOverlaysProps> = ({
   isWelcomeOverlayVisible,
   onWelcomeClose,
 
-  // Victory/Loss Overlay
-  gameOver,
-  overlayOutcome,
-  overlayAttempts,
-  overlayCorrectAnswer,
-  overlayCoinsEarned,
-  guesses,
-  onOverlayNext,
-  onOverlayRetry,
-
   // Full Profile Details Overlay
   isFullProfileDetailsOverlayVisible,
   onCloseFullProfileDetailsOverlay,
@@ -135,48 +107,11 @@ const GameOverlays: React.FC<GameOverlaysProps> = ({
   isWatchAdModalVisible,
   onWatchAdAccepted,
   onWatchAdDeclined,
-
-  // Home/Play Overlays
-  onCloseHomeOverlay,
-  onClosePlayOverlay,
 }) => {
   return (
     <>
-      {/* Victory/Loss Overlays */}
-      {gameOver && overlayOutcome === "win" && (
-        <View style={styles.overlayContainer}>
-          <VictoryLossOverlay
-            isVisible={gameOver && overlayOutcome === "win"}
-            outcome="win"
-            attempts={overlayAttempts}
-            correctAnswer={overlayCorrectAnswer}
-            coinsEarned={overlayCoinsEarned || 0}
-            guesses={guesses}
-            onNext={onOverlayNext}
-            onRetry={onOverlayRetry}
-            onHome={() => {}}
-          />
-        </View>
-      )}
-
-      {gameOver && overlayOutcome === "loss" && (
-        <View style={styles.overlayContainer}>
-          <VictoryLossOverlay
-            isVisible={gameOver && overlayOutcome === "loss"}
-            outcome="loss"
-            attempts={overlayAttempts}
-            correctAnswer={overlayCorrectAnswer}
-            coinsEarned={0}
-            guesses={guesses}
-            onNext={onOverlayNext}
-            onRetry={onOverlayRetry}
-            onHome={() => {}}
-          />
-        </View>
-      )}
-
-      {/* Hint Overlay */}
-      <HintOverlay
+      {/* Hint Modal */}
+      <HintModal
         isVisible={isHintOverlayVisible}
         onClose={onHintClose}
         onShowHint={onShowHint}
@@ -184,18 +119,14 @@ const GameOverlays: React.FC<GameOverlaysProps> = ({
         userCoins={userCoins}
       />
 
-      {/* Other Overlays */}
-      <HomeOverlay isVisible={false} onClose={onCloseHomeOverlay} />
-      <PlayOverlay isVisible={false} onClose={onClosePlayOverlay} />
-
-      <ProfileOverlay
+      <ProfileModal
         isVisible={isProfileOverlayVisible}
         onClose={onProfileClose}
         playerData={playerData}
         onFullProfilePress={onFullProfilePress}
       />
 
-      <SettingsOverlay
+      <SettingsModal
         isVisible={isSettingsOverlayVisible}
         onClose={onSettingsClose}
         isSoundEnabled={isSoundEnabled}
@@ -206,17 +137,17 @@ const GameOverlays: React.FC<GameOverlaysProps> = ({
         onPressHelp={onPressHelp}
       />
 
-      <InstructionsOverlay
+      <InstructionsModal
         isVisible={isInstructionsVisible}
         onClose={onCloseInstructions}
       />
 
-      <WelcomeOverlay
+      <WelcomeModal
         isVisible={isWelcomeOverlayVisible}
         onClose={onWelcomeClose}
       />
 
-      <FullProfileDetailsOverlay
+      <FullProfileDetailsModal
         isVisible={isFullProfileDetailsOverlayVisible}
         onClose={onCloseFullProfileDetailsOverlay}
         playerData={playerData}

@@ -4,6 +4,25 @@ dotenv.config({path: ".env"}); // Load .env file from firebase-functions directo
 // Import necessary testing libraries and modules
 import {describe, it, beforeAll, afterAll, beforeEach} from "@jest/globals";
 
+// Mock console methods to reduce noise during test runs
+const originalConsoleTime = console.time;
+const originalConsoleTimeEnd = console.timeEnd;
+const originalConsoleLog = console.log;
+
+beforeAll(() => {
+  // Suppress console timing and log output during tests
+  console.time = jest.fn();
+  console.timeEnd = jest.fn();
+  console.log = jest.fn(); // Also suppress console.log to reduce noise
+});
+
+afterAll(() => {
+  // Restore console methods after tests
+  console.time = originalConsoleTime;
+  console.timeEnd = originalConsoleTimeEnd;
+  console.log = originalConsoleLog;
+});
+
 // 🚨 CRITICAL SAFETY CHECK - PREVENT PRODUCTION DATA DESTRUCTION 🚨
 const FIREBASE_PROJECT_ID = "qwordly-6ba44";
 const FIRESTORE_EMULATOR_HOST = process.env.FIRESTORE_EMULATOR_HOST;
@@ -70,9 +89,43 @@ describe("Game Logic - Integration Tests", () => {
   const testUserId = "testUserGameLogic";
 
   beforeAll(async () => {
-    // Initialize Firestore instance after admin app is initialized.
-    firestore = admin.firestore();
-  });
+    try {
+      // Initialize Firestore instance after admin app is initialized.
+      firestore = admin.firestore();
+
+      // Test Firebase connection with retry logic
+      let connectionAttempts = 0;
+      const maxAttempts = 3;
+      let connectionSuccessful = false;
+
+      while (connectionAttempts < maxAttempts && !connectionSuccessful) {
+        try {
+          connectionAttempts++;
+          console.log(`🔄 Firebase connection attempt ${connectionAttempts}/${maxAttempts}`);
+
+          const testDoc = firestore.collection("_test").doc("connection");
+          await testDoc.set({timestamp: new Date(), attempt: connectionAttempts});
+          await testDoc.delete();
+
+          connectionSuccessful = true;
+          console.log("✅ Firebase connection successful for GameLogic integration tests");
+        } catch (attemptError) {
+          console.warn(`⚠️ Connection attempt ${connectionAttempts} failed:`, attemptError);
+          if (connectionAttempts < maxAttempts) {
+            // Wait 2 seconds before retry
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+          }
+        }
+      }
+
+      if (!connectionSuccessful) {
+        throw new Error(`Firebase connection failed after ${maxAttempts} attempts. Check emulator status and network.`);
+      }
+    } catch (error) {
+      console.error("❌ Firebase connection failed for GameLogic integration tests:", error);
+      throw error;
+    }
+  }, 60000);
 
   beforeEach(async () => {
     console.time("beforeEach_total");
@@ -287,6 +340,16 @@ describe("Game Logic - Integration Tests", () => {
       const hintCost = 50;
       const currentAttempt = ["a", "", "", "", ""]; // 'a' _ _ _ _ for 'apple'
 
+      // Ensure test user exists before making the request
+      const userDoc = await firestore.collection("users").doc(testUserId).get();
+      expect(userDoc.exists).toBe(true);
+      expect(userDoc.data()?.coins).toBe(initialCoins);
+
+      // Ensure test riddle exists before making the request
+      const riddleDoc = await firestore.collection("riddles").doc(riddleId).get();
+      expect(riddleDoc.exists).toBe(true);
+      expect(riddleDoc.data()?.answer).toBe("apple");
+
       const request = constructOnCallRequest({currentAttempt, riddleId});
 
       const result = await wrappedGetHint(request);
@@ -298,8 +361,8 @@ describe("Game Logic - Integration Tests", () => {
       });
 
       // Verify coins deducted in Firestore
-      const userDoc = await firestore.collection("users").doc(testUserId).get();
-      expect(userDoc.data()?.coins).toBe(initialCoins - hintCost);
+      const updatedUserDoc = await firestore.collection("users").doc(testUserId).get();
+      expect(updatedUserDoc.data()?.coins).toBe(initialCoins - hintCost);
 
       // Verify hint index stored in gameState
       const gameStateDoc = await firestore
@@ -312,7 +375,16 @@ describe("Game Logic - Integration Tests", () => {
     });
 
     it("should throw failed-precondition if insufficient coins", async () => {
+      // Ensure user exists before updating
+      const userDocBefore = await firestore.collection("users").doc(testUserId).get();
+      expect(userDocBefore.exists).toBe(true);
+
       await firestore.collection("users").doc(testUserId).update({coins: 10}); // Insufficient coins
+
+      // Verify update worked
+      const userDocAfter = await firestore.collection("users").doc(testUserId).get();
+      expect(userDocAfter.data()?.coins).toBe(10);
+
       const riddleId = "testRiddle1";
       const currentAttempt = ["a", "", "", "", ""];
       const request = constructOnCallRequest({currentAttempt, riddleId});
@@ -369,9 +441,16 @@ describe("Game Logic - Integration Tests", () => {
       await expect(wrappedGetHint(request)).rejects.toThrow(
         new HttpsError("internal", `Answer not found for riddle ID ${riddleId}.`),
       );
+
+      // Clean up the test riddle
+      await firestore.collection("riddles").doc(riddleId).delete();
     });
 
     it("should throw not-found if user data not found", async () => {
+      // Store current user data
+      const userDocSnap = await firestore.collection("users").doc(testUserId).get();
+      const userData = userDocSnap.data();
+
       // Delete the test user to simulate user data not found
       await firestore.collection("users").doc(testUserId).delete();
 
@@ -380,6 +459,11 @@ describe("Game Logic - Integration Tests", () => {
       const request = constructOnCallRequest({currentAttempt, riddleId});
 
       await expect(wrappedGetHint(request)).rejects.toThrow(new HttpsError("not-found", "User data not found."));
+
+      // Restore user data for next test
+      if (userData) {
+        await firestore.collection("users").doc(testUserId).set(userData);
+      }
     });
   });
 
@@ -390,6 +474,11 @@ describe("Game Logic - Integration Tests", () => {
       const amountToSpend = 50;
       const reason = "hint";
 
+      // Ensure test user exists before making the request
+      const userDoc = await firestore.collection("users").doc(testUserId).get();
+      expect(userDoc.exists).toBe(true);
+      expect(userDoc.data()?.coins).toBe(initialCoins);
+
       const request = constructOnCallRequest({amount: amountToSpend, reason});
 
       const result = await wrappedSpendCoins(request);
@@ -397,12 +486,21 @@ describe("Game Logic - Integration Tests", () => {
       expect(result).toEqual({newCoins: initialCoins - amountToSpend});
 
       // Verify coins deducted in Firestore
-      const userDoc = await firestore.collection("users").doc(testUserId).get();
-      expect(userDoc.data()?.coins).toBe(initialCoins - amountToSpend);
+      const updatedUserDoc = await firestore.collection("users").doc(testUserId).get();
+      expect(updatedUserDoc.data()?.coins).toBe(initialCoins - amountToSpend);
     });
 
     it("should throw failed-precondition if insufficient coins", async () => {
+      // Ensure user exists before updating
+      const userDocBefore = await firestore.collection("users").doc(testUserId).get();
+      expect(userDocBefore.exists).toBe(true);
+
       await firestore.collection("users").doc(testUserId).update({coins: 10}); // Insufficient coins
+
+      // Verify update worked
+      const userDocAfter = await firestore.collection("users").doc(testUserId).get();
+      expect(userDocAfter.data()?.coins).toBe(10);
+
       const amountToSpend = 50;
       const reason = "hint";
       const request = constructOnCallRequest({amount: amountToSpend, reason});
@@ -442,6 +540,10 @@ describe("Game Logic - Integration Tests", () => {
     });
 
     it("should throw not-found if user data not found", async () => {
+      // Store current user data
+      const userDocSnap = await firestore.collection("users").doc(testUserId).get();
+      const userData = userDocSnap.data();
+
       // Delete the test user to simulate user data not found
       await firestore.collection("users").doc(testUserId).delete();
 
@@ -450,6 +552,11 @@ describe("Game Logic - Integration Tests", () => {
       const request = constructOnCallRequest({amount: amountToSpend, reason});
 
       await expect(wrappedSpendCoins(request)).rejects.toThrow(new HttpsError("not-found", "User data not found."));
+
+      // Restore user data for next test
+      if (userData) {
+        await firestore.collection("users").doc(testUserId).set(userData);
+      }
     });
   });
 });

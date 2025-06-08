@@ -16,6 +16,7 @@ import {
 import { Player, FirestoreRiddle } from "../validation/firestoreSchemas";
 import auth from "@react-native-firebase/auth";
 import { RiddleInitializationService } from "../services/RiddleInitializationService";
+import { AccessToken } from "react-native-fbsdk-next";
 // Assuming you have an AuthService with login/logout methods
 // import { AuthService } from "../services/AuthService";
 
@@ -245,16 +246,126 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
               "🆕 No user document found, creating new user document for:",
               user.uid
             );
-            console.log("📧 Using email:", user.email || "");
+            console.log(
+              "📧 Firebase user email:",
+              user.email || "(null/empty)"
+            );
+            console.log("📧 Email type:", typeof user.email);
+            console.log("📧 Email length:", user.email ? user.email.length : 0);
             console.log(
               "👤 Using display name:",
               user.displayName || "undefined"
             );
+            console.log("🔍 Full user object debug:", {
+              uid: user.uid,
+              email: user.email,
+              emailVerified: user.emailVerified,
+              displayName: user.displayName,
+              photoURL: user.photoURL,
+              providerData: user.providerData.map((provider) => ({
+                providerId: provider.providerId,
+                uid: provider.uid,
+                email: provider.email,
+                displayName: provider.displayName,
+              })),
+            });
 
             try {
+              let userEmail = user.email;
+
+              // Check if email is null, undefined, or empty string
+              if (!userEmail || userEmail.trim() === "") {
+                console.log(
+                  "⚠️ Firebase user has no email, checking if this is a Facebook user..."
+                );
+
+                // Check if this is a Facebook login by looking at provider data
+                const facebookProvider = user.providerData?.find(
+                  (provider) => provider.providerId === "facebook.com"
+                );
+
+                if (facebookProvider) {
+                  console.log(
+                    "📘 Detected Facebook login, attempting direct Facebook Graph API call..."
+                  );
+
+                  try {
+                    // Get current Facebook access token
+                    const currentToken =
+                      await AccessToken.getCurrentAccessToken();
+                    if (!currentToken) {
+                      throw new Error(
+                        "No Facebook access token available for Graph API call"
+                      );
+                    }
+
+                    console.log(
+                      "🌐 Making Facebook Graph API request for user email..."
+                    );
+
+                    // Call Facebook Graph API to get user info including email
+                    const graphResponse = await fetch(
+                      `https://graph.facebook.com/me?fields=id,name,email&access_token=${currentToken.accessToken}`
+                    );
+
+                    if (!graphResponse.ok) {
+                      throw new Error(
+                        `Facebook Graph API error: ${graphResponse.status} ${graphResponse.statusText}`
+                      );
+                    }
+
+                    const userData = await graphResponse.json();
+                    console.log("📊 Facebook Graph API response:", {
+                      id: userData.id,
+                      name: userData.name,
+                      email: userData.email || "(not provided)",
+                      hasEmail: !!userData.email,
+                    });
+
+                    if (userData.email) {
+                      console.log(
+                        "✅ Successfully retrieved email from Facebook Graph API:",
+                        userData.email
+                      );
+                      userEmail = userData.email;
+                    } else {
+                      console.warn(
+                        "⚠️ Facebook Graph API also didn't provide email address"
+                      );
+                      console.warn("🔍 This could mean:");
+                      console.warn(
+                        "  - User's Facebook account has no email address"
+                      );
+                      console.warn("  - Email is not verified on Facebook");
+                      console.warn(
+                        "  - Facebook privacy settings prevent email sharing"
+                      );
+                      console.warn(
+                        "  - App needs to be in Live mode for email permission"
+                      );
+                      console.warn(
+                        "  - Email permission was not actually granted despite UI showing it"
+                      );
+                    }
+                  } catch (graphError) {
+                    console.error(
+                      "❌ Facebook Graph API call failed:",
+                      graphError
+                    );
+                  }
+                }
+
+                // Final check - if we still don't have an email, throw error
+                if (!userEmail || userEmail.trim() === "") {
+                  throw new Error(
+                    "Email is required but not provided by authentication provider. Please ensure email permission is granted."
+                  );
+                }
+              }
+
               data = await createUserDocumentInFirestore(
                 user.uid,
-                user.email || "",
+                userEmail!, // We've validated userEmail is not null above
                 user.displayName || undefined
               );
               console.log("✅ New user document created successfully");

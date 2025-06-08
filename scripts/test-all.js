@@ -168,7 +168,7 @@ function initializeFirestore() {
     fs.writeFileSync(tempFile, initScript);
 
     const command = isWindows ? "node.exe" : "node";
-    const initProcess = spawn(command, [tempFile], {
+    const initProcess = spawn(command, [tempFile, "--input-type=commonjs"], {
       env: {
         ...process.env,
         FIRESTORE_EMULATOR_HOST: "127.0.0.1:8099",

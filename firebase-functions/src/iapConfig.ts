@@ -202,3 +202,11 @@ export function getAppleSharedSecret() {
   if (!isIapInitialized) console.warn("[iapConfig] getAppleSharedSecret called before initialization!");
   return appleSharedSecret;
 }
+
+// Export a reset function for testing purposes
+export function resetIapConfig(): void {
+  appleSharedSecret = undefined;
+  finalGoogleServiceAccountForIap = undefined;
+  iapGoogleCredentials = undefined;
+  isIapInitialized = false;
+}

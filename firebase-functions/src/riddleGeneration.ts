@@ -212,7 +212,13 @@ export async function generateAndAppendRiddles(numberOfRiddles: number): Promise
   const newRiddles: {question: string; answer: string}[] = [];
   const generatedAttempts: {question: string; answer: string}[] = [];
 
-  while (newRiddles.length < numberOfRiddles) {
+  // Circuit breaker: Maximum attempts to prevent infinite loops
+  const maxAttempts = numberOfRiddles * 10; // Allow 10x attempts for retries
+  let attemptCount = 0;
+
+  while (newRiddles.length < numberOfRiddles && attemptCount < maxAttempts) {
+    attemptCount++;
+
     // Generate a riddle using the OpenAI service
     const riddle = await generateUniqueRiddle();
 
@@ -235,13 +241,23 @@ export async function generateAndAppendRiddles(numberOfRiddles: number): Promise
         // Add to existing for subsequent duplicate checks within this run
         existing.questions.push(newRiddle.question.toLowerCase());
         existing.answers.push(newRiddle.answer.toLowerCase());
-        console.log(`Generated riddle ${newRiddles.length}/${numberOfRiddles}`);
+        console.log(`Generated riddle ${newRiddles.length}/${numberOfRiddles} (attempt ${attemptCount})`);
       } else {
-        console.warn("Generated riddle is a duplicate, trying again...");
+        console.warn(`Generated riddle is a duplicate, trying again... (attempt ${attemptCount}/${maxAttempts})`);
       }
       generatedAttempts.push(newRiddle);
     } else {
-      console.warn("Failed to generate unique riddle, retrying...");
+      console.warn(`Failed to generate unique riddle, retrying... (attempt ${attemptCount}/${maxAttempts})`);
+    }
+  }
+
+  // Check if we hit the circuit breaker
+  if (newRiddles.length < numberOfRiddles && attemptCount >= maxAttempts) {
+    console.warn(
+      `Circuit breaker activated: Only generated ${newRiddles.length}/${numberOfRiddles} riddles after ${maxAttempts} attempts`,
+    );
+    if (newRiddles.length === 0) {
+      throw new Error(`Failed to generate any unique riddles after ${maxAttempts} attempts`);
     }
   }
 
@@ -278,7 +294,13 @@ export async function generateAndAppendDailyRiddles(numberOfRiddles: number): Pr
   const newRiddles: {question: string; answer: string}[] = [];
   const generatedAttempts: {question: string; answer: string}[] = [];
 
-  while (newRiddles.length < numberOfRiddles) {
+  // Circuit breaker: Maximum attempts to prevent infinite loops
+  const maxAttempts = numberOfRiddles * 10; // Allow 10x attempts for retries
+  let attemptCount = 0;
+
+  while (newRiddles.length < numberOfRiddles && attemptCount < maxAttempts) {
+    attemptCount++;
+
     // Generate a riddle using the OpenAI service
     const riddle = await generateUniqueRiddle();
 
@@ -301,13 +323,23 @@ export async function generateAndAppendDailyRiddles(numberOfRiddles: number): Pr
         // Add to existing for subsequent duplicate checks within this run
         existing.questions.push(newRiddle.question.toLowerCase());
         existing.answers.push(newRiddle.answer.toLowerCase());
-        console.log(`Generated daily riddle ${newRiddles.length}/${numberOfRiddles}`);
+        console.log(`Generated daily riddle ${newRiddles.length}/${numberOfRiddles} (attempt ${attemptCount})`);
       } else {
-        console.warn("Generated daily riddle is a duplicate, trying again...");
+        console.warn(`Generated daily riddle is a duplicate, trying again... (attempt ${attemptCount}/${maxAttempts})`);
       }
       generatedAttempts.push(newRiddle);
     } else {
-      console.warn("Failed to generate unique daily riddle, retrying...");
+      console.warn(`Failed to generate unique daily riddle, retrying... (attempt ${attemptCount}/${maxAttempts})`);
+    }
+  }
+
+  // Check if we hit the circuit breaker
+  if (newRiddles.length < numberOfRiddles && attemptCount >= maxAttempts) {
+    console.warn(
+      `Circuit breaker activated: Only generated ${newRiddles.length}/${numberOfRiddles} daily riddles after ${maxAttempts} attempts`,
+    );
+    if (newRiddles.length === 0) {
+      throw new Error(`Failed to generate any unique daily riddles after ${maxAttempts} attempts`);
     }
   }
 

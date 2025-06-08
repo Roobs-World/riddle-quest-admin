@@ -68,7 +68,7 @@ const GameBoard: React.FC<GameBoardProps> = ({
         </Animated.View>
       </View>
 
-      {!isAnyOverlayVisible && <Keyboard onKeyPress={onKeyPress} />}
+      <Keyboard onKeyPress={onKeyPress} isVisible={!isAnyOverlayVisible} />
     </>
   );
 };

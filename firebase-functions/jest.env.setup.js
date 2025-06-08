@@ -11,9 +11,14 @@ if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
   process.env.GOOGLE_APPLICATION_CREDENTIALS = __dirname + "/qwordly-admin-sdk.json";
 }
 
-// Set Firebase project for integration tests
+// Set Firebase project for integration tests - use test project for safety
 if (!process.env.FIREBASE_PROJECT_ID) {
-  process.env.FIREBASE_PROJECT_ID = "qwordly-6ba44";
+  process.env.FIREBASE_PROJECT_ID = "qwordly-test-project"; // Use test project instead of production
+}
+
+// Ensure Firestore emulator is used for integration tests
+if (!process.env.FIRESTORE_EMULATOR_HOST) {
+  process.env.FIRESTORE_EMULATOR_HOST = "127.0.0.1:8099";
 }
 
 // Set OpenAI API key for tests
@@ -37,3 +42,60 @@ process.env.GOOGLE_CLOUD_PROFILER_ENABLED = "false";
 if (typeof global !== "undefined") {
   global.mockFunctionsConfig = {};
 }
+
+// Suppress Firebase Functions logger console output during tests
+const originalConsoleLog = console.log;
+const originalConsoleError = console.error;
+const originalConsoleWarn = console.warn;
+const originalConsoleInfo = console.info;
+
+// Store original methods globally so they can be restored if needed
+global.originalConsoleMethods = {
+  log: originalConsoleLog,
+  error: originalConsoleError,
+  warn: originalConsoleWarn,
+  info: originalConsoleInfo,
+};
+
+// Override console methods to filter out Firebase Functions logger noise
+console.log = (...args) => {
+  const message = args.join(" ");
+  // Allow test output but suppress Firebase logger noise
+  if (
+    !message.includes('{"severity":') &&
+    !message.includes("beforeEach_") &&
+    !message.includes("afterEach_") &&
+    !message.includes("User testUserGameLogic") &&
+    !message.includes("[iapConfig")
+  ) {
+    originalConsoleLog(...args);
+  }
+};
+
+console.error = (...args) => {
+  const message = args.join(" ");
+  // Suppress Firebase logger JSON errors but allow actual test errors
+  if (!message.includes('{"severity":"ERROR"')) {
+    originalConsoleError(...args);
+  }
+};
+
+console.warn = (...args) => {
+  const message = args.join(" ");
+  // Suppress Firebase logger JSON warnings and service account output
+  if (
+    !message.includes('{"severity":"WARNING"') &&
+    !message.includes('{"client_email"') &&
+    !message.includes('"private_key"')
+  ) {
+    originalConsoleWarn(...args);
+  }
+};
+
+console.info = (...args) => {
+  const message = args.join(" ");
+  // Suppress Firebase logger JSON info messages
+  if (!message.includes('{"severity":"INFO"')) {
+    originalConsoleInfo(...args);
+  }
+};

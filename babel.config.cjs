@@ -1,10 +1,17 @@
 // eslint-disable-next-line no-undef
 module.exports = function (api) {
-  api.cache(true);
+  // Use cache.using() to prevent duplicate configuration errors
+  api.cache.using(() => process.env.NODE_ENV);
 
   // Check for the Jest global variable
   const isFirebaseFunctionsTest =
     process.env.IS_FIREBASE_FUNCTIONS_TEST === "true";
+
+  // Check if we're in a Jest test environment
+  const isJestTest =
+    process.env.NODE_ENV === "test" ||
+    (typeof global !== "undefined" && global.hasOwnProperty("__DEV__")) ||
+    api.env("test");
 
   if (isFirebaseFunctionsTest) {
     // Return a minimal config for Firebase Functions tests
@@ -15,12 +22,17 @@ module.exports = function (api) {
     };
   }
 
+  // For Jest tests, avoid nativewind/babel to prevent CSS interop issues
+  const presets = isJestTest
+    ? ["babel-preset-expo"]
+    : [
+        ["babel-preset-expo", { jsxImportSource: "nativewind" }],
+        "nativewind/babel",
+      ];
+
   // React Native config with TypeScript support
   return {
-    presets: [
-      ["babel-preset-expo", { jsxImportSource: "nativewind" }],
-      "nativewind/babel",
-    ],
+    presets,
     plugins: [
       "@babel/plugin-transform-flow-strip-types",
       [

@@ -1,5 +1,5 @@
 import { Audio, AVPlaybackSource } from "expo-av";
-import { AppState, AppStateStatus } from "react-native";
+import { AppState, AppStateStatus, InteractionManager } from "react-native";
 
 import neutralWav from "../../assets/audio/Neutral.wav";
 import positiveWav from "../../assets/audio/Success.wav"; // Repurposed as positive music
@@ -74,6 +74,44 @@ const getMusicByMode = (mode: MusicMode): Audio.Sound | null => {
   }
 };
 
+// Helper function to pause all music except the specified one
+const pauseAllMusicExcept = async (
+  exceptMusic: Audio.Sound | null
+): Promise<void> => {
+  const allMusic = [neutralMusic, positiveMusic, negativeMusic];
+
+  for (const music of allMusic) {
+    if (music && music !== exceptMusic) {
+      try {
+        const status = await runAudioOperation(() => music.getStatusAsync());
+        if (status.isLoaded && status.isPlaying) {
+          await runAudioOperation(() => music.pauseAsync());
+        }
+      } catch (error) {
+        console.error("Error pausing music:", error);
+      }
+    }
+  }
+};
+
+// Helper function to pause all music (for emergency stops)
+const pauseAllMusic = async (): Promise<void> => {
+  const allMusic = [neutralMusic, positiveMusic, negativeMusic];
+
+  for (const music of allMusic) {
+    if (music) {
+      try {
+        const status = await runAudioOperation(() => music.getStatusAsync());
+        if (status.isLoaded && status.isPlaying) {
+          await runAudioOperation(() => music.pauseAsync());
+        }
+      } catch (error) {
+        console.error("Error pausing music:", error);
+      }
+    }
+  }
+};
+
 // Enhanced audio quality configuration
 const HIGH_QUALITY_AUDIO_CONFIG = {
   // High-fidelity audio mode optimized for music playback
@@ -102,6 +140,29 @@ const HIGH_QUALITY_SOUND_OPTIONS = {
 // Assume isSoundEnabled state is managed elsewhere (e.g., in App.tsx or Context)
 // and can be accessed or passed here if needed for conditional playback.
 // For now, we will assume the check is done at the call site.
+
+// Thread-safe audio operation helper
+const runAudioOperation = <T>(operation: () => Promise<T>): Promise<T> => {
+  return new Promise((resolve, reject) => {
+    InteractionManager.runAfterInteractions(async () => {
+      try {
+        const result = await operation();
+        resolve(result);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  });
+};
+
+// Thread-safe delay helper
+const safeDelay = (ms: number): Promise<void> => {
+  return new Promise((resolve) => {
+    requestAnimationFrame(() => {
+      setTimeout(resolve, ms);
+    });
+  });
+};
 
 export const SoundManager = {
   init: async () => {
@@ -204,8 +265,28 @@ export const SoundManager = {
 
       console.log("SoundManager: All music modes loaded with enhanced quality");
 
-      // Start with neutral music mode
-      await SoundManager.setMusicMode("neutral", { duration: 0 }); // No fade for initial start
+      // Start with neutral music mode directly
+      if (neutralMusic) {
+        try {
+          // Ensure volume is 1.0 and play
+          await runAudioOperation(() => neutralMusic!.setVolumeAsync(1.0));
+          await runAudioOperation(() => neutralMusic!.playAsync());
+          currentMusicMode = "neutral"; // Explicitly set current mode
+          console.log(
+            "SoundManager: Neutral music started directly during init."
+          );
+        } catch (e) {
+          console.error(
+            "SoundManager: Failed to start neutral music directly in init",
+            e
+          );
+          // Fallback or further error handling might be needed here
+        }
+      } else {
+        console.error(
+          "SoundManager: neutralMusic instance is null, cannot start directly in init."
+        );
+      }
 
       isInitialized = true;
       console.log(
@@ -271,19 +352,27 @@ export const SoundManager = {
         return;
       }
 
+      // CRITICAL FIX: Immediately pause all other music to ensure only one plays at a time
+      await pauseAllMusicExcept(newMusic);
+
       // Start the new music at volume 0 and begin playing
-      await newMusic.setVolumeAsync(0);
-      await newMusic.playAsync();
+      await runAudioOperation(() => newMusic.setVolumeAsync(0));
+      await runAudioOperation(() => newMusic.playAsync());
 
       if (currentMusic && config.duration > 0) {
         // Crossfade between current and new music
+        // Note: currentMusic should already be paused by pauseAllMusicExcept, but restart it for crossfade
+        const currentStatus = await runAudioOperation(() =>
+          currentMusic.getStatusAsync()
+        );
+        if (currentStatus.isLoaded && !currentStatus.isPlaying) {
+          await runAudioOperation(() => currentMusic.playAsync());
+        }
         await SoundManager.crossfade(currentMusic, newMusic, config);
       } else {
-        // No crossfade, just start new music immediately
-        await newMusic.setVolumeAsync(1.0);
-        if (currentMusic) {
-          await currentMusic.pauseAsync();
-        }
+        // No crossfade, just start new music immediately at full volume
+        await runAudioOperation(() => newMusic.setVolumeAsync(1.0));
+        // currentMusic is already paused by pauseAllMusicExcept
       }
 
       currentMusicMode = mode;
@@ -313,14 +402,11 @@ export const SoundManager = {
         return;
       }
 
-      const currentMusic = getMusicByMode(currentMusicMode);
-      if (currentMusic) {
-        const status = await currentMusic.getStatusAsync();
-        if (status.isLoaded && status.isPlaying) {
-          await currentMusic.pauseAsync();
-          console.log(`SoundManager: Paused ${currentMusicMode} music`);
-        }
-      }
+      // Pause all music to be extra safe
+      await pauseAllMusic();
+      console.log(
+        `SoundManager: Paused all music (was in ${currentMusicMode} mode)`
+      );
     } catch (error) {
       console.error("Error pausing current music:", error);
     }
@@ -337,9 +423,11 @@ export const SoundManager = {
 
       const currentMusic = getMusicByMode(currentMusicMode);
       if (currentMusic) {
-        const status = await currentMusic.getStatusAsync();
+        const status = await runAudioOperation(() =>
+          currentMusic.getStatusAsync()
+        );
         if (status.isLoaded && !status.isPlaying) {
-          await currentMusic.playAsync();
+          await runAudioOperation(() => currentMusic.playAsync());
           console.log(
             `SoundManager: Resumed ${currentMusicMode} music in high quality`
           );
@@ -454,7 +542,7 @@ export const SoundManager = {
         return;
       }
 
-      const status = await sound.getStatusAsync();
+      const status = await runAudioOperation(() => sound.getStatusAsync());
       if (!status.isLoaded) {
         console.warn("SoundManager: Sound not loaded for fade in");
         return;
@@ -462,8 +550,8 @@ export const SoundManager = {
 
       // Start playing at volume 0 if not already playing
       if (!status.isPlaying) {
-        await sound.setVolumeAsync(0);
-        await sound.playAsync();
+        await runAudioOperation(() => sound.setVolumeAsync(0));
+        await runAudioOperation(() => sound.playAsync());
       }
 
       const stepDuration = config.duration / config.steps;
@@ -474,10 +562,10 @@ export const SoundManager = {
         const progress = i / config.steps;
         const volume = calculateFadeValue(progress, config.curve);
 
-        await sound.setVolumeAsync(volume);
+        await runAudioOperation(() => sound.setVolumeAsync(volume));
 
         if (i < config.steps) {
-          await new Promise((resolve) => setTimeout(resolve, stepDuration));
+          await safeDelay(stepDuration);
         }
       }
 
@@ -508,7 +596,7 @@ export const SoundManager = {
     try {
       activeFades.add(sound);
 
-      const status = await sound.getStatusAsync();
+      const status = await runAudioOperation(() => sound.getStatusAsync());
       if (!status.isLoaded || !status.isPlaying) {
         console.warn("SoundManager: Sound not playing for fade out");
         return;
@@ -522,15 +610,15 @@ export const SoundManager = {
         const progress = i / config.steps;
         const volume = calculateFadeValue(progress, config.curve);
 
-        await sound.setVolumeAsync(volume);
+        await runAudioOperation(() => sound.setVolumeAsync(volume));
 
         if (i > 0) {
-          await new Promise((resolve) => setTimeout(resolve, stepDuration));
+          await safeDelay(stepDuration);
         }
       }
 
       // Pause the sound after fade out completes
-      await sound.pauseAsync();
+      await runAudioOperation(() => sound.pauseAsync());
 
       console.log(
         `SoundManager: Fade out completed (${config.duration}ms, ${config.curve})`
@@ -569,11 +657,23 @@ export const SoundManager = {
         return;
       }
 
+      // SAFETY: Pause all other music except the ones we're crossfading
+      await pauseAllMusicExcept(fromSound);
+      await pauseAllMusicExcept(toSound);
+
       // Start the new sound at volume 0
-      const toStatus = await toSound.getStatusAsync();
+      const toStatus = await runAudioOperation(() => toSound.getStatusAsync());
       if (toStatus.isLoaded && !toStatus.isPlaying) {
-        await toSound.setVolumeAsync(0);
-        await toSound.playAsync();
+        await runAudioOperation(() => toSound.setVolumeAsync(0));
+        await runAudioOperation(() => toSound.playAsync());
+      }
+
+      // Ensure fromSound is playing for the crossfade
+      const fromStatus = await runAudioOperation(() =>
+        fromSound.getStatusAsync()
+      );
+      if (fromStatus.isLoaded && !fromStatus.isPlaying) {
+        await runAudioOperation(() => fromSound.playAsync());
       }
 
       const stepDuration = config.duration / config.steps;
@@ -586,17 +686,18 @@ export const SoundManager = {
         const fadeInVolume = calculateFadeValue(progress, config.curve);
 
         await Promise.all([
-          fromSound.setVolumeAsync(fadeOutVolume),
-          toSound.setVolumeAsync(fadeInVolume),
+          runAudioOperation(() => fromSound.setVolumeAsync(fadeOutVolume)),
+          runAudioOperation(() => toSound.setVolumeAsync(fadeInVolume)),
         ]);
 
         if (i < config.steps) {
-          await new Promise((resolve) => setTimeout(resolve, stepDuration));
+          await safeDelay(stepDuration);
         }
       }
 
-      // Pause the old sound after crossfade completes
-      await fromSound.pauseAsync();
+      // Pause the old sound after crossfade completes and ensure no other music is playing
+      await runAudioOperation(() => fromSound.pauseAsync());
+      await pauseAllMusicExcept(toSound);
 
       console.log(
         `SoundManager: Crossfade completed (${config.duration}ms, ${config.curve})`
@@ -648,6 +749,18 @@ export const SoundManager = {
       console.log("SoundManager: All music unloaded successfully");
     } catch (error) {
       console.error("Error unloading music:", error);
+    }
+  },
+
+  /**
+   * Pause all music (emergency stop)
+   */
+  pauseAllMusic: async (): Promise<void> => {
+    try {
+      await pauseAllMusic();
+      console.log("SoundManager: All music paused");
+    } catch (error) {
+      console.error("Error pausing all music:", error);
     }
   },
 };

@@ -22,6 +22,8 @@ windConfig.transformer.babelTransformerPath = require.resolve(
   "react-native-svg-transformer"
 );
 
+windConfig.transformer.inlineRequires = false;
+
 windConfig.resolver.assetExts = windConfig.resolver.assetExts.filter(
   (ext) => ext !== "svg"
 );

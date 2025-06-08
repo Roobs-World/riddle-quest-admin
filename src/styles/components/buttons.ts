@@ -5,8 +5,6 @@
 
 import { StyleSheet, ViewStyle, TextStyle } from "react-native";
 import { SPACING } from "../tokens/spacing";
-import { BORDER_RADIUS } from "../tokens/borderRadius";
-import { COLORS } from "../tokens/colors";
 import { TYPOGRAPHY } from "../tokens/typography";
 
 export const buttonStyles = StyleSheet.create({
@@ -33,31 +31,6 @@ export const buttonStyles = StyleSheet.create({
     marginBottom: SPACING.sm,
     marginRight: SPACING.sm,
   } as ViewStyle,
-
-  debugButton: {
-    alignItems: "center",
-    padding: SPACING.sm,
-    borderRadius: BORDER_RADIUS.sm,
-  } as ViewStyle,
-
-  debugButtonText: {
-    color: COLORS.white,
-    fontSize: TYPOGRAPHY.fontSize.sm,
-    fontWeight: "bold",
-    textAlign: "center",
-  } as TextStyle,
-
-  riddleRegenerationButton: {
-    alignItems: "center",
-    padding: SPACING.md,
-    borderRadius: BORDER_RADIUS.md,
-  } as ViewStyle,
-
-  riddleRegenerationButtonText: {
-    color: COLORS.white,
-    fontSize: TYPOGRAPHY.fontSize.base,
-    fontWeight: "bold",
-  } as TextStyle,
 
   signUpButtonText: {
     fontFamily: TYPOGRAPHY.fontPrimary,

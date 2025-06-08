@@ -1,5 +1,4 @@
 export const checkAnyOverlayVisible = (
-  isVictoryModalVisible: boolean,
   isInstructionsVisible: boolean,
   isFullProfileDetailsOverlayVisible: boolean,
   isCoinShopModalVisible: boolean,
@@ -8,7 +7,6 @@ export const checkAnyOverlayVisible = (
   isOutOfAttemptsModalVisible: boolean
 ): boolean => {
   return (
-    isVictoryModalVisible ||
     isInstructionsVisible ||
     isFullProfileDetailsOverlayVisible ||
     isCoinShopModalVisible ||

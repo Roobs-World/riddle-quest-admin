@@ -74,9 +74,9 @@ describe("BottomNavigationBar", () => {
       const { getByTestId } = render(<BottomNavigationBar {...defaultProps} />);
 
       const bottomNav = getByTestId("bottom-navigation-bar");
-      expect(bottomNav.props.className).toContain("bg-white");
-      expect(bottomNav.props.className).toContain("border-t");
-      expect(bottomNav.props.className).toContain("border-gray-200");
+      expect(bottomNav.props.className).toContain("px-4");
+      expect(bottomNav.props.className).toContain("pt-6");
+      expect(bottomNav.props.className).toContain("pb-2");
     });
 
     it("renders icons with correct dimensions and color", () => {
@@ -88,13 +88,13 @@ describe("BottomNavigationBar", () => {
       expect(profileIcon.props.style).toMatchObject({
         width: 24,
         height: 24,
-        backgroundColor: "#222222",
+        backgroundColor: "#FFFFFF",
       });
 
       expect(settingsIcon.props.style).toMatchObject({
         width: 24,
         height: 24,
-        backgroundColor: "#222222",
+        backgroundColor: "#FFFFFF",
       });
     });
   });

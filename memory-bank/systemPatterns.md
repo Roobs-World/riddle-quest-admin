@@ -1,5 +1,27 @@
 # System Patterns
 
+This document outlines the system architecture, key technical decisions, design patterns, and component relationships within the Qwordly project.
+
+## System Architecture:
+
+[Describe the overall architecture, e.g., Client-Server (React Native app + Firebase Functions/Firestore), key components and how they interact.]
+
+## Key Technical Decisions:
+
+- [List significant technical choices and the reasoning behind them, e.g., Using Firebase for backend, TypeScript for type safety.]
+
+## Design Patterns in Use:
+
+- [Identify and describe prominent design patterns used in the codebase, e.g., Repository pattern for data access, Observer pattern.]
+
+## Component Relationships:
+
+[Describe how major components interact with each other, possibly using a simple diagram or text description.]
+
+## Critical Implementation Paths:
+
+[Outline the most important or complex parts of the system that require careful implementation and testing, e.g., User authentication flow, Game state management, In-app purchase handling.]
+
 ## Architecture Overview
 
 ```

@@ -102,16 +102,39 @@ describe("Profile Functions - Integration Tests", () => {
     try {
       firestore = admin.firestore();
 
-      // Test Firebase connection
-      await firestore.collection("_test").doc("connection").set({timestamp: new Date()});
-      await firestore.collection("_test").doc("connection").delete();
+      // Test Firebase connection with retry logic
+      let connectionAttempts = 0;
+      const maxAttempts = 3;
+      let connectionSuccessful = false;
 
-      console.log("✅ Firebase connection successful for Profile integration tests");
+      while (connectionAttempts < maxAttempts && !connectionSuccessful) {
+        try {
+          connectionAttempts++;
+          console.log(`🔄 Firebase connection attempt ${connectionAttempts}/${maxAttempts}`);
+
+          const testDoc = firestore.collection("_test").doc("connection");
+          await testDoc.set({timestamp: new Date(), attempt: connectionAttempts});
+          await testDoc.delete();
+
+          connectionSuccessful = true;
+          console.log("✅ Firebase connection successful for Profile integration tests");
+        } catch (attemptError) {
+          console.warn(`⚠️ Connection attempt ${connectionAttempts} failed:`, attemptError);
+          if (connectionAttempts < maxAttempts) {
+            // Wait 2 seconds before retry
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+          }
+        }
+      }
+
+      if (!connectionSuccessful) {
+        throw new Error(`Firebase connection failed after ${maxAttempts} attempts. Check emulator status and network.`);
+      }
     } catch (error) {
       console.error("❌ Firebase connection failed for Profile integration tests:", error);
-      throw new Error("Firebase connection failed. Check credentials and network.");
+      throw error;
     }
-  }, 30000);
+  }, 60000);
 
   beforeEach(async () => {
     try {

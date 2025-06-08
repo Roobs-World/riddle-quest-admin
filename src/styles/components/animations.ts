@@ -23,6 +23,21 @@ export const animationStyles = StyleSheet.create({
     justifyContent: "center",
   } as ViewStyle,
 
+  shatteringTile: {
+    width: 56, // TILE_SIZE
+    height: 56, // TILE_SIZE
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    // Default borderColor will be applied in component if not specified by tile data
+  } as ViewStyle,
+
+  shatteringTileText: {
+    fontSize: 28, // TILE_SIZE / 2
+    fontWeight: "bold",
+    // Default color will be applied in component if not specified by tile data
+  } as ViewStyle,
+
   shatteringTilesContainer: {
     ...StyleSheet.absoluteFillObject,
     alignItems: "center",

@@ -121,10 +121,11 @@ export async function performPlatformValidation(
               const googleResponse = res as Omit<GoogleValidationResponse, "service" | "status">;
               // Ensure the service property is included for library compatibility
               // Google responses may not always have a status, so default to 0 (success)
+              const responseWithStatus = googleResponse as GoogleValidationResponse & {status?: number};
               resolve({
                 ...googleResponse,
                 service: iap.GOOGLE,
-                status: (googleResponse as any).status ?? 0,
+                status: responseWithStatus.status ?? 0,
               });
             }
           },

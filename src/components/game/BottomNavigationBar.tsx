@@ -44,7 +44,7 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
 
   return (
     <View
-      className="px-4 py-2"
+      className="px-4 pt-6 pb-2"
       style={{ paddingBottom: insets.bottom + 8 }}
       testID="bottom-navigation-bar"
     >
@@ -70,7 +70,7 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
 
         {/* Submit Button */}
         <TouchableOpacity
-          className={`px-6 py-3 rounded-lg ${
+          className={`px-8 py-4 rounded-lg ${
             isSubmitDisabled || gameOver ? "bg-gray-400" : "bg-blue-500"
           }`}
           onPress={() => {
@@ -84,7 +84,7 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
           accessibilityRole="button"
           accessibilityLabel="Submit current guess"
         >
-          <Text className="text-white font-bold">Submit</Text>
+          <Text className="text-white font-bold text-base">Submit</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
