@@ -1,0 +1,23 @@
+
+objects:
+
+planet_r - grey/green planet with no moons
+planet_a - red planet with 1 moon: moon_a_h
+planet_d - large orange planet with 2 moons: mood_d_f + moon_d_g
+planet_v - blue planet with small ring
+planet k - green planet with large ring and 2 moons: moon_k_c + moon_k_d
+sun
+
+textures should be named to match mostly.
+
+The child objects of planets and sun with the "_glow" are billboards that should always face the camera.
+
+They have a coloured luminance texture and a transarency map: tex_gradient_circle_i.png (planets) and tex_gradient_circle_sun_i.png (sun).
+
+I was using alpha maps (tex_gradient_circle.png/tex_gradient_circle_sun.png), but they didn't seem to export correctly so I switched to transparency.
+
+The transparency or luminance doesn't seem to show in Windows 3D object viewer, but if I import the .fbx back into Cinema4D it all shows up correctly.
+
+I am not sure how the .fbx format handles these things. I have previously used alpha/transparency in other projects into Unity and it has worked fine. It may be that a single glow image with alpha transparency for each planet glow object is needed.
+
+The rings are only single sided currently. I may need to double up the faces for the underside.

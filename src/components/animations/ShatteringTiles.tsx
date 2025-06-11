@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, {
   useEffect,
   useRef,
@@ -10,10 +11,10 @@ import Animated, {
   useAnimatedStyle,
   withTiming,
   runOnJS,
+  useSharedValue,
 } from "react-native-reanimated";
 import Matter from "matter-js";
 import { styles as globalStyles, COLORS } from "../../styles"; // Renamed styles to globalStyles
-import PropTypes from "prop-types";
 
 const TILE_SIZE = 56; // 14 * 4 (w-14 from GuessGrid)
 const MAX_POOL_SIZE = 21; // Max tiles we might need (3 rows × 7 columns = 21)
@@ -107,28 +108,6 @@ const ShatteringTileItem: React.FC<ShatteringTileItemProps> = React.memo(
 );
 ShatteringTileItem.displayName = "ShatteringTileItem"; // Add display name
 
-// Add PropTypes for ShatteringTileItem
-ShatteringTileItem.propTypes = {
-  tileState: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    data: PropTypes.shape({
-      letter: PropTypes.string,
-      backgroundColor: PropTypes.string.isRequired,
-      borderColor: PropTypes.string.isRequired,
-      textColor: PropTypes.string.isRequired,
-      x: PropTypes.number.isRequired,
-      y: PropTypes.number.isRequired,
-    }).isRequired,
-    body: PropTypes.object.isRequired, // Matter.Body is an object
-    x: PropTypes.object.isRequired, // Animated.SharedValue is an object
-    y: PropTypes.object.isRequired, // Animated.SharedValue is an object
-    angle: PropTypes.object.isRequired, // Animated.SharedValue is an object
-    opacity: PropTypes.object.isRequired, // Animated.SharedValue is an object
-    isActive: PropTypes.bool.isRequired,
-  }).isRequired,
-  index: PropTypes.number.isRequired,
-};
-
 const ShatteringTiles: React.FC<ShatteringTilesProps> = ({
   tiles,
   startAnimation,
@@ -144,15 +123,14 @@ const ShatteringTiles: React.FC<ShatteringTilesProps> = ({
 
   // Create animated shared values for each tile based on the tiles prop
   const sharedValues = useMemo(() => {
+    const { useSharedValue } = require("react-native-reanimated");
     // console.log('[ShatteringTiles.tsx] useMemo for sharedValues. tiles:', tiles);
-    // This useMemo is incorrect for creating shared values. They should be managed outside or in state/ref.
-    // Returning tile data for now, the animation logic needs refactoring.
     return tiles.map((tile) => {
       return {
-        x: tile.x - TILE_SIZE / 2,
-        y: tile.y - TILE_SIZE / 2,
-        angle: 0,
-        opacity: 0,
+        x: useSharedValue(tile.x - TILE_SIZE / 2),
+        y: useSharedValue(tile.y - TILE_SIZE / 2),
+        angle: useSharedValue(0),
+        opacity: useSharedValue(0),
         tileId: tile.letter,
         backgroundColor: tile.backgroundColor,
         borderColor: tile.borderColor,

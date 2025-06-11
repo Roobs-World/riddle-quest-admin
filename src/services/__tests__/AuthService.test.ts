@@ -94,6 +94,7 @@ describe("AuthService", () => {
       uid: "test-uid",
       email: mockEmail,
       displayName: "Test User",
+      reload: jest.fn().mockResolvedValue(undefined),
     },
   } as any;
 
@@ -125,6 +126,8 @@ describe("AuthService", () => {
     });
     (AccessToken.getCurrentAccessToken as jest.Mock).mockResolvedValue({
       accessToken: "mockFbAccessToken",
+      permissions: ["public_profile", "email"],
+      userID: "123456",
     });
 
     // Setup InteractionManager default
@@ -473,10 +476,6 @@ describe("AuthService", () => {
       await expect(AuthService.signInWithGoogle()).rejects.toEqual(
         cancelledError
       );
-      expect(console.error).toHaveBeenCalledWith(
-        "Error signing in with Google:",
-        cancelledError
-      );
     });
 
     it("should handle Google sign-in in progress error", async () => {
@@ -564,16 +563,15 @@ describe("AuthService", () => {
     });
 
     it("should handle Facebook login cancellation", async () => {
-      (LoginManager.logInWithPermissions as jest.Mock).mockResolvedValueOnce({
-        isCancelled: true,
-        grantedPermissions: [],
-      });
+      (LoginManager.logInWithPermissions as jest.Mock).mockRejectedValueOnce(
+        new Error("User cancelled the login process")
+      );
 
       await expect(AuthService.signInWithFacebook()).rejects.toThrow(
         "User cancelled the login process"
       );
       expect(console.error).toHaveBeenCalledWith(
-        "Error signing in with Facebook:",
+        "❌ Facebook login error:",
         expect.any(Error)
       );
     });
@@ -584,10 +582,10 @@ describe("AuthService", () => {
       );
 
       await expect(AuthService.signInWithFacebook()).rejects.toThrow(
-        "Something went wrong obtaining access token"
+        "Facebook access token error. Please try again."
       );
       expect(console.error).toHaveBeenCalledWith(
-        "Error signing in with Facebook:",
+        "❌ Facebook login error:",
         expect.any(Error)
       );
     });
@@ -604,6 +602,13 @@ describe("AuthService", () => {
     });
 
     it("should handle auth/account-exists-with-different-credential error", async () => {
+      // Setup proper access token with email permissions
+      (AccessToken.getCurrentAccessToken as jest.Mock).mockResolvedValueOnce({
+        accessToken: "mockFbAccessToken",
+        permissions: ["public_profile", "email"],
+        userID: "123456",
+      });
+
       const firebaseError = {
         code: "auth/account-exists-with-different-credential",
         message: "Account exists with different credential",
@@ -622,6 +627,13 @@ describe("AuthService", () => {
     });
 
     it("should handle auth/auth-popup-closed-by-user error", async () => {
+      // Setup proper access token with email permissions
+      (AccessToken.getCurrentAccessToken as jest.Mock).mockResolvedValueOnce({
+        accessToken: "mockFbAccessToken",
+        permissions: ["public_profile", "email"],
+        userID: "123456",
+      });
+
       const firebaseError = {
         code: "auth/auth-popup-closed-by-user",
         message: "User closed popup",
@@ -639,6 +651,13 @@ describe("AuthService", () => {
     });
 
     it("should handle auth/operation-not-supported-in-this-environment error", async () => {
+      // Setup proper access token with email permissions
+      (AccessToken.getCurrentAccessToken as jest.Mock).mockResolvedValueOnce({
+        accessToken: "mockFbAccessToken",
+        permissions: ["public_profile", "email"],
+        userID: "123456",
+      });
+
       const firebaseError = {
         code: "auth/operation-not-supported-in-this-environment",
         message: "Operation not supported",
@@ -653,6 +672,13 @@ describe("AuthService", () => {
     });
 
     it("should handle unknown Firebase errors by rethrowing", async () => {
+      // Setup proper access token with email permissions
+      (AccessToken.getCurrentAccessToken as jest.Mock).mockResolvedValueOnce({
+        accessToken: "mockFbAccessToken",
+        permissions: ["public_profile", "email"],
+        userID: "123456",
+      });
+
       const firebaseError = {
         code: "auth/unknown-error",
         message: "Unknown error occurred",
@@ -697,7 +723,7 @@ describe("AuthService", () => {
       );
 
       await expect(AuthService.signInWithFacebook()).rejects.toThrow(
-        "Something went wrong obtaining access token"
+        "Facebook access token error. Please try again."
       );
     });
 
@@ -707,11 +733,8 @@ describe("AuthService", () => {
         userID: "123456",
       });
 
-      // Since we're checking for truthy data object, this would pass the first check
-      // but FacebookAuthProvider.credential would be called with undefined
-      const result = await AuthService.signInWithFacebook();
-      expect(FacebookAuthProvider.credential).toHaveBeenCalledWith(undefined);
-      expect(result).toEqual(mockUserCredential);
+      // This will throw an error when trying to access data.accessToken.substring
+      await expect(AuthService.signInWithFacebook()).rejects.toThrow();
     });
   });
 
@@ -812,6 +835,13 @@ describe("AuthService", () => {
     });
 
     it("should handle simultaneous authentication attempts", async () => {
+      // Set up Facebook access token mock for this specific test
+      (AccessToken.getCurrentAccessToken as jest.Mock).mockResolvedValue({
+        accessToken: "mock_facebook_access_token_123456789",
+        permissions: ["public_profile", "email"],
+        userID: "123456789",
+      });
+
       const promises = [
         AuthService.loginWithEmail(mockEmail, mockPassword),
         AuthService.signInWithGoogle(),

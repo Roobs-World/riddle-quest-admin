@@ -261,7 +261,7 @@ export const applyAudioEnhancements = async (
     );
 
     // For now, ensure optimal playback settings
-    await sound.setVolumeAsync(1.0);
+    await sound.setStatusAsync({ volume: 1.0 });
     if (Audio.PitchCorrectionQuality?.High) {
       await sound.setRateAsync(1.0, false, Audio.PitchCorrectionQuality.High);
     } else {

@@ -1,5 +1,11 @@
 import React, { useMemo, useCallback } from "react";
-import { View, Dimensions, StyleSheet } from "react-native";
+import {
+  View,
+  Dimensions,
+  StyleSheet,
+  ImageSourcePropType,
+  Image,
+} from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -20,6 +26,12 @@ import Svg, {
   LinearGradient,
 } from "react-native-svg";
 import { COLORS } from "../../styles";
+import {
+  PLANET_TEXTURES,
+  MOON_TEXTURES,
+  RING_TEXTURES,
+  SUN_TEXTURES,
+} from "../../constants/planetTextures";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -52,6 +64,11 @@ interface Planet {
   textureColors: string[];
   rotationSpeed?: number;
   hasRings?: boolean;
+  // 3D Texture support
+  textureImage?: ImageSourcePropType; // Planet texture asset
+  moonTextures?: ImageSourcePropType[]; // Moon texture assets
+  ringTexture?: ImageSourcePropType; // Ring texture asset
+  use3DTextures?: boolean; // Enable/disable 3D textures
 }
 
 interface Comet {
@@ -192,14 +209,14 @@ const SolarSystemBackground: React.FC = () => {
     const sunY = SCREEN_HEIGHT * 0.3; // Position sun in upper area
 
     const planetData: Planet[] = [
-      // Mercury - rocky, cratered surface
+      // Mercury - rocky, cratered surface (using 3D texture)
       {
         id: 1,
         name: "Mercury",
         centerX: sunX,
         centerY: sunY,
         orbitRadius: 60,
-        size: 8,
+        size: 16, // Increased size to show texture detail
         color: "#8C7853",
         orbitSpeed: 15, // Fast orbit
         rotationSpeed: 8, // Slow rotation
@@ -207,31 +224,39 @@ const SolarSystemBackground: React.FC = () => {
         hasMoons: false,
         gradientId: "mercuryGradient",
         textureColors: ["#8C7853", "#6B5B42", "#A89068", "#7A6B4F"],
+        // 3D texture integration
+        use3DTextures: true,
+        textureImage: PLANET_TEXTURES.mercury,
       },
-      // Venus - thick atmosphere, yellowish
+      // Venus - thick atmosphere, yellowish (using 3D texture with rings)
       {
         id: 2,
         name: "Venus",
         centerX: sunX,
         centerY: sunY,
         orbitRadius: 85,
-        size: 12,
+        size: 20, // Increased size to show texture detail
         color: "#FFC649",
         orbitSpeed: 25,
         rotationSpeed: 12, // Slow rotation (Venus rotates slowly)
         initialAngle: Math.PI / 3,
         hasMoons: false,
+        hasRings: true,
         gradientId: "venusGradient",
         textureColors: ["#FFC649", "#FFD700", "#F4A460", "#DAA520"],
+        // 3D texture integration
+        use3DTextures: true,
+        textureImage: PLANET_TEXTURES.venus,
+        ringTexture: RING_TEXTURES.ring_a,
       },
-      // Earth - blue oceans, green/brown land
+      // Earth - blue oceans, green/brown land (using 3D texture with moon)
       {
         id: 3,
         name: "Earth",
         centerX: sunX,
         centerY: sunY,
         orbitRadius: 120,
-        size: 14,
+        size: 24, // Increased size to show texture detail
         color: "#6B93D6",
         orbitSpeed: 40,
         rotationSpeed: 6, // 24-hour rotation
@@ -240,15 +265,19 @@ const SolarSystemBackground: React.FC = () => {
         moonCount: 1,
         gradientId: "earthGradient",
         textureColors: ["#6B93D6", "#4682B4", "#228B22", "#8B4513"],
+        // 3D texture integration
+        use3DTextures: true,
+        textureImage: PLANET_TEXTURES.earth,
+        moonTextures: [MOON_TEXTURES.moon_a_h],
       },
-      // Mars - red surface with polar caps
+      // Mars - red surface with polar caps (using 3D texture with 2 moons)
       {
         id: 4,
         name: "Mars",
         centerX: sunX,
         centerY: sunY,
         orbitRadius: 160,
-        size: 10,
+        size: 18, // Increased size to show texture detail
         color: "#CD5C5C",
         orbitSpeed: 60,
         rotationSpeed: 6.5, // Similar to Earth
@@ -257,32 +286,42 @@ const SolarSystemBackground: React.FC = () => {
         moonCount: 2,
         gradientId: "marsGradient",
         textureColors: ["#CD5C5C", "#A0522D", "#D2691E", "#B22222"],
+        // 3D texture integration
+        use3DTextures: true,
+        textureImage: PLANET_TEXTURES.mars,
+        moonTextures: [MOON_TEXTURES.moon_d_f, MOON_TEXTURES.moon_d_g],
       },
-      // Jupiter - gas giant with bands
+      // Jupiter - gas giant with bands (using 3D texture with rings and 2 moons)
       {
         id: 5,
         name: "Jupiter",
         centerX: sunX,
         centerY: sunY,
         orbitRadius: 220,
-        size: 24,
+        size: 36, // Largest planet - increased size to show texture detail
         color: "#D8CA9D",
         orbitSpeed: 120,
         rotationSpeed: 4, // Fast rotation (10-hour day)
         initialAngle: Math.PI / 6,
         hasMoons: true,
-        moonCount: 4,
+        moonCount: 2, // Updated to match available moon textures
+        hasRings: true,
         gradientId: "jupiterGradient",
         textureColors: ["#D8CA9D", "#DEB887", "#F4A460", "#CD853F"],
+        // 3D texture integration
+        use3DTextures: true,
+        textureImage: PLANET_TEXTURES.jupiter,
+        moonTextures: [MOON_TEXTURES.moon_k_c, MOON_TEXTURES.moon_k_d],
+        ringTexture: RING_TEXTURES.ring_b, // Large ring system
       },
-      // Saturn - ringed gas giant
+      // Saturn - ringed gas giant (using Venus planet texture with prominent rings)
       {
         id: 6,
         name: "Saturn",
         centerX: sunX,
         centerY: sunY,
         orbitRadius: 280,
-        size: 20,
+        size: 28, // Increased size for ring detail
         color: "#FAD5A5",
         orbitSpeed: 180,
         rotationSpeed: 4.5, // Fast rotation like Jupiter
@@ -292,6 +331,11 @@ const SolarSystemBackground: React.FC = () => {
         hasRings: true,
         gradientId: "saturnGradient",
         textureColors: ["#FAD5A5", "#E6C791", "#D4AF7A", "#C19A6B"],
+        // 3D texture integration
+        use3DTextures: true,
+        textureImage: PLANET_TEXTURES.venus, // Venus texture for Saturn
+        ringTexture: RING_TEXTURES.ring_a, // Prominent ring system
+        moonTextures: [], // Keep as SVG for now
       },
     ];
 
@@ -747,16 +791,28 @@ const AnimatedSun: React.FC = () => {
         animatedProps,
       ]}
     >
-      <Svg width={sunSize} height={sunSize}>
-        <Circle
-          cx={sunSize / 2}
-          cy={sunSize / 2}
-          r={sunSize / 2}
-          fill="url(#sunGradient)"
-          stroke="#FFD700"
-          strokeWidth="1"
-        />
-      </Svg>
+      {/* Enhanced sun with 3D texture and glow effects */}
+      <Image
+        source={SUN_TEXTURES.sunGlow}
+        style={{
+          width: sunSize * 1.5, // Larger glow layer
+          height: sunSize * 1.5,
+          position: "absolute",
+          top: -sunSize * 0.25,
+          left: -sunSize * 0.25,
+          opacity: 0.6,
+        }}
+        resizeMode="contain"
+      />
+      <Image
+        source={SUN_TEXTURES.sun}
+        style={{
+          width: sunSize,
+          height: sunSize,
+          borderRadius: sunSize / 2, // Make circular
+        }}
+        resizeMode="cover"
+      />
     </Animated.View>
   );
 };
@@ -813,52 +869,84 @@ const AnimatedPlanet: React.FC<AnimatedPlanetProps> = React.memo(
 
     return (
       <Animated.View style={[styles.animatedPlanetContainer, animatedProps]}>
-        {/* Saturn rings (rendered behind planet) */}
-        {planet.hasRings && (
-          <Svg
-            width={planet.size * 2.5}
-            height={planet.size * 2.5}
-            style={[
-              styles.animatedSaturnRingsSvg,
-              { left: -planet.size * 0.75, top: -planet.size * 0.75 },
-            ]}
-          >
-            <Ellipse
-              cx={(planet.size * 2.5) / 2}
-              cy={(planet.size * 2.5) / 2}
-              rx={planet.size * 1.2}
-              ry={planet.size * 0.3}
-              fill="url(#saturnRingsGradient)"
-              stroke="#C0C0C0"
-              strokeWidth="0.5"
-              strokeOpacity="0.3"
+        {/* Rings (rendered behind planet) - supports both 3D textures and SVG fallback */}
+        {planet.hasRings &&
+          (planet.use3DTextures && planet.ringTexture ? (
+            // Use 3D ring texture if available
+            <Image
+              source={planet.ringTexture}
+              style={[
+                styles.animatedSaturnRingsSvg,
+                {
+                  width: planet.size * 2.5,
+                  height: planet.size * 2.5,
+                  left: -planet.size * 0.75,
+                  top: -planet.size * 0.75,
+                  opacity: 0.8,
+                },
+              ]}
+              resizeMode="contain"
             />
-            <Ellipse
-              cx={(planet.size * 2.5) / 2}
-              cy={(planet.size * 2.5) / 2}
-              rx={planet.size * 1.0}
-              ry={planet.size * 0.25}
-              fill="none"
-              stroke="#A0A0A0"
-              strokeWidth="0.3"
-              strokeOpacity="0.6"
-            />
-          </Svg>
-        )}
+          ) : (
+            // Fallback to SVG rings
+            <Svg
+              width={planet.size * 2.5}
+              height={planet.size * 2.5}
+              style={[
+                styles.animatedSaturnRingsSvg,
+                { left: -planet.size * 0.75, top: -planet.size * 0.75 },
+              ]}
+            >
+              <Ellipse
+                cx={(planet.size * 2.5) / 2}
+                cy={(planet.size * 2.5) / 2}
+                rx={planet.size * 1.2}
+                ry={planet.size * 0.3}
+                fill="url(#saturnRingsGradient)"
+                stroke="#C0C0C0"
+                strokeWidth="0.5"
+                strokeOpacity="0.3"
+              />
+              <Ellipse
+                cx={(planet.size * 2.5) / 2}
+                cy={(planet.size * 2.5) / 2}
+                rx={planet.size * 1.0}
+                ry={planet.size * 0.25}
+                fill="none"
+                stroke="#A0A0A0"
+                strokeWidth="0.3"
+                strokeOpacity="0.6"
+              />
+            </Svg>
+          ))}
 
-        {/* Planet with rotation */}
+        {/* Planet with rotation - supports both 3D textures and SVG fallback */}
         <Animated.View style={rotationProps}>
-          <Svg width={planet.size} height={planet.size}>
-            <Circle
-              cx={planet.size / 2}
-              cy={planet.size / 2}
-              r={planet.size / 2}
-              fill={`url(#${planet.gradientId})`}
-              stroke={planet.color}
-              strokeWidth="0.5"
-              strokeOpacity="0.6"
+          {planet.use3DTextures && planet.textureImage ? (
+            // Use 3D texture if available
+            <Image
+              source={planet.textureImage}
+              style={{
+                width: planet.size,
+                height: planet.size,
+                borderRadius: planet.size / 2, // Make circular
+              }}
+              resizeMode="cover"
             />
-          </Svg>
+          ) : (
+            // Fallback to SVG gradient
+            <Svg width={planet.size} height={planet.size}>
+              <Circle
+                cx={planet.size / 2}
+                cy={planet.size / 2}
+                r={planet.size / 2}
+                fill={`url(#${planet.gradientId})`}
+                stroke={planet.color}
+                strokeWidth="0.5"
+                strokeOpacity="0.6"
+              />
+            </Svg>
+          )}
         </Animated.View>
 
         {/* Moons */}
@@ -918,18 +1006,40 @@ const AnimatedMoon: React.FC<{
     };
   });
 
+  // Get moon texture if available
+  const moonTexture =
+    planet.use3DTextures &&
+    planet.moonTextures &&
+    planet.moonTextures[moonIndex]
+      ? planet.moonTextures[moonIndex]
+      : null;
+
   return (
     <Animated.View style={[styles.animatedMoonContainer, animatedProps]}>
-      <Svg width={moonSize} height={moonSize}>
-        <Circle
-          cx={moonSize / 2}
-          cy={moonSize / 2}
-          r={moonSize / 2}
-          fill="#C0C0C0"
-          stroke="#A9A9A9"
-          strokeWidth="0.3"
+      {moonTexture ? (
+        // Use 3D moon texture if available
+        <Image
+          source={moonTexture}
+          style={{
+            width: moonSize,
+            height: moonSize,
+            borderRadius: moonSize / 2, // Make circular
+          }}
+          resizeMode="cover"
         />
-      </Svg>
+      ) : (
+        // Fallback to SVG moon
+        <Svg width={moonSize} height={moonSize}>
+          <Circle
+            cx={moonSize / 2}
+            cy={moonSize / 2}
+            r={moonSize / 2}
+            fill="#C0C0C0"
+            stroke="#A9A9A9"
+            strokeWidth="0.3"
+          />
+        </Svg>
+      )}
     </Animated.View>
   );
 });

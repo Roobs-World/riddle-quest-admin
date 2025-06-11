@@ -4,7 +4,7 @@ import WatchAdForChanceModal from "../WatchAdForChanceModal";
 
 // Mock dependencies
 jest.mock("../../../buttons/WideButton", () => "WideButton");
-jest.mock("../../../constants/AppStrings", () => ({
+jest.mock("../../../../constants/AppStrings", () => ({
   AppStrings: {
     RewardedAdPrompts: {
       OUT_OF_GUESSES_PROMPT: "Out of guesses! Watch an ad for another chance?",
@@ -14,7 +14,7 @@ jest.mock("../../../constants/AppStrings", () => ({
   },
 }));
 jest.mock("react-native-vector-icons/Ionicons", () => "Icon");
-jest.mock("../../../styles", () => ({
+jest.mock("../../../../styles", () => ({
   styles: {
     modalWrapper: { flex: 1 },
     closeButtonContainer: { padding: 10 },

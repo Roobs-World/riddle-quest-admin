@@ -3,7 +3,7 @@ import { render, fireEvent } from "@testing-library/react-native";
 import OutOfAttemptsModal from "../OutOfAttemptsModal";
 
 // Debug: Test direct CloseButton import
-import CloseButton from "../../buttons/CloseButton";
+import CloseButton from "../../../buttons/CloseButton";
 
 // Debug tests to understand what's resolving to undefined
 describe("OutOfAttemptsModal - Debug", () => {

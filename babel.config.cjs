@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-undef
 module.exports = function (api) {
-  // Use cache.using() to prevent duplicate configuration errors
+  // Use cache.using() to prevent caching conflicts
   api.cache.using(() => process.env.NODE_ENV);
 
   // Check for the Jest global variable
@@ -15,26 +15,54 @@ module.exports = function (api) {
 
   if (isFirebaseFunctionsTest) {
     // Return a minimal config for Firebase Functions tests
-    // This ensures ts-jest handles everything and no React Native presets are loaded.
     return {
-      presets: [], // No presets from here
-      plugins: [], // No plugins from here
+      presets: [],
+      plugins: [],
     };
   }
 
-  // For Jest tests, avoid nativewind/babel to prevent CSS interop issues
-  const presets = isJestTest
-    ? ["babel-preset-expo"]
-    : [
-        ["babel-preset-expo", { jsxImportSource: "nativewind" }],
-        "nativewind/babel",
-      ];
+  // For Jest tests, use classic runtime for compatibility
+  if (isJestTest) {
+    return {
+      presets: [
+        [
+          "babel-preset-expo",
+          {
+            jsxRuntime: "classic",
+            jsxPragma: "React.createElement",
+            jsxPragmaFrag: "React.Fragment",
+          },
+        ],
+      ],
+      plugins: [
+        [
+          "module-resolver",
+          {
+            root: ["./"],
+            alias: {
+              "@": "./src",
+              "@images": "./assets/images",
+              "@fonts": "./assets/fonts",
+            },
+          },
+        ],
+      ],
+    };
+  }
 
-  // React Native config with TypeScript support
+  // Production/Development configuration
   return {
-    presets,
+    presets: [
+      [
+        "babel-preset-expo",
+        {
+          jsxImportSource: "nativewind",
+          jsxRuntime: "automatic",
+        },
+      ],
+      "nativewind/babel",
+    ],
     plugins: [
-      "@babel/plugin-transform-flow-strip-types",
       [
         "module-resolver",
         {

@@ -52,7 +52,10 @@ jest.mock("../GuessGrid", () => {
 
 jest.mock("../Keyboard", () => {
   const React = require("react");
-  return function MockKeyboard({ onKeyPress }: any) {
+
+  return function MockKeyboard({ onKeyPress, isVisible }: any) {
+    if (!isVisible) return null;
+
     return React.createElement("div", {
       testID: "keyboard",
       onClick: () => onKeyPress && onKeyPress("a"),

@@ -157,7 +157,7 @@ describe("Navigation", () => {
         "visible:true"
       );
       expect(getByTestId("pulsing-spinner").props.accessibilityLabel).toContain(
-        "size:150"
+        "size:120"
       );
       expect(getByTestId("pulsing-spinner").props.accessibilityLabel).toContain(
         "opacity:0.8"

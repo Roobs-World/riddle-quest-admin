@@ -453,26 +453,23 @@ describe("LandingScreen", () => {
       });
     });
 
-    it("should handle generic Facebook sign in error", async () => {
-      const error = {
-        code: "auth/unknown-error",
-        message: "Unknown Facebook error",
-      };
-      (AuthService.signInWithFacebook as jest.Mock).mockRejectedValue(error);
-
-      const { getByTestId } = render(
+    it("should handle Facebook sign-in failure with generic error", async () => {
+      const errorMessage = "FB Network error";
+      mockSignInWithFacebook.mockRejectedValueOnce(new Error(errorMessage));
+      const { getByTestId, findByTestId } = render(
         <LandingScreen navigation={mockNavigation} />
       );
 
-      const facebookButton = getByTestId("facebook-signin-button");
-      fireEvent.press(facebookButton);
+      fireEvent.press(getByTestId("facebook-signin-button"));
 
       await waitFor(() => {
-        const errorMessage = getByTestId("error-message");
-        expect(errorMessage.props["data-message"]).toBe(
-          "Unknown Facebook error"
-        );
+        expect(mockSignInWithFacebook).toHaveBeenCalledTimes(1);
+        expect(mockLogin).not.toHaveBeenCalled();
       });
+
+      const errorComponent = await findByTestId("error-message");
+      expect(errorComponent.props["data-message"]).toBe(errorMessage);
+      expect(getByTestId("pulsing-spinner").props["data-visible"]).toBe(false);
     });
   });
 

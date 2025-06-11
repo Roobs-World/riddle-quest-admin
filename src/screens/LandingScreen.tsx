@@ -130,6 +130,13 @@ const LandingScreen = ({
           );
           return;
         }
+
+        // For generic Error objects that don't match specific patterns, use the actual error message
+        // This fixes the issue where "FB Network error" was being replaced with generic message
+        if (!("code" in error)) {
+          setAuthError(errorMessage);
+          return;
+        }
       }
 
       // Handle Firebase auth errors

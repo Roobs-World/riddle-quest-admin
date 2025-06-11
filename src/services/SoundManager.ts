@@ -123,20 +123,6 @@ const HIGH_QUALITY_AUDIO_CONFIG = {
   playThroughEarpieceAndroid: false,
 };
 
-// High-quality sound creation options
-const HIGH_QUALITY_SOUND_OPTIONS = {
-  // Disable pitch correction for better quality
-  shouldCorrectPitch: false,
-  // Maximum volume for best dynamic range
-  volume: 1.0,
-  // Standard playback rate
-  rate: 1.0,
-  // Use high-quality pitch correction when rate changes (if available)
-  ...(Audio.PitchCorrectionQuality?.High && {
-    pitchCorrectionQuality: Audio.PitchCorrectionQuality.High,
-  }),
-};
-
 // Assume isSoundEnabled state is managed elsewhere (e.g., in App.tsx or Context)
 // and can be accessed or passed here if needed for conditional playback.
 // For now, we will assume the check is done at the call site.
@@ -205,12 +191,14 @@ export const SoundManager = {
 
       // Create neutral music (default background music)
       console.log("SoundManager: Loading neutral music with high quality...");
-      const { sound: neutralMusicInstance } = await Audio.Sound.createAsync(
+      const neutralResult = await Audio.Sound.createAsync(
         neutralWav as AVPlaybackSource,
         {
           isLooping: true,
           shouldPlay: false,
-          ...HIGH_QUALITY_SOUND_OPTIONS,
+          volume: 1.0,
+          rate: 1.0,
+          shouldCorrectPitch: false,
         },
         (status) => {
           if (status.isLoaded && !status.didJustFinish) {
@@ -224,7 +212,15 @@ export const SoundManager = {
           }
         }
       );
-      neutralMusic = neutralMusicInstance;
+
+      if (!neutralResult.sound) {
+        console.error(
+          "SoundManager: Failed to create neutral music sound object"
+        );
+        throw new Error("Failed to create neutral music sound object");
+      }
+
+      neutralMusic = neutralResult.sound;
       console.log("SoundManager: Neutral music loaded with high quality");
 
       // Create positive music (for correct answers)
@@ -235,11 +231,8 @@ export const SoundManager = {
           isLooping: true,
           shouldPlay: false,
           volume: 0, // Start at 0 volume since it's not the default mode
-          // Use high-quality settings except for volume
-          shouldCorrectPitch: HIGH_QUALITY_SOUND_OPTIONS.shouldCorrectPitch,
-          rate: HIGH_QUALITY_SOUND_OPTIONS.rate,
-          pitchCorrectionQuality:
-            HIGH_QUALITY_SOUND_OPTIONS.pitchCorrectionQuality,
+          rate: 1.0,
+          shouldCorrectPitch: false,
         }
       );
       positiveMusic = positiveMusicInstance;
@@ -253,11 +246,8 @@ export const SoundManager = {
           isLooping: true,
           shouldPlay: false,
           volume: 0, // Start at 0 volume since it's not the default mode
-          // Use high-quality settings except for volume
-          shouldCorrectPitch: HIGH_QUALITY_SOUND_OPTIONS.shouldCorrectPitch,
-          rate: HIGH_QUALITY_SOUND_OPTIONS.rate,
-          pitchCorrectionQuality:
-            HIGH_QUALITY_SOUND_OPTIONS.pitchCorrectionQuality,
+          rate: 1.0,
+          shouldCorrectPitch: false,
         }
       );
       negativeMusic = negativeMusicInstance;
@@ -268,9 +258,13 @@ export const SoundManager = {
       // Start with neutral music mode directly
       if (neutralMusic) {
         try {
-          // Ensure volume is 1.0 and play
-          await runAudioOperation(() => neutralMusic!.setVolumeAsync(1.0));
-          await runAudioOperation(() => neutralMusic!.playAsync());
+          // Use setStatusAsync instead of individual method calls
+          await runAudioOperation(() =>
+            neutralMusic!.setStatusAsync({
+              shouldPlay: true,
+              volume: 1.0,
+            })
+          );
           currentMusicMode = "neutral"; // Explicitly set current mode
           console.log(
             "SoundManager: Neutral music started directly during init."
@@ -356,8 +350,9 @@ export const SoundManager = {
       await pauseAllMusicExcept(newMusic);
 
       // Start the new music at volume 0 and begin playing
-      await runAudioOperation(() => newMusic.setVolumeAsync(0));
-      await runAudioOperation(() => newMusic.playAsync());
+      await runAudioOperation(() =>
+        newMusic.setStatusAsync({ volume: 0, shouldPlay: true })
+      );
 
       if (currentMusic && config.duration > 0) {
         // Crossfade between current and new music
@@ -371,7 +366,7 @@ export const SoundManager = {
         await SoundManager.crossfade(currentMusic, newMusic, config);
       } else {
         // No crossfade, just start new music immediately at full volume
-        await runAudioOperation(() => newMusic.setVolumeAsync(1.0));
+        await runAudioOperation(() => newMusic.setStatusAsync({ volume: 1.0 }));
         // currentMusic is already paused by pauseAllMusicExcept
       }
 
@@ -550,8 +545,9 @@ export const SoundManager = {
 
       // Start playing at volume 0 if not already playing
       if (!status.isPlaying) {
-        await runAudioOperation(() => sound.setVolumeAsync(0));
-        await runAudioOperation(() => sound.playAsync());
+        await runAudioOperation(() =>
+          sound.setStatusAsync({ volume: 0, shouldPlay: true })
+        );
       }
 
       const stepDuration = config.duration / config.steps;
@@ -562,7 +558,7 @@ export const SoundManager = {
         const progress = i / config.steps;
         const volume = calculateFadeValue(progress, config.curve);
 
-        await runAudioOperation(() => sound.setVolumeAsync(volume));
+        await runAudioOperation(() => sound.setStatusAsync({ volume }));
 
         if (i < config.steps) {
           await safeDelay(stepDuration);
@@ -610,7 +606,7 @@ export const SoundManager = {
         const progress = i / config.steps;
         const volume = calculateFadeValue(progress, config.curve);
 
-        await runAudioOperation(() => sound.setVolumeAsync(volume));
+        await runAudioOperation(() => sound.setStatusAsync({ volume }));
 
         if (i > 0) {
           await safeDelay(stepDuration);
@@ -664,8 +660,9 @@ export const SoundManager = {
       // Start the new sound at volume 0
       const toStatus = await runAudioOperation(() => toSound.getStatusAsync());
       if (toStatus.isLoaded && !toStatus.isPlaying) {
-        await runAudioOperation(() => toSound.setVolumeAsync(0));
-        await runAudioOperation(() => toSound.playAsync());
+        await runAudioOperation(() =>
+          toSound.setStatusAsync({ volume: 0, shouldPlay: true })
+        );
       }
 
       // Ensure fromSound is playing for the crossfade
@@ -686,8 +683,12 @@ export const SoundManager = {
         const fadeInVolume = calculateFadeValue(progress, config.curve);
 
         await Promise.all([
-          runAudioOperation(() => fromSound.setVolumeAsync(fadeOutVolume)),
-          runAudioOperation(() => toSound.setVolumeAsync(fadeInVolume)),
+          runAudioOperation(() =>
+            fromSound.setStatusAsync({ volume: fadeOutVolume })
+          ),
+          runAudioOperation(() =>
+            toSound.setStatusAsync({ volume: fadeInVolume })
+          ),
         ]);
 
         if (i < config.steps) {

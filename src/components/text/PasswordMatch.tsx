@@ -1,3 +1,4 @@
+import React from "react";
 import { AppStrings } from "../../constants/AppStrings";
 import { Text } from "react-native";
 

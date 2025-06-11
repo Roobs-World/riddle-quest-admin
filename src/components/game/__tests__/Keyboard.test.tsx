@@ -83,6 +83,7 @@ describe("Keyboard", () => {
 
   const defaultProps = {
     onKeyPress: mockOnKeyPress,
+    isVisible: true,
   };
 
   beforeEach(() => {
@@ -195,7 +196,7 @@ describe("Keyboard", () => {
       const backspaceButton = getByTestId("backspace-icon").parent;
       if (backspaceButton) {
         fireEvent.press(backspaceButton);
-        expect(mockOnKeyPress).toHaveBeenCalledWith("DELETE");
+        expect(mockOnKeyPress).toHaveBeenCalledWith("BACKSPACE");
       }
     });
 
@@ -318,7 +319,7 @@ describe("Keyboard", () => {
   describe("Error Handling", () => {
     it("should handle undefined onKeyPress gracefully", () => {
       expect(() => {
-        render(<Keyboard onKeyPress={undefined as any} />);
+        render(<Keyboard onKeyPress={undefined as any} isVisible={true} />);
       }).not.toThrow();
     });
 
@@ -350,7 +351,7 @@ describe("Keyboard", () => {
 
       const newOnKeyPress = jest.fn();
       expect(() => {
-        rerender(<Keyboard onKeyPress={newOnKeyPress} />);
+        rerender(<Keyboard onKeyPress={newOnKeyPress} isVisible={true} />);
       }).not.toThrow();
     });
   });
