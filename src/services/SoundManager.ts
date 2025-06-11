@@ -85,7 +85,9 @@ const pauseAllMusicExcept = async (
       try {
         const status = await runAudioOperation(() => music.getStatusAsync());
         if (status.isLoaded && status.isPlaying) {
-          await runAudioOperation(() => music.pauseAsync());
+          await runAudioOperation(() =>
+            music.setStatusAsync({ shouldPlay: false })
+          );
         }
       } catch (error) {
         console.error("Error pausing music:", error);
@@ -103,7 +105,9 @@ const pauseAllMusic = async (): Promise<void> => {
       try {
         const status = await runAudioOperation(() => music.getStatusAsync());
         if (status.isLoaded && status.isPlaying) {
-          await runAudioOperation(() => music.pauseAsync());
+          await runAudioOperation(() =>
+            music.setStatusAsync({ shouldPlay: false })
+          );
         }
       } catch (error) {
         console.error("Error pausing music:", error);
@@ -141,12 +145,19 @@ const runAudioOperation = <T>(operation: () => Promise<T>): Promise<T> => {
   });
 };
 
-// Thread-safe delay helper
+// Thread-safe delay helper - avoid setTimeout to prevent Reanimated worklet conflicts
 const safeDelay = (ms: number): Promise<void> => {
   return new Promise((resolve) => {
-    requestAnimationFrame(() => {
-      setTimeout(resolve, ms);
-    });
+    const startTime = performance.now();
+    const checkElapsed = () => {
+      const elapsed = performance.now() - startTime;
+      if (elapsed >= ms) {
+        resolve();
+      } else {
+        requestAnimationFrame(checkElapsed);
+      }
+    };
+    requestAnimationFrame(checkElapsed);
   });
 };
 
@@ -199,17 +210,6 @@ export const SoundManager = {
           volume: 1.0,
           rate: 1.0,
           shouldCorrectPitch: false,
-        },
-        (status) => {
-          if (status.isLoaded && !status.didJustFinish) {
-            console.log("SoundManager: Neutral music high-quality status:", {
-              uri: status.uri,
-              duration: status.durationMillis,
-              shouldCorrectPitch: status.shouldCorrectPitch,
-              volume: status.volume,
-              rate: status.rate,
-            });
-          }
         }
       );
 
@@ -468,13 +468,13 @@ export const SoundManager = {
       curve: "exponential",
     });
 
-    // After a delay, return to neutral mode
-    setTimeout(async () => {
+    // After a delay, return to neutral mode using safeDelay to avoid Reanimated conflicts
+    safeDelay(3000).then(async () => {
       await SoundManager.setMusicMode("neutral", {
         duration: 2000,
         curve: "exponential",
       });
-    }, 3000); // Stay in positive mode for 3 seconds
+    });
   },
 
   playNegative: async () => {
@@ -484,13 +484,13 @@ export const SoundManager = {
       curve: "exponential",
     });
 
-    // After a delay, return to neutral mode
-    setTimeout(async () => {
+    // After a delay, return to neutral mode using safeDelay to avoid Reanimated conflicts
+    safeDelay(4000).then(async () => {
       await SoundManager.setMusicMode("neutral", {
         duration: 2000,
         curve: "exponential",
       });
-    }, 4000); // Stay in negative mode for 4 seconds
+    });
   },
 
   /**
@@ -505,13 +505,13 @@ export const SoundManager = {
 
     await SoundManager.setMusicMode("negative", config);
 
-    // Return to neutral after a delay
-    setTimeout(async () => {
+    // Return to neutral after a delay using safeDelay to avoid Reanimated conflicts
+    safeDelay(4000).then(async () => {
       await SoundManager.setMusicMode("neutral", {
         duration: 2000,
         curve: "exponential",
       });
-    }, 4000);
+    });
   },
 
   /**
@@ -613,8 +613,10 @@ export const SoundManager = {
         }
       }
 
-      // Pause the sound after fade out completes
-      await runAudioOperation(() => sound.pauseAsync());
+      // Pause the sound after fade out completes using setStatusAsync
+      await runAudioOperation(() =>
+        sound.setStatusAsync({ shouldPlay: false })
+      );
 
       console.log(
         `SoundManager: Fade out completed (${config.duration}ms, ${config.curve})`
@@ -697,7 +699,9 @@ export const SoundManager = {
       }
 
       // Pause the old sound after crossfade completes and ensure no other music is playing
-      await runAudioOperation(() => fromSound.pauseAsync());
+      await runAudioOperation(() =>
+        fromSound.setStatusAsync({ shouldPlay: false })
+      );
       await pauseAllMusicExcept(toSound);
 
       console.log(

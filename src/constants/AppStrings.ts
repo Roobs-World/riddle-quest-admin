@@ -93,6 +93,7 @@ export const AppStrings = {
     HAPTICS_TOGGLE: "Haptics",
     HELP_BUTTON: "Help",
     LOGOUT_BUTTON: "Logout",
+    CREDITS_BUTTON: "Credits",
     TEST_CRASH_BUTTON: "Test Crash",
     TEST_CRASH_ALERT_TITLE: "Test Crash",
     TEST_CRASH_ALERT_MESSAGE:
@@ -102,6 +103,13 @@ export const AppStrings = {
     CLOSE_BUTTON: "Close",
     LOGOUT_ERROR_TITLE: "Error",
     LOGOUT_ERROR_MESSAGE: "Could not log out. Please try again.",
+  },
+  Credits: {
+    TITLE: "Credits",
+    SUBTITLE: "Meet the amazing team behind Qwordly",
+    THANK_YOU_TITLE: "Thank You!",
+    THANK_YOU_TEXT:
+      "Special thanks to all our contributors who made Qwordly possible. Your creativity, dedication, and passion brought this project to life.",
   },
   Profile: {
     LOADING_MESSAGE: "Loading profile data...",

@@ -12,9 +12,10 @@
     "esModuleInterop": true,
     "isolatedModules": true,
     "types": ["react", "react-native", "jest", "node"],
+    "baseUrl": "./",
     "paths": {
-      "@images/*": ["./assets/images/*"],
-      "@fonts/*": ["./assets/fonts/*"]
+      "@/*": ["assets/*"],
+      "@/3d/*": ["assets/3d/*"]
     }
   },
   "include": [

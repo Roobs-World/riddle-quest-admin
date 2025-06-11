@@ -8,6 +8,7 @@ export { default as WatchAdForChanceModal } from "./game/WatchAdForChanceModal";
 export { default as SettingsModal } from "./settings/SettingsModal";
 export { default as ProfileModal } from "./settings/ProfileModal";
 export { default as FullProfileDetailsModal } from "./settings/FullProfileDetailsModal";
+export { default as CreditsModal } from "./settings/CreditsModal";
 
 // Help Modals
 export { default as HintModal } from "./help/HintModal";

@@ -65,15 +65,29 @@ export class RiddleInitializationService {
 
       console.log("⚠️ No riddles found in database - initializing...");
 
-      // Call the Firebase function to initialize riddles
+      // Call the Firebase function to initialize riddles with timeout
       const initializeRiddleDatabase = getCallableFunction(
         "initializeRiddleDatabase"
       );
 
       try {
         console.log("📡 Calling initializeRiddleDatabase Firebase function...");
-        const result = await initializeRiddleDatabase({});
-        console.log("✅ Riddle initialization result:", result.data);
+
+        // Add timeout handling for Firebase Function calls
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(
+            () =>
+              reject(new Error("Firebase function timeout after 60 seconds")),
+            60000
+          );
+        });
+
+        const result = await Promise.race([
+          initializeRiddleDatabase({}),
+          timeoutPromise,
+        ]);
+
+        console.log("✅ Riddle initialization result:", (result as any)?.data);
       } catch (error) {
         console.error("❌ Error calling initializeRiddleDatabase:", error);
 
@@ -84,15 +98,39 @@ export class RiddleInitializationService {
         );
 
         try {
-          const result = await generateClassicRiddles({});
-          console.log("✅ Classic riddles generation result:", result.data);
+          console.log("📡 Calling generateClassicRiddles Firebase function...");
+
+          // Add timeout for fallback function too
+          const fallbackTimeoutPromise = new Promise((_, reject) => {
+            setTimeout(
+              () =>
+                reject(new Error("Firebase function timeout after 60 seconds")),
+              60000
+            );
+          });
+
+          const result = await Promise.race([
+            generateClassicRiddles({}),
+            fallbackTimeoutPromise,
+          ]);
+
+          console.log(
+            "✅ Classic riddles generation result:",
+            (result as any)?.data
+          );
         } catch (fallbackError) {
           console.error(
             "❌ Error calling generateClassicRiddles:",
             fallbackError
           );
+          const errorMessage =
+            error instanceof Error ? error.message : String(error);
+          const fallbackErrorMessage =
+            fallbackError instanceof Error
+              ? fallbackError.message
+              : String(fallbackError);
           throw new Error(
-            "Failed to initialize riddle database with both methods"
+            `Failed to initialize riddle database with both methods. Primary error: ${errorMessage}. Fallback error: ${fallbackErrorMessage}`
           );
         }
       }

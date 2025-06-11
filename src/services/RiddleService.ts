@@ -8,7 +8,9 @@ import {
   SubmitGuessOutputSchema,
 } from "../validation/cloudFunctionsSchemas";
 
-export const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+import { safeDelay } from "../utils/timing";
+
+export const delay = (ms: number) => safeDelay(ms);
 
 export const RiddleService = {
   /**

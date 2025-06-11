@@ -4,7 +4,8 @@ export const checkAnyOverlayVisible = (
   isCoinShopModalVisible: boolean,
   isWatchAdModalVisible: boolean,
   isWelcomeOverlayVisible: boolean,
-  isOutOfAttemptsModalVisible: boolean
+  isOutOfAttemptsModalVisible: boolean,
+  isCreditsOverlayVisible: boolean
 ): boolean => {
   return (
     isInstructionsVisible ||
@@ -12,6 +13,7 @@ export const checkAnyOverlayVisible = (
     isCoinShopModalVisible ||
     isWatchAdModalVisible ||
     isWelcomeOverlayVisible ||
-    isOutOfAttemptsModalVisible
+    isOutOfAttemptsModalVisible ||
+    isCreditsOverlayVisible
   );
 };

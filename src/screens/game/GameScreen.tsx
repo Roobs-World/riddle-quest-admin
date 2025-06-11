@@ -4,7 +4,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../../components/game/Header";
 import Controls from "../../components/game/Controls";
 import BottomNavigationBar from "../../components/game/BottomNavigationBar";
-import GameAnimations from "../../components/game/GameAnimations";
 import GameOverlays from "../../components/game/GameOverlays";
 import GameBoard from "../../components/game/GameBoard";
 import { SoundManager } from "../../services/SoundManager";
@@ -22,14 +21,15 @@ import {
   GetHintInputSchema,
   GetHintOutputSchema,
 } from "../../validation/cloudFunctionsSchemas";
-import { useTileCapture } from "../../hooks/useTileCapture";
+
 import { useAuth } from "../../contexts/AuthContext";
 import { AppStrings } from "../../constants/AppStrings";
 import { isTablet } from "../../utils/responsive";
+import { safeDelay } from "../../utils/timing";
 import PulsingSpinner from "../../components/loading/PulsingSpinner";
 import OutOfAttemptsModal from "../../components/modals/game/OutOfAttemptsModal";
-import SolarSystemBackground from "../../components/background/StarryBackground";
 import { styles } from "../../styles";
+import StarryBackground from "../../components/background/StarryBackground";
 
 interface GuessResult {
   outcome: "win" | "loss" | "continue" | "attemptLimitReached";
@@ -72,10 +72,10 @@ interface GameScreenState {
   isOutOfAttemptsModalVisible: boolean;
   lastGuessResult: GuessResult | null;
   startShatterAnimation: boolean;
-  startTileShatterAnimation: boolean;
   isHintOverlayVisible: boolean;
   isProfileOverlayVisible: boolean;
   isSettingsOverlayVisible: boolean;
+  isCreditsOverlayVisible: boolean;
   isWelcomeOverlayVisible: boolean;
   isLoading: boolean;
 }
@@ -116,17 +116,6 @@ const GameScreen: React.FC<GameScreenProps> = ({
   gameMode,
 }) => {
   const { playerData, logout } = useAuth();
-  const { setTileRef, captureTiles } = useTileCapture();
-  const [tilesData, setTilesData] = useState<
-    Array<{
-      letter: string | null;
-      backgroundColor: string;
-      borderColor: string;
-      textColor: string;
-      x: number;
-      y: number;
-    }>
-  >([]);
 
   const [overlayState, setOverlayState] = useState<GameScreenState>({
     isInstructionsVisible: false,
@@ -137,10 +126,10 @@ const GameScreen: React.FC<GameScreenProps> = ({
     isOutOfAttemptsModalVisible: false,
     lastGuessResult: null,
     startShatterAnimation: false,
-    startTileShatterAnimation: false,
     isHintOverlayVisible: false,
     isProfileOverlayVisible: false,
     isSettingsOverlayVisible: false,
+    isCreditsOverlayVisible: false,
     isWelcomeOverlayVisible: false,
     isLoading: false,
   });
@@ -167,15 +156,14 @@ const GameScreen: React.FC<GameScreenProps> = ({
         : (gameMode as "challenge" | "classic"),
   });
 
-  const isWin = gameOver && overlayState.lastGuessResult?.outcome === "win";
-
   const isAnyOverlayVisible = checkAnyOverlayVisible(
     overlayState.isInstructionsVisible,
     overlayState.isFullProfileDetailsOverlayVisible,
     overlayState.isCoinShopModalVisible,
     overlayState.isWatchAdModalVisible,
     overlayState.isWelcomeOverlayVisible,
-    overlayState.isOutOfAttemptsModalVisible
+    overlayState.isOutOfAttemptsModalVisible,
+    overlayState.isCreditsOverlayVisible
   );
 
   const { isRewardedAdReady, loadRewardedAd, showRewardedAd } =
@@ -262,11 +250,13 @@ const GameScreen: React.FC<GameScreenProps> = ({
   useEffect(() => {
     if (isSoundEnabled) {
       // Add a small delay to ensure SoundManager has time to initialize
-      const timer = setTimeout(() => {
-        SoundManager.playBackgroundMusic();
-      }, 500);
+      let cleanup: (() => void) | undefined;
 
-      return () => clearTimeout(timer);
+      safeDelay(500).then(() => {
+        SoundManager.playBackgroundMusic();
+      });
+
+      return cleanup;
     } else {
       // Pause background music if sound is disabled
       SoundManager.pauseBackgroundMusic();
@@ -278,29 +268,11 @@ const GameScreen: React.FC<GameScreenProps> = ({
       const result = overlayState.lastGuessResult;
 
       if (result.outcome === "win") {
-        // Capture tiles for shattering animation
-        const captureAndShatter = async () => {
-          try {
-            const tiles = await captureTiles(guesses, answerLength);
-            setTilesData(tiles);
-            setOverlayState((prev) => ({
-              ...prev,
-              startTileShatterAnimation: true,
-            }));
-
-            // Delay text shattering to let tile animation start
-            setTimeout(() => {
-              setOverlayState((prev) => ({
-                ...prev,
-                startShatterAnimation: true,
-              }));
-            }, 300);
-          } catch (error) {
-            console.warn("Failed to capture tiles for shattering:", error);
-          }
-        };
-
-        captureAndShatter();
+        // Start text shattering animation
+        setOverlayState((prev) => ({
+          ...prev,
+          startShatterAnimation: true,
+        }));
 
         // Fade out background music before playing success sound for dramatic effect
         SoundManager.fadeOutBackgroundMusic({
@@ -308,16 +280,16 @@ const GameScreen: React.FC<GameScreenProps> = ({
           curve: "exponential",
         });
 
-        setTimeout(() => {
+        safeDelay(500).then(() => {
           SoundManager.playSuccess();
           // Fade background music back in after success sound
-          setTimeout(() => {
+          safeDelay(1000).then(() => {
             SoundManager.fadeInBackgroundMusic({
               duration: 1000,
               curve: "linear",
             });
-          }, 1000);
-        }, 500);
+          });
+        });
 
         if (isHapticsEnabled) {
           ReactNativeHapticFeedback.trigger("impactHeavy", hapticOptions);
@@ -452,8 +424,6 @@ const GameScreen: React.FC<GameScreenProps> = ({
       ...prev,
       isProfileOverlayVisible: false,
     }));
-    // Fade in background music when closing profile overlay
-    SoundManager.fadeInBackgroundMusic({ duration: 600, curve: "linear" });
   };
 
   const handleSettingsPress = () => {
@@ -461,11 +431,6 @@ const GameScreen: React.FC<GameScreenProps> = ({
       ...prev,
       isSettingsOverlayVisible: true,
     }));
-    // Fade out background music when opening settings overlay
-    SoundManager.fadeOutBackgroundMusic({
-      duration: 400,
-      curve: "exponential",
-    });
   };
 
   const handleSettingsClose = () => {
@@ -473,8 +438,20 @@ const GameScreen: React.FC<GameScreenProps> = ({
       ...prev,
       isSettingsOverlayVisible: false,
     }));
-    // Fade in background music when closing settings overlay
-    SoundManager.fadeInBackgroundMusic({ duration: 600, curve: "linear" });
+  };
+
+  const handleCreditsPress = () => {
+    setOverlayState((prev) => ({
+      ...prev,
+      isCreditsOverlayVisible: true,
+    }));
+  };
+
+  const handleCreditsClose = () => {
+    setOverlayState((prev) => ({
+      ...prev,
+      isCreditsOverlayVisible: false,
+    }));
   };
 
   const handleProfilePress = () => {
@@ -482,11 +459,6 @@ const GameScreen: React.FC<GameScreenProps> = ({
       ...prev,
       isProfileOverlayVisible: true,
     }));
-    // Fade out background music when opening profile overlay
-    SoundManager.fadeOutBackgroundMusic({
-      duration: 400,
-      curve: "exponential",
-    });
   };
 
   const handleCloseHomeOverlay = () => {
@@ -782,13 +754,14 @@ const GameScreen: React.FC<GameScreenProps> = ({
   });
 
   return (
-    <SafeAreaView className="flex-1 bg-cream-light">
-      <SolarSystemBackground />
+    <SafeAreaView className="flex-1">
+      <StarryBackground />
       <KeyboardAvoidingView
         style={[
           styles.gameContainer,
           isAnyOverlayVisible && styles.overlayVisible,
           isTablet && styles.gameContainerTablet,
+          { paddingBottom: 120 }, // Add padding to prevent content being hidden by bottom bar
         ]}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
@@ -798,20 +771,12 @@ const GameScreen: React.FC<GameScreenProps> = ({
           onCoinsPress={handleCoinsPress}
         />
 
-        <GameAnimations
-          isWin={isWin}
-          tilesData={tilesData}
-          startShatterAnimation={overlayState.startShatterAnimation}
-          startTileShatterAnimation={overlayState.startTileShatterAnimation}
-        />
-
         <GameBoard
           riddleText={riddleText}
           guesses={guesses}
           currentGuess={currentGuess}
           answerLength={answerLength}
           shakeKey={overlayState.shakeKey}
-          setTileRef={setTileRef}
           animatedStyle={animatedStyle}
           onKeyPress={handleKeyPress}
           isAnyOverlayVisible={isAnyOverlayVisible}
@@ -853,6 +818,7 @@ const GameScreen: React.FC<GameScreenProps> = ({
             isInstructionsVisible: true,
           }));
         }}
+        onPressCredits={handleCreditsPress}
         // Instructions Overlay
         isInstructionsVisible={overlayState.isInstructionsVisible}
         onCloseInstructions={handleCloseInstructions}
@@ -875,6 +841,9 @@ const GameScreen: React.FC<GameScreenProps> = ({
         // Home/Play Overlays
         onCloseHomeOverlay={handleCloseHomeOverlay}
         onClosePlayOverlay={handleClosePlayOverlay}
+        // Credits Overlay
+        isCreditsOverlayVisible={overlayState.isCreditsOverlayVisible}
+        onCreditsClose={handleCreditsClose}
       />
 
       {/* Out of Attempts Modal */}

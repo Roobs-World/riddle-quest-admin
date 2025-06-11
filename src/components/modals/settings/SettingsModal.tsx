@@ -27,6 +27,7 @@ import { COLORS } from "../../../styles";
  * @property {(isEnabled: boolean) => void} onToggleHaptics - Callback to toggle haptics.
  * @property {() => void} onPressHelp - Callback for the Help button.
  * @property {() => void} onPressLogout - Callback for the Logout button.
+ * @property {() => void} onPressCredits - Callback for the Credits button.
  */
 interface SettingsModalProps {
   isVisible: boolean;
@@ -37,6 +38,7 @@ interface SettingsModalProps {
   onToggleHaptics: (isEnabled: boolean) => void;
   onPressHelp: () => void;
   onPressLogout: () => void;
+  onPressCredits: () => void;
 }
 
 /**
@@ -51,6 +53,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
   onToggleHaptics,
   onPressHelp,
   onPressLogout,
+  onPressCredits,
 }) => {
   // Function to reset welcome panel
   const resetWelcomePanel = async () => {
@@ -122,6 +125,17 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
             <Icon name="help-outline" size={20} color={COLORS.gray600} />
             <Text className="text-gray-800 font-semibold ml-2">
               {AppStrings.Settings.HELP_BUTTON}
+            </Text>
+          </TouchableOpacity>
+
+          {/* Credits Button */}
+          <TouchableOpacity
+            className="bg-gray-200 px-4 py-3 rounded-md mb-3 w-full items-center flex-row justify-center"
+            onPress={onPressCredits}
+          >
+            <Icon name="info-outline" size={20} color={COLORS.gray600} />
+            <Text className="text-gray-800 font-semibold ml-2">
+              {AppStrings.Settings.CREDITS_BUTTON}
             </Text>
           </TouchableOpacity>
 

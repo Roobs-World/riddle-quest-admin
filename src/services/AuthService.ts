@@ -6,6 +6,7 @@ import auth, {
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { AccessToken, LoginManager } from "react-native-fbsdk-next";
 import { InteractionManager, AppState } from "react-native";
+import { safeTimeout } from "../utils/timing";
 
 /**
  * Ensures the function runs on the main thread to avoid threading issues with Google Play Services
@@ -202,7 +203,7 @@ export const AuthService = {
 
       // Create a timeout promise
       const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => {
+        safeTimeout(() => {
           appStateListener?.remove();
           reject(
             new Error(

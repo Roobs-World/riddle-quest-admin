@@ -10,9 +10,10 @@ import CreditsScreen from "../screens/CreditsScreen";
 import PulsingSpinner from "../components/loading/PulsingSpinner";
 import { useAuth } from "../contexts/AuthContext";
 import { AppStrings } from "../constants/AppStrings";
-import { View, Text } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import { fetchClassicRiddleFromFirestore } from "../services/FirestoreService";
 import { styles } from "../styles";
+import { RiddleInitializationService } from "../services/RiddleInitializationService";
 
 const Stack = createNativeStackNavigator();
 
@@ -75,8 +76,20 @@ const GameScreenWrapper = () => {
     }
   };
 
+  const handleRetryInitialization = async () => {
+    console.log("🔄 Retrying riddle initialization...");
+    RiddleInitializationService.resetInitializationFlags();
+    await RiddleInitializationService.checkAndInitializeRiddles();
+
+    // Try to fetch riddles again
+    if (isAuthenticated && playerData) {
+      await fetchCurrentRiddle(playerData, gameMode);
+    }
+  };
+
   // Always render something to avoid conditional returns that can cause hooks violations
-  // Show loading spinner while authentication is in progress or riddles are being initialized
+  // Show loading spinner while authentication is in progress, riddles are being initialized,
+  // or we don't have a riddle yet (unless there's a confirmed error)
   if (isLoading || isRiddlesInitializing) {
     console.log(
       AppStrings.LogMessages.SHOWING_LOADING_SPINNER_USER_DATA,
@@ -95,16 +108,56 @@ const GameScreenWrapper = () => {
     return <View style={styles.errorContainer} />;
   }
 
-  // Since we now always fall back to classic riddles, we should always have a riddle
-  // Only show error if riddle is truly null after all fallback attempts and initialization is complete
-  if (!currentRiddle && !isLoading && !isRiddlesInitializing) {
-    return (
-      <View style={styles.errorContainer}>
-        <Text style={styles.errorMessage}>
-          {AppStrings.ErrorMessages.UNABLE_TO_LOAD_RIDDLES}
-        </Text>
-      </View>
-    );
+  // Check if riddle initialization failed
+  const initStatus = RiddleInitializationService.getInitializationStatus();
+
+  // Show spinner if we don't have a riddle yet and initialization hasn't failed
+  if (!currentRiddle && !initStatus.initializationFailed) {
+    console.log("⏳ No riddle loaded yet, showing spinner...");
+    return <PulsingSpinner visible={true} size={120} opacity={0.7} />;
+  }
+
+  // Only show error messages when we truly don't have a riddle AND there's a confirmed problem
+  if (!currentRiddle) {
+    if (initStatus.initializationFailed) {
+      return (
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorMessage}>
+            Failed to initialize the riddle database. This might be your first
+            time using the app.
+          </Text>
+          <Text style={[styles.errorMessage, { fontSize: 14, marginTop: 10 }]}>
+            Please check your internet connection and try again.
+          </Text>
+          <TouchableOpacity
+            style={[
+              styles.keyButton,
+              { marginTop: 20, paddingHorizontal: 30, paddingVertical: 12 },
+            ]}
+            onPress={handleRetryInitialization}
+          >
+            <Text style={styles.buttonText}>Retry</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    } else {
+      return (
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorMessage}>
+            {AppStrings.ErrorMessages.UNABLE_TO_LOAD_RIDDLES}
+          </Text>
+          <TouchableOpacity
+            style={[
+              styles.keyButton,
+              { marginTop: 20, paddingHorizontal: 30, paddingVertical: 12 },
+            ]}
+            onPress={handleRetryInitialization}
+          >
+            <Text style={styles.buttonText}>Retry</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
   }
 
   // Render GameScreen with all necessary props only when we have current riddle

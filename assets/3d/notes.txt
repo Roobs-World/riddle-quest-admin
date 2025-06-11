@@ -1,3 +1,15 @@
+Update:
+
+There's quarter and half size textures, just copy and replace files from the relevant folder into the "tex" folder. Currently I have placed the quarter size textures in the "tex" folder.
+
+Re-exported planets and sun with a colour channel in the glow billboard.
+
+In my scene, I'm using 2 lights:
+
+* Sun = Omni/Point Light Source. RGB: 255,251,247 at 120% intensity and raytraced shadows. Placed where the sun is. I set the sun to not cast or receive shadow. The planets are set to only receive shadow and not recieve it.
+
+* Background = Omni/Point Light Source. RGB: 80,40,120 at 33% intensity fixed just behind the camera/viewer, so everything isn't always black.
+
 
 objects:
 
@@ -21,3 +33,5 @@ The transparency or luminance doesn't seem to show in Windows 3D object viewer, 
 I am not sure how the .fbx format handles these things. I have previously used alpha/transparency in other projects into Unity and it has worked fine. It may be that a single glow image with alpha transparency for each planet glow object is needed.
 
 The rings are only single sided currently. I may need to double up the faces for the underside.
+
+

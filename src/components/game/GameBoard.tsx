@@ -18,7 +18,6 @@ interface GameBoardProps {
   currentGuess: string[];
   answerLength: number;
   shakeKey: number;
-  setTileRef: (rowIndex: number, cellIndex: number, ref: View | null) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   animatedStyle: any;
   onKeyPress: (key: string) => void;
@@ -35,7 +34,6 @@ const GameBoard: React.FC<GameBoardProps> = ({
   currentGuess,
   answerLength,
   shakeKey,
-  setTileRef,
   animatedStyle,
   onKeyPress,
   isAnyOverlayVisible,
@@ -63,7 +61,6 @@ const GameBoard: React.FC<GameBoardProps> = ({
             currentGuess={currentGuess}
             answerLength={answerLength}
             shakeKey={shakeKey}
-            setTileRef={setTileRef}
           />
         </Animated.View>
       </View>

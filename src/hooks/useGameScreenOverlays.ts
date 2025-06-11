@@ -14,6 +14,7 @@ const useGameScreenOverlays = (): GameScreenOverlayState &
   const [isProfileOverlayVisible, setIsProfileOverlayVisible] = useState(false);
   const [isSettingsOverlayVisible, setIsSettingsOverlayVisible] =
     useState(false);
+  const [isCreditsOverlayVisible, setIsCreditsOverlayVisible] = useState(false);
 
   return {
     isVictoryModalVisible,
@@ -30,6 +31,8 @@ const useGameScreenOverlays = (): GameScreenOverlayState &
     setIsProfileOverlayVisible,
     isSettingsOverlayVisible,
     setIsSettingsOverlayVisible,
+    isCreditsOverlayVisible,
+    setIsCreditsOverlayVisible,
   };
 };
 

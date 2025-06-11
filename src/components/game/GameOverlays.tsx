@@ -3,6 +3,7 @@ import {
   HintModal,
   ProfileModal,
   SettingsModal,
+  CreditsModal,
   InstructionsModal,
   WelcomeModal,
   FullProfileDetailsModal,
@@ -34,6 +35,7 @@ interface GameOverlaysProps {
   onToggleHaptics: (enabled: boolean) => void;
   onPressLogout: () => void;
   onPressHelp: () => void;
+  onPressCredits: () => void;
 
   // Instructions Overlay
   isInstructionsVisible: boolean;
@@ -60,6 +62,10 @@ interface GameOverlaysProps {
   // Home/Play Overlays
   onCloseHomeOverlay: () => void;
   onClosePlayOverlay: () => void;
+
+  // Credits Overlay
+  isCreditsOverlayVisible: boolean;
+  onCreditsClose: () => void;
 }
 
 const GameOverlays: React.FC<GameOverlaysProps> = ({
@@ -85,6 +91,7 @@ const GameOverlays: React.FC<GameOverlaysProps> = ({
   onToggleHaptics,
   onPressLogout,
   onPressHelp,
+  onPressCredits,
 
   // Instructions Overlay
   isInstructionsVisible,
@@ -107,6 +114,10 @@ const GameOverlays: React.FC<GameOverlaysProps> = ({
   isWatchAdModalVisible,
   onWatchAdAccepted,
   onWatchAdDeclined,
+
+  // Credits Overlay
+  isCreditsOverlayVisible,
+  onCreditsClose,
 }) => {
   return (
     <>
@@ -135,6 +146,7 @@ const GameOverlays: React.FC<GameOverlaysProps> = ({
         onToggleHaptics={onToggleHaptics}
         onPressLogout={onPressLogout}
         onPressHelp={onPressHelp}
+        onPressCredits={onPressCredits}
       />
 
       <InstructionsModal
@@ -170,6 +182,11 @@ const GameOverlays: React.FC<GameOverlaysProps> = ({
           onClose={onWatchAdDeclined}
         />
       )}
+
+      <CreditsModal
+        isVisible={isCreditsOverlayVisible}
+        onClose={onCreditsClose}
+      />
     </>
   );
 };

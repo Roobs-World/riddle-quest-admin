@@ -51,6 +51,9 @@ module.exports = {
       "android.permission.MODIFY_AUDIO_SETTINGS",
       "android.permission.WRITE_EXTERNAL_STORAGE",
     ],
+    // Development build configuration to help with Google Play Services
+    versionCode: 1,
+    allowBackup: false,
   },
   web: {
     favicon: "./assets/images/favicon.png",

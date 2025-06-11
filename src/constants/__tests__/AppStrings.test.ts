@@ -487,6 +487,7 @@ describe("AppStrings", () => {
       expect(AppStrings.Settings.HAPTICS_TOGGLE).toBe("Haptics");
       expect(AppStrings.Settings.HELP_BUTTON).toBe("Help");
       expect(AppStrings.Settings.LOGOUT_BUTTON).toBe("Logout");
+      expect(AppStrings.Settings.CREDITS_BUTTON).toBe("Credits");
       expect(AppStrings.Settings.CLOSE_BUTTON).toBe("Close");
     });
 
@@ -499,6 +500,26 @@ describe("AppStrings", () => {
 
     it("should have all strings as non-empty values", () => {
       Object.values(AppStrings.Settings).forEach((value) => {
+        expect(typeof value).toBe("string");
+        expect(value.length).toBeGreaterThan(0);
+      });
+    });
+  });
+
+  describe("Credits", () => {
+    it("should have credits screen strings", () => {
+      expect(AppStrings.Credits.TITLE).toBe("Credits");
+      expect(AppStrings.Credits.SUBTITLE).toBe(
+        "Meet the amazing team behind Qwordly"
+      );
+      expect(AppStrings.Credits.THANK_YOU_TITLE).toBe("Thank You!");
+      expect(AppStrings.Credits.THANK_YOU_TEXT).toBe(
+        "Special thanks to all our contributors who made Qwordly possible. Your creativity, dedication, and passion brought this project to life."
+      );
+    });
+
+    it("should have all strings as non-empty values", () => {
+      Object.values(AppStrings.Credits).forEach((value) => {
         expect(typeof value).toBe("string");
         expect(value.length).toBeGreaterThan(0);
       });

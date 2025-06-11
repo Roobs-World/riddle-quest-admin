@@ -1,4 +1,4 @@
-// metro.config.js - Minimal config to bypass Metro dependency issues
+// metro.config.js - Enhanced config for better asset loading
 const { getDefaultConfig } = require("expo/metro-config");
 const { withNativeWind } = require("nativewind/metro");
 const path = require("path");
@@ -11,6 +11,37 @@ const config = getDefaultConfig(__dirname, {
 
 // Disable package exports to prevent module resolution issues
 config.resolver.unstable_enablePackageExports = false;
+
+// Enhanced asset configuration for better texture loading
+config.resolver.assetExts = [
+  ...config.resolver.assetExts,
+  "png",
+  "jpg",
+  "jpeg",
+  "gif",
+  "webp",
+  "svg",
+];
+
+// Optimize asset resolution for 3D textures
+config.resolver.platforms = ["ios", "android", "native", "web"];
+
+// Remove problematic path aliases - using direct relative paths instead
+// config.resolver.alias = {
+//   "@": path.resolve(__dirname, "assets"),
+//   "@/3d": path.resolve(__dirname, "assets/3d"),
+// };
+
+// Add Reanimated plugin to transformer
+config.transformer.getTransformOptions = async () => ({
+  transform: {
+    experimentalImportSupport: false,
+    inlineRequires: false,
+  },
+});
+
+// Enhanced asset transformer settings
+config.transformer.assetPlugins = ["expo-asset/tools/hashAssetFiles"];
 
 // Apply NativeWind configuration
 const windConfig = withNativeWind(config, {

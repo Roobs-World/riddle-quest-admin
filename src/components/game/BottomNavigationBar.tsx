@@ -44,7 +44,7 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
 
   return (
     <View
-      className="px-4 pt-6 pb-2"
+      className="absolute bottom-0 left-0 right-0 px-4 pt-6 pb-2 bg-cream-light"
       style={{ paddingBottom: insets.bottom + 8 }}
       testID="bottom-navigation-bar"
     >

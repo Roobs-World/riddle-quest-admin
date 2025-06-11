@@ -8,7 +8,6 @@ import Animated, {
 } from "react-native-reanimated";
 
 import type { SubmittedGuess, Feedback } from "../../hooks/types"; // Import Feedback type from types.ts
-import { useTileCapture } from "../../hooks/useTileCapture";
 import { scale } from "../../utils/responsive";
 import { styles } from "../../styles";
 
@@ -18,14 +17,12 @@ import { styles } from "../../styles";
  * @property {string[]} currentGuess - The current guess being typed by the user.
  * @property {number} answerLength - The length of the answer.
  * @property {number} shakeKey - Added shakeKey prop
- * @property {(rowIndex: number, cellIndex: number, ref: View | null) => void} setTileRef - Optional callback to set tile refs for animation capture
  */
 type GuessGridProps = {
   guesses: SubmittedGuess[]; // Now accepts SubmittedGuess[]
   currentGuess: string[]; // Add currentGuess prop
   shakeKey: number; // Added shakeKey prop
   answerLength: number; // Add answerLength prop
-  setTileRef?: (rowIndex: number, cellIndex: number, ref: View | null) => void; // Optional tile ref setter
 };
 
 /**
@@ -40,15 +37,11 @@ const GuessGrid: React.FC<GuessGridProps> = ({
   currentGuess,
   shakeKey,
   answerLength,
-  setTileRef,
 }) => {
   // Responsive sizes
   const TILE_SIZE = scale(56); // Base size 56px
   const TILE_MARGIN = scale(2); // Base margin 2px
   const ROW_HEIGHT = TILE_SIZE + TILE_MARGIN * 2 + scale(4); // Tile + margins + mb-1 (4px)
-
-  // Tile capture system for shattering animation
-  const { setTileRef: setInternalTileRef } = useTileCapture();
 
   // Animation shared value for shaking
   const shakeAnimation = useSharedValue(0);
@@ -135,21 +128,6 @@ const GuessGrid: React.FC<GuessGridProps> = ({
     return "text-transparent"; // Transparent for empty cells (no letters shown)
   };
 
-  // Handle both internal tile refs and external setTileRef prop
-  const handleTileRef = (
-    rowIndex: number,
-    cellIndex: number,
-    ref: View | null
-  ) => {
-    // Set ref for internal tile capture system
-    setInternalTileRef(rowIndex, cellIndex, ref);
-
-    // Also call external setTileRef if provided (for other shattering animations)
-    if (setTileRef) {
-      setTileRef(rowIndex, cellIndex, ref);
-    }
-  };
-
   return (
     <View className="w-full items-center py-4 mt-2 flex-grow">
       {/* Masking container that clips content sliding upward */}
@@ -181,7 +159,6 @@ const GuessGrid: React.FC<GuessGridProps> = ({
                 return (
                   <View
                     key={cellIndex}
-                    ref={(ref) => handleTileRef(rowIndex, cellIndex, ref)}
                     className={`border ${borderColor} items-center justify-center rounded ${backgroundColor}`}
                     style={{
                       width: TILE_SIZE,
