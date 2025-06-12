@@ -14,8 +14,41 @@ import {
   DoubleSide,
   Texture,
   TextureLoader,
+  Object3D,
 } from "three";
 import { Asset } from "expo-asset";
+
+// FBX Loader interface for typing
+interface FBXLoaderType {
+  load(
+    url: string,
+    onLoad: (object: Object3D) => void,
+    onProgress?: (event: ProgressEvent) => void,
+    onError?: (event: ErrorEvent) => void
+  ): void;
+}
+
+// FBX Loader class - will be null if not available
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let FBXLoader: (new () => FBXLoaderType) | null = null;
+
+// Check FBX Loader availability at startup
+(() => {
+  try {
+    // Note: FBXLoader may not be available in React Native/Expo environment
+    // We'll import it dynamically and handle errors gracefully
+    const loaderModule = eval("require")(
+      "three/examples/jsm/loaders/FBXLoader.js"
+    );
+    FBXLoader = loaderModule.FBXLoader;
+    console.log("SolarSystemPreloader: FBXLoader available");
+  } catch {
+    console.warn(
+      "SolarSystemPreloader: FBXLoader not available - will use fallback geometries"
+    );
+    console.warn("This is normal in React Native/Expo environments");
+  }
+})();
 
 // Import textures using relative path to assets
 import texPlanetR from "../../assets/3d/tex_planet_r.png";
@@ -36,6 +69,19 @@ import texRingB from "../../assets/3d/tex_ring_b.png";
 // Gradient textures for glowing effects
 import texGradientCircle from "../../assets/3d/tex_gradient_circle.png";
 import texGradientCircleSun from "../../assets/3d/tex_gradient_circle_sun.png";
+
+// Import FBX models
+import sunFbx from "../../assets/3d/sun.fbx";
+import planetVFbx from "../../assets/3d/planet_v.fbx";
+import planetRFbx from "../../assets/3d/planet_r.fbx";
+import planetKFbx from "../../assets/3d/planet_k.fbx";
+import planetDFbx from "../../assets/3d/planet_d.fbx";
+import planetAFbx from "../../assets/3d/planet_a.fbx";
+import moonKDFbx from "../../assets/3d/moon_k_d.fbx";
+import moonKCFbx from "../../assets/3d/moon_k_c.fbx";
+import moonDGFbx from "../../assets/3d/moon_d_g.fbx";
+import moonDFFbx from "../../assets/3d/moon_d_f.fbx";
+import moonAHFbx from "../../assets/3d/moon_a_h.fbx";
 
 export interface PlanetConfig {
   id: string;
@@ -70,13 +116,21 @@ export interface TexturePreloadProgress {
   percentage: number;
 }
 
+export interface FBXPreloadProgress {
+  loaded: number;
+  total: number;
+  currentModel: string;
+  percentage: number;
+}
+
 export interface SolarSystemPreloadProgress {
-  phase: "textures" | "geometries" | "materials" | "scene" | "complete";
+  phase: "textures" | "fbx" | "geometries" | "materials" | "scene" | "complete";
   loaded: number;
   total: number;
   currentItem: string;
   percentage: number;
   textureProgress?: TexturePreloadProgress;
+  fbxProgress?: FBXPreloadProgress;
 }
 
 export interface PreloadedSolarSystem {
@@ -89,6 +143,7 @@ export interface PreloadedSolarSystem {
   geometries: Map<string, SphereGeometry | RingGeometry>;
   materials: Map<string, MeshPhongMaterial | MeshBasicMaterial>;
   textures: Map<string, Texture | null>;
+  fbxModels: Map<string, Object3D | null>;
 }
 
 export class SolarSystemPreloader {
@@ -96,6 +151,7 @@ export class SolarSystemPreloader {
   private static isPreloading = false;
   private static isPreloaded = false;
   private static textureCache = new Map<string, Texture | null>();
+  private static fbxCache = new Map<string, Object3D | null>();
 
   // Define texture mapping for solar system - matching notes.txt structure
   private static readonly textureMapping = [
@@ -117,6 +173,21 @@ export class SolarSystemPreloader {
     // Gradient textures for glowing effects
     { key: "glow_planet", path: texGradientCircle },
     { key: "glow_sun", path: texGradientCircleSun },
+  ];
+
+  // Define FBX model mapping
+  private static readonly fbxMapping = [
+    { key: "sun", path: sunFbx },
+    { key: "planet_r", path: planetRFbx },
+    { key: "planet_a", path: planetAFbx },
+    { key: "planet_d", path: planetDFbx },
+    { key: "planet_v", path: planetVFbx },
+    { key: "planet_k", path: planetKFbx },
+    { key: "moon_a_h", path: moonAHFbx },
+    { key: "moon_d_f", path: moonDFFbx },
+    { key: "moon_d_g", path: moonDGFbx },
+    { key: "moon_k_c", path: moonKCFbx },
+    { key: "moon_k_d", path: moonKDFbx },
   ];
 
   // Solar system configuration based on notes.txt - using actual FBX model structure
@@ -266,6 +337,69 @@ export class SolarSystemPreloader {
   }
 
   /**
+   * Load FBX model from bundled asset using expo-asset - TRUE LOCAL LOADING
+   */
+  private static async loadFBXFromAsset(
+    loader: FBXLoaderType,
+    assetId: number,
+    cacheKey: string
+  ): Promise<Object3D> {
+    console.time(`SolarSystemPreloader: Load FBX ${cacheKey}`);
+
+    try {
+      console.log(
+        `SolarSystemPreloader: Loading FBX ${cacheKey} from bundled asset using expo-asset`
+      );
+
+      // Use expo-asset to get proper local URI for bundled assets
+      const asset = Asset.fromModule(assetId);
+      await asset.downloadAsync(); // Ensure asset is available locally
+
+      console.log(
+        `SolarSystemPreloader: FBX Asset ${cacheKey} local URI: ${asset.localUri}`
+      );
+
+      // Load FBX using the local URI (no network dependency)
+      return new Promise((resolve, reject) => {
+        loader.load(
+          asset.localUri || asset.uri,
+          (fbx: Object3D) => {
+            console.timeEnd(`SolarSystemPreloader: Load FBX ${cacheKey}`);
+            console.log(
+              `SolarSystemPreloader: ✅ Successfully loaded FBX ${cacheKey} from bundled asset`
+            );
+            resolve(fbx);
+          },
+          (progress: ProgressEvent) => {
+            console.log(
+              `SolarSystemPreloader: FBX ${cacheKey} loading progress:`,
+              progress
+            );
+          },
+          (error: ErrorEvent) => {
+            console.error(
+              `SolarSystemPreloader: ❌ Failed to load FBX ${cacheKey} from bundled asset:`,
+              error
+            );
+            console.error(`SolarSystemPreloader: FBX Asset ID was: ${assetId}`);
+            reject(error);
+          }
+        );
+      });
+    } catch (error) {
+      console.error(
+        `SolarSystemPreloader: ❌ Failed to load FBX ${cacheKey} from bundled asset:`,
+        error
+      );
+      console.error(`SolarSystemPreloader: FBX Asset ID was: ${assetId}`);
+      console.error(
+        `SolarSystemPreloader: This indicates an issue with FBX asset bundling or expo-asset compatibility`
+      );
+      throw error;
+    }
+  }
+
+  /**
    * Preload all solar system textures - FAULT-TOLERANT VERSION
    */
   private static async preloadTextures(
@@ -386,6 +520,149 @@ export class SolarSystemPreloader {
   }
 
   /**
+   * Preload all solar system FBX models - FAULT-TOLERANT VERSION
+   */
+  private static async preloadFBXModels(
+    onProgress?: (progress: FBXPreloadProgress) => void
+  ): Promise<Map<string, Object3D | null>> {
+    if (this.fbxCache.size > 0) {
+      console.log(
+        "SolarSystemPreloader: FBX models already preloaded, returning cache"
+      );
+      return this.fbxCache;
+    }
+
+    // Check if FBXLoader is available
+    if (!FBXLoader) {
+      console.warn(
+        "SolarSystemPreloader: FBXLoader not available - skipping FBX model loading"
+      );
+      console.warn("All objects will use fallback geometries");
+
+      // Mark all FBX models as failed (null) so fallback geometries are used
+      this.fbxMapping.forEach(({ key }) => {
+        this.fbxCache.set(key, null);
+      });
+
+      // Report progress as complete
+      if (onProgress) {
+        onProgress({
+          loaded: this.fbxMapping.length,
+          total: this.fbxMapping.length,
+          currentModel: "FBX loader unavailable - using fallbacks",
+          percentage: 100,
+        });
+      }
+
+      return this.fbxCache;
+    }
+
+    console.log(
+      "SolarSystemPreloader: Starting fault-tolerant FBX model preloading..."
+    );
+    console.time("SolarSystemPreloader: Total FBX preload time");
+
+    // Debug: Log all FBX paths
+    console.log("SolarSystemPreloader: FBX mapping paths:");
+    this.fbxMapping.forEach(({ key, path }) => {
+      console.log(`  ${key}: ${path}`);
+    });
+
+    const fbxLoader = new FBXLoader();
+    const total = this.fbxMapping.length;
+    let loaded = 0;
+
+    // Load FBX models in small batches with fault tolerance
+    const BATCH_SIZE = 1; // Smaller batch size for FBX loading
+    for (let i = 0; i < this.fbxMapping.length; i += BATCH_SIZE) {
+      const batch = this.fbxMapping.slice(i, i + BATCH_SIZE);
+      console.log(
+        `SolarSystemPreloader: Loading FBX batch ${
+          Math.floor(i / BATCH_SIZE) + 1
+        } (${batch.length} models)`
+      );
+
+      const batchPromises = batch.map(async ({ key, path }) => {
+        try {
+          const fbx = await this.loadFBXFromAsset(fbxLoader, path, key);
+          this.fbxCache.set(key, fbx);
+          console.log(
+            `SolarSystemPreloader: ✅ Successfully loaded FBX ${key}`
+          );
+
+          loaded++;
+          const percentage = Math.round((loaded / total) * 100);
+
+          if (onProgress) {
+            onProgress({
+              loaded,
+              total,
+              currentModel: key,
+              percentage,
+            });
+          }
+
+          return { key, success: true };
+        } catch (error) {
+          console.warn(
+            `SolarSystemPreloader: ⚠️ Failed to load FBX ${key}, continuing anyway:`,
+            error
+          );
+          this.fbxCache.set(key, null); // Store null for failed FBX models
+          loaded++;
+
+          const percentage = Math.round((loaded / total) * 100);
+          if (onProgress) {
+            onProgress({
+              loaded,
+              total,
+              currentModel: `${key} (failed)`,
+              percentage,
+            });
+          }
+
+          return { key, success: false, error };
+        }
+      });
+
+      // Wait for current batch to complete before starting next batch
+      await Promise.all(batchPromises);
+
+      // Small delay between batches to prevent overwhelming the system
+      if (i + BATCH_SIZE < this.fbxMapping.length) {
+        await new Promise((resolve) => setTimeout(resolve, 300)); // Increased delay for FBX
+      }
+    }
+
+    console.timeEnd("SolarSystemPreloader: Total FBX preload time");
+
+    const successful = Array.from(this.fbxCache.values()).filter(
+      (m) => m !== null
+    ).length;
+    const failed = total - successful;
+
+    console.log(
+      `SolarSystemPreloader: ✅ FBX preloading complete - ${successful} successful, ${failed} failed`
+    );
+
+    if (failed > 0) {
+      const failedKeys = Array.from(this.fbxCache.entries())
+        .filter(([, model]) => model === null)
+        .map(([key]) => key);
+      console.warn(
+        `SolarSystemPreloader: ⚠️ Failed FBX models (will use fallback geometries): ${failedKeys.join(
+          ", "
+        )}`
+      );
+    }
+
+    console.log(
+      "SolarSystemPreloader: 🎯 FBX preloading completed with fault tolerance"
+    );
+    return this.fbxCache;
+  }
+
+  /**
    * Preload the complete 3D solar system scene
    */
   static async preloadSolarSystem(
@@ -435,7 +712,7 @@ export class SolarSystemPreloader {
         "SolarSystemPreloader: Starting complete scene preloading..."
       );
 
-      // Phase 1: Preload textures (40% of progress) with mandatory loading
+      // Phase 1: Preload textures (30% of progress) with mandatory loading
       console.log(
         "SolarSystemPreloader: Phase 1 - Preloading textures (MANDATORY)..."
       );
@@ -447,7 +724,7 @@ export class SolarSystemPreloader {
             loaded: textureProgress.loaded,
             total: textureProgress.total,
             currentItem: textureProgress.currentTexture,
-            percentage: Math.round(textureProgress.percentage * 0.4), // 40% of total
+            percentage: Math.round(textureProgress.percentage * 0.3), // 30% of total
             textureProgress,
           });
         }
@@ -486,8 +763,61 @@ export class SolarSystemPreloader {
         );
       }
 
-      // Phase 2: Create geometries (20% of progress)
-      console.log("SolarSystemPreloader: Phase 2 - Creating geometries...");
+      // Phase 2: Preload FBX models (30% of progress)
+      console.log(
+        "SolarSystemPreloader: Phase 2 - Preloading FBX models (OPTIONAL)..."
+      );
+
+      const fbxModels = await this.preloadFBXModels((fbxProgress) => {
+        if (onProgress) {
+          onProgress({
+            phase: "fbx",
+            loaded: fbxProgress.loaded,
+            total: fbxProgress.total,
+            currentItem: fbxProgress.currentModel,
+            percentage: 30 + Math.round(fbxProgress.percentage * 0.3), // 30% + 30%
+            fbxProgress,
+          });
+        }
+      });
+
+      // Check FBX loading results
+      const successfulFBX = Array.from(fbxModels.values()).filter(
+        (m) => m !== null
+      ).length;
+      const totalFBX = fbxModels.size;
+      const fbxSuccessRate = successfulFBX / totalFBX;
+
+      console.log(
+        `SolarSystemPreloader: FBX loading results - ${successfulFBX}/${totalFBX} successful (${Math.round(
+          fbxSuccessRate * 100
+        )}%)`
+      );
+
+      if (fbxSuccessRate < 1.0) {
+        // Some FBX models failed to load - continue with fallback geometries
+        const failedFBX = Array.from(fbxModels.entries())
+          .filter(([, model]) => model === null)
+          .map(([key]) => key);
+
+        console.warn(
+          "SolarSystemPreloader: Some FBX models failed to load - continuing with fallback geometries"
+        );
+        console.warn(
+          `Failed FBX models (using fallback geometries): ${failedFBX.join(
+            ", "
+          )}`
+        );
+        console.log(
+          `SolarSystemPreloader: ${successfulFBX}/${totalFBX} FBX models loaded successfully, ${failedFBX.length} using fallback geometries`
+        );
+        console.log(
+          "SolarSystemPreloader: The solar system will render with mixed FBX models and fallback geometries"
+        );
+      }
+
+      // Phase 3: Create geometries (15% of progress) - fallback for failed FBX
+      console.log("SolarSystemPreloader: Phase 3 - Creating geometries...");
       const geometries = await this.createGeometries(
         (loaded, total, current) => {
           if (onProgress) {
@@ -496,14 +826,14 @@ export class SolarSystemPreloader {
               loaded,
               total,
               currentItem: current,
-              percentage: 40 + Math.round((loaded / total) * 20), // 40% + 20%
+              percentage: 60 + Math.round((loaded / total) * 15), // 60% + 15%
             });
           }
         }
       );
 
-      // Phase 3: Create materials (20% of progress)
-      console.log("SolarSystemPreloader: Phase 3 - Creating materials...");
+      // Phase 4: Create materials (15% of progress)
+      console.log("SolarSystemPreloader: Phase 4 - Creating materials...");
       const materials = await this.createMaterials(
         textures,
         (loaded, total, current) => {
@@ -513,18 +843,19 @@ export class SolarSystemPreloader {
               loaded,
               total,
               currentItem: current,
-              percentage: 60 + Math.round((loaded / total) * 20), // 60% + 20%
+              percentage: 75 + Math.round((loaded / total) * 15), // 75% + 15%
             });
           }
         }
       );
 
-      // Phase 4: Create complete scene (20% of progress)
-      console.log("SolarSystemPreloader: Phase 4 - Creating complete scene...");
+      // Phase 5: Create complete scene (10% of progress)
+      console.log("SolarSystemPreloader: Phase 5 - Creating complete scene...");
       this.preloadedSystem = await this.createCompleteScene(
         geometries,
         materials,
         textures,
+        fbxModels,
         (loaded, total, current) => {
           if (onProgress) {
             onProgress({
@@ -532,7 +863,7 @@ export class SolarSystemPreloader {
               loaded,
               total,
               currentItem: current,
-              percentage: 80 + Math.round((loaded / total) * 20), // 80% + 20%
+              percentage: 90 + Math.round((loaded / total) * 10), // 90% + 10%
             });
           }
         }
@@ -797,6 +1128,7 @@ export class SolarSystemPreloader {
     geometries: Map<string, SphereGeometry | RingGeometry>,
     materials: Map<string, MeshPhongMaterial | MeshBasicMaterial>,
     textures: Map<string, Texture | null>,
+    fbxModels: Map<string, Object3D | null>,
     onProgress?: (loaded: number, total: number, current: string) => void
   ): Promise<PreloadedSolarSystem> {
     // Initialize scene
@@ -843,16 +1175,41 @@ export class SolarSystemPreloader {
 
     onProgress?.(2, 10, "Lighting setup");
 
-    // Create sun
-    const sunGeometry = geometries.get("sun")!;
-    const sunMaterial = materials.get("sun")!;
-    const sun = new Mesh(sunGeometry, sunMaterial);
-    sun.position.set(0, 0, 0);
-    sun.userData = { isSun: true };
-    scene.add(sun);
-    meshes.push(sun);
+    // Create sun - use FBX if available, otherwise fallback to geometry
+    const sunFBX = fbxModels.get("sun");
+    if (sunFBX) {
+      // Use FBX model for sun
+      const sun = sunFBX.clone();
+      sun.position.set(0, 0, 0);
+      sun.scale.set(6.0, 6.0, 6.0); // Scale to match desired size
+      sun.userData = { isSun: true, isFromFBX: true };
 
-    console.log(`☀️ Sun created at position (0, 0, 0) with radius 6.0`);
+      // Apply material to FBX mesh
+      const sunMaterial = materials.get("sun")!;
+      sun.traverse((child) => {
+        if (child instanceof Mesh) {
+          child.material = sunMaterial;
+          meshes.push(child);
+        }
+      });
+
+      scene.add(sun);
+      console.log(
+        `☀️ Sun created from FBX model at position (0, 0, 0) with scale 6.0`
+      );
+    } else {
+      // Fallback to geometry-based sun
+      const sunGeometry = geometries.get("sun")!;
+      const sunMaterial = materials.get("sun")!;
+      const sun = new Mesh(sunGeometry, sunMaterial);
+      sun.position.set(0, 0, 0);
+      sun.userData = { isSun: true, isFromFBX: false };
+      scene.add(sun);
+      meshes.push(sun);
+      console.log(
+        `☀️ Sun created from geometry at position (0, 0, 0) with radius 6.0`
+      );
+    }
 
     onProgress?.(3, 10, "Sun created");
 
@@ -869,28 +1226,73 @@ export class SolarSystemPreloader {
         orbitAngle: Math.random() * Math.PI * 2,
       };
 
-      // Get preloaded planet texture (may be null if failed to load)
+      // Get preloaded planet texture and FBX model (may be null if failed to load)
       const planetTexture = textures.get(planetConfig.id);
+      const planetFBX = fbxModels.get(planetConfig.id);
 
-      // Always create planet - use fallback material if texture failed
-      console.log(
-        `🪐 Creating planet ${planetConfig.id} ${
-          planetTexture ? "with texture" : "with fallback color"
-        }`
-      );
+      // Create planet - use FBX if available, otherwise fallback to geometry
+      let planet: Object3D | Mesh;
 
-      const planetGeometry = geometries.get(`planet_${planetConfig.id}`)!;
-      const planetMaterial = materials.get(`planet_${planetConfig.id}`)!;
+      if (planetFBX) {
+        console.log(
+          `🪐 Creating planet ${planetConfig.id} from FBX model ${
+            planetTexture ? "with texture" : "with fallback color"
+          }`
+        );
 
-      const planet = new Mesh(planetGeometry, planetMaterial);
-      planet.position.set(planetConfig.orbitRadius, 0, 0);
-      planet.userData = { isPlanet: true, config: planetConfig };
-      planetGroup.add(planet);
-      meshes.push(planet);
+        planet = planetFBX.clone();
+        planet.position.set(planetConfig.orbitRadius, 0, 0);
+        planet.scale.set(
+          planetConfig.radius,
+          planetConfig.radius,
+          planetConfig.radius
+        );
+        planet.userData = {
+          isPlanet: true,
+          config: planetConfig,
+          isFromFBX: true,
+        };
 
-      console.log(
-        `🪐 Planet ${planetConfig.id} created at position (${planetConfig.orbitRadius}, 0, 0) with radius ${planetConfig.radius}`
-      );
+        // Apply material to all meshes in the FBX model
+        const planetMaterial = materials.get(`planet_${planetConfig.id}`)!;
+        planet.traverse((child) => {
+          if (child instanceof Mesh) {
+            child.material = planetMaterial;
+            meshes.push(child);
+          }
+        });
+
+        planetGroup.add(planet);
+        console.log(
+          `🪐 Planet ${planetConfig.id} created from FBX at position (${planetConfig.orbitRadius}, 0, 0) with scale ${planetConfig.radius}`
+        );
+      } else {
+        // Fallback to geometry-based planet
+        console.log(
+          `🪐 Creating planet ${planetConfig.id} from geometry ${
+            planetTexture ? "with texture" : "with fallback color"
+          }`
+        );
+
+        const planetGeometry = geometries.get(`planet_${planetConfig.id}`)!;
+        const planetMaterial = materials.get(`planet_${planetConfig.id}`)!;
+
+        planet = new Mesh(planetGeometry, planetMaterial);
+        planet.position.set(planetConfig.orbitRadius, 0, 0);
+        planet.userData = {
+          isPlanet: true,
+          config: planetConfig,
+          isFromFBX: false,
+        };
+        planetGroup.add(planet);
+        if (planet instanceof Mesh) {
+          meshes.push(planet);
+        }
+
+        console.log(
+          `🪐 Planet ${planetConfig.id} created from geometry at position (${planetConfig.orbitRadius}, 0, 0) with radius ${planetConfig.radius}`
+        );
+      }
 
       // Add rings if present (with fallback handling)
       if (planetConfig.rings) {
@@ -911,40 +1313,100 @@ export class SolarSystemPreloader {
         meshes.push(ring);
       }
 
-      // Add moons if present (with fallback handling)
+      // Add moons if present (with fallback handling and FBX support)
       if (planetConfig.moons) {
         for (let i = 0; i < planetConfig.moons.length; i++) {
           const moonConfig = planetConfig.moons[i];
           const moonTexture = textures.get(`moon_${planetConfig.id}_${i}`);
 
-          console.log(
-            `🌙 Adding moon ${i} for ${planetConfig.id} ${
-              moonTexture ? "with texture" : "with fallback color"
-            }`
-          );
+          // Get moon FBX key based on planet and moon assignments
+          let moonFBXKey = "";
+          if (planetConfig.id === "planet_a") {
+            moonFBXKey = "moon_a_h";
+          } else if (planetConfig.id === "planet_d") {
+            moonFBXKey = i === 0 ? "moon_d_f" : "moon_d_g";
+          } else if (planetConfig.id === "planet_k") {
+            moonFBXKey = i === 0 ? "moon_k_c" : "moon_k_d";
+          }
 
-          const moonGeometry = geometries.get(`moon_${planetConfig.id}_${i}`)!;
-          const moonMaterial = materials.get(`moon_${planetConfig.id}_${i}`)!;
+          const moonFBX = fbxModels.get(moonFBXKey);
 
-          const moon = new Mesh(moonGeometry, moonMaterial);
-
+          let moon: Object3D | Mesh;
           const moonAngle = (i * Math.PI * 2) / planetConfig.moons.length;
-          moon.position.set(
-            planetConfig.orbitRadius +
-              Math.cos(moonAngle) * moonConfig.orbitRadius,
-            0,
-            Math.sin(moonAngle) * moonConfig.orbitRadius
-          );
 
-          moon.userData = {
-            isMoon: true,
-            moonConfig,
-            moonIndex: i,
-            orbitAngle: moonAngle,
-          };
+          if (moonFBX) {
+            console.log(
+              `🌙 Adding moon ${i} (${moonFBXKey}) for ${
+                planetConfig.id
+              } from FBX ${
+                moonTexture ? "with texture" : "with fallback color"
+              }`
+            );
+
+            moon = moonFBX.clone();
+            moon.position.set(
+              planetConfig.orbitRadius +
+                Math.cos(moonAngle) * moonConfig.orbitRadius,
+              0,
+              Math.sin(moonAngle) * moonConfig.orbitRadius
+            );
+            moon.scale.set(
+              moonConfig.radius,
+              moonConfig.radius,
+              moonConfig.radius
+            );
+
+            // Apply material to all meshes in the FBX model
+            const moonMaterial = materials.get(`moon_${planetConfig.id}_${i}`)!;
+            moon.traverse((child) => {
+              if (child instanceof Mesh) {
+                child.material = moonMaterial;
+                meshes.push(child);
+              }
+            });
+
+            moon.userData = {
+              isMoon: true,
+              moonConfig,
+              moonIndex: i,
+              orbitAngle: moonAngle,
+              isFromFBX: true,
+            };
+          } else {
+            // Fallback to geometry-based moon
+            console.log(
+              `🌙 Adding moon ${i} for ${planetConfig.id} from geometry ${
+                moonTexture ? "with texture" : "with fallback color"
+              }`
+            );
+
+            const moonGeometry = geometries.get(
+              `moon_${planetConfig.id}_${i}`
+            )!;
+            const moonMaterial = materials.get(`moon_${planetConfig.id}_${i}`)!;
+
+            moon = new Mesh(moonGeometry, moonMaterial);
+            moon.position.set(
+              planetConfig.orbitRadius +
+                Math.cos(moonAngle) * moonConfig.orbitRadius,
+              0,
+              Math.sin(moonAngle) * moonConfig.orbitRadius
+            );
+
+            moon.userData = {
+              isMoon: true,
+              moonConfig,
+              moonIndex: i,
+              orbitAngle: moonAngle,
+              isFromFBX: false,
+            };
+
+            if (moon instanceof Mesh) {
+              meshes.push(moon);
+            }
+          }
 
           planetGroup.add(moon);
-          meshes.push(moon);
         }
       }
 
@@ -984,6 +1446,7 @@ export class SolarSystemPreloader {
       geometries,
       materials,
       textures,
+      fbxModels,
     };
   }
 

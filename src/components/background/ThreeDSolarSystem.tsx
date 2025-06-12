@@ -25,23 +25,6 @@ const ThreeDSolarSystem: React.FC = () => {
   const cameraRef = useRef<PerspectiveCamera | null>(null);
   const planetsGroupRef = useRef<Group | null>(null);
 
-  // Create a simple test cube to verify Three.js is working
-  const createTestCube = (scene: Scene) => {
-    console.log(
-      "ThreeDSolarSystem: Creating test cube for visibility verification"
-    );
-    const geometry = new BoxGeometry(5, 5, 5);
-    const material = new MeshBasicMaterial({ color: 0xff0000 });
-    const cube = new Mesh(geometry, material);
-    cube.position.set(0, 0, 0);
-    cube.userData = { isTestCube: true };
-    scene.add(cube);
-    console.log(
-      "ThreeDSolarSystem: Test cube added at (0, 0, 0) with size 5x5x5"
-    );
-    return cube;
-  };
-
   // Create a simple fallback solar system if preloaded system fails
   const createFallbackSolarSystem = (scene: Scene) => {
     console.log("ThreeDSolarSystem: Creating fallback solar system");
@@ -224,9 +207,6 @@ const ThreeDSolarSystem: React.FC = () => {
         `Camera FOV: ${camera.fov}, Near: ${camera.near}, Far: ${camera.far}`
       );
 
-      // Add a test cube to verify rendering is working
-      const testCube = createTestCube(scene);
-
       // Store references
       sceneRef.current = scene;
       cameraRef.current = camera;
@@ -281,12 +261,6 @@ const ThreeDSolarSystem: React.FC = () => {
           !planetsGroupRef.current
         )
           return;
-
-        // Rotate test cube for visibility verification
-        if (testCube) {
-          testCube.rotation.x += 0.01;
-          testCube.rotation.y += 0.01;
-        }
 
         // Animate planets orbital motion
         planetsGroupRef.current.children.forEach((planetGroup) => {
@@ -410,9 +384,6 @@ const ThreeDSolarSystem: React.FC = () => {
           !planetsGroupRef.current
         )
           return;
-
-        // Rotate test cube for visibility verification
-        createTestCube(sceneRef.current);
 
         // Animate planets orbital motion
         planetsGroupRef.current.children.forEach((planetGroup) => {
