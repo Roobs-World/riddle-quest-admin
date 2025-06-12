@@ -28,6 +28,10 @@ export default function App() {
       try {
         console.log("🚀 Starting app initialization...");
 
+        // Clear any existing solar system cache to start fresh
+        SolarSystemPreloader.clearCache();
+        console.log("🧹 Cleared solar system cache");
+
         // Load fonts and initialize sound manager
         console.log("📝 Loading fonts...");
         await loadFonts();
@@ -43,6 +47,9 @@ export default function App() {
           const preloadPromise = SolarSystemPreloader.preloadSolarSystem(
             (progress) => {
               setSolarSystemProgress(progress);
+              console.log(
+                `🌌 Solar system loading: ${progress.percentage}% - ${progress.currentItem}`
+              );
             }
           );
 
@@ -56,6 +63,16 @@ export default function App() {
 
           await Promise.race([preloadPromise, timeoutPromise]);
           console.log("✅ 3D solar system preloaded successfully");
+
+          // Verify the solar system was loaded properly
+          const system = SolarSystemPreloader.getPreloadedSystem();
+          if (system) {
+            console.log(
+              `🌌 Solar system verification: ${system.meshes.length} meshes, ${system.scene.children.length} scene children`
+            );
+          } else {
+            console.warn("⚠️ Solar system loaded but not accessible");
+          }
         } catch (error) {
           console.error("❌ Solar system preloading failed:", error);
 

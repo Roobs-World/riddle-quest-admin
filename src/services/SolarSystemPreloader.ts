@@ -13,8 +13,9 @@ import {
   MeshBasicMaterial,
   DoubleSide,
   Texture,
+  TextureLoader,
 } from "three";
-import { TexturePreloader, TexturePreloadProgress } from "./TexturePreloader";
+import { Asset } from "expo-asset";
 
 // Import textures using relative path to assets
 import texPlanetR from "../../assets/3d/tex_planet_r.png";
@@ -32,6 +33,10 @@ import texMoonD from "../../assets/3d/tex_moon_d.png";
 import texRingA from "../../assets/3d/tex_ring_a.png";
 import texRingB from "../../assets/3d/tex_ring_b.png";
 
+// Gradient textures for glowing effects
+import texGradientCircle from "../../assets/3d/tex_gradient_circle.png";
+import texGradientCircleSun from "../../assets/3d/tex_gradient_circle_sun.png";
+
 export interface PlanetConfig {
   id: string;
   texture: string;
@@ -41,6 +46,8 @@ export interface PlanetConfig {
   radius: number;
   moons?: MoonConfig[];
   rings?: RingConfig;
+  materialType?: "phong" | "emissive"; // For different material types
+  emissiveIntensity?: number; // For glowing effects
 }
 
 export interface MoonConfig {
@@ -54,6 +61,13 @@ interface RingConfig {
   texture: string;
   innerRadius: number;
   outerRadius: number;
+}
+
+export interface TexturePreloadProgress {
+  loaded: number;
+  total: number;
+  currentTexture: string;
+  percentage: number;
 }
 
 export interface SolarSystemPreloadProgress {
@@ -81,101 +95,295 @@ export class SolarSystemPreloader {
   private static preloadedSystem: PreloadedSolarSystem | null = null;
   private static isPreloading = false;
   private static isPreloaded = false;
+  private static textureCache = new Map<string, Texture | null>();
 
-  // Define realistic 3D solar system configuration matching the reference image
+  // Define texture mapping for solar system - matching notes.txt structure
+  private static readonly textureMapping = [
+    // Planet textures (matching notes.txt)
+    { key: "planet_r", path: texPlanetR },
+    { key: "planet_a", path: texPlanetA },
+    { key: "planet_d", path: texPlanetD },
+    { key: "planet_v", path: texPlanetV },
+    { key: "planet_k", path: texPlanetK },
+    // Ring textures
+    { key: "ring_planet_v", path: texRingA },
+    { key: "ring_planet_k", path: texRingB },
+    // Moon textures (matching notes.txt assignments)
+    { key: "moon_a_h", path: texMoonH }, // moon for planet_a
+    { key: "moon_d_f", path: texMoonF }, // first moon for planet_d
+    { key: "moon_d_g", path: texMoonG }, // second moon for planet_d
+    { key: "moon_k_c", path: texMoonC }, // first moon for planet_k
+    { key: "moon_k_d", path: texMoonD }, // second moon for planet_k
+    // Gradient textures for glowing effects
+    { key: "glow_planet", path: texGradientCircle },
+    { key: "glow_sun", path: texGradientCircleSun },
+  ];
+
+  // Solar system configuration based on notes.txt - using actual FBX model structure
+  // Scaled up for visibility from camera distance
   private static readonly solarSystemConfig: PlanetConfig[] = [
-    // Mercury - planet_r (small rocky planet, closest to sun) - SCALED UP for visibility
+    // planet_r - grey/green planet with no moons (closest)
     {
-      id: "mercury",
+      id: "planet_r",
       texture: texPlanetR,
-      orbitRadius: 6, // Increased from 4
-      orbitSpeed: 0.025,
-      rotationSpeed: 0.008,
-      radius: 0.5, // Increased from 0.25
-    },
-    // Venus - planet_v (medium planet with rings) - SCALED UP for visibility
-    {
-      id: "venus",
-      texture: texPlanetV,
-      orbitRadius: 9, // Increased from 6
-      orbitSpeed: 0.018,
-      rotationSpeed: 0.003,
-      radius: 0.8, // Increased from 0.4
-      rings: {
-        texture: texRingA,
-        innerRadius: 1.0, // Increased from 0.55
-        outerRadius: 1.5, // Increased from 0.9
-      },
-    },
-    // Earth - planet_a (blue-green planet with 1 moon) - SCALED UP for visibility
-    {
-      id: "earth",
-      texture: texPlanetA,
-      orbitRadius: 12, // Increased from 8
-      orbitSpeed: 0.015,
+      orbitRadius: 6,
+      orbitSpeed: 0.02,
       rotationSpeed: 0.01,
-      radius: 0.9, // Increased from 0.45
+      radius: 2.0, // Scaled up for visibility
+      materialType: "phong",
+    },
+    // planet_a - red planet with 1 moon: moon_a_h
+    {
+      id: "planet_a",
+      texture: texPlanetA,
+      orbitRadius: 8,
+      orbitSpeed: 0.015,
+      rotationSpeed: 0.008,
+      radius: 2.5, // Scaled up for visibility
+      materialType: "phong",
       moons: [
         {
           texture: texMoonH,
-          orbitRadius: 1.5, // Increased from 0.8
-          orbitSpeed: 0.08,
-          radius: 0.2, // Increased from 0.1
+          orbitRadius: 3,
+          orbitSpeed: 0.05,
+          radius: 0.8,
         },
       ],
     },
-    // Mars - planet_d (red planet with 2 small moons) - SCALED UP for visibility
+    // planet_d - large orange planet with 2 moons: moon_d_f + moon_d_g
     {
-      id: "mars",
+      id: "planet_d",
       texture: texPlanetD,
-      orbitRadius: 16, // Increased from 11
+      orbitRadius: 10,
       orbitSpeed: 0.012,
-      rotationSpeed: 0.009,
-      radius: 0.7, // Increased from 0.35
+      rotationSpeed: 0.006,
+      radius: 3.0, // Scaled up for visibility
+      materialType: "phong",
       moons: [
         {
           texture: texMoonF,
-          orbitRadius: 1.2, // Increased from 0.6
-          orbitSpeed: 0.06,
-          radius: 0.12, // Increased from 0.06
+          orbitRadius: 3.5,
+          orbitSpeed: 0.04,
+          radius: 0.8,
         },
         {
           texture: texMoonG,
-          orbitRadius: 1.8, // Increased from 0.9
-          orbitSpeed: 0.04,
-          radius: 0.1, // Increased from 0.05
+          orbitRadius: 4,
+          orbitSpeed: 0.03,
+          radius: 0.8,
         },
       ],
     },
-    // Jupiter - planet_k (largest planet with rings and moons) - SCALED UP for visibility
+    // planet_v - blue planet with small ring
     {
-      id: "jupiter",
+      id: "planet_v",
+      texture: texPlanetV,
+      orbitRadius: 12,
+      orbitSpeed: 0.01,
+      rotationSpeed: 0.005,
+      radius: 2.5, // Scaled up for visibility
+      materialType: "phong",
+      rings: {
+        texture: texRingA,
+        innerRadius: 3.5,
+        outerRadius: 5.0,
+      },
+    },
+    // planet_k - green planet with large ring and 2 moons: moon_k_c + moon_k_d
+    {
+      id: "planet_k",
       texture: texPlanetK,
-      orbitRadius: 22, // Increased from 16
+      orbitRadius: 15,
       orbitSpeed: 0.008,
-      rotationSpeed: 0.015,
-      radius: 2.0, // Increased from 1.2
+      rotationSpeed: 0.004,
+      radius: 4.0, // Scaled up for visibility
+      materialType: "phong",
       moons: [
         {
           texture: texMoonC,
-          orbitRadius: 3.0, // Increased from 1.8
-          orbitSpeed: 0.04,
-          radius: 0.3, // Increased from 0.18
+          orbitRadius: 5,
+          orbitSpeed: 0.06,
+          radius: 0.8,
         },
         {
           texture: texMoonD,
-          orbitRadius: 4.0, // Increased from 2.5
-          orbitSpeed: 0.03,
-          radius: 0.25, // Increased from 0.15
+          orbitRadius: 6,
+          orbitSpeed: 0.04,
+          radius: 0.8,
         },
       ],
       rings: {
         texture: texRingB,
-        innerRadius: 2.5, // Increased from 1.4
-        outerRadius: 3.5, // Increased from 2.2
+        innerRadius: 5.0,
+        outerRadius: 7.0,
       },
     },
   ];
+
+  /**
+   * Load texture from bundled asset using expo-asset - TRUE LOCAL LOADING
+   */
+  private static async loadTextureFromAsset(
+    loader: TextureLoader,
+    assetId: number,
+    cacheKey: string
+  ): Promise<Texture> {
+    console.time(`SolarSystemPreloader: Load ${cacheKey}`);
+
+    try {
+      console.log(
+        `SolarSystemPreloader: Loading ${cacheKey} from bundled asset using expo-asset`
+      );
+
+      // Use expo-asset to get proper local URI for bundled assets
+      const asset = Asset.fromModule(assetId);
+      await asset.downloadAsync(); // Ensure asset is available locally
+
+      console.log(
+        `SolarSystemPreloader: Asset ${cacheKey} local URI: ${asset.localUri}`
+      );
+
+      // Load texture using the local URI (no network dependency)
+      const texture = loader.load(asset.localUri || asset.uri);
+
+      console.timeEnd(`SolarSystemPreloader: Load ${cacheKey}`);
+      console.log(
+        `SolarSystemPreloader: ✅ Successfully loaded ${cacheKey} from bundled asset`
+      );
+
+      return texture;
+    } catch (error) {
+      console.error(
+        `SolarSystemPreloader: ❌ Failed to load ${cacheKey} from bundled asset:`,
+        error
+      );
+      console.error(`SolarSystemPreloader: Asset ID was: ${assetId}`);
+      console.error(
+        `SolarSystemPreloader: This indicates an issue with asset bundling or expo-asset compatibility`
+      );
+      throw error;
+    }
+  }
+
+  /**
+   * Preload all solar system textures - FAULT-TOLERANT VERSION
+   */
+  private static async preloadTextures(
+    onProgress?: (progress: TexturePreloadProgress) => void
+  ): Promise<Map<string, Texture | null>> {
+    if (this.textureCache.size > 0) {
+      console.log(
+        "SolarSystemPreloader: Textures already preloaded, returning cache"
+      );
+      return this.textureCache;
+    }
+
+    console.log(
+      "SolarSystemPreloader: Starting fault-tolerant texture preloading..."
+    );
+    console.time("SolarSystemPreloader: Total texture preload time");
+
+    // Debug: Log all texture paths
+    console.log("SolarSystemPreloader: Texture mapping paths:");
+    this.textureMapping.forEach(({ key, path }) => {
+      console.log(`  ${key}: ${path}`);
+    });
+
+    const textureLoader = new TextureLoader();
+    const total = this.textureMapping.length;
+    let loaded = 0;
+
+    // Load textures in small batches with fault tolerance
+    const BATCH_SIZE = 2; // Reduced batch size for better stability
+    for (let i = 0; i < this.textureMapping.length; i += BATCH_SIZE) {
+      const batch = this.textureMapping.slice(i, i + BATCH_SIZE);
+      console.log(
+        `SolarSystemPreloader: Loading texture batch ${
+          Math.floor(i / BATCH_SIZE) + 1
+        } (${batch.length} textures)`
+      );
+
+      const batchPromises = batch.map(async ({ key, path }) => {
+        try {
+          const texture = await this.loadTextureFromAsset(
+            textureLoader,
+            path,
+            key
+          );
+          this.textureCache.set(key, texture);
+          console.log(`SolarSystemPreloader: ✅ Successfully loaded ${key}`);
+
+          loaded++;
+          const percentage = Math.round((loaded / total) * 100);
+
+          if (onProgress) {
+            onProgress({
+              loaded,
+              total,
+              currentTexture: key,
+              percentage,
+            });
+          }
+
+          return { key, success: true };
+        } catch (error) {
+          console.warn(
+            `SolarSystemPreloader: ⚠️ Failed to load ${key}, continuing anyway:`,
+            error
+          );
+          this.textureCache.set(key, null); // Store null for failed textures
+          loaded++;
+
+          const percentage = Math.round((loaded / total) * 100);
+          if (onProgress) {
+            onProgress({
+              loaded,
+              total,
+              currentTexture: `${key} (failed)`,
+              percentage,
+            });
+          }
+
+          return { key, success: false, error };
+        }
+      });
+
+      // Wait for current batch to complete before starting next batch
+      await Promise.all(batchPromises);
+
+      // Small delay between batches to prevent overwhelming the system
+      if (i + BATCH_SIZE < this.textureMapping.length) {
+        await new Promise((resolve) => setTimeout(resolve, 200)); // Increased delay
+      }
+    }
+
+    console.timeEnd("SolarSystemPreloader: Total texture preload time");
+
+    const successful = Array.from(this.textureCache.values()).filter(
+      (t) => t !== null
+    ).length;
+    const failed = total - successful;
+
+    console.log(
+      `SolarSystemPreloader: ✅ Texture preloading complete - ${successful} successful, ${failed} failed`
+    );
+
+    if (failed > 0) {
+      const failedKeys = Array.from(this.textureCache.entries())
+        .filter(([, texture]) => texture === null)
+        .map(([key]) => key);
+      console.warn(
+        `SolarSystemPreloader: ⚠️ Failed textures (will use fallbacks): ${failedKeys.join(
+          ", "
+        )}`
+      );
+    }
+
+    console.log(
+      "SolarSystemPreloader: 🎯 Texture preloading completed with fault tolerance"
+    );
+    return this.textureCache;
+  }
 
   /**
    * Preload the complete 3D solar system scene
@@ -232,20 +440,18 @@ export class SolarSystemPreloader {
         "SolarSystemPreloader: Phase 1 - Preloading textures (MANDATORY)..."
       );
 
-      const textures = await TexturePreloader.preloadTextures(
-        (textureProgress) => {
-          if (onProgress) {
-            onProgress({
-              phase: "textures",
-              loaded: textureProgress.loaded,
-              total: textureProgress.total,
-              currentItem: textureProgress.currentTexture,
-              percentage: Math.round(textureProgress.percentage * 0.4), // 40% of total
-              textureProgress,
-            });
-          }
+      const textures = await this.preloadTextures((textureProgress) => {
+        if (onProgress) {
+          onProgress({
+            phase: "textures",
+            loaded: textureProgress.loaded,
+            total: textureProgress.total,
+            currentItem: textureProgress.currentTexture,
+            percentage: Math.round(textureProgress.percentage * 0.4), // 40% of total
+            textureProgress,
+          });
         }
-      );
+      });
 
       // Check texture loading results - all textures should load from local assets
       const successfulTextures = Array.from(textures.values()).filter(
@@ -363,35 +569,40 @@ export class SolarSystemPreloader {
   }
 
   /**
-   * Create and cache all required geometries
+   * Create enhanced geometries with high polygon counts for FBX-like quality
    */
   private static async createGeometries(
     onProgress?: (loaded: number, total: number, current: string) => void
   ): Promise<Map<string, SphereGeometry | RingGeometry>> {
     const geometries = new Map<string, SphereGeometry | RingGeometry>();
 
-    // Calculate total geometries needed
     const geometrySpecs: Array<{
       key: string;
       create: () => SphereGeometry | RingGeometry;
-    }> = [{ key: "sun", create: () => new SphereGeometry(3.0, 32, 32) }]; // Increased sun size from 2.0 to 3.0
+    }> = [
+      // High-quality sun geometry - scaled up for visibility
+      { key: "sun", create: () => new SphereGeometry(6.0, 64, 64) },
+    ];
 
-    // Add planet geometries
+    // Add high-quality planet geometries
     this.solarSystemConfig.forEach((planet) => {
+      // Very high polygon count for smooth, FBX-like appearance
+      const segments = planet.radius > 2 ? 128 : planet.radius > 1 ? 96 : 64;
+
       geometrySpecs.push({
-        key: `planet_${planet.radius}`,
-        create: () => new SphereGeometry(planet.radius, 24, 24),
+        key: `planet_${planet.id}`,
+        create: () => new SphereGeometry(planet.radius, segments, segments),
       });
 
-      // Add moon geometries
-      planet.moons?.forEach((moon) => {
+      // Add high-quality moon geometries
+      planet.moons?.forEach((moon, i) => {
         geometrySpecs.push({
-          key: `moon_${moon.radius}`,
-          create: () => new SphereGeometry(moon.radius, 16, 16),
+          key: `moon_${planet.id}_${i}`,
+          create: () => new SphereGeometry(moon.radius, 32, 32),
         });
       });
 
-      // Add ring geometries
+      // Add high-quality ring geometries
       if (planet.rings) {
         geometrySpecs.push({
           key: `ring_${planet.id}`,
@@ -399,7 +610,7 @@ export class SolarSystemPreloader {
             new RingGeometry(
               planet.rings!.innerRadius,
               planet.rings!.outerRadius,
-              24
+              128 // Very high segment count for smooth rings
             ),
         });
       }
@@ -421,7 +632,7 @@ export class SolarSystemPreloader {
   }
 
   /**
-   * Create and cache all required materials - FAULT-TOLERANT VERSION
+   * Create enhanced materials that mimic FBX model appearance
    */
   private static async createMaterials(
     textures: Map<string, Texture | null>,
@@ -433,97 +644,129 @@ export class SolarSystemPreloader {
       key: string;
       create: () => MeshPhongMaterial | MeshBasicMaterial;
     }> = [
+      // Enhanced sun material with bright emission-like appearance
       {
         key: "sun",
-        create: () => new MeshBasicMaterial({ color: 0xffaa00 }),
+        create: () =>
+          new MeshBasicMaterial({
+            color: 0xffaa00,
+            transparent: false,
+          }),
       },
     ];
 
-    // Add planet materials using bundled textures with fallbacks
+    // Add enhanced planet materials that look like FBX models
     this.solarSystemConfig.forEach((planet) => {
       const planetTexture = textures.get(planet.id);
 
-      // Define fallback colors for each planet
+      // Enhanced fallback colors matching FBX model appearance
       const fallbackColors = {
-        mercury: 0x8c7853, // Brownish
-        venus: 0xffc649, // Yellow
-        earth: 0x6b93d6, // Blue
-        mars: 0xcd5c5c, // Red
-        jupiter: 0xd8ca9d, // Tan
+        planet_r: 0x8c7853, // Rocky brownish
+        planet_a: 0x6b93d6, // Blue-red planet
+        planet_d: 0xcd5c5c, // Orange-red planet
+        planet_v: 0xffc649, // Blue planet
+        planet_k: 0xd8ca9d, // Green planet
       };
 
+      // Create sophisticated planet material
       materialSpecs.push({
         key: `planet_${planet.id}`,
         create: () => {
           if (planetTexture) {
-            console.log(`✅ Using texture for planet ${planet.id}`);
+            console.log(`✅ Using supplied texture for planet ${planet.id}`);
             return new MeshPhongMaterial({
               map: planetTexture,
               color: 0xffffff,
-              shininess: 100,
+              shininess: 20, // Slightly shiny for realism
               transparent: false,
+              // Enhanced lighting properties
+              specular: 0x222222,
+              reflectivity: 0.1,
             });
           } else {
-            console.warn(`⚠️ Using fallback color for planet ${planet.id}`);
+            console.warn(
+              `⚠️ Using fallback color for planet ${planet.id} - texture not loaded`
+            );
             return new MeshPhongMaterial({
               color:
                 fallbackColors[planet.id as keyof typeof fallbackColors] ||
                 0x888888,
-              shininess: 100,
+              shininess: 20,
               transparent: false,
+              specular: 0x222222,
+              reflectivity: 0.1,
             });
           }
         },
       });
 
-      // Add moon materials using bundled textures with fallbacks
+      // Add high-quality moon materials using actual moon names from notes.txt
       planet.moons?.forEach((moon, i) => {
-        const moonTexture = textures.get(`moon_${planet.id}_${i}`);
+        // Get the actual moon texture key based on planet and moon assignments
+        let moonTextureKey = "";
+        if (planet.id === "planet_a") {
+          moonTextureKey = "moon_a_h";
+        } else if (planet.id === "planet_d") {
+          moonTextureKey = i === 0 ? "moon_d_f" : "moon_d_g";
+        } else if (planet.id === "planet_k") {
+          moonTextureKey = i === 0 ? "moon_k_c" : "moon_k_d";
+        }
+
+        const moonTexture = textures.get(moonTextureKey);
         materialSpecs.push({
           key: `moon_${planet.id}_${i}`,
           create: () => {
             if (moonTexture) {
-              console.log(`✅ Using texture for moon ${planet.id}_${i}`);
+              console.log(
+                `✅ Using supplied texture for moon ${moonTextureKey} (${planet.id}_${i})`
+              );
               return new MeshPhongMaterial({
                 map: moonTexture,
                 color: 0xffffff,
-                shininess: 50,
+                shininess: 5, // Less shiny than planets
+                specular: 0x111111,
+                reflectivity: 0.05,
               });
             } else {
               console.warn(
-                `⚠️ Using fallback color for moon ${planet.id}_${i}`
+                `⚠️ Using fallback color for moon ${moonTextureKey} (${planet.id}_${i}) - texture not loaded`
               );
               return new MeshPhongMaterial({
-                color: 0xaaaaaa, // Gray fallback for moons
-                shininess: 50,
+                color: 0xaaaaaa,
+                shininess: 5,
+                specular: 0x111111,
+                reflectivity: 0.05,
               });
             }
           },
         });
       });
 
-      // Add ring materials using bundled textures with fallbacks
+      // Add high-quality ring materials
       if (planet.rings) {
         const ringTexture = textures.get(`ring_${planet.id}`);
         materialSpecs.push({
           key: `ring_mat_${planet.id}`,
           create: () => {
             if (ringTexture) {
-              console.log(`✅ Using texture for ring ${planet.id}`);
+              console.log(`✅ Using supplied texture for ring ${planet.id}`);
               return new MeshBasicMaterial({
                 map: ringTexture,
                 color: 0xffffff,
                 side: DoubleSide,
                 transparent: true,
-                opacity: 0.8,
+                opacity: 0.9,
+                alphaTest: 0.1,
               });
             } else {
-              console.warn(`⚠️ Using fallback color for ring ${planet.id}`);
+              console.warn(
+                `⚠️ Using fallback color for ring ${planet.id} - texture not loaded`
+              );
               return new MeshBasicMaterial({
-                color: 0x666666, // Dark gray fallback for rings
+                color: 0x666666,
                 side: DoubleSide,
                 transparent: true,
-                opacity: 0.6,
+                opacity: 0.7,
               });
             }
           },
@@ -543,9 +786,7 @@ export class SolarSystemPreloader {
       }
     }
 
-    console.log(
-      `✅ Created ${materials.size} materials (with fallbacks for missing textures)`
-    );
+    console.log(`✅ Created ${materials.size} high-quality materials`);
     return materials;
   }
 
@@ -560,9 +801,18 @@ export class SolarSystemPreloader {
   ): Promise<PreloadedSolarSystem> {
     // Initialize scene
     const scene = new Scene();
-    const camera = new PerspectiveCamera(50, 1, 0.1, 100); // Aspect ratio will be set later
-    camera.position.set(20, 15, 20);
-    camera.lookAt(0, 0, 0);
+    const camera = new PerspectiveCamera(
+      75, // Field of view
+      1, // Aspect ratio (will be updated by component)
+      0.1, // Near plane
+      500 // Far plane - increased for larger distances
+    );
+
+    // Position camera much closer and higher for better view
+    camera.position.set(15, 10, 15); // Much closer to the action
+    camera.lookAt(0, 0, 0); // Look at center where sun is
+
+    console.log(`📷 Camera positioned at (15, 10, 15) looking at (0, 0, 0)`);
 
     const clock = new Clock();
     const meshes: Mesh[] = [];
@@ -570,22 +820,26 @@ export class SolarSystemPreloader {
 
     onProgress?.(1, 10, "Scene setup");
 
-    // Setup lighting
-    const ambientLight = new AmbientLight(0x404040, 0.3);
+    // Setup lighting - enhanced for better visibility
+    const ambientLight = new AmbientLight(0x404040, 0.6); // Increased ambient light
     scene.add(ambientLight);
     lights.push(ambientLight);
 
-    const sunLight = new DirectionalLight(0xffffff, 1.2);
-    sunLight.position.set(0, 0, 0);
-    sunLight.target.position.set(10, 0, 0);
+    const sunLight = new DirectionalLight(0xffffff, 2.0); // Increased intensity
+    sunLight.position.set(0, 10, 0);
+    sunLight.target.position.set(0, 0, 0);
     scene.add(sunLight);
     scene.add(sunLight.target);
     lights.push(sunLight);
 
-    const sunPointLight = new PointLight(0xffffff, 1.5, 100);
+    const sunPointLight = new PointLight(0xffffff, 3.0, 200); // Increased intensity and range
     sunPointLight.position.set(0, 0, 0);
     scene.add(sunPointLight);
     lights.push(sunPointLight);
+
+    console.log(
+      `💡 Lighting setup: Ambient(0.6), Directional(2.0), Point(3.0)`
+    );
 
     onProgress?.(2, 10, "Lighting setup");
 
@@ -593,9 +847,12 @@ export class SolarSystemPreloader {
     const sunGeometry = geometries.get("sun")!;
     const sunMaterial = materials.get("sun")!;
     const sun = new Mesh(sunGeometry, sunMaterial);
+    sun.position.set(0, 0, 0);
     sun.userData = { isSun: true };
     scene.add(sun);
     meshes.push(sun);
+
+    console.log(`☀️ Sun created at position (0, 0, 0) with radius 6.0`);
 
     onProgress?.(3, 10, "Sun created");
 
@@ -622,7 +879,7 @@ export class SolarSystemPreloader {
         }`
       );
 
-      const planetGeometry = geometries.get(`planet_${planetConfig.radius}`)!;
+      const planetGeometry = geometries.get(`planet_${planetConfig.id}`)!;
       const planetMaterial = materials.get(`planet_${planetConfig.id}`)!;
 
       const planet = new Mesh(planetGeometry, planetMaterial);
@@ -630,6 +887,10 @@ export class SolarSystemPreloader {
       planet.userData = { isPlanet: true, config: planetConfig };
       planetGroup.add(planet);
       meshes.push(planet);
+
+      console.log(
+        `🪐 Planet ${planetConfig.id} created at position (${planetConfig.orbitRadius}, 0, 0) with radius ${planetConfig.radius}`
+      );
 
       // Add rings if present (with fallback handling)
       if (planetConfig.rings) {
@@ -662,7 +923,7 @@ export class SolarSystemPreloader {
             }`
           );
 
-          const moonGeometry = geometries.get(`moon_${moonConfig.radius}`)!;
+          const moonGeometry = geometries.get(`moon_${planetConfig.id}_${i}`)!;
           const moonMaterial = materials.get(`moon_${planetConfig.id}_${i}`)!;
 
           const moon = new Mesh(moonGeometry, moonMaterial);
@@ -783,8 +1044,13 @@ export class SolarSystemPreloader {
       }
     }
 
-    // Clear texture cache too
-    TexturePreloader.clearCache();
+    // Clear texture cache
+    this.textureCache.forEach((texture) => {
+      if (texture) {
+        texture.dispose();
+      }
+    });
+    this.textureCache.clear();
 
     this.preloadedSystem = null;
     this.isPreloaded = false;

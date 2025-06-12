@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useMemo, useRef, useEffect, useState } from "react";
+import React, { useMemo, useRef, useEffect } from "react";
 import { View, Dimensions, StyleSheet } from "react-native";
 import Animated, {
   useSharedValue,
@@ -10,7 +10,6 @@ import Animated, {
   Easing,
 } from "react-native-reanimated";
 import { COLORS } from "../../styles";
-import { SolarSystemPreloader } from "../../services/SolarSystemPreloader";
 import ThreeDSolarSystem from "./ThreeDSolarSystem";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
@@ -301,7 +300,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 0,
     top: 0,
-    zIndex: 2,
+    zIndex: 4,
   },
   cometTail: {
     borderRadius: 50,
@@ -316,7 +315,6 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
   },
-
   star: {
     backgroundColor: COLORS.white,
     elevation: 5,
@@ -331,34 +329,13 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 0,
     top: 0,
-    zIndex: 1,
+    zIndex: 3,
   },
 });
 
 const StarryBackground: React.FC = () => {
   // Performance tracking
   const starRefs = useRef<Set<number>>(new Set());
-
-  // Solar system ready state - check if it's preloaded during app initialization
-  const [systemReady, setSystemReady] = useState(false);
-
-  // Check if solar system is ready on mount
-  useEffect(() => {
-    const checkSystemReady = () => {
-      if (SolarSystemPreloader.isSystemPreloaded()) {
-        setSystemReady(true);
-        console.log("StarryBackground: Solar system is ready");
-      } else {
-        console.log(
-          "StarryBackground: Solar system not ready yet, will check again..."
-        );
-        // Check again after a short delay
-        setTimeout(checkSystemReady, 100);
-      }
-    };
-
-    checkSystemReady();
-  }, []);
 
   // Generate enhanced star pool with better visibility
   const stars = useMemo(() => {
@@ -452,27 +429,22 @@ const StarryBackground: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      {/* Only render 3D content when solar system is ready */}
-      {systemReady && (
-        <>
-          {/* Three.js 3D Solar System - Background Layer (uses preloaded system) */}
-          <ThreeDSolarSystem />
+      {/* Always render the solar system - let it handle its own initialization */}
+      <ThreeDSolarSystem />
 
-          {/* Enhanced animated stars with movement */}
-          <View style={styles.starsContainer}>
-            {stars.map((star) => (
-              <AnimatedStar key={star.id} star={star} />
-            ))}
-          </View>
+      {/* Enhanced animated stars with movement */}
+      <View style={styles.starsContainer}>
+        {stars.map((star) => (
+          <AnimatedStar key={star.id} star={star} />
+        ))}
+      </View>
 
-          {/* Animated comets with tails */}
-          <View style={styles.cometContainer}>
-            {comets.map((comet) => (
-              <AnimatedComet key={comet.id} comet={comet} />
-            ))}
-          </View>
-        </>
-      )}
+      {/* Animated comets with tails */}
+      <View style={styles.cometContainer}>
+        {comets.map((comet) => (
+          <AnimatedComet key={comet.id} comet={comet} />
+        ))}
+      </View>
     </View>
   );
 };

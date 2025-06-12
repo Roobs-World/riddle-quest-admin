@@ -12,7 +12,7 @@ const config = getDefaultConfig(__dirname, {
 // Disable package exports to prevent module resolution issues
 config.resolver.unstable_enablePackageExports = false;
 
-// Enhanced asset configuration for better texture loading
+// Enhanced asset configuration for better texture and 3D model loading
 config.resolver.assetExts = [
   ...config.resolver.assetExts,
   "png",
@@ -21,6 +21,10 @@ config.resolver.assetExts = [
   "gif",
   "webp",
   "svg",
+  "fbx",
+  "gltf",
+  "glb",
+  "obj",
 ];
 
 // Optimize asset resolution for 3D textures
