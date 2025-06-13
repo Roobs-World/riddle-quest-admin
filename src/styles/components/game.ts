@@ -49,7 +49,7 @@ export const gameStyles = StyleSheet.create({
     alignItems: "center",
     position: "relative",
     backgroundColor: COLORS.transparent,
-    marginTop: SPACING.lg,
+    marginTop: SPACING.sm,
     paddingHorizontal: SPACING.sm,
   } as ViewStyle,
 

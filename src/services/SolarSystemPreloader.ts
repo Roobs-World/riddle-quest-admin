@@ -135,11 +135,11 @@ export class SolarSystemPreloader {
   // Safe orbital distances from sun (radius 15) with EXTREME speed increases
   private static readonly solarSystemConfig: PlanetConfig[] = [
     // REMOVED Mercury (planet_r) due to texture loading issues
-    // Venus - first planet with moon (blue)
+    // Venus - first planet with moon (blue) - MUCH CLOSER TO SUN
     {
       id: "planet_a",
       texture: texPlanetA,
-      orbitRadius: 75, // SAFE spacing from Mercury and sun
+      orbitRadius: 35, // CLOSE to sun (was 75) - 15 unit clearance from sun surface
       orbitSpeed: 0.7, // ULTRA FAST - 2.8x faster than before (was 0.25)
       rotationSpeed: 0.015,
       radius: 5.0, // Slightly larger than Mercury
@@ -147,17 +147,17 @@ export class SolarSystemPreloader {
       moons: [
         {
           texture: texMoonH,
-          orbitRadius: 10, // Close moon orbit
+          orbitRadius: 8, // Closer moon orbit (was 10)
           orbitSpeed: 2.0, // EXTREMELY fast moon - 2.5x faster than before (was 0.8)
           radius: 2.0, // Small moon
         },
       ],
     },
-    // Mars - red planet with 2 moons (orange)
+    // Mars - red planet with 2 moons (orange) - MUCH CLOSER TO SUN
     {
       id: "planet_d",
       texture: texPlanetD,
-      orbitRadius: 105, // SAFE spacing from Venus
+      orbitRadius: 45, // CLOSE to sun (was 105) - compact spacing
       orbitSpeed: 0.6, // ULTRA FAST - 3x faster than before (was 0.2)
       rotationSpeed: 0.012,
       radius: 4.5, // Small rocky planet
@@ -165,23 +165,23 @@ export class SolarSystemPreloader {
       moons: [
         {
           texture: texMoonF,
-          orbitRadius: 12, // First moon
+          orbitRadius: 10, // Closer first moon (was 12)
           orbitSpeed: 1.5, // EXTREMELY fast moon - 2.5x faster than before (was 0.6)
           radius: 1.8, // Small moon
         },
         {
           texture: texMoonG,
-          orbitRadius: 16, // Second moon further out
+          orbitRadius: 13, // Closer second moon (was 16)
           orbitSpeed: 1.2, // EXTREMELY fast moon - 2.4x faster than before (was 0.5)
           radius: 2.0, // Slightly larger moon
         },
       ],
     },
-    // Jupiter - gas giant with rings (blue)
+    // Jupiter - gas giant with rings (blue) - MUCH CLOSER TO SUN
     {
       id: "planet_v",
       texture: texPlanetV,
-      orbitRadius: 140, // SAFE spacing from Mars
+      orbitRadius: 60, // CLOSE to sun (was 140) - compact gas giant
       orbitSpeed: 0.45, // ULTRA FAST - 3x faster than before (was 0.15)
       rotationSpeed: 0.008,
       radius: 8.0, // Large gas giant
@@ -192,11 +192,11 @@ export class SolarSystemPreloader {
         outerRadius: 14.0,
       },
     },
-    // Saturn - outermost with rings and moons (green)
+    // Saturn - outermost with rings and moons (green) - MUCH CLOSER TO SUN
     {
       id: "planet_k",
       texture: texPlanetK,
-      orbitRadius: 185, // SAFE spacing from Jupiter
+      orbitRadius: 75, // CLOSE to sun (was 185) - compact outer planet
       orbitSpeed: 0.3, // ULTRA FAST - 3x faster than before (was 0.1)
       rotationSpeed: 0.006,
       radius: 7.5, // Large but smaller than Jupiter
@@ -204,13 +204,13 @@ export class SolarSystemPreloader {
       moons: [
         {
           texture: texMoonC,
-          orbitRadius: 18, // First major moon
+          orbitRadius: 15, // Closer first moon (was 18)
           orbitSpeed: 1.0, // EXTREMELY fast moon - 2.5x faster than before (was 0.4)
           radius: 2.5, // Larger moon
         },
         {
           texture: texMoonD,
-          orbitRadius: 25, // Outer moon
+          orbitRadius: 20, // Closer outer moon (was 25)
           orbitSpeed: 0.9, // EXTREMELY fast moon - 2.57x faster than before (was 0.35)
           radius: 2.2, // Slightly smaller
         },
@@ -850,12 +850,12 @@ export class SolarSystemPreloader {
       800 // Increased far plane for larger view distance
     );
 
-    // Position camera for optimal centered view of the solar system
-    camera.position.set(120, 80, 120); // Closer position for new orbital radii (50-185 units)
+    // Position camera for optimal centered view of the compact solar system
+    camera.position.set(90, 60, 90); // Closer position for compact orbital radii (35-75 units)
     camera.lookAt(0, 0, 0); // Look at center where sun is
 
     console.log(
-      `📷 Camera positioned at (120, 80, 120) looking at center (0, 0, 0) for optimal solar system view`
+      `📷 Camera positioned at (90, 60, 90) looking at center (0, 0, 0) for optimal compact solar system view`
     );
 
     const clock = new Clock();

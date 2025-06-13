@@ -134,7 +134,7 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, isVisible }) => {
 
         {/* Bottom row - ZXCVBNM + DELETE */}
         <View style={gameStyles.keyboardRow}>
-          <View style={{ width: scale(57) }} />
+          <View style={{ width: scale(48) }} />
           {bottomRow.map((key) => (
             <TouchableOpacity
               key={key}
@@ -175,7 +175,7 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, isVisible }) => {
               {
                 borderRadius: scale(6),
                 height: keyHeight,
-                width: scale(57), // Wider delete button
+                width: scale(48), // Adjusted delete button width
                 margin: keyMargin,
               },
             ]}

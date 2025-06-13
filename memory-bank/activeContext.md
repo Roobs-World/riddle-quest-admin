@@ -115,6 +115,49 @@ if (typeof path === "number") {
 
 **Result**: Solar system now guaranteed to render with beautiful colored planets even if all textures fail! 🚀🎨
 
+### COMPACT ORBITAL SYSTEM - PLANETS MUCH CLOSER TO SUN 🔥⭐
+
+**Change Requested**: User wanted planets to orbit closer to the sun for a more compact and visually appealing solar system.
+
+**Massive Orbital Reduction Applied**:
+
+```typescript
+// BEFORE (wide orbits):
+Venus: 75 units, Mars: 105 units, Jupiter: 140 units, Saturn: 185 units
+
+// AFTER (compact orbits):
+Venus: 35 units, Mars: 45 units, Jupiter: 60 units, Saturn: 75 units
+```
+
+**Orbital Distance Changes**:
+
+- **Venus (planet_a)**: 75→35 units (53% reduction) - 15 unit clearance from sun
+- **Mars (planet_d)**: 105→45 units (57% reduction) - tight spacing
+- **Jupiter (planet_v)**: 140→60 units (57% reduction) - compact gas giant
+- **Saturn (planet_k)**: 185→75 units (59% reduction) - close outer orbit
+
+**Moon Orbital Adjustments**:
+
+- **Venus moon**: 10→8 units closer to planet
+- **Mars moons**: 12→10 and 16→13 units closer to planet
+- **Saturn moons**: 18→15 and 25→20 units closer to planet
+
+**Camera Position Optimized**:
+
+- **Previous**: (120, 80, 120) for wide solar system
+- **Updated**: (90, 60, 90) for compact solar system view
+- **Better Framing**: Optimal viewing distance for closer planets
+
+**Visual Impact**:
+
+- ✅ **Dramatic Scale**: Planets appear much larger relative to each other
+- ✅ **Action-Packed**: More dynamic with planets closer together
+- ✅ **Better Visibility**: Easier to see planet details and motion
+- ✅ **Cinematic View**: More engaging and visually impressive
+- ✅ **Safe Distances**: Still 15+ unit clearance from sun surface
+
+**Result**: Compact, action-packed solar system with planets orbiting dramatically close to the sun! 🔥🚀
+
 ---
 
 ## Previous Status: 3D Solar System ORBITAL RADIUS FIX - NO SUN COLLISIONS ✅
