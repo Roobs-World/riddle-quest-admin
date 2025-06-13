@@ -3,7 +3,6 @@ import {
   HintModal,
   ProfileModal,
   SettingsModal,
-  CreditsModal,
   InstructionsModal,
   WelcomeModal,
   FullProfileDetailsModal,
@@ -62,10 +61,6 @@ interface GameOverlaysProps {
   // Home/Play Overlays
   onCloseHomeOverlay: () => void;
   onClosePlayOverlay: () => void;
-
-  // Credits Overlay
-  isCreditsOverlayVisible: boolean;
-  onCreditsClose: () => void;
 }
 
 const GameOverlays: React.FC<GameOverlaysProps> = ({
@@ -114,10 +109,6 @@ const GameOverlays: React.FC<GameOverlaysProps> = ({
   isWatchAdModalVisible,
   onWatchAdAccepted,
   onWatchAdDeclined,
-
-  // Credits Overlay
-  isCreditsOverlayVisible,
-  onCreditsClose,
 }) => {
   return (
     <>
@@ -182,11 +173,6 @@ const GameOverlays: React.FC<GameOverlaysProps> = ({
           onClose={onWatchAdDeclined}
         />
       )}
-
-      <CreditsModal
-        isVisible={isCreditsOverlayVisible}
-        onClose={onCreditsClose}
-      />
     </>
   );
 };

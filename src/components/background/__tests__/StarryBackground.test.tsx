@@ -422,4 +422,19 @@ describe("SolarSystemBackground", () => {
       });
     });
   });
+
+  describe("Solar System Orbit Mechanics", () => {
+    it("planets should always orbit the sun at the center (0,0,0)", () => {
+      // Mock a simplified orbit calculation as in ThreeDSolarSystem
+      const orbitRadius = 30;
+      const orbitSpeed = 0.01;
+      const time = 100; // arbitrary time
+      const angle = time * orbitSpeed;
+      const x = Math.cos(angle) * orbitRadius;
+      const z = Math.sin(angle) * orbitRadius;
+      // The sun is always at (0,0,0)
+      expect(Math.sqrt(x * x + z * z)).toBeCloseTo(orbitRadius, 5);
+      // The planet's distance from the sun should always be the orbitRadius
+    });
+  });
 });

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Alert, KeyboardAvoidingView, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useNavigation } from "@react-navigation/native";
 import Header from "../../components/game/Header";
 import Controls from "../../components/game/Controls";
 import BottomNavigationBar from "../../components/game/BottomNavigationBar";
@@ -75,7 +76,6 @@ interface GameScreenState {
   isHintOverlayVisible: boolean;
   isProfileOverlayVisible: boolean;
   isSettingsOverlayVisible: boolean;
-  isCreditsOverlayVisible: boolean;
   isWelcomeOverlayVisible: boolean;
   isLoading: boolean;
 }
@@ -116,6 +116,7 @@ const GameScreen: React.FC<GameScreenProps> = ({
   gameMode,
 }) => {
   const { playerData, logout } = useAuth();
+  const navigation = useNavigation();
 
   const [overlayState, setOverlayState] = useState<GameScreenState>({
     isInstructionsVisible: false,
@@ -129,7 +130,6 @@ const GameScreen: React.FC<GameScreenProps> = ({
     isHintOverlayVisible: false,
     isProfileOverlayVisible: false,
     isSettingsOverlayVisible: false,
-    isCreditsOverlayVisible: false,
     isWelcomeOverlayVisible: false,
     isLoading: false,
   });
@@ -163,7 +163,7 @@ const GameScreen: React.FC<GameScreenProps> = ({
     overlayState.isWatchAdModalVisible,
     overlayState.isWelcomeOverlayVisible,
     overlayState.isOutOfAttemptsModalVisible,
-    overlayState.isCreditsOverlayVisible
+    false
   );
 
   const { isRewardedAdReady, loadRewardedAd, showRewardedAd } =
@@ -441,17 +441,7 @@ const GameScreen: React.FC<GameScreenProps> = ({
   };
 
   const handleCreditsPress = () => {
-    setOverlayState((prev) => ({
-      ...prev,
-      isCreditsOverlayVisible: true,
-    }));
-  };
-
-  const handleCreditsClose = () => {
-    setOverlayState((prev) => ({
-      ...prev,
-      isCreditsOverlayVisible: false,
-    }));
+    navigation.navigate(AppStrings.Navigation.CREDITS as never);
   };
 
   const handleProfilePress = () => {
@@ -841,9 +831,6 @@ const GameScreen: React.FC<GameScreenProps> = ({
         // Home/Play Overlays
         onCloseHomeOverlay={handleCloseHomeOverlay}
         onClosePlayOverlay={handleClosePlayOverlay}
-        // Credits Overlay
-        isCreditsOverlayVisible={overlayState.isCreditsOverlayVisible}
-        onCreditsClose={handleCreditsClose}
       />
 
       {/* Out of Attempts Modal */}

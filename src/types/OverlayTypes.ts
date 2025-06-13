@@ -6,7 +6,6 @@ export interface GameScreenOverlayState {
   isPlayOverlayVisible: boolean;
   isProfileOverlayVisible: boolean;
   isSettingsOverlayVisible: boolean;
-  isCreditsOverlayVisible: boolean;
 }
 
 export interface GameScreenOverlayActions {
@@ -17,5 +16,4 @@ export interface GameScreenOverlayActions {
   setIsPlayOverlayVisible: (isVisible: boolean) => void;
   setIsProfileOverlayVisible: (isVisible: boolean) => void;
   setIsSettingsOverlayVisible: (isVisible: boolean) => void;
-  setIsCreditsOverlayVisible: (isVisible: boolean) => void;
 }

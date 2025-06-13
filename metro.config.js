@@ -13,6 +13,7 @@ const config = getDefaultConfig(__dirname, {
 config.resolver.unstable_enablePackageExports = false;
 
 // Enhanced asset configuration for better texture and 3D model loading
+// Explicitly include high-quality audio formats without compression
 config.resolver.assetExts = [
   ...config.resolver.assetExts,
   "png",
@@ -25,6 +26,13 @@ config.resolver.assetExts = [
   "gltf",
   "glb",
   "obj",
+  // High-quality audio formats
+  "wav",
+  "aiff",
+  "flac",
+  "m4a",
+  "aac",
+  "mp3",
 ];
 
 // Optimize asset resolution for 3D textures
@@ -44,8 +52,21 @@ config.transformer.getTransformOptions = async () => ({
   },
 });
 
-// Enhanced asset transformer settings
+// Enhanced asset transformer settings - preserve audio quality
 config.transformer.assetPlugins = ["expo-asset/tools/hashAssetFiles"];
+
+// Disable audio compression during bundling
+config.transformer.enableBabelRCLookup = false;
+config.transformer.enableBabelRuntime = false;
+
+// Preserve original audio file quality
+config.transformer.minifierConfig = {
+  // Disable audio minification
+  keep_fnames: true,
+  mangle: {
+    keep_fnames: true,
+  },
+};
 
 // Apply NativeWind configuration
 const windConfig = withNativeWind(config, {

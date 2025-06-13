@@ -11,16 +11,9 @@ import { Navigation } from "./src/navigation/NavigationStack";
 import AppLovinMAX, { Configuration } from "react-native-applovin-max";
 import PulsingSpinner from "./src/components/loading/PulsingSpinner";
 import { AuthService } from "./src/services/AuthService";
-import {
-  SolarSystemPreloader,
-  SolarSystemPreloadProgress,
-} from "./src/services/SolarSystemPreloader";
-import { View, Text, StyleSheet } from "react-native";
-import { COLORS } from "./src/styles";
+import { SolarSystemPreloader } from "./src/services/SolarSystemPreloader";
 export default function App() {
   const [isInitialized, setIsInitialized] = useState(false);
-  const [solarSystemProgress, setSolarSystemProgress] =
-    useState<SolarSystemPreloadProgress | null>(null);
 
   // Effect to load all static resources and initialize services
   useEffect(() => {
@@ -46,7 +39,6 @@ export default function App() {
           // Add 30-second timeout wrapper around preloading
           const preloadPromise = SolarSystemPreloader.preloadSolarSystem(
             (progress) => {
-              setSolarSystemProgress(progress);
               console.log(
                 `🌌 Solar system loading: ${progress.percentage}% - ${progress.currentItem}`
               );
@@ -102,7 +94,6 @@ export default function App() {
           }
 
           // Clear progress state and continue - app should work without 3D system
-          setSolarSystemProgress(null);
           console.warn(
             "⚠️ Continuing app initialization without 3D solar system"
           );
@@ -223,33 +214,7 @@ export default function App() {
   if (!isInitialized) {
     console.log("⏳ App not initialized yet, showing loading spinner");
 
-    // Show detailed progress if 3D solar system is loading
-    if (solarSystemProgress) {
-      return (
-        <View style={styles.loadingContainer}>
-          <PulsingSpinner visible={true} size={120} opacity={0.8} />
-          <View style={styles.progressContainer}>
-            <Text style={styles.progressTitle}>
-              Loading 3D Solar System... {solarSystemProgress.percentage}%
-            </Text>
-            <Text style={styles.progressPhase}>
-              {solarSystemProgress.phase === "textures" &&
-                "🖼️ Loading textures"}
-              {solarSystemProgress.phase === "geometries" &&
-                "🔷 Creating geometries"}
-              {solarSystemProgress.phase === "materials" &&
-                "✨ Creating materials"}
-              {solarSystemProgress.phase === "scene" && "🌌 Building scene"}
-              {solarSystemProgress.phase === "complete" && "✅ Ready!"}
-            </Text>
-            <Text style={styles.progressDetail}>
-              {solarSystemProgress.currentItem}
-            </Text>
-          </View>
-        </View>
-      );
-    }
-
+    // Show only spinner, no progress text, during 3D solar system loading
     return <PulsingSpinner visible={true} size={120} opacity={0.8} />;
   }
 
@@ -262,36 +227,3 @@ export default function App() {
     </AuthProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  loadingContainer: {
-    alignItems: "center",
-    backgroundColor: COLORS.starryBackgroundMain,
-    flex: 1,
-    justifyContent: "center",
-    padding: 20,
-  },
-  progressContainer: {
-    alignItems: "center",
-    marginTop: 30,
-  },
-  progressDetail: {
-    color: COLORS.gray300,
-    fontSize: 14,
-    opacity: 0.8,
-    textAlign: "center",
-  },
-  progressPhase: {
-    color: COLORS.primaryOrangeLight,
-    fontSize: 16,
-    marginBottom: 5,
-    textAlign: "center",
-  },
-  progressTitle: {
-    color: COLORS.white,
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 10,
-    textAlign: "center",
-  },
-});

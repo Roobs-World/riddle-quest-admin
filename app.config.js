@@ -84,12 +84,26 @@ module.exports = {
           targetSdkVersion: 35,
           buildToolsVersion: "35.0.0",
           kotlinVersion: "2.0.21",
-          // Enhanced audio processing
+          // Enhanced audio processing - preserve maximum quality
           proguardMinifyEnabled: false, // Disable minification to preserve audio quality
+          resourceShrinkingEnabled: false, // Disable resource shrinking for audio assets
+          compressionEnabled: false, // Disable asset compression
+          packagingOptions: {
+            pickFirst: ["**/libc++_shared.so", "**/libjsc.so"],
+            doNotStrip: ["**/*.so"], // Preserve native audio libraries
+          },
         },
         ios: {
-          // Enhanced audio configuration for iOS
+          // Enhanced audio configuration for iOS - preserve maximum quality
           deploymentTarget: "16.0",
+          // Disable bitcode to preserve audio library quality
+          bitcodeEnabled: false,
+          // Preserve debug symbols for audio debugging
+          includeSymbols: true,
+          // Disable app thinning for audio assets
+          appThinning: {
+            disabled: true,
+          },
         },
       },
     ],
@@ -99,6 +113,14 @@ module.exports = {
       {
         microphonePermission:
           "Allow $(PRODUCT_NAME) to access your microphone for enhanced audio features.",
+        // Enhanced audio quality configuration
+        audioSessionCategoryIOS: "playback", // Optimize for high-quality playback
+        audioSessionModeIOS: "default", // Use default mode for best quality
+        audioSessionCategoryOptionsIOS: [
+          "mixWithOthers",
+          "allowBluetooth",
+          "defaultToSpeaker",
+        ],
       },
     ],
   ],

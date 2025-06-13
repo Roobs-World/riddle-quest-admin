@@ -13,12 +13,20 @@
     },
     "preview": {
       "distribution": "internal",
+      "env": {
+        "EXPO_NO_AUDIO_COMPRESSION": "1",
+        "EXPO_PRESERVE_AUDIO_QUALITY": "1"
+      },
       "ios": {
         "buildConfiguration": "Release"
       }
     },
     "production": {
       "autoIncrement": true,
+      "env": {
+        "EXPO_NO_AUDIO_COMPRESSION": "1",
+        "EXPO_PRESERVE_AUDIO_QUALITY": "1"
+      },
       "ios": {
         "buildConfiguration": "Release"
       }

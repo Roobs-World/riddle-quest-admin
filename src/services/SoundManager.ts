@@ -1,5 +1,11 @@
 import { Audio, AVPlaybackSource } from "expo-av";
 import { AppState, AppStateStatus, InteractionManager } from "react-native";
+import {
+  configureHighQualityAudioSession,
+  createHighQualitySound,
+  getOptimalAudioConfig,
+  monitorAudioQuality,
+} from "../utils/audioOptimization";
 
 import neutralWav from "../../assets/audio/Neutral.wav";
 import positiveWav from "../../assets/audio/Success.wav"; // Repurposed as positive music
@@ -125,6 +131,9 @@ const HIGH_QUALITY_AUDIO_CONFIG = {
   shouldDuckAndroid: false,
   // Use speakers for better quality
   playThroughEarpieceAndroid: false,
+  // Additional quality enhancements
+  interruptionModeIOS: 1, // Do not mix with other apps
+  interruptionModeAndroid: 1, // Do not mix with other apps
 };
 
 // Assume isSoundEnabled state is managed elsewhere (e.g., in App.tsx or Context)
@@ -192,8 +201,9 @@ export const SoundManager = {
         handleAppStateChange
       );
 
-      // Set up high-fidelity audio mode
+      // Set up high-fidelity audio mode with optimal configuration
       console.log("SoundManager: Setting high-quality audio mode...");
+      await configureHighQualityAudioSession();
       await Audio.setAudioModeAsync(HIGH_QUALITY_AUDIO_CONFIG);
       console.log("SoundManager: High-quality audio mode set successfully");
 
@@ -202,7 +212,7 @@ export const SoundManager = {
 
       // Create neutral music (default background music)
       console.log("SoundManager: Loading neutral music with high quality...");
-      const neutralResult = await Audio.Sound.createAsync(
+      const neutralResult = await createHighQualitySound(
         neutralWav as AVPlaybackSource,
         {
           isLooping: true,
@@ -221,11 +231,12 @@ export const SoundManager = {
       }
 
       neutralMusic = neutralResult.sound;
+      monitorAudioQuality(neutralMusic);
       console.log("SoundManager: Neutral music loaded with high quality");
 
       // Create positive music (for correct answers)
       console.log("SoundManager: Loading positive music with high quality...");
-      const { sound: positiveMusicInstance } = await Audio.Sound.createAsync(
+      const { sound: positiveMusicInstance } = await createHighQualitySound(
         positiveWav as AVPlaybackSource,
         {
           isLooping: true,
@@ -236,11 +247,12 @@ export const SoundManager = {
         }
       );
       positiveMusic = positiveMusicInstance;
+      monitorAudioQuality(positiveMusic);
       console.log("SoundManager: Positive music loaded with high quality");
 
       // Create negative music (for wrong answers)
       console.log("SoundManager: Loading negative music with high quality...");
-      const { sound: negativeMusicInstance } = await Audio.Sound.createAsync(
+      const { sound: negativeMusicInstance } = await createHighQualitySound(
         negativeWav as AVPlaybackSource,
         {
           isLooping: true,
@@ -251,7 +263,15 @@ export const SoundManager = {
         }
       );
       negativeMusic = negativeMusicInstance;
+      monitorAudioQuality(negativeMusic);
       console.log("SoundManager: Negative music loaded with high quality");
+
+      // Log optimal audio configuration for monitoring
+      const optimalConfig = getOptimalAudioConfig();
+      console.log(
+        "SoundManager: Using optimal audio configuration:",
+        optimalConfig
+      );
 
       console.log("SoundManager: All music modes loaded with enhanced quality");
 

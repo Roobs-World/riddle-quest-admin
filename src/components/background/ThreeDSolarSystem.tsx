@@ -1,23 +1,14 @@
 import React, { useRef, useEffect, useState, useCallback } from "react";
 import { View, StyleSheet, Text } from "react-native";
-import { GLView } from "expo-gl";
-import { ExpoWebGLRenderingContext } from "expo-gl";
+import { ExpoWebGLRenderingContext, GLView } from "expo-gl";
 import { Renderer } from "expo-three";
-import {
-  Scene,
-  PerspectiveCamera,
-  Group,
-  Mesh,
-  BoxGeometry,
-  MeshBasicMaterial,
-} from "three";
+import { Scene, PerspectiveCamera, Group } from "three";
 import { SolarSystemPreloader } from "../../services/SolarSystemPreloader";
+import { TextureDebugger } from "../../services/TextureDebugger";
 
 const ThreeDSolarSystem: React.FC = () => {
   console.log("ThreeDSolarSystem component is mounting");
-  const [isReady, setIsReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [systemStatus, setSystemStatus] = useState<string>("Initializing...");
 
   const rendererRef = useRef<Renderer | null>(null);
   const animationIdRef = useRef<number | null>(null);
@@ -25,86 +16,7 @@ const ThreeDSolarSystem: React.FC = () => {
   const cameraRef = useRef<PerspectiveCamera | null>(null);
   const planetsGroupRef = useRef<Group | null>(null);
 
-  // Create a simple fallback solar system if preloaded system fails
-  const createFallbackSolarSystem = (scene: Scene) => {
-    console.log("ThreeDSolarSystem: Creating fallback solar system");
-
-    // Create a LARGE sun for guaranteed visibility
-    const sunGeometry = new BoxGeometry(12, 12, 12);
-    const sunMaterial = new MeshBasicMaterial({
-      color: 0xffaa00,
-      wireframe: false, // Solid for sun
-    });
-    const sun = new Mesh(sunGeometry, sunMaterial);
-    sun.position.set(0, 0, 0);
-    sun.userData = { isSun: true, isFallback: true };
-    scene.add(sun);
-    console.log(
-      "ThreeDSolarSystem: LARGE fallback sun created at (0,0,0) with size 12x12x12"
-    );
-
-    // Create LARGE planets for guaranteed visibility
-    const planets = [
-      { color: 0x8c7853, radius: 6, orbit: 6, name: "planet_r" },
-      { color: 0x6b93d6, radius: 7, orbit: 8, name: "planet_a" },
-      { color: 0xcd5c5c, radius: 8, orbit: 10, name: "planet_d" },
-      { color: 0xffc649, radius: 7, orbit: 12, name: "planet_v" },
-      { color: 0xd8ca9d, radius: 9, orbit: 15, name: "planet_k" },
-    ];
-
-    const planetsGroup = new Group();
-    scene.add(planetsGroup);
-
-    planets.forEach((planetConfig, i) => {
-      const planetGroup = new Group();
-      planetGroup.userData = {
-        config: {
-          orbitRadius: planetConfig.orbit,
-          orbitSpeed: 0.01 + i * 0.005,
-        },
-        orbitAngle: (i * Math.PI * 2) / planets.length,
-      };
-
-      const planetGeometry = new BoxGeometry(
-        planetConfig.radius,
-        planetConfig.radius,
-        planetConfig.radius
-      );
-      const planetMaterial = new MeshBasicMaterial({
-        color: planetConfig.color,
-        wireframe: true, // Wireframe for planets to ensure visibility
-      });
-      const planet = new Mesh(planetGeometry, planetMaterial);
-      planet.position.set(planetConfig.orbit, 0, 0);
-      planet.userData = {
-        isPlanet: true,
-        isFallback: true,
-        config: planetConfig,
-      };
-      planetGroup.add(planet);
-      planetsGroup.add(planetGroup);
-
-      console.log(
-        `LARGE fallback planet ${planetConfig.name} created at orbit ${planetConfig.orbit} with size ${planetConfig.radius}x${planetConfig.radius}x${planetConfig.radius}`
-      );
-    });
-
-    console.log(
-      "ThreeDSolarSystem: LARGE fallback solar system created - objects should be VERY visible"
-    );
-    console.log(`Total scene children: ${scene.children.length}`);
-    console.log(`Planets group children: ${planetsGroup.children.length}`);
-
-    return {
-      planetsGroup,
-      meshes: [
-        sun,
-        ...planets.map((_, i) => planetsGroup.children[i].children[0]),
-      ],
-    };
-  };
-
-  // Initialize Three.js scene with preloaded solar system
+  // Initialize Three.js scene with texture-based solar system
   const initializeScene = async (gl: ExpoWebGLRenderingContext) => {
     console.log("ThreeDSolarSystem: initializeScene called");
     console.log(
@@ -112,348 +24,248 @@ const ThreeDSolarSystem: React.FC = () => {
     );
 
     try {
-      setSystemStatus("Checking for preloaded solar system...");
-
-      // FORCE FRESH LOAD: Clear cache to use new camera/orbital settings
-      SolarSystemPreloader.clearCache();
-      console.log(
-        "ThreeDSolarSystem: Cleared preloader cache to force fresh load with new settings"
-      );
-
-      // First, try to get the preloaded solar system
-      let preloadedSystem = SolarSystemPreloader.getPreloadedSystem();
-
-      if (!preloadedSystem) {
-        console.log(
-          "ThreeDSolarSystem: No preloaded system found, triggering preload..."
-        );
-        setSystemStatus("Loading solar system assets...");
-
-        // Trigger preloading if not already done
-        preloadedSystem = await SolarSystemPreloader.preloadSolarSystem(
-          (progress) => {
-            setSystemStatus(
-              `Loading: ${progress.currentItem} (${progress.percentage}%)`
-            );
-          }
-        );
-      }
-
-      if (!preloadedSystem) {
-        throw new Error("Failed to load solar system");
-      }
-
-      console.log("ThreeDSolarSystem: Using preloaded solar system");
-      console.log(`Solar system has ${preloadedSystem.meshes.length} meshes`);
-      console.log(
-        `Scene has ${preloadedSystem.scene.children.length} children`
-      );
-      console.log(`Textures loaded: ${preloadedSystem.textures.size}`);
-      console.log(`Materials created: ${preloadedSystem.materials.size}`);
-
-      // Debug: Log which textures were successfully loaded
-      console.log("ThreeDSolarSystem: Texture loading status:");
-      preloadedSystem.textures.forEach((texture, key) => {
-        if (texture) {
-          console.log(`  ✅ ${key}: loaded successfully`);
-        } else {
-          console.log(`  ❌ ${key}: failed to load`);
-        }
-      });
-
-      // Debug: Log materials that use textures
-      console.log("ThreeDSolarSystem: Material status:");
-      preloadedSystem.materials.forEach((material, key) => {
-        if (material.map) {
-          console.log(`  ✅ ${key}: has texture map`);
-        } else {
-          console.log(`  ⚠️ ${key}: using fallback color`);
-        }
-      });
-
-      setSystemStatus("Setting up 3D renderer...");
-
-      // Initialize renderer using expo-three
+      // Initialize renderer first
       const renderer = new Renderer({ gl });
-      console.log("ThreeDSolarSystem: Renderer created successfully");
-
       renderer.setSize(gl.drawingBufferWidth, gl.drawingBufferHeight);
-      renderer.setClearColor(0x111122, 1); // Slightly lighter background for better contrast
-
-      // CRITICAL: Enable depth testing for proper 3D rendering
+      renderer.setClearColor(0x111122, 1);
       const glContext = renderer.getContext();
       glContext.enable(glContext.DEPTH_TEST);
       glContext.depthFunc(glContext.LEQUAL);
-
-      console.log("ThreeDSolarSystem: Renderer configured with depth testing");
-
       rendererRef.current = renderer;
 
-      // Use the preloaded scene and camera
+      // Test texture loading first
+      console.log("🔍 TESTING TEXTURE ASSETS...");
+      await TextureDebugger.testAllAssets();
+
+      // Use the preloaded solar system with correct textures/materials
+      let preloadedSystem = SolarSystemPreloader.getPreloadedSystem();
+      if (!preloadedSystem) {
+        console.log("🚀 PRELOADING SOLAR SYSTEM...");
+
+        // Clear cache to force fresh load
+        SolarSystemPreloader.clearCache();
+        console.log("🗑️ CLEARED PRELOADER CACHE - FORCING FRESH LOAD");
+
+        preloadedSystem = await SolarSystemPreloader.preloadSolarSystem();
+        console.log("✅ SOLAR SYSTEM PRELOADED SUCCESSFULLY");
+      } else {
+        console.log("✅ USING CACHED SOLAR SYSTEM");
+      }
+
+      if (!preloadedSystem) {
+        console.error("❌ NO PRELOADED SYSTEM AVAILABLE");
+        setError("Failed to load solar system - textures must load properly");
+        return;
+      }
+
+      // DIAGNOSTIC: Check what we got from the preloader
+      console.log("🔍 SOLAR SYSTEM DIAGNOSTIC:", {
+        hasScene: !!preloadedSystem.scene,
+        hasCamera: !!preloadedSystem.camera,
+        hasPlanetsGroup: !!preloadedSystem.planetsGroup,
+        planetGroupChildren: preloadedSystem.planetsGroup.children.length,
+        totalMeshes: preloadedSystem.meshes.length,
+        sceneChildren: preloadedSystem.scene.children.length,
+      });
+
+      // DIAGNOSTIC: Check planets group in detail
+      console.log("🪐 PLANETS GROUP DETAIL:");
+      preloadedSystem.planetsGroup.children.forEach((child, index) => {
+        console.log(`  Planet Group ${index}:`, {
+          type: child.type,
+          hasUserData: !!child.userData,
+          hasConfig: !!(child.userData && child.userData.config),
+          childrenCount: child.children.length,
+          position: `(${child.position.x}, ${child.position.y}, ${child.position.z})`,
+          userData: child.userData,
+        });
+
+        // Check what's inside each planet group
+        if (child.children.length > 0) {
+          child.children.forEach((grandchild, gIndex) => {
+            console.log(`    Child ${gIndex}:`, {
+              type: grandchild.type,
+              isPlanet: grandchild.userData?.isPlanet,
+              isMoon: grandchild.userData?.isMoon,
+              isRing: grandchild.userData?.isRing,
+              position: `(${grandchild.position.x}, ${grandchild.position.y}, ${grandchild.position.z})`,
+            });
+          });
+        }
+      });
+
+      // Use the preloaded scene, camera, and planets group
       const scene = preloadedSystem.scene;
       const camera = preloadedSystem.camera;
       const planetsGroup = preloadedSystem.planetsGroup;
 
-      // CRITICAL: Set up camera aspect ratio for current viewport
+      // Update camera aspect ratio for current viewport
       camera.aspect = gl.drawingBufferWidth / gl.drawingBufferHeight;
       camera.updateProjectionMatrix();
 
-      console.log(`Camera aspect ratio: ${camera.aspect}`);
-      console.log(
-        `Camera position: (${camera.position.x}, ${camera.position.y}, ${camera.position.z})`
-      );
-      console.log(`Camera looking at: (0, 0, 0)`);
-      console.log(
-        `Camera FOV: ${camera.fov}, Near: ${camera.near}, Far: ${camera.far}`
-      );
-
-      // Store references
       sceneRef.current = scene;
       cameraRef.current = camera;
       planetsGroupRef.current = planetsGroup;
 
-      console.log("ThreeDSolarSystem: Camera and scene configured");
-
-      setSystemStatus("Starting solar system animation...");
-
-      // CRITICAL: Force multiple initial renders to ensure visibility
-      console.log("ThreeDSolarSystem: Attempting initial renders...");
+      // Force multiple initial renders to ensure visibility
       for (let i = 0; i < 3; i++) {
         renderer.render(scene, camera);
-        console.log(`ThreeDSolarSystem: Initial render ${i + 1} completed`);
+        gl.endFrameEXP();
       }
 
-      // Debug: Log scene contents with detailed positioning
-      console.log("ThreeDSolarSystem: Scene contents with positions:");
-      scene.traverse((child) => {
-        if (child instanceof Mesh) {
-          const type = child.userData.isTestCube
-            ? "TEST_CUBE"
-            : child.userData.isSun
-            ? "SUN"
-            : child.userData.isPlanet
-            ? "PLANET"
-            : child.userData.isMoon
-            ? "MOON"
-            : "OTHER";
+      // Start animation loop using configured planet speeds
+      let animationCounter = 0;
+
+      const animate = () => {
+        if (
+          !rendererRef.current ||
+          !sceneRef.current ||
+          !cameraRef.current ||
+          !planetsGroupRef.current
+        )
+          return;
+
+        animationCounter += 0.05; // Animation progression
+        const time = Date.now() * 0.001;
+        const dt = 0.016; // Fixed delta time for consistent animation
+
+        // CRITICAL DEBUG: Verify animation loop is running
+        if (Math.floor(animationCounter * 5) % 50 === 0) {
           console.log(
-            `  ${type}: position(${child.position.x.toFixed(
-              1
-            )}, ${child.position.y.toFixed(1)}, ${child.position.z.toFixed(
-              1
-            )}) scale(${child.scale.x.toFixed(1)}, ${child.scale.y.toFixed(
-              1
-            )}, ${child.scale.z.toFixed(1)})`
+            `🎬 ANIMATION LOOP RUNNING - Counter: ${animationCounter.toFixed(
+              2
+            )}, Time: ${time.toFixed(1)}`
+          );
+        }
+
+        // Debug: Check if we have planet groups
+        if (planetsGroupRef.current.children.length === 0) {
+          console.warn("⚠️ NO PLANETS in planetsGroup to animate!");
+          return; // Exit if no planets
+        }
+
+        // Enhanced Debug: Track time progression and animation status
+        if (Math.floor(animationCounter * 2) % 20 === 0) {
+          console.log(
+            `⏰ ANIMATION STATUS: Counter: ${animationCounter.toFixed(
+              2
+            )}, Planets: ${
+              planetsGroupRef.current.children.length
+            }, Animation Active: ${!!animationIdRef.current}`
           );
 
-          // Check if object is within camera view
-          const distance = camera.position.distanceTo(child.position);
-          console.log(`    Distance from camera: ${distance.toFixed(1)} units`);
+          // Force log first planet position to verify movement
+          if (planetsGroupRef.current.children.length > 0) {
+            const firstPlanet = planetsGroupRef.current.children[0];
+            console.log(
+              `🔍 FIRST PLANET POSITION: (${firstPlanet.position.x.toFixed(
+                1
+              )}, ${firstPlanet.position.y.toFixed(
+                1
+              )}, ${firstPlanet.position.z.toFixed(1)})`
+            );
+          }
         }
-      });
 
-      // Start animation loop with test cube rotation
-      const animate = () => {
-        if (
-          !rendererRef.current ||
-          !sceneRef.current ||
-          !cameraRef.current ||
-          !planetsGroupRef.current
-        )
-          return;
+        // Debug: Log animation status every few seconds
+        if (Math.floor(animationCounter) % 10 === 0) {
+          console.log(
+            `🌌 TEXTURE-BASED ANIMATION: ${
+              planetsGroupRef.current.children.length
+            } planets, counter: ${animationCounter.toFixed(2)}`
+          );
 
-        // Animate planets orbital motion
-        planetsGroupRef.current.children.forEach((planetGroup) => {
-          if (planetGroup.userData.config) {
-            const config = planetGroup.userData.config;
-
-            // Update orbital position
-            planetGroup.userData.orbitAngle += config.orbitSpeed * 0.5;
-            const orbitAngle = planetGroup.userData.orbitAngle;
-
-            planetGroup.position.set(
-              Math.cos(orbitAngle) * config.orbitRadius,
-              0,
-              Math.sin(orbitAngle) * config.orbitRadius
-            );
-
-            // Animate planet rotation and moons
-            planetGroup.children.forEach((child) => {
-              if (child.userData.isPlanet && child instanceof Mesh) {
-                child.rotation.y += config.rotationSpeed || 0.01;
-              }
-
-              // Animate moons
-              if (child.userData.isMoon && child instanceof Mesh) {
-                const moonConfig = child.userData.moonConfig;
-                child.userData.orbitAngle += moonConfig.orbitSpeed * 0.5;
-
-                const moonOrbitAngle = child.userData.orbitAngle;
-                child.position.set(
-                  config.orbitRadius +
-                    Math.cos(moonOrbitAngle) * moonConfig.orbitRadius,
-                  0,
-                  Math.sin(moonOrbitAngle) * moonConfig.orbitRadius
-                );
-
-                child.rotation.y += 0.01; // Moon rotation
-              }
-            });
-          }
-        });
-
-        // Animate sun rotation
-        sceneRef.current.children.forEach((child) => {
-          if (child.userData.isSun && child instanceof Mesh) {
-            child.rotation.y += 0.005; // Slow sun rotation
-          }
-        });
-
-        rendererRef.current.render(sceneRef.current, cameraRef.current);
-        animationIdRef.current = requestAnimationFrame(animate);
-      };
-
-      animationIdRef.current = requestAnimationFrame(animate);
-      console.log(
-        "ThreeDSolarSystem: Animation loop started with preloaded solar system"
-      );
-
-      setSystemStatus("Solar system active!");
-      setIsReady(true);
-
-      // Log final status
-      console.log("🌌 ThreeDSolarSystem: INITIALIZATION COMPLETE");
-      console.log(
-        `📊 Final stats: ${preloadedSystem.meshes.length} meshes, ${scene.children.length} scene objects`
-      );
-      console.log(
-        "🎬 Animation loop running - solar system should be visible!"
-      );
-    } catch (error) {
-      console.error("ThreeDSolarSystem: Error initializing scene:", error);
-      setError(`Failed to initialize solar system: ${error}`);
-      setSystemStatus("Error loading solar system");
-
-      // Initialize basic scene and camera for fallback
-      const scene = new Scene();
-      const camera = new PerspectiveCamera(
-        75,
-        gl.drawingBufferWidth / gl.drawingBufferHeight,
-        0.1,
-        500
-      );
-      camera.position.set(15, 10, 15); // Match the preloader camera position
-      camera.lookAt(0, 0, 0);
-
-      sceneRef.current = scene;
-      cameraRef.current = camera;
-
-      // Create a simple fallback solar system if preloaded system fails
-      if (!sceneRef.current || !cameraRef.current) {
-        console.error(
-          "ThreeDSolarSystem: Scene or camera not initialized for fallback"
-        );
-        return;
-      }
-
-      const fallbackSystem = createFallbackSolarSystem(sceneRef.current);
-      planetsGroupRef.current = fallbackSystem.planetsGroup;
-
-      // Initialize renderer using expo-three
-      const renderer = new Renderer({ gl });
-      console.log("ThreeDSolarSystem: Renderer created successfully");
-
-      renderer.setSize(gl.drawingBufferWidth, gl.drawingBufferHeight);
-      renderer.setClearColor(0x000011, 1); // Very dark blue background
-
-      // CRITICAL: Enable depth testing for proper 3D rendering
-      const glContext = renderer.getContext();
-      glContext.enable(glContext.DEPTH_TEST);
-      glContext.depthFunc(glContext.LEQUAL);
-
-      console.log("ThreeDSolarSystem: Renderer configured with depth testing");
-
-      rendererRef.current = renderer;
-
-      // Start animation loop with test cube rotation
-      const animate = () => {
-        if (
-          !rendererRef.current ||
-          !sceneRef.current ||
-          !cameraRef.current ||
-          !planetsGroupRef.current
-        )
-          return;
-
-        // Animate planets orbital motion
-        planetsGroupRef.current.children.forEach((planetGroup) => {
-          if (planetGroup.userData.config) {
-            const config = planetGroup.userData.config;
-
-            // Update orbital position
-            planetGroup.userData.orbitAngle += config.orbitSpeed * 0.5;
-            const orbitAngle = planetGroup.userData.orbitAngle;
-
-            planetGroup.position.set(
-              Math.cos(orbitAngle) * config.orbitRadius,
-              0,
-              Math.sin(orbitAngle) * config.orbitRadius
-            );
-
-            // Animate planet rotation and moons
-            planetGroup.children.forEach((child) => {
-              if (child.userData.isPlanet && child instanceof Mesh) {
-                child.rotation.y += config.rotationSpeed || 0.01;
-              }
-
-              // Animate moons
-              if (child.userData.isMoon && child instanceof Mesh) {
-                const moonConfig = child.userData.moonConfig;
-                child.userData.orbitAngle += moonConfig.orbitSpeed * 0.5;
-
-                const moonOrbitAngle = child.userData.orbitAngle;
-                child.position.set(
-                  config.orbitRadius +
-                    Math.cos(moonOrbitAngle) * moonConfig.orbitRadius,
-                  0,
-                  Math.sin(moonOrbitAngle) * moonConfig.orbitRadius
-                );
-
-                child.rotation.y += 0.01; // Moon rotation
-              }
-            });
-          }
-        });
-
-        // Animate sun rotation
-        if (sceneRef.current) {
-          sceneRef.current.children.forEach((child) => {
-            if (child.userData.isSun && child instanceof Mesh) {
-              child.rotation.y += 0.005; // Slow sun rotation
+          // Simple planet position check
+          planetsGroupRef.current.children.forEach((planetGroup, idx) => {
+            if (idx < 3) {
+              // Only log first 3 planets
+              const distance = Math.sqrt(
+                planetGroup.position.x * planetGroup.position.x +
+                  planetGroup.position.z * planetGroup.position.z
+              );
+              console.log(
+                `🪐 Planet ${idx}: pos(${planetGroup.position.x.toFixed(
+                  1
+                )}, ${planetGroup.position.y.toFixed(
+                  1
+                )}, ${planetGroup.position.z.toFixed(
+                  1
+                )}) dist=${distance.toFixed(1)}`
+              );
             }
           });
         }
 
-        rendererRef.current.render(sceneRef.current, cameraRef.current);
+        // Animate planet orbits using CONFIGURED speeds and radii (NO FALLBACKS)
+        planetsGroupRef.current.children.forEach((planetGroup, index) => {
+          // Use the planet's actual configuration speeds - NO HARDCODED OVERRIDES
+          if (planetGroup.userData && planetGroup.userData.config) {
+            const config = planetGroup.userData.config;
+            // Use ONLY the configured speeds from the planet config
+            const orbitSpeed = config.orbitSpeed; // NO fallback speeds
+            const orbitRadius = config.orbitRadius; // NO fallback radii
+
+            console.log(
+              `🪐 Using CONFIGURED speed: ${orbitSpeed}, radius: ${orbitRadius}`
+            );
+
+            // ORBITAL CALCULATION using configured values
+            const angle = animationCounter * orbitSpeed + index * Math.PI * 0.4; // Spread planets out
+            const newX = Math.cos(angle) * orbitRadius;
+            const newZ = Math.sin(angle) * orbitRadius;
+
+            // Set orbital position
+            planetGroup.position.set(newX, 0, newZ);
+
+            // Debug: Track movement for first few planets
+            if (index < 2 && Math.floor(animationCounter * 5) % 50 === 0) {
+              console.log(
+                `🚀 Planet ${index} position: (${newX.toFixed(
+                  1
+                )}, 0, ${newZ.toFixed(1)}) at speed ${orbitSpeed}`
+              );
+            }
+          } else {
+            console.error(
+              `❌ Planet ${index} missing configuration - cannot animate without config`
+            );
+          }
+
+          // Animate moons orbiting around their parent planet (only if planet group has children)
+          if (planetGroup.children.length > 0) {
+            planetGroup.children.forEach((child) => {
+              if (child.userData && child.userData.isMoon) {
+                const moonConfig = child.userData.moonConfig;
+                const moonIndex = child.userData.moonIndex || 0;
+
+                // Initialize orbit angle if not set
+                if (child.userData.orbitAngle === undefined) {
+                  child.userData.orbitAngle = moonIndex * Math.PI;
+                }
+
+                // Update moon's orbital angle using its specific orbit speed
+                child.userData.orbitAngle += moonConfig.orbitSpeed * dt;
+
+                // Position moon relative to its parent planet (at origin of planetGroup)
+                const moonAngle = child.userData.orbitAngle;
+                child.position.set(
+                  Math.cos(moonAngle) * moonConfig.orbitRadius,
+                  0,
+                  Math.sin(moonAngle) * moonConfig.orbitRadius
+                );
+              }
+            });
+          }
+        });
+
+        renderer.render(sceneRef.current, cameraRef.current);
+        gl.endFrameEXP();
         animationIdRef.current = requestAnimationFrame(animate);
       };
-
       animationIdRef.current = requestAnimationFrame(animate);
-      console.log(
-        "ThreeDSolarSystem: Animation loop started with fallback solar system"
-      );
-
-      setSystemStatus("Solar system active!");
-      setIsReady(true);
-
-      // Log final status
-      console.log("🌌 ThreeDSolarSystem: INITIALIZATION COMPLETE");
-      console.log(
-        `📊 Final stats: ${fallbackSystem.meshes.length} meshes, ${sceneRef.current.children.length} scene objects`
-      );
-      console.log(
-        "🎬 Animation loop running - solar system should be visible!"
-      );
+    } catch (error) {
+      setError(`Failed to initialize solar system: ${error}`);
+      console.error("❌ Critical error - no fallback available:", error);
     }
   };
 
@@ -484,32 +296,19 @@ const ThreeDSolarSystem: React.FC = () => {
     };
   }, []);
 
-  if (error) {
-    return (
-      <View style={styles.container}>
-        <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>Solar System Error</Text>
-          <Text style={styles.errorDetails}>{error}</Text>
-        </View>
-      </View>
-    );
-  }
-
   return (
     <View style={styles.container}>
-      {/* Status overlay for debugging */}
-      {!isReady && (
-        <View style={styles.statusOverlay}>
-          <Text style={styles.statusText}>{systemStatus}</Text>
-        </View>
-      )}
-
-      {/* Three.js GLView */}
       <GLView
         style={styles.glView}
         onContextCreate={onContextCreate}
         enableExperimentalWorkletSupport={false}
       />
+      {error && (
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>Solar System Error</Text>
+          <Text style={styles.errorDetails}>{error}</Text>
+        </View>
+      )}
     </View>
   );
 };
@@ -521,47 +320,29 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 0,
     top: 0,
-    zIndex: 1, // Behind other UI elements
+    zIndex: -1,
   },
   errorContainer: {
     backgroundColor: "rgba(255, 0, 0, 0.8)",
-    borderRadius: 8,
+    borderRadius: 5,
     left: 20,
-    padding: 15,
+    padding: 10,
     position: "absolute",
     right: 20,
     top: 50,
-    zIndex: 10,
   },
   errorDetails: {
     color: "white",
     fontSize: 12,
-    textAlign: "center",
+    marginTop: 5,
   },
   errorText: {
     color: "white",
     fontSize: 16,
     fontWeight: "bold",
-    marginBottom: 5,
-    textAlign: "center",
   },
   glView: {
     flex: 1,
-  },
-  statusOverlay: {
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
-    borderRadius: 8,
-    left: 20,
-    padding: 15,
-    position: "absolute",
-    right: 20,
-    top: 50,
-    zIndex: 10,
-  },
-  statusText: {
-    color: "white",
-    fontSize: 14,
-    textAlign: "center",
   },
 });
 

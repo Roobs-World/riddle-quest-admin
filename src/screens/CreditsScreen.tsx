@@ -69,7 +69,7 @@ const CreditsScreen = ({
     <CustomSafeAreaView>
       <HomeBgSvg width="120%" height="100%" style={styles.backgroundImage} />
 
-      <BackButton navigation={navigation} targetScreen="Landing" />
+      <BackButton navigation={navigation} />
 
       <Text
         className="text-2xl font-bold text-gray-800 text-center mb-4"

@@ -49,6 +49,8 @@ export const gameStyles = StyleSheet.create({
     alignItems: "center",
     position: "relative",
     backgroundColor: COLORS.transparent,
+    marginTop: SPACING.lg,
+    paddingHorizontal: SPACING.sm,
   } as ViewStyle,
 
   keyboardLayer: {

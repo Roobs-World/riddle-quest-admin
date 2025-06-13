@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import BackspaceIcon from "../icons/BackspaceIcon";
-import { scale, moderateScale, isTablet } from "../../utils/responsive";
+import { scale, moderateScale } from "../../utils/responsive";
 import { gameStyles } from "../../styles";
 
 interface KeyboardProps {
@@ -19,10 +19,9 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, isVisible }) => {
 
   // Responsive styles
   const keyHeight = scale(48);
-  const keyWidth = scale(38); // Wider keys
+  const keyWidth = scale(32); // Reduced from 38 to 32 to prevent overflow
   const keyMargin = scale(1);
   const fontSize = moderateScale(18);
-  const containerPadding = isTablet ? scale(16) : scale(12); // Reduced padding
 
   const handleKeyPress = (key: string) => {
     onKeyPress(key);
@@ -34,7 +33,6 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, isVisible }) => {
       style={[
         gameStyles.keyboardContainer,
         {
-          padding: containerPadding,
           minHeight: scale(160), // Reduced from 200 to fit bottom bar
           opacity: isVisible ? 1 : 0,
           pointerEvents: isVisible ? "auto" : "none",
@@ -100,7 +98,7 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, isVisible }) => {
             },
           ]}
         >
-          <View style={{ width: scale(19) }} />
+          <View style={{ width: scale(16) }} />
           {midRow.map((key) => (
             <TouchableOpacity
               key={key}
@@ -131,7 +129,7 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, isVisible }) => {
               </Text>
             </TouchableOpacity>
           ))}
-          <View style={{ width: scale(19) }} />
+          <View style={{ width: scale(16) }} />
         </View>
 
         {/* Bottom row - ZXCVBNM + DELETE */}
