@@ -10,7 +10,6 @@ import Animated, {
   Easing,
 } from "react-native-reanimated";
 import { COLORS } from "../../styles";
-import ThreeDSolarSystem from "./ThreeDSolarSystem";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -156,6 +155,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 0,
     top: 0,
+    zIndex: 0,
   },
   star: {
     backgroundColor: COLORS.white,
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 0,
     top: 0,
-    zIndex: 3,
+    zIndex: 2,
   },
 });
 
@@ -200,11 +200,11 @@ const StarryBackground: React.FC = () => {
         // Increased opacity for better visibility
         opacity: Math.random() * 0.4 + 0.6, // 0.6-1.0 instead of 0.4-1.0
         color: starColors[Math.floor(Math.random() * starColors.length)],
-        animationDuration: Math.random() * 3000 + 3000,
-        animationDelay: Math.random() * 3000,
+        animationDuration: Math.random() * 8000 + 12000, // Slower: 12-20 seconds instead of 3-6
+        animationDelay: Math.random() * 5000, // Slightly longer delay spread
         movementSpeed: Math.random() * 30 + 20,
         movementDirection: Math.random() * 360,
-        movementRadius: Math.random() * 20 + 10,
+        movementRadius: Math.random() * 15 + 8, // Slightly smaller movement radius for gentler motion
       });
       starRefs.current.add(i);
     }
@@ -214,10 +214,7 @@ const StarryBackground: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      {/* Always render the solar system - let it handle its own initialization */}
-      <ThreeDSolarSystem />
-
-      {/* Enhanced animated stars with movement */}
+      {/* Beautiful animated stars */}
       <View style={styles.starsContainer}>
         {stars.map((star) => (
           <AnimatedStar key={star.id} star={star} />
