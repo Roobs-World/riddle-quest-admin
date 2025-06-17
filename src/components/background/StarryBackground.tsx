@@ -14,8 +14,8 @@ import SolarSystem3D from "./SolarSystem3D";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
-// Reduced star count since we now have the 3D solar system as main focus
-const OPTIMIZED_STAR_COUNT = 80;
+// Further optimized star count for better performance
+const OPTIMIZED_STAR_COUNT = 60; // Reduced from 80
 
 interface Star {
   id: number;
@@ -31,29 +31,38 @@ interface Star {
   movementRadius: number;
 }
 
-// Animated Star Component
-const AnimatedStar: React.FC<{ star: Star }> = ({ star }) => {
+// Optimized Animated Star Component with reduced complexity
+const AnimatedStar: React.FC<{ star: Star }> = React.memo(({ star }) => {
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
   const opacity = useSharedValue(star.opacity);
   const scale = useSharedValue(1);
 
-  useEffect(() => {
-    // Gentle floating movement
-    const moveX =
-      star.movementRadius * Math.cos((star.movementDirection * Math.PI) / 180);
-    const moveY =
-      star.movementRadius * Math.sin((star.movementDirection * Math.PI) / 180);
+  // Memoized animation calculations
+  const moveParams = useMemo(
+    () => ({
+      moveX:
+        star.movementRadius *
+        Math.cos((star.movementDirection * Math.PI) / 180),
+      moveY:
+        star.movementRadius *
+        Math.sin((star.movementDirection * Math.PI) / 180),
+    }),
+    [star.movementDirection, star.movementRadius]
+  );
 
+  // Optimized animation setup
+  useEffect(() => {
     // Start movement animations with delay
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
+      // Simplified X movement
       translateX.value = withRepeat(
         withSequence(
-          withTiming(moveX, {
+          withTiming(moveParams.moveX, {
             duration: star.animationDuration,
             easing: Easing.inOut(Easing.sin),
           }),
-          withTiming(-moveX, {
+          withTiming(-moveParams.moveX, {
             duration: star.animationDuration,
             easing: Easing.inOut(Easing.sin),
           })
@@ -62,14 +71,16 @@ const AnimatedStar: React.FC<{ star: Star }> = ({ star }) => {
         true
       );
 
+      // Simplified Y movement
       translateY.value = withRepeat(
         withSequence(
-          withTiming(moveY * 0.5, {
-            duration: star.animationDuration * 1.2,
+          withTiming(moveParams.moveY * 0.3, {
+            // Reduced movement range
+            duration: star.animationDuration * 1.5,
             easing: Easing.inOut(Easing.sin),
           }),
-          withTiming(-moveY * 0.5, {
-            duration: star.animationDuration * 1.2,
+          withTiming(-moveParams.moveY * 0.3, {
+            duration: star.animationDuration * 1.5,
             easing: Easing.inOut(Easing.sin),
           })
         ),
@@ -77,15 +88,16 @@ const AnimatedStar: React.FC<{ star: Star }> = ({ star }) => {
         true
       );
 
-      // Subtle twinkling effect (reduced intensity for background stars)
+      // Reduced opacity animation frequency for performance
       opacity.value = withRepeat(
         withSequence(
-          withTiming(star.opacity * 0.4, {
-            duration: 3000 + Math.random() * 3000,
+          withTiming(star.opacity * 0.6, {
+            // Less dramatic opacity changes
+            duration: 4000 + Math.random() * 4000, // Longer duration
             easing: Easing.inOut(Easing.quad),
           }),
           withTiming(star.opacity, {
-            duration: 3000 + Math.random() * 3000,
+            duration: 4000 + Math.random() * 4000,
             easing: Easing.inOut(Easing.quad),
           })
         ),
@@ -93,15 +105,16 @@ const AnimatedStar: React.FC<{ star: Star }> = ({ star }) => {
         true
       );
 
-      // Very gentle scale pulsing
+      // Simplified scale animation
       scale.value = withRepeat(
         withSequence(
-          withTiming(1.1, {
-            duration: 4000 + Math.random() * 2000,
+          withTiming(1.05, {
+            // Smaller scale changes
+            duration: 6000 + Math.random() * 3000, // Longer duration
             easing: Easing.inOut(Easing.sin),
           }),
-          withTiming(0.9, {
-            duration: 4000 + Math.random() * 2000,
+          withTiming(0.95, {
+            duration: 6000 + Math.random() * 3000,
             easing: Easing.inOut(Easing.sin),
           })
         ),
@@ -109,8 +122,11 @@ const AnimatedStar: React.FC<{ star: Star }> = ({ star }) => {
         true
       );
     }, star.animationDelay);
-  }, [star, translateX, translateY, opacity, scale]);
 
+    return () => clearTimeout(timeoutId);
+  }, [star, translateX, translateY, opacity, scale, moveParams]);
+
+  // Optimized animated style with interpolation
   const animatedStyle = useAnimatedStyle(() => {
     return {
       transform: [
@@ -120,32 +136,32 @@ const AnimatedStar: React.FC<{ star: Star }> = ({ star }) => {
       ],
       opacity: opacity.value,
     };
-  });
+  }, []);
 
-  return (
-    <Animated.View
-      style={[
-        styles.star,
-        {
-          position: "absolute",
-          left: star.initialX,
-          top: star.initialY,
-          width: star.size,
-          height: star.size,
-          borderRadius: star.size / 2,
-          backgroundColor: star.color,
-          // Reduced glow effect since we want 3D solar system to be the focus
-          shadowColor: star.color,
-          shadowOffset: { width: 0, height: 0 },
-          shadowOpacity: 0.6,
-          shadowRadius: star.size * 1.5,
-          elevation: 6,
-        },
-        animatedStyle,
-      ]}
-    />
+  // Memoized static styles
+  const staticStyle = useMemo(
+    () => ({
+      position: "absolute" as const,
+      left: star.initialX,
+      top: star.initialY,
+      width: star.size,
+      height: star.size,
+      borderRadius: star.size / 2,
+      backgroundColor: star.color,
+      // Reduced shadow effects for performance
+      shadowColor: star.color,
+      shadowOffset: { width: 0, height: 0 },
+      shadowOpacity: 0.4, // Reduced from 0.6
+      shadowRadius: star.size * 1.2, // Reduced from 1.5
+      elevation: 3, // Reduced from 6
+    }),
+    [star]
   );
-};
+
+  return <Animated.View style={[styles.star, staticStyle, animatedStyle]} />;
+});
+
+AnimatedStar.displayName = "AnimatedStar";
 
 const styles = StyleSheet.create({
   container: {
@@ -168,11 +184,11 @@ const styles = StyleSheet.create({
   },
   star: {
     backgroundColor: COLORS.white,
-    elevation: 5,
+    elevation: 3, // Reduced from 5
     position: "absolute",
     shadowColor: COLORS.white,
     shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
+    shadowOpacity: 0.6, // Reduced from 0.8
   },
   starsContainer: {
     bottom: 0,
@@ -188,7 +204,7 @@ const StarryBackground: React.FC = () => {
   // Performance tracking
   const starRefs = useRef<Set<number>>(new Set());
 
-  // Generate background star pool with reduced intensity for background effect
+  // Optimized star generation with better performance characteristics
   const stars = useMemo(() => {
     const generatedStars: Star[] = [];
     const starColors = [
@@ -204,16 +220,17 @@ const StarryBackground: React.FC = () => {
         id: i,
         initialX: Math.random() * SCREEN_WIDTH,
         initialY: Math.random() * SCREEN_HEIGHT,
-        // Smaller stars for background effect
-        size: Math.random() * 2 + 1, // 1-3px
-        // Reduced opacity for background
-        opacity: Math.random() * 0.3 + 0.4, // 0.4-0.7 instead of higher values
+        // Optimized size range
+        size: Math.random() * 1.5 + 1, // 1-2.5px (reduced from 1-3px)
+        // Optimized opacity for better performance
+        opacity: Math.random() * 0.25 + 0.45, // 0.45-0.7 (tighter range)
         color: starColors[Math.floor(Math.random() * starColors.length)],
-        animationDuration: Math.random() * 10000 + 15000, // Slower: 15-25 seconds
-        animationDelay: Math.random() * 8000, // Longer delay spread
-        movementSpeed: Math.random() * 20 + 10,
+        // Slower animations for performance
+        animationDuration: Math.random() * 15000 + 20000, // 20-35 seconds (increased)
+        animationDelay: Math.random() * 10000, // Longer delay spread
+        movementSpeed: Math.random() * 15 + 8, // Reduced movement speed
         movementDirection: Math.random() * 360,
-        movementRadius: Math.random() * 10 + 5, // Smaller movement radius
+        movementRadius: Math.random() * 8 + 4, // Smaller movement radius (4-12px)
       });
       starRefs.current.add(i);
     }
@@ -221,14 +238,16 @@ const StarryBackground: React.FC = () => {
     return generatedStars;
   }, []);
 
+  // Memoized star components for better performance
+  const starComponents = useMemo(
+    () => stars.map((star) => <AnimatedStar key={star.id} star={star} />),
+    [stars]
+  );
+
   return (
     <View style={styles.container}>
       {/* Background animated stars */}
-      <View style={styles.starsContainer}>
-        {stars.map((star) => (
-          <AnimatedStar key={star.id} star={star} />
-        ))}
-      </View>
+      <View style={styles.starsContainer}>{starComponents}</View>
 
       {/* 3D Solar System */}
       <View style={styles.solarSystemContainer}>
@@ -238,4 +257,4 @@ const StarryBackground: React.FC = () => {
   );
 };
 
-export default StarryBackground;
+export default React.memo(StarryBackground);
