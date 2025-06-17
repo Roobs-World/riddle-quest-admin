@@ -428,60 +428,79 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
 
           {/* Comprehensive Stats Grid */}
           <ScrollView className="max-h-60 mb-6">
-            <View className="grid grid-cols-2 gap-4">
-              {/* Stats from ProfileOverlay and Full Profile Page requirement */}
-              <View className="items-center">
+            <Text className="text-lg font-bold text-gray-800 mb-4">
+              Statistics
+            </Text>
+            <View className="flex-row flex-wrap justify-between">
+              {/* Row 1 */}
+              <View className="w-1/2 items-center mb-4 pr-2">
                 <Text className="text-2xl font-bold text-gray-800">
                   {(playerData.progress?.dailyChallengeIndex || 0).toString()}
                 </Text>
-                <Text className="text-sm text-gray-600">Daily Puzzles</Text>
+                <Text className="text-sm text-gray-600 text-center">
+                  Daily Puzzles
+                </Text>
               </View>
-              <View className="items-center">
+              <View className="w-1/2 items-center mb-4 pl-2">
                 <Text className="text-2xl font-bold text-gray-800">
                   {(stats?.bestStreak || 0).toString()}
                 </Text>
-                <Text className="text-sm text-gray-600">Best Streak</Text>
+                <Text className="text-sm text-gray-600 text-center">
+                  Best Streak
+                </Text>
               </View>
-              <View className="items-center">
+
+              {/* Row 2 */}
+              <View className="w-1/2 items-center mb-4 pr-2">
                 <Text className="text-2xl font-bold text-gray-800">
                   {(stats?.totalWordsGuessed || 0).toString()}
                 </Text>
-                <Text className="text-sm text-gray-600">Words Guessed</Text>
+                <Text className="text-sm text-gray-600 text-center">
+                  Words Guessed
+                </Text>
               </View>
-              <View className="items-center">
+              <View className="w-1/2 items-center mb-4 pl-2">
                 <Text className="text-2xl font-bold text-gray-800">
                   {`${(stats?.winRate || 0).toString()}%`}
                 </Text>
-                <Text className="text-sm text-gray-600">Win Rate</Text>
+                <Text className="text-sm text-gray-600 text-center">
+                  Win Rate
+                </Text>
               </View>
 
-              {/* Additional Stats */}
-              <View className="items-center">
+              {/* Row 3 */}
+              <View className="w-1/2 items-center mb-4 pr-2">
                 <Text className="text-2xl font-bold text-gray-800">
                   {(stats?.totalScore || 0).toString()}
                 </Text>
-                <Text className="text-sm text-gray-600">Total Score</Text>
+                <Text className="text-sm text-gray-600 text-center">
+                  Total Score
+                </Text>
               </View>
-              <View className="items-center">
+              <View className="w-1/2 items-center mb-4 pl-2">
                 <Text className="text-2xl font-bold text-gray-800">
                   {(stats?.highestLevelClassic || 0).toString()}
                 </Text>
-                <Text className="text-sm text-gray-600">Highest Level</Text>
+                <Text className="text-sm text-gray-600 text-center">
+                  Highest Level
+                </Text>
               </View>
-              <View className="items-center">
+
+              {/* Row 4 */}
+              <View className="w-1/2 items-center mb-4 pr-2">
                 <Text className="text-2xl font-bold text-gray-800">
                   {(stats?.gamesPlayed || 0).toString()}
                 </Text>
-                <Text className="text-sm text-gray-600">Games Played</Text>
+                <Text className="text-sm text-gray-600 text-center">
+                  Games Played
+                </Text>
               </View>
-              {/* Coins Display */}
-              <View className="items-center">
-                {/* Placeholder for Treasure Chest Icon */}
+              <View className="w-1/2 items-center mb-4 pl-2">
                 <View className="w-8 h-8 bg-yellow-500 rounded-sm mb-1" />
                 <Text className="text-2xl font-bold text-gray-800">
                   {(playerData.coins || 0).toString()}
                 </Text>
-                <Text className="text-sm text-gray-600">Coins</Text>
+                <Text className="text-sm text-gray-600 text-center">Coins</Text>
               </View>
             </View>
           </ScrollView>

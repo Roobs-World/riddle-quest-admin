@@ -45,7 +45,7 @@ export const AUDIO_QUALITY_PRESETS = {
     bufferSize: 1536,
     useHardwareAcceleration: true,
   },
-} as const;
+};
 
 // Adaptive quality management
 interface BufferingTracker {

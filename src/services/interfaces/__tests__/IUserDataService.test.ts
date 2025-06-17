@@ -6,7 +6,6 @@ describe("IUserDataService", () => {
     userId: "test-user-123",
     username: "testuser",
     email: "test@example.com",
-    xp: 100,
     coins: 50,
     hasPurchasedApp: false,
     stats: {

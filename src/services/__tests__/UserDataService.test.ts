@@ -210,7 +210,6 @@ describe("UserDataService", () => {
     const mockUserData = {
       userId: mockUserId,
       username: "TestUser",
-      xp: 150,
       coins: 100,
       stats: {
         dailyPuzzlesCompleted: 5,
@@ -489,7 +488,6 @@ describe("UserDataService", () => {
     const mockUserData = {
       userId: mockUserId,
       username: "TestUser",
-      xp: 0,
       coins: 50,
       stats: {
         dailyPuzzlesCompleted: 0,
@@ -756,7 +754,6 @@ describe("UserDataService", () => {
       mockUpdate.mockResolvedValue(undefined);
       const multipleUpdates = {
         coins: 200,
-        xp: 500,
         username: "NewUsername",
         displayName: "New Display Name",
       };

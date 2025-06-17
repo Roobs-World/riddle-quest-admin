@@ -83,7 +83,6 @@ describe("firestoreSchemas", () => {
         username: "testuser",
         email: "test@example.com",
         displayName: "Test User",
-        xp: 100,
         coins: 50,
       };
 
@@ -113,17 +112,6 @@ describe("firestoreSchemas", () => {
       expect(result.success).toBe(false);
     });
 
-    it("should reject player with negative XP", () => {
-      const invalidPlayer = {
-        userId: "user123",
-        username: "testuser",
-        xp: -5,
-      };
-
-      const result = PlayerSchema.safeParse(invalidPlayer);
-      expect(result.success).toBe(false);
-    });
-
     it("should handle player with default values", () => {
       const minimalPlayer = {
         userId: "user123",
@@ -134,7 +122,6 @@ describe("firestoreSchemas", () => {
       const result = PlayerSchema.safeParse(minimalPlayer);
       expect(result.success).toBe(true);
       if (result.success) {
-        expect(result.data.xp).toBe(0);
         expect(result.data.coins).toBe(0);
         expect(result.data.hasPurchasedApp).toBe(false);
       }

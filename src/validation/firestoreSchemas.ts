@@ -72,7 +72,6 @@ export const PlayerSchema = z.object({
   ),
   displayName: z.string().optional(),
   avatarUrl: z.string().url().optional(),
-  xp: z.number().int().nonnegative().default(0),
   coins: z.number().int().nonnegative().default(0),
   createdAt: z.number().optional(),
   registeredAt: z.number().optional(),

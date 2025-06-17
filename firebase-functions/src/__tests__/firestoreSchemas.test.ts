@@ -291,7 +291,6 @@ describe("Firestore Schemas", () => {
         username: "testuser",
         displayName: "Test User",
         avatarUrl: "https://example.com/avatar.jpg",
-        xp: 100,
         coins: 50,
         hasPurchasedApp: true,
         createdAt: 1640995200000,
@@ -324,7 +323,6 @@ describe("Firestore Schemas", () => {
       const result = PlayerSchema.safeParse(minimalPlayer);
       expect(result.success).toBe(true);
       if (result.success) {
-        expect(result.data.xp).toBe(0);
         expect(result.data.coins).toBe(0);
         expect(result.data.hasPurchasedApp).toBe(false);
         expect(result.data.stats).toBeDefined();
@@ -365,17 +363,6 @@ describe("Firestore Schemas", () => {
         userId: "user123",
         username: "testuser",
         avatarUrl: "not-a-url",
-      };
-
-      const result = PlayerSchema.safeParse(invalidPlayer);
-      expect(result.success).toBe(false);
-    });
-
-    test("should reject negative XP", () => {
-      const invalidPlayer = {
-        userId: "user123",
-        username: "testuser",
-        xp: -10,
       };
 
       const result = PlayerSchema.safeParse(invalidPlayer);
@@ -513,7 +500,6 @@ describe("Firestore Schemas", () => {
       const player: Player = {
         userId: "user123",
         username: "testuser",
-        xp: 0,
         coins: 0,
         hasPurchasedApp: false,
         stats: {
@@ -540,7 +526,6 @@ describe("Firestore Schemas", () => {
 
       expect(typeof player.userId).toBe("string");
       expect(typeof player.username).toBe("string");
-      expect(typeof player.xp).toBe("number");
       expect(typeof player.coins).toBe("number");
       expect(typeof player.hasPurchasedApp).toBe("boolean");
       expect(typeof player.stats).toBe("object");
@@ -588,7 +573,6 @@ describe("Firestore Schemas", () => {
       const player = {
         userId: "user123",
         username: "testuser",
-        xp: Number.MAX_SAFE_INTEGER,
         coins: Number.MAX_SAFE_INTEGER,
       };
 

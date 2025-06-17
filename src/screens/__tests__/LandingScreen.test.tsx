@@ -454,8 +454,11 @@ describe("LandingScreen", () => {
     });
 
     it("should handle Facebook sign-in failure with generic error", async () => {
-      const errorMessage = "FB Network error";
-      mockSignInWithFacebook.mockRejectedValueOnce(new Error(errorMessage));
+      const errorMessage =
+        "An unexpected error occurred during Facebook login.";
+      (AuthService.signInWithFacebook as jest.Mock).mockRejectedValueOnce(
+        new Error(errorMessage)
+      );
       const { getByTestId, findByTestId } = render(
         <LandingScreen navigation={mockNavigation} />
       );
@@ -780,7 +783,7 @@ describe("Facebook Sign-In", () => {
   });
 
   it("should handle Facebook sign-in failure with generic error", async () => {
-    const errorMessage = "FB Network error";
+    const errorMessage = "An unexpected error occurred during Facebook login.";
     mockSignInWithFacebook.mockRejectedValueOnce(new Error(errorMessage));
     const { getByTestId, findByTestId } = render(
       <LandingScreen navigation={mockNavigation} />

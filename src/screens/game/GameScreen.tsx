@@ -419,13 +419,6 @@ const GameScreen: React.FC<GameScreenProps> = ({
     onNextLevel();
   };
 
-  const handleProfileClose = () => {
-    setOverlayState((prev) => ({
-      ...prev,
-      isProfileOverlayVisible: false,
-    }));
-  };
-
   const handleSettingsPress = () => {
     setOverlayState((prev) => ({
       ...prev,
@@ -447,7 +440,7 @@ const GameScreen: React.FC<GameScreenProps> = ({
   const handleProfilePress = () => {
     setOverlayState((prev) => ({
       ...prev,
-      isProfileOverlayVisible: true,
+      isFullProfileDetailsOverlayVisible: true,
     }));
   };
 
@@ -489,13 +482,6 @@ const GameScreen: React.FC<GameScreenProps> = ({
     } catch (error) {
       console.error("Error checking instructions AsyncStorage:", error);
     }
-  };
-
-  const handleShowFullProfileDetails = () => {
-    setOverlayState((prev) => ({
-      ...prev,
-      isFullProfileDetailsOverlayVisible: true,
-    }));
   };
 
   const handleCloseFullProfileDetailsOverlay = () => {
@@ -789,11 +775,6 @@ const GameScreen: React.FC<GameScreenProps> = ({
         onShowHint={handleShowHint}
         hintCost={hintCost}
         userCoins={userCoins}
-        // Profile Overlay
-        isProfileOverlayVisible={overlayState.isProfileOverlayVisible}
-        onProfileClose={handleProfileClose}
-        playerData={playerData}
-        onFullProfilePress={handleShowFullProfileDetails}
         // Settings Overlay
         isSettingsOverlayVisible={overlayState.isSettingsOverlayVisible}
         onSettingsClose={handleSettingsClose}
@@ -820,6 +801,7 @@ const GameScreen: React.FC<GameScreenProps> = ({
           overlayState.isFullProfileDetailsOverlayVisible
         }
         onCloseFullProfileDetailsOverlay={handleCloseFullProfileDetailsOverlay}
+        playerData={playerData}
         // Coin Shop Modal
         isCoinShopModalVisible={overlayState.isCoinShopModalVisible}
         onCloseCoinShopModal={handleCloseCoinShopModal}

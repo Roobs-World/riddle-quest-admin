@@ -1,7 +1,6 @@
 import React from "react";
 import {
   HintModal,
-  ProfileModal,
   SettingsModal,
   InstructionsModal,
   WelcomeModal,
@@ -17,13 +16,6 @@ interface GameOverlaysProps {
   onShowHint: () => void;
   hintCost: number;
   userCoins: number;
-
-  // Profile Overlay
-  isProfileOverlayVisible: boolean;
-  onProfileClose: () => void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  playerData: any; // Using any to avoid complex type mismatch for now
-  onFullProfilePress: () => void;
 
   // Settings Overlay
   isSettingsOverlayVisible: boolean;
@@ -47,6 +39,8 @@ interface GameOverlaysProps {
   // Full Profile Details Overlay
   isFullProfileDetailsOverlayVisible: boolean;
   onCloseFullProfileDetailsOverlay: () => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  playerData: any; // Using any to avoid complex type mismatch for now
 
   // Coin Shop Modal
   isCoinShopModalVisible: boolean;
@@ -71,12 +65,6 @@ const GameOverlays: React.FC<GameOverlaysProps> = ({
   hintCost,
   userCoins,
 
-  // Profile Overlay
-  isProfileOverlayVisible,
-  onProfileClose,
-  playerData,
-  onFullProfilePress,
-
   // Settings Overlay
   isSettingsOverlayVisible,
   onSettingsClose,
@@ -99,6 +87,7 @@ const GameOverlays: React.FC<GameOverlaysProps> = ({
   // Full Profile Details Overlay
   isFullProfileDetailsOverlayVisible,
   onCloseFullProfileDetailsOverlay,
+  playerData,
 
   // Coin Shop Modal
   isCoinShopModalVisible,
@@ -119,13 +108,6 @@ const GameOverlays: React.FC<GameOverlaysProps> = ({
         onShowHint={onShowHint}
         hintCost={hintCost}
         userCoins={userCoins}
-      />
-
-      <ProfileModal
-        isVisible={isProfileOverlayVisible}
-        onClose={onProfileClose}
-        playerData={playerData}
-        onFullProfilePress={onFullProfilePress}
       />
 
       <SettingsModal

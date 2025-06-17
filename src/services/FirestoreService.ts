@@ -537,7 +537,6 @@ export const createUserDocumentInFirestore = async (
       userId,
       email,
       username: displayName || email.split("@")[0], // Use display name or email prefix as username
-      xp: 0, // Starting XP
       coins: 100, // Starting coins
       progress: {
         classicIndex: 0,

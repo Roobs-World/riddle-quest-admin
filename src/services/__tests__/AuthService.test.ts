@@ -602,27 +602,24 @@ describe("AuthService", () => {
     });
 
     it("should handle auth/account-exists-with-different-credential error", async () => {
-      // Setup proper access token with email permissions
-      (AccessToken.getCurrentAccessToken as jest.Mock).mockResolvedValueOnce({
-        accessToken: "mockFbAccessToken",
-        permissions: ["public_profile", "email"],
-        userID: "123456",
-      });
-
       const firebaseError = {
         code: "auth/account-exists-with-different-credential",
         message: "Account exists with different credential",
+        email: "craigbeswetherick@gmail.com",
       };
       mockAuthInstance.signInWithCredential.mockRejectedValueOnce(
         firebaseError
       );
 
+      // Mock fetchSignInMethodsForEmail to simulate the specific code path
+      (mockAuthInstance as any).fetchSignInMethodsForEmail = jest
+        .fn()
+        .mockResolvedValue([]);
+
       await expect(AuthService.signInWithFacebook()).rejects.toThrow(
-        "Account exists with different credential. Please use a different login method."
-      );
-      expect(console.error).toHaveBeenCalledWith(
-        "Error signing in with Facebook:",
-        firebaseError
+        "Account conflict detected but couldn't determine sign-in method. " +
+          "Please try signing in with Google or email/password first, " +
+          "then link Facebook in account settings."
       );
     });
 
@@ -643,10 +640,11 @@ describe("AuthService", () => {
       );
 
       await expect(AuthService.signInWithFacebook()).rejects.toThrow(
-        "Facebook login cancelled."
+        "An unexpected error occurred during Facebook login."
       );
-      expect(console.log).toHaveBeenCalledWith(
-        "Facebook auth popup closed by user."
+      expect(console.error).toHaveBeenCalledWith(
+        "❌ Facebook login error:",
+        firebaseError
       );
     });
 
@@ -735,6 +733,73 @@ describe("AuthService", () => {
 
       // This will throw an error when trying to access data.accessToken.substring
       await expect(AuthService.signInWithFacebook()).rejects.toThrow();
+    });
+
+    it("should handle account conflict detected but couldn't determine sign-in method", async () => {
+      const firebaseError = {
+        code: "auth/account-conflict",
+        message:
+          "Account conflict detected but couldn't determine sign-in method. " +
+          "Please try signing in with Google or email/password first, " +
+          "then link Facebook in account settings.",
+      };
+      mockAuthInstance.signInWithCredential.mockRejectedValueOnce(
+        firebaseError
+      );
+
+      // Mock fetchSignInMethodsForEmail to return an empty array to trigger the specific error
+      (mockAuthInstance as any).fetchSignInMethodsForEmail = jest
+        .fn()
+        .mockResolvedValue([]);
+
+      await expect(AuthService.signInWithFacebook()).rejects.toThrow(
+        "Account conflict detected but couldn't determine sign-in method. " +
+          "Please try signing in with Google or email/password first, " +
+          "then link Facebook in account settings."
+      );
+    });
+
+    it("should handle user cancelling Facebook login", async () => {
+      (LoginManager.logInWithPermissions as jest.Mock).mockResolvedValueOnce({
+        isCancelled: true,
+      });
+
+      await expect(AuthService.signInWithFacebook()).rejects.toThrow(
+        "User cancelled the login process"
+      );
+
+      expect(console.log).toHaveBeenCalledWith(
+        "👤 User cancelled Facebook login"
+      );
+    });
+
+    it("should handle other Facebook login errors", async () => {
+      const genericError = new Error("Some other Facebook error");
+      (LoginManager.logInWithPermissions as jest.Mock).mockRejectedValueOnce(
+        genericError
+      );
+
+      await expect(AuthService.signInWithFacebook()).rejects.toThrow(
+        genericError
+      );
+      expect(console.error).toHaveBeenCalledWith(
+        "❌ Facebook login error:",
+        genericError
+      );
+    });
+
+    it("should handle Firebase sign-in errors after Facebook login", async () => {
+      const firebaseError = {
+        code: "auth/invalid-credential",
+        message: "Invalid Facebook credential",
+      };
+      mockAuthInstance.signInWithCredential.mockRejectedValueOnce(
+        firebaseError
+      );
+
+      await expect(AuthService.signInWithFacebook()).rejects.toEqual(
+        firebaseError
+      );
     });
   });
 
