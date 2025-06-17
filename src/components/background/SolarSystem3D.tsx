@@ -98,7 +98,7 @@ const GEOMETRY_CONFIG = {
   ring: { segments: 32 }, // Reduced from 64
 };
 
-// Corona component with billboard behavior
+// Corona component with billboard behavior - 6x the size of the sun
 const Corona: React.FC = () => {
   const coronaRef = useRef<Mesh>(null);
 
@@ -108,13 +108,16 @@ const Corona: React.FC = () => {
     Asset.fromModule(texGradientCircleSun).uri
   );
 
-  // Pulsing animation effect
+  // Enhanced pulsing animation effect for dramatic corona
   const animateCorona = useCallback((state: any) => {
     if (coronaRef.current) {
-      // Add slight pulsing effect
+      // Add subtle pulsing effect with slower, more gentle movement
       const time = state.clock.getElapsedTime();
-      const scale = 1 + Math.sin(time * 2) * 0.1; // Gentle pulsing
+      const scale = 1 + Math.sin(time * 1.5) * 0.08; // Gentler pulsing
+      const rotation = time * 0.5; // Slow rotation for dynamic effect
+
       coronaRef.current.scale.setScalar(scale);
+      coronaRef.current.rotation.z = rotation;
     }
   }, []);
 
@@ -123,14 +126,15 @@ const Corona: React.FC = () => {
   return (
     <Billboard>
       <mesh ref={coronaRef} position={[0, 0, 0]}>
-        <planeGeometry args={[8, 8]} />
+        <planeGeometry args={[22, 22]} />
         <meshBasicMaterial
           map={coronaTexture}
           transparent
-          opacity={0.6}
+          opacity={0.8}
           blending={2} // AdditiveBlending
           depthWrite={false}
           side={2} // DoubleSide
+          color={0xfff5e1} // Warm corona tint (255,245,225)
         />
       </mesh>
     </Billboard>
