@@ -130,7 +130,7 @@ const Corona: React.FC = () => {
         <meshBasicMaterial
           map={coronaTexture}
           transparent
-          opacity={0.8}
+          opacity={0.95}
           blending={2} // AdditiveBlending
           depthWrite={false}
           side={2} // DoubleSide
