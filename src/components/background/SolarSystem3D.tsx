@@ -3,6 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useRef, useMemo, Suspense, useCallback } from "react";
 import { Canvas, useFrame, useLoader } from "@react-three/fiber";
+import { Billboard } from "@react-three/drei";
 import { TextureLoader, Mesh, Group, RepeatWrapping } from "three";
 import { Dimensions, View, StyleSheet } from "react-native";
 import { Asset } from "expo-asset";
@@ -107,33 +108,32 @@ const Corona: React.FC = () => {
     Asset.fromModule(texGradientCircleSun).uri
   );
 
-  // Billboard effect - always face the camera
-  const updateBillboard = useCallback((state: any) => {
-    if (coronaRef.current && state.camera) {
-      // Make the corona always face the camera
-      coronaRef.current.lookAt(state.camera.position);
-
-      // Optional: Add slight pulsing effect
+  // Pulsing animation effect
+  const animateCorona = useCallback((state: any) => {
+    if (coronaRef.current) {
+      // Add slight pulsing effect
       const time = state.clock.getElapsedTime();
       const scale = 1 + Math.sin(time * 2) * 0.1; // Gentle pulsing
       coronaRef.current.scale.setScalar(scale);
     }
   }, []);
 
-  useFrame(updateBillboard);
+  useFrame(animateCorona);
 
   return (
-    <mesh ref={coronaRef} position={[0, 0, 0]}>
-      <planeGeometry args={[8, 8]} />
-      <meshBasicMaterial
-        map={coronaTexture}
-        transparent
-        opacity={0.6}
-        blending={2} // AdditiveBlending
-        depthWrite={false}
-        side={2} // DoubleSide
-      />
-    </mesh>
+    <Billboard>
+      <mesh ref={coronaRef} position={[0, 0, 0]}>
+        <planeGeometry args={[8, 8]} />
+        <meshBasicMaterial
+          map={coronaTexture}
+          transparent
+          opacity={0.6}
+          blending={2} // AdditiveBlending
+          depthWrite={false}
+          side={2} // DoubleSide
+        />
+      </mesh>
+    </Billboard>
   );
 };
 
