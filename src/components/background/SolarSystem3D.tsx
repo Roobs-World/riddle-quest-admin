@@ -213,48 +213,52 @@ const PLANET_CONFIG = [
 
 // Extremely optimized geometry configurations for maximum performance
 const GEOMETRY_CONFIG = {
-  sun: { widthSegments: 16, heightSegments: 16 }, // Reduced from 24,24
-  planet: { widthSegments: 12, heightSegments: 12 }, // Reduced from 16,16
-  moon: { widthSegments: 8, heightSegments: 8 }, // Reduced from 12,12
-  ring: { segments: 24 }, // Reduced from 32
+  sun: { widthSegments: 16, heightSegments: 16 },
+  planet: { widthSegments: 12, heightSegments: 12 },
+  moon: { widthSegments: 8, heightSegments: 8 },
+  ring: { segments: 24 },
   corona: { widthSegments: 12, heightSegments: 12 },
 };
 
-// Simplified Corona component optimized for performance
+// Animation state management for centralized control
+interface AnimationRefs {
+  sunMesh: React.RefObject<Mesh | null>;
+  sunCorona: React.RefObject<Mesh | null>;
+  planetaryCoronas: React.RefObject<Mesh | null>[];
+  planets: {
+    group: React.RefObject<Group | null>;
+    mesh: React.RefObject<Mesh | null>;
+    orbitTime: React.MutableRefObject<number>;
+    config: (typeof PLANET_CONFIG)[0];
+    moons: {
+      group: React.RefObject<Group | null>;
+      mesh: React.RefObject<Mesh | null>;
+      orbitTime: React.MutableRefObject<number>;
+      config: any;
+      moonIndex: number;
+    }[];
+    rings: React.RefObject<Mesh | null>[];
+  }[];
+  camera: any;
+  sunLight: any;
+}
+
+// Static Corona component (no animation)
 interface PlanetaryCoronaProps {
   planetSize: number;
   color?: number;
   intensity?: number;
+  coronaRef: React.RefObject<Mesh | null>;
 }
 
 const PlanetaryCorona: React.FC<PlanetaryCoronaProps> = React.memo(
-  ({
-    planetSize,
-    color = 0xfff5e1,
-    intensity = 0.2, // Reduced intensity for better performance
-  }) => {
-    const coronaRef = useRef<Mesh>(null);
-
-    // Load corona texture
+  ({ planetSize, color = 0xfff5e1, intensity = 0.2, coronaRef }) => {
     const coronaTexture = useLoader(
       TextureLoader,
       Asset.fromModule(texGradientCircle).uri
     );
 
-    // Simplified animation with reduced calculations
-    const animateCorona = useCallback((state: any) => {
-      if (coronaRef.current) {
-        const time = state.clock.getElapsedTime();
-        // Simpler animation with less calculations
-        const scale = 1 + Math.sin(time * 1.5) * 0.03; // Reduced amplitude
-        coronaRef.current.scale.setScalar(scale);
-        coronaRef.current.rotation.z = time * 0.2; // Slower rotation
-      }
-    }, []);
-
-    useFrame(animateCorona);
-
-    const coronaSize = planetSize * 3; // Reduced from 4x for performance
+    const coronaSize = planetSize * 3;
 
     return (
       <Billboard>
@@ -276,61 +280,42 @@ const PlanetaryCorona: React.FC<PlanetaryCoronaProps> = React.memo(
 );
 PlanetaryCorona.displayName = "PlanetaryCorona";
 
-// Optimized Sun Corona component
-const SunCorona: React.FC = React.memo(() => {
-  const coronaRef = useRef<Mesh>(null);
+// Static Sun Corona component
+const SunCorona: React.FC<{ coronaRef: React.RefObject<Mesh | null> }> =
+  React.memo(({ coronaRef }) => {
+    const coronaTexture = useLoader(
+      TextureLoader,
+      Asset.fromModule(texGradientCircleSun).uri
+    );
 
-  const coronaTexture = useLoader(
-    TextureLoader,
-    Asset.fromModule(texGradientCircleSun).uri
-  );
-
-  const animateCorona = useCallback((state: any) => {
-    if (coronaRef.current) {
-      const time = state.clock.getElapsedTime();
-      const scale = 1 + Math.sin(time * 1.2) * 0.05; // Reduced calculation complexity
-      coronaRef.current.scale.setScalar(scale);
-      coronaRef.current.rotation.z = time * 0.3;
-    }
-  }, []);
-
-  useFrame(animateCorona);
-
-  return (
-    <Billboard>
-      <mesh ref={coronaRef} position={[0, 0, 0]}>
-        <planeGeometry args={[18, 18]} /> {/* Reduced from 22x22 */}
-        <meshBasicMaterial
-          map={coronaTexture}
-          transparent
-          opacity={0.8} // Reduced from 0.95
-          blending={2}
-          depthWrite={false}
-          side={2}
-          color={0xfff5e1}
-        />
-      </mesh>
-    </Billboard>
-  );
-});
+    return (
+      <Billboard>
+        <mesh ref={coronaRef} position={[0, 0, 0]}>
+          <planeGeometry args={[18, 18]} />
+          <meshBasicMaterial
+            map={coronaTexture}
+            transparent
+            opacity={0.8}
+            blending={2}
+            depthWrite={false}
+            side={2}
+            color={0xfff5e1}
+          />
+        </mesh>
+      </Billboard>
+    );
+  });
 SunCorona.displayName = "SunCorona";
 
-// Highly optimized Sun component
-const Sun: React.FC = React.memo(() => {
-  const sunRef = useRef<Mesh>(null);
-
+// Static Sun component
+const Sun: React.FC<{
+  sunRef: React.RefObject<Mesh | null>;
+  coronaRef: React.RefObject<Mesh | null>;
+}> = React.memo(({ sunRef, coronaRef }) => {
   const sunTexture = useLoader(
     TextureLoader,
     Asset.fromModule(texSunSpots).uri as string
   );
-
-  const animateSun = useCallback(() => {
-    if (sunRef.current) {
-      sunRef.current.rotation.y += 0.006; // Slightly reduced rotation speed
-    }
-  }, []);
-
-  useFrame(animateSun);
 
   const sunGeometry = useMemo(
     () =>
@@ -344,13 +329,13 @@ const Sun: React.FC = React.memo(() => {
 
   return (
     <group>
-      <SunCorona />
+      <SunCorona coronaRef={coronaRef} />
       <mesh ref={sunRef} position={[0, 0, 0]} castShadow={false}>
         <sphereGeometry args={sunGeometry} />
         <meshPhongMaterial
           map={sunTexture}
           emissive={0xffaa00}
-          emissiveIntensity={1.0} // Reduced from 1.2
+          emissiveIntensity={1.0}
           color={0xffcc00}
           shininess={5}
           specular={0xffcc44}
@@ -361,7 +346,7 @@ const Sun: React.FC = React.memo(() => {
 });
 Sun.displayName = "Sun";
 
-// Optimized Moon component with fixed orbital paths (no collision detection)
+// Static Moon component
 interface MoonProps {
   config: {
     texture: any;
@@ -372,40 +357,16 @@ interface MoonProps {
   };
   planetPosition: [number, number, number];
   moonIndex?: number;
+  moonRef: React.RefObject<Group | null>;
+  meshRef: React.RefObject<Mesh | null>;
 }
 
 const Moon: React.FC<MoonProps> = React.memo(
-  ({ config, planetPosition, moonIndex = 0 }) => {
-    const moonRef = useRef<Group>(null);
-    const meshRef = useRef<Mesh>(null);
-    const moonOrbitTime = useRef(config.startAngle || 0);
-
+  ({ config, planetPosition, moonIndex = 0, moonRef, meshRef }) => {
     const texture = useLoader(
       TextureLoader,
       Asset.fromModule(config.texture).uri
     );
-
-    // Simplified animation with fixed orbital path - no collision detection
-    const animateMoon = useCallback(() => {
-      moonOrbitTime.current += config.orbitSpeed;
-
-      if (moonRef.current) {
-        // Simple circular orbit calculation
-        const x = Math.cos(moonOrbitTime.current) * config.distance;
-        const z = Math.sin(moonOrbitTime.current) * config.distance;
-
-        // Fixed height offset for ring avoidance (no dynamic collision detection)
-        const y = moonIndex > 0 ? 0.5 + moonIndex * 0.3 : 0; // Simple static spacing
-
-        moonRef.current.position.set(x, y, z);
-      }
-
-      if (meshRef.current) {
-        meshRef.current.rotation.y += 0.015; // Reduced rotation speed
-      }
-    }, [config.orbitSpeed, config.distance, moonIndex]);
-
-    useFrame(animateMoon);
 
     const moonGeometry = useMemo(
       () =>
@@ -423,10 +384,10 @@ const Moon: React.FC<MoonProps> = React.memo(
           <sphereGeometry args={moonGeometry} />
           <meshPhongMaterial
             map={texture}
-            shininess={10} // Reduced from 15
-            specular={0x333333} // Reduced from 0x444444
+            shininess={10}
+            specular={0x333333}
             emissive={0x111111}
-            emissiveIntensity={0.03} // Reduced from 0.05
+            emissiveIntensity={0.03}
           />
         </mesh>
       </group>
@@ -435,7 +396,7 @@ const Moon: React.FC<MoonProps> = React.memo(
 );
 Moon.displayName = "Moon";
 
-// Optimized Ring component
+// Static Ring component
 interface RingProps {
   config: {
     texture: any;
@@ -444,255 +405,359 @@ interface RingProps {
     opacity: number;
   };
   planetPosition: [number, number, number];
+  ringRef: React.RefObject<Mesh | null>;
 }
 
-const Ring: React.FC<RingProps> = React.memo(({ config, planetPosition }) => {
-  const ringRef = useRef<Mesh>(null);
+const Ring: React.FC<RingProps> = React.memo(
+  ({ config, planetPosition, ringRef }) => {
+    const texture = useLoader(
+      TextureLoader,
+      Asset.fromModule(config.texture).uri
+    );
 
-  const texture = useLoader(
-    TextureLoader,
-    Asset.fromModule(config.texture).uri
-  );
+    // Configure texture wrapping
+    useMemo(() => {
+      texture.wrapS = RepeatWrapping;
+      texture.wrapT = RepeatWrapping;
+    }, [texture]);
 
-  // Configure texture wrapping
-  useMemo(() => {
-    texture.wrapS = RepeatWrapping;
-    texture.wrapT = RepeatWrapping;
-  }, [texture]);
+    const ringGeometry = useMemo(
+      () =>
+        [
+          config.innerRadius,
+          config.outerRadius,
+          GEOMETRY_CONFIG.ring.segments,
+        ] as const,
+      [config.innerRadius, config.outerRadius]
+    );
 
-  const animateRing = useCallback(() => {
-    if (ringRef.current) {
-      ringRef.current.rotation.z += 0.001; // Reduced rotation speed
-    }
-  }, []);
-
-  useFrame(animateRing);
-
-  const ringGeometry = useMemo(
-    () =>
-      [
-        config.innerRadius,
-        config.outerRadius,
-        GEOMETRY_CONFIG.ring.segments,
-      ] as const,
-    [config.innerRadius, config.outerRadius]
-  );
-
-  return (
-    <mesh
-      ref={ringRef}
-      position={planetPosition}
-      rotation={[Math.PI / 2, 0, 0]}
-      receiveShadow
-      castShadow
-    >
-      <ringGeometry args={ringGeometry} />
-      <meshPhongMaterial
-        map={texture}
-        transparent
-        opacity={config.opacity}
-        side={2}
-        shininess={20} // Reduced from 25
-        specular={0x555555} // Reduced from 0x666666
-        emissive={0x222222}
-        emissiveIntensity={0.05} // Reduced from 0.08
-      />
-    </mesh>
-  );
-});
-Ring.displayName = "Ring";
-
-// Optimized Planet component with simplified materials
-interface PlanetProps {
-  config: (typeof PLANET_CONFIG)[0];
-}
-
-const Planet: React.FC<PlanetProps> = React.memo(({ config }) => {
-  const planetGroupRef = useRef<Group>(null);
-  const planetMeshRef = useRef<Mesh>(null);
-  const orbitTime = useRef(config.startAngle || 0);
-
-  const texture = useLoader(
-    TextureLoader,
-    Asset.fromModule(config.texture).uri
-  );
-
-  // Simplified material properties for better performance
-  const planetMaterial = useMemo(() => {
-    const baseProps = {
-      map: texture,
-      color: config.color,
-      shininess: 25, // Standardized for performance
-      specular: 0x444444,
-      emissive: 0x000000,
-      emissiveIntensity: 0.05, // Standardized low value
-    };
-
-    return baseProps;
-  }, [texture, config.color]);
-
-  // Optimized animation with minimal calculations
-  const animatePlanet = useCallback(() => {
-    orbitTime.current += config.orbitSpeed;
-
-    if (planetGroupRef.current) {
-      const x = Math.cos(orbitTime.current) * config.distance;
-      const z = Math.sin(orbitTime.current) * config.distance;
-      planetGroupRef.current.position.set(x, 0, z);
-    }
-
-    if (planetMeshRef.current) {
-      planetMeshRef.current.rotation.y += config.rotationSpeed;
-    }
-  }, [config.orbitSpeed, config.rotationSpeed, config.distance]);
-
-  useFrame(animatePlanet);
-
-  const planetGeometry = useMemo(
-    () =>
-      [
-        config.size,
-        GEOMETRY_CONFIG.planet.widthSegments,
-        GEOMETRY_CONFIG.planet.heightSegments,
-      ] as const,
-    [config.size]
-  );
-
-  return (
-    <group ref={planetGroupRef}>
-      {/* Simplified planetary corona - only for large planets */}
-      {config.size > 1.0 && (
-        <PlanetaryCorona
-          planetSize={config.size}
-          color={config.color}
-          intensity={0.15} // Reduced intensity
-        />
-      )}
-
-      <mesh ref={planetMeshRef} position={[0, 0, 0]} receiveShadow castShadow>
-        <sphereGeometry args={planetGeometry} />
+    return (
+      <mesh
+        ref={ringRef}
+        position={planetPosition}
+        rotation={[Math.PI / 2, 0, 0]}
+        receiveShadow
+        castShadow
+      >
+        <ringGeometry args={ringGeometry} />
         <meshPhongMaterial
-          map={planetMaterial.map}
-          color={planetMaterial.color}
-          shininess={planetMaterial.shininess}
-          specular={planetMaterial.specular}
-          emissive={planetMaterial.emissive}
-          emissiveIntensity={planetMaterial.emissiveIntensity}
+          map={texture}
+          transparent
+          opacity={config.opacity}
+          side={2}
+          shininess={20}
+          specular={0x555555}
+          emissive={0x222222}
+          emissiveIntensity={0.05}
         />
       </mesh>
+    );
+  }
+);
+Ring.displayName = "Ring";
 
-      {config.rings && (
-        <Ring config={config.rings} planetPosition={[0, 0, 0]} />
-      )}
+// Static Planet component
+interface PlanetProps {
+  config: (typeof PLANET_CONFIG)[0];
+  planetGroupRef: React.RefObject<Group | null>;
+  planetMeshRef: React.RefObject<Mesh | null>;
+  coronaRef?: React.RefObject<Mesh | null>;
+  ringRefs: React.RefObject<Mesh | null>[];
+  moonRefs: {
+    group: React.RefObject<Group | null>;
+    mesh: React.RefObject<Mesh | null>;
+  }[];
+}
 
-      {config.moons?.map((moon, index) => (
-        <Moon
-          key={index}
-          config={moon}
-          planetPosition={[0, 0, 0]}
-          moonIndex={index}
-        />
-      ))}
-    </group>
-  );
-});
+const Planet: React.FC<PlanetProps> = React.memo(
+  ({
+    config,
+    planetGroupRef,
+    planetMeshRef,
+    coronaRef,
+    ringRefs,
+    moonRefs,
+  }) => {
+    const texture = useLoader(
+      TextureLoader,
+      Asset.fromModule(config.texture).uri
+    );
+
+    const planetMaterial = useMemo(
+      () => ({
+        map: texture,
+        color: config.color,
+        shininess: 25,
+        specular: 0x444444,
+        emissive: 0x000000,
+        emissiveIntensity: 0.05,
+      }),
+      [texture, config.color]
+    );
+
+    const planetGeometry = useMemo(
+      () =>
+        [
+          config.size,
+          GEOMETRY_CONFIG.planet.widthSegments,
+          GEOMETRY_CONFIG.planet.heightSegments,
+        ] as const,
+      [config.size]
+    );
+
+    return (
+      <group ref={planetGroupRef}>
+        {config.size > 1.0 && coronaRef && (
+          <PlanetaryCorona
+            planetSize={config.size}
+            color={config.color}
+            intensity={0.15}
+            coronaRef={coronaRef}
+          />
+        )}
+
+        <mesh ref={planetMeshRef} position={[0, 0, 0]} receiveShadow castShadow>
+          <sphereGeometry args={planetGeometry} />
+          <meshPhongMaterial
+            map={planetMaterial.map}
+            color={planetMaterial.color}
+            shininess={planetMaterial.shininess}
+            specular={planetMaterial.specular}
+            emissive={planetMaterial.emissive}
+            emissiveIntensity={planetMaterial.emissiveIntensity}
+          />
+        </mesh>
+
+        {config.rings && (
+          <Ring
+            config={config.rings}
+            planetPosition={[0, 0, 0]}
+            ringRef={ringRefs[0]}
+          />
+        )}
+
+        {config.moons?.map((moon, index) => (
+          <Moon
+            key={index}
+            config={moon}
+            planetPosition={[0, 0, 0]}
+            moonIndex={index}
+            moonRef={moonRefs[index].group}
+            meshRef={moonRefs[index].mesh}
+          />
+        ))}
+      </group>
+    );
+  }
+);
 Planet.displayName = "Planet";
 
-// Optimized camera controller with reduced update frequency
-const CameraController: React.FC = React.memo(() => {
-  const lastUpdate = useRef(0);
-  const UPDATE_FREQUENCY = 1 / 30; // 30fps updates for camera
+// Centralized Animation Manager - Single useFrame for all animations
+const AnimationManager: React.FC<{ animationRefs: AnimationRefs }> = ({
+  animationRefs,
+}) => {
+  useFrame((state) => {
+    const time = state.clock.getElapsedTime();
 
-  const animateCamera = useCallback((state: any) => {
-    const currentTime = state.clock.getElapsedTime();
-
-    if (currentTime - lastUpdate.current < UPDATE_FREQUENCY) {
-      return;
+    // Sun rotation
+    if (animationRefs.sunMesh.current) {
+      animationRefs.sunMesh.current.rotation.y += 0.006;
     }
 
-    lastUpdate.current = currentTime;
+    // Sun corona animation
+    if (animationRefs.sunCorona.current) {
+      const scale = 1 + Math.sin(time * 1.2) * 0.05;
+      animationRefs.sunCorona.current.scale.setScalar(scale);
+      animationRefs.sunCorona.current.rotation.z = time * 0.3;
+    }
 
-    const time = currentTime * 0.025; // Slower camera movement
-    const cameraDistance = 55;
-    const heightVariation = 5; // Reduced height variation
-
-    state.camera.position.x = Math.cos(time) * cameraDistance;
-    state.camera.position.z = Math.sin(time) * cameraDistance;
-    state.camera.position.y =
-      Math.sin(currentTime * 0.02) * heightVariation + 18;
-    state.camera.lookAt(0, 0, 0);
-  }, []);
-
-  useFrame(animateCamera);
-  return null;
-});
-CameraController.displayName = "CameraController";
-
-// Simplified lighting setup for maximum performance
-const Lighting: React.FC = React.memo(() => {
-  const lightGroupRef = useRef<Group>(null);
-
-  // Minimal lighting animation for performance
-  const animateLighting = useCallback((state: any) => {
-    if (lightGroupRef.current) {
-      const time = state.clock.getElapsedTime();
-      const sunIntensityVariation = 1 + Math.sin(time * 0.3) * 0.05; // Reduced variation
-
-      const sunLight = lightGroupRef.current.children.find(
-        (child: any) => child.userData?.name === "sunLight"
-      );
-      if (sunLight) {
-        (sunLight as any).intensity = 10 * sunIntensityVariation; // Reduced base intensity
+    // Planetary corona animations
+    animationRefs.planetaryCoronas.forEach((coronaRef) => {
+      if (coronaRef.current) {
+        const scale = 1 + Math.sin(time * 1.5) * 0.03;
+        coronaRef.current.scale.setScalar(scale);
+        coronaRef.current.rotation.z = time * 0.2;
       }
+    });
+
+    // Planet animations
+    animationRefs.planets.forEach((planet) => {
+      // Planet orbit
+      planet.orbitTime.current += planet.config.orbitSpeed;
+
+      if (planet.group.current) {
+        const x = Math.cos(planet.orbitTime.current) * planet.config.distance;
+        const z = Math.sin(planet.orbitTime.current) * planet.config.distance;
+        planet.group.current.position.set(x, 0, z);
+      }
+
+      // Planet rotation
+      if (planet.mesh.current) {
+        planet.mesh.current.rotation.y += planet.config.rotationSpeed;
+      }
+
+      // Moon animations
+      planet.moons.forEach((moon) => {
+        moon.orbitTime.current += moon.config.orbitSpeed;
+
+        if (moon.group.current) {
+          const x = Math.cos(moon.orbitTime.current) * moon.config.distance;
+          const z = Math.sin(moon.orbitTime.current) * moon.config.distance;
+          const y = moon.moonIndex > 0 ? 0.5 + moon.moonIndex * 0.3 : 0;
+          moon.group.current.position.set(x, y, z);
+        }
+
+        if (moon.mesh.current) {
+          moon.mesh.current.rotation.y += 0.015;
+        }
+      });
+
+      // Ring animations
+      planet.rings.forEach((ringRef) => {
+        if (ringRef.current) {
+          ringRef.current.rotation.z += 0.001;
+        }
+      });
+    });
+
+    // Camera animation (60fps, no throttling)
+    const cameraTime = time * 0.025;
+    const cameraDistance = 55;
+    const heightVariation = 5;
+
+    state.camera.position.x = Math.cos(cameraTime) * cameraDistance;
+    state.camera.position.z = Math.sin(cameraTime) * cameraDistance;
+    state.camera.position.y = Math.sin(time * 0.02) * heightVariation + 18;
+    state.camera.lookAt(0, 0, 0);
+
+    // Light animation
+    if (animationRefs.sunLight) {
+      const sunIntensityVariation = 1 + Math.sin(time * 0.3) * 0.05;
+      animationRefs.sunLight.intensity = 10 * sunIntensityVariation;
     }
-  }, []);
+  });
 
-  useFrame(animateLighting);
+  return null;
+};
 
-  return (
-    <group ref={lightGroupRef}>
-      {/* Simplified lighting setup - reduced from 8+ lights to 4 essential lights */}
-      <ambientLight intensity={0.6} color={0x404060} />{" "}
-      {/* Reduced intensity */}
-      <pointLight
-        userData={{ name: "sunLight" }}
-        position={[0, 0, 0]}
-        intensity={10} // Reduced from 12
-        color={0xfff2e6}
-        distance={80} // Reduced distance
-        decay={1.5} // Increased decay for performance
-        castShadow={true}
-        shadow-mapSize={[1024, 1024]} // Reduced shadow map size
-        shadow-camera-near={0.5}
-        shadow-camera-far={80}
-      />
-      <directionalLight
-        position={[30, 20, 25]} // Closer position
-        intensity={0.8} // Reduced intensity
-        color={0xffffff}
-        castShadow={false}
-      />
-      <directionalLight
-        position={[-25, 15, -20]} // Closer position
-        intensity={0.5} // Reduced intensity
-        color={0xffffdd}
-        castShadow={false}
-      />
-    </group>
-  );
-});
+// Static Lighting component
+const Lighting: React.FC<{ lightRef: React.MutableRefObject<any> }> =
+  React.memo(({ lightRef }) => {
+    return (
+      <group>
+        <ambientLight intensity={0.6} color={0x404060} />
+
+        <pointLight
+          ref={(ref) => (lightRef.current = ref)}
+          userData={{ name: "sunLight" }}
+          position={[0, 0, 0]}
+          intensity={10}
+          color={0xfff2e6}
+          distance={80}
+          decay={1.5}
+          castShadow={true}
+          shadow-mapSize={[1024, 1024]}
+          shadow-camera-near={0.5}
+          shadow-camera-far={80}
+        />
+
+        <directionalLight
+          position={[30, 20, 25]}
+          intensity={0.8}
+          color={0xffffff}
+          castShadow={false}
+        />
+
+        <directionalLight
+          position={[-25, 15, -20]}
+          intensity={0.5}
+          color={0xffffdd}
+          castShadow={false}
+        />
+      </group>
+    );
+  });
 Lighting.displayName = "Lighting";
 
-// Main Solar System Scene with maximum optimization
+// Main Solar System Scene with centralized animation
 const SolarSystemScene: React.FC = React.memo(() => {
+  // Create all refs for centralized animation control
+  const sunMeshRef = useRef<Mesh>(null);
+  const sunCoronaRef = useRef<Mesh>(null);
+  const sunLightRef = useRef<any>(null);
+
+  // Create planet refs
+  const planetRefs = useMemo(
+    () =>
+      PLANET_CONFIG.map((config) => ({
+        group: React.createRef<Group>(),
+        mesh: React.createRef<Mesh>(),
+        orbitTime: { current: config.startAngle || 0 },
+        config,
+        moons:
+          config.moons?.map((moon, index) => ({
+            group: React.createRef<Group>(),
+            mesh: React.createRef<Mesh>(),
+            orbitTime: { current: moon.startAngle || 0 },
+            config: moon,
+            moonIndex: index,
+          })) || [],
+        rings: config.rings ? [React.createRef<Mesh>()] : [],
+      })),
+    []
+  );
+
+  // Create corona refs for large planets
+  const planetaryCoronaRefs = useMemo(
+    () =>
+      PLANET_CONFIG.map((config) =>
+        config.size > 1.0 ? React.createRef<Mesh>() : null
+      ).filter(Boolean) as React.RefObject<Mesh>[],
+    []
+  );
+
+  // Build animation refs object
+  const animationRefs: AnimationRefs = useMemo(
+    () => ({
+      sunMesh: sunMeshRef,
+      sunCorona: sunCoronaRef,
+      planetaryCoronas: planetaryCoronaRefs,
+      planets: planetRefs,
+      camera: null, // Will be set by useFrame
+      sunLight: sunLightRef.current,
+    }),
+    [planetRefs, planetaryCoronaRefs]
+  );
+
   return (
     <>
-      <Lighting />
-      <CameraController />
-      <Sun />
-      {PLANET_CONFIG.map((planetConfig) => (
-        <Planet key={planetConfig.name} config={planetConfig} />
+      <Lighting lightRef={sunLightRef} />
+
+      <Sun sunRef={sunMeshRef} coronaRef={sunCoronaRef} />
+
+      {PLANET_CONFIG.map((planetConfig, index) => (
+        <Planet
+          key={planetConfig.name}
+          config={planetConfig}
+          planetGroupRef={planetRefs[index].group}
+          planetMeshRef={planetRefs[index].mesh}
+          coronaRef={
+            planetConfig.size > 1.0
+              ? planetaryCoronaRefs[
+                  planetaryCoronaRefs.findIndex(
+                    (_, i) =>
+                      PLANET_CONFIG[i] === planetConfig &&
+                      PLANET_CONFIG[i].size > 1.0
+                  )
+                ]
+              : undefined
+          }
+          ringRefs={planetRefs[index].rings}
+          moonRefs={planetRefs[index].moons}
+        />
       ))}
+
+      <AnimationManager animationRefs={animationRefs} />
     </>
   );
 });
@@ -735,10 +800,10 @@ const SolarSystem3D: React.FC = React.memo(() => {
 
   const glConfig = useMemo(
     () => ({
-      antialias: false, // Disabled for mobile performance
+      antialias: false,
       alpha: true,
       powerPreference: "high-performance" as const,
-      stencil: false, // Disabled for performance
+      stencil: false,
       depth: true,
     }),
     []
@@ -755,12 +820,12 @@ const SolarSystem3D: React.FC = React.memo(() => {
           gl.pixelRatio = Math.min(
             1.5,
             typeof window !== "undefined" ? window.devicePixelRatio : 1
-          ); // Reduced pixel ratio
+          );
           gl.shadowMap.enabled = true;
           gl.shadowMap.type = 2; // PCFShadowMap for performance
         }}
         frameloop="always"
-        performance={{ min: 0.8, max: 1.0, debounce: 200 }} // Performance hints
+        performance={{ min: 0.9, max: 1.0, debounce: 100 }} // Increased performance thresholds
       >
         <Suspense fallback={<LoadingFallback />}>
           <SolarSystemScene />
