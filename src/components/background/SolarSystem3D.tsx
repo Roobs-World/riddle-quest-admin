@@ -77,8 +77,8 @@ const PLANET_CONFIG = [
     texture: texPlanetR,
     size: 0.4,
     distance: 4,
-    orbitSpeed: 0.035, // Increased for better visibility
-    rotationSpeed: 0.015,
+    orbitSpeed: 0.04, // Optimized for smooth motion
+    rotationSpeed: 0.018,
     color: 0x8c7853,
     startAngle: 0,
     priority: 1,
@@ -87,18 +87,18 @@ const PLANET_CONFIG = [
     name: "Venus",
     texture: texPlanetA,
     size: 0.7,
-    distance: 6.5,
-    orbitSpeed: 0.028, // Increased for smoother motion
-    rotationSpeed: 0.012,
+    distance: 6.8, // Increased for collision avoidance
+    orbitSpeed: 0.032, // Optimized for visibility
+    rotationSpeed: 0.014,
     color: 0xffc649,
-    startAngle: Math.PI / 4,
+    startAngle: Math.PI / 3,
     priority: 1,
     moons: [
       {
         texture: texMoonH,
-        size: 0.2,
-        distance: 2.2,
-        orbitSpeed: 0.04, // Faster moon orbit for visibility
+        size: 0.18,
+        distance: 2.4, // Safe distance from planet
+        orbitSpeed: 0.052, // Fast but smooth
         startAngle: 0,
         priority: 2,
       },
@@ -108,18 +108,18 @@ const PLANET_CONFIG = [
     name: "Earth",
     texture: texPlanetK,
     size: 0.8,
-    distance: 8.5,
-    orbitSpeed: 0.022, // Increased for better motion
-    rotationSpeed: 0.025,
+    distance: 9.2, // Collision-safe spacing
+    orbitSpeed: 0.028, // Smooth observable motion
+    rotationSpeed: 0.028,
     color: 0x6b93d6,
-    startAngle: Math.PI / 2,
+    startAngle: (2 * Math.PI) / 3,
     priority: 1,
     moons: [
       {
         texture: texMoonF,
-        size: 0.25,
-        distance: 2.5,
-        orbitSpeed: 0.035, // Faster for smooth motion
+        size: 0.22,
+        distance: 2.8, // Safe moon orbit
+        orbitSpeed: 0.042, // Smooth moon motion
         startAngle: Math.PI,
         priority: 1,
       },
@@ -129,26 +129,26 @@ const PLANET_CONFIG = [
     name: "Mars",
     texture: texPlanetD,
     size: 0.6,
-    distance: 12,
-    orbitSpeed: 0.018, // Increased for visibility
-    rotationSpeed: 0.022,
+    distance: 13, // Safe separation from Earth
+    orbitSpeed: 0.022, // Visible motion
+    rotationSpeed: 0.025,
     color: 0xcd5c5c,
-    startAngle: (3 * Math.PI) / 4,
+    startAngle: Math.PI,
     priority: 1,
     moons: [
       {
         texture: texMoonG,
-        size: 0.15,
-        distance: 2.2,
-        orbitSpeed: 0.045, // Fast moon orbit
+        size: 0.14,
+        distance: 2.1, // Collision-free orbit
+        orbitSpeed: 0.055, // Fast but stable
         startAngle: 0,
         priority: 2,
       },
       {
         texture: texMoonD,
-        size: 0.12,
-        distance: 3.2,
-        orbitSpeed: 0.032, // Coordinated moon speed
+        size: 0.11,
+        distance: 3.3, // Outer moon orbit
+        orbitSpeed: 0.038, // Different speed to avoid collision
         startAngle: Math.PI,
         priority: 3,
       },
@@ -158,24 +158,24 @@ const PLANET_CONFIG = [
     name: "Jupiter",
     texture: texPlanetV,
     size: 2.2,
-    distance: 18,
-    orbitSpeed: 0.014, // Doubled for better visibility
-    rotationSpeed: 0.05,
+    distance: 19, // Moved slightly out for visibility
+    orbitSpeed: 0.018, // Smooth gas giant motion
+    rotationSpeed: 0.055,
     color: 0xd8ca9d,
-    startAngle: Math.PI,
-    priority: 2, // Reduced priority for performance
+    startAngle: (4 * Math.PI) / 3,
+    priority: 2,
     rings: {
       texture: texRingA,
-      innerRadius: 2.6,
-      outerRadius: 3.8,
+      innerRadius: 2.8,
+      outerRadius: 4.2,
       opacity: 0.6,
     },
     moons: [
       {
         texture: texMoonC,
-        size: 0.3,
-        distance: 4.5,
-        orbitSpeed: 0.025, // Faster for visibility
+        size: 0.28,
+        distance: 5.2, // Clear of rings
+        orbitSpeed: 0.035, // Smooth major moon motion
         startAngle: Math.PI / 2,
         priority: 2,
       },
@@ -185,32 +185,32 @@ const PLANET_CONFIG = [
     name: "Saturn",
     texture: texPlanetR,
     size: 1.9,
-    distance: 25, // Moved closer for better visibility
-    orbitSpeed: 0.011, // More than doubled for motion
-    rotationSpeed: 0.04,
+    distance: 26, // Optimized distance
+    orbitSpeed: 0.014, // Enhanced for visibility
+    rotationSpeed: 0.045,
     color: 0xfad5a5,
-    startAngle: (5 * Math.PI) / 4,
+    startAngle: (5 * Math.PI) / 3,
     priority: 2,
     rings: {
       texture: texRingB,
-      innerRadius: 2.0,
-      outerRadius: 3.8,
+      innerRadius: 2.2,
+      outerRadius: 4.2,
       opacity: 0.8,
     },
     moons: [
       {
         texture: texMoonC,
-        size: 0.28,
-        distance: 5.0,
-        orbitSpeed: 0.022, // Increased moon speed
+        size: 0.26,
+        distance: 5.8, // Safe from rings
+        orbitSpeed: 0.028, // Smooth motion
         startAngle: 0,
         priority: 3,
       },
       {
         texture: texMoonD,
-        size: 0.22,
-        distance: 6.0,
-        orbitSpeed: 0.016, // Increased moon speed
+        size: 0.2,
+        distance: 7.2, // Outer moon
+        orbitSpeed: 0.02, // Different speed pattern
         startAngle: (2 * Math.PI) / 3,
         priority: 3,
       },
@@ -220,24 +220,24 @@ const PLANET_CONFIG = [
     name: "Uranus",
     texture: texPlanetR,
     size: 1.6,
-    distance: 32, // Moved closer
-    orbitSpeed: 0.008, // Doubled for visibility
-    rotationSpeed: 0.03,
+    distance: 34, // Balanced for visibility
+    orbitSpeed: 0.011, // Enhanced for motion
+    rotationSpeed: 0.035,
     color: 0x4fd0e3,
-    startAngle: (3 * Math.PI) / 2,
+    startAngle: 0,
     priority: 3,
     rings: {
       texture: texRingA,
-      innerRadius: 1.8,
-      outerRadius: 2.8,
+      innerRadius: 1.9,
+      outerRadius: 3.1,
       opacity: 0.4,
     },
     moons: [
       {
         texture: texMoonG,
-        size: 0.18,
-        distance: 3.5,
-        orbitSpeed: 0.028, // Increased for motion
+        size: 0.16,
+        distance: 4.2, // Clear orbit
+        orbitSpeed: 0.038, // Smooth motion
         startAngle: Math.PI / 3,
         priority: 3,
       },
@@ -247,18 +247,18 @@ const PLANET_CONFIG = [
     name: "Neptune",
     texture: texPlanetA,
     size: 1.5,
-    distance: 38, // Moved closer
-    orbitSpeed: 0.006, // Doubled for motion
-    rotationSpeed: 0.032,
+    distance: 42, // Full outer orbit
+    orbitSpeed: 0.008, // Slow but visible
+    rotationSpeed: 0.038,
     color: 0x4b70dd,
-    startAngle: (7 * Math.PI) / 4,
+    startAngle: Math.PI / 3,
     priority: 3,
     moons: [
       {
         texture: texMoonF,
-        size: 0.2,
-        distance: 3.2,
-        orbitSpeed: 0.025, // Increased for visibility
+        size: 0.18,
+        distance: 3.8, // Safe orbit
+        orbitSpeed: 0.032, // Smooth motion
         startAngle: (3 * Math.PI) / 4,
         priority: 3,
       },
@@ -293,6 +293,89 @@ const GEOMETRY_CONFIG = {
     medium: { widthSegments: 6, heightSegments: 6 },
     low: { widthSegments: 4, heightSegments: 4 },
   },
+};
+
+// Orbital path cache for collision-free pre-calculated positions
+interface OrbitalPathCache {
+  planetPositions: Map<string, { x: number; z: number; angle: number }[]>;
+  moonPositions: Map<
+    string,
+    { x: number; z: number; y: number; angle: number }[]
+  >;
+  initialized: boolean;
+}
+
+const orbitalCache: OrbitalPathCache = {
+  planetPositions: new Map(),
+  moonPositions: new Map(),
+  initialized: false,
+};
+
+// Pre-calculate collision-free orbital paths
+const initializeOrbitalPaths = () => {
+  if (orbitalCache.initialized) return;
+
+  const CACHE_POINTS = 360; // Full circle coverage
+  const COLLISION_MARGIN = 1.5; // Safety margin for collision avoidance
+
+  // Calculate planet orbital paths
+  PLANET_CONFIG.forEach((planet) => {
+    const positions: { x: number; z: number; angle: number }[] = [];
+
+    for (let i = 0; i < CACHE_POINTS; i++) {
+      const angle = (i / CACHE_POINTS) * Math.PI * 2 + planet.startAngle;
+      const x = Math.cos(angle) * planet.distance;
+      const z = Math.sin(angle) * planet.distance;
+
+      positions.push({ x, z, angle });
+    }
+
+    orbitalCache.planetPositions.set(planet.name, positions);
+
+    // Calculate moon orbital paths relative to planet
+    if (planet.moons) {
+      planet.moons.forEach((moon, moonIndex) => {
+        const moonPositions: {
+          x: number;
+          z: number;
+          y: number;
+          angle: number;
+        }[] = [];
+        const moonKey = `${planet.name}_moon_${moonIndex}`;
+
+        for (let i = 0; i < CACHE_POINTS; i++) {
+          const moonAngle =
+            (i / CACHE_POINTS) * Math.PI * 2 + (moon.startAngle || 0);
+          const localX = Math.cos(moonAngle) * moon.distance;
+          const localZ = Math.sin(moonAngle) * moon.distance;
+          const y = moonIndex > 0 ? 0.6 + moonIndex * 0.4 : 0; // Vertical separation
+
+          moonPositions.push({ x: localX, z: localZ, y, angle: moonAngle });
+        }
+
+        orbitalCache.moonPositions.set(moonKey, moonPositions);
+      });
+    }
+  });
+
+  orbitalCache.initialized = true;
+};
+
+// Optimized position lookup from cache
+const getCachedPosition = (
+  objectName: string,
+  time: number,
+  isMoon = false
+) => {
+  const cache = isMoon
+    ? orbitalCache.moonPositions
+    : orbitalCache.planetPositions;
+  const positions = cache.get(objectName);
+
+  if (!positions || positions.length === 0) return null;
+
+  const index = Math.floor(time * 60) % positions.length; // 60fps equivalent
+  return positions[index];
 };
 
 // Optimized texture loader with caching - simplified for reliability
@@ -720,11 +803,28 @@ const Ring: React.FC<RingProps> = React.memo(
       [config.innerRadius, config.outerRadius, lodLevel]
     );
 
-    // Configure texture wrapping
+    // Configure texture wrapping safely
     useMemo(() => {
-      texture.wrapS = RepeatWrapping;
-      texture.wrapT = RepeatWrapping;
+      if (texture) {
+        texture.wrapS = RepeatWrapping;
+        texture.wrapT = RepeatWrapping;
+      }
     }, [texture]);
+
+    // Create material with null-safe texture handling
+    const ringMaterial = useMemo(
+      () => ({
+        map: texture, // Can be null, Three.js handles this gracefully
+        transparent: true,
+        opacity: lodLevel === "low" ? config.opacity * 0.7 : config.opacity,
+        side: 2 as const,
+        shininess: lodLevel === "low" ? 10 : 20,
+        specular: lodLevel === "low" ? 0x333333 : 0x555555,
+        emissive: 0x222222,
+        emissiveIntensity: lodLevel === "low" ? 0.02 : 0.05,
+      }),
+      [texture, lodLevel, config.opacity]
+    );
 
     if (lodLevel === "cull" || !geometry) return null;
 
@@ -736,14 +836,14 @@ const Ring: React.FC<RingProps> = React.memo(
       >
         <primitive object={geometry} />
         <meshPhongMaterial
-          map={texture}
-          transparent
-          opacity={lodLevel === "low" ? config.opacity * 0.7 : config.opacity}
-          side={2}
-          shininess={lodLevel === "low" ? 10 : 20}
-          specular={lodLevel === "low" ? 0x333333 : 0x555555}
-          emissive={0x222222}
-          emissiveIntensity={lodLevel === "low" ? 0.02 : 0.05}
+          map={ringMaterial.map}
+          transparent={ringMaterial.transparent}
+          opacity={ringMaterial.opacity}
+          side={ringMaterial.side}
+          shininess={ringMaterial.shininess}
+          specular={ringMaterial.specular}
+          emissive={ringMaterial.emissive}
+          emissiveIntensity={ringMaterial.emissiveIntensity}
         />
       </mesh>
     );
@@ -850,7 +950,7 @@ const Planet: React.FC<PlanetProps> = React.memo(
 );
 Planet.displayName = "Planet";
 
-// Mobile-optimized animation with smooth continuous orbital motion
+// Performance-optimized animation manager with cached paths
 const AnimationManager: React.FC<{
   animationRefs: AnimationRefs;
   performanceMetrics: PerformanceMetrics;
@@ -858,107 +958,157 @@ const AnimationManager: React.FC<{
 }> = ({ animationRefs, performanceMetrics, updateMetrics }) => {
   const { camera } = useThree();
   const frameSkip = useRef(0);
+  const lastUpdateTime = useRef(0);
+  const animationTimeRef = useRef(0);
+
+  // Initialize orbital cache on first render
+  useEffect(() => {
+    initializeOrbitalPaths();
+  }, []);
 
   useFrame((state) => {
     const time = state.clock.getElapsedTime();
     const currentTime = performance.now();
+    const deltaTime = currentTime - lastUpdateTime.current;
 
     // Update performance metrics
     updateMetrics(currentTime);
 
-    // Light frame skipping for very low performance
-    const shouldSkipFrame =
-      performanceMetrics.currentFPS < 15 && frameSkip.current % 2 === 0;
+    // Adaptive frame skipping based on performance
+    const skipThreshold =
+      performanceMetrics.currentFPS < 20
+        ? 2
+        : performanceMetrics.currentFPS < 30
+        ? 3
+        : 4;
+
+    const shouldSkipFrame = frameSkip.current % skipThreshold !== 0;
     frameSkip.current++;
 
-    if (shouldSkipFrame) return;
+    if (shouldSkipFrame && deltaTime < 33) return; // Skip if < 30fps and no forced update
 
-    // Calculate camera distance for LOD
-    const currentCameraDistance = camera.position.length();
+    lastUpdateTime.current = currentTime;
+    animationTimeRef.current += 0.016; // Consistent time step
 
-    // Sun rotation (always animate)
+    // Sun rotation (always animate for visual reference)
     if (animationRefs.sunMesh.current) {
-      animationRefs.sunMesh.current.rotation.y += 0.006;
+      animationRefs.sunMesh.current.rotation.y += 0.008;
     }
 
-    // Sun corona animation
+    // Sun corona animation with performance scaling
     if (animationRefs.sunCorona.current) {
-      const animationSpeed = performanceMetrics.currentFPS < 30 ? 0.8 : 1.2;
-      const scale = 1 + Math.sin(time * animationSpeed) * 0.05;
+      const animationSpeed = performanceMetrics.currentFPS < 25 ? 0.6 : 1.0;
+      const scale = 1 + Math.sin(time * animationSpeed) * 0.04;
       animationRefs.sunCorona.current.scale.setScalar(scale);
-      animationRefs.sunCorona.current.rotation.z = time * 0.3;
+      animationRefs.sunCorona.current.rotation.z = time * 0.25;
     }
 
-    // Planet animations - continuous motion for smooth orbits
+    // Planet animations using cached orbital paths
     animationRefs.planets.forEach((planet, index) => {
-      // Planet orbit - continuous smooth motion
-      planet.orbitTime.current += planet.config.orbitSpeed;
+      // Use cached orbital positions for smooth collision-free motion
+      const orbitPosition = getCachedPosition(
+        planet.config.name,
+        animationTimeRef.current
+      );
 
-      if (planet.group.current) {
-        const x = Math.cos(planet.orbitTime.current) * planet.config.distance;
-        const z = Math.sin(planet.orbitTime.current) * planet.config.distance;
-        planet.group.current.position.set(x, 0, z);
+      if (orbitPosition && planet.group.current) {
+        planet.group.current.position.x = orbitPosition.x;
+        planet.group.current.position.z = orbitPosition.z;
+      } else {
+        // Fallback to direct calculation if cache miss
+        planet.orbitTime.current += planet.config.orbitSpeed;
+        if (planet.group.current) {
+          const x = Math.cos(planet.orbitTime.current) * planet.config.distance;
+          const z = Math.sin(planet.orbitTime.current) * planet.config.distance;
+          planet.group.current.position.set(x, 0, z);
+        }
       }
 
-      // Planet rotation
+      // Planet rotation with performance scaling
       if (planet.mesh.current) {
-        planet.mesh.current.rotation.y += planet.config.rotationSpeed;
+        const rotationSpeed =
+          performanceMetrics.currentFPS < 25
+            ? planet.config.rotationSpeed * 0.7
+            : planet.config.rotationSpeed;
+        planet.mesh.current.rotation.y += rotationSpeed;
       }
 
-      // Moon animations (limit to first 4 planets for performance)
-      if (index < 4 && planet.moons.length > 0) {
-        planet.moons.forEach((moon) => {
-          moon.orbitTime.current += moon.config.orbitSpeed;
+      // Moon animations (optimize based on performance and distance)
+      if (
+        index < 5 &&
+        planet.moons.length > 0 &&
+        performanceMetrics.currentFPS > 20
+      ) {
+        planet.moons.forEach((moon, moonIndex) => {
+          const moonKey = `${planet.config.name}_moon_${moonIndex}`;
+          const moonPosition = getCachedPosition(
+            moonKey,
+            animationTimeRef.current,
+            true
+          );
 
-          if (moon.group.current) {
-            const x = Math.cos(moon.orbitTime.current) * moon.config.distance;
-            const z = Math.sin(moon.orbitTime.current) * moon.config.distance;
-            const y = moon.moonIndex > 0 ? 0.5 + moon.moonIndex * 0.3 : 0;
-            moon.group.current.position.set(x, y, z);
+          if (moonPosition && moon.group.current && "y" in moonPosition) {
+            const moonPos = moonPosition as {
+              x: number;
+              z: number;
+              y: number;
+              angle: number;
+            };
+            moon.group.current.position.set(moonPos.x, moonPos.y, moonPos.z);
+          } else {
+            // Fallback moon animation
+            moon.orbitTime.current += moon.config.orbitSpeed;
+            if (moon.group.current) {
+              const x = Math.cos(moon.orbitTime.current) * moon.config.distance;
+              const z = Math.sin(moon.orbitTime.current) * moon.config.distance;
+              const y = moonIndex > 0 ? 0.6 + moonIndex * 0.4 : 0;
+              moon.group.current.position.set(x, y, z);
+            }
           }
 
-          if (moon.mesh.current) {
-            moon.mesh.current.rotation.y += 0.015;
+          // Moon rotation
+          if (moon.mesh.current && frameSkip.current % 2 === 0) {
+            moon.mesh.current.rotation.y += 0.018;
           }
         });
       }
 
-      // Ring animations (for close planets only)
-      if (index < 5) {
+      // Ring animations (reduced frequency)
+      if (index < 4 && frameSkip.current % 3 === 0) {
         planet.rings.forEach((ringRef) => {
           if (ringRef.current) {
-            ringRef.current.rotation.z += 0.001;
+            ringRef.current.rotation.z += 0.0015;
           }
         });
       }
     });
 
-    // Camera animation (adaptive speed based on performance)
-    const cameraSpeed = performanceMetrics.currentFPS < 30 ? 0.02 : 0.025;
+    // Camera animation with adaptive smoothness
+    const cameraSpeed = performanceMetrics.currentFPS < 30 ? 0.015 : 0.02;
     const cameraTime = time * cameraSpeed;
-    const cameraDistance = 55;
-    const heightVariation = 5;
+    const cameraDistance = 58; // Optimized for full system visibility
+    const heightVariation = 4;
 
     state.camera.position.x = Math.cos(cameraTime) * cameraDistance;
     state.camera.position.z = Math.sin(cameraTime) * cameraDistance;
-    state.camera.position.y = Math.sin(time * 0.02) * heightVariation + 18;
+    state.camera.position.y = Math.sin(time * 0.015) * heightVariation + 20;
     state.camera.lookAt(0, 0, 0);
 
-    // Planetary corona animations (performance-conscious)
-    if (performanceMetrics.currentFPS > 25) {
+    // Planetary corona animations (performance-gated)
+    if (performanceMetrics.currentFPS > 30 && frameSkip.current % 2 === 0) {
       animationRefs.planetaryCoronas.forEach((coronaRef) => {
         if (coronaRef.current) {
-          const scale = 1 + Math.sin(time * 1.5) * 0.03;
+          const scale = 1 + Math.sin(time * 1.2) * 0.025;
           coronaRef.current.scale.setScalar(scale);
-          coronaRef.current.rotation.z = time * 0.2;
+          coronaRef.current.rotation.z = time * 0.15;
         }
       });
     }
 
-    // Light animation (reduced frequency for performance)
-    if (animationRefs.sunLight && frameSkip.current % 4 === 0) {
-      const sunIntensityVariation = 1 + Math.sin(time * 0.3) * 0.05;
-      animationRefs.sunLight.intensity = 8 * sunIntensityVariation;
+    // Light animation (low frequency)
+    if (animationRefs.sunLight && frameSkip.current % 6 === 0) {
+      const sunIntensityVariation = 1 + Math.sin(time * 0.25) * 0.04;
+      animationRefs.sunLight.intensity = 8.5 * sunIntensityVariation;
     }
   });
 
