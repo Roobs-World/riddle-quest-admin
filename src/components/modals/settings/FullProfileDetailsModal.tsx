@@ -67,8 +67,6 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
-  const [isLinkAccountModalVisible, setIsLinkAccountModalVisible] =
-    useState(false);
   const [isPreloadedAvatarsModalVisible, setIsPreloadedAvatarsModalVisible] =
     useState(false); // State for preloaded avatars modal
   const [isAvatarOptionsModalVisible, setIsAvatarOptionsModalVisible] = // State for avatar options modal
@@ -298,91 +296,6 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
     }
   };
 
-  const handleLinkAccount = async (provider: "google" | "facebook") => {
-    const user = auth().currentUser;
-
-    if (!user) {
-      Alert.alert("Error", "User not logged in.");
-      return;
-    }
-
-    try {
-      if (provider === "google") {
-        // Google Linking Logic
-        const signInResult = await GoogleSignin.signIn();
-        const idToken = signInResult.data?.idToken;
-
-        if (!idToken) {
-          Alert.alert("Error", "No ID token received from Google Sign-In");
-          return;
-        }
-
-        const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-
-        // Check if the account is already linked
-        const existingProviderData = user.providerData.find(
-          (p) => p.providerId === "google.com"
-        );
-
-        if (existingProviderData) {
-          Alert.alert("Info", "Google account is already linked.");
-          return;
-        }
-
-        await user.linkWithCredential(googleCredential);
-        Alert.alert("Success", "Google account linked successfully!");
-      } else if (provider === "facebook") {
-        // Facebook Linking Logic
-        const result = await LoginManager.logInWithPermissions([
-          "public_profile",
-          "email",
-        ]);
-
-        if (result.isCancelled) {
-          Alert.alert("Login Cancelled", "Facebook login was cancelled.");
-        } else {
-          const data = await AccessToken.getCurrentAccessToken();
-          if (data && data.accessToken) {
-            // Accessing accessToken correctly
-            const facebookCredential = auth.FacebookAuthProvider.credential(
-              data.accessToken // Use accessToken directly
-            );
-
-            // Check if the account is already linked
-            const existingProviderData = user.providerData.find(
-              (p) => p.providerId === "facebook.com"
-            );
-
-            if (existingProviderData) {
-              Alert.alert("Info", "Facebook account is already linked.");
-              return;
-            }
-
-            await user.linkWithCredential(facebookCredential);
-            Alert.alert("Success", "Facebook account linked successfully!");
-          } else {
-            Alert.alert("Error", "Could not get Facebook access token.");
-          }
-        }
-      }
-    } catch (error) {
-      const firebaseError = error as FirebaseError;
-      console.error(`Error linking ${provider} account:`, firebaseError);
-      let errorMessage = `An error occurred while linking your ${provider} account.`;
-
-      if (
-        firebaseError.code === "auth/credential-already-in-use" &&
-        firebaseError.email
-      ) {
-        errorMessage = `This ${provider} account is already linked to another user (${firebaseError.email}).`;
-      } else if (firebaseError.message) {
-        errorMessage = firebaseError.message;
-      }
-
-      Alert.alert("Error", errorMessage);
-    }
-  };
-
   return (
     <Modal
       visible={isVisible}
@@ -391,222 +304,171 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
       onRequestClose={onClose}
     >
       <View className="flex-1 justify-center items-center bg-black/50">
-        <View className="bg-white p-6 rounded-lg m-4 w-11/12 max-w-sm relative">
+        <View className="bg-white rounded-lg m-4 w-11/12 max-w-sm relative max-h-5/6">
           {/* Close Button in top-right corner */}
           <View className="absolute top-2 right-2 z-10">
             <CloseButton onPress={onClose} size={20} />
           </View>
 
-          <Text className="text-2xl font-bold text-gray-800 mb-4">
-            Full Profile
-          </Text>
+          <ScrollView className="p-6" showsVerticalScrollIndicator={false}>
+            <Text className="text-2xl font-bold text-gray-800 mb-4">
+              Full Profile
+            </Text>
 
-          {/* Basic Info (similar to ProfileOverlay but can add more detail) */}
-          <View className="flex-row items-center mb-6">
-            {/* Avatar Display - Reusing logic or component from ProfileOverlay */}
-            {playerData.avatarUrl ? (
-              <Image
-                source={{ uri: playerData.avatarUrl }}
-                className="w-16 h-16 rounded-full mr-4"
+            {/* Basic Info (similar to ProfileOverlay but can add more detail) */}
+            <View className="flex-row items-center mb-6">
+              {/* Avatar Display - Reusing logic or component from ProfileOverlay */}
+              {playerData.avatarUrl ? (
+                <Image
+                  source={{ uri: playerData.avatarUrl }}
+                  className="w-16 h-16 rounded-full mr-4"
+                />
+              ) : (
+                <View className="w-16 h-16 rounded-full mr-4 bg-blue-500 items-center justify-center">
+                  <Text className="text-white text-3xl font-bold">
+                    {playerData.username
+                      ? playerData.username.charAt(0).toUpperCase()
+                      : ""}
+                  </Text>
+                </View>
+              )}
+              <View className="flex-1">
+                <Text className="text-xl font-bold text-gray-800">
+                  {playerData.username || "Guest"}
+                </Text>
+                {/* Additional basic info if needed */}
+              </View>
+            </View>
+
+            {/* Comprehensive Stats Grid */}
+            <View className="mb-6">
+              <Text className="text-lg font-bold text-gray-800 mb-4">
+                Statistics
+              </Text>
+              <View className="flex-row flex-wrap justify-between">
+                {/* Row 1 */}
+                <View className="w-1/2 items-center mb-4 pr-2">
+                  <Text className="text-2xl font-bold text-gray-800">
+                    {(playerData.progress?.dailyChallengeIndex || 0).toString()}
+                  </Text>
+                  <Text className="text-sm text-gray-600 text-center">
+                    Daily Puzzles
+                  </Text>
+                </View>
+                <View className="w-1/2 items-center mb-4 pl-2">
+                  <Text className="text-2xl font-bold text-gray-800">
+                    {(stats?.bestStreak || 0).toString()}
+                  </Text>
+                  <Text className="text-sm text-gray-600 text-center">
+                    Best Streak
+                  </Text>
+                </View>
+
+                {/* Row 2 */}
+                <View className="w-1/2 items-center mb-4 pr-2">
+                  <Text className="text-2xl font-bold text-gray-800">
+                    {(stats?.totalWordsGuessed || 0).toString()}
+                  </Text>
+                  <Text className="text-sm text-gray-600 text-center">
+                    Words Guessed
+                  </Text>
+                </View>
+                <View className="w-1/2 items-center mb-4 pl-2">
+                  <Text className="text-2xl font-bold text-gray-800">
+                    {`${(stats?.winRate || 0).toString()}%`}
+                  </Text>
+                  <Text className="text-sm text-gray-600 text-center">
+                    Win Rate
+                  </Text>
+                </View>
+
+                {/* Row 3 */}
+                <View className="w-1/2 items-center mb-4 pr-2">
+                  <Text className="text-2xl font-bold text-gray-800">
+                    {(stats?.totalScore || 0).toString()}
+                  </Text>
+                  <Text className="text-sm text-gray-600 text-center">
+                    Total Score
+                  </Text>
+                </View>
+                <View className="w-1/2 items-center mb-4 pl-2">
+                  <Text className="text-2xl font-bold text-gray-800">
+                    {(stats?.highestLevelClassic || 0).toString()}
+                  </Text>
+                  <Text className="text-sm text-gray-600 text-center">
+                    Highest Level
+                  </Text>
+                </View>
+
+                {/* Row 4 */}
+                <View className="w-1/2 items-center mb-4 pr-2">
+                  <Text className="text-2xl font-bold text-gray-800">
+                    {(stats?.gamesPlayed || 0).toString()}
+                  </Text>
+                  <Text className="text-sm text-gray-600 text-center">
+                    Games Played
+                  </Text>
+                </View>
+                <View className="w-1/2 items-center mb-4 pl-2">
+                  <View className="w-8 h-8 bg-yellow-500 rounded-sm mb-1" />
+                  <Text className="text-2xl font-bold text-gray-800">
+                    {(playerData.coins || 0).toString()}
+                  </Text>
+                  <Text className="text-sm text-gray-600 text-center">
+                    Coins
+                  </Text>
+                </View>
+              </View>
+            </View>
+
+            {/* Update Avatar Options */}
+            <View className="mb-6">
+              <Text className="text-lg font-bold text-gray-800 mb-3">
+                Avatar
+              </Text>
+              <WideButton
+                buttonText="Update Avatar"
+                onPress={handleUpdateAvatarPress}
               />
-            ) : (
-              <View className="w-16 h-16 rounded-full mr-4 bg-blue-500 items-center justify-center">
-                <Text className="text-white text-3xl font-bold">
-                  {playerData.username
-                    ? playerData.username.charAt(0).toUpperCase()
-                    : ""}
-                </Text>
-              </View>
-            )}
-            <View className="flex-1">
-              <Text className="text-xl font-bold text-gray-800">
-                {playerData.username || "Guest"}
+            </View>
+
+            {/* Account Settings / Update Options */}
+            <View className="w-full mt-4 border-t border-gray-200 pt-4">
+              <Text className="text-lg font-bold text-gray-800 mb-3">
+                Account Settings
               </Text>
-              {/* Additional basic info if needed */}
+
+              {/* Update Username Button */}
+              <TouchableOpacity
+                className="bg-gray-200 px-4 py-3 rounded-md mb-3 w-full items-center"
+                onPress={() => setIsUsernameModalVisible(true)}
+              >
+                <Text className="text-gray-800 font-semibold">
+                  Update Username
+                </Text>
+              </TouchableOpacity>
+
+              {/* Change Password Button */}
+              <TouchableOpacity
+                className="bg-gray-200 px-4 py-3 rounded-md mb-3 w-full items-center"
+                onPress={() => setIsPasswordModalVisible(true)}
+              >
+                <Text className="text-gray-800 font-semibold">
+                  Change Password
+                </Text>
+              </TouchableOpacity>
             </View>
-          </View>
 
-          {/* Comprehensive Stats Grid */}
-          <ScrollView className="max-h-60 mb-6">
-            <Text className="text-lg font-bold text-gray-800 mb-4">
-              Statistics
-            </Text>
-            <View className="flex-row flex-wrap justify-between">
-              {/* Row 1 */}
-              <View className="w-1/2 items-center mb-4 pr-2">
-                <Text className="text-2xl font-bold text-gray-800">
-                  {(playerData.progress?.dailyChallengeIndex || 0).toString()}
-                </Text>
-                <Text className="text-sm text-gray-600 text-center">
-                  Daily Puzzles
-                </Text>
-              </View>
-              <View className="w-1/2 items-center mb-4 pl-2">
-                <Text className="text-2xl font-bold text-gray-800">
-                  {(stats?.bestStreak || 0).toString()}
-                </Text>
-                <Text className="text-sm text-gray-600 text-center">
-                  Best Streak
-                </Text>
-              </View>
-
-              {/* Row 2 */}
-              <View className="w-1/2 items-center mb-4 pr-2">
-                <Text className="text-2xl font-bold text-gray-800">
-                  {(stats?.totalWordsGuessed || 0).toString()}
-                </Text>
-                <Text className="text-sm text-gray-600 text-center">
-                  Words Guessed
-                </Text>
-              </View>
-              <View className="w-1/2 items-center mb-4 pl-2">
-                <Text className="text-2xl font-bold text-gray-800">
-                  {`${(stats?.winRate || 0).toString()}%`}
-                </Text>
-                <Text className="text-sm text-gray-600 text-center">
-                  Win Rate
-                </Text>
-              </View>
-
-              {/* Row 3 */}
-              <View className="w-1/2 items-center mb-4 pr-2">
-                <Text className="text-2xl font-bold text-gray-800">
-                  {(stats?.totalScore || 0).toString()}
-                </Text>
-                <Text className="text-sm text-gray-600 text-center">
-                  Total Score
-                </Text>
-              </View>
-              <View className="w-1/2 items-center mb-4 pl-2">
-                <Text className="text-2xl font-bold text-gray-800">
-                  {(stats?.highestLevelClassic || 0).toString()}
-                </Text>
-                <Text className="text-sm text-gray-600 text-center">
-                  Highest Level
-                </Text>
-              </View>
-
-              {/* Row 4 */}
-              <View className="w-1/2 items-center mb-4 pr-2">
-                <Text className="text-2xl font-bold text-gray-800">
-                  {(stats?.gamesPlayed || 0).toString()}
-                </Text>
-                <Text className="text-sm text-gray-600 text-center">
-                  Games Played
-                </Text>
-              </View>
-              <View className="w-1/2 items-center mb-4 pl-2">
-                <View className="w-8 h-8 bg-yellow-500 rounded-sm mb-1" />
-                <Text className="text-2xl font-bold text-gray-800">
-                  {(playerData.coins || 0).toString()}
-                </Text>
-                <Text className="text-sm text-gray-600 text-center">Coins</Text>
-              </View>
-            </View>
+            {/* Close Button */}
+            <TouchableOpacity
+              onPress={onClose}
+              className="bg-gray-500 px-4 py-2 rounded w-full items-center mt-6"
+            >
+              <Text className="text-white font-bold">Close</Text>
+            </TouchableOpacity>
           </ScrollView>
-
-          {/* Update Avatar Options */}
-          <View className="mb-6">
-            <Text className="text-lg font-bold text-gray-800 mb-3">Avatar</Text>
-            <WideButton
-              buttonText="Update Avatar"
-              onPress={handleUpdateAvatarPress}
-            />
-          </View>
-
-          {/* Account Settings / Update Options */}
-          <View className="w-full mt-4 border-t border-gray-200 pt-4">
-            <Text className="text-lg font-bold text-gray-800 mb-3">
-              Account Settings
-            </Text>
-
-            {/* Update Username Button */}
-            <TouchableOpacity
-              className="bg-gray-200 px-4 py-3 rounded-md mb-3 w-full items-center"
-              onPress={() => setIsUsernameModalVisible(true)}
-            >
-              <Text className="text-gray-800 font-semibold">
-                Update Username
-              </Text>
-            </TouchableOpacity>
-
-            {/* Change Password Button */}
-            <TouchableOpacity
-              className="bg-gray-200 px-4 py-3 rounded-md mb-3 w-full items-center"
-              onPress={() => setIsPasswordModalVisible(true)}
-            >
-              <Text className="text-gray-800 font-semibold">
-                Change Password
-              </Text>
-            </TouchableOpacity>
-
-            {/* Link Account Button (Placeholder) */}
-            <TouchableOpacity
-              className="bg-gray-200 px-4 py-3 rounded-md w-full items-center"
-              onPress={() => setIsLinkAccountModalVisible(true)}
-            >
-              <Text className="text-gray-800 font-semibold">Link Accounts</Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* Close Button */}
-          <TouchableOpacity
-            onPress={onClose}
-            className="bg-gray-500 px-4 py-2 rounded w-full items-center mt-6"
-          >
-            <Text className="text-white font-bold">Close</Text>
-          </TouchableOpacity>
         </View>
       </View>
-
-      {/* Link Account Modal */}
-      <Modal
-        visible={isLinkAccountModalVisible}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={() => setIsLinkAccountModalVisible(false)}
-      >
-        <View className="flex-1 justify-center items-center bg-black/50">
-          <View className="bg-white p-6 rounded-lg m-4 w-11/12 max-w-sm relative">
-            {/* Close Button in top-right corner */}
-            <View className="absolute top-2 right-2 z-10">
-              <CloseButton
-                onPress={() => setIsLinkAccountModalVisible(false)}
-                size={20}
-              />
-            </View>
-
-            <Text className="text-lg font-bold text-gray-800 mb-4">
-              Link Accounts
-            </Text>
-
-            {/* Link Google Button */}
-            <TouchableOpacity
-              className="bg-red-500 px-4 py-3 rounded-md mb-3 w-full items-center"
-              onPress={() => handleLinkAccount("google")}
-            >
-              <Text className="text-white font-semibold">Link with Google</Text>
-            </TouchableOpacity>
-
-            {/* Link Facebook Button */}
-            <TouchableOpacity
-              className="bg-blue-600 px-4 py-3 rounded-md mb-4 w-full items-center"
-              onPress={() => handleLinkAccount("facebook")}
-            >
-              <Text className="text-white font-semibold">
-                Link with Facebook
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              className="bg-gray-300 px-4 py-3 rounded-md w-full items-center"
-              onPress={() => setIsLinkAccountModalVisible(false)}
-            >
-              <Text className="text-gray-800 font-semibold">Cancel</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
 
       {/* Change Password Modal */}
       <Modal
