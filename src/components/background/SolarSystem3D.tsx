@@ -61,8 +61,6 @@ import texMoonD from "../../../assets/3d/tex_moon_d.png";
 import texMoonF from "../../../assets/3d/tex_moon_f.png";
 import texMoonG from "../../../assets/3d/tex_moon_g.png";
 import texMoonH from "../../../assets/3d/tex_moon_h.png";
-import texRingA from "../../../assets/3d/tex_ring_a.png";
-import texRingB from "../../../assets/3d/tex_ring_b.png";
 
 // Sun and corona textures
 import texSunSpots from "../../../assets/3d/tex_sun_spots_02.png";
@@ -164,17 +162,11 @@ const PLANET_CONFIG = [
     color: 0xd8ca9d,
     startAngle: (4 * Math.PI) / 3,
     priority: 2,
-    rings: {
-      texture: texRingA,
-      innerRadius: 2.8,
-      outerRadius: 4.2,
-      opacity: 0.6,
-    },
     moons: [
       {
         texture: texMoonC,
         size: 0.28,
-        distance: 5.2, // Clear of rings
+        distance: 5.2,
         orbitSpeed: 0.035, // Smooth major moon motion
         startAngle: Math.PI / 2,
         priority: 2,
@@ -191,17 +183,11 @@ const PLANET_CONFIG = [
     color: 0xfad5a5,
     startAngle: (5 * Math.PI) / 3,
     priority: 2,
-    rings: {
-      texture: texRingB,
-      innerRadius: 2.2,
-      outerRadius: 4.2,
-      opacity: 0.8,
-    },
     moons: [
       {
         texture: texMoonC,
         size: 0.26,
-        distance: 5.8, // Safe from rings
+        distance: 5.8,
         orbitSpeed: 0.028, // Smooth motion
         startAngle: 0,
         priority: 3,
@@ -226,12 +212,6 @@ const PLANET_CONFIG = [
     color: 0x4fd0e3,
     startAngle: 0,
     priority: 3,
-    rings: {
-      texture: texRingA,
-      innerRadius: 1.9,
-      outerRadius: 3.1,
-      opacity: 0.4,
-    },
     moons: [
       {
         texture: texMoonG,
@@ -589,7 +569,6 @@ interface AnimationRefs {
       config: any;
       moonIndex: number;
     }[];
-    rings: React.RefObject<Mesh | null>[];
   }[];
   camera: any;
   sunLight: any;
@@ -775,81 +754,6 @@ const Moon: React.FC<MoonProps> = React.memo(
 Moon.displayName = "Moon";
 
 // Optimized Ring component with LOD
-interface RingProps {
-  config: {
-    texture: any;
-    innerRadius: number;
-    outerRadius: number;
-    opacity: number;
-  };
-  planetPosition: [number, number, number];
-  ringRef: React.RefObject<Mesh | null>;
-  cameraDistance: number;
-}
-
-const Ring: React.FC<RingProps> = React.memo(
-  ({ config, planetPosition, ringRef, cameraDistance }) => {
-    const texture = useOptimizedTexture(config.texture);
-    const lodLevel = useLOD(cameraDistance);
-
-    const geometry = useMemo(
-      () =>
-        createOptimizedGeometry(
-          "ring",
-          config.innerRadius,
-          lodLevel,
-          config.outerRadius
-        ),
-      [config.innerRadius, config.outerRadius, lodLevel]
-    );
-
-    // Configure texture wrapping safely
-    useMemo(() => {
-      if (texture) {
-        texture.wrapS = RepeatWrapping;
-        texture.wrapT = RepeatWrapping;
-      }
-    }, [texture]);
-
-    // Create material with null-safe texture handling
-    const ringMaterial = useMemo(
-      () => ({
-        map: texture, // Can be null, Three.js handles this gracefully
-        transparent: true,
-        opacity: lodLevel === "low" ? config.opacity * 0.7 : config.opacity,
-        side: 2 as const,
-        shininess: lodLevel === "low" ? 10 : 20,
-        specular: lodLevel === "low" ? 0x333333 : 0x555555,
-        emissive: 0x222222,
-        emissiveIntensity: lodLevel === "low" ? 0.02 : 0.05,
-      }),
-      [texture, lodLevel, config.opacity]
-    );
-
-    if (lodLevel === "cull" || !geometry) return null;
-
-    return (
-      <mesh
-        ref={ringRef}
-        position={planetPosition}
-        rotation={[Math.PI / 2, 0, 0]}
-      >
-        <primitive object={geometry} />
-        <meshPhongMaterial
-          map={ringMaterial.map}
-          transparent={ringMaterial.transparent}
-          opacity={ringMaterial.opacity}
-          side={ringMaterial.side}
-          shininess={ringMaterial.shininess}
-          specular={ringMaterial.specular}
-          emissive={ringMaterial.emissive}
-          emissiveIntensity={ringMaterial.emissiveIntensity}
-        />
-      </mesh>
-    );
-  }
-);
-Ring.displayName = "Ring";
 
 // Optimized Planet component with LOD
 interface PlanetProps {
@@ -857,7 +761,7 @@ interface PlanetProps {
   planetGroupRef: React.RefObject<Group | null>;
   planetMeshRef: React.RefObject<Mesh | null>;
   coronaRef?: React.RefObject<Mesh | null>;
-  ringRefs: React.RefObject<Mesh | null>[];
+
   moonRefs: {
     group: React.RefObject<Group | null>;
     mesh: React.RefObject<Mesh | null>;
@@ -871,7 +775,7 @@ const Planet: React.FC<PlanetProps> = React.memo(
     planetGroupRef,
     planetMeshRef,
     coronaRef,
-    ringRefs,
+
     moonRefs,
     cameraDistance,
   }) => {
@@ -923,15 +827,6 @@ const Planet: React.FC<PlanetProps> = React.memo(
             emissiveIntensity={planetMaterial.emissiveIntensity}
           />
         </mesh>
-
-        {config.rings && lodLevel !== "cull" && (
-          <Ring
-            config={config.rings}
-            planetPosition={[0, 0, 0]}
-            ringRef={ringRefs[0]}
-            cameraDistance={cameraDistance}
-          />
-        )}
 
         {config.moons?.map((moon, index) => (
           <Moon
@@ -1072,15 +967,6 @@ const AnimationManager: React.FC<{
           }
         });
       }
-
-      // Ring animations (reduced frequency)
-      if (index < 4 && frameSkip.current % 3 === 0) {
-        planet.rings.forEach((ringRef) => {
-          if (ringRef.current) {
-            ringRef.current.rotation.z += 0.0015;
-          }
-        });
-      }
     });
 
     // Camera animation with adaptive smoothness
@@ -1123,7 +1009,7 @@ const Lighting: React.FC<{ lightRef: React.MutableRefObject<any> }> =
         <ambientLight intensity={0.8} color={0x404080} />
 
         <pointLight
-          ref={(ref) => (lightRef.current = ref)}
+          ref={(ref: any) => (lightRef.current = ref)}
           userData={{ name: "sunLight" }}
           position={[0, 0, 0]}
           intensity={8} // Reduced for mobile performance
@@ -1178,7 +1064,6 @@ const SolarSystemScene: React.FC = React.memo(() => {
             config: moon,
             moonIndex: index,
           })) || [],
-        rings: config.rings ? [React.createRef<Mesh>()] : [],
       })),
     []
   );
@@ -1232,7 +1117,6 @@ const SolarSystemScene: React.FC = React.memo(() => {
                 ]
               : undefined
           }
-          ringRefs={planetRefs[index].rings}
           moonRefs={planetRefs[index].moons}
           cameraDistance={cameraDistance}
         />
@@ -1322,9 +1206,11 @@ const SolarSystem3D: React.FC = React.memo(() => {
         onCreated={({ gl, scene }) => {
           gl.setClearColor(0x000000, 0);
           // More aggressive pixel ratio capping for mobile performance
-          gl.pixelRatio = Math.min(
-            1.2, // Reduced from 1.5 for better mobile performance
-            typeof window !== "undefined" ? window.devicePixelRatio : 1
+          gl.setPixelRatio(
+            Math.min(
+              1.2, // Reduced from 1.5 for better mobile performance
+              typeof window !== "undefined" ? window.devicePixelRatio : 1
+            )
           );
           gl.shadowMap.enabled = false; // Disabled shadows for mobile performance
 

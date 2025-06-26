@@ -61,6 +61,7 @@ module.exports = {
   },
   plugins: [
     "@react-native-firebase/app",
+    "@react-native-firebase/crashlytics",
     "@react-native-google-signin/google-signin",
     [
       "react-native-fbsdk-next",
@@ -126,7 +127,7 @@ module.exports = {
   ],
   extra: {
     eas: {
-      projectId: "c587e97f-f71b-4258-a34c-98a2df4a6508",
+      projectId: "492989b0-124c-46ac-a328-0ec513a3130f",
     },
     ENABLE_CRASH_TESTING: process.env.ENABLE_CRASH_TESTING || "false",
     OPEN_AI_KEY: "YnDnl1dSucAApjYEN019-6hGt2ufiedaq4HsP-h7",
