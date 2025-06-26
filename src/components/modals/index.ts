@@ -6,7 +6,6 @@ export { default as WatchAdForChanceModal } from "./game/WatchAdForChanceModal";
 
 // Settings Modals
 export { default as SettingsModal } from "./settings/SettingsModal";
-export { default as ProfileModal } from "./settings/ProfileModal";
 export { default as FullProfileDetailsModal } from "./settings/FullProfileDetailsModal";
 
 // Help Modals
