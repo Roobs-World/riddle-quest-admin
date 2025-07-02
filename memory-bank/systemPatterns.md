@@ -1,112 +1,164 @@
-# System Patterns: Riddle Wordle Clone
+# System Patterns
 
-## 1. System Architecture Overview
+This document outlines the system architecture, key technical decisions, design patterns, and component relationships within the Qwordly project.
 
-The system follows a client-server architecture:
+## System Architecture:
 
-- **Client:** React Native mobile application (iOS and Android) responsible for UI, user interaction, game logic execution, and communication with the backend.
-- **Backend:** Firebase services providing authentication, database (Firestore), file storage (Firebase Storage), and serverless functions (Firebase Cloud Functions).
-- **External Integration:** Google Sheets (via Google Apps Script) for initial riddle data management and synchronization.
+[Describe the overall architecture, e.g., Client-Server (React Native app + Firebase Functions/Firestore), key components and how they interact.]
 
-```mermaid
-graph TD
-    UserMobile[User on Mobile App] --> ClientApp[React Native App]
+## Key Technical Decisions:
 
-    ClientApp --> FirebaseAuth[Firebase Auth]
-    ClientApp --> FirestoreDB[Firestore Database]
-    ClientApp --> FirebaseStorage[Firebase Storage]
-    ClientApp --> FirebaseFunctions[Firebase Cloud Functions]
-    ClientApp --> IAPClient[react-native-iap]
+- [List significant technical choices and the reasoning behind them, e.g., Using Firebase for backend, TypeScript for type safety.]
 
-    IAPClient --> AppStore[App Store / Play Store]
-    AppStore --> FirebaseFunctionsForIAP[Firebase Cloud Function for IAP Validation]
+## Design Patterns in Use:
 
-    Admin[Admin/Dev] --> GoogleSheets[Google Sheets]
-    GoogleSheets -- Apps Script --> FirestoreDB
-    GoogleSheets -- Apps Script --> FirebaseFunctionsForRiddles
+- [Identify and describe prominent design patterns used in the codebase, e.g., Repository pattern for data access, Observer pattern.]
 
-    FirebaseFunctionsForRiddles[Firebase Cloud Function for Riddle Generation] --> FirestoreDB
-    FirebaseFunctionsForRiddles --> GoogleSheets
+## Component Relationships:
 
-    subgraph Firebase Backend
-        FirebaseAuth
-        FirestoreDB
-        FirebaseStorage
-        FirebaseFunctions
-        FirebaseFunctionsForIAP
-        FirebaseFunctionsForRiddles
-    end
+[Describe how major components interact with each other, possibly using a simple diagram or text description.]
 
-    subgraph Mobile Client
-        ClientApp
-        IAPClient
-    end
+## Critical Implementation Paths:
+
+[Outline the most important or complex parts of the system that require careful implementation and testing, e.g., User authentication flow, Game state management, In-app purchase handling.]
+
+## Architecture Overview
+
+```
+Client (React Native)
+├── Authentication Layer (Firebase Auth)
+├── State Management (React Context)
+├── UI Components (React Native + NativeWind)
+├── Services Layer
+│   ├── FirestoreService (Database operations)
+│   ├── SoundManager (Audio management)
+│   └── RiddleService (Game logic via Firebase Functions)
+└── Navigation (React Navigation)
 ```
 
-## 2. Key Technical Decisions & Design Patterns
+## Core Services
 
-- **Cross-Platform Development:** React Native is chosen for its ability to target both iOS and Android with a single codebase, accelerating development.
-- **Serverless Backend:** Firebase is adopted to minimize backend infrastructure management, leveraging its PaaS/BaaS capabilities for auth, DB, storage, and functions.
-- **Component-Based UI:** React Native promotes a component-based architecture for the UI, enhancing reusability and maintainability. We are actively creating reusable components, starting with `ReusableTextInput`.
-- **Styling with Utility Classes:** NativeWind (Tailwind CSS) will be used for styling, promoting rapid UI development and consistency through utility-first classes.
-- **State Management:**
-  - **Local/Component State:** React's built-in `useState` and `useReducer` for component-level state.
-  - **Global State:** React Context API for simpler global state needs (e.g., theme, user authentication status). Zustand may be considered if state logic becomes complex and requires more performance or a more structured approach outside of React's component tree.
-- **Data Flow:** Primarily unidirectional data flow within the client application, typical of React applications.
-- **API Communication:** Asynchronous requests (e.g., using `fetch` or a library like Axios) from the client to Firebase services.
-- **Modularity:** Code will be organized into modules by feature (e.g., authentication, game, profile, settings, store) and by type (e.g., components, screens, services, hooks, types).
+### FirestoreService
 
-## 3. Component Relationships (High-Level)
+- User data management
+- Riddle storage and retrieval
+- Progress tracking
+- Statistics management
 
-- **App Navigator:** Manages overall screen navigation (e.g., Auth stack, Main App stack with bottom tabs).
-- **Screen Components:** Represent individual screens (e.g., `HomeScreen`, `GameScreen`, `ProfileScreen`, `SettingsScreen`, `StoreScreen`).
-- **Shared Components:** Reusable UI elements (e.g., `Button`, `Card`, `Input`, `Modal`, `GuessGrid`, `Keyboard`). `ReusableTextInput` has been created as the first of these shared input components.
-- **Service Modules:** Encapsulate logic for interacting with Firebase (e.g., `AuthService`, `FirestoreService`, `StorageService`).
-- **State Management Contexts/Stores:** Provide global state and actions to components that need them.
+### RiddleService
 
-## 4. Critical Implementation Paths
+- Server-side game logic via Firebase Functions
+- Guess validation and feedback
+- Hint system
+- Coin management
 
-1.  **Authentication Flow:** Secure user sign-up, login (Google, email/password), password reset, and anonymous login. Handling auth state changes and protecting routes.
-2.  **Game Logic:** Implementing the core Wordle-style guess evaluation, riddle presentation, and state updates for both Challenge and Classic modes.
-3.  **Firebase Integration:**
-    - Setting up Firestore schemas for user data, game progress, and riddles.
-    - Implementing CRUD operations for Firestore.
-    - Integrating Firebase Storage for avatar uploads.
-4.  **Google Sheets to Firestore Sync:** Developing the Google Apps Script for initial riddle population and ensuring a reliable sync mechanism.
-5.  **Cloud Function for Riddle Generation:** Designing and implementing the serverless function to dynamically create new 5-letter riddles and update both Firestore and Google Sheets. This is critical for long-term content.
-6.  **In-App Purchase (IAP) Flow:** Integrating `react-native-iap`, handling purchases, and implementing server-side validation via a Firebase Cloud Function.
-7.  **Profile Management:** Avatar selection/upload, stats display, and persistence.
-8.  **UI Styling and Responsiveness:** Ensuring the app looks and feels consistent with the design mockups across different screen sizes and platforms using NativeWind.
+## Firebase Functions Pattern
 
-## 5. Data Models (Initial Thoughts for Firestore)
+All game logic is server-authoritative:
 
-- **`users` collection:**
-  - `userId` (doc ID)
-  - `email` (if email auth)
-  - `username`
-  - `avatarUrl`
-  - `xp`
-  - `coins`
-  - `createdAt`
-  - `stats` (object: `dailyPuzzlesCompleted`, `bestStreak`, `totalWordsGuessed`, `winRate`, `averageGuesses`, `totalScore`, `highestLevelClassic`, `gamesPlayed`)
-- **`riddles` collection (for Classic Mode & Challenge Mode history/pool):**
-  - `riddleId` (doc ID)
-  - `riddleText`
-  - `answer` (5-letter word)
-  - `difficulty` (optional)
-  - `source` (e.g., "googleSheet", "generated")
-- **`userClassicProgress` collection:**
-  - `userId_riddleId` (doc ID or subcollection under users)
-  - `status` ("unlocked", "solved", "skipped")
-  - `attempts` (if solved)
-  - `solvedAt`
-- **`dailyChallenge` collection (stores the current daily challenge):**
-  - `date` (e.g., "YYYY-MM-DD", doc ID)
-  - `riddleId` (references `riddles` collection)
-- **`userDailyChallengeAttempts` collection:**
-  - `userId_challengeDate` (doc ID)
-  - `guesses` (array of guessed words)
-  - `isSolved`
-  - `coinsEarned`
+1. **Submit Guess Function**
 
-These data models are initial and will be refined as development progresses.
+```typescript
+export const submitGuess = onCall(async (request) => {
+  // Validate user authentication
+  // Process guess against riddle
+  // Return feedback and game state
+  // Award coins based on performance
+});
+```
+
+2. **Get Hint Function**
+
+```typescript
+export const getHint = onCall(async (request) => {
+  // Validate user has sufficient coins
+  // Reveal hint for current riddle
+  // Deduct coin cost
+  // Track hint usage
+});
+```
+
+3. **Spend Coins Function**
+
+```typescript
+export const spendCoins = onCall(async (request) => {
+  // Validate coin balance
+  // Execute transaction atomically
+  // Update user document
+  // Return new balance
+});
+```
+
+## Data Models
+
+### User Document
+
+```typescript
+interface UserData {
+  userId: string;
+  username: string;
+  email: string;
+  coins: number;
+  progress: {
+    classicIndex: number;
+    completedDailyChallenges: string[];
+  };
+  statistics: {
+    gamesPlayed: number;
+    gamesWon: number;
+    totalScore: number;
+    // ... other stats
+  };
+}
+```
+
+### Riddle Document
+
+```typescript
+interface Riddle {
+  riddleId: string;
+  text: string;
+  answer: string;
+  hints: string[];
+  difficulty: number;
+  type: "daily" | "classic" | "tutorial";
+}
+```
+
+## Security Patterns
+
+- Server-side validation for all game actions
+- Atomic Firestore transactions for coin operations
+- User authentication required for all game functions
+- Input validation using Zod schemas
+- Rate limiting on expensive operations
+
+## Error Handling
+
+- Graceful degradation when services are unavailable
+- User-friendly error messages
+- Comprehensive logging for debugging
+- Fallback mechanisms for critical functionality
+
+## State Management
+
+- React Context for global app state
+- Local component state for UI interactions
+- AsyncStorage for user preferences
+- Firestore as single source of truth for game data
+
+### Testing
+
+- **Unified Test Command**: `pnpm run test`
+  - Single command runs all tests
+  - Automatic Firebase emulator management
+  - **Firestore initialization with test data**
+  - Runs Firebase Functions tests first
+  - Then runs React Native tests
+  - Graceful failure handling
+  - Custom script at `scripts/test-all.js`
+- **Test Data**: Automatic population of test riddles and users
+- **Firebase Functions**: 218 tests - all passing
+- **React Native**: 172 tests - running (46 failing due to test logic, not infrastructure)
+- **Total Test Coverage**: 390 tests, 344 passing
+- **Infrastructure**: Both test suites working with proper transformations

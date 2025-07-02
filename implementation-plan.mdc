@@ -1,0 +1,16 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+## Implementation Plan
+
+This plan outlines the steps for implementing missing functionalities in the project, based on the memory bank and identified TODOs.
+
+1. Implement actual server-side validation for ad network callbacks (in `firebase-functions/src/index.ts`).
+2. Implement actual server-side validation for in-app purchases (in `firebase-functions/src/index.ts`).
+3. Refine the logic for updating user statistics, specifically how 'games played' is incremented in the `submitGuess` function (in `firebase-functions/src/index.ts`).
+4. Improve hint tracking in the `getHint` function (in `firebase-functions/src/index.ts`).
+5. Implement proper logic for determining the next riddle and handling the end-of-riddles scenario in the `skipRiddle` function (in `firebase-functions/src/index.ts`).
+6. Add more robust logic and handling for different form types in the `processFormSubmission` function (in `firebase-functions/src/index.ts`).
+7. Replace the placeholder riddle generation logic in `firebase-functions/src/generateRiddles.ts`.

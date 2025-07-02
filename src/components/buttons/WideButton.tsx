@@ -1,28 +1,43 @@
 import React from "react";
-import { TouchableOpacity, Text, View } from "react-native";
-import ButtonBackground from "@images/button.svg";
+import { TouchableOpacity, Text } from "react-native";
+import { styles } from "../../styles";
 
 interface WideButtonProps {
-  onPress: () => void;
   buttonText: string;
+  onPress: () => void;
+  disabled?: boolean;
 }
 
-const WideButton: React.FC<WideButtonProps> = ({ onPress, buttonText }) => {
+/**
+ * WideButton component for full-width buttons in the app.
+ * Displays text and handles press events.
+ * Can be disabled to prevent interaction.
+ *
+ * @param {WideButtonProps} props - The properties for the button.
+ * @returns {React.FC<WideButtonProps>} A TouchableOpacity component with text.
+ */
+const WideButton: React.FC<WideButtonProps> = ({
+  buttonText,
+  onPress,
+  disabled = false,
+}) => {
   return (
-    <TouchableOpacity className="w-full mb-4 rounded-lg" onPress={onPress}>
-      <View className="relative">
-        <View className="absolute top-0 left-0 right-0 bottom-0">
-          <ButtonBackground width="100%" height="100%" />
-        </View>
-        <View className="py-4 rounded-lg">
-          <Text
-            className="text-black text-lg font-semibold text-center"
-            style={{ fontFamily: "PoppinsSemiBold" }}
-          >
-            {buttonText}
-          </Text>
-        </View>
-      </View>
+    <TouchableOpacity
+      className={`w-full rounded-lg py-3 px-6 my-4 ${
+        disabled ? "bg-gray-300" : "bg-primary-orange"
+      }`}
+      onPress={onPress}
+      disabled={disabled}
+      style={styles.buttonOpacity}
+    >
+      <Text
+        className={`font-semibold text-center ${
+          disabled ? "text-gray-500" : "text-white"
+        }`}
+        style={styles.buttonText}
+      >
+        {buttonText}
+      </Text>
     </TouchableOpacity>
   );
 };

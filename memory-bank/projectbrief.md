@@ -1,6 +1,63 @@
-# Project Brief: Riddle Wordle Clone
+# Project Brief
 
-## 1. Project Overview
+This document outlines the core requirements and goals for the project.
+
+## Project Name:
+
+Qwordly (inferred from workspace path)
+
+## Project Description:
+
+Build a riddle-based Wordle-clone mobile game using React Native, NativeWind, and TypeScript. The game will feature user authentication, a persistent backend for user data and game levels, multiple game modes, in-app purchases for a coin system, and customizable user profiles.
+
+## Core Requirements:
+
+- Firebase Functions deployment.
+- Development of iOS (16+) and Android (10+) application.
+- User authentication (Google, Facebook, email/password).
+- Firestore database for user data and riddle levels (primary storage).
+- Firebase Storage for user avatars.
+- Server-side riddle generation and guess validation.
+- Two primary game modes: Daily Challenge and Classic Mode.
+- In-app purchase system for coins and ad removal.
+- AppLovin MAX integration for rewarded and interstitial ads.
+- User profiles with statistics and customizable avatars.
+- Game win 'shattering title' animation.
+
+## Goals:
+
+- To build a fully functional riddle-based Wordle-clone mobile game, Qwordly.
+- Implement all core features including user authentication, persistent backend, multiple game modes, in-app purchases, and customizable user profiles.
+- Ensure successful deployment and operation of Firebase Functions for backend logic.
+- Achieve comprehensive test coverage for both client and server-side code.
+- Implement audio fading for background music and sound effects based on user progress or game state.
+
+## Stakeholders:
+
+- Mobile gamers who enjoy word puzzles and riddle-based challenges.
+- Users looking for engaging daily and progressive puzzle experiences.
+
+## Key Assumptions:
+
+- The project will be developed using React Native, NativeWind, and TypeScript.
+- The game will feature user authentication, a persistent backend for user data and game levels, multiple game modes, in-app purchases for a coin system, and customizable user profiles.
+- The game will be deployed on iOS (16+) and Android (10+) platforms.
+
+## Constraints:
+
+- The project will not include anonymous login.
+- The game will not include real-time multiplayer features beyond individual progression.
+- The game will not include social features like friend lists or direct messaging.
+- The project will not include a web-based version of the game.
+
+## Definition of Done:
+
+- The project will be successfully deployed and stable in operation.
+- Positive user engagement metrics (e.g., daily active users, session length) will be achieved post-launch.
+- High test coverage for critical game logic and backend services will be achieved.
+- All features outlined in the core requirements will be successfully implemented.
+
+## Project Overview
 
 Build a riddle-based Wordle-clone mobile game using React Native, NativeWind, and TypeScript. The game will feature user authentication, a persistent backend for user data and game levels, multiple game modes, in-app purchases for a coin system, and customizable user profiles.
 
@@ -12,87 +69,53 @@ Build a riddle-based Wordle-clone mobile game using React Native, NativeWind, an
 - **Frontend:** React Native (0.75+), NativeWind, TypeScript
 - **State Management:** React Context or Zustand
 - **Caching:** AsyncStorage or MMKV
-- **Animations:** Reanimated & Gesture Handler
+- **Animations:** Reanimated & Gesture Handler, Matter.js (for physics-based animations)
 - **Sound:** expo-av
 - **Haptics:** react-native-haptic-feedback
 
 ### 2.2. Backend & Authentication
 
-- **Authentication:** Firebase Auth (Google, email/password, password reset, optional anonymous)
-- **Database:** Firestore (user stats, progress, coin balances, avatar URLs, riddle levels)
+- **Authentication:** Firebase Auth (Google, Facebook, email/password, password reset). Anonymous login will not be implemented.
+- **Database:** Firestore (user stats, progress, coin balances, avatar URLs, riddle levels - **primary and only source**)
 - **Storage:** Firebase Storage (user-uploaded avatars)
 - **Level Management:**
-  - Initial 100+ riddle levels synced from Google Sheets (via Apps Script).
-  - Firebase Cloud Function to generate new 5-letter riddles when levels run out (updating Firestore & Sheets).
+  - Riddle levels stored directly in Firestore with automatic generation.
+  - Firebase Cloud Function to generate new riddles continuously for Classic Mode (current implementation allows for variable answer lengths, not strictly 5-letter), storing them directly in Firestore. This function is triggered by the client when a user reaches the end of currently available Classic levels, ensuring an unlimited supply of puzzles.
 
 ### 2.3. Game Modes
 
 - **Challenge Mode:**
-  - One daily riddle (5-letter answer).
-  - 6 guesses with color feedback (green/yellow/gray).
+  - One daily riddle (any letter answer length).
+    5 guesses with color feedback (green/yellow/red). **Guess validation and feedback are handled server-side.**
   - Coin rewards based on guesses (20 for 1-guess, 15 for 2, etc.).
   - Locks until the next UTC day.
 - **Classic Mode:**
   - Sequential levels from Sheets/Firestore.
   - Solve to unlock the next level.
-  - Option to spend 50 coins to skip a level.
-  - Same 6-guess grid and feedback.
+    Same 5-guess grid and feedback. **Guess validation and feedback are handled server-side.**
 
 ### 2.4. In-App Purchases & Coin System
 
-- **IAP:** `react-native-iap` for coin purchases (100 coins/$0.99, 500/$4.99, 1000/$9.99).
-- **Server-side Validation:** For IAP.
-- **Coin Usage:** Skip levels (50 coins), buy hints (20 coins to reveal a letter).
-- **Coin Balance Display:** Prominently in header, profile, and store.
+- **IAP:** (Details to be defined, e.g., specific coin pack amounts, pricing, no-ads purchase option details)
+  - Purchase `react-native-iap` or equivalent for managing IAPs.
+  - Server-side validation of purchases with Firebase Functions.
+- **Coin System:**
+  - Coins for hints (Classic Mode).
+  - Earn coins via daily challenges and rewarded ads.
 
-### 2.5. User Profile
+### 2.5. Advertising
 
-- **Profile Overlay (from bottom nav "profile"):**
-  - Circular avatar, username, XP bar (e.g., "320 – 500").
-  - Daily puzzles completed.
-  - Stats grid: Best streak, Total words guessed, Win rate %, Average guesses.
-  - Treasure chest graphic + total coins.
-- **Full Profile Page (from home/settings):**
-  - All overlay stats + total score, highest level, games played.
-  - "Update Avatar": Choose from 10-15 preloads or upload (PNG/JPEG, ≤5 MB) via `react-native-image-picker`.
-  - Avatar URL stored in Firestore, displayed as 100x100 px circular image.
+- **Ad Network:** AppLovin MAX
+- **Types:** Rewarded Ads (for coins/hints), Interstitial Ads (shown between levels if the user has not purchased the app).
+- **Environment Variables:** `APPLOVIN_SDK_KEY`, `APPLOVIN_INTERSTITIAL_AD_UNIT_ID`, `APPLOVIN_REWARDED_AD_UNIT_ID`, `APPLE_SHARED_SECRET`, `GOOGLE_SERVICE_ACCOUNT` (JSON string for IAP), `OPENAI_API_KEY`, `FIREBASE_API_KEY`, `FIREBASE_APP_ID`, `FIREBASE_AUTH_DOMAIN`, `FIREBASE_MESSAGING_SENDER_ID`, `FIREBASE_PROJECT_ID`, `FIREBASE_STORAGE_BUCKET`, `FACEBOOK_APP_ID`, `FACEBOOK_APP_SECRET`, `FACEBOOK_CLIENT_TOKEN`.
 
-### 2.6. Settings Overlay
+### 2.6. User Profiles & Stats
 
-- Accessible from bottom nav or gear icon.
-- Toggles for Sound and Haptic feedback.
-- "Help & Support?" link (FAQ or contact form).
-- "Logout" and "Reset Stats" buttons (secondary section).
-
-### 2.7. UI & UX
-
-- Clean card-based design, bold headings, rounded toggles (mimic screenshot styling).
-- Bottom navigation with home, play, profile icons.
-- **Main Game Screen:** Riddle text, 6x5 guess grid, on-screen keyboard, header (Level, Score, Coins, Hint & Skip buttons).
-- **Store Screen:** List coin packs with "Buy"/"Restore Purchases" buttons.
-- **Victory/Loss Screens:** Attempts, score, coins earned, shareable emoji summary, Next/Retry/Home buttons.
-- **Accessibility:** VoiceOver/TalkBack labels, color-blind patterns, adjustable text size.
+- User accounts with persistent data (stats, progress, coins, avatar).
+- Ability for users to upload and change their avatar (stored in Firebase Storage).
+- Display of game statistics (e.g., win rate, current streak, games played).
 
 ### 2.8. Quality & Performance
 
-- **Code:** Secure, documented, modular.
-- **Testing:** Jest (unit tests), Detox (e2e tests).
-- **Performance:** <100 ms input latency, <2 s cold start time.
-
-## 3. Key Goals
-
-- Deliver a fully functional MVP (Minimum Viable Product) within 2 weeks.
-- Provide an engaging and intuitive user experience.
-- Ensure a robust and scalable backend system for user data and dynamic riddle generation.
-- Implement secure authentication and in-app purchase flows.
-- Achieve high performance and accessibility standards.
-
-## 4. Deliverables
-
-- Secure and well-documented code repository.
-- Google Sheet setup for initial riddle levels.
-- Firebase Cloud Function for dynamic riddle generation.
-- Functional Profile and Settings overlays as per design.
-- Complete authentication and in-app purchase flows.
-- Comprehensive test suites (unit and e2e).
-- Deployment instructions.
+- **Code:** Secure, documented, modular. **Core game logic, including guess validation and win/loss conditions, is implemented server-side for security and authority.**
+- **Testing:** Comprehensive unit and integration tests for both client-side (React Native) and server-side (Firebase Functions) code to ensure reliability and maintainability. Integration tests connect directly to the live Firebase project, not the emulator.

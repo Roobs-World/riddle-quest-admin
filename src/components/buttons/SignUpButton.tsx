@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
+import { styles } from "../../styles";
 
 interface SignUpButtonProps {
   onPress: () => void;
@@ -14,7 +15,7 @@ const SignUpButton: React.FC<SignUpButtonProps> = ({ onPress }) => {
       >
         <Text
           className="text-sm text-gray-800 font-semibold"
-          style={{ fontFamily: "PoppinsSemiBold" }}
+          style={styles.signUpButtonText}
         >
           Sign up
         </Text>

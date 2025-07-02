@@ -1,0 +1,17 @@
+c8bb4e1750913cfdd606e77dd6b59a49
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.validateEmail = void 0;
+var _AppStrings = require("../constants/AppStrings");
+var validateEmail = exports.validateEmail = function validateEmail(email) {
+  if (!email) {
+    return _AppStrings.AppStrings.AuthStrings.Login.INVALID_EMAIL_FORMAT_ERROR;
+  }
+  var emailRegex = /^[\w-]+(?:\.[\w-]+)*@(?:[\w-]+\.)+[a-zA-Z]{2,7}$/;
+  if (!emailRegex.test(email)) {
+    return _AppStrings.AppStrings.AuthStrings.Login.INVALID_EMAIL_FORMAT_ERROR;
+  }
+  return "";
+};
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJfQXBwU3RyaW5ncyIsInJlcXVpcmUiLCJ2YWxpZGF0ZUVtYWlsIiwiZXhwb3J0cyIsImVtYWlsIiwiQXBwU3RyaW5ncyIsIkF1dGhTdHJpbmdzIiwiTG9naW4iLCJJTlZBTElEX0VNQUlMX0ZPUk1BVF9FUlJPUiIsImVtYWlsUmVnZXgiLCJ0ZXN0Il0sInNvdXJjZXMiOlsiZW1haWxWYWxpZGF0aW9uLnRzIl0sInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IEFwcFN0cmluZ3MgfSBmcm9tIFwiLi4vY29uc3RhbnRzL0FwcFN0cmluZ3NcIjtcclxuXHJcbmV4cG9ydCBjb25zdCB2YWxpZGF0ZUVtYWlsID0gKGVtYWlsOiBzdHJpbmcpOiBzdHJpbmcgPT4ge1xyXG4gIGlmICghZW1haWwpIHtcclxuICAgIHJldHVybiBBcHBTdHJpbmdzLkF1dGhTdHJpbmdzLkxvZ2luLklOVkFMSURfRU1BSUxfRk9STUFUX0VSUk9SO1xyXG4gIH1cclxuICBjb25zdCBlbWFpbFJlZ2V4ID0gL15bXFx3LV0rKD86XFwuW1xcdy1dKykqQCg/OltcXHctXStcXC4pK1thLXpBLVpdezIsN30kLztcclxuICBpZiAoIWVtYWlsUmVnZXgudGVzdChlbWFpbCkpIHtcclxuICAgIHJldHVybiBBcHBTdHJpbmdzLkF1dGhTdHJpbmdzLkxvZ2luLklOVkFMSURfRU1BSUxfRk9STUFUX0VSUk9SO1xyXG4gIH1cclxuICByZXR1cm4gXCJcIjtcclxufTtcclxuIl0sIm1hcHBpbmdzIjoiOzs7O0FBQUEsSUFBQUEsV0FBQSxHQUFBQyxPQUFBO0FBRU8sSUFBTUMsYUFBYSxHQUFBQyxPQUFBLENBQUFELGFBQUEsR0FBRyxTQUFoQkEsYUFBYUEsQ0FBSUUsS0FBYSxFQUFhO0VBQ3RELElBQUksQ0FBQ0EsS0FBSyxFQUFFO0lBQ1YsT0FBT0Msc0JBQVUsQ0FBQ0MsV0FBVyxDQUFDQyxLQUFLLENBQUNDLDBCQUEwQjtFQUNoRTtFQUNBLElBQU1DLFVBQVUsR0FBRyxrREFBa0Q7RUFDckUsSUFBSSxDQUFDQSxVQUFVLENBQUNDLElBQUksQ0FBQ04sS0FBSyxDQUFDLEVBQUU7SUFDM0IsT0FBT0Msc0JBQVUsQ0FBQ0MsV0FBVyxDQUFDQyxLQUFLLENBQUNDLDBCQUEwQjtFQUNoRTtFQUNBLE9BQU8sRUFBRTtBQUNYLENBQUMiLCJpZ25vcmVMaXN0IjpbXX0=

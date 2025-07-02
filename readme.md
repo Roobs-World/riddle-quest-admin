@@ -1,4 +1,8 @@
-# Riddle Wordle Clone
+npx eas-cli build --profile development --platform android
+
+expo run:android --clear
+
+use firebase functions:config:get to return the config settings used
 
 ## Project Overview
 
@@ -12,7 +16,7 @@ This is a mobile game that combines the popular Wordle-style gameplay with chall
   - Classic Mode: Sequential levels with increasing difficulty.
 - **User Authentication:** Secure login and sign-up using Firebase Auth (Google, Email/Password).
 - **Persistent User Data:** Game progress, stats, and coin balance stored in Firestore.
-- **In-App Purchases:** Purchase coins to skip levels or get hints.
+- **In-App Purchases:** Purchase coins to get hints.
 - **Customizable Profile:** User avatars and detailed game statistics.
 - **Accessibility:** Designed with accessibility features like VoiceOver/TalkBack support and color-blind friendly patterns.
 
@@ -25,7 +29,7 @@ This is a mobile game that combines the popular Wordle-style gameplay with chall
 - **Sound:** expo-av
 - **Haptics:** react-native-haptic-feedback
 - **Backend:** Firebase (Authentication, Firestore, Storage, Cloud Functions)
-- **Data Sync:** Google Sheets, Google Apps Script
+- **Data Storage:** Firestore (riddles, user data, game state)
 - **IAP:** `react-native-iap`
 - **Image Picker:** `react-native-image-picker`
 - **Testing:** Jest (Unit), Detox (E2E)
@@ -73,6 +77,15 @@ npm run android
 ## Memory Bank
 
 This project utilizes a `memory-bank` directory containing detailed documentation on project context, technical decisions, system patterns, and progress. Refer to these documents (`projectbrief.md`, `productContext.md`, `techContext.md`, `systemPatterns.md`, `activeContext.md`, `progress.md`) for in-depth information.
+
+## TODO
+
+- [ ] Update team member website links in the Credits screen (`src/screens/CreditsScreen.tsx`)
+  - Craig Beswetherick - Lead Developer & Game Design
+  - Reuben Beswetherick - Inspiration
+  - Thomas Lemrond - Game Designer, Publisher, Overall Hero
+  - Gavin Harrison - Sound Design
+  - Nathalia - Design
 
 ## Contributing
 

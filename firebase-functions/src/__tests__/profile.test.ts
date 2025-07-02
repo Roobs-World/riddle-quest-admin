@@ -1,0 +1,142 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import {afterEach, beforeEach, describe, expect, it, jest} from "@jest/globals";
+
+// 1. Mock const declarations
+const mockUpdateUserProfile = jest.fn<(userId: string, profileData: Record<string, unknown>) => Promise<void>>();
+const mockAdminFirestoreUpdate = jest.fn<() => Promise<void>>();
+const mockAdminFirestoreDoc = jest.fn((_id?: string) => ({update: mockAdminFirestoreUpdate}));
+const mockAdminFirestoreCollection = jest.fn((_path?: string) => ({doc: mockAdminFirestoreDoc}));
+
+// Mock for console methods (these are the jest.fn() implementations)
+const mockConsoleLogInternal = jest.fn<(...args: unknown[]) => void>();
+const mockConsoleErrorInternal = jest.fn<(...args: unknown[]) => void>();
+
+// 2. Jest/type imports
+import {CallableRequest, HttpsError} from "firebase-functions/v2/https";
+
+// 3. jest.mock() calls
+jest.mock("../firestoreService", () => ({
+  // This ensures that when firestoreService.updateUserProfile is called,
+  // it delegates to the mockUpdateUserProfile defined in the outer scope.
+  updateUserProfile: (...args: [string, Record<string, unknown>]) => mockUpdateUserProfile(...args),
+}));
+
+jest.mock("firebase-admin", () => ({
+  initializeApp: jest.fn(),
+  firestore: () => ({
+    collection: (path: string) => mockAdminFirestoreCollection(path),
+  }),
+}));
+
+interface MockOnCallHandler {
+  (optionsOrHandler: unknown, handler?: unknown): unknown;
+}
+
+jest.mock("firebase-functions/v2/https", () => {
+  const actualV2Https = jest.requireActual(
+    "firebase-functions/v2/https",
+  ) as typeof import("firebase-functions/v2/https");
+  return {
+    onCall: jest.fn(((optionsOrHandler: unknown, handler?: unknown) => {
+      // Handle both signatures: onCall(handler) and onCall(options, handler)
+      if (typeof optionsOrHandler === "function") {
+        return optionsOrHandler; // Single argument: onCall(handler)
+      }
+      return handler; // Two arguments: onCall(options, handler)
+    }) as MockOnCallHandler),
+    HttpsError: actualV2Https.HttpsError,
+  };
+});
+
+// 4. Import the module under test
+import {updateAvatar} from "../profile";
+
+// 5. Describe block
+describe("Profile Cloud Functions", () => {
+  // Use correct type for spies: jest.SpiedFunction<typeof target>
+  let consoleLogSpy: jest.SpiedFunction<typeof console.log>;
+  let consoleErrorSpy: jest.SpiedFunction<typeof console.error>;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockConsoleLogInternal.mockClear(); // Clear the internal jest.fn mocks too
+    mockConsoleErrorInternal.mockClear();
+    consoleLogSpy = jest.spyOn(console, "log").mockImplementation(mockConsoleLogInternal);
+    consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(mockConsoleErrorInternal);
+  });
+
+  afterEach(() => {
+    consoleLogSpy.mockRestore();
+    consoleErrorSpy.mockRestore();
+  });
+
+  describe("updateAvatar", () => {
+    const mockAuth = {uid: "testUserId456"};
+    const validAvatarUrl = "https://example.com/avatar.png";
+
+    it("should successfully update avatar URL", async () => {
+      mockUpdateUserProfile.mockResolvedValue(undefined);
+      const request = {
+        auth: mockAuth,
+        data: {avatarUrl: validAvatarUrl},
+      } as CallableRequest<{avatarUrl: string}>;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result = await (updateAvatar as any)(request);
+      expect(mockUpdateUserProfile).toHaveBeenCalledWith(mockAuth.uid, {avatarUrl: validAvatarUrl});
+      expect(result).toEqual({success: true, message: "Avatar URL updated successfully."});
+      expect(consoleLogSpy).toHaveBeenCalledWith(
+        `Updating avatar URL for user: ${mockAuth.uid} with ${validAvatarUrl}`,
+      );
+      expect(consoleLogSpy).toHaveBeenCalledWith(`User ${mockAuth.uid} avatar URL updated successfully.`);
+    });
+
+    it("should throw HttpsError if not authenticated", async () => {
+      const request = {
+        auth: undefined,
+        data: {avatarUrl: validAvatarUrl},
+      } as CallableRequest<{avatarUrl: string}>;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await expect((updateAvatar as any)(request)).rejects.toThrow(
+        new HttpsError("unauthenticated", "The function must be called while authenticated."),
+      );
+    });
+
+    it("should throw HttpsError for invalid avatar URL (missing)", async () => {
+      const request = {
+        auth: mockAuth,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        data: {avatarUrl: undefined as any},
+      } as CallableRequest<{avatarUrl: string}>;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await expect((updateAvatar as any)(request)).rejects.toThrow(
+        new HttpsError("invalid-argument", "Invalid or missing avatar URL."),
+      );
+    });
+
+    it("should throw HttpsError for invalid avatar URL (not a string)", async () => {
+      const request = {
+        auth: mockAuth,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        data: {avatarUrl: 123 as any},
+      } as CallableRequest<{avatarUrl: string}>;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await expect((updateAvatar as any)(request)).rejects.toThrow(
+        new HttpsError("invalid-argument", "Invalid or missing avatar URL."),
+      );
+    });
+
+    it("should throw HttpsError and log error if updateUserProfile service fails", async () => {
+      const serviceError = new Error("Service call failed");
+      mockUpdateUserProfile.mockRejectedValue(serviceError);
+      const request = {
+        auth: mockAuth,
+        data: {avatarUrl: validAvatarUrl},
+      } as CallableRequest<{avatarUrl: string}>;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await expect((updateAvatar as any)(request)).rejects.toThrow(
+        new HttpsError("internal", "An error occurred while updating avatar URL.", serviceError),
+      );
+      expect(consoleErrorSpy).toHaveBeenCalledWith(`Error updating avatar URL for user ${mockAuth.uid}:`, serviceError);
+    });
+  });
+});

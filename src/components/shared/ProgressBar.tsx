@@ -10,7 +10,7 @@ const ProgressBar = ({
   totalSteps: number;
   stepColors?: string[];
 }) => (
-  <View className="flex-row items-center mx-auto mt-4">
+  <View className="flex-row items-center mx-auto mb-8">
     {Array.from({ length: totalSteps }).map((_, index) => (
       <View
         key={index}

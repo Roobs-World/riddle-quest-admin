@@ -1,18 +1,15 @@
+import React from "react";
 import { Text } from "react-native";
+import { styles } from "../../styles";
 
-export default function Subtitle({ text }: { text: string }) {
-  return (
-    <Text
-      className="text-2xl font-bold text-black-400 text-center mb-8 mx-12"
-      style={{
-        fontFamily: "Poppins",
-        fontWeight: "400",
-        fontSize: 14,
-        lineHeight: 24,
-        letterSpacing: -0.104,
-      }}
-    >
-      {text}
-    </Text>
-  );
+interface SubtitleProps {
+  text: string;
 }
+
+const Subtitle = ({ text }: SubtitleProps) => (
+  <Text className="text-center text-gray-600 mb-4" style={styles.subtitle}>
+    {text}
+  </Text>
+);
+
+export default Subtitle;

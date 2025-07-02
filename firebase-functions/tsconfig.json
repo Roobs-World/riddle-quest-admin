@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "es2022",
+    "module": "NodeNext",
+    "esModuleInterop": true,
+    "moduleResolution": "nodenext",
+    "isolatedModules": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "outDir": "lib",
+    "rootDir": "src",
+    "baseUrl": ".",
+    "sourceMap": true,
+    "strict": true,
+    "lib": ["esnext", "dom"],
+    "types": ["node", "jest"],
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "noEmit": false
+  },
+  "compileOnSave": true,
+  "include": ["src/**/*.ts", "src/**/*.js", "jest.config.js"],
+  "exclude": ["node_modules", "lib", "src/__tests__", "src/__mocks__", "**/*.bak", "**/*.skip"]
+}

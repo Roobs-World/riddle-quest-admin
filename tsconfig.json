@@ -2,16 +2,35 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "target": "ESNext",
     "jsx": "react-native",
     "allowJs": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "types": ["react", "react-native", "jest", "node"],
+    "baseUrl": "./",
     "paths": {
-      "@images/*": ["./assets/images/*"],
-      "@fonts/*": ["./assets/fonts/*"]
+      "@/*": ["assets/*"],
+      "@/3d/*": ["assets/3d/*"]
     }
-  }
+  },
+  "include": [
+    "src/**/*",
+    "src/types/**/*",
+    "App.tsx",
+    "global.css",
+    "nativewind-env.d.ts",
+    "global.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "babel.config.js",
+    "metro.config.js",
+    "jest.setup.js",
+    "firebase-functions"
+  ]
 }

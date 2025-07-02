@@ -1,30 +1,40 @@
+import React from "react";
 import { View, Text } from "react-native";
 import { AppStrings } from "../../constants/AppStrings";
 import ReusableTextInput from "../shared/ReusableTextInput";
+import Error from "../text/Error";
+import { styles } from "../../styles";
 
-export default function UserUsernameInput({
+interface UserUsernameInputProps {
+  username: string;
+  setUsername: (username: string) => void;
+  errorMessage?: string | null;
+}
+
+const UserUsernameInput: React.FC<UserUsernameInputProps> = ({
   username,
   setUsername,
-}: {
-  username: string;
-  setUsername: (email: string) => void;
-}) {
+  errorMessage,
+}) => {
   return (
-    <View className="w-full mb-2">
+    <View className="w-full">
       <Text
         className="text-sm text-gray-600 mb-2 text-left"
-        style={{ fontFamily: "PoppinsSemiBold" }}
+        style={styles.labelText}
       >
         {AppStrings.AuthStrings.SignUp.USERNAME_LABEL}
       </Text>
-      <View className="flex-row items-center border border-gray-300 rounded-lg mb-2">
+      <View className="flex-row items-center bg-input-background rounded-lg border border-gray-300">
         <ReusableTextInput
           value={username}
           onChangeText={setUsername}
-          autoCapitalize="none"
           placeholder={AppStrings.AuthStrings.SignUp.USERNAME_PLACEHOLDER}
+          autoCapitalize="none"
         />
       </View>
+      {errorMessage && <Error message={errorMessage} />}
     </View>
   );
-}
+};
+
+export default UserUsernameInput;

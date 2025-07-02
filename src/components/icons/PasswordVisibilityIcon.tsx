@@ -1,5 +1,4 @@
 import React from "react";
-import { Text } from "react-native";
 import EyeSvg from "@images/eye.svg";
 import EyeOpenSvg from "@images/eye-open.svg";
 
