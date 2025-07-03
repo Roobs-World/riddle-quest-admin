@@ -49,7 +49,7 @@ const Header: React.FC<HeaderProps> = ({
           accessibilityRole="button"
           accessibilityLabel="Get hint for current riddle"
         >
-          <HintIcon width={24} height={24} color="#ffffff" />
+          <HintIcon width={36} height={36} color="#ffffff" />
           <Text className="text-xs mt-1 text-white">
             {AppStrings.Navigation.HINT_BUTTON}
           </Text>

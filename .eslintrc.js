@@ -9,6 +9,7 @@ module.exports = {
     "plugin:react-native/all",
     "plugin:@typescript-eslint/recommended",
     "plugin:react-hooks/recommended",
+    "plugin:@react-three/recommended",
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
@@ -18,7 +19,13 @@ module.exports = {
     ecmaVersion: "latest",
     sourceType: "module",
   },
-  plugins: ["react", "react-native", "@typescript-eslint", "react-hooks"],
+  plugins: [
+    "react",
+    "react-native",
+    "@typescript-eslint",
+    "react-hooks",
+    "@react-three",
+  ],
   settings: {
     react: {
       version: "detect",

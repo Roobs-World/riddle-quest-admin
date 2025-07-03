@@ -11,7 +11,7 @@
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
     "isolatedModules": true,
-    "types": ["react", "react-native", "jest", "node"],
+    "types": ["react", "react-native", "jest", "node", "@react-three/fiber"],
     "baseUrl": "./",
     "paths": {
       "@/*": ["assets/*"],

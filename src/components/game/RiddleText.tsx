@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
  */
 const RiddleText: React.FC<RiddleTextProps> = ({ riddleText }) => {
   return (
-    <View className="px-6 py-4 items-center z-10">
+    <View className="px-6 items-center z-10">
       <Text
         className="text-center text-white font-bold"
         style={styles.riddleText}
