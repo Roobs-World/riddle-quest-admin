@@ -47,12 +47,9 @@ module.exports = {
     googleServicesFile: "./google-services.json",
     // Audio quality permissions and settings
     permissions: [
-      "android.permission.RECORD_AUDIO",
       "android.permission.MODIFY_AUDIO_SETTINGS",
       "android.permission.WRITE_EXTERNAL_STORAGE",
     ],
-    // Development build configuration to help with Google Play Services
-    versionCode: 1,
     allowBackup: false,
   },
   web: {

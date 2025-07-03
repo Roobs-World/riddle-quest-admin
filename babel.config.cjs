@@ -1,6 +1,5 @@
 // eslint-disable-next-line no-undef
 module.exports = function (api) {
-  // Use cache.using() to prevent caching conflicts
   api.cache.using(() => process.env.NODE_ENV);
 
   // Check for the Jest global variable
@@ -21,46 +20,17 @@ module.exports = function (api) {
     };
   }
 
-  // For Jest tests, use classic runtime for compatibility
-  if (isJestTest) {
-    return {
-      presets: [
-        [
-          "babel-preset-expo",
-          {
-            jsxRuntime: "classic",
-            jsxPragma: "React.createElement",
-            jsxPragmaFrag: "React.Fragment",
-          },
-        ],
-      ],
-      plugins: [
-        [
-          "module-resolver",
-          {
-            root: ["./"],
-            alias: {
-              "@": "./src",
-              "@images": "./assets/images",
-              "@fonts": "./assets/fonts",
-            },
-          },
-        ],
-      ],
-    };
-  }
-
-  // Production/Development configuration
-  return {
+  // Base configuration for all environments
+  const baseConfig = {
     presets: [
       [
         "babel-preset-expo",
         {
-          jsxImportSource: "nativewind",
           jsxRuntime: "automatic",
+          jsxImportSource: "react-native-css-interop",
+          enableDevelopmentTransforms: true,
         },
       ],
-      "nativewind/babel",
     ],
     plugins: [
       [
@@ -77,7 +47,14 @@ module.exports = function (api) {
       ["@babel/plugin-transform-class-properties", { loose: true }],
       ["@babel/plugin-transform-private-methods", { loose: true }],
       ["@babel/plugin-transform-private-property-in-object", { loose: true }],
-      "react-native-reanimated/plugin", // This should be listed last
     ],
   };
+
+  // Add NativeWind and Reanimated for non-test environments
+  if (!isJestTest) {
+    baseConfig.presets.push("nativewind/babel");
+    baseConfig.plugins.push("react-native-reanimated/plugin");
+  }
+
+  return baseConfig;
 };

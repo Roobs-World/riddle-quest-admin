@@ -57,12 +57,7 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
           accessibilityRole="button"
           accessibilityLabel="Open profile"
         >
-          <ProfileIcon
-            width={24}
-            height={24}
-            color="#FFFFFF"
-            testID="profile-icon"
-          />
+          <ProfileIcon color="#FFFFFF" testID="profile-icon" />
           <Text className="text-xs mt-1 text-white">
             {AppStrings.Navigation.PROFILE_BUTTON}
           </Text>
@@ -70,7 +65,7 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
 
         {/* Submit Button */}
         <TouchableOpacity
-          className={`px-8 py-4 rounded-lg ${
+          className={`px-8 py-4 mt-8 rounded-lg ${
             isSubmitDisabled || gameOver ? "bg-gray-400" : "bg-blue-500"
           }`}
           onPress={() => {
@@ -95,12 +90,7 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
           accessibilityRole="button"
           accessibilityLabel="Open settings"
         >
-          <SettingsIcon
-            width={24}
-            height={24}
-            color="#FFFFFF"
-            testID="settings-icon"
-          />
+          <SettingsIcon color="#FFFFFF" testID="settings-icon" />
           <Text className="text-xs mt-1 text-white">
             {AppStrings.Navigation.SETTINGS_BUTTON}
           </Text>

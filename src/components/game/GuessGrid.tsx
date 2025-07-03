@@ -129,7 +129,7 @@ const GuessGrid: React.FC<GuessGridProps> = ({
   };
 
   return (
-    <View className="w-full items-center py-4 mt-2 flex-grow">
+    <View className="w-full items-center py-4 mb-4 flex-grow">
       {/* Masking container that clips content sliding upward */}
       <View className="w-full relative" style={styles.maskingContainer}>
         {displayRows.map((row, rowIndex) => {

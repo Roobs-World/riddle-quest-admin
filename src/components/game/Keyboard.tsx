@@ -20,7 +20,7 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, isVisible }) => {
   // Responsive styles
   const keyHeight = scale(48);
   const keyWidth = scale(32); // Reduced from 38 to 32 to prevent overflow
-  const keyMargin = scale(1);
+  const keyMargin = scale(1.65);
   const fontSize = moderateScale(18);
 
   const handleKeyPress = (key: string) => {
@@ -33,6 +33,7 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, isVisible }) => {
       style={[
         gameStyles.keyboardContainer,
         {
+          marginTop: -8,
           minHeight: scale(160), // Reduced from 200 to fit bottom bar
           opacity: isVisible ? 1 : 0,
           pointerEvents: isVisible ? "auto" : "none",
@@ -175,18 +176,14 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, isVisible }) => {
               {
                 borderRadius: scale(6),
                 height: keyHeight,
-                width: scale(48), // Adjusted delete button width
+                width: scale(48),
                 margin: keyMargin,
               },
             ]}
             onPress={() => handleKeyPress("BACKSPACE")}
             activeOpacity={0.7}
           >
-            <BackspaceIcon
-              width={scale(20)}
-              height={scale(20)}
-              color="#fcfaf4"
-            />
+            <BackspaceIcon color="#fcfaf4" />
           </TouchableOpacity>
         </View>
       </View>

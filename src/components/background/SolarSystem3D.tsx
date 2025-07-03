@@ -263,6 +263,11 @@ const GEOMETRY_CONFIG = {
     medium: { widthSegments: 6, heightSegments: 6 },
     low: { widthSegments: 4, heightSegments: 4 },
   },
+  sphere: {
+    high: { widthSegments: 16, heightSegments: 16 },
+    medium: { widthSegments: 12, heightSegments: 12 },
+    low: { widthSegments: 8, heightSegments: 8 },
+  },
   ring: {
     high: { segments: 16 },
     medium: { segments: 12 },
@@ -364,20 +369,27 @@ const useOptimizedTexture = (textureAsset: any) => {
   const textureUri = useMemo(() => {
     try {
       const asset = Asset.fromModule(textureAsset);
-      return asset.localUri || asset.uri || "";
+      return asset.localUri || asset.uri || textureAsset;
     } catch (error) {
       console.warn("Failed to load texture asset:", textureAsset, error);
-      // Return empty string as fallback - useLoader will handle this gracefully
-      return "";
+      // Return the asset directly as fallback
+      return textureAsset;
     }
   }, [textureAsset]);
 
   // Always call useLoader (required for React hooks)
-  const texture = useLoader(TextureLoader, textureUri);
+  const loadedTexture = useLoader(TextureLoader, textureUri);
 
   return useMemo(() => {
-    // Return null if no valid texture or URI
-    if (!texture || !textureUri) return null;
+    // Return null if no texture loaded
+    if (!loadedTexture) return null;
+
+    // Handle both single texture and array of textures
+    const texture = Array.isArray(loadedTexture)
+      ? loadedTexture[0]
+      : loadedTexture;
+
+    if (!texture) return null;
 
     try {
       // Optimize texture settings for performance
@@ -388,9 +400,10 @@ const useOptimizedTexture = (textureAsset: any) => {
       return texture;
     } catch (error) {
       console.warn("Failed to configure texture:", error);
-      return null;
+      // Return texture even if configuration fails
+      return texture;
     }
-  }, [texture, textureUri]);
+  }, [loadedTexture]);
 };
 
 // Optimized geometry creator with caching and LOD
@@ -430,7 +443,10 @@ const createOptimizedGeometry = (
     }
 
     switch (type) {
-      case "sphere": {
+      case "sphere":
+      case "planet":
+      case "moon":
+      case "sun": {
         const sphereConfig = fallbackConfig as {
           widthSegments: number;
           heightSegments: number;
@@ -451,7 +467,8 @@ const createOptimizedGeometry = (
         );
         break;
       }
-      case "plane": {
+      case "plane":
+      case "corona": {
         const planeConfig = fallbackConfig as {
           widthSegments: number;
           heightSegments: number;
@@ -474,6 +491,9 @@ const createOptimizedGeometry = (
 
   switch (type) {
     case "sphere":
+    case "planet":
+    case "moon":
+    case "sun":
       geometry = new THREE.SphereGeometry(
         size,
         lodConfig.widthSegments || 8,
@@ -488,6 +508,7 @@ const createOptimizedGeometry = (
       );
       break;
     case "plane":
+    case "corona":
       geometry = new THREE.PlaneGeometry(
         size,
         size,
@@ -722,7 +743,7 @@ const Moon: React.FC<MoonProps> = React.memo(
     const lodLevel = useLOD(cameraDistance);
 
     const geometry = useMemo(
-      () => createOptimizedGeometry("sphere", config.size, lodLevel),
+      () => createOptimizedGeometry("moon", config.size, lodLevel),
       [config.size, lodLevel]
     );
 
@@ -783,7 +804,7 @@ const Planet: React.FC<PlanetProps> = React.memo(
     const lodLevel = useLOD(cameraDistance);
 
     const geometry = useMemo(
-      () => createOptimizedGeometry("sphere", config.size, lodLevel),
+      () => createOptimizedGeometry("planet", config.size, lodLevel),
       [config.size, lodLevel]
     );
 
@@ -1237,12 +1258,16 @@ const SolarSystem3D: React.FC = React.memo(() => {
 });
 SolarSystem3D.displayName = "SolarSystem3D";
 
+const COLORS = {
+  TRANSPARENT: "transparent",
+};
+
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "transparent",
+    backgroundColor: COLORS.TRANSPARENT,
     bottom: 0,
     left: 0,
-    position: "absolute",
+    position: "absolute" as const,
     right: 0,
     top: 0,
     zIndex: 1,

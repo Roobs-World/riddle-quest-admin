@@ -2,15 +2,14 @@ import React from "react";
 import Svg, { Path } from "react-native-svg";
 
 interface SettingsIconProps {
-  width?: number;
-  height?: number;
   color?: string;
   testID?: string;
 }
 
+const width = 64;
+const height = 64;
+
 const SettingsIcon: React.FC<SettingsIconProps> = ({
-  width = 24,
-  height = 24,
   color = "#FFFFFF",
   testID,
 }) => {
@@ -18,7 +17,7 @@ const SettingsIcon: React.FC<SettingsIconProps> = ({
     <Svg
       width={width}
       height={height}
-      viewBox="0 0 53 52"
+      viewBox="0 -10 53 52"
       fill="none"
       testID={testID}
     >
