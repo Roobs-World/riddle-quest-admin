@@ -47,14 +47,6 @@ const SOLAR_SYSTEM_CONFIG = [
         texture: moonCTexture,
         startAngle: 0,
       },
-      {
-        size: 0.12,
-        distance: 2.0,
-        orbitSpeed: 0.06,
-        color: 0x999999,
-        texture: moonDTexture,
-        startAngle: Math.PI,
-      },
     ],
   },
   {
@@ -75,22 +67,6 @@ const SOLAR_SYSTEM_CONFIG = [
         color: 0x999999,
         texture: moonDTexture,
         startAngle: 0,
-      },
-      {
-        size: 0.18,
-        distance: 2.8,
-        orbitSpeed: 0.04,
-        color: 0xaaaaaa,
-        texture: moonFTexture,
-        startAngle: Math.PI / 2,
-      },
-      {
-        size: 0.14,
-        distance: 3.5,
-        orbitSpeed: 0.03,
-        color: 0x777777,
-        texture: moonGTexture,
-        startAngle: Math.PI,
       },
     ],
   },
@@ -142,22 +118,6 @@ const SOLAR_SYSTEM_CONFIG = [
         texture: moonGTexture,
         startAngle: 0,
       },
-      {
-        size: 0.14,
-        distance: 2.6,
-        orbitSpeed: 0.05,
-        color: 0x666666,
-        texture: moonCTexture,
-        startAngle: Math.PI / 3,
-      },
-      {
-        size: 0.12,
-        distance: 3.2,
-        orbitSpeed: 0.04,
-        color: 0x555555,
-        texture: moonDTexture,
-        startAngle: (Math.PI * 2) / 3,
-      },
     ],
   },
   {
@@ -186,30 +146,6 @@ const SOLAR_SYSTEM_CONFIG = [
         color: 0x999999,
         texture: moonFTexture,
         startAngle: Math.PI / 6,
-      },
-      {
-        size: 0.28,
-        distance: 5.5,
-        orbitSpeed: 0.03,
-        color: 0x888888,
-        texture: moonGTexture,
-        startAngle: Math.PI / 3,
-      },
-      {
-        size: 0.25,
-        distance: 6.8,
-        orbitSpeed: 0.025,
-        color: 0x777777,
-        texture: moonCTexture,
-        startAngle: Math.PI / 2,
-      },
-      {
-        size: 0.22,
-        distance: 8.0,
-        orbitSpeed: 0.02,
-        color: 0x666666,
-        texture: moonDTexture,
-        startAngle: (Math.PI * 2) / 3,
       },
     ],
   },
@@ -360,7 +296,7 @@ const SolarSystem3D: React.FC = () => {
 
   const cameraConfig = useMemo(
     () => ({
-      position: [0, -25, 85] as [number, number, number],
+      position: [0, 0, 85] as [number, number, number],
       fov: 75,
       near: 0.1,
       far: 150,
@@ -375,7 +311,7 @@ const SolarSystem3D: React.FC = () => {
         camera={cameraConfig}
         onCreated={({ gl, camera }) => {
           gl.setClearColor(0x000000, 0);
-          camera.lookAt(0, -10, 0);
+          camera.lookAt(0, 0, 0);
 
           console.log("✅ Canvas created successfully");
           console.log("📷 Camera position:", camera.position);
