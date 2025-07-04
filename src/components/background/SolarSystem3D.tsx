@@ -20,150 +20,197 @@ import moonHTexture from "../../../assets/3d/tex_moon_h.png";
 // Get screen dimensions
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
-// Solar system configuration with textures
-// FLAT PLANE ORBITAL APPROACH:
-// 1. Safe Distance Calculation: Each planet's distance = previous planet's (distance + moon orbit distance) + safety buffer
-// 2. Flat Plane Orbits: All planets orbit on the same horizontal plane at y=15
-// 3. Distance Progression: Mercury(12) -> Venus(16) -> Earth(21) -> Mars(27) -> Jupiter(34)
-// 4. Moon Collision Prevention: Moons orbit within their planet's safe zone with staggered distances
-// 5. Sun Clearance: Minimum distance from sun (radius 5.5) is 12 units for Mercury
+// Solar system configuration with 3D positioning
+// 3D SOLAR SYSTEM - ONE TEXTURE PER PLANET:
+// 1. Planets orbit with configurable Y positions for 3D depth
+// 2. Different orbital distances for visual depth - ADJUSTED TO PREVENT COLLISIONS
+// 3. All planets orbit in the same direction around the sun
+// 4. Each planet uses a unique texture
+// 5. Enhanced lighting to show planetary details
+// 6. Orbital distances increased to prevent planet and moon collisions
+// 7. Y positions create visual depth and separation between planetary orbits
 const SOLAR_SYSTEM_CONFIG = [
+  // Inner rocky planets - increased distances for better spacing
   {
     name: "Mercury",
-    size: 0.8,
-    distance: 12,
-    orbitSpeed: 0.02,
+    size: 2.2,
+    distance: 18, // Increased from 15
+    orbitSpeed: 0.045,
     rotationSpeed: 0.01,
     color: 0x8c7853,
     texture: planetATexture,
     startAngle: 0,
-    inclination: 0,
-    moons: [
-      {
-        size: 0.15,
-        distance: 1.5,
-        orbitSpeed: 0.08,
-        color: 0x888888,
-        texture: moonCTexture,
-        startAngle: 0,
-      },
-    ],
+    yPosition: 0, // Earth's plane
+    moons: [],
   },
   {
     name: "Venus",
-    size: 1.2,
-    distance: 16,
-    orbitSpeed: 0.015,
+    size: 3.0,
+    distance: 26, // Increased from 20
+    orbitSpeed: 0.038,
     rotationSpeed: 0.008,
     color: 0xffd700,
     texture: planetVTexture,
     startAngle: Math.PI / 3,
-    inclination: 0,
-    moons: [
-      {
-        size: 0.2,
-        distance: 2.0,
-        orbitSpeed: 0.06,
-        color: 0x999999,
-        texture: moonDTexture,
-        startAngle: 0,
-      },
-    ],
+    yPosition: -3, // Slightly below Earth's plane
+    moons: [],
   },
   {
     name: "Earth",
-    size: 1.4,
-    distance: 21,
-    orbitSpeed: 0.012,
+    size: 3.5,
+    distance: 35, // Increased from 25
+    orbitSpeed: 0.032,
     rotationSpeed: 0.02,
     color: 0x4169e1,
     texture: planetDTexture,
-    startAngle: (2 * Math.PI) / 3,
-    inclination: 0,
+    startAngle: (Math.PI * 2) / 3,
+    yPosition: 0, // Main orbital plane
     moons: [
       {
-        size: 0.3,
-        distance: 2.5,
-        orbitSpeed: 0.05,
+        size: 1.4, // Balanced size for visibility
+        distance: 2.8, // Further increased orbital distance
+        orbitSpeed: 0.06,
         color: 0xc0c0c0,
         texture: moonFTexture,
         startAngle: 0,
       },
       {
-        size: 0.16,
-        distance: 3.8,
-        orbitSpeed: 0.03,
-        color: 0x888888,
-        texture: moonHTexture,
-        startAngle: Math.PI / 4,
+        size: 1.1, // Balanced size for visibility
+        distance: 4.0, // Further increased orbital distance with more separation
+        orbitSpeed: 0.04,
+        color: 0x999999,
+        texture: moonGTexture,
+        startAngle: Math.PI,
       },
     ],
   },
   {
     name: "Mars",
-    size: 1.0,
-    distance: 27,
-    orbitSpeed: 0.008,
+    size: 2.6,
+    distance: 45, // Increased from 32
+    orbitSpeed: 0.028,
     rotationSpeed: 0.015,
     color: 0xcd5c5c,
     texture: planetRTexture,
     startAngle: Math.PI,
-    inclination: 0,
+    yPosition: 2, // Above Earth's plane
     moons: [
       {
-        size: 0.18,
-        distance: 1.8,
-        orbitSpeed: 0.07,
-        color: 0x777777,
-        texture: moonGTexture,
+        size: 0.8, // Balanced size for visibility
+        distance: 2.2, // Further increased orbital distance
+        orbitSpeed: 0.08,
+        color: 0x8b7355,
+        texture: moonCTexture,
         startAngle: 0,
+      },
+      {
+        size: 0.6, // Balanced size for visibility
+        distance: 3.2, // Further increased orbital distance with more separation
+        orbitSpeed: 0.06,
+        color: 0x696969,
+        texture: moonDTexture,
+        startAngle: Math.PI / 2,
       },
     ],
   },
+
+  // Gas giants - increased distances for better spacing
   {
     name: "Jupiter",
-    size: 2.2,
-    distance: 34,
-    orbitSpeed: 0.005,
+    size: 10.0,
+    distance: 75, // Increased from 55
+    orbitSpeed: 0.018,
     rotationSpeed: 0.025,
     color: 0xdaa520,
     texture: planetKTexture,
-    startAngle: Math.PI * 1.5,
-    inclination: 0,
+    startAngle: Math.PI * 1.2,
+    yPosition: -6, // Further below Earth's plane for depth
     moons: [
       {
-        size: 0.4,
-        distance: 3.5,
+        size: 2.3, // Balanced size for visibility
+        distance: 5.0, // Further increased orbital distance
         orbitSpeed: 0.04,
         color: 0xaaaaaa,
         texture: moonHTexture,
         startAngle: 0,
       },
       {
-        size: 0.35,
-        distance: 4.5,
-        orbitSpeed: 0.035,
-        color: 0x999999,
+        size: 2.0, // Balanced size for visibility
+        distance: 7.5, // Further increased orbital distance with more separation
+        orbitSpeed: 0.032,
+        color: 0xc0c0c0,
         texture: moonFTexture,
-        startAngle: Math.PI / 6,
+        startAngle: Math.PI / 3,
+      },
+      {
+        size: 1.8, // Balanced size for visibility
+        distance: 10.0, // Further increased orbital distance with even more separation
+        orbitSpeed: 0.028,
+        color: 0x999999,
+        texture: moonGTexture,
+        startAngle: (Math.PI * 2) / 3,
       },
     ],
   },
+  {
+    name: "Saturn",
+    size: 8.5,
+    distance: 95, // Increased from 70
+    orbitSpeed: 0.015,
+    rotationSpeed: 0.022,
+    color: 0xffd700,
+    texture: moonCTexture,
+    startAngle: Math.PI * 1.7,
+    yPosition: 4, // Above Earth's plane for depth
+    moons: [
+      {
+        size: 2.0, // Balanced size for visibility
+        distance: 5.5, // Further increased orbital distance
+        orbitSpeed: 0.038,
+        color: 0xc0c0c0,
+        texture: moonDTexture,
+        startAngle: 0,
+      },
+      {
+        size: 1.6, // Balanced size for visibility
+        distance: 8.0, // Further increased orbital distance with more separation
+        orbitSpeed: 0.03,
+        color: 0xaaaaaa,
+        texture: moonHTexture,
+        startAngle: Math.PI / 2,
+      },
+    ],
+  },
+
+  // Ice giants - increased distance for better spacing
+  {
+    name: "Uranus",
+    size: 7.0,
+    distance: 115, // Increased from 85
+    orbitSpeed: 0.012,
+    rotationSpeed: 0.018,
+    color: 0x4fd0e3,
+    texture: moonGTexture,
+    startAngle: Math.PI * 0.3,
+    yPosition: -2, // Slight deviation below Earth's plane
+    moons: [],
+  },
 ];
 
-// Sun component with texture loading
+// Sun component with enhanced size and brightness for dramatic effect
 const Sun: React.FC = () => {
   const sunRef = useRef<Mesh>(null);
 
   useFrame(() => {
     if (sunRef.current) {
-      sunRef.current.rotation.y += 0.005;
+      sunRef.current.rotation.y += 0.008;
+      sunRef.current.rotation.x += 0.002;
     }
   });
 
   return (
-    <mesh ref={sunRef} position={[0, 12, 0]}>
-      <sphereGeometry args={[5.5, 32, 32]} />
+    <mesh ref={sunRef} position={[0, 15, 0]}>
+      <sphereGeometry args={[12.0, 24, 24]} />
       <meshBasicMaterial>
         <primitive object={useLoader(TextureLoader, sunTexture)} attach="map" />
       </meshBasicMaterial>
@@ -171,7 +218,7 @@ const Sun: React.FC = () => {
   );
 };
 
-// Moon component with texture loading
+// Moon component with orbital ring system support
 interface MoonProps {
   moonConfig: {
     size: number;
@@ -187,31 +234,46 @@ const Moon: React.FC<MoonProps> = ({ moonConfig }) => {
   const moonRef = useRef<Mesh>(null);
   const orbitTime = useRef(moonConfig.startAngle);
 
+  // Load texture properly at component level
+  const texture = useLoader(TextureLoader, moonConfig.texture);
+
+  // Debug logging for moon creation
+  console.log(
+    `🌙 Creating moon with size: ${moonConfig.size}, distance: ${moonConfig.distance}`
+  );
+
   useFrame(() => {
+    // Update orbit time for smooth circular motion around parent planet
     orbitTime.current += moonConfig.orbitSpeed;
+
     if (moonRef.current) {
+      // Circular orbit calculation around parent planet (NOT the sun)
+      // The moon's position is relative to its parent planet's position
       const x = Math.cos(orbitTime.current) * moonConfig.distance;
       const z = Math.sin(orbitTime.current) * moonConfig.distance;
-      // Ensure moons orbit on flat plane (y=0 relative to parent planet at y=15)
-      moonRef.current.position.set(x, 0, z);
-      moonRef.current.rotation.y += 0.02;
+      const y = 0; // Same Y level as parent planet
+
+      // Set position for circular orbit around parent planet
+      moonRef.current.position.set(x, y, z);
+      moonRef.current.rotation.y += 0.02; // Moon self-rotation
     }
   });
 
   return (
     <mesh ref={moonRef}>
-      <sphereGeometry args={[moonConfig.size, 16, 16]} />
-      <meshBasicMaterial>
-        <primitive
-          object={useLoader(TextureLoader, moonConfig.texture)}
-          attach="map"
-        />
-      </meshBasicMaterial>
+      {/* Balanced size multiplier for optimal visibility and proportions */}
+      <sphereGeometry args={[moonConfig.size * 1.4, 16, 16]} />
+      <meshLambertMaterial
+        map={texture}
+        color={moonConfig.color}
+        emissive={0x333333}
+        emissiveIntensity={0.2}
+      />
     </mesh>
   );
 };
 
-// Planet component with texture loading
+// Planet component with orbital ring system
 interface PlanetProps {
   config: (typeof SOLAR_SYSTEM_CONFIG)[0];
 }
@@ -222,16 +284,20 @@ const Planet: React.FC<PlanetProps> = ({ config }) => {
   const orbitTime = useRef(config.startAngle);
 
   useFrame(() => {
-    // Update orbit on flat plane
+    // Update orbit time for smooth circular motion
     orbitTime.current += config.orbitSpeed;
+
     if (groupRef.current) {
+      // Circular orbit with configurable Y position for 3D depth
       const x = Math.cos(orbitTime.current) * config.distance;
       const z = Math.sin(orbitTime.current) * config.distance;
-      // All planets orbit on the same flat plane at y=15
-      groupRef.current.position.set(x, 15, z);
+      const y = config.yPosition; // Use configurable Y position
+
+      // Set position for circular orbit with depth variation
+      groupRef.current.position.set(x, y, z);
     }
 
-    // Update rotation
+    // Update planet self-rotation
     if (meshRef.current) {
       meshRef.current.rotation.y += config.rotationSpeed;
     }
@@ -240,7 +306,7 @@ const Planet: React.FC<PlanetProps> = ({ config }) => {
   return (
     <group ref={groupRef}>
       <mesh ref={meshRef}>
-        <sphereGeometry args={[config.size, 20, 20]} />
+        <sphereGeometry args={[config.size, 8, 8]} />
         <meshBasicMaterial>
           <primitive
             object={useLoader(TextureLoader, config.texture)}
@@ -257,19 +323,37 @@ const Planet: React.FC<PlanetProps> = ({ config }) => {
   );
 };
 
-// Solar system scene
+// Enhanced solar system scene with single plane lighting
 const SolarSystemScene: React.FC = () => {
-  console.log("🌌 Rendering solar system with texture support prepared");
+  console.log("🌌 Rendering single plane solar system with enhanced lighting");
+
+  // Count total moons for debugging
+  const totalMoons = SOLAR_SYSTEM_CONFIG.reduce(
+    (count, planet) => count + planet.moons.length,
+    0
+  );
+  console.log(`🌙 Total moons in solar system: ${totalMoons}`);
 
   return (
     <>
-      {/* Bright ambient light */}
-      <ambientLight intensity={1.5} />
+      {/* Enhanced lighting for single plane orbital system */}
+      <ambientLight intensity={0.3} />
+      <directionalLight
+        position={[0, 50, 0]}
+        intensity={2.5}
+        color={0xffffff}
+      />
+      <pointLight
+        position={[0, 0, 0]}
+        intensity={3.0}
+        color={0xffa500}
+        distance={300}
+      />
 
-      {/* Sun at center */}
+      {/* Sun at center with enhanced brightness */}
       <Sun />
 
-      {/* All planets */}
+      {/* All planets in single orbital plane */}
       {SOLAR_SYSTEM_CONFIG.map((planetConfig) => (
         <Planet key={planetConfig.name} config={planetConfig} />
       ))}
@@ -278,7 +362,9 @@ const SolarSystemScene: React.FC = () => {
 };
 
 const SolarSystem3D: React.FC = () => {
-  console.log("🟢 SolarSystem3D component is rendering");
+  console.log(
+    "🟢 SolarSystem3D component is rendering single plane solar system"
+  );
 
   const canvasStyle = useMemo(
     () => ({
@@ -292,12 +378,13 @@ const SolarSystem3D: React.FC = () => {
     []
   );
 
+  // Enhanced camera configuration for single plane orbital view
   const cameraConfig = useMemo(
     () => ({
-      position: [0, -20, 85] as [number, number, number],
-      fov: 75,
+      position: [0, 45, 150] as [number, number, number],
+      fov: 60,
       near: 0.1,
-      far: 150,
+      far: 700,
     }),
     []
   );
@@ -311,9 +398,16 @@ const SolarSystem3D: React.FC = () => {
           gl.setClearColor(0x000000, 0);
           camera.lookAt(0, 0, 0);
 
-          console.log("✅ Canvas created successfully");
+          console.log(
+            "✅ Single plane solar system canvas created successfully"
+          );
           console.log("📷 Camera position:", camera.position);
-          console.log("🎯 Camera looking at solar system center");
+          console.log("🎯 Camera looking at sun position [0, 0, 0]");
+          console.log(
+            "🪐 Solar system now contains",
+            SOLAR_SYSTEM_CONFIG.length,
+            "celestial bodies in single orbital plane"
+          );
         }}
         frameloop="always"
       >
