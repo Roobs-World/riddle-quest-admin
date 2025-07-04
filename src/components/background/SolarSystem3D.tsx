@@ -35,81 +35,65 @@ const SOLAR_SYSTEM_CONFIG = [
     name: "Mercury",
     size: 2.2,
     distance: 18, // Increased from 15
-    orbitSpeed: 0.045,
+    orbitSpeed: 0.02,
     rotationSpeed: 0.01,
     color: 0x8c7853,
     texture: planetATexture,
     startAngle: 0,
-    yPosition: 0, // Earth's plane
+    yPosition: 15, // Earth's plane
     moons: [],
   },
   {
     name: "Venus",
     size: 3.0,
     distance: 26, // Increased from 20
-    orbitSpeed: 0.038,
+    orbitSpeed: 0.018,
     rotationSpeed: 0.008,
     color: 0xffd700,
     texture: planetVTexture,
     startAngle: Math.PI / 3,
-    yPosition: -3, // Slightly below Earth's plane
+    yPosition: 15, // Slightly below Earth's plane
     moons: [],
   },
   {
     name: "Earth",
     size: 3.5,
-    distance: 35, // Increased from 25
-    orbitSpeed: 0.032,
+    distance: 30, // Increased from 25
+    orbitSpeed: 0.015,
     rotationSpeed: 0.02,
     color: 0x4169e1,
     texture: planetDTexture,
     startAngle: (Math.PI * 2) / 3,
-    yPosition: 0, // Main orbital plane
+    yPosition: 15, // Main orbital plane
     moons: [
       {
-        size: 1.4, // Balanced size for visibility
-        distance: 2.8, // Further increased orbital distance
+        size: 1, // Balanced size for visibility
+        distance: 7, // Further increased orbital distance
         orbitSpeed: 0.06,
         color: 0xc0c0c0,
         texture: moonFTexture,
         startAngle: 0,
-      },
-      {
-        size: 1.1, // Balanced size for visibility
-        distance: 4.0, // Further increased orbital distance with more separation
-        orbitSpeed: 0.04,
-        color: 0x999999,
-        texture: moonGTexture,
-        startAngle: Math.PI,
       },
     ],
   },
   {
     name: "Mars",
     size: 2.6,
-    distance: 45, // Increased from 32
-    orbitSpeed: 0.028,
+    distance: 35, // Increased from 32
+    orbitSpeed: 0.015,
     rotationSpeed: 0.015,
     color: 0xcd5c5c,
     texture: planetRTexture,
     startAngle: Math.PI,
-    yPosition: 2, // Above Earth's plane
+    yPosition: 13, // Above Earth's plane
     moons: [
       {
         size: 0.8, // Balanced size for visibility
-        distance: 2.2, // Further increased orbital distance
+        distance: 7, // Further increased orbital distance
         orbitSpeed: 0.08,
         color: 0x8b7355,
         texture: moonCTexture,
         startAngle: 0,
-      },
-      {
-        size: 0.6, // Balanced size for visibility
-        distance: 3.2, // Further increased orbital distance with more separation
-        orbitSpeed: 0.06,
-        color: 0x696969,
-        texture: moonDTexture,
-        startAngle: Math.PI / 2,
       },
     ],
   },
@@ -118,54 +102,46 @@ const SOLAR_SYSTEM_CONFIG = [
   {
     name: "Jupiter",
     size: 10.0,
-    distance: 75, // Increased from 55
-    orbitSpeed: 0.018,
+    distance: 70, // Increased from 55
+    orbitSpeed: 0.004,
     rotationSpeed: 0.025,
     color: 0xdaa520,
     texture: planetKTexture,
     startAngle: Math.PI * 1.2,
-    yPosition: -6, // Further below Earth's plane for depth
+    yPosition: 15, // Further below Earth's plane for depth
     moons: [
       {
-        size: 2.3, // Balanced size for visibility
-        distance: 5.0, // Further increased orbital distance
-        orbitSpeed: 0.04,
+        size: 1.3, // Balanced size for visibility
+        distance: 13, // Further increased orbital distance
+        orbitSpeed: 0.03,
         color: 0xaaaaaa,
         texture: moonHTexture,
         startAngle: 0,
       },
       {
-        size: 2.0, // Balanced size for visibility
-        distance: 7.5, // Further increased orbital distance with more separation
+        size: 1, // Balanced size for visibility
+        distance: 11.5, // Further increased orbital distance with more separation
         orbitSpeed: 0.032,
         color: 0xc0c0c0,
         texture: moonFTexture,
         startAngle: Math.PI / 3,
-      },
-      {
-        size: 1.8, // Balanced size for visibility
-        distance: 10.0, // Further increased orbital distance with even more separation
-        orbitSpeed: 0.028,
-        color: 0x999999,
-        texture: moonGTexture,
-        startAngle: (Math.PI * 2) / 3,
       },
     ],
   },
   {
     name: "Saturn",
     size: 8.5,
-    distance: 95, // Increased from 70
-    orbitSpeed: 0.015,
+    distance: 90, // Increased from 70
+    orbitSpeed: 0.005,
     rotationSpeed: 0.022,
     color: 0xffd700,
     texture: moonCTexture,
     startAngle: Math.PI * 1.7,
-    yPosition: 4, // Above Earth's plane for depth
+    yPosition: 15, // Above Earth's plane for depth
     moons: [
       {
         size: 2.0, // Balanced size for visibility
-        distance: 5.5, // Further increased orbital distance
+        distance: 12, // Further increased orbital distance
         orbitSpeed: 0.038,
         color: 0xc0c0c0,
         texture: moonDTexture,
@@ -173,7 +149,7 @@ const SOLAR_SYSTEM_CONFIG = [
       },
       {
         size: 1.6, // Balanced size for visibility
-        distance: 8.0, // Further increased orbital distance with more separation
+        distance: 12, // Further increased orbital distance with more separation
         orbitSpeed: 0.03,
         color: 0xaaaaaa,
         texture: moonHTexture,
@@ -186,13 +162,13 @@ const SOLAR_SYSTEM_CONFIG = [
   {
     name: "Uranus",
     size: 7.0,
-    distance: 115, // Increased from 85
-    orbitSpeed: 0.012,
+    distance: 150, // Increased from 85
+    orbitSpeed: 0.004,
     rotationSpeed: 0.018,
     color: 0x4fd0e3,
     texture: moonGTexture,
     startAngle: Math.PI * 0.3,
-    yPosition: -2, // Slight deviation below Earth's plane
+    yPosition: 15, // Slight deviation below Earth's plane
     moons: [],
   },
 ];
