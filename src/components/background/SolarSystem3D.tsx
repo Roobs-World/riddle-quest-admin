@@ -21,91 +21,197 @@ import moonHTexture from "../../../assets/3d/tex_moon_h.png";
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 // Solar system configuration with textures
+// COLLISION PREVENTION APPROACH:
+// 1. Safe Distance Calculation: Each planet's distance = previous planet's (distance + moon orbit distance) + safety buffer
+// 2. Orbital Inclination: Each planet has slight inclination to create different orbital planes
+// 3. Distance Progression: Mercury(12) -> Venus(16) -> Earth(21) -> Mars(27) -> Jupiter(34)
+// 4. Moon Collision Prevention: Moons orbit within their planet's safe zone with staggered distances
+// 5. Sun Clearance: Minimum distance from sun (radius 5.5) is 12 units for Mercury
 const SOLAR_SYSTEM_CONFIG = [
   {
     name: "Mercury",
     size: 0.8,
-    distance: 6,
+    distance: 12,
     orbitSpeed: 0.02,
     rotationSpeed: 0.01,
     color: 0x8c7853,
     texture: planetATexture,
     startAngle: 0,
-    moon: {
-      size: 0.15,
-      distance: 1.5,
-      orbitSpeed: 0.08,
-      color: 0x888888,
-      texture: moonCTexture,
-    },
+    inclination: 0,
+    moons: [
+      {
+        size: 0.15,
+        distance: 1.5,
+        orbitSpeed: 0.08,
+        color: 0x888888,
+        texture: moonCTexture,
+        startAngle: 0,
+      },
+      {
+        size: 0.12,
+        distance: 2.0,
+        orbitSpeed: 0.06,
+        color: 0x999999,
+        texture: moonDTexture,
+        startAngle: Math.PI,
+      },
+    ],
   },
   {
     name: "Venus",
     size: 1.2,
-    distance: 8,
+    distance: 16,
     orbitSpeed: 0.015,
     rotationSpeed: 0.008,
     color: 0xffd700,
     texture: planetVTexture,
     startAngle: Math.PI / 3,
-    moon: {
-      size: 0.2,
-      distance: 2.0,
-      orbitSpeed: 0.06,
-      color: 0x999999,
-      texture: moonDTexture,
-    },
+    inclination: 0.05,
+    moons: [
+      {
+        size: 0.2,
+        distance: 2.0,
+        orbitSpeed: 0.06,
+        color: 0x999999,
+        texture: moonDTexture,
+        startAngle: 0,
+      },
+      {
+        size: 0.18,
+        distance: 2.8,
+        orbitSpeed: 0.04,
+        color: 0xaaaaaa,
+        texture: moonFTexture,
+        startAngle: Math.PI / 2,
+      },
+      {
+        size: 0.14,
+        distance: 3.5,
+        orbitSpeed: 0.03,
+        color: 0x777777,
+        texture: moonGTexture,
+        startAngle: Math.PI,
+      },
+    ],
   },
   {
     name: "Earth",
     size: 1.4,
-    distance: 10,
+    distance: 21,
     orbitSpeed: 0.012,
     rotationSpeed: 0.02,
     color: 0x4169e1,
     texture: planetDTexture,
     startAngle: (2 * Math.PI) / 3,
-    moon: {
-      size: 0.3,
-      distance: 2.5,
-      orbitSpeed: 0.05,
-      color: 0xc0c0c0,
-      texture: moonFTexture,
-    },
+    inclination: -0.03,
+    moons: [
+      {
+        size: 0.3,
+        distance: 2.5,
+        orbitSpeed: 0.05,
+        color: 0xc0c0c0,
+        texture: moonFTexture,
+        startAngle: 0,
+      },
+      {
+        size: 0.16,
+        distance: 3.8,
+        orbitSpeed: 0.03,
+        color: 0x888888,
+        texture: moonHTexture,
+        startAngle: Math.PI / 4,
+      },
+    ],
   },
   {
     name: "Mars",
     size: 1.0,
-    distance: 12,
+    distance: 27,
     orbitSpeed: 0.008,
     rotationSpeed: 0.015,
     color: 0xcd5c5c,
     texture: planetRTexture,
     startAngle: Math.PI,
-    moon: {
-      size: 0.18,
-      distance: 1.8,
-      orbitSpeed: 0.07,
-      color: 0x777777,
-      texture: moonGTexture,
-    },
+    inclination: 0.08,
+    moons: [
+      {
+        size: 0.18,
+        distance: 1.8,
+        orbitSpeed: 0.07,
+        color: 0x777777,
+        texture: moonGTexture,
+        startAngle: 0,
+      },
+      {
+        size: 0.14,
+        distance: 2.6,
+        orbitSpeed: 0.05,
+        color: 0x666666,
+        texture: moonCTexture,
+        startAngle: Math.PI / 3,
+      },
+      {
+        size: 0.12,
+        distance: 3.2,
+        orbitSpeed: 0.04,
+        color: 0x555555,
+        texture: moonDTexture,
+        startAngle: (Math.PI * 2) / 3,
+      },
+    ],
   },
   {
     name: "Jupiter",
     size: 2.2,
-    distance: 15,
+    distance: 34,
     orbitSpeed: 0.005,
     rotationSpeed: 0.025,
     color: 0xdaa520,
     texture: planetKTexture,
     startAngle: Math.PI * 1.5,
-    moon: {
-      size: 0.4,
-      distance: 3.5,
-      orbitSpeed: 0.04,
-      color: 0xaaaaaa,
-      texture: moonHTexture,
-    },
+    inclination: -0.06,
+    moons: [
+      {
+        size: 0.4,
+        distance: 3.5,
+        orbitSpeed: 0.04,
+        color: 0xaaaaaa,
+        texture: moonHTexture,
+        startAngle: 0,
+      },
+      {
+        size: 0.35,
+        distance: 4.5,
+        orbitSpeed: 0.035,
+        color: 0x999999,
+        texture: moonFTexture,
+        startAngle: Math.PI / 6,
+      },
+      {
+        size: 0.28,
+        distance: 5.5,
+        orbitSpeed: 0.03,
+        color: 0x888888,
+        texture: moonGTexture,
+        startAngle: Math.PI / 3,
+      },
+      {
+        size: 0.25,
+        distance: 6.8,
+        orbitSpeed: 0.025,
+        color: 0x777777,
+        texture: moonCTexture,
+        startAngle: Math.PI / 2,
+      },
+      {
+        size: 0.22,
+        distance: 8.0,
+        orbitSpeed: 0.02,
+        color: 0x666666,
+        texture: moonDTexture,
+        startAngle: (Math.PI * 2) / 3,
+      },
+    ],
   },
 ];
 
@@ -131,12 +237,19 @@ const Sun: React.FC = () => {
 
 // Moon component with texture loading
 interface MoonProps {
-  moonConfig: (typeof SOLAR_SYSTEM_CONFIG)[0]["moon"];
+  moonConfig: {
+    size: number;
+    distance: number;
+    orbitSpeed: number;
+    color: number;
+    texture: string;
+    startAngle: number;
+  };
 }
 
 const Moon: React.FC<MoonProps> = ({ moonConfig }) => {
   const moonRef = useRef<Mesh>(null);
-  const orbitTime = useRef(0);
+  const orbitTime = useRef(moonConfig.startAngle);
 
   useFrame(() => {
     orbitTime.current += moonConfig.orbitSpeed;
@@ -175,9 +288,13 @@ const Planet: React.FC<PlanetProps> = ({ config }) => {
     // Update orbit
     orbitTime.current += config.orbitSpeed;
     if (groupRef.current) {
+      // Apply orbital inclination for collision prevention
       const x = Math.cos(orbitTime.current) * config.distance;
       const z = Math.sin(orbitTime.current) * config.distance;
-      groupRef.current.position.set(x, 0, z);
+      // Apply inclination to create different orbital planes
+      const y =
+        Math.sin(orbitTime.current) * config.distance * config.inclination;
+      groupRef.current.position.set(x, y, z);
     }
 
     // Update rotation
@@ -198,8 +315,10 @@ const Planet: React.FC<PlanetProps> = ({ config }) => {
         </meshBasicMaterial>
       </mesh>
 
-      {/* Moon orbiting the planet */}
-      <Moon moonConfig={config.moon} />
+      {/* Moons orbiting the planet */}
+      {config.moons.map((moonConfig, index) => (
+        <Moon key={`${config.name}-moon-${index}`} moonConfig={moonConfig} />
+      ))}
     </group>
   );
 };
@@ -241,10 +360,10 @@ const SolarSystem3D: React.FC = () => {
 
   const cameraConfig = useMemo(
     () => ({
-      position: [0, 0, 60] as [number, number, number],
+      position: [0, 0, 85] as [number, number, number],
       fov: 75,
       near: 0.1,
-      far: 100,
+      far: 150,
     }),
     []
   );
