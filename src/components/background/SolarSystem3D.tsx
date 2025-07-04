@@ -21,9 +21,9 @@ import moonHTexture from "../../../assets/3d/tex_moon_h.png";
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 // Solar system configuration with textures
-// COLLISION PREVENTION APPROACH:
+// FLAT PLANE ORBITAL APPROACH:
 // 1. Safe Distance Calculation: Each planet's distance = previous planet's (distance + moon orbit distance) + safety buffer
-// 2. Orbital Inclination: Each planet has slight inclination to create different orbital planes
+// 2. Flat Plane Orbits: All planets orbit on the same horizontal plane at y=15
 // 3. Distance Progression: Mercury(12) -> Venus(16) -> Earth(21) -> Mars(27) -> Jupiter(34)
 // 4. Moon Collision Prevention: Moons orbit within their planet's safe zone with staggered distances
 // 5. Sun Clearance: Minimum distance from sun (radius 5.5) is 12 units for Mercury
@@ -58,7 +58,7 @@ const SOLAR_SYSTEM_CONFIG = [
     color: 0xffd700,
     texture: planetVTexture,
     startAngle: Math.PI / 3,
-    inclination: 0.05,
+    inclination: 0,
     moons: [
       {
         size: 0.2,
@@ -79,7 +79,7 @@ const SOLAR_SYSTEM_CONFIG = [
     color: 0x4169e1,
     texture: planetDTexture,
     startAngle: (2 * Math.PI) / 3,
-    inclination: -0.03,
+    inclination: 0,
     moons: [
       {
         size: 0.3,
@@ -108,7 +108,7 @@ const SOLAR_SYSTEM_CONFIG = [
     color: 0xcd5c5c,
     texture: planetRTexture,
     startAngle: Math.PI,
-    inclination: 0.08,
+    inclination: 0,
     moons: [
       {
         size: 0.18,
@@ -129,7 +129,7 @@ const SOLAR_SYSTEM_CONFIG = [
     color: 0xdaa520,
     texture: planetKTexture,
     startAngle: Math.PI * 1.5,
-    inclination: -0.06,
+    inclination: 0,
     moons: [
       {
         size: 0.4,
@@ -162,7 +162,7 @@ const Sun: React.FC = () => {
   });
 
   return (
-    <mesh ref={sunRef} position={[0, 0, 0]}>
+    <mesh ref={sunRef} position={[0, 12, 0]}>
       <sphereGeometry args={[5.5, 32, 32]} />
       <meshBasicMaterial>
         <primitive object={useLoader(TextureLoader, sunTexture)} attach="map" />
@@ -192,6 +192,7 @@ const Moon: React.FC<MoonProps> = ({ moonConfig }) => {
     if (moonRef.current) {
       const x = Math.cos(orbitTime.current) * moonConfig.distance;
       const z = Math.sin(orbitTime.current) * moonConfig.distance;
+      // Ensure moons orbit on flat plane (y=0 relative to parent planet at y=15)
       moonRef.current.position.set(x, 0, z);
       moonRef.current.rotation.y += 0.02;
     }
@@ -221,16 +222,13 @@ const Planet: React.FC<PlanetProps> = ({ config }) => {
   const orbitTime = useRef(config.startAngle);
 
   useFrame(() => {
-    // Update orbit
+    // Update orbit on flat plane
     orbitTime.current += config.orbitSpeed;
     if (groupRef.current) {
-      // Apply orbital inclination for collision prevention
       const x = Math.cos(orbitTime.current) * config.distance;
       const z = Math.sin(orbitTime.current) * config.distance;
-      // Apply inclination to create different orbital planes
-      const y =
-        Math.sin(orbitTime.current) * config.distance * config.inclination;
-      groupRef.current.position.set(x, y, z);
+      // All planets orbit on the same flat plane at y=15
+      groupRef.current.position.set(x, 15, z);
     }
 
     // Update rotation
@@ -296,7 +294,7 @@ const SolarSystem3D: React.FC = () => {
 
   const cameraConfig = useMemo(
     () => ({
-      position: [0, 0, 85] as [number, number, number],
+      position: [0, -20, 85] as [number, number, number],
       fov: 75,
       near: 0.1,
       far: 150,
