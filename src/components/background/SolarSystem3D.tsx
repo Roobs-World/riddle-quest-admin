@@ -360,7 +360,7 @@ const SolarSystem3D: React.FC = () => {
 
   const cameraConfig = useMemo(
     () => ({
-      position: [0, 0, 85] as [number, number, number],
+      position: [0, -25, 85] as [number, number, number],
       fov: 75,
       near: 0.1,
       far: 150,
@@ -375,7 +375,7 @@ const SolarSystem3D: React.FC = () => {
         camera={cameraConfig}
         onCreated={({ gl, camera }) => {
           gl.setClearColor(0x000000, 0);
-          camera.lookAt(0, 0, 0);
+          camera.lookAt(0, -10, 0);
 
           console.log("✅ Canvas created successfully");
           console.log("📷 Camera position:", camera.position);
