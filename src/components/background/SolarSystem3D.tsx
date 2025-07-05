@@ -29,6 +29,7 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 // 5. Enhanced lighting to show planetary details
 // 6. Orbital distances increased to prevent planet and moon collisions
 // 7. Y positions create visual depth and separation between planetary orbits
+// 8. All moon textures used for maximum visual variety and brightness
 const SOLAR_SYSTEM_CONFIG = [
   // Inner rocky planets - increased distances for better spacing
   {
@@ -50,7 +51,7 @@ const SOLAR_SYSTEM_CONFIG = [
     orbitSpeed: 0.018,
     rotationSpeed: 0.008,
     color: 0xffd700,
-    texture: planetVTexture,
+    texture: planetDTexture,
     startAngle: Math.PI / 3,
     yPosition: 15, // Slightly below Earth's plane
     moons: [],
@@ -62,7 +63,7 @@ const SOLAR_SYSTEM_CONFIG = [
     orbitSpeed: 0.015,
     rotationSpeed: 0.02,
     color: 0x4169e1,
-    texture: planetDTexture,
+    texture: planetVTexture,
     startAngle: (Math.PI * 2) / 3,
     yPosition: 15, // Main orbital plane
     moons: [
@@ -71,7 +72,7 @@ const SOLAR_SYSTEM_CONFIG = [
         distance: 7, // Further increased orbital distance
         orbitSpeed: 0.06,
         color: 0xc0c0c0,
-        texture: moonFTexture,
+        texture: moonDTexture, // Updated to use moon D texture
         startAngle: 0,
       },
     ],
@@ -92,7 +93,7 @@ const SOLAR_SYSTEM_CONFIG = [
         distance: 7, // Further increased orbital distance
         orbitSpeed: 0.08,
         color: 0x8b7355,
-        texture: moonCTexture,
+        texture: moonGTexture, // Updated to use moon G texture
         startAngle: 0,
       },
     ],
@@ -115,7 +116,7 @@ const SOLAR_SYSTEM_CONFIG = [
         distance: 13, // Further increased orbital distance
         orbitSpeed: 0.03,
         color: 0xaaaaaa,
-        texture: moonHTexture,
+        texture: moonHTexture, // Keep moon H texture
         startAngle: 0,
       },
       {
@@ -123,7 +124,7 @@ const SOLAR_SYSTEM_CONFIG = [
         distance: 11.5, // Further increased orbital distance with more separation
         orbitSpeed: 0.032,
         color: 0xc0c0c0,
-        texture: moonFTexture,
+        texture: moonCTexture, // Updated to use moon C texture
         startAngle: Math.PI / 3,
       },
     ],
@@ -144,7 +145,7 @@ const SOLAR_SYSTEM_CONFIG = [
         distance: 12, // Further increased orbital distance
         orbitSpeed: 0.038,
         color: 0xc0c0c0,
-        texture: moonDTexture,
+        texture: moonFTexture, // Updated to use moon F texture
         startAngle: 0,
       },
       {
@@ -152,7 +153,7 @@ const SOLAR_SYSTEM_CONFIG = [
         distance: 12, // Further increased orbital distance with more separation
         orbitSpeed: 0.03,
         color: 0xaaaaaa,
-        texture: moonHTexture,
+        texture: moonDTexture, // Updated to use moon D texture (different from Earth's moon)
         startAngle: Math.PI / 2,
       },
     ],
@@ -239,11 +240,13 @@ const Moon: React.FC<MoonProps> = ({ moonConfig }) => {
     <mesh ref={moonRef}>
       {/* Balanced size multiplier for optimal visibility and proportions */}
       <sphereGeometry args={[moonConfig.size * 1.4, 16, 16]} />
-      <meshLambertMaterial
+      <meshStandardMaterial
         map={texture}
-        color={moonConfig.color}
-        emissive={0x333333}
-        emissiveIntensity={0.2}
+        color={0xffffff}
+        emissive={0x666666}
+        emissiveIntensity={0.8}
+        roughness={0.9}
+        metalness={0.1}
       />
     </mesh>
   );
