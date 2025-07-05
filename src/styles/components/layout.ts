@@ -72,8 +72,6 @@ export const layoutStyles = StyleSheet.create({
     marginVertical: SPACING.sm,
     marginBottom: SPACING.md,
     position: "relative",
-    paddingTop: scale(12),
-    paddingBottom: scale(4),
     minHeight: scale(80),
     justifyContent: "center",
   } as ViewStyle,

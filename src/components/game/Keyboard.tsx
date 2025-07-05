@@ -18,7 +18,7 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, isVisible }) => {
   const keyRefs = useRef<{ [key: string]: View | null }>({});
 
   // Responsive styles
-  const keyHeight = scale(48);
+  const keyHeight = scale(36);
   const keyWidth = scale(32); // Reduced from 38 to 32 to prevent overflow
   const keyMargin = scale(1.65);
   const fontSize = moderateScale(18);
@@ -73,7 +73,7 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, isVisible }) => {
                   margin: keyMargin,
                 },
               ]}
-              onPress={() => handleKeyPress(key)}
+              onPressIn={() => handleKeyPress(key)}
               activeOpacity={0.7}
             >
               <Text
@@ -115,7 +115,7 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, isVisible }) => {
                   margin: keyMargin,
                 },
               ]}
-              onPress={() => handleKeyPress(key)}
+              onPressIn={() => handleKeyPress(key)}
               activeOpacity={0.7}
             >
               <Text
@@ -151,7 +151,7 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, isVisible }) => {
                   margin: keyMargin,
                 },
               ]}
-              onPress={() => handleKeyPress(key)}
+              onPressIn={() => handleKeyPress(key)}
               activeOpacity={0.7}
             >
               <Text
@@ -180,7 +180,7 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, isVisible }) => {
                 margin: keyMargin,
               },
             ]}
-            onPress={() => handleKeyPress("BACKSPACE")}
+            onPressIn={() => handleKeyPress("BACKSPACE")}
             activeOpacity={0.7}
           >
             <BackspaceIcon color="#fcfaf4" />

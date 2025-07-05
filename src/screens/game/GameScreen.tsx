@@ -30,7 +30,7 @@ import { safeDelay } from "../../utils/timing";
 import PulsingSpinner from "../../components/loading/PulsingSpinner";
 import OutOfAttemptsModal from "../../components/modals/game/OutOfAttemptsModal";
 import { styles } from "../../styles";
-import StarryBackground from "../../components/background/StarryBackground";
+// import StarryBackground from "../../components/background/StarryBackground";
 
 interface GuessResult {
   outcome: "win" | "loss" | "continue" | "attemptLimitReached";
@@ -731,7 +731,7 @@ const GameScreen: React.FC<GameScreenProps> = ({
 
   return (
     <SafeAreaView className="flex-1">
-      <StarryBackground />
+      {/* <StarryBackground /> */}
       <KeyboardAvoidingView
         style={[
           styles.gameContainer,
@@ -741,11 +741,7 @@ const GameScreen: React.FC<GameScreenProps> = ({
         ]}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <Header
-          userCoins={userCoins}
-          onHintPress={handleHintPress}
-          onCoinsPress={handleCoinsPress}
-        />
+        <Header userCoins={userCoins} onCoinsPress={handleCoinsPress} />
 
         <GameBoard
           riddleText={riddleText}

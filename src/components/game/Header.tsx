@@ -1,8 +1,7 @@
 import React from "react";
-import { View, TouchableOpacity, Text } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 import CoinsDisplay from "./CoinsDisplay";
-import HintIcon from "../icons/HintIcon";
-import { AppStrings } from "../../constants/AppStrings";
+import LogoIcon from "../icons/LogoIcon";
 
 /**
  * Props for the Header component.
@@ -12,7 +11,6 @@ import { AppStrings } from "../../constants/AppStrings";
  */
 interface HeaderProps {
   userCoins: number;
-  onHintPress: () => void;
   onCoinsPress: () => void;
 }
 
@@ -23,14 +21,10 @@ interface HeaderProps {
  * @param {HeaderProps} props - The props for the component.
  * @returns {React.FC<HeaderProps>} The rendered Header component.
  */
-const Header: React.FC<HeaderProps> = ({
-  userCoins,
-  onHintPress,
-  onCoinsPress,
-}) => {
+const Header: React.FC<HeaderProps> = ({ userCoins, onCoinsPress }) => {
   return (
     <View
-      className="w-full flex-row items-center justify-between p-4"
+      className="w-full flex-row items-center justify-between pt-4 px-4"
       testID="header"
       accessible={true}
       accessibilityRole="none"
@@ -42,17 +36,13 @@ const Header: React.FC<HeaderProps> = ({
         testID="header-left-side"
       >
         <TouchableOpacity
-          onPress={onHintPress}
-          className="items-center p-2"
+          className="items-center"
           testID="hint-button"
           accessible={true}
           accessibilityRole="button"
-          accessibilityLabel="Get hint for current riddle"
+          accessibilityLabel="logo"
         >
-          <HintIcon width={36} height={36} color="#ffffff" />
-          <Text className="text-lg font-bold mt-1 ml-1 text-white font-poppins-bold">
-            {AppStrings.Navigation.HINT_BUTTON}
-          </Text>
+          <LogoIcon width={48} height={48} color="#ffffff" />
         </TouchableOpacity>
       </View>
 
