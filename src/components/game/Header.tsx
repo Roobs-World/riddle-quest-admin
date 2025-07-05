@@ -50,7 +50,7 @@ const Header: React.FC<HeaderProps> = ({
           accessibilityLabel="Get hint for current riddle"
         >
           <HintIcon width={36} height={36} color="#ffffff" />
-          <Text className="text-xs mt-1 text-white">
+          <Text className="text-lg font-bold mt-1 ml-1 text-white font-poppins-bold">
             {AppStrings.Navigation.HINT_BUTTON}
           </Text>
         </TouchableOpacity>
