@@ -3,7 +3,6 @@ import { View, TouchableOpacity, Text } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import ProfileIcon from "../icons/ProfileIcon";
 import SettingsIcon from "../icons/SettingsIcon";
-import { AppStrings } from "../../constants/AppStrings";
 
 export type OverlayType = "profile" | "settings";
 
