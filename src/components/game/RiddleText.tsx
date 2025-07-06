@@ -17,9 +17,6 @@ const styles = StyleSheet.create({
     fontSize: moderateScale(24),
     lineHeight: moderateScale(32),
     maxWidth: moderateScale(300),
-    textShadowColor: COLORS.textShadowDark,
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 2,
   },
 });
 
@@ -33,7 +30,7 @@ const RiddleText: React.FC<RiddleTextProps> = ({ riddleText }) => {
   return (
     <View className="px-6 items-center z-10">
       <Text
-        className="text-center text-white text-2xl"
+        className="text-center text-black text-2xl"
         style={styles.riddleText}
         numberOfLines={3}
         adjustsFontSizeToFit
