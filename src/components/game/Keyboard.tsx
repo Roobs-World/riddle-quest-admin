@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import BackspaceIcon from "../icons/BackspaceIcon";
 import { scale, moderateScale } from "../../utils/responsive";
-import { COLORS, gameStyles } from "../../styles";
+import { gameStyles } from "../../styles";
 
 interface KeyboardProps {
   onKeyPress: (key: string) => void;
