@@ -81,18 +81,6 @@ const GuessGrid: React.FC<GuessGridProps> = ({
     }
   };
 
-  /**
-   * Function to determine text color based on feedback.
-   * @param {Feedback} feedback - The feedback for a specific letter cell.
-   * @param {string | null} letter - The letter in the cell.
-   * @returns {string} The Tailwind CSS class string for the text color.
-   */
-  const getCellTextColor = (feedback: Feedback, letter: string | null) => {
-    if (feedback) return "text-key-border";
-    if (letter !== null) return "text-key-border";
-    return "text-transparent";
-  };
-
   return (
     <View
       className="w-full items-center justify-center"
@@ -114,7 +102,6 @@ const GuessGrid: React.FC<GuessGridProps> = ({
             {row.letters.map((letter, cellIndex) => {
               const feedback = row.feedback[cellIndex];
               const backgroundColor = getCellBackgroundColor(feedback);
-              const textColor = getCellTextColor(feedback, letter);
               return (
                 <View
                   key={cellIndex}
@@ -126,7 +113,7 @@ const GuessGrid: React.FC<GuessGridProps> = ({
                   }}
                 >
                   <Text
-                    className={`font-bold uppercase ${textColor}`}
+                    className={`font-bold uppercase text-key-border`}
                     style={{
                       fontSize: scale(24),
                       lineHeight: scale(28), // Added line-height for better vertical alignment
