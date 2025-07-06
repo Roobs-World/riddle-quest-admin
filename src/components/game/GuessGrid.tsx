@@ -16,7 +16,6 @@ import { NUM_GUESSES } from "src/utils/constants";
 type GuessGridProps = {
   guesses: SubmittedGuess[];
   currentGuess: string[];
-  shakeKey: number;
   answerLength: number;
 };
 
