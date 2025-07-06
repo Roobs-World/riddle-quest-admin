@@ -43,14 +43,14 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
 
   return (
     <View
-      className="absolute bottom-0 left-0 right-0 px-4 pt-6 pb-2 bg-cream-light"
+      className="absolute bottom-0 left-0 right-0 px-4 pt-2 pb-2 bg-white"
       style={{ paddingBottom: insets.bottom + 8 }}
       testID="bottom-navigation-bar"
     >
       <View className="flex-row justify-between items-center ">
         <TouchableOpacity
           onPress={() => onProfilePress && onProfilePress()}
-          className="items-center py-2"
+          className="items-center "
           testID="profile-button"
           accessible={true}
           accessibilityRole="button"
@@ -61,7 +61,7 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
 
         {/* Submit Button */}
         <TouchableOpacity
-          className={`px-14 py-4 mt-8 rounded-full ${
+          className={`px-14 py-4 rounded-full ${
             isSubmitDisabled || gameOver ? "bg-secondary-orange" : "bg-blue-500"
           }`}
           onPress={() => {
@@ -80,7 +80,7 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
 
         <TouchableOpacity
           onPress={() => onSettingsPress && onSettingsPress()}
-          className="items-center py-2 "
+          className="items-center"
           testID="settings-button"
           accessible={true}
           accessibilityRole="button"
