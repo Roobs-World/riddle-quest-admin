@@ -1,11 +1,5 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { View, Text } from "react-native";
-import Animated, {
-  useSharedValue,
-  withSequence,
-  withTiming,
-  withSpring,
-} from "react-native-reanimated";
 
 import type { SubmittedGuess, Feedback } from "../../hooks/types"; // Import Feedback type from types.ts
 import { scale } from "../../utils/responsive";
@@ -16,18 +10,19 @@ import { styles } from "../../styles";
  * @property {SubmittedGuess[]} guesses - An array of submitted guesses with their feedback.
  * @property {string[]} currentGuess - The current guess being typed by the user.
  * @property {number} answerLength - The length of the answer.
- * @property {number} shakeKey - Added shakeKey prop
+ * @property {number} shakeKey - Kept for backwards compatibility but not used for animation
  */
 type GuessGridProps = {
-  guesses: SubmittedGuess[]; // Now accepts SubmittedGuess[]
-  currentGuess: string[]; // Add currentGuess prop
-  shakeKey: number; // Added shakeKey prop
-  answerLength: number; // Add answerLength prop
+  guesses: SubmittedGuess[];
+  currentGuess: string[];
+  shakeKey: number;
+  answerLength: number;
 };
 
 /**
  * The component that displays the guess grid for the Wordle-style game.
  * It shows submitted guesses with feedback and the current guess being entered.
+ * Optimized version without animations for better performance.
  *
  * @param {GuessGridProps} props - The props for the component.
  * @returns {React.FC<GuessGridProps>} The rendered GuessGrid component.
@@ -35,16 +30,12 @@ type GuessGridProps = {
 const GuessGrid: React.FC<GuessGridProps> = ({
   guesses,
   currentGuess,
-  shakeKey,
   answerLength,
 }) => {
   // Responsive sizes
-  const TILE_SIZE = scale(56); // Base size 56px
-  const TILE_MARGIN = scale(2); // Base margin 2px
-  const ROW_HEIGHT = TILE_SIZE + TILE_MARGIN * 2 + scale(4); // Tile + margins + mb-1 (4px)
-
-  // Animation shared value for shaking
-  const shakeAnimation = useSharedValue(0);
+  const TILE_SIZE = scale(56);
+  const TILE_MARGIN = scale(2);
+  const ROW_HEIGHT = TILE_SIZE + TILE_MARGIN * 2 + scale(4);
 
   // Combine submitted guesses and the current guess for display
   const displayRows: { letters: (string | null)[]; feedback: Feedback[] }[] =
@@ -71,23 +62,6 @@ const GuessGrid: React.FC<GuessGridProps> = ({
     });
   }
 
-  // Effect to trigger shake animation when shakeKey changes
-  useEffect(() => {
-    shakeAnimation.value = withSequence(
-      withTiming(-10, { duration: 50 }),
-      withSpring(10, { damping: 8, stiffness: 100 }),
-      withSpring(-10, { damping: 8, stiffness: 100 }),
-      withSpring(0, { damping: 8, stiffness: 100 })
-    );
-  }, [shakeKey, shakeAnimation]);
-
-  // Reset shattering state when guesses reset (new game)
-  useEffect(() => {
-    if (guesses.length === 0) {
-      // Reset logic if needed
-    }
-  }, [guesses.length]);
-
   /**
    * Function to determine cell background color based on feedback.
    * @param {Feedback} feedback - The feedback for a specific letter cell.
@@ -96,13 +70,13 @@ const GuessGrid: React.FC<GuessGridProps> = ({
   const getCellBackgroundColor = (feedback: Feedback) => {
     switch (feedback) {
       case "green":
-        return "bg-green-500"; // Green for correct letter and position
+        return "bg-green-500";
       case "yellow":
-        return "bg-yellow-500"; // Yellow for correct letter wrong position
+        return "bg-yellow-500";
       case "red":
-        return "bg-red-500"; // Red for incorrect letter
+        return "bg-red-500";
       default:
-        return "bg-transparent"; // Default background for empty or current cells
+        return "bg-transparent";
     }
   };
 
@@ -112,8 +86,8 @@ const GuessGrid: React.FC<GuessGridProps> = ({
    * @returns {string} The Tailwind CSS class string for the border color.
    */
   const getCellBorderColor = (feedback: Feedback) => {
-    if (feedback) return "border-transparent"; // No border if there's feedback
-    return "border-gray-400"; // Default border for empty cells
+    if (feedback) return "border-transparent";
+    return "border-gray-400";
   };
 
   /**
@@ -123,63 +97,50 @@ const GuessGrid: React.FC<GuessGridProps> = ({
    * @returns {string} The Tailwind CSS class string for the text color.
    */
   const getCellTextColor = (feedback: Feedback, letter: string | null) => {
-    if (feedback) return "text-white"; // White text for colored feedback cells (submitted)
-    if (letter !== null) return "text-white"; // White text for letters being typed
-    return "text-transparent"; // Transparent for empty cells (no letters shown)
+    if (feedback) return "text-white";
+    if (letter !== null) return "text-white";
+    return "text-transparent";
   };
 
   return (
-    <View className="w-full items-center py-4 mb-4 flex-grow">
-      {/* Masking container that clips content sliding upward */}
-      <View className="w-full relative" style={styles.maskingContainer}>
-        {displayRows.map((row, rowIndex) => {
-          // Apply shake animation to the most recent submitted guess
-          const isLastSubmittedRow =
-            rowIndex === guesses.length - 1 && guesses.length > 0;
-
-          // Apply shake animation only to last submitted row
-          const animatedStyle = isLastSubmittedRow
-            ? { transform: [{ translateX: shakeAnimation }] }
-            : {};
-
-          return (
-            <Animated.View
-              key={rowIndex}
-              className="flex-row justify-center mb-1"
-              style={[
-                animatedStyle,
-                { height: ROW_HEIGHT }, // Fixed height for consistent spacing
-              ]}
-            >
-              {row.letters.map((letter, cellIndex) => {
-                const feedback = row.feedback[cellIndex];
-                const backgroundColor = getCellBackgroundColor(feedback);
-                const borderColor = getCellBorderColor(feedback);
-                const textColor = getCellTextColor(feedback, letter);
-                return (
-                  <View
-                    key={cellIndex}
-                    className={`border ${borderColor} items-center justify-center rounded ${backgroundColor}`}
+    <View className="w-full items-center justify-center">
+      {/* Container for the grid rows with proper vertical alignment */}
+      <View className="w-full items-center" style={styles.maskingContainer}>
+        {displayRows.map((row, rowIndex) => (
+          <View
+            key={rowIndex}
+            className="flex-row justify-center items-center"
+            style={{ height: ROW_HEIGHT }}
+          >
+            {row.letters.map((letter, cellIndex) => {
+              const feedback = row.feedback[cellIndex];
+              const backgroundColor = getCellBackgroundColor(feedback);
+              const borderColor = getCellBorderColor(feedback);
+              const textColor = getCellTextColor(feedback, letter);
+              return (
+                <View
+                  key={cellIndex}
+                  className={`border ${borderColor} items-center justify-center rounded ${backgroundColor}`}
+                  style={{
+                    width: TILE_SIZE,
+                    height: TILE_SIZE,
+                    margin: TILE_MARGIN,
+                  }}
+                >
+                  <Text
+                    className={`font-bold uppercase ${textColor}`}
                     style={{
-                      width: TILE_SIZE,
-                      height: TILE_SIZE,
-                      margin: TILE_MARGIN,
+                      fontSize: scale(24),
+                      lineHeight: scale(28), // Added line-height for better vertical alignment
                     }}
                   >
-                    <Text
-                      className={`font-bold uppercase ${textColor}`}
-                      style={{
-                        fontSize: scale(24), // Responsive font size
-                      }}
-                    >
-                      {letter}
-                    </Text>
-                  </View>
-                );
-              })}
-            </Animated.View>
-          );
-        })}
+                    {letter}
+                  </Text>
+                </View>
+              );
+            })}
+          </View>
+        ))}
       </View>
     </View>
   );

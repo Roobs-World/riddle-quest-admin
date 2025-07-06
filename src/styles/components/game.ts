@@ -49,7 +49,6 @@ export const gameStyles = StyleSheet.create({
     alignItems: "center",
     position: "relative",
     backgroundColor: COLORS.transparent,
-    marginTop: SPACING.sm,
     paddingHorizontal: SPACING.sm,
   } as ViewStyle,
 
@@ -70,42 +69,6 @@ export const gameStyles = StyleSheet.create({
 
   logo: {
     marginBottom: SPACING.md,
-  } as ViewStyle,
-
-  particleAsteroid: {
-    backgroundColor: COLORS.gray300,
-    transform: [{ rotate: "45deg" }],
-    shadowColor: COLORS.black,
-    shadowOffset: { width: 2, height: 2 },
-    shadowOpacity: 0.5,
-    shadowRadius: 4,
-    elevation: 8,
-  } as ViewStyle,
-
-  particleAsteroidContainer: {
-    position: "absolute",
-  } as ViewStyle,
-
-  particleLayer: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    zIndex: 0,
-  } as ViewStyle,
-
-  particleStar: {
-    backgroundColor: COLORS.primaryOrange,
-    borderRadius: 1000, // Large value to ensure circular
-    shadowColor: COLORS.primaryOrange,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 1,
-    elevation: 10,
-  } as ViewStyle,
-
-  particleStarContainer: {
-    position: "absolute",
   } as ViewStyle,
 
   pulseCircle: {

@@ -33,7 +33,6 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, isVisible }) => {
       style={[
         gameStyles.keyboardContainer,
         {
-          marginTop: -8,
           minHeight: scale(160), // Reduced from 200 to fit bottom bar
           opacity: isVisible ? 1 : 0,
           pointerEvents: isVisible ? "auto" : "none",
@@ -41,14 +40,7 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, isVisible }) => {
       ]}
     >
       {/* Keyboard keys layer */}
-      <View
-        style={[
-          gameStyles.keyboardLayer,
-          {
-            paddingVertical: scale(8), // Reduced from 10
-          },
-        ]}
-      >
+      <View style={gameStyles.keyboardLayer}>
         {/* Top row - QWERTYUIOP */}
         <View
           style={[
