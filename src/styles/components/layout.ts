@@ -7,7 +7,6 @@ import { StyleSheet, ViewStyle, ImageStyle } from "react-native";
 import { scale } from "../../utils/responsive";
 import { SPACING } from "../tokens/spacing";
 import { COLORS } from "../tokens/colors";
-import { SIZING } from "../tokens/sizing";
 
 export const layoutStyles = StyleSheet.create({
   activityIndicator: {
