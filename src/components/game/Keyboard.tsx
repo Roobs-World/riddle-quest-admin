@@ -9,7 +9,7 @@ interface KeyboardProps {
   isVisible: boolean;
 }
 
-const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, isVisible }) => {
+const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress }) => {
   const topRow = ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"];
   const midRow = ["a", "s", "d", "f", "g", "h", "j", "k", "l"];
   const bottomRow = ["z", "x", "c", "v", "b", "n", "m"];
@@ -28,17 +28,7 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, isVisible }) => {
   };
 
   return (
-    <View
-      ref={keyboardRef}
-      style={[
-        gameStyles.keyboardContainer,
-        {
-          minHeight: scale(160), // Reduced from 200 to fit bottom bar
-          opacity: isVisible ? 1 : 0,
-          pointerEvents: isVisible ? "auto" : "none",
-        },
-      ]}
-    >
+    <View ref={keyboardRef} style={gameStyles.keyboardContainer}>
       {/* Keyboard keys layer */}
       <View style={gameStyles.keyboardLayer}>
         {/* Top row - QWERTYUIOP */}
@@ -166,7 +156,6 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, isVisible }) => {
             style={[
               gameStyles.backspaceKey,
               {
-                borderRadius: scale(6),
                 height: keyHeight,
                 width: scale(48),
                 margin: keyMargin,
@@ -175,7 +164,7 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, isVisible }) => {
             onPressIn={() => handleKeyPress("BACKSPACE")}
             activeOpacity={0.7}
           >
-            <BackspaceIcon color="#fcfaf4" />
+            <BackspaceIcon />
           </TouchableOpacity>
         </View>
       </View>

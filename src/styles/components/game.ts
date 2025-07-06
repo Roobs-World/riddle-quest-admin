@@ -14,11 +14,6 @@ export const gameStyles = StyleSheet.create({
   backspaceKey: {
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: COLORS.black,
-    shadowColor: COLORS.black,
-    shadowOpacity: 0.2,
-    shadowRadius: 1.5,
-    elevation: 2,
   } as ViewStyle,
 
   iconColor: {
@@ -49,7 +44,6 @@ export const gameStyles = StyleSheet.create({
     alignItems: "center",
     position: "relative",
     backgroundColor: COLORS.transparent,
-    paddingHorizontal: SPACING.sm,
   } as ViewStyle,
 
   keyboardLayer: {

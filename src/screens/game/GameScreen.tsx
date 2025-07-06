@@ -754,10 +754,10 @@ const GameScreen: React.FC<GameScreenProps> = ({
 
         <View className="flex-row justify-between items-center ">
           <TouchableOpacity
-            className={`px-14 py-4 rounded-full ${
+            className={`px-14 py-4 rounded-full mx-auto ${
               isSubmitDisabled || gameOver
                 ? "bg-secondary-orange"
-                : "bg-blue-500"
+                : "bg-primary-orange"
             }`}
             onPress={() => {
               if (!isSubmitDisabled && !gameOver) {
