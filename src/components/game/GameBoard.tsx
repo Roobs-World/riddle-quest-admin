@@ -6,6 +6,7 @@ import GuessGrid from "./GuessGrid";
 import Keyboard from "./Keyboard";
 import { isTablet } from "../../utils/responsive";
 import { styles } from "../../styles";
+import QuestionsSvg from "../../../assets/images/questions.svg";
 
 interface SubmittedGuess {
   guess: string[];
@@ -44,8 +45,23 @@ const GameBoard: React.FC<GameBoardProps> = ({
         style={[
           styles.riddleContainer,
           isTablet && styles.riddleContainerTablet,
+          {
+            justifyContent: "center",
+            alignItems: "center",
+          },
         ]}
       >
+        <QuestionsSvg
+          width="90%"
+          height="100%"
+          preserveAspectRatio="none"
+          style={{
+            position: "absolute",
+            top: "0%",
+            left: "5%",
+            zIndex: 0,
+          }}
+        />
         <RiddleText riddleText={riddleText} />
       </View>
 

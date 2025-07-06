@@ -25,6 +25,7 @@ export const layoutStyles = StyleSheet.create({
 
   centerContainer: {
     justifyContent: "flex-start",
+    marginTop: -SPACING.sm,
   } as ViewStyle,
 
   centerContainerTablet: {
@@ -69,17 +70,14 @@ export const layoutStyles = StyleSheet.create({
 
   riddleContainer: {
     alignItems: "center",
-    marginVertical: SPACING.sm,
-    marginBottom: SPACING.md,
     position: "relative",
-    minHeight: scale(80),
     justifyContent: "center",
+    minHeight: "20%",
   } as ViewStyle,
 
   riddleContainerTablet: {
-    marginVertical: SPACING.md,
-    marginBottom: SPACING.lg,
     paddingHorizontal: SPACING.md,
+    minHeight: "30%",
   } as ViewStyle,
 
   scrollViewContent: {

@@ -55,7 +55,7 @@ const CoinsDisplay: React.FC<CoinsDisplayProps> = ({ coins, onPress }) => {
       accessibilityLabel={accessibilityLabel}
     >
       <SvgXml xml={coinSvg} width={36} height={36} testID="coin-icon" />
-      <Text className="text-lg font-bold text-white ml-1 font-poppins-bold">
+      <Text className="text-lg font-bold text-black ml-1 font-poppins-bold">
         {coins}
       </Text>
     </View>
