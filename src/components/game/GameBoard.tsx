@@ -18,7 +18,8 @@ interface GameBoardProps {
   currentGuess: string[];
   answerLength: number;
   shakeKey: number;
-  onKeyPress: (key: string) => void;
+  handleBackspace: () => void;
+  handleKeyPress: (key: string) => void;
   isAnyOverlayVisible: boolean;
 }
 
@@ -32,7 +33,8 @@ const GameBoard: React.FC<GameBoardProps> = ({
   currentGuess,
   answerLength,
   shakeKey,
-  onKeyPress,
+  handleBackspace,
+  handleKeyPress,
   isAnyOverlayVisible,
 }) => {
   return (
@@ -71,7 +73,11 @@ const GameBoard: React.FC<GameBoardProps> = ({
         shakeKey={shakeKey}
       />
 
-      <Keyboard onKeyPress={onKeyPress} isVisible={!isAnyOverlayVisible} />
+      <Keyboard
+        submitKeyPress={handleKeyPress}
+        handleBackspace={handleBackspace}
+        isVisible={!isAnyOverlayVisible}
+      />
     </>
   );
 };

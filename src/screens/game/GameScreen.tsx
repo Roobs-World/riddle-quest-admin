@@ -1,12 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Alert, KeyboardAvoidingView, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import Header from "../../components/game/Header";
@@ -36,7 +29,6 @@ import { safeDelay } from "../../utils/timing";
 import PulsingSpinner from "../../components/loading/PulsingSpinner";
 import OutOfAttemptsModal from "../../components/modals/game/OutOfAttemptsModal";
 import { styles } from "../../styles";
-import { SubmitButton } from "src/components/game/SubmitButton";
 import { GameInput } from "src/components/game/GameInput";
 
 // import StarryBackground from "../../components/background/StarryBackground";
@@ -358,60 +350,51 @@ const GameScreen: React.FC<GameScreenProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameOver, overlayState.lastGuessResult]);
 
-  const handleKeyPress = async (key: string) => {
-    if (
-      gameOver ||
-      isAnyOverlayVisible ||
-      overlayState.isLoading ||
-      (currentGuess.length >= answerLength &&
-        key !== "ENTER" &&
-        key !== "BACKSPACE")
-    )
-      return;
+  const handleSubmit = async () => {
+    if (currentGuess.length === answerLength) {
+      // Show loading spinner while processing guess
+      setOverlayState((prev) => ({
+        ...prev,
+        isLoading: true,
+      }));
 
-    if (key === "ENTER") {
-      if (currentGuess.length === answerLength) {
-        // Show loading spinner while processing guess
+      try {
+        const result = (await processGuess(currentGuess)) as GuessResult;
         setOverlayState((prev) => ({
           ...prev,
-          isLoading: true,
+          lastGuessResult: result,
+          isLoading: false,
         }));
-
-        try {
-          const result = (await processGuess(currentGuess)) as GuessResult;
-          setOverlayState((prev) => ({
-            ...prev,
-            lastGuessResult: result,
-            isLoading: false,
-          }));
-        } catch (error) {
-          console.error("Error processing guess in GameScreen:", error);
-          setOverlayState((prev) => ({
-            ...prev,
-            isLoading: false,
-          }));
-          Alert.alert(
-            AppStrings.GameScreenAlerts.SUBMIT_GUESS_ERROR_TITLE,
-            AppStrings.GameScreenAlerts.SUBMIT_GUESS_ERROR_MESSAGE
-          );
-        }
-      } else {
+      } catch (error) {
+        console.error("Error processing guess in GameScreen:", error);
         setOverlayState((prev) => ({
           ...prev,
-          shakeKey: prev.shakeKey + 1,
+          isLoading: false,
         }));
-        if (isHapticsEnabled) {
-          ReactNativeHapticFeedback.trigger(
-            "notificationWarning",
-            hapticOptions
-          );
-        }
+        Alert.alert(
+          AppStrings.GameScreenAlerts.SUBMIT_GUESS_ERROR_TITLE,
+          AppStrings.GameScreenAlerts.SUBMIT_GUESS_ERROR_MESSAGE
+        );
       }
-    } else if (key === "BACKSPACE") {
-      setCurrentGuess((prev: string[]) => prev.slice(0, -1));
-    } else if (currentGuess.length < answerLength) {
+    } else {
+      setOverlayState((prev) => ({
+        ...prev,
+        shakeKey: prev.shakeKey + 1,
+      }));
+      if (isHapticsEnabled) {
+        ReactNativeHapticFeedback.trigger("notificationWarning", hapticOptions);
+      }
+    }
+  };
+
+  const handleKeyPress = (key: string) => {
+    if (currentGuess.length < answerLength) {
       setCurrentGuess((prev: string[]) => [...prev, key]);
     }
+  };
+
+  const handleBackspace = () => {
+    setCurrentGuess((prev: string[]) => prev.slice(0, -1));
   };
 
   const handleHintPress = () => {
@@ -761,14 +744,18 @@ const GameScreen: React.FC<GameScreenProps> = ({
           currentGuess={currentGuess}
           answerLength={answerLength}
           shakeKey={overlayState.shakeKey}
-          onKeyPress={handleKeyPress}
+          submitKeyPress={handleSubmit}
+          handleKeyPress={handleKeyPress}
+          handleBackspace={handleBackspace}
           isAnyOverlayVisible={isAnyOverlayVisible}
         />
 
         <GameInput
           isSubmitDisabled={isSubmitDisabled}
           gameOver={gameOver}
-          handleKeyPress={handleKeyPress}
+          handleSubmit={handleSubmit}
+          handleHint={handleHintPress}
+          handleNext={handleOverlayNext}
         />
 
         <BottomNavigationBar

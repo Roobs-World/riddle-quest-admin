@@ -5,11 +5,15 @@ import { scale, moderateScale } from "../../utils/responsive";
 import { gameStyles } from "../../styles";
 
 interface KeyboardProps {
-  onKeyPress: (key: string) => void;
+  submitKeyPress: (key: string) => void;
+  handleBackspace: () => void;
   isVisible: boolean;
 }
 
-const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress }) => {
+const Keyboard: React.FC<KeyboardProps> = ({
+  submitKeyPress,
+  handleBackspace,
+}) => {
   const topRow = ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"];
   const midRow = ["a", "s", "d", "f", "g", "h", "j", "k", "l"];
   const bottomRow = ["z", "x", "c", "v", "b", "n", "m"];
@@ -22,10 +26,6 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress }) => {
   const keyWidth = scale(35);
   const keyMargin = scale(1.65);
   const fontSize = moderateScale(18);
-
-  const handleKeyPress = (key: string) => {
-    onKeyPress(key);
-  };
 
   return (
     <View ref={keyboardRef} style={gameStyles.keyboardContainer}>
@@ -48,7 +48,7 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress }) => {
                   margin: keyMargin,
                 },
               ]}
-              onPressIn={() => handleKeyPress(key)}
+              onPressIn={() => submitKeyPress(key)}
               activeOpacity={0.7}
             >
               <Text
@@ -90,7 +90,7 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress }) => {
                   margin: keyMargin,
                 },
               ]}
-              onPressIn={() => handleKeyPress(key)}
+              onPressIn={() => submitKeyPress(key)}
               activeOpacity={0.7}
             >
               <Text
@@ -127,7 +127,7 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress }) => {
                   margin: keyMargin,
                 },
               ]}
-              onPressIn={() => handleKeyPress(key)}
+              onPressIn={() => submitKeyPress(key)}
               activeOpacity={0.7}
             >
               <Text
@@ -152,7 +152,7 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress }) => {
               width: scale(48),
               margin: keyMargin,
             }}
-            onPressIn={() => handleKeyPress("BACKSPACE")}
+            onPressIn={() => handleBackspace()}
             activeOpacity={0.7}
           >
             <BackspaceIcon />

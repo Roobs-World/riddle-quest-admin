@@ -29,7 +29,7 @@ export const SubmitButton = ({
       accessibilityRole="button"
       accessibilityLabel="Submit current guess"
     >
-      <Text className="text-black font-bold text-lg">Submit</Text>
+      <Text className="text-black font-bold text-lg">SUBMIT</Text>
     </TouchableOpacity>
   );
 };
