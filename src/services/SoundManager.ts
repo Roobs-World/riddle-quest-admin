@@ -26,6 +26,9 @@ let isChangingMode = false; // Prevents multiple mode changes at once
 // Track initialization state
 let isInitialized = false;
 
+// Global sound enabled state
+let globalSoundEnabled = true;
+
 // Track app state to prevent audio focus exceptions when in background
 let appState: AppStateStatus = AppState.currentState;
 let appStateSubscription: { remove: () => void } | null = null;
@@ -171,6 +174,28 @@ const safeDelay = (ms: number): Promise<void> => {
 };
 
 export const SoundManager = {
+  /**
+   * Enable or disable sound globally
+   */
+  setSoundEnabled: (enabled: boolean) => {
+    globalSoundEnabled = enabled;
+    console.log(
+      `SoundManager: Sound globally ${enabled ? "enabled" : "disabled"}`
+    );
+
+    if (!enabled) {
+      // Immediately pause all music when sound is disabled
+      SoundManager.pauseAllMusic();
+    }
+  },
+
+  /**
+   * Get the current global sound enabled state
+   */
+  getSoundEnabled: (): boolean => {
+    return globalSoundEnabled;
+  },
+
   init: async () => {
     try {
       console.log(
@@ -335,6 +360,11 @@ export const SoundManager = {
         return;
       }
 
+      if (!globalSoundEnabled) {
+        console.log("SoundManager: Sound disabled, skipping music mode change");
+        return;
+      }
+
       if (appState !== "active") {
         console.log("SoundManager: App not active, skipping music mode change");
         return;
@@ -436,6 +466,11 @@ export const SoundManager = {
         return;
       }
 
+      if (!globalSoundEnabled) {
+        console.log("SoundManager: Sound disabled, skipping music resume");
+        return;
+      }
+
       const currentMusic = getMusicByMode(currentMusicMode);
       if (currentMusic) {
         const status = await runAudioOperation(() =>
@@ -463,6 +498,11 @@ export const SoundManager = {
   },
 
   fadeInBackgroundMusic: async (options: FadeOptions = {}) => {
+    if (!globalSoundEnabled) {
+      console.log("SoundManager: Sound disabled, skipping fade-in");
+      return;
+    }
+
     const currentMusic = getMusicByMode(currentMusicMode);
     if (currentMusic) {
       await SoundManager.fadeIn(currentMusic, options);
@@ -482,6 +522,11 @@ export const SoundManager = {
    * These methods are maintained for backwards compatibility but may be deprecated
    */
   playSuccess: async () => {
+    if (!globalSoundEnabled) {
+      console.log("SoundManager: Sound disabled, skipping success sound");
+      return;
+    }
+
     // Transition to positive music mode for success
     await SoundManager.setMusicMode("positive", {
       duration: 1500,
@@ -498,6 +543,11 @@ export const SoundManager = {
   },
 
   playNegative: async () => {
+    if (!globalSoundEnabled) {
+      console.log("SoundManager: Sound disabled, skipping negative sound");
+      return;
+    }
+
     // Transition to negative music mode for failure
     await SoundManager.setMusicMode("negative", {
       duration: 1000,
@@ -517,6 +567,13 @@ export const SoundManager = {
    * Play negative music with fade-in for wrong guesses
    */
   playNegativeWithFadeIn: async (options: FadeOptions = {}) => {
+    if (!globalSoundEnabled) {
+      console.log(
+        "SoundManager: Sound disabled, skipping negative fade-in sound"
+      );
+      return;
+    }
+
     const config = {
       duration: 1500,
       curve: "exponential" as const,

@@ -1,7 +1,7 @@
 import React from "react";
 import { Text, View, StyleSheet } from "react-native";
 import { moderateScale } from "../../utils/responsive";
-import { COLORS, TYPOGRAPHY } from "../../styles";
+import { TYPOGRAPHY } from "../../styles";
 
 /**
  * Define the props for the RiddleText component.

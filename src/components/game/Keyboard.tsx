@@ -19,7 +19,7 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress }) => {
 
   // Responsive styles
   const keyHeight = scale(36);
-  const keyWidth = scale(32); // Reduced from 38 to 32 to prevent overflow
+  const keyWidth = scale(35); // Reduced from 38 to 32 to prevent overflow
   const keyMargin = scale(1.65);
   const fontSize = moderateScale(18);
 
@@ -32,14 +32,7 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress }) => {
       {/* Keyboard keys layer */}
       <View style={gameStyles.keyboardLayer}>
         {/* Top row - QWERTYUIOP */}
-        <View
-          style={[
-            gameStyles.keyboardRow,
-            {
-              marginBottom: scale(5), // Reduced from 6
-            },
-          ]}
-        >
+        <View style={gameStyles.keyboardRow}>
           {topRow.map((key) => (
             <TouchableOpacity
               key={key}
@@ -124,6 +117,7 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress }) => {
               ref={(ref) => {
                 keyRefs.current[key] = ref;
               }}
+              className="rounded-full"
               style={[
                 gameStyles.keyButton,
                 {

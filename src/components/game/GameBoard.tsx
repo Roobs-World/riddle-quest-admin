@@ -42,6 +42,10 @@ const GameBoard: React.FC<GameBoardProps> = ({
           styles.riddleContainer,
           isTablet && styles.riddleContainerTablet,
           {
+            maxHeight: "20%",
+            height: "20%",
+            width: "100%",
+            minHeight: "20%",
             justifyContent: "center",
             alignItems: "center",
           },
@@ -54,7 +58,6 @@ const GameBoard: React.FC<GameBoardProps> = ({
           style={{
             position: "absolute",
             top: "0%",
-            left: "5%",
             zIndex: 0,
           }}
         />

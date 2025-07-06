@@ -28,10 +28,6 @@ export const gameStyles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: COLORS.gray300,
-    shadowColor: COLORS.black,
-    shadowOpacity: 0.2,
-    shadowRadius: 1.5,
-    elevation: 2,
   } as ViewStyle,
 
   keyText: {
@@ -42,8 +38,13 @@ export const gameStyles = StyleSheet.create({
 
   keyboardContainer: {
     alignItems: "center",
+    justifyContent: "center",
     position: "relative",
+    width: "100%",
     backgroundColor: COLORS.transparent,
+    minHeight: "16%",
+    maxHeight: "16%",
+    height: "16%",
   } as ViewStyle,
 
   keyboardLayer: {

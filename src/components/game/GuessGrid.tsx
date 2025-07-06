@@ -4,6 +4,7 @@ import { View, Text } from "react-native";
 import type { SubmittedGuess, Feedback } from "../../hooks/types"; // Import Feedback type from types.ts
 import { scale } from "../../utils/responsive";
 import { styles } from "../../styles";
+import { NUM_GUESSES } from "src/utils/constants";
 
 /**
  * Define the structure for the entire guess grid.
@@ -55,7 +56,7 @@ const GuessGrid: React.FC<GuessGridProps> = ({
   }
 
   // Fill the remaining rows with empty cells up to 3 rows
-  while (displayRows.length < 3) {
+  while (displayRows.length < NUM_GUESSES) {
     displayRows.push({
       letters: Array(answerLength).fill(null),
       feedback: Array(answerLength).fill(null),
@@ -103,7 +104,15 @@ const GuessGrid: React.FC<GuessGridProps> = ({
   };
 
   return (
-    <View className="w-full items-center justify-center">
+    <View
+      className="w-full items-center justify-center"
+      style={{
+        height: "36%",
+        minHeight: "36%",
+        maxHeight: "36%",
+        width: "100%",
+      }}
+    >
       {/* Container for the grid rows with proper vertical alignment */}
       <View className="w-full items-center" style={styles.maskingContainer}>
         {displayRows.map((row, rowIndex) => (
@@ -120,7 +129,7 @@ const GuessGrid: React.FC<GuessGridProps> = ({
               return (
                 <View
                   key={cellIndex}
-                  className={`border ${borderColor} items-center justify-center rounded ${backgroundColor}`}
+                  className={`border ${borderColor} items-center justify-center rounded-full ${backgroundColor}`}
                   style={{
                     width: TILE_SIZE,
                     height: TILE_SIZE,

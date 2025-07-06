@@ -31,7 +31,14 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
   onSettingsPress,
 }) => {
   return (
-    <View className="flex-row justify-between items-center bg-white left-0 right-0 px-4">
+    <View
+      className="flex-row justify-between items-center bg-white left-0 right-0 px-4 w-full"
+      style={{
+        height: "8%",
+        minHeight: "8%",
+        maxHeight: "8%",
+      }}
+    >
       <TouchableOpacity
         onPress={() => onProfilePress()}
         accessible={true}

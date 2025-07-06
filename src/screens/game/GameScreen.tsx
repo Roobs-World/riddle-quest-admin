@@ -215,7 +215,10 @@ const GameScreen: React.FC<GameScreenProps> = ({
           SOUND_ENABLED_STORAGE_KEY
         );
         if (soundEnabled !== null) {
-          setIsSoundEnabled(JSON.parse(soundEnabled));
+          const parsedSoundEnabled = JSON.parse(soundEnabled);
+          setIsSoundEnabled(parsedSoundEnabled);
+          // Sync with SoundManager when loading settings
+          SoundManager.setSoundEnabled(parsedSoundEnabled);
         }
 
         const hapticsEnabled = await AsyncStorage.getItem(
@@ -252,6 +255,9 @@ const GameScreen: React.FC<GameScreenProps> = ({
 
   // Start background music automatically if sound is enabled
   useEffect(() => {
+    // Update the global sound state in SoundManager
+    SoundManager.setSoundEnabled(isSoundEnabled);
+
     if (isSoundEnabled) {
       // Add a small delay to ensure SoundManager has time to initialize
       let cleanup: (() => void) | undefined;
@@ -510,6 +516,8 @@ const GameScreen: React.FC<GameScreenProps> = ({
 
   const toggleSoundEnabled = (isEnabled: boolean) => {
     setIsSoundEnabled(isEnabled);
+    // Update the global sound state in SoundManager
+    SoundManager.setSoundEnabled(isEnabled);
     if (isEnabled) {
       SoundManager.playBackgroundMusic();
     } else {
@@ -737,7 +745,6 @@ const GameScreen: React.FC<GameScreenProps> = ({
           styles.gameContainer,
           isAnyOverlayVisible && styles.overlayVisible,
           isTablet && styles.gameContainerTablet,
-          { paddingBottom: 120 }, // Add padding to prevent content being hidden by bottom bar
         ]}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
@@ -753,7 +760,16 @@ const GameScreen: React.FC<GameScreenProps> = ({
           isAnyOverlayVisible={isAnyOverlayVisible}
         />
 
-        <View className="flex-row justify-between items-center ">
+        <View
+          className="flex-row justify-center items-center"
+          style={{
+            height: "10%",
+            minHeight: "10%",
+            maxHeight: "10%",
+            width: "100%",
+            justifyContent: "center",
+          }}
+        >
           <TouchableOpacity
             className={`px-14 py-4 rounded-full mx-auto ${
               isSubmitDisabled || gameOver

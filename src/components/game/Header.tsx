@@ -24,7 +24,12 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ userCoins, onCoinsPress }) => {
   return (
     <View
-      className="w-full flex-row items-center justify-between pt-4 px-4"
+      className="w-full flex-row items-center justify-between px-4"
+      style={{
+        minHeight: "8%",
+        maxHeight: "8%",
+        height: "8%",
+      }}
       testID="header"
       accessible={true}
       accessibilityRole="none"
