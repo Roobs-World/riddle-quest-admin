@@ -52,6 +52,7 @@ export const layoutStyles = StyleSheet.create({
     maxHeight: "100%",
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "#FCFAF4",
   } as ViewStyle,
 
   gameContainerTablet: {
