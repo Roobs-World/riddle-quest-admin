@@ -411,7 +411,9 @@ export const SoundManager = {
           currentMusic.getStatusAsync()
         );
         if (currentStatus.isLoaded && !currentStatus.isPlaying) {
-          await runAudioOperation(() => currentMusic.playAsync());
+          await runAudioOperation(() =>
+            currentMusic.setStatusAsync({ shouldPlay: true })
+          );
         }
         await SoundManager.crossfade(currentMusic, newMusic, config);
       } else {
@@ -477,7 +479,9 @@ export const SoundManager = {
           currentMusic.getStatusAsync()
         );
         if (status.isLoaded && !status.isPlaying) {
-          await runAudioOperation(() => currentMusic.playAsync());
+          await runAudioOperation(() =>
+            currentMusic.setStatusAsync({ shouldPlay: true })
+          );
           console.log(
             `SoundManager: Resumed ${currentMusicMode} music in high quality`
           );
@@ -749,7 +753,9 @@ export const SoundManager = {
         fromSound.getStatusAsync()
       );
       if (fromStatus.isLoaded && !fromStatus.isPlaying) {
-        await runAudioOperation(() => fromSound.playAsync());
+        await runAudioOperation(() =>
+          fromSound.setStatusAsync({ shouldPlay: true })
+        );
       }
 
       const stepDuration = config.duration / config.steps;
