@@ -12,6 +12,8 @@ module.exports = {
         "primary-orange": "#FF8C00",
         "secondary-orange": "#FCC880",
         "input-background": "#F8F5EE",
+        "key-bg": "#FCF1D3",
+        "key-border": "#401F40",
       },
       screens: {
         // Custom breakpoints for mobile-first responsive design

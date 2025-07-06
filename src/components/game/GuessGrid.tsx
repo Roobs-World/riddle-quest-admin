@@ -77,18 +77,8 @@ const GuessGrid: React.FC<GuessGridProps> = ({
       case "red":
         return "bg-red-500";
       default:
-        return "bg-transparent";
+        return "bg-key-bg";
     }
-  };
-
-  /**
-   * Function to determine cell border color.
-   * @param {Feedback} feedback - The feedback for a specific letter cell.
-   * @returns {string} The Tailwind CSS class string for the border color.
-   */
-  const getCellBorderColor = (feedback: Feedback) => {
-    if (feedback) return "border-transparent";
-    return "border-gray-400";
   };
 
   /**
@@ -124,12 +114,11 @@ const GuessGrid: React.FC<GuessGridProps> = ({
             {row.letters.map((letter, cellIndex) => {
               const feedback = row.feedback[cellIndex];
               const backgroundColor = getCellBackgroundColor(feedback);
-              const borderColor = getCellBorderColor(feedback);
               const textColor = getCellTextColor(feedback, letter);
               return (
                 <View
                   key={cellIndex}
-                  className={`border ${borderColor} items-center justify-center rounded-full ${backgroundColor}`}
+                  className={`border-key-border border-2 items-center justify-center rounded-full ${backgroundColor}`}
                   style={{
                     width: TILE_SIZE,
                     height: TILE_SIZE,

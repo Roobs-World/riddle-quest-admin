@@ -19,7 +19,7 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress }) => {
 
   // Responsive styles
   const keyHeight = scale(36);
-  const keyWidth = scale(35); // Reduced from 38 to 32 to prevent overflow
+  const keyWidth = scale(35);
   const keyMargin = scale(1.65);
   const fontSize = moderateScale(18);
 
