@@ -8,14 +8,8 @@ import { SPACING } from "../tokens/spacing";
 import { BORDER_RADIUS } from "../tokens/borderRadius";
 import { COLORS } from "../tokens/colors";
 import { SIZING } from "../tokens/sizing";
-import { SHADOWS } from "../tokens/shadows";
 
 export const gameStyles = StyleSheet.create({
-  backspaceKey: {
-    alignItems: "center",
-    justifyContent: "center",
-  } as ViewStyle,
-
   iconColor: {
     color: COLORS.activeTextColor,
   } as ViewStyle,
@@ -27,7 +21,6 @@ export const gameStyles = StyleSheet.create({
   keyButton: {
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: COLORS.gray300,
   } as ViewStyle,
 
   keyText: {
@@ -64,20 +57,6 @@ export const gameStyles = StyleSheet.create({
 
   logo: {
     marginBottom: SPACING.md,
-  } as ViewStyle,
-
-  pulseCircle: {
-    backgroundColor: COLORS.primaryOrange,
-    position: "absolute",
-    ...SHADOWS.lg,
-    shadowColor: COLORS.primaryOrange,
-    shadowOpacity: 0.3,
-    shadowRadius: SPACING.sm,
-  } as ViewStyle,
-
-  pulseContainer: {
-    ...StyleSheet.absoluteFillObject,
-    zIndex: 10,
   } as ViewStyle,
 
   tileView: {

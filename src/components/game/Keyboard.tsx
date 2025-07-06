@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import BackspaceIcon from "../icons/BackspaceIcon";
 import { scale, moderateScale } from "../../utils/responsive";
-import { gameStyles } from "../../styles";
+import { COLORS, gameStyles } from "../../styles";
 
 interface KeyboardProps {
   onKeyPress: (key: string) => void;
@@ -147,14 +147,11 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress }) => {
             ref={(ref) => {
               keyRefs.current["DELETE"] = ref;
             }}
-            style={[
-              gameStyles.backspaceKey,
-              {
-                height: keyHeight,
-                width: scale(48),
-                margin: keyMargin,
-              },
-            ]}
+            style={{
+              height: keyHeight,
+              width: scale(48),
+              margin: keyMargin,
+            }}
             onPressIn={() => handleKeyPress("BACKSPACE")}
             activeOpacity={0.7}
           >
