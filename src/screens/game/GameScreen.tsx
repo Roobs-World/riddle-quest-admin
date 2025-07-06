@@ -221,6 +221,9 @@ const GameScreen: React.FC<GameScreenProps> = ({
           setIsSoundEnabled(parsedSoundEnabled);
           // Sync with SoundManager when loading settings
           SoundManager.setSoundEnabled(parsedSoundEnabled);
+        } else {
+          // For new users, ensure SoundManager knows the default state (true)
+          SoundManager.setSoundEnabled(true);
         }
 
         const hapticsEnabled = await AsyncStorage.getItem(

@@ -300,32 +300,12 @@ export const SoundManager = {
 
       console.log("SoundManager: All music modes loaded with enhanced quality");
 
-      // Start with neutral music mode directly
-      if (neutralMusic) {
-        try {
-          // Use setStatusAsync instead of individual method calls
-          await runAudioOperation(() =>
-            neutralMusic!.setStatusAsync({
-              shouldPlay: true,
-              volume: 1.0,
-            })
-          );
-          currentMusicMode = "neutral"; // Explicitly set current mode
-          console.log(
-            "SoundManager: Neutral music started directly during init."
-          );
-        } catch (e) {
-          console.error(
-            "SoundManager: Failed to start neutral music directly in init",
-            e
-          );
-          // Fallback or further error handling might be needed here
-        }
-      } else {
-        console.error(
-          "SoundManager: neutralMusic instance is null, cannot start directly in init."
-        );
-      }
+      // Set current mode to neutral but don't start playing automatically
+      // Let the GameScreen control when to start music after loading saved settings
+      currentMusicMode = "neutral";
+      console.log(
+        "SoundManager: Neutral music mode set as default (not playing yet)"
+      );
 
       isInitialized = true;
       console.log(
