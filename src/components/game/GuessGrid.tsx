@@ -88,8 +88,8 @@ const GuessGrid: React.FC<GuessGridProps> = ({
    * @returns {string} The Tailwind CSS class string for the text color.
    */
   const getCellTextColor = (feedback: Feedback, letter: string | null) => {
-    if (feedback) return "text-white";
-    if (letter !== null) return "text-white";
+    if (feedback) return "text-key-border";
+    if (letter !== null) return "text-key-border";
     return "text-transparent";
   };
 
