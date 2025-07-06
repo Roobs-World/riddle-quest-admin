@@ -69,11 +69,6 @@ export const layoutStyles = StyleSheet.create({
     alignItems: "center",
   } as ViewStyle,
 
-  maskingContainer: {
-    minHeight: SIZING.tile.size * 3 + scale(2) * 6 + scale(4) * 3,
-    overflow: "hidden",
-  } as ViewStyle,
-
   questionsBackground: {
     position: "absolute",
     top: 0,

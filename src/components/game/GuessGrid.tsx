@@ -91,7 +91,7 @@ const GuessGrid: React.FC<GuessGridProps> = ({
       }}
     >
       {/* Container for the grid rows with proper vertical alignment */}
-      <View className="w-full items-center" style={styles.maskingContainer}>
+      <View className="w-full items-center">
         {displayRows.map((row, rowIndex) => (
           <View
             key={rowIndex}
