@@ -40,6 +40,7 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
       }}
     >
       <TouchableOpacity
+        className="ml-10"
         onPress={() => onProfilePress()}
         accessible={true}
         accessibilityRole="button"
@@ -58,6 +59,7 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
       </TouchableOpacity>
 
       <TouchableOpacity
+        className="mr-10"
         onPress={() => onSettingsPress()}
         testID="settings-button"
         accessible={true}
