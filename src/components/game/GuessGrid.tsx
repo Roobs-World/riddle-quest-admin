@@ -3,7 +3,6 @@ import { View, Text } from "react-native";
 
 import type { SubmittedGuess, Feedback } from "../../hooks/types"; // Import Feedback type from types.ts
 import { scale } from "../../utils/responsive";
-import { styles } from "../../styles";
 import { NUM_GUESSES } from "src/utils/constants";
 
 /**
