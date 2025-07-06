@@ -1,8 +1,7 @@
 import React from "react";
-import { View, TouchableOpacity, Text } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import ProfileIcon from "../icons/ProfileIcon";
-import SettingsIcon from "../icons/SettingsIcon";
+import { View, TouchableOpacity } from "react-native";
+import ProfileIcon from "../../../assets/images/profile-icon.svg";
+import SettingsIcon from "../../../assets/images/settings-icon.svg";
 
 export type OverlayType = "profile" | "settings";
 
@@ -18,10 +17,6 @@ export type OverlayType = "profile" | "settings";
 interface BottomNavigationBarProps {
   onProfilePress: () => void;
   onSettingsPress: () => void;
-  onSubmitPress: () => void;
-  currentGuess: string[];
-  answerLength: number;
-  gameOver: boolean;
 }
 
 /**
@@ -33,62 +28,29 @@ interface BottomNavigationBarProps {
 const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
   onProfilePress,
   onSettingsPress,
-  onSubmitPress,
-  currentGuess,
-  answerLength,
-  gameOver,
 }) => {
-  const isSubmitDisabled = currentGuess.length !== answerLength;
-  const insets = useSafeAreaInsets();
-
   return (
-    <View
-      className="absolute bottom-0 left-0 right-0 px-4 pt-2 pb-2 bg-white"
-      style={{ paddingBottom: insets.bottom + 8 }}
-      testID="bottom-navigation-bar"
-    >
-      <View className="flex-row justify-between items-center ">
-        <TouchableOpacity
-          onPress={() => onProfilePress && onProfilePress()}
-          className="items-center "
-          testID="profile-button"
-          accessible={true}
-          accessibilityRole="button"
-          accessibilityLabel="Open profile"
-        >
-          <ProfileIcon color="#999999" testID="profile-icon" />
-        </TouchableOpacity>
+    <View className="flex-row justify-between items-center bg-white left-0 right-0 px-4">
+      <TouchableOpacity
+        onPress={() => onProfilePress && onProfilePress()}
+        className="items-center "
+        accessible={true}
+        accessibilityRole="button"
+        accessibilityLabel="Open profile"
+      >
+        <ProfileIcon />
+      </TouchableOpacity>
 
-        {/* Submit Button */}
-        <TouchableOpacity
-          className={`px-14 py-4 rounded-full ${
-            isSubmitDisabled || gameOver ? "bg-secondary-orange" : "bg-blue-500"
-          }`}
-          onPress={() => {
-            if (!isSubmitDisabled && !gameOver && onSubmitPress) {
-              onSubmitPress();
-            }
-          }}
-          disabled={isSubmitDisabled || gameOver}
-          testID="submit-button"
-          accessible={true}
-          accessibilityRole="button"
-          accessibilityLabel="Submit current guess"
-        >
-          <Text className="text-black font-bold text-lg">Submit</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={() => onSettingsPress && onSettingsPress()}
-          className="items-center"
-          testID="settings-button"
-          accessible={true}
-          accessibilityRole="button"
-          accessibilityLabel="Open settings"
-        >
-          <SettingsIcon color="#999999" testID="settings-icon" />
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity
+        onPress={() => onSettingsPress && onSettingsPress()}
+        className="items-center"
+        testID="settings-button"
+        accessible={true}
+        accessibilityRole="button"
+        accessibilityLabel="Open settings"
+      >
+        <SettingsIcon />
+      </TouchableOpacity>
     </View>
   );
 };

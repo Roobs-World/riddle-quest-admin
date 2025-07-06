@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Alert, KeyboardAvoidingView, Platform } from "react-native";
+import {
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import Header from "../../components/game/Header";
@@ -11,7 +18,6 @@ import { SoundManager } from "../../services/SoundManager";
 import useGameLogic from "../../hooks/useGameLogic";
 import { checkAnyOverlayVisible } from "../../utils/overlayUtils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useSharedValue, useAnimatedStyle } from "react-native-reanimated";
 import functions from "@react-native-firebase/functions";
 import { getApp } from "@react-native-firebase/app";
 import { GameMode } from "../../contexts/AuthContext";
@@ -133,9 +139,6 @@ const GameScreen: React.FC<GameScreenProps> = ({
     isWelcomeOverlayVisible: false,
     isLoading: false,
   });
-
-  // Animation value for shaking the GuessGrid
-  const shakeAnimation = useSharedValue(0);
 
   const [isSoundEnabled, setIsSoundEnabled] = useState(true);
   const [isHapticsEnabled, setIsHapticsEnabled] = useState(true);
@@ -723,11 +726,7 @@ const GameScreen: React.FC<GameScreenProps> = ({
     }));
   };
 
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ translateX: shakeAnimation.value }],
-    };
-  });
+  const isSubmitDisabled = currentGuess.length !== answerLength;
 
   return (
     <SafeAreaView className="flex-1">
@@ -749,18 +748,35 @@ const GameScreen: React.FC<GameScreenProps> = ({
           currentGuess={currentGuess}
           answerLength={answerLength}
           shakeKey={overlayState.shakeKey}
-          animatedStyle={animatedStyle}
           onKeyPress={handleKeyPress}
           isAnyOverlayVisible={isAnyOverlayVisible}
         />
 
+        <View className="flex-row justify-between items-center ">
+          <TouchableOpacity
+            className={`px-14 py-4 rounded-full ${
+              isSubmitDisabled || gameOver
+                ? "bg-secondary-orange"
+                : "bg-blue-500"
+            }`}
+            onPress={() => {
+              if (!isSubmitDisabled && !gameOver) {
+                handleKeyPress("ENTER");
+              }
+            }}
+            disabled={isSubmitDisabled || gameOver}
+            testID="submit-button"
+            accessible={true}
+            accessibilityRole="button"
+            accessibilityLabel="Submit current guess"
+          >
+            <Text className="text-black font-bold text-lg">Submit</Text>
+          </TouchableOpacity>
+        </View>
+
         <BottomNavigationBar
           onProfilePress={handleProfilePress}
           onSettingsPress={handleSettingsPress}
-          onSubmitPress={() => handleKeyPress("ENTER")}
-          currentGuess={currentGuess}
-          answerLength={answerLength}
-          gameOver={gameOver}
         />
       </KeyboardAvoidingView>
 
