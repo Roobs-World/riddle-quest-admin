@@ -36,6 +36,8 @@ import { safeDelay } from "../../utils/timing";
 import PulsingSpinner from "../../components/loading/PulsingSpinner";
 import OutOfAttemptsModal from "../../components/modals/game/OutOfAttemptsModal";
 import { styles } from "../../styles";
+import { SubmitButton } from "src/components/game/SubmitButton";
+import { GameInput } from "src/components/game/GameInput";
 
 // import StarryBackground from "../../components/background/StarryBackground";
 
@@ -760,36 +762,11 @@ const GameScreen: React.FC<GameScreenProps> = ({
           isAnyOverlayVisible={isAnyOverlayVisible}
         />
 
-        <View
-          className="flex-row justify-center items-center"
-          style={{
-            height: "10%",
-            minHeight: "10%",
-            maxHeight: "10%",
-            width: "100%",
-            justifyContent: "center",
-          }}
-        >
-          <TouchableOpacity
-            className={`px-14 py-4 rounded-full mx-auto ${
-              isSubmitDisabled || gameOver
-                ? "bg-secondary-orange"
-                : "bg-primary-orange"
-            }`}
-            onPress={() => {
-              if (!isSubmitDisabled && !gameOver) {
-                handleKeyPress("ENTER");
-              }
-            }}
-            disabled={isSubmitDisabled || gameOver}
-            testID="submit-button"
-            accessible={true}
-            accessibilityRole="button"
-            accessibilityLabel="Submit current guess"
-          >
-            <Text className="text-black font-bold text-lg">Submit</Text>
-          </TouchableOpacity>
-        </View>
+        <GameInput
+          isSubmitDisabled={isSubmitDisabled}
+          gameOver={gameOver}
+          handleKeyPress={handleKeyPress}
+        />
 
         <BottomNavigationBar
           onProfilePress={handleProfilePress}

@@ -58,6 +58,16 @@ export const layoutStyles = StyleSheet.create({
     paddingHorizontal: SPACING.md,
   } as ViewStyle,
 
+  gameInput: {
+    height: "10%",
+    minHeight: "10%",
+    maxHeight: "10%",
+    width: "100%",
+    justifyContent: "center",
+    flexDirection: "row",
+    alignItems: "center",
+  } as ViewStyle,
+
   maskingContainer: {
     minHeight: SIZING.tile.size * 3 + scale(2) * 6 + scale(4) * 3,
     overflow: "hidden",
