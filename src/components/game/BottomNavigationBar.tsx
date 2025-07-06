@@ -2,6 +2,7 @@ import React from "react";
 import { View, TouchableOpacity } from "react-native";
 import ProfileIcon from "../../../assets/images/profile-icon.svg";
 import SettingsIcon from "../../../assets/images/settings-icon.svg";
+import LetsPlayIcon from "../../../assets/images/lets-play.svg";
 
 export type OverlayType = "profile" | "settings";
 
@@ -32,8 +33,7 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
   return (
     <View className="flex-row justify-between items-center bg-white left-0 right-0 px-4">
       <TouchableOpacity
-        onPress={() => onProfilePress && onProfilePress()}
-        className="items-center "
+        onPress={() => onProfilePress()}
         accessible={true}
         accessibilityRole="button"
         accessibilityLabel="Open profile"
@@ -42,8 +42,16 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
       </TouchableOpacity>
 
       <TouchableOpacity
-        onPress={() => onSettingsPress && onSettingsPress()}
-        className="items-center"
+        onPress={() => {}}
+        accessible={true}
+        accessibilityRole="button"
+        accessibilityLabel="Open profile"
+      >
+        <LetsPlayIcon />
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        onPress={() => onSettingsPress()}
         testID="settings-button"
         accessible={true}
         accessibilityRole="button"

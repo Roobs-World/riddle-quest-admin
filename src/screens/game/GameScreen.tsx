@@ -36,6 +36,7 @@ import { safeDelay } from "../../utils/timing";
 import PulsingSpinner from "../../components/loading/PulsingSpinner";
 import OutOfAttemptsModal from "../../components/modals/game/OutOfAttemptsModal";
 import { styles } from "../../styles";
+import StarryBackground from "src/components/background/StarryBackground";
 // import StarryBackground from "../../components/background/StarryBackground";
 
 interface GuessResult {
