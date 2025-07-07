@@ -10,5 +10,6 @@ export { default as FullProfileDetailsModal } from "./settings/FullProfileDetail
 
 // Help Modals
 export { default as HintModal } from "./help/HintModal";
+export { default as SkipModal } from "./help/SkipModal";
 export { default as WelcomeModal } from "./help/WelcomeModal";
 export { default as InstructionsModal } from "./help/InstructionsModal";

@@ -28,6 +28,7 @@ import { isTablet } from "../../utils/responsive";
 import { safeDelay } from "../../utils/timing";
 import PulsingSpinner from "../../components/loading/PulsingSpinner";
 import OutOfAttemptsModal from "../../components/modals/game/OutOfAttemptsModal";
+import SkipModal from "../../components/modals/help/SkipModal";
 import { styles } from "../../styles";
 import { GameInput } from "src/components/game/GameInput";
 
@@ -67,15 +68,13 @@ interface GameScreenProps {
 
 interface GameScreenState {
   isInstructionsVisible: boolean;
-  shakeKey: number;
   isFullProfileDetailsOverlayVisible: boolean;
   isCoinShopModalVisible: boolean;
   isWatchAdModalVisible: boolean;
   isOutOfAttemptsModalVisible: boolean;
   lastGuessResult: GuessResult | null;
-  startShatterAnimation: boolean;
   isHintOverlayVisible: boolean;
-  isProfileOverlayVisible: boolean;
+  isSkipModalVisible: boolean;
   isSettingsOverlayVisible: boolean;
   isWelcomeOverlayVisible: boolean;
   isLoading: boolean;
@@ -121,15 +120,13 @@ const GameScreen: React.FC<GameScreenProps> = ({
 
   const [overlayState, setOverlayState] = useState<GameScreenState>({
     isInstructionsVisible: false,
-    shakeKey: 0,
     isFullProfileDetailsOverlayVisible: false,
     isCoinShopModalVisible: false,
     isWatchAdModalVisible: false,
     isOutOfAttemptsModalVisible: false,
     lastGuessResult: null,
-    startShatterAnimation: false,
     isHintOverlayVisible: false,
-    isProfileOverlayVisible: false,
+    isSkipModalVisible: false,
     isSettingsOverlayVisible: false,
     isWelcomeOverlayVisible: false,
     isLoading: false,
@@ -161,7 +158,7 @@ const GameScreen: React.FC<GameScreenProps> = ({
     overlayState.isWatchAdModalVisible,
     overlayState.isWelcomeOverlayVisible,
     overlayState.isOutOfAttemptsModalVisible,
-    false
+    overlayState.isSkipModalVisible
   );
 
   const { isRewardedAdReady, loadRewardedAd, showRewardedAd } =
@@ -275,12 +272,6 @@ const GameScreen: React.FC<GameScreenProps> = ({
       const result = overlayState.lastGuessResult;
 
       if (result.outcome === "win") {
-        // Start text shattering animation
-        setOverlayState((prev) => ({
-          ...prev,
-          startShatterAnimation: true,
-        }));
-
         // Fade out background music before playing success sound for dramatic effect
         SoundManager.fadeOutBackgroundMusic({
           duration: 500,
@@ -304,7 +295,6 @@ const GameScreen: React.FC<GameScreenProps> = ({
         setOverlayState((prev) => ({
           ...prev,
           lastGuessResult: result,
-          startShatterAnimation: true,
         }));
         onGameWin(guesses.length, result.coinsEarned || 0);
       } else if (result.outcome === "attemptLimitReached") {
@@ -377,10 +367,6 @@ const GameScreen: React.FC<GameScreenProps> = ({
         );
       }
     } else {
-      setOverlayState((prev) => ({
-        ...prev,
-        shakeKey: prev.shakeKey + 1,
-      }));
       if (isHapticsEnabled) {
         ReactNativeHapticFeedback.trigger("notificationWarning", hapticOptions);
       }
@@ -411,10 +397,25 @@ const GameScreen: React.FC<GameScreenProps> = ({
     }));
   };
 
-  const handleOverlayNext = () => {
-    console.log("VictoryLossOverlay Next Level button pressed");
+  const handleSkipClose = () => {
+    setOverlayState((prev) => ({
+      ...prev,
+      isSkipModalVisible: false,
+    }));
+  };
+
+  const handleSkipHint = async () => {
+    handleSkipClose();
     resetGame();
     onNextLevel();
+  };
+
+  const handleOverlayNext = () => {
+    console.log("Next button pressed - opening skip modal");
+    setOverlayState((prev) => ({
+      ...prev,
+      isSkipModalVisible: true,
+    }));
   };
 
   const handleSettingsPress = () => {
@@ -818,6 +819,15 @@ const GameScreen: React.FC<GameScreenProps> = ({
         onWatchAd={handleWatchAdToContinue}
         onSpendCoins={handleSpendCoinsToContinue}
         onClose={handleGiveUpAttempts}
+      />
+
+      {/* Skip Modal */}
+      <SkipModal
+        isVisible={overlayState.isSkipModalVisible}
+        userCoins={userCoins}
+        skipCost={hintCost}
+        onShowHint={handleSkipHint}
+        onClose={handleSkipClose}
       />
 
       <Controls

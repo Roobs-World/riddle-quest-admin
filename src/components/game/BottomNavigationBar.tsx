@@ -11,6 +11,7 @@ export type OverlayType = "profile" | "settings";
  * @property {() => void} onProfilePress - Function to call when the Profile icon is pressed.
  * @property {() => void} onSettingsPress - Function to call when the Settings icon is pressed.
  * @property {() => void} onHintPress - Function to call when the Hint button is pressed.
+ * @property {() => void} onSkipPress - Function to call when the Skip button is pressed.
  */
 interface BottomNavigationBarProps {
   onProfilePress: () => void;
