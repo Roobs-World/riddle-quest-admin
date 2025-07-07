@@ -305,13 +305,26 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
       onRequestClose={onClose}
     >
       <View className="flex-1 justify-center items-center bg-black/50">
-        <View className="bg-white rounded-lg m-4 w-11/12 max-w-sm relative max-h-5/6">
+        <View
+          className="bg-white rounded-lg m-4 w-11/12 max-w-sm relative"
+          style={{ height: "85%" }}
+          pointerEvents="box-none"
+        >
           {/* Close Button in top-right corner */}
           <View className="absolute top-2 right-2 z-10">
             <CloseButton onPress={onClose} size={20} />
           </View>
 
-          <ScrollView className="p-6" showsVerticalScrollIndicator={false}>
+          <ScrollView
+            className="p-6 pt-12"
+            showsVerticalScrollIndicator={true}
+            bounces={true}
+            scrollEventThrottle={16}
+            keyboardShouldPersistTaps="handled"
+            alwaysBounceVertical={true}
+            scrollEnabled={true}
+            contentContainerStyle={{ flexGrow: 1, paddingBottom: 100 }}
+          >
             <Text className="text-2xl font-bold text-gray-800 mb-4">
               Full Profile
             </Text>
