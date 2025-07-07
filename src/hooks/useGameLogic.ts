@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { SubmittedGuess } from "./types"; // Assuming you will create a types file for this
-import functions from "@react-native-firebase/functions";
+import { getFunctions } from "@react-native-firebase/functions";
 import { getApp } from "@react-native-firebase/app";
 
 export type Feedback = "green" | "yellow" | "red";
@@ -31,7 +31,7 @@ const useGameLogic = ({ riddleId, gameMode }: UseGameLogicProps) => {
     const currentAttempt = attemptsUsed + 1;
 
     try {
-      const submitGuessCallable = functions(getApp()).httpsCallable(
+      const submitGuessCallable = getFunctions(getApp()).httpsCallable(
         "submitGuess"
       );
       const result = await submitGuessCallable({

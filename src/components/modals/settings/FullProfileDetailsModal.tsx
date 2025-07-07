@@ -13,12 +13,13 @@ import {
 import { Player } from "../../../validation/firestoreSchemas"; // Updated import path
 import { useAuth } from "../../../contexts/AuthContext"; // Updated import path
 import * as ImagePicker from "react-native-image-picker";
-import storage, { FirebaseStorageTypes } from "@react-native-firebase/storage";
-import functions from "@react-native-firebase/functions";
+import {
+  getStorage,
+  FirebaseStorageTypes,
+} from "@react-native-firebase/storage";
+import { getFunctions } from "@react-native-firebase/functions";
+import { getAuth, EmailAuthProvider } from "@react-native-firebase/auth";
 import { getApp } from "@react-native-firebase/app";
-import auth from "@react-native-firebase/auth"; // Import auth module
-import { GoogleSignin } from "@react-native-google-signin/google-signin"; // Import Google Sign-In
-import { LoginManager, AccessToken } from "react-native-fbsdk-next"; // Import Facebook SDK
 import WideButton from "../../buttons/WideButton"; // Updated import path
 import CloseButton from "../../buttons/CloseButton"; // Updated import path
 
@@ -82,9 +83,9 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
 
   // Function to get Facebook photo URL from provider data
   const getFacebookPhotoUrl = () => {
-    const facebookProviderData = auth().currentUser?.providerData.find(
-      (p) => p.providerId === "facebook.com"
-    );
+    const facebookProviderData = getAuth(
+      getApp()
+    ).currentUser?.providerData.find((p) => p.providerId === "facebook.com");
     return facebookProviderData?.photoURL || null;
   };
 
@@ -107,7 +108,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
         if (selectedAsset.uri && playerData?.userId) {
           const uploadUri = selectedAsset.uri;
           const filename = uploadUri.substring(uploadUri.lastIndexOf("/") + 1);
-          const storageRef = storage().ref(
+          const storageRef = getStorage(getApp()).ref(
             `avatars/${playerData.userId}/${filename}`
           );
 
@@ -198,9 +199,9 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
     }
 
     try {
-      const processFormSubmissionCallable = functions(getApp()).httpsCallable(
-        "processFormSubmission"
-      );
+      const processFormSubmissionCallable = getFunctions(
+        getApp()
+      ).httpsCallable("processFormSubmission");
       const result = await processFormSubmissionCallable({
         formType: "profileUpdate",
         formData: {
@@ -252,7 +253,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
       return;
     }
 
-    const user = auth().currentUser;
+    const user = getAuth(getApp()).currentUser;
 
     if (!user || !user.email) {
       Alert.alert("Error", "User not logged in or email not available.");
@@ -261,13 +262,13 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
 
     try {
       // 3. Re-authenticate user if necessary
-      const credential = auth.EmailAuthProvider.credential(
+      const credential = EmailAuthProvider.credential(
         user.email,
         currentPassword
       );
       await user.reauthenticateWithCredential(credential);
 
-      // 4. Call auth().currentUser.updatePassword(newPassword)
+      // 4. Call user.updatePassword(newPassword) with current user instance
       await user.updatePassword(newPassword);
 
       // 5. Handle success

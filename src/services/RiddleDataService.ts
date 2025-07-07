@@ -1,4 +1,4 @@
-import firestore from "@react-native-firebase/firestore";
+import { getFirestore } from "@react-native-firebase/firestore";
 import { getApp } from "@react-native-firebase/app";
 import {
   FirestoreRiddle,
@@ -20,7 +20,7 @@ export class RiddleDataService implements IRiddleDataService {
     try {
       const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD format
 
-      const snapshot = await firestore(getApp())
+      const snapshot = await getFirestore(getApp())
         .collection(RiddleDataService.RIDDLES_COLLECTION)
         .where("category", "==", "daily")
         .where("date", "==", today)
@@ -57,7 +57,7 @@ export class RiddleDataService implements IRiddleDataService {
     console.log(`Fetching classic riddle for level ${level} from Firestore`);
 
     try {
-      const snapshot = await firestore(getApp())
+      const snapshot = await getFirestore(getApp())
         .collection(RiddleDataService.RIDDLES_COLLECTION)
         .where("classicIndex", "==", level)
         .limit(1)
@@ -105,7 +105,7 @@ export class RiddleDataService implements IRiddleDataService {
     console.log(`Fetching tutorial riddle for level ${level} from Firestore`);
 
     try {
-      const snapshot = await firestore(getApp())
+      const snapshot = await getFirestore(getApp())
         .collection(RiddleDataService.RIDDLES_COLLECTION)
         .where("category", "==", "tutorial")
         .where("tutorialIndex", "==", level)
@@ -154,7 +154,7 @@ export class RiddleDataService implements IRiddleDataService {
     }
 
     try {
-      const riddleDoc = await firestore(getApp())
+      const riddleDoc = await getFirestore(getApp())
         .collection(RiddleDataService.RIDDLES_COLLECTION)
         .doc(riddleId)
         .get();
@@ -195,7 +195,7 @@ export class RiddleDataService implements IRiddleDataService {
    */
   async getClassicRiddleCount(): Promise<number> {
     try {
-      const snapshot = await firestore(getApp())
+      const snapshot = await getFirestore(getApp())
         .collection(RiddleDataService.RIDDLES_COLLECTION)
         .where("category", "==", "classic")
         .get();
@@ -212,7 +212,7 @@ export class RiddleDataService implements IRiddleDataService {
    */
   async getTutorialRiddleCount(): Promise<number> {
     try {
-      const snapshot = await firestore(getApp())
+      const snapshot = await getFirestore(getApp())
         .collection(RiddleDataService.RIDDLES_COLLECTION)
         .where("category", "==", "tutorial")
         .get();

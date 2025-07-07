@@ -6,7 +6,7 @@ import {
   AdDisplayFailedInfo,
   AdRewardInfo,
 } from "react-native-applovin-max";
-import functions from "@react-native-firebase/functions";
+import { getFunctions } from "@react-native-firebase/functions";
 import { getApp } from "@react-native-firebase/app";
 import { useAuth } from "../contexts/AuthContext";
 import Constants from "expo-constants";
@@ -182,7 +182,7 @@ const useRewardedAds = (): UseRewardedAds => {
           const firebasePlacement =
             adUnitId || placement || networkName || "rewarded_ad";
 
-          await functions(getApp()).httpsCallable("awardedAdCallback")({
+          await getFunctions(getApp()).httpsCallable("awardedAdCallback")({
             userId: playerData.userId,
             placement: firebasePlacement, // Send ad unit ID or placement string
             // You could also send amount and label if your backend wants to verify them, though S2S is more reliable

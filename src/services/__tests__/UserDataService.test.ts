@@ -1,5 +1,5 @@
 import { UserDataService } from "../UserDataService";
-import firestore from "@react-native-firebase/firestore";
+import { getFirestore } from "@react-native-firebase/firestore";
 import { getApp } from "@react-native-firebase/app";
 import { Player, PlayerSchema } from "../../validation/firestoreSchemas";
 import { ZodError } from "zod";

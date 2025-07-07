@@ -1,6 +1,6 @@
-import firestore from "@react-native-firebase/firestore";
-import auth from "@react-native-firebase/auth";
-import functions from "@react-native-firebase/functions";
+import { getFirestore } from "@react-native-firebase/firestore";
+import { getAuth } from "@react-native-firebase/auth";
+import { getFunctions } from "@react-native-firebase/functions";
 import { getApp } from "@react-native-firebase/app";
 import { z, ZodError } from "zod";
 import {
@@ -21,7 +21,7 @@ export const RiddleService = {
    */
   async fetchDailyRiddle() {
     console.log("Fetching daily riddle from Firestore");
-    const userId = auth(getApp()).currentUser?.uid;
+    const userId = getAuth(getApp()).currentUser?.uid;
     if (!userId) {
       console.error("No authenticated user found.");
       return null;
@@ -30,7 +30,7 @@ export const RiddleService = {
     const today = new Date().toISOString().slice(0, 10);
 
     try {
-      const userDoc = await firestore(getApp())
+      const userDoc = await getFirestore(getApp())
         .collection("users")
         .doc(userId)
         .get();
@@ -56,7 +56,7 @@ export const RiddleService = {
         }
       }
 
-      const dailyChallengeDoc = await firestore(getApp())
+      const dailyChallengeDoc = await getFirestore(getApp())
         .collection("dailyChallenge")
         .doc(today)
         .get();
@@ -76,7 +76,7 @@ export const RiddleService = {
         return null;
       }
 
-      const userAttemptsDoc = await firestore(getApp())
+      const userAttemptsDoc = await getFirestore(getApp())
         .collection("userDailyChallengeAttempts")
         .doc(`${userId}_${today}`)
         .get();
@@ -87,7 +87,7 @@ export const RiddleService = {
       if (completedIndex < riddleIds.length) {
         const nextRiddleId = riddleIds[completedIndex];
 
-        const riddleDoc = await firestore(getApp())
+        const riddleDoc = await getFirestore(getApp())
           .collection("riddles")
           .doc(nextRiddleId)
           .get();
@@ -117,7 +117,7 @@ export const RiddleService = {
         }
       } else {
         console.log(`User has completed all daily riddles for date: ${today}`);
-        const userRef = firestore(getApp()).collection("users").doc(userId);
+        const userRef = getFirestore(getApp()).collection("users").doc(userId);
         await userRef.update({
           lastCompletedDailyChallengeDate: new Date().toISOString(),
         });
@@ -139,7 +139,7 @@ export const RiddleService = {
     console.log(`Fetching classic riddle for level ${level} from Firestore`);
 
     try {
-      const snapshot = await firestore(getApp())
+      const snapshot = await getFirestore(getApp())
         .collection("riddles")
         .where("classicIndex", "==", level)
         .limit(1)
@@ -181,7 +181,7 @@ export const RiddleService = {
   async fetchTutorialRiddle(level: number) {
     console.log(`Fetching tutorial riddle for level ${level} from Firestore`);
     try {
-      const snapshot = await firestore(getApp())
+      const snapshot = await getFirestore(getApp())
         .collection("riddles")
         .where("category", "==", "tutorial")
         .where("tutorialIndex", "==", level)
@@ -223,7 +223,7 @@ export const RiddleService = {
     try {
       SubmitGuessInputSchema.parse(guessData);
 
-      const submitGuessCallable = functions(getApp()).httpsCallable(
+      const submitGuessCallable = getFunctions(getApp()).httpsCallable(
         "submitGuess"
       );
       const result = await submitGuessCallable(guessData);

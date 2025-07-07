@@ -10,8 +10,9 @@ import {
 } from "react-native";
 import { useAuth } from "../contexts/AuthContext";
 import * as ImagePicker from "react-native-image-picker";
-import storage from "@react-native-firebase/storage";
+import { getStorage } from "@react-native-firebase/storage";
 import { FirebaseStorageTypes } from "@react-native-firebase/storage";
+import { getApp } from "@react-native-firebase/app";
 import { AppStrings } from "../constants/AppStrings";
 
 // Define the structure for preloaded avatars (can be moved to a separate file later)
@@ -105,7 +106,7 @@ const ProfileScreen: React.FC = () => {
         if (selectedAsset.uri && playerData?.userId) {
           const uploadUri = selectedAsset.uri;
           const filename = uploadUri.substring(uploadUri.lastIndexOf("/") + 1);
-          const storageRef = storage().ref(
+          const storageRef = getStorage(getApp()).ref(
             `avatars/${playerData.userId}/${filename}`
           );
 

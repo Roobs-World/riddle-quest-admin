@@ -1,6 +1,8 @@
 import React from "react";
-import { View, Text, Modal, TouchableOpacity } from "react-native";
+import { View, Text, Modal } from "react-native";
 import CloseButton from "../../buttons/CloseButton";
+import { ModalButton } from "../ModalButton";
+import { TYPOGRAPHY } from "src/styles";
 
 interface HintModalProps {
   isVisible: boolean;
@@ -18,7 +20,6 @@ const HintModal: React.FC<HintModalProps> = ({
   onClose,
 }) => {
   const canAffordHint = userCoins >= hintCost;
-
   return (
     <Modal
       visible={isVisible}
@@ -27,39 +28,47 @@ const HintModal: React.FC<HintModalProps> = ({
       onRequestClose={onClose}
     >
       <View className="flex-1 justify-center items-center bg-black/50">
-        <View className="bg-white p-6 rounded-lg items-center relative">
+        <View className="bg-input-background p-6 rounded-3xl items-center relative">
           {/* Close Button in top-right corner */}
           <View className="absolute top-2 right-2 z-10">
             <CloseButton onPress={onClose} size={20} />
           </View>
 
-          <Text className="text-xl font-bold text-gray-800 mb-4">
+          <Text
+            className="text-gray-800 mb-4"
+            style={{
+              fontFamily: TYPOGRAPHY.fontPrimary,
+              fontSize: 24,
+            }}
+          >
             Use a Hint?
           </Text>
-          <Text className="text-md text-gray-700 mb-4">
+          <Text
+            className="text-md text-gray-700 mb-4"
+            style={{
+              fontFamily: TYPOGRAPHY.fontPrimary,
+            }}
+          >
             Cost: {hintCost} Coins. You have: {userCoins} Coins.
           </Text>
           {!canAffordHint && (
-            <Text className="text-red-500 mb-4">
+            <Text
+              className="text-red-500 mb-4"
+              style={{
+                fontFamily: TYPOGRAPHY.fontPrimary,
+              }}
+            >
               You do not have enough coins for a hint.
             </Text>
           )}
           <View className="flex-row mt-4">
-            <TouchableOpacity
-              onPress={onShowHint}
-              className={`px-4 py-2 rounded mr-4 ${
-                canAffordHint ? "bg-yellow-500" : "bg-gray-400"
-              }`}
-              disabled={!canAffordHint}
-            >
-              <Text className="text-white font-bold">Show Hint</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={onClose}
-              className="bg-gray-500 px-4 py-2 rounded"
-            >
-              <Text className="text-white font-bold">Close</Text>
-            </TouchableOpacity>
+            <ModalButton
+              text="SHOW HINT"
+              callback={onShowHint}
+              isDisabled={!canAffordHint}
+            />
+
+            <ModalButton text="CLOSE" callback={onClose} isDisabled={false} />
           </View>
         </View>
       </View>

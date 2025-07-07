@@ -11,7 +11,7 @@ import { SoundManager } from "../../services/SoundManager";
 import useGameLogic from "../../hooks/useGameLogic";
 import { checkAnyOverlayVisible } from "../../utils/overlayUtils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import functions from "@react-native-firebase/functions";
+import { getFunctions } from "@react-native-firebase/functions";
 import { getApp } from "@react-native-firebase/app";
 import { GameMode } from "../../contexts/AuthContext";
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
@@ -537,7 +537,7 @@ const GameScreen: React.FC<GameScreenProps> = ({
     try {
       GetHintInputSchema.parse(hintRequestData);
 
-      const getHintCallable = functions(getApp()).httpsCallable("getHint");
+      const getHintCallable = getFunctions(getApp()).httpsCallable("getHint");
       const result = await getHintCallable(hintRequestData);
 
       const hintData = GetHintOutputSchema.parse(result.data);
@@ -671,7 +671,7 @@ const GameScreen: React.FC<GameScreenProps> = ({
 
     try {
       // Call backend to spend coins
-      const spendCoinsCallable = functions(getApp()).httpsCallable(
+      const spendCoinsCallable = getFunctions(getApp()).httpsCallable(
         "spendCoins"
       );
       await spendCoinsCallable({
@@ -759,6 +759,7 @@ const GameScreen: React.FC<GameScreenProps> = ({
         <BottomNavigationBar
           onProfilePress={handleProfilePress}
           onSettingsPress={handleSettingsPress}
+          onHintPress={handleShowHint}
         />
       </KeyboardAvoidingView>
 

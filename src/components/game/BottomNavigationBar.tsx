@@ -10,25 +10,24 @@ export type OverlayType = "profile" | "settings";
  * Props for the BottomNavigationBar component.
  * @property {() => void} onProfilePress - Function to call when the Profile icon is pressed.
  * @property {() => void} onSettingsPress - Function to call when the Settings icon is pressed.
- * @property {() => void} onSubmitPress - Function to call when the Submit button is pressed.
- * @property {string[]} currentGuess - Current guess array to determine submit button state.
- * @property {number} answerLength - Expected answer length to validate submit button.
- * @property {boolean} gameOver - Whether the game is over to disable submit button.
+ * @property {() => void} onHintPress - Function to call when the Hint button is pressed.
  */
 interface BottomNavigationBarProps {
   onProfilePress: () => void;
   onSettingsPress: () => void;
+  onHintPress: () => void;
 }
 
 /**
  * A navigation bar component displayed at the bottom of the screen.
- * It provides navigation links to profile and settings sections, plus a submit button for gameplay.
+ * It provides navigation links to profile and settings sections, plus a hint button for gameplay.
  * @param {BottomNavigationBarProps} props - The props for the component.
  * @returns {React.FC<BottomNavigationBarProps>} The rendered BottomNavigationBar component.
  */
 const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
   onProfilePress,
   onSettingsPress,
+  onHintPress,
 }) => {
   return (
     <View
@@ -50,10 +49,10 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
       </TouchableOpacity>
 
       <TouchableOpacity
-        onPress={() => {}}
+        onPress={() => onHintPress()}
         accessible={true}
         accessibilityRole="button"
-        accessibilityLabel="Open profile"
+        accessibilityLabel="Show hint"
       >
         <LetsPlayIcon />
       </TouchableOpacity>

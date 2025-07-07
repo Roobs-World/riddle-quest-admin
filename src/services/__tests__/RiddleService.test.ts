@@ -1,7 +1,7 @@
 import { RiddleService } from "../RiddleService";
-import firestore from "@react-native-firebase/firestore";
-import auth from "@react-native-firebase/auth";
-import functions from "@react-native-firebase/functions";
+import { getFirestore } from "@react-native-firebase/firestore";
+import { getAuth } from "@react-native-firebase/auth";
+import { getFunctions } from "@react-native-firebase/functions";
 import { getApp } from "@react-native-firebase/app";
 import {
   SubmitGuessInputSchema,

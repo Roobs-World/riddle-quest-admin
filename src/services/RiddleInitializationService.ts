@@ -1,4 +1,4 @@
-import firestore from "@react-native-firebase/firestore";
+import { getFirestore } from "@react-native-firebase/firestore";
 import { getApp } from "@react-native-firebase/app";
 import { getCallableFunction } from "../utils/firebaseFunctions";
 
@@ -48,7 +48,7 @@ export class RiddleInitializationService {
 
     try {
       // Check if any classic riddles exist
-      const riddlesSnapshot = await firestore(getApp())
+      const riddlesSnapshot = await getFirestore(getApp())
         .collection("riddles")
         .where("classicIndex", ">=", 0)
         .limit(1)
@@ -136,7 +136,7 @@ export class RiddleInitializationService {
       }
 
       // Verify riddles were created
-      const verifySnapshot = await firestore(getApp())
+      const verifySnapshot = await getFirestore(getApp())
         .collection("riddles")
         .where("classicIndex", ">=", 0)
         .limit(1)
@@ -176,7 +176,7 @@ export class RiddleInitializationService {
    */
   static async hasEnoughRiddles(minimumCount: number = 10): Promise<boolean> {
     try {
-      const riddlesSnapshot = await firestore(getApp())
+      const riddlesSnapshot = await getFirestore(getApp())
         .collection("riddles")
         .where("classicIndex", ">=", 0)
         .limit(minimumCount)

@@ -1,7 +1,7 @@
 // Import first since we're not overriding the global mocks
 import { renderHook, act } from "@testing-library/react-native";
 import useGameLogic, { Feedback } from "../useGameLogic";
-import functions from "@react-native-firebase/functions";
+import { getFunctions } from "@react-native-firebase/functions";
 
 // Get the mocked functions module
 const mockFunctions = functions as jest.MockedFunction<typeof functions>;

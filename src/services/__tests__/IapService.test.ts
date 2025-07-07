@@ -34,7 +34,7 @@ jest.mock("@react-native-firebase/app", () => ({
 import { IapService, COIN_PRODUCT_DETAILS } from "../IapService";
 import * as RNIap from "react-native-iap";
 import { Platform } from "react-native";
-import functions from "@react-native-firebase/functions";
+import { getFunctions } from "@react-native-firebase/functions";
 
 // Get the mocked functions for better type safety
 const mockInitConnection = RNIap.initConnection as jest.MockedFunction<

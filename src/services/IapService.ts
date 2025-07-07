@@ -1,6 +1,6 @@
 import * as RNIap from "react-native-iap";
 import { Platform } from "react-native";
-import functions from "@react-native-firebase/functions";
+import { getFunctions } from "@react-native-firebase/functions";
 import { getApp } from "@react-native-firebase/app";
 import { PurchaseValidationResponse } from "../types/Player";
 
@@ -175,7 +175,7 @@ export const IapService = {
 
     // Call the Firebase Cloud Function for validation
     try {
-      const result = await functions(getApp()).httpsCallable<
+      const result = await getFunctions(getApp()).httpsCallable<
         { purchaseToken: string; productId: string; platform: string },
         PurchaseValidationResponse
       >("validatePurchase")({

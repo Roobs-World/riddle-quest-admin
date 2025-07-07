@@ -1,4 +1,5 @@
-import firestore, {
+import {
+  getFirestore,
   FirebaseFirestoreTypes,
 } from "@react-native-firebase/firestore";
 import { getApp } from "@react-native-firebase/app";
@@ -24,7 +25,7 @@ export const saveUserProgressToFirestore = async (
     return;
   }
   try {
-    await firestore(getApp()).collection("users").doc(userId).set(
+    await getFirestore(getApp()).collection("users").doc(userId).set(
       {
         progress: progress,
       },
@@ -48,7 +49,7 @@ export const loadUserProgressFromFirestore = async (
     return null;
   }
   try {
-    const userDoc = await firestore(getApp())
+    const userDoc = await getFirestore(getApp())
       .collection("users")
       .doc(userId)
       .get();
@@ -97,7 +98,7 @@ export const fetchDailyRiddleFromFirestore = async (
   console.log(`Fetching daily riddle for index ${dailyIndex} from Firestore`);
 
   try {
-    const riddleQuerySnapshot = await firestore(getApp())
+    const riddleQuerySnapshot = await getFirestore(getApp())
       .collection("riddles")
       .where("dailyIndex", "==", dailyIndex)
       .limit(1)
@@ -155,7 +156,7 @@ export const fetchClassicRiddleFromFirestore = async (
   );
 
   try {
-    const riddleQuerySnapshot = await firestore(getApp())
+    const riddleQuerySnapshot = await getFirestore(getApp())
       .collection("riddles")
       .where("classicIndex", "==", classicIndex)
       .limit(1)
@@ -210,7 +211,7 @@ export const fetchDailyRiddleForDate = async (
   try {
     // Assuming daily riddles are stored in a subcollection or have a field referencing the date
     // For now, let's assume they are in the 'riddles' collection with a 'date' field.
-    const riddleQuerySnapshot = await firestore(getApp())
+    const riddleQuerySnapshot = await getFirestore(getApp())
       .collection("riddles")
       .where("date", "==", dateString)
       .limit(1)
@@ -273,8 +274,9 @@ export const updateLastDailyChallengeCompletedAt = async (
     return;
   }
   try {
-    await firestore(getApp()).collection("users").doc(userId).update({
-      lastDailyChallengeCompletedAt: firestore.FieldValue.serverTimestamp(),
+    await getFirestore(getApp()).collection("users").doc(userId).update({
+      lastDailyChallengeCompletedAt:
+        FirebaseFirestoreTypes.FieldValue.serverTimestamp(),
     });
     console.log(
       "Last daily challenge completed timestamp updated successfully for user:",
@@ -299,7 +301,7 @@ export const fetchTutorialRiddleFromFirestore = async (
   tutorialIndex: number
 ): Promise<FirestoreRiddle | null> => {
   try {
-    const riddleQuerySnapshot = await firestore(getApp())
+    const riddleQuerySnapshot = await getFirestore(getApp())
       .collection("riddles")
       .where("tutorialIndex", "==", tutorialIndex)
       .limit(1)
@@ -359,7 +361,7 @@ export const updateClassicIndexInFirestore = async (
     return;
   }
   try {
-    await firestore(getApp()).collection("users").doc(userId).update({
+    await getFirestore(getApp()).collection("users").doc(userId).update({
       "progress.classicIndex": classicIndex,
     });
     console.log(
@@ -392,7 +394,7 @@ export const updateDailyChallengeIndexInFirestore = async (
     return;
   }
   try {
-    await firestore(getApp()).collection("users").doc(userId).update({
+    await getFirestore(getApp()).collection("users").doc(userId).update({
       "progress.dailyChallengeIndex": dailyChallengeIndex,
     });
     console.log(
@@ -425,7 +427,7 @@ export const updateTutorialIndexInFirestore = async (
     return;
   }
   try {
-    await firestore(getApp()).collection("users").doc(userId).update({
+    await getFirestore(getApp()).collection("users").doc(userId).update({
       "progress.tutorialIndex": tutorialIndex,
     });
     console.log(
@@ -461,7 +463,10 @@ export const updateUserDocumentInFirestore = async (
     // No Zod validation here as FieldValue is not directly parsable by Zod
     // PlayerSchema.partial().parse(updates); // Remove Zod parse
 
-    await firestore(getApp()).collection("users").doc(userId).update(updates);
+    await getFirestore(getApp())
+      .collection("users")
+      .doc(userId)
+      .update(updates);
     console.log("User document updated successfully for user:", userId);
   } catch (error) {
     if (error instanceof ZodError) {
@@ -495,7 +500,7 @@ export const updateUserStats = async (
     console.warn("Attempted to update user stats without a userId.");
     return;
   }
-  const userRef = firestore(getApp()).collection("users").doc(userId);
+  const userRef = getFirestore(getApp()).collection("users").doc(userId);
 
   try {
     await (transaction
@@ -580,7 +585,7 @@ export const createUserDocumentInFirestore = async (
 
     // Save to Firestore
     console.log("💾 Saving user document to Firestore...");
-    await firestore(getApp())
+    await getFirestore(getApp())
       .collection("users")
       .doc(userId)
       .set(validatedUserData);

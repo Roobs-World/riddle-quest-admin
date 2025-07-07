@@ -14,7 +14,8 @@ import {
   createUserDocumentInFirestore,
 } from "../services/FirestoreService";
 import { Player, FirestoreRiddle } from "../validation/firestoreSchemas";
-import auth from "@react-native-firebase/auth";
+import { getAuth } from "@react-native-firebase/auth";
+import { getApp } from "@react-native-firebase/app";
 import { RiddleInitializationService } from "../services/RiddleInitializationService";
 import { AccessToken } from "react-native-fbsdk-next";
 // Assuming you have an AuthService with login/logout methods
@@ -218,7 +219,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     console.log("🔧 Setting up Firebase auth listener...");
 
-    const subscriber = auth().onAuthStateChanged(async (user) => {
+    const subscriber = getAuth(getApp()).onAuthStateChanged(async (user) => {
       console.log(
         "🔔 Firebase auth state changed. User:",
         user ? user.uid : "null"
@@ -487,7 +488,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const logout = async () => {
     setIsLoading(true);
     try {
-      await auth().signOut(); // Trigger Firebase sign out
+      await getAuth(getApp()).signOut(); // Trigger Firebase sign out
       // The onAuthStateChanged listener will handle the state update
     } catch (error) {
       console.error("Error during logout:", error);

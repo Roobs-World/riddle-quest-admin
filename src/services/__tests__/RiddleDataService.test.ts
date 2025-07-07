@@ -1,5 +1,5 @@
 import { RiddleDataService } from "../RiddleDataService";
-import firestore from "@react-native-firebase/firestore";
+import { getFirestore } from "@react-native-firebase/firestore";
 import { getApp } from "@react-native-firebase/app";
 import { FirestoreRiddleSchema } from "../../validation/firestoreSchemas";
 import { ZodError } from "zod";

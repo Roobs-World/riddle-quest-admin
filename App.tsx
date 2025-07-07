@@ -12,7 +12,7 @@ import AppLovinMAX, { Configuration } from "react-native-applovin-max";
 import PulsingSpinner from "./src/components/loading/PulsingSpinner";
 import { AuthService } from "./src/services/AuthService";
 import { SolarSystemPreloader } from "./src/services/SolarSystemPreloader";
-import crashlytics from "@react-native-firebase/crashlytics";
+import { getCrashlytics } from "@react-native-firebase/crashlytics";
 export default function App() {
   const [isInitialized, setIsInitialized] = useState(false);
 
@@ -24,7 +24,7 @@ export default function App() {
 
         // Initialize Firebase Crashlytics
         console.log("📊 Initializing Firebase Crashlytics...");
-        crashlytics().log("App initialization started");
+        getCrashlytics().log("App initialization started");
         console.log("✅ Firebase Crashlytics initialized successfully!");
 
         // Clear any existing solar system cache to start fresh

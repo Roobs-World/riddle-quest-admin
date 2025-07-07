@@ -9,7 +9,8 @@ import {
   Alert, // Import Alert component
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import auth from "@react-native-firebase/auth"; // Correct import for auth module
+import { getAuth } from "@react-native-firebase/auth";
+import { getApp } from "@react-native-firebase/app";
 import { AppStrings } from "../../../constants/AppStrings";
 import CloseButton from "../../buttons/CloseButton";
 import { COLORS } from "../../../styles";
@@ -126,7 +127,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
             onPress={async () => {
               try {
                 console.log("Attempting to log out...");
-                await auth().signOut();
+                await getAuth(getApp()).signOut();
                 console.log("User logged out successfully.");
                 // The onAuthStateChanged listener in AuthContext should handle navigation
                 if (onPressLogout) onPressLogout(); // Call any provided callback

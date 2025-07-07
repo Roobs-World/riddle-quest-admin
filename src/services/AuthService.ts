@@ -1,8 +1,10 @@
-import auth, {
+import {
+  getAuth,
   type FirebaseAuthTypes,
   GoogleAuthProvider,
   FacebookAuthProvider,
 } from "@react-native-firebase/auth";
+import { getApp } from "@react-native-firebase/app";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { AccessToken, LoginManager } from "react-native-fbsdk-next";
 import { InteractionManager, AppState } from "react-native";
@@ -37,10 +39,9 @@ export const AuthService = {
     password: string
   ): Promise<FirebaseAuthTypes.UserCredential> {
     try {
-      const userCredential = await auth().createUserWithEmailAndPassword(
-        email,
-        password
-      );
+      const userCredential = await getAuth(
+        getApp()
+      ).createUserWithEmailAndPassword(email, password);
       return userCredential;
     } catch (error) {
       console.error("Error signing up with email:", error);
@@ -60,7 +61,7 @@ export const AuthService = {
     password: string
   ): Promise<FirebaseAuthTypes.UserCredential> {
     try {
-      const userCredential = await auth().signInWithEmailAndPassword(
+      const userCredential = await getAuth(getApp()).signInWithEmailAndPassword(
         email,
         password
       );
@@ -79,7 +80,7 @@ export const AuthService = {
    */
   async sendPasswordResetEmail(email: string): Promise<void> {
     try {
-      await auth().sendPasswordResetEmail(email);
+      await getAuth(getApp()).sendPasswordResetEmail(email);
       console.log("Password reset email sent successfully.");
     } catch (error) {
       console.error("Error sending password reset email:", error);
@@ -110,7 +111,7 @@ export const AuthService = {
 
         const googleCredential = GoogleAuthProvider.credential(idToken);
 
-        const userCredential = await auth().signInWithCredential(
+        const userCredential = await getAuth(getApp()).signInWithCredential(
           googleCredential
         );
 
@@ -424,7 +425,7 @@ export const AuthService = {
 
       // Sign in with Firebase
       console.log("🔥 Signing in with Firebase...");
-      const userCredential = await auth().signInWithCredential(
+      const userCredential = await getAuth(getApp()).signInWithCredential(
         facebookCredential
       );
 
@@ -457,7 +458,7 @@ export const AuthService = {
         "🔄 Reloading Firebase user to populate all provider data..."
       );
       await userCredential.user.reload();
-      const reloadedUser = auth().currentUser;
+      const reloadedUser = getAuth(getApp()).currentUser;
 
       console.log("🔍 FIREBASE USER OBJECT AFTER RELOAD:");
       console.log("- UID:", reloadedUser?.uid);
@@ -591,9 +592,9 @@ export const AuthService = {
 
               // Get existing sign-in methods for the email
               console.log("📧 Checking existing sign-in methods for email...");
-              signInMethods = await auth().fetchSignInMethodsForEmail(
-                "craigbeswetherick@gmail.com"
-              );
+              signInMethods = await getAuth(
+                getApp()
+              ).fetchSignInMethodsForEmail("craigbeswetherick@gmail.com");
               console.log("🔍 Existing sign-in methods:", signInMethods);
 
               // If fetchSignInMethodsForEmail returns empty but we have a conflict,
@@ -631,9 +632,9 @@ export const AuthService = {
 
                 const googleCredential =
                   GoogleAuthProvider.credential(googleIdToken);
-                const googleUserCredential = await auth().signInWithCredential(
-                  googleCredential
-                );
+                const googleUserCredential = await getAuth(
+                  getApp()
+                ).signInWithCredential(googleCredential);
 
                 console.log(
                   "✅ Signed in with Google, now linking Facebook..."
@@ -769,7 +770,7 @@ export const AuthService = {
    */
   async logout(): Promise<void> {
     try {
-      await auth().signOut();
+      await getAuth(getApp()).signOut();
       console.log("User signed out successfully.");
     } catch (error) {
       console.error("Error signing out:", error);

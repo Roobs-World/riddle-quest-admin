@@ -1,4 +1,4 @@
-import firestore from "@react-native-firebase/firestore";
+import { getFirestore } from "@react-native-firebase/firestore";
 import { getApp } from "@react-native-firebase/app";
 import { Player, PlayerSchema } from "../validation/firestoreSchemas";
 import { ZodError } from "zod";
@@ -23,7 +23,7 @@ export class UserDataService implements IUserDataService {
     }
 
     try {
-      await firestore(getApp())
+      await getFirestore(getApp())
         .collection(UserDataService.USERS_COLLECTION)
         .doc(userId)
         .set({ progress }, { merge: true });
@@ -50,7 +50,7 @@ export class UserDataService implements IUserDataService {
     }
 
     try {
-      const userDoc = await firestore(getApp())
+      const userDoc = await getFirestore(getApp())
         .collection(UserDataService.USERS_COLLECTION)
         .doc(userId)
         .get();
@@ -95,7 +95,7 @@ export class UserDataService implements IUserDataService {
       // Validate the user data before saving
       const validatedData = PlayerSchema.parse(userData);
 
-      await firestore(getApp())
+      await getFirestore(getApp())
         .collection(UserDataService.USERS_COLLECTION)
         .doc(userId)
         .set(validatedData);
@@ -126,7 +126,7 @@ export class UserDataService implements IUserDataService {
     }
 
     try {
-      await firestore(getApp())
+      await getFirestore(getApp())
         .collection(UserDataService.USERS_COLLECTION)
         .doc(userId)
         .update(updates);
@@ -147,7 +147,7 @@ export class UserDataService implements IUserDataService {
     }
 
     try {
-      await firestore(getApp())
+      await getFirestore(getApp())
         .collection(UserDataService.USERS_COLLECTION)
         .doc(userId)
         .update({
@@ -174,7 +174,7 @@ export class UserDataService implements IUserDataService {
     }
 
     try {
-      await firestore(getApp())
+      await getFirestore(getApp())
         .collection(UserDataService.USERS_COLLECTION)
         .doc(userId)
         .update({
@@ -197,7 +197,7 @@ export class UserDataService implements IUserDataService {
     }
 
     try {
-      const userDoc = await firestore(getApp())
+      const userDoc = await getFirestore(getApp())
         .collection(UserDataService.USERS_COLLECTION)
         .doc(userId)
         .get();
