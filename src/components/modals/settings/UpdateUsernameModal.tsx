@@ -1,16 +1,11 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Modal,
-  TextInput,
-  Alert,
-} from "react-native";
+import { View, Text, Modal, TextInput, Alert } from "react-native";
 import { getFunctions } from "@react-native-firebase/functions";
 import { getApp } from "@react-native-firebase/app";
 import { useAuth } from "../../../contexts/AuthContext";
 import CloseButton from "../../buttons/CloseButton";
+import WideButton from "src/components/buttons/WideButton";
+import { TYPOGRAPHY } from "src/styles";
 
 // Define proper error interface for Firebase errors
 interface FirebaseError {
@@ -115,7 +110,10 @@ const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({
             <CloseButton onPress={handleClose} size={20} />
           </View>
 
-          <Text className="text-lg font-bold text-gray-800 mb-4">
+          <Text
+            className="text-lg text-gray-800 mb-4"
+            style={{ fontFamily: TYPOGRAPHY.fontPrimary }}
+          >
             Update Username
           </Text>
           <TextInput
@@ -125,18 +123,12 @@ const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({
             placeholder="Enter new username"
             autoCapitalize="none"
           />
-          <TouchableOpacity
-            className="bg-blue-500 px-4 py-3 rounded-md mb-3 w-full items-center"
-            onPress={handleUpdateUsername}
-          >
-            <Text className="text-white font-semibold">Save</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            className="bg-gray-300 px-4 py-3 rounded-md w-full items-center"
-            onPress={handleClose}
-          >
-            <Text className="text-gray-800 font-semibold">Cancel</Text>
-          </TouchableOpacity>
+          <WideButton buttonText="Save" onPress={() => handleUpdateUsername} />
+          <WideButton
+            buttonText="Close"
+            onPress={onClose}
+            buttonColor="bg-gray-500"
+          />
         </View>
       </View>
     </Modal>
