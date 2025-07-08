@@ -37,6 +37,7 @@ export type SignUpFormData = z.infer<typeof signUpSchema>;
 export const PlayerProgressSchema = z.object({
   classicIndex: z.number().int().nonnegative().default(0),
   dailyChallengeIndex: z.number().int().nonnegative().default(0),
+  dailyChallengeCurrentQuestion: z.number().int().nonnegative().default(0),
   tutorialIndex: z.number().int().nonnegative().default(0),
 });
 

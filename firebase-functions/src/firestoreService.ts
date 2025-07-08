@@ -18,6 +18,7 @@ function getDb(): admin.firestore.Firestore {
 export type PlayerUpdate = {
   userId?: string;
   dailyChallengeIndex?: number | admin.firestore.FieldValue;
+  dailyChallengeCurrentQuestion?: number | admin.firestore.FieldValue;
   tutorialIndex?: number | admin.firestore.FieldValue;
   classicIndex?: number | admin.firestore.FieldValue;
   coins?: number | admin.firestore.FieldValue;
@@ -218,6 +219,7 @@ export async function initializeNewUser(
       progress: {
         classicIndex: 0,
         dailyChallengeIndex: 0,
+        dailyChallengeCurrentQuestion: 0,
         tutorialIndex: 0,
       },
     };
@@ -308,6 +310,7 @@ export async function ensureUserDocumentComplete(userId: string): Promise<void> 
       updates.progress = {
         classicIndex: 0,
         dailyChallengeIndex: 0,
+        dailyChallengeCurrentQuestion: 0,
         tutorialIndex: 0,
       };
     } else {
@@ -315,6 +318,7 @@ export async function ensureUserDocumentComplete(userId: string): Promise<void> 
       const defaultProgress = {
         classicIndex: 0,
         dailyChallengeIndex: 0,
+        dailyChallengeCurrentQuestion: 0,
         tutorialIndex: 0,
       };
 

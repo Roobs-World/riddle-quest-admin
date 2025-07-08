@@ -17,6 +17,7 @@ import UpdateUsernameModal from "./UpdateUsernameModal";
 import AvatarOptionsModal from "./AvatarOptionsModal";
 import PreloadedAvatarsModal from "./PreloadedAvatarsModal";
 import TreasureChest from "./TreasureChest";
+import { styles, TYPOGRAPHY } from "../../../styles";
 
 const { height: screenHeight } = Dimensions.get("window");
 
@@ -142,7 +143,13 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
               flexGrow: 1,
             }}
           >
-            <Text className="text-2xl font-bold text-gray-800 mb-4">
+            <Text
+              className="text-2xl font-bold text-gray-800 mb-4"
+              style={[
+                styles.creditsTitle,
+                { fontFamily: TYPOGRAPHY.fontPrimary },
+              ]}
+            >
               Full Profile
             </Text>
 
@@ -157,7 +164,10 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
                 />
               ) : (
                 <View className="w-16 h-16 rounded-full mr-4 bg-blue-500 items-center justify-center">
-                  <Text className="text-white text-3xl font-bold">
+                  <Text
+                    className="text-white text-3xl font-bold"
+                    style={{ fontFamily: TYPOGRAPHY.fontSecondaryBold }}
+                  >
                     {playerData.username
                       ? playerData.username.charAt(0).toUpperCase()
                       : ""}
@@ -165,7 +175,10 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
                 </View>
               )}
               <View className="flex-1">
-                <Text className="text-xl font-bold text-gray-800">
+                <Text
+                  className="text-xl font-bold text-gray-800"
+                  style={{ fontFamily: TYPOGRAPHY.fontSecondaryBold }}
+                >
                   {playerData.username || "Guest"}
                 </Text>
                 {/* Additional basic info if needed */}
@@ -174,70 +187,115 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
 
             {/* Comprehensive Stats Grid */}
             <View className="mb-6">
-              <Text className="text-lg font-bold text-gray-800 mb-4">
+              <Text
+                className="text-lg font-bold text-gray-800 mb-4"
+                style={{ fontFamily: TYPOGRAPHY.fontSecondaryBold }}
+              >
                 Statistics
               </Text>
               <View className="flex-row flex-wrap justify-between">
                 {/* Row 1 */}
                 <View className="w-1/2 items-center mb-4 pr-2">
-                  <Text className="text-2xl font-bold text-gray-800">
+                  <Text
+                    className="text-2xl font-bold text-gray-800"
+                    style={{ fontFamily: TYPOGRAPHY.fontSecondaryBold }}
+                  >
                     {(playerData.progress?.dailyChallengeIndex || 0).toString()}
                   </Text>
-                  <Text className="text-sm text-gray-600 text-center">
+                  <Text
+                    className="text-sm text-gray-600 text-center"
+                    style={{ fontFamily: TYPOGRAPHY.fontSecondary }}
+                  >
                     Daily Puzzles
                   </Text>
                 </View>
                 <View className="w-1/2 items-center mb-4 pl-2">
-                  <Text className="text-2xl font-bold text-gray-800">
+                  <Text
+                    className="text-2xl font-bold text-gray-800"
+                    style={{ fontFamily: TYPOGRAPHY.fontSecondaryBold }}
+                  >
                     {(stats?.bestStreak || 0).toString()}
                   </Text>
-                  <Text className="text-sm text-gray-600 text-center">
+                  <Text
+                    className="text-sm text-gray-600 text-center"
+                    style={{ fontFamily: TYPOGRAPHY.fontSecondary }}
+                  >
                     Best Streak
                   </Text>
                 </View>
 
                 {/* Row 2 */}
                 <View className="w-1/2 items-center mb-4 pr-2">
-                  <Text className="text-2xl font-bold text-gray-800">
+                  <Text
+                    className="text-2xl font-bold text-gray-800"
+                    style={{ fontFamily: TYPOGRAPHY.fontSecondaryBold }}
+                  >
                     {(stats?.totalWordsGuessed || 0).toString()}
                   </Text>
-                  <Text className="text-sm text-gray-600 text-center">
+                  <Text
+                    className="text-sm text-gray-600 text-center"
+                    style={{ fontFamily: TYPOGRAPHY.fontSecondary }}
+                  >
                     Words Guessed
                   </Text>
                 </View>
                 <View className="w-1/2 items-center mb-4 pl-2">
-                  <Text className="text-2xl font-bold text-gray-800">
+                  <Text
+                    className="text-2xl font-bold text-gray-800"
+                    style={{ fontFamily: TYPOGRAPHY.fontSecondaryBold }}
+                  >
                     {`${(stats?.winRate || 0).toString()}%`}
                   </Text>
-                  <Text className="text-sm text-gray-600 text-center">
+                  <Text
+                    className="text-sm text-gray-600 text-center"
+                    style={{ fontFamily: TYPOGRAPHY.fontSecondary }}
+                  >
                     Win Rate
                   </Text>
                 </View>
 
                 {/* Row 3 */}
                 <View className="w-1/2 items-center mb-4 pr-2">
-                  <Text className="text-2xl font-bold text-gray-800">
+                  <Text
+                    className="text-2xl font-bold text-gray-800"
+                    style={{ fontFamily: TYPOGRAPHY.fontSecondaryBold }}
+                  >
                     {(stats?.totalScore || 0).toString()}
                   </Text>
-                  <Text className="text-sm text-gray-600 text-center">
+                  <Text
+                    className="text-sm text-gray-600 text-center"
+                    style={{ fontFamily: TYPOGRAPHY.fontSecondary }}
+                  >
                     Total Score
                   </Text>
                 </View>
                 <View className="w-1/2 items-center mb-4 pl-2">
-                  <Text className="text-2xl font-bold text-gray-800">
+                  <Text
+                    className="text-2xl font-bold text-gray-800"
+                    style={{ fontFamily: TYPOGRAPHY.fontSecondaryBold }}
+                  >
                     {(stats?.highestLevelClassic || 0).toString()}
                   </Text>
-                  <Text className="text-sm text-gray-600 text-center">
+                  <Text
+                    className="text-sm text-gray-600 text-center"
+                    style={{ fontFamily: TYPOGRAPHY.fontSecondary }}
+                  >
                     Highest Level
                   </Text>
                 </View>
 
                 {/* Row 4 */}
                 <View className="w-1/2 items-center mb-4 pr-2">
-                  <Text className="text-2xl font-bold text-gray-800">
+                  <Text
+                    className="text-2xl font-bold text-gray-800"
+                    style={{ fontFamily: TYPOGRAPHY.fontSecondaryBold }}
+                  >
                     {(stats?.gamesPlayed || 0).toString()}
                   </Text>
-                  <Text className="text-sm text-gray-600 text-center">
+                  <Text
+                    className="text-sm text-gray-600 text-center"
+                    style={{ fontFamily: TYPOGRAPHY.fontSecondary }}
+                  >
                     Games Played
                   </Text>
                 </View>
@@ -246,7 +304,10 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
 
             {/* Update Avatar Options */}
             <View className="mb-6">
-              <Text className="text-lg font-bold text-gray-800 mb-3">
+              <Text
+                className="text-lg font-bold text-gray-800 mb-3"
+                style={{ fontFamily: TYPOGRAPHY.fontSecondaryBold }}
+              >
                 Avatar
               </Text>
               <WideButton
@@ -259,7 +320,10 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
 
             {/* Account Settings / Update Options */}
             <View className="w-full mt-4 border-t border-gray-200 pt-4">
-              <Text className="text-lg font-bold text-gray-800 mb-3">
+              <Text
+                className="text-lg font-bold text-gray-800 mb-3"
+                style={{ fontFamily: TYPOGRAPHY.fontSecondaryBold }}
+              >
                 Account Settings
               </Text>
 

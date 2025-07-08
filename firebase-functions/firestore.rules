@@ -2,41 +2,188 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Allow authenticated users to read users collection, but only write to their own document
+    // Helper functions for validation and security
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isValidUser(userId) {
+      return userId is string && userId.size() > 0 && userId == request.auth.uid;
+    }
+
+    // Check if the request is from a Firebase Cloud Function (admin SDK)
+    function isServerRequest() {
+      return request.auth.token.firebase.sign_in_provider == 'custom';
+    }
+
+    // Validate user document structure on creation/update
+    function isValidUserDocument() {
+      let requiredFields = ['userId', 'username', 'email', 'coins'];
+      let optionalFields = ['displayName', 'avatarUrl', 'hasPurchasedApp', 'createdAt', 'registeredAt', 'lastLogin', 'lastDailyChallengeCompletedAt', 'stats', 'progress'];
+      let allFields = requiredFields.concat(optionalFields);
+      
+      return resource.data.keys().hasAll(requiredFields) &&
+             resource.data.keys().hasOnly(allFields) &&
+             resource.data.userId is string &&
+             resource.data.username is string &&
+             resource.data.username.size() >= 1 &&
+             resource.data.username.size() <= 50 &&
+             resource.data.email is string &&
+             resource.data.email.matches('.*@.*\\..*') &&
+             resource.data.coins is number &&
+             resource.data.coins >= 0 &&
+             (!('displayName' in resource.data) || (resource.data.displayName is string && resource.data.displayName.size() <= 100)) &&
+             (!('avatarUrl' in resource.data) || (resource.data.avatarUrl is string)) &&
+             (!('hasPurchasedApp' in resource.data) || resource.data.hasPurchasedApp is bool);
+    }
+
+    // Validate stats update structure
+    function isValidStatsUpdate() {
+      let allowedStats = ['dailyPuzzlesCompleted', 'bestStreak', 'totalWordsGuessed', 'winRate', 'averageGuesses', 'totalScore', 'highestLevelClassic', 'gamesPlayed', 'wins', 'challengeWins', 'winStreak', 'totalWins', 'totalGuessesInWins'];
+      
+      return resource.data.stats.keys().hasOnly(allowedStats) &&
+             (!('dailyPuzzlesCompleted' in resource.data.stats) || (resource.data.stats.dailyPuzzlesCompleted is number && resource.data.stats.dailyPuzzlesCompleted >= 0)) &&
+             (!('bestStreak' in resource.data.stats) || (resource.data.stats.bestStreak is number && resource.data.stats.bestStreak >= 0)) &&
+             (!('totalWordsGuessed' in resource.data.stats) || (resource.data.stats.totalWordsGuessed is number && resource.data.stats.totalWordsGuessed >= 0)) &&
+             (!('winRate' in resource.data.stats) || (resource.data.stats.winRate is number && resource.data.stats.winRate >= 0 && resource.data.stats.winRate <= 1)) &&
+             (!('totalScore' in resource.data.stats) || (resource.data.stats.totalScore is number && resource.data.stats.totalScore >= 0)) &&
+             (!('gamesPlayed' in resource.data.stats) || (resource.data.stats.gamesPlayed is number && resource.data.stats.gamesPlayed >= 0));
+    }
+
+    // Validate progress update structure
+    function isValidProgressUpdate() {
+      let allowedProgress = ['classicIndex', 'dailyChallengeIndex', 'tutorialIndex'];
+      
+      return resource.data.progress.keys().hasOnly(allowedProgress) &&
+             (!('classicIndex' in resource.data.progress) || (resource.data.progress.classicIndex is number && resource.data.progress.classicIndex >= 0)) &&
+             (!('dailyChallengeIndex' in resource.data.progress) || (resource.data.progress.dailyChallengeIndex is number && resource.data.progress.dailyChallengeIndex >= 0)) &&
+             (!('tutorialIndex' in resource.data.progress) || (resource.data.progress.tutorialIndex is number && resource.data.progress.tutorialIndex >= 0));
+    }
+
+    // Users collection - strict privacy controls
     match /users/{userId} {
-      allow read: if request.auth != null;
-      allow create: if request.auth != null && request.auth.uid == userId;
-      allow update: if request.auth != null && request.auth.uid == userId;
-      allow delete: if false; // Prevent client-side deletion
+      // Users can only read their own document
+      allow read: if isOwner(userId);
+      
+      // Users can create their own document with proper validation
+      allow create: if isOwner(userId) && 
+                      isValidUser(userId) && 
+                      isValidUserDocument();
+      
+      // Users can update their own document with validation
+      // Server requests (Cloud Functions) can also update for game logic
+      allow update: if (isOwner(userId) || isServerRequest()) && 
+                      isValidUser(userId) && 
+                      isValidUserDocument() &&
+                      (!('stats' in resource.data) || isValidStatsUpdate()) &&
+                      (!('progress' in resource.data) || isValidProgressUpdate());
+      
+      // Prevent client-side deletion - only allow server deletion
+      allow delete: if isServerRequest();
     }
 
-    // Allow authenticated users to read riddles collection
-    // Writing is restricted, handled by server-side processes (e.g., Cloud Functions, Apps Script sync)
+    // Riddles collection - read-only for clients, write-only for server
     match /riddles/{riddleId} {
-      allow read: if request.auth != null;
-      allow write: if false; // Prevent client-side writing
+      // Authenticated users can read riddles
+      allow read: if isAuthenticated();
+      
+      // Only server (Cloud Functions) can create/update/delete riddles
+      allow write: if isServerRequest();
     }
 
-    // Allow authenticated users to read and write their own classic progress
-    match /userClassicProgress/{userRiddleId} {
-       allow read: if request.auth != null && request.auth.uid == resource.data.userId;
-       allow write: if request.auth != null && request.auth.uid == request.resource.data.userId;
-    }
-
-    // Allow authenticated users to read dailyChallenge collection
-    // Writing is restricted, handled by server-side processes
+    // Daily Challenge collection - read-only for clients
     match /dailyChallenge/{date} {
-      allow read: if request.auth != null;
-      allow write: if false; // Prevent client-side writing
+      // Authenticated users can read daily challenges
+      allow read: if isAuthenticated();
+      
+      // Only server (Cloud Functions) can manage daily challenges
+      allow write: if isServerRequest();
     }
 
-    // Allow authenticated users to read and write their own daily challenge attempts
+    // User Classic Progress - strict user ownership
+    match /userClassicProgress/{userRiddleId} {
+      // Users can only read their own progress
+      allow read: if isAuthenticated() && 
+                    resource.data.userId == request.auth.uid;
+      
+      // Users can create their own progress entries
+      allow create: if isAuthenticated() && 
+                      request.resource.data.userId == request.auth.uid &&
+                      request.resource.data.keys().hasAll(['userId', 'riddleId']) &&
+                      request.resource.data.keys().hasOnly(['userId', 'riddleId', 'completed', 'attempts', 'completedAt']);
+      
+      // Users can update their own progress, server can also update
+      allow update: if (isAuthenticated() && resource.data.userId == request.auth.uid) || 
+                      isServerRequest();
+      
+      // Only server can delete progress entries
+      allow delete: if isServerRequest();
+    }
+
+    // User Daily Challenge Attempts - strict user ownership
     match /userDailyChallengeAttempts/{userChallengeDate} {
-       allow read: if request.auth != null && request.auth.uid == resource.data.userId;
-       allow write: if request.auth != null && request.auth.uid == request.resource.data.userId;
+      // Users can only read their own attempts
+      allow read: if isAuthenticated() && 
+                    resource.data.userId == request.auth.uid;
+      
+      // Users can create their own challenge attempts
+      allow create: if isAuthenticated() && 
+                      request.resource.data.userId == request.auth.uid &&
+                      request.resource.data.keys().hasAll(['userId', 'date']) &&
+                      request.resource.data.keys().hasOnly(['userId', 'date', 'completed', 'attempts', 'completedAt']);
+      
+      // Users can update their own attempts, server can also update
+      allow update: if (isAuthenticated() && resource.data.userId == request.auth.uid) || 
+                      isServerRequest();
+      
+      // Only server can delete challenge attempts
+      allow delete: if isServerRequest();
     }
 
-    // Deny all other read/write access by default
+    // Processed Purchases - user subcollection for IAP tracking
+    match /users/{userId}/processedPurchases/{purchaseToken} {
+      // Users can read their own purchase history
+      allow read: if isOwner(userId);
+      
+      // Only server can create/update purchase records
+      allow write: if isServerRequest();
+    }
+
+    // Ad interaction tracking - server-only collection
+    match /adInteractions/{interactionId} {
+      // Only server can manage ad interactions
+      allow read, write: if isServerRequest();
+    }
+
+    // Tutorial progress tracking - if it exists as a separate collection
+    match /tutorialProgress/{userId} {
+      // Users can read their own tutorial progress
+      allow read: if isOwner(userId);
+      
+      // Users and server can update tutorial progress
+      allow write: if isOwner(userId) || isServerRequest();
+    }
+
+    // App configuration - read-only for all authenticated users
+    match /config/{configId} {
+      // All authenticated users can read app configuration
+      allow read: if isAuthenticated();
+      
+      // Only server can update configuration
+      allow write: if isServerRequest();
+    }
+
+    // Analytics collection - server-only
+    match /analytics/{analyticsId} {
+      // Only server can read/write analytics data
+      allow read, write: if isServerRequest();
+    }
+
+    // Deny all other access by default
     match /{document=**} {
       allow read, write: if false;
     }

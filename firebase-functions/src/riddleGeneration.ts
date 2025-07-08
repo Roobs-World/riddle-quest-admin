@@ -1,5 +1,5 @@
 import * as functions from "firebase-functions";
-import {onCall, CallableOptions} from "firebase-functions/v2/https";
+import {onCall, CallableOptions, CallableRequest} from "firebase-functions/v2/https";
 import * as admin from "firebase-admin";
 import {generateUniqueRiddle} from "./openaiService";
 import type {FirestoreRiddle} from "./validation/firestoreSchemas";
@@ -524,6 +524,236 @@ export const generateDailyRiddles = onCall(
         console.error("❌ Error details:", String(error));
       }
       throw new functions.https.HttpsError("internal", "Failed to generate new daily riddles.", error);
+    }
+  },
+);
+
+/**
+ * Generates 5 riddles for today's daily challenge and stores them in the proper structure.
+ * This replaces the single daily riddle with a 5-question daily challenge.
+ * @param forceGenerate - If true, generates new riddles even if today's challenge already exists.
+ * @return A promise that resolves when the daily challenge is created.
+ */
+export async function generateTodaysDailyChallenge(forceGenerate: boolean = false): Promise<void> {
+  console.log("🚀 Generating today's 5-question daily challenge...");
+
+  const today = new Date();
+  const todayDateString = today.toISOString().split("T")[0]; // YYYY-MM-DD format
+
+  // Check if today's challenge already exists
+  const dailyChallengeRef = admin.firestore().collection("dailyChallenge").doc("current");
+  const existingChallenge = await dailyChallengeRef.get();
+
+  if (existingChallenge.exists && !forceGenerate) {
+    const existingData = existingChallenge.data();
+    if (existingData?.date === todayDateString && existingData?.questions?.length === 5) {
+      console.log("✅ Today's daily challenge already exists with 5 questions.");
+      return;
+    }
+  }
+
+  console.log(`📝 Generating 5 new riddles for daily challenge on ${todayDateString}...`);
+
+  // Check for required environment variables
+  const openAIKey = process.env.OPENAI_API_KEY;
+  if (!openAIKey) {
+    throw new Error("OPENAI_API_KEY environment variable is required");
+  }
+
+  // Get existing riddles for duplicate checking
+  const existing = await getExistingRiddlesFromFirestore();
+
+  const dailyChallengeQuestions: {
+    riddleId: string;
+    text: string;
+    answer: string;
+  }[] = [];
+
+  const generatedAttempts: {question: string; answer: string}[] = [];
+
+  // Circuit breaker: Maximum attempts to prevent infinite loops
+  const maxAttempts = 50; // 10x the number of riddles we need
+  let attemptCount = 0;
+
+  while (dailyChallengeQuestions.length < 5 && attemptCount < maxAttempts) {
+    attemptCount++;
+
+    // Generate a riddle using the OpenAI service
+    const riddle = await generateUniqueRiddle();
+
+    if (riddle) {
+      const newRiddle = {
+        question: riddle[0],
+        answer: riddle[1],
+      };
+
+      // Check for duplicates against existing and newly generated riddles
+      if (
+        !riddleExists(newRiddle, existing.questions, existing.answers) &&
+        !riddleExists(
+          newRiddle,
+          generatedAttempts.map((r) => r.question),
+          generatedAttempts.map((r) => r.answer),
+        )
+      ) {
+        // Create riddle document in riddles collection
+        const riddleRef = admin.firestore().collection("riddles").doc();
+        const riddleData: FirestoreRiddle = {
+          riddleId: riddleRef.id,
+          text: newRiddle.question,
+          answer: newRiddle.answer,
+          category: "daily-challenge",
+          difficulty: "normal",
+        };
+
+        // Store the riddle in the riddles collection
+        await riddleRef.set(riddleData);
+
+        // Add to daily challenge questions array
+        dailyChallengeQuestions.push({
+          riddleId: riddleRef.id,
+          text: newRiddle.question,
+          answer: newRiddle.answer,
+        });
+
+        // Add to existing for subsequent duplicate checks within this run
+        existing.questions.push(newRiddle.question.toLowerCase());
+        existing.answers.push(newRiddle.answer.toLowerCase());
+
+        console.log(`Generated daily challenge question ${dailyChallengeQuestions.length}/5 (attempt ${attemptCount})`);
+      } else {
+        console.warn(`Generated riddle is a duplicate, trying again... (attempt ${attemptCount}/${maxAttempts})`);
+      }
+      generatedAttempts.push(newRiddle);
+    } else {
+      console.warn(`Failed to generate unique riddle, retrying... (attempt ${attemptCount}/${maxAttempts})`);
+    }
+  }
+
+  // Check if we hit the circuit breaker
+  if (dailyChallengeQuestions.length < 5 && attemptCount >= maxAttempts) {
+    console.warn(
+      `Circuit breaker activated: Only generated ${dailyChallengeQuestions.length}/5 daily challenge questions after ${maxAttempts} attempts`,
+    );
+    if (dailyChallengeQuestions.length === 0) {
+      throw new Error(`Failed to generate any unique daily challenge questions after ${maxAttempts} attempts`);
+    }
+  }
+
+  if (dailyChallengeQuestions.length > 0) {
+    // Create the daily challenge document structure
+    const dailyChallengeData = {
+      date: todayDateString,
+      questions: dailyChallengeQuestions.map((q, _index) => ({
+        riddleId: q.riddleId,
+        text: q.text,
+        // Don't include answer in the client-accessible data
+      })),
+      totalQuestions: dailyChallengeQuestions.length,
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    };
+
+    // Store the daily challenge in the dailyChallenge collection
+    await dailyChallengeRef.set(dailyChallengeData);
+
+    // Reset all users' daily challenge progress for the new day
+    await resetAllUsersDailyChallengeProgress();
+
+    console.log(
+      `✅ Successfully generated and stored ${dailyChallengeQuestions.length} questions for today's daily challenge.`,
+    );
+  } else {
+    throw new Error("Failed to generate any daily challenge questions.");
+  }
+}
+
+/**
+ * Resets all users' daily challenge progress to 0 for the new day.
+ * This is called when a new daily challenge is generated.
+ */
+async function resetAllUsersDailyChallengeProgress(): Promise<void> {
+  console.log("🔄 Resetting all users' daily challenge progress for new day...");
+
+  try {
+    // Get all user documents
+    const usersSnapshot = await admin.firestore().collection("users").get();
+
+    if (usersSnapshot.empty) {
+      console.log("No users found to reset progress.");
+      return;
+    }
+
+    // Create batch to update all users
+    const batch = admin.firestore().batch();
+    let userCount = 0;
+
+    usersSnapshot.forEach((userDoc) => {
+      const userRef = userDoc.ref;
+      batch.update(userRef, {
+        "progress.dailyChallengeCurrentQuestion": 0,
+      });
+      userCount++;
+    });
+
+    // Commit the batch update
+    await batch.commit();
+
+    console.log(`✅ Reset daily challenge progress for ${userCount} users.`);
+  } catch (error) {
+    console.error("❌ Error resetting users' daily challenge progress:", error);
+    throw new Error("Failed to reset users' daily challenge progress.");
+  }
+}
+
+/**
+ * Callable function to generate today's 5-question daily challenge.
+ * Can be called manually or by a scheduler.
+ * @return A promise resolving to an object indicating success or failure.
+ */
+export const generateTodaysDailyChallengeFunction = onCall(
+  {
+    enforceAppCheck: false,
+    cors: true,
+    region: "us-central1",
+    secrets: ["OPENAI_API_KEY"],
+    timeoutSeconds: 540, // 9 minutes for riddle generation
+  } as CallableOptions,
+  async (
+    request: CallableRequest<{forceGenerate?: boolean}>,
+  ): Promise<{success: boolean; message: string; questionsGenerated: number}> => {
+    console.log("🚀 generateTodaysDailyChallengeFunction called - entry point reached");
+
+    try {
+      const {forceGenerate = false} = request.data || {};
+
+      const today = new Date();
+      const todayDateString = today.toISOString().split("T")[0];
+
+      console.log(`📝 Starting daily challenge generation for ${todayDateString}...`);
+      await generateTodaysDailyChallenge(forceGenerate);
+
+      // Get the generated challenge to count questions
+      const dailyChallengeRef = admin.firestore().collection("dailyChallenge").doc("current");
+      const challengeDoc = await dailyChallengeRef.get();
+      const questionsGenerated = challengeDoc.exists ? challengeDoc.data()?.questions?.length || 0 : 0;
+
+      console.log(`✅ Daily challenge generated successfully with ${questionsGenerated} questions.`);
+      return {
+        success: true,
+        message: `Today's daily challenge generated successfully with ${questionsGenerated} questions.`,
+        questionsGenerated,
+      };
+    } catch (error) {
+      console.error("❌ Error generating today's daily challenge:", error);
+      console.error("❌ Error type:", typeof error);
+      console.error("❌ Error constructor:", error?.constructor?.name);
+      if (error instanceof Error) {
+        console.error("❌ Error message:", error.message);
+        console.error("❌ Error stack:", error.stack);
+      } else {
+        console.error("❌ Error details:", String(error));
+      }
+      throw new functions.https.HttpsError("internal", "Failed to generate today's daily challenge.", error);
     }
   },
 );

@@ -22,9 +22,20 @@ admin.initializeApp();
 // Explicitly import and export functions from sub-modules
 import {awardedAdCallback} from "./adCallbacks";
 import {validatePurchase} from "./iapValidation";
-import {getHint, spendCoins} from "./gameLogic";
-import {setCompletedDailyChallenge, hasCompletedDailyChallenge, getCurrentDailyChallenge} from "./dailyChallenge";
-import {generateClassicRiddles, initializeRiddleDatabase, generateDailyRiddles} from "./riddleGeneration";
+import {getHint, spendCoins, skipRiddle} from "./gameLogic";
+import {
+  setCompletedDailyChallenge,
+  hasCompletedDailyChallenge,
+  getCurrentDailyChallenge,
+  getCurrentDailyChallengeQuestion,
+  advanceDailyChallengeProgress,
+} from "./dailyChallenge";
+import {
+  generateClassicRiddles,
+  initializeRiddleDatabase,
+  generateDailyRiddles,
+  generateTodaysDailyChallengeFunction,
+} from "./riddleGeneration";
 import {updateAvatar} from "./profile";
 import {submitGuess} from "./submitGuessLogic";
 import {dailyChallengeScheduler} from "./dailyScheduler";
@@ -35,12 +46,16 @@ export {
   validatePurchase,
   getHint,
   spendCoins,
+  skipRiddle,
   setCompletedDailyChallenge,
   hasCompletedDailyChallenge,
   getCurrentDailyChallenge,
+  getCurrentDailyChallengeQuestion,
+  advanceDailyChallengeProgress,
   generateClassicRiddles,
   initializeRiddleDatabase,
   generateDailyRiddles,
+  generateTodaysDailyChallengeFunction,
   updateAvatar,
   submitGuess,
   dailyChallengeScheduler,

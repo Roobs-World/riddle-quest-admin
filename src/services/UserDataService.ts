@@ -1,4 +1,5 @@
 import { getFirestore } from "@react-native-firebase/firestore";
+import { getFunctions } from "@react-native-firebase/functions";
 import { getApp } from "@react-native-firebase/app";
 import { Player, PlayerSchema } from "../validation/firestoreSchemas";
 import { ZodError } from "zod";
@@ -206,6 +207,95 @@ export class UserDataService implements IUserDataService {
     } catch (error) {
       console.error("Error checking if user exists:", error);
       return false;
+    }
+  }
+
+  /**
+   * Initializes a new user document with complete default stats and progress.
+   * Calls the Firebase function to ensure proper server-side initialization.
+   */
+  async initializeNewUser(userData: {
+    email: string;
+    username: string;
+    displayName?: string;
+    avatarUrl?: string;
+  }): Promise<{ success: boolean; message: string; userId: string }> {
+    try {
+      const initializeUserCallable = getFunctions(getApp()).httpsCallable(
+        "initializeUser"
+      );
+      const result = await initializeUserCallable(userData);
+
+      console.log("User initialized successfully:", result.data);
+      return result.data as {
+        success: boolean;
+        message: string;
+        userId: string;
+      };
+    } catch (error) {
+      console.error("Error initializing new user:", error);
+      throw new Error("Failed to initialize new user account");
+    }
+  }
+
+  /**
+   * Ensures user document has all required stats and progress fields.
+   * Calls the Firebase function to fix any missing fields.
+   */
+  async ensureUserDocumentComplete(): Promise<{
+    success: boolean;
+    message: string;
+  }> {
+    try {
+      const ensureUserCompleteCallable = getFunctions(getApp()).httpsCallable(
+        "ensureUserComplete"
+      );
+      const result = await ensureUserCompleteCallable({});
+
+      console.log("User document completeness ensured:", result.data);
+      return result.data as { success: boolean; message: string };
+    } catch (error) {
+      console.error("Error ensuring user document completeness:", error);
+      throw new Error("Failed to ensure user document completeness");
+    }
+  }
+
+  /**
+   * Updates user statistics manually (admin function).
+   * Useful for data fixes or admin operations.
+   */
+  async updateUserStats(
+    targetUserId: string,
+    statsUpdate: {
+      dailyPuzzlesCompleted?: number;
+      bestStreak?: number;
+      totalWordsGuessed?: number;
+      winRate?: number;
+      averageGuesses?: number;
+      totalScore?: number;
+      highestLevelClassic?: number;
+      gamesPlayed?: number;
+      wins?: number;
+      challengeWins?: number;
+      winStreak?: number;
+      totalWins?: number;
+      totalGuessesInWins?: number;
+    }
+  ): Promise<{ success: boolean; message: string }> {
+    try {
+      const updateUserStatsCallable = getFunctions(getApp()).httpsCallable(
+        "updateUserStats"
+      );
+      const result = await updateUserStatsCallable({
+        targetUserId,
+        statsUpdate,
+      });
+
+      console.log("User stats updated successfully:", result.data);
+      return result.data as { success: boolean; message: string };
+    } catch (error) {
+      console.error("Error updating user stats:", error);
+      throw new Error("Failed to update user stats");
     }
   }
 }

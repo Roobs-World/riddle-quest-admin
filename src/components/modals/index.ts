@@ -3,6 +3,7 @@ export { default as VictoryModal } from "./game/VictoryModal";
 export { default as LossModal } from "./game/LossModal";
 export { default as OutOfAttemptsModal } from "./game/OutOfAttemptsModal";
 export { default as WatchAdForChanceModal } from "./game/WatchAdForChanceModal";
+export { default as DailyChallengeCompletionModal } from "./game/DailyChallengeCompletionModal";
 
 // Settings Modals
 export { default as SettingsModal } from "./settings/SettingsModal";

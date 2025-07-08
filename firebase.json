@@ -3,6 +3,12 @@
     "source": "firebase-functions",
     "runtime": "nodejs22"
   },
+  "firestore": {
+    "rules": "firebase-functions/firestore.rules"
+  },
+  "storage": {
+    "rules": "firebase-functions/storage.rules"
+  },
   "emulators": {
     "functions": {
       "port": 5001

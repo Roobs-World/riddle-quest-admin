@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LandingScreen from "../screens/LandingScreen";
 import LoginScreen from "../screens/auth/LoginScreen";
@@ -14,6 +14,9 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { fetchClassicRiddleFromFirestore } from "../services/FirestoreService";
 import { styles } from "../styles";
 import { RiddleInitializationService } from "../services/RiddleInitializationService";
+import { DailyChallengeCompletionModal } from "../components/modals";
+import { getFunctions } from "@react-native-firebase/functions";
+import { getApp } from "@react-native-firebase/app";
 
 const Stack = createNativeStackNavigator();
 
@@ -30,6 +33,13 @@ const GameScreenWrapper = () => {
     setCurrentRiddle,
     fetchCurrentRiddle,
   } = useAuth();
+
+  // State for daily challenge completion modal
+  const [showCompletionModal, setShowCompletionModal] = useState(false);
+  const [completionData, setCompletionData] = useState({
+    totalCoinsEarned: 0,
+    questionsCompleted: 5,
+  });
 
   // Effect to load riddle when dependencies change
   useEffect(() => {
@@ -50,9 +60,41 @@ const GameScreenWrapper = () => {
     isAuthenticated,
   ]);
 
+  // Function to check if user completed all 5 daily challenge questions
+  const checkDailyChallengeCompletion = async () => {
+    if (!playerData || gameMode !== "daily") return false;
+
+    try {
+      const getCurrentDailyChallengeCallable = getFunctions(
+        getApp()
+      ).httpsCallable("getCurrentDailyChallenge");
+      const result = await getCurrentDailyChallengeCallable();
+      const data = result.data as { hasCompletedToday: boolean };
+      const { hasCompletedToday } = data;
+      return hasCompletedToday;
+    } catch (error) {
+      console.error("Error checking daily challenge completion:", error);
+      return false;
+    }
+  };
+
   const handleNextLevel = async () => {
     if (!playerData) return;
 
+    // For daily challenge mode, check for completion after winning
+    if (gameMode === "daily") {
+      const isCompleted = await checkDailyChallengeCompletion();
+      if (isCompleted) {
+        // Don't advance to next level, user has completed all 5 questions
+        console.log("Daily challenge completed! All 5 questions finished.");
+        return;
+      }
+      // If not completed, fetch next daily challenge question
+      await fetchCurrentRiddle(playerData, gameMode);
+      return;
+    }
+
+    // For classic mode, advance to next level
     const nextClassicIndex = (playerData.progress?.classicIndex || 0) + 1;
 
     try {
@@ -160,34 +202,74 @@ const GameScreenWrapper = () => {
     }
   }
 
+  // Modal handlers
+  const handleContinueAfterCompletion = () => {
+    setShowCompletionModal(false);
+    // Switch to classic mode after daily challenge completion
+    // Note: This would require gameMode switching functionality in AuthContext
+    console.log(
+      "User chose to continue with Classic Mode after daily challenge completion"
+    );
+  };
+
+  const handleHomeAfterCompletion = () => {
+    setShowCompletionModal(false);
+    // Navigate back to landing/home screen
+    console.log("User chose to return home after daily challenge completion");
+  };
+
   // Render GameScreen with all necessary props only when we have current riddle
   if (currentRiddle) {
     return (
-      <GameScreen
-        riddleId={currentRiddle.riddleId}
-        riddleText={currentRiddle.text}
-        answerLength={currentRiddle.answer.length}
-        userCoins={playerData.coins || 0}
-        hintCost={10}
-        onGameWin={(attempts: number, coinsEarned: number) => {
-          console.log(
-            AppStrings.GameMessages.GAME_WON +
-              attempts +
-              AppStrings.GameMessages.IN_MODE +
-              gameMode +
-              AppStrings.GameMessages.MODE_SUFFIX
-          );
-          console.log(AppStrings.GameMessages.COINS_EARNED + coinsEarned);
-        }}
-        onGameLoss={(correctAnswer: string) => {
-          console.log(AppStrings.GameMessages.GAME_LOST + correctAnswer);
-        }}
-        onHintUsed={async (cost: number) => {
-          console.log(AppStrings.GameMessages.HINT_USED + cost);
-        }}
-        onNextLevel={handleNextLevel}
-        gameMode={gameMode}
-      />
+      <>
+        <GameScreen
+          riddleId={currentRiddle.riddleId}
+          riddleText={currentRiddle.text}
+          answerLength={currentRiddle.answer.length}
+          userCoins={playerData.coins || 0}
+          hintCost={10}
+          onGameWin={async (attempts: number, coinsEarned: number) => {
+            console.log(
+              AppStrings.GameMessages.GAME_WON +
+                attempts +
+                AppStrings.GameMessages.IN_MODE +
+                gameMode +
+                AppStrings.GameMessages.MODE_SUFFIX
+            );
+            console.log(AppStrings.GameMessages.COINS_EARNED + coinsEarned);
+
+            // Check if user completed all 5 daily challenge questions
+            if (gameMode === "daily") {
+              const isCompleted = await checkDailyChallengeCompletion();
+              if (isCompleted) {
+                // Show congratulations modal for completing all 5 questions
+                setCompletionData({
+                  totalCoinsEarned: coinsEarned,
+                  questionsCompleted: 5,
+                });
+                setShowCompletionModal(true);
+              }
+            }
+          }}
+          onGameLoss={(correctAnswer: string) => {
+            console.log(AppStrings.GameMessages.GAME_LOST + correctAnswer);
+          }}
+          onHintUsed={async (cost: number) => {
+            console.log(AppStrings.GameMessages.HINT_USED + cost);
+          }}
+          onNextLevel={handleNextLevel}
+          gameMode={gameMode}
+        />
+
+        {/* Daily Challenge Completion Modal */}
+        <DailyChallengeCompletionModal
+          isVisible={showCompletionModal}
+          totalCoinsEarned={completionData.totalCoinsEarned}
+          questionsCompleted={completionData.questionsCompleted}
+          onContinue={handleContinueAfterCompletion}
+          onHome={handleHomeAfterCompletion}
+        />
+      </>
     );
   }
 
