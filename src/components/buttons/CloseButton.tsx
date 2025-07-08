@@ -5,14 +5,12 @@ import CloseIcon from "../icons/CloseIcon";
 interface CloseButtonProps extends TouchableOpacityProps {
   onPress: () => void;
   size?: number;
-  color?: string;
   className?: string;
 }
 
 const CloseButton = ({
   onPress,
   size = 24,
-  color = "#374151",
   className = "",
   ...props
 }: CloseButtonProps) => {
@@ -24,7 +22,7 @@ const CloseButton = ({
       accessibilityRole="button"
       {...props}
     >
-      <CloseIcon width={size} height={size} color={color} />
+      <CloseIcon width={size} height={size} />
     </TouchableOpacity>
   );
 };
