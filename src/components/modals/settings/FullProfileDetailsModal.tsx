@@ -102,12 +102,6 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
           }}
         />
 
-        <TouchableOpacity
-          style={{ flex: 1 }}
-          activeOpacity={1}
-          onPress={onClose}
-        />
-
         {/* Fixed Modal Container */}
         <View
           style={{
@@ -236,7 +230,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
             </View>
 
             {/* Comprehensive Stats Grid */}
-            <View className="mb-6">
+            <View className="mb-6 mt-8">
               <View className="flex-row flex-wrap justify-between">
                 {/* Row 1 */}
                 <View className="w-1/2 items-center mb-4 pr-2">
