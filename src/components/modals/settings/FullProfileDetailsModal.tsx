@@ -12,6 +12,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Player } from "../../../validation/firestoreSchemas"; // Updated import path
 import WideButton from "../../buttons/WideButton"; // Updated import path
 import CloseButton from "../../buttons/CloseButton"; // Updated import path
+import LogoIcon from "../../icons/LogoIcon";
 import ChangePasswordModal from "./ChangePasswordModal";
 import UpdateUsernameModal from "./UpdateUsernameModal";
 import AvatarOptionsModal from "./AvatarOptionsModal";
@@ -157,6 +158,18 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
                 }}
               >
                 <AvatarBgSvg width={351} height={231} />
+              </View>
+
+              {/* Logo Icon - positioned over the background */}
+              <View
+                style={{
+                  position: "absolute",
+                  top: 20,
+                  left: 0,
+                  zIndex: 2,
+                }}
+              >
+                <LogoIcon width={48} height={48} color="#ffffff" />
               </View>
 
               {/* Close Button - positioned over the background */}
