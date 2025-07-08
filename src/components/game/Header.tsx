@@ -6,7 +6,6 @@ import LogoIcon from "../icons/LogoIcon";
 /**
  * Props for the Header component.
  * @property {number} userCoins - The current user's coin balance.
- * @property {() => void} onHintPress - Function to call when the Hint button is pressed.
  * @property {() => void} onCoinsPress - Function to call when the coins are pressed (opens shop).
  */
 interface HeaderProps {
@@ -16,7 +15,7 @@ interface HeaderProps {
 
 /**
  * The header component for the game screen.
- * Displays the hint button and coins in the top left corner.
+ * Displays the logo icon in the top left and coins in the top right corner.
  *
  * @param {HeaderProps} props - The props for the component.
  * @returns {React.FC<HeaderProps>} The rendered Header component.
@@ -24,7 +23,7 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ userCoins, onCoinsPress }) => {
   return (
     <View
-      className="w-full flex-row items-center justify-between px-4"
+      className="w-full flex-row items-center justify-between px-4 relative"
       style={{
         minHeight: "8%",
         maxHeight: "8%",
@@ -33,16 +32,13 @@ const Header: React.FC<HeaderProps> = ({ userCoins, onCoinsPress }) => {
       testID="header"
       accessible={true}
       accessibilityRole="none"
-      accessibilityLabel="Game header with hint button and coin balance"
+      accessibilityLabel="Game header with logo and coin balance"
     >
-      {/* Left side: Hint button */}
-      <View
-        className="flex-row items-center space-x-3"
-        testID="header-left-side"
-      >
+      {/* Logo Icon in top-left corner - positioned absolutely like CloseButton */}
+      <View className="absolute top-4 left-4 z-10">
         <TouchableOpacity
           className="items-center"
-          testID="hint-button"
+          testID="logo-button"
           accessible={true}
           accessibilityRole="button"
           accessibilityLabel="logo"
@@ -52,7 +48,7 @@ const Header: React.FC<HeaderProps> = ({ userCoins, onCoinsPress }) => {
       </View>
 
       {/* Right side: Coins */}
-      <View testID="header-right-side">
+      <View className="absolute top-4 right-4 z-10" testID="header-right-side">
         <CoinsDisplay coins={userCoins} onPress={onCoinsPress} />
       </View>
     </View>

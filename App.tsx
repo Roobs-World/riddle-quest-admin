@@ -13,6 +13,7 @@ import PulsingSpinner from "./src/components/loading/PulsingSpinner";
 import { AuthService } from "./src/services/AuthService";
 import { SolarSystemPreloader } from "./src/services/SolarSystemPreloader";
 import { getCrashlytics } from "@react-native-firebase/crashlytics";
+import { ModalProvider } from "./src/contexts/ModalContext";
 export default function App() {
   const [isInitialized, setIsInitialized] = useState(false);
 
@@ -224,12 +225,16 @@ export default function App() {
     return <PulsingSpinner visible={true} size={120} opacity={0.8} />;
   }
 
-  console.log("🎯 App initialized, rendering AuthProvider and Navigation");
+  console.log(
+    "🎯 App initialized, rendering ModalProvider, AuthProvider and Navigation"
+  );
   return (
-    <AuthProvider>
-      <NavigationContainer>
-        <Navigation />
-      </NavigationContainer>
-    </AuthProvider>
+    <ModalProvider>
+      <AuthProvider>
+        <NavigationContainer>
+          <Navigation />
+        </NavigationContainer>
+      </AuthProvider>
+    </ModalProvider>
   );
 }

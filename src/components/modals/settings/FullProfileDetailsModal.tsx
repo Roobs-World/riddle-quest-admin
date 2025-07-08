@@ -17,9 +17,12 @@ import UpdateUsernameModal from "./UpdateUsernameModal";
 import AvatarOptionsModal from "./AvatarOptionsModal";
 import PreloadedAvatarsModal from "./PreloadedAvatarsModal";
 import TreasureChest from "./TreasureChest";
-import { styles, TYPOGRAPHY } from "../../../styles";
+import { TYPOGRAPHY } from "../../../styles";
 
 const { height: screenHeight } = Dimensions.get("window");
+
+// Import SVG directly
+import AvatarBgSvg from "../../../../assets/images/avatar-bg.svg";
 
 /**
  * Props for the FullProfileDetailsModal component.
@@ -124,11 +127,6 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
             elevation: 10,
           }}
         >
-          {/* Close Button in top-right corner */}
-          <View className="absolute top-4 right-4 z-10">
-            <CloseButton onPress={onClose} size={20} />
-          </View>
-
           <ScrollView
             className="flex-1 px-6"
             showsVerticalScrollIndicator={true}
@@ -138,53 +136,94 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
             alwaysBounceVertical={false}
             scrollEnabled={true}
             contentContainerStyle={{
-              paddingTop: 50, // Account for close button
+              paddingTop: 20,
               paddingBottom: Math.max(30, insets.bottom + 20),
               flexGrow: 1,
             }}
           >
-            {/* Basic Info (similar to ProfileOverlay but can add more detail) */}
+            {/* Basic Info with background flush to top */}
+            <View
+              className="items-center mb-6 relative"
+              style={{ height: 200, marginTop: -20 }}
+            >
+              {/* Avatar Background SVG - flush to top */}
+              <View
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: "50%",
+                  transform: [{ translateX: -175.5 }], // Half of SVG width (351/2)
+                  zIndex: 0,
+                }}
+              >
+                <AvatarBgSvg width={351} height={231} />
+              </View>
 
-            <View className="items-center mb-6">
-              <TouchableOpacity
-                onPress={handleUpdateAvatarPress}
-                activeOpacity={0.8}
+              {/* Close Button - positioned over the background */}
+              <View
+                style={{
+                  position: "absolute",
+                  top: 20,
+                  right: 0,
+                  zIndex: 2,
+                }}
               >
-                {playerData.avatarUrl ? (
-                  <Image
-                    testID="avatar-image"
-                    source={{ uri: playerData.avatarUrl }}
-                    className="w-16 h-16 rounded-full"
-                  />
-                ) : (
-                  <View className="w-16 h-16 rounded-full bg-blue-500 items-center justify-center">
-                    <Text
-                      className="text-white text-3xl font-bold"
-                      style={{ fontFamily: TYPOGRAPHY.fontSecondaryBold }}
+                <CloseButton onPress={onClose} size={20} />
+              </View>
+
+              {/* Avatar and Username - centered within the background */}
+              <View
+                style={{
+                  zIndex: 1,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  paddingTop: 40,
+                }}
+              >
+                <TouchableOpacity
+                  onPress={handleUpdateAvatarPress}
+                  activeOpacity={0.8}
+                >
+                  {playerData.avatarUrl ? (
+                    <Image
+                      testID="avatar-image"
+                      source={{ uri: playerData.avatarUrl }}
+                      className="w-20 h-20 rounded-full"
+                      style={{
+                        borderWidth: 3,
+                        borderColor: "#FCC070",
+                      }}
+                    />
+                  ) : (
+                    <View
+                      className="w-20 h-20 rounded-full bg-blue-500 items-center justify-center"
+                      style={{
+                        borderWidth: 3,
+                        borderColor: "#FCC070",
+                      }}
                     >
-                      {playerData.username
-                        ? playerData.username.charAt(0).toUpperCase()
-                        : ""}
-                    </Text>
-                  </View>
-                )}
-              </TouchableOpacity>
-              <Text
-                className="text-xl font-bold text-gray-800 mt-2"
-                style={{ fontFamily: TYPOGRAPHY.fontSecondaryBold }}
-              >
-                {playerData.username || "Guest"}
-              </Text>
+                      <Text
+                        className="text-white text-3xl font-bold"
+                        style={{ fontFamily: TYPOGRAPHY.fontSecondaryBold }}
+                      >
+                        {playerData.username
+                          ? playerData.username.charAt(0).toUpperCase()
+                          : ""}
+                      </Text>
+                    </View>
+                  )}
+                </TouchableOpacity>
+                <Text
+                  className="text-xl font-bold text-white mt-3"
+                  style={{ fontFamily: TYPOGRAPHY.fontSecondaryBold }}
+                >
+                  {playerData.username || "Guest"}
+                </Text>
+              </View>
             </View>
 
             {/* Comprehensive Stats Grid */}
             <View className="mb-6">
-              <Text
-                className=" text-gray-800 mb-4"
-                style={{ fontFamily: TYPOGRAPHY.fontPrimary }}
-              >
-                Statistics
-              </Text>
               <View className="flex-row flex-wrap justify-between">
                 {/* Row 1 */}
                 <View className="w-1/2 items-center mb-4 pr-2">
