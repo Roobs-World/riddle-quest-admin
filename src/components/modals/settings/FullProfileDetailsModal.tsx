@@ -143,44 +143,34 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
               flexGrow: 1,
             }}
           >
-            <Text
-              className="text-2xl font-bold text-gray-800 mb-4"
-              style={[
-                styles.creditsTitle,
-                { fontFamily: TYPOGRAPHY.fontPrimary },
-              ]}
-            >
-              Full Profile
-            </Text>
             {/* Basic Info (similar to ProfileOverlay but can add more detail) */}
 
-            <TouchableOpacity
-              className="flex-row items-center mb-6"
-              onPress={handleUpdateAvatarPress}
-              activeOpacity={0.8} // Optional: tweak the opacity on press
-            >
-              {playerData.avatarUrl ? (
-                <Image
-                  testID="avatar-image"
-                  source={{ uri: playerData.avatarUrl }}
-                  className="w-16 h-16 rounded-full mr-4"
-                />
-              ) : (
-                <View className="w-16 h-16 rounded-full mr-4 bg-blue-500 items-center justify-center">
-                  <Text
-                    className="text-white text-3xl font-bold"
-                    style={{ fontFamily: TYPOGRAPHY.fontSecondaryBold }}
-                  >
-                    {playerData.username
-                      ? playerData.username.charAt(0).toUpperCase()
-                      : ""}
-                  </Text>
-                </View>
-              )}
-            </TouchableOpacity>
-            <View className="flex-1">
+            <View className="items-center mb-6">
+              <TouchableOpacity
+                onPress={handleUpdateAvatarPress}
+                activeOpacity={0.8}
+              >
+                {playerData.avatarUrl ? (
+                  <Image
+                    testID="avatar-image"
+                    source={{ uri: playerData.avatarUrl }}
+                    className="w-16 h-16 rounded-full"
+                  />
+                ) : (
+                  <View className="w-16 h-16 rounded-full bg-blue-500 items-center justify-center">
+                    <Text
+                      className="text-white text-3xl font-bold"
+                      style={{ fontFamily: TYPOGRAPHY.fontSecondaryBold }}
+                    >
+                      {playerData.username
+                        ? playerData.username.charAt(0).toUpperCase()
+                        : ""}
+                    </Text>
+                  </View>
+                )}
+              </TouchableOpacity>
               <Text
-                className="text-xl font-bold text-gray-800"
+                className="text-xl font-bold text-gray-800 mt-2"
                 style={{ fontFamily: TYPOGRAPHY.fontSecondaryBold }}
               >
                 {playerData.username || "Guest"}
@@ -307,7 +297,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
             {/* Account Settings / Update Options */}
             <View className="w-full mt-4 pt-4">
               <Text
-                className="text-lg font-bold text-gray-800 mb-3"
+                className="text-lg text-gray-800 mb-3"
                 style={{ fontFamily: TYPOGRAPHY.fontPrimary }}
               >
                 Account Settings
