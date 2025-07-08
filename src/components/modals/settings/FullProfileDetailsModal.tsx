@@ -152,10 +152,13 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
             >
               Full Profile
             </Text>
-
             {/* Basic Info (similar to ProfileOverlay but can add more detail) */}
-            <View className="flex-row items-center mb-6">
-              {/* Avatar Display - Reusing logic or component from ProfileOverlay */}
+
+            <TouchableOpacity
+              className="flex-row items-center mb-6"
+              onPress={handleUpdateAvatarPress}
+              activeOpacity={0.8} // Optional: tweak the opacity on press
+            >
               {playerData.avatarUrl ? (
                 <Image
                   testID="avatar-image"
@@ -174,22 +177,21 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
                   </Text>
                 </View>
               )}
-              <View className="flex-1">
-                <Text
-                  className="text-xl font-bold text-gray-800"
-                  style={{ fontFamily: TYPOGRAPHY.fontSecondaryBold }}
-                >
-                  {playerData.username || "Guest"}
-                </Text>
-                {/* Additional basic info if needed */}
-              </View>
+            </TouchableOpacity>
+            <View className="flex-1">
+              <Text
+                className="text-xl font-bold text-gray-800"
+                style={{ fontFamily: TYPOGRAPHY.fontSecondaryBold }}
+              >
+                {playerData.username || "Guest"}
+              </Text>
             </View>
 
             {/* Comprehensive Stats Grid */}
             <View className="mb-6">
               <Text
-                className="text-lg font-bold text-gray-800 mb-4"
-                style={{ fontFamily: TYPOGRAPHY.fontSecondaryBold }}
+                className=" text-gray-800 mb-4"
+                style={{ fontFamily: TYPOGRAPHY.fontPrimary }}
               >
                 Statistics
               </Text>
@@ -301,28 +303,12 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
                 </View>
               </View>
             </View>
-
-            {/* Update Avatar Options */}
-            <View className="mb-6">
-              <Text
-                className="text-lg font-bold text-gray-800 mb-3"
-                style={{ fontFamily: TYPOGRAPHY.fontSecondaryBold }}
-              >
-                Avatar
-              </Text>
-              <WideButton
-                buttonText="Update Avatar"
-                onPress={handleUpdateAvatarPress}
-              />
-            </View>
-
             <TreasureChest coins={playerData.coins} />
-
             {/* Account Settings / Update Options */}
-            <View className="w-full mt-4 border-t border-gray-200 pt-4">
+            <View className="w-full mt-4 pt-4">
               <Text
                 className="text-lg font-bold text-gray-800 mb-3"
-                style={{ fontFamily: TYPOGRAPHY.fontSecondaryBold }}
+                style={{ fontFamily: TYPOGRAPHY.fontPrimary }}
               >
                 Account Settings
               </Text>
@@ -339,7 +325,6 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
                 onPress={() => setIsPasswordModalVisible(true)}
               />
             </View>
-
             {/* Close Button */}
             <WideButton
               buttonText="Close"

@@ -159,7 +159,11 @@ const AvatarOptionsModal: React.FC<AvatarOptionsModalProps> = ({
           )}
 
           {/* Cancel Button */}
-          <WideButton buttonText="Cancel" onPress={onClose} />
+          <WideButton
+            buttonText="Cancel"
+            buttonColor="bg-gray-500"
+            onPress={onClose}
+          />
         </View>
       </SafeAreaView>
     </Modal>
