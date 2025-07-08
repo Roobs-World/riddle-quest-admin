@@ -73,7 +73,6 @@ const mockUser: Player = {
   email: "test@example.com",
   username: "tester",
   coins: 100,
-  xp: 0,
   hasPurchasedApp: false,
   stats: {
     gamesPlayed: 10,
@@ -131,7 +130,6 @@ describe("handleGuessLogic", () => {
         userId: mockUser.userId,
         username: mockUser.username,
         coins: mockUser.coins,
-        xp: mockUser.xp,
         stats: mockUser.stats,
         registeredAt: mockUser.registeredAt,
         lastLogin: mockUser.lastLogin,
@@ -239,10 +237,12 @@ describe("handleGuessLogic", () => {
       await handleGuessLogic(requestData, authContext);
       const expectedStatsUpdate: Record<string, unknown> = {
         gamesPlayed: "increment(1)",
+        totalWordsGuessed: "increment(1)", // Added new stat
         wins: "increment(1)",
         totalWins: "increment(1)",
         winStreak: "increment(1)",
         totalGuessesInWins: "increment(1)",
+        totalScore: "increment(100)", // Classic mode: base 50 + attempts bonus (6-1+1)*10 = 60, total = 110, but this is for 1 attempt so 50 + 50 = 100
         averageGuesses: parseFloat(
           ((mockUser.stats.totalGuessesInWins! + 1) / (mockUser.stats.totalWins! + 1)).toFixed(2),
         ),
@@ -381,11 +381,14 @@ describe("handleGuessLogic", () => {
       await handleGuessLogic(requestData, authContext);
       const expectedStatsUpdate: Record<string, unknown> = {
         gamesPlayed: "increment(1)",
+        totalWordsGuessed: "increment(1)", // Added new stat
         wins: "increment(1)",
         totalWins: "increment(1)",
         winStreak: "increment(1)",
         totalGuessesInWins: "increment(2)",
         challengeWins: "increment(1)",
+        dailyPuzzlesCompleted: "increment(1)", // Added daily puzzles stat
+        totalScore: "increment(140)", // Challenge mode: base 100 + attempts bonus (5-2+1)*10 = 40, total = 140
         averageGuesses: parseFloat(
           ((mockUser.stats.totalGuessesInWins! + 2) / (mockUser.stats.totalWins! + 1)).toFixed(2),
         ),
@@ -427,6 +430,7 @@ describe("handleGuessLogic", () => {
       await handleGuessLogic(requestData, authContext);
       const expectedStatsUpdate: Record<string, unknown> = {
         gamesPlayed: "increment(1)",
+        totalWordsGuessed: "increment(1)", // Added new stat for incorrect guesses too
         winRate: parseFloat(
           ((userWithStreak.stats.totalWins! / (userWithStreak.stats.gamesPlayed! + 1)) * 100).toFixed(2),
         ),
@@ -456,6 +460,7 @@ describe("handleGuessLogic", () => {
       await handleGuessLogic(requestData, authContext);
       const expectedStatsUpdate: Record<string, unknown> = {
         gamesPlayed: "increment(1)",
+        totalWordsGuessed: "increment(1)", // Added new stat for game over incorrect guesses too
         winStreak: 0,
         winRate: parseFloat(((mockUser.stats.totalWins! / (mockUser.stats.gamesPlayed! + 1)) * 100).toFixed(2)),
       };

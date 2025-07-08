@@ -28,6 +28,7 @@ import {generateClassicRiddles, initializeRiddleDatabase, generateDailyRiddles} 
 import {updateAvatar} from "./profile";
 import {submitGuess} from "./submitGuessLogic";
 import {dailyChallengeScheduler} from "./dailyScheduler";
+import {initializeUser, ensureUserComplete, updateUserStats} from "./userManagement";
 
 export {
   awardedAdCallback,
@@ -43,6 +44,9 @@ export {
   updateAvatar,
   submitGuess,
   dailyChallengeScheduler,
+  initializeUser,
+  ensureUserComplete,
+  updateUserStats,
 };
 
 // Removed all individual function definitions and exports from here

@@ -1,7 +1,7 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import {onCall, HttpsError} from "firebase-functions/v2/https";
-import {getUser, updateUserCoins, updateUserStats, getRiddle} from "./firestoreService";
+import {getUser, updateUserCoins, updateUserStats, getRiddle, ensureUserDocumentComplete} from "./firestoreService";
 import type {PlayerStats, PlayerStatsUpdate} from "./validation/firestoreSchemas";
 import {PlayerSchema} from "./validation/firestoreSchemas";
 import type {FeedbackItem} from "./validation/requestSchemas";
@@ -19,7 +19,7 @@ export type FeedbackColor = "green" | "yellow" | "red";
 interface SubmitGuessRequestData {
   guess: string;
   riddleId: string;
-  gameMode: "challenge" | "classic";
+  gameMode: "challenge" | "classic" | "tutorial";
   attempts: number;
 }
 
@@ -52,6 +52,9 @@ export async function handleGuessLogic(
   }
 
   try {
+    // Ensure user document has all required stats and progress fields (defensive programming)
+    await ensureUserDocumentComplete(userId);
+
     // Initialize database if empty (for new deployments)
     await initializeRiddleDatabaseIfEmpty();
 
@@ -118,7 +121,8 @@ export async function handleGuessLogic(
 
     const isCorrect = guessClean === correctAnswerClean;
     let coinsEarned = 0;
-    const maxAttempts = gameMode === "challenge" ? MAX_ATTEMPTS_CHALLENGE : MAX_ATTEMPTS_CLASSIC;
+    const maxAttempts =
+      gameMode === "challenge" ? MAX_ATTEMPTS_CHALLENGE : gameMode === "tutorial" ? 3 : MAX_ATTEMPTS_CLASSIC; // Tutorial has 3 attempts
     const gameOver = isCorrect || attempts >= maxAttempts;
 
     const user = await getUser(userId);
@@ -127,26 +131,25 @@ export async function handleGuessLogic(
     }
 
     const currentStats: PlayerStats = user.stats || {
-      gamesPlayed: 0,
-      wins: 0,
-      winStreak: 0,
+      dailyPuzzlesCompleted: 0,
       bestStreak: 0,
-      totalWordsGuessed: 0, // Ensure this is part of PlayerStats if used
+      totalWordsGuessed: 0,
       winRate: 0,
       averageGuesses: 0,
-      totalScore: 0, // Ensure this is part of PlayerStats if used
-      highestLevelClassic: 0, // Ensure this is part of PlayerStats if used
+      totalScore: 0,
+      highestLevelClassic: 0,
+      gamesPlayed: 0,
+      wins: 0,
       challengeWins: 0,
+      winStreak: 0,
       totalWins: 0,
       totalGuessesInWins: 0,
     };
 
     const statsUpdate: PlayerStatsUpdate = {
       gamesPlayed: admin.firestore.FieldValue.increment(1),
+      totalWordsGuessed: admin.firestore.FieldValue.increment(1), // Track each guess attempt
     };
-
-    // Increment totalWordsGuessed if it's a stat you track with every guess
-    // statsUpdate.totalWordsGuessed = admin.firestore.FieldValue.increment(1);
 
     if (isCorrect) {
       statsUpdate.wins = admin.firestore.FieldValue.increment(1);
@@ -158,11 +161,40 @@ export async function handleGuessLogic(
 
       if (gameMode === "challenge") {
         statsUpdate.challengeWins = admin.firestore.FieldValue.increment(1);
+        statsUpdate.dailyPuzzlesCompleted = admin.firestore.FieldValue.increment(1); // Track daily puzzles completed
         coinsEarned = Math.max(0, 20 - (attempts - 1) * 5);
         playerProfileUpdate.lastDailyChallengeCompletedAt = admin.firestore.FieldValue.serverTimestamp();
+
+        // Update daily challenge progress index
+        await admin
+          .firestore()
+          .collection("users")
+          .doc(userId)
+          .update({
+            "progress.dailyChallengeIndex": admin.firestore.FieldValue.increment(1),
+          });
+        console.log(`User ${userId} completed daily challenge. Incremented dailyChallengeIndex.`);
+      } else if (gameMode === "tutorial") {
+        coinsEarned = 5; // Tutorial mode gives small coin reward
+
+        // Update tutorial progress index
+        await admin
+          .firestore()
+          .collection("users")
+          .doc(userId)
+          .update({
+            "progress.tutorialIndex": admin.firestore.FieldValue.increment(1),
+          });
+        console.log(`User ${userId} completed tutorial level. Incremented tutorialIndex.`);
       } else {
-        coinsEarned = 10;
+        coinsEarned = 10; // Classic mode
       }
+
+      // Calculate and add score based on performance (fewer attempts = higher score)
+      const baseScore = gameMode === "challenge" ? 100 : gameMode === "tutorial" ? 25 : 50; // Tutorial has lower base score
+      const attemptsBonus = Math.max(0, (maxAttempts - attempts + 1) * 10);
+      const scoreEarned = baseScore + attemptsBonus;
+      statsUpdate.totalScore = admin.firestore.FieldValue.increment(scoreEarned);
       await updateUserCoins(userId, coinsEarned);
 
       if (Object.keys(playerProfileUpdate).length > 0) {
@@ -200,6 +232,14 @@ export async function handleGuessLogic(
         "progress.classicIndex": admin.firestore.FieldValue.increment(1),
       });
       console.log(`User ${userId} solved Classic riddle ${riddleId}. Incremented classicIndex.`);
+
+      // Update highestLevelClassic stat to match the new progress
+      const newClassicLevel = (user.progress?.classicIndex || 0) + 1;
+      if (newClassicLevel > (currentStats.highestLevelClassic || 0)) {
+        await updateUserStats(userId, {
+          highestLevelClassic: newClassicLevel,
+        });
+      }
 
       // Check if new riddles need to be generated
       const updatedUserDoc = await userRef.get();

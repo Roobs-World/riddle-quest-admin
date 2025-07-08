@@ -6,6 +6,7 @@ interface WideButtonProps {
   buttonText: string;
   onPress: () => void;
   disabled?: boolean;
+  buttonColor?: string;
 }
 
 /**
@@ -20,11 +21,14 @@ const WideButton: React.FC<WideButtonProps> = ({
   buttonText,
   onPress,
   disabled = false,
+  buttonColor,
 }) => {
+  const bg = buttonColor || "bg-primary-orange";
+
   return (
     <TouchableOpacity
       className={`w-full rounded-lg py-3 px-6 my-4 ${
-        disabled ? "bg-gray-300" : "bg-primary-orange"
+        disabled ? "bg-gray-300" : bg
       }`}
       onPress={onPress}
       disabled={disabled}

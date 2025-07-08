@@ -172,6 +172,188 @@ export async function updateUserProfile(userId: string, profileUpdate: Partial<P
 }
 
 /**
+ * Initializes a new user document with default stats and progress.
+ * Called when a new user account is created.
+ *
+ * @param userId - The ID of the user.
+ * @param userData - Basic user data (email, username, etc.).
+ * @return A promise that resolves when the user document is created.
+ */
+export async function initializeNewUser(
+  userId: string,
+  userData: {
+    email: string;
+    username: string;
+    displayName?: string;
+    avatarUrl?: string;
+  },
+): Promise<void> {
+  try {
+    const defaultUserData: Player = {
+      userId,
+      email: userData.email,
+      username: userData.username,
+      displayName: userData.displayName,
+      avatarUrl: userData.avatarUrl,
+      coins: 100, // Starting coins
+      hasPurchasedApp: false,
+      createdAt: Date.now(),
+      registeredAt: Date.now(),
+      lastLogin: Date.now(),
+      stats: {
+        dailyPuzzlesCompleted: 0,
+        bestStreak: 0,
+        totalWordsGuessed: 0,
+        winRate: 0,
+        averageGuesses: 0,
+        totalScore: 0,
+        highestLevelClassic: 0,
+        gamesPlayed: 0,
+        wins: 0,
+        challengeWins: 0,
+        winStreak: 0,
+        totalWins: 0,
+        totalGuessesInWins: 0,
+      },
+      progress: {
+        classicIndex: 0,
+        dailyChallengeIndex: 0,
+        tutorialIndex: 0,
+      },
+    };
+
+    await getDb().collection("users").doc(userId).set(defaultUserData);
+    functions.logger.info(`Initialized new user document for ${userId} with default stats and progress`);
+  } catch (error) {
+    functions.logger.error(`Error initializing new user ${userId}:`, error);
+    throw error;
+  }
+}
+
+/**
+ * Ensures a user document exists with proper default values.
+ * If the user exists but is missing stats/progress, it will add them.
+ *
+ * @param userId - The ID of the user.
+ * @return A promise that resolves when the user document is verified/updated.
+ */
+export async function ensureUserDocumentComplete(userId: string): Promise<void> {
+  try {
+    const userRef = getDb().collection("users").doc(userId);
+    const userDoc = await userRef.get();
+
+    if (!userDoc.exists) {
+      functions.logger.warn(
+        `User document not found for ${userId}, cannot ensure completeness without basic user data`,
+      );
+      return;
+    }
+
+    const userData = userDoc.data() as Partial<Player>;
+    const updates: Partial<Player> = {};
+
+    // Ensure stats object exists with all required fields
+    if (!userData.stats) {
+      updates.stats = {
+        dailyPuzzlesCompleted: 0,
+        bestStreak: 0,
+        totalWordsGuessed: 0,
+        winRate: 0,
+        averageGuesses: 0,
+        totalScore: 0,
+        highestLevelClassic: 0,
+        gamesPlayed: 0,
+        wins: 0,
+        challengeWins: 0,
+        winStreak: 0,
+        totalWins: 0,
+        totalGuessesInWins: 0,
+      };
+    } else {
+      // Check for missing stat fields and add defaults
+      const currentStats = userData.stats;
+      const defaultStats = {
+        dailyPuzzlesCompleted: 0,
+        bestStreak: 0,
+        totalWordsGuessed: 0,
+        winRate: 0,
+        averageGuesses: 0,
+        totalScore: 0,
+        highestLevelClassic: 0,
+        gamesPlayed: 0,
+        wins: 0,
+        challengeWins: 0,
+        winStreak: 0,
+        totalWins: 0,
+        totalGuessesInWins: 0,
+      };
+
+      let needsStatsUpdate = false;
+      const mergedStats = {...currentStats};
+
+      for (const [key, defaultValue] of Object.entries(defaultStats)) {
+        if (!(key in currentStats) || currentStats[key as keyof typeof currentStats] === undefined) {
+          mergedStats[key as keyof typeof mergedStats] = defaultValue;
+          needsStatsUpdate = true;
+        }
+      }
+
+      if (needsStatsUpdate) {
+        updates.stats = mergedStats;
+      }
+    }
+
+    // Ensure progress object exists with all required fields
+    if (!userData.progress) {
+      updates.progress = {
+        classicIndex: 0,
+        dailyChallengeIndex: 0,
+        tutorialIndex: 0,
+      };
+    } else {
+      const currentProgress = userData.progress;
+      const defaultProgress = {
+        classicIndex: 0,
+        dailyChallengeIndex: 0,
+        tutorialIndex: 0,
+      };
+
+      let needsProgressUpdate = false;
+      const mergedProgress = {...currentProgress};
+
+      for (const [key, defaultValue] of Object.entries(defaultProgress)) {
+        if (!(key in currentProgress) || currentProgress[key as keyof typeof currentProgress] === undefined) {
+          mergedProgress[key as keyof typeof mergedProgress] = defaultValue;
+          needsProgressUpdate = true;
+        }
+      }
+
+      if (needsProgressUpdate) {
+        updates.progress = mergedProgress;
+      }
+    }
+
+    // Ensure other required fields exist
+    if (userData.coins === undefined) {
+      updates.coins = 100; // Default starting coins
+    }
+
+    if (userData.hasPurchasedApp === undefined) {
+      updates.hasPurchasedApp = false;
+    }
+
+    // Apply updates if any are needed
+    if (Object.keys(updates).length > 0) {
+      await userRef.update(updates);
+      functions.logger.info(`Updated user document for ${userId} with missing fields:`, Object.keys(updates));
+    }
+  } catch (error) {
+    functions.logger.error(`Error ensuring user document completeness for ${userId}:`, error);
+    throw error;
+  }
+}
+
+/**
  * Fetches a riddle document by ID.
  *
  * @param riddleId - The ID of the riddle.

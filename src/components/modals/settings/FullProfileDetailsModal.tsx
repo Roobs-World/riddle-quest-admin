@@ -16,6 +16,7 @@ import ChangePasswordModal from "./ChangePasswordModal";
 import UpdateUsernameModal from "./UpdateUsernameModal";
 import AvatarOptionsModal from "./AvatarOptionsModal";
 import PreloadedAvatarsModal from "./PreloadedAvatarsModal";
+import TreasureChest from "./TreasureChest";
 
 const { height: screenHeight } = Dimensions.get("window");
 
@@ -240,15 +241,6 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
                     Games Played
                   </Text>
                 </View>
-                <View className="w-1/2 items-center mb-4 pl-2">
-                  <View className="w-8 h-8 bg-yellow-500 rounded-sm mb-1" />
-                  <Text className="text-2xl font-bold text-gray-800">
-                    {(playerData.coins || 0).toString()}
-                  </Text>
-                  <Text className="text-sm text-gray-600 text-center">
-                    Coins
-                  </Text>
-                </View>
               </View>
             </View>
 
@@ -263,6 +255,8 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
               />
             </View>
 
+            <TreasureChest coins={playerData.coins} />
+
             {/* Account Settings / Update Options */}
             <View className="w-full mt-4 border-t border-gray-200 pt-4">
               <Text className="text-lg font-bold text-gray-800 mb-3">
@@ -270,33 +264,24 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
               </Text>
 
               {/* Update Username Button */}
-              <TouchableOpacity
-                className="bg-gray-200 px-4 py-3 rounded-md mb-3 w-full items-center"
+              <WideButton
+                buttonText="Update Username"
                 onPress={() => setIsUsernameModalVisible(true)}
-              >
-                <Text className="text-gray-800 font-semibold">
-                  Update Username
-                </Text>
-              </TouchableOpacity>
+              />
 
               {/* Change Password Button */}
-              <TouchableOpacity
-                className="bg-gray-200 px-4 py-3 rounded-md mb-3 w-full items-center"
+              <WideButton
+                buttonText="Change Password"
                 onPress={() => setIsPasswordModalVisible(true)}
-              >
-                <Text className="text-gray-800 font-semibold">
-                  Change Password
-                </Text>
-              </TouchableOpacity>
+              />
             </View>
 
             {/* Close Button */}
-            <TouchableOpacity
+            <WideButton
+              buttonText="Close"
               onPress={onClose}
-              className="bg-gray-500 px-4 py-2 rounded w-full items-center mt-6"
-            >
-              <Text className="text-white font-bold">Close</Text>
-            </TouchableOpacity>
+              buttonColor="bg-gray-500"
+            />
           </ScrollView>
         </View>
       </View>
