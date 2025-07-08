@@ -3,17 +3,16 @@ import {
   View,
   Text,
   Modal,
-  TouchableOpacity,
   SafeAreaView,
   Switch, // Import Switch component for toggles
   Alert, // Import Alert component
 } from "react-native";
-import Icon from "react-native-vector-icons/MaterialIcons";
 import { getAuth } from "@react-native-firebase/auth";
 import { getApp } from "@react-native-firebase/app";
 import { AppStrings } from "../../../constants/AppStrings";
 import CloseButton from "../../buttons/CloseButton";
-import { COLORS } from "../../../styles";
+import { COLORS, TYPOGRAPHY } from "../../../styles";
+import WideButton from "src/components/buttons/WideButton";
 
 /**
  * Props for the SettingsModal component.
@@ -67,7 +66,10 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
             <CloseButton onPress={onClose} size={20} />
           </View>
 
-          <Text className="text-2xl font-bold text-gray-800 mb-6 text-center">
+          <Text
+            className="text-2xl text-gray-800 mb-6 text-center"
+            style={{ fontFamily: TYPOGRAPHY.fontPrimary }}
+          >
             {AppStrings.Settings.TITLE}
           </Text>
 
@@ -100,30 +102,20 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
           </View>
 
           {/* Help Button */}
-          <TouchableOpacity
-            className="bg-gray-200 px-4 py-3 rounded-md mb-3 w-full items-center flex-row justify-center"
+          <WideButton
+            buttonText={AppStrings.Settings.HELP_BUTTON}
             onPress={onPressHelp}
-          >
-            <Icon name="help-outline" size={20} color={COLORS.gray600} />
-            <Text className="text-gray-800 font-semibold ml-2">
-              {AppStrings.Settings.HELP_BUTTON}
-            </Text>
-          </TouchableOpacity>
+          />
 
           {/* Credits Button */}
-          <TouchableOpacity
-            className="bg-gray-200 px-4 py-3 rounded-md mb-3 w-full items-center flex-row justify-center"
+          <WideButton
+            buttonText={AppStrings.Settings.CREDITS_BUTTON}
             onPress={onPressCredits}
-          >
-            <Icon name="info-outline" size={20} color={COLORS.gray600} />
-            <Text className="text-gray-800 font-semibold ml-2">
-              {AppStrings.Settings.CREDITS_BUTTON}
-            </Text>
-          </TouchableOpacity>
+          />
 
           {/* Logout Button */}
-          <TouchableOpacity
-            className="bg-red-500 px-4 py-3 rounded-md mb-3 w-full items-center flex-row justify-center"
+          <WideButton
+            buttonText={AppStrings.Settings.LOGOUT_BUTTON}
             onPress={async () => {
               try {
                 console.log("Attempting to log out...");
@@ -136,12 +128,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                 Alert.alert("Error", "Could not log out. Please try again.");
               }
             }}
-          >
-            <Icon name="logout" size={20} color={COLORS.white} />
-            <Text className="text-white font-semibold ml-2">
-              {AppStrings.Settings.LOGOUT_BUTTON}
-            </Text>
-          </TouchableOpacity>
+            buttonColor="bg-gray-500"
+          />
         </View>
       </SafeAreaView>
     </Modal>
