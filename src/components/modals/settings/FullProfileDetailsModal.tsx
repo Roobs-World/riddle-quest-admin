@@ -6,30 +6,18 @@ import {
   Modal,
   ScrollView,
   Image,
-  Alert,
-  TextInput,
-  SafeAreaView,
+  Dimensions,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Player } from "../../../validation/firestoreSchemas"; // Updated import path
-import { useAuth } from "../../../contexts/AuthContext"; // Updated import path
-import * as ImagePicker from "react-native-image-picker";
-import {
-  getStorage,
-  FirebaseStorageTypes,
-} from "@react-native-firebase/storage";
-import { getFunctions } from "@react-native-firebase/functions";
-import { getAuth, EmailAuthProvider } from "@react-native-firebase/auth";
-import { getApp } from "@react-native-firebase/app";
 import WideButton from "../../buttons/WideButton"; // Updated import path
 import CloseButton from "../../buttons/CloseButton"; // Updated import path
+import ChangePasswordModal from "./ChangePasswordModal";
+import UpdateUsernameModal from "./UpdateUsernameModal";
+import AvatarOptionsModal from "./AvatarOptionsModal";
+import PreloadedAvatarsModal from "./PreloadedAvatarsModal";
 
-// Placeholder array of preloaded avatar URLs
-const preloadedAvatars = [
-  "https://firebasestorage.googleapis.com/v0/b/your-project-id.appspot.com/o/avatars%2Fpreloaded%2Favatar1.png?alt=media", // Replace with actual URLs
-  "https://firebasestorage.googleapis.com/v0/b/your-project-id.appspot.com/o/avatars%2Fpreloaded%2Favatar2.png?alt=media",
-  "https://firebasestorage.googleapis.com/v0/b/your-project-id.appspot.com/o/avatars%2Fpreloaded%2Favatar3.png?alt=media",
-  // Add more preloaded avatar URLs here
-];
+const { height: screenHeight } = Dimensions.get("window");
 
 /**
  * Props for the FullProfileDetailsModal component.
@@ -43,13 +31,6 @@ interface FullProfileDetailsModalProps {
   playerData: Player | null;
 }
 
-// Define proper error interface for Firebase errors
-interface FirebaseError {
-  code: string;
-  message: string;
-  email?: string;
-}
-
 /**
  * Modal component for displaying comprehensive user profile details and settings.
  * Accessible from the basic Profile Modal.
@@ -59,19 +40,17 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
   onClose,
   playerData,
 }) => {
-  // Move all hooks to the top, before any conditional returns
-  const { updatePlayerData } = useAuth(); // Get updatePlayerData from auth context
-
   const [isUsernameModalVisible, setIsUsernameModalVisible] = useState(false);
-  const [newUsername, setNewUsername] = useState(playerData?.username || "");
   const [isPasswordModalVisible, setIsPasswordModalVisible] = useState(false);
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [isPreloadedAvatarsModalVisible, setIsPreloadedAvatarsModalVisible] =
     useState(false); // State for preloaded avatars modal
   const [isAvatarOptionsModalVisible, setIsAvatarOptionsModalVisible] = // State for avatar options modal
     useState(false);
+
+  // Get safe area insets for proper positioning
+  const insets = useSafeAreaInsets();
+  const availableHeight = screenHeight - insets.top - insets.bottom;
+  const maxModalHeight = availableHeight * 0.85;
 
   // Now handle the conditional return after all hooks are called
   if (!playerData) {
@@ -81,103 +60,6 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
   // Access stats directly from playerData.stats, ensuring they are treated as numbers
   const { stats } = playerData;
 
-  // Function to get Facebook photo URL from provider data
-  const getFacebookPhotoUrl = () => {
-    const facebookProviderData = getAuth(
-      getApp()
-    ).currentUser?.providerData.find((p) => p.providerId === "facebook.com");
-    return facebookProviderData?.photoURL || null;
-  };
-
-  const handleUploadAvatar = async () => {
-    setIsAvatarOptionsModalVisible(false); // Close options modal
-    try {
-      const result = await ImagePicker.launchImageLibrary({
-        mediaType: "photo",
-        maxHeight: 200,
-        maxWidth: 200,
-        includeBase64: false,
-      });
-
-      if (result.didCancel) {
-        console.log("User cancelled image picker");
-      } else if (result.errorMessage) {
-        console.log("ImagePicker Error: ", result.errorMessage);
-      } else if (result.assets && result.assets.length > 0) {
-        const selectedAsset = result.assets[0];
-        if (selectedAsset.uri && playerData?.userId) {
-          const uploadUri = selectedAsset.uri;
-          const filename = uploadUri.substring(uploadUri.lastIndexOf("/") + 1);
-          const storageRef = getStorage(getApp()).ref(
-            `avatars/${playerData.userId}/${filename}`
-          );
-
-          const task = storageRef.putFile(uploadUri);
-
-          task.on(
-            "state_changed",
-            (snapshot: FirebaseStorageTypes.TaskSnapshot) => {
-              const progress =
-                (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-              console.log("Upload is " + progress + "% done");
-            }
-          );
-
-          task.then(async () => {
-            console.log("Image uploaded to the bucket!");
-            const downloadURL = await storageRef.getDownloadURL();
-            console.log("File available at", downloadURL);
-
-            // Update the avatarUrl in the user's Firestore document
-            await updatePlayerData({ avatarUrl: downloadURL });
-
-            Alert.alert("Success", "Avatar updated successfully!");
-            console.log("Avatar URL updated successfully.");
-          });
-        }
-      }
-    } catch (error) {
-      console.error("Avatar selection or upload error:", error);
-      Alert.alert("Error", "Could not update avatar. Please try again.");
-    }
-  };
-
-  const handlePreloadedAvatarSelect = async (avatarUrl: string) => {
-    try {
-      // Update the avatarUrl in the user's Firestore document
-      await updatePlayerData({ avatarUrl });
-      Alert.alert("Success", "Avatar updated successfully!");
-      setIsPreloadedAvatarsModalVisible(false); // Close modal on selection
-      setIsAvatarOptionsModalVisible(false); // Also close the options modal if open
-    } catch (error) {
-      console.error("Error updating avatar:", error);
-      Alert.alert("Error", "Could not update avatar. Please try again.");
-    }
-  };
-
-  const handleUseFacebookAvatar = async () => {
-    setIsAvatarOptionsModalVisible(false); // Close options modal
-    const facebookPhotoUrl = getFacebookPhotoUrl();
-
-    if (facebookPhotoUrl) {
-      try {
-        await updatePlayerData({ avatarUrl: facebookPhotoUrl });
-        Alert.alert("Success", "Avatar updated to Facebook photo!");
-      } catch (error) {
-        console.error("Error setting Facebook avatar:", error);
-        Alert.alert(
-          "Error",
-          "Could not set Facebook avatar. Please try again."
-        );
-      }
-    } else {
-      Alert.alert(
-        "Info",
-        "No Facebook photo available. Please link your Facebook account first."
-      );
-    }
-  };
-
   const handleUpdateAvatarPress = () => {
     setIsAvatarOptionsModalVisible(true); // Open avatar options modal
   };
@@ -186,115 +68,12 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
     setIsAvatarOptionsModalVisible(false);
   };
 
-  const handleUpdateUsername = async () => {
-    if (newUsername.trim() === "") {
-      Alert.alert("Error", "Username cannot be empty.");
-      return;
-    }
-
-    // Add a check for minimum length, e.g., 3 characters
-    if (newUsername.trim().length < 3) {
-      Alert.alert("Error", "Username must be at least 3 characters long.");
-      return;
-    }
-
-    try {
-      const processFormSubmissionCallable = getFunctions(
-        getApp()
-      ).httpsCallable("processFormSubmission");
-      const result = await processFormSubmissionCallable({
-        formType: "profileUpdate",
-        formData: {
-          displayName: newUsername, // Use displayName as per backend function
-        },
-      });
-
-      const responseData = result.data as { success: boolean; message: string }; // Explicit type casting
-
-      if (responseData.success) {
-        Alert.alert("Success", responseData.message);
-        // Update client-side player data with the new username
-        // NOTE: The backend updates 'displayName', assuming client uses 'username'
-        // Ensure consistency between backend and frontend field names or map them.
-        updatePlayerData({ username: newUsername }); // Assuming username is the correct field to update
-        setIsUsernameModalVisible(false);
-      } else {
-        // This else block might not be reached if backend throws HttpsError
-        Alert.alert("Error", responseData.message || "Username update failed.");
-      }
-    } catch (error) {
-      const firebaseError = error as FirebaseError;
-      console.error("Error updating username:", firebaseError);
-      let errorMessage = "An error occurred.";
-      if (firebaseError.code === "invalid-argument") {
-        errorMessage = "Invalid username data provided.";
-      } else if (firebaseError.code === "internal") {
-        errorMessage = "Server error updating username.";
-      } else if (firebaseError.message) {
-        // Catch other potential errors with a message
-        errorMessage = firebaseError.message;
-      }
-      Alert.alert("Error", errorMessage);
-    }
+  const handleOpenPreloadedAvatars = () => {
+    setIsPreloadedAvatarsModalVisible(true);
   };
 
-  const handleChangePassword = async () => {
-    // 1. Validate inputs (currentPassword, newPassword, confirmNewPassword)
-    if (!currentPassword || !newPassword || !confirmNewPassword) {
-      Alert.alert("Error", "Please fill in all password fields.");
-      return;
-    }
-    if (newPassword !== confirmNewPassword) {
-      Alert.alert("Error", "New passwords do not match.");
-      return;
-    }
-    if (newPassword.length < 6) {
-      Alert.alert("Error", "New password must be at least 6 characters long.");
-      return;
-    }
-
-    const user = getAuth(getApp()).currentUser;
-
-    if (!user || !user.email) {
-      Alert.alert("Error", "User not logged in or email not available.");
-      return;
-    }
-
-    try {
-      // 3. Re-authenticate user if necessary
-      const credential = EmailAuthProvider.credential(
-        user.email,
-        currentPassword
-      );
-      await user.reauthenticateWithCredential(credential);
-
-      // 4. Call user.updatePassword(newPassword) with current user instance
-      await user.updatePassword(newPassword);
-
-      // 5. Handle success
-      Alert.alert("Success", "Password updated successfully!");
-      setIsPasswordModalVisible(false); // Close modal on completion
-      // Clear password fields
-      setCurrentPassword("");
-      setNewPassword("");
-      setConfirmNewPassword("");
-    } catch (error) {
-      const firebaseError = error as FirebaseError;
-      console.error("Error changing password:", firebaseError);
-      let errorMessage = "An error occurred while changing password.";
-
-      if (firebaseError.code === "auth/requires-recent-login") {
-        errorMessage = "Please log in again to change your password.";
-      } else if (firebaseError.code === "auth/invalid-credential") {
-        errorMessage = "Invalid current password.";
-      } else if (firebaseError.code === "auth/weak-password") {
-        errorMessage = "New password is too weak.";
-      } else if (firebaseError.message) {
-        errorMessage = firebaseError.message;
-      }
-
-      Alert.alert("Error", errorMessage);
-    }
+  const handleClosePreloadedAvatars = () => {
+    setIsPreloadedAvatarsModalVisible(false);
   };
 
   return (
@@ -304,26 +83,63 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
       animationType="fade"
       onRequestClose={onClose}
     >
-      <View className="flex-1 justify-center items-center bg-black/50">
+      <View style={{ flex: 1 }}>
+        {/* Backdrop */}
         <View
-          className="bg-white rounded-lg m-4 w-11/12 max-w-sm relative"
-          style={{ height: "85%" }}
-          pointerEvents="box-none"
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+          }}
+        />
+
+        <TouchableOpacity
+          style={{ flex: 1 }}
+          activeOpacity={1}
+          onPress={onClose}
+        />
+
+        {/* Fixed Modal Container */}
+        <View
+          style={{
+            position: "absolute",
+            top: insets.top + (availableHeight * 0.1) / 2,
+            left: 16,
+            right: 16,
+            backgroundColor: "white",
+            borderRadius: 20,
+            height: maxModalHeight,
+            shadowColor: "#000",
+            shadowOffset: {
+              width: 0,
+              height: -4,
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 5,
+            elevation: 10,
+          }}
         >
           {/* Close Button in top-right corner */}
-          <View className="absolute top-2 right-2 z-10">
+          <View className="absolute top-4 right-4 z-10">
             <CloseButton onPress={onClose} size={20} />
           </View>
 
           <ScrollView
-            className="p-6 pt-12"
+            className="flex-1 px-6"
             showsVerticalScrollIndicator={true}
             bounces={true}
             scrollEventThrottle={16}
             keyboardShouldPersistTaps="handled"
-            alwaysBounceVertical={true}
+            alwaysBounceVertical={false}
             scrollEnabled={true}
-            contentContainerStyle={{ flexGrow: 1, paddingBottom: 100 }}
+            contentContainerStyle={{
+              paddingTop: 50, // Account for close button
+              paddingBottom: Math.max(30, insets.bottom + 20),
+              flexGrow: 1,
+            }}
           >
             <Text className="text-2xl font-bold text-gray-800 mb-4">
               Full Profile
@@ -334,6 +150,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
               {/* Avatar Display - Reusing logic or component from ProfileOverlay */}
               {playerData.avatarUrl ? (
                 <Image
+                  testID="avatar-image"
                   source={{ uri: playerData.avatarUrl }}
                   className="w-16 h-16 rounded-full mr-4"
                 />
@@ -485,195 +302,32 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
       </View>
 
       {/* Change Password Modal */}
-      <Modal
-        visible={isPasswordModalVisible}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={() => setIsPasswordModalVisible(false)}
-      >
-        <View className="flex-1 justify-center items-center bg-black/50">
-          <View className="bg-white p-6 rounded-lg m-4 w-11/12 max-w-sm relative">
-            {/* Close Button in top-right corner */}
-            <View className="absolute top-2 right-2 z-10">
-              <CloseButton
-                onPress={() => setIsPasswordModalVisible(false)}
-                size={20}
-              />
-            </View>
-
-            <Text className="text-lg font-bold text-gray-800 mb-4">
-              Change Password
-            </Text>
-            <TextInput
-              className="border border-gray-300 p-3 rounded-md mb-4 text-gray-800"
-              value={currentPassword}
-              onChangeText={setCurrentPassword}
-              placeholder="Current Password"
-              secureTextEntry
-            />
-            <TextInput
-              className="border border-gray-300 p-3 rounded-md mb-4 text-gray-800"
-              value={newPassword}
-              onChangeText={setNewPassword}
-              placeholder="New Password"
-              secureTextEntry
-            />
-            <TextInput
-              className="border border-gray-300 p-3 rounded-md mb-4 text-gray-800"
-              value={confirmNewPassword}
-              onChangeText={setConfirmNewPassword}
-              placeholder="Confirm New Password"
-              secureTextEntry
-            />
-            <TouchableOpacity
-              className="bg-blue-500 px-4 py-3 rounded-md mb-3 w-full items-center"
-              onPress={handleChangePassword}
-            >
-              <Text className="text-white font-semibold">Save Changes</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              className="bg-gray-300 px-4 py-3 rounded-md w-full items-center"
-              onPress={() => setIsPasswordModalVisible(false)}
-            >
-              <Text className="text-gray-800 font-semibold">Cancel</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+      <ChangePasswordModal
+        isVisible={isPasswordModalVisible}
+        onClose={() => setIsPasswordModalVisible(false)}
+      />
 
       {/* Update Username Modal */}
-      <Modal
-        visible={isUsernameModalVisible}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={() => setIsUsernameModalVisible(false)}
-      >
-        <View className="flex-1 justify-center items-center bg-black/50">
-          <View className="bg-white p-6 rounded-lg m-4 w-11/12 max-w-sm relative">
-            {/* Close Button in top-right corner */}
-            <View className="absolute top-2 right-2 z-10">
-              <CloseButton
-                onPress={() => setIsUsernameModalVisible(false)}
-                size={20}
-              />
-            </View>
-
-            <Text className="text-lg font-bold text-gray-800 mb-4">
-              Update Username
-            </Text>
-            <TextInput
-              className="border border-gray-300 p-3 rounded-md mb-4 text-gray-800"
-              value={newUsername}
-              onChangeText={setNewUsername}
-              placeholder="Enter new username"
-              autoCapitalize="none"
-            />
-            <TouchableOpacity
-              className="bg-blue-500 px-4 py-3 rounded-md mb-3 w-full items-center"
-              onPress={handleUpdateUsername}
-            >
-              <Text className="text-white font-semibold">Save</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              className="bg-gray-300 px-4 py-3 rounded-md w-full items-center"
-              onPress={() => setIsUsernameModalVisible(false)}
-            >
-              <Text className="text-gray-800 font-semibold">Cancel</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+      <UpdateUsernameModal
+        isVisible={isUsernameModalVisible}
+        onClose={() => setIsUsernameModalVisible(false)}
+        currentUsername={playerData?.username || ""}
+      />
 
       {/* Avatar Options Modal */}
-      <Modal
-        visible={isAvatarOptionsModalVisible}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={handleCloseAvatarOptionsModal}
-      >
-        <SafeAreaView className="flex-1 justify-end bg-black/50">
-          <View className="bg-white p-6 rounded-t-lg w-full">
-            <Text className="text-xl font-bold text-gray-800 mb-6 text-center">
-              Update Avatar
-            </Text>
-
-            {/* Option: Upload from Library */}
-            <WideButton
-              buttonText="Upload from Photo Library"
-              onPress={handleUploadAvatar}
-            />
-
-            {/* Option: Choose from Preloaded */}
-            <WideButton
-              buttonText="Choose from Our Avatars"
-              onPress={() => {
-                setIsAvatarOptionsModalVisible(false);
-                setIsPreloadedAvatarsModalVisible(true);
-              }}
-            />
-
-            {/* Option: Use Facebook Photo (Conditional) */}
-            {getFacebookPhotoUrl() && (
-              <WideButton
-                buttonText="Use Facebook Photo"
-                onPress={handleUseFacebookAvatar}
-              />
-            )}
-
-            {/* Cancel Button */}
-            <WideButton
-              buttonText="Cancel"
-              onPress={handleCloseAvatarOptionsModal}
-            />
-          </View>
-        </SafeAreaView>
-      </Modal>
+      <AvatarOptionsModal
+        isVisible={isAvatarOptionsModalVisible}
+        onClose={handleCloseAvatarOptionsModal}
+        onOpenPreloadedAvatars={handleOpenPreloadedAvatars}
+        userId={playerData?.userId || null}
+      />
 
       {/* Preloaded Avatars Modal */}
-      <Modal
-        visible={isPreloadedAvatarsModalVisible}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={() => setIsPreloadedAvatarsModalVisible(false)}
-      >
-        <View className="flex-1 justify-center items-center bg-black/50">
-          <View className="bg-white p-6 rounded-lg m-4 w-11/12 max-w-sm relative">
-            {/* Close Button in top-right corner */}
-            <View className="absolute top-2 right-2 z-10">
-              <CloseButton
-                onPress={() => setIsPreloadedAvatarsModalVisible(false)}
-                size={20}
-              />
-            </View>
-
-            <Text className="text-lg font-bold text-gray-800 mb-4">
-              Select Avatar
-            </Text>
-            <ScrollView className="max-h-60 mb-4">
-              <View className="flex-row flex-wrap justify-center">
-                {preloadedAvatars.map((url, index) => (
-                  <TouchableOpacity
-                    key={index}
-                    onPress={() => handlePreloadedAvatarSelect(url)}
-                    className="m-2"
-                  >
-                    <Image
-                      source={{ uri: url }}
-                      className="w-16 h-16 rounded-full"
-                    />
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </ScrollView>
-            <TouchableOpacity
-              className="bg-gray-300 px-4 py-3 rounded-md w-full items-center"
-              onPress={() => setIsPreloadedAvatarsModalVisible(false)}
-            >
-              <Text className="text-gray-800 font-semibold">Cancel</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+      <PreloadedAvatarsModal
+        isVisible={isPreloadedAvatarsModalVisible}
+        onClose={handleClosePreloadedAvatars}
+        onCloseAvatarOptions={handleCloseAvatarOptionsModal}
+      />
     </Modal>
   );
 };
