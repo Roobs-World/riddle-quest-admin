@@ -11,8 +11,8 @@ export default function TreasureChest({ coins }: { coins: number }) {
       >
         Your Treasure Chest
       </Text>
-      <View className="relative w-48 h-48 items-center justify-center mx-auto">
-        <TreasureChestBgSvg width={192} height={192} />
+      <View className="relative w-full h-48 items-center justify-center">
+        <TreasureChestBgSvg width="100%" height={192} />
         <View className="absolute inset-0 items-center justify-center">
           <Text
             className="text-sm text-black mb-1"
