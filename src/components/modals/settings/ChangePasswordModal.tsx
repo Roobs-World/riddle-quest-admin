@@ -1,15 +1,10 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Modal,
-  TextInput,
-  Alert,
-} from "react-native";
+import { View, Text, Modal, TextInput, Alert } from "react-native";
 import { getAuth, EmailAuthProvider } from "@react-native-firebase/auth";
 import { getApp } from "@react-native-firebase/app";
 import CloseButton from "../../buttons/CloseButton";
+import WideButton from "src/components/buttons/WideButton";
+import { TYPOGRAPHY } from "src/styles";
 
 // Define proper error interface for Firebase errors
 interface FirebaseError {
@@ -121,7 +116,10 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
             <CloseButton onPress={handleClose} size={20} />
           </View>
 
-          <Text className="text-lg font-bold text-gray-800 mb-4">
+          <Text
+            className="text-lg text-gray-800 mb-4"
+            style={{ fontFamily: TYPOGRAPHY.fontPrimary }}
+          >
             Change Password
           </Text>
           <TextInput
@@ -145,18 +143,13 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
             placeholder="Confirm New Password"
             secureTextEntry
           />
-          <TouchableOpacity
-            className="bg-blue-500 px-4 py-3 rounded-md mb-3 w-full items-center"
-            onPress={handleChangePassword}
-          >
-            <Text className="text-white font-semibold">Save Changes</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            className="bg-gray-300 px-4 py-3 rounded-md w-full items-center"
+
+          <WideButton buttonText="Save" onPress={() => handleChangePassword} />
+          <WideButton
+            buttonText="Close"
             onPress={handleClose}
-          >
-            <Text className="text-gray-800 font-semibold">Cancel</Text>
-          </TouchableOpacity>
+            buttonColor="bg-gray-500"
+          />
         </View>
       </View>
     </Modal>
