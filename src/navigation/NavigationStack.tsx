@@ -6,7 +6,6 @@ import SignUpScreen from "../screens/auth/SignUpScreen";
 import ForgotPasswordScreen from "../screens/auth/ForgotPasswordScreen";
 import NewPasswordScreen from "../screens/auth/NewPasswordScreen";
 import GameScreen from "../screens/game/GameScreen";
-import CreditsScreen from "../screens/CreditsScreen";
 import PulsingSpinner from "../components/loading/PulsingSpinner";
 import { useAuth } from "../contexts/AuthContext";
 import { AppStrings } from "../constants/AppStrings";
@@ -355,12 +354,6 @@ export const Navigation = () => {
       <Stack.Screen
         name={AppStrings.Navigation.GAME}
         component={GameScreenWrapper}
-        options={{ headerShown: false }}
-      />
-
-      <Stack.Screen
-        name={AppStrings.Navigation.CREDITS}
-        component={CreditsScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
