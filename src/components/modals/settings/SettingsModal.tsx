@@ -75,7 +75,10 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
 
           {/* Sound Toggle */}
           <View className="flex-row items-center justify-between w-full mb-4">
-            <Text className="text-lg text-gray-800 flex-shrink-0">
+            <Text
+              className="text-lg text-gray-800 flex-shrink-0"
+              style={{ fontFamily: TYPOGRAPHY.fontPrimary }}
+            >
               {AppStrings.Settings.SOUND_TOGGLE}
             </Text>
             <View className="ml-auto">
@@ -91,7 +94,10 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
 
           {/* Haptics Toggle */}
           <View className="flex-row items-center justify-between w-full mb-6">
-            <Text className="text-lg text-gray-800 flex-shrink-0">
+            <Text
+              className="text-lg text-gray-800 flex-shrink-0"
+              style={{ fontFamily: TYPOGRAPHY.fontPrimary }}
+            >
               {AppStrings.Settings.HAPTICS_TOGGLE}
             </Text>
             <View className="ml-auto">
