@@ -1,8 +1,9 @@
 import React from "react";
-import { View, Text, Modal, ScrollView, TouchableOpacity } from "react-native";
+import { View, Text, Modal, ScrollView } from "react-native";
 import CloseButton from "../../buttons/CloseButton";
 import HomeBgSvg from "../../../../assets/images/home-bg.svg";
 import { styles } from "../../../styles";
+import WideButton from "src/components/buttons/WideButton";
 
 interface CreditsModalProps {
   isVisible: boolean;
@@ -151,17 +152,7 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isVisible, onClose }) => {
           <View
             style={{ position: "absolute", bottom: 20, left: 20, right: 20 }}
           >
-            <TouchableOpacity
-              className="bg-blue-500 py-3 px-6 rounded-lg self-center"
-              onPress={onClose}
-            >
-              <Text
-                className="text-white text-lg font-semibold"
-                style={styles.creditsTitle}
-              >
-                Got It!
-              </Text>
-            </TouchableOpacity>
+            <WideButton buttonText="Got It!" onPress={onClose} />
           </View>
         </View>
       </View>

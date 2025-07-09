@@ -18,7 +18,10 @@ export const useModal = () => {
       data: ModalDataType<T>,
       options?: ModalOptions
     ): string => {
-      return context.openModal(type, data, options);
+      console.log(`Opening modal of type: ${type}`, { data, options });
+      const modalId = context.openModal(type, data, options);
+      console.log(`Modal ${type} opened with ID: ${modalId}`);
+      return modalId;
     },
     [context]
   );
@@ -138,7 +141,15 @@ export const useModal = () => {
       data: ModalDataType<"instructions"> = {},
       options?: ModalOptions
     ): string => {
-      return openGameModal("instructions", data, options);
+      console.log(
+        "showInstructionsModal called with data:",
+        data,
+        "options:",
+        options
+      );
+      const modalId = openGameModal("instructions", data, options);
+      console.log("Instructions modal opened with ID:", modalId);
+      return modalId;
     },
     [openGameModal]
   );

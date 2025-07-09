@@ -399,14 +399,31 @@ const GameScreen: React.FC<GameScreenProps> = ({
   };
 
   const handleSettingsPress = () => {
+    console.log("Settings button pressed - opening settings modal");
     modal.showSettingsModal({
       isSoundEnabled,
       isHapticsEnabled,
       onToggleSound: toggleSoundEnabled,
       onToggleHaptics: toggleHapticsEnabled,
       onPressLogout: logout,
-      onPressHelp: () => modal.showInstructionsModal(),
-      onPressCredits: () => modal.showCreditsModal(),
+      onPressHelp: () => {
+        console.log(
+          "Help button pressed - closing settings and opening instructions modal"
+        );
+        modal.closeModalByType("settings");
+        setTimeout(() => {
+          modal.showInstructionsModal();
+        }, 100); // Small delay to ensure settings modal is closed
+      },
+      onPressCredits: () => {
+        console.log(
+          "Credits button pressed - closing settings and opening credits modal"
+        );
+        modal.closeModalByType("settings");
+        setTimeout(() => {
+          modal.showCreditsModal();
+        }, 100); // Small delay to ensure settings modal is closed
+      },
     });
   };
 

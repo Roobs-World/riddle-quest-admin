@@ -1,6 +1,9 @@
 import React from "react";
-import { View, Text, Modal, TouchableOpacity } from "react-native";
+import { View, Text, Modal, ScrollView } from "react-native";
 import CloseButton from "../../buttons/CloseButton";
+import HomeBgSvg from "../../../../assets/images/home-bg.svg";
+import { styles } from "../../../styles";
+import WideButton from "../../buttons/WideButton";
 
 interface InstructionsModalProps {
   isVisible: boolean;
@@ -18,43 +21,156 @@ const InstructionsModal: React.FC<InstructionsModalProps> = ({
       visible={isVisible}
       onRequestClose={onClose}
     >
-      <View className="flex-1 justify-center items-center bg-black bg-opacity-50">
-        <View className="bg-white p-6 rounded-lg m-4 relative">
-          {/* Close Button in top-right corner */}
-          <View className="absolute top-2 right-2 z-10">
+      <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.5)" }}>
+        <View
+          style={{
+            backgroundColor: "#FCFAF4",
+            borderBottomLeftRadius: 20,
+            borderBottomRightRadius: 20,
+            height: "100%",
+            paddingTop: 40,
+            flex: 1,
+          }}
+        >
+          <HomeBgSvg
+            width="120%"
+            height="100%"
+            style={styles.backgroundImage}
+          />
+
+          {/* Drag Handle */}
+          <View
+            style={{
+              alignSelf: "center",
+              width: 40,
+              height: 4,
+              backgroundColor: "#D1D5DB",
+              borderRadius: 2,
+              marginBottom: 20,
+            }}
+          />
+
+          <View
+            style={{ position: "absolute", top: 50, right: 20, zIndex: 10 }}
+          >
             <CloseButton onPress={onClose} size={20} />
           </View>
 
-          <Text className="text-xl font-bold mb-4">How to Play</Text>
-          <Text className="text-base mb-4">
-            Guess the hidden riddle in 3 tries.
-          </Text>
-          <Text className="text-base mb-4">
-            After each guess, the color of the letters will change to show how
-            close your guess was.
-          </Text>
-          <Text className="text-base mb-4">
-            Here&apos;s what the colors mean:
-          </Text>
-          <Text className="text-base mb-2 font-semibold">Examples:</Text>
-          <Text className="text-base mb-2">
-            - <Text className="text-green-600">GREEN</Text>: The letter is in
-            the word and in the correct spot.
-          </Text>
-          <Text className="text-base mb-2">
-            - <Text className="text-yellow-600">YELLOW</Text>: The letter is in
-            the word but in the wrong spot.
-          </Text>
-          <Text className="text-base mb-4">
-            - <Text className="text-red-600">RED</Text>: The letter is not in
-            the word in any spot.
-          </Text>
-          <TouchableOpacity
-            className="mt-6 bg-blue-500 py-3 px-6 rounded-lg self-center"
-            onPress={onClose}
+          <View style={{ paddingHorizontal: 20, paddingTop: 10 }}>
+            <Text
+              className="text-2xl font-bold text-gray-800 text-center mb-4"
+              style={styles.creditsTitle}
+            >
+              How to Play
+            </Text>
+
+            <Text
+              className="text-lg text-gray-600 text-center mb-8"
+              style={styles.creditsSubtitle}
+            >
+              Learn the rules and start your word guessing adventure
+            </Text>
+          </View>
+
+          <View style={{ flex: 1, paddingBottom: 80 }}>
+            <ScrollView
+              className="flex-1 w-full"
+              style={{ flex: 1 }}
+              showsVerticalScrollIndicator={true}
+              contentContainerStyle={{ paddingBottom: 40 }}
+            >
+              <View className="mx-4">
+                <View
+                  className="bg-white/90 rounded-lg p-6 mb-4 shadow-sm"
+                  style={styles.teamMemberCard}
+                >
+                  <Text
+                    className="text-xl font-bold text-gray-800 text-center mb-2"
+                    style={styles.memberName}
+                  >
+                    The Goal
+                  </Text>
+                  <Text
+                    className="text-base text-gray-600 text-center"
+                    style={styles.memberRole}
+                  >
+                    Guess the hidden riddle in 3 tries using the color clues to
+                    guide you.
+                  </Text>
+                </View>
+
+                <View
+                  className="bg-white/90 rounded-lg p-6 mb-4 shadow-sm"
+                  style={styles.teamMemberCard}
+                >
+                  <Text
+                    className="text-xl font-bold text-gray-800 text-center mb-4"
+                    style={styles.memberName}
+                  >
+                    Color Clues
+                  </Text>
+                  <View className="space-y-3">
+                    <View className="flex-row items-center">
+                      <View className="w-6 h-6 bg-green-500 rounded mr-3" />
+                      <Text
+                        className="text-base text-gray-600 flex-1"
+                        style={styles.memberRole}
+                      >
+                        <Text className="font-semibold">GREEN:</Text> Letter is
+                        correct and in the right position
+                      </Text>
+                    </View>
+                    <View className="flex-row items-center">
+                      <View className="w-6 h-6 bg-yellow-500 rounded mr-3" />
+                      <Text
+                        className="text-base text-gray-600 flex-1"
+                        style={styles.memberRole}
+                      >
+                        <Text className="font-semibold">YELLOW:</Text> Letter is
+                        in the word but wrong position
+                      </Text>
+                    </View>
+                    <View className="flex-row items-center">
+                      <View className="w-6 h-6 bg-red-500 rounded mr-3" />
+                      <Text
+                        className="text-base text-gray-600 flex-1"
+                        style={styles.memberRole}
+                      >
+                        <Text className="font-semibold">RED:</Text> Letter is
+                        not in the word at all
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+
+                <View
+                  className="bg-white/90 rounded-lg p-6 mb-4 shadow-sm"
+                  style={styles.teamMemberCard}
+                >
+                  <Text
+                    className="text-xl font-bold text-gray-800 text-center mb-2"
+                    style={styles.memberName}
+                  >
+                    Tips for Success
+                  </Text>
+                  <Text
+                    className="text-base text-gray-600 text-center"
+                    style={styles.memberRole}
+                  >
+                    Start with common letters and use the color feedback to
+                    narrow down your guesses. Remember, you only have 3
+                    attempts!
+                  </Text>
+                </View>
+              </View>
+            </ScrollView>
+          </View>
+
+          <View
+            style={{ position: "absolute", bottom: 20, left: 20, right: 20 }}
           >
-            <Text className="text-white text-lg font-semibold">Got It!</Text>
-          </TouchableOpacity>
+            <WideButton buttonText="Got It!" onPress={onClose} />
+          </View>
         </View>
       </View>
     </Modal>
