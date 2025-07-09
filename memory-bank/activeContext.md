@@ -1,144 +1,77 @@
-# Active Context: Qwordly Development
+# Active Context - Qwordly Development
 
-## Current Focus: Environment Variables Security Implementation ✅ COMPLETED
+## Current Work Focus: Modal System Consolidation
 
-**Status**: Successfully implemented comprehensive environment variables security across the entire Qwordly codebase.
+### Recent Discovery & Correction
 
-## Recent Completed Work
+- **Issue Identified**: Found that comprehensive modal styles already exist in `src/styles/components/modals.ts` that properly integrate with the design system
+- **Action Taken**: Consolidated modal styles to work with existing design tokens (COLORS, SPACING, BORDER_RADIUS, SHADOWS) instead of creating duplicates
+- **Design System**: Existing modular styles architecture is well-organized with:
+  - Design tokens in `/tokens/` (colors, spacing, typography, sizing, border radius, shadows)
+  - Component styles in `/components/` (layout, buttons, text, modals, game, forms, animations)
+  - Utility functions in `/utils/` (createShadow, createButtonStyle, createResponsivePadding)
+  - Main index.ts that aggregates everything
 
-### Environment Variables Security Implementation ✅
+### Current Status
 
-**Objective**: Ensure all sensitive API keys and configuration values are loaded from environment variables instead of being hardcoded.
+- **Completed**: Enhanced modal styles while preserving existing design system integration
+- **In Progress**: Ensuring all modal components use the consolidated styling system
+- **Next**: Complete settings modals styling and documentation
 
-**Completed Changes**:
+## Recent Changes Made
 
-1. **Root Level Configuration**:
+### Modal System Enhancement
 
-   - ✅ Updated `app.config.js` to use `process.env` for all sensitive values
-   - ✅ Added `dotenv` package for environment variable loading
-   - ✅ Created comprehensive `.env.example` with all required variables
-   - ✅ Updated `App.tsx` to load Google Web Client ID from environment variables
+1. **Preserved Design System Integration**: Maintained proper use of design tokens
+2. **Enhanced Documentation**: Updated TSDoc with comprehensive modal style descriptions
+3. **Organized Structure**: Maintained alphabetical ordering and proper categorization
+4. **Design Token Usage**: Ensured all styles use SPACING, COLORS, BORDER_RADIUS, SHADOWS tokens
 
-2. **Firebase Functions Configuration**:
+### Key Files Modified
 
-   - ✅ Updated `firebase-functions/set-env-vars.sh` to use environment variables instead of hardcoded secrets
-   - ✅ Created `firebase-functions/.env.example` for Firebase functions environment setup
-   - ✅ Added proper validation and error handling for missing environment variables
+- `src/styles/components/modals.ts` - Enhanced with better organization and documentation
+- Modal components - Using consolidated design system approach
 
-3. **Documentation Updates**:
-   - ✅ Added comprehensive environment variables setup section to README.md
-   - ✅ Included setup instructions for all API services (Firebase, OpenAI, Facebook, AppLovin, etc.)
-   - ✅ Added security best practices and troubleshooting guidance
+## Next Steps
 
-**Security Improvements**:
+### Immediate Tasks
 
-- All API keys now loaded from environment variables with fallback to placeholder values
-- Proper validation and warning messages for missing configuration
-- Enhanced documentation for secure environment setup
-- Firebase functions secrets properly managed through environment variables
+1. Complete settings modals styling with proper design token usage
+2. Ensure all modal components reference the consolidated styles correctly
+3. Update TODO progress to reflect proper consolidation approach
 
-**Environment Variables Secured**:
+### Design System Principles
 
-- `OPENAI_API_KEY` - OpenAI API for riddle generation
-- `FIREBASE_*` - All Firebase configuration values
-- `GOOGLE_WEB_CLIENT_ID` - Google Sign-In authentication
-- `FACEBOOK_*` - Facebook authentication credentials
-- `APPLOVIN_*` - AppLovin MAX advertising configuration
-- `APPLE_SHARED_SECRET` - Apple IAP validation
-- `GOOGLE_SERVICE_ACCOUNT` - Google Play IAP validation
-- `EAS_PROJECT_ID` - Expo Application Services
+- Always use existing design tokens (COLORS, SPACING, etc.)
+- Maintain alphabetical ordering in style objects
+- Use responsive utilities (scale() function)
+- Provide comprehensive TSDoc documentation
+- Follow existing architectural patterns
 
-**Files Modified**:
+## Important Patterns
 
-- `app.config.js` - Comprehensive environment variable implementation
-- `App.tsx` - Google Sign-In configuration from environment variables
-- `firebase-functions/set-env-vars.sh` - Secure Firebase secrets management
-- `.env.example` - Root level environment template
-- `firebase-functions/.env.example` - Firebase functions environment template
-- `readme.md` - Comprehensive environment setup documentation
+### Proper Style Imports
 
-## Previously Completed Work
+```typescript
+import { COLORS, SPACING, BORDER_RADIUS, SHADOWS } from "../styles";
+```
 
-### Documentation Phase ✅
+### Modal Style Usage
 
-**Comprehensive JSDoc Documentation Added**:
+```typescript
+const styles = StyleSheet.create({
+  modalContainer: {
+    backgroundColor: COLORS.white,
+    borderRadius: BORDER_RADIUS.lg,
+    padding: SPACING.lg,
+    ...SHADOWS.md,
+  },
+});
+```
 
-**Core Application Files** ✅:
+## Project Context
 
-- App.tsx: Enhanced initialization sequence documentation
-- index.ts: React Native app registration entry point
-- app.config.js: Extensive Expo configuration documentation
-
-**UI Components** ✅:
-
-- Buttons: BackButton, CloseButton with accessibility and usage patterns
-- Icons: BackIcon lightweight text-based implementation
-- Layouts: CustomSafeAreaView standardized wrapper
-- Text: ScreenTitle typography, Error component with accessibility fixes
-- Shared: ProgressBar dynamic step generation, ReusableTextInput foundational component
-- Loading: PulsingSpinner advanced animation and performance optimization
-
-**Game Components** ✅:
-
-- CoinsDisplay: Coin balance with embedded SVG and interaction modes
-- BottomNavigationBar: Fixed navigation with profile/hint/settings actions
-- Controls: Context-sensitive control buttons and game progression
-- GameBoard: Layout architecture with responsive design patterns
-- Keyboard: QWERTY layout implementation with accessibility features
-
-**Modal System** ✅:
-
-- ModalProvider: Central management with comprehensive type definitions
-- VictoryModal: Celebration modal with emoji grid sharing
-- ModalButton: Standardized button with state management
-- HintModal: Game economy integration with coin costs
-- SettingsModal: Preferences and account management with Firebase integration
-
-**Services Layer** ✅:
-
-- AuthService: Google/Facebook authentication with debugging capabilities
-- FirestoreService: Database operations with Zod validation
-- SoundManager: Advanced audio management with quality optimization
-
-### System Architecture Completed ✅
-
-**3D Solar System Integration**: Advanced 3D background with planet textures, orbital mechanics, and performance optimization
-
-**Game Logic**: Multi-mode riddle system (Daily Challenge, Classic) with progression tracking, coin economy, and comprehensive error handling
-
-**Authentication**: Multi-provider system (Google, Facebook, Guest) with robust error handling and troubleshooting diagnostics
-
-**Firebase Functions**: Scheduled daily challenges, riddle generation, IAP validation, and ad callbacks with proper secrets management
-
-**Testing Infrastructure**: 390 comprehensive tests covering all components, services, and business logic
-
-## Current Application Status
-
-**Fully Functional Features**:
-
-- User authentication (Google, Facebook, Guest)
-- Daily Challenge mode (5 questions, scheduled generation)
-- Classic game mode with unlimited riddles
-- 3D solar system background with realistic planetary motion
-- Comprehensive audio system with multiple feedback types
-- In-app purchases for coins and premium features
-- Rewarded and interstitial advertising integration
-- Robust error handling and crash reporting
-- Cross-platform compatibility (iOS/Android)
-
-**Development Environment**: Production-ready with comprehensive testing suite, Firebase integration, and secure environment variable management
-
-**Next Development Priorities**:
-
-1. Complete remaining documentation tasks (hooks, screens, etc.)
-2. Performance optimizations for 3D rendering
-3. Additional game modes and features
-4. Enhanced analytics and user engagement tracking
-
-## Technical Excellence Standards
-
-**Code Quality**: Comprehensive TypeScript typing, extensive testing (390 tests), robust error handling
-**Security**: Environment variables properly secured, Firebase rules configured, input validation with Zod schemas
-**Performance**: Optimized 3D rendering, efficient state management, audio quality preservation
-**Accessibility**: WCAG compliance, screen reader support, proper semantic markup
-**Cross-Platform**: Consistent behavior across iOS/Android with platform-specific optimizations
+- **Framework**: React Native with NativeWind, TypeScript, Firebase
+- **Design System**: Modular architecture with design tokens
+- **Testing**: 520/520 React Native tests, 738/738 total tests passing
+- **Architecture**: Clean separation of concerns with comprehensive documentation
