@@ -21,6 +21,7 @@ import HintModal from "./help/HintModal";
 import SkipModal from "./help/SkipModal";
 import WelcomeModal from "./help/WelcomeModal";
 import InstructionsModal from "./help/InstructionsModal";
+import CreditsModal from "./help/CreditsModal";
 
 import CoinShopModal from "../shop/CoinShopModal";
 
@@ -264,6 +265,9 @@ const ModalRenderer: React.FC<{
 
     case "instructions":
       return <InstructionsModal {...commonProps} />;
+
+    case "credits":
+      return <CreditsModal {...commonProps} />;
 
     case "coinShop":
       return (

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Alert, KeyboardAvoidingView, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation } from "@react-navigation/native";
+
 import Header from "../../components/game/Header";
 import Controls from "../../components/game/Controls";
 import BottomNavigationBar from "../../components/game/BottomNavigationBar";
@@ -75,7 +75,6 @@ const GameScreen: React.FC<GameScreenProps> = ({
   gameMode,
 }) => {
   const { playerData, logout } = useAuth();
-  const navigation = useNavigation();
   const modal = useModal();
 
   // Simplified state - no more massive overlay state object!
@@ -407,8 +406,7 @@ const GameScreen: React.FC<GameScreenProps> = ({
       onToggleHaptics: toggleHapticsEnabled,
       onPressLogout: logout,
       onPressHelp: () => modal.showInstructionsModal(),
-      onPressCredits: () =>
-        navigation.navigate(AppStrings.Navigation.CREDITS as never),
+      onPressCredits: () => modal.showCreditsModal(),
     });
   };
 

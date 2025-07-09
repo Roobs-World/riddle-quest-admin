@@ -134,6 +134,8 @@ export interface GameModalTypes {
 
   instructions: Record<string, never>;
 
+  credits: Record<string, never>;
+
   // Shop modals
   coinShop: {
     onPurchaseProduct: (productId: string) => void;
