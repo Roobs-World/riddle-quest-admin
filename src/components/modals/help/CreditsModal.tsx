@@ -57,9 +57,8 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isVisible, onClose }) => {
             backgroundColor: "#FCFAF4",
             borderBottomLeftRadius: 20,
             borderBottomRightRadius: 20,
-            height: "100%",
-            paddingTop: 40,
             flex: 1,
+            paddingTop: 40,
           }}
         >
           <HomeBgSvg
@@ -102,52 +101,55 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isVisible, onClose }) => {
             </Text>
           </View>
 
-          <View style={{ flex: 1, paddingBottom: 80 }}>
-            <ScrollView
-              className="flex-1 w-full"
-              style={{ flex: 1 }}
-              showsVerticalScrollIndicator={true}
-              contentContainerStyle={{ paddingBottom: 40 }}
-            >
-              {teamMembers.map((member, index) => (
-                <View
-                  key={index}
-                  className="bg-white/90 rounded-lg p-6 mb-4 mx-4 shadow-sm"
-                  style={styles.teamMemberCard}
-                >
-                  <Text
-                    className="text-xl font-bold text-gray-800 text-center mb-2"
-                    style={styles.memberName}
-                  >
-                    {member.name}
-                  </Text>
-                  <Text
-                    className="text-base text-gray-600 text-center"
-                    style={styles.memberRole}
-                  >
-                    {member.role}
-                  </Text>
-                </View>
-              ))}
-
-              <View className="mt-8 mx-4">
+          <ScrollView
+            style={{
+              flex: 1,
+              marginBottom: 80, // Space for the button
+            }}
+            showsVerticalScrollIndicator={true}
+            contentContainerStyle={{
+              paddingHorizontal: 16,
+              paddingBottom: 20,
+            }}
+          >
+            {teamMembers.map((member, index) => (
+              <View
+                key={index}
+                className="bg-white/90 rounded-lg p-6 mb-4 shadow-sm"
+                style={styles.teamMemberCard}
+              >
                 <Text
-                  className="text-lg font-bold text-gray-800 text-center mb-4"
-                  style={styles.thankYouTitle}
+                  className="text-xl font-bold text-gray-800 text-center mb-2"
+                  style={styles.memberName}
                 >
-                  Thank You!
+                  {member.name}
                 </Text>
                 <Text
                   className="text-base text-gray-600 text-center"
-                  style={styles.thankYouText}
+                  style={styles.memberRole}
                 >
-                  Special thanks to all our contributors who made Qwordly
-                  possible. Your creativity, dedication, and passion brought
-                  this project to life.
+                  {member.role}
                 </Text>
               </View>
-            </ScrollView>
-          </View>
+            ))}
+
+            <View className="mt-8">
+              <Text
+                className="text-lg font-bold text-gray-800 text-center mb-4"
+                style={styles.thankYouTitle}
+              >
+                Thank You!
+              </Text>
+              <Text
+                className="text-base text-gray-600 text-center"
+                style={styles.thankYouText}
+              >
+                Special thanks to all our contributors who made Qwordly
+                possible. Your creativity, dedication, and passion brought this
+                project to life.
+              </Text>
+            </View>
+          </ScrollView>
 
           <View
             style={{ position: "absolute", bottom: 20, left: 20, right: 20 }}
