@@ -74,31 +74,35 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
           </Text>
 
           {/* Sound Toggle */}
-          <View className="flex-row items-center justify-between mb-4">
-            <Text className="text-lg text-gray-800">
+          <View className="flex-row items-center justify-between w-full mb-4">
+            <Text className="text-lg text-gray-800 flex-shrink-0">
               {AppStrings.Settings.SOUND_TOGGLE}
             </Text>
-            <Switch
-              trackColor={{ false: COLORS.gray500, true: COLORS.info }}
-              thumbColor={isSoundEnabled ? COLORS.warning : COLORS.gray200}
-              ios_backgroundColor={COLORS.gray700}
-              onValueChange={onToggleSound}
-              value={isSoundEnabled}
-            />
+            <View className="ml-auto">
+              <Switch
+                trackColor={{ false: COLORS.gray500, true: COLORS.info }}
+                thumbColor={isSoundEnabled ? COLORS.warning : COLORS.gray200}
+                ios_backgroundColor={COLORS.gray700}
+                onValueChange={onToggleSound}
+                value={isSoundEnabled}
+              />
+            </View>
           </View>
 
           {/* Haptics Toggle */}
-          <View className="flex-row items-center justify-between mb-6">
-            <Text className="text-lg text-gray-800">
+          <View className="flex-row items-center justify-between w-full mb-6">
+            <Text className="text-lg text-gray-800 flex-shrink-0">
               {AppStrings.Settings.HAPTICS_TOGGLE}
             </Text>
-            <Switch
-              trackColor={{ false: COLORS.gray500, true: COLORS.info }}
-              thumbColor={isHapticsEnabled ? COLORS.warning : COLORS.gray200}
-              ios_backgroundColor={COLORS.gray700}
-              onValueChange={onToggleHaptics}
-              value={isHapticsEnabled}
-            />
+            <View className="ml-auto">
+              <Switch
+                trackColor={{ false: COLORS.gray500, true: COLORS.info }}
+                thumbColor={isHapticsEnabled ? COLORS.warning : COLORS.gray200}
+                ios_backgroundColor={COLORS.gray700}
+                onValueChange={onToggleHaptics}
+                value={isHapticsEnabled}
+              />
+            </View>
           </View>
 
           {/* Help Button */}

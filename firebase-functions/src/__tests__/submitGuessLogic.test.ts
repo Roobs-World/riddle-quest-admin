@@ -39,7 +39,8 @@ jest.mock("../firestoreService", () => ({
   getUser: jest.fn(),
   updateUserCoins: jest.fn(),
   updateUserStats: jest.fn(),
-  getRiddle: jest.fn(),
+  getRiddleByGameMode: jest.fn(),
+  ensureUserDocumentComplete: jest.fn(),
 }));
 
 // Mock riddleGeneration
@@ -89,7 +90,7 @@ const mockUser: Player = {
     totalGuessesInWins: 17,
     dailyPuzzlesCompleted: 0,
   },
-  progress: {classicIndex: 5, dailyChallengeIndex: 1, tutorialIndex: 0},
+  progress: {classicIndex: 5, dailyChallengeIndex: 1, dailyChallengeCurrentQuestion: 0, tutorialIndex: 0},
   registeredAt: Date.now(),
   lastLogin: Date.now(),
 };
@@ -99,7 +100,6 @@ const mockRiddle: FirestoreRiddle = {
   text: "I have keys but open no locks. I have space but no room. You can enter, but you can't go outside. What am I?",
   answer: "keyboard",
   category: "classic",
-  classicIndex: 1,
 };
 
 describe("handleGuessLogic", () => {
@@ -112,12 +112,14 @@ describe("handleGuessLogic", () => {
     (firestoreService.getUser as jest.Mock<Promise<Player | null>>).mockResolvedValue(
       JSON.parse(JSON.stringify(mockUser)),
     );
-    (firestoreService.getRiddle as jest.Mock<Promise<FirestoreRiddle | null>>).mockResolvedValue(
+    (firestoreService.getRiddleByGameMode as jest.Mock<Promise<FirestoreRiddle | null>>).mockResolvedValue(
       JSON.parse(JSON.stringify(mockRiddle)),
     );
+    (firestoreService.ensureUserDocumentComplete as jest.Mock<Promise<void>>).mockResolvedValue(undefined);
     (firestoreService.updateUserCoins as jest.Mock<Promise<void>>).mockResolvedValue(undefined);
     (firestoreService.updateUserStats as jest.Mock<Promise<void>>).mockResolvedValue(undefined);
     (riddleGeneration.generateAndAppendRiddles as jest.Mock<Promise<void>>).mockResolvedValue(undefined);
+    (riddleGeneration.initializeRiddleDatabaseIfEmpty as jest.Mock<Promise<void>>).mockResolvedValue(undefined);
 
     mockAdminFirestoreUpdate.mockResolvedValue(undefined);
 
@@ -179,7 +181,7 @@ describe("handleGuessLogic", () => {
   });
 
   test("should throw HttpsError if riddle is not found", async () => {
-    (firestoreService.getRiddle as jest.Mock).mockResolvedValue(null);
+    (firestoreService.getRiddleByGameMode as jest.Mock).mockResolvedValue(null);
     const requestData: SubmitGuessRequestData = {
       guess: "test",
       riddleId: "nonexistent",
@@ -187,12 +189,12 @@ describe("handleGuessLogic", () => {
       attempts: 1,
     };
     await expect(handleGuessLogic(requestData, authContext)).rejects.toThrow(
-      new HttpsError("not-found", "Riddle with ID nonexistent not found."),
+      new HttpsError("not-found", "classic riddle with ID nonexistent not found."),
     );
   });
 
   test("should throw HttpsError if riddle answer is not found", async () => {
-    (firestoreService.getRiddle as jest.Mock).mockResolvedValue({...mockRiddle, answer: undefined});
+    (firestoreService.getRiddleByGameMode as jest.Mock).mockResolvedValue({...mockRiddle, answer: undefined});
     const requestData: SubmitGuessRequestData = {
       guess: "test",
       riddleId: "riddle-123",
@@ -200,7 +202,7 @@ describe("handleGuessLogic", () => {
       attempts: 1,
     };
     await expect(handleGuessLogic(requestData, authContext)).rejects.toThrow(
-      new HttpsError("not-found", "Answer not found for riddle riddle-123."),
+      new HttpsError("not-found", "Answer not found for classic riddle riddle-123."),
     );
   });
 
@@ -515,7 +517,7 @@ describe("handleGuessLogic", () => {
   });
 
   test("handleGuessLogic should throw generic HttpsError for unexpected errors", async () => {
-    (firestoreService.getRiddle as jest.Mock).mockRejectedValue(new Error("Unexpected riddle error"));
+    (firestoreService.getRiddleByGameMode as jest.Mock).mockRejectedValue(new Error("Unexpected riddle error"));
     const requestData: SubmitGuessRequestData = {
       guess: "test",
       riddleId: "riddle-123",
@@ -536,7 +538,7 @@ describe("handleGuessLogic", () => {
         ...mockRiddle,
         answer: "apple", // Has repeated 'p'
       };
-      (firestoreService.getRiddle as jest.Mock).mockResolvedValue(riddleWithRepeatedChars);
+      (firestoreService.getRiddleByGameMode as jest.Mock).mockResolvedValue(riddleWithRepeatedChars);
 
       const requestData: SubmitGuessRequestData = {
         guess: "plpep", // Guess that will trigger the character count logic
@@ -556,7 +558,7 @@ describe("handleGuessLogic", () => {
         ...mockRiddle,
         answer: "cat",
       };
-      (firestoreService.getRiddle as jest.Mock).mockResolvedValue(shortAnswerRiddle);
+      (firestoreService.getRiddleByGameMode as jest.Mock).mockResolvedValue(shortAnswerRiddle);
 
       const requestData: SubmitGuessRequestData = {
         guess: "catcher", // Longer than answer
@@ -576,7 +578,7 @@ describe("handleGuessLogic", () => {
         ...mockRiddle,
         answer: "abc",
       };
-      (firestoreService.getRiddle as jest.Mock).mockResolvedValue(riddleWithSingleChars);
+      (firestoreService.getRiddleByGameMode as jest.Mock).mockResolvedValue(riddleWithSingleChars);
 
       const requestData: SubmitGuessRequestData = {
         guess: "aaa", // Repeated chars to exhaust character counts
@@ -597,7 +599,7 @@ describe("handleGuessLogic", () => {
         ...mockRiddle,
         answer: "test", // t-e-s-t
       };
-      (firestoreService.getRiddle as jest.Mock).mockResolvedValue(specialRiddle);
+      (firestoreService.getRiddleByGameMode as jest.Mock).mockResolvedValue(specialRiddle);
 
       const requestData: SubmitGuessRequestData = {
         guess: "tttt", // All same letter but only one exists in answer
@@ -620,7 +622,7 @@ describe("handleGuessLogic", () => {
         ...mockRiddle,
         answer: "door", // d-o-o-r (has two 'o's)
       };
-      (firestoreService.getRiddle as jest.Mock).mockResolvedValue(riddleForTest);
+      (firestoreService.getRiddleByGameMode as jest.Mock).mockResolvedValue(riddleForTest);
 
       const requestData: SubmitGuessRequestData = {
         guess: "oooo", // More 'o's than available, should exhaust count
@@ -691,7 +693,7 @@ describe("handleGuessLogic", () => {
 
     test("should handle non-HttpsError exceptions in main catch block", async () => {
       // Target lines 255-260 with a different error path
-      (firestoreService.getRiddle as jest.Mock).mockImplementation(() => {
+      (firestoreService.getRiddleByGameMode as jest.Mock).mockImplementation(() => {
         throw new TypeError("Invalid operation"); // Non-HttpsError
       });
 
@@ -714,7 +716,7 @@ describe("handleGuessLogic", () => {
         ...mockRiddle,
         answer: "book", // b-o-o-k (two 'o's)
       };
-      (firestoreService.getRiddle as jest.Mock).mockResolvedValue(riddleWithMultipleChars);
+      (firestoreService.getRiddleByGameMode as jest.Mock).mockResolvedValue(riddleWithMultipleChars);
 
       const requestData: SubmitGuessRequestData = {
         guess: "poor", // p-o-o-r (two 'o's but different positions)
@@ -742,7 +744,7 @@ describe("handleGuessLogic", () => {
         ...mockRiddle,
         answer: "cat", // Only one of each letter
       };
-      (firestoreService.getRiddle as jest.Mock).mockResolvedValue(riddleForCountTest);
+      (firestoreService.getRiddleByGameMode as jest.Mock).mockResolvedValue(riddleForCountTest);
 
       const requestData: SubmitGuessRequestData = {
         guess: "aaa", // Three 'a's but answer only has one
@@ -767,7 +769,7 @@ describe("handleGuessLogic", () => {
         ...mockRiddle,
         answer: "level", // l-e-v-e-l (has repeated letters)
       };
-      (firestoreService.getRiddle as jest.Mock).mockResolvedValue(complexRiddle);
+      (firestoreService.getRiddleByGameMode as jest.Mock).mockResolvedValue(complexRiddle);
 
       const requestData: SubmitGuessRequestData = {
         guess: "lllee", // More l's and e's than positions allow
@@ -797,7 +799,7 @@ describe("handleGuessLogic", () => {
         ...mockRiddle,
         answer: "dad", // d-a-d (two d's, one a)
       };
-      (firestoreService.getRiddle as jest.Mock).mockResolvedValue(testRiddle);
+      (firestoreService.getRiddleByGameMode as jest.Mock).mockResolvedValue(testRiddle);
 
       const requestData: SubmitGuessRequestData = {
         guess: "ddd", // Three d's but answer only has two

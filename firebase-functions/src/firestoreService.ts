@@ -1,6 +1,14 @@
 import * as admin from "firebase-admin";
 // Removed unused import: import { getFirestore, FieldValue, Timestamp } from "firebase-admin/firestore";
-import type {Player, PlayerStatsUpdate, FirestoreRiddle} from "./validation/firestoreSchemas";
+import type {
+  Player,
+  PlayerStatsUpdate,
+  FirestoreRiddle,
+  ClassicRiddle,
+  DailyRiddle,
+  TutorialRiddle,
+} from "./validation/firestoreSchemas";
+import {RiddleCollections} from "./validation/firestoreSchemas";
 // Removed import for non-existent models.js: import type { GameState } from "./models.js";
 import * as functions from "firebase-functions";
 
@@ -358,30 +366,138 @@ export async function ensureUserDocumentComplete(userId: string): Promise<void> 
 }
 
 /**
- * Fetches a riddle document by ID.
+ * Fetches a riddle document by ID from the classic riddles collection.
  *
  * @param riddleId - The ID of the riddle.
  * @return A promise that resolves with the riddle document data, or undefined if not found.
  */
-export async function getRiddle(riddleId: string): Promise<FirestoreRiddle | undefined> {
-  const riddleRef = getDb().collection("riddles").doc(riddleId);
+export async function getClassicRiddle(riddleId: string): Promise<ClassicRiddle | undefined> {
+  const riddleRef = getDb().collection(RiddleCollections.RIDDLES).doc(riddleId);
   const riddleDoc = await riddleRef.get();
 
   if (!riddleDoc.exists) {
-    functions.logger.info(`Riddle document not found for ID ${riddleId}`);
+    functions.logger.info(`Classic riddle document not found for ID ${riddleId}`);
     return undefined;
   }
 
   const data = riddleDoc.data();
   if (!data) {
-    functions.logger.info(`Riddle data is null for ID ${riddleId}`);
+    functions.logger.info(`Classic riddle data is null for ID ${riddleId}`);
     return undefined;
   }
 
-  // Ensure riddleId is included in the returned object
-  const riddleData = data as FirestoreRiddle;
+  const riddleData = data as ClassicRiddle;
   return {
     ...riddleData,
-    riddleId: riddleData.riddleId || riddleId, // Use riddleId from data if available, otherwise use provided riddleId
+    riddleId: riddleData.riddleId || riddleId,
   };
+}
+
+/**
+ * Fetches a riddle document by ID from the daily riddles collection.
+ *
+ * @param riddleId - The ID of the riddle.
+ * @return A promise that resolves with the riddle document data, or undefined if not found.
+ */
+export async function getDailyRiddle(riddleId: string): Promise<DailyRiddle | undefined> {
+  const riddleRef = getDb().collection(RiddleCollections.DAILY_RIDDLES).doc(riddleId);
+  const riddleDoc = await riddleRef.get();
+
+  if (!riddleDoc.exists) {
+    functions.logger.info(`Daily riddle document not found for ID ${riddleId}`);
+    return undefined;
+  }
+
+  const data = riddleDoc.data();
+  if (!data) {
+    functions.logger.info(`Daily riddle data is null for ID ${riddleId}`);
+    return undefined;
+  }
+
+  const riddleData = data as DailyRiddle;
+  return {
+    ...riddleData,
+    riddleId: riddleData.riddleId || riddleId,
+  };
+}
+
+/**
+ * Fetches a riddle document by ID from the tutorial riddles collection.
+ *
+ * @param riddleId - The ID of the riddle.
+ * @return A promise that resolves with the riddle document data, or undefined if not found.
+ */
+export async function getTutorialRiddle(riddleId: string): Promise<TutorialRiddle | undefined> {
+  const riddleRef = getDb().collection(RiddleCollections.TUTORIAL_RIDDLES).doc(riddleId);
+  const riddleDoc = await riddleRef.get();
+
+  if (!riddleDoc.exists) {
+    functions.logger.info(`Tutorial riddle document not found for ID ${riddleId}`);
+    return undefined;
+  }
+
+  const data = riddleDoc.data();
+  if (!data) {
+    functions.logger.info(`Tutorial riddle data is null for ID ${riddleId}`);
+    return undefined;
+  }
+
+  const riddleData = data as TutorialRiddle;
+  return {
+    ...riddleData,
+    riddleId: riddleData.riddleId || riddleId,
+  };
+}
+
+/**
+ * Fetches a riddle document by ID, searching across all riddle collections.
+ *
+ * @param riddleId - The ID of the riddle.
+ * @return A promise that resolves with the riddle document data, or undefined if not found.
+ */
+export async function getRiddle(riddleId: string): Promise<FirestoreRiddle | undefined> {
+  // First try the classic riddles collection
+  const classicRiddle = await getClassicRiddle(riddleId);
+  if (classicRiddle) {
+    return classicRiddle;
+  }
+
+  // Then try the daily riddles collection
+  const dailyRiddle = await getDailyRiddle(riddleId);
+  if (dailyRiddle) {
+    return dailyRiddle;
+  }
+
+  // Finally try the tutorial riddles collection
+  const tutorialRiddle = await getTutorialRiddle(riddleId);
+  if (tutorialRiddle) {
+    return tutorialRiddle;
+  }
+
+  functions.logger.info(`Riddle document not found for ID ${riddleId} in any collection`);
+  return undefined;
+}
+
+/**
+ * Fetches a riddle document by ID based on the game mode.
+ *
+ * @param riddleId - The ID of the riddle.
+ * @param gameMode - The game mode ('classic', 'challenge', or 'tutorial').
+ * @return A promise that resolves with the riddle document data, or undefined if not found.
+ */
+export async function getRiddleByGameMode(
+  riddleId: string,
+  gameMode: "classic" | "challenge" | "tutorial",
+): Promise<FirestoreRiddle | undefined> {
+  switch (gameMode) {
+    case "classic":
+      return await getClassicRiddle(riddleId);
+    case "challenge":
+      return await getDailyRiddle(riddleId);
+    case "tutorial":
+      return await getTutorialRiddle(riddleId);
+    default:
+      functions.logger.warn(`Unknown game mode: ${gameMode}`);
+      return undefined;
+  }
 }

@@ -2,7 +2,8 @@ import * as functions from "firebase-functions";
 import {onCall, CallableOptions, CallableRequest} from "firebase-functions/v2/https";
 import * as admin from "firebase-admin";
 import {generateUniqueRiddle} from "./openaiService";
-import type {FirestoreRiddle} from "./validation/firestoreSchemas";
+import type {ClassicRiddle, DailyRiddle, TutorialRiddle} from "./validation/firestoreSchemas";
+import {RiddleCollections} from "./validation/firestoreSchemas";
 
 /**
  * Checks if a riddle already exists in the provided lists of questions and
@@ -25,8 +26,8 @@ function riddleExists(
 }
 
 /**
- * Fetches existing riddles from Firestore for duplicate checking.
- * Checks both classic riddles and daily challenge riddles.
+ * Fetches existing riddles from all riddle collections for duplicate checking.
+ * Checks classic riddles, daily riddles, and tutorial riddles.
  * @returns A promise that resolves with an object containing arrays of questions and answers.
  */
 async function getExistingRiddlesFromFirestore(): Promise<{questions: string[]; answers: string[]}> {
@@ -35,7 +36,7 @@ async function getExistingRiddlesFromFirestore(): Promise<{questions: string[]; 
     const answers: string[] = [];
 
     // Get classic riddles from 'riddles' collection
-    const riddlesSnapshot = await admin.firestore().collection("riddles").get();
+    const riddlesSnapshot = await admin.firestore().collection(RiddleCollections.RIDDLES).get();
     riddlesSnapshot.forEach((doc) => {
       const data = doc.data();
       if (data.text) {
@@ -46,9 +47,21 @@ async function getExistingRiddlesFromFirestore(): Promise<{questions: string[]; 
       }
     });
 
-    // Get daily challenge riddles from 'dailyChallenge' collection
-    const dailyChallengeSnapshot = await admin.firestore().collection("dailyChallenge").get();
-    dailyChallengeSnapshot.forEach((doc) => {
+    // Get daily riddles from 'dailyRiddles' collection
+    const dailyRiddlesSnapshot = await admin.firestore().collection(RiddleCollections.DAILY_RIDDLES).get();
+    dailyRiddlesSnapshot.forEach((doc) => {
+      const data = doc.data();
+      if (data.text) {
+        questions.push(data.text.toLowerCase());
+      }
+      if (data.answer) {
+        answers.push(data.answer.toLowerCase());
+      }
+    });
+
+    // Get tutorial riddles from 'tutorialRiddles' collection
+    const tutorialRiddlesSnapshot = await admin.firestore().collection(RiddleCollections.TUTORIAL_RIDDLES).get();
+    tutorialRiddlesSnapshot.forEach((doc) => {
       const data = doc.data();
       if (data.text) {
         questions.push(data.text.toLowerCase());
@@ -76,7 +89,7 @@ async function getNextClassicIndex(): Promise<number> {
   try {
     const riddlesSnapshot = await admin
       .firestore()
-      .collection("riddles")
+      .collection(RiddleCollections.RIDDLES)
       .where("classicIndex", ">=", 0)
       .orderBy("classicIndex", "desc")
       .limit(1)
@@ -96,19 +109,19 @@ async function getNextClassicIndex(): Promise<number> {
 }
 
 /**
- * Stores generated riddles directly in Firestore.
+ * Stores generated classic riddles in the riddles collection.
  * @param riddles - An array of riddle objects to store.
  * @param startingIndex - The starting classic index for the riddles.
  */
-async function storeRiddlesInFirestore(
+async function storeClassicRiddlesInFirestore(
   riddles: {question: string; answer: string}[],
   startingIndex: number,
 ): Promise<void> {
   const batch = admin.firestore().batch();
 
   riddles.forEach((riddle, index) => {
-    const riddleRef = admin.firestore().collection("riddles").doc();
-    const riddleData: FirestoreRiddle = {
+    const riddleRef = admin.firestore().collection(RiddleCollections.RIDDLES).doc();
+    const riddleData: ClassicRiddle = {
       riddleId: riddleRef.id,
       text: riddle.question,
       answer: riddle.answer,
@@ -121,10 +134,10 @@ async function storeRiddlesInFirestore(
 
   try {
     await batch.commit();
-    console.log(`Successfully stored ${riddles.length} new riddles in Firestore.`);
+    console.log(`Successfully stored ${riddles.length} new classic riddles in Firestore.`);
   } catch (error) {
-    console.error("Error storing riddles in Firestore:", error);
-    throw new Error("Failed to store riddles in Firestore.");
+    console.error("Error storing classic riddles in Firestore:", error);
+    throw new Error("Failed to store classic riddles in Firestore.");
   }
 }
 
@@ -136,7 +149,7 @@ async function getNextDailyIndex(): Promise<number> {
   try {
     const riddlesSnapshot = await admin
       .firestore()
-      .collection("riddles")
+      .collection(RiddleCollections.DAILY_RIDDLES)
       .where("dailyIndex", ">=", 0)
       .orderBy("dailyIndex", "desc")
       .limit(1)
@@ -156,7 +169,7 @@ async function getNextDailyIndex(): Promise<number> {
 }
 
 /**
- * Stores generated daily riddles directly in Firestore.
+ * Stores generated daily riddles in the dailyRiddles collection.
  * @param riddles - An array of riddle objects to store.
  * @param startingIndex - The starting daily index for the riddles.
  */
@@ -167,8 +180,8 @@ async function storeDailyRiddlesInFirestore(
   const batch = admin.firestore().batch();
 
   riddles.forEach((riddle, index) => {
-    const riddleRef = admin.firestore().collection("riddles").doc();
-    const riddleData: FirestoreRiddle = {
+    const riddleRef = admin.firestore().collection(RiddleCollections.DAILY_RIDDLES).doc();
+    const riddleData: DailyRiddle = {
       riddleId: riddleRef.id,
       text: riddle.question,
       answer: riddle.answer,
@@ -185,6 +198,66 @@ async function storeDailyRiddlesInFirestore(
   } catch (error) {
     console.error("Error storing daily riddles in Firestore:", error);
     throw new Error("Failed to store daily riddles in Firestore.");
+  }
+}
+
+/**
+ * Gets the next available tutorial index for new tutorial riddles.
+ * @returns The next available tutorial index.
+ */
+async function getNextTutorialIndex(): Promise<number> {
+  try {
+    const riddlesSnapshot = await admin
+      .firestore()
+      .collection(RiddleCollections.TUTORIAL_RIDDLES)
+      .where("tutorialIndex", ">=", 0)
+      .orderBy("tutorialIndex", "desc")
+      .limit(1)
+      .get();
+
+    if (riddlesSnapshot.empty) {
+      return 0; // Start from 0 if no tutorial riddles exist
+    }
+
+    const highestIndexDoc = riddlesSnapshot.docs[0];
+    const highestIndex = highestIndexDoc.data().tutorialIndex || 0;
+    return highestIndex + 1;
+  } catch (error) {
+    console.error("Error getting next tutorial index:", error);
+    throw new Error("Failed to get next tutorial index.");
+  }
+}
+
+/**
+ * Stores generated tutorial riddles in the tutorialRiddles collection.
+ * @param riddles - An array of riddle objects to store.
+ * @param startingIndex - The starting tutorial index for the riddles.
+ */
+async function storeTutorialRiddlesInFirestore(
+  riddles: {question: string; answer: string}[],
+  startingIndex: number,
+): Promise<void> {
+  const batch = admin.firestore().batch();
+
+  riddles.forEach((riddle, index) => {
+    const riddleRef = admin.firestore().collection(RiddleCollections.TUTORIAL_RIDDLES).doc();
+    const riddleData: TutorialRiddle = {
+      riddleId: riddleRef.id,
+      text: riddle.question,
+      answer: riddle.answer,
+      tutorialIndex: startingIndex + index,
+      category: "tutorial",
+    };
+
+    batch.set(riddleRef, riddleData);
+  });
+
+  try {
+    await batch.commit();
+    console.log(`Successfully stored ${riddles.length} new tutorial riddles in Firestore.`);
+  } catch (error) {
+    console.error("Error storing tutorial riddles in Firestore:", error);
+    throw new Error("Failed to store tutorial riddles in Firestore.");
   }
 }
 
@@ -263,7 +336,7 @@ export async function generateAndAppendRiddles(numberOfRiddles: number): Promise
 
   if (newRiddles.length > 0) {
     // Store riddles directly in Firestore
-    await storeRiddlesInFirestore(newRiddles, startingIndex);
+    await storeClassicRiddlesInFirestore(newRiddles, startingIndex);
     console.log(`Successfully generated and stored ${newRiddles.length} new riddles in Firestore.`);
   } else {
     console.warn("No new unique riddles were generated.");
@@ -353,6 +426,90 @@ export async function generateAndAppendDailyRiddles(numberOfRiddles: number): Pr
 }
 
 /**
+ * Generates a specified number of unique tutorial riddles and stores them directly in Firestore.
+ * This function is called automatically by the submit answer function when needed.
+ *
+ * @param numberOfRiddles - The number of new tutorial riddles to generate.
+ */
+export async function generateAndAppendTutorialRiddles(numberOfRiddles: number): Promise<void> {
+  console.log(`Generating ${numberOfRiddles} new tutorial riddles...`);
+
+  // Check for required environment variables
+  const openAIKey = process.env.OPENAI_API_KEY;
+  if (!openAIKey) {
+    throw new Error("OPENAI_API_KEY environment variable is required");
+  }
+
+  // Get existing riddles for duplicate checking (includes both classic and daily)
+  const existing = await getExistingRiddlesFromFirestore();
+
+  // Get the next available tutorial index
+  const startingIndex = await getNextTutorialIndex();
+
+  const newRiddles: {question: string; answer: string}[] = [];
+  const generatedAttempts: {question: string; answer: string}[] = [];
+
+  // Circuit breaker: Maximum attempts to prevent infinite loops
+  const maxAttempts = numberOfRiddles * 10; // Allow 10x attempts for retries
+  let attemptCount = 0;
+
+  while (newRiddles.length < numberOfRiddles && attemptCount < maxAttempts) {
+    attemptCount++;
+
+    // Generate a riddle using the OpenAI service
+    const riddle = await generateUniqueRiddle();
+
+    if (riddle) {
+      const newRiddle = {
+        question: riddle[0],
+        answer: riddle[1],
+      };
+
+      // Check for duplicates against existing and newly generated riddles
+      if (
+        !riddleExists(newRiddle, existing.questions, existing.answers) &&
+        !riddleExists(
+          newRiddle,
+          generatedAttempts.map((r) => r.question),
+          generatedAttempts.map((r) => r.answer),
+        )
+      ) {
+        newRiddles.push(newRiddle);
+        // Add to existing for subsequent duplicate checks within this run
+        existing.questions.push(newRiddle.question.toLowerCase());
+        existing.answers.push(newRiddle.answer.toLowerCase());
+        console.log(`Generated tutorial riddle ${newRiddles.length}/${numberOfRiddles} (attempt ${attemptCount})`);
+      } else {
+        console.warn(
+          `Generated tutorial riddle is a duplicate, trying again... (attempt ${attemptCount}/${maxAttempts})`,
+        );
+      }
+      generatedAttempts.push(newRiddle);
+    } else {
+      console.warn(`Failed to generate unique tutorial riddle, retrying... (attempt ${attemptCount}/${maxAttempts})`);
+    }
+  }
+
+  // Check if we hit the circuit breaker
+  if (newRiddles.length < numberOfRiddles && attemptCount >= maxAttempts) {
+    console.warn(
+      `Circuit breaker activated: Only generated ${newRiddles.length}/${numberOfRiddles} tutorial riddles after ${maxAttempts} attempts`,
+    );
+    if (newRiddles.length === 0) {
+      throw new Error(`Failed to generate any unique tutorial riddles after ${maxAttempts} attempts`);
+    }
+  }
+
+  if (newRiddles.length > 0) {
+    // Store tutorial riddles directly in Firestore
+    await storeTutorialRiddlesInFirestore(newRiddles, startingIndex);
+    console.log(`Successfully generated and stored ${newRiddles.length} new tutorial riddles in Firestore.`);
+  } else {
+    console.warn("No new unique tutorial riddles were generated.");
+  }
+}
+
+/**
  * Initializes the riddle database if it's empty.
  * This function is called automatically by the submit answer function if no riddles exist.
  *
@@ -365,7 +522,7 @@ export async function initializeRiddleDatabaseIfEmpty(initialRiddleCount: number
     // Check if any classic riddles already exist
     const existingRiddlesSnapshot = await admin
       .firestore()
-      .collection("riddles")
+      .collection(RiddleCollections.RIDDLES)
       .where("classicIndex", ">=", 0)
       .limit(1)
       .get();
@@ -448,7 +605,7 @@ export const initializeRiddleDatabase = onCall(
       // Check if any classic riddles already exist
       const existingRiddlesSnapshot = await admin
         .firestore()
-        .collection("riddles")
+        .collection(RiddleCollections.RIDDLES)
         .where("classicIndex", ">=", 0)
         .limit(1)
         .get();
@@ -529,6 +686,47 @@ export const generateDailyRiddles = onCall(
 );
 
 /**
+ * Generates a specified number of unique tutorial riddles and stores them directly in Firestore.
+ * This is now deprecated in favor of automatic generation in submit answer function.
+ * Kept for backward compatibility.
+ * @return A promise resolving to an object indicating success or failure.
+ */
+export const generateTutorialRiddles = onCall(
+  {
+    enforceAppCheck: false,
+    cors: true,
+    region: "us-central1",
+    secrets: ["OPENAI_API_KEY"],
+    timeoutSeconds: 540, // 9 minutes for riddle generation
+  } as CallableOptions,
+  async (): Promise<{success: boolean; message: string}> => {
+    console.log("🚀 generateTutorialRiddles function called - entry point reached");
+    console.log("🔧 Function configuration: enforceAppCheck=false, cors=true, region=us-central1");
+
+    try {
+      console.log("📝 Starting tutorial riddle generation process with 10 riddles...");
+      await generateAndAppendTutorialRiddles(10);
+      console.log("✅ Tutorial riddles generated and stored in Firestore successfully.");
+      return {
+        success: true,
+        message: "New Tutorial riddles generated and added to Firestore.",
+      };
+    } catch (error) {
+      console.error("❌ Error generating Tutorial riddles:", error);
+      console.error("❌ Error type:", typeof error);
+      console.error("❌ Error constructor:", error?.constructor?.name);
+      if (error instanceof Error) {
+        console.error("❌ Error message:", error.message);
+        console.error("❌ Error stack:", error.stack);
+      } else {
+        console.error("❌ Error details:", String(error));
+      }
+      throw new functions.https.HttpsError("internal", "Failed to generate new tutorial riddles.", error);
+    }
+  },
+);
+
+/**
  * Generates 5 riddles for today's daily challenge and stores them in the proper structure.
  * This replaces the single daily riddle with a 5-question daily challenge.
  * @param forceGenerate - If true, generates new riddles even if today's challenge already exists.
@@ -596,17 +794,18 @@ export async function generateTodaysDailyChallenge(forceGenerate: boolean = fals
           generatedAttempts.map((r) => r.answer),
         )
       ) {
-        // Create riddle document in riddles collection
-        const riddleRef = admin.firestore().collection("riddles").doc();
-        const riddleData: FirestoreRiddle = {
+        // Create riddle document in dailyRiddles collection
+        const riddleRef = admin.firestore().collection(RiddleCollections.DAILY_RIDDLES).doc();
+        const riddleData: DailyRiddle = {
           riddleId: riddleRef.id,
           text: newRiddle.question,
           answer: newRiddle.answer,
-          category: "daily-challenge",
+          dailyIndex: dailyChallengeQuestions.length, // Use the current count as index
+          category: "daily",
           difficulty: "normal",
         };
 
-        // Store the riddle in the riddles collection
+        // Store the riddle in the dailyRiddles collection
         await riddleRef.set(riddleData);
 
         // Add to daily challenge questions array

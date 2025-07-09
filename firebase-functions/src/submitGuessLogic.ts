@@ -1,9 +1,14 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import {onCall, HttpsError} from "firebase-functions/v2/https";
-import {getUser, updateUserCoins, updateUserStats, getRiddle, ensureUserDocumentComplete} from "./firestoreService";
-import type {PlayerStats, PlayerStatsUpdate} from "./validation/firestoreSchemas";
-import {PlayerSchema} from "./validation/firestoreSchemas";
+import {
+  getUser,
+  updateUserCoins,
+  updateUserStats,
+  getRiddleByGameMode,
+  ensureUserDocumentComplete,
+} from "./firestoreService";
+import {PlayerStats, PlayerStatsUpdate, PlayerSchema} from "./validation/firestoreSchemas";
 import type {FeedbackItem} from "./validation/requestSchemas";
 import {generateAndAppendRiddles, initializeRiddleDatabaseIfEmpty} from "./riddleGeneration";
 
@@ -44,8 +49,8 @@ export async function handleGuessLogic(
   data: SubmitGuessRequestData,
   auth: SubmitGuessAuthContext,
 ): Promise<SubmitGuessResponseData> {
-  const userId = auth.uid;
   const {guess, riddleId, gameMode, attempts} = data;
+  const userId = auth.uid;
 
   if (!guess || !riddleId || !gameMode || attempts === undefined) {
     throw new HttpsError("invalid-argument", "Missing required parameters: guess, riddleId, gameMode, attempts.");
@@ -58,13 +63,14 @@ export async function handleGuessLogic(
     // Initialize database if empty (for new deployments)
     await initializeRiddleDatabaseIfEmpty();
 
-    const riddle = await getRiddle(riddleId);
+    // Get riddle from the appropriate collection based on game mode
+    const riddle = await getRiddleByGameMode(riddleId, gameMode);
     console.log("handleGuessLogic - Fetched riddle:", JSON.stringify(riddle));
 
     if (!riddle || !riddle.answer) {
       const errorMessage = !riddle
-        ? `Riddle with ID ${riddleId} not found.`
-        : `Answer not found for riddle ${riddleId}.`;
+        ? `${gameMode} riddle with ID ${riddleId} not found.`
+        : `Answer not found for ${gameMode} riddle ${riddleId}.`;
       functions.logger.error(errorMessage);
       throw new HttpsError("not-found", errorMessage);
     }

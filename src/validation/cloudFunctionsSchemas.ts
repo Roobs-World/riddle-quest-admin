@@ -74,7 +74,8 @@ export const GuessFeedbackSchema = z.union([
 export const SubmitGuessInputSchema = z.object({
   guess: z.string().min(1, "Guess cannot be empty"),
   riddleId: z.string().min(1, "Riddle ID is required"),
-  gameMode: z.enum(["challenge", "classic"]),
+  gameMode: z.enum(["challenge", "classic", "tutorial"]),
+  attempts: z.number().int().positive("Attempts must be a positive integer"),
 });
 
 export const SubmitGuessOutputSchema = z.object({
@@ -97,6 +98,7 @@ export type SubmitGuessOutput = z.infer<typeof SubmitGuessOutputSchema>;
 export const GetHintInputSchema = z.object({
   currentAttempt: z.array(z.string()), // Each string could be a letter
   riddleId: z.string(),
+  gameMode: GameModeSchema,
 });
 
 export const GetHintOutputSchema = z
@@ -106,6 +108,29 @@ export const GetHintOutputSchema = z
     coinsCost: z.number().int().positive(),
   })
   .nullable();
+
+// skipRiddle
+export const SkipRiddleInputSchema = z.object({
+  riddleId: z.string().min(1, "Riddle ID is required"),
+  gameMode: GameModeSchema,
+});
+
+export const SkipRiddleOutputSchema = z.object({
+  success: z.boolean(),
+  newProgress: z.any().optional(),
+  message: z.string(),
+  costDeducted: z.number(),
+});
+
+// spendCoins
+export const SpendCoinsInputSchema = z.object({
+  amount: z.number().positive("Amount must be a positive number"),
+  reason: z.enum(["hint", "skip"]),
+});
+
+export const SpendCoinsOutputSchema = z.object({
+  newCoins: z.number().nonnegative(),
+});
 
 // initializeRiddleDatabase
 export const InitializeRiddleDatabaseInputSchema = z.object({});

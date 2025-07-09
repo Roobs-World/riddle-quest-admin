@@ -88,7 +88,7 @@ export const RiddleService = {
         const nextRiddleId = riddleIds[completedIndex];
 
         const riddleDoc = await getFirestore(getApp())
-          .collection("riddles")
+          .collection("dailyRiddles")
           .doc(nextRiddleId)
           .get();
 
@@ -106,13 +106,15 @@ export const RiddleService = {
             };
           } else {
             console.error(
-              `Riddle data or answer missing for ID: ${nextRiddleId}. Data:`,
+              `Daily riddle data or answer missing for ID: ${nextRiddleId}. Data:`,
               riddleData
             );
             return null;
           }
         } else {
-          console.log(`Riddle document not found for ID: ${nextRiddleId}`);
+          console.log(
+            `Daily riddle document not found for ID: ${nextRiddleId}`
+          );
           return null;
         }
       } else {
@@ -182,8 +184,7 @@ export const RiddleService = {
     console.log(`Fetching tutorial riddle for level ${level} from Firestore`);
     try {
       const snapshot = await getFirestore(getApp())
-        .collection("riddles")
-        .where("category", "==", "tutorial")
+        .collection("tutorialRiddles")
         .where("tutorialIndex", "==", level)
         .limit(1)
         .get();
@@ -198,7 +199,7 @@ export const RiddleService = {
           };
         } else {
           console.error(
-            `Riddle data or answer missing for level: ${level}. Data:`,
+            `Tutorial riddle data or answer missing for level: ${level}. Data:`,
             riddleData
           );
           return null;

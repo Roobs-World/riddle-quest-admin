@@ -1,16 +1,16 @@
 import {logger} from "firebase-functions/v2";
 import * as admin from "firebase-admin";
 import {onCall, HttpsError, CallableRequest} from "firebase-functions/v2/https";
-import {updateUserCoins, getUser} from "./firestoreService";
+import {updateUserCoins, getUser, getRiddleByGameMode} from "./firestoreService";
 
 /**
  * Provides a hint (reveals a letter) for the current riddle based on the user's
  * current attempt.
- * @param data - The request data object containing currentAttempt, and
- * riddleId.
+ * @param data - The request data object containing currentAttempt, riddleId, and gameMode.
  * @param data.currentAttempt - An array of strings representing the user's
  * current guess attempt.
  * @param data.riddleId - The ID of the riddle being attempted.
+ * @param data.gameMode - The game mode ('classic', 'challenge', or 'tutorial').
  * @param context - The context object representing the request context.
  * @return An object containing the revealed letter, its index, and the coin cost,
  * or null if no hint is available/applicable.
@@ -18,7 +18,11 @@ import {updateUserCoins, getUser} from "./firestoreService";
 export const getHint = onCall(
   {},
   async (
-    request: CallableRequest<{currentAttempt: string[]; riddleId: string}>,
+    request: CallableRequest<{
+      currentAttempt: string[];
+      riddleId: string;
+      gameMode: "classic" | "challenge" | "tutorial";
+    }>,
   ): Promise<{revealedLetter: string; index: number; coinsCost: number} | null> => {
     try {
       if (!request.auth) {
@@ -26,17 +30,22 @@ export const getHint = onCall(
       }
 
       const currentUserId = request.auth.uid;
-      const {currentAttempt, riddleId} = request.data;
+      const {currentAttempt, riddleId, gameMode} = request.data;
 
-      const riddleDoc = await admin.firestore().collection("riddles").doc(riddleId).get();
-
-      if (!riddleDoc.exists) {
-        throw new HttpsError("not-found", `Riddle with ID ${riddleId} not found.`);
+      // Validate game mode
+      if (!["classic", "challenge", "tutorial"].includes(gameMode)) {
+        throw new HttpsError("invalid-argument", "Invalid game mode specified.");
       }
-      const riddleData = riddleDoc.data();
 
-      if (!riddleData || !riddleData.answer) {
-        throw new HttpsError("internal", `Answer not found for riddle ID ${riddleId}.`);
+      // Get riddle from the appropriate collection based on game mode
+      const riddleData = await getRiddleByGameMode(riddleId, gameMode);
+
+      if (!riddleData) {
+        throw new HttpsError("not-found", `${gameMode} riddle with ID ${riddleId} not found.`);
+      }
+
+      if (!riddleData.answer) {
+        throw new HttpsError("internal", `Answer not found for ${gameMode} riddle ID ${riddleId}.`);
       }
 
       const answer: string = riddleData.answer.toLowerCase();
@@ -64,7 +73,7 @@ export const getHint = onCall(
       const isGameCompleted = gameState?.isCompleted === true;
 
       if (isGameCompleted) {
-        logger.warn(`User ${currentUserId} requested hint for completed riddle ${riddleId}.`);
+        logger.warn(`User ${currentUserId} requested hint for completed ${gameMode} riddle ${riddleId}.`);
         throw new HttpsError("failed-precondition", "Game is already completed.");
       }
 
@@ -86,7 +95,7 @@ export const getHint = onCall(
 
       if (revealedLetter === null || index === null) {
         logger.warn(
-          `No hint available for user ${currentUserId}, riddle ${riddleId}. All letters revealed or guessed correctly.`,
+          `No hint available for user ${currentUserId}, ${gameMode} riddle ${riddleId}. All letters revealed or guessed correctly.`,
         );
         return null;
       }
@@ -101,7 +110,7 @@ export const getHint = onCall(
       );
 
       logger.info(
-        `User ${currentUserId} used a hint for riddle ${riddleId}, revealing letter ${revealedLetter.toUpperCase()} at index ${index}.`,
+        `User ${currentUserId} used a hint for ${gameMode} riddle ${riddleId}, revealing letter ${revealedLetter.toUpperCase()} at index ${index}.`,
       );
 
       return {
@@ -178,10 +187,10 @@ export const skipRiddle = onCall(
         );
       }
 
-      // Check if riddle exists
-      const riddleDoc = await admin.firestore().collection("riddles").doc(riddleId).get();
-      if (!riddleDoc.exists) {
-        throw new HttpsError("not-found", `Riddle with ID ${riddleId} not found.`);
+      // Check if riddle exists in the appropriate collection
+      const riddleData = await getRiddleByGameMode(riddleId, gameMode);
+      if (!riddleData) {
+        throw new HttpsError("not-found", `${gameMode} riddle with ID ${riddleId} not found.`);
       }
 
       // Check if riddle is already completed

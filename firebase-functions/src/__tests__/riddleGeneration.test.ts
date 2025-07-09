@@ -137,6 +137,12 @@ describe("riddleGeneration", () => {
         }),
       };
 
+      const tutorialRiddlesSnapshot: any = {
+        empty: true,
+        docs: [],
+        forEach: jest.fn(),
+      };
+
       (mockFirestoreCollection as any)
         .mockReturnValueOnce({
           get: jest.fn().mockResolvedValue(riddlesSnapshot),
@@ -147,13 +153,19 @@ describe("riddleGeneration", () => {
           get: jest.fn().mockResolvedValue(dailyChallengeSnapshot),
           doc: jest.fn(),
           where: jest.fn(),
+        } as any)
+        .mockReturnValueOnce({
+          get: jest.fn().mockResolvedValue(tutorialRiddlesSnapshot),
+          doc: jest.fn(),
+          where: jest.fn(),
         } as any);
 
       // Call private function through a public function that uses it
       await expect(riddleGeneration.generateAndAppendRiddles(1)).rejects.toThrow();
 
       expect(mockFirestoreCollection).toHaveBeenCalledWith("riddles");
-      expect(mockFirestoreCollection).toHaveBeenCalledWith("dailyChallenge");
+      expect(mockFirestoreCollection).toHaveBeenCalledWith("dailyRiddles");
+      expect(mockFirestoreCollection).toHaveBeenCalledWith("tutorialRiddles");
     });
 
     test("should handle Firestore errors gracefully", async () => {
@@ -178,6 +190,9 @@ describe("riddleGeneration", () => {
       (mockFirestoreCollection as any)
         .mockReturnValueOnce({
           get: jest.fn().mockResolvedValue(riddlesSnapshot),
+        } as any)
+        .mockReturnValueOnce({
+          get: jest.fn().mockResolvedValue({empty: true, docs: [], forEach: jest.fn()}),
         } as any)
         .mockReturnValueOnce({
           get: jest.fn().mockResolvedValue({empty: true, docs: [], forEach: jest.fn()}),
@@ -422,11 +437,13 @@ describe("riddleGeneration", () => {
         }),
       };
 
+      const emptySnapshot = {empty: true, docs: [], forEach: jest.fn()};
+
+      // Mock all three collections for getExistingRiddlesFromFirestore
       (mockFirestoreCollection as any)
-        .mockReturnValueOnce({get: jest.fn().mockResolvedValue(existingRiddlesSnapshot)} as any)
-        .mockReturnValueOnce({
-          get: jest.fn().mockResolvedValue({empty: true, docs: [], forEach: jest.fn()}),
-        } as any)
+        .mockReturnValueOnce({get: jest.fn().mockResolvedValue(existingRiddlesSnapshot)} as any) // riddles
+        .mockReturnValueOnce({get: jest.fn().mockResolvedValue(emptySnapshot)} as any) // dailyRiddles
+        .mockReturnValueOnce({get: jest.fn().mockResolvedValue(emptySnapshot)} as any) // tutorialRiddles
         .mockReturnValue({
           doc: mockFirestoreDoc,
           where: mockWhere,
@@ -524,11 +541,13 @@ describe("riddleGeneration", () => {
         }),
       };
 
+      const emptySnapshot = {empty: true, docs: [], forEach: jest.fn()};
+
+      // Mock all three collections for getExistingRiddlesFromFirestore
       (mockFirestoreCollection as any)
-        .mockReturnValueOnce({get: jest.fn().mockResolvedValue(existingSnapshot)} as any)
-        .mockReturnValueOnce({
-          get: jest.fn().mockResolvedValue({empty: true, docs: [], forEach: jest.fn()}),
-        } as any)
+        .mockReturnValueOnce({get: jest.fn().mockResolvedValue(emptySnapshot)} as any) // riddles
+        .mockReturnValueOnce({get: jest.fn().mockResolvedValue(existingSnapshot)} as any) // dailyRiddles
+        .mockReturnValueOnce({get: jest.fn().mockResolvedValue(emptySnapshot)} as any) // tutorialRiddles
         .mockReturnValue({
           doc: mockFirestoreDoc,
           where: mockWhere,
@@ -872,11 +891,13 @@ describe("riddleGeneration", () => {
         }),
       };
 
+      const emptySnapshot = {empty: true, docs: [], forEach: jest.fn()};
+
+      // Mock all three collections for getExistingRiddlesFromFirestore
       (mockFirestoreCollection as any)
-        .mockReturnValueOnce({get: jest.fn().mockResolvedValue(existingSnapshot)} as any)
-        .mockReturnValueOnce({
-          get: jest.fn().mockResolvedValue({empty: true, docs: [], forEach: jest.fn()}),
-        } as any)
+        .mockReturnValueOnce({get: jest.fn().mockResolvedValue(existingSnapshot)} as any) // riddles
+        .mockReturnValueOnce({get: jest.fn().mockResolvedValue(emptySnapshot)} as any) // dailyRiddles
+        .mockReturnValueOnce({get: jest.fn().mockResolvedValue(emptySnapshot)} as any) // tutorialRiddles
         .mockReturnValue({
           doc: mockFirestoreDoc,
           where: mockWhere,

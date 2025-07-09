@@ -47,7 +47,7 @@ export class RiddleInitializationService {
     console.log("🔍 Checking if riddle database needs initialization...");
 
     try {
-      // Check if any classic riddles exist
+      // Check if any classic riddles exist in the riddles collection
       const riddlesSnapshot = await getFirestore(getApp())
         .collection("riddles")
         .where("classicIndex", ">=", 0)
@@ -56,14 +56,14 @@ export class RiddleInitializationService {
 
       if (!riddlesSnapshot.empty) {
         console.log(
-          "✅ Riddle database already has riddles - no initialization needed"
+          "✅ Classic riddles database already has riddles - no initialization needed"
         );
         this.hasInitialized = true;
         this.initializationFailed = false;
         return;
       }
 
-      console.log("⚠️ No riddles found in database - initializing...");
+      console.log("⚠️ No classic riddles found in database - initializing...");
 
       // Call the Firebase function to initialize riddles with timeout
       const initializeRiddleDatabase = getCallableFunction(
@@ -87,7 +87,10 @@ export class RiddleInitializationService {
           timeoutPromise,
         ]);
 
-        console.log("✅ Riddle initialization result:", (result as any)?.data);
+        console.log(
+          "✅ Riddle initialization result:",
+          (result as { data: unknown })?.data
+        );
       } catch (error) {
         console.error("❌ Error calling initializeRiddleDatabase:", error);
 
@@ -116,7 +119,7 @@ export class RiddleInitializationService {
 
           console.log(
             "✅ Classic riddles generation result:",
-            (result as any)?.data
+            (result as { data: unknown })?.data
           );
         } catch (fallbackError) {
           console.error(
@@ -135,7 +138,7 @@ export class RiddleInitializationService {
         }
       }
 
-      // Verify riddles were created
+      // Verify classic riddles were created in the riddles collection
       const verifySnapshot = await getFirestore(getApp())
         .collection("riddles")
         .where("classicIndex", ">=", 0)
@@ -144,11 +147,11 @@ export class RiddleInitializationService {
 
       if (verifySnapshot.empty) {
         throw new Error(
-          "Riddle initialization completed but no riddles found in database"
+          "Riddle initialization completed but no classic riddles found in database"
         );
       }
 
-      console.log("✅ Riddle database successfully initialized!");
+      console.log("✅ Classic riddles database successfully initialized!");
       this.hasInitialized = true;
       this.initializationFailed = false;
     } catch (error) {
@@ -171,7 +174,7 @@ export class RiddleInitializationService {
   }
 
   /**
-   * Checks if there are sufficient riddles for gameplay.
+   * Checks if there are sufficient classic riddles for gameplay.
    * @returns true if there are enough riddles, false otherwise
    */
   static async hasEnoughRiddles(minimumCount: number = 10): Promise<boolean> {

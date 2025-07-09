@@ -7,7 +7,7 @@ export type Feedback = "green" | "yellow" | "red";
 
 interface UseGameLogicProps {
   riddleId: string;
-  gameMode: "challenge" | "classic";
+  gameMode: "challenge" | "classic" | "tutorial";
 }
 
 const useGameLogic = ({ riddleId, gameMode }: UseGameLogicProps) => {

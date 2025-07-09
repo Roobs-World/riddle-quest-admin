@@ -35,11 +35,14 @@ import {
   initializeRiddleDatabase,
   generateDailyRiddles,
   generateTodaysDailyChallengeFunction,
+  generateTutorialRiddles,
 } from "./riddleGeneration";
+import {getCurrentTutorialRiddle, advanceTutorialProgress, initializeTutorialRiddlesFunction} from "./tutorialRiddles";
 import {updateAvatar} from "./profile";
 import {submitGuess} from "./submitGuessLogic";
 import {dailyChallengeScheduler} from "./dailyScheduler";
 import {initializeUser, ensureUserComplete, updateUserStats} from "./userManagement";
+import {migrateRiddleCollections, cleanupOriginalRiddles} from "./migrationScript";
 
 export {
   awardedAdCallback,
@@ -56,12 +59,18 @@ export {
   initializeRiddleDatabase,
   generateDailyRiddles,
   generateTodaysDailyChallengeFunction,
+  generateTutorialRiddles,
+  getCurrentTutorialRiddle,
+  advanceTutorialProgress,
+  initializeTutorialRiddlesFunction,
   updateAvatar,
   submitGuess,
   dailyChallengeScheduler,
   initializeUser,
   ensureUserComplete,
   updateUserStats,
+  migrateRiddleCollections,
+  cleanupOriginalRiddles,
 };
 
 // Removed all individual function definitions and exports from here
