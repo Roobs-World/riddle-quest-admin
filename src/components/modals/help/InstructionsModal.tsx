@@ -109,36 +109,78 @@ const InstructionsModal: React.FC<InstructionsModalProps> = ({
                   >
                     Color Clues
                   </Text>
-                  <View className="space-y-3">
-                    <View className="flex-row items-center">
-                      <View className="w-6 h-6 bg-green-500 rounded mr-3" />
-                      <Text
-                        className="text-base text-gray-600 flex-1"
-                        style={styles.memberRole}
-                      >
-                        <Text className="font-semibold">GREEN:</Text> Letter is
-                        correct and in the right position
-                      </Text>
+                  <View style={{ gap: 16 }}>
+                    <View
+                      style={{ flexDirection: "row", alignItems: "center" }}
+                    >
+                      <View
+                        style={{
+                          width: 24,
+                          height: 24,
+                          backgroundColor: "#22c55e", // green-500
+                          borderRadius: 4,
+                          marginRight: 12,
+                        }}
+                      />
+                      <View style={{ flex: 1 }}>
+                        <Text
+                          style={{
+                            fontSize: 16,
+                            color: "#6B7280",
+                            fontWeight: "400",
+                          }}
+                        >
+                          Letter is correct and in the right position
+                        </Text>
+                      </View>
                     </View>
-                    <View className="flex-row items-center">
-                      <View className="w-6 h-6 bg-yellow-500 rounded mr-3" />
-                      <Text
-                        className="text-base text-gray-600 flex-1"
-                        style={styles.memberRole}
-                      >
-                        <Text className="font-semibold">YELLOW:</Text> Letter is
-                        in the word but wrong position
-                      </Text>
+                    <View
+                      style={{ flexDirection: "row", alignItems: "center" }}
+                    >
+                      <View
+                        style={{
+                          width: 24,
+                          height: 24,
+                          backgroundColor: "#eab308", // yellow-500
+                          borderRadius: 4,
+                          marginRight: 12,
+                        }}
+                      />
+                      <View style={{ flex: 1 }}>
+                        <Text
+                          style={{
+                            fontSize: 16,
+                            color: "#6B7280",
+                            fontWeight: "400",
+                          }}
+                        >
+                          Letter is in the word but wrong position
+                        </Text>
+                      </View>
                     </View>
-                    <View className="flex-row items-center">
-                      <View className="w-6 h-6 bg-red-500 rounded mr-3" />
-                      <Text
-                        className="text-base text-gray-600 flex-1"
-                        style={styles.memberRole}
-                      >
-                        <Text className="font-semibold">RED:</Text> Letter is
-                        not in the word at all
-                      </Text>
+                    <View
+                      style={{ flexDirection: "row", alignItems: "center" }}
+                    >
+                      <View
+                        style={{
+                          width: 24,
+                          height: 24,
+                          backgroundColor: "#ef4444", // red-500
+                          borderRadius: 4,
+                          marginRight: 12,
+                        }}
+                      />
+                      <View style={{ flex: 1 }}>
+                        <Text
+                          style={{
+                            fontSize: 16,
+                            color: "#6B7280",
+                            fontWeight: "400",
+                          }}
+                        >
+                          Letter is not in the word at all
+                        </Text>
+                      </View>
                     </View>
                   </View>
                 </View>
