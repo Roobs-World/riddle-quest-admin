@@ -58,6 +58,7 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isVisible, onClose }) => {
             borderBottomRightRadius: 20,
             height: "100%",
             paddingTop: 40,
+            flex: 1,
           }}
         >
           <HomeBgSvg
@@ -100,51 +101,56 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isVisible, onClose }) => {
             </Text>
           </View>
 
-          <ScrollView
-            className="flex-1 w-full"
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.scrollViewContent}
-          >
-            {teamMembers.map((member, index) => (
-              <View
-                key={index}
-                className="bg-white/90 rounded-lg p-6 mb-4 mx-4 shadow-sm"
-                style={styles.teamMemberCard}
-              >
-                <Text
-                  className="text-xl font-bold text-gray-800 text-center mb-2"
-                  style={styles.memberName}
+          <View style={{ flex: 1, paddingBottom: 80 }}>
+            <ScrollView
+              className="flex-1 w-full"
+              style={{ flex: 1 }}
+              showsVerticalScrollIndicator={true}
+              contentContainerStyle={{ paddingBottom: 40 }}
+            >
+              {teamMembers.map((member, index) => (
+                <View
+                  key={index}
+                  className="bg-white/90 rounded-lg p-6 mb-4 mx-4 shadow-sm"
+                  style={styles.teamMemberCard}
                 >
-                  {member.name}
+                  <Text
+                    className="text-xl font-bold text-gray-800 text-center mb-2"
+                    style={styles.memberName}
+                  >
+                    {member.name}
+                  </Text>
+                  <Text
+                    className="text-base text-gray-600 text-center"
+                    style={styles.memberRole}
+                  >
+                    {member.role}
+                  </Text>
+                </View>
+              ))}
+
+              <View className="mt-8 mx-4">
+                <Text
+                  className="text-lg font-bold text-gray-800 text-center mb-4"
+                  style={styles.thankYouTitle}
+                >
+                  Thank You!
                 </Text>
                 <Text
                   className="text-base text-gray-600 text-center"
-                  style={styles.memberRole}
+                  style={styles.thankYouText}
                 >
-                  {member.role}
+                  Special thanks to all our contributors who made Qwordly
+                  possible. Your creativity, dedication, and passion brought
+                  this project to life.
                 </Text>
               </View>
-            ))}
+            </ScrollView>
+          </View>
 
-            <View className="mt-8 mx-4">
-              <Text
-                className="text-lg font-bold text-gray-800 text-center mb-4"
-                style={styles.thankYouTitle}
-              >
-                Thank You!
-              </Text>
-              <Text
-                className="text-base text-gray-600 text-center"
-                style={styles.thankYouText}
-              >
-                Special thanks to all our contributors who made Qwordly
-                possible. Your creativity, dedication, and passion brought this
-                project to life.
-              </Text>
-            </View>
-          </ScrollView>
-
-          <View style={{ padding: 20 }}>
+          <View
+            style={{ position: "absolute", bottom: 20, left: 20, right: 20 }}
+          >
             <TouchableOpacity
               className="bg-blue-500 py-3 px-6 rounded-lg self-center"
               onPress={onClose}
