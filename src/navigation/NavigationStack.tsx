@@ -265,8 +265,10 @@ const GameScreenWrapper = () => {
           isVisible={showCompletionModal}
           totalCoinsEarned={completionData.totalCoinsEarned}
           questionsCompleted={completionData.questionsCompleted}
+          totalQuestions={5}
           onContinue={handleContinueAfterCompletion}
           onHome={handleHomeAfterCompletion}
+          onClose={() => setShowCompletionModal(false)}
         />
       </>
     );
