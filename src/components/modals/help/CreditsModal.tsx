@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, Modal, ScrollView, TouchableOpacity } from "react-native";
 import CloseButton from "../../buttons/CloseButton";
+import { styles } from "../../../styles";
 
 interface CreditsModalProps {
   isVisible: boolean;
@@ -47,95 +48,92 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isVisible, onClose }) => {
           </View>
 
           <Text
-            style={{
-              fontSize: 24,
-              fontWeight: "bold",
-              textAlign: "center",
-              marginBottom: 16,
-              color: "black",
-            }}
+            style={[
+              styles.creditsTitle,
+              { textAlign: "center", marginBottom: 16, color: "black" },
+            ]}
           >
             Credits
           </Text>
 
           <Text
-            style={{
-              fontSize: 16,
-              textAlign: "center",
-              marginBottom: 20,
-              color: "#666",
-            }}
+            style={[
+              styles.creditsSubtitle,
+              { textAlign: "center", marginBottom: 20, color: "#666" },
+            ]}
           >
             Meet the amazing team behind Qwordly
           </Text>
 
-          <ScrollView
-            style={{ flex: 1 }}
-            contentContainerStyle={{ paddingBottom: 80 }}
-            showsVerticalScrollIndicator={false}
-          >
-            {teamMembers.map((member, index) => (
+          <View style={{ flex: 1 }}>
+            <ScrollView
+              style={{ flex: 1 }}
+              contentContainerStyle={{ paddingBottom: 10 }}
+              showsVerticalScrollIndicator={false}
+            >
+              {teamMembers.map((member, index) => (
+                <View
+                  key={index}
+                  style={[
+                    styles.teamMemberCard,
+                    {
+                      backgroundColor: "#f9f9f9",
+                      borderRadius: 8,
+                      padding: 16,
+                      marginBottom: 12,
+                      marginHorizontal: 4,
+                    },
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.memberName,
+                      { textAlign: "center", marginBottom: 8, color: "black" },
+                    ]}
+                  >
+                    {member.name}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.memberRole,
+                      { textAlign: "center", color: "#666" },
+                    ]}
+                  >
+                    {member.role}
+                  </Text>
+                </View>
+              ))}
+
               <View
-                key={index}
                 style={{
-                  backgroundColor: "#f9f9f9",
-                  borderRadius: 8,
+                  marginTop: 20,
                   padding: 16,
-                  marginBottom: 12,
-                  shadowColor: "#000",
-                  shadowOffset: { width: 0, height: 1 },
-                  shadowOpacity: 0.1,
-                  shadowRadius: 2,
-                  elevation: 2,
+                  backgroundColor: "#f0f8ff",
+                  borderRadius: 8,
+                  marginHorizontal: 4,
                 }}
               >
                 <Text
-                  style={{
-                    fontSize: 18,
-                    fontWeight: "bold",
-                    textAlign: "center",
-                    marginBottom: 4,
-                    color: "black",
-                  }}
+                  style={[
+                    styles.thankYouTitle,
+                    { textAlign: "center", marginBottom: 8, color: "black" },
+                  ]}
                 >
-                  {member.name}
+                  Thank You!
                 </Text>
                 <Text
-                  style={{ fontSize: 14, textAlign: "center", color: "#666" }}
+                  style={[
+                    styles.thankYouText,
+                    { textAlign: "center", color: "#666" },
+                  ]}
                 >
-                  {member.role}
+                  Special thanks to all our contributors who made Qwordly
+                  possible. Your creativity, dedication, and passion brought
+                  this project to life.
                 </Text>
               </View>
-            ))}
-
-            <View
-              style={{
-                marginTop: 20,
-                padding: 16,
-                backgroundColor: "#f0f8ff",
-                borderRadius: 8,
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 18,
-                  fontWeight: "bold",
-                  textAlign: "center",
-                  marginBottom: 8,
-                  color: "black",
-                }}
-              >
-                Thank You!
-              </Text>
-              <Text
-                style={{ fontSize: 14, textAlign: "center", color: "#666" }}
-              >
-                Special thanks to all our contributors who made Qwordly
-                possible. Your creativity, dedication, and passion brought this
-                project to life.
-              </Text>
-            </View>
-          </ScrollView>
+            </ScrollView>
+          </View>
 
           <TouchableOpacity
             style={{
