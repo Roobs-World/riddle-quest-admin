@@ -1,34 +1,106 @@
-// This import block will be removed.
-// const {
-//   withFirebaseAndroid,
-//   withFirebaseIOS,
-// } = require("@react-native-firebase/app");
+/**
+ * @fileoverview Expo application configuration for Qwordly - riddle-based Wordle clone.
+ *
+ * This configuration file defines all aspects of the Expo/EAS build process including:
+ * - Basic app metadata (name, version, icons)
+ * - Platform-specific settings (iOS/Android)
+ * - Plugin configurations (Firebase, authentication, ads)
+ * - Build optimization settings
+ * - Environment variable definitions
+ *
+ * The configuration is structured to support both development and production
+ * environments with optimized settings for audio quality, 3D rendering,
+ * and cross-platform compatibility.
+ *
+ * @author Qwordly Development Team
+ * @version 1.0.0
+ * @since 2024
+ */
 
+// Load environment variables
+require("dotenv").config();
+
+/**
+ * Expo Configuration Object
+ *
+ * Defines the complete application configuration for Expo/EAS builds.
+ * Includes metadata, platform settings, plugins, and environment variables.
+ */
 module.exports = {
+  /** Application display name shown to users */
   name: "Qwordly",
+
+  /** URL-friendly app identifier used by Expo */
   slug: "qwordly",
+
+  /** Application version for app stores and updates */
   version: "1.0.0",
+
+  /** Lock app to portrait orientation for optimal game experience */
   orientation: "portrait",
+
+  /** App icon displayed on device home screens */
   icon: "./assets/images/icon.png",
+
+  /** UI style preference - light mode for better visibility */
   userInterfaceStyle: "light",
+
+  /** Disable React Native's new architecture for compatibility */
   newArchEnabled: false,
+
+  /**
+   * Splash Screen Configuration
+   *
+   * Defines the loading screen shown when the app starts.
+   * Uses contain mode to preserve aspect ratio of the splash icon.
+   */
   splash: {
     image: "./assets/images/splash-icon.png",
     resizeMode: "contain",
     backgroundColor: "#ffffff",
   },
+
+  /**
+   * iOS Platform Configuration
+   *
+   * iOS-specific settings including bundle identifier, permissions,
+   * audio configuration, and Google Services integration.
+   */
   ios: {
+    /** Enable iPad support for larger screen gameplay */
     supportsTablet: true,
+
+    /** Unique iOS bundle identifier for App Store */
     bundleIdentifier: "com.grindhead.qwordly",
+
+    /** Firebase configuration file for iOS */
     googleServicesFile: "./GoogleService-Info.plist",
+
+    /**
+     * iOS Info.plist Configuration
+     *
+     * Defines permissions and audio session settings for iOS.
+     * Optimized for high-quality audio playback and camera/photo access.
+     */
     infoPlist: {
+      /** Ad tracking permission description */
       NSUserTrackingUsageDescription:
         "This identifier will be used to deliver personalized ads to you.",
+
+      /** Camera access permission for profile photos */
       NSCameraUsageDescription:
         "This app needs access to camera to capture profile photos.",
+
+      /** Photo library access permission for profile photos */
       NSPhotoLibraryUsageDescription:
         "This app needs access to photo library to select profile photos.",
-      // Enhanced audio session configuration for high-quality playback
+
+      /**
+       * Enhanced Audio Session Configuration
+       *
+       * Configures iOS audio session for high-quality game audio
+       * with background playback capabilities and device mixing.
+       */
       UIBackgroundModes: ["audio"],
       AVAudioSessionCategoryOptions: [
         "AVAudioSessionCategoryOptionMixWithOthers",
@@ -37,81 +109,166 @@ module.exports = {
       ],
     },
   },
+
+  /**
+   * Android Platform Configuration
+   *
+   * Android-specific settings including adaptive icons, permissions,
+   * audio quality settings, and Google Services integration.
+   */
   android: {
+    /**
+     * Adaptive Icon Configuration
+     *
+     * Provides foreground image for Android's adaptive icon system,
+     * allowing the icon to adapt to different device themes and shapes.
+     */
     adaptiveIcon: {
       foregroundImage: "./assets/images/adaptive-icon.png",
       backgroundColor: "#ffffff",
     },
+
+    /** Disable edge-to-edge display for consistent UI */
     edgeToEdgeEnabled: false,
+
+    /** Unique Android package name for Google Play Store */
     package: "com.grindhead.qwordly",
+
+    /** Firebase configuration file for Android */
     googleServicesFile: "./google-services.json",
-    // Audio quality permissions and settings
+
+    /**
+     * Android Audio Quality Permissions
+     *
+     * Permissions required for optimal audio performance and
+     * quality on Android devices.
+     */
     permissions: [
       "android.permission.MODIFY_AUDIO_SETTINGS",
       "android.permission.WRITE_EXTERNAL_STORAGE",
     ],
+
+    /** Disable automatic backup for game data security */
     allowBackup: false,
   },
+
+  /**
+   * Web Platform Configuration
+   *
+   * Settings for potential web deployment (currently unused but configured).
+   */
   web: {
     favicon: "./assets/images/favicon.png",
     bundler: "metro",
   },
+
+  /**
+   * Expo Plugins Configuration
+   *
+   * List of Expo plugins that add native functionality to the app.
+   * Includes Firebase, authentication, ads, and build optimization plugins.
+   */
   plugins: [
+    /** Firebase core services integration */
     "@react-native-firebase/app",
+
+    /** Firebase Crashlytics for error tracking */
     "@react-native-firebase/crashlytics",
+
+    /** Google Sign-In authentication */
     "@react-native-google-signin/google-signin",
+
+    /**
+     * Facebook SDK Configuration
+     *
+     * Configures Facebook authentication with app-specific settings
+     * and privacy-focused defaults (no auto-logging, no advertiser ID).
+     * Uses environment variables for secure configuration.
+     */
     [
       "react-native-fbsdk-next",
       {
-        appID: "1249521063516632",
-        clientToken: "3b513e77a89b821d83a13d0847a16afe",
+        appID: process.env.FACEBOOK_APP_ID || "YOUR_FACEBOOK_APP_ID",
+        clientToken:
+          process.env.FACEBOOK_CLIENT_TOKEN || "YOUR_FACEBOOK_CLIENT_TOKEN",
         displayName: "Qwordly",
-        scheme: "fb1249521063516632",
+        scheme: `fb${process.env.FACEBOOK_APP_ID || "YOUR_FACEBOOK_APP_ID"}`,
         advertiserIDCollectionEnabled: false,
         autoLogAppEventsEnabled: false,
         isAutoInitEnabled: true,
       },
     ],
+
+    /** Custom plugin for Android IAP store selection */
     "./plugins/withAndroidIapStoreSelection.js",
+
+    /**
+     * Expo Build Properties Configuration
+     *
+     * Platform-specific build settings optimized for audio quality,
+     * performance, and compatibility. Disables compression and
+     * minification to preserve audio fidelity.
+     */
     [
       "expo-build-properties",
       {
+        /**
+         * Android Build Configuration
+         *
+         * Optimized for audio quality and performance with
+         * disabled compression and resource shrinking.
+         */
         android: {
           minSdkVersion: 24,
           compileSdkVersion: 35,
           targetSdkVersion: 35,
           buildToolsVersion: "35.0.0",
           kotlinVersion: "2.0.21",
-          // Enhanced audio processing - preserve maximum quality
+
+          /** Audio quality preservation settings */
           proguardMinifyEnabled: false, // Disable minification to preserve audio quality
           resourceShrinkingEnabled: false, // Disable resource shrinking for audio assets
           compressionEnabled: false, // Disable asset compression
+
+          /** Native library packaging options */
           packagingOptions: {
             pickFirst: ["**/libc++_shared.so", "**/libjsc.so"],
             doNotStrip: ["**/*.so"], // Preserve native audio libraries
           },
         },
+
+        /**
+         * iOS Build Configuration
+         *
+         * Enhanced settings for audio quality and debugging
+         * with bitcode disabled for library compatibility.
+         */
         ios: {
-          // Enhanced audio configuration for iOS - preserve maximum quality
           deploymentTarget: "16.0",
-          // Disable bitcode to preserve audio library quality
-          bitcodeEnabled: false,
-          // Preserve debug symbols for audio debugging
-          includeSymbols: true,
-          // Disable app thinning for audio assets
+          bitcodeEnabled: false, // Disable bitcode to preserve audio library quality
+          includeSymbols: true, // Preserve debug symbols for audio debugging
+
+          /** Disable app thinning for audio assets */
           appThinning: {
             disabled: true,
           },
         },
       },
     ],
-    // Add expo-av plugin with audio optimization
+
+    /**
+     * Expo AV Audio Plugin Configuration
+     *
+     * Configures expo-av for high-quality audio playback with
+     * optimized session settings for iOS and Android.
+     */
     [
       "expo-av",
       {
         microphonePermission:
           "Allow $(PRODUCT_NAME) to access your microphone for enhanced audio features.",
-        // Enhanced audio quality configuration
+
+        /** iOS audio session optimization */
         audioSessionCategoryIOS: "playback", // Optimize for high-quality playback
         audioSessionModeIOS: "default", // Use default mode for best quality
         audioSessionCategoryOptionsIOS: [
@@ -122,26 +279,96 @@ module.exports = {
       },
     ],
   ],
+
+  /**
+   * Extra Configuration and Environment Variables
+   *
+   * Contains EAS project settings and environment variables for
+   * Firebase, social authentication, advertising, and AI services.
+   * All sensitive values are loaded from environment variables.
+   */
   extra: {
+    /** EAS (Expo Application Services) project identifier */
     eas: {
-      projectId: "492989b0-124c-46ac-a328-0ec513a3130f",
+      projectId:
+        process.env.EAS_PROJECT_ID || "492989b0-124c-46ac-a328-0ec513a3130f",
     },
+
+    /** Development and testing flags */
     ENABLE_CRASH_TESTING: process.env.ENABLE_CRASH_TESTING || "false",
-    OPEN_AI_KEY: "YnDnl1dSucAApjYEN019-6hGt2ufiedaq4HsP-h7",
-    FIREBASE_API_KEY: "AIzaSyBNjLrkvGibqctZ30YIktDYUBGf1WMhUBs",
-    FIREBASE_APP_ID: "1:26666910831:android:38c5f64b1df8df7168799a",
-    FIREBASE_AUTH_DOMAIN: "qwordly-6ba44.firebaseapp.com",
-    FIREBASE_MESSAGING_SENDER_ID: "26666910831",
-    FIREBASE_PROJECT_ID: "qwordly-6ba44",
-    FIREBASE_STORAGE_BUCKET: "qwordly-6ba44.firebasestorage.app",
-    FACEBOOK_APP_ID: "1249521063516632",
-    FACEBOOK_APP_SECRET: "5e3500f7fade64706c26f3a26af4b28d",
-    FACEBOOK_CLIENT_TOKEN: "3b513e77a89b821d83a13d0847a16afe",
-    APPLOVIN_INTERSTITIAL_AD_UNIT_ID: "YOUR_INTERSTITIAL_AD_UNIT_ID_HERE",
-    APPLOVIN_REWARDED_AD_UNIT_ID: "YOUR_REWARDED_AD_UNIT_ID_HERE",
-    APPLOVIN_SDK_KEY:
-      "l0DW3tQICL3wzDHvHp2_94_T9l9RTheo_ETqTv9wek0c2BLUG17QClOTHhLNUB_3SusS4e8PEfmokc9ymTO0px",
+
+    /** OpenAI API key for riddle generation */
+    OPENAI_API_KEY: process.env.OPENAI_API_KEY || "YOUR_OPENAI_API_KEY_HERE",
+
+    /**
+     * Firebase Configuration Variables
+     *
+     * Firebase project settings for authentication, database,
+     * and storage services. All values loaded from environment variables.
+     */
+    FIREBASE_API_KEY: process.env.FIREBASE_API_KEY || "YOUR_FIREBASE_API_KEY",
+    FIREBASE_APP_ID: process.env.FIREBASE_APP_ID || "YOUR_FIREBASE_APP_ID",
+    FIREBASE_AUTH_DOMAIN:
+      process.env.FIREBASE_AUTH_DOMAIN || "YOUR_FIREBASE_AUTH_DOMAIN",
+    FIREBASE_MESSAGING_SENDER_ID:
+      process.env.FIREBASE_MESSAGING_SENDER_ID ||
+      "YOUR_FIREBASE_MESSAGING_SENDER_ID",
+    FIREBASE_PROJECT_ID:
+      process.env.FIREBASE_PROJECT_ID || "YOUR_FIREBASE_PROJECT_ID",
+    FIREBASE_STORAGE_BUCKET:
+      process.env.FIREBASE_STORAGE_BUCKET || "YOUR_FIREBASE_STORAGE_BUCKET",
+
+    /**
+     * Google Authentication Configuration
+     *
+     * Google Sign-In web client ID from Firebase console.
+     */
+    GOOGLE_WEB_CLIENT_ID:
+      process.env.GOOGLE_WEB_CLIENT_ID || "YOUR_GOOGLE_WEB_CLIENT_ID",
+
+    /**
+     * Facebook Authentication Configuration
+     *
+     * Facebook app credentials for social authentication.
+     * All values loaded from environment variables for security.
+     */
+    FACEBOOK_APP_ID: process.env.FACEBOOK_APP_ID || "YOUR_FACEBOOK_APP_ID",
+    FACEBOOK_APP_SECRET:
+      process.env.FACEBOOK_APP_SECRET || "YOUR_FACEBOOK_APP_SECRET",
+    FACEBOOK_CLIENT_TOKEN:
+      process.env.FACEBOOK_CLIENT_TOKEN || "YOUR_FACEBOOK_CLIENT_TOKEN",
+
+    /**
+     * AppLovin MAX Advertising Configuration
+     *
+     * Ad unit IDs and SDK key for rewarded and interstitial ads.
+     * All values loaded from environment variables.
+     */
+    APPLOVIN_SDK_KEY: process.env.APPLOVIN_SDK_KEY || "YOUR_APPLOVIN_SDK_KEY",
+    APPLOVIN_INTERSTITIAL_AD_UNIT_ID:
+      process.env.APPLOVIN_INTERSTITIAL_AD_UNIT_ID ||
+      "YOUR_INTERSTITIAL_AD_UNIT_ID_HERE",
+    APPLOVIN_REWARDED_AD_UNIT_ID:
+      process.env.APPLOVIN_REWARDED_AD_UNIT_ID ||
+      "YOUR_REWARDED_AD_UNIT_ID_HERE",
+
+    /**
+     * In-App Purchase Configuration
+     *
+     * Apple and Google Play Store IAP validation credentials.
+     */
+    APPLE_SHARED_SECRET:
+      process.env.APPLE_SHARED_SECRET || "YOUR_APPLE_SHARED_SECRET",
+    GOOGLE_SERVICE_ACCOUNT:
+      process.env.GOOGLE_SERVICE_ACCOUNT || "YOUR_GOOGLE_SERVICE_ACCOUNT_JSON",
   },
-  // Asset optimization to preserve audio quality
+
+  /**
+   * Asset Bundle Patterns
+   *
+   * Defines which assets to include in the app bundle.
+   * The wildcard pattern includes all assets to preserve audio quality
+   * and ensure all 3D models and textures are available.
+   */
   assetBundlePatterns: ["**/*"],
 };

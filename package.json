@@ -28,6 +28,7 @@
     "@react-three/fiber": "^9.2.0",
     "@types/matter-js": "^0.19.8",
     "axios": "^1.9.0",
+    "dotenv": "^17.2.0",
     "expo": "53.0.17",
     "expo-asset": "^11.1.5",
     "expo-av": "~15.1.7",

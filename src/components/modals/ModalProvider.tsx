@@ -1,3 +1,17 @@
+/**
+ * @fileoverview ModalProvider component - Central modal management system for Qwordly.
+ *
+ * This component serves as the central orchestrator for all modal dialogs in the
+ * application. It provides a unified system for displaying game modals, settings
+ * modals, help modals, and shop modals through a context-based architecture.
+ * The provider handles modal state management, data passing, and modal rendering
+ * with proper TypeScript type safety.
+ *
+ * @author Qwordly Development Team
+ * @version 1.0.0
+ * @since 2024
+ */
+
 import React from "react";
 import { useModalContext } from "../../contexts/ModalContext";
 import { Player } from "../../validation/firestoreSchemas";
@@ -25,7 +39,20 @@ import CreditsModal from "./help/CreditsModal";
 
 import CoinShopModal from "../shop/CoinShopModal";
 
-// Type definitions for modal data
+/**
+ * Type definitions for modal-specific data structures.
+ * Each modal type has its own data interface to ensure type safety
+ * and proper prop passing when rendering modals.
+ */
+
+/**
+ * Data structure for victory modal when player wins a riddle.
+ *
+ * @property {number} attempts - Number of attempts taken to solve
+ * @property {number} coinsEarned - Coins awarded for solving the riddle
+ * @property {() => void} onNext - Callback to proceed to next level
+ * @property {() => void} onHome - Callback to return to home screen
+ */
 interface VictoryModalData {
   attempts: number;
   coinsEarned: number;
@@ -33,12 +60,27 @@ interface VictoryModalData {
   onHome: () => void;
 }
 
+/**
+ * Data structure for loss modal when player fails to solve a riddle.
+ *
+ * @property {string} correctAnswer - The correct answer to show player
+ * @property {() => void} onNext - Callback to try next level
+ * @property {() => void} onHome - Callback to return to home screen
+ */
 interface LossModalData {
   correctAnswer: string;
   onNext: () => void;
   onHome: () => void;
 }
 
+/**
+ * Data structure for out-of-attempts modal when player runs out of guesses.
+ *
+ * @property {number} userCoins - Player's current coin balance
+ * @property {number} continueCost - Cost in coins to continue playing
+ * @property {() => void} onWatchAd - Callback to watch ad for free continue
+ * @property {() => void} onSpendCoins - Callback to spend coins for continue
+ */
 interface OutOfAttemptsModalData {
   userCoins: number;
   continueCost: number;
@@ -46,10 +88,23 @@ interface OutOfAttemptsModalData {
   onSpendCoins: () => void;
 }
 
+/**
+ * Data structure for watch-ad-for-chance modal.
+ *
+ * @property {() => void} onWatchAd - Callback to initiate ad viewing
+ */
 interface WatchAdForChanceModalData {
   onWatchAd: () => void;
 }
 
+/**
+ * Data structure for daily challenge completion modal.
+ *
+ * @property {number} coinsEarned - Total coins earned from daily challenge
+ * @property {number} questionsCompleted - Number of questions completed
+ * @property {() => void} onContinue - Callback to continue playing
+ * @property {() => void} onHome - Callback to return to home screen
+ */
 interface DailyChallengeCompletionModalData {
   coinsEarned: number;
   questionsCompleted: number;
@@ -57,6 +112,17 @@ interface DailyChallengeCompletionModalData {
   onHome: () => void;
 }
 
+/**
+ * Data structure for settings modal with game preferences.
+ *
+ * @property {boolean} isSoundEnabled - Current sound setting state
+ * @property {boolean} isHapticsEnabled - Current haptics setting state
+ * @property {() => void} onToggleSound - Callback to toggle sound on/off
+ * @property {() => void} onToggleHaptics - Callback to toggle haptics on/off
+ * @property {() => void} onPressLogout - Callback to initiate logout
+ * @property {() => void} onPressHelp - Callback to open help section
+ * @property {() => void} onPressCredits - Callback to open credits
+ */
 interface SettingsModalData {
   isSoundEnabled: boolean;
   isHapticsEnabled: boolean;
@@ -67,31 +133,69 @@ interface SettingsModalData {
   onPressCredits: () => void;
 }
 
+/**
+ * Data structure for full profile details modal.
+ *
+ * @property {Player | null} playerData - Complete player data object
+ */
 interface FullProfileDetailsModalData {
   playerData: Player | null;
 }
 
+/**
+ * Data structure for username update modal.
+ *
+ * @property {string} currentUsername - Player's current username
+ */
 interface UpdateUsernameModalData {
   currentUsername: string;
 }
 
+/**
+ * Data structure for avatar options modal.
+ *
+ * @property {string} userId - Player's unique user ID
+ * @property {() => void} onOpenPreloadedAvatars - Callback to open avatar gallery
+ */
 interface AvatarOptionsModalData {
   userId: string;
   onOpenPreloadedAvatars: () => void;
 }
 
+/**
+ * Data structure for hint modal.
+ *
+ * @property {number} hintCost - Cost in coins for the hint
+ * @property {number} userCoins - Player's current coin balance
+ * @property {() => void} onShowHint - Callback to purchase and show hint
+ */
 interface HintModalData {
   hintCost: number;
   userCoins: number;
   onShowHint: () => void;
 }
 
+/**
+ * Data structure for skip level modal.
+ *
+ * @property {number} userCoins - Player's current coin balance
+ * @property {number} skipCost - Cost in coins to skip the level
+ * @property {() => void} onSkipLevel - Callback to skip current level
+ */
 interface SkipModalData {
   userCoins: number;
   skipCost: number;
   onSkipLevel: () => void;
 }
 
+/**
+ * Data structure for coin shop modal with IAP products.
+ *
+ * @property {RNIap.Product[]} products - Available in-app purchase products
+ * @property {boolean} loading - Loading state for product fetching
+ * @property {string | null} error - Error message if product loading fails
+ * @property {(productId: string) => void} onPurchaseProduct - Callback to purchase product
+ */
 interface CoinShopModalData {
   products: RNIap.Product[];
   loading: boolean;
@@ -99,7 +203,10 @@ interface CoinShopModalData {
   onPurchaseProduct: (productId: string) => void;
 }
 
-// Union type for all modal data
+/**
+ * Union type combining all possible modal data structures.
+ * Includes a fallback type for extensibility and unknown modal types.
+ */
 type ModalData =
   | VictoryModalData
   | LossModalData
@@ -115,12 +222,25 @@ type ModalData =
   | CoinShopModalData
   | Record<string, unknown>; // Fallback for other modal types
 
-// Modal renderer component
+/**
+ * ModalRenderer Component
+ *
+ * Internal component responsible for rendering the appropriate modal based on
+ * the modal type and data. It acts as a switch statement to instantiate the
+ * correct modal component with properly typed props.
+ *
+ * @param {Object} props - Modal renderer props
+ * @param {string} props.modalType - Type identifier for the modal to render
+ * @param {ModalData} props.modalData - Data to pass to the modal component
+ * @param {() => void} props.onClose - Callback to close the modal
+ * @returns {JSX.Element} The rendered modal component
+ */
 const ModalRenderer: React.FC<{
   modalType: string;
   modalData: ModalData;
   onClose: () => void;
 }> = ({ modalType, modalData, onClose }) => {
+  /** Common props shared by all modal components */
   const commonProps = {
     isVisible: true,
     onClose,

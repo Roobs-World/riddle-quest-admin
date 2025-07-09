@@ -94,3 +94,107 @@ This project utilizes a `memory-bank` directory containing detailed documentatio
 ## License
 
 (License information to be added later)
+
+# Environment Variables Setup
+
+## Prerequisites
+
+Before running the Qwordly app, you need to configure the environment variables with your actual API keys and configuration values.
+
+## Setup Instructions
+
+1. **Copy the environment template:**
+
+   ```bash
+   cp .env.example .env
+   ```
+
+2. **Fill in your actual values in the `.env` file:**
+
+### Required Environment Variables
+
+#### OpenAI Configuration
+
+- `OPENAI_API_KEY` - Your OpenAI API key for riddle generation
+
+#### Firebase Configuration
+
+- `FIREBASE_API_KEY` - Firebase Web API key from Firebase Console
+- `FIREBASE_APP_ID` - Firebase App ID from Firebase Console
+- `FIREBASE_AUTH_DOMAIN` - Firebase Auth domain (usually `{project-id}.firebaseapp.com`)
+- `FIREBASE_MESSAGING_SENDER_ID` - Firebase Messaging Sender ID
+- `FIREBASE_PROJECT_ID` - Firebase Project ID
+- `FIREBASE_STORAGE_BUCKET` - Firebase Storage bucket name
+
+#### Google Authentication
+
+- `GOOGLE_WEB_CLIENT_ID` - Google Sign-In Web Client ID from Firebase Console
+
+#### Facebook Authentication
+
+- `FACEBOOK_APP_ID` - Facebook App ID from Facebook Developers Console
+- `FACEBOOK_APP_SECRET` - Facebook App Secret from Facebook Developers Console
+- `FACEBOOK_CLIENT_TOKEN` - Facebook Client Token from Facebook Developers Console
+
+#### AppLovin MAX Advertising (Optional)
+
+- `APPLOVIN_SDK_KEY` - AppLovin MAX SDK key
+- `APPLOVIN_INTERSTITIAL_AD_UNIT_ID` - Interstitial ad unit ID
+- `APPLOVIN_REWARDED_AD_UNIT_ID` - Rewarded ad unit ID
+
+#### In-App Purchases (Optional)
+
+- `APPLE_SHARED_SECRET` - Apple App Store shared secret for receipt validation
+- `GOOGLE_SERVICE_ACCOUNT` - Google Play service account JSON for receipt validation
+
+#### EAS Build Configuration
+
+- `EAS_PROJECT_ID` - Expo Application Services project ID
+
+## Security Notes
+
+- **Never commit the `.env` file to version control** - it contains sensitive API keys
+- The `.env` file is already included in `.gitignore` for protection
+- Use different environment files for different deployment environments (development, staging, production)
+- Regularly rotate your API keys and secrets for security
+
+## Getting API Keys
+
+### Firebase Setup
+
+1. Go to [Firebase Console](https://console.firebase.google.com/)
+2. Create a new project or select existing project
+3. Add your app (iOS/Android/Web)
+4. Copy the configuration values from the Firebase config
+
+### OpenAI Setup
+
+1. Go to [OpenAI Platform](https://platform.openai.com/)
+2. Create an account and add payment method
+3. Generate an API key in the API keys section
+
+### Facebook Setup
+
+1. Go to [Facebook Developers](https://developers.facebook.com/)
+2. Create a new app or select existing app
+3. Add Facebook Login product
+4. Copy the App ID, App Secret, and Client Token
+
+### AppLovin MAX Setup
+
+1. Go to [AppLovin MAX](https://dash.applovin.com/)
+2. Create an account and set up your app
+3. Generate ad unit IDs for your app
+4. Copy the SDK key and ad unit IDs
+
+## Troubleshooting
+
+If you encounter authentication or API issues:
+
+1. **Verify all environment variables are set correctly**
+2. **Check that your API keys are valid and not expired**
+3. **Ensure your Firebase project has the correct services enabled**
+4. **Verify your Facebook app is in development or live mode as needed**
+5. **Check the console logs for specific error messages about missing configuration**
+
+The app will show warning messages in the console if environment variables are missing or set to placeholder values.

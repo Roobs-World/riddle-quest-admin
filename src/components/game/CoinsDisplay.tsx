@@ -1,8 +1,34 @@
+/**
+ * @fileoverview CoinsDisplay component for showing player's coin balance in Qwordly.
+ *
+ * This component displays the player's current coin balance with a custom SVG
+ * coin icon. It supports both read-only display and interactive modes that
+ * open the coin shop when tapped. The component includes proper accessibility
+ * support and visual feedback for user interactions.
+ *
+ * @author Qwordly Development Team
+ * @version 1.0.0
+ * @since 2024
+ */
+
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { SvgXml } from "react-native-svg";
 
-// Import the coin SVG content
+/**
+ * Embedded SVG icon for the coin display.
+ *
+ * This SVG represents a stack of gold coins with shadows and highlights
+ * to create a 3D effect. The icon uses the app's primary orange color
+ * scheme and includes decorative plus symbols around the coins.
+ *
+ * Visual features:
+ * - Multiple coin layers for depth perception
+ * - Gold/orange gradient coloring
+ * - 3D shading and highlights
+ * - Decorative plus symbols
+ * - Optimized for 24x24 to 48x48 pixel display
+ */
 const coinSvg = `<svg width="24" height="24" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path fill-rule="evenodd" clip-rule="evenodd" d="M24.6523 84.8488C24.6523 75.8092 45.1995 68.4873 70.5531 68.4873C95.9066 68.4873 116.461 75.8089 116.461 84.8488V99.8809C116.461 108.921 95.9066 116.242 70.5531 116.242C45.1995 116.242 24.6523 108.921 24.6523 99.8809C24.6523 94.8702 24.6523 89.8595 24.6523 84.8488Z" fill="#FE9923"/>
 <path fill-rule="evenodd" clip-rule="evenodd" d="M70.5531 68.4873C95.9063 68.4873 116.461 75.8089 116.461 84.8488C116.461 93.8816 95.9066 101.21 70.5531 101.21C45.1995 101.21 24.6523 93.8818 24.6523 84.8488C24.6523 75.8092 45.1995 68.4873 70.5531 68.4873Z" fill="#FECD3D"/>
@@ -26,27 +52,81 @@ const coinSvg = `<svg width="24" height="24" viewBox="0 0 120 120" fill="none" x
 </svg>`;
 
 /**
- * Props for the CoinsDisplay component.
- * @property {number} coins - The number of coins to display.
- * @property {() => void} onPress - Function to call when the coins are pressed (opens shop).
+ * Props interface for the CoinsDisplay component.
+ *
+ * @property {number} coins - Current coin balance to display
+ * @property {() => void} [onPress] - Optional callback when component is tapped
  */
 interface CoinsDisplayProps {
+  /** The number of coins to display (non-negative integer) */
   coins: number;
+
+  /**
+   * Optional function to call when the coins are pressed.
+   * If provided, makes the component interactive and typically opens the coin shop.
+   */
   onPress?: () => void;
 }
 
 /**
- * A component to display the current player's coin balance.
- * Tapping on the coins opens the coin shop.
+ * CoinsDisplay Component
  *
- * @param {CoinsDisplayProps} props - The props for the component.
- * @returns {React.FC<CoinsDisplayProps>} The rendered CoinsDisplay component.
+ * A component that displays the player's current coin balance with an attractive
+ * coin icon. Supports both read-only display and interactive modes for accessing
+ * the coin shop. The component provides proper accessibility support and visual
+ * feedback for user interactions.
+ *
+ * Visual Design:
+ * - Custom SVG coin icon with 3D appearance
+ * - Bold typography for coin count
+ * - Horizontal layout with icon and number
+ * - Consistent spacing and alignment
+ *
+ * Interaction Modes:
+ * - Read-only: Displays coin balance without interaction
+ * - Interactive: Tappable area that triggers onPress callback
+ * - Accessibility: Proper labels and roles for screen readers
+ *
+ * Features:
+ * - Animated SVG coin icon with gradient coloring
+ * - Proper pluralization (coin vs coins)
+ * - Touch feedback when interactive
+ * - Test ID support for automated testing
+ * - Comprehensive accessibility labeling
+ * - Responsive sizing for different screen sizes
+ *
+ * Usage Examples:
+ * ```tsx
+ * // Read-only coin display
+ * <CoinsDisplay coins={150} />
+ *
+ * // Interactive coin display that opens shop
+ * <CoinsDisplay coins={42} onPress={openCoinShop} />
+ *
+ * // In a header or status bar
+ * <View className="flex-row justify-between">
+ *   <ScreenTitle title="Game" />
+ *   <CoinsDisplay coins={playerCoins} onPress={handleShopOpen} />
+ * </View>
+ * ```
+ *
+ * @param {CoinsDisplayProps} props - Component props
+ * @returns {JSX.Element} Rendered coin display component
  */
 const CoinsDisplay: React.FC<CoinsDisplayProps> = ({ coins, onPress }) => {
+  /** Generate appropriate text for singular/plural coin count */
   const coinText = coins === 1 ? "coin" : "coins";
+
+  /** Accessibility label for read-only mode */
   const accessibilityLabel = `You have ${coins} ${coinText}`;
+
+  /** Accessibility label for interactive mode */
   const touchableAccessibilityLabel = `Open coin shop. ${accessibilityLabel}`;
 
+  /**
+   * Core content component showing coin icon and count.
+   * This is rendered the same way regardless of interaction mode.
+   */
   const content = (
     <View
       className="flex-row items-center"
@@ -61,6 +141,12 @@ const CoinsDisplay: React.FC<CoinsDisplayProps> = ({ coins, onPress }) => {
     </View>
   );
 
+  /**
+   * Interactive Mode Rendering
+   *
+   * When onPress is provided, wraps the content in a TouchableOpacity
+   * to enable tap interactions (typically for opening the coin shop).
+   */
   if (onPress) {
     return (
       <TouchableOpacity
@@ -76,6 +162,12 @@ const CoinsDisplay: React.FC<CoinsDisplayProps> = ({ coins, onPress }) => {
     );
   }
 
+  /**
+   * Read-Only Mode Rendering
+   *
+   * When no onPress is provided, returns the content directly
+   * for display-only purposes.
+   */
   return content;
 };
 
