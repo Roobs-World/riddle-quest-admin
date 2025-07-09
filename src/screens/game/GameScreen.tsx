@@ -383,10 +383,15 @@ const GameScreen: React.FC<GameScreenProps> = ({
 
   const handleOverlayNext = () => {
     console.log("Next button pressed - opening skip modal");
+
+    // Determine skip cost based on game mode
+    const skipCost =
+      gameMode === "daily" ? 150 : gameMode === "classic" ? 100 : 25;
+
     modal.showSkipModal({
       userCoins,
-      skipCost: hintCost,
-      onShowHint: () => {
+      skipCost,
+      onSkipLevel: () => {
         modal.closeModalByType("skip");
         resetGame();
         onNextLevel();

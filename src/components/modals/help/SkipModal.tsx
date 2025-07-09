@@ -8,7 +8,7 @@ interface SkipModalProps {
   isVisible: boolean;
   userCoins: number;
   skipCost: number;
-  onShowHint: () => void;
+  onSkipLevel: () => void;
   onClose: () => void;
 }
 
@@ -16,7 +16,7 @@ const SkipModal: React.FC<SkipModalProps> = ({
   isVisible,
   userCoins,
   skipCost,
-  onShowHint,
+  onSkipLevel,
   onClose,
 }) => {
   const canAffordSkip = userCoins >= skipCost;
@@ -63,8 +63,8 @@ const SkipModal: React.FC<SkipModalProps> = ({
           )}
           <View className="flex-row mt-4">
             <ModalButton
-              text="SHOW HINT"
-              callback={onShowHint}
+              text="SKIP LEVEL"
+              callback={onSkipLevel}
               isDisabled={!canAffordSkip}
             />
 

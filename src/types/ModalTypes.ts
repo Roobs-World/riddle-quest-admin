@@ -127,7 +127,7 @@ export interface GameModalTypes {
   skip: {
     userCoins: number;
     skipCost: number;
-    onShowHint: () => void;
+    onSkipLevel: () => void;
   };
 
   welcome: Record<string, never>;

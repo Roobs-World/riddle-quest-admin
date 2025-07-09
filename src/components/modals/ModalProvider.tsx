@@ -161,7 +161,7 @@ const ModalRenderer: React.FC<{
           {...commonProps}
           userCoins={modalData.userCoins}
           skipCost={modalData.skipCost}
-          onShowHint={modalData.onShowHint}
+          onSkipLevel={modalData.onSkipLevel}
         />
       );
 
