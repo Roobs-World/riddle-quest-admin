@@ -5,7 +5,7 @@
  * game state. Currently manages the "Next Level" button that appears after winning
  * a level, allowing players to progress to subsequent challenges.
  *
- * @author Qwordly Development Team
+m * @author Qwordly Development Team
  * @version 1.0.0
  * @since 2024
  */

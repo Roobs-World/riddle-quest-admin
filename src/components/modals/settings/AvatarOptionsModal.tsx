@@ -9,6 +9,7 @@ import { getAuth } from "@react-native-firebase/auth";
 import { getApp } from "@react-native-firebase/app";
 import { useAuth } from "../../../contexts/AuthContext";
 import WideButton from "../../buttons/WideButton";
+import { TYPOGRAPHY } from "src/styles";
 
 /**
  * Props for the AvatarOptionsModal component.
@@ -134,7 +135,10 @@ const AvatarOptionsModal: React.FC<AvatarOptionsModalProps> = ({
     >
       <SafeAreaView className="flex-1 justify-end bg-black/50">
         <View className="bg-white p-6 rounded-t-lg w-full">
-          <Text className="text-xl font-bold text-gray-800 mb-6 text-center">
+          <Text
+            className="text-xl font-bold text-gray-800 mb-6 text-center"
+            style={{ fontFamily: TYPOGRAPHY.fontPrimary }}
+          >
             Update Avatar
           </Text>
 
