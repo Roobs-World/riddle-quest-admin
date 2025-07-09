@@ -95,8 +95,6 @@ export type PlayerProgressUpdate = {
 
 export const FirestoreRiddleSchema = z.object({
   riddleId: z.string(),
-  dailyIndex: z.number().int().nonnegative().optional(),
-  classicIndex: z.number().int().nonnegative().optional(),
   text: z.string(),
   answer: z.string().min(1),
   // Added optional fields that might be present in riddle documents
@@ -104,7 +102,47 @@ export const FirestoreRiddleSchema = z.object({
   category: z.string().optional(),
 });
 
+// Schema for riddles in the main 'riddles' collection (classic mode)
+export const ClassicRiddleSchema = z.object({
+  riddleId: z.string(),
+  text: z.string(),
+  answer: z.string().min(1),
+  classicIndex: z.number().int().nonnegative(),
+  difficulty: z.string().optional(),
+  category: z.string().default("classic"),
+});
+
+// Schema for riddles in the 'dailyRiddles' collection
+export const DailyRiddleSchema = z.object({
+  riddleId: z.string(),
+  text: z.string(),
+  answer: z.string().min(1),
+  dailyIndex: z.number().int().nonnegative(),
+  difficulty: z.string().optional(),
+  category: z.string().default("daily"),
+});
+
+// Schema for riddles in the 'tutorialRiddles' collection
+export const TutorialRiddleSchema = z.object({
+  riddleId: z.string(),
+  text: z.string(),
+  answer: z.string().min(1),
+  tutorialIndex: z.number().int().nonnegative(),
+  difficulty: z.string().optional(),
+  category: z.string().default("tutorial"),
+});
+
 export type FirestoreRiddle = z.infer<typeof FirestoreRiddleSchema>;
+export type ClassicRiddle = z.infer<typeof ClassicRiddleSchema>;
+export type DailyRiddle = z.infer<typeof DailyRiddleSchema>;
+export type TutorialRiddle = z.infer<typeof TutorialRiddleSchema>;
+
+// Collection names enum for consistency
+export enum RiddleCollections {
+  RIDDLES = "riddles",
+  DAILY_RIDDLES = "dailyRiddles",
+  TUTORIAL_RIDDLES = "tutorialRiddles",
+}
 
 // Export PlayerProgress and PlayerStats types derived from schemas for consistency
 export type PlayerProgress = z.infer<typeof PlayerProgressSchema>;

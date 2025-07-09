@@ -1,5 +1,7 @@
 import React from "react";
 import { useModalContext } from "../../contexts/ModalContext";
+import { Player } from "../../validation/firestoreSchemas";
+import * as RNIap from "react-native-iap";
 
 // Import modal components directly
 import VictoryModal from "./game/VictoryModal";
@@ -22,10 +24,100 @@ import InstructionsModal from "./help/InstructionsModal";
 
 import CoinShopModal from "../shop/CoinShopModal";
 
+// Type definitions for modal data
+interface VictoryModalData {
+  attempts: number;
+  coinsEarned: number;
+  onNext: () => void;
+  onHome: () => void;
+}
+
+interface LossModalData {
+  correctAnswer: string;
+  onNext: () => void;
+  onHome: () => void;
+}
+
+interface OutOfAttemptsModalData {
+  userCoins: number;
+  continueCost: number;
+  onWatchAd: () => void;
+  onSpendCoins: () => void;
+}
+
+interface WatchAdForChanceModalData {
+  onWatchAd: () => void;
+}
+
+interface DailyChallengeCompletionModalData {
+  coinsEarned: number;
+  questionsCompleted: number;
+  onContinue: () => void;
+  onHome: () => void;
+}
+
+interface SettingsModalData {
+  isSoundEnabled: boolean;
+  isHapticsEnabled: boolean;
+  onToggleSound: () => void;
+  onToggleHaptics: () => void;
+  onPressLogout: () => void;
+  onPressHelp: () => void;
+  onPressCredits: () => void;
+}
+
+interface FullProfileDetailsModalData {
+  playerData: Player | null;
+}
+
+interface UpdateUsernameModalData {
+  currentUsername: string;
+}
+
+interface AvatarOptionsModalData {
+  userId: string;
+  onOpenPreloadedAvatars: () => void;
+}
+
+interface HintModalData {
+  hintCost: number;
+  userCoins: number;
+  onShowHint: () => void;
+}
+
+interface SkipModalData {
+  userCoins: number;
+  skipCost: number;
+  onSkipLevel: () => void;
+}
+
+interface CoinShopModalData {
+  products: RNIap.Product[];
+  loading: boolean;
+  error: string | null;
+  onPurchaseProduct: (productId: string) => void;
+}
+
+// Union type for all modal data
+type ModalData =
+  | VictoryModalData
+  | LossModalData
+  | OutOfAttemptsModalData
+  | WatchAdForChanceModalData
+  | DailyChallengeCompletionModalData
+  | SettingsModalData
+  | FullProfileDetailsModalData
+  | UpdateUsernameModalData
+  | AvatarOptionsModalData
+  | HintModalData
+  | SkipModalData
+  | CoinShopModalData
+  | Record<string, unknown>; // Fallback for other modal types
+
 // Modal renderer component
 const ModalRenderer: React.FC<{
   modalType: string;
-  modalData: any;
+  modalData: ModalData;
   onClose: () => void;
 }> = ({ modalType, modalData, onClose }) => {
   const commonProps = {
@@ -38,10 +130,10 @@ const ModalRenderer: React.FC<{
       return (
         <VictoryModal
           {...commonProps}
-          attempts={modalData.attempts}
-          coinsEarned={modalData.coinsEarned}
-          onNextLevel={modalData.onNext}
-          onHome={modalData.onHome}
+          attempts={(modalData as VictoryModalData).attempts}
+          coinsEarned={(modalData as VictoryModalData).coinsEarned}
+          onNextLevel={(modalData as VictoryModalData).onNext}
+          onHome={(modalData as VictoryModalData).onHome}
           guesses={[]}
         />
       );
@@ -50,9 +142,9 @@ const ModalRenderer: React.FC<{
       return (
         <LossModal
           {...commonProps}
-          correctAnswer={modalData.correctAnswer}
-          onRetry={modalData.onNext}
-          onHome={modalData.onHome}
+          correctAnswer={(modalData as LossModalData).correctAnswer}
+          onRetry={(modalData as LossModalData).onNext}
+          onHome={(modalData as LossModalData).onHome}
         />
       );
 
@@ -60,19 +152,19 @@ const ModalRenderer: React.FC<{
       return (
         <OutOfAttemptsModal
           {...commonProps}
-          userCoins={modalData.userCoins}
-          continueCost={modalData.continueCost}
-          onWatchAd={modalData.onWatchAd}
-          onSpendCoins={modalData.onSpendCoins}
+          userCoins={(modalData as OutOfAttemptsModalData).userCoins}
+          continueCost={(modalData as OutOfAttemptsModalData).continueCost}
+          onWatchAd={(modalData as OutOfAttemptsModalData).onWatchAd}
+          onSpendCoins={(modalData as OutOfAttemptsModalData).onSpendCoins}
         />
       );
 
     case "watchAdForChance":
       return (
         <WatchAdForChanceModal
-          isVisible={true}
+          visible={true}
           onClose={onClose}
-          onWatchAd={modalData.onWatchAd}
+          onWatchAd={(modalData as WatchAdForChanceModalData).onWatchAd}
         />
       );
 
@@ -80,10 +172,16 @@ const ModalRenderer: React.FC<{
       return (
         <DailyChallengeCompletionModal
           {...commonProps}
-          totalCoinsEarned={modalData.coinsEarned}
-          questionsCompleted={modalData.questionsCompleted}
-          onContinue={modalData.onContinue}
-          onHome={modalData.onHome}
+          totalCoinsEarned={
+            (modalData as DailyChallengeCompletionModalData).coinsEarned
+          }
+          questionsCompleted={
+            (modalData as DailyChallengeCompletionModalData).questionsCompleted
+          }
+          onContinue={
+            (modalData as DailyChallengeCompletionModalData).onContinue
+          }
+          onHome={(modalData as DailyChallengeCompletionModalData).onHome}
         />
       );
 
@@ -91,13 +189,13 @@ const ModalRenderer: React.FC<{
       return (
         <SettingsModal
           {...commonProps}
-          isSoundEnabled={modalData.isSoundEnabled}
-          isHapticsEnabled={modalData.isHapticsEnabled}
-          onToggleSound={modalData.onToggleSound}
-          onToggleHaptics={modalData.onToggleHaptics}
-          onPressLogout={modalData.onPressLogout}
-          onPressHelp={modalData.onPressHelp}
-          onPressCredits={modalData.onPressCredits}
+          isSoundEnabled={(modalData as SettingsModalData).isSoundEnabled}
+          isHapticsEnabled={(modalData as SettingsModalData).isHapticsEnabled}
+          onToggleSound={(modalData as SettingsModalData).onToggleSound}
+          onToggleHaptics={(modalData as SettingsModalData).onToggleHaptics}
+          onPressLogout={(modalData as SettingsModalData).onPressLogout}
+          onPressHelp={(modalData as SettingsModalData).onPressHelp}
+          onPressCredits={(modalData as SettingsModalData).onPressCredits}
         />
       );
 
@@ -105,24 +203,20 @@ const ModalRenderer: React.FC<{
       return (
         <FullProfileDetailsModal
           {...commonProps}
-          playerData={modalData.playerData}
+          playerData={(modalData as FullProfileDetailsModalData).playerData}
         />
       );
 
     case "changePassword":
-      return (
-        <ChangePasswordModal
-          {...commonProps}
-          onPasswordChanged={modalData.onPasswordChanged}
-        />
-      );
+      return <ChangePasswordModal {...commonProps} />;
 
     case "updateUsername":
       return (
         <UpdateUsernameModal
           {...commonProps}
-          currentUsername={modalData.currentUsername}
-          onUsernameUpdated={modalData.onUsernameUpdated}
+          currentUsername={
+            (modalData as UpdateUsernameModalData).currentUsername
+          }
         />
       );
 
@@ -130,9 +224,10 @@ const ModalRenderer: React.FC<{
       return (
         <AvatarOptionsModal
           {...commonProps}
-          onAvatarSelected={modalData.onAvatarSelected}
-          onOpenPreloadedAvatars={() => {}}
-          userId=""
+          onOpenPreloadedAvatars={
+            (modalData as AvatarOptionsModalData).onOpenPreloadedAvatars
+          }
+          userId={(modalData as AvatarOptionsModalData).userId}
         />
       );
 
@@ -140,7 +235,6 @@ const ModalRenderer: React.FC<{
       return (
         <PreloadedAvatarsModal
           {...commonProps}
-          onAvatarSelected={modalData.onAvatarSelected}
           onCloseAvatarOptions={onClose}
         />
       );
@@ -149,9 +243,9 @@ const ModalRenderer: React.FC<{
       return (
         <HintModal
           {...commonProps}
-          hintCost={modalData.hintCost}
-          userCoins={modalData.userCoins}
-          onShowHint={modalData.onShowHint}
+          hintCost={(modalData as HintModalData).hintCost}
+          userCoins={(modalData as HintModalData).userCoins}
+          onShowHint={(modalData as HintModalData).onShowHint}
         />
       );
 
@@ -159,9 +253,9 @@ const ModalRenderer: React.FC<{
       return (
         <SkipModal
           {...commonProps}
-          userCoins={modalData.userCoins}
-          skipCost={modalData.skipCost}
-          onSkipLevel={modalData.onSkipLevel}
+          userCoins={(modalData as SkipModalData).userCoins}
+          skipCost={(modalData as SkipModalData).skipCost}
+          onSkipLevel={(modalData as SkipModalData).onSkipLevel}
         />
       );
 
@@ -175,10 +269,10 @@ const ModalRenderer: React.FC<{
       return (
         <CoinShopModal
           {...commonProps}
-          products={modalData.products || []}
-          loading={modalData.loading || false}
-          error={modalData.error || null}
-          onPurchaseProduct={modalData.onPurchaseProduct}
+          products={(modalData as CoinShopModalData).products || []}
+          loading={(modalData as CoinShopModalData).loading || false}
+          error={(modalData as CoinShopModalData).error || null}
+          onPurchaseProduct={(modalData as CoinShopModalData).onPurchaseProduct}
         />
       );
 
