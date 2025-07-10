@@ -202,6 +202,8 @@ interface CoinShopModalData {
   loading: boolean;
   error: string | null;
   onPurchaseProduct: (productId: string) => void;
+  onWatchVideo?: () => void;
+  onPayAndPlay?: () => void;
 }
 
 /**
@@ -399,6 +401,8 @@ const ModalRenderer: React.FC<{
           loading={(modalData as CoinShopModalData).loading || false}
           error={(modalData as CoinShopModalData).error || null}
           onPurchaseProduct={(modalData as CoinShopModalData).onPurchaseProduct}
+          onWatchVideo={(modalData as CoinShopModalData).onWatchVideo}
+          onPayAndPlay={(modalData as CoinShopModalData).onPayAndPlay}
         />
       );
 

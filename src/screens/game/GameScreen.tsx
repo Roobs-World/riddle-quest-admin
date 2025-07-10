@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Alert, KeyboardAvoidingView, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import * as RNIap from "react-native-iap";
 
 import Header from "../../components/game/Header";
 import Controls from "../../components/game/Controls";
@@ -29,6 +30,8 @@ import { styles } from "../../styles";
 import { GameInput } from "src/components/game/GameInput";
 import { useModal } from "../../hooks/useModal";
 import { ModalProvider } from "../../components/modals/ModalProvider";
+import { IapService } from "../../services/IapService";
+import ModalTogglePanel from "../../components/development/ModalTogglePanel";
 
 interface GuessResult {
   outcome: "win" | "loss" | "continue" | "attemptLimitReached";
@@ -85,6 +88,11 @@ const GameScreen: React.FC<GameScreenProps> = ({
   const [isHapticsEnabled, setIsHapticsEnabled] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
+  // IAP state
+  const [iapProducts, setIapProducts] = useState<RNIap.Product[]>([]);
+  const [iapLoading, setIapLoading] = useState(false);
+  const [iapError, setIapError] = useState<string | null>(null);
+
   const {
     guesses,
     currentGuess,
@@ -109,6 +117,27 @@ const GameScreen: React.FC<GameScreenProps> = ({
   const { loadInterstitialAd, showInterstitialAd } = useInterstitialAds();
 
   const CONTINUE_COST = 50;
+
+  // Load IAP products when component mounts
+  useEffect(() => {
+    const loadProducts = async () => {
+      setIapLoading(true);
+      setIapError(null);
+      try {
+        const products = await IapService.getProducts();
+        setIapProducts(products);
+      } catch (error) {
+        console.error("Error loading IAP products:", error);
+        setIapError(
+          error instanceof Error ? error.message : "Failed to load products"
+        );
+      } finally {
+        setIapLoading(false);
+      }
+    };
+
+    loadProducts();
+  }, []);
 
   // Initialize first-time user experience
   useEffect(() => {
@@ -435,12 +464,81 @@ const GameScreen: React.FC<GameScreenProps> = ({
   };
 
   const handleCoinsPress = () => {
-    modal.showCoinShopModal({
-      onPurchaseProduct: (productId: string) => {
-        console.log(`Purchasing product: ${productId}`);
-        modal.closeModalByType("coinShop");
-      },
+    console.log("Opening coin shop modal with:", {
+      products: iapProducts.length,
+      loading: iapLoading,
+      error: iapError,
+      hasCallback: typeof handlePurchaseProduct === "function",
     });
+
+    modal.showCoinShopModal({
+      products: iapProducts,
+      loading: iapLoading,
+      error: iapError,
+      onPurchaseProduct: handlePurchaseProduct,
+      onWatchVideo: handleWatchVideo,
+      onPayAndPlay: handlePayAndPlay,
+    });
+  };
+
+  const handlePurchaseProduct = async (productId: string) => {
+    console.log(`Initiating purchase for product: ${productId}`);
+    setIapLoading(true);
+
+    try {
+      const purchaseResult = await IapService.purchaseProduct(productId);
+
+      if (purchaseResult) {
+        console.log("Purchase completed successfully:", purchaseResult);
+        Alert.alert(
+          "Purchase Successful!",
+          "Your coins have been added to your account.",
+          [
+            {
+              text: "OK",
+              onPress: () => modal.closeModalByType("coinShop"),
+            },
+          ]
+        );
+      } else {
+        console.log("Purchase was cancelled or returned null");
+        // Don't show an error for cancelled purchases
+      }
+    } catch (error) {
+      console.error("Purchase failed:", error);
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Purchase failed. Please try again.";
+      Alert.alert("Purchase Failed", errorMessage);
+    } finally {
+      setIapLoading(false);
+    }
+  };
+
+  const handleWatchVideo = () => {
+    console.log("Watch video button pressed");
+    modal.closeModalByType("coinShop");
+    // TODO: Implement rewarded ad functionality
+    Alert.alert(
+      "Watch Video",
+      "This will show a rewarded video ad to earn free coins. Feature coming soon!",
+      [{ text: "OK" }]
+    );
+  };
+
+  const handlePayAndPlay = () => {
+    console.log("Pay and play button pressed");
+    // This could trigger the cheapest coin pack purchase or show a specific payment flow
+    const cheapestProduct = iapProducts.sort(
+      (a, b) => parseFloat(a.price) - parseFloat(b.price)
+    )[0];
+
+    if (cheapestProduct) {
+      handlePurchaseProduct(cheapestProduct.productId);
+    } else {
+      Alert.alert("No Products Available", "Please try again later.");
+    }
   };
 
   const toggleSoundEnabled = (isEnabled: boolean) => {
@@ -570,6 +668,9 @@ const GameScreen: React.FC<GameScreenProps> = ({
       />
 
       <PulsingSpinner visible={isLoading} size={120} opacity={0.7} />
+
+      {/* Development Modal Debug Panel - Only visible in development builds */}
+      {__DEV__ && <ModalTogglePanel />}
     </SafeAreaView>
   );
 };

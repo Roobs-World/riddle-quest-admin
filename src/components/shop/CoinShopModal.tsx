@@ -17,6 +17,7 @@ import CloseButton from "../buttons/CloseButton";
 import { COLORS, TYPOGRAPHY } from "../../styles";
 import { scale } from "../../utils/responsive";
 import BuyCoinsSvg from "../../../assets/images/buy-coins.svg";
+import CoinSvg from "../../../assets/images/coin.svg";
 
 const { height: screenHeight } = Dimensions.get("window");
 
@@ -36,6 +37,8 @@ interface CoinShopModalProps {
   products: RNIap.Product[];
   loading: boolean;
   error: string | null;
+  onWatchVideo?: () => void;
+  onPayAndPlay?: () => void;
 }
 
 /**
@@ -48,11 +51,12 @@ const CoinShopModal: React.FC<CoinShopModalProps> = ({
   products,
   loading,
   error,
+  onWatchVideo,
+  onPayAndPlay,
 }) => {
   // Get safe area insets for proper positioning like profile modal
   const insets = useSafeAreaInsets();
   const availableHeight = screenHeight - insets.top - insets.bottom;
-  const maxModalHeight = availableHeight * 0.85;
 
   return (
     <Modal
@@ -78,12 +82,12 @@ const CoinShopModal: React.FC<CoinShopModalProps> = ({
         <View
           style={{
             position: "absolute",
-            top: insets.top + (availableHeight * 0.1) / 2,
+            top: insets.top + availableHeight * 0.05,
             left: 16,
             right: 16,
+            bottom: insets.bottom + availableHeight * 0.05,
             backgroundColor: "white",
             borderRadius: 20,
-            height: maxModalHeight,
             shadowColor: "#000",
             shadowOffset: {
               width: 0,
@@ -95,7 +99,8 @@ const CoinShopModal: React.FC<CoinShopModalProps> = ({
           }}
         >
           <ScrollView
-            className="flex-1 px-6"
+            className="px-6"
+            style={{ flex: 1 }}
             showsVerticalScrollIndicator={true}
             bounces={true}
             scrollEventThrottle={16}
@@ -104,7 +109,6 @@ const CoinShopModal: React.FC<CoinShopModalProps> = ({
             scrollEnabled={true}
             contentContainerStyle={{
               paddingTop: 20,
-              paddingBottom: Math.max(30, insets.bottom + 20),
               flexGrow: 1,
             }}
           >
@@ -130,15 +134,143 @@ const CoinShopModal: React.FC<CoinShopModalProps> = ({
               Coin Shop
             </Text>
 
-            {/* Buy Coins Icons - 2 horizontally at the top */}
-            <View className="flex-row justify-center items-center mb-4 mt-6 px-2">
-              <View className="flex-1">
+            {/* Buy Coins Icons - 2 vertically stacked full width */}
+            <View className="w-full mb-4 mt-6">
+              {/* First SVG with "BEST DEAL" overlay */}
+              <TouchableOpacity
+                className="relative"
+                onPress={() => {
+                  console.log("Best Deal SVG tapped - 65000 coins");
+                  onPurchaseProduct("com.qwordly.coins65000");
+                }}
+                activeOpacity={0.8}
+              >
                 <BuyCoinsSvg width="100%" height={scale(280)} />
-              </View>
-              <View className="w-1" />
-              <View className="flex-1">
+
+                {/* Best Deal Banner */}
+                <View className="absolute top-2 left-12 px-3 py-1 rounded-lg">
+                  <Text
+                    className="text-white font-bold text-xs"
+                    style={{
+                      fontFamily: TYPOGRAPHY.fontPrimary,
+                      fontSize: scale(10),
+                    }}
+                  >
+                    BEST DEAL
+                  </Text>
+                </View>
+
+                {/* Coin Amount Text */}
+                <View
+                  className="absolute items-center"
+                  style={{
+                    bottom: scale(84),
+                    left: 0,
+                    right: 0,
+                  }}
+                >
+                  <Text
+                    className="text-gray-800 font-bold text-center"
+                    style={{
+                      fontFamily: TYPOGRAPHY.fontPrimary,
+                      fontSize: scale(18),
+                    }}
+                  >
+                    65000 coins
+                  </Text>
+                </View>
+
+                {/* Price Text */}
+                <View
+                  className="absolute items-center"
+                  style={{
+                    bottom: scale(36),
+                    left: 0,
+                    right: 0,
+                  }}
+                >
+                  <View className="px-4 rounded-full">
+                    <Text
+                      className="text-white font-bold text-center"
+                      style={{
+                        fontFamily: TYPOGRAPHY.fontPrimary,
+                        fontSize: scale(14),
+                      }}
+                    >
+                      $4.99
+                    </Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+
+              <View className="h-2" />
+
+              {/* Second SVG with different text */}
+              <TouchableOpacity
+                className="relative"
+                onPress={() => {
+                  console.log("Great Value SVG tapped - 25000 coins");
+                  onPurchaseProduct("com.qwordly.coins25000");
+                }}
+                activeOpacity={0.8}
+              >
                 <BuyCoinsSvg width="100%" height={scale(280)} />
-              </View>
+
+                {/* Value Banner */}
+                <View className="absolute top-2 left-12 px-3 py-1 rounded-lg">
+                  <Text
+                    className="text-white font-bold text-xs"
+                    style={{
+                      fontFamily: TYPOGRAPHY.fontPrimary,
+                      fontSize: scale(10),
+                    }}
+                  >
+                    GREAT VALUE
+                  </Text>
+                </View>
+
+                {/* Coin Amount Text */}
+                <View
+                  className="absolute items-center"
+                  style={{
+                    bottom: scale(84),
+                    left: 0,
+                    right: 0,
+                  }}
+                >
+                  <Text
+                    className="text-gray-800 font-bold text-center"
+                    style={{
+                      fontFamily: TYPOGRAPHY.fontPrimary,
+                      fontSize: scale(18),
+                    }}
+                  >
+                    25000 coins
+                  </Text>
+                </View>
+
+                {/* Price Text */}
+                <View
+                  className="absolute items-center"
+                  style={{
+                    bottom: scale(36),
+                    left: 0,
+                    right: 0,
+                  }}
+                >
+                  <View className="px-4 rounded-full">
+                    <Text
+                      className="text-white font-bold text-center"
+                      style={{
+                        fontFamily: TYPOGRAPHY.fontPrimary,
+                        fontSize: scale(14),
+                      }}
+                    >
+                      $2.99
+                    </Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
             </View>
 
             {loading && (
@@ -169,10 +301,7 @@ const CoinShopModal: React.FC<CoinShopModalProps> = ({
             )}
 
             {!loading && !error && (
-              <ScrollView
-                className="max-h-96 w-full"
-                showsVerticalScrollIndicator={false}
-              >
+              <View className="w-full">
                 {/* Dynamic Products from App Stores */}
                 {products.length > 0 && (
                   <View className="pb-6">
@@ -186,34 +315,40 @@ const CoinShopModal: React.FC<CoinShopModalProps> = ({
                         : "N/A";
 
                       return (
-                        <View
+                        <TouchableOpacity
                           key={product.productId}
-                          className="flex-row items-center bg-gray-100 rounded-2xl mb-4 p-4 shadow-sm"
+                          className={`flex-row items-center rounded-2xl mb-4 p-4 shadow-sm border-2 ${
+                            loading
+                              ? "bg-gray-200 border-gray-300"
+                              : "bg-gray-100 border-transparent hover:bg-gray-200"
+                          }`}
+                          onPress={() => {
+                            console.log(
+                              "Purchase row tapped for product:",
+                              product.productId
+                            );
+                            console.log("Loading state:", loading);
+                            console.log(
+                              "onPurchaseProduct callback:",
+                              typeof onPurchaseProduct
+                            );
+                            onPurchaseProduct(product.productId);
+                          }}
+                          disabled={loading}
+                          testID={`purchase-row-${product.productId}`}
+                          activeOpacity={0.5}
                         >
                           {/* Coin Pack Icon */}
-                          <View
-                            className="rounded-full mr-4 items-center justify-center"
-                            style={{
-                              backgroundColor: COLORS.primaryOrange,
-                              width: scale(50),
-                              height: scale(50),
-                            }}
-                          >
-                            <Text
-                              className="text-white font-bold text-center"
-                              style={{
-                                fontFamily: TYPOGRAPHY.fontPrimary,
-                                fontSize: scale(12),
-                              }}
-                            >
-                              {coinsAmount}
-                            </Text>
+                          <View className="mr-4">
+                            <CoinSvg width={scale(50)} height={scale(50)} />
                           </View>
 
                           {/* Product Details */}
                           <View className="flex-1 mr-4">
                             <Text
-                              className="text-gray-800 font-semibold mb-1"
+                              className={`font-semibold mb-1 ${
+                                loading ? "text-gray-500" : "text-gray-800"
+                              }`}
                               style={{
                                 fontFamily: TYPOGRAPHY.fontPrimary,
                                 fontSize: scale(16),
@@ -222,23 +357,25 @@ const CoinShopModal: React.FC<CoinShopModalProps> = ({
                               {product.title || `${coinsAmount} Coins`}
                             </Text>
                             <Text
-                              className="text-gray-600"
+                              className={`${
+                                loading ? "text-gray-400" : "text-gray-600"
+                              }`}
                               style={{
                                 fontFamily: TYPOGRAPHY.fontPrimary,
                                 fontSize: scale(14),
                               }}
                             >
-                              {product.localizedPrice}
+                              {loading
+                                ? "Processing..."
+                                : product.localizedPrice}
                             </Text>
                           </View>
 
-                          {/* Purchase Button */}
-                          <TouchableOpacity
-                            className={`rounded-2xl px-6 py-3 min-w-18 ${
+                          {/* Price Badge */}
+                          <View
+                            className={`rounded-2xl px-4 py-2 ${
                               loading ? "bg-gray-300" : "bg-orange-500"
                             }`}
-                            onPress={() => onPurchaseProduct(product.productId)}
-                            disabled={loading}
                           >
                             <Text
                               className={`text-center font-semibold ${
@@ -249,10 +386,10 @@ const CoinShopModal: React.FC<CoinShopModalProps> = ({
                                 fontSize: scale(14),
                               }}
                             >
-                              Buy
+                              {loading ? "..." : "Buy"}
                             </Text>
-                          </TouchableOpacity>
-                        </View>
+                          </View>
+                        </TouchableOpacity>
                       );
                     })}
                   </View>
@@ -261,28 +398,33 @@ const CoinShopModal: React.FC<CoinShopModalProps> = ({
                 {/* Additional Coin Pack Options */}
                 <View className="pb-6">
                   {/* 100 Coins Pack */}
-                  <View className="flex-row items-center bg-gray-100 rounded-2xl mb-4 p-4 shadow-sm">
-                    <View
-                      className="rounded-full mr-4 items-center justify-center"
-                      style={{
-                        backgroundColor: COLORS.primaryOrange,
-                        width: scale(50),
-                        height: scale(50),
-                      }}
-                    >
-                      <Text
-                        className="text-white font-bold text-center"
-                        style={{
-                          fontFamily: TYPOGRAPHY.fontPrimary,
-                          fontSize: scale(12),
-                        }}
-                      >
-                        100
-                      </Text>
+                  <TouchableOpacity
+                    className={`flex-row items-center rounded-2xl mb-4 p-4 shadow-sm border-2 ${
+                      loading
+                        ? "bg-gray-200 border-gray-300"
+                        : "bg-gray-100 border-transparent hover:bg-gray-200"
+                    }`}
+                    onPress={() => {
+                      console.log("Static 100 coins row tapped");
+                      console.log("Loading state:", loading);
+                      console.log(
+                        "onPurchaseProduct callback:",
+                        typeof onPurchaseProduct
+                      );
+                      onPurchaseProduct("com.qwordly.coins100");
+                    }}
+                    disabled={loading}
+                    testID="purchase-row-static-100"
+                    activeOpacity={0.5}
+                  >
+                    <View className="mr-4">
+                      <CoinSvg width={scale(50)} height={scale(50)} />
                     </View>
                     <View className="flex-1 mr-4">
                       <Text
-                        className="text-gray-800 font-semibold mb-1"
+                        className={`font-semibold mb-1 ${
+                          loading ? "text-gray-500" : "text-gray-800"
+                        }`}
                         style={{
                           fontFamily: TYPOGRAPHY.fontPrimary,
                           fontSize: scale(16),
@@ -291,46 +433,48 @@ const CoinShopModal: React.FC<CoinShopModalProps> = ({
                         100 coins
                       </Text>
                     </View>
-                    <TouchableOpacity
-                      className="rounded-2xl px-6 py-3 min-w-18 bg-orange-500"
-                      onPress={() => onPurchaseProduct("com.qwordly.coins100")}
-                      disabled={loading}
+                    <View
+                      className={`rounded-2xl px-4 py-2 ${
+                        loading ? "bg-gray-300" : "bg-orange-500"
+                      }`}
                     >
                       <Text
-                        className="text-center font-semibold text-white"
+                        className={`text-center font-semibold ${
+                          loading ? "text-gray-500" : "text-white"
+                        }`}
                         style={{
                           fontFamily: TYPOGRAPHY.fontPrimary,
                           fontSize: scale(14),
                         }}
                       >
-                        $1.99
+                        {loading ? "..." : "$1.99"}
                       </Text>
-                    </TouchableOpacity>
-                  </View>
+                    </View>
+                  </TouchableOpacity>
 
                   {/* 250 Coins Pack */}
-                  <View className="flex-row items-center bg-gray-100 rounded-2xl mb-4 p-4 shadow-sm">
-                    <View
-                      className="rounded-full mr-4 items-center justify-center"
-                      style={{
-                        backgroundColor: COLORS.primaryOrange,
-                        width: scale(50),
-                        height: scale(50),
-                      }}
-                    >
-                      <Text
-                        className="text-white font-bold text-center"
-                        style={{
-                          fontFamily: TYPOGRAPHY.fontPrimary,
-                          fontSize: scale(12),
-                        }}
-                      >
-                        250
-                      </Text>
+                  <TouchableOpacity
+                    className={`flex-row items-center rounded-2xl mb-4 p-4 shadow-sm border-2 ${
+                      loading
+                        ? "bg-gray-200 border-gray-300"
+                        : "bg-gray-100 border-transparent hover:bg-gray-200"
+                    }`}
+                    onPress={() => {
+                      console.log("Static 250 coins row tapped");
+                      onPurchaseProduct("com.qwordly.coins250");
+                    }}
+                    disabled={loading}
+                    testID="purchase-row-static-250"
+                    activeOpacity={0.5}
+                  >
+                    <View className="mr-4">
+                      <CoinSvg width={scale(50)} height={scale(50)} />
                     </View>
                     <View className="flex-1 mr-4">
                       <Text
-                        className="text-gray-800 font-semibold mb-1"
+                        className={`font-semibold mb-1 ${
+                          loading ? "text-gray-500" : "text-gray-800"
+                        }`}
                         style={{
                           fontFamily: TYPOGRAPHY.fontPrimary,
                           fontSize: scale(16),
@@ -339,46 +483,48 @@ const CoinShopModal: React.FC<CoinShopModalProps> = ({
                         250 coins
                       </Text>
                     </View>
-                    <TouchableOpacity
-                      className="rounded-2xl px-6 py-3 min-w-18 bg-orange-500"
-                      onPress={() => onPurchaseProduct("com.qwordly.coins250")}
-                      disabled={loading}
+                    <View
+                      className={`rounded-2xl px-4 py-2 ${
+                        loading ? "bg-gray-300" : "bg-orange-500"
+                      }`}
                     >
                       <Text
-                        className="text-center font-semibold text-white"
+                        className={`text-center font-semibold ${
+                          loading ? "text-gray-500" : "text-white"
+                        }`}
                         style={{
                           fontFamily: TYPOGRAPHY.fontPrimary,
                           fontSize: scale(14),
                         }}
                       >
-                        $4.99
+                        {loading ? "..." : "$4.99"}
                       </Text>
-                    </TouchableOpacity>
-                  </View>
+                    </View>
+                  </TouchableOpacity>
 
                   {/* 500 Coins Pack */}
-                  <View className="flex-row items-center bg-gray-100 rounded-2xl mb-4 p-4 shadow-sm">
-                    <View
-                      className="rounded-full mr-4 items-center justify-center"
-                      style={{
-                        backgroundColor: COLORS.primaryOrange,
-                        width: scale(50),
-                        height: scale(50),
-                      }}
-                    >
-                      <Text
-                        className="text-white font-bold text-center"
-                        style={{
-                          fontFamily: TYPOGRAPHY.fontPrimary,
-                          fontSize: scale(12),
-                        }}
-                      >
-                        500
-                      </Text>
+                  <TouchableOpacity
+                    className={`flex-row items-center rounded-2xl mb-4 p-4 shadow-sm border-2 ${
+                      loading
+                        ? "bg-gray-200 border-gray-300"
+                        : "bg-gray-100 border-transparent hover:bg-gray-200"
+                    }`}
+                    onPress={() => {
+                      console.log("Static 500 coins row tapped");
+                      onPurchaseProduct("com.qwordly.coins500");
+                    }}
+                    disabled={loading}
+                    testID="purchase-row-static-500"
+                    activeOpacity={0.5}
+                  >
+                    <View className="mr-4">
+                      <CoinSvg width={scale(50)} height={scale(50)} />
                     </View>
                     <View className="flex-1 mr-4">
                       <Text
-                        className="text-gray-800 font-semibold mb-1"
+                        className={`font-semibold mb-1 ${
+                          loading ? "text-gray-500" : "text-gray-800"
+                        }`}
                         style={{
                           fontFamily: TYPOGRAPHY.fontPrimary,
                           fontSize: scale(16),
@@ -387,46 +533,48 @@ const CoinShopModal: React.FC<CoinShopModalProps> = ({
                         500 coins
                       </Text>
                     </View>
-                    <TouchableOpacity
-                      className="rounded-2xl px-6 py-3 min-w-18 bg-orange-500"
-                      onPress={() => onPurchaseProduct("com.qwordly.coins500")}
-                      disabled={loading}
+                    <View
+                      className={`rounded-2xl px-4 py-2 ${
+                        loading ? "bg-gray-300" : "bg-orange-500"
+                      }`}
                     >
                       <Text
-                        className="text-center font-semibold text-white"
+                        className={`text-center font-semibold ${
+                          loading ? "text-gray-500" : "text-white"
+                        }`}
                         style={{
                           fontFamily: TYPOGRAPHY.fontPrimary,
                           fontSize: scale(14),
                         }}
                       >
-                        $9.99
+                        {loading ? "..." : "$9.99"}
                       </Text>
-                    </TouchableOpacity>
-                  </View>
+                    </View>
+                  </TouchableOpacity>
 
                   {/* 1000 Coins Pack */}
-                  <View className="flex-row items-center bg-gray-100 rounded-2xl mb-4 p-4 shadow-sm">
-                    <View
-                      className="rounded-full mr-4 items-center justify-center"
-                      style={{
-                        backgroundColor: COLORS.primaryOrange,
-                        width: scale(50),
-                        height: scale(50),
-                      }}
-                    >
-                      <Text
-                        className="text-white font-bold text-center"
-                        style={{
-                          fontFamily: TYPOGRAPHY.fontPrimary,
-                          fontSize: scale(11),
-                        }}
-                      >
-                        1000
-                      </Text>
+                  <TouchableOpacity
+                    className={`flex-row items-center rounded-2xl mb-4 p-4 shadow-sm border-2 ${
+                      loading
+                        ? "bg-gray-200 border-gray-300"
+                        : "bg-gray-100 border-transparent hover:bg-gray-200"
+                    }`}
+                    onPress={() => {
+                      console.log("Static 1000 coins row tapped");
+                      onPurchaseProduct("com.qwordly.coins1000");
+                    }}
+                    disabled={loading}
+                    testID="purchase-row-static-1000"
+                    activeOpacity={0.5}
+                  >
+                    <View className="mr-4">
+                      <CoinSvg width={scale(50)} height={scale(50)} />
                     </View>
                     <View className="flex-1 mr-4">
                       <Text
-                        className="text-gray-800 font-semibold mb-1"
+                        className={`font-semibold mb-1 ${
+                          loading ? "text-gray-500" : "text-gray-800"
+                        }`}
                         style={{
                           fontFamily: TYPOGRAPHY.fontPrimary,
                           fontSize: scale(16),
@@ -435,44 +583,85 @@ const CoinShopModal: React.FC<CoinShopModalProps> = ({
                         1000 coins
                       </Text>
                     </View>
-                    <TouchableOpacity
-                      className="rounded-2xl px-6 py-3 min-w-18 bg-orange-500"
-                      onPress={() => onPurchaseProduct("com.qwordly.coins1000")}
-                      disabled={loading}
+                    <View
+                      className={`rounded-2xl px-4 py-2 ${
+                        loading ? "bg-gray-300" : "bg-orange-500"
+                      }`}
                     >
                       <Text
-                        className="text-center font-semibold text-white"
+                        className={`text-center font-semibold ${
+                          loading ? "text-gray-500" : "text-white"
+                        }`}
                         style={{
                           fontFamily: TYPOGRAPHY.fontPrimary,
                           fontSize: scale(14),
                         }}
                       >
-                        $19.99
+                        {loading ? "..." : "$19.99"}
                       </Text>
-                    </TouchableOpacity>
-                  </View>
+                    </View>
+                  </TouchableOpacity>
                 </View>
-              </ScrollView>
-            )}
 
-            {/* Close Button */}
-            <TouchableOpacity
-              className={`w-full items-center rounded-2xl mt-6 py-4 ${
-                loading ? "bg-gray-300" : "bg-gray-500"
-              }`}
-              onPress={onClose}
-              disabled={loading}
-            >
-              <Text
-                className="text-white font-semibold"
-                style={{
-                  fontFamily: TYPOGRAPHY.fontPrimary,
-                  fontSize: scale(16),
-                }}
-              >
-                Close
-              </Text>
-            </TouchableOpacity>
+                {/* Action Buttons - Inside ScrollView */}
+                <View
+                  className="pt-6 space-y-3"
+                  style={{
+                    paddingBottom: Math.max(20, insets.bottom + 10),
+                  }}
+                >
+                  {/* Watch Video and Play Button */}
+                  <TouchableOpacity
+                    className={`w-full items-center rounded-full py-4 border-2 border-gray-300 ${
+                      loading ? "bg-gray-100" : "bg-white"
+                    }`}
+                    onPress={onWatchVideo}
+                    disabled={loading}
+                  >
+                    <View className="flex-row items-center">
+                      <View className="w-6 h-6 rounded-full bg-gray-800 items-center justify-center mr-3">
+                        <Text
+                          className="text-white text-xs font-bold"
+                          style={{ fontFamily: TYPOGRAPHY.fontPrimary }}
+                        >
+                          ▶
+                        </Text>
+                      </View>
+                      <Text
+                        className={`font-semibold ${
+                          loading ? "text-gray-400" : "text-gray-800"
+                        }`}
+                        style={{
+                          fontFamily: TYPOGRAPHY.fontPrimary,
+                          fontSize: scale(16),
+                        }}
+                      >
+                        WATCH VIDEO AND PLAY
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+
+                  {/* Pay and Play Button */}
+                  <TouchableOpacity
+                    className={`w-full items-center rounded-full py-4 ${
+                      loading ? "bg-gray-300" : "bg-pink-400"
+                    }`}
+                    onPress={onPayAndPlay}
+                    disabled={loading}
+                  >
+                    <Text
+                      className="text-white font-semibold"
+                      style={{
+                        fontFamily: TYPOGRAPHY.fontPrimary,
+                        fontSize: scale(16),
+                      }}
+                    >
+                      PAY AND PLAY
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            )}
           </ScrollView>
         </View>
       </View>

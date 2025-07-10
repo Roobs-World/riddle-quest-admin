@@ -1,3 +1,5 @@
+import * as RNIap from "react-native-iap";
+
 // Base modal interface that all modals must implement
 export interface BaseModalProps {
   isVisible: boolean;
@@ -139,7 +141,12 @@ export interface GameModalTypes {
 
   // Shop modals
   coinShop: {
+    products?: RNIap.Product[];
+    loading?: boolean;
+    error?: string | null;
     onPurchaseProduct: (productId: string) => void;
+    onWatchVideo?: () => void;
+    onPayAndPlay?: () => void;
   };
 }
 

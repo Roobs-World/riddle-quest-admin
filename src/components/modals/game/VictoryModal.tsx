@@ -12,10 +12,17 @@
  */
 
 import React from "react";
-import { View, Text, Modal, TouchableOpacity } from "react-native";
+import { View, Text, Modal, SafeAreaView } from "react-native";
 import type { SubmittedGuess } from "../../../hooks/types";
-import { generateFeedbackEmojiGrid } from "../../../utils/gameUtils"; // Import the utility function
+import { generateFeedbackEmojiGrid } from "../../../utils/gameUtils";
 import CloseButton from "../../buttons/CloseButton";
+import WideButton from "../../buttons/WideButton";
+import HomeBgSvg from "../../../../assets/images/home-bg.svg";
+import { modalStyles } from "../../../styles/components/modals";
+import { COLORS } from "../../../styles/tokens/colors";
+import { SPACING } from "../../../styles/tokens/spacing";
+import { BORDER_RADIUS } from "../../../styles/tokens/borderRadius";
+import { scale } from "../../../utils/responsive";
 
 /**
  * Props interface for the VictoryModal component.
@@ -67,9 +74,10 @@ interface VictoryModalProps {
  * - Close button for quick exit
  *
  * Visual Design:
- * - Slide-in animation for engaging entrance
- * - Semi-transparent background overlay
- * - Rounded card layout with cream background
+ * - Full-screen modal with branded background
+ * - SafeAreaView for proper device handling
+ * - Drag handle for intuitive interaction
+ * - Professional layout with design tokens
  * - Green "Victory!" header for positive reinforcement
  * - Clear typography hierarchy for information
  *
@@ -120,66 +128,207 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
   return (
     <Modal
       animationType="slide"
-      transparent={true}
+      transparent={false}
       visible={isVisible}
-      onRequestClose={() => {}}
+      onRequestClose={onHome}
+      accessibilityLabel="Victory celebration modal"
     >
-      <View className="flex-1 justify-center items-center bg-black/50">
-        <View className="bg-cream-light p-6 rounded-lg w-11/12 max-w-sm items-center relative">
-          {/* Close Button in top-right corner */}
-          <View className="absolute top-2 right-2 z-10">
-            <CloseButton onPress={onHome} size={20} />
+      <SafeAreaView
+        style={{ flex: 1, backgroundColor: COLORS.backgroundPrimary }}
+      >
+        <View
+          style={{
+            backgroundColor: COLORS.backgroundPrimary,
+            borderBottomLeftRadius: BORDER_RADIUS.xl,
+            borderBottomRightRadius: BORDER_RADIUS.xl,
+            flex: 1,
+            paddingTop: SPACING.lg,
+          }}
+        >
+          {/* Background Design */}
+          <HomeBgSvg
+            width="120%"
+            height="100%"
+            style={{
+              position: "absolute",
+              top: 0,
+              left: -50,
+              zIndex: 0,
+              opacity: 0.1,
+            }}
+          />
+
+          {/* Drag Handle */}
+          <View
+            style={{
+              alignSelf: "center",
+              width: scale(40),
+              height: scale(4),
+              backgroundColor: COLORS.gray300,
+              borderRadius: BORDER_RADIUS.sm,
+              marginBottom: SPACING.lg,
+            }}
+          />
+
+          {/* Close Button */}
+          <View
+            style={{
+              position: "absolute",
+              top: SPACING.xl,
+              right: SPACING.lg,
+              zIndex: 10,
+            }}
+          >
+            <CloseButton
+              onPress={onHome}
+              size={scale(24)}
+              accessibilityLabel="Close victory modal"
+            />
           </View>
 
-          {/* Victory Celebration Header */}
-          <Text className="text-3xl font-bold mb-4 text-green-500">
-            Victory!
-          </Text>
-
-          {/* Performance Statistics */}
-          <Text className="text-lg mb-2 text-gray-800">
-            Solved in {attempts} attempts!
-          </Text>
-
-          {/* Conditional Coin Reward Display */}
-          {coinsEarned > 0 && (
-            <Text className="text-lg mb-4 text-gray-800">
-              Coins Earned: {coinsEarned}
+          {/* Header */}
+          <View
+            style={[
+              modalStyles.headerCentered,
+              { paddingHorizontal: SPACING.lg },
+            ]}
+          >
+            <Text
+              style={[
+                modalStyles.title,
+                {
+                  fontSize: scale(32),
+                  color: COLORS.success,
+                  marginBottom: SPACING.sm,
+                },
+              ]}
+            >
+              🎉 Victory!
             </Text>
-          )}
+            <Text
+              style={[
+                modalStyles.subtitle,
+                {
+                  fontSize: scale(18),
+                  color: COLORS.textSecondary,
+                  marginBottom: SPACING.md,
+                },
+              ]}
+            >
+              Solved in {attempts} attempts!
+            </Text>
+          </View>
 
-          {/* Emoji Grid Summary for Sharing */}
-          {guesses.length > 0 && (
-            <View className="mb-4 items-center">
-              <Text className="text-gray-800 text-lg font-bold mb-2">
-                Share your result:
-              </Text>
-              <Text className="text-xl leading-relaxed">{emojiSummary}</Text>
-            </View>
-          )}
-
-          {/* Navigation Action Buttons */}
-          <TouchableOpacity
-            className="bg-blue-500 py-3 px-6 rounded-md mb-3"
-            onPress={onNextLevel}
-            accessibilityRole="button"
-            accessibilityLabel="Go to next level"
-            accessibilityHint="Continue to the next riddle challenge"
+          {/* Content Container */}
+          <View
+            style={{
+              flex: 1,
+              paddingHorizontal: SPACING.lg,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
           >
-            <Text className="text-white text-lg font-semibold">Next Level</Text>
-          </TouchableOpacity>
+            {/* Conditional Coin Reward Display */}
+            {coinsEarned > 0 && (
+              <View
+                style={{
+                  backgroundColor: "rgba(255, 255, 255, 0.95)",
+                  borderRadius: BORDER_RADIUS.lg,
+                  padding: SPACING.lg,
+                  marginBottom: SPACING.xl,
+                  shadowColor: COLORS.shadowColor,
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.1,
+                  shadowRadius: 4,
+                  elevation: 3,
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: scale(18),
+                    fontWeight: "bold",
+                    color: COLORS.textPrimary,
+                    marginBottom: SPACING.xs,
+                  }}
+                >
+                  💰 Coins Earned
+                </Text>
+                <Text
+                  style={{
+                    fontSize: scale(24),
+                    fontWeight: "bold",
+                    color: COLORS.primaryOrange,
+                  }}
+                >
+                  {coinsEarned}
+                </Text>
+              </View>
+            )}
 
-          <TouchableOpacity
-            className="bg-gray-300 py-3 px-6 rounded-md"
-            onPress={onHome}
-            accessibilityRole="button"
-            accessibilityLabel="Return to home screen"
-            accessibilityHint="Go back to the main menu"
+            {/* Emoji Grid Summary for Sharing */}
+            {guesses.length > 0 && (
+              <View
+                style={{
+                  backgroundColor: "rgba(255, 255, 255, 0.95)",
+                  borderRadius: BORDER_RADIUS.lg,
+                  padding: SPACING.lg,
+                  marginBottom: SPACING.xl,
+                  shadowColor: COLORS.shadowColor,
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.1,
+                  shadowRadius: 4,
+                  elevation: 3,
+                  alignItems: "center",
+                  width: "100%",
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: scale(18),
+                    fontWeight: "bold",
+                    color: COLORS.textPrimary,
+                    marginBottom: SPACING.md,
+                    textAlign: "center",
+                  }}
+                >
+                  📤 Share your result:
+                </Text>
+                <Text
+                  style={{
+                    fontSize: scale(20),
+                    lineHeight: scale(28),
+                    textAlign: "center",
+                    color: COLORS.textPrimary,
+                  }}
+                >
+                  {emojiSummary}
+                </Text>
+              </View>
+            )}
+          </View>
+
+          {/* Action Buttons */}
+          <View
+            style={{
+              paddingHorizontal: SPACING.lg,
+              paddingBottom: SPACING.lg,
+              backgroundColor: COLORS.backgroundPrimary,
+            }}
           >
-            <Text className="text-gray-800 text-lg font-semibold">Home</Text>
-          </TouchableOpacity>
+            <WideButton
+              buttonText="🚀 Next Level"
+              onPress={onNextLevel}
+              buttonColor="bg-blue-500"
+            />
+            <WideButton
+              buttonText="🏠 Home"
+              onPress={onHome}
+              buttonColor="bg-gray-500"
+            />
+          </View>
         </View>
-      </View>
+      </SafeAreaView>
     </Modal>
   );
 };

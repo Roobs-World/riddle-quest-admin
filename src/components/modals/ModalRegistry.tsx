@@ -365,6 +365,8 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
         (props.onPurchaseProduct as (productId: string) => void) || (() => {}),
       loading: (props.loading as boolean) || false,
       error: (props.error as string | null) || null,
+      onWatchVideo: (props.onWatchVideo as () => void) || undefined,
+      onPayAndPlay: (props.onPayAndPlay as () => void) || undefined,
     })
   ),
 };
