@@ -57,6 +57,7 @@ export interface GameModalTypes {
   victory: {
     attempts: number;
     coinsEarned: number;
+    guesses: import("../hooks/types").SubmittedGuess[];
     onNext: () => void;
     onHome: () => void;
   };

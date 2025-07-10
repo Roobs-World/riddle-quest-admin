@@ -9,18 +9,21 @@ interface IapError extends Error {
   code?: string;
 }
 
+// Replace the placeholder product IDs with your real ones
 const coinProductIds = [
-  "com.yourgame.coinpack1",
-  "com.yourgame.coinpack2",
-  "com.yourgame.coinpack3",
+  "com.qwordly.coins100",
+  "com.qwordly.coins250",
+  "com.qwordly.coins500",
+  "com.qwordly.coins1000",
 ];
 
 export const COIN_PRODUCT_DETAILS: {
   [key: string]: { id: string; coins: number };
 } = {
-  COIN_PACK_SMALL: { id: "com.yourgame.coinpack1", coins: 100 },
-  COIN_PACK_MEDIUM: { id: "com.yourgame.coinpack2", coins: 500 },
-  COIN_PACK_LARGE: { id: "com.yourgame.coinpack3", coins: 1200 },
+  COIN_PACK_SMALL: { id: "com.qwordly.coins100", coins: 100 },
+  COIN_PACK_MEDIUM: { id: "com.qwordly.coins250", coins: 250 },
+  COIN_PACK_LARGE: { id: "com.qwordly.coins500", coins: 500 },
+  COIN_PACK_PREMIUM: { id: "com.qwordly.coins1000", coins: 1000 },
 };
 
 export const IapService = {

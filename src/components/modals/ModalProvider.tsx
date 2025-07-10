@@ -56,6 +56,7 @@ import CoinShopModal from "../shop/CoinShopModal";
 interface VictoryModalData {
   attempts: number;
   coinsEarned: number;
+  guesses: import("../../hooks/types").SubmittedGuess[];
   onNext: () => void;
   onHome: () => void;
 }
@@ -255,7 +256,7 @@ const ModalRenderer: React.FC<{
           coinsEarned={(modalData as VictoryModalData).coinsEarned}
           onNextLevel={(modalData as VictoryModalData).onNext}
           onHome={(modalData as VictoryModalData).onHome}
-          guesses={[]}
+          guesses={(modalData as VictoryModalData).guesses || []}
         />
       );
 
@@ -299,6 +300,7 @@ const ModalRenderer: React.FC<{
           questionsCompleted={
             (modalData as DailyChallengeCompletionModalData).questionsCompleted
           }
+          totalQuestions={5}
           onContinue={
             (modalData as DailyChallengeCompletionModalData).onContinue
           }

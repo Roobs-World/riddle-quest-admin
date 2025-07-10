@@ -224,6 +224,7 @@ const GameScreen: React.FC<GameScreenProps> = ({
         modal.showVictoryModal({
           attempts: guesses.length,
           coinsEarned: result.coinsEarned || 0,
+          guesses: guesses,
           onNext: () => {
             modal.closeModalByType("victory");
             resetGame();
