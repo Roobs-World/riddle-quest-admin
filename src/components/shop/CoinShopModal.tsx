@@ -605,14 +605,13 @@ const CoinShopModal: React.FC<CoinShopModalProps> = ({
 
                 {/* Action Buttons - Inside ScrollView */}
                 <View
-                  className="pt-6 space-y-3"
                   style={{
                     paddingBottom: Math.max(20, insets.bottom + 10),
                   }}
                 >
                   {/* Watch Video and Play Button */}
                   <TouchableOpacity
-                    className={`w-full items-center rounded-full py-4 border-2 border-gray-300 ${
+                    className={`w-full items-center rounded-full py-4 mb-8 border-2 border-gray-300 ${
                       loading ? "bg-gray-100" : "bg-white"
                     }`}
                     onPress={onWatchVideo}
