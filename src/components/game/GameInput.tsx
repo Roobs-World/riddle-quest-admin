@@ -14,7 +14,7 @@ type GameInputProps = {
   handleNext: () => void;
 };
 
-export const GameInput = ({
+const GameInputComponent = ({
   isSubmitDisabled,
   gameOver,
   handleSubmit,
@@ -43,3 +43,5 @@ export const GameInput = ({
     </View>
   );
 };
+
+export const GameInput = React.memo(GameInputComponent);

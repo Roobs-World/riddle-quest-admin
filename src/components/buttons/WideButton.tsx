@@ -60,7 +60,7 @@ const WideButton: React.FC<WideButtonProps> = ({
 
   return (
     <TouchableOpacity
-      className={`w-full rounded-lg py-3 px-6 my-4 ${
+      className={`w-full rounded-lg py-3 px-6 my-2 ${
         disabled ? "bg-gray-300" : bg
       }`}
       onPress={handlePress}

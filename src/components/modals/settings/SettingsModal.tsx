@@ -146,7 +146,6 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "rgba(0,0,0,0.6)",
         }}
       >
         <View
@@ -165,6 +164,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
               alignItems: "center",
               justifyContent: "space-around",
               padding: 20,
+              zIndex: 1,
             }}
           >
             <CloseButton
@@ -177,14 +177,21 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
               style={{
                 fontFamily: TYPOGRAPHY.fontPrimary,
                 fontSize: scale(28),
-                color: "white",
+                color: "black",
                 textAlign: "center",
               }}
             >
               {AppStrings.Settings.TITLE}
             </Text>
 
-            <View style={{ width: "100%" }}>
+            <View
+              style={{
+                width: "100%",
+                backgroundColor: "white",
+                borderRadius: 15,
+                padding: 20,
+              }}
+            >
               <View
                 style={{
                   flexDirection: "row",
@@ -198,7 +205,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                   style={{
                     fontFamily: TYPOGRAPHY.fontSecondary,
                     fontSize: scale(18),
-                    color: "white",
+                    color: "black",
                   }}
                 >
                   {AppStrings.Settings.SOUND_TOGGLE}
@@ -224,7 +231,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                   style={{
                     fontFamily: TYPOGRAPHY.fontSecondary,
                     fontSize: scale(18),
-                    color: "white",
+                    color: "black",
                   }}
                 >
                   {AppStrings.Settings.HAPTICS_TOGGLE}

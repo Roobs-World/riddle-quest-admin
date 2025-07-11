@@ -23,12 +23,12 @@ import LossModal from "./game/LossModal";
 import GameModeModal from "./game/GameModeModal";
 // Note: OutOfAttemptsModal, WatchAdForChanceModal, and DailyChallengeCompletionModal have been removed
 
-import SettingsModal from "./settings/SettingsModal";
 import FullProfileDetailsModal from "./settings/FullProfileDetailsModal";
 import ChangePasswordModal from "./settings/ChangePasswordModal";
 import UpdateUsernameModal from "./settings/UpdateUsernameModal";
 import AvatarOptionsModal from "./settings/AvatarOptionsModal";
 import PreloadedAvatarsModal from "./settings/PreloadedAvatarsModal";
+import SettingsModal from "./settings/SettingsModal";
 
 import HintModal from "./help/HintModal";
 import SkipModal from "./help/SkipModal";
@@ -98,8 +98,8 @@ interface GameModeModalData {
 interface SettingsModalData {
   isSoundEnabled: boolean;
   isHapticsEnabled: boolean;
-  onToggleSound: () => void;
-  onToggleHaptics: () => void;
+  onToggleSound: (isEnabled: boolean) => void;
+  onToggleHaptics: (isEnabled: boolean) => void;
   onPressLogout: () => void;
   onPressHelp: () => void;
   onPressCredits: () => void;

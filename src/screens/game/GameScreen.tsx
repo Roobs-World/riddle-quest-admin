@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Alert, KeyboardAvoidingView, Platform, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as RNIap from "react-native-iap";
@@ -337,8 +337,22 @@ const GameScreen: React.FC<GameScreenProps> = ({
     resetGame,
   ]);
 
+  const toggleSoundEnabled = useCallback((isEnabled: boolean) => {
+    setIsSoundEnabled(isEnabled);
+    SoundManager.setSoundEnabled(isEnabled);
+    if (isEnabled) {
+      SoundManager.playBackgroundMusic();
+    } else {
+      SoundManager.pauseBackgroundMusic();
+    }
+  }, []);
+
+  const toggleHapticsEnabled = useCallback((isEnabled: boolean) => {
+    setIsHapticsEnabled(isEnabled);
+  }, []);
+
   // Game actions
-  const handleSubmit = async () => {
+  const handleSubmit = useCallback(async () => {
     if (currentGuess.length === answerLength) {
       setIsLoading(true);
       try {
@@ -358,19 +372,29 @@ const GameScreen: React.FC<GameScreenProps> = ({
         ReactNativeHapticFeedback.trigger("notificationWarning", hapticOptions);
       }
     }
-  };
+  }, [
+    currentGuess,
+    answerLength,
+    processGuess,
+    isHapticsEnabled,
+    setLastGuessResult,
+    setIsLoading,
+  ]);
 
-  const handleKeyPress = (key: string) => {
-    if (currentGuess.length < answerLength) {
-      setCurrentGuess((prev: string[]) => [...prev, key]);
-    }
-  };
+  const handleKeyPress = useCallback(
+    (key: string) => {
+      if (currentGuess.length < answerLength) {
+        setCurrentGuess((prev: string[]) => [...prev, key]);
+      }
+    },
+    [answerLength, currentGuess.length, setCurrentGuess]
+  );
 
-  const handleBackspace = () => {
+  const handleBackspace = useCallback(() => {
     setCurrentGuess((prev: string[]) => prev.slice(0, -1));
-  };
+  }, [setCurrentGuess]);
 
-  const handleChangeGameModePress = () => {
+  const handleChangeGameModePress = useCallback(() => {
     modal.showGameModeModal({
       onSelectMode: (mode) => {
         console.log(`Selected game mode: ${mode}`);
@@ -408,9 +432,16 @@ const GameScreen: React.FC<GameScreenProps> = ({
         }
       },
     });
-  };
+  }, [
+    modal,
+    resetGame,
+    playerData,
+    setGameMode,
+    fetchCurrentRiddle,
+    setIsLoading,
+  ]);
 
-  const handleShowHint = async () => {
+  const handleShowHint = useCallback(async () => {
     if (!playerData?.userId) return;
 
     console.log("Showing hint modal for riddle:", riddleId);
@@ -459,9 +490,18 @@ const GameScreen: React.FC<GameScreenProps> = ({
         }
       },
     });
-  };
+  }, [
+    playerData?.userId,
+    riddleId,
+    modal,
+    userCoins,
+    hintCost,
+    currentGuess,
+    onHintUsed,
+    setIsLoading,
+  ]);
 
-  const handleOverlayNext = () => {
+  const handleOverlayNext = useCallback(() => {
     console.log("Next button pressed - opening skip modal");
 
     // Determine skip cost based on game mode
@@ -477,9 +517,9 @@ const GameScreen: React.FC<GameScreenProps> = ({
         onNextLevel();
       },
     });
-  };
+  }, [gameMode, modal, userCoins, resetGame, onNextLevel]);
 
-  const handleSettingsPress = () => {
+  const handleSettingsPress = useCallback(() => {
     console.log("Settings button pressed - opening settings modal");
     modal.showSettingsModal({
       isSoundEnabled,
@@ -506,68 +546,60 @@ const GameScreen: React.FC<GameScreenProps> = ({
         }, 100); // Small delay to ensure settings modal is closed
       },
     });
-  };
+  }, [
+    modal,
+    isSoundEnabled,
+    isHapticsEnabled,
+    toggleSoundEnabled,
+    toggleHapticsEnabled,
+    logout,
+  ]);
 
-  const handleProfilePress = () => {
+  const handleProfilePress = useCallback(() => {
     modal.showFullProfileDetailsModal({
       playerData: playerData || {},
     });
-  };
+  }, [modal, playerData]);
 
-  const handleCoinsPress = () => {
-    console.log("Opening coin shop modal with:", {
-      products: iapProducts.length,
-      loading: iapLoading,
-      error: iapError,
-      hasCallback: typeof handlePurchaseProduct === "function",
-    });
+  const handlePurchaseProduct = useCallback(
+    async (productId: string) => {
+      console.log(`Initiating purchase for product: ${productId}`);
+      setIapLoading(true);
 
-    modal.showCoinShopModal({
-      products: iapProducts,
-      loading: iapLoading,
-      error: iapError,
-      onPurchaseProduct: handlePurchaseProduct,
-      onWatchVideo: handleWatchAdForCoins,
-      onPayAndPlay: handlePayAndPlay,
-    });
-  };
+      try {
+        const purchaseResult = await IapService.purchaseProduct(productId);
 
-  const handlePurchaseProduct = async (productId: string) => {
-    console.log(`Initiating purchase for product: ${productId}`);
-    setIapLoading(true);
-
-    try {
-      const purchaseResult = await IapService.purchaseProduct(productId);
-
-      if (purchaseResult) {
-        console.log("Purchase completed successfully:", purchaseResult);
-        Alert.alert(
-          "Purchase Successful!",
-          "Your coins have been added to your account.",
-          [
-            {
-              text: "OK",
-              onPress: () => modal.closeModalByType("coinShop"),
-            },
-          ]
-        );
-      } else {
-        console.log("Purchase was cancelled or returned null");
-        // Don't show an error for cancelled purchases
+        if (purchaseResult) {
+          console.log("Purchase completed successfully:", purchaseResult);
+          Alert.alert(
+            "Purchase Successful!",
+            "Your coins have been added to your account.",
+            [
+              {
+                text: "OK",
+                onPress: () => modal.closeModalByType("coinShop"),
+              },
+            ]
+          );
+        } else {
+          console.log("Purchase was cancelled or returned null");
+          // Don't show an error for cancelled purchases
+        }
+      } catch (error) {
+        console.error("Purchase failed:", error);
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : "Purchase failed. Please try again.";
+        Alert.alert("Purchase Failed", errorMessage);
+      } finally {
+        setIapLoading(false);
       }
-    } catch (error) {
-      console.error("Purchase failed:", error);
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "Purchase failed. Please try again.";
-      Alert.alert("Purchase Failed", errorMessage);
-    } finally {
-      setIapLoading(false);
-    }
-  };
+    },
+    [modal]
+  );
 
-  const handlePayAndPlay = () => {
+  const handlePayAndPlay = useCallback(() => {
     console.log("Pay and play button pressed");
     // This could trigger the cheapest coin pack purchase or show a specific payment flow
     const cheapestProduct = iapProducts.sort(
@@ -579,9 +611,9 @@ const GameScreen: React.FC<GameScreenProps> = ({
     } else {
       Alert.alert("No Products Available", "Please try again later.");
     }
-  };
+  }, [iapProducts, handlePurchaseProduct]);
 
-  const handleWatchAdForCoins = async () => {
+  const handleWatchAdForCoins = useCallback(async () => {
     console.log("Watch ad for coins button pressed");
     modal.closeModalByType("coinShop");
 
@@ -604,21 +636,33 @@ const GameScreen: React.FC<GameScreenProps> = ({
         "An error occurred while trying to show the rewarded ad."
       );
     }
-  };
+  }, [modal, loadRewardedAd, isRewardedAdReady, showRewardedAd]);
 
-  const toggleSoundEnabled = (isEnabled: boolean) => {
-    setIsSoundEnabled(isEnabled);
-    SoundManager.setSoundEnabled(isEnabled);
-    if (isEnabled) {
-      SoundManager.playBackgroundMusic();
-    } else {
-      SoundManager.pauseBackgroundMusic();
-    }
-  };
+  const handleCoinsPress = useCallback(() => {
+    console.log("Opening coin shop modal with:", {
+      products: iapProducts.length,
+      loading: iapLoading,
+      error: iapError,
+      hasCallback: typeof handlePurchaseProduct === "function",
+    });
 
-  const toggleHapticsEnabled = (isEnabled: boolean) => {
-    setIsHapticsEnabled(isEnabled);
-  };
+    modal.showCoinShopModal({
+      products: iapProducts,
+      loading: iapLoading,
+      error: iapError,
+      onPurchaseProduct: handlePurchaseProduct,
+      onWatchVideo: handleWatchAdForCoins,
+      onPayAndPlay: handlePayAndPlay,
+    });
+  }, [
+    modal,
+    iapProducts,
+    iapLoading,
+    iapError,
+    handlePurchaseProduct,
+    handleWatchAdForCoins,
+    handlePayAndPlay,
+  ]);
 
   const isSubmitDisabled = currentGuess.length !== answerLength;
 

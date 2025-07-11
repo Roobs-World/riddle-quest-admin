@@ -197,4 +197,4 @@ const GameBoard: React.FC<GameBoardProps> = ({
   );
 };
 
-export default GameBoard;
+export default React.memo(GameBoard);

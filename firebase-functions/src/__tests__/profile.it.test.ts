@@ -12,7 +12,7 @@ import {updateAvatar} from "../profile";
 import {createUser} from "./testUtils";
 
 // 🚨 CRITICAL SAFETY CHECK - PREVENT PRODUCTION DATA DESTRUCTION 🚨
-const FIREBASE_PROJECT_ID = "qwordly-6ba44";
+const FIREBASE_PROJECT_ID = process.env.FIREBASE_PROJECT_ID;
 const FIRESTORE_EMULATOR_HOST = process.env.FIRESTORE_EMULATOR_HOST;
 
 // 🚨 ABSOLUTE SAFETY: This test MUST NEVER run against production
@@ -65,7 +65,7 @@ describe("Profile Functions - Integration Tests", () => {
   const initialUserData = {
     email: "profile@example.com",
     coins: 100,
-    progress: {classicIndex: 5, dailyChallengeIndex: 2, tutorialIndex: 1},
+    progress: {classicIndex: 5, dailyChallengeIndex: 2, tutorialIndex: 1, dailyChallengeCurrentQuestion: 0},
     stats: {
       gamesWon: 10,
       hintsUsed: 5,

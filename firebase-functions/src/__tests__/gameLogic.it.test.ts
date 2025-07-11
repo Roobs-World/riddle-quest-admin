@@ -24,7 +24,7 @@ afterAll(() => {
 });
 
 // 🚨 CRITICAL SAFETY CHECK - PREVENT PRODUCTION DATA DESTRUCTION 🚨
-const FIREBASE_PROJECT_ID = "qwordly-6ba44";
+const FIREBASE_PROJECT_ID = process.env.FIREBASE_PROJECT_ID;
 const FIRESTORE_EMULATOR_HOST = process.env.FIRESTORE_EMULATOR_HOST;
 
 // 🚨 ABSOLUTE SAFETY: This test MUST NEVER run against production

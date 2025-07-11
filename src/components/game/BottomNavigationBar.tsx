@@ -141,4 +141,4 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
   );
 };
 
-export default BottomNavigationBar;
+export default React.memo(BottomNavigationBar);

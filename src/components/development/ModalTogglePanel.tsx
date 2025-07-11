@@ -120,13 +120,6 @@ const generateMockData = (
     },
   ];
 
-  const commonCallbacks = {
-    onNext: () => console.log(`[${modalType}] Next pressed`),
-    onNextLevel: () => console.log(`[${modalType}] Next level pressed`),
-    onHome: () => console.log(`[${modalType}] Home pressed`),
-    onClose: () => console.log(`[${modalType}] Close pressed`),
-  };
-
   switch (modalType) {
     case "victory":
       return {
@@ -502,4 +495,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ModalTogglePanel;
+export default React.memo(ModalTogglePanel);
