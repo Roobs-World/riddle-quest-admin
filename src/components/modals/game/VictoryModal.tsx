@@ -258,11 +258,19 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
               top: SPACING.xl,
               right: SPACING.lg,
               zIndex: 10,
+              backgroundColor: COLORS.white,
+              borderRadius: BORDER_RADIUS.full,
+              elevation: 4,
+              shadowColor: COLORS.shadowColor,
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.2,
+              shadowRadius: 3,
+              padding: scale(2), // Added padding around the button
             }}
           >
             <CloseButton
               onPress={onHome}
-              size={scale(24)}
+              size={scale(32)} // Increased size from 28 to 32 for better visibility
               accessibilityLabel="Close victory modal"
             />
           </View>
@@ -278,7 +286,7 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
               style={[
                 modalStyles.title,
                 {
-                  fontSize: scale(32),
+                  fontSize: scale(48),
                   color: COLORS.success,
                   fontFamily: TYPOGRAPHY.fontPrimary,
                 },
@@ -338,7 +346,7 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
                   alignItems: "center",
                   width: "100%",
                   position: "absolute",
-                  top: 220,
+                  top: 200, // Adjusted from 220 to 200 to move up slightly
                 }}
               >
                 {/* Treasure Chest with Overlaid Text */}
@@ -346,10 +354,10 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
                   style={{
                     position: "relative",
                     alignItems: "center",
-                    marginTop: -80,
+                    marginTop: -100, // Adjusted from -80 to -60
                   }}
                 >
-                  <ChestSvg width={scale(250)} height={scale(180)} />
+                  <ChestSvg width={scale(320)} height={scale(240)} />
 
                   {/* Overlaid Coins Text - Only show when coins are earned */}
                   {coinsEarned > 0 && (
@@ -367,14 +375,14 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
                       {/* Semi-transparent background for better text visibility */}
                       <View
                         style={{
-                          paddingHorizontal: scale(12),
-
+                          paddingHorizontal: scale(16),
+                          paddingVertical: scale(8),
                           alignItems: "center",
                         }}
                       >
                         <Text
                           style={{
-                            fontSize: scale(20),
+                            fontSize: scale(24),
                             fontFamily: TYPOGRAPHY.fontPrimary,
                             color: "black",
                             textAlign: "center",
@@ -384,7 +392,7 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
                         </Text>
                         <Text
                           style={{
-                            fontSize: scale(28),
+                            fontSize: scale(32),
                             color: COLORS.primaryOrange,
                             textAlign: "center",
                             fontFamily: TYPOGRAPHY.fontPrimary,
@@ -406,12 +414,12 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
                   alignItems: "center",
                   width: "100%",
                   position: "absolute",
-                  top: 300,
+                  top: 280, // Adjusted from 300 to 380 to move down below the larger chest
                 }}
               >
                 <Text
                   style={{
-                    fontSize: scale(18),
+                    fontSize: scale(24), // Increased from 18 to 20
                     fontFamily: TYPOGRAPHY.fontPrimary,
                     color: COLORS.textPrimary,
                     marginBottom: SPACING.md,
@@ -425,19 +433,21 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
                 <View
                   style={{
                     flexDirection: "row",
-                    justifyContent: "space-around", // Changed from space-between to space-around
-                    width: "80%", // Reduced width for better centering
+                    justifyContent: "center",
+                    width: "100%",
+                    marginTop: scale(12), // Increased from 8 to 12 for better spacing
+                    gap: scale(24), // Increased from 16 to 24 for better spacing between buttons
                   }}
                 >
                   <SocialShareButton
                     platform="facebook"
                     onPress={() => handleShare("facebook")}
-                    size="medium"
+                    size="medium" // Changed from small to medium
                   />
                   <SocialShareButton
                     platform="x"
                     onPress={() => handleShare("x")}
-                    size="medium"
+                    size="medium" // Changed from small to medium
                   />
                 </View>
               </View>

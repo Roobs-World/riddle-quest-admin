@@ -95,7 +95,7 @@ const SocialShareButton: React.FC<SocialShareButtonProps> = ({
   const getTextStyle = () => {
     const baseTextStyle = {
       fontWeight: "bold" as const, // Changed from "600" to "bold" to match modal text patterns
-      marginLeft: SPACING.xs,
+      marginLeft: platform === "x" ? scale(4) : SPACING.xs, // Adjust margin for X platform
     };
 
     const sizeTextStyles = {
@@ -145,6 +145,10 @@ const SocialShareButton: React.FC<SocialShareButtonProps> = ({
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "center",
+          // Add specific adjustments for X platform
+          ...(platform === "x" && {
+            paddingLeft: scale(2), // Slight adjustment for X logo
+          }),
         }}
       >
         {getIcon()}

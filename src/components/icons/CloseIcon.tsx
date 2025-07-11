@@ -1,5 +1,5 @@
 import React from "react";
-import CloseSvg from "@images/close.svg";
+import CloseSvg from "../../../assets/images/close.svg";
 
 interface CloseIconProps {
   width?: number | string;
