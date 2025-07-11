@@ -354,7 +354,7 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
                   style={{
                     position: "relative",
                     alignItems: "center",
-                    marginTop: -100, // Adjusted from -80 to -60
+                    marginTop: -90, // Adjusted from -80 to -60
                   }}
                 >
                   <ChestSvg width={scale(320)} height={scale(240)} />
