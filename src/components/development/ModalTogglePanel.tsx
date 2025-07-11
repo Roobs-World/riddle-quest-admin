@@ -51,7 +51,10 @@ interface ModalToggleState {
 /**
  * Generate Mock Data for Modal Testing
  */
-const generateMockData = (modalType: string): ModalData => {
+const generateMockData = (
+  modalType: string,
+  closeModalFn?: (type: string) => void
+): ModalData => {
   const mockPlayer: Player = {
     userId: "test-user-123",
     username: "TestPlayer",
@@ -122,7 +125,26 @@ const generateMockData = (modalType: string): ModalData => {
         attempts: 3,
         coinsEarned: 50,
         guesses: mockGuesses,
-        ...commonCallbacks,
+        onNext: async () => {
+          console.log("[VictoryModal Debug] Next level button pressed");
+          // Close the modal first
+          console.log("[VictoryModal Debug] Closing modal");
+          if (closeModalFn) closeModalFn("victory");
+
+          // Simulate navigation to next level - in debug mode, this just logs the action
+          console.log(
+            "[VictoryModal Debug] Would navigate to next level in real app"
+          );
+
+          // You could add additional logic here to actually load the next level
+          // For example, if you have access to the navigation context:
+          // const { onNextLevel } = useContext(GameContext);
+          // if (onNextLevel) await onNextLevel();
+        },
+        onHome: () => {
+          console.log("[VictoryModal Debug] Home button pressed");
+          if (closeModalFn) closeModalFn("victory");
+        },
       };
     case "loss":
       return { correctAnswer: "MOUSE", ...commonCallbacks };
@@ -244,7 +266,7 @@ const ModalTogglePanel: React.FC = () => {
       const ModalComponent = getModalComponent(modalType);
       if (!ModalComponent) return null;
 
-      const mockData = generateMockData(modalType);
+      const mockData = generateMockData(modalType, closeModal);
 
       return (
         <ModalComponent

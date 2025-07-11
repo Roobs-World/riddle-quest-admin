@@ -78,10 +78,20 @@ const GameScreenWrapper = () => {
   };
 
   const handleNextLevel = async () => {
-    if (!playerData) return;
+    console.log("NavigationStack: handleNextLevel called");
+
+    if (!playerData) {
+      console.warn(
+        "NavigationStack: handleNextLevel - No player data available"
+      );
+      return;
+    }
 
     // For daily challenge mode, check for completion after winning
     if (gameMode === "daily") {
+      console.log(
+        "NavigationStack: handleNextLevel - Daily challenge mode detected"
+      );
       const isCompleted = await checkDailyChallengeCompletion();
       if (isCompleted) {
         // Don't advance to next level, user has completed all 5 questions
@@ -89,19 +99,36 @@ const GameScreenWrapper = () => {
         return;
       }
       // If not completed, fetch next daily challenge question
+      console.log(
+        "NavigationStack: handleNextLevel - Fetching next daily challenge question"
+      );
       await fetchCurrentRiddle(playerData, gameMode);
+      console.log(
+        "NavigationStack: handleNextLevel - Daily challenge question fetched"
+      );
       return;
     }
 
     // For classic mode, advance to next level
+    console.log("NavigationStack: handleNextLevel - Classic mode detected");
     const nextClassicIndex = (playerData.progress?.classicIndex || 0) + 1;
+    console.log(
+      `NavigationStack: handleNextLevel - Moving to classic index: ${nextClassicIndex}`
+    );
 
     try {
+      console.log(
+        `NavigationStack: handleNextLevel - Fetching classic riddle with index: ${nextClassicIndex}`
+      );
       const nextRiddle = await fetchClassicRiddleFromFirestore(
         nextClassicIndex
       );
 
       if (nextRiddle) {
+        console.log(
+          "NavigationStack: handleNextLevel - Next riddle fetched successfully:",
+          nextRiddle.riddleId
+        );
         setCurrentRiddle(nextRiddle);
       } else {
         console.log(

@@ -254,11 +254,20 @@ const GameScreen: React.FC<GameScreenProps> = ({
           attempts: guesses.length,
           coinsEarned: result.coinsEarned || 0,
           guesses: guesses,
-          onNext: () => {
+          onNext: async () => {
             console.log("Victory modal: Next level button pressed");
+            console.log("Closing victory modal...");
             modal.closeModalByType("victory");
+            console.log("Resetting game...");
             resetGame();
-            onNextLevel();
+            console.log("Calling onNextLevel...");
+            try {
+              // Make sure we await the async onNextLevel function
+              await onNextLevel();
+              console.log("onNextLevel completed successfully");
+            } catch (error) {
+              console.error("Error calling onNextLevel:", error);
+            }
           },
           onHome: () => {
             console.log("Victory modal: Home button pressed");

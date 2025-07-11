@@ -250,7 +250,7 @@ const ModalRenderer: React.FC<{
   };
 
   switch (modalType) {
-    case "victory":
+    case "victory": {
       console.log("Rendering VictoryModal with data:", {
         attempts: (modalData as VictoryModalData).attempts,
         coinsEarned: (modalData as VictoryModalData).coinsEarned,
@@ -259,6 +259,17 @@ const ModalRenderer: React.FC<{
         guessesLength: ((modalData as VictoryModalData).guesses || []).length,
         onClose: typeof onClose === "function",
       });
+
+      // Debug the onNext function
+      const onNextFn = (modalData as VictoryModalData).onNext;
+      console.log("VictoryModal onNext function details:", {
+        isDefined: !!onNextFn,
+        type: typeof onNextFn,
+        functionToString: onNextFn
+          ? onNextFn.toString().substring(0, 100) + "..."
+          : "undefined",
+      });
+
       return (
         <VictoryModal
           {...commonProps}
@@ -270,6 +281,7 @@ const ModalRenderer: React.FC<{
           onClose={onClose}
         />
       );
+    }
 
     case "loss":
       return (

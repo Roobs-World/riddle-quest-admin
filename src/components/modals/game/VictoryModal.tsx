@@ -208,15 +208,44 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
    * Handle next level button press
    * This ensures both the onNextLevel callback is called and the modal is closed
    */
-  const handleNextLevel = () => {
+  const handleNextLevel = async () => {
     console.log("Next Level button pressed in VictoryModal");
-    if (typeof onClose === "function") {
-      console.log("Calling onClose");
-      onClose();
-    }
+    console.log("onNextLevel type:", typeof onNextLevel);
+    console.log("onClose type:", typeof onClose);
+
+    // First call onNextLevel if it exists
     if (typeof onNextLevel === "function") {
       console.log("Calling onNextLevel");
-      onNextLevel();
+      try {
+        // Handle both async and non-async onNextLevel functions
+        await Promise.resolve(onNextLevel());
+        console.log("onNextLevel called successfully");
+      } catch (error) {
+        console.error("Error calling onNextLevel:", error);
+
+        // Even if onNextLevel fails, still try to close the modal
+        console.log("Attempting to close modal after onNextLevel error");
+      }
+    } else {
+      console.warn("onNextLevel is not a function or is undefined");
+
+      // Special handling for debug mode - just close the modal
+      console.log("In debug mode or missing callback - just closing modal");
+    }
+
+    // Then close the modal
+    if (typeof onClose === "function") {
+      console.log("Calling onClose");
+      try {
+        onClose();
+        console.log("onClose called successfully");
+      } catch (error) {
+        console.error("Error calling onClose:", error);
+        console.log("Modal may remain open due to onClose error");
+      }
+    } else {
+      console.warn("onClose is not a function or is undefined");
+      console.log("Cannot close modal - onClose callback is missing");
     }
   };
 
