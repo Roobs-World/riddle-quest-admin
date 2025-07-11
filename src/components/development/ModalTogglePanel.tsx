@@ -115,6 +115,7 @@ const generateMockData = (
 
   const commonCallbacks = {
     onNext: () => console.log(`[${modalType}] Next pressed`),
+    onNextLevel: () => console.log(`[${modalType}] Next level pressed`),
     onHome: () => console.log(`[${modalType}] Home pressed`),
     onClose: () => console.log(`[${modalType}] Close pressed`),
   };
@@ -147,7 +148,28 @@ const generateMockData = (
         },
       };
     case "loss":
-      return { correctAnswer: "MOUSE", ...commonCallbacks };
+      return {
+        correctAnswer: "MOUSE",
+        onNextLevel: async () => {
+          console.log("[LossModal Debug] Next level button pressed");
+          // Close the modal first
+          console.log("[LossModal Debug] Closing modal");
+          if (closeModalFn) closeModalFn("loss");
+
+          // Simulate navigation to next level - in debug mode, this just logs the action
+          console.log(
+            "[LossModal Debug] Would navigate to next level in real app"
+          );
+        },
+        onHome: () => {
+          console.log("[LossModal Debug] Home button pressed");
+          if (closeModalFn) closeModalFn("loss");
+        },
+        onClose: () => {
+          console.log("[LossModal Debug] Close button pressed");
+          if (closeModalFn) closeModalFn("loss");
+        },
+      };
     case "outOfAttempts":
       return {
         userCoins: 75,

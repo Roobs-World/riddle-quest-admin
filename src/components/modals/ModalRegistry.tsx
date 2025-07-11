@@ -193,7 +193,7 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
   loss: createModalWrapper(LossModal, (props: BaseModalProps & ModalData) => ({
     isVisible: props.isVisible,
     correctAnswer: (props.correctAnswer as string) || "",
-    onNextLevel: (props.onNext as () => void) || (() => {}),
+    onNextLevel: (props.onNextLevel as () => void) || (() => {}),
     onHome: (props.onHome as () => void) || (() => {}),
     onClose: props.onClose,
   })),

@@ -65,12 +65,12 @@ interface VictoryModalData {
  * Data structure for loss modal when player fails to solve a riddle.
  *
  * @property {string} correctAnswer - The correct answer to show player
- * @property {() => void} onNext - Callback to try next level
+ * @property {() => void} onNextLevel - Callback to go to next level
  * @property {() => void} onHome - Callback to return to home screen
  */
 interface LossModalData {
   correctAnswer: string;
-  onNext: () => void;
+  onNextLevel: () => void;
   onHome: () => void;
 }
 
@@ -288,7 +288,7 @@ const ModalRenderer: React.FC<{
         <LossModal
           {...commonProps}
           correctAnswer={(modalData as LossModalData).correctAnswer}
-          onNextLevel={(modalData as LossModalData).onNext}
+          onNextLevel={(modalData as LossModalData).onNextLevel}
           onHome={(modalData as LossModalData).onHome}
           onClose={onClose}
         />
