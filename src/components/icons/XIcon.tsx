@@ -4,32 +4,41 @@ import xLogo from "../../../assets/images/x-logo.png";
 
 interface XIconProps {
   width?: number | string;
-  height?: number | string;
 }
 
-const XIcon = ({ width, height }: XIconProps) => {
-  const iconSize = typeof width === "string" ? parseInt(width) : width;
-  const iconHeight = typeof height === "string" ? parseInt(height) : height;
+const XIcon = ({ width }: XIconProps) => {
+  const iconSize = typeof width === "string" ? parseInt(width) : width || 24;
+  const iconHeight = 24;
 
   return (
     <View
       style={{
         width: iconSize,
         height: iconHeight,
-        alignItems: "center",
-        justifyContent: "center",
-        overflow: "hidden",
+        position: "relative",
       }}
     >
-      <Image
-        source={xLogo}
+      <View
         style={{
-          width: "100%", // Changed from 90% to 100% for better visibility
-          height: "100%", // Changed from 90% to 100%
-          resizeMode: "contain",
-          alignSelf: "center", // Added to ensure proper centering
+          position: "absolute",
+          top: 0,
+
+          right: 0,
+          bottom: 0,
+          justifyContent: "center",
+          alignItems: "center",
         }}
-      />
+      >
+        <Image
+          source={xLogo}
+          style={{
+            width: iconSize * 0.6,
+            height: iconHeight * 0.6,
+            resizeMode: "contain",
+            padding: 18,
+          }}
+        />
+      </View>
     </View>
   );
 };

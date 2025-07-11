@@ -49,9 +49,13 @@ export const useModal = () => {
   // Close modal by type (closes the first modal of that type)
   const closeModalByType = useCallback(
     (type: string): void => {
+      console.log(`Attempting to close modal of type: ${type}`);
       const modal = context.modals.find((m) => m.type === type);
       if (modal) {
+        console.log(`Found modal with ID: ${modal.id}, closing it`);
         context.closeModal(modal.id);
+      } else {
+        console.log(`No modal of type ${type} found to close`);
       }
     },
     [context]

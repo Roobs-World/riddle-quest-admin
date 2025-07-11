@@ -251,6 +251,14 @@ const ModalRenderer: React.FC<{
 
   switch (modalType) {
     case "victory":
+      console.log("Rendering VictoryModal with data:", {
+        attempts: (modalData as VictoryModalData).attempts,
+        coinsEarned: (modalData as VictoryModalData).coinsEarned,
+        onNext: typeof (modalData as VictoryModalData).onNext === "function",
+        onHome: typeof (modalData as VictoryModalData).onHome === "function",
+        guessesLength: ((modalData as VictoryModalData).guesses || []).length,
+        onClose: typeof onClose === "function",
+      });
       return (
         <VictoryModal
           {...commonProps}
@@ -259,6 +267,7 @@ const ModalRenderer: React.FC<{
           onNextLevel={(modalData as VictoryModalData).onNext}
           onHome={(modalData as VictoryModalData).onHome}
           guesses={(modalData as VictoryModalData).guesses || []}
+          onClose={onClose}
         />
       );
 

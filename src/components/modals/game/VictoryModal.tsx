@@ -22,7 +22,6 @@ import Animated, {
 } from "react-native-reanimated";
 import type { SubmittedGuess } from "../../../hooks/types";
 import { generateFeedbackEmojiGrid } from "../../../utils/gameUtils";
-import CloseButton from "../../buttons/CloseButton";
 import WideButton from "../../buttons/WideButton";
 import SocialShareButton from "../../buttons/SocialShareButton";
 import WheelBgSvg from "../../../../assets/images/wheel-bg.svg";
@@ -70,6 +69,9 @@ interface VictoryModalProps {
 
   /** Game mode for contextual sharing text */
   gameMode?: "daily" | "classic";
+
+  /** Function to close the modal (from BaseModalProps) */
+  onClose: () => void;
 }
 
 /**
@@ -133,7 +135,17 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
   onHome,
   guesses,
   gameMode = "daily",
+  onClose,
 }) => {
+  console.log("VictoryModal rendered with props:", {
+    isVisible,
+    attempts,
+    coinsEarned,
+    onNextLevel: typeof onNextLevel === "function",
+    onHome: typeof onHome === "function",
+    guessesLength: guesses?.length,
+    onClose: typeof onClose === "function",
+  });
   /**
    * Generate emoji grid representation of the player's guesses.
    * This creates a shareable visual summary of the solution path
@@ -192,12 +204,31 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
     }
   };
 
+  /**
+   * Handle next level button press
+   * This ensures both the onNextLevel callback is called and the modal is closed
+   */
+  const handleNextLevel = () => {
+    console.log("Next Level button pressed in VictoryModal");
+    if (typeof onClose === "function") {
+      console.log("Calling onClose");
+      onClose();
+    }
+    if (typeof onNextLevel === "function") {
+      console.log("Calling onNextLevel");
+      onNextLevel();
+    }
+  };
+
   return (
     <Modal
       animationType="slide"
       transparent={false}
       visible={isVisible}
-      onRequestClose={onHome}
+      onRequestClose={() => {
+        console.log("Modal onRequestClose triggered");
+        onHome();
+      }}
       accessibilityLabel="Victory celebration modal"
     >
       <SafeAreaView style={{ flex: 1, backgroundColor: "transparent" }}>
@@ -250,30 +281,6 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
               marginBottom: SPACING.lg,
             }}
           />
-
-          {/* Close Button */}
-          <View
-            style={{
-              position: "absolute",
-              top: SPACING.xl,
-              right: SPACING.lg,
-              zIndex: 10,
-              backgroundColor: COLORS.white,
-              borderRadius: BORDER_RADIUS.full,
-              elevation: 4,
-              shadowColor: COLORS.shadowColor,
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.2,
-              shadowRadius: 3,
-              padding: scale(2), // Added padding around the button
-            }}
-          >
-            <CloseButton
-              onPress={onHome}
-              size={scale(32)} // Increased size from 28 to 32 for better visibility
-              accessibilityLabel="Close victory modal"
-            />
-          </View>
 
           {/* Header */}
           <View
@@ -432,22 +439,25 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
                 {/* Social Share Buttons */}
                 <View
                   style={{
-                    flexDirection: "row",
+                    flexDirection: "column",
                     justifyContent: "center",
-                    width: "100%",
-                    marginTop: scale(12), // Increased from 8 to 12 for better spacing
-                    gap: scale(24), // Increased from 16 to 24 for better spacing between buttons
+                    alignItems: "center",
+                    width: "80%",
+                    marginTop: scale(12),
+                    gap: scale(16),
                   }}
                 >
                   <SocialShareButton
                     platform="facebook"
                     onPress={() => handleShare("facebook")}
-                    size="medium" // Changed from small to medium
+                    size="medium"
+                    fullWidth
                   />
                   <SocialShareButton
                     platform="x"
                     onPress={() => handleShare("x")}
-                    size="medium" // Changed from small to medium
+                    size="medium"
+                    fullWidth
                   />
                 </View>
               </View>
@@ -464,13 +474,8 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
           >
             <WideButton
               buttonText="Next Level"
-              onPress={onNextLevel}
+              onPress={handleNextLevel}
               buttonColor="bg-blue-500"
-            />
-            <WideButton
-              buttonText="Home"
-              onPress={onHome}
-              buttonColor="bg-gray-500"
             />
           </View>
         </View>

@@ -11,7 +11,13 @@
  */
 
 import React from "react";
-import { TouchableOpacity, Text, View } from "react-native";
+import {
+  TouchableOpacity,
+  Text,
+  View,
+  StyleSheet,
+  ViewStyle,
+} from "react-native";
 import FacebookIcon from "../icons/FacebookIcon";
 import XIcon from "../icons/XIcon";
 import { COLORS } from "../../styles/tokens/colors";
@@ -24,6 +30,7 @@ interface SocialShareButtonProps {
   onPress: () => void;
   disabled?: boolean;
   size?: "small" | "medium" | "large";
+  fullWidth?: boolean;
 }
 
 const SocialShareButton: React.FC<SocialShareButtonProps> = ({
@@ -31,25 +38,27 @@ const SocialShareButton: React.FC<SocialShareButtonProps> = ({
   onPress,
   disabled = false,
   size = "medium",
+  fullWidth = false,
 }) => {
   const getIcon = () => {
+    // Standard icon sizes for all platforms
     const iconSize = size === "small" ? 20 : size === "medium" ? 24 : 32;
 
     switch (platform) {
       case "facebook":
         return <FacebookIcon width={iconSize} height={iconSize} />;
       case "x":
-        return <XIcon width={iconSize} height={iconSize} />;
+        return <XIcon width={iconSize} />;
       default:
         return null;
     }
   };
 
   const getButtonStyle = () => {
-    const baseStyle = {
-      flexDirection: "row" as const,
-      alignItems: "center" as const,
-      justifyContent: "center" as const,
+    const baseStyle: ViewStyle = {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
       borderRadius: BORDER_RADIUS.lg,
       shadowColor: COLORS.shadowColor,
       shadowOffset: { width: 0, height: 2 },
@@ -81,21 +90,24 @@ const SocialShareButton: React.FC<SocialShareButtonProps> = ({
         backgroundColor: disabled ? COLORS.gray200 : "#1877F2",
       },
       x: {
-        backgroundColor: disabled ? COLORS.gray200 : "#000000", // X uses black branding
+        backgroundColor: disabled ? COLORS.gray200 : "white", // X uses black branding
       },
     };
+
+    const widthStyle: ViewStyle = fullWidth ? { width: "100%" } : {};
 
     return {
       ...baseStyle,
       ...sizeStyles[size],
       ...platformStyles[platform],
+      ...widthStyle,
     };
   };
 
   const getTextStyle = () => {
     const baseTextStyle = {
-      fontWeight: "bold" as const, // Changed from "600" to "bold" to match modal text patterns
-      marginLeft: platform === "x" ? scale(4) : SPACING.xs, // Adjust margin for X platform
+      fontWeight: "bold" as const,
+      marginLeft: SPACING.xs,
     };
 
     const sizeTextStyles = {
@@ -110,8 +122,12 @@ const SocialShareButton: React.FC<SocialShareButtonProps> = ({
       },
     };
 
-    // Ensure white text for better visibility, especially on X's black background
-    const textColor = disabled ? COLORS.gray400 : "#FFFFFF";
+    // Platform-specific text colors
+    const textColor = disabled
+      ? COLORS.gray400
+      : platform === "x"
+      ? "#000000"
+      : "#FFFFFF";
 
     return {
       ...baseTextStyle,
@@ -125,11 +141,13 @@ const SocialShareButton: React.FC<SocialShareButtonProps> = ({
       case "facebook":
         return "Facebook";
       case "x":
-        return "X";
+        return "";
       default:
         return "";
     }
   };
+
+  const platformText = getPlatformText();
 
   return (
     <TouchableOpacity
@@ -137,25 +155,40 @@ const SocialShareButton: React.FC<SocialShareButtonProps> = ({
       onPress={disabled ? undefined : onPress}
       disabled={disabled}
       activeOpacity={0.8}
-      accessibilityLabel={`Share to ${getPlatformText()}`}
+      accessibilityLabel={`Share to ${platformText || platform}`}
       accessibilityRole="button"
     >
       <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-          // Add specific adjustments for X platform
-          ...(platform === "x" && {
-            paddingLeft: scale(2), // Slight adjustment for X logo
-          }),
-        }}
+        style={[
+          styles.contentContainer,
+          platform === "facebook"
+            ? styles.facebookContentContainer
+            : styles.xContentContainer,
+        ]}
       >
         {getIcon()}
-        <Text style={getTextStyle()}>{getPlatformText()}</Text>
+        {platformText ? (
+          <Text style={getTextStyle()}>{platformText}</Text>
+        ) : null}
       </View>
     </TouchableOpacity>
   );
 };
+
+const styles = StyleSheet.create({
+  contentContainer: {
+    alignItems: "center",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    width: "100%",
+  },
+  facebookContentContainer: {
+    transform: [{ translateX: -15 }],
+  },
+  xContentContainer: {
+    transform: [{ translateX: 5 }],
+  },
+});
 
 export default SocialShareButton;

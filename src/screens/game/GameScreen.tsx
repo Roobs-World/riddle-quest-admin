@@ -255,11 +255,13 @@ const GameScreen: React.FC<GameScreenProps> = ({
           coinsEarned: result.coinsEarned || 0,
           guesses: guesses,
           onNext: () => {
+            console.log("Victory modal: Next level button pressed");
             modal.closeModalByType("victory");
             resetGame();
             onNextLevel();
           },
           onHome: () => {
+            console.log("Victory modal: Home button pressed");
             modal.closeModalByType("victory");
             resetGame();
           },
