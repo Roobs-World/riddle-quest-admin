@@ -3,12 +3,19 @@ import { render } from "@testing-library/react-native";
 import HintModal from "../HintModal";
 
 // Mock dependencies
-jest.mock("../buttons/CloseButton", () => "CloseButton");
+jest.mock("../../../buttons/CloseButton", () => "CloseButton");
 jest.mock("react-native", () => ({
   View: "View",
   Text: "Text",
   Modal: "Modal",
   TouchableOpacity: "TouchableOpacity",
+  Dimensions: {
+    get: jest.fn().mockReturnValue({ width: 390, height: 844 }),
+    addEventListener: jest.fn().mockReturnValue({ remove: jest.fn() }),
+  },
+  StyleSheet: {
+    create: jest.fn((styles) => styles),
+  },
 }));
 
 describe("HintModal", () => {

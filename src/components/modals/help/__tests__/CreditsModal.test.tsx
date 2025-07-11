@@ -2,6 +2,9 @@ import React from "react";
 import { render, fireEvent, screen } from "@testing-library/react-native";
 import CreditsModal from "../CreditsModal";
 
+// Mock SVG component
+jest.mock("../../../../assets/images/home-bg.svg", () => "HomeBgSvg");
+
 describe("CreditsModal", () => {
   const mockOnClose = jest.fn();
 
@@ -12,7 +15,7 @@ describe("CreditsModal", () => {
   it("renders correctly when visible", () => {
     render(<CreditsModal isVisible={true} onClose={mockOnClose} />);
 
-    expect(screen.getByText("Credits")).toBeTruthy();
+    expect(screen.getByText("🎉 Credits")).toBeTruthy();
     expect(
       screen.getByText("Meet the amazing team behind Qwordly")
     ).toBeTruthy();
@@ -22,20 +25,22 @@ describe("CreditsModal", () => {
     expect(
       screen.getByText("Game Designer, Publisher, Overall Hero")
     ).toBeTruthy();
-    expect(screen.getByText("Thank You!")).toBeTruthy();
+    expect(screen.getByText("🙏 Thank You!")).toBeTruthy();
     expect(screen.getByText("Got It!")).toBeTruthy();
   });
 
   it("does not render when not visible", () => {
     render(<CreditsModal isVisible={false} onClose={mockOnClose} />);
 
-    expect(screen.queryByText("Credits")).toBeNull();
+    // Modal is not visible so we shouldn't find this text
+    expect(screen.queryByText("🎉 Credits")).toBeNull();
   });
 
   it("calls onClose when close button is pressed", () => {
     render(<CreditsModal isVisible={true} onClose={mockOnClose} />);
 
-    const closeButton = screen.getByRole("button");
+    // Find by accessibility label since we don't have a direct text label
+    const closeButton = screen.getByLabelText("Close credits modal");
     fireEvent.press(closeButton);
 
     expect(mockOnClose).toHaveBeenCalledTimes(1);

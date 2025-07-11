@@ -107,6 +107,7 @@ export class GameStateManager {
         guess: this.state.currentGuess,
         riddleId: this.config.riddleId,
         gameMode: this.config.mode === "daily" ? "challenge" : "classic",
+        attempts: this.state.guesses.length + 1, // Add the current attempt number
       };
 
       const result = await RiddleService.submitGuess(guessData);

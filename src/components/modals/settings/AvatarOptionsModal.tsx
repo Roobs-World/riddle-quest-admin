@@ -1,23 +1,16 @@
 import React from "react";
-import { View, Text, Modal, SafeAreaView, Alert } from "react-native";
+import { View, Text, Modal, Alert } from "react-native";
 import * as ImagePicker from "react-native-image-picker";
-import {
-  getStorage,
-  FirebaseStorageTypes,
-} from "@react-native-firebase/storage";
+import { getStorage } from "@react-native-firebase/storage";
 import { getAuth } from "@react-native-firebase/auth";
 import { getApp } from "@react-native-firebase/app";
 import { useAuth } from "../../../contexts/AuthContext";
 import WideButton from "../../buttons/WideButton";
 import { TYPOGRAPHY } from "src/styles";
+import ModalBg from "../../../../assets/images/modal-bg.svg";
+import { scale } from "src/utils/responsive";
+import CloseButton from "../../buttons/CloseButton";
 
-/**
- * Props for the AvatarOptionsModal component.
- * @property {boolean} isVisible - Controls the visibility of the modal.
- * @property {() => void} onClose - Function to call when the modal is closed.
- * @property {() => void} onOpenPreloadedAvatars - Function to open the preloaded avatars modal.
- * @property {string | null} userId - The user's ID for avatar upload.
- */
 interface AvatarOptionsModalProps {
   isVisible: boolean;
   onClose: () => void;
@@ -25,10 +18,6 @@ interface AvatarOptionsModalProps {
   userId: string | null;
 }
 
-/**
- * Modal component for avatar update options.
- * Provides options to upload from photo library, choose from preloaded avatars, or use Facebook photo.
- */
 const AvatarOptionsModal: React.FC<AvatarOptionsModalProps> = ({
   isVisible,
   onClose,
@@ -37,7 +26,6 @@ const AvatarOptionsModal: React.FC<AvatarOptionsModalProps> = ({
 }) => {
   const { updatePlayerData } = useAuth();
 
-  // Function to get Facebook photo URL from provider data
   const getFacebookPhotoUrl = () => {
     const facebookProviderData = getAuth(
       getApp()
@@ -46,7 +34,7 @@ const AvatarOptionsModal: React.FC<AvatarOptionsModalProps> = ({
   };
 
   const handleUploadAvatar = async () => {
-    onClose(); // Close options modal
+    onClose();
     try {
       const result = await ImagePicker.launchImageLibrary({
         mediaType: "photo",
@@ -56,10 +44,9 @@ const AvatarOptionsModal: React.FC<AvatarOptionsModalProps> = ({
       });
 
       if (result.didCancel) {
-        console.log("User cancelled image picker");
-      } else if (result.errorMessage) {
-        console.log("ImagePicker Error: ", result.errorMessage);
-      } else if (result.assets && result.assets.length > 0) {
+        return;
+      }
+      if (result.assets && result.assets.length > 0) {
         const selectedAsset = result.assets[0];
         if (selectedAsset.uri && userId) {
           const uploadUri = selectedAsset.uri;
@@ -69,45 +56,27 @@ const AvatarOptionsModal: React.FC<AvatarOptionsModalProps> = ({
           );
 
           const task = storageRef.putFile(uploadUri);
+          task.on("state_changed", () => {});
+          await task;
+          const downloadURL = await storageRef.getDownloadURL();
+          await updatePlayerData({ avatarUrl: downloadURL });
 
-          task.on(
-            "state_changed",
-            (snapshot: FirebaseStorageTypes.TaskSnapshot) => {
-              const progress =
-                (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-              console.log("Upload is " + progress + "% done");
-            }
-          );
-
-          task.then(async () => {
-            console.log("Image uploaded to the bucket!");
-            const downloadURL = await storageRef.getDownloadURL();
-            console.log("File available at", downloadURL);
-
-            // Update the avatarUrl in the user's Firestore document
-            await updatePlayerData({ avatarUrl: downloadURL });
-
-            Alert.alert("Success", "Avatar updated successfully!");
-            console.log("Avatar URL updated successfully.");
-          });
+          Alert.alert("Success", "Avatar updated successfully!");
         }
       }
-    } catch (error) {
-      console.error("Avatar selection or upload error:", error);
+    } catch {
       Alert.alert("Error", "Could not update avatar. Please try again.");
     }
   };
 
   const handleUseFacebookAvatar = async () => {
-    onClose(); // Close options modal
+    onClose();
     const facebookPhotoUrl = getFacebookPhotoUrl();
-
     if (facebookPhotoUrl) {
       try {
         await updatePlayerData({ avatarUrl: facebookPhotoUrl });
         Alert.alert("Success", "Avatar updated to Facebook photo!");
-      } catch (error) {
-        console.error("Error setting Facebook avatar:", error);
+      } catch {
         Alert.alert(
           "Error",
           "Could not set Facebook avatar. Please try again."
@@ -133,43 +102,68 @@ const AvatarOptionsModal: React.FC<AvatarOptionsModalProps> = ({
       animationType="fade"
       onRequestClose={onClose}
     >
-      <SafeAreaView className="flex-1 justify-end bg-black/50">
-        <View className="bg-white p-6 rounded-t-lg w-full">
-          <Text
-            className="text-xl font-bold text-gray-800 mb-6 text-center"
-            style={{ fontFamily: TYPOGRAPHY.fontPrimary }}
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "rgba(0,0,0,0.6)",
+        }}
+      >
+        <View
+          style={{
+            width: 335,
+            height: 423,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <ModalBg style={{ position: "absolute" }} />
+          <View
+            style={{
+              width: "80%",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
           >
-            Update Avatar
-          </Text>
-
-          {/* Option: Upload from Library */}
-          <WideButton
-            buttonText="Upload from Photo Library"
-            onPress={handleUploadAvatar}
-          />
-
-          {/* Option: Choose from Preloaded */}
-          <WideButton
-            buttonText="Choose from Our Avatars"
-            onPress={handleChoosePreloadedAvatars}
-          />
-
-          {/* Option: Use Facebook Photo (Conditional) */}
-          {getFacebookPhotoUrl() && (
-            <WideButton
-              buttonText="Use Facebook Photo"
-              onPress={handleUseFacebookAvatar}
+            <CloseButton
+              onPress={onClose}
+              size={20}
+              style={{ position: "absolute", top: -60, right: -20, zIndex: 10 }}
             />
-          )}
+            <Text
+              style={{
+                fontFamily: TYPOGRAPHY.fontPrimary,
+                fontSize: scale(24),
+                color: "white",
+                marginBottom: 20,
+                textAlign: "center",
+              }}
+            >
+              Update Avatar
+            </Text>
 
-          {/* Cancel Button */}
-          <WideButton
-            buttonText="Cancel"
-            buttonColor="bg-gray-500"
-            onPress={onClose}
-          />
+            <WideButton
+              buttonText="Upload from Photo Library"
+              onPress={handleUploadAvatar}
+            />
+            <View style={{ height: 10 }} />
+            <WideButton
+              buttonText="Choose from Our Avatars"
+              onPress={handleChoosePreloadedAvatars}
+            />
+            {getFacebookPhotoUrl() && (
+              <>
+                <View style={{ height: 10 }} />
+                <WideButton
+                  buttonText="Use Facebook Photo"
+                  onPress={handleUseFacebookAvatar}
+                />
+              </>
+            )}
+          </View>
         </View>
-      </SafeAreaView>
+      </View>
     </Modal>
   );
 };

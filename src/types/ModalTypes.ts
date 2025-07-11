@@ -70,22 +70,10 @@ export interface GameModalTypes {
     onHome: () => void;
   };
 
-  outOfAttempts: {
-    userCoins: number;
-    continueCost: number;
-    onWatchAd: () => void;
-    onSpendCoins: () => void;
-  };
-
-  watchAdForChance: {
-    onWatchAd: () => void;
-  };
-
-  dailyChallengeCompletion: {
-    questionsCompleted: number;
-    totalQuestions: number;
-    coinsEarned: number;
-    onContinue: () => void;
+  // Game mode selection modal
+  gameMode: {
+    onSelectMode: (mode: "classic" | "daily") => void;
+    currentLevel?: number;
   };
 
   // Settings modals

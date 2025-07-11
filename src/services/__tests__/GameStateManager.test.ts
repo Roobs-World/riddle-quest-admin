@@ -451,6 +451,7 @@ describe("GameStateManager", () => {
         guess: "hello",
         riddleId: "test-riddle-id",
         gameMode: "classic",
+        attempts: 1,
       });
     });
 
@@ -481,6 +482,7 @@ describe("GameStateManager", () => {
         guess: "hello",
         riddleId: "daily-riddle",
         gameMode: "challenge",
+        attempts: 1,
       });
     });
   });

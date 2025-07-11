@@ -12,7 +12,7 @@ jest.mock("../../../../contexts/AuthContext", () => ({
 }));
 
 // Mock CloseButton
-jest.mock("../../buttons/CloseButton", () => {
+jest.mock("../../../buttons/CloseButton", () => {
   const MockCloseButton = ({ onPress }: { onPress: () => void }) => {
     const { TouchableOpacity, Text } = require("react-native");
     return (
@@ -95,14 +95,15 @@ describe("ProfileOverlay", () => {
   const mockOnFullProfilePress = jest.fn();
 
   const defaultPlayerData: Player = {
-    userId: "test-user-id",
+    userId: "test123",
     username: "TestUser",
     email: "test@example.com",
+    displayName: "Test User",
     avatarUrl: "https://example.com/avatar.jpg",
     coins: 150,
     createdAt: Date.now(),
+    registeredAt: Date.now(),
     lastLogin: Date.now(),
-    xp: 0,
     hasPurchasedApp: false,
     stats: {
       totalWordsGuessed: 42,

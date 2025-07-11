@@ -51,7 +51,6 @@ describe("GuessGrid", () => {
   const defaultProps = {
     guesses: [] as SubmittedGuess[],
     currentGuess: [] as string[],
-    shakeKey: 0,
     answerLength: 4,
     setTileRef: mockSetTileRef,
   };
@@ -248,73 +247,8 @@ describe("GuessGrid", () => {
     });
   });
 
-  describe("Shake Animation", () => {
-    it("should handle shake key changes", () => {
-      const { rerender } = render(<GuessGrid {...defaultProps} shakeKey={0} />);
-
-      expect(() => {
-        rerender(<GuessGrid {...defaultProps} shakeKey={1} />);
-      }).not.toThrow();
-    });
-
-    it("should handle multiple shake animations", () => {
-      const { rerender } = render(<GuessGrid {...defaultProps} shakeKey={0} />);
-
-      expect(() => {
-        rerender(<GuessGrid {...defaultProps} shakeKey={1} />);
-        rerender(<GuessGrid {...defaultProps} shakeKey={2} />);
-        rerender(<GuessGrid {...defaultProps} shakeKey={3} />);
-      }).not.toThrow();
-    });
-  });
-
   describe("Feedback Colors", () => {
-    it("should handle green feedback", () => {
-      const guesses: SubmittedGuess[] = [
-        {
-          guess: ["T"],
-          feedback: ["green"],
-        },
-      ];
-
-      expect(() => {
-        render(
-          <GuessGrid {...defaultProps} guesses={guesses} answerLength={1} />
-        );
-      }).not.toThrow();
-    });
-
-    it("should handle yellow feedback", () => {
-      const guesses: SubmittedGuess[] = [
-        {
-          guess: ["T"],
-          feedback: ["yellow"],
-        },
-      ];
-
-      expect(() => {
-        render(
-          <GuessGrid {...defaultProps} guesses={guesses} answerLength={1} />
-        );
-      }).not.toThrow();
-    });
-
-    it("should handle red feedback", () => {
-      const guesses: SubmittedGuess[] = [
-        {
-          guess: ["T"],
-          feedback: ["red"],
-        },
-      ];
-
-      expect(() => {
-        render(
-          <GuessGrid {...defaultProps} guesses={guesses} answerLength={1} />
-        );
-      }).not.toThrow();
-    });
-
-    it("should handle mixed feedback in one guess", () => {
+    it("should display correct feedback colors", () => {
       const guesses: SubmittedGuess[] = [
         {
           guess: ["T", "E", "S", "T"],
@@ -326,120 +260,114 @@ describe("GuessGrid", () => {
         render(<GuessGrid {...defaultProps} guesses={guesses} />);
       }).not.toThrow();
     });
-  });
 
-  describe("Tile Reference Handling", () => {
-    it("should call setTileRef when provided", () => {
-      render(<GuessGrid {...defaultProps} />);
-
-      // setTileRef should be available for external use
-      expect(mockSetTileRef).toBeDefined();
-    });
-
-    it("should work without setTileRef prop", () => {
-      const propsWithoutSetTileRef = {
-        guesses: [],
-        currentGuess: [] as string[],
-        shakeKey: 0,
-        answerLength: 4,
-      };
-
-      expect(() => {
-        render(<GuessGrid {...propsWithoutSetTileRef} />);
-      }).not.toThrow();
-    });
-  });
-
-  describe("Edge Cases", () => {
-    it("should handle null letters", () => {
-      expect(() => {
-        render(<GuessGrid {...defaultProps} />);
-      }).not.toThrow();
-    });
-
-    it("should handle zero answer length", () => {
-      expect(() => {
-        render(<GuessGrid {...defaultProps} answerLength={0} />);
-      }).not.toThrow();
-    });
-
-    it("should handle negative shake key", () => {
-      expect(() => {
-        render(<GuessGrid {...defaultProps} shakeKey={-1} />);
-      }).not.toThrow();
-    });
-
-    it("should handle very large shake key", () => {
-      expect(() => {
-        render(<GuessGrid {...defaultProps} shakeKey={999} />);
-      }).not.toThrow();
-    });
-  });
-
-  describe("Component Lifecycle", () => {
-    it("should handle component unmounting", () => {
-      const { unmount } = render(<GuessGrid {...defaultProps} />);
-
-      expect(() => unmount()).not.toThrow();
-    });
-
-    it("should handle prop updates", () => {
-      const { rerender } = render(<GuessGrid {...defaultProps} />);
-
-      const newGuesses: SubmittedGuess[] = [
+    it("should handle all green feedback", () => {
+      const guesses: SubmittedGuess[] = [
         {
-          guess: ["N", "E", "W"],
-          feedback: ["green", "yellow", "red"],
+          guess: ["W", "I", "N", "S"],
+          feedback: ["green", "green", "green", "green"],
         },
       ];
 
       expect(() => {
-        rerender(
-          <GuessGrid {...defaultProps} guesses={newGuesses} answerLength={3} />
+        render(<GuessGrid {...defaultProps} guesses={guesses} />);
+      }).not.toThrow();
+    });
+
+    it("should handle all yellow feedback", () => {
+      const guesses: SubmittedGuess[] = [
+        {
+          guess: ["C", "L", "O", "S", "E"],
+          feedback: ["yellow", "yellow", "yellow", "yellow", "yellow"],
+        },
+      ];
+
+      expect(() => {
+        render(
+          <GuessGrid {...defaultProps} guesses={guesses} answerLength={5} />
+        );
+      }).not.toThrow();
+    });
+
+    it("should handle all red feedback", () => {
+      const guesses: SubmittedGuess[] = [
+        {
+          guess: ["W", "R", "O", "N", "G"],
+          feedback: ["red", "red", "red", "red", "red"],
+        },
+      ];
+
+      expect(() => {
+        render(
+          <GuessGrid {...defaultProps} guesses={guesses} answerLength={5} />
+        );
+      }).not.toThrow();
+    });
+
+    it("should handle mixed feedback", () => {
+      const guesses: SubmittedGuess[] = [
+        {
+          guess: ["M", "I", "X", "E", "D"],
+          feedback: ["green", "yellow", "red", "green", "yellow"],
+        },
+      ];
+
+      expect(() => {
+        render(
+          <GuessGrid {...defaultProps} guesses={guesses} answerLength={5} />
         );
       }).not.toThrow();
     });
   });
 
-  describe("Performance and Optimization", () => {
-    it("should handle rapid prop changes", () => {
-      const { rerender } = render(<GuessGrid {...defaultProps} />);
-
-      // Simulate rapid updates
-      for (let i = 0; i < 10; i++) {
-        expect(() => {
-          rerender(<GuessGrid {...defaultProps} shakeKey={i} />);
-        }).not.toThrow();
-      }
-    });
-
-    it("should handle large number of guesses efficiently", () => {
-      const manyGuesses: SubmittedGuess[] = [];
-      for (let i = 0; i < 3; i++) {
-        manyGuesses.push({
-          guess: ["T", "E", "S", "T"],
+  describe("Edge Cases", () => {
+    it("should handle special characters in guesses", () => {
+      const guesses: SubmittedGuess[] = [
+        {
+          guess: ["!", "@", "#", "$"],
           feedback: ["green", "yellow", "red", "green"],
-        });
-      }
+        },
+      ];
 
       expect(() => {
-        render(<GuessGrid {...defaultProps} guesses={manyGuesses} />);
+        render(<GuessGrid {...defaultProps} guesses={guesses} />);
+      }).not.toThrow();
+    });
+
+    it("should handle numbers in guesses", () => {
+      const guesses: SubmittedGuess[] = [
+        {
+          guess: ["1", "2", "3", "4"],
+          feedback: ["green", "yellow", "red", "green"],
+        },
+      ];
+
+      expect(() => {
+        render(<GuessGrid {...defaultProps} guesses={guesses} />);
+      }).not.toThrow();
+    });
+
+    it("should handle empty strings in guesses", () => {
+      const guesses: SubmittedGuess[] = [
+        {
+          guess: ["", "", "", ""],
+          feedback: ["green", "yellow", "red", "green"],
+        },
+      ];
+
+      expect(() => {
+        render(<GuessGrid {...defaultProps} guesses={guesses} />);
       }).not.toThrow();
     });
   });
 
-  describe("Responsive Design", () => {
-    it("should apply responsive scaling", () => {
-      expect(() => {
-        render(<GuessGrid {...defaultProps} />);
-      }).not.toThrow();
-    });
+  describe("Performance Testing", () => {
+    it("should handle multiple rerenders", () => {
+      const { rerender } = render(<GuessGrid {...defaultProps} />);
 
-    it("should handle different screen sizes", () => {
-      // Test that responsive scaling doesn't break the component
-      expect(() => {
-        render(<GuessGrid {...defaultProps} answerLength={6} />);
-      }).not.toThrow();
+      for (let i = 0; i < 10; i++) {
+        rerender(<GuessGrid {...defaultProps} />);
+      }
     });
   });
 });

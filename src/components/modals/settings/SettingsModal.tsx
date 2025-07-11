@@ -12,13 +12,15 @@
  */
 
 import React from "react";
-import { View, Text, Modal, SafeAreaView, Switch, Alert } from "react-native";
+import { View, Text, Modal, Switch, Alert } from "react-native";
 import { getAuth } from "@react-native-firebase/auth";
 import { getApp } from "@react-native-firebase/app";
 import { AppStrings } from "../../../constants/AppStrings";
 import CloseButton from "../../buttons/CloseButton";
 import { COLORS, TYPOGRAPHY } from "../../../styles";
 import WideButton from "src/components/buttons/WideButton";
+import ModalBg from "../../../../assets/images/modal-bg.svg";
+import { scale } from "../../../utils/responsive";
 
 /**
  * Props interface for the SettingsModal component.
@@ -139,94 +141,136 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
       animationType="fade"
       onRequestClose={onClose}
     >
-      <SafeAreaView className="flex-1 justify-center items-center bg-black/50">
-        <View className="bg-white p-6 rounded-lg m-4 w-11/12 max-w-sm items-center relative">
-          {/* Close Button in top-right corner */}
-          <View className="absolute top-2 right-2 z-10">
-            <CloseButton onPress={onClose} size={20} />
-          </View>
-
-          {/* Settings Title */}
-          <Text
-            className="text-2xl text-gray-800 mb-6 text-center"
-            style={{ fontFamily: TYPOGRAPHY.fontPrimary }}
-          >
-            {AppStrings.Settings.TITLE}
-          </Text>
-
-          {/* Sound Toggle Setting */}
-          <View className="flex-row items-center justify-between w-full mb-4">
-            <Text
-              className="text-lg text-gray-800 flex-shrink-0"
-              style={{ fontFamily: TYPOGRAPHY.fontPrimary }}
-            >
-              {AppStrings.Settings.SOUND_TOGGLE}
-            </Text>
-            <View className="ml-auto">
-              <Switch
-                trackColor={{ false: COLORS.gray500, true: COLORS.info }}
-                thumbColor={isSoundEnabled ? COLORS.warning : COLORS.gray200}
-                ios_backgroundColor={COLORS.gray700}
-                onValueChange={onToggleSound}
-                value={isSoundEnabled}
-                accessibilityLabel="Toggle sound effects"
-                accessibilityHint="Enable or disable game sound effects and audio"
-              />
-            </View>
-          </View>
-
-          {/* Haptics Toggle Setting */}
-          <View className="flex-row items-center justify-between w-full mb-6">
-            <Text
-              className="text-lg text-gray-800 flex-shrink-0"
-              style={{ fontFamily: TYPOGRAPHY.fontPrimary }}
-            >
-              {AppStrings.Settings.HAPTICS_TOGGLE}
-            </Text>
-            <View className="ml-auto">
-              <Switch
-                trackColor={{ false: COLORS.gray500, true: COLORS.info }}
-                thumbColor={isHapticsEnabled ? COLORS.warning : COLORS.gray200}
-                ios_backgroundColor={COLORS.gray700}
-                onValueChange={onToggleHaptics}
-                value={isHapticsEnabled}
-                accessibilityLabel="Toggle haptic feedback"
-                accessibilityHint="Enable or disable vibration feedback for game actions"
-              />
-            </View>
-          </View>
-
-          {/* Help Navigation Button */}
-          <WideButton
-            buttonText={AppStrings.Settings.HELP_BUTTON}
-            onPress={onPressHelp}
-          />
-
-          {/* Credits Navigation Button */}
-          <WideButton
-            buttonText={AppStrings.Settings.CREDITS_BUTTON}
-            onPress={onPressCredits}
-          />
-
-          {/* Logout Button with Firebase Integration */}
-          <WideButton
-            buttonText={AppStrings.Settings.LOGOUT_BUTTON}
-            onPress={async () => {
-              try {
-                console.log("Attempting to log out...");
-                await getAuth(getApp()).signOut();
-                console.log("User logged out successfully.");
-                // The onAuthStateChanged listener in AuthContext should handle navigation
-                if (onPressLogout) onPressLogout(); // Call any provided callback
-              } catch (error) {
-                console.error("Error logging out:", error);
-                Alert.alert("Error", "Could not log out. Please try again.");
-              }
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "rgba(0,0,0,0.6)",
+        }}
+      >
+        <View
+          style={{
+            width: 335,
+            height: 423,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <ModalBg style={{ position: "absolute" }} />
+          <View
+            style={{
+              flex: 1,
+              width: "100%",
+              alignItems: "center",
+              justifyContent: "space-around",
+              padding: 20,
             }}
-            buttonColor="bg-gray-500"
-          />
+          >
+            <CloseButton
+              onPress={onClose}
+              size={20}
+              style={{ position: "absolute", top: 20, right: 20, zIndex: 10 }}
+            />
+
+            <Text
+              style={{
+                fontFamily: TYPOGRAPHY.fontPrimary,
+                fontSize: scale(28),
+                color: "white",
+                textAlign: "center",
+              }}
+            >
+              {AppStrings.Settings.TITLE}
+            </Text>
+
+            <View style={{ width: "100%" }}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  width: "100%",
+                  marginBottom: 20,
+                }}
+              >
+                <Text
+                  style={{
+                    fontFamily: TYPOGRAPHY.fontSecondary,
+                    fontSize: scale(18),
+                    color: "white",
+                  }}
+                >
+                  {AppStrings.Settings.SOUND_TOGGLE}
+                </Text>
+                <Switch
+                  trackColor={{ false: COLORS.gray500, true: COLORS.info }}
+                  thumbColor={isSoundEnabled ? COLORS.warning : COLORS.gray200}
+                  ios_backgroundColor={COLORS.gray700}
+                  onValueChange={onToggleSound}
+                  value={isSoundEnabled}
+                />
+              </View>
+
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  width: "100%",
+                }}
+              >
+                <Text
+                  style={{
+                    fontFamily: TYPOGRAPHY.fontSecondary,
+                    fontSize: scale(18),
+                    color: "white",
+                  }}
+                >
+                  {AppStrings.Settings.HAPTICS_TOGGLE}
+                </Text>
+                <Switch
+                  trackColor={{ false: COLORS.gray500, true: COLORS.info }}
+                  thumbColor={
+                    isHapticsEnabled ? COLORS.warning : COLORS.gray200
+                  }
+                  ios_backgroundColor={COLORS.gray700}
+                  onValueChange={onToggleHaptics}
+                  value={isHapticsEnabled}
+                />
+              </View>
+            </View>
+
+            <View style={{ width: "100%", alignItems: "center" }}>
+              <WideButton
+                buttonText={AppStrings.Settings.HELP_BUTTON}
+                onPress={onPressHelp}
+              />
+              <View style={{ height: 10 }} />
+              <WideButton
+                buttonText={AppStrings.Settings.CREDITS_BUTTON}
+                onPress={onPressCredits}
+              />
+              <View style={{ height: 10 }} />
+              <WideButton
+                buttonText={AppStrings.Settings.LOGOUT_BUTTON}
+                onPress={async () => {
+                  try {
+                    await getAuth(getApp()).signOut();
+                    if (onPressLogout) onPressLogout();
+                  } catch {
+                    Alert.alert(
+                      "Error",
+                      "Could not log out. Please try again."
+                    );
+                  }
+                }}
+                buttonColor="bg-gray-500"
+              />
+            </View>
+          </View>
         </View>
-      </SafeAreaView>
+      </View>
     </Modal>
   );
 };

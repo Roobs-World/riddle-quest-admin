@@ -45,14 +45,14 @@ jest.mock("@react-native-firebase/app", () => ({
 
 // Mock useAuth hook
 const mockUpdatePlayerData = jest.fn();
-jest.mock("../../../contexts/AuthContext", () => ({
+jest.mock("../../../../contexts/AuthContext", () => ({
   useAuth: () => ({
     updatePlayerData: mockUpdatePlayerData,
   }),
 }));
 
 // Mock WideButton
-jest.mock("../../buttons/WideButton", () => {
+jest.mock("../../../buttons/WideButton", () => {
   const MockWideButton = ({
     buttonText,
     onPress,

@@ -17,14 +17,14 @@ jest.mock("@react-native-firebase/app", () => ({
 
 // Mock useAuth hook
 const mockUpdatePlayerData = jest.fn();
-jest.mock("../../../contexts/AuthContext", () => ({
+jest.mock("../../../../contexts/AuthContext", () => ({
   useAuth: () => ({
     updatePlayerData: mockUpdatePlayerData,
   }),
 }));
 
 // Mock CloseButton
-jest.mock("../../buttons/CloseButton", () => {
+jest.mock("../../../buttons/CloseButton", () => {
   const MockCloseButton = ({ onPress }: { onPress: () => void }) => {
     const { TouchableOpacity, Text } = require("react-native");
     return (

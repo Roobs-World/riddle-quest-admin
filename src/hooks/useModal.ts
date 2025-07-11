@@ -105,13 +105,6 @@ export const useModal = () => {
     [openGameModal]
   );
 
-  const showOutOfAttemptsModal = useCallback(
-    (data: ModalDataType<"outOfAttempts">, options?: ModalOptions): string => {
-      return openGameModal("outOfAttempts", data, options);
-    },
-    [openGameModal]
-  );
-
   const showSettingsModal = useCallback(
     (data: ModalDataType<"settings">, options?: ModalOptions): string => {
       return openGameModal("settings", data, options);
@@ -182,26 +175,6 @@ export const useModal = () => {
     [openGameModal]
   );
 
-  const showWatchAdForChanceModal = useCallback(
-    (
-      data: ModalDataType<"watchAdForChance">,
-      options?: ModalOptions
-    ): string => {
-      return openGameModal("watchAdForChance", data, options);
-    },
-    [openGameModal]
-  );
-
-  const showDailyChallengeCompletionModal = useCallback(
-    (
-      data: ModalDataType<"dailyChallengeCompletion">,
-      options?: ModalOptions
-    ): string => {
-      return openGameModal("dailyChallengeCompletion", data, options);
-    },
-    [openGameModal]
-  );
-
   const showChangePasswordModal = useCallback(
     (data: ModalDataType<"changePassword">, options?: ModalOptions): string => {
       return openGameModal("changePassword", data, options);
@@ -233,6 +206,13 @@ export const useModal = () => {
     [openGameModal]
   );
 
+  const showGameModeModal = useCallback(
+    (data: ModalDataType<"gameMode">, options?: ModalOptions): string => {
+      return openGameModal("gameMode", data, options);
+    },
+    [openGameModal]
+  );
+
   return {
     // Core modal functions
     openModal,
@@ -250,7 +230,6 @@ export const useModal = () => {
     // Convenience methods
     showVictoryModal,
     showLossModal,
-    showOutOfAttemptsModal,
     showSettingsModal,
     showHintModal,
     showSkipModal,
@@ -259,12 +238,11 @@ export const useModal = () => {
     showCreditsModal,
     showCoinShopModal,
     showFullProfileDetailsModal,
-    showWatchAdForChanceModal,
-    showDailyChallengeCompletionModal,
     showChangePasswordModal,
     showUpdateUsernameModal,
     showAvatarOptionsModal,
     showPreloadedAvatarsModal,
+    showGameModeModal,
   };
 };
 

@@ -15,6 +15,7 @@ import { useAuth } from "../contexts/AuthContext";
 import Error from "../components/text/Error";
 import { type FirebaseAuthTypes } from "@react-native-firebase/auth";
 import { styles } from "../styles";
+import useModal from "../hooks/useModal";
 
 type RootStackParamList = {
   Landing: undefined;
@@ -22,7 +23,7 @@ type RootStackParamList = {
   SignUp: undefined;
   ForgotPassword: undefined;
   NewPassword: undefined;
-  Game: undefined;
+  Game: { mode: "classic" | "daily" };
   Credits: undefined;
 };
 
@@ -45,6 +46,7 @@ const LandingScreen = ({
   const [authError, setAuthError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
+  const { showGameModeModal } = useModal();
 
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
@@ -186,6 +188,23 @@ const LandingScreen = ({
     }
   };
 
+  const handlePlayButtonPress = () => {
+    showGameModeModal({
+      onSelectMode: (mode) => {
+        console.log(`Selected game mode: ${mode}`);
+        // Handle mode selection here
+        if (mode === "classic") {
+          // Navigate to classic mode
+          navigation.navigate("Game", { mode: "classic" });
+        } else if (mode === "daily") {
+          // Navigate to daily challenge
+          navigation.navigate("Game", { mode: "daily" });
+        }
+      },
+      currentLevel: 8, // Example level to display
+    });
+  };
+
   return (
     <CustomSafeAreaView className="justify-start">
       <HomeBgSvg width="120%" height="100%" style={styles.backgroundImage} />
@@ -241,6 +260,14 @@ const LandingScreen = ({
 
         <SignUpButton
           onPress={() => navigation.navigate(AppStrings.Navigation.SIGN_UP)}
+        />
+
+        {/* Play as Guest Button */}
+        <WideButton
+          buttonText="Play as Guest"
+          onPress={handlePlayButtonPress}
+          disabled={isLoading}
+          buttonColor="bg-purple-600"
         />
 
         <TouchableOpacity

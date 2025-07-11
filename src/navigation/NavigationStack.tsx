@@ -13,7 +13,7 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { fetchClassicRiddleFromFirestore } from "../services/FirestoreService";
 import { styles } from "../styles";
 import { RiddleInitializationService } from "../services/RiddleInitializationService";
-import { DailyChallengeCompletionModal } from "../components/modals";
+import { VictoryModal } from "../components/modals";
 import { getFunctions } from "@react-native-firebase/functions";
 import { getApp } from "@react-native-firebase/app";
 
@@ -287,15 +287,16 @@ const GameScreenWrapper = () => {
           gameMode={gameMode}
         />
 
-        {/* Daily Challenge Completion Modal */}
-        <DailyChallengeCompletionModal
+        {/* Daily Challenge Completion Modal - using VictoryModal instead */}
+        <VictoryModal
           isVisible={showCompletionModal}
-          totalCoinsEarned={completionData.totalCoinsEarned}
-          questionsCompleted={completionData.questionsCompleted}
-          totalQuestions={5}
-          onContinue={handleContinueAfterCompletion}
+          attempts={5}
+          coinsEarned={completionData.totalCoinsEarned}
+          onNextLevel={handleContinueAfterCompletion}
           onHome={handleHomeAfterCompletion}
           onClose={() => setShowCompletionModal(false)}
+          guesses={[]}
+          gameMode="daily"
         />
       </>
     );

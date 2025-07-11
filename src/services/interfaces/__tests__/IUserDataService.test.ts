@@ -119,7 +119,7 @@ describe("IUserDataService", () => {
       dailyChallengeIndex: 3,
       tutorialIndex: 2,
     };
-    const updates = { coins: 150, xp: 200 };
+    const updates = { coins: 150 };
 
     mockService.saveUserProgress("user123", progress);
     mockService.loadUserProgress("user456");
@@ -178,9 +178,8 @@ describe("IUserDataService", () => {
     // Test various partial updates
     const partialUpdates: Partial<Player>[] = [
       { coins: 100 },
-      { xp: 500 },
       { username: "newusername" },
-      { coins: 200, xp: 300 },
+      { coins: 200 },
       {
         stats: {
           dailyPuzzlesCompleted: 0,

@@ -26,7 +26,7 @@ jest.mock("@react-native-firebase/app", () => ({
 }));
 
 // Mock CloseButton
-jest.mock("../../buttons/CloseButton", () => {
+jest.mock("../../../buttons/CloseButton", () => {
   const MockCloseButton = ({ onPress }: { onPress: () => void }) => {
     const { TouchableOpacity, Text } = require("react-native");
     return (

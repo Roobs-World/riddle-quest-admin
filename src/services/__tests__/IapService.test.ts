@@ -90,7 +90,7 @@ describe("IapService", () => {
     mockHttpsCallable.mockReturnValue(mockCallableFunction);
 
     // Ensure Firebase functions mock returns our mock object - this is crucial!
-    (functions as jest.MockedFunction<typeof functions>).mockReturnValue({
+    (getFunctions as jest.MockedFunction<typeof getFunctions>).mockReturnValue({
       httpsCallable: mockHttpsCallable,
     } as any);
   });

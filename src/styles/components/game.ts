@@ -10,6 +10,13 @@ import { COLORS } from "../tokens/colors";
 import { SIZING } from "../tokens/sizing";
 
 export const gameStyles = StyleSheet.create({
+  backspaceKey: {
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: COLORS.tileDefault,
+    borderRadius: BORDER_RADIUS.sm,
+  } as ViewStyle,
+
   iconColor: {
     color: COLORS.activeTextColor,
   } as ViewStyle,

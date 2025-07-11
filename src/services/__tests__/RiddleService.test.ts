@@ -108,11 +108,13 @@ describe("RiddleService", () => {
     });
 
     // Ensure Firebase mocks return our mock objects
-    (firestore as jest.MockedFunction<typeof firestore>).mockReturnValue(
+    (getFirestore as jest.MockedFunction<typeof getFirestore>).mockReturnValue(
       mockFirestore as any
     );
-    (auth as jest.MockedFunction<typeof auth>).mockReturnValue(mockAuth as any);
-    (functions as jest.MockedFunction<typeof functions>).mockReturnValue({
+    (getAuth as jest.MockedFunction<typeof getAuth>).mockReturnValue(
+      mockAuth as any
+    );
+    (getFunctions as jest.MockedFunction<typeof getFunctions>).mockReturnValue({
       httpsCallable: mockHttpsCallable,
     } as any);
 
@@ -778,6 +780,7 @@ describe("RiddleService", () => {
       guess: "PIANO",
       riddleId: "riddle-123",
       gameMode: "classic" as const,
+      attempts: 1,
     };
 
     const mockValidResult = {
@@ -830,8 +833,10 @@ describe("RiddleService", () => {
 
     it("should submit guess for daily challenge game mode", async () => {
       const dailyGuessData = {
-        ...mockGuessData,
         gameMode: "challenge" as const,
+        guess: "daily",
+        riddleId: "daily-riddle-id",
+        attempts: 1,
       };
       const mockCallable = jest.fn().mockResolvedValue({
         data: mockValidResult,
@@ -847,8 +852,10 @@ describe("RiddleService", () => {
 
     it("should submit guess for tutorial game mode", async () => {
       const tutorialGuessData = {
-        ...mockGuessData,
         gameMode: "classic" as const,
+        guess: "tutor",
+        riddleId: "tutorial-riddle-id",
+        attempts: 1,
       };
       const mockCallable = jest.fn().mockResolvedValue({
         data: mockValidResult,
@@ -992,8 +999,9 @@ describe("RiddleService", () => {
     it("should handle empty guess data", async () => {
       const emptyGuessData = {
         guess: "",
-        riddleId: "",
+        riddleId: "test-riddle-id",
         gameMode: "classic" as const,
+        attempts: 1,
       };
 
       const zodError = new ZodError([
@@ -1067,9 +1075,24 @@ describe("RiddleService", () => {
       });
       mockHttpsCallable.mockReturnValue(mockCallable);
 
-      const guess1 = { ...mockGuessData, riddleId: "riddle-1" };
-      const guess2 = { ...mockGuessData, riddleId: "riddle-2" };
-      const guess3 = { ...mockGuessData, riddleId: "riddle-3" };
+      const guess1 = {
+        riddleId: "riddle1",
+        guess: "guess1",
+        gameMode: "classic" as const,
+        attempts: 1,
+      };
+      const guess2 = {
+        riddleId: "riddle2",
+        guess: "guess2",
+        gameMode: "classic" as const,
+        attempts: 2,
+      };
+      const guess3 = {
+        riddleId: "riddle3",
+        guess: "guess3",
+        gameMode: "classic" as const,
+        attempts: 3,
+      };
 
       const results = await Promise.all([
         RiddleService.submitGuess(guess1),
@@ -1099,7 +1122,7 @@ describe("RiddleService", () => {
       await RiddleService.fetchDailyRiddle();
 
       expect(getApp).toHaveBeenCalled();
-      expect(auth).toHaveBeenCalledWith(getApp());
+      expect(getAuth).toHaveBeenCalledWith(getApp());
       // Note: firestore may not be called when no user is authenticated
     });
 

@@ -1,234 +1,171 @@
-import React from "react";
+// Use require syntax for React to fix TypeScript error with esModuleInterop
+const React = require("react");
+import { render, fireEvent, waitFor } from "@testing-library/react-native";
+import LossModal from "../LossModal";
 
 // Mock child components with working React Native Testing Library approach
-jest.mock("../../buttons/CloseButton", () => {
-  const React = require("react");
-  return function MockCloseButton({ onPress, size }: any) {
-    return React.createElement("div", {
-      testID: "close-button",
-      onClick: onPress,
-      "data-size": size,
-    });
+jest.mock("../../../buttons/CloseButton", () => {
+  const { TouchableOpacity, Text } = require("react-native");
+  return function MockCloseButton({ onPress, size, color }: any) {
+    return (
+      <TouchableOpacity testID="close-button" onPress={onPress}>
+        <Text>Close {size && `(${size})`}</Text>
+      </TouchableOpacity>
+    );
   };
 });
+
+// Mock the WideButton component
+jest.mock("../../../buttons/WideButton", () => {
+  const { TouchableOpacity, Text } = require("react-native");
+  const MockWideButton = ({
+    buttonText,
+    onPress,
+    buttonColor,
+  }: {
+    buttonText: string;
+    onPress: () => void;
+    buttonColor?: string;
+  }) => (
+    <TouchableOpacity testID="wide-button" onPress={onPress}>
+      <Text>{buttonText}</Text>
+    </TouchableOpacity>
+  );
+  return MockWideButton;
+});
+
+// Mock the SVG components
+jest.mock("../../../../assets/images/wheel-bg.svg", () => "WheelBgSvg");
+jest.mock("../../../../assets/images/segment-bg.svg", () => "SegmentBgSvg");
 
 describe("LossModal", () => {
   const defaultProps = {
     isVisible: true,
     correctAnswer: "WORLD",
-    onRestart: jest.fn(),
+    onNext: jest.fn(),
     onHome: jest.fn(),
-    watchAdForChance: jest.fn(),
+    onClose: jest.fn(),
   };
 
-  // Simple mock function tests without rendering complexity
-  describe("Component Import", () => {
-    it("should import without error", () => {
-      expect(() => {
-        const LossModal = require("../LossModal").default;
-        expect(LossModal).toBeDefined();
-      }).not.toThrow();
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe("Rendering", () => {
+    it("should render correctly when visible", () => {
+      const { getByText } = render(<LossModal {...defaultProps} />);
+
+      expect(getByText("Try Again!")).toBeTruthy();
+      expect(
+        getByText("Don't worry, every puzzle is a learning opportunity!")
+      ).toBeTruthy();
+      expect(getByText("The correct answer was:")).toBeTruthy();
+      expect(getByText("WORLD")).toBeTruthy();
+      expect(getByText("Next Level")).toBeTruthy();
+    });
+
+    it("should handle modal visibility state", () => {
+      const { queryByText, rerender } = render(
+        <LossModal {...defaultProps} isVisible={false} />
+      );
+
+      // Note: React Native Modal in testing may render content even when not visible
+      // This is a limitation of the testing environment, not the component itself
+      // We test that the component can be rendered with isVisible=false without errors
+      expect(() =>
+        render(<LossModal {...defaultProps} isVisible={false} />)
+      ).not.toThrow();
+
+      // Test that switching visibility works
+      rerender(<LossModal {...defaultProps} isVisible={true} />);
+      expect(queryByText("Try Again!")).toBeTruthy();
+    });
+
+    it("should render different correct answers", () => {
+      const { getByText, rerender } = render(
+        <LossModal {...defaultProps} correctAnswer="HELLO" />
+      );
+
+      expect(getByText("HELLO")).toBeTruthy();
+
+      rerender(<LossModal {...defaultProps} correctAnswer="TEST" />);
+      expect(getByText("TEST")).toBeTruthy();
     });
   });
 
-  describe("Props Validation", () => {
-    it("should handle different prop combinations", () => {
-      const testCases = [
-        { ...defaultProps, isVisible: false },
-        { ...defaultProps, correctAnswer: "HELLO" },
-        { ...defaultProps, correctAnswer: "" },
-        { ...defaultProps, onRestart: undefined },
-        { ...defaultProps, onHome: undefined },
-        { ...defaultProps, watchAdForChance: undefined },
-      ];
+  describe("Interactions", () => {
+    it("should call onNext when Next Level button is pressed", () => {
+      const { getByText } = render(<LossModal {...defaultProps} />);
 
-      testCases.forEach((testCase, index) => {
-        expect(() => {
-          const LossModal = require("../LossModal").default;
-          // Test prop validation without rendering
-          expect(typeof LossModal).toBe("function");
-        }).not.toThrow();
-      });
-    });
-  });
+      fireEvent.press(getByText("Next Level"));
 
-  describe("Component Structure", () => {
-    it("should be a valid React component", () => {
-      const LossModal = require("../LossModal").default;
-      expect(typeof LossModal).toBe("function");
-      expect(LossModal.name).toBe("LossModal");
+      expect(defaultProps.onNext).toHaveBeenCalledTimes(1);
     });
 
-    it("should handle visibility prop", () => {
-      const LossModal = require("../LossModal").default;
+    it("should call onClose after onNext when Next Level button is pressed", async () => {
+      // Create a custom mock that ensures onNext resolves before onClose is called
+      const mockOnNext = jest.fn().mockResolvedValue(undefined);
+      const mockOnClose = jest.fn();
 
-      // Test with visible true
-      const propsVisible = { ...defaultProps, isVisible: true };
-      expect(() => React.createElement(LossModal, propsVisible)).not.toThrow();
-
-      // Test with visible false
-      const propsHidden = { ...defaultProps, isVisible: false };
-      expect(() => React.createElement(LossModal, propsHidden)).not.toThrow();
-    });
-
-    it("should handle answer prop variations", () => {
-      const LossModal = require("../LossModal").default;
-
-      const testAnswers = ["HELLO", "WORLD", "TEST", "A", "LONGER"];
-      testAnswers.forEach((answer) => {
-        const props = { ...defaultProps, correctAnswer: answer };
-        expect(() => React.createElement(LossModal, props)).not.toThrow();
-      });
-    });
-
-    it("should handle callback props", () => {
-      const LossModal = require("../LossModal").default;
-
-      const mockCallbacks = {
-        onRestart: jest.fn(),
-        onHome: jest.fn(),
-        watchAdForChance: jest.fn(),
+      const props = {
+        ...defaultProps,
+        onNext: mockOnNext,
+        onClose: mockOnClose,
       };
 
-      const props = { ...defaultProps, ...mockCallbacks };
-      expect(() => React.createElement(LossModal, props)).not.toThrow();
-    });
-  });
+      const { getByText } = render(<LossModal {...props} />);
 
-  describe("Functional Logic", () => {
-    it("should work with different visibility states", () => {
-      const LossModal = require("../LossModal").default;
+      fireEvent.press(getByText("Next Level"));
 
-      // Test visibility logic
-      const hiddenModal = React.createElement(LossModal, {
-        ...defaultProps,
-        isVisible: false,
+      expect(mockOnNext).toHaveBeenCalledTimes(1);
+
+      // Wait for the async operation to complete
+      await waitFor(() => {
+        expect(mockOnClose).toHaveBeenCalledTimes(1);
       });
-      expect(hiddenModal).toBeDefined();
-
-      const visibleModal = React.createElement(LossModal, {
-        ...defaultProps,
-        isVisible: true,
-      });
-      expect(visibleModal).toBeDefined();
     });
 
-    it("should handle answer display logic", () => {
-      const LossModal = require("../LossModal").default;
+    it("should handle null/undefined callbacks gracefully", () => {
+      const { getByText } = render(
+        <LossModal
+          {...defaultProps}
+          onNext={undefined as any}
+          onClose={undefined as any}
+        />
+      );
 
-      // Test with various answers
-      const shortAnswer = React.createElement(LossModal, {
-        ...defaultProps,
-        correctAnswer: "CAT",
-      });
-      expect(shortAnswer).toBeDefined();
+      // Should render without crashing
+      expect(getByText("Try Again!")).toBeTruthy();
+      expect(getByText("Next Level")).toBeTruthy();
 
-      const longAnswer = React.createElement(LossModal, {
-        ...defaultProps,
-        correctAnswer: "ELEPHANT",
-      });
-      expect(longAnswer).toBeDefined();
-    });
-
-    it("should handle button interactions gracefully", () => {
-      const mockRestart = jest.fn();
-      const mockHome = jest.fn();
-      const mockWatchAd = jest.fn();
-
-      const LossModal = require("../LossModal").default;
-      const modal = React.createElement(LossModal, {
-        ...defaultProps,
-        onRestart: mockRestart,
-        onHome: mockHome,
-        watchAdForChance: mockWatchAd,
-      });
-
-      expect(modal).toBeDefined();
-      // Callbacks should be functions
-      expect(typeof mockRestart).toBe("function");
-      expect(typeof mockHome).toBe("function");
-      expect(typeof mockWatchAd).toBe("function");
+      // Should not crash when button is pressed
+      fireEvent.press(getByText("Next Level"));
+      // Test passes if no error is thrown
     });
   });
 
   describe("Edge Cases", () => {
     it("should handle empty string answer", () => {
-      const LossModal = require("../LossModal").default;
-      const modal = React.createElement(LossModal, {
-        ...defaultProps,
-        correctAnswer: "",
-      });
-      expect(modal).toBeDefined();
-    });
-
-    it("should handle null/undefined callbacks", () => {
-      const LossModal = require("../LossModal").default;
-      const modal = React.createElement(LossModal, {
-        ...defaultProps,
-        onRestart: null,
-        onHome: undefined,
-        watchAdForChance: null,
-      });
-      expect(modal).toBeDefined();
+      const { getByText } = render(
+        <LossModal {...defaultProps} correctAnswer="" />
+      );
+      expect(getByText("The correct answer was:")).toBeTruthy();
+      // Empty string should still render
+      expect(getByText("")).toBeTruthy();
     });
 
     it("should handle special characters in answer", () => {
-      const LossModal = require("../LossModal").default;
-      const modal = React.createElement(LossModal, {
-        ...defaultProps,
-        correctAnswer: "TEST123",
-      });
-      expect(modal).toBeDefined();
+      const { getByText } = render(
+        <LossModal {...defaultProps} correctAnswer="TEST123" />
+      );
+      expect(getByText("TEST123")).toBeTruthy();
     });
 
-    it("should handle boolean variations", () => {
-      const LossModal = require("../LossModal").default;
-
-      // Test different boolean values for isVisible
-      [true, false, undefined, null].forEach((visible) => {
-        expect(() => {
-          React.createElement(LossModal, {
-            ...defaultProps,
-            isVisible: visible,
-          });
-        }).not.toThrow();
-      });
-    });
-  });
-
-  describe("Component Lifecycle", () => {
-    it("should handle creation and destruction", () => {
-      const LossModal = require("../LossModal").default;
-
-      // Create component
-      const modal = React.createElement(LossModal, defaultProps);
-      expect(modal).toBeDefined();
-      expect(modal.type).toBe(LossModal);
-      expect(modal.props).toEqual(defaultProps);
-
-      // Component should be reusable
-      const anotherModal = React.createElement(LossModal, {
-        ...defaultProps,
-        correctAnswer: "DIFFERENT",
-      });
-      expect(anotherModal).toBeDefined();
-    });
-
-    it("should handle prop updates", () => {
-      const LossModal = require("../LossModal").default;
-
-      // Initial props
-      const initialModal = React.createElement(LossModal, defaultProps);
-      expect(initialModal.props.correctAnswer).toBe("WORLD");
-
-      // Updated props
-      const updatedModal = React.createElement(LossModal, {
-        ...defaultProps,
-        correctAnswer: "UPDATED",
-        isVisible: false,
-      });
-      expect(updatedModal.props.correctAnswer).toBe("UPDATED");
-      expect(updatedModal.props.isVisible).toBe(false);
+    it("should handle long answers", () => {
+      const { getByText } = render(
+        <LossModal {...defaultProps} correctAnswer="VERYLONGWORD" />
+      );
+      expect(getByText("VERYLONGWORD")).toBeTruthy();
     });
   });
 });

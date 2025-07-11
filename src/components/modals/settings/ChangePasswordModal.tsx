@@ -5,28 +5,20 @@ import { getApp } from "@react-native-firebase/app";
 import CloseButton from "../../buttons/CloseButton";
 import WideButton from "src/components/buttons/WideButton";
 import { TYPOGRAPHY } from "src/styles";
+import ModalBg from "../../../../assets/images/modal-bg.svg";
+import { scale } from "src/utils/responsive";
 
-// Define proper error interface for Firebase errors
 interface FirebaseError {
   code: string;
   message: string;
   email?: string;
 }
 
-/**
- * Props for the ChangePasswordModal component.
- * @property {boolean} isVisible - Controls the visibility of the modal.
- * @property {() => void} onClose - Function to call when the modal is closed.
- */
 interface ChangePasswordModalProps {
   isVisible: boolean;
   onClose: () => void;
 }
 
-/**
- * Modal component for changing user password.
- * Provides form fields for current password, new password, and confirmation.
- */
 const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
   isVisible,
   onClose,
@@ -36,7 +28,6 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
 
   const handleChangePassword = async () => {
-    // 1. Validate inputs (currentPassword, newPassword, confirmNewPassword)
     if (!currentPassword || !newPassword || !confirmNewPassword) {
       Alert.alert("Error", "Please fill in all password fields.");
       return;
@@ -58,44 +49,26 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
     }
 
     try {
-      // 3. Re-authenticate user if necessary
       const credential = EmailAuthProvider.credential(
         user.email,
         currentPassword
       );
       await user.reauthenticateWithCredential(credential);
-
-      // 4. Call user.updatePassword(newPassword) with current user instance
       await user.updatePassword(newPassword);
 
-      // 5. Handle success
       Alert.alert("Success", "Password updated successfully!");
-      onClose(); // Close modal on completion
-      // Clear password fields
-      setCurrentPassword("");
-      setNewPassword("");
-      setConfirmNewPassword("");
+      handleClose();
     } catch (error) {
       const firebaseError = error as FirebaseError;
-      console.error("Error changing password:", firebaseError);
       let errorMessage = "An error occurred while changing password.";
-
-      if (firebaseError.code === "auth/requires-recent-login") {
-        errorMessage = "Please log in again to change your password.";
-      } else if (firebaseError.code === "auth/invalid-credential") {
+      if (firebaseError.code === "auth/invalid-credential") {
         errorMessage = "Invalid current password.";
-      } else if (firebaseError.code === "auth/weak-password") {
-        errorMessage = "New password is too weak.";
-      } else if (firebaseError.message) {
-        errorMessage = firebaseError.message;
       }
-
       Alert.alert("Error", errorMessage);
     }
   };
 
   const handleClose = () => {
-    // Clear password fields when closing
     setCurrentPassword("");
     setNewPassword("");
     setConfirmNewPassword("");
@@ -109,47 +82,87 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
       animationType="fade"
       onRequestClose={handleClose}
     >
-      <View className="flex-1 justify-center items-center bg-black/50">
-        <View className="bg-white p-6 rounded-lg m-4 w-11/12 max-w-sm relative">
-          {/* Close Button in top-right corner */}
-          <View className="absolute top-2 right-2 z-10">
-            <CloseButton onPress={handleClose} size={20} />
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "rgba(0,0,0,0.6)",
+        }}
+      >
+        <View
+          style={{
+            width: 335,
+            height: 423,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <ModalBg style={{ position: "absolute" }} />
+          <View style={{ width: "80%", alignItems: "center" }}>
+            <CloseButton
+              onPress={handleClose}
+              size={20}
+              style={{ position: "absolute", top: -20, right: -20, zIndex: 10 }}
+            />
+            <Text
+              style={{
+                fontFamily: TYPOGRAPHY.fontPrimary,
+                fontSize: scale(24),
+                color: "white",
+                marginBottom: 20,
+                textAlign: "center",
+              }}
+            >
+              Change Password
+            </Text>
+            <TextInput
+              style={{
+                backgroundColor: "white",
+                width: "100%",
+                borderRadius: 8,
+                padding: 12,
+                marginBottom: 10,
+                fontFamily: TYPOGRAPHY.fontSecondary,
+              }}
+              value={currentPassword}
+              onChangeText={setCurrentPassword}
+              placeholder="Current Password"
+              placeholderTextColor="#888"
+              secureTextEntry
+            />
+            <TextInput
+              style={{
+                backgroundColor: "white",
+                width: "100%",
+                borderRadius: 8,
+                padding: 12,
+                marginBottom: 10,
+                fontFamily: TYPOGRAPHY.fontSecondary,
+              }}
+              value={newPassword}
+              onChangeText={setNewPassword}
+              placeholder="New Password"
+              placeholderTextColor="#888"
+              secureTextEntry
+            />
+            <TextInput
+              style={{
+                backgroundColor: "white",
+                width: "100%",
+                borderRadius: 8,
+                padding: 12,
+                marginBottom: 20,
+                fontFamily: TYPOGRAPHY.fontSecondary,
+              }}
+              value={confirmNewPassword}
+              onChangeText={setConfirmNewPassword}
+              placeholder="Confirm New Password"
+              placeholderTextColor="#888"
+              secureTextEntry
+            />
+            <WideButton buttonText="Save" onPress={handleChangePassword} />
           </View>
-
-          <Text
-            className="text-lg text-gray-800 mb-4"
-            style={{ fontFamily: TYPOGRAPHY.fontPrimary }}
-          >
-            Change Password
-          </Text>
-          <TextInput
-            className="border border-gray-300 p-3 rounded-md mb-4 text-gray-800"
-            value={currentPassword}
-            onChangeText={setCurrentPassword}
-            placeholder="Current Password"
-            secureTextEntry
-          />
-          <TextInput
-            className="border border-gray-300 p-3 rounded-md mb-4 text-gray-800"
-            value={newPassword}
-            onChangeText={setNewPassword}
-            placeholder="New Password"
-            secureTextEntry
-          />
-          <TextInput
-            className="border border-gray-300 p-3 rounded-md mb-4 text-gray-800"
-            value={confirmNewPassword}
-            onChangeText={setConfirmNewPassword}
-            placeholder="Confirm New Password"
-            secureTextEntry
-          />
-
-          <WideButton buttonText="Save" onPress={() => handleChangePassword} />
-          <WideButton
-            buttonText="Close"
-            onPress={handleClose}
-            buttonColor="bg-gray-500"
-          />
         </View>
       </View>
     </Modal>

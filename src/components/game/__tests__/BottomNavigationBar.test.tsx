@@ -2,8 +2,8 @@ import React from "react";
 import { render, fireEvent } from "@testing-library/react-native";
 import BottomNavigationBar from "../BottomNavigationBar";
 
-// Mock SVG components
-jest.mock("../../../../assets/images/profile-icon.svg", () => {
+// Mock icon components
+jest.mock("../../icons/ProfileIcon", () => {
   const React = require("react");
   const { View } = require("react-native");
 
@@ -15,7 +15,7 @@ jest.mock("../../../../assets/images/profile-icon.svg", () => {
   return MockProfileIcon;
 });
 
-jest.mock("../../../../assets/images/settings-icon.svg", () => {
+jest.mock("../../icons/SettingsIcon", () => {
   const React = require("react");
   const { View } = require("react-native");
 

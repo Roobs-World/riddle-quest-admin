@@ -63,9 +63,17 @@ describe("UserDataService", () => {
       update: mockUpdate,
     });
 
-    // Ensure the firestore mock returns our mock object
-    (firestore as jest.MockedFunction<typeof firestore>).mockReturnValue(
-      mockFirestore as any
+    // Setup the firestore mock to include FieldValue
+    const firestoreInstance = {
+      collection: mockCollection,
+      FieldValue: {
+        serverTimestamp: jest.fn(),
+      },
+    };
+
+    // Ensure the firestore mock returns our mock object with FieldValue
+    (getFirestore as jest.MockedFunction<typeof getFirestore>).mockReturnValue(
+      firestoreInstance as any
     );
   });
 
@@ -767,7 +775,6 @@ describe("UserDataService", () => {
       mockUpdate.mockResolvedValue(undefined);
       const nestedUpdates: Partial<Player> = {
         coins: 200,
-        xp: 500,
         username: "UpdatedUsername",
       };
 
@@ -1225,7 +1232,7 @@ describe("UserDataService", () => {
       } as Player["progress"]);
 
       expect(getApp).toHaveBeenCalled();
-      expect(firestore).toHaveBeenCalledWith(getApp());
+      expect(getFirestore).toHaveBeenCalledWith(getApp());
     });
 
     it("should handle service instantiation correctly", () => {

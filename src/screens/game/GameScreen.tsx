@@ -15,7 +15,6 @@ import { getApp } from "@react-native-firebase/app";
 import { GameMode } from "../../contexts/AuthContext";
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 import useRewardedAds from "../../hooks/useRewardedAds";
-import { useInterstitialAds } from "../../hooks/useInterstitialAds";
 import {
   GetHintInputSchema,
   GetHintOutputSchema,
@@ -27,7 +26,7 @@ import { isTablet } from "../../utils/responsive";
 import { safeDelay } from "../../utils/timing";
 import PulsingSpinner from "../../components/loading/PulsingSpinner";
 import { styles } from "../../styles";
-import { GameInput } from "src/components/game/GameInput";
+import { GameInput } from "../../components/game/GameInput";
 import { useModal } from "../../hooks/useModal";
 import { ModalProvider } from "../../components/modals/ModalProvider";
 import { IapService } from "../../services/IapService";
@@ -77,7 +76,7 @@ const GameScreen: React.FC<GameScreenProps> = ({
   onNextLevel,
   gameMode,
 }) => {
-  const { playerData, logout } = useAuth();
+  const { playerData, logout, setGameMode, fetchCurrentRiddle } = useAuth();
   const modal = useModal();
 
   // Simplified state - no more massive overlay state object!
@@ -99,7 +98,6 @@ const GameScreen: React.FC<GameScreenProps> = ({
     gameOver,
     setCurrentGuess,
     processGuess,
-    continueGame,
     resetGame,
   } = useGameLogic({
     riddleId,
@@ -109,14 +107,18 @@ const GameScreen: React.FC<GameScreenProps> = ({
         : (gameMode as "challenge" | "classic"),
   });
 
+  // Update useGameLogic when gameMode changes
+  useEffect(() => {
+    console.log(`Game mode changed to: ${gameMode}`);
+    // Reset the game when game mode changes
+    resetGame();
+  }, [gameMode, resetGame]);
+
   // Check if any modal is currently open
   const isAnyModalVisible = modal.modals.length > 0;
 
   const { isRewardedAdReady, loadRewardedAd, showRewardedAd } =
     useRewardedAds();
-  const { loadInterstitialAd, showInterstitialAd } = useInterstitialAds();
-
-  const CONTINUE_COST = 50;
 
   // Load IAP products when component mounts
   useEffect(() => {
@@ -278,48 +280,46 @@ const GameScreen: React.FC<GameScreenProps> = ({
 
         onGameWin(guesses.length, result.coinsEarned || 0);
       } else if (result.outcome === "attemptLimitReached") {
-        // Show out of attempts modal
-        modal.showOutOfAttemptsModal({
-          userCoins,
-          continueCost: CONTINUE_COST,
-          onWatchAd: handleWatchAdToContinue,
-          onSpendCoins: handleSpendCoinsToContinue,
+        // Show loss modal directly
+        modal.showLossModal({
+          correctAnswer: result.correctAnswer || "Unknown",
+          onNext: () => {
+            modal.closeModalByType("loss");
+            resetGame();
+            onNextLevel();
+          },
+          onHome: () => {
+            modal.closeModalByType("loss");
+            resetGame();
+          },
         });
       } else if (result.outcome === "loss") {
-        if (result.canOfferRewardedAd) {
-          modal.showWatchAdForChanceModal({
-            onWatchAd: handleWatchAdAccepted,
-          });
-        } else {
-          SoundManager.playNegativeWithFadeIn({
-            duration: 2000,
-            curve: "exponential",
-          });
+        // Always show loss modal
+        SoundManager.playNegativeWithFadeIn({
+          duration: 2000,
+          curve: "exponential",
+        });
 
-          if (isHapticsEnabled) {
-            ReactNativeHapticFeedback.trigger(
-              "notificationError",
-              hapticOptions
-            );
-          }
+        if (isHapticsEnabled) {
+          ReactNativeHapticFeedback.trigger("notificationError", hapticOptions);
+        }
 
-          // Show loss modal
-          modal.showLossModal({
-            correctAnswer: result.correctAnswer || "",
-            onNext: () => {
-              modal.closeModalByType("loss");
-              resetGame();
-              onNextLevel();
-            },
-            onHome: () => {
-              modal.closeModalByType("loss");
-              resetGame();
-            },
-          });
+        // Show loss modal
+        modal.showLossModal({
+          correctAnswer: result.correctAnswer || "",
+          onNext: () => {
+            modal.closeModalByType("loss");
+            resetGame();
+            onNextLevel();
+          },
+          onHome: () => {
+            modal.closeModalByType("loss");
+            resetGame();
+          },
+        });
 
-          if (result.correctAnswer) {
-            onGameLoss(result.correctAnswer);
-          }
+        if (result.correctAnswer) {
+          onGameLoss(result.correctAnswer);
         }
       }
     }
@@ -327,7 +327,7 @@ const GameScreen: React.FC<GameScreenProps> = ({
     gameOver,
     lastGuessResult,
     modal,
-    guesses.length,
+    guesses,
     userCoins,
     isHapticsEnabled,
     onGameWin,
@@ -369,56 +369,95 @@ const GameScreen: React.FC<GameScreenProps> = ({
     setCurrentGuess((prev: string[]) => prev.slice(0, -1));
   };
 
-  const handleHintPress = () => {
-    modal.showHintModal({
-      hintCost,
-      userCoins,
-      onShowHint: handleShowHint,
+  const handleChangeGameModePress = () => {
+    modal.showGameModeModal({
+      onSelectMode: (mode) => {
+        console.log(`Selected game mode: ${mode}`);
+        // Handle mode selection here
+        if (mode === "classic") {
+          // Navigate to classic mode
+          resetGame();
+          // Logic for switching to classic mode
+          setIsLoading(true);
+          // Use the setGameMode function from AuthContext
+          if (playerData) {
+            setGameMode("classic");
+            // Fetch the riddle for classic mode
+            fetchCurrentRiddle(playerData, "classic").finally(() => {
+              setIsLoading(false);
+            });
+          } else {
+            setIsLoading(false);
+          }
+        } else if (mode === "daily") {
+          // Navigate to daily challenge
+          resetGame();
+          // Logic for switching to daily challenge
+          setIsLoading(true);
+          // Use the setGameMode function from AuthContext
+          if (playerData) {
+            setGameMode("daily");
+            // Fetch the riddle for daily challenge
+            fetchCurrentRiddle(playerData, "daily").finally(() => {
+              setIsLoading(false);
+            });
+          } else {
+            setIsLoading(false);
+          }
+        }
+      },
     });
   };
 
   const handleShowHint = async () => {
     if (!playerData?.userId) return;
-    if (userCoins < hintCost) {
-      Alert.alert(
-        AppStrings.GameScreenAlerts.NOT_ENOUGH_COINS_TITLE,
-        AppStrings.GameScreenAlerts.NOT_ENOUGH_COINS_MESSAGE
-      );
-      return;
-    }
 
-    console.log("Showing hint for riddle:", riddleId);
-    resetGame();
+    console.log("Showing hint modal for riddle:", riddleId);
 
-    const hintRequestData = {
-      currentAttempt: currentGuess,
-      riddleId: riddleId,
-    };
+    // Show the hint modal using the modal system
+    modal.showHintModal({
+      userCoins,
+      hintCost,
+      onShowHint: async () => {
+        modal.closeModalByType("hint");
 
-    try {
-      GetHintInputSchema.parse(hintRequestData);
-      const getHintCallable = getFunctions(getApp()).httpsCallable("getHint");
-      const result = await getHintCallable(hintRequestData);
-      const hintData = GetHintOutputSchema.parse(result.data);
+        // Process the hint request after user confirms in the modal
+        const hintRequestData = {
+          currentAttempt: currentGuess,
+          riddleId: riddleId,
+        };
 
-      if (hintData) {
-        Alert.alert(
-          "Hint",
-          `The letter '${hintData.revealedLetter}' is at position ${
-            hintData.index + 1
-          }.`
-        );
-        onHintUsed(hintData.coinsCost);
-      } else {
-        Alert.alert(
-          "Hint Not Available",
-          "No more hints can be revealed for this riddle."
-        );
-      }
-    } catch (error: unknown) {
-      console.error("Error getting hint:", error);
-      Alert.alert("Error", "An error occurred while getting a hint.");
-    }
+        try {
+          setIsLoading(true);
+          GetHintInputSchema.parse(hintRequestData);
+          const getHintCallable = getFunctions(getApp()).httpsCallable(
+            "getHint"
+          );
+          const result = await getHintCallable(hintRequestData);
+          const hintData = GetHintOutputSchema.parse(result.data);
+          setIsLoading(false);
+
+          if (hintData) {
+            Alert.alert(
+              "Hint",
+              `The letter '${hintData.revealedLetter}' is at position ${
+                hintData.index + 1
+              }.`
+            );
+            onHintUsed(hintData.coinsCost);
+          } else {
+            Alert.alert(
+              "Hint Not Available",
+              "No more hints can be revealed for this riddle."
+            );
+          }
+        } catch (error: unknown) {
+          setIsLoading(false);
+          console.error("Error getting hint:", error);
+          Alert.alert("Error", "An error occurred while getting a hint.");
+        }
+      },
+    });
   };
 
   const handleOverlayNext = () => {
@@ -487,7 +526,7 @@ const GameScreen: React.FC<GameScreenProps> = ({
       loading: iapLoading,
       error: iapError,
       onPurchaseProduct: handlePurchaseProduct,
-      onWatchVideo: handleWatchVideo,
+      onWatchVideo: handleWatchAdForCoins,
       onPayAndPlay: handlePayAndPlay,
     });
   };
@@ -527,17 +566,6 @@ const GameScreen: React.FC<GameScreenProps> = ({
     }
   };
 
-  const handleWatchVideo = () => {
-    console.log("Watch video button pressed");
-    modal.closeModalByType("coinShop");
-    // TODO: Implement rewarded ad functionality
-    Alert.alert(
-      "Watch Video",
-      "This will show a rewarded video ad to earn free coins. Feature coming soon!",
-      [{ text: "OK" }]
-    );
-  };
-
   const handlePayAndPlay = () => {
     console.log("Pay and play button pressed");
     // This could trigger the cheapest coin pack purchase or show a specific payment flow
@@ -549,6 +577,31 @@ const GameScreen: React.FC<GameScreenProps> = ({
       handlePurchaseProduct(cheapestProduct.productId);
     } else {
       Alert.alert("No Products Available", "Please try again later.");
+    }
+  };
+
+  const handleWatchAdForCoins = async () => {
+    console.log("Watch ad for coins button pressed");
+    modal.closeModalByType("coinShop");
+
+    try {
+      await loadRewardedAd();
+      if (isRewardedAdReady) {
+        await showRewardedAd();
+        console.log("Rewarded ad for coins shown successfully");
+      } else {
+        console.warn("Rewarded ad was not ready to be shown");
+        Alert.alert(
+          "Ad Not Ready",
+          "The rewarded ad couldn't be loaded at this time. Please try again later."
+        );
+      }
+    } catch (error) {
+      console.error("Error showing rewarded ad for coins:", error);
+      Alert.alert(
+        "Ad Error",
+        "An error occurred while trying to show the rewarded ad."
+      );
     }
   };
 
@@ -564,71 +617,6 @@ const GameScreen: React.FC<GameScreenProps> = ({
 
   const toggleHapticsEnabled = (isEnabled: boolean) => {
     setIsHapticsEnabled(isEnabled);
-  };
-
-  const handleWatchAdAccepted = async () => {
-    modal.closeModalByType("watchAdForChance");
-    try {
-      await loadRewardedAd();
-      if (isRewardedAdReady) {
-        await showRewardedAd();
-        console.log("Rewarded ad shown (or attempt to show finished).");
-      } else {
-        console.warn("Rewarded ad was not ready to be shown.");
-        Alert.alert(
-          "Ad Not Ready",
-          "The rewarded ad couldn't be loaded at this time. Please try again later."
-        );
-      }
-    } catch (adError: unknown) {
-      console.error("Error showing rewarded ad:", adError);
-      Alert.alert(
-        "Ad Error",
-        "An error occurred while trying to show the rewarded ad."
-      );
-    }
-  };
-
-  const handleWatchAdToContinue = async () => {
-    modal.closeModalByType("outOfAttempts");
-    try {
-      await loadInterstitialAd();
-      showInterstitialAd();
-      continueGame();
-      console.log("User continued game after watching interstitial ad");
-    } catch (error) {
-      console.error("Error showing interstitial ad:", error);
-      Alert.alert(
-        "Ad Error",
-        "An error occurred while trying to show the ad. You can try spending coins instead."
-      );
-    }
-  };
-
-  const handleSpendCoinsToContinue = async () => {
-    if (userCoins < CONTINUE_COST) {
-      Alert.alert(
-        "Not Enough Coins",
-        `You need ${CONTINUE_COST} coins to continue. You have ${userCoins} coins.`
-      );
-      return;
-    }
-
-    modal.closeModalByType("outOfAttempts");
-    try {
-      const spendCoinsCallable = getFunctions(getApp()).httpsCallable(
-        "spendCoins"
-      );
-      await spendCoinsCallable({
-        amount: CONTINUE_COST,
-        reason: "continue_attempts",
-      });
-      continueGame();
-      console.log(`User spent ${CONTINUE_COST} coins to continue game`);
-    } catch (error) {
-      console.error("Error spending coins:", error);
-      Alert.alert("Error", "Failed to spend coins. Please try again.");
-    }
   };
 
   const isSubmitDisabled = currentGuess.length !== answerLength;
@@ -659,14 +647,14 @@ const GameScreen: React.FC<GameScreenProps> = ({
           isSubmitDisabled={isSubmitDisabled}
           gameOver={gameOver}
           handleSubmit={handleSubmit}
-          handleHint={handleHintPress}
+          handleHint={handleShowHint}
           handleNext={handleOverlayNext}
         />
 
         <BottomNavigationBar
           onProfilePress={handleProfilePress}
           onSettingsPress={handleSettingsPress}
-          onHintPress={handleShowHint}
+          onChangeGameModePress={handleChangeGameModePress}
         />
       </KeyboardAvoidingView>
 

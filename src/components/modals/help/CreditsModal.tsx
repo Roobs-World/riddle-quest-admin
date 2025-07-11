@@ -35,326 +35,149 @@
  */
 
 import React from "react";
-import { View, Text, Modal, ScrollView, SafeAreaView } from "react-native";
+import { View, Text, Modal, ScrollView } from "react-native";
 import CloseButton from "../../buttons/CloseButton";
 import WideButton from "../../buttons/WideButton";
-import HomeBgSvg from "../../../../assets/images/home-bg.svg";
-import { modalStyles } from "../../../styles/components/modals";
-import { COLORS } from "../../../styles/tokens/colors";
-import { SPACING } from "../../../styles/tokens/spacing";
-import { BORDER_RADIUS } from "../../../styles/tokens/borderRadius";
+import ModalBg from "../../../../assets/images/modal-bg.svg";
 import { scale } from "../../../utils/responsive";
+import { TYPOGRAPHY } from "../../../styles";
 
-/**
- * Props interface for the CreditsModal component.
- *
- * Defines the required properties for displaying the credits and
- * acknowledgments modal with appropriate navigation controls.
- */
 interface CreditsModalProps {
-  /** Controls the visibility state of the modal */
   isVisible: boolean;
-
-  /** Callback function executed when user closes the modal */
   onClose: () => void;
 }
 
-/**
- * Team Member Information Interface
- *
- * Defines the structure for individual team member data including
- * their name, role, and potential future website/portfolio links.
- */
 interface TeamMember {
-  /** Full name of the team member */
   name: string;
-
-  /** Role or contribution description */
   role: string;
-
-  /** Optional website or portfolio URL (reserved for future use) */
   website?: string;
 }
 
-/**
- * Credits Modal Component
- *
- * A full-screen informational modal that presents the development team
- * and acknowledges all contributors to the Qwordly project. The modal
- * provides a professional and respectful presentation of credits while
- * maintaining the app's visual branding and accessibility standards.
- *
- * **Behavior:**
- * - Displays as full-screen modal with branded background
- * - Provides smooth scrolling for extensive team listings
- * - Includes drag handle for intuitive interaction patterns
- * - Dismisses via close button or primary action button
- * - Maintains focus accessibility for keyboard navigation
- *
- * **Accessibility:**
- * - Screen reader compatible with proper heading hierarchy
- * - High contrast text over background elements
- * - Touch-friendly interactive elements with adequate spacing
- * - Clear navigation and dismissal options
- * - Proper semantic markup for content structure
- *
- * **Styling:**
- * - Full-screen layout with branded background integration
- * - Card-based presentation for individual team members
- * - Consistent typography and spacing throughout
- * - Professional color scheme with appropriate emphasis
- * - Responsive design accommodating various screen sizes
- *
- * @param props - Component props defining modal state and callbacks
- * @returns Rendered credits modal component
- *
- * @example
- * ```tsx
- * <CreditsModal
- *   isVisible={showCreditsModal}
- *   onClose={() => setShowCreditsModal(false)}
- * />
- * ```
- */
 const CreditsModal: React.FC<CreditsModalProps> = ({ isVisible, onClose }) => {
-  /**
-   * Development Team Members
-   *
-   * Comprehensive listing of all individuals who contributed to the
-   * Qwordly project, including their specific roles and contributions.
-   * Website links are reserved for future implementation.
-   */
   const teamMembers: TeamMember[] = [
     {
       name: "Craig Beswetherick",
       role: "Lead Developer & Game Design",
-      website: "", // TODO: Add website link
     },
     {
       name: "Reuben Beswetherick",
       role: "Inspiration",
-      website: "", // TODO: Add website link
     },
     {
       name: "Thomas Lemrond",
       role: "Game Designer, Publisher, Overall Hero",
-      website: "", // TODO: Add website link
     },
     {
       name: "Gavin Harrison",
       role: "Sound Design",
-      website: "", // TODO: Add website link
     },
     {
       name: "Nathalia",
       role: "Design",
-      website: "", // TODO: Add website link
     },
     {
       name: "Mr Ben",
       role: "Design",
-      website: "", // TODO: Add website link
     },
   ];
 
   return (
     <Modal
-      animationType="slide"
-      transparent={false}
+      animationType="fade"
+      transparent={true}
       visible={isVisible}
       onRequestClose={onClose}
-      accessibilityLabel="Credits and acknowledgments"
     >
-      <SafeAreaView
-        style={{ flex: 1, backgroundColor: COLORS.backgroundPrimary }}
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "rgba(0,0,0,0.6)",
+        }}
       >
         <View
           style={{
-            backgroundColor: COLORS.backgroundPrimary,
-            borderBottomLeftRadius: BORDER_RADIUS.xl,
-            borderBottomRightRadius: BORDER_RADIUS.xl,
-            flex: 1,
-            paddingTop: SPACING.lg,
+            width: 335,
+            height: 423,
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
-          {/* Background Design */}
-          <HomeBgSvg
-            width="120%"
-            height="100%"
-            style={{
-              position: "absolute",
-              top: 0,
-              left: -50,
-              zIndex: 0,
-              opacity: 0.1,
-            }}
-          />
-
-          {/* Drag Handle */}
+          <ModalBg style={{ position: "absolute" }} />
           <View
             style={{
-              alignSelf: "center",
-              width: scale(40),
-              height: scale(4),
-              backgroundColor: COLORS.gray300,
-              borderRadius: BORDER_RADIUS.sm,
-              marginBottom: SPACING.lg,
-            }}
-          />
-
-          {/* Close Button */}
-          <View
-            style={{
-              position: "absolute",
-              top: SPACING.xl,
-              right: SPACING.lg,
-              zIndex: 10,
+              flex: 1,
+              width: "100%",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: 20,
             }}
           >
             <CloseButton
               onPress={onClose}
-              size={scale(24)}
-              accessibilityLabel="Close credits modal"
+              size={20}
+              style={{ position: "absolute", top: 20, right: 20, zIndex: 10 }}
             />
-          </View>
-
-          {/* Header */}
-          <View
-            style={[
-              modalStyles.headerCentered,
-              { paddingHorizontal: SPACING.lg },
-            ]}
-          >
             <Text
-              style={[
-                modalStyles.title,
-                {
-                  fontSize: scale(28),
-                  color: COLORS.textPrimary,
-                  marginBottom: SPACING.sm,
-                },
-              ]}
-            >
-              🎉 Credits
-            </Text>
-            <Text
-              style={[
-                modalStyles.subtitle,
-                {
-                  fontSize: scale(18),
-                  color: COLORS.textSecondary,
-                  marginBottom: SPACING.xl,
-                },
-              ]}
-            >
-              Meet the amazing team behind Qwordly
-            </Text>
-          </View>
-
-          {/* Scrollable Team Members */}
-          <ScrollView
-            style={{ flex: 1 }}
-            showsVerticalScrollIndicator={true}
-            contentContainerStyle={{
-              paddingHorizontal: SPACING.lg,
-              paddingBottom: SPACING.xl,
-              flexGrow: 1,
-            }}
-            accessibilityLabel="Team members list"
-          >
-            {teamMembers.map((member, index) => (
-              <View
-                key={index}
-                style={{
-                  backgroundColor: "rgba(255, 255, 255, 0.95)",
-                  borderRadius: BORDER_RADIUS.lg,
-                  padding: SPACING.lg,
-                  marginBottom: SPACING.md,
-                  shadowColor: COLORS.shadowColor,
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: 0.1,
-                  shadowRadius: 4,
-                  elevation: 3,
-                }}
-                accessibilityRole="text"
-                accessibilityLabel={`Team member: ${member.name}, ${member.role}`}
-              >
-                <Text
-                  style={{
-                    fontSize: scale(20),
-                    fontWeight: "bold",
-                    color: COLORS.textPrimary,
-                    textAlign: "center",
-                    marginBottom: SPACING.sm,
-                  }}
-                >
-                  {member.name}
-                </Text>
-                <Text
-                  style={{
-                    fontSize: scale(16),
-                    color: COLORS.textSecondary,
-                    textAlign: "center",
-                    lineHeight: scale(22),
-                  }}
-                >
-                  {member.role}
-                </Text>
-              </View>
-            ))}
-
-            {/* Thank You Section */}
-            <View
               style={{
-                marginTop: SPACING.xl,
-                padding: SPACING.lg,
-                backgroundColor: "rgba(255, 140, 0, 0.1)",
-                borderRadius: BORDER_RADIUS.lg,
-                borderWidth: 1,
-                borderColor: COLORS.primaryOrangeLight,
+                fontFamily: TYPOGRAPHY.fontPrimary,
+                fontSize: scale(28),
+                color: "white",
+                textAlign: "center",
               }}
             >
-              <Text
-                style={{
-                  fontSize: scale(22),
-                  fontWeight: "bold",
-                  color: COLORS.textPrimary,
-                  textAlign: "center",
-                  marginBottom: SPACING.md,
-                }}
-              >
-                🙏 Thank You!
-              </Text>
-              <Text
-                style={{
-                  fontSize: scale(16),
-                  color: COLORS.textSecondary,
-                  textAlign: "center",
-                  lineHeight: scale(24),
-                }}
-              >
-                Special thanks to all our contributors who made Qwordly
-                possible. Your creativity, dedication, and passion brought this
-                project to life.
-              </Text>
-            </View>
-          </ScrollView>
-
-          {/* Action Button */}
-          <View
-            style={{
-              paddingHorizontal: SPACING.lg,
-              paddingBottom: SPACING.lg,
-              paddingTop: SPACING.md,
-              backgroundColor: COLORS.backgroundPrimary,
-            }}
-          >
-            <WideButton buttonText="Got It!" onPress={onClose} />
+              Credits
+            </Text>
+            <ScrollView
+              style={{ flex: 1, width: "100%", maxHeight: 280, marginTop: 10 }}
+              contentContainerStyle={{ alignItems: "center" }}
+            >
+              {teamMembers.map((member, index) => (
+                <TeamMemberCard key={index} member={member} />
+              ))}
+            </ScrollView>
+            <WideButton buttonText="Close" onPress={onClose} />
           </View>
         </View>
-      </SafeAreaView>
+      </View>
     </Modal>
   );
 };
+
+const TeamMemberCard = ({ member }: { member: TeamMember }) => (
+  <View
+    style={{
+      backgroundColor: "rgba(0,0,0,0.2)",
+      borderRadius: 12,
+      padding: 16,
+      marginBottom: 12,
+      width: "100%",
+      alignItems: "center",
+    }}
+  >
+    <Text
+      style={{
+        fontFamily: TYPOGRAPHY.fontSecondaryBold,
+        fontSize: scale(18),
+        color: "white",
+        textAlign: "center",
+      }}
+    >
+      {member.name}
+    </Text>
+    <Text
+      style={{
+        fontFamily: TYPOGRAPHY.fontSecondary,
+        fontSize: scale(14),
+        color: "rgba(255,255,255,0.8)",
+        textAlign: "center",
+        marginTop: 4,
+      }}
+    >
+      {member.role}
+    </Text>
+  </View>
+);
 
 export default CreditsModal;

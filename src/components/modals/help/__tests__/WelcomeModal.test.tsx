@@ -3,7 +3,7 @@ import { render } from "@testing-library/react-native";
 import WelcomeModal from "../WelcomeModal";
 
 // Mock dependencies
-jest.mock("../buttons/CloseButton", () => "CloseButton");
+jest.mock("../../../buttons/CloseButton", () => "CloseButton");
 jest.mock("react-native", () => ({
   View: "View",
   Text: "Text",

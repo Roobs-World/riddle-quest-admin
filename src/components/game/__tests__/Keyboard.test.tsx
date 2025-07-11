@@ -80,9 +80,12 @@ jest.mock("react-native-reanimated", () => {
 
 describe("Keyboard", () => {
   const mockOnKeyPress = jest.fn();
+  const mockSubmitKeyPress = jest.fn();
+  const mockHandleBackspace = jest.fn();
 
   const defaultProps = {
-    onKeyPress: mockOnKeyPress,
+    submitKeyPress: mockSubmitKeyPress,
+    handleBackspace: mockHandleBackspace,
     isVisible: true,
   };
 
@@ -143,14 +146,14 @@ describe("Keyboard", () => {
   });
 
   describe("Key Press Handling", () => {
-    it("should call onKeyPress when letter key is pressed", () => {
+    it("should call submitKeyPress when letter key is pressed", () => {
       const { getByText } = render(<Keyboard {...defaultProps} />);
 
-      fireEvent.press(getByText("q"));
-      expect(mockOnKeyPress).toHaveBeenCalledWith("q");
+      fireEvent(getByText("q"), "pressIn");
+      expect(mockSubmitKeyPress).toHaveBeenCalledWith("q");
     });
 
-    it("should call onKeyPress for all letter keys", () => {
+    it("should call submitKeyPress for all letter keys", () => {
       const { getByText } = render(<Keyboard {...defaultProps} />);
 
       const allKeys = [
@@ -183,11 +186,11 @@ describe("Keyboard", () => {
       ];
 
       allKeys.forEach((key) => {
-        fireEvent.press(getByText(key));
-        expect(mockOnKeyPress).toHaveBeenCalledWith(key);
+        fireEvent(getByText(key), "pressIn");
+        expect(mockSubmitKeyPress).toHaveBeenCalledWith(key);
       });
 
-      expect(mockOnKeyPress).toHaveBeenCalledTimes(allKeys.length);
+      expect(mockSubmitKeyPress).toHaveBeenCalledTimes(allKeys.length);
     });
 
     it("should handle backspace key press", () => {
@@ -195,19 +198,23 @@ describe("Keyboard", () => {
 
       const backspaceButton = getByTestId("backspace-icon").parent;
       if (backspaceButton) {
-        fireEvent.press(backspaceButton);
-        expect(mockOnKeyPress).toHaveBeenCalledWith("BACKSPACE");
+        fireEvent(backspaceButton, "pressIn");
+        expect(mockHandleBackspace).toHaveBeenCalled();
       }
     });
 
     it("should handle multiple key presses", () => {
-      const { getByText } = render(<Keyboard {...defaultProps} />);
+      const props = {
+        ...defaultProps,
+        submitKeyPress: mockOnKeyPress,
+      };
+      const { getByText } = render(<Keyboard {...props} />);
 
-      fireEvent.press(getByText("h"));
-      fireEvent.press(getByText("e"));
-      fireEvent.press(getByText("l"));
-      fireEvent.press(getByText("l"));
-      fireEvent.press(getByText("o"));
+      fireEvent(getByText("h"), "pressIn");
+      fireEvent(getByText("e"), "pressIn");
+      fireEvent(getByText("l"), "pressIn");
+      fireEvent(getByText("l"), "pressIn");
+      fireEvent(getByText("o"), "pressIn");
 
       expect(mockOnKeyPress).toHaveBeenCalledTimes(5);
       expect(mockOnKeyPress).toHaveBeenNthCalledWith(1, "h");
@@ -220,50 +227,64 @@ describe("Keyboard", () => {
 
   describe("Particle System", () => {
     it("should create particles with different types", () => {
-      // Test that component renders without error when particle system is active
-      expect(() => {
-        render(<Keyboard {...defaultProps} />);
-      }).not.toThrow();
+      const { getByText } = render(<Keyboard {...defaultProps} />);
+
+      // Particle system should render without error
+      expect(getByText("q")).toBeTruthy();
     });
 
     it("should handle particle animation triggers", () => {
       const { getByText } = render(<Keyboard {...defaultProps} />);
 
-      // Pressing keys should trigger particle animations
-      expect(() => {
-        fireEvent.press(getByText("q"));
-      }).not.toThrow();
+      // Simulate key press to trigger particle animation
+      fireEvent(getByText("a"), "pressIn");
+
+      // Particle animation should not cause errors
+      expect(mockSubmitKeyPress).toHaveBeenCalledWith("a");
     });
 
     it("should handle multiple particle triggers", () => {
       const { getByText } = render(<Keyboard {...defaultProps} />);
 
-      expect(() => {
-        fireEvent.press(getByText("q"));
-        fireEvent.press(getByText("w"));
-        fireEvent.press(getByText("e"));
-      }).not.toThrow();
+      // Simulate multiple key presses to trigger multiple particle animations
+      fireEvent(getByText("q"), "pressIn");
+      fireEvent(getByText("w"), "pressIn");
+      fireEvent(getByText("e"), "pressIn");
+
+      // Multiple particle animations should not cause errors
+      expect(mockSubmitKeyPress).toHaveBeenCalledTimes(3);
     });
   });
 
   describe("Responsive Design", () => {
     it("should apply responsive scaling", () => {
-      expect(() => {
-        render(<Keyboard {...defaultProps} />);
-      }).not.toThrow();
+      const { getByText } = render(<Keyboard {...defaultProps} />);
+
+      // Component should render with responsive scaling
+      expect(getByText("q")).toBeTruthy();
     });
 
     it("should handle tablet layout", () => {
-      // Mock isTablet as true
-      jest.doMock("../../../utils/responsive", () => ({
-        scale: (size: number) => size * 1.5,
-        moderateScale: (size: number) => size * 1.3,
+      // Create a new mock for this test
+      jest.resetModules();
+      jest.mock("../../../utils/responsive", () => ({
+        scale: (size: number) => size * 1.2,
+        moderateScale: (size: number) => size * 1.1,
         isTablet: true,
       }));
 
-      expect(() => {
-        render(<Keyboard {...defaultProps} />);
-      }).not.toThrow();
+      const { getByText } = render(<Keyboard {...defaultProps} />);
+
+      // Component should render with tablet layout
+      expect(getByText("q")).toBeTruthy();
+
+      // Reset the mock to its original state
+      jest.resetModules();
+      jest.mock("../../../utils/responsive", () => ({
+        scale: (size: number) => size * 1.2,
+        moderateScale: (size: number) => size * 1.1,
+        isTablet: false,
+      }));
     });
   });
 
@@ -271,55 +292,36 @@ describe("Keyboard", () => {
     it("should have correct keyboard layout structure", () => {
       const { getByText } = render(<Keyboard {...defaultProps} />);
 
-      // Verify that all expected keys are present
-      const allExpectedKeys = [
-        "q",
-        "w",
-        "e",
-        "r",
-        "t",
-        "y",
-        "u",
-        "i",
-        "o",
-        "p",
-        "a",
-        "s",
-        "d",
-        "f",
-        "g",
-        "h",
-        "j",
-        "k",
-        "l",
-        "z",
-        "x",
-        "c",
-        "v",
-        "b",
-        "n",
-        "m",
-      ];
-
-      allExpectedKeys.forEach((key) => {
-        expect(getByText(key)).toBeTruthy();
-      });
+      // Verify QWERTY layout structure
+      expect(getByText("q")).toBeTruthy();
+      expect(getByText("a")).toBeTruthy();
+      expect(getByText("z")).toBeTruthy();
     });
 
     it("should maintain proper row structure", () => {
       const { getByText } = render(<Keyboard {...defaultProps} />);
 
-      // Test that keys from each row are present
-      expect(getByText("q")).toBeTruthy(); // Top row
-      expect(getByText("a")).toBeTruthy(); // Middle row
-      expect(getByText("z")).toBeTruthy(); // Bottom row
+      // Verify row structure
+      expect(getByText("q")).toBeTruthy(); // First key in top row
+      expect(getByText("p")).toBeTruthy(); // Last key in top row
+      expect(getByText("a")).toBeTruthy(); // First key in middle row
+      expect(getByText("l")).toBeTruthy(); // Last key in middle row
+      expect(getByText("z")).toBeTruthy(); // First key in bottom row
+      expect(getByText("m")).toBeTruthy(); // Last key in bottom row
     });
   });
 
   describe("Error Handling", () => {
     it("should handle undefined onKeyPress gracefully", () => {
       expect(() => {
-        render(<Keyboard onKeyPress={undefined as any} isVisible={true} />);
+        render(
+          <Keyboard
+            submitKeyPress={jest.fn()}
+            handleBackspace={jest.fn()}
+            onKeyPress={undefined as any}
+            isVisible={true}
+          />
+        );
       }).not.toThrow();
     });
 
@@ -328,7 +330,7 @@ describe("Keyboard", () => {
 
       // Should not throw even if measurement fails
       expect(() => {
-        fireEvent.press(getByText("q"));
+        fireEvent(getByText("q"), "pressIn");
       }).not.toThrow();
     });
   });
@@ -349,21 +351,25 @@ describe("Keyboard", () => {
     it("should handle prop updates", () => {
       const { rerender } = render(<Keyboard {...defaultProps} />);
 
-      const newOnKeyPress = jest.fn();
       expect(() => {
-        rerender(<Keyboard onKeyPress={newOnKeyPress} isVisible={true} />);
+        rerender(<Keyboard {...defaultProps} isVisible={false} />);
       }).not.toThrow();
     });
   });
 
   describe("Performance", () => {
     it("should handle rapid key presses", () => {
-      const { getByText } = render(<Keyboard {...defaultProps} />);
+      const props = {
+        ...defaultProps,
+        submitKeyPress: mockOnKeyPress,
+      };
+      const { getByText } = render(<Keyboard {...props} />);
 
       // Simulate rapid key presses
       expect(() => {
         for (let i = 0; i < 10; i++) {
-          fireEvent.press(getByText("q"));
+          const key = "qwertyuiopasdfghjklzxcvbnm"[i % 26];
+          fireEvent(getByText(key), "pressIn");
         }
       }).not.toThrow();
 
@@ -373,62 +379,39 @@ describe("Keyboard", () => {
     it("should handle all key combinations", () => {
       const { getByText, getByTestId } = render(<Keyboard {...defaultProps} />);
 
-      const allKeys = [
-        "q",
-        "w",
-        "e",
-        "r",
-        "t",
-        "y",
-        "u",
-        "i",
-        "o",
-        "p",
-        "a",
-        "s",
-        "d",
-        "f",
-        "g",
-        "h",
-        "j",
-        "k",
-        "l",
-        "z",
-        "x",
-        "c",
-        "v",
-        "b",
-        "n",
-        "m",
-      ];
+      // Test a combination of letter keys and backspace
+      fireEvent(getByText("h"), "pressIn");
+      fireEvent(getByText("e"), "pressIn");
+      fireEvent(getByText("l"), "pressIn");
+      fireEvent(getByText("l"), "pressIn");
+      fireEvent(getByText("o"), "pressIn");
 
-      expect(() => {
-        allKeys.forEach((key) => {
-          fireEvent.press(getByText(key));
-        });
+      const backspaceButton = getByTestId("backspace-icon").parent;
+      if (backspaceButton) {
+        fireEvent(backspaceButton, "pressIn");
+      }
 
-        // Test backspace
-        const backspaceButton = getByTestId("backspace-icon").parent;
-        if (backspaceButton) {
-          fireEvent.press(backspaceButton);
-        }
-      }).not.toThrow();
+      expect(mockSubmitKeyPress).toHaveBeenCalledTimes(5);
+      expect(mockHandleBackspace).toHaveBeenCalledTimes(1);
     });
   });
 
   describe("Visual Elements", () => {
     it("should render with correct styling", () => {
-      expect(() => {
-        render(<Keyboard {...defaultProps} />);
-      }).not.toThrow();
+      const { getByText } = render(<Keyboard {...defaultProps} />);
+
+      // Component should render with correct styling
+      expect(getByText("q")).toBeTruthy();
     });
 
     it("should handle active opacity on key press", () => {
       const { getByText } = render(<Keyboard {...defaultProps} />);
 
-      expect(() => {
-        fireEvent.press(getByText("q"));
-      }).not.toThrow();
+      // Simulate key press to test active opacity
+      fireEvent(getByText("q"), "pressIn");
+
+      // Key press should not cause errors
+      expect(mockSubmitKeyPress).toHaveBeenCalledWith("q");
     });
   });
 });

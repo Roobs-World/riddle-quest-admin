@@ -18,6 +18,7 @@ import { COLORS, TYPOGRAPHY } from "../../styles";
 import { scale } from "../../utils/responsive";
 import BuyCoinsSvg from "../../../assets/images/buy-coins.svg";
 import CoinSvg from "../../../assets/images/coin.svg";
+import ModalBg from "../../../assets/images/modal-bg.svg";
 
 const { height: screenHeight } = Dimensions.get("window");
 
@@ -86,7 +87,6 @@ const CoinShopModal: React.FC<CoinShopModalProps> = ({
             left: 16,
             right: 16,
             bottom: insets.bottom + availableHeight * 0.05,
-            backgroundColor: "white",
             borderRadius: 20,
             shadowColor: "#000",
             shadowOffset: {
@@ -96,8 +96,15 @@ const CoinShopModal: React.FC<CoinShopModalProps> = ({
             shadowOpacity: 0.25,
             shadowRadius: 5,
             elevation: 10,
+            overflow: "hidden",
           }}
         >
+          <ModalBg
+            width="100%"
+            height="100%"
+            style={{ position: "absolute" }}
+            preserveAspectRatio="xMidYMid slice"
+          />
           <ScrollView
             className="px-6"
             style={{ flex: 1 }}

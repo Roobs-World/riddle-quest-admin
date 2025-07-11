@@ -4,7 +4,7 @@ import useGameLogic, { Feedback } from "../useGameLogic";
 import { getFunctions } from "@react-native-firebase/functions";
 
 // Get the mocked functions module
-const mockFunctions = functions as jest.MockedFunction<typeof functions>;
+const mockFunctions = getFunctions as jest.MockedFunction<typeof getFunctions>;
 
 // Create a mock callable function that we'll use for submitGuess
 const mockSubmitGuessCallable = jest.fn();

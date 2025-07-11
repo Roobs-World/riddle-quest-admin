@@ -31,27 +31,14 @@
  * @since 2024
  *
  * @see {@link VictoryModal} For success state counterpart
- * @see {@link OutOfAttemptsModal} For attempt exhaustion handling
  */
 
-import React, { useEffect } from "react";
-import { View, Text, Modal, SafeAreaView } from "react-native";
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withRepeat,
-  withTiming,
-  Easing,
-} from "react-native-reanimated";
-import { modalStyles } from "../../../styles/components/modals";
-import { COLORS } from "../../../styles/tokens/colors";
-import { SPACING } from "../../../styles/tokens/spacing";
-import { BORDER_RADIUS } from "../../../styles/tokens/borderRadius";
-import { scale } from "../../../utils/responsive";
-import WheelBgSvg from "../../../../assets/images/wheel-bg.svg";
-import SegmentBgSvg from "../../../../assets/images/segment-bg.svg";
+import React from "react";
+import { View, Text, Modal } from "react-native";
 import { TYPOGRAPHY } from "../../../styles";
 import WideButton from "../../buttons/WideButton";
+import ModalBg from "../../../../assets/images/modal-bg.svg";
+import { scale } from "../../../utils/responsive";
 
 /**
  * Props interface for the LossModal component.
@@ -67,7 +54,7 @@ interface LossModalProps {
   correctAnswer: string;
 
   /** Callback function executed when user chooses to go to the next level */
-  onNextLevel: () => void;
+  onNext: () => void;
 
   /** Callback function executed when user chooses to return to main menu */
   onHome: () => void;
@@ -82,313 +69,121 @@ interface LossModalProps {
  * Displays when a player fails to solve a riddle, providing the correct answer
  * and options for next steps. The modal focuses on learning and encouragement
  * rather than punishment, helping maintain player engagement and motivation.
- *
- * **Behavior:**
- * - Appears immediately after final incorrect guess
- * - Reveals the correct answer for educational value
- * - Provides immediate next level option for re-engagement
- * - Allows navigation back to main menu
- * - Dismisses upon any action selection
- *
- * **Accessibility:**
- * - Screen reader compatible with clear state communication
- * - High contrast colors for text and background elements
- * - Touch-friendly button sizes and spacing
- * - Clear labeling of all interactive elements
- *
- * **Styling:**
- * - Error modal variant with red accent color
- * - Prominent correct answer display for learning
- * - Primary next level button for immediate re-engagement
- * - Secondary home button for session management
- *
- * @param props - Component props defining modal state and callbacks
- * @returns Rendered loss modal component
- *
- * @example
- * ```tsx
- * <LossModal
- *   isVisible={showLossModal}
- *   correctAnswer="rainbow"
- *   onNextLevel={() => {
- *     loadNextLevel();
- *     setShowLossModal(false);
- *   }}
- *   onHome={() => {
- *     navigateToHome();
- *     setShowLossModal(false);
- *   }}
- * />
- * ```
  */
 const LossModal: React.FC<LossModalProps> = ({
   isVisible,
   correctAnswer,
-  onNextLevel,
+  onNext,
   onHome,
   onClose,
 }) => {
-  /**
-   * Rotation animation for the wheel background
-   */
-  const rotation = useSharedValue(0);
-
-  useEffect(() => {
-    if (isVisible) {
-      // Start rotation animation when modal becomes visible
-      rotation.value = 0; // Reset to 0 first
-      rotation.value = withRepeat(
-        withTiming(360, {
-          duration: 10000, // 10 seconds for one full rotation (faster)
-          easing: Easing.linear,
-        }),
-        -1, // Infinite repetition
-        false // Don't reverse
-      );
-    } else {
-      // Reset rotation when modal is hidden
-      rotation.value = 0;
-    }
-  }, [isVisible, rotation]);
-
-  const animatedWheelStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ rotate: `${rotation.value}deg` }],
-    };
-  });
-
-  /**
-   * Handle next level button press
-   * This ensures both the onNextLevel callback is called and the modal is closed
-   */
   const handleNextLevel = async () => {
-    console.log("Next Level button pressed in LossModal");
-    console.log("onNextLevel type:", typeof onNextLevel);
-    console.log("onClose type:", typeof onClose);
-
-    // First call onNextLevel if it exists
-    if (typeof onNextLevel === "function") {
-      console.log("Calling onNextLevel");
-      try {
-        // Handle both async and non-async onNextLevel functions
-        await Promise.resolve(onNextLevel());
-        console.log("onNextLevel called successfully");
-      } catch (error) {
-        console.error("Error calling onNextLevel:", error);
-
-        // Even if onNextLevel fails, still try to close the modal
-        console.log("Attempting to close modal after onNextLevel error");
-      }
-    } else {
-      console.warn("onNextLevel is not a function or is undefined");
-
-      // Special handling for debug mode - just close the modal
-      console.log("In debug mode or missing callback - just closing modal");
+    if (typeof onNext === "function") {
+      await Promise.resolve(onNext());
     }
-
-    // Then close the modal
     if (typeof onClose === "function") {
-      console.log("Calling onClose");
-      try {
-        onClose();
-        console.log("onClose called successfully");
-      } catch (error) {
-        console.error("Error calling onClose:", error);
-        console.log("Modal may remain open due to onClose error");
-      }
-    } else {
-      console.warn("onClose is not a function or is undefined");
-      console.log("Cannot close modal - onClose callback is missing");
+      onClose();
+    }
+  };
+
+  const handleHome = async () => {
+    if (typeof onHome === "function") {
+      await Promise.resolve(onHome());
+    }
+    if (typeof onClose === "function") {
+      onClose();
     }
   };
 
   return (
     <Modal
-      animationType="slide"
-      transparent={false}
+      animationType="fade"
+      transparent={true}
       visible={isVisible}
-      onRequestClose={() => {
-        onHome();
-      }}
+      onRequestClose={onClose}
       accessibilityLabel="Game loss notification with correct answer"
     >
-      <SafeAreaView style={{ flex: 1, backgroundColor: "transparent" }}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "rgba(0,0,0,0.6)",
+        }}
+      >
         <View
           style={{
-            backgroundColor: "transparent",
-            borderBottomLeftRadius: BORDER_RADIUS.xl,
-            borderBottomRightRadius: BORDER_RADIUS.xl,
-            flex: 1,
-            paddingTop: SPACING.lg,
+            width: 335,
+            height: 423,
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
-          {/* Background Design */}
-          <View
-            style={{
-              position: "absolute",
-              top: -150,
-              left: -150,
-              right: -150,
-              bottom: -150,
-              zIndex: 0,
-              justifyContent: "center",
-              alignItems: "center",
-              opacity: 0.4,
-            }}
-          >
-            <Animated.View
-              style={[
-                animatedWheelStyle,
-                {
-                  width: 1000,
-                  height: 1000,
-                  justifyContent: "center",
-                  alignItems: "center",
-                },
-              ]}
-            >
-              <WheelBgSvg width={1000} height={1000} />
-            </Animated.View>
-          </View>
-
-          {/* Drag Handle */}
-          <View
-            style={{
-              alignSelf: "center",
-              width: scale(40),
-              height: scale(4),
-              backgroundColor: COLORS.gray300,
-              borderRadius: BORDER_RADIUS.sm,
-              marginBottom: SPACING.lg,
-            }}
-          />
-
-          {/* Header */}
-          <View
-            style={[
-              modalStyles.headerCentered,
-              { paddingHorizontal: SPACING.lg },
-            ]}
-          >
-            <Text
-              style={[
-                modalStyles.title,
-                {
-                  fontSize: scale(48),
-                  color: COLORS.error,
-                  fontFamily: TYPOGRAPHY.fontPrimary,
-                },
-              ]}
-            >
-              Try Again!
-            </Text>
-            <Text
-              style={[
-                modalStyles.subtitle,
-                {
-                  fontSize: scale(24),
-                  color: COLORS.textSecondary,
-                  fontFamily: TYPOGRAPHY.fontPrimary,
-                  marginTop: SPACING.md,
-                },
-              ]}
-            >
-              Don&apos;t worry, every puzzle is a learning opportunity!
-            </Text>
-          </View>
-
-          {/* Content Container */}
+          <ModalBg style={{ position: "absolute" }} />
           <View
             style={{
               flex: 1,
-              paddingHorizontal: SPACING.lg,
-              justifyContent: "center",
+              width: "100%",
               alignItems: "center",
+              justifyContent: "space-around",
+              padding: 20,
             }}
           >
-            {/* Middle Section with Treasure Chest */}
             <View
               style={{
+                flex: 1,
+                justifyContent: "center",
                 alignItems: "center",
-                width: "100%",
-                position: "relative",
               }}
             >
-              {/* Treasure Chest with Overlaid Text */}
-              <View
+              <Text
                 style={{
-                  position: "absolute",
-                  alignItems: "center",
-                  top: -160,
+                  fontFamily: TYPOGRAPHY.fontPrimary,
+                  fontSize: scale(32),
+                  color: "white",
                 }}
               >
-                <SegmentBgSvg width={scale(320)} height={scale(240)} />
-
-                {/* Overlaid Answer Text */}
-                <View
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  {/* Semi-transparent background for better text visibility */}
-                  <View
-                    style={{
-                      paddingHorizontal: scale(16),
-                      paddingVertical: scale(8),
-                      alignItems: "center",
-                    }}
-                  >
-                    <Text
-                      style={{
-                        fontSize: scale(18),
-                        fontFamily: TYPOGRAPHY.fontPrimary,
-                        color: "black",
-                        textAlign: "center",
-                      }}
-                    >
-                      The correct answer was:
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: scale(32),
-                        color: COLORS.primaryOrange,
-                        textAlign: "center",
-                        fontFamily: TYPOGRAPHY.fontPrimary,
-                        textTransform: "uppercase",
-                        letterSpacing: 2,
-                      }}
-                    >
-                      {correctAnswer}
-                    </Text>
-                  </View>
-                </View>
-              </View>
+                Oh no!
+              </Text>
+              <Text
+                style={{
+                  fontFamily: TYPOGRAPHY.fontSecondary,
+                  fontSize: scale(20),
+                  color: "white",
+                  textAlign: "center",
+                }}
+              >
+                You lost this round.
+              </Text>
+            </View>
+            <View
+              style={{
+                flex: 2,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text style={{ color: "white" }}>The correct word was</Text>
+              <Text
+                style={{
+                  fontFamily: TYPOGRAPHY.fontPrimary,
+                  fontSize: scale(32),
+                  color: "white",
+                  textTransform: "uppercase",
+                  letterSpacing: 2,
+                }}
+              >
+                {correctAnswer}
+              </Text>
+            </View>
+            <View style={{ flex: 1, justifyContent: "center", width: "100%" }}>
+              <WideButton onPress={handleNextLevel} buttonText="Next Level" />
+              <View style={{ height: 10 }} />
+              <WideButton onPress={handleHome} buttonText="Go to Lobby" />
             </View>
           </View>
-
-          {/* Action Buttons */}
-          <View
-            style={{
-              paddingHorizontal: SPACING.lg,
-              paddingBottom: SPACING.lg,
-              backgroundColor: "transparent",
-              gap: SPACING.sm,
-            }}
-          >
-            <WideButton
-              buttonText="Next Level"
-              onPress={handleNextLevel}
-              buttonColor="bg-orange-500"
-            />
-          </View>
         </View>
-      </SafeAreaView>
+      </View>
     </Modal>
   );
 };

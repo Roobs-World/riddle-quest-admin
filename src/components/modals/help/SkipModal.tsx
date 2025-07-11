@@ -1,8 +1,10 @@
 import React from "react";
 import { View, Text, Modal } from "react-native";
 import CloseButton from "../../buttons/CloseButton";
-import { ModalButton } from "../ModalButton";
 import { TYPOGRAPHY } from "src/styles";
+import ModalBg from "../../../../assets/images/modal-bg.svg";
+import { scale } from "src/utils/responsive";
+import WideButton from "src/components/buttons/WideButton";
 
 interface SkipModalProps {
   isVisible: boolean;
@@ -27,48 +29,88 @@ const SkipModal: React.FC<SkipModalProps> = ({
       animationType="fade"
       onRequestClose={onClose}
     >
-      <View className="flex-1 justify-center items-center bg-black/50">
-        <View className="bg-input-background p-6 rounded-3xl items-center relative">
-          {/* Close Button in top-right corner */}
-          <View className="absolute top-2 right-2 z-10">
-            <CloseButton onPress={onClose} size={20} />
-          </View>
-
-          <Text
-            className="text-gray-800 mb-4"
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "rgba(0,0,0,0.6)",
+        }}
+      >
+        <View
+          style={{
+            width: 335,
+            height: 423,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <ModalBg style={{ position: "absolute" }} />
+          <View
             style={{
-              fontFamily: TYPOGRAPHY.fontPrimary,
-              fontSize: 24,
+              width: "80%",
+              alignItems: "center",
+              justifyContent: "center",
             }}
           >
-            Skip the level?
-          </Text>
-          <Text
-            className="text-md text-gray-700 mb-4"
-            style={{
-              fontFamily: TYPOGRAPHY.fontPrimary,
-            }}
-          >
-            Cost: {skipCost} Coins. You have: {userCoins} Coins.
-          </Text>
-          {!canAffordSkip && (
+            <CloseButton
+              onPress={onClose}
+              size={20}
+              style={{
+                position: "absolute",
+                top: -100,
+                right: -20,
+                zIndex: 10,
+              }}
+            />
             <Text
-              className="text-red-500 mb-4"
               style={{
                 fontFamily: TYPOGRAPHY.fontPrimary,
+                fontSize: scale(28),
+                color: "white",
+                marginBottom: 20,
+                textAlign: "center",
               }}
             >
-              You do not have enough coins to skip a level.
+              Skip the level?
             </Text>
-          )}
-          <View className="flex-row mt-4">
-            <ModalButton
-              text="SKIP LEVEL"
-              callback={onSkipLevel}
-              isDisabled={!canAffordSkip}
-            />
+            <Text
+              style={{
+                fontFamily: TYPOGRAPHY.fontSecondary,
+                fontSize: scale(18),
+                color: "white",
+                marginBottom: 20,
+                textAlign: "center",
+              }}
+            >
+              Cost: {skipCost} Coins. You have: {userCoins} Coins.
+            </Text>
+            {!canAffordSkip && (
+              <Text
+                style={{
+                  fontFamily: TYPOGRAPHY.fontSecondary,
+                  fontSize: scale(16),
+                  color: "#FF6B6B",
+                  marginBottom: 20,
+                  textAlign: "center",
+                }}
+              >
+                You do not have enough coins to skip a level.
+              </Text>
+            )}
+            <View style={{ flexDirection: "row", marginTop: 20 }}>
+              <WideButton
+                buttonText="SKIP LEVEL"
+                onPress={onSkipLevel}
+                disabled={!canAffordSkip}
+              />
 
-            <ModalButton text="CLOSE" callback={onClose} isDisabled={false} />
+              <WideButton
+                buttonText="CLOSE"
+                onPress={onClose}
+                disabled={false}
+              />
+            </View>
           </View>
         </View>
       </View>

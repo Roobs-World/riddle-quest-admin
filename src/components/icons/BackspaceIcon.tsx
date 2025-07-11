@@ -1,11 +1,19 @@
 import React from "react";
-import BackspaceSvg from "@images/backspace-key.svg";
+import BackspaceSvg from "../../../assets/images/backspace-key.svg";
 
-const width = 32;
-const height = 32;
+interface BackspaceIconProps {
+  width?: number | string;
+  height?: number | string;
+  color?: string;
+}
 
-const BackspaceIcon = () => {
-  return <BackspaceSvg width={width} height={height} />;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const BackspaceIcon: React.FC<BackspaceIconProps> = ({
+  width = 32,
+  height = 32,
+  color,
+}) => {
+  return <BackspaceSvg width={width} height={height} color={color} />;
 };
 
 export default BackspaceIcon;

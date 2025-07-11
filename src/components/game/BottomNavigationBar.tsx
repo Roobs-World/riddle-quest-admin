@@ -13,8 +13,8 @@
 
 import React from "react";
 import { View, TouchableOpacity } from "react-native";
-import ProfileIcon from "../../../assets/images/profile-icon.svg";
-import SettingsIcon from "../../../assets/images/settings-icon.svg";
+import ProfileIcon from "../icons/ProfileIcon";
+import SettingsIcon from "../icons/SettingsIcon";
 import LetsPlayIcon from "../../../assets/images/lets-play.svg";
 
 /**
@@ -41,7 +41,7 @@ interface BottomNavigationBarProps {
   onSettingsPress: () => void;
 
   /** Function called when the Hint button (center) is pressed - shows gameplay hint */
-  onHintPress: () => void;
+  onChangeGameModePress: () => void;
 }
 
 /**
@@ -81,7 +81,7 @@ interface BottomNavigationBarProps {
  * <BottomNavigationBar
  *   onProfilePress={() => setOverlay('profile')}
  *   onSettingsPress={() => setOverlay('settings')}
- *   onHintPress={() => handleShowHint()}
+ *   onChangeGameModePress={() => onChangeGameModePress()}
  * />
  * ```
  *
@@ -91,7 +91,7 @@ interface BottomNavigationBarProps {
 const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
   onProfilePress,
   onSettingsPress,
-  onHintPress,
+  onChangeGameModePress,
 }) => {
   return (
     <View
@@ -116,7 +116,7 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
 
       {/* Center - Hint Button */}
       <TouchableOpacity
-        onPress={() => onHintPress()}
+        onPress={() => onChangeGameModePress()}
         accessible={true}
         accessibilityRole="button"
         accessibilityLabel="Show hint"

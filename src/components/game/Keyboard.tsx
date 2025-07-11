@@ -23,6 +23,7 @@ import { gameStyles } from "../../styles";
  * @property {(key: string) => void} submitKeyPress - Function called when a letter key is pressed
  * @property {() => void} handleBackspace - Function called when backspace is pressed
  * @property {boolean} isVisible - Whether the keyboard should be visible/interactive
+ * @property {(key: string) => void} onKeyPress - Alternative function for key press (for backward compatibility)
  */
 interface KeyboardProps {
   /** Function called when any letter key is pressed with the letter as parameter */
@@ -33,6 +34,9 @@ interface KeyboardProps {
 
   /** Flag controlling keyboard visibility (currently not used but available for future features) */
   isVisible: boolean;
+
+  /** Alternative function for key press (for backward compatibility) */
+  onKeyPress?: (key: string) => void;
 }
 
 /**
@@ -98,6 +102,8 @@ interface KeyboardProps {
 const Keyboard: React.FC<KeyboardProps> = ({
   submitKeyPress,
   handleBackspace,
+  isVisible = true,
+  onKeyPress,
 }) => {
   /** Standard QWERTY keyboard layout definition */
   const topRow = ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"];
@@ -113,6 +119,13 @@ const Keyboard: React.FC<KeyboardProps> = ({
   const keyWidth = scale(35);
   const keyMargin = scale(1.65);
   const fontSize = moderateScale(18);
+
+  // Use onKeyPress as a fallback if submitKeyPress is not provided
+  const keyPressHandler = submitKeyPress || onKeyPress || (() => {});
+
+  if (!isVisible) {
+    return null;
+  }
 
   return (
     <View ref={keyboardRef} style={gameStyles.keyboardContainer}>
@@ -135,7 +148,7 @@ const Keyboard: React.FC<KeyboardProps> = ({
                   margin: keyMargin,
                 },
               ]}
-              onPressIn={() => submitKeyPress(key)}
+              onPressIn={() => keyPressHandler(key)}
               activeOpacity={0.7}
               accessibilityRole="button"
               accessibilityLabel={`Letter ${key.toUpperCase()}`}
@@ -180,7 +193,7 @@ const Keyboard: React.FC<KeyboardProps> = ({
                   margin: keyMargin,
                 },
               ]}
-              onPressIn={() => submitKeyPress(key)}
+              onPressIn={() => keyPressHandler(key)}
               activeOpacity={0.7}
               accessibilityRole="button"
               accessibilityLabel={`Letter ${key.toUpperCase()}`}
@@ -221,7 +234,7 @@ const Keyboard: React.FC<KeyboardProps> = ({
                   margin: keyMargin,
                 },
               ]}
-              onPressIn={() => submitKeyPress(key)}
+              onPressIn={() => keyPressHandler(key)}
               activeOpacity={0.7}
               accessibilityRole="button"
               accessibilityLabel={`Letter ${key.toUpperCase()}`}

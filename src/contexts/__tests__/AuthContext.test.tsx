@@ -56,7 +56,6 @@ describe("AuthContext", () => {
     username: "TestUser",
     displayName: "Test User",
     avatarUrl: "test.jpg",
-    xp: 1000,
     coins: 100,
     registeredAt: Date.now(),
     lastLogin: Date.now(),

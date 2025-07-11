@@ -20,9 +20,8 @@ import * as RNIap from "react-native-iap";
 // Import modal components directly
 import VictoryModal from "./game/VictoryModal";
 import LossModal from "./game/LossModal";
-import OutOfAttemptsModal from "./game/OutOfAttemptsModal";
-import WatchAdForChanceModal from "./game/WatchAdForChanceModal";
-import DailyChallengeCompletionModal from "./game/DailyChallengeCompletionModal";
+import GameModeModal from "./game/GameModeModal";
+// Note: OutOfAttemptsModal, WatchAdForChanceModal, and DailyChallengeCompletionModal have been removed
 
 import SettingsModal from "./settings/SettingsModal";
 import FullProfileDetailsModal from "./settings/FullProfileDetailsModal";
@@ -65,52 +64,24 @@ interface VictoryModalData {
  * Data structure for loss modal when player fails to solve a riddle.
  *
  * @property {string} correctAnswer - The correct answer to show player
- * @property {() => void} onNextLevel - Callback to go to next level
+ * @property {() => void} onNext - Callback to go to next level
  * @property {() => void} onHome - Callback to return to home screen
  */
 interface LossModalData {
   correctAnswer: string;
-  onNextLevel: () => void;
+  onNext: () => void;
   onHome: () => void;
 }
 
 /**
- * Data structure for out-of-attempts modal when player runs out of guesses.
+ * Data structure for game mode selection modal.
  *
- * @property {number} userCoins - Player's current coin balance
- * @property {number} continueCost - Cost in coins to continue playing
- * @property {() => void} onWatchAd - Callback to watch ad for free continue
- * @property {() => void} onSpendCoins - Callback to spend coins for continue
+ * @property {(mode: "classic" | "daily") => void} onSelectMode - Callback when a mode is selected
+ * @property {number} [currentLevel] - Optional current level for display in classic mode
  */
-interface OutOfAttemptsModalData {
-  userCoins: number;
-  continueCost: number;
-  onWatchAd: () => void;
-  onSpendCoins: () => void;
-}
-
-/**
- * Data structure for watch-ad-for-chance modal.
- *
- * @property {() => void} onWatchAd - Callback to initiate ad viewing
- */
-interface WatchAdForChanceModalData {
-  onWatchAd: () => void;
-}
-
-/**
- * Data structure for daily challenge completion modal.
- *
- * @property {number} coinsEarned - Total coins earned from daily challenge
- * @property {number} questionsCompleted - Number of questions completed
- * @property {() => void} onContinue - Callback to continue playing
- * @property {() => void} onHome - Callback to return to home screen
- */
-interface DailyChallengeCompletionModalData {
-  coinsEarned: number;
-  questionsCompleted: number;
-  onContinue: () => void;
-  onHome: () => void;
+interface GameModeModalData {
+  onSelectMode: (mode: "classic" | "daily") => void;
+  currentLevel?: number;
 }
 
 /**
@@ -213,9 +184,7 @@ interface CoinShopModalData {
 type ModalData =
   | VictoryModalData
   | LossModalData
-  | OutOfAttemptsModalData
-  | WatchAdForChanceModalData
-  | DailyChallengeCompletionModalData
+  | GameModeModalData
   | SettingsModalData
   | FullProfileDetailsModalData
   | UpdateUsernameModalData
@@ -288,47 +257,17 @@ const ModalRenderer: React.FC<{
         <LossModal
           {...commonProps}
           correctAnswer={(modalData as LossModalData).correctAnswer}
-          onNextLevel={(modalData as LossModalData).onNextLevel}
+          onNext={(modalData as LossModalData).onNext}
           onHome={(modalData as LossModalData).onHome}
           onClose={onClose}
         />
       );
 
-    case "outOfAttempts":
+    case "gameMode":
       return (
-        <OutOfAttemptsModal
+        <GameModeModal
           {...commonProps}
-          userCoins={(modalData as OutOfAttemptsModalData).userCoins}
-          continueCost={(modalData as OutOfAttemptsModalData).continueCost}
-          onWatchAd={(modalData as OutOfAttemptsModalData).onWatchAd}
-          onSpendCoins={(modalData as OutOfAttemptsModalData).onSpendCoins}
-        />
-      );
-
-    case "watchAdForChance":
-      return (
-        <WatchAdForChanceModal
-          visible={true}
-          onClose={onClose}
-          onWatchAd={(modalData as WatchAdForChanceModalData).onWatchAd}
-        />
-      );
-
-    case "dailyChallengeCompletion":
-      return (
-        <DailyChallengeCompletionModal
-          {...commonProps}
-          totalCoinsEarned={
-            (modalData as DailyChallengeCompletionModalData).coinsEarned
-          }
-          questionsCompleted={
-            (modalData as DailyChallengeCompletionModalData).questionsCompleted
-          }
-          totalQuestions={5}
-          onContinue={
-            (modalData as DailyChallengeCompletionModalData).onContinue
-          }
-          onHome={(modalData as DailyChallengeCompletionModalData).onHome}
+          onSelectMode={(modalData as GameModeModalData).onSelectMode}
         />
       );
 

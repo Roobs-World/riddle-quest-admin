@@ -10,12 +10,12 @@ import { NUM_GUESSES } from "../../utils/constants";
  * @property {SubmittedGuess[]} guesses - An array of submitted guesses with their feedback.
  * @property {string[]} currentGuess - The current guess being typed by the user.
  * @property {number} answerLength - The length of the answer.
- * @property {number} shakeKey - Kept for backwards compatibility but not used for animation
  */
 type GuessGridProps = {
   guesses: SubmittedGuess[];
   currentGuess: string[];
   answerLength: number;
+  setTileRef?: (rowIndex: number, cellIndex: number, ref: View | null) => void;
 };
 
 /**
@@ -30,6 +30,7 @@ const GuessGrid: React.FC<GuessGridProps> = ({
   guesses,
   currentGuess,
   answerLength,
+  setTileRef,
 }) => {
   // Responsive sizes
   const TILE_SIZE = scale(56);
@@ -109,6 +110,11 @@ const GuessGrid: React.FC<GuessGridProps> = ({
                     height: TILE_SIZE,
                     margin: TILE_MARGIN,
                   }}
+                  ref={
+                    setTileRef
+                      ? (ref) => setTileRef(rowIndex, cellIndex, ref)
+                      : undefined
+                  }
                 >
                   <Text
                     className={`font-bold uppercase text-key-border`}

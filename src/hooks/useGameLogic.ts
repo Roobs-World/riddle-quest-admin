@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import type { SubmittedGuess } from "./types"; // Assuming you will create a types file for this
 import { getFunctions } from "@react-native-firebase/functions";
 import { getApp } from "@react-native-firebase/app";
@@ -127,13 +127,13 @@ const useGameLogic = ({ riddleId, gameMode }: UseGameLogicProps) => {
   };
 
   // Function to reset the game state
-  const resetGame = () => {
+  const resetGame = useCallback(() => {
     setGuesses([]);
     setCurrentGuess([]);
     setGameOver(false);
     setAttemptsUsed(0);
     setHasUsedContinue(false);
-  };
+  }, []);
 
   // Calculate attempts remaining
   const maxAttempts = hasUsedContinue

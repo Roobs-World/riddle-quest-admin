@@ -30,7 +30,7 @@ jest.mock("../CoinsDisplay", () => {
 });
 
 // Mock the HintIcon component
-jest.mock("../../icons/HintIcon", () => {
+jest.mock("../../../icons/HintIcon", () => {
   const React = require("react");
   const { View } = require("react-native");
 

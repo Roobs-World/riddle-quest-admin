@@ -44,6 +44,9 @@ interface SubmittedGuess {
  * @property {() => void} handleBackspace - Function to handle backspace key press
  * @property {(key: string) => void} handleKeyPress - Function to handle letter key presses
  * @property {boolean} isAnyOverlayVisible - Whether any overlay (modal) is currently visible
+ * @property {(rowIndex: number, cellIndex: number, ref: View | null) => void} setTileRef - Function to set refs for tiles
+ * @property {object} animatedStyle - Style object for animations (for backward compatibility)
+ * @property {(key: string) => void} onKeyPress - Alternative function to handle key presses (for backward compatibility)
  */
 interface GameBoardProps {
   /** The riddle question text displayed to the player */
@@ -66,6 +69,15 @@ interface GameBoardProps {
 
   /** Flag indicating if any overlay (modal) is currently visible */
   isAnyOverlayVisible: boolean;
+
+  /** Function to set refs for tiles */
+  setTileRef?: (rowIndex: number, cellIndex: number, ref: View | null) => void;
+
+  /** Style object for animations (for backward compatibility) */
+  animatedStyle?: object;
+
+  /** Alternative function to handle key presses (for backward compatibility) */
+  onKeyPress?: (key: string) => void;
 }
 
 /**
@@ -128,7 +140,12 @@ const GameBoard: React.FC<GameBoardProps> = ({
   handleBackspace,
   handleKeyPress,
   isAnyOverlayVisible,
+  setTileRef,
+  onKeyPress,
 }) => {
+  // Use onKeyPress as a fallback if handleKeyPress is not provided
+  const keyPressHandler = handleKeyPress || onKeyPress || (() => {});
+
   return (
     <>
       {/* Riddle Display Container - 20% of screen height */}
@@ -167,11 +184,12 @@ const GameBoard: React.FC<GameBoardProps> = ({
         guesses={guesses}
         currentGuess={currentGuess}
         answerLength={answerLength}
+        setTileRef={setTileRef}
       />
 
       {/* Interactive Keyboard - Hidden when overlays are visible */}
       <Keyboard
-        submitKeyPress={handleKeyPress}
+        submitKeyPress={keyPressHandler}
         handleBackspace={handleBackspace}
         isVisible={!isAnyOverlayVisible}
       />

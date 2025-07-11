@@ -1,6 +1,10 @@
 import React from "react";
-import { View, Text, Modal, TouchableOpacity } from "react-native";
+import { View, Text, Modal } from "react-native";
 import CloseButton from "../../buttons/CloseButton";
+import ModalBg from "../../../../assets/images/modal-bg.svg";
+import { scale } from "src/utils/responsive";
+import { TYPOGRAPHY } from "src/styles";
+import WideButton from "../../buttons/WideButton";
 
 interface WelcomeModalProps {
   isVisible: boolean;
@@ -15,35 +19,73 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({ isVisible, onClose }) => {
       visible={isVisible}
       onRequestClose={onClose}
     >
-      <View className="flex-1 justify-center items-center bg-black bg-opacity-50">
-        <View className="bg-white p-6 rounded-lg m-4 relative max-w-sm">
-          {/* Close Button in top-right corner */}
-          <View className="absolute top-2 right-2 z-10">
-            <CloseButton onPress={onClose} size={20} />
-          </View>
-
-          <Text className="text-2xl font-bold mb-4 text-center">
-            Welcome to Qwordly!
-          </Text>
-          <Text className="text-base mb-4 text-center text-gray-700">
-            Ready for an exciting riddle adventure?
-          </Text>
-          <Text className="text-base mb-4 text-center text-gray-600">
-            Solve engaging riddles by guessing the answer letter by letter. Each
-            puzzle is a mini-mystery waiting to be solved!
-          </Text>
-          <Text className="text-base mb-6 text-center text-gray-600">
-            Earn coins, unlock new levels, and challenge yourself daily.
-            Let&apos;s get started!
-          </Text>
-          <TouchableOpacity
-            className="mt-4 bg-blue-500 py-3 px-6 rounded-lg self-center"
-            onPress={onClose}
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "rgba(0,0,0,0.6)",
+        }}
+      >
+        <View
+          style={{
+            width: 335,
+            height: 423,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <ModalBg style={{ position: "absolute" }} />
+          <View
+            style={{
+              width: "85%",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
           >
-            <Text className="text-white text-lg font-semibold">
-              Let&apos;s Play!
+            <CloseButton
+              onPress={onClose}
+              size={20}
+              style={{ position: "absolute", top: -80, right: -20, zIndex: 10 }}
+            />
+            <Text
+              style={{
+                fontFamily: TYPOGRAPHY.fontPrimary,
+                fontSize: scale(28),
+                color: "white",
+                marginBottom: 20,
+                textAlign: "center",
+              }}
+            >
+              Welcome to Qwordly!
             </Text>
-          </TouchableOpacity>
+            <Text
+              style={{
+                fontFamily: TYPOGRAPHY.fontSecondary,
+                fontSize: scale(16),
+                color: "white",
+                marginBottom: 15,
+                textAlign: "center",
+              }}
+            >
+              Ready for an exciting riddle adventure? Solve engaging riddles by
+              guessing the answer letter by letter. Each puzzle is a
+              mini-mystery waiting to be solved!
+            </Text>
+            <Text
+              style={{
+                fontFamily: TYPOGRAPHY.fontSecondary,
+                fontSize: scale(16),
+                color: "white",
+                marginBottom: 25,
+                textAlign: "center",
+              }}
+            >
+              Earn coins, unlock new levels, and challenge yourself daily.
+              Let&apos;s get started!
+            </Text>
+            <WideButton buttonText="Let's Play!" onPress={onClose} />
+          </View>
         </View>
       </View>
     </Modal>

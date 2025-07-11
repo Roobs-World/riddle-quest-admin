@@ -3,7 +3,7 @@ import { render, fireEvent } from "@testing-library/react-native";
 import InstructionsModal from "../InstructionsModal";
 
 // Mock the CloseButton component
-jest.mock("../../buttons/CloseButton", () => {
+jest.mock("../../../buttons/CloseButton", () => {
   const React = require("react");
   const { TouchableOpacity, Text } = require("react-native");
 
@@ -16,6 +16,9 @@ jest.mock("../../buttons/CloseButton", () => {
   MockCloseButton.displayName = "MockCloseButton";
   return MockCloseButton;
 });
+
+// Mock SVG component
+jest.mock("../../../../assets/images/home-bg.svg", () => "HomeBgSvg");
 
 describe("InstructionsModal", () => {
   const mockOnClose = jest.fn();
@@ -124,13 +127,13 @@ describe("InstructionsModal", () => {
         <InstructionsModal isVisible={true} onClose={mockOnClose} />
       );
 
-      expect(getByText("Guess the hidden riddle in 3 tries.")).toBeTruthy();
+      expect(getByText("The Goal")).toBeTruthy();
       expect(
         getByText(
-          "After each guess, the color of the letters will change to show how close your guess was."
+          "Guess the hidden riddle in 3 tries using the color clues to guide you."
         )
       ).toBeTruthy();
-      expect(getByText("Here's what the colors mean:")).toBeTruthy();
+      expect(getByText("Color Clues")).toBeTruthy();
     });
 
     it("renders color explanations", () => {
@@ -138,10 +141,13 @@ describe("InstructionsModal", () => {
         <InstructionsModal isVisible={true} onClose={mockOnClose} />
       );
 
-      expect(getByText("Examples:")).toBeTruthy();
-      expect(getByText("GREEN")).toBeTruthy();
-      expect(getByText("YELLOW")).toBeTruthy();
-      expect(getByText("RED")).toBeTruthy();
+      expect(
+        getByText("Letter is correct and in the right position")
+      ).toBeTruthy();
+      expect(
+        getByText("Letter is in the word but wrong position")
+      ).toBeTruthy();
+      expect(getByText("Letter is not in the word at all")).toBeTruthy();
     });
 
     it("renders action button", () => {

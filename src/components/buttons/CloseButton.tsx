@@ -24,6 +24,7 @@ import CloseIcon from "../icons/CloseIcon";
  * @property {() => void} onPress - Callback function executed when button is pressed
  * @property {number} [size] - Size of the close icon in pixels
  * @property {string} [className] - Optional NativeWind class names for additional styling
+ * @property {string} [color] - Optional color for the close icon
  */
 interface CloseButtonProps extends TouchableOpacityProps {
   /** Callback function called when the close button is pressed */
@@ -34,6 +35,9 @@ interface CloseButtonProps extends TouchableOpacityProps {
 
   /** Optional NativeWind class names for custom styling */
   className?: string;
+
+  /** Optional color for the close icon */
+  color?: string;
 }
 
 /**
@@ -86,6 +90,7 @@ const CloseButton = ({
   onPress,
   size = 24,
   className = "",
+  color,
   ...props
 }: CloseButtonProps) => {
   return (
@@ -96,7 +101,7 @@ const CloseButton = ({
       accessibilityRole="button"
       {...props}
     >
-      <CloseIcon width={size} height={size} />
+      <CloseIcon width={size} height={size} color={color} />
     </TouchableOpacity>
   );
 };

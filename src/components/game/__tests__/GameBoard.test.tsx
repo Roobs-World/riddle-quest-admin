@@ -34,18 +34,12 @@ jest.mock("../RiddleText", () => {
 
 jest.mock("../GuessGrid", () => {
   const React = require("react");
-  return function MockGuessGrid({
-    guesses,
-    currentGuess,
-    answerLength,
-    shakeKey,
-  }: any) {
+  return function MockGuessGrid({ guesses, currentGuess, answerLength }: any) {
     return React.createElement("div", {
       testID: "guess-grid",
       "data-guesses-length": guesses.length,
       "data-current-guess-length": currentGuess ? currentGuess.length : 0,
       "data-answer-length": answerLength,
-      "data-shake-key": shakeKey,
     });
   };
 });
@@ -53,33 +47,29 @@ jest.mock("../GuessGrid", () => {
 jest.mock("../Keyboard", () => {
   const React = require("react");
 
-  return function MockKeyboard({ onKeyPress, isVisible }: any) {
+  return function MockKeyboard({ submitKeyPress, isVisible }: any) {
     if (!isVisible) return null;
 
     return React.createElement("div", {
       testID: "keyboard",
-      onClick: () => onKeyPress && onKeyPress("a"),
+      onClick: () => submitKeyPress && submitKeyPress("a"),
     });
   };
 });
 
-// Mock react-native-reanimated
-jest.mock("react-native-reanimated", () => {
+// Mock SVG component
+jest.mock("../../../../assets/images/questions.svg", () => {
   const React = require("react");
-  const { View } = require("react-native");
-
-  return {
-    __esModule: true,
-    default: {
-      View: ({ children, style }: any) =>
-        React.createElement(View, { style, testID: "animated-view" }, children),
-    },
+  return function MockQuestionsSvg(props: any) {
+    return React.createElement("svg", props);
   };
 });
 
 describe("GameBoard", () => {
   const mockSetTileRef = jest.fn();
   const mockOnKeyPress = jest.fn();
+  const mockHandleBackspace = jest.fn();
+  const mockHandleKeyPress = jest.fn();
 
   const defaultProps = {
     riddleText: "Test riddle",
@@ -95,11 +85,12 @@ describe("GameBoard", () => {
     ],
     currentGuess: [] as string[],
     answerLength: 4,
-    shakeKey: 0,
     setTileRef: mockSetTileRef,
     animatedStyle: { opacity: 1 },
     onKeyPress: mockOnKeyPress,
     isAnyOverlayVisible: false,
+    handleBackspace: mockHandleBackspace,
+    handleKeyPress: mockHandleKeyPress,
   };
 
   beforeEach(() => {
@@ -119,7 +110,6 @@ describe("GameBoard", () => {
       expect(getByTestId("riddle-text")).toBeTruthy();
       expect(getByTestId("guess-grid")).toBeTruthy();
       expect(getByTestId("keyboard")).toBeTruthy();
-      expect(getByTestId("animated-view")).toBeTruthy();
     });
 
     it("should pass riddleText to RiddleText component", () => {
@@ -136,7 +126,6 @@ describe("GameBoard", () => {
       expect(guessGrid.props["data-guesses-length"]).toBe(1);
       expect(guessGrid.props["data-current-guess-length"]).toBe(0);
       expect(guessGrid.props["data-answer-length"]).toBe(4);
-      expect(guessGrid.props["data-shake-key"]).toBe(0);
     });
 
     it("should pass currentGuess to GuessGrid", () => {
@@ -185,15 +174,6 @@ describe("GameBoard", () => {
 
       const guessGrid = getByTestId("guess-grid");
       expect(guessGrid.props["data-answer-length"]).toBe(6);
-    });
-
-    it("should handle different shake keys", () => {
-      const { getByTestId } = render(
-        <GameBoard {...defaultProps} shakeKey={5} />
-      );
-
-      const guessGrid = getByTestId("guess-grid");
-      expect(guessGrid.props["data-shake-key"]).toBe(5);
     });
 
     it("should handle empty guesses array", () => {
@@ -257,15 +237,6 @@ describe("GameBoard", () => {
       // Component should render without throwing, indicating styles are applied correctly
       expect(getByTestId("riddle-text")).toBeTruthy();
     });
-
-    it("should apply animated style to guess grid container", () => {
-      const customStyle = { opacity: 0.5, transform: [{ scale: 1.1 }] };
-      const { getByTestId } = render(
-        <GameBoard {...defaultProps} animatedStyle={customStyle} />
-      );
-
-      expect(getByTestId("animated-view")).toBeTruthy();
-    });
   });
 
   describe("Edge Cases", () => {
@@ -292,15 +263,6 @@ describe("GameBoard", () => {
       const guessGrid = getByTestId("guess-grid");
       expect(guessGrid.props["data-answer-length"]).toBe(0);
     });
-
-    it("should handle negative shake key", () => {
-      const { getByTestId } = render(
-        <GameBoard {...defaultProps} shakeKey={-1} />
-      );
-
-      const guessGrid = getByTestId("guess-grid");
-      expect(guessGrid.props["data-shake-key"]).toBe(-1);
-    });
   });
 
   describe("Component Integration", () => {
@@ -309,7 +271,6 @@ describe("GameBoard", () => {
 
       // Verify all main components are present in correct structure
       expect(getByTestId("riddle-text")).toBeTruthy();
-      expect(getByTestId("animated-view")).toBeTruthy();
       expect(getByTestId("guess-grid")).toBeTruthy();
       expect(getByTestId("keyboard")).toBeTruthy();
     });

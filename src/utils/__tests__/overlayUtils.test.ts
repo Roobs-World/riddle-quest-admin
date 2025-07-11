@@ -9,7 +9,6 @@ describe("overlayUtils", () => {
         false,
         false,
         false,
-        false,
         false
       );
       expect(result).toBe(false);
@@ -18,7 +17,6 @@ describe("overlayUtils", () => {
     it("should return true when instructions overlay is visible", () => {
       const result = checkAnyOverlayVisible(
         true,
-        false,
         false,
         false,
         false,
@@ -35,7 +33,6 @@ describe("overlayUtils", () => {
         false,
         false,
         false,
-        false,
         false
       );
       expect(result).toBe(true);
@@ -46,7 +43,6 @@ describe("overlayUtils", () => {
         false,
         false,
         true,
-        false,
         false,
         false,
         false
@@ -61,7 +57,6 @@ describe("overlayUtils", () => {
         false,
         true,
         false,
-        false,
         false
       );
       expect(result).toBe(true);
@@ -69,20 +64,6 @@ describe("overlayUtils", () => {
 
     it("should return true when welcome overlay is visible", () => {
       const result = checkAnyOverlayVisible(
-        false,
-        false,
-        false,
-        false,
-        true,
-        false,
-        false
-      );
-      expect(result).toBe(true);
-    });
-
-    it("should return true when out of attempts modal is visible", () => {
-      const result = checkAnyOverlayVisible(
-        false,
         false,
         false,
         false,
@@ -100,7 +81,6 @@ describe("overlayUtils", () => {
         false,
         false,
         false,
-        false,
         true
       );
       expect(result).toBe(true);
@@ -113,63 +93,51 @@ describe("overlayUtils", () => {
         false,
         false,
         false,
-        false,
         false
       );
       expect(result).toBe(true);
     });
 
     it("should return true when all overlays are visible", () => {
-      const result = checkAnyOverlayVisible(
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true
-      );
+      const result = checkAnyOverlayVisible(true, true, true, true, true, true);
       expect(result).toBe(true);
     });
 
     it("should handle mixed boolean values correctly", () => {
       expect(
-        checkAnyOverlayVisible(true, false, false, false, false, false, false)
+        checkAnyOverlayVisible(true, false, false, false, false, false)
       ).toBe(true);
       expect(
-        checkAnyOverlayVisible(false, true, false, false, false, false, false)
+        checkAnyOverlayVisible(false, true, false, false, false, false)
       ).toBe(true);
       expect(
-        checkAnyOverlayVisible(false, false, true, false, false, false, false)
+        checkAnyOverlayVisible(false, false, true, false, false, false)
       ).toBe(true);
       expect(
-        checkAnyOverlayVisible(false, false, false, true, false, false, false)
+        checkAnyOverlayVisible(false, false, false, true, false, false)
       ).toBe(true);
       expect(
-        checkAnyOverlayVisible(false, false, false, false, true, false, false)
+        checkAnyOverlayVisible(false, false, false, false, true, false)
       ).toBe(true);
       expect(
-        checkAnyOverlayVisible(false, false, false, false, false, true, false)
+        checkAnyOverlayVisible(false, false, false, false, false, true)
       ).toBe(true);
       expect(
-        checkAnyOverlayVisible(false, false, false, false, false, false, true)
-      ).toBe(true);
-      expect(
-        checkAnyOverlayVisible(false, false, false, false, false, false, false)
+        checkAnyOverlayVisible(false, false, false, false, false, false)
       ).toBe(false);
     });
 
     it("should work with edge case combinations", () => {
       const edgeCases = [
-        [true, true, true, false, false, false, false],
-        [false, false, false, true, true, true, false],
-        [true, false, true, false, true, false, false],
-        [false, true, false, true, false, true, false],
-        [false, false, false, false, false, false, true],
+        [true, true, true, false, false, false],
+        [false, false, false, true, true, false],
+        [true, false, true, false, true, false],
+        [false, true, false, true, false, false],
+        [false, false, false, false, false, true],
       ];
 
-      edgeCases.forEach(([a, b, c, d, e, f, g]) => {
-        const result = checkAnyOverlayVisible(a, b, c, d, e, f, g);
+      edgeCases.forEach(([a, b, c, d, e, f]) => {
+        const result = checkAnyOverlayVisible(a, b, c, d, e, f);
         expect(result).toBe(true);
       });
     });

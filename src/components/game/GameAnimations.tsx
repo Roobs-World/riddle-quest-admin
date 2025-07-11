@@ -1,23 +1,16 @@
 import React from "react";
-import ShatteringTitle from "../animations/ShatteringTitle";
+import StaticTitle from "../animations/StaticTitle";
 
 interface GameAnimationsProps {
   isWin: boolean;
-  startShatterAnimation: boolean;
 }
 
-const GameAnimations: React.FC<GameAnimationsProps> = ({
-  isWin,
-  startShatterAnimation,
-}) => {
+const GameAnimations: React.FC<GameAnimationsProps> = ({ isWin }) => {
   if (!isWin) return null;
 
   return (
     <>
-      <ShatteringTitle
-        title="YOU WON!"
-        startAnimation={startShatterAnimation}
-      />
+      <StaticTitle title="YOU WON!" />
     </>
   );
 };

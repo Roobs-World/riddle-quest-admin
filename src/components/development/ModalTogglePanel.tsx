@@ -40,12 +40,19 @@ import { SubmittedGuess } from "../../hooks/types";
 import { Player } from "../../validation/firestoreSchemas";
 import * as RNIap from "react-native-iap";
 import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY } from "../../styles";
+import { getFunctions } from "@react-native-firebase/functions";
+import { getApp } from "@react-native-firebase/app";
 
 /**
- * Modal Toggle State Interface
+ * Type for the updateModalData function
  */
-interface ModalToggleState {
-  [key: string]: boolean;
+type UpdateModalDataFn = (newData: Record<string, unknown>) => void;
+
+/**
+ * Extended Modal Data with server data fetching capability
+ */
+interface ExtendedModalData extends ModalData {
+  __fetchServerData?: (updateFn: UpdateModalDataFn) => Promise<void>;
 }
 
 /**
@@ -54,7 +61,7 @@ interface ModalToggleState {
 const generateMockData = (
   modalType: string,
   closeModalFn?: (type: string) => void
-): ModalData => {
+): ExtendedModalData => {
   const mockPlayer: Player = {
     userId: "test-user-123",
     username: "TestPlayer",
@@ -148,9 +155,10 @@ const generateMockData = (
         },
       };
     case "loss":
+      // We'll use an async IIFE to fetch the correct answer from the server
       return {
-        correctAnswer: "MOUSE",
-        onNextLevel: async () => {
+        correctAnswer: "FETCHING...", // Initial placeholder value
+        onNext: async () => {
           console.log("[LossModal Debug] Next level button pressed");
           // Close the modal first
           console.log("[LossModal Debug] Closing modal");
@@ -169,23 +177,55 @@ const generateMockData = (
           console.log("[LossModal Debug] Close button pressed");
           if (closeModalFn) closeModalFn("loss");
         },
+        // This property allows the ModalRenderer to know this modal needs server data
+        __fetchServerData: async (updateModalData: UpdateModalDataFn) => {
+          try {
+            console.log(
+              "[LossModal Debug] Fetching correct answer from server"
+            );
+
+            // Use a test riddle ID that should exist in your database
+            const testRiddleId = "daily_riddle_1"; // Replace with a valid riddle ID from your database
+
+            // Call the Firebase Function directly
+            const submitGuessCallable = getFunctions(getApp()).httpsCallable(
+              "submitGuess"
+            );
+            const result = await submitGuessCallable({
+              guess: "wrong", // Intentionally wrong guess to get the correct answer
+              riddleId: testRiddleId,
+              gameMode: "classic",
+              attempts: 3, // Final attempt
+            });
+
+            // Extract the correct answer from the response
+            const { correctAnswer } = result.data as {
+              correctAnswer?: string;
+              isCorrect: boolean;
+            };
+
+            console.log(
+              `[LossModal Debug] Server returned answer: ${correctAnswer}`
+            );
+
+            // Update the modal data with the correct answer
+            if (correctAnswer && updateModalData) {
+              updateModalData({ correctAnswer });
+            }
+          } catch (error) {
+            console.error(
+              "[LossModal Debug] Error fetching correct answer:",
+              error
+            );
+            // If there's an error, use a fallback answer
+            if (updateModalData) {
+              updateModalData({ correctAnswer: "ANSWER" });
+            }
+          }
+        },
       };
-    case "outOfAttempts":
-      return {
-        userCoins: 75,
-        continueCost: 25,
-        onWatchAd: () => console.log("Watch ad pressed"),
-        onSpendCoins: () => console.log("Spend coins pressed"),
-      };
-    case "watchAdForChance":
-      return { onWatchAd: () => console.log("Watch ad for chance pressed") };
-    case "dailyChallengeCompletion":
-      return {
-        questionsCompleted: 4,
-        totalQuestions: 5,
-        coinsEarned: 80,
-        ...commonCallbacks,
-      };
+    // outOfAttempts and watchAdForChance cases removed - using loss modal instead
+    // dailyChallengeCompletion case removed - using victory modal instead
     case "settings":
       return {
         isSoundEnabled: true,
@@ -248,7 +288,9 @@ const generateMockData = (
  */
 const ModalTogglePanel: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [modalToggles, setModalToggles] = useState<ModalToggleState>({});
+  const [modalToggles, setModalToggles] = useState<{
+    [key: string]: boolean | Record<string, unknown>;
+  }>({});
 
   // CRITICAL: Only render in development builds
   if (!__DEV__) {
@@ -262,20 +304,22 @@ const ModalTogglePanel: React.FC = () => {
    * Toggle Modal Visibility
    */
   const toggleModal = (modalType: string, isVisible: boolean) => {
-    setModalToggles((prev) => ({
-      ...prev,
-      [modalType]: isVisible,
-    }));
+    setModalToggles((prev) => {
+      const updatedToggles = { ...prev };
+      updatedToggles[modalType] = isVisible;
+      return updatedToggles;
+    });
   };
 
   /**
    * Close Modal
    */
   const closeModal = (modalType: string) => {
-    setModalToggles((prev) => ({
-      ...prev,
-      [modalType]: false,
-    }));
+    setModalToggles((prev) => {
+      const updatedToggles = { ...prev };
+      updatedToggles[modalType] = false;
+      return updatedToggles;
+    });
   };
 
   /**
@@ -289,6 +333,48 @@ const ModalTogglePanel: React.FC = () => {
       if (!ModalComponent) return null;
 
       const mockData = generateMockData(modalType, closeModal);
+
+      // Check if this modal needs to fetch server data
+      if (
+        mockData.__fetchServerData &&
+        typeof mockData.__fetchServerData === "function"
+      ) {
+        // Create a function to update modal data
+        const updateModalData: UpdateModalDataFn = (newData) => {
+          console.log(`Updating modal data for ${modalType}:`, newData);
+          // Re-render the modal with updated data
+          setModalToggles((prev) => {
+            const updatedToggles = { ...prev };
+            updatedToggles[modalType] = false; // First close the modal
+            return updatedToggles;
+          });
+
+          // Then re-open it with updated data
+          setTimeout(() => {
+            setModalToggles((prev) => {
+              const updatedToggles = { ...prev };
+              updatedToggles[modalType] = true; // Re-open the modal
+              updatedToggles[`${modalType}_data`] = newData; // Store the updated data
+              return updatedToggles;
+            });
+          }, 100);
+        };
+
+        // Call the fetch function
+        mockData.__fetchServerData(updateModalData);
+
+        // Remove the __fetchServerData property before passing to the component
+        delete mockData.__fetchServerData;
+      }
+
+      // Check if we have stored updated data for this modal
+      const updatedData = modalToggles[`${modalType}_data`] as
+        | Record<string, unknown>
+        | undefined;
+      if (updatedData) {
+        // Merge the updated data with the mock data
+        Object.assign(mockData, updatedData);
+      }
 
       return (
         <ModalComponent
@@ -310,7 +396,7 @@ const ModalTogglePanel: React.FC = () => {
         {modalType.charAt(0).toUpperCase() + modalType.slice(1)}
       </Text>
       <Switch
-        value={modalToggles[modalType] || false}
+        value={Boolean(modalToggles[modalType])}
         onValueChange={(value) => toggleModal(modalType, value)}
         trackColor={{ false: COLORS.gray300, true: COLORS.primaryOrange }}
         thumbColor={modalToggles[modalType] ? COLORS.white : COLORS.gray400}

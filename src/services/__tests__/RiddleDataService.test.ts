@@ -86,7 +86,7 @@ describe("RiddleDataService", () => {
     }));
 
     // Ensure the firestore mock returns our mock object
-    (firestore as jest.MockedFunction<typeof firestore>).mockReturnValue(
+    (getFirestore as jest.MockedFunction<typeof getFirestore>).mockReturnValue(
       mockFirestore as any
     );
   });
@@ -1010,7 +1010,7 @@ describe("RiddleDataService", () => {
       await riddleDataService.getClassicRiddleCount();
 
       expect(getApp).toHaveBeenCalled();
-      expect(firestore).toHaveBeenCalledWith(getApp());
+      expect(getFirestore).toHaveBeenCalledWith(getApp());
     });
 
     it("should handle service instantiation correctly", () => {

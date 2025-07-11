@@ -46,9 +46,7 @@ import * as RNIap from "react-native-iap";
 // Import all modal components
 import VictoryModal from "./game/VictoryModal";
 import LossModal from "./game/LossModal";
-import OutOfAttemptsModal from "./game/OutOfAttemptsModal";
-import WatchAdForChanceModal from "./game/WatchAdForChanceModal";
-import DailyChallengeCompletionModal from "./game/DailyChallengeCompletionModal";
+// Note: OutOfAttemptsModal, WatchAdForChanceModal, and DailyChallengeCompletionModal have been removed
 
 import SettingsModal from "./settings/SettingsModal";
 import FullProfileDetailsModal from "./settings/FullProfileDetailsModal";
@@ -135,9 +133,6 @@ type ModalRegistryEntry = {
  * **Game Modals:**
  * - `victory` - Success celebration and progression options
  * - `loss` - Failure state with retry and navigation options
- * - `outOfAttempts` - No more attempts with continue options
- * - `watchAdForChance` - Ad-based additional attempt opportunity
- * - `dailyChallengeCompletion` - Daily challenge summary and rewards
  *
  * **Settings Modals:**
  * - `settings` - App preferences and account management
@@ -193,44 +188,10 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
   loss: createModalWrapper(LossModal, (props: BaseModalProps & ModalData) => ({
     isVisible: props.isVisible,
     correctAnswer: (props.correctAnswer as string) || "",
-    onNextLevel: (props.onNextLevel as () => void) || (() => {}),
+    onNext: (props.onNext as () => void) || (() => {}),
     onHome: (props.onHome as () => void) || (() => {}),
     onClose: props.onClose,
   })),
-
-  outOfAttempts: createModalWrapper(
-    OutOfAttemptsModal,
-    (props: BaseModalProps & ModalData) => ({
-      isVisible: props.isVisible,
-      userCoins: (props.userCoins as number) || 0,
-      continueCost: (props.continueCost as number) || 0,
-      onWatchAd: (props.onWatchAd as () => void) || (() => {}),
-      onSpendCoins: (props.onSpendCoins as () => void) || (() => {}),
-      onClose: props.onClose,
-    })
-  ),
-
-  watchAdForChance: createModalWrapper(
-    WatchAdForChanceModal,
-    (props: BaseModalProps & ModalData) => ({
-      visible: props.isVisible,
-      onClose: props.onClose,
-      onWatchAd: (props.onWatchAd as () => void) || (() => {}),
-    })
-  ),
-
-  dailyChallengeCompletion: createModalWrapper(
-    DailyChallengeCompletionModal,
-    (props: BaseModalProps & ModalData) => ({
-      isVisible: props.isVisible,
-      questionsCompleted: (props.questionsCompleted as number) || 0,
-      totalQuestions: (props.totalQuestions as number) || 5,
-      totalCoinsEarned: (props.coinsEarned as number) || 0,
-      onContinue: (props.onContinue as () => void) || (() => {}),
-      onHome: (props.onHome as () => void) || (() => {}),
-      onClose: props.onClose,
-    })
-  ),
 
   /**
    * Settings Modals
