@@ -288,8 +288,9 @@ const ModalRenderer: React.FC<{
         <LossModal
           {...commonProps}
           correctAnswer={(modalData as LossModalData).correctAnswer}
-          onRetry={(modalData as LossModalData).onNext}
+          onNextLevel={(modalData as LossModalData).onNext}
           onHome={(modalData as LossModalData).onHome}
+          onClose={onClose}
         />
       );
 

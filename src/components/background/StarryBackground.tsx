@@ -1,3 +1,30 @@
+/**
+ * @fileoverview Starry Background Component
+ *
+ * A performance-optimized animated background that creates a dynamic starry night sky
+ * with twinkling stars and subtle movements. This component serves as the primary
+ * background for the app, providing an immersive cosmic atmosphere while maintaining
+ * high performance on mobile devices.
+ *
+ * **Key Features:**
+ * - Performance-optimized star rendering with object pooling
+ * - Animated star twinkling with randomized parameters
+ * - Subtle star movement with configurable paths
+ * - Integrated 3D solar system overlay
+ * - Memory-efficient animation techniques
+ *
+ * **Technical Implementation:**
+ * - Uses React Native Reanimated for smooth animations
+ * - Implements useMemo for optimized re-renders
+ * - Employs React.memo for component memoization
+ * - Calculates animations based on device dimensions
+ * - Carefully tuned animation parameters for mobile performance
+ *
+ * @author Qwordly Development Team
+ * @version 1.0.0
+ * @since 2024
+ */
+
 /* eslint-disable react/prop-types */
 import React, { useMemo, useRef, useEffect } from "react";
 import { View, Dimensions, StyleSheet } from "react-native";
@@ -17,6 +44,21 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 // Further optimized star count for better performance
 const OPTIMIZED_STAR_COUNT = 60; // Reduced from 80
 
+/**
+ * Star interface defining properties for individual stars in the background.
+ *
+ * @property {number} id - Unique identifier for the star
+ * @property {number} initialX - Initial X position on screen
+ * @property {number} initialY - Initial Y position on screen
+ * @property {number} size - Diameter of the star in pixels
+ * @property {number} opacity - Base opacity value (0-1)
+ * @property {string} color - CSS color string for the star
+ * @property {number} animationDuration - Duration of animation cycle in ms
+ * @property {number} animationDelay - Delay before animation starts in ms
+ * @property {number} movementSpeed - Speed of star movement
+ * @property {number} movementDirection - Direction of movement in degrees
+ * @property {number} movementRadius - Maximum distance of movement in pixels
+ */
 interface Star {
   id: number;
   initialX: number;
@@ -31,7 +73,17 @@ interface Star {
   movementRadius: number;
 }
 
-// Optimized Animated Star Component with reduced complexity
+/**
+ * Animated Star Component
+ *
+ * Renders a single animated star with twinkling and subtle movement effects.
+ * This component is memoized for performance optimization and uses Reanimated
+ * for smooth animations that run on the UI thread.
+ *
+ * @param {Object} props - Component props
+ * @param {Star} props.star - Star configuration object
+ * @returns {JSX.Element} Rendered animated star
+ */
 const AnimatedStar: React.FC<{ star: Star }> = React.memo(({ star }) => {
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
@@ -200,6 +252,22 @@ const styles = StyleSheet.create({
   },
 });
 
+/**
+ * Starry Background Component
+ *
+ * Creates an animated cosmic background with twinkling stars and an optional
+ * 3D solar system overlay. This component is designed for performance with
+ * optimized rendering and animation techniques.
+ *
+ * **Performance Optimizations:**
+ * - Limited star count for mobile performance
+ * - Memoized star generation and rendering
+ * - Reduced animation complexity and frequency
+ * - Optimized shadow effects and visual properties
+ * - Efficient component re-rendering with React.memo
+ *
+ * @returns {JSX.Element} Rendered starry background component
+ */
 const StarryBackground: React.FC = () => {
   // Performance tracking
   const starRefs = useRef<Set<number>>(new Set());

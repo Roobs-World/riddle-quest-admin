@@ -1,3 +1,29 @@
+/**
+ * @fileoverview Solar System Configuration
+ *
+ * Configuration data for the 3D solar system, defining planets, moons,
+ * their properties, and orbital characteristics. This file serves as the
+ * central source of truth for all celestial body parameters used in the
+ * SolarSystem3D component.
+ *
+ * **Configuration Parameters:**
+ * - Celestial body sizes and orbital distances
+ * - Rotation and orbital speeds
+ * - Texture mappings for visual appearance
+ * - Starting positions and orbital planes
+ * - Moon systems with their own parameters
+ *
+ * **Design Considerations:**
+ * - Balanced visual appeal with performance
+ * - Proper spacing to prevent visual collisions
+ * - Varied orbital planes for 3D depth perception
+ * - Optimized texture usage across celestial bodies
+ *
+ * @author Qwordly Development Team
+ * @version 1.0.0
+ * @since 2024
+ */
+
 import planetATexture from "../../../assets/3d/tex_planet_a.png";
 import planetVTexture from "../../../assets/3d/tex_planet_v.png";
 import planetDTexture from "../../../assets/3d/tex_planet_d.png";
@@ -9,7 +35,69 @@ import moonFTexture from "../../../assets/3d/tex_moon_f.png";
 import moonGTexture from "../../../assets/3d/tex_moon_g.png";
 import moonHTexture from "../../../assets/3d/tex_moon_h.png";
 
-export const SOLAR_SYSTEM_CONFIG = [
+/**
+ * Moon configuration interface defining properties for moons
+ * that orbit planets in the solar system.
+ *
+ * @property {number} size - Radius of the moon in arbitrary units
+ * @property {number} distance - Orbital distance from parent planet
+ * @property {number} orbitSpeed - Angular velocity of orbit
+ * @property {number} color - Hexadecimal color value for the moon
+ * @property {string} texture - Imported texture for the moon's surface
+ * @property {number} startAngle - Initial orbital position in radians
+ */
+interface MoonConfig {
+  size: number;
+  distance: number;
+  orbitSpeed: number;
+  color: number;
+  texture: string;
+  startAngle: number;
+}
+
+/**
+ * Planet configuration interface defining properties for planets
+ * that orbit the sun in the solar system.
+ *
+ * @property {string} name - Name of the planet
+ * @property {number} size - Radius of the planet in arbitrary units
+ * @property {number} distance - Orbital distance from the sun
+ * @property {number} orbitSpeed - Angular velocity of orbit around sun
+ * @property {number} rotationSpeed - Speed of planet's self-rotation
+ * @property {number} color - Hexadecimal color value for the planet
+ * @property {string} texture - Imported texture for the planet's surface
+ * @property {number} startAngle - Initial orbital position in radians
+ * @property {number} yPosition - Y-axis position for 3D depth effect
+ * @property {MoonConfig[]} moons - Array of moons orbiting this planet
+ */
+interface PlanetConfig {
+  name: string;
+  size: number;
+  distance: number;
+  orbitSpeed: number;
+  rotationSpeed: number;
+  color: number;
+  texture: string;
+  startAngle: number;
+  yPosition: number;
+  moons: MoonConfig[];
+}
+
+/**
+ * Complete solar system configuration defining all planets
+ * and their properties for the 3D solar system visualization.
+ *
+ * Key design principles:
+ * 1. Planets orbit with configurable Y positions for 3D depth
+ * 2. Different orbital distances for visual depth - adjusted to prevent collisions
+ * 3. All planets orbit in the same direction around the sun
+ * 4. Each planet uses a unique texture for visual variety
+ * 5. Enhanced lighting to show planetary details
+ * 6. Orbital distances increased to prevent planet and moon collisions
+ * 7. Y positions create visual depth and separation between planetary orbits
+ * 8. All moon textures used for maximum visual variety and brightness
+ */
+export const SOLAR_SYSTEM_CONFIG: PlanetConfig[] = [
   // Inner rocky planets - increased distances for better spacing
   {
     name: "Mercury",

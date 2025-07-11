@@ -186,14 +186,16 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
       onNextLevel: (props.onNext as () => void) || (() => {}),
       onHome: (props.onHome as () => void) || (() => {}),
       guesses: (props.guesses as SubmittedGuess[]) || [],
+      onClose: props.onClose,
     })
   ),
 
   loss: createModalWrapper(LossModal, (props: BaseModalProps & ModalData) => ({
     isVisible: props.isVisible,
     correctAnswer: (props.correctAnswer as string) || "",
-    onRetry: (props.onNext as () => void) || (() => {}),
+    onNextLevel: (props.onNext as () => void) || (() => {}),
     onHome: (props.onHome as () => void) || (() => {}),
+    onClose: props.onClose,
   })),
 
   outOfAttempts: createModalWrapper(

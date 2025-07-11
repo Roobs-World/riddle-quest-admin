@@ -26,6 +26,7 @@ import { SPACING } from "../tokens/spacing";
 import { BORDER_RADIUS } from "../tokens/borderRadius";
 import { COLORS } from "../tokens/colors";
 import { SHADOWS } from "../tokens/shadows";
+import { TYPOGRAPHY } from "../tokens/typography";
 
 /**
  * Modal Styles Configuration
@@ -629,6 +630,7 @@ export const modalStyles = StyleSheet.create({
     color: COLORS.textPrimary,
     textAlign: "center",
     marginBottom: SPACING.sm,
+    fontFamily: TYPOGRAPHY.fontPrimary,
   } as TextStyle,
 
   /**
