@@ -28,12 +28,13 @@ export const gameStyles = StyleSheet.create({
   keyButton: {
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: COLORS.transparent,
   } as ViewStyle,
 
   keyText: {
     fontWeight: "bold",
     textTransform: "uppercase",
-    color: COLORS.black,
+    color: COLORS.white,
   } as TextStyle,
 
   keyboardContainer: {
@@ -42,9 +43,6 @@ export const gameStyles = StyleSheet.create({
     position: "relative",
     width: "100%",
     backgroundColor: COLORS.transparent,
-    minHeight: "16%",
-    maxHeight: "16%",
-    height: "16%",
   } as ViewStyle,
 
   keyboardLayer: {

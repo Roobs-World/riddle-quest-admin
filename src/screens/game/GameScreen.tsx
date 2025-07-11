@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Alert, KeyboardAvoidingView, Platform } from "react-native";
+import { Alert, KeyboardAvoidingView, Platform, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as RNIap from "react-native-iap";
 
@@ -31,6 +31,7 @@ import { useModal } from "../../hooks/useModal";
 import { ModalProvider } from "../../components/modals/ModalProvider";
 import { IapService } from "../../services/IapService";
 import ModalTogglePanel from "../../components/development/ModalTogglePanel";
+import StarryBackground from "../../components/background/StarryBackground";
 
 interface GuessResult {
   outcome: "win" | "loss" | "continue" | "attemptLimitReached";
@@ -622,55 +623,58 @@ const GameScreen: React.FC<GameScreenProps> = ({
   const isSubmitDisabled = currentGuess.length !== answerLength;
 
   return (
-    <SafeAreaView className="flex-1">
-      <KeyboardAvoidingView
-        style={[
-          styles.gameContainer,
-          isAnyModalVisible && styles.overlayVisible,
-          isTablet && styles.gameContainerTablet,
-        ]}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-      >
-        <Header userCoins={userCoins} onCoinsPress={handleCoinsPress} />
+    <View style={{ flex: 1 }}>
+      <StarryBackground />
+      <SafeAreaView className="flex-1">
+        <KeyboardAvoidingView
+          style={[
+            styles.gameContainer,
+            isAnyModalVisible && styles.overlayVisible,
+            isTablet && styles.gameContainerTablet,
+          ]}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+        >
+          <Header userCoins={userCoins} onCoinsPress={handleCoinsPress} />
 
-        <GameBoard
-          riddleText={riddleText}
-          guesses={guesses}
-          currentGuess={currentGuess}
-          answerLength={answerLength}
-          handleKeyPress={handleKeyPress}
-          handleBackspace={handleBackspace}
-          isAnyOverlayVisible={isAnyModalVisible}
+          <GameBoard
+            riddleText={riddleText}
+            guesses={guesses}
+            currentGuess={currentGuess}
+            answerLength={answerLength}
+            handleKeyPress={handleKeyPress}
+            handleBackspace={handleBackspace}
+            isAnyOverlayVisible={isAnyModalVisible}
+          />
+
+          <GameInput
+            isSubmitDisabled={isSubmitDisabled}
+            gameOver={gameOver}
+            handleSubmit={handleSubmit}
+            handleHint={handleShowHint}
+            handleNext={handleOverlayNext}
+          />
+
+          <BottomNavigationBar
+            onProfilePress={handleProfilePress}
+            onSettingsPress={handleSettingsPress}
+            onChangeGameModePress={handleChangeGameModePress}
+          />
+        </KeyboardAvoidingView>
+
+        {/* The new modal system - no more massive props list! */}
+        <ModalProvider />
+
+        <Controls
+          onNextPress={handleOverlayNext}
+          isWin={gameOver && lastGuessResult?.outcome === "win"}
         />
 
-        <GameInput
-          isSubmitDisabled={isSubmitDisabled}
-          gameOver={gameOver}
-          handleSubmit={handleSubmit}
-          handleHint={handleShowHint}
-          handleNext={handleOverlayNext}
-        />
+        <PulsingSpinner visible={isLoading} size={120} opacity={0.7} />
 
-        <BottomNavigationBar
-          onProfilePress={handleProfilePress}
-          onSettingsPress={handleSettingsPress}
-          onChangeGameModePress={handleChangeGameModePress}
-        />
-      </KeyboardAvoidingView>
-
-      {/* The new modal system - no more massive props list! */}
-      <ModalProvider />
-
-      <Controls
-        onNextPress={handleOverlayNext}
-        isWin={gameOver && lastGuessResult?.outcome === "win"}
-      />
-
-      <PulsingSpinner visible={isLoading} size={120} opacity={0.7} />
-
-      {/* Development Modal Debug Panel - Only visible in development builds */}
-      {__DEV__ && <ModalTogglePanel />}
-    </SafeAreaView>
+        {/* Development Modal Debug Panel - Only visible in development builds */}
+        {__DEV__ && <ModalTogglePanel />}
+      </SafeAreaView>
+    </View>
   );
 };
 

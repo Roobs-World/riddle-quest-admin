@@ -76,7 +76,7 @@ const GuessGrid: React.FC<GuessGridProps> = ({
       case "red":
         return "bg-red-500";
       default:
-        return "bg-key-bg";
+        return "transparent";
     }
   };
 

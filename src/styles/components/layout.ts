@@ -50,8 +50,7 @@ export const layoutStyles = StyleSheet.create({
     minHeight: "100%",
     maxHeight: "100%",
     alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#FCFAF4",
+    justifyContent: "space-between",
   } as ViewStyle,
 
   gameContainerTablet: {
@@ -59,9 +58,6 @@ export const layoutStyles = StyleSheet.create({
   } as ViewStyle,
 
   gameInput: {
-    height: "10%",
-    minHeight: "10%",
-    maxHeight: "10%",
     width: "100%",
     justifyContent: "center",
     flexDirection: "row",
