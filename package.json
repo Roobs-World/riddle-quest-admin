@@ -7,7 +7,10 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx --fix"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
+    "test": "cross-env NODE_ENV=test jest",
+    "test:watch": "cross-env NODE_ENV=test jest --watch",
+    "test:coverage": "cross-env NODE_ENV=test jest --coverage"
   },
   "dependencies": {
     "@expo/cli": "^0.24.14",
@@ -87,6 +90,7 @@
     "@expo/config-plugins": "~10.1.1",
     "@react-native-community/cli": "latest",
     "@react-three/eslint-plugin": "^0.1.2",
+    "@testing-library/jest-native": "^5.4.3",
     "@testing-library/react-native": "^13.2.0",
     "@types/in-app-purchase": "^1.11.4",
     "@types/jest": "^29.5.14",
@@ -100,6 +104,7 @@
     "@typescript-eslint/parser": "^8.33.0",
     "babel-jest": "^29.7.0",
     "babel-plugin-module-resolver": "^5.0.2",
+    "cross-env": "^7.0.3",
     "eslint": "^8.57.1",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",

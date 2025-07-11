@@ -1,6 +1,6 @@
 import { View, Text } from "react-native";
 import TreasureChestBgSvg from "../../../../assets/images/treasure-chest.svg";
-import { TYPOGRAPHY } from "src/styles";
+import { TYPOGRAPHY } from "../../../styles";
 
 export default function TreasureChest({ coins }: { coins: number }) {
   return (

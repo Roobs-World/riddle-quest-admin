@@ -3,7 +3,7 @@ import { render, fireEvent } from "@testing-library/react-native";
 import GoogleSignInButton from "../GoogleSignInButton";
 
 // Mock the GoogleIcon component
-jest.mock("../icons/GoogleIcon", () => {
+jest.mock("../../icons/GoogleIcon", () => {
   const React = require("react");
   const { View } = require("react-native");
 

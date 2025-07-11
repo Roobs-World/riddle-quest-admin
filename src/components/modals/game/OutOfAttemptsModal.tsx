@@ -153,6 +153,7 @@ const OutOfAttemptsModal: React.FC<OutOfAttemptsModalProps> = ({
       animationType="fade"
       onRequestClose={onClose}
       accessibilityLabel="Out of attempts - continuation options"
+      testID="out-of-attempts-modal"
     >
       <SafeAreaView style={modalStyles.overlay}>
         <View style={[modalStyles.modalContainer, modalStyles.warningModal]}>
@@ -162,6 +163,7 @@ const OutOfAttemptsModal: React.FC<OutOfAttemptsModalProps> = ({
               onPress={onClose}
               size={scale(24)}
               accessibilityLabel="Close attempts modal and give up"
+              testID="close-button"
             />
           </View>
 
@@ -225,6 +227,7 @@ const OutOfAttemptsModal: React.FC<OutOfAttemptsModalProps> = ({
               accessibilityRole="button"
               accessibilityLabel="Watch advertisement for free continue"
               accessibilityHint="View a short video to get 3 more attempts"
+              testID="watch-ad-button"
             >
               <Text
                 style={{
@@ -280,6 +283,7 @@ const OutOfAttemptsModal: React.FC<OutOfAttemptsModalProps> = ({
                   ? "Use coins to get 3 more attempts immediately"
                   : "Visit coin shop to purchase more coins"
               }
+              testID="spend-coins-button"
             >
               <View style={modalStyles.coinDisplay}>
                 <Text
@@ -320,6 +324,7 @@ const OutOfAttemptsModal: React.FC<OutOfAttemptsModalProps> = ({
               accessibilityRole="button"
               accessibilityLabel="Give up and exit current riddle"
               accessibilityHint="Return to main menu without continuing"
+              testID="give-up-button"
             >
               <Text
                 style={{

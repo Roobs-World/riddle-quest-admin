@@ -38,7 +38,7 @@ const useGameLogic = ({ riddleId, gameMode }: UseGameLogicProps) => {
         guess: currentGuessString,
         riddleId,
         gameMode,
-        attempts: currentAttempt,
+        attempts: guesses.length + 1, // Use actual number of guesses + 1 for current attempt
       });
       const {
         feedback: serverFeedback,

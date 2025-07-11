@@ -36,6 +36,8 @@ import { SHADOWS } from "../tokens/shadows";
  * - Interactive elements (buttons, inputs)
  * - Specialized modal variants
  * - Animation and transition styles
+ *
+ * @namespace modalStyles
  */
 export const modalStyles = StyleSheet.create({
   /**
@@ -43,6 +45,12 @@ export const modalStyles = StyleSheet.create({
    *
    * Consistent positioning and styling for modal
    * close buttons with accessibility support.
+   */
+
+  /**
+   * @property {ViewStyle} baseOverlayCloseButtonContainer - Container for close button in overlay modals
+   * Positions the close button at the top of the modal with appropriate z-index
+   * to ensure it remains clickable above other content.
    */
   baseOverlayCloseButtonContainer: {
     position: "absolute",
@@ -56,6 +64,12 @@ export const modalStyles = StyleSheet.create({
    * Layout containers for modal action buttons
    * with proper spacing and alignment.
    */
+
+  /**
+   * @property {ViewStyle} buttonContainer - Horizontal container for multiple action buttons
+   * Creates a row layout with even spacing between buttons, typically used for
+   * primary and secondary action pairs (e.g., "Confirm" and "Cancel").
+   */
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
@@ -63,12 +77,22 @@ export const modalStyles = StyleSheet.create({
     width: "100%",
   } as ViewStyle,
 
+  /**
+   * @property {ViewStyle} buttonContainerSingle - Container for a single centered button
+   * Centers a single action button within the modal, typically used for
+   * acknowledgment actions (e.g., "OK", "Got it").
+   */
   buttonContainerSingle: {
     alignItems: "center",
     marginTop: SPACING.lg,
     width: "100%",
   } as ViewStyle,
 
+  /**
+   * @property {ViewStyle} buttonContainerVertical - Vertical container for stacked buttons
+   * Arranges multiple buttons in a vertical column with consistent spacing,
+   * useful for modals with multiple action options.
+   */
   buttonContainerVertical: {
     flexDirection: "column",
     gap: SPACING.md,
@@ -76,6 +100,11 @@ export const modalStyles = StyleSheet.create({
     width: "100%",
   } as ViewStyle,
 
+  /**
+   * @property {ViewStyle} closeButton - Standard close button positioned at top-right
+   * Positions a close/dismiss button at the top-right corner of the modal
+   * with appropriate padding and z-index for accessibility.
+   */
   closeButton: {
     position: "absolute",
     top: SPACING.sm,
@@ -84,6 +113,11 @@ export const modalStyles = StyleSheet.create({
     padding: SPACING.xs,
   } as ViewStyle,
 
+  /**
+   * @property {ViewStyle} closeButtonLeft - Close button positioned at top-left
+   * Alternative positioning for close/back buttons at the top-left corner,
+   * useful for modals with navigation hierarchies.
+   */
   closeButtonLeft: {
     position: "absolute",
     top: SPACING.sm,
@@ -98,6 +132,12 @@ export const modalStyles = StyleSheet.create({
    * Specialized styling for game-related modals
    * including victory, loss, and progress displays.
    */
+
+  /**
+   * @property {ViewStyle} coinDisplay - Container for displaying coin/currency amounts
+   * Creates a visually distinct container for displaying in-game currency
+   * with appropriate spacing and background for emphasis.
+   */
   coinDisplay: {
     flexDirection: "row",
     alignItems: "center",
@@ -108,6 +148,11 @@ export const modalStyles = StyleSheet.create({
     borderRadius: BORDER_RADIUS.md,
   } as ViewStyle,
 
+  /**
+   * @property {TextStyle} coinText - Text styling for coin/currency amounts
+   * Emphasizes currency values with appropriate size, weight, and color
+   * to draw attention to rewards or costs.
+   */
   coinText: {
     fontSize: scale(16),
     fontWeight: "600",
@@ -115,17 +160,17 @@ export const modalStyles = StyleSheet.create({
     marginLeft: SPACING.xs,
   } as TextStyle,
 
-  gameModal: {
-    backgroundColor: COLORS.white,
-    alignItems: "center",
-    paddingVertical: SPACING.xl,
-  } as ViewStyle,
-
   /**
    * Content and Layout Styles
    *
    * Flexible content containers for different modal
    * layouts and content types.
+   */
+
+  /**
+   * @property {ViewStyle} content - Primary content container for modals
+   * Provides the main container for modal content with appropriate
+   * background, border radius, and size constraints.
    */
   content: {
     backgroundColor: COLORS.backgroundDark,
@@ -137,12 +182,22 @@ export const modalStyles = StyleSheet.create({
     position: "relative",
   } as ViewStyle,
 
+  /**
+   * @property {ViewStyle} contentCentered - Centered alignment for modal content
+   * Ensures content is centered both horizontally and vertically,
+   * typically used for simple messages or status displays.
+   */
   contentCentered: {
     alignItems: "center",
     justifyContent: "center",
     textAlign: "center",
   } as ViewStyle,
 
+  /**
+   * @property {ViewStyle} contentScrollable - Scrollable content container
+   * Allows for scrolling when content exceeds the maximum height,
+   * ensuring modals remain usable with varying content lengths.
+   */
   contentScrollable: {
     maxHeight: "70%",
     width: "100%",
@@ -154,6 +209,12 @@ export const modalStyles = StyleSheet.create({
    * Typography and content styling for modal
    * text, descriptions, and messaging.
    */
+
+  /**
+   * @property {TextStyle} description - Secondary explanatory text styling
+   * Provides styling for longer explanatory text with appropriate
+   * size, color, and line spacing for readability.
+   */
   description: {
     fontSize: scale(14),
     color: COLORS.textSecondary,
@@ -163,25 +224,39 @@ export const modalStyles = StyleSheet.create({
   } as TextStyle,
 
   /**
+   * @property {ViewStyle} errorModal - Container styling for error modals
+   * Applies distinctive styling for error messages with appropriate
+   * border indicators and background colors.
+   */
+  errorModal: {
+    backgroundColor: COLORS.white,
+    borderTopWidth: 4,
+    borderTopColor: COLORS.error,
+  } as ViewStyle,
+
+  /**
    * Animation and Transition Styles
    *
    * Styles for modal entrance, exit, and
    * interactive animations.
    */
+
+  /**
+   * @property {ViewStyle} fadeIn - Style for fade-in animation state
+   * Defines the visible state for opacity-based animations,
+   * used in conjunction with animation libraries.
+   */
   fadeIn: {
     opacity: 1,
   } as ViewStyle,
 
+  /**
+   * @property {ViewStyle} fadeOut - Style for fade-out animation state
+   * Defines the hidden state for opacity-based animations,
+   * used in conjunction with animation libraries.
+   */
   fadeOut: {
     opacity: 0,
-  } as ViewStyle,
-
-  scaleIn: {
-    transform: [{ scale: 1 }],
-  } as ViewStyle,
-
-  scaleOut: {
-    transform: [{ scale: 0.9 }],
   } as ViewStyle,
 
   /**
@@ -190,28 +265,39 @@ export const modalStyles = StyleSheet.create({
    * Styling for modal forms, inputs, and
    * interactive elements.
    */
+
+  /**
+   * @property {ViewStyle} formContainer - Container for form elements within modals
+   * Provides appropriate width and spacing for form elements,
+   * ensuring consistent layout across different modal types.
+   */
   formContainer: {
     width: "100%",
     marginBottom: SPACING.lg,
   } as ViewStyle,
 
-  inputContainer: {
-    marginBottom: SPACING.md,
-    width: "100%",
+  /**
+   * @property {ViewStyle} gameModal - Specialized styling for game-related modals
+   * Applies game-specific styling with appropriate background and padding,
+   * typically used for victory, loss, or game status modals.
+   */
+  gameModal: {
+    backgroundColor: COLORS.white,
+    alignItems: "center",
+    paddingVertical: SPACING.xl,
   } as ViewStyle,
-
-  inputLabel: {
-    fontSize: scale(14),
-    color: COLORS.textPrimary,
-    marginBottom: SPACING.xs,
-    fontWeight: "500",
-  } as TextStyle,
 
   /**
    * List and Grid Styles
    *
    * Layout styles for modal content displayed
    * in lists, grids, or structured formats.
+   */
+
+  /**
+   * @property {ViewStyle} gridContainer - Container for grid layouts within modals
+   * Arranges child elements in a responsive grid pattern with appropriate
+   * wrapping and spacing for various screen sizes.
    */
   gridContainer: {
     flexDirection: "row",
@@ -220,18 +306,98 @@ export const modalStyles = StyleSheet.create({
     marginVertical: SPACING.md,
   } as ViewStyle,
 
+  /**
+   * @property {ViewStyle} gridItem - Individual item within a grid layout
+   * Provides consistent margin and alignment for grid items,
+   * ensuring uniform appearance across the grid.
+   */
   gridItem: {
     margin: SPACING.xs,
     alignItems: "center",
     justifyContent: "center",
   } as ViewStyle,
 
+  /**
+   * Header and Title Styles
+   *
+   * Consistent header styling for modal titles,
+   * close buttons, and navigation elements.
+   */
+
+  /**
+   * @property {ViewStyle} header - Standard header with justified content
+   * Creates a row layout for headers with content justified between
+   * left and right edges, typically for title + close button combinations.
+   */
+  header: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: SPACING.md,
+    width: "100%",
+  } as ViewStyle,
+
+  /**
+   * @property {ViewStyle} headerCentered - Centered header layout
+   * Centers header content horizontally with appropriate vertical spacing,
+   * typically used for simple title-only headers.
+   */
+  headerCentered: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: SPACING.lg,
+    width: "100%",
+  } as ViewStyle,
+
+  /**
+   * @property {ViewStyle} infoModal - Container styling for informational modals
+   * Applies distinctive styling for informational messages with
+   * appropriate border indicators and background colors.
+   */
+  infoModal: {
+    backgroundColor: COLORS.white,
+    borderTopWidth: 4,
+    borderTopColor: COLORS.info,
+  } as ViewStyle,
+
+  /**
+   * @property {ViewStyle} inputContainer - Container for input fields
+   * Provides consistent spacing and width for input elements,
+   * ensuring proper layout within forms and modals.
+   */
+  inputContainer: {
+    marginBottom: SPACING.md,
+    width: "100%",
+  } as ViewStyle,
+
+  /**
+   * @property {TextStyle} inputLabel - Text styling for input field labels
+   * Applies appropriate size, color, and weight for form field labels,
+   * ensuring clear association with their respective inputs.
+   */
+  inputLabel: {
+    fontSize: scale(14),
+    color: COLORS.textPrimary,
+    marginBottom: SPACING.xs,
+    fontWeight: "500",
+  } as TextStyle,
+
+  /**
+   * @property {ViewStyle} listContainer - Container for list layouts
+   * Provides appropriate dimensions and spacing for scrollable lists,
+   * with maximum height constraints to prevent oversized modals.
+   */
   listContainer: {
     width: "100%",
     maxHeight: scale(300),
     marginVertical: SPACING.md,
   } as ViewStyle,
 
+  /**
+   * @property {ViewStyle} listItem - Individual item within a list layout
+   * Creates consistent styling for list items with appropriate
+   * padding, alignment, and border styling for visual separation.
+   */
   listItem: {
     flexDirection: "row",
     alignItems: "center",
@@ -242,46 +408,16 @@ export const modalStyles = StyleSheet.create({
   } as ViewStyle,
 
   /**
-   * Header and Title Styles
-   *
-   * Consistent header styling for modal titles,
-   * close buttons, and navigation elements.
-   */
-  header: {
-    alignItems: "center",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: SPACING.md,
-    width: "100%",
-  } as ViewStyle,
-
-  headerCentered: {
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: SPACING.lg,
-    width: "100%",
-  } as ViewStyle,
-
-  title: {
-    fontSize: scale(24),
-    fontWeight: "bold",
-    color: COLORS.textPrimary,
-    textAlign: "center",
-    marginBottom: SPACING.sm,
-  } as TextStyle,
-
-  subtitle: {
-    fontSize: scale(16),
-    color: COLORS.textSecondary,
-    textAlign: "center",
-    marginBottom: SPACING.md,
-  } as TextStyle,
-
-  /**
    * Core Modal Container Styles
    *
    * Primary modal container with responsive sizing,
    * proper shadows, and accessibility features.
+   */
+
+  /**
+   * @property {ViewStyle} modalContainer - Primary container for standard modals
+   * Provides the main structural container with appropriate sizing,
+   * background, border radius, and shadow effects.
    */
   modalContainer: {
     alignItems: "center",
@@ -294,6 +430,11 @@ export const modalStyles = StyleSheet.create({
     ...SHADOWS.lg,
   } as ViewStyle,
 
+  /**
+   * @property {TextStyle} modalText - Standard text styling within modals
+   * Applies consistent text styling for primary content with
+   * appropriate size, color, and line height for readability.
+   */
   modalText: {
     marginBottom: SPACING.md,
     textAlign: "center",
@@ -302,6 +443,11 @@ export const modalStyles = StyleSheet.create({
     lineHeight: scale(24),
   } as TextStyle,
 
+  /**
+   * @property {ViewStyle} modalView - Alternative modal container style
+   * Provides an alternative styling approach for modals with
+   * different padding and shadow characteristics.
+   */
   modalView: {
     alignItems: "center",
     backgroundColor: COLORS.white,
@@ -311,6 +457,11 @@ export const modalStyles = StyleSheet.create({
     ...SHADOWS.md,
   } as ViewStyle,
 
+  /**
+   * @property {ViewStyle} modalWrapper - Outer wrapper for modal positioning
+   * Creates a flexible container that centers the modal within
+   * the available screen space with appropriate padding.
+   */
   modalWrapper: {
     alignItems: "center",
     flex: 1,
@@ -324,6 +475,12 @@ export const modalStyles = StyleSheet.create({
    * Foundation styles for modal overlays providing backdrop
    * functionality and proper z-index stacking.
    */
+
+  /**
+   * @property {ViewStyle} overlay - Semi-transparent backdrop overlay
+   * Creates a darkened backdrop behind modals to emphasize modal content
+   * and prevent interaction with underlying elements.
+   */
   overlay: {
     ...StyleSheet.absoluteFillObject,
     alignItems: "center",
@@ -332,26 +489,40 @@ export const modalStyles = StyleSheet.create({
     zIndex: 1000,
   } as ViewStyle,
 
+  /**
+   * @property {ViewStyle} overlayContainer - Container for overlay elements
+   * Provides positioning context for overlay content with appropriate
+   * z-index to ensure proper stacking order.
+   */
   overlayContainer: {
     ...StyleSheet.absoluteFillObject,
     zIndex: 10,
   } as ViewStyle,
 
+  /**
+   * @property {ViewStyle} overlayContent - Content container within overlays
+   * Applies consistent styling to content displayed within overlays,
+   * with appropriate padding and border radius.
+   */
   overlayContent: {
     alignItems: "center",
     borderRadius: BORDER_RADIUS.md,
     padding: SPACING.lg,
   } as ViewStyle,
 
+  /**
+   * @property {ViewStyle} overlayVisible - Style for visible overlay state
+   * Defines the semi-transparent state for overlay backgrounds,
+   * allowing underlying content to remain partially visible.
+   */
   overlayVisible: {
     opacity: 0.3,
   } as ViewStyle,
 
   /**
-   * Progress and Status Styles
-   *
-   * Visual indicators for progress, status,
-   * and state within modal interfaces.
+   * @property {ViewStyle} progressBar - Container for progress indicators
+   * Creates a visual container for progress bars with appropriate
+   * height, background, and border radius.
    */
   progressBar: {
     height: scale(8),
@@ -360,17 +531,57 @@ export const modalStyles = StyleSheet.create({
     overflow: "hidden",
   } as ViewStyle,
 
+  /**
+   * @property {ViewStyle} progressContainer - Wrapper for progress elements
+   * Provides consistent width and vertical spacing for progress indicators,
+   * ensuring proper layout within modal content.
+   */
   progressContainer: {
     width: "100%",
     marginVertical: SPACING.md,
   } as ViewStyle,
 
+  /**
+   * @property {ViewStyle} progressFill - Active fill for progress indicators
+   * Defines the appearance of the filled portion of progress bars
+   * with appropriate color and border radius.
+   */
   progressFill: {
     height: "100%",
     backgroundColor: COLORS.primaryOrange,
     borderRadius: BORDER_RADIUS.sm,
   } as ViewStyle,
 
+  /**
+   * @property {ViewStyle} scaleIn - Style for scale-in animation state
+   * Defines the visible state for scale-based animations,
+   * used in conjunction with animation libraries.
+   */
+  scaleIn: {
+    transform: [{ scale: 1 }],
+  } as ViewStyle,
+
+  /**
+   * @property {ViewStyle} scaleOut - Style for scale-out animation state
+   * Defines the reduced-scale state for scale-based animations,
+   * used in conjunction with animation libraries.
+   */
+  scaleOut: {
+    transform: [{ scale: 0.9 }],
+  } as ViewStyle,
+
+  /**
+   * Progress and Status Styles
+   *
+   * Visual indicators for progress, status,
+   * and state within modal interfaces.
+   */
+
+  /**
+   * @property {ViewStyle} statusIndicator - Visual indicator for status states
+   * Creates a small circular indicator for representing status
+   * (e.g., success, error, warning) with appropriate dimensions.
+   */
   statusIndicator: {
     width: scale(12),
     height: scale(12),
@@ -379,10 +590,28 @@ export const modalStyles = StyleSheet.create({
   } as ViewStyle,
 
   /**
+   * @property {TextStyle} subtitle - Secondary heading text styling
+   * Applies consistent styling for secondary headings with
+   * appropriate size, color, and spacing.
+   */
+  subtitle: {
+    fontSize: scale(16),
+    color: COLORS.textSecondary,
+    textAlign: "center",
+    marginBottom: SPACING.md,
+  } as TextStyle,
+
+  /**
    * Specialized Modal Variants
    *
    * Themed styling for different types of modals
    * (success, error, warning, info).
+   */
+
+  /**
+   * @property {ViewStyle} successModal - Container styling for success modals
+   * Applies distinctive styling for success messages with
+   * appropriate border indicators and background colors.
    */
   successModal: {
     backgroundColor: COLORS.white,
@@ -390,24 +619,34 @@ export const modalStyles = StyleSheet.create({
     borderTopColor: COLORS.success,
   } as ViewStyle,
 
-  errorModal: {
-    backgroundColor: COLORS.white,
-    borderTopWidth: 4,
-    borderTopColor: COLORS.error,
-  } as ViewStyle,
+  /**
+   * @property {TextStyle} title - Primary heading text styling
+   * Applies consistent styling for primary modal titles with
+   * appropriate size, color, and spacing for visual hierarchy.
+   */
+  title: {
+    fontSize: scale(24),
+    color: COLORS.textPrimary,
+    textAlign: "center",
+    marginBottom: SPACING.sm,
+  } as TextStyle,
 
+  /**
+   * @property {ViewStyle} warningModal - Container styling for warning modals
+   * Applies distinctive styling for warning messages with
+   * appropriate border indicators and background colors.
+   */
   warningModal: {
     backgroundColor: COLORS.white,
     borderTopWidth: 4,
     borderTopColor: COLORS.warning,
   } as ViewStyle,
 
-  infoModal: {
-    backgroundColor: COLORS.white,
-    borderTopWidth: 4,
-    borderTopColor: COLORS.info,
-  } as ViewStyle,
-
+  /**
+   * @property {TextStyle} warningText - Text styling for warning messages
+   * Emphasizes warning text with appropriate color, size, and weight
+   * to draw attention to important cautionary information.
+   */
   warningText: {
     fontSize: scale(14),
     color: COLORS.error,

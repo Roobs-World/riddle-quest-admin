@@ -1,5 +1,5 @@
 import React from "react";
-import FacebookSvg from "@images/facebook.svg";
+import FacebookSvg from "../../../assets/images/facebook.svg";
 
 interface FacebookIconProps {
   width?: number | string;

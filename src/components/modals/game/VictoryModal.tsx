@@ -11,18 +11,30 @@
  * @since 2024
  */
 
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Text, Modal, SafeAreaView } from "react-native";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withRepeat,
+  withTiming,
+  Easing,
+} from "react-native-reanimated";
 import type { SubmittedGuess } from "../../../hooks/types";
 import { generateFeedbackEmojiGrid } from "../../../utils/gameUtils";
 import CloseButton from "../../buttons/CloseButton";
 import WideButton from "../../buttons/WideButton";
-import HomeBgSvg from "../../../../assets/images/home-bg.svg";
+import SocialShareButton from "../../buttons/SocialShareButton";
+import WheelBgSvg from "../../../../assets/images/wheel-bg.svg";
+import LargeCoinStackSvg from "../../../../assets/images/large-coin-stack.svg";
+import ChestSvg from "../../../../assets/images/chest.svg";
 import { modalStyles } from "../../../styles/components/modals";
 import { COLORS } from "../../../styles/tokens/colors";
 import { SPACING } from "../../../styles/tokens/spacing";
 import { BORDER_RADIUS } from "../../../styles/tokens/borderRadius";
 import { scale } from "../../../utils/responsive";
+import { SocialSharingService } from "../../../services/SocialSharingService";
+import { TYPOGRAPHY } from "../../../styles";
 
 /**
  * Props interface for the VictoryModal component.
@@ -55,6 +67,9 @@ interface VictoryModalProps {
    * Used to generate the emoji grid for sharing.
    */
   guesses: SubmittedGuess[];
+
+  /** Game mode for contextual sharing text */
+  gameMode?: "daily" | "classic";
 }
 
 /**
@@ -117,6 +132,7 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
   onNextLevel,
   onHome,
   guesses,
+  gameMode = "daily",
 }) => {
   /**
    * Generate emoji grid representation of the player's guesses.
@@ -124,6 +140,57 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
    * using colored squares to represent correct, partial, and incorrect letters.
    */
   const emojiSummary = generateFeedbackEmojiGrid(guesses);
+
+  /**
+   * Rotation animation for the wheel background
+   */
+  const rotation = useSharedValue(0);
+
+  useEffect(() => {
+    if (isVisible) {
+      // Start rotation animation when modal becomes visible
+      rotation.value = 0; // Reset to 0 first
+      rotation.value = withRepeat(
+        withTiming(360, {
+          duration: 10000, // 10 seconds for one full rotation (faster)
+          easing: Easing.linear,
+        }),
+        -1, // Infinite repetition
+        false // Don't reverse
+      );
+    } else {
+      // Reset rotation when modal is hidden
+      rotation.value = 0;
+    }
+  }, [isVisible, rotation]);
+
+  const animatedWheelStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ rotate: `${rotation.value}deg` }],
+    };
+  });
+
+  /**
+   * Handle social media sharing
+   */
+  const handleShare = async (platform: "facebook" | "x") => {
+    try {
+      const shareContent = {
+        attempts,
+        emojiGrid: emojiSummary,
+        gameMode,
+      };
+
+      const success = await SocialSharingService.share(platform, shareContent);
+      if (success) {
+        console.log(`✅ Successfully shared to ${platform}`);
+      } else {
+        console.log(`❌ Failed to share to ${platform}`);
+      }
+    } catch (error) {
+      console.error(`Error sharing to ${platform}:`, error);
+    }
+  };
 
   return (
     <Modal
@@ -133,12 +200,10 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
       onRequestClose={onHome}
       accessibilityLabel="Victory celebration modal"
     >
-      <SafeAreaView
-        style={{ flex: 1, backgroundColor: COLORS.backgroundPrimary }}
-      >
+      <SafeAreaView style={{ flex: 1, backgroundColor: "transparent" }}>
         <View
           style={{
-            backgroundColor: COLORS.backgroundPrimary,
+            backgroundColor: "transparent",
             borderBottomLeftRadius: BORDER_RADIUS.xl,
             borderBottomRightRadius: BORDER_RADIUS.xl,
             flex: 1,
@@ -146,17 +211,33 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
           }}
         >
           {/* Background Design */}
-          <HomeBgSvg
-            width="120%"
-            height="100%"
+          <View
             style={{
               position: "absolute",
-              top: 0,
-              left: -50,
+              top: -150,
+              left: -150,
+              right: -150,
+              bottom: -150,
               zIndex: 0,
-              opacity: 0.1,
+              justifyContent: "center",
+              alignItems: "center",
+              opacity: 0.4,
             }}
-          />
+          >
+            <Animated.View
+              style={[
+                animatedWheelStyle,
+                {
+                  width: 1000,
+                  height: 1000,
+                  justifyContent: "center",
+                  alignItems: "center",
+                },
+              ]}
+            >
+              <WheelBgSvg width={1000} height={1000} />
+            </Animated.View>
+          </View>
 
           {/* Drag Handle */}
           <View
@@ -199,11 +280,11 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
                 {
                   fontSize: scale(32),
                   color: COLORS.success,
-                  marginBottom: SPACING.sm,
+                  fontFamily: TYPOGRAPHY.fontPrimary,
                 },
               ]}
             >
-              🎉 Victory!
+              Victory!
             </Text>
             <Text
               style={[
@@ -211,11 +292,11 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
                 {
                   fontSize: scale(18),
                   color: COLORS.textSecondary,
-                  marginBottom: SPACING.md,
+                  fontFamily: TYPOGRAPHY.fontPrimary,
                 },
               ]}
             >
-              Solved in {attempts} attempts!
+              Solved in {attempts} {attempts === 1 ? "attempt" : "attempts"}!
             </Text>
           </View>
 
@@ -224,86 +305,141 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
             style={{
               flex: 1,
               paddingHorizontal: SPACING.lg,
-              justifyContent: "center",
+              justifyContent: "space-between", // Changed from center to space-between
               alignItems: "center",
             }}
           >
-            {/* Conditional Coin Reward Display */}
-            {coinsEarned > 0 && (
-              <View
-                style={{
-                  backgroundColor: "rgba(255, 255, 255, 0.95)",
-                  borderRadius: BORDER_RADIUS.lg,
-                  padding: SPACING.lg,
-                  marginBottom: SPACING.xl,
-                  shadowColor: COLORS.shadowColor,
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: 0.1,
-                  shadowRadius: 4,
-                  elevation: 3,
-                  alignItems: "center",
-                }}
-              >
-                <Text
+            {/* Top Section with Victory Message and Coins */}
+            <View style={{ width: "100%", alignItems: "center" }}>
+              {coinsEarned > 0 && (
+                <View
                   style={{
-                    fontSize: scale(18),
-                    fontWeight: "bold",
-                    color: COLORS.textPrimary,
-                    marginBottom: SPACING.xs,
+                    alignItems: "center",
                   }}
                 >
-                  💰 Coins Earned
-                </Text>
-                <Text
-                  style={{
-                    fontSize: scale(24),
-                    fontWeight: "bold",
-                    color: COLORS.primaryOrange,
-                  }}
-                >
-                  {coinsEarned}
-                </Text>
-              </View>
-            )}
+                  {/* Large Coin Stack Icon */}
+                  <View>
+                    <LargeCoinStackSvg
+                      width={scale(300)}
+                      height={scale(200)}
+                      style={{
+                        top: -20,
+                      }}
+                    />
+                  </View>
+                </View>
+              )}
+            </View>
 
-            {/* Emoji Grid Summary for Sharing */}
+            {/* Middle Section with Treasure Chest */}
             {guesses.length > 0 && (
               <View
                 style={{
-                  backgroundColor: "rgba(255, 255, 255, 0.95)",
-                  borderRadius: BORDER_RADIUS.lg,
-                  padding: SPACING.lg,
-                  marginBottom: SPACING.xl,
-                  shadowColor: COLORS.shadowColor,
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: 0.1,
-                  shadowRadius: 4,
-                  elevation: 3,
                   alignItems: "center",
                   width: "100%",
+                  position: "absolute",
+                  top: 220,
+                }}
+              >
+                {/* Treasure Chest with Overlaid Text */}
+                <View
+                  style={{
+                    position: "relative",
+                    alignItems: "center",
+                    marginTop: -80,
+                  }}
+                >
+                  <ChestSvg width={scale(250)} height={scale(180)} />
+
+                  {/* Overlaid Coins Text - Only show when coins are earned */}
+                  {coinsEarned > 0 && (
+                    <View
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      {/* Semi-transparent background for better text visibility */}
+                      <View
+                        style={{
+                          paddingHorizontal: scale(12),
+
+                          alignItems: "center",
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontSize: scale(20),
+                            fontFamily: TYPOGRAPHY.fontPrimary,
+                            color: "black",
+                            textAlign: "center",
+                          }}
+                        >
+                          Coins Earned
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: scale(28),
+                            color: COLORS.primaryOrange,
+                            textAlign: "center",
+                            fontFamily: TYPOGRAPHY.fontPrimary,
+                          }}
+                        >
+                          {coinsEarned}
+                        </Text>
+                      </View>
+                    </View>
+                  )}
+                </View>
+              </View>
+            )}
+
+            {/* Bottom Section with Share Functionality */}
+            {guesses.length > 0 && (
+              <View
+                style={{
+                  alignItems: "center",
+                  width: "100%",
+                  position: "absolute",
+                  top: 300,
                 }}
               >
                 <Text
                   style={{
                     fontSize: scale(18),
-                    fontWeight: "bold",
+                    fontFamily: TYPOGRAPHY.fontPrimary,
                     color: COLORS.textPrimary,
                     marginBottom: SPACING.md,
                     textAlign: "center",
                   }}
                 >
-                  📤 Share your result:
+                  Share your victory
                 </Text>
-                <Text
+
+                {/* Social Share Buttons */}
+                <View
                   style={{
-                    fontSize: scale(20),
-                    lineHeight: scale(28),
-                    textAlign: "center",
-                    color: COLORS.textPrimary,
+                    flexDirection: "row",
+                    justifyContent: "space-around", // Changed from space-between to space-around
+                    width: "80%", // Reduced width for better centering
                   }}
                 >
-                  {emojiSummary}
-                </Text>
+                  <SocialShareButton
+                    platform="facebook"
+                    onPress={() => handleShare("facebook")}
+                    size="medium"
+                  />
+                  <SocialShareButton
+                    platform="x"
+                    onPress={() => handleShare("x")}
+                    size="medium"
+                  />
+                </View>
               </View>
             )}
           </View>
@@ -313,16 +449,16 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
             style={{
               paddingHorizontal: SPACING.lg,
               paddingBottom: SPACING.lg,
-              backgroundColor: COLORS.backgroundPrimary,
+              backgroundColor: "transparent",
             }}
           >
             <WideButton
-              buttonText="🚀 Next Level"
+              buttonText="Next Level"
               onPress={onNextLevel}
               buttonColor="bg-blue-500"
             />
             <WideButton
-              buttonText="🏠 Home"
+              buttonText="Home"
               onPress={onHome}
               buttonColor="bg-gray-500"
             />

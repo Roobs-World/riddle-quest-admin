@@ -3,7 +3,7 @@ import { render, fireEvent } from "@testing-library/react-native";
 import FacebookSignInButton from "../FacebookSignInButton";
 
 // Mock the FacebookIcon component
-jest.mock("../icons/FacebookIcon", () => {
+jest.mock("../../icons/FacebookIcon", () => {
   const React = require("react");
   const { View } = require("react-native");
 
