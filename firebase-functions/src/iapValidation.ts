@@ -8,8 +8,19 @@ import {NO_ADS_PRODUCT_ID, BACKEND_COIN_PRODUCT_DETAILS} from "./iapConfig";
 import {isPurchaseTokenAlreadyProcessed, markPurchaseTokenAsProcessed} from "./iapReceiptService";
 import {performPlatformValidation} from "./iapPlatformValidator";
 
-// TODO: Configure these environment variables securely in Firebase Functions settings using `firebase functions:config:set`
-// The iap.config() and related env var checks are now handled in iapConfig.ts
+/**
+ * IAP Validation Module
+ *
+ * Environment variables required for IAP validation (configured in iapConfig.ts):
+ * - APPLE_SHARED_SECRET: Required for iOS App Store receipt validation
+ * - GOOGLE_SERVICE_ACCOUNT: JSON string containing Google Play service account credentials
+ *
+ * These should be set via Firebase Functions environment configuration:
+ *   firebase functions:secrets:set APPLE_SHARED_SECRET
+ *   firebase functions:secrets:set GOOGLE_SERVICE_ACCOUNT
+ *
+ * Or via .env files for local development (ensure they are gitignored).
+ */
 
 /**
  * Callable function to validate an in-app purchase and award items.

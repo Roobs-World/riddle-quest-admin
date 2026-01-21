@@ -9,7 +9,14 @@ interface IapError extends Error {
   code?: string;
 }
 
-// Replace the placeholder product IDs with your real ones
+/**
+ * Product IDs for coin packages.
+ * These must match the product IDs configured in:
+ * - App Store Connect (iOS)
+ * - Google Play Console (Android)
+ *
+ * Format: com.qwordly.coins{amount}
+ */
 const coinProductIds = [
   "com.qwordly.coins100",
   "com.qwordly.coins250",
@@ -17,6 +24,10 @@ const coinProductIds = [
   "com.qwordly.coins1000",
 ];
 
+/**
+ * Coin product details mapping product IDs to coin amounts.
+ * These values must match the backend configuration in firebase-functions/src/iapConfig.ts
+ */
 export const COIN_PRODUCT_DETAILS: {
   [key: string]: { id: string; coins: number };
 } = {
@@ -161,22 +172,22 @@ export const IapService = {
     }
   },
 
+  /**
+   * Validates a purchase with the server-side Firebase Cloud Function.
+   * The server verifies the purchase receipt with App Store/Google Play APIs
+   * and awards coins to the user if valid.
+   *
+   * @param purchaseToken - The purchase receipt/token from the store
+   * @param productId - The product ID that was purchased
+   * @returns Promise resolving to true if validation succeeded, false otherwise
+   * @throws Error if the validation request fails
+   */
   async validatePurchase(
     purchaseToken: string,
     productId: string
   ): Promise<boolean> {
-    // This function should take the purchaseToken and productId,
-    // verify them with the App Store/Google Play APIs on the server,
-    // and update the user's coin balance in Firestore if valid.
-    console.log(
-      "Placeholder: Sending purchase for validation:",
-      purchaseToken,
-      productId
-    );
-
-    console.warn("validatePurchase is using a placeholder implementation.");
-
-    // Call the Firebase Cloud Function for validation
+    // Call the Firebase Cloud Function for server-side validation
+    // The server validates with App Store/Google Play and awards coins
     try {
       const result = await getFunctions(getApp()).httpsCallable<
         { purchaseToken: string; productId: string; platform: string },
@@ -184,14 +195,12 @@ export const IapService = {
       >("validatePurchase")({
         purchaseToken,
         productId,
-        platform: Platform.OS, // Pass platform to the backend
+        platform: Platform.OS,
       });
 
-      // Assuming the callable function returns { success: boolean, newCoins?: number }
-      return result.data.success; // Return the success status from the backend
+      return result.data.success;
     } catch (error) {
       console.error("Error calling validatePurchase Firebase Function:", error);
-      // Rethrow the error to be handled by the calling function (purchaseProduct)
       throw error;
     }
   },

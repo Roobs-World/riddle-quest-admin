@@ -23,7 +23,7 @@ module.exports = function (api) {
   // Base configuration for all environments
   const baseConfig = {
     presets: [
-      [
+      isJestTest ? "module:@react-native/babel-preset" : [
         "babel-preset-expo",
         {
           jsxRuntime: "automatic",

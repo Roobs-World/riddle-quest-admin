@@ -125,8 +125,32 @@ interface UpdateUserStatsRequestData {
 }
 
 /**
+ * Checks if the authenticated user has admin privileges.
+ * Admin status is determined by Firebase custom claims.
+ *
+ * @param auth - The auth object from the request
+ * @returns True if the user is an admin, false otherwise
+ */
+async function isUserAdmin(auth: {uid: string; token: {admin?: boolean}}): Promise<boolean> {
+  // Check for admin custom claim set via Firebase Admin SDK
+  // To set admin claim: admin.auth().setCustomUserClaims(uid, { admin: true })
+  if (auth.token?.admin === true) {
+    return true;
+  }
+
+  // Fallback: Check if user is in the admins collection in Firestore
+  try {
+    const adminDoc = await admin.firestore().collection("admins").doc(auth.uid).get();
+    return adminDoc.exists;
+  } catch (error) {
+    functions.logger.error("Error checking admin status:", error);
+    return false;
+  }
+}
+
+/**
  * Admin function to manually update user statistics.
- * Requires admin privileges or special authentication.
+ * Requires admin privileges via Firebase custom claims or admins collection.
  *
  * @param request - The request containing user ID and stats to update
  * @returns A promise resolving to update status
@@ -138,8 +162,12 @@ export const updateUserStats = onCall<UpdateUserStatsRequestData, Promise<{succe
         throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
       }
 
-      // TODO: Add admin authorization check here
-      // For now, allowing any authenticated user for development purposes
+      // Verify admin authorization using custom claims or admins collection
+      const hasAdminAccess = await isUserAdmin(request.auth as {uid: string; token: {admin?: boolean}});
+      if (!hasAdminAccess) {
+        functions.logger.warn(`Unauthorized admin access attempt by user ${request.auth.uid}`);
+        throw new HttpsError("permission-denied", "This operation requires admin privileges.");
+      }
 
       const {targetUserId, statsUpdate} = request.data;
 

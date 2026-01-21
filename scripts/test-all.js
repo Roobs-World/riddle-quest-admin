@@ -104,14 +104,12 @@ function initializeFirestore() {
 
     // Create a simple initialization script that adds test data
     const initScript = `
-      const path = require('path');
-      const { createRequire } = require('module');
-      
-      // Create require from the project root to resolve firebase-admin
-      const projectRoot = path.resolve(__dirname, '../..');
-      const require = createRequire(path.join(projectRoot, 'package.json'));
-      
-      const admin = require('firebase-admin');
+      import path from 'path';
+      import { fileURLToPath } from 'url';
+      import admin from 'firebase-admin';
+
+      const __filename = fileURLToPath(import.meta.url);
+      const __dirname = path.dirname(__filename);
       
       if (!admin.apps.length) {
         admin.initializeApp({
@@ -168,7 +166,7 @@ function initializeFirestore() {
     fs.writeFileSync(tempFile, initScript);
 
     const command = isWindows ? "node.exe" : "node";
-    const initProcess = spawn(command, [tempFile, "--input-type=commonjs"], {
+    const initProcess = spawn(command, [tempFile], {
       env: {
         ...process.env,
         FIRESTORE_EMULATOR_HOST: "127.0.0.1:8099",
@@ -247,8 +245,8 @@ function runAllTests() {
       log("📱 Running React Native tests...", colors.cyan);
 
       const rnTestProcess = spawn(
-        isWindows ? "npx.cmd" : "npx",
-        ["jest", "--config", "jest.config.cjs"],
+        isWindows ? "npm.cmd" : "npm",
+        ["run", "test:rn"],
         {
           stdio: "inherit",
           env: {

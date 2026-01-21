@@ -8,7 +8,18 @@ This document outlines the system architecture, key technical decisions, design 
 
 ## Key Technical Decisions:
 
-- [List significant technical choices and the reasoning behind them, e.g., Using Firebase for backend, TypeScript for type safety.]
+- **React Native 0.83.1**: Latest stable version for modern mobile development with improved performance and ES modules
+- **React 19.0.0**: Latest major version for enhanced concurrent features and improved developer experience
+- **Firebase v23**: Latest Firebase SDK with modular API for better tree-shaking and performance
+- **Jest 30.2.0**: Latest testing framework with improved performance and compatibility
+- **Expo SDK 54**: Latest Expo toolchain for development and building
+
+### Recent Major Updates (January 2025):
+
+- **Package Updates**: All dependencies updated to latest versions for security and performance
+- **Jest Configuration**: Overhauled for React Native 0.83.1 ES module compatibility
+- **Firebase Migration**: Complete migration from v22 to v23 modular API
+- **Babel Configuration**: Updated with conditional presets for test environments
 
 ## Design Patterns in Use:
 
@@ -158,7 +169,18 @@ interface Riddle {
   - Graceful failure handling
   - Custom script at `scripts/test-all.js`
 - **Test Data**: Automatic population of test riddles and users
-- **Firebase Functions**: 218 tests - all passing
-- **React Native**: 172 tests - running (46 failing due to test logic, not infrastructure)
-- **Total Test Coverage**: 390 tests, 344 passing
-- **Infrastructure**: Both test suites working with proper transformations
+- **Firebase Functions**: 275 tests at 62.27% coverage
+- **React Native**: Component, hook, and service tests (Jest configuration updated for RN 0.83.1)
+- **Total Test Coverage**: 390+ tests across Firebase Functions and React Native
+- **Known Issues**: Firebase mock updates needed for v23 API compatibility
+- **Infrastructure**: Jest configuration updated for React Native 0.83.1 ES modules
+
+### Testing Priorities (January 2025)
+
+| File | Current | Target | Notes |
+|------|---------|--------|-------|
+| riddleGeneration.ts | 49.72% | 70%+ | Complex Firebase mocking |
+| iapValidation.ts | 98.33% | 100% | 1 line remaining |
+| firestoreService.ts | 97.01% | 100% | 2 lines remaining |
+| iapPlatformValidator.ts | 97.72% | 100% | 1 line remaining |
+| dailyChallenge.ts | 96.42% | 100% | 2 lines remaining |

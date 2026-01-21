@@ -1,5 +1,5 @@
-import React, { useReducer, useState, useMemo } from "react";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import React, { useReducer, useState, useMemo, useCallback } from "react";
+import { View, Text, TouchableOpacity, ScrollView, Linking, Alert } from "react-native";
 import ProgressBar from "../../components/shared/ProgressBar";
 import CheckboxIcon from "../../components/icons/CheckboxIcon";
 import CustomSafeAreaView from "../../components/layouts/CustomSafeAreaView";
@@ -118,6 +118,10 @@ function passwordReducer(
  *
  * @param {object} navigation - The navigation prop from React Navigation.
  */
+// URLs for legal pages - update these with your actual URLs
+const TERMS_OF_SERVICE_URL = "https://qwordly.com/terms";
+const PRIVACY_POLICY_URL = "https://qwordly.com/privacy";
+
 const SignUpScreen = ({ navigation }: { navigation: NavigationProp }) => {
   const [username, setUsername] = useState("");
   const [passwordState, dispatch] = useReducer(
@@ -136,6 +140,30 @@ const SignUpScreen = ({ navigation }: { navigation: NavigationProp }) => {
   const [confirmPasswordError, setConfirmPasswordError] = useState<
     string | null
   >(null);
+
+  /**
+   * Opens an external URL in the device's default browser.
+   * Shows an error alert if the URL cannot be opened.
+   */
+  const openExternalUrl = useCallback(async (url: string, pageName: string) => {
+    try {
+      const canOpen = await Linking.canOpenURL(url);
+      if (canOpen) {
+        await Linking.openURL(url);
+      } else {
+        Alert.alert(
+          "Unable to Open",
+          `Cannot open ${pageName}. Please visit ${url} in your browser.`
+        );
+      }
+    } catch (error) {
+      console.error(`Error opening ${pageName}:`, error);
+      Alert.alert(
+        "Error",
+        `Could not open ${pageName}. Please try again later.`
+      );
+    }
+  }, []);
 
   const handleNextPress = async () => {
     setIsLoading(true);
@@ -335,10 +363,7 @@ const SignUpScreen = ({ navigation }: { navigation: NavigationProp }) => {
                   {AppStrings.AuthStrings.SignUp.TERMS_AGREEMENT_PART1}
                 </Text>
                 <TouchableOpacity
-                  onPress={() => {
-                    console.log("Navigate to terms - Placeholder");
-                    // TODO: Implement actual navigation to terms page
-                  }}
+                  onPress={() => openExternalUrl(TERMS_OF_SERVICE_URL, "Terms of Service")}
                 >
                   <Text className="text-blue-600 underline">
                     {AppStrings.AuthStrings.SignUp.TERMS_USER_AGREEMENT}
@@ -348,10 +373,7 @@ const SignUpScreen = ({ navigation }: { navigation: NavigationProp }) => {
                   {AppStrings.AuthStrings.SignUp.TERMS_AGREEMENT_PART2}
                 </Text>
                 <TouchableOpacity
-                  onPress={() => {
-                    console.log("Navigate to privacy policy - Placeholder");
-                    // TODO: Implement actual navigation to privacy policy page
-                  }}
+                  onPress={() => openExternalUrl(PRIVACY_POLICY_URL, "Privacy Policy")}
                 >
                   <Text className="text-blue-600 underline">
                     {AppStrings.AuthStrings.SignUp.TERMS_PRIVACY_POLICY}

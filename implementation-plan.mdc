@@ -1,5 +1,5 @@
 ---
-description:
+description: Implementation plan for Qwordly project features and improvements
 globs:
 alwaysApply: false
 ---
@@ -7,10 +7,69 @@ alwaysApply: false
 
 This plan outlines the steps for implementing missing functionalities in the project, based on the memory bank and identified TODOs.
 
-1. Implement actual server-side validation for ad network callbacks (in `firebase-functions/src/index.ts`).
-2. Implement actual server-side validation for in-app purchases (in `firebase-functions/src/index.ts`).
-3. Refine the logic for updating user statistics, specifically how 'games played' is incremented in the `submitGuess` function (in `firebase-functions/src/index.ts`).
-4. Improve hint tracking in the `getHint` function (in `firebase-functions/src/index.ts`).
-5. Implement proper logic for determining the next riddle and handling the end-of-riddles scenario in the `skipRiddle` function (in `firebase-functions/src/index.ts`).
-6. Add more robust logic and handling for different form types in the `processFormSubmission` function (in `firebase-functions/src/index.ts`).
-7. Replace the placeholder riddle generation logic in `firebase-functions/src/generateRiddles.ts`.
+### ✅ Completed Tasks
+
+1. ~~Implement actual server-side validation for ad network callbacks~~ - **DONE**
+   - Implemented in `firebase-functions/src/adCallbacks.ts`
+   - AppLovin MAX signature verification with SHA256 hashing
+   - Replay attack prevention with transaction token tracking
+
+2. ~~Implement actual server-side validation for in-app purchases~~ - **DONE**
+   - Implemented in `firebase-functions/src/iapValidation.ts`
+   - Platform validation via `iapPlatformValidator.ts`
+   - Receipt service for duplicate prevention
+
+### 🔄 In Progress / Needs Review
+
+3. Refine the logic for updating user statistics, specifically how 'games played' is incremented in the `submitGuess` function (in `firebase-functions/src/gameLogic.ts`).
+   - **Status**: Implemented, needs review for accuracy
+
+4. Improve hint tracking in the `getHint` function (in `firebase-functions/src/gameLogic.ts`).
+   - **Status**: Working, tracks revealed hint indices
+
+5. Implement proper logic for determining the next riddle and handling the end-of-riddles scenario in the `skipRiddle` function.
+   - **Status**: Needs implementation review
+
+6. Add more robust logic and handling for different form types in the `processFormSubmission` function (in `firebase-functions/src/profile.ts`).
+   - **Status**: Needs enhancement
+
+### ✅ Completed Tasks (January 2025)
+
+7. **Terms & Privacy Policy Navigation** (`src/screens/auth/SignUpScreen.tsx`) - **DONE**
+   - Implemented external URL navigation using React Native `Linking` API
+   - Added error handling and fallback alerts
+   - URLs configurable via constants
+
+8. **Admin Authorization** (`firebase-functions/src/userManagement.ts`) - **DONE**
+   - Implemented `isUserAdmin()` with dual validation
+   - Firebase custom claims (`admin: true`) as primary check
+   - Firestore `admins` collection as fallback
+   - Unauthorized attempts logged and rejected
+
+9. **IAP Product ID Configuration** (`src/services/IapService.ts`) - **DONE**
+   - Added proper documentation for product ID configuration
+   - Removed placeholder warnings from validatePurchase
+
+10. **Ad Client Callback Correlation** (`firebase-functions/src/adClientCallbacks.ts`) - **DONE**
+    - Implemented `findValidatedPostback()` for S2S correlation
+    - Implemented `recordClientNotification()` for tracking
+    - 60-second correlation window
+    - Returns coins awarded or pending validation status
+
+### 🔄 Remaining Tasks
+
+11. **Console.log Cleanup** (38 files, 517 instances)
+    - Replace with structured logging (Firebase logger)
+    - Remove debug statements before production
+
+12. **Test Coverage Enhancement**
+    - Increase `riddleGeneration.ts` from 49.72% to 70%+
+    - Fix 24 failing tests (legacy expectations)
+
+### 📋 Feature Backlog
+
+13. **Advanced Analytics** - User behavior tracking, game metrics
+14. **Offline Mode** - Local state management, sync on reconnect
+15. **Tutorial Flow** - Interactive onboarding experience
+16. **Achievement System** - Unlock criteria, badge mechanics
+17. **Performance Optimization** - Asset loading, memory management

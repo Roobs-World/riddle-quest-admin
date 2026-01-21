@@ -66,7 +66,7 @@ Build a riddle-based Wordle-clone mobile game using React Native, NativeWind, an
 ### 2.1. Platform & Technology
 
 - **Mobile Platform:** iOS (16+) and Android (10+)
-- **Frontend:** React Native (0.75+), NativeWind, TypeScript
+- **Frontend:** React Native (0.83.1), React (19.0.0), NativeWind, TypeScript
 - **State Management:** React Context or Zustand
 - **Caching:** AsyncStorage or MMKV
 - **Animations:** Reanimated & Gesture Handler, Matter.js (for physics-based animations)

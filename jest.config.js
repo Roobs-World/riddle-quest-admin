@@ -1,9 +1,12 @@
 module.exports = {
-  preset: "jest-expo",
+  preset: null,
   testEnvironment: "jsdom",
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
+  transform: {
+    '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { configFile: './babel.config.cjs' }],
+  },
   transformIgnorePatterns: [
-    "node_modules/(?!(jest-)?react-native|@react-native|expo|@expo|@react-navigation|react-native-svg|react-native-reanimated|react-native-fbsdk-next)",
+    "node_modules/(?!(react-native|@react-native|expo|@expo|@react-navigation|react-native-svg|react-native-reanimated|react-native-fbsdk-next|@react-native/js-polyfills))",
   ],
   moduleNameMapper: {
     "\\.(svg)$": "<rootDir>/src/__mocks__/svgMock.js",

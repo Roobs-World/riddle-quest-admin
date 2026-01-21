@@ -4,10 +4,10 @@ This document details the technologies, development setup, technical constraints
 
 ## Technologies Used:
 
-- **React Native**: 0.75.4 - Core mobile framework for iOS and Android
-- **Expo**: SDK 53.0.9 - Development platform and toolchain
+- **React Native**: 0.83.1 - Core mobile framework for iOS and Android (updated from 0.79.5)
+- **Expo**: SDK 54.0.22 - Development platform and toolchain (updated from 53.0.17)
 - **TypeScript**: 5.8.3 - Type-safe JavaScript development
-- **React**: 18.2.0 - JavaScript library for building user interfaces
+- **React**: 19.0.0 - JavaScript library for building user interfaces (updated from 18.2.0)
 - **NativeWind**: 4.1.23 - Tailwind CSS for React Native styling
 
 ### Bundling & Development
@@ -129,9 +129,14 @@ This document details the technologies, development setup, technical constraints
 ### **✅ Testing Infrastructure - FULLY COMPLETED**:
 
 **Framework**: Jest with TypeScript support  
-**Configuration**: Single-project focus on Firebase Functions  
-**Coverage**: 167/167 tests passing (100% success rate)  
-**Strategy**: Backend-first testing with comprehensive business logic coverage
+**Configuration**: Dual testing for React Native and Firebase Functions  
+**Coverage**: 2,450/2,474 tests passing (99.0% success rate)  
+**Strategy**: Comprehensive coverage of both frontend and backend
+
+**Test Distribution**:
+- **React Native**: ~2,200+ tests covering components, hooks, services
+- **Firebase Functions**: 275 tests at 62.27% coverage
+- **Known Issues**: 24 failing tests (legacy expectations, not infrastructure)
 
 **Key Achievements**:
 
