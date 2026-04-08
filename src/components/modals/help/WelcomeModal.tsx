@@ -31,6 +31,8 @@ interface WelcomeModalProps {
   onStartTutorial?: () => void;
   /** When false, "Start Tutorial" is not shown (e.g. no tutorial riddles available). Defaults to true when onStartTutorial is provided. */
   showStartTutorial?: boolean;
+  /** Optional callback fired after the welcome modal is dismissed. */
+  onDismiss?: () => void;
 }
 
 const WelcomeModal: React.FC<WelcomeModalProps> = ({
@@ -38,6 +40,7 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({
   onClose,
   onStartTutorial,
   showStartTutorial = true,
+  onDismiss,
 }) => {
   const rotation = useSharedValue(0);
 
@@ -58,9 +61,14 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({
     transform: [{ rotate: `${rotation.value * 360}deg` }],
   }));
 
+  const handleDismiss = () => {
+    onClose();
+    onDismiss?.();
+  };
+
   const handleStartTutorial = () => {
     onStartTutorial?.();
-    onClose();
+    handleDismiss();
   };
 
   const canShowStartTutorial = Boolean(onStartTutorial && showStartTutorial);
@@ -70,7 +78,7 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({
       animationType="fade"
       transparent={true}
       visible={isVisible}
-      onRequestClose={onClose}
+      onRequestClose={handleDismiss}
     >
       <View
         style={{
@@ -175,14 +183,14 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({
                   <WideButton buttonText="Start Tutorial" onPress={handleStartTutorial} />
                   <WideButton
                     buttonText="Skip to Play"
-                    onPress={onClose}
+                    onPress={handleDismiss}
                     buttonColor="bg-gray-500"
                   />
                 </>
               ) : (
                 <WideButton
                   buttonText="Let's Play!"
-                  onPress={onClose}
+                  onPress={handleDismiss}
                   buttonColor={onStartTutorial ? "bg-gray-500" : undefined}
                 />
               )}

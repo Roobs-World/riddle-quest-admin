@@ -151,6 +151,8 @@ export interface GameModalTypes {
     onStartTutorial?: () => void;
     /** When false, "Start Tutorial" is hidden even if onStartTutorial is set (e.g. no tutorial riddles in Firestore). */
     showStartTutorial?: boolean;
+    /** Optional callback fired after the welcome modal is dismissed. */
+    onDismiss?: () => void;
   };
 
   instructions: Record<string, never>;

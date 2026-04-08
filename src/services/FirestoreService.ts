@@ -137,7 +137,11 @@ export const fetchDailyRiddleFromFirestore = async (
 
   try {
     const riddleQuerySnapshot = await getDocs(
-      query(collection(getFirestore(), "riddles"), where("dailyIndex", "==", dailyIndex), limit(1))
+      query(
+        collection(getFirestore(), "dailyRiddles"),
+        where("dailyIndex", "==", dailyIndex),
+        limit(1)
+      )
     );
 
     if (!riddleQuerySnapshot.empty) {

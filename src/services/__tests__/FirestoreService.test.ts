@@ -307,7 +307,7 @@ describe("FirestoreService", () => {
         dailyIndex
       );
 
-      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "riddles");
+      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "dailyRiddles");
       expect(mockWhere).toHaveBeenCalledWith("dailyIndex", "==", dailyIndex);
       expect(mockLimit).toHaveBeenCalledWith(1);
       expect(result).toEqual(mockRiddleData);

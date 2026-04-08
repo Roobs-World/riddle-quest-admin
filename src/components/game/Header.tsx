@@ -7,8 +7,8 @@
  * for providing quick access to the coin shop as well as surfacing tutorial
  * context when the user is in guided onboarding.
  */
-import React from "react";
-import { View, TouchableOpacity, Text } from "react-native";
+import React, { useMemo, useState } from "react";
+import { LayoutChangeEvent, View, TouchableOpacity, Text } from "react-native";
 import CoinsDisplay from "./CoinsDisplay";
 import LogoIcon from "../icons/LogoIcon";
 import { TYPOGRAPHY, SPACING } from "../../styles";
@@ -54,6 +54,38 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
   const showTutorialCues = isTutorial && tutorialStep >= 1;
   const showModeLabel = !showTutorialCues && !!modeLabel;
+  const [headerWidth, setHeaderWidth] = useState(0);
+  const [leftAnchor, setLeftAnchor] = useState({ x: SPACING.md, width: HEADER_LOGO_SIZE });
+  const [rightAnchor, setRightAnchor] = useState({ x: 0, width: 0 });
+  const layoutRecalcKey = `${userCoins}-${modeLabel ?? ""}`;
+
+  const modeLabelContainerStyle = useMemo(() => {
+    const leftBoundary = leftAnchor.x + leftAnchor.width;
+    const rightBoundary = rightAnchor.x;
+    const rightInset = headerWidth > 0 ? Math.max(0, headerWidth - rightBoundary) : SPACING.md;
+
+    // Center the label within the live space between logo and coins so it never overlaps either side.
+    if (headerWidth > 0 && rightBoundary > leftBoundary) {
+      return { top: 0, bottom: 0, left: leftBoundary, right: rightInset, transform: [{ translateY: 4 }] };
+    }
+
+    // Safe fallback before first layout pass.
+    return { top: 0, bottom: 0, left: SPACING.xl, right: SPACING.xl, transform: [{ translateY: 4 }] };
+  }, [headerWidth, leftAnchor, rightAnchor]);
+
+  const handleHeaderLayout = (event: LayoutChangeEvent) => {
+    setHeaderWidth(event.nativeEvent.layout.width);
+  };
+
+  const handleLeftAnchorLayout = (event: LayoutChangeEvent) => {
+    const { x, width } = event.nativeEvent.layout;
+    setLeftAnchor({ x, width });
+  };
+
+  const handleRightAnchorLayout = (event: LayoutChangeEvent) => {
+    const { x, width } = event.nativeEvent.layout;
+    setRightAnchor({ x, width });
+  };
 
   return (
     <View
@@ -65,6 +97,7 @@ const Header: React.FC<HeaderProps> = ({
         paddingHorizontal: SPACING.md,
       }}
       testID="header"
+      onLayout={handleHeaderLayout}
       accessible={true}
       accessibilityRole="none"
       accessibilityLabel={
@@ -77,6 +110,7 @@ const Header: React.FC<HeaderProps> = ({
       <View
         style={{ position: "absolute", top: SPACING.md, left: SPACING.md, zIndex: 10 }}
         testID="header-left-side"
+        onLayout={handleLeftAnchorLayout}
       >
         <TouchableOpacity
           className="items-center"
@@ -123,8 +157,9 @@ const Header: React.FC<HeaderProps> = ({
       )}
       {showModeLabel && (
         <View
+          key={`mode-label-${layoutRecalcKey}`}
           className="absolute left-0 right-0 items-center justify-center z-0"
-          style={{ top: 0, bottom: 0, transform: [{ translateY: 4 }] }}
+          style={modeLabelContainerStyle}
           testID="header-mode-label-container"
         >
           <Text
@@ -142,8 +177,10 @@ const Header: React.FC<HeaderProps> = ({
 
       {/* Right side: Coins */}
       <View
+        key={`coins-anchor-${layoutRecalcKey}`}
         style={{ position: "absolute", top: SPACING.md, right: SPACING.md, zIndex: 10 }}
         testID="header-right-side"
+        onLayout={handleRightAnchorLayout}
       >
         <CoinsDisplay coins={userCoins} onPress={onCoinsPress} />
       </View>

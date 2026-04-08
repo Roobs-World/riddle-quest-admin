@@ -380,12 +380,14 @@ const ModalRenderer: React.FC<{
       const welcomeData = modalData as {
         onStartTutorial?: () => void;
         showStartTutorial?: boolean;
+        onDismiss?: () => void;
       };
       return (
         <WelcomeModal
           {...commonProps}
           onStartTutorial={welcomeData.onStartTutorial}
           showStartTutorial={welcomeData.showStartTutorial}
+          onDismiss={welcomeData.onDismiss}
         />
       );
     }

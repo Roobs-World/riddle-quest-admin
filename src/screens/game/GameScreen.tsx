@@ -46,7 +46,6 @@ import {
 import { styles } from "../../styles";
 import { GameInput } from "../../components/game/GameInput";
 import { useModal } from "../../hooks/useModal";
-import { useFirstTimeExperience } from "../../hooks/useFirstTimeExperience";
 import { ModalProvider } from "../../components/modals/ModalProvider";
 import { IapService } from "../../services/IapService";
 import ModalTogglePanel from "../../components/development/ModalTogglePanel";
@@ -121,7 +120,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 }) => {
   const { playerData, logout, setGameMode, fetchCurrentRiddle } = useAuth();
   const modal = useModal();
-  useFirstTimeExperience();
 
   // Simplified state - no more massive overlay state object!
   const [lastGuessResult, setLastGuessResult] = useState<GuessResult | null>(
@@ -228,53 +226,53 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     loadProducts();
   }, []);
 
-  // Initialize first-time user experience — guard with a ref so this only
-  // runs once even though modal/playerData deps cause the effect to re-fire.
+  // Initialize onboarding flow — always show welcome first, then instructions.
+  // Guard with a ref so this only runs once per screen mount.
   const firstTimeCheckDone = useRef(false);
   const { showWelcomeModal, showInstructionsModal } = useModal();
   useEffect(() => {
     if (firstTimeCheckDone.current) return;
     firstTimeCheckDone.current = true;
 
-    const checkIfFirstTimeUser = async () => {
+    const runOnboardingFlow = async () => {
       try {
-        const hasSeenWelcome = await AsyncStorage.getItem("hasSeenWelcome");
-        if (hasSeenWelcome === null) {
-          let showStartTutorial = true;
-          try {
-            const count = await getTutorialRiddleCount();
-            showStartTutorial = count > 0;
-          } catch (err) {
-            logger.warn("Could not get tutorial riddle count, hiding Start Tutorial:", err);
-            showStartTutorial = false;
-          }
-          modal.showWelcomeModal({
-            onStartTutorial: () => {
-              setGameMode("tutorial");
-              if (playerData) {
-                fetchCurrentRiddle(playerData, "tutorial");
-              }
-            },
-            showStartTutorial,
-          });
-          await AsyncStorage.setItem("hasSeenWelcome", "true");
-        } else {
-          const hasSeenInstructions = await AsyncStorage.getItem(
-            "hasSeenInstructions"
-          );
-          if (hasSeenInstructions === null) {
-            modal.showInstructionsModal();
-            await AsyncStorage.setItem("hasSeenInstructions", "true");
-          }
+        let showStartTutorial = true;
+        try {
+          const count = await getTutorialRiddleCount();
+          showStartTutorial = count > 0;
+        } catch (err) {
+          logger.warn("Could not get tutorial riddle count, hiding Start Tutorial:", err);
+          showStartTutorial = false;
         }
+
+        showWelcomeModal({
+          onStartTutorial: () => {
+            setGameMode("tutorial");
+            if (playerData) {
+              fetchCurrentRiddle(playerData, "tutorial");
+            }
+          },
+          showStartTutorial,
+          onDismiss: () => {
+            safeDelay(MODAL_CLOSE_DELAY_MS).then(() => {
+              showInstructionsModal();
+            });
+          },
+        });
       } catch (error) {
-        logger.error("Error checking AsyncStorage:", error);
+        logger.error("Error running onboarding flow:", error);
         captureException(error);
       }
     };
 
-    checkIfFirstTimeUser();
-  }, [modal, playerData, setGameMode, fetchCurrentRiddle]);
+    runOnboardingFlow();
+  }, [
+    playerData,
+    setGameMode,
+    fetchCurrentRiddle,
+    showWelcomeModal,
+    showInstructionsModal,
+  ]);
 
   // Load settings — batch all keys in a single AsyncStorage call
   useEffect(() => {

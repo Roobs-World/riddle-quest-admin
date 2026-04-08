@@ -97,6 +97,15 @@ service cloud.firestore {
       allow write: if isServerRequest();
     }
 
+    // Daily riddles collection - read-only for clients, write-only for server
+    match /dailyRiddles/{riddleId} {
+      // Authenticated users (including anonymous guest accounts) can read daily riddles
+      allow read: if isAuthenticated();
+
+      // Only server (Cloud Functions) can create/update/delete daily riddles
+      allow write: if isServerRequest();
+    }
+
     // Daily Challenge collection - read-only for clients
     match /dailyChallenge/{date} {
       // Authenticated users can read daily challenges

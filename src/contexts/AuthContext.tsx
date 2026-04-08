@@ -32,6 +32,7 @@ import {
 import { Player, FirestoreRiddle } from "../validation/firestoreSchemas";
 import { getAuth } from "@react-native-firebase/auth";
 import { getApp } from "@react-native-firebase/app";
+import { getFunctions, httpsCallable } from "@react-native-firebase/functions";
 import { RiddleInitializationService } from "../services/RiddleInitializationService";
 import { AccessToken } from "react-native-fbsdk-next";
 import { logger } from "../utils/logger";
@@ -117,6 +118,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     lastCompletedUtc.setUTCHours(0, 0, 0, 0);
     return todayUtc.getTime() > lastCompletedUtc.getTime();
   };
+
+  const hasCompletedDailyChallengeToday = useCallback(
+    async (player: Player | null): Promise<boolean> => {
+      if (!player) return false;
+
+      try {
+        const getCurrentDailyChallengeCallable = httpsCallable(
+          getFunctions(getApp()),
+          "getCurrentDailyChallenge"
+        );
+        const result = await getCurrentDailyChallengeCallable();
+        const data = result.data as { hasCompletedToday?: boolean };
+        return data.hasCompletedToday === true;
+      } catch (error) {
+        logger.warn(
+          "Unable to resolve daily completion from Firebase function, falling back to player timestamp check.",
+          error
+        );
+        const lastCompletedDate = player.lastDailyChallengeCompletedAt
+          ? new Date(player.lastDailyChallengeCompletedAt)
+          : null;
+        if (!lastCompletedDate) return false;
+        const todayUtc = new Date();
+        todayUtc.setUTCHours(0, 0, 0, 0);
+        const lastCompletedUtc = new Date(lastCompletedDate);
+        lastCompletedUtc.setUTCHours(0, 0, 0, 0);
+        return todayUtc.getTime() <= lastCompletedUtc.getTime();
+      }
+    },
+    []
+  );
 
   // Function to fetch riddle based on current game mode and player data
   const fetchCurrentRiddle = useCallback(
@@ -352,7 +384,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
               hasPurchasedApp: false,
             };
             setPlayerData(guestPlayer);
-            await fetchCurrentRiddle(guestPlayer, gameModeRef.current);
+
+            const guestCompletedToday =
+              await hasCompletedDailyChallengeToday(guestPlayer);
+            const guestInitialMode: GameMode = guestCompletedToday
+              ? "classic"
+              : "daily";
+
+            setGameMode(guestInitialMode);
+            await fetchCurrentRiddle(guestPlayer, guestInitialMode);
             setIsLoading(false);
             return;
           }
@@ -506,9 +546,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           logger.debug("📊 User data loaded successfully:", !!data);
           setPlayerData(data);
 
-          // Fetch riddle based on loaded player data and current game mode
-          logger.debug("🧩 Loading riddle for game mode:", gameModeRef.current);
-          await fetchCurrentRiddle(data, gameModeRef.current);
+          const completedToday = await hasCompletedDailyChallengeToday(data);
+          const initialMode: GameMode = completedToday ? "classic" : "daily";
+
+          setGameMode(initialMode);
+
+          // Fetch riddle based on Firebase-backed completion status at launch:
+          // daily by default, classic only when today's daily is already complete.
+          logger.debug("🧩 Loading riddle for initial game mode:", initialMode);
+          await fetchCurrentRiddle(data, initialMode);
           logger.debug("✅ Riddle loading completed");
 
           // Only set loading to false after everything is complete
@@ -555,7 +601,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     return subscriber;
     // fetchCurrentRiddle is stable (its own deps are React state setters).
     // gameModeRef.current is read at call time so gameMode need not be a dep.
-  }, [fetchCurrentRiddle]);
+  }, [fetchCurrentRiddle, hasCompletedDailyChallengeToday]);
 
   // Wrapped in useCallback so these are stable references and don't invalidate
   // the PlayerContext memo on every render.
