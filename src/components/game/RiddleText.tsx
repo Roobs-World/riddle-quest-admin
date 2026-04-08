@@ -13,11 +13,11 @@ type RiddleTextProps = {
 
 const styles = StyleSheet.create({
   riddleText: {
+    color: "#1A1A1A",
     fontFamily: TYPOGRAPHY.fontPrimary,
     fontSize: TYPOGRAPHY.fontSize["2xl"],
     lineHeight: TYPOGRAPHY.fontSize["2xl"] * TYPOGRAPHY.lineHeight.normal,
     maxWidth: RIDDLE_TEXT_MAX_WIDTH,
-    color: "#1A1A1A",
   },
 });
 

@@ -1,8 +1,29 @@
 module.exports = {
   root: true,
+
   env: {
     node: true,
+    es2022: true,
   },
+
+  parser: "@typescript-eslint/parser",
+
+  parserOptions: {
+    ecmaVersion: "latest",
+    sourceType: "module",
+    ecmaFeatures: {
+      jsx: true,
+    },
+  },
+
+  plugins: [
+    "react",
+    "react-native",
+    "@typescript-eslint",
+    "react-hooks",
+    "@react-three",
+  ],
+
   extends: [
     "eslint:recommended",
     "plugin:react/recommended",
@@ -11,49 +32,24 @@ module.exports = {
     "plugin:react-hooks/recommended",
     "plugin:@react-three/recommended",
   ],
-  parser: "@typescript-eslint/parser",
-  parserOptions: {
-    ecmaFeatures: {
-      jsx: true,
-    },
-    ecmaVersion: "latest",
-    sourceType: "module",
-  },
-  plugins: [
-    "react",
-    "react-native",
-    "@typescript-eslint",
-    "react-hooks",
-    "@react-three",
-  ],
+
   settings: {
     react: {
       version: "detect",
     },
   },
+
   rules: {
-    // Add any specific rules or overrides here
-    // For example, to disable a rule:
-    // '@typescript-eslint/explicit-function-return-type': 'off',
-    "react/react-in-jsx-scope": "off", // Not needed with new React versions
+    "react/react-in-jsx-scope": "off",
+
     "react-native/no-unused-styles": "warn",
     "react-native/split-platform-components": "warn",
     "react-native/no-inline-styles": "warn",
     "react-native/no-color-literals": "warn",
     "react-native/no-raw-text": "warn",
   },
+
   overrides: [
-    {
-      files: [
-        "*.cjs",
-        "*.config.js",
-        "metro.config.js",
-        "react-native.config.js",
-      ],
-      env: {
-        node: true,
-      },
-    },
     {
       files: [
         "**/__tests__/**/*",

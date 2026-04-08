@@ -33,8 +33,8 @@ const styles = StyleSheet.create({
     zIndex: 1000,
   },
   title: {
-    fontFamily: TYPOGRAPHY.fontPrimary,
     color: COLORS.primaryOrange,
+    fontFamily: TYPOGRAPHY.fontPrimary,
     fontSize: TYPOGRAPHY.fontSize.display,
     fontWeight: "400",
     textAlign: "center",
