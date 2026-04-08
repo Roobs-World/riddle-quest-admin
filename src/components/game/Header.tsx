@@ -30,6 +30,7 @@ interface HeaderProps {
   isTutorial?: boolean;
   tutorialStep?: number;
   tutorialTotalSteps?: number;
+  modeLabel?: string;
 }
 
 /**
@@ -49,8 +50,10 @@ const Header: React.FC<HeaderProps> = ({
   isTutorial = false,
   tutorialStep = 1,
   tutorialTotalSteps,
+  modeLabel,
 }) => {
   const showTutorialCues = isTutorial && tutorialStep >= 1;
+  const showModeLabel = !showTutorialCues && !!modeLabel;
 
   return (
     <View
@@ -87,7 +90,7 @@ const Header: React.FC<HeaderProps> = ({
         </TouchableOpacity>
       </View>
 
-      {/* Center: Tutorial label and step indicator when in tutorial mode */}
+      {/* Center: Tutorial cues (or current game mode when not in tutorial) */}
       {showTutorialCues && (
         <View
           className="absolute left-0 right-0 items-center justify-center z-0"
@@ -115,6 +118,24 @@ const Header: React.FC<HeaderProps> = ({
             {tutorialTotalSteps != null && tutorialTotalSteps > 0
               ? `Step ${tutorialStep} of ${tutorialTotalSteps}`
               : `Step ${tutorialStep}`}
+          </Text>
+        </View>
+      )}
+      {showModeLabel && (
+        <View
+          className="absolute left-0 right-0 items-center justify-center z-0"
+          style={{ top: 0, bottom: 0, transform: [{ translateY: 4 }] }}
+          testID="header-mode-label-container"
+        >
+          <Text
+            style={{
+              fontFamily: TYPOGRAPHY.fontPrimary,
+              fontSize: TYPOGRAPHY.fontSize.xl,
+              color: "#ffffff",
+            }}
+            testID="header-mode-label"
+          >
+            {modeLabel}
           </Text>
         </View>
       )}

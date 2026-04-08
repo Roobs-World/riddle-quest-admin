@@ -2,6 +2,18 @@ import React from "react";
 import { render, fireEvent } from "@testing-library/react-native";
 import Header from "../Header";
 
+// Avoid ESM parsing issues from @sentry/react-native during Jest runs.
+jest.mock("@sentry/react-native", () => ({
+  init: jest.fn(),
+  withScope: (cb: (scope: { setExtras: jest.Mock }) => void) =>
+    cb({ setExtras: jest.fn() }),
+  captureException: jest.fn(),
+  captureMessage: jest.fn(),
+  setUser: jest.fn(),
+  addBreadcrumb: jest.fn(),
+  startInactiveSpan: jest.fn(() => ({ end: jest.fn() })),
+}));
+
 // Mock the CoinsDisplay component
 jest.mock("../CoinsDisplay", () => {
   const React = require("react");
@@ -270,6 +282,33 @@ describe("Header", () => {
         />
       );
       expect(getByText("Step 3")).toBeTruthy();
+    });
+  });
+
+  describe("Mode label", () => {
+    it("shows mode label when provided and not in tutorial", () => {
+      const { getByTestId, getByText } = render(
+        <Header {...defaultProps} modeLabel="Daily Challenge" />
+      );
+
+      expect(getByTestId("header-mode-label-container")).toBeTruthy();
+      expect(getByTestId("header-mode-label")).toBeTruthy();
+      expect(getByText("Daily Challenge")).toBeTruthy();
+    });
+
+    it("does not show mode label during tutorial", () => {
+      const { queryByTestId } = render(
+        <Header
+          {...defaultProps}
+          isTutorial={true}
+          tutorialStep={1}
+          tutorialTotalSteps={3}
+          modeLabel="Classic"
+        />
+      );
+
+      expect(queryByTestId("header-mode-label-container")).toBeNull();
+      expect(queryByTestId("header-mode-label")).toBeNull();
     });
   });
 

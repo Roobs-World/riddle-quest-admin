@@ -848,6 +848,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     () => currentGuess.length !== answerLength,
     [currentGuess.length, answerLength]
   );
+  const headerModeLabel = gameMode === "daily" ? "Daily Challenge" : "Classic";
 
   return (
     <View style={{ flex: 1 }}>
@@ -869,6 +870,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
             isTutorial={gameMode === "tutorial"}
             tutorialStep={(playerData?.progress?.tutorialIndex ?? 0) + 1}
             tutorialTotalSteps={tutorialTotalSteps ?? undefined}
+            modeLabel={headerModeLabel}
           />
 
           <GameBoard
