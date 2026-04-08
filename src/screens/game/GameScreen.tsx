@@ -37,11 +37,7 @@ import {
   CONTINUE_COST_COINS,
   MODAL_CLOSE_DELAY_MS,
   SOUND_RESUME_DELAY_MS,
-  WIN_FADE_OUT_DURATION_MS,
-  WIN_SUCCESS_DELAY_MS,
-  WIN_FADE_IN_DELAY_MS,
-  WIN_FADE_IN_DURATION_MS,
-  LOSS_NEGATIVE_FADE_DURATION_MS,
+
 } from "../../constants/game";
 import {
   LOADING_SPINNER_OPACITY,
@@ -235,6 +231,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   // Initialize first-time user experience — guard with a ref so this only
   // runs once even though modal/playerData deps cause the effect to re-fire.
   const firstTimeCheckDone = useRef(false);
+  const { showWelcomeModal, showInstructionsModal } = useModal();
   useEffect(() => {
     if (firstTimeCheckDone.current) return;
     firstTimeCheckDone.current = true;
@@ -391,21 +388,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       const result = lastGuessResult;
 
       if (result.outcome === "win") {
-        SoundManager.fadeOutBackgroundMusic({
-          duration: WIN_FADE_OUT_DURATION_MS,
-          curve: "exponential",
-        });
-
-        safeDelay(WIN_SUCCESS_DELAY_MS).then(() => {
-          SoundManager.playSuccess();
-          safeDelay(WIN_FADE_IN_DELAY_MS).then(() => {
-            SoundManager.fadeInBackgroundMusic({
-              duration: WIN_FADE_IN_DURATION_MS,
-              curve: "linear",
-            });
-          });
-        });
-
+    
         if (isHapticsEnabled) {
           ReactNativeHapticFeedback.trigger("impactHeavy", hapticOptions);
         }
@@ -461,12 +444,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           },
         });
       } else if (result.outcome === "loss") {
-        // Always show loss modal
-        SoundManager.playNegativeWithFadeIn({
-          duration: LOSS_NEGATIVE_FADE_DURATION_MS,
-          curve: "exponential",
-        });
-
+      
         if (isHapticsEnabled) {
           ReactNativeHapticFeedback.trigger("notificationError", hapticOptions);
         }
@@ -568,14 +546,14 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     setLastGuessResult,
     setIsLoading,
   ]);
-
+  
   const handleKeyPress = useCallback(
     (key: string) => {
       if (currentGuess.length < answerLength) {
         setCurrentGuess((prev: string[]) => [...prev, key]);
       }
     },
-    [answerLength, currentGuess.length, setCurrentGuess]
+    [answerLength, currentGuess.length, setCurrentGuess, modal]
   );
 
   const handleBackspace = useCallback(() => {

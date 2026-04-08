@@ -3,7 +3,6 @@ import { View, Text, StyleSheet } from "react-native";
 import { COLORS } from "../../styles/tokens/colors";
 import { TYPOGRAPHY } from "../../styles/tokens/typography";
 import { BORDER_RADIUS } from "../../styles/tokens/borderRadius";
-import { SPACING } from "../../styles/tokens/spacing";
 import { STATIC_TITLE_PADDING_H, STATIC_TITLE_PADDING_V } from "../../constants/layout";
 import { moderateScale } from "../../utils/responsive";
 

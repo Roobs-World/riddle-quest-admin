@@ -12,7 +12,7 @@ import {
   AuthorizationStatus,
   FirebaseMessagingTypes,
 } from "@react-native-firebase/messaging";
-import { getFirestore, collection, doc, updateDoc } from "@react-native-firebase/firestore";
+import { getFirestore, doc, updateDoc } from "@react-native-firebase/firestore";
 import { getApp } from "@react-native-firebase/app";
 import { getFunctions, httpsCallable } from "@react-native-firebase/functions";
 import { logger } from "../utils/logger";

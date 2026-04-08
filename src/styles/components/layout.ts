@@ -72,12 +72,19 @@ export const layoutStyles = StyleSheet.create({
     justifyContent: "space-between",
   } as ViewStyle,
 
-  /** Small tablet (600–767 px): adds a touch of horizontal breathing room. */
-  gameContainerTablet: {
-    paddingHorizontal: SPACING.md,
+
+    /**
+ * Desktop (≥ 1024 px): same centring approach with slightly more padding
+ * for a comfortable click/keyboard target feel.
+ */
+  gameContainerDesktop: {
+    paddingHorizontal: SPACING.xl,
+    maxWidth: MAX_CONTENT_WIDTH,
+    alignSelf: "center",
+    width: "100%",
   } as ViewStyle,
 
-  /**
+    /**
    * Large tablet / iPad (768–1023 px): caps and centres the game column so
    * it doesn't stretch uncomfortably across the full iPad width.
    */
@@ -88,15 +95,12 @@ export const layoutStyles = StyleSheet.create({
     width: "100%",
   } as ViewStyle,
 
-  /**
-   * Desktop (≥ 1024 px): same centring approach with slightly more padding
-   * for a comfortable click/keyboard target feel.
-   */
-  gameContainerDesktop: {
-    paddingHorizontal: SPACING.xl,
-    maxWidth: MAX_CONTENT_WIDTH,
-    alignSelf: "center",
-    width: "100%",
+
+
+
+  /** Small tablet (600–767 px): adds a touch of horizontal breathing room. */
+  gameContainerTablet: {
+    paddingHorizontal: SPACING.md,
   } as ViewStyle,
 
   gameInput: {
@@ -117,17 +121,19 @@ export const layoutStyles = StyleSheet.create({
     minHeight: "20%",
   } as ViewStyle,
 
+   /** Large tablet / desktop: more padding and a taller minimum slot. */
+  riddleContainerLargeTablet: {
+    paddingHorizontal: SPACING.lg,
+    minHeight: "30%",
+  } as ViewStyle,
+
   /** Small tablet: add horizontal padding so the riddle text has room. */
   riddleContainerTablet: {
     paddingHorizontal: SPACING.md,
     minHeight: "25%",
   } as ViewStyle,
 
-  /** Large tablet / desktop: more padding and a taller minimum slot. */
-  riddleContainerLargeTablet: {
-    paddingHorizontal: SPACING.lg,
-    minHeight: "30%",
-  } as ViewStyle,
+ 
 
   scrollViewContent: {
     paddingBottom: SPACING.xl,

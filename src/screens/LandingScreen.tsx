@@ -17,7 +17,6 @@ import PulsingSpinner from "../components/loading/PulsingSpinner";
 import { AppStrings } from "../constants/AppStrings";
 import { LOADING_SPINNER_SIZE } from "../constants/loading";
 import Subtitle from "../components/text/Subtitle";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { AuthService } from "../services/AuthService";
 import { useAuth } from "../contexts/AuthContext";
 import Error from "../components/text/Error";
@@ -28,19 +27,6 @@ import { captureException } from "../utils/sentry";
 import CreditsModal from "../components/modals/help/CreditsModal";
 import GameModeModal from "../components/modals/game/GameModeModal";
 
-type RootStackParamList = {
-  Landing: undefined;
-  Login: undefined;
-  ForgotPassword: undefined;
-  NewPassword: undefined;
-  Game: undefined;
-};
-
-type LandingScreenNavigationProp = NativeStackNavigationProp<
-  RootStackParamList,
-  "Landing"
->;
-
 /**
  * Landing screen component used at the root of the auth stack.
  *
@@ -50,11 +36,7 @@ type LandingScreenNavigationProp = NativeStackNavigationProp<
  *
  * @param navigation React Navigation stack navigation prop.
  */
-const LandingScreen = ({
-  navigation,
-}: {
-  navigation: LandingScreenNavigationProp;
-}) => {
+const LandingScreen = () => {
   const [authError, setAuthError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { login, isAuthenticated, setGameMode } = useAuth();

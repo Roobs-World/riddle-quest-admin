@@ -62,7 +62,6 @@ interface VictoryModalData {
   coinsEarned: number;
   guesses: import("../../hooks/types").SubmittedGuess[];
   onNext: () => void;
-  onHome: () => void;
 }
 
 /**
@@ -239,7 +238,6 @@ const ModalRenderer: React.FC<{
         attempts: (modalData as VictoryModalData).attempts,
         coinsEarned: (modalData as VictoryModalData).coinsEarned,
         onNext: typeof (modalData as VictoryModalData).onNext === "function",
-        onHome: typeof (modalData as VictoryModalData).onHome === "function",
         guessesLength: ((modalData as VictoryModalData).guesses || []).length,
         onClose: typeof onClose === "function",
       });
@@ -260,7 +258,6 @@ const ModalRenderer: React.FC<{
           attempts={(modalData as VictoryModalData).attempts}
           coinsEarned={(modalData as VictoryModalData).coinsEarned}
           onNextLevel={(modalData as VictoryModalData).onNext}
-          onHome={(modalData as VictoryModalData).onHome}
           guesses={(modalData as VictoryModalData).guesses || []}
           onClose={onClose}
         />

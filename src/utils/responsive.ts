@@ -28,6 +28,7 @@
  */
 
 import { Dimensions } from "react-native";
+import { logger } from "./logger";
 
 // ---------------------------------------------------------------------------
 // Snapshot screen dimensions once at module load
@@ -38,7 +39,9 @@ let _dims: { width: number; height: number } = { width: 390, height: 844 };
 try {
   const _got = Dimensions.get("window");
   if (_got && typeof _got.width === "number") _dims = _got;
-} catch {}
+} catch {
+  logger.error('dimensions not found');
+}
 
 const { width: screenWidth, height: screenHeight } = _dims;
 

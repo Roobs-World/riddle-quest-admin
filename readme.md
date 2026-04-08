@@ -1,6 +1,11 @@
 npx eas-cli build --profile development --platform android
 
-expo run:android --clear
+expo run:android
+
+if the build breaks, then: 
+1. npx expo prebuild --clean
+2. ./gradlew clean in the android directory 
+3. try a new build 
 
 use firebase functions:config:get to return the config settings used
 

@@ -8,8 +8,7 @@ import { useModal } from "./useModal";
 export const useFirstTimeExperience = () => {
   const modal = useModal();
   const modalRef = useRef(modal);
-  modalRef.current = modal;
-
+  
   useEffect(() => {
     modalRef.current.showWelcomeModal();
   }, []);

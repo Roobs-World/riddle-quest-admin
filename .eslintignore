@@ -3,6 +3,7 @@ metro.config.js
 node_modules/
 dist/
 .expo/
+firebase-functions/
 android/
 __mocks__/
 .git/
@@ -27,6 +28,11 @@ google-services.json
 readme.md
 implementation-plan.mdc
 firebase-functions/lib/
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+__tests__/
 
 # Scripts (Node.js scripts that use require)
 scripts/ 

@@ -16,7 +16,7 @@ import { type FirebaseAuthTypes } from "@react-native-firebase/auth";
 import StarryBackground from "../../components/background/StarryBackground";
 import PulsingSpinner from "../../components/loading/PulsingSpinner";
 import { LOADING_SPINNER_SIZE } from "../../constants/loading";
-import { styles, SPACING } from "../../styles";
+import { SPACING } from "../../styles";
 import { AUTH_ICON_SIZE } from "../../constants/layout";
 import { logger } from "../../utils/logger";
 import { captureException } from "../../utils/sentry";

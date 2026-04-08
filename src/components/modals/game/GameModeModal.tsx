@@ -12,7 +12,6 @@ import {
   CLOSE_BUTTON_INSET,
   CLOSE_BUTTON_SIZE,
   MODAL_CLOSE_TOP_OFFSET_NARROW,
-  MODAL_CONTENT_PADDING,
 } from "../../../constants/layout";
 import CloseButton from "../../buttons/CloseButton";
 

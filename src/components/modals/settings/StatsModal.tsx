@@ -8,7 +8,7 @@ import React from "react";
 import { View, Text, Modal, ScrollView } from "react-native";
 import { Player } from "../../../validation/firestoreSchemas";
 import CloseButton from "../../buttons/CloseButton";
-import { TYPOGRAPHY, COLORS, SPACING } from "../../../styles";
+import { TYPOGRAPHY, SPACING } from "../../../styles";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import { MODAL_WIDTH, MODAL_HEIGHT, CLOSE_BUTTON_INSET, CLOSE_BUTTON_SIZE, CARD_BORDER_RADIUS, MODAL_CONTENT_PADDING, MODAL_SCROLLABLE_MAX_HEIGHT } from "../../../constants/layout";
 

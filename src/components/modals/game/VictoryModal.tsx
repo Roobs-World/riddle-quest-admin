@@ -1,17 +1,4 @@
-/**
- * @fileoverview VictoryModal component - Celebration modal for successful riddle solving.
- *
- * This modal is displayed when a player successfully solves a riddle, providing
- * a celebratory experience with game statistics, coin rewards, and sharing options.
- * It includes an emoji grid representation of the player's guesses for social
- * sharing and provides navigation options to continue playing or return home.
- *
- * @author Qwordly Development Team
- * @version 1.0.0
- * @since 2024
- */
-
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useMemo } from "react";
 import { View, Text, Modal, Animated, Easing } from "react-native";
 import type { SubmittedGuess } from "../../../hooks/types";
 import { generateFeedbackEmojiGrid } from "../../../utils/gameUtils";
@@ -26,14 +13,18 @@ import ModalBg from "../../../../assets/images/modal-bg.svg";
 import WheelBg from "../../../../assets/images/wheel-bg.svg";
 import { logger } from "../../../utils/logger";
 import { captureException } from "../../../utils/sentry";
-import { MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, MODAL_BUTTON_SPACER } from "../../../constants/layout";
+import {
+  MODAL_WIDTH,
+  MODAL_HEIGHT,
+  MODAL_CONTENT_PADDING,
+  MODAL_BUTTON_SPACER,
+} from "../../../constants/layout";
 
 interface VictoryModalProps {
   isVisible: boolean;
   attempts: number;
   coinsEarned: number;
   onNextLevel: () => void;
-  onHome: () => void;
   guesses: SubmittedGuess[];
   gameMode?: "daily" | "classic";
   onClose: () => void;
@@ -44,11 +35,22 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
   attempts,
   coinsEarned,
   onNextLevel,
-  onHome,
   guesses,
   gameMode = "daily",
   onClose,
 }) => {
+  // ✅ Proper ref initialization (no render-time mutation)
+  const rotationAnimRef = useRef<Animated.Value>(new Animated.Value(0));
+  const rotationAnim = rotationAnimRef.current;
+
+  // ✅ Interpolation (no need to depend on ref)
+  const spin = useMemo(() => {
+    return rotationAnim.interpolate({
+      inputRange: [0, 1],
+      outputRange: ["0deg", "360deg"],
+    });
+  }, [rotationAnim]);
+
   const emojiSummary = generateFeedbackEmojiGrid(guesses);
 
   const handleShare = async (platform: "facebook" | "x" | "system") => {
@@ -67,56 +69,43 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
   };
 
   const handleNextLevel = async () => {
-    if (typeof onNextLevel === "function") {
-      await Promise.resolve(onNextLevel());
-    }
-    if (typeof onClose === "function") {
-      onClose();
-    }
+    await Promise.resolve(onNextLevel?.());
+    onClose?.();
   };
-
-  const handleHome = async () => {
-    if (typeof onHome === "function") {
-      await Promise.resolve(onHome());
-    }
-    if (typeof onClose === "function") {
-      onClose();
-    }
-  };
-
-  const rotationAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    const animation = Animated.loop(
-      Animated.timing(rotationAnim, {
-        toValue: 1,
-        duration: 12000,
-        easing: Easing.linear,
-        useNativeDriver: true,
-      })
-    );
+    let animation: Animated.CompositeAnimation | null = null;
+
     if (isVisible) {
+      rotationAnim.setValue(0);
+
+      animation = Animated.loop(
+        Animated.timing(rotationAnim, {
+          toValue: 1,
+          duration: 12000,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        })
+      );
+
       animation.start();
     }
+
     return () => {
-      animation.stop();
+      animation?.stop();
+      rotationAnim.stopAnimation();
       rotationAnim.setValue(0);
     };
-  }, [isVisible, rotationAnim]);
+  }, [isVisible]);
 
-  const spin = rotationAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: ["0deg", "360deg"],
-  });
-
-  // Must be large enough to cover all corners at any rotation angle.
-  // The minimum safe size is the modal's diagonal (√(W²+H²)), with 20% headroom.
-  const wheelSize = Math.ceil(Math.sqrt(MODAL_WIDTH ** 2 + MODAL_HEIGHT ** 2) * 1.2);
+  const wheelSize = Math.ceil(
+    Math.sqrt(MODAL_WIDTH ** 2 + MODAL_HEIGHT ** 2) * 1.2
+  );
 
   return (
     <Modal
+      transparent
       animationType="fade"
-      transparent={true}
       visible={isVisible}
       onRequestClose={onClose}
     >
@@ -136,7 +125,12 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
             justifyContent: "center",
           }}
         >
-          <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{ position: "absolute" }} />
+          <ModalBg
+            width={MODAL_WIDTH}
+            height={MODAL_HEIGHT}
+            style={{ position: "absolute" }}
+          />
+
           <View
             style={{
               position: "absolute",
@@ -158,6 +152,7 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
               <WheelBg width={wheelSize} height={wheelSize} />
             </Animated.View>
           </View>
+
           <View
             style={{
               flex: 1,
@@ -179,7 +174,10 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
             </Text>
 
             <View style={{ alignItems: "center" }}>
-              <LargeCoinStackSvg width={COIN_ICON_SIZE_LARGE} height={COIN_ICON_SIZE_LARGE} />
+              <LargeCoinStackSvg
+                width={COIN_ICON_SIZE_LARGE}
+                height={COIN_ICON_SIZE_LARGE}
+              />
               <Text
                 style={{
                   fontFamily: TYPOGRAPHY.fontSecondaryBold,
@@ -202,6 +200,7 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
               >
                 Share your victory!
               </Text>
+
               <View
                 style={{
                   flexDirection: "row",
@@ -229,7 +228,10 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
             </View>
 
             <View style={{ width: "100%" }}>
-              <WideButton onPress={handleNextLevel} buttonText="Next Level" />
+              <WideButton
+                onPress={handleNextLevel}
+                buttonText="Next Level"
+              />
             </View>
           </View>
         </View>

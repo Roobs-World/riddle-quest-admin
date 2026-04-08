@@ -11,7 +11,7 @@
  */
 
 import React from "react";
-import { TouchableOpacity, Text, StyleSheet, ViewStyle } from "react-native";
+import { TouchableOpacity, Text, ViewStyle } from "react-native";
 import FacebookIcon from "../icons/FacebookIcon";
 import XIcon from "../icons/XIcon";
 import { COLORS } from "../../styles/tokens/colors";
@@ -107,7 +107,5 @@ const SocialShareButton: React.FC<SocialShareButtonProps> = ({
     </TouchableOpacity>
   );
 };
-
-const styles = StyleSheet.create({});
 
 export default SocialShareButton;

@@ -9,7 +9,7 @@ import ScreenTitle from "../../components/text/ScreenTitle";
 import Subtitle from "../../components/text/Subtitle";
 import StarryBackground from "../../components/background/StarryBackground";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { styles, SPACING } from "../../styles";
+import { SPACING } from "../../styles";
 import { AUTH_ICON_SIZE } from "../../constants/layout";
 
 type AuthStackParamList = {

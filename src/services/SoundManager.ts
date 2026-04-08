@@ -105,7 +105,7 @@ export const SoundManager = {
 
   // Kept for API compatibility — no-op with single track
   getCurrentMusicMode: () => "neutral" as const,
-  setMusicMode: async (_mode: string, _options?: FadeOptions): Promise<void> => {},
+  setMusicMode: async (): Promise<void> => {},
 
   pauseCurrentMusic: async (): Promise<void> => {
     try {
@@ -134,16 +134,6 @@ export const SoundManager = {
     if (!globalSoundEnabled || !music) return;
     await SoundManager.fadeIn(music, options);
   },
-
-  fadeOutBackgroundMusic: async (options: FadeOptions = {}) => {
-    if (!music) return;
-    await SoundManager.fadeOut(music, options);
-  },
-
-  // Kept for API compatibility — no additional tracks to crossfade to
-  playSuccess: async () => {},
-  playNegative: async () => {},
-  playNegativeWithFadeIn: async (_options: FadeOptions = {}) => {},
 
   fadeIn: async (
     sound: AudioPlayer,
@@ -174,43 +164,6 @@ export const SoundManager = {
     } finally {
       activeFades.delete(sound);
     }
-  },
-
-  fadeOut: async (
-    sound: AudioPlayer,
-    options: FadeOptions = {}
-  ): Promise<void> => {
-    const config = { ...DEFAULT_FADE_OPTIONS, ...options };
-    if (activeFades.has(sound)) return;
-
-    try {
-      activeFades.add(sound);
-      if (!sound.isLoaded || !sound.playing) return;
-
-      const stepDuration = config.duration / config.steps;
-      for (let i = config.steps; i >= 0; i--) {
-        if (!activeFades.has(sound)) break;
-        const progress = i / config.steps;
-        sound.volume = calculateFadeValue(progress, config.curve);
-        if (i > 0) await safeDelay(stepDuration);
-      }
-      sound.pause();
-    } catch (error) {
-      logger.error("Error during fade out:", error);
-      captureException(error);
-    } finally {
-      activeFades.delete(sound);
-    }
-  },
-
-  crossfade: async (
-    _fromSound: AudioPlayer,
-    _toSound: AudioPlayer,
-    _options: FadeOptions = {}
-  ): Promise<void> => {},
-
-  cancelFade: (sound: AudioPlayer): void => {
-    activeFades.delete(sound);
   },
 
   unload: async () => {

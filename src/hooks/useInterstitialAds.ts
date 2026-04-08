@@ -16,7 +16,6 @@ import {
 } from "react-native-applovin-max";
 import Constants from "expo-constants";
 import { logger } from "../utils/logger";
-import { captureException } from "../utils/sentry";
 
 const INTERSTITIAL_AD_UNIT_ID =
   Constants.expoConfig?.extra?.APPLOVIN_INTERSTITIAL_AD_UNIT_ID;
