@@ -1,3 +1,14 @@
+/**
+ * @fileoverview
+ * High-level modal management hook built on top of `ModalContext`.
+ *
+ * This hook exposes a type-safe API for opening and closing both generic
+ * and game-specific modals, plus convenience helpers for the most common
+ * modal types used throughout Qwordly (victory, loss, settings, hints, etc.).
+ *
+ * It does not render any UI itself; instead it delegates to the underlying
+ * `ModalProvider` and `ModalRegistry` to render appropriate components.
+ */
 import { useCallback } from "react";
 import { useModalContext } from "../contexts/ModalContext";
 import {
@@ -6,8 +17,15 @@ import {
   GameModalTypes,
   ModalDataType,
 } from "../types/ModalTypes";
+import { logger } from "../utils/logger";
 
-// Custom hook for modal management
+/**
+ * Custom hook that wraps `ModalContext` with a typed, ergonomic interface
+ * for working with Qwordly modals.
+ *
+ * @returns An object containing core modal operations, current modal state,
+ * and convenience helpers for frequently used modal types.
+ */
 export const useModal = () => {
   const context = useModalContext();
 
@@ -18,9 +36,9 @@ export const useModal = () => {
       data: ModalDataType<T>,
       options?: ModalOptions
     ): string => {
-      console.log(`Opening modal of type: ${type}`, { data, options });
+      logger.debug(`Opening modal of type: ${type}`, { data, options });
       const modalId = context.openModal(type, data, options);
-      console.log(`Modal ${type} opened with ID: ${modalId}`);
+      logger.debug(`Modal ${type} opened with ID: ${modalId}`);
       return modalId;
     },
     [context]
@@ -49,13 +67,13 @@ export const useModal = () => {
   // Close modal by type (closes the first modal of that type)
   const closeModalByType = useCallback(
     (type: string): void => {
-      console.log(`Attempting to close modal of type: ${type}`);
+      logger.debug(`Attempting to close modal of type: ${type}`);
       const modal = context.modals.find((m) => m.type === type);
       if (modal) {
-        console.log(`Found modal with ID: ${modal.id}, closing it`);
+        logger.debug(`Found modal with ID: ${modal.id}, closing it`);
         context.closeModal(modal.id);
       } else {
-        console.log(`No modal of type ${type} found to close`);
+        logger.debug(`No modal of type ${type} found to close`);
       }
     },
     [context]
@@ -138,14 +156,14 @@ export const useModal = () => {
       data: ModalDataType<"instructions"> = {},
       options?: ModalOptions
     ): string => {
-      console.log(
+      logger.debug(
         "showInstructionsModal called with data:",
         data,
         "options:",
         options
       );
       const modalId = openGameModal("instructions", data, options);
-      console.log("Instructions modal opened with ID:", modalId);
+      logger.debug("Instructions modal opened with ID:", modalId);
       return modalId;
     },
     [openGameModal]
@@ -213,6 +231,13 @@ export const useModal = () => {
     [openGameModal]
   );
 
+  const showInfoModal = useCallback(
+    (data: ModalDataType<"info">, options?: ModalOptions): string => {
+      return openGameModal("info", data, options);
+    },
+    [openGameModal]
+  );
+
   return {
     // Core modal functions
     openModal,
@@ -243,6 +268,7 @@ export const useModal = () => {
     showAvatarOptionsModal,
     showPreloadedAvatarsModal,
     showGameModeModal,
+    showInfoModal,
   };
 };
 

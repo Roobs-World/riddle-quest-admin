@@ -6,31 +6,25 @@ import {
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
-  Dimensions,
+  StyleSheet,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-// Import the product details from IapService for displaying in the UI
-import { COIN_PRODUCT_DETAILS } from "../../services/IapService";
-import * as RNIap from "react-native-iap"; // Import RNIap types for Product
-import CloseButton from "../buttons/CloseButton";
-import { COLORS, TYPOGRAPHY } from "../../styles";
-import { scale } from "../../utils/responsive";
-import BuyCoinsSvg from "../../../assets/images/buy-coins.svg";
+import * as RNIap from "react-native-iap";
+import { ProductPricing, ProductPricingService } from "../../services/ProductPricingService";
+import { COLORS, TYPOGRAPHY, SPACING, BORDER_RADIUS } from "../../styles";
+import { scale, verticalScale, moderateScale, dimensions } from "../../utils/responsive";
+import { MODAL_CONTENT_PADDING } from "../../constants/layout";
+import Shop1Svg from "../../../assets/images/shop-1.svg";
 import CoinSvg from "../../../assets/images/coin.svg";
 import ModalBg from "../../../assets/images/modal-bg.svg";
+import { logger } from "../../utils/logger";
 
-const { height: screenHeight } = Dimensions.get("window");
+const { screenHeight } = dimensions;
 
-/**
- * Props for the CoinShopModal component.
- * @property {boolean} isVisible - Controls the visibility of the modal.
- * @property {() => void} onClose - Function to call when the modal is closed.
- * @property {(productId: string) => void} onPurchaseProduct - Callback function to initiate a purchase.
- * @property {RNIap.Product[]} products - Array of RNIap products.
- * @property {boolean} loading - Indicates whether the component is loading.
- * @property {string | null} error - Error message if any, or null.
- */
+const FEATURED_COIN_IMG_SIZE = moderateScale(100);
+const ROW_COIN_ICON_SIZE = moderateScale(44);
+
 interface CoinShopModalProps {
   isVisible: boolean;
   onClose: () => void;
@@ -40,11 +34,10 @@ interface CoinShopModalProps {
   error: string | null;
   onWatchVideo?: () => void;
   onPayAndPlay?: () => void;
+  firestoreProducts?: ProductPricing[];
+  currentCoins?: number;
 }
 
-/**
- * Modal component for displaying the Coin Shop with available coin packs for purchase.
- */
 const CoinShopModal: React.FC<CoinShopModalProps> = ({
   isVisible,
   onClose,
@@ -54,10 +47,25 @@ const CoinShopModal: React.FC<CoinShopModalProps> = ({
   error,
   onWatchVideo,
   onPayAndPlay,
+  firestoreProducts = [],
+  currentCoins = 0,
 }) => {
-  // Get safe area insets for proper positioning like profile modal
   const insets = useSafeAreaInsets();
   const availableHeight = screenHeight - insets.top - insets.bottom;
+
+  const featuredProducts = ProductPricingService.getFeaturedProducts(firestoreProducts);
+  const regularProducts = firestoreProducts.filter(
+    (p) => p.featuredOrder === undefined || p.featuredOrder === null
+  );
+
+  const getDisplayPrice = (product: ProductPricing) => {
+    const storeProduct = products.find((p) => p.id === product.productId);
+    return (
+      storeProduct?.displayPrice ??
+      product.regionalPrices.find((r) => r.currency === "USD")?.displayPrice ??
+      "—"
+    );
+  };
 
   return (
     <Modal
@@ -66,613 +74,410 @@ const CoinShopModal: React.FC<CoinShopModalProps> = ({
       animationType="fade"
       onRequestClose={onClose}
     >
-      <View style={{ flex: 1 }}>
-        {/* Backdrop */}
-        <View
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-          }}
-        />
+      <View style={styles.overlay}>
+        <View style={styles.backdrop} />
 
-        {/* Fixed Modal Container */}
         <View
-          style={{
-            position: "absolute",
-            top: insets.top + availableHeight * 0.05,
-            left: 16,
-            right: 16,
-            bottom: insets.bottom + availableHeight * 0.05,
-            borderRadius: 20,
-            shadowColor: "#000",
-            shadowOffset: {
-              width: 0,
-              height: -4,
+          style={[
+            styles.modalContainer,
+            {
+              top: insets.top + availableHeight * 0.05,
+              bottom: insets.bottom + availableHeight * 0.05,
             },
-            shadowOpacity: 0.25,
-            shadowRadius: 5,
-            elevation: 10,
-            overflow: "hidden",
-          }}
+          ]}
         >
           <ModalBg
             width="100%"
             height="100%"
-            style={{ position: "absolute" }}
+            style={StyleSheet.absoluteFill}
             preserveAspectRatio="xMidYMid slice"
           />
+
           <ScrollView
-            className="px-6"
-            style={{ flex: 1 }}
-            showsVerticalScrollIndicator={true}
-            bounces={true}
-            scrollEventThrottle={16}
-            keyboardShouldPersistTaps="handled"
-            alwaysBounceVertical={false}
-            scrollEnabled={true}
-            contentContainerStyle={{
-              paddingTop: 20,
-              flexGrow: 1,
-            }}
+            style={styles.scroll}
+            contentContainerStyle={styles.scrollContent}
+            showsVerticalScrollIndicator={false}
+            bounces={false}
           >
-            {/* Close Button */}
-            <View
-              style={{
-                position: "absolute",
-                top: 20,
-                right: 0,
-                zIndex: 2,
-              }}
-            >
-              <CloseButton onPress={onClose} size={24} />
-            </View>
-
-            <Text
-              className="text-gray-800 mb-6 mt-2 text-center"
-              style={{
-                fontFamily: TYPOGRAPHY.fontPrimary,
-                fontSize: scale(24),
-              }}
-            >
-              Coin Shop
-            </Text>
-
-            {/* Buy Coins Icons - 2 vertically stacked full width */}
-            <View className="w-full mb-4 mt-6">
-              {/* First SVG with "BEST DEAL" overlay */}
-              <TouchableOpacity
-                className="relative"
-                onPress={() => {
-                  console.log("Best Deal SVG tapped - 65000 coins");
-                  onPurchaseProduct("com.qwordly.coins65000");
-                }}
-                activeOpacity={0.8}
-              >
-                <BuyCoinsSvg width="100%" height={scale(280)} />
-
-                {/* Best Deal Banner */}
-                <View className="absolute top-2 left-12 px-3 py-1 rounded-lg">
-                  <Text
-                    className="text-white font-bold text-xs"
-                    style={{
-                      fontFamily: TYPOGRAPHY.fontPrimary,
-                      fontSize: scale(10),
-                    }}
-                  >
-                    BEST DEAL
-                  </Text>
-                </View>
-
-                {/* Coin Amount Text */}
-                <View
-                  className="absolute items-center"
-                  style={{
-                    bottom: scale(84),
-                    left: 0,
-                    right: 0,
-                  }}
-                >
-                  <Text
-                    className="text-gray-800 font-bold text-center"
-                    style={{
-                      fontFamily: TYPOGRAPHY.fontPrimary,
-                      fontSize: scale(18),
-                    }}
-                  >
-                    65000 coins
-                  </Text>
-                </View>
-
-                {/* Price Text */}
-                <View
-                  className="absolute items-center"
-                  style={{
-                    bottom: scale(36),
-                    left: 0,
-                    right: 0,
-                  }}
-                >
-                  <View className="px-4 rounded-full">
-                    <Text
-                      className="text-white font-bold text-center"
-                      style={{
-                        fontFamily: TYPOGRAPHY.fontPrimary,
-                        fontSize: scale(14),
-                      }}
-                    >
-                      $4.99
-                    </Text>
-                  </View>
-                </View>
-              </TouchableOpacity>
-
-              <View className="h-2" />
-
-              {/* Second SVG with different text */}
-              <TouchableOpacity
-                className="relative"
-                onPress={() => {
-                  console.log("Great Value SVG tapped - 25000 coins");
-                  onPurchaseProduct("com.qwordly.coins25000");
-                }}
-                activeOpacity={0.8}
-              >
-                <BuyCoinsSvg width="100%" height={scale(280)} />
-
-                {/* Value Banner */}
-                <View className="absolute top-2 left-12 px-3 py-1 rounded-lg">
-                  <Text
-                    className="text-white font-bold text-xs"
-                    style={{
-                      fontFamily: TYPOGRAPHY.fontPrimary,
-                      fontSize: scale(10),
-                    }}
-                  >
-                    GREAT VALUE
-                  </Text>
-                </View>
-
-                {/* Coin Amount Text */}
-                <View
-                  className="absolute items-center"
-                  style={{
-                    bottom: scale(84),
-                    left: 0,
-                    right: 0,
-                  }}
-                >
-                  <Text
-                    className="text-gray-800 font-bold text-center"
-                    style={{
-                      fontFamily: TYPOGRAPHY.fontPrimary,
-                      fontSize: scale(18),
-                    }}
-                  >
-                    25000 coins
-                  </Text>
-                </View>
-
-                {/* Price Text */}
-                <View
-                  className="absolute items-center"
-                  style={{
-                    bottom: scale(36),
-                    left: 0,
-                    right: 0,
-                  }}
-                >
-                  <View className="px-4 rounded-full">
-                    <Text
-                      className="text-white font-bold text-center"
-                      style={{
-                        fontFamily: TYPOGRAPHY.fontPrimary,
-                        fontSize: scale(14),
-                      }}
-                    >
-                      $2.99
-                    </Text>
-                  </View>
-                </View>
+            {/* Header row */}
+            <View style={styles.headerRow}>
+              <View style={styles.headerSpacer} />
+              <Text style={styles.title}>COIN SHOP</Text>
+              <TouchableOpacity onPress={onClose} style={styles.closeButton} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+                <Text style={styles.closeText}>✕</Text>
               </TouchableOpacity>
             </View>
 
-            {loading && (
-              <View className="flex-1 justify-center items-center py-8">
-                <ActivityIndicator size="large" color={COLORS.primaryOrange} />
-                <Text
-                  className="text-gray-600 mt-4 text-center"
-                  style={{
-                    fontFamily: TYPOGRAPHY.fontPrimary,
-                    fontSize: scale(16),
-                  }}
-                >
-                  Loading Coin Packs...
-                </Text>
+            {/* Current coins pill */}
+            <View style={styles.coinsPill}>
+              <View style={styles.coinsPillLeft}>
+                <CoinSvg width={moderateScale(32)} height={moderateScale(32)} />
+                <View style={styles.coinsPillText}>
+                  <Text style={styles.coinsPillLabel}>Your balance</Text>
+                </View>
               </View>
-            )}
+              <Text style={styles.coinsPillAmount}>{currentCoins.toLocaleString()} coins</Text>
+            </View>
 
-            {error && (
-              <Text
-                className="text-red-500 mb-6 text-center px-4"
-                style={{
-                  fontFamily: TYPOGRAPHY.fontPrimary,
-                  fontSize: scale(14),
-                }}
-              >
-                {error}
-              </Text>
-            )}
-
-            {!loading && !error && (
-              <View className="w-full">
-                {/* Dynamic Products from App Stores */}
-                {products.length > 0 && (
-                  <View className="pb-6">
-                    {products.map((product) => {
-                      // Find the corresponding product detail to get the coin amount
-                      const productDetail = Object.values(
-                        COIN_PRODUCT_DETAILS
-                      ).find((detail) => detail.id === product.productId);
-                      const coinsAmount = productDetail
-                        ? productDetail.coins
-                        : "N/A";
-
-                      return (
-                        <TouchableOpacity
-                          key={product.productId}
-                          className={`flex-row items-center rounded-2xl mb-4 p-4 shadow-sm border-2 ${
-                            loading
-                              ? "bg-gray-200 border-gray-300"
-                              : "bg-gray-100 border-transparent hover:bg-gray-200"
-                          }`}
-                          onPress={() => {
-                            console.log(
-                              "Purchase row tapped for product:",
-                              product.productId
-                            );
-                            console.log("Loading state:", loading);
-                            console.log(
-                              "onPurchaseProduct callback:",
-                              typeof onPurchaseProduct
-                            );
-                            onPurchaseProduct(product.productId);
-                          }}
-                          disabled={loading}
-                          testID={`purchase-row-${product.productId}`}
-                          activeOpacity={0.5}
-                        >
-                          {/* Coin Pack Icon */}
-                          <View className="mr-4">
-                            <CoinSvg width={scale(50)} height={scale(50)} />
-                          </View>
-
-                          {/* Product Details */}
-                          <View className="flex-1 mr-4">
-                            <Text
-                              className={`font-semibold mb-1 ${
-                                loading ? "text-gray-500" : "text-gray-800"
-                              }`}
-                              style={{
-                                fontFamily: TYPOGRAPHY.fontPrimary,
-                                fontSize: scale(16),
-                              }}
-                            >
-                              {product.title || `${coinsAmount} Coins`}
-                            </Text>
-                            <Text
-                              className={`${
-                                loading ? "text-gray-400" : "text-gray-600"
-                              }`}
-                              style={{
-                                fontFamily: TYPOGRAPHY.fontPrimary,
-                                fontSize: scale(14),
-                              }}
-                            >
-                              {loading
-                                ? "Processing..."
-                                : product.localizedPrice}
-                            </Text>
-                          </View>
-
-                          {/* Price Badge */}
-                          <View
-                            className={`rounded-2xl px-4 py-2 ${
-                              loading ? "bg-gray-300" : "bg-orange-500"
-                            }`}
-                          >
-                            <Text
-                              className={`text-center font-semibold ${
-                                loading ? "text-gray-500" : "text-white"
-                              }`}
-                              style={{
-                                fontFamily: TYPOGRAPHY.fontPrimary,
-                                fontSize: scale(14),
-                              }}
-                            >
-                              {loading ? "..." : "Buy"}
-                            </Text>
-                          </View>
-                        </TouchableOpacity>
-                      );
-                    })}
-                  </View>
-                )}
-
-                {/* Additional Coin Pack Options */}
-                <View className="pb-6">
-                  {/* 100 Coins Pack */}
-                  <TouchableOpacity
-                    className={`flex-row items-center rounded-2xl mb-4 p-4 shadow-sm border-2 ${
-                      loading
-                        ? "bg-gray-200 border-gray-300"
-                        : "bg-gray-100 border-transparent hover:bg-gray-200"
-                    }`}
-                    onPress={() => {
-                      console.log("Static 100 coins row tapped");
-                      console.log("Loading state:", loading);
-                      console.log(
-                        "onPurchaseProduct callback:",
-                        typeof onPurchaseProduct
-                      );
-                      onPurchaseProduct("com.qwordly.coins100");
-                    }}
-                    disabled={loading}
-                    testID="purchase-row-static-100"
-                    activeOpacity={0.5}
-                  >
-                    <View className="mr-4">
-                      <CoinSvg width={scale(50)} height={scale(50)} />
-                    </View>
-                    <View className="flex-1 mr-4">
-                      <Text
-                        className={`font-semibold mb-1 ${
-                          loading ? "text-gray-500" : "text-gray-800"
-                        }`}
-                        style={{
-                          fontFamily: TYPOGRAPHY.fontPrimary,
-                          fontSize: scale(16),
-                        }}
-                      >
-                        100 coins
-                      </Text>
-                    </View>
-                    <View
-                      className={`rounded-2xl px-4 py-2 ${
-                        loading ? "bg-gray-300" : "bg-orange-500"
-                      }`}
+            {/* Featured packs — side by side */}
+            {featuredProducts.length > 0 && (
+              <View style={styles.featuredRow}>
+                {featuredProducts.map((featured) => {
+                  const displayPrice = getDisplayPrice(featured);
+                  return (
+                    <TouchableOpacity
+                      key={featured.productId}
+                      style={styles.featuredCard}
+                      onPress={() => {
+                        logger.debug(`Featured pack tapped: ${featured.productId}`);
+                        onPurchaseProduct(featured.productId);
+                      }}
+                      activeOpacity={0.8}
+                      testID={`featured-pack-${featured.productId}`}
                     >
-                      <Text
-                        className={`text-center font-semibold ${
-                          loading ? "text-gray-500" : "text-white"
-                        }`}
-                        style={{
-                          fontFamily: TYPOGRAPHY.fontPrimary,
-                          fontSize: scale(14),
-                        }}
-                      >
-                        {loading ? "..." : "$1.99"}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
+                      {featured.featuredBadge && (
+                        <View style={styles.badge}>
+                          <Text style={styles.badgeText}>{featured.featuredBadge}</Text>
+                        </View>
+                      )}
 
-                  {/* 250 Coins Pack */}
-                  <TouchableOpacity
-                    className={`flex-row items-center rounded-2xl mb-4 p-4 shadow-sm border-2 ${
-                      loading
-                        ? "bg-gray-200 border-gray-300"
-                        : "bg-gray-100 border-transparent hover:bg-gray-200"
-                    }`}
-                    onPress={() => {
-                      console.log("Static 250 coins row tapped");
-                      onPurchaseProduct("com.qwordly.coins250");
-                    }}
-                    disabled={loading}
-                    testID="purchase-row-static-250"
-                    activeOpacity={0.5}
-                  >
-                    <View className="mr-4">
-                      <CoinSvg width={scale(50)} height={scale(50)} />
-                    </View>
-                    <View className="flex-1 mr-4">
-                      <Text
-                        className={`font-semibold mb-1 ${
-                          loading ? "text-gray-500" : "text-gray-800"
-                        }`}
-                        style={{
-                          fontFamily: TYPOGRAPHY.fontPrimary,
-                          fontSize: scale(16),
-                        }}
-                      >
-                        250 coins
-                      </Text>
-                    </View>
-                    <View
-                      className={`rounded-2xl px-4 py-2 ${
-                        loading ? "bg-gray-300" : "bg-orange-500"
-                      }`}
-                    >
-                      <Text
-                        className={`text-center font-semibold ${
-                          loading ? "text-gray-500" : "text-white"
-                        }`}
-                        style={{
-                          fontFamily: TYPOGRAPHY.fontPrimary,
-                          fontSize: scale(14),
-                        }}
-                      >
-                        {loading ? "..." : "$4.99"}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
+                      <Shop1Svg
+                        width={FEATURED_COIN_IMG_SIZE}
+                        height={FEATURED_COIN_IMG_SIZE}
+                        style={styles.featuredImage}
+                      />
 
-                  {/* 500 Coins Pack */}
-                  <TouchableOpacity
-                    className={`flex-row items-center rounded-2xl mb-4 p-4 shadow-sm border-2 ${
-                      loading
-                        ? "bg-gray-200 border-gray-300"
-                        : "bg-gray-100 border-transparent hover:bg-gray-200"
-                    }`}
-                    onPress={() => {
-                      console.log("Static 500 coins row tapped");
-                      onPurchaseProduct("com.qwordly.coins500");
-                    }}
-                    disabled={loading}
-                    testID="purchase-row-static-500"
-                    activeOpacity={0.5}
-                  >
-                    <View className="mr-4">
-                      <CoinSvg width={scale(50)} height={scale(50)} />
-                    </View>
-                    <View className="flex-1 mr-4">
-                      <Text
-                        className={`font-semibold mb-1 ${
-                          loading ? "text-gray-500" : "text-gray-800"
-                        }`}
-                        style={{
-                          fontFamily: TYPOGRAPHY.fontPrimary,
-                          fontSize: scale(16),
-                        }}
-                      >
-                        500 coins
-                      </Text>
-                    </View>
-                    <View
-                      className={`rounded-2xl px-4 py-2 ${
-                        loading ? "bg-gray-300" : "bg-orange-500"
-                      }`}
-                    >
-                      <Text
-                        className={`text-center font-semibold ${
-                          loading ? "text-gray-500" : "text-white"
-                        }`}
-                        style={{
-                          fontFamily: TYPOGRAPHY.fontPrimary,
-                          fontSize: scale(14),
-                        }}
-                      >
-                        {loading ? "..." : "$9.99"}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
+                      <Text style={styles.featuredCoins}>{featured.coins.toLocaleString()} coins</Text>
 
-                  {/* 1000 Coins Pack */}
-                  <TouchableOpacity
-                    className={`flex-row items-center rounded-2xl mb-4 p-4 shadow-sm border-2 ${
-                      loading
-                        ? "bg-gray-200 border-gray-300"
-                        : "bg-gray-100 border-transparent hover:bg-gray-200"
-                    }`}
-                    onPress={() => {
-                      console.log("Static 1000 coins row tapped");
-                      onPurchaseProduct("com.qwordly.coins1000");
-                    }}
-                    disabled={loading}
-                    testID="purchase-row-static-1000"
-                    activeOpacity={0.5}
-                  >
-                    <View className="mr-4">
-                      <CoinSvg width={scale(50)} height={scale(50)} />
-                    </View>
-                    <View className="flex-1 mr-4">
-                      <Text
-                        className={`font-semibold mb-1 ${
-                          loading ? "text-gray-500" : "text-gray-800"
-                        }`}
-                        style={{
-                          fontFamily: TYPOGRAPHY.fontPrimary,
-                          fontSize: scale(16),
-                        }}
-                      >
-                        1000 coins
-                      </Text>
-                    </View>
-                    <View
-                      className={`rounded-2xl px-4 py-2 ${
-                        loading ? "bg-gray-300" : "bg-orange-500"
-                      }`}
-                    >
-                      <Text
-                        className={`text-center font-semibold ${
-                          loading ? "text-gray-500" : "text-white"
-                        }`}
-                        style={{
-                          fontFamily: TYPOGRAPHY.fontPrimary,
-                          fontSize: scale(14),
-                        }}
-                      >
-                        {loading ? "..." : "$19.99"}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                </View>
-
-                {/* Action Buttons - Inside ScrollView */}
-                <View
-                  style={{
-                    paddingBottom: Math.max(20, insets.bottom + 10),
-                  }}
-                >
-                  {/* Watch Video and Play Button */}
-                  <TouchableOpacity
-                    className={`w-full items-center rounded-full py-4 mb-8 border-2 border-gray-300 ${
-                      loading ? "bg-gray-100" : "bg-white"
-                    }`}
-                    onPress={onWatchVideo}
-                    disabled={loading}
-                  >
-                    <View className="flex-row items-center">
-                      <View className="w-6 h-6 rounded-full bg-gray-800 items-center justify-center mr-3">
-                        <Text
-                          className="text-white text-xs font-bold"
-                          style={{ fontFamily: TYPOGRAPHY.fontPrimary }}
-                        >
-                          ▶
-                        </Text>
+                      <View style={styles.featuredPriceButton}>
+                        <Text style={styles.featuredPriceText}>{displayPrice}</Text>
                       </View>
-                      <Text
-                        className={`font-semibold ${
-                          loading ? "text-gray-400" : "text-gray-800"
-                        }`}
-                        style={{
-                          fontFamily: TYPOGRAPHY.fontPrimary,
-                          fontSize: scale(16),
-                        }}
-                      >
-                        WATCH VIDEO AND PLAY
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-
-                  {/* Pay and Play Button */}
-                  <TouchableOpacity
-                    className={`w-full items-center rounded-full py-4 ${
-                      loading ? "bg-gray-300" : "bg-pink-400"
-                    }`}
-                    onPress={onPayAndPlay}
-                    disabled={loading}
-                  >
-                    <Text
-                      className="text-white font-semibold"
-                      style={{
-                        fontFamily: TYPOGRAPHY.fontPrimary,
-                        fontSize: scale(16),
-                      }}
-                    >
-                      PAY AND PLAY
-                    </Text>
-                  </TouchableOpacity>
-                </View>
+                    </TouchableOpacity>
+                  );
+                })}
               </View>
             )}
+
+            {/* Loading / Error */}
+            {loading && (
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color={COLORS.primaryOrange} />
+              </View>
+            )}
+            {error && <Text style={styles.errorText}>{error}</Text>}
+
+            {/* Regular coin rows */}
+            {!loading && !error && regularProducts.map((product) => {
+              const displayPrice = getDisplayPrice(product);
+              return (
+                <TouchableOpacity
+                  key={product.productId}
+                  style={styles.productRow}
+                  onPress={() => {
+                    logger.debug("Purchase row tapped:", product.productId);
+                    onPurchaseProduct(product.productId);
+                  }}
+                  activeOpacity={0.7}
+                  testID={`purchase-row-${product.productId}`}
+                >
+                  <CoinSvg width={ROW_COIN_ICON_SIZE} height={ROW_COIN_ICON_SIZE} />
+                  <Text style={styles.productCoins}>{product.coins.toLocaleString()} coins</Text>
+                  <View style={styles.productPriceButton}>
+                    <Text style={styles.productPriceText}>{displayPrice}</Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
+
+            {/* Bottom buttons */}
+            <View style={styles.bottomButtons}>
+              <TouchableOpacity
+                style={styles.watchVideoButton}
+                onPress={onWatchVideo}
+                disabled={loading}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.watchVideoText}>WATCH VIDEO AND PLAY</Text>
+                <View style={styles.infoIcon}>
+                  <Text style={styles.infoIconText}>i</Text>
+                </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.payAndPlayButton, loading && styles.payAndPlayDisabled]}
+                onPress={onPayAndPlay}
+                disabled={loading}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.payAndPlayText}>PAY AND PLAY</Text>
+              </TouchableOpacity>
+            </View>
           </ScrollView>
         </View>
       </View>
     </Modal>
   );
 };
+
+const FEATURED_CARD_BORDER = "#E91E8C";
+const PRICE_BUTTON_BG = "#2D1B69";
+const PAY_AND_PLAY_BG = "#F9A8D4";
+
+const styles = StyleSheet.create({
+  overlay: {
+    flex: 1,
+  },
+  backdrop: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  modalContainer: {
+    position: "absolute",
+    left: SPACING.md,
+    right: SPACING.md,
+    borderRadius: BORDER_RADIUS["2xl"],
+    overflow: "hidden",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 10,
+  },
+  scroll: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingHorizontal: scale(16),
+    paddingTop: MODAL_CONTENT_PADDING,
+    paddingBottom: verticalScale(16),
+    flexGrow: 1,
+  },
+
+  // Header
+  headerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: verticalScale(12),
+  },
+  headerSpacer: {
+    width: moderateScale(32),
+  },
+  title: {
+    flex: 1,
+    textAlign: "center",
+    fontFamily: TYPOGRAPHY.fontPrimary,
+    fontSize: TYPOGRAPHY.fontSize["2xl"],
+    fontWeight: "700",
+    color: COLORS.gray800,
+    letterSpacing: 1,
+  },
+  closeButton: {
+    width: moderateScale(32),
+    height: moderateScale(32),
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  closeText: {
+    fontSize: moderateScale(18),
+    color: COLORS.gray700,
+    fontWeight: "600",
+  },
+
+  // Coins pill
+  coinsPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: COLORS.figmaCream,
+    borderRadius: moderateScale(50),
+    paddingHorizontal: scale(16),
+    paddingVertical: verticalScale(8),
+    marginBottom: verticalScale(16),
+    borderWidth: 1,
+    borderColor: COLORS.gray200,
+  },
+  coinsPillLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: scale(8),
+  },
+  coinsPillText: {
+    marginLeft: scale(8),
+  },
+  coinsPillLabel: {
+    fontFamily: TYPOGRAPHY.fontPrimary,
+    fontSize: TYPOGRAPHY.fontSize.sm,
+    color: COLORS.gray600,
+  },
+  coinsPillAmount: {
+    fontFamily: TYPOGRAPHY.fontPrimary,
+    fontSize: TYPOGRAPHY.fontSize.base,
+    fontWeight: "700",
+    color: COLORS.gray800,
+  },
+
+  // Featured row
+  featuredRow: {
+    flexDirection: "row",
+    gap: scale(10),
+    marginBottom: verticalScale(16),
+  },
+  featuredCard: {
+    flex: 1,
+    alignItems: "center",
+    backgroundColor: COLORS.figmaCream,
+    borderRadius: moderateScale(16),
+    borderWidth: 2,
+    borderColor: FEATURED_CARD_BORDER,
+    paddingTop: verticalScale(28),
+    paddingBottom: verticalScale(12),
+    paddingHorizontal: scale(8),
+    overflow: "hidden",
+  },
+  badge: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    backgroundColor: FEATURED_CARD_BORDER,
+    paddingHorizontal: scale(8),
+    paddingVertical: verticalScale(4),
+    borderBottomRightRadius: moderateScale(10),
+    borderTopLeftRadius: moderateScale(14),
+  },
+  badgeText: {
+    fontFamily: TYPOGRAPHY.fontPrimary,
+    fontSize: TYPOGRAPHY.fontSize.xs,
+    fontWeight: "700",
+    color: COLORS.white,
+    letterSpacing: 0.5,
+  },
+  featuredImage: {
+    marginBottom: verticalScale(8),
+  },
+  featuredCoins: {
+    fontFamily: TYPOGRAPHY.fontPrimary,
+    fontSize: TYPOGRAPHY.fontSize.sm,
+    fontWeight: "700",
+    color: COLORS.gray800,
+    marginBottom: verticalScale(8),
+  },
+  featuredPriceButton: {
+    backgroundColor: PRICE_BUTTON_BG,
+    borderRadius: moderateScale(8),
+    paddingHorizontal: scale(20),
+    paddingVertical: verticalScale(8),
+    width: "100%",
+    alignItems: "center",
+  },
+  featuredPriceText: {
+    fontFamily: TYPOGRAPHY.fontPrimary,
+    fontSize: TYPOGRAPHY.fontSize.base,
+    fontWeight: "700",
+    color: COLORS.white,
+  },
+
+  // Loading / error
+  loadingContainer: {
+    paddingVertical: verticalScale(24),
+    alignItems: "center",
+  },
+  errorText: {
+    fontFamily: TYPOGRAPHY.fontPrimary,
+    fontSize: TYPOGRAPHY.fontSize.sm,
+    color: COLORS.error,
+    textAlign: "center",
+    marginBottom: verticalScale(12),
+  },
+
+  // Regular product rows
+  productRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: COLORS.white,
+    borderRadius: moderateScale(14),
+    paddingHorizontal: scale(12),
+    paddingVertical: verticalScale(10),
+    marginBottom: verticalScale(8),
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  productCoins: {
+    flex: 1,
+    fontFamily: TYPOGRAPHY.fontPrimary,
+    fontSize: TYPOGRAPHY.fontSize.base,
+    fontWeight: "600",
+    color: COLORS.gray800,
+    marginLeft: scale(12),
+  },
+  productPriceButton: {
+    backgroundColor: PRICE_BUTTON_BG,
+    borderRadius: moderateScale(10),
+    paddingHorizontal: scale(18),
+    paddingVertical: verticalScale(8),
+  },
+  productPriceText: {
+    fontFamily: TYPOGRAPHY.fontPrimary,
+    fontSize: TYPOGRAPHY.fontSize.sm,
+    fontWeight: "700",
+    color: COLORS.white,
+  },
+
+  // Bottom buttons
+  bottomButtons: {
+    marginTop: verticalScale(8),
+    gap: verticalScale(10),
+  },
+  watchVideoButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: moderateScale(50),
+    borderWidth: 1.5,
+    borderColor: COLORS.gray300,
+    backgroundColor: COLORS.white,
+    paddingVertical: verticalScale(12),
+    gap: scale(8),
+  },
+  watchVideoText: {
+    fontFamily: TYPOGRAPHY.fontPrimary,
+    fontSize: TYPOGRAPHY.fontSize.sm,
+    fontWeight: "600",
+    color: COLORS.gray800,
+    letterSpacing: 0.5,
+  },
+  infoIcon: {
+    width: moderateScale(20),
+    height: moderateScale(20),
+    borderRadius: moderateScale(10),
+    backgroundColor: COLORS.gray300,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  infoIconText: {
+    fontFamily: TYPOGRAPHY.fontPrimary,
+    fontSize: TYPOGRAPHY.fontSize.xs,
+    fontWeight: "700",
+    color: COLORS.gray700,
+  },
+  payAndPlayButton: {
+    borderRadius: moderateScale(50),
+    backgroundColor: PAY_AND_PLAY_BG,
+    paddingVertical: verticalScale(14),
+    alignItems: "center",
+  },
+  payAndPlayDisabled: {
+    backgroundColor: COLORS.gray300,
+  },
+  payAndPlayText: {
+    fontFamily: TYPOGRAPHY.fontPrimary,
+    fontSize: TYPOGRAPHY.fontSize.base,
+    fontWeight: "700",
+    color: COLORS.white,
+    letterSpacing: 1,
+  },
+});
 
 export default CoinShopModal;

@@ -16,9 +16,16 @@ Qwordly addresses the gap in mobile puzzle gaming by combining traditional word 
 
 4. **Monetization Balance**: Finding the right balance between free gameplay and revenue generation. Qwordly's 3-attempt system with optional continues provides choice without forcing spending.
 
-## How Qwordly Should Work (User Flow):n
+## How Qwordly Should Work (User Flow):
 
-[Outline the basic user flow, e.g., App Launch -> Main Menu -> Choose Game Mode -> Play Game -> View Stats/Profile.]
+1. **App Launch** → Landing screen with sign-in options
+2. **Authentication** → Email/password, Google, or Facebook sign-in
+3. **First-Time User** → Welcome modal with tutorial flow
+4. **Main Game Screen** → Choose Daily Challenge or Classic Mode
+5. **Gameplay** → Read riddle, type guesses, receive color feedback (green/yellow/red)
+6. **Hints** → Spend 50 coins to reveal a letter via bottom nav hint button
+7. **Win/Loss** → Victory animation or loss modal with stats
+8. **Profile/Settings** → View stats, customize avatar, manage account via bottom nav
 
 ## User Experience (UX) Goals:
 
@@ -27,29 +34,31 @@ Qwordly addresses the gap in mobile puzzle gaming by combining traditional word 
 - **Monetization Balance**: Fair freemium model with meaningful free options
 - **Social Proof**: Statistics and achievements provide shareable moments
 - **Retention**: Daily challenges and progressive unlocks encourage return visits
-- **Tension & Release**: 3-attempt limit creates engagement, continue options provide relief
+- **Tension & Release**: 5-guess limit creates engagement, hint system provides relief
 
 ## Target Audience:
 
-[Describe the ideal user for Qwordly in more detail.]
+- **Primary**: Mobile gamers aged 18-45 who enjoy word puzzles (Wordle, crosswords) and riddle-based challenges
+- **Secondary**: Casual gamers looking for short daily gaming sessions (5-10 minutes)
+- **Characteristics**: Enjoys intellectual challenge, appreciates progression systems, willing to engage with optional monetization for enhanced experience
 
 ## Updated Core Features
 
 ### **Gameplay Features**
 
 - Riddle-based Wordle-clone gameplay with variable answer lengths
-- 3-attempt limit per riddle with optional continues
+- 5-guess limit per riddle (Classic and Challenge modes); 3 for tutorial
 - Daily Challenge mode with unique daily riddles
 - Classic Mode with sequential, progressively unlocked levels
-- Hint system with coin cost
+- Hint system (50 coins to reveal a letter)
 - Server-side riddle generation and guess validation
 
 ### **Monetization Features**
 
-- Interstitial ads for free continues after 3 attempts
-- Optional coin spending (50 coins) for continues
-- Coin purchases for hints and continues
-- Rewarded video ads as alternative to coin spending
+- Interstitial ads shown between levels (unless user purchased ad removal)
+- Rewarded video ads for coins/hints
+- Coin purchases for hints
+- In-app purchases for coin packs and ad removal
 
 ### **Progression Features**
 
@@ -67,76 +76,18 @@ Qwordly addresses the gap in mobile puzzle gaming by combining traditional word 
 
 ## Monetization Philosophy
 
-The 3-attempt system with continue options represents a balanced approach to freemium gaming:
-
-1. **Generous Free Play**: 3 attempts per riddle allows most puzzles to be solved without spending
-2. **Meaningful Choice**: When attempts run out, players have genuine options (free ad vs premium coins vs accept loss)
+1. **Generous Free Play**: 5 guesses per riddle allows most puzzles to be solved without spending
+2. **Meaningful Choice**: Hints cost coins, and coins can be earned through gameplay or purchased
 3. **No Force**: Players are never forced to spend money or watch ads
-4. **Value Perception**: Both free (ad) and paid (coin) options provide clear value
-5. **Pacing**: Natural break points prevent endless grinding while maintaining engagement
+4. **Value Perception**: Both free (rewarded ad) and paid (coin purchase) options provide clear value
+5. **Pacing**: Daily challenge locks and sequential classic levels maintain engagement without enabling endless grinding
 
-This system should feel fair and engaging rather than manipulative or punishing, encouraging long-term retention through positive user experience rather than artificial friction.
+## Key Differentiators
 
-## 1. What is Qwordly?
-
-Qwordly is a riddle-based Wordle-clone mobile game that challenges players to solve engaging riddles instead of guessing random words. The game combines the addictive mechanics of Wordle with the intellectual satisfaction of solving riddles.
-
-## 2. Core Value Proposition
-
-- **Unique Twist on Wordle:** Instead of guessing random 5-letter words, players solve riddles with answers of varying lengths.
-- **Daily Engagement:** A new daily challenge keeps players coming back.
-- **Progressive Difficulty:** Classic mode offers hundreds of levels with increasing complexity.
-- **Rewarding Experience:** Coin system and achievements provide motivation and progression.
-- It features daily challenges, a classic mode with a vast and ever-growing number of levels stored in Firestore and augmented by AI, user authentication, and a rewarding coin system.
-
-## 3. Target User Experience
-
-- **Accessibility:** Easy to pick up for casual players, challenging enough for puzzle enthusiasts.
-- **Social Sharing:** Players can share their daily challenge results (similar to Wordle's grid sharing).
-- **Progression:** Clear sense of advancement through classic mode levels and statistics.
-- **Monetization:** Optional coin purchases for hints, with rewarded ads as an alternative.
-
-## 4. Key Differentiators
-
-- **Riddle-Based Gameplay:** More engaging than random word guessing.
-- **Variable Answer Lengths:** Not limited to 5-letter words, adding complexity and variety.
-- **AI-Generated Content:** Continuous content expansion through OpenAI integration.
-- \*\*Levels sourced from Firestore, ensuring consistent performance and automatic scaling.
-- **Comprehensive User Profiles:** Detailed statistics and customizable avatars.
-- **Cross-Platform:** Available on both iOS and Android with synchronized progress.
-
-## 5. Problem Statement
-
-- Existing mobile puzzle games may lack a specific blend of riddle-solving and Wordle-like mechanics, or may not offer a continuously updated stream of new content.
-- Users seek engaging daily challenges and longer-term progressive puzzle experiences in a single mobile game.
-
-## 6. Proposed Solution
-
-- Qwordly, a mobile game for iOS and Android, combines riddle-based puzzles with Wordle-style letter guessing.
-- Backend powered by Firebase for reliability and scalability.
-
-## 7. Key Features
-
-- Riddle-based Wordle-clone gameplay.
-- Daily Challenge mode with unique daily riddles.
-- Classic Mode with sequential, progressively unlocked levels.
-- User authentication (Google, Facebook, email/password).
-- Firebase backend for data persistence (user stats, progress, levels).
-- In-app purchases (coins, no-ads).
-- Rewarded and interstitial ads (AppLovin MAX).
-- Customizable user profiles with avatars and statistics.
-- Server-side riddle generation and guess validation.
-- Levels sourced from Firestore, ensuring consistent performance and automatic scaling.
-- Automatic generation and appending of 25 new riddles to the Firestore when a user's remaining classic mode riddles drop to 10.
-
-## 8. User Experience (UX) Goals
-
-- Intuitive and engaging gameplay that is easy to learn but challenging to master.
-- Seamless user onboarding and authentication process.
-- Clear visual feedback for guesses and game progression.
-- Including celebratory animations (e.g., 'shattering title' effect on game win) to enhance engagement.
-- Motivating reward system (coins) and fair IAP options.
-- Uninterrupted gameplay with new content regularly available.
-- Visually appealing interface with smooth animations and haptic feedback.
-- Dynamic and immersive audio experience with fading based on user progress or game state.
-- Stable and performant application on both iOS and Android.
+- **Riddle-Based Gameplay**: More engaging than random word guessing
+- **Variable Answer Lengths**: Not limited to 5-letter words, adding complexity and variety
+- **AI-Generated Content**: Continuous content expansion through OpenAI integration
+- **Firestore-Backed Levels**: Consistent performance and automatic scaling; 25 new riddles auto-generated when a user's remaining classic levels drop to 10
+- **Comprehensive User Profiles**: Detailed statistics and customizable avatars
+- **Cross-Platform**: Available on both iOS and Android with synchronized progress
+- **Social Sharing**: Players can share daily challenge results (similar to Wordle's grid sharing)

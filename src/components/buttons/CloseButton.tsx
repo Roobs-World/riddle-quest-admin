@@ -13,6 +13,8 @@
 import React from "react";
 import { TouchableOpacity, TouchableOpacityProps } from "react-native";
 import CloseIcon from "../icons/CloseIcon";
+import { SPACING } from "../../styles";
+import { CLOSE_BUTTON_SIZE_LG } from "../../constants/layout";
 
 /**
  * Props interface for the CloseButton component.
@@ -88,7 +90,7 @@ interface CloseButtonProps extends TouchableOpacityProps {
  */
 const CloseButton = ({
   onPress,
-  size = 24,
+  size = CLOSE_BUTTON_SIZE_LG,
   className = "",
   color,
   ...props
@@ -96,7 +98,8 @@ const CloseButton = ({
   return (
     <TouchableOpacity
       onPress={onPress}
-      className={`p-2 ${className}`}
+      className={className}
+      style={{ padding: SPACING.sm }}
       accessibilityLabel="Close"
       accessibilityRole="button"
       {...props}

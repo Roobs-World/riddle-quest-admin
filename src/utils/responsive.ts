@@ -1,172 +1,199 @@
 /**
  * @fileoverview Responsive Utilities
  *
- * A comprehensive set of utilities for responsive design in React Native,
- * providing consistent scaling across different device sizes and orientations.
- * This module handles device type detection, responsive scaling, and provides
- * standardized dimensions for UI components.
+ * Scaling utilities for consistent layout across phone, tablet, and desktop.
  *
- * **Key Features:**
- * - Device type detection (phone, tablet, large tablet)
- * - Responsive scaling functions for different dimensions
- * - Device-specific value selection
- * - Standardized responsive sizes for typography and spacing
- * - Orientation change handling
+ * ## Scale caps by device tier
+ * | Tier         | Width        | scale() cap | verticalScale() cap |
+ * |--------------|--------------|-------------|---------------------|
+ * | phone        | < 600 px     | none        | none                |
+ * | tablet       | 600–767 px   | 1.3 ×       | 1.2 ×               |
+ * | large tablet | 768–1023 px  | 1.5 ×       | 1.3 ×               |
+ * | desktop      | ≥ 1024 px    | 1.6 ×       | 1.4 ×               |
  *
- * **Usage Patterns:**
- * - Import specific scaling functions for component dimensions
- * - Use responsiveValue for device-specific customization
- * - Access standardized sizes from responsiveSizes
- * - Register orientation change listeners when needed
+ * All caps are applied to the scale factor, not the output value, so the
+ * relationship between scaled values is preserved at every tier.
  *
- * @author Qwordly Development Team
- * @version 1.0.0
- * @since 2024
+ * ## Functions
+ * - `scale(n)`          — width-based scaling for layout dimensions
+ * - `verticalScale(n)`  — height-based scaling for vertical dimensions
+ * - `moderateScale(n)`  — blended scaling for typography / border-radius
+ * - `clamp(v, min, max)`— generic numeric clamp helper
+ * - `responsiveValue()`  — pick a value by device tier
+ *
+ * ## Usage
+ * Import only what you need; tokens in `styles/tokens/` re-export the
+ * pre-computed `responsiveSizes` values so most components never need to
+ * call these functions directly.
  */
 
 import { Dimensions } from "react-native";
 
-const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
+// ---------------------------------------------------------------------------
+// Snapshot screen dimensions once at module load
+// (safe: StyleSheet values are computed once; orientation is locked to portrait)
+// ---------------------------------------------------------------------------
 
-// Device breakpoints
-const TABLET_MIN_WIDTH = 600; // Common tablet minimum width in portrait
-const LARGE_TABLET_MIN_WIDTH = 768; // iPad size in portrait
+let _dims: { width: number; height: number } = { width: 390, height: 844 };
+try {
+  const _got = Dimensions.get("window");
+  if (_got && typeof _got.width === "number") _dims = _got;
+} catch {}
+
+const { width: screenWidth, height: screenHeight } = _dims;
+
+// ---------------------------------------------------------------------------
+// Reference device — iPhone 14
+// ---------------------------------------------------------------------------
+
+const BASE_WIDTH = 390;
+const BASE_HEIGHT = 844;
+
+// ---------------------------------------------------------------------------
+// Device-tier breakpoints
+// ---------------------------------------------------------------------------
+
+const TABLET_MIN_WIDTH = 600;
+const LARGE_TABLET_MIN_WIDTH = 768;
+const DESKTOP_MIN_WIDTH = 1024;
 
 /**
- * Flag indicating if the current device is a tablet (width >= 600px)
+ * True for any non-phone device (width ≥ 600 px).
+ * Kept inclusive of largeTablet/desktop for backward compatibility.
  */
 export const isTablet = screenWidth >= TABLET_MIN_WIDTH;
 
-/**
- * Flag indicating if the current device is a large tablet (width >= 768px)
- */
+/** True for devices ≥ 768 px wide (iPads, large Android tablets, desktop). */
 export const isLargeTablet = screenWidth >= LARGE_TABLET_MIN_WIDTH;
 
-/**
- * Flag indicating if the current device is a phone (width < 600px)
- */
+/** True for devices ≥ 1024 px wide (desktop browsers, large iPads). */
+export const isDesktop = screenWidth >= DESKTOP_MIN_WIDTH;
+
+/** True for phones (width < 600 px). */
 export const isPhone = screenWidth < TABLET_MIN_WIDTH;
 
-/**
- * Returns the current device type based on screen width.
- *
- * @returns {"phone" | "tablet" | "largeTablet"} The detected device type
- */
-export const getDeviceType = (): "phone" | "tablet" | "largeTablet" => {
+/** Returns a string identifier for the current device tier. */
+export const getDeviceType = (): "phone" | "tablet" | "largeTablet" | "desktop" => {
+  if (isDesktop) return "desktop";
   if (isLargeTablet) return "largeTablet";
   if (isTablet) return "tablet";
   return "phone";
 };
 
+// ---------------------------------------------------------------------------
+// Tiered scale caps
+// ---------------------------------------------------------------------------
+
+/** Maximum width-scale factor allowed at the current device tier. */
+const SCALE_CAP = isDesktop ? 1.6 : isLargeTablet ? 1.5 : isTablet ? 1.3 : Infinity;
+
 /**
- * Scales a size value proportionally based on screen width.
- * Uses iPhone 14 (390px) as the base width for scaling calculations.
- * Limits maximum scaling for tablets to prevent oversized elements.
+ * Maximum height-scale factor — gentler than width so vertically-fixed
+ * components (buttons, headers) don't grow too tall on wide/tall screens.
+ */
+const V_SCALE_CAP = isDesktop ? 1.4 : isLargeTablet ? 1.3 : isTablet ? 1.2 : Infinity;
+
+// ---------------------------------------------------------------------------
+// Core scaling functions
+// ---------------------------------------------------------------------------
+
+/**
+ * Scales a value proportionally to screen **width**.
+ * Use for horizontal dimensions, padding, margins, widths, and icon sizes.
  *
- * @param {number} size - The base size to scale
- * @returns {number} The scaled size value, rounded to nearest integer
+ * @param size - Base size in logical pixels (designed at 390 px wide).
  */
 export const scale = (size: number): number => {
-  // Base scale on iPhone 14 width (390px)
-  const baseWidth = 390;
-  const scaleFactor = screenWidth / baseWidth;
-
-  // Limit scaling for tablets to prevent elements from becoming too large
-  const maxScaleFactor = isTablet ? 1.5 : scaleFactor;
-  const appliedScaleFactor = Math.min(scaleFactor, maxScaleFactor);
-
-  return Math.round(size * appliedScaleFactor);
+  const factor = Math.min(screenWidth / BASE_WIDTH, SCALE_CAP);
+  return Math.round(size * factor);
 };
 
 /**
- * Scales a size value proportionally based on screen height.
- * Uses iPhone 14 (844px) as the base height for scaling calculations.
- * Particularly useful for vertical dimensions like heights and margins.
+ * Scales a value proportionally to screen **height**.
+ * Use for component heights (buttons, inputs, headers) and vertical spacing
+ * that must track available viewport height.
  *
- * @param {number} size - The base size to scale
- * @returns {number} The vertically scaled size value, rounded to nearest integer
+ * @param size - Base size in logical pixels (designed at 844 px tall).
  */
 export const verticalScale = (size: number): number => {
-  // Base scale on iPhone 14 height (844px)
-  const baseHeight = 844;
-  const scaleFactor = screenHeight / baseHeight;
-
-  // Limit scaling for tablets
-  const maxScaleFactor = isTablet ? 1.5 : scaleFactor;
-  const appliedScaleFactor = Math.min(scaleFactor, maxScaleFactor);
-
-  return Math.round(size * appliedScaleFactor);
+  const factor = Math.min(screenHeight / BASE_HEIGHT, V_SCALE_CAP);
+  return Math.round(size * factor);
 };
 
 /**
- * Applies moderate scaling to a size value with a customizable factor.
- * Useful for elements that should scale but not as dramatically as with direct scaling.
- * Commonly used for typography, border radius, and other subtle dimensions.
+ * Blended width-based scaling — grows more slowly than `scale`.
+ * Default `factor=0.5` means the output meets scale() halfway, making it
+ * ideal for typography and border radius where extreme growth looks wrong.
  *
- * @param {number} size - The base size to scale
- * @param {number} [factor=0.5] - The scaling factor (0-1), where 0 means no scaling
- *                               and 1 means full scaling
- * @returns {number} The moderately scaled size value
+ * Formula: `size + (scale(size) − size) × factor`
+ *
+ * @param size   - Base size in logical pixels.
+ * @param factor - Blend factor in [0, 1]; 0 = no scaling, 1 = full `scale()`.
  */
 export const moderateScale = (size: number, factor = 0.5): number => {
-  return size + (scale(size) - size) * factor;
+  return Math.round(size + (scale(size) - size) * factor);
 };
 
 /**
- * Returns a value based on the current device type.
- * Allows for device-specific customization with fallbacks.
- *
- * @template T - The type of value being returned
- * @param {Object} values - Object containing values for different device types
- * @param {T} values.phone - Value for phone devices (required)
- * @param {T} [values.tablet] - Value for tablet devices (optional)
- * @param {T} [values.largeTablet] - Value for large tablet devices (optional)
- * @returns {T} The appropriate value for the current device type
+ * Clamps `value` to the inclusive range [min, max].
  *
  * @example
- * ```ts
- * const padding = responsiveValue({
- *   phone: 16,
- *   tablet: 24,
- *   largeTablet: 32
- * });
- * ```
+ * clamp(moderateScale(32), 28, 40) // never below 28 or above 40
+ */
+export const clamp = (value: number, min: number, max: number): number =>
+  Math.min(max, Math.max(min, value));
+
+// ---------------------------------------------------------------------------
+// Device-tier value selector
+// ---------------------------------------------------------------------------
+
+/**
+ * Returns the most-specific value for the current device tier, falling back
+ * toward `phone` when a more-specific value is not supplied.
+ *
+ * @example
+ * const padding = responsiveValue({ phone: 16, tablet: 24, desktop: 32 });
  */
 export const responsiveValue = <T>(values: {
   phone: T;
   tablet?: T;
   largeTablet?: T;
+  desktop?: T;
 }): T => {
-  const deviceType = getDeviceType();
-
-  if (deviceType === "largeTablet" && values.largeTablet !== undefined) {
+  const tier = getDeviceType();
+  if (tier === "desktop" && values.desktop !== undefined) return values.desktop;
+  if ((tier === "desktop" || tier === "largeTablet") && values.largeTablet !== undefined)
     return values.largeTablet;
-  }
-  if (deviceType === "tablet" && values.tablet !== undefined) {
-    return values.tablet;
-  }
+  if (tier !== "phone" && values.tablet !== undefined) return values.tablet;
   return values.phone;
 };
 
-/**
- * Object containing current screen dimensions and device type flags.
- * Useful for component calculations and conditional rendering.
- */
+// ---------------------------------------------------------------------------
+// Convenience object — current screen dimensions + flags
+// ---------------------------------------------------------------------------
+
+/** Current screen dimensions and device-tier flags. */
 export const dimensions = {
   screenWidth,
   screenHeight,
+  isPhone,
   isTablet,
   isLargeTablet,
-  isPhone,
-};
+  isDesktop,
+} as const;
+
+// ---------------------------------------------------------------------------
+// Pre-computed responsive sizes
+// (consumed by design tokens in src/styles/tokens/)
+// ---------------------------------------------------------------------------
 
 /**
- * Standardized responsive sizes for consistent UI elements.
- * Includes typography, spacing, component dimensions, and border radius values.
- * All values are automatically scaled based on device size.
+ * Pre-computed responsive sizes for all design tokens.
+ * Consume via TYPOGRAPHY, SPACING, SIZING, and BORDER_RADIUS tokens rather
+ * than importing this object directly.
  */
 export const responsiveSizes = {
-  // Font sizes
+  // ── Typography ────────────────────────────────────────────────────────────
   textXs: moderateScale(12),
   textSm: moderateScale(14),
   textBase: moderateScale(16),
@@ -175,8 +202,14 @@ export const responsiveSizes = {
   text2xl: moderateScale(24),
   text3xl: moderateScale(30),
   text4xl: moderateScale(36),
+  /** Modal / screen titles (e.g. "Credits", "Use a Hint?"). */
+  textTitle: moderateScale(28),
+  /** Hero / display text (e.g. "Victory!", "Oh no!", answer reveal). */
+  textDisplay: moderateScale(32),
+  /** Letter text inside a game tile — scales with tile size. */
+  textTile: moderateScale(28),
 
-  // Spacing
+  // ── Spacing ───────────────────────────────────────────────────────────────
   spacingXs: scale(4),
   spacingSm: scale(8),
   spacingMd: scale(16),
@@ -184,39 +217,36 @@ export const responsiveSizes = {
   spacingXl: scale(32),
   spacing2xl: scale(48),
 
-  // Common component sizes
+  // ── Component heights ─────────────────────────────────────────────────────
   buttonHeight: verticalScale(48),
   inputHeight: verticalScale(48),
   headerHeight: verticalScale(60),
   tabBarHeight: verticalScale(60),
 
-  // Border radius
+  // ── Border radius ─────────────────────────────────────────────────────────
   radiusSm: moderateScale(4),
   radiusMd: moderateScale(8),
   radiusLg: moderateScale(12),
   radiusXl: moderateScale(16),
+  radiusXxl: moderateScale(20),
   radiusFull: 9999,
-};
+} as const;
+
+// ---------------------------------------------------------------------------
+// Orientation change helper
+// ---------------------------------------------------------------------------
 
 /**
- * Sets up a listener for orientation changes and returns a cleanup function.
- * Useful for components that need to respond to device rotation.
+ * Registers a listener for device orientation / window-resize events.
+ * Returns a cleanup function suitable for use in `useEffect`.
  *
- * @param {() => void} callback - Function to call when orientation changes
- * @returns {() => void} Cleanup function to remove the listener
+ * Note: the app is currently portrait-locked, so this is provided for
+ * completeness and future use only.
  *
  * @example
- * ```tsx
- * useEffect(() => {
- *   const cleanup = addOrientationChangeListener(() => {
- *     // Handle orientation change
- *     updateLayout();
- *   });
- *   return cleanup;
- * }, []);
- * ```
+ * useEffect(() => addOrientationChangeListener(forceUpdate), []);
  */
-export const addOrientationChangeListener = (callback: () => void) => {
+export const addOrientationChangeListener = (callback: () => void): (() => void) => {
   const subscription = Dimensions.addEventListener("change", callback);
   return () => subscription?.remove();
 };

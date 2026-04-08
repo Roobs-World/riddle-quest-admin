@@ -8,24 +8,18 @@ import {
   SubmitGuessOutputSchema,
 } from "../../validation/cloudFunctionsSchemas";
 import { ZodError } from "zod";
+import { logger } from "../../utils/logger";
 
-// Mock Firebase dependencies
-const mockGet = jest.fn();
-const mockUpdate = jest.fn();
-const mockWhere = jest.fn();
-const mockLimit = jest.fn();
-const mockDoc = jest.fn(() => ({
-  get: mockGet,
-  update: mockUpdate,
-}));
-const mockCollection = jest.fn(() => ({
-  doc: mockDoc,
-  where: mockWhere,
-}));
-
-const mockFirestore = {
-  collection: mockCollection,
-};
+// Standalone modular mock function references (assigned in jest.mock factories)
+let mockGetDoc: jest.Mock;
+let mockGetDocs: jest.Mock;
+let mockUpdateDoc: jest.Mock;
+let mockWhere: jest.Mock;
+let mockLimit: jest.Mock;
+let mockDoc: jest.Mock;
+let mockCollection: jest.Mock;
+let mockQuery: jest.Mock;
+let mockHttpsCallableFn: jest.Mock;
 
 const mockCurrentUser = {
   uid: "test-user-id",
@@ -35,28 +29,61 @@ const mockAuth = {
   currentUser: mockCurrentUser,
 };
 
+// mockHttpsCallable is the callable returned by httpsCallable(functions, name)
 const mockHttpsCallable = jest.fn();
-const mockFunctions = jest.fn(() => ({
-  httpsCallable: mockHttpsCallable,
-}));
 
-jest.mock("@react-native-firebase/firestore", () => ({
-  __esModule: true,
-  default: jest.fn(() => mockFirestore),
-}));
+jest.mock("@react-native-firebase/firestore", () => {
+  mockGetDoc = jest.fn();
+  mockGetDocs = jest.fn();
+  mockUpdateDoc = jest.fn();
+  mockWhere = jest.fn(() => ({}));
+  mockLimit = jest.fn(() => ({}));
+  mockDoc = jest.fn(() => ({}));
+  mockCollection = jest.fn(() => ({}));
+  mockQuery = jest.fn(() => ({}));
+
+  return {
+    __esModule: true,
+    getFirestore: jest.fn(() => ({})),
+    doc: mockDoc,
+    collection: mockCollection,
+    getDoc: mockGetDoc,
+    getDocs: mockGetDocs,
+    updateDoc: mockUpdateDoc,
+    query: mockQuery,
+    where: mockWhere,
+    limit: mockLimit,
+    default: jest.fn(() => ({})),
+  };
+});
 
 jest.mock("@react-native-firebase/auth", () => ({
   __esModule: true,
+  getAuth: jest.fn(() => mockAuth),
   default: jest.fn(() => mockAuth),
 }));
 
-jest.mock("@react-native-firebase/functions", () => ({
-  __esModule: true,
-  default: jest.fn(() => ({ httpsCallable: mockHttpsCallable })),
-}));
+jest.mock("@react-native-firebase/functions", () => {
+  mockHttpsCallableFn = jest.fn(() => mockHttpsCallable);
+  return {
+    __esModule: true,
+    getFunctions: jest.fn(() => ({})),
+    httpsCallable: mockHttpsCallableFn,
+    default: jest.fn(() => ({})),
+  };
+});
 
 jest.mock("@react-native-firebase/app", () => ({
   getApp: jest.fn().mockReturnValue({}),
+}));
+
+jest.mock("../../utils/logger", () => ({
+  logger: {
+    debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+  },
 }));
 
 jest.mock("../../validation/cloudFunctionsSchemas", () => ({
@@ -82,41 +109,29 @@ describe("RiddleService", () => {
     jest.clearAllMocks();
 
     // Reset all mock implementations
-    mockGet.mockReset();
-    mockUpdate.mockReset();
+    mockGetDoc.mockReset();
+    mockGetDocs.mockReset();
+    mockUpdateDoc.mockReset();
     mockWhere.mockReset();
     mockLimit.mockReset();
     mockDoc.mockReset();
     mockCollection.mockReset();
+    mockQuery.mockReset();
     mockHttpsCallable.mockReset();
+    mockHttpsCallableFn.mockReset();
+    mockHttpsCallableFn.mockReturnValue(mockHttpsCallable);
 
-    // Setup default mock chain
-    mockCollection.mockReturnValue({
-      doc: mockDoc,
-      where: mockWhere,
-    });
-    mockDoc.mockReturnValue({
-      get: mockGet,
-      update: mockUpdate,
-    });
-    mockWhere.mockReturnValue({
-      where: mockWhere,
-      limit: mockLimit,
-    });
-    mockLimit.mockReturnValue({
-      get: mockGet,
-    });
+    // Setup defaults for standalone modular functions
+    mockDoc.mockReturnValue({});
+    mockCollection.mockReturnValue({});
+    mockQuery.mockReturnValue({});
+    mockWhere.mockReturnValue({});
+    mockLimit.mockReturnValue({});
 
-    // Ensure Firebase mocks return our mock objects
-    (getFirestore as jest.MockedFunction<typeof getFirestore>).mockReturnValue(
-      mockFirestore as any
-    );
+    // Ensure Firebase auth mock returns our mock object
     (getAuth as jest.MockedFunction<typeof getAuth>).mockReturnValue(
       mockAuth as any
     );
-    (getFunctions as jest.MockedFunction<typeof getFunctions>).mockReturnValue({
-      httpsCallable: mockHttpsCallable,
-    } as any);
 
     // Mock Date to return consistent test date
     jest.spyOn(Date.prototype, "toISOString").mockReturnValue(mockTodayISO);
@@ -145,27 +160,24 @@ describe("RiddleService", () => {
       const result = await RiddleService.fetchDailyRiddle();
 
       expect(result).toBeNull();
-      expect(console.error).toHaveBeenCalledWith(
-        "No authenticated user found."
-      );
-      expect(mockCollection).not.toHaveBeenCalled();
+      expect(logger.error).toHaveBeenCalledWith("No authenticated user found.");
+      expect(mockGetDoc).not.toHaveBeenCalled();
     });
 
     it("should return completedToday: true when user already completed today's challenge", async () => {
       const userDoc = {
         exists: () => true,
         data: () => ({
-          lastCompletedDailyChallengeDate: mockTodayISO,
+          lastDailyChallengeCompletedAt: mockTodayISO,
         }),
       };
-      mockGet.mockResolvedValueOnce(userDoc);
+      mockGetDoc.mockResolvedValueOnce(userDoc);
 
       const result = await RiddleService.fetchDailyRiddle();
 
       expect(result).toEqual({ completedToday: true });
-      expect(mockCollection).toHaveBeenCalledWith("users");
-      expect(mockDoc).toHaveBeenCalledWith(mockUserId);
-      expect(console.log).toHaveBeenCalledWith(
+      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "users", mockUserId);
+      expect(logger.debug).toHaveBeenCalledWith(
         `User ${mockUserId} has already completed the daily challenge for today (${mockToday}).`
       );
     });
@@ -178,17 +190,16 @@ describe("RiddleService", () => {
         exists: () => false,
       };
 
-      mockGet
+      mockGetDoc
         .mockResolvedValueOnce(userDoc)
         .mockResolvedValueOnce(dailyChallengeDoc);
 
       const result = await RiddleService.fetchDailyRiddle();
 
       expect(result).toBeNull();
-      expect(mockCollection).toHaveBeenCalledWith("users");
-      expect(mockCollection).toHaveBeenCalledWith("dailyChallenge");
-      expect(mockDoc).toHaveBeenCalledWith(mockToday);
-      expect(console.log).toHaveBeenCalledWith(
+      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "users", mockUserId);
+      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "dailyChallenge", mockToday);
+      expect(logger.debug).toHaveBeenCalledWith(
         `No daily challenge found for date: ${mockToday}`
       );
     });
@@ -200,14 +211,14 @@ describe("RiddleService", () => {
         data: () => ({}),
       };
 
-      mockGet
+      mockGetDoc
         .mockResolvedValueOnce(userDoc)
         .mockResolvedValueOnce(dailyChallengeDoc);
 
       const result = await RiddleService.fetchDailyRiddle();
 
       expect(result).toBeNull();
-      expect(console.log).toHaveBeenCalledWith(
+      expect(logger.debug).toHaveBeenCalledWith(
         `Daily challenge found for ${mockToday}, but no riddleIds array.`
       );
     });
@@ -219,14 +230,14 @@ describe("RiddleService", () => {
         data: () => ({ riddleIds: [] }),
       };
 
-      mockGet
+      mockGetDoc
         .mockResolvedValueOnce(userDoc)
         .mockResolvedValueOnce(dailyChallengeDoc);
 
       const result = await RiddleService.fetchDailyRiddle();
 
       expect(result).toBeNull();
-      expect(console.log).toHaveBeenCalledWith(
+      expect(logger.debug).toHaveBeenCalledWith(
         `Daily challenge found for ${mockToday}, but no riddleIds array.`
       );
     });
@@ -247,7 +258,7 @@ describe("RiddleService", () => {
         id: riddleId,
       };
 
-      mockGet
+      mockGetDoc
         .mockResolvedValueOnce(userDoc)
         .mockResolvedValueOnce(dailyChallengeDoc)
         .mockResolvedValueOnce(userAttemptsDoc)
@@ -261,11 +272,9 @@ describe("RiddleService", () => {
         completedToday: false,
         answerLength: 5,
       });
-      expect(mockCollection).toHaveBeenCalledWith("userDailyChallengeAttempts");
-      expect(mockDoc).toHaveBeenCalledWith(`${mockUserId}_${mockToday}`);
-      expect(mockCollection).toHaveBeenCalledWith("riddles");
-      expect(mockDoc).toHaveBeenCalledWith(riddleId);
-      expect(console.log).toHaveBeenCalledWith(
+      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "userDailyChallengeAttempts", `${mockUserId}_${mockToday}`);
+      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "dailyRiddles", riddleId);
+      expect(logger.debug).toHaveBeenCalledWith(
         `Fetched daily riddle ID: ${riddleId} at index 0`
       );
     });
@@ -286,7 +295,7 @@ describe("RiddleService", () => {
         id: riddleId,
       };
 
-      mockGet
+      mockGetDoc
         .mockResolvedValueOnce(userDoc)
         .mockResolvedValueOnce(dailyChallengeDoc)
         .mockResolvedValueOnce(userAttemptsDoc)
@@ -316,7 +325,7 @@ describe("RiddleService", () => {
         exists: () => false,
       };
 
-      mockGet
+      mockGetDoc
         .mockResolvedValueOnce(userDoc)
         .mockResolvedValueOnce(dailyChallengeDoc)
         .mockResolvedValueOnce(userAttemptsDoc)
@@ -325,8 +334,8 @@ describe("RiddleService", () => {
       const result = await RiddleService.fetchDailyRiddle();
 
       expect(result).toBeNull();
-      expect(console.log).toHaveBeenCalledWith(
-        `Riddle document not found for ID: ${riddleId}`
+      expect(logger.debug).toHaveBeenCalledWith(
+        `Daily riddle document not found for ID: ${riddleId}`
       );
     });
 
@@ -346,7 +355,7 @@ describe("RiddleService", () => {
         id: riddleId,
       };
 
-      mockGet
+      mockGetDoc
         .mockResolvedValueOnce(userDoc)
         .mockResolvedValueOnce(dailyChallengeDoc)
         .mockResolvedValueOnce(userAttemptsDoc)
@@ -355,8 +364,8 @@ describe("RiddleService", () => {
       const result = await RiddleService.fetchDailyRiddle();
 
       expect(result).toBeNull();
-      expect(console.error).toHaveBeenCalledWith(
-        `Riddle data or answer missing for ID: ${riddleId}. Data:`,
+      expect(logger.error).toHaveBeenCalledWith(
+        `Daily riddle data or answer missing for ID: ${riddleId}. Data:`,
         { text: "Incomplete riddle" }
       );
     });
@@ -372,20 +381,20 @@ describe("RiddleService", () => {
         data: () => ({ completedIndex: 1 }), // User completed all riddles
       };
 
-      mockGet
+      mockGetDoc
         .mockResolvedValueOnce(userDoc)
         .mockResolvedValueOnce(dailyChallengeDoc)
         .mockResolvedValueOnce(userAttemptsDoc);
 
-      mockUpdate.mockResolvedValue(undefined);
+      mockUpdateDoc.mockResolvedValue(undefined);
 
       const result = await RiddleService.fetchDailyRiddle();
 
       expect(result).toEqual({ completedToday: true });
-      expect(mockUpdate).toHaveBeenCalledWith({
-        lastCompletedDailyChallengeDate: mockTodayISO,
+      expect(mockUpdateDoc).toHaveBeenCalledWith(expect.any(Object), {
+        lastDailyChallengeCompletedAt: mockTodayISO,
       });
-      expect(console.log).toHaveBeenCalledWith(
+      expect(logger.debug).toHaveBeenCalledWith(
         `User has completed all daily riddles for date: ${mockToday}`
       );
     });
@@ -395,13 +404,13 @@ describe("RiddleService", () => {
 
     it("should handle Firestore errors gracefully", async () => {
       const error = new Error("Firestore connection error");
-      mockGet.mockRejectedValue(error);
+      mockGetDoc.mockRejectedValue(error);
 
       await expect(RiddleService.fetchDailyRiddle()).rejects.toThrow(
         "Firestore connection error"
       );
 
-      expect(console.error).toHaveBeenCalledWith(
+      expect(logger.error).toHaveBeenCalledWith(
         "Error fetching daily riddle:",
         error
       );
@@ -418,7 +427,7 @@ describe("RiddleService", () => {
       };
       const networkError = new Error("Network unavailable");
 
-      mockGet
+      mockGetDoc
         .mockResolvedValueOnce(userDoc)
         .mockResolvedValueOnce(dailyChallengeDoc)
         .mockResolvedValueOnce(userAttemptsDoc)
@@ -428,7 +437,7 @@ describe("RiddleService", () => {
         "Network unavailable"
       );
 
-      expect(console.error).toHaveBeenCalledWith(
+      expect(logger.error).toHaveBeenCalledWith(
         "Error fetching daily riddle:",
         networkError
       );
@@ -457,7 +466,7 @@ describe("RiddleService", () => {
         ],
       };
 
-      mockGet.mockResolvedValue(mockSnapshot);
+      mockGetDocs.mockResolvedValue(mockSnapshot);
 
       const result = await RiddleService.fetchClassicRiddle(level);
 
@@ -466,10 +475,10 @@ describe("RiddleService", () => {
         riddleId,
         answerLength: 4,
       });
-      expect(mockCollection).toHaveBeenCalledWith("riddles");
+      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "riddles");
       expect(mockWhere).toHaveBeenCalledWith("classicIndex", "==", level);
       expect(mockLimit).toHaveBeenCalledWith(1);
-      expect(console.log).toHaveBeenCalledWith(
+      expect(logger.debug).toHaveBeenCalledWith(
         `Classic riddle found for level: ${level}`
       );
     });
@@ -481,12 +490,12 @@ describe("RiddleService", () => {
         docs: [],
       };
 
-      mockGet.mockResolvedValue(mockSnapshot);
+      mockGetDocs.mockResolvedValue(mockSnapshot);
 
       const result = await RiddleService.fetchClassicRiddle(level);
 
       expect(result).toBeNull();
-      expect(console.log).toHaveBeenCalledWith(
+      expect(logger.debug).toHaveBeenCalledWith(
         `No classic riddle found for level: ${level}. Riddles will be generated automatically on the server when needed.`
       );
     });
@@ -509,12 +518,12 @@ describe("RiddleService", () => {
         ],
       };
 
-      mockGet.mockResolvedValue(mockSnapshot);
+      mockGetDocs.mockResolvedValue(mockSnapshot);
 
       const result = await RiddleService.fetchClassicRiddle(level);
 
       expect(result).toBeNull();
-      expect(console.error).toHaveBeenCalledWith(
+      expect(logger.error).toHaveBeenCalledWith(
         `Riddle data or answer missing for level: ${level}. Data:`,
         invalidRiddleData
       );
@@ -533,7 +542,7 @@ describe("RiddleService", () => {
         ],
       };
 
-      mockGet.mockResolvedValue(mockSnapshot);
+      mockGetDocs.mockResolvedValue(mockSnapshot);
 
       const result = await RiddleService.fetchClassicRiddle(level);
 
@@ -553,7 +562,7 @@ describe("RiddleService", () => {
         docs: [],
       };
 
-      mockGet.mockResolvedValue(mockSnapshot);
+      mockGetDocs.mockResolvedValue(mockSnapshot);
 
       const result = await RiddleService.fetchClassicRiddle(level);
 
@@ -568,7 +577,7 @@ describe("RiddleService", () => {
         docs: [],
       };
 
-      mockGet.mockResolvedValue(mockSnapshot);
+      mockGetDocs.mockResolvedValue(mockSnapshot);
 
       const result = await RiddleService.fetchClassicRiddle(level);
 
@@ -579,13 +588,13 @@ describe("RiddleService", () => {
     it("should handle Firestore errors", async () => {
       const level = 1;
       const error = new Error("Firestore query error");
-      mockGet.mockRejectedValue(error);
+      mockGetDocs.mockRejectedValue(error);
 
       await expect(RiddleService.fetchClassicRiddle(level)).rejects.toThrow(
         "Firestore query error"
       );
 
-      expect(console.error).toHaveBeenCalledWith(
+      expect(logger.error).toHaveBeenCalledWith(
         `Error fetching classic riddle for level ${level}:`,
         error
       );
@@ -594,13 +603,13 @@ describe("RiddleService", () => {
     it("should handle permission errors", async () => {
       const level = 1;
       const permissionError = new Error("Permission denied");
-      mockGet.mockRejectedValue(permissionError);
+      mockGetDocs.mockRejectedValue(permissionError);
 
       await expect(RiddleService.fetchClassicRiddle(level)).rejects.toThrow(
         "Permission denied"
       );
 
-      expect(console.error).toHaveBeenCalledWith(
+      expect(logger.error).toHaveBeenCalledWith(
         `Error fetching classic riddle for level ${level}:`,
         permissionError
       );
@@ -629,7 +638,7 @@ describe("RiddleService", () => {
         ],
       };
 
-      mockGet.mockResolvedValue(mockSnapshot);
+      mockGetDocs.mockResolvedValue(mockSnapshot);
 
       const result = await RiddleService.fetchTutorialRiddle(level);
 
@@ -638,8 +647,7 @@ describe("RiddleService", () => {
         riddleId,
         answerLength: 1,
       });
-      expect(mockCollection).toHaveBeenCalledWith("riddles");
-      expect(mockWhere).toHaveBeenCalledWith("category", "==", "tutorial");
+      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "tutorialRiddles");
       expect(mockWhere).toHaveBeenCalledWith("tutorialIndex", "==", level);
       expect(mockLimit).toHaveBeenCalledWith(1);
     });
@@ -651,12 +659,12 @@ describe("RiddleService", () => {
         docs: [],
       };
 
-      mockGet.mockResolvedValue(mockSnapshot);
+      mockGetDocs.mockResolvedValue(mockSnapshot);
 
       const result = await RiddleService.fetchTutorialRiddle(level);
 
       expect(result).toBeNull();
-      expect(console.log).toHaveBeenCalledWith(
+      expect(logger.debug).toHaveBeenCalledWith(
         `No tutorial riddle found for level: ${level}`
       );
     });
@@ -679,13 +687,13 @@ describe("RiddleService", () => {
         ],
       };
 
-      mockGet.mockResolvedValue(mockSnapshot);
+      mockGetDocs.mockResolvedValue(mockSnapshot);
 
       const result = await RiddleService.fetchTutorialRiddle(level);
 
       expect(result).toBeNull();
-      expect(console.error).toHaveBeenCalledWith(
-        `Riddle data or answer missing for level: ${level}. Data:`,
+      expect(logger.error).toHaveBeenCalledWith(
+        `Tutorial riddle data or answer missing for level: ${level}. Data:`,
         invalidRiddleData
       );
     });
@@ -703,7 +711,7 @@ describe("RiddleService", () => {
         ],
       };
 
-      mockGet.mockResolvedValue(mockSnapshot);
+      mockGetDocs.mockResolvedValue(mockSnapshot);
 
       const result = await RiddleService.fetchTutorialRiddle(level);
 
@@ -733,7 +741,7 @@ describe("RiddleService", () => {
         ],
       };
 
-      mockGet.mockResolvedValue(mockSnapshot);
+      mockGetDocs.mockResolvedValue(mockSnapshot);
 
       const result = await RiddleService.fetchTutorialRiddle(level);
 
@@ -747,13 +755,13 @@ describe("RiddleService", () => {
     it("should handle Firestore errors", async () => {
       const level = 1;
       const error = new Error("Firestore tutorial error");
-      mockGet.mockRejectedValue(error);
+      mockGetDocs.mockRejectedValue(error);
 
       await expect(RiddleService.fetchTutorialRiddle(level)).rejects.toThrow(
         "Firestore tutorial error"
       );
 
-      expect(console.error).toHaveBeenCalledWith(
+      expect(logger.error).toHaveBeenCalledWith(
         "Error fetching tutorial riddle:",
         error
       );
@@ -762,13 +770,13 @@ describe("RiddleService", () => {
     it("should handle network timeout errors", async () => {
       const level = 1;
       const timeoutError = new Error("Request timeout");
-      mockGet.mockRejectedValue(timeoutError);
+      mockGetDocs.mockRejectedValue(timeoutError);
 
       await expect(RiddleService.fetchTutorialRiddle(level)).rejects.toThrow(
         "Request timeout"
       );
 
-      expect(console.error).toHaveBeenCalledWith(
+      expect(logger.error).toHaveBeenCalledWith(
         "Error fetching tutorial riddle:",
         timeoutError
       );
@@ -807,25 +815,22 @@ describe("RiddleService", () => {
     });
 
     it("should submit guess successfully and return validated result", async () => {
-      const mockCallable = jest.fn().mockResolvedValue({
-        data: mockValidResult,
-      });
-      mockHttpsCallable.mockReturnValue(mockCallable);
+      mockHttpsCallable.mockResolvedValue({ data: mockValidResult });
 
       const result = await RiddleService.submitGuess(mockGuessData);
 
       expect(SubmitGuessInputSchema.parse).toHaveBeenCalledWith(mockGuessData);
-      expect(mockHttpsCallable).toHaveBeenCalledWith("submitGuess");
-      expect(mockCallable).toHaveBeenCalledWith(mockGuessData);
+      expect(mockHttpsCallableFn).toHaveBeenCalledWith(expect.any(Object), "submitGuess");
+      expect(mockHttpsCallable).toHaveBeenCalledWith(mockGuessData);
       expect(SubmitGuessOutputSchema.parse).toHaveBeenCalledWith(
         mockValidResult
       );
       expect(result).toEqual(mockValidResult);
-      expect(console.log).toHaveBeenCalledWith(
+      expect(logger.debug).toHaveBeenCalledWith(
         "Submitting guess for validation:",
         mockGuessData
       );
-      expect(console.log).toHaveBeenCalledWith(
+      expect(logger.debug).toHaveBeenCalledWith(
         "Guess validation result received and validated:",
         mockValidResult
       );
@@ -838,15 +843,12 @@ describe("RiddleService", () => {
         riddleId: "daily-riddle-id",
         attempts: 1,
       };
-      const mockCallable = jest.fn().mockResolvedValue({
-        data: mockValidResult,
-      });
-      mockHttpsCallable.mockReturnValue(mockCallable);
+      mockHttpsCallable.mockResolvedValue({ data: mockValidResult });
 
       const result = await RiddleService.submitGuess(dailyGuessData);
 
       expect(SubmitGuessInputSchema.parse).toHaveBeenCalledWith(dailyGuessData);
-      expect(mockCallable).toHaveBeenCalledWith(dailyGuessData);
+      expect(mockHttpsCallable).toHaveBeenCalledWith(dailyGuessData);
       expect(result).toEqual(mockValidResult);
     });
 
@@ -857,17 +859,14 @@ describe("RiddleService", () => {
         riddleId: "tutorial-riddle-id",
         attempts: 1,
       };
-      const mockCallable = jest.fn().mockResolvedValue({
-        data: mockValidResult,
-      });
-      mockHttpsCallable.mockReturnValue(mockCallable);
+      mockHttpsCallable.mockResolvedValue({ data: mockValidResult });
 
       const result = await RiddleService.submitGuess(tutorialGuessData);
 
       expect(SubmitGuessInputSchema.parse).toHaveBeenCalledWith(
         tutorialGuessData
       );
-      expect(mockCallable).toHaveBeenCalledWith(tutorialGuessData);
+      expect(mockHttpsCallable).toHaveBeenCalledWith(tutorialGuessData);
       expect(result).toEqual(mockValidResult);
     });
 
@@ -884,10 +883,7 @@ describe("RiddleService", () => {
         gameOver: false,
         coinsEarned: 0,
       };
-      const mockCallable = jest.fn().mockResolvedValue({
-        data: incorrectResult,
-      });
-      mockHttpsCallable.mockReturnValue(mockCallable);
+      mockHttpsCallable.mockResolvedValue({ data: incorrectResult });
 
       const result = await RiddleService.submitGuess(mockGuessData);
 
@@ -901,7 +897,6 @@ describe("RiddleService", () => {
         {
           code: "invalid_type",
           expected: "string",
-          received: "number",
           path: ["guess"],
           message: "Expected string, received number",
         },
@@ -915,7 +910,7 @@ describe("RiddleService", () => {
         "Invalid guess data provided."
       );
 
-      expect(console.error).toHaveBeenCalledWith(
+      expect(logger.error).toHaveBeenCalledWith(
         "Zod validation error for guess submission:",
         zodError.issues
       );
@@ -926,16 +921,12 @@ describe("RiddleService", () => {
         {
           code: "invalid_type",
           expected: "boolean",
-          received: "string",
           path: ["isCorrect"],
           message: "Expected boolean, received string",
         },
       ]);
 
-      const mockCallable = jest.fn().mockResolvedValue({
-        data: { invalidData: true },
-      });
-      mockHttpsCallable.mockReturnValue(mockCallable);
+      mockHttpsCallable.mockResolvedValue({ data: { invalidData: true } });
 
       (SubmitGuessOutputSchema.parse as jest.Mock).mockImplementation(() => {
         throw zodError;
@@ -945,7 +936,7 @@ describe("RiddleService", () => {
         "Invalid guess data provided."
       );
 
-      expect(console.error).toHaveBeenCalledWith(
+      expect(logger.error).toHaveBeenCalledWith(
         "Zod validation error for guess submission:",
         zodError.issues
       );
@@ -953,14 +944,13 @@ describe("RiddleService", () => {
 
     it("should handle Cloud Function call errors", async () => {
       const functionError = new Error("Cloud Function execution failed");
-      const mockCallable = jest.fn().mockRejectedValue(functionError);
-      mockHttpsCallable.mockReturnValue(mockCallable);
+      mockHttpsCallable.mockRejectedValue(functionError);
 
       await expect(RiddleService.submitGuess(mockGuessData)).rejects.toThrow(
         "Failed to submit guess."
       );
 
-      expect(console.error).toHaveBeenCalledWith(
+      expect(logger.error).toHaveBeenCalledWith(
         "Error submitting guess to Cloud Function:",
         functionError
       );
@@ -968,14 +958,13 @@ describe("RiddleService", () => {
 
     it("should handle network timeout errors", async () => {
       const timeoutError = new Error("Network timeout");
-      const mockCallable = jest.fn().mockRejectedValue(timeoutError);
-      mockHttpsCallable.mockReturnValue(mockCallable);
+      mockHttpsCallable.mockRejectedValue(timeoutError);
 
       await expect(RiddleService.submitGuess(mockGuessData)).rejects.toThrow(
         "Failed to submit guess."
       );
 
-      expect(console.error).toHaveBeenCalledWith(
+      expect(logger.error).toHaveBeenCalledWith(
         "Error submitting guess to Cloud Function:",
         timeoutError
       );
@@ -983,14 +972,13 @@ describe("RiddleService", () => {
 
     it("should handle Firebase Functions permission errors", async () => {
       const permissionError = new Error("Permission denied");
-      const mockCallable = jest.fn().mockRejectedValue(permissionError);
-      mockHttpsCallable.mockReturnValue(mockCallable);
+      mockHttpsCallable.mockRejectedValue(permissionError);
 
       await expect(RiddleService.submitGuess(mockGuessData)).rejects.toThrow(
         "Failed to submit guess."
       );
 
-      expect(console.error).toHaveBeenCalledWith(
+      expect(logger.error).toHaveBeenCalledWith(
         "Error submitting guess to Cloud Function:",
         permissionError
       );
@@ -1008,7 +996,7 @@ describe("RiddleService", () => {
         {
           code: "too_small",
           minimum: 1,
-          type: "string",
+          origin: "string",
           inclusive: true,
           exact: false,
           path: ["guess"],
@@ -1024,7 +1012,7 @@ describe("RiddleService", () => {
         "Invalid guess data provided."
       );
 
-      expect(console.error).toHaveBeenCalledWith(
+      expect(logger.error).toHaveBeenCalledWith(
         "Zod validation error for guess submission:",
         zodError.issues
       );
@@ -1040,10 +1028,7 @@ describe("RiddleService", () => {
         gameOver: false,
         coinsEarned: 0,
       };
-      const mockCallable = jest.fn().mockResolvedValue({
-        data: partialResult,
-      });
-      mockHttpsCallable.mockReturnValue(mockCallable);
+      mockHttpsCallable.mockResolvedValue({ data: partialResult });
 
       const result = await RiddleService.submitGuess(mockGuessData);
 
@@ -1063,17 +1048,14 @@ describe("RiddleService", () => {
         "Failed to submit guess."
       );
 
-      expect(console.error).toHaveBeenCalledWith(
+      expect(logger.error).toHaveBeenCalledWith(
         "Error submitting guess to Cloud Function:",
         initError
       );
     });
 
     it("should handle multiple concurrent guess submissions", async () => {
-      const mockCallable = jest.fn().mockResolvedValue({
-        data: mockValidResult,
-      });
-      mockHttpsCallable.mockReturnValue(mockCallable);
+      mockHttpsCallable.mockResolvedValue({ data: mockValidResult });
 
       const guess1 = {
         riddleId: "riddle1",
@@ -1104,7 +1086,7 @@ describe("RiddleService", () => {
       results.forEach((result) => {
         expect(result).toEqual(mockValidResult);
       });
-      expect(mockCallable).toHaveBeenCalledTimes(3);
+      expect(mockHttpsCallable).toHaveBeenCalledTimes(3);
     });
   });
 
@@ -1133,10 +1115,10 @@ describe("RiddleService", () => {
       // Test multiple method calls use consistent collection names
       (mockAuth as any).currentUser = { uid: "test-user" };
 
-      // Test fetchDailyRiddle collections
+      // Test fetchDailyRiddle (uses doc() not collection())
       const userDoc = { exists: () => false };
       const dailyChallengeDoc = { exists: () => false };
-      mockGet
+      mockGetDoc
         .mockResolvedValueOnce(userDoc)
         .mockResolvedValueOnce(dailyChallengeDoc);
 
@@ -1144,14 +1126,14 @@ describe("RiddleService", () => {
 
       // Test other service collections
       const mockSnapshot = { empty: true, docs: [] };
-      mockGet.mockResolvedValue(mockSnapshot);
+      mockGetDocs.mockResolvedValue(mockSnapshot);
       await RiddleService.fetchClassicRiddle(1);
       await RiddleService.fetchTutorialRiddle(1);
 
-      // Verify collections were called correctly
-      expect(mockCollection).toHaveBeenCalledWith("users");
-      expect(mockCollection).toHaveBeenCalledWith("dailyChallenge");
-      expect(mockCollection).toHaveBeenCalledWith("riddles");
+      // Verify doc/collection calls were made with correct collection names
+      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "users", expect.any(String));
+      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "dailyChallenge", expect.any(String));
+      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "riddles");
     });
 
     it("should handle service recovery from intermittent errors", async () => {
@@ -1161,7 +1143,7 @@ describe("RiddleService", () => {
       const userDoc = { exists: () => false };
       const dailyChallengeDoc = { exists: () => false };
 
-      mockGet
+      mockGetDoc
         .mockRejectedValueOnce(new Error("Network error"))
         .mockResolvedValueOnce(userDoc)
         .mockResolvedValueOnce(dailyChallengeDoc);

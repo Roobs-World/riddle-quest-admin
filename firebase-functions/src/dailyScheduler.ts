@@ -2,24 +2,25 @@ import {onSchedule} from "firebase-functions/v2/scheduler";
 import {ScheduledEvent} from "firebase-functions/v2/scheduler";
 import {generateTodaysDailyChallenge} from "./riddleGeneration";
 import * as functions from "firebase-functions";
+import {captureException} from "./sentry";
 
 // Export the handler function for testing first
 export const scheduledTaskHandler = async (_context: ScheduledEvent) => {
-  console.log("Daily challenge scheduler started.");
+  functions.logger.info("Daily challenge scheduler started.");
 
   try {
     const currentDate = new Date();
     const todayDateString = currentDate.toISOString().split("T")[0]; // YYYY-MM-DD format
 
-    console.log(`🗓️ Starting daily challenge generation for ${todayDateString}...`);
+    functions.logger.info(`Starting daily challenge generation for ${todayDateString}...`);
 
     // Use the new 5-question daily challenge generation function
     await generateTodaysDailyChallenge(false); // forceGenerate = false
 
-    console.log("✅ Daily challenge scheduler finished successfully.");
+    functions.logger.info("Daily challenge scheduler finished successfully.");
   } catch (error) {
-    functions.logger.error("❌ Daily challenge scheduler failed:", error);
-    console.error("❌ Daily challenge scheduler failed:", error);
+    functions.logger.error("Daily challenge scheduler failed:", error);
+    captureException(error);
     throw error; // Re-throw to ensure proper error reporting
   }
 };
@@ -34,7 +35,6 @@ export const dailyChallengeScheduler = onSchedule(
   {
     schedule: "0 0 * * *", // Runs daily at 00:00 UTC
     timeZone: "UTC",
-    secrets: ["OPENAI_API_KEY"],
   },
   scheduledTaskHandler, // Use the exported handler here
 );

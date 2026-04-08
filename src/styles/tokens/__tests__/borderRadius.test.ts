@@ -124,7 +124,8 @@ describe("BORDER_RADIUS", () => {
       expect(keys).toContain("lg");
       expect(keys).toContain("xl");
       expect(keys).toContain("full");
-      expect(keys.length).toBe(6);
+      expect(keys).toContain("2xl");
+      expect(keys.length).toBe(7);
     });
   });
 });

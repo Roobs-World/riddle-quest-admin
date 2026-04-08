@@ -7,6 +7,7 @@ jest.mock("../../../styles", () => ({
   styles: {
     screenTitle: {},
   },
+  SPACING: { xs: 4, sm: 8, md: 16, lg: 24, xl: 32, "2xl": 48 },
 }));
 
 describe("ScreenTitle", () => {
@@ -57,10 +58,12 @@ describe("ScreenTitle", () => {
       const titleElement = getByText("Test Title");
 
       expect(titleElement.props.className).toContain("text-center");
-      expect(titleElement.props.className).toContain("text-3xl");
       expect(titleElement.props.className).toContain("font-bold");
-      expect(titleElement.props.className).toContain("mb-2");
       expect(titleElement.props.className).toContain("text-gray-800");
+      const style = Array.isArray(titleElement.props.style)
+        ? Object.assign({}, ...titleElement.props.style)
+        : titleElement.props.style;
+      expect(style.marginBottom).toBeDefined();
     });
 
     it("applies custom className when provided", () => {
@@ -132,7 +135,6 @@ describe("ScreenTitle", () => {
 
       // Should have both default and custom classes
       expect(titleElement.props.className).toContain("text-center");
-      expect(titleElement.props.className).toContain("text-3xl");
       expect(titleElement.props.className).toContain(customClass);
     });
 

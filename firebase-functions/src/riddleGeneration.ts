@@ -1,7 +1,9 @@
 import * as functions from "firebase-functions";
 import {onCall, CallableOptions, CallableRequest} from "firebase-functions/v2/https";
+import {logger} from "firebase-functions/v2";
 import * as admin from "firebase-admin";
 import {generateUniqueRiddle} from "./openaiService";
+import {captureException} from "./sentry";
 import type {ClassicRiddle, DailyRiddle, TutorialRiddle} from "./validation/firestoreSchemas";
 import {RiddleCollections} from "./validation/firestoreSchemas";
 
@@ -71,12 +73,13 @@ async function getExistingRiddlesFromFirestore(): Promise<{questions: string[]; 
       }
     });
 
-    console.log(
+    logger.info(
       `Loaded ${questions.length} existing questions and ${answers.length} existing answers for duplicate checking`,
     );
     return {questions, answers};
   } catch (error) {
-    console.error("Error fetching existing riddles from Firestore:", error);
+    logger.error("Error fetching existing riddles from Firestore:", error);
+    captureException(error);
     throw new Error("Failed to fetch existing riddles from Firestore.");
   }
 }
@@ -96,14 +99,15 @@ async function getNextClassicIndex(): Promise<number> {
       .get();
 
     if (riddlesSnapshot.empty) {
-      return 0; // Start from 0 if no classic riddles exist
+      return 1; // Start from 1 to match the classic_1 doc naming convention
     }
 
     const highestIndexDoc = riddlesSnapshot.docs[0];
     const highestIndex = highestIndexDoc.data().classicIndex || 0;
     return highestIndex + 1;
   } catch (error) {
-    console.error("Error getting next classic index:", error);
+    logger.error("Error getting next classic index:", error);
+    captureException(error);
     throw new Error("Failed to get next classic index.");
   }
 }
@@ -120,9 +124,10 @@ async function storeClassicRiddlesInFirestore(
   const batch = admin.firestore().batch();
 
   riddles.forEach((riddle, index) => {
-    const riddleRef = admin.firestore().collection(RiddleCollections.RIDDLES).doc();
+    const docId = `classic_${startingIndex + index}`;
+    const riddleRef = admin.firestore().collection(RiddleCollections.RIDDLES).doc(docId);
     const riddleData: ClassicRiddle = {
-      riddleId: riddleRef.id,
+      riddleId: docId,
       text: riddle.question,
       answer: riddle.answer,
       classicIndex: startingIndex + index,
@@ -134,9 +139,10 @@ async function storeClassicRiddlesInFirestore(
 
   try {
     await batch.commit();
-    console.log(`Successfully stored ${riddles.length} new classic riddles in Firestore.`);
+    logger.info(`Successfully stored ${riddles.length} new classic riddles in Firestore.`);
   } catch (error) {
-    console.error("Error storing classic riddles in Firestore:", error);
+    logger.error("Error storing classic riddles in Firestore:", error);
+    captureException(error);
     throw new Error("Failed to store classic riddles in Firestore.");
   }
 }
@@ -163,7 +169,8 @@ async function getNextDailyIndex(): Promise<number> {
     const highestIndex = highestIndexDoc.data().dailyIndex || 0;
     return highestIndex + 1;
   } catch (error) {
-    console.error("Error getting next daily index:", error);
+    logger.error("Error getting next daily index:", error);
+    captureException(error);
     throw new Error("Failed to get next daily index.");
   }
 }
@@ -194,9 +201,10 @@ async function storeDailyRiddlesInFirestore(
 
   try {
     await batch.commit();
-    console.log(`Successfully stored ${riddles.length} new daily riddles in Firestore.`);
+    logger.info(`Successfully stored ${riddles.length} new daily riddles in Firestore.`);
   } catch (error) {
-    console.error("Error storing daily riddles in Firestore:", error);
+    logger.error("Error storing daily riddles in Firestore:", error);
+    captureException(error);
     throw new Error("Failed to store daily riddles in Firestore.");
   }
 }
@@ -223,7 +231,8 @@ async function getNextTutorialIndex(): Promise<number> {
     const highestIndex = highestIndexDoc.data().tutorialIndex || 0;
     return highestIndex + 1;
   } catch (error) {
-    console.error("Error getting next tutorial index:", error);
+    logger.error("Error getting next tutorial index:", error);
+    captureException(error);
     throw new Error("Failed to get next tutorial index.");
   }
 }
@@ -254,9 +263,10 @@ async function storeTutorialRiddlesInFirestore(
 
   try {
     await batch.commit();
-    console.log(`Successfully stored ${riddles.length} new tutorial riddles in Firestore.`);
+    logger.info(`Successfully stored ${riddles.length} new tutorial riddles in Firestore.`);
   } catch (error) {
-    console.error("Error storing tutorial riddles in Firestore:", error);
+    logger.error("Error storing tutorial riddles in Firestore:", error);
+    captureException(error);
     throw new Error("Failed to store tutorial riddles in Firestore.");
   }
 }
@@ -268,7 +278,7 @@ async function storeTutorialRiddlesInFirestore(
  * @param numberOfRiddles - The number of new riddles to generate.
  */
 export async function generateAndAppendRiddles(numberOfRiddles: number): Promise<void> {
-  console.log(`Generating ${numberOfRiddles} new riddles...`);
+  logger.info(`Generating ${numberOfRiddles} new riddles...`);
 
   // Check for required environment variables
   const openAIKey = process.env.OPENAI_API_KEY;
@@ -314,19 +324,19 @@ export async function generateAndAppendRiddles(numberOfRiddles: number): Promise
         // Add to existing for subsequent duplicate checks within this run
         existing.questions.push(newRiddle.question.toLowerCase());
         existing.answers.push(newRiddle.answer.toLowerCase());
-        console.log(`Generated riddle ${newRiddles.length}/${numberOfRiddles} (attempt ${attemptCount})`);
+        logger.info(`Generated riddle ${newRiddles.length}/${numberOfRiddles} (attempt ${attemptCount})`);
       } else {
-        console.warn(`Generated riddle is a duplicate, trying again... (attempt ${attemptCount}/${maxAttempts})`);
+        logger.warn(`Generated riddle is a duplicate, trying again... (attempt ${attemptCount}/${maxAttempts})`);
       }
       generatedAttempts.push(newRiddle);
     } else {
-      console.warn(`Failed to generate unique riddle, retrying... (attempt ${attemptCount}/${maxAttempts})`);
+      logger.warn(`Failed to generate unique riddle, retrying... (attempt ${attemptCount}/${maxAttempts})`);
     }
   }
 
   // Check if we hit the circuit breaker
   if (newRiddles.length < numberOfRiddles && attemptCount >= maxAttempts) {
-    console.warn(
+    logger.warn(
       `Circuit breaker activated: Only generated ${newRiddles.length}/${numberOfRiddles} riddles after ${maxAttempts} attempts`,
     );
     if (newRiddles.length === 0) {
@@ -337,9 +347,9 @@ export async function generateAndAppendRiddles(numberOfRiddles: number): Promise
   if (newRiddles.length > 0) {
     // Store riddles directly in Firestore
     await storeClassicRiddlesInFirestore(newRiddles, startingIndex);
-    console.log(`Successfully generated and stored ${newRiddles.length} new riddles in Firestore.`);
+    logger.info(`Successfully generated and stored ${newRiddles.length} new riddles in Firestore.`);
   } else {
-    console.warn("No new unique riddles were generated.");
+    logger.warn("No new unique riddles were generated.");
   }
 }
 
@@ -350,7 +360,7 @@ export async function generateAndAppendRiddles(numberOfRiddles: number): Promise
  * @param numberOfRiddles - The number of new daily riddles to generate.
  */
 export async function generateAndAppendDailyRiddles(numberOfRiddles: number): Promise<void> {
-  console.log(`Generating ${numberOfRiddles} new daily riddles...`);
+  logger.info(`Generating ${numberOfRiddles} new daily riddles...`);
 
   // Check for required environment variables
   const openAIKey = process.env.OPENAI_API_KEY;
@@ -396,19 +406,19 @@ export async function generateAndAppendDailyRiddles(numberOfRiddles: number): Pr
         // Add to existing for subsequent duplicate checks within this run
         existing.questions.push(newRiddle.question.toLowerCase());
         existing.answers.push(newRiddle.answer.toLowerCase());
-        console.log(`Generated daily riddle ${newRiddles.length}/${numberOfRiddles} (attempt ${attemptCount})`);
+        logger.info(`Generated daily riddle ${newRiddles.length}/${numberOfRiddles} (attempt ${attemptCount})`);
       } else {
-        console.warn(`Generated daily riddle is a duplicate, trying again... (attempt ${attemptCount}/${maxAttempts})`);
+        logger.warn(`Generated daily riddle is a duplicate, trying again... (attempt ${attemptCount}/${maxAttempts})`);
       }
       generatedAttempts.push(newRiddle);
     } else {
-      console.warn(`Failed to generate unique daily riddle, retrying... (attempt ${attemptCount}/${maxAttempts})`);
+      logger.warn(`Failed to generate unique daily riddle, retrying... (attempt ${attemptCount}/${maxAttempts})`);
     }
   }
 
   // Check if we hit the circuit breaker
   if (newRiddles.length < numberOfRiddles && attemptCount >= maxAttempts) {
-    console.warn(
+    logger.warn(
       `Circuit breaker activated: Only generated ${newRiddles.length}/${numberOfRiddles} daily riddles after ${maxAttempts} attempts`,
     );
     if (newRiddles.length === 0) {
@@ -419,9 +429,9 @@ export async function generateAndAppendDailyRiddles(numberOfRiddles: number): Pr
   if (newRiddles.length > 0) {
     // Store daily riddles directly in Firestore
     await storeDailyRiddlesInFirestore(newRiddles, startingIndex);
-    console.log(`Successfully generated and stored ${newRiddles.length} new daily riddles in Firestore.`);
+    logger.info(`Successfully generated and stored ${newRiddles.length} new daily riddles in Firestore.`);
   } else {
-    console.warn("No new unique daily riddles were generated.");
+    logger.warn("No new unique daily riddles were generated.");
   }
 }
 
@@ -432,7 +442,7 @@ export async function generateAndAppendDailyRiddles(numberOfRiddles: number): Pr
  * @param numberOfRiddles - The number of new tutorial riddles to generate.
  */
 export async function generateAndAppendTutorialRiddles(numberOfRiddles: number): Promise<void> {
-  console.log(`Generating ${numberOfRiddles} new tutorial riddles...`);
+  logger.info(`Generating ${numberOfRiddles} new tutorial riddles...`);
 
   // Check for required environment variables
   const openAIKey = process.env.OPENAI_API_KEY;
@@ -478,21 +488,21 @@ export async function generateAndAppendTutorialRiddles(numberOfRiddles: number):
         // Add to existing for subsequent duplicate checks within this run
         existing.questions.push(newRiddle.question.toLowerCase());
         existing.answers.push(newRiddle.answer.toLowerCase());
-        console.log(`Generated tutorial riddle ${newRiddles.length}/${numberOfRiddles} (attempt ${attemptCount})`);
+        logger.info(`Generated tutorial riddle ${newRiddles.length}/${numberOfRiddles} (attempt ${attemptCount})`);
       } else {
-        console.warn(
+        logger.warn(
           `Generated tutorial riddle is a duplicate, trying again... (attempt ${attemptCount}/${maxAttempts})`,
         );
       }
       generatedAttempts.push(newRiddle);
     } else {
-      console.warn(`Failed to generate unique tutorial riddle, retrying... (attempt ${attemptCount}/${maxAttempts})`);
+      logger.warn(`Failed to generate unique tutorial riddle, retrying... (attempt ${attemptCount}/${maxAttempts})`);
     }
   }
 
   // Check if we hit the circuit breaker
   if (newRiddles.length < numberOfRiddles && attemptCount >= maxAttempts) {
-    console.warn(
+    logger.warn(
       `Circuit breaker activated: Only generated ${newRiddles.length}/${numberOfRiddles} tutorial riddles after ${maxAttempts} attempts`,
     );
     if (newRiddles.length === 0) {
@@ -503,9 +513,9 @@ export async function generateAndAppendTutorialRiddles(numberOfRiddles: number):
   if (newRiddles.length > 0) {
     // Store tutorial riddles directly in Firestore
     await storeTutorialRiddlesInFirestore(newRiddles, startingIndex);
-    console.log(`Successfully generated and stored ${newRiddles.length} new tutorial riddles in Firestore.`);
+    logger.info(`Successfully generated and stored ${newRiddles.length} new tutorial riddles in Firestore.`);
   } else {
-    console.warn("No new unique tutorial riddles were generated.");
+    logger.warn("No new unique tutorial riddles were generated.");
   }
 }
 
@@ -516,7 +526,7 @@ export async function generateAndAppendTutorialRiddles(numberOfRiddles: number):
  * @param initialRiddleCount - The number of initial riddles to generate.
  */
 export async function initializeRiddleDatabaseIfEmpty(initialRiddleCount: number = 20): Promise<void> {
-  console.log("🔍 Checking if riddle database needs initialization...");
+  logger.info("Checking if riddle database needs initialization...");
 
   try {
     // Check if any classic riddles already exist
@@ -528,16 +538,17 @@ export async function initializeRiddleDatabaseIfEmpty(initialRiddleCount: number
       .get();
 
     if (!existingRiddlesSnapshot.empty) {
-      console.log("✅ Riddle database already initialized - classic riddles exist.");
+      logger.info("Riddle database already initialized - classic riddles exist.");
       return;
     }
 
     // Generate initial batch of riddles for new database
-    console.log(`📝 Generating ${initialRiddleCount} initial riddles for database initialization...`);
+    logger.info(`Generating ${initialRiddleCount} initial riddles for database initialization...`);
     await generateAndAppendRiddles(initialRiddleCount);
-    console.log(`✅ Riddle database initialized with ${initialRiddleCount} classic riddles.`);
+    logger.info(`Riddle database initialized with ${initialRiddleCount} classic riddles.`);
   } catch (error) {
-    console.error("❌ Error initializing riddle database:", error);
+    logger.error("Error initializing riddle database:", error);
+    captureException(error);
     throw new Error("Failed to initialize riddle database.");
   }
 }
@@ -553,30 +564,24 @@ export const generateClassicRiddles = onCall(
     enforceAppCheck: false,
     cors: true,
     region: "us-central1",
-    secrets: ["OPENAI_API_KEY"],
     timeoutSeconds: 540, // 9 minutes for riddle generation
   } as CallableOptions,
   async (): Promise<{success: boolean; message: string}> => {
-    console.log("🚀 generateClassicRiddles function called - entry point reached");
-    console.log("🔧 Function configuration: enforceAppCheck=false, cors=true, region=us-central1");
+    logger.info("generateClassicRiddles function called - entry point reached");
 
     try {
-      console.log("📝 Starting riddle generation process with 10 riddles...");
+      logger.info("Starting riddle generation process with 10 riddles...");
       await generateAndAppendRiddles(10);
-      console.log("✅ Classic Mode riddles generated and stored in Firestore successfully.");
+      logger.info("Classic Mode riddles generated and stored in Firestore successfully.");
       return {
         success: true,
         message: "New Classic Mode riddles generated and added to Firestore.",
       };
     } catch (error) {
-      console.error("❌ Error generating Classic Mode riddles:", error);
-      console.error("❌ Error type:", typeof error);
-      console.error("❌ Error constructor:", error?.constructor?.name);
+      logger.error("Error generating Classic Mode riddles:", error);
+      captureException(error);
       if (error instanceof Error) {
-        console.error("❌ Error message:", error.message);
-        console.error("❌ Error stack:", error.stack);
-      } else {
-        console.error("❌ Error details:", String(error));
+        logger.error("Error message:", error.message);
       }
       throw new functions.https.HttpsError("internal", "Failed to generate new classic riddles.", error);
     }
@@ -594,12 +599,10 @@ export const initializeRiddleDatabase = onCall(
     enforceAppCheck: false,
     cors: true,
     region: "us-central1",
-    secrets: ["OPENAI_API_KEY"],
     timeoutSeconds: 300, // 5 minutes for initial database setup
   } as CallableOptions,
   async (): Promise<{success: boolean; message: string; riddlesGenerated: number}> => {
-    console.log("🚀 initializeRiddleDatabase function called - entry point reached");
-    console.log("🔧 Function configuration: enforceAppCheck=false, cors=true, region=us-central1");
+    logger.info("initializeRiddleDatabase function called - entry point reached");
 
     try {
       // Check if any classic riddles already exist
@@ -611,7 +614,7 @@ export const initializeRiddleDatabase = onCall(
         .get();
 
       if (!existingRiddlesSnapshot.empty) {
-        console.log("✅ Riddle database already initialized - classic riddles exist.");
+        logger.info("Riddle database already initialized - classic riddles exist.");
         return {
           success: true,
           message: "Riddle database already initialized.",
@@ -621,9 +624,9 @@ export const initializeRiddleDatabase = onCall(
 
       // Generate initial batch of riddles for new database
       const initialRiddleCount = 20;
-      console.log(`📝 Generating ${initialRiddleCount} initial riddles for database initialization...`);
+      logger.info(`Generating ${initialRiddleCount} initial riddles for database initialization...`);
       await generateAndAppendRiddles(initialRiddleCount);
-      console.log(`✅ Riddle database initialized with ${initialRiddleCount} classic riddles.`);
+      logger.info(`Riddle database initialized with ${initialRiddleCount} classic riddles.`);
 
       return {
         success: true,
@@ -631,14 +634,10 @@ export const initializeRiddleDatabase = onCall(
         riddlesGenerated: initialRiddleCount,
       };
     } catch (error) {
-      console.error("❌ Error initializing riddle database:", error);
-      console.error("❌ Error type:", typeof error);
-      console.error("❌ Error constructor:", error?.constructor?.name);
+      logger.error("Error initializing riddle database:", error);
+      captureException(error);
       if (error instanceof Error) {
-        console.error("❌ Error message:", error.message);
-        console.error("❌ Error stack:", error.stack);
-      } else {
-        console.error("❌ Error details:", String(error));
+        logger.error("Error message:", error.message);
       }
       throw new functions.https.HttpsError("internal", "Failed to initialize riddle database.", error);
     }
@@ -655,30 +654,24 @@ export const generateDailyRiddles = onCall(
     enforceAppCheck: false,
     cors: true,
     region: "us-central1",
-    secrets: ["OPENAI_API_KEY"],
     timeoutSeconds: 540, // 9 minutes for riddle generation
   } as CallableOptions,
   async (): Promise<{success: boolean; message: string}> => {
-    console.log("🚀 generateDailyRiddles function called - entry point reached");
-    console.log("🔧 Function configuration: enforceAppCheck=false, cors=true, region=us-central1");
+    logger.info("generateDailyRiddles function called - entry point reached");
 
     try {
-      console.log("📝 Starting daily riddle generation process with 10 riddles...");
+      logger.info("Starting daily riddle generation process with 10 riddles...");
       await generateAndAppendDailyRiddles(10);
-      console.log("✅ Daily Mode riddles generated and stored in Firestore successfully.");
+      logger.info("Daily Mode riddles generated and stored in Firestore successfully.");
       return {
         success: true,
         message: "New Daily Mode riddles generated and added to Firestore.",
       };
     } catch (error) {
-      console.error("❌ Error generating Daily Mode riddles:", error);
-      console.error("❌ Error type:", typeof error);
-      console.error("❌ Error constructor:", error?.constructor?.name);
+      logger.error("Error generating Daily Mode riddles:", error);
+      captureException(error);
       if (error instanceof Error) {
-        console.error("❌ Error message:", error.message);
-        console.error("❌ Error stack:", error.stack);
-      } else {
-        console.error("❌ Error details:", String(error));
+        logger.error("Error message:", error.message);
       }
       throw new functions.https.HttpsError("internal", "Failed to generate new daily riddles.", error);
     }
@@ -696,30 +689,24 @@ export const generateTutorialRiddles = onCall(
     enforceAppCheck: false,
     cors: true,
     region: "us-central1",
-    secrets: ["OPENAI_API_KEY"],
     timeoutSeconds: 540, // 9 minutes for riddle generation
   } as CallableOptions,
   async (): Promise<{success: boolean; message: string}> => {
-    console.log("🚀 generateTutorialRiddles function called - entry point reached");
-    console.log("🔧 Function configuration: enforceAppCheck=false, cors=true, region=us-central1");
+    logger.info("generateTutorialRiddles function called - entry point reached");
 
     try {
-      console.log("📝 Starting tutorial riddle generation process with 10 riddles...");
+      logger.info("Starting tutorial riddle generation process with 10 riddles...");
       await generateAndAppendTutorialRiddles(10);
-      console.log("✅ Tutorial riddles generated and stored in Firestore successfully.");
+      logger.info("Tutorial riddles generated and stored in Firestore successfully.");
       return {
         success: true,
         message: "New Tutorial riddles generated and added to Firestore.",
       };
     } catch (error) {
-      console.error("❌ Error generating Tutorial riddles:", error);
-      console.error("❌ Error type:", typeof error);
-      console.error("❌ Error constructor:", error?.constructor?.name);
+      logger.error("Error generating Tutorial riddles:", error);
+      captureException(error);
       if (error instanceof Error) {
-        console.error("❌ Error message:", error.message);
-        console.error("❌ Error stack:", error.stack);
-      } else {
-        console.error("❌ Error details:", String(error));
+        logger.error("Error message:", error.message);
       }
       throw new functions.https.HttpsError("internal", "Failed to generate new tutorial riddles.", error);
     }
@@ -733,7 +720,7 @@ export const generateTutorialRiddles = onCall(
  * @return A promise that resolves when the daily challenge is created.
  */
 export async function generateTodaysDailyChallenge(forceGenerate: boolean = false): Promise<void> {
-  console.log("🚀 Generating today's 5-question daily challenge...");
+  logger.info("Generating today's 5-question daily challenge...");
 
   const today = new Date();
   const todayDateString = today.toISOString().split("T")[0]; // YYYY-MM-DD format
@@ -745,12 +732,12 @@ export async function generateTodaysDailyChallenge(forceGenerate: boolean = fals
   if (existingChallenge.exists && !forceGenerate) {
     const existingData = existingChallenge.data();
     if (existingData?.date === todayDateString && existingData?.questions?.length === 5) {
-      console.log("✅ Today's daily challenge already exists with 5 questions.");
+      logger.info("Today's daily challenge already exists with 5 questions.");
       return;
     }
   }
 
-  console.log(`📝 Generating 5 new riddles for daily challenge on ${todayDateString}...`);
+  logger.info(`Generating 5 new riddles for daily challenge on ${todayDateString}...`);
 
   // Check for required environment variables
   const openAIKey = process.env.OPENAI_API_KEY;
@@ -819,19 +806,19 @@ export async function generateTodaysDailyChallenge(forceGenerate: boolean = fals
         existing.questions.push(newRiddle.question.toLowerCase());
         existing.answers.push(newRiddle.answer.toLowerCase());
 
-        console.log(`Generated daily challenge question ${dailyChallengeQuestions.length}/5 (attempt ${attemptCount})`);
+        logger.info(`Generated daily challenge question ${dailyChallengeQuestions.length}/5 (attempt ${attemptCount})`);
       } else {
-        console.warn(`Generated riddle is a duplicate, trying again... (attempt ${attemptCount}/${maxAttempts})`);
+        logger.warn(`Generated riddle is a duplicate, trying again... (attempt ${attemptCount}/${maxAttempts})`);
       }
       generatedAttempts.push(newRiddle);
     } else {
-      console.warn(`Failed to generate unique riddle, retrying... (attempt ${attemptCount}/${maxAttempts})`);
+      logger.warn(`Failed to generate unique riddle, retrying... (attempt ${attemptCount}/${maxAttempts})`);
     }
   }
 
   // Check if we hit the circuit breaker
   if (dailyChallengeQuestions.length < 5 && attemptCount >= maxAttempts) {
-    console.warn(
+    logger.warn(
       `Circuit breaker activated: Only generated ${dailyChallengeQuestions.length}/5 daily challenge questions after ${maxAttempts} attempts`,
     );
     if (dailyChallengeQuestions.length === 0) {
@@ -858,8 +845,8 @@ export async function generateTodaysDailyChallenge(forceGenerate: boolean = fals
     // Reset all users' daily challenge progress for the new day
     await resetAllUsersDailyChallengeProgress();
 
-    console.log(
-      `✅ Successfully generated and stored ${dailyChallengeQuestions.length} questions for today's daily challenge.`,
+    logger.info(
+      `Successfully generated and stored ${dailyChallengeQuestions.length} questions for today's daily challenge.`,
     );
   } else {
     throw new Error("Failed to generate any daily challenge questions.");
@@ -871,14 +858,14 @@ export async function generateTodaysDailyChallenge(forceGenerate: boolean = fals
  * This is called when a new daily challenge is generated.
  */
 async function resetAllUsersDailyChallengeProgress(): Promise<void> {
-  console.log("🔄 Resetting all users' daily challenge progress for new day...");
+  logger.info("Resetting all users' daily challenge progress for new day...");
 
   try {
     // Get all user documents
     const usersSnapshot = await admin.firestore().collection("users").get();
 
     if (usersSnapshot.empty) {
-      console.log("No users found to reset progress.");
+      logger.info("No users found to reset progress.");
       return;
     }
 
@@ -897,9 +884,10 @@ async function resetAllUsersDailyChallengeProgress(): Promise<void> {
     // Commit the batch update
     await batch.commit();
 
-    console.log(`✅ Reset daily challenge progress for ${userCount} users.`);
+    logger.info(`Reset daily challenge progress for ${userCount} users.`);
   } catch (error) {
-    console.error("❌ Error resetting users' daily challenge progress:", error);
+    logger.error("Error resetting users' daily challenge progress:", error);
+    captureException(error);
     throw new Error("Failed to reset users' daily challenge progress.");
   }
 }
@@ -914,13 +902,12 @@ export const generateTodaysDailyChallengeFunction = onCall(
     enforceAppCheck: false,
     cors: true,
     region: "us-central1",
-    secrets: ["OPENAI_API_KEY"],
     timeoutSeconds: 540, // 9 minutes for riddle generation
   } as CallableOptions,
   async (
     request: CallableRequest<{forceGenerate?: boolean}>,
   ): Promise<{success: boolean; message: string; questionsGenerated: number}> => {
-    console.log("🚀 generateTodaysDailyChallengeFunction called - entry point reached");
+    logger.info("generateTodaysDailyChallengeFunction called - entry point reached");
 
     try {
       const {forceGenerate = false} = request.data || {};
@@ -928,7 +915,7 @@ export const generateTodaysDailyChallengeFunction = onCall(
       const today = new Date();
       const todayDateString = today.toISOString().split("T")[0];
 
-      console.log(`📝 Starting daily challenge generation for ${todayDateString}...`);
+      logger.info(`Starting daily challenge generation for ${todayDateString}...`);
       await generateTodaysDailyChallenge(forceGenerate);
 
       // Get the generated challenge to count questions
@@ -936,21 +923,17 @@ export const generateTodaysDailyChallengeFunction = onCall(
       const challengeDoc = await dailyChallengeRef.get();
       const questionsGenerated = challengeDoc.exists ? challengeDoc.data()?.questions?.length || 0 : 0;
 
-      console.log(`✅ Daily challenge generated successfully with ${questionsGenerated} questions.`);
+      logger.info(`Daily challenge generated successfully with ${questionsGenerated} questions.`);
       return {
         success: true,
         message: `Today's daily challenge generated successfully with ${questionsGenerated} questions.`,
         questionsGenerated,
       };
     } catch (error) {
-      console.error("❌ Error generating today's daily challenge:", error);
-      console.error("❌ Error type:", typeof error);
-      console.error("❌ Error constructor:", error?.constructor?.name);
+      logger.error("Error generating today's daily challenge:", error);
+      captureException(error);
       if (error instanceof Error) {
-        console.error("❌ Error message:", error.message);
-        console.error("❌ Error stack:", error.stack);
-      } else {
-        console.error("❌ Error details:", String(error));
+        logger.error("Error message:", error.message);
       }
       throw new functions.https.HttpsError("internal", "Failed to generate today's daily challenge.", error);
     }

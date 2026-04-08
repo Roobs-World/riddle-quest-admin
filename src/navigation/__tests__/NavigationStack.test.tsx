@@ -4,6 +4,36 @@ import { Navigation } from "../NavigationStack";
 import { useAuth } from "../../contexts/AuthContext";
 import { AppStrings } from "../../constants/AppStrings";
 
+jest.mock("@react-native-firebase/app", () => ({
+  getApp: jest.fn(() => ({})),
+}));
+
+jest.mock("@react-native-firebase/firestore", () => ({
+  getFirestore: jest.fn(() => ({
+    collection: jest.fn(() => ({
+      doc: jest.fn(() => ({ get: jest.fn(), set: jest.fn(), update: jest.fn() })),
+      where: jest.fn(() => ({ limit: jest.fn(() => ({ get: jest.fn() })) })),
+    })),
+  })),
+}));
+
+jest.mock("@react-native-firebase/storage", () => ({
+  getStorage: jest.fn(() => ({
+    ref: jest.fn(() => ({
+      putFile: jest.fn(),
+      getDownloadURL: jest.fn(),
+    })),
+  })),
+}));
+
+jest.mock("@react-native-firebase/auth", () => ({
+  getAuth: jest.fn(() => ({
+    currentUser: null,
+    onAuthStateChanged: jest.fn(),
+    signOut: jest.fn(),
+  })),
+}));
+
 // Mock all dependencies
 jest.mock("../../screens/LandingScreen", () => {
   const React = require("react");
@@ -55,21 +85,14 @@ jest.mock("../../screens/game/GameScreen", () => {
   return MockGameScreen;
 });
 
-jest.mock("../../screens/CreditsScreen", () => {
-  const React = require("react");
-  const { View } = require("react-native");
-  const MockCreditsScreen = () => <View testID="credits-screen" />;
-  MockCreditsScreen.displayName = "MockCreditsScreen";
-  return MockCreditsScreen;
-});
-
 jest.mock("../../components/loading/PulsingSpinner", () => {
   const React = require("react");
   const { View } = require("react-native");
-  const MockPulsingSpinner = (props: any) => (
+  const MockPulsingSpinner = (_props: any) => (
     <View
       testID="pulsing-spinner"
-      accessibilityLabel={`visible:${props.visible},opacity:${props.opacity},size:${props.size}`}
+      accessibilityLabel="Loading"
+      accessibilityRole="progressbar"
     />
   );
   MockPulsingSpinner.displayName = "MockPulsingSpinner";
@@ -78,6 +101,16 @@ jest.mock("../../components/loading/PulsingSpinner", () => {
 
 jest.mock("../../services/FirestoreService", () => ({
   fetchClassicRiddleFromFirestore: jest.fn(),
+  fetchTutorialRiddleFromFirestore: jest.fn(),
+  updateTutorialIndexInFirestore: jest.fn(),
+}));
+
+jest.mock("../../services/AnalyticsService", () => ({
+  analyticsService: { logScreenView: jest.fn() },
+}));
+
+jest.mock("../../hooks/useNotificationNavigation", () => ({
+  useNotificationNavigation: jest.fn(),
 }));
 
 jest.mock("../../contexts/AuthContext");
@@ -153,14 +186,11 @@ describe("Navigation", () => {
       const { getByTestId } = render(<Navigation />);
 
       expect(getByTestId("pulsing-spinner")).toBeTruthy();
-      expect(getByTestId("pulsing-spinner").props.accessibilityLabel).toContain(
-        "visible:true"
+      expect(getByTestId("pulsing-spinner").props.accessibilityLabel).toBe(
+        "Loading"
       );
-      expect(getByTestId("pulsing-spinner").props.accessibilityLabel).toContain(
-        "size:120"
-      );
-      expect(getByTestId("pulsing-spinner").props.accessibilityLabel).toContain(
-        "opacity:0.8"
+      expect(getByTestId("pulsing-spinner").props.accessibilityRole).toBe(
+        "progressbar"
       );
     });
 
@@ -185,8 +215,11 @@ describe("Navigation", () => {
       const { getByTestId } = render(<Navigation />);
 
       expect(getByTestId("pulsing-spinner")).toBeTruthy();
-      expect(getByTestId("pulsing-spinner").props.accessibilityLabel).toContain(
-        "visible:true"
+      expect(getByTestId("pulsing-spinner").props.accessibilityLabel).toBe(
+        "Loading"
+      );
+      expect(getByTestId("pulsing-spinner").props.accessibilityRole).toBe(
+        "progressbar"
       );
     });
 

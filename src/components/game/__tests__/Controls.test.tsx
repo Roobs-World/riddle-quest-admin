@@ -2,13 +2,6 @@ import React from "react";
 import { render, fireEvent } from "@testing-library/react-native";
 import Controls from "../Controls";
 
-// Mock React Native components
-jest.mock("react-native", () => ({
-  View: "View",
-  TouchableOpacity: "TouchableOpacity",
-  Text: "Text",
-}));
-
 describe("Controls", () => {
   const mockOnNextPress = jest.fn();
 

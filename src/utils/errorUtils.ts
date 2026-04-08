@@ -1,5 +1,7 @@
 import { ZodError } from "zod";
 import { ValidationUtils } from "./validationUtils";
+import { logger } from "./logger";
+import { captureException } from "./sentry";
 
 /**
  * Custom error types for the application
@@ -162,32 +164,33 @@ export class ErrorUtils {
    */
   static logError(error: unknown, context?: string): void {
     const prefix = context ? `[${context}]` : "";
+    captureException(error, context ? { context } : undefined);
 
     if (error instanceof AppError) {
-      console.error(`${prefix} AppError:`, {
+      logger.error(`${prefix} AppError:`, {
         name: error.name,
         message: error.message,
         code: error.code,
         statusCode: error.statusCode,
       });
     } else if (this.isZodError(error)) {
-      console.error(
+      logger.error(
         `${prefix} Validation Error:`,
         ValidationUtils.formatZodError(error)
       );
     } else if (this.isFirebaseError(error)) {
-      console.error(`${prefix} Firebase Error:`, {
+      logger.error(`${prefix} Firebase Error:`, {
         code: error.code,
         message: error.message,
       });
     } else if (error instanceof Error) {
-      console.error(`${prefix} Error:`, {
+      logger.error(`${prefix} Error:`, {
         name: error.name,
         message: error.message,
         stack: error.stack,
       });
     } else {
-      console.error(`${prefix} Unknown Error:`, error);
+      logger.error(`${prefix} Unknown Error:`, error);
     }
   }
 

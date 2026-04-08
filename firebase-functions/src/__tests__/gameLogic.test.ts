@@ -1,8 +1,11 @@
 import {beforeEach, describe, expect, it, jest, beforeAll, afterAll} from "@jest/globals";
 import {HttpsError as HttpsErrorV2, CallableRequest as CallableRequestV2} from "firebase-functions/v2/https"; // Specifically for onCall v2 HttpsError
 import {logger} from "firebase-functions";
-import {getHint as getHintOriginal, spendCoins as spendCoinsOriginal} from "../gameLogic";
-import {updateUserCoins, getUser} from "../firestoreService";
+import {
+  spendCoins as spendCoinsOriginal,
+  skipRiddle as skipRiddleOriginal,
+} from "../gameLogic";
+import {updateUserCoins, getUser, getRiddleByGameMode} from "../firestoreService";
 import {DecodedIdToken} from "firebase-admin/auth";
 
 // Mock document snapshot interface
@@ -15,6 +18,7 @@ interface MockDocumentSnapshot {
 jest.mock("../firestoreService", () => ({
   updateUserCoins: jest.fn(),
   getUser: jest.fn(),
+  getRiddleByGameMode: jest.fn(),
 }));
 
 const mockFirestoreGet = jest.fn() as jest.MockedFunction<() => Promise<MockDocumentSnapshot>>;
@@ -51,9 +55,14 @@ const createMockFirestoreRef = (): MockFirestoreRef => ({
 const mockFirestoreRoot = createMockFirestoreRef();
 
 jest.mock("firebase-admin", () => {
+  const firestoreFn = () => mockFirestoreRoot;
+  (firestoreFn as {FieldValue: {increment: (n: number) => unknown; serverTimestamp: () => unknown}}).FieldValue = {
+    increment: (n: number) => ({__type: "increment" as const, value: n}),
+    serverTimestamp: () => ({__type: "serverTimestamp" as const}),
+  };
   return {
     initializeApp: jest.fn(),
-    firestore: () => mockFirestoreRoot,
+    firestore: firestoreFn,
   };
 });
 
@@ -117,26 +126,25 @@ jest.mock("firebase-functions/v2/https", () => {
 // --- Mocks End ---
 
 // Define types for request data
-interface GetHintData {
-  currentAttempt: string[];
-  riddleId: string;
-  gameMode: "classic" | "challenge" | "tutorial";
-}
-
 interface SpendCoinsData {
   amount: number;
   reason: string;
 }
 
+interface SkipRiddleData {
+  riddleId: string;
+  gameMode: "classic" | "challenge" | "tutorial";
+}
+
 // Define handler types based on function signatures and expected return values from tests
-type GetHintHandler = (
-  request: CallableRequestV2<GetHintData>,
-) => Promise<{revealedLetter: string; index: number; coinsCost: number} | null>;
 type SpendCoinsHandler = (request: CallableRequestV2<SpendCoinsData>) => Promise<{newCoins: number}>;
+type SkipRiddleHandler = (
+  request: CallableRequestV2<SkipRiddleData>,
+) => Promise<{success: boolean; newProgress?: unknown; message: string; costDeducted: number}>;
 
 // Cast the imported functions to their handler types for use in tests
-const getHint = getHintOriginal as unknown as GetHintHandler;
 const spendCoins = spendCoinsOriginal as unknown as SpendCoinsHandler;
+const skipRiddle = skipRiddleOriginal as unknown as SkipRiddleHandler;
 
 // Helper function to create mock CallableRequest
 const createMockCallableRequest = <T>(
@@ -196,228 +204,15 @@ describe("Game Logic Functions", () => {
 
     // Re-establish default mock for getUser after clearing mocks
     (getUser as ReturnType<typeof jest.fn>).mockResolvedValue(defaultMockUser);
+
+    // Default getRiddleByGameMode mock for classic riddles
+    (getRiddleByGameMode as ReturnType<typeof jest.fn>).mockResolvedValue({answer: "apple"});
+
   });
 
   // Cleanup that runs once after all tests
   afterAll(() => {
     jest.restoreAllMocks();
-  });
-
-  describe("getHint", () => {
-    const riddleId = "riddle1";
-    const mockRiddle = {answer: "apple"};
-    const coinsCost = 50;
-
-    it("should throw unauthenticated if user is not authenticated", async () => {
-      const request = createMockCallableRequest(
-        {currentAttempt: [], riddleId, gameMode: "classic" as const},
-        undefined,
-      );
-      try {
-        await getHint(request);
-        throw new Error("Test failed: Expected HttpsErrorV2 to be thrown.");
-      } catch (e: unknown) {
-        if (e instanceof HttpsErrorV2) {
-          expect(e).toBeInstanceOf(HttpsErrorV2);
-          expect(e.code).toBe("unauthenticated");
-          expect(e.message).toBe("The user must be authenticated to get a hint.");
-        } else {
-          throw e;
-        }
-      }
-    });
-
-    it("should throw not-found if riddle does not exist", async () => {
-      const mockDoc: MockDocumentSnapshot = {exists: false, data: () => undefined};
-      mockFirestoreGet.mockResolvedValueOnce(mockDoc); // Riddle doc
-      const request = createMockCallableRequest(
-        {currentAttempt: [], riddleId, gameMode: "classic" as const},
-        createMockAuth(mockUserId),
-      );
-      try {
-        await getHint(request);
-        throw new Error("Test failed: Expected HttpsErrorV2 to be thrown.");
-      } catch (e: unknown) {
-        if (e instanceof HttpsErrorV2) {
-          expect(e).toBeInstanceOf(HttpsErrorV2);
-          expect(e.code).toBe("not-found");
-          expect(e.message).toBe(`classic riddle with ID ${riddleId} not found.`);
-        } else {
-          throw e;
-        }
-      }
-    });
-
-    it("should throw internal if riddle has no answer", async () => {
-      const mockDoc: MockDocumentSnapshot = {exists: true, data: () => ({text: "A riddle"})};
-      mockFirestoreGet.mockResolvedValueOnce(mockDoc); // Riddle doc with no answer
-      const request = createMockCallableRequest(
-        {currentAttempt: [], riddleId, gameMode: "classic" as const},
-        createMockAuth(mockUserId),
-      );
-      try {
-        await getHint(request);
-        throw new Error("Test failed: Expected HttpsErrorV2 to be thrown.");
-      } catch (e: unknown) {
-        if (e instanceof HttpsErrorV2) {
-          expect(e).toBeInstanceOf(HttpsErrorV2);
-          expect(e.code).toBe("internal");
-          expect(e.message).toBe(`Answer not found for classic riddle ID ${riddleId}.`);
-        } else {
-          throw e;
-        }
-      }
-    });
-
-    it("should throw not-found if user data not found", async () => {
-      const mockDoc: MockDocumentSnapshot = {exists: true, data: () => mockRiddle};
-      mockFirestoreGet.mockResolvedValueOnce(mockDoc); // Riddle doc
-      (getUser as ReturnType<typeof jest.fn>).mockResolvedValueOnce(null);
-      const request = createMockCallableRequest(
-        {currentAttempt: [], riddleId, gameMode: "classic" as const},
-        createMockAuth(mockUserId),
-      );
-      try {
-        await getHint(request);
-        throw new Error("Test failed: Expected HttpsErrorV2 to be thrown.");
-      } catch (e: unknown) {
-        if (e instanceof HttpsErrorV2) {
-          expect(e).toBeInstanceOf(HttpsErrorV2);
-          expect(e.code).toBe("not-found");
-          expect(e.message).toBe("User data not found.");
-        } else {
-          throw e;
-        }
-      }
-    });
-
-    it("should throw failed-precondition if user has insufficient coins", async () => {
-      const mockDoc: MockDocumentSnapshot = {exists: true, data: () => mockRiddle};
-      mockFirestoreGet.mockResolvedValueOnce(mockDoc);
-      (getUser as ReturnType<typeof jest.fn>).mockResolvedValueOnce({coins: coinsCost - 10});
-      const request = createMockCallableRequest(
-        {currentAttempt: [], riddleId, gameMode: "classic" as const},
-        createMockAuth(mockUserId),
-      );
-      try {
-        await getHint(request);
-        throw new Error("Test failed: Expected HttpsErrorV2 to be thrown.");
-      } catch (e: unknown) {
-        if (e instanceof HttpsErrorV2) {
-          expect(e).toBeInstanceOf(HttpsErrorV2);
-          expect(e.code).toBe("failed-precondition");
-          expect(e.message).toBe("Insufficient coins to get a hint.");
-        } else {
-          throw e;
-        }
-      }
-    });
-
-    it("should throw failed-precondition if game is already completed", async () => {
-      const riddleDoc: MockDocumentSnapshot = {exists: true, data: () => mockRiddle};
-      const gameStateDoc: MockDocumentSnapshot = {
-        exists: true,
-        data: () => ({isCompleted: true, hintRevealedIndices: []}),
-      };
-      mockFirestoreGet.mockResolvedValueOnce(riddleDoc); // Riddle
-      (getUser as ReturnType<typeof jest.fn>).mockResolvedValueOnce({coins: coinsCost} as MockUser); // User
-      mockFirestoreGet.mockResolvedValueOnce(gameStateDoc); // Game state
-      const request = createMockCallableRequest(
-        {currentAttempt: Array(5).fill(""), riddleId, gameMode: "classic" as const},
-        createMockAuth(mockUserId),
-      );
-
-      try {
-        await getHint(request);
-        throw new Error("Test failed: Expected HttpsErrorV2 to be thrown.");
-      } catch (e: unknown) {
-        if (e instanceof HttpsErrorV2) {
-          expect(e).toBeInstanceOf(HttpsErrorV2);
-          expect(e.code).toBe("failed-precondition");
-          expect(e.message).toBe("Game is already completed.");
-        } else {
-          throw e;
-        }
-      }
-    });
-
-    it("should reveal a hint, deduct coins, and update game state", async () => {
-      const riddleDoc: MockDocumentSnapshot = {exists: true, data: () => mockRiddle};
-      const gameStateDoc: MockDocumentSnapshot = {exists: true, data: () => ({hintRevealedIndices: []})};
-      mockFirestoreGet.mockResolvedValueOnce(riddleDoc); // Riddle
-      (getUser as ReturnType<typeof jest.fn>).mockResolvedValueOnce({coins: coinsCost + 10} as MockUser); // User
-      mockFirestoreGet.mockResolvedValueOnce(gameStateDoc); // Game state
-      (updateUserCoins as ReturnType<typeof jest.fn>).mockResolvedValueOnce(undefined);
-      mockFirestoreSet.mockResolvedValueOnce(undefined); // Game state update
-
-      const currentAttempt = ["a", "", "", "l", ""]; // Example: a _ _ l _ for apple
-      const request = createMockCallableRequest(
-        {currentAttempt, riddleId, gameMode: "classic" as const},
-        createMockAuth(mockUserId),
-      );
-
-      const result = await getHint(request);
-
-      expect(result).toEqual({
-        revealedLetter: "P", // Second letter of apple
-        index: 1,
-        coinsCost,
-      });
-      expect(updateUserCoins).toHaveBeenCalledWith(mockUserId, -coinsCost);
-      expect(mockFirestoreSet).toHaveBeenCalledWith({hintRevealedIndices: [1]}, {merge: true});
-      expect(logger.info).toHaveBeenCalledWith(
-        `User ${mockUserId} used a hint for classic riddle ${riddleId}, revealing letter P at index 1.`,
-      );
-    });
-
-    it("should return null if no hint is available (all letters guessed or revealed)", async () => {
-      const riddleDoc: MockDocumentSnapshot = {exists: true, data: () => mockRiddle};
-      const gameStateDoc: MockDocumentSnapshot = {exists: true, data: () => ({hintRevealedIndices: [1, 3]})};
-      mockFirestoreGet.mockResolvedValueOnce(riddleDoc); // Riddle
-      (getUser as ReturnType<typeof jest.fn>).mockResolvedValueOnce({coins: coinsCost} as MockUser); // User
-      // Game state: all letters of 'apple' are either guessed or revealed
-      mockFirestoreGet.mockResolvedValueOnce(gameStateDoc);
-      const currentAttempt = ["a", "p", "p", "l", "e"]; // Correct guess or already revealed
-      const request = createMockCallableRequest(
-        {currentAttempt, riddleId, gameMode: "classic" as const},
-        createMockAuth(mockUserId),
-      );
-
-      const result = await getHint(request);
-      expect(result).toBeNull();
-      expect(updateUserCoins).not.toHaveBeenCalled();
-      expect(mockFirestoreSet).not.toHaveBeenCalled();
-    });
-
-    it("should reveal a hint and create game state if it does not exist", async () => {
-      const riddleDoc: MockDocumentSnapshot = {exists: true, data: () => mockRiddle};
-      const nonExistentGameStateDoc: MockDocumentSnapshot = {exists: false, data: () => undefined}; // Game state does not exist
-      mockFirestoreGet.mockResolvedValueOnce(riddleDoc); // Riddle
-      (getUser as ReturnType<typeof jest.fn>).mockResolvedValueOnce({coins: coinsCost + 10} as MockUser); // User
-      mockFirestoreGet.mockResolvedValueOnce(nonExistentGameStateDoc); // Game state (riddleStates)
-      (updateUserCoins as ReturnType<typeof jest.fn>).mockResolvedValueOnce(undefined);
-      mockFirestoreSet.mockResolvedValueOnce(undefined); // Game state creation/update
-
-      const currentAttempt = ["", "", "", "", ""]; // All blank for 'apple'
-      const request = createMockCallableRequest(
-        {currentAttempt, riddleId, gameMode: "classic" as const},
-        createMockAuth(mockUserId),
-      );
-
-      const result = await getHint(request);
-
-      expect(result).toEqual({
-        revealedLetter: "A", // First letter of apple
-        index: 0,
-        coinsCost,
-      });
-      expect(updateUserCoins).toHaveBeenCalledWith(mockUserId, -coinsCost);
-      // Should be called to create/update the hintRevealedIndices
-      expect(mockFirestoreSet).toHaveBeenCalledWith({hintRevealedIndices: [0]}, {merge: true});
-      expect(logger.info).toHaveBeenCalledWith(
-        `User ${mockUserId} used a hint for classic riddle ${riddleId}, revealing letter A at index 0.`,
-      );
-    });
   });
 
   describe("spendCoins", () => {
@@ -522,9 +317,6 @@ describe("Game Logic Functions", () => {
       const initialCoins = 100;
       const expectedCoinsAfterSpend = initialCoins - amountToSpend;
 
-      // Clear any previous mocks
-      jest.clearAllMocks();
-
       (getUser as ReturnType<typeof jest.fn>)
         .mockResolvedValueOnce({coins: initialCoins})
         .mockResolvedValueOnce({coins: expectedCoinsAfterSpend});
@@ -578,9 +370,11 @@ describe("Game Logic Functions", () => {
       const auth = createMockAuth(mockUserId);
       const request = createMockCallableRequest({amount: amountToSpend, reason}, auth);
 
-      (getUser as ReturnType<typeof jest.fn>).mockResolvedValueOnce({coins: 100}); // Initial check
-      (updateUserCoins as ReturnType<typeof jest.fn>).mockResolvedValueOnce(undefined); // Successful update
-      (getUser as ReturnType<typeof jest.fn>).mockResolvedValueOnce(null); // Failed to retrieve updated data
+      // spendCoins: getUser (balance check) -> updateUserCoins -> getUser (updated balance)
+      (getUser as ReturnType<typeof jest.fn>)
+        .mockResolvedValueOnce({coins: 100})
+        .mockResolvedValueOnce(undefined as any); // Second getUser returns undefined = cannot retrieve updated data
+      (updateUserCoins as ReturnType<typeof jest.fn>).mockResolvedValueOnce(undefined);
 
       try {
         await spendCoins(request);
@@ -597,64 +391,270 @@ describe("Game Logic Functions", () => {
     });
   });
 
-  describe("Error Handling Edge Cases", () => {
-    const riddleId = "riddle1";
-    const mockRiddle = {answer: "apple"};
+  describe("skipRiddle", () => {
+    const riddleId = "riddle-classic-1";
 
-    it("should properly log warning when requesting hint for completed game", async () => {
-      const riddleDoc: MockDocumentSnapshot = {exists: true, data: () => mockRiddle};
-      const gameStateDoc: MockDocumentSnapshot = {
-        exists: true,
-        data: () => ({isCompleted: true, hintRevealedIndices: []}),
-      };
-      mockFirestoreGet.mockResolvedValueOnce(riddleDoc); // Riddle
-      (getUser as ReturnType<typeof jest.fn>).mockResolvedValueOnce({coins: 100} as MockUser); // User
-      mockFirestoreGet.mockResolvedValueOnce(gameStateDoc); // Game state
-
+    it("should throw unauthenticated if user is not authenticated", async () => {
       const request = createMockCallableRequest(
-        {currentAttempt: Array(5).fill(""), riddleId, gameMode: "classic" as const},
+        {riddleId, gameMode: "classic" as const},
+        undefined,
+      );
+      try {
+        await skipRiddle(request);
+        throw new Error("Test failed: Expected HttpsErrorV2 to be thrown.");
+      } catch (e: unknown) {
+        if (e instanceof HttpsErrorV2) {
+          expect(e.code).toBe("unauthenticated");
+          expect(e.message).toBe("The user must be authenticated to skip a riddle.");
+        } else {
+          throw e;
+        }
+      }
+    });
+
+    it("should throw invalid-argument if game mode is invalid", async () => {
+      const request = createMockCallableRequest(
+        {riddleId, gameMode: "invalid" as "classic"},
         createMockAuth(mockUserId),
       );
-
       try {
-        await getHint(request);
+        await skipRiddle(request);
+        throw new Error("Test failed: Expected HttpsErrorV2 to be thrown.");
+      } catch (e: unknown) {
+        if (e instanceof HttpsErrorV2) {
+          expect(e.code).toBe("invalid-argument");
+          expect(e.message).toBe("Invalid game mode specified.");
+        } else {
+          throw e;
+        }
+      }
+    });
+
+    it("should throw not-found if user data not found", async () => {
+      (getUser as ReturnType<typeof jest.fn>).mockResolvedValueOnce(null);
+      const request = createMockCallableRequest(
+        {riddleId, gameMode: "classic" as const},
+        createMockAuth(mockUserId),
+      );
+      try {
+        await skipRiddle(request);
+        throw new Error("Test failed: Expected HttpsErrorV2 to be thrown.");
+      } catch (e: unknown) {
+        if (e instanceof HttpsErrorV2) {
+          expect(e.code).toBe("not-found");
+          expect(e.message).toBe("User data not found.");
+        } else {
+          throw e;
+        }
+      }
+    });
+
+    it("should throw failed-precondition if user has insufficient coins for classic", async () => {
+      (getUser as ReturnType<typeof jest.fn>).mockResolvedValueOnce({coins: 50}); // SKIP_COST_CLASSIC is 100
+      (getRiddleByGameMode as ReturnType<typeof jest.fn>).mockResolvedValueOnce({answer: "apple"});
+      const gameStateDoc: MockDocumentSnapshot = {exists: true, data: () => ({isCompleted: false})};
+      mockFirestoreGet.mockResolvedValueOnce(gameStateDoc);
+
+      const request = createMockCallableRequest(
+        {riddleId, gameMode: "classic" as const},
+        createMockAuth(mockUserId),
+      );
+      try {
+        await skipRiddle(request);
         throw new Error("Test failed: Expected HttpsErrorV2 to be thrown.");
       } catch (e: unknown) {
         if (e instanceof HttpsErrorV2) {
           expect(e.code).toBe("failed-precondition");
-          expect(e.message).toBe("Game is already completed.");
-          // Verify that the warning log was called with the expected message
-          expect(logger.warn).toHaveBeenCalledWith(
-            `User ${mockUserId} requested hint for completed classic riddle ${riddleId}.`,
-          );
+          expect(e.message).toContain("Insufficient coins to skip");
+          expect(e.message).toContain("100");
         } else {
           throw e;
         }
       }
     });
 
-    it("should handle unexpected errors in getHint and throw internal HttpsError", async () => {
-      (getUser as ReturnType<typeof jest.fn>).mockRejectedValueOnce(new TypeError("Unexpected Error"));
+    it("should throw not-found if riddle does not exist", async () => {
+      (getRiddleByGameMode as jest.Mock).mockReset();
+      (getRiddleByGameMode as jest.Mock).mockResolvedValue(undefined);
       const request = createMockCallableRequest(
-        {currentAttempt: [], riddleId, gameMode: "classic" as const},
+        {riddleId, gameMode: "classic" as const},
+        createMockAuth(mockUserId),
+      );
+      try {
+        await skipRiddle(request);
+        throw new Error("Test failed: Expected HttpsErrorV2 to be thrown.");
+      } catch (e: unknown) {
+        if (e instanceof HttpsErrorV2) {
+          expect(e.code).toBe("not-found");
+          expect(e.message).toBe(`classic riddle with ID ${riddleId} not found.`);
+        } else {
+          throw e;
+        }
+      }
+    });
+
+    it("should throw failed-precondition if riddle is already completed", async () => {
+      (getRiddleByGameMode as jest.Mock).mockResolvedValueOnce({answer: "apple"});
+      const gameStateDoc: MockDocumentSnapshot = {exists: true, data: () => ({isCompleted: true})};
+      mockFirestoreGet.mockReset();
+      mockFirestoreGet.mockResolvedValueOnce(gameStateDoc);
+
+      const request = createMockCallableRequest(
+        {riddleId, gameMode: "classic" as const},
+        createMockAuth(mockUserId),
+      );
+      try {
+        await skipRiddle(request);
+        throw new Error("Test failed: Expected HttpsErrorV2 to be thrown.");
+      } catch (e: unknown) {
+        if (e instanceof HttpsErrorV2) {
+          expect(e.code).toBe("failed-precondition");
+          expect(e.message).toBe("Riddle is already completed.");
+        } else {
+          throw e;
+        }
+      }
+    });
+
+    it("should skip classic riddle, deduct coins, and update progress and stats", async () => {
+      (getRiddleByGameMode as ReturnType<typeof jest.fn>).mockResolvedValueOnce({answer: "apple"});
+      const gameStateDoc: MockDocumentSnapshot = {exists: true, data: () => ({isCompleted: false})};
+      const userDoc: MockDocumentSnapshot = {
+        exists: true,
+        data: () => ({progress: {classicIndex: 2}, stats: {}}),
+      };
+      mockFirestoreGet.mockResolvedValueOnce(gameStateDoc).mockResolvedValueOnce(userDoc);
+      (updateUserCoins as ReturnType<typeof jest.fn>).mockResolvedValueOnce(undefined);
+      mockFirestoreSet.mockResolvedValueOnce(undefined);
+      mockFirestoreUpdate.mockResolvedValueOnce(undefined).mockResolvedValueOnce(undefined);
+
+      const request = createMockCallableRequest(
+        {riddleId, gameMode: "classic" as const},
         createMockAuth(mockUserId),
       );
 
+      const result = await skipRiddle(request);
+
+      expect(result.success).toBe(true);
+      expect(result.costDeducted).toBe(100); // SKIP_COST_CLASSIC
+      expect(result.newProgress).toEqual({classicIndex: 3});
+      expect(result.message).toContain("Riddle skipped successfully");
+      expect(updateUserCoins).toHaveBeenCalledWith(mockUserId, -100);
+      expect(mockFirestoreSet).toHaveBeenCalledWith(
+        expect.objectContaining({isCompleted: true, isSkipped: true}),
+        {merge: true},
+      );
+      expect(mockFirestoreUpdate).toHaveBeenCalledWith(
+        expect.objectContaining({"progress.classicIndex": 3}),
+      );
+      expect(mockFirestoreUpdate).toHaveBeenCalledWith(
+        expect.objectContaining({"stats.classicSkipped": expect.anything()}),
+      );
+    });
+
+    it("should skip tutorial riddle and update tutorialIndex", async () => {
+      (getRiddleByGameMode as ReturnType<typeof jest.fn>).mockResolvedValueOnce({answer: "apple"});
+      const gameStateDoc: MockDocumentSnapshot = {exists: true, data: () => ({isCompleted: false})};
+      const userDoc: MockDocumentSnapshot = {
+        exists: true,
+        data: () => ({progress: {tutorialIndex: 1}, stats: {}}),
+      };
+      mockFirestoreGet.mockResolvedValueOnce(gameStateDoc).mockResolvedValueOnce(userDoc);
+      (updateUserCoins as ReturnType<typeof jest.fn>).mockResolvedValueOnce(undefined);
+      mockFirestoreSet.mockResolvedValueOnce(undefined);
+      mockFirestoreUpdate.mockResolvedValueOnce(undefined).mockResolvedValueOnce(undefined);
+
+      const request = createMockCallableRequest(
+        {riddleId, gameMode: "tutorial" as const},
+        createMockAuth(mockUserId),
+      );
+
+      const result = await skipRiddle(request);
+
+      expect(result.success).toBe(true);
+      expect(result.costDeducted).toBe(25); // SKIP_COST_TUTORIAL
+      expect(result.newProgress).toEqual({tutorialIndex: 2});
+      expect(updateUserCoins).toHaveBeenCalledWith(mockUserId, -25);
+      expect(mockFirestoreUpdate).toHaveBeenCalledWith(
+        expect.objectContaining({"progress.tutorialIndex": 2}),
+      );
+    });
+
+    it("should skip challenge riddle and advance dailyChallengeCurrentQuestion", async () => {
+      (getRiddleByGameMode as ReturnType<typeof jest.fn>).mockResolvedValueOnce({answer: "apple"});
+      const gameStateDoc: MockDocumentSnapshot = {exists: true, data: () => ({isCompleted: false})};
+      const userDoc: MockDocumentSnapshot = {
+        exists: true,
+        data: () => ({progress: {dailyChallengeCurrentQuestion: 2}, stats: {}}),
+      };
+      mockFirestoreGet.mockResolvedValueOnce(gameStateDoc).mockResolvedValueOnce(userDoc);
+      (updateUserCoins as ReturnType<typeof jest.fn>).mockResolvedValueOnce(undefined);
+      mockFirestoreSet.mockResolvedValueOnce(undefined);
+      mockFirestoreUpdate.mockResolvedValueOnce(undefined).mockResolvedValueOnce(undefined);
+
+      const request = createMockCallableRequest(
+        {riddleId, gameMode: "challenge" as const},
+        createMockAuth(mockUserId),
+      );
+
+      const result = await skipRiddle(request);
+
+      expect(result.success).toBe(true);
+      expect(result.costDeducted).toBe(150); // SKIP_COST_DAILY
+      expect(result.newProgress).toEqual({dailyChallengeCurrentQuestion: 3});
+      expect(updateUserCoins).toHaveBeenCalledWith(mockUserId, -150);
+      expect(mockFirestoreUpdate).toHaveBeenCalledWith(
+        expect.objectContaining({"progress.dailyChallengeCurrentQuestion": 3}),
+      );
+    });
+
+    it("should throw failed-precondition when daily challenge already completed (all 5 questions)", async () => {
+      (getRiddleByGameMode as ReturnType<typeof jest.fn>).mockResolvedValueOnce({answer: "apple"});
+      const gameStateDoc: MockDocumentSnapshot = {exists: true, data: () => ({isCompleted: false})};
+      const userDoc: MockDocumentSnapshot = {
+        exists: true,
+        data: () => ({progress: {dailyChallengeCurrentQuestion: 5}, stats: {}}),
+      };
+      mockFirestoreGet.mockResolvedValueOnce(gameStateDoc).mockResolvedValueOnce(userDoc);
+
+      const request = createMockCallableRequest(
+        {riddleId, gameMode: "challenge" as const},
+        createMockAuth(mockUserId),
+      );
       try {
-        await getHint(request);
+        await skipRiddle(request);
+        throw new Error("Test failed: Expected HttpsErrorV2 to be thrown.");
+      } catch (e: unknown) {
+        if (e instanceof HttpsErrorV2) {
+          expect(e.code).toBe("failed-precondition");
+          expect(e.message).toBe("Daily challenge already completed (all 5 questions finished).");
+        } else {
+          throw e;
+        }
+      }
+    });
+
+    it("should handle unexpected errors and throw internal HttpsError", async () => {
+      (getRiddleByGameMode as ReturnType<typeof jest.fn>).mockRejectedValueOnce(new Error("Firestore error"));
+      const request = createMockCallableRequest(
+        {riddleId, gameMode: "classic" as const},
+        createMockAuth(mockUserId),
+      );
+      try {
+        await skipRiddle(request);
         throw new Error("Test failed: Expected HttpsErrorV2 to be thrown.");
       } catch (e: unknown) {
         if (e instanceof HttpsErrorV2) {
           expect(e.code).toBe("internal");
-          expect(e.message).toBe("An error occurred while getting a hint.");
-          // Verify that the unexpected error was logged
-          expect(logger.error).toHaveBeenCalledWith("Unexpected error getting hint:", expect.any(TypeError));
+          expect(e.message).toBe("An error occurred while skipping the riddle.");
         } else {
           throw e;
         }
       }
     });
+  });
 
+  describe("Error Handling Edge Cases", () => {
     it("should handle unexpected errors in spendCoins and throw internal HttpsError", async () => {
       (getUser as ReturnType<typeof jest.fn>).mockRejectedValueOnce(new Error("Database error"));
       const request = createMockCallableRequest({amount: 50, reason: "hint"}, createMockAuth(mockUserId));
@@ -674,25 +674,5 @@ describe("Game Logic Functions", () => {
       }
     });
 
-    it("should log warning when no hint is available due to all letters revealed/guessed", async () => {
-      const riddleDoc: MockDocumentSnapshot = {exists: true, data: () => mockRiddle};
-      const gameStateDoc: MockDocumentSnapshot = {exists: true, data: () => ({hintRevealedIndices: [1, 3]})};
-      mockFirestoreGet.mockResolvedValueOnce(riddleDoc); // Riddle
-      (getUser as ReturnType<typeof jest.fn>).mockResolvedValueOnce({coins: 100} as MockUser); // User
-      mockFirestoreGet.mockResolvedValueOnce(gameStateDoc); // Game state
-
-      const currentAttempt = ["a", "p", "p", "l", "e"]; // All letters guessed correctly
-      const request = createMockCallableRequest(
-        {currentAttempt, riddleId, gameMode: "classic" as const},
-        createMockAuth(mockUserId),
-      );
-
-      const result = await getHint(request);
-
-      expect(result).toBeNull();
-      expect(logger.warn).toHaveBeenCalledWith(
-        `No hint available for user ${mockUserId}, classic riddle ${riddleId}. All letters revealed or guessed correctly.`,
-      );
-    });
   });
 });

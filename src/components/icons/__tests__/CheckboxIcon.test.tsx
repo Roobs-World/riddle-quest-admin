@@ -64,13 +64,14 @@ describe("CheckboxIcon", () => {
       const View = require("react-native").View;
       const container = UNSAFE_getByType(View);
 
-      expect(container.props.className).toContain("w-8");
-      expect(container.props.className).toContain("h-8");
       expect(container.props.className).toContain("border-2");
       expect(container.props.className).toContain("rounded");
-      expect(container.props.className).toContain("mr-4");
       expect(container.props.className).toContain("justify-center");
       expect(container.props.className).toContain("items-center");
+      const style = container.props.style ?? {};
+      expect(style.width).toBeDefined();
+      expect(style.height).toBeDefined();
+      expect(style.marginRight).toBeDefined();
     });
 
     it("applies correct text styling when checked", () => {

@@ -1,6 +1,16 @@
-import { getFirestore } from "@react-native-firebase/firestore";
+import {
+  getFirestore,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  updateDoc,
+  query,
+  where,
+  limit,
+} from "@react-native-firebase/firestore";
 import { getAuth } from "@react-native-firebase/auth";
-import { getFunctions } from "@react-native-firebase/functions";
+import { getFunctions, httpsCallable } from "@react-native-firebase/functions";
 import { getApp } from "@react-native-firebase/app";
 import { z, ZodError } from "zod";
 import {
@@ -9,6 +19,8 @@ import {
 } from "../validation/cloudFunctionsSchemas";
 
 import { safeDelay } from "../utils/timing";
+import { logger } from "../utils/logger";
+import { captureException } from "../utils/sentry";
 
 export const delay = (ms: number) => safeDelay(ms);
 
@@ -20,26 +32,23 @@ export const RiddleService = {
    * @returns A Promise resolving to the daily riddle data, or null if no riddle is available, all daily riddles are completed, or the daily challenge for today is already completed.
    */
   async fetchDailyRiddle() {
-    console.log("Fetching daily riddle from Firestore");
+    logger.debug("Fetching daily riddle from Firestore");
     const userId = getAuth(getApp()).currentUser?.uid;
     if (!userId) {
-      console.error("No authenticated user found.");
+      logger.error("No authenticated user found.");
       return null;
     }
 
     const today = new Date().toISOString().slice(0, 10);
 
     try {
-      const userDoc = await getFirestore(getApp())
-        .collection("users")
-        .doc(userId)
-        .get();
+      const userDoc = await getDoc(doc(getFirestore(), "users", userId));
 
       if (userDoc.exists()) {
         const userData = userDoc.data();
         if (userData) {
           const lastCompletedDateStr =
-            userData.lastCompletedDailyChallengeDate as string | undefined;
+            userData.lastDailyChallengeCompletedAt as string | undefined;
           if (lastCompletedDateStr) {
             const lastCompletedDate = new Date(lastCompletedDateStr);
             const lastCompletedDateUTC = lastCompletedDate
@@ -47,7 +56,7 @@ export const RiddleService = {
               .slice(0, 10);
 
             if (lastCompletedDateUTC === today) {
-              console.log(
+              logger.debug(
                 `User ${userId} has already completed the daily challenge for today (${today}).`
               );
               return { completedToday: true };
@@ -56,13 +65,10 @@ export const RiddleService = {
         }
       }
 
-      const dailyChallengeDoc = await getFirestore(getApp())
-        .collection("dailyChallenge")
-        .doc(today)
-        .get();
+      const dailyChallengeDoc = await getDoc(doc(getFirestore(), "dailyChallenge", today));
 
       if (!dailyChallengeDoc.exists()) {
-        console.log(`No daily challenge found for date: ${today}`);
+        logger.debug(`No daily challenge found for date: ${today}`);
         return null;
       }
 
@@ -70,16 +76,13 @@ export const RiddleService = {
       const riddleIds = dailyChallengeData?.riddleIds as string[] | undefined;
 
       if (!riddleIds || riddleIds.length === 0) {
-        console.log(
+        logger.debug(
           `Daily challenge found for ${today}, but no riddleIds array.`
         );
         return null;
       }
 
-      const userAttemptsDoc = await getFirestore(getApp())
-        .collection("userDailyChallengeAttempts")
-        .doc(`${userId}_${today}`)
-        .get();
+      const userAttemptsDoc = await getDoc(doc(getFirestore(), "userDailyChallengeAttempts", `${userId}_${today}`));
 
       const userAttemptsData = userAttemptsDoc.data();
       const completedIndex = (userAttemptsData?.completedIndex as number) ?? 0;
@@ -87,15 +90,12 @@ export const RiddleService = {
       if (completedIndex < riddleIds.length) {
         const nextRiddleId = riddleIds[completedIndex];
 
-        const riddleDoc = await getFirestore(getApp())
-          .collection("dailyRiddles")
-          .doc(nextRiddleId)
-          .get();
+        const riddleDoc = await getDoc(doc(getFirestore(), "dailyRiddles", nextRiddleId));
 
         if (riddleDoc.exists()) {
           const riddleData = riddleDoc.data();
           if (riddleData && riddleData.answer !== undefined) {
-            console.log(
+            logger.debug(
               `Fetched daily riddle ID: ${nextRiddleId} at index ${completedIndex}`
             );
             return {
@@ -105,28 +105,28 @@ export const RiddleService = {
               answerLength: riddleData.answer.length,
             };
           } else {
-            console.error(
+            logger.error(
               `Daily riddle data or answer missing for ID: ${nextRiddleId}. Data:`,
               riddleData
             );
             return null;
           }
         } else {
-          console.log(
+          logger.debug(
             `Daily riddle document not found for ID: ${nextRiddleId}`
           );
           return null;
         }
       } else {
-        console.log(`User has completed all daily riddles for date: ${today}`);
-        const userRef = getFirestore(getApp()).collection("users").doc(userId);
-        await userRef.update({
-          lastCompletedDailyChallengeDate: new Date().toISOString(),
+        logger.debug(`User has completed all daily riddles for date: ${today}`);
+        await updateDoc(doc(getFirestore(), "users", userId), {
+          lastDailyChallengeCompletedAt: new Date().toISOString(),
         });
         return { completedToday: true };
       }
     } catch (error) {
-      console.error("Error fetching daily riddle:", error);
+      logger.error("Error fetching daily riddle:", error);
+      captureException(error);
       throw error;
     }
   },
@@ -138,17 +138,15 @@ export const RiddleService = {
    * @returns A Promise resolving to the classic riddle data, or null if not found.
    */
   async fetchClassicRiddle(level: number) {
-    console.log(`Fetching classic riddle for level ${level} from Firestore`);
+    logger.debug(`Fetching classic riddle for level ${level} from Firestore`);
 
     try {
-      const snapshot = await getFirestore(getApp())
-        .collection("riddles")
-        .where("classicIndex", "==", level)
-        .limit(1)
-        .get();
+      const snapshot = await getDocs(
+        query(collection(getFirestore(), "riddles"), where("classicIndex", "==", level), limit(1))
+      );
 
       if (!snapshot.empty) {
-        console.log(`Classic riddle found for level: ${level}`);
+        logger.debug(`Classic riddle found for level: ${level}`);
         const riddleData = snapshot.docs[0].data();
         if (riddleData && riddleData.answer !== undefined) {
           return {
@@ -157,20 +155,21 @@ export const RiddleService = {
             answerLength: riddleData.answer.length,
           };
         } else {
-          console.error(
+          logger.error(
             `Riddle data or answer missing for level: ${level}. Data:`,
             riddleData
           );
           return null;
         }
       } else {
-        console.log(
+        logger.debug(
           `No classic riddle found for level: ${level}. Riddles will be generated automatically on the server when needed.`
         );
         return null;
       }
     } catch (error) {
-      console.error(`Error fetching classic riddle for level ${level}:`, error);
+      logger.error(`Error fetching classic riddle for level ${level}:`, error);
+      captureException(error);
       throw error;
     }
   },
@@ -181,13 +180,11 @@ export const RiddleService = {
    * @returns A Promise resolving to the tutorial riddle data, or null if not found.
    */
   async fetchTutorialRiddle(level: number) {
-    console.log(`Fetching tutorial riddle for level ${level} from Firestore`);
+    logger.debug(`Fetching tutorial riddle for level ${level} from Firestore`);
     try {
-      const snapshot = await getFirestore(getApp())
-        .collection("tutorialRiddles")
-        .where("tutorialIndex", "==", level)
-        .limit(1)
-        .get();
+      const snapshot = await getDocs(
+        query(collection(getFirestore(), "tutorialRiddles"), where("tutorialIndex", "==", level), limit(1))
+      );
 
       if (!snapshot.empty) {
         const riddleData = snapshot.docs[0].data();
@@ -198,18 +195,19 @@ export const RiddleService = {
             answerLength: riddleData.answer.length,
           };
         } else {
-          console.error(
+          logger.error(
             `Tutorial riddle data or answer missing for level: ${level}. Data:`,
             riddleData
           );
           return null;
         }
       } else {
-        console.log(`No tutorial riddle found for level: ${level}`);
+        logger.debug(`No tutorial riddle found for level: ${level}`);
         return null;
       }
     } catch (error) {
-      console.error("Error fetching tutorial riddle:", error);
+      logger.error("Error fetching tutorial riddle:", error);
+      captureException(error);
       throw error;
     }
   },
@@ -220,30 +218,30 @@ export const RiddleService = {
    * @returns A Promise resolving to the validation result from the backend.
    */
   async submitGuess(guessData: z.infer<typeof SubmitGuessInputSchema>) {
-    console.log("Submitting guess for validation:", guessData);
+    logger.debug("Submitting guess for validation:", guessData);
     try {
       SubmitGuessInputSchema.parse(guessData);
 
-      const submitGuessCallable = getFunctions(getApp()).httpsCallable(
-        "submitGuess"
-      );
+      const submitGuessCallable = httpsCallable(getFunctions(getApp()), "submitGuess");
       const result = await submitGuessCallable(guessData);
 
       const validatedResult = SubmitGuessOutputSchema.parse(result.data);
-      console.log(
+      logger.debug(
         "Guess validation result received and validated:",
         validatedResult
       );
       return validatedResult;
     } catch (error) {
       if (error instanceof ZodError) {
-        console.error(
+        logger.error(
           "Zod validation error for guess submission:",
           error.issues
         );
+        captureException(error);
         throw new Error("Invalid guess data provided.");
       } else {
-        console.error("Error submitting guess to Cloud Function:", error);
+        logger.error("Error submitting guess to Cloud Function:", error);
+        captureException(error);
         throw new Error("Failed to submit guess.");
       }
     }

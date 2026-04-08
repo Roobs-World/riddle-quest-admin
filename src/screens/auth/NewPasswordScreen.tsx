@@ -7,9 +7,10 @@ import CustomSafeAreaView from "../../components/layouts/CustomSafeAreaView";
 import AuthLayout from "../../components/layouts/AuthLayout";
 import ScreenTitle from "../../components/text/ScreenTitle";
 import Subtitle from "../../components/text/Subtitle";
-import HomeBgSvg from "../../../assets/images/home-bg.svg";
+import StarryBackground from "../../components/background/StarryBackground";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { styles } from "../../styles";
+import { styles, SPACING } from "../../styles";
+import { AUTH_ICON_SIZE } from "../../constants/layout";
 
 type AuthStackParamList = {
   Login: object | undefined;
@@ -47,10 +48,10 @@ export default function NewPasswordScreen({
   };
 
   return (
-    <CustomSafeAreaView className="flex-1 bg-cream-light p-6">
-      <HomeBgSvg width="120%" height="100%" style={styles.backgroundImage} />
+    <CustomSafeAreaView className="flex-1 bg-cream-light" style={{ padding: SPACING.lg }}>
+      <StarryBackground />
       <AuthLayout>
-        <PadlockIcon className="w-24 h-24 mb-8 mx-auto" />
+        <PadlockIcon width={AUTH_ICON_SIZE} height={AUTH_ICON_SIZE} style={{ marginBottom: SPACING.xl, alignSelf: "center" }} />
         <ScreenTitle title={AppStrings.AuthStrings.NewPassword.TITLE} />
 
         <Subtitle

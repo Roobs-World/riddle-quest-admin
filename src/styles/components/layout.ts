@@ -1,12 +1,26 @@
 /**
  * Layout Component Styles
  * Container, positioning, and layout-related styles
+ *
+ * Device-tier styles follow a progressive enhancement pattern:
+ *   base style            — phone (< 600 px)
+ *   + gameContainerTablet — small tablet (600–767 px)
+ *   + gameContainerLargeTablet — large tablet / iPad (768–1023 px)
+ *   + gameContainerDesktop — desktop / wide viewport (≥ 1024 px)
+ *
+ * Apply them in JSX with the isTablet / isLargeTablet / isDesktop flags:
+ *   style={[
+ *     styles.gameContainer,
+ *     isTablet      && styles.gameContainerTablet,
+ *     isLargeTablet && styles.gameContainerLargeTablet,
+ *     isDesktop     && styles.gameContainerDesktop,
+ *   ]}
  */
 
 import { StyleSheet, ViewStyle, ImageStyle } from "react-native";
-import { scale } from "../../utils/responsive";
 import { SPACING } from "../tokens/spacing";
 import { COLORS } from "../tokens/colors";
+import { MAX_CONTENT_WIDTH } from "../../constants/layout";
 
 export const layoutStyles = StyleSheet.create({
   activityIndicator: {
@@ -27,10 +41,13 @@ export const layoutStyles = StyleSheet.create({
     marginTop: -SPACING.sm,
   } as ViewStyle,
 
+  /**
+   * Constrains and centres content on large screens.
+   * Used by screens that render a scrollable content column (e.g. auth screens).
+   */
   centerContainerTablet: {
     alignSelf: "center",
-    marginHorizontal: SPACING.xl,
-    maxWidth: scale(600),
+    maxWidth: MAX_CONTENT_WIDTH,
     width: "100%",
   } as ViewStyle,
 
@@ -44,6 +61,8 @@ export const layoutStyles = StyleSheet.create({
     flex: 1,
   } as ViewStyle,
 
+  // ── Game container — phone baseline ──────────────────────────────────────
+
   gameContainer: {
     flex: 1,
     height: "100%",
@@ -53,8 +72,31 @@ export const layoutStyles = StyleSheet.create({
     justifyContent: "space-between",
   } as ViewStyle,
 
+  /** Small tablet (600–767 px): adds a touch of horizontal breathing room. */
   gameContainerTablet: {
     paddingHorizontal: SPACING.md,
+  } as ViewStyle,
+
+  /**
+   * Large tablet / iPad (768–1023 px): caps and centres the game column so
+   * it doesn't stretch uncomfortably across the full iPad width.
+   */
+  gameContainerLargeTablet: {
+    paddingHorizontal: SPACING.lg,
+    maxWidth: MAX_CONTENT_WIDTH,
+    alignSelf: "center",
+    width: "100%",
+  } as ViewStyle,
+
+  /**
+   * Desktop (≥ 1024 px): same centring approach with slightly more padding
+   * for a comfortable click/keyboard target feel.
+   */
+  gameContainerDesktop: {
+    paddingHorizontal: SPACING.xl,
+    maxWidth: MAX_CONTENT_WIDTH,
+    alignSelf: "center",
+    width: "100%",
   } as ViewStyle,
 
   gameInput: {
@@ -62,17 +104,11 @@ export const layoutStyles = StyleSheet.create({
     justifyContent: "center",
     flexDirection: "row",
     alignItems: "center",
+    paddingHorizontal: SPACING.md,
+    gap: SPACING.sm,
   } as ViewStyle,
 
-  questionsBackground: {
-    position: "absolute",
-    top: 0,
-    alignSelf: "center",
-    width: scale(343),
-    height: scale(95),
-    marginTop: scale(12),
-    zIndex: 0,
-  } as ViewStyle,
+  // ── Riddle container ──────────────────────────────────────────────────────
 
   riddleContainer: {
     alignItems: "center",
@@ -81,8 +117,15 @@ export const layoutStyles = StyleSheet.create({
     minHeight: "20%",
   } as ViewStyle,
 
+  /** Small tablet: add horizontal padding so the riddle text has room. */
   riddleContainerTablet: {
     paddingHorizontal: SPACING.md,
+    minHeight: "25%",
+  } as ViewStyle,
+
+  /** Large tablet / desktop: more padding and a taller minimum slot. */
+  riddleContainerLargeTablet: {
+    paddingHorizontal: SPACING.lg,
     minHeight: "30%",
   } as ViewStyle,
 

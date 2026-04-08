@@ -22,12 +22,15 @@ describe("IUserDataService", () => {
       winStreak: 2,
       totalWins: 20,
       totalGuessesInWins: 84,
+      totalHintsUsed: 0,
     },
     progress: {
       classicIndex: 5,
       dailyChallengeIndex: 3,
+      dailyChallengeCurrentQuestion: 0,
       tutorialIndex: 2,
     },
+    unlockedAchievements: [],
   };
 
   it("should allow implementing the interface", () => {
@@ -117,6 +120,7 @@ describe("IUserDataService", () => {
     const progress = {
       classicIndex: 5,
       dailyChallengeIndex: 3,
+      dailyChallengeCurrentQuestion: 0,
       tutorialIndex: 2,
     };
     const updates = { coins: 150 };
@@ -195,12 +199,14 @@ describe("IUserDataService", () => {
           winStreak: 0,
           totalWins: 0,
           totalGuessesInWins: 0,
+          totalHintsUsed: 0,
         },
       },
       {
         progress: {
           classicIndex: 8,
           dailyChallengeIndex: 0,
+      dailyChallengeCurrentQuestion: 0,
           tutorialIndex: 0,
         },
       },

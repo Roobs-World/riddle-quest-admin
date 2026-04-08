@@ -45,9 +45,6 @@ module.exports = {
   /** UI style preference - light mode for better visibility */
   userInterfaceStyle: "light",
 
-  /** Disable React Native's new architecture for compatibility */
-  newArchEnabled: false,
-
   /**
    * Splash Screen Configuration
    *
@@ -128,9 +125,6 @@ module.exports = {
       backgroundColor: "#ffffff",
     },
 
-    /** Disable edge-to-edge display for consistent UI */
-    edgeToEdgeEnabled: false,
-
     /** Unique Android package name for Google Play Store */
     package: "com.grindhead.qwordly",
 
@@ -169,12 +163,9 @@ module.exports = {
    * Includes Firebase, authentication, ads, and build optimization plugins.
    */
   plugins: [
-    /** Firebase core services integration */
-    "@react-native-firebase/app",
-
-    /** Firebase Crashlytics for error tracking */
+     /** Firebase Crashlytics for error tracking */
     "@react-native-firebase/crashlytics",
-
+     "@sentry/react-native",
     /** Google Sign-In authentication */
     "@react-native-google-signin/google-signin",
 
@@ -220,9 +211,9 @@ module.exports = {
          */
         android: {
           minSdkVersion: 24,
-          compileSdkVersion: 35,
-          targetSdkVersion: 35,
-          buildToolsVersion: "35.0.0",
+          compileSdkVersion: 36,
+          targetSdkVersion: 36,
+          buildToolsVersion: "36.0.0",
           kotlinVersion: "2.0.21",
 
           /** Audio quality preservation settings */
@@ -257,25 +248,17 @@ module.exports = {
     ],
 
     /**
-     * Expo AV Audio Plugin Configuration
+     * Expo Audio Plugin Configuration
      *
-     * Configures expo-av for high-quality audio playback with
-     * optimized session settings for iOS and Android.
+     * Configures expo-audio for high-quality audio playback (expo-av replacement in SDK 55).
      */
     [
-      "expo-av",
+      "expo-audio",
       {
         microphonePermission:
           "Allow $(PRODUCT_NAME) to access your microphone for enhanced audio features.",
-
-        /** iOS audio session optimization */
-        audioSessionCategoryIOS: "playback", // Optimize for high-quality playback
-        audioSessionModeIOS: "default", // Use default mode for best quality
-        audioSessionCategoryOptionsIOS: [
-          "mixWithOthers",
-          "allowBluetooth",
-          "defaultToSpeaker",
-        ],
+        enableBackgroundPlayback: false,
+        enableBackgroundRecording: false,
       },
     ],
   ],

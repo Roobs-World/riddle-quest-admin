@@ -18,13 +18,20 @@ jest.mock("../openaiService", () => ({
   generateUniqueRiddle: mockGenerateUniqueRiddle,
 }));
 
-jest.mock("firebase-admin", () => ({
-  initializeApp: jest.fn(),
-  firestore: jest.fn(() => ({
+jest.mock("firebase-admin", () => {
+  const firestoreImpl = () => ({
     collection: mockFirestoreCollection,
     batch: mockFirestoreBatch,
-  })),
-}));
+  });
+  return {
+    initializeApp: jest.fn(),
+    firestore: Object.assign(firestoreImpl, {
+      FieldValue: {
+        serverTimestamp: () => ({}),
+      },
+    }),
+  };
+});
 
 jest.mock("firebase-functions", () => ({
   https: {
@@ -41,6 +48,14 @@ jest.mock("firebase-functions", () => ({
   },
 }));
 
+jest.mock("firebase-functions/v2", () => ({
+  logger: {
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+  },
+}));
+
 jest.mock("firebase-functions/v2/https", () => ({
   onCall: jest.fn((options, handler) => handler),
 }));
@@ -51,6 +66,7 @@ describe("riddleGeneration", () => {
   const mockRiddleRef = {id: "test-riddle-id"};
   const mockBatch = {
     set: mockSet,
+    update: jest.fn(),
     commit: mockCommit,
   };
 
@@ -105,6 +121,14 @@ describe("riddleGeneration", () => {
       delete process.env.OPENAI_API_KEY;
 
       await expect(riddleGeneration.generateAndAppendDailyRiddles(1)).rejects.toThrow(
+        "OPENAI_API_KEY environment variable is required",
+      );
+    });
+
+    test("generateAndAppendTutorialRiddles should throw error without OPENAI_API_KEY", async () => {
+      delete process.env.OPENAI_API_KEY;
+
+      await expect(riddleGeneration.generateAndAppendTutorialRiddles(1)).rejects.toThrow(
         "OPENAI_API_KEY environment variable is required",
       );
     });
@@ -224,7 +248,7 @@ describe("riddleGeneration", () => {
       expect(mockSet).toHaveBeenCalledWith(
         mockRiddleRef,
         expect.objectContaining({
-          classicIndex: 0, // Starting from 0 when empty
+          classicIndex: 1, // Starting from 1 when empty (classic_1 naming convention)
         }),
       );
     });
@@ -365,10 +389,10 @@ describe("riddleGeneration", () => {
       await riddleGeneration.generateAndAppendRiddles(1);
 
       expect(mockSet).toHaveBeenCalledWith(mockRiddleRef, {
-        riddleId: "test-riddle-id",
+        riddleId: "classic_1",
         text: "What is blue?",
         answer: "sky",
-        classicIndex: 0,
+        classicIndex: 1,
         category: "classic",
       });
       expect(mockCommit).toHaveBeenCalled();
@@ -565,6 +589,122 @@ describe("riddleGeneration", () => {
           text: "New daily riddle?",
           answer: "new",
         }),
+      );
+    });
+  });
+
+  describe("generateAndAppendTutorialRiddles", () => {
+    test("should successfully generate and store tutorial riddles", async () => {
+      (mockGenerateUniqueRiddle as any).mockResolvedValue(["Tutorial question?", "tutorial"]);
+      (mockFirestoreCollection as any).mockReturnValue({
+        get: jest.fn().mockResolvedValue({empty: true, docs: [], forEach: jest.fn()}),
+        doc: mockFirestoreDoc,
+        where: mockWhere,
+      } as any);
+
+      await riddleGeneration.generateAndAppendTutorialRiddles(1);
+
+      expect(mockSet).toHaveBeenCalledWith(mockRiddleRef, {
+        riddleId: "test-riddle-id",
+        text: "Tutorial question?",
+        answer: "tutorial",
+        tutorialIndex: 0,
+        category: "tutorial",
+      });
+      expect(mockCommit).toHaveBeenCalled();
+    });
+
+    test("should return next tutorial index when tutorial riddles exist", async () => {
+      const mockDoc = {data: () => ({tutorialIndex: 2})};
+      const indexQuery = {
+        get: jest.fn().mockResolvedValue({empty: false, docs: [mockDoc], forEach: jest.fn()}),
+        orderBy: jest.fn().mockReturnThis(),
+        limit: jest.fn().mockReturnThis(),
+      };
+
+      (mockFirestoreCollection as any).mockReturnValue({
+        get: jest.fn().mockResolvedValue({empty: true, docs: [], forEach: jest.fn()}),
+        doc: mockFirestoreDoc,
+        where: jest.fn().mockReturnValue(indexQuery),
+      } as any);
+
+      (mockGenerateUniqueRiddle as any).mockResolvedValue(["Tutorial riddle?", "ans"]);
+
+      await riddleGeneration.generateAndAppendTutorialRiddles(1);
+
+      expect(mockSet).toHaveBeenCalledWith(
+        mockRiddleRef,
+        expect.objectContaining({
+          tutorialIndex: 3,
+        }),
+      );
+    });
+
+    test("should handle storeTutorialRiddlesInFirestore commit error", async () => {
+      (mockCommit as any).mockRejectedValueOnce(new Error("Tutorial store failed"));
+      (mockGenerateUniqueRiddle as any).mockResolvedValue(["Tutorial?", "tut"]);
+      (mockFirestoreCollection as any).mockReturnValue({
+        get: jest.fn().mockResolvedValue({empty: true, docs: [], forEach: jest.fn()}),
+        doc: mockFirestoreDoc,
+        where: mockWhere,
+      } as any);
+
+      await expect(riddleGeneration.generateAndAppendTutorialRiddles(1)).rejects.toThrow(
+        "Failed to store tutorial riddles in Firestore.",
+      );
+    });
+
+    test("should handle getNextTutorialIndex Firestore error", async () => {
+      const indexQuery = {
+        get: jest.fn().mockRejectedValue(new Error("Tutorial index error")),
+        orderBy: jest.fn().mockReturnThis(),
+        limit: jest.fn().mockReturnThis(),
+      };
+
+      (mockFirestoreCollection as any).mockReturnValue({
+        get: jest.fn().mockResolvedValue({empty: true, docs: [], forEach: jest.fn()}),
+        doc: mockFirestoreDoc,
+        where: jest.fn().mockReturnValue(indexQuery),
+      } as any);
+
+      await expect(riddleGeneration.generateAndAppendTutorialRiddles(1)).rejects.toThrow(
+        "Failed to get next tutorial index.",
+      );
+    });
+  });
+
+  describe("storeDailyRiddlesInFirestore", () => {
+    test("should handle batch commit errors", async () => {
+      (mockCommit as any).mockRejectedValue(new Error("Daily commit failed"));
+      (mockGenerateUniqueRiddle as any).mockResolvedValue(["Daily?", "d"]);
+      (mockFirestoreCollection as any).mockReturnValue({
+        get: jest.fn().mockResolvedValue({empty: true, docs: [], forEach: jest.fn()}),
+        doc: mockFirestoreDoc,
+        where: mockWhere,
+      } as any);
+
+      await expect(riddleGeneration.generateAndAppendDailyRiddles(1)).rejects.toThrow(
+        "Failed to store daily riddles in Firestore.",
+      );
+    });
+  });
+
+  describe("getNextDailyIndex", () => {
+    test("should handle Firestore errors", async () => {
+      const indexQuery = {
+        get: jest.fn().mockRejectedValue(new Error("Daily index error")),
+        orderBy: jest.fn().mockReturnThis(),
+        limit: jest.fn().mockReturnThis(),
+      };
+
+      (mockFirestoreCollection as any).mockReturnValue({
+        get: jest.fn().mockResolvedValue({empty: true, docs: [], forEach: jest.fn()}),
+        doc: mockFirestoreDoc,
+        where: jest.fn().mockReturnValue(indexQuery),
+      } as any);
+
+      await expect(riddleGeneration.generateAndAppendDailyRiddles(1)).rejects.toThrow(
+        "Failed to get next daily index.",
       );
     });
   });
@@ -792,16 +932,196 @@ describe("riddleGeneration", () => {
         await expect(riddleGeneration.generateDailyRiddles({} as any, {} as any)).rejects.toThrow();
       });
     });
+
+    describe("generateTutorialRiddles", () => {
+      test("should return success when tutorial riddles are generated", async () => {
+        (mockGenerateUniqueRiddle as any).mockResolvedValue(["Tutorial riddle?", "tutorial"]);
+        (mockFirestoreCollection as any).mockReturnValue({
+          get: jest.fn().mockResolvedValue({empty: true, docs: [], forEach: jest.fn()}),
+          doc: mockFirestoreDoc,
+          where: mockWhere,
+        } as any);
+
+        const result = await riddleGeneration.generateTutorialRiddles({} as any, {} as any);
+
+        expect(result).toEqual({
+          success: true,
+          message: "New Tutorial riddles generated and added to Firestore.",
+        });
+      });
+
+      test("should handle errors and throw HttpsError", async () => {
+        (mockGenerateUniqueRiddle as any).mockRejectedValue(new Error("Tutorial generation failed"));
+
+        (mockFirestoreCollection as any).mockReturnValue({
+          get: jest.fn().mockResolvedValue({empty: true, docs: [], forEach: jest.fn()}),
+          doc: mockFirestoreDoc,
+          where: mockWhere,
+        } as any);
+
+        await expect(riddleGeneration.generateTutorialRiddles({} as any, {} as any)).rejects.toThrow();
+      });
+    });
+  });
+
+  describe("generateTodaysDailyChallenge", () => {
+    test("should skip generation when today's challenge already exists with 5 questions", async () => {
+      const today = new Date().toISOString().split("T")[0];
+      (mockFirestoreCollection as any).mockReturnValueOnce({
+        doc: () => ({
+          get: jest.fn().mockResolvedValue({
+            exists: true,
+            data: () => ({
+              date: today,
+              questions: [{}, {}, {}, {}, {}],
+            }),
+          }),
+        }),
+      } as any);
+
+      await riddleGeneration.generateTodaysDailyChallenge(false);
+
+      expect(mockGenerateUniqueRiddle).not.toHaveBeenCalled();
+    });
+
+    test("should throw when OPENAI_API_KEY is missing and generation is needed", async () => {
+      delete process.env.OPENAI_API_KEY;
+      (mockFirestoreCollection as any).mockReturnValueOnce({
+        doc: () => ({
+          get: jest.fn().mockResolvedValue({exists: false}),
+        }),
+      } as any);
+
+      await expect(riddleGeneration.generateTodaysDailyChallenge(true)).rejects.toThrow(
+        "OPENAI_API_KEY environment variable is required",
+      );
+    });
+
+    test("should generate when forceGenerate is true even if doc exists", async () => {
+      const today = new Date().toISOString().split("T")[0];
+      const emptySnapshot = {empty: true, docs: [], forEach: jest.fn()};
+      const mockDocRef = {
+        id: "daily-riddle-id",
+        set: jest.fn().mockResolvedValue(undefined),
+      };
+      const mockChallengeDocRef = {
+        get: jest.fn().mockResolvedValue({
+          exists: true,
+          data: () => ({date: today, questions: [{}, {}, {}, {}, {}]}),
+        }),
+        set: jest.fn().mockResolvedValue(undefined),
+      };
+      (mockGenerateUniqueRiddle as any)
+        .mockResolvedValueOnce(["Q1?", "a1"])
+        .mockResolvedValueOnce(["Q2?", "a2"])
+        .mockResolvedValueOnce(["Q3?", "a3"])
+        .mockResolvedValueOnce(["Q4?", "a4"])
+        .mockResolvedValueOnce(["Q5?", "a5"]);
+
+      (mockFirestoreCollection as any)
+        .mockReturnValueOnce({
+          doc: () => mockChallengeDocRef,
+        } as any)
+        .mockReturnValueOnce({get: jest.fn().mockResolvedValue(emptySnapshot)} as any)
+        .mockReturnValueOnce({get: jest.fn().mockResolvedValue(emptySnapshot)} as any)
+        .mockReturnValueOnce({get: jest.fn().mockResolvedValue(emptySnapshot)} as any)
+        .mockReturnValueOnce({doc: () => mockDocRef} as any)
+        .mockReturnValueOnce({doc: () => mockDocRef} as any)
+        .mockReturnValueOnce({doc: () => mockDocRef} as any)
+        .mockReturnValueOnce({doc: () => mockDocRef} as any)
+        .mockReturnValueOnce({doc: () => mockDocRef} as any)
+        .mockReturnValueOnce({
+          get: jest.fn().mockResolvedValue({
+            empty: false,
+            forEach: jest.fn((cb: (doc: {ref: unknown}) => void) => {
+              cb({ref: {}});
+            }),
+          }),
+        } as any);
+
+      await riddleGeneration.generateTodaysDailyChallenge(true);
+
+      expect(mockGenerateUniqueRiddle).toHaveBeenCalledTimes(5);
+      expect(mockChallengeDocRef.set).toHaveBeenCalled();
+      expect(mockCommit).toHaveBeenCalled();
+    });
+  });
+
+  describe("generateTodaysDailyChallengeFunction", () => {
+    test("should return success and questionsGenerated when challenge is generated", async () => {
+      const today = new Date().toISOString().split("T")[0];
+      const emptySnapshot = {empty: true, docs: [], forEach: jest.fn()};
+      const mockDocRef = {id: "daily-id", set: jest.fn().mockResolvedValue(undefined)};
+      const mockChallengeDocRef = {
+        get: jest.fn().mockResolvedValue({exists: false}),
+        set: jest.fn().mockResolvedValue(undefined),
+      };
+      (mockGenerateUniqueRiddle as any)
+        .mockResolvedValueOnce(["Q1?", "a1"])
+        .mockResolvedValueOnce(["Q2?", "a2"])
+        .mockResolvedValueOnce(["Q3?", "a3"])
+        .mockResolvedValueOnce(["Q4?", "a4"])
+        .mockResolvedValueOnce(["Q5?", "a5"]);
+
+      (mockFirestoreCollection as any)
+        .mockReturnValueOnce({doc: () => mockChallengeDocRef} as any)
+        .mockReturnValueOnce({get: jest.fn().mockResolvedValue(emptySnapshot)} as any)
+        .mockReturnValueOnce({get: jest.fn().mockResolvedValue(emptySnapshot)} as any)
+        .mockReturnValueOnce({get: jest.fn().mockResolvedValue(emptySnapshot)} as any)
+        .mockReturnValueOnce({doc: () => mockDocRef} as any)
+        .mockReturnValueOnce({doc: () => mockDocRef} as any)
+        .mockReturnValueOnce({doc: () => mockDocRef} as any)
+        .mockReturnValueOnce({doc: () => mockDocRef} as any)
+        .mockReturnValueOnce({doc: () => mockDocRef} as any)
+        .mockReturnValueOnce({
+          get: jest.fn().mockResolvedValue({
+            empty: false,
+            forEach: jest.fn((cb: (doc: {ref: unknown}) => void) => cb({ref: {}})),
+          }),
+        } as any)
+        .mockReturnValueOnce({
+          doc: () => ({
+            get: jest.fn().mockResolvedValue({
+              exists: true,
+              data: () => ({questions: [1, 2, 3, 4, 5]}),
+            }),
+          }),
+        } as any);
+
+      const result = await riddleGeneration.generateTodaysDailyChallengeFunction(
+        {data: {}} as any,
+        {} as any,
+      );
+
+      expect(result.success).toBe(true);
+      expect(result.questionsGenerated).toBe(5);
+    });
+
+    test("should handle errors and throw HttpsError", async () => {
+      (mockFirestoreCollection as any).mockReturnValueOnce({
+        doc: () => ({
+          get: jest.fn().mockRejectedValue(new Error("Firestore error")),
+        }),
+      } as any);
+
+      await expect(
+        riddleGeneration.generateTodaysDailyChallengeFunction({data: {}} as any, {} as any),
+      ).rejects.toThrow();
+    });
   });
 
   describe("Module Structure and Type Safety", () => {
     test("should export all required functions", () => {
       expect(typeof riddleGeneration.generateAndAppendRiddles).toBe("function");
       expect(typeof riddleGeneration.generateAndAppendDailyRiddles).toBe("function");
+      expect(typeof riddleGeneration.generateAndAppendTutorialRiddles).toBe("function");
       expect(typeof riddleGeneration.initializeRiddleDatabaseIfEmpty).toBe("function");
       expect(typeof riddleGeneration.generateClassicRiddles).toBe("function");
       expect(typeof riddleGeneration.initializeRiddleDatabase).toBe("function");
       expect(typeof riddleGeneration.generateDailyRiddles).toBe("function");
+      expect(typeof riddleGeneration.generateTutorialRiddles).toBe("function");
+      expect(typeof riddleGeneration.generateTodaysDailyChallenge).toBe("function");
+      expect(typeof riddleGeneration.generateTodaysDailyChallengeFunction).toBe("function");
     });
 
     test("functions should have proper TypeScript types", () => {

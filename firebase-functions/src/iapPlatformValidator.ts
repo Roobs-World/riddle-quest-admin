@@ -1,5 +1,6 @@
 import * as functions from "firebase-functions";
 import iap from "in-app-purchase";
+import { captureException } from "./sentry";
 
 interface AppleReceiptInfo {
   quantity: string;
@@ -144,6 +145,7 @@ export async function performPlatformValidation(
       `Platform IAP validation failed for ${platform}, ` + `token ${purchaseToken}, ` + `product ${productId}:`,
       validationError,
     );
+    captureException(validationError);
 
     // Determine HttpsError code based on the validationError from iap.validate
     let errorCode: functions.https.FunctionsErrorCode = "internal";

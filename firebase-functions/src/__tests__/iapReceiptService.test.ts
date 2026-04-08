@@ -4,6 +4,9 @@ import {describe, expect, it, jest, beforeEach} from "@jest/globals";
 const mockSet = jest.fn<(...args: unknown[]) => Promise<unknown>>();
 const mockGet = jest.fn<(...args: unknown[]) => Promise<unknown>>();
 const mockServerTimestampFn = jest.fn(() => "SENTINEL_SERVER_TIMESTAMP_VALUE");
+const mockLogger = {info: jest.fn(), error: jest.fn(), warn: jest.fn(), debug: jest.fn()};
+
+jest.mock("firebase-functions", () => ({logger: mockLogger, config: () => ({})}));
 
 // 3. jest.mock calls
 jest.mock("firebase-admin", () => {
@@ -66,13 +69,10 @@ describe("iapReceiptService", () => {
     it("should return true and log error if Firestore get fails", async () => {
       const testError = new Error("Firestore get error");
       mockGet.mockRejectedValueOnce(testError);
-      const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
-
       const result = await isPurchaseTokenAlreadyProcessed("userFailedUser", "tokenFail");
 
       expect(result).toBe(true);
-      expect(consoleErrorSpy).toHaveBeenCalledWith("Error checking if IAP purchase token was processed:", testError);
-      consoleErrorSpy.mockRestore();
+      expect(mockLogger.error).toHaveBeenCalledWith("Error checking if IAP purchase token was processed:", testError);
     });
   });
 
@@ -104,12 +104,9 @@ describe("iapReceiptService", () => {
     it("should throw error and log it if Firestore set fails", async () => {
       const testError = new Error("Firestore set error");
       mockSet.mockRejectedValueOnce(testError);
-      const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
-
       await expect(markPurchaseTokenAsProcessed("user456", "tokenFAIL", "product002")).rejects.toThrow(testError);
 
-      expect(consoleErrorSpy).toHaveBeenCalledWith("Error marking IAP purchase token as processed:", testError);
-      consoleErrorSpy.mockRestore();
+      expect(mockLogger.error).toHaveBeenCalledWith("Error marking IAP purchase token as processed:", testError);
     });
   });
 });

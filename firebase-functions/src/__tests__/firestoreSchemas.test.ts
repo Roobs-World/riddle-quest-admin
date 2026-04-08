@@ -16,6 +16,7 @@ import {
   PlayerStatsSchema,
   PlayerSchema,
   FirestoreRiddleSchema,
+  ClassicRiddleSchema,
   type LoginFormData,
   type SignUpFormData,
   type Player,
@@ -165,6 +166,7 @@ describe("Firestore Schemas", () => {
       const validProgress = {
         classicIndex: 5,
         dailyChallengeIndex: 3,
+        dailyChallengeCurrentQuestion: 0,
         tutorialIndex: 1,
       };
 
@@ -182,8 +184,9 @@ describe("Firestore Schemas", () => {
       expect(result.success).toBe(true);
       if (result.success) {
         expect(result.data).toEqual({
-          classicIndex: 0,
+          classicIndex: 1,
           dailyChallengeIndex: 0,
+          dailyChallengeCurrentQuestion: 0,
           tutorialIndex: 0,
         });
       }
@@ -228,6 +231,7 @@ describe("Firestore Schemas", () => {
         winStreak: 3,
         totalWins: 15,
         totalGuessesInWins: 45,
+        totalHintsUsed: 0,
       };
 
       const result = PlayerStatsSchema.safeParse(validStats);
@@ -394,8 +398,6 @@ describe("Firestore Schemas", () => {
     test("should validate complete riddle data", () => {
       const validRiddle = {
         riddleId: "riddle123",
-        dailyIndex: 5,
-        classicIndex: 10,
         text: "What has keys but no locks?",
         answer: "keyboard",
         difficulty: "medium",
@@ -439,12 +441,12 @@ describe("Firestore Schemas", () => {
     test("should reject riddle with negative indices", () => {
       const invalidRiddle = {
         riddleId: "riddle123",
-        dailyIndex: -1,
+        classicIndex: -1,
         text: "What has keys but no locks?",
         answer: "keyboard",
       };
 
-      const result = FirestoreRiddleSchema.safeParse(invalidRiddle);
+      const result = ClassicRiddleSchema.safeParse(invalidRiddle);
       expect(result.success).toBe(false);
     });
 
@@ -456,7 +458,7 @@ describe("Firestore Schemas", () => {
         answer: "keyboard",
       };
 
-      const result = FirestoreRiddleSchema.safeParse(invalidRiddle);
+      const result = ClassicRiddleSchema.safeParse(invalidRiddle);
       expect(result.success).toBe(false);
     });
 
@@ -516,9 +518,10 @@ describe("Firestore Schemas", () => {
           winStreak: 0,
           totalWins: 0,
           totalGuessesInWins: 0,
+          totalHintsUsed: 0,
         },
         progress: {
-          classicIndex: 0,
+          classicIndex: 1,
           dailyChallengeIndex: 0,
           tutorialIndex: 0,
         },

@@ -20,7 +20,7 @@ const GameInputComponent = ({
   handleSubmit,
   handleHint,
   handleNext,
-}: GameInputProps): JSX.Element => {
+}: GameInputProps): React.JSX.Element => {
   return (
     <View style={styles.gameInput}>
       <GameInputButton

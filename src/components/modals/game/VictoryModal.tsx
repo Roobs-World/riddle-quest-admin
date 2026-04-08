@@ -11,17 +11,22 @@
  * @since 2024
  */
 
-import React from "react";
-import { View, Text, Modal } from "react-native";
+import React, { useEffect, useRef } from "react";
+import { View, Text, Modal, Animated, Easing } from "react-native";
 import type { SubmittedGuess } from "../../../hooks/types";
 import { generateFeedbackEmojiGrid } from "../../../utils/gameUtils";
 import WideButton from "../../buttons/WideButton";
 import SocialShareButton from "../../buttons/SocialShareButton";
 import LargeCoinStackSvg from "../../../../assets/images/large-coin-stack.svg";
-import { scale } from "../../../utils/responsive";
+import { COIN_ICON_SIZE_LARGE } from "../../../constants/layout";
 import { SocialSharingService } from "../../../services/SocialSharingService";
+import { analyticsService } from "../../../services/AnalyticsService";
 import { TYPOGRAPHY } from "../../../styles";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
+import WheelBg from "../../../../assets/images/wheel-bg.svg";
+import { logger } from "../../../utils/logger";
+import { captureException } from "../../../utils/sentry";
+import { MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, MODAL_BUTTON_SPACER } from "../../../constants/layout";
 
 interface VictoryModalProps {
   isVisible: boolean;
@@ -46,7 +51,7 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
 }) => {
   const emojiSummary = generateFeedbackEmojiGrid(guesses);
 
-  const handleShare = async (platform: "facebook" | "x") => {
+  const handleShare = async (platform: "facebook" | "x" | "system") => {
     try {
       const shareContent = {
         attempts,
@@ -54,8 +59,10 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
         gameMode,
       };
       await SocialSharingService.share(platform, shareContent);
+      void analyticsService.logShare({ platform, gameMode });
     } catch (error) {
-      console.error(`Error sharing to ${platform}:`, error);
+      logger.error(`Error sharing to ${platform}:`, error);
+      captureException(error);
     }
   };
 
@@ -77,6 +84,35 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
     }
   };
 
+  const rotationAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const animation = Animated.loop(
+      Animated.timing(rotationAnim, {
+        toValue: 1,
+        duration: 12000,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      })
+    );
+    if (isVisible) {
+      animation.start();
+    }
+    return () => {
+      animation.stop();
+      rotationAnim.setValue(0);
+    };
+  }, [isVisible, rotationAnim]);
+
+  const spin = rotationAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["0deg", "360deg"],
+  });
+
+  // Must be large enough to cover all corners at any rotation angle.
+  // The minimum safe size is the modal's diagonal (√(W²+H²)), with 20% headroom.
+  const wheelSize = Math.ceil(Math.sqrt(MODAL_WIDTH ** 2 + MODAL_HEIGHT ** 2) * 1.2);
+
   return (
     <Modal
       animationType="fade"
@@ -89,77 +125,111 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "rgba(0,0,0,0.6)",
+          backgroundColor: "rgba(0,0,0,0.5)",
         }}
       >
         <View
           style={{
-            width: 335,
-            height: 423,
+            width: MODAL_WIDTH,
+            height: MODAL_HEIGHT,
             alignItems: "center",
             justifyContent: "center",
           }}
         >
-          <ModalBg style={{ position: "absolute" }} />
+          <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{ position: "absolute" }} />
+          <View
+            style={{
+              position: "absolute",
+              width: MODAL_WIDTH,
+              height: MODAL_HEIGHT,
+              overflow: "hidden",
+              borderRadius: 30,
+            }}
+          >
+            <Animated.View
+              style={{
+                position: "absolute",
+                left: (MODAL_WIDTH - wheelSize) / 2,
+                top: (MODAL_HEIGHT - wheelSize) / 2,
+                opacity: 0.25,
+                transform: [{ rotate: spin }],
+              }}
+            >
+              <WheelBg width={wheelSize} height={wheelSize} />
+            </Animated.View>
+          </View>
           <View
             style={{
               flex: 1,
               width: "100%",
               alignItems: "center",
-              justifyContent: "space-around",
-              padding: 20,
+              justifyContent: "center",
+              gap: MODAL_BUTTON_SPACER * 2,
+              padding: MODAL_CONTENT_PADDING,
             }}
           >
             <Text
               style={{
                 fontFamily: TYPOGRAPHY.fontPrimary,
-                fontSize: scale(32),
-                color: "white",
+                fontSize: TYPOGRAPHY.fontSize.display,
+                color: "black",
               }}
             >
               Victory!
             </Text>
 
             <View style={{ alignItems: "center" }}>
-              <LargeCoinStackSvg width={scale(80)} height={scale(80)} />
+              <LargeCoinStackSvg width={COIN_ICON_SIZE_LARGE} height={COIN_ICON_SIZE_LARGE} />
               <Text
                 style={{
                   fontFamily: TYPOGRAPHY.fontSecondaryBold,
-                  fontSize: scale(24),
-                  color: "white",
+                  fontSize: TYPOGRAPHY.fontSize["2xl"],
+                  color: "black",
                 }}
               >
                 +{coinsEarned} Coins
               </Text>
             </View>
 
-            <View style={{ alignItems: "center" }}>
-              <Text style={{ color: "white", fontSize: scale(16) }}>
-                {emojiSummary}
+            <View style={{ alignItems: "center", width: "100%" }}>
+              <Text
+                style={{
+                  fontFamily: TYPOGRAPHY.fontSecondary,
+                  fontSize: TYPOGRAPHY.fontSize.sm,
+                  color: "black",
+                  marginBottom: MODAL_BUTTON_SPACER,
+                }}
+              >
+                Share your victory!
               </Text>
               <View
                 style={{
                   flexDirection: "row",
                   justifyContent: "center",
-                  marginTop: 10,
+                  width: "100%",
+                  gap: MODAL_BUTTON_SPACER,
                 }}
               >
                 <SocialShareButton
                   platform="facebook"
                   onPress={() => handleShare("facebook")}
+                  size="small"
                 />
-                <View style={{ width: 10 }} />
                 <SocialShareButton
                   platform="x"
                   onPress={() => handleShare("x")}
+                  size="small"
+                />
+                <SocialShareButton
+                  platform="system"
+                  onPress={() => handleShare("system")}
+                  size="small"
                 />
               </View>
             </View>
 
             <View style={{ width: "100%" }}>
               <WideButton onPress={handleNextLevel} buttonText="Next Level" />
-              <View style={{ height: 10 }} />
-              <WideButton onPress={handleHome} buttonText="Home" />
             </View>
           </View>
         </View>

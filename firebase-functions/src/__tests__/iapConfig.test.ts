@@ -17,9 +17,11 @@ describe("iapConfig", () => {
 
     test("should export BACKEND_COIN_PRODUCT_DETAILS", () => {
       expect(iapConfig.BACKEND_COIN_PRODUCT_DETAILS).toEqual({
-        COIN_PACK_SMALL: {id: "com.qwordly.coinpack.small", coins: 100},
-        COIN_PACK_MEDIUM: {id: "com.qwordly.coinpack.medium", coins: 500},
-        COIN_PACK_LARGE: {id: "com.qwordly.coinpack.large", coins: 1200},
+        COIN_PACK_TINY:  {id: "com.qwordly.coinpack1", coins: 50},
+        COIN_PACK_SMALL: {id: "com.qwordly.coinpack2", coins: 100},
+        COIN_PACK_MID:   {id: "com.qwordly.coinpack3", coins: 250},
+        COIN_PACK_LARGE: {id: "com.qwordly.coinpack4", coins: 500},
+        COIN_PACK_HUGE:  {id: "com.qwordly.coinpack5", coins: 1000},
       });
     });
   });
@@ -317,6 +319,36 @@ describe("iapConfig", () => {
         process.env.JEST_WORKER_ID = originalJestWorker;
       }
       consoleLogSpy.mockRestore();
+    });
+
+    it("should handle iap.config() throwing an error in non-Jest environment", () => {
+      const originalJestWorker = process.env.JEST_WORKER_ID;
+      delete process.env.JEST_WORKER_ID;
+
+      const iap = require("in-app-purchase").default || require("in-app-purchase");
+      const originalConfig = iap.config;
+      iap.config = () => {
+        throw new Error("iap.config exploded");
+      };
+
+      const consoleLogSpy = jest.spyOn(console, "log").mockImplementation();
+      const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
+
+      iapConfig.initializeIapConfig();
+
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        expect.stringContaining("CRITICAL: Error calling iap.config()"),
+      );
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        expect.stringContaining("iap.config exploded"),
+      );
+
+      iap.config = originalConfig;
+      if (originalJestWorker) {
+        process.env.JEST_WORKER_ID = originalJestWorker;
+      }
+      consoleLogSpy.mockRestore();
+      consoleErrorSpy.mockRestore();
     });
 
     it("should handle credentials with partial configuration", () => {

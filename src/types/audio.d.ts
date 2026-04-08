@@ -1,16 +1,16 @@
-import { AVPlaybackSource } from "expo-av";
+import type { AudioSource } from "expo-audio";
 
 declare module "*.wav" {
-  const src: AVPlaybackSource;
+  const src: AudioSource;
   export default src;
 }
 
 declare module "*.mp3" {
-  const src: AVPlaybackSource;
+  const src: AudioSource;
   export default src;
 }
 
 declare module "*.m4a" {
-  const src: AVPlaybackSource;
+  const src: AudioSource;
   export default src;
 }

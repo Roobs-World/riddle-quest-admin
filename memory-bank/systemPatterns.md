@@ -4,101 +4,73 @@ This document outlines the system architecture, key technical decisions, design 
 
 ## System Architecture:
 
-[Describe the overall architecture, e.g., Client-Server (React Native app + Firebase Functions/Firestore), key components and how they interact.]
+Client-Server architecture: React Native mobile app communicates with Firebase Functions (server-authoritative game logic) and Firestore (primary data store).
+
+```
+React Native App (iOS/Android)
+│
+├── Screens (LandingScreen, GameScreen, Auth screens)
+├── Components (modals, game UI, buttons)
+├── Hooks (useGameLogic, useRewardedAds, useInterstitialAds, useModal, useSettings)
+├── Contexts (AuthContext)
+├── Services
+│   ├── FirestoreService — CRUD operations on Firestore
+│   ├── RiddleService — calls Firebase Functions for game actions
+│   ├── RiddleDataService — riddle fetching and caching
+│   ├── RiddleInitializationService — level bootstrapping
+│   ├── UserDataService — user profile management
+│   ├── AuthService — authentication flows
+│   ├── IapService — in-app purchases
+│   ├── SoundManager — audio playback (expo-audio)
+│   ├── GameStateManager — local game state coordination
+│   └── SocialSharingService — share results
+└── Navigation (React Navigation stack)
+
+Firebase Backend
+├── Cloud Functions (submitGuess, getHint, spendCoins, validatePurchase, riddleGeneration, dailyScheduler)
+├── Firestore (users, riddles, dailyChallenges)
+├── Auth (email/password, Google, Facebook)
+└── Storage (user avatars)
+```
 
 ## Key Technical Decisions:
 
-- **React Native 0.83.1**: Latest stable version for modern mobile development with improved performance and ES modules
-- **React 19.0.0**: Latest major version for enhanced concurrent features and improved developer experience
-- **Firebase v23**: Latest Firebase SDK with modular API for better tree-shaking and performance
-- **Jest 30.2.0**: Latest testing framework with improved performance and compatibility
-- **Expo SDK 54**: Latest Expo toolchain for development and building
-
-### Recent Major Updates (January 2025):
-
-- **Package Updates**: All dependencies updated to latest versions for security and performance
-- **Jest Configuration**: Overhauled for React Native 0.83.1 ES module compatibility
-- **Firebase Migration**: Complete migration from v22 to v23 modular API
-- **Babel Configuration**: Updated with conditional presets for test environments
+- **React Native 0.84.1**: Latest stable with New Architecture mandatory
+- **React 19.2.4**: Concurrent features and improved DX
+- **Firebase v23**: Modular API (`getFirestore()`, `getAuth()`, etc.) for tree-shaking
+- **Jest 30.2.0**: Latest testing framework with `preset: "react-native"`
+- **Expo SDK 55**: New Architecture mandatory; expo-audio for sound
+- **Zod 4.x**: Schema validation for Firestore documents and API inputs
+- **Server-authoritative**: All guess validation, coin transactions, and hint reveals happen server-side
 
 ## Design Patterns in Use:
 
-- [Identify and describe prominent design patterns used in the codebase, e.g., Repository pattern for data access, Observer pattern.]
+- **Service Layer**: All data access isolated in service classes (`FirestoreService`, `RiddleService`, etc.)
+- **Context Providers**: `AuthContext` for global auth state; `ModalProvider` for modal management
+- **Server-Authoritative Game Logic**: `submitGuess`, `getHint`, `spendCoins` are Firebase `onCall` functions — clients never compute game outcomes
+- **Atomic Transactions**: Coin operations use Firestore transactions to prevent race conditions
+- **Centralized Modal Registry**: `ModalRegistry.tsx` maps modal names to components; `ModalProvider` controls visibility
+- **Logger Abstraction**: `src/utils/logger.ts` gates verbose logging behind `__DEV__` to prevent JSI crashes in production
+- **Zod Schema Validation**: Firestore documents validated on read/write via shared Zod schemas
+- **Riddle Session Cache**: `FirestoreService` maintains an in-memory cache (max 50 entries) for daily/classic/tutorial riddle fetches to avoid repeated Firestore reads in the same session; `clearRiddleCache()` exported for tests
+- **Backend Game Constants**: `firebase-functions/src/constants.ts` holds HINT_COST_COINS and SKIP_COST_*; must stay in sync with client `src/constants/game.ts`. gameLogic (getHint, skipRiddle) uses these to avoid magic numbers and drift.
 
 ## Component Relationships:
 
-[Describe how major components interact with each other, possibly using a simple diagram or text description.]
+- **GameScreen** orchestrates gameplay: renders `Header`, `RiddleText`, `GuessGrid`, `Keyboard`, `Controls`, `BottomNavigationBar`
+- **useGameLogic** hook manages game state and calls `RiddleService` for server interactions
+- **BottomNavigationBar** provides access to profile, hints, and settings
+- **ModalProvider** wraps the app and manages modal visibility via `useModal` hook
+- **AuthContext** wraps the navigation stack and gates authenticated routes
 
 ## Critical Implementation Paths:
 
-[Outline the most important or complex parts of the system that require careful implementation and testing, e.g., User authentication flow, Game state management, In-app purchase handling.]
-
-## Architecture Overview
-
-```
-Client (React Native)
-├── Authentication Layer (Firebase Auth)
-├── State Management (React Context)
-├── UI Components (React Native + NativeWind)
-├── Services Layer
-│   ├── FirestoreService (Database operations)
-│   ├── SoundManager (Audio management)
-│   └── RiddleService (Game logic via Firebase Functions)
-└── Navigation (React Navigation)
-```
-
-## Core Services
-
-### FirestoreService
-
-- User data management
-- Riddle storage and retrieval
-- Progress tracking
-- Statistics management
-
-### RiddleService
-
-- Server-side game logic via Firebase Functions
-- Guess validation and feedback
-- Hint system
-- Coin management
-
-## Firebase Functions Pattern
-
-All game logic is server-authoritative:
-
-1. **Submit Guess Function**
-
-```typescript
-export const submitGuess = onCall(async (request) => {
-  // Validate user authentication
-  // Process guess against riddle
-  // Return feedback and game state
-  // Award coins based on performance
-});
-```
-
-2. **Get Hint Function**
-
-```typescript
-export const getHint = onCall(async (request) => {
-  // Validate user has sufficient coins
-  // Reveal hint for current riddle
-  // Deduct coin cost
-  // Track hint usage
-});
-```
-
-3. **Spend Coins Function**
-
-```typescript
-export const spendCoins = onCall(async (request) => {
-  // Validate coin balance
-  // Execute transaction atomically
-  // Update user document
-  // Return new balance
-});
-```
+1. **Guess Submission**: `Keyboard` → `useGameLogic.submitGuess()` → `RiddleService` → Firebase `submitGuess` function → returns feedback + game state
+2. **Authentication**: `AuthService` → Firebase Auth → `AuthContext` state update → navigation guard
+3. **IAP Flow**: `IapService` → React Native IAP → Firebase `validatePurchase` function → coin credit
+4. **Riddle Generation**: `riddleGeneration` Firebase function → OpenAI API → Zod validation → Firestore write
+5. **Daily Challenge**: `dailyScheduler` cron → generates daily riddle → stores in Firestore
+6. **Achievements**: After `submitGuess` / `getHint` / `validatePurchase` (no-ads), `evaluateAchievements(userId, context)` runs; newly unlocked IDs are appended to user `unlockedAchievements`; client shows list in AchievementsModal (entry from profile).
 
 ## Data Models
 
@@ -118,8 +90,10 @@ interface UserData {
     gamesPlayed: number;
     gamesWon: number;
     totalScore: number;
-    // ... other stats
+    totalHintsUsed: number;
+    // ... other stats (winRate, currentStreak, etc.)
   };
+  unlockedAchievements?: { achievementId: string; unlockedAt: number }[];
 }
 ```
 
@@ -144,6 +118,12 @@ interface Riddle {
 - Input validation using Zod schemas
 - Rate limiting on expensive operations
 
+## Logging
+
+- **Logger utility** (`src/utils/logger.ts`): Use instead of `console.log`/`warn`/`error` in production code
+- **Levels**: `logger.debug`, `logger.info`, `logger.warn` (dev only); `logger.error` (always)
+- **Rationale**: Prevents JSI crashes from excessive logging; production builds suppress verbose output
+
 ## Error Handling
 
 - Graceful degradation when services are unavailable
@@ -160,6 +140,7 @@ interface Riddle {
 
 ### Testing
 
+- **Pre-commit enforcement**: Husky runs `pnpm run test:precommit` before every commit (lint + RN tests + Firebase Functions tests). Commit blocked on failure.
 - **Unified Test Command**: `pnpm run test`
   - Single command runs all tests
   - Automatic Firebase emulator management
@@ -169,18 +150,52 @@ interface Riddle {
   - Graceful failure handling
   - Custom script at `scripts/test-all.js`
 - **Test Data**: Automatic population of test riddles and users
-- **Firebase Functions**: 275 tests at 62.27% coverage
-- **React Native**: Component, hook, and service tests (Jest configuration updated for RN 0.83.1)
-- **Total Test Coverage**: 390+ tests across Firebase Functions and React Native
-- **Known Issues**: Firebase mock updates needed for v23 API compatibility
-- **Infrastructure**: Jest configuration updated for React Native 0.83.1 ES modules
+- **Firebase Functions**: 386 tests at 61.65% coverage (11 files at 100%)
+- **React Native**: Component, hook, and service tests via @testing-library/react-native
+- **Total Test Coverage**: 2,497 tests across Firebase Functions (386) and React Native (2,111), 0 failures
 
-### Testing Priorities (January 2025)
+### Testing Priorities (March 2026)
 
 | File | Current | Target | Notes |
 |------|---------|--------|-------|
-| riddleGeneration.ts | 49.72% | 70%+ | Complex Firebase mocking |
-| iapValidation.ts | 98.33% | 100% | 1 line remaining |
-| firestoreService.ts | 97.01% | 100% | 2 lines remaining |
-| iapPlatformValidator.ts | 97.72% | 100% | 1 line remaining |
-| dailyChallenge.ts | 96.42% | 100% | 2 lines remaining |
+| riddleGeneration.ts | 53.59% | 70%+ | Complex Firebase mocking — roadmap item |
+| submitGuessLogic.ts | 94.65% | ~95% | Remaining lines are dead code |
+| iapConfig.ts | 97.82% | ~98% | Lines 185-186 structurally unreachable |
+| iapPlatformValidator.ts | 97.72% | ~98% | Line 141 is dead code |
+| firestoreService.ts | 100% | ✅ Done | Partial progress merge test added |
+| dailyChallenge.ts | 100% | ✅ Done | All functions fully covered |
+
+### Files at 100% Line Coverage (11 files)
+
+profanityFilter.ts, firestoreSchemas.ts, openaiService.ts, profile.ts, iapReceiptService.ts, dailyScheduler.ts, adCallbacks.ts, iapValidation.ts, dailyChallenge.ts, index.ts, firestoreService.ts
+
+## Code Documentation Standards
+
+- **TSDoc for exported APIs**
+  - All exported functions, hooks, React components, classes, and context values in `src/` and `firebase-functions/src/` SHOULD have a `/** ... */` TSDoc block.
+  - Each block MUST include:
+    - A one-line summary of the symbol’s purpose.
+    - Optional additional details for behavior, invariants, and important edge cases.
+    - `@param` and `@returns` tags for functions and hooks where the signature is not completely obvious from the name alone.
+  - For React components and screens, the primary props interface SHOULD be documented with `@property` tags for all non-trivial props.
+  - For hooks, the TSDoc MUST describe:
+    - Input arguments (if any) and how they are expected to be used.
+    - The structure of the returned object or tuple.
+    - Any side effects (network calls, navigation, storage access) and when they occur.
+
+- **`@fileoverview` for complex modules**
+  - High-complexity orchestrators (e.g., navigation, modal provider, core game logic hooks, complex animation/background components) SHOULD include a `@fileoverview` block at the top of the file that:
+    - Describes the module’s role in the overall architecture.
+    - Highlights key behaviors or flows.
+    - Notes any important performance or integration considerations.
+  - Existing examples such as `src/components/background/StarryBackground.tsx` and `src/components/modals/ModalProvider.tsx` SHOULD be used as reference style guides.
+
+- **Markdown for subsystem overviews**
+  - When a folder contains multiple modules that work together (e.g., `src/hooks/`, `src/contexts/`, `src/services/`), a short `README.md` MAY be added to:
+    - Describe the purpose of the folder.
+    - Explain how modules are intended to be used together.
+    - Capture any conventions (e.g., hooks that must only be used under certain providers).
+
+- **Signal over noise**
+  - Comments MUST focus on intent, behavior, invariants, and external contracts rather than restating obvious implementation details.
+  - Documentation-only changes MUST NOT alter runtime behavior and do not require new tests, but any behavioral code changes MUST follow the usual TDD workflow.

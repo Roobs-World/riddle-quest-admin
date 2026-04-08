@@ -1,3 +1,15 @@
+/**
+ * @fileoverview
+ * Hook that encapsulates AppLovin MAX rewarded ad lifecycle for Qwordly.
+ *
+ * This hook manages loading and showing rewarded ads, subscribes to all
+ * relevant AppLovin MAX rewarded callbacks, and reports completed rewards
+ * to the backend via the `awardedAdCallback` Firebase Function.
+ *
+ * It never awards coins directly on the client. The server remains the
+ * authority for applying rewards based on AppLovin's S2S callbacks; this
+ * hook is responsible only for UX state and telemetry.
+ */
 import { useEffect, useState, useRef, useCallback } from "react";
 import {
   AdInfo,
@@ -6,12 +18,18 @@ import {
   AdDisplayFailedInfo,
   AdRewardInfo,
 } from "react-native-applovin-max";
-import { getFunctions } from "@react-native-firebase/functions";
+import { getFunctions, httpsCallable } from "@react-native-firebase/functions";
 import { getApp } from "@react-native-firebase/app";
 import { useAuth } from "../contexts/AuthContext";
 import Constants from "expo-constants";
+import { logger } from "../utils/logger";
+import { captureException } from "../utils/sentry";
+import { analyticsService } from "../services/AnalyticsService";
 
-// Extend AdRewardInfo type to include native methods not present in JS typings
+/**
+ * Extend AdRewardInfo type to include native methods that exist on the
+ * underlying native object but are not surfaced in the JS typings.
+ */
 interface ExtendedAdRewardInfo extends AdRewardInfo {
   getAmount(): number;
   getLabel(): string;
@@ -25,7 +43,7 @@ const REWARDED_AD_UNIT_ID = Constants.expoConfig?.extra
   ?.APPLOVIN_REWARDED_AD_UNIT_ID as string | undefined;
 
 if (!REWARDED_AD_UNIT_ID) {
-  console.error(
+  logger.error(
     "CRITICAL ERROR: APPLOVIN_REWARDED_AD_UNIT_ID environment variable is not set. Rewarded ads will not function."
   );
 }
@@ -33,6 +51,9 @@ if (!REWARDED_AD_UNIT_ID) {
 // AppLovin recommends retrying with exponentially higher delays up to a maximum delay
 const MAX_EXPONENTIAL_RETRY_COUNT = 6;
 
+/**
+ * Public API returned from the `useRewardedAds` hook.
+ */
 interface UseRewardedAds {
   isRewardedAdReady: boolean;
   loadRewardedAd: () => void;
@@ -42,51 +63,65 @@ interface UseRewardedAds {
   // error: string | null;
 }
 
+/**
+ * Provides a thin, typed interface around AppLovin MAX rewarded ads.
+ *
+ * The hook exposes boolean readiness state plus imperative `loadRewardedAd`
+ * and `showRewardedAd` helpers to be used from UI components. It automatically
+ * wires MAX event listeners, implements a bounded exponential backoff strategy
+ * for load failures, and forwards reward completions to the backend.
+ *
+ * @returns An object describing whether a rewarded ad is ready and helpers
+ * to load or show the ad.
+ */
 const useRewardedAds = (): UseRewardedAds => {
   const [isRewardedAdReady, setIsRewardedAdReady] = useState(false);
   const retryAttempt = useRef(0);
+  const retryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { playerData } = useAuth();
 
   // --- Ad Loading Function (wrapped in useCallback) ---
 
   const loadRewardedAd = useCallback(() => {
     if (!REWARDED_AD_UNIT_ID) {
-      console.error(
+      logger.error(
         "Cannot load rewarded ad: APPLOVIN_REWARDED_AD_UNIT_ID is not set."
       );
       return;
     }
-    console.log("Loading rewarded ad...");
+    logger.debug("Loading rewarded ad...");
     // Check if SDK is initialized before loading ads, potentially add a state for SDK initialized status
     // if (AppLovinMAX.isInitialized()) { // Check SDK initialization status if available/needed
     RewardedAd.loadAd(REWARDED_AD_UNIT_ID);
     // } else {
-    //    console.warn("AppLovin SDK not initialized. Cannot load rewarded ad.");
+    //    logger.warn("AppLovin SDK not initialized. Cannot load rewarded ad.");
     // }
   }, []);
 
   // --- Event Listeners for Rewarded Ads ---
 
   const onRewardedAdLoaded = useCallback((adInfo: AdInfo) => {
-    console.log("Rewarded ad loaded from " + adInfo.networkName);
+    logger.debug("Rewarded ad loaded from " + adInfo.networkName);
     setIsRewardedAdReady(true);
     retryAttempt.current = 0; // Reset retry attempt
+    void analyticsService.logAdEvent("loaded", { network_name: adInfo.networkName });
   }, []);
 
   const onRewardedAdLoadFailed = useCallback(
     (errorInfo: AdLoadFailedInfo) => {
-      console.log(
+      logger.debug(
         "Rewarded ad failed to load with code " +
           errorInfo.code +
           " and message: " +
           errorInfo.message
       );
       setIsRewardedAdReady(false);
+      void analyticsService.logAdEvent("load_failed", { error_code: errorInfo.code });
 
       // AppLovin recommends retrying with exponentially higher delays
       retryAttempt.current++;
       if (retryAttempt.current > MAX_EXPONENTIAL_RETRY_COUNT) {
-        console.warn("Rewarded ad load retry limit reached.");
+        logger.warn("Rewarded ad load retry limit reached.");
         return;
       }
 
@@ -95,11 +130,11 @@ const useRewardedAds = (): UseRewardedAds => {
         Math.min(MAX_EXPONENTIAL_RETRY_COUNT, retryAttempt.current)
       );
 
-      console.log(
+      logger.debug(
         `Retrying rewarded ad load in ${retryDelay}s (attempt ${retryAttempt.current})...`
       );
 
-      setTimeout(() => {
+      retryTimerRef.current = setTimeout(() => {
         loadRewardedAd();
       }, retryDelay * 1000);
     },
@@ -108,7 +143,7 @@ const useRewardedAds = (): UseRewardedAds => {
 
   const onRewardedAdDisplayFailed = useCallback(
     (adInfo: AdDisplayFailedInfo) => {
-      console.log(
+      logger.debug(
         "Rewarded ad failed to display with code " +
           adInfo.code +
           " and message: " +
@@ -122,9 +157,9 @@ const useRewardedAds = (): UseRewardedAds => {
   );
 
   const onRewardedAdDisplayed = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    (_adInfo: AdInfo) => {
-      console.log("Rewarded ad displayed");
+    (adInfo: AdInfo) => {
+      logger.debug("Rewarded ad displayed");
+      void analyticsService.logAdEvent("displayed", { network_name: adInfo.networkName });
     },
     []
   );
@@ -132,7 +167,7 @@ const useRewardedAds = (): UseRewardedAds => {
   const onRewardedAdClicked = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     (_adInfo: AdInfo) => {
-      console.log("Rewarded ad clicked");
+      logger.debug("Rewarded ad clicked");
     },
     []
   );
@@ -140,7 +175,7 @@ const useRewardedAds = (): UseRewardedAds => {
   const onRewardedAdHidden = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     (_adInfo: AdInfo) => {
-      console.log("Rewarded ad hidden");
+      logger.debug("Rewarded ad hidden");
       setIsRewardedAdReady(false); // Ad is hidden, so it's no longer ready
       // Pre-load the next ad
       loadRewardedAd();
@@ -158,7 +193,8 @@ const useRewardedAds = (): UseRewardedAds => {
       // Using 'any' and checking for method existence to bypass strict type checking.
       const amount = extendedRewardInfo.getAmount();
       const label = extendedRewardInfo.getLabel();
-      console.log("User rewarded: " + amount + " " + label);
+      logger.debug("User rewarded: " + amount + " " + label);
+      void analyticsService.logAdEvent("completed", { reward_amount: amount, reward_label: label });
 
       // IMPORTANT: Do NOT award coins directly on the client side.
       // The actual coin awarding should happen server-side AFTER AppLovin sends
@@ -173,7 +209,7 @@ const useRewardedAds = (): UseRewardedAds => {
           const placement = extendedRewardInfo.getPlacement();
           const networkName = extendedRewardInfo.getNetworkName();
 
-          console.log(
+          logger.debug(
             `Calling rewardedAdCallback with userId: ${playerData.userId}, adUnitId: ${adUnitId}, placement: ${placement}, network: ${networkName}`
           );
 
@@ -182,46 +218,37 @@ const useRewardedAds = (): UseRewardedAds => {
           const firebasePlacement =
             adUnitId || placement || networkName || "rewarded_ad";
 
-          await getFunctions(getApp()).httpsCallable("awardedAdCallback")({
+          await httpsCallable(getFunctions(getApp()), "awardedAdCallback")({
             userId: playerData.userId,
             placement: firebasePlacement, // Send ad unit ID or placement string
             // You could also send amount and label if your backend wants to verify them, though S2S is more reliable
             // amount: amount,
             // label: label,
           });
-          console.log(
+          logger.debug(
             "Successfully notified server of rewarded ad completion."
           );
         } catch (error) {
-          console.error(
+          logger.error(
             "Error calling rewardedAdCallback Firebase function:",
             error
           );
+          captureException(error);
         }
       } else {
-        console.warn("Cannot notify server: User ID not available.");
+        logger.warn("Cannot notify server: User ID not available.");
       }
     },
-    [playerData?.userId]
+    [playerData]
   );
 
   // --- Hook Lifecycle ---
 
-  useEffect(() => {
-    // Attach event listeners when the hook mounts
-    // AppLovin documentation examples typically don't show explicit removal of these listeners in a hook cleanup.
-    // They are likely intended to be attached once after SDK initialization.
-    RewardedAd.addAdLoadedEventListener(onRewardedAdLoaded);
-    RewardedAd.addAdLoadFailedEventListener(onRewardedAdLoadFailed);
-    RewardedAd.addAdFailedToDisplayEventListener(onRewardedAdDisplayFailed);
-    RewardedAd.addAdDisplayedEventListener(onRewardedAdDisplayed);
-    RewardedAd.addAdClickedEventListener(onRewardedAdClicked);
-    RewardedAd.addAdHiddenEventListener(onRewardedAdHidden);
-    RewardedAd.addAdReceivedRewardEventListener(onUserRewarded);
-
-    // No explicit listener removal here based on observed documentation patterns.
-    // The listeners will persist for the lifetime of the hook instance.
-  }, [
+  // Keep stable refs so listeners registered once always call the latest callback.
+  // This prevents listener accumulation: without this pattern, every time `playerData`
+  // changes `onUserRewarded` gets a new reference, the effect re-runs, and another
+  // set of 7 listeners piles up on top of the previous ones.
+  const callbacksRef = useRef({
     onRewardedAdLoaded,
     onRewardedAdLoadFailed,
     onRewardedAdDisplayFailed,
@@ -229,20 +256,49 @@ const useRewardedAds = (): UseRewardedAds => {
     onRewardedAdClicked,
     onRewardedAdHidden,
     onUserRewarded,
-  ]); // Fixed dependency array
+  });
+
+  // Sync refs on every render without triggering re-registration.
+  useEffect(() => {
+    callbacksRef.current = {
+      onRewardedAdLoaded,
+      onRewardedAdLoadFailed,
+      onRewardedAdDisplayFailed,
+      onRewardedAdDisplayed,
+      onRewardedAdClicked,
+      onRewardedAdHidden,
+      onUserRewarded,
+    };
+  });
+
+  // Register stable wrappers exactly once. Each wrapper delegates to the
+  // latest callback via the ref, so state changes are always reflected
+  // without adding new listeners.
+  useEffect(() => {
+    RewardedAd.addAdLoadedEventListener((info: AdInfo) => callbacksRef.current.onRewardedAdLoaded(info));
+    RewardedAd.addAdLoadFailedEventListener((info: AdLoadFailedInfo) => callbacksRef.current.onRewardedAdLoadFailed(info));
+    RewardedAd.addAdFailedToDisplayEventListener((info: AdDisplayFailedInfo) => callbacksRef.current.onRewardedAdDisplayFailed(info));
+    RewardedAd.addAdDisplayedEventListener((info: AdInfo) => callbacksRef.current.onRewardedAdDisplayed(info));
+    RewardedAd.addAdClickedEventListener((info: AdInfo) => callbacksRef.current.onRewardedAdClicked(info));
+    RewardedAd.addAdHiddenEventListener((info: AdInfo) => callbacksRef.current.onRewardedAdHidden(info));
+    RewardedAd.addAdReceivedRewardEventListener((info: AdRewardInfo) => callbacksRef.current.onUserRewarded(info));
+    return () => {
+      if (retryTimerRef.current) clearTimeout(retryTimerRef.current);
+    };
+  }, []); // Empty — registers once for the lifetime of the hook
 
   const showRewardedAd = useCallback(() => {
     if (!REWARDED_AD_UNIT_ID) {
-      console.error(
+      logger.error(
         "Cannot show rewarded ad: APPLOVIN_REWARDED_AD_UNIT_ID is not set."
       );
       return;
     }
     if (isRewardedAdReady) {
-      console.log("Showing rewarded ad...");
+      logger.debug("Showing rewarded ad...");
       RewardedAd.showAd(REWARDED_AD_UNIT_ID);
     } else {
-      console.log("Rewarded ad is not ready yet.");
+      logger.debug("Rewarded ad is not ready yet.");
       // Optionally, load the ad if it's not ready
       loadRewardedAd();
     }

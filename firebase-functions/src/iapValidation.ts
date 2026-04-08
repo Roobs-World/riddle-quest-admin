@@ -3,10 +3,13 @@ import {onCall} from "firebase-functions/v2/https";
 import iap from "in-app-purchase"; // Keep for iap.isValidated and iap.getPurchaseData
 
 import {getUser, updateUserCoins, updateUserProfile} from "./firestoreService";
+import {evaluateAchievements} from "./achievements";
 // Import configurations, receipt service functions, and platform validator
 import {NO_ADS_PRODUCT_ID, BACKEND_COIN_PRODUCT_DETAILS} from "./iapConfig";
 import {isPurchaseTokenAlreadyProcessed, markPurchaseTokenAsProcessed} from "./iapReceiptService";
 import {performPlatformValidation} from "./iapPlatformValidator";
+import {getCoinsForProduct, logPurchaseAnalytic, updateRegionalSpendingStats} from "./productPricingService";
+import {captureException} from "./sentry";
 
 /**
  * IAP Validation Module
@@ -104,27 +107,53 @@ export const validatePurchase = onCall(
         if (validatedProductIdFromReceipt === NO_ADS_PRODUCT_ID) {
           await updateUserProfile(userId, {hasPurchasedApp: true});
           functions.logger.info(`User ${userId} has purchased ad removal.`);
+          try {
+            await evaluateAchievements(userId, {
+              gameMode: "classic",
+              isCorrect: false,
+              attempts: 0,
+              gameOver: false,
+            });
+          } catch (err) {
+            functions.logger.error("Error evaluating achievements after purchase:", err);
+            captureException(err);
+          }
           const updatedUser = await getUser(userId);
           awardedCoins = updatedUser?.coins;
         } else {
-          const productInfo = Object.values(BACKEND_COIN_PRODUCT_DETAILS).find(
-            (p) => p.id === validatedProductIdFromReceipt,
-          );
+          // Look up coin amount from Firestore productPricing first, fall back to hardcoded config
+          awardedCoins = await getCoinsForProduct(validatedProductIdFromReceipt!, BACKEND_COIN_PRODUCT_DETAILS);
 
-          if (!productInfo) {
+          if (awardedCoins === undefined) {
             functions.logger.error(
-              "Product details not found on backend for validated product ID " +
+              "Product details not found for validated product ID " +
                 `${validatedProductIdFromReceipt} for user ${userId}.`,
             );
             throw new functions.https.HttpsError("internal", "Product configuration error on backend.");
           }
-          awardedCoins = productInfo.coins;
+
           await updateUserCoins(userId, awardedCoins);
 
           const updatedUserForLog = await getUser(userId);
           functions.logger.info(
             `Awarded ${awardedCoins} coins to user ${userId}. ` + `New balance: ${updatedUserForLog?.coins}`,
           );
+
+          // Log purchase analytics (non-critical — errors don't fail the purchase)
+          await logPurchaseAnalytic({
+            userId,
+            productId: validatedProductIdFromReceipt!,
+            coinsReceived: awardedCoins,
+            amountPaid: 0, // actual amount not available from receipt validation
+            currency: "USD",
+            platform,
+            country: "US", // country not available from receipt validation
+            transactionId: purchaseToken,
+            wasSpecialOffer: false,
+          });
+
+          // Update regional spending stats (non-critical)
+          await updateRegionalSpendingStats("US", "USD", 0);
         }
 
         await markPurchaseTokenAsProcessed(userId, purchaseToken, validatedProductIdFromReceipt);
@@ -147,6 +176,7 @@ export const validatePurchase = onCall(
       }
     } catch (error: unknown) {
       functions.logger.error(`IAP validation process failed for user ${userId}, product ${productId}:`, error);
+      captureException(error);
       if (error instanceof functions.https.HttpsError) {
         throw error;
       }

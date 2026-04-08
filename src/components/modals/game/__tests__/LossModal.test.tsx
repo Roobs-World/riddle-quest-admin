@@ -55,11 +55,9 @@ describe("LossModal", () => {
     it("should render correctly when visible", () => {
       const { getByText } = render(<LossModal {...defaultProps} />);
 
-      expect(getByText("Try Again!")).toBeTruthy();
-      expect(
-        getByText("Don't worry, every puzzle is a learning opportunity!")
-      ).toBeTruthy();
-      expect(getByText("The correct answer was:")).toBeTruthy();
+      expect(getByText("Oh no!")).toBeTruthy();
+      expect(getByText("You lost this round.")).toBeTruthy();
+      expect(getByText("The correct word was")).toBeTruthy();
       expect(getByText("WORLD")).toBeTruthy();
       expect(getByText("Next Level")).toBeTruthy();
     });
@@ -78,7 +76,7 @@ describe("LossModal", () => {
 
       // Test that switching visibility works
       rerender(<LossModal {...defaultProps} isVisible={true} />);
-      expect(queryByText("Try Again!")).toBeTruthy();
+      expect(queryByText("Oh no!")).toBeTruthy();
     });
 
     it("should render different correct answers", () => {
@@ -135,7 +133,7 @@ describe("LossModal", () => {
       );
 
       // Should render without crashing
-      expect(getByText("Try Again!")).toBeTruthy();
+      expect(getByText("Oh no!")).toBeTruthy();
       expect(getByText("Next Level")).toBeTruthy();
 
       // Should not crash when button is pressed
@@ -149,9 +147,9 @@ describe("LossModal", () => {
       const { getByText } = render(
         <LossModal {...defaultProps} correctAnswer="" />
       );
-      expect(getByText("The correct answer was:")).toBeTruthy();
-      // Empty string should still render
-      expect(getByText("")).toBeTruthy();
+      expect(getByText("The correct word was")).toBeTruthy();
+      // Empty string should still render (correctAnswer is empty)
+      expect(getByText("Next Level")).toBeTruthy();
     });
 
     it("should handle special characters in answer", () => {

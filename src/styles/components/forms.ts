@@ -5,6 +5,7 @@
 
 import { StyleSheet, TextStyle, ViewStyle } from "react-native";
 import { SPACING } from "../tokens/spacing";
+import { verticalScale } from "../../utils/responsive";
 import { BORDER_RADIUS } from "../tokens/borderRadius";
 import { COLORS } from "../tokens/colors";
 import { TYPOGRAPHY } from "../tokens/typography";
@@ -13,15 +14,16 @@ export const formStyles = StyleSheet.create({
   debugContainer: {
     backgroundColor: `${COLORS.white}E6`, // 90% opacity white
     borderRadius: BORDER_RADIUS.sm,
-    bottom: 100,
+    bottom: verticalScale(100),
     padding: SPACING.md,
     position: "absolute",
     right: SPACING.sm,
   } as ViewStyle,
 
   debugTitle: {
+    fontFamily: TYPOGRAPHY.fontSecondary,
     fontSize: TYPOGRAPHY.fontSize.xs,
-    fontWeight: "bold",
+    fontWeight: "600",
     marginBottom: SPACING.sm,
   } as TextStyle,
 
@@ -32,6 +34,7 @@ export const formStyles = StyleSheet.create({
   } as ViewStyle,
 
   errorMessage: {
+    fontFamily: TYPOGRAPHY.fontSecondary,
     color: COLORS.error,
     fontSize: TYPOGRAPHY.fontSize.base,
   } as TextStyle,
@@ -48,8 +51,9 @@ export const formStyles = StyleSheet.create({
   } as ViewStyle,
 
   riddleRegenerationTitle: {
+    fontFamily: TYPOGRAPHY.fontSecondary,
     fontSize: TYPOGRAPHY.fontSize.base,
-    fontWeight: "bold",
+    fontWeight: "600",
     marginBottom: SPACING.sm,
   } as TextStyle,
 

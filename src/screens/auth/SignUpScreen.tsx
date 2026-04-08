@@ -1,3 +1,12 @@
+/**
+ * @fileoverview
+ * Account creation screen for Qwordly.
+ *
+ * This screen collects username, email, and password inputs, enforces
+ * validation via Zod schemas, and requires users to agree to the terms
+ * of service and privacy policy before attempting sign-up. On success
+ * it delegates to `AuthService` to create the Firebase Auth account.
+ */
 import React, { useReducer, useState, useMemo, useCallback } from "react";
 import { View, Text, TouchableOpacity, ScrollView, Linking, Alert } from "react-native";
 import ProgressBar from "../../components/shared/ProgressBar";
@@ -14,12 +23,16 @@ import PasswordMatch from "../../components/text/PasswordMatch";
 import Error from "../../components/text/Error";
 import BackButton from "../../components/buttons/BackButton";
 import PulsingSpinner from "../../components/loading/PulsingSpinner";
+import { LOADING_SPINNER_SIZE } from "../../constants/loading";
 import { AuthService } from "../../services/AuthService";
 import { signUpSchema, SignUpFormData } from "../../validation/authSchemas";
 import { ZodError, ZodFormattedError } from "zod";
-import HomeBgSvg from "../../../assets/images/home-bg.svg";
+import StarryBackground from "../../components/background/StarryBackground";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { styles } from "../../styles";
+import { styles, SPACING, TYPOGRAPHY } from "../../styles";
+import { verticalScale } from "../../utils/responsive";
+import { logger } from "../../utils/logger";
+import { captureException } from "../../utils/sentry";
 
 /**
  * Defines the structure of the password state managed by the reducer.
@@ -113,10 +126,14 @@ function passwordReducer(
 }
 
 /**
- * Sign Up screen for the authentication flow.
- * Allows users to create a new account with username, email, and password.
+ * Sign-up screen component for the authentication flow.
  *
- * @param {object} navigation - The navigation prop from React Navigation.
+ * Manages username/email/password form state, including password matching
+ * and length checks via a reducer, applies Zod-based validation, and wires
+ * in legal links for the terms of service and privacy policy. When the
+ * form is valid and terms are accepted, it calls `AuthService.signUpWithEmail`.
+ *
+ * @param navigation React Navigation stack navigation prop.
  */
 // URLs for legal pages - update these with your actual URLs
 const TERMS_OF_SERVICE_URL = "https://qwordly.com/terms";
@@ -157,7 +174,8 @@ const SignUpScreen = ({ navigation }: { navigation: NavigationProp }) => {
         );
       }
     } catch (error) {
-      console.error(`Error opening ${pageName}:`, error);
+      logger.error(`Error opening ${pageName}:`, error);
+      captureException(error);
       Alert.alert(
         "Error",
         `Could not open ${pageName}. Please try again later.`
@@ -188,7 +206,7 @@ const SignUpScreen = ({ navigation }: { navigation: NavigationProp }) => {
         return;
       }
 
-      console.log("Validation successful. Attempting sign up...");
+      logger.debug("Validation successful. Attempting sign up...");
 
       await AuthService.signUpWithEmail(email, passwordState.password);
     } catch (error) {
@@ -209,7 +227,8 @@ const SignUpScreen = ({ navigation }: { navigation: NavigationProp }) => {
         }
       } else if (error && typeof error === "object" && "code" in error) {
         const firebaseError = error as FirebaseError;
-        console.error("Sign up error:", firebaseError);
+        logger.error("Sign up error:", firebaseError);
+        captureException(error);
         switch (firebaseError.code) {
           case "auth/email-already-in-use":
             setEmailError(
@@ -234,7 +253,8 @@ const SignUpScreen = ({ navigation }: { navigation: NavigationProp }) => {
             );
         }
       } else {
-        console.error("Unexpected sign up error:", error);
+        logger.error("Unexpected sign up error:", error);
+        captureException(error);
         setAuthError("An unexpected error occurred during sign up.");
       }
     } finally {
@@ -296,23 +316,19 @@ const SignUpScreen = ({ navigation }: { navigation: NavigationProp }) => {
 
   return (
     <View style={styles.signUpContainer}>
-      <HomeBgSvg
-        width="120%"
-        height="100%"
-        style={styles.signUpBackgroundSvg}
-      />
+      <StarryBackground />
       <CustomSafeAreaView style={styles.signUpSafeArea}>
         <AuthLayout>
-          <View className="relative w-full mb-8">
+          <View className="relative w-full" style={{ marginBottom: SPACING.xl }}>
             <BackButton navigation={navigation} />
-            <ScreenTitle
-              title={AppStrings.AuthStrings.SignUp.TITLE}
-              className="mt-7"
-            />
+            <View style={{ marginTop: verticalScale(28) }}>
+              <ScreenTitle title={AppStrings.AuthStrings.SignUp.TITLE} />
+            </View>
           </View>
 
           <ScrollView
-            className="w-full px-4"
+            className="w-full"
+            style={{ paddingHorizontal: SPACING.md }}
             showsVerticalScrollIndicator={false}
           >
             <ProgressBar activeStep={activeStep} totalSteps={3} />
@@ -354,28 +370,29 @@ const SignUpScreen = ({ navigation }: { navigation: NavigationProp }) => {
             )}
 
             <TouchableOpacity
-              className="flex-row items-center my-4"
+              className="flex-row items-center"
+              style={{ marginVertical: SPACING.md }}
               onPress={() => setAgreedToTerms(!agreedToTerms)}
             >
               <CheckboxIcon checked={agreedToTerms} />
-              <View className="flex-row flex-wrap ml-2">
-                <Text>
+              <View className="flex-row flex-wrap" style={{ marginLeft: SPACING.sm }}>
+                <Text className="text-white">
                   {AppStrings.AuthStrings.SignUp.TERMS_AGREEMENT_PART1}
                 </Text>
                 <TouchableOpacity
                   onPress={() => openExternalUrl(TERMS_OF_SERVICE_URL, "Terms of Service")}
                 >
-                  <Text className="text-blue-600 underline">
+                  <Text className="text-blue-300 underline">
                     {AppStrings.AuthStrings.SignUp.TERMS_USER_AGREEMENT}
                   </Text>
                 </TouchableOpacity>
-                <Text>
+                <Text className="text-white">
                   {AppStrings.AuthStrings.SignUp.TERMS_AGREEMENT_PART2}
                 </Text>
                 <TouchableOpacity
                   onPress={() => openExternalUrl(PRIVACY_POLICY_URL, "Privacy Policy")}
                 >
-                  <Text className="text-blue-600 underline">
+                  <Text className="text-blue-300 underline">
                     {AppStrings.AuthStrings.SignUp.TERMS_PRIVACY_POLICY}
                   </Text>
                 </TouchableOpacity>
@@ -385,7 +402,7 @@ const SignUpScreen = ({ navigation }: { navigation: NavigationProp }) => {
             {authError && <Error message={authError} />}
           </ScrollView>
 
-          <View className="w-full px-4 mt-auto">
+          <View className="w-full mt-auto" style={{ paddingHorizontal: SPACING.md }}>
             <WideButton
               buttonText={AppStrings.AuthStrings.SignUp.NEXT_BUTTON}
               onPress={handleNextPress}
@@ -393,11 +410,11 @@ const SignUpScreen = ({ navigation }: { navigation: NavigationProp }) => {
             />
             <TouchableOpacity
               onPress={() => navigation.navigate(AppStrings.Navigation.LOGIN)}
-              className="mb-4"
+              style={{ marginBottom: SPACING.md }}
             >
-              <Text className="text-center  text-sm text-gray-600">
+              <Text className="text-center text-white" style={{ fontSize: TYPOGRAPHY.fontSize.sm }}>
                 {AppStrings.AuthStrings.SignUp.HAS_ACCOUNT_PROMPT}
-                <Text className="text-sm text-blue-600 font-semibold">
+                <Text className="text-blue-300 font-semibold" style={{ fontSize: TYPOGRAPHY.fontSize.sm }}>
                   {AppStrings.AuthStrings.SignUp.LOGIN_NOW}
                 </Text>
               </Text>
@@ -406,7 +423,7 @@ const SignUpScreen = ({ navigation }: { navigation: NavigationProp }) => {
         </AuthLayout>
       </CustomSafeAreaView>
 
-      <PulsingSpinner visible={isLoading} size={120} />
+      <PulsingSpinner visible={isLoading} size={LOADING_SPINNER_SIZE} />
     </View>
   );
 };

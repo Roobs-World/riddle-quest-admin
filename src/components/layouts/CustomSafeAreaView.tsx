@@ -12,7 +12,8 @@
  */
 
 import React from "react";
-import { SafeAreaView, ViewProps } from "react-native";
+import { ViewProps } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 /**
  * Props interface for the CustomSafeAreaView component.
@@ -88,7 +89,7 @@ const CustomSafeAreaView: React.FC<CustomSafeAreaViewProps> = ({
    * The default classes provide the app's standard safe area appearance,
    * while custom classes can override or extend this styling.
    */
-  const combinedClassName = `bg-[#FCFAF4] flex-1 justify-center items-center p-6 ${
+  const combinedClassName = `bg-transparent flex-1 justify-center items-center p-6 ${
     className || ""
   }`;
 

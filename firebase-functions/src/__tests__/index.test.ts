@@ -187,7 +187,6 @@ describe("Firebase Functions", () => {
     const expectedFunctions = [
       "awardedAdCallback",
       "validatePurchase",
-      "getHint",
       "spendCoins",
       "setCompletedDailyChallenge",
       "hasCompletedDailyChallenge",

@@ -1,45 +1,25 @@
 import React from "react";
-import { Image, View } from "react-native";
+import { Image } from "react-native";
 import xLogo from "../../../assets/images/x-logo.png";
 
 interface XIconProps {
   width?: number | string;
+  tintColor?: string;
 }
 
-const XIcon = ({ width }: XIconProps) => {
+const XIcon = ({ width, tintColor }: XIconProps) => {
   const iconSize = typeof width === "string" ? parseInt(width) : width || 24;
-  const iconHeight = 24;
 
   return (
-    <View
+    <Image
+      source={xLogo}
       style={{
         width: iconSize,
-        height: iconHeight,
-        position: "relative",
+        height: iconSize,
+        resizeMode: "contain",
+        ...(tintColor ? { tintColor } : {}),
       }}
-    >
-      <View
-        style={{
-          position: "absolute",
-          top: 0,
-
-          right: 0,
-          bottom: 0,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Image
-          source={xLogo}
-          style={{
-            width: iconSize * 0.6,
-            height: iconHeight * 0.6,
-            resizeMode: "contain",
-            padding: 18,
-          }}
-        />
-      </View>
-    </View>
+    />
   );
 };
 

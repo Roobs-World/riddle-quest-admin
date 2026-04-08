@@ -466,5 +466,21 @@ describe("awardedAdCallback", () => {
         expect.objectContaining({message: "Database connection failed"}),
       );
     });
+
+    it("should return 401 when crypto throws during signature verification", async () => {
+      mockGet.mockResolvedValue({exists: false});
+      mockDigest.mockImplementation(() => {
+        throw new Error("Crypto failure");
+      });
+
+      await awardedAdCallback(mockReq as any, mockRes as any);
+
+      expect(mockRes.status).toHaveBeenCalledWith(401);
+      expect(mockRes.send).toHaveBeenCalledWith({message: "Validation failed."});
+      expect(mockLoggerError).toHaveBeenCalledWith(
+        "Error during AppLovin signature verification:",
+        expect.objectContaining({message: "Crypto failure"}),
+      );
+    });
   });
 });

@@ -1,6 +1,11 @@
 import React from "react";
 import { render } from "@testing-library/react-native";
 
+jest.mock("react-native-safe-area-context", () => ({
+  useSafeAreaInsets: () => ({ top: 44, bottom: 34, left: 0, right: 0 }),
+  SafeAreaProvider: ({ children }: any) => children,
+}));
+
 // Mock all dependencies first
 jest.mock("react-native", () => {
   const mockReact = require("react");
@@ -38,6 +43,17 @@ jest.mock("../../../services/IapService", () => ({
   COIN_PRODUCT_DETAILS: {
     coins_100: { id: "coins_100", coins: 100 },
     coins_500: { id: "coins_500", coins: 500 },
+  },
+}));
+
+// Mock ProductPricingService
+jest.mock("../../../services/ProductPricingService", () => ({
+  ProductPricingService: {
+    findByProductId: jest.fn(() => undefined),
+    getActiveSpecialOffer: jest.fn(() => undefined),
+    getPriceForCurrency: jest.fn(() => undefined),
+    getActiveProducts: jest.fn(() => Promise.resolve([])),
+    clearCache: jest.fn(),
   },
 }));
 

@@ -68,6 +68,16 @@ export interface GameModalTypes {
     correctAnswer: string;
     onNext: () => void;
     onHome: () => void;
+    /** If provided, a "Watch Ad to Continue" button is shown. */
+    onWatchAdContinue?: () => void;
+    /** If provided, a "Use Coins to Continue" button is shown. */
+    onCoinContinue?: () => void;
+    /** Coin cost displayed on the coin-continue button. */
+    coinContinueCost?: number;
+    /** Whether the rewarded ad is ready to show. */
+    canWatchAd?: boolean;
+    /** Whether the user has enough coins to continue. */
+    canUseCoin?: boolean;
   };
 
   // Game mode selection modal
@@ -80,15 +90,31 @@ export interface GameModalTypes {
   settings: {
     isSoundEnabled: boolean;
     isHapticsEnabled: boolean;
+    isHardMode: boolean;
     onToggleSound: (enabled: boolean) => void;
     onToggleHaptics: (enabled: boolean) => void;
+    onToggleHardMode: (enabled: boolean) => void;
     onPressLogout: () => void;
     onPressHelp: () => void;
     onPressCredits: () => void;
+    /** When provided, a "View Achievements" button is shown that opens the achievements modal. */
+    playerData?: import("../validation/firestoreSchemas").Player | null;
   };
 
   fullProfileDetails: {
     playerData: Record<string, unknown>; // Could be more strictly typed based on your user data model
+  };
+
+  achievements: {
+    playerData: import("../validation/firestoreSchemas").Player | null;
+  };
+
+  stats: {
+    playerData: import("../validation/firestoreSchemas").Player | null;
+  };
+
+  leaderboard: {
+    currentUserId: string | null;
   };
 
   changePassword: {
@@ -121,11 +147,22 @@ export interface GameModalTypes {
     onSkipLevel: () => void;
   };
 
-  welcome: Record<string, never>;
+  welcome: {
+    onStartTutorial?: () => void;
+    /** When false, "Start Tutorial" is hidden even if onStartTutorial is set (e.g. no tutorial riddles in Firestore). */
+    showStartTutorial?: boolean;
+  };
 
   instructions: Record<string, never>;
 
   credits: Record<string, never>;
+
+  info: {
+    title: string;
+    message: string;
+    /** Optional extra callback fired when the user presses OK (before the modal closes). */
+    onConfirm?: () => void;
+  };
 
   // Shop modals
   coinShop: {

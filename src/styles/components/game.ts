@@ -8,6 +8,7 @@ import { SPACING } from "../tokens/spacing";
 import { BORDER_RADIUS } from "../tokens/borderRadius";
 import { COLORS } from "../tokens/colors";
 import { SIZING } from "../tokens/sizing";
+import { TYPOGRAPHY } from "../tokens/typography";
 
 export const gameStyles = StyleSheet.create({
   backspaceKey: {
@@ -32,7 +33,8 @@ export const gameStyles = StyleSheet.create({
   } as ViewStyle,
 
   keyText: {
-    fontWeight: "bold",
+    fontFamily: TYPOGRAPHY.fontPrimary,
+    fontWeight: "400",
     textTransform: "uppercase",
     color: COLORS.white,
   } as TextStyle,

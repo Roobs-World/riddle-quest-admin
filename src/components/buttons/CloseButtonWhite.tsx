@@ -1,6 +1,8 @@
 import React from "react";
 import { TouchableOpacity, TouchableOpacityProps } from "react-native";
 import CloseIconWhite from "../icons/CloseIconWhite";
+import { SPACING } from "../../styles";
+import { CLOSE_BUTTON_SIZE_LG } from "../../constants/layout";
 
 interface CloseButtonProps extends TouchableOpacityProps {
   onPress: () => void;
@@ -10,14 +12,15 @@ interface CloseButtonProps extends TouchableOpacityProps {
 
 const CloseButtonWhite = ({
   onPress,
-  size = 24,
+  size = CLOSE_BUTTON_SIZE_LG,
   className = "",
   ...props
 }: CloseButtonProps) => {
   return (
     <TouchableOpacity
       onPress={onPress}
-      className={`p-2 ${className}`}
+      className={className}
+      style={{ padding: SPACING.sm }}
       accessibilityLabel="Close"
       accessibilityRole="button"
       {...props}

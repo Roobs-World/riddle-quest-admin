@@ -4,13 +4,13 @@
  */
 
 import { StyleSheet, TextStyle } from "react-native";
-import { scale } from "../../utils/responsive";
 import { COLORS } from "../tokens/colors";
 import { TYPOGRAPHY } from "../tokens/typography";
 
 export const textStyles = StyleSheet.create({
   creditsLink: {
     fontFamily: TYPOGRAPHY.fontSecondary,
+    fontSize: TYPOGRAPHY.fontSize.sm,
   } as TextStyle,
 
   creditsSubtitle: {
@@ -46,10 +46,10 @@ export const textStyles = StyleSheet.create({
   letterText: {
     color: COLORS.gray700,
     fontFamily: TYPOGRAPHY.fontPrimary,
-    fontSize: scale(32),
+    fontSize: TYPOGRAPHY.fontSize.display,
     fontWeight: "400",
     letterSpacing: TYPOGRAPHY.letterSpacing.tight,
-    lineHeight: scale(32) * TYPOGRAPHY.lineHeight.tight,
+    lineHeight: TYPOGRAPHY.fontSize.display * TYPOGRAPHY.lineHeight.tight,
   } as TextStyle,
 
   memberName: {
@@ -65,6 +65,7 @@ export const textStyles = StyleSheet.create({
   } as TextStyle,
 
   screenTitle: {
+    color: COLORS.white,
     fontFamily: TYPOGRAPHY.fontPrimary,
     fontSize: TYPOGRAPHY.fontSize["2xl"],
     fontWeight: "400",
@@ -73,10 +74,13 @@ export const textStyles = StyleSheet.create({
   } as TextStyle,
 
   separatorText: {
+    color: COLORS.white,
     fontFamily: TYPOGRAPHY.fontSecondary,
+    fontSize: TYPOGRAPHY.fontSize.sm,
   } as TextStyle,
 
   subtitle: {
+    color: COLORS.white,
     fontFamily: TYPOGRAPHY.fontSecondary,
     fontSize: TYPOGRAPHY.fontSize.base,
     lineHeight: TYPOGRAPHY.fontSize.base * TYPOGRAPHY.lineHeight.normal,
@@ -95,12 +99,14 @@ export const textStyles = StyleSheet.create({
   } as TextStyle,
 
   tileText: {
-    fontSize: scale(24),
-    fontWeight: "bold",
+    fontFamily: TYPOGRAPHY.fontPrimary,
+    fontSize: TYPOGRAPHY.fontSize["2xl"],
+    fontWeight: "400",
     textTransform: "uppercase",
   } as TextStyle,
 
   title: {
+    color: COLORS.white,
     fontFamily: TYPOGRAPHY.fontPrimary,
     fontSize: TYPOGRAPHY.fontSize["2xl"],
     fontWeight: "400",

@@ -10,6 +10,7 @@ import { SPACING } from "../tokens/spacing";
 import { BORDER_RADIUS } from "../tokens/borderRadius";
 import { SIZING } from "../tokens/sizing";
 import { SHADOWS } from "../tokens/shadows";
+import { moderateScale } from "../../utils/responsive";
 
 export const createButtonStyle = (
   backgroundColor: string = COLORS.primaryOrange,
@@ -37,7 +38,7 @@ export const createButtonStyle = (
         button: {
           ...baseButton,
           backgroundColor: COLORS.transparent,
-          borderWidth: 2,
+          borderWidth: moderateScale(2),
           borderColor: backgroundColor,
         },
         text: {

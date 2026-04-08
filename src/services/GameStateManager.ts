@@ -1,10 +1,26 @@
+/**
+ * @fileoverview
+ * Local game state manager and React hook for classic 5-letter Qwordly gameplay.
+ *
+ * `GameStateManager` encapsulates client-side guess entry, feedback handling,
+ * and audio feedback, while delegating authoritative guess validation to
+ * `RiddleService.submitGuess` and the corresponding Firebase Function.
+ *
+ * The exported `useGameStateManager` hook provides a React-friendly wrapper
+ * around this class for components that want an imperative-but-typed game API.
+ */
 import { useState, useCallback } from "react";
 import { GameMode } from "../contexts/AuthContext";
 import { RiddleService } from "./RiddleService";
 import { SubmitGuessInput } from "../validation/cloudFunctionsSchemas";
 import { IAudioFeedbackService } from "./interfaces/IAudioFeedbackService";
 import { serviceRegistry } from "./ServiceRegistry";
+import { logger } from "../utils/logger";
+import { captureException } from "../utils/sentry";
 
+/**
+ * Internal snapshot of the current game state for a single riddle.
+ */
 interface GameState {
   currentGuess: string;
   guesses: string[];
@@ -15,6 +31,9 @@ interface GameState {
   coinsEarned?: number;
 }
 
+/**
+ * Configuration used when constructing a new `GameStateManager` instance.
+ */
 interface GameConfig {
   mode: GameMode;
   maxGuesses: number;
@@ -23,6 +42,14 @@ interface GameConfig {
   onError?: (error: string) => void;
 }
 
+/**
+ * Class-based game state manager used by the React hook wrapper below.
+ *
+ * This class owns the mutable game state for a single riddle instance,
+ * exposes imperative actions (add/remove letters, submit guesses, reset),
+ * and notifies subscribers when state changes so React components can
+ * re-render via `useGameStateManager`.
+ */
 export class GameStateManager {
   private state: GameState = {
     currentGuess: "",
@@ -37,6 +64,12 @@ export class GameStateManager {
   private listeners: Set<() => void> = new Set();
   private audioFeedback: IAudioFeedbackService;
 
+  /**
+   * Creates a new game state manager with the supplied configuration.
+   *
+   * @param config Game configuration including mode, max guesses, riddle id,
+   * and optional completion/error callbacks.
+   */
   constructor(config: GameConfig) {
     this.config = config;
     // Get audio feedback service from registry
@@ -162,7 +195,8 @@ export class GameStateManager {
         this.config.onError(errorMessage);
       }
 
-      console.error("Error submitting guess:", error);
+      logger.error("Error submitting guess:", error);
+      captureException(error);
     }
   };
 
@@ -200,7 +234,16 @@ export class GameStateManager {
   }
 }
 
-// Hook for using GameStateManager in React components
+/**
+ * React hook wrapper around `GameStateManager` for use in components.
+ *
+ * It creates a single `GameStateManager` instance per hook usage and
+ * subscribes to its updates, forcing React re-renders when the internal
+ * state changes.
+ *
+ * @param config Game configuration used to construct the underlying manager.
+ * @returns Current game state plus grouped `actions` and `utils` helpers.
+ */
 export const useGameStateManager = (config: GameConfig) => {
   const [gameManager] = useState(() => new GameStateManager(config));
   const [, forceUpdate] = useState({});

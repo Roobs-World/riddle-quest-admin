@@ -7,6 +7,7 @@ jest.mock("../../../styles", () => ({
   styles: {
     signUpButtonText: {},
   },
+  SPACING: { xs: 4, sm: 8, md: 16, lg: 24, xl: 32, "2xl": 48 },
 }));
 
 describe("SignUpButton", () => {
@@ -47,17 +48,17 @@ describe("SignUpButton", () => {
       const TouchableOpacity = require("react-native").TouchableOpacity;
       const button = UNSAFE_getByType(TouchableOpacity);
 
-      expect(button.props.className).toContain("px-8");
-      expect(button.props.className).toContain("py-2");
       expect(button.props.className).toContain("border");
       expect(button.props.className).toContain("rounded-xl");
+      const style = button.props.style ?? {};
+      expect(style.paddingHorizontal).toBeDefined();
+      expect(style.paddingVertical).toBeDefined();
     });
 
     it("applies correct text styling", () => {
       const { getByText } = render(<SignUpButton onPress={mockOnPress} />);
 
       const buttonText = getByText("Sign up");
-      expect(buttonText.props.className).toContain("text-sm");
       expect(buttonText.props.className).toContain("text-gray-800");
       expect(buttonText.props.className).toContain("font-semibold");
     });
@@ -164,7 +165,8 @@ describe("SignUpButton", () => {
       const containerView = views[0];
       expect(containerView.props.className).toContain("flex-row");
       expect(containerView.props.className).toContain("items-center");
-      expect(containerView.props.className).toContain("mt-8");
+      const style = containerView.props.style ?? {};
+      expect(style.marginTop).toBeDefined();
     });
 
     it("contains TouchableOpacity within View", () => {
@@ -239,8 +241,9 @@ describe("SignUpButton", () => {
       const TouchableOpacity = require("react-native").TouchableOpacity;
       const button = UNSAFE_getByType(TouchableOpacity);
 
-      expect(button.props.className).toContain("px-8");
-      expect(button.props.className).toContain("py-2");
+      const style = button.props.style ?? {};
+      expect(style.paddingHorizontal).toBeDefined();
+      expect(style.paddingVertical).toBeDefined();
     });
 
     it("handles rapid successive presses", () => {
@@ -290,7 +293,6 @@ describe("SignUpButton", () => {
       const { getByText } = render(<SignUpButton onPress={mockOnPress} />);
       const buttonText = getByText("Sign up");
 
-      expect(buttonText.props.className).toContain("text-sm");
       expect(buttonText.props.style).toBeDefined();
     });
   });

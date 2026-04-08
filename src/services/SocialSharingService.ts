@@ -12,6 +12,8 @@
 
 import { Share, Linking } from "react-native";
 import { ShareDialog } from "react-native-fbsdk-next";
+import { logger } from "../utils/logger";
+import { captureException } from "../utils/sentry";
 
 export interface ShareContent {
   attempts: number;
@@ -47,7 +49,8 @@ export class SocialSharingService {
 
       return result.action === Share.sharedAction;
     } catch (error) {
-      console.error("Error sharing via system:", error);
+      logger.error("Error sharing via system:", error);
+      captureException(error);
       return false;
     }
   }
@@ -79,7 +82,8 @@ export class SocialSharingService {
         return this.shareViaSystem(content);
       }
     } catch (error) {
-      console.error("Error sharing to Facebook:", error);
+      logger.error("Error sharing to Facebook:", error);
+      captureException(error);
       // Fallback to system share
       return this.shareViaSystem(content);
     }
@@ -114,7 +118,8 @@ export class SocialSharingService {
         }
       }
     } catch (error) {
-      console.error("Error sharing to X:", error);
+      logger.error("Error sharing to X:", error);
+      captureException(error);
       // Fallback to system share
       return this.shareViaSystem(content);
     }

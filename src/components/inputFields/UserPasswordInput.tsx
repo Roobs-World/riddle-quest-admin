@@ -4,7 +4,8 @@ import { AppStrings } from "../../constants/AppStrings";
 import ReusableTextInput from "../shared/ReusableTextInput";
 import PasswordVisibilityIcon from "../icons/PasswordVisibilityIcon";
 import Error from "../text/Error";
-import { styles } from "../../styles";
+import { styles, SPACING } from "../../styles";
+import { scale } from "../../utils/responsive";
 
 interface UserPasswordInputProps {
   password: string;
@@ -34,8 +35,8 @@ const UserPasswordInput: React.FC<UserPasswordInputProps> = ({
   return (
     <View className="w-full">
       <Text
-        className="text-sm text-gray-600 mb-2 text-left"
-        style={styles.labelText}
+        className="text-gray-600 text-left"
+        style={[styles.labelText, { marginBottom: SPACING.sm }]}
       >
         {passwordLabel}
       </Text>
@@ -46,7 +47,7 @@ const UserPasswordInput: React.FC<UserPasswordInputProps> = ({
           placeholder={passwordPlaceholder}
           secureTextEntry={!isPasswordVisible}
         />
-        <TouchableOpacity onPress={togglePasswordVisibility} className="p-3">
+        <TouchableOpacity onPress={togglePasswordVisibility} style={{ padding: scale(12) }}>
           <PasswordVisibilityIcon visible={isPasswordVisible} />
         </TouchableOpacity>
       </View>

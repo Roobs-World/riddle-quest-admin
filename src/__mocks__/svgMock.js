@@ -1,6 +1,6 @@
 import React from "react";
 
-// SVG Mock that returns a functional React component
+// SVG Mock - returns a functional React component (svg works in jsdom)
 const SvgMock = React.forwardRef((props, ref) => {
   return React.createElement("svg", {
     ...props,

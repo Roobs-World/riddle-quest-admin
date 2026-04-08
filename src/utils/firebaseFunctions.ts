@@ -1,4 +1,4 @@
-import { getFunctions } from "@react-native-firebase/functions";
+import { getFunctions, httpsCallable } from "@react-native-firebase/functions";
 import { getApp } from "@react-native-firebase/app";
 
 /**
@@ -16,7 +16,7 @@ export const getFirebaseFunctions = () => {
  */
 export const getCallableFunction = (functionName: string) => {
   const functions = getFirebaseFunctions();
-  const callable = functions.httpsCallable(functionName);
+  const callable = httpsCallable(functions, functionName);
 
   // Note: Timeout handling for riddle generation functions is configured
   // server-side in Firebase Functions (540 seconds = 9 minutes)

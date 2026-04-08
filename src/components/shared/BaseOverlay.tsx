@@ -2,6 +2,7 @@ import React from "react";
 import { View, Modal, TouchableOpacity } from "react-native";
 import CloseButton from "../buttons/CloseButton";
 import { styles } from "../../styles";
+import { CLOSE_BUTTON_SIZE } from "../../constants/layout";
 
 interface BaseOverlayProps {
   visible: boolean;
@@ -50,7 +51,7 @@ const BaseOverlay: React.FC<BaseOverlayProps> = ({
                   : styles.topRight,
               ]}
             >
-              <CloseButton onPress={onClose} size={20} />
+              <CloseButton onPress={onClose} size={CLOSE_BUTTON_SIZE} />
             </View>
           )}
           {children}

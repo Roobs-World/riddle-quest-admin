@@ -8,8 +8,16 @@ import { useAuth } from "../../../contexts/AuthContext";
 import WideButton from "../../buttons/WideButton";
 import { TYPOGRAPHY } from "src/styles";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
-import { scale } from "src/utils/responsive";
 import CloseButton from "../../buttons/CloseButton";
+import {
+  MODAL_WIDTH,
+  MODAL_HEIGHT,
+  CLOSE_BUTTON_INSET,
+  CLOSE_BUTTON_SIZE,
+  MODAL_CLOSE_TOP_OFFSET_SM,
+  MODAL_BUTTON_SPACER,
+} from "../../../constants/layout";
+import { SPACING } from "../../../styles";
 
 interface AvatarOptionsModalProps {
   isVisible: boolean;
@@ -107,18 +115,18 @@ const AvatarOptionsModal: React.FC<AvatarOptionsModalProps> = ({
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "rgba(0,0,0,0.6)",
+          backgroundColor: "rgba(0,0,0,0.5)",
         }}
       >
         <View
           style={{
-            width: 335,
-            height: 423,
+            width: MODAL_WIDTH,
+            height: MODAL_HEIGHT,
             alignItems: "center",
             justifyContent: "center",
           }}
         >
-          <ModalBg style={{ position: "absolute" }} />
+          <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{ position: "absolute" }} />
           <View
             style={{
               width: "80%",
@@ -128,15 +136,20 @@ const AvatarOptionsModal: React.FC<AvatarOptionsModalProps> = ({
           >
             <CloseButton
               onPress={onClose}
-              size={20}
-              style={{ position: "absolute", top: -60, right: -20, zIndex: 10 }}
+              size={CLOSE_BUTTON_SIZE}
+              style={{
+                position: "absolute",
+                top: MODAL_CLOSE_TOP_OFFSET_SM,
+                right: -CLOSE_BUTTON_INSET,
+                zIndex: 10,
+              }}
             />
             <Text
               style={{
                 fontFamily: TYPOGRAPHY.fontPrimary,
-                fontSize: scale(24),
-                color: "white",
-                marginBottom: 20,
+                fontSize: TYPOGRAPHY.fontSize["2xl"],
+                color: "black",
+                marginBottom: SPACING.lg,
                 textAlign: "center",
               }}
             >
@@ -147,14 +160,14 @@ const AvatarOptionsModal: React.FC<AvatarOptionsModalProps> = ({
               buttonText="Upload from Photo Library"
               onPress={handleUploadAvatar}
             />
-            <View style={{ height: 10 }} />
+            <View style={{ height: MODAL_BUTTON_SPACER }} />
             <WideButton
               buttonText="Choose from Our Avatars"
               onPress={handleChoosePreloadedAvatars}
             />
             {getFacebookPhotoUrl() && (
               <>
-                <View style={{ height: 10 }} />
+                <View style={{ height: MODAL_BUTTON_SPACER }} />
                 <WideButton
                   buttonText="Use Facebook Photo"
                   onPress={handleUseFacebookAvatar}

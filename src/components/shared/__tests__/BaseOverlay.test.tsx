@@ -297,8 +297,8 @@ describe("BaseOverlay", () => {
 
       const closeButton = getByTestId("close-button");
       expect(closeButton.props.style).toMatchObject({
-        width: 20,
-        height: 20,
+        width: 19,
+        height: 19,
       });
     });
 

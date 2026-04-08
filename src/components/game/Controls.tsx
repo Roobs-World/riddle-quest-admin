@@ -12,6 +12,8 @@ m * @author Qwordly Development Team
 
 import React from "react";
 import { View, TouchableOpacity, Text } from "react-native";
+import { SPACING, TYPOGRAPHY } from "../../styles";
+import { scale } from "../../utils/responsive";
 
 /**
  * Props interface for the Controls component.
@@ -76,17 +78,18 @@ const Controls: React.FC<ControlsProps> = ({ onNextPress, isWin }) => {
   const isNextVisible = isWin;
 
   return (
-    <View className="flex-row justify-center w-full mt-4">
+    <View className="flex-row justify-center w-full" style={{ marginTop: SPACING.md }}>
       {/* Next Level Button - Only visible after winning */}
       {isNextVisible && (
         <TouchableOpacity
-          className="p-3 bg-green-500 rounded-lg"
+          className="bg-green-500 rounded-lg"
+          style={{ padding: scale(12) }}
           onPress={onNextPress}
           accessibilityRole="button"
           accessibilityLabel="Next Level"
           accessibilityHint="Advance to the next level after completing this one"
         >
-          <Text className="text-white font-bold">Next Level</Text>
+          <Text style={{ color: "white", fontFamily: TYPOGRAPHY.fontPrimary }}>Next Level</Text>
         </TouchableOpacity>
       )}
     </View>

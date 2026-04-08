@@ -2,6 +2,7 @@ import * as functions from "firebase-functions";
 import * as admin from "firebase-admin"; // Added for Firestore access
 import {onCall, HttpsError, CallableRequest} from "firebase-functions/v2/https";
 import {updateUserLastCompletedDailyChallengeDate, getUser} from "./firestoreService";
+import {captureException} from "./sentry";
 
 /**
  * Sets the last completed daily challenge date for the authenticated user.
@@ -30,6 +31,7 @@ export const setCompletedDailyChallenge = onCall(
         throw error;
       }
       functions.logger.error("Error setting completed daily challenge:", error);
+      captureException(error);
       throw new HttpsError("internal", "An error occurred while setting completed daily challenge.", error);
     }
   },
@@ -65,6 +67,7 @@ export const hasCompletedDailyChallenge = onCall(
       }
     } catch (error) {
       functions.logger.error("Error checking daily challenge status:", error);
+      captureException(error);
       throw new HttpsError("internal", "An error occurred while checking daily challenge status.", error);
     }
   },
@@ -161,7 +164,7 @@ export const getCurrentDailyChallenge = onCall(
         }
       }
 
-      console.log(
+      functions.logger.info(
         `Returning daily challenge for ${challengeData.date}: 5 questions, user progress: ${currentQuestion}/5`,
       );
       return {
@@ -172,6 +175,7 @@ export const getCurrentDailyChallenge = onCall(
       };
     } catch (error) {
       functions.logger.error("Error getting current daily challenge:", error);
+      captureException(error);
       return {error: "An error occurred while fetching the daily challenge."};
     }
   },
@@ -244,6 +248,7 @@ export const getCurrentDailyChallengeQuestion = onCall(
         throw error;
       }
       functions.logger.error("Error getting current daily challenge question:", error);
+      captureException(error);
       throw new HttpsError("internal", "An error occurred while fetching the current question.");
     }
   },
@@ -295,7 +300,7 @@ export const advanceDailyChallengeProgress = onCall(
 
       // If fully completed, update completion date and reset for next day
       if (isFullyCompleted) {
-        updates.lastDailyChallengeCompletedAt = new Date().toISOString();
+        updates.lastDailyChallengeCompletedAt = admin.firestore.FieldValue.serverTimestamp();
         // Note: dailyChallengeCurrentQuestion will be reset to 0 by the daily scheduler
       }
 
@@ -315,6 +320,7 @@ export const advanceDailyChallengeProgress = onCall(
         throw error;
       }
       functions.logger.error("Error advancing daily challenge progress:", error);
+      captureException(error);
       throw new HttpsError("internal", "An error occurred while advancing progress.");
     }
   },

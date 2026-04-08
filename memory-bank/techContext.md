@@ -4,63 +4,67 @@ This document details the technologies, development setup, technical constraints
 
 ## Technologies Used:
 
-- **React Native**: 0.83.1 - Core mobile framework for iOS and Android (updated from 0.79.5)
-- **Expo**: SDK 54.0.22 - Development platform and toolchain (updated from 53.0.17)
-- **TypeScript**: 5.8.3 - Type-safe JavaScript development
-- **React**: 19.0.0 - JavaScript library for building user interfaces (updated from 18.2.0)
-- **NativeWind**: 4.1.23 - Tailwind CSS for React Native styling
+- **React Native**: 0.84.1 - Core mobile framework for iOS and Android
+- **Expo**: SDK 55 - Development platform and toolchain
+- **TypeScript**: 5.9.3 - Type-safe JavaScript development
+- **React**: 19.2.4 - JavaScript library for building user interfaces
+- **NativeWind**: 4.2.2 - Tailwind CSS for React Native styling
 
 ### Bundling & Development
 
-- **Metro**: React Native bundler for JavaScript transformation and bundling
-- **Expo CLI**: 0.24.13 - Command-line tool for Expo development
+- **Metro**: 0.84.2 - React Native bundler for JavaScript transformation and bundling
+- **Expo CLI**: 55.x - Command-line tool for Expo development
 - **PNPM**: 10.11.0 - Fast, disk space efficient package manager
 
 ### Animation & UI
 
-- **React Native Reanimated**: 3.17.4 - High-performance animations
-- **React Native Gesture Handler**: 2.24.0 - Touch gesture management
+- **React Native Reanimated**: 4.2.2 - High-performance animations
+- **React Native Gesture Handler**: 2.30.0 - Touch gesture management
 - **Matter.js**: 0.20.0 - 2D physics engine for animations
-- **React Native SVG**: 15.12.0 - SVG support for React Native
+- **React Native SVG**: 15.15.3 - SVG support for React Native
+- **Three.js**: 0.183.2 - 3D rendering for solar system visualization
+- **@react-three/fiber**: 9.5.0 - React renderer for Three.js
+- **@react-three/drei**: 10.7.7 - Helpers for react-three-fiber
 
 ### Backend Technologies
 
 - **Firebase**: Authentication, Firestore, Cloud Functions (v2, using `process.env` for configuration), Storage
 - **Node.js**: Runtime for Firebase Functions
 - **TypeScript**: Type-safe server-side development
-- **Firebase Admin SDK**: 13.4.0 - Server-side Firebase operations
-- **OpenAI**: 4.102.0 - AI/ML integration for riddle generation with enhanced validation
+- **Firebase Admin SDK**: 13.7.0 - Server-side Firebase operations
+- **OpenAI**: 6.25.0 - AI/ML integration for riddle generation with enhanced validation
 
 ### Testing & Quality
 
-- **Jest**: 29.7.0 - JavaScript testing framework
-- **ts-jest**: 29.3.4 - TypeScript support for Jest
-- **ESLint**: Code linting and quality enforcement
-- **Prettier**: Code formatting
-- **Test Coverage**: 184 passing tests across 21 test suites with 0 failures
+- **Jest**: 30.2.0 - JavaScript testing framework
+- **ts-jest**: 29.4.6 - TypeScript support for Jest
+- **@testing-library/react-native**: 13.3.3 - React Native component testing
+- **ESLint**: 9.16.0 - Code linting and quality enforcement
+- **Husky**: 9.1.7 - Git hooks for pre-commit test enforcement
+- **Test Coverage**: 2,497 passing tests (2,111 RN + 386 Firebase Functions), 0 failures
 
 ### Data Validation & Quality
 
-- **Zod**: 3.25.17 - TypeScript-first schema validation
+- **Zod**: 4.3.6 - TypeScript-first schema validation
 - **Answer Validation**: Strict regex validation (`/^[a-z]+$/`) ensuring only lowercase letters in riddle answers
 - **Punctuation Prevention**: Enhanced OpenAI prompts and server-side validation preventing all punctuation marks
 - **Content Quality**: 7-character maximum answer length with comprehensive validation rules
 
 ### Native Integrations
 
-- **React Native Firebase**: 22.2.0 - Native Firebase SDK integration
-- **Google Sign-In**: 14.0.1 - Google authentication
-- **AppLovin MAX**: 9.1.0 - Mobile advertising platform
-- **Facebook SDK**: 13.4.1 - Facebook integration
-- **React Native IAP**: 12.16.2 - In-app purchases
+- **React Native Firebase**: 23.8.6 - Native Firebase SDK integration (modular API)
+- **Google Sign-In**: 16.1.2 - Google authentication
+- **AppLovin MAX**: 9.5.0 - Mobile advertising platform
+- **Facebook SDK**: 13.4.3 - Facebook integration
+- **React Native IAP**: 14.7.12 - In-app purchases
 
 ### Additional Libraries
 
-- **Axios**: 1.9.0 - HTTP client for API requests
+- **Axios**: 1.13.6 - HTTP client for API requests
 
 ### Sound & Haptics
 
-- **Sound:** expo-av (Will be extended to include audio fading capabilities)
+- **Sound:** expo-audio (SDK 55; migrated from expo-av; supports audio fading)
 - **Haptics:** react-native-haptic-feedback
 
 ## Development Setup:
@@ -74,10 +78,10 @@ This document details the technologies, development setup, technical constraints
 
 ## Technical Constraints:
 
-- **Expo SDK 53**: Stricter package.json exports enforcement affecting some third-party libraries
+- **Expo SDK 55**: New Architecture mandatory; expo-av removed (use expo-audio)
 - **Metro Bundler**: Module resolution changes requiring compatibility adjustments
 - **Firebase Platform**: Function execution time and Firestore query limitations. Firebase Functions v2 requires configuration via environment variables (`process.env`) instead of `functions.config()`.
-- **React Native 0.79.2**: New Architecture (Fabric/TurboModules) compatibility considerations
+- **React Native 0.84.1**: New Architecture (Fabric/TurboModules) mandatory
 - **iOS 16+/Android 10+**: Minimum platform version requirements
 - **Android Edge-to-Edge**: Enabled for future Android 16+ compatibility (targetSdkVersion 36+)
 - **TypeScript Module Resolution**: Using "bundler" resolution for Metro compatibility
@@ -99,9 +103,12 @@ This document details the technologies, development setup, technical constraints
 
 - **Testing Commands**:
 
-  - `npm run test` - Run Jest tests for React Native app
-  - `npm run lint` - ESLint code quality checks
-  - Firebase Functions testing via separate Jest configuration
+  - `pnpm run test` - Run Jest tests for React Native app (src/ only)
+  - `pnpm run test:precommit` - Full pre-commit suite: lint + RN tests + Firebase Functions tests
+  - `pnpm run lint` - ESLint code quality checks
+  - `cd firebase-functions && pnpm run test` - Firebase Functions unit tests (excludes *.it.test.ts)
+  - **Pre-commit**: Husky runs `test:precommit` before every commit; use `git commit --no-verify` to bypass
+  - **PRE_COMMIT_SKIP_LINT=1**: Skips lint step (e.g. for quick test-only runs)
 
 - **Build & Deploy Commands**:
   - `npx expo build:android` - Build Android APK
@@ -118,46 +125,20 @@ This document details the technologies, development setup, technical constraints
 - **firebase.json**: Firebase services configuration
 - **.env files (recommended)**: For managing Firebase Functions environment variables locally (e.g., `.env.local`, `.env.dev`, `.env.prod`). Ensure these are gitignored. Environment variables include `OPENAI_API_KEY`, `GOOGLE_SERVICE_ACCOUNT` (JSON string for IAP), `APPLE_SHARED_SECRET`, `APPLOVIN_SDK_KEY`, `APPLOVIN_INTERSTITIAL_AD_UNIT_ID`, `APPLOVIN_REWARDED_AD_UNIT_ID`, `FIREBASE_API_KEY`, `FIREBASE_APP_ID`, `FIREBASE_AUTH_DOMAIN`, `FIREBASE_MESSAGING_SENDER_ID`, `FIREBASE_PROJECT_ID`, `FIREBASE_STORAGE_BUCKET`, `FACEBOOK_APP_ID`, `FACEBOOK_APP_SECRET`, `FACEBOOK_CLIENT_TOKEN`.
 
-### **✅ Configuration Fixes - Recently Completed**:
-
-- **TypeScript Configuration**: Fixed module resolution compatibility by changing from "node" to "bundler" in tsconfig.json
-- **Android Edge-to-Edge**: Enabled for modern Android experience and future Android 16+ compatibility
-- **Build Environment**: Cleaned Gradle caches and resolved React Native Gradle plugin dependency issues
-
 ## Core Technologies:
 
-### **✅ Testing Infrastructure - FULLY COMPLETED**:
+### **Testing Infrastructure**:
 
-**Framework**: Jest with TypeScript support  
-**Configuration**: Dual testing for React Native and Firebase Functions  
-**Coverage**: 2,450/2,474 tests passing (99.0% success rate)  
-**Strategy**: Comprehensive coverage of both frontend and backend
-
-**Test Distribution**:
-- **React Native**: ~2,200+ tests covering components, hooks, services
-- **Firebase Functions**: 275 tests at 62.27% coverage
-- **Known Issues**: 24 failing tests (legacy expectations, not infrastructure)
-
-**Key Achievements**:
-
-- ✅ **Resolved Firebase Functions v2 Import Issues**: Reverted to v1 compatibility for stable dependencies
-- ✅ **Fixed Dynamic Import Problems**: Replaced with static imports and proper mock setup
-- ✅ **Established Reliable CI/CD**: No more TypeScript transformation errors blocking pipelines
-- ✅ **Comprehensive Backend Coverage**: All critical business logic tested through Firebase Functions
-- ✅ **Live Firebase Integration**: Tests run against actual Firebase project for real-world validation
+**Framework**: Jest 30.2.0 with TypeScript support  
+**Configuration**: Dual testing — React Native (preset: `react-native`) and Firebase Functions (ts-jest)  
+**Results**: 2,497 tests passing, 0 failures (2,111 RN + 386 Firebase Functions)  
+**Firebase Functions Coverage**: 61.65% overall, 11 files at 100% line coverage  
+**Pre-commit**: Husky enforces `pnpm run test:precommit` (lint + all tests) before every commit
 
 **Test Categories**:
 
-- **Firebase Functions**: All cloud functions with business logic validation
-- **Integration Tests**: Real Firestore operations with proper data management
-- **Unit Tests**: Proper mocking and isolation for service layer testing
+- **React Native**: Component, hook, and service tests via @testing-library/react-native
+- **Firebase Functions**: Unit tests with Jest mocks; integration tests against live Firebase
 - **Error Handling**: Comprehensive edge case and error scenario coverage
-
-**Benefits**:
-
-- **Fast Execution**: Focused backend testing without complex React Native dependencies
-- **Reliable Results**: 100% pass rate provides deployment confidence
-- **Maintainable**: Simple Jest configuration focused on critical functionality
-- **Scalable**: Test infrastructure supports continued development
 
 ### **Development Environment**:

@@ -57,20 +57,16 @@ Build a riddle-based Wordle-clone mobile game using React Native, NativeWind, an
 - High test coverage for critical game logic and backend services will be achieved.
 - All features outlined in the core requirements will be successfully implemented.
 
-## Project Overview
-
-Build a riddle-based Wordle-clone mobile game using React Native, NativeWind, and TypeScript. The game will feature user authentication, a persistent backend for user data and game levels, multiple game modes, in-app purchases for a coin system, and customizable user profiles.
-
 ## 2. Core Requirements
 
 ### 2.1. Platform & Technology
 
 - **Mobile Platform:** iOS (16+) and Android (10+)
-- **Frontend:** React Native (0.83.1), React (19.0.0), NativeWind, TypeScript
+- **Frontend:** React Native (0.84.1), React (19.2.4), NativeWind, TypeScript
 - **State Management:** React Context or Zustand
 - **Caching:** AsyncStorage or MMKV
 - **Animations:** Reanimated & Gesture Handler, Matter.js (for physics-based animations)
-- **Sound:** expo-av
+- **Sound:** expo-audio (SDK 55)
 - **Haptics:** react-native-haptic-feedback
 
 ### 2.2. Backend & Authentication
@@ -90,7 +86,7 @@ Build a riddle-based Wordle-clone mobile game using React Native, NativeWind, an
   - Coin rewards based on guesses (20 for 1-guess, 15 for 2, etc.).
   - Locks until the next UTC day.
 - **Classic Mode:**
-  - Sequential levels from Sheets/Firestore.
+  - Sequential levels from Firestore.
   - Solve to unlock the next level.
     Same 5-guess grid and feedback. **Guess validation and feedback are handled server-side.**
 

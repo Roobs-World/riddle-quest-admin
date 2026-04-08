@@ -21,7 +21,6 @@
  */
 
 import { StyleSheet, ViewStyle, TextStyle } from "react-native";
-import { scale } from "../../utils/responsive";
 import { SPACING } from "../tokens/spacing";
 import { BORDER_RADIUS } from "../tokens/borderRadius";
 import { COLORS } from "../tokens/colors";
@@ -155,7 +154,8 @@ export const modalStyles = StyleSheet.create({
    * to draw attention to rewards or costs.
    */
   coinText: {
-    fontSize: scale(16),
+    fontFamily: TYPOGRAPHY.fontSecondary,
+    fontSize: TYPOGRAPHY.fontSize.base,
     fontWeight: "600",
     color: COLORS.primaryOrange,
     marginLeft: SPACING.xs,
@@ -217,11 +217,12 @@ export const modalStyles = StyleSheet.create({
    * size, color, and line spacing for readability.
    */
   description: {
-    fontSize: scale(14),
+    fontFamily: TYPOGRAPHY.fontSecondary,
+    fontSize: TYPOGRAPHY.fontSize.sm,
     color: COLORS.textSecondary,
     textAlign: "center",
     marginBottom: SPACING.lg,
-    lineHeight: scale(20),
+    lineHeight: TYPOGRAPHY.fontSize.sm * TYPOGRAPHY.lineHeight.normal,
   } as TextStyle,
 
   /**
@@ -377,7 +378,8 @@ export const modalStyles = StyleSheet.create({
    * ensuring clear association with their respective inputs.
    */
   inputLabel: {
-    fontSize: scale(14),
+    fontFamily: TYPOGRAPHY.fontSecondary,
+    fontSize: TYPOGRAPHY.fontSize.sm,
     color: COLORS.textPrimary,
     marginBottom: SPACING.xs,
     fontWeight: "500",
@@ -390,7 +392,7 @@ export const modalStyles = StyleSheet.create({
    */
   listContainer: {
     width: "100%",
-    maxHeight: scale(300),
+    maxHeight: SPACING["2xl"] * 6, // ≈ 300 px at base; scales with device
     marginVertical: SPACING.md,
   } as ViewStyle,
 
@@ -437,11 +439,12 @@ export const modalStyles = StyleSheet.create({
    * appropriate size, color, and line height for readability.
    */
   modalText: {
+    fontFamily: TYPOGRAPHY.fontSecondary,
     marginBottom: SPACING.md,
     textAlign: "center",
-    fontSize: scale(16),
+    fontSize: TYPOGRAPHY.fontSize.base,
     color: COLORS.textPrimary,
-    lineHeight: scale(24),
+    lineHeight: TYPOGRAPHY.fontSize.base * TYPOGRAPHY.lineHeight.normal,
   } as TextStyle,
 
   /**
@@ -454,7 +457,7 @@ export const modalStyles = StyleSheet.create({
     backgroundColor: COLORS.white,
     borderRadius: BORDER_RADIUS.lg,
     margin: SPACING.md,
-    padding: scale(35),
+    padding: SPACING.xl,
     ...SHADOWS.md,
   } as ViewStyle,
 
@@ -526,7 +529,7 @@ export const modalStyles = StyleSheet.create({
    * height, background, and border radius.
    */
   progressBar: {
-    height: scale(8),
+    height: SPACING.xs * 2, // 8 px at base; scales with device
     backgroundColor: COLORS.gray200,
     borderRadius: BORDER_RADIUS.sm,
     overflow: "hidden",
@@ -584,9 +587,9 @@ export const modalStyles = StyleSheet.create({
    * (e.g., success, error, warning) with appropriate dimensions.
    */
   statusIndicator: {
-    width: scale(12),
-    height: scale(12),
-    borderRadius: scale(6),
+    width: SPACING.sm + SPACING.xs,   // 12 px at base
+    height: SPACING.sm + SPACING.xs,  // 12 px at base
+    borderRadius: (SPACING.sm + SPACING.xs) / 2,
     marginRight: SPACING.xs,
   } as ViewStyle,
 
@@ -596,7 +599,8 @@ export const modalStyles = StyleSheet.create({
    * appropriate size, color, and spacing.
    */
   subtitle: {
-    fontSize: scale(16),
+    fontFamily: TYPOGRAPHY.fontSecondary,
+    fontSize: TYPOGRAPHY.fontSize.base,
     color: COLORS.textSecondary,
     textAlign: "center",
     marginBottom: SPACING.md,
@@ -626,11 +630,12 @@ export const modalStyles = StyleSheet.create({
    * appropriate size, color, and spacing for visual hierarchy.
    */
   title: {
-    fontSize: scale(24),
+    fontFamily: TYPOGRAPHY.fontPrimary,
+    fontSize: TYPOGRAPHY.fontSize["2xl"],
+    fontWeight: "400",
     color: COLORS.textPrimary,
     textAlign: "center",
     marginBottom: SPACING.sm,
-    fontFamily: TYPOGRAPHY.fontPrimary,
   } as TextStyle,
 
   /**
@@ -650,7 +655,8 @@ export const modalStyles = StyleSheet.create({
    * to draw attention to important cautionary information.
    */
   warningText: {
-    fontSize: scale(14),
+    fontFamily: TYPOGRAPHY.fontSecondary,
+    fontSize: TYPOGRAPHY.fontSize.sm,
     color: COLORS.error,
     textAlign: "center",
     marginBottom: SPACING.md,

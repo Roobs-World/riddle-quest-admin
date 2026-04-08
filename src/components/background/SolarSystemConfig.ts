@@ -24,6 +24,7 @@
  * @since 2024
  */
 
+import { Asset } from "expo-asset";
 import planetATexture from "../../../assets/3d/tex_planet_a.png";
 import planetVTexture from "../../../assets/3d/tex_planet_v.png";
 import planetDTexture from "../../../assets/3d/tex_planet_d.png";
@@ -34,6 +35,15 @@ import moonDTexture from "../../../assets/3d/tex_moon_d.png";
 import moonFTexture from "../../../assets/3d/tex_moon_f.png";
 import moonGTexture from "../../../assets/3d/tex_moon_g.png";
 import moonHTexture from "../../../assets/3d/tex_moon_h.png";
+
+// React Native bundler returns numeric asset IDs for static imports.
+// Three.js TextureLoader requires a URL string, so we resolve via Expo Asset.
+const getUri = (module: number | string): string => {
+  if (typeof module === "number") {
+    return Asset.fromModule(module).uri;
+  }
+  return module;
+};
 
 /**
  * Moon configuration interface defining properties for moons
@@ -77,6 +87,7 @@ interface PlanetConfig {
   orbitSpeed: number;
   rotationSpeed: number;
   color: number;
+  atmosphereColor: string;
   texture: string;
   startAngle: number;
   yPosition: number;
@@ -106,7 +117,8 @@ export const SOLAR_SYSTEM_CONFIG: PlanetConfig[] = [
     orbitSpeed: 0.02,
     rotationSpeed: 0.01,
     color: 0x8c7853,
-    texture: planetATexture,
+    atmosphereColor: "#aa9977",
+    texture: getUri(planetATexture),
     startAngle: 0,
     yPosition: 30, // Earth's plane
     moons: [],
@@ -118,7 +130,8 @@ export const SOLAR_SYSTEM_CONFIG: PlanetConfig[] = [
     orbitSpeed: 0.018,
     rotationSpeed: 0.008,
     color: 0xffd700,
-    texture: planetDTexture,
+    atmosphereColor: "#ffcc44",
+    texture: getUri(planetDTexture),
     startAngle: Math.PI / 3,
     yPosition: 30, // Slightly below Earth's plane
     moons: [],
@@ -130,7 +143,8 @@ export const SOLAR_SYSTEM_CONFIG: PlanetConfig[] = [
     orbitSpeed: 0.015,
     rotationSpeed: 0.02,
     color: 0x4169e1,
-    texture: planetVTexture,
+    atmosphereColor: "#4488ff",
+    texture: getUri(planetVTexture),
     startAngle: (Math.PI * 2) / 3,
     yPosition: 30, // Main orbital plane
     moons: [
@@ -139,7 +153,7 @@ export const SOLAR_SYSTEM_CONFIG: PlanetConfig[] = [
         distance: 7, // Further increased orbital distance
         orbitSpeed: 0.06,
         color: 0xc0c0c0,
-        texture: moonDTexture, // Updated to use moon D texture
+        texture: getUri(moonDTexture), // Updated to use moon D texture
         startAngle: 0,
       },
     ],
@@ -151,7 +165,8 @@ export const SOLAR_SYSTEM_CONFIG: PlanetConfig[] = [
     orbitSpeed: 0.015,
     rotationSpeed: 0.015,
     color: 0xcd5c5c,
-    texture: planetRTexture,
+    atmosphereColor: "#ff5533",
+    texture: getUri(planetRTexture),
     startAngle: Math.PI,
     yPosition: 28, // Above Earth's plane
     moons: [
@@ -160,7 +175,7 @@ export const SOLAR_SYSTEM_CONFIG: PlanetConfig[] = [
         distance: 7, // Further increased orbital distance
         orbitSpeed: 0.08,
         color: 0x8b7355,
-        texture: moonGTexture, // Updated to use moon G texture
+        texture: getUri(moonGTexture), // Updated to use moon G texture
         startAngle: 0,
       },
     ],
@@ -174,7 +189,8 @@ export const SOLAR_SYSTEM_CONFIG: PlanetConfig[] = [
     orbitSpeed: 0.004,
     rotationSpeed: 0.025,
     color: 0xdaa520,
-    texture: planetKTexture,
+    atmosphereColor: "#ddaa44",
+    texture: getUri(planetKTexture),
     startAngle: Math.PI * 1.2,
     yPosition: 30, // Further below Earth's plane for depth
     moons: [
@@ -183,7 +199,7 @@ export const SOLAR_SYSTEM_CONFIG: PlanetConfig[] = [
         distance: 13, // Further increased orbital distance
         orbitSpeed: 0.03,
         color: 0xaaaaaa,
-        texture: moonHTexture, // Keep moon H texture
+        texture: getUri(moonHTexture), // Keep moon H texture
         startAngle: 0,
       },
       {
@@ -191,7 +207,7 @@ export const SOLAR_SYSTEM_CONFIG: PlanetConfig[] = [
         distance: 11.5, // Further increased orbital distance with more separation
         orbitSpeed: 0.032,
         color: 0xc0c0c0,
-        texture: moonCTexture, // Updated to use moon C texture
+        texture: getUri(moonCTexture), // Updated to use moon C texture
         startAngle: Math.PI / 3,
       },
     ],
@@ -203,7 +219,8 @@ export const SOLAR_SYSTEM_CONFIG: PlanetConfig[] = [
     orbitSpeed: 0.005,
     rotationSpeed: 0.022,
     color: 0xffd700,
-    texture: moonCTexture,
+    atmosphereColor: "#ffee88",
+    texture: getUri(moonCTexture),
     startAngle: Math.PI * 1.7,
     yPosition: 30, // Above Earth's plane for depth
     moons: [
@@ -212,7 +229,7 @@ export const SOLAR_SYSTEM_CONFIG: PlanetConfig[] = [
         distance: 12, // Further increased orbital distance
         orbitSpeed: 0.038,
         color: 0xc0c0c0,
-        texture: moonFTexture, // Updated to use moon F texture
+        texture: getUri(moonFTexture), // Updated to use moon F texture
         startAngle: 0,
       },
       {
@@ -220,7 +237,7 @@ export const SOLAR_SYSTEM_CONFIG: PlanetConfig[] = [
         distance: 12, // Further increased orbital distance with more separation
         orbitSpeed: 0.03,
         color: 0xaaaaaa,
-        texture: moonDTexture, // Updated to use moon D texture (different from Earth's moon)
+        texture: getUri(moonDTexture), // Updated to use moon D texture (different from Earth's moon)
         startAngle: Math.PI / 2,
       },
     ],
@@ -234,7 +251,8 @@ export const SOLAR_SYSTEM_CONFIG: PlanetConfig[] = [
     orbitSpeed: 0.004,
     rotationSpeed: 0.018,
     color: 0x4fd0e3,
-    texture: moonGTexture,
+    atmosphereColor: "#44ddee",
+    texture: getUri(moonGTexture),
     startAngle: Math.PI * 0.3,
     yPosition: 30, // Slight deviation below Earth's plane
     moons: [],

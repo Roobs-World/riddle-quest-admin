@@ -1,3 +1,13 @@
+/**
+ * @fileoverview
+ * Utility service for validating that all 3D texture assets used by the
+ * solar system background can be resolved and downloaded via Expo's
+ * `Asset` system.
+ *
+ * This code is intended for development and debugging only. It does not
+ * render anything; instead it logs detailed diagnostics that help track
+ * down asset pipeline issues when running on device or simulator.
+ */
 import { Asset } from "expo-asset";
 
 // Import all textures to test
@@ -20,7 +30,12 @@ import texGradientCircle from "../../assets/3d/tex_gradient_circle.png";
 import texGradientCircleSun from "../../assets/3d/tex_gradient_circle_sun.png";
 import texGradientCircleI from "../../assets/3d/tex_gradient_circle_i.png";
 import texGradientCircleSunI from "../../assets/3d/tex_gradient_circle_sun_i.png";
+import { logger } from "../utils/logger";
+import { captureException } from "../utils/sentry";
 
+/**
+ * Static helper class for batch or single-asset texture verification.
+ */
 export class TextureDebugger {
   private static readonly textureAssets = [
     { name: "planet_r", asset: texPlanetR },
@@ -41,8 +56,12 @@ export class TextureDebugger {
     { name: "gradient_circle_sun_i", asset: texGradientCircleSunI },
   ];
 
+  /**
+   * Iterates over all known texture assets, attempting to resolve and
+   * download each one and logging a summary of successes and failures.
+   */
   static async testAllAssets(): Promise<void> {
-    console.log("🔍 TextureDebugger: Starting asset loading test...");
+    logger.debug("🔍 TextureDebugger: Starting asset loading test...");
 
     const results = {
       success: 0,
@@ -52,7 +71,7 @@ export class TextureDebugger {
 
     for (const { name, asset } of this.textureAssets) {
       try {
-        console.log(`🔍 Testing asset: ${name}`);
+        logger.debug(`🔍 Testing asset: ${name}`);
 
         // Test 1: Check if asset import is valid
         if (!asset) {
@@ -61,57 +80,67 @@ export class TextureDebugger {
 
         // Test 2: Create Expo Asset
         const imageAsset = Asset.fromModule(asset);
-        console.log(`  ✓ Asset created: ${imageAsset.name || "unnamed"}`);
+        logger.debug(`  ✓ Asset created: ${imageAsset.name || "unnamed"}`);
 
         // Test 3: Download asset
         await imageAsset.downloadAsync();
-        console.log(`  ✓ Asset downloaded`);
+        logger.debug(`  ✓ Asset downloaded`);
 
         // Test 4: Check localUri
         if (!imageAsset.localUri) {
           throw new Error(`localUri is null after download`);
         }
-        console.log(`  ✓ LocalUri available: ${imageAsset.localUri}`);
+        logger.debug(`  ✓ LocalUri available: ${imageAsset.localUri}`);
 
         // Test 5: Check if file exists (basic validation)
         if (imageAsset.localUri.length < 10) {
           throw new Error(`localUri seems invalid: ${imageAsset.localUri}`);
         }
 
-        console.log(`✅ ${name}: SUCCESS`);
+        logger.debug(`✅ ${name}: SUCCESS`);
         results.success++;
       } catch (error) {
         const errorMsg = `❌ ${name}: ${error}`;
-        console.error(errorMsg);
+        logger.error(errorMsg);
+        captureException(error);
         results.errors.push(errorMsg);
         results.failed++;
       }
     }
 
-    console.log("\n🔍 TextureDebugger: Test Results Summary");
-    console.log(
+    logger.debug("\n🔍 TextureDebugger: Test Results Summary");
+    logger.debug(
       `✅ Successful: ${results.success}/${this.textureAssets.length}`
     );
-    console.log(`❌ Failed: ${results.failed}/${this.textureAssets.length}`);
+    logger.debug(`❌ Failed: ${results.failed}/${this.textureAssets.length}`);
 
     if (results.errors.length > 0) {
-      console.log("\n❌ Errors:");
-      results.errors.forEach((error) => console.log(`  ${error}`));
+      logger.debug("\n❌ Errors:");
+      results.errors.forEach((error) => logger.debug(`  ${error}`));
     }
 
     if (results.success === this.textureAssets.length) {
-      console.log("🎉 All texture assets loaded successfully!");
+      logger.debug("🎉 All texture assets loaded successfully!");
     } else {
-      console.log("⚠️ Some texture assets failed to load");
+      logger.debug("⚠️ Some texture assets failed to load");
     }
   }
 
+  /**
+   * Tests a single texture asset by resolving it through the Expo `Asset`
+   * system and ensuring a non-empty `localUri` is produced.
+   *
+   * @param assetPath Module reference for the asset (as imported).
+   * @param name Human-readable name used in log output.
+   * @returns `true` if the asset could be downloaded and validated,
+   * otherwise `false`.
+   */
   static async testSingleAsset(
     assetPath: string | number,
     name: string
   ): Promise<boolean> {
     try {
-      console.log(`🔍 Testing single asset: ${name}`);
+      logger.debug(`🔍 Testing single asset: ${name}`);
 
       const imageAsset = Asset.fromModule(assetPath);
       await imageAsset.downloadAsync();
@@ -120,10 +149,11 @@ export class TextureDebugger {
         throw new Error(`localUri is null`);
       }
 
-      console.log(`✅ ${name}: SUCCESS - ${imageAsset.localUri}`);
+      logger.debug(`✅ ${name}: SUCCESS - ${imageAsset.localUri}`);
       return true;
     } catch (error) {
-      console.error(`❌ ${name}: FAILED - ${error}`);
+      logger.error(`❌ ${name}: FAILED - ${error}`);
+      captureException(error);
       return false;
     }
   }

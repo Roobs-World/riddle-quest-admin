@@ -11,9 +11,19 @@ import {
 import { useAuth } from "../../../contexts/AuthContext";
 import CloseButton from "../../buttons/CloseButton";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
-import { scale } from "src/utils/responsive";
 import { TYPOGRAPHY } from "src/styles";
 import WideButton from "../../buttons/WideButton";
+import {
+  MODAL_WIDTH,
+  MODAL_HEIGHT,
+  MODAL_CONTENT_PADDING,
+  MODAL_SCROLLABLE_MAX_HEIGHT,
+  CLOSE_BUTTON_INSET,
+  CLOSE_BUTTON_SIZE,
+  AVATAR_SIZE_MEDIUM,
+  AVATAR_THUMBNAIL_MARGIN,
+} from "../../../constants/layout";
+import { SPACING } from "../../../styles";
 
 // Placeholder array of preloaded avatar URLs
 const preloadedAvatars = [
@@ -52,66 +62,76 @@ const PreloadedAvatarsModal: React.FC<PreloadedAvatarsModalProps> = ({
       transparent={true}
       animationType="fade"
       onRequestClose={onClose}
+      testID="modal"
     >
       <View
         style={{
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "rgba(0,0,0,0.6)",
+          backgroundColor: "rgba(0,0,0,0.5)",
         }}
       >
         <View
           style={{
-            width: 335,
-            height: 423,
+            width: MODAL_WIDTH,
+            height: MODAL_HEIGHT,
             alignItems: "center",
             justifyContent: "center",
           }}
         >
-          <ModalBg style={{ position: "absolute" }} />
+          <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{ position: "absolute" }} />
           <View
             style={{
               flex: 1,
               width: "100%",
               alignItems: "center",
               justifyContent: "space-between",
-              padding: 20,
+              padding: MODAL_CONTENT_PADDING,
             }}
           >
             <CloseButton
               onPress={onClose}
-              size={20}
-              style={{ position: "absolute", top: 20, right: 20, zIndex: 10 }}
+              size={CLOSE_BUTTON_SIZE}
+              style={{
+                position: "absolute",
+                top: CLOSE_BUTTON_INSET,
+                right: CLOSE_BUTTON_INSET,
+                zIndex: 10,
+              }}
             />
             <Text
               style={{
                 fontFamily: TYPOGRAPHY.fontPrimary,
-                fontSize: scale(24),
-                color: "white",
+                fontSize: TYPOGRAPHY.fontSize["2xl"],
+                color: "black",
                 textAlign: "center",
               }}
             >
               Select Avatar
             </Text>
             <ScrollView
-              style={{ flex: 1, width: "100%", maxHeight: 280 }}
+              style={{ flex: 1, width: "100%", maxHeight: MODAL_SCROLLABLE_MAX_HEIGHT }}
               contentContainerStyle={{
                 flexDirection: "row",
                 flexWrap: "wrap",
                 justifyContent: "center",
-                paddingVertical: 10,
+                paddingVertical: SPACING.sm,
               }}
             >
               {preloadedAvatars.map((url, index) => (
                 <TouchableOpacity
                   key={index}
                   onPress={() => handlePreloadedAvatarSelect(url)}
-                  style={{ margin: 8 }}
+                  style={{ margin: AVATAR_THUMBNAIL_MARGIN }}
                 >
                   <Image
                     source={{ uri: url }}
-                    style={{ width: 64, height: 64, borderRadius: 32 }}
+                    style={{
+                      width: AVATAR_SIZE_MEDIUM,
+                      height: AVATAR_SIZE_MEDIUM,
+                      borderRadius: AVATAR_SIZE_MEDIUM / 2,
+                    }}
                   />
                 </TouchableOpacity>
               ))}

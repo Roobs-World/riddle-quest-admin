@@ -12,7 +12,7 @@
  * @since 2024
  */
 
-import React, { useRef, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Animated, Easing, View, Modal } from "react-native";
 import Svg, { Circle } from "react-native-svg";
 import { styles, COLORS } from "../../styles";
@@ -109,10 +109,11 @@ const PulsingSpinner = React.memo(function PulsingSpinner({
   /**
    * Stable animated values that persist across renders.
    * Each dot has its own Animated.Value for independent animation control.
+   * useState with lazy init so refs are not read during render (satisfies react-hooks/refs).
    */
-  const animValues = useRef(
+  const [animValues] = useState(() =>
     Array.from({ length: dotCount }, () => new Animated.Value(0))
-  ).current;
+  );
 
   /**
    * Memoized geometric calculations for dot positioning.
@@ -228,6 +229,8 @@ const PulsingSpinner = React.memo(function PulsingSpinner({
             maxHeight: size,
           },
         ]}
+        accessibilityLabel="Loading"
+        accessibilityRole="progressbar"
       >
         <Svg
           width={size}

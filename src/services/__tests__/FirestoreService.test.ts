@@ -1,61 +1,62 @@
 import { ZodError } from "zod";
 import * as FirestoreService from "../FirestoreService";
-import { Player } from "../../validation/firestoreSchemas";
-import { getFirestore } from "@react-native-firebase/firestore";
+import {
+  Player,
+  PlayerSchema,
+  FirestoreRiddleSchema,
+} from "../../validation/firestoreSchemas";
+import { logger } from "../../utils/logger";
 
-// Mock Firebase dependencies
-const mockGet = jest.fn();
-const mockSet = jest.fn();
-const mockUpdate = jest.fn();
-const mockDoc = jest.fn(() => ({
-  get: mockGet,
-  set: mockSet,
-  update: mockUpdate,
-}));
-const mockWhere = jest.fn();
-const mockLimit = jest.fn(() => ({
-  get: mockGet,
-}));
-const mockCollection = jest.fn(() => ({
-  doc: mockDoc,
-  where: mockWhere,
-}));
-const mockServerTimestamp = jest.fn();
+// Mock refs assigned in jest.mock factory
+let mockGetDoc: jest.Mock;
+let mockGetDocs: jest.Mock;
+let mockSetDoc: jest.Mock;
+let mockUpdateDoc: jest.Mock;
+let mockDoc: jest.Mock;
+let mockWhere: jest.Mock;
+let mockLimit: jest.Mock;
+let mockCollection: jest.Mock;
+let mockQuery: jest.Mock;
+let mockServerTimestamp: jest.Mock;
+let mockGetFirestore: jest.Mock;
 
-// Setup the mock chain properly
-mockWhere.mockImplementation(() => ({
-  where: mockWhere,
-  limit: mockLimit,
-  get: mockGet,
-}));
+// Keep legacy aliases for assertions that still use v8-style names
+let mockGet: jest.Mock;
+let mockSet: jest.Mock;
+let mockUpdate: jest.Mock;
 
-// Critical: Mock the static firestore.FieldValue properly
 jest.mock("@react-native-firebase/firestore", () => {
-  const mockServerTimestamp = jest.fn();
-  const mockFirestoreInstance = {
-    collection: jest.fn(() => ({
-      doc: jest.fn(() => ({
-        get: jest.fn(),
-        set: jest.fn(),
-        update: jest.fn(),
-      })),
-      where: jest.fn(),
-    })),
-    FieldValue: {
-      serverTimestamp: mockServerTimestamp,
-    },
-  };
+  mockGetDoc = jest.fn();
+  mockGetDocs = jest.fn();
+  mockSetDoc = jest.fn();
+  mockUpdateDoc = jest.fn();
+  mockDoc = jest.fn(() => ({}));
+  mockWhere = jest.fn(() => ({}));
+  mockLimit = jest.fn(() => ({}));
+  mockCollection = jest.fn(() => ({}));
+  mockQuery = jest.fn(() => ({}));
+  mockServerTimestamp = jest.fn(() => "MOCK_SERVER_TIMESTAMP");
+  mockGetFirestore = jest.fn(() => ({}));
 
-  const mockGetFirestore = jest.fn(() => mockFirestoreInstance);
+  // Legacy aliases
+  mockGet = mockGetDoc;
+  mockSet = mockSetDoc;
+  mockUpdate = mockUpdateDoc;
 
   return {
     __esModule: true,
     getFirestore: mockGetFirestore,
-    FirebaseFirestoreTypes: {
-      FieldValue: {
-        serverTimestamp: mockServerTimestamp,
-      },
-    },
+    doc: mockDoc,
+    collection: mockCollection,
+    getDoc: mockGetDoc,
+    getDocs: mockGetDocs,
+    setDoc: mockSetDoc,
+    updateDoc: mockUpdateDoc,
+    query: mockQuery,
+    where: mockWhere,
+    limit: mockLimit,
+    serverTimestamp: mockServerTimestamp,
+    FirebaseFirestoreTypes: {},
   };
 });
 
@@ -65,77 +66,50 @@ jest.mock("@react-native-firebase/app", () => ({
 
 // Mock schemas
 jest.mock("../../validation/firestoreSchemas", () => ({
-  PlayerSchema: {
-    parse: jest.fn(),
-  },
-  FirestoreRiddleSchema: {
-    parse: jest.fn(),
-  },
+  PlayerSchema: { parse: jest.fn() },
+  FirestoreRiddleSchema: { parse: jest.fn() },
 }));
 
-// Mock console methods to reduce noise
-jest.spyOn(console, "log").mockImplementation(() => {});
-jest.spyOn(console, "warn").mockImplementation(() => {});
-jest.spyOn(console, "error").mockImplementation(() => {});
+// Mock logger - must be defined in factory so it's available when module loads
+jest.mock("../../utils/logger", () => ({
+  logger: {
+    debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+  },
+}));
 
 describe("FirestoreService", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    FirestoreService.clearRiddleCache();
 
     // Reset all mocks
-    mockGet.mockReset();
-    mockSet.mockReset();
-    mockUpdate.mockReset();
+    mockGetDoc.mockReset();
+    mockGetDocs.mockReset();
+    mockSetDoc.mockReset();
+    mockUpdateDoc.mockReset();
     mockDoc.mockReset();
     mockWhere.mockReset();
     mockLimit.mockReset();
     mockCollection.mockReset();
+    mockQuery.mockReset();
     mockServerTimestamp.mockReset();
+    mockGetFirestore.mockReset();
 
-    // Setup default mock chain
-    mockWhere.mockImplementation(() => ({
-      where: mockWhere,
-      limit: mockLimit,
-      get: mockGet,
-    }));
-    mockLimit.mockReturnValue({
-      get: mockGet,
-    });
-    mockCollection.mockReturnValue({
-      doc: mockDoc,
-      where: mockWhere,
-    });
-    mockDoc.mockImplementation(() => ({
-      get: mockGet,
-      set: mockSet,
-      update: mockUpdate,
-    }));
-
-    // Setup serverTimestamp mock
+    // Setup defaults: standalone functions return their arg or {}
+    mockDoc.mockReturnValue({});
+    mockCollection.mockReturnValue({});
+    mockQuery.mockReturnValue({});
+    mockWhere.mockReturnValue({});
+    mockLimit.mockReturnValue({});
+    mockGetFirestore.mockReturnValue({});
     mockServerTimestamp.mockReturnValue("MOCK_SERVER_TIMESTAMP");
 
-    // Setup the firestore mock to include FieldValue
-    const firestoreInstance = {
-      collection: mockCollection,
-      FieldValue: {
-        serverTimestamp: mockServerTimestamp,
-      },
-    };
-
-    // Ensure the firestore mock returns our mock object with FieldValue
-    (getFirestore as jest.MockedFunction<typeof getFirestore>).mockReturnValue(
-      firestoreInstance as any
-    );
-
-    // Ensure the FirebaseFirestoreTypes.FieldValue is properly mocked
-    jest.mock("@react-native-firebase/firestore", () => ({
-      ...jest.requireActual("@react-native-firebase/firestore"),
-      FirebaseFirestoreTypes: {
-        FieldValue: {
-          serverTimestamp: mockServerTimestamp,
-        },
-      },
-    }));
+    // Default: schema parse returns input (identity)
+    (PlayerSchema.parse as jest.Mock).mockImplementation((x: unknown) => x);
+    (FirestoreRiddleSchema.parse as jest.Mock).mockImplementation((x: unknown) => x);
   });
 
   describe("saveUserProgressToFirestore", () => {
@@ -147,20 +121,20 @@ describe("FirestoreService", () => {
     } as Player["progress"];
 
     it("should save user progress successfully", async () => {
-      mockSet.mockResolvedValue(undefined);
+      mockSetDoc.mockResolvedValue(undefined);
 
       await FirestoreService.saveUserProgressToFirestore(
         mockUserId,
         mockProgress
       );
 
-      expect(mockCollection).toHaveBeenCalledWith("users");
-      expect(mockDoc).toHaveBeenCalledWith(mockUserId);
-      expect(mockSet).toHaveBeenCalledWith(
+      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "users", mockUserId);
+      expect(mockSetDoc).toHaveBeenCalledWith(
+        expect.any(Object),
         { progress: mockProgress },
         { merge: true }
       );
-      expect(console.log).toHaveBeenCalledWith(
+      expect(logger.info).toHaveBeenCalledWith(
         "Player progress saved to Firestore successfully for user:",
         mockUserId
       );
@@ -169,10 +143,10 @@ describe("FirestoreService", () => {
     it("should handle empty userId gracefully", async () => {
       await FirestoreService.saveUserProgressToFirestore("", mockProgress);
 
-      expect(console.warn).toHaveBeenCalledWith(
+      expect(logger.warn).toHaveBeenCalledWith(
         "Attempted to save progress to Firestore without a userId."
       );
-      expect(mockCollection).not.toHaveBeenCalled();
+      expect(mockSetDoc).not.toHaveBeenCalled();
     });
 
     it("should handle null userId gracefully", async () => {
@@ -181,21 +155,21 @@ describe("FirestoreService", () => {
         mockProgress
       );
 
-      expect(console.warn).toHaveBeenCalledWith(
+      expect(logger.warn).toHaveBeenCalledWith(
         "Attempted to save progress to Firestore without a userId."
       );
-      expect(mockCollection).not.toHaveBeenCalled();
+      expect(mockSetDoc).not.toHaveBeenCalled();
     });
 
     it("should handle Firestore errors", async () => {
       const error = new Error("Firestore error");
-      mockSet.mockRejectedValue(error);
+      mockSetDoc.mockRejectedValue(error);
 
       await expect(
         FirestoreService.saveUserProgressToFirestore(mockUserId, mockProgress)
       ).rejects.toThrow("Firestore error");
 
-      expect(console.error).toHaveBeenCalledWith(
+      expect(logger.error).toHaveBeenCalledWith(
         "Error saving player progress to Firestore:",
         error
       );
@@ -217,22 +191,20 @@ describe("FirestoreService", () => {
     } as unknown as Player;
 
     it("should load user progress successfully", async () => {
-      mockGet.mockResolvedValue({
+      mockGetDoc.mockResolvedValue({
         exists: () => true,
         data: () => mockUserData,
       });
-      // (PlayerSchema.parse as jest.Mock).mockReturnValue(mockUserData); // This line is removed as per the edit hint
 
       const result = await FirestoreService.loadUserProgressFromFirestore(
         mockUserId
       );
 
-      expect(mockCollection).toHaveBeenCalledWith("users");
-      expect(mockDoc).toHaveBeenCalledWith(mockUserId);
-      expect(mockGet).toHaveBeenCalled();
+      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "users", mockUserId);
+      expect(mockGetDoc).toHaveBeenCalled();
       // expect(PlayerSchema.parse).toHaveBeenCalledWith(mockUserData); // This line is removed as per the edit hint
       expect(result).toEqual(mockUserData);
-      expect(console.log).toHaveBeenCalledWith(
+      expect(logger.info).toHaveBeenCalledWith(
         "Player data validated successfully."
       );
     });
@@ -240,15 +212,15 @@ describe("FirestoreService", () => {
     it("should handle empty userId gracefully", async () => {
       const result = await FirestoreService.loadUserProgressFromFirestore("");
 
-      expect(console.warn).toHaveBeenCalledWith(
+      expect(logger.warn).toHaveBeenCalledWith(
         "Attempted to load progress from Firestore without a userId."
       );
       expect(result).toBeNull();
-      expect(mockCollection).not.toHaveBeenCalled();
+      expect(mockGetDoc).not.toHaveBeenCalled();
     });
 
     it("should handle non-existent user document", async () => {
-      mockGet.mockResolvedValue({
+      mockGetDoc.mockResolvedValue({
         exists: () => false,
       });
 
@@ -256,7 +228,7 @@ describe("FirestoreService", () => {
         mockUserId
       );
 
-      expect(console.log).toHaveBeenCalledWith(
+      expect(logger.info).toHaveBeenCalledWith(
         "No player progress found in Firestore for user:",
         mockUserId
       );
@@ -268,25 +240,24 @@ describe("FirestoreService", () => {
         {
           code: "invalid_type",
           expected: "string",
-          received: "number",
           path: ["email"],
           message: "Expected string, received number",
         },
       ]);
 
-      mockGet.mockResolvedValue({
+      mockGetDoc.mockResolvedValue({
         exists: () => true,
         data: () => mockUserData,
       });
-      // (PlayerSchema.parse as jest.Mock).mockImplementation(() => { // This line is removed as per the edit hint
-      //   throw zodError; // This line is removed as per the edit hint
-      // }); // This line is removed as per the edit hint
+      (PlayerSchema.parse as jest.Mock).mockImplementation(() => {
+        throw zodError;
+      });
 
       const result = await FirestoreService.loadUserProgressFromFirestore(
         mockUserId
       );
 
-      expect(console.error).toHaveBeenCalledWith(
+      expect(logger.error).toHaveBeenCalledWith(
         "Zod validation error for player data:",
         zodError.issues
       );
@@ -295,13 +266,13 @@ describe("FirestoreService", () => {
 
     it("should handle Firestore errors", async () => {
       const error = new Error("Firestore error");
-      mockGet.mockRejectedValue(error);
+      mockGetDoc.mockRejectedValue(error);
 
       await expect(
         FirestoreService.loadUserProgressFromFirestore(mockUserId)
       ).rejects.toThrow("Firestore error");
 
-      expect(console.error).toHaveBeenCalledWith(
+      expect(logger.error).toHaveBeenCalledWith(
         "Error loading player progress from Firestore:",
         error
       );
@@ -311,9 +282,10 @@ describe("FirestoreService", () => {
   describe("fetchDailyRiddleFromFirestore", () => {
     const dailyIndex = 5;
     const mockRiddleData = {
+      riddleId: "daily-5",
       category: "daily",
       dailyIndex: 5,
-      riddle: "What has four legs?",
+      text: "What has four legs?",
       answer: "DOG",
       hint: "A pet",
       difficulty: "easy",
@@ -329,19 +301,15 @@ describe("FirestoreService", () => {
         ],
       };
 
-      mockGet.mockResolvedValue(mockSnapshot);
-      // (FirestoreRiddleSchema.parse as jest.Mock).mockReturnValue( // This line is removed as per the edit hint
-      //   mockRiddleData // This line is removed as per the edit hint
-      // ); // This line is removed as per the edit hint
+      mockGetDocs.mockResolvedValue(mockSnapshot);
 
       const result = await FirestoreService.fetchDailyRiddleFromFirestore(
         dailyIndex
       );
 
-      expect(mockCollection).toHaveBeenCalledWith("riddles");
+      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "riddles");
       expect(mockWhere).toHaveBeenCalledWith("dailyIndex", "==", dailyIndex);
       expect(mockLimit).toHaveBeenCalledWith(1);
-      // expect(FirestoreRiddleSchema.parse).toHaveBeenCalledWith(mockRiddleData); // This line is removed as per the edit hint
       expect(result).toEqual(mockRiddleData);
     });
 
@@ -351,14 +319,14 @@ describe("FirestoreService", () => {
         docs: [],
       };
 
-      mockGet.mockResolvedValue(mockSnapshot);
+      mockGetDocs.mockResolvedValue(mockSnapshot);
 
       const result = await FirestoreService.fetchDailyRiddleFromFirestore(
         dailyIndex
       );
 
       expect(result).toBeNull();
-      expect(console.log).toHaveBeenCalledWith(
+      expect(logger.debug).toHaveBeenCalledWith(
         `No daily riddle found for index: ${dailyIndex}`
       );
     });
@@ -368,7 +336,6 @@ describe("FirestoreService", () => {
         {
           code: "invalid_type",
           expected: "string",
-          received: "number",
           path: ["riddle"],
           message: "Expected string, received number",
         },
@@ -383,16 +350,16 @@ describe("FirestoreService", () => {
         ],
       };
 
-      mockGet.mockResolvedValue(mockSnapshot);
-      // (FirestoreRiddleSchema.parse as jest.Mock).mockImplementation(() => { // This line is removed as per the edit hint
-      //   throw zodError; // This line is removed as per the edit hint
-      // }); // This line is removed as per the edit hint
+      mockGetDocs.mockResolvedValue(mockSnapshot);
+      (FirestoreRiddleSchema.parse as jest.Mock).mockImplementation(() => {
+        throw zodError;
+      });
 
       const result = await FirestoreService.fetchDailyRiddleFromFirestore(
         dailyIndex
       );
 
-      expect(console.error).toHaveBeenCalledWith(
+      expect(logger.error).toHaveBeenCalledWith(
         "Zod validation error for daily riddle data:",
         zodError.issues
       );
@@ -401,13 +368,13 @@ describe("FirestoreService", () => {
 
     it("should handle Firestore errors", async () => {
       const error = new Error("Firestore connection failed");
-      mockGet.mockRejectedValue(error);
+      mockGetDocs.mockRejectedValue(error);
 
       await expect(
         FirestoreService.fetchDailyRiddleFromFirestore(dailyIndex)
       ).rejects.toThrow("Firestore connection failed");
 
-      expect(console.error).toHaveBeenCalledWith(
+      expect(logger.error).toHaveBeenCalledWith(
         "Error fetching daily riddle from Firestore:",
         error
       );
@@ -417,9 +384,10 @@ describe("FirestoreService", () => {
   describe("fetchClassicRiddleFromFirestore", () => {
     const classicIndex = 10;
     const mockRiddleData = {
+      riddleId: "classic-10",
       category: "classic",
       classicIndex: 10,
-      riddle: "I am thinking of a word",
+      text: "I am thinking of a word",
       answer: "WORD",
       hint: "Something you say",
       difficulty: "medium",
@@ -435,23 +403,19 @@ describe("FirestoreService", () => {
         ],
       };
 
-      mockGet.mockResolvedValue(mockSnapshot);
-      // (FirestoreRiddleSchema.parse as jest.Mock).mockReturnValue( // This line is removed as per the edit hint
-      //   mockRiddleData // This line is removed as per the edit hint
-      // ); // This line is removed as per the edit hint
+      mockGetDocs.mockResolvedValue(mockSnapshot);
 
       const result = await FirestoreService.fetchClassicRiddleFromFirestore(
         classicIndex
       );
 
-      expect(mockCollection).toHaveBeenCalledWith("riddles");
+      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "riddles");
       expect(mockWhere).toHaveBeenCalledWith(
         "classicIndex",
         "==",
         classicIndex
       );
       expect(mockLimit).toHaveBeenCalledWith(1);
-      // expect(FirestoreRiddleSchema.parse).toHaveBeenCalledWith(mockRiddleData); // This line is removed as per the edit hint
       expect(result).toEqual(mockRiddleData);
     });
 
@@ -461,14 +425,14 @@ describe("FirestoreService", () => {
         docs: [],
       };
 
-      mockGet.mockResolvedValue(mockSnapshot);
+      mockGetDocs.mockResolvedValue(mockSnapshot);
 
       const result = await FirestoreService.fetchClassicRiddleFromFirestore(
         classicIndex
       );
 
       expect(result).toBeNull();
-      expect(console.log).toHaveBeenCalledWith(
+      expect(logger.debug).toHaveBeenCalledWith(
         `No classic riddle found for index: ${classicIndex}`
       );
     });
@@ -477,9 +441,10 @@ describe("FirestoreService", () => {
   describe("fetchDailyRiddleForDate", () => {
     const dateString = "2023-12-01";
     const mockRiddleData = {
+      riddleId: "daily-date",
       category: "daily",
       date: dateString,
-      riddle: "What flies without wings?",
+      text: "What flies without wings?",
       answer: "TIME",
       hint: "It goes fast",
       difficulty: "hard",
@@ -495,14 +460,11 @@ describe("FirestoreService", () => {
         ],
       };
 
-      mockGet.mockResolvedValue(mockSnapshot);
-      // (FirestoreRiddleSchema.parse as jest.Mock).mockReturnValue( // This line is removed as per the edit hint
-      //   mockRiddleData // This line is removed as per the edit hint
-      // ); // This line is removed as per the edit hint
+      mockGetDocs.mockResolvedValue(mockSnapshot);
 
       const result = await FirestoreService.fetchDailyRiddleForDate(dateString);
 
-      expect(mockCollection).toHaveBeenCalledWith("riddles");
+      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "riddles");
       expect(mockWhere).toHaveBeenCalledWith("date", "==", dateString);
       expect(mockLimit).toHaveBeenCalledWith(1);
       // expect(result).toEqual(mockRiddleData); // This line is removed as per the edit hint
@@ -514,12 +476,12 @@ describe("FirestoreService", () => {
         docs: [],
       };
 
-      mockGet.mockResolvedValue(mockSnapshot);
+      mockGetDocs.mockResolvedValue(mockSnapshot);
 
       const result = await FirestoreService.fetchDailyRiddleForDate(dateString);
 
       expect(result).toBeNull();
-      expect(console.log).toHaveBeenCalledWith(
+      expect(logger.debug).toHaveBeenCalledWith(
         "No daily riddle found for date:",
         dateString
       );
@@ -527,13 +489,13 @@ describe("FirestoreService", () => {
 
     it("should handle Firestore errors", async () => {
       const error = new Error("Database error");
-      mockGet.mockRejectedValue(error);
+      mockGetDocs.mockRejectedValue(error);
 
       await expect(
         FirestoreService.fetchDailyRiddleForDate(dateString)
       ).rejects.toThrow("Database error");
 
-      expect(console.error).toHaveBeenCalledWith(
+      expect(logger.error).toHaveBeenCalledWith(
         "Error fetching daily riddle for date from Firestore:",
         error
       );
@@ -544,17 +506,17 @@ describe("FirestoreService", () => {
     const mockUserId = "test-user-id";
 
     it("should update last daily challenge timestamp successfully", async () => {
-      mockUpdate.mockResolvedValue(undefined);
+      mockUpdateDoc.mockResolvedValue(undefined);
 
       await FirestoreService.updateLastDailyChallengeCompletedAt(mockUserId);
 
-      expect(mockCollection).toHaveBeenCalledWith("users");
-      expect(mockDoc).toHaveBeenCalledWith(mockUserId);
+      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "users", mockUserId);
       expect(mockServerTimestamp).toHaveBeenCalled();
-      expect(mockUpdate).toHaveBeenCalledWith({
-        lastDailyChallengeCompletedAt: "MOCK_SERVER_TIMESTAMP",
-      });
-      expect(console.log).toHaveBeenCalledWith(
+      expect(mockUpdateDoc).toHaveBeenCalledWith(
+        expect.any(Object),
+        { lastDailyChallengeCompletedAt: "MOCK_SERVER_TIMESTAMP" }
+      );
+      expect(logger.info).toHaveBeenCalledWith(
         "Last daily challenge completed timestamp updated successfully for user:",
         mockUserId
       );
@@ -563,21 +525,21 @@ describe("FirestoreService", () => {
     it("should handle empty userId gracefully", async () => {
       await FirestoreService.updateLastDailyChallengeCompletedAt("");
 
-      expect(console.warn).toHaveBeenCalledWith(
+      expect(logger.warn).toHaveBeenCalledWith(
         "Attempted to update daily challenge completion timestamp without a userId."
       );
-      expect(mockCollection).not.toHaveBeenCalled();
+      expect(mockUpdateDoc).not.toHaveBeenCalled();
     });
 
     it("should handle Firestore errors", async () => {
       const error = new Error("Update failed");
-      mockUpdate.mockRejectedValue(error);
+      mockUpdateDoc.mockRejectedValue(error);
 
       await expect(
         FirestoreService.updateLastDailyChallengeCompletedAt(mockUserId)
       ).rejects.toThrow("Update failed");
 
-      expect(console.error).toHaveBeenCalledWith(
+      expect(logger.error).toHaveBeenCalledWith(
         "Error updating last daily challenge completed timestamp in Firestore:",
         error
       );
@@ -587,9 +549,10 @@ describe("FirestoreService", () => {
   describe("fetchTutorialRiddleFromFirestore", () => {
     const tutorialIndex = 3;
     const mockRiddleData = {
+      riddleId: "tutorial-3",
       category: "tutorial",
       tutorialIndex: 3,
-      riddle: "Simple puzzle",
+      text: "Simple puzzle",
       answer: "CAT",
       hint: "Feline friend",
       difficulty: "easy",
@@ -605,16 +568,13 @@ describe("FirestoreService", () => {
         ],
       };
 
-      mockGet.mockResolvedValue(mockSnapshot);
-      // (FirestoreRiddleSchema.parse as jest.Mock).mockReturnValue( // This line is removed as per the edit hint
-      //   mockRiddleData // This line is removed as per the edit hint
-      // ); // This line is removed as per the edit hint
+      mockGetDocs.mockResolvedValue(mockSnapshot);
 
       const result = await FirestoreService.fetchTutorialRiddleFromFirestore(
         tutorialIndex
       );
 
-      expect(mockCollection).toHaveBeenCalledWith("riddles");
+      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "riddles");
       expect(mockWhere).toHaveBeenCalledWith(
         "tutorialIndex",
         "==",
@@ -630,16 +590,48 @@ describe("FirestoreService", () => {
         docs: [],
       };
 
-      mockGet.mockResolvedValue(mockSnapshot);
+      mockGetDocs.mockResolvedValue(mockSnapshot);
 
       const result = await FirestoreService.fetchTutorialRiddleFromFirestore(
         tutorialIndex
       );
 
       expect(result).toBeNull();
-      expect(console.log).toHaveBeenCalledWith(
+      expect(logger.debug).toHaveBeenCalledWith(
         "No tutorial riddle found for index:",
         tutorialIndex
+      );
+    });
+  });
+
+  describe("getTutorialRiddleCount", () => {
+    it("should return count of tutorial riddles", async () => {
+      mockGetDocs.mockResolvedValue({ size: 5 });
+
+      const result = await FirestoreService.getTutorialRiddleCount();
+
+      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "riddles");
+      expect(mockWhere).toHaveBeenCalledWith("category", "==", "tutorial");
+      expect(result).toBe(5);
+    });
+
+    it("should return 0 when no tutorial riddles exist", async () => {
+      mockGetDocs.mockResolvedValue({ size: 0 });
+
+      const result = await FirestoreService.getTutorialRiddleCount();
+
+      expect(result).toBe(0);
+    });
+
+    it("should throw when get fails", async () => {
+      mockGetDocs.mockRejectedValue(new Error("Firestore get failed!"));
+
+      await expect(FirestoreService.getTutorialRiddleCount()).rejects.toThrow(
+        "Firestore get failed!"
+      );
+      expect(logger.error).toHaveBeenCalledWith(
+        "Error getting tutorial riddle count from Firestore:",
+        expect.any(Error)
       );
     });
   });
@@ -649,19 +641,19 @@ describe("FirestoreService", () => {
     const classicIndex = 15;
 
     it("should update classic index successfully", async () => {
-      mockUpdate.mockResolvedValue(undefined);
+      mockUpdateDoc.mockResolvedValue(undefined);
 
       await FirestoreService.updateClassicIndexInFirestore(
         mockUserId,
         classicIndex
       );
 
-      expect(mockCollection).toHaveBeenCalledWith("users");
-      expect(mockDoc).toHaveBeenCalledWith(mockUserId);
-      expect(mockUpdate).toHaveBeenCalledWith({
-        "progress.classicIndex": classicIndex,
-      });
-      expect(console.log).toHaveBeenCalledWith(
+      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "users", mockUserId);
+      expect(mockUpdateDoc).toHaveBeenCalledWith(
+        expect.any(Object),
+        { "progress.classicIndex": classicIndex }
+      );
+      expect(logger.info).toHaveBeenCalledWith(
         "Classic index updated successfully for user:",
         mockUserId,
         "to",
@@ -672,10 +664,10 @@ describe("FirestoreService", () => {
     it("should handle empty userId gracefully", async () => {
       await FirestoreService.updateClassicIndexInFirestore("", classicIndex);
 
-      expect(console.warn).toHaveBeenCalledWith(
+      expect(logger.warn).toHaveBeenCalledWith(
         "Attempted to update classic index in Firestore without a userId."
       );
-      expect(mockCollection).not.toHaveBeenCalled();
+      expect(mockUpdateDoc).not.toHaveBeenCalled();
     });
   });
 
@@ -684,18 +676,18 @@ describe("FirestoreService", () => {
     const dailyChallengeIndex = 8;
 
     it("should update daily challenge index successfully", async () => {
-      mockUpdate.mockResolvedValue(undefined);
+      mockUpdateDoc.mockResolvedValue(undefined);
 
       await FirestoreService.updateDailyChallengeIndexInFirestore(
         mockUserId,
         dailyChallengeIndex
       );
 
-      expect(mockCollection).toHaveBeenCalledWith("users");
-      expect(mockDoc).toHaveBeenCalledWith(mockUserId);
-      expect(mockUpdate).toHaveBeenCalledWith({
-        "progress.dailyChallengeIndex": dailyChallengeIndex,
-      });
+      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "users", mockUserId);
+      expect(mockUpdateDoc).toHaveBeenCalledWith(
+        expect.any(Object),
+        { "progress.dailyChallengeIndex": dailyChallengeIndex }
+      );
     });
 
     it("should handle empty userId gracefully", async () => {
@@ -704,10 +696,10 @@ describe("FirestoreService", () => {
         dailyChallengeIndex
       );
 
-      expect(console.warn).toHaveBeenCalledWith(
+      expect(logger.warn).toHaveBeenCalledWith(
         "Attempted to update daily challenge index in Firestore without a userId."
       );
-      expect(mockCollection).not.toHaveBeenCalled();
+      expect(mockUpdateDoc).not.toHaveBeenCalled();
     });
   });
 
@@ -716,19 +708,19 @@ describe("FirestoreService", () => {
     const tutorialIndex = 5;
 
     it("should update tutorial index successfully", async () => {
-      mockUpdate.mockResolvedValue(undefined);
+      mockUpdateDoc.mockResolvedValue(undefined);
 
       await FirestoreService.updateTutorialIndexInFirestore(
         mockUserId,
         tutorialIndex
       );
 
-      expect(mockCollection).toHaveBeenCalledWith("users");
-      expect(mockDoc).toHaveBeenCalledWith(mockUserId);
-      expect(mockUpdate).toHaveBeenCalledWith({
-        "progress.tutorialIndex": tutorialIndex,
-      });
-      expect(console.log).toHaveBeenCalledWith(
+      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "users", mockUserId);
+      expect(mockUpdateDoc).toHaveBeenCalledWith(
+        expect.any(Object),
+        { "progress.tutorialIndex": tutorialIndex }
+      );
+      expect(logger.info).toHaveBeenCalledWith(
         "Tutorial index updated successfully for user:",
         mockUserId,
         "to",
@@ -739,10 +731,10 @@ describe("FirestoreService", () => {
     it("should handle empty userId gracefully", async () => {
       await FirestoreService.updateTutorialIndexInFirestore("", tutorialIndex);
 
-      expect(console.warn).toHaveBeenCalledWith(
+      expect(logger.warn).toHaveBeenCalledWith(
         "Attempted to update tutorial index in Firestore without a userId."
       );
-      expect(mockCollection).not.toHaveBeenCalled();
+      expect(mockUpdateDoc).not.toHaveBeenCalled();
     });
   });
 
@@ -754,17 +746,16 @@ describe("FirestoreService", () => {
     };
 
     it("should update user document successfully", async () => {
-      mockUpdate.mockResolvedValue(undefined);
+      mockUpdateDoc.mockResolvedValue(undefined);
 
       await FirestoreService.updateUserDocumentInFirestore(
         mockUserId,
         mockUpdates
       );
 
-      expect(mockCollection).toHaveBeenCalledWith("users");
-      expect(mockDoc).toHaveBeenCalledWith(mockUserId);
-      expect(mockUpdate).toHaveBeenCalledWith(mockUpdates);
-      expect(console.log).toHaveBeenCalledWith(
+      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "users", mockUserId);
+      expect(mockUpdateDoc).toHaveBeenCalledWith(expect.any(Object), mockUpdates);
+      expect(logger.info).toHaveBeenCalledWith(
         "User document updated successfully for user:",
         mockUserId
       );
@@ -773,21 +764,21 @@ describe("FirestoreService", () => {
     it("should handle empty userId gracefully", async () => {
       await FirestoreService.updateUserDocumentInFirestore("", mockUpdates);
 
-      expect(console.warn).toHaveBeenCalledWith(
+      expect(logger.warn).toHaveBeenCalledWith(
         "Attempted to update user document in Firestore without a userId."
       );
-      expect(mockCollection).not.toHaveBeenCalled();
+      expect(mockUpdateDoc).not.toHaveBeenCalled();
     });
 
     it("should handle Zod errors", async () => {
       const zodError = new ZodError([]);
-      mockUpdate.mockRejectedValue(zodError);
+      mockUpdateDoc.mockRejectedValue(zodError);
 
       await expect(
         FirestoreService.updateUserDocumentInFirestore(mockUserId, mockUpdates)
       ).rejects.toThrow("Invalid user document update data provided.");
 
-      expect(console.error).toHaveBeenCalledWith(
+      expect(logger.error).toHaveBeenCalledWith(
         "Zod validation error for user document updates:",
         zodError.issues
       );
@@ -802,22 +793,21 @@ describe("FirestoreService", () => {
     };
 
     it("should update user stats successfully", async () => {
-      mockUpdate.mockResolvedValue(undefined);
+      mockUpdateDoc.mockResolvedValue(undefined);
 
       await FirestoreService.updateUserStats(mockUserId, mockStats);
 
-      expect(mockCollection).toHaveBeenCalledWith("users");
-      expect(mockDoc).toHaveBeenCalledWith(mockUserId);
-      expect(mockUpdate).toHaveBeenCalledWith({ stats: mockStats });
+      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "users", mockUserId);
+      expect(mockUpdateDoc).toHaveBeenCalledWith(expect.any(Object), { stats: mockStats });
     });
 
     it("should handle empty userId gracefully", async () => {
       await FirestoreService.updateUserStats("", mockStats);
 
-      expect(console.warn).toHaveBeenCalledWith(
+      expect(logger.warn).toHaveBeenCalledWith(
         "Attempted to update user stats without a userId."
       );
-      expect(mockCollection).not.toHaveBeenCalled();
+      expect(mockUpdateDoc).not.toHaveBeenCalled();
     });
 
     it("should update user stats with transaction", async () => {
@@ -841,7 +831,7 @@ describe("FirestoreService", () => {
     const mockDisplayName = "Test User";
 
     it("should create user document successfully", async () => {
-      mockSet.mockResolvedValue(undefined);
+      mockSetDoc.mockResolvedValue(undefined);
       const mockValidatedUser = {
         userId: mockUserId,
         email: mockEmail,
@@ -849,7 +839,7 @@ describe("FirestoreService", () => {
         username: mockDisplayName,
         coins: 100,
         progress: {
-          classicIndex: 0,
+          classicIndex: 1,
           dailyChallengeIndex: 0,
           tutorialIndex: 0,
         },
@@ -870,20 +860,24 @@ describe("FirestoreService", () => {
         },
       } as Player;
 
-      // (PlayerSchema.parse as jest.Mock).mockReturnValue(mockValidatedUser); // This line is removed as per the edit hint
-
       const result = await FirestoreService.createUserDocumentInFirestore(
         mockUserId,
         mockEmail,
         mockDisplayName
       );
 
-      expect(mockCollection).toHaveBeenCalledWith("users");
-      expect(mockDoc).toHaveBeenCalledWith(mockUserId);
-      expect(mockSet).toHaveBeenCalled();
-      // expect(PlayerSchema.parse).toHaveBeenCalled(); // This line is removed as per the edit hint
-      expect(result).toEqual(mockValidatedUser);
-      expect(console.log).toHaveBeenCalledWith(
+      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "users", mockUserId);
+      expect(mockSetDoc).toHaveBeenCalled();
+      expect(result).toMatchObject({
+        userId: mockUserId,
+        email: mockEmail,
+        displayName: mockDisplayName,
+        username: mockDisplayName,
+        coins: 100,
+        progress: mockValidatedUser.progress,
+        stats: mockValidatedUser.stats,
+      });
+      expect(logger.info).toHaveBeenCalledWith(
         "New user document created successfully for user:",
         mockUserId
       );
@@ -896,14 +890,14 @@ describe("FirestoreService", () => {
     });
 
     it("should create user document without displayName", async () => {
-      mockSet.mockResolvedValue(undefined);
+      mockSetDoc.mockResolvedValue(undefined);
       const mockValidatedUser = {
         userId: mockUserId,
         email: mockEmail,
         username: "test",
         coins: 100,
         progress: {
-          classicIndex: 0,
+          classicIndex: 1,
           dailyChallengeIndex: 0,
           tutorialIndex: 0,
         },
@@ -931,20 +925,26 @@ describe("FirestoreService", () => {
         mockEmail
       );
 
-      expect(result).toEqual(mockValidatedUser);
+      expect(result).toMatchObject({
+        userId: mockUserId,
+        email: mockEmail,
+        username: "test",
+        coins: 100,
+        progress: mockValidatedUser.progress,
+        stats: mockValidatedUser.stats,
+      });
     });
 
     it("should handle Firestore errors", async () => {
       const error = new Error("Creation failed");
-      mockSet.mockRejectedValue(error);
-      // (PlayerSchema.parse as jest.Mock).mockReturnValue({} as Player); // This line is removed as per the edit hint
+      mockSetDoc.mockRejectedValue(error);
 
       await expect(
         FirestoreService.createUserDocumentInFirestore(mockUserId, mockEmail)
       ).rejects.toThrow("Creation failed");
 
-      expect(console.error).toHaveBeenCalledWith(
-        "❌ Error creating user document in Firestore:",
+      expect(logger.error).toHaveBeenCalledWith(
+        "Error creating user document in Firestore:",
         error
       );
     });

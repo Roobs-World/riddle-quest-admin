@@ -22,8 +22,9 @@ const modalReducer = (
   action: ModalAction
 ): ModalInstance[] => {
   switch (action.type) {
-    case "OPEN_MODAL":
+    case "OPEN_MODAL": {
       // If replace option is true, close all modals of the same type
+      const needsSort = action.payload.priority !== 0 || state.some((m) => m.priority !== 0);
       if (
         action.payload.data &&
         "replace" in action.payload.data &&
@@ -32,11 +33,12 @@ const modalReducer = (
         const filteredState = state.filter(
           (modal) => modal.type !== action.payload.type
         );
-        return [...filteredState, action.payload].sort(
-          (a, b) => a.priority - b.priority
-        );
+        const next = [...filteredState, action.payload];
+        return needsSort ? next.sort((a, b) => a.priority - b.priority) : next;
       }
-      return [...state, action.payload].sort((a, b) => a.priority - b.priority);
+      const next = [...state, action.payload];
+      return needsSort ? next.sort((a, b) => a.priority - b.priority) : next;
+    }
 
     case "CLOSE_MODAL":
       return state.filter((modal) => modal.id !== action.payload);

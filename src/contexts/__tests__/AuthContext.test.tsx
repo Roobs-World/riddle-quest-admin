@@ -2,16 +2,44 @@ import React from "react";
 import { renderHook, act, waitFor } from "@testing-library/react-native";
 import { Player, FirestoreRiddle } from "../../validation/firestoreSchemas";
 
-// Mock all Firebase dependencies before importing AuthContext
+// Mock Firestore before any module imports it
+jest.mock("@react-native-firebase/firestore", () => {
+  const mockCollection = jest.fn(() => ({
+    doc: jest.fn(() => ({
+      get: jest.fn(() => Promise.resolve({ exists: false, data: () => null })),
+      set: jest.fn(() => Promise.resolve()),
+      update: jest.fn(() => Promise.resolve()),
+    })),
+    where: jest.fn(() => ({
+      limit: jest.fn(() => ({
+        get: jest.fn(() => Promise.resolve({ empty: true, docs: [] })),
+      })),
+    })),
+    get: jest.fn(() => Promise.resolve({ empty: true, docs: [] })),
+  }));
+  return {
+    __esModule: true,
+    getFirestore: jest.fn(() => ({
+      collection: mockCollection,
+    })),
+    FirebaseFirestoreTypes: {},
+  };
+});
+
+// Mock all Firebase dependencies before importing AuthContext (modular API: getAuth, getApp)
 jest.mock("@react-native-firebase/auth", () => {
   const mockAuthInstance = {
     currentUser: null,
-    onAuthStateChanged: jest.fn(),
+    onAuthStateChanged: jest.fn((cb) => {
+      setTimeout(() => cb(null), 0);
+      return jest.fn();
+    }),
     signOut: jest.fn(),
   };
   return {
     __esModule: true,
     default: () => mockAuthInstance,
+    getAuth: jest.fn(() => mockAuthInstance),
     // Expose the instance for test access
     __mockAuthInstance: mockAuthInstance,
   };
@@ -61,6 +89,7 @@ describe("AuthContext", () => {
     lastLogin: Date.now(),
     progress: {
       dailyChallengeIndex: 0,
+      dailyChallengeCurrentQuestion: 0,
       classicIndex: 1,
       tutorialIndex: 0,
     },
@@ -78,9 +107,11 @@ describe("AuthContext", () => {
       winStreak: 0,
       totalWins: 0,
       totalGuessesInWins: 0,
+      totalHintsUsed: 0,
     },
     lastDailyChallengeCompletedAt: undefined,
     hasPurchasedApp: false,
+    unlockedAchievements: [],
   };
 
   const mockDailyRiddle: FirestoreRiddle = {
@@ -155,12 +186,12 @@ describe("AuthContext", () => {
 
       const { result } = renderHook(() => useAuth(), { wrapper });
 
-      // Wait for auth state to update
+      // Wait for auth state to update and loading to complete
       await waitFor(() => {
         expect(result.current.isAuthenticated).toBe(true);
+        expect(result.current.isLoading).toBe(false);
       });
 
-      expect(result.current.isLoading).toBe(false);
       expect(result.current.playerData).toEqual(mockPlayer);
       expect(result.current.currentRiddle).toEqual(mockDailyRiddle);
       expect(

@@ -4,6 +4,7 @@ import { z } from "zod";
 export const GameModeSchema = z.union([
   z.literal("daily"),
   z.literal("classic"),
+  z.literal("challenge"),
   z.literal("tutorial"),
 ]);
 
@@ -89,25 +90,11 @@ export const SubmitGuessOutputSchema = z.object({
   gameOver: z.boolean(),
   correctAnswer: z.string().optional(),
   coinsEarned: z.number().default(0),
+  newlyUnlockedAchievementIds: z.array(z.string()).optional(),
 });
 
 export type SubmitGuessInput = z.infer<typeof SubmitGuessInputSchema>;
 export type SubmitGuessOutput = z.infer<typeof SubmitGuessOutputSchema>;
-
-// getHint
-export const GetHintInputSchema = z.object({
-  currentAttempt: z.array(z.string()), // Each string could be a letter
-  riddleId: z.string(),
-  gameMode: GameModeSchema,
-});
-
-export const GetHintOutputSchema = z
-  .object({
-    revealedLetter: z.string(),
-    index: z.number().int().nonnegative(),
-    coinsCost: z.number().int().positive(),
-  })
-  .nullable();
 
 // skipRiddle
 export const SkipRiddleInputSchema = z.object({

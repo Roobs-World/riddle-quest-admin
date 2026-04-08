@@ -39,11 +39,17 @@ export const COLORS = {
   textMuted: "#9CA3AF",
   textInverse: "#FFFFFF",
 
-  // Game-specific colors
-  tileCorrect: "#10B981",
-  tilePartial: "#F59E0B",
-  tileIncorrect: "#EF4444",
-  tileDefault: "#E5E7EB",
+  // Game-specific colors — Figma brand palette
+  tileCorrect: "#401F40",
+  tilePartial: "#FEC880",
+  tileIncorrect: "#F54160",
+  tileDefault: "#FCFAF4",
+
+  // Figma brand colours
+  figmaPurple: "#401F40",
+  figmaGold: "#FEC880",
+  figmaCrimson: "#F54160",
+  figmaCream: "#FCFAF4",
 
   // Legacy colors (for backward compatibility)
   activeTextColor: "#222222",

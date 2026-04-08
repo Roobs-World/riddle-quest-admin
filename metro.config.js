@@ -1,10 +1,11 @@
-// metro.config.js - Enhanced config for better asset loading
-const { getDefaultConfig } = require("expo/metro-config");
 const { withNativeWind } = require("nativewind/metro");
 const path = require("path");
+const {
+  getSentryExpoConfig
+} = require("@sentry/react-native/metro");
 
 // Load default Expo Metro config
-const config = getDefaultConfig(__dirname, {
+const config = getSentryExpoConfig(__dirname, {
   // Disable problematic features that cause importLocationsPlugin errors
   isCSSEnabled: true,
 });

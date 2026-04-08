@@ -1,14 +1,30 @@
+/**
+ * @fileoverview
+ * Authentication and player session context for Qwordly.
+ *
+ * This provider wraps the navigation tree and exposes a unified view of the
+ * authenticated user, their progress, the currently active riddle, and the
+ * selected game mode. It is also responsible for coordinating with Firestore
+ * and Firebase Auth to initialize user documents and riddle data.
+ *
+ * All game screens and hooks that need authenticated player data should access
+ * it through this context via the `useAuth` hook rather than talking to
+ * Firebase directly.
+ */
 import React, {
   createContext,
   useState,
   useEffect,
   useContext,
   useCallback,
+  useMemo,
+  useRef,
 } from "react";
 import {
   loadUserProgressFromFirestore,
   fetchDailyRiddleFromFirestore,
   fetchClassicRiddleFromFirestore,
+  fetchTutorialRiddleFromFirestore,
   updateClassicIndexInFirestore,
   updateUserDocumentInFirestore,
   createUserDocumentInFirestore,
@@ -18,11 +34,17 @@ import { getAuth } from "@react-native-firebase/auth";
 import { getApp } from "@react-native-firebase/app";
 import { RiddleInitializationService } from "../services/RiddleInitializationService";
 import { AccessToken } from "react-native-fbsdk-next";
-// Assuming you have an AuthService with login/logout methods
-// import { AuthService } from "../services/AuthService";
+import { logger } from "../utils/logger";
+import { captureException, setUser as sentrySetUser, clearUser as sentryClearUser, addBreadcrumb } from "../utils/sentry";
+import { analyticsService } from "../services/AnalyticsService";
+import { offlineQueue } from "../services/OfflineQueueService";
+import { NotificationService } from "../services/NotificationService";
 
-export type GameMode = "daily" | "classic" | "challenge"; // Export GameMode type and include "challenge"
+export type GameMode = "daily" | "classic" | "challenge" | "tutorial";
 
+/**
+ * Shape of the value exposed by `AuthContext` and returned from `useAuth`.
+ */
 interface AuthContextType {
   isAuthenticated: boolean;
   playerData: Player | null;
@@ -38,6 +60,7 @@ interface AuthContextType {
   // updatePlayerCoins: (newCoins: number) => Promise<void>;
   updatePlayerClassicIndex: (newIndex: number) => Promise<void>;
   updatePlayerData: (updates: Partial<Player>) => Promise<void>;
+  updatePlayerDataLocally: (updates: Partial<Player>) => void;
   // Add setCurrentRiddle to the interface
   setCurrentRiddle: React.Dispatch<
     React.SetStateAction<FirestoreRiddle | null>
@@ -45,22 +68,45 @@ interface AuthContextType {
   fetchCurrentRiddle: (player: Player | null, mode: GameMode) => Promise<void>; // Expose fetchCurrentRiddle
 }
 
+// Three separate contexts so consumers only re-render when their slice changes.
+// AuthSessionContext  — isAuthenticated / isLoading / login / logout
+// PlayerContext       — playerData / updatePlayerClassicIndex / updatePlayerData
+// RiddleContext       — currentRiddle / gameMode / isDailyChallengeAvailable / isRiddlesInitializing / …
+//
+// useAuth() merges all three for backward-compatibility with existing call-sites.
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+/**
+ * Top-level provider that wires Firebase Auth, Firestore-backed player data,
+ * and riddle loading into a single React context.
+ *
+ * The provider listens to Firebase auth state changes, ensures a corresponding
+ * user document exists, initializes riddles when required, and keeps the
+ * current riddle in sync with the selected `gameMode`.
+ *
+ * @param children React element tree that should have access to authentication
+ * and player state.
+ */
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [playerData, setPlayerData] = useState<Player | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [currentRiddle, setCurrentRiddle] = useState<FirestoreRiddle | null>(
-    null
-  ); // Use single state for current riddle
-  const [isDailyChallengeAvailable, setIsDailyChallengeAvailable] = useState<
-    boolean | undefined
-  >(undefined); // Initialize as undefined to indicate not yet determined
-  const [gameMode, setGameMode] = useState<GameMode>("daily"); // Add state for game mode, default to daily
-  const [isRiddlesInitializing, setIsRiddlesInitializing] = useState(false); // Track riddle initialization
+  const [currentRiddle, setCurrentRiddle] = useState<FirestoreRiddle | null>(null);
+  const [isDailyChallengeAvailable, setIsDailyChallengeAvailable] = useState<boolean | undefined>(undefined);
+  const [gameMode, setGameMode] = useState<GameMode>("daily");
+  const [isRiddlesInitializing, setIsRiddlesInitializing] = useState(false);
+
+  // Ref keeps the current gameMode accessible inside the auth listener without
+  // making it a dependency (which would re-subscribe on every mode change).
+  const gameModeRef = useRef<GameMode>("daily");
+  gameModeRef.current = gameMode;
+
+  // Tracks the FCM token-refresh unsubscriber so it can be torn down on sign-out.
+  const notifUnsubRef = useRef<(() => void) | null>(null);
+  // Tracks the current authenticated user ID for use inside the auth listener.
+  const currentUserIdRef = useRef<string | null>(null);
 
   // Helper function to check if the last completed date was today in UTC
   const isTodayUTC = (date?: Date | null): boolean => {
@@ -105,7 +151,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
               );
             } else {
               // Handle case where dailyIndex is undefined for daily mode (shouldn't happen if user data is initialized correctly)
-              console.warn(
+              logger.warn(
                 "Daily challenge index is undefined for daily mode."
               );
             }
@@ -113,15 +159,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
           // If no daily riddle available (completed or failed to fetch), fall back to classic mode
           if (!fetchedRiddle) {
-            console.log(
+            logger.debug(
               "No daily riddle available, falling back to classic mode riddle."
             );
             if (player.progress?.classicIndex !== undefined) {
               fetchedRiddle = await fetchClassicRiddleFromFirestore(
                 player.progress.classicIndex
               );
+              setGameMode("classic");
             } else {
-              console.warn(
+              logger.warn(
                 "Classic index is undefined, cannot load fallback riddle."
               );
             }
@@ -135,7 +182,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             );
           } else {
             // Handle case where classicIndex is undefined for classic mode
-            console.warn("Classic index is undefined for classic mode.");
+            logger.warn("Classic index is undefined for classic mode.");
           }
         } else if (mode === "challenge") {
           // For challenge mode, try to fetch daily riddle first
@@ -149,13 +196,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
           // If no daily riddle available, fall back to classic mode
           if (!fetchedRiddle) {
-            console.log(
+            logger.debug(
               "No daily challenge riddle available, falling back to classic mode riddle."
             );
             if (player.progress?.classicIndex !== undefined) {
               fetchedRiddle = await fetchClassicRiddleFromFirestore(
                 player.progress.classicIndex
               );
+              setGameMode("classic");
+            }
+          }
+        } else if (mode === "tutorial") {
+          const tutorialIndex = player.progress?.tutorialIndex ?? 0;
+          fetchedRiddle =
+            await fetchTutorialRiddleFromFirestore(tutorialIndex);
+          if (!fetchedRiddle) {
+            logger.debug(
+              "No tutorial riddle available, falling back to classic mode riddle."
+            );
+            if (player.progress?.classicIndex !== undefined) {
+              fetchedRiddle = await fetchClassicRiddleFromFirestore(
+                player.progress.classicIndex
+              );
+              setGameMode("classic");
             }
           }
         }
@@ -173,7 +236,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
         // Only poll if initialization hasn't failed
         if (!initStatus.initializationFailed) {
-          console.log(
+          logger.debug(
             "📊 No riddle found, checking if riddles are still being generated..."
           );
           setIsRiddlesInitializing(true);
@@ -181,7 +244,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           // Poll for riddles
           while (!fetchedRiddle && attemptCount < maxAttempts) {
             attemptCount++;
-            console.log(
+            logger.debug(
               `🔄 Polling for riddles... Attempt ${attemptCount}/${maxAttempts}`
             );
 
@@ -209,55 +272,122 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setCurrentRiddle(fetchedRiddle);
 
       if (!fetchedRiddle) {
-        console.error("❌ Failed to load any riddle after all attempts");
+        logger.error("❌ Failed to load any riddle after all attempts");
       }
     },
-    [setIsRiddlesInitializing]
+    [setIsRiddlesInitializing, setGameMode]
   );
+
+  // Initialize offline queue once on mount
+  useEffect(() => {
+    offlineQueue.initialize();
+  }, []);
 
   // Effect to set up Firebase auth state listener
   useEffect(() => {
-    console.log("🔧 Setting up Firebase auth listener...");
+    logger.debug("🔧 Setting up Firebase auth listener...");
 
     const subscriber = getAuth(getApp()).onAuthStateChanged(async (user) => {
-      console.log(
+      logger.debug(
         "🔔 Firebase auth state changed. User:",
         user ? user.uid : "null"
       );
 
       if (user) {
         // User is signed in
-        console.log("🔐 User authenticated, loading user data...");
+        logger.debug("🔐 User authenticated, loading user data...");
         setIsAuthenticated(true);
+        currentUserIdRef.current = user.uid;
+        sentrySetUser(user.uid, user.email, user.displayName);
+        addBreadcrumb("auth", "User signed in", { uid: user.uid });
+        void analyticsService.initialize(user.uid);
+        void analyticsService.logAuthEvent("login");
+
+        // Request notification permission and register FCM token (non-blocking).
+        void (async () => {
+          const granted = await NotificationService.requestPermission();
+          if (granted) {
+            await NotificationService.registerToken(user.uid);
+            // Replace any existing token-refresh listener.
+            notifUnsubRef.current?.();
+            notifUnsubRef.current = NotificationService.onTokenRefresh(user.uid);
+          }
+        })();
 
         try {
-          // Check and initialize riddles if needed (do this early so riddles are ready)
-          console.log("🎲 Checking riddle database...");
+          // Anonymous (guest) users get a minimal in-memory player — no Firestore read/write needed.
+          if (user.isAnonymous) {
+            logger.debug("👤 Anonymous guest user detected, creating in-memory player data");
+            setIsRiddlesInitializing(true);
+            await RiddleInitializationService.checkAndInitializeRiddles();
+            setIsRiddlesInitializing(false);
+            const guestPlayer: Player = {
+              userId: user.uid,
+              email: `guest_${user.uid}@guest.qwordly.com`,
+              username: "Guest",
+              coins: 0,
+              progress: {
+                classicIndex: 1,
+                dailyChallengeIndex: 0,
+                dailyChallengeCurrentQuestion: 0,
+                tutorialIndex: 0,
+              },
+              stats: {
+                dailyPuzzlesCompleted: 0,
+                bestStreak: 0,
+                totalWordsGuessed: 0,
+                winRate: 0,
+                averageGuesses: 0,
+                totalScore: 0,
+                highestLevelClassic: 0,
+                gamesPlayed: 0,
+                wins: 0,
+                challengeWins: 0,
+                winStreak: 0,
+                totalWins: 0,
+                totalGuessesInWins: 0,
+                totalHintsUsed: 0,
+              },
+              unlockedAchievements: [],
+              hasPurchasedApp: false,
+            };
+            setPlayerData(guestPlayer);
+            await fetchCurrentRiddle(guestPlayer, gameModeRef.current);
+            setIsLoading(false);
+            return;
+          }
+
+          // Run riddle initialization and user data load in parallel —
+          // they are independent and both can start immediately after sign-in.
+          logger.debug("🎲 Checking riddle database & loading user data in parallel...");
           setIsRiddlesInitializing(true);
-          await RiddleInitializationService.checkAndInitializeRiddles();
+          const [, loadedData] = await Promise.all([
+            RiddleInitializationService.checkAndInitializeRiddles(),
+            loadUserProgressFromFirestore(user.uid),
+          ]);
           setIsRiddlesInitializing(false);
 
-          // Load user data from Firestore
-          console.log("🔍 Checking for existing user document...");
-          let data = await loadUserProgressFromFirestore(user.uid);
+          logger.debug("🔍 Checking for existing user document...");
+          let data = loadedData;
 
           // If no user document exists, create one (new user signup)
           if (!data) {
-            console.log(
+            void analyticsService.logAuthEvent("signup");
+            logger.debug(
               "🆕 No user document found, creating new user document for:",
               user.uid
             );
-            console.log(
+            logger.debug(
               "📧 Firebase user email:",
               user.email || "(null/empty)"
             );
-            console.log("📧 Email type:", typeof user.email);
-            console.log("📧 Email length:", user.email ? user.email.length : 0);
-            console.log(
+            logger.debug("📧 Email type:", typeof user.email);
+            logger.debug("📧 Email length:", user.email ? user.email.length : 0);
+            logger.debug(
               "👤 Using display name:",
               user.displayName || "undefined"
             );
-            console.log("🔍 Full user object debug:", {
+            logger.debug("🔍 Full user object debug:", {
               uid: user.uid,
               email: user.email,
               emailVerified: user.emailVerified,
@@ -276,83 +406,73 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
               // Check if email is null, undefined, or empty string
               if (!userEmail || userEmail.trim() === "") {
-                console.log(
-                  "⚠️ Firebase user has no email, checking if this is a Facebook user..."
+                logger.debug(
+                  "⚠️ Firebase user has no email, checking providerData..."
                 );
 
-                // Check if this is a Facebook login by looking at provider data
-                const facebookProvider = user.providerData?.find(
-                  (provider) => provider.providerId === "facebook.com"
+                // First, try to get email from any provider in providerData
+                const providerWithEmail = user.providerData?.find(
+                  (provider) => provider.email && provider.email.trim() !== ""
                 );
 
-                if (facebookProvider) {
-                  console.log(
-                    "📘 Detected Facebook login, attempting direct Facebook Graph API call..."
+                if (providerWithEmail?.email) {
+                  logger.debug(
+                    `✅ Found email in providerData (${providerWithEmail.providerId}):`,
+                    providerWithEmail.email
+                  );
+                  userEmail = providerWithEmail.email;
+                }
+
+                // If still no email and this is a Facebook login, try Graph API
+                if (!userEmail || userEmail.trim() === "") {
+                  const facebookProvider = user.providerData?.find(
+                    (provider) => provider.providerId === "facebook.com"
                   );
 
-                  try {
-                    // Get current Facebook access token
-                    const currentToken =
-                      await AccessToken.getCurrentAccessToken();
-                    if (!currentToken) {
-                      throw new Error(
-                        "No Facebook access token available for Graph API call"
-                      );
-                    }
-
-                    console.log(
-                      "🌐 Making Facebook Graph API request for user email..."
+                  if (facebookProvider) {
+                    logger.debug(
+                      "📘 Detected Facebook login, attempting direct Facebook Graph API call..."
                     );
 
-                    // Call Facebook Graph API to get user info including email
-                    const graphResponse = await fetch(
-                      `https://graph.facebook.com/me?fields=id,name,email&access_token=${currentToken.accessToken}`
-                    );
+                    try {
+                      const currentToken =
+                        await AccessToken.getCurrentAccessToken();
+                      if (!currentToken) {
+                        throw new Error(
+                          "No Facebook access token available for Graph API call"
+                        );
+                      }
 
-                    if (!graphResponse.ok) {
-                      throw new Error(
-                        `Facebook Graph API error: ${graphResponse.status} ${graphResponse.statusText}`
+                      const graphResponse = await fetch(
+                        `https://graph.facebook.com/me?fields=id,name,email&access_token=${currentToken.accessToken}`
                       );
+
+                      if (!graphResponse.ok) {
+                        throw new Error(
+                          `Facebook Graph API error: ${graphResponse.status} ${graphResponse.statusText}`
+                        );
+                      }
+
+                      const userData = await graphResponse.json();
+
+                      if (userData.email) {
+                        logger.debug(
+                          "✅ Successfully retrieved email from Facebook Graph API:",
+                          userData.email
+                        );
+                        userEmail = userData.email;
+                      } else {
+                        logger.warn(
+                          "⚠️ Facebook Graph API also didn't provide email address"
+                        );
+                      }
+                    } catch (graphError) {
+                      logger.error(
+                        "❌ Facebook Graph API call failed:",
+                        graphError
+                      );
+                      captureException(graphError);
                     }
-
-                    const userData = await graphResponse.json();
-                    console.log("📊 Facebook Graph API response:", {
-                      id: userData.id,
-                      name: userData.name,
-                      email: userData.email || "(not provided)",
-                      hasEmail: !!userData.email,
-                    });
-
-                    if (userData.email) {
-                      console.log(
-                        "✅ Successfully retrieved email from Facebook Graph API:",
-                        userData.email
-                      );
-                      userEmail = userData.email;
-                    } else {
-                      console.warn(
-                        "⚠️ Facebook Graph API also didn't provide email address"
-                      );
-                      console.warn("🔍 This could mean:");
-                      console.warn(
-                        "  - User's Facebook account has no email address"
-                      );
-                      console.warn("  - Email is not verified on Facebook");
-                      console.warn(
-                        "  - Facebook privacy settings prevent email sharing"
-                      );
-                      console.warn(
-                        "  - App needs to be in Live mode for email permission"
-                      );
-                      console.warn(
-                        "  - Email permission was not actually granted despite UI showing it"
-                      );
-                    }
-                  } catch (graphError) {
-                    console.error(
-                      "❌ Facebook Graph API call failed:",
-                      graphError
-                    );
                   }
                 }
 
@@ -369,35 +489,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
                 userEmail!, // We've validated userEmail is not null above
                 user.displayName || undefined
               );
-              console.log("✅ New user document created successfully");
-              console.log(
+              logger.debug("✅ New user document created successfully");
+              logger.debug(
                 "📄 Created user data:",
                 JSON.stringify(data, null, 2)
               );
             } catch (createError) {
-              console.error("❌ Error creating user document:", createError);
+              logger.error("❌ Error creating user document:", createError);
+              captureException(createError);
               throw createError;
             }
           } else {
-            console.log("✅ Existing user document found");
+            logger.debug("✅ Existing user document found");
           }
 
-          console.log("📊 User data loaded successfully:", !!data);
+          logger.debug("📊 User data loaded successfully:", !!data);
           setPlayerData(data);
 
           // Fetch riddle based on loaded player data and current game mode
-          console.log("🧩 Loading riddle for game mode:", gameMode);
-          await fetchCurrentRiddle(data, gameMode);
-          console.log("✅ Riddle loading completed");
+          logger.debug("🧩 Loading riddle for game mode:", gameModeRef.current);
+          await fetchCurrentRiddle(data, gameModeRef.current);
+          logger.debug("✅ Riddle loading completed");
 
           // Only set loading to false after everything is complete
-          console.log(
+          logger.debug(
             "🏁 Setting isLoading to false - initialization complete"
           );
           setIsLoading(false);
         } catch (error) {
-          console.error("❌ Error loading user data or riddle:", error);
-          console.error("❌ Error details:", JSON.stringify(error, null, 2));
+          logger.error("❌ Error loading user data or riddle:", error);
+          logger.error("❌ Error details:", JSON.stringify(error, null, 2));
+          captureException(error);
           setPlayerData(null);
           setCurrentRiddle(null);
           setIsDailyChallengeAvailable(undefined);
@@ -406,121 +528,178 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         }
       } else {
         // User is signed out - no need to load riddles
-        console.log("🚪 User signed out, clearing data");
+        logger.debug("🚪 User signed out, clearing data");
+        sentryClearUser();
+        addBreadcrumb("auth", "User signed out");
+        void analyticsService.logAuthEvent("logout");
+        void analyticsService.reset();
+
+        // Clean up FCM token-refresh listener (token itself was unregistered in logout()).
+        notifUnsubRef.current?.();
+        notifUnsubRef.current = null;
+        currentUserIdRef.current = null;
         setIsAuthenticated(false);
         setPlayerData(null);
         setCurrentRiddle(null);
         setIsDailyChallengeAvailable(undefined);
-        console.log("🏁 Setting isLoading to false");
+        logger.debug("🏁 Setting isLoading to false");
         setIsLoading(false);
       }
 
-      console.log("✅ Auth state processing completed");
+      logger.debug("✅ Auth state processing completed");
     });
 
-    console.log("🎯 Firebase auth listener set up successfully");
+    logger.debug("🎯 Firebase auth listener set up successfully");
 
     // Unsubscribe on unmount
     return subscriber;
-  }, [gameMode, fetchCurrentRiddle]);
+    // fetchCurrentRiddle is stable (its own deps are React state setters).
+    // gameModeRef.current is read at call time so gameMode need not be a dep.
+  }, [fetchCurrentRiddle]);
 
-  // Function to update player classic index and context state
-  const updatePlayerClassicIndex = async (newIndex: number): Promise<void> => {
-    if (!playerData?.userId) return; // Ensure user is logged in
-    try {
-      await updateClassicIndexInFirestore(playerData.userId, newIndex);
-      // Update local state to reflect the change immediately and re-fetch riddle
-      setPlayerData((prevData: Player | null) =>
-        // Correctly update the nested classicIndex property
-        prevData
-          ? {
-              ...prevData,
-              progress: { ...prevData.progress, classicIndex: newIndex },
-            }
-          : null
-      );
-      console.log(
-        "AuthContext: Player classic index updated locally and in Firestore."
-      );
-      // After updating the index, re-fetch the riddle for the new level
-      if (playerData)
+  // Wrapped in useCallback so these are stable references and don't invalidate
+  // the PlayerContext memo on every render.
+  const updatePlayerClassicIndex = useCallback(
+    async (newIndex: number): Promise<void> => {
+      if (!playerData?.userId) return;
+      try {
+        await updateClassicIndexInFirestore(playerData.userId, newIndex);
+        setPlayerData((prevData: Player | null) =>
+          prevData
+            ? { ...prevData, progress: { ...prevData.progress, classicIndex: newIndex } }
+            : null
+        );
+        logger.debug("AuthContext: Player classic index updated locally and in Firestore.");
         await fetchCurrentRiddle(
-          // Pass a new object with the updated classicIndex in progress
-          {
-            ...playerData,
-            progress: { ...playerData.progress, classicIndex: newIndex },
-          },
+          { ...playerData, progress: { ...playerData.progress, classicIndex: newIndex } },
           "classic"
-        ); // Use updated data for fetch
-    } catch (error) {
-      console.error("AuthContext: Error updating player classic index:", error);
-      throw error; // Rethrow
-    }
-  };
+        );
+      } catch (error) {
+        logger.error("AuthContext: Error updating player classic index:", error);
+        captureException(error);
+        throw error;
+      }
+    },
+    [playerData, fetchCurrentRiddle]
+  );
 
-  // New function to update partial player data in Firestore and context
-  const updatePlayerData = async (updates: Partial<Player>): Promise<void> => {
-    if (!playerData?.userId) {
-      console.warn("Attempted to update player data without a userId.");
-      return;
-    }
-    try {
-      await updateUserDocumentInFirestore(playerData.userId, updates); // Call the Firestore service function
-      // Update local state to reflect the change immediately by merging updates
+  const updatePlayerData = useCallback(
+    async (updates: Partial<Player>): Promise<void> => {
+      if (!playerData?.userId) {
+        logger.warn("Attempted to update player data without a userId.");
+        return;
+      }
+      try {
+        await updateUserDocumentInFirestore(playerData.userId, updates);
+        setPlayerData((prevData: Player | null) =>
+          prevData ? { ...prevData, ...updates } : null
+        );
+        logger.debug("AuthContext: Player data updated locally and in Firestore.");
+      } catch (error) {
+        logger.error("AuthContext: Error updating player data:", error);
+        captureException(error);
+        throw error;
+      }
+    },
+    [playerData]
+  );
+
+  const updatePlayerDataLocally = useCallback(
+    (updates: Partial<Player>): void => {
       setPlayerData((prevData: Player | null) =>
-        // Merge updates, handling nested objects if necessary (Partial<Player> should handle this)
         prevData ? { ...prevData, ...updates } : null
       );
-      console.log("AuthContext: Player data updated locally and in Firestore.");
-    } catch (error) {
-      console.error("AuthContext: Error updating player data:", error);
-      throw error; // Rethrow
-    }
-  };
+    },
+    []
+  );
 
   // Placeholder login function (keep for now, onAuthStateChanged listener handles state)
-  const login = async () => {
+  const login = useCallback(async () => {
     // The onAuthStateChanged listener will handle the state update including riddle fetching
     // We can potentially add a re-fetch logic here if needed after a manual login trigger
-  };
+  }, []);
 
   // Placeholder logout function (keep for now, onAuthStateChanged listener handles state)
-  const logout = async () => {
+  const logout = useCallback(async () => {
     setIsLoading(true);
     try {
+      RiddleInitializationService.resetInitializationFlags();
+      // Unregister FCM token before signing out — must happen while still authenticated
+      notifUnsubRef.current?.();
+      notifUnsubRef.current = null;
+      if (currentUserIdRef.current) {
+        await NotificationService.unregisterToken(currentUserIdRef.current);
+        currentUserIdRef.current = null;
+      }
       await getAuth(getApp()).signOut(); // Trigger Firebase sign out
       // The onAuthStateChanged listener will handle the state update
     } catch (error) {
-      console.error("Error during logout:", error);
+      logger.error("Error during logout:", error);
+      captureException(error);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
+
+  // Three narrow memos — each slice only re-triggers consumers that depend on it.
+  // sessionValue  changes only on auth state / loading changes.
+  // playerValue   changes only when player data or its updaters change.
+  // riddleValue   changes only when riddle / game-mode state changes.
+  // The merged contextValue is kept for backward-compat via useAuth().
+  const sessionValue = useMemo(
+    () => ({ isAuthenticated, isLoading, login, logout }),
+    [isAuthenticated, isLoading, login, logout]
+  );
+
+  const playerValue = useMemo(
+    () => ({ playerData, updatePlayerClassicIndex, updatePlayerData, updatePlayerDataLocally }),
+    [playerData, updatePlayerClassicIndex, updatePlayerData, updatePlayerDataLocally]
+  );
+
+  const riddleValue = useMemo(
+    () => ({
+      currentRiddle,
+      setCurrentRiddle,
+      fetchCurrentRiddle,
+      isDailyChallengeAvailable,
+      gameMode,
+      setGameMode,
+      isRiddlesInitializing,
+    }),
+    [
+      currentRiddle,
+      setCurrentRiddle,
+      fetchCurrentRiddle,
+      isDailyChallengeAvailable,
+      gameMode,
+      setGameMode,
+      isRiddlesInitializing,
+    ]
+  );
+
+  // Merged value for useAuth() — consumers that call useAuth() still re-render
+  // when any slice changes, but targeted hooks (useAuthSession / usePlayer /
+  // useRiddle) can be adopted incrementally for finer-grained subscriptions.
+  const contextValue = useMemo(
+    () => ({ ...sessionValue, ...playerValue, ...riddleValue }),
+    [sessionValue, playerValue, riddleValue]
+  );
 
   return (
-    <AuthContext.Provider
-      value={{
-        isAuthenticated,
-        playerData,
-        isLoading,
-        isRiddlesInitializing,
-        currentRiddle,
-        isDailyChallengeAvailable,
-        gameMode,
-        setGameMode,
-        login,
-        logout,
-        updatePlayerClassicIndex,
-        updatePlayerData,
-        setCurrentRiddle,
-        fetchCurrentRiddle,
-      }}
-    >
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   );
 };
 
+/**
+ * Convenience hook for consuming the authentication and player session
+ * context. This must be called from within an `AuthProvider` subtree.
+ *
+ * @returns The current `AuthContextType` value, including player data,
+ * loading flags, and helpers for updating state.
+ * @throws If used outside of an `AuthProvider`.
+ */
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {

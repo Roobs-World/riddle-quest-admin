@@ -1,0 +1,16 @@
+---
+description: Next.js Server/Client component boundary rules
+globs: src/**/*.tsx,src/**/*.ts
+alwaysApply: false
+---
+
+# Server / Client Rules
+
+- Default to Server Components wherever possible.
+- Only add `"use client"` when required.
+- Do not import server-only code into client components.
+- Avoid leaking large packages into client bundle.
+- Ensure data fetching is colocated and optimized.
+- Validate caching and ISR strategies.
+- Avoid side-effects in Server Components.
+- Check memorybank for past violations before generating code.

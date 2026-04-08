@@ -15,42 +15,37 @@ describe("CreditsModal", () => {
   it("renders correctly when visible", () => {
     render(<CreditsModal isVisible={true} onClose={mockOnClose} />);
 
-    expect(screen.getByText("🎉 Credits")).toBeTruthy();
-    expect(
-      screen.getByText("Meet the amazing team behind Qwordly")
-    ).toBeTruthy();
+    expect(screen.getByText("Credits")).toBeTruthy();
     expect(screen.getByText("Craig Beswetherick")).toBeTruthy();
     expect(screen.getByText("Lead Developer & Game Design")).toBeTruthy();
     expect(screen.getByText("Thomas Lemrond")).toBeTruthy();
     expect(
       screen.getByText("Game Designer, Publisher, Overall Hero")
     ).toBeTruthy();
-    expect(screen.getByText("🙏 Thank You!")).toBeTruthy();
-    expect(screen.getByText("Got It!")).toBeTruthy();
+    expect(screen.getByText("Close")).toBeTruthy();
   });
 
   it("does not render when not visible", () => {
     render(<CreditsModal isVisible={false} onClose={mockOnClose} />);
 
     // Modal is not visible so we shouldn't find this text
-    expect(screen.queryByText("🎉 Credits")).toBeNull();
+    expect(screen.queryByText("Credits")).toBeNull();
   });
 
-  it("calls onClose when close button is pressed", () => {
+  it("calls onClose when close button (X) is pressed", () => {
     render(<CreditsModal isVisible={true} onClose={mockOnClose} />);
 
-    // Find by accessibility label since we don't have a direct text label
-    const closeButton = screen.getByLabelText("Close credits modal");
+    const closeButton = screen.getByLabelText("Close");
     fireEvent.press(closeButton);
 
     expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
 
-  it("calls onClose when Got It button is pressed", () => {
+  it("calls onClose when Close button is pressed", () => {
     render(<CreditsModal isVisible={true} onClose={mockOnClose} />);
 
-    const gotItButton = screen.getByText("Got It!");
-    fireEvent.press(gotItButton);
+    const closeButton = screen.getByText("Close");
+    fireEvent.press(closeButton);
 
     expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
@@ -73,13 +68,11 @@ describe("CreditsModal", () => {
     });
   });
 
-  it("displays thank you message", () => {
+  it("displays team member roles", () => {
     render(<CreditsModal isVisible={true} onClose={mockOnClose} />);
 
-    expect(
-      screen.getByText(
-        "Special thanks to all our contributors who made Qwordly possible. Your creativity, dedication, and passion brought this project to life."
-      )
-    ).toBeTruthy();
+    expect(screen.getByText("Inspiration")).toBeTruthy();
+    expect(screen.getByText("Sound Design")).toBeTruthy();
+    expect(screen.getAllByText("Design").length).toBeGreaterThanOrEqual(1);
   });
 });

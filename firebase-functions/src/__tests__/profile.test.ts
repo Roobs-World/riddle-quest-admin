@@ -7,18 +7,24 @@ const mockAdminFirestoreUpdate = jest.fn<() => Promise<void>>();
 const mockAdminFirestoreDoc = jest.fn((_id?: string) => ({update: mockAdminFirestoreUpdate}));
 const mockAdminFirestoreCollection = jest.fn((_path?: string) => ({doc: mockAdminFirestoreDoc}));
 
-// Mock for console methods (these are the jest.fn() implementations)
-const mockConsoleLogInternal = jest.fn<(...args: unknown[]) => void>();
-const mockConsoleErrorInternal = jest.fn<(...args: unknown[]) => void>();
+const mockLoggerInfo = jest.fn<(...args: unknown[]) => void>();
+const mockLoggerError = jest.fn<(...args: unknown[]) => void>();
 
 // 2. Jest/type imports
 import {CallableRequest, HttpsError} from "firebase-functions/v2/https";
 
 // 3. jest.mock() calls
 jest.mock("../firestoreService", () => ({
-  // This ensures that when firestoreService.updateUserProfile is called,
-  // it delegates to the mockUpdateUserProfile defined in the outer scope.
   updateUserProfile: (...args: [string, Record<string, unknown>]) => mockUpdateUserProfile(...args),
+}));
+
+jest.mock("firebase-functions/v2", () => ({
+  logger: {
+    info: (...args: unknown[]) => mockLoggerInfo(...args),
+    error: (...args: unknown[]) => mockLoggerError(...args),
+    warn: jest.fn(),
+    debug: jest.fn(),
+  },
 }));
 
 jest.mock("firebase-admin", () => ({
@@ -53,21 +59,12 @@ import {updateAvatar} from "../profile";
 
 // 5. Describe block
 describe("Profile Cloud Functions", () => {
-  // Use correct type for spies: jest.SpiedFunction<typeof target>
-  let consoleLogSpy: jest.SpiedFunction<typeof console.log>;
-  let consoleErrorSpy: jest.SpiedFunction<typeof console.error>;
-
   beforeEach(() => {
     jest.clearAllMocks();
-    mockConsoleLogInternal.mockClear(); // Clear the internal jest.fn mocks too
-    mockConsoleErrorInternal.mockClear();
-    consoleLogSpy = jest.spyOn(console, "log").mockImplementation(mockConsoleLogInternal);
-    consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(mockConsoleErrorInternal);
   });
 
   afterEach(() => {
-    consoleLogSpy.mockRestore();
-    consoleErrorSpy.mockRestore();
+    jest.restoreAllMocks();
   });
 
   describe("updateAvatar", () => {
@@ -84,10 +81,10 @@ describe("Profile Cloud Functions", () => {
       const result = await (updateAvatar as any)(request);
       expect(mockUpdateUserProfile).toHaveBeenCalledWith(mockAuth.uid, {avatarUrl: validAvatarUrl});
       expect(result).toEqual({success: true, message: "Avatar URL updated successfully."});
-      expect(consoleLogSpy).toHaveBeenCalledWith(
+      expect(mockLoggerInfo).toHaveBeenCalledWith(
         `Updating avatar URL for user: ${mockAuth.uid} with ${validAvatarUrl}`,
       );
-      expect(consoleLogSpy).toHaveBeenCalledWith(`User ${mockAuth.uid} avatar URL updated successfully.`);
+      expect(mockLoggerInfo).toHaveBeenCalledWith(`User ${mockAuth.uid} avatar URL updated successfully.`);
     });
 
     it("should throw HttpsError if not authenticated", async () => {
@@ -136,7 +133,7 @@ describe("Profile Cloud Functions", () => {
       await expect((updateAvatar as any)(request)).rejects.toThrow(
         new HttpsError("internal", "An error occurred while updating avatar URL.", serviceError),
       );
-      expect(consoleErrorSpy).toHaveBeenCalledWith(`Error updating avatar URL for user ${mockAuth.uid}:`, serviceError);
+      expect(mockLoggerError).toHaveBeenCalledWith(`Error updating avatar URL for user ${mockAuth.uid}:`, serviceError);
     });
   });
 });

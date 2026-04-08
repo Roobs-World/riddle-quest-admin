@@ -6,7 +6,15 @@ import CloseButton from "../../buttons/CloseButton";
 import WideButton from "src/components/buttons/WideButton";
 import { TYPOGRAPHY } from "src/styles";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
-import { scale } from "src/utils/responsive";
+import {
+  MODAL_WIDTH,
+  MODAL_HEIGHT,
+  CLOSE_BUTTON_INSET,
+  CLOSE_BUTTON_SIZE,
+  INPUT_BORDER_RADIUS,
+  INPUT_PADDING,
+} from "../../../constants/layout";
+import { SPACING } from "../../../styles";
 
 interface FirebaseError {
   code: string;
@@ -75,6 +83,14 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
     onClose();
   };
 
+  const inputStyle = {
+    backgroundColor: "white" as const,
+    width: "100%" as const,
+    borderRadius: INPUT_BORDER_RADIUS,
+    padding: INPUT_PADDING,
+    fontFamily: TYPOGRAPHY.fontSecondary,
+  };
+
   return (
     <Modal
       visible={isVisible}
@@ -87,44 +103,42 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "rgba(0,0,0,0.6)",
+          backgroundColor: "rgba(0,0,0,0.5)",
         }}
       >
         <View
           style={{
-            width: 335,
-            height: 423,
+            width: MODAL_WIDTH,
+            height: MODAL_HEIGHT,
             alignItems: "center",
             justifyContent: "center",
           }}
         >
-          <ModalBg style={{ position: "absolute" }} />
+          <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{ position: "absolute" }} />
           <View style={{ width: "80%", alignItems: "center" }}>
             <CloseButton
               onPress={handleClose}
-              size={20}
-              style={{ position: "absolute", top: -20, right: -20, zIndex: 10 }}
+              size={CLOSE_BUTTON_SIZE}
+              style={{
+                position: "absolute",
+                top: -CLOSE_BUTTON_INSET,
+                right: -CLOSE_BUTTON_INSET,
+                zIndex: 10,
+              }}
             />
             <Text
               style={{
                 fontFamily: TYPOGRAPHY.fontPrimary,
-                fontSize: scale(24),
-                color: "white",
-                marginBottom: 20,
+                fontSize: TYPOGRAPHY.fontSize["2xl"],
+                color: "black",
+                marginBottom: SPACING.lg,
                 textAlign: "center",
               }}
             >
               Change Password
             </Text>
             <TextInput
-              style={{
-                backgroundColor: "white",
-                width: "100%",
-                borderRadius: 8,
-                padding: 12,
-                marginBottom: 10,
-                fontFamily: TYPOGRAPHY.fontSecondary,
-              }}
+              style={{ ...inputStyle, marginBottom: SPACING.sm }}
               value={currentPassword}
               onChangeText={setCurrentPassword}
               placeholder="Current Password"
@@ -132,14 +146,7 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
               secureTextEntry
             />
             <TextInput
-              style={{
-                backgroundColor: "white",
-                width: "100%",
-                borderRadius: 8,
-                padding: 12,
-                marginBottom: 10,
-                fontFamily: TYPOGRAPHY.fontSecondary,
-              }}
+              style={{ ...inputStyle, marginBottom: SPACING.sm }}
               value={newPassword}
               onChangeText={setNewPassword}
               placeholder="New Password"
@@ -147,14 +154,7 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
               secureTextEntry
             />
             <TextInput
-              style={{
-                backgroundColor: "white",
-                width: "100%",
-                borderRadius: 8,
-                padding: 12,
-                marginBottom: 20,
-                fontFamily: TYPOGRAPHY.fontSecondary,
-              }}
+              style={{ ...inputStyle, marginBottom: SPACING.lg }}
               value={confirmNewPassword}
               onChangeText={setConfirmNewPassword}
               placeholder="Confirm New Password"

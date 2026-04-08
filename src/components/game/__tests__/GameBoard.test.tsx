@@ -5,7 +5,12 @@ import GameBoard from "../GameBoard";
 
 // Mock the responsive utility
 jest.mock("../../../utils/responsive", () => ({
+  scale: (n: number) => n,
+  moderateScale: (n: number) => n,
   isTablet: false,
+  isLargeTablet: false,
+  isDesktop: false,
+  dimensions: { screenWidth: 390, screenHeight: 844 },
 }));
 
 // Mock styles

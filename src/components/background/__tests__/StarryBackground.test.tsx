@@ -60,13 +60,14 @@ jest.mock("react-native-svg", () => {
   MockCircle.displayName = "MockCircle";
 
   const MockEllipse = React.forwardRef((props: any, ref: any) => {
-    return React.createElement("div", {
-      ...props,
-      ref,
-      "data-testid": "svg-ellipse",
-    });
+    return React.createElement("div", { ...props, ref, "data-testid": "svg-ellipse" });
   });
   MockEllipse.displayName = "MockEllipse";
+
+  const MockRect = React.forwardRef((props: any, ref: any) => {
+    return React.createElement("div", { ...props, ref, "data-testid": "svg-rect" });
+  });
+  MockRect.displayName = "MockRect";
 
   return {
     Svg: MockSvg,
@@ -76,6 +77,8 @@ jest.mock("react-native-svg", () => {
     Stop: MockStop,
     Circle: MockCircle,
     Ellipse: MockEllipse,
+    Rect: MockRect,
+    default: MockSvg,
   };
 });
 
@@ -95,10 +98,16 @@ jest.mock("react-native-reanimated", () => {
     withTiming: mockWithTiming,
     withRepeat: mockWithRepeat,
     withDelay: mockWithDelay,
+    withSequence: jest.fn((...args: any[]) => args[0]),
+    cancelAnimation: jest.fn(),
     interpolate: mockInterpolate,
     Easing: {
-      inOut: jest.fn(),
+      inOut: jest.fn((e: any) => e),
+      in: jest.fn((e: any) => e),
+      out: jest.fn((e: any) => e),
       linear: jest.fn(),
+      quad: jest.fn(),
+      sin: jest.fn(),
     },
     default: {
       View,
@@ -143,7 +152,7 @@ describe("SolarSystemBackground", () => {
   describe("Basic Component Functionality", () => {
     it("should export the component successfully", () => {
       expect(SolarSystemBackground).toBeDefined();
-      expect(typeof SolarSystemBackground).toBe("function");
+      expect(typeof SolarSystemBackground).toBe("object");
     });
 
     it("should render without crashing", () => {

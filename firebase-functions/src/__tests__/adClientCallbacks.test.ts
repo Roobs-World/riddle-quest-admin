@@ -86,7 +86,8 @@ describe("notifyRewardedAdCompleted Callable Function", () => {
     );
     expect(result).toEqual({
       success: true,
-      message: "Rewarded ad completion notification received.",
+      message: "Ad completion received. Reward will be credited once validated.",
+      pendingValidation: true,
     });
   });
 
@@ -104,7 +105,8 @@ describe("notifyRewardedAdCompleted Callable Function", () => {
     );
     expect(result).toEqual({
       success: true,
-      message: "Rewarded ad completion notification received.",
+      message: "Ad completion received. Reward will be credited once validated.",
+      pendingValidation: true,
     });
   });
 
@@ -127,7 +129,8 @@ describe("notifyRewardedAdCompleted Callable Function", () => {
     );
     expect(result).toEqual({
       success: true,
-      message: "Rewarded ad completion notification received.",
+      message: "Ad completion received. Reward will be credited once validated.",
+      pendingValidation: true,
     });
   });
 
@@ -144,7 +147,8 @@ describe("notifyRewardedAdCompleted Callable Function", () => {
     );
     expect(result).toEqual({
       success: true,
-      message: "Rewarded ad completion notification received.",
+      message: "Ad completion received. Reward will be credited once validated.",
+      pendingValidation: true,
     });
   });
 });

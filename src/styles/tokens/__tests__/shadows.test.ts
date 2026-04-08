@@ -1,5 +1,6 @@
 import { SHADOWS } from "../shadows";
 import { COLORS } from "../colors";
+import { moderateScale } from "../../../utils/responsive";
 
 describe("SHADOWS", () => {
   describe("Structure", () => {
@@ -19,9 +20,9 @@ describe("SHADOWS", () => {
   describe("Small Shadow (sm)", () => {
     it("has correct shadow properties", () => {
       expect(SHADOWS.sm.shadowColor).toBe(COLORS.shadowColor);
-      expect(SHADOWS.sm.shadowOffset).toEqual({ width: 0, height: 1 });
+      expect(SHADOWS.sm.shadowOffset).toEqual({ width: 0, height: moderateScale(1) });
       expect(SHADOWS.sm.shadowOpacity).toBe(0.05);
-      expect(SHADOWS.sm.shadowRadius).toBe(2);
+      expect(SHADOWS.sm.shadowRadius).toBe(moderateScale(2));
       expect(SHADOWS.sm.elevation).toBe(1);
     });
 
@@ -36,9 +37,9 @@ describe("SHADOWS", () => {
   describe("Medium Shadow (md)", () => {
     it("has correct shadow properties", () => {
       expect(SHADOWS.md.shadowColor).toBe(COLORS.shadowColor);
-      expect(SHADOWS.md.shadowOffset).toEqual({ width: 0, height: 2 });
+      expect(SHADOWS.md.shadowOffset).toEqual({ width: 0, height: moderateScale(2) });
       expect(SHADOWS.md.shadowOpacity).toBe(0.1);
-      expect(SHADOWS.md.shadowRadius).toBe(3.84);
+      expect(SHADOWS.md.shadowRadius).toBe(moderateScale(4));
       expect(SHADOWS.md.elevation).toBe(5);
     });
 
@@ -57,9 +58,9 @@ describe("SHADOWS", () => {
   describe("Large Shadow (lg)", () => {
     it("has correct shadow properties", () => {
       expect(SHADOWS.lg.shadowColor).toBe(COLORS.shadowColor);
-      expect(SHADOWS.lg.shadowOffset).toEqual({ width: 0, height: 4 });
+      expect(SHADOWS.lg.shadowOffset).toEqual({ width: 0, height: moderateScale(4) });
       expect(SHADOWS.lg.shadowOpacity).toBe(0.15);
-      expect(SHADOWS.lg.shadowRadius).toBe(6);
+      expect(SHADOWS.lg.shadowRadius).toBe(moderateScale(6));
       expect(SHADOWS.lg.elevation).toBe(8);
     });
 
@@ -78,9 +79,9 @@ describe("SHADOWS", () => {
   describe("Extra Large Shadow (xl)", () => {
     it("has correct shadow properties", () => {
       expect(SHADOWS.xl.shadowColor).toBe(COLORS.shadowColor);
-      expect(SHADOWS.xl.shadowOffset).toEqual({ width: 0, height: 10 });
+      expect(SHADOWS.xl.shadowOffset).toEqual({ width: 0, height: moderateScale(10) });
       expect(SHADOWS.xl.shadowOpacity).toBe(0.25);
-      expect(SHADOWS.xl.shadowRadius).toBe(15);
+      expect(SHADOWS.xl.shadowRadius).toBe(moderateScale(15));
       expect(SHADOWS.xl.elevation).toBe(15);
     });
 

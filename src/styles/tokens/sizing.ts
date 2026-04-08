@@ -3,7 +3,7 @@
  * Component sizing standards for buttons, inputs, tiles, and icons
  */
 
-import { scale, responsiveSizes } from "../../utils/responsive";
+import { scale, verticalScale, responsiveSizes } from "../../utils/responsive";
 
 export const SIZING = {
   button: {
@@ -12,7 +12,7 @@ export const SIZING = {
   },
   input: {
     height: responsiveSizes.inputHeight,
-    minHeight: scale(44),
+    minHeight: verticalScale(44),
   },
   tile: {
     size: scale(56),

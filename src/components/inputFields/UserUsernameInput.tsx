@@ -3,7 +3,7 @@ import { View, Text } from "react-native";
 import { AppStrings } from "../../constants/AppStrings";
 import ReusableTextInput from "../shared/ReusableTextInput";
 import Error from "../text/Error";
-import { styles } from "../../styles";
+import { styles, SPACING } from "../../styles";
 
 interface UserUsernameInputProps {
   username: string;
@@ -19,8 +19,8 @@ const UserUsernameInput: React.FC<UserUsernameInputProps> = ({
   return (
     <View className="w-full">
       <Text
-        className="text-sm text-gray-600 mb-2 text-left"
-        style={styles.labelText}
+        className="text-gray-600 text-left"
+        style={[styles.labelText, { marginBottom: SPACING.sm }]}
       >
         {AppStrings.AuthStrings.SignUp.USERNAME_LABEL}
       </Text>

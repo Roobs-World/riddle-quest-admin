@@ -1,28 +1,83 @@
+import { useEffect } from "react";
 import { View, Text } from "react-native";
-import TreasureChestBgSvg from "../../../../assets/images/treasure-chest.svg";
-import { TYPOGRAPHY } from "../../../styles";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withRepeat,
+  withTiming,
+  cancelAnimation,
+  Easing,
+} from "react-native-reanimated";
+import TreasureChestRaysSvg from "../../../../assets/images/treasure-chest-rays.svg";
+import TreasureChestSvg from "../../../../assets/images/treasure-chest.svg";
+import { TYPOGRAPHY, SPACING } from "../../../styles";
+import { verticalScale } from "../../../utils/responsive";
 
 export default function TreasureChest({ coins }: { coins: number }) {
+  const rotation = useSharedValue(0);
+
+  useEffect(() => {
+    rotation.value = withRepeat(
+      withTiming(1, { duration: 20000, easing: Easing.linear }),
+      -1,
+      false
+    );
+    return () => cancelAnimation(rotation);
+  }, [rotation]);
+
+  const raysStyle = useAnimatedStyle(() => ({
+    transform: [{ rotate: `${rotation.value * 360}deg` }],
+  }));
+
   return (
     <View className="w-full">
       <Text
-        className="text-lg mb-4 text-black text-left"
-        style={{ fontFamily: TYPOGRAPHY.fontPrimary }}
+        className="text-black text-left"
+        style={{ fontFamily: TYPOGRAPHY.fontPrimary, fontSize: TYPOGRAPHY.fontSize.lg, marginBottom: SPACING.md }}
       >
         Your Treasure Chest
       </Text>
-      <View className="relative w-full h-48 items-center justify-center">
-        <TreasureChestBgSvg width="100%" height="100%" />
-        <View className="absolute inset-0 items-center justify-center">
+      <View
+        style={{
+          width: "100%",
+          height: verticalScale(192),
+          borderRadius: 16,
+          backgroundColor: "#E2DCC7",
+          overflow: "hidden",
+        }}
+      >
+        {/* Rotating background rays — oversized so corners stay covered at all angles */}
+        <Animated.View
+          style={[{
+            position: "absolute",
+            width: "150%",
+            height: "150%",
+            top: "-25%",
+            left: "-25%",
+          }, raysStyle]}
+          pointerEvents="none"
+          shouldRasterizeIOS
+          renderToHardwareTextureAndroid
+        >
+          <TreasureChestRaysSvg width="100%" height="100%" />
+        </Animated.View>
+
+        {/* Static chest graphic (transparent background) */}
+        <View style={{ position: "absolute", width: "100%", height: "100%" }}>
+          <TreasureChestSvg width="100%" height="100%" />
+        </View>
+
+        {/* Coins text */}
+        <View style={{ position: "absolute", width: "100%", height: "100%", alignItems: "center", justifyContent: "center" }}>
           <Text
-            className="text-black mb-1 mt-24 text-2xl"
-            style={{ fontFamily: TYPOGRAPHY.fontPrimary }}
+            className="text-black"
+            style={{ fontFamily: TYPOGRAPHY.fontPrimary, fontSize: TYPOGRAPHY.fontSize["2xl"], marginBottom: SPACING.xs, marginTop: verticalScale(96) }}
           >
             Total Coins:
           </Text>
           <Text
-            className="text-2xl text-black"
-            style={{ fontFamily: TYPOGRAPHY.fontPrimary }}
+            className="text-black"
+            style={{ fontFamily: TYPOGRAPHY.fontPrimary, fontSize: TYPOGRAPHY.fontSize["2xl"] }}
           >
             {coins}
           </Text>

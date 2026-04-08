@@ -41,11 +41,12 @@ describe("PasswordMatch", () => {
       );
 
       const errorText = getByText("Password is too short ✗");
-      expect(errorText.props.className).toContain("text-xs");
       expect(errorText.props.className).toContain("text-red-600");
-      expect(errorText.props.className).toContain("ml-1");
-      expect(errorText.props.className).toContain("mb-4");
       expect(errorText.props.className).toContain("text-right");
+      const style = errorText.props.style ?? {};
+      expect(style.fontSize).toBeDefined();
+      expect(style.marginLeft).toBeDefined();
+      expect(style.marginBottom).toBeDefined();
     });
   });
 
@@ -74,11 +75,12 @@ describe("PasswordMatch", () => {
       );
 
       const errorText = getByText("Passwords do not match ✗");
-      expect(errorText.props.className).toContain("text-xs");
       expect(errorText.props.className).toContain("text-red-600");
-      expect(errorText.props.className).toContain("ml-1");
-      expect(errorText.props.className).toContain("mb-4");
       expect(errorText.props.className).toContain("text-right");
+      const style = errorText.props.style ?? {};
+      expect(style.fontSize).toBeDefined();
+      expect(style.marginLeft).toBeDefined();
+      expect(style.marginBottom).toBeDefined();
     });
   });
 
@@ -107,11 +109,12 @@ describe("PasswordMatch", () => {
       );
 
       const successText = getByText("Passwords match ✓");
-      expect(successText.props.className).toContain("text-xs");
       expect(successText.props.className).toContain("text-green-600");
-      expect(successText.props.className).toContain("ml-1");
-      expect(successText.props.className).toContain("mb-4");
       expect(successText.props.className).toContain("text-right");
+      const style = successText.props.style ?? {};
+      expect(style.fontSize).toBeDefined();
+      expect(style.marginLeft).toBeDefined();
+      expect(style.marginBottom).toBeDefined();
     });
   });
 
@@ -187,7 +190,7 @@ describe("PasswordMatch", () => {
           );
 
           const text = getByText(expected);
-          expect(text.props.className).toContain("text-xs");
+          expect((text.props.style ?? {}).fontSize).toBeDefined();
         }
       );
     });

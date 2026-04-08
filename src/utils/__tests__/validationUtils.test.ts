@@ -36,7 +36,7 @@ describe("ValidationUtils", () => {
           if (error instanceof ZodError) {
             const formatted = ValidationUtils.formatZodError(error);
             expect(formatted).toContain("name");
-            expect(formatted).toContain("Expected string");
+            expect(formatted).toMatch(/expected string|Expected string/i);
           }
         }
       });

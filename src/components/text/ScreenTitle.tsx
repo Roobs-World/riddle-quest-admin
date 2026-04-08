@@ -12,7 +12,7 @@
 
 import React from "react";
 import { Text } from "react-native";
-import { styles } from "../../styles";
+import { styles, SPACING } from "../../styles";
 
 /**
  * Props interface for the ScreenTitle component.
@@ -69,10 +69,8 @@ interface ScreenTitleProps {
  */
 const ScreenTitle = ({ title, className }: ScreenTitleProps) => (
   <Text
-    className={`text-center text-3xl font-bold mb-2 text-gray-800 ${
-      className || ""
-    }`}
-    style={styles.screenTitle}
+    className={`text-center font-bold text-white ${className || ""}`}
+    style={[styles.screenTitle, { marginBottom: SPACING.sm }]}
     accessibilityRole="header"
   >
     {title}

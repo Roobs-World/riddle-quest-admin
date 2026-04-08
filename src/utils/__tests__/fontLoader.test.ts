@@ -6,7 +6,7 @@ jest.mock("expo-font", () => ({
   loadAsync: jest.fn(),
 }));
 
-// Mock console.log
+// Mock logger (fontLoader uses logger.debug which calls console.log in dev)
 const originalConsoleLog = console.log;
 beforeAll(() => {
   console.log = jest.fn();

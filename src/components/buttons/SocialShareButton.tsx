@@ -11,22 +11,22 @@
  */
 
 import React from "react";
-import {
-  TouchableOpacity,
-  Text,
-  View,
-  StyleSheet,
-  ViewStyle,
-} from "react-native";
+import { TouchableOpacity, Text, StyleSheet, ViewStyle } from "react-native";
 import FacebookIcon from "../icons/FacebookIcon";
 import XIcon from "../icons/XIcon";
 import { COLORS } from "../../styles/tokens/colors";
 import { SPACING } from "../../styles/tokens/spacing";
 import { BORDER_RADIUS } from "../../styles/tokens/borderRadius";
-import { scale } from "../../utils/responsive";
+import { TYPOGRAPHY } from "../../styles/tokens/typography";
+import { moderateScale } from "../../utils/responsive";
+import {
+  SOCIAL_BUTTON_MIN_WIDTH_SM,
+  SOCIAL_BUTTON_MIN_WIDTH_MD,
+  SOCIAL_BUTTON_MIN_WIDTH_LG,
+} from "../../constants/layout";
 
 interface SocialShareButtonProps {
-  platform: "facebook" | "x";
+  platform: "facebook" | "x" | "system";
   onPress: () => void;
   disabled?: boolean;
   size?: "small" | "medium" | "large";
@@ -40,114 +40,58 @@ const SocialShareButton: React.FC<SocialShareButtonProps> = ({
   size = "medium",
   fullWidth = false,
 }) => {
-  const getIcon = () => {
-    // Standard icon sizes for all platforms
-    const iconSize = size === "small" ? 20 : size === "medium" ? 24 : 32;
+  const iconSize = size === "small" ? moderateScale(20) : size === "medium" ? moderateScale(24) : moderateScale(32);
 
+  const getIcon = () => {
     switch (platform) {
       case "facebook":
         return <FacebookIcon width={iconSize} height={iconSize} />;
       case "x":
-        return <XIcon width={iconSize} />;
+        return <XIcon width={iconSize} tintColor="#FFFFFF" />;
       default:
         return null;
     }
   };
 
-  const getButtonStyle = () => {
-    const baseStyle: ViewStyle = {
+  const getButtonStyle = (): ViewStyle => {
+    const sizeStyles = {
+      small: { paddingHorizontal: SPACING.sm, paddingVertical: SPACING.xs, minWidth: SOCIAL_BUTTON_MIN_WIDTH_SM },
+      medium: { paddingHorizontal: SPACING.md, paddingVertical: SPACING.sm, minWidth: SOCIAL_BUTTON_MIN_WIDTH_MD },
+      large: { paddingHorizontal: SPACING.lg, paddingVertical: SPACING.md, minWidth: SOCIAL_BUTTON_MIN_WIDTH_LG },
+    };
+
+    const platformBg = {
+      facebook: disabled ? COLORS.gray200 : "#1877F2",
+      x: disabled ? COLORS.gray200 : "#000000",
+      system: disabled ? COLORS.gray200 : "#5856D6",
+    };
+
+    return {
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "center",
       borderRadius: BORDER_RADIUS.lg,
       shadowColor: COLORS.shadowColor,
-      shadowOffset: { width: 0, height: 2 },
+      shadowOffset: { width: 0, height: moderateScale(2) },
       shadowOpacity: 0.1,
-      shadowRadius: 4,
+      shadowRadius: moderateScale(4),
       elevation: 3,
-    };
-
-    const sizeStyles = {
-      small: {
-        paddingHorizontal: SPACING.sm,
-        paddingVertical: SPACING.xs,
-        minWidth: scale(80),
-      },
-      medium: {
-        paddingHorizontal: SPACING.md,
-        paddingVertical: SPACING.sm,
-        minWidth: scale(120),
-      },
-      large: {
-        paddingHorizontal: SPACING.lg,
-        paddingVertical: SPACING.md,
-        minWidth: scale(160),
-      },
-    };
-
-    const platformStyles = {
-      facebook: {
-        backgroundColor: disabled ? COLORS.gray200 : "#1877F2",
-      },
-      x: {
-        backgroundColor: disabled ? COLORS.gray200 : "white", // X uses black branding
-      },
-    };
-
-    const widthStyle: ViewStyle = fullWidth ? { width: "100%" } : {};
-
-    return {
-      ...baseStyle,
+      backgroundColor: platformBg[platform],
+      ...(fullWidth ? { width: "100%" } : {}),
       ...sizeStyles[size],
-      ...platformStyles[platform],
-      ...widthStyle,
     };
   };
 
-  const getTextStyle = () => {
-    const baseTextStyle = {
-      fontWeight: "bold" as const,
-      marginLeft: SPACING.xs,
-    };
-
-    const sizeTextStyles = {
-      small: {
-        fontSize: scale(12),
-      },
-      medium: {
-        fontSize: scale(14),
-      },
-      large: {
-        fontSize: scale(16),
-      },
-    };
-
-    // Platform-specific text colors
-    const textColor = disabled
-      ? COLORS.gray400
-      : platform === "x"
-      ? "#000000"
-      : "#FFFFFF";
-
-    return {
-      ...baseTextStyle,
-      ...sizeTextStyles[size],
-      color: textColor,
-    };
+  const textColor = disabled ? COLORS.gray400 : "#FFFFFF";
+  const textStyle = {
+    fontFamily: TYPOGRAPHY.fontSecondary,
+    fontWeight: "600" as const,
+    marginLeft: platform === "facebook" ? SPACING.xs : 0,
+    color: textColor,
+    fontSize: size === "small" ? TYPOGRAPHY.fontSize.xs : size === "medium" ? TYPOGRAPHY.fontSize.sm : TYPOGRAPHY.fontSize.base,
   };
 
-  const getPlatformText = () => {
-    switch (platform) {
-      case "facebook":
-        return "Facebook";
-      case "x":
-        return "";
-      default:
-        return "";
-    }
-  };
-
-  const platformText = getPlatformText();
+  const platformLabel = platform === "facebook" ? "Facebook" : platform === "x" ? "X" : "Share";
 
   return (
     <TouchableOpacity
@@ -155,40 +99,15 @@ const SocialShareButton: React.FC<SocialShareButtonProps> = ({
       onPress={disabled ? undefined : onPress}
       disabled={disabled}
       activeOpacity={0.8}
-      accessibilityLabel={`Share to ${platformText || platform}`}
+      accessibilityLabel={`Share to ${platformLabel}`}
       accessibilityRole="button"
     >
-      <View
-        style={[
-          styles.contentContainer,
-          platform === "facebook"
-            ? styles.facebookContentContainer
-            : styles.xContentContainer,
-        ]}
-      >
-        {getIcon()}
-        {platformText ? (
-          <Text style={getTextStyle()}>{platformText}</Text>
-        ) : null}
-      </View>
+      {getIcon()}
+      {platform !== "x" && <Text style={textStyle}>{platformLabel}</Text>}
     </TouchableOpacity>
   );
 };
 
-const styles = StyleSheet.create({
-  contentContainer: {
-    alignItems: "center",
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    width: "100%",
-  },
-  facebookContentContainer: {
-    transform: [{ translateX: -15 }],
-  },
-  xContentContainer: {
-    transform: [{ translateX: 5 }],
-  },
-});
+const styles = StyleSheet.create({});
 
 export default SocialShareButton;

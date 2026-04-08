@@ -13,13 +13,13 @@ import { AppStrings } from "../../constants/AppStrings";
 import Error from "../../components/text/Error";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { type FirebaseAuthTypes } from "@react-native-firebase/auth";
-import HomeBgSvg from "../../../assets/images/home-bg.svg";
+import StarryBackground from "../../components/background/StarryBackground";
 import PulsingSpinner from "../../components/loading/PulsingSpinner";
-import { styles } from "../../styles";
-
-/**
- * Forgot password screen for the authentication flow.
- */
+import { LOADING_SPINNER_SIZE } from "../../constants/loading";
+import { styles, SPACING } from "../../styles";
+import { AUTH_ICON_SIZE } from "../../constants/layout";
+import { logger } from "../../utils/logger";
+import { captureException } from "../../utils/sentry";
 
 type RootStackParamList = {
   Landing: object | undefined;
@@ -43,10 +43,12 @@ const ForgotPasswordScreen = ({ navigation }: ForgotPasswordScreenProps) => {
   const [isLoading, setIsLoading] = useState(false);
 
   /**
-   * Handles the password reset flow.
+   * Handles the password reset flow by validating the email and delegating
+   * to `AuthService.sendPasswordResetEmail`, surfacing any Firebase errors
+   * to the user via inline messaging.
    */
   const handleResetPassword = async () => {
-    console.log("Password reset requested for email:", email);
+    logger.debug("Password reset requested for email:", email);
 
     setEmailError(null);
     setSuccessMessage("");
@@ -64,10 +66,11 @@ const ForgotPasswordScreen = ({ navigation }: ForgotPasswordScreenProps) => {
     try {
       await AuthService.sendPasswordResetEmail(email);
       setSuccessMessage("Password reset email sent! Check your inbox.");
-      console.log("Password reset email sent successfully.");
+      logger.debug("Password reset email sent successfully.");
     } catch (error) {
       const firebaseError = error as FirebaseAuthTypes.NativeFirebaseAuthError;
-      console.error("Password reset error:", firebaseError);
+      logger.error("Password reset error:", firebaseError);
+      captureException(error);
 
       // Handle specific Firebase errors
       if (firebaseError.code === "auth/user-not-found") {
@@ -86,11 +89,11 @@ const ForgotPasswordScreen = ({ navigation }: ForgotPasswordScreenProps) => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-cream-light p-6">
-      <HomeBgSvg width="120%" height="100%" style={styles.backgroundImage} />
+    <SafeAreaView className="flex-1 bg-cream-light" style={{ padding: SPACING.lg }}>
+      <StarryBackground />
       <BackButton navigation={navigation} />
       <AuthLayout>
-        <PadlockIcon width={80} height={80} />
+        <PadlockIcon width={AUTH_ICON_SIZE} height={AUTH_ICON_SIZE} />
         <ScreenTitle title="Reset Password" />
         <UserEmailInput
           email={email}
@@ -98,7 +101,7 @@ const ForgotPasswordScreen = ({ navigation }: ForgotPasswordScreenProps) => {
           errorMessage={emailError}
         />
         {successMessage && (
-          <Text className="text-green-500 text-center">{successMessage}</Text>
+          <Text className="text-green-400 text-center">{successMessage}</Text>
         )}
         {generalError && <Error message={generalError} />}
       </AuthLayout>
@@ -111,14 +114,14 @@ const ForgotPasswordScreen = ({ navigation }: ForgotPasswordScreenProps) => {
 
       <TouchableOpacity
         onPress={() => navigation.navigate(AppStrings.Navigation.LOGIN)}
-        className="mt-4"
+        style={{ marginTop: SPACING.md }}
       >
-        <Text className="text-center text-blue-500 underline">
+        <Text className="text-center text-blue-300 underline">
           Back to Login
         </Text>
       </TouchableOpacity>
 
-      <PulsingSpinner visible={isLoading} size={120} />
+      <PulsingSpinner visible={isLoading} size={LOADING_SPINNER_SIZE} />
     </SafeAreaView>
   );
 };

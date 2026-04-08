@@ -6,6 +6,9 @@ const mockFirestore = {
   collection: jest.fn(),
   runTransaction: jest.fn(),
 };
+const firestoreWithFieldValue = Object.assign(() => mockFirestore, {
+  FieldValue: { arrayUnion: (...args: any[]) => args },
+});
 
 const mockCollection = {
   doc: jest.fn(),
@@ -30,7 +33,7 @@ const mockLogger = {
 };
 
 jest.mock("firebase-admin", () => ({
-  firestore: () => mockFirestore,
+  firestore: firestoreWithFieldValue,
 }));
 
 jest.mock("firebase-functions", () => ({
@@ -45,6 +48,12 @@ import {
   updateUserStats,
   updateUserProfile,
   getRiddle,
+  initializeNewUser,
+  ensureUserDocumentComplete,
+  appendUnlockedAchievements,
+  getDailyRiddle,
+  getTutorialRiddle,
+  getRiddleByGameMode,
 } from "../firestoreService";
 
 describe("FirestoreService", () => {
@@ -157,8 +166,6 @@ describe("FirestoreService", () => {
       (mockTransaction.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
       (mockTransaction.update as jest.MockedFunction<any>).mockResolvedValue(undefined);
 
-      const consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {});
-
       await updateUserCoins(testUserId, coinsToAdd);
 
       expect(mockFirestore.runTransaction).toHaveBeenCalled();
@@ -166,9 +173,7 @@ describe("FirestoreService", () => {
       expect(mockTransaction.update).toHaveBeenCalledWith(expect.any(Object), {
         coins: 150,
       });
-      expect(consoleSpy).toHaveBeenCalledWith(`User ${testUserId} coins updated by ${coinsToAdd}.`);
-
-      consoleSpy.mockRestore();
+      expect(mockLogger.info).toHaveBeenCalledWith(`User ${testUserId} coins updated by ${coinsToAdd}.`);
     });
 
     test("should update user coins with negative amount", async () => {
@@ -181,16 +186,12 @@ describe("FirestoreService", () => {
       (mockTransaction.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
       (mockTransaction.update as jest.MockedFunction<any>).mockResolvedValue(undefined);
 
-      const consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {});
-
       await updateUserCoins(testUserId, coinsToSpend);
 
       expect(mockTransaction.update).toHaveBeenCalledWith(expect.any(Object), {
         coins: 70,
       });
-      expect(consoleSpy).toHaveBeenCalledWith(`User ${testUserId} coins updated by ${coinsToSpend}.`);
-
-      consoleSpy.mockRestore();
+      expect(mockLogger.info).toHaveBeenCalledWith(`User ${testUserId} coins updated by ${coinsToSpend}.`);
     });
 
     test("should throw error when user does not exist", async () => {
@@ -268,8 +269,6 @@ describe("FirestoreService", () => {
       (mockTransaction.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
       (mockTransaction.update as jest.MockedFunction<any>).mockResolvedValue(undefined);
 
-      const consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {});
-
       await updateUserStats(testUserId, statsUpdate);
 
       expect(mockFirestore.runTransaction).toHaveBeenCalled();
@@ -281,9 +280,7 @@ describe("FirestoreService", () => {
           winRate: 0.55,
         },
       });
-      expect(consoleSpy).toHaveBeenCalledWith(`Stats for user ${testUserId} updated.`);
-
-      consoleSpy.mockRestore();
+      expect(mockLogger.info).toHaveBeenCalledWith(`Stats for user ${testUserId} updated.`);
     });
 
     test("should handle missing stats property", async () => {
@@ -301,8 +298,6 @@ describe("FirestoreService", () => {
       (mockTransaction.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
       (mockTransaction.update as jest.MockedFunction<any>).mockResolvedValue(undefined);
 
-      const consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {});
-
       await updateUserStats(testUserId, statsUpdate);
 
       expect(mockTransaction.update).toHaveBeenCalledWith(expect.any(Object), {
@@ -311,8 +306,6 @@ describe("FirestoreService", () => {
           wins: 1,
         },
       });
-
-      consoleSpy.mockRestore();
     });
 
     test("should throw error when user does not exist", async () => {
@@ -393,7 +386,9 @@ describe("FirestoreService", () => {
       const result = await getRiddle(testRiddleId);
 
       expect(result).toBeUndefined();
-      expect(mockLogger.info).toHaveBeenCalledWith(`Riddle document not found for ID ${testRiddleId}`);
+      expect(mockLogger.info).toHaveBeenCalledWith(
+        `Riddle document not found for ID ${testRiddleId} in any collection`,
+      );
     });
 
     test("should return undefined when riddle data is null", async () => {
@@ -407,7 +402,9 @@ describe("FirestoreService", () => {
       const result = await getRiddle(testRiddleId);
 
       expect(result).toBeUndefined();
-      expect(mockLogger.info).toHaveBeenCalledWith(`Riddle data is null for ID ${testRiddleId}`);
+      expect(mockLogger.info).toHaveBeenCalledWith(
+        `Classic riddle data is null for ID ${testRiddleId}`,
+      );
     });
 
     test("should add riddleId to data if missing", async () => {
@@ -453,15 +450,11 @@ describe("FirestoreService", () => {
       (mockTransaction.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
       (mockTransaction.update as jest.MockedFunction<any>).mockResolvedValue(undefined);
 
-      const consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {});
-
       await updateUserCoins(testUserId, coinsToAdd);
 
       expect(mockTransaction.update).toHaveBeenCalledWith(expect.any(Object), {
         coins: 10,
       });
-
-      consoleSpy.mockRestore();
     });
 
     test("should handle empty stats updates", async () => {
@@ -474,15 +467,11 @@ describe("FirestoreService", () => {
       (mockTransaction.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
       (mockTransaction.update as jest.MockedFunction<any>).mockResolvedValue(undefined);
 
-      const consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {});
-
       await updateUserStats(testUserId, {});
 
       expect(mockTransaction.update).toHaveBeenCalledWith(expect.any(Object), {
         stats: {gamesPlayed: 5},
       });
-
-      consoleSpy.mockRestore();
     });
 
     test("should log specific error for insufficient coins with exact error message", async () => {
@@ -519,6 +508,735 @@ describe("FirestoreService", () => {
 
       // Verify the specific error logging call (line 149)
       expect(mockLogger.error).toHaveBeenCalledWith(expectedErrorMessage, expect.any(Error));
+    });
+  });
+
+  describe("updateUserCoins - external transaction path", () => {
+    const testUserId = "testUser123";
+
+    test("should use provided transaction instead of creating a new one", async () => {
+      const externalTransaction = {
+        get: jest.fn() as jest.MockedFunction<any>,
+        update: jest.fn() as jest.MockedFunction<any>,
+      };
+
+      const mockUserDoc = {
+        exists: true,
+        data: () => ({coins: 100}),
+      };
+
+      (externalTransaction.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
+
+      await updateUserCoins(testUserId, 50, externalTransaction as any);
+
+      expect(mockFirestore.runTransaction).not.toHaveBeenCalled();
+      expect(externalTransaction.get).toHaveBeenCalled();
+      expect(externalTransaction.update).toHaveBeenCalledWith(expect.any(Object), {coins: 150});
+    });
+  });
+
+  describe("updateUserStats - external transaction path", () => {
+    const testUserId = "testUser123";
+
+    test("should use provided transaction instead of creating a new one", async () => {
+      const externalTransaction = {
+        get: jest.fn() as jest.MockedFunction<any>,
+        update: jest.fn() as jest.MockedFunction<any>,
+      };
+
+      const mockUserDoc = {
+        exists: true,
+        data: () => ({stats: {gamesPlayed: 5, wins: 2}}),
+      };
+
+      (externalTransaction.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
+
+      await updateUserStats(testUserId, {gamesPlayed: 6}, externalTransaction as any);
+
+      expect(mockFirestore.runTransaction).not.toHaveBeenCalled();
+      expect(externalTransaction.get).toHaveBeenCalled();
+      expect(externalTransaction.update).toHaveBeenCalledWith(expect.any(Object), {
+        stats: {gamesPlayed: 6, wins: 2},
+      });
+    });
+  });
+
+  describe("initializeNewUser", () => {
+    const testUserId = "newUser123";
+    const testUserData = {
+      email: "new@example.com",
+      username: "NewPlayer",
+    };
+
+    test("should create user document with default stats and progress", async () => {
+      (mockDoc.set as jest.MockedFunction<any>).mockResolvedValue(undefined);
+
+      await initializeNewUser(testUserId, testUserData);
+
+      expect(mockFirestore.collection).toHaveBeenCalledWith("users");
+      expect(mockCollection.doc).toHaveBeenCalledWith(testUserId);
+      expect(mockDoc.set).toHaveBeenCalledWith(
+        expect.objectContaining({
+          userId: testUserId,
+          email: testUserData.email,
+          username: testUserData.username,
+          coins: 100,
+          hasPurchasedApp: false,
+          stats: expect.objectContaining({
+            dailyPuzzlesCompleted: 0,
+            bestStreak: 0,
+            totalWordsGuessed: 0,
+            gamesPlayed: 0,
+            wins: 0,
+          }),
+          progress: expect.objectContaining({
+            classicIndex: 1,
+            dailyChallengeIndex: 0,
+            dailyChallengeCurrentQuestion: 0,
+            tutorialIndex: 0,
+          }),
+        }),
+      );
+      expect(mockLogger.info).toHaveBeenCalledWith(
+        `Initialized new user document for ${testUserId} with default stats and progress`,
+      );
+    });
+
+    test("should include optional displayName and avatarUrl when provided", async () => {
+      (mockDoc.set as jest.MockedFunction<any>).mockResolvedValue(undefined);
+
+      await initializeNewUser(testUserId, {
+        ...testUserData,
+        displayName: "New Player",
+        avatarUrl: "https://example.com/avatar.png",
+      });
+
+      expect(mockDoc.set).toHaveBeenCalledWith(
+        expect.objectContaining({
+          displayName: "New Player",
+          avatarUrl: "https://example.com/avatar.png",
+        }),
+      );
+    });
+
+    test("should throw and log error when Firestore set fails", async () => {
+      const testError = new Error("Firestore write failed");
+      (mockDoc.set as jest.MockedFunction<any>).mockRejectedValue(testError);
+
+      await expect(initializeNewUser(testUserId, testUserData)).rejects.toThrow("Firestore write failed");
+      expect(mockLogger.error).toHaveBeenCalledWith(
+        `Error initializing new user ${testUserId}:`,
+        testError,
+      );
+    });
+  });
+
+  describe("ensureUserDocumentComplete", () => {
+    const testUserId = "existingUser123";
+
+    test("should return early when user document does not exist", async () => {
+      const mockUserDoc = {
+        exists: false,
+      };
+      (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
+
+      await ensureUserDocumentComplete(testUserId);
+
+      expect(mockLogger.warn).toHaveBeenCalledWith(
+        `User document not found for ${testUserId}, cannot ensure completeness without basic user data`,
+      );
+      expect(mockDoc.update).not.toHaveBeenCalled();
+    });
+
+    test("should not update when user has all required fields", async () => {
+      const completeUser = {
+        stats: {
+          dailyPuzzlesCompleted: 5,
+          bestStreak: 3,
+          totalWordsGuessed: 20,
+          winRate: 0.6,
+          averageGuesses: 4,
+          totalScore: 100,
+          highestLevelClassic: 5,
+          gamesPlayed: 10,
+          wins: 6,
+          challengeWins: 2,
+          winStreak: 3,
+          totalWins: 6,
+          totalGuessesInWins: 24,
+          totalHintsUsed: 0,
+        },
+        progress: {
+          classicIndex: 5,
+          dailyChallengeIndex: 3,
+          dailyChallengeCurrentQuestion: 1,
+          tutorialIndex: 3,
+        },
+        coins: 200,
+        hasPurchasedApp: true,
+        unlockedAchievements: [],
+      };
+
+      const mockUserDoc = {
+        exists: true,
+        data: () => completeUser,
+      };
+      (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
+
+      await ensureUserDocumentComplete(testUserId);
+
+      expect(mockDoc.update).not.toHaveBeenCalled();
+    });
+
+    test("should add default stats when stats object is missing", async () => {
+      const userWithoutStats = {
+        progress: {
+          classicIndex: 0,
+          dailyChallengeIndex: 0,
+          dailyChallengeCurrentQuestion: 0,
+          tutorialIndex: 0,
+        },
+        coins: 100,
+        hasPurchasedApp: false,
+      };
+
+      const mockUserDoc = {
+        exists: true,
+        data: () => userWithoutStats,
+      };
+      (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
+      (mockDoc.update as jest.MockedFunction<any>).mockResolvedValue(undefined);
+
+      await ensureUserDocumentComplete(testUserId);
+
+      expect(mockDoc.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          stats: expect.objectContaining({
+            dailyPuzzlesCompleted: 0,
+            bestStreak: 0,
+            totalWordsGuessed: 0,
+            gamesPlayed: 0,
+            wins: 0,
+          }),
+        }),
+      );
+    });
+
+    test("should add default progress when progress object is missing", async () => {
+      const userWithoutProgress = {
+        stats: {
+          dailyPuzzlesCompleted: 0,
+          bestStreak: 0,
+          totalWordsGuessed: 0,
+          winRate: 0,
+          averageGuesses: 0,
+          totalScore: 0,
+          highestLevelClassic: 0,
+          gamesPlayed: 0,
+          wins: 0,
+          challengeWins: 0,
+          winStreak: 0,
+          totalWins: 0,
+          totalGuessesInWins: 0,
+        },
+        coins: 100,
+        hasPurchasedApp: false,
+      };
+
+      const mockUserDoc = {
+        exists: true,
+        data: () => userWithoutProgress,
+      };
+      (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
+      (mockDoc.update as jest.MockedFunction<any>).mockResolvedValue(undefined);
+
+      await ensureUserDocumentComplete(testUserId);
+
+      expect(mockDoc.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          progress: {
+            classicIndex: 1,
+            dailyChallengeIndex: 0,
+            dailyChallengeCurrentQuestion: 0,
+            tutorialIndex: 0,
+          },
+        }),
+      );
+    });
+
+    test("should merge missing stat fields into existing partial stats", async () => {
+      const userWithPartialStats = {
+        stats: {
+          gamesPlayed: 10,
+          wins: 5,
+        },
+        progress: {
+          classicIndex: 0,
+          dailyChallengeIndex: 0,
+          dailyChallengeCurrentQuestion: 0,
+          tutorialIndex: 0,
+        },
+        coins: 100,
+        hasPurchasedApp: false,
+      };
+
+      const mockUserDoc = {
+        exists: true,
+        data: () => userWithPartialStats,
+      };
+      (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
+      (mockDoc.update as jest.MockedFunction<any>).mockResolvedValue(undefined);
+
+      await ensureUserDocumentComplete(testUserId);
+
+      expect(mockDoc.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          stats: expect.objectContaining({
+            gamesPlayed: 10,
+            wins: 5,
+            dailyPuzzlesCompleted: 0,
+            bestStreak: 0,
+            totalWordsGuessed: 0,
+          }),
+        }),
+      );
+    });
+
+    test("should merge missing progress fields into existing partial progress", async () => {
+      const userWithPartialProgress = {
+        stats: {
+          dailyPuzzlesCompleted: 0,
+          bestStreak: 0,
+          totalWordsGuessed: 0,
+          winRate: 0,
+          averageGuesses: 0,
+          totalScore: 0,
+          highestLevelClassic: 0,
+          gamesPlayed: 0,
+          wins: 0,
+          challengeWins: 0,
+          winStreak: 0,
+          totalWins: 0,
+          totalGuessesInWins: 0,
+          totalHintsUsed: 0,
+        },
+        progress: {
+          classicIndex: 5,
+          dailyChallengeIndex: 2,
+          // dailyChallengeCurrentQuestion and tutorialIndex missing
+        },
+        coins: 100,
+        hasPurchasedApp: false,
+      };
+
+      const mockUserDoc = {
+        exists: true,
+        data: () => userWithPartialProgress,
+      };
+      (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
+      (mockDoc.update as jest.MockedFunction<any>).mockResolvedValue(undefined);
+
+      await ensureUserDocumentComplete(testUserId);
+
+      expect(mockDoc.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          progress: expect.objectContaining({
+            classicIndex: 5,
+            dailyChallengeIndex: 2,
+            dailyChallengeCurrentQuestion: 0,
+            tutorialIndex: 0,
+          }),
+        }),
+      );
+    });
+
+    test("should add default coins when coins is undefined", async () => {
+      const userWithoutCoins = {
+        stats: {
+          dailyPuzzlesCompleted: 0,
+          bestStreak: 0,
+          totalWordsGuessed: 0,
+          winRate: 0,
+          averageGuesses: 0,
+          totalScore: 0,
+          highestLevelClassic: 0,
+          gamesPlayed: 0,
+          wins: 0,
+          challengeWins: 0,
+          winStreak: 0,
+          totalWins: 0,
+          totalGuessesInWins: 0,
+        },
+        progress: {
+          classicIndex: 0,
+          dailyChallengeIndex: 0,
+          dailyChallengeCurrentQuestion: 0,
+          tutorialIndex: 0,
+        },
+        hasPurchasedApp: false,
+      };
+
+      const mockUserDoc = {
+        exists: true,
+        data: () => userWithoutCoins,
+      };
+      (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
+      (mockDoc.update as jest.MockedFunction<any>).mockResolvedValue(undefined);
+
+      await ensureUserDocumentComplete(testUserId);
+
+      expect(mockDoc.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          coins: 100,
+        }),
+      );
+    });
+
+    test("should add default hasPurchasedApp when it is undefined", async () => {
+      const userWithoutPurchaseFlag = {
+        stats: {
+          dailyPuzzlesCompleted: 0,
+          bestStreak: 0,
+          totalWordsGuessed: 0,
+          winRate: 0,
+          averageGuesses: 0,
+          totalScore: 0,
+          highestLevelClassic: 0,
+          gamesPlayed: 0,
+          wins: 0,
+          challengeWins: 0,
+          winStreak: 0,
+          totalWins: 0,
+          totalGuessesInWins: 0,
+        },
+        progress: {
+          classicIndex: 0,
+          dailyChallengeIndex: 0,
+          dailyChallengeCurrentQuestion: 0,
+          tutorialIndex: 0,
+        },
+        coins: 100,
+      };
+
+      const mockUserDoc = {
+        exists: true,
+        data: () => userWithoutPurchaseFlag,
+      };
+      (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockUserDoc);
+      (mockDoc.update as jest.MockedFunction<any>).mockResolvedValue(undefined);
+
+      await ensureUserDocumentComplete(testUserId);
+
+      expect(mockDoc.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          hasPurchasedApp: false,
+        }),
+      );
+    });
+
+    test("should throw and log error when Firestore fails", async () => {
+      const testError = new Error("Firestore read failed");
+      (mockDoc.get as jest.MockedFunction<any>).mockRejectedValue(testError);
+
+      await expect(ensureUserDocumentComplete(testUserId)).rejects.toThrow("Firestore read failed");
+      expect(mockLogger.error).toHaveBeenCalledWith(
+        `Error ensuring user document completeness for ${testUserId}:`,
+        testError,
+      );
+    });
+  });
+
+  describe("appendUnlockedAchievements", () => {
+    const testUserId = "user-achievements-1";
+
+    test("should do nothing when newEntries is empty", async () => {
+      await appendUnlockedAchievements(testUserId, []);
+
+      expect(mockDoc.get).not.toHaveBeenCalled();
+      expect(mockDoc.update).not.toHaveBeenCalled();
+    });
+
+    test("should do nothing and warn when user document does not exist", async () => {
+      (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue({ exists: false });
+
+      await appendUnlockedAchievements(testUserId, [
+        { achievementId: "first_win", unlockedAt: 1000 },
+      ]);
+
+      expect(mockLogger.warn).toHaveBeenCalledWith(
+        `Cannot append achievements: user ${testUserId} not found`,
+      );
+      expect(mockDoc.update).not.toHaveBeenCalled();
+    });
+
+    test("should append new achievements when user exists and has no existing unlocks", async () => {
+      const userData = { unlockedAchievements: [] };
+      (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue({
+        exists: true,
+        data: () => userData,
+      });
+      (mockDoc.update as jest.MockedFunction<any>).mockResolvedValue(undefined);
+
+      const newEntries = [
+        { achievementId: "first_win", unlockedAt: 1000 },
+        { achievementId: "wins_5", unlockedAt: 1001 },
+      ];
+
+      await appendUnlockedAchievements(testUserId, newEntries);
+
+      expect(mockDoc.update).toHaveBeenCalledTimes(1);
+      expect(mockDoc.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          unlockedAchievements: expect.anything(),
+        }),
+      );
+      expect(mockLogger.info).toHaveBeenCalledWith(
+        `Appended 2 achievements for user ${testUserId}`,
+      );
+    });
+
+    test("should not duplicate already unlocked achievement ids", async () => {
+      const userData = {
+        unlockedAchievements: [{ achievementId: "first_win", unlockedAt: 999 }],
+      };
+      (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue({
+        exists: true,
+        data: () => userData,
+      });
+      (mockDoc.update as jest.MockedFunction<any>).mockResolvedValue(undefined);
+
+      await appendUnlockedAchievements(testUserId, [
+        { achievementId: "first_win", unlockedAt: 1000 },
+      ]);
+
+      expect(mockDoc.update).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("getDailyRiddle", () => {
+    const testRiddleId = "daily123";
+
+    test("should return undefined when data is null", async () => {
+      const mockRiddleDoc = {
+        exists: true,
+        data: () => null,
+      };
+      (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockRiddleDoc);
+
+      const result = await getDailyRiddle(testRiddleId);
+
+      expect(result).toBeUndefined();
+      expect(mockLogger.info).toHaveBeenCalledWith(
+        `Daily riddle data is null for ID ${testRiddleId}`,
+      );
+    });
+
+    test("should return riddle data when daily riddle exists", async () => {
+      const dailyRiddleData = {
+        riddleId: testRiddleId,
+        text: "A daily challenge",
+        answer: "ANSWER",
+        dailyIndex: 1,
+      };
+
+      const mockRiddleDoc = {
+        exists: true,
+        data: () => dailyRiddleData,
+      };
+      (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockRiddleDoc);
+
+      const result = await getDailyRiddle(testRiddleId);
+
+      expect(mockFirestore.collection).toHaveBeenCalledWith("dailyRiddles");
+      expect(result).toEqual(dailyRiddleData);
+    });
+  });
+
+  describe("getTutorialRiddle", () => {
+    const testRiddleId = "tutorial123";
+
+    test("should return undefined when data is null", async () => {
+      const mockRiddleDoc = {
+        exists: true,
+        data: () => null,
+      };
+      (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockRiddleDoc);
+
+      const result = await getTutorialRiddle(testRiddleId);
+
+      expect(result).toBeUndefined();
+      expect(mockLogger.info).toHaveBeenCalledWith(
+        `Tutorial riddle data is null for ID ${testRiddleId}`,
+      );
+    });
+
+    test("should return riddle data when tutorial riddle exists", async () => {
+      const tutorialRiddleData = {
+        riddleId: testRiddleId,
+        text: "A tutorial riddle",
+        answer: "LEARN",
+        tutorialIndex: 0,
+      };
+
+      const mockRiddleDoc = {
+        exists: true,
+        data: () => tutorialRiddleData,
+      };
+      (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockRiddleDoc);
+
+      const result = await getTutorialRiddle(testRiddleId);
+
+      expect(mockFirestore.collection).toHaveBeenCalledWith("tutorialRiddles");
+      expect(result).toEqual(tutorialRiddleData);
+    });
+  });
+
+  describe("getRiddle - cross-collection search", () => {
+    const testRiddleId = "search123";
+
+    test("should return classic riddle when found in classic collection", async () => {
+      const classicRiddleData = {
+        riddleId: testRiddleId,
+        text: "Classic riddle",
+        answer: "CLASSIC",
+        classicIndex: 0,
+      };
+
+      const mockRiddleDoc = {
+        exists: true,
+        data: () => classicRiddleData,
+      };
+      (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockRiddleDoc);
+
+      const result = await getRiddle(testRiddleId);
+
+      expect(result).toEqual(classicRiddleData);
+    });
+
+    test("should return daily riddle when not found in classic but found in daily", async () => {
+      const dailyRiddleData = {
+        riddleId: testRiddleId,
+        text: "Daily riddle",
+        answer: "DAILY",
+        dailyIndex: 1,
+      };
+
+      let callCount = 0;
+      (mockDoc.get as jest.MockedFunction<any>).mockImplementation(() => {
+        callCount++;
+        if (callCount === 1) {
+          return Promise.resolve({exists: false});
+        }
+        return Promise.resolve({exists: true, data: () => dailyRiddleData});
+      });
+
+      const result = await getRiddle(testRiddleId);
+
+      expect(result).toEqual(dailyRiddleData);
+    });
+
+    test("should return tutorial riddle when not found in classic or daily", async () => {
+      const tutorialRiddleData = {
+        riddleId: testRiddleId,
+        text: "Tutorial riddle",
+        answer: "TUTOR",
+        tutorialIndex: 0,
+      };
+
+      let callCount = 0;
+      (mockDoc.get as jest.MockedFunction<any>).mockImplementation(() => {
+        callCount++;
+        if (callCount <= 2) {
+          return Promise.resolve({exists: false});
+        }
+        return Promise.resolve({exists: true, data: () => tutorialRiddleData});
+      });
+
+      const result = await getRiddle(testRiddleId);
+
+      expect(result).toEqual(tutorialRiddleData);
+    });
+
+    test("should return undefined when riddle not found in any collection", async () => {
+      (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue({exists: false});
+
+      const result = await getRiddle(testRiddleId);
+
+      expect(result).toBeUndefined();
+      expect(mockLogger.info).toHaveBeenCalledWith(
+        `Riddle document not found for ID ${testRiddleId} in any collection`,
+      );
+    });
+  });
+
+  describe("getRiddleByGameMode", () => {
+    const testRiddleId = "mode123";
+
+    test("should fetch from classic collection for 'classic' game mode", async () => {
+      const classicRiddleData = {
+        riddleId: testRiddleId,
+        text: "Classic riddle",
+        answer: "WORD",
+        classicIndex: 5,
+      };
+
+      const mockRiddleDoc = {
+        exists: true,
+        data: () => classicRiddleData,
+      };
+      (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockRiddleDoc);
+
+      const result = await getRiddleByGameMode(testRiddleId, "classic");
+
+      expect(mockFirestore.collection).toHaveBeenCalledWith("riddles");
+      expect(result).toEqual(classicRiddleData);
+    });
+
+    test("should fetch from daily collection for 'challenge' game mode", async () => {
+      const dailyRiddleData = {
+        riddleId: testRiddleId,
+        text: "Daily riddle",
+        answer: "DAILY",
+        dailyIndex: 2,
+      };
+
+      const mockRiddleDoc = {
+        exists: true,
+        data: () => dailyRiddleData,
+      };
+      (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockRiddleDoc);
+
+      const result = await getRiddleByGameMode(testRiddleId, "challenge");
+
+      expect(mockFirestore.collection).toHaveBeenCalledWith("dailyRiddles");
+      expect(result).toEqual(dailyRiddleData);
+    });
+
+    test("should fetch from tutorial collection for 'tutorial' game mode", async () => {
+      const tutorialRiddleData = {
+        riddleId: testRiddleId,
+        text: "Tutorial riddle",
+        answer: "LEARN",
+        tutorialIndex: 1,
+      };
+
+      const mockRiddleDoc = {
+        exists: true,
+        data: () => tutorialRiddleData,
+      };
+      (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockRiddleDoc);
+
+      const result = await getRiddleByGameMode(testRiddleId, "tutorial");
+
+      expect(mockFirestore.collection).toHaveBeenCalledWith("tutorialRiddles");
+      expect(result).toEqual(tutorialRiddleData);
+    });
+
+    test("should return undefined and warn for unknown game mode", async () => {
+      const result = await getRiddleByGameMode(testRiddleId, "unknown" as any);
+
+      expect(result).toBeUndefined();
+      expect(mockLogger.warn).toHaveBeenCalledWith("Unknown game mode: unknown");
     });
   });
 });

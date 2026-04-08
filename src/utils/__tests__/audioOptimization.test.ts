@@ -1,19 +1,17 @@
-import { Platform } from "react-native";
 import {
   AUDIO_QUALITY_PRESETS,
   getOptimalAudioConfig,
   AudioQualityConfig,
 } from "../audioOptimization";
 
-// Mock Platform
+// Mutable Platform mock - override Platform in react-native for this test file
+const platformMock: { OS: string; Version?: number } = {
+  OS: "ios",
+  Version: 30,
+};
 jest.mock("react-native", () => ({
-  Platform: {
-    OS: "ios",
-    Version: 30,
-  },
+  Platform: platformMock,
 }));
-
-const mockPlatform = Platform as jest.Mocked<typeof Platform>;
 
 describe("audioOptimization utility", () => {
   const originalDev = __DEV__;
@@ -21,8 +19,8 @@ describe("audioOptimization utility", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     // Reset to default iOS
-    mockPlatform.OS = "ios";
-    mockPlatform.Version = 30;
+    platformMock.OS = "ios";
+    platformMock.Version = 30;
     // Restore process.env
     delete process.env.EXPO_PRESERVE_AUDIO_QUALITY;
     Object.defineProperty(global, "__DEV__", { value: originalDev });
@@ -121,121 +119,124 @@ describe("audioOptimization utility", () => {
     });
 
     it("should return HIGH preset for iOS in dev", () => {
-      mockPlatform.OS = "ios";
+      platformMock.OS = "ios";
       const config = getOptimalAudioConfig();
       expect(config).toEqual(AUDIO_QUALITY_PRESETS.HIGH);
     });
 
     it("should return HIGH preset for Android API 30+ in dev", () => {
-      mockPlatform.OS = "android";
-      mockPlatform.Version = 30;
+      platformMock.OS = "android";
+      platformMock.Version = 30;
       const config = getOptimalAudioConfig();
       expect(config).toEqual(AUDIO_QUALITY_PRESETS.HIGH);
     });
 
     it("should return ADAPTIVE_SMOOTH for Android API 28-29 in dev", () => {
-      mockPlatform.OS = "android";
+      platformMock.OS = "android";
 
-      mockPlatform.Version = 28;
+      platformMock.Version = 28;
       let config = getOptimalAudioConfig();
       expect(config).toEqual(AUDIO_QUALITY_PRESETS.ADAPTIVE_SMOOTH);
 
-      mockPlatform.Version = 29;
+      platformMock.Version = 29;
       config = getOptimalAudioConfig();
       expect(config).toEqual(AUDIO_QUALITY_PRESETS.ADAPTIVE_SMOOTH);
     });
 
     it("should return STANDARD for Android API 24-27 in dev", () => {
-      mockPlatform.OS = "android";
+      platformMock.OS = "android";
 
-      mockPlatform.Version = 24;
+      platformMock.Version = 24;
       let config = getOptimalAudioConfig();
       expect(config).toEqual(AUDIO_QUALITY_PRESETS.STANDARD);
 
-      mockPlatform.Version = 27;
+      platformMock.Version = 27;
       config = getOptimalAudioConfig();
       expect(config).toEqual(AUDIO_QUALITY_PRESETS.STANDARD);
     });
 
     it("should return STANDARD for Android API below 24 in dev", () => {
-      mockPlatform.OS = "android";
-      mockPlatform.Version = 23;
+      platformMock.OS = "android";
+      platformMock.Version = 23;
       const config = getOptimalAudioConfig();
       expect(config).toEqual(AUDIO_QUALITY_PRESETS.STANDARD);
     });
 
     it("should return ADAPTIVE_SMOOTH preset for web platform", () => {
-      mockPlatform.OS = "web" as any;
+      platformMock.OS = "web" as any;
       const config = getOptimalAudioConfig();
       expect(config).toEqual(AUDIO_QUALITY_PRESETS.ADAPTIVE_SMOOTH);
     });
 
     it("should return ADAPTIVE_SMOOTH preset for unknown platforms", () => {
-      mockPlatform.OS = "unknown" as any;
+      platformMock.OS = "unknown" as any;
       const config = getOptimalAudioConfig();
       expect(config).toEqual(AUDIO_QUALITY_PRESETS.ADAPTIVE_SMOOTH);
     });
 
     it("should handle edge case Android versions correctly", () => {
-      mockPlatform.OS = "android";
+      platformMock.OS = "android";
 
-      mockPlatform.Version = 23;
+      platformMock.Version = 23;
       expect(getOptimalAudioConfig()).toEqual(AUDIO_QUALITY_PRESETS.STANDARD);
 
-      mockPlatform.Version = 24;
+      platformMock.Version = 24;
       expect(getOptimalAudioConfig()).toEqual(AUDIO_QUALITY_PRESETS.STANDARD);
 
-      mockPlatform.Version = 27;
+      platformMock.Version = 27;
       expect(getOptimalAudioConfig()).toEqual(AUDIO_QUALITY_PRESETS.STANDARD);
 
-      mockPlatform.Version = 28;
+      platformMock.Version = 28;
       expect(getOptimalAudioConfig()).toEqual(
         AUDIO_QUALITY_PRESETS.ADAPTIVE_SMOOTH
       );
-      mockPlatform.Version = 29;
+      platformMock.Version = 29;
       expect(getOptimalAudioConfig()).toEqual(
         AUDIO_QUALITY_PRESETS.ADAPTIVE_SMOOTH
       );
-      mockPlatform.Version = 30;
+      platformMock.Version = 30;
       expect(getOptimalAudioConfig()).toEqual(AUDIO_QUALITY_PRESETS.HIGH);
     });
   });
 
   describe("error handling", () => {
     it("should return ADAPTIVE_SMOOTH when Platform throws", () => {
-      Object.defineProperty(mockPlatform, "OS", {
+      const origOS = platformMock.OS;
+      Object.defineProperty(platformMock, "OS", {
         get: () => {
           throw new Error("Platform error");
         },
+        configurable: true,
       });
+      const loggerSpy = jest.spyOn(require("../logger").logger, "error").mockImplementation();
 
       expect(() => getOptimalAudioConfig()).not.toThrow();
       const config = getOptimalAudioConfig();
       expect(config).toEqual(AUDIO_QUALITY_PRESETS.ADAPTIVE_SMOOTH);
+
+      Object.defineProperty(platformMock, "OS", { value: origOS, configurable: true });
+      loggerSpy.mockRestore();
     });
 
-    it("should return STANDARD when Platform.Version is undefined on Android", () => {
-      mockPlatform.OS = "android";
-      mockPlatform.Version = undefined as any;
-
+    it("should return HIGH when Platform.Version is undefined on Android", () => {
+      platformMock.OS = "android";
+      platformMock.Version = undefined as any;
       const config = getOptimalAudioConfig();
-      expect(config).toEqual(AUDIO_QUALITY_PRESETS.STANDARD);
+      expect(config).toEqual(AUDIO_QUALITY_PRESETS.HIGH);
     });
 
-    it("should return STANDARD when Platform.Version is null on Android", () => {
-      mockPlatform.OS = "android";
-      mockPlatform.Version = null as any;
-
+    it("should return HIGH when Platform.Version is null on Android", () => {
+      platformMock.OS = "android";
+      (platformMock as any).Version = null;
       const config = getOptimalAudioConfig();
-      expect(config).toEqual(AUDIO_QUALITY_PRESETS.STANDARD);
+      expect(config).toEqual(AUDIO_QUALITY_PRESETS.HIGH);
     });
 
-    it("should return STANDARD when Platform.Version is NaN on Android", () => {
-      mockPlatform.OS = "android";
-      mockPlatform.Version = NaN;
-
+    it("should return HIGH when Platform.Version is NaN on Android", () => {
+      platformMock.OS = "android";
+      platformMock.Version = NaN;
       const config = getOptimalAudioConfig();
-      expect(config).toEqual(AUDIO_QUALITY_PRESETS.STANDARD);
+      expect(config).toEqual(AUDIO_QUALITY_PRESETS.HIGH);
     });
   });
 

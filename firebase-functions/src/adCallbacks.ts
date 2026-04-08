@@ -4,6 +4,7 @@ import * as admin from "firebase-admin";
 import {Request, Response} from "express";
 import * as crypto from "crypto";
 import {updateUserCoins} from "./firestoreService";
+import {captureException} from "./sentry";
 
 /**
  * Function to verify ad network signature (AppLovin MAX Postback Validation)
@@ -81,6 +82,7 @@ async function isAdTransactionAlreadyProcessed(userId: string, token: string): P
     return transactionDoc.exists;
   } catch (error) {
     functions.logger.error("Error checking if ad transaction was processed:", error);
+    captureException(error, {userId, token, fn: "isAdTransactionAlreadyProcessed"});
     return true;
   }
 }
@@ -105,6 +107,7 @@ async function markAdTransactionAsProcessed(userId: string, token: string): Prom
       .set({processedAt: admin.firestore.FieldValue.serverTimestamp()});
   } catch (error) {
     functions.logger.error("Error marking ad transaction as processed:", error);
+    captureException(error, {userId, token, fn: "markAdTransactionAsProcessed"});
     throw error;
   }
 }

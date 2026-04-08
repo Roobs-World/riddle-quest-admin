@@ -84,7 +84,7 @@ describe("InstructionsModal", () => {
       const modal = UNSAFE_getByType(Modal);
 
       expect(modal.props.transparent).toBe(true);
-      expect(modal.props.animationType).toBe("slide");
+      expect(modal.props.animationType).toBe("fade");
       expect(modal.props.onRequestClose).toBe(mockOnClose);
     });
   });

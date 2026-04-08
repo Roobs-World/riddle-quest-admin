@@ -2,18 +2,34 @@ import React from "react";
 import { render } from "@testing-library/react-native";
 import RiddleText from "../RiddleText";
 
-// Mock moderateScale from responsive utils
+// Mock responsive utils
 jest.mock("../../../utils/responsive", () => ({
+  scale: (value: number) => value,
   moderateScale: (value: number) => value,
+  verticalScale: (value: number) => value,
+  dimensions: { screenWidth: 390, screenHeight: 844, isLargeTablet: false },
+  responsiveSizes: {
+    textXs: 12, textSm: 14, textBase: 16, textLg: 18, textXl: 20,
+    text2xl: 24, text3xl: 30, text4xl: 36, textTitle: 28, textDisplay: 32, textTile: 28,
+    spacingXs: 4, spacingSm: 8, spacingMd: 16, spacingLg: 24, spacingXl: 32, spacing2xl: 48,
+    buttonHeight: 48, inputHeight: 48, headerHeight: 60, tabBarHeight: 60,
+    radiusSm: 4, radiusMd: 8, radiusLg: 12, radiusXl: 16, radiusXxl: 20, radiusFull: 9999,
+  },
 }));
 
-// Mock COLORS from styles
+// Mock styles (RiddleText uses TYPOGRAPHY.fontPrimary)
 jest.mock("../../../styles", () => ({
   COLORS: {
     textShadowDark: "rgba(0, 0, 0, 0.75)",
     primary: "#000000",
     secondary: "#ffffff",
   },
+  TYPOGRAPHY: {
+    fontPrimary: "System",
+    fontSize: { xs: 12, sm: 14, base: 16, lg: 18, xl: 20, "2xl": 24, "3xl": 30, "4xl": 36, title: 28, display: 32 },
+    lineHeight: { tight: 1.25, snug: 1.375, normal: 1.5, relaxed: 1.625, loose: 2 },
+  },
+  SPACING: { xs: 4, sm: 8, md: 16, lg: 24, xl: 32, "2xl": 48 },
 }));
 
 describe("RiddleText", () => {
@@ -145,8 +161,11 @@ describe("RiddleText", () => {
       const Text = require("react-native").Text;
       const textElement = UNSAFE_getAllByType(Text)[0];
       expect(textElement.props.className).toContain("text-center");
-      expect(textElement.props.className).toContain("text-white");
-      expect(textElement.props.className).toContain("font-bold");
+      expect(textElement.props.className).toContain("text-black");
+      const style = Array.isArray(textElement.props.style)
+        ? Object.assign({}, ...textElement.props.style)
+        : (textElement.props.style ?? {});
+      expect(style.fontSize).toBeDefined();
     });
 
     it("uses correct number of lines", () => {
@@ -170,7 +189,7 @@ describe("RiddleText", () => {
       expect(textElement.props.minimumFontScale).toBe(0.8);
     });
 
-    it("applies text shadow styles", () => {
+    it("applies font and layout styles from StyleSheet", () => {
       const { UNSAFE_getAllByType } = render(
         <RiddleText riddleText="Test riddle" />
       );
@@ -179,11 +198,8 @@ describe("RiddleText", () => {
       const textElement = UNSAFE_getAllByType(Text)[0];
       expect(textElement.props.style).toMatchObject({
         fontSize: 24,
-        lineHeight: 32,
-        textShadowColor: "rgba(0, 0, 0, 0.75)",
-        textShadowOffset: { width: 1, height: 1 },
-        textShadowRadius: 2,
-        maxWidth: 300,
+        lineHeight: 36,
+        maxWidth: 312,
       });
     });
 
@@ -194,11 +210,10 @@ describe("RiddleText", () => {
 
       const View = require("react-native").View;
       const viewElement = UNSAFE_getAllByType(View)[0];
-      expect(viewElement.props.className).toContain("px-6");
-      expect(viewElement.props.className).toContain("py-4");
-      expect(viewElement.props.className).toContain("mb-2");
       expect(viewElement.props.className).toContain("items-center");
       expect(viewElement.props.className).toContain("z-10");
+      const style = viewElement.props.style ?? {};
+      expect(style.paddingHorizontal).toBeDefined();
     });
   });
 
@@ -265,8 +280,8 @@ describe("RiddleText", () => {
       // Since we mocked moderateScale to return the same value,
       // we verify the values match what was passed to moderateScale
       expect(textElement.props.style.fontSize).toBe(24);
-      expect(textElement.props.style.lineHeight).toBe(32);
-      expect(textElement.props.style.maxWidth).toBe(300);
+      expect(textElement.props.style.lineHeight).toBe(36);
+      expect(textElement.props.style.maxWidth).toBe(312);
     });
   });
 });

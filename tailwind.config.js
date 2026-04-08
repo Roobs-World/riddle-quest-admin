@@ -14,6 +14,15 @@ module.exports = {
         "input-background": "#F8F5EE",
         "key-bg": "#FCF1D3",
         "key-border": "#401F40",
+        // Figma brand colors
+        "figma-purple": "#401F40",
+        "figma-gold": "#FEC880",
+        "figma-crimson": "#F54160",
+        "figma-cream": "#FCFAF4",
+        // Tile states
+        "tile-correct": "#401F40",
+        "tile-partial": "#FEC880",
+        "tile-incorrect": "#F54160",
       },
       screens: {
         // Custom breakpoints for mobile-first responsive design

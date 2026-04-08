@@ -91,6 +91,7 @@ export const AppStrings = {
     TITLE: "Settings",
     SOUND_TOGGLE: "Sound",
     HAPTICS_TOGGLE: "Haptics",
+    HARD_MODE_TOGGLE: "Hard Mode",
     HELP_BUTTON: "Help",
     LOGOUT_BUTTON: "Logout",
     CREDITS_BUTTON: "Credits",
@@ -183,5 +184,10 @@ export const AppStrings = {
     NOT_ENOUGH_COINS_TITLE: "Not enough coins",
     NOT_ENOUGH_COINS_MESSAGE: "You need more coins to use a hint.",
     HINT_ERROR_TITLE: "Error",
+  },
+  Achievements: {
+    UNLOCKED_ALERT_TITLE: "Achievement(s) Unlocked!",
+    UNLOCKED_ALERT_MESSAGE: "Check your profile to see your new achievements.",
+    UNLOCKED_ALERT_OK: "OK",
   },
 } as const;

@@ -35,18 +35,24 @@ import {
   TextureLoader,
   SphereGeometry,
   MeshPhongMaterial,
-  AdditiveBlending,
+  ColorManagement,
 } from "three";
-import { Dimensions, View, StyleSheet } from "react-native";
+
+// Expo's EXGL doesn't support UNPACK_COLORSPACE_CONVERSION_WEBGL which Three.js
+// r152+ tries to set when color management is enabled.
+ColorManagement.enabled = false;
+import { View, StyleSheet } from "react-native";
+import { Asset } from "expo-asset";
 import { SOLAR_SYSTEM_CONFIG } from "./SolarSystemConfig";
+import { dimensions } from "../../utils/responsive";
 // Import texture assets
-import sunTexturePath from "../../../assets/3d/tex_sun_spots_02.png";
+import sunTextureModule from "../../../assets/3d/tex_sun_spots_02.png";
+const sunTexturePath = Asset.fromModule(sunTextureModule).uri;
 
-// Get screen dimensions
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
+const { screenWidth: SCREEN_WIDTH, screenHeight: SCREEN_HEIGHT } = dimensions;
 
-// Pre-defined geometries and materials for performance
-const sunGeometry = new SphereGeometry(12.0, 16, 16);
+// Pre-defined shared geometries — lower segment counts are fine for a background
+const sunGeometry = new SphereGeometry(12.0, 48, 48);
 
 /**
  * Sun component with enhanced size and brightness for dramatic effect.
@@ -61,12 +67,10 @@ const Sun: React.FC = React.memo(() => {
   const sunMaterial = useMemo(
     () =>
       new MeshPhongMaterial({
-        map: sunTexture,
+        map: Array.isArray(sunTexture) ? sunTexture[0] : sunTexture,
         emissive: 0xffa500,
         emissiveIntensity: 1.5,
-        emissiveMap: sunTexture,
-        transparent: true,
-        blending: AdditiveBlending,
+        // emissiveMap intentionally omitted — same texture as map would sample it twice per fragment
       }),
     [sunTexture]
   );
@@ -79,12 +83,9 @@ const Sun: React.FC = React.memo(() => {
   });
 
   return (
-    <mesh
-      ref={sunRef}
-      position={[0, 30, 0]}
-      geometry={sunGeometry}
-      material={sunMaterial}
-    />
+    <group position={[0, 30, 0]}>
+      <mesh ref={sunRef} geometry={sunGeometry} material={sunMaterial} />
+    </group>
   );
 });
 Sun.displayName = "Sun";
@@ -123,7 +124,7 @@ const Moon: React.FC<MoonProps> = React.memo(({ moonConfig }) => {
   const texture = useLoader(TextureLoader, moonConfig.texture);
 
   const moonGeometry = useMemo(
-    () => new SphereGeometry(moonConfig.size * 1.4, 8, 8),
+    () => new SphereGeometry(moonConfig.size * 1.4, 16, 16),
     [moonConfig.size]
   );
   const moonMaterial = useMemo(
@@ -137,9 +138,8 @@ const Moon: React.FC<MoonProps> = React.memo(({ moonConfig }) => {
     if (moonRef.current) {
       const x = Math.cos(orbitTime.current) * moonConfig.distance;
       const z = Math.sin(orbitTime.current) * moonConfig.distance;
-      const y = 0;
 
-      moonRef.current.position.set(x, y, z);
+      moonRef.current.position.set(x, 0, z);
       moonRef.current.rotation.y += 0.02;
     }
   });
@@ -171,11 +171,14 @@ const Planet: React.FC<PlanetProps> = React.memo(({ config }) => {
   const planetTexture = useLoader(TextureLoader, config.texture);
 
   const planetGeometry = useMemo(
-    () => new SphereGeometry(config.size, 16, 16),
+    () => new SphereGeometry(config.size, 32, 32),
     [config.size]
   );
   const planetMaterial = useMemo(
-    () => new MeshPhongMaterial({ map: planetTexture }),
+    () =>
+      new MeshPhongMaterial({
+        map: Array.isArray(planetTexture) ? planetTexture[0] : planetTexture,
+      }),
     [planetTexture]
   );
 
@@ -185,9 +188,7 @@ const Planet: React.FC<PlanetProps> = React.memo(({ config }) => {
     if (groupRef.current) {
       const x = Math.cos(orbitTime.current) * config.distance;
       const z = Math.sin(orbitTime.current) * config.distance;
-      const y = config.yPosition;
-
-      groupRef.current.position.set(x, y, z);
+      groupRef.current.position.set(x, config.yPosition, z);
     }
 
     if (meshRef.current) {
@@ -198,7 +199,6 @@ const Planet: React.FC<PlanetProps> = React.memo(({ config }) => {
   return (
     <group ref={groupRef}>
       <mesh ref={meshRef} geometry={planetGeometry} material={planetMaterial} />
-
       {config.moons.map((moonConfig, index) => (
         <Moon key={`${config.name}-moon-${index}`} moonConfig={moonConfig} />
       ))}
@@ -216,17 +216,12 @@ Planet.displayName = "Planet";
 const SolarSystemScene: React.FC = () => {
   return (
     <>
-      <ambientLight intensity={0.3} />
-      <directionalLight
-        position={[0, 50, 0]}
-        intensity={2.5}
-        color={0xffffff}
-      />
+      <ambientLight intensity={0.35} />
       <pointLight
-        position={[0, 0, 0]}
+        position={[0, 30, 0]}
         intensity={3.0}
         color={0xffa500}
-        distance={300}
+        distance={250}
       />
 
       <Sun />
@@ -272,6 +267,8 @@ const SolarSystem3D: React.FC = () => {
       <Canvas
         style={canvasStyle}
         camera={cameraConfig}
+        dpr={[1, 1.5]}
+        gl={{ alpha: true }}
         onCreated={({ gl, camera }) => {
           gl.setClearColor(0x000000, 0);
           camera.lookAt(0, 0, 0);

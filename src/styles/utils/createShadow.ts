@@ -4,11 +4,12 @@
  */
 
 import { COLORS } from "../tokens/colors";
+import { moderateScale } from "../../utils/responsive";
 
 export const createShadow = (
   elevation: number = 5,
   shadowOpacity: number = 0.25,
-  shadowRadius: number = 4,
+  shadowRadius: number = moderateScale(4),
   shadowColor: string = COLORS.shadowColor
 ) => ({
   shadowColor,

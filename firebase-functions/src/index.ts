@@ -1,28 +1,22 @@
+/**
+ * @fileoverview
+ * Firebase Functions entrypoint for Qwordly.
+ *
+ * This module initializes the Firebase Admin SDK once and re-exports all
+ * callable and scheduled Cloud Functions from their feature-specific
+ * submodules. Each submodule owns its own request/response validation and
+ * environment variable access; this file is intentionally kept small and
+ * declarative.
+ */
 import * as admin from "firebase-admin";
-// Removed onCall and CallableContext imports as they are now in sub-modules
-// Removed Request and Response imports as they are now in adCallbacks.ts
-// Removed getRiddleDataFromSheet as it's used only in gameLogic.ts now
-// Removed firestoreService imports that are now in sub-modules
 
-// Removed unused imports and types
-// import type { FirestoreRiddle } from "../../src/validation/firestoreSchemas";
-
-// Environment variables are now accessed within the modules that need them
-
+// Initialize the Firebase Admin SDK once for all functions in this project.
 admin.initializeApp();
-
-// game logic
-// export * from "./adCallbacks.js";
-// export * from "./iapValidation.js";
-// export * from "./gameLogic.js";
-// export * from "./dailyChallenge.js";
-// export * from "./riddleGeneration.js";
-// export * from "./profile.js";
 
 // Explicitly import and export functions from sub-modules
 import {awardedAdCallback} from "./adCallbacks";
 import {validatePurchase} from "./iapValidation";
-import {getHint, spendCoins, skipRiddle} from "./gameLogic";
+import {spendCoins, skipRiddle} from "./gameLogic";
 import {
   setCompletedDailyChallenge,
   hasCompletedDailyChallenge,
@@ -38,16 +32,17 @@ import {
   generateTutorialRiddles,
 } from "./riddleGeneration";
 import {getCurrentTutorialRiddle, advanceTutorialProgress, initializeTutorialRiddlesFunction} from "./tutorialRiddles";
-import {updateAvatar} from "./profile";
-import {submitGuess} from "./submitGuessLogic";
+import {updateAvatar, updateUsername} from "./profile";
+import {submitGuess, completeGame} from "./submitGuessLogic";
 import {dailyChallengeScheduler} from "./dailyScheduler";
 import {initializeUser, ensureUserComplete, updateUserStats} from "./userManagement";
-import {migrateRiddleCollections, cleanupOriginalRiddles} from "./migrationScript";
-
+import {sendNotificationCampaign, registerFcmToken} from "./notificationCampaigns";
+import {notifyRewardedAdCompleted} from "./adClientCallbacks";
+import {getLeaderboard} from "./leaderboard";
+import {dailyStreakReminder} from "./streakNotifications";
 export {
   awardedAdCallback,
   validatePurchase,
-  getHint,
   spendCoins,
   skipRiddle,
   setCompletedDailyChallenge,
@@ -64,13 +59,18 @@ export {
   advanceTutorialProgress,
   initializeTutorialRiddlesFunction,
   updateAvatar,
+  updateUsername,
   submitGuess,
+  completeGame,
   dailyChallengeScheduler,
   initializeUser,
   ensureUserComplete,
   updateUserStats,
-  migrateRiddleCollections,
-  cleanupOriginalRiddles,
+  sendNotificationCampaign,
+  registerFcmToken,
+  notifyRewardedAdCompleted,
+  getLeaderboard,
+  dailyStreakReminder,
 };
 
 // Removed all individual function definitions and exports from here

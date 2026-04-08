@@ -33,11 +33,13 @@ const mockSetState = jest.fn();
 const mockUseState = jest.fn((initial) => [initial, mockSetState]);
 const mockUseCallback = jest.fn((fn) => fn);
 const mockUseEffect = jest.fn();
+const mockUseRef = jest.fn((initial) => ({ current: initial }));
 
 jest.mock("react", () => ({
   useState: mockUseState,
   useCallback: mockUseCallback,
   useEffect: mockUseEffect,
+  useRef: mockUseRef,
 }));
 
 // Mock console methods
@@ -51,6 +53,7 @@ describe("useInterstitialAds", () => {
     mockUseState.mockImplementation((initial) => [initial, mockSetState]);
     mockUseCallback.mockImplementation((fn) => fn);
     mockUseEffect.mockImplementation(() => {});
+    mockUseRef.mockImplementation((initial) => ({ current: initial }));
     // mockSetState is also cleared by clearAllMocks, which is fine for a simple jest.fn()
   });
 
@@ -99,7 +102,7 @@ describe("useInterstitialAds", () => {
       const hookPath = path.join(__dirname, "../useInterstitialAds.ts");
       const hookContent = fs.readFileSync(hookPath, "utf8");
 
-      expect(hookContent).toContain("console.error");
+      expect(hookContent).toContain("logger.error");
       expect(hookContent).toContain("not configured");
     });
   });
@@ -230,7 +233,7 @@ describe("useInterstitialAds", () => {
       const hookPath = path.join(__dirname, "../useInterstitialAds.ts");
       const hookContent = fs.readFileSync(hookPath, "utf8");
 
-      expect(hookContent).toContain("console.error");
+      expect(hookContent).toContain("logger.error");
       expect(hookContent).toContain("not configured");
       expect(hookContent).toContain("Cannot load ad");
       expect(hookContent).toContain("Cannot show ad");

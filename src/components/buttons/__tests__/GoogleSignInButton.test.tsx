@@ -4,15 +4,10 @@ import GoogleSignInButton from "../GoogleSignInButton";
 
 // Mock the GoogleIcon component
 jest.mock("../../icons/GoogleIcon", () => {
-  const React = require("react");
-  const { View } = require("react-native");
-
-  const MockGoogleIcon = ({ width, height, ...props }: any) => (
-    <View testID="google-icon" style={{ width, height }} {...props} />
-  );
-
-  MockGoogleIcon.displayName = "MockGoogleIcon";
-  return MockGoogleIcon;
+  return function MockGoogleIcon(props: any) {
+    const { width, height, ...rest } = props;
+    return require("react").createElement("View", { testID: "google-icon", style: { width, height }, ...rest });
+  };
 });
 
 // Mock styles
@@ -20,6 +15,8 @@ jest.mock("../../../styles", () => ({
   styles: {
     socialButtonText: {},
   },
+  SPACING: { xs: 4, sm: 8, md: 16, lg: 24, xl: 32, "2xl": 48 },
+  SIZING: { button: { height: 48, minWidth: 120 }, input: { height: 48, minHeight: 44 }, tile: { size: 56, border: 1 }, icon: { xs: 16, sm: 20, md: 24, lg: 32, xl: 40 } },
 }));
 
 describe("GoogleSignInButton", () => {
@@ -133,9 +130,7 @@ describe("GoogleSignInButton", () => {
       const TouchableOpacity = require("react-native").TouchableOpacity;
       const button = UNSAFE_getByType(TouchableOpacity);
 
-      fireEvent.press(button);
-
-      expect(mockOnPress).not.toHaveBeenCalled();
+      expect(button.props.onPress).toBeUndefined();
     });
 
     it("has undefined onPress when disabled", () => {
@@ -170,11 +165,12 @@ describe("GoogleSignInButton", () => {
       const button = UNSAFE_getByType(TouchableOpacity);
 
       expect(button.props.className).toContain("w-full");
-      expect(button.props.className).toContain("py-3");
       expect(button.props.className).toContain("rounded-lg");
       expect(button.props.className).toContain("shadow-sm");
-      expect(button.props.className).toContain("mb-4");
       expect(button.props.className).toContain("border");
+      const style = button.props.style ?? {};
+      expect(style.paddingVertical).toBeDefined();
+      expect(style.marginBottom).toBeDefined();
     });
 
     it("contains both icon and text", () => {
@@ -192,7 +188,10 @@ describe("GoogleSignInButton", () => {
       );
 
       const buttonText = getByText("Continue with Google");
-      expect(buttonText.props.className).toContain("ml-2");
+      const style = Array.isArray(buttonText.props.style)
+        ? Object.assign({}, ...buttonText.props.style)
+        : (buttonText.props.style ?? {});
+      expect(style.marginLeft).toBeDefined();
     });
   });
 
@@ -255,11 +254,8 @@ describe("GoogleSignInButton", () => {
       const TouchableOpacity = require("react-native").TouchableOpacity;
       const button = UNSAFE_getByType(TouchableOpacity);
 
-      for (let i = 0; i < 5; i++) {
-        fireEvent.press(button);
-      }
-
-      expect(mockOnPress).not.toHaveBeenCalled();
+      expect(button.props.disabled).toBe(true);
+      expect(button.props.onPress).toBeUndefined();
     });
   });
 

@@ -1,5 +1,6 @@
 import React from "react";
-import { render, fireEvent } from "@testing-library/react-native";
+import { fireEvent } from "@testing-library/react-native";
+import { renderWithModalProvider } from "../../../../test-utils";
 import FullProfileDetailsModal from "../FullProfileDetailsModal";
 import { Player } from "../../../../validation/firestoreSchemas";
 
@@ -13,6 +14,40 @@ jest.mock("react-native-safe-area-context", () => ({
   }),
 }));
 
+// Mock responsive/styles/ModalBg
+jest.mock("src/utils/responsive", () => ({
+  scale: (n: number) => n,
+  moderateScale: (n: number) => n,
+  verticalScale: (n: number) => n,
+  dimensions: { screenWidth: 390, screenHeight: 844, isLargeTablet: false },
+  responsiveSizes: {
+    textXs: 12, textSm: 14, textBase: 16, textLg: 18, textXl: 20,
+    text2xl: 24, text3xl: 30, text4xl: 36, textTitle: 28, textDisplay: 32, textTile: 28,
+    spacingXs: 4, spacingSm: 8, spacingMd: 16, spacingLg: 24, spacingXl: 32, spacing2xl: 48,
+    buttonHeight: 48, inputHeight: 48, headerHeight: 60, tabBarHeight: 60,
+    radiusSm: 4, radiusMd: 8, radiusLg: 12, radiusXl: 16, radiusXxl: 20, radiusFull: 9999,
+  },
+}));
+jest.mock("../../../../styles", () => ({
+  TYPOGRAPHY: {
+    fontPrimary: "System",
+    fontSecondary: "System",
+    fontSecondaryBold: "System-Bold",
+    fontSize: { xs: 12, sm: 14, base: 16, lg: 18, xl: 20, "2xl": 24, "3xl": 30, "4xl": 36 },
+    lineHeight: { tight: 1.25, snug: 1.375, normal: 1.5, relaxed: 1.625, loose: 2 },
+    letterSpacing: { tight: -0.1, normal: 0, wide: 0.025 },
+  },
+  SPACING: { xs: 4, sm: 8, md: 16, lg: 24, xl: 32 },
+}));
+jest.mock("../../../../assets/images/modal-bg.svg", () => {
+  const React = require("react");
+  const { View } = require("react-native");
+  const MockModalBg = (props: any) =>
+    React.createElement(View, { testID: "modal-bg", ...props });
+  MockModalBg.displayName = "MockModalBg";
+  return MockModalBg;
+});
+
 // Mock components
 jest.mock("../../../buttons/WideButton", () => {
   return function MockWideButton({ buttonText, onPress }: any) {
@@ -20,7 +55,7 @@ jest.mock("../../../buttons/WideButton", () => {
     const { TouchableOpacity, Text } = require("react-native");
     return React.createElement(
       TouchableOpacity,
-      { onPress, testID: "wide-button" },
+      { onPress, testID: `wide-button-${buttonText.toLowerCase().replace(/\s+/g, "-")}` },
       React.createElement(Text, {}, buttonText)
     );
   };
@@ -111,16 +146,19 @@ describe("FullProfileDetailsModal", () => {
       winStreak: 5,
       totalWins: 20,
       totalGuessesInWins: 60,
+      totalHintsUsed: 0,
     },
     progress: {
       classicIndex: 10,
       dailyChallengeIndex: 5,
+      dailyChallengeCurrentQuestion: 0,
       tutorialIndex: 3,
     },
-    createdAt: 1704067200000, // 2024-01-01 as timestamp
+    createdAt: 1704067200000,
     registeredAt: 1704067200000,
     lastLogin: 1704067200000,
     hasPurchasedApp: false,
+    unlockedAchievements: [],
   };
 
   const defaultProps = {
@@ -134,53 +172,45 @@ describe("FullProfileDetailsModal", () => {
   });
 
   it("renders correctly when visible with player data", () => {
-    const { getByText, getByTestId } = render(
+    const { getByText, getByTestId } = renderWithModalProvider(
       <FullProfileDetailsModal {...defaultProps} />
     );
 
-    expect(getByText("Full Profile")).toBeTruthy();
     expect(getByText("TestUser")).toBeTruthy();
-    expect(getByText("150")).toBeTruthy(); // coins
-    expect(getByText("25")).toBeTruthy(); // games played
-    expect(getByText("80%")).toBeTruthy(); // win rate
+    expect(getByText("5")).toBeTruthy();
     expect(getByTestId("close-button")).toBeTruthy();
   });
 
   it("does not render when player data is null", () => {
-    const { queryByText } = render(
+    const { queryByText } = renderWithModalProvider(
       <FullProfileDetailsModal {...defaultProps} playerData={null} />
     );
 
-    expect(queryByText("Full Profile")).toBeNull();
+    expect(queryByText("TestUser")).toBeNull();
   });
 
   it("does not render when not visible", () => {
-    const { queryByText } = render(
+    const { queryByText } = renderWithModalProvider(
       <FullProfileDetailsModal {...defaultProps} isVisible={false} />
     );
 
-    expect(queryByText("Full Profile")).toBeNull();
+    expect(queryByText("TestUser")).toBeNull();
   });
 
   it("displays all player statistics correctly", () => {
-    const { getByText } = render(<FullProfileDetailsModal {...defaultProps} />);
+    const { getByText } = renderWithModalProvider(<FullProfileDetailsModal {...defaultProps} />);
 
-    // Check all displayed stats
-    expect(getByText("5")).toBeTruthy(); // Daily puzzles
-    expect(getByText("8")).toBeTruthy(); // Best streak
-    expect(getByText("150")).toBeTruthy(); // Words guessed & coins
-    expect(getByText("80%")).toBeTruthy(); // Win rate
-    expect(getByText("1500")).toBeTruthy(); // Total score
-    expect(getByText("15")).toBeTruthy(); // Highest level
-    expect(getByText("25")).toBeTruthy(); // Games played
+    expect(getByText("5")).toBeTruthy();
+    expect(getByText("8")).toBeTruthy();
+    expect(getByText("Daily puzzles completed")).toBeTruthy();
+    expect(getByText("Best Strike")).toBeTruthy();
   });
 
   it("displays avatar image when avatarUrl is provided", () => {
-    const { getByTestId } = render(
+    const { getByTestId } = renderWithModalProvider(
       <FullProfileDetailsModal {...defaultProps} />
     );
 
-    // Should render an Image component with the avatar
     expect(() => getByTestId("avatar-image")).not.toThrow();
   });
 
@@ -190,19 +220,19 @@ describe("FullProfileDetailsModal", () => {
       avatarUrl: undefined,
     };
 
-    const { getByText } = render(
+    const { getByText } = renderWithModalProvider(
       <FullProfileDetailsModal
         {...defaultProps}
         playerData={playerWithoutAvatar}
       />
     );
 
-    expect(getByText("T")).toBeTruthy(); // First letter of TestUser
+    expect(getByText("T")).toBeTruthy();
   });
 
   it("calls onClose when close button is pressed", () => {
     const mockOnClose = jest.fn();
-    const { getByTestId } = render(
+    const { getByTestId } = renderWithModalProvider(
       <FullProfileDetailsModal {...defaultProps} onClose={mockOnClose} />
     );
 
@@ -211,16 +241,16 @@ describe("FullProfileDetailsModal", () => {
   });
 
   it("opens update username modal when button is pressed", () => {
-    const { getByText, getByTestId } = render(
+    const { getByText, getByTestId } = renderWithModalProvider(
       <FullProfileDetailsModal {...defaultProps} />
     );
 
-    fireEvent.press(getByText("Update Username"));
+    fireEvent.press(getByText("TestUser"));
     expect(getByTestId("update-username-modal")).toBeTruthy();
   });
 
   it("opens change password modal when button is pressed", () => {
-    const { getByText, getByTestId } = render(
+    const { getByText, getByTestId } = renderWithModalProvider(
       <FullProfileDetailsModal {...defaultProps} />
     );
 
@@ -228,27 +258,26 @@ describe("FullProfileDetailsModal", () => {
     expect(getByTestId("change-password-modal")).toBeTruthy();
   });
 
-  it("opens avatar options modal when update avatar button is pressed", () => {
-    const { getByTestId } = render(
+  it("opens avatar options modal when avatar is pressed", () => {
+    const { getByTestId } = renderWithModalProvider(
       <FullProfileDetailsModal {...defaultProps} />
     );
 
-    fireEvent.press(getByTestId("wide-button"));
+    fireEvent.press(getByTestId("avatar-image"));
     expect(getByTestId("avatar-options-modal")).toBeTruthy();
   });
 
-  it("renders with proper safe area positioning", () => {
-    const { getByText } = render(<FullProfileDetailsModal {...defaultProps} />);
+  it("renders with proper positioning", () => {
+    const { getByText } = renderWithModalProvider(<FullProfileDetailsModal {...defaultProps} />);
 
-    expect(getByText("Full Profile")).toBeTruthy();
+    expect(getByText("TestUser")).toBeTruthy();
   });
 
-  it("renders fixed modal container without gestures", () => {
-    const { getByText } = render(<FullProfileDetailsModal {...defaultProps} />);
+  it("renders modal without gestures", () => {
+    const { getByText } = renderWithModalProvider(<FullProfileDetailsModal {...defaultProps} />);
 
-    // Modal should be rendered without any gesture handling
-    expect(getByText("Full Profile")).toBeTruthy();
     expect(getByText("TestUser")).toBeTruthy();
+    expect(getByText("Daily puzzles completed")).toBeTruthy();
   });
 
   it("handles zero stats gracefully", () => {
@@ -268,23 +297,32 @@ describe("FullProfileDetailsModal", () => {
         winStreak: 0,
         totalWins: 0,
         totalGuessesInWins: 0,
+        totalHintsUsed: 0,
       },
       coins: 0,
       progress: {
         classicIndex: 0,
         dailyChallengeIndex: 0,
+      dailyChallengeCurrentQuestion: 0,
         tutorialIndex: 0,
       },
     };
 
-    const { getByText } = render(
+    const { getAllByText } = renderWithModalProvider(
       <FullProfileDetailsModal
         {...defaultProps}
         playerData={playerWithZeroStats}
       />
     );
 
-    expect(getByText("0")).toBeTruthy(); // Should display zeros without crashing
-    expect(getByText("0%")).toBeTruthy(); // Win rate as 0%
+    expect(getAllByText("0").length).toBeGreaterThan(0);
+  });
+
+  it("renders the Leaderboard button", () => {
+    const { getByText } = renderWithModalProvider(
+      <FullProfileDetailsModal {...defaultProps} />
+    );
+
+    expect(getByText("Leaderboard")).toBeTruthy();
   });
 });

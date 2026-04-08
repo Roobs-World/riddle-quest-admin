@@ -1,6 +1,14 @@
-import { getFirestore } from "@react-native-firebase/firestore";
-import { getApp } from "@react-native-firebase/app";
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  query,
+  where,
+  limit,
+} from "@react-native-firebase/firestore";
 import { getCallableFunction } from "../utils/firebaseFunctions";
+import { logger } from "../utils/logger";
+import { captureException, startTransaction } from "../utils/sentry";
 
 /**
  * Service responsible for checking and initializing the riddle database
@@ -37,33 +45,32 @@ export class RiddleInitializationService {
   static async checkAndInitializeRiddles(): Promise<void> {
     // Prevent duplicate initialization calls
     if (this.isInitializing || this.hasInitialized) {
-      console.log(
-        "🔒 Riddle initialization already in progress or completed, skipping..."
+      logger.debug(
+        "Riddle initialization already in progress or completed, skipping..."
       );
       return;
     }
 
     this.isInitializing = true;
-    console.log("🔍 Checking if riddle database needs initialization...");
+    logger.debug("Checking if riddle database needs initialization...");
 
+    const txn = startTransaction("checkAndInitializeRiddles", "db");
     try {
       // Check if any classic riddles exist in the riddles collection
-      const riddlesSnapshot = await getFirestore(getApp())
-        .collection("riddles")
-        .where("classicIndex", ">=", 0)
-        .limit(1)
-        .get();
+      const riddlesSnapshot = await getDocs(
+        query(collection(getFirestore(), "riddles"), where("classicIndex", ">=", 0), limit(1))
+      );
 
       if (!riddlesSnapshot.empty) {
-        console.log(
-          "✅ Classic riddles database already has riddles - no initialization needed"
+        logger.debug(
+          "Classic riddles database already has riddles - no initialization needed"
         );
         this.hasInitialized = true;
         this.initializationFailed = false;
         return;
       }
 
-      console.log("⚠️ No classic riddles found in database - initializing...");
+      logger.warn("No classic riddles found in database - initializing...");
 
       // Call the Firebase function to initialize riddles with timeout
       const initializeRiddleDatabase = getCallableFunction(
@@ -71,61 +78,75 @@ export class RiddleInitializationService {
       );
 
       try {
-        console.log("📡 Calling initializeRiddleDatabase Firebase function...");
+        logger.info("Calling initializeRiddleDatabase Firebase function...");
 
         // Add timeout handling for Firebase Function calls
+        let timeoutId: ReturnType<typeof setTimeout>;
         const timeoutPromise = new Promise((_, reject) => {
-          setTimeout(
+          timeoutId = setTimeout(
             () =>
               reject(new Error("Firebase function timeout after 60 seconds")),
             60000
           );
         });
 
-        const result = await Promise.race([
-          initializeRiddleDatabase({}),
-          timeoutPromise,
-        ]);
+        let result: unknown;
+        try {
+          result = await Promise.race([
+            initializeRiddleDatabase({}),
+            timeoutPromise,
+          ]);
+        } finally {
+          clearTimeout(timeoutId!);
+        }
 
-        console.log(
-          "✅ Riddle initialization result:",
+        logger.info(
+          "Riddle initialization result:",
           (result as { data: unknown })?.data
         );
       } catch (error) {
-        console.error("❌ Error calling initializeRiddleDatabase:", error);
+        logger.error("❌ Error calling initializeRiddleDatabase:", error);
+        captureException(error);
 
         // Try the alternative function
-        console.log("🔄 Trying alternative: generateClassicRiddles...");
+        logger.info("Trying alternative: generateClassicRiddles...");
         const generateClassicRiddles = getCallableFunction(
           "generateClassicRiddles"
         );
 
         try {
-          console.log("📡 Calling generateClassicRiddles Firebase function...");
+          logger.info("Calling generateClassicRiddles Firebase function...");
 
           // Add timeout for fallback function too
+          let fallbackTimeoutId: ReturnType<typeof setTimeout>;
           const fallbackTimeoutPromise = new Promise((_, reject) => {
-            setTimeout(
+            fallbackTimeoutId = setTimeout(
               () =>
                 reject(new Error("Firebase function timeout after 60 seconds")),
               60000
             );
           });
 
-          const result = await Promise.race([
-            generateClassicRiddles({}),
-            fallbackTimeoutPromise,
-          ]);
+          let result: unknown;
+          try {
+            result = await Promise.race([
+              generateClassicRiddles({}),
+              fallbackTimeoutPromise,
+            ]);
+          } finally {
+            clearTimeout(fallbackTimeoutId!);
+          }
 
-          console.log(
-            "✅ Classic riddles generation result:",
+          logger.info(
+            "Classic riddles generation result:",
             (result as { data: unknown })?.data
           );
         } catch (fallbackError) {
-          console.error(
+          logger.error(
             "❌ Error calling generateClassicRiddles:",
             fallbackError
           );
+          captureException(fallbackError);
           const errorMessage =
             error instanceof Error ? error.message : String(error);
           const fallbackErrorMessage =
@@ -139,11 +160,9 @@ export class RiddleInitializationService {
       }
 
       // Verify classic riddles were created in the riddles collection
-      const verifySnapshot = await getFirestore(getApp())
-        .collection("riddles")
-        .where("classicIndex", ">=", 0)
-        .limit(1)
-        .get();
+      const verifySnapshot = await getDocs(
+        query(collection(getFirestore(), "riddles"), where("classicIndex", ">=", 0), limit(1))
+      );
 
       if (verifySnapshot.empty) {
         throw new Error(
@@ -151,15 +170,17 @@ export class RiddleInitializationService {
         );
       }
 
-      console.log("✅ Classic riddles database successfully initialized!");
+      logger.info("Classic riddles database successfully initialized!");
       this.hasInitialized = true;
       this.initializationFailed = false;
     } catch (error) {
-      console.error("❌ Error during riddle initialization check:", error);
+      logger.error("❌ Error during riddle initialization check:", error);
+      captureException(error);
       this.initializationFailed = true;
       // Don't throw here - allow the app to continue even if initialization fails
       // The user will see appropriate error messages when trying to play
     } finally {
+      txn.finish();
       this.isInitializing = false;
     }
   }
@@ -179,15 +200,14 @@ export class RiddleInitializationService {
    */
   static async hasEnoughRiddles(minimumCount: number = 10): Promise<boolean> {
     try {
-      const riddlesSnapshot = await getFirestore(getApp())
-        .collection("riddles")
-        .where("classicIndex", ">=", 0)
-        .limit(minimumCount)
-        .get();
+      const riddlesSnapshot = await getDocs(
+        query(collection(getFirestore(), "riddles"), where("classicIndex", ">=", 0), limit(minimumCount))
+      );
 
       return riddlesSnapshot.size >= minimumCount;
     } catch (error) {
-      console.error("Error checking riddle count:", error);
+      logger.error("Error checking riddle count:", error);
+      captureException(error);
       return false;
     }
   }

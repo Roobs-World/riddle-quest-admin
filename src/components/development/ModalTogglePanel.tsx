@@ -40,8 +40,11 @@ import { SubmittedGuess } from "../../hooks/types";
 import { Player } from "../../validation/firestoreSchemas";
 import * as RNIap from "react-native-iap";
 import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY } from "../../styles";
-import { getFunctions } from "@react-native-firebase/functions";
+import { scale, verticalScale } from "../../utils/responsive";
+import { getFunctions, httpsCallable } from "@react-native-firebase/functions";
 import { getApp } from "@react-native-firebase/app";
+import { logger } from "../../utils/logger";
+import { captureException } from "../../utils/sentry";
 
 /**
  * Type for the updateModalData function
@@ -70,6 +73,7 @@ const generateMockData = (
     progress: {
       classicIndex: 25,
       dailyChallengeIndex: 10,
+      dailyChallengeCurrentQuestion: 0,
       tutorialIndex: 5,
     },
     stats: {
@@ -86,11 +90,13 @@ const generateMockData = (
       challengeWins: 10,
       totalWins: 75,
       totalGuessesInWins: 240,
+      totalHintsUsed: 0,
     },
     avatarUrl: "https://example.com/avatar.jpg",
     createdAt: Date.now(),
     lastLogin: Date.now(),
     hasPurchasedApp: false,
+    unlockedAchievements: [],
   };
 
   const mockGuesses: SubmittedGuess[] = [
@@ -110,14 +116,16 @@ const generateMockData = (
 
   const mockProducts: RNIap.Product[] = [
     {
-      productId: "coin_pack_small",
-      price: "$0.99",
+      id: "coin_pack_small",
+      nameAndroid: "Small Coin Pack",
+      platform: "android",
+      price: 0.99,
       currency: "USD",
-      localizedPrice: "$0.99",
+      displayPrice: "$0.99",
       title: "Small Coin Pack",
       description: "100 coins for hints and power-ups",
-      type: "iap",
-    },
+      type: "in-app",
+    } as RNIap.ProductAndroid,
   ];
 
   switch (modalType) {
@@ -127,13 +135,13 @@ const generateMockData = (
         coinsEarned: 50,
         guesses: mockGuesses,
         onNext: async () => {
-          console.log("[VictoryModal Debug] Next level button pressed");
+          logger.debug("[VictoryModal Debug] Next level button pressed");
           // Close the modal first
-          console.log("[VictoryModal Debug] Closing modal");
+          logger.debug("[VictoryModal Debug] Closing modal");
           if (closeModalFn) closeModalFn("victory");
 
           // Simulate navigation to next level - in debug mode, this just logs the action
-          console.log(
+          logger.debug(
             "[VictoryModal Debug] Would navigate to next level in real app"
           );
 
@@ -143,7 +151,7 @@ const generateMockData = (
           // if (onNextLevel) await onNextLevel();
         },
         onHome: () => {
-          console.log("[VictoryModal Debug] Home button pressed");
+          logger.debug("[VictoryModal Debug] Home button pressed");
           if (closeModalFn) closeModalFn("victory");
         },
       };
@@ -152,28 +160,28 @@ const generateMockData = (
       return {
         correctAnswer: "FETCHING...", // Initial placeholder value
         onNext: async () => {
-          console.log("[LossModal Debug] Next level button pressed");
+          logger.debug("[LossModal Debug] Next level button pressed");
           // Close the modal first
-          console.log("[LossModal Debug] Closing modal");
+          logger.debug("[LossModal Debug] Closing modal");
           if (closeModalFn) closeModalFn("loss");
 
           // Simulate navigation to next level - in debug mode, this just logs the action
-          console.log(
+          logger.debug(
             "[LossModal Debug] Would navigate to next level in real app"
           );
         },
         onHome: () => {
-          console.log("[LossModal Debug] Home button pressed");
+          logger.debug("[LossModal Debug] Home button pressed");
           if (closeModalFn) closeModalFn("loss");
         },
         onClose: () => {
-          console.log("[LossModal Debug] Close button pressed");
+          logger.debug("[LossModal Debug] Close button pressed");
           if (closeModalFn) closeModalFn("loss");
         },
         // This property allows the ModalRenderer to know this modal needs server data
         __fetchServerData: async (updateModalData: UpdateModalDataFn) => {
           try {
-            console.log(
+            logger.debug(
               "[LossModal Debug] Fetching correct answer from server"
             );
 
@@ -181,7 +189,8 @@ const generateMockData = (
             const testRiddleId = "daily_riddle_1"; // Replace with a valid riddle ID from your database
 
             // Call the Firebase Function directly
-            const submitGuessCallable = getFunctions(getApp()).httpsCallable(
+            const submitGuessCallable = httpsCallable(
+              getFunctions(getApp()),
               "submitGuess"
             );
             const result = await submitGuessCallable({
@@ -197,7 +206,7 @@ const generateMockData = (
               isCorrect: boolean;
             };
 
-            console.log(
+            logger.debug(
               `[LossModal Debug] Server returned answer: ${correctAnswer}`
             );
 
@@ -206,10 +215,11 @@ const generateMockData = (
               updateModalData({ correctAnswer });
             }
           } catch (error) {
-            console.error(
+            logger.error(
               "[LossModal Debug] Error fetching correct answer:",
               error
             );
+            captureException(error);
             // If there's an error, use a fallback answer
             if (updateModalData) {
               updateModalData({ correctAnswer: "ANSWER" });
@@ -223,51 +233,51 @@ const generateMockData = (
       return {
         isSoundEnabled: true,
         isHapticsEnabled: false,
-        onToggleSound: (enabled: boolean) => console.log("Sound:", enabled),
-        onToggleHaptics: (enabled: boolean) => console.log("Haptics:", enabled),
-        onPressLogout: () => console.log("Logout pressed"),
-        onPressHelp: () => console.log("Help pressed"),
-        onPressCredits: () => console.log("Credits pressed"),
+        onToggleSound: (enabled: boolean) => logger.debug("Sound:", enabled),
+        onToggleHaptics: (enabled: boolean) => logger.debug("Haptics:", enabled),
+        onPressLogout: () => logger.debug("Logout pressed"),
+        onPressHelp: () => logger.debug("Help pressed"),
+        onPressCredits: () => logger.debug("Credits pressed"),
       };
     case "fullProfileDetails":
       return { playerData: mockPlayer };
     case "changePassword":
-      return { onPasswordChanged: () => console.log("Password changed") };
+      return { onPasswordChanged: () => logger.debug("Password changed") };
     case "updateUsername":
       return {
         currentUsername: "TestPlayer",
         onUsernameUpdated: (username: string) =>
-          console.log("Username:", username),
+          logger.debug("Username:", username),
       };
     case "avatarOptions":
       return {
         userId: "test-user-123",
-        onAvatarSelected: (url: string) => console.log("Avatar:", url),
-        onOpenPreloadedAvatars: () => console.log("Open preloaded avatars"),
+        onAvatarSelected: (url: string) => logger.debug("Avatar:", url),
+        onOpenPreloadedAvatars: () => logger.debug("Open preloaded avatars"),
       };
     case "preloadedAvatars":
       return {
         onAvatarSelected: (url: string) =>
-          console.log("Preloaded avatar:", url),
-        onCloseAvatarOptions: () => console.log("Close avatar options"),
+          logger.debug("Preloaded avatar:", url),
+        onCloseAvatarOptions: () => logger.debug("Close avatar options"),
       };
     case "hint":
       return {
         userCoins: 100,
         hintCost: 20,
-        onShowHint: () => console.log("Show hint pressed"),
+        onShowHint: () => logger.debug("Show hint pressed"),
       };
     case "skip":
       return {
         userCoins: 100,
         skipCost: 50,
-        onSkipLevel: () => console.log("Skip level pressed"),
+        onSkipLevel: () => logger.debug("Skip level pressed"),
       };
     case "coinShop":
       return {
         products: mockProducts,
         onPurchaseProduct: (productId: string) =>
-          console.log("Purchase:", productId),
+          logger.debug("Purchase:", productId),
         loading: false,
         error: null,
       };
@@ -287,7 +297,7 @@ const ModalTogglePanel: React.FC = () => {
 
   // CRITICAL: Only render in development builds
   if (!__DEV__) {
-    console.warn("ModalTogglePanel should not be used in production builds");
+    logger.warn("ModalTogglePanel should not be used in production builds");
     return null;
   }
 
@@ -334,7 +344,7 @@ const ModalTogglePanel: React.FC = () => {
       ) {
         // Create a function to update modal data
         const updateModalData: UpdateModalDataFn = (newData) => {
-          console.log(`Updating modal data for ${modalType}:`, newData);
+          logger.debug(`Updating modal data for ${modalType}:`, newData);
           // Re-render the modal with updated data
           setModalToggles((prev) => {
             const updatedToggles = { ...prev };
@@ -456,15 +466,15 @@ const styles = StyleSheet.create({
     borderRadius: BORDER_RADIUS.md,
     borderWidth: 1,
     elevation: 10,
-    maxHeight: 400,
-    minWidth: 200,
+    maxHeight: verticalScale(400),
+    minWidth: scale(200),
     position: "absolute",
-    right: 10,
-    top: 100,
+    right: scale(10),
+    top: verticalScale(100),
     zIndex: 9999,
   },
   content: {
-    maxHeight: 300,
+    maxHeight: verticalScale(300),
     padding: SPACING.sm,
   },
   header: {

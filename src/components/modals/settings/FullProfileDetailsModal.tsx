@@ -8,14 +8,21 @@ import {
   Image,
 } from "react-native";
 import { Player } from "../../../validation/firestoreSchemas";
-import WideButton from "../../buttons/WideButton";
 import CloseButton from "../../buttons/CloseButton";
+import { useModal } from "../../../hooks/useModal";
 import ChangePasswordModal from "./ChangePasswordModal";
 import UpdateUsernameModal from "./UpdateUsernameModal";
 import AvatarOptionsModal from "./AvatarOptionsModal";
 import PreloadedAvatarsModal from "./PreloadedAvatarsModal";
-import { TYPOGRAPHY } from "../../../styles";
-import ModalBg from "../../../../assets/images/modal-bg.svg";
+import { TYPOGRAPHY, SPACING } from "../../../styles";
+import {
+  CLOSE_BUTTON_SIZE,
+  AVATAR_SIZE_LARGE,
+} from "../../../constants/layout";
+import { moderateScale } from "../../../utils/responsive";
+import LogoIcon from "../../icons/LogoIcon";
+import TreasureChest from "./TreasureChest";
+import { getXpLevel } from "../../../constants/game";
 
 interface FullProfileDetailsModalProps {
   isVisible: boolean;
@@ -23,11 +30,16 @@ interface FullProfileDetailsModalProps {
   playerData: Player | null;
 }
 
+const PURPLE = "#401F40";
+const CREAM = "#FCFAF4";
+const GOLD = "#FEC880";
+
 const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
   isVisible,
   onClose,
   playerData,
 }) => {
+  const modal = useModal();
   const [isUsernameModalVisible, setIsUsernameModalVisible] = useState(false);
   const [isPasswordModalVisible, setIsPasswordModalVisible] = useState(false);
   const [isPreloadedAvatarsModalVisible, setIsPreloadedAvatarsModalVisible] =
@@ -40,147 +52,321 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
   }
 
   const { stats } = playerData;
+  const avatarRadius = AVATAR_SIZE_LARGE / 2;
+  const initial = playerData.username ? playerData.username.charAt(0).toUpperCase() : "?";
 
-  const handleUpdateAvatarPress = () => {
-    setIsAvatarOptionsModalVisible(true);
-  };
+  const handleUpdateAvatarPress = () => setIsAvatarOptionsModalVisible(true);
+  const handleCloseAvatarOptionsModal = () => setIsAvatarOptionsModalVisible(false);
+  const handleOpenPreloadedAvatars = () => setIsPreloadedAvatarsModalVisible(true);
+  const handleClosePreloadedAvatars = () => setIsPreloadedAvatarsModalVisible(false);
 
-  const handleCloseAvatarOptionsModal = () => {
-    setIsAvatarOptionsModalVisible(false);
-  };
-
-  const handleOpenPreloadedAvatars = () => {
-    setIsPreloadedAvatarsModalVisible(true);
-  };
-
-  const handleClosePreloadedAvatars = () => {
-    setIsPreloadedAvatarsModalVisible(false);
-  };
+  const winRate = Math.round(stats?.winRate ?? 0);
+  const avgGuess = stats?.averageGuesses != null
+    ? Number(stats.averageGuesses).toFixed(1)
+    : "—";
+  const { level, progressPct, currentXp, nextLevelXp } = getXpLevel(stats?.totalScore ?? 0);
 
   return (
     <Modal
       visible={isVisible}
       transparent={true}
-      animationType="fade"
+      animationType="slide"
       onRequestClose={onClose}
     >
       <View
         style={{
           flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "rgba(0,0,0,0.6)",
+          justifyContent: "flex-end",
+          backgroundColor: "rgba(0,0,0,0.5)",
         }}
       >
         <View
           style={{
-            width: 335,
-            height: 423,
-            alignItems: "center",
-            justifyContent: "center",
+            backgroundColor: CREAM,
+            borderTopLeftRadius: 24,
+            borderTopRightRadius: 24,
+            flex: 1,
+            maxHeight: "92%",
           }}
         >
-          <ModalBg style={{ position: "absolute" }} />
-          <CloseButton
-            onPress={onClose}
-            size={20}
-            style={{ position: "absolute", top: 20, right: 20, zIndex: 10 }}
-          />
-          <ScrollView
-            style={{ flex: 1, width: "100%" }}
-            contentContainerStyle={{
-              padding: 20,
-              alignItems: "center",
+          {/* ── Dark purple header ───────────────────────────── */}
+          <View
+            style={{
+              backgroundColor: PURPLE,
+              borderTopLeftRadius: 24,
+              borderTopRightRadius: 24,
+              paddingBottom: SPACING.xl,
+              overflow: "hidden",
             }}
           >
-            <TouchableOpacity
-              onPress={handleUpdateAvatarPress}
-              activeOpacity={0.8}
-            >
-              {playerData.avatarUrl ? (
-                <Image
-                  testID="avatar-image"
-                  source={{ uri: playerData.avatarUrl }}
-                  style={{
-                    width: 80,
-                    height: 80,
-                    borderRadius: 40,
-                    borderWidth: 3,
-                    borderColor: "#FCC070",
-                  }}
-                />
-              ) : (
-                <View
-                  style={{
-                    width: 80,
-                    height: 80,
-                    borderRadius: 40,
-                    backgroundColor: "#4A90E2",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderWidth: 3,
-                    borderColor: "#FCC070",
-                  }}
-                >
-                  <Text
-                    style={{
-                      color: "white",
-                      fontSize: 32,
-                      fontFamily: TYPOGRAPHY.fontSecondaryBold,
-                    }}
-                  >
-                    {playerData.username
-                      ? playerData.username.charAt(0).toUpperCase()
-                      : ""}
-                  </Text>
-                </View>
-              )}
-            </TouchableOpacity>
-            <Text
+            {/* Decorative wave lines */}
+            {[0, 1, 2, 3, 4].map((i) => (
+              <View
+                key={i}
+                style={{
+                  position: "absolute",
+                  left: -20,
+                  right: -20,
+                  top: 40 + i * 28,
+                  height: 1,
+                  backgroundColor: "rgba(255,255,255,0.07)",
+                  transform: [{ rotate: "-8deg" }],
+                }}
+              />
+            ))}
+
+            {/* Top bar: logo | PROFILE | close */}
+            <View
               style={{
-                fontSize: 24,
-                fontFamily: TYPOGRAPHY.fontSecondaryBold,
-                color: "white",
-                marginTop: 12,
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                paddingHorizontal: SPACING.lg,
+                paddingTop: SPACING.lg,
+                paddingBottom: SPACING.sm,
               }}
             >
-              {playerData.username || "Guest"}
-            </Text>
-
-            <View style={{ marginVertical: 20, width: "100%" }}>
-              <View
+              <LogoIcon width={32} height={32} color="#FFFFFF" />
+              <Text
                 style={{
-                  flexDirection: "row",
-                  flexWrap: "wrap",
-                  justifyContent: "space-around",
+                  fontFamily: TYPOGRAPHY.fontPrimary,
+                  fontSize: TYPOGRAPHY.fontSize.lg,
+                  fontWeight: "bold",
+                  color: "#FFFFFF",
+                  letterSpacing: 2,
                 }}
               >
-                <StatItem
-                  label="Daily Puzzles"
-                  value={stats?.dailyPuzzlesCompleted || 0}
-                />
-                <StatItem
-                  label="Games Played"
-                  value={stats?.gamesPlayed || 0}
-                />
-                <StatItem label="Best Streak" value={stats?.bestStreak || 0} />
-                <StatItem
-                  label="Win Rate"
-                  value={Math.round(stats?.winRate || 0)}
-                  unit="%"
-                />
-              </View>
+                PROFILE
+              </Text>
+              <CloseButton
+                onPress={onClose}
+                size={CLOSE_BUTTON_SIZE}
+              />
             </View>
 
-            <WideButton
+            {/* Avatar */}
+            <View style={{ alignItems: "center", marginTop: SPACING.sm }}>
+              <TouchableOpacity
+                onPress={handleUpdateAvatarPress}
+                activeOpacity={0.8}
+              >
+                {playerData.avatarUrl ? (
+                  <Image
+                    testID="avatar-image"
+                    source={{ uri: playerData.avatarUrl }}
+                    style={{
+                      width: AVATAR_SIZE_LARGE,
+                      height: AVATAR_SIZE_LARGE,
+                      borderRadius: avatarRadius,
+                      borderWidth: moderateScale(3),
+                      borderColor: "#FFFFFF",
+                    }}
+                  />
+                ) : (
+                  <View
+                    style={{
+                      width: AVATAR_SIZE_LARGE,
+                      height: AVATAR_SIZE_LARGE,
+                      borderRadius: avatarRadius,
+                      backgroundColor: "rgba(255,255,255,0.15)",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      borderWidth: moderateScale(3),
+                      borderColor: "#FFFFFF",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: "#FFFFFF",
+                        fontSize: TYPOGRAPHY.fontSize.display,
+                        fontFamily: TYPOGRAPHY.fontSecondaryBold,
+                      }}
+                    >
+                      {initial}
+                    </Text>
+                  </View>
+                )}
+              </TouchableOpacity>
+
+              {/* Username + edit */}
+              <TouchableOpacity
+                onPress={() => setIsUsernameModalVisible(true)}
+                style={{ flexDirection: "row", alignItems: "center", marginTop: SPACING.sm, gap: 6 }}
+              >
+                <Text
+                  style={{
+                    color: "#FFFFFF",
+                    fontSize: TYPOGRAPHY.fontSize.lg,
+                    fontFamily: TYPOGRAPHY.fontSecondaryBold,
+                  }}
+                >
+                  {playerData.username || "Guest"}
+                </Text>
+                <Text style={{ color: GOLD, fontSize: 14 }}>✏</Text>
+              </TouchableOpacity>
+
+              {/* XP progress bar */}
+              <View
+                style={{
+                  width: "70%",
+                  marginTop: SPACING.sm,
+                  gap: 4,
+                }}
+              >
+                <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+                  <Text style={{ color: GOLD, fontSize: 18 }}>★</Text>
+                  <View style={{ flex: 1, height: 8, backgroundColor: "rgba(255,255,255,0.2)", borderRadius: 4, overflow: "hidden" }}>
+                    <View
+                      style={{
+                        width: `${progressPct * 100}%`,
+                        height: "100%",
+                        backgroundColor: GOLD,
+                        borderRadius: 4,
+                      }}
+                    />
+                  </View>
+                  <Text style={{ color: GOLD, fontSize: 11, fontFamily: TYPOGRAPHY.fontSecondary }}>
+                    Lv.{level}
+                  </Text>
+                </View>
+                <Text style={{ color: "rgba(255,255,255,0.6)", fontSize: 10, fontFamily: TYPOGRAPHY.fontSecondary, textAlign: "center" }}>
+                  {nextLevelXp > 0 ? `${currentXp} / ${nextLevelXp} XP` : "Max Level"}
+                </Text>
+              </View>
+            </View>
+          </View>
+
+          {/* ── Scrollable stats section ─────────────────────── */}
+          <ScrollView
+            style={{ flex: 1 }}
+            contentContainerStyle={{ padding: SPACING.lg }}
+            showsVerticalScrollIndicator={false}
+          >
+            {/* Daily puzzles completed */}
+            <Text
+              style={{
+                fontFamily: TYPOGRAPHY.fontPrimary,
+                fontSize: TYPOGRAPHY.fontSize.base,
+                fontWeight: "bold",
+                color: "#1A1A1A",
+                marginBottom: SPACING.sm,
+              }}
+            >
+              Daily puzzles completed
+            </Text>
+            <View
+              style={{
+                backgroundColor: "#F5EDD4",
+                borderRadius: 16,
+                padding: SPACING.md,
+                flexDirection: "row",
+                alignItems: "center",
+                marginBottom: SPACING.lg,
+                gap: SPACING.md,
+              }}
+            >
+              <View
+                style={{
+                  width: 44,
+                  height: 44,
+                  borderRadius: 22,
+                  backgroundColor: GOLD,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Text style={{ fontSize: 20 }}>🏅</Text>
+              </View>
+              <Text
+                style={{
+                  fontFamily: TYPOGRAPHY.fontPrimary,
+                  fontSize: TYPOGRAPHY.fontSize["2xl"],
+                  fontWeight: "bold",
+                  color: "#1A1A1A",
+                  flex: 1,
+                }}
+              >
+                {stats?.dailyPuzzlesCompleted ?? 0}
+              </Text>
+              <Text
+                style={{
+                  fontFamily: TYPOGRAPHY.fontSecondary,
+                  fontSize: TYPOGRAPHY.fontSize.xs,
+                  color: "#6B7280",
+                  textAlign: "right",
+                }}
+              >
+                Regular Days{"\n"}Completed
+              </Text>
+            </View>
+
+            {/* Best Strike */}
+            <Text
+              style={{
+                fontFamily: TYPOGRAPHY.fontPrimary,
+                fontSize: TYPOGRAPHY.fontSize.base,
+                fontWeight: "bold",
+                color: "#1A1A1A",
+                marginBottom: SPACING.sm,
+              }}
+            >
+              Best Strike
+            </Text>
+            <View
+              style={{
+                flexDirection: "row",
+                flexWrap: "wrap",
+                gap: SPACING.sm,
+                marginBottom: SPACING.lg,
+              }}
+            >
+              <StatBox value={stats?.bestStreak ?? 0} label="Best streak" />
+              <StatBox value={stats?.wins ?? 0} label="Total words guessed" />
+              <StatBox value={`${winRate}%`} label="Win rate" />
+              <StatBox value={avgGuess} label="Average guess" />
+            </View>
+
+            {/* Treasure chest */}
+            <View style={{ marginBottom: SPACING.lg }}>
+              <TreasureChest coins={playerData.coins ?? 0} />
+            </View>
+
+            {/* Action buttons */}
+            <TouchableOpacity
               onPress={() => setIsPasswordModalVisible(true)}
-              buttonText="Change Password"
-            />
-            <View style={{ height: 10 }} />
-            <WideButton
-              onPress={() => setIsUsernameModalVisible(true)}
-              buttonText="Update Username"
-            />
+              style={actionButtonStyle}
+            >
+              <Text style={actionButtonTextStyle}>Change Password</Text>
+            </TouchableOpacity>
+
+            <View style={{ height: SPACING.sm }} />
+
+            <TouchableOpacity
+              onPress={() => modal.openGameModal("achievements", { playerData })}
+              style={actionButtonStyle}
+            >
+              <Text style={actionButtonTextStyle}>Achievements</Text>
+            </TouchableOpacity>
+
+            <View style={{ height: SPACING.sm }} />
+
+            <TouchableOpacity
+              onPress={() => modal.openGameModal("stats", { playerData })}
+              style={actionButtonStyle}
+            >
+              <Text style={actionButtonTextStyle}>Statistics</Text>
+            </TouchableOpacity>
+
+            <View style={{ height: SPACING.sm }} />
+
+            <TouchableOpacity
+              onPress={() => modal.openGameModal("leaderboard", { currentUserId: playerData.userId })}
+              style={actionButtonStyle}
+            >
+              <Text style={actionButtonTextStyle}>Leaderboard</Text>
+            </TouchableOpacity>
+
+            <View style={{ height: SPACING.xl }} />
           </ScrollView>
         </View>
       </View>
@@ -209,32 +395,56 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
   );
 };
 
-const StatItem = ({
-  label,
+const actionButtonStyle = {
+  backgroundColor: "#FEC880",
+  borderRadius: 14,
+  paddingVertical: 14,
+  alignItems: "center" as const,
+};
+
+const actionButtonTextStyle = {
+  fontFamily: TYPOGRAPHY.fontPrimary,
+  fontSize: TYPOGRAPHY.fontSize.base,
+  fontWeight: "bold" as const,
+  color: "#1A1A1A",
+};
+
+const StatBox = ({
   value,
-  unit,
+  label,
 }: {
+  value: number | string;
   label: string;
-  value: number;
-  unit?: string;
 }) => (
-  <View style={{ width: "50%", alignItems: "center", marginBottom: 16 }}>
+  <View
+    style={{
+      flex: 1,
+      minWidth: "45%",
+      backgroundColor: "#FFFFFF",
+      borderRadius: 14,
+      padding: SPACING.md,
+      alignItems: "center",
+      borderWidth: 1,
+      borderColor: "#F0EAF0",
+    }}
+  >
     <Text
       style={{
-        fontSize: 24,
-        fontFamily: TYPOGRAPHY.fontSecondaryBold,
-        color: "white",
+        fontFamily: TYPOGRAPHY.fontPrimary,
+        fontSize: TYPOGRAPHY.fontSize["2xl"],
+        fontWeight: "bold",
+        color: "#1A1A1A",
       }}
     >
-      {value.toString()}
-      {unit}
+      {typeof value === "number" ? value.toString() : value}
     </Text>
     <Text
       style={{
-        fontSize: 14,
         fontFamily: TYPOGRAPHY.fontSecondary,
-        color: "white",
+        fontSize: TYPOGRAPHY.fontSize.xs,
+        color: "#6B7280",
         textAlign: "center",
+        marginTop: 2,
       }}
     >
       {label}

@@ -13,27 +13,51 @@ jest.mock("../../../hooks/useTileCapture", () => ({
 
 // Mock responsive utilities
 jest.mock("../../../utils/responsive", () => ({
-  scale: (size: number) => size * 1.2, // Mock scaling factor
+  scale: (size: number) => size,
+  moderateScale: (size: number) => size,
+  responsiveValue: (values: { phone: unknown }) => values.phone,
+  dimensions: { screenWidth: 390, screenHeight: 844 },
+  isPhone: true,
+  isTablet: false,
+  isLargeTablet: false,
+  isDesktop: false,
+  responsiveSizes: {
+    textXs: 12, textSm: 14, textBase: 16, textLg: 18, textXl: 20,
+    text2xl: 24, text3xl: 30, text4xl: 36, textTitle: 28, textDisplay: 32,
+  },
 }));
 
 // Mock styles
 jest.mock("../../../styles", () => ({
-  styles: {
-    maskingContainer: { overflow: "hidden" },
+  styles: { maskingContainer: { overflow: "hidden" } },
+  TYPOGRAPHY: {
+    fontPrimary: "PoetsenOne",
+    fontSize: { xs: 12, sm: 14, base: 16, lg: 18, xl: 20, "2xl": 24, "3xl": 30, "4xl": 36, title: 28, display: 32 },
+    lineHeight: { tight: 1.25, snug: 1.375, normal: 1.5, relaxed: 1.625, loose: 2 },
+    letterSpacing: { tight: -0.104, normal: 0, wide: 0.025 },
   },
+}));
+
+// Mock layout constants used in tile size calculation
+jest.mock("../../../constants/layout", () => ({
+  GUESS_TILE_MAX_SIZE: 56,
+  GUESS_GRID_H_PADDING: 32,
+  GUESS_TILE_MARGIN: 4,
+  GUESS_TILE_ROW_GAP: 4,
+  GUESS_GRID_EFFECTIVE_WIDTH: 390,
+  MAX_CONTENT_WIDTH: 560,
 }));
 
 // Mock react-native-reanimated
 jest.mock("react-native-reanimated", () => {
   const React = require("react");
-  const { View } = require("react-native");
 
   return {
     __esModule: true,
     default: {
       View: ({ children, style, className }: any) =>
         React.createElement(
-          View,
+          "View",
           { style, className, testID: "animated-view" },
           children
         ),
@@ -66,11 +90,12 @@ describe("GuessGrid", () => {
       }).not.toThrow();
     });
 
-    it("should render 3 rows by default", () => {
-      const { getAllByTestId } = render(<GuessGrid {...defaultProps} />);
-
-      const animatedViews = getAllByTestId("animated-view");
-      expect(animatedViews).toHaveLength(3);
+    it("should render rows matching NUM_GUESSES", () => {
+      const { toJSON } = render(<GuessGrid {...defaultProps} />);
+      const tree = toJSON();
+      const first = Array.isArray(tree) ? tree[0] : tree;
+      const gridContainer = first && typeof first === "object" ? first.children?.[0] : null;
+      expect(gridContainer && typeof gridContainer === "object" ? gridContainer.children : null).toHaveLength(4);
     });
 
     it("should render correct number of cells per row", () => {

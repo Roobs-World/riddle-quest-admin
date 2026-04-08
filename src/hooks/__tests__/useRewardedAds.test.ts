@@ -54,6 +54,12 @@ jest.mock("../../contexts/AuthContext", () => ({
   })),
 }));
 
+jest.mock("../../services/AnalyticsService", () => ({
+  analyticsService: {
+    logAdEvent: jest.fn().mockResolvedValue(undefined),
+  },
+}));
+
 // Mock console methods
 jest.spyOn(console, "log").mockImplementation(() => {});
 jest.spyOn(console, "error").mockImplementation(() => {});
@@ -329,7 +335,6 @@ describe("useRewardedAds", () => {
       const hookPath = path.join(__dirname, "../useRewardedAds.ts");
       const hookContent = fs.readFileSync(hookPath, "utf8");
 
-      expect(hookContent).toContain("functions(getApp()).httpsCallable");
       expect(hookContent).toContain("awardedAdCallback");
       expect(hookContent).toContain("playerData?.userId");
     });
@@ -495,7 +500,7 @@ describe("useRewardedAds", () => {
 
       expect(hookContent).toContain("[loadRewardedAd]");
       expect(hookContent).toContain("[isRewardedAdReady, loadRewardedAd]");
-      expect(hookContent).toContain("[playerData?.userId]");
+      expect(hookContent).toContain("[playerData]");
     });
   });
 
@@ -508,7 +513,7 @@ describe("useRewardedAds", () => {
       const hookContent = fs.readFileSync(hookPath, "utf8");
 
       expect(hookContent).toContain("if (!REWARDED_AD_UNIT_ID)");
-      expect(hookContent).toContain("console.error");
+      expect(hookContent).toContain("logger.error");
       expect(hookContent).toContain("return;");
     });
 
@@ -532,9 +537,9 @@ describe("useRewardedAds", () => {
       const hookPath = path.join(__dirname, "../useRewardedAds.ts");
       const hookContent = fs.readFileSync(hookPath, "utf8");
 
-      expect(hookContent).toContain("console.log");
-      expect(hookContent).toContain("console.error");
-      expect(hookContent).toContain("console.warn");
+      expect(hookContent).toContain("logger.debug");
+      expect(hookContent).toContain("logger.error");
+      expect(hookContent).toContain("logger.warn");
     });
   });
 

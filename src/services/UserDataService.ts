@@ -1,9 +1,18 @@
-import { getFirestore } from "@react-native-firebase/firestore";
-import { getFunctions } from "@react-native-firebase/functions";
+import {
+  getFirestore,
+  collection,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+} from "@react-native-firebase/firestore";
+import { getFunctions, httpsCallable } from "@react-native-firebase/functions";
 import { getApp } from "@react-native-firebase/app";
 import { Player, PlayerSchema } from "../validation/firestoreSchemas";
 import { ZodError } from "zod";
 import { IUserDataService } from "./interfaces/IUserDataService";
+import { logger } from "../utils/logger";
+import { captureException } from "../utils/sentry";
 
 /**
  * Service for managing user data in Firestore
@@ -19,22 +28,24 @@ export class UserDataService implements IUserDataService {
     progress: Player["progress"]
   ): Promise<void> {
     if (!userId || !userId.trim()) {
-      console.warn("Attempted to save progress to Firestore without a userId.");
+      logger.warn("Attempted to save progress to Firestore without a userId.");
       return;
     }
 
     try {
-      await getFirestore(getApp())
-        .collection(UserDataService.USERS_COLLECTION)
-        .doc(userId)
-        .set({ progress }, { merge: true });
+      await setDoc(
+        doc(getFirestore(), UserDataService.USERS_COLLECTION, userId),
+        { progress },
+        { merge: true }
+      );
 
-      console.log(
+      logger.info(
         "Player progress saved to Firestore successfully for user:",
         userId
       );
     } catch (error) {
-      console.error("Error saving player progress to Firestore:", error);
+      logger.error("Error saving player progress to Firestore:", error);
+      captureException(error);
       throw error;
     }
   }
@@ -44,26 +55,23 @@ export class UserDataService implements IUserDataService {
    */
   async loadUserProgress(userId: string): Promise<Player | null> {
     if (!userId || !userId.trim()) {
-      console.warn(
+      logger.warn(
         "Attempted to load progress from Firestore without a userId."
       );
       return null;
     }
 
     try {
-      const userDoc = await getFirestore(getApp())
-        .collection(UserDataService.USERS_COLLECTION)
-        .doc(userId)
-        .get();
+      const userDoc = await getDoc(doc(getFirestore(), UserDataService.USERS_COLLECTION, userId));
 
       if (!userDoc.exists()) {
-        console.log("No user document found for userId:", userId);
+        logger.info("No user document found for userId:", userId);
         return null;
       }
 
       const userData = userDoc.data();
       if (!userData) {
-        console.warn(
+        logger.warn(
           "User document exists but has no data for userId:",
           userId
         );
@@ -72,14 +80,16 @@ export class UserDataService implements IUserDataService {
 
       // Validate the data structure
       const validatedData = PlayerSchema.parse(userData);
-      console.log("User progress loaded successfully for user:", userId);
+      logger.info("User progress loaded successfully for user:", userId);
       return validatedData;
     } catch (error) {
       if (error instanceof ZodError) {
-        console.error("User data validation failed:", error.issues);
+        logger.error("User data validation failed:", error.issues);
+        captureException(error);
         throw new Error("Invalid user data structure in Firestore");
       }
-      console.error("Error loading user progress from Firestore:", error);
+      logger.error("Error loading user progress from Firestore:", error);
+      captureException(error);
       throw error;
     }
   }
@@ -96,21 +106,20 @@ export class UserDataService implements IUserDataService {
       // Validate the user data before saving
       const validatedData = PlayerSchema.parse(userData);
 
-      await getFirestore(getApp())
-        .collection(UserDataService.USERS_COLLECTION)
-        .doc(userId)
-        .set(validatedData);
+      await setDoc(doc(getFirestore(), UserDataService.USERS_COLLECTION, userId), validatedData);
 
-      console.log("User document created successfully for user:", userId);
+      logger.info("User document created successfully for user:", userId);
     } catch (error) {
       if (error instanceof ZodError) {
-        console.error(
+        logger.error(
           "User data validation failed during creation:",
           error.issues
         );
+        captureException(error);
         throw new Error("Invalid user data provided for creation");
       }
-      console.error("Error creating user document:", error);
+      logger.error("Error creating user document:", error);
+      captureException(error);
       throw error;
     }
   }
@@ -127,14 +136,12 @@ export class UserDataService implements IUserDataService {
     }
 
     try {
-      await getFirestore(getApp())
-        .collection(UserDataService.USERS_COLLECTION)
-        .doc(userId)
-        .update(updates);
+      await updateDoc(doc(getFirestore(), UserDataService.USERS_COLLECTION, userId), updates);
 
-      console.log("User document updated successfully for user:", userId);
+      logger.info("User document updated successfully for user:", userId);
     } catch (error) {
-      console.error("Error updating user document:", error);
+      logger.error("Error updating user document:", error);
+      captureException(error);
       throw error;
     }
   }
@@ -148,16 +155,14 @@ export class UserDataService implements IUserDataService {
     }
 
     try {
-      await getFirestore(getApp())
-        .collection(UserDataService.USERS_COLLECTION)
-        .doc(userId)
-        .update({
-          "progress.classicIndex": newIndex,
-        });
+      await updateDoc(doc(getFirestore(), UserDataService.USERS_COLLECTION, userId), {
+        "progress.classicIndex": newIndex,
+      });
 
-      console.log(`Classic index updated to ${newIndex} for user:`, userId);
+      logger.info(`Classic index updated to ${newIndex} for user:`, userId);
     } catch (error) {
-      console.error("Error updating classic index:", error);
+      logger.error("Error updating classic index:", error);
+      captureException(error);
       throw error;
     }
   }
@@ -175,16 +180,14 @@ export class UserDataService implements IUserDataService {
     }
 
     try {
-      await getFirestore(getApp())
-        .collection(UserDataService.USERS_COLLECTION)
-        .doc(userId)
-        .update({
-          coins: newCoinAmount,
-        });
+      await updateDoc(doc(getFirestore(), UserDataService.USERS_COLLECTION, userId), {
+        coins: newCoinAmount,
+      });
 
-      console.log(`Coins updated to ${newCoinAmount} for user:`, userId);
+      logger.info(`Coins updated to ${newCoinAmount} for user:`, userId);
     } catch (error) {
-      console.error("Error updating user coins:", error);
+      logger.error("Error updating user coins:", error);
+      captureException(error);
       throw error;
     }
   }
@@ -198,14 +201,12 @@ export class UserDataService implements IUserDataService {
     }
 
     try {
-      const userDoc = await getFirestore(getApp())
-        .collection(UserDataService.USERS_COLLECTION)
-        .doc(userId)
-        .get();
+      const userDoc = await getDoc(doc(getFirestore(), UserDataService.USERS_COLLECTION, userId));
 
       return userDoc.exists();
     } catch (error) {
-      console.error("Error checking if user exists:", error);
+      logger.error("Error checking if user exists:", error);
+      captureException(error);
       return false;
     }
   }
@@ -221,19 +222,18 @@ export class UserDataService implements IUserDataService {
     avatarUrl?: string;
   }): Promise<{ success: boolean; message: string; userId: string }> {
     try {
-      const initializeUserCallable = getFunctions(getApp()).httpsCallable(
-        "initializeUser"
-      );
+      const initializeUserCallable = httpsCallable(getFunctions(getApp()), "initializeUser");
       const result = await initializeUserCallable(userData);
 
-      console.log("User initialized successfully:", result.data);
+      logger.info("User initialized successfully:", result.data);
       return result.data as {
         success: boolean;
         message: string;
         userId: string;
       };
     } catch (error) {
-      console.error("Error initializing new user:", error);
+      logger.error("Error initializing new user:", error);
+      captureException(error);
       throw new Error("Failed to initialize new user account");
     }
   }
@@ -247,15 +247,14 @@ export class UserDataService implements IUserDataService {
     message: string;
   }> {
     try {
-      const ensureUserCompleteCallable = getFunctions(getApp()).httpsCallable(
-        "ensureUserComplete"
-      );
+      const ensureUserCompleteCallable = httpsCallable(getFunctions(getApp()), "ensureUserComplete");
       const result = await ensureUserCompleteCallable({});
 
-      console.log("User document completeness ensured:", result.data);
+      logger.info("User document completeness ensured:", result.data);
       return result.data as { success: boolean; message: string };
     } catch (error) {
-      console.error("Error ensuring user document completeness:", error);
+      logger.error("Error ensuring user document completeness:", error);
+      captureException(error);
       throw new Error("Failed to ensure user document completeness");
     }
   }
@@ -283,18 +282,17 @@ export class UserDataService implements IUserDataService {
     }
   ): Promise<{ success: boolean; message: string }> {
     try {
-      const updateUserStatsCallable = getFunctions(getApp()).httpsCallable(
-        "updateUserStats"
-      );
+      const updateUserStatsCallable = httpsCallable(getFunctions(getApp()), "updateUserStats");
       const result = await updateUserStatsCallable({
         targetUserId,
         statsUpdate,
       });
 
-      console.log("User stats updated successfully:", result.data);
+      logger.info("User stats updated successfully:", result.data);
       return result.data as { success: boolean; message: string };
     } catch (error) {
-      console.error("Error updating user stats:", error);
+      logger.error("Error updating user stats:", error);
+      captureException(error);
       throw new Error("Failed to update user stats");
     }
   }

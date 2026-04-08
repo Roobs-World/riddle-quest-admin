@@ -1,3 +1,14 @@
+/**
+ * @fileoverview
+ * Audio and haptics feedback service used by game state and UI components.
+ *
+ * `AudioFeedbackManager` implements `IAudioFeedbackService` and provides
+ * a centralized place to coordinate sound effects and haptic patterns for
+ * neutral input, successes, errors, and wrong guesses.
+ *
+ * It respects per-call overrides while applying a default configuration
+ * that keeps behavior consistent across the app.
+ */
 import { SoundManager } from "./SoundManager";
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 import {
@@ -5,7 +16,12 @@ import {
   FeedbackType,
   FeedbackConfig,
 } from "./interfaces/IAudioFeedbackService";
+import { logger } from "../utils/logger";
+import { captureException } from "../utils/sentry";
 
+/**
+ * Default implementation of `IAudioFeedbackService` for Qwordly.
+ */
 export class AudioFeedbackManager implements IAudioFeedbackService {
   private defaultConfig: Required<FeedbackConfig> = {
     playSound: true,
@@ -28,7 +44,8 @@ export class AudioFeedbackManager implements IAudioFeedbackService {
         ReactNativeHapticFeedback.trigger("impactLight");
       }
     } catch (error) {
-      console.error("Error playing neutral feedback:", error);
+      logger.error("Error playing neutral feedback:", error);
+      captureException(error);
     }
   }
 
@@ -47,7 +64,8 @@ export class AudioFeedbackManager implements IAudioFeedbackService {
         ReactNativeHapticFeedback.trigger("notificationSuccess");
       }
     } catch (error) {
-      console.error("Error playing success feedback:", error);
+      logger.error("Error playing success feedback:", error);
+      captureException(error);
     }
   }
 
@@ -69,7 +87,8 @@ export class AudioFeedbackManager implements IAudioFeedbackService {
         ReactNativeHapticFeedback.trigger("notificationError");
       }
     } catch (error) {
-      console.error("Error playing error feedback:", error);
+      logger.error("Error playing error feedback:", error);
+      captureException(error);
     }
   }
 
@@ -91,7 +110,8 @@ export class AudioFeedbackManager implements IAudioFeedbackService {
         ReactNativeHapticFeedback.trigger("impactMedium");
       }
     } catch (error) {
-      console.error("Error playing wrong guess feedback:", error);
+      logger.error("Error playing wrong guess feedback:", error);
+      captureException(error);
     }
   }
 
@@ -112,7 +132,7 @@ export class AudioFeedbackManager implements IAudioFeedbackService {
       case "wrongGuess":
         return this.playWrongGuessFeedback(config);
       default:
-        console.warn(`Unknown feedback type: ${type}`);
+        logger.warn(`Unknown feedback type: ${type}`);
     }
   }
 }

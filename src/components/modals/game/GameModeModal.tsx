@@ -1,45 +1,37 @@
 /**
- * @fileoverview GameModeModal component - Modal for selecting game mode.
- *
- * This modal allows players to choose between different game modes:
- * - Classic mode: Regular gameplay with unlimited levels
- * - Daily Challenge: Daily puzzles with special rewards
- *
- * @author Qwordly Development Team
- * @version 1.0.0
- * @since 2024
+ * @fileoverview GameModeModal — centered card for selecting Classic or Daily game mode.
  */
 
 import React from "react";
-import { View, Text, Modal } from "react-native";
-import CloseButton from "../../buttons/CloseButton";
+import { View, Text, Modal, TouchableOpacity } from "react-native";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
-import { TYPOGRAPHY } from "../../../styles";
-import WideButton from "src/components/buttons/WideButton";
+import { TYPOGRAPHY, SPACING } from "../../../styles";
+import {
+  MODAL_WIDTH,
+  MODAL_HEIGHT,
+  CLOSE_BUTTON_INSET,
+  CLOSE_BUTTON_SIZE,
+  MODAL_CLOSE_TOP_OFFSET_NARROW,
+  MODAL_CONTENT_PADDING,
+} from "../../../constants/layout";
+import CloseButton from "../../buttons/CloseButton";
 
 interface GameModeModalProps {
   isVisible: boolean;
   onClose: () => void;
   onSelectMode: (mode: "classic" | "daily") => void;
+  currentLevel?: number;
 }
 
-/**
- * GameModeModal Component
- *
- * A modal that allows players to select between different game modes.
- * Currently supports Classic mode and Daily Challenge mode.
- *
- * @param {GameModeModalProps} props - Component props
- * @returns {JSX.Element} Rendered game mode selection modal
- */
 const GameModeModal: React.FC<GameModeModalProps> = ({
   isVisible,
   onClose,
   onSelectMode,
+  currentLevel,
 }) => {
   return (
     <Modal
-      animationType="slide"
+      animationType="fade"
       transparent={true}
       visible={isVisible}
       onRequestClose={onClose}
@@ -47,62 +39,124 @@ const GameModeModal: React.FC<GameModeModalProps> = ({
       <View
         style={{
           flex: 1,
-          backgroundColor: "rgba(0,0,0,0.5)",
           justifyContent: "center",
           alignItems: "center",
+          backgroundColor: "rgba(0,0,0,0.5)",
         }}
       >
         <View
           style={{
-            borderRadius: 20,
-            padding: 20,
+            width: MODAL_WIDTH,
+            height: MODAL_HEIGHT,
             alignItems: "center",
             justifyContent: "center",
-            position: "relative",
-            width: 335,
-            height: 423,
-            overflow: "hidden",
           }}
         >
-          <ModalBg
-            width="100%"
-            height="100%"
-            style={{ position: "absolute" }}
-            preserveAspectRatio="xMidYMid slice"
-          />
+          <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{ position: "absolute" }} />
 
-          {/* Close button */}
           <View
-            style={{ position: "absolute", top: 10, right: 10, zIndex: 10 }}
+            style={{
+              width: "80%",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
           >
-            <CloseButton onPress={onClose} size={20} />
+            <CloseButton
+              onPress={onClose}
+              size={CLOSE_BUTTON_SIZE}
+              style={{
+                position: "absolute",
+                top: MODAL_CLOSE_TOP_OFFSET_NARROW,
+                right: -CLOSE_BUTTON_INSET,
+                zIndex: 10,
+              }}
+            />
+
+            <Text
+              style={{
+                fontFamily: TYPOGRAPHY.fontPrimary,
+                fontSize: TYPOGRAPHY.fontSize.xl,
+                fontWeight: "bold",
+                color: "#1A1A1A",
+                letterSpacing: 1,
+                marginBottom: SPACING.xl,
+              }}
+            >
+              LET&apos;S PLAY
+            </Text>
+
+            {/* Classic Challenge button */}
+            <TouchableOpacity
+              onPress={() => onSelectMode("classic")}
+              style={{
+                backgroundColor: "#401F40",
+                borderRadius: 16,
+                paddingVertical: 18,
+                paddingHorizontal: 20,
+                width: "100%",
+                marginBottom: SPACING.md,
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <Text
+                style={{
+                  fontFamily: TYPOGRAPHY.fontPrimary,
+                  fontSize: TYPOGRAPHY.fontSize.lg,
+                  fontWeight: "bold",
+                  color: "#FFFFFF",
+                }}
+              >
+                Classic
+              </Text>
+              {currentLevel != null && (
+                <View
+                  style={{
+                    backgroundColor: "#FEC880",
+                    borderRadius: 12,
+                    paddingHorizontal: 14,
+                    paddingVertical: 5,
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: "#1A1A1A",
+                      fontFamily: TYPOGRAPHY.fontPrimary,
+                      fontWeight: "bold",
+                      fontSize: TYPOGRAPHY.fontSize.sm,
+                    }}
+                  >
+                    Level {currentLevel}
+                  </Text>
+                </View>
+              )}
+            </TouchableOpacity>
+
+            {/* Daily Challenge button */}
+            <TouchableOpacity
+              onPress={() => onSelectMode("daily")}
+              style={{
+                backgroundColor: "#401F40",
+                borderRadius: 16,
+                paddingVertical: 18,
+                paddingHorizontal: 20,
+                width: "100%",
+                alignItems: "center",
+              }}
+            >
+              <Text
+                style={{
+                  fontFamily: TYPOGRAPHY.fontPrimary,
+                  fontSize: TYPOGRAPHY.fontSize.lg,
+                  fontWeight: "bold",
+                  color: "#FFFFFF",
+                }}
+              >
+                Daily Challenge
+              </Text>
+            </TouchableOpacity>
           </View>
-
-          {/* Title */}
-          <Text
-            className="text-2xl text-gray-800 text-center mb-8"
-            style={{ fontFamily: TYPOGRAPHY.fontPrimary }}
-          >
-            LET&apos;S PLAY
-          </Text>
-
-          <WideButton
-            buttonText="Classic Challenge"
-            onPress={() => onSelectMode("classic")}
-            buttonColor="bg-orange-500"
-          />
-
-          <WideButton
-            buttonText="Daily Challenge"
-            onPress={() => onSelectMode("daily")}
-            buttonColor="bg-orange-500"
-          />
-
-          <WideButton
-            buttonText="Close"
-            onPress={onClose}
-            buttonColor="bg-gray-500"
-          />
         </View>
       </View>
     </Modal>

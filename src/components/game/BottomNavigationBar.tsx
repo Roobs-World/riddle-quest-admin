@@ -16,6 +16,8 @@ import { View, TouchableOpacity } from "react-native";
 import ProfileIcon from "../icons/ProfileIcon";
 import SettingsIcon from "../icons/SettingsIcon";
 import LetsPlayIcon from "../../../assets/images/lets-play.svg";
+import { SPACING } from "../../styles";
+import { scale } from "../../utils/responsive";
 
 /**
  * Type definition for overlay types that can be triggered from the navigation bar.
@@ -95,39 +97,21 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
 }) => {
   return (
     <View
-      className="flex-row justify-between items-center bg-white px-4 w-full"
       style={{
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        backgroundColor: "#FFFFFF",
+        width: "100%",
         height: "10%",
         minHeight: "10%",
         maxHeight: "10%",
+        paddingHorizontal: SPACING.md,
       }}
     >
-      {/* Left Side - Profile Button */}
+      {/* Left Side - Settings Button */}
       <TouchableOpacity
-        className="ml-10"
-        onPress={() => onProfilePress()}
-        accessible={true}
-        accessibilityRole="button"
-        accessibilityLabel="Open profile"
-        accessibilityHint="View your profile, statistics, and game progress"
-      >
-        <ProfileIcon />
-      </TouchableOpacity>
-
-      {/* Center - Hint Button */}
-      <TouchableOpacity
-        onPress={() => onChangeGameModePress()}
-        accessible={true}
-        accessibilityRole="button"
-        accessibilityLabel="Show hint"
-        accessibilityHint="Get a hint for the current riddle. Costs 50 coins."
-      >
-        <LetsPlayIcon />
-      </TouchableOpacity>
-
-      {/* Right Side - Settings Button */}
-      <TouchableOpacity
-        className="mr-10"
+        style={{ marginLeft: scale(20), padding: scale(8) }}
         onPress={() => onSettingsPress()}
         testID="settings-button"
         accessible={true}
@@ -135,7 +119,43 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
         accessibilityLabel="Open settings"
         accessibilityHint="Access game settings, sound options, and account management"
       >
-        <SettingsIcon />
+        <SettingsIcon color="#401F40" />
+      </TouchableOpacity>
+
+      {/* Center - Change Game Mode Button (large dark purple circle) */}
+      <TouchableOpacity
+        onPress={() => onChangeGameModePress()}
+        accessible={true}
+        accessibilityRole="button"
+        accessibilityLabel="Change game mode"
+        accessibilityHint="Select Classic or Daily Challenge mode"
+        style={{
+          width: scale(56),
+          height: scale(56),
+          borderRadius: scale(28),
+          backgroundColor: "#401F40",
+          alignItems: "center",
+          justifyContent: "center",
+          shadowColor: "#401F40",
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.3,
+          shadowRadius: 8,
+          elevation: 6,
+        }}
+      >
+        <LetsPlayIcon width={scale(24)} height={scale(24)} />
+      </TouchableOpacity>
+
+      {/* Right Side - Profile Button */}
+      <TouchableOpacity
+        style={{ marginRight: scale(20), padding: scale(8) }}
+        onPress={() => onProfilePress()}
+        accessible={true}
+        accessibilityRole="button"
+        accessibilityLabel="Open profile"
+        accessibilityHint="View your profile, statistics, and game progress"
+      >
+        <ProfileIcon color="#401F40" />
       </TouchableOpacity>
     </View>
   );

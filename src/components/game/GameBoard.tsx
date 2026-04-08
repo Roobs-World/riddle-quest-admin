@@ -16,9 +16,10 @@ import { View } from "react-native";
 import RiddleText from "./RiddleText";
 import GuessGrid from "./GuessGrid";
 import Keyboard from "./Keyboard";
-import { isTablet } from "../../utils/responsive";
+import { isTablet, isLargeTablet } from "../../utils/responsive";
 import { styles } from "../../styles";
 import QuestionsSvg from "../../../assets/images/questions.svg";
+import type { Feedback } from "../../hooks/types";
 
 /**
  * Structure representing a submitted guess with feedback.
@@ -78,6 +79,12 @@ interface GameBoardProps {
 
   /** Alternative function to handle key presses (for backward compatibility) */
   onKeyPress?: (key: string) => void;
+
+  /** Best known feedback state per letter, passed to the keyboard for key colouring. */
+  letterStates?: Record<string, Feedback>;
+
+  /** Indices of positions revealed by hints in the current guess (shown as green). */
+  hintRevealedIndices?: number[];
 }
 
 /**
@@ -142,6 +149,8 @@ const GameBoard: React.FC<GameBoardProps> = ({
   isAnyOverlayVisible,
   setTileRef,
   onKeyPress,
+  letterStates,
+  hintRevealedIndices,
 }) => {
   // Use onKeyPress as a fallback if handleKeyPress is not provided
   const keyPressHandler = handleKeyPress || onKeyPress || (() => {});
@@ -153,6 +162,7 @@ const GameBoard: React.FC<GameBoardProps> = ({
         style={[
           styles.riddleContainer,
           isTablet && styles.riddleContainerTablet,
+          isLargeTablet && styles.riddleContainerLargeTablet,
           {
             maxHeight: "20%",
             height: "20%",
@@ -185,6 +195,7 @@ const GameBoard: React.FC<GameBoardProps> = ({
         currentGuess={currentGuess}
         answerLength={answerLength}
         setTileRef={setTileRef}
+        hintRevealedIndices={hintRevealedIndices}
       />
 
       {/* Interactive Keyboard - Hidden when overlays are visible */}
@@ -192,6 +203,7 @@ const GameBoard: React.FC<GameBoardProps> = ({
         submitKeyPress={keyPressHandler}
         handleBackspace={handleBackspace}
         isVisible={!isAnyOverlayVisible}
+        letterStates={letterStates}
       />
     </>
   );

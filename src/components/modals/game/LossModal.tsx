@@ -38,7 +38,7 @@ import { View, Text, Modal } from "react-native";
 import { TYPOGRAPHY } from "../../../styles";
 import WideButton from "../../buttons/WideButton";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
-import { scale } from "../../../utils/responsive";
+import { MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, MODAL_BUTTON_SPACER } from "../../../constants/layout";
 
 /**
  * Props interface for the LossModal component.
@@ -61,6 +61,21 @@ interface LossModalProps {
 
   /** Function to close the modal (from BaseModalProps) */
   onClose?: () => void;
+
+  /** When provided, shows a "Watch Ad" button to continue with extra attempts */
+  onWatchAdContinue?: () => void;
+
+  /** When provided, shows a "Use Coins" button to continue with extra attempts */
+  onCoinContinue?: () => void;
+
+  /** Coin cost shown on the coin-continue button */
+  coinContinueCost?: number;
+
+  /** Whether the rewarded ad is ready (disables the watch-ad button if false) */
+  canWatchAd?: boolean;
+
+  /** Whether the user has enough coins (disables the coin button if false) */
+  canUseCoin?: boolean;
 }
 
 /**
@@ -76,7 +91,13 @@ const LossModal: React.FC<LossModalProps> = ({
   onNext,
   onHome,
   onClose,
+  onWatchAdContinue,
+  onCoinContinue,
+  coinContinueCost,
+  canWatchAd,
+  canUseCoin,
 }) => {
+  const showContinueOptions = !!(onWatchAdContinue || onCoinContinue);
   const handleNextLevel = async () => {
     if (typeof onNext === "function") {
       await Promise.resolve(onNext());
@@ -89,6 +110,24 @@ const LossModal: React.FC<LossModalProps> = ({
   const handleHome = async () => {
     if (typeof onHome === "function") {
       await Promise.resolve(onHome());
+    }
+    if (typeof onClose === "function") {
+      onClose();
+    }
+  };
+
+  const handleWatchAdContinue = async () => {
+    if (typeof onWatchAdContinue === "function") {
+      await Promise.resolve(onWatchAdContinue());
+    }
+    if (typeof onClose === "function") {
+      onClose();
+    }
+  };
+
+  const handleCoinContinue = async () => {
+    if (typeof onCoinContinue === "function") {
+      await Promise.resolve(onCoinContinue());
     }
     if (typeof onClose === "function") {
       onClose();
@@ -108,79 +147,141 @@ const LossModal: React.FC<LossModalProps> = ({
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "rgba(0,0,0,0.6)",
+          backgroundColor: "rgba(0,0,0,0.5)",
         }}
       >
         <View
           style={{
-            width: 335,
-            height: 423,
+            width: MODAL_WIDTH,
+            height: MODAL_HEIGHT,
             alignItems: "center",
             justifyContent: "center",
           }}
         >
-          <ModalBg style={{ position: "absolute" }} />
+          <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{ position: "absolute" }} />
           <View
             style={{
               flex: 1,
               width: "100%",
               alignItems: "center",
               justifyContent: "space-around",
-              padding: 20,
+              padding: MODAL_CONTENT_PADDING,
             }}
           >
-            <View
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Text
-                style={{
-                  fontFamily: TYPOGRAPHY.fontPrimary,
-                  fontSize: scale(32),
-                  color: "white",
-                }}
-              >
-                Oh no!
-              </Text>
-              <Text
-                style={{
-                  fontFamily: TYPOGRAPHY.fontSecondary,
-                  fontSize: scale(20),
-                  color: "white",
-                  textAlign: "center",
-                }}
-              >
-                You lost this round.
-              </Text>
-            </View>
-            <View
-              style={{
-                flex: 2,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Text style={{ color: "white" }}>The correct word was</Text>
-              <Text
-                style={{
-                  fontFamily: TYPOGRAPHY.fontPrimary,
-                  fontSize: scale(32),
-                  color: "white",
-                  textTransform: "uppercase",
-                  letterSpacing: 2,
-                }}
-              >
-                {correctAnswer}
-              </Text>
-            </View>
-            <View style={{ flex: 1, justifyContent: "center", width: "100%" }}>
-              <WideButton onPress={handleNextLevel} buttonText="Next Level" />
-              <View style={{ height: 10 }} />
-              <WideButton onPress={handleHome} buttonText="Go to Lobby" />
-            </View>
+            {showContinueOptions ? (
+              <>
+                <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                  <Text
+                    style={{
+                      fontFamily: TYPOGRAPHY.fontPrimary,
+                      fontSize: TYPOGRAPHY.fontSize.display,
+                      color: "black",
+                      textAlign: "center",
+                    }}
+                  >
+                    So close!
+                  </Text>
+                  <Text
+                    style={{
+                      fontFamily: TYPOGRAPHY.fontSecondary,
+                      fontSize: TYPOGRAPHY.fontSize.xl,
+                      color: "black",
+                      textAlign: "center",
+                    }}
+                  >
+                    Out of attempts.
+                  </Text>
+                </View>
+                <View style={{ flex: 2, justifyContent: "center", width: "100%" }}>
+                  {onWatchAdContinue && (
+                    <>
+                      <WideButton
+                        onPress={handleWatchAdContinue}
+                        buttonText="Watch Ad to Continue"
+                        disabled={canWatchAd === false}
+                      />
+                      <View style={{ height: MODAL_BUTTON_SPACER }} />
+                    </>
+                  )}
+                  {onCoinContinue && (
+                    <>
+                      <WideButton
+                        onPress={handleCoinContinue}
+                        buttonText={`Use ${coinContinueCost ?? 0} Coins to Continue`}
+                        disabled={canUseCoin === false}
+                      />
+                      <View style={{ height: MODAL_BUTTON_SPACER }} />
+                    </>
+                  )}
+                  <WideButton onPress={handleNextLevel} buttonText="Skip Level" />
+                  <View style={{ height: MODAL_BUTTON_SPACER }} />
+                  <WideButton onPress={handleHome} buttonText="Go to Lobby" />
+                </View>
+              </>
+            ) : (
+              <>
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontFamily: TYPOGRAPHY.fontPrimary,
+                      fontSize: TYPOGRAPHY.fontSize.display,
+                      color: "black",
+                    }}
+                  >
+                    Oh no!
+                  </Text>
+                  <Text
+                    style={{
+                      fontFamily: TYPOGRAPHY.fontSecondary,
+                      fontSize: TYPOGRAPHY.fontSize.xl,
+                      color: "black",
+                      textAlign: "center",
+                    }}
+                  >
+                    You lost this round.
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    flex: 2,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontFamily: TYPOGRAPHY.fontSecondary,
+                      fontSize: TYPOGRAPHY.fontSize.base,
+                      color: "black",
+                    }}
+                  >
+                    The correct word was
+                  </Text>
+                  <Text
+                    style={{
+                      fontFamily: TYPOGRAPHY.fontPrimary,
+                      fontSize: TYPOGRAPHY.fontSize.display,
+                      color: "black",
+                      textTransform: "uppercase",
+                      letterSpacing: TYPOGRAPHY.letterSpacing.wide,
+                    }}
+                  >
+                    {correctAnswer}
+                  </Text>
+                </View>
+                <View style={{ flex: 1, justifyContent: "center", width: "100%" }}>
+                  <WideButton onPress={handleNextLevel} buttonText="Next Level" />
+                  <View style={{ height: MODAL_BUTTON_SPACER }} />
+                  <WideButton onPress={handleHome} buttonText="Go to Lobby" />
+                </View>
+              </>
+            )}
           </View>
         </View>
       </View>

@@ -1,6 +1,7 @@
 import {onCall, HttpsError, CallableRequest} from "firebase-functions/v2/https";
 import {logger} from "firebase-functions/v2";
 import * as admin from "firebase-admin";
+import {captureException} from "./sentry";
 
 // Define the expected data structure from the client
 interface RewardedAdCompletionData {
@@ -43,7 +44,7 @@ async function findValidatedPostback(
     const cutoffTime = new Date(Date.now() - POSTBACK_CORRELATION_WINDOW_MS);
 
     // Query for recent validated postbacks for this user
-    let query = admin
+    const query = admin
       .firestore()
       .collection("users")
       .doc(userId)
@@ -79,6 +80,7 @@ async function findValidatedPostback(
     };
   } catch (error) {
     logger.error("Error finding validated postback:", error);
+    captureException(error);
     return null;
   }
 }
@@ -107,6 +109,7 @@ async function recordClientNotification(
       });
   } catch (error) {
     logger.error("Error recording client notification:", error);
+    captureException(error);
     // Non-critical, don't throw
   }
 }

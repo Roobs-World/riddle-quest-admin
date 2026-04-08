@@ -29,30 +29,20 @@ jest.mock("../CoinsDisplay", () => {
   return MockCoinsDisplay;
 });
 
-// Mock the HintIcon component
-jest.mock("../../../icons/HintIcon", () => {
+// Mock LogoIcon (Header uses LogoIcon - path from __tests__ to components/icons)
+jest.mock("../../icons/LogoIcon", () => {
   const React = require("react");
-  const { View } = require("react-native");
+  const { View, Text } = require("react-native");
 
-  const MockHintIcon = ({ width, height, color }: any) => (
-    <View
-      testID="hint-icon"
-      style={{ width, height, backgroundColor: color }}
-    />
+  const MockLogoIcon = () => (
+    <View testID="logo-icon">
+      <Text>Logo</Text>
+    </View>
   );
 
-  MockHintIcon.displayName = "MockHintIcon";
-  return MockHintIcon;
+  MockLogoIcon.displayName = "MockLogoIcon";
+  return MockLogoIcon;
 });
-
-// Mock AppStrings
-jest.mock("../../../constants/AppStrings", () => ({
-  AppStrings: {
-    Navigation: {
-      HINT_BUTTON: "Hint",
-    },
-  },
-}));
 
 describe("Header", () => {
   const defaultProps = {
@@ -74,16 +64,16 @@ describe("Header", () => {
       expect(getByTestId("header-right-side")).toBeTruthy();
     });
 
-    it("renders hint button with correct text", () => {
+    it("renders logo button", () => {
       const { getByText } = render(<Header {...defaultProps} />);
 
-      expect(getByText("Hint")).toBeTruthy();
+      expect(getByText("Logo")).toBeTruthy();
     });
 
-    it("renders hint icon", () => {
+    it("renders logo icon", () => {
       const { getByTestId } = render(<Header {...defaultProps} />);
 
-      expect(getByTestId("hint-icon")).toBeTruthy();
+      expect(getByTestId("logo-icon")).toBeTruthy();
     });
 
     it("renders coins display component", () => {
@@ -106,7 +96,8 @@ describe("Header", () => {
       expect(header.props.className).toContain("flex-row");
       expect(header.props.className).toContain("items-center");
       expect(header.props.className).toContain("justify-between");
-      expect(header.props.className).toContain("p-4");
+      const style = header.props.style ?? {};
+      expect(style.paddingHorizontal).toBeDefined();
     });
   });
 
@@ -125,27 +116,21 @@ describe("Header", () => {
       expect(getByTestId("coins-display-touchable")).toBeTruthy();
     });
 
-    it("renders HintIcon with correct dimensions", () => {
+    it("renders LogoIcon in left side", () => {
       const { getByTestId } = render(<Header {...defaultProps} />);
 
-      const hintIcon = getByTestId("hint-icon");
-      expect(hintIcon.props.style).toMatchObject({
-        width: 24,
-        height: 24,
-        backgroundColor: "#ffffff",
-      });
+      const logoIcon = getByTestId("logo-icon");
+      expect(logoIcon).toBeTruthy();
     });
 
-    it("shows left side components in correct order", () => {
+    it("shows left side with logo", () => {
       const { getByTestId } = render(<Header {...defaultProps} />);
 
       const leftSide = getByTestId("header-left-side");
-      expect(leftSide.props.className).toContain("flex-row");
-      expect(leftSide.props.className).toContain("items-center");
-      expect(leftSide.props.className).toContain("space-x-3");
+      expect(leftSide).toBeTruthy();
     });
 
-    it("maintains empty right side for future expansion", () => {
+    it("maintains right side with coins", () => {
       const { getByTestId } = render(<Header {...defaultProps} />);
 
       const rightSide = getByTestId("header-right-side");
@@ -154,11 +139,11 @@ describe("Header", () => {
   });
 
   describe("Button Interactions", () => {
-    it("calls onHintPress when hint button is pressed", () => {
+    it("calls onHintPress when logo button is pressed", () => {
       const { getByTestId } = render(<Header {...defaultProps} />);
 
-      const hintButton = getByTestId("hint-button");
-      fireEvent.press(hintButton);
+      const logoButton = getByTestId("logo-button");
+      fireEvent.press(logoButton);
 
       expect(defaultProps.onHintPress).toHaveBeenCalledTimes(1);
     });
@@ -172,13 +157,13 @@ describe("Header", () => {
       expect(defaultProps.onCoinsPress).toHaveBeenCalledTimes(1);
     });
 
-    it("handles multiple hint button presses", () => {
+    it("handles multiple logo button presses", () => {
       const { getByTestId } = render(<Header {...defaultProps} />);
 
-      const hintButton = getByTestId("hint-button");
-      fireEvent.press(hintButton);
-      fireEvent.press(hintButton);
-      fireEvent.press(hintButton);
+      const logoButton = getByTestId("logo-button");
+      fireEvent.press(logoButton);
+      fireEvent.press(logoButton);
+      fireEvent.press(logoButton);
 
       expect(defaultProps.onHintPress).toHaveBeenCalledTimes(3);
     });
@@ -202,11 +187,10 @@ describe("Header", () => {
         />
       );
 
-      const hintButton = getByTestId("hint-button");
-      const coinsDisplay = getByTestId("coins-display"); // Use coins-display when onPress is undefined
+      const logoButton = getByTestId("logo-button");
+      const coinsDisplay = getByTestId("coins-display");
 
-      // Should not throw errors
-      expect(() => fireEvent.press(hintButton)).not.toThrow();
+      expect(() => fireEvent.press(logoButton)).not.toThrow();
       expect(() => fireEvent.press(coinsDisplay)).not.toThrow();
     });
   });
@@ -219,33 +203,73 @@ describe("Header", () => {
       expect(header.props.accessible).toBe(true);
       expect(header.props.accessibilityRole).toBe("none");
       expect(header.props.accessibilityLabel).toBe(
-        "Game header with hint button and coin balance"
+        "Game header with logo and coin balance"
       );
     });
 
-    it("has proper hint button accessibility properties", () => {
+    it("has proper logo button accessibility properties", () => {
       const { getByTestId } = render(<Header {...defaultProps} />);
 
-      const hintButton = getByTestId("hint-button");
-      expect(hintButton.props.accessible).toBe(true);
-      expect(hintButton.props.accessibilityRole).toBe("button");
-      expect(hintButton.props.accessibilityLabel).toBe(
-        "Get hint for current riddle"
-      );
+      const logoButton = getByTestId("logo-button");
+      expect(logoButton.props.accessible).toBe(true);
+      expect(logoButton.props.accessibilityRole).toBe("button");
+      expect(logoButton.props.accessibilityLabel).toBe("logo");
     });
 
     it("maintains accessibility structure for components", () => {
       const { getByTestId } = render(<Header {...defaultProps} />);
 
-      expect(getByTestId("hint-button")).toBeTruthy();
+      expect(getByTestId("logo-button")).toBeTruthy();
       expect(getByTestId("coins-display-touchable")).toBeTruthy();
     });
 
-    it("provides accessible hint icon", () => {
+    it("provides accessible logo icon", () => {
       const { getByTestId } = render(<Header {...defaultProps} />);
 
-      const hintIcon = getByTestId("hint-icon");
-      expect(hintIcon).toBeTruthy();
+      const logoIcon = getByTestId("logo-icon");
+      expect(logoIcon).toBeTruthy();
+    });
+  });
+
+  describe("Tutorial mode", () => {
+    it("does not show tutorial cues when isTutorial is false", () => {
+      const { queryByTestId } = render(
+        <Header
+          {...defaultProps}
+          isTutorial={false}
+          tutorialStep={1}
+          tutorialTotalSteps={5}
+        />
+      );
+      expect(queryByTestId("header-tutorial-cues")).toBeNull();
+    });
+
+    it("shows tutorial label and step when isTutorial is true", () => {
+      const { getByTestId, getByText } = render(
+        <Header
+          {...defaultProps}
+          isTutorial={true}
+          tutorialStep={2}
+          tutorialTotalSteps={5}
+        />
+      );
+      expect(getByTestId("header-tutorial-cues")).toBeTruthy();
+      expect(getByTestId("header-tutorial-label")).toBeTruthy();
+      expect(getByText("Tutorial")).toBeTruthy();
+      expect(getByTestId("header-tutorial-step-text")).toBeTruthy();
+      expect(getByText("Step 2 of 5")).toBeTruthy();
+    });
+
+    it("shows Step X only when tutorialTotalSteps is not provided", () => {
+      const { getByText } = render(
+        <Header
+          {...defaultProps}
+          isTutorial={true}
+          tutorialStep={3}
+          tutorialTotalSteps={undefined}
+        />
+      );
+      expect(getByText("Step 3")).toBeTruthy();
     });
   });
 
@@ -301,7 +325,6 @@ describe("Header", () => {
     it("handles rapid prop changes efficiently", () => {
       const { rerender } = render(<Header {...defaultProps} />);
 
-      // Simulate rapid prop changes
       for (let i = 0; i < 20; i++) {
         rerender(
           <Header
@@ -313,18 +336,16 @@ describe("Header", () => {
         );
       }
 
-      // Should not throw errors
       expect(true).toBe(true);
     });
 
     it("handles rapid button presses efficiently", () => {
       const { getByTestId } = render(<Header {...defaultProps} />);
 
-      const hintButton = getByTestId("hint-button");
+      const logoButton = getByTestId("logo-button");
 
-      // Simulate rapid button presses
       for (let i = 0; i < 10; i++) {
-        fireEvent.press(hintButton);
+        fireEvent.press(logoButton);
       }
 
       expect(defaultProps.onHintPress).toHaveBeenCalledTimes(10);
@@ -340,7 +361,7 @@ describe("Header", () => {
       rerender(<Header {...defaultProps} userCoins={20} />);
 
       expect(getByTestId("coins-display-touchable")).toBeTruthy();
-      expect(getByTestId("hint-button")).toBeTruthy();
+      expect(getByTestId("logo-button")).toBeTruthy();
     });
 
     it("handles callback changes efficiently", () => {
@@ -354,7 +375,7 @@ describe("Header", () => {
 
       rerender(<Header {...newCallbacks} />);
 
-      fireEvent.press(getByTestId("hint-button"));
+      fireEvent.press(getByTestId("logo-button"));
       fireEvent.press(getByTestId("coins-display-touchable"));
 
       expect(newCallbacks.onHintPress).toHaveBeenCalledTimes(1);

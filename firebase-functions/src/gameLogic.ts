@@ -2,135 +2,8 @@ import {logger} from "firebase-functions/v2";
 import * as admin from "firebase-admin";
 import {onCall, HttpsError, CallableRequest} from "firebase-functions/v2/https";
 import {updateUserCoins, getUser, getRiddleByGameMode} from "./firestoreService";
-
-/**
- * Provides a hint (reveals a letter) for the current riddle based on the user's
- * current attempt.
- * @param data - The request data object containing currentAttempt, riddleId, and gameMode.
- * @param data.currentAttempt - An array of strings representing the user's
- * current guess attempt.
- * @param data.riddleId - The ID of the riddle being attempted.
- * @param data.gameMode - The game mode ('classic', 'challenge', or 'tutorial').
- * @param context - The context object representing the request context.
- * @return An object containing the revealed letter, its index, and the coin cost,
- * or null if no hint is available/applicable.
- */
-export const getHint = onCall(
-  {},
-  async (
-    request: CallableRequest<{
-      currentAttempt: string[];
-      riddleId: string;
-      gameMode: "classic" | "challenge" | "tutorial";
-    }>,
-  ): Promise<{revealedLetter: string; index: number; coinsCost: number} | null> => {
-    try {
-      if (!request.auth) {
-        throw new HttpsError("unauthenticated", "The user must be authenticated to get a hint.");
-      }
-
-      const currentUserId = request.auth.uid;
-      const {currentAttempt, riddleId, gameMode} = request.data;
-
-      // Validate game mode
-      if (!["classic", "challenge", "tutorial"].includes(gameMode)) {
-        throw new HttpsError("invalid-argument", "Invalid game mode specified.");
-      }
-
-      // Get riddle from the appropriate collection based on game mode
-      const riddleData = await getRiddleByGameMode(riddleId, gameMode);
-
-      if (!riddleData) {
-        throw new HttpsError("not-found", `${gameMode} riddle with ID ${riddleId} not found.`);
-      }
-
-      if (!riddleData.answer) {
-        throw new HttpsError("internal", `Answer not found for ${gameMode} riddle ID ${riddleId}.`);
-      }
-
-      const answer: string = riddleData.answer.toLowerCase();
-      const coinsCost = 50;
-
-      const user = await getUser(currentUserId);
-
-      if (!user) {
-        throw new HttpsError("not-found", "User data not found.");
-      }
-
-      if (user.coins < coinsCost) {
-        throw new HttpsError("failed-precondition", "Insufficient coins to get a hint.");
-      }
-
-      const gameStateRef = admin
-        .firestore()
-        .collection("users")
-        .doc(currentUserId)
-        .collection("riddleStates")
-        .doc(riddleId);
-      const gameStateDoc = await gameStateRef.get();
-      const gameState = gameStateDoc.data();
-      const hintRevealedIndices: number[] = gameState?.hintRevealedIndices || [];
-      const isGameCompleted = gameState?.isCompleted === true;
-
-      if (isGameCompleted) {
-        logger.warn(`User ${currentUserId} requested hint for completed ${gameMode} riddle ${riddleId}.`);
-        throw new HttpsError("failed-precondition", "Game is already completed.");
-      }
-
-      const guessedLetters: string[] = currentAttempt.map((letter: string) => letter.toLowerCase());
-
-      let revealedLetter: string | null = null;
-      let index: number | null = null;
-
-      for (let i = 0; i < answer.length; i++) {
-        const answerLetter: string = answer[i];
-        const guessedLetter: string = guessedLetters[i];
-
-        if (guessedLetter !== answerLetter && !hintRevealedIndices.includes(i)) {
-          revealedLetter = answerLetter;
-          index = i;
-          break;
-        }
-      }
-
-      if (revealedLetter === null || index === null) {
-        logger.warn(
-          `No hint available for user ${currentUserId}, ${gameMode} riddle ${riddleId}. All letters revealed or guessed correctly.`,
-        );
-        return null;
-      }
-
-      await updateUserCoins(currentUserId, -coinsCost);
-
-      await gameStateRef.set(
-        {
-          hintRevealedIndices: [...hintRevealedIndices, index],
-        },
-        {merge: true},
-      );
-
-      logger.info(
-        `User ${currentUserId} used a hint for ${gameMode} riddle ${riddleId}, revealing letter ${revealedLetter.toUpperCase()} at index ${index}.`,
-      );
-
-      return {
-        revealedLetter: revealedLetter.toUpperCase(),
-        index,
-        coinsCost,
-      };
-    } catch (error) {
-      // Only log unexpected errors, not expected business logic errors
-      if (error instanceof HttpsError) {
-        // These are expected errors (authentication, validation, business logic)
-        // Don't log them as errors since they're part of normal operation
-        throw error;
-      }
-      // Log unexpected errors (system errors, database errors, etc.)
-      logger.error("Unexpected error getting hint:", error);
-      throw new HttpsError("internal", "An error occurred while getting a hint.", error);
-    }
-  },
-);
+import {SKIP_COST_CLASSIC, SKIP_COST_DAILY, SKIP_COST_TUTORIAL} from "./constants";
+import {captureException} from "./sentry";
 
 /**
  * Skips the current riddle by marking it as completed and advancing to the next level/question.
@@ -164,20 +37,20 @@ export const skipRiddle = onCall(
         throw new HttpsError("not-found", "User data not found.");
       }
 
-      // Different skip costs for different modes
+      // Different skip costs for different modes (must match client src/constants/game.ts)
       let skipCost: number;
       switch (gameMode) {
         case "tutorial":
-          skipCost = 25; // Cheapest, to help new users
+          skipCost = SKIP_COST_TUTORIAL;
           break;
         case "classic":
-          skipCost = 100; // Standard cost
+          skipCost = SKIP_COST_CLASSIC;
           break;
         case "challenge":
-          skipCost = 150; // Most expensive, since daily challenges are premium content
+          skipCost = SKIP_COST_DAILY;
           break;
         default:
-          skipCost = 100;
+          skipCost = SKIP_COST_CLASSIC;
       }
 
       if (user.coins < skipCost) {
@@ -287,7 +160,7 @@ export const skipRiddle = onCall(
 
         // If all 5 questions are completed, mark daily challenge as fully completed
         if (isFullyCompleted) {
-          updates.lastDailyChallengeCompletedAt = new Date().toISOString();
+          updates.lastDailyChallengeCompletedAt = admin.firestore.FieldValue.serverTimestamp();
         }
 
         await userRef.update(updates);
@@ -317,6 +190,7 @@ export const skipRiddle = onCall(
         throw error;
       }
       logger.error("Unexpected error skipping riddle:", error);
+      captureException(error);
       throw new HttpsError("internal", "An error occurred while skipping the riddle.", error);
     }
   },
@@ -345,9 +219,8 @@ export const spendCoins = onCall(
       throw new HttpsError("invalid-argument", "Invalid amount specified.");
     }
 
-    // Updated to accept both "hint" and "skip" as valid reasons
-    if (!["hint", "skip"].includes(reason)) {
-      throw new HttpsError("invalid-argument", "Invalid reason specified. Must be 'hint' or 'skip'.");
+    if (!["hint", "skip", "continue"].includes(reason)) {
+      throw new HttpsError("invalid-argument", "Invalid reason specified. Must be 'hint', 'skip', or 'continue'.");
     }
 
     try {
@@ -380,6 +253,7 @@ export const spendCoins = onCall(
       }
       // Log unexpected errors (system errors, database errors, etc.)
       logger.error("Unexpected error spending coins:", error);
+      captureException(error);
       throw new HttpsError("internal", "An error occurred while spending coins.", error);
     }
   },

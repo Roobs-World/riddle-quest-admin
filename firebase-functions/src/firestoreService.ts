@@ -1,5 +1,6 @@
 import * as admin from "firebase-admin";
 // Removed unused import: import { getFirestore, FieldValue, Timestamp } from "firebase-admin/firestore";
+import {captureException} from "./sentry";
 import type {
   Player,
   PlayerStatsUpdate,
@@ -7,6 +8,7 @@ import type {
   ClassicRiddle,
   DailyRiddle,
   TutorialRiddle,
+  UnlockedAchievement,
 } from "./validation/firestoreSchemas";
 import {RiddleCollections} from "./validation/firestoreSchemas";
 // Removed import for non-existent models.js: import type { GameState } from "./models.js";
@@ -76,6 +78,7 @@ export async function updateUserLastCompletedDailyChallengeDate(userId: string, 
     await getDb().collection("users").doc(userId).update({lastDailyChallengeCompletedAt: date});
   } catch (error) {
     functions.logger.error(`Error updating last completed daily challenge date for user ${userId}:`, error);
+    captureException(error);
     throw error;
   }
 }
@@ -123,7 +126,7 @@ export async function updateUserCoins(
     await getDb().runTransaction(updateOperation);
   }
 
-  console.log(`User ${userId} coins updated by ${coinsToAdd}.`);
+  functions.logger.info(`User ${userId} coins updated by ${coinsToAdd}.`);
 }
 
 /**
@@ -161,7 +164,7 @@ export async function updateUserStats(
     await getDb().runTransaction(updateOperation);
   }
 
-  console.log(`Stats for user ${userId} updated.`);
+  functions.logger.info(`Stats for user ${userId} updated.`);
 }
 
 /**
@@ -176,6 +179,7 @@ export async function updateUserProfile(userId: string, profileUpdate: Partial<P
     await getDb().collection("users").doc(userId).update(profileUpdate);
   } catch (error) {
     functions.logger.error(`Error updating profile for user ${userId}:`, error);
+    captureException(error);
     throw error;
   }
 }
@@ -223,9 +227,11 @@ export async function initializeNewUser(
         winStreak: 0,
         totalWins: 0,
         totalGuessesInWins: 0,
+        totalHintsUsed: 0,
       },
+      unlockedAchievements: [],
       progress: {
-        classicIndex: 0,
+        classicIndex: 1,
         dailyChallengeIndex: 0,
         dailyChallengeCurrentQuestion: 0,
         tutorialIndex: 0,
@@ -236,6 +242,7 @@ export async function initializeNewUser(
     functions.logger.info(`Initialized new user document for ${userId} with default stats and progress`);
   } catch (error) {
     functions.logger.error(`Error initializing new user ${userId}:`, error);
+    captureException(error);
     throw error;
   }
 }
@@ -278,6 +285,7 @@ export async function ensureUserDocumentComplete(userId: string): Promise<void> 
         winStreak: 0,
         totalWins: 0,
         totalGuessesInWins: 0,
+        totalHintsUsed: 0,
       };
     } else {
       // Check for missing stat fields and add defaults
@@ -296,6 +304,7 @@ export async function ensureUserDocumentComplete(userId: string): Promise<void> 
         winStreak: 0,
         totalWins: 0,
         totalGuessesInWins: 0,
+        totalHintsUsed: 0,
       };
 
       let needsStatsUpdate = false;
@@ -316,7 +325,7 @@ export async function ensureUserDocumentComplete(userId: string): Promise<void> 
     // Ensure progress object exists with all required fields
     if (!userData.progress) {
       updates.progress = {
-        classicIndex: 0,
+        classicIndex: 1,
         dailyChallengeIndex: 0,
         dailyChallengeCurrentQuestion: 0,
         tutorialIndex: 0,
@@ -324,7 +333,7 @@ export async function ensureUserDocumentComplete(userId: string): Promise<void> 
     } else {
       const currentProgress = userData.progress;
       const defaultProgress = {
-        classicIndex: 0,
+        classicIndex: 1,
         dailyChallengeIndex: 0,
         dailyChallengeCurrentQuestion: 0,
         tutorialIndex: 0,
@@ -354,6 +363,10 @@ export async function ensureUserDocumentComplete(userId: string): Promise<void> 
       updates.hasPurchasedApp = false;
     }
 
+    if (!Array.isArray(userData.unlockedAchievements)) {
+      updates.unlockedAchievements = [];
+    }
+
     // Apply updates if any are needed
     if (Object.keys(updates).length > 0) {
       await userRef.update(updates);
@@ -361,8 +374,38 @@ export async function ensureUserDocumentComplete(userId: string): Promise<void> 
     }
   } catch (error) {
     functions.logger.error(`Error ensuring user document completeness for ${userId}:`, error);
+    captureException(error);
     throw error;
   }
+}
+
+/**
+ * Appends newly unlocked achievements to the user document.
+ * Deduplicates by achievementId so the same achievement is not added twice.
+ *
+ * @param userId - The user's ID.
+ * @param newEntries - Array of { achievementId, unlockedAt } to append.
+ * @return A promise that resolves when the update is complete.
+ */
+export async function appendUnlockedAchievements(
+  userId: string,
+  newEntries: UnlockedAchievement[],
+): Promise<void> {
+  if (newEntries.length === 0) return;
+  const userRef = getDb().collection("users").doc(userId);
+  const userDoc = await userRef.get();
+  if (!userDoc.exists) {
+    functions.logger.warn(`Cannot append achievements: user ${userId} not found`);
+    return;
+  }
+  const existing = (userDoc.data()?.unlockedAchievements as UnlockedAchievement[] | undefined) || [];
+  const existingIds = new Set(existing.map((e) => e.achievementId));
+  const toAdd = newEntries.filter((e) => !existingIds.has(e.achievementId));
+  if (toAdd.length === 0) return;
+  await userRef.update({
+    unlockedAchievements: admin.firestore.FieldValue.arrayUnion(...toAdd),
+  });
+  functions.logger.info(`Appended ${toAdd.length} achievements for user ${userId}`);
 }
 
 /**

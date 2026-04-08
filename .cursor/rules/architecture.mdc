@@ -1,0 +1,17 @@
+---
+description: Enforce monorepo architecture boundaries and dependency rules
+alwaysApply: true
+---
+
+# Architecture Rules
+
+- `apps/` must not depend on other `apps/`.
+- `packages/` must not depend on `apps/`.
+- No circular dependencies.
+- Domain logic must not live in UI components.
+- Domain layer must be framework-agnostic.
+- Components must remain thin and focused.
+- Shared logic must reside in `packages/core/`.
+- Avoid tight coupling between modules.
+- Navigation logic must be isolated.
+- Violations must be logged to memorybank as drift entries.

@@ -1,30 +1,39 @@
+/**
+ * @fileoverview
+ * Landing screen for the Qwordly authentication flow.
+ *
+ * This screen is the primary entry point for unauthenticated users. It
+ * provides email/password, Google, and Facebook sign-in options, a path
+ * to registration, and a "Play as Guest" shortcut into game mode selection.
+ */
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text } from "react-native";
 import CustomSafeAreaView from "../components/layouts/CustomSafeAreaView";
 import GoogleSignInButton from "../components/buttons/GoogleSignInButton";
 import FacebookSignInButton from "../components/buttons/FacebookSignInButton";
 import WideButton from "../components/buttons/WideButton";
-import HomeBgSvg from "../../assets/images/home-bg.svg";
-import SignUpButton from "../components/buttons/SignUpButton";
+import StarryBackground from "../components/background/StarryBackground";
 import PulsingSpinner from "../components/loading/PulsingSpinner";
 import { AppStrings } from "../constants/AppStrings";
+import { LOADING_SPINNER_SIZE } from "../constants/loading";
 import Subtitle from "../components/text/Subtitle";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { AuthService } from "../services/AuthService";
 import { useAuth } from "../contexts/AuthContext";
 import Error from "../components/text/Error";
 import { type FirebaseAuthTypes } from "@react-native-firebase/auth";
-import { styles } from "../styles";
-import useModal from "../hooks/useModal";
+import { styles, SPACING } from "../styles";
+import { logger } from "../utils/logger";
+import { captureException } from "../utils/sentry";
+import CreditsModal from "../components/modals/help/CreditsModal";
+import GameModeModal from "../components/modals/game/GameModeModal";
 
 type RootStackParamList = {
   Landing: undefined;
   Login: undefined;
-  SignUp: undefined;
   ForgotPassword: undefined;
   NewPassword: undefined;
-  Game: { mode: "classic" | "daily" };
-  Credits: undefined;
+  Game: undefined;
 };
 
 type LandingScreenNavigationProp = NativeStackNavigationProp<
@@ -33,10 +42,13 @@ type LandingScreenNavigationProp = NativeStackNavigationProp<
 >;
 
 /**
- * Landing screen for the authentication flow.
- * Allows users to navigate to sign in or sign up, or sign in with social providers.
+ * Landing screen component used at the root of the auth stack.
  *
- * @param {object} navigation - The navigation prop from React Navigation.
+ * It wires social sign-in handlers, navigates to email/password login and
+ * registration screens, and exposes a guest play CTA that opens the game
+ * mode selection modal before routing into gameplay.
+ *
+ * @param navigation React Navigation stack navigation prop.
  */
 const LandingScreen = ({
   navigation,
@@ -45,8 +57,9 @@ const LandingScreen = ({
 }) => {
   const [authError, setAuthError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
-  const { showGameModeModal } = useModal();
+  const { login, isAuthenticated, setGameMode } = useAuth();
+  const [isCreditsVisible, setIsCreditsVisible] = useState(false);
+  const [isGameModeVisible, setIsGameModeVisible] = useState(false);
 
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
@@ -54,13 +67,14 @@ const LandingScreen = ({
 
     try {
       const userCredential = await AuthService.signInWithGoogle();
-      console.log("Google login success:", userCredential);
+      logger.debug("Google login success:", userCredential);
       if (userCredential.user?.uid) {
         login();
       }
     } catch (error) {
       const firebaseError = error as FirebaseAuthTypes.NativeFirebaseAuthError;
-      console.error("Google login error:", firebaseError);
+      logger.error("Google login error:", firebaseError);
+      captureException(error);
       switch (firebaseError.code) {
         case "auth/account-exists-with-different-credential":
           setAuthError(
@@ -68,7 +82,7 @@ const LandingScreen = ({
           );
           break;
         case "auth/auth-popup-closed-by-user":
-          console.log("Auth popup closed by user.");
+          logger.debug("Auth popup closed by user.");
           break;
         default:
           setAuthError(
@@ -87,12 +101,13 @@ const LandingScreen = ({
 
     try {
       const userCredential = await AuthService.signInWithFacebook();
-      console.log("Facebook login success:", userCredential);
+      logger.debug("Facebook login success:", userCredential);
       if (userCredential.user?.uid) {
         login();
       }
     } catch (error: unknown) {
-      console.error("Facebook login error:", error);
+      logger.error("Facebook login error:", error);
+      captureException(error);
 
       // Check if the error is a user cancellation first (more specific matching)
       if (error instanceof Error) {
@@ -103,14 +118,14 @@ const LandingScreen = ({
           errorMessage === "User cancelled the login process" ||
           errorMessage === "Facebook login cancelled."
         ) {
-          console.log("Facebook login cancelled by user.");
+          logger.debug("Facebook login cancelled by user.");
           // Don't show error for cancellation - it's expected behavior
           return;
         }
 
         // Handle specific Facebook SDK errors
         if (errorMessage.includes("access token")) {
-          console.error("Facebook access token error detected");
+          logger.error("Facebook access token error detected");
           setAuthError(
             "Facebook login configuration issue. Please try again or contact support."
           );
@@ -118,7 +133,7 @@ const LandingScreen = ({
         }
 
         if (errorMessage.includes("Facebook permission request timed out")) {
-          console.error("Facebook login timeout detected");
+          logger.error("Facebook login timeout detected");
           setAuthError(
             "Facebook login timed out. This may indicate a configuration issue. Please try again."
           );
@@ -126,7 +141,7 @@ const LandingScreen = ({
         }
 
         if (errorMessage.includes("Facebook SDK not properly initialized")) {
-          console.error("Facebook SDK initialization error detected");
+          logger.error("Facebook SDK initialization error detected");
           setAuthError(
             "Facebook login is not properly configured. Please restart the app and try again."
           );
@@ -152,7 +167,7 @@ const LandingScreen = ({
             );
             break;
           case "auth/auth-popup-closed-by-user":
-            console.log("Auth popup closed by user.");
+            logger.debug("Auth popup closed by user.");
             break;
           case "auth/operation-not-supported-in-this-environment":
             setAuthError(
@@ -180,7 +195,7 @@ const LandingScreen = ({
             ? (error as Error).message
             : "An unexpected error occurred during Facebook login.";
 
-        console.error("Non-Firebase Facebook error:", errorMessage);
+        logger.error("Non-Firebase Facebook error:", errorMessage);
         setAuthError(errorMessage);
       }
     } finally {
@@ -189,101 +204,76 @@ const LandingScreen = ({
   };
 
   const handlePlayButtonPress = () => {
-    showGameModeModal({
-      onSelectMode: (mode) => {
-        console.log(`Selected game mode: ${mode}`);
-        // Handle mode selection here
-        if (mode === "classic") {
-          // Navigate to classic mode
-          navigation.navigate("Game", { mode: "classic" });
-        } else if (mode === "daily") {
-          // Navigate to daily challenge
-          navigation.navigate("Game", { mode: "daily" });
-        }
-      },
-      currentLevel: 8, // Example level to display
-    });
+    // Show game mode selection first; sign-in happens after the user picks a mode
+    // so that the modal isn't unmounted when isAuthenticated flips to true.
+    setIsGameModeVisible(true);
   };
 
   return (
     <CustomSafeAreaView className="justify-start">
-      <HomeBgSvg width="120%" height="100%" style={styles.backgroundImage} />
+      <StarryBackground />
 
-      <ScrollView
-        className="w-full"
-        contentContainerStyle={{
-          flexGrow: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          paddingVertical: 20,
-        }}
-        showsVerticalScrollIndicator={false}
-      >
-        <Text
-          className="text-2xl font-bold text-gray-800 text-center mb-8"
-          style={styles.title}
-        >
-          {AppStrings.AuthStrings.Landing.TAGLINE_1}
-        </Text>
-        <Subtitle text={AppStrings.AuthStrings.Landing.TAGLINE_2} />
-
-        <WideButton
-          buttonText={AppStrings.AuthStrings.Landing.SIGN_IN_BUTTON}
-          onPress={() => navigation.navigate(AppStrings.Navigation.LOGIN)}
-          disabled={isLoading}
-        />
-
-        <View className="flex-row items-center mt-4 mb-8">
-          <View className="flex-1 h-px bg-gray-400 mr-2" />
-          <Text className="text-sm text-black-400" style={styles.separatorText}>
-            {AppStrings.AuthStrings.Landing.OR_SIGN_IN_WITH}
-          </Text>
-          <View className="flex-1 h-px bg-gray-400 ml-2" />
-        </View>
-
-        <GoogleSignInButton onPress={handleGoogleSignIn} disabled={isLoading} />
-
-        <FacebookSignInButton
-          onPress={handleFacebookSignIn}
-          disabled={isLoading}
-        />
-
-        {authError && <Error message={authError} />}
-
-        <View className="flex-row items-center mt-8">
-          <View className="flex-1 h-px bg-gray-400 mr-2" />
-          <Text className="text-sm text-black-400" style={styles.separatorText}>
-            {AppStrings.AuthStrings.Landing.NO_ACCOUNT_PROMPT}{" "}
-          </Text>
-          <View className="flex-1 h-px bg-gray-400 ml-2" />
-        </View>
-
-        <SignUpButton
-          onPress={() => navigation.navigate(AppStrings.Navigation.SIGN_UP)}
-        />
-
-        {/* Play as Guest Button */}
-        <WideButton
-          buttonText="Play as Guest"
-          onPress={handlePlayButtonPress}
-          disabled={isLoading}
-          buttonColor="bg-purple-600"
-        />
-
-        <TouchableOpacity
-          onPress={() => navigation.navigate(AppStrings.Navigation.CREDITS)}
-          className="mt-6 mb-4"
-        >
+      <View style={{ flex: 1, width: '100%', alignItems: 'center', zIndex: 2 }}>
+        {/* Title at the top */}
+        <View style={{ alignItems: 'center', paddingTop: SPACING.xl }}>
           <Text
-            className="text-center text-sm text-gray-500 underline"
-            style={styles.creditsLink}
+            className="font-bold text-white text-center"
+            style={[styles.title, { marginBottom: SPACING.md, color: '#FFFFFF' }]}
           >
-            Credits
+            {AppStrings.AuthStrings.Landing.TAGLINE_1}
           </Text>
-        </TouchableOpacity>
-      </ScrollView>
+          <Subtitle text={AppStrings.AuthStrings.Landing.TAGLINE_2} />
+        </View>
 
-      <PulsingSpinner visible={isLoading} size={120} />
+        {/* Spacer — solar system visible here */}
+        <View style={{ flex: 1, minHeight: 0 }} />
+
+        {/* Buttons at the bottom */}
+        <View style={{ width: '100%', alignItems: 'center', gap: SPACING.md, paddingBottom: SPACING.xl }}>
+          <GoogleSignInButton onPress={handleGoogleSignIn} disabled={isLoading} />
+          <FacebookSignInButton onPress={handleFacebookSignIn} disabled={isLoading} />
+          {authError && <Error message={authError} />}
+          <WideButton
+            buttonText="Play as Guest"
+            onPress={handlePlayButtonPress}
+            disabled={isLoading}
+            buttonColor="bg-purple-600"
+          />
+          <WideButton
+            buttonText="Credits"
+            onPress={() => setIsCreditsVisible(true)}
+            buttonColor="bg-white"
+            textColor="text-black"
+          />
+        </View>
+      </View>
+
+      <PulsingSpinner visible={isLoading} size={LOADING_SPINNER_SIZE} />
+      <CreditsModal
+        isVisible={isCreditsVisible}
+        onClose={() => setIsCreditsVisible(false)}
+      />
+      <GameModeModal
+        isVisible={isGameModeVisible}
+        onClose={() => setIsGameModeVisible(false)}
+        onSelectMode={async (mode) => {
+          setIsGameModeVisible(false);
+          setIsLoading(true);
+          try {
+            if (isAuthenticated) {
+              await AuthService.logout();
+            }
+            setGameMode(mode);
+            await AuthService.signInAnonymously();
+            // isAuthenticated becomes true → Navigation switches to Game automatically
+          } catch (error) {
+            logger.error("Error signing in anonymously for guest play:", error);
+            captureException(error);
+          } finally {
+            setIsLoading(false);
+          }
+        }}
+      />
     </CustomSafeAreaView>
   );
 };

@@ -97,6 +97,7 @@ describe("cloudFunctionsSchemas", () => {
         guess: "table",
         riddleId: "riddle123",
         gameMode: "challenge",
+        attempts: 1,
       };
 
       const result = SubmitGuessInputSchema.safeParse(validInput);
@@ -220,6 +221,7 @@ describe("cloudFunctionsSchemas", () => {
       const validInput = {
         currentAttempt: ["t", "a", "b", "l", "e"],
         riddleId: "riddle123",
+        gameMode: "daily",
       };
 
       const result = GetHintInputSchema.safeParse(validInput);

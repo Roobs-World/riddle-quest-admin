@@ -19,19 +19,19 @@ This plan outlines the steps for implementing missing functionalities in the pro
    - Platform validation via `iapPlatformValidator.ts`
    - Receipt service for duplicate prevention
 
-### 🔄 In Progress / Needs Review
+### ✅ Completed (Implementation review — March 2026)
 
-3. Refine the logic for updating user statistics, specifically how 'games played' is incremented in the `submitGuess` function (in `firebase-functions/src/gameLogic.ts`).
-   - **Status**: Implemented, needs review for accuracy
+3. **User statistics (games played)** — **DONE**  
+   - submitGuess only increments `gamesPlayed` when `gameOver = true`; winRate fixed (see progress.md).
 
-4. Improve hint tracking in the `getHint` function (in `firebase-functions/src/gameLogic.ts`).
-   - **Status**: Working, tracks revealed hint indices
+4. **Hint tracking** — **DONE**  
+   - `totalHintsUsed` in stats; getHint calls `updateUserStats` (see progress.md).
 
-5. Implement proper logic for determining the next riddle and handling the end-of-riddles scenario in the `skipRiddle` function.
-   - **Status**: Needs implementation review
+5. **skipRiddle next-riddle and end-of-riddles** — **DONE**  
+   - skipRiddle updates classicIndex/tutorialIndex/dailyChallengeCurrentQuestion, returns newProgress; client fetches next riddle by index. Unit tests added in gameLogic.test.ts (11 skipRiddle tests).
 
-6. Add more robust logic and handling for different form types in the `processFormSubmission` function (in `firebase-functions/src/profile.ts`).
-   - **Status**: Needs enhancement
+6. **profile.ts form handling** — **N/A**  
+   - No `processFormSubmission` in codebase; profile.ts exposes `updateAvatar` only. Removed from active backlog.
 
 ### ✅ Completed Tasks (January 2025)
 
@@ -56,20 +56,19 @@ This plan outlines the steps for implementing missing functionalities in the pro
     - 60-second correlation window
     - Returns coins awarded or pending validation status
 
-### 🔄 Remaining Tasks
+### ✅ Completed Tasks (March 2026)
 
-11. **Console.log Cleanup** (38 files, 517 instances)
-    - Replace with structured logging (Firebase logger)
-    - Remove debug statements before production
+11. **Console.log Cleanup** — **DONE**
+    - All production code uses `src/utils/logger.ts`; zero raw `console.log/warn` in `src/` and Firebase Functions.
 
-12. **Test Coverage Enhancement**
-    - Increase `riddleGeneration.ts` from 49.72% to 70%+
-    - Fix 24 failing tests (legacy expectations)
+12. **Test Coverage / Failing Tests** — **DONE**
+    - All 2,497+ tests passing (RN + Firebase Functions). Legacy failures fixed.
+    - `riddleGeneration.ts` coverage increased 53.59% → 91.71% (March 2026); target 70%+ met.
 
 ### 📋 Feature Backlog
 
 13. **Advanced Analytics** - User behavior tracking, game metrics
 14. **Offline Mode** - Local state management, sync on reconnect
-15. **Tutorial Flow** - Interactive onboarding experience
-16. **Achievement System** - Unlock criteria, badge mechanics
+15. **Tutorial Flow** - Interactive onboarding experience — First slice + polish done (tutorial UI in header, step indicator, Start Tutorial gated by riddle availability)
+16. **Achievement System** - Unlock criteria, badge mechanics — **DONE** (March 2026). Server: achievements.ts + evaluateAchievements after submitGuess/getHint/validatePurchase; Firestore unlockedAchievements; client AchievementsModal + definitions; newlyUnlockedAchievementIds in submitGuess response.
 17. **Performance Optimization** - Asset loading, memory management

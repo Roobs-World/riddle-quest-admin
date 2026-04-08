@@ -21,6 +21,7 @@ jest.mock("../../../styles", () => ({
   styles: {
     backButton: {},
   },
+  SPACING: { xs: 4, sm: 8, md: 16, lg: 24, xl: 32, "2xl": 48 },
 }));
 
 type RootStackParamList = Record<string, object | undefined>;
@@ -63,7 +64,10 @@ describe("BackButton", () => {
       const TouchableOpacity = require("react-native").TouchableOpacity;
       const button = UNSAFE_getByType(TouchableOpacity);
 
-      expect(button.props.className).toContain("p-1");
+      const style = Array.isArray(button.props.style)
+        ? Object.assign({}, ...button.props.style)
+        : button.props.style;
+      expect(style.padding).toBeDefined();
     });
   });
 
@@ -272,7 +276,10 @@ describe("BackButton", () => {
       const TouchableOpacity = require("react-native").TouchableOpacity;
       const button = UNSAFE_getByType(TouchableOpacity);
 
-      expect(button.props.className).toContain("p-1");
+      const style = Array.isArray(button.props.style)
+        ? Object.assign({}, ...button.props.style)
+        : button.props.style;
+      expect(style.padding).toBeDefined();
     });
   });
 });

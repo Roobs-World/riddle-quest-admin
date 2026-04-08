@@ -9,6 +9,13 @@ jest.mock("react-native", () => ({
   Text: "Text",
   Modal: "Modal",
   TouchableOpacity: "TouchableOpacity",
+  StyleSheet: {
+    create: (styles: Record<string, unknown>) => styles,
+    flatten: (style: unknown) => style,
+  },
+  Dimensions: {
+    get: () => ({ width: 375, height: 812, scale: 2, fontScale: 1 }),
+  },
 }));
 
 describe("WelcomeModal", () => {
@@ -149,6 +156,36 @@ describe("WelcomeModal", () => {
       render(<WelcomeModal isVisible={true} onClose={mockOnClose} />);
       // Component should apply proper styling classes
       expect(true).toBe(true);
+    });
+  });
+
+  describe("Start Tutorial gating", () => {
+    it("should show only Let's Play when showStartTutorial is false and onStartTutorial is provided", () => {
+      const mockOnStartTutorial = jest.fn();
+      const { queryByText } = render(
+        <WelcomeModal
+          isVisible={true}
+          onClose={mockOnClose}
+          onStartTutorial={mockOnStartTutorial}
+          showStartTutorial={false}
+        />
+      );
+      // Start Tutorial button should not be present; Let's Play is shown instead
+      expect(queryByText("Start Tutorial")).toBeNull();
+    });
+
+    it("should show Start Tutorial and Skip to Play when showStartTutorial is true", () => {
+      const mockOnStartTutorial = jest.fn();
+      const { getByText } = render(
+        <WelcomeModal
+          isVisible={true}
+          onClose={mockOnClose}
+          onStartTutorial={mockOnStartTutorial}
+          showStartTutorial={true}
+        />
+      );
+      expect(getByText("Start Tutorial")).toBeTruthy();
+      expect(getByText("Skip to Play")).toBeTruthy();
     });
   });
 

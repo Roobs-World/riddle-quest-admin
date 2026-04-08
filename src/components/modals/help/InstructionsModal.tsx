@@ -3,8 +3,22 @@ import { View, Text, Modal, ScrollView } from "react-native";
 import CloseButton from "../../buttons/CloseButton";
 import WideButton from "../../buttons/WideButton";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
-import { scale } from "src/utils/responsive";
 import { TYPOGRAPHY } from "src/styles";
+import {
+  MODAL_WIDTH,
+  MODAL_HEIGHT,
+  MODAL_CONTENT_PADDING,
+  MODAL_SCROLLABLE_MAX_HEIGHT,
+  CLOSE_BUTTON_INSET,
+  CARD_BORDER_RADIUS,
+  CARD_PADDING,
+  CARD_MARGIN_BOTTOM,
+  COLOR_CLUE_INDICATOR_SIZE,
+  COLOR_CLUE_BORDER_RADIUS,
+  COLOR_CLUE_MARGIN_RIGHT,
+  CLOSE_BUTTON_SIZE,
+} from "../../../constants/layout";
+import { SPACING } from "../../../styles";
 
 interface InstructionsModalProps {
   isVisible: boolean;
@@ -27,37 +41,42 @@ const InstructionsModal: React.FC<InstructionsModalProps> = ({
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "rgba(0,0,0,0.6)",
+          backgroundColor: "rgba(0,0,0,0.5)",
         }}
       >
         <View
           style={{
-            width: 335,
-            height: 423,
+            width: MODAL_WIDTH,
+            height: MODAL_HEIGHT,
             alignItems: "center",
             justifyContent: "center",
           }}
         >
-          <ModalBg style={{ position: "absolute" }} />
+          <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{ position: "absolute" }} />
           <View
             style={{
               flex: 1,
               width: "100%",
               alignItems: "center",
               justifyContent: "space-between",
-              padding: 20,
+              padding: MODAL_CONTENT_PADDING,
             }}
           >
             <CloseButton
               onPress={onClose}
-              size={20}
-              style={{ position: "absolute", top: 20, right: 20, zIndex: 10 }}
+              size={CLOSE_BUTTON_SIZE}
+              style={{
+                position: "absolute",
+                top: CLOSE_BUTTON_INSET,
+                right: CLOSE_BUTTON_INSET,
+                zIndex: 10,
+              }}
             />
             <Text
               style={{
                 fontFamily: TYPOGRAPHY.fontPrimary,
-                fontSize: scale(28),
-                color: "white",
+                fontSize: TYPOGRAPHY.fontSize.title,
+                color: "black",
                 textAlign: "center",
               }}
             >
@@ -65,17 +84,20 @@ const InstructionsModal: React.FC<InstructionsModalProps> = ({
             </Text>
 
             <ScrollView
-              style={{ flex: 1, width: "100%", maxHeight: 280, marginTop: 10 }}
-              contentContainerStyle={{
-                alignItems: "center",
+              style={{
+                flex: 1,
+                width: "100%",
+                maxHeight: MODAL_SCROLLABLE_MAX_HEIGHT,
+                marginTop: SPACING.sm,
               }}
+              contentContainerStyle={{ alignItems: "center" }}
             >
               <InstructionCard
                 title="The Goal"
                 description="Guess the hidden riddle in 3 tries using the color clues to guide you."
               />
               <InstructionCard title="Color Clues">
-                <View style={{ gap: 12, alignItems: "flex-start" }}>
+                <View style={{ gap: SPACING.sm, alignItems: "flex-start" }}>
                   <ColorClue
                     color="#22c55e"
                     text="Letter is correct and in the right position"
@@ -116,19 +138,19 @@ const InstructionCard = ({
   <View
     style={{
       backgroundColor: "rgba(0,0,0,0.2)",
-      borderRadius: 12,
-      padding: 16,
-      marginBottom: 12,
+      borderRadius: CARD_BORDER_RADIUS,
+      padding: CARD_PADDING,
+      marginBottom: CARD_MARGIN_BOTTOM,
       width: "100%",
     }}
   >
     <Text
       style={{
         fontFamily: TYPOGRAPHY.fontSecondaryBold,
-        fontSize: scale(18),
-        color: "white",
+        fontSize: TYPOGRAPHY.fontSize.lg,
+        color: "black",
         textAlign: "center",
-        marginBottom: 8,
+        marginBottom: SPACING.sm,
       }}
     >
       {title}
@@ -137,8 +159,8 @@ const InstructionCard = ({
       <Text
         style={{
           fontFamily: TYPOGRAPHY.fontSecondary,
-          fontSize: scale(14),
-          color: "white",
+          fontSize: TYPOGRAPHY.fontSize.sm,
+          color: "black",
           textAlign: "center",
         }}
       >
@@ -153,19 +175,19 @@ const ColorClue = ({ color, text }: { color: string; text: string }) => (
   <View style={{ flexDirection: "row", alignItems: "center" }}>
     <View
       style={{
-        width: 24,
-        height: 24,
+        width: COLOR_CLUE_INDICATOR_SIZE,
+        height: COLOR_CLUE_INDICATOR_SIZE,
         backgroundColor: color,
-        borderRadius: 4,
-        marginRight: 12,
+        borderRadius: COLOR_CLUE_BORDER_RADIUS,
+        marginRight: COLOR_CLUE_MARGIN_RIGHT,
       }}
     />
     <Text
       style={{
         flex: 1,
         fontFamily: TYPOGRAPHY.fontSecondary,
-        fontSize: scale(14),
-        color: "white",
+        fontSize: TYPOGRAPHY.fontSize.sm,
+        color: "black",
       }}
     >
       {text}

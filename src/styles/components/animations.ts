@@ -3,9 +3,11 @@
  * Animation, loading, and special effect styling
  */
 
-import { StyleSheet, ViewStyle } from "react-native";
+import { StyleSheet, ViewStyle, TextStyle } from "react-native";
 import { SHADOWS } from "../tokens/shadows";
 import { COLORS } from "../tokens/colors";
+import { TYPOGRAPHY } from "../tokens/typography";
+import { SIZING } from "../tokens/sizing";
 
 export const animationStyles = StyleSheet.create({
   overlay: {
@@ -24,19 +26,20 @@ export const animationStyles = StyleSheet.create({
   } as ViewStyle,
 
   shatteringTile: {
-    width: 56, // TILE_SIZE
-    height: 56, // TILE_SIZE
-    borderWidth: 1,
+    width: SIZING.tile.size,
+    height: SIZING.tile.size,
+    borderWidth: SIZING.tile.border,
     alignItems: "center",
     justifyContent: "center",
     // Default borderColor will be applied in component if not specified by tile data
   } as ViewStyle,
 
   shatteringTileText: {
-    fontSize: 28, // TILE_SIZE / 2
-    fontWeight: "bold",
+    fontFamily: TYPOGRAPHY.fontPrimary,
+    fontSize: TYPOGRAPHY.fontSize.tile,
+    fontWeight: "400",
     // Default color will be applied in component if not specified by tile data
-  } as ViewStyle,
+  } as TextStyle,
 
   shatteringTilesContainer: {
     ...StyleSheet.absoluteFillObject,

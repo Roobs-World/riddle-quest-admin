@@ -42,6 +42,7 @@ import { BaseModalProps, ModalData } from "../../types/ModalTypes";
 import { SubmittedGuess } from "../../hooks/types";
 import { Player } from "../../validation/firestoreSchemas";
 import * as RNIap from "react-native-iap";
+import { logger } from "../../utils/logger";
 
 // Import all modal components
 import VictoryModal from "./game/VictoryModal";
@@ -54,8 +55,12 @@ import ChangePasswordModal from "./settings/ChangePasswordModal";
 import UpdateUsernameModal from "./settings/UpdateUsernameModal";
 import AvatarOptionsModal from "./settings/AvatarOptionsModal";
 import PreloadedAvatarsModal from "./settings/PreloadedAvatarsModal";
+import AchievementsModal from "./settings/AchievementsModal";
+import StatsModal from "./settings/StatsModal";
+import LeaderboardModal from "./settings/LeaderboardModal";
 
 import HintModal from "./help/HintModal";
+import InfoModal from "./help/InfoModal";
 import SkipModal from "./help/SkipModal";
 import WelcomeModal from "./help/WelcomeModal";
 import InstructionsModal from "./help/InstructionsModal";
@@ -191,6 +196,11 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
     onNext: (props.onNext as () => void) || (() => {}),
     onHome: (props.onHome as () => void) || (() => {}),
     onClose: props.onClose,
+    onWatchAdContinue: props.onWatchAdContinue as (() => void) | undefined,
+    onCoinContinue: props.onCoinContinue as (() => void) | undefined,
+    coinContinueCost: props.coinContinueCost as number | undefined,
+    canWatchAd: props.canWatchAd as boolean | undefined,
+    canUseCoin: props.canUseCoin as boolean | undefined,
   })),
 
   /**
@@ -205,13 +215,17 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
       onClose: props.onClose,
       isSoundEnabled: (props.isSoundEnabled as boolean) || false,
       isHapticsEnabled: (props.isHapticsEnabled as boolean) || false,
+      isHardMode: (props.isHardMode as boolean) || false,
       onToggleSound:
         (props.onToggleSound as (enabled: boolean) => void) || (() => {}),
       onToggleHaptics:
         (props.onToggleHaptics as (enabled: boolean) => void) || (() => {}),
+      onToggleHardMode:
+        (props.onToggleHardMode as (enabled: boolean) => void) || (() => {}),
       onPressLogout: (props.onPressLogout as () => void) || (() => {}),
       onPressHelp: (props.onPressHelp as () => void) || (() => {}),
       onPressCredits: (props.onPressCredits as () => void) || (() => {}),
+      playerData: (props.playerData as Player) ?? null,
     })
   ),
 
@@ -221,6 +235,33 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
       isVisible: props.isVisible,
       onClose: props.onClose,
       playerData: (props.playerData as Player) || null,
+    })
+  ),
+
+  achievements: createModalWrapper(
+    AchievementsModal,
+    (props: BaseModalProps & ModalData) => ({
+      isVisible: props.isVisible,
+      onClose: props.onClose,
+      playerData: (props.playerData as Player) ?? null,
+    })
+  ),
+
+  stats: createModalWrapper(
+    StatsModal,
+    (props: BaseModalProps & ModalData) => ({
+      isVisible: props.isVisible,
+      onClose: props.onClose,
+      playerData: (props.playerData as Player) ?? null,
+    })
+  ),
+
+  leaderboard: createModalWrapper(
+    LeaderboardModal,
+    (props: BaseModalProps & ModalData) => ({
+      isVisible: props.isVisible,
+      onClose: props.onClose,
+      currentUserId: (props.currentUserId as string | null) ?? null,
     })
   ),
 
@@ -273,6 +314,16 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
    *
    * Modals providing assistance, tutorials, and informational content.
    */
+  info: createModalWrapper(InfoModal, (props: BaseModalProps & ModalData) => ({
+    isVisible: props.isVisible,
+    title: (props.title as string) || "",
+    message: (props.message as string) || "",
+    onClose: () => {
+      if (typeof props.onConfirm === "function") (props.onConfirm as () => void)();
+      props.onClose();
+    },
+  })),
+
   hint: createModalWrapper(HintModal, (props: BaseModalProps & ModalData) => ({
     isVisible: props.isVisible,
     onClose: props.onClose,
@@ -294,6 +345,7 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
     (props: BaseModalProps & ModalData) => ({
       isVisible: props.isVisible,
       onClose: props.onClose,
+      onStartTutorial: (props as { onStartTutorial?: () => void }).onStartTutorial,
     })
   ),
 
@@ -359,7 +411,7 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
 export const getModalComponent = (type: string): ModalRegistryEntry | null => {
   const component = modalRegistry[type];
   if (!component) {
-    console.warn(`[ModalRegistry] Modal type "${type}" not found in registry`);
+    logger.warn(`[ModalRegistry] Modal type "${type}" not found in registry`);
     return null;
   }
   return component;

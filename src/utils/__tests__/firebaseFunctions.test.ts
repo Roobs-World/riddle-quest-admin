@@ -6,6 +6,7 @@ import {
 // Mock Firebase modules
 jest.mock("@react-native-firebase/functions", () => ({
   getFunctions: jest.fn(),
+  httpsCallable: jest.fn(),
 }));
 
 jest.mock("@react-native-firebase/app", () => ({
@@ -14,6 +15,8 @@ jest.mock("@react-native-firebase/app", () => ({
 
 const mockGetFunctions =
   require("@react-native-firebase/functions").getFunctions;
+const mockHttpsCallable =
+  require("@react-native-firebase/functions").httpsCallable;
 const mockGetApp = require("@react-native-firebase/app").getApp;
 
 describe("firebaseFunctions", () => {
@@ -64,17 +67,16 @@ describe("firebaseFunctions", () => {
         call: jest.fn(),
         timeout: 540000,
       };
-      const mockFunctions = {
-        httpsCallable: jest.fn().mockReturnValue(mockCallable),
-      };
+      const mockFunctions = {};
 
       mockGetApp.mockReturnValue(mockApp);
       mockGetFunctions.mockReturnValue(mockFunctions);
+      mockHttpsCallable.mockReturnValue(mockCallable);
 
       const functionName = "submitGuess";
       const result = getCallableFunction(functionName);
 
-      expect(mockFunctions.httpsCallable).toHaveBeenCalledWith(functionName);
+      expect(mockHttpsCallable).toHaveBeenCalledWith(mockFunctions, functionName);
       expect(result).toBe(mockCallable);
     });
 
@@ -82,26 +84,26 @@ describe("firebaseFunctions", () => {
       const mockApp = { name: "test-app" };
       const mockCallable1 = { call: jest.fn() };
       const mockCallable2 = { call: jest.fn() };
-      const mockFunctions = {
-        httpsCallable: jest
-          .fn()
-          .mockReturnValueOnce(mockCallable1)
-          .mockReturnValueOnce(mockCallable2),
-      };
+      const mockFunctions = {};
 
       mockGetApp.mockReturnValue(mockApp);
       mockGetFunctions.mockReturnValue(mockFunctions);
+      mockHttpsCallable
+        .mockReturnValueOnce(mockCallable1)
+        .mockReturnValueOnce(mockCallable2);
 
       const result1 = getCallableFunction("generateRiddles");
       const result2 = getCallableFunction("submitGuess");
 
-      expect(mockFunctions.httpsCallable).toHaveBeenCalledTimes(2);
-      expect(mockFunctions.httpsCallable).toHaveBeenNthCalledWith(
+      expect(mockHttpsCallable).toHaveBeenCalledTimes(2);
+      expect(mockHttpsCallable).toHaveBeenNthCalledWith(
         1,
+        mockFunctions,
         "generateRiddles"
       );
-      expect(mockFunctions.httpsCallable).toHaveBeenNthCalledWith(
+      expect(mockHttpsCallable).toHaveBeenNthCalledWith(
         2,
+        mockFunctions,
         "submitGuess"
       );
       expect(result1).toBe(mockCallable1);
@@ -111,16 +113,15 @@ describe("firebaseFunctions", () => {
     it("should handle empty function name", () => {
       const mockApp = { name: "test-app" };
       const mockCallable = { call: jest.fn() };
-      const mockFunctions = {
-        httpsCallable: jest.fn().mockReturnValue(mockCallable),
-      };
+      const mockFunctions = {};
 
       mockGetApp.mockReturnValue(mockApp);
       mockGetFunctions.mockReturnValue(mockFunctions);
+      mockHttpsCallable.mockReturnValue(mockCallable);
 
       const result = getCallableFunction("");
 
-      expect(mockFunctions.httpsCallable).toHaveBeenCalledWith("");
+      expect(mockHttpsCallable).toHaveBeenCalledWith(mockFunctions, "");
       expect(result).toBe(mockCallable);
     });
 
@@ -128,20 +129,18 @@ describe("firebaseFunctions", () => {
       const mockApp = { name: "test-app" };
       const mockCallable1 = { call: jest.fn() };
       const mockCallable2 = { call: jest.fn() };
-      const mockFunctions = {
-        httpsCallable: jest
-          .fn()
-          .mockReturnValueOnce(mockCallable1)
-          .mockReturnValueOnce(mockCallable2),
-      };
+      const mockFunctions = {};
 
       mockGetApp.mockReturnValue(mockApp);
       mockGetFunctions.mockReturnValue(mockFunctions);
+      mockHttpsCallable
+        .mockReturnValueOnce(mockCallable1)
+        .mockReturnValueOnce(mockCallable2);
 
       const result1 = getCallableFunction("testFunction");
       const result2 = getCallableFunction("testFunction");
 
-      expect(mockFunctions.httpsCallable).toHaveBeenCalledTimes(2);
+      expect(mockHttpsCallable).toHaveBeenCalledTimes(2);
       expect(result1).toBe(mockCallable1);
       expect(result2).toBe(mockCallable2);
     });
@@ -153,19 +152,18 @@ describe("firebaseFunctions", () => {
       const mockCallable = {
         call: jest.fn().mockResolvedValue({ data: "test-result" }),
       };
-      const mockFunctions = {
-        httpsCallable: jest.fn().mockReturnValue(mockCallable),
-      };
+      const mockFunctions = {};
 
       mockGetApp.mockReturnValue(mockApp);
       mockGetFunctions.mockReturnValue(mockFunctions);
+      mockHttpsCallable.mockReturnValue(mockCallable);
 
       // Test the full flow
       const callable = getCallableFunction("testFunction");
 
       expect(mockGetApp).toHaveBeenCalledWith();
       expect(mockGetFunctions).toHaveBeenCalledWith(mockApp, "us-central1");
-      expect(mockFunctions.httpsCallable).toHaveBeenCalledWith("testFunction");
+      expect(mockHttpsCallable).toHaveBeenCalledWith(mockFunctions, "testFunction");
       expect(callable).toBe(mockCallable);
     });
 
@@ -194,7 +192,7 @@ describe("firebaseFunctions", () => {
   describe("Configuration", () => {
     it("should always use us-central1 region", () => {
       const mockApp = { name: "test-app" };
-      const mockFunctions = { httpsCallable: jest.fn() };
+      const mockFunctions = {};
 
       mockGetApp.mockReturnValue(mockApp);
       mockGetFunctions.mockReturnValue(mockFunctions);
@@ -207,8 +205,8 @@ describe("firebaseFunctions", () => {
     it("should work with different app instances", () => {
       const mockApp1 = { name: "app1" };
       const mockApp2 = { name: "app2" };
-      const mockFunctions1 = { httpsCallable: jest.fn() };
-      const mockFunctions2 = { httpsCallable: jest.fn() };
+      const mockFunctions1 = {};
+      const mockFunctions2 = {};
 
       mockGetApp.mockReturnValueOnce(mockApp1).mockReturnValueOnce(mockApp2);
       mockGetFunctions

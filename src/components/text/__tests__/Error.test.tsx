@@ -7,6 +7,7 @@ jest.mock("../../../styles", () => ({
   styles: {
     errorText: {},
   },
+  SPACING: { xs: 4, sm: 8, md: 16, lg: 24, xl: 32, "2xl": 48 },
 }));
 
 describe("Error", () => {
@@ -65,14 +66,17 @@ describe("Error", () => {
       // Check if the component applies the correct style classes
       expect(errorText.props.className).toContain("text-red-500");
       expect(errorText.props.className).toContain("text-center");
-      expect(errorText.props.className).toContain("mb-4");
+      const style = Array.isArray(errorText.props.style)
+        ? Object.assign({}, ...errorText.props.style)
+        : errorText.props.style;
+      expect(style.marginBottom).toBeDefined();
     });
 
     it("has proper accessibility role", () => {
       const { getByText } = render(<Error message="Test error" />);
       const errorText = getByText("Test error");
 
-      expect(errorText.props.role).toBe("alert");
+      expect(errorText.props.accessibilityRole).toBe("alert");
     });
   });
 

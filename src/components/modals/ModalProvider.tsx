@@ -29,14 +29,19 @@ import UpdateUsernameModal from "./settings/UpdateUsernameModal";
 import AvatarOptionsModal from "./settings/AvatarOptionsModal";
 import PreloadedAvatarsModal from "./settings/PreloadedAvatarsModal";
 import SettingsModal from "./settings/SettingsModal";
+import AchievementsModal from "./settings/AchievementsModal";
+import StatsModal from "./settings/StatsModal";
+import LeaderboardModal from "./settings/LeaderboardModal";
 
 import HintModal from "./help/HintModal";
+import InfoModal from "./help/InfoModal";
 import SkipModal from "./help/SkipModal";
 import WelcomeModal from "./help/WelcomeModal";
 import InstructionsModal from "./help/InstructionsModal";
 import CreditsModal from "./help/CreditsModal";
 
 import CoinShopModal from "../shop/CoinShopModal";
+import { logger } from "../../utils/logger";
 
 /**
  * Type definitions for modal-specific data structures.
@@ -98,11 +103,14 @@ interface GameModeModalData {
 interface SettingsModalData {
   isSoundEnabled: boolean;
   isHapticsEnabled: boolean;
+  isHardMode: boolean;
   onToggleSound: (isEnabled: boolean) => void;
   onToggleHaptics: (isEnabled: boolean) => void;
+  onToggleHardMode: (isEnabled: boolean) => void;
   onPressLogout: () => void;
   onPressHelp: () => void;
   onPressCredits: () => void;
+  playerData?: import("../../validation/firestoreSchemas").Player | null;
 }
 
 /**
@@ -141,6 +149,12 @@ interface AvatarOptionsModalData {
  * @property {number} userCoins - Player's current coin balance
  * @property {() => void} onShowHint - Callback to purchase and show hint
  */
+interface InfoModalData {
+  title: string;
+  message: string;
+  onConfirm?: () => void;
+}
+
 interface HintModalData {
   hintCost: number;
   userCoins: number;
@@ -189,6 +203,7 @@ type ModalData =
   | FullProfileDetailsModalData
   | UpdateUsernameModalData
   | AvatarOptionsModalData
+  | InfoModalData
   | HintModalData
   | SkipModalData
   | CoinShopModalData
@@ -220,7 +235,7 @@ const ModalRenderer: React.FC<{
 
   switch (modalType) {
     case "victory": {
-      console.log("Rendering VictoryModal with data:", {
+      logger.debug("Rendering VictoryModal with data:", {
         attempts: (modalData as VictoryModalData).attempts,
         coinsEarned: (modalData as VictoryModalData).coinsEarned,
         onNext: typeof (modalData as VictoryModalData).onNext === "function",
@@ -231,7 +246,7 @@ const ModalRenderer: React.FC<{
 
       // Debug the onNext function
       const onNextFn = (modalData as VictoryModalData).onNext;
-      console.log("VictoryModal onNext function details:", {
+      logger.debug("VictoryModal onNext function details:", {
         isDefined: !!onNextFn,
         type: typeof onNextFn,
         functionToString: onNextFn
@@ -277,11 +292,14 @@ const ModalRenderer: React.FC<{
           {...commonProps}
           isSoundEnabled={(modalData as SettingsModalData).isSoundEnabled}
           isHapticsEnabled={(modalData as SettingsModalData).isHapticsEnabled}
+          isHardMode={(modalData as SettingsModalData).isHardMode ?? false}
           onToggleSound={(modalData as SettingsModalData).onToggleSound}
           onToggleHaptics={(modalData as SettingsModalData).onToggleHaptics}
+          onToggleHardMode={(modalData as SettingsModalData).onToggleHardMode ?? (() => {})}
           onPressLogout={(modalData as SettingsModalData).onPressLogout}
           onPressHelp={(modalData as SettingsModalData).onPressHelp}
           onPressCredits={(modalData as SettingsModalData).onPressCredits}
+          playerData={(modalData as SettingsModalData).playerData ?? null}
         />
       );
 
@@ -325,6 +343,22 @@ const ModalRenderer: React.FC<{
         />
       );
 
+    case "info": {
+      const infoData = modalData as InfoModalData;
+      const handleInfoClose = () => {
+        if (infoData.onConfirm) infoData.onConfirm();
+        onClose();
+      };
+      return (
+        <InfoModal
+          isVisible={true}
+          title={infoData.title}
+          message={infoData.message}
+          onClose={handleInfoClose}
+        />
+      );
+    }
+
     case "hint":
       return (
         <HintModal
@@ -345,8 +379,19 @@ const ModalRenderer: React.FC<{
         />
       );
 
-    case "welcome":
-      return <WelcomeModal {...commonProps} />;
+    case "welcome": {
+      const welcomeData = modalData as {
+        onStartTutorial?: () => void;
+        showStartTutorial?: boolean;
+      };
+      return (
+        <WelcomeModal
+          {...commonProps}
+          onStartTutorial={welcomeData.onStartTutorial}
+          showStartTutorial={welcomeData.showStartTutorial}
+        />
+      );
+    }
 
     case "instructions":
       return <InstructionsModal {...commonProps} />;
@@ -367,8 +412,32 @@ const ModalRenderer: React.FC<{
         />
       );
 
+    case "achievements":
+      return (
+        <AchievementsModal
+          {...commonProps}
+          playerData={(modalData as { playerData: Player | null }).playerData ?? null}
+        />
+      );
+
+    case "stats":
+      return (
+        <StatsModal
+          {...commonProps}
+          playerData={(modalData as { playerData: Player | null }).playerData ?? null}
+        />
+      );
+
+    case "leaderboard":
+      return (
+        <LeaderboardModal
+          {...commonProps}
+          currentUserId={(modalData as { currentUserId: string | null }).currentUserId ?? null}
+        />
+      );
+
     default:
-      console.warn(`Unknown modal type: ${modalType}`);
+      logger.warn(`Unknown modal type: ${modalType}`);
       return null;
   }
 };

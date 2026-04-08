@@ -241,18 +241,16 @@ describe("Tutorial Riddles Functions", () => {
       const mockAuth = createMockAuth(mockUserId);
       const request = createMockCallableRequest({}, mockAuth);
 
-      // Mock Firestore to return a tutorial riddle
-      mockFirestoreGet.mockImplementation(() =>
-        Promise.resolve({
-          exists: true,
-          data: () => mockTutorialRiddle,
-        }),
-      );
-
-      // Mock count query
-      mockFirestoreCount.mockImplementation(() => ({
-        get: () => Promise.resolve({data: () => ({count: 5})}),
-      }));
+      // Mock Firestore: getTutorialRiddle uses .where().limit(1).get() -> QuerySnapshot
+      // then .count().get() -> {data: () => ({count: n})}
+      const mockQuerySnapshot = {
+        empty: false,
+        docs: [{exists: true, data: () => mockTutorialRiddle, id: mockTutorialRiddle.riddleId}],
+      };
+      const mockCountSnapshot = {data: () => ({count: 5})};
+      mockFirestoreGet
+        .mockResolvedValueOnce(mockQuerySnapshot)
+        .mockResolvedValueOnce(mockCountSnapshot);
 
       const result = await getCurrentTutorialRiddle(request);
 
@@ -288,10 +286,8 @@ describe("Tutorial Riddles Functions", () => {
       const mockAuth = createMockAuth(mockUserId);
       const request = createMockCallableRequest({}, mockAuth);
 
-      // Mock count query
-      mockFirestoreCount.mockImplementation(() => ({
-        get: () => Promise.resolve({data: () => ({count: 5})}),
-      }));
+      // Mock count query: collection("tutorialRiddles").count().get()
+      mockFirestoreGet.mockResolvedValueOnce({data: () => ({count: 5})});
 
       // Mock user update
       mockFirestoreUpdate.mockResolvedValue();
@@ -335,9 +331,7 @@ describe("Tutorial Riddles Functions", () => {
       (getUser as ReturnType<typeof jest.fn>).mockResolvedValue(userAtEnd);
 
       // Mock count query - 5 total riddles
-      mockFirestoreCount.mockImplementation(() => ({
-        get: () => Promise.resolve({data: () => ({count: 5})}),
-      }));
+      mockFirestoreGet.mockResolvedValueOnce({data: () => ({count: 5})});
 
       mockFirestoreUpdate.mockResolvedValue();
 

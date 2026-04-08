@@ -1,10 +1,21 @@
+/**
+ * @fileoverview
+ * Preloader and factory for the 3D solar system background scene.
+ *
+ * This service is responsible for:
+ * - Preloading and validating all planet, moon, ring, and glow textures
+ *   using Expo's `Asset` system.
+ * - Constructing high-quality Three.js geometries, materials, lights,
+ *   and meshes representing the Qwordly solar system.
+ * - Exposing a cached, preconstructed scene graph that can be reused by
+ *   React Three Fiber components without redoing expensive setup work.
+ */
 import {
   Scene,
   PerspectiveCamera,
   DirectionalLight,
   AmbientLight,
   PointLight,
-  Clock,
   Group,
   SphereGeometry,
   MeshPhongMaterial,
@@ -16,6 +27,8 @@ import {
   TextureLoader,
 } from "three";
 import { Asset } from "expo-asset";
+import { logger } from "../utils/logger";
+import { captureException } from "../utils/sentry";
 
 /**
  * Solar System Preloader Service - v2.4.0 EXPO ASSET SYSTEM
@@ -93,7 +106,6 @@ export interface SolarSystemPreloadProgress {
 export interface PreloadedSolarSystem {
   scene: Scene;
   camera: PerspectiveCamera;
-  clock: Clock;
   planetsGroup: Group;
   meshes: Mesh[];
   lights: (DirectionalLight | AmbientLight | PointLight)[];
@@ -227,11 +239,11 @@ export class SolarSystemPreloader {
    * Preload and verify all assets are downloaded before texture loading
    */
   private static async preloadAndVerifyAssets(): Promise<void> {
-    console.log("🔍 Preloading and verifying all solar system assets...");
+    logger.debug("🔍 Preloading and verifying all solar system assets...");
 
     const assetPromises = this.textureMapping.map(async ({ key, path }) => {
       try {
-        console.log(`📦 Preloading asset: ${key}`);
+        logger.debug(`📦 Preloading asset: ${key}`);
 
         // Create asset and ensure it's downloaded
         const asset = Asset.fromModule(path);
@@ -256,10 +268,11 @@ export class SolarSystemPreloader {
           throw new Error(`Asset ${key} has no localUri after download`);
         }
 
-        console.log(`✅ Asset ${key} verified: ${asset.localUri}`);
+        logger.debug(`✅ Asset ${key} verified: ${asset.localUri}`);
         return { key, asset };
       } catch (error) {
-        console.error(`❌ Failed to preload asset ${key}:`, error);
+        logger.error(`❌ Failed to preload asset ${key}:`, error);
+        captureException(error);
         throw new Error(`CRITICAL: Asset ${key} failed to preload: ${error}`);
       }
     });
@@ -267,7 +280,7 @@ export class SolarSystemPreloader {
     // Wait for all assets to be preloaded and verified
     const preloadedAssets = await Promise.all(assetPromises);
 
-    console.log(
+    logger.debug(
       `✅ All ${preloadedAssets.length} assets preloaded and verified successfully`
     );
   }
@@ -279,20 +292,20 @@ export class SolarSystemPreloader {
     onProgress?: (progress: TexturePreloadProgress) => void
   ): Promise<Map<string, Texture | null>> {
     if (this.textureCache.size > 0) {
-      console.log(
+      logger.debug(
         "SolarSystemPreloader: Textures already preloaded, returning cache"
       );
       return this.textureCache;
     }
 
-    console.log(
+    logger.debug(
       "SolarSystemPreloader: Loading textures with fallback support..."
     );
 
     // Debug: Log all texture mappings to diagnose import issues
-    console.log("📝 Texture mappings to load:");
+    logger.debug("📝 Texture mappings to load:");
     this.textureMapping.forEach(({ key, path }, index) => {
-      console.log(`  ${index + 1}. ${key} -> ${typeof path} (${path})`);
+      logger.debug(`  ${index + 1}. ${key} -> ${typeof path} (${path})`);
     });
 
     const textureLoader = new TextureLoader();
@@ -303,43 +316,35 @@ export class SolarSystemPreloader {
     // Load textures individually with graceful fallbacks
     for (const { key, path } of this.textureMapping) {
       try {
-        console.log(`🔄 Attempting to load texture: ${key}`);
+        logger.debug(`🔄 Attempting to load texture: ${key}`);
 
-        // Check if path is a number (asset import issue)
-        if (typeof path === "number") {
-          console.warn(
-            `⚠️ Texture ${key} has numeric path (${path}) - likely import issue, skipping`
+        // Individual 3-second timeout per texture for faster failure detection
+        const texturePromise = this.loadTextureFromAsset(
+          textureLoader,
+          path,
+          key
+        );
+        const timeoutPromise = new Promise<never>((_, reject) => {
+          setTimeout(
+            () => reject(new Error(`Texture ${key} timeout after 3 seconds`)),
+            3000
           );
-          this.textureCache.set(key, null);
+        });
+
+        const texture = await Promise.race([texturePromise, timeoutPromise]);
+
+        if (texture) {
+          this.textureCache.set(key, texture);
+          successfullyLoaded++;
+          logger.debug(`✅ Successfully loaded ${key}`);
         } else {
-          // Individual 3-second timeout per texture for faster failure detection
-          const texturePromise = this.loadTextureFromAsset(
-            textureLoader,
-            path,
-            key
+          this.textureCache.set(key, null);
+          logger.warn(
+            `⚠️ Texture ${key} loaded as null, will use fallback color`
           );
-          const timeoutPromise = new Promise<never>((_, reject) => {
-            setTimeout(
-              () => reject(new Error(`Texture ${key} timeout after 3 seconds`)),
-              3000
-            );
-          });
-
-          const texture = await Promise.race([texturePromise, timeoutPromise]);
-
-          if (texture) {
-            this.textureCache.set(key, texture);
-            successfullyLoaded++;
-            console.log(`✅ Successfully loaded ${key}`);
-          } else {
-            this.textureCache.set(key, null);
-            console.warn(
-              `⚠️ Texture ${key} loaded as null, will use fallback color`
-            );
-          }
         }
       } catch (error) {
-        console.warn(
+        logger.warn(
           `⚠️ Failed to load texture ${key}, will use fallback color:`,
           error
         );
@@ -362,7 +367,7 @@ export class SolarSystemPreloader {
       await new Promise((resolve) => setTimeout(resolve, 10));
     }
 
-    console.log(
+    logger.debug(
       `SolarSystemPreloader: Texture loading completed - ${successfullyLoaded}/${total} loaded successfully, ${
         total - successfullyLoaded
       } will use fallback colors`
@@ -380,7 +385,7 @@ export class SolarSystemPreloader {
     cacheKey: string
   ): Promise<Texture> {
     try {
-      console.log(
+      logger.debug(
         `SolarSystemPreloader: Loading texture ${cacheKey} from verified asset`
       );
 
@@ -389,7 +394,7 @@ export class SolarSystemPreloader {
 
       // Ensure asset is downloaded
       if (!imageAsset.downloaded) {
-        console.log(`⚠️ Asset ${cacheKey} not downloaded, downloading...`);
+        logger.debug(`⚠️ Asset ${cacheKey} not downloaded, downloading...`);
         await imageAsset.downloadAsync();
       }
 
@@ -402,7 +407,7 @@ export class SolarSystemPreloader {
         );
       }
 
-      console.log(`  Using asset URI for Three.js: ${textureUri}`);
+      logger.debug(`  Using asset URI for Three.js: ${textureUri}`);
 
       // ✅ Use TextureLoader with localUri from verified asset
       return new Promise<Texture>((resolve, reject) => {
@@ -412,7 +417,7 @@ export class SolarSystemPreloader {
           );
         }, 5000); // 5 second timeout per individual texture load (using local files now)
 
-        console.log(
+        logger.debug(
           `  Starting TextureLoader.load for ${cacheKey} with verified URI: ${textureUri}`
         );
 
@@ -420,10 +425,10 @@ export class SolarSystemPreloader {
           textureUri,
           (texture) => {
             clearTimeout(timeoutId);
-            console.log(
+            logger.debug(
               `SolarSystemPreloader: ✅ Successfully loaded ${cacheKey} via verified Expo Asset`
             );
-            console.log(`  Texture details:`, {
+            logger.debug(`  Texture details:`, {
               width: texture.image?.width,
               height: texture.image?.height,
               format: texture.format,
@@ -432,11 +437,11 @@ export class SolarSystemPreloader {
             resolve(texture);
           },
           (progress) => {
-            console.log(`  Loading progress for ${cacheKey}:`, progress);
+            logger.debug(`  Loading progress for ${cacheKey}:`, progress);
           },
           (error) => {
             clearTimeout(timeoutId);
-            console.error(`  TextureLoader error for ${cacheKey}:`, error);
+            logger.error(`  TextureLoader error for ${cacheKey}:`, error);
             reject(
               new Error(
                 `Failed to load ${cacheKey} via verified Expo Asset: ${error}`
@@ -446,7 +451,8 @@ export class SolarSystemPreloader {
         );
       });
     } catch (error) {
-      console.error(`Verified asset loading failed for ${cacheKey}:`, error);
+      logger.error(`Verified asset loading failed for ${cacheKey}:`, error);
+      captureException(error);
       throw new Error(
         `Verified asset loading failed for ${cacheKey}: ${error}`
       );
@@ -460,14 +466,14 @@ export class SolarSystemPreloader {
     onProgress?: (progress: SolarSystemPreloadProgress) => void
   ): Promise<PreloadedSolarSystem> {
     if (this.isPreloaded && this.preloadedSystem) {
-      console.log(
+      logger.debug(
         "SolarSystemPreloader: System already preloaded, returning cached version"
       );
       return this.preloadedSystem;
     }
 
     if (this.isPreloading) {
-      console.log(
+      logger.debug(
         "SolarSystemPreloader: System is currently preloading, waiting..."
       );
       // Add timeout to prevent infinite waiting
@@ -478,7 +484,7 @@ export class SolarSystemPreloader {
         waitTime += 100;
       }
       if (waitTime >= maxWaitTime) {
-        console.warn(
+        logger.warn(
           "SolarSystemPreloader: Wait timeout, creating new instance"
         );
         this.isPreloading = false; // Reset the flag
@@ -490,11 +496,11 @@ export class SolarSystemPreloader {
     this.isPreloading = true;
 
     try {
-      console.log("SolarSystemPreloader: Starting solar system preloading...");
+      logger.debug("SolarSystemPreloader: Starting solar system preloading...");
       console.time("SolarSystemPreloader: Total preload time");
 
       // Phase 1: Preload textures (30% of progress) - STRICT LOADING, NO FALLBACKS
-      console.log("SolarSystemPreloader: Phase 1 - Preloading textures...");
+      logger.debug("SolarSystemPreloader: Phase 1 - Preloading textures...");
 
       const textures = await this.preloadTextures((textureProgress) => {
         if (onProgress) {
@@ -509,12 +515,12 @@ export class SolarSystemPreloader {
         }
       });
 
-      console.log(
+      logger.debug(
         "SolarSystemPreloader: ✅ Texture loading completed with fallback support"
       );
 
       // Phase 2: Create geometries (15% of progress)
-      console.log("SolarSystemPreloader: Phase 2 - Creating geometries...");
+      logger.debug("SolarSystemPreloader: Phase 2 - Creating geometries...");
       const geometries = await this.createGeometries(
         (loaded, total, current) => {
           if (onProgress) {
@@ -530,7 +536,7 @@ export class SolarSystemPreloader {
       );
 
       // Phase 3: Create materials (15% of progress)
-      console.log("SolarSystemPreloader: Phase 3 - Creating materials...");
+      logger.debug("SolarSystemPreloader: Phase 3 - Creating materials...");
       const materials = await this.createMaterials(
         textures,
         (loaded, total, current) => {
@@ -547,7 +553,7 @@ export class SolarSystemPreloader {
       );
 
       // Phase 4: Create scene (40% of progress)
-      console.log("SolarSystemPreloader: Phase 4 - Creating scene...");
+      logger.debug("SolarSystemPreloader: Phase 4 - Creating scene...");
       this.preloadedSystem = await this.createCompleteScene(
         geometries,
         materials,
@@ -579,17 +585,18 @@ export class SolarSystemPreloader {
         });
       }
 
-      console.log("🌌 SolarSystemPreloader: PRELOADING COMPLETE");
-      console.log(
+      logger.debug("🌌 SolarSystemPreloader: PRELOADING COMPLETE");
+      logger.debug(
         `✅ Solar system ready with ${this.preloadedSystem.meshes.length} meshes`
       );
 
       return this.preloadedSystem;
     } catch (error) {
-      console.error(
+      logger.error(
         "SolarSystemPreloader: Critical error during preloading:",
         error
       );
+      captureException(error);
       this.isPreloading = false;
 
       // Re-throw the error as the system should still work with fallback colors
@@ -694,8 +701,8 @@ export class SolarSystemPreloader {
       materialSpecs.push({
         key: `planet_${planet.id}`,
         create: () => {
-          // Find the texture key for this planet
-          const planetTextureKey = `planet_${planet.id}`;
+          // Find the texture key for this planet (id already has the "planet_" prefix)
+          const planetTextureKey = planet.id;
           const planetTexture = textures.get(planetTextureKey);
 
           // Fallback colors for each planet
@@ -707,7 +714,7 @@ export class SolarSystemPreloader {
           };
 
           if (planetTexture) {
-            console.log(`🪐 Planet ${planet.id} using texture`);
+            logger.debug(`🪐 Planet ${planet.id} using texture`);
             return new MeshPhongMaterial({
               map: planetTexture,
               color: 0xffffff, // White to show texture properly
@@ -718,7 +725,7 @@ export class SolarSystemPreloader {
             const fallbackColor =
               fallbackColors[planet.id as keyof typeof fallbackColors] ||
               0x888888;
-            console.log(
+            logger.debug(
               `🪐 Planet ${
                 planet.id
               } using fallback color: ${fallbackColor.toString(16)}`
@@ -747,7 +754,7 @@ export class SolarSystemPreloader {
           key: `moon_${planet.id}_${i}`,
           create: () => {
             if (moonTexture) {
-              console.log(`🌙 Moon ${planet.id}_${i} using texture`);
+              logger.debug(`🌙 Moon ${planet.id}_${i} using texture`);
               return new MeshPhongMaterial({
                 map: moonTexture,
                 color: 0xffffff, // White to show texture properly
@@ -755,7 +762,7 @@ export class SolarSystemPreloader {
                 specular: 0x080808,
               });
             } else {
-              console.log(
+              logger.debug(
                 `🌙 Moon ${planet.id}_${i} using fallback color: gray`
               );
               return new MeshPhongMaterial({
@@ -785,7 +792,7 @@ export class SolarSystemPreloader {
             };
 
             if (ringTexture) {
-              console.log(`💍 Ring ${planet.id} using texture`);
+              logger.debug(`💍 Ring ${planet.id} using texture`);
               return new MeshPhongMaterial({
                 map: ringTexture,
                 color: 0xffffff, // White to show texture properly
@@ -801,7 +808,7 @@ export class SolarSystemPreloader {
                 fallbackRingColors[
                   planet.id as keyof typeof fallbackRingColors
                 ] || 0x999999;
-              console.log(
+              logger.debug(
                 `💍 Ring ${
                   planet.id
                 } using fallback color: ${fallbackColor.toString(16)}`
@@ -854,11 +861,10 @@ export class SolarSystemPreloader {
     camera.position.set(90, 60, 90); // Closer position for compact orbital radii (35-75 units)
     camera.lookAt(0, 0, 0); // Look at center where sun is
 
-    console.log(
+    logger.debug(
       `📷 Camera positioned at (90, 60, 90) looking at center (0, 0, 0) for optimal compact solar system view`
     );
 
-    const clock = new Clock();
     const meshes: Mesh[] = [];
     const lights: (DirectionalLight | AmbientLight | PointLight)[] = [];
 
@@ -901,7 +907,7 @@ export class SolarSystemPreloader {
     scene.add(rimLight2.target);
     lights.push(rimLight2);
 
-    console.log(
+    logger.debug(
       `💡 Enhanced lighting setup for MeshPhongMaterial: Ambient(1.2), Sun Directional(4.0), Sun Point(5.0), Rim Lights(0.8, 0.6)`
     );
 
@@ -938,9 +944,9 @@ export class SolarSystemPreloader {
           meshes.push(sunMesh);
           sunMeshes.push(sunMesh);
         }
-        console.log("☀️ Sun (multi-layered glow) added to scene.");
+        logger.debug("☀️ Sun (multi-layered glow) added to scene.");
       } else {
-        console.error("❌ Sun geometry missing! Using fallback sphere.");
+        logger.error("❌ Sun geometry missing! Using fallback sphere.");
         const fallbackSun = new Mesh(
           new SphereGeometry(20.0, 16, 16),
           new MeshBasicMaterial({ color: 0xffff00 })
@@ -950,10 +956,11 @@ export class SolarSystemPreloader {
         scene.add(fallbackSun);
         meshes.push(fallbackSun);
         sunMeshes.push(fallbackSun);
-        console.log("☀️ Emergency fallback sun added to scene.");
+        logger.debug("☀️ Emergency fallback sun added to scene.");
       }
     } catch (err) {
-      console.error("❌ Exception while creating sun mesh:", err);
+      logger.error("❌ Exception while creating sun mesh:", err);
+      captureException(err);
       const fallbackSun = new Mesh(
         new SphereGeometry(20.0, 16, 16),
         new MeshBasicMaterial({ color: 0xffff00 })
@@ -963,10 +970,10 @@ export class SolarSystemPreloader {
       scene.add(fallbackSun);
       meshes.push(fallbackSun);
       sunMeshes.push(fallbackSun);
-      console.log("☀️ Emergency fallback sun added to scene.");
+      logger.debug("☀️ Emergency fallback sun added to scene.");
     }
     if (!sunMeshes.length) {
-      console.error("❌ No sun mesh present in scene after all attempts!");
+      logger.error("❌ No sun mesh present in scene after all attempts!");
     }
     onProgress?.(3, 10, "Sun created");
 
@@ -1015,20 +1022,21 @@ export class SolarSystemPreloader {
         };
         planetGroup.add(planet);
         if (planet instanceof Mesh) meshes.push(planet);
-        console.log(
+        logger.debug(
           `🪐 Planet ${planetConfig.id} added with REQUIRED texture ${planetTextureKey}.`
         );
       } catch (err) {
-        console.error(
+        logger.error(
           `❌ Exception while creating planet ${planetConfig.id}:`,
           err
         );
+        captureException(err);
       }
 
       // Add moons to this planet - ONLY if the planet was successfully created AND added to scene
       if (planetConfig.moons) {
         if (!planet) {
-          console.warn(
+          logger.warn(
             `⚠️ Skipping ${planetConfig.moons.length} moon(s) for ${planetConfig.id} because planet failed to create - no orphaned moons allowed.`
           );
         } else {
@@ -1036,7 +1044,7 @@ export class SolarSystemPreloader {
           const isPlanetInGroup = planetGroup.children.includes(planet);
 
           if (!isPlanetInGroup) {
-            console.warn(
+            logger.warn(
               `⚠️ Skipping ${planetConfig.moons.length} moon(s) for ${planetConfig.id} because planet is not in the scene group - no orphaned moons allowed.`
             );
           } else {
@@ -1052,12 +1060,12 @@ export class SolarSystemPreloader {
                 );
 
                 if (!moonGeometry) {
-                  console.error(
+                  logger.error(
                     `❌ Missing geometry for moon ${planetConfig.id}_${i}, using fallback sphere.`
                   );
                 }
                 if (!moonMaterial) {
-                  console.error(
+                  logger.error(
                     `❌ Missing material for moon ${planetConfig.id}_${i}, using fallback material.`
                   );
                 }
@@ -1087,14 +1095,15 @@ export class SolarSystemPreloader {
                 };
                 planetGroup.add(moon);
                 if (moon instanceof Mesh) meshes.push(moon);
-                console.log(
+                logger.debug(
                   `🌙 Moon ${planetConfig.id}_${i} added with correct texture (planet validated).`
                 );
               } catch (err) {
-                console.error(
+                logger.error(
                   `❌ Exception while creating moon ${planetConfig.id}_${i}:`,
                   err
                 );
+                captureException(err);
               }
             }
           }
@@ -1104,7 +1113,7 @@ export class SolarSystemPreloader {
       // Add rings to this planet - ONLY if the planet was successfully created AND added to scene
       if (planetConfig.rings) {
         if (!planet) {
-          console.warn(
+          logger.warn(
             `⚠️ Skipping ring for ${planetConfig.id} because planet failed to create - no standalone rings allowed.`
           );
         } else {
@@ -1120,15 +1129,15 @@ export class SolarSystemPreloader {
           const isPlanetInGroup = planetGroup.children.includes(planet);
 
           if (!isPlanetInGroup) {
-            console.warn(
+            logger.warn(
               `⚠️ Skipping ring for ${planetConfig.id} because planet is not in the scene group - no orphaned rings allowed.`
             );
           } else if (!ringGeometry) {
-            console.error(
+            logger.error(
               `❌ Missing geometry for ring ${planetConfig.id}, skipping ring.`
             );
           } else if (!ringMaterial) {
-            console.error(
+            logger.error(
               `❌ Missing material for ring ${planetConfig.id}, using fallback material.`
             );
             // Only create ring with validated geometry and confirmed planet presence
@@ -1152,7 +1161,7 @@ export class SolarSystemPreloader {
             };
             planetGroup.add(ring);
             if (ring instanceof Mesh) meshes.push(ring);
-            console.log(
+            logger.debug(
               `💍 Ring for planet ${planetConfig.id} added with fallback material (planet validated).`
             );
           } else {
@@ -1167,7 +1176,7 @@ export class SolarSystemPreloader {
             };
             planetGroup.add(ring);
             if (ring instanceof Mesh) meshes.push(ring);
-            console.log(
+            logger.debug(
               `💍 Ring for planet ${planetConfig.id} added with correct material (planet validated).`
             );
           }
@@ -1175,11 +1184,11 @@ export class SolarSystemPreloader {
       }
       planetsGroup.add(planetGroup);
     }
-    console.log(
+    logger.debug(
       `🪐 Planets group has ${planetsGroup.children.length} children.`
     );
     setTimeout(() => {
-      console.log(
+      logger.debug(
         "🔎 Scene children:",
         scene.children.map((c) => c.userData)
       );
@@ -1188,7 +1197,6 @@ export class SolarSystemPreloader {
     return {
       scene,
       camera,
-      clock,
       planetsGroup,
       meshes,
       lights,
@@ -1229,7 +1237,7 @@ export class SolarSystemPreloader {
    * Clear preloaded system and free memory
    */
   static clearCache(): void {
-    console.log("SolarSystemPreloader: Clearing all caches...");
+    logger.debug("SolarSystemPreloader: Clearing all caches...");
 
     // Clear all cached data
     this.textureCache.clear();
@@ -1244,6 +1252,6 @@ export class SolarSystemPreloader {
       }
     });
 
-    console.log("SolarSystemPreloader: All caches cleared successfully");
+    logger.debug("SolarSystemPreloader: All caches cleared successfully");
   }
 }

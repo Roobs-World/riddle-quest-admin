@@ -4,45 +4,40 @@ import { render, fireEvent, waitFor } from "@testing-library/react-native";
 import VictoryModal from "../VictoryModal";
 import type { SubmittedGuess, Feedback } from "../../../../hooks/types";
 
+// Mock Modal to avoid NativeEventEmitter/Keyboard native module errors
+jest.mock("react-native/Libraries/Modal/Modal", () => {
+  const React = require("react");
+  return {
+    __esModule: true,
+    default: function MockModal({ children, visible }: any) {
+      if (!visible) return null;
+      return React.createElement("View", { testID: "modal" }, children);
+    },
+  };
+});
+
 // Mock the CloseButton component
 jest.mock("../../../buttons/CloseButton", () => {
-  const { TouchableOpacity, Text } = require("react-native");
-  const MockCloseButton = ({
-    onPress,
-    size,
-    color,
-    className,
-  }: {
-    onPress: () => void;
-    size?: number;
-    color?: string;
-    className?: string;
-  }) => (
-    <TouchableOpacity testID="close-button" onPress={onPress}>
-      <Text>Close {size && `(${size})`}</Text>
-    </TouchableOpacity>
-  );
-  MockCloseButton.displayName = "MockCloseButton";
-  return MockCloseButton;
+  const React = require("react");
+  return function MockCloseButton({ onPress, size }: any) {
+    return React.createElement(
+      "View",
+      { testID: "close-button", accessible: true, onPress },
+      React.createElement("Text", null, "Close" + (size ? ` (${size})` : ""))
+    );
+  };
 });
 
 // Mock the WideButton component
 jest.mock("../../../buttons/WideButton", () => {
-  const { TouchableOpacity, Text } = require("react-native");
-  const MockWideButton = ({
-    buttonText,
-    onPress,
-    buttonColor,
-  }: {
-    buttonText: string;
-    onPress: () => void;
-    buttonColor?: string;
-  }) => (
-    <TouchableOpacity testID="wide-button" onPress={onPress}>
-      <Text>{buttonText}</Text>
-    </TouchableOpacity>
-  );
-  return MockWideButton;
+  const React = require("react");
+  return function MockWideButton({ buttonText, onPress }: any) {
+    return React.createElement(
+      "View",
+      { testID: "wide-button", accessible: true, onPress },
+      React.createElement("Text", null, buttonText)
+    );
+  };
 });
 
 // Mock the utility function
@@ -55,27 +50,21 @@ jest.mock("../../../../utils/gameUtils", () => ({
 
 // Mock the SocialShareButton component
 jest.mock("../../../buttons/SocialShareButton", () => {
-  const { View, Text } = require("react-native");
-  const MockSocialShareButton = ({
-    platform,
-    onPress,
-  }: {
-    platform: string;
-    onPress: () => void;
-  }) => (
-    <View
-      accessibilityLabel={`Share to ${
-        platform === "facebook" ? "Facebook" : "X"
-      }`}
-      accessibilityRole="button"
-      accessibilityState={{ disabled: false }}
-      onPress={onPress}
-      testID={`share-button-${platform}`}
-    >
-      <Text>{platform === "facebook" ? "Facebook" : "X"}</Text>
-    </View>
-  );
-  return MockSocialShareButton;
+  const React = require("react");
+  return function MockSocialShareButton({ platform, onPress }: any) {
+    const label = platform === "facebook" ? "Facebook" : platform === "x" ? "X" : "Share";
+    return React.createElement(
+      "View",
+      {
+        accessibilityLabel: `Share to ${label}`,
+        accessibilityRole: "button",
+        accessibilityState: { disabled: false },
+        onPress,
+        testID: `share-button-${platform}`,
+      },
+      React.createElement("Text", null, label)
+    );
+  };
 });
 
 // Mock the SocialSharingService
@@ -85,7 +74,29 @@ jest.mock("../../../../services/SocialSharingService", () => ({
   },
 }));
 
+// Mock AnalyticsService
+jest.mock("../../../../services/AnalyticsService", () => ({
+  analyticsService: {
+    logShare: jest.fn().mockResolvedValue(undefined),
+  },
+}));
+
+// Mock sentry utils
+jest.mock("../../../../utils/sentry", () => ({
+  captureException: jest.fn(),
+}));
+
+// Mock logger
+jest.mock("../../../../utils/logger", () => ({
+  logger: {
+    error: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+  },
+}));
+
 // Mock the SVG components
+jest.mock("../../../../assets/images/modal-bg.svg", () => "ModalBgSvg");
 jest.mock("../../../../assets/images/wheel-bg.svg", () => "WheelBgSvg");
 jest.mock(
   "../../../../assets/images/large-coin-stack.svg",
@@ -123,10 +134,7 @@ describe("VictoryModal", () => {
       const { getByText } = render(<VictoryModal {...defaultProps} />);
 
       expect(getByText("Victory!")).toBeTruthy();
-      expect(getByText(/Solved in.*3.*attempts/)).toBeTruthy();
-      expect(getByText("Coins Earned")).toBeTruthy();
-      expect(getByText("50")).toBeTruthy();
-      expect(getByText("Share your victory")).toBeTruthy();
+      expect(getByText(/\+50 Coins/)).toBeTruthy();
       expect(getByText("Next Level")).toBeTruthy();
     });
 
@@ -160,17 +168,16 @@ describe("VictoryModal", () => {
         <VictoryModal {...defaultProps} attempts={1} />
       );
 
-      expect(getByText("Solved in 1 attempt!")).toBeTruthy();
+      expect(getByText("Victory!")).toBeTruthy();
+      expect(getByText(/\+50 Coins/)).toBeTruthy();
     });
 
     it("should render emoji grid when guesses are provided", () => {
-      const { getByText } = render(<VictoryModal {...defaultProps} />);
+      render(<VictoryModal {...defaultProps} />);
       const {
         generateFeedbackEmojiGrid,
       } = require("../../../../utils/gameUtils");
 
-      expect(getByText("Share your victory")).toBeTruthy();
-      // Check that the function was called rather than the exact emoji text
       expect(generateFeedbackEmojiGrid).toHaveBeenCalledWith(
         defaultProps.guesses
       );
@@ -239,6 +246,21 @@ describe("VictoryModal", () => {
         gameMode: "daily",
       });
     });
+
+    it("should call share service when system share button is pressed", () => {
+      const { getByTestId } = render(<VictoryModal {...defaultProps} />);
+      const {
+        SocialSharingService,
+      } = require("../../../../services/SocialSharingService");
+
+      fireEvent.press(getByTestId("share-button-system"));
+
+      expect(SocialSharingService.share).toHaveBeenCalledWith("system", {
+        attempts: 3,
+        emojiGrid: "🟩🟩🟩🟩🟩\n🟨🟨🟨🟨🟨",
+        gameMode: "daily",
+      });
+    });
   });
 
   describe("Props Validation", () => {
@@ -247,12 +269,10 @@ describe("VictoryModal", () => {
         <VictoryModal {...defaultProps} coinsEarned={100} />
       );
 
-      expect(getByText("Coins Earned")).toBeTruthy();
-      expect(getByText("100")).toBeTruthy();
+      expect(getByText(/\+100 Coins/)).toBeTruthy();
 
       rerender(<VictoryModal {...defaultProps} coinsEarned={1} />);
-      expect(getByText("Coins Earned")).toBeTruthy();
-      expect(getByText("1")).toBeTruthy();
+      expect(getByText(/\+1 Coins/)).toBeTruthy();
     });
   });
 });

@@ -15,7 +15,8 @@ import React from "react";
 import { TouchableOpacity } from "react-native";
 import BackIcon from "@images/back-icon.svg";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { styles } from "../../styles";
+import { styles, SPACING } from "../../styles";
+import { BACK_ICON_SIZE } from "../../constants/layout";
 
 /**
  * Props interface for the BackButton component.
@@ -92,15 +93,14 @@ const BackButton = <
   return (
     <TouchableOpacity
       onPress={handlePress}
-      className="p-1"
-      style={styles.backButton}
+      style={[styles.backButton, { padding: SPACING.xs }]}
       accessibilityRole="button"
       accessibilityLabel={
         targetScreen ? `Navigate to ${String(targetScreen)}` : "Go back"
       }
       accessibilityHint="Double tap to navigate back or to the previous screen"
     >
-      <BackIcon width={35} height={35} />
+      <BackIcon width={BACK_ICON_SIZE} height={BACK_ICON_SIZE} />
     </TouchableOpacity>
   );
 };

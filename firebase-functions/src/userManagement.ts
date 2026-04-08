@@ -2,6 +2,7 @@ import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import {onCall, HttpsError} from "firebase-functions/v2/https";
 import {initializeNewUser, ensureUserDocumentComplete} from "./firestoreService";
+import {captureException} from "./sentry";
 
 /**
  * Request data for initializing a new user
@@ -60,7 +61,8 @@ export const initializeUser = onCall<InitializeUserRequestData, Promise<Initiali
         userId,
       };
     } catch (error: unknown) {
-      console.error("Error in initializeUser:", error);
+      functions.logger.error("Error in initializeUser:", error);
+      captureException(error);
       if (error instanceof HttpsError) {
         throw error;
       }
@@ -94,7 +96,8 @@ export const ensureUserComplete = onCall<object, Promise<{success: boolean; mess
       message: "User document verified/updated with all required fields.",
     };
   } catch (error: unknown) {
-    console.error("Error in ensureUserComplete:", error);
+    functions.logger.error("Error in ensureUserComplete:", error);
+    captureException(error);
     if (error instanceof HttpsError) {
       throw error;
     }
@@ -144,6 +147,7 @@ async function isUserAdmin(auth: {uid: string; token: {admin?: boolean}}): Promi
     return adminDoc.exists;
   } catch (error) {
     functions.logger.error("Error checking admin status:", error);
+    captureException(error);
     return false;
   }
 }
@@ -214,7 +218,8 @@ export const updateUserStats = onCall<UpdateUserStatsRequestData, Promise<{succe
         message: `User stats updated successfully for ${targetUserId}.`,
       };
     } catch (error: unknown) {
-      console.error("Error in updateUserStats:", error);
+      functions.logger.error("Error in updateUserStats:", error);
+      captureException(error);
       if (error instanceof HttpsError) {
         throw error;
       }

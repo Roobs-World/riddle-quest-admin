@@ -21,47 +21,49 @@ service cloud.firestore {
     }
 
     // Validate user document structure on creation/update
+    // Uses request.resource.data (the incoming data) rather than resource.data
+    // (the existing document, which is null for create operations).
     function isValidUserDocument() {
       let requiredFields = ['userId', 'username', 'email', 'coins'];
-      let optionalFields = ['displayName', 'avatarUrl', 'hasPurchasedApp', 'createdAt', 'registeredAt', 'lastLogin', 'lastDailyChallengeCompletedAt', 'stats', 'progress'];
+      let optionalFields = ['displayName', 'avatarUrl', 'hasPurchasedApp', 'createdAt', 'registeredAt', 'lastLogin', 'lastDailyChallengeCompletedAt', 'stats', 'progress', 'unlockedAchievements', 'fcmToken', 'fcmTokenUpdatedAt', 'lastStreakReminderSentAt'];
       let allFields = requiredFields.concat(optionalFields);
-      
-      return resource.data.keys().hasAll(requiredFields) &&
-             resource.data.keys().hasOnly(allFields) &&
-             resource.data.userId is string &&
-             resource.data.username is string &&
-             resource.data.username.size() >= 1 &&
-             resource.data.username.size() <= 50 &&
-             resource.data.email is string &&
-             resource.data.email.matches('.*@.*\\..*') &&
-             resource.data.coins is number &&
-             resource.data.coins >= 0 &&
-             (!('displayName' in resource.data) || (resource.data.displayName is string && resource.data.displayName.size() <= 100)) &&
-             (!('avatarUrl' in resource.data) || (resource.data.avatarUrl is string)) &&
-             (!('hasPurchasedApp' in resource.data) || resource.data.hasPurchasedApp is bool);
+
+      return request.resource.data.keys().hasAll(requiredFields) &&
+             request.resource.data.keys().hasOnly(allFields) &&
+             request.resource.data.userId is string &&
+             request.resource.data.username is string &&
+             request.resource.data.username.size() >= 1 &&
+             request.resource.data.username.size() <= 50 &&
+             request.resource.data.email is string &&
+             request.resource.data.email.matches('.*@.*\\..*') &&
+             request.resource.data.coins is number &&
+             request.resource.data.coins >= 0 &&
+             (!('displayName' in request.resource.data) || (request.resource.data.displayName is string && request.resource.data.displayName.size() <= 100)) &&
+             (!('avatarUrl' in request.resource.data) || (request.resource.data.avatarUrl is string)) &&
+             (!('hasPurchasedApp' in request.resource.data) || request.resource.data.hasPurchasedApp is bool);
     }
 
     // Validate stats update structure
     function isValidStatsUpdate() {
-      let allowedStats = ['dailyPuzzlesCompleted', 'bestStreak', 'totalWordsGuessed', 'winRate', 'averageGuesses', 'totalScore', 'highestLevelClassic', 'gamesPlayed', 'wins', 'challengeWins', 'winStreak', 'totalWins', 'totalGuessesInWins'];
-      
-      return resource.data.stats.keys().hasOnly(allowedStats) &&
-             (!('dailyPuzzlesCompleted' in resource.data.stats) || (resource.data.stats.dailyPuzzlesCompleted is number && resource.data.stats.dailyPuzzlesCompleted >= 0)) &&
-             (!('bestStreak' in resource.data.stats) || (resource.data.stats.bestStreak is number && resource.data.stats.bestStreak >= 0)) &&
-             (!('totalWordsGuessed' in resource.data.stats) || (resource.data.stats.totalWordsGuessed is number && resource.data.stats.totalWordsGuessed >= 0)) &&
-             (!('winRate' in resource.data.stats) || (resource.data.stats.winRate is number && resource.data.stats.winRate >= 0 && resource.data.stats.winRate <= 1)) &&
-             (!('totalScore' in resource.data.stats) || (resource.data.stats.totalScore is number && resource.data.stats.totalScore >= 0)) &&
-             (!('gamesPlayed' in resource.data.stats) || (resource.data.stats.gamesPlayed is number && resource.data.stats.gamesPlayed >= 0));
+      let allowedStats = ['dailyPuzzlesCompleted', 'bestStreak', 'totalWordsGuessed', 'winRate', 'averageGuesses', 'totalScore', 'highestLevelClassic', 'gamesPlayed', 'wins', 'challengeWins', 'winStreak', 'totalWins', 'totalGuessesInWins', 'totalHintsUsed'];
+
+      return request.resource.data.stats.keys().hasOnly(allowedStats) &&
+             (!('dailyPuzzlesCompleted' in request.resource.data.stats) || (request.resource.data.stats.dailyPuzzlesCompleted is number && request.resource.data.stats.dailyPuzzlesCompleted >= 0)) &&
+             (!('bestStreak' in request.resource.data.stats) || (request.resource.data.stats.bestStreak is number && request.resource.data.stats.bestStreak >= 0)) &&
+             (!('totalWordsGuessed' in request.resource.data.stats) || (request.resource.data.stats.totalWordsGuessed is number && request.resource.data.stats.totalWordsGuessed >= 0)) &&
+             (!('winRate' in request.resource.data.stats) || (request.resource.data.stats.winRate is number && request.resource.data.stats.winRate >= 0 && request.resource.data.stats.winRate <= 100)) &&
+             (!('totalScore' in request.resource.data.stats) || (request.resource.data.stats.totalScore is number && request.resource.data.stats.totalScore >= 0)) &&
+             (!('gamesPlayed' in request.resource.data.stats) || (request.resource.data.stats.gamesPlayed is number && request.resource.data.stats.gamesPlayed >= 0));
     }
 
     // Validate progress update structure
     function isValidProgressUpdate() {
-      let allowedProgress = ['classicIndex', 'dailyChallengeIndex', 'tutorialIndex'];
-      
-      return resource.data.progress.keys().hasOnly(allowedProgress) &&
-             (!('classicIndex' in resource.data.progress) || (resource.data.progress.classicIndex is number && resource.data.progress.classicIndex >= 0)) &&
-             (!('dailyChallengeIndex' in resource.data.progress) || (resource.data.progress.dailyChallengeIndex is number && resource.data.progress.dailyChallengeIndex >= 0)) &&
-             (!('tutorialIndex' in resource.data.progress) || (resource.data.progress.tutorialIndex is number && resource.data.progress.tutorialIndex >= 0));
+      let allowedProgress = ['classicIndex', 'dailyChallengeIndex', 'dailyChallengeCurrentQuestion', 'tutorialIndex'];
+
+      return request.resource.data.progress.keys().hasOnly(allowedProgress) &&
+             (!('classicIndex' in request.resource.data.progress) || (request.resource.data.progress.classicIndex is number && request.resource.data.progress.classicIndex >= 0)) &&
+             (!('dailyChallengeIndex' in request.resource.data.progress) || (request.resource.data.progress.dailyChallengeIndex is number && request.resource.data.progress.dailyChallengeIndex >= 0)) &&
+             (!('tutorialIndex' in request.resource.data.progress) || (request.resource.data.progress.tutorialIndex is number && request.resource.data.progress.tutorialIndex >= 0));
     }
 
     // Users collection - strict privacy controls
@@ -144,6 +146,18 @@ service cloud.firestore {
       allow delete: if isServerRequest();
     }
 
+    // Processed Ad Callbacks - server-only subcollection for idempotency
+    match /users/{userId}/processedAdCallbacks/{tokenId} {
+      allow read: if isOwner(userId);
+      allow write: if isServerRequest();
+    }
+
+    // Pending Ad Completions - server-only subcollection for rewarded ad queue
+    match /users/{userId}/pendingAdCompletions/{docId} {
+      allow read: if isOwner(userId);
+      allow write: if isServerRequest();
+    }
+
     // Processed Purchases - user subcollection for IAP tracking
     match /users/{userId}/processedPurchases/{purchaseToken} {
       // Users can read their own purchase history
@@ -181,6 +195,15 @@ service cloud.firestore {
     match /analytics/{analyticsId} {
       // Only server can read/write analytics data
       allow read, write: if isServerRequest();
+    }
+
+    // Leaderboard collection - read for all authenticated users, write for server only
+    match /leaderboard/{userId} {
+      // Any authenticated user can read leaderboard entries
+      allow read: if isAuthenticated();
+
+      // Only Cloud Functions (admin SDK) may create or update entries
+      allow write: if isServerRequest();
     }
 
     // Deny all other access by default

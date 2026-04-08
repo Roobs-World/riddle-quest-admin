@@ -1,4 +1,6 @@
 import * as admin from "firebase-admin";
+import * as functions from "firebase-functions";
+import {captureException} from "./sentry";
 
 /**
  * Checks if a specific IAP token has been processed for a user.
@@ -20,7 +22,8 @@ export async function isPurchaseTokenAlreadyProcessed(userId: string, purchaseTo
       .get();
     return transactionDoc.exists;
   } catch (error) {
-    console.error("Error checking if IAP purchase token was processed:", error);
+    functions.logger.error("Error checking if IAP purchase token was processed:", error);
+    captureException(error);
     // Returning true in case of error is a safer default to prevent accidental double awards
     return true;
   }
@@ -45,7 +48,8 @@ export async function markPurchaseTokenAsProcessed(
       productId: productId,
     });
   } catch (error) {
-    console.error("Error marking IAP purchase token as processed:", error);
+    functions.logger.error("Error marking IAP purchase token as processed:", error);
+    captureException(error);
     throw error;
   }
 }

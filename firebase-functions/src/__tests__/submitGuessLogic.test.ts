@@ -1,10 +1,21 @@
 import * as admin from "firebase-admin";
+import * as functions from "firebase-functions";
 import {HttpsError} from "firebase-functions/v2/https";
 import {handleGuessLogic} from "../submitGuessLogic";
 import * as firestoreService from "../firestoreService";
 import * as riddleGeneration from "../riddleGeneration";
+import * as achievements from "../achievements";
 import type {Player, FirestoreRiddle} from "../validation/firestoreSchemas";
 import type {SubmitGuessRequestData, SubmitGuessAuthContext} from "../validation/requestSchemas";
+
+// Mock firebase-functions logger (source uses functions.logger.info/error/debug instead of console)
+jest.mock("firebase-functions", () => ({
+  logger: {
+    info: jest.fn(),
+    debug: jest.fn(),
+    error: jest.fn(),
+  },
+}));
 
 // Mock firebase-admin
 const mockAdminFirestoreUpdate = jest.fn().mockResolvedValue(undefined);
@@ -47,6 +58,16 @@ jest.mock("../firestoreService", () => ({
 jest.mock("../riddleGeneration", () => ({
   generateAndAppendRiddles: jest.fn(),
   initializeRiddleDatabaseIfEmpty: jest.fn(),
+}));
+
+// Mock achievements
+jest.mock("../achievements", () => ({
+  evaluateAchievements: jest.fn().mockResolvedValue([]),
+}));
+
+// Mock leaderboard (non-blocking update, errors are swallowed)
+jest.mock("../leaderboard", () => ({
+  updateLeaderboardEntry: jest.fn().mockResolvedValue(undefined),
 }));
 
 // Mock Firebase Functions v2 onCall - create a proper HttpsError class
@@ -233,6 +254,13 @@ describe("handleGuessLogic", () => {
       expect(result.feedback).toEqual(mockRiddle.answer!.split("").map((l) => ({letter: l, status: "green"})));
       expect(result.coinsEarned).toBe(10);
       expect(result.correctAnswer).toBe("keyboard");
+      expect(Array.isArray(result.newlyUnlockedAchievementIds)).toBe(true);
+    });
+
+    test("should include newlyUnlockedAchievementIds when achievements module returns them", async () => {
+      (achievements.evaluateAchievements as jest.Mock).mockResolvedValueOnce(["first_win", "wins_5"]);
+      const result = await handleGuessLogic(requestData, authContext);
+      expect(result.newlyUnlockedAchievementIds).toEqual(["first_win", "wins_5"]);
     });
 
     test("should update user stats correctly", async () => {
@@ -289,7 +317,7 @@ describe("handleGuessLogic", () => {
         await handleGuessLogic(baseClassicCorrectRequest, authContext);
 
         expect(riddleGeneration.generateAndAppendRiddles).toHaveBeenCalledWith(25);
-        expect(console.log).toHaveBeenCalledWith(
+        expect(functions.logger.info).toHaveBeenCalledWith(
           expect.stringContaining(
             "User test-user-id has <= 10 classic riddles remaining. Triggering generation of 25 new riddles.",
           ),
@@ -331,7 +359,7 @@ describe("handleGuessLogic", () => {
 
         await handleGuessLogic(baseClassicCorrectRequest, authContext);
 
-        expect(console.error).toHaveBeenCalledWith("Error checking classic riddle count:", expect.any(Error));
+        expect(functions.logger.error).toHaveBeenCalledWith("Error checking classic riddle count:", expect.any(Error));
         expect(riddleGeneration.generateAndAppendRiddles).not.toHaveBeenCalled();
       });
 
@@ -351,7 +379,7 @@ describe("handleGuessLogic", () => {
 
         await handleGuessLogic(baseClassicCorrectRequest, authContext);
 
-        expect(console.error).toHaveBeenCalledWith(
+        expect(functions.logger.error).toHaveBeenCalledWith(
           "Error triggering generation of new classic riddles:",
           expect.any(Error),
         );
@@ -430,17 +458,11 @@ describe("handleGuessLogic", () => {
       const userWithStreak = {...mockUser, stats: {...mockUser.stats, winStreak: 1}};
       (firestoreService.getUser as jest.Mock).mockResolvedValue(userWithStreak);
       await handleGuessLogic(requestData, authContext);
-      const expectedStatsUpdate: Record<string, unknown> = {
-        gamesPlayed: "increment(1)",
-        totalWordsGuessed: "increment(1)", // Added new stat for incorrect guesses too
-        winRate: parseFloat(
-          ((userWithStreak.stats.totalWins! / (userWithStreak.stats.gamesPlayed! + 1)) * 100).toFixed(2),
-        ),
-      };
-      expect(firestoreService.updateUserStats).toHaveBeenCalledWith(
-        authContext.uid,
-        expect.objectContaining(expectedStatsUpdate),
-      );
+      // gamesPlayed is only incremented when gameOver (isCorrect or attempts >= maxAttempts)
+      // For incorrect guess not game over: statsUpdate has totalWordsGuessed only (no gamesPlayed, no winRate)
+      const statsUpdate = (firestoreService.updateUserStats as jest.Mock).mock.calls[0][1];
+      expect(statsUpdate).toHaveProperty("totalWordsGuessed");
+      expect(statsUpdate).not.toHaveProperty("gamesPlayed");
     });
   });
 
@@ -527,7 +549,7 @@ describe("handleGuessLogic", () => {
     await expect(handleGuessLogic(requestData, authContext)).rejects.toThrow(
       new HttpsError("internal", "An unexpected error occurred in handleGuessLogic.", expect.any(Error)),
     );
-    expect(console.error).toHaveBeenCalledWith("Error in handleGuessLogic:", expect.any(Error));
+    expect(functions.logger.error).toHaveBeenCalledWith("Error in handleGuessLogic:", expect.any(Error));
   });
 
   // New tests to cover uncovered lines
@@ -668,7 +690,7 @@ describe("handleGuessLogic", () => {
       // Should still succeed despite riddle generation error
       const result = await handleGuessLogic(requestData, authContext);
       expect(result.isCorrect).toBe(true);
-      expect(console.error).toHaveBeenCalledWith(
+      expect(functions.logger.error).toHaveBeenCalledWith(
         "Error triggering generation of new classic riddles:",
         expect.any(Error),
       );
@@ -688,7 +710,7 @@ describe("handleGuessLogic", () => {
       await expect(handleGuessLogic(requestData, authContext)).rejects.toThrow(
         new HttpsError("internal", "An unexpected error occurred in handleGuessLogic.", expect.any(Error)),
       );
-      expect(console.error).toHaveBeenCalledWith("Error in handleGuessLogic:", expect.any(Error));
+      expect(functions.logger.error).toHaveBeenCalledWith("Error in handleGuessLogic:", expect.any(Error));
     });
 
     test("should handle non-HttpsError exceptions in main catch block", async () => {
@@ -707,7 +729,7 @@ describe("handleGuessLogic", () => {
       await expect(handleGuessLogic(requestData, authContext)).rejects.toThrow(
         new HttpsError("internal", "An unexpected error occurred in handleGuessLogic.", expect.any(TypeError)),
       );
-      expect(console.error).toHaveBeenCalledWith("Error in handleGuessLogic:", expect.any(TypeError));
+      expect(functions.logger.error).toHaveBeenCalledWith("Error in handleGuessLogic:", expect.any(TypeError));
     });
 
     test("should handle extremely specific character count edge case to trigger defensive checks", async () => {
@@ -823,7 +845,81 @@ describe("handleGuessLogic", () => {
       expect(greenDs + yellowDs).toBeLessThanOrEqual(2); // Can't exceed available d's in "dad"
     });
   });
-});
 
-// Note: submitGuess onCall wrapper tests have been removed to avoid Firebase Functions v2 mocking complexity.
-// The core business logic is thoroughly tested through handleGuessLogic tests above.
+  describe("Correct Guess - Tutorial Mode", () => {
+    const tutorialRiddle: FirestoreRiddle = {
+      ...mockRiddle,
+      riddleId: "tutorial-riddle-1",
+      category: "tutorial",
+    };
+
+    beforeEach(() => {
+      (firestoreService.getRiddleByGameMode as jest.Mock).mockResolvedValue(
+        JSON.parse(JSON.stringify(tutorialRiddle)),
+      );
+    });
+
+    test("should award 5 coins for correct tutorial guess", async () => {
+      const requestData: SubmitGuessRequestData = {
+        guess: "keyboard",
+        riddleId: "tutorial-riddle-1",
+        gameMode: "tutorial",
+        attempts: 1,
+      };
+
+      const result = await handleGuessLogic(requestData, authContext);
+      expect(result.isCorrect).toBe(true);
+      expect(result.coinsEarned).toBe(5);
+      expect(firestoreService.updateUserCoins).toHaveBeenCalledWith(authContext.uid, 5);
+    });
+
+    test("should increment tutorialIndex on correct tutorial guess", async () => {
+      const requestData: SubmitGuessRequestData = {
+        guess: "keyboard",
+        riddleId: "tutorial-riddle-1",
+        gameMode: "tutorial",
+        attempts: 2,
+      };
+
+      await handleGuessLogic(requestData, authContext);
+
+      expect(mockAdminFirestoreUpdate).toHaveBeenCalledWith({
+        "progress.tutorialIndex": mockIncrement(1),
+      });
+      expect(functions.logger.info).toHaveBeenCalledWith(
+        expect.stringContaining("completed tutorial level. Incremented tutorialIndex"),
+      );
+    });
+
+    test("should use maxAttempts of 3 for tutorial mode", async () => {
+      const requestData: SubmitGuessRequestData = {
+        guess: "wrong",
+        riddleId: "tutorial-riddle-1",
+        gameMode: "tutorial",
+        attempts: 3,
+      };
+
+      const result = await handleGuessLogic(requestData, authContext);
+      expect(result.isCorrect).toBe(false);
+      expect(result.correctAnswer).toBe("keyboard");
+    });
+
+    test("should calculate tutorial score with base 25", async () => {
+      const requestData: SubmitGuessRequestData = {
+        guess: "keyboard",
+        riddleId: "tutorial-riddle-1",
+        gameMode: "tutorial",
+        attempts: 1,
+      };
+
+      await handleGuessLogic(requestData, authContext);
+
+      expect(firestoreService.updateUserStats).toHaveBeenCalledWith(
+        authContext.uid,
+        expect.objectContaining({
+          totalScore: "increment(55)",
+        }),
+      );
+    });
+  });
+});

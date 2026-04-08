@@ -1,4 +1,7 @@
+import { ReactElement } from "react";
 import { Text, TouchableOpacity } from "react-native";
+import { SPACING, TYPOGRAPHY } from "../../styles";
+import { SUBMIT_BUTTON_PADDING_H } from "../../constants/layout";
 
 type SubmitButtonProps = {
   isSubmitDisabled: boolean;
@@ -10,14 +13,15 @@ export const SubmitButton = ({
   isSubmitDisabled,
   gameOver,
   handleKeyPress,
-}: SubmitButtonProps): JSX.Element => {
+}: SubmitButtonProps): ReactElement => {
   return (
     <TouchableOpacity
-      className={`px-14 py-4 rounded-full mx-auto ${
+      className={`rounded-full ${
         isSubmitDisabled || gameOver
           ? "bg-secondary-orange"
           : "bg-primary-orange"
       }`}
+      style={{ paddingHorizontal: SUBMIT_BUTTON_PADDING_H, paddingVertical: SPACING.md }}
       onPress={() => {
         if (!isSubmitDisabled && !gameOver) {
           handleKeyPress("ENTER");
@@ -29,7 +33,7 @@ export const SubmitButton = ({
       accessibilityRole="button"
       accessibilityLabel="Submit current guess"
     >
-      <Text className="text-black font-bold text-lg">SUBMIT</Text>
+      <Text style={{ fontSize: TYPOGRAPHY.fontSize.lg, fontFamily: TYPOGRAPHY.fontPrimary, color: "black" }}>SUBMIT</Text>
     </TouchableOpacity>
   );
 };

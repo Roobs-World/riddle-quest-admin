@@ -3,13 +3,13 @@
  * Font families, sizes, and text styling for the Qwordly app
  */
 
-import { responsiveSizes } from "../../utils/responsive";
+import { responsiveSizes, moderateScale } from "../../utils/responsive";
 
 export const TYPOGRAPHY = {
   // Font families
   fontPrimary: "PoetsenOne",
-  fontSecondary: "Poppins",
-  fontSecondaryBold: "PoppinsSemiBold",
+  fontSecondary: "PoetsenOne",
+  fontSecondaryBold: "PoetsenOne",
 
   // Font sizes (using responsive scaling)
   fontSize: {
@@ -21,6 +21,12 @@ export const TYPOGRAPHY = {
     "2xl": responsiveSizes.text2xl,
     "3xl": responsiveSizes.text3xl,
     "4xl": responsiveSizes.text4xl,
+    /** Modal / screen titles — 28 px at base. */
+    title: responsiveSizes.textTitle,
+    /** Hero / display text — 32 px at base. */
+    display: responsiveSizes.textDisplay,
+    /** Letter inside a game tile — 28 px at base. */
+    tile: responsiveSizes.textTile,
   },
 
   // Line heights
@@ -37,5 +43,7 @@ export const TYPOGRAPHY = {
     tight: -0.104,
     normal: 0,
     wide: 0.025,
+    /** Uppercase/caps tracking — 1pt at base, scales with device. */
+    caps: moderateScale(1),
   },
 } as const;

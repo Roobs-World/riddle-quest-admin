@@ -5,8 +5,11 @@ import CustomSafeAreaView from "../CustomSafeAreaView";
 
 // Mock React Native components
 jest.mock("react-native", () => ({
-  SafeAreaView: "SafeAreaView",
   Text: "Text",
+}));
+
+jest.mock("react-native-safe-area-context", () => ({
+  SafeAreaView: "SafeAreaView",
 }));
 
 describe("CustomSafeAreaView", () => {

@@ -1,4 +1,6 @@
 import OpenAI from "openai";
+import * as functions from "firebase-functions";
+import {captureException} from "./sentry";
 
 // Lazy initialization variable
 let openaiClient: OpenAI | null = null;
@@ -70,7 +72,7 @@ export async function generateUniqueRiddle(): Promise<[string, string] | null> {
 
     const output = completion.choices[0].message.content;
     if (!output) {
-      console.warn("OpenAI returned empty content.");
+      functions.logger.warn("OpenAI returned empty content.");
       return null;
     }
 
@@ -81,7 +83,7 @@ export async function generateUniqueRiddle(): Promise<[string, string] | null> {
     const answerMatch = cleanedOutput.match(/Answer:\s*(.+?)(?:\n|$)/s);
 
     if (!questionMatch || !answerMatch) {
-      console.warn("Could not parse question or answer from OpenAI output using standard format.");
+      functions.logger.warn("Could not parse question or answer from OpenAI output using standard format.");
       return null;
     }
 
@@ -89,34 +91,35 @@ export async function generateUniqueRiddle(): Promise<[string, string] | null> {
     const answer = answerMatch[1].trim();
 
     if (!question || !answer) {
-      console.warn("Question or answer is empty after parsing.");
+      functions.logger.warn("Question or answer is empty after parsing.");
       return null;
     }
 
     // Validate answer length (critical requirement)
     if (answer.length > 7) {
-      console.warn(`Answer too long: "${answer}" (${answer.length} characters). Must be 7 or fewer.`);
+      functions.logger.warn(`Answer too long: "${answer}" (${answer.length} characters). Must be 7 or fewer.`);
       return null;
     }
 
     // Validate answer format (only lowercase letters)
     if (!/^[a-z]+$/.test(answer)) {
-      console.warn(`Answer contains invalid characters: "${answer}". Must be only lowercase letters.`);
+      functions.logger.warn(`Answer contains invalid characters: "${answer}". Must be only lowercase letters.`);
       return null;
     }
 
     // Validate question format (allow natural language but keep it reasonable)
     if (!/^[a-zA-Z0-9\s,.'?!-]+$/.test(question)) {
-      console.warn(
+      functions.logger.warn(
         `Question contains invalid characters: "${question}". Must contain only letters, numbers, spaces, and basic punctuation.`,
       );
       return null;
     }
 
-    console.log(`Generated valid riddle: "${question}" → "${answer}" (${answer.length} chars)`);
+    functions.logger.info(`Generated valid riddle: "${question}" → "${answer}" (${answer.length} chars)`);
     return [question, answer];
   } catch (error) {
-    console.error("Error generating riddle with OpenAI:", error);
+    functions.logger.error("Error generating riddle with OpenAI:", error);
+    captureException(error);
     return null; // Return null on error to prevent breaking the loop
   }
 }

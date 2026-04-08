@@ -1,35 +1,33 @@
-// Import first since we're not overriding the global mocks
 import { renderHook, act } from "@testing-library/react-native";
 import useGameLogic, { Feedback } from "../useGameLogic";
-import { getFunctions } from "@react-native-firebase/functions";
+import { httpsCallable } from "@react-native-firebase/functions";
 
-// Get the mocked functions module
-const mockFunctions = getFunctions as jest.MockedFunction<typeof getFunctions>;
-
-// Create a mock callable function that we'll use for submitGuess
-const mockSubmitGuessCallable = jest.fn();
+const mockHttpsCallable = httpsCallable as jest.MockedFunction<typeof httpsCallable>;
+const mockCompleteGameCallable = jest.fn();
 
 describe("useGameLogic", () => {
+  /**
+   * THORN contains none of G, U, E, S, F, A, I, L so any guess using those
+   * letters will produce all-red feedback, which keeps most tests simple.
+   */
   const defaultProps = {
     riddleId: "testRiddle123",
     gameMode: "classic" as "classic" | "challenge",
-    correctAnswerLength: 5, // Assuming a default, adjust if necessary
+    answer: "THORN",
   };
 
   beforeEach(() => {
     jest.clearAllMocks();
 
-    // Configure the global mock to return our specific callable
-    mockFunctions.mockReturnValue({
-      httpsCallable: jest.fn((functionName: string) => {
-        if (functionName === "submitGuess") {
-          return mockSubmitGuessCallable;
-        }
-        return jest.fn().mockResolvedValue({ data: {} });
-      }),
-    } as any);
+    // Route httpsCallable(functions, "completeGame") to mockCompleteGameCallable
+    mockHttpsCallable.mockImplementation((_functions: any, functionName: string) => {
+      if (functionName === "completeGame") {
+        return mockCompleteGameCallable as any;
+      }
+      return jest.fn().mockResolvedValue({ data: {} }) as any;
+    });
 
-    mockSubmitGuessCallable.mockReset();
+    mockCompleteGameCallable.mockReset();
   });
 
   it("should initialize with correct default state", () => {
@@ -50,19 +48,12 @@ describe("useGameLogic", () => {
   it("should reset game state when resetGame is called", async () => {
     const { result } = renderHook(() => useGameLogic(defaultProps));
 
-    mockSubmitGuessCallable.mockResolvedValueOnce({
-      data: {
-        feedback: ["red", "red", "red", "red", "red"] as Feedback[],
-        isCorrect: false,
-      },
-    });
     await act(async () => {
-      await result.current.processGuess(["W", "R", "O", "N", "G"]);
+      await result.current.processGuess(["G", "U", "E", "S", "S"]);
     });
     act(() => {
       result.current.setCurrentGuess(["A"]);
     });
-
     act(() => {
       result.current.resetGame();
     });
@@ -73,269 +64,210 @@ describe("useGameLogic", () => {
   });
 
   describe("processGuess", () => {
+    const allRedFeedback: Feedback[] = ["red", "red", "red", "red", "red"];
     const guessWord = ["G", "U", "E", "S", "S"];
-    const guessString = "GUESS";
 
-    it("should handle a winning guess", async () => {
-      const guessChars = ["G", "U", "E", "S", "S"]; // Corresponds to guessString
-      const feedbackStrings: Feedback[] = [
-        "green",
-        "green",
-        "green",
-        "green",
-        "green",
-      ];
-      mockSubmitGuessCallable.mockResolvedValueOnce({
-        data: {
-          feedback: feedbackStrings.map((status, index) => ({
-            // Create the structured feedback
-            letter: guessChars[index],
-            status,
-          })),
-          isCorrect: true,
-          correctAnswer: guessString,
-          coinsEarned: 10,
-        },
+    it("should compute feedback locally without calling the server", async () => {
+      const { result } = renderHook(() => useGameLogic(defaultProps));
+
+      await act(async () => {
+        await result.current.processGuess(guessWord);
       });
 
-      const { result } = renderHook(() => useGameLogic(defaultProps));
-      let processResult;
+      // completeGame must NOT be called for a mid-game guess
+      expect(mockCompleteGameCallable).not.toHaveBeenCalled();
+      expect(result.current.guesses[0].feedback).toEqual(allRedFeedback);
+    });
+
+    it("should handle a winning guess — calls completeGame once", async () => {
+      mockCompleteGameCallable.mockResolvedValueOnce({
+        data: { coinsEarned: 10, newlyUnlockedAchievementIds: [] },
+      });
+
+      // answer matches the guess exactly
+      const { result } = renderHook(() =>
+        useGameLogic({ ...defaultProps, answer: "GUESS" })
+      );
+
+      let processResult: unknown;
       await act(async () => {
         processResult = await result.current.processGuess(guessWord);
       });
 
-      expect(mockSubmitGuessCallable).toHaveBeenCalledTimes(1);
-      expect(mockSubmitGuessCallable).toHaveBeenCalledWith({
-        guess: guessString,
+      expect(mockCompleteGameCallable).toHaveBeenCalledTimes(1);
+      expect(mockCompleteGameCallable).toHaveBeenCalledWith({
         riddleId: defaultProps.riddleId,
         gameMode: defaultProps.gameMode,
         attempts: 1,
+        isCorrect: true,
       });
+
       expect(result.current.guesses.length).toBe(1);
       expect(result.current.guesses[0]).toEqual({
         guess: guessWord,
-        feedback: feedbackStrings,
-      }); // Assert against the transformed strings
-      expect(result.current.currentGuess).toEqual([]);
+        feedback: ["green", "green", "green", "green", "green"],
+      });
       expect(result.current.gameOver).toBe(true);
       expect(processResult).toEqual({
         outcome: "win",
-        feedback: feedbackStrings,
+        feedback: ["green", "green", "green", "green", "green"],
         coinsEarned: 10,
-        correctAnswer: guessString,
+        correctAnswer: "GUESS",
+        newlyUnlockedAchievementIds: [],
       });
     });
 
-    it("should handle an incorrect guess with attempts remaining", async () => {
-      const guessChars = ["G", "U", "E", "S", "S"];
-      const feedbackStrings: Feedback[] = [
-        "red",
-        "yellow",
-        "red",
-        "green",
-        "red",
-      ];
-      mockSubmitGuessCallable.mockResolvedValueOnce({
-        data: {
-          feedback: feedbackStrings.map((status, index) => ({
-            // Structured feedback
-            letter: guessChars[index],
-            status,
-          })),
-          isCorrect: false,
-        },
-      });
-
+    it("should handle an incorrect guess with attempts remaining — no server call", async () => {
       const { result } = renderHook(() => useGameLogic(defaultProps));
-      let processResult;
+
+      let processResult: unknown;
       await act(async () => {
         processResult = await result.current.processGuess(guessWord);
       });
 
-      expect(mockSubmitGuessCallable).toHaveBeenCalledTimes(1);
-      expect(mockSubmitGuessCallable).toHaveBeenCalledWith({
-        guess: guessString,
-        riddleId: defaultProps.riddleId,
-        gameMode: defaultProps.gameMode,
-        attempts: 1,
-      });
-
+      expect(mockCompleteGameCallable).not.toHaveBeenCalled();
       expect(result.current.guesses.length).toBe(1);
       expect(result.current.guesses[0]).toEqual({
         guess: guessWord,
-        feedback: feedbackStrings,
-      }); // Assert against transformed strings
+        feedback: allRedFeedback,
+      });
       expect(result.current.currentGuess).toEqual([]);
       expect(result.current.gameOver).toBe(false);
       expect(processResult).toEqual({
         outcome: "continue",
-        feedback: feedbackStrings,
+        feedback: allRedFeedback,
         attemptsRemaining: 2,
       });
     });
 
-    it("should handle a losing guess (classic mode - 3 attempts)", async () => {
-      const feedbackStrings: Feedback[] = ["red", "red", "red", "red", "red"];
-
-      // Mock for all 3 calls (updated from 5 to 3 for new attempt system)
-      mockSubmitGuessCallable.mockImplementation(
-        async (callData: {
-          guess: string;
-          riddleId: string;
-          gameMode: string;
-          attempts: number;
-        }) => {
-          const currentGuessString = callData.guess as string;
-          const currentGuessChars = currentGuessString.split("");
-
-          return {
-            data: {
-              feedback: feedbackStrings.map((status, index) => ({
-                // Structured feedback
-                letter: currentGuessChars[index] || "", // Handle potential length mismatches gracefully for the mock
-                status,
-              })),
-              isCorrect: false, // All these calls are incorrect
-              correctAnswer: "ANSWER", // Only relevant on the last call from the SUT's perspective
-              coinsEarned: 0,
-            },
-          };
-        }
-      );
-
+    it("should reach attemptLimitReached after 3 wrong guesses (classic)", async () => {
       const { result } = renderHook(() => useGameLogic(defaultProps));
-      const incorrectGuessBase = ["F", "A", "I", "L"];
-      // Updated to only 2 loops for 3-attempt system
+      const wrong = ["F", "A", "I", "L", "S"]; // no letters in THORN
+
       for (let i = 0; i < 2; i++) {
         await act(async () => {
-          await result.current.processGuess([
-            ...incorrectGuessBase,
-            (i + 1).toString() as "1" | "2",
-          ]);
+          await result.current.processGuess(wrong);
         });
       }
-      let processResult;
-      await act(async () => {
-        processResult = await result.current.processGuess(guessWord); // guessWord is ['G','U','E','S','S']
-      });
 
-      expect(mockSubmitGuessCallable).toHaveBeenCalledTimes(3); // Updated from 5 to 3
-      expect(mockSubmitGuessCallable).toHaveBeenLastCalledWith({
-        guess: guessString, // last guess
-        riddleId: defaultProps.riddleId,
-        gameMode: defaultProps.gameMode,
-        attempts: 3, // Updated from 5 to 3
-      });
-
-      expect(result.current.guesses.length).toBe(3); // Updated from 5 to 3
-      expect(result.current.guesses[2]).toEqual({
-        // Updated from guesses[4] to guesses[2]
-        guess: guessWord,
-        feedback: feedbackStrings,
-      }); // Check last guess feedback
-      expect(result.current.gameOver).toBe(true);
-      expect(processResult).toEqual({
-        outcome: "attemptLimitReached", // Updated from "loss"
-        feedback: feedbackStrings, // Assert against transformed strings
-        correctAnswer: "ANSWER",
-        coinsEarned: 0,
-        canOfferRewardedAd: true,
-        canOfferCoinContinue: true, // New field for 3-attempt system
-      });
-    });
-
-    it("should handle a losing guess in challenge mode (3 attempts)", async () => {
-      const challengeProps = {
-        riddleId: "challengeRiddle456",
-        gameMode: "challenge" as "classic" | "challenge",
-        correctAnswerLength: 5,
-      };
-      const feedbackStrings: Feedback[] = ["red", "red", "red", "red", "red"];
-
-      mockSubmitGuessCallable.mockImplementation(
-        async (callData: {
-          guess: string;
-          riddleId: string;
-          gameMode: string;
-          attempts: number;
-        }) => {
-          const currentGuessString = callData.guess as string;
-          const currentGuessChars = currentGuessString.split("");
-          return {
-            data: {
-              feedback: feedbackStrings.map((status, index) => ({
-                letter: currentGuessChars[index] || "",
-                status,
-              })),
-              isCorrect: false,
-              correctAnswer: "ANSWER",
-              coinsEarned: 0,
-            },
-          };
-        }
-      );
-
-      const { result } = renderHook(() => useGameLogic(challengeProps));
-      const incorrectGuessBase = ["F", "A", "I", "L"];
-      // Updated to only 2 loops for 3-attempt system (same for both classic and challenge now)
-      for (let i = 0; i < 2; i++) {
-        await act(async () => {
-          await result.current.processGuess([
-            ...incorrectGuessBase,
-            (i + 1).toString() as "1" | "2",
-          ]);
-        });
-      }
-      let processResult;
+      let processResult: unknown;
       await act(async () => {
         processResult = await result.current.processGuess(guessWord);
       });
 
-      expect(mockSubmitGuessCallable).toHaveBeenCalledTimes(3); // Updated from 6 to 3
-      expect(mockSubmitGuessCallable).toHaveBeenLastCalledWith({
-        guess: guessString,
-        riddleId: challengeProps.riddleId,
-        gameMode: challengeProps.gameMode,
-        attempts: 3, // Updated from 6 to 3
-      });
-
-      expect(result.current.guesses.length).toBe(3); // Updated from 6 to 3
-      expect(result.current.guesses[2]).toEqual({
-        // Updated from guesses[5] to guesses[2]
-        guess: guessWord,
-        feedback: feedbackStrings,
-      });
+      // completeGame NOT called yet (user can still continue)
+      expect(mockCompleteGameCallable).not.toHaveBeenCalled();
+      expect(result.current.guesses.length).toBe(3);
       expect(result.current.gameOver).toBe(true);
       expect(processResult).toEqual({
-        outcome: "attemptLimitReached", // Updated from "loss"
-        feedback: feedbackStrings,
-        correctAnswer: "ANSWER",
+        outcome: "attemptLimitReached",
+        feedback: allRedFeedback,
+        correctAnswer: defaultProps.answer,
         coinsEarned: 0,
         canOfferRewardedAd: true,
-        canOfferCoinContinue: true, // New field for 3-attempt system
+        canOfferCoinContinue: true,
       });
     });
 
-    it("should throw an error if submitGuess callable fails", async () => {
-      mockSubmitGuessCallable.mockRejectedValueOnce(
-        new Error("Firebase error")
-      );
+    it("should reach attemptLimitReached after 3 wrong guesses (challenge)", async () => {
+      const challengeProps = {
+        riddleId: "challengeRiddle456",
+        gameMode: "challenge" as "classic" | "challenge",
+        answer: "THORN",
+      };
+      const { result } = renderHook(() => useGameLogic(challengeProps));
+      const wrong = ["F", "A", "I", "L", "S"];
+
+      for (let i = 0; i < 2; i++) {
+        await act(async () => {
+          await result.current.processGuess(wrong);
+        });
+      }
+
+      let processResult: unknown;
+      await act(async () => {
+        processResult = await result.current.processGuess(guessWord);
+      });
+
+      expect(mockCompleteGameCallable).not.toHaveBeenCalled();
+      expect(result.current.guesses.length).toBe(3);
+      expect(result.current.gameOver).toBe(true);
+      expect(processResult).toEqual({
+        outcome: "attemptLimitReached",
+        feedback: allRedFeedback,
+        correctAnswer: challengeProps.answer,
+        coinsEarned: 0,
+        canOfferRewardedAd: true,
+        canOfferCoinContinue: true,
+      });
+    });
+
+    it("should produce final loss after using continue and exhausting extra attempts", async () => {
+      mockCompleteGameCallable.mockResolvedValueOnce({
+        data: { coinsEarned: 0, newlyUnlockedAchievementIds: [] },
+      });
 
       const { result } = renderHook(() => useGameLogic(defaultProps));
+      const wrong = ["F", "A", "I", "L", "S"];
 
-      await expect(
-        act(async () => {
-          await result.current.processGuess(guessWord);
-        })
-      ).rejects.toThrow("Firebase error");
+      // Use up initial 3 attempts
+      for (let i = 0; i < 3; i++) {
+        await act(async () => {
+          await result.current.processGuess(wrong);
+        });
+      }
 
-      expect(mockSubmitGuessCallable).toHaveBeenCalledTimes(1);
-      expect(mockSubmitGuessCallable).toHaveBeenCalledWith({
-        guess: guessString,
+      // Grant continue
+      act(() => {
+        result.current.continueGame();
+      });
+      expect(result.current.gameOver).toBe(false);
+
+      // Use up the 3 extra attempts — final one triggers completeGame
+      for (let i = 0; i < 2; i++) {
+        await act(async () => {
+          await result.current.processGuess(wrong);
+        });
+      }
+
+      let processResult: unknown;
+      await act(async () => {
+        processResult = await result.current.processGuess(guessWord);
+      });
+
+      expect(mockCompleteGameCallable).toHaveBeenCalledTimes(1);
+      expect(mockCompleteGameCallable).toHaveBeenCalledWith({
         riddleId: defaultProps.riddleId,
         gameMode: defaultProps.gameMode,
-        attempts: 1,
+        attempts: 6,
+        isCorrect: false,
       });
+      expect(result.current.gameOver).toBe(true);
+      expect(processResult).toEqual({
+        outcome: "loss",
+        feedback: allRedFeedback,
+        correctAnswer: defaultProps.answer,
+        coinsEarned: 0,
+        canOfferRewardedAd: false,
+      });
+    });
+
+    it("should gracefully handle completeGame server failure on win", async () => {
+      mockCompleteGameCallable.mockRejectedValueOnce(new Error("Firebase error"));
+
+      const { result } = renderHook(() =>
+        useGameLogic({ ...defaultProps, answer: "GUESS" })
+      );
+
+      let processResult: unknown;
+      await act(async () => {
+        processResult = await result.current.processGuess(guessWord);
+      });
+
+      // Game still ends — error is swallowed so the user isn't blocked
+      expect(result.current.gameOver).toBe(true);
+      expect((processResult as { outcome: string }).outcome).toBe("win");
+      expect((processResult as { coinsEarned: number }).coinsEarned).toBe(0);
     });
   });
 });

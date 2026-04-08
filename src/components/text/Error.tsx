@@ -13,7 +13,7 @@
 
 import React from "react";
 import { Text } from "react-native";
-import { styles } from "../../styles";
+import { styles, SPACING } from "../../styles";
 
 /**
  * Props interface for the Error component.
@@ -70,8 +70,8 @@ interface ErrorProps {
  */
 const Error = ({ message }: ErrorProps) => (
   <Text
-    className="text-red-500 text-center mb-4"
-    style={styles.errorText}
+    className="text-red-500 text-center"
+    style={[styles.errorText, { marginBottom: SPACING.md }]}
     accessibilityRole="alert"
   >
     {message}

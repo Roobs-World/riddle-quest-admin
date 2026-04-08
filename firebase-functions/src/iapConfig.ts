@@ -1,6 +1,7 @@
 import iap from "in-app-purchase";
 import fs from "fs";
 import path from "path";
+import { captureException } from "./sentry";
 
 let appleSharedSecret: string | undefined;
 let finalGoogleServiceAccountForIap: Record<string, unknown> | undefined; // This will be populated from process.env
@@ -60,6 +61,7 @@ export function initializeIapConfig(): void {
       console.error(
         `[iapConfig Firebase Functions Test Env] Error reading/parsing service account from file: ${errorMessage}`,
       ); // Keep as error - actual problem
+      captureException(e);
       finalGoogleServiceAccountForIap = {privateKey: "TEST_KEY_PARSE_ERROR"}; // Indicate error
     }
   } else if (!isJestEnvironment) {
@@ -88,6 +90,7 @@ export function initializeIapConfig(): void {
         console.error(
           `[iapConfig Prod/Deployed Env] Error parsing GOOGLE_SERVICE_ACCOUNT JSON string: ${errorMessage}`,
         ); // Keep as error - actual problem
+        captureException(e);
         finalGoogleServiceAccountForIap = undefined;
       }
     } else {
@@ -162,6 +165,7 @@ export function initializeIapConfig(): void {
       console.error(
         `[iapConfig] CRITICAL: Error calling iap.config(): ${errorMessage}. Stack: ${error instanceof Error ? error.stack : "N/A"}`,
       ); // Keep as error - actual problem
+      captureException(error);
     }
   } else {
     console.log("[iapConfig Jest Unit Test] SKIPPING iap.config() call as module should be mocked by test."); // Changed to console.log
@@ -175,9 +179,11 @@ export const NO_ADS_PRODUCT_ID = "com.qwordly.no_ads";
 export const BACKEND_COIN_PRODUCT_DETAILS: {
   [key: string]: {id: string; coins: number};
 } = {
-  COIN_PACK_SMALL: {id: "com.qwordly.coinpack.small", coins: 100},
-  COIN_PACK_MEDIUM: {id: "com.qwordly.coinpack.medium", coins: 500},
-  COIN_PACK_LARGE: {id: "com.qwordly.coinpack.large", coins: 1200},
+  COIN_PACK_TINY:  {id: "com.qwordly.coinpack1", coins: 50},
+  COIN_PACK_SMALL: {id: "com.qwordly.coinpack2", coins: 100},
+  COIN_PACK_MID:   {id: "com.qwordly.coinpack3", coins: 250},
+  COIN_PACK_LARGE: {id: "com.qwordly.coinpack4", coins: 500},
+  COIN_PACK_HUGE:  {id: "com.qwordly.coinpack5", coins: 1000},
 };
 
 // Automatically initialize if not in a Jest test environment

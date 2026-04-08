@@ -1,12 +1,16 @@
 import React from "react";
 import { TouchableOpacity, Text } from "react-native";
-import { styles } from "../../styles";
+import { styles, SPACING, TYPOGRAPHY } from "../../styles";
+import { verticalScale } from "../../utils/responsive";
+import { logger } from "../../utils/logger";
+import { captureException } from "../../utils/sentry";
 
 interface WideButtonProps {
   buttonText: string;
   onPress: () => void;
   disabled?: boolean;
   buttonColor?: string;
+  textColor?: string;
 }
 
 /**
@@ -22,36 +26,38 @@ const WideButton: React.FC<WideButtonProps> = ({
   onPress,
   disabled = false,
   buttonColor,
+  textColor,
 }) => {
   const bg = buttonColor || "bg-primary-orange";
 
   const handlePress = async () => {
-    console.log(`WideButton pressed: ${buttonText}`);
-    console.log("onPress type:", typeof onPress);
+    logger.debug(`WideButton pressed: ${buttonText}`);
+    logger.debug("onPress type:", typeof onPress);
 
     if (typeof onPress === "function") {
       try {
         // Handle both async and non-async onPress functions
         await Promise.resolve(onPress());
-        console.log(`${buttonText} onPress handler executed successfully`);
+        logger.debug(`${buttonText} onPress handler executed successfully`);
       } catch (error) {
-        console.error(`Error in ${buttonText} onPress handler:`, error);
-        console.log(
+        logger.error(`Error in ${buttonText} onPress handler:`, error);
+        captureException(error);
+        logger.debug(
           `${buttonText} button press failed to execute callback properly`
         );
       }
     } else {
-      console.warn(`${buttonText} onPress is not a function or is undefined`);
-      console.log(
+      logger.warn(`${buttonText} onPress is not a function or is undefined`);
+      logger.debug(
         `${buttonText} button pressed but no action will be taken (missing callback)`
       );
 
       // In debug mode, provide more helpful information
       if (__DEV__) {
-        console.log(
+        logger.debug(
           `DEBUG INFO: ${buttonText} button needs an onPress function to work properly`
         );
-        console.log(
+        logger.debug(
           `Check how this button is being rendered and ensure onPress is provided correctly`
         );
       }
@@ -60,18 +66,14 @@ const WideButton: React.FC<WideButtonProps> = ({
 
   return (
     <TouchableOpacity
-      className={`w-full rounded-lg py-3 px-6 my-2 ${
-        disabled ? "bg-gray-300" : bg
-      }`}
+      className={`w-full rounded-lg ${disabled ? "bg-gray-300" : bg}`}
       onPress={handlePress}
       disabled={disabled}
-      style={styles.buttonOpacity}
+      style={[styles.buttonOpacity, { paddingVertical: verticalScale(12), paddingHorizontal: SPACING.lg }]}
     >
       <Text
-        className={`font-semibold text-center ${
-          disabled ? "text-gray-500" : "text-white"
-        }`}
-        style={styles.buttonText}
+        className={`text-center ${disabled ? "text-gray-500" : (textColor || "text-white")}`}
+        style={[styles.buttonText, { fontFamily: TYPOGRAPHY.fontSecondaryBold }]}
       >
         {buttonText}
       </Text>

@@ -35,7 +35,7 @@ export type SignUpFormData = z.infer<typeof signUpSchema>;
 
 // Define the structure for player progress
 export const PlayerProgressSchema = z.object({
-  classicIndex: z.number().int().nonnegative().default(0),
+  classicIndex: z.number().int().nonnegative().default(1),
   dailyChallengeIndex: z.number().int().nonnegative().default(0),
   dailyChallengeCurrentQuestion: z.number().int().nonnegative().default(0),
   tutorialIndex: z.number().int().nonnegative().default(0),
@@ -56,7 +56,15 @@ export const PlayerStatsSchema = z.object({
   winStreak: z.number().int().nonnegative().default(0), // Add winStreak
   totalWins: z.number().int().nonnegative().default(0), // Added totalWins for win rate calculation
   totalGuessesInWins: z.number().int().nonnegative().default(0), // Added totalGuessesInWins for average guesses calculation
+  totalHintsUsed: z.number().int().nonnegative().default(0),
 });
+
+/** Single unlocked achievement record stored on the user document. */
+export const UnlockedAchievementSchema = z.object({
+  achievementId: z.string(),
+  unlockedAt: z.number(),
+});
+export type UnlockedAchievement = z.infer<typeof UnlockedAchievementSchema>;
 
 export const PlayerSchema = z.object({
   userId: z.string(),
@@ -80,6 +88,10 @@ export const PlayerSchema = z.object({
   lastDailyChallengeCompletedAt: z.number().optional(), // Assuming timestamp is stored as a number
   stats: PlayerStatsSchema.default({}), // Use nested stats schema
   progress: PlayerProgressSchema.default({}), // Use nested progress schema
+  unlockedAchievements: z.array(UnlockedAchievementSchema).optional().default([]),
+  fcmToken: z.string().optional(),
+  fcmTokenUpdatedAt: z.number().optional(),
+  lastStreakReminderSentAt: z.number().optional(),
   // currentRiddle is not part of the Player document in Firestore, should be managed client-side or in AuthContext state
 });
 

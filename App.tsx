@@ -16,10 +16,21 @@
  */
 
 import "./global.css";
+import * as Sentry from "@sentry/react-native";
+import { captureException } from "./src/utils/sentry";
+
+if (process.env.EXPO_PUBLIC_SENTRY_DSN) {
+  Sentry.init({
+    dsn: process.env.EXPO_PUBLIC_SENTRY_DSN,
+    tracesSampleRate: 1.0,
+  });
+}
+
 import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { loadFonts } from "./src/utils/fontLoader";
 import { SoundManager } from "./src/services/SoundManager";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Constants from "expo-constants";
 import { Settings } from "react-native-fbsdk-next";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
@@ -46,7 +57,7 @@ import { ModalProvider } from "./src/contexts/ModalContext";
  *
  * @returns {JSX.Element} The root application component with providers and navigation
  */
-export default function App() {
+export default Sentry.wrap(function App() {
   /** Application initialization state - true when all services are ready */
   const [isInitialized, setIsInitialized] = useState(false);
 
@@ -94,6 +105,15 @@ export default function App() {
         await loadFonts();
         console.log("🔊 Initializing sound manager...");
         await SoundManager.init();
+
+        // Start background music immediately — respects stored sound preference
+        const storedSound = await AsyncStorage.getItem("isSoundEnabled");
+        const soundEnabled = storedSound !== null ? JSON.parse(storedSound) : true;
+        SoundManager.setSoundEnabled(soundEnabled);
+        if (soundEnabled) {
+          await SoundManager.playBackgroundMusic();
+        }
+
         console.log("✅ Fonts and sound manager initialized");
 
         // Preload 3D solar system during app initialization with timeout protection
@@ -198,6 +218,7 @@ export default function App() {
         GoogleSignin.configure({
           webClientId: googleWebClientId,
           offlineAccess: true,
+          scopes: ["email", "profile"],
         });
         console.log("✅ Google Sign-In configured successfully!");
         console.log(
@@ -314,6 +335,7 @@ export default function App() {
         console.log("✅ App ready to render AuthProvider and Navigation");
       } catch (error: unknown) {
         console.error("❌ App initialization error:", error);
+        captureException(error, { context: "App.initializeApp" });
         /**
          * Error Recovery Strategy
          *
@@ -366,12 +388,17 @@ export default function App() {
    * throughout the component tree.
    */
   return (
-    <ModalProvider>
-      <AuthProvider>
-        <NavigationContainer>
-          <Navigation />
-        </NavigationContainer>
-      </AuthProvider>
-    </ModalProvider>
+    <Sentry.ErrorBoundary
+      fallback={<PulsingSpinner visible={true} size={120} opacity={0.8} />}
+      onError={(error) => captureException(error, { context: "App.ErrorBoundary" })}
+    >
+      <ModalProvider>
+        <AuthProvider>
+          <NavigationContainer>
+            <Navigation />
+          </NavigationContainer>
+        </AuthProvider>
+      </ModalProvider>
+    </Sentry.ErrorBoundary>
   );
-}
+});

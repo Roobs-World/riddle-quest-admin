@@ -1,9 +1,51 @@
-import React from "react";
+/**
+ * @fileoverview
+ * Presentational guess grid component for the Qwordly game.
+ *
+ * This component renders a fixed number of rows representing past guesses,
+ * the current in-progress guess, and any remaining empty rows. It is kept
+ * animation-free for performance and focuses solely on layout and visual
+ * feedback based on server-provided guess results.
+ */
+import React, { memo, useMemo } from "react";
 import { View, Text } from "react-native";
 
 import type { SubmittedGuess, Feedback } from "../../hooks/types"; // Import Feedback type from types.ts
-import { scale } from "../../utils/responsive";
+import {
+  GUESS_TILE_MAX_SIZE,
+  GUESS_GRID_H_PADDING,
+  GUESS_TILE_MARGIN,
+  GUESS_TILE_ROW_GAP,
+  GUESS_GRID_EFFECTIVE_WIDTH,
+} from "../../constants/layout";
+import { TYPOGRAPHY } from "../../styles/tokens/typography";
 import { NUM_GUESSES } from "../../utils/constants";
+
+/**
+ * Returns background + text colour for a tile.
+ * - Empty (no letter, no feedback): transparent so the solar system shows through.
+ * - Being typed (has letter, no feedback): semi-transparent cream so the letter is readable.
+ * - Submitted: solid Figma brand colour.
+ *
+ * Defined at module level so it is not recreated on every render.
+ */
+const getCellColors = (
+  feedback: Feedback,
+  hasLetter: boolean
+): { bg: string; text: string; border: string } => {
+  switch (feedback) {
+    case "green":
+      return { bg: "#22C55E", text: "#FFFFFF", border: "#22C55E" };
+    case "yellow":
+      return { bg: "#EAB308", text: "#FFFFFF", border: "#EAB308" };
+    case "red":
+      return { bg: "#EF4444", text: "#FFFFFF", border: "#EF4444" };
+    default:
+      return hasLetter
+        ? { bg: "rgba(252,250,244,0.88)", text: "#401F40", border: "#401F40" }
+        : { bg: "transparent", text: "#FFFFFF", border: "rgba(252,250,244,0.45)" };
+  }
+};
 
 /**
  * Define the structure for the entire guess grid.
@@ -16,6 +58,7 @@ type GuessGridProps = {
   currentGuess: string[];
   answerLength: number;
   setTileRef?: (rowIndex: number, cellIndex: number, ref: View | null) => void;
+  hintRevealedIndices?: number[];
 };
 
 /**
@@ -26,59 +69,46 @@ type GuessGridProps = {
  * @param {GuessGridProps} props - The props for the component.
  * @returns {React.FC<GuessGridProps>} The rendered GuessGrid component.
  */
-const GuessGrid: React.FC<GuessGridProps> = ({
+const GuessGrid: React.FC<GuessGridProps> = memo(function GuessGrid({
   guesses,
   currentGuess,
   answerLength,
   setTileRef,
-}) => {
-  // Responsive sizes
-  const TILE_SIZE = scale(56);
-  const TILE_MARGIN = scale(2);
-  const ROW_HEIGHT = TILE_SIZE + TILE_MARGIN * 2 + scale(4);
+  hintRevealedIndices = [],
+}) {
+  // Tile sizing — only recalculate when answerLength changes.
+  const { TILE_SIZE, ROW_HEIGHT } = useMemo(() => {
+    const availableWidth = GUESS_GRID_EFFECTIVE_WIDTH - GUESS_GRID_H_PADDING;
+    const maxTileFromWidth = Math.floor(availableWidth / answerLength) - GUESS_TILE_MARGIN * 2;
+    const tileSize = Math.min(GUESS_TILE_MAX_SIZE, maxTileFromWidth);
+    return {
+      TILE_SIZE: tileSize,
+      ROW_HEIGHT: tileSize + GUESS_TILE_MARGIN * 2 + GUESS_TILE_ROW_GAP,
+    };
+  }, [answerLength]);
 
-  // Combine submitted guesses and the current guess for display
-  const displayRows: { letters: (string | null)[]; feedback: Feedback[] }[] =
-    guesses.map((sg) => ({ letters: sg.guess, feedback: sg.feedback }));
+  // Build display rows — recalculates when guesses or currentGuess change.
+  const displayRows = useMemo(() => {
+    const rows: { letters: (string | null)[]; feedback: Feedback[] }[] =
+      guesses.map((sg: SubmittedGuess) => ({ letters: sg.guess, feedback: sg.feedback }));
 
-  // Add the current guess being typed to the next row if there's space and it's not empty
-  if (displayRows.length < 3 && currentGuess.length > 0) {
-    const currentGuessRow: (string | null)[] = [...currentGuess];
-    // Fill remaining slots with null to match answerLength
-    while (currentGuessRow.length < answerLength) {
-      currentGuessRow.push(null);
+    if (rows.length < 3 && currentGuess.length > 0) {
+      const currentGuessRow: (string | null)[] = [...currentGuess];
+      while (currentGuessRow.length < answerLength) currentGuessRow.push(null);
+      const currentGuessFeedback: Feedback[] = Array(answerLength)
+        .fill(null)
+        .map((_, i) => (hintRevealedIndices.includes(i) ? "green" : null));
+      rows.push({ letters: currentGuessRow, feedback: currentGuessFeedback });
     }
-    displayRows.push({
-      letters: currentGuessRow,
-      feedback: Array(answerLength).fill(null),
-    });
-  }
 
-  // Fill the remaining rows with empty cells up to 3 rows
-  while (displayRows.length < NUM_GUESSES) {
-    displayRows.push({
-      letters: Array(answerLength).fill(null),
-      feedback: Array(answerLength).fill(null),
-    });
-  }
-
-  /**
-   * Function to determine cell background color based on feedback.
-   * @param {Feedback} feedback - The feedback for a specific letter cell.
-   * @returns {string} The Tailwind CSS class string for the background color.
-   */
-  const getCellBackgroundColor = (feedback: Feedback) => {
-    switch (feedback) {
-      case "green":
-        return "bg-green-500";
-      case "yellow":
-        return "bg-yellow-500";
-      case "red":
-        return "bg-red-500";
-      default:
-        return "transparent";
+    while (rows.length < NUM_GUESSES) {
+      rows.push({
+        letters: Array(answerLength).fill(null),
+        feedback: Array(answerLength).fill(null),
+      });
     }
-  };
+    return rows;
+  }, [guesses, currentGuess, answerLength, hintRevealedIndices]);
 
   return (
     <View
@@ -100,15 +130,18 @@ const GuessGrid: React.FC<GuessGridProps> = ({
           >
             {row.letters.map((letter, cellIndex) => {
               const feedback = row.feedback[cellIndex];
-              const backgroundColor = getCellBackgroundColor(feedback);
+              const { bg, text, border } = getCellColors(feedback, !!letter);
               return (
                 <View
                   key={cellIndex}
-                  className={`border-key-border border-2 items-center justify-center rounded-full ${backgroundColor}`}
+                  className="items-center justify-center rounded-full"
                   style={{
                     width: TILE_SIZE,
                     height: TILE_SIZE,
-                    margin: TILE_MARGIN,
+                    margin: GUESS_TILE_MARGIN,
+                    backgroundColor: bg,
+                    borderWidth: 2,
+                    borderColor: border,
                   }}
                   ref={
                     setTileRef
@@ -117,10 +150,11 @@ const GuessGrid: React.FC<GuessGridProps> = ({
                   }
                 >
                   <Text
-                    className={`font-bold uppercase text-key-border`}
+                    className="font-bold uppercase"
                     style={{
-                      fontSize: scale(24),
-                      lineHeight: scale(28), // Added line-height for better vertical alignment
+                      color: text,
+                      fontSize: TYPOGRAPHY.fontSize["2xl"],
+                      lineHeight: TYPOGRAPHY.fontSize["2xl"] * TYPOGRAPHY.lineHeight.snug,
                     }}
                   >
                     {letter}
@@ -133,6 +167,6 @@ const GuessGrid: React.FC<GuessGridProps> = ({
       </View>
     </View>
   );
-};
+});
 
 export default GuessGrid;

@@ -35,8 +35,9 @@ export type SignUpFormData = z.infer<typeof signUpSchema>;
 
 // Define the structure for player progress
 const PlayerProgressSchema = z.object({
-  classicIndex: z.number().int().nonnegative().default(0),
+  classicIndex: z.number().int().nonnegative().default(1),
   dailyChallengeIndex: z.number().int().nonnegative().default(0),
+  dailyChallengeCurrentQuestion: z.number().int().nonnegative().default(0),
   tutorialIndex: z.number().int().nonnegative().default(0),
 });
 
@@ -55,7 +56,15 @@ const PlayerStatsSchema = z.object({
   winStreak: z.number().int().nonnegative().default(0),
   totalWins: z.number().int().nonnegative().default(0),
   totalGuessesInWins: z.number().int().nonnegative().default(0),
+  totalHintsUsed: z.number().int().nonnegative().default(0),
 });
+
+/** Single unlocked achievement record stored on the user document. */
+export const UnlockedAchievementSchema = z.object({
+  achievementId: z.string(),
+  unlockedAt: z.number(),
+});
+export type UnlockedAchievement = z.infer<typeof UnlockedAchievementSchema>;
 
 export const PlayerSchema = z.object({
   userId: z.string(),
@@ -77,8 +86,29 @@ export const PlayerSchema = z.object({
   registeredAt: z.number().optional(),
   lastLogin: z.number().optional(),
   lastDailyChallengeCompletedAt: z.number().optional(),
-  stats: PlayerStatsSchema.default({}),
-  progress: PlayerProgressSchema.default({}),
+  stats: PlayerStatsSchema.default(() => ({
+    dailyPuzzlesCompleted: 0,
+    bestStreak: 0,
+    totalWordsGuessed: 0,
+    winRate: 0,
+    averageGuesses: 0,
+    totalScore: 0,
+    highestLevelClassic: 0,
+    gamesPlayed: 0,
+    wins: 0,
+    challengeWins: 0,
+    winStreak: 0,
+    totalWins: 0,
+    totalGuessesInWins: 0,
+    totalHintsUsed: 0,
+  })),
+  progress: PlayerProgressSchema.default(() => ({
+    classicIndex: 1,
+    dailyChallengeIndex: 0,
+    dailyChallengeCurrentQuestion: 0,
+    tutorialIndex: 0,
+  })),
+  unlockedAchievements: z.array(UnlockedAchievementSchema).optional().default([]),
   hasPurchasedApp: z.boolean().optional().default(false),
 });
 

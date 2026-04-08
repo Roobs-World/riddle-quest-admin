@@ -14,6 +14,8 @@
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { SvgXml } from "react-native-svg";
+import { COIN_DISPLAY_ICON_SIZE } from "../../constants/layout";
+import { TYPOGRAPHY, SPACING } from "../../styles";
 
 /**
  * Embedded SVG icon for the coin display.
@@ -134,10 +136,10 @@ const CoinsDisplay: React.FC<CoinsDisplayProps> = ({ coins, onPress }) => {
       accessible={true}
       accessibilityLabel={accessibilityLabel}
     >
-      <SvgXml xml={coinSvg} width={36} height={36} testID="coin-icon" />
-      <Text className="text-lg font-bold text-black ml-1 font-poppins-bold">
-        {coins}
+      <Text style={{ fontFamily: TYPOGRAPHY.fontPrimary, color: "#ffffff", fontSize: TYPOGRAPHY.fontSize.lg, marginRight: SPACING.xs }}>
+        {String(coins)}
       </Text>
+      <SvgXml xml={coinSvg} width={COIN_DISPLAY_ICON_SIZE} height={COIN_DISPLAY_ICON_SIZE} testID="coin-icon" />
     </View>
   );
 

@@ -1,8 +1,11 @@
 import * as RNIap from "react-native-iap";
 import { Platform } from "react-native";
-import { getFunctions } from "@react-native-firebase/functions";
+import { getFunctions, httpsCallable } from "@react-native-firebase/functions";
 import { getApp } from "@react-native-firebase/app";
 import { PurchaseValidationResponse } from "../types/Player";
+import { logger } from "../utils/logger";
+import { captureException, addBreadcrumb, startTransaction } from "../utils/sentry";
+import { analyticsService } from "./AnalyticsService";
 
 // Interface for IAP error objects that have error codes
 interface IapError extends Error {
@@ -18,10 +21,11 @@ interface IapError extends Error {
  * Format: com.qwordly.coins{amount}
  */
 const coinProductIds = [
-  "com.qwordly.coins100",
-  "com.qwordly.coins250",
-  "com.qwordly.coins500",
-  "com.qwordly.coins1000",
+  "com.qwordly.coinpack1",
+  "com.qwordly.coinpack2",
+  "com.qwordly.coinpack3",
+  "com.qwordly.coinpack4",
+  "com.qwordly.coinpack5",
 ];
 
 /**
@@ -31,35 +35,50 @@ const coinProductIds = [
 export const COIN_PRODUCT_DETAILS: {
   [key: string]: { id: string; coins: number };
 } = {
-  COIN_PACK_SMALL: { id: "com.qwordly.coins100", coins: 100 },
-  COIN_PACK_MEDIUM: { id: "com.qwordly.coins250", coins: 250 },
-  COIN_PACK_LARGE: { id: "com.qwordly.coins500", coins: 500 },
-  COIN_PACK_PREMIUM: { id: "com.qwordly.coins1000", coins: 1000 },
+  COIN_PACK_TINY:  { id: "com.qwordly.coinpack1", coins: 50 },
+  COIN_PACK_SMALL: { id: "com.qwordly.coinpack2", coins: 100 },
+  COIN_PACK_MID:   { id: "com.qwordly.coinpack3", coins: 250 },
+  COIN_PACK_LARGE: { id: "com.qwordly.coinpack4", coins: 500 },
+  COIN_PACK_HUGE:  { id: "com.qwordly.coinpack5", coins: 1000 },
 };
+
+/** Cached product list with a 5-minute TTL to avoid redundant store round-trips. */
+let cachedProducts: RNIap.Product[] | null = null;
+let cacheTimestamp = 0;
+const PRODUCT_CACHE_TTL_MS = 5 * 60 * 1000;
 
 export const IapService = {
   /**
    * Fetches a list of available in-app purchase products (coin packs).
+   * Results are cached for 5 minutes to avoid redundant store round-trips.
    * @returns A Promise resolving to an array of product details.
    */
   async getProducts(): Promise<RNIap.Product[]> {
+    const now = Date.now();
+    if (cachedProducts && now - cacheTimestamp < PRODUCT_CACHE_TTL_MS) {
+      logger.debug("Returning cached IAP products");
+      return cachedProducts;
+    }
     try {
       await RNIap.initConnection();
 
       if (Platform.OS === "android") {
-        const purchaseHistory = await RNIap.getPurchaseHistory();
-        for (const purchase of purchaseHistory) {
+        const availablePurchases = await RNIap.getAvailablePurchases();
+        for (const purchase of availablePurchases) {
           await RNIap.finishTransaction({ purchase: purchase });
         }
       }
 
-      const products = await RNIap.getProducts({
+      const products = await RNIap.fetchProducts({
         skus: coinProductIds,
-      });
-      console.log("Fetched products:", products);
+      }) as RNIap.Product[];
+      logger.debug("Fetched products:", products);
+      cachedProducts = products;
+      cacheTimestamp = Date.now();
       return products;
     } catch (error) {
-      console.error("Error fetching products:", error);
+      logger.error("Error fetching products:", error);
+      captureException(error);
       throw error; // Rethrow the error for handling in the component
     }
   },
@@ -71,53 +90,68 @@ export const IapService = {
    */
   async purchaseProduct(
     productId: string
-  ): Promise<RNIap.ProductPurchase | null> {
+  ): Promise<RNIap.Purchase | null> {
+    addBreadcrumb("iap", "Purchase initiated", { productId });
+    void analyticsService.logPurchaseEvent("initiated", { product_id: productId });
     try {
-      const purchaseResult = await RNIap.requestPurchase({ sku: productId });
+      const purchaseResult = await RNIap.requestPurchase({
+        type: "in-app",
+        request: {
+          apple: { sku: productId },
+          google: { skus: [productId] },
+        },
+      });
 
       const purchase = Array.isArray(purchaseResult)
         ? purchaseResult[0] // Take the first item if it's an array
         : purchaseResult; // Otherwise use the result directly
 
       if (!purchase) {
-        console.log("Purchase request did not return a purchase object.");
+        logger.debug("Purchase request did not return a purchase object.");
         return null; // Return null if no purchase object is obtained
       }
 
-      console.log("Purchase successful:", purchase);
+      logger.debug("Purchase successful:", purchase);
 
-      const purchaseToken = Platform.select({
-        ios: purchase.transactionReceipt,
-        android: purchase.purchaseToken,
-      });
+      const purchaseToken = purchase.purchaseToken;
 
       if (purchaseToken) {
+        const iapTxn = startTransaction("validatePurchase", "http.client");
         try {
           const isValid = await this.validatePurchase(purchaseToken, productId);
 
           if (isValid) {
-            console.log(
+            logger.debug(
               "Server validation successful. Coins awarded (handled server-side)."
             );
-
+            addBreadcrumb("iap", "Purchase validated", { productId });
+            void analyticsService.logPurchaseEvent("validated", { product_id: productId });
             await RNIap.finishTransaction({ purchase: purchase });
+            addBreadcrumb("iap", "Purchase completed", { productId });
+            void analyticsService.logPurchaseEvent("completed", {
+              product_id: productId,
+              coins: this.getCoinsForProduct(productId) ?? 0,
+            });
             return purchase; // Return the purchase details
           } else {
-            console.warn("Purchase validation failed for product:", productId);
+            logger.warn("Purchase validation failed for product:", productId);
             // Do NOT finish the transaction if validation fails.
             throw new Error(
               "Your purchase could not be validated. Please try again or contact support."
             );
           }
         } catch (validationError) {
-          console.error("Error during server validation:", validationError);
+          logger.error("Error during server validation:", validationError);
+          captureException(validationError);
           // Do NOT finish the transaction if validation call fails.
           throw new Error(
             "A network error occurred during purchase validation. Please check your internet connection."
           );
+        } finally {
+          iapTxn.finish();
         }
       } else {
-        console.error(
+        logger.error(
           "Purchase token is missing. Cannot proceed with validation."
         );
         throw new Error(
@@ -125,26 +159,32 @@ export const IapService = {
         );
       }
     } catch (error: unknown) {
-      console.error("Error purchasing product:", error);
+      logger.error("Error purchasing product:", error);
+      captureException(error);
+      addBreadcrumb("iap", "Purchase failed", { productId }, "error");
+      void analyticsService.logPurchaseEvent("failed", {
+        product_id: productId,
+        error_code: (error as { code?: string }).code ?? "unknown",
+      });
       // Refer to RNIap documentation for error codes.
       let userFriendlyMessage =
         "An unexpected error occurred during the purchase process. Please try again.";
 
       if ((error as IapError).code === "E_USER_CANCELLED") {
-        console.log("Purchase cancelled by user.");
+        logger.debug("Purchase cancelled by user.");
         userFriendlyMessage = "Purchase cancelled.";
       } else if ((error as IapError).code === "E_ALREADY_OWNED") {
-        console.log("Item already owned.");
+        logger.debug("Item already owned.");
         userFriendlyMessage = "You already own this item.";
       } else if ((error as IapError).code === "E_DEVELOPER_ERROR") {
-        console.log("Developer error.");
+        logger.debug("Developer error.");
         userFriendlyMessage =
           "A system error occurred. Please contact support if this persists.";
       } else if ((error as IapError).code === "E_ITEM_UNAVAILABLE") {
-        console.log("Item unavailable.");
+        logger.debug("Item unavailable.");
         userFriendlyMessage = "This item is currently unavailable.";
       } else if ((error as IapError).code === "E_NETWORK_ERROR") {
-        console.log("Network error during purchase.");
+        logger.debug("Network error during purchase.");
         userFriendlyMessage =
           "Network error. Please check your connection and try again.";
       } else if (
@@ -189,10 +229,10 @@ export const IapService = {
     // Call the Firebase Cloud Function for server-side validation
     // The server validates with App Store/Google Play and awards coins
     try {
-      const result = await getFunctions(getApp()).httpsCallable<
+      const result = await httpsCallable<
         { purchaseToken: string; productId: string; platform: string },
         PurchaseValidationResponse
-      >("validatePurchase")({
+      >(getFunctions(getApp()), "validatePurchase")({
         purchaseToken,
         productId,
         platform: Platform.OS,
@@ -200,7 +240,8 @@ export const IapService = {
 
       return result.data.success;
     } catch (error) {
-      console.error("Error calling validatePurchase Firebase Function:", error);
+      logger.error("Error calling validatePurchase Firebase Function:", error);
+      captureException(error);
       throw error;
     }
   },
@@ -215,6 +256,12 @@ export const IapService = {
       (detail) => detail.id === productId
     );
     return productDetail?.coins;
+  },
+
+  /** Clears the product cache. Intended for use in tests only. */
+  clearCache(): void {
+    cachedProducts = null;
+    cacheTimestamp = 0;
   },
 
   // ... existing code ...

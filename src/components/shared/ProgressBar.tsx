@@ -12,6 +12,8 @@
 
 import React from "react";
 import { View } from "react-native";
+import { SPACING } from "../../styles";
+import { scale, verticalScale } from "../../utils/responsive";
 
 /**
  * Props interface for the ProgressBar component.
@@ -84,17 +86,18 @@ const ProgressBar = ({
   totalSteps,
   stepColors,
 }: ProgressBarProps) => (
-  <View className="flex-row items-center mx-auto mb-8">
+  <View className="flex-row items-center mx-auto" style={{ marginBottom: SPACING.xl }}>
     {Array.from({ length: totalSteps }).map((_, index) => (
       <View
         key={index}
-        className={`h-2 w-16 rounded-full mx-2 ${
+        className={`rounded-full ${
           stepColors && stepColors[index]
             ? stepColors[index]
             : index <= activeStep - 1
             ? "bg-primary-orange"
             : "bg-gray-300"
         }`}
+        style={{ height: verticalScale(8), width: scale(64), marginHorizontal: SPACING.sm }}
         accessibilityLabel={`Step ${index + 1} of ${totalSteps}${
           index <= activeStep - 1 ? " completed" : " pending"
         }`}

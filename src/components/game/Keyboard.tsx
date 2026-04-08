@@ -11,11 +11,25 @@
  * @since 2024
  */
 
-import React, { useRef } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import React, { useState, useCallback } from "react";
+import { View, Text, TouchableOpacity, LayoutChangeEvent } from "react-native";
 import BackspaceIcon from "../icons/BackspaceIcon";
-import { scale, moderateScale } from "../../utils/responsive";
-import { gameStyles } from "../../styles";
+import { gameStyles, TYPOGRAPHY } from "../../styles";
+import {
+  KEYBOARD_KEY_HEIGHT,
+  KEYBOARD_KEY_MARGIN,
+  KEYBOARD_KEY_BORDER_RADIUS,
+  KEYBOARD_MID_ROW_MARGIN_BOTTOM,
+  KEYBOARD_ROW_SPACER,
+  KEYBOARD_BOTTOM_OFFSET,
+} from "../../constants/layout";
+import { dimensions } from "../../utils/responsive";
+import type { Feedback } from "../../hooks/types";
+
+/** QWERTY keyboard layout — defined at module scope so they are never reallocated */
+const TOP_ROW = ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"];
+const MID_ROW = ["a", "s", "d", "f", "g", "h", "j", "k", "l"];
+const BOTTOM_ROW = ["z", "x", "c", "v", "b", "n", "m"];
 
 /**
  * Props interface for the Keyboard component.
@@ -37,7 +51,26 @@ interface KeyboardProps {
 
   /** Alternative function for key press (for backward compatibility) */
   onKeyPress?: (key: string) => void;
+
+  /** Best known feedback state per letter, derived from submitted guesses. */
+  letterStates?: Record<string, Feedback>;
 }
+
+/** Returns background/text colours for a keyboard key based on its feedback state. */
+const getKeyColors = (
+  state: Feedback | undefined
+): { bg: string; text: string } => {
+  switch (state) {
+    case "green":
+      return { bg: "#22C55E", text: "#FFFFFF" };
+    case "yellow":
+      return { bg: "#EAB308", text: "#FFFFFF" };
+    case "red":
+      return { bg: "rgba(90,90,90,0.65)", text: "#BBBBBB" };
+    default:
+      return { bg: "transparent", text: "#FFFFFF" };
+  }
+};
 
 /**
  * Keyboard Component
@@ -99,26 +132,30 @@ interface KeyboardProps {
  * @param {KeyboardProps} props - Component props
  * @returns {JSX.Element} Interactive on-screen keyboard with QWERTY layout
  */
-const Keyboard: React.FC<KeyboardProps> = ({
+
+/** Number of keys in the widest (top) row — used to compute key width. */
+const TOP_ROW_KEY_COUNT = TOP_ROW.length; // 10
+
+const Keyboard: React.FC<KeyboardProps> = React.memo(function Keyboard({
   submitKeyPress,
   handleBackspace,
   isVisible = true,
   onKeyPress,
-}) => {
-  /** Standard QWERTY keyboard layout definition */
-  const topRow = ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"];
-  const midRow = ["a", "s", "d", "f", "g", "h", "j", "k", "l"];
-  const bottomRow = ["z", "x", "c", "v", "b", "n", "m"];
+  letterStates,
+}) {
+  const fontSize = TYPOGRAPHY.fontSize.lg;
 
-  /** Refs for keyboard container and individual keys (for potential future enhancements) */
-  const keyboardRef = useRef<View>(null);
-  const keyRefs = useRef<{ [key: string]: View | null }>({});
+  // Track the actual rendered container width so keys never overflow the x axis.
+  const [containerWidth, setContainerWidth] = useState(dimensions.screenWidth);
+  const onContainerLayout = useCallback(
+    (e: LayoutChangeEvent) => setContainerWidth(e.nativeEvent.layout.width),
+    []
+  );
 
-  /** Responsive styling calculations based on screen size */
-  const keyHeight = scale(36);
-  const keyWidth = scale(35);
-  const keyMargin = scale(1.65);
-  const fontSize = moderateScale(18);
+  // Key width derived from container width so the top row (10 keys) always fits.
+  const keyWidth = Math.floor(
+    containerWidth / TOP_ROW_KEY_COUNT - 2 * KEYBOARD_KEY_MARGIN
+  );
 
   // Use onKeyPress as a fallback if submitKeyPress is not provided
   const keyPressHandler = submitKeyPress || onKeyPress || (() => {});
@@ -127,44 +164,45 @@ const Keyboard: React.FC<KeyboardProps> = ({
     return null;
   }
 
+  const renderKey = (key: string) => {
+    const { bg, text } = getKeyColors(letterStates?.[key]);
+    return (
+      <TouchableOpacity
+        key={key}
+        style={[
+          gameStyles.keyButton,
+          {
+            borderRadius: KEYBOARD_KEY_BORDER_RADIUS,
+            height: KEYBOARD_KEY_HEIGHT,
+            width: keyWidth,
+            margin: KEYBOARD_KEY_MARGIN,
+            backgroundColor: bg,
+          },
+        ]}
+        onPressIn={() => keyPressHandler(key)}
+        activeOpacity={0.7}
+        accessibilityRole="button"
+        accessibilityLabel={`Letter ${key.toUpperCase()}`}
+      >
+        <Text
+          style={[
+            gameStyles.keyText,
+            { fontSize, color: text },
+          ]}
+        >
+          {key}
+        </Text>
+      </TouchableOpacity>
+    );
+  };
+
   return (
-    <View ref={keyboardRef} style={gameStyles.keyboardContainer}>
+    <View style={gameStyles.keyboardContainer} onLayout={onContainerLayout}>
       {/* Main keyboard layout container */}
       <View style={gameStyles.keyboardLayer}>
         {/* Top Row - QWERTYUIOP */}
         <View style={gameStyles.keyboardRow}>
-          {topRow.map((key) => (
-            <TouchableOpacity
-              key={key}
-              ref={(ref) => {
-                keyRefs.current[key] = ref;
-              }}
-              style={[
-                gameStyles.keyButton,
-                {
-                  borderRadius: scale(6),
-                  height: keyHeight,
-                  width: keyWidth,
-                  margin: keyMargin,
-                },
-              ]}
-              onPressIn={() => keyPressHandler(key)}
-              activeOpacity={0.7}
-              accessibilityRole="button"
-              accessibilityLabel={`Letter ${key.toUpperCase()}`}
-            >
-              <Text
-                style={[
-                  gameStyles.keyText,
-                  {
-                    fontSize,
-                  },
-                ]}
-              >
-                {key}
-              </Text>
-            </TouchableOpacity>
-          ))}
+          {TOP_ROW.map(renderKey)}
         </View>
 
         {/* Middle Row - ASDFGHJKL with traditional QWERTY offset */}
@@ -172,96 +210,30 @@ const Keyboard: React.FC<KeyboardProps> = ({
           style={[
             gameStyles.keyboardRow,
             {
-              marginBottom: scale(5),
+              marginBottom: KEYBOARD_MID_ROW_MARGIN_BOTTOM,
             },
           ]}
         >
           {/* Left spacing for QWERTY offset */}
-          <View style={{ width: scale(16) }} />
-          {midRow.map((key) => (
-            <TouchableOpacity
-              key={key}
-              ref={(ref) => {
-                keyRefs.current[key] = ref;
-              }}
-              style={[
-                gameStyles.keyButton,
-                {
-                  borderRadius: scale(6),
-                  height: keyHeight,
-                  width: keyWidth,
-                  margin: keyMargin,
-                },
-              ]}
-              onPressIn={() => keyPressHandler(key)}
-              activeOpacity={0.7}
-              accessibilityRole="button"
-              accessibilityLabel={`Letter ${key.toUpperCase()}`}
-            >
-              <Text
-                style={[
-                  gameStyles.keyText,
-                  {
-                    fontSize,
-                  },
-                ]}
-              >
-                {key}
-              </Text>
-            </TouchableOpacity>
-          ))}
+          <View style={{ width: KEYBOARD_ROW_SPACER }} />
+          {MID_ROW.map(renderKey)}
           {/* Right spacing for QWERTY balance */}
-          <View style={{ width: scale(16) }} />
+          <View style={{ width: KEYBOARD_ROW_SPACER }} />
         </View>
 
         {/* Bottom Row - ZXCVBNM + Backspace Key */}
         <View style={gameStyles.keyboardRow}>
           {/* Left spacing to center the shorter bottom row */}
-          <View style={{ width: scale(48) }} />
-          {bottomRow.map((key) => (
-            <TouchableOpacity
-              key={key}
-              ref={(ref) => {
-                keyRefs.current[key] = ref;
-              }}
-              className="rounded-full"
-              style={[
-                gameStyles.keyButton,
-                {
-                  borderRadius: scale(6),
-                  height: keyHeight,
-                  width: keyWidth,
-                  margin: keyMargin,
-                },
-              ]}
-              onPressIn={() => keyPressHandler(key)}
-              activeOpacity={0.7}
-              accessibilityRole="button"
-              accessibilityLabel={`Letter ${key.toUpperCase()}`}
-            >
-              <Text
-                style={[
-                  gameStyles.keyText,
-                  {
-                    fontSize,
-                  },
-                ]}
-              >
-                {key}
-              </Text>
-            </TouchableOpacity>
-          ))}
+          <View style={{ width: KEYBOARD_BOTTOM_OFFSET }} />
+          {BOTTOM_ROW.map(renderKey)}
 
           {/* Backspace Key with Icon */}
           <TouchableOpacity
             key="delete"
-            ref={(ref) => {
-              keyRefs.current["DELETE"] = ref;
-            }}
             style={{
-              height: keyHeight,
-              width: scale(48),
-              margin: keyMargin,
+              height: KEYBOARD_KEY_HEIGHT,
+              width: KEYBOARD_BOTTOM_OFFSET,
+              margin: KEYBOARD_KEY_MARGIN,
             }}
             onPressIn={() => handleBackspace()}
             activeOpacity={0.7}
@@ -275,6 +247,6 @@ const Keyboard: React.FC<KeyboardProps> = ({
       </View>
     </View>
   );
-};
+});
 
 export default Keyboard;

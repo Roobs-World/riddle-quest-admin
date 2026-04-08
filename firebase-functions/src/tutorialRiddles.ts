@@ -3,6 +3,7 @@ import * as admin from "firebase-admin";
 import {onCall, HttpsError, CallableRequest} from "firebase-functions/v2/https";
 import {getUser} from "./firestoreService";
 import {RiddleCollections, TutorialRiddle} from "./validation/firestoreSchemas";
+import {captureException} from "./sentry";
 
 /**
  * Gets a tutorial riddle by its index.
@@ -27,6 +28,7 @@ export async function getTutorialRiddle(tutorialIndex: number): Promise<Tutorial
     return riddleDoc.data() as TutorialRiddle;
   } catch (error) {
     functions.logger.error(`Error getting tutorial riddle at index ${tutorialIndex}:`, error);
+    captureException(error);
     throw new Error(`Failed to get tutorial riddle at index ${tutorialIndex}`);
   }
 }
@@ -76,7 +78,7 @@ export const getCurrentTutorialRiddle = onCall(
           .count()
           .get();
 
-        const totalTutorialRiddles = totalRiddlesSnapshot.data().count;
+        const totalTutorialRiddles = totalRiddlesSnapshot.data()?.count ?? 0;
 
         if (currentTutorialIndex >= totalTutorialRiddles) {
           return {
@@ -112,6 +114,7 @@ export const getCurrentTutorialRiddle = onCall(
         throw error;
       }
       functions.logger.error("Error getting current tutorial riddle:", error);
+      captureException(error);
       throw new HttpsError("internal", "An error occurred while fetching the tutorial riddle.");
     }
   },
@@ -171,6 +174,7 @@ export const advanceTutorialProgress = onCall(
         throw error;
       }
       functions.logger.error("Error advancing tutorial progress:", error);
+      captureException(error);
       throw new HttpsError("internal", "An error occurred while advancing tutorial progress.");
     }
   },
@@ -194,6 +198,7 @@ export async function getTutorialRiddleWithAnswer(riddleId: string): Promise<Tut
     return riddleDoc.data() as TutorialRiddle;
   } catch (error) {
     functions.logger.error(`Error getting tutorial riddle with answer for ID ${riddleId}:`, error);
+    captureException(error);
     throw new Error(`Failed to get tutorial riddle with answer for ID ${riddleId}`);
   }
 }
@@ -211,7 +216,7 @@ export async function initializeTutorialRiddlesIfEmpty(): Promise<void> {
       .get();
 
     if (!existingRiddlesSnapshot.empty) {
-      console.log("Tutorial riddles already exist, skipping initialization.");
+      functions.logger.info("Tutorial riddles already exist, skipping initialization.");
       return;
     }
 
@@ -261,9 +266,10 @@ export async function initializeTutorialRiddlesIfEmpty(): Promise<void> {
     });
 
     await batch.commit();
-    console.log(`Successfully created ${basicTutorialRiddles.length} basic tutorial riddles.`);
+    functions.logger.info(`Successfully created ${basicTutorialRiddles.length} basic tutorial riddles.`);
   } catch (error) {
-    console.error("Error initializing tutorial riddles:", error);
+    functions.logger.error("Error initializing tutorial riddles:", error);
+    captureException(error);
     throw new Error("Failed to initialize tutorial riddles.");
   }
 }
@@ -281,6 +287,7 @@ export const initializeTutorialRiddlesFunction = onCall({}, async (): Promise<{s
     };
   } catch (error) {
     functions.logger.error("Error initializing tutorial riddles:", error);
+    captureException(error);
     throw new HttpsError("internal", "Failed to initialize tutorial riddles.");
   }
 });

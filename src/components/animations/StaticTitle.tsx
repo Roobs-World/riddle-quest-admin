@@ -1,7 +1,11 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { COLORS } from "../../styles/tokens/colors";
-import { scale } from "../../utils/responsive";
+import { TYPOGRAPHY } from "../../styles/tokens/typography";
+import { BORDER_RADIUS } from "../../styles/tokens/borderRadius";
+import { SPACING } from "../../styles/tokens/spacing";
+import { STATIC_TITLE_PADDING_H, STATIC_TITLE_PADDING_V } from "../../constants/layout";
+import { moderateScale } from "../../utils/responsive";
 
 interface StaticTitleProps {
   title: string;
@@ -29,19 +33,20 @@ const styles = StyleSheet.create({
     zIndex: 1000,
   },
   title: {
+    fontFamily: TYPOGRAPHY.fontPrimary,
     color: COLORS.primaryOrange,
-    fontSize: scale(32),
-    fontWeight: "bold",
+    fontSize: TYPOGRAPHY.fontSize.display,
+    fontWeight: "400",
     textAlign: "center",
     textShadowColor: "rgba(0, 0, 0, 0.75)",
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 2,
+    textShadowOffset: { width: moderateScale(1), height: moderateScale(1) },
+    textShadowRadius: moderateScale(2),
   },
   titleContainer: {
     backgroundColor: "rgba(0, 0, 0, 0.7)",
-    borderRadius: 10,
-    paddingHorizontal: 30,
-    paddingVertical: 15,
+    borderRadius: BORDER_RADIUS.lg,
+    paddingHorizontal: STATIC_TITLE_PADDING_H,
+    paddingVertical: STATIC_TITLE_PADDING_V,
   },
 });
 

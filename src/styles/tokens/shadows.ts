@@ -4,34 +4,35 @@
  */
 
 import { COLORS } from "./colors";
+import { moderateScale } from "../../utils/responsive";
 
 export const SHADOWS = {
   sm: {
     shadowColor: COLORS.shadowColor,
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: { width: 0, height: moderateScale(1) },
     shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
+    shadowRadius: moderateScale(2),
+    elevation: moderateScale(1),
   },
   md: {
     shadowColor: COLORS.shadowColor,
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: moderateScale(2) },
     shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
+    shadowRadius: moderateScale(4),
+    elevation: moderateScale(5),
   },
   lg: {
     shadowColor: COLORS.shadowColor,
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: { width: 0, height: moderateScale(4) },
     shadowOpacity: 0.15,
-    shadowRadius: 6,
-    elevation: 8,
+    shadowRadius: moderateScale(6),
+    elevation: moderateScale(8),
   },
   xl: {
     shadowColor: COLORS.shadowColor,
-    shadowOffset: { width: 0, height: 10 },
+    shadowOffset: { width: 0, height: moderateScale(10) },
     shadowOpacity: 0.25,
-    shadowRadius: 15,
-    elevation: 15,
+    shadowRadius: moderateScale(15),
+    elevation: moderateScale(15),
   },
 } as const;

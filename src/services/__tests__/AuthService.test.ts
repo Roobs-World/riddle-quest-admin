@@ -1,3 +1,14 @@
+// Mock getApp for modular Firebase API
+jest.mock("@react-native-firebase/app", () => ({
+  getApp: jest.fn(() => ({})),
+}));
+
+// Avoid real requestAnimationFrame/setTimeout from safeTimeout (prevents Jest teardown "access after torn down")
+jest.mock("../../utils/timing", () => ({
+  safeTimeout: jest.fn(() => jest.fn()),
+  safeDelay: jest.fn(() => Promise.resolve()),
+}));
+
 // Mock React Native first - this must be done before any other imports
 jest.mock("react-native", () => ({
   InteractionManager: {
@@ -18,6 +29,7 @@ jest.mock("react-native", () => ({
 jest.mock("react-native-fbsdk-next", () => ({
   LoginManager: {
     logInWithPermissions: jest.fn(),
+    logOut: jest.fn(),
   },
   AccessToken: {
     getCurrentAccessToken: jest.fn(),
@@ -42,7 +54,8 @@ jest.mock("@react-native-google-signin/google-signin", () => ({
 const mockAuthInstance = {
   currentUser: null,
   onAuthStateChanged: jest.fn((callback) => {
-    setTimeout(() => callback(null), 0);
+    // Call synchronously to avoid Jest teardown "access after torn down" (no setTimeout)
+    callback(null);
     return jest.fn();
   }),
   signInWithEmailAndPassword: jest.fn(),
@@ -52,10 +65,11 @@ const mockAuthInstance = {
   sendPasswordResetEmail: jest.fn(),
 };
 
-// Mock Firebase auth module completely before imports
+// Mock Firebase auth module completely before imports (modular API: getAuth(getApp()))
 jest.mock("@react-native-firebase/auth", () => ({
   __esModule: true,
-  default: () => mockAuthInstance, // Return the auth instance directly
+  getAuth: jest.fn(() => mockAuthInstance),
+  default: () => mockAuthInstance,
   GoogleAuthProvider: {
     credential: jest.fn((idToken) => ({
       type: "google.com",
@@ -617,9 +631,8 @@ describe("AuthService", () => {
         .mockResolvedValue([]);
 
       await expect(AuthService.signInWithFacebook()).rejects.toThrow(
-        "Account conflict detected but couldn't determine sign-in method. " +
-          "Please try signing in with Google or email/password first, " +
-          "then link Facebook in account settings."
+        "Google sign-in failed during account linking. " +
+          "Please try signing in with Google first, then link Facebook in account settings."
       );
     });
 
@@ -640,11 +653,7 @@ describe("AuthService", () => {
       );
 
       await expect(AuthService.signInWithFacebook()).rejects.toThrow(
-        "An unexpected error occurred during Facebook login."
-      );
-      expect(console.error).toHaveBeenCalledWith(
-        "❌ Facebook login error:",
-        firebaseError
+        "Facebook login cancelled."
       );
     });
 
@@ -735,27 +744,17 @@ describe("AuthService", () => {
       await expect(AuthService.signInWithFacebook()).rejects.toThrow();
     });
 
-    it("should handle account conflict detected but couldn't determine sign-in method", async () => {
+    it("should handle account conflict with unknown error code", async () => {
       const firebaseError = {
         code: "auth/account-conflict",
-        message:
-          "Account conflict detected but couldn't determine sign-in method. " +
-          "Please try signing in with Google or email/password first, " +
-          "then link Facebook in account settings.",
+        message: "Account conflict",
       };
       mockAuthInstance.signInWithCredential.mockRejectedValueOnce(
         firebaseError
       );
 
-      // Mock fetchSignInMethodsForEmail to return an empty array to trigger the specific error
-      (mockAuthInstance as any).fetchSignInMethodsForEmail = jest
-        .fn()
-        .mockResolvedValue([]);
-
-      await expect(AuthService.signInWithFacebook()).rejects.toThrow(
-        "Account conflict detected but couldn't determine sign-in method. " +
-          "Please try signing in with Google or email/password first, " +
-          "then link Facebook in account settings."
+      await expect(AuthService.signInWithFacebook()).rejects.toEqual(
+        firebaseError
       );
     });
 
@@ -797,9 +796,29 @@ describe("AuthService", () => {
         firebaseError
       );
 
-      await expect(AuthService.signInWithFacebook()).rejects.toEqual(
-        firebaseError
+      await expect(AuthService.signInWithFacebook()).rejects.toThrow(
+        "Invalid Facebook credentials. Please try again."
       );
+    });
+
+    it("should proceed with sign-in when LoginManager.logOut throws during session clear", async () => {
+      (LoginManager.logOut as jest.Mock).mockImplementationOnce(() => {
+        throw new Error("Logout failed");
+      });
+      (LoginManager.logInWithPermissions as jest.Mock).mockResolvedValueOnce({
+        isCancelled: false,
+        grantedPermissions: ["public_profile", "email"],
+      });
+      (AccessToken.getCurrentAccessToken as jest.Mock).mockResolvedValueOnce({
+        accessToken: "mockFbAccessToken",
+        permissions: ["public_profile", "email"],
+        expirationTime: Date.now() + 3600000,
+      });
+
+      const result = await AuthService.signInWithFacebook();
+
+      expect(result).toEqual(mockUserCredential);
+      expect(mockAuthInstance.signInWithCredential).toHaveBeenCalled();
     });
   });
 

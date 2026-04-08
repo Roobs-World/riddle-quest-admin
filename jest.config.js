@@ -1,15 +1,19 @@
 module.exports = {
-  preset: null,
-  testEnvironment: "jsdom",
+  preset: "react-native",
+  roots: ["<rootDir>/src"],
+  testPathIgnorePatterns: ["/node_modules/", "/firebase-functions/"],
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
   transform: {
     '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { configFile: './babel.config.cjs' }],
   },
   transformIgnorePatterns: [
-    "node_modules/(?!(react-native|@react-native|expo|@expo|@react-navigation|react-native-svg|react-native-reanimated|react-native-fbsdk-next|@react-native/js-polyfills))",
+    "/node_modules/(?!(.pnpm|react-native|@react-native|@react-native-community|expo|@expo|@react-navigation|react-native-svg|react-native-reanimated|react-native-fbsdk-next|@react-native/js-polyfills))",
   ],
   moduleNameMapper: {
+    "^src/(.*)$": "<rootDir>/src/$1",
     "\\.(svg)$": "<rootDir>/src/__mocks__/svgMock.js",
+    "\\.(ttf|otf|woff|woff2)$": "<rootDir>/src/__mocks__/fileMock.js",
+    "\\.(png|jpg|jpeg|gif|webp|bmp)$": "<rootDir>/src/__mocks__/fileMock.js",
     "^@/(.*)$": "<rootDir>/src/$1",
     "^@images/(.*)$": "<rootDir>/assets/images/$1",
     "^@fonts/(.*)$": "<rootDir>/assets/fonts/$1",
@@ -17,6 +21,8 @@ module.exports = {
       "<rootDir>/src/__mocks__/react-native-fbsdk-next.js",
     "react-native-reanimated":
       "<rootDir>/src/__mocks__/react-native-reanimated.js",
+    "@react-native-firebase/messaging":
+      "<rootDir>/src/__mocks__/@react-native-firebase/messaging.js",
   },
   testMatch: [
     "**/__tests__/**/*.(test|spec).(js|jsx|ts|tsx)",

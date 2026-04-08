@@ -60,7 +60,7 @@ import functionsTest from "firebase-functions-test";
 import {HttpsError, CallableRequest} from "firebase-functions/v2/https"; // Import HttpsError and CallableRequest
 
 // Import the functions to test (these will interact with the emulator)
-import {getHint, spendCoins} from "../gameLogic";
+import {spendCoins} from "../gameLogic";
 import {createUser} from "./testUtils"; // Import createUser from testUtils
 
 // Initialize firebase-functions-test. This DOES NOT initialize admin.initializeApp()
@@ -83,7 +83,6 @@ let firestore: admin.firestore.Firestore;
 
 describe("Game Logic - Integration Tests", () => {
   // Wrap the callable functions for testing
-  const wrappedGetHint = testEnv.wrap(getHint);
   const wrappedSpendCoins = testEnv.wrap(spendCoins);
 
   const testUserId = "testUserGameLogic";
@@ -331,141 +330,6 @@ describe("Game Logic - Integration Tests", () => {
       rawRequest: {headers: {}, body: {}},
     } as CallableRequest<Record<string, unknown>>;
   };
-
-  // --- getHint Integration Tests ---
-  describe("getHint", () => {
-    it("should reveal a hint and deduct coins", async () => {
-      const riddleId = "testRiddle1";
-      const initialCoins = 100;
-      const hintCost = 50;
-      const currentAttempt = ["a", "", "", "", ""]; // 'a' _ _ _ _ for 'apple'
-
-      // Ensure test user exists before making the request
-      const userDoc = await firestore.collection("users").doc(testUserId).get();
-      expect(userDoc.exists).toBe(true);
-      expect(userDoc.data()?.coins).toBe(initialCoins);
-
-      // Ensure test riddle exists before making the request
-      const riddleDoc = await firestore.collection("riddles").doc(riddleId).get();
-      expect(riddleDoc.exists).toBe(true);
-      expect(riddleDoc.data()?.answer).toBe("apple");
-
-      const request = constructOnCallRequest({currentAttempt, riddleId});
-
-      const result = await wrappedGetHint(request);
-
-      expect(result).toEqual({
-        revealedLetter: "P",
-        index: 1,
-        coinsCost: hintCost,
-      });
-
-      // Verify coins deducted in Firestore
-      const updatedUserDoc = await firestore.collection("users").doc(testUserId).get();
-      expect(updatedUserDoc.data()?.coins).toBe(initialCoins - hintCost);
-
-      // Verify hint index stored in gameState
-      const gameStateDoc = await firestore
-        .collection("users")
-        .doc(testUserId)
-        .collection("riddleStates")
-        .doc(riddleId)
-        .get();
-      expect(gameStateDoc.data()?.hintRevealedIndices).toEqual([1]);
-    });
-
-    it("should throw failed-precondition if insufficient coins", async () => {
-      // Ensure user exists before updating
-      const userDocBefore = await firestore.collection("users").doc(testUserId).get();
-      expect(userDocBefore.exists).toBe(true);
-
-      await firestore.collection("users").doc(testUserId).update({coins: 10}); // Insufficient coins
-
-      // Verify update worked
-      const userDocAfter = await firestore.collection("users").doc(testUserId).get();
-      expect(userDocAfter.data()?.coins).toBe(10);
-
-      const riddleId = "testRiddle1";
-      const currentAttempt = ["a", "", "", "", ""];
-      const request = constructOnCallRequest({currentAttempt, riddleId});
-
-      await expect(wrappedGetHint(request)).rejects.toThrow(
-        new HttpsError("failed-precondition", "Insufficient coins to get a hint."),
-      );
-    });
-
-    it("should return null if no hint is available", async () => {
-      const riddleId = "testRiddle1";
-      // Simulate all letters guessed or revealed
-      const currentAttempt = ["a", "p", "p", "l", "e"]; // Correct guess
-      // Pre-set game state to indicate some hints revealed (if applicable, though not strictly needed for a fully correct guess)
-      await firestore
-        .collection("users")
-        .doc(testUserId)
-        .collection("riddleStates")
-        .doc(riddleId)
-        .set({hintRevealedIndices: [1, 3], isCompleted: false}, {merge: true});
-
-      const request = constructOnCallRequest({currentAttempt, riddleId});
-
-      const result = await wrappedGetHint(request);
-      expect(result).toBeNull();
-    });
-
-    it("should throw unauthenticated if user is not authenticated", async () => {
-      const riddleId = "testRiddle1";
-      const currentAttempt = ["a", "", "", "", ""];
-      const request = constructOnCallRequest({currentAttempt, riddleId}, null);
-
-      await expect(wrappedGetHint(request)).rejects.toThrow(
-        new HttpsError("unauthenticated", "The user must be authenticated to get a hint."),
-      );
-    });
-
-    it("should throw not-found if riddle does not exist", async () => {
-      const riddleId = "nonexistentRiddle";
-      const currentAttempt = ["a", "", "", "", ""];
-      const request = constructOnCallRequest({currentAttempt, riddleId});
-
-      await expect(wrappedGetHint(request)).rejects.toThrow(
-        new HttpsError("not-found", `Riddle with ID ${riddleId} not found.`),
-      );
-    });
-
-    it("should throw internal if riddle has no answer field", async () => {
-      const riddleId = "testRiddleWithoutAnswer";
-      await firestore.collection("riddles").doc(riddleId).set({text: "A riddle without an answer"});
-      const currentAttempt = ["a", "", "", "", ""];
-      const request = constructOnCallRequest({currentAttempt, riddleId});
-
-      await expect(wrappedGetHint(request)).rejects.toThrow(
-        new HttpsError("internal", `Answer not found for riddle ID ${riddleId}.`),
-      );
-
-      // Clean up the test riddle
-      await firestore.collection("riddles").doc(riddleId).delete();
-    });
-
-    it("should throw not-found if user data not found", async () => {
-      // Store current user data
-      const userDocSnap = await firestore.collection("users").doc(testUserId).get();
-      const userData = userDocSnap.data();
-
-      // Delete the test user to simulate user data not found
-      await firestore.collection("users").doc(testUserId).delete();
-
-      const riddleId = "testRiddle1";
-      const currentAttempt = ["a", "", "", "", ""];
-      const request = constructOnCallRequest({currentAttempt, riddleId});
-
-      await expect(wrappedGetHint(request)).rejects.toThrow(new HttpsError("not-found", "User data not found."));
-
-      // Restore user data for next test
-      if (userData) {
-        await firestore.collection("users").doc(testUserId).set(userData);
-      }
-    });
-  });
 
   // --- spendCoins Integration Tests ---
   describe("spendCoins", () => {

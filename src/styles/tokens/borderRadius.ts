@@ -11,5 +11,7 @@ export const BORDER_RADIUS = {
   md: responsiveSizes.radiusMd,
   lg: responsiveSizes.radiusLg,
   xl: responsiveSizes.radiusXl,
+  /** Modal outer containers and large cards — 20 px at base. */
+  "2xl": responsiveSizes.radiusXxl,
   full: responsiveSizes.radiusFull,
 } as const;

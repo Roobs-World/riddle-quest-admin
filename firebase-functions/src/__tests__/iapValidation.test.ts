@@ -7,6 +7,10 @@ const mockIapGetProducts = jest.fn<() => Promise<unknown[]>>().mockResolvedValue
 const mockIapGetSubscriptions = jest.fn<() => Promise<unknown[]>>().mockResolvedValue([]);
 const mockIapFinishTransaction = jest.fn<(...args: unknown[]) => Promise<void>>().mockResolvedValue(undefined);
 
+const mockGetCoinsForProduct = jest.fn<(...args: unknown[]) => Promise<number | undefined>>();
+const mockLogPurchaseAnalytic = jest.fn<(...args: unknown[]) => Promise<void>>().mockResolvedValue(undefined);
+const mockUpdateRegionalSpendingStats = jest.fn<(...args: unknown[]) => Promise<void>>().mockResolvedValue(undefined);
+
 // iapValidation.test.ts
 // 1. Jest Globals and Types First
 import {describe, expect, it, jest, beforeEach} from "@jest/globals";
@@ -155,6 +159,12 @@ jest.mock("../iapPlatformValidator", () => ({
   performPlatformValidation: (...args: unknown[]) => mockPerformPlatformValidation(...args),
 }));
 
+jest.mock("../productPricingService", () => ({
+  getCoinsForProduct: (...args: unknown[]) => mockGetCoinsForProduct(...args),
+  logPurchaseAnalytic: (...args: unknown[]) => mockLogPurchaseAnalytic(...args),
+  updateRegionalSpendingStats: (...args: unknown[]) => mockUpdateRegionalSpendingStats(...args),
+}));
+
 jest.mock("firebase-admin", () => ({
   initializeApp: jest.fn(),
   firestore: Object.assign(
@@ -222,6 +232,14 @@ describe("validatePurchase - Unit Tests", () => {
     mockLoggerWarn.mockReset();
     mockLoggerError.mockReset();
 
+    mockGetCoinsForProduct.mockReset();
+    mockLogPurchaseAnalytic.mockReset();
+    mockUpdateRegionalSpendingStats.mockReset();
+    mockLogPurchaseAnalytic.mockResolvedValue(undefined);
+    mockUpdateRegionalSpendingStats.mockResolvedValue(undefined);
+    // Default: no Firestore pricing found, fall back to hardcoded map
+    mockGetCoinsForProduct.mockResolvedValue(undefined);
+
     // Default mock implementations
     mockGetUser.mockResolvedValue({coins: 100, hasPurchasedApp: false});
     mockUpdateUserProfile.mockResolvedValue(undefined);
@@ -271,7 +289,7 @@ describe("validatePurchase - Unit Tests", () => {
     expect(mockUpdateUserProfile).toHaveBeenCalledWith(testUserId, {hasPurchasedApp: true});
     expect(mockUpdateUserCoins).not.toHaveBeenCalled();
     expect(mockMarkPurchaseTokenAsProcessed).toHaveBeenCalledWith(testUserId, "token_noads", NO_ADS_PRODUCT_ID);
-    expect(mockGetUser).toHaveBeenCalledTimes(2);
+    expect(mockGetUser).toHaveBeenCalledTimes(3); // updateUserProfile flow + evaluateAchievements + final balance
     expect(mockLoggerInfo).toHaveBeenCalledWith(
       `Purchase validated and product ID matched for user ${testUserId}: ${NO_ADS_PRODUCT_ID}`,
     );
@@ -292,6 +310,7 @@ describe("validatePurchase - Unit Tests", () => {
     } as CallableRequest<ValidatePurchaseData>;
 
     iapController.getPurchaseData.mockReturnValue([{productId: coinProductId, transactionId: "token_coins_tx"}]);
+    mockGetCoinsForProduct.mockResolvedValueOnce(coinsToAward);
     mockGetUser.mockResolvedValueOnce({coins: initialUserCoins + coinsToAward, hasPurchasedApp: false});
     mockGetUser.mockResolvedValueOnce({coins: initialUserCoins + coinsToAward, hasPurchasedApp: false});
 
@@ -407,7 +426,7 @@ describe("validatePurchase - Unit Tests", () => {
       new functions.https.HttpsError("internal", "Product configuration error on backend."),
     );
     expect(mockLoggerError).toHaveBeenCalledWith(
-      expect.stringContaining("Product details not found on backend for validated product ID"),
+      expect.stringContaining("Product details not found for validated product ID"),
     );
   });
 
@@ -426,6 +445,47 @@ describe("validatePurchase - Unit Tests", () => {
     expect(mockLoggerError).toHaveBeenCalledWith(
       expect.stringContaining("IAP validation process failed"),
       expect.any(Error),
+    );
+  });
+
+  it("should throw invalid-argument error if purchaseToken is not a string", async () => {
+    const auth = {uid: testUserId} as CallableRequest<ValidatePurchaseData>["auth"];
+    const request = {
+      auth,
+      data: {purchaseToken: 12345, productId: "test_product", platform: "ios"},
+    } as unknown as CallableRequest<ValidatePurchaseData>;
+
+    await expect(validatePurchase(request)).rejects.toThrow(
+      new functions.https.HttpsError("invalid-argument", "Invalid purchase token, product ID, or platform."),
+    );
+  });
+
+  it("should throw invalid-argument error if platform is not ios or android", async () => {
+    const auth = {uid: testUserId} as CallableRequest<ValidatePurchaseData>["auth"];
+    const request = {
+      auth,
+      data: {purchaseToken: "token", productId: "product", platform: "web"},
+    } as CallableRequest<ValidatePurchaseData>;
+
+    await expect(validatePurchase(request)).rejects.toThrow(
+      new functions.https.HttpsError("invalid-argument", "Invalid purchase token, product ID, or platform."),
+    );
+  });
+
+  it("should throw failed-precondition when iap.isValidated returns false", async () => {
+    const auth = {uid: testUserId} as CallableRequest<ValidatePurchaseData>["auth"];
+    const request = {
+      auth,
+      data: {purchaseToken: "token_invalid", productId: "test_product", platform: "ios"},
+    } as CallableRequest<ValidatePurchaseData>;
+
+    iapController.isValidated.mockReturnValue(false);
+
+    await expect(validatePurchase(request)).rejects.toThrow(
+      new functions.https.HttpsError("failed-precondition", "Purchase validation failed or product ID mismatch."),
+    );
+    expect(mockLoggerError).toHaveBeenCalledWith(
+      expect.stringContaining("Purchase validation failed or product ID mismatch"),
     );
   });
 });
