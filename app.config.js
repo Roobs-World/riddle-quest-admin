@@ -20,6 +20,11 @@
 // Load environment variables
 require("dotenv").config();
 
+const sentryOrg = process.env.SENTRY_ORG || process.env.SENTRY_ORGANIZATION;
+const sentryProject = process.env.SENTRY_PROJECT;
+const sentryUrl = process.env.SENTRY_URL || "https://sentry.io/";
+const useSentryExpoPlugin = Boolean(sentryOrg && sentryProject);
+
 /**
  * Expo Configuration Object
  *
@@ -164,10 +169,21 @@ module.exports = {
    */
   plugins: [
      /** Firebase Crashlytics for error tracking */
-    "@react-native-firebase/crashlytics",
-     "@sentry/react-native",
+    "./plugins/withReactNativeFirebaseCrashlytics.js",
+    ...(useSentryExpoPlugin
+      ? [
+          [
+            "@sentry/react-native/expo",
+            {
+              url: sentryUrl,
+              organization: sentryOrg,
+              project: sentryProject,
+            },
+          ],
+        ]
+      : []),
     /** Google Sign-In authentication */
-    "@react-native-google-signin/google-signin",
+    "./plugins/withReactNativeGoogleSignin.js",
 
     /**
      * Facebook SDK Configuration
