@@ -1,6 +1,8 @@
 /* eslint-disable no-undef */
-declare const global: any;
-declare const ErrorUtils: any;
+type ErrorUtilsLike = {
+  getGlobalHandler?: () => ((error: Error, isFatal?: boolean) => void) | undefined;
+  setGlobalHandler?: (handler: (error: Error, isFatal?: boolean) => void) => void;
+};
 
 let installed = false;
 
@@ -17,11 +19,11 @@ export function installGlobalErrorLogging(): void {
     }
   };
 
-  const hasErrorUtils =
-    typeof ErrorUtils !== "undefined" ||
-    (typeof global !== "undefined" && global?.ErrorUtils);
-  const errorUtilsRef =
-    typeof ErrorUtils !== "undefined" ? ErrorUtils : global?.ErrorUtils;
+  const globalWithErrorUtils = globalThis as typeof globalThis & {
+    ErrorUtils?: ErrorUtilsLike;
+  };
+  const errorUtilsRef = globalWithErrorUtils.ErrorUtils;
+  const hasErrorUtils = typeof errorUtilsRef !== "undefined";
 
   if (hasErrorUtils && errorUtilsRef?.setGlobalHandler) {
     const previousHandler =
@@ -43,4 +45,3 @@ export function installGlobalErrorLogging(): void {
     });
   }
 }
-

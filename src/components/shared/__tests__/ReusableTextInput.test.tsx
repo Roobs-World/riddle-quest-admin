@@ -63,7 +63,7 @@ describe("ReusableTextInput", () => {
     });
 
     it("should be a React functional component", () => {
-      expect(ReusableTextInput.prototype).toEqual({});
+      expect(ReusableTextInput.prototype).toBeUndefined();
       expect(typeof ReusableTextInput).toBe("function");
     });
   });
@@ -787,4 +787,3 @@ describe("ReusableTextInput", () => {
     });
   });
 });
-

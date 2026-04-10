@@ -24,7 +24,6 @@ import {
   MeshBasicMaterial,
   DoubleSide,
   Texture,
-  ClampToEdgeWrapping,
   LinearFilter,
 } from "three";
 import { Asset } from "expo-asset";

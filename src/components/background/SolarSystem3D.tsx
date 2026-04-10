@@ -82,14 +82,17 @@ function useExpoTexture(assetModule: string | number): Texture | null {
   });
 
   useEffect(() => {
-    if (textureCache.has(assetModule)) {
-      setTexture(textureCache.get(assetModule)!);
-      return;
-    }
-
     let mounted = true;
     const loadTexture = async () => {
       try {
+        const cached = textureCache.get(assetModule);
+        if (cached) {
+          if (mounted) {
+            setTexture(cached);
+          }
+          return;
+        }
+
         const asset = Asset.fromModule(assetModule);
         if (!asset.downloaded) {
           await asset.downloadAsync();
@@ -357,4 +360,3 @@ const styles = StyleSheet.create({
 });
 
 export default React.memo(SolarSystem3D);
-

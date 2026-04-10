@@ -12,6 +12,22 @@ if the build breaks, then:
 
 use firebase functions:config:get to return the config settings used
 
+## RN 0.85 Upgrade Notes
+
+- Runtime now targets React Native `0.85.0` with Expo SDK 56 canary.
+- Node.js minimum version is `20.19.4` (`.nvmrc` and `package.json` engines).
+- Run upgrade guardrails:
+  - `pnpm run check:rn-upgrade`
+  - `pnpm run baseline:report`
+  - `pnpm run validate:upgrade`
+- Metro TLS (HTTPS/WSS for dev) is supported when env vars are set:
+  - `METRO_TLS_CERT_PATH`
+  - `METRO_TLS_KEY_PATH`
+  - optional `METRO_TLS_CA_PATH`
+- Shared Animation Backend flag:
+  - `EXPO_PUBLIC_ENABLE_SHARED_ANIMATION_BACKEND=true`
+  - Keep disabled until RN `0.85.1+` is available and experimental channel is enabled.
+
 ## Project Overview
 
 This is a mobile game that combines the popular Wordle-style gameplay with challenging riddles. Built using React Native and Firebase, the game features user authentication, multiple game modes, in-app purchases for a coin system, and customizable user profiles.

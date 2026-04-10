@@ -1,10 +1,10 @@
 module.exports = {
-  preset: "react-native",
+  preset: "@react-native/jest-preset",
   roots: ["<rootDir>/src"],
   testPathIgnorePatterns: ["/node_modules/", "/firebase-functions/"],
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
   transform: {
-    '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { configFile: './babel.config.js' }],
+    '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { configFile: './babel.config.jest.js' }],
   },
   transformIgnorePatterns: [
     "/node_modules/(?!(.pnpm|react-native|@react-native|@react-native-community|expo|@expo|@react-navigation|react-native-svg|react-native-reanimated|react-native-fbsdk-next|@react-native/js-polyfills))",

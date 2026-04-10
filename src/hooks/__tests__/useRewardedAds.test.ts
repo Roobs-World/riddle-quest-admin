@@ -239,7 +239,7 @@ describe("useRewardedAds", () => {
       const hookContent = fs.readFileSync(hookPath, "utf8");
 
       expect(hookContent).toContain("Rewarded ad is not ready yet");
-      expect(hookContent).toContain("if (isRewardedAdReady)");
+      expect(hookContent).toContain("if (!isRewardedAdReady)");
     });
 
     it("should handle missing ad unit ID in show function", () => {
@@ -499,7 +499,7 @@ describe("useRewardedAds", () => {
       const hookContent = fs.readFileSync(hookPath, "utf8");
 
       expect(hookContent).toContain("[loadRewardedAd]");
-      expect(hookContent).toContain("[isRewardedAdReady, loadRewardedAd]");
+      expect(hookContent).toContain("[isRewardedAdReady, loadRewardedAd, resolvePendingShow]");
       expect(hookContent).toContain("[playerData]");
     });
   });
