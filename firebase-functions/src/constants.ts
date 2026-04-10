@@ -45,16 +45,12 @@ export const XP_LEVEL_THRESHOLDS = {
   growthPerLevel: 10,
 } as const;
 
-/** Maximum level supported by the XP curve. */
-export const XP_MAX_LEVEL = 10;
-
 /**
  * Returns total cumulative XP required to be at a given level (1-based).
  */
 export function getXpThresholdForLevel(level: number): number {
   if (level <= 1) return 0;
-  const clampedLevel = Math.min(level, XP_MAX_LEVEL);
-  const completedLevelUps = clampedLevel - 1;
+  const completedLevelUps = level - 1;
   const { basePerLevel, growthPerLevel } = XP_LEVEL_THRESHOLDS;
   return (
     completedLevelUps * basePerLevel +
@@ -66,15 +62,14 @@ export function getXpThresholdForLevel(level: number): number {
  * Converts cumulative XP into a 1-based level.
  */
 export function getLevelFromXp(totalXp: number): number {
-  let level = 1;
-  for (let nextLevel = 2; nextLevel <= XP_MAX_LEVEL; nextLevel++) {
-    if (totalXp >= getXpThresholdForLevel(nextLevel)) {
-      level = nextLevel;
-    } else {
-      break;
-    }
-  }
-  return level;
+  const xp = Math.max(totalXp, 0);
+  const { basePerLevel, growthPerLevel } = XP_LEVEL_THRESHOLDS;
+  const a = growthPerLevel / 2;
+  const b = basePerLevel - growthPerLevel / 2;
+  const discriminant = b * b + 4 * a * xp;
+  const completedLevelUps = Math.floor((-b + Math.sqrt(discriminant)) / (2 * a));
+
+  return completedLevelUps + 1;
 }
 
 /** Threshold of remaining riddles below which new riddles are auto-generated. */

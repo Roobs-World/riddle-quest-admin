@@ -21,15 +21,12 @@ export const XP_LEVEL_THRESHOLDS = {
   growthPerLevel: 10,
 } as const;
 
-export const XP_MAX_LEVEL = 10;
-
 /**
  * Returns total cumulative XP required to be at a given level (1-based).
  */
 export function getXpThresholdForLevel(level: number): number {
   if (level <= 1) return 0;
-  const clampedLevel = Math.min(level, XP_MAX_LEVEL);
-  const completedLevelUps = clampedLevel - 1;
+  const completedLevelUps = level - 1;
   const { basePerLevel, growthPerLevel } = XP_LEVEL_THRESHOLDS;
   return (
     completedLevelUps * basePerLevel +
@@ -47,24 +44,23 @@ export function getXpLevel(totalScore: number): {
   currentXp: number;
   nextLevelXp: number;
 } {
-  let level = 1;
-  for (let nextLevel = 2; nextLevel <= XP_MAX_LEVEL; nextLevel++) {
-    if (totalScore >= getXpThresholdForLevel(nextLevel)) level = nextLevel;
-    else break;
-  }
+  const score = Math.max(totalScore, 0);
+  const { basePerLevel, growthPerLevel } = XP_LEVEL_THRESHOLDS;
+  const a = growthPerLevel / 2;
+  const b = basePerLevel - growthPerLevel / 2;
+  const discriminant = b * b + 4 * a * score;
+  const completedLevelUps = Math.floor((-b + Math.sqrt(discriminant)) / (2 * a));
 
-  const isMax = level >= XP_MAX_LEVEL;
+  const level = completedLevelUps + 1;
   const currentThreshold = getXpThresholdForLevel(level);
-  const nextThreshold = isMax ? getXpThresholdForLevel(XP_MAX_LEVEL) : getXpThresholdForLevel(level + 1);
-  const progressPct = isMax
-    ? 1
-    : (totalScore - currentThreshold) / (nextThreshold - currentThreshold);
+  const nextThreshold = getXpThresholdForLevel(level + 1);
+  const progressPct = (score - currentThreshold) / (nextThreshold - currentThreshold);
 
   return {
     level,
     progressPct: Math.min(Math.max(progressPct, 0), 1),
-    currentXp: totalScore - currentThreshold,
-    nextLevelXp: isMax ? 0 : nextThreshold - currentThreshold,
+    currentXp: score - currentThreshold,
+    nextLevelXp: nextThreshold - currentThreshold,
   };
 }
 
