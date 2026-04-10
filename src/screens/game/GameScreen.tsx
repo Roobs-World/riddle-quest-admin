@@ -233,6 +233,10 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const { isRewardedAdReady, loadRewardedAd, showRewardedAd } =
     useRewardedAds();
 
+  useEffect(() => {
+    loadRewardedAd();
+  }, [loadRewardedAd]);
+
   // Load IAP products when component mounts
   useEffect(() => {
     const loadProducts = async () => {
@@ -458,12 +462,17 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   }, [answerLength, currentGuess]);
 
   const handleWatchAdToContinue = useCallback(async () => {
-    modal.closeModalByType("loss");
-    if (isRewardedAdReady) {
-      showRewardedAd();
+    const didCompleteRewardedAd = await showRewardedAd();
+    if (didCompleteRewardedAd) {
+      continueGame();
+      return true;
     }
-    continueGame();
-  }, [modal, isRewardedAdReady, showRewardedAd, continueGame]);
+    modal.showInfoModal({
+      title: "Ad Not Ready",
+      message: "The rewarded ad couldn't be shown at this time. Please try again shortly.",
+    });
+    return false;
+  }, [showRewardedAd, continueGame, modal]);
 
   const handleCoinContinue = useCallback(async () => {
     modal.closeModalByType("loss");
@@ -983,9 +992,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     modal.closeModalByType("coinShop");
 
     try {
-      await loadRewardedAd();
-      if (isRewardedAdReady) {
-        await showRewardedAd();
+      const didCompleteRewardedAd = await showRewardedAd();
+      if (didCompleteRewardedAd) {
         logger.debug("Rewarded ad for coins shown successfully");
       } else {
         logger.warn("Rewarded ad was not ready to be shown");
@@ -1002,7 +1010,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         message: "An error occurred while trying to show the rewarded ad.",
       });
     }
-  }, [modal, loadRewardedAd, isRewardedAdReady, showRewardedAd]);
+  }, [modal, showRewardedAd]);
 
   const handleCoinsPress = useCallback(() => {
     logger.debug("Opening coin shop modal with:", {

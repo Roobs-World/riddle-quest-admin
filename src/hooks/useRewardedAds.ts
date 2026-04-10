@@ -57,7 +57,7 @@ const MAX_EXPONENTIAL_RETRY_COUNT = 6;
 interface UseRewardedAds {
   isRewardedAdReady: boolean;
   loadRewardedAd: () => void;
-  showRewardedAd: () => void;
+  showRewardedAd: () => Promise<boolean>;
   // You might want to expose loading state, error state, etc.
   // isLoading: boolean;
   // error: string | null;
@@ -78,7 +78,22 @@ const useRewardedAds = (): UseRewardedAds => {
   const [isRewardedAdReady, setIsRewardedAdReady] = useState(false);
   const retryAttempt = useRef(0);
   const retryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const showTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pendingShowResolveRef = useRef<((didEarnReward: boolean) => void) | null>(null);
+  const didReceiveRewardRef = useRef(false);
   const { playerData } = useAuth();
+
+  const resolvePendingShow = useCallback((didEarnReward: boolean) => {
+    if (showTimeoutRef.current) {
+      clearTimeout(showTimeoutRef.current);
+      showTimeoutRef.current = null;
+    }
+    if (pendingShowResolveRef.current) {
+      pendingShowResolveRef.current(didEarnReward);
+      pendingShowResolveRef.current = null;
+    }
+    didReceiveRewardRef.current = false;
+  }, []);
 
   // --- Ad Loading Function (wrapped in useCallback) ---
 
@@ -154,10 +169,11 @@ const useRewardedAds = (): UseRewardedAds => {
           adInfo.message
       );
       setIsRewardedAdReady(false); // Ad failed to display, so it's no longer ready
+      resolvePendingShow(false);
       // AppLovin recommends loading the next ad if one fails to display
       loadRewardedAd();
     },
-    [loadRewardedAd]
+    [loadRewardedAd, resolvePendingShow]
   );
 
   const onRewardedAdDisplayed = useCallback(
@@ -183,10 +199,11 @@ const useRewardedAds = (): UseRewardedAds => {
     (_adInfo: AdInfo) => {
       logger.debug("Rewarded ad hidden");
       setIsRewardedAdReady(false); // Ad is hidden, so it's no longer ready
+      resolvePendingShow(didReceiveRewardRef.current);
       // Pre-load the next ad
       loadRewardedAd();
     },
-    [loadRewardedAd]
+    [loadRewardedAd, resolvePendingShow]
   );
 
   const onUserRewarded = useCallback(
@@ -199,6 +216,7 @@ const useRewardedAds = (): UseRewardedAds => {
       // Using 'any' and checking for method existence to bypass strict type checking.
       const amount = extendedRewardInfo.getAmount();
       const label = extendedRewardInfo.getLabel();
+      didReceiveRewardRef.current = true;
       logger.debug("User rewarded: " + amount + " " + label);
       void analyticsService.logAdEvent("completed", { reward_amount: amount, reward_label: label });
 
@@ -290,25 +308,42 @@ const useRewardedAds = (): UseRewardedAds => {
     RewardedAd.addAdReceivedRewardEventListener((info: AdRewardInfo) => callbacksRef.current.onUserRewarded(info));
     return () => {
       if (retryTimerRef.current) clearTimeout(retryTimerRef.current);
+      if (showTimeoutRef.current) clearTimeout(showTimeoutRef.current);
+      resolvePendingShow(false);
     };
-  }, []); // Empty — registers once for the lifetime of the hook
+  }, [resolvePendingShow]); // Registers once and cleans up pending async state
 
-  const showRewardedAd = useCallback(() => {
+  const showRewardedAd = useCallback(async (): Promise<boolean> => {
     if (!REWARDED_AD_UNIT_ID) {
       logger.error(
         "Cannot show rewarded ad: APPLOVIN_REWARDED_AD_UNIT_ID is not set."
       );
-      return;
+      return false;
     }
-    if (isRewardedAdReady) {
-      logger.debug("Showing rewarded ad...");
-      RewardedAd.showAd(REWARDED_AD_UNIT_ID);
-    } else {
+    if (!isRewardedAdReady) {
       logger.debug("Rewarded ad is not ready yet.");
       // Optionally, load the ad if it's not ready
       loadRewardedAd();
+      return false;
     }
-  }, [isRewardedAdReady, loadRewardedAd]);
+
+    if (pendingShowResolveRef.current) {
+      logger.warn("Rewarded ad show requested while another ad is still active.");
+      return false;
+    }
+
+    logger.debug("Showing rewarded ad...");
+    didReceiveRewardRef.current = false;
+
+    return await new Promise<boolean>((resolve) => {
+      pendingShowResolveRef.current = resolve;
+      showTimeoutRef.current = setTimeout(() => {
+        logger.warn("Timed out waiting for rewarded ad to close.");
+        resolvePendingShow(false);
+      }, 90000);
+      RewardedAd.showAd(REWARDED_AD_UNIT_ID);
+    });
+  }, [isRewardedAdReady, loadRewardedAd, resolvePendingShow]);
 
   // --- Initial Ad Load ---
 
@@ -328,3 +363,4 @@ const useRewardedAds = (): UseRewardedAds => {
 };
 
 export default useRewardedAds;
+

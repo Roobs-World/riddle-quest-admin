@@ -147,7 +147,7 @@ describe("useRewardedAds", () => {
       expect(hookContent).toContain("interface UseRewardedAds");
       expect(hookContent).toContain("isRewardedAdReady: boolean");
       expect(hookContent).toContain("loadRewardedAd: () => void");
-      expect(hookContent).toContain("showRewardedAd: () => void");
+      expect(hookContent).toContain("showRewardedAd: () => Promise<boolean>");
     });
 
     it("should define extended reward info interface", () => {
@@ -580,4 +580,3 @@ describe("useRewardedAds", () => {
     });
   });
 });
-

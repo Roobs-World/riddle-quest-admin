@@ -73,9 +73,9 @@ export interface GameModalTypes {
     onNext: () => void;
     onHome: () => void;
     /** If provided, a "Watch Ad to Continue" button is shown. */
-    onWatchAdContinue?: () => void;
+    onWatchAdContinue?: () => void | boolean | Promise<void | boolean>;
     /** If provided, a "Use Coins to Continue" button is shown. */
-    onCoinContinue?: () => void;
+    onCoinContinue?: () => void | boolean | Promise<void | boolean>;
     /** Coin cost displayed on the coin-continue button. */
     coinContinueCost?: number;
     /** Whether the rewarded ad is ready to show. */

@@ -63,10 +63,10 @@ interface LossModalProps {
   onClose?: () => void;
 
   /** When provided, shows a "Watch Ad" button to continue with extra attempts */
-  onWatchAdContinue?: () => void;
+  onWatchAdContinue?: () => void | boolean | Promise<void | boolean>;
 
   /** When provided, shows a "Use Coins" button to continue with extra attempts */
-  onCoinContinue?: () => void;
+  onCoinContinue?: () => void | boolean | Promise<void | boolean>;
 
   /** Coin cost shown on the coin-continue button */
   coinContinueCost?: number;
@@ -117,19 +117,23 @@ const LossModal: React.FC<LossModalProps> = ({
   };
 
   const handleWatchAdContinue = async () => {
+    let shouldClose = true;
     if (typeof onWatchAdContinue === "function") {
-      await Promise.resolve(onWatchAdContinue());
+      const result = await Promise.resolve(onWatchAdContinue());
+      shouldClose = result !== false;
     }
-    if (typeof onClose === "function") {
+    if (shouldClose && typeof onClose === "function") {
       onClose();
     }
   };
 
   const handleCoinContinue = async () => {
+    let shouldClose = true;
     if (typeof onCoinContinue === "function") {
-      await Promise.resolve(onCoinContinue());
+      const result = await Promise.resolve(onCoinContinue());
+      shouldClose = result !== false;
     }
-    if (typeof onClose === "function") {
+    if (shouldClose && typeof onClose === "function") {
       onClose();
     }
   };
@@ -262,4 +266,3 @@ const LossModal: React.FC<LossModalProps> = ({
 };
 
 export default LossModal;
-
