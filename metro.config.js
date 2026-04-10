@@ -1,3 +1,4 @@
+const fs = require("fs");
 const { withNativeWind } = require("nativewind/metro");
 const path = require("path");
 const {
@@ -112,6 +113,22 @@ windConfig.resolver.sourceExts = [
 windConfig.resolver.extraNodeModules = {
   fs: false,
 };
+
+// Optional Metro TLS support for HTTPS/WSS local development.
+// Enable by setting METRO_TLS_CERT_PATH and METRO_TLS_KEY_PATH.
+const tlsCertPath = process.env.METRO_TLS_CERT_PATH;
+const tlsKeyPath = process.env.METRO_TLS_KEY_PATH;
+const tlsCaPath = process.env.METRO_TLS_CA_PATH;
+if (tlsCertPath && tlsKeyPath) {
+  windConfig.server = windConfig.server || {};
+  windConfig.server.tls = {
+    cert: fs.readFileSync(path.resolve(__dirname, tlsCertPath)),
+    key: fs.readFileSync(path.resolve(__dirname, tlsKeyPath)),
+    ...(tlsCaPath
+      ? { ca: fs.readFileSync(path.resolve(__dirname, tlsCaPath)) }
+      : {}),
+  };
+}
 
 // Block Firebase Functions node_modules
 const firebaseNodeModulesPath = path.resolve(

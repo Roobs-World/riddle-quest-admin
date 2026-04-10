@@ -486,7 +486,7 @@ export const modalStyles = StyleSheet.create({
    * and prevent interaction with underlying elements.
    */
   overlay: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
@@ -499,7 +499,7 @@ export const modalStyles = StyleSheet.create({
    * z-index to ensure proper stacking order.
    */
   overlayContainer: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     zIndex: 10,
   } as ViewStyle,
 
@@ -663,4 +663,3 @@ export const modalStyles = StyleSheet.create({
     fontWeight: "500",
   } as TextStyle,
 });
-

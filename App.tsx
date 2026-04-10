@@ -46,8 +46,12 @@ import {
   APP_LANGUAGE_STORAGE_KEY,
   isSupportedLanguage,
   setAppLanguage,
-  useDeviceLanguage,
+  detectDeviceLanguage,
 } from "./src/constants/AppStrings";
+import {
+  isSharedAnimationBackendEnabled,
+  isSharedAnimationBackendFlagRequested,
+} from "./src/config/featureFlags";
 
 const SOLAR_PRELOAD_TIMEOUT_MS = 15000;
 
@@ -188,12 +192,21 @@ export default Sentry.wrap(function App() {
     void (async () => {
       try {
         logger.info("Starting app initialization");
+        if (isSharedAnimationBackendEnabled()) {
+          logger.info(
+            "Shared Animation Backend is active (RN 0.85.1+ requirement satisfied)."
+          );
+        } else if (isSharedAnimationBackendFlagRequested()) {
+          logger.warn(
+            "Shared Animation Backend flag requested but current RN version does not satisfy 0.85.1+ requirement."
+          );
+        }
         getCrashlytics().log("App initialization started");
         const savedLanguage = await AsyncStorage.getItem(APP_LANGUAGE_STORAGE_KEY);
         if (savedLanguage && isSupportedLanguage(savedLanguage)) {
           setAppLanguage(savedLanguage);
         } else {
-          useDeviceLanguage();
+          detectDeviceLanguage();
         }
         await loadFonts();
         configureGoogleSignIn();

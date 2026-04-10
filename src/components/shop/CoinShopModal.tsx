@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import {
   View,
   Text,
@@ -68,14 +68,17 @@ const CoinShopModal: React.FC<CoinShopModalProps> = ({
     [firestoreProducts],
   );
 
-  const getDisplayPrice = (product: ProductPricing) => {
-    const storeProduct = products.find((p) => p.id === product.productId);
-    return (
-      storeProduct?.displayPrice ??
-      product.regionalPrices.find((r) => r.currency === "USD")?.displayPrice ??
-      "-"
-    );
-  };
+  const getDisplayPrice = useCallback(
+    (product: ProductPricing) => {
+      const storeProduct = products.find((p) => p.id === product.productId);
+      return (
+        storeProduct?.displayPrice ??
+        product.regionalPrices.find((r) => r.currency === "USD")?.displayPrice ??
+        "-"
+      );
+    },
+    [products],
+  );
 
   useEffect(() => {
     if (!isVisible) {
@@ -98,7 +101,7 @@ const CoinShopModal: React.FC<CoinShopModalProps> = ({
         displayPrice: getDisplayPrice(product),
       });
     });
-  }, [isVisible, loading, error, sortedProducts, products]);
+  }, [isVisible, loading, error, sortedProducts, getDisplayPrice]);
 
   const handlePackPress = (product: ProductPricing) => {
     logger.debug("Shop pack tapped:", product.productId);
@@ -257,7 +260,7 @@ const PAY_AND_PLAY_BG = "#F9A8D4";
 
 const styles = StyleSheet.create({
   backdrop: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     backgroundColor: "rgba(0,0,0,0.5)",
   },
   badge: {
@@ -342,7 +345,7 @@ const styles = StyleSheet.create({
     width: "48%",
   },
   gridCardBackground: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
   },
   headerRow: {
     alignItems: "center",

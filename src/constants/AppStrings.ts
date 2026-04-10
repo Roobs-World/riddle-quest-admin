@@ -1116,13 +1116,16 @@ export const setAppLanguage = (language: SupportedLanguage): void => {
   currentLanguage = language;
 };
 
-export const useDeviceLanguage = (locale?: string): SupportedLanguage => {
+export const detectDeviceLanguage = (locale?: string): SupportedLanguage => {
   const resolvedLocale =
     locale ?? Intl.DateTimeFormat().resolvedOptions().locale ?? "en";
   const language = normalizeLanguage(resolvedLocale);
   currentLanguage = language;
   return currentLanguage;
 };
+
+// Backward-compatible alias. Prefer detectDeviceLanguage in non-hook contexts.
+export const useDeviceLanguage = detectDeviceLanguage;
 
 export const getAppStrings = (): AppStringsSchema =>
   localizedStrings[currentLanguage];

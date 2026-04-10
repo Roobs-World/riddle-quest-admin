@@ -20,7 +20,7 @@ export const animationStyles = StyleSheet.create({
   } as ViewStyle,
 
   shatteringContainer: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     alignItems: "center",
     justifyContent: "center",
   } as ViewStyle,
@@ -42,7 +42,7 @@ export const animationStyles = StyleSheet.create({
   } as TextStyle,
 
   shatteringTilesContainer: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     alignItems: "center",
     justifyContent: "center",
   } as ViewStyle,
@@ -54,7 +54,7 @@ export const animationStyles = StyleSheet.create({
   } as ViewStyle,
 
   spinnerWrapper: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     alignItems: "center",
     backgroundColor: `${COLORS.black}80`, // 50% opacity black
     flex: 1,

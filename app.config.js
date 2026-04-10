@@ -252,7 +252,7 @@ module.exports = {
          * with bitcode disabled for library compatibility.
          */
         ios: {
-          deploymentTarget: "16.0",
+          deploymentTarget: "16.4",
           bitcodeEnabled: false, // Disable bitcode to preserve audio library quality
           includeSymbols: true, // Preserve debug symbols for audio debugging
 
@@ -296,6 +296,8 @@ module.exports = {
 
     /** Development and testing flags */
     ENABLE_CRASH_TESTING: process.env.ENABLE_CRASH_TESTING || "false",
+    EXPO_PUBLIC_ENABLE_SHARED_ANIMATION_BACKEND:
+      process.env.EXPO_PUBLIC_ENABLE_SHARED_ANIMATION_BACKEND || "false",
 
     /** OpenAI API key for riddle generation */
     OPENAI_API_KEY: process.env.OPENAI_API_KEY || "YOUR_OPENAI_API_KEY_HERE",

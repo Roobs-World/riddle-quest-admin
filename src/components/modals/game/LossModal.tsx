@@ -87,7 +87,7 @@ interface LossModalProps {
  */
 const LossModal: React.FC<LossModalProps> = ({
   isVisible,
-  correctAnswer: _correctAnswer,
+  correctAnswer,
   onNext,
   onHome,
   onClose,
@@ -195,6 +195,17 @@ const LossModal: React.FC<LossModalProps> = ({
                   >
                     Out of attempts.
                   </Text>
+                  <Text
+                    style={{
+                      fontFamily: TYPOGRAPHY.fontSecondary,
+                      fontSize: TYPOGRAPHY.fontSize.base,
+                      color: "black",
+                      textAlign: "center",
+                      marginTop: 6,
+                    }}
+                  >
+                    Answer: {correctAnswer}
+                  </Text>
                 </View>
                 <View style={{ flex: 2, justifyContent: "center", width: "100%" }}>
                   {onWatchAdContinue && (
@@ -249,6 +260,17 @@ const LossModal: React.FC<LossModalProps> = ({
                     }}
                   >
                     Out of attempts.
+                  </Text>
+                  <Text
+                    style={{
+                      fontFamily: TYPOGRAPHY.fontSecondary,
+                      fontSize: TYPOGRAPHY.fontSize.base,
+                      color: "black",
+                      textAlign: "center",
+                      marginTop: 6,
+                    }}
+                  >
+                    Answer: {correctAnswer}
                   </Text>
                 </View>
                 <View style={{ flex: 2, justifyContent: "center", width: "100%" }}>
