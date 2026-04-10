@@ -5,6 +5,7 @@ import {
   query,
   where,
   orderBy,
+  FirebaseFirestoreTypes,
 } from "@react-native-firebase/firestore";
 import { logger } from "../utils/logger";
 import { captureException } from "../utils/sentry";
@@ -61,7 +62,10 @@ export const ProductPricingService = {
         query(collection(getFirestore(), "productPricing"), where("isActive", "==", true), orderBy("sortOrder"))
       );
 
-      const products = snapshot.docs.map((doc) => doc.data() as ProductPricing);
+      const products = snapshot.docs.map(
+        (doc: FirebaseFirestoreTypes.QueryDocumentSnapshot) =>
+          doc.data() as ProductPricing
+      );
       cachedProducts = products;
       cacheTimestamp = now;
       logger.debug(`Fetched ${products.length} active products from Firestore`);

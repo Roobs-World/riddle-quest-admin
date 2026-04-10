@@ -322,7 +322,7 @@ describe("FullProfileDetailsModal", () => {
     expect(getAllByText("0").length).toBeGreaterThan(0);
   });
 
-  it("fills XP progress bar based on user XP", () => {
+  it("fills XP progress bar and shows max-level state", () => {
     const playerWithXpProgress: Player = {
       ...mockPlayerData,
       stats: {
@@ -340,8 +340,8 @@ describe("FullProfileDetailsModal", () => {
     );
 
     const xpFill = getByTestId("xp-progress-fill");
-    expect(xpFill.props.style.width).toBe("25%");
-    expect(getByText("250 / 1000 XP")).toBeTruthy();
+    expect(xpFill.props.style.width).toBe("100%");
+    expect(getByText("Max Level")).toBeTruthy();
   });
 
   it("renders the Leaderboard button", () => {
@@ -352,4 +352,3 @@ describe("FullProfileDetailsModal", () => {
     expect(getByText("Leaderboard")).toBeTruthy();
   });
 });
-

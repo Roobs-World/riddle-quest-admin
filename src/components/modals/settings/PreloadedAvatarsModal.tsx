@@ -134,7 +134,6 @@ const PreloadedAvatarsModal: React.FC<PreloadedAvatarsModalProps> = ({
             <WideButton
               buttonText="Cancel"
               onPress={onClose}
-              buttonColor="bg-gray-500"
             />
           </View>
         </View>
@@ -144,4 +143,3 @@ const PreloadedAvatarsModal: React.FC<PreloadedAvatarsModalProps> = ({
 };
 
 export default PreloadedAvatarsModal;
-

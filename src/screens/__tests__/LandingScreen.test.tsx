@@ -32,6 +32,7 @@ jest.mock("../../services/AuthService", () => ({
 
 // Mock useAuth hook
 const mockLogin = jest.fn();
+const mockSetGameMode = jest.fn();
 jest.mock("../../contexts/AuthContext", () => ({
   useAuth: jest.fn(),
 }));
@@ -130,6 +131,26 @@ jest.mock("../../components/background/StarryBackground", () => {
   };
 });
 
+jest.mock("../../components/modals/help/CreditsModal", () => {
+  const React = require("react");
+  return function MockCreditsModal({ isVisible }: any) {
+    return React.createElement("View", {
+      testID: "credits-modal",
+      "data-visible": isVisible,
+    });
+  };
+});
+
+jest.mock("../../components/modals/game/GameModeModal", () => {
+  const React = require("react");
+  return function MockGameModeModal({ isVisible }: any) {
+    return React.createElement("View", {
+      testID: "game-mode-modal",
+      "data-visible": isVisible,
+    });
+  };
+});
+
 // Mock HomeBgSvg
 jest.mock("../../../assets/images/home-bg.svg", () => {
   const React = require("react");
@@ -193,11 +214,13 @@ const renderWithProviders = (ui: React.ReactElement) =>
     wrapper: TestWrapper,
   });
 
-describe.skip("LandingScreen", () => {
+describe("LandingScreen", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     (useAuth as jest.Mock).mockReturnValue({
       login: mockLogin,
+      isAuthenticated: false,
+      setGameMode: mockSetGameMode,
     });
   });
 
@@ -208,14 +231,11 @@ describe.skip("LandingScreen", () => {
       );
 
       expect(getByTestId("custom-safe-area-view")).toBeTruthy();
-      expect(getByTestId("home-bg-svg")).toBeTruthy();
       expect(getAllByTestId("wide-button").length).toBeGreaterThanOrEqual(1);
       expect(getByTestId("google-signin-button")).toBeTruthy();
       expect(getByTestId("facebook-signin-button")).toBeTruthy();
-      expect(getByTestId("sign-up-button")).toBeTruthy();
       expect(getByTestId("pulsing-spinner")).toBeTruthy();
       expect(getByText("Test Tagline 1")).toBeTruthy();
-      expect(getByText("Credits")).toBeTruthy();
     });
 
     it("should render subtitle component with correct text", () => {
@@ -227,17 +247,21 @@ describe.skip("LandingScreen", () => {
       expect(subtitle.props["data-text"]).toBe("Test Tagline 2");
     });
 
-    it("should render wide button with correct text", () => {
+    it("should render guest and credits buttons", () => {
       const { getAllByTestId } = renderWithProviders(
         <LandingScreen />
       );
 
       const wideButtons = getAllByTestId("wide-button");
-      const signInButton = wideButtons.find(
-        (btn: any) => btn.props["data-text"] === "Sign In"
+      const guestButton = wideButtons.find(
+        (btn: any) => btn.props["data-text"] === "Play as Guest"
       );
-      expect(signInButton).toBeTruthy();
-      expect(signInButton!.props["data-disabled"]).toBe(false);
+      const creditsButton = wideButtons.find(
+        (btn: any) => btn.props["data-text"] === "Credits"
+      );
+      expect(guestButton).toBeTruthy();
+      expect(guestButton!.props["data-disabled"]).toBe(false);
+      expect(creditsButton).toBeTruthy();
     });
 
     it("should render spinner as not visible initially", () => {
@@ -251,47 +275,41 @@ describe.skip("LandingScreen", () => {
     });
   });
 
-  describe("Navigation", () => {
-    it("should navigate to login when sign in button is pressed", () => {
+  describe("Modal Triggers", () => {
+    it("should open game mode modal when guest button is pressed", () => {
       const { getAllByTestId } = renderWithProviders(
         <LandingScreen />
       );
 
       const wideButtons = getAllByTestId("wide-button");
-      const signInButton = wideButtons.find(
-        (btn: any) => btn.props["data-text"] === "Sign In"
+      const guestButton = wideButtons.find(
+        (btn: any) => btn.props["data-text"] === "Play as Guest"
       );
-      fireEvent.press(signInButton!);
+      fireEvent.press(guestButton!);
 
-      expect(mockNavigate).toHaveBeenCalledWith("Login");
+      expect(getAllByTestId("game-mode-modal")[0].props["data-visible"]).toBe(
+        true
+      );
     });
 
-    it("should navigate to sign up when sign up button is pressed", () => {
-      const { getByTestId } = renderWithProviders(
+    it("should open credits modal when credits button is pressed", () => {
+      const { getAllByTestId, getByTestId } = renderWithProviders(
         <LandingScreen />
       );
 
-      const signUpButton = getByTestId("sign-up-button");
-      fireEvent.press(signUpButton);
-
-      expect(mockNavigate).toHaveBeenCalledWith("SignUp");
-    });
-
-    it("should navigate to credits when credits link is pressed", () => {
-      const { getByText } = renderWithProviders(
-        <LandingScreen />
+      const wideButtons = getAllByTestId("wide-button");
+      const creditsButton = wideButtons.find(
+        (btn: any) => btn.props["data-text"] === "Credits"
       );
+      fireEvent.press(creditsButton!);
 
-      const creditsLink = getByText("Credits");
-      fireEvent.press(creditsLink);
-
-      expect(mockNavigate).toHaveBeenCalledWith("Credits");
+      expect(getByTestId("credits-modal").props["data-visible"]).toBe(true);
     });
   });
 
   describe("Google Sign In", () => {
     beforeEach(() => {
-      (useAuth as jest.Mock).mockReturnValue({ login: mockLogin });
+      (useAuth as jest.Mock).mockReturnValue({ login: mockLogin, isAuthenticated: false, setGameMode: mockSetGameMode });
       mockSignInWithGoogle.mockClear();
       mockLogin.mockClear();
     });
@@ -401,7 +419,7 @@ describe.skip("LandingScreen", () => {
 
   describe("Facebook Sign In", () => {
     beforeEach(() => {
-      (useAuth as jest.Mock).mockReturnValue({ login: mockLogin });
+      (useAuth as jest.Mock).mockReturnValue({ login: mockLogin, isAuthenticated: false, setGameMode: mockSetGameMode });
       mockSignInWithFacebook.mockClear();
       mockLogin.mockClear();
     });
@@ -525,12 +543,12 @@ describe.skip("LandingScreen", () => {
       fireEvent.press(googleButton);
 
       const wideButtons = getAllByTestId("wide-button");
-      const signInButton = wideButtons.find(
-        (btn: any) => btn.props["data-text"] === "Sign In"
+      const guestButton = wideButtons.find(
+        (btn: any) => btn.props["data-text"] === "Play as Guest"
       );
       const facebookButton = getByTestId("facebook-signin-button");
 
-      expect(signInButton!.props["data-disabled"]).toBe(true);
+      expect(guestButton!.props["data-disabled"]).toBe(true);
       expect(googleButton.props["data-disabled"]).toBe(true);
       expect(facebookButton.props["data-disabled"]).toBe(true);
     });
@@ -650,13 +668,13 @@ describe.skip("LandingScreen", () => {
   });
 
   describe("Text Content", () => {
-    it("should display correct separator texts", () => {
-      const { getByText } = renderWithProviders(
+    it("should not display legacy separator text", () => {
+      const { queryByText } = renderWithProviders(
         <LandingScreen />
       );
 
-      expect(getByText("Or sign in with")).toBeTruthy();
-      expect(getByText("No account?")).toBeTruthy();
+      expect(queryByText("Or sign in with")).toBeNull();
+      expect(queryByText("No account?")).toBeNull();
     });
 
     it("should display taglines from constants", () => {
@@ -673,11 +691,6 @@ describe.skip("LandingScreen", () => {
       const { getByTestId } = renderWithProviders(
         <LandingScreen />
       );
-
-      // Check background SVG props
-      const bgSvg = getByTestId("home-bg-svg");
-      expect(bgSvg.props["data-width"]).toBe("120%");
-      expect(bgSvg.props["data-height"]).toBe("100%");
 
       // Check spinner props
       const spinner = getByTestId("pulsing-spinner");
@@ -697,9 +710,9 @@ const mockSignInWithFacebook =
     typeof AuthService.signInWithFacebook
   >;
 
-describe.skip("Google Sign-In", () => {
+describe("Google Sign-In", () => {
   beforeEach(() => {
-    (useAuth as jest.Mock).mockReturnValue({ login: mockLogin });
+    (useAuth as jest.Mock).mockReturnValue({ login: mockLogin, isAuthenticated: false, setGameMode: mockSetGameMode });
     mockSignInWithGoogle.mockClear();
     mockLogin.mockClear();
   });
@@ -770,8 +783,6 @@ describe.skip("Google Sign-In", () => {
     mockSignInWithGoogle.mockRejectedValueOnce({
       code: "auth/auth-popup-closed-by-user",
     });
-    // Spy on console.log for this specific test
-    const consoleSpy = jest.spyOn(console, "log");
 
     const { getByTestId, queryByTestId } = renderWithProviders(
       <LandingScreen />
@@ -782,14 +793,12 @@ describe.skip("Google Sign-In", () => {
     await waitFor(() => expect(mockSignInWithGoogle).toHaveBeenCalledTimes(1));
 
     expect(queryByTestId("error-message")).toBeNull();
-    expect(consoleSpy).toHaveBeenCalledWith("Auth popup closed by user.");
-    consoleSpy.mockRestore(); // Restore console.log
   });
 });
 
-describe.skip("Facebook Sign-In", () => {
+describe("Facebook Sign-In", () => {
   beforeEach(() => {
-    (useAuth as jest.Mock).mockReturnValue({ login: mockLogin });
+    (useAuth as jest.Mock).mockReturnValue({ login: mockLogin, isAuthenticated: false, setGameMode: mockSetGameMode });
     mockSignInWithFacebook.mockClear();
     mockLogin.mockClear();
   });
@@ -862,7 +871,6 @@ describe.skip("Facebook Sign-In", () => {
     mockSignInWithFacebook.mockRejectedValueOnce({
       code: "auth/auth-popup-closed-by-user",
     });
-    const consoleSpy = jest.spyOn(console, "log");
     const { getByTestId, queryByTestId } = renderWithProviders(
       <LandingScreen />
     );
@@ -874,8 +882,6 @@ describe.skip("Facebook Sign-In", () => {
     );
 
     expect(queryByTestId("error-message")).toBeNull();
-    expect(consoleSpy).toHaveBeenCalledWith("Auth popup closed by user.");
-    consoleSpy.mockRestore();
   });
 
   it("should handle Facebook sign-in failure with 'auth/operation-not-supported-in-this-environment'", async () => {
@@ -899,10 +905,10 @@ describe.skip("Facebook Sign-In", () => {
   });
 });
 
-describe.skip("Loading States and Button Disabling", () => {
+describe("Loading States and Button Disabling", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    (useAuth as jest.Mock).mockReturnValue({ login: mockLogin });
+    (useAuth as jest.Mock).mockReturnValue({ login: mockLogin, isAuthenticated: false, setGameMode: mockSetGameMode });
   });
 
   it("should disable all relevant buttons when Google sign-in is loading", async () => {
@@ -918,8 +924,8 @@ describe.skip("Loading States and Button Disabling", () => {
     const googleButton = getByTestId("google-signin-button");
     const facebookButton = getByTestId("facebook-signin-button");
     const wideButtons = getAllByTestId("wide-button");
-    const signInButton = wideButtons.find(
-      (btn: any) => btn.props["data-text"] === "Sign In"
+    const guestButton = wideButtons.find(
+      (btn: any) => btn.props["data-text"] === "Play as Guest"
     );
 
     fireEvent.press(googleButton);
@@ -930,7 +936,7 @@ describe.skip("Loading States and Button Disabling", () => {
 
     expect(googleButton.props["data-disabled"]).toBe(true);
     expect(facebookButton.props["data-disabled"]).toBe(true);
-    expect(signInButton!.props["data-disabled"]).toBe(true);
+    expect(guestButton!.props["data-disabled"]).toBe(true);
 
     // Resolve the promise to allow cleanup
     resolveGooglePromise!({ user: { uid: "test-uid" } } as any);
@@ -952,8 +958,8 @@ describe.skip("Loading States and Button Disabling", () => {
     const googleButton = getByTestId("google-signin-button");
     const facebookButton = getByTestId("facebook-signin-button");
     const wideButtons = getAllByTestId("wide-button");
-    const signInButton = wideButtons.find(
-      (btn: any) => btn.props["data-text"] === "Sign In"
+    const guestButton = wideButtons.find(
+      (btn: any) => btn.props["data-text"] === "Play as Guest"
     );
 
     fireEvent.press(facebookButton);
@@ -964,7 +970,7 @@ describe.skip("Loading States and Button Disabling", () => {
 
     expect(googleButton.props["data-disabled"]).toBe(true);
     expect(facebookButton.props["data-disabled"]).toBe(true);
-    expect(signInButton!.props["data-disabled"]).toBe(true);
+    expect(guestButton!.props["data-disabled"]).toBe(true);
 
     // Resolve the promise to allow cleanup
     resolveFacebookPromise!({ user: { uid: "test-uid" } } as any);
@@ -973,3 +979,8 @@ describe.skip("Loading States and Button Disabling", () => {
     });
   });
 });
+
+
+
+
+

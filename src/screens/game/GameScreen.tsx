@@ -949,10 +949,10 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
         if (purchaseResult) {
           logger.debug("Purchase completed successfully:", purchaseResult);
-          modal.showInfoModal({
-            title: "Purchase Successful!",
-            message: "Your coins have been added to your account.",
-            onConfirm: () => modal.closeModalByType("coinShop"),
+          const coinsPurchased = IapService.getCoinsForProduct(productId) ?? 0;
+          modal.closeModalByType("coinShop");
+          modal.showCoinPurchaseFanfareModal({
+            coinsPurchased,
           });
         } else {
           logger.debug("Purchase was cancelled or returned null");
@@ -1105,17 +1105,17 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         </KeyboardAvoidingView>
 
         {/* The new modal system - no more massive props list! */}
+        <PulsingSpinner
+          visible={isLoading}
+          size={LOADING_SPINNER_SIZE}
+          opacity={LOADING_SPINNER_OPACITY}
+        />
+
         <ModalProvider />
 
         <Controls
           onNextPress={handleOverlayNext}
           isWin={gameOver && lastGuessResult?.outcome === "win"}
-        />
-
-        <PulsingSpinner
-          visible={isLoading}
-          size={LOADING_SPINNER_SIZE}
-          opacity={LOADING_SPINNER_OPACITY}
         />
 
         {/* Development Modal Debug Panel - Only visible in development builds */}

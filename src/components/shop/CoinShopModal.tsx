@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -54,14 +54,13 @@ const CoinShopModal: React.FC<CoinShopModalProps> = ({
   products,
   loading,
   error,
-  onWatchVideo,
-  onPayAndPlay,
   firestoreProducts = [],
   currentCoins = 0,
 }) => {
   const insets = useSafeAreaInsets();
   const availableHeight = screenHeight - insets.top - insets.bottom;
   const trackedImpressionsRef = useRef<Set<string>>(new Set());
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
 
   const sortedProducts = useMemo(
     () => [...firestoreProducts].sort((a, b) => a.sortOrder - b.sortOrder),
@@ -83,6 +82,7 @@ const CoinShopModal: React.FC<CoinShopModalProps> = ({
   useEffect(() => {
     if (!isVisible) {
       trackedImpressionsRef.current.clear();
+      setSelectedProductId(null);
       return;
     }
     if (loading || error) return;
@@ -103,8 +103,20 @@ const CoinShopModal: React.FC<CoinShopModalProps> = ({
     });
   }, [isVisible, loading, error, sortedProducts, getDisplayPrice]);
 
+  useEffect(() => {
+    if (!selectedProductId) return;
+
+    const selectedProductStillAvailable = sortedProducts.some(
+      (product) => product.productId === selectedProductId,
+    );
+    if (!selectedProductStillAvailable) {
+      setSelectedProductId(null);
+    }
+  }, [selectedProductId, sortedProducts]);
+
   const handlePackPress = (product: ProductPricing) => {
     logger.debug("Shop pack tapped:", product.productId);
+    setSelectedProductId(product.productId);
     void analyticsService.logShopPackSelected({
       productId: product.productId,
       productKey: product.productKey,
@@ -114,7 +126,11 @@ const CoinShopModal: React.FC<CoinShopModalProps> = ({
         product.featuredOrder !== undefined && product.featuredOrder !== null,
       displayPrice: getDisplayPrice(product),
     });
-    onPurchaseProduct(product.productId);
+  };
+
+  const handlePurchasePress = () => {
+    if (!selectedProductId) return;
+    onPurchaseProduct(selectedProductId);
   };
 
   return (
@@ -182,10 +198,11 @@ const CoinShopModal: React.FC<CoinShopModalProps> = ({
               <View style={styles.grid}>
                 {sortedProducts.map((product) => {
                   const displayPrice = getDisplayPrice(product);
+                  const isSelected = selectedProductId === product.productId;
                   return (
                     <TouchableOpacity
                       key={product.productId}
-                      style={styles.gridCard}
+                      style={[styles.gridCard, isSelected && styles.gridCardSelected]}
                       onPress={() => handlePackPress(product)}
                       activeOpacity={0.8}
                       testID={`pack-card-${product.productId}`}
@@ -224,27 +241,16 @@ const CoinShopModal: React.FC<CoinShopModalProps> = ({
 
             <View style={styles.bottomButtons}>
               <TouchableOpacity
-                style={styles.watchVideoButton}
-                onPress={onWatchVideo}
-                disabled={loading}
-                activeOpacity={0.7}
-              >
-                <Text style={styles.watchVideoText}>WATCH VIDEO AND PLAY</Text>
-                <View style={styles.infoIcon}>
-                  <Text style={styles.infoIconText}>i</Text>
-                </View>
-              </TouchableOpacity>
-
-              <TouchableOpacity
                 style={[
-                  styles.payAndPlayButton,
-                  loading && styles.payAndPlayDisabled,
+                  styles.purchaseButton,
+                  (loading || !selectedProductId) && styles.purchaseButtonDisabled,
                 ]}
-                onPress={onPayAndPlay}
-                disabled={loading}
+                onPress={handlePurchasePress}
+                disabled={loading || !selectedProductId}
                 activeOpacity={0.7}
+                testID="purchase-button"
               >
-                <Text style={styles.payAndPlayText}>PAY AND PLAY</Text>
+                <Text style={styles.purchaseButtonText}>PURCHASE</Text>
               </TouchableOpacity>
             </View>
           </ScrollView>
@@ -256,7 +262,7 @@ const CoinShopModal: React.FC<CoinShopModalProps> = ({
 
 const FEATURED_CARD_BORDER = "#E91E8C";
 const PRICE_BUTTON_BG = "#2D1B69";
-const PAY_AND_PLAY_BG = "#F9A8D4";
+const PURCHASE_BG = "#F9A8D4";
 
 const styles = StyleSheet.create({
   backdrop: {
@@ -344,26 +350,16 @@ const styles = StyleSheet.create({
     paddingTop: verticalScale(18),
     width: "48%",
   },
+  gridCardSelected: {
+    borderColor: COLORS.primaryOrange,
+    borderWidth: 2,
+  },
   gridCardBackground: {
     ...StyleSheet.absoluteFill,
   },
   headerRow: {
     alignItems: "center",
     marginBottom: verticalScale(12),
-  },
-  infoIcon: {
-    alignItems: "center",
-    backgroundColor: COLORS.gray300,
-    borderRadius: moderateScale(10),
-    height: moderateScale(20),
-    justifyContent: "center",
-    width: moderateScale(20),
-  },
-  infoIconText: {
-    color: COLORS.gray700,
-    fontFamily: TYPOGRAPHY.fontPrimary,
-    fontSize: TYPOGRAPHY.fontSize.xs,
-    fontWeight: "700",
   },
   loadingContainer: {
     alignItems: "center",
@@ -384,16 +380,16 @@ const styles = StyleSheet.create({
   overlay: {
     flex: 1,
   },
-  payAndPlayButton: {
+  purchaseButton: {
     alignItems: "center",
-    backgroundColor: PAY_AND_PLAY_BG,
+    backgroundColor: PURCHASE_BG,
     borderRadius: moderateScale(50),
     paddingVertical: verticalScale(14),
   },
-  payAndPlayDisabled: {
+  purchaseButtonDisabled: {
     backgroundColor: COLORS.gray300,
   },
-  payAndPlayText: {
+  purchaseButtonText: {
     color: COLORS.white,
     fontFamily: TYPOGRAPHY.fontPrimary,
     fontSize: TYPOGRAPHY.fontSize.base,
@@ -437,24 +433,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     letterSpacing: 1,
     textAlign: "center",
-  },
-  watchVideoButton: {
-    alignItems: "center",
-    backgroundColor: COLORS.white,
-    borderColor: COLORS.gray300,
-    borderRadius: moderateScale(50),
-    borderWidth: 1.5,
-    flexDirection: "row",
-    gap: scale(8),
-    justifyContent: "center",
-    paddingVertical: verticalScale(12),
-  },
-  watchVideoText: {
-    color: COLORS.gray800,
-    fontFamily: TYPOGRAPHY.fontPrimary,
-    fontSize: TYPOGRAPHY.fontSize.sm,
-    fontWeight: "600",
-    letterSpacing: 0.5,
   },
 });
 

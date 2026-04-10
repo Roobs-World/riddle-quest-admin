@@ -37,22 +37,39 @@ export const BASE_SCORE_CHALLENGE = 100;
 export const BASE_SCORE_TUTORIAL = 25;
 
 /**
- * XP thresholds to reach each level (index 0 = level 1).
- * Kept in sync with client `src/constants/game.ts`.
+ * XP curve configuration.
+ * Each new level needs a slightly larger XP amount than the previous level.
  */
-export const XP_LEVEL_THRESHOLDS = [0, 100, 300, 600, 1000, 1500, 2500, 4000, 6000, 9000] as const;
+export const XP_LEVEL_THRESHOLDS = {
+  basePerLevel: 100,
+  growthPerLevel: 10,
+} as const;
 
-/** Maximum level based on XP thresholds. */
-export const XP_MAX_LEVEL = XP_LEVEL_THRESHOLDS.length;
+/** Maximum level supported by the XP curve. */
+export const XP_MAX_LEVEL = 10;
+
+/**
+ * Returns total cumulative XP required to be at a given level (1-based).
+ */
+export function getXpThresholdForLevel(level: number): number {
+  if (level <= 1) return 0;
+  const clampedLevel = Math.min(level, XP_MAX_LEVEL);
+  const completedLevelUps = clampedLevel - 1;
+  const { basePerLevel, growthPerLevel } = XP_LEVEL_THRESHOLDS;
+  return (
+    completedLevelUps * basePerLevel +
+    ((completedLevelUps - 1) * completedLevelUps * growthPerLevel) / 2
+  );
+}
 
 /**
  * Converts cumulative XP into a 1-based level.
  */
 export function getLevelFromXp(totalXp: number): number {
   let level = 1;
-  for (let i = 1; i < XP_LEVEL_THRESHOLDS.length; i++) {
-    if (totalXp >= XP_LEVEL_THRESHOLDS[i]) {
-      level = i + 1;
+  for (let nextLevel = 2; nextLevel <= XP_MAX_LEVEL; nextLevel++) {
+    if (totalXp >= getXpThresholdForLevel(nextLevel)) {
+      level = nextLevel;
     } else {
       break;
     }

@@ -14,12 +14,17 @@ jest.mock("react-native/Libraries/Animated/Animated", () => {
     }
   }
   const simpleAnim = () => ({ start: jest.fn(), stop: jest.fn() });
-  return {
+  const Animated = {
     View,
     Value: MockAnimatedValue,
     timing: jest.fn(simpleAnim),
     sequence: jest.fn(simpleAnim),
     loop: jest.fn(simpleAnim),
+  };
+  return {
+    __esModule: true,
+    default: Animated,
+    ...Animated,
   };
 });
 
@@ -123,9 +128,8 @@ jest.mock(
 );
 jest.mock("../../../../assets/images/chest.svg", () => "ChestSvg");
 
-describe.skip("VictoryModal", () => {
+describe("VictoryModal", () => {
   const mockOnNextLevel = jest.fn();
-  const mockOnHome = jest.fn();
   const mockOnClose = jest.fn();
 
   const defaultProps = {
@@ -133,7 +137,6 @@ describe.skip("VictoryModal", () => {
     attempts: 3,
     coinsEarned: 50,
     onNextLevel: mockOnNextLevel,
-    onHome: mockOnHome,
     onClose: mockOnClose,
     guesses: [
       {
@@ -174,12 +177,12 @@ describe.skip("VictoryModal", () => {
       expect(queryByText("Victory!")).toBeTruthy();
     });
 
-    it("should render without coins earned when coinsEarned is 0", () => {
-      const { queryByText } = render(
+    it("should render +0 coins when coinsEarned is 0", () => {
+      const { getByText } = render(
         <VictoryModal {...defaultProps} coinsEarned={0} />
       );
 
-      expect(queryByText("Coins Earned")).toBeNull();
+      expect(getByText(/\+0 Coins/)).toBeTruthy();
     });
 
     it("should render different attempts count", () => {
@@ -202,13 +205,15 @@ describe.skip("VictoryModal", () => {
       );
     });
 
-    it("should not render emoji grid when no guesses are provided", () => {
-      const { queryByText } = render(
+    it("should handle empty guesses when sharing", () => {
+      render(
         <VictoryModal {...defaultProps} guesses={[]} />
       );
+      const {
+        generateFeedbackEmojiGrid,
+      } = require("../../../../utils/gameUtils");
 
-      // If there are no guesses, the sharing section might not be shown
-      expect(queryByText("Share your victory")).toBeNull();
+      expect(generateFeedbackEmojiGrid).toHaveBeenCalledWith([]);
     });
   });
 
@@ -265,4 +270,5 @@ describe.skip("VictoryModal", () => {
     });
   });
 });
+
 

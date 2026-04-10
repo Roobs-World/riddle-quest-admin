@@ -72,6 +72,7 @@ import InstructionsModal from "./help/InstructionsModal";
 import CreditsModal from "./help/CreditsModal";
 
 import CoinShopModal from "../shop/CoinShopModal";
+import CoinPurchaseFanfareModal from "./shop/CoinPurchaseFanfareModal";
 
 /**
  * Modal Wrapper Factory Function
@@ -397,6 +398,15 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
       error: (props.error as string | null) || null,
       onWatchVideo: (props.onWatchVideo as () => void) || undefined,
       onPayAndPlay: (props.onPayAndPlay as () => void) || undefined,
+    })
+  ),
+
+  coinPurchaseFanfare: createModalWrapper(
+    CoinPurchaseFanfareModal,
+    (props: BaseModalProps & ModalData) => ({
+      isVisible: props.isVisible,
+      onClose: props.onClose,
+      coinsPurchased: (props.coinsPurchased as number) || 0,
     })
   ),
 };

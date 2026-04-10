@@ -184,14 +184,12 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({
                   <WideButton
                     buttonText="Skip to Play"
                     onPress={handleDismiss}
-                    buttonColor="bg-gray-500"
                   />
                 </>
               ) : (
                 <WideButton
                   buttonText="Let's Play!"
                   onPress={handleDismiss}
-                  buttonColor={onStartTutorial ? "bg-gray-500" : undefined}
                 />
               )}
             </View>
@@ -203,4 +201,3 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({
 };
 
 export default WelcomeModal;
-

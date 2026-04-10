@@ -41,6 +41,7 @@ import InstructionsModal from "./help/InstructionsModal";
 import CreditsModal from "./help/CreditsModal";
 
 import CoinShopModal from "../shop/CoinShopModal";
+import CoinPurchaseFanfareModal from "./shop/CoinPurchaseFanfareModal";
 import { logger } from "../../utils/logger";
 import { ProductPricing } from "../../services/ProductPricingService";
 import { SupportedLanguage } from "../../constants/AppStrings";
@@ -202,6 +203,10 @@ interface CoinShopModalData {
   onPayAndPlay?: () => void;
 }
 
+interface CoinPurchaseFanfareModalData {
+  coinsPurchased: number;
+}
+
 /**
  * Union type combining all possible modal data structures.
  * Includes a fallback type for extensibility and unknown modal types.
@@ -218,6 +223,7 @@ type ModalData =
   | HintModalData
   | SkipModalData
   | CoinShopModalData
+  | CoinPurchaseFanfareModalData
   | Record<string, unknown>; // Fallback for other modal types
 
 /**
@@ -434,6 +440,14 @@ const ModalRenderer: React.FC<{
           onPurchaseProduct={(modalData as CoinShopModalData).onPurchaseProduct}
           onWatchVideo={(modalData as CoinShopModalData).onWatchVideo}
           onPayAndPlay={(modalData as CoinShopModalData).onPayAndPlay}
+        />
+      );
+
+    case "coinPurchaseFanfare":
+      return (
+        <CoinPurchaseFanfareModal
+          {...commonProps}
+          coinsPurchased={(modalData as CoinPurchaseFanfareModalData).coinsPurchased}
         />
       );
 

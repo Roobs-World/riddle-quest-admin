@@ -219,13 +219,10 @@ const LandingScreen = () => {
             buttonText="Play as Guest"
             onPress={handlePlayButtonPress}
             disabled={isLoading}
-            buttonColor="bg-purple-600"
           />
           <WideButton
             buttonText="Credits"
             onPress={() => setIsCreditsVisible(true)}
-            buttonColor="bg-white"
-            textColor="text-black"
           />
         </View>
       </View>
@@ -261,4 +258,3 @@ const LandingScreen = () => {
 };
 
 export default LandingScreen;
-

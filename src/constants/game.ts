@@ -13,17 +13,29 @@ export const SKIP_COST_CLASSIC = 100;
 export const SKIP_COST_TUTORIAL = 25;
 
 /**
- * XP thresholds to reach each level (index 0 = level 1).
- * Calibrated against ~60 XP per average win (50 base + partial attempts bonus).
- *   Lv 1 →  2: ~2 wins   Lv 5 →  6: ~8 wins
- *   Lv 2 →  3: ~3 wins   Lv 6 →  7: ~17 wins
- *   Lv 3 →  4: ~5 wins   Lv 7 →  8: ~25 wins
- *   Lv 4 →  5: ~7 wins   Lv 8 →  9: ~42 wins
- *                          Lv 9 → 10: ~67 wins
+ * XP curve configuration.
+ * Each new level needs a slightly larger XP amount than the previous level.
  */
-export const XP_LEVEL_THRESHOLDS = [0, 100, 300, 600, 1000, 1500, 2500, 4000, 6000, 9000] as const;
+export const XP_LEVEL_THRESHOLDS = {
+  basePerLevel: 100,
+  growthPerLevel: 10,
+} as const;
 
-export const XP_MAX_LEVEL = XP_LEVEL_THRESHOLDS.length;
+export const XP_MAX_LEVEL = 10;
+
+/**
+ * Returns total cumulative XP required to be at a given level (1-based).
+ */
+export function getXpThresholdForLevel(level: number): number {
+  if (level <= 1) return 0;
+  const clampedLevel = Math.min(level, XP_MAX_LEVEL);
+  const completedLevelUps = clampedLevel - 1;
+  const { basePerLevel, growthPerLevel } = XP_LEVEL_THRESHOLDS;
+  return (
+    completedLevelUps * basePerLevel +
+    ((completedLevelUps - 1) * completedLevelUps * growthPerLevel) / 2
+  );
+}
 
 /**
  * Returns the player's current level (1-based), progress fraction [0,1]
@@ -36,16 +48,18 @@ export function getXpLevel(totalScore: number): {
   nextLevelXp: number;
 } {
   let level = 1;
-  for (let i = 1; i < XP_LEVEL_THRESHOLDS.length; i++) {
-    if (totalScore >= XP_LEVEL_THRESHOLDS[i]) level = i + 1;
+  for (let nextLevel = 2; nextLevel <= XP_MAX_LEVEL; nextLevel++) {
+    if (totalScore >= getXpThresholdForLevel(nextLevel)) level = nextLevel;
     else break;
   }
+
   const isMax = level >= XP_MAX_LEVEL;
-  const currentThreshold = XP_LEVEL_THRESHOLDS[level - 1];
-  const nextThreshold = isMax ? XP_LEVEL_THRESHOLDS[XP_MAX_LEVEL - 1] : XP_LEVEL_THRESHOLDS[level];
+  const currentThreshold = getXpThresholdForLevel(level);
+  const nextThreshold = isMax ? getXpThresholdForLevel(XP_MAX_LEVEL) : getXpThresholdForLevel(level + 1);
   const progressPct = isMax
     ? 1
     : (totalScore - currentThreshold) / (nextThreshold - currentThreshold);
+
   return {
     level,
     progressPct: Math.min(Math.max(progressPct, 0), 1),
@@ -76,4 +90,3 @@ export const WIN_FADE_IN_DELAY_MS = 1000;
 export const WIN_FADE_IN_DURATION_MS = 1000;
 /** Loss flow: duration for negative sound fade-in (ms). */
 export const LOSS_NEGATIVE_FADE_DURATION_MS = 2000;
-

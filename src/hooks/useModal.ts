@@ -183,6 +183,16 @@ export const useModal = () => {
     [openGameModal]
   );
 
+  const showCoinPurchaseFanfareModal = useCallback(
+    (
+      data: ModalDataType<"coinPurchaseFanfare">,
+      options?: ModalOptions
+    ): string => {
+      return openGameModal("coinPurchaseFanfare", data, options);
+    },
+    [openGameModal]
+  );
+
   const showFullProfileDetailsModal = useCallback(
     (
       data: ModalDataType<"fullProfileDetails">,
@@ -262,6 +272,7 @@ export const useModal = () => {
     showInstructionsModal,
     showCreditsModal,
     showCoinShopModal,
+    showCoinPurchaseFanfareModal,
     showFullProfileDetailsModal,
     showChangePasswordModal,
     showUpdateUsernameModal,
@@ -273,4 +284,3 @@ export const useModal = () => {
 };
 
 export default useModal;
-

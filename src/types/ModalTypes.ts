@@ -183,6 +183,10 @@ export interface GameModalTypes {
     onWatchVideo?: () => void;
     onPayAndPlay?: () => void;
   };
+
+  coinPurchaseFanfare: {
+    coinsPurchased: number;
+  };
 }
 
 // Helper type for getting modal data type
