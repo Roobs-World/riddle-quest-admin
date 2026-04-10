@@ -1,9 +1,12 @@
+
 npx eas-cli build --profile development --platform android
 
-expo run:android
+pnpm exec expo start --clear ( clears metro cache )
+pnpm exec expo run:android
+
 
 if the build breaks, then: 
-1. npx expo prebuild --clean
+1. npx expo prebuild --clean in root
 2. ./gradlew clean in the android directory 
 3. try a new build 
 
