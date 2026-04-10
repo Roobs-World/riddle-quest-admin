@@ -24,11 +24,32 @@ import {
   MeshBasicMaterial,
   DoubleSide,
   Texture,
-  TextureLoader,
+  ClampToEdgeWrapping,
+  LinearFilter,
 } from "three";
 import { Asset } from "expo-asset";
 import { logger } from "../utils/logger";
 import { captureException } from "../utils/sentry";
+
+/**
+ * Creates a Three.js texture from an expo-asset that works with expo-gl.
+ * This mimics expo-three's parseTexture but without the problematic imports.
+ */
+function createTextureFromAsset(asset: Asset): Texture {
+  const texture = new Texture();
+  // expo-gl expects this specific image format with the asset as data
+  (texture.image as unknown) = {
+    data: asset,
+    width: asset.width,
+    height: asset.height,
+  };
+  texture.needsUpdate = true;
+  // isDataTexture forces expo-gl to pass data to gl.texImage2D verbatim
+  (texture as unknown as { isDataTexture: boolean }).isDataTexture = true;
+  // LinearFilter handles non-power-of-two textures
+  texture.minFilter = LinearFilter;
+  return texture;
+}
 
 /**
  * Solar System Preloader Service - v2.4.0 EXPO ASSET SYSTEM
@@ -259,8 +280,6 @@ export class SolarSystemPreloader {
     let successfullyLoaded = 0;
 
     const loadNextTexture = async (): Promise<void> => {
-      const textureLoader = new TextureLoader();
-
       while (pendingTextures.length > 0) {
         const nextTexture = pendingTextures.shift();
         if (!nextTexture) {
@@ -269,7 +288,7 @@ export class SolarSystemPreloader {
 
         const { key, path } = nextTexture;
         try {
-          const texturePromise = this.loadTextureFromAsset(textureLoader, path, key);
+          const texturePromise = this.loadTextureFromAsset(path, key);
           const timeoutPromise = new Promise<never>((_, reject) => {
             setTimeout(
               () => reject(new Error(`Texture ${key} timeout after 3 seconds`)),
@@ -314,11 +333,10 @@ export class SolarSystemPreloader {
   }
 
   /**
-   * Load texture from bundled asset using Expo Asset system
-   * Assumes assets are already preloaded and verified
+   * Load texture from bundled asset using expo-asset directly.
+   * Creates textures compatible with expo-gl without requiring expo-three.
    */
   private static async loadTextureFromAsset(
-    loader: TextureLoader,
     assetPath: string | number,
     cacheKey: string
   ): Promise<Texture> {
@@ -329,43 +347,15 @@ export class SolarSystemPreloader {
         await imageAsset.downloadAsync();
       }
 
-      const textureUri = imageAsset.localUri || imageAsset.uri;
+      // Create texture directly using expo-gl compatible format
+      const texture = createTextureFromAsset(imageAsset);
 
-      if (!textureUri) {
-        throw new Error(
-          `Asset ${cacheKey} has no localUri or uri after download`
-        );
-      }
-
-      return new Promise<Texture>((resolve, reject) => {
-        const timeoutId = setTimeout(() => {
-          reject(
-            new Error(`Texture loading timeout: ${cacheKey} after 5 seconds`)
-          );
-        }, 5000);
-
-        loader.load(
-          textureUri,
-          (texture) => {
-            clearTimeout(timeoutId);
-            resolve(texture);
-          },
-          undefined,
-          (error) => {
-            clearTimeout(timeoutId);
-            reject(
-              new Error(
-                `Failed to load ${cacheKey} via verified Expo Asset: ${error}`
-              )
-            );
-          }
-        );
-      });
+      return texture;
     } catch (error) {
-      logger.error(`Verified asset loading failed for ${cacheKey}:`, error);
+      logger.error(`Texture loading failed for ${cacheKey}:`, error);
       captureException(error);
       throw new Error(
-        `Verified asset loading failed for ${cacheKey}: ${error}`
+        `Texture loading failed for ${cacheKey}: ${error}`
       );
     }
   }

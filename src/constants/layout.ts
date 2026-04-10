@@ -295,3 +295,6 @@ export const KEYBOARD_ROW_SPACER = moderateScale(16);
 /** Width of the spacer that centres the bottom row, and of the backspace key. */
 export const KEYBOARD_BOTTOM_OFFSET = moderateScale(48);
 
+export const wheelSize = Math.ceil(
+  Math.sqrt(MODAL_WIDTH ** 2 + MODAL_HEIGHT ** 2) * 1.2
+);

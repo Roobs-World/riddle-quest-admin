@@ -12,6 +12,7 @@ import {
   ModalOptions,
   ModalAction,
 } from "../types/ModalTypes";
+import { logger } from "src/utils/logger";
 
 // Initial state
 const initialState: ModalInstance[] = [];
@@ -54,6 +55,7 @@ const modalReducer = (
       );
 
     default:
+      logger.warn("modal reducer unsure of action: " + action)
       return state;
   }
 };

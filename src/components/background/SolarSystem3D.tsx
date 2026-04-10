@@ -27,27 +27,91 @@
 
 /* eslint-disable react/prop-types */
 /* eslint-disable react/no-unknown-property */
-import React, { useRef, useMemo } from "react";
-import { Canvas, useFrame, useLoader } from "@react-three/fiber";
+import React, { useRef, useMemo, useState, useEffect } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
 import {
   Mesh,
   Group,
-  TextureLoader,
   SphereGeometry,
   MeshPhongMaterial,
   ColorManagement,
+  Texture,
+  LinearFilter,
 } from "three";
+import { View, StyleSheet } from "react-native";
+import { Asset } from "expo-asset";
 
 // Expo's EXGL doesn't support UNPACK_COLORSPACE_CONVERSION_WEBGL which Three.js
 // r152+ tries to set when color management is enabled.
 ColorManagement.enabled = false;
-import { View, StyleSheet } from "react-native";
-import { Asset } from "expo-asset";
 import { SOLAR_SYSTEM_CONFIG } from "./SolarSystemConfig";
 import { dimensions } from "../../utils/responsive";
 // Import texture assets
 import sunTextureModule from "../../../assets/3d/tex_sun_spots_02.png";
-const sunTexturePath = Asset.fromModule(sunTextureModule).uri;
+
+// Cache for loaded textures
+const textureCache = new Map<string | number, Texture>();
+
+/**
+ * Creates a Three.js texture from an expo-asset that works with expo-gl.
+ * This mimics expo-three's parseTexture but without the problematic imports.
+ */
+function createTextureFromAsset(asset: Asset): Texture {
+  const texture = new Texture();
+  // expo-gl expects this specific image format with the asset as data
+  (texture.image as unknown) = {
+    data: asset,
+    width: asset.width,
+    height: asset.height,
+  };
+  texture.needsUpdate = true;
+  // isDataTexture forces expo-gl to pass data to gl.texImage2D verbatim
+  (texture as unknown as { isDataTexture: boolean }).isDataTexture = true;
+  // LinearFilter handles non-power-of-two textures
+  texture.minFilter = LinearFilter;
+  return texture;
+}
+
+/**
+ * Custom hook to load textures for React Native using expo-asset directly.
+ * Avoids expo-three's problematic loader imports.
+ */
+function useExpoTexture(assetModule: string | number): Texture | null {
+  const [texture, setTexture] = useState<Texture | null>(() => {
+    return textureCache.get(assetModule) || null;
+  });
+
+  useEffect(() => {
+    if (textureCache.has(assetModule)) {
+      setTexture(textureCache.get(assetModule)!);
+      return;
+    }
+
+    let mounted = true;
+    const loadTexture = async () => {
+      try {
+        const asset = Asset.fromModule(assetModule);
+        if (!asset.downloaded) {
+          await asset.downloadAsync();
+        }
+        const loaded = createTextureFromAsset(asset);
+        if (mounted) {
+          textureCache.set(assetModule, loaded);
+          setTexture(loaded);
+        }
+      } catch (error) {
+        console.warn("Failed to load texture:", error);
+      }
+    };
+
+    loadTexture();
+    return () => {
+      mounted = false;
+    };
+  }, [assetModule]);
+
+  return texture;
+}
 
 const { screenWidth: SCREEN_WIDTH, screenHeight: SCREEN_HEIGHT } = dimensions;
 
@@ -62,12 +126,12 @@ const sunGeometry = new SphereGeometry(12.0, 48, 48);
  */
 const Sun: React.FC = React.memo(() => {
   const sunRef = useRef<Mesh>(null);
-  const sunTexture = useLoader(TextureLoader, sunTexturePath);
+  const sunTexture = useExpoTexture(sunTextureModule);
 
   const sunMaterial = useMemo(
     () =>
       new MeshPhongMaterial({
-        map: Array.isArray(sunTexture) ? sunTexture[0] : sunTexture,
+        map: sunTexture || undefined,
         emissive: 0xffa500,
         emissiveIntensity: 1.5,
         // emissiveMap intentionally omitted — same texture as map would sample it twice per fragment
@@ -97,7 +161,7 @@ Sun.displayName = "Sun";
  * @property {number} distance - Orbital distance from parent planet
  * @property {number} orbitSpeed - Angular velocity of orbit
  * @property {number} color - Hexadecimal color value for the moon
- * @property {string} texture - Path to texture image for the moon
+ * @property {number} textureModule - Asset module for the moon's texture
  * @property {number} startAngle - Initial orbital position in radians
  */
 interface MoonProps {
@@ -106,7 +170,7 @@ interface MoonProps {
     distance: number;
     orbitSpeed: number;
     color: number;
-    texture: string;
+    textureModule: number;
     startAngle: number;
   };
 }
@@ -121,14 +185,14 @@ interface MoonProps {
 const Moon: React.FC<MoonProps> = React.memo(({ moonConfig }) => {
   const moonRef = useRef<Mesh>(null);
   const orbitTime = useRef(moonConfig.startAngle);
-  const texture = useLoader(TextureLoader, moonConfig.texture);
+  const texture = useExpoTexture(moonConfig.textureModule);
 
   const moonGeometry = useMemo(
     () => new SphereGeometry(moonConfig.size * 1.4, 16, 16),
     [moonConfig.size]
   );
   const moonMaterial = useMemo(
-    () => new MeshPhongMaterial({ map: texture, color: 0xffffff }),
+    () => new MeshPhongMaterial({ map: texture || undefined, color: 0xffffff }),
     [texture]
   );
 
@@ -168,7 +232,7 @@ const Planet: React.FC<PlanetProps> = React.memo(({ config }) => {
   const groupRef = useRef<Group>(null);
   const meshRef = useRef<Mesh>(null);
   const orbitTime = useRef(config.startAngle);
-  const planetTexture = useLoader(TextureLoader, config.texture);
+  const planetTexture = useExpoTexture(config.textureModule);
 
   const planetGeometry = useMemo(
     () => new SphereGeometry(config.size, 32, 32),
@@ -177,7 +241,7 @@ const Planet: React.FC<PlanetProps> = React.memo(({ config }) => {
   const planetMaterial = useMemo(
     () =>
       new MeshPhongMaterial({
-        map: Array.isArray(planetTexture) ? planetTexture[0] : planetTexture,
+        map: planetTexture || undefined,
       }),
     [planetTexture]
   );

@@ -5,7 +5,7 @@ import { generateFeedbackEmojiGrid } from "../../../utils/gameUtils";
 import WideButton from "../../buttons/WideButton";
 import SocialShareButton from "../../buttons/SocialShareButton";
 import LargeCoinStackSvg from "../../../../assets/images/large-coin-stack.svg";
-import { COIN_ICON_SIZE_LARGE } from "../../../constants/layout";
+import { COIN_ICON_SIZE_LARGE, wheelSize } from "../../../constants/layout";
 import { SocialSharingService } from "../../../services/SocialSharingService";
 import { analyticsService } from "../../../services/AnalyticsService";
 import { TYPOGRAPHY } from "../../../styles";
@@ -133,10 +133,6 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
     inputRange: [0, 1],
     outputRange: [1, 1.06],
   });
-
-  const wheelSize = Math.ceil(
-    Math.sqrt(MODAL_WIDTH ** 2 + MODAL_HEIGHT ** 2) * 1.2
-  );
 
   return (
     <Modal

@@ -157,7 +157,8 @@
       "Bash(npm i:*)",
       "Bash(pnpm:*)",
       "Bash(cd:*)",
-      "Bash(find C:Userscraigworkqwordly -name *.properties)"
+      "Bash(find C:Userscraigworkqwordly -name *.properties)",
+      "Bash(./gradlew.bat clean:*)"
     ]
   }
 }

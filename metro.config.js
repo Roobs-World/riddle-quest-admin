@@ -45,7 +45,7 @@ config.resolver.platforms = ["ios", "android", "native", "web"];
 // Add Reanimated plugin to transformer
 config.transformer.getTransformOptions = async () => ({
   transform: {
-    experimentalImportSupport: true,
+    experimentalImportSupport: false,
     inlineRequires: false,
   },
 });
