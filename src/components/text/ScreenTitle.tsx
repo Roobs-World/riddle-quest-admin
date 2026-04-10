@@ -78,3 +78,4 @@ const ScreenTitle = ({ title, className }: ScreenTitleProps) => (
 );
 
 export default ScreenTitle;
+

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import {
   View,
   Text,
@@ -11,10 +11,8 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import * as RNIap from "react-native-iap";
-import {
-  ProductPricing,
-  ProductPricingService,
-} from "../../services/ProductPricingService";
+import { ProductPricing } from "../../services/ProductPricingService";
+import { analyticsService } from "../../services/AnalyticsService";
 import { COLORS, TYPOGRAPHY, SPACING, BORDER_RADIUS } from "../../styles";
 import {
   scale,
@@ -22,16 +20,19 @@ import {
   moderateScale,
   dimensions,
 } from "../../utils/responsive";
-import { MODAL_CONTENT_PADDING } from "../../constants/layout";
-import Shop1Svg from "../../../assets/images/shop-1.svg";
+import {
+  MODAL_CONTENT_PADDING,
+  CLOSE_BUTTON_SIZE_LG,
+  MODAL_CLOSE_BUTTON_POSITION,
+} from "../../constants/layout";
 import CoinSvg from "../../../assets/images/coin.svg";
+import BuyCoinsBg from "../../../assets/images/buy-coins.svg";
 import ModalBg from "../../../assets/images/modal-bg.svg";
 import { logger } from "../../utils/logger";
+import CloseButton from "../buttons/CloseButton";
 
 const { screenHeight } = dimensions;
-
-const FEATURED_COIN_IMG_SIZE = moderateScale(100);
-const ROW_COIN_ICON_SIZE = moderateScale(44);
+const GRID_COIN_ICON_SIZE = moderateScale(54);
 
 interface CoinShopModalProps {
   isVisible: boolean;
@@ -60,11 +61,11 @@ const CoinShopModal: React.FC<CoinShopModalProps> = ({
 }) => {
   const insets = useSafeAreaInsets();
   const availableHeight = screenHeight - insets.top - insets.bottom;
+  const trackedImpressionsRef = useRef<Set<string>>(new Set());
 
-  const featuredProducts =
-    ProductPricingService.getFeaturedProducts(firestoreProducts);
-  const regularProducts = firestoreProducts.filter(
-    (p) => p.featuredOrder === undefined || p.featuredOrder === null,
+  const sortedProducts = useMemo(
+    () => [...firestoreProducts].sort((a, b) => a.sortOrder - b.sortOrder),
+    [firestoreProducts],
   );
 
   const getDisplayPrice = (product: ProductPricing) => {
@@ -72,8 +73,45 @@ const CoinShopModal: React.FC<CoinShopModalProps> = ({
     return (
       storeProduct?.displayPrice ??
       product.regionalPrices.find((r) => r.currency === "USD")?.displayPrice ??
-      "—"
+      "-"
     );
+  };
+
+  useEffect(() => {
+    if (!isVisible) {
+      trackedImpressionsRef.current.clear();
+      return;
+    }
+    if (loading || error) return;
+
+    sortedProducts.forEach((product) => {
+      if (trackedImpressionsRef.current.has(product.productId)) return;
+
+      trackedImpressionsRef.current.add(product.productId);
+      void analyticsService.logShopPackImpression({
+        productId: product.productId,
+        productKey: product.productKey,
+        coins: product.coins,
+        sortOrder: product.sortOrder,
+        featured:
+          product.featuredOrder !== undefined && product.featuredOrder !== null,
+        displayPrice: getDisplayPrice(product),
+      });
+    });
+  }, [isVisible, loading, error, sortedProducts, products]);
+
+  const handlePackPress = (product: ProductPricing) => {
+    logger.debug("Shop pack tapped:", product.productId);
+    void analyticsService.logShopPackSelected({
+      productId: product.productId,
+      productKey: product.productKey,
+      coins: product.coins,
+      sortOrder: product.sortOrder,
+      featured:
+        product.featuredOrder !== undefined && product.featuredOrder !== null,
+      displayPrice: getDisplayPrice(product),
+    });
+    onPurchaseProduct(product.productId);
   };
 
   return (
@@ -101,6 +139,12 @@ const CoinShopModal: React.FC<CoinShopModalProps> = ({
             style={StyleSheet.absoluteFill}
             preserveAspectRatio="xMidYMid slice"
           />
+          <CloseButton
+            onPress={onClose}
+            size={CLOSE_BUTTON_SIZE_LG}
+            style={styles.closeButton}
+            accessibilityLabel="Close coin shop"
+          />
 
           <ScrollView
             style={styles.scroll}
@@ -108,20 +152,10 @@ const CoinShopModal: React.FC<CoinShopModalProps> = ({
             showsVerticalScrollIndicator={false}
             bounces={false}
           >
-            {/* Header row */}
             <View style={styles.headerRow}>
-              <View style={styles.headerSpacer} />
               <Text style={styles.title}>COIN SHOP</Text>
-              <TouchableOpacity
-                onPress={onClose}
-                style={styles.closeButton}
-                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-              >
-                <Text style={styles.closeText}>✕</Text>
-              </TouchableOpacity>
             </View>
 
-            {/* Current coins pill */}
             <View style={styles.coinsPill}>
               <View style={styles.coinsPillLeft}>
                 <CoinSvg width={moderateScale(32)} height={moderateScale(32)} />
@@ -134,54 +168,6 @@ const CoinShopModal: React.FC<CoinShopModalProps> = ({
               </Text>
             </View>
 
-            {/* Featured packs — side by side */}
-            {featuredProducts.length > 0 && (
-              <View style={styles.featuredRow}>
-                {featuredProducts.map((featured) => {
-                  const displayPrice = getDisplayPrice(featured);
-                  return (
-                    <TouchableOpacity
-                      key={featured.productId}
-                      style={styles.featuredCard}
-                      onPress={() => {
-                        logger.debug(
-                          `Featured pack tapped: ${featured.productId}`,
-                        );
-                        onPurchaseProduct(featured.productId);
-                      }}
-                      activeOpacity={0.8}
-                      testID={`featured-pack-${featured.productId}`}
-                    >
-                      {featured.featuredBadge && (
-                        <View style={styles.badge}>
-                          <Text style={styles.badgeText}>
-                            {featured.featuredBadge}
-                          </Text>
-                        </View>
-                      )}
-
-                      <Shop1Svg
-                        width={FEATURED_COIN_IMG_SIZE}
-                        height={FEATURED_COIN_IMG_SIZE}
-                        style={styles.featuredImage}
-                      />
-
-                      <Text style={styles.featuredCoins}>
-                        {featured.coins.toLocaleString()} coins
-                      </Text>
-
-                      <View style={styles.featuredPriceButton}>
-                        <Text style={styles.featuredPriceText}>
-                          {displayPrice}
-                        </Text>
-                      </View>
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
-            )}
-
-            {/* Loading / Error */}
             {loading && (
               <View style={styles.loadingContainer}>
                 <ActivityIndicator size="large" color={COLORS.primaryOrange} />
@@ -189,39 +175,50 @@ const CoinShopModal: React.FC<CoinShopModalProps> = ({
             )}
             {error && <Text style={styles.errorText}>{error}</Text>}
 
-            {/* Regular coin rows */}
-            {!loading &&
-              !error &&
-              regularProducts.map((product) => {
-                const displayPrice = getDisplayPrice(product);
-                return (
-                  <TouchableOpacity
-                    key={product.productId}
-                    style={styles.productRow}
-                    onPress={() => {
-                      logger.debug("Purchase row tapped:", product.productId);
-                      onPurchaseProduct(product.productId);
-                    }}
-                    activeOpacity={0.7}
-                    testID={`purchase-row-${product.productId}`}
-                  >
-                    <CoinSvg
-                      width={ROW_COIN_ICON_SIZE}
-                      height={ROW_COIN_ICON_SIZE}
-                    />
-                    <Text style={styles.productCoins}>
-                      {product.coins.toLocaleString()} coins
-                    </Text>
-                    <View style={styles.productPriceButton}>
-                      <Text style={styles.productPriceText}>
-                        {displayPrice}
+            {!loading && !error && sortedProducts.length > 0 && (
+              <View style={styles.grid}>
+                {sortedProducts.map((product) => {
+                  const displayPrice = getDisplayPrice(product);
+                  return (
+                    <TouchableOpacity
+                      key={product.productId}
+                      style={styles.gridCard}
+                      onPress={() => handlePackPress(product)}
+                      activeOpacity={0.8}
+                      testID={`pack-card-${product.productId}`}
+                    >
+                      <BuyCoinsBg
+                        width="100%"
+                        height="100%"
+                        style={styles.gridCardBackground}
+                        preserveAspectRatio="xMidYMid slice"
+                        pointerEvents="none"
+                      />
+                      {product.featuredBadge && (
+                        <View style={styles.badge}>
+                          <Text style={styles.badgeText}>{product.featuredBadge}</Text>
+                        </View>
+                      )}
+                      <CoinSvg
+                        width={GRID_COIN_ICON_SIZE}
+                        height={GRID_COIN_ICON_SIZE}
+                      />
+                      <Text style={styles.productCoins}>
+                        {product.coins.toLocaleString()} coins
                       </Text>
-                    </View>
-                  </TouchableOpacity>
-                );
-              })}
+                      <View style={styles.productPriceButton}>
+                        <Text style={styles.productPriceText}>{displayPrice}</Text>
+                      </View>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            )}
 
-            {/* Bottom buttons */}
+            {!loading && !error && sortedProducts.length === 0 && (
+              <Text style={styles.errorText}>No coin packs are available right now.</Text>
+            )}
+
             <View style={styles.bottomButtons}>
               <TouchableOpacity
                 style={styles.watchVideoButton}
@@ -285,15 +282,7 @@ const styles = StyleSheet.create({
     marginTop: verticalScale(8),
   },
   closeButton: {
-    alignItems: "center",
-    height: moderateScale(32),
-    justifyContent: "center",
-    width: moderateScale(32),
-  },
-  closeText: {
-    color: COLORS.gray700,
-    fontSize: moderateScale(18),
-    fontWeight: "600",
+    ...MODAL_CLOSE_BUTTON_POSITION,
   },
   coinsPill: {
     alignItems: "center",
@@ -333,54 +322,31 @@ const styles = StyleSheet.create({
     marginBottom: verticalScale(12),
     textAlign: "center",
   },
-  featuredCard: {
+  grid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    marginBottom: verticalScale(8),
+  },
+  gridCard: {
     alignItems: "center",
     backgroundColor: COLORS.figmaCream,
-    borderColor: FEATURED_CARD_BORDER,
+    borderColor: COLORS.gray200,
     borderRadius: moderateScale(16),
-    borderWidth: 2,
-    flex: 1,
+    borderWidth: 1,
+    marginBottom: verticalScale(10),
     overflow: "hidden",
-    paddingBottom: verticalScale(12),
-    paddingHorizontal: scale(8),
-    paddingTop: verticalScale(28),
+    paddingBottom: verticalScale(14),
+    paddingHorizontal: scale(10),
+    paddingTop: verticalScale(18),
+    width: "48%",
   },
-  featuredCoins: {
-    color: COLORS.gray800,
-    fontFamily: TYPOGRAPHY.fontPrimary,
-    fontSize: TYPOGRAPHY.fontSize.sm,
-    fontWeight: "700",
-    marginBottom: verticalScale(8),
-  },
-  featuredImage: {
-    marginBottom: verticalScale(8),
-  },
-  featuredPriceButton: {
-    alignItems: "center",
-    backgroundColor: PRICE_BUTTON_BG,
-    borderRadius: moderateScale(8),
-    paddingHorizontal: scale(20),
-    paddingVertical: verticalScale(8),
-    width: "100%",
-  },
-  featuredPriceText: {
-    color: COLORS.white,
-    fontFamily: TYPOGRAPHY.fontPrimary,
-    fontSize: TYPOGRAPHY.fontSize.base,
-    fontWeight: "700",
-  },
-  featuredRow: {
-    flexDirection: "row",
-    gap: scale(10),
-    marginBottom: verticalScale(16),
+  gridCardBackground: {
+    ...StyleSheet.absoluteFillObject,
   },
   headerRow: {
     alignItems: "center",
-    flexDirection: "row",
     marginBottom: verticalScale(12),
-  },
-  headerSpacer: {
-    width: moderateScale(32),
   },
   infoIcon: {
     alignItems: "center",
@@ -433,16 +399,17 @@ const styles = StyleSheet.create({
   },
   productCoins: {
     color: COLORS.gray800,
-    flex: 1,
     fontFamily: TYPOGRAPHY.fontPrimary,
     fontSize: TYPOGRAPHY.fontSize.base,
-    fontWeight: "600",
-    marginLeft: scale(12),
+    fontWeight: "700",
+    marginTop: verticalScale(8),
+    textAlign: "center",
   },
   productPriceButton: {
     backgroundColor: PRICE_BUTTON_BG,
     borderRadius: moderateScale(10),
-    paddingHorizontal: scale(18),
+    marginTop: verticalScale(10),
+    paddingHorizontal: scale(16),
     paddingVertical: verticalScale(8),
   },
   productPriceText: {
@@ -450,20 +417,6 @@ const styles = StyleSheet.create({
     fontFamily: TYPOGRAPHY.fontPrimary,
     fontSize: TYPOGRAPHY.fontSize.sm,
     fontWeight: "700",
-  },
-  productRow: {
-    alignItems: "center",
-    backgroundColor: COLORS.white,
-    borderRadius: moderateScale(14),
-    elevation: 2,
-    flexDirection: "row",
-    marginBottom: verticalScale(8),
-    paddingHorizontal: scale(12),
-    paddingVertical: verticalScale(10),
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.06,
-    shadowRadius: 3,
   },
   scroll: {
     flex: 1,
@@ -476,7 +429,6 @@ const styles = StyleSheet.create({
   },
   title: {
     color: COLORS.gray800,
-    flex: 1,
     fontFamily: TYPOGRAPHY.fontPrimary,
     fontSize: TYPOGRAPHY.fontSize["2xl"],
     fontWeight: "700",

@@ -10,9 +10,8 @@ import ModalBg from "../../../../assets/images/modal-bg.svg";
 import {
   MODAL_WIDTH,
   MODAL_HEIGHT,
-  CLOSE_BUTTON_INSET,
   CLOSE_BUTTON_SIZE,
-  MODAL_CLOSE_TOP_OFFSET_SM,
+  MODAL_CLOSE_BUTTON_POSITION,
   INPUT_BORDER_RADIUS,
   INPUT_PADDING,
 } from "../../../constants/layout";
@@ -110,12 +109,7 @@ const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({
             <CloseButton
               onPress={handleClose}
               size={CLOSE_BUTTON_SIZE}
-              style={{
-                position: "absolute",
-                top: MODAL_CLOSE_TOP_OFFSET_SM,
-                right: -CLOSE_BUTTON_INSET,
-                zIndex: 10,
-              }}
+              style={MODAL_CLOSE_BUTTON_POSITION}
             />
             <Text
               style={{
@@ -152,3 +146,4 @@ const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({
 };
 
 export default UpdateUsernameModal;
+

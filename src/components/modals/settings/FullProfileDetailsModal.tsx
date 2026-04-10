@@ -64,7 +64,16 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
   const avgGuess = stats?.averageGuesses != null
     ? Number(stats.averageGuesses).toFixed(1)
     : "—";
-  const { level, progressPct, currentXp, nextLevelXp } = getXpLevel(stats?.totalScore ?? 0);
+  const xpFromProfile =
+    (playerData as unknown as { xp?: unknown; totalXp?: unknown }).xp ??
+    (playerData as unknown as { xp?: unknown; totalXp?: unknown }).totalXp ??
+    (stats as unknown as { xp?: unknown; totalXp?: unknown })?.xp ??
+    (stats as unknown as { xp?: unknown; totalXp?: unknown })?.totalXp ??
+    stats?.totalScore ??
+    0;
+  const totalXp = Number.isFinite(Number(xpFromProfile)) ? Number(xpFromProfile) : 0;
+  const { level, progressPct, currentXp, nextLevelXp } = getXpLevel(totalXp);
+  const xpProgressWidth = `${Math.round(progressPct * 100)}%` as `${number}%`;
 
   return (
     <Modal
@@ -141,6 +150,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
               <CloseButton
                 onPress={onClose}
                 size={CLOSE_BUTTON_SIZE}
+                color="white"
               />
             </View>
 
@@ -217,8 +227,9 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
                   <Text style={{ color: GOLD, fontSize: 18 }}>★</Text>
                   <View style={{ flex: 1, height: 8, backgroundColor: "rgba(255,255,255,0.2)", borderRadius: 4, overflow: "hidden" }}>
                     <View
+                      testID="xp-progress-fill"
                       style={{
-                        width: `${progressPct * 100}%`,
+                        width: xpProgressWidth,
                         height: "100%",
                         backgroundColor: GOLD,
                         borderRadius: 4,

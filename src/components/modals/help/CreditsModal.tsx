@@ -13,7 +13,7 @@ import {
   MODAL_HEIGHT,
   MODAL_CONTENT_PADDING,
   MODAL_SCROLLABLE_MAX_HEIGHT,
-  CLOSE_BUTTON_INSET,
+  MODAL_CLOSE_BUTTON_POSITION,
   CARD_BORDER_RADIUS,
   CARD_PADDING,
   CARD_MARGIN_BOTTOM,
@@ -85,12 +85,7 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isVisible, onClose }) => {
             <CloseButton
               onPress={onClose}
               size={CLOSE_BUTTON_SIZE}
-              style={{
-                position: "absolute",
-                top: CLOSE_BUTTON_INSET,
-                right: CLOSE_BUTTON_INSET,
-                zIndex: 10,
-              }}
+              style={MODAL_CLOSE_BUTTON_POSITION}
             />
             <Text
               style={{
@@ -157,3 +152,4 @@ const TeamMemberCard = ({ member }: { member: TeamMember }) => (
 );
 
 export default CreditsModal;
+

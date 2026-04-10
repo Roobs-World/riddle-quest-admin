@@ -10,7 +10,7 @@ import { Player } from "../../../validation/firestoreSchemas";
 import CloseButton from "../../buttons/CloseButton";
 import { TYPOGRAPHY, SPACING } from "../../../styles";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
-import { MODAL_WIDTH, MODAL_HEIGHT, CLOSE_BUTTON_INSET, CLOSE_BUTTON_SIZE, CARD_BORDER_RADIUS, MODAL_CONTENT_PADDING, MODAL_SCROLLABLE_MAX_HEIGHT } from "../../../constants/layout";
+import { MODAL_WIDTH, MODAL_HEIGHT, CLOSE_BUTTON_SIZE, MODAL_CLOSE_BUTTON_POSITION, CARD_BORDER_RADIUS, MODAL_CONTENT_PADDING, MODAL_SCROLLABLE_MAX_HEIGHT } from "../../../constants/layout";
 
 export interface StatsModalProps {
   isVisible: boolean;
@@ -59,7 +59,7 @@ const StatsModal: React.FC<StatsModalProps> = ({
           <CloseButton
             onPress={onClose}
             size={CLOSE_BUTTON_SIZE}
-            style={{ position: "absolute", top: CLOSE_BUTTON_INSET, right: CLOSE_BUTTON_INSET, zIndex: 10 }}
+            style={MODAL_CLOSE_BUTTON_POSITION}
             accessibilityLabel="Close statistics"
           />
           <Text
@@ -165,3 +165,4 @@ const StatRow = ({
 );
 
 export default StatsModal;
+

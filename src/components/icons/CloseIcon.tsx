@@ -8,8 +8,7 @@ interface CloseIconProps {
   color?: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const CloseIcon = ({ width = 18, height = 18, color }: CloseIconProps) => {
+const CloseIcon = ({ width = 18, height = 18, color: _color }: CloseIconProps) => {
   return <CloseSvg width={width} height={height} />;
 };
 

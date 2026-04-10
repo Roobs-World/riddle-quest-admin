@@ -1,5 +1,5 @@
 import React from "react";
-import { render } from "@testing-library/react-native";
+import { render, fireEvent } from "@testing-library/react-native";
 import { View } from "react-native";
 import GuessGrid from "../GuessGrid";
 import type { SubmittedGuess } from "../../../hooks/types";
@@ -393,6 +393,42 @@ describe("GuessGrid", () => {
       for (let i = 0; i < 10; i++) {
         rerender(<GuessGrid {...defaultProps} />);
       }
+    });
+  });
+
+  describe("Active Slot Selection", () => {
+    it("should allow tapping a cell in the active row to select the slot", () => {
+      const onSelectCurrentGuessSlot = jest.fn();
+      const { getByTestId } = render(
+        <GuessGrid
+          {...defaultProps}
+          onSelectCurrentGuessSlot={onSelectCurrentGuessSlot}
+        />
+      );
+
+      fireEvent.press(getByTestId("guess-cell-0-2"));
+      expect(onSelectCurrentGuessSlot).toHaveBeenCalledWith(2);
+    });
+
+    it("should ignore taps on non-active rows", () => {
+      const onSelectCurrentGuessSlot = jest.fn();
+      const guesses: SubmittedGuess[] = [
+        {
+          guess: ["T", "E", "S", "T"],
+          feedback: ["green", "yellow", "red", "green"],
+        },
+      ];
+      const { getByTestId } = render(
+        <GuessGrid
+          {...defaultProps}
+          guesses={guesses}
+          currentGuess={["A"]}
+          onSelectCurrentGuessSlot={onSelectCurrentGuessSlot}
+        />
+      );
+
+      fireEvent(getByTestId("guess-cell-0-1"), "press");
+      expect(onSelectCurrentGuessSlot).not.toHaveBeenCalled();
     });
   });
 });

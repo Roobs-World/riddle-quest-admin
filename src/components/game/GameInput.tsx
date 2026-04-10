@@ -45,3 +45,4 @@ const GameInputComponent = ({
 };
 
 export const GameInput = React.memo(GameInputComponent);
+

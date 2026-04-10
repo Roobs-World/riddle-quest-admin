@@ -64,6 +64,20 @@ export const GenerateClassicRiddlesOutputSchema = z.object({
   message: z.string(),
 });
 
+// getHint
+export const GetHintInputSchema = z.object({
+  currentAttempt: z.array(z.string().length(1)),
+  riddleId: z.string().min(1, "Riddle ID is required"),
+  gameMode: GameModeSchema,
+});
+export const GetHintOutputSchema = z
+  .object({
+    revealedLetter: z.string().length(1),
+    index: z.number().int().nonnegative(),
+    coinsCost: z.number().int().nonnegative(),
+  })
+  .nullable();
+
 // Define a schema for guess feedback (green, yellow, red)
 export const GuessFeedbackSchema = z.union([
   z.literal("green"),

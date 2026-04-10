@@ -12,7 +12,7 @@ import { Player } from "../../../validation/firestoreSchemas";
 import CloseButton from "../../buttons/CloseButton";
 import { TYPOGRAPHY, COLORS, SPACING } from "../../../styles";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
-import { MODAL_WIDTH, MODAL_HEIGHT, CLOSE_BUTTON_INSET, CLOSE_BUTTON_SIZE, CARD_BORDER_RADIUS, ACHIEVEMENT_ICON_SIZE, MODAL_CONTENT_PADDING, MODAL_SCROLLABLE_MAX_HEIGHT } from "../../../constants/layout";
+import { MODAL_WIDTH, MODAL_HEIGHT, CLOSE_BUTTON_SIZE, MODAL_CLOSE_BUTTON_POSITION, CARD_BORDER_RADIUS, ACHIEVEMENT_ICON_SIZE, MODAL_CONTENT_PADDING, MODAL_SCROLLABLE_MAX_HEIGHT } from "../../../constants/layout";
 import { scale } from "../../../utils/responsive";
 import { ACHIEVEMENT_DEFINITIONS } from "../../../constants/achievements";
 
@@ -64,7 +64,7 @@ const AchievementsModal: React.FC<AchievementsModalProps> = ({
           <CloseButton
             onPress={onClose}
             size={CLOSE_BUTTON_SIZE}
-            style={{ position: "absolute", top: CLOSE_BUTTON_INSET, right: CLOSE_BUTTON_INSET, zIndex: 10 }}
+            style={MODAL_CLOSE_BUTTON_POSITION}
             accessibilityLabel="Close achievements"
           />
           <Text
@@ -199,3 +199,4 @@ const AchievementsModal: React.FC<AchievementsModalProps> = ({
 };
 
 export default AchievementsModal;
+

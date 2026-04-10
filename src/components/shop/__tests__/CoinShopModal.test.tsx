@@ -57,6 +57,13 @@ jest.mock("../../../services/ProductPricingService", () => ({
   },
 }));
 
+jest.mock("../../../services/AnalyticsService", () => ({
+  analyticsService: {
+    logShopPackImpression: jest.fn(),
+    logShopPackSelected: jest.fn(),
+  },
+}));
+
 // Mock WideButton
 jest.mock("../../buttons/WideButton", () => {
   const mockReact = require("react");
@@ -190,3 +197,4 @@ describe("CoinShopModal", () => {
     });
   });
 });
+

@@ -46,6 +46,8 @@ describe("StatsModal", () => {
     email: "test@example.com",
     coins: 200,
     stats: {
+      xp: 0,
+      level: 1,
       dailyPuzzlesCompleted: 5,
       bestStreak: 7,
       totalWordsGuessed: 80,
@@ -182,3 +184,5 @@ function getAllByTextHelper(renderResult: any, text: string) {
     return [];
   }
 }
+
+

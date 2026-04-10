@@ -8,7 +8,7 @@
  * feedback based on server-provided guess results.
  */
 import React, { memo, useMemo } from "react";
-import { View, Text } from "react-native";
+import { View, Text, Pressable } from "react-native";
 
 import type { SubmittedGuess, Feedback } from "../../hooks/types"; // Import Feedback type from types.ts
 import {
@@ -30,7 +30,7 @@ import { NUM_GUESSES } from "../../utils/constants";
  * Defined at module level so it is not recreated on every render.
  */
 const getCellColors = (
-  feedback: Feedback,
+  feedback: Feedback | null,
   hasLetter: boolean
 ): { bg: string; text: string; border: string } => {
   switch (feedback) {
@@ -59,6 +59,8 @@ type GuessGridProps = {
   answerLength: number;
   setTileRef?: (rowIndex: number, cellIndex: number, ref: View | null) => void;
   hintRevealedIndices?: number[];
+  activeSlotIndex?: number;
+  onSelectCurrentGuessSlot?: (slotIndex: number) => void;
 };
 
 /**
@@ -75,6 +77,8 @@ const GuessGrid: React.FC<GuessGridProps> = memo(function GuessGrid({
   answerLength,
   setTileRef,
   hintRevealedIndices = [],
+  activeSlotIndex = 0,
+  onSelectCurrentGuessSlot,
 }) {
   // Tile sizing — only recalculate when answerLength changes.
   const { TILE_SIZE, ROW_HEIGHT } = useMemo(() => {
@@ -89,13 +93,13 @@ const GuessGrid: React.FC<GuessGridProps> = memo(function GuessGrid({
 
   // Build display rows — recalculates when guesses or currentGuess change.
   const displayRows = useMemo(() => {
-    const rows: { letters: (string | null)[]; feedback: Feedback[] }[] =
+    const rows: { letters: (string | null)[]; feedback: (Feedback | null)[] }[] =
       guesses.map((sg: SubmittedGuess) => ({ letters: sg.guess, feedback: sg.feedback }));
 
     if (rows.length < 3 && currentGuess.length > 0) {
       const currentGuessRow: (string | null)[] = [...currentGuess];
       while (currentGuessRow.length < answerLength) currentGuessRow.push(null);
-      const currentGuessFeedback: Feedback[] = Array(answerLength)
+      const currentGuessFeedback: (Feedback | null)[] = Array(answerLength)
         .fill(null)
         .map((_, i) => (hintRevealedIndices.includes(i) ? "green" : null));
       rows.push({ letters: currentGuessRow, feedback: currentGuessFeedback });
@@ -131,17 +135,62 @@ const GuessGrid: React.FC<GuessGridProps> = memo(function GuessGrid({
             {row.letters.map((letter, cellIndex) => {
               const feedback = row.feedback[cellIndex];
               const { bg, text, border } = getCellColors(feedback, !!letter);
+              const isCurrentGuessRow =
+                rowIndex === guesses.length && rowIndex < NUM_GUESSES;
+              const isSelectable =
+                isCurrentGuessRow && typeof onSelectCurrentGuessSlot === "function";
+              const tileBorderColor =
+                isSelectable && cellIndex === activeSlotIndex ? "#FCFAF4" : border;
+              const tileBorderWidth =
+                isSelectable && cellIndex === activeSlotIndex ? 3 : 2;
+
+              if (isSelectable) {
+                return (
+                  <Pressable
+                    key={cellIndex}
+                    testID={`guess-cell-${rowIndex}-${cellIndex}`}
+                    className="items-center justify-center rounded-full"
+                    style={{
+                      width: TILE_SIZE,
+                      height: TILE_SIZE,
+                      margin: GUESS_TILE_MARGIN,
+                      backgroundColor: bg,
+                      borderWidth: tileBorderWidth,
+                      borderColor: tileBorderColor,
+                    }}
+                    onPress={() => onSelectCurrentGuessSlot(cellIndex)}
+                    ref={
+                      setTileRef
+                        ? (ref) => setTileRef(rowIndex, cellIndex, ref)
+                        : undefined
+                    }
+                  >
+                    <Text
+                      className="font-bold uppercase"
+                      style={{
+                        color: text,
+                        fontSize: TYPOGRAPHY.fontSize["2xl"],
+                        lineHeight: TYPOGRAPHY.fontSize["2xl"] * TYPOGRAPHY.lineHeight.snug,
+                      }}
+                    >
+                      {letter}
+                    </Text>
+                  </Pressable>
+                );
+              }
+
               return (
                 <View
                   key={cellIndex}
+                  testID={`guess-cell-${rowIndex}-${cellIndex}`}
                   className="items-center justify-center rounded-full"
                   style={{
                     width: TILE_SIZE,
                     height: TILE_SIZE,
                     margin: GUESS_TILE_MARGIN,
                     backgroundColor: bg,
-                    borderWidth: 2,
-                    borderColor: border,
+                    borderWidth: tileBorderWidth,
+                    borderColor: tileBorderColor,
                   }}
                   ref={
                     setTileRef

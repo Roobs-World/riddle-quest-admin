@@ -9,7 +9,6 @@ interface BaseOverlayProps {
   onClose: () => void;
   children: React.ReactNode;
   showCloseButton?: boolean;
-  closeButtonPosition?: "top-right" | "top-left";
   backgroundColor?: string;
   overlayStyle?: object;
   contentStyle?: object;
@@ -20,7 +19,6 @@ const BaseOverlay: React.FC<BaseOverlayProps> = ({
   onClose,
   children,
   showCloseButton = true,
-  closeButtonPosition = "top-right",
   backgroundColor = "rgba(0, 0, 0, 0.8)",
   overlayStyle,
   contentStyle,
@@ -46,9 +44,7 @@ const BaseOverlay: React.FC<BaseOverlayProps> = ({
             <View
               style={[
                 styles.baseOverlayCloseButtonContainer,
-                closeButtonPosition === "top-left"
-                  ? styles.topLeft
-                  : styles.topRight,
+                styles.topRight,
               ]}
             >
               <CloseButton onPress={onClose} size={CLOSE_BUTTON_SIZE} />
@@ -62,3 +58,4 @@ const BaseOverlay: React.FC<BaseOverlayProps> = ({
 };
 
 export default BaseOverlay;
+

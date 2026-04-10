@@ -82,3 +82,4 @@ const WideButton: React.FC<WideButtonProps> = ({
 };
 
 export default WideButton;
+

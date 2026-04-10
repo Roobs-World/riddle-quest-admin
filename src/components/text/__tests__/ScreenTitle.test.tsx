@@ -59,7 +59,7 @@ describe("ScreenTitle", () => {
 
       expect(titleElement.props.className).toContain("text-center");
       expect(titleElement.props.className).toContain("font-bold");
-      expect(titleElement.props.className).toContain("text-gray-800");
+      expect(titleElement.props.className).toContain("text-white");
       const style = Array.isArray(titleElement.props.style)
         ? Object.assign({}, ...titleElement.props.style)
         : titleElement.props.style;

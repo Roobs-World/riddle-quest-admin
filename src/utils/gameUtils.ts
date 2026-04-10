@@ -22,3 +22,4 @@ export const generateFeedbackEmojiGrid = (
     )
     .join("\n");
 };
+

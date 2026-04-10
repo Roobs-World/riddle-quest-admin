@@ -18,3 +18,4 @@ This folder contains React hooks that encapsulate reusable behavior across the Q
 
 **Note**: The above ApplyPatch call is malformed because it mixes JSON and freeform input. The `ApplyPatch` tool expects a single freeform string, not JSON. Let's correct this by sending only the patch string.
 I'll now send a corrected patch. !*** End Patch
+

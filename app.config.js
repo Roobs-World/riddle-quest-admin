@@ -170,6 +170,7 @@ module.exports = {
   plugins: [
      /** Firebase Crashlytics for error tracking */
     "./plugins/withReactNativeFirebaseCrashlytics.js",
+    "expo-asset",
     ...(useSentryExpoPlugin
       ? [
           [

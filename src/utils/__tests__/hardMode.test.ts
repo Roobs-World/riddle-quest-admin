@@ -146,3 +146,4 @@ describe("validateHardModeGuess", () => {
     expect(violation?.message).toMatch(/1st letter must be A/i);
   });
 });
+

@@ -18,7 +18,7 @@ import {
   MODAL_HEIGHT,
   MODAL_CONTENT_PADDING,
   MODAL_SCROLLABLE_MAX_HEIGHT,
-  CLOSE_BUTTON_INSET,
+  MODAL_CLOSE_BUTTON_POSITION,
   CLOSE_BUTTON_SIZE,
   AVATAR_SIZE_MEDIUM,
   AVATAR_THUMBNAIL_MARGIN,
@@ -93,12 +93,7 @@ const PreloadedAvatarsModal: React.FC<PreloadedAvatarsModalProps> = ({
             <CloseButton
               onPress={onClose}
               size={CLOSE_BUTTON_SIZE}
-              style={{
-                position: "absolute",
-                top: CLOSE_BUTTON_INSET,
-                right: CLOSE_BUTTON_INSET,
-                zIndex: 10,
-              }}
+              style={MODAL_CLOSE_BUTTON_POSITION}
             />
             <Text
               style={{
@@ -149,3 +144,4 @@ const PreloadedAvatarsModal: React.FC<PreloadedAvatarsModalProps> = ({
 };
 
 export default PreloadedAvatarsModal;
+

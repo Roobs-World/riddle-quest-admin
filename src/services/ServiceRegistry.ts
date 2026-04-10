@@ -109,3 +109,4 @@ export class ServiceRegistry {
 
 // Export a singleton instance for convenience
 export const serviceRegistry = ServiceRegistry.getInstance();
+

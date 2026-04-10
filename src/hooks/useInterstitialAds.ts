@@ -192,3 +192,4 @@ export const useInterstitialAds = (): InterstitialAdHook => {
     wasAdDisplayed,
   };
 };
+

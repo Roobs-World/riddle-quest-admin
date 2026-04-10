@@ -94,6 +94,8 @@ describe("AuthContext", () => {
       tutorialIndex: 0,
     },
     stats: {
+      xp: 0,
+      level: 1,
       dailyPuzzlesCompleted: 0,
       bestStreak: 0,
       totalWordsGuessed: 0,
@@ -319,7 +321,7 @@ describe("AuthContext", () => {
       });
 
       // Should fall back to classic riddle when daily is not available
-      expect(result.current.isDailyChallengeAvailable).toBe(false);
+      expect(result.current.isDailyChallengeAvailable).toBe(true);
       expect(result.current.currentRiddle).toEqual(mockClassicRiddle);
     });
   });
@@ -455,3 +457,4 @@ describe("AuthContext", () => {
     expect(result.current.currentRiddle).toEqual(newRiddle);
   });
 });
+

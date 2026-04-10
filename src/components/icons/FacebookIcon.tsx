@@ -11,3 +11,4 @@ const FacebookIcon = ({ width, height }: FacebookIconProps) => {
 };
 
 export default FacebookIcon;
+

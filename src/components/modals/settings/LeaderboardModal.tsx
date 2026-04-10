@@ -1,5 +1,5 @@
 /**
- * @fileoverview Leaderboard modal — shows the top players for Total Score,
+ * @fileoverview Leaderboard modal — shows the top players for XP,
  * Total Wins, or Best Streak.
  *
  * Data is fetched from the `getLeaderboard` Cloud Function on mount. The
@@ -25,8 +25,8 @@ import ModalBg from "../../../../assets/images/modal-bg.svg";
 import {
   MODAL_WIDTH,
   MODAL_HEIGHT,
-  CLOSE_BUTTON_INSET,
   CLOSE_BUTTON_SIZE,
+  MODAL_CLOSE_BUTTON_POSITION,
   CARD_BORDER_RADIUS,
   MODAL_CONTENT_PADDING,
   AVATAR_SIZE_MEDIUM,
@@ -39,13 +39,13 @@ import { captureException } from "../../../utils/sentry";
 // Types
 // ─────────────────────────────────────────────────────────────────────────────
 
-export type LeaderboardType = "totalScore" | "totalWins" | "bestStreak";
+export type LeaderboardType = "xp" | "totalWins" | "bestStreak";
 
 export interface LeaderboardEntry {
   userId: string;
   username: string;
   avatarUrl?: string;
-  totalScore: number;
+  xp: number;
   totalWins: number;
   bestStreak: number;
   updatedAt: number;
@@ -68,7 +68,7 @@ const TAB_INACTIVE = "rgba(0,0,0,0.15)";
 const HIGHLIGHT_BG = "rgba(254,200,128,0.25)";
 
 const TABS: { type: LeaderboardType; label: string; statKey: keyof LeaderboardEntry }[] = [
-  { type: "totalScore", label: "Score", statKey: "totalScore" },
+  { type: "xp", label: "XP", statKey: "xp" },
   { type: "totalWins", label: "Wins", statKey: "totalWins" },
   { type: "bestStreak", label: "Streak", statKey: "bestStreak" },
 ];
@@ -82,7 +82,7 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({
   onClose,
   currentUserId,
 }) => {
-  const [activeTab, setActiveTab] = useState<LeaderboardType>("totalScore");
+  const [activeTab, setActiveTab] = useState<LeaderboardType>("xp");
   const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -141,12 +141,7 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({
           <CloseButton
             onPress={onClose}
             size={CLOSE_BUTTON_SIZE}
-            style={{
-              position: "absolute",
-              top: CLOSE_BUTTON_INSET,
-              right: CLOSE_BUTTON_INSET,
-              zIndex: 10,
-            }}
+            style={MODAL_CLOSE_BUTTON_POSITION}
             accessibilityLabel="Close leaderboard"
           />
 
@@ -406,3 +401,4 @@ const LeaderboardRow: React.FC<LeaderboardRowProps> = ({
 };
 
 export default LeaderboardModal;
+

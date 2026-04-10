@@ -663,3 +663,4 @@ export const modalStyles = StyleSheet.create({
     fontWeight: "500",
   } as TextStyle,
 });
+

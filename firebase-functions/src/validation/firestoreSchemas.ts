@@ -43,6 +43,8 @@ export const PlayerProgressSchema = z.object({
 
 // Define the structure for player stats
 export const PlayerStatsSchema = z.object({
+  xp: z.number().int().nonnegative().default(0),
+  level: z.number().int().positive().default(1),
   dailyPuzzlesCompleted: z.number().int().nonnegative().default(0),
   bestStreak: z.number().int().nonnegative().default(0),
   totalWordsGuessed: z.number().int().nonnegative().default(0),

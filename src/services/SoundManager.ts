@@ -135,6 +135,25 @@ export const SoundManager = {
     await SoundManager.fadeIn(music, options);
   },
 
+  fadeOutBackgroundMusic: async (options: FadeOptions = {}) => {
+    if (!music) return;
+    await SoundManager.fadeOut(music, options);
+  },
+
+  playSuccess: async (): Promise<void> => {
+    await SoundManager.resumeCurrentMusic();
+  },
+
+  playNegative: async (): Promise<void> => {
+    await SoundManager.pauseCurrentMusic();
+  },
+
+  playNegativeWithFadeIn: async (options: FadeOptions = {}): Promise<void> => {
+    if (!music) return;
+    await SoundManager.fadeOut(music, { duration: 150, steps: 6, curve: "linear" });
+    await SoundManager.fadeIn(music, options);
+  },
+
   fadeIn: async (
     sound: AudioPlayer,
     options: FadeOptions = {}
@@ -164,6 +183,50 @@ export const SoundManager = {
     } finally {
       activeFades.delete(sound);
     }
+  },
+
+  fadeOut: async (
+    sound: AudioPlayer,
+    options: FadeOptions = {}
+  ): Promise<void> => {
+    const config = { ...DEFAULT_FADE_OPTIONS, ...options };
+    if (activeFades.has(sound)) return;
+
+    try {
+      activeFades.add(sound);
+      if (!sound.isLoaded) return;
+
+      const startingVolume = typeof sound.volume === "number" ? sound.volume : 1;
+      const stepDuration = config.duration / config.steps;
+      for (let i = 0; i <= config.steps; i++) {
+        if (!activeFades.has(sound)) break;
+        const progress = i / config.steps;
+        const eased = calculateFadeValue(progress, config.curve);
+        sound.volume = Math.max(0, startingVolume * (1 - eased));
+        if (i < config.steps) await safeDelay(stepDuration);
+      }
+      if (sound.playing) sound.pause();
+    } catch (error) {
+      logger.error("Error during fade out:", error);
+      captureException(error);
+    } finally {
+      activeFades.delete(sound);
+    }
+  },
+
+  crossfade: async (
+    fromSound: AudioPlayer,
+    toSound: AudioPlayer,
+    options: FadeOptions = {}
+  ): Promise<void> => {
+    await Promise.all([
+      SoundManager.fadeOut(fromSound, options),
+      SoundManager.fadeIn(toSound, options),
+    ]);
+  },
+
+  cancelFade: (sound: AudioPlayer): void => {
+    activeFades.delete(sound);
   },
 
   unload: async () => {

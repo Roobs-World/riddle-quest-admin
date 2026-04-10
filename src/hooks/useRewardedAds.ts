@@ -104,7 +104,9 @@ const useRewardedAds = (): UseRewardedAds => {
     logger.debug("Rewarded ad loaded from " + adInfo.networkName);
     setIsRewardedAdReady(true);
     retryAttempt.current = 0; // Reset retry attempt
-    void analyticsService.logAdEvent("loaded", { network_name: adInfo.networkName });
+    void analyticsService.logAdEvent("loaded", {
+      network_name: adInfo.networkName ?? "unknown",
+    });
   }, []);
 
   const onRewardedAdLoadFailed = useCallback(
@@ -116,7 +118,9 @@ const useRewardedAds = (): UseRewardedAds => {
           errorInfo.message
       );
       setIsRewardedAdReady(false);
-      void analyticsService.logAdEvent("load_failed", { error_code: errorInfo.code });
+      void analyticsService.logAdEvent("load_failed", {
+        error_code: errorInfo.code ?? -1,
+      });
 
       // AppLovin recommends retrying with exponentially higher delays
       retryAttempt.current++;
@@ -159,7 +163,9 @@ const useRewardedAds = (): UseRewardedAds => {
   const onRewardedAdDisplayed = useCallback(
     (adInfo: AdInfo) => {
       logger.debug("Rewarded ad displayed");
-      void analyticsService.logAdEvent("displayed", { network_name: adInfo.networkName });
+      void analyticsService.logAdEvent("displayed", {
+        network_name: adInfo.networkName ?? "unknown",
+      });
     },
     []
   );

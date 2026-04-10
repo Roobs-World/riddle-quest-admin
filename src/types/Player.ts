@@ -21,6 +21,8 @@ export type Player = {
 };
 
 export type PlayerStats = {
+  xp: number | admin.firestore.FieldValue;
+  level: number | admin.firestore.FieldValue;
   gamesPlayed: number | admin.firestore.FieldValue;
   wins: number | admin.firestore.FieldValue;
   winStreak: number | admin.firestore.FieldValue;
@@ -41,3 +43,4 @@ export interface PurchaseValidationResponse {
   success: boolean;
   newCoins?: number;
 }
+

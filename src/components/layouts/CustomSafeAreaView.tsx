@@ -101,3 +101,4 @@ const CustomSafeAreaView: React.FC<CustomSafeAreaViewProps> = ({
 };
 
 export default CustomSafeAreaView;
+

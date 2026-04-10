@@ -7,9 +7,8 @@ import WideButton from "../../buttons/WideButton";
 import {
   MODAL_WIDTH,
   MODAL_HEIGHT,
-  CLOSE_BUTTON_INSET,
   CLOSE_BUTTON_SIZE,
-  MODAL_CLOSE_TOP_OFFSET,
+  MODAL_CLOSE_BUTTON_POSITION,
 } from "../../../constants/layout";
 
 interface InfoModalProps {
@@ -59,12 +58,7 @@ const InfoModal: React.FC<InfoModalProps> = ({
             <CloseButton
               onPress={onClose}
               size={CLOSE_BUTTON_SIZE}
-              style={{
-                position: "absolute",
-                top: MODAL_CLOSE_TOP_OFFSET,
-                right: -CLOSE_BUTTON_INSET,
-                zIndex: 10,
-              }}
+              style={MODAL_CLOSE_BUTTON_POSITION}
             />
             <Text
               style={{
@@ -99,3 +93,4 @@ const InfoModal: React.FC<InfoModalProps> = ({
 };
 
 export default InfoModal;
+

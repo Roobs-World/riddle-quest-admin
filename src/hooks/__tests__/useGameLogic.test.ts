@@ -112,6 +112,7 @@ describe("useGameLogic", () => {
         outcome: "win",
         feedback: ["green", "green", "green", "green", "green"],
         coinsEarned: 10,
+        scoreEarned: 0,
         correctAnswer: "GUESS",
         newlyUnlockedAchievementIds: [],
       });
@@ -271,3 +272,4 @@ describe("useGameLogic", () => {
     });
   });
 });
+

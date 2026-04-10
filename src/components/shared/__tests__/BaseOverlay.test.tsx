@@ -100,11 +100,8 @@ describe("BaseOverlay", () => {
       expect(queryByTestId("close-button")).toBeNull();
     });
 
-    it("renders close button in top-left position", () => {
-      const { getByTestId } = render(
-        <BaseOverlay {...defaultProps} closeButtonPosition="top-left" />
-      );
-
+    it("renders close button in the standard top-right position", () => {
+      const { getByTestId } = render(<BaseOverlay {...defaultProps} />);
       expect(getByTestId("close-button")).toBeTruthy();
     });
 
@@ -302,19 +299,10 @@ describe("BaseOverlay", () => {
       });
     });
 
-    it("renders close button with different positions", () => {
-      const positions: Array<"top-right" | "top-left"> = [
-        "top-right",
-        "top-left",
-      ];
-
-      positions.forEach((position) => {
-        const { getByTestId } = render(
-          <BaseOverlay {...defaultProps} closeButtonPosition={position} />
-        );
-
-        expect(getByTestId("close-button")).toBeTruthy();
-      });
+    it("renders close button in a consistent position", () => {
+      const { getByTestId } = render(<BaseOverlay {...defaultProps} />);
+      expect(getByTestId("close-button")).toBeTruthy();
     });
   });
 });
+

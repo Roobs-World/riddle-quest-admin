@@ -36,6 +36,30 @@ export const BASE_SCORE_CHALLENGE = 100;
 /** Base score for a Tutorial win. */
 export const BASE_SCORE_TUTORIAL = 25;
 
+/**
+ * XP thresholds to reach each level (index 0 = level 1).
+ * Kept in sync with client `src/constants/game.ts`.
+ */
+export const XP_LEVEL_THRESHOLDS = [0, 100, 300, 600, 1000, 1500, 2500, 4000, 6000, 9000] as const;
+
+/** Maximum level based on XP thresholds. */
+export const XP_MAX_LEVEL = XP_LEVEL_THRESHOLDS.length;
+
+/**
+ * Converts cumulative XP into a 1-based level.
+ */
+export function getLevelFromXp(totalXp: number): number {
+  let level = 1;
+  for (let i = 1; i < XP_LEVEL_THRESHOLDS.length; i++) {
+    if (totalXp >= XP_LEVEL_THRESHOLDS[i]) {
+      level = i + 1;
+    } else {
+      break;
+    }
+  }
+  return level;
+}
+
 /** Threshold of remaining riddles below which new riddles are auto-generated. */
 export const RIDDLE_GENERATION_THRESHOLD = 10;
 

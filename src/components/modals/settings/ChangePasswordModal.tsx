@@ -9,8 +9,8 @@ import ModalBg from "../../../../assets/images/modal-bg.svg";
 import {
   MODAL_WIDTH,
   MODAL_HEIGHT,
-  CLOSE_BUTTON_INSET,
   CLOSE_BUTTON_SIZE,
+  MODAL_CLOSE_BUTTON_POSITION,
   INPUT_BORDER_RADIUS,
   INPUT_PADDING,
 } from "../../../constants/layout";
@@ -119,12 +119,7 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
             <CloseButton
               onPress={handleClose}
               size={CLOSE_BUTTON_SIZE}
-              style={{
-                position: "absolute",
-                top: -CLOSE_BUTTON_INSET,
-                right: -CLOSE_BUTTON_INSET,
-                zIndex: 10,
-              }}
+              style={MODAL_CLOSE_BUTTON_POSITION}
             />
             <Text
               style={{
@@ -170,3 +165,4 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
 };
 
 export default ChangePasswordModal;
+

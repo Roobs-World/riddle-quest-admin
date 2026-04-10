@@ -56,6 +56,8 @@ describe("Player Types", () => {
         },
         avatarUrl: "https://example.com/avatar.jpg",
         stats: {
+          xp: 0,
+          level: 1,
           gamesPlayed: 50,
           wins: 30,
           winStreak: 5,
@@ -103,6 +105,8 @@ describe("Player Types", () => {
   describe("PlayerStats", () => {
     it("should accept numeric values", () => {
       const stats: PlayerStats = {
+        xp: 0,
+        level: 1,
         gamesPlayed: 25,
         wins: 15,
         winStreak: 3,
@@ -127,6 +131,8 @@ describe("Player Types", () => {
 
     it("should work with zero values", () => {
       const stats: PlayerStats = {
+        xp: 0,
+        level: 1,
         gamesPlayed: 0,
         wins: 0,
         winStreak: 0,
@@ -201,3 +207,5 @@ describe("Player Types", () => {
     });
   });
 });
+
+

@@ -11,3 +11,4 @@ const CloseIconWhite = ({ width = 18, height = 18 }: CloseIconProps) => {
 };
 
 export default CloseIconWhite;
+

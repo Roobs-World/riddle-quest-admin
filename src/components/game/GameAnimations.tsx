@@ -16,3 +16,4 @@ const GameAnimations: React.FC<GameAnimationsProps> = ({ isWin }) => {
 };
 
 export default GameAnimations;
+

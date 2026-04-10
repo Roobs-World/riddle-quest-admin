@@ -43,6 +43,8 @@ const PlayerProgressSchema = z.object({
 
 // Define the structure for player stats
 const PlayerStatsSchema = z.object({
+  xp: z.number().int().nonnegative().default(0),
+  level: z.number().int().positive().default(1),
   dailyPuzzlesCompleted: z.number().int().nonnegative().default(0),
   bestStreak: z.number().int().nonnegative().default(0),
   totalWordsGuessed: z.number().int().nonnegative().default(0),
@@ -87,6 +89,8 @@ export const PlayerSchema = z.object({
   lastLogin: z.number().optional(),
   lastDailyChallengeCompletedAt: z.number().optional(),
   stats: PlayerStatsSchema.default(() => ({
+    xp: 0,
+    level: 1,
     dailyPuzzlesCompleted: 0,
     bestStreak: 0,
     totalWordsGuessed: 0,
@@ -128,3 +132,4 @@ export type FirestoreRiddle = z.infer<typeof FirestoreRiddleSchema>;
 
 export type PlayerProgress = z.infer<typeof PlayerProgressSchema>;
 export type PlayerStats = z.infer<typeof PlayerStatsSchema>;
+

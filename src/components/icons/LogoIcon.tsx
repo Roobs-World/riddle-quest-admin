@@ -16,3 +16,4 @@ const LogoIcon: React.FC<LogoIconProps> = ({
 };
 
 export default LogoIcon;
+

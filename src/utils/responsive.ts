@@ -253,3 +253,4 @@ export const addOrientationChangeListener = (callback: () => void): (() => void)
   const subscription = Dimensions.addEventListener("change", callback);
   return () => subscription?.remove();
 };
+

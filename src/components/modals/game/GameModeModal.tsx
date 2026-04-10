@@ -9,9 +9,8 @@ import { TYPOGRAPHY, SPACING } from "../../../styles";
 import {
   MODAL_WIDTH,
   MODAL_HEIGHT,
-  CLOSE_BUTTON_INSET,
   CLOSE_BUTTON_SIZE,
-  MODAL_CLOSE_TOP_OFFSET_NARROW,
+  MODAL_CLOSE_BUTTON_POSITION,
 } from "../../../constants/layout";
 import CloseButton from "../../buttons/CloseButton";
 
@@ -63,12 +62,7 @@ const GameModeModal: React.FC<GameModeModalProps> = ({
             <CloseButton
               onPress={onClose}
               size={CLOSE_BUTTON_SIZE}
-              style={{
-                position: "absolute",
-                top: MODAL_CLOSE_TOP_OFFSET_NARROW,
-                right: -CLOSE_BUTTON_INSET,
-                zIndex: 10,
-              }}
+              style={MODAL_CLOSE_BUTTON_POSITION}
             />
 
             <Text
@@ -163,3 +157,4 @@ const GameModeModal: React.FC<GameModeModalProps> = ({
 };
 
 export default GameModeModal;
+

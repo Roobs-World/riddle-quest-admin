@@ -83,7 +83,7 @@ function makeEntry(overrides: Partial<LeaderboardEntry> = {}): LeaderboardEntry 
   return {
     userId: "user-1",
     username: "Alice",
-    totalScore: 500,
+    xp: 500,
     totalWins: 10,
     bestStreak: 5,
     updatedAt: 1_700_000_000,
@@ -138,15 +138,15 @@ describe("LeaderboardModal", () => {
 
     const { getByLabelText } = render(<LeaderboardModal {...defaultProps} />);
 
-    expect(getByLabelText("Score")).toBeTruthy();
+    expect(getByLabelText("XP")).toBeTruthy();
     expect(getByLabelText("Wins")).toBeTruthy();
     expect(getByLabelText("Streak")).toBeTruthy();
   });
 
   it("displays entries after successful fetch", async () => {
     const entries = [
-      makeEntry({ userId: "user-1", username: "Alice", totalScore: 500 }),
-      makeEntry({ userId: "user-2", username: "Bob", totalScore: 300 }),
+      makeEntry({ userId: "user-1", username: "Alice", xp: 500 }),
+      makeEntry({ userId: "user-2", username: "Bob", xp: 300 }),
     ];
     mockHttpsCallable.mockResolvedValueOnce({ data: { entries } });
 
@@ -252,7 +252,7 @@ describe("LeaderboardModal", () => {
   });
 
   it("displays stat values as localized numbers", async () => {
-    const entries = [makeEntry({ totalScore: 1000 })];
+    const entries = [makeEntry({ xp: 1000 })];
     mockHttpsCallable.mockResolvedValueOnce({ data: { entries } });
 
     const { getByText } = render(<LeaderboardModal {...defaultProps} />);
@@ -263,3 +263,4 @@ describe("LeaderboardModal", () => {
     });
   });
 });
+

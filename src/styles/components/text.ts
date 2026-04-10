@@ -114,3 +114,4 @@ export const textStyles = StyleSheet.create({
     lineHeight: TYPOGRAPHY.fontSize["2xl"] * TYPOGRAPHY.lineHeight.tight,
   } as TextStyle,
 });
+

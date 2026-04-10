@@ -214,6 +214,8 @@ export async function initializeNewUser(
       registeredAt: Date.now(),
       lastLogin: Date.now(),
       stats: {
+        xp: 0,
+        level: 1,
         dailyPuzzlesCompleted: 0,
         bestStreak: 0,
         totalWordsGuessed: 0,
@@ -272,6 +274,8 @@ export async function ensureUserDocumentComplete(userId: string): Promise<void> 
     // Ensure stats object exists with all required fields
     if (!userData.stats) {
       updates.stats = {
+        xp: 0,
+        level: 1,
         dailyPuzzlesCompleted: 0,
         bestStreak: 0,
         totalWordsGuessed: 0,
@@ -291,6 +295,8 @@ export async function ensureUserDocumentComplete(userId: string): Promise<void> 
       // Check for missing stat fields and add defaults
       const currentStats = userData.stats;
       const defaultStats = {
+        xp: 0,
+        level: 1,
         dailyPuzzlesCompleted: 0,
         bestStreak: 0,
         totalWordsGuessed: 0,

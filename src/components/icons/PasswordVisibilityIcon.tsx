@@ -18,3 +18,4 @@ const PasswordVisibilityIcon: React.FC<PasswordVisibilityIconProps> = ({
 };
 
 export default PasswordVisibilityIcon;
+

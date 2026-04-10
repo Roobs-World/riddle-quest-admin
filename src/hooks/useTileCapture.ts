@@ -99,7 +99,7 @@ export const useTileCapture = () => {
 
               if (tileRef) {
                 const measurePromise = new Promise<void>((resolveMeasure) => {
-                  tileRef.measure((x, y, width, height, pageX, pageY) => {
+                  tileRef.measure((_x, _y, _width, _height, pageX, pageY) => {
                     const feedback = row.feedback[cellIndex];
 
                     tiles.push({

@@ -298,3 +298,4 @@ export class OfflineQueueService {
 
 /** Singleton export for convenience. */
 export const offlineQueue = OfflineQueueService.getInstance();
+

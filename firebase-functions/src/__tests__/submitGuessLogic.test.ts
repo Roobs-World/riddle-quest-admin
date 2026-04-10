@@ -1,10 +1,11 @@
 import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
 import {HttpsError} from "firebase-functions/v2/https";
-import {handleGuessLogic} from "../submitGuessLogic";
+import {handleCompleteGameLogic, handleGuessLogic} from "../submitGuessLogic";
 import * as firestoreService from "../firestoreService";
 import * as riddleGeneration from "../riddleGeneration";
 import * as achievements from "../achievements";
+import * as leaderboard from "../leaderboard";
 import type {Player, FirestoreRiddle} from "../validation/firestoreSchemas";
 import type {SubmitGuessRequestData, SubmitGuessAuthContext} from "../validation/requestSchemas";
 
@@ -272,7 +273,8 @@ describe("handleGuessLogic", () => {
         totalWins: "increment(1)",
         winStreak: "increment(1)",
         totalGuessesInWins: "increment(1)",
-        totalScore: "increment(100)", // Classic mode: base 50 + attempts bonus (6-1+1)*10 = 60, total = 110, but this is for 1 attempt so 50 + 50 = 100
+        xp: "increment(100)",
+        level: 2,
         averageGuesses: parseFloat(
           ((mockUser.stats.totalGuessesInWins! + 1) / (mockUser.stats.totalWins! + 1)).toFixed(2),
         ),
@@ -418,7 +420,8 @@ describe("handleGuessLogic", () => {
         totalGuessesInWins: "increment(2)",
         challengeWins: "increment(1)",
         dailyPuzzlesCompleted: "increment(1)", // Added daily puzzles stat
-        totalScore: "increment(140)", // Challenge mode: base 100 + attempts bonus (5-2+1)*10 = 40, total = 140
+        xp: "increment(140)",
+        level: 2,
         averageGuesses: parseFloat(
           ((mockUser.stats.totalGuessesInWins! + 2) / (mockUser.stats.totalWins! + 1)).toFixed(2),
         ),
@@ -917,9 +920,51 @@ describe("handleGuessLogic", () => {
       expect(firestoreService.updateUserStats).toHaveBeenCalledWith(
         authContext.uid,
         expect.objectContaining({
-          totalScore: "increment(55)",
+          xp: "increment(55)",
         }),
       );
+    });
+  });
+
+  describe("handleCompleteGameLogic - Leaderboard", () => {
+    test("should update leaderboard entry when game is won", async () => {
+      const requestData = {
+        riddleId: "riddle-123",
+        gameMode: "classic" as const,
+        attempts: 1,
+        isCorrect: true,
+      };
+
+      await handleCompleteGameLogic(requestData, authContext);
+
+      expect(leaderboard.updateLeaderboardEntry).toHaveBeenCalledTimes(1);
+      expect(leaderboard.updateLeaderboardEntry).toHaveBeenCalledWith(
+        authContext.uid,
+        mockUser.username,
+        expect.objectContaining({
+          totalWins: mockUser.stats.totalWins + 1,
+          bestStreak: Math.max(mockUser.stats.bestStreak, mockUser.stats.winStreak + 1),
+        }),
+        null,
+      );
+
+      const leaderboardStats = (leaderboard.updateLeaderboardEntry as jest.Mock).mock.calls[0][2] as {
+        xp: number;
+      };
+      expect(leaderboardStats.xp).toBeGreaterThan(mockUser.stats.xp ?? 0);
+    });
+
+    test("should not update leaderboard entry when game is lost", async () => {
+      const requestData = {
+        riddleId: "riddle-123",
+        gameMode: "classic" as const,
+        attempts: 3,
+        isCorrect: false,
+      };
+
+      await handleCompleteGameLogic(requestData, authContext);
+
+      expect(leaderboard.updateLeaderboardEntry).not.toHaveBeenCalled();
     });
   });
 });

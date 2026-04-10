@@ -269,3 +269,4 @@ const useGameLogic = ({ riddleId, answer, gameMode }: UseGameLogicProps) => {
 };
 
 export default useGameLogic;
+

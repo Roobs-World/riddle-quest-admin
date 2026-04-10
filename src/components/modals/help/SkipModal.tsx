@@ -7,9 +7,8 @@ import WideButton from "src/components/buttons/WideButton";
 import {
   MODAL_WIDTH,
   MODAL_HEIGHT,
-  CLOSE_BUTTON_INSET,
   CLOSE_BUTTON_SIZE,
-  MODAL_CLOSE_TOP_OFFSET,
+  MODAL_CLOSE_BUTTON_POSITION,
 } from "../../../constants/layout";
 import { SPACING } from "../../../styles";
 
@@ -63,12 +62,7 @@ const SkipModal: React.FC<SkipModalProps> = ({
             <CloseButton
               onPress={onClose}
               size={CLOSE_BUTTON_SIZE}
-              style={{
-                position: "absolute",
-                top: MODAL_CLOSE_TOP_OFFSET,
-                right: -CLOSE_BUTTON_INSET,
-                zIndex: 10,
-              }}
+              style={MODAL_CLOSE_BUTTON_POSITION}
             />
             <Text
               style={{
@@ -130,3 +124,4 @@ const SkipModal: React.FC<SkipModalProps> = ({
 };
 
 export default SkipModal;
+

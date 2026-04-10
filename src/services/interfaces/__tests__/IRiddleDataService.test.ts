@@ -117,3 +117,4 @@ describe("IRiddleDataService", () => {
     await expect(mockService.getTutorialRiddleCount()).resolves.toBe(0);
   });
 });
+

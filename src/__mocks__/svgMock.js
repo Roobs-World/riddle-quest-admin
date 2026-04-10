@@ -12,3 +12,4 @@ const SvgMock = React.forwardRef((props, ref) => {
 SvgMock.displayName = "SvgMock";
 
 export default SvgMock;
+

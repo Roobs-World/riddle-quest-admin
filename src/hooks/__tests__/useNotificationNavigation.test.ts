@@ -218,3 +218,4 @@ describe("useNotificationNavigation", () => {
     expect(onNavigate).not.toHaveBeenCalled();
   });
 });
+

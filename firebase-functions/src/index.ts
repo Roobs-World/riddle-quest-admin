@@ -72,5 +72,3 @@ export {
   getLeaderboard,
   dailyStreakReminder,
 };
-
-// Removed all individual function definitions and exports from here

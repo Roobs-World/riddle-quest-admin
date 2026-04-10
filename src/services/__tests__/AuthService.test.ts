@@ -129,8 +129,10 @@ describe("AuthService", () => {
     // Setup Google Sign-In defaults
     (GoogleSignin.hasPlayServices as jest.Mock).mockResolvedValue(true);
     (GoogleSignin.signIn as jest.Mock).mockResolvedValue({
-      data: { idToken: "mockGoogleIdToken" },
-      user: { email: "user@google.com", name: "Test Google User" },
+      data: {
+        idToken: "mockGoogleIdToken",
+        user: { email: "user@google.com", name: "Test Google User" },
+      },
     });
 
     // Setup Facebook defaults
@@ -1031,3 +1033,4 @@ describe("AuthService", () => {
     });
   });
 });
+

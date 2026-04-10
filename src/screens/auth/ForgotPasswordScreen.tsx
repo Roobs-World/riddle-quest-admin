@@ -127,3 +127,4 @@ const ForgotPasswordScreen = ({ navigation }: ForgotPasswordScreenProps) => {
 };
 
 export default ForgotPasswordScreen;
+

@@ -97,3 +97,4 @@ const Controls: React.FC<ControlsProps> = ({ onNextPress, isWin }) => {
 };
 
 export default React.memo(Controls);
+

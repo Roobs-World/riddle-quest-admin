@@ -23,6 +23,7 @@ import {
   BASE_SCORE_CLASSIC,
   BASE_SCORE_CHALLENGE,
   BASE_SCORE_TUTORIAL,
+  getLevelFromXp,
   RIDDLE_GENERATION_THRESHOLD,
   RIDDLE_GENERATION_BATCH_SIZE,
 } from "./constants";
@@ -152,6 +153,8 @@ export async function handleGuessLogic(
     }
 
     const currentStats: PlayerStats = user.stats || {
+      xp: 0,
+      level: 1,
       dailyPuzzlesCompleted: 0,
       bestStreak: 0,
       totalWordsGuessed: 0,
@@ -215,7 +218,14 @@ export async function handleGuessLogic(
       const baseScore = gameMode === "challenge" ? BASE_SCORE_CHALLENGE : gameMode === "tutorial" ? BASE_SCORE_TUTORIAL : BASE_SCORE_CLASSIC;
       const attemptsBonus = Math.max(0, (maxAttempts - attempts + 1) * 10);
       const scoreEarned = baseScore + attemptsBonus;
-      statsUpdate.totalScore = admin.firestore.FieldValue.increment(scoreEarned);
+      const currentXp = currentStats.xp ?? 0;
+      const newXp = currentXp + scoreEarned;
+      const priorLevel = currentStats.level ?? getLevelFromXp(currentXp);
+      const newLevel = getLevelFromXp(newXp);
+      statsUpdate.xp = admin.firestore.FieldValue.increment(scoreEarned);
+      if (newLevel !== priorLevel) {
+        statsUpdate.level = newLevel;
+      }
       await updateUserCoins(userId, coinsEarned);
 
       if (Object.keys(playerProfileUpdate).length > 0) {
@@ -228,13 +238,13 @@ export async function handleGuessLogic(
 
       // Update leaderboard entry with computed post-win stats (non-blocking)
       try {
-        const newTotalScore = (currentStats.totalScore ?? 0) + scoreEarned;
+        const newTotalXp = (currentStats.xp ?? 0) + scoreEarned;
         const newTotalWins = (currentStats.totalWins ?? 0) + 1;
         const newBestStreak = Math.max((currentStats.bestStreak ?? 0), (currentStats.winStreak ?? 0) + 1);
         await updateLeaderboardEntry(
           userId,
           user.username,
-          {totalScore: newTotalScore, totalWins: newTotalWins, bestStreak: newBestStreak},
+          {level: newLevel, xp: newTotalXp, totalWins: newTotalWins, bestStreak: newBestStreak},
           user.avatarUrl ?? null,
         );
       } catch (error) {
@@ -351,7 +361,7 @@ export const submitGuess = onCall<SubmitGuessRequestData, Promise<SubmitGuessRes
 });
 
 // ---------------------------------------------------------------------------
-// completeGame — called once when a game truly ends (win or final loss).
+// completeGame â€” called once when a game truly ends (win or final loss).
 // Feedback is computed client-side; this function handles all server-side
 // side-effects: coins, stats, progress advancement, and achievements.
 // ---------------------------------------------------------------------------
@@ -368,6 +378,10 @@ interface CompleteGameResponseData {
   coinsEarned: number;
   newlyUnlockedAchievementIds: string[];
   scoreEarned: number;
+  xpEarned: number;
+  newXp: number;
+  newLevel: number;
+  leveledUp: boolean;
 }
 
 export async function handleCompleteGameLogic(
@@ -390,6 +404,8 @@ export async function handleCompleteGameLogic(
     }
 
     const currentStats: PlayerStats = user.stats || {
+      xp: 0,
+      level: 1,
       dailyPuzzlesCompleted: 0,
       bestStreak: 0,
       totalWordsGuessed: 0,
@@ -412,6 +428,10 @@ export async function handleCompleteGameLogic(
     };
 
     let coinsEarned = 0;
+    let xpEarned = 0;
+    let newXp = currentStats.xp ?? 0;
+    let newLevel = currentStats.level ?? getLevelFromXp(newXp);
+    let leveledUp = false;
 
     if (isCorrect) {
       statsUpdate.wins = admin.firestore.FieldValue.increment(1);
@@ -449,7 +469,15 @@ export async function handleCompleteGameLogic(
       const baseScore =
         gameMode === "challenge" ? BASE_SCORE_CHALLENGE : gameMode === "tutorial" ? BASE_SCORE_TUTORIAL : BASE_SCORE_CLASSIC;
       const attemptsBonus = Math.max(0, (maxAttempts - attempts + 1) * 10);
-      statsUpdate.totalScore = admin.firestore.FieldValue.increment(baseScore + attemptsBonus);
+      xpEarned = baseScore + attemptsBonus;
+      statsUpdate.xp = admin.firestore.FieldValue.increment(xpEarned);
+      newXp = (currentStats.xp ?? 0) + xpEarned;
+      const previousLevel = currentStats.level ?? getLevelFromXp(currentStats.xp ?? 0);
+      newLevel = getLevelFromXp(newXp);
+      leveledUp = newLevel > previousLevel;
+      if (newLevel !== previousLevel) {
+        statsUpdate.level = newLevel;
+      }
 
       await updateUserCoins(userId, coinsEarned);
 
@@ -459,6 +487,23 @@ export async function handleCompleteGameLogic(
 
       if ((currentStats.winStreak || 0) + 1 > (currentStats.bestStreak || 0)) {
         statsUpdate.bestStreak = (currentStats.winStreak || 0) + 1;
+      }
+
+      // Update leaderboard entry with computed post-win stats (non-blocking)
+      try {
+        const scoreEarned = xpEarned;
+        const newTotalXp = (currentStats.xp ?? 0) + scoreEarned;
+        const newTotalWins = (currentStats.totalWins ?? 0) + 1;
+        const newBestStreak = Math.max((currentStats.bestStreak ?? 0), (currentStats.winStreak ?? 0) + 1);
+        await updateLeaderboardEntry(
+          userId,
+          user.username,
+          {level: newLevel, xp: newTotalXp, totalWins: newTotalWins, bestStreak: newBestStreak},
+          user.avatarUrl ?? null,
+        );
+      } catch (error) {
+        functions.logger.error("Error updating leaderboard entry:", error);
+        captureException(error);
       }
 
       if (gameMode === "classic") {
@@ -523,17 +568,9 @@ export async function handleCompleteGameLogic(
       captureException(error);
     }
 
-    const scoreEarned = isCorrect
-      ? (() => {
-          const maxAttempts =
-            gameMode === "challenge" ? MAX_ATTEMPTS_CHALLENGE : gameMode === "tutorial" ? MAX_ATTEMPTS_TUTORIAL : MAX_ATTEMPTS_CLASSIC;
-          const baseScore =
-            gameMode === "challenge" ? BASE_SCORE_CHALLENGE : gameMode === "tutorial" ? BASE_SCORE_TUTORIAL : BASE_SCORE_CLASSIC;
-          return baseScore + Math.max(0, (maxAttempts - attempts + 1) * 10);
-        })()
-      : 0;
+    const scoreEarned = xpEarned;
 
-    return {coinsEarned, newlyUnlockedAchievementIds, scoreEarned};
+    return {coinsEarned, newlyUnlockedAchievementIds, scoreEarned, xpEarned, newXp, newLevel, leveledUp};
   } catch (error: unknown) {
     functions.logger.error("Error in handleCompleteGameLogic:", error);
     captureException(error);
@@ -548,3 +585,4 @@ export const completeGame = onCall<CompleteGameRequestData, Promise<CompleteGame
   }
   return handleCompleteGameLogic(request.data, request.auth);
 });
+

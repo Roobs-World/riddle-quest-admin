@@ -174,3 +174,4 @@ const CoinsDisplay: React.FC<CoinsDisplayProps> = ({ coins, onPress }) => {
 };
 
 export default CoinsDisplay;
+

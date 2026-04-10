@@ -86,3 +86,4 @@ export default function TreasureChest({ coins }: { coins: number }) {
     </View>
   );
 }
+

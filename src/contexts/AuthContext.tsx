@@ -108,16 +108,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const notifUnsubRef = useRef<(() => void) | null>(null);
   // Tracks the current authenticated user ID for use inside the auth listener.
   const currentUserIdRef = useRef<string | null>(null);
-
-  // Helper function to check if the last completed date was today in UTC
-  const isTodayUTC = (date?: Date | null): boolean => {
-    if (!date) return true; // If no date is set, the challenge is available
-    const todayUtc = new Date();
-    todayUtc.setUTCHours(0, 0, 0, 0);
-    const lastCompletedUtc = new Date(date);
-    lastCompletedUtc.setUTCHours(0, 0, 0, 0);
-    return todayUtc.getTime() > lastCompletedUtc.getTime();
-  };
+  // Deduplicates immediate duplicate auth callbacks for the same user.
+  const lastAuthEventRef = useRef<{ uid: string | null; at: number }>({
+    uid: null,
+    at: 0,
+  });
 
   const hasCompletedDailyChallengeToday = useCallback(
     async (player: Player | null): Promise<boolean> => {
@@ -163,12 +158,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       let attemptCount = 0;
       const maxAttempts = 20; // Try for up to 1 minute (20 * 3 seconds)
 
-      // Check daily challenge availability
-      // The lastDailyChallengeCompletedAt is stored as a number timestamp, convert to Date for isTodayUTC
-      const lastCompletedDate = player.lastDailyChallengeCompletedAt
-        ? new Date(player.lastDailyChallengeCompletedAt)
-        : null;
-      const dailyAvailable = isTodayUTC(lastCompletedDate);
+      // Resolve daily challenge availability from backend status so we don't rely
+      // on stale local timestamps after a completion in the same session.
+      const completedToday = await hasCompletedDailyChallengeToday(player);
+      const dailyAvailable = !completedToday;
       setIsDailyChallengeAvailable(dailyAvailable); // Update availability state
 
       // Helper function to attempt riddle fetch
@@ -307,7 +300,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         logger.error("❌ Failed to load any riddle after all attempts");
       }
     },
-    [setIsRiddlesInitializing, setGameMode]
+    [setIsRiddlesInitializing, setGameMode, hasCompletedDailyChallengeToday]
   );
 
   // Initialize offline queue once on mount
@@ -326,6 +319,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       );
 
       if (user) {
+        const now = Date.now();
+        const isDuplicateImmediateAuthEvent =
+          lastAuthEventRef.current.uid === user.uid &&
+          now - lastAuthEventRef.current.at < 1500;
+        if (isDuplicateImmediateAuthEvent) {
+          logger.debug(
+            "Skipping duplicate immediate auth event for user:",
+            user.uid
+          );
+          return;
+        }
+        lastAuthEventRef.current = { uid: user.uid, at: now };
+
         // User is signed in
         logger.debug("🔐 User authenticated, loading user data...");
         setIsAuthenticated(true);
@@ -365,6 +371,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
                 tutorialIndex: 0,
               },
               stats: {
+                xp: 0,
+                level: 1,
                 dailyPuzzlesCompleted: 0,
                 bestStreak: 0,
                 totalWordsGuessed: 0,
@@ -573,6 +581,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           setIsLoading(false);
         }
       } else {
+        lastAuthEventRef.current = { uid: null, at: Date.now() };
         // User is signed out - no need to load riddles
         logger.debug("🚪 User signed out, clearing data");
         sentryClearUser();
@@ -753,3 +762,4 @@ export const useAuth = () => {
   }
   return context;
 };
+

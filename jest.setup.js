@@ -17,6 +17,14 @@ global.nativeModuleProxy = {
 };
 global.__fbBatchedBridgeConfig = { remoteModuleConfig: [] };
 
+if (typeof global.ResizeObserver === "undefined") {
+  global.ResizeObserver = class ResizeObserver {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  };
+}
+
 import "react-native-gesture-handler/jestSetup";
 
 jest.mock("react-native/Libraries/TurboModule/TurboModuleRegistry", () => ({
@@ -257,6 +265,21 @@ jest.mock("@react-native-firebase/analytics", () => {
     setUserProperty: jest.fn(() => Promise.resolve()),
   };
 });
+
+jest.mock("@sentry/react-native", () => ({
+  __esModule: true,
+  init: jest.fn(),
+  withScope: jest.fn((cb) => {
+    cb?.({ setExtras: jest.fn() });
+  }),
+  captureException: jest.fn(),
+  captureMessage: jest.fn(),
+  setUser: jest.fn(),
+  addBreadcrumb: jest.fn(),
+  startInactiveSpan: jest.fn(() => ({
+    end: jest.fn(),
+  })),
+}));
 
 jest.mock("@react-native-firebase/auth", () => ({
   __esModule: true,

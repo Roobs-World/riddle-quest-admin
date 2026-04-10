@@ -51,6 +51,14 @@ export const CLOSE_BUTTON_INSET = moderateScale(20);
 /** Standard close button icon size used across all modals. */
 export const CLOSE_BUTTON_SIZE = scale(20);
 
+/** Standard top-right placement for modal close buttons. */
+export const MODAL_CLOSE_BUTTON_POSITION = {
+  position: "absolute" as const,
+  top: CLOSE_BUTTON_INSET,
+  right: CLOSE_BUTTON_INSET,
+  zIndex: 10,
+};
+
 /** Larger close button icon size for full-screen / shop modals. */
 export const CLOSE_BUTTON_SIZE_LG = scale(24);
 
@@ -286,3 +294,4 @@ export const KEYBOARD_ROW_SPACER = moderateScale(16);
 
 /** Width of the spacer that centres the bottom row, and of the backspace key. */
 export const KEYBOARD_BOTTOM_OFFSET = moderateScale(48);
+

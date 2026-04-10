@@ -35,8 +35,7 @@ jest.mock("../../../buttons/WideButton", () => {
 });
 
 // Mock the SVG components
-jest.mock("../../../../assets/images/wheel-bg.svg", () => "WheelBgSvg");
-jest.mock("../../../../assets/images/segment-bg.svg", () => "SegmentBgSvg");
+jest.mock("../../../../assets/images/modal-bg.svg", () => "ModalBgSvg");
 
 describe("LossModal", () => {
   const defaultProps = {
@@ -55,10 +54,8 @@ describe("LossModal", () => {
     it("should render correctly when visible", () => {
       const { getByText } = render(<LossModal {...defaultProps} />);
 
-      expect(getByText("Oh no!")).toBeTruthy();
-      expect(getByText("You lost this round.")).toBeTruthy();
-      expect(getByText("The correct word was")).toBeTruthy();
-      expect(getByText("WORLD")).toBeTruthy();
+      expect(getByText("So close!")).toBeTruthy();
+      expect(getByText("Out of attempts.")).toBeTruthy();
       expect(getByText("Next Level")).toBeTruthy();
     });
 
@@ -76,7 +73,7 @@ describe("LossModal", () => {
 
       // Test that switching visibility works
       rerender(<LossModal {...defaultProps} isVisible={true} />);
-      expect(queryByText("Oh no!")).toBeTruthy();
+      expect(queryByText("So close!")).toBeTruthy();
     });
 
     it("should render different correct answers", () => {
@@ -84,10 +81,34 @@ describe("LossModal", () => {
         <LossModal {...defaultProps} correctAnswer="HELLO" />
       );
 
-      expect(getByText("HELLO")).toBeTruthy();
+      expect(getByText("So close!")).toBeTruthy();
 
       rerender(<LossModal {...defaultProps} correctAnswer="TEST" />);
-      expect(getByText("TEST")).toBeTruthy();
+      expect(getByText("Out of attempts.")).toBeTruthy();
+    });
+
+    it("should never display the correct answer text", () => {
+      const { queryByText } = render(
+        <LossModal {...defaultProps} correctAnswer="SECRET" />
+      );
+
+      expect(queryByText("The correct word was")).toBeNull();
+      expect(queryByText("SECRET")).toBeNull();
+    });
+
+    it("should render ad and coin continue actions when callbacks are provided", () => {
+      const { getByText } = render(
+        <LossModal
+          {...defaultProps}
+          onWatchAdContinue={jest.fn()}
+          onCoinContinue={jest.fn()}
+          coinContinueCost={25}
+        />
+      );
+
+      expect(getByText("Watch Ad to Continue")).toBeTruthy();
+      expect(getByText("Use 25 Coins to Continue")).toBeTruthy();
+      expect(getByText("Skip Level")).toBeTruthy();
     });
   });
 
@@ -133,7 +154,7 @@ describe("LossModal", () => {
       );
 
       // Should render without crashing
-      expect(getByText("Oh no!")).toBeTruthy();
+      expect(getByText("So close!")).toBeTruthy();
       expect(getByText("Next Level")).toBeTruthy();
 
       // Should not crash when button is pressed
@@ -147,8 +168,7 @@ describe("LossModal", () => {
       const { getByText } = render(
         <LossModal {...defaultProps} correctAnswer="" />
       );
-      expect(getByText("The correct word was")).toBeTruthy();
-      // Empty string should still render (correctAnswer is empty)
+      expect(getByText("Out of attempts.")).toBeTruthy();
       expect(getByText("Next Level")).toBeTruthy();
     });
 
@@ -156,14 +176,15 @@ describe("LossModal", () => {
       const { getByText } = render(
         <LossModal {...defaultProps} correctAnswer="TEST123" />
       );
-      expect(getByText("TEST123")).toBeTruthy();
+      expect(getByText("Out of attempts.")).toBeTruthy();
     });
 
     it("should handle long answers", () => {
       const { getByText } = render(
         <LossModal {...defaultProps} correctAnswer="VERYLONGWORD" />
       );
-      expect(getByText("VERYLONGWORD")).toBeTruthy();
+      expect(getByText("So close!")).toBeTruthy();
     });
   });
 });
+

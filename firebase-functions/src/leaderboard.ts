@@ -6,9 +6,9 @@
  * Clients call `getLeaderboard` to retrieve the top players for a given stat.
  *
  * Leaderboard types:
- *  - "totalScore"  — highest cumulative score across all modes
- *  - "totalWins"   — most games won
- *  - "bestStreak"  — longest win streak ever achieved
+ *  - "xp"          — highest cumulative XP across all modes
+ *  - "totalWins"   â€” most games won
+ *  - "bestStreak"  â€” longest win streak ever achieved
  */
 
 import * as admin from "firebase-admin";
@@ -16,20 +16,29 @@ import * as functions from "firebase-functions";
 import {onCall, HttpsError} from "firebase-functions/v2/https";
 import {captureException} from "./sentry";
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Types
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-export type LeaderboardType = "totalScore" | "totalWins" | "bestStreak";
+export type LeaderboardType = "xp" | "totalWins" | "bestStreak";
 
 export interface LeaderboardEntry {
   userId: string;
   username: string;
   avatarUrl?: string;
-  totalScore: number;
+  level: number;
+  xp: number;
+  /** Combined progression rank key derived from level + xp. */
+  progressScore: number;
   totalWins: number;
   bestStreak: number;
   updatedAt: number;
+}
+
+const LEVEL_WEIGHT = 1_000_000_000;
+
+function computeProgressScore(level: number, xp: number): number {
+  return level * LEVEL_WEIGHT + xp;
 }
 
 interface GetLeaderboardRequest {
@@ -43,9 +52,9 @@ export interface GetLeaderboardResponse {
   requestingUserId: string;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Server-side helper (not a callable — called from submitGuessLogic)
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// Server-side helper (not a callable â€” called from submitGuessLogic)
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 /**
  * Write (or merge) a user's leaderboard entry. Called by submitGuessLogic
@@ -59,13 +68,15 @@ export interface GetLeaderboardResponse {
 export async function updateLeaderboardEntry(
   userId: string,
   username: string,
-  stats: {totalScore: number; totalWins: number; bestStreak: number},
+  stats: {level: number; xp: number; totalWins: number; bestStreak: number},
   avatarUrl?: string | null,
 ): Promise<void> {
   const entry: LeaderboardEntry = {
     userId,
     username,
-    totalScore: stats.totalScore,
+    level: stats.level,
+    xp: stats.xp,
+    progressScore: computeProgressScore(stats.level, stats.xp),
     totalWins: stats.totalWins,
     bestStreak: stats.bestStreak,
     updatedAt: Date.now(),
@@ -84,9 +95,9 @@ export async function updateLeaderboardEntry(
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Callable
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 /**
  * Callable: return the top N players sorted by the requested stat.
@@ -100,21 +111,19 @@ export const getLeaderboard = onCall(async (request) => {
   }
 
   const data = request.data as GetLeaderboardRequest;
-  const type: LeaderboardType = data?.type ?? "totalScore";
+  const type: LeaderboardType = data?.type ?? "xp";
   const limit = Math.min(data?.limit ?? 50, 100);
 
-  const validTypes: LeaderboardType[] = ["totalScore", "totalWins", "bestStreak"];
+  const validTypes: LeaderboardType[] = ["xp", "totalWins", "bestStreak"];
   if (!validTypes.includes(type)) {
-    throw new HttpsError("invalid-argument", "type must be one of: totalScore, totalWins, bestStreak.");
+    throw new HttpsError("invalid-argument", "type must be one of: xp, totalWins, bestStreak.");
   }
 
   try {
-    const snapshot = await admin
-      .firestore()
-      .collection("leaderboard")
-      .orderBy(type, "desc")
-      .limit(limit)
-      .get();
+    const baseRef = admin.firestore().collection("leaderboard");
+    const snapshot = await (type === "xp"
+      ? baseRef.orderBy("progressScore", "desc").limit(limit).get()
+      : baseRef.orderBy(type, "desc").limit(limit).get());
 
     const entries: LeaderboardEntry[] = snapshot.docs.map((doc) => doc.data() as LeaderboardEntry);
 
@@ -131,3 +140,4 @@ export const getLeaderboard = onCall(async (request) => {
     throw new HttpsError("internal", "Failed to fetch leaderboard.");
   }
 });
+

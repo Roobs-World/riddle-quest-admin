@@ -76,3 +76,4 @@ export const WIN_FADE_IN_DELAY_MS = 1000;
 export const WIN_FADE_IN_DURATION_MS = 1000;
 /** Loss flow: duration for negative sound fade-in (ms). */
 export const LOSS_NEGATIVE_FADE_DURATION_MS = 2000;
+

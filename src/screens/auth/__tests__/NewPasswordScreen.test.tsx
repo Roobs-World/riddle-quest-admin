@@ -96,14 +96,12 @@ jest.mock("@images/padlock.svg", () => {
   };
 });
 
-// HomeBgSvg mock for NewPasswordScreen test context
-jest.mock("../../../../assets/images/home-bg.svg", () => {
+// StarryBackground mock for NewPasswordScreen test context
+jest.mock("../../../components/background/StarryBackground", () => {
   const React = require("react");
-  return function MockHomeBgSvgNewPassword(props: any) {
+  return function MockStarryBackground() {
     return React.createElement("View", {
-      testID: "home-bg-svg-main", // Specific testID for this file's HomeBgSvg mock
-      "data-width": props.width,
-      "data-height": props.height,
+      testID: "starry-background",
     });
   };
 });
@@ -133,6 +131,17 @@ jest.mock("../../../styles", () => ({
   styles: {
     backgroundImage: { position: "absolute" },
   },
+  COLORS: {
+    black: "#000000",
+    white: "#FFFFFF",
+    creamLight: "#FCFAF4",
+  },
+  TYPOGRAPHY: {
+    fontPrimary: "System",
+    fontSecondary: "System",
+    fontSecondaryBold: "System-Bold",
+    fontSize: { xs: 12, sm: 14, base: 16, lg: 18, xl: 20, "2xl": 24, "3xl": 30, "4xl": 36 },
+  },
   SPACING: { xs: 4, sm: 8, md: 16, lg: 24, xl: 32, "2xl": 48 },
 }));
 
@@ -149,9 +158,7 @@ describe("NewPasswordScreen", () => {
 
       expect(getByTestId("custom-safe-area-view")).toBeTruthy();
 
-      // Expect at least one home-bg-svg-main (the actual background)
-      const homeBgSvgs = getAllByTestId("home-bg-svg-main");
-      expect(homeBgSvgs.length).toBeGreaterThanOrEqual(1);
+      expect(getByTestId("starry-background")).toBeTruthy();
 
       expect(getByTestId("auth-layout")).toBeTruthy();
       // Cannot reliably test for PadlockIcon: expect(getByTestId("padlock-icon-newpwd-placeholder")).toBeTruthy();
@@ -262,13 +269,10 @@ describe("NewPasswordScreen", () => {
 
   describe("Background and Layout", () => {
     it("should render background SVG with correct dimensions", () => {
-      const { getAllByTestId } = render(
+      const { getByTestId } = render(
         <NewPasswordScreen navigation={mockNavigation} />
       );
-      // Assuming the first instance is the main background SVG
-      const bgSvgs = getAllByTestId("home-bg-svg-main");
-      expect(bgSvgs[0].props["data-width"]).toBe("120%");
-      expect(bgSvgs[0].props["data-height"]).toBe("100%");
+      expect(getByTestId("starry-background")).toBeTruthy();
     });
 
     // Test for padlock icon class removed as its rendering is unreliable
@@ -318,10 +322,7 @@ describe("NewPasswordScreen", () => {
 
       expect(getByTestId("custom-safe-area-view")).toBeTruthy();
 
-      const homeBgSvgs = getAllByTestId("home-bg-svg-main");
-      expect(homeBgSvgs.length).toBeGreaterThanOrEqual(1); // Main background
-      // The second instance (mis-mocked PadlockIcon) might still be there,
-      // but we are only concerned with the presence of at least one for the background.
+      expect(getByTestId("starry-background")).toBeTruthy();
 
       expect(getByTestId("auth-layout")).toBeTruthy();
       // PadlockIcon assertion removed.

@@ -9,6 +9,8 @@ describe("IUserDataService", () => {
     coins: 50,
     hasPurchasedApp: false,
     stats: {
+      xp: 0,
+      level: 1,
       dailyPuzzlesCompleted: 5,
       bestStreak: 3,
       totalWordsGuessed: 20,
@@ -186,6 +188,8 @@ describe("IUserDataService", () => {
       { coins: 200 },
       {
         stats: {
+          xp: 0,
+          level: 1,
           dailyPuzzlesCompleted: 0,
           bestStreak: 0,
           totalWordsGuessed: 0,
@@ -221,3 +225,5 @@ describe("IUserDataService", () => {
     );
   });
 });
+
+

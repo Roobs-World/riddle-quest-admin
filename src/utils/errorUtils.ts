@@ -243,3 +243,4 @@ export class ErrorUtils {
 // Export helper functions for easier usage
 export const isFirebaseError = ErrorUtils.isFirebaseError;
 export const isZodError = ErrorUtils.isZodError;
+

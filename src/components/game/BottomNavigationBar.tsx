@@ -162,3 +162,4 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
 };
 
 export default React.memo(BottomNavigationBar);
+

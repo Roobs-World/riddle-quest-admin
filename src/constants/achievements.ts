@@ -169,3 +169,4 @@ export function getAchievementProgress(
   if (!def) return 0;
   return def.getProgress({ stats, progress, hasPurchasedApp });
 }
+

@@ -26,3 +26,4 @@ const SignUpButton: React.FC<SignUpButtonProps> = ({ onPress }) => {
 };
 
 export default SignUpButton;
+

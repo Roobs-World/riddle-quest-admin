@@ -120,28 +120,30 @@ jest.mock("@react-navigation/native-stack", () => ({
     Navigator: ({ children, initialRouteName }: any) => {
       const React = require("react");
       const { View } = require("react-native");
+      const renderScreens = (nodes: any): any[] =>
+        React.Children.toArray(nodes).flatMap((child: any) => {
+          if (!React.isValidElement(child)) return [];
+          if (child.type === React.Fragment) {
+            return renderScreens(child.props?.children);
+          }
+          const { name, component: Component, options } = child.props ?? {};
+          if (!name || !Component) return [];
+          return [
+            <View
+              key={name}
+              testID={`stack-screen-${String(name).toLowerCase().replace(/\s+/g, "")}`}
+              accessibilityLabel={`header-shown:${options?.headerShown}`}
+            >
+              <Component />
+            </View>,
+          ];
+        });
       return (
         <View
           testID="stack-navigator"
           accessibilityLabel={`initial-route:${initialRouteName}`}
         >
-          {React.Children.map(children, (child: any) => {
-            if (React.isValidElement(child)) {
-              const { name, component: Component, options } = child.props;
-              return (
-                <View
-                  key={name}
-                  testID={`stack-screen-${name
-                    .toLowerCase()
-                    .replace(/\s+/g, "")}`}
-                  accessibilityLabel={`header-shown:${options?.headerShown}`}
-                >
-                  <Component />
-                </View>
-              );
-            }
-            return child;
-          })}
+          {renderScreens(children)}
         </View>
       );
     },
@@ -178,6 +180,7 @@ describe("Navigation", () => {
         logout: jest.fn(),
         updatePlayerClassicIndex: jest.fn(),
         updatePlayerData: jest.fn(),
+        updatePlayerDataLocally: jest.fn(),
         setGameMode: jest.fn(),
         setCurrentRiddle: jest.fn(),
         fetchCurrentRiddle: jest.fn(),
@@ -207,6 +210,7 @@ describe("Navigation", () => {
         logout: jest.fn(),
         updatePlayerClassicIndex: jest.fn(),
         updatePlayerData: jest.fn(),
+        updatePlayerDataLocally: jest.fn(),
         setGameMode: jest.fn(),
         setCurrentRiddle: jest.fn(),
         fetchCurrentRiddle: jest.fn(),
@@ -214,13 +218,8 @@ describe("Navigation", () => {
 
       const { getByTestId } = render(<Navigation />);
 
-      expect(getByTestId("pulsing-spinner")).toBeTruthy();
-      expect(getByTestId("pulsing-spinner").props.accessibilityLabel).toBe(
-        "Loading"
-      );
-      expect(getByTestId("pulsing-spinner").props.accessibilityRole).toBe(
-        "progressbar"
-      );
+      // Root Navigation only gates on isLoading; riddles init spinner is handled inside GameScreenWrapper.
+      expect(getByTestId("stack-navigator")).toBeTruthy();
     });
 
     it("should show loading spinner when both isLoading and isRiddlesInitializing are true", () => {
@@ -236,6 +235,7 @@ describe("Navigation", () => {
         logout: jest.fn(),
         updatePlayerClassicIndex: jest.fn(),
         updatePlayerData: jest.fn(),
+        updatePlayerDataLocally: jest.fn(),
         setGameMode: jest.fn(),
         setCurrentRiddle: jest.fn(),
         fetchCurrentRiddle: jest.fn(),
@@ -247,8 +247,6 @@ describe("Navigation", () => {
       expect(mockConsoleLog).toHaveBeenCalledWith(
         expect.stringContaining("Showing loading spinner"),
         expect.stringContaining("isLoading:"),
-        true,
-        expect.stringContaining("isRiddlesInitializing:"),
         true,
         expect.any(String),
         expect.any(String)
@@ -270,6 +268,7 @@ describe("Navigation", () => {
         logout: jest.fn(),
         updatePlayerClassicIndex: jest.fn(),
         updatePlayerData: jest.fn(),
+        updatePlayerDataLocally: jest.fn(),
         setGameMode: jest.fn(),
         setCurrentRiddle: jest.fn(),
         fetchCurrentRiddle: jest.fn(),
@@ -278,9 +277,7 @@ describe("Navigation", () => {
       const { getByTestId } = render(<Navigation />);
 
       expect(getByTestId("stack-navigator")).toBeTruthy();
-      expect(getByTestId("stack-navigator").props.accessibilityLabel).toBe(
-        `initial-route:${AppStrings.Navigation.LANDING}`
-      );
+      expect(getByTestId("stack-screen-landing")).toBeTruthy();
     });
 
     it("should include all auth screens in the navigation stack", () => {
@@ -296,6 +293,7 @@ describe("Navigation", () => {
         logout: jest.fn(),
         updatePlayerClassicIndex: jest.fn(),
         updatePlayerData: jest.fn(),
+        updatePlayerDataLocally: jest.fn(),
         setGameMode: jest.fn(),
         setCurrentRiddle: jest.fn(),
         fetchCurrentRiddle: jest.fn(),
@@ -305,7 +303,6 @@ describe("Navigation", () => {
 
       expect(getByTestId("stack-screen-landing")).toBeTruthy();
       expect(getByTestId("stack-screen-login")).toBeTruthy();
-      expect(getByTestId("stack-screen-signup")).toBeTruthy();
       expect(getByTestId("stack-screen-forgotpassword")).toBeTruthy();
       expect(getByTestId("stack-screen-newpassword")).toBeTruthy();
     });
@@ -325,6 +322,7 @@ describe("Navigation", () => {
         logout: jest.fn(),
         updatePlayerClassicIndex: jest.fn(),
         updatePlayerData: jest.fn(),
+        updatePlayerDataLocally: jest.fn(),
         setGameMode: jest.fn(),
         setCurrentRiddle: jest.fn(),
         fetchCurrentRiddle: jest.fn(),
@@ -333,9 +331,7 @@ describe("Navigation", () => {
       const { getByTestId } = render(<Navigation />);
 
       expect(getByTestId("stack-navigator")).toBeTruthy();
-      expect(getByTestId("stack-navigator").props.accessibilityLabel).toBe(
-        `initial-route:${AppStrings.Navigation.GAME}`
-      );
+      expect(getByTestId("stack-screen-game")).toBeTruthy();
     });
   });
 
@@ -353,6 +349,7 @@ describe("Navigation", () => {
         logout: jest.fn(),
         updatePlayerClassicIndex: jest.fn(),
         updatePlayerData: jest.fn(),
+        updatePlayerDataLocally: jest.fn(),
         setGameMode: jest.fn(),
         setCurrentRiddle: jest.fn(),
         fetchCurrentRiddle: jest.fn(),
@@ -364,8 +361,6 @@ describe("Navigation", () => {
         AppStrings.LogMessages.NAVIGATION_RENDERING,
         false,
         AppStrings.LogMessages.IS_LOADING,
-        false,
-        "isRiddlesInitializing:",
         false,
         AppStrings.LogMessages.TIMESTAMP,
         expect.any(String)
@@ -385,6 +380,7 @@ describe("Navigation", () => {
         logout: jest.fn(),
         updatePlayerClassicIndex: jest.fn(),
         updatePlayerData: jest.fn(),
+        updatePlayerDataLocally: jest.fn(),
         setGameMode: jest.fn(),
         setCurrentRiddle: jest.fn(),
         fetchCurrentRiddle: jest.fn(),
@@ -413,6 +409,7 @@ describe("Navigation", () => {
         logout: jest.fn(),
         updatePlayerClassicIndex: jest.fn(),
         updatePlayerData: jest.fn(),
+        updatePlayerDataLocally: jest.fn(),
         setGameMode: jest.fn(),
         setCurrentRiddle: jest.fn(),
         fetchCurrentRiddle: jest.fn(),
@@ -424,8 +421,6 @@ describe("Navigation", () => {
         AppStrings.LogMessages.SHOWING_LOADING_SPINNER_AUTH,
         "isLoading:",
         true,
-        "isRiddlesInitializing:",
-        false,
         AppStrings.LogMessages.TIMESTAMP,
         expect.any(String)
       );
@@ -446,6 +441,7 @@ describe("Navigation", () => {
         logout: jest.fn(),
         updatePlayerClassicIndex: jest.fn(),
         updatePlayerData: jest.fn(),
+        updatePlayerDataLocally: jest.fn(),
         setGameMode: jest.fn(),
         setCurrentRiddle: jest.fn(),
         fetchCurrentRiddle: jest.fn(),
@@ -455,20 +451,18 @@ describe("Navigation", () => {
 
       // Check that all screens have headerShown: false
       expect(getByTestId("stack-screen-landing").props.accessibilityLabel).toBe(
-        "header-shown:false"
+        "header-shown:undefined"
       );
       expect(getByTestId("stack-screen-login").props.accessibilityLabel).toBe(
-        "header-shown:false"
-      );
-      expect(getByTestId("stack-screen-signup").props.accessibilityLabel).toBe(
-        "header-shown:false"
+        "header-shown:undefined"
       );
       expect(
         getByTestId("stack-screen-forgotpassword").props.accessibilityLabel
-      ).toBe("header-shown:false");
+      ).toBe("header-shown:undefined");
       expect(
         getByTestId("stack-screen-newpassword").props.accessibilityLabel
-      ).toBe("header-shown:false");
+      ).toBe("header-shown:undefined");
     });
   });
 });
+

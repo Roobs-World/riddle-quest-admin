@@ -45,6 +45,8 @@ describe("AchievementsModal", () => {
     email: "test@example.com",
     coins: 100,
     stats: {
+      xp: 0,
+      level: 1,
       dailyPuzzlesCompleted: 1,
       bestStreak: 2,
       totalWordsGuessed: 50,
@@ -115,3 +117,5 @@ describe("AchievementsModal", () => {
     expect(getByText("Achievements")).toBeTruthy();
   });
 });
+
+

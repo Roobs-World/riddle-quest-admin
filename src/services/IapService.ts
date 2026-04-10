@@ -132,6 +132,11 @@ export const IapService = {
               product_id: productId,
               coins: this.getCoinsForProduct(productId) ?? 0,
             });
+            void analyticsService.logCoinPackPurchased({
+              productId,
+              coins: this.getCoinsForProduct(productId) ?? 0,
+              purchaseCount: 1,
+            });
             return purchase; // Return the purchase details
           } else {
             logger.warn("Purchase validation failed for product:", productId);

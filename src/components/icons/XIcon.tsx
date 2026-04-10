@@ -24,3 +24,4 @@ const XIcon = ({ width, tintColor }: XIconProps) => {
 };
 
 export default XIcon;
+

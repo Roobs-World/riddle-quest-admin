@@ -43,6 +43,11 @@ import { SubmittedGuess } from "../../hooks/types";
 import { Player } from "../../validation/firestoreSchemas";
 import * as RNIap from "react-native-iap";
 import { logger } from "../../utils/logger";
+import { ProductPricing } from "../../services/ProductPricingService";
+import {
+  SupportedLanguage,
+  getAppLanguage,
+} from "../../constants/AppStrings";
 
 // Import all modal components
 import VictoryModal from "./game/VictoryModal";
@@ -183,6 +188,8 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
       isVisible: props.isVisible,
       attempts: (props.attempts as number) || 0,
       coinsEarned: (props.coinsEarned as number) || 0,
+      unlockedAchievementNames:
+        (props.unlockedAchievementNames as string[] | undefined) ?? [],
       onNextLevel: (props.onNext as () => void) || (() => {}),
       onHome: (props.onHome as () => void) || (() => {}),
       guesses: (props.guesses as SubmittedGuess[]) || [],
@@ -216,12 +223,17 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
       isSoundEnabled: (props.isSoundEnabled as boolean) || false,
       isHapticsEnabled: (props.isHapticsEnabled as boolean) || false,
       isHardMode: (props.isHardMode as boolean) || false,
+      currentLanguage:
+        (props.currentLanguage as SupportedLanguage) ?? getAppLanguage(),
       onToggleSound:
         (props.onToggleSound as (enabled: boolean) => void) || (() => {}),
       onToggleHaptics:
         (props.onToggleHaptics as (enabled: boolean) => void) || (() => {}),
       onToggleHardMode:
         (props.onToggleHardMode as (enabled: boolean) => void) || (() => {}),
+      onChangeLanguage:
+        (props.onChangeLanguage as (language: SupportedLanguage) => void) ||
+        (() => {}),
       onPressLogout: (props.onPressLogout as () => void) || (() => {}),
       onPressHelp: (props.onPressHelp as () => void) || (() => {}),
       onPressCredits: (props.onPressCredits as () => void) || (() => {}),
@@ -376,6 +388,9 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
       isVisible: props.isVisible,
       onClose: props.onClose,
       products: (props.products as RNIap.Product[]) || [],
+      firestoreProducts:
+        (props.firestoreProducts as ProductPricing[] | undefined) || [],
+      currentCoins: (props.currentCoins as number | undefined) ?? 0,
       onPurchaseProduct:
         (props.onPurchaseProduct as (productId: string) => void) || (() => {}),
       loading: (props.loading as boolean) || false,

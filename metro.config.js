@@ -10,9 +10,6 @@ const config = getSentryExpoConfig(__dirname, {
   isCSSEnabled: true,
 });
 
-// Disable package exports to prevent module resolution issues
-config.resolver.unstable_enablePackageExports = false;
-
 // Enhanced asset configuration for better texture and 3D model loading
 // Explicitly include high-quality audio formats without compression
 config.resolver.assetExts = [
@@ -48,17 +45,13 @@ config.resolver.platforms = ["ios", "android", "native", "web"];
 // Add Reanimated plugin to transformer
 config.transformer.getTransformOptions = async () => ({
   transform: {
-    experimentalImportSupport: false,
+    experimentalImportSupport: true,
     inlineRequires: false,
   },
 });
 
 // Enhanced asset transformer settings - preserve audio quality
 config.transformer.assetPlugins = ["expo-asset/tools/hashAssetFiles"];
-
-// Disable audio compression during bundling
-config.transformer.enableBabelRCLookup = false;
-config.transformer.enableBabelRuntime = false;
 
 // Preserve original audio file quality
 config.transformer.minifierConfig = {
@@ -74,9 +67,32 @@ const windConfig = withNativeWind(config, {
   input: "./global.css",
 });
 
+const existingReporter = windConfig.reporter;
+windConfig.reporter = {
+  update(event) {
+    if (event?.type === "bundling_error") {
+      const details = event?.error || event;
+      console.error("[metro:bundling_error]", details);
+    } else if (event?.type === "transform_cache_reset") {
+      console.log("[metro:transform_cache_reset]");
+    } else if (event?.type === "worker_stdout_chunk" || event?.type === "worker_stderr_chunk") {
+      const chunk = Buffer.isBuffer(event.chunk)
+        ? event.chunk.toString("utf8")
+        : String(event.chunk || "");
+      if (chunk.trim()) {
+        console.log(`[metro:${event.type}]`, chunk.trim());
+      }
+    }
+
+    if (typeof existingReporter?.update === "function") {
+      existingReporter.update(event);
+    }
+  },
+};
+
 // Configure SVG support
 windConfig.transformer.babelTransformerPath = require.resolve(
-  "react-native-svg-transformer"
+  "react-native-svg-transformer/expo"
 );
 
 windConfig.transformer.inlineRequires = false;

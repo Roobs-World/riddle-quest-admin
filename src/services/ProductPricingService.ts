@@ -61,7 +61,7 @@ export const ProductPricingService = {
         query(collection(getFirestore(), "productPricing"), where("isActive", "==", true), orderBy("sortOrder"))
       );
 
-      const products = snapshot.docs.map((doc) => doc.data() as ProductPricing);
+      const products = snapshot.docs.map((doc: any) => doc.data() as ProductPricing);
       cachedProducts = products;
       cacheTimestamp = now;
       logger.debug(`Fetched ${products.length} active products from Firestore`);

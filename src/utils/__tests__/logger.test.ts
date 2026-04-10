@@ -37,3 +37,4 @@ describe("logger", () => {
     expect(consoleWarnSpy).toHaveBeenCalledWith("test warn");
   });
 });
+

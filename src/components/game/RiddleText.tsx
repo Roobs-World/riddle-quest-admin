@@ -44,3 +44,4 @@ const RiddleText: React.FC<RiddleTextProps> = ({ riddleText }) => {
 };
 
 export default RiddleText;
+

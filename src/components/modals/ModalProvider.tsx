@@ -42,6 +42,8 @@ import CreditsModal from "./help/CreditsModal";
 
 import CoinShopModal from "../shop/CoinShopModal";
 import { logger } from "../../utils/logger";
+import { ProductPricing } from "../../services/ProductPricingService";
+import { SupportedLanguage } from "../../constants/AppStrings";
 
 /**
  * Type definitions for modal-specific data structures.
@@ -61,6 +63,7 @@ interface VictoryModalData {
   attempts: number;
   coinsEarned: number;
   guesses: import("../../hooks/types").SubmittedGuess[];
+  unlockedAchievementNames?: string[];
   onNext: () => void;
 }
 
@@ -75,6 +78,11 @@ interface LossModalData {
   correctAnswer: string;
   onNext: () => void;
   onHome: () => void;
+  onWatchAdContinue?: () => void;
+  onCoinContinue?: () => void;
+  coinContinueCost?: number;
+  canWatchAd?: boolean;
+  canUseCoin?: boolean;
 }
 
 /**
@@ -103,9 +111,11 @@ interface SettingsModalData {
   isSoundEnabled: boolean;
   isHapticsEnabled: boolean;
   isHardMode: boolean;
+  currentLanguage: SupportedLanguage;
   onToggleSound: (isEnabled: boolean) => void;
   onToggleHaptics: (isEnabled: boolean) => void;
   onToggleHardMode: (isEnabled: boolean) => void;
+  onChangeLanguage: (language: SupportedLanguage) => void;
   onPressLogout: () => void;
   onPressHelp: () => void;
   onPressCredits: () => void;
@@ -183,6 +193,8 @@ interface SkipModalData {
  */
 interface CoinShopModalData {
   products: RNIap.Product[];
+  firestoreProducts?: ProductPricing[];
+  currentCoins?: number;
   loading: boolean;
   error: string | null;
   onPurchaseProduct: (productId: string) => void;
@@ -257,6 +269,9 @@ const ModalRenderer: React.FC<{
           {...commonProps}
           attempts={(modalData as VictoryModalData).attempts}
           coinsEarned={(modalData as VictoryModalData).coinsEarned}
+          unlockedAchievementNames={
+            (modalData as VictoryModalData).unlockedAchievementNames ?? []
+          }
           onNextLevel={(modalData as VictoryModalData).onNext}
           guesses={(modalData as VictoryModalData).guesses || []}
           onClose={onClose}
@@ -271,6 +286,11 @@ const ModalRenderer: React.FC<{
           correctAnswer={(modalData as LossModalData).correctAnswer}
           onNext={(modalData as LossModalData).onNext}
           onHome={(modalData as LossModalData).onHome}
+          onWatchAdContinue={(modalData as LossModalData).onWatchAdContinue}
+          onCoinContinue={(modalData as LossModalData).onCoinContinue}
+          coinContinueCost={(modalData as LossModalData).coinContinueCost}
+          canWatchAd={(modalData as LossModalData).canWatchAd}
+          canUseCoin={(modalData as LossModalData).canUseCoin}
           onClose={onClose}
         />
       );
@@ -290,9 +310,11 @@ const ModalRenderer: React.FC<{
           isSoundEnabled={(modalData as SettingsModalData).isSoundEnabled}
           isHapticsEnabled={(modalData as SettingsModalData).isHapticsEnabled}
           isHardMode={(modalData as SettingsModalData).isHardMode ?? false}
+          currentLanguage={(modalData as SettingsModalData).currentLanguage}
           onToggleSound={(modalData as SettingsModalData).onToggleSound}
           onToggleHaptics={(modalData as SettingsModalData).onToggleHaptics}
           onToggleHardMode={(modalData as SettingsModalData).onToggleHardMode ?? (() => {})}
+          onChangeLanguage={(modalData as SettingsModalData).onChangeLanguage}
           onPressLogout={(modalData as SettingsModalData).onPressLogout}
           onPressHelp={(modalData as SettingsModalData).onPressHelp}
           onPressCredits={(modalData as SettingsModalData).onPressCredits}
@@ -403,6 +425,10 @@ const ModalRenderer: React.FC<{
         <CoinShopModal
           {...commonProps}
           products={(modalData as CoinShopModalData).products || []}
+          firestoreProducts={
+            (modalData as CoinShopModalData).firestoreProducts || []
+          }
+          currentCoins={(modalData as CoinShopModalData).currentCoins ?? 0}
           loading={(modalData as CoinShopModalData).loading || false}
           error={(modalData as CoinShopModalData).error || null}
           onPurchaseProduct={(modalData as CoinShopModalData).onPurchaseProduct}

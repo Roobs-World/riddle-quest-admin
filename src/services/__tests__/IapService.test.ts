@@ -41,6 +41,7 @@ jest.mock("../../utils/logger", () => ({
 jest.mock("../AnalyticsService", () => ({
   analyticsService: {
     logPurchaseEvent: jest.fn().mockResolvedValue(undefined),
+    logCoinPackPurchased: jest.fn().mockResolvedValue(undefined),
   },
 }));
 
@@ -48,6 +49,7 @@ import { IapService, COIN_PRODUCT_DETAILS } from "../IapService";
 import * as RNIap from "react-native-iap";
 import { Platform } from "react-native";
 import { getFunctions, httpsCallable } from "@react-native-firebase/functions";
+import { analyticsService } from "../AnalyticsService";
 
 // Get the mocked functions for better type safety
 const mockInitConnection = RNIap.initConnection as jest.MockedFunction<
@@ -65,6 +67,10 @@ const mockGetProducts = RNIap.fetchProducts as jest.MockedFunction<
 const mockRequestPurchase = RNIap.requestPurchase as jest.MockedFunction<
   typeof RNIap.requestPurchase
 >;
+const mockLogCoinPackPurchased =
+  analyticsService.logCoinPackPurchased as jest.MockedFunction<
+    typeof analyticsService.logCoinPackPurchased
+  >;
 
 const mockPlatform = Platform as { OS: string };
 
@@ -409,6 +415,11 @@ describe("IapService", () => {
       await expect(
         IapService.purchaseProduct("com.qwordly.coins100")
       ).resolves.toEqual(mockPurchase);
+      expect(mockLogCoinPackPurchased).toHaveBeenCalledWith({
+        productId: "com.qwordly.coins100",
+        coins: 0,
+        purchaseCount: 1,
+      });
     });
 
     it("should successfully purchase and validate on Android", async () => {

@@ -270,6 +270,8 @@ const PulsingSpinner = React.memo(function PulsingSpinner({
         visible={visible}
         animationType="fade"
         statusBarTranslucent={true}
+        presentationStyle="overFullScreen"
+        hardwareAccelerated={true}
       >
         <View
           style={[

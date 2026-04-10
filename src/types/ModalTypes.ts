@@ -1,4 +1,6 @@
 import * as RNIap from "react-native-iap";
+import { ProductPricing } from "../services/ProductPricingService";
+import { SupportedLanguage } from "../constants/AppStrings";
 
 // Base modal interface that all modals must implement
 export interface BaseModalProps {
@@ -60,6 +62,8 @@ export interface GameModalTypes {
     attempts: number;
     coinsEarned: number;
     guesses: import("../hooks/types").SubmittedGuess[];
+    /** Human-readable names of achievements newly unlocked by this win. */
+    unlockedAchievementNames?: string[];
     onNext: () => void;
     onHome: () => void;
   };
@@ -91,9 +95,11 @@ export interface GameModalTypes {
     isSoundEnabled: boolean;
     isHapticsEnabled: boolean;
     isHardMode: boolean;
+    currentLanguage: SupportedLanguage;
     onToggleSound: (enabled: boolean) => void;
     onToggleHaptics: (enabled: boolean) => void;
     onToggleHardMode: (enabled: boolean) => void;
+    onChangeLanguage: (language: SupportedLanguage) => void;
     onPressLogout: () => void;
     onPressHelp: () => void;
     onPressCredits: () => void;
@@ -169,6 +175,8 @@ export interface GameModalTypes {
   // Shop modals
   coinShop: {
     products?: RNIap.Product[];
+    firestoreProducts?: ProductPricing[];
+    currentCoins?: number;
     loading?: boolean;
     error?: string | null;
     onPurchaseProduct: (productId: string) => void;

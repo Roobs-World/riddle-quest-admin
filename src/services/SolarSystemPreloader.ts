@@ -119,6 +119,7 @@ export class SolarSystemPreloader {
   private static isPreloading = false;
   private static isPreloaded = false;
   private static textureCache = new Map<string, Texture | null>();
+  private static readonly texturePreloadConcurrency = 4;
 
   // Define texture mapping for solar system - matching notes.txt structure
   private static readonly textureMapping = [
@@ -236,56 +237,6 @@ export class SolarSystemPreloader {
   ];
 
   /**
-   * Preload and verify all assets are downloaded before texture loading
-   */
-  private static async preloadAndVerifyAssets(): Promise<void> {
-    logger.debug("🔍 Preloading and verifying all solar system assets...");
-
-    const assetPromises = this.textureMapping.map(async ({ key, path }) => {
-      try {
-        logger.debug(`📦 Preloading asset: ${key}`);
-
-        // Create asset and ensure it's downloaded
-        const asset = Asset.fromModule(path);
-
-        // Force download with longer timeout
-        await Promise.race([
-          asset.downloadAsync(),
-          new Promise((_, reject) =>
-            setTimeout(
-              () => reject(new Error(`Asset download timeout: ${key}`)),
-              30000
-            )
-          ),
-        ]);
-
-        // Verify the asset is actually downloaded and has a localUri
-        if (!asset.downloaded) {
-          throw new Error(`Asset ${key} not marked as downloaded`);
-        }
-
-        if (!asset.localUri) {
-          throw new Error(`Asset ${key} has no localUri after download`);
-        }
-
-        logger.debug(`✅ Asset ${key} verified: ${asset.localUri}`);
-        return { key, asset };
-      } catch (error) {
-        logger.error(`❌ Failed to preload asset ${key}:`, error);
-        captureException(error);
-        throw new Error(`CRITICAL: Asset ${key} failed to preload: ${error}`);
-      }
-    });
-
-    // Wait for all assets to be preloaded and verified
-    const preloadedAssets = await Promise.all(assetPromises);
-
-    logger.debug(
-      `✅ All ${preloadedAssets.length} assets preloaded and verified successfully`
-    );
-  }
-
-  /**
    * Preload all solar system textures - WITH FALLBACKS for system stability
    */
   private static async preloadTextures(
@@ -302,70 +253,57 @@ export class SolarSystemPreloader {
       "SolarSystemPreloader: Loading textures with fallback support..."
     );
 
-    // Debug: Log all texture mappings to diagnose import issues
-    logger.debug("📝 Texture mappings to load:");
-    this.textureMapping.forEach(({ key, path }, index) => {
-      logger.debug(`  ${index + 1}. ${key} -> ${typeof path} (${path})`);
-    });
-
-    const textureLoader = new TextureLoader();
+    const pendingTextures = [...this.textureMapping];
     const total = this.textureMapping.length;
     let loaded = 0;
     let successfullyLoaded = 0;
 
-    // Load textures individually with graceful fallbacks
-    for (const { key, path } of this.textureMapping) {
-      try {
-        logger.debug(`🔄 Attempting to load texture: ${key}`);
+    const loadNextTexture = async (): Promise<void> => {
+      const textureLoader = new TextureLoader();
 
-        // Individual 3-second timeout per texture for faster failure detection
-        const texturePromise = this.loadTextureFromAsset(
-          textureLoader,
-          path,
-          key
-        );
-        const timeoutPromise = new Promise<never>((_, reject) => {
-          setTimeout(
-            () => reject(new Error(`Texture ${key} timeout after 3 seconds`)),
-            3000
-          );
-        });
-
-        const texture = await Promise.race([texturePromise, timeoutPromise]);
-
-        if (texture) {
-          this.textureCache.set(key, texture);
-          successfullyLoaded++;
-          logger.debug(`✅ Successfully loaded ${key}`);
-        } else {
-          this.textureCache.set(key, null);
-          logger.warn(
-            `⚠️ Texture ${key} loaded as null, will use fallback color`
-          );
+      while (pendingTextures.length > 0) {
+        const nextTexture = pendingTextures.shift();
+        if (!nextTexture) {
+          return;
         }
-      } catch (error) {
-        logger.warn(
-          `⚠️ Failed to load texture ${key}, will use fallback color:`,
-          error
-        );
-        this.textureCache.set(key, null);
+
+        const { key, path } = nextTexture;
+        try {
+          const texturePromise = this.loadTextureFromAsset(textureLoader, path, key);
+          const timeoutPromise = new Promise<never>((_, reject) => {
+            setTimeout(
+              () => reject(new Error(`Texture ${key} timeout after 3 seconds`)),
+              3000
+            );
+          });
+
+          const texture = await Promise.race([texturePromise, timeoutPromise]);
+          this.textureCache.set(key, texture ?? null);
+
+          if (texture) {
+            successfullyLoaded++;
+          }
+        } catch (error) {
+          logger.warn(`Texture load failed for ${key}, using fallback color`, error);
+          this.textureCache.set(key, null);
+        } finally {
+          loaded++;
+          const percentage = Math.round((loaded / total) * 100);
+          onProgress?.({
+            loaded,
+            total,
+            currentTexture: key,
+            percentage,
+          });
+        }
       }
+    };
 
-      loaded++;
-      const percentage = Math.round((loaded / total) * 100);
-
-      if (onProgress) {
-        onProgress({
-          loaded,
-          total,
-          currentTexture: key,
-          percentage,
-        });
-      }
-
-      // Small delay to prevent blocking
-      await new Promise((resolve) => setTimeout(resolve, 10));
-    }
+    const workers = Array.from(
+      { length: Math.min(this.texturePreloadConcurrency, total) },
+      () => loadNextTexture()
+    );
+    await Promise.all(workers);
 
     logger.debug(
       `SolarSystemPreloader: Texture loading completed - ${successfullyLoaded}/${total} loaded successfully, ${
@@ -385,20 +323,12 @@ export class SolarSystemPreloader {
     cacheKey: string
   ): Promise<Texture> {
     try {
-      logger.debug(
-        `SolarSystemPreloader: Loading texture ${cacheKey} from verified asset`
-      );
-
-      // ✅ Get the already-downloaded asset
       const imageAsset = Asset.fromModule(assetPath);
 
-      // Ensure asset is downloaded
       if (!imageAsset.downloaded) {
-        logger.debug(`⚠️ Asset ${cacheKey} not downloaded, downloading...`);
         await imageAsset.downloadAsync();
       }
 
-      // Prefer localUri (local file) over uri (HTTP URL) for reliability
       const textureUri = imageAsset.localUri || imageAsset.uri;
 
       if (!textureUri) {
@@ -407,41 +337,22 @@ export class SolarSystemPreloader {
         );
       }
 
-      logger.debug(`  Using asset URI for Three.js: ${textureUri}`);
-
-      // ✅ Use TextureLoader with localUri from verified asset
       return new Promise<Texture>((resolve, reject) => {
         const timeoutId = setTimeout(() => {
           reject(
             new Error(`Texture loading timeout: ${cacheKey} after 5 seconds`)
           );
-        }, 5000); // 5 second timeout per individual texture load (using local files now)
-
-        logger.debug(
-          `  Starting TextureLoader.load for ${cacheKey} with verified URI: ${textureUri}`
-        );
+        }, 5000);
 
         loader.load(
           textureUri,
           (texture) => {
             clearTimeout(timeoutId);
-            logger.debug(
-              `SolarSystemPreloader: ✅ Successfully loaded ${cacheKey} via verified Expo Asset`
-            );
-            logger.debug(`  Texture details:`, {
-              width: texture.image?.width,
-              height: texture.image?.height,
-              format: texture.format,
-              type: texture.type,
-            });
             resolve(texture);
           },
-          (progress) => {
-            logger.debug(`  Loading progress for ${cacheKey}:`, progress);
-          },
+          undefined,
           (error) => {
             clearTimeout(timeoutId);
-            logger.error(`  TextureLoader error for ${cacheKey}:`, error);
             reject(
               new Error(
                 `Failed to load ${cacheKey} via verified Expo Asset: ${error}`
@@ -633,10 +544,10 @@ export class SolarSystemPreloader {
       });
 
       // Add high-quality moon geometries
-      planet.moons?.forEach((moon, i) => {
+      planet.moons?.forEach((moonConfig, i) => {
         geometrySpecs.push({
           key: `moon_${planet.id}_${i}`,
-          create: () => new SphereGeometry(moon.radius, 24, 24), // High-quality moons
+          create: () => new SphereGeometry(moonConfig.radius, 24, 24), // High-quality moons
         });
       });
 
@@ -740,7 +651,7 @@ export class SolarSystemPreloader {
       });
 
       // Moons - WITH FALLBACK COLORS for stability
-      planet.moons?.forEach((moon, i) => {
+      planet.moons?.forEach((_moon, i) => {
         // Determine moon texture key
         let moonTextureKey = "";
         if (planet.id === "planet_a") moonTextureKey = "moon_a_h";
@@ -1239,18 +1150,18 @@ export class SolarSystemPreloader {
   static clearCache(): void {
     logger.debug("SolarSystemPreloader: Clearing all caches...");
 
-    // Clear all cached data
-    this.textureCache.clear();
-    this.preloadedSystem = null;
-    this.isPreloaded = false;
-    this.isPreloading = false;
-
-    // Dispose of textures properly
+    // Dispose textures before clearing references.
     this.textureCache.forEach((texture) => {
       if (texture) {
         texture.dispose();
       }
     });
+
+    // Clear all cached data
+    this.textureCache.clear();
+    this.preloadedSystem = null;
+    this.isPreloaded = false;
+    this.isPreloading = false;
 
     logger.debug("SolarSystemPreloader: All caches cleared successfully");
   }

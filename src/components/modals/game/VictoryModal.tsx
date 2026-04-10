@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { View, Text, Modal, Animated, Easing } from "react-native";
 import type { SubmittedGuess } from "../../../hooks/types";
 import { generateFeedbackEmojiGrid } from "../../../utils/gameUtils";
@@ -24,6 +24,7 @@ interface VictoryModalProps {
   isVisible: boolean;
   attempts: number;
   coinsEarned: number;
+  unlockedAchievementNames?: string[];
   onNextLevel: () => void;
   guesses: SubmittedGuess[];
   gameMode?: "daily" | "classic";
@@ -34,16 +35,15 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
   isVisible,
   attempts,
   coinsEarned,
+  unlockedAchievementNames = [],
   onNextLevel,
   guesses,
   gameMode = "daily",
   onClose,
 }) => {
-  // ✅ Proper ref initialization (no render-time mutation)
-  const rotationAnimRef = useRef<Animated.Value>(new Animated.Value(0));
-  const rotationAnim = rotationAnimRef.current;
+  const [rotationAnim] = useState(() => new Animated.Value(0));
+  const [fanfareAnim] = useState(() => new Animated.Value(0));
 
-  // ✅ Interpolation (no need to depend on ref)
   const spin = useMemo(() => {
     return rotationAnim.interpolate({
       inputRange: [0, 1],
@@ -96,7 +96,43 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
       rotationAnim.stopAnimation();
       rotationAnim.setValue(0);
     };
-  }, [isVisible]);
+  }, [isVisible, rotationAnim]);
+
+  useEffect(() => {
+    let animation: Animated.CompositeAnimation | null = null;
+
+    if (isVisible && unlockedAchievementNames.length > 0) {
+      fanfareAnim.setValue(0);
+      animation = Animated.loop(
+        Animated.sequence([
+          Animated.timing(fanfareAnim, {
+            toValue: 1,
+            duration: 550,
+            easing: Easing.out(Easing.quad),
+            useNativeDriver: true,
+          }),
+          Animated.timing(fanfareAnim, {
+            toValue: 0,
+            duration: 550,
+            easing: Easing.in(Easing.quad),
+            useNativeDriver: true,
+          }),
+        ])
+      );
+      animation.start();
+    }
+
+    return () => {
+      animation?.stop();
+      fanfareAnim.stopAnimation();
+      fanfareAnim.setValue(0);
+    };
+  }, [isVisible, unlockedAchievementNames.length, fanfareAnim]);
+
+  const fanfareScale = fanfareAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, 1.06],
+  });
 
   const wheelSize = Math.ceil(
     Math.sqrt(MODAL_WIDTH ** 2 + MODAL_HEIGHT ** 2) * 1.2
@@ -173,6 +209,42 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
               Victory!
             </Text>
 
+            {unlockedAchievementNames.length > 0 ? (
+              <Animated.View
+                style={{
+                  transform: [{ scale: fanfareScale }],
+                  backgroundColor: "#fef3c7",
+                  borderColor: "#f59e0b",
+                  borderWidth: 2,
+                  borderRadius: 14,
+                  paddingHorizontal: 16,
+                  paddingVertical: 10,
+                  alignItems: "center",
+                  maxWidth: "100%",
+                }}
+              >
+                <Text
+                  style={{
+                    fontFamily: TYPOGRAPHY.fontSecondaryBold,
+                    fontSize: TYPOGRAPHY.fontSize.base,
+                    color: "#92400e",
+                  }}
+                >
+                  Achievement Unlocked!
+                </Text>
+                <Text
+                  style={{
+                    fontFamily: TYPOGRAPHY.fontSecondary,
+                    fontSize: TYPOGRAPHY.fontSize.sm,
+                    color: "#78350f",
+                    textAlign: "center",
+                  }}
+                >
+                  {unlockedAchievementNames.join(", ")}
+                </Text>
+              </Animated.View>
+            ) : null}
+
             <View style={{ alignItems: "center" }}>
               <LargeCoinStackSvg
                 width={COIN_ICON_SIZE_LARGE}
@@ -206,19 +278,8 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
                   flexDirection: "row",
                   justifyContent: "center",
                   width: "100%",
-                  gap: MODAL_BUTTON_SPACER,
                 }}
               >
-                <SocialShareButton
-                  platform="facebook"
-                  onPress={() => handleShare("facebook")}
-                  size="small"
-                />
-                <SocialShareButton
-                  platform="x"
-                  onPress={() => handleShare("x")}
-                  size="small"
-                />
                 <SocialShareButton
                   platform="system"
                   onPress={() => handleShare("system")}
@@ -241,3 +302,4 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
 };
 
 export default VictoryModal;
+

@@ -32,3 +32,4 @@ export const signUpSchema = z
 
 export type LoginFormData = z.infer<typeof loginSchema>;
 export type SignUpFormData = z.infer<typeof signUpSchema>;
+

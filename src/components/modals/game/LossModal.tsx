@@ -87,7 +87,7 @@ interface LossModalProps {
  */
 const LossModal: React.FC<LossModalProps> = ({
   isVisible,
-  correctAnswer,
+  correctAnswer: _correctAnswer,
   onNext,
   onHome,
   onClose,
@@ -234,7 +234,7 @@ const LossModal: React.FC<LossModalProps> = ({
                       color: "black",
                     }}
                   >
-                    Oh no!
+                    So close!
                   </Text>
                   <Text
                     style={{
@@ -244,38 +244,10 @@ const LossModal: React.FC<LossModalProps> = ({
                       textAlign: "center",
                     }}
                   >
-                    You lost this round.
+                    Out of attempts.
                   </Text>
                 </View>
-                <View
-                  style={{
-                    flex: 2,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Text
-                    style={{
-                      fontFamily: TYPOGRAPHY.fontSecondary,
-                      fontSize: TYPOGRAPHY.fontSize.base,
-                      color: "black",
-                    }}
-                  >
-                    The correct word was
-                  </Text>
-                  <Text
-                    style={{
-                      fontFamily: TYPOGRAPHY.fontPrimary,
-                      fontSize: TYPOGRAPHY.fontSize.display,
-                      color: "black",
-                      textTransform: "uppercase",
-                      letterSpacing: TYPOGRAPHY.letterSpacing.wide,
-                    }}
-                  >
-                    {correctAnswer}
-                  </Text>
-                </View>
-                <View style={{ flex: 1, justifyContent: "center", width: "100%" }}>
+                <View style={{ flex: 2, justifyContent: "center", width: "100%" }}>
                   <WideButton onPress={handleNextLevel} buttonText="Next Level" />
                   <View style={{ height: MODAL_BUTTON_SPACER }} />
                   <WideButton onPress={handleHome} buttonText="Go to Lobby" />
@@ -290,3 +262,4 @@ const LossModal: React.FC<LossModalProps> = ({
 };
 
 export default LossModal;
+

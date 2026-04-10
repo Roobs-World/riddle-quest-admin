@@ -13,6 +13,7 @@
 import React from "react";
 import { TouchableOpacity, TouchableOpacityProps } from "react-native";
 import CloseIcon from "../icons/CloseIcon";
+import CloseIconWhite from "../icons/CloseIconWhite";
 import { SPACING } from "../../styles";
 import { CLOSE_BUTTON_SIZE_LG } from "../../constants/layout";
 
@@ -26,7 +27,7 @@ import { CLOSE_BUTTON_SIZE_LG } from "../../constants/layout";
  * @property {() => void} onPress - Callback function executed when button is pressed
  * @property {number} [size] - Size of the close icon in pixels
  * @property {string} [className] - Optional NativeWind class names for additional styling
- * @property {string} [color] - Optional color for the close icon
+ * @property {"black" | "white"} [color] - Close icon color variant
  */
 interface CloseButtonProps extends TouchableOpacityProps {
   /** Callback function called when the close button is pressed */
@@ -38,8 +39,8 @@ interface CloseButtonProps extends TouchableOpacityProps {
   /** Optional NativeWind class names for custom styling */
   className?: string;
 
-  /** Optional color for the close icon */
-  color?: string;
+  /** Close icon color variant */
+  color?: "black" | "white";
 }
 
 /**
@@ -92,9 +93,11 @@ const CloseButton = ({
   onPress,
   size = CLOSE_BUTTON_SIZE_LG,
   className = "",
-  color,
+  color = "black",
   ...props
 }: CloseButtonProps) => {
+  const IconComponent = color === "white" ? CloseIconWhite : CloseIcon;
+
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -104,9 +107,10 @@ const CloseButton = ({
       accessibilityRole="button"
       {...props}
     >
-      <CloseIcon width={size} height={size} color={color} />
+      <IconComponent width={size} height={size} />
     </TouchableOpacity>
   );
 };
 
 export default CloseButton;
+

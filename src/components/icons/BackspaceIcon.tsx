@@ -17,3 +17,4 @@ const BackspaceIcon: React.FC<BackspaceIconProps> = ({
 };
 
 export default BackspaceIcon;
+

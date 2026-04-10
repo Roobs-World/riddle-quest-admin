@@ -429,3 +429,4 @@ const SignUpScreen = ({ navigation }: { navigation: NavigationProp }) => {
 };
 
 export default SignUpScreen;
+

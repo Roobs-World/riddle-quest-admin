@@ -65,7 +65,7 @@ describe("Subtitle", () => {
 
       // Check if the component applies the correct style classes
       expect(subtitleText.props.className).toContain("text-center");
-      expect(subtitleText.props.className).toContain("text-gray-600");
+      expect(subtitleText.props.className).toContain("text-white");
     });
 
     it("applies custom styles correctly", () => {
@@ -171,7 +171,7 @@ describe("Subtitle", () => {
       const element = getByText("Styled text");
 
       expect(element.props.className).toBeDefined();
-      expect(element.props.className).toContain("text-gray-600");
+      expect(element.props.className).toContain("text-white");
     });
 
     it("maintains center alignment", () => {
@@ -215,3 +215,4 @@ describe("Subtitle", () => {
     });
   });
 });
+

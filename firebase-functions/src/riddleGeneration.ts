@@ -714,13 +714,13 @@ export const generateTutorialRiddles = onCall(
 );
 
 /**
- * Generates 5 riddles for today's daily challenge and stores them in the proper structure.
- * This replaces the single daily riddle with a 5-question daily challenge.
+ * Generates 1 riddle for today's daily challenge and stores it in the challenge structure.
  * @param forceGenerate - If true, generates new riddles even if today's challenge already exists.
  * @return A promise that resolves when the daily challenge is created.
  */
 export async function generateTodaysDailyChallenge(forceGenerate: boolean = false): Promise<void> {
-  logger.info("Generating today's 5-question daily challenge...");
+  const dailyChallengeQuestionCount = 1;
+  logger.info(`Generating today's ${dailyChallengeQuestionCount}-question daily challenge...`);
 
   const today = new Date();
   const todayDateString = today.toISOString().split("T")[0]; // YYYY-MM-DD format
@@ -731,13 +731,13 @@ export async function generateTodaysDailyChallenge(forceGenerate: boolean = fals
 
   if (existingChallenge.exists && !forceGenerate) {
     const existingData = existingChallenge.data();
-    if (existingData?.date === todayDateString && existingData?.questions?.length === 5) {
-      logger.info("Today's daily challenge already exists with 5 questions.");
+    if (existingData?.date === todayDateString && existingData?.questions?.length === dailyChallengeQuestionCount) {
+      logger.info(`Today's daily challenge already exists with ${dailyChallengeQuestionCount} question.`);
       return;
     }
   }
 
-  logger.info(`Generating 5 new riddles for daily challenge on ${todayDateString}...`);
+  logger.info(`Generating ${dailyChallengeQuestionCount} new riddle for daily challenge on ${todayDateString}...`);
 
   // Check for required environment variables
   const openAIKey = process.env.OPENAI_API_KEY;
@@ -747,6 +747,7 @@ export async function generateTodaysDailyChallenge(forceGenerate: boolean = fals
 
   // Get existing riddles for duplicate checking
   const existing = await getExistingRiddlesFromFirestore();
+  const startingDailyIndex = await getNextDailyIndex();
 
   const dailyChallengeQuestions: {
     riddleId: string;
@@ -757,10 +758,10 @@ export async function generateTodaysDailyChallenge(forceGenerate: boolean = fals
   const generatedAttempts: {question: string; answer: string}[] = [];
 
   // Circuit breaker: Maximum attempts to prevent infinite loops
-  const maxAttempts = 50; // 10x the number of riddles we need
+  const maxAttempts = dailyChallengeQuestionCount * 10;
   let attemptCount = 0;
 
-  while (dailyChallengeQuestions.length < 5 && attemptCount < maxAttempts) {
+  while (dailyChallengeQuestions.length < dailyChallengeQuestionCount && attemptCount < maxAttempts) {
     attemptCount++;
 
     // Generate a riddle using the OpenAI service
@@ -787,7 +788,7 @@ export async function generateTodaysDailyChallenge(forceGenerate: boolean = fals
           riddleId: riddleRef.id,
           text: newRiddle.question,
           answer: newRiddle.answer,
-          dailyIndex: dailyChallengeQuestions.length, // Use the current count as index
+          dailyIndex: startingDailyIndex + dailyChallengeQuestions.length,
           category: "daily",
           difficulty: "normal",
         };
@@ -806,7 +807,9 @@ export async function generateTodaysDailyChallenge(forceGenerate: boolean = fals
         existing.questions.push(newRiddle.question.toLowerCase());
         existing.answers.push(newRiddle.answer.toLowerCase());
 
-        logger.info(`Generated daily challenge question ${dailyChallengeQuestions.length}/5 (attempt ${attemptCount})`);
+        logger.info(
+          `Generated daily challenge question ${dailyChallengeQuestions.length}/${dailyChallengeQuestionCount} (attempt ${attemptCount})`,
+        );
       } else {
         logger.warn(`Generated riddle is a duplicate, trying again... (attempt ${attemptCount}/${maxAttempts})`);
       }
@@ -817,9 +820,9 @@ export async function generateTodaysDailyChallenge(forceGenerate: boolean = fals
   }
 
   // Check if we hit the circuit breaker
-  if (dailyChallengeQuestions.length < 5 && attemptCount >= maxAttempts) {
+  if (dailyChallengeQuestions.length < dailyChallengeQuestionCount && attemptCount >= maxAttempts) {
     logger.warn(
-      `Circuit breaker activated: Only generated ${dailyChallengeQuestions.length}/5 daily challenge questions after ${maxAttempts} attempts`,
+      `Circuit breaker activated: Only generated ${dailyChallengeQuestions.length}/${dailyChallengeQuestionCount} daily challenge questions after ${maxAttempts} attempts`,
     );
     if (dailyChallengeQuestions.length === 0) {
       throw new Error(`Failed to generate any unique daily challenge questions after ${maxAttempts} attempts`);
@@ -893,7 +896,7 @@ async function resetAllUsersDailyChallengeProgress(): Promise<void> {
 }
 
 /**
- * Callable function to generate today's 5-question daily challenge.
+ * Callable function to generate today's single-question daily challenge.
  * Can be called manually or by a scheduler.
  * @return A promise resolving to an object indicating success or failure.
  */

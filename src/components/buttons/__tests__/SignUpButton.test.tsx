@@ -59,7 +59,7 @@ describe("SignUpButton", () => {
       const { getByText } = render(<SignUpButton onPress={mockOnPress} />);
 
       const buttonText = getByText("Sign up");
-      expect(buttonText.props.className).toContain("text-gray-800");
+      expect(buttonText.props.className).toContain("text-white");
       expect(buttonText.props.className).toContain("font-semibold");
     });
   });
@@ -165,8 +165,6 @@ describe("SignUpButton", () => {
       const containerView = views[0];
       expect(containerView.props.className).toContain("flex-row");
       expect(containerView.props.className).toContain("items-center");
-      const style = containerView.props.style ?? {};
-      expect(style.marginTop).toBeDefined();
     });
 
     it("contains TouchableOpacity within View", () => {

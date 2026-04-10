@@ -2,20 +2,30 @@ import React from "react";
 import { render, fireEvent } from "@testing-library/react-native";
 import CloseButton from "../CloseButton";
 
-// Mock CloseIcon
+// Mock CloseIcon (black variant)
 jest.mock("../../icons/CloseIcon", () => {
   const React = require("react");
   const { View } = require("react-native");
 
-  const MockCloseIcon = ({ width, height, color }: any) => (
-    <View
-      testID="close-icon"
-      style={{ width, height, backgroundColor: color }}
-    />
+  const MockCloseIcon = ({ width, height }: any) => (
+    <View testID="close-icon-black" style={{ width, height }} />
   );
 
   MockCloseIcon.displayName = "MockCloseIcon";
   return MockCloseIcon;
+});
+
+// Mock CloseIconWhite (white variant)
+jest.mock("../../icons/CloseIconWhite", () => {
+  const React = require("react");
+  const { View } = require("react-native");
+
+  const MockCloseIconWhite = ({ width, height }: any) => (
+    <View testID="close-icon-white" style={{ width, height }} />
+  );
+
+  MockCloseIconWhite.displayName = "MockCloseIconWhite";
+  return MockCloseIconWhite;
 });
 
 describe("CloseButton", () => {
@@ -35,7 +45,7 @@ describe("CloseButton", () => {
       );
 
       expect(getByLabelText("Close")).toBeTruthy();
-      expect(getByTestId("close-icon")).toBeTruthy();
+      expect(getByTestId("close-icon-black")).toBeTruthy();
     });
 
     it("renders with custom size", () => {
@@ -44,7 +54,7 @@ describe("CloseButton", () => {
         <CloseButton {...defaultProps} size={customSize} />
       );
 
-      const icon = getByTestId("close-icon");
+      const icon = getByTestId("close-icon-black");
       expect(icon.props.style.width).toBe(customSize);
       expect(icon.props.style.height).toBe(customSize);
     });
@@ -54,7 +64,7 @@ describe("CloseButton", () => {
         <CloseButton onPress={defaultProps.onPress} />
       );
 
-      const icon = getByTestId("close-icon");
+      const icon = getByTestId("close-icon-black");
       expect(icon).toBeTruthy();
     });
   });
@@ -92,18 +102,17 @@ describe("CloseButton", () => {
     it("passes correct default color to icon", () => {
       const { getByTestId } = render(<CloseButton {...defaultProps} />);
 
-      const icon = getByTestId("close-icon");
-      // Color is only passed when specified, no default color in implementation
+      const icon = getByTestId("close-icon-black");
       expect(icon).toBeTruthy();
     });
 
-    it("passes custom color to icon", () => {
+    it("renders white icon variant when color is white", () => {
       const { getByTestId } = render(
-        <CloseButton {...defaultProps} color="#fff" />
+        <CloseButton {...defaultProps} color="white" />
       );
 
-      const icon = getByTestId("close-icon");
-      expect(icon.props.style.backgroundColor).toBe("#fff");
+      const icon = getByTestId("close-icon-white");
+      expect(icon).toBeTruthy();
     });
   });
 
@@ -139,7 +148,7 @@ describe("CloseButton", () => {
         <CloseButton {...defaultProps} size={0} />
       );
 
-      const icon = getByTestId("close-icon");
+      const icon = getByTestId("close-icon-black");
       expect(icon.props.style.width).toBe(0);
       expect(icon.props.style.height).toBe(0);
     });
@@ -149,7 +158,7 @@ describe("CloseButton", () => {
         <CloseButton {...defaultProps} size={-10} />
       );
 
-      const icon = getByTestId("close-icon");
+      const icon = getByTestId("close-icon-black");
       expect(icon.props.style.width).toBe(-10);
       expect(icon.props.style.height).toBe(-10);
     });
@@ -159,7 +168,7 @@ describe("CloseButton", () => {
         <CloseButton {...defaultProps} size={1000} />
       );
 
-      const icon = getByTestId("close-icon");
+      const icon = getByTestId("close-icon-black");
       expect(icon.props.style.width).toBe(1000);
       expect(icon.props.style.height).toBe(1000);
     });
@@ -188,12 +197,12 @@ describe("CloseButton", () => {
         <CloseButton {...defaultProps} size={24} />
       );
 
-      const icon1 = getByTestId("close-icon");
+      const icon1 = getByTestId("close-icon-black");
       expect(icon1.props.style.width).toBe(24);
 
       rerender(<CloseButton {...defaultProps} size={48} />);
 
-      const icon2 = getByTestId("close-icon");
+      const icon2 = getByTestId("close-icon-black");
       expect(icon2.props.style.width).toBe(48);
     });
   });
@@ -226,3 +235,4 @@ describe("CloseButton", () => {
     });
   });
 });
+

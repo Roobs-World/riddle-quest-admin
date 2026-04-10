@@ -11,3 +11,4 @@ const GoogleIcon = ({ width, height }: GoogleIconProps) => {
 };
 
 export default GoogleIcon;
+

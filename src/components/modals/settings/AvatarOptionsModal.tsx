@@ -12,9 +12,8 @@ import CloseButton from "../../buttons/CloseButton";
 import {
   MODAL_WIDTH,
   MODAL_HEIGHT,
-  CLOSE_BUTTON_INSET,
   CLOSE_BUTTON_SIZE,
-  MODAL_CLOSE_TOP_OFFSET_SM,
+  MODAL_CLOSE_BUTTON_POSITION,
   MODAL_BUTTON_SPACER,
 } from "../../../constants/layout";
 import { SPACING } from "../../../styles";
@@ -137,12 +136,7 @@ const AvatarOptionsModal: React.FC<AvatarOptionsModalProps> = ({
             <CloseButton
               onPress={onClose}
               size={CLOSE_BUTTON_SIZE}
-              style={{
-                position: "absolute",
-                top: MODAL_CLOSE_TOP_OFFSET_SM,
-                right: -CLOSE_BUTTON_INSET,
-                zIndex: 10,
-              }}
+              style={MODAL_CLOSE_BUTTON_POSITION}
             />
             <Text
               style={{
@@ -182,3 +176,4 @@ const AvatarOptionsModal: React.FC<AvatarOptionsModalProps> = ({
 };
 
 export default AvatarOptionsModal;
+

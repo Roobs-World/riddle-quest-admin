@@ -627,6 +627,8 @@ export const createUserDocumentInFirestore = async (
         tutorialIndex: 0,
       },
       stats: {
+        xp: 0,
+        level: 1,
         dailyPuzzlesCompleted: 0,
         bestStreak: 0,
         totalWordsGuessed: 0,
@@ -676,3 +678,4 @@ export const createUserDocumentInFirestore = async (
     throw error;
   }
 };
+

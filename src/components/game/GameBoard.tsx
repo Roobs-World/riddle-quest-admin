@@ -85,6 +85,12 @@ interface GameBoardProps {
 
   /** Indices of positions revealed by hints in the current guess (shown as green). */
   hintRevealedIndices?: number[];
+
+  /** Active slot index for the current guess row. */
+  activeSlotIndex?: number;
+
+  /** Selects the slot index in the current guess row for the next letter placement. */
+  onSelectCurrentGuessSlot?: (slotIndex: number) => void;
 }
 
 /**
@@ -151,6 +157,8 @@ const GameBoard: React.FC<GameBoardProps> = ({
   onKeyPress,
   letterStates,
   hintRevealedIndices,
+  activeSlotIndex,
+  onSelectCurrentGuessSlot,
 }) => {
   // Use onKeyPress as a fallback if handleKeyPress is not provided
   const keyPressHandler = handleKeyPress || onKeyPress || (() => {});
@@ -196,6 +204,8 @@ const GameBoard: React.FC<GameBoardProps> = ({
         answerLength={answerLength}
         setTileRef={setTileRef}
         hintRevealedIndices={hintRevealedIndices}
+        activeSlotIndex={activeSlotIndex}
+        onSelectCurrentGuessSlot={onSelectCurrentGuessSlot}
       />
 
       {/* Interactive Keyboard - Hidden when overlays are visible */}

@@ -133,6 +133,8 @@ describe("FullProfileDetailsModal", () => {
     coins: 150,
     avatarUrl: "https://example.com/avatar.jpg",
     stats: {
+      xp: 0,
+      level: 1,
       dailyPuzzlesCompleted: 5,
       bestStreak: 8,
       totalWordsGuessed: 150,
@@ -284,6 +286,8 @@ describe("FullProfileDetailsModal", () => {
     const playerWithZeroStats = {
       ...mockPlayerData,
       stats: {
+        xp: 0,
+        level: 1,
         dailyPuzzlesCompleted: 0,
         bestStreak: 0,
         totalWordsGuessed: 0,
@@ -318,6 +322,28 @@ describe("FullProfileDetailsModal", () => {
     expect(getAllByText("0").length).toBeGreaterThan(0);
   });
 
+  it("fills XP progress bar based on user XP", () => {
+    const playerWithXpProgress: Player = {
+      ...mockPlayerData,
+      stats: {
+        ...mockPlayerData.stats,
+        xp: 1750,
+        totalScore: 1750,
+      },
+    };
+
+    const { getByTestId, getByText } = renderWithModalProvider(
+      <FullProfileDetailsModal
+        {...defaultProps}
+        playerData={playerWithXpProgress}
+      />
+    );
+
+    const xpFill = getByTestId("xp-progress-fill");
+    expect(xpFill.props.style.width).toBe("25%");
+    expect(getByText("250 / 1000 XP")).toBeTruthy();
+  });
+
   it("renders the Leaderboard button", () => {
     const { getByText } = renderWithModalProvider(
       <FullProfileDetailsModal {...defaultProps} />
@@ -326,3 +352,4 @@ describe("FullProfileDetailsModal", () => {
     expect(getByText("Leaderboard")).toBeTruthy();
   });
 });
+

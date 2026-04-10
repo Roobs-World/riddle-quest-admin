@@ -1,12 +1,24 @@
-/**
+﻿/**
  * @fileoverview SettingsModal component - Bottom sheet settings modal for Qwordly.
  */
 
 import React from "react";
-import { View, Text, Modal, TouchableOpacity, Alert } from "react-native";
+import {
+  View,
+  Text,
+  Modal,
+  TouchableOpacity,
+  Alert,
+  ScrollView,
+} from "react-native";
 import { getAuth } from "@react-native-firebase/auth";
 import { getApp } from "@react-native-firebase/app";
-import { AppStrings } from "../../../constants/AppStrings";
+import {
+  AppStrings,
+  LANGUAGE_OPTIONS,
+  SupportedLanguage,
+  getLanguageLabel,
+} from "../../../constants/AppStrings";
 import { TYPOGRAPHY } from "../../../styles";
 import { useModal } from "../../../hooks/useModal";
 import { SPACING } from "../../../styles";
@@ -20,13 +32,14 @@ interface SettingsModalProps {
   onToggleHaptics: (isEnabled: boolean) => void;
   isHardMode: boolean;
   onToggleHardMode: (isEnabled: boolean) => void;
+  currentLanguage: SupportedLanguage;
+  onChangeLanguage: (language: SupportedLanguage) => void;
   onPressHelp: () => void;
   onPressLogout: () => void;
   onPressCredits: () => void;
   playerData?: import("../../../validation/firestoreSchemas").Player | null;
 }
 
-/** Segmented On/Off toggle matching the Figma design. */
 const SegmentedToggle = ({
   value,
   onChange,
@@ -84,12 +97,13 @@ const SegmentedToggle = ({
   </View>
 );
 
-/** Row item with label + right chevron arrow. */
 const ArrowRow = ({
   label,
+  value,
   onPress,
 }: {
   label: string;
+  value?: string;
   onPress: () => void;
 }) => (
   <TouchableOpacity
@@ -110,7 +124,21 @@ const ArrowRow = ({
     >
       {label}
     </Text>
-    <Text style={{ fontSize: 20, color: "#9CA3AF" }}>›</Text>
+    <View style={{ flexDirection: "row", alignItems: "center" }}>
+      {value ? (
+        <Text
+          style={{
+            marginRight: 8,
+            color: "#6B7280",
+            fontFamily: TYPOGRAPHY.fontSecondary,
+            fontSize: TYPOGRAPHY.fontSize.sm,
+          }}
+        >
+          {value}
+        </Text>
+      ) : null}
+      <Text style={{ fontSize: 20, color: "#9CA3AF" }}>{">"}</Text>
+    </View>
   </TouchableOpacity>
 );
 
@@ -123,12 +151,15 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
   onToggleHaptics,
   isHardMode,
   onToggleHardMode,
+  currentLanguage,
+  onChangeLanguage,
   onPressHelp,
   onPressLogout,
   onPressCredits,
   playerData,
 }) => {
   const modal = useModal();
+  const [isLanguagePickerOpen, setIsLanguagePickerOpen] = React.useState(false);
 
   const handleViewAchievements = () => {
     onClose();
@@ -151,12 +182,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
           backgroundColor: "rgba(0,0,0,0.5)",
         }}
       >
-        {/* Dismiss on backdrop tap */}
-        <TouchableOpacity
-          style={{ flex: 1 }}
-          onPress={onClose}
-          activeOpacity={1}
-        />
+        <TouchableOpacity style={{ flex: 1 }} onPress={onClose} activeOpacity={1} />
 
         <View
           style={{
@@ -166,7 +192,6 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
             paddingBottom: SPACING["2xl"] ?? 32,
           }}
         >
-          {/* Drag handle */}
           <View style={{ alignItems: "center", paddingTop: 12, paddingBottom: 4 }}>
             <View
               style={{
@@ -178,7 +203,6 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
             />
           </View>
 
-          {/* Header row */}
           <View
             style={{
               flexDirection: "row",
@@ -218,14 +242,12 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                   fontWeight: "300",
                 }}
               >
-                ✕
+                x
               </Text>
             </TouchableOpacity>
           </View>
 
-          {/* Rows */}
           <View style={{ paddingHorizontal: SPACING.lg }}>
-            {/* Sound toggle */}
             <View
               style={{
                 flexDirection: "row",
@@ -248,7 +270,6 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
 
             <View style={{ height: 1, backgroundColor: "#E8E0E8" }} />
 
-            {/* Haptics toggle */}
             <View
               style={{
                 flexDirection: "row",
@@ -271,7 +292,6 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
 
             <View style={{ height: 1, backgroundColor: "#E8E0E8" }} />
 
-            {/* Hard Mode toggle */}
             <View
               style={{
                 flexDirection: "row",
@@ -294,12 +314,18 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
 
             <View style={{ height: 1, backgroundColor: "#E8E0E8" }} />
 
-            {/* Help and Support */}
+            <ArrowRow
+              label={AppStrings.Settings.LANGUAGE_LABEL}
+              value={getLanguageLabel(currentLanguage)}
+              onPress={() => setIsLanguagePickerOpen(true)}
+            />
+
+            <View style={{ height: 1, backgroundColor: "#E8E0E8" }} />
+
             <ArrowRow label="Help and Support?" onPress={onPressHelp} />
 
             <View style={{ height: 1, backgroundColor: "#E8E0E8" }} />
 
-            {/* Details account */}
             <ArrowRow label="Details account" onPress={onPressCredits} />
 
             {playerData != null && (
@@ -311,7 +337,6 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
 
             <View style={{ height: 1, backgroundColor: "#E8E0E8" }} />
 
-            {/* Logout */}
             <TouchableOpacity
               onPress={async () => {
                 try {
@@ -336,6 +361,117 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
           </View>
         </View>
       </View>
+
+      <Modal
+        visible={isLanguagePickerOpen}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setIsLanguagePickerOpen(false)}
+      >
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            backgroundColor: "rgba(0,0,0,0.5)",
+            paddingHorizontal: SPACING.lg,
+          }}
+        >
+          <TouchableOpacity
+            style={{ flex: 1 }}
+            activeOpacity={1}
+            onPress={() => setIsLanguagePickerOpen(false)}
+          />
+
+          <View
+            style={{
+              maxHeight: "70%",
+              borderRadius: 20,
+              backgroundColor: "#FCFAF4",
+              padding: SPACING.lg,
+            }}
+          >
+            <Text
+              style={{
+                fontFamily: TYPOGRAPHY.fontPrimary,
+                fontSize: TYPOGRAPHY.fontSize.lg,
+                fontWeight: "bold",
+                color: "#1A1A1A",
+                marginBottom: SPACING.md,
+              }}
+            >
+              {AppStrings.Settings.LANGUAGE_LABEL}
+            </Text>
+
+            <ScrollView>
+              {LANGUAGE_OPTIONS.map((option) => {
+                const isSelected = option.code === currentLanguage;
+                return (
+                  <TouchableOpacity
+                    key={option.code}
+                    onPress={() => {
+                      onChangeLanguage(option.code);
+                      setIsLanguagePickerOpen(false);
+                    }}
+                    style={{
+                      paddingVertical: 12,
+                      borderBottomWidth: 1,
+                      borderBottomColor: "#E8E0E8",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontFamily: TYPOGRAPHY.fontSecondary,
+                        fontSize: TYPOGRAPHY.fontSize.base,
+                        color: "#1A1A1A",
+                      }}
+                    >
+                      {option.label}
+                    </Text>
+                    <Text
+                      style={{
+                        fontFamily: TYPOGRAPHY.fontSecondary,
+                        fontSize: TYPOGRAPHY.fontSize.sm,
+                        color: isSelected ? "#401F40" : "#9CA3AF",
+                      }}
+                    >
+                      {isSelected ? "Selected" : ""}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+
+            <TouchableOpacity
+              onPress={() => setIsLanguagePickerOpen(false)}
+              style={{
+                alignSelf: "flex-end",
+                marginTop: SPACING.md,
+                paddingVertical: 8,
+                paddingHorizontal: 12,
+              }}
+            >
+              <Text
+                style={{
+                  fontFamily: TYPOGRAPHY.fontSecondary,
+                  fontSize: TYPOGRAPHY.fontSize.base,
+                  color: "#401F40",
+                }}
+              >
+                {AppStrings.Settings.CLOSE_BUTTON}
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          <TouchableOpacity
+            style={{ flex: 1 }}
+            activeOpacity={1}
+            onPress={() => setIsLanguagePickerOpen(false)}
+          />
+        </View>
+      </Modal>
     </Modal>
   );
 };

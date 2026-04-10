@@ -7,7 +7,7 @@
  * and centralizes riddle progression behavior for daily, classic, and tutorial
  * modes.
  */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LandingScreen from "../screens/LandingScreen";
 import LoginScreen from "../screens/auth/LoginScreen";
@@ -15,7 +15,7 @@ import ForgotPasswordScreen from "../screens/auth/ForgotPasswordScreen";
 import NewPasswordScreen from "../screens/auth/NewPasswordScreen";
 import GameScreen from "../screens/game/GameScreen";
 import PulsingSpinner from "../components/loading/PulsingSpinner";
-import { HINT_COST_COINS } from "../constants/game";
+import { HINT_COST_COINS, getXpLevel } from "../constants/game";
 import {
   LOADING_SPINNER_OPACITY,
   LOADING_SPINNER_OPACITY_OVERLAY,
@@ -70,22 +70,27 @@ const GameScreenWrapper = () => {
   const [showCompletionModal, setShowCompletionModal] = useState(false);
   const [completionData, setCompletionData] = useState({
     totalCoinsEarned: 0,
-    questionsCompleted: 5,
+    questionsCompleted: 1,
   });
+  const lastFetchedModeRef = useRef<typeof gameMode | null>(null);
 
   // Effect to load riddle when dependencies change
   useEffect(() => {
     const loadRiddle = async () => {
       if (isAuthenticated && playerData) {
-        // This logic is now handled within fetchCurrentRiddle based on gameMode
+        if (lastFetchedModeRef.current === gameMode && currentRiddle) {
+          return;
+        }
         await fetchCurrentRiddle(playerData, gameMode);
+        lastFetchedModeRef.current = gameMode;
       }
     };
 
-    loadRiddle();
+    void loadRiddle();
   }, [
     playerData,
     gameMode,
+    currentRiddle,
     isDailyChallengeAvailable,
     setCurrentRiddle,
     fetchCurrentRiddle,
@@ -106,7 +111,7 @@ const GameScreenWrapper = () => {
     },
   });
 
-  // Function to check if user completed all 5 daily challenge questions
+  // Function to check if user completed today's single daily challenge
   const checkDailyChallengeCompletion = async () => {
     if (!playerData || gameMode !== "daily") return false;
 
@@ -136,25 +141,20 @@ const GameScreenWrapper = () => {
       return;
     }
 
-    // For daily challenge mode, check for completion after winning
+    // For daily challenge mode, switch back to classic after completion
     if (gameMode === "daily") {
       logger.debug(
         "NavigationStack: handleNextLevel - Daily challenge mode detected"
       );
       const isCompleted = await checkDailyChallengeCompletion();
       if (isCompleted) {
-        // Don't advance to next level, user has completed all 5 questions
-        logger.debug("Daily challenge completed! All 5 questions finished.");
+        logger.debug("Daily challenge completed. Switching to classic mode.");
+        setGameMode("classic");
+        await fetchCurrentRiddle(playerData, "classic");
         return;
       }
-      // If not completed, fetch next daily challenge question
-      logger.debug(
-        "NavigationStack: handleNextLevel - Fetching next daily challenge question"
-      );
-      await fetchCurrentRiddle(playerData, gameMode);
-      logger.debug(
-        "NavigationStack: handleNextLevel - Daily challenge question fetched"
-      );
+      logger.debug("Daily challenge mode active and not completed yet.");
+      await fetchCurrentRiddle(playerData, "daily");
       return;
     }
 
@@ -340,12 +340,6 @@ const GameScreenWrapper = () => {
     );
   };
 
-  const handleHomeAfterCompletion = () => {
-    setShowCompletionModal(false);
-    // Navigate back to landing/home screen
-    logger.debug("User chose to return home after daily challenge completion");
-  };
-
   // Render GameScreen with all necessary props only when we have current riddle
   if (currentRiddle) {
     return (
@@ -366,25 +360,27 @@ const GameScreenWrapper = () => {
                 AppStrings.GameMessages.MODE_SUFFIX
             );
             logger.debug(AppStrings.GameMessages.COINS_EARNED + coinsEarned);
+            const newTotalXp = (playerData.stats?.xp ?? playerData.stats?.totalScore ?? 0) + scoreEarned;
+            const derivedLevel = getXpLevel(newTotalXp).level;
 
             updatePlayerDataLocally({
               coins: (playerData.coins ?? 0) + coinsEarned,
               stats: {
                 ...playerData.stats,
-                totalScore: (playerData.stats?.totalScore ?? 0) + scoreEarned,
+                xp: newTotalXp,
+                level: Math.max(playerData.stats?.level ?? 1, derivedLevel),
                 wins: (playerData.stats?.wins ?? 0) + 1,
                 totalWins: (playerData.stats?.totalWins ?? 0) + 1,
               },
             });
 
-            // Check if user completed all 5 daily challenge questions
+            // Check if user completed today's daily challenge
             if (gameMode === "daily") {
               const isCompleted = await checkDailyChallengeCompletion();
               if (isCompleted) {
-                // Show congratulations modal for completing all 5 questions
                 setCompletionData({
                   totalCoinsEarned: coinsEarned,
-                  questionsCompleted: 5,
+                  questionsCompleted: 1,
                 });
                 setShowCompletionModal(true);
               }
@@ -411,10 +407,9 @@ const GameScreenWrapper = () => {
         {/* Daily Challenge Completion Modal - using VictoryModal instead */}
         <VictoryModal
           isVisible={showCompletionModal}
-          attempts={5}
+          attempts={1}
           coinsEarned={completionData.totalCoinsEarned}
           onNextLevel={handleContinueAfterCompletion}
-          onHome={handleHomeAfterCompletion}
           onClose={() => setShowCompletionModal(false)}
           guesses={[]}
           gameMode="daily"

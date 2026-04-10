@@ -41,10 +41,7 @@ import { Player } from "../../validation/firestoreSchemas";
 import * as RNIap from "react-native-iap";
 import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY } from "../../styles";
 import { scale, verticalScale } from "../../utils/responsive";
-import { getFunctions, httpsCallable } from "@react-native-firebase/functions";
-import { getApp } from "@react-native-firebase/app";
 import { logger } from "../../utils/logger";
-import { captureException } from "../../utils/sentry";
 
 /**
  * Type for the updateModalData function
@@ -77,6 +74,8 @@ const generateMockData = (
       tutorialIndex: 5,
     },
     stats: {
+      xp: 0,
+      level: 1,
       gamesPlayed: 100,
       wins: 75,
       totalScore: 2500,
@@ -156,9 +155,19 @@ const generateMockData = (
         },
       };
     case "loss":
-      // We'll use an async IIFE to fetch the correct answer from the server
       return {
-        correctAnswer: "FETCHING...", // Initial placeholder value
+        correctAnswer: "HIDDEN",
+        onWatchAdContinue: () => {
+          logger.debug("[LossModal Debug] Watch ad to continue pressed");
+          if (closeModalFn) closeModalFn("loss");
+        },
+        onCoinContinue: () => {
+          logger.debug("[LossModal Debug] Use coins to continue pressed");
+          if (closeModalFn) closeModalFn("loss");
+        },
+        coinContinueCost: 25,
+        canWatchAd: true,
+        canUseCoin: true,
         onNext: async () => {
           logger.debug("[LossModal Debug] Next level button pressed");
           // Close the modal first
@@ -177,54 +186,6 @@ const generateMockData = (
         onClose: () => {
           logger.debug("[LossModal Debug] Close button pressed");
           if (closeModalFn) closeModalFn("loss");
-        },
-        // This property allows the ModalRenderer to know this modal needs server data
-        __fetchServerData: async (updateModalData: UpdateModalDataFn) => {
-          try {
-            logger.debug(
-              "[LossModal Debug] Fetching correct answer from server"
-            );
-
-            // Use a test riddle ID that should exist in your database
-            const testRiddleId = "daily_riddle_1"; // Replace with a valid riddle ID from your database
-
-            // Call the Firebase Function directly
-            const submitGuessCallable = httpsCallable(
-              getFunctions(getApp()),
-              "submitGuess"
-            );
-            const result = await submitGuessCallable({
-              guess: "wrong", // Intentionally wrong guess to get the correct answer
-              riddleId: testRiddleId,
-              gameMode: "classic",
-              attempts: 3, // Final attempt
-            });
-
-            // Extract the correct answer from the response
-            const { correctAnswer } = result.data as {
-              correctAnswer?: string;
-              isCorrect: boolean;
-            };
-
-            logger.debug(
-              `[LossModal Debug] Server returned answer: ${correctAnswer}`
-            );
-
-            // Update the modal data with the correct answer
-            if (correctAnswer && updateModalData) {
-              updateModalData({ correctAnswer });
-            }
-          } catch (error) {
-            logger.error(
-              "[LossModal Debug] Error fetching correct answer:",
-              error
-            );
-            captureException(error);
-            // If there's an error, use a fallback answer
-            if (updateModalData) {
-              updateModalData({ correctAnswer: "ANSWER" });
-            }
-          }
         },
       };
     // outOfAttempts and watchAdForChance cases removed - using loss modal instead
@@ -506,3 +467,4 @@ const styles = StyleSheet.create({
 });
 
 export default React.memo(ModalTogglePanel);
+

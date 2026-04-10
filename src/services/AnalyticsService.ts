@@ -196,6 +196,22 @@ export class AnalyticsService {
   }
 
   /**
+   * Log a successful coin-pack purchase.
+   * Firebase can aggregate this event count per pack to show total purchases.
+   */
+  async logCoinPackPurchased(params: {
+    productId: string;
+    coins: number;
+    purchaseCount?: number;
+  }): Promise<void> {
+    await this.logEvent("coin_pack_purchased", {
+      product_id: params.productId,
+      coins: params.coins,
+      purchase_count: params.purchaseCount ?? 1,
+    });
+  }
+
+  /**
    * Log a rewarded ad lifecycle event.
    *
    * @param event - Stage of the ad lifecycle.
@@ -206,6 +222,48 @@ export class AnalyticsService {
     params: Record<string, string | number | boolean> = {}
   ): Promise<void> {
     await this.logEvent(`rewarded_ad_${event}`, params);
+  }
+
+  /**
+   * Log when a shop pack is shown in the coin-shop grid.
+   */
+  async logShopPackImpression(params: {
+    productId: string;
+    productKey: string;
+    coins: number;
+    sortOrder: number;
+    featured: boolean;
+    displayPrice: string;
+  }): Promise<void> {
+    await this.logEvent("shop_pack_impression", {
+      product_id: params.productId,
+      product_key: params.productKey,
+      coins: params.coins,
+      sort_order: params.sortOrder,
+      featured: params.featured,
+      display_price: params.displayPrice,
+    });
+  }
+
+  /**
+   * Log when a shop pack is tapped.
+   */
+  async logShopPackSelected(params: {
+    productId: string;
+    productKey: string;
+    coins: number;
+    sortOrder: number;
+    featured: boolean;
+    displayPrice: string;
+  }): Promise<void> {
+    await this.logEvent("shop_pack_selected", {
+      product_id: params.productId,
+      product_key: params.productKey,
+      coins: params.coins,
+      sort_order: params.sortOrder,
+      featured: params.featured,
+      display_price: params.displayPrice,
+    });
   }
 
   /**

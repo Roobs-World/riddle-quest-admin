@@ -26,7 +26,14 @@ import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 import useRewardedAds from "../../hooks/useRewardedAds";
 
 import { useAuth } from "../../contexts/AuthContext";
-import { AppStrings } from "../../constants/AppStrings";
+import {
+  APP_LANGUAGE_STORAGE_KEY,
+  AppStrings,
+  SupportedLanguage,
+  getAppLanguage,
+  isSupportedLanguage,
+  setAppLanguage,
+} from "../../constants/AppStrings";
 import { isTablet, isLargeTablet, isDesktop } from "../../utils/responsive";
 import { safeDelay } from "../../utils/timing";
 import PulsingSpinner from "../../components/loading/PulsingSpinner";
@@ -48,6 +55,10 @@ import { GameInput } from "../../components/game/GameInput";
 import { useModal } from "../../hooks/useModal";
 import { ModalProvider } from "../../components/modals/ModalProvider";
 import { IapService } from "../../services/IapService";
+import {
+  ProductPricing,
+  ProductPricingService,
+} from "../../services/ProductPricingService";
 import ModalTogglePanel from "../../components/development/ModalTogglePanel";
 import StarryBackground from "../../components/background/StarryBackground";
 import { logger } from "../../utils/logger";
@@ -55,6 +66,7 @@ import { captureException } from "../../utils/sentry";
 import { getHardModeConstraints, validateHardModeGuess } from "../../utils/hardMode";
 import { computeLetterStates } from "../../utils/letterStates";
 import { getTutorialRiddleCount } from "../../services/FirestoreService";
+import { ACHIEVEMENT_DEFINITIONS } from "../../constants/achievements";
 
 interface GuessResult {
   outcome: "win" | "loss" | "continue" | "attemptLimitReached";
@@ -128,7 +140,11 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const [isSoundEnabled, setIsSoundEnabled] = useState(true);
   const [isHapticsEnabled, setIsHapticsEnabled] = useState(true);
   const [isHardMode, setIsHardMode] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguage>(
+    getAppLanguage()
+  );
+  const [activeServerRequests, setActiveServerRequests] = useState(0);
+  const [activeSlotIndex, setActiveSlotIndex] = useState(0);
 
   // Guard against re-running game-over logic when modal context re-renders.
   // The `modal` object from useModal() gets a new reference every time any
@@ -140,6 +156,9 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const [iapProducts, setIapProducts] = useState<RNIap.Product[]>([]);
   const [iapLoading, setIapLoading] = useState(false);
   const [iapError, setIapError] = useState<string | null>(null);
+  const [firestoreProducts, setFirestoreProducts] = useState<ProductPricing[]>([]);
+  const [productPricingLoading, setProductPricingLoading] = useState(false);
+  const [productPricingError, setProductPricingError] = useState<string | null>(null);
 
   // Tutorial total steps (for header step indicator when in tutorial mode)
   const [tutorialTotalSteps, setTutorialTotalSteps] = useState<number | null>(
@@ -169,6 +188,16 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   // Using a ref so it is readable synchronously inside the hint callback without
   // needing to appear in useCallback dep arrays.
   const hintRevealedIndicesRef = useRef<number[]>([]);
+  const isLoading = activeServerRequests > 0;
+
+  const runWithServerLoading = useCallback(async <T,>(work: () => Promise<T> | T) => {
+    setActiveServerRequests((count) => count + 1);
+    try {
+      return await Promise.resolve(work());
+    } finally {
+      setActiveServerRequests((count) => Math.max(0, count - 1));
+    }
+  }, []);
 
   // Reset hint tracking whenever the riddle or game mode changes.
   useEffect(() => {
@@ -188,12 +217,12 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       setTutorialTotalSteps(null);
       return;
     }
-    getTutorialRiddleCount()
+    runWithServerLoading(() => getTutorialRiddleCount())
       .then(setTutorialTotalSteps)
       .catch((err) => {
         logger.warn("Could not get tutorial riddle count for header:", err);
       });
-  }, [gameMode]);
+  }, [gameMode, runWithServerLoading]);
 
   // Check if any modal is currently open
   const isAnyModalVisible = modal.modals.length > 0;
@@ -210,7 +239,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       setIapLoading(true);
       setIapError(null);
       try {
-        const products = await IapService.getProducts();
+        const products = await runWithServerLoading(() => IapService.getProducts());
         setIapProducts(products);
       } catch (error) {
         logger.error("Error loading IAP products:", error);
@@ -224,7 +253,32 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     };
 
     loadProducts();
-  }, []);
+  }, [runWithServerLoading]);
+
+  useEffect(() => {
+    const loadFirestoreProducts = async () => {
+      setProductPricingLoading(true);
+      setProductPricingError(null);
+      try {
+        const products = await runWithServerLoading(() =>
+          ProductPricingService.getActiveProducts()
+        );
+        setFirestoreProducts(products);
+      } catch (error) {
+        logger.error("Error loading Firestore product pricing:", error);
+        captureException(error);
+        setProductPricingError(
+          error instanceof Error
+            ? error.message
+            : "Failed to load shop products"
+        );
+      } finally {
+        setProductPricingLoading(false);
+      }
+    };
+
+    loadFirestoreProducts();
+  }, [runWithServerLoading]);
 
   // Initialize onboarding flow — always show welcome first, then instructions.
   // Guard with a ref so this only runs once per screen mount.
@@ -238,7 +292,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       try {
         let showStartTutorial = true;
         try {
-          const count = await getTutorialRiddleCount();
+          const count = await runWithServerLoading(() => getTutorialRiddleCount());
           showStartTutorial = count > 0;
         } catch (err) {
           logger.warn("Could not get tutorial riddle count, hiding Start Tutorial:", err);
@@ -249,7 +303,12 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           onStartTutorial: () => {
             setGameMode("tutorial");
             if (playerData) {
-              fetchCurrentRiddle(playerData, "tutorial");
+              runWithServerLoading(() => fetchCurrentRiddle(playerData, "tutorial")).catch(
+                (error) => {
+                  logger.error("Error fetching tutorial riddle:", error);
+                  captureException(error);
+                }
+              );
             }
           },
           showStartTutorial,
@@ -272,17 +331,19 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     fetchCurrentRiddle,
     showWelcomeModal,
     showInstructionsModal,
+    runWithServerLoading,
   ]);
 
   // Load settings — batch all keys in a single AsyncStorage call
   useEffect(() => {
     const loadSettings = async () => {
       try {
-        const [[, soundEnabled], [, hapticsEnabled], [, hardMode]] =
+        const [[, soundEnabled], [, hapticsEnabled], [, hardMode], [, language]] =
           await AsyncStorage.multiGet([
             SOUND_ENABLED_STORAGE_KEY,
             HAPTICS_ENABLED_STORAGE_KEY,
             HARD_MODE_STORAGE_KEY,
+            APP_LANGUAGE_STORAGE_KEY,
           ]);
         if (soundEnabled !== null) {
           const parsedSoundEnabled = JSON.parse(soundEnabled);
@@ -296,6 +357,10 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         }
         if (hardMode !== null) {
           setIsHardMode(JSON.parse(hardMode));
+        }
+        if (language && isSupportedLanguage(language)) {
+          setAppLanguage(language);
+          setCurrentLanguage(language);
         }
       } catch (error) {
         logger.error("Error loading settings from AsyncStorage:", error);
@@ -337,6 +402,15 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     });
   }, [isHardMode]);
 
+  useEffect(() => {
+    AsyncStorage.setItem(APP_LANGUAGE_STORAGE_KEY, currentLanguage).catch(
+      (error: unknown) => {
+        logger.error("Error saving language setting to AsyncStorage:", error);
+        captureException(error);
+      }
+    );
+  }, [currentLanguage]);
+
   // Background music management
   useEffect(() => {
     SoundManager.setSoundEnabled(isSoundEnabled);
@@ -356,6 +430,33 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     }
   }, [gameOver]);
 
+  useEffect(() => {
+    if (answerLength <= 0) {
+      setActiveSlotIndex(0);
+      return;
+    }
+
+    setActiveSlotIndex((prev) => {
+      const maxIndex = Math.max(0, answerLength - 1);
+      const clampedPrev = Math.min(Math.max(0, prev), maxIndex);
+
+      if (currentGuess.length === 0) {
+        return 0;
+      }
+
+      if (!currentGuess[clampedPrev]) {
+        return clampedPrev;
+      }
+
+      const firstEmptyIndex = currentGuess.findIndex((letter) => !letter);
+      if (firstEmptyIndex !== -1) {
+        return firstEmptyIndex;
+      }
+
+      return clampedPrev;
+    });
+  }, [answerLength, currentGuess]);
+
   const handleWatchAdToContinue = useCallback(async () => {
     modal.closeModalByType("loss");
     if (isRewardedAdReady) {
@@ -367,17 +468,19 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const handleCoinContinue = useCallback(async () => {
     modal.closeModalByType("loss");
     try {
-      await httpsCallable(getFunctions(getApp()), "spendCoins")({
-        amount: CONTINUE_COST_COINS,
-        reason: "continue",
-      });
+      await runWithServerLoading(() =>
+        httpsCallable(getFunctions(getApp()), "spendCoins")({
+          amount: CONTINUE_COST_COINS,
+          reason: "continue",
+        })
+      );
       continueGame();
     } catch (error) {
       logger.error("Error spending coins for continue:", error);
       captureException(error);
       modal.showInfoModal({ title: "Error", message: "Could not spend coins. Please try again." });
     }
-  }, [modal, continueGame]);
+  }, [modal, continueGame, runWithServerLoading]);
 
   // Handle game over states
   useEffect(() => {
@@ -386,15 +489,26 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       const result = lastGuessResult;
 
       if (result.outcome === "win") {
+        const unlockedAchievementNames = (result.newlyUnlockedAchievementIds ?? [])
+          .map(
+            (achievementId) =>
+              ACHIEVEMENT_DEFINITIONS.find((d) => d.id === achievementId)?.name
+          )
+          .filter((name): name is string => typeof name === "string");
+
     
         if (isHapticsEnabled) {
           ReactNativeHapticFeedback.trigger("impactHeavy", hapticOptions);
+          if (unlockedAchievementNames.length > 0) {
+            ReactNativeHapticFeedback.trigger("notificationSuccess", hapticOptions);
+          }
         }
 
         // Use the new modal system - much cleaner!
         modal.showVictoryModal({
           attempts: guesses.length,
           coinsEarned: result.coinsEarned || 0,
+          unlockedAchievementNames,
           guesses: guesses,
           onNext: async () => {
             logger.debug("Victory modal: Next level button pressed");
@@ -405,7 +519,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
             logger.debug("Calling onNextLevel...");
             try {
               // Make sure we await the async onNextLevel function
-              await onNextLevel();
+              await runWithServerLoading(() => onNextLevel());
               logger.debug("onNextLevel completed successfully");
             } catch (error) {
               logger.error("Error calling onNextLevel:", error);
@@ -426,14 +540,17 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         modal.showLossModal({
           correctAnswer: result.correctAnswer || "",
           onWatchAdContinue: result.canOfferRewardedAd ? handleWatchAdToContinue : undefined,
-          onCoinContinue: (result.canOfferCoinContinue && canAffordCoinContinue) ? handleCoinContinue : undefined,
+          onCoinContinue: result.canOfferCoinContinue ? handleCoinContinue : undefined,
           coinContinueCost: CONTINUE_COST_COINS,
           canWatchAd: isRewardedAdReady,
           canUseCoin: canAffordCoinContinue,
           onNext: () => {
             modal.closeModalByType("loss");
             resetGame();
-            onNextLevel();
+            runWithServerLoading(() => onNextLevel()).catch((error) => {
+              logger.error("Error loading next level after attempt limit:", error);
+              captureException(error);
+            });
           },
           onHome: () => {
             modal.closeModalByType("loss");
@@ -453,7 +570,10 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           onNext: () => {
             modal.closeModalByType("loss");
             resetGame();
-            onNextLevel();
+            runWithServerLoading(() => onNextLevel()).catch((error) => {
+              logger.error("Error loading next level after loss:", error);
+              captureException(error);
+            });
           },
           onHome: () => {
             modal.closeModalByType("loss");
@@ -481,6 +601,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     resetGame,
     handleWatchAdToContinue,
     handleCoinContinue,
+    runWithServerLoading,
   ]);
 
   const toggleSoundEnabled = useCallback((isEnabled: boolean) => {
@@ -501,9 +622,18 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     setIsHardMode(isEnabled);
   }, []);
 
+  const handleChangeLanguage = useCallback((language: SupportedLanguage) => {
+    setAppLanguage(language);
+    setCurrentLanguage(language);
+  }, []);
+
   // Game actions
   const handleSubmit = useCallback(async () => {
-    if (currentGuess.length === answerLength) {
+    const isGuessComplete =
+      currentGuess.length === answerLength &&
+      currentGuess.every((letter) => typeof letter === "string" && letter.length > 0);
+
+    if (isGuessComplete) {
       if (isHardMode && guesses.length > 0) {
         const constraints = getHardModeConstraints(guesses);
         const violation = validateHardModeGuess(currentGuess, constraints);
@@ -515,15 +645,14 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           return;
         }
       }
-      setIsLoading(true);
       try {
-        const result = (await processGuess(currentGuess)) as GuessResult;
+        const result = (await runWithServerLoading(() =>
+          processGuess(currentGuess)
+        )) as GuessResult;
         setLastGuessResult(result);
-        setIsLoading(false);
       } catch (error) {
         logger.error("Error processing guess in GameScreen:", error);
         captureException(error);
-        setIsLoading(false);
         modal.showInfoModal({
           title: AppStrings.GameScreenAlerts.SUBMIT_GUESS_ERROR_TITLE,
           message: AppStrings.GameScreenAlerts.SUBMIT_GUESS_ERROR_MESSAGE,
@@ -541,22 +670,69 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     isHapticsEnabled,
     isHardMode,
     guesses,
+    modal,
     setLastGuessResult,
-    setIsLoading,
+    runWithServerLoading,
   ]);
   
   const handleKeyPress = useCallback(
     (key: string) => {
-      if (currentGuess.length < answerLength) {
-        setCurrentGuess((prev: string[]) => [...prev, key]);
-      }
+      if (answerLength <= 0) return;
+
+      const targetIndex = Math.min(
+        Math.max(0, activeSlotIndex),
+        Math.max(0, answerLength - 1)
+      );
+
+      setCurrentGuess((prev: string[]) => {
+        const next = [...prev];
+        while (next.length <= targetIndex) {
+          next.push("");
+        }
+        next[targetIndex] = key;
+        if (next.length > answerLength) {
+          next.length = answerLength;
+        }
+        return next;
+      });
+
+      setActiveSlotIndex((prev) => Math.min(Math.max(0, answerLength - 1), prev + 1));
     },
-    [answerLength, currentGuess.length, setCurrentGuess, modal]
+    [activeSlotIndex, answerLength, setCurrentGuess]
   );
 
   const handleBackspace = useCallback(() => {
-    setCurrentGuess((prev: string[]) => prev.slice(0, -1));
-  }, [setCurrentGuess]);
+    if (answerLength <= 0) return;
+
+    const targetIndex = Math.min(
+      Math.max(0, activeSlotIndex - 1),
+      Math.max(0, answerLength - 1)
+    );
+
+    setCurrentGuess((prev: string[]) => {
+      if (prev.length === 0) {
+        return prev;
+      }
+
+      const next = [...prev];
+      next[targetIndex] = "";
+      while (next.length > 0 && !next[next.length - 1]) {
+        next.pop();
+      }
+      return next;
+    });
+
+    setActiveSlotIndex((prev) => Math.max(0, prev - 1));
+  }, [activeSlotIndex, answerLength, setCurrentGuess]);
+
+  const handleSelectCurrentGuessSlot = useCallback(
+    (slotIndex: number) => {
+      if (answerLength <= 0) return;
+      if (slotIndex < 0 || slotIndex >= answerLength) return;
+      setActiveSlotIndex(slotIndex);
+    },
+    [answerLength]
+  );
 
   const handleChangeGameModePress = useCallback(() => {
     modal.showGameModeModal({
@@ -567,32 +743,30 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         if (mode === "classic") {
           // Navigate to classic mode
           resetGame();
-          // Logic for switching to classic mode
-          setIsLoading(true);
           // Use the setGameMode function from AuthContext
           if (playerData) {
             setGameMode("classic");
             // Fetch the riddle for classic mode
-            fetchCurrentRiddle(playerData, "classic").finally(() => {
-              setIsLoading(false);
+            runWithServerLoading(() =>
+              fetchCurrentRiddle(playerData, "classic")
+            ).catch((error) => {
+              logger.error("Error fetching classic riddle:", error);
+              captureException(error);
             });
-          } else {
-            setIsLoading(false);
           }
         } else if (mode === "daily") {
           // Navigate to daily challenge
           resetGame();
-          // Logic for switching to daily challenge
-          setIsLoading(true);
           // Use the setGameMode function from AuthContext
           if (playerData) {
             setGameMode("daily");
             // Fetch the riddle for daily challenge
-            fetchCurrentRiddle(playerData, "daily").finally(() => {
-              setIsLoading(false);
+            runWithServerLoading(() =>
+              fetchCurrentRiddle(playerData, "daily")
+            ).catch((error) => {
+              logger.error("Error fetching daily riddle:", error);
+              captureException(error);
             });
-          } else {
-            setIsLoading(false);
           }
         }
       },
@@ -603,7 +777,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     playerData,
     setGameMode,
     fetchCurrentRiddle,
-    setIsLoading,
+    runWithServerLoading,
   ]);
 
   const handleShowHint = useCallback(async () => {
@@ -678,13 +852,15 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       skipCost,
       onSkipLevel: async () => {
         try {
-          await httpsCallable(getFunctions(getApp()), "spendCoins")({
-            amount: skipCost,
-            reason: "skip",
-          });
+          await runWithServerLoading(() =>
+            httpsCallable(getFunctions(getApp()), "spendCoins")({
+              amount: skipCost,
+              reason: "skip",
+            })
+          );
           onSkipUsed(skipCost);
           resetGame();
-          onNextLevel();
+          await runWithServerLoading(() => onNextLevel());
         } catch (error) {
           logger.error("Error spending coins for skip:", error);
           captureException(error);
@@ -692,7 +868,15 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         }
       },
     });
-  }, [gameMode, modal, userCoins, resetGame, onNextLevel, onSkipUsed]);
+  }, [
+    gameMode,
+    modal,
+    userCoins,
+    resetGame,
+    onNextLevel,
+    onSkipUsed,
+    runWithServerLoading,
+  ]);
 
   const handleSettingsPress = useCallback(() => {
     logger.debug("Settings button pressed - opening settings modal");
@@ -700,9 +884,11 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       isSoundEnabled,
       isHapticsEnabled,
       isHardMode,
+      currentLanguage,
       onToggleSound: toggleSoundEnabled,
       onToggleHaptics: toggleHapticsEnabled,
       onToggleHardMode: toggleHardMode,
+      onChangeLanguage: handleChangeLanguage,
       onPressLogout: logout,
       onPressHelp: () => {
         logger.debug(
@@ -730,9 +916,11 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     playerData,
     isHapticsEnabled,
     isHardMode,
+    currentLanguage,
     toggleSoundEnabled,
     toggleHapticsEnabled,
     toggleHardMode,
+    handleChangeLanguage,
     logout,
   ]);
 
@@ -826,8 +1014,10 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
     modal.showCoinShopModal({
       products: iapProducts,
-      loading: iapLoading,
-      error: iapError,
+      firestoreProducts,
+      currentCoins: userCoins,
+      loading: iapLoading || productPricingLoading,
+      error: iapError || productPricingError,
       onPurchaseProduct: handlePurchaseProduct,
       onWatchVideo: handleWatchAdForCoins,
       onPayAndPlay: handlePayAndPlay,
@@ -835,16 +1025,22 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   }, [
     modal,
     iapProducts,
+    firestoreProducts,
+    userCoins,
     iapLoading,
+    productPricingLoading,
     iapError,
+    productPricingError,
     handlePurchaseProduct,
     handleWatchAdForCoins,
     handlePayAndPlay,
   ]);
 
   const isSubmitDisabled = useMemo(
-    () => currentGuess.length !== answerLength,
-    [currentGuess.length, answerLength]
+    () =>
+      currentGuess.length !== answerLength ||
+      currentGuess.some((letter) => typeof letter !== "string" || letter.length === 0),
+    [currentGuess, answerLength]
   );
   const headerModeLabel = gameMode === "daily" ? "Daily Challenge" : "Classic";
 
@@ -881,6 +1077,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
             isAnyOverlayVisible={isAnyModalVisible}
             letterStates={letterStates}
             hintRevealedIndices={hintRevealedIndicesRef.current}
+            activeSlotIndex={activeSlotIndex}
+            onSelectCurrentGuessSlot={handleSelectCurrentGuessSlot}
           />
 
           <GameInput
