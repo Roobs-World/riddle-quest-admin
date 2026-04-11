@@ -1001,6 +1001,19 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     handlePayAndPlay,
   ]);
 
+  const handleDebugCompleteRiddle = useCallback(() => {
+    if (gameOver) return;
+
+    const solvedGuess = answer.toUpperCase().split("");
+    setCurrentGuess(solvedGuess);
+    setActiveSlotIndex(Math.max(0, answerLength - 1));
+  }, [
+    gameOver,
+    answer,
+    answerLength,
+    setCurrentGuess,
+  ]);
+
   const isSubmitDisabled = useMemo(
     () =>
       currentGuess.length !== answerLength ||
@@ -1073,7 +1086,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         />
 
         {/* Development Modal Debug Panel - Only visible in development builds */}
-        {__DEV__ && <ModalTogglePanel />}
+        {__DEV__ && <ModalTogglePanel onCompleteRiddle={handleDebugCompleteRiddle} />}
       </SafeAreaView>
     </View>
   );

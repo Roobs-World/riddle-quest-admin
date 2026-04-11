@@ -245,4 +245,16 @@ describe("ModalTogglePanel", () => {
       }
     }
   });
+
+  it("invokes onCompleteRiddle when debug action button is pressed", () => {
+    const onCompleteRiddle = jest.fn();
+    const { getByText } = render(
+      <ModalTogglePanel onCompleteRiddle={onCompleteRiddle} />
+    );
+
+    fireEvent.press(getByText(/Modal Testing/));
+    fireEvent.press(getByText("Complete Riddle"));
+
+    expect(onCompleteRiddle).toHaveBeenCalledTimes(1);
+  });
 });

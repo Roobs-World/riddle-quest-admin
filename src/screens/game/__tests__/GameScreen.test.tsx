@@ -111,6 +111,7 @@ const mockCloseModalByType = jest.fn();
 const mockShowCreditsModal = jest.fn();
 const mockShowFullProfileDetailsModal = jest.fn();
 const mockShowCoinPurchaseFanfareModal = jest.fn();
+const mockShowAchievementUnlockFanfareModal = jest.fn();
 
 jest.mock("../../../hooks/useModal", () => ({
   useModal: () => ({
@@ -121,6 +122,7 @@ jest.mock("../../../hooks/useModal", () => ({
     showSkipModal: mockShowSkipModal,
     showSettingsModal: mockShowSettingsModal,
     showGameModeModal: mockShowGameModeModal,
+    showCoinShop: mockShowCoinShopModal,
     showCoinShopModal: mockShowCoinShopModal,
     showInfoModal: mockShowInfoModal,
     showWelcomeModal: mockShowWelcomeModal,
@@ -128,6 +130,7 @@ jest.mock("../../../hooks/useModal", () => ({
     showCreditsModal: mockShowCreditsModal,
     showFullProfileDetailsModal: mockShowFullProfileDetailsModal,
     showCoinPurchaseFanfareModal: mockShowCoinPurchaseFanfareModal,
+    showAchievementUnlockFanfareModal: mockShowAchievementUnlockFanfareModal,
     closeModalByType: mockCloseModalByType,
   }),
 }));
@@ -249,10 +252,12 @@ jest.mock("../../../components/loading/PulsingSpinner", () => {
   };
 });
 
+const mockModalTogglePanel = jest.fn();
 jest.mock("../../../components/development/ModalTogglePanel", () => {
   const React = require("react");
   const { View } = require("react-native");
-  return function MockModalTogglePanel() {
+  return function MockModalTogglePanel(props: any) {
+    mockModalTogglePanel(props);
     return React.createElement(View, { testID: "mock-modal-toggle" });
   };
 });
@@ -1329,6 +1334,9 @@ describe("GameScreen", () => {
       const config =
         mockShowVictoryModal.mock.calls[mockShowVictoryModal.mock.calls.length - 1][0];
       expect(config.unlockedAchievementNames).toEqual(["First Win"]);
+      expect(mockShowAchievementUnlockFanfareModal).toHaveBeenCalledWith({
+        achievementNames: ["First Win"],
+      });
       expect(haptics.trigger).toHaveBeenCalledWith("notificationSuccess", expect.any(Object));
 
       await config.onNext();
@@ -1451,6 +1459,42 @@ describe("GameScreen", () => {
       expect(SoundManager.pauseBackgroundMusic).toHaveBeenCalled();
       expect(SoundManager.playBackgroundMusic).toHaveBeenCalled();
       expect(setAppLanguage).toHaveBeenCalledWith("es");
+    });
+
+    it("passes a complete-riddle callback to the debug panel", async () => {
+      render(<GameScreen {...defaultProps} />);
+
+      await waitFor(() => {
+        expect(mockModalTogglePanel).toHaveBeenCalled();
+      });
+
+      const latestProps =
+        mockModalTogglePanel.mock.calls[mockModalTogglePanel.mock.calls.length - 1][0];
+      expect(typeof latestProps.onCompleteRiddle).toBe("function");
+    });
+
+    it("debug complete-riddle fills letters without submitting", async () => {
+      render(<GameScreen {...defaultProps} />);
+
+      await waitFor(() => {
+        expect(mockModalTogglePanel).toHaveBeenCalled();
+      });
+
+      const latestProps =
+        mockModalTogglePanel.mock.calls[mockModalTogglePanel.mock.calls.length - 1][0];
+      latestProps.onCompleteRiddle();
+
+      expect(mockUseGameLogic.setCurrentGuess).toHaveBeenCalledWith([
+        "K",
+        "E",
+        "Y",
+        "B",
+        "O",
+        "A",
+        "R",
+        "D",
+      ]);
+      expect(mockUseGameLogic.processGuess).not.toHaveBeenCalled();
     });
 
     it("covers keypress truncation and backspace updater branches", () => {

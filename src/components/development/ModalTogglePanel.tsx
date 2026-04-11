@@ -49,6 +49,10 @@ import { getAppLanguage, SupportedLanguage } from "../../constants/AppStrings";
  */
 type UpdateModalDataFn = (newData: Record<string, unknown>) => void;
 
+interface ModalTogglePanelProps {
+  onCompleteRiddle?: () => void | Promise<void>;
+}
+
 /**
  * Extended Modal Data with server data fetching capability
  */
@@ -288,7 +292,9 @@ const generateMockData = (
 /**
  * Modal Toggle Panel Component
  */
-const ModalTogglePanel: React.FC = () => {
+const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
+  onCompleteRiddle,
+}) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [modalToggles, setModalToggles] = useState<{
     [key: string]: boolean | Record<string, unknown>;
@@ -426,6 +432,17 @@ const ModalTogglePanel: React.FC = () => {
           >
             {modalTypes.map(renderToggleSwitch)}
 
+            {onCompleteRiddle ? (
+              <TouchableOpacity
+                style={styles.completeButton}
+                onPress={() => {
+                  void onCompleteRiddle();
+                }}
+              >
+                <Text style={styles.completeButtonText}>Complete Riddle</Text>
+              </TouchableOpacity>
+            ) : null}
+
             <TouchableOpacity
               style={styles.clearButton}
               onPress={() => setModalToggles({})}
@@ -446,6 +463,19 @@ const ModalTogglePanel: React.FC = () => {
  * Component Styles
  */
 const styles = StyleSheet.create({
+  completeButton: {
+    alignItems: "center",
+    backgroundColor: COLORS.success,
+    borderRadius: BORDER_RADIUS.sm,
+    marginTop: SPACING.sm,
+    padding: SPACING.xs,
+  },
+  completeButtonText: {
+    color: COLORS.white,
+    fontFamily: TYPOGRAPHY.fontSecondary,
+    fontSize: TYPOGRAPHY.fontSize.sm,
+    fontWeight: "600",
+  },
   clearButton: {
     alignItems: "center",
     backgroundColor: COLORS.error,

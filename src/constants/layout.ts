@@ -46,7 +46,7 @@ export const MODAL_SCROLLABLE_MAX_HEIGHT = verticalScale(280);
 export const MODAL_BUTTON_SPACER = verticalScale(10);
 
 /** Inset (top + right) for a close button anchored inside the modal frame. */
-export const CLOSE_BUTTON_INSET = moderateScale(20);
+export const CLOSE_BUTTON_INSET = verticalScale(28);
 
 /** Standard close button icon size used across all modals. */
 export const CLOSE_BUTTON_SIZE = scale(20);
@@ -54,7 +54,7 @@ export const CLOSE_BUTTON_SIZE = scale(20);
 /** Standard top-right placement for modal close buttons. */
 export const MODAL_CLOSE_BUTTON_POSITION = {
   position: "absolute" as const,
-  top: CLOSE_BUTTON_INSET,
+  top: verticalScale(48),
   right: CLOSE_BUTTON_INSET,
   zIndex: 10,
 };
