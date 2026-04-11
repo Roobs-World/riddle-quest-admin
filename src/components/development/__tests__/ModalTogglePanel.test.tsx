@@ -7,20 +7,53 @@ const mockDebug = jest.fn();
 const mockWarn = jest.fn();
 const mockGetModalComponent = jest.fn();
 
+const expectedModalTypes = [
+  "victory",
+  "loss",
+  "gameMode",
+  "settings",
+  "fullProfileDetails",
+  "achievements",
+  "stats",
+  "leaderboard",
+  "changePassword",
+  "updateUsername",
+  "avatarOptions",
+  "preloadedAvatars",
+  "info",
+  "hint",
+  "skip",
+  "welcome",
+  "instructions",
+  "credits",
+  "coinShop",
+  "coinPurchaseFanfare",
+  "achievementUnlockFanfare",
+];
+
 jest.mock("../../modals/ModalRegistry", () => ({
   modalRegistry: {
     victory: {},
     loss: {},
+    gameMode: {},
     settings: {},
     fullProfileDetails: {},
+    achievements: {},
+    stats: {},
+    leaderboard: {},
     changePassword: {},
     updateUsername: {},
     avatarOptions: {},
     preloadedAvatars: {},
+    info: {},
     hint: {},
     skip: {},
+    welcome: {},
+    instructions: {},
+    credits: {},
     coinShop: {},
-    unknownType: {},
+    coinPurchaseFanfare: {},
+    achievementUnlockFanfare: {},
   },
   getModalComponent: (...args: any[]) => mockGetModalComponent(...args),
 }));
@@ -106,7 +139,7 @@ describe("ModalTogglePanel", () => {
     fireEvent.press(getByText(/Modal Testing/));
 
     const switches = UNSAFE_getAllByType(Switch);
-    expect(switches.length).toBeGreaterThan(5);
+    expect(switches.length).toBe(expectedModalTypes.length);
 
     for (const item of switches) {
       fireEvent(item, "valueChange", true);
@@ -114,9 +147,12 @@ describe("ModalTogglePanel", () => {
 
     expect(queryByTestId("active-victory")).toBeTruthy();
     expect(queryByTestId("active-loss")).toBeTruthy();
+    expect(queryByTestId("active-gameMode")).toBeTruthy();
     expect(queryByTestId("active-settings")).toBeTruthy();
+    expect(queryByTestId("active-info")).toBeTruthy();
     expect(queryByTestId("active-coinShop")).toBeTruthy();
-    expect(queryByTestId("active-unknownType")).toBeTruthy();
+    expect(queryByTestId("active-coinPurchaseFanfare")).toBeTruthy();
+    expect(queryByTestId("active-achievementUnlockFanfare")).toBeTruthy();
 
     fireEvent.press(getByText("Clear All"));
 
@@ -153,12 +189,17 @@ describe("ModalTogglePanel", () => {
 
     fireEvent.press(getByTestId("invoke-settings"));
     fireEvent.press(getByTestId("invoke-victory"));
+    fireEvent.press(getByTestId("invoke-gameMode"));
     fireEvent.press(getByTestId("invoke-updateUsername"));
     fireEvent.press(getByTestId("invoke-avatarOptions"));
     fireEvent.press(getByTestId("invoke-preloadedAvatars"));
+    fireEvent.press(getByTestId("invoke-info"));
     fireEvent.press(getByTestId("invoke-hint"));
     fireEvent.press(getByTestId("invoke-skip"));
+    fireEvent.press(getByTestId("invoke-welcome"));
     fireEvent.press(getByTestId("invoke-coinShop"));
+    fireEvent.press(getByTestId("invoke-coinPurchaseFanfare"));
+    fireEvent.press(getByTestId("invoke-achievementUnlockFanfare"));
     fireEvent.press(getByTestId("invoke-loss"));
 
     expect(mockGetModalComponent).toHaveBeenCalled();
@@ -183,7 +224,7 @@ describe("ModalTogglePanel", () => {
       fireEvent.press(getByText(/Modal Testing/));
 
       const switches = UNSAFE_getAllByType(Switch);
-      fireEvent(switches[2], "valueChange", true); // settings
+      fireEvent(switches[3], "valueChange", true); // settings
 
       await act(async () => {
         jest.advanceTimersByTime(120);

@@ -1,10 +1,12 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Modal, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import MuteButton from "../buttons/MuteButton";
 import { SoundManager } from "../../services/SoundManager";
 
 const SOUND_ENABLED_STORAGE_KEY = "isSoundEnabled";
+const OVERLAY_TOP_OFFSET = 56;
+const OVERLAY_RIGHT_OFFSET = 16;
 
 const parseSoundPreference = (rawValue: string | null): boolean => {
   if (rawValue === null) return SoundManager.getSoundEnabled();
@@ -48,25 +50,30 @@ const GlobalMuteOverlay = () => {
     void SoundManager.pauseBackgroundMusic();
   }, [isMuted]);
 
-  return null;
-  
-  (
-    <Modal
-      transparent={true}
-      visible={true}
-      animationType="none"
-      statusBarTranslucent={true}
-    >
-      <View style={{ flex: 1 }} pointerEvents="box-none">
-        <View
-          pointerEvents="box-none"
-          style={{ position: "absolute", top: 16, right: 16, zIndex: 2147483647 }}
-        >
-          <MuteButton isMuted={isMuted} onToggle={handleToggleMute} />
-        </View>
+  return (
+    <View pointerEvents="box-none" style={styles.touchThroughRoot}>
+      <View
+        pointerEvents="box-none"
+        style={[
+          styles.buttonContainer,
+          { top: OVERLAY_TOP_OFFSET, right: OVERLAY_RIGHT_OFFSET },
+        ]}
+      >
+        <MuteButton isMuted={isMuted} onToggle={handleToggleMute} />
       </View>
-    </Modal>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  touchThroughRoot: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 2147483647,
+    elevation: 9999,
+  },
+  buttonContainer: {
+    position: "absolute",
+  },
+});
 
 export default GlobalMuteOverlay;

@@ -53,6 +53,7 @@ import {
 import VictoryModal from "./game/VictoryModal";
 import LossModal from "./game/LossModal";
 import GameModeModal from "./game/GameModeModal";
+import AchievementUnlockFanfareModal from "./game/AchievementUnlockFanfareModal";
 // Note: OutOfAttemptsModal, WatchAdForChanceModal, and DailyChallengeCompletionModal have been removed
 
 import SettingsModal from "./settings/SettingsModal";
@@ -417,6 +418,15 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
       isVisible: props.isVisible,
       onClose: props.onClose,
       coinsPurchased: (props.coinsPurchased as number) || 0,
+    })
+  ),
+
+  achievementUnlockFanfare: createModalWrapper(
+    AchievementUnlockFanfareModal,
+    (props: BaseModalProps & ModalData) => ({
+      isVisible: props.isVisible,
+      onClose: props.onClose,
+      achievementNames: (props.achievementNames as string[] | undefined) ?? [],
     })
   ),
 };

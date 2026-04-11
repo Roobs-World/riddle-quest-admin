@@ -487,6 +487,12 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           }
         }
 
+        if (unlockedAchievementNames.length > 0) {
+          modal.showAchievementUnlockFanfareModal({
+            achievementNames: unlockedAchievementNames,
+          });
+        }
+
         // Use the new modal system - much cleaner!
         modal.showVictoryModal({
           attempts: guesses.length,

@@ -182,6 +182,10 @@ export interface GameModalTypes {
   coinPurchaseFanfare: {
     coinsPurchased: number;
   };
+
+  achievementUnlockFanfare: {
+    achievementNames: string[];
+  };
 }
 
 // Helper type for getting modal data type

@@ -7,6 +7,7 @@ MockModal.displayName = "MockModal";
 jest.mock("../game/VictoryModal", () => MockModal);
 jest.mock("../game/LossModal", () => MockModal);
 jest.mock("../game/GameModeModal", () => MockModal);
+jest.mock("../game/AchievementUnlockFanfareModal", () => MockModal);
 jest.mock("../settings/SettingsModal", () => MockModal);
 jest.mock("../settings/FullProfileDetailsModal", () => MockModal);
 jest.mock("../settings/ChangePasswordModal", () => MockModal);
@@ -22,7 +23,7 @@ jest.mock("../help/SkipModal", () => MockModal);
 jest.mock("../help/WelcomeModal", () => MockModal);
 jest.mock("../help/InstructionsModal", () => MockModal);
 jest.mock("../help/CreditsModal", () => MockModal);
-jest.mock("../../shop/CoinShopModal", () => MockModal);
+jest.mock("../../shop/CoinShop", () => MockModal);
 jest.mock("../shop/CoinPurchaseFanfareModal", () => MockModal);
 
 // Mock logger
@@ -70,6 +71,7 @@ describe("ModalRegistry", () => {
       "credits",
       "coinShop",
       "coinPurchaseFanfare",
+      "achievementUnlockFanfare",
     ];
 
     it("should register all required modal types", () => {
@@ -429,6 +431,18 @@ describe("ModalRegistry", () => {
 
         expect(() => CoinPurchaseFanfareModal(props)).not.toThrow();
       });
+
+      it("should map props correctly for achievementUnlockFanfare modal", () => {
+        const AchievementUnlockFanfareModal = getModalComponent(
+          "achievementUnlockFanfare"
+        );
+        const props = {
+          ...createBaseProps(),
+          achievementNames: ["First Victory"],
+        };
+
+        expect(() => AchievementUnlockFanfareModal(props)).not.toThrow();
+      });
     });
   });
 
@@ -443,6 +457,7 @@ describe("ModalRegistry", () => {
       expect(modalRegistry.victory).toBeDefined();
       expect(modalRegistry.loss).toBeDefined();
       expect(modalRegistry.gameMode).toBeDefined();
+      expect(modalRegistry.achievementUnlockFanfare).toBeDefined();
 
       // Settings modals
       expect(modalRegistry.settings).toBeDefined();

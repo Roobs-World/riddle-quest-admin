@@ -42,6 +42,7 @@ import * as RNIap from "react-native-iap";
 import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY } from "../../styles";
 import { scale, verticalScale } from "../../utils/responsive";
 import { logger } from "../../utils/logger";
+import { getAppLanguage, SupportedLanguage } from "../../constants/AppStrings";
 
 /**
  * Type for the updateModalData function
@@ -193,14 +194,30 @@ const generateMockData = (
       return {
         isSoundEnabled: true,
         isHapticsEnabled: false,
+        currentLanguage: getAppLanguage(),
         onToggleSound: (enabled: boolean) => logger.debug("Sound:", enabled),
         onToggleHaptics: (enabled: boolean) => logger.debug("Haptics:", enabled),
+        onChangeLanguage: (language: SupportedLanguage) =>
+          logger.debug("Language:", language),
         onPressLogout: () => logger.debug("Logout pressed"),
         onPressHelp: () => logger.debug("Help pressed"),
         onPressCredits: () => logger.debug("Credits pressed"),
+        playerData: mockPlayer,
+      };
+    case "gameMode":
+      return {
+        onSelectMode: (mode: "classic" | "daily") =>
+          logger.debug("Selected mode:", mode),
+        currentLevel: 26,
       };
     case "fullProfileDetails":
       return { playerData: mockPlayer };
+    case "achievements":
+      return { playerData: mockPlayer };
+    case "stats":
+      return { playerData: mockPlayer };
+    case "leaderboard":
+      return { currentUserId: mockPlayer.userId };
     case "changePassword":
       return { onPasswordChanged: () => logger.debug("Password changed") };
     case "updateUsername":
@@ -227,12 +244,26 @@ const generateMockData = (
         hintCost: 20,
         onShowHint: () => logger.debug("Show hint pressed"),
       };
+    case "info":
+      return {
+        title: "Debug Info",
+        message: "This is a test info modal from the debug panel.",
+        onConfirm: () => logger.debug("Info confirm pressed"),
+      };
     case "skip":
       return {
         userCoins: 100,
         skipCost: 50,
         onSkipLevel: () => logger.debug("Skip level pressed"),
       };
+    case "welcome":
+      return {
+        onDismiss: () => logger.debug("Welcome dismissed"),
+      };
+    case "instructions":
+      return {};
+    case "credits":
+      return {};
     case "coinShop":
       return {
         products: mockProducts,
@@ -240,6 +271,14 @@ const generateMockData = (
           logger.debug("Purchase:", productId),
         loading: false,
         error: null,
+      };
+    case "coinPurchaseFanfare":
+      return {
+        coinsPurchased: 100,
+      };
+    case "achievementUnlockFanfare":
+      return {
+        achievementNames: ["First Victory", "Perfect Streak"],
       };
     default:
       return {};

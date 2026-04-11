@@ -12,7 +12,6 @@ import {
   MODAL_WIDTH,
   MODAL_HEIGHT,
   MODAL_CONTENT_PADDING,
-  MODAL_SCROLLABLE_MAX_HEIGHT,
   MODAL_CLOSE_BUTTON_POSITION,
   CARD_BORDER_RADIUS,
   CARD_PADDING,
@@ -20,6 +19,7 @@ import {
   CLOSE_BUTTON_SIZE,
 } from "../../../constants/layout";
 import { SPACING } from "../../../styles";
+import { dimensions } from "../../../utils/responsive";
 
 interface CreditsModalProps {
   isVisible: boolean;
@@ -47,6 +47,11 @@ const renderTeamMember = ({ item }: { item: TeamMember }) => (
 );
 
 const keyExtractor = (item: TeamMember) => item.name;
+
+const CREDITS_MODAL_HEIGHT = Math.min(
+  MODAL_HEIGHT * 1.2,
+  dimensions.screenHeight * 0.9
+);
 
 const CreditsModal: React.FC<CreditsModalProps> = ({
   isVisible,
@@ -85,12 +90,16 @@ const CreditsModal: React.FC<CreditsModalProps> = ({
         <View
           style={{
             width: MODAL_WIDTH,
-            height: MODAL_HEIGHT,
+            height: CREDITS_MODAL_HEIGHT,
             alignItems: "center",
             justifyContent: "center",
           }}
         >
-          <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{ position: "absolute" }} />
+          <ModalBg
+            width={MODAL_WIDTH}
+            height={CREDITS_MODAL_HEIGHT}
+            style={{ position: "absolute" }}
+          />
           <View
             style={{
               flex: 1,
@@ -122,7 +131,6 @@ const CreditsModal: React.FC<CreditsModalProps> = ({
               style={{
                 flex: 1,
                 width: "100%",
-                maxHeight: MODAL_SCROLLABLE_MAX_HEIGHT,
                 marginTop: SPACING.sm,
               }}
               contentContainerStyle={{ alignItems: "center" }}

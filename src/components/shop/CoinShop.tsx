@@ -37,6 +37,7 @@ const GRID_COIN_ICON_WIDTH = moderateScale(86);
 const GRID_COIN_ICON_HEIGHT = verticalScale(51);
 const GRID_CARD_HEIGHT = verticalScale(160);
 const COIN_SHOP_MODAL_SIDE_INSET = scale(28);
+const COIN_SHOP_SAFE_EDGE_GAP = scale(12);
 
 interface CoinShopProps {
   isVisible: boolean;
@@ -156,6 +157,14 @@ const CoinShop: React.FC<CoinShopProps> = ({
           style={[
             styles.modalContainer,
             {
+              left: Math.max(
+                COIN_SHOP_MODAL_SIDE_INSET,
+                insets.left + COIN_SHOP_SAFE_EDGE_GAP,
+              ),
+              right: Math.max(
+                COIN_SHOP_MODAL_SIDE_INSET,
+                insets.right + COIN_SHOP_SAFE_EDGE_GAP,
+              ),
               top: insets.top + availableHeight * 0.05,
               bottom: insets.bottom + availableHeight * 0.05,
             },
@@ -373,10 +382,8 @@ const styles = StyleSheet.create({
   modalContainer: {
     borderRadius: BORDER_RADIUS["2xl"],
     elevation: 10,
-    left: COIN_SHOP_MODAL_SIDE_INSET,
     overflow: "hidden",
     position: "absolute",
-    right: COIN_SHOP_MODAL_SIDE_INSET,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.25,

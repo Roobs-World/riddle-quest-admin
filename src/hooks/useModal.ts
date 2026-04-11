@@ -193,6 +193,16 @@ export const useModal = () => {
     [openGameModal]
   );
 
+  const showAchievementUnlockFanfareModal = useCallback(
+    (
+      data: ModalDataType<"achievementUnlockFanfare">,
+      options?: ModalOptions
+    ): string => {
+      return openGameModal("achievementUnlockFanfare", data, options);
+    },
+    [openGameModal]
+  );
+
   const showFullProfileDetailsModal = useCallback(
     (
       data: ModalDataType<"fullProfileDetails">,
@@ -273,6 +283,7 @@ export const useModal = () => {
     showCreditsModal,
     showCoinShop,
     showCoinPurchaseFanfareModal,
+    showAchievementUnlockFanfareModal,
     showFullProfileDetailsModal,
     showChangePasswordModal,
     showUpdateUsernameModal,
