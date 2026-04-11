@@ -29,6 +29,7 @@ if (process.env.EXPO_PUBLIC_SENTRY_DSN) {
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
+import { View } from "react-native";
 import { loadFonts } from "./src/utils/fontLoader";
 import { SoundManager } from "./src/services/SoundManager";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -237,11 +238,13 @@ export default Sentry.wrap(function App() {
     >
       <ModalProvider>
         <AuthProvider>
-          <NavigationContainer>
-            <Navigation />
-          </NavigationContainer>
+          <View style={{ flex: 1 }}>
+            <NavigationContainer>
+              <Navigation />
+            </NavigationContainer>
+            <GlobalMuteOverlay />
+          </View>
         </AuthProvider>
-        <GlobalMuteOverlay />
       </ModalProvider>
     </Sentry.ErrorBoundary>
   );

@@ -35,7 +35,7 @@ import WideButton from "../buttons/WideButton";
 const { screenHeight } = dimensions;
 const GRID_COIN_ICON_WIDTH = moderateScale(86);
 const GRID_COIN_ICON_HEIGHT = verticalScale(51);
-const GRID_CARD_HEIGHT = verticalScale(160);
+const GRID_CARD_HEIGHT = verticalScale(144);
 const COIN_SHOP_MODAL_SIDE_INSET = scale(28);
 const COIN_SHOP_SAFE_EDGE_GAP = scale(12);
 
@@ -173,8 +173,8 @@ const CoinShop: React.FC<CoinShopProps> = ({
           <ModalBg
             width="100%"
             height="100%"
-            style={StyleSheet.absoluteFill}
-            preserveAspectRatio="xMidYMid slice"
+            style={[StyleSheet.absoluteFill, styles.modalBackground]}
+            preserveAspectRatio="none"
           />
           <CloseButton
             onPress={onClose}
@@ -206,12 +206,7 @@ const CoinShop: React.FC<CoinShopProps> = ({
             )}
             {error && <Text style={styles.errorText}>{error}</Text>}
 
-            <ScrollView
-              style={styles.scroll}
-              contentContainerStyle={styles.scrollContent}
-              showsVerticalScrollIndicator={false}
-              bounces={true}
-            >
+            <View style={styles.scrollContent}>
 
             {!loading && !error && sortedProducts.length > 0 && (
               <View style={styles.grid}>
@@ -257,7 +252,7 @@ const CoinShop: React.FC<CoinShopProps> = ({
             )}
 
             
-          </ScrollView>
+          </View>
 
           <View style={styles.bottomButtons}>
             <View testID="purchase-button" style={styles.purchaseButtonContainer}>
@@ -297,11 +292,10 @@ const styles = StyleSheet.create({
   },
   bottomButtons: {
     gap: verticalScale(10),
-    marginTop: verticalScale(8),
   },
   closeButton: {
     ...MODAL_CLOSE_BUTTON_POSITION,
-    top: verticalScale(28)
+    top: verticalScale(36)
   },
   coinsPill: {
     alignItems: "center",
@@ -311,7 +305,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: verticalScale(16),
+    marginBottom: verticalScale(8),
     paddingHorizontal: scale(16),
     paddingVertical: verticalScale(8),
     marginLeft: scale(12),
@@ -346,8 +340,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-between",
-    marginBottom: verticalScale(8),
-    
   },
   gridCard: {
     alignItems: "center",
@@ -359,7 +351,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     marginBottom: verticalScale(10),
     overflow: "hidden",
-    paddingTop: verticalScale(34),
+    paddingTop: verticalScale(24),
     position: "relative",
     width: "48%",
   },
@@ -372,7 +364,7 @@ const styles = StyleSheet.create({
   },
   headerRow: {
     alignItems: "center",
-    marginTop: verticalScale(24),
+    marginTop: verticalScale(30),
     marginBottom: verticalScale(12),
   },
   loadingContainer: {
@@ -393,7 +385,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   purchaseButtonContainer: {
-    marginBottom: verticalScale(24),
+    marginBottom: verticalScale(48),
     marginLeft: scale(12),
     marginRight: scale(12),
   },
@@ -426,9 +418,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    paddingBottom: verticalScale(16),
     paddingHorizontal: scale(16),
-    paddingTop: MODAL_CONTENT_PADDING,
   },
   title: {
     color: COLORS.gray800,
