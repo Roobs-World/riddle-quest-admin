@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Modal, ScrollView } from "react-native";
+import { View, Text, Modal } from "react-native";
 import CloseButton from "../../buttons/CloseButton";
 import WideButton from "../../buttons/WideButton";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
@@ -8,7 +8,6 @@ import {
   MODAL_WIDTH,
   MODAL_HEIGHT,
   MODAL_CONTENT_PADDING,
-  MODAL_SCROLLABLE_MAX_HEIGHT,
   MODAL_CLOSE_BUTTON_POSITION,
   CARD_BORDER_RADIUS,
   CARD_PADDING,
@@ -24,6 +23,8 @@ interface InstructionsModalProps {
   isVisible: boolean;
   onClose: () => void;
 }
+
+const INSTRUCTIONS_MODAL_HEIGHT = MODAL_HEIGHT * 1.5;
 
 const InstructionsModal: React.FC<InstructionsModalProps> = ({
   isVisible,
@@ -47,12 +48,16 @@ const InstructionsModal: React.FC<InstructionsModalProps> = ({
         <View
           style={{
             width: MODAL_WIDTH,
-            height: MODAL_HEIGHT,
+            height: INSTRUCTIONS_MODAL_HEIGHT,
             alignItems: "center",
             justifyContent: "center",
           }}
         >
-          <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{ position: "absolute" }} />
+          <ModalBg
+            width={MODAL_WIDTH}
+            height={INSTRUCTIONS_MODAL_HEIGHT}
+            style={{ position: "absolute" }}
+          />
           <View
             style={{
               flex: 1,
@@ -78,14 +83,11 @@ const InstructionsModal: React.FC<InstructionsModalProps> = ({
               How to Play
             </Text>
 
-            <ScrollView
+            <View
               style={{
-                flex: 1,
                 width: "100%",
-                maxHeight: MODAL_SCROLLABLE_MAX_HEIGHT,
                 marginTop: SPACING.sm,
               }}
-              contentContainerStyle={{ alignItems: "center" }}
             >
               <InstructionCard
                 title="The Goal"
@@ -111,7 +113,7 @@ const InstructionsModal: React.FC<InstructionsModalProps> = ({
                 title="Tips for Success"
                 description="Start with common letters and use the color feedback to narrow down your guesses. Remember, you only have 3 attempts!"
               />
-            </ScrollView>
+            </View>
 
             <WideButton buttonText="Got It!" onPress={onClose} />
           </View>
@@ -132,7 +134,6 @@ const InstructionCard = ({
 }) => (
   <View
     style={{
-      backgroundColor: "rgba(0,0,0,0.2)",
       borderRadius: CARD_BORDER_RADIUS,
       padding: CARD_PADDING,
       marginBottom: CARD_MARGIN_BOTTOM,
@@ -142,10 +143,9 @@ const InstructionCard = ({
     <Text
       style={{
         fontFamily: TYPOGRAPHY.fontSecondaryBold,
-        fontSize: TYPOGRAPHY.fontSize.lg,
+        fontSize: TYPOGRAPHY.fontSize["2xl"],
         color: "black",
         textAlign: "center",
-        marginBottom: SPACING.sm,
       }}
     >
       {title}
@@ -191,4 +191,3 @@ const ColorClue = ({ color, text }: { color: string; text: string }) => (
 );
 
 export default InstructionsModal;
-

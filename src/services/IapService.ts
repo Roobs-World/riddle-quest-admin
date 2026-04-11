@@ -48,6 +48,25 @@ let cacheTimestamp = 0;
 const PRODUCT_CACHE_TTL_MS = 5 * 60 * 1000;
 
 export const IapService = {
+  async grantDevCoinsFallback(
+    productId: string
+  ): Promise<boolean> {
+    const coins = this.getCoinsForProduct(productId);
+    if (!coins || coins <= 0) {
+      logger.error(`No coin mapping found for dev fallback product: ${productId}`);
+      return false;
+    }
+
+    const result = await httpsCallable<
+      { productId: string },
+      { success: boolean; newCoins: number; coinsAwarded: number }
+    >(getFunctions(getApp()), "grantDevCoinsForPurchase")({
+      productId,
+    });
+
+    return result.data?.success === true;
+  },
+
   /**
    * Fetches a list of available in-app purchase products (coin packs).
    * Results are cached for 5 minutes to avoid redundant store round-trips.
@@ -93,7 +112,36 @@ export const IapService = {
   ): Promise<RNIap.Purchase | null> {
     addBreadcrumb("iap", "Purchase initiated", { productId });
     void analyticsService.logPurchaseEvent("initiated", { product_id: productId });
+    const shouldUseDevFallback =
+      __DEV__ && typeof process !== "undefined" && !process.env.JEST_WORKER_ID;
     try {
+      if (shouldUseDevFallback) {
+        logger.debug("Using dev purchase bypass via Firebase callable (store skipped).");
+        const fallbackSucceeded = await this.grantDevCoinsFallback(productId);
+        if (!fallbackSucceeded) {
+          throw new Error(
+            "Development purchase fallback failed. Ensure grantDevCoinsForPurchase is deployed and enabled."
+          );
+        }
+
+        addBreadcrumb("iap", "Dev purchase fallback succeeded", { productId });
+        void analyticsService.logPurchaseEvent("completed", {
+          product_id: productId,
+          coins: this.getCoinsForProduct(productId) ?? 0,
+          dev_fallback: true,
+        });
+        void analyticsService.logCoinPackPurchased({
+          productId,
+          coins: this.getCoinsForProduct(productId) ?? 0,
+          purchaseCount: 1,
+        });
+
+        return {
+          productId,
+          transactionId: `dev-${productId}-${Date.now()}`,
+        } as RNIap.Purchase;
+      }
+
       const purchaseResult = await RNIap.requestPurchase({
         type: "in-app",
         request: {

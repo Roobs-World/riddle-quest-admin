@@ -26,14 +26,17 @@ import {
   MODAL_CLOSE_BUTTON_POSITION,
 } from "../../constants/layout";
 import CoinSvg from "../../../assets/images/coin.svg";
-import BuyCoinsBg from "../../../assets/images/buy-coins.svg";
-import BuyCoinsBasicBg from "../../../assets/images/buy-coins-basic.svg";
+import LargeCoinStackSvg from "../../../assets/images/large-coin-stack.svg";
 import ModalBg from "../../../assets/images/modal-bg.svg";
 import { logger } from "../../utils/logger";
 import CloseButton from "../buttons/CloseButton";
+import WideButton from "../buttons/WideButton";
 
 const { screenHeight } = dimensions;
-const GRID_COIN_ICON_SIZE = moderateScale(54);
+const GRID_COIN_ICON_WIDTH = moderateScale(86);
+const GRID_COIN_ICON_HEIGHT = verticalScale(51);
+const GRID_CARD_HEIGHT = verticalScale(160);
+const COIN_SHOP_MODAL_SIDE_INSET = scale(28);
 
 interface CoinShopProps {
   isVisible: boolean;
@@ -117,6 +120,11 @@ const CoinShop: React.FC<CoinShopProps> = ({
 
   const handlePackPress = (product: ProductPricing) => {
     logger.debug("Shop pack tapped:", product.productId);
+    if (selectedProductId === product.productId) {
+      setSelectedProductId(null);
+      return;
+    }
+
     setSelectedProductId(product.productId);
     void analyticsService.logShopPackSelected({
       productId: product.productId,
@@ -209,44 +217,25 @@ const CoinShop: React.FC<CoinShopProps> = ({
                       activeOpacity={0.8}
                       testID={`pack-card-${product.productId}`}
                     >
-                      
-                    {product.featuredBadge && (
-                        <BuyCoinsBg
-                          width="100%"
-                          height="100%"
-                          style={styles.gridCardBackground}
-                          preserveAspectRatio="xMidYMid slice"
-                          pointerEvents="none"
-                        />
-                      )}
                       {product.featuredBadge && (
                         <View style={styles.badge}>
                           <Text style={styles.badgeText}>{product.featuredBadge}</Text>
                         </View>
                       )}
-                      
-                      {!product.featuredBadge && (
-                        <BuyCoinsBasicBg
-                          width="100%"
-                          height="100%"
-                          style={styles.gridCardBackground}
-                          preserveAspectRatio="xMidYMid slice"
-                          pointerEvents="none"
-                        />
-                      )}
 
-
-                      <CoinSvg
-                        width={GRID_COIN_ICON_SIZE}
-                        height={GRID_COIN_ICON_SIZE}
+                      <LargeCoinStackSvg
+                        width={GRID_COIN_ICON_WIDTH}
+                        height={GRID_COIN_ICON_HEIGHT}
+                        style={styles.gridCoinIcon}
                       />
+                      <Text style={styles.productCoins}>
+                        {product.coins.toLocaleString()} coins
+                      </Text>
                       <View style={styles.productPriceButton}>
                         <Text style={styles.productPriceText}>{displayPrice}</Text>
                       </View>
 
-                      <Text style={styles.productCoins}>
-                        {product.coins.toLocaleString()} coins
-                      </Text>
+                      
                       
                     </TouchableOpacity>
                   );
@@ -262,18 +251,13 @@ const CoinShop: React.FC<CoinShopProps> = ({
           </ScrollView>
 
           <View style={styles.bottomButtons}>
-            <TouchableOpacity
-              style={[
-                styles.purchaseButton,
-                (loading || !selectedProductId) && styles.purchaseButtonDisabled,
-              ]}
-              onPress={handlePurchasePress}
-              disabled={loading || !selectedProductId}
-              activeOpacity={0.7}
-              testID="purchase-button"
-            >
-              <Text style={styles.purchaseButtonText}>PURCHASE</Text>
-            </TouchableOpacity>
+            <View testID="purchase-button" style={styles.purchaseButtonContainer}>
+              <WideButton
+                buttonText="PURCHASE"
+                onPress={handlePurchasePress}
+                disabled={loading || !selectedProductId}
+              />
+            </View>
           </View>
         </View>
       </View>
@@ -281,17 +265,18 @@ const CoinShop: React.FC<CoinShopProps> = ({
   );
 };
 
-const FEATURED_CARD_BORDER = "#E91E8C";
-
 const styles = StyleSheet.create({
   backdrop: {
     ...StyleSheet.absoluteFill,
     backgroundColor: "rgba(0,0,0,0.5)",
   },
   badge: {
+    backgroundColor: "#F54160",
+    borderBottomRightRadius: moderateScale(12),
     left: 0,
-    paddingHorizontal: scale(8),
-    paddingVertical: verticalScale(4),
+    minWidth: "52%",
+    paddingHorizontal: scale(10),
+    paddingVertical: verticalScale(5),
     position: "absolute",
     top: 0,
   },
@@ -299,7 +284,6 @@ const styles = StyleSheet.create({
     color: COLORS.white,
     fontFamily: TYPOGRAPHY.fontPrimary,
     fontSize: TYPOGRAPHY.fontSize.xs,
-    fontWeight: "700",
     letterSpacing: 0.5,
   },
   bottomButtons: {
@@ -328,7 +312,6 @@ const styles = StyleSheet.create({
     color: COLORS.gray800,
     fontFamily: TYPOGRAPHY.fontPrimary,
     fontSize: TYPOGRAPHY.fontSize.base,
-    fontWeight: "700",
   },
   coinsPillLabel: {
     color: COLORS.gray600,
@@ -355,24 +338,28 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     justifyContent: "space-between",
     marginBottom: verticalScale(8),
+    
   },
   gridCard: {
     alignItems: "center",
+    backgroundColor: "#EAE1C4",
     borderRadius: moderateScale(16),
+    borderColor: "#F54160",
     borderWidth: 2,
-    borderColor: COLORS.black,
+    height: GRID_CARD_HEIGHT,
+    justifyContent: "flex-start",
     marginBottom: verticalScale(10),
     overflow: "hidden",
-    paddingBottom: verticalScale(14),
-    paddingTop: verticalScale(36),
+    paddingTop: verticalScale(34),
+    position: "relative",
     width: "48%",
+  },
+  gridCoinIcon: {
+    marginBottom: 0,
   },
   gridCardSelected: {
     borderColor: COLORS.primaryOrange,
     borderWidth: 2,
-  },
-  gridCardBackground: {
-    ...StyleSheet.absoluteFill,
   },
   headerRow: {
     alignItems: "center",
@@ -386,10 +373,10 @@ const styles = StyleSheet.create({
   modalContainer: {
     borderRadius: BORDER_RADIUS["2xl"],
     elevation: 10,
-    left: SPACING.md,
+    left: COIN_SHOP_MODAL_SIDE_INSET,
     overflow: "hidden",
     position: "absolute",
-    right: SPACING.md,
+    right: COIN_SHOP_MODAL_SIDE_INSET,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.25,
@@ -398,45 +385,34 @@ const styles = StyleSheet.create({
   overlay: {
     flex: 1,
   },
-  purchaseButton: {
-    alignItems: "center",
-    backgroundColor: COLORS.primaryOrange,
-    borderRadius: moderateScale(50),
-    paddingVertical: verticalScale(14),
+  purchaseButtonContainer: {
     marginBottom: verticalScale(24),
     marginLeft: scale(12),
-    marginRight: scale(12)
-  },
-  purchaseButtonDisabled: {
-    backgroundColor: COLORS.gray300,
-  },
-  purchaseButtonText: {
-    color: COLORS.white,
-    fontFamily: TYPOGRAPHY.fontPrimary,
-    fontSize: TYPOGRAPHY.fontSize.base,
-    fontWeight: "700",
-    letterSpacing: 1,
+    marginRight: scale(12),
   },
   productCoins: {
-    color: COLORS.white,
+    color: COLORS.black,
     fontFamily: TYPOGRAPHY.fontPrimary,
-    fontSize: TYPOGRAPHY.fontSize.base,
-    fontWeight: "700",
-    paddingTop:verticalScale(18), 
-    marginTop: verticalScale(14),
+    fontSize: TYPOGRAPHY.fontSize["2xl"],
+    marginTop: verticalScale(-12),
     textAlign: "center",
   },
   productPriceButton: {
-    marginTop: verticalScale(10),
-    marginBottom: verticalScale(24),
-    paddingHorizontal: scale(16),
-    paddingVertical: verticalScale(8),
+    alignItems: "center",
+    backgroundColor: "#401F40",
+    borderColor: "#FEC880",
+    borderRadius: moderateScale(10),
+    borderWidth: 1.5,
+    bottom: verticalScale(8),
+    left: scale(8),
+    paddingVertical: verticalScale(7),
+    position: "absolute",
+    right: scale(8),
   },
   productPriceText: {
-    color: COLORS.black,
+    color: COLORS.white,
     fontFamily: TYPOGRAPHY.fontPrimary,
     fontSize: TYPOGRAPHY.fontSize.sm,
-    fontWeight: "700",
   },
   scroll: {
     flex: 1,
@@ -451,7 +427,6 @@ const styles = StyleSheet.create({
     color: COLORS.gray800,
     fontFamily: TYPOGRAPHY.fontPrimary,
     fontSize: TYPOGRAPHY.fontSize["2xl"],
-    fontWeight: "700",
     letterSpacing: 1,
     textAlign: "center",
   },

@@ -184,3 +184,55 @@ export const validatePurchase = onCall(
     }
   },
 );
+
+/**
+ * Development-only fallback for coin pack purchases when native store integration is skipped.
+ * This is intentionally gated to emulator or explicit opt-in via ALLOW_DEV_IAP_BYPASS=true.
+ */
+export const grantDevCoinsForPurchase = onCall(
+  async (
+    request: functions.https.CallableRequest<{
+      productId: string;
+    }>,
+  ): Promise<{success: boolean; newCoins: number; coinsAwarded: number}> => {
+    if (!request.auth) {
+      throw new functions.https.HttpsError(
+        "unauthenticated",
+        "The function must be called while authenticated.",
+      );
+    }
+
+    const isEmulator = process.env.FUNCTIONS_EMULATOR === "true";
+    const explicitBypass = process.env.ALLOW_DEV_IAP_BYPASS === "true";
+    if (!isEmulator && !explicitBypass) {
+      throw new functions.https.HttpsError(
+        "permission-denied",
+        "Dev purchase bypass is disabled.",
+      );
+    }
+
+    const productId = request.data?.productId;
+    if (typeof productId !== "string" || productId.length === 0) {
+      throw new functions.https.HttpsError("invalid-argument", "Invalid product ID.");
+    }
+
+    const userId = request.auth.uid;
+    const coinsToAward = await getCoinsForProduct(productId, BACKEND_COIN_PRODUCT_DETAILS);
+    if (coinsToAward === undefined) {
+      throw new functions.https.HttpsError("invalid-argument", "Unknown product ID.");
+    }
+
+    await updateUserCoins(userId, coinsToAward);
+    const updatedUser = await getUser(userId);
+
+    functions.logger.info(
+      `Dev bypass awarded ${coinsToAward} coins to user ${userId} for ${productId}.`,
+    );
+
+    return {
+      success: true,
+      newCoins: updatedUser?.coins ?? 0,
+      coinsAwarded: coinsToAward,
+    };
+  },
+);

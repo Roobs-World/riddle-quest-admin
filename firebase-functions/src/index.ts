@@ -15,7 +15,7 @@ admin.initializeApp();
 
 // Explicitly import and export functions from sub-modules
 import {awardedAdCallback} from "./adCallbacks";
-import {validatePurchase} from "./iapValidation";
+import {validatePurchase, grantDevCoinsForPurchase} from "./iapValidation";
 import {spendCoins, skipRiddle} from "./gameLogic";
 import {
   setCompletedDailyChallenge,
@@ -41,6 +41,7 @@ import {dailyStreakReminder} from "./streakNotifications";
 export {
   awardedAdCallback,
   validatePurchase,
+  grantDevCoinsForPurchase,
   spendCoins,
   skipRiddle,
   setCompletedDailyChallenge,
