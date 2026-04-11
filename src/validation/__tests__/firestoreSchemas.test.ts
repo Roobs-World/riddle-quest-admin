@@ -152,7 +152,6 @@ describe("firestoreSchemas", () => {
         progress: {
           classicIndex: 5,
           dailyChallengeIndex: 10,
-          tutorialIndex: 3,
         },
       };
 
@@ -167,7 +166,6 @@ describe("firestoreSchemas", () => {
         riddleId: "riddle123",
         text: "What has four legs but cannot walk?",
         answer: "TABLE",
-        difficulty: "medium",
         category: "objects",
         dailyIndex: 5,
       };
@@ -181,7 +179,6 @@ describe("firestoreSchemas", () => {
         riddleId: "riddle123",
         text: "What has four legs but cannot walk?",
         answer: "", // Empty answer should be invalid
-        difficulty: "medium",
       };
 
       const result = FirestoreRiddleSchema.safeParse(invalidRiddle);
@@ -192,7 +189,6 @@ describe("firestoreSchemas", () => {
       const invalidRiddle = {
         text: "What has four legs but cannot walk?",
         answer: "TABLE",
-        difficulty: "medium",
       };
 
       const result = FirestoreRiddleSchema.safeParse(invalidRiddle);

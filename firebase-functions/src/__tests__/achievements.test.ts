@@ -39,7 +39,6 @@ function makeUser(overrides: Partial<Player> = {}): Player {
       classicIndex: 0,
       dailyChallengeIndex: 0,
       dailyChallengeCurrentQuestion: 0,
-      tutorialIndex: 0,
     },
     unlockedAchievements: [],
     ...overrides,

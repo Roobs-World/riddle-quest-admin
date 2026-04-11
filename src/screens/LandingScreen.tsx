@@ -26,8 +26,6 @@ import { logger } from "../utils/logger";
 import { captureException } from "../utils/sentry";
 import CreditsModal from "../components/modals/help/CreditsModal";
 import GameModeModal from "../components/modals/game/GameModeModal";
-import MuteButton from "../components/buttons/MuteButton";
-import { SoundManager } from "../services/SoundManager";
 
 /**
  * Landing screen component used at the root of the auth stack.
@@ -44,7 +42,6 @@ const LandingScreen = () => {
   const { login, isAuthenticated, setGameMode } = useAuth();
   const [isCreditsVisible, setIsCreditsVisible] = useState(false);
   const [isGameModeVisible, setIsGameModeVisible] = useState(false);
-  const [isMuted, setIsMuted] = useState(!SoundManager.getSoundEnabled());
 
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
@@ -195,45 +192,11 @@ const LandingScreen = () => {
     setIsGameModeVisible(true);
   };
 
-  const handleToggleMute = () => {
-    const nextIsMuted = !isMuted;
-    const nextSoundEnabled = !nextIsMuted;
-
-    setIsMuted(nextIsMuted);
-    SoundManager.setSoundEnabled(nextSoundEnabled);
-
-    if (nextSoundEnabled) {
-      void SoundManager.playBackgroundMusic();
-      return;
-    }
-
-    void SoundManager.pauseBackgroundMusic();
-  };
-
-  const renderMuteButton = () => (
-    <MuteButton
-      isMuted={isMuted}
-      onToggle={handleToggleMute}
-      disabled={isLoading}
-    />
-  );
-
   return (
     <CustomSafeAreaView className="justify-start">
       <StarryBackground />
 
       <View style={{ flex: 1, width: '100%', alignItems: 'center', zIndex: 2 }}>
-        <View
-          style={{
-            position: "absolute",
-            top: SPACING.md,
-            right: SPACING.md,
-            zIndex: 30,
-          }}
-        >
-          {renderMuteButton()}
-        </View>
-
         {/* Title at the top */}
         <View style={{ alignItems: 'center', paddingTop: SPACING.xl }}>
           <Text
@@ -269,12 +232,10 @@ const LandingScreen = () => {
       <CreditsModal
         isVisible={isCreditsVisible}
         onClose={() => setIsCreditsVisible(false)}
-        topRightControl={renderMuteButton()}
       />
       <GameModeModal
         isVisible={isGameModeVisible}
         onClose={() => setIsGameModeVisible(false)}
-        topRightControl={renderMuteButton()}
         /* istanbul ignore next */
         onSelectMode={async (mode) => {
           setIsGameModeVisible(false);

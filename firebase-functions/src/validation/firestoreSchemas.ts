@@ -38,7 +38,6 @@ export const PlayerProgressSchema = z.object({
   classicIndex: z.number().int().nonnegative().default(1),
   dailyChallengeIndex: z.number().int().nonnegative().default(0),
   dailyChallengeCurrentQuestion: z.number().int().nonnegative().default(0),
-  tutorialIndex: z.number().int().nonnegative().default(0),
 });
 
 // Define the structure for player stats
@@ -112,7 +111,6 @@ export const FirestoreRiddleSchema = z.object({
   text: z.string(),
   answer: z.string().min(1),
   // Added optional fields that might be present in riddle documents
-  difficulty: z.string().optional(),
   category: z.string().optional(),
 });
 
@@ -122,7 +120,6 @@ export const ClassicRiddleSchema = z.object({
   text: z.string(),
   answer: z.string().min(1),
   classicIndex: z.number().int().nonnegative(),
-  difficulty: z.string().optional(),
   category: z.string().default("classic"),
 });
 
@@ -132,30 +129,17 @@ export const DailyRiddleSchema = z.object({
   text: z.string(),
   answer: z.string().min(1),
   dailyIndex: z.number().int().nonnegative(),
-  difficulty: z.string().optional(),
   category: z.string().default("daily"),
-});
-
-// Schema for riddles in the 'tutorialRiddles' collection
-export const TutorialRiddleSchema = z.object({
-  riddleId: z.string(),
-  text: z.string(),
-  answer: z.string().min(1),
-  tutorialIndex: z.number().int().nonnegative(),
-  difficulty: z.string().optional(),
-  category: z.string().default("tutorial"),
 });
 
 export type FirestoreRiddle = z.infer<typeof FirestoreRiddleSchema>;
 export type ClassicRiddle = z.infer<typeof ClassicRiddleSchema>;
 export type DailyRiddle = z.infer<typeof DailyRiddleSchema>;
-export type TutorialRiddle = z.infer<typeof TutorialRiddleSchema>;
 
 // Collection names enum for consistency
 export enum RiddleCollections {
   RIDDLES = "riddles",
   DAILY_RIDDLES = "dailyRiddles",
-  TUTORIAL_RIDDLES = "tutorialRiddles",
 }
 
 // Export PlayerProgress and PlayerStats types derived from schemas for consistency

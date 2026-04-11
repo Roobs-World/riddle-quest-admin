@@ -91,7 +91,6 @@ describe("AuthContext", () => {
       dailyChallengeIndex: 0,
       dailyChallengeCurrentQuestion: 0,
       classicIndex: 1,
-      tutorialIndex: 0,
     },
     stats: {
       xp: 0,
@@ -122,7 +121,6 @@ describe("AuthContext", () => {
     text: "I am a daily riddle",
     answer: "DAILY",
     category: "general",
-    difficulty: "medium",
   };
 
   const mockClassicRiddle: FirestoreRiddle = {
@@ -131,7 +129,6 @@ describe("AuthContext", () => {
     text: "I am a classic riddle",
     answer: "CLASSIC",
     category: "general",
-    difficulty: "easy",
   };
 
   const wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (

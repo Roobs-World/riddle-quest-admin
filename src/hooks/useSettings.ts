@@ -16,7 +16,6 @@ import { SOUND_RESUME_DELAY_MS } from "../constants/game";
 
 const SOUND_ENABLED_STORAGE_KEY = "isSoundEnabled";
 const HAPTICS_ENABLED_STORAGE_KEY = "isHapticsEnabled";
-const HARD_MODE_STORAGE_KEY = "isHardMode";
 
 /**
  * Manages persisted sound and haptics preferences for the current user.
@@ -31,7 +30,6 @@ const HARD_MODE_STORAGE_KEY = "isHardMode";
 export const useSettings = () => {
   const [isSoundEnabled, setIsSoundEnabled] = useState(true);
   const [isHapticsEnabled, setIsHapticsEnabled] = useState(true);
-  const [isHardMode, setIsHardMode] = useState(false);
 
   useEffect(() => {
     const loadSettings = async () => {
@@ -52,11 +50,6 @@ export const useSettings = () => {
         );
         if (hapticsEnabled !== null) {
           setIsHapticsEnabled(JSON.parse(hapticsEnabled));
-        }
-
-        const hardMode = await AsyncStorage.getItem(HARD_MODE_STORAGE_KEY);
-        if (hardMode !== null) {
-          setIsHardMode(JSON.parse(hardMode));
         }
       } catch (error) {
         logger.error("Error loading settings from AsyncStorage:", error);
@@ -96,16 +89,6 @@ export const useSettings = () => {
     });
   }, [isHapticsEnabled]);
 
-  useEffect(() => {
-    AsyncStorage.setItem(
-      HARD_MODE_STORAGE_KEY,
-      JSON.stringify(isHardMode)
-    ).catch((error: unknown) => {
-      logger.error("Error saving hard mode setting:", error);
-      captureException(error);
-    });
-  }, [isHardMode]);
-
   const toggleSoundEnabled = useCallback((enabled: boolean) => {
     setIsSoundEnabled(enabled);
   }, []);
@@ -114,17 +97,11 @@ export const useSettings = () => {
     setIsHapticsEnabled(enabled);
   }, []);
 
-  const toggleHardMode = useCallback((enabled: boolean) => {
-    setIsHardMode(enabled);
-  }, []);
-
   return {
     isSoundEnabled,
     isHapticsEnabled,
-    isHardMode,
     toggleSoundEnabled,
     toggleHapticsEnabled,
-    toggleHardMode,
   };
 };
 

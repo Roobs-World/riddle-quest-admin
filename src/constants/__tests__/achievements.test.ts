@@ -127,20 +127,6 @@ describe("achievements", () => {
     });
   });
 
-  describe("getProgress for tutorial_started achievement", () => {
-    it("should return tutorialIndex from progress", () => {
-      const tutorial = ACHIEVEMENT_DEFINITIONS.find((a) => a.id === "tutorial_started");
-      expect(tutorial?.getProgress({ progress: { tutorialIndex: 1 } as any })).toBe(1);
-      expect(tutorial?.getProgress({ progress: { tutorialIndex: 5 } as any })).toBe(5);
-    });
-
-    it("should return 0 for missing progress", () => {
-      const tutorial = ACHIEVEMENT_DEFINITIONS.find((a) => a.id === "tutorial_started");
-      expect(tutorial?.getProgress({})).toBe(0);
-      expect(tutorial?.getProgress({ progress: null })).toBe(0);
-    });
-  });
-
   describe("getProgress for hint_user achievement", () => {
     it("should return totalHintsUsed from stats", () => {
       const hint = ACHIEVEMENT_DEFINITIONS.find((a) => a.id === "hint_user");
@@ -199,9 +185,7 @@ describe("achievements", () => {
         "streak_7",
         "classic_10",
         "daily_completed",
-        "perfect_guess",
-        "tutorial_started",
-        "hint_user",
+        "perfect_guess",        "hint_user",
         "first_purchase",
       ];
 
@@ -262,9 +246,7 @@ describe("achievements", () => {
         streak_7: "⚡",
         classic_10: "🎮",
         daily_completed: "📅",
-        perfect_guess: "💎",
-        tutorial_started: "📚",
-        hint_user: "💡",
+        perfect_guess: "💎",        hint_user: "💡",
         first_purchase: "❤️",
       };
 

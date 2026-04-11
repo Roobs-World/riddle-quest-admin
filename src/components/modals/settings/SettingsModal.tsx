@@ -30,8 +30,6 @@ interface SettingsModalProps {
   onToggleSound: (isEnabled: boolean) => void;
   isHapticsEnabled: boolean;
   onToggleHaptics: (isEnabled: boolean) => void;
-  isHardMode: boolean;
-  onToggleHardMode: (isEnabled: boolean) => void;
   currentLanguage: SupportedLanguage;
   onChangeLanguage: (language: SupportedLanguage) => void;
   onPressHelp: () => void;
@@ -149,8 +147,6 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
   onToggleSound,
   isHapticsEnabled,
   onToggleHaptics,
-  isHardMode,
-  onToggleHardMode,
   currentLanguage,
   onChangeLanguage,
   onPressHelp,
@@ -288,28 +284,6 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                 {AppStrings.Settings.HAPTICS_TOGGLE}
               </Text>
               <SegmentedToggle value={isHapticsEnabled} onChange={onToggleHaptics} />
-            </View>
-
-            <View style={{ height: 1, backgroundColor: "#E8E0E8" }} />
-
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-                paddingVertical: 16,
-              }}
-            >
-              <Text
-                style={{
-                  fontFamily: TYPOGRAPHY.fontSecondary,
-                  fontSize: TYPOGRAPHY.fontSize.base,
-                  color: "#1A1A1A",
-                }}
-              >
-                {AppStrings.Settings.HARD_MODE_TOGGLE}
-              </Text>
-              <SegmentedToggle value={isHardMode} onChange={onToggleHardMode} />
             </View>
 
             <View style={{ height: 1, backgroundColor: "#E8E0E8" }} />

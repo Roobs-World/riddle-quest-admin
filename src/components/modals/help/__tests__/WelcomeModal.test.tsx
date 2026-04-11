@@ -159,71 +159,19 @@ describe("WelcomeModal", () => {
     });
   });
 
-  describe("Start Tutorial gating", () => {
-    it("should show only Let's Play when showStartTutorial is false and onStartTutorial is provided", () => {
-      const mockOnStartTutorial = jest.fn();
-      const { queryByText } = render(
-        <WelcomeModal
-          isVisible={true}
-          onClose={mockOnClose}
-          onStartTutorial={mockOnStartTutorial}
-          showStartTutorial={false}
-        />
-      );
-      // Start Tutorial button should not be present; Let's Play is shown instead
-      expect(queryByText("Start Tutorial")).toBeNull();
-    });
-
-    it("should show Start Tutorial and Skip to Play when showStartTutorial is true", () => {
-      const mockOnStartTutorial = jest.fn();
-      const { getByText } = render(
-        <WelcomeModal
-          isVisible={true}
-          onClose={mockOnClose}
-          onStartTutorial={mockOnStartTutorial}
-          showStartTutorial={true}
-        />
-      );
-      expect(getByText("Start Tutorial")).toBeTruthy();
-      expect(getByText("Skip to Play")).toBeTruthy();
-    });
-
-    it("fires tutorial callback and dismiss callbacks when Start Tutorial is pressed", () => {
-      const mockOnStartTutorial = jest.fn();
+  describe("Dismiss callback", () => {
+    it("fires dismiss callbacks when Let's Play is pressed", () => {
       const mockOnDismiss = jest.fn();
       const { getByText } = render(
         <WelcomeModal
           isVisible={true}
           onClose={mockOnClose}
-          onStartTutorial={mockOnStartTutorial}
-          showStartTutorial={true}
           onDismiss={mockOnDismiss}
         />
       );
 
-      fireEvent.press(getByText("Start Tutorial"));
+      fireEvent.press(getByText("Let's Play"));
 
-      expect(mockOnStartTutorial).toHaveBeenCalledTimes(1);
-      expect(mockOnClose).toHaveBeenCalledTimes(1);
-      expect(mockOnDismiss).toHaveBeenCalledTimes(1);
-    });
-
-    it("dismisses without tutorial callback when Skip to Play is pressed", () => {
-      const mockOnStartTutorial = jest.fn();
-      const mockOnDismiss = jest.fn();
-      const { getByText } = render(
-        <WelcomeModal
-          isVisible={true}
-          onClose={mockOnClose}
-          onStartTutorial={mockOnStartTutorial}
-          showStartTutorial={true}
-          onDismiss={mockOnDismiss}
-        />
-      );
-
-      fireEvent.press(getByText("Skip to Play"));
-
-      expect(mockOnStartTutorial).not.toHaveBeenCalled();
       expect(mockOnClose).toHaveBeenCalledTimes(1);
       expect(mockOnDismiss).toHaveBeenCalledTimes(1);
     });

@@ -12,7 +12,6 @@ describe("Player Types", () => {
         userId: "test-user-123",
         progress: {
           dailyChallengeIndex: 5,
-          tutorialIndex: 10,
           classicIndex: 3,
         },
         coins: 100,
@@ -25,7 +24,6 @@ describe("Player Types", () => {
 
       expect(player.userId).toBe("test-user-123");
       expect(player.progress.dailyChallengeIndex).toBe(5);
-      expect(player.progress.tutorialIndex).toBe(10);
       expect(player.progress.classicIndex).toBe(3);
       expect(player.coins).toBe(100);
       expect(player.username).toBe("testuser");
@@ -40,7 +38,6 @@ describe("Player Types", () => {
         userId: "test-user-123",
         progress: {
           dailyChallengeIndex: 5,
-          tutorialIndex: 10,
           classicIndex: 3,
         },
         coins: 100,
@@ -84,7 +81,6 @@ describe("Player Types", () => {
         userId: "test-user-123",
         progress: {
           dailyChallengeIndex: 0,
-          tutorialIndex: 0,
           classicIndex: 0,
         },
         coins: 0,

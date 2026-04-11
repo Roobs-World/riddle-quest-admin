@@ -164,7 +164,6 @@ describe("FullProfileDetailsModal", () => {
       classicIndex: 10,
       dailyChallengeIndex: 5,
       dailyChallengeCurrentQuestion: 0,
-      tutorialIndex: 3,
     },
     createdAt: 1704067200000,
     registeredAt: 1704067200000,
@@ -318,7 +317,6 @@ describe("FullProfileDetailsModal", () => {
         classicIndex: 0,
         dailyChallengeIndex: 0,
       dailyChallengeCurrentQuestion: 0,
-        tutorialIndex: 0,
       },
     };
 

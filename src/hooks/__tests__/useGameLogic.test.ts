@@ -599,34 +599,6 @@ describe("useGameLogic", () => {
     });
   });
 
-  describe("tutorial game mode", () => {
-    it("should work correctly with tutorial game mode", async () => {
-      mockCompleteGameCallable.mockResolvedValueOnce({
-        data: { coinsEarned: 5, newlyUnlockedAchievementIds: [] },
-      });
-
-      const tutorialProps = {
-        riddleId: "tutorialRiddle",
-        gameMode: "tutorial" as "classic" | "challenge" | "tutorial",
-        answer: "HELLO",
-      };
-
-      const { result } = renderHook(() => useGameLogic(tutorialProps));
-
-      await act(async () => {
-        await result.current.processGuess(["H", "E", "L", "L", "O"]);
-      });
-
-      expect(mockCompleteGameCallable).toHaveBeenCalledWith({
-        riddleId: "tutorialRiddle",
-        gameMode: "tutorial",
-        attempts: 1,
-        isCorrect: true,
-      });
-      expect(result.current.gameOver).toBe(true);
-    });
-  });
-
   describe("win with achievements", () => {
     it("should return unlocked achievement IDs from server", async () => {
       mockCompleteGameCallable.mockResolvedValueOnce({

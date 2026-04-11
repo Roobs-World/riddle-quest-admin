@@ -2,21 +2,21 @@ import {logger} from "firebase-functions/v2";
 import * as admin from "firebase-admin";
 import {onCall, HttpsError, CallableRequest} from "firebase-functions/v2/https";
 import {updateUserCoins, getUser, getRiddleByGameMode} from "./firestoreService";
-import {SKIP_COST_CLASSIC, SKIP_COST_DAILY, SKIP_COST_TUTORIAL} from "./constants";
+import {SKIP_COST_CLASSIC, SKIP_COST_DAILY} from "./constants";
 import {captureException} from "./sentry";
 
 /**
  * Skips the current riddle by marking it as completed and advancing to the next level/question.
  * @param data - The request data object containing riddleId and gameMode.
  * @param data.riddleId - The ID of the riddle being skipped.
- * @param data.gameMode - The game mode ('classic', 'challenge', or 'tutorial').
+ * @param data.gameMode - The game mode ('classic', 'challenge').
  * @param context - The context object representing the request context.
  * @return An object containing success status and new progress information.
  */
 export const skipRiddle = onCall(
   {},
   async (
-    request: CallableRequest<{riddleId: string; gameMode: "classic" | "challenge" | "tutorial"}>,
+    request: CallableRequest<{riddleId: string; gameMode: "classic" | "challenge"}>,
   ): Promise<{success: boolean; newProgress?: any; message: string; costDeducted: number}> => {
     try {
       if (!request.auth) {
@@ -27,7 +27,7 @@ export const skipRiddle = onCall(
       const {riddleId, gameMode} = request.data;
 
       // Validate game mode
-      if (!["classic", "challenge", "tutorial"].includes(gameMode)) {
+      if (!["classic", "challenge"].includes(gameMode)) {
         throw new HttpsError("invalid-argument", "Invalid game mode specified.");
       }
 
@@ -40,9 +40,6 @@ export const skipRiddle = onCall(
       // Different skip costs for different modes (must match client src/constants/game.ts)
       let skipCost: number;
       switch (gameMode) {
-        case "tutorial":
-          skipCost = SKIP_COST_TUTORIAL;
-          break;
         case "classic":
           skipCost = SKIP_COST_CLASSIC;
           break;
@@ -120,25 +117,6 @@ export const skipRiddle = onCall(
         });
 
         progressMessage = `Advanced to classic level ${newClassicIndex + 1}`;
-      } else if (gameMode === "tutorial") {
-        const currentTutorialIndex = userData?.progress?.tutorialIndex || 0;
-        const newTutorialIndex = currentTutorialIndex + 1;
-
-        newProgress = {
-          ...userData?.progress,
-          tutorialIndex: newTutorialIndex,
-        };
-
-        await userRef.update({
-          "progress.tutorialIndex": newTutorialIndex,
-        });
-
-        // Update stats
-        await userRef.update({
-          "stats.tutorialSkipped": admin.firestore.FieldValue.increment(1),
-        });
-
-        progressMessage = `Advanced to tutorial level ${newTutorialIndex + 1}`;
       } else if (gameMode === "challenge") {
         const currentQuestionIndex = userData?.progress?.dailyChallengeCurrentQuestion || 0;
 

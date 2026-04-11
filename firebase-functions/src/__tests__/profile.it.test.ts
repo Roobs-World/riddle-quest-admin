@@ -65,7 +65,7 @@ describe("Profile Functions - Integration Tests", () => {
   const initialUserData = {
     email: "profile@example.com",
     coins: 100,
-    progress: {classicIndex: 5, dailyChallengeIndex: 2, tutorialIndex: 1, dailyChallengeCurrentQuestion: 0},
+    progress: {classicIndex: 5, dailyChallengeIndex: 2, dailyChallengeCurrentQuestion: 0},
     stats: {
       gamesWon: 10,
       hintsUsed: 5,

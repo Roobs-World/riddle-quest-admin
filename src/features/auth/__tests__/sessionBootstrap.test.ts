@@ -115,10 +115,6 @@ describe("sessionBootstrap", () => {
         expect(player.progress.dailyChallengeCurrentQuestion).toBe(0);
       });
 
-      it("sets tutorialIndex to 0", () => {
-        const player = createGuestPlayer(testUid);
-        expect(player.progress.tutorialIndex).toBe(0);
-      });
     });
 
     describe("stats initialization", () => {

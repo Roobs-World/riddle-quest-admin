@@ -156,7 +156,6 @@ describe("RiddleService", () => {
       text: "What has keys but no locks?",
       answer: "PIANO",
       category: "daily",
-      difficulty: "medium",
     };
 
     beforeEach(() => {
@@ -569,7 +568,6 @@ describe("RiddleService", () => {
       text: "I can be cracked, made, told, and played. What am I?",
       answer: "JOKE",
       category: "classic",
-      difficulty: "easy",
       classicIndex: 1,
     };
 
@@ -736,173 +734,6 @@ describe("RiddleService", () => {
     });
   });
 
-  describe("fetchTutorialRiddle", () => {
-    const mockTutorialRiddleData = {
-      text: "Tutorial: What comes after A?",
-      answer: "B",
-      category: "tutorial",
-      difficulty: "beginner",
-      tutorialIndex: 1,
-    };
-
-    it("should fetch tutorial riddle successfully", async () => {
-      const level = 1;
-      const riddleId = "tutorial-001";
-      const mockSnapshot = {
-        empty: false,
-        docs: [
-          {
-            data: () => mockTutorialRiddleData,
-            id: riddleId,
-          },
-        ],
-      };
-
-      mockGetDocs.mockResolvedValue(mockSnapshot);
-
-      const result = await RiddleService.fetchTutorialRiddle(level);
-
-      expect(result).toEqual({
-        ...mockTutorialRiddleData,
-        riddleId,
-        answerLength: 1,
-      });
-      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "tutorialRiddles");
-      expect(mockWhere).toHaveBeenCalledWith("tutorialIndex", "==", level);
-      expect(mockLimit).toHaveBeenCalledWith(1);
-    });
-
-    it("should return null when no tutorial riddle found for level", async () => {
-      const level = 999;
-      const mockSnapshot = {
-        empty: true,
-        docs: [],
-      };
-
-      mockGetDocs.mockResolvedValue(mockSnapshot);
-
-      const result = await RiddleService.fetchTutorialRiddle(level);
-
-      expect(result).toBeNull();
-      expect(logger.debug).toHaveBeenCalledWith(
-        `No tutorial riddle found for level: ${level}`
-      );
-    });
-
-    it("should return null when riddle data is missing answer", async () => {
-      const level = 1;
-      const riddleId = "invalid-tutorial";
-      const invalidRiddleData = {
-        text: "Incomplete tutorial riddle",
-        category: "tutorial",
-        tutorialIndex: 1,
-      };
-      const mockSnapshot = {
-        empty: false,
-        docs: [
-          {
-            data: () => invalidRiddleData,
-            id: riddleId,
-          },
-        ],
-      };
-
-      mockGetDocs.mockResolvedValue(mockSnapshot);
-
-      const result = await RiddleService.fetchTutorialRiddle(level);
-
-      expect(result).toBeNull();
-      expect(logger.error).toHaveBeenCalledWith(
-        `Tutorial riddle data or answer missing for level: ${level}. Data:`,
-        invalidRiddleData
-      );
-    });
-
-    it("should handle zero level", async () => {
-      const level = 0;
-      const riddleId = "tutorial-000";
-      const mockSnapshot = {
-        empty: false,
-        docs: [
-          {
-            data: () => ({ ...mockTutorialRiddleData, tutorialIndex: 0 }),
-            id: riddleId,
-          },
-        ],
-      };
-
-      mockGetDocs.mockResolvedValue(mockSnapshot);
-
-      const result = await RiddleService.fetchTutorialRiddle(level);
-
-      expect(result).toEqual({
-        ...mockTutorialRiddleData,
-        tutorialIndex: 0,
-        riddleId,
-        answerLength: 1,
-      });
-      expect(mockWhere).toHaveBeenCalledWith("tutorialIndex", "==", 0);
-    });
-
-    it("should handle long answers correctly", async () => {
-      const level = 1;
-      const riddleId = "tutorial-long";
-      const longAnswerRiddle = {
-        ...mockTutorialRiddleData,
-        answer: "LONGANSWER",
-      };
-      const mockSnapshot = {
-        empty: false,
-        docs: [
-          {
-            data: () => longAnswerRiddle,
-            id: riddleId,
-          },
-        ],
-      };
-
-      mockGetDocs.mockResolvedValue(mockSnapshot);
-
-      const result = await RiddleService.fetchTutorialRiddle(level);
-
-      expect(result).toEqual({
-        ...longAnswerRiddle,
-        riddleId,
-        answerLength: 10,
-      });
-    });
-
-    it("should handle Firestore errors", async () => {
-      const level = 1;
-      const error = new Error("Firestore tutorial error");
-      mockGetDocs.mockRejectedValue(error);
-
-      await expect(RiddleService.fetchTutorialRiddle(level)).rejects.toThrow(
-        "Firestore tutorial error"
-      );
-
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error fetching tutorial riddle:",
-        error
-      );
-    });
-
-    it("should handle network timeout errors", async () => {
-      const level = 1;
-      const timeoutError = new Error("Request timeout");
-      mockGetDocs.mockRejectedValue(timeoutError);
-
-      await expect(RiddleService.fetchTutorialRiddle(level)).rejects.toThrow(
-        "Request timeout"
-      );
-
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error fetching tutorial riddle:",
-        timeoutError
-      );
-    });
-  });
-
   describe("submitGuess", () => {
     const mockGuessData = {
       guess: "PIANO",
@@ -969,24 +800,6 @@ describe("RiddleService", () => {
 
       expect(SubmitGuessInputSchema.parse).toHaveBeenCalledWith(dailyGuessData);
       expect(mockHttpsCallable).toHaveBeenCalledWith(dailyGuessData);
-      expect(result).toEqual(mockValidResult);
-    });
-
-    it("should submit guess for tutorial game mode", async () => {
-      const tutorialGuessData = {
-        gameMode: "classic" as const,
-        guess: "tutor",
-        riddleId: "tutorial-riddle-id",
-        attempts: 1,
-      };
-      mockHttpsCallable.mockResolvedValue({ data: mockValidResult });
-
-      const result = await RiddleService.submitGuess(tutorialGuessData);
-
-      expect(SubmitGuessInputSchema.parse).toHaveBeenCalledWith(
-        tutorialGuessData
-      );
-      expect(mockHttpsCallable).toHaveBeenCalledWith(tutorialGuessData);
       expect(result).toEqual(mockValidResult);
     });
 
@@ -1214,7 +1027,6 @@ describe("RiddleService", () => {
     it("should have all required methods available", () => {
       expect(typeof RiddleService.fetchDailyRiddle).toBe("function");
       expect(typeof RiddleService.fetchClassicRiddle).toBe("function");
-      expect(typeof RiddleService.fetchTutorialRiddle).toBe("function");
       expect(typeof RiddleService.submitGuess).toBe("function");
     });
 
@@ -1248,7 +1060,6 @@ describe("RiddleService", () => {
       const mockSnapshot = { empty: true, docs: [] };
       mockGetDocs.mockResolvedValue(mockSnapshot);
       await RiddleService.fetchClassicRiddle(1);
-      await RiddleService.fetchTutorialRiddle(1);
 
       // Verify doc/collection calls were made with correct collection names
       expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "users", expect.any(String));
@@ -1279,4 +1090,3 @@ describe("RiddleService", () => {
     });
   });
 });
-

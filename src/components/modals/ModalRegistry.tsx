@@ -236,15 +236,12 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
       onClose: props.onClose,
       isSoundEnabled: (props.isSoundEnabled as boolean) || false,
       isHapticsEnabled: (props.isHapticsEnabled as boolean) || false,
-      isHardMode: (props.isHardMode as boolean) || false,
       currentLanguage:
         (props.currentLanguage as SupportedLanguage) ?? getAppLanguage(),
       onToggleSound:
         (props.onToggleSound as (enabled: boolean) => void) || (() => {}),
       onToggleHaptics:
         (props.onToggleHaptics as (enabled: boolean) => void) || (() => {}),
-      onToggleHardMode:
-        (props.onToggleHardMode as (enabled: boolean) => void) || (() => {}),
       onChangeLanguage:
         (props.onChangeLanguage as (language: SupportedLanguage) => void) ||
         (() => {}),

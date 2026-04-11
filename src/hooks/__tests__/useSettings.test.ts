@@ -55,26 +55,22 @@ describe("useSettings", () => {
     mockGetItem.mockResolvedValue(null);
   });
 
-  it("should return API with isSoundEnabled, isHapticsEnabled, isHardMode, and toggles", () => {
+  it("should return API with isSoundEnabled, isHapticsEnabled and toggles", () => {
     const { result } = renderHook(() => useSettings());
     expect(result.current).toHaveProperty("isSoundEnabled");
     expect(result.current).toHaveProperty("isHapticsEnabled");
-    expect(result.current).toHaveProperty("isHardMode");
     expect(result.current).toHaveProperty("toggleSoundEnabled");
     expect(result.current).toHaveProperty("toggleHapticsEnabled");
-    expect(result.current).toHaveProperty("toggleHardMode");
     expect(typeof result.current.toggleSoundEnabled).toBe("function");
     expect(typeof result.current.toggleHapticsEnabled).toBe("function");
-    expect(typeof result.current.toggleHardMode).toBe("function");
   });
 
-  it("should default to sound and haptics enabled and hard mode off when storage is empty", async () => {
+  it("should default to sound and haptics enabled when storage is empty", async () => {
     mockGetItem.mockResolvedValue(null);
     const { result } = renderHook(() => useSettings());
     await waitFor(() => {
       expect(result.current.isSoundEnabled).toBe(true);
       expect(result.current.isHapticsEnabled).toBe(true);
-      expect(result.current.isHardMode).toBe(false);
     });
     expect(mockSetSoundEnabled).toHaveBeenCalledWith(true);
   });
@@ -169,52 +165,6 @@ describe("useSettings", () => {
     });
   });
 
-  it("should load persisted hard mode setting from AsyncStorage", async () => {
-    mockGetItem
-      .mockResolvedValueOnce(null) // sound
-      .mockResolvedValueOnce(null) // haptics
-      .mockResolvedValueOnce(JSON.stringify(true)); // hard mode
-    const { result } = renderHook(() => useSettings());
-    await waitFor(() => {
-      expect(result.current.isHardMode).toBe(true);
-    });
-  });
-
-  it("should persist hard mode when toggling on", async () => {
-    mockGetItem.mockResolvedValue(null);
-    const { result } = renderHook(() => useSettings());
-    await waitFor(() => expect(result.current.isHardMode).toBe(false));
-
-    act(() => {
-      result.current.toggleHardMode(true);
-    });
-
-    expect(result.current.isHardMode).toBe(true);
-    expect(mockSetItem).toHaveBeenCalledWith(
-      "isHardMode",
-      JSON.stringify(true)
-    );
-  });
-
-  it("should persist hard mode when toggling off", async () => {
-    mockGetItem
-      .mockResolvedValueOnce(null)
-      .mockResolvedValueOnce(null)
-      .mockResolvedValueOnce(JSON.stringify(true));
-    const { result } = renderHook(() => useSettings());
-    await waitFor(() => expect(result.current.isHardMode).toBe(true));
-
-    act(() => {
-      result.current.toggleHardMode(false);
-    });
-
-    expect(result.current.isHardMode).toBe(false);
-    expect(mockSetItem).toHaveBeenCalledWith(
-      "isHardMode",
-      JSON.stringify(false)
-    );
-  });
-
   describe("setItem error handling", () => {
     beforeEach(() => {
       setItemConfig.shouldFail = true;
@@ -254,24 +204,6 @@ describe("useSettings", () => {
       await waitFor(() => {
         expect(mockLoggerError).toHaveBeenCalledWith(
           "Error saving haptics setting:",
-          expect.any(Error)
-        );
-        expect(mockCaptureException).toHaveBeenCalled();
-      });
-    });
-
-    it("should log error and capture exception when hard mode setting fails to save", async () => {
-      mockGetItem.mockResolvedValue(null);
-      const { result } = renderHook(() => useSettings());
-      await waitFor(() => expect(result.current.isHardMode).toBe(false));
-
-      act(() => {
-        result.current.toggleHardMode(true);
-      });
-
-      await waitFor(() => {
-        expect(mockLoggerError).toHaveBeenCalledWith(
-          "Error saving hard mode setting:",
           expect.any(Error)
         );
         expect(mockCaptureException).toHaveBeenCalled();

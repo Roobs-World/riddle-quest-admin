@@ -28,7 +28,6 @@ jest.mock("../../../../constants/AppStrings", () => ({
       TITLE: "Settings",
       SOUND_TOGGLE: "Sound",
       HAPTICS_TOGGLE: "Haptics",
-      HARD_MODE_TOGGLE: "Hard Mode",
       LANGUAGE_LABEL: "Language",
       LOGOUT_BUTTON: "Logout",
       CLOSE_BUTTON: "Close",
@@ -81,8 +80,6 @@ describe("<SettingsModal />", () => {
     onToggleSound: jest.fn(),
     isHapticsEnabled: true,
     onToggleHaptics: jest.fn(),
-    isHardMode: false,
-    onToggleHardMode: jest.fn(),
     currentLanguage: "en" as const,
     onChangeLanguage: jest.fn(),
     onPressHelp: jest.fn(),
@@ -118,11 +115,6 @@ describe("<SettingsModal />", () => {
     it("should render haptics toggle", () => {
       const { getByText } = render(<SettingsModal {...defaultProps} />);
       expect(getByText("Haptics")).toBeTruthy();
-    });
-
-    it("should render hard mode toggle", () => {
-      const { getByText } = render(<SettingsModal {...defaultProps} />);
-      expect(getByText("Hard Mode")).toBeTruthy();
     });
 
     it("should render language option", () => {
@@ -179,14 +171,6 @@ describe("<SettingsModal />", () => {
       // Second On button is for Haptics
       fireEvent.press(onButtons[1]);
       expect(defaultProps.onToggleHaptics).toHaveBeenCalledWith(true);
-    });
-
-    it("should call onToggleHardMode when hard mode toggle is pressed", () => {
-      const { getAllByText } = render(<SettingsModal {...defaultProps} />);
-      const onButtons = getAllByText("On");
-      // Third On button is for Hard Mode
-      fireEvent.press(onButtons[2]);
-      expect(defaultProps.onToggleHardMode).toHaveBeenCalledWith(true);
     });
   });
 
@@ -419,13 +403,6 @@ describe("<SettingsModal />", () => {
       );
       expect(getAllByText("On").length).toBeGreaterThan(0);
     });
-
-    it("should show correct state for hard mode toggle when enabled", () => {
-      const { getAllByText } = render(
-        <SettingsModal {...defaultProps} isHardMode={true} />
-      );
-      expect(getAllByText("On").length).toBeGreaterThan(0);
-    });
   });
 
   describe("Component Lifecycle", () => {
@@ -435,7 +412,6 @@ describe("<SettingsModal />", () => {
       expect(() => {
         rerender(<SettingsModal {...defaultProps} isSoundEnabled={false} />);
         rerender(<SettingsModal {...defaultProps} isHapticsEnabled={false} />);
-        rerender(<SettingsModal {...defaultProps} isHardMode={true} />);
         rerender(<SettingsModal {...defaultProps} currentLanguage="es" as any />);
       }).not.toThrow();
     });
@@ -473,7 +449,6 @@ describe("<SettingsModal />", () => {
           {...defaultProps}
           isSoundEnabled={false}
           isHapticsEnabled={false}
-          isHardMode={false}
         />
       );
       expect(getByText("Settings")).toBeTruthy();
@@ -485,7 +460,6 @@ describe("<SettingsModal />", () => {
           {...defaultProps}
           isSoundEnabled={true}
           isHapticsEnabled={true}
-          isHardMode={true}
         />
       );
       expect(getByText("Settings")).toBeTruthy();

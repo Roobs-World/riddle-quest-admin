@@ -167,7 +167,6 @@ describe("Firestore Schemas", () => {
         classicIndex: 5,
         dailyChallengeIndex: 3,
         dailyChallengeCurrentQuestion: 0,
-        tutorialIndex: 1,
       };
 
       const result = PlayerProgressSchema.safeParse(validProgress);
@@ -187,7 +186,6 @@ describe("Firestore Schemas", () => {
           classicIndex: 1,
           dailyChallengeIndex: 0,
           dailyChallengeCurrentQuestion: 0,
-          tutorialIndex: 0,
         });
       }
     });
@@ -196,7 +194,6 @@ describe("Firestore Schemas", () => {
       const invalidProgress = {
         classicIndex: -1,
         dailyChallengeIndex: 3,
-        tutorialIndex: 1,
       };
 
       const result = PlayerProgressSchema.safeParse(invalidProgress);
@@ -207,7 +204,6 @@ describe("Firestore Schemas", () => {
       const invalidProgress = {
         classicIndex: 5.5,
         dailyChallengeIndex: 3,
-        tutorialIndex: 1,
       };
 
       const result = PlayerProgressSchema.safeParse(invalidProgress);
@@ -311,7 +307,6 @@ describe("Firestore Schemas", () => {
         progress: {
           classicIndex: 5,
           dailyChallengeIndex: 3,
-          tutorialIndex: 1,
         },
       };
 
@@ -402,7 +397,6 @@ describe("Firestore Schemas", () => {
         riddleId: "riddle123",
         text: "What has keys but no locks?",
         answer: "keyboard",
-        difficulty: "medium",
         category: "technology",
       };
 
@@ -525,7 +519,6 @@ describe("Firestore Schemas", () => {
         progress: {
           classicIndex: 1,
           dailyChallengeIndex: 0,
-          tutorialIndex: 0,
         },
       };
 

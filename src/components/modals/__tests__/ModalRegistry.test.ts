@@ -227,11 +227,9 @@ describe("ModalRegistry", () => {
           ...createBaseProps(),
           isSoundEnabled: true,
           isHapticsEnabled: true,
-          isHardMode: false,
           currentLanguage: "en",
           onToggleSound: jest.fn(),
           onToggleHaptics: jest.fn(),
-          onToggleHardMode: jest.fn(),
           onChangeLanguage: jest.fn(),
           onPressLogout: jest.fn(),
           onPressHelp: jest.fn(),
@@ -396,12 +394,11 @@ describe("ModalRegistry", () => {
       });
     });
 
-    describe("Help and Tutorial Modals", () => {
+    describe("Help Modals", () => {
       it("should map props correctly for welcome modal", () => {
         const WelcomeModal = getModalComponent("welcome");
         const props = {
           ...createBaseProps(),
-          onStartTutorial: jest.fn(),
         };
 
         expect(() => WelcomeModal(props)).not.toThrow();

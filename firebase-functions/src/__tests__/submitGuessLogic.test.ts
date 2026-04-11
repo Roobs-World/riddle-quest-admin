@@ -112,7 +112,7 @@ const mockUser: Player = {
     totalGuessesInWins: 17,
     dailyPuzzlesCompleted: 0,
   },
-  progress: {classicIndex: 5, dailyChallengeIndex: 1, dailyChallengeCurrentQuestion: 0, tutorialIndex: 0},
+  progress: {classicIndex: 5, dailyChallengeIndex: 1, dailyChallengeCurrentQuestion: 0},
   registeredAt: Date.now(),
   lastLogin: Date.now(),
 };
@@ -852,83 +852,6 @@ describe("handleGuessLogic", () => {
       const greenDs = result.feedback.filter((f) => f.letter === "d" && f.status === "green").length;
       const yellowDs = result.feedback.filter((f) => f.letter === "d" && f.status === "yellow").length;
       expect(greenDs + yellowDs).toBeLessThanOrEqual(2); // Can't exceed available d's in "dad"
-    });
-  });
-
-  describe("Correct Guess - Tutorial Mode", () => {
-    const tutorialRiddle: FirestoreRiddle = {
-      ...mockRiddle,
-      riddleId: "tutorial-riddle-1",
-      category: "tutorial",
-    };
-
-    beforeEach(() => {
-      (firestoreService.getRiddleByGameMode as jest.Mock).mockResolvedValue(
-        JSON.parse(JSON.stringify(tutorialRiddle)),
-      );
-    });
-
-    test("should award 5 coins for correct tutorial guess", async () => {
-      const requestData: SubmitGuessRequestData = {
-        guess: "keyboard",
-        riddleId: "tutorial-riddle-1",
-        gameMode: "tutorial",
-        attempts: 1,
-      };
-
-      const result = await handleGuessLogic(requestData, authContext);
-      expect(result.isCorrect).toBe(true);
-      expect(result.coinsEarned).toBe(5);
-      expect(firestoreService.updateUserCoins).toHaveBeenCalledWith(authContext.uid, 5);
-    });
-
-    test("should increment tutorialIndex on correct tutorial guess", async () => {
-      const requestData: SubmitGuessRequestData = {
-        guess: "keyboard",
-        riddleId: "tutorial-riddle-1",
-        gameMode: "tutorial",
-        attempts: 2,
-      };
-
-      await handleGuessLogic(requestData, authContext);
-
-      expect(mockAdminFirestoreUpdate).toHaveBeenCalledWith({
-        "progress.tutorialIndex": mockIncrement(1),
-      });
-      expect(functions.logger.info).toHaveBeenCalledWith(
-        expect.stringContaining("completed tutorial level. Incremented tutorialIndex"),
-      );
-    });
-
-    test("should use maxAttempts of 3 for tutorial mode", async () => {
-      const requestData: SubmitGuessRequestData = {
-        guess: "wrong",
-        riddleId: "tutorial-riddle-1",
-        gameMode: "tutorial",
-        attempts: 3,
-      };
-
-      const result = await handleGuessLogic(requestData, authContext);
-      expect(result.isCorrect).toBe(false);
-      expect(result.correctAnswer).toBe("keyboard");
-    });
-
-    test("should calculate tutorial score with base 25", async () => {
-      const requestData: SubmitGuessRequestData = {
-        guess: "keyboard",
-        riddleId: "tutorial-riddle-1",
-        gameMode: "tutorial",
-        attempts: 1,
-      };
-
-      await handleGuessLogic(requestData, authContext);
-
-      expect(firestoreService.updateUserStats).toHaveBeenCalledWith(
-        authContext.uid,
-        expect.objectContaining({
-          xp: "increment(55)",
-        }),
-      );
     });
   });
 

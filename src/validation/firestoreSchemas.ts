@@ -122,7 +122,6 @@ export const FirestoreRiddleSchema = z.object({
   classicIndex: z.number().int().nonnegative().optional(),
   text: z.string(),
   answer: z.string().min(1),
-  difficulty: z.string().optional(),
   category: z.string().optional(),
 });
 

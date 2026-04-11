@@ -245,7 +245,6 @@ describe("ValidationUtils", () => {
       test("should return true for valid game modes", () => {
         expect(ValidationUtils.isValidGameMode("daily")).toBe(true);
         expect(ValidationUtils.isValidGameMode("classic")).toBe(true);
-        expect(ValidationUtils.isValidGameMode("tutorial")).toBe(true);
       });
 
       test("should return false for invalid game modes", () => {
@@ -420,16 +419,12 @@ describe("ValidationUtils", () => {
       const riddleData = {
         riddleId: "riddle_123",
         answer: "HELLO",
-        difficulty: 3,
         hints: ["clue1", "clue2"],
         date: "2024-01-15",
       };
 
       expect(ValidationUtils.isValidRiddleId(riddleData.riddleId)).toBe(true);
       expect(ValidationUtils.isValidGuess(riddleData.answer)).toBe(true);
-      expect(ValidationUtils.isPositiveNumber(riddleData.difficulty)).toBe(
-        true
-      );
       expect(ValidationUtils.hasMinLength(riddleData.hints, 1)).toBe(true);
       expect(ValidationUtils.isValidDateString(riddleData.date)).toBe(true);
     });

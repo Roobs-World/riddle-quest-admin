@@ -55,7 +55,6 @@ jest.mock("firebase-admin", () => {
       if (
         collectionPath === "riddles" ||
         collectionPath === "dailyRiddles" ||
-        collectionPath === "tutorialRiddles" ||
         collectionPath === "users"
       ) {
         return {

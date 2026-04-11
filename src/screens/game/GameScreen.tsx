@@ -62,7 +62,6 @@ import ModalTogglePanel from "../../components/development/ModalTogglePanel";
 import StarryBackground from "../../components/background/StarryBackground";
 import { logger } from "../../utils/logger";
 import { captureException } from "../../utils/sentry";
-import { getHardModeConstraints, validateHardModeGuess } from "../../utils/hardMode";
 import { computeLetterStates } from "../../utils/letterStates";
 import { ACHIEVEMENT_DEFINITIONS } from "../../constants/achievements";
 import { useGameSessionController } from "../../features/game-session/useGameSessionController";
@@ -92,7 +91,6 @@ interface GuessResult {
 
 const SOUND_ENABLED_STORAGE_KEY = "isSoundEnabled";
 const HAPTICS_ENABLED_STORAGE_KEY = "isHapticsEnabled";
-const HARD_MODE_STORAGE_KEY = "isHardMode";
 
 // Configuration for haptic feedback (optional)
 const hapticOptions = {
@@ -160,7 +158,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   );
   const [isSoundEnabled, setIsSoundEnabled] = useState(true);
   const [isHapticsEnabled, setIsHapticsEnabled] = useState(true);
-  const [isHardMode, setIsHardMode] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguage>(
     getAppLanguage()
   );
@@ -327,11 +324,10 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   useEffect(() => {
     const loadSettings = async () => {
       try {
-        const [[, soundEnabled], [, hapticsEnabled], [, hardMode], [, language]] =
+        const [[, soundEnabled], [, hapticsEnabled], [, language]] =
           await AsyncStorage.multiGet([
             SOUND_ENABLED_STORAGE_KEY,
             HAPTICS_ENABLED_STORAGE_KEY,
-            HARD_MODE_STORAGE_KEY,
             APP_LANGUAGE_STORAGE_KEY,
           ]);
         if (soundEnabled !== null) {
@@ -343,9 +339,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         }
         if (hapticsEnabled !== null) {
           setIsHapticsEnabled(JSON.parse(hapticsEnabled));
-        }
-        if (hardMode !== null) {
-          setIsHardMode(JSON.parse(hardMode));
         }
         if (language && isSupportedLanguage(language)) {
           setAppLanguage(language);
@@ -380,16 +373,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       captureException(error);
     });
   }, [isHapticsEnabled]);
-
-  useEffect(() => {
-    AsyncStorage.setItem(
-      HARD_MODE_STORAGE_KEY,
-      JSON.stringify(isHardMode)
-    ).catch((error: unknown) => {
-      logger.error("Error saving hard mode setting to AsyncStorage:", error);
-      captureException(error);
-    });
-  }, [isHardMode]);
 
   useEffect(() => {
     AsyncStorage.setItem(APP_LANGUAGE_STORAGE_KEY, currentLanguage).catch(
@@ -618,10 +601,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     setIsHapticsEnabled(isEnabled);
   }, []);
 
-  const toggleHardMode = useCallback((isEnabled: boolean) => {
-    setIsHardMode(isEnabled);
-  }, []);
-
   const handleChangeLanguage = useCallback((language: SupportedLanguage) => {
     setAppLanguage(language);
     setCurrentLanguage(language);
@@ -634,17 +613,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       currentGuess.every((letter) => typeof letter === "string" && letter.length > 0);
 
     if (isGuessComplete) {
-      if (isHardMode && guesses.length > 0) {
-        const constraints = getHardModeConstraints(guesses);
-        const violation = validateHardModeGuess(currentGuess, constraints);
-        if (violation) {
-          if (isHapticsEnabled) {
-            ReactNativeHapticFeedback.trigger("notificationWarning", hapticOptions);
-          }
-          modalActions.showHardModeViolation(violation.message);
-          return;
-        }
-      }
       try {
         const result = (await runWithServerLoading(() =>
           processGuess(currentGuess)
@@ -668,7 +636,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     answerLength,
     processGuess,
     isHapticsEnabled,
-    isHardMode,
     guesses,
     modal,
     modalActions,
@@ -886,11 +853,9 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     modal.showSettingsModal({
       isSoundEnabled,
       isHapticsEnabled,
-      isHardMode,
       currentLanguage,
       onToggleSound: toggleSoundEnabled,
       onToggleHaptics: toggleHapticsEnabled,
-      onToggleHardMode: toggleHardMode,
       onChangeLanguage: handleChangeLanguage,
       onPressLogout: logout,
       onPressHelp: () => {
@@ -918,11 +883,9 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     isSoundEnabled,
     playerData,
     isHapticsEnabled,
-    isHardMode,
     currentLanguage,
     toggleSoundEnabled,
     toggleHapticsEnabled,
-    toggleHardMode,
     handleChangeLanguage,
     logout,
   ]);

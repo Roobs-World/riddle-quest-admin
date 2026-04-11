@@ -5,8 +5,6 @@ import { Navigation } from "../NavigationStack";
 import { useAuth } from "../../contexts/AuthContext";
 import {
   fetchClassicRiddleFromFirestore,
-  fetchTutorialRiddleFromFirestore,
-  updateTutorialIndexInFirestore,
 } from "../../services/FirestoreService";
 import { RiddleInitializationService } from "../../services/RiddleInitializationService";
 import { useNotificationNavigation } from "../../hooks/useNotificationNavigation";
@@ -31,8 +29,6 @@ jest.mock("../../contexts/AuthContext", () => ({
 
 jest.mock("../../services/FirestoreService", () => ({
   fetchClassicRiddleFromFirestore: jest.fn(),
-  fetchTutorialRiddleFromFirestore: jest.fn(),
-  updateTutorialIndexInFirestore: jest.fn(),
 }));
 
 jest.mock("../../services/RiddleInitializationService", () => ({
@@ -219,14 +215,6 @@ const mockedUseAuth = useAuth as jest.MockedFunction<typeof useAuth>;
 const mockedFetchClassic = fetchClassicRiddleFromFirestore as jest.MockedFunction<
   typeof fetchClassicRiddleFromFirestore
 >;
-const mockedFetchTutorial =
-  fetchTutorialRiddleFromFirestore as jest.MockedFunction<
-    typeof fetchTutorialRiddleFromFirestore
-  >;
-const mockedUpdateTutorial =
-  updateTutorialIndexInFirestore as jest.MockedFunction<
-    typeof updateTutorialIndexInFirestore
-  >;
 const mockedRiddleInitService = RiddleInitializationService as jest.Mocked<
   typeof RiddleInitializationService
 >;
@@ -441,139 +429,6 @@ describe("NavigationStack", () => {
 
     await waitFor(() => expect(mockedCaptureException).toHaveBeenCalled());
     expect(fetchCurrentRiddle).toHaveBeenCalledWith(playerData, "daily");
-  });
-
-  it("handles next level in tutorial mode with successful next tutorial riddle", async () => {
-    const playerData = {
-      userId: "u5",
-      progress: { tutorialIndex: 0 },
-      coins: 30,
-      stats: { xp: 0, level: 1 },
-    };
-    const setCurrentRiddle = jest.fn();
-    mockedUpdateTutorial.mockResolvedValue(undefined as any);
-    mockedFetchTutorial.mockResolvedValue({
-      riddleId: "tutorial-2",
-      text: "Tutorial 2",
-      answer: "TEST",
-    } as any);
-
-    mockedUseAuth.mockReturnValue(
-      createAuthState({
-        isAuthenticated: true,
-        gameMode: "tutorial",
-        playerData,
-        currentRiddle: { riddleId: "tutorial-1", text: "T1", answer: "ONE" },
-        setCurrentRiddle,
-      }) as any
-    );
-
-    const { getByTestId } = render(<Navigation />);
-    fireEvent.press(getByTestId("trigger-next-level"));
-
-    await waitFor(() =>
-      expect(mockedUpdateTutorial).toHaveBeenCalledWith("u5", 1)
-    );
-    expect(mockedFetchTutorial).toHaveBeenCalledWith(1);
-    expect(setCurrentRiddle).toHaveBeenCalledWith(
-      expect.objectContaining({ riddleId: "tutorial-2" })
-    );
-  });
-
-  it("switches tutorial mode to daily when no next tutorial riddle exists", async () => {
-    const playerData = {
-      userId: "u5b",
-      progress: { tutorialIndex: 1 },
-      coins: 30,
-      stats: { xp: 0, level: 1 },
-    };
-    const setGameMode = jest.fn();
-    const fetchCurrentRiddle = jest.fn().mockResolvedValue(undefined);
-    mockedUpdateTutorial.mockResolvedValue(undefined as any);
-    mockedFetchTutorial.mockResolvedValue(null as any);
-
-    mockedUseAuth.mockReturnValue(
-      createAuthState({
-        isAuthenticated: true,
-        gameMode: "tutorial",
-        playerData,
-        currentRiddle: { riddleId: "tutorial-1", text: "T1", answer: "ONE" },
-        setGameMode,
-        fetchCurrentRiddle,
-      }) as any
-    );
-
-    const { getByTestId } = render(<Navigation />);
-    fireEvent.press(getByTestId("trigger-next-level"));
-
-    await waitFor(() => expect(setGameMode).toHaveBeenCalledWith("daily"));
-    expect(fetchCurrentRiddle).toHaveBeenCalledWith(playerData, "daily");
-  });
-
-  it("switches tutorial mode to daily when tutorial fetch throws", async () => {
-    const playerData = {
-      userId: "u5c",
-      progress: { tutorialIndex: 1 },
-      coins: 30,
-      stats: { xp: 0, level: 1 },
-    };
-    const setGameMode = jest.fn();
-    const fetchCurrentRiddle = jest.fn().mockResolvedValue(undefined);
-    mockedUpdateTutorial.mockRejectedValue(new Error("tutorial-update-failed"));
-
-    mockedUseAuth.mockReturnValue(
-      createAuthState({
-        isAuthenticated: true,
-        gameMode: "tutorial",
-        playerData,
-        currentRiddle: { riddleId: "tutorial-1", text: "T1", answer: "ONE" },
-        setGameMode,
-        fetchCurrentRiddle,
-      }) as any
-    );
-
-    const { getByTestId } = render(<Navigation />);
-    fireEvent.press(getByTestId("trigger-next-level"));
-
-    await waitFor(() => expect(mockedCaptureException).toHaveBeenCalled());
-    expect(setGameMode).toHaveBeenCalledWith("daily");
-    expect(fetchCurrentRiddle).toHaveBeenCalledWith(playerData, "daily");
-  });
-
-  it("does not write tutorial progress to Firestore for guest users", async () => {
-    const playerData = {
-      userId: "guest-1",
-      email: "guest_guest-1@guest.qwordly.com",
-      username: "Guest",
-      progress: { tutorialIndex: 0 },
-      coins: 30,
-      stats: { xp: 0, level: 1 },
-    };
-    const setCurrentRiddle = jest.fn();
-    mockedFetchTutorial.mockResolvedValue({
-      riddleId: "tutorial-2",
-      text: "Tutorial 2",
-      answer: "TEST",
-    } as any);
-
-    mockedUseAuth.mockReturnValue(
-      createAuthState({
-        isAuthenticated: true,
-        gameMode: "tutorial",
-        playerData,
-        currentRiddle: { riddleId: "tutorial-1", text: "T1", answer: "ONE" },
-        setCurrentRiddle,
-      }) as any
-    );
-
-    const { getByTestId } = render(<Navigation />);
-    fireEvent.press(getByTestId("trigger-next-level"));
-
-    await waitFor(() => expect(mockedFetchTutorial).toHaveBeenCalledWith(1));
-    expect(mockedUpdateTutorial).not.toHaveBeenCalled();
-    expect(setCurrentRiddle).toHaveBeenCalledWith(
-      expect.objectContaining({ riddleId: "tutorial-2" })
-    );
   });
 
   it("handles next level in classic mode with a next riddle", async () => {

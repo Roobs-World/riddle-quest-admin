@@ -148,7 +148,6 @@ describe("Request Schemas", () => {
       const riddleIds = [
         "daily_2024-01-15",
         "classic_level_1",
-        "tutorial_intro",
         "custom_riddle_abc123",
         "riddle_12345",
       ];

@@ -29,9 +29,7 @@ import {
   initializeRiddleDatabase,
   generateDailyRiddles,
   generateTodaysDailyChallengeFunction,
-  generateTutorialRiddles,
 } from "./riddleGeneration";
-import {getCurrentTutorialRiddle, advanceTutorialProgress, initializeTutorialRiddlesFunction} from "./tutorialRiddles";
 import {updateAvatar, updateUsername} from "./profile";
 import {submitGuess, completeGame} from "./submitGuessLogic";
 import {dailyChallengeScheduler} from "./dailyScheduler";
@@ -54,10 +52,6 @@ export {
   initializeRiddleDatabase,
   generateDailyRiddles,
   generateTodaysDailyChallengeFunction,
-  generateTutorialRiddles,
-  getCurrentTutorialRiddle,
-  advanceTutorialProgress,
-  initializeTutorialRiddlesFunction,
   updateAvatar,
   updateUsername,
   submitGuess,

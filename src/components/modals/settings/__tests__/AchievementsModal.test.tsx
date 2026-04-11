@@ -66,7 +66,6 @@ describe("AchievementsModal", () => {
       classicIndex: 5,
       dailyChallengeIndex: 1,
       dailyChallengeCurrentQuestion: 0,
-      tutorialIndex: 1,
     },
     unlockedAchievements: [
       { achievementId: "first_win", unlockedAt: 1000 },

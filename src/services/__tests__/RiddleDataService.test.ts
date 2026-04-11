@@ -91,7 +91,6 @@ describe("RiddleDataService", () => {
       text: "What has four legs and goes woof?",
       answer: "DOG",
       hint: "A loyal pet",
-      difficulty: "easy",
     };
 
     const mockValidatedRiddle = {
@@ -221,7 +220,6 @@ describe("RiddleDataService", () => {
       text: "I am thinking of a word",
       answer: "WORD",
       hint: "Something you say",
-      difficulty: "medium",
     };
 
     const mockValidatedRiddle = {
@@ -296,7 +294,6 @@ describe("RiddleDataService", () => {
         classicIndex: 5,
         text: "I am thinking of a word",
         hint: "Something you say",
-        difficulty: "medium",
         // answer is missing
       };
 
@@ -406,169 +403,6 @@ describe("RiddleDataService", () => {
     });
   });
 
-  describe("fetchTutorialRiddle", () => {
-    const level = 3;
-    const mockRiddleData = {
-      category: "tutorial",
-      tutorialIndex: 3,
-      text: "Simple word puzzle",
-      answer: "CAT",
-      hint: "A feline friend",
-      difficulty: "easy",
-    };
-
-    const mockValidatedRiddle = {
-      ...mockRiddleData,
-      riddleId: "tutorial-riddle-123",
-      answerLength: 3,
-    };
-
-    it("should fetch tutorial riddle successfully", async () => {
-      const mockSnapshot = {
-        empty: false,
-        docs: [
-          {
-            id: "tutorial-riddle-123",
-            data: () => mockRiddleData,
-          },
-        ],
-      };
-
-      mockGet.mockResolvedValue(mockSnapshot);
-      (FirestoreRiddleSchema.parse as jest.Mock).mockReturnValue(
-        mockValidatedRiddle
-      );
-
-      const result = await riddleDataService.fetchTutorialRiddle(level);
-
-      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "riddles");
-      expect(mockWhere).toHaveBeenCalledWith("category", "==", "tutorial");
-      expect(mockWhere).toHaveBeenCalledWith("tutorialIndex", "==", level);
-      expect(mockLimit).toHaveBeenCalledWith(1);
-      expect(FirestoreRiddleSchema.parse).toHaveBeenCalledWith({
-        ...mockRiddleData,
-        riddleId: "tutorial-riddle-123",
-        answerLength: 3,
-      });
-      expect(result).toEqual(mockValidatedRiddle);
-    });
-
-    it("should return null when no tutorial riddle found", async () => {
-      const mockSnapshot = {
-        empty: true,
-        docs: [],
-      };
-
-      mockGet.mockResolvedValue(mockSnapshot);
-
-      const result = await riddleDataService.fetchTutorialRiddle(level);
-
-      expect(result).toBeNull();
-    });
-
-    it("should return null when riddle data is null", async () => {
-      const mockSnapshot = {
-        empty: false,
-        docs: [
-          {
-            id: "tutorial-riddle-123",
-            data: () => null,
-          },
-        ],
-      };
-
-      mockGet.mockResolvedValue(mockSnapshot);
-
-      const result = await riddleDataService.fetchTutorialRiddle(level);
-
-      expect(result).toBeNull();
-    });
-
-    it("should return null when answer is undefined", async () => {
-      const incompleteRiddleData = {
-        category: "tutorial",
-        tutorialIndex: 3,
-        text: "Simple word puzzle",
-        hint: "A feline friend",
-        difficulty: "easy",
-        answer: undefined,
-      };
-
-      const mockSnapshot = {
-        empty: false,
-        docs: [
-          {
-            id: "tutorial-riddle-123",
-            data: () => incompleteRiddleData,
-          },
-        ],
-      };
-
-      mockGet.mockResolvedValue(mockSnapshot);
-
-      const result = await riddleDataService.fetchTutorialRiddle(level);
-
-      expect(result).toBeNull();
-    });
-
-    it("should handle Zod validation errors", async () => {
-      const mockSnapshot = {
-        empty: false,
-        docs: [
-          {
-            id: "tutorial-riddle-123",
-            data: () => mockRiddleData,
-          },
-        ],
-      };
-
-      const zodError = new ZodError([
-        {
-          code: "too_small",
-          minimum: 1,
-          origin: "string",
-          inclusive: true,
-          exact: false,
-          path: ["answer"],
-          message: "String must contain at least 1 character(s)",
-        },
-      ]);
-
-      mockGet.mockResolvedValue(mockSnapshot);
-      (FirestoreRiddleSchema.parse as jest.Mock).mockImplementation(() => {
-        throw zodError;
-      });
-
-      await expect(
-        riddleDataService.fetchTutorialRiddle(level)
-      ).rejects.toThrow("Invalid tutorial riddle data structure");
-    });
-
-    it("should handle Firestore errors", async () => {
-      const error = new Error("Connection timeout");
-      mockGet.mockRejectedValue(error);
-
-      await expect(
-        riddleDataService.fetchTutorialRiddle(level)
-      ).rejects.toThrow("Connection timeout");
-    });
-
-    it("should handle zero level for tutorial", async () => {
-      const zeroLevel = 0;
-      const mockSnapshot = {
-        empty: true,
-        docs: [],
-      };
-
-      mockGet.mockResolvedValue(mockSnapshot);
-
-      const result = await riddleDataService.fetchTutorialRiddle(zeroLevel);
-
-      expect(mockWhere).toHaveBeenCalledWith("tutorialIndex", "==", zeroLevel);
-      expect(result).toBeNull();
-    });
-  });
-
   describe("fetchRiddleById", () => {
     const riddleId = "riddle-abc-123";
     const mockRiddleData = {
@@ -576,7 +410,6 @@ describe("RiddleDataService", () => {
       text: "What flies but has no wings?",
       answer: "TIME",
       hint: "It moves fast",
-      difficulty: "hard",
     };
 
     const mockValidatedRiddle = {
@@ -775,73 +608,6 @@ describe("RiddleDataService", () => {
     });
   });
 
-  describe("getTutorialRiddleCount", () => {
-    it("should get tutorial riddle count successfully", async () => {
-      const mockSnapshot = {
-        size: 10,
-      };
-
-      mockGet.mockResolvedValue(mockSnapshot);
-
-      const result = await riddleDataService.getTutorialRiddleCount();
-
-      expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "riddles");
-      expect(mockWhere).toHaveBeenCalledWith("category", "==", "tutorial");
-      expect(result).toBe(10);
-    });
-
-    it("should return zero when no tutorial riddles found", async () => {
-      const mockSnapshot = {
-        size: 0,
-      };
-
-      mockGet.mockResolvedValue(mockSnapshot);
-
-      const result = await riddleDataService.getTutorialRiddleCount();
-
-      expect(result).toBe(0);
-    });
-
-    it("should handle single tutorial riddle", async () => {
-      const mockSnapshot = {
-        size: 1,
-      };
-
-      mockGet.mockResolvedValue(mockSnapshot);
-
-      const result = await riddleDataService.getTutorialRiddleCount();
-
-      expect(result).toBe(1);
-    });
-
-    it("should handle Firestore errors", async () => {
-      const error = new Error("Collection access denied");
-      mockGet.mockRejectedValue(error);
-
-      await expect(riddleDataService.getTutorialRiddleCount()).rejects.toThrow(
-        "Collection access denied"
-      );
-    });
-
-    it("should handle database connection errors", async () => {
-      const connectionError = new Error("Database connection lost");
-      mockGet.mockRejectedValue(connectionError);
-
-      await expect(riddleDataService.getTutorialRiddleCount()).rejects.toThrow(
-        "Database connection lost"
-      );
-    });
-
-    it("should handle timeout errors", async () => {
-      const timeoutError = new Error("Request timeout");
-      mockGet.mockRejectedValue(timeoutError);
-
-      await expect(riddleDataService.getTutorialRiddleCount()).rejects.toThrow(
-        "Request timeout"
-      );
-    });
-  });
-
   describe("Service Integration", () => {
     it("should have correct riddles collection constant", () => {
       expect((RiddleDataService as any).RIDDLES_COLLECTION).toBe("riddles");
@@ -851,10 +617,8 @@ describe("RiddleDataService", () => {
       // Test that the service has all required methods
       expect(typeof riddleDataService.fetchDailyRiddle).toBe("function");
       expect(typeof riddleDataService.fetchClassicRiddle).toBe("function");
-      expect(typeof riddleDataService.fetchTutorialRiddle).toBe("function");
       expect(typeof riddleDataService.fetchRiddleById).toBe("function");
       expect(typeof riddleDataService.getClassicRiddleCount).toBe("function");
-      expect(typeof riddleDataService.getTutorialRiddleCount).toBe("function");
     });
 
     it("should use correct Firebase app instance", async () => {
@@ -876,7 +640,7 @@ describe("RiddleDataService", () => {
 
       // Test multiple methods use same collection
       await riddleDataService.getClassicRiddleCount();
-      await riddleDataService.getTutorialRiddleCount();
+      await riddleDataService.getClassicRiddleCount();
 
       // Verify all calls used the same collection name
       expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "riddles");
@@ -887,10 +651,7 @@ describe("RiddleDataService", () => {
       mockGet.mockResolvedValue({ size: 5 });
 
       // Simulate concurrent operations
-      const operations = [
-        riddleDataService.getClassicRiddleCount(),
-        riddleDataService.getTutorialRiddleCount(),
-      ];
+      const operations = [riddleDataService.getClassicRiddleCount(), riddleDataService.getClassicRiddleCount()];
 
       const results = await Promise.all(operations);
 
@@ -911,11 +672,10 @@ describe("RiddleDataService", () => {
       );
 
       // Service should still work for subsequent calls
-      const result = await riddleDataService.getTutorialRiddleCount();
+      const result = await riddleDataService.getClassicRiddleCount();
       expect(result).toBe(10);
 
       expect(mockGet).toHaveBeenCalledTimes(2);
     });
   });
 });
-

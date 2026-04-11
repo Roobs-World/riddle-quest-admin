@@ -219,7 +219,7 @@ describe("Game Logic - Integration Tests", () => {
     console.time("beforeEach_createUser");
     await createUser(firestore, testUserId, {
       coins: 100,
-      progress: {classicIndex: 0, dailyChallengeIndex: 0, tutorialIndex: 0},
+      progress: {classicIndex: 0, dailyChallengeIndex: 0},
       stats: {
         dailyPuzzlesCompleted: 0,
         bestStreak: 0,

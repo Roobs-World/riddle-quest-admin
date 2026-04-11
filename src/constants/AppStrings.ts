@@ -103,7 +103,6 @@ const EN_APP_STRINGS = {
     TITLE: "Settings",
     SOUND_TOGGLE: "Sound",
     HAPTICS_TOGGLE: "Haptics",
-    HARD_MODE_TOGGLE: "Hard Mode",
     LANGUAGE_LABEL: "Language",
     HELP_BUTTON: "Help",
     LOGOUT_BUTTON: "Logout",

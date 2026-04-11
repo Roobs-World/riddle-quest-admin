@@ -67,7 +67,6 @@ describe("StatsModal", () => {
       classicIndex: 12,
       dailyChallengeIndex: 5,
       dailyChallengeCurrentQuestion: 0,
-      tutorialIndex: 1,
     },
     unlockedAchievements: [],
     hasPurchasedApp: false,

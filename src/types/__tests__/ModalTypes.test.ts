@@ -387,11 +387,9 @@ describe("ModalTypes", () => {
       const settingsData: GameModalTypes["settings"] = {
         isSoundEnabled: true,
         isHapticsEnabled: false,
-        isHardMode: true,
         currentLanguage: "en",
         onToggleSound: jest.fn(),
         onToggleHaptics: jest.fn(),
-        onToggleHardMode: jest.fn(),
         onChangeLanguage: jest.fn(),
         onPressLogout: jest.fn(),
         onPressHelp: jest.fn(),
@@ -399,7 +397,6 @@ describe("ModalTypes", () => {
       };
 
       expect(settingsData.isSoundEnabled).toBe(true);
-      expect(settingsData.isHardMode).toBe(true);
     });
 
     it("should define hint modal type", () => {
@@ -421,16 +418,6 @@ describe("ModalTypes", () => {
       };
 
       expect(skipData.skipCost).toBe(50);
-    });
-
-    it("should define welcome modal type with optional properties", () => {
-      const welcomeData: GameModalTypes["welcome"] = {
-        onStartTutorial: jest.fn(),
-        showStartTutorial: true,
-        onDismiss: jest.fn(),
-      };
-
-      expect(welcomeData.showStartTutorial).toBe(true);
     });
 
     it("should define instructions and credits as empty objects", () => {
@@ -556,11 +543,9 @@ describe("ModalTypes", () => {
       const settingsData: ModalDataType<"settings"> = {
         isSoundEnabled: false,
         isHapticsEnabled: true,
-        isHardMode: false,
         currentLanguage: "es",
         onToggleSound: jest.fn(),
         onToggleHaptics: jest.fn(),
-        onToggleHardMode: jest.fn(),
         onChangeLanguage: jest.fn(),
         onPressLogout: jest.fn(),
         onPressHelp: jest.fn(),

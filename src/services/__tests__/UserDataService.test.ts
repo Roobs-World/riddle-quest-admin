@@ -116,7 +116,6 @@ describe("UserDataService", () => {
     const mockProgress = {
       classicIndex: 5,
       dailyChallengeIndex: 2,
-      tutorialIndex: 1,
     } as Player["progress"];
 
     it("should save user progress successfully", async () => {
@@ -177,7 +176,6 @@ describe("UserDataService", () => {
       const zeroProgress = {
         classicIndex: 0,
         dailyChallengeIndex: 0,
-        tutorialIndex: 0,
       } as Player["progress"];
 
       await userDataService.saveUserProgress(mockUserId, zeroProgress);
@@ -194,7 +192,6 @@ describe("UserDataService", () => {
       const largeProgress = {
         classicIndex: 999999,
         dailyChallengeIndex: 888888,
-        tutorialIndex: 777777,
       } as Player["progress"];
 
       await userDataService.saveUserProgress(mockUserId, largeProgress);
@@ -273,7 +270,6 @@ describe("UserDataService", () => {
         classicIndex: 5,
         dailyChallengeIndex: 2,
       dailyChallengeCurrentQuestion: 0,
-        tutorialIndex: 1,
       },
       preferences: {
         soundEnabled: true,
@@ -548,7 +544,6 @@ describe("UserDataService", () => {
         classicIndex: 0,
         dailyChallengeIndex: 0,
       dailyChallengeCurrentQuestion: 0,
-        tutorialIndex: 0,
       },
       preferences: {
         soundEnabled: true,
@@ -719,7 +714,6 @@ describe("UserDataService", () => {
         classicIndex: 10,
         dailyChallengeIndex: 3,
       dailyChallengeCurrentQuestion: 0,
-        tutorialIndex: 2,
       },
     };
 
@@ -1717,7 +1711,6 @@ describe("UserDataService", () => {
       await userDataService.saveUserProgress("test-id", {
         classicIndex: 1,
         dailyChallengeIndex: 0,
-        tutorialIndex: 0,
       } as Player["progress"]);
 
       expect(mockSetDoc).toHaveBeenCalled();
@@ -1738,7 +1731,6 @@ describe("UserDataService", () => {
       await userDataService.saveUserProgress("user1", {
         classicIndex: 1,
         dailyChallengeIndex: 0,
-        tutorialIndex: 0,
       } as Player["progress"]);
 
       await userDataService.userExists("user2");
@@ -1758,7 +1750,6 @@ describe("UserDataService", () => {
       await userDataService.saveUserProgress("user1", {
         classicIndex: 1,
         dailyChallengeIndex: 0,
-        tutorialIndex: 0,
       } as Player["progress"]);
 
       await userDataService.userExists("user2");
@@ -1778,7 +1769,6 @@ describe("UserDataService", () => {
             classicIndex: 5,
             dailyChallengeIndex: 2,
             dailyChallengeCurrentQuestion: 0,
-            tutorialIndex: 1,
           },
         }),
       });

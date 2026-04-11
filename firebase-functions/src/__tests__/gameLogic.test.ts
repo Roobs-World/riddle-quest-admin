@@ -133,7 +133,7 @@ interface SpendCoinsData {
 
 interface SkipRiddleData {
   riddleId: string;
-  gameMode: "classic" | "challenge" | "tutorial";
+  gameMode: "classic" | "challenge";
 }
 
 // Define handler types based on function signatures and expected return values from tests
@@ -549,34 +549,6 @@ describe("Game Logic Functions", () => {
       );
       expect(mockFirestoreUpdate).toHaveBeenCalledWith(
         expect.objectContaining({"stats.classicSkipped": expect.anything()}),
-      );
-    });
-
-    it("should skip tutorial riddle and update tutorialIndex", async () => {
-      (getRiddleByGameMode as ReturnType<typeof jest.fn>).mockResolvedValueOnce({answer: "apple"});
-      const gameStateDoc: MockDocumentSnapshot = {exists: true, data: () => ({isCompleted: false})};
-      const userDoc: MockDocumentSnapshot = {
-        exists: true,
-        data: () => ({progress: {tutorialIndex: 1}, stats: {}}),
-      };
-      mockFirestoreGet.mockResolvedValueOnce(gameStateDoc).mockResolvedValueOnce(userDoc);
-      (updateUserCoins as ReturnType<typeof jest.fn>).mockResolvedValueOnce(undefined);
-      mockFirestoreSet.mockResolvedValueOnce(undefined);
-      mockFirestoreUpdate.mockResolvedValueOnce(undefined).mockResolvedValueOnce(undefined);
-
-      const request = createMockCallableRequest(
-        {riddleId, gameMode: "tutorial" as const},
-        createMockAuth(mockUserId),
-      );
-
-      const result = await skipRiddle(request);
-
-      expect(result.success).toBe(true);
-      expect(result.costDeducted).toBe(25); // SKIP_COST_TUTORIAL
-      expect(result.newProgress).toEqual({tutorialIndex: 2});
-      expect(updateUserCoins).toHaveBeenCalledWith(mockUserId, -25);
-      expect(mockFirestoreUpdate).toHaveBeenCalledWith(
-        expect.objectContaining({"progress.tutorialIndex": 2}),
       );
     });
 

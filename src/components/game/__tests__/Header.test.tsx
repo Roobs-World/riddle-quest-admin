@@ -244,50 +244,8 @@ describe("Header", () => {
     });
   });
 
-  describe("Tutorial mode", () => {
-    it("does not show tutorial cues when isTutorial is false", () => {
-      const { queryByTestId } = render(
-        <Header
-          {...defaultProps}
-          isTutorial={false}
-          tutorialStep={1}
-          tutorialTotalSteps={5}
-        />
-      );
-      expect(queryByTestId("header-tutorial-cues")).toBeNull();
-    });
-
-    it("shows tutorial label and step when isTutorial is true", () => {
-      const { getByTestId, getByText } = render(
-        <Header
-          {...defaultProps}
-          isTutorial={true}
-          tutorialStep={2}
-          tutorialTotalSteps={5}
-        />
-      );
-      expect(getByTestId("header-tutorial-cues")).toBeTruthy();
-      expect(getByTestId("header-tutorial-label")).toBeTruthy();
-      expect(getByText("Tutorial")).toBeTruthy();
-      expect(getByTestId("header-tutorial-step-text")).toBeTruthy();
-      expect(getByText("Step 2 of 5")).toBeTruthy();
-    });
-
-    it("shows Step X only when tutorialTotalSteps is not provided", () => {
-      const { getByText } = render(
-        <Header
-          {...defaultProps}
-          isTutorial={true}
-          tutorialStep={3}
-          tutorialTotalSteps={undefined}
-        />
-      );
-      expect(getByText("Step 3")).toBeTruthy();
-    });
-  });
-
   describe("Mode label", () => {
-    it("shows mode label when provided and not in tutorial", () => {
+    it("shows mode label when provided", () => {
       const { getByTestId, getByText } = render(
         <Header {...defaultProps} modeLabel="Daily Challenge" />
       );
@@ -295,21 +253,6 @@ describe("Header", () => {
       expect(getByTestId("header-mode-label-container")).toBeTruthy();
       expect(getByTestId("header-mode-label")).toBeTruthy();
       expect(getByText("Daily Challenge")).toBeTruthy();
-    });
-
-    it("does not show mode label during tutorial", () => {
-      const { queryByTestId } = render(
-        <Header
-          {...defaultProps}
-          isTutorial={true}
-          tutorialStep={1}
-          tutorialTotalSteps={3}
-          modeLabel="Classic"
-        />
-      );
-
-      expect(queryByTestId("header-mode-label-container")).toBeNull();
-      expect(queryByTestId("header-mode-label")).toBeNull();
     });
 
     it("uses fallback mode label bounds before first layout measurement", () => {

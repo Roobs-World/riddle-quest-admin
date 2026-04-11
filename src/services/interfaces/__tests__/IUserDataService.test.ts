@@ -30,7 +30,6 @@ describe("IUserDataService", () => {
       classicIndex: 5,
       dailyChallengeIndex: 3,
       dailyChallengeCurrentQuestion: 0,
-      tutorialIndex: 2,
     },
     unlockedAchievements: [],
   };
@@ -123,7 +122,6 @@ describe("IUserDataService", () => {
       classicIndex: 5,
       dailyChallengeIndex: 3,
       dailyChallengeCurrentQuestion: 0,
-      tutorialIndex: 2,
     };
     const updates = { coins: 150 };
 
@@ -211,7 +209,6 @@ describe("IUserDataService", () => {
           classicIndex: 8,
           dailyChallengeIndex: 0,
       dailyChallengeCurrentQuestion: 0,
-          tutorialIndex: 0,
         },
       },
     ];

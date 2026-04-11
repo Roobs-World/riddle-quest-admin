@@ -13,7 +13,7 @@ import type {Player, UnlockedAchievement} from "./validation/firestoreSchemas";
 
 /** Context passed from submitGuess (or other callers) for achievement evaluation. */
 export interface AchievementContext {
-  gameMode: "challenge" | "classic" | "tutorial";
+  gameMode: "challenge" | "classic";
   isCorrect: boolean;
   attempts: number;
   gameOver: boolean;
@@ -58,10 +58,6 @@ const ACHIEVEMENT_RULES: Array<{id: string; rule: AchievementRule}> = [
   {
     id: "perfect_guess",
     rule: (user, ctx) => ctx.isCorrect && ctx.attempts === 1,
-  },
-  {
-    id: "tutorial_started",
-    rule: (user) => (user.progress?.tutorialIndex ?? 0) >= 1,
   },
   {
     id: "hint_user",

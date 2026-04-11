@@ -94,11 +94,9 @@ export interface GameModalTypes {
   settings: {
     isSoundEnabled: boolean;
     isHapticsEnabled: boolean;
-    isHardMode: boolean;
     currentLanguage: SupportedLanguage;
     onToggleSound: (enabled: boolean) => void;
     onToggleHaptics: (enabled: boolean) => void;
-    onToggleHardMode: (enabled: boolean) => void;
     onChangeLanguage: (language: SupportedLanguage) => void;
     onPressLogout: () => void;
     onPressHelp: () => void;

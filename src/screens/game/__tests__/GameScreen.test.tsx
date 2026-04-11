@@ -59,7 +59,7 @@ jest.mock("../../../services/ProductPricingService", () => ({
 
 // Mock FirestoreService
 jest.mock("../../../services/FirestoreService", () => ({
-  getTutorialRiddleCount: jest.fn(() => Promise.resolve(5)),
+  
 }));
 
 // Mock SoundManager
@@ -170,14 +170,12 @@ jest.mock("../../../features/game-session/useGameSessionController", () => ({
 }));
 
 // Mock gameModalActions
-const mockShowHardModeViolation = jest.fn();
 const mockShowSpendCoinsError = jest.fn();
 const mockShowNoProductsAvailable = jest.fn();
 const mockShowAdNotReady = jest.fn();
 const mockShowAdError = jest.fn();
 jest.mock("../../../features/game-session/gameModalActions", () => ({
   createGameModalActions: () => ({
-    showHardModeViolation: mockShowHardModeViolation,
     showSpendCoinsError: mockShowSpendCoinsError,
     showNoProductsAvailable: mockShowNoProductsAvailable,
     showAdNotReady: mockShowAdNotReady,
@@ -286,7 +284,6 @@ jest.mock("../../../constants/AppStrings", () => ({
 jest.mock("../../../constants/game", () => ({
   SKIP_COST_CLASSIC: 10,
   SKIP_COST_DAILY: 15,
-  SKIP_COST_TUTORIAL: 5,
   CONTINUE_COST_COINS: 20,
   MODAL_CLOSE_DELAY_MS: 300,
   SOUND_RESUME_DELAY_MS: 100,
@@ -326,11 +323,6 @@ jest.mock("../../../utils/logger", () => ({
 
 jest.mock("../../../utils/sentry", () => ({
   captureException: jest.fn(),
-}));
-
-jest.mock("../../../utils/hardMode", () => ({
-  getHardModeConstraints: jest.fn(() => ({})),
-  validateHardModeGuess: jest.fn(() => null),
 }));
 
 jest.mock("../../../utils/letterStates", () => ({
@@ -426,14 +418,6 @@ describe("GameScreen", () => {
       });
     });
 
-    it("should render with tutorial game mode", async () => {
-      const { queryByTestId } = render(
-        <GameScreen {...defaultProps} gameMode="tutorial" />
-      );
-      await waitFor(() => {
-        expect(queryByTestId("mock-header")).toBeTruthy();
-      });
-    });
   });
 
   describe("Props Handling", () => {
@@ -521,13 +505,6 @@ describe("GameScreen", () => {
       expect(element.props.gameMode).toBe("daily");
     });
 
-    it("should create element for tutorial mode", () => {
-      const element = React.createElement(GameScreen, {
-        ...defaultProps,
-        gameMode: "tutorial",
-      });
-      expect(element.props.gameMode).toBe("tutorial");
-    });
   });
 
   describe("Edge Cases", () => {
@@ -683,18 +660,6 @@ describe("GameScreen", () => {
       });
     });
 
-    it("should handle tutorial riddle count error in tutorial mode", async () => {
-      const { getTutorialRiddleCount } = require("../../../services/FirestoreService");
-      getTutorialRiddleCount.mockRejectedValueOnce(new Error("Firestore error"));
-
-      const { queryByTestId } = render(
-        <GameScreen {...defaultProps} gameMode="tutorial" />
-      );
-
-      await waitFor(() => {
-        expect(queryByTestId("mock-header")).toBeTruthy();
-      });
-    });
   });
 
   describe("Game Mode Changes", () => {
@@ -714,21 +679,6 @@ describe("GameScreen", () => {
       });
     });
 
-    it("should handle switching from classic to tutorial mode", async () => {
-      const { rerender, queryByTestId } = render(
-        <GameScreen {...defaultProps} gameMode="classic" />
-      );
-
-      await waitFor(() => {
-        expect(queryByTestId("mock-header")).toBeTruthy();
-      });
-
-      rerender(<GameScreen {...defaultProps} gameMode="tutorial" />);
-
-      await waitFor(() => {
-        expect(queryByTestId("mock-header")).toBeTruthy();
-      });
-    });
   });
 
   describe("Answer Length Edge Cases", () => {
@@ -939,31 +889,6 @@ describe("GameScreen", () => {
       ]);
     });
 
-    it("blocks submit in hard mode when guess violates constraints", async () => {
-      (AsyncStorage.multiGet as jest.Mock).mockResolvedValueOnce([
-        ["isSoundEnabled", "true"],
-        ["isHapticsEnabled", "true"],
-        ["isHardMode", "true"],
-        ["appLanguage", "en"],
-      ]);
-      const { validateHardModeGuess } = require("../../../utils/hardMode");
-      validateHardModeGuess.mockReturnValueOnce({ message: "Must use revealed letters." });
-      mockUseGameLogic.guesses = [["P", "R", "I", "O", "R", "", "", ""]];
-      mockUseGameLogic.currentGuess = ["K", "E", "Y", "B", "O", "A", "R", "D"];
-
-      render(<GameScreen {...defaultProps} />);
-
-      await waitFor(() => {
-        expect(AsyncStorage.multiGet).toHaveBeenCalled();
-      });
-
-      const inputProps = getLatestProps(mockGameInput);
-      await inputProps.handleSubmit();
-
-      expect(mockShowHardModeViolation).toHaveBeenCalledWith("Must use revealed letters.");
-      expect(mockUseGameLogic.processGuess).not.toHaveBeenCalled();
-    });
-
     it("opens game mode modal and switches to daily when selected", async () => {
       render(<GameScreen {...defaultProps} />);
 
@@ -1052,8 +977,7 @@ describe("GameScreen", () => {
       expect(defaultProps.onGameWin).toHaveBeenCalledWith(0, 25, 100);
     });
 
-    it("handles onboarding callbacks for tutorial start and dismiss", async () => {
-      mockFetchCurrentRiddle.mockResolvedValueOnce(undefined);
+    it("handles onboarding dismiss callback", async () => {
       render(<GameScreen {...defaultProps} />);
 
       await waitFor(() => {
@@ -1061,15 +985,9 @@ describe("GameScreen", () => {
       });
 
       const onboardingConfig = mockShowWelcomeModal.mock.calls[0][0];
-      onboardingConfig.onStartTutorial();
       onboardingConfig.onDismiss();
 
       await waitFor(() => {
-        expect(mockSetGameMode).toHaveBeenCalledWith("tutorial");
-        expect(mockFetchCurrentRiddle).toHaveBeenCalledWith(
-          mockPlayerData,
-          "tutorial"
-        );
         expect(mockShowInstructionsModal).toHaveBeenCalled();
       });
     });
@@ -1268,48 +1186,6 @@ describe("GameScreen", () => {
       expect(mockShowAdError).toHaveBeenCalled();
     });
 
-    it("handles onboarding tutorial-count failure and hides start tutorial", async () => {
-      const { getTutorialRiddleCount } = require("../../../services/FirestoreService");
-      const { logger } = require("../../../utils/logger");
-      getTutorialRiddleCount.mockRejectedValueOnce(new Error("count fail"));
-
-      render(<GameScreen {...defaultProps} />);
-
-      await waitFor(() => {
-        expect(mockShowWelcomeModal).toHaveBeenCalled();
-      });
-
-      const config = mockShowWelcomeModal.mock.calls[mockShowWelcomeModal.mock.calls.length - 1][0];
-      expect(config.showStartTutorial).toBe(false);
-      expect(logger.warn).toHaveBeenCalledWith(
-        "Could not get tutorial riddle count, hiding Start Tutorial:",
-        expect.any(Error)
-      );
-    });
-
-    it("handles onboarding start tutorial fetch failure", async () => {
-      const { logger } = require("../../../utils/logger");
-      const { captureException } = require("../../../utils/sentry");
-      mockFetchCurrentRiddle.mockRejectedValueOnce(new Error("fetch fail"));
-
-      render(<GameScreen {...defaultProps} />);
-
-      await waitFor(() => {
-        expect(mockShowWelcomeModal).toHaveBeenCalled();
-      });
-
-      const config = mockShowWelcomeModal.mock.calls[mockShowWelcomeModal.mock.calls.length - 1][0];
-      config.onStartTutorial();
-
-      await waitFor(() => {
-        expect(logger.error).toHaveBeenCalledWith(
-          "Error fetching tutorial riddle:",
-          expect.any(Error)
-        );
-        expect(captureException).toHaveBeenCalledWith(expect.any(Error));
-      });
-    });
-
     it("handles onboarding flow outer catch when welcome modal throws", async () => {
       const { logger } = require("../../../utils/logger");
       const { captureException } = require("../../../utils/sentry");
@@ -1335,7 +1211,6 @@ describe("GameScreen", () => {
       (AsyncStorage.setItem as jest.Mock)
         .mockRejectedValueOnce(new Error("save sound fail"))
         .mockRejectedValueOnce(new Error("save haptics fail"))
-        .mockRejectedValueOnce(new Error("save hard fail"))
         .mockRejectedValueOnce(new Error("save language fail"));
 
       render(<GameScreen {...defaultProps} />);
@@ -1357,10 +1232,6 @@ describe("GameScreen", () => {
           expect.any(Error)
         );
         expect(logger.error).toHaveBeenCalledWith(
-          "Error saving hard mode setting to AsyncStorage:",
-          expect.any(Error)
-        );
-        expect(logger.error).toHaveBeenCalledWith(
           "Error saving language setting to AsyncStorage:",
           expect.any(Error)
         );
@@ -1373,7 +1244,6 @@ describe("GameScreen", () => {
       (AsyncStorage.multiGet as jest.Mock).mockResolvedValueOnce([
         ["isSoundEnabled", "false"],
         ["isHapticsEnabled", "true"],
-        ["isHardMode", "false"],
         ["appLanguage", "en"],
       ]);
 
@@ -1576,7 +1446,6 @@ describe("GameScreen", () => {
       config.onToggleSound(false);
       config.onToggleSound(true);
       config.onToggleHaptics(false);
-      config.onToggleHardMode(true);
       config.onChangeLanguage("es");
 
       expect(SoundManager.pauseBackgroundMusic).toHaveBeenCalled();

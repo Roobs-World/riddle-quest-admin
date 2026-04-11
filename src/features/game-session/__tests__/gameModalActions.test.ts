@@ -17,18 +17,6 @@ describe("createGameModalActions", () => {
     });
   });
 
-  it("shows hard mode violation modal with message", () => {
-    const modal = createModalMock() as any;
-    const actions = createGameModalActions(modal);
-
-    actions.showHardModeViolation("Must include revealed letter");
-
-    expect(modal.showInfoModal).toHaveBeenCalledWith({
-      title: "Hard Mode",
-      message: "Must include revealed letter",
-    });
-  });
-
   it("shows ad and product informational modals", () => {
     const modal = createModalMock() as any;
     const actions = createGameModalActions(modal);

@@ -9,8 +9,6 @@ import useModal from "../../hooks/useModal";
 interface GameModalActionSet {
   /** Shows generic failure messaging for coin spend attempts. */
   showSpendCoinsError: () => void;
-  /** Shows hard-mode rule violation messaging. */
-  showHardModeViolation: (message: string) => void;
   /** Shows fallback when shop product data is unavailable. */
   showNoProductsAvailable: () => void;
   /** Shows fallback when rewarded ad inventory is not ready. */
@@ -39,9 +37,6 @@ export const createGameModalActions = (
       title: "Error",
       message: "Could not spend coins. Please try again.",
     }),
-
-  showHardModeViolation: (message: string) =>
-    modal.showInfoModal({ title: "Hard Mode", message }),
 
   showNoProductsAvailable: () =>
     modal.showInfoModal({

@@ -17,12 +17,9 @@ import {captureException} from "./sentry";
 import {
   MAX_ATTEMPTS_CLASSIC,
   MAX_ATTEMPTS_CHALLENGE,
-  MAX_ATTEMPTS_TUTORIAL,
   COINS_REWARD_CLASSIC,
-  COINS_REWARD_TUTORIAL,
   BASE_SCORE_CLASSIC,
   BASE_SCORE_CHALLENGE,
-  BASE_SCORE_TUTORIAL,
   getLevelFromXp,
   RIDDLE_GENERATION_THRESHOLD,
   RIDDLE_GENERATION_BATCH_SIZE,
@@ -44,7 +41,7 @@ interface SubmitGuessRequestData {
   /** Active riddle id being solved. */
   riddleId: string;
   /** Game mode controlling scoring/progression rules. */
-  gameMode: "challenge" | "classic" | "tutorial";
+  gameMode: "challenge" | "classic";
   /** One-based attempt number for this submission. */
   attempts: number;
 }
@@ -161,7 +158,7 @@ export async function handleGuessLogic(
     const isCorrect = guessClean === correctAnswerClean;
     let coinsEarned = 0;
     const maxAttempts =
-      gameMode === "challenge" ? MAX_ATTEMPTS_CHALLENGE : gameMode === "tutorial" ? MAX_ATTEMPTS_TUTORIAL : MAX_ATTEMPTS_CLASSIC;
+      gameMode === "challenge" ? MAX_ATTEMPTS_CHALLENGE : MAX_ATTEMPTS_CLASSIC;
     const gameOver = isCorrect || attempts >= maxAttempts;
 
     const user = await getUser(userId);
@@ -217,22 +214,11 @@ export async function handleGuessLogic(
             "progress.dailyChallengeIndex": admin.firestore.FieldValue.increment(1),
           });
         functions.logger.info(`User ${userId} completed daily challenge. Incremented dailyChallengeIndex.`);
-      } else if (gameMode === "tutorial") {
-        coinsEarned = COINS_REWARD_TUTORIAL;
-
-        await admin
-          .firestore()
-          .collection("users")
-          .doc(userId)
-          .update({
-            "progress.tutorialIndex": admin.firestore.FieldValue.increment(1),
-          });
-        functions.logger.info(`User ${userId} completed tutorial level. Incremented tutorialIndex.`);
       } else {
         coinsEarned = COINS_REWARD_CLASSIC;
       }
 
-      const baseScore = gameMode === "challenge" ? BASE_SCORE_CHALLENGE : gameMode === "tutorial" ? BASE_SCORE_TUTORIAL : BASE_SCORE_CLASSIC;
+      const baseScore = gameMode === "challenge" ? BASE_SCORE_CHALLENGE : BASE_SCORE_CLASSIC;
       const attemptsBonus = Math.max(0, (maxAttempts - attempts + 1) * 10);
       const scoreEarned = baseScore + attemptsBonus;
       const currentXp = currentStats.xp ?? 0;
@@ -392,7 +378,7 @@ interface CompleteGameRequestData {
   /** Active riddle id being finalized. */
   riddleId: string;
   /** Game mode controlling reward/progression rules. */
-  gameMode: "challenge" | "classic" | "tutorial";
+  gameMode: "challenge" | "classic";
   /** Total number of guesses made during the game. */
   attempts: number;
   /** Whether the player solved the riddle. */
@@ -481,7 +467,7 @@ export async function handleCompleteGameLogic(
       const playerProfileUpdate: PlayerTopLevelUpdate = {};
 
       const maxAttempts =
-        gameMode === "challenge" ? MAX_ATTEMPTS_CHALLENGE : gameMode === "tutorial" ? MAX_ATTEMPTS_TUTORIAL : MAX_ATTEMPTS_CLASSIC;
+        gameMode === "challenge" ? MAX_ATTEMPTS_CHALLENGE : MAX_ATTEMPTS_CLASSIC;
 
       if (gameMode === "challenge") {
         statsUpdate.challengeWins = admin.firestore.FieldValue.increment(1);
@@ -493,20 +479,13 @@ export async function handleCompleteGameLogic(
           "progress.dailyChallengeIndex": admin.firestore.FieldValue.increment(1),
         });
         functions.logger.info(`User ${userId} completed daily challenge. Incremented dailyChallengeIndex.`);
-      } else if (gameMode === "tutorial") {
-        coinsEarned = COINS_REWARD_TUTORIAL;
-
-        await admin.firestore().collection("users").doc(userId).update({
-          "progress.tutorialIndex": admin.firestore.FieldValue.increment(1),
-        });
-        functions.logger.info(`User ${userId} completed tutorial level. Incremented tutorialIndex.`);
       } else {
         // classic
         coinsEarned = COINS_REWARD_CLASSIC;
       }
 
       const baseScore =
-        gameMode === "challenge" ? BASE_SCORE_CHALLENGE : gameMode === "tutorial" ? BASE_SCORE_TUTORIAL : BASE_SCORE_CLASSIC;
+        gameMode === "challenge" ? BASE_SCORE_CHALLENGE : BASE_SCORE_CLASSIC;
       const attemptsBonus = Math.max(0, (maxAttempts - attempts + 1) * 10);
       xpEarned = baseScore + attemptsBonus;
       statsUpdate.xp = admin.firestore.FieldValue.increment(xpEarned);

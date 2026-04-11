@@ -128,7 +128,6 @@ function initializeFirestore() {
             text: 'Test riddle 1',
             answer: 'test',
             classicIndex: 0,
-            difficulty: 'easy',
             category: 'test',
             hints: ['Test hint']
           });
@@ -145,7 +144,6 @@ function initializeFirestore() {
             progress: {
               dailyChallengeIndex: 0,
               classicIndex: 0,
-              tutorialIndex: 0
             }
           });
           

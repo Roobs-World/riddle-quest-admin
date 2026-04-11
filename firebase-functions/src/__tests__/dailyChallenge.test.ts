@@ -295,7 +295,6 @@ describe("Daily Challenge Functions", () => {
             classicIndex: 0,
             dailyChallengeIndex: 0,
             dailyChallengeCurrentQuestion: 5, // Completed all 5 questions
-            tutorialIndex: 0,
           },
         }),
       );
@@ -418,7 +417,6 @@ describe("Daily Challenge Functions", () => {
           classicIndex: 0,
           dailyChallengeIndex: 0,
           dailyChallengeCurrentQuestion: 1, // Completed today's single question
-          tutorialIndex: 0,
         },
       });
 
@@ -656,7 +654,6 @@ describe("Daily Challenge Functions", () => {
             classicIndex: 0,
             dailyChallengeIndex: 0,
             dailyChallengeCurrentQuestion: 1,
-            tutorialIndex: 0,
           },
         }),
       );
@@ -677,7 +674,6 @@ describe("Daily Challenge Functions", () => {
             classicIndex: 0,
             dailyChallengeIndex: 0,
             dailyChallengeCurrentQuestion: 0,
-            tutorialIndex: 0,
           },
         }),
       );
@@ -699,7 +695,6 @@ describe("Daily Challenge Functions", () => {
             classicIndex: 0,
             dailyChallengeIndex: 0,
             dailyChallengeCurrentQuestion: 0,
-            tutorialIndex: 0,
           },
         }),
       );
@@ -725,7 +720,6 @@ describe("Daily Challenge Functions", () => {
             classicIndex: 0,
             dailyChallengeIndex: 0,
             dailyChallengeCurrentQuestion: 0,
-            tutorialIndex: 0,
           },
         }),
       );
@@ -747,7 +741,6 @@ describe("Daily Challenge Functions", () => {
             classicIndex: 0,
             dailyChallengeIndex: 0,
             dailyChallengeCurrentQuestion: 0,
-            tutorialIndex: 0,
           },
         }),
       );
@@ -774,7 +767,6 @@ describe("Daily Challenge Functions", () => {
             classicIndex: 0,
             dailyChallengeIndex: 0,
             dailyChallengeCurrentQuestion: 0,
-            tutorialIndex: 0,
           },
         }),
       );
@@ -883,7 +875,6 @@ describe("Daily Challenge Functions", () => {
             classicIndex: 0,
             dailyChallengeIndex: 0,
             dailyChallengeCurrentQuestion: 1,
-            tutorialIndex: 0,
           },
         }),
       );
@@ -906,7 +897,6 @@ describe("Daily Challenge Functions", () => {
             classicIndex: 0,
             dailyChallengeIndex: 0,
             dailyChallengeCurrentQuestion: 0,
-            tutorialIndex: 0,
           },
         }),
       );
@@ -933,7 +923,6 @@ describe("Daily Challenge Functions", () => {
             classicIndex: 0,
             dailyChallengeIndex: 0,
             dailyChallengeCurrentQuestion: 0,
-            tutorialIndex: 0,
           },
         }),
       );

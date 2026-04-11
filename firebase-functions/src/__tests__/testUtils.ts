@@ -24,7 +24,6 @@ export async function createUser(
     progress: {
       classicIndex: 1,
       dailyChallengeIndex: 1,
-      tutorialIndex: 0,
     },
     stats: {
       gamesPlayed: 0,

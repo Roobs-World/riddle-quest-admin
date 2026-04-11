@@ -15,7 +15,7 @@ import {
 describe("cloudFunctionsSchemas", () => {
   describe("GameModeSchema", () => {
     it("should validate valid game modes", () => {
-      const validModes = ["daily", "classic", "tutorial"];
+      const validModes = ["daily", "classic", "challenge"];
 
       validModes.forEach((mode) => {
         const result = GameModeSchema.safeParse(mode);

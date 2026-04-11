@@ -52,7 +52,6 @@ import {
   ensureUserDocumentComplete,
   appendUnlockedAchievements,
   getDailyRiddle,
-  getTutorialRiddle,
   getRiddleByGameMode,
 } from "../firestoreService";
 
@@ -362,7 +361,6 @@ describe("FirestoreService", () => {
       riddleId: testRiddleId,
       text: "What has keys but no locks?",
       answer: "KEYBOARD",
-      difficulty: 3,
     };
 
     test("should return riddle data when riddle exists", async () => {
@@ -416,7 +414,6 @@ describe("FirestoreService", () => {
       const riddleDataWithoutId = {
         text: "What has keys but no locks?",
         answer: "KEYBOARD",
-        difficulty: 3,
       };
 
       const mockRiddleDoc = {
@@ -598,7 +595,6 @@ describe("FirestoreService", () => {
             classicIndex: 1,
             dailyChallengeIndex: 0,
             dailyChallengeCurrentQuestion: 0,
-            tutorialIndex: 0,
           }),
         }),
       );
@@ -677,7 +673,6 @@ describe("FirestoreService", () => {
           classicIndex: 5,
           dailyChallengeIndex: 3,
           dailyChallengeCurrentQuestion: 1,
-          tutorialIndex: 3,
         },
         coins: 200,
         hasPurchasedApp: true,
@@ -701,7 +696,6 @@ describe("FirestoreService", () => {
           classicIndex: 0,
           dailyChallengeIndex: 0,
           dailyChallengeCurrentQuestion: 0,
-          tutorialIndex: 0,
         },
         coins: 100,
         hasPurchasedApp: false,
@@ -765,7 +759,6 @@ describe("FirestoreService", () => {
             classicIndex: 1,
             dailyChallengeIndex: 0,
             dailyChallengeCurrentQuestion: 0,
-            tutorialIndex: 0,
           },
         }),
       );
@@ -781,7 +774,6 @@ describe("FirestoreService", () => {
           classicIndex: 0,
           dailyChallengeIndex: 0,
           dailyChallengeCurrentQuestion: 0,
-          tutorialIndex: 0,
         },
         coins: 100,
         hasPurchasedApp: false,
@@ -830,7 +822,6 @@ describe("FirestoreService", () => {
         progress: {
           classicIndex: 5,
           dailyChallengeIndex: 2,
-          // dailyChallengeCurrentQuestion and tutorialIndex missing
         },
         coins: 100,
         hasPurchasedApp: false,
@@ -851,7 +842,6 @@ describe("FirestoreService", () => {
             classicIndex: 5,
             dailyChallengeIndex: 2,
             dailyChallengeCurrentQuestion: 0,
-            tutorialIndex: 0,
           }),
         }),
       );
@@ -878,7 +868,6 @@ describe("FirestoreService", () => {
           classicIndex: 0,
           dailyChallengeIndex: 0,
           dailyChallengeCurrentQuestion: 0,
-          tutorialIndex: 0,
         },
         hasPurchasedApp: false,
       };
@@ -920,7 +909,6 @@ describe("FirestoreService", () => {
           classicIndex: 0,
           dailyChallengeIndex: 0,
           dailyChallengeCurrentQuestion: 0,
-          tutorialIndex: 0,
         },
         coins: 100,
       };
@@ -1059,45 +1047,6 @@ describe("FirestoreService", () => {
     });
   });
 
-  describe("getTutorialRiddle", () => {
-    const testRiddleId = "tutorial123";
-
-    test("should return undefined when data is null", async () => {
-      const mockRiddleDoc = {
-        exists: true,
-        data: () => null,
-      };
-      (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockRiddleDoc);
-
-      const result = await getTutorialRiddle(testRiddleId);
-
-      expect(result).toBeUndefined();
-      expect(mockLogger.info).toHaveBeenCalledWith(
-        `Tutorial riddle data is null for ID ${testRiddleId}`,
-      );
-    });
-
-    test("should return riddle data when tutorial riddle exists", async () => {
-      const tutorialRiddleData = {
-        riddleId: testRiddleId,
-        text: "A tutorial riddle",
-        answer: "LEARN",
-        tutorialIndex: 0,
-      };
-
-      const mockRiddleDoc = {
-        exists: true,
-        data: () => tutorialRiddleData,
-      };
-      (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockRiddleDoc);
-
-      const result = await getTutorialRiddle(testRiddleId);
-
-      expect(mockFirestore.collection).toHaveBeenCalledWith("tutorialRiddles");
-      expect(result).toEqual(tutorialRiddleData);
-    });
-  });
-
   describe("getRiddle - cross-collection search", () => {
     const testRiddleId = "search123";
 
@@ -1140,28 +1089,6 @@ describe("FirestoreService", () => {
       const result = await getRiddle(testRiddleId);
 
       expect(result).toEqual(dailyRiddleData);
-    });
-
-    test("should return tutorial riddle when not found in classic or daily", async () => {
-      const tutorialRiddleData = {
-        riddleId: testRiddleId,
-        text: "Tutorial riddle",
-        answer: "TUTOR",
-        tutorialIndex: 0,
-      };
-
-      let callCount = 0;
-      (mockDoc.get as jest.MockedFunction<any>).mockImplementation(() => {
-        callCount++;
-        if (callCount <= 2) {
-          return Promise.resolve({exists: false});
-        }
-        return Promise.resolve({exists: true, data: () => tutorialRiddleData});
-      });
-
-      const result = await getRiddle(testRiddleId);
-
-      expect(result).toEqual(tutorialRiddleData);
     });
 
     test("should return undefined when riddle not found in any collection", async () => {
@@ -1217,26 +1144,6 @@ describe("FirestoreService", () => {
 
       expect(mockFirestore.collection).toHaveBeenCalledWith("dailyRiddles");
       expect(result).toEqual(dailyRiddleData);
-    });
-
-    test("should fetch from tutorial collection for 'tutorial' game mode", async () => {
-      const tutorialRiddleData = {
-        riddleId: testRiddleId,
-        text: "Tutorial riddle",
-        answer: "LEARN",
-        tutorialIndex: 1,
-      };
-
-      const mockRiddleDoc = {
-        exists: true,
-        data: () => tutorialRiddleData,
-      };
-      (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue(mockRiddleDoc);
-
-      const result = await getRiddleByGameMode(testRiddleId, "tutorial");
-
-      expect(mockFirestore.collection).toHaveBeenCalledWith("tutorialRiddles");
-      expect(result).toEqual(tutorialRiddleData);
     });
 
     test("should return undefined and warn for unknown game mode", async () => {
