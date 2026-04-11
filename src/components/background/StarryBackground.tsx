@@ -19,8 +19,8 @@ const { screenWidth: SCREEN_WIDTH, screenHeight: SCREEN_HEIGHT } = dimensions;
 
 const STAR_COUNT = 80;
 const SHOOTING_STAR_COUNT = 4;
-
-// ─── Star types ──────────────────────────────────────────────────────────────
+export const __STAR_COUNT_FOR_TESTS = STAR_COUNT;
+export const __SHOOTING_STAR_COUNT_FOR_TESTS = SHOOTING_STAR_COUNT;
 
 interface Star {
   id: number;
@@ -38,19 +38,67 @@ interface ShootingStarConfig {
   startX: number;
   startY: number;
   length: number;
-  /** Travel direction in degrees (0 = right, 90 = down) */
   angle: number;
-  /** Total travel distance in pixels */
   distance: number;
-  /** Duration of one shot in ms */
   duration: number;
-  /** Initial delay before first shot in ms */
   delay: number;
-  /** Wait time between shots in ms */
   repeatInterval: number;
 }
 
-// ─── AnimatedStar ─────────────────────────────────────────────────────────────
+export const __generateStarsForTests = (
+  screenWidth: number,
+  screenHeight: number,
+  count: number = STAR_COUNT,
+): Star[] => {
+  const generatedStars: Star[] = [];
+  const starColors = [
+    "#FFFFFF",
+    "#FFFFFF",
+    "#FFD700",
+    "#FFF8DC",
+    "#FFFFE0",
+    "#E8F4FF",
+    "#FFE135",
+  ];
+
+  for (let i = 0; i < count; i++) {
+    generatedStars.push({
+      id: i,
+      initialX: Math.random() * screenWidth,
+      initialY: Math.random() * screenHeight,
+      size: Math.random() * 2.5 + 1.5,
+      opacity: Math.random() * 0.25 + 0.75,
+      color: starColors[Math.floor(Math.random() * starColors.length)],
+      animationDuration: Math.random() * 15000 + 20000,
+      animationDelay: Math.random() * 10000,
+    });
+  }
+
+  return generatedStars;
+};
+
+export const __generateShootingStarsForTests = (
+  screenWidth: number,
+  screenHeight: number,
+  count: number = SHOOTING_STAR_COUNT,
+): ShootingStarConfig[] => {
+  const configs: ShootingStarConfig[] = [];
+  for (let i = 0; i < count; i++) {
+    const angle = 120 + Math.random() * 40;
+    configs.push({
+      id: i,
+      startX: Math.random() * screenWidth * 0.7,
+      startY: Math.random() * screenHeight * 0.35,
+      length: 18 + Math.random() * 16,
+      angle,
+      distance: 160 + Math.random() * 120,
+      duration: 2800 + Math.random() * 1800,
+      delay: i * 3000 + Math.random() * 1500,
+      repeatInterval: 5000 + Math.random() * 9000,
+    });
+  }
+  return configs;
+};
 
 const AnimatedStar: React.FC<{ star: Star }> = React.memo(({ star }) => {
   const opacity = useSharedValue(star.opacity);
@@ -119,12 +167,15 @@ const AnimatedStar: React.FC<{ star: Star }> = React.memo(({ star }) => {
     [star]
   );
 
-  return <Animated.View style={[styles.star, staticStyle, animatedStyle]} />;
+  return (
+    <Animated.View
+      testID={`star-${star.id}`}
+      style={[styles.star, staticStyle, animatedStyle]}
+    />
+  );
 });
 
 AnimatedStar.displayName = "AnimatedStar";
-
-// ─── ShootingStar ─────────────────────────────────────────────────────────────
 
 const ShootingStar: React.FC<{ config: ShootingStarConfig }> = React.memo(
   ({ config }) => {
@@ -160,7 +211,6 @@ const ShootingStar: React.FC<{ config: ShootingStarConfig }> = React.memo(
           false
         );
 
-        // Fade in fast, hold, fade out
         opacity.value = withRepeat(
           withSequence(
             withTiming(1, {
@@ -196,28 +246,31 @@ const ShootingStar: React.FC<{ config: ShootingStarConfig }> = React.memo(
       opacity: opacity.value,
     }));
 
-    // SVG dimensions: trail length + 4px for the head dot overflow
     const svgWidth = config.length + 4;
     const svgHeight = 5;
     const cy = svgHeight / 2;
 
     return (
       <Animated.View
-        style={[{ position: "absolute" as const, left: config.startX, top: config.startY - cy },
+        testID={`shooting-star-${config.id}`}
+        style={[
+          {
+            position: "absolute" as const,
+            left: config.startX,
+            top: config.startY - cy,
+          },
           animatedStyle,
         ]}
       >
         <Svg width={svgWidth} height={svgHeight}>
           <Defs>
-            {/* Gradient: fully transparent tail (left) → opaque head (right) */}
             <LinearGradient id={`sg${config.id}`} x1="0" y1="0" x2="1" y2="0">
-              <Stop offset="0"    stopColor="white" stopOpacity={0} />
-              <Stop offset="0.5"  stopColor="white" stopOpacity={0.05} />
+              <Stop offset="0" stopColor="white" stopOpacity={0} />
+              <Stop offset="0.5" stopColor="white" stopOpacity={0.05} />
               <Stop offset="0.82" stopColor="white" stopOpacity={0.5} />
-              <Stop offset="1"    stopColor="white" stopOpacity={1} />
+              <Stop offset="1" stopColor="white" stopOpacity={1} />
             </LinearGradient>
           </Defs>
-          {/* Thin gradient trail — 1px tall */}
           <Rect
             x={0}
             y={cy - 0.5}
@@ -226,7 +279,6 @@ const ShootingStar: React.FC<{ config: ShootingStarConfig }> = React.memo(
             rx={0.5}
             fill={`url(#sg${config.id})`}
           />
-          {/* Bright head dot */}
           <Circle cx={config.length + 1.5} cy={cy} r={1.5} fill="white" fillOpacity={1} />
         </Svg>
       </Animated.View>
@@ -235,8 +287,6 @@ const ShootingStar: React.FC<{ config: ShootingStarConfig }> = React.memo(
 );
 
 ShootingStar.displayName = "ShootingStar";
-
-// ─── Styles ───────────────────────────────────────────────────────────────────
 
 const styles = StyleSheet.create({
   container: {
@@ -275,56 +325,14 @@ const styles = StyleSheet.create({
   },
 });
 
-// ─── StarryBackground ─────────────────────────────────────────────────────────
-
 const StarryBackground: React.FC = () => {
-  const [stars] = useState<Star[]>(() => {
-    const generatedStars: Star[] = [];
-    const starColors = [
-      "#FFFFFF", // Pure white
-      "#FFFFFF", // Pure white (weighted)
-      "#FFD700", // Gold
-      "#FFF8DC", // Cornsilk
-      "#FFFFE0", // Light yellow
-      "#E8F4FF", // Ice blue-white
-      "#FFE135", // Bright yellow
-    ];
+  const [stars] = useState<Star[]>(() =>
+    __generateStarsForTests(SCREEN_WIDTH, SCREEN_HEIGHT),
+  );
 
-    for (let i = 0; i < STAR_COUNT; i++) {
-      generatedStars.push({
-        id: i,
-        initialX: Math.random() * SCREEN_WIDTH,
-        initialY: Math.random() * SCREEN_HEIGHT,
-        size: Math.random() * 2.5 + 1.5, // 1.5–4px
-        opacity: Math.random() * 0.25 + 0.75, // 0.75–1.0
-        color: starColors[Math.floor(Math.random() * starColors.length)],
-        animationDuration: Math.random() * 15000 + 20000,
-        animationDelay: Math.random() * 10000,
-      });
-    }
-
-    return generatedStars;
-  });
-
-  const [shootingStars] = useState<ShootingStarConfig[]>(() => {
-    const configs: ShootingStarConfig[] = [];
-    for (let i = 0; i < SHOOTING_STAR_COUNT; i++) {
-      // Angles 120–160 degrees: shooting downward to the right
-      const angle = 120 + Math.random() * 40;
-      configs.push({
-        id: i,
-        startX: Math.random() * SCREEN_WIDTH * 0.7,
-        startY: Math.random() * SCREEN_HEIGHT * 0.35,
-        length: 18 + Math.random() * 16, // 18–34px — short, realistic tail
-        angle,
-        distance: 160 + Math.random() * 120, // 160–280px
-        duration: 2800 + Math.random() * 1800, // 2.8–4.6s — slow, realistic drift
-        delay: i * 3000 + Math.random() * 1500, // staggered starts
-        repeatInterval: 5000 + Math.random() * 9000, // 5–14s between shots
-      });
-    }
-    return configs;
-  });
+  const [shootingStars] = useState<ShootingStarConfig[]>(() =>
+    __generateShootingStarsForTests(SCREEN_WIDTH, SCREEN_HEIGHT),
+  );
 
   const starComponents = useMemo(
     () => stars.map((star) => <AnimatedStar key={star.id} star={star} />),
@@ -354,4 +362,3 @@ const StarryBackground: React.FC = () => {
 };
 
 export default React.memo(StarryBackground);
-

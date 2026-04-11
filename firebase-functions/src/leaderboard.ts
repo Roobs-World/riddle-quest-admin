@@ -23,30 +23,48 @@ import {captureException} from "./sentry";
 export type LeaderboardType = "xp" | "totalWins" | "bestStreak";
 
 export interface LeaderboardEntry {
+  /** User document id / Firebase UID. */
   userId: string;
+  /** Public display name for leaderboard row. */
   username: string;
+  /** Optional avatar image URL. */
   avatarUrl?: string;
+  /** Current player level. */
   level: number;
+  /** Current player XP. */
   xp: number;
   /** Combined progression rank key derived from level + xp. */
   progressScore: number;
+  /** Lifetime wins across modes. */
   totalWins: number;
+  /** Best historical win streak. */
   bestStreak: number;
+  /** Epoch milliseconds when row was last updated. */
   updatedAt: number;
 }
 
 const LEVEL_WEIGHT = 1_000_000_000;
 
+/**
+ * Computes sortable progression score using level as primary rank key.
+ *
+ * @param level Player level.
+ * @param xp Player xp.
+ * @returns Composite numeric score for descending sort.
+ */
 function computeProgressScore(level: number, xp: number): number {
   return level * LEVEL_WEIGHT + xp;
 }
 
 interface GetLeaderboardRequest {
+  /** Requested leaderboard ranking type. */
   type: LeaderboardType;
+  /** Optional maximum number of rows to return. */
   limit?: number;
 }
 
 export interface GetLeaderboardResponse {
+  /** Ranked leaderboard rows for the requested type. */
   entries: LeaderboardEntry[];
   /** The UID of the requesting user so the client can highlight their row. */
   requestingUserId: string;
@@ -140,4 +158,3 @@ export const getLeaderboard = onCall(async (request) => {
     throw new HttpsError("internal", "Failed to fetch leaderboard.");
   }
 });
-

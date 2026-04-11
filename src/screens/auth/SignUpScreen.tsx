@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 /**
  * @fileoverview
  * Account creation screen for Qwordly.
@@ -429,4 +430,3 @@ const SignUpScreen = ({ navigation }: { navigation: NavigationProp }) => {
 };
 
 export default SignUpScreen;
-

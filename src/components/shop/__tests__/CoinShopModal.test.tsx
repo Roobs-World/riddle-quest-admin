@@ -1,200 +1,332 @@
 import React from "react";
-import { render } from "@testing-library/react-native";
+import { fireEvent, render, waitFor } from "@testing-library/react-native";
 
-jest.mock("react-native-safe-area-context", () => ({
-  useSafeAreaInsets: () => ({ top: 44, bottom: 34, left: 0, right: 0 }),
-  SafeAreaProvider: ({ children }: any) => children,
-}));
+import CoinShopModal from "../CoinShopModal";
+import { analyticsService } from "../../../services/AnalyticsService";
 
-// Mock all dependencies first
-jest.mock("react-native", () => {
-  const mockReact = require("react");
+jest.mock("react-native/Libraries/Components/Touchable/TouchableOpacity", () => {
+  const React = require("react");
+  const { Pressable } = require("react-native");
+  const MockTouchableOpacity = ({ children, ...props }: any) =>
+    React.createElement(Pressable, props, children);
   return {
-    Modal: ({ children, visible }: any) => (visible ? children : null),
-    SafeAreaView: ({ children }: any) => children,
-    ScrollView: ({ children }: any) => children,
-    View: ({ children }: any) => children,
-    Text: ({ children }: any) => children,
-    TouchableOpacity: ({ children, onPress }: any) => (
-      <div onClick={onPress}>{children}</div>
-    ),
-    ActivityIndicator: () =>
-      mockReact.createElement(
-        mockReact.View,
-        null,
-        mockReact.createElement(mockReact.Text, null, "Loading...")
-      ),
-    StyleSheet: {
-      create: (styles: any) => styles,
-    },
-    Dimensions: {
-      get: jest.fn(() => ({ width: 375, height: 812 })),
-    },
+    __esModule: true,
+    default: MockTouchableOpacity,
   };
 });
 
-// Mock react-native-iap
-jest.mock("react-native-iap", () => ({
-  Product: {},
-}));
-
-// Mock IapService
-jest.mock("../../../services/IapService", () => ({
-  COIN_PRODUCT_DETAILS: {
-    coins_100: { id: "coins_100", coins: 100 },
-    coins_500: { id: "coins_500", coins: 500 },
-  },
-}));
-
-// Mock ProductPricingService
-jest.mock("../../../services/ProductPricingService", () => ({
-  ProductPricingService: {
-    findByProductId: jest.fn(() => undefined),
-    getActiveSpecialOffer: jest.fn(() => undefined),
-    getPriceForCurrency: jest.fn(() => undefined),
-    getActiveProducts: jest.fn(() => Promise.resolve([])),
-    clearCache: jest.fn(),
-  },
+jest.mock("react-native-safe-area-context", () => ({
+  useSafeAreaInsets: () => ({ top: 10, bottom: 10, left: 0, right: 0 }),
 }));
 
 jest.mock("../../../services/AnalyticsService", () => ({
   analyticsService: {
-    logShopPackImpression: jest.fn(),
-    logShopPackSelected: jest.fn(),
+    logShopPackImpression: jest.fn().mockResolvedValue(undefined),
+    logShopPackSelected: jest.fn().mockResolvedValue(undefined),
   },
 }));
 
-// Mock WideButton
-jest.mock("../../buttons/WideButton", () => {
-  const mockReact = require("react");
-  const MockWideButton = (props: any) =>
-    mockReact.createElement("button", {
-      ...props,
-      "data-testid": "wide-button",
-    });
-  MockWideButton.displayName = "MockWideButton";
-  return MockWideButton;
-});
+jest.mock("../../../utils/logger", () => ({
+  logger: {
+    debug: jest.fn(),
+    error: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+  },
+}));
 
-// Mock CloseButton
 jest.mock("../../buttons/CloseButton", () => {
-  const mockReact = require("react");
-  const MockCloseButton = (props: any) =>
-    mockReact.createElement("button", {
-      ...props,
-      "data-testid": "close-button",
-    });
-  MockCloseButton.displayName = "MockCloseButton";
-  return MockCloseButton;
+  const React = require("react");
+  const { Pressable, Text } = require("react-native");
+
+  return function MockCloseButton({
+    onPress,
+    accessibilityLabel,
+  }: {
+    onPress: () => void;
+    accessibilityLabel?: string;
+  }) {
+    return (
+      <Pressable onPress={onPress} testID="close-button">
+        <Text>{accessibilityLabel ?? "Close"}</Text>
+      </Pressable>
+    );
+  };
 });
 
-import CoinShopModal from "../CoinShopModal";
+const mockAnalytics = analyticsService as jest.Mocked<typeof analyticsService>;
+
+type ProductPricing = {
+  productId: string;
+  productKey: string;
+  coins: number;
+  sortOrder: number;
+  featuredBadge?: string;
+  featuredOrder?: number | null;
+  regionalPrices: Array<{ currency: string; displayPrice: string }>;
+};
+
+const createProduct = (overrides: Partial<ProductPricing>): ProductPricing => ({
+  productId: "coins_100",
+  productKey: "coins_100",
+  coins: 100,
+  sortOrder: 1,
+  featuredBadge: undefined,
+  featuredOrder: null,
+  regionalPrices: [{ currency: "USD", displayPrice: "$0.99" }],
+  ...overrides,
+});
+
+const baseProps = {
+  isVisible: true,
+  onClose: jest.fn(),
+  onPurchaseProduct: jest.fn(),
+  products: [{ id: "coins_100", displayPrice: "$0.99" }] as any[],
+  loading: false,
+  error: null as string | null,
+  currentCoins: 1500,
+};
 
 describe("CoinShopModal", () => {
-  describe("Component Import and Structure", () => {
-    it("should successfully import the component", () => {
-      expect(CoinShopModal).toBeDefined();
-      expect(CoinShopModal).not.toBeNull();
-      expect(typeof CoinShopModal).toBe("function");
-    });
-
-    it("should be a React component", () => {
-      const componentToTest = CoinShopModal;
-      expect(componentToTest).toBeDefined();
-
-      if (componentToTest && typeof componentToTest === "function") {
-        expect(componentToTest.name).toBeTruthy();
-      }
-    });
-
-    it("should create element without crashing", () => {
-      const mockProps = {
-        isVisible: false,
-        onClose: jest.fn(),
-        onPurchaseProduct: jest.fn(),
-        products: [],
-        loading: false,
-        error: null,
-      };
-
-      expect(() => {
-        const element = React.createElement(CoinShopModal, mockProps);
-        expect(element).toBeTruthy();
-      }).not.toThrow();
-    });
-
-    it("should handle different prop combinations", () => {
-      const baseProps = {
-        isVisible: true,
-        onClose: jest.fn(),
-        onPurchaseProduct: jest.fn(),
-        products: [
-          {
-            productId: "coins_100",
-            title: "100 Coins",
-            localizedPrice: "$0.99",
-          } as any,
-        ],
-        loading: false,
-        error: null,
-      };
-
-      expect(() => {
-        React.createElement(CoinShopModal, baseProps);
-        React.createElement(CoinShopModal, { ...baseProps, loading: true });
-        React.createElement(CoinShopModal, {
-          ...baseProps,
-          error: "Test error",
-        });
-      }).not.toThrow();
-    });
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
-  describe("Component Behavior", () => {
-    it("should handle empty products array", () => {
-      const props = {
-        isVisible: true,
-        onClose: jest.fn(),
-        onPurchaseProduct: jest.fn(),
-        products: [],
-        loading: false,
-        error: null,
-      };
+  it("renders loading state and suppresses impressions while loading", () => {
+    const { getByText } = render(
+      <CoinShopModal
+        {...baseProps}
+        loading={true}
+        firestoreProducts={[createProduct({ productId: "coins_100" }) as any]}
+      />
+    );
 
-      expect(() => {
-        React.createElement(CoinShopModal, props);
-      }).not.toThrow();
+    expect(getByText("COIN SHOP")).toBeTruthy();
+    expect(mockAnalytics.logShopPackImpression).not.toHaveBeenCalled();
+  });
+
+  it("renders error state and suppresses impressions when error is present", () => {
+    const { getByText } = render(
+      <CoinShopModal
+        {...baseProps}
+        error="Store unavailable"
+        firestoreProducts={[createProduct({ productId: "coins_100" }) as any]}
+      />
+    );
+
+    expect(getByText("Store unavailable")).toBeTruthy();
+    expect(mockAnalytics.logShopPackImpression).not.toHaveBeenCalled();
+  });
+
+  it("shows empty state when there are no packs", () => {
+    const { getByText } = render(
+      <CoinShopModal {...baseProps} firestoreProducts={[]} />
+    );
+
+    expect(getByText("No coin packs are available right now.")).toBeTruthy();
+  });
+
+  it("tracks impressions in sorted order and uses store price when available", async () => {
+    const p1 = createProduct({
+      productId: "coins_500",
+      productKey: "coins_500",
+      coins: 500,
+      sortOrder: 2,
+      regionalPrices: [{ currency: "USD", displayPrice: "$4.99" }],
+    });
+    const p2 = createProduct({
+      productId: "coins_100",
+      productKey: "coins_100",
+      coins: 100,
+      sortOrder: 1,
+      regionalPrices: [{ currency: "USD", displayPrice: "$0.99" }],
     });
 
-    it("should handle loading state", () => {
-      const props = {
-        isVisible: true,
-        onClose: jest.fn(),
-        onPurchaseProduct: jest.fn(),
-        products: [],
-        loading: true,
-        error: null,
-      };
+    render(
+      <CoinShopModal
+        {...baseProps}
+        products={[
+          { id: "coins_100", displayPrice: "$1.09" },
+          { id: "coins_500", displayPrice: "$5.49" },
+        ] as any}
+        firestoreProducts={[p1 as any, p2 as any]}
+      />
+    );
 
-      expect(() => {
-        React.createElement(CoinShopModal, props);
-      }).not.toThrow();
+    await waitFor(() =>
+      expect(mockAnalytics.logShopPackImpression).toHaveBeenCalledTimes(2)
+    );
+
+    expect(mockAnalytics.logShopPackImpression).toHaveBeenNthCalledWith(
+      1,
+      expect.objectContaining({
+        productId: "coins_100",
+        sortOrder: 1,
+        displayPrice: "$1.09",
+      })
+    );
+    expect(mockAnalytics.logShopPackImpression).toHaveBeenNthCalledWith(
+      2,
+      expect.objectContaining({
+        productId: "coins_500",
+        sortOrder: 2,
+        displayPrice: "$5.49",
+      })
+    );
+  });
+
+  it("falls back to regional USD price and then '-' when store/region prices are missing", () => {
+    const withUsdFallback = createProduct({
+      productId: "coins_200",
+      productKey: "coins_200",
+      coins: 200,
+      sortOrder: 1,
+      regionalPrices: [{ currency: "USD", displayPrice: "$1.99" }],
+    });
+    const withDashFallback = createProduct({
+      productId: "coins_300",
+      productKey: "coins_300",
+      coins: 300,
+      sortOrder: 2,
+      regionalPrices: [{ currency: "EUR", displayPrice: "EUR 2.99" }],
     });
 
-    it("should handle error state", () => {
-      const props = {
-        isVisible: true,
-        onClose: jest.fn(),
-        onPurchaseProduct: jest.fn(),
-        products: [],
-        loading: false,
-        error: "Purchase failed",
-      };
+    const { getByText } = render(
+      <CoinShopModal
+        {...baseProps}
+        products={[]}
+        firestoreProducts={[withUsdFallback as any, withDashFallback as any]}
+      />
+    );
 
-      expect(() => {
-        React.createElement(CoinShopModal, props);
-      }).not.toThrow();
+    expect(getByText("$1.99")).toBeTruthy();
+    expect(getByText("-")).toBeTruthy();
+  });
+
+  it("does not purchase when no product is selected", () => {
+    const onPurchaseProduct = jest.fn();
+    const product = createProduct({
+      productId: "coins_100",
+      productKey: "coins_100",
+      coins: 100,
+      sortOrder: 1,
+      featuredOrder: 1,
+      featuredBadge: "Best Value",
     });
+
+    const { getByTestId } = render(
+      <CoinShopModal
+        {...baseProps}
+        onPurchaseProduct={onPurchaseProduct}
+        firestoreProducts={[product as any]}
+      />
+    );
+
+    fireEvent.press(getByTestId("purchase-button"));
+    expect(onPurchaseProduct).not.toHaveBeenCalled();
+  });
+
+  it("selects a pack, logs selection, and purchases selected product", async () => {
+    const onPurchaseProduct = jest.fn();
+    const product = createProduct({
+      productId: "coins_100",
+      productKey: "coins_100",
+      coins: 100,
+      sortOrder: 1,
+      featuredOrder: 1,
+      featuredBadge: "Best Value",
+    });
+
+    const { getByTestId } = render(
+      <CoinShopModal
+        {...baseProps}
+        onPurchaseProduct={onPurchaseProduct}
+        firestoreProducts={[product as any]}
+      />
+    );
+
+    fireEvent.press(getByTestId("pack-card-coins_100"));
+
+    await waitFor(() =>
+      expect(mockAnalytics.logShopPackSelected).toHaveBeenCalledWith(
+        expect.objectContaining({
+          productId: "coins_100",
+          featured: true,
+        })
+      )
+    );
+
+    fireEvent.press(getByTestId("purchase-button"));
+    expect(onPurchaseProduct).toHaveBeenCalledWith("coins_100");
+  });
+
+  it("resets selected pack when the selected product no longer exists", () => {
+    const onPurchaseProduct = jest.fn();
+    const selected = createProduct({
+      productId: "coins_100",
+      productKey: "coins_100",
+      sortOrder: 1,
+    });
+    const other = createProduct({
+      productId: "coins_500",
+      productKey: "coins_500",
+      sortOrder: 2,
+    });
+
+    const { getByTestId, rerender } = render(
+      <CoinShopModal
+        {...baseProps}
+        onPurchaseProduct={onPurchaseProduct}
+        firestoreProducts={[selected as any, other as any]}
+      />
+    );
+
+    fireEvent.press(getByTestId("pack-card-coins_100"));
+    fireEvent.press(getByTestId("purchase-button"));
+    expect(onPurchaseProduct).toHaveBeenCalledWith("coins_100");
+
+    rerender(
+      <CoinShopModal
+        {...baseProps}
+        onPurchaseProduct={onPurchaseProduct}
+        firestoreProducts={[other as any]}
+      />
+    );
+
+    fireEvent.press(getByTestId("purchase-button"));
+    expect(onPurchaseProduct).toHaveBeenCalledTimes(1);
+  });
+
+  it("clears impression cache when hidden and tracks again when re-opened", async () => {
+    const product = createProduct({ productId: "coins_100", sortOrder: 1 });
+    const { rerender } = render(
+      <CoinShopModal {...baseProps} isVisible={true} firestoreProducts={[product as any]} />
+    );
+
+    await waitFor(() =>
+      expect(mockAnalytics.logShopPackImpression).toHaveBeenCalledTimes(1)
+    );
+
+    rerender(
+      <CoinShopModal {...baseProps} isVisible={false} firestoreProducts={[product as any]} />
+    );
+    rerender(
+      <CoinShopModal {...baseProps} isVisible={true} firestoreProducts={[product as any]} />
+    );
+
+    await waitFor(() =>
+      expect(mockAnalytics.logShopPackImpression).toHaveBeenCalledTimes(2)
+    );
+  });
+
+  it("uses close button action and renders localized coin balance", () => {
+    const onClose = jest.fn();
+    const { getByTestId, getByText } = render(
+      <CoinShopModal {...baseProps} onClose={onClose} currentCoins={25000} />
+    );
+
+    expect(getByText("25,000 coins")).toBeTruthy();
+    fireEvent.press(getByTestId("close-button"));
+    expect(onClose).toHaveBeenCalledTimes(1);
   });
 });
-

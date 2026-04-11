@@ -2,7 +2,9 @@
  * Base interface for all game events
  */
 export interface GameEvent {
+  /** Discriminant identifying the concrete event shape. */
   type: string;
+  /** Millisecond Unix timestamp when the event was emitted. */
   timestamp: number;
 }
 
@@ -10,8 +12,11 @@ export interface GameEvent {
  * Letter added to current guess
  */
 export interface LetterAddedEvent extends GameEvent {
+  /** Event discriminator. */
   type: "LETTER_ADDED";
+  /** Lowercase letter inserted into the guess. */
   letter: string;
+  /** Zero-based slot index where the letter was inserted. */
   position: number;
 }
 
@@ -19,7 +24,9 @@ export interface LetterAddedEvent extends GameEvent {
  * Letter removed from current guess
  */
 export interface LetterRemovedEvent extends GameEvent {
+  /** Event discriminator. */
   type: "LETTER_REMOVED";
+  /** Zero-based slot index cleared by backspace/delete. */
   position: number;
 }
 
@@ -27,8 +34,11 @@ export interface LetterRemovedEvent extends GameEvent {
  * Guess submitted
  */
 export interface GuessSubmittedEvent extends GameEvent {
+  /** Event discriminator. */
   type: "GUESS_SUBMITTED";
+  /** Submitted guess string at time of send. */
   guess: string;
+  /** One-based attempt count for this submission. */
   attemptNumber: number;
 }
 
@@ -36,9 +46,13 @@ export interface GuessSubmittedEvent extends GameEvent {
  * Guess validated with feedback
  */
 export interface GuessValidatedEvent extends GameEvent {
+  /** Event discriminator. */
   type: "GUESS_VALIDATED";
+  /** Submitted guess string that was validated. */
   guess: string;
+  /** Per-letter validation status aligned to guess indices. */
   feedback: { letter: string; status: "green" | "yellow" | "red" }[];
+  /** True when the guess solved the riddle. */
   isCorrect: boolean;
 }
 
@@ -46,9 +60,13 @@ export interface GuessValidatedEvent extends GameEvent {
  * Game completed
  */
 export interface GameCompletedEvent extends GameEvent {
+  /** Event discriminator. */
   type: "GAME_COMPLETED";
+  /** Final game outcome for the riddle. */
   outcome: "won" | "lost";
+  /** Total attempts used in this game session. */
   attempts: number;
+  /** Optional coin payout awarded on win. */
   coinsEarned?: number;
 }
 
@@ -56,7 +74,9 @@ export interface GameCompletedEvent extends GameEvent {
  * Hint requested
  */
 export interface HintRequestedEvent extends GameEvent {
+  /** Event discriminator. */
   type: "HINT_REQUESTED";
+  /** Hint subtype requested by the player. */
   hintType: "letter" | "position";
 }
 
@@ -84,8 +104,11 @@ export type GameEventListener<T extends GameEvent = AnyGameEvent> = (
  * Closed for modification (existing functionality doesn't change)
  */
 export class GameEventBus {
+  /** Singleton instance backing `getInstance()`. */
   private static instance: GameEventBus;
+  /** Event-type scoped listeners. */
   private listeners = new Map<string, Set<GameEventListener>>();
+  /** Global listeners invoked for every emitted event. */
   private globalListeners = new Set<GameEventListener<AnyGameEvent>>();
 
   private constructor() {}
@@ -102,6 +125,10 @@ export class GameEventBus {
 
   /**
    * Subscribe to a specific event type
+   *
+   * @param eventType Concrete event discriminator to listen for.
+   * @param listener Handler invoked whenever that event type is emitted.
+   * @returns Unsubscribe function.
    */
   on<T extends AnyGameEvent>(
     eventType: T["type"],
@@ -122,6 +149,9 @@ export class GameEventBus {
 
   /**
    * Subscribe to all events
+   *
+   * @param listener Handler invoked for every emitted game event.
+   * @returns Unsubscribe function.
    */
   onAll(listener: GameEventListener<AnyGameEvent>): () => void {
     this.globalListeners.add(listener);
@@ -134,6 +164,8 @@ export class GameEventBus {
 
   /**
    * Emit an event
+   *
+   * @param event Event payload excluding timestamp (added internally).
    */
   emit<T extends AnyGameEvent>(event: Omit<T, "timestamp">): void {
     const fullEvent = {
@@ -153,6 +185,8 @@ export class GameEventBus {
 
   /**
    * Clear all listeners for a specific event type
+   *
+   * @param eventType Optional event type. When omitted, clears every listener.
    */
   clearListeners(eventType?: string): void {
     if (eventType) {
@@ -165,6 +199,9 @@ export class GameEventBus {
 
   /**
    * Get the number of listeners for an event type
+   *
+   * @param eventType Optional event type. When omitted, returns total listener count.
+   * @returns Number of active listeners.
    */
   getListenerCount(eventType?: string): number {
     if (eventType) {
@@ -182,4 +219,3 @@ export class GameEventBus {
 
 // Export singleton instance
 export const gameEventBus = GameEventBus.getInstance();
-

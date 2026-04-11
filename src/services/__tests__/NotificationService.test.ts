@@ -224,6 +224,22 @@ describe("NotificationService", () => {
 
       expect(updateDoc).toHaveBeenCalled();
     });
+
+    it("should handle error when both cloud function and Firestore fail", async () => {
+      (hasPermission as jest.Mock).mockResolvedValueOnce(
+        AuthorizationStatus.AUTHORIZED
+      );
+      (getToken as jest.Mock).mockResolvedValueOnce("test-token");
+
+      const mockCallable = jest.fn().mockRejectedValueOnce(new Error("Function error"));
+      (httpsCallable as jest.Mock).mockReturnValueOnce(mockCallable);
+      (updateDoc as jest.Mock).mockRejectedValueOnce(new Error("Firestore error"));
+
+      // Should not throw
+      await expect(
+        NotificationService.registerToken("user-123")
+      ).resolves.not.toThrow();
+    });
   });
 
   describe("onTokenRefresh", () => {
@@ -241,6 +257,60 @@ describe("NotificationService", () => {
         expect.anything(),
         expect.any(Function)
       );
+    });
+
+    it("should register refreshed token via cloud function", async () => {
+      let capturedCallback: ((token: string) => Promise<void>) | null = null;
+      (onTokenRefresh as jest.Mock).mockImplementationOnce((_messaging, callback) => {
+        capturedCallback = callback;
+        return jest.fn();
+      });
+
+      NotificationService.onTokenRefresh("user-123");
+
+      expect(capturedCallback).not.toBeNull();
+
+      // Call the captured callback
+      await capturedCallback!("new-refreshed-token");
+
+      expect(httpsCallable).toHaveBeenCalledWith(
+        expect.anything(),
+        "registerFcmToken"
+      );
+    });
+
+    it("should fallback to Firestore when cloud function fails on refresh", async () => {
+      let capturedCallback: ((token: string) => Promise<void>) | null = null;
+      (onTokenRefresh as jest.Mock).mockImplementationOnce((_messaging, callback) => {
+        capturedCallback = callback;
+        return jest.fn();
+      });
+
+      const mockCallable = jest.fn().mockRejectedValueOnce(new Error("Function error"));
+      (httpsCallable as jest.Mock).mockReturnValueOnce(mockCallable);
+
+      NotificationService.onTokenRefresh("user-123");
+
+      await capturedCallback!("new-refreshed-token");
+
+      expect(updateDoc).toHaveBeenCalled();
+    });
+
+    it("should handle error when both cloud function and Firestore fail on refresh", async () => {
+      let capturedCallback: ((token: string) => Promise<void>) | null = null;
+      (onTokenRefresh as jest.Mock).mockImplementationOnce((_messaging, callback) => {
+        capturedCallback = callback;
+        return jest.fn();
+      });
+
+      const mockCallable = jest.fn().mockRejectedValueOnce(new Error("Function error"));
+      (httpsCallable as jest.Mock).mockReturnValueOnce(mockCallable);
+      (updateDoc as jest.Mock).mockRejectedValueOnce(new Error("Firestore error"));
+
+      NotificationService.onTokenRefresh("user-123");
+
+      // Should not throw
+      await expect(capturedCallback!("new-refreshed-token")).resolves.not.toThrow();
     });
   });
 

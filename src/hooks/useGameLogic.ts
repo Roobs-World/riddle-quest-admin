@@ -21,6 +21,7 @@ export type Feedback = "green" | "yellow" | "red";
  * Props used to configure the `useGameLogic` hook for a specific riddle instance.
  */
 interface UseGameLogicProps {
+  /** Identifier of the active riddle, passed to backend completion calls. */
   riddleId: string;
   /**
    * The correct answer for the current riddle (lower-cased comparison is applied
@@ -28,6 +29,7 @@ interface UseGameLogicProps {
    * round-trip on every guess.
    */
   answer: string;
+  /** Backend mode key used for analytics and completion submission. */
   gameMode: "challenge" | "classic" | "tutorial";
 }
 
@@ -73,6 +75,12 @@ function computeFeedback(guess: string, answer: string): Feedback[] {
   return feedback;
 }
 
+/**
+ * Owns local guess state and bridges terminal game outcomes to backend completion.
+ *
+ * @param props Riddle identity, answer cache, and backend game mode key.
+ * @returns Gameplay state plus actions used by `GameScreen`.
+ */
 const useGameLogic = ({ riddleId, answer, gameMode }: UseGameLogicProps) => {
   const [guesses, setGuesses] = useState<SubmittedGuess[]>([]);
   const [currentGuess, setCurrentGuess] = useState<string[]>([]);
@@ -269,4 +277,3 @@ const useGameLogic = ({ riddleId, answer, gameMode }: UseGameLogicProps) => {
 };
 
 export default useGameLogic;
-

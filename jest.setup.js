@@ -200,6 +200,7 @@ jest.mock("react-native/Libraries/Animated/NativeAnimatedModule", () => {
 });
 
 // Mock Keyboard to avoid AggregateError (ScrollView calls Keyboard.metrics in componentDidMount)
+// Also mock isVisible for KeyboardAvoidingView which calls it in componentDidMount
 jest.mock("react-native/Libraries/Components/Keyboard/Keyboard", () => ({
   __esModule: true,
   default: {
@@ -207,6 +208,7 @@ jest.mock("react-native/Libraries/Components/Keyboard/Keyboard", () => ({
     removeListener: jest.fn(),
     dismiss: jest.fn(),
     metrics: jest.fn(() => ({ height: 0, screenY: 0 })),
+    isVisible: jest.fn(() => false),
   },
 }));
 

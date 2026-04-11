@@ -218,6 +218,8 @@ describe("Firestore Schemas", () => {
   describe("PlayerStatsSchema", () => {
     test("should validate correct stats data", () => {
       const validStats = {
+        xp: 0,
+        level: 1,
         dailyPuzzlesCompleted: 10,
         bestStreak: 5,
         totalWordsGuessed: 100,

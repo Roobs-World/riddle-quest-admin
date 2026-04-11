@@ -1,5 +1,8 @@
 /**
  * @fileoverview
+ * @deprecated Legacy game-state abstraction kept temporarily for compatibility.
+ * Prefer `useGameLogic` and `GameScreen` flow-specific hooks for active gameplay.
+ *
  * Local game state manager and React hook for classic 5-letter Qwordly gameplay.
  *
  * `GameStateManager` encapsulates client-side guess entry, feedback handling,
@@ -22,12 +25,19 @@ import { captureException } from "../utils/sentry";
  * Internal snapshot of the current game state for a single riddle.
  */
 interface GameState {
+  /** Current in-progress guess as a lowercased string. */
   currentGuess: string;
+  /** Previously submitted guesses in order. */
   guesses: string[];
+  /** Feedback rows aligned to `guesses`. */
   feedback: { letter: string; status: "green" | "yellow" | "red" }[][];
+  /** Current lifecycle state of this riddle session. */
   gameStatus: "playing" | "won" | "lost";
+  /** True while a guess submit request is in flight. */
   isLoading: boolean;
+  /** Controls whether hint UI is visible. */
   showHint: boolean;
+  /** Coins awarded when the session ends in a win. */
   coinsEarned?: number;
 }
 
@@ -35,10 +45,15 @@ interface GameState {
  * Configuration used when constructing a new `GameStateManager` instance.
  */
 interface GameConfig {
+  /** Selected game mode for this session. */
   mode: GameMode;
+  /** Maximum guesses allowed before loss. */
   maxGuesses: number;
+  /** Optional riddle id required for server-backed submit flow. */
   riddleId?: string;
+  /** Callback fired when the game reaches win/loss terminal state. */
   onGameComplete?: (result: { won: boolean; coinsEarned?: number }) => void;
+  /** Callback fired when submit/validation flow fails. */
   onError?: (error: string) => void;
 }
 
@@ -72,33 +87,55 @@ export class GameStateManager {
    */
   constructor(config: GameConfig) {
     this.config = config;
+    logger.warn(
+      "[DEPRECATED] GameStateManager is legacy. Migrate callers to useGameLogic/controller hooks."
+    );
     // Get audio feedback service from registry
     this.audioFeedback = serviceRegistry.getAudioFeedbackService();
   }
 
-  // Subscribe to state changes
+  /**
+   * Subscribes to state updates emitted by this manager.
+   *
+   * @param listener Callback invoked after each state mutation.
+   * @returns Unsubscribe function.
+   */
   subscribe(listener: () => void): () => void {
     this.listeners.add(listener);
     return () => this.listeners.delete(listener);
   }
 
-  // Get current state
+  /**
+   * Returns the latest immutable snapshot of game state.
+   *
+   * @returns Current game state snapshot.
+   */
   getState(): GameState {
     return { ...this.state };
   }
 
-  // Notify all listeners of state changes
+  /**
+   * Notifies all active subscribers that state has changed.
+   */
   private notifyListeners(): void {
     this.listeners.forEach((listener) => listener());
   }
 
-  // Update state and notify listeners
+  /**
+   * Merges partial updates into current state and emits change notifications.
+   *
+   * @param updates Partial state fields to update.
+   */
   private setState(updates: Partial<GameState>): void {
     this.state = { ...this.state, ...updates };
     this.notifyListeners();
   }
 
-  // Game actions
+  /**
+   * Appends one letter to the current guess when input is allowed.
+   *
+   * @param letter Letter to append to the current guess.
+   */
   addLetter = (letter: string): void => {
     if (
       this.state.currentGuess.length < 5 &&
@@ -113,6 +150,9 @@ export class GameStateManager {
     }
   };
 
+  /**
+   * Removes the last letter from the current guess when available.
+   */
   removeLetter = (): void => {
     if (this.state.currentGuess.length > 0) {
       this.setState({
@@ -124,6 +164,11 @@ export class GameStateManager {
     }
   };
 
+  /**
+   * Submits the current guess to backend validation and updates session state.
+   *
+   * @returns Promise resolved when submit flow is complete.
+   */
   submitGuess = async (): Promise<void> => {
     if (
       this.state.currentGuess.length !== 5 ||
@@ -200,6 +245,9 @@ export class GameStateManager {
     }
   };
 
+  /**
+   * Resets the manager to a fresh game state.
+   */
   resetGame = (): void => {
     this.setState({
       currentGuess: "",
@@ -212,11 +260,18 @@ export class GameStateManager {
     });
   };
 
+  /**
+   * Toggles hint visibility to true.
+   */
   showHint = (): void => {
     this.setState({ showHint: true });
   };
 
-  // Utility methods
+  /**
+   * Indicates whether submit action is currently valid.
+   *
+   * @returns True when guess length is valid and game is ready to submit.
+   */
   canSubmitGuess(): boolean {
     return (
       this.state.currentGuess.length === 5 &&
@@ -225,10 +280,20 @@ export class GameStateManager {
     );
   }
 
+  /**
+   * Returns the zero-based row index for the next guess.
+   *
+   * @returns Number of submitted guesses.
+   */
   getCurrentRow(): number {
     return this.state.guesses.length;
   }
 
+  /**
+   * Returns remaining guesses before reaching max attempts.
+   *
+   * @returns Remaining guess count.
+   */
   getRemainingGuesses(): number {
     return this.config.maxGuesses - this.state.guesses.length;
   }
@@ -275,4 +340,3 @@ export const useGameStateManager = (config: GameConfig) => {
     },
   };
 };
-

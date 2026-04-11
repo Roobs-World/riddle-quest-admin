@@ -1,6 +1,7 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react-native";
 import Header from "../Header";
+import { SPACING } from "../../../styles";
 
 // Avoid ESM parsing issues from @sentry/react-native during Jest runs.
 jest.mock("@sentry/react-native", () => ({
@@ -310,6 +311,37 @@ describe("Header", () => {
       expect(queryByTestId("header-mode-label-container")).toBeNull();
       expect(queryByTestId("header-mode-label")).toBeNull();
     });
+
+    it("uses fallback mode label bounds before first layout measurement", () => {
+      const { getByTestId } = render(
+        <Header {...defaultProps} modeLabel="Classic" />
+      );
+
+      const container = getByTestId("header-mode-label-container");
+      expect(container.props.style.left).toBe(SPACING.xl);
+      expect(container.props.style.right).toBe(SPACING.xl);
+    });
+
+    it("recalculates mode label bounds after header and anchor layouts", () => {
+      const { getByTestId } = render(
+        <Header {...defaultProps} modeLabel="Daily Challenge" />
+      );
+
+      fireEvent(getByTestId("header"), "layout", {
+        nativeEvent: { layout: { width: 400, height: 64, x: 0, y: 0 } },
+      });
+      fireEvent(getByTestId("header-left-side"), "layout", {
+        nativeEvent: { layout: { x: 16, width: 48, height: 48, y: 0 } },
+      });
+      fireEvent(getByTestId("header-right-side"), "layout", {
+        nativeEvent: { layout: { x: 300, width: 84, height: 32, y: 0 } },
+      });
+
+      const container = getByTestId("header-mode-label-container");
+      expect(container.props.style.left).toBe(64);
+      expect(container.props.style.right).toBe(100);
+      expect(container.props.style.transform).toEqual([{ translateY: 4 }]);
+    });
   });
 
   describe("Edge Cases", () => {
@@ -422,4 +454,3 @@ describe("Header", () => {
     });
   });
 });
-

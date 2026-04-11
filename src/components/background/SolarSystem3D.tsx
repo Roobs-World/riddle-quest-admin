@@ -52,6 +52,11 @@ import sunTextureModule from "../../../assets/3d/tex_sun_spots_02.png";
 // Cache for loaded textures
 const textureCache = new Map<string | number, Texture>();
 
+// Test-only helper to clear module cache between unit tests.
+export const __resetSolarSystem3DTextureCacheForTests = (): void => {
+  textureCache.clear();
+};
+
 /**
  * Creates a Three.js texture from an expo-asset that works with expo-gl.
  * This mimics expo-three's parseTexture but without the problematic imports.
@@ -143,10 +148,9 @@ const Sun: React.FC = React.memo(() => {
   );
 
   useFrame(() => {
-    if (sunRef.current) {
-      sunRef.current.rotation.y += 0.008;
-      sunRef.current.rotation.x += 0.002;
-    }
+    __applySunFrameUpdateForTests(
+      sunRef.current as unknown as { rotation: { x: number; y: number } } | null
+    );
   });
 
   return (
@@ -178,6 +182,36 @@ interface MoonProps {
   };
 }
 
+export const __applySunFrameUpdateForTests = (
+  sun: { rotation: { x: number; y: number } } | null
+): void => {
+  if (sun) {
+    sun.rotation.y += 0.008;
+    sun.rotation.x += 0.002;
+  }
+};
+
+export const __applyMoonFrameUpdateForTests = (
+  moon: {
+    position: { set: (x: number, y: number, z: number) => void };
+    rotation: { y: number };
+  } | null,
+  orbit: number,
+  moonConfig: MoonProps["moonConfig"]
+): number => {
+  const nextOrbit = orbit + moonConfig.orbitSpeed;
+
+  if (moon) {
+    const x = Math.cos(nextOrbit) * moonConfig.distance;
+    const z = Math.sin(nextOrbit) * moonConfig.distance;
+
+    moon.position.set(x, 0, z);
+    moon.rotation.y += 0.02;
+  }
+
+  return nextOrbit;
+};
+
 /**
  * Moon component that orbits around a parent planet.
  * Creates a textured moon that orbits its parent with configurable parameters.
@@ -200,15 +234,14 @@ const Moon: React.FC<MoonProps> = React.memo(({ moonConfig }) => {
   );
 
   useFrame(() => {
-    orbitTime.current += moonConfig.orbitSpeed;
-
-    if (moonRef.current) {
-      const x = Math.cos(orbitTime.current) * moonConfig.distance;
-      const z = Math.sin(orbitTime.current) * moonConfig.distance;
-
-      moonRef.current.position.set(x, 0, z);
-      moonRef.current.rotation.y += 0.02;
-    }
+    orbitTime.current = __applyMoonFrameUpdateForTests(
+      moonRef.current as unknown as {
+        position: { set: (x: number, y: number, z: number) => void };
+        rotation: { y: number };
+      } | null,
+      orbitTime.current,
+      moonConfig
+    );
   });
 
   return <mesh ref={moonRef} geometry={moonGeometry} material={moonMaterial} />;
@@ -223,6 +256,27 @@ Moon.displayName = "Moon";
 interface PlanetProps {
   config: (typeof SOLAR_SYSTEM_CONFIG)[0];
 }
+
+export const __applyPlanetFrameUpdateForTests = (
+  group: { position: { set: (x: number, y: number, z: number) => void } } | null,
+  mesh: { rotation: { y: number } } | null,
+  orbit: number,
+  config: PlanetProps["config"]
+): number => {
+  const nextOrbit = orbit + config.orbitSpeed;
+
+  if (group) {
+    const x = Math.cos(nextOrbit) * config.distance;
+    const z = Math.sin(nextOrbit) * config.distance;
+    group.position.set(x, config.yPosition, z);
+  }
+
+  if (mesh) {
+    mesh.rotation.y += config.rotationSpeed;
+  }
+
+  return nextOrbit;
+};
 
 /**
  * Planet component with orbital mechanics and moon system.
@@ -250,17 +304,14 @@ const Planet: React.FC<PlanetProps> = React.memo(({ config }) => {
   );
 
   useFrame(() => {
-    orbitTime.current += config.orbitSpeed;
-
-    if (groupRef.current) {
-      const x = Math.cos(orbitTime.current) * config.distance;
-      const z = Math.sin(orbitTime.current) * config.distance;
-      groupRef.current.position.set(x, config.yPosition, z);
-    }
-
-    if (meshRef.current) {
-      meshRef.current.rotation.y += config.rotationSpeed;
-    }
+    orbitTime.current = __applyPlanetFrameUpdateForTests(
+      groupRef.current as unknown as {
+        position: { set: (x: number, y: number, z: number) => void };
+      } | null,
+      meshRef.current as unknown as { rotation: { y: number } } | null,
+      orbitTime.current,
+      config
+    );
   });
 
   return (

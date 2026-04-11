@@ -24,12 +24,19 @@ import { HEADER_LOGO_SIZE } from "../../constants/layout";
  * @property {number} tutorialTotalSteps - Total tutorial steps for "Step X of Y" (optional).
  */
 interface HeaderProps {
+  /** Current coin balance shown on the right side of the header. */
   userCoins: number;
+  /** Opens the coin shop when the coin display is pressed. */
   onCoinsPress: () => void;
+  /** Optional callback for tapping the logo icon (currently hint entry point). */
   onHintPress?: () => void;
+  /** Enables tutorial-specific label and progress indicator. */
   isTutorial?: boolean;
+  /** One-based tutorial step index. */
   tutorialStep?: number;
+  /** Total number of tutorial steps for "Step X of Y". */
   tutorialTotalSteps?: number;
+  /** Optional mode label (e.g. "Daily Challenge") shown when not in tutorial. */
   modeLabel?: string;
 }
 
@@ -189,4 +196,3 @@ const Header: React.FC<HeaderProps> = ({
 };
 
 export default React.memo(Header);
-

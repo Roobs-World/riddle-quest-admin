@@ -14,13 +14,26 @@ import {
 } from "../../../constants/layout";
 import CloseButton from "../../buttons/CloseButton";
 
+/**
+ * Props for the mode-selection modal displayed from gameplay.
+ */
 interface GameModeModalProps {
+  /** Controls modal visibility. */
   isVisible: boolean;
+  /** Closes the modal without changing mode. */
   onClose: () => void;
+  /** Called when a game mode is selected. */
   onSelectMode: (mode: "classic" | "daily") => void;
+  /** Optional classic level badge shown next to the Classic button. */
   currentLevel?: number;
 }
 
+/**
+ * Presents game mode choices (Classic or Daily Challenge).
+ *
+ * @param props Visibility state and selection callbacks.
+ * @returns Centered modal card with mode actions.
+ */
 const GameModeModal: React.FC<GameModeModalProps> = ({
   isVisible,
   onClose,
@@ -157,4 +170,3 @@ const GameModeModal: React.FC<GameModeModalProps> = ({
 };
 
 export default GameModeModal;
-

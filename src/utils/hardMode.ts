@@ -10,13 +10,16 @@
 import type { SubmittedGuess } from "../hooks/types";
 
 export interface HardModeConstraint {
+  /** Letter that must be present according to prior feedback. */
   letter: string;
   /** Position index (0-based) for green constraints; undefined for yellow. */
   position?: number;
+  /** Constraint kind derived from prior feedback. */
   type: "green" | "yellow";
 }
 
 export interface HardModeViolation {
+  /** Human-readable explanation shown to the player. */
   message: string;
 }
 
@@ -96,4 +99,3 @@ function ordinalPosition(index: number): string {
   const ordinals = ["1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th"];
   return ordinals[index] ?? `${index + 1}th`;
 }
-

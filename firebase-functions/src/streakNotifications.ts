@@ -25,8 +25,11 @@ import {captureException} from "./sentry";
 // ─────────────────────────────────────────────────────────────────────────────
 
 export interface StreakReminderResult {
+  /** Number of notifications successfully sent. */
   sent: number;
+  /** Number of users skipped by eligibility checks. */
   skipped: number;
+  /** Number of failed send attempts. */
   failed: number;
 }
 
@@ -35,7 +38,9 @@ export interface StreakReminderResult {
 // ─────────────────────────────────────────────────────────────────────────────
 
 interface NotificationCopy {
+  /** Notification title text. */
   title: string;
+  /** Notification body text. */
   body: string;
 }
 

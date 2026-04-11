@@ -75,12 +75,8 @@ const mockLogCoinPackPurchased =
 const mockPlatform = Platform as { OS: string };
 
 // Mock console methods to reduce noise
-const originalConsoleLog = console.log;
-const originalConsoleWarn = console.warn;
-const originalConsoleError = console.error;
 jest.spyOn(console, "log").mockImplementation(() => {});
 jest.spyOn(console, "warn").mockImplementation(() => {});
-jest.spyOn(console, "error").mockImplementation(() => {});
 
 describe("IapService", () => {
   // Mock purchase object used across multiple test suites

@@ -54,12 +54,19 @@ const getCellColors = (
  * @property {number} answerLength - The length of the answer.
  */
 type GuessGridProps = {
+  /** Submitted guesses with finalized feedback rows. */
   guesses: SubmittedGuess[];
+  /** Current in-progress guess row. */
   currentGuess: string[];
+  /** Required answer length (tile count per row). */
   answerLength: number;
+  /** Optional ref setter used by tile-capture/sharing flows. */
   setTileRef?: (rowIndex: number, cellIndex: number, ref: View | null) => void;
+  /** Indices revealed by hints that should render as green in the current row. */
   hintRevealedIndices?: number[];
+  /** Currently selected slot in the in-progress row. */
   activeSlotIndex?: number;
+  /** Invoked when a slot in current row is tapped. */
   onSelectCurrentGuessSlot?: (slotIndex: number) => void;
 };
 

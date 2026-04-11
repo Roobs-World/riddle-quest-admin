@@ -42,15 +42,24 @@ export const getCurrentTutorialRiddle = onCall(
   async (
     request: CallableRequest<unknown>,
   ): Promise<{
+    /** Current tutorial riddle payload (answer excluded). */
     riddle?: {
+      /** Tutorial riddle document id. */
       riddleId: string;
+      /** Tutorial prompt text shown to the player. */
       text: string;
+      /** Zero-based tutorial progression index. */
       tutorialIndex: number;
+      /** Optional riddle difficulty marker. */
       difficulty?: string;
     };
+    /** Current tutorial progression index for the user. */
     currentIndex?: number;
+    /** Total number of tutorial riddles available. */
     totalTutorialRiddles?: number;
+    /** True when user has completed tutorial sequence. */
     isCompleted?: boolean;
+    /** Error message when a tutorial riddle cannot be loaded. */
     error?: string;
   }> => {
     try {
@@ -129,8 +138,11 @@ export const advanceTutorialProgress = onCall(
   async (
     request: CallableRequest<unknown>,
   ): Promise<{
+    /** Updated tutorial index after advancement. */
     newTutorialIndex: number;
+    /** True when the tutorial is fully completed. */
     isCompleted: boolean;
+    /** Human-readable status message for the client. */
     message: string;
   }> => {
     try {

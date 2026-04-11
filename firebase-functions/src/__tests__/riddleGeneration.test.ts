@@ -72,6 +72,16 @@ describe("riddleGeneration", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGenerateUniqueRiddle.mockReset();
+    mockFirestoreCollection.mockReset();
+    mockFirestoreBatch.mockReset();
+    mockFirestoreDoc.mockReset();
+    mockSet.mockReset();
+    mockCommit.mockReset();
+    mockGet.mockReset();
+    mockWhere.mockReset();
+    mockOrderBy.mockReset();
+    mockLimit.mockReset();
     process.env.OPENAI_API_KEY = "test-api-key";
 
     // Simplified mock setup to reduce memory usage
@@ -965,7 +975,7 @@ describe("riddleGeneration", () => {
   });
 
   describe("generateTodaysDailyChallenge", () => {
-    test("should skip generation when today's challenge already exists with 5 questions", async () => {
+    test("should skip generation when today's challenge already exists with 1 question", async () => {
       const today = new Date().toISOString().split("T")[0];
       (mockFirestoreCollection as any).mockReturnValueOnce({
         doc: () => ({
@@ -973,7 +983,7 @@ describe("riddleGeneration", () => {
             exists: true,
             data: () => ({
               date: today,
-              questions: [{}, {}, {}, {}, {}],
+              questions: [{}],
             }),
           }),
         }),
@@ -1000,6 +1010,11 @@ describe("riddleGeneration", () => {
     test("should generate when forceGenerate is true even if doc exists", async () => {
       const today = new Date().toISOString().split("T")[0];
       const emptySnapshot = {empty: true, docs: [], forEach: jest.fn()};
+      const indexQuery = {
+        get: jest.fn().mockResolvedValue({empty: true, docs: [], forEach: jest.fn()}),
+        orderBy: jest.fn().mockReturnThis(),
+        limit: jest.fn().mockReturnThis(),
+      };
       const mockDocRef = {
         id: "daily-riddle-id",
         set: jest.fn().mockResolvedValue(undefined),
@@ -1007,16 +1022,11 @@ describe("riddleGeneration", () => {
       const mockChallengeDocRef = {
         get: jest.fn().mockResolvedValue({
           exists: true,
-          data: () => ({date: today, questions: [{}, {}, {}, {}, {}]}),
+          data: () => ({date: today, questions: [{}]}),
         }),
         set: jest.fn().mockResolvedValue(undefined),
       };
-      (mockGenerateUniqueRiddle as any)
-        .mockResolvedValueOnce(["Q1?", "a1"])
-        .mockResolvedValueOnce(["Q2?", "a2"])
-        .mockResolvedValueOnce(["Q3?", "a3"])
-        .mockResolvedValueOnce(["Q4?", "a4"])
-        .mockResolvedValueOnce(["Q5?", "a5"]);
+      (mockGenerateUniqueRiddle as any).mockResolvedValueOnce(["Q1?", "a1"]);
 
       (mockFirestoreCollection as any)
         .mockReturnValueOnce({
@@ -1025,10 +1035,10 @@ describe("riddleGeneration", () => {
         .mockReturnValueOnce({get: jest.fn().mockResolvedValue(emptySnapshot)} as any)
         .mockReturnValueOnce({get: jest.fn().mockResolvedValue(emptySnapshot)} as any)
         .mockReturnValueOnce({get: jest.fn().mockResolvedValue(emptySnapshot)} as any)
-        .mockReturnValueOnce({doc: () => mockDocRef} as any)
-        .mockReturnValueOnce({doc: () => mockDocRef} as any)
-        .mockReturnValueOnce({doc: () => mockDocRef} as any)
-        .mockReturnValueOnce({doc: () => mockDocRef} as any)
+        .mockReturnValueOnce({
+          doc: () => mockDocRef,
+          where: jest.fn().mockReturnValue(indexQuery),
+        } as any)
         .mockReturnValueOnce({doc: () => mockDocRef} as any)
         .mockReturnValueOnce({
           get: jest.fn().mockResolvedValue({
@@ -1041,7 +1051,7 @@ describe("riddleGeneration", () => {
 
       await riddleGeneration.generateTodaysDailyChallenge(true);
 
-      expect(mockGenerateUniqueRiddle).toHaveBeenCalledTimes(5);
+      expect(mockGenerateUniqueRiddle).toHaveBeenCalledTimes(1);
       expect(mockChallengeDocRef.set).toHaveBeenCalled();
       expect(mockCommit).toHaveBeenCalled();
     });
@@ -1050,40 +1060,21 @@ describe("riddleGeneration", () => {
   describe("generateTodaysDailyChallengeFunction", () => {
     test("should return success and questionsGenerated when challenge is generated", async () => {
       const today = new Date().toISOString().split("T")[0];
-      const emptySnapshot = {empty: true, docs: [], forEach: jest.fn()};
-      const mockDocRef = {id: "daily-id", set: jest.fn().mockResolvedValue(undefined)};
       const mockChallengeDocRef = {
-        get: jest.fn().mockResolvedValue({exists: false}),
+        get: jest.fn().mockResolvedValue({
+          exists: true,
+          data: () => ({date: today, questions: [{}]}),
+        }),
         set: jest.fn().mockResolvedValue(undefined),
       };
-      (mockGenerateUniqueRiddle as any)
-        .mockResolvedValueOnce(["Q1?", "a1"])
-        .mockResolvedValueOnce(["Q2?", "a2"])
-        .mockResolvedValueOnce(["Q3?", "a3"])
-        .mockResolvedValueOnce(["Q4?", "a4"])
-        .mockResolvedValueOnce(["Q5?", "a5"]);
 
       (mockFirestoreCollection as any)
         .mockReturnValueOnce({doc: () => mockChallengeDocRef} as any)
-        .mockReturnValueOnce({get: jest.fn().mockResolvedValue(emptySnapshot)} as any)
-        .mockReturnValueOnce({get: jest.fn().mockResolvedValue(emptySnapshot)} as any)
-        .mockReturnValueOnce({get: jest.fn().mockResolvedValue(emptySnapshot)} as any)
-        .mockReturnValueOnce({doc: () => mockDocRef} as any)
-        .mockReturnValueOnce({doc: () => mockDocRef} as any)
-        .mockReturnValueOnce({doc: () => mockDocRef} as any)
-        .mockReturnValueOnce({doc: () => mockDocRef} as any)
-        .mockReturnValueOnce({doc: () => mockDocRef} as any)
-        .mockReturnValueOnce({
-          get: jest.fn().mockResolvedValue({
-            empty: false,
-            forEach: jest.fn((cb: (doc: {ref: unknown}) => void) => cb({ref: {}})),
-          }),
-        } as any)
         .mockReturnValueOnce({
           doc: () => ({
             get: jest.fn().mockResolvedValue({
               exists: true,
-              data: () => ({questions: [1, 2, 3, 4, 5]}),
+              data: () => ({questions: [1]}),
             }),
           }),
         } as any);
@@ -1094,7 +1085,7 @@ describe("riddleGeneration", () => {
       );
 
       expect(result.success).toBe(true);
-      expect(result.questionsGenerated).toBe(5);
+      expect(result.questionsGenerated).toBe(1);
     });
 
     test("should handle errors and throw HttpsError", async () => {

@@ -269,6 +269,207 @@ describe("VictoryModal", () => {
       expect(getByText(/\+1 Coins/)).toBeTruthy();
     });
   });
+
+  describe("Achievements", () => {
+    it("should display achievement unlocked section when achievements are provided", () => {
+      const { getByText } = render(
+        <VictoryModal
+          {...defaultProps}
+          unlockedAchievementNames={["First Win"]}
+        />
+      );
+
+      expect(getByText("Achievement Unlocked!")).toBeTruthy();
+      expect(getByText("First Win")).toBeTruthy();
+    });
+
+    it("should display multiple achievements", () => {
+      const { getByText } = render(
+        <VictoryModal
+          {...defaultProps}
+          unlockedAchievementNames={["First Win", "Speed Demon", "Perfect Score"]}
+        />
+      );
+
+      expect(getByText("Achievement Unlocked!")).toBeTruthy();
+      expect(getByText("First Win, Speed Demon, Perfect Score")).toBeTruthy();
+    });
+
+    it("should not display achievement section when no achievements are unlocked", () => {
+      const { queryByText } = render(
+        <VictoryModal {...defaultProps} unlockedAchievementNames={[]} />
+      );
+
+      expect(queryByText("Achievement Unlocked!")).toBeNull();
+    });
+
+    it("should not display achievement section when unlockedAchievementNames is undefined", () => {
+      const { queryByText } = render(
+        <VictoryModal {...defaultProps} unlockedAchievementNames={undefined} />
+      );
+
+      expect(queryByText("Achievement Unlocked!")).toBeNull();
+    });
+  });
+
+  describe("Share Functionality", () => {
+    it("should log share analytics after successful share", async () => {
+      const { getByTestId } = render(<VictoryModal {...defaultProps} />);
+      const { analyticsService } = require("../../../../services/AnalyticsService");
+
+      fireEvent.press(getByTestId("share-button-system"));
+
+      await waitFor(() => {
+        expect(analyticsService.logShare).toHaveBeenCalledWith({
+          platform: "system",
+          gameMode: "daily",
+        });
+      });
+    });
+
+    it("should handle share error gracefully", async () => {
+      const { SocialSharingService } = require("../../../../services/SocialSharingService");
+      const { captureException } = require("../../../../utils/sentry");
+      const { logger } = require("../../../../utils/logger");
+
+      SocialSharingService.share.mockRejectedValueOnce(new Error("Share failed"));
+
+      const { getByTestId } = render(<VictoryModal {...defaultProps} />);
+
+      fireEvent.press(getByTestId("share-button-system"));
+
+      await waitFor(() => {
+        expect(logger.error).toHaveBeenCalled();
+        expect(captureException).toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe("Game Mode", () => {
+    it("should render with classic game mode", () => {
+      const { getByText } = render(
+        <VictoryModal {...defaultProps} gameMode="classic" />
+      );
+
+      expect(getByText("Victory!")).toBeTruthy();
+    });
+
+    it("should use default daily game mode when not specified", () => {
+      const propsWithoutGameMode = {
+        isVisible: true,
+        attempts: 3,
+        coinsEarned: 50,
+        onNextLevel: mockOnNextLevel,
+        onClose: mockOnClose,
+        guesses: defaultProps.guesses,
+      };
+
+      const { getByText } = render(<VictoryModal {...propsWithoutGameMode} />);
+
+      expect(getByText("Victory!")).toBeTruthy();
+    });
+
+    it("should include game mode in share content", () => {
+      const { getByTestId } = render(
+        <VictoryModal {...defaultProps} gameMode="classic" />
+      );
+      const { SocialSharingService } = require("../../../../services/SocialSharingService");
+
+      fireEvent.press(getByTestId("share-button-system"));
+
+      expect(SocialSharingService.share).toHaveBeenCalledWith(
+        "system",
+        expect.objectContaining({
+          gameMode: "classic",
+        })
+      );
+    });
+  });
+
+  describe("Animation", () => {
+    it("should not throw when visibility changes", () => {
+      const { rerender } = render(
+        <VictoryModal {...defaultProps} isVisible={true} />
+      );
+
+      expect(() => {
+        rerender(<VictoryModal {...defaultProps} isVisible={false} />);
+      }).not.toThrow();
+
+      expect(() => {
+        rerender(<VictoryModal {...defaultProps} isVisible={true} />);
+      }).not.toThrow();
+    });
+
+    it("should handle rapid visibility toggles", () => {
+      const { rerender } = render(
+        <VictoryModal {...defaultProps} isVisible={true} />
+      );
+
+      for (let i = 0; i < 5; i++) {
+        expect(() => {
+          rerender(<VictoryModal {...defaultProps} isVisible={i % 2 === 0} />);
+        }).not.toThrow();
+      }
+    });
+  });
+
+  describe("Edge Cases", () => {
+    it("should handle large coin amounts", () => {
+      const { getByText } = render(
+        <VictoryModal {...defaultProps} coinsEarned={999999} />
+      );
+
+      expect(getByText(/\+999999 Coins/)).toBeTruthy();
+    });
+
+    it("should handle negative coin amounts (edge case)", () => {
+      const { getByText } = render(
+        <VictoryModal {...defaultProps} coinsEarned={-10} />
+      );
+
+      expect(getByText(/\+-10 Coins/)).toBeTruthy();
+    });
+
+    it("should handle zero attempts", () => {
+      const { getByText } = render(
+        <VictoryModal {...defaultProps} attempts={0} />
+      );
+
+      expect(getByText("Victory!")).toBeTruthy();
+    });
+
+    it("should handle many guesses", () => {
+      const manyGuesses: SubmittedGuess[] = Array(10).fill({
+        guess: ["H", "E", "L", "L", "O"],
+        feedback: ["green", "green", "green", "green", "green"] as Feedback[],
+      });
+
+      const { getByText } = render(
+        <VictoryModal {...defaultProps} guesses={manyGuesses} />
+      );
+
+      expect(getByText("Victory!")).toBeTruthy();
+    });
+
+    it("should call onClose when onRequestClose is triggered", () => {
+      // Note: This tests the Modal's onRequestClose prop behavior
+      // In the mocked Modal, onRequestClose is passed but may not be triggerable
+      // This test verifies the component accepts the prop without error
+      const { getByText } = render(<VictoryModal {...defaultProps} />);
+      expect(getByText("Victory!")).toBeTruthy();
+    });
+  });
+
+  describe("Accessibility", () => {
+    it("should have accessible elements", () => {
+      const { getByText } = render(<VictoryModal {...defaultProps} />);
+
+      // Victory text should be accessible
+      expect(getByText("Victory!")).toBeTruthy();
+      expect(getByText("Share your victory!")).toBeTruthy();
+    });
+  });
 });
 
 

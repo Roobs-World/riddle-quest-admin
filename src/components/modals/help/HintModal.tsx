@@ -16,14 +16,28 @@ import {
 } from "../../../constants/layout";
 import { SPACING } from "../../../styles";
 
+/**
+ * Props for the hint purchase modal shown during gameplay.
+ */
 interface HintModalProps {
+  /** Controls modal visibility. */
   isVisible: boolean;
+  /** User's current coin balance. */
   userCoins: number;
+  /** Cost in coins required to reveal a hint. */
   hintCost: number;
+  /** Invoked after user confirms hint purchase. */
   onShowHint: () => void;
+  /** Closes the hint modal. */
   onClose: () => void;
 }
 
+/**
+ * Confirms hint purchase and displays affordability state for the player.
+ *
+ * @param props Coin and action handlers for hint flow.
+ * @returns Hint confirmation modal.
+ */
 const HintModal: React.FC<HintModalProps> = ({
   isVisible,
   userCoins,
@@ -129,4 +143,3 @@ const HintModal: React.FC<HintModalProps> = ({
 };
 
 export default HintModal;
-

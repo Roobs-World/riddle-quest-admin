@@ -98,6 +98,10 @@ const LossModal: React.FC<LossModalProps> = ({
   canUseCoin,
 }) => {
   const showContinueOptions = !!(onWatchAdContinue || onCoinContinue);
+
+  /**
+   * Handles skipping to the next level and closes the modal afterward.
+   */
   const handleNextLevel = async () => {
     if (typeof onNext === "function") {
       await Promise.resolve(onNext());
@@ -107,6 +111,9 @@ const LossModal: React.FC<LossModalProps> = ({
     }
   };
 
+  /**
+   * Handles returning to lobby/home and closes the modal afterward.
+   */
   const handleHome = async () => {
     if (typeof onHome === "function") {
       await Promise.resolve(onHome());
@@ -116,6 +123,9 @@ const LossModal: React.FC<LossModalProps> = ({
     }
   };
 
+  /**
+   * Handles rewarded-ad continue flow; closes unless callback explicitly returns `false`.
+   */
   const handleWatchAdContinue = async () => {
     let shouldClose = true;
     if (typeof onWatchAdContinue === "function") {
@@ -127,6 +137,9 @@ const LossModal: React.FC<LossModalProps> = ({
     }
   };
 
+  /**
+   * Handles coin-continue flow; closes unless callback explicitly returns `false`.
+   */
   const handleCoinContinue = async () => {
     let shouldClose = true;
     if (typeof onCoinContinue === "function") {

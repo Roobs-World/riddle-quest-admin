@@ -17,9 +17,25 @@ export const SKIP_COST_TUTORIAL = 25;
  * Each new level needs a slightly larger XP amount than the previous level.
  */
 export const XP_LEVEL_THRESHOLDS = {
+  /** XP needed for each level-up before growth is applied. */
   basePerLevel: 100,
+  /** Extra XP added per level-up as level increases. */
   growthPerLevel: 10,
 } as const;
+
+/**
+ * XP progress details for the current score snapshot.
+ */
+interface XpLevelSnapshot {
+  /** One-based player level derived from total score. */
+  level: number;
+  /** Level progress clamped to [0, 1]. */
+  progressPct: number;
+  /** XP earned toward the current level only. */
+  currentXp: number;
+  /** XP required to complete the current level. */
+  nextLevelXp: number;
+}
 
 /**
  * Returns total cumulative XP required to be at a given level (1-based).
@@ -38,12 +54,7 @@ export function getXpThresholdForLevel(level: number): number {
  * Returns the player's current level (1-based), progress fraction [0,1]
  * within that level, and the raw XP values for display.
  */
-export function getXpLevel(totalScore: number): {
-  level: number;
-  progressPct: number;
-  currentXp: number;
-  nextLevelXp: number;
-} {
+export function getXpLevel(totalScore: number): XpLevelSnapshot {
   const score = Math.max(totalScore, 0);
   const { basePerLevel, growthPerLevel } = XP_LEVEL_THRESHOLDS;
   const a = growthPerLevel / 2;
@@ -56,12 +67,14 @@ export function getXpLevel(totalScore: number): {
   const nextThreshold = getXpThresholdForLevel(level + 1);
   const progressPct = (score - currentThreshold) / (nextThreshold - currentThreshold);
 
-  return {
+  const snapshot: XpLevelSnapshot = {
     level,
     progressPct: Math.min(Math.max(progressPct, 0), 1),
     currentXp: score - currentThreshold,
     nextLevelXp: nextThreshold - currentThreshold,
   };
+
+  return snapshot;
 }
 
 /** Delay (ms) after closing a modal before opening another, to avoid overlap. */

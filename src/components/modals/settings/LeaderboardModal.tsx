@@ -42,17 +42,26 @@ import { captureException } from "../../../utils/sentry";
 export type LeaderboardType = "xp" | "totalWins" | "bestStreak";
 
 export interface LeaderboardEntry {
+  /** User id for this leaderboard row. */
   userId: string;
+  /** Display username. */
   username: string;
+  /** Optional avatar image URL. */
   avatarUrl?: string;
+  /** Current XP total. */
   xp: number;
+  /** Lifetime wins count. */
   totalWins: number;
+  /** Highest recorded win streak. */
   bestStreak: number;
+  /** Epoch millis when this row was last refreshed. */
   updatedAt: number;
 }
 
 export interface LeaderboardModalProps {
+  /** Controls whether the leaderboard modal is visible. */
   isVisible: boolean;
+  /** Closes the modal. */
   onClose: () => void;
   /** The current user's ID — used to highlight their row in the list. */
   currentUserId: string | null;
@@ -284,9 +293,13 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({
 // ─────────────────────────────────────────────────────────────────────────────
 
 interface LeaderboardRowProps {
+  /** One-based rank in the active leaderboard. */
   rank: number;
+  /** Raw leaderboard entry data. */
   entry: LeaderboardEntry;
+  /** Metric value for the active tab (xp/wins/streak). */
   statValue: number;
+  /** True when this row belongs to the signed-in user. */
   isCurrentUser: boolean;
 }
 
@@ -401,4 +414,3 @@ const LeaderboardRow: React.FC<LeaderboardRowProps> = ({
 };
 
 export default LeaderboardModal;
-

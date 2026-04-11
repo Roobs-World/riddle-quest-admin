@@ -18,6 +18,11 @@ let mockSet: jest.Mock;
 let mockUpdate: jest.Mock;
 let mockCollection: jest.Mock;
 
+// Firebase Functions mocks
+let mockHttpsCallable: jest.Mock;
+let mockGetFunctions: jest.Mock;
+let mockCallableFunction: jest.Mock;
+
 jest.mock("@react-native-firebase/firestore", () => {
   mockGetDoc = jest.fn();
   mockSetDoc = jest.fn();
@@ -47,6 +52,18 @@ jest.mock("@react-native-firebase/app", () => ({
   getApp: jest.fn().mockReturnValue({}),
 }));
 
+jest.mock("@react-native-firebase/functions", () => {
+  mockCallableFunction = jest.fn();
+  mockHttpsCallable = jest.fn(() => mockCallableFunction);
+  mockGetFunctions = jest.fn(() => ({}));
+
+  return {
+    __esModule: true,
+    getFunctions: mockGetFunctions,
+    httpsCallable: mockHttpsCallable,
+  };
+});
+
 // Mock PlayerSchema
 jest.mock("../../validation/firestoreSchemas", () => ({
   PlayerSchema: {
@@ -64,6 +81,11 @@ jest.mock("../../utils/logger", () => ({
   },
 }));
 
+// Mock sentry
+jest.mock("../../utils/sentry", () => ({
+  captureException: jest.fn(),
+}));
+
 describe("UserDataService", () => {
   let userDataService: UserDataService;
 
@@ -79,10 +101,14 @@ describe("UserDataService", () => {
     mockSetDoc.mockReset();
     mockUpdateDoc.mockReset();
     mockDoc.mockReset();
+    mockHttpsCallable.mockReset();
+    mockCallableFunction.mockReset();
 
     // Setup defaults: doc() returns a docRef placeholder
     mockDoc.mockReturnValue({});
     mockGetFirestore.mockReturnValue({});
+    mockGetFunctions.mockReturnValue({});
+    mockHttpsCallable.mockReturnValue(mockCallableFunction);
   });
 
   describe("saveUserProgress", () => {
@@ -818,7 +844,7 @@ describe("UserDataService", () => {
 
     it("should handle Firestore network errors during update", async () => {
       const networkError = new Error("Network unavailable");
-      mockUpdate.mockRejectedValue(networkError);
+      mockUpdateDoc.mockRejectedValue(networkError);
 
       await expect(
         userDataService.updateUserDocument(mockUserId, mockUpdates)
@@ -832,7 +858,7 @@ describe("UserDataService", () => {
 
     it("should handle document not found errors", async () => {
       const notFoundError = new Error("Document not found");
-      mockUpdate.mockRejectedValue(notFoundError);
+      mockUpdateDoc.mockRejectedValue(notFoundError);
 
       await expect(
         userDataService.updateUserDocument(mockUserId, mockUpdates)
@@ -930,7 +956,7 @@ describe("UserDataService", () => {
 
     it("should handle Firestore errors", async () => {
       const error = new Error("Firestore error");
-      mockUpdate.mockRejectedValue(error);
+      mockUpdateDoc.mockRejectedValue(error);
 
       await expect(
         userDataService.updateClassicIndex(mockUserId, newIndex)
@@ -944,7 +970,7 @@ describe("UserDataService", () => {
 
     it("should handle Firestore permission errors", async () => {
       const permissionError = new Error("Permission denied");
-      mockUpdate.mockRejectedValue(permissionError);
+      mockUpdateDoc.mockRejectedValue(permissionError);
 
       await expect(
         userDataService.updateClassicIndex(mockUserId, newIndex)
@@ -958,7 +984,7 @@ describe("UserDataService", () => {
 
     it("should handle Firestore network errors", async () => {
       const networkError = new Error("Network unavailable");
-      mockUpdate.mockRejectedValue(networkError);
+      mockUpdateDoc.mockRejectedValue(networkError);
 
       await expect(
         userDataService.updateClassicIndex(mockUserId, newIndex)
@@ -1066,7 +1092,7 @@ describe("UserDataService", () => {
 
     it("should handle Firestore permission errors", async () => {
       const permissionError = new Error("Permission denied");
-      mockUpdate.mockRejectedValue(permissionError);
+      mockUpdateDoc.mockRejectedValue(permissionError);
 
       await expect(
         userDataService.updateUserCoins(mockUserId, newCoinAmount)
@@ -1080,7 +1106,7 @@ describe("UserDataService", () => {
 
     it("should handle Firestore network errors", async () => {
       const networkError = new Error("Network unavailable");
-      mockUpdate.mockRejectedValue(networkError);
+      mockUpdateDoc.mockRejectedValue(networkError);
 
       await expect(
         userDataService.updateUserCoins(mockUserId, newCoinAmount)
@@ -1215,6 +1241,453 @@ describe("UserDataService", () => {
     });
   });
 
+  describe("initializeNewUser", () => {
+    const mockUserData = {
+      email: "test@example.com",
+      username: "TestUser",
+      displayName: "Test User",
+      avatarUrl: "https://example.com/avatar.png",
+    };
+
+    it("should initialize new user successfully", async () => {
+      const mockResponse = {
+        data: {
+          success: true,
+          message: "User initialized successfully",
+          userId: "new-user-id",
+        },
+      };
+      mockCallableFunction.mockResolvedValue(mockResponse);
+
+      const result = await userDataService.initializeNewUser(mockUserData);
+
+      expect(mockHttpsCallable).toHaveBeenCalledWith(expect.any(Object), "initializeUser");
+      expect(mockCallableFunction).toHaveBeenCalledWith(mockUserData);
+      expect(result).toEqual(mockResponse.data);
+      expect(logger.info).toHaveBeenCalledWith(
+        "User initialized successfully:",
+        mockResponse.data
+      );
+    });
+
+    it("should initialize user with minimal data", async () => {
+      const minimalUserData = {
+        email: "minimal@example.com",
+        username: "MinimalUser",
+      };
+      const mockResponse = {
+        data: {
+          success: true,
+          message: "User initialized successfully",
+          userId: "minimal-user-id",
+        },
+      };
+      mockCallableFunction.mockResolvedValue(mockResponse);
+
+      const result = await userDataService.initializeNewUser(minimalUserData);
+
+      expect(mockCallableFunction).toHaveBeenCalledWith(minimalUserData);
+      expect(result).toEqual(mockResponse.data);
+    });
+
+    it("should handle Firebase function errors", async () => {
+      const error = new Error("Firebase function error");
+      mockCallableFunction.mockRejectedValue(error);
+
+      await expect(
+        userDataService.initializeNewUser(mockUserData)
+      ).rejects.toThrow("Failed to initialize new user account");
+
+      expect(logger.error).toHaveBeenCalledWith(
+        "Error initializing new user:",
+        error
+      );
+    });
+
+    it("should handle network errors", async () => {
+      const networkError = new Error("Network unavailable");
+      mockCallableFunction.mockRejectedValue(networkError);
+
+      await expect(
+        userDataService.initializeNewUser(mockUserData)
+      ).rejects.toThrow("Failed to initialize new user account");
+
+      expect(logger.error).toHaveBeenCalledWith(
+        "Error initializing new user:",
+        networkError
+      );
+    });
+
+    it("should handle permission errors", async () => {
+      const permissionError = new Error("Permission denied");
+      mockCallableFunction.mockRejectedValue(permissionError);
+
+      await expect(
+        userDataService.initializeNewUser(mockUserData)
+      ).rejects.toThrow("Failed to initialize new user account");
+
+      expect(logger.error).toHaveBeenCalledWith(
+        "Error initializing new user:",
+        permissionError
+      );
+    });
+
+    it("should handle unauthenticated errors", async () => {
+      const unauthError = new Error("User is not authenticated");
+      mockCallableFunction.mockRejectedValue(unauthError);
+
+      await expect(
+        userDataService.initializeNewUser(mockUserData)
+      ).rejects.toThrow("Failed to initialize new user account");
+
+      expect(logger.error).toHaveBeenCalledWith(
+        "Error initializing new user:",
+        unauthError
+      );
+    });
+
+    it("should pass optional displayName correctly", async () => {
+      const userDataWithDisplayName = {
+        email: "test@example.com",
+        username: "TestUser",
+        displayName: "Custom Display Name",
+      };
+      const mockResponse = {
+        data: {
+          success: true,
+          message: "User initialized successfully",
+          userId: "user-id",
+        },
+      };
+      mockCallableFunction.mockResolvedValue(mockResponse);
+
+      await userDataService.initializeNewUser(userDataWithDisplayName);
+
+      expect(mockCallableFunction).toHaveBeenCalledWith(userDataWithDisplayName);
+    });
+
+    it("should pass optional avatarUrl correctly", async () => {
+      const userDataWithAvatar = {
+        email: "test@example.com",
+        username: "TestUser",
+        avatarUrl: "https://example.com/custom-avatar.png",
+      };
+      const mockResponse = {
+        data: {
+          success: true,
+          message: "User initialized successfully",
+          userId: "user-id",
+        },
+      };
+      mockCallableFunction.mockResolvedValue(mockResponse);
+
+      await userDataService.initializeNewUser(userDataWithAvatar);
+
+      expect(mockCallableFunction).toHaveBeenCalledWith(userDataWithAvatar);
+    });
+  });
+
+  describe("ensureUserDocumentComplete", () => {
+    it("should ensure user document is complete successfully", async () => {
+      const mockResponse = {
+        data: {
+          success: true,
+          message: "User document is complete",
+        },
+      };
+      mockCallableFunction.mockResolvedValue(mockResponse);
+
+      const result = await userDataService.ensureUserDocumentComplete();
+
+      expect(mockHttpsCallable).toHaveBeenCalledWith(expect.any(Object), "ensureUserComplete");
+      expect(mockCallableFunction).toHaveBeenCalledWith({});
+      expect(result).toEqual(mockResponse.data);
+      expect(logger.info).toHaveBeenCalledWith(
+        "User document completeness ensured:",
+        mockResponse.data
+      );
+    });
+
+    it("should handle successful fix of missing fields", async () => {
+      const mockResponse = {
+        data: {
+          success: true,
+          message: "Missing fields added to user document",
+        },
+      };
+      mockCallableFunction.mockResolvedValue(mockResponse);
+
+      const result = await userDataService.ensureUserDocumentComplete();
+
+      expect(result).toEqual(mockResponse.data);
+      expect(result.success).toBe(true);
+    });
+
+    it("should handle Firebase function errors", async () => {
+      const error = new Error("Firebase function error");
+      mockCallableFunction.mockRejectedValue(error);
+
+      await expect(
+        userDataService.ensureUserDocumentComplete()
+      ).rejects.toThrow("Failed to ensure user document completeness");
+
+      expect(logger.error).toHaveBeenCalledWith(
+        "Error ensuring user document completeness:",
+        error
+      );
+    });
+
+    it("should handle network errors", async () => {
+      const networkError = new Error("Network unavailable");
+      mockCallableFunction.mockRejectedValue(networkError);
+
+      await expect(
+        userDataService.ensureUserDocumentComplete()
+      ).rejects.toThrow("Failed to ensure user document completeness");
+
+      expect(logger.error).toHaveBeenCalledWith(
+        "Error ensuring user document completeness:",
+        networkError
+      );
+    });
+
+    it("should handle permission errors", async () => {
+      const permissionError = new Error("Permission denied");
+      mockCallableFunction.mockRejectedValue(permissionError);
+
+      await expect(
+        userDataService.ensureUserDocumentComplete()
+      ).rejects.toThrow("Failed to ensure user document completeness");
+
+      expect(logger.error).toHaveBeenCalledWith(
+        "Error ensuring user document completeness:",
+        permissionError
+      );
+    });
+
+    it("should handle unauthenticated errors", async () => {
+      const unauthError = new Error("User is not authenticated");
+      mockCallableFunction.mockRejectedValue(unauthError);
+
+      await expect(
+        userDataService.ensureUserDocumentComplete()
+      ).rejects.toThrow("Failed to ensure user document completeness");
+
+      expect(logger.error).toHaveBeenCalledWith(
+        "Error ensuring user document completeness:",
+        unauthError
+      );
+    });
+
+    it("should handle timeout errors", async () => {
+      const timeoutError = new Error("Request timeout");
+      mockCallableFunction.mockRejectedValue(timeoutError);
+
+      await expect(
+        userDataService.ensureUserDocumentComplete()
+      ).rejects.toThrow("Failed to ensure user document completeness");
+
+      expect(logger.error).toHaveBeenCalledWith(
+        "Error ensuring user document completeness:",
+        timeoutError
+      );
+    });
+  });
+
+  describe("updateUserStats", () => {
+    const mockTargetUserId = "target-user-id";
+    const mockStatsUpdate = {
+      dailyPuzzlesCompleted: 10,
+      bestStreak: 5,
+      totalWordsGuessed: 50,
+      winRate: 0.75,
+      averageGuesses: 4.5,
+      totalScore: 2500,
+    };
+
+    it("should update user stats successfully", async () => {
+      const mockResponse = {
+        data: {
+          success: true,
+          message: "User stats updated successfully",
+        },
+      };
+      mockCallableFunction.mockResolvedValue(mockResponse);
+
+      const result = await userDataService.updateUserStats(mockTargetUserId, mockStatsUpdate);
+
+      expect(mockHttpsCallable).toHaveBeenCalledWith(expect.any(Object), "updateUserStats");
+      expect(mockCallableFunction).toHaveBeenCalledWith({
+        targetUserId: mockTargetUserId,
+        statsUpdate: mockStatsUpdate,
+      });
+      expect(result).toEqual(mockResponse.data);
+      expect(logger.info).toHaveBeenCalledWith(
+        "User stats updated successfully:",
+        mockResponse.data
+      );
+    });
+
+    it("should update single stat field", async () => {
+      const singleStatUpdate = { gamesPlayed: 25 };
+      const mockResponse = {
+        data: {
+          success: true,
+          message: "User stats updated successfully",
+        },
+      };
+      mockCallableFunction.mockResolvedValue(mockResponse);
+
+      const result = await userDataService.updateUserStats(mockTargetUserId, singleStatUpdate);
+
+      expect(mockCallableFunction).toHaveBeenCalledWith({
+        targetUserId: mockTargetUserId,
+        statsUpdate: singleStatUpdate,
+      });
+      expect(result).toEqual(mockResponse.data);
+    });
+
+    it("should update all stat fields", async () => {
+      const allStatsUpdate = {
+        dailyPuzzlesCompleted: 15,
+        bestStreak: 10,
+        totalWordsGuessed: 100,
+        winRate: 0.85,
+        averageGuesses: 4.0,
+        totalScore: 5000,
+        highestLevelClassic: 50,
+        gamesPlayed: 100,
+        wins: 85,
+        challengeWins: 20,
+        winStreak: 5,
+        totalWins: 85,
+        totalGuessesInWins: 340,
+      };
+      const mockResponse = {
+        data: {
+          success: true,
+          message: "User stats updated successfully",
+        },
+      };
+      mockCallableFunction.mockResolvedValue(mockResponse);
+
+      const result = await userDataService.updateUserStats(mockTargetUserId, allStatsUpdate);
+
+      expect(mockCallableFunction).toHaveBeenCalledWith({
+        targetUserId: mockTargetUserId,
+        statsUpdate: allStatsUpdate,
+      });
+      expect(result).toEqual(mockResponse.data);
+    });
+
+    it("should handle empty stats update", async () => {
+      const emptyStatsUpdate = {};
+      const mockResponse = {
+        data: {
+          success: true,
+          message: "No stats to update",
+        },
+      };
+      mockCallableFunction.mockResolvedValue(mockResponse);
+
+      const result = await userDataService.updateUserStats(mockTargetUserId, emptyStatsUpdate);
+
+      expect(mockCallableFunction).toHaveBeenCalledWith({
+        targetUserId: mockTargetUserId,
+        statsUpdate: emptyStatsUpdate,
+      });
+      expect(result).toEqual(mockResponse.data);
+    });
+
+    it("should handle Firebase function errors", async () => {
+      const error = new Error("Firebase function error");
+      mockCallableFunction.mockRejectedValue(error);
+
+      await expect(
+        userDataService.updateUserStats(mockTargetUserId, mockStatsUpdate)
+      ).rejects.toThrow("Failed to update user stats");
+
+      expect(logger.error).toHaveBeenCalledWith(
+        "Error updating user stats:",
+        error
+      );
+    });
+
+    it("should handle network errors", async () => {
+      const networkError = new Error("Network unavailable");
+      mockCallableFunction.mockRejectedValue(networkError);
+
+      await expect(
+        userDataService.updateUserStats(mockTargetUserId, mockStatsUpdate)
+      ).rejects.toThrow("Failed to update user stats");
+
+      expect(logger.error).toHaveBeenCalledWith(
+        "Error updating user stats:",
+        networkError
+      );
+    });
+
+    it("should handle permission errors", async () => {
+      const permissionError = new Error("Permission denied");
+      mockCallableFunction.mockRejectedValue(permissionError);
+
+      await expect(
+        userDataService.updateUserStats(mockTargetUserId, mockStatsUpdate)
+      ).rejects.toThrow("Failed to update user stats");
+
+      expect(logger.error).toHaveBeenCalledWith(
+        "Error updating user stats:",
+        permissionError
+      );
+    });
+
+    it("should handle user not found errors", async () => {
+      const notFoundError = new Error("Target user not found");
+      mockCallableFunction.mockRejectedValue(notFoundError);
+
+      await expect(
+        userDataService.updateUserStats(mockTargetUserId, mockStatsUpdate)
+      ).rejects.toThrow("Failed to update user stats");
+
+      expect(logger.error).toHaveBeenCalledWith(
+        "Error updating user stats:",
+        notFoundError
+      );
+    });
+
+    it("should handle unauthenticated errors", async () => {
+      const unauthError = new Error("User is not authenticated");
+      mockCallableFunction.mockRejectedValue(unauthError);
+
+      await expect(
+        userDataService.updateUserStats(mockTargetUserId, mockStatsUpdate)
+      ).rejects.toThrow("Failed to update user stats");
+
+      expect(logger.error).toHaveBeenCalledWith(
+        "Error updating user stats:",
+        unauthError
+      );
+    });
+
+    it("should handle invalid stats values gracefully", async () => {
+      const invalidStatsUpdate = {
+        winRate: 1.5, // Invalid: should be between 0 and 1
+        gamesPlayed: -5, // Invalid: should be non-negative
+      };
+      const mockResponse = {
+        data: {
+          success: false,
+          message: "Invalid stats values provided",
+        },
+      };
+      mockCallableFunction.mockResolvedValue(mockResponse);
+
+      const result = await userDataService.updateUserStats(mockTargetUserId, invalidStatsUpdate);
+
+      expect(result.success).toBe(false);
+    });
+  });
+
   describe("Service Integration", () => {
     it("should have correct users collection constant", () => {
       expect((UserDataService as any).USERS_COLLECTION).toBe("users");
@@ -1229,6 +1702,13 @@ describe("UserDataService", () => {
       expect(typeof userDataService.updateClassicIndex).toBe("function");
       expect(typeof userDataService.updateUserCoins).toBe("function");
       expect(typeof userDataService.userExists).toBe("function");
+    });
+
+    it("should have additional methods not in interface", () => {
+      // Test that the service has Firebase Functions methods
+      expect(typeof userDataService.initializeNewUser).toBe("function");
+      expect(typeof userDataService.ensureUserDocumentComplete).toBe("function");
+      expect(typeof userDataService.updateUserStats).toBe("function");
     });
 
     it("should use correct Firebase app instance", async () => {
@@ -1361,6 +1841,19 @@ describe("UserDataService", () => {
 
       expect(mockUpdateDoc).toHaveBeenCalledTimes(2);
     });
+
+    it("should handle mixed Firestore and Firebase Functions operations", async () => {
+      mockUpdateDoc.mockResolvedValue(undefined);
+      mockCallableFunction.mockResolvedValue({
+        data: { success: true, message: "Done" },
+      });
+
+      // Execute both Firestore and Functions operations
+      await userDataService.updateUserCoins("user1", 100);
+      await userDataService.ensureUserDocumentComplete();
+
+      expect(mockUpdateDoc).toHaveBeenCalledTimes(1);
+      expect(mockCallableFunction).toHaveBeenCalledTimes(1);
+    });
   });
 });
-

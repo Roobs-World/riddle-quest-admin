@@ -1,10 +1,13 @@
 import {
+  APP_LANGUAGE_STORAGE_KEY,
   AppStrings,
   LANGUAGE_OPTIONS,
   getAppLanguage,
   getLanguageLabel,
   isSupportedLanguage,
+  loadAppStringsForLanguage,
   setAppLanguage,
+  setAppLanguageAsync,
   useDeviceLanguage,
 } from "../AppStrings";
 
@@ -85,4 +88,34 @@ describe("AppStrings i18n support", () => {
     setAppLanguage("zh");
     expect(AppStrings.Settings.TITLE).toBe("设置");
   });
+
+  it("supports async language loading path", async () => {
+    const esBundle = await loadAppStringsForLanguage("es");
+    expect(esBundle.Settings.TITLE).toBe("Configuracion");
+
+    await setAppLanguageAsync("fr");
+    expect(getAppLanguage()).toBe("fr");
+    expect(AppStrings.Settings.TITLE).toBe("Parametres");
+  });
+
+  it("normalizes all supported locale prefixes and falls back to English", () => {
+    expect(useDeviceLanguage("pt-BR")).toBe("pt");
+    expect(useDeviceLanguage("de-DE")).toBe("de");
+    expect(useDeviceLanguage("ja-JP")).toBe("ja");
+    expect(useDeviceLanguage("ko-KR")).toBe("ko");
+    expect(useDeviceLanguage("zh-CN")).toBe("zh");
+    expect(useDeviceLanguage("ru-RU")).toBe("ru");
+    expect(useDeviceLanguage("tr-TR")).toBe("tr");
+    expect(useDeviceLanguage("it-IT")).toBe("en");
+  });
+
+  it("falls back to English label for unknown language code", () => {
+    expect(getLanguageLabel("en")).toBe("English");
+    expect(getLanguageLabel("zz" as any)).toBe("English");
+  });
+
+  it("exposes language storage key", () => {
+    expect(APP_LANGUAGE_STORAGE_KEY).toBe("appLanguage");
+  });
+
 });

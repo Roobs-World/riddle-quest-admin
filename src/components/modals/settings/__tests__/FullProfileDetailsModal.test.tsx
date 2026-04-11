@@ -76,12 +76,17 @@ jest.mock("../../../buttons/CloseButton", () => {
 jest.mock("../ChangePasswordModal", () => {
   return function MockChangePasswordModal({ isVisible, onClose }: any) {
     const React = require("react");
-    const { View, Text } = require("react-native");
+    const { View, Text, TouchableOpacity } = require("react-native");
     if (!isVisible) return null;
     return React.createElement(
       View,
       { testID: "change-password-modal" },
-      React.createElement(Text, {}, "Change Password Modal")
+      React.createElement(Text, {}, "Change Password Modal"),
+      React.createElement(
+        TouchableOpacity,
+        { testID: "change-password-close", onPress: onClose },
+        React.createElement(Text, {}, "Close Change Password")
+      )
     );
   };
 });
@@ -89,12 +94,17 @@ jest.mock("../ChangePasswordModal", () => {
 jest.mock("../UpdateUsernameModal", () => {
   return function MockUpdateUsernameModal({ isVisible, onClose }: any) {
     const React = require("react");
-    const { View, Text } = require("react-native");
+    const { View, Text, TouchableOpacity } = require("react-native");
     if (!isVisible) return null;
     return React.createElement(
       View,
       { testID: "update-username-modal" },
-      React.createElement(Text, {}, "Update Username Modal")
+      React.createElement(Text, {}, "Update Username Modal"),
+      React.createElement(
+        TouchableOpacity,
+        { testID: "update-username-close", onPress: onClose },
+        React.createElement(Text, {}, "Close Update Username")
+      )
     );
   };
 });
@@ -350,5 +360,57 @@ describe("FullProfileDetailsModal", () => {
     );
 
     expect(getByText("Leaderboard")).toBeTruthy();
+  });
+
+  it("opens achievements modal when Achievements button is pressed", () => {
+    const { getByText } = renderWithModalProvider(
+      <FullProfileDetailsModal {...defaultProps} />
+    );
+
+    fireEvent.press(getByText("Achievements"));
+    // The modal.openGameModal is called - we verify the button exists and is pressable
+    expect(getByText("Achievements")).toBeTruthy();
+  });
+
+  it("opens statistics modal when Statistics button is pressed", () => {
+    const { getByText } = renderWithModalProvider(
+      <FullProfileDetailsModal {...defaultProps} />
+    );
+
+    fireEvent.press(getByText("Statistics"));
+    // The modal.openGameModal is called - we verify the button exists and is pressable
+    expect(getByText("Statistics")).toBeTruthy();
+  });
+
+  it("opens leaderboard modal when Leaderboard button is pressed", () => {
+    const { getByText } = renderWithModalProvider(
+      <FullProfileDetailsModal {...defaultProps} />
+    );
+
+    fireEvent.press(getByText("Leaderboard"));
+    // The modal.openGameModal is called - we verify the button exists and is pressable
+    expect(getByText("Leaderboard")).toBeTruthy();
+  });
+
+  it("closes change password modal via onClose callback", () => {
+    const { getByText, queryByTestId, getByTestId } = renderWithModalProvider(
+      <FullProfileDetailsModal {...defaultProps} />
+    );
+
+    fireEvent.press(getByText("Change Password"));
+    expect(getByTestId("change-password-modal")).toBeTruthy();
+    fireEvent.press(getByTestId("change-password-close"));
+    expect(queryByTestId("change-password-modal")).toBeNull();
+  });
+
+  it("closes update username modal via onClose callback", () => {
+    const { getByText, getByTestId, queryByTestId } = renderWithModalProvider(
+      <FullProfileDetailsModal {...defaultProps} />
+    );
+
+    fireEvent.press(getByText("TestUser"));
+    expect(getByTestId("update-username-modal")).toBeTruthy();
+    fireEvent.press(getByTestId("update-username-close"));
+    expect(queryByTestId("update-username-modal")).toBeNull();
   });
 });

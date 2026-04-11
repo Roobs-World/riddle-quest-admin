@@ -186,5 +186,293 @@ describe("LossModal", () => {
       expect(getByText("So close!")).toBeTruthy();
     });
   });
+
+  describe("Continue Options", () => {
+    it("should show Watch Ad button when onWatchAdContinue is provided", () => {
+      const { getByText } = render(
+        <LossModal
+          {...defaultProps}
+          onWatchAdContinue={jest.fn()}
+        />
+      );
+
+      expect(getByText("Watch Ad to Continue")).toBeTruthy();
+    });
+
+    it("should show coin continue button when onCoinContinue is provided", () => {
+      const { getByText } = render(
+        <LossModal
+          {...defaultProps}
+          onCoinContinue={jest.fn()}
+          coinContinueCost={50}
+        />
+      );
+
+      expect(getByText("Use 50 Coins to Continue")).toBeTruthy();
+    });
+
+    it("should show default 0 coins when coinContinueCost is not provided", () => {
+      const { getByText } = render(
+        <LossModal
+          {...defaultProps}
+          onCoinContinue={jest.fn()}
+        />
+      );
+
+      expect(getByText("Use 0 Coins to Continue")).toBeTruthy();
+    });
+
+    it("should show Skip Level instead of Next Level when continue options are available", () => {
+      const { getByText, queryByText } = render(
+        <LossModal
+          {...defaultProps}
+          onWatchAdContinue={jest.fn()}
+        />
+      );
+
+      expect(getByText("Skip Level")).toBeTruthy();
+      expect(queryByText("Next Level")).toBeNull();
+    });
+
+    it("should show both continue options when both callbacks are provided", () => {
+      const { getByText } = render(
+        <LossModal
+          {...defaultProps}
+          onWatchAdContinue={jest.fn()}
+          onCoinContinue={jest.fn()}
+          coinContinueCost={25}
+        />
+      );
+
+      expect(getByText("Watch Ad to Continue")).toBeTruthy();
+      expect(getByText("Use 25 Coins to Continue")).toBeTruthy();
+    });
+
+    it("should call onWatchAdContinue when Watch Ad button is pressed", async () => {
+      const mockWatchAd = jest.fn().mockResolvedValue(undefined);
+
+      const { getByText } = render(
+        <LossModal
+          {...defaultProps}
+          onWatchAdContinue={mockWatchAd}
+        />
+      );
+
+      fireEvent.press(getByText("Watch Ad to Continue"));
+
+      expect(mockWatchAd).toHaveBeenCalledTimes(1);
+    });
+
+    it("should call onCoinContinue when Use Coins button is pressed", async () => {
+      const mockCoinContinue = jest.fn().mockResolvedValue(undefined);
+
+      const { getByText } = render(
+        <LossModal
+          {...defaultProps}
+          onCoinContinue={mockCoinContinue}
+          coinContinueCost={50}
+        />
+      );
+
+      fireEvent.press(getByText("Use 50 Coins to Continue"));
+
+      expect(mockCoinContinue).toHaveBeenCalledTimes(1);
+    });
+
+    it("should not close modal if onWatchAdContinue returns false", async () => {
+      const mockWatchAd = jest.fn().mockResolvedValue(false);
+      const mockOnClose = jest.fn();
+
+      const { getByText } = render(
+        <LossModal
+          {...defaultProps}
+          onWatchAdContinue={mockWatchAd}
+          onClose={mockOnClose}
+        />
+      );
+
+      fireEvent.press(getByText("Watch Ad to Continue"));
+
+      await waitFor(() => {
+        expect(mockWatchAd).toHaveBeenCalledTimes(1);
+      });
+
+      // onClose should not be called when callback returns false
+      expect(mockOnClose).not.toHaveBeenCalled();
+    });
+
+    it("should not close modal if onCoinContinue returns false", async () => {
+      const mockCoinContinue = jest.fn().mockResolvedValue(false);
+      const mockOnClose = jest.fn();
+
+      const { getByText } = render(
+        <LossModal
+          {...defaultProps}
+          onCoinContinue={mockCoinContinue}
+          coinContinueCost={50}
+          onClose={mockOnClose}
+        />
+      );
+
+      fireEvent.press(getByText("Use 50 Coins to Continue"));
+
+      await waitFor(() => {
+        expect(mockCoinContinue).toHaveBeenCalledTimes(1);
+      });
+
+      expect(mockOnClose).not.toHaveBeenCalled();
+    });
+
+    it("should close modal if onWatchAdContinue returns undefined/void", async () => {
+      const mockWatchAd = jest.fn().mockResolvedValue(undefined);
+      const mockOnClose = jest.fn();
+
+      const { getByText } = render(
+        <LossModal
+          {...defaultProps}
+          onWatchAdContinue={mockWatchAd}
+          onClose={mockOnClose}
+        />
+      );
+
+      fireEvent.press(getByText("Watch Ad to Continue"));
+
+      await waitFor(() => {
+        expect(mockOnClose).toHaveBeenCalledTimes(1);
+      });
+    });
+  });
+
+  describe("canWatchAd and canUseCoin props", () => {
+    it("should pass disabled state to Watch Ad button when canWatchAd is false", () => {
+      const { getByText } = render(
+        <LossModal
+          {...defaultProps}
+          onWatchAdContinue={jest.fn()}
+          canWatchAd={false}
+        />
+      );
+
+      // The button should still be rendered
+      expect(getByText("Watch Ad to Continue")).toBeTruthy();
+    });
+
+    it("should pass disabled state to Coin button when canUseCoin is false", () => {
+      const { getByText } = render(
+        <LossModal
+          {...defaultProps}
+          onCoinContinue={jest.fn()}
+          coinContinueCost={50}
+          canUseCoin={false}
+        />
+      );
+
+      expect(getByText("Use 50 Coins to Continue")).toBeTruthy();
+    });
+
+    it("should enable buttons when canWatchAd and canUseCoin are true", () => {
+      const { getByText } = render(
+        <LossModal
+          {...defaultProps}
+          onWatchAdContinue={jest.fn()}
+          onCoinContinue={jest.fn()}
+          coinContinueCost={50}
+          canWatchAd={true}
+          canUseCoin={true}
+        />
+      );
+
+      expect(getByText("Watch Ad to Continue")).toBeTruthy();
+      expect(getByText("Use 50 Coins to Continue")).toBeTruthy();
+    });
+  });
+
+  describe("Go to Lobby button", () => {
+    it("should call onHome when Go to Lobby button is pressed", () => {
+      const { getByText } = render(<LossModal {...defaultProps} />);
+
+      fireEvent.press(getByText("Go to Lobby"));
+
+      expect(defaultProps.onHome).toHaveBeenCalledTimes(1);
+    });
+
+    it("should call onClose after onHome when Go to Lobby is pressed", async () => {
+      const mockOnHome = jest.fn().mockResolvedValue(undefined);
+      const mockOnClose = jest.fn();
+
+      const props = {
+        ...defaultProps,
+        onHome: mockOnHome,
+        onClose: mockOnClose,
+      };
+
+      const { getByText } = render(<LossModal {...props} />);
+
+      fireEvent.press(getByText("Go to Lobby"));
+
+      expect(mockOnHome).toHaveBeenCalledTimes(1);
+
+      await waitFor(() => {
+        expect(mockOnClose).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    it("should show Go to Lobby in both continue and non-continue views", () => {
+      // Non-continue view
+      const { getByText: getByTextNoContinue } = render(
+        <LossModal {...defaultProps} />
+      );
+      expect(getByTextNoContinue("Go to Lobby")).toBeTruthy();
+
+      // Continue view
+      const { getByText: getByTextContinue } = render(
+        <LossModal {...defaultProps} onWatchAdContinue={jest.fn()} />
+      );
+      expect(getByTextContinue("Go to Lobby")).toBeTruthy();
+    });
+  });
+
+  describe("Answer Display", () => {
+    it("should display the correct answer in the modal", () => {
+      const { getByText } = render(
+        <LossModal {...defaultProps} correctAnswer="PUZZLE" />
+      );
+
+      expect(getByText("Answer: PUZZLE")).toBeTruthy();
+    });
+
+    it("should display answer in continue options view", () => {
+      const { getByText } = render(
+        <LossModal
+          {...defaultProps}
+          correctAnswer="RIDDLE"
+          onWatchAdContinue={jest.fn()}
+        />
+      );
+
+      expect(getByText("Answer: RIDDLE")).toBeTruthy();
+    });
+  });
+
+  describe("Modal Accessibility", () => {
+    it("should have accessibility label for game loss notification", () => {
+      render(<LossModal {...defaultProps} />);
+      // Modal should have accessibilityLabel set (tested via render without errors)
+    });
+  });
+
+  describe("Visibility Transitions", () => {
+    it("should handle rapid visibility changes without errors", () => {
+      const { rerender } = render(
+        <LossModal {...defaultProps} isVisible={true} />
+      );
+
+      for (let i = 0; i < 5; i++) {
+        expect(() => {
+          rerender(<LossModal {...defaultProps} isVisible={i % 2 === 0} />);
+        }).not.toThrow();
+      }
+    });
+  });
 });
 

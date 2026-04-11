@@ -42,9 +42,8 @@ jest.mock("react", () => ({
   useRef: mockUseRef,
 }));
 
-// Mock console methods
+// Mock console.log to reduce noise
 jest.spyOn(console, "log").mockImplementation(() => {});
-jest.spyOn(console, "error").mockImplementation(() => {});
 
 describe("useInterstitialAds", () => {
   beforeEach(() => {

@@ -52,6 +52,7 @@ import {
 // Import all modal components
 import VictoryModal from "./game/VictoryModal";
 import LossModal from "./game/LossModal";
+import GameModeModal from "./game/GameModeModal";
 // Note: OutOfAttemptsModal, WatchAdForChanceModal, and DailyChallengeCompletionModal have been removed
 
 import SettingsModal from "./settings/SettingsModal";
@@ -210,6 +211,18 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
     canWatchAd: props.canWatchAd as boolean | undefined,
     canUseCoin: props.canUseCoin as boolean | undefined,
   })),
+
+  gameMode: createModalWrapper(
+    GameModeModal,
+    (props: BaseModalProps & ModalData) => ({
+      isVisible: props.isVisible,
+      onClose: props.onClose,
+      onSelectMode:
+        (props.onSelectMode as (mode: "classic" | "daily") => void) ||
+        (() => {}),
+      currentLevel: props.currentLevel as number | undefined,
+    })
+  ),
 
   /**
    * Settings Modals

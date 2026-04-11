@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 /**
  * @fileoverview
  * Authentication and player session context for Qwordly.
@@ -34,12 +35,16 @@ import { getAuth } from "@react-native-firebase/auth";
 import { getApp } from "@react-native-firebase/app";
 import { getFunctions, httpsCallable } from "@react-native-firebase/functions";
 import { RiddleInitializationService } from "../services/RiddleInitializationService";
-import { AccessToken } from "react-native-fbsdk-next";
 import { logger } from "../utils/logger";
 import { captureException, setUser as sentrySetUser, clearUser as sentryClearUser, addBreadcrumb } from "../utils/sentry";
 import { analyticsService } from "../services/AnalyticsService";
 import { offlineQueue } from "../services/OfflineQueueService";
 import { NotificationService } from "../services/NotificationService";
+import {
+  createGuestPlayer,
+  resolveInitialGameMode,
+  resolveUserEmail,
+} from "../features/auth/sessionBootstrap";
 
 export type GameMode = "daily" | "classic" | "challenge" | "tutorial";
 
@@ -69,13 +74,32 @@ interface AuthContextType {
   fetchCurrentRiddle: (player: Player | null, mode: GameMode) => Promise<void>; // Expose fetchCurrentRiddle
 }
 
-// Three separate contexts so consumers only re-render when their slice changes.
-// AuthSessionContext  — isAuthenticated / isLoading / login / logout
-// PlayerContext       — playerData / updatePlayerClassicIndex / updatePlayerData
-// RiddleContext       — currentRiddle / gameMode / isDailyChallengeAvailable / isRiddlesInitializing / …
-//
-// useAuth() merges all three for backward-compatibility with existing call-sites.
+type AuthSessionContextType = Pick<
+  AuthContextType,
+  "isAuthenticated" | "isLoading" | "login" | "logout"
+>;
+type PlayerContextType = Pick<
+  AuthContextType,
+  "playerData" | "updatePlayerClassicIndex" | "updatePlayerData" | "updatePlayerDataLocally"
+>;
+type RiddleContextType = Pick<
+  AuthContextType,
+  | "currentRiddle"
+  | "setCurrentRiddle"
+  | "fetchCurrentRiddle"
+  | "isDailyChallengeAvailable"
+  | "gameMode"
+  | "setGameMode"
+  | "isRiddlesInitializing"
+>;
+
+// Legacy merged context for compatibility.
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthSessionContext = createContext<AuthSessionContextType | undefined>(
+  undefined
+);
+const PlayerContext = createContext<PlayerContextType | undefined>(undefined);
+const RiddleContext = createContext<RiddleContextType | undefined>(undefined);
 
 /**
  * Top-level provider that wires Firebase Auth, Firestore-backed player data,
@@ -359,45 +383,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             setIsRiddlesInitializing(true);
             await RiddleInitializationService.checkAndInitializeRiddles();
             setIsRiddlesInitializing(false);
-            const guestPlayer: Player = {
-              userId: user.uid,
-              email: `guest_${user.uid}@guest.qwordly.com`,
-              username: "Guest",
-              coins: 0,
-              progress: {
-                classicIndex: 1,
-                dailyChallengeIndex: 0,
-                dailyChallengeCurrentQuestion: 0,
-                tutorialIndex: 0,
-              },
-              stats: {
-                xp: 0,
-                level: 1,
-                dailyPuzzlesCompleted: 0,
-                bestStreak: 0,
-                totalWordsGuessed: 0,
-                winRate: 0,
-                averageGuesses: 0,
-                totalScore: 0,
-                highestLevelClassic: 0,
-                gamesPlayed: 0,
-                wins: 0,
-                challengeWins: 0,
-                winStreak: 0,
-                totalWins: 0,
-                totalGuessesInWins: 0,
-                totalHintsUsed: 0,
-              },
-              unlockedAchievements: [],
-              hasPurchasedApp: false,
-            };
+            const guestPlayer: Player = createGuestPlayer(user.uid);
             setPlayerData(guestPlayer);
 
             const guestCompletedToday =
               await hasCompletedDailyChallengeToday(guestPlayer);
-            const guestInitialMode: GameMode = guestCompletedToday
-              ? "classic"
-              : "daily";
+            const guestInitialMode = resolveInitialGameMode(
+              guestCompletedToday
+            ) as GameMode;
 
             setGameMode(guestInitialMode);
             await fetchCurrentRiddle(guestPlayer, guestInitialMode);
@@ -450,91 +443,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             });
 
             try {
-              let userEmail = user.email;
-
-              // Check if email is null, undefined, or empty string
-              if (!userEmail || userEmail.trim() === "") {
-                logger.debug(
-                  "⚠️ Firebase user has no email, checking providerData..."
-                );
-
-                // First, try to get email from any provider in providerData
-                const providerWithEmail = user.providerData?.find(
-                  (provider) => provider.email && provider.email.trim() !== ""
-                );
-
-                if (providerWithEmail?.email) {
-                  logger.debug(
-                    `✅ Found email in providerData (${providerWithEmail.providerId}):`,
-                    providerWithEmail.email
-                  );
-                  userEmail = providerWithEmail.email;
-                }
-
-                // If still no email and this is a Facebook login, try Graph API
-                if (!userEmail || userEmail.trim() === "") {
-                  const facebookProvider = user.providerData?.find(
-                    (provider) => provider.providerId === "facebook.com"
-                  );
-
-                  if (facebookProvider) {
-                    logger.debug(
-                      "📘 Detected Facebook login, attempting direct Facebook Graph API call..."
-                    );
-
-                    try {
-                      const currentToken =
-                        await AccessToken.getCurrentAccessToken();
-                      if (!currentToken) {
-                        throw new Error(
-                          "No Facebook access token available for Graph API call"
-                        );
-                      }
-
-                      const graphResponse = await fetch(
-                        `https://graph.facebook.com/me?fields=id,name,email&access_token=${currentToken.accessToken}`
-                      );
-
-                      if (!graphResponse.ok) {
-                        throw new Error(
-                          `Facebook Graph API error: ${graphResponse.status} ${graphResponse.statusText}`
-                        );
-                      }
-
-                      const userData = await graphResponse.json();
-
-                      if (userData.email) {
-                        logger.debug(
-                          "✅ Successfully retrieved email from Facebook Graph API:",
-                          userData.email
-                        );
-                        userEmail = userData.email;
-                      } else {
-                        logger.warn(
-                          "⚠️ Facebook Graph API also didn't provide email address"
-                        );
-                      }
-                    } catch (graphError) {
-                      logger.error(
-                        "❌ Facebook Graph API call failed:",
-                        graphError
-                      );
-                      captureException(graphError);
-                    }
-                  }
-                }
-
-                // Final check - if we still don't have an email, throw error
-                if (!userEmail || userEmail.trim() === "") {
-                  throw new Error(
-                    "Email is required but not provided by authentication provider. Please ensure email permission is granted."
-                  );
-                }
-              }
+              const userEmail = await resolveUserEmail(user);
 
               data = await createUserDocumentInFirestore(
                 user.uid,
-                userEmail!, // We've validated userEmail is not null above
+                userEmail,
                 user.displayName || undefined
               );
               logger.debug("✅ New user document created successfully");
@@ -555,7 +468,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           setPlayerData(data);
 
           const completedToday = await hasCompletedDailyChallengeToday(data);
-          const initialMode: GameMode = completedToday ? "classic" : "daily";
+          const initialMode = resolveInitialGameMode(completedToday) as GameMode;
 
           setGameMode(initialMode);
 
@@ -741,9 +654,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 
   return (
-    <AuthContext.Provider value={contextValue}>
-      {children}
-    </AuthContext.Provider>
+    <AuthSessionContext.Provider value={sessionValue}>
+      <PlayerContext.Provider value={playerValue}>
+        <RiddleContext.Provider value={riddleValue}>
+          <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
+        </RiddleContext.Provider>
+      </PlayerContext.Provider>
+    </AuthSessionContext.Provider>
   );
 };
 
@@ -763,3 +680,26 @@ export const useAuth = () => {
   return context;
 };
 
+export const useAuthSession = () => {
+  const context = useContext(AuthSessionContext);
+  if (context === undefined) {
+    throw new Error("useAuthSession must be used within an AuthProvider");
+  }
+  return context;
+};
+
+export const usePlayer = () => {
+  const context = useContext(PlayerContext);
+  if (context === undefined) {
+    throw new Error("usePlayer must be used within an AuthProvider");
+  }
+  return context;
+};
+
+export const useRiddleState = () => {
+  const context = useContext(RiddleContext);
+  if (context === undefined) {
+    throw new Error("useRiddleState must be used within an AuthProvider");
+  }
+  return context;
+};

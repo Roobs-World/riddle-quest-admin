@@ -3,12 +3,24 @@ import { Text, TouchableOpacity } from "react-native";
 import { GAME_INPUT_BUTTON_HEIGHT } from "../../constants/layout";
 import { SPACING, TYPOGRAPHY } from "../../styles";
 
+/**
+ * Props for a reusable circular action button in the game input row.
+ */
 type GameInputButtonProps = {
+  /** Icon rendered on the left side of the label. */
   icon: ReactElement;
+  /** Visible button label. */
   text: string;
+  /** Handler invoked when the button is pressed. */
   callback: () => void;
 };
 
+/**
+ * Small reusable button used by game input controls (e.g. hint/next).
+ *
+ * @param props Button content and press callback.
+ * @returns Styled touchable action button.
+ */
 export const GameInputButton = ({
   text,
   icon,
@@ -25,4 +37,3 @@ export const GameInputButton = ({
     </TouchableOpacity>
   );
 };
-

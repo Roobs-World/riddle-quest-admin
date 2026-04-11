@@ -2,6 +2,19 @@ import React from "react";
 import { render, fireEvent } from "@testing-library/react-native";
 import UserPasswordInput from "../UserPasswordInput";
 
+// Mock the PasswordVisibilityIcon
+jest.mock("../../icons/PasswordVisibilityIcon", () => {
+  const React = require("react");
+  const { Text } = require("react-native");
+
+  const MockPasswordVisibilityIcon = ({ visible }: { visible: boolean }) => (
+    <Text testID="password-visibility-icon">{visible ? "visible" : "hidden"}</Text>
+  );
+
+  MockPasswordVisibilityIcon.displayName = "MockPasswordVisibilityIcon";
+  return MockPasswordVisibilityIcon;
+});
+
 // Mock the shared components
 jest.mock("../../shared/ReusableTextInput", () => {
   const React = require("react");
@@ -174,6 +187,31 @@ describe("UserPasswordInput", () => {
       fireEvent.press(input);
 
       expect(mockSetPassword).toHaveBeenCalled();
+    });
+
+    it("toggles password visibility when visibility icon is pressed", () => {
+      const { getByTestId, UNSAFE_getAllByType } = render(
+        <UserPasswordInput password="mypassword" setPassword={mockSetPassword} />
+      );
+
+      // Initial state should be hidden
+      expect(getByTestId("password-visibility-icon").props.children).toBe("hidden");
+
+      // Find the TouchableOpacity that wraps the icon
+      const { TouchableOpacity } = require("react-native");
+      const touchables = UNSAFE_getAllByType(TouchableOpacity);
+
+      // Press the visibility toggle (should be the only TouchableOpacity)
+      fireEvent.press(touchables[0]);
+
+      // Should now be visible
+      expect(getByTestId("password-visibility-icon").props.children).toBe("visible");
+
+      // Press again to toggle back
+      fireEvent.press(touchables[0]);
+
+      // Should be hidden again
+      expect(getByTestId("password-visibility-icon").props.children).toBe("hidden");
     });
   });
 

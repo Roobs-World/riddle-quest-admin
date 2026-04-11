@@ -64,8 +64,8 @@ describe("AudioFeedbackManager", () => {
     mockPlayNegativeWithFadeIn.mockResolvedValue(undefined);
     mockHapticTrigger.mockReturnValue(undefined);
 
-    consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
-    consoleWarnSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
+    consoleErrorSpy = jest.spyOn(console, "error");
+    consoleWarnSpy = jest.spyOn(console, "warn");
   });
 
   afterEach(() => {

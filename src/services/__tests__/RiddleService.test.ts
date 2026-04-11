@@ -95,10 +95,18 @@ jest.mock("../../validation/cloudFunctionsSchemas", () => ({
   },
 }));
 
-// Mock console methods to reduce noise
+// Mock sentry to avoid actual error reporting during tests
+jest.mock("../../utils/sentry", () => ({
+  captureException: jest.fn(),
+}));
+
+// Get the mocked captureException for assertions
+import { captureException } from "../../utils/sentry";
+const mockCaptureException = captureException as jest.Mock;
+
+// Mock console.log/warn to reduce noise
 jest.spyOn(console, "log").mockImplementation(() => {});
 jest.spyOn(console, "warn").mockImplementation(() => {});
-jest.spyOn(console, "error").mockImplementation(() => {});
 
 // Mock Date for consistent testing
 const mockToday = "2024-01-15";
@@ -120,6 +128,7 @@ describe("RiddleService", () => {
     mockHttpsCallable.mockReset();
     mockHttpsCallableFn.mockReset();
     mockHttpsCallableFn.mockReturnValue(mockHttpsCallable);
+    mockCaptureException.mockReset();
 
     // Setup defaults for standalone modular functions
     mockDoc.mockReturnValue({});
@@ -402,7 +411,7 @@ describe("RiddleService", () => {
     // Note: Previous day completion test removed due to Date mocking complexity
     // The actual functionality works correctly in the real service
 
-    it("should handle Firestore errors gracefully", async () => {
+    it("should handle Firestore errors gracefully and call captureException", async () => {
       const error = new Error("Firestore connection error");
       mockGetDoc.mockRejectedValue(error);
 
@@ -414,9 +423,10 @@ describe("RiddleService", () => {
         "Error fetching daily riddle:",
         error
       );
+      expect(mockCaptureException).toHaveBeenCalledWith(error);
     });
 
-    it("should handle network errors during riddle fetch", async () => {
+    it("should handle network errors during riddle fetch and call captureException", async () => {
       const userDoc = { exists: () => false };
       const dailyChallengeDoc = {
         exists: () => true,
@@ -440,6 +450,116 @@ describe("RiddleService", () => {
       expect(logger.error).toHaveBeenCalledWith(
         "Error fetching daily riddle:",
         networkError
+      );
+      expect(mockCaptureException).toHaveBeenCalledWith(networkError);
+    });
+
+    it("should proceed when user doc exists but has no lastDailyChallengeCompletedAt", async () => {
+      const riddleId = "daily-riddle-001";
+      const userDoc = {
+        exists: () => true,
+        data: () => ({ someOtherField: "value" }), // No lastDailyChallengeCompletedAt
+      };
+      const dailyChallengeDoc = {
+        exists: () => true,
+        data: () => ({ riddleIds: [riddleId] }),
+      };
+      const userAttemptsDoc = {
+        data: () => ({ completedIndex: 0 }),
+      };
+      const riddleDoc = {
+        exists: () => true,
+        data: () => ({
+          text: "Test riddle",
+          answer: "TEST",
+        }),
+        id: riddleId,
+      };
+
+      mockGetDoc
+        .mockResolvedValueOnce(userDoc)
+        .mockResolvedValueOnce(dailyChallengeDoc)
+        .mockResolvedValueOnce(userAttemptsDoc)
+        .mockResolvedValueOnce(riddleDoc);
+
+      const result = await RiddleService.fetchDailyRiddle();
+
+      expect(result).toEqual({
+        text: "Test riddle",
+        answer: "TEST",
+        riddleId,
+        completedToday: false,
+        answerLength: 4,
+      });
+    });
+
+    it("should proceed when user doc exists but userData is null", async () => {
+      const riddleId = "daily-riddle-001";
+      const userDoc = {
+        exists: () => true,
+        data: () => null, // null userData
+      };
+      const dailyChallengeDoc = {
+        exists: () => true,
+        data: () => ({ riddleIds: [riddleId] }),
+      };
+      const userAttemptsDoc = {
+        data: () => ({ completedIndex: 0 }),
+      };
+      const riddleDoc = {
+        exists: () => true,
+        data: () => ({
+          text: "Test riddle",
+          answer: "TEST",
+        }),
+        id: riddleId,
+      };
+
+      mockGetDoc
+        .mockResolvedValueOnce(userDoc)
+        .mockResolvedValueOnce(dailyChallengeDoc)
+        .mockResolvedValueOnce(userAttemptsDoc)
+        .mockResolvedValueOnce(riddleDoc);
+
+      const result = await RiddleService.fetchDailyRiddle();
+
+      expect(result).toEqual({
+        text: "Test riddle",
+        answer: "TEST",
+        riddleId,
+        completedToday: false,
+        answerLength: 4,
+      });
+    });
+
+    it("should return null when riddle data is null", async () => {
+      const riddleId = "invalid-riddle";
+      const userDoc = { exists: () => false };
+      const dailyChallengeDoc = {
+        exists: () => true,
+        data: () => ({ riddleIds: [riddleId] }),
+      };
+      const userAttemptsDoc = {
+        data: () => ({ completedIndex: 0 }),
+      };
+      const riddleDoc = {
+        exists: () => true,
+        data: () => null, // null riddleData
+        id: riddleId,
+      };
+
+      mockGetDoc
+        .mockResolvedValueOnce(userDoc)
+        .mockResolvedValueOnce(dailyChallengeDoc)
+        .mockResolvedValueOnce(userAttemptsDoc)
+        .mockResolvedValueOnce(riddleDoc);
+
+      const result = await RiddleService.fetchDailyRiddle();
+
+      expect(result).toBeNull();
+      expect(logger.error).toHaveBeenCalledWith(
+        `Daily riddle data or answer missing for ID: ${riddleId}. Data:`,
+        null
       );
     });
   });

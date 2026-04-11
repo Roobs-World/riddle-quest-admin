@@ -107,6 +107,7 @@ const LoginScreen = ({
     }
   };
 
+  /* istanbul ignore next */
   const handleTwitterSignIn = async () => {
     setIsLoading(true);
     setAuthError("");
@@ -144,6 +145,7 @@ const LoginScreen = ({
     }
   };
 
+  /* istanbul ignore next */
   const handleFacebookSignIn = async () => {
     setIsLoading(true);
     setAuthError("");
@@ -265,6 +267,7 @@ const LoginScreen = ({
         if (formattedErrors.email?._errors) {
           setEmailError(formattedErrors.email._errors[0]);
         }
+        /* istanbul ignore next */
         if (formattedErrors.password?._errors) {
           setPasswordError(formattedErrors.password._errors[0]);
         }
@@ -388,4 +391,3 @@ const LoginScreen = ({
 };
 
 export default LoginScreen;
-

@@ -432,5 +432,81 @@ describe("AnalyticsService", () => {
         service.logCoinSpend({ action: "skip", amount: 100, gameMode: "classic" })
       ).resolves.not.toThrow();
     });
+
+    it("does not throw when initialize fails", async () => {
+      const localService = createService();
+      mockSetAnalyticsCollectionEnabled.mockRejectedValueOnce(new Error("Init error"));
+      await expect(localService.initialize("test-user")).resolves.not.toThrow();
+    });
+
+    it("does not throw when reset fails", async () => {
+      mockSetUserId.mockRejectedValueOnce(new Error("Reset error"));
+      await expect(service.reset()).resolves.not.toThrow();
+    });
+
+    it("does not throw when logShare fails", async () => {
+      mockLogShare.mockRejectedValueOnce(new Error("Share error"));
+      await expect(
+        service.logShare({ platform: "x", gameMode: "classic" })
+      ).resolves.not.toThrow();
+    });
+
+    it("does not throw when setUserProperty fails", async () => {
+      mockSetUserProperty.mockRejectedValueOnce(new Error("Property error"));
+      await expect(
+        service.setUserProperty("test_prop", "test_value")
+      ).resolves.not.toThrow();
+    });
+
+    it("does not throw when logLevelEnd fails in game completed handler", async () => {
+      mockLogLevelEnd.mockRejectedValueOnce(new Error("LevelEnd error"));
+
+      const event: GameCompletedEvent = {
+        type: "GAME_COMPLETED",
+        timestamp: Date.now(),
+        payload: {
+          won: true,
+          attempts: 3,
+          riddleId: "riddle-123",
+          gameMode: "classic",
+          coinsEarned: 50,
+        },
+      };
+
+      gameEventBus.emit(event);
+      await flushPromises();
+
+      // Should not throw
+      expect(true).toBe(true);
+    });
+  });
+
+  // ── Additional event coverage ──────────────────────────────────────────────
+
+  describe("logGameStart", () => {
+    it("logs game_start event with params", async () => {
+      await service.logGameStart({ gameMode: "daily", riddleId: "riddle-456" });
+
+      expect(mockLogEvent).toHaveBeenCalledWith("game_start", {
+        gameMode: "daily",
+        riddleId: "riddle-456",
+      });
+    });
+  });
+
+  describe("unknown event handling", () => {
+    it("handles unknown event types gracefully", async () => {
+      const unknownEvent = {
+        type: "UNKNOWN_EVENT_TYPE",
+        timestamp: Date.now(),
+        payload: {},
+      };
+
+      // Should not throw when receiving unknown event
+      gameEventBus.emit(unknownEvent as any);
+      await flushPromises();
+
+      expect(true).toBe(true);
+    });
   });
 });

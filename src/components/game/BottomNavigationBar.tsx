@@ -33,7 +33,7 @@ export type OverlayType = "profile" | "settings";
  *
  * @property {() => void} onProfilePress - Callback for profile icon press
  * @property {() => void} onSettingsPress - Callback for settings icon press
- * @property {() => void} onHintPress - Callback for hint button press
+ * @property {() => void} onChangeGameModePress - Callback for game mode button press
  */
 interface BottomNavigationBarProps {
   /** Function called when the Profile icon is pressed - opens user profile overlay */
@@ -162,4 +162,3 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
 };
 
 export default React.memo(BottomNavigationBar);
-

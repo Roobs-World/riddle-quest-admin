@@ -313,6 +313,7 @@ describe("AvatarOptionsModal", () => {
         expect(mockOnClose).toHaveBeenCalled();
       });
     });
+
   });
 
   describe("Facebook Avatar Flow", () => {
@@ -361,6 +362,26 @@ describe("AvatarOptionsModal", () => {
         );
       });
     });
+
+    it("shows info alert when Facebook button is pressed but photo is unavailable", async () => {
+      const { getByTestId } = render(
+        <AvatarOptionsModal
+          isVisible={true}
+          onClose={mockOnClose}
+          onOpenPreloadedAvatars={mockOnOpenPreloadedAvatars}
+          userId={userId}
+        />
+      );
+
+      mockGetAuth.mockReturnValueOnce({ currentUser: { providerData: [] } });
+      fireEvent.press(getByTestId("wide-button-use-facebook-photo"));
+
+      await waitFor(() => {
+        expect(Alert.alert).toHaveBeenCalledWith(
+          "Info",
+          "No Facebook photo available. Please link your Facebook account first."
+        );
+      });
+    });
   });
 });
-

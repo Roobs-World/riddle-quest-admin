@@ -1,5 +1,35 @@
 # Refactor and Optimization Plan (2026-04-10)
 
+## Progress (updated 2026-04-10)
+- [x] Phase 0.1 Align alias config between TS and Babel direction (`@/*` -> `src/*`).
+- [x] Phase 0.2 Add architecture decision record for modal single-source-of-truth.
+- [x] Phase 0.3 Mark legacy `GameStateManager` as deprecated.
+- [x] Phase 1.1 Introduce `useGameSessionController` with shared server-loading orchestration.
+- [x] Phase 1.2 Introduce `gameModalActions` helpers and wire `GameScreen` to shared modal actions.
+- [x] Phase 2.1 Extract auth bootstrap helpers into `src/features/auth/sessionBootstrap.ts`.
+- [x] Phase 2.2 Add segmented contexts and hooks (`useAuthSession`, `usePlayer`, `useRiddleState`) while preserving `useAuth` compatibility.
+- [x] Phase 3.1 Consolidate runtime modal rendering to use `ModalRegistry` as source of truth.
+- [x] Phase 3.2 Add missing `gameMode` modal registry entry to close parity gap.
+- [x] Phase 3.3 Split solar system static config into `src/services/solar/solarSystemConfig.ts` and wire preloader to it.
+- [x] Phase 1.3 Add controller boundary tests.
+- [x] Phase 2.3 Add auth bootstrap scenario tests.
+- [x] Phase 3.4 Add modal registry contract tests.
+- [x] Phase 3.5 Split remaining solar preloader concerns (texture loader/factory/cache modules).
+- [x] Phase 4.1 Move locale overrides out of monolithic `AppStrings.ts`.
+- [x] Phase 4.2 Add lazy language loading path.
+- [x] Phase 4.3 Add localization parity + startup smoke tests for the new i18n loading path.
+
+### Validation run
+- `pnpm exec jest src/features/game-session/__tests__/useGameSessionController.test.ts src/features/auth/__tests__/sessionBootstrap.test.ts src/components/modals/__tests__/ModalRegistry.test.ts src/contexts/__tests__/AuthContext.test.tsx --runInBand`
+  - Result: pass (4 suites / 17 tests).
+  - Note: existing console noise in `AuthContext` tests from `NotificationService` mocked Firestore shape mismatch.
+- `pnpm exec jest src/constants/__tests__/AppStrings.i18n.test.ts src/constants/__tests__/AppStrings.test.ts src/features/game-session/__tests__/useGameSessionController.test.ts src/features/auth/__tests__/sessionBootstrap.test.ts src/components/modals/__tests__/ModalRegistry.test.ts src/contexts/__tests__/AuthContext.test.tsx --runInBand`
+  - Result: pass (6 suites / 95 tests).
+  - Note: same pre-existing console noise in `AuthContext` tests from `NotificationService` mock mismatch.
+- `pnpm exec jest src/features/game-session/__tests__/gameModalActions.test.ts src/features/game-session/__tests__/useGameSessionController.test.ts src/services/solar/__tests__/solarSystemConfig.test.ts src/services/solar/__tests__/textureCache.test.ts src/services/solar/__tests__/textureLoader.test.ts src/services/solar/__tests__/sceneFactory.test.ts src/i18n/__tests__/languageOverrides.test.ts --runInBand`
+  - Result: pass (7 suites / 19 tests).
+  - Purpose: verify new-file unit-test coverage after TSDoc/test hardening pass.
+
 ## Scope and approach
 This plan is based on a codebase scan focused on architecture depth, coupling seams, and optimization opportunities with low migration risk.
 

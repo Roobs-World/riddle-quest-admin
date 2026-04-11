@@ -1,5 +1,5 @@
 import React from "react";
-import { render } from "@testing-library/react-native";
+import { render, fireEvent } from "@testing-library/react-native";
 import WelcomeModal from "../WelcomeModal";
 
 // Mock dependencies
@@ -187,6 +187,46 @@ describe("WelcomeModal", () => {
       expect(getByText("Start Tutorial")).toBeTruthy();
       expect(getByText("Skip to Play")).toBeTruthy();
     });
+
+    it("fires tutorial callback and dismiss callbacks when Start Tutorial is pressed", () => {
+      const mockOnStartTutorial = jest.fn();
+      const mockOnDismiss = jest.fn();
+      const { getByText } = render(
+        <WelcomeModal
+          isVisible={true}
+          onClose={mockOnClose}
+          onStartTutorial={mockOnStartTutorial}
+          showStartTutorial={true}
+          onDismiss={mockOnDismiss}
+        />
+      );
+
+      fireEvent.press(getByText("Start Tutorial"));
+
+      expect(mockOnStartTutorial).toHaveBeenCalledTimes(1);
+      expect(mockOnClose).toHaveBeenCalledTimes(1);
+      expect(mockOnDismiss).toHaveBeenCalledTimes(1);
+    });
+
+    it("dismisses without tutorial callback when Skip to Play is pressed", () => {
+      const mockOnStartTutorial = jest.fn();
+      const mockOnDismiss = jest.fn();
+      const { getByText } = render(
+        <WelcomeModal
+          isVisible={true}
+          onClose={mockOnClose}
+          onStartTutorial={mockOnStartTutorial}
+          showStartTutorial={true}
+          onDismiss={mockOnDismiss}
+        />
+      );
+
+      fireEvent.press(getByText("Skip to Play"));
+
+      expect(mockOnStartTutorial).not.toHaveBeenCalled();
+      expect(mockOnClose).toHaveBeenCalledTimes(1);
+      expect(mockOnDismiss).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe("User Interaction", () => {
@@ -203,4 +243,3 @@ describe("WelcomeModal", () => {
     });
   });
 });
-

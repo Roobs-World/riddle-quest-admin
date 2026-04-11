@@ -1,5 +1,11 @@
 import type { SubmittedGuess } from "../hooks/types";
 
+/**
+ * Converts submitted guess feedback into a shareable emoji grid.
+ *
+ * @param submittedGuesses Submitted guesses with per-letter feedback states.
+ * @returns Multiline emoji string representing each guess row.
+ */
 export const generateFeedbackEmojiGrid = (
   submittedGuesses: SubmittedGuess[]
 ): string => {
@@ -22,4 +28,3 @@ export const generateFeedbackEmojiGrid = (
     )
     .join("\n");
 };
-

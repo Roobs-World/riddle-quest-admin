@@ -14,8 +14,9 @@
     "types": ["react", "react-native", "jest", "node", "@react-three/fiber"],
     "baseUrl": "./",
     "paths": {
-      "@/*": ["assets/*"],
-      "@/3d/*": ["assets/3d/*"]
+      "@/*": ["src/*"],
+      "@assets/*": ["assets/*"],
+      "@assets/3d/*": ["assets/3d/*"]
     }
   },
   "include": [

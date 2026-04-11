@@ -20,12 +20,11 @@ jest.mock("react-native-applovin-max", () => ({
 }));
 
 // Mock Firebase
-const mockHttpsCallable = jest.fn();
-const mockFunctions = jest.fn(() => ({
+const mockHttpsCallable = jest.fn(() => jest.fn(() => Promise.resolve({ data: {} })));
+jest.mock("@react-native-firebase/functions", () => ({
+  getFunctions: jest.fn(() => ({})),
   httpsCallable: mockHttpsCallable,
 }));
-
-jest.mock("@react-native-firebase/functions", () => mockFunctions);
 jest.mock("@react-native-firebase/app", () => ({
   getApp: jest.fn(() => ({})),
 }));
@@ -60,9 +59,23 @@ jest.mock("../../services/AnalyticsService", () => ({
   },
 }));
 
-// Mock console methods
+// Mock logger
+jest.mock("../../utils/logger", () => ({
+  logger: {
+    debug: jest.fn(),
+    error: jest.fn(),
+    warn: jest.fn(),
+    info: jest.fn(),
+  },
+}));
+
+// Mock Sentry
+jest.mock("../../utils/sentry", () => ({
+  captureException: jest.fn(),
+}));
+
+// Mock console.log/warn to reduce noise
 jest.spyOn(console, "log").mockImplementation(() => {});
-jest.spyOn(console, "error").mockImplementation(() => {});
 jest.spyOn(console, "warn").mockImplementation(() => {});
 
 describe("useRewardedAds", () => {
@@ -134,6 +147,16 @@ describe("useRewardedAds", () => {
       expect(hookContent).toContain("MAX_EXPONENTIAL_RETRY_COUNT");
       expect(hookContent).toContain("Math.pow");
     });
+
+    it("should define MAX_EXPONENTIAL_RETRY_COUNT as 6", () => {
+      const fs = require("fs");
+      const path = require("path");
+
+      const hookPath = path.join(__dirname, "../useRewardedAds.ts");
+      const hookContent = fs.readFileSync(hookPath, "utf8");
+
+      expect(hookContent).toContain("MAX_EXPONENTIAL_RETRY_COUNT = 6");
+    });
   });
 
   describe("Interface and types", () => {
@@ -191,6 +214,28 @@ describe("useRewardedAds", () => {
       expect(hookContent).toContain("useEffect");
       expect(hookContent).toContain("playerData?.userId");
     });
+
+    it("should track retry attempts with useRef", () => {
+      const fs = require("fs");
+      const path = require("path");
+
+      const hookPath = path.join(__dirname, "../useRewardedAds.ts");
+      const hookContent = fs.readFileSync(hookPath, "utf8");
+
+      expect(hookContent).toContain("retryAttempt = useRef(0)");
+      expect(hookContent).toContain("retryTimerRef = useRef");
+    });
+
+    it("should track pending show resolve with useRef", () => {
+      const fs = require("fs");
+      const path = require("path");
+
+      const hookPath = path.join(__dirname, "../useRewardedAds.ts");
+      const hookContent = fs.readFileSync(hookPath, "utf8");
+
+      expect(hookContent).toContain("pendingShowResolveRef");
+      expect(hookContent).toContain("didReceiveRewardRef");
+    });
   });
 
   describe("Ad loading functionality", () => {
@@ -215,6 +260,16 @@ describe("useRewardedAds", () => {
 
       expect(hookContent).toContain("Cannot load rewarded ad");
       expect(hookContent).toContain("APPLOVIN_REWARDED_AD_UNIT_ID is not set");
+    });
+
+    it("should check for ad unit ID before loading", () => {
+      const fs = require("fs");
+      const path = require("path");
+
+      const hookPath = path.join(__dirname, "../useRewardedAds.ts");
+      const hookContent = fs.readFileSync(hookPath, "utf8");
+
+      expect(hookContent).toContain("if (!REWARDED_AD_UNIT_ID)");
     });
   });
 
@@ -252,6 +307,39 @@ describe("useRewardedAds", () => {
       expect(hookContent).toContain("Cannot show rewarded ad");
       expect(hookContent).toContain("APPLOVIN_REWARDED_AD_UNIT_ID is not set");
     });
+
+    it("should return a Promise<boolean> from showRewardedAd", () => {
+      const fs = require("fs");
+      const path = require("path");
+
+      const hookPath = path.join(__dirname, "../useRewardedAds.ts");
+      const hookContent = fs.readFileSync(hookPath, "utf8");
+
+      expect(hookContent).toContain("async (): Promise<boolean>");
+      expect(hookContent).toContain("return await new Promise<boolean>");
+    });
+
+    it("should prevent concurrent ad shows", () => {
+      const fs = require("fs");
+      const path = require("path");
+
+      const hookPath = path.join(__dirname, "../useRewardedAds.ts");
+      const hookContent = fs.readFileSync(hookPath, "utf8");
+
+      expect(hookContent).toContain("if (pendingShowResolveRef.current)");
+      expect(hookContent).toContain("another ad is still active");
+    });
+
+    it("should implement 90 second timeout for ad showing", () => {
+      const fs = require("fs");
+      const path = require("path");
+
+      const hookPath = path.join(__dirname, "../useRewardedAds.ts");
+      const hookContent = fs.readFileSync(hookPath, "utf8");
+
+      expect(hookContent).toContain("90000");
+      expect(hookContent).toContain("Timed out waiting for rewarded ad");
+    });
   });
 
   describe("Event listeners setup", () => {
@@ -285,6 +373,17 @@ describe("useRewardedAds", () => {
       expect(hookContent).toContain("onRewardedAdClicked");
       expect(hookContent).toContain("onRewardedAdHidden");
       expect(hookContent).toContain("onUserRewarded");
+    });
+
+    it("should use stable refs for callbacks to prevent listener accumulation", () => {
+      const fs = require("fs");
+      const path = require("path");
+
+      const hookPath = path.join(__dirname, "../useRewardedAds.ts");
+      const hookContent = fs.readFileSync(hookPath, "utf8");
+
+      expect(hookContent).toContain("callbacksRef");
+      expect(hookContent).toContain("callbacksRef.current");
     });
   });
 
@@ -324,6 +423,27 @@ describe("useRewardedAds", () => {
       expect(hookContent).toContain(
         "if (retryAttempt.current > MAX_EXPONENTIAL_RETRY_COUNT)"
       );
+    });
+
+    it("should calculate retry delay with Math.pow", () => {
+      const fs = require("fs");
+      const path = require("path");
+
+      const hookPath = path.join(__dirname, "../useRewardedAds.ts");
+      const hookContent = fs.readFileSync(hookPath, "utf8");
+
+      expect(hookContent).toContain("Math.pow(");
+      expect(hookContent).toContain("Math.min(MAX_EXPONENTIAL_RETRY_COUNT");
+    });
+
+    it("should multiply retry delay by 1000 for seconds", () => {
+      const fs = require("fs");
+      const path = require("path");
+
+      const hookPath = path.join(__dirname, "../useRewardedAds.ts");
+      const hookContent = fs.readFileSync(hookPath, "utf8");
+
+      expect(hookContent).toContain("retryDelay * 1000");
     });
   });
 
@@ -376,6 +496,16 @@ describe("useRewardedAds", () => {
         "Cannot notify server: User ID not available"
       );
     });
+
+    it("should use httpsCallable from Firebase functions", () => {
+      const fs = require("fs");
+      const path = require("path");
+
+      const hookPath = path.join(__dirname, "../useRewardedAds.ts");
+      const hookContent = fs.readFileSync(hookPath, "utf8");
+
+      expect(hookContent).toContain("httpsCallable(getFunctions(getApp())");
+    });
   });
 
   describe("Reward processing", () => {
@@ -404,6 +534,26 @@ describe("useRewardedAds", () => {
       );
       expect(hookContent).toContain("server is the authority");
       expect(hookContent).toContain("S2S callback");
+    });
+
+    it("should set didReceiveRewardRef to true when user is rewarded", () => {
+      const fs = require("fs");
+      const path = require("path");
+
+      const hookPath = path.join(__dirname, "../useRewardedAds.ts");
+      const hookContent = fs.readFileSync(hookPath, "utf8");
+
+      expect(hookContent).toContain("didReceiveRewardRef.current = true");
+    });
+
+    it("should cast AdRewardInfo to ExtendedAdRewardInfo", () => {
+      const fs = require("fs");
+      const path = require("path");
+
+      const hookPath = path.join(__dirname, "../useRewardedAds.ts");
+      const hookContent = fs.readFileSync(hookPath, "utf8");
+
+      expect(hookContent).toContain("rewardInfo as ExtendedAdRewardInfo");
     });
   });
 
@@ -462,6 +612,26 @@ describe("useRewardedAds", () => {
 
       expect(hookContent).toContain("Rewarded ad displayed");
     });
+
+    it("should resolve pending show when ad is hidden", () => {
+      const fs = require("fs");
+      const path = require("path");
+
+      const hookPath = path.join(__dirname, "../useRewardedAds.ts");
+      const hookContent = fs.readFileSync(hookPath, "utf8");
+
+      expect(hookContent).toContain("resolvePendingShow(didReceiveRewardRef.current)");
+    });
+
+    it("should resolve pending show with false when display fails", () => {
+      const fs = require("fs");
+      const path = require("path");
+
+      const hookPath = path.join(__dirname, "../useRewardedAds.ts");
+      const hookContent = fs.readFileSync(hookPath, "utf8");
+
+      expect(hookContent).toContain("resolvePendingShow(false)");
+    });
   });
 
   describe("Hook lifecycle and dependencies", () => {
@@ -502,6 +672,18 @@ describe("useRewardedAds", () => {
       expect(hookContent).toContain("[isRewardedAdReady, loadRewardedAd, resolvePendingShow]");
       expect(hookContent).toContain("[playerData]");
     });
+
+    it("should cleanup timers in useEffect return", () => {
+      const fs = require("fs");
+      const path = require("path");
+
+      const hookPath = path.join(__dirname, "../useRewardedAds.ts");
+      const hookContent = fs.readFileSync(hookPath, "utf8");
+
+      expect(hookContent).toContain("return () => {");
+      expect(hookContent).toContain("clearTimeout(retryTimerRef.current)");
+      expect(hookContent).toContain("clearTimeout(showTimeoutRef.current)");
+    });
   });
 
   describe("Error handling and edge cases", () => {
@@ -541,6 +723,16 @@ describe("useRewardedAds", () => {
       expect(hookContent).toContain("logger.error");
       expect(hookContent).toContain("logger.warn");
     });
+
+    it("should use captureException for error reporting", () => {
+      const fs = require("fs");
+      const path = require("path");
+
+      const hookPath = path.join(__dirname, "../useRewardedAds.ts");
+      const hookContent = fs.readFileSync(hookPath, "utf8");
+
+      expect(hookContent).toContain("captureException(error)");
+    });
   });
 
   describe("Integration patterns", () => {
@@ -577,6 +769,95 @@ describe("useRewardedAds", () => {
       expect(hookContent).toContain("AppLovin recommends");
       expect(hookContent).toContain("exponentially higher delays");
       expect(hookContent).toContain("loading the next ad");
+    });
+  });
+
+  describe("Analytics integration", () => {
+    it("should log ad events via analyticsService", () => {
+      const fs = require("fs");
+      const path = require("path");
+
+      const hookPath = path.join(__dirname, "../useRewardedAds.ts");
+      const hookContent = fs.readFileSync(hookPath, "utf8");
+
+      expect(hookContent).toContain("analyticsService.logAdEvent");
+    });
+
+    it("should log loaded event with network name", () => {
+      const fs = require("fs");
+      const path = require("path");
+
+      const hookPath = path.join(__dirname, "../useRewardedAds.ts");
+      const hookContent = fs.readFileSync(hookPath, "utf8");
+
+      expect(hookContent).toContain('logAdEvent("loaded"');
+      expect(hookContent).toContain("network_name");
+    });
+
+    it("should log load_failed event with error code", () => {
+      const fs = require("fs");
+      const path = require("path");
+
+      const hookPath = path.join(__dirname, "../useRewardedAds.ts");
+      const hookContent = fs.readFileSync(hookPath, "utf8");
+
+      expect(hookContent).toContain('logAdEvent("load_failed"');
+      expect(hookContent).toContain("error_code");
+    });
+
+    it("should log displayed event", () => {
+      const fs = require("fs");
+      const path = require("path");
+
+      const hookPath = path.join(__dirname, "../useRewardedAds.ts");
+      const hookContent = fs.readFileSync(hookPath, "utf8");
+
+      expect(hookContent).toContain('logAdEvent("displayed"');
+    });
+
+    it("should log completed event with reward info", () => {
+      const fs = require("fs");
+      const path = require("path");
+
+      const hookPath = path.join(__dirname, "../useRewardedAds.ts");
+      const hookContent = fs.readFileSync(hookPath, "utf8");
+
+      expect(hookContent).toContain('logAdEvent("completed"');
+      expect(hookContent).toContain("reward_amount");
+      expect(hookContent).toContain("reward_label");
+    });
+  });
+
+  describe("resolvePendingShow helper", () => {
+    it("should be defined as a useCallback", () => {
+      const fs = require("fs");
+      const path = require("path");
+
+      const hookPath = path.join(__dirname, "../useRewardedAds.ts");
+      const hookContent = fs.readFileSync(hookPath, "utf8");
+
+      expect(hookContent).toContain("const resolvePendingShow = useCallback");
+    });
+
+    it("should clear show timeout", () => {
+      const fs = require("fs");
+      const path = require("path");
+
+      const hookPath = path.join(__dirname, "../useRewardedAds.ts");
+      const hookContent = fs.readFileSync(hookPath, "utf8");
+
+      expect(hookContent).toContain("if (showTimeoutRef.current)");
+      expect(hookContent).toContain("clearTimeout(showTimeoutRef.current)");
+    });
+
+    it("should reset didReceiveRewardRef after resolving", () => {
+      const fs = require("fs");
+      const path = require("path");
+
+      const hookPath = path.join(__dirname, "../useRewardedAds.ts");
+      const hookContent = fs.readFileSync(hookPath, "utf8");
+
+      expect(hookContent).toContain("didReceiveRewardRef.current = false");
     });
   });
 });

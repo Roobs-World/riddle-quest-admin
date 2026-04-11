@@ -60,6 +60,11 @@ describe("FirestoreService", () => {
   beforeEach(() => {
     // Reset all mocks before each test
     jest.clearAllMocks();
+    (mockDoc.get as jest.MockedFunction<any>).mockReset();
+    (mockDoc.update as jest.MockedFunction<any>).mockReset();
+    (mockDoc.set as jest.MockedFunction<any>).mockReset();
+    (mockTransaction.get as jest.MockedFunction<any>).mockReset();
+    (mockTransaction.update as jest.MockedFunction<any>).mockReset();
 
     // Setup default mock implementations
     mockFirestore.collection.mockReturnValue(mockCollection);
@@ -651,6 +656,8 @@ describe("FirestoreService", () => {
     test("should not update when user has all required fields", async () => {
       const completeUser = {
         stats: {
+          xp: 0,
+          level: 1,
           dailyPuzzlesCompleted: 5,
           bestStreak: 3,
           totalWordsGuessed: 20,

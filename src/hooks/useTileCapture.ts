@@ -2,28 +2,53 @@ import { useRef, useCallback } from "react";
 import { View } from "react-native";
 import type { SubmittedGuess, Feedback } from "./types";
 
+/**
+ * Serializable snapshot of a rendered guess tile, used by share/capture flows.
+ */
 interface TileData {
+  /** Rendered letter content for the tile. */
   letter: string | null;
+  /** Tailwind-like token describing the tile background. */
   backgroundColor: string;
+  /** Tailwind-like token describing the tile border. */
   borderColor: string;
+  /** Tailwind-like token describing the letter color. */
   textColor: string;
-  x: number; // Absolute position
-  y: number; // Absolute position
+  /** Absolute X page position measured from the native view tree. */
+  x: number;
+  /** Absolute Y page position measured from the native view tree. */
+  y: number;
 }
 
+/**
+ * Minimal shape required to measure a tile's on-screen position.
+ */
 interface TileRef {
+  /** Measures the underlying native view and invokes `callback` with geometry. */
   measure: (
+    /** Receives local + absolute coordinates from React Native `measure`. */
     callback: (
+      /** X relative to parent (unused by capture flow). */
       x: number,
+      /** Y relative to parent (unused by capture flow). */
       y: number,
+      /** Measured tile width in points. */
       width: number,
+      /** Measured tile height in points. */
       height: number,
+      /** Absolute X position on screen/page. */
       pageX: number,
+      /** Absolute Y position on screen/page. */
       pageY: number
     ) => void
   ) => void;
 }
 
+/**
+ * Tracks guess-grid tile refs and captures positioned tile snapshots.
+ *
+ * @returns Ref-registration callback and async tile capture helper.
+ */
 export const useTileCapture = () => {
   const tileRefs = useRef<{ [key: string]: TileRef }>({});
 

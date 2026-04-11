@@ -22,14 +22,23 @@ import { safeDelay } from "../utils/timing";
 import { logger } from "../utils/logger";
 import { captureException } from "../utils/sentry";
 
+/**
+ * Shared helper for testable async timing in riddle service flows.
+ *
+ * @param ms Delay duration in milliseconds.
+ * @returns Promise resolved after `ms`.
+ */
 export const delay = (ms: number) => safeDelay(ms);
 
+/**
+ * Firestore and Cloud Function gateway for riddle retrieval and guess validation.
+ */
 export const RiddleService = {
   /**
    * Fetches the current daily riddle for the authenticated user.
    * It checks the user's progress for the day and returns the next uncompleted riddle.
    * Also checks if the daily challenge for the current UTC day has already been completed.
-   * @returns A Promise resolving to the daily riddle data, or null if no riddle is available, all daily riddles are completed, or the daily challenge for today is already completed.
+   * @returns Daily riddle payload, `{ completedToday: true }`, or `null` when unavailable.
    */
   async fetchDailyRiddle() {
     logger.debug("Fetching daily riddle from Firestore");
@@ -247,4 +256,3 @@ export const RiddleService = {
     }
   },
 };
-

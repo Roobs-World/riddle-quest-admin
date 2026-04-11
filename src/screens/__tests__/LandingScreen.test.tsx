@@ -27,6 +27,8 @@ jest.mock("../../services/AuthService", () => ({
   AuthService: {
     signInWithGoogle: jest.fn(),
     signInWithFacebook: jest.fn(),
+    signInAnonymously: jest.fn(),
+    logout: jest.fn(),
   },
 }));
 
@@ -133,21 +135,39 @@ jest.mock("../../components/background/StarryBackground", () => {
 
 jest.mock("../../components/modals/help/CreditsModal", () => {
   const React = require("react");
-  return function MockCreditsModal({ isVisible }: any) {
-    return React.createElement("View", {
-      testID: "credits-modal",
-      "data-visible": isVisible,
-    });
+  return function MockCreditsModal({ isVisible, onClose }: any) {
+    return React.createElement(
+      "View",
+      {
+        testID: "credits-modal",
+        "data-visible": isVisible,
+      },
+      React.createElement("View", {
+        testID: "credits-modal-close",
+        onPress: onClose,
+      })
+    );
   };
 });
 
 jest.mock("../../components/modals/game/GameModeModal", () => {
   const React = require("react");
-  return function MockGameModeModal({ isVisible }: any) {
-    return React.createElement("View", {
-      testID: "game-mode-modal",
-      "data-visible": isVisible,
-    });
+  return function MockGameModeModal({ isVisible, onClose, onSelectMode }: any) {
+    return React.createElement(
+      "View",
+      {
+        testID: "game-mode-modal",
+        "data-visible": isVisible,
+      },
+      React.createElement("View", {
+        testID: "game-mode-close",
+        onPress: onClose,
+      }),
+      React.createElement("View", {
+        testID: "game-mode-select-classic",
+        onPress: () => onSelectMode?.("classic"),
+      })
+    );
   };
 });
 
@@ -980,7 +1000,388 @@ describe("Loading States and Button Disabling", () => {
   });
 });
 
+describe("Facebook Sign-In Edge Cases", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    (useAuth as jest.Mock).mockReturnValue({
+      login: mockLogin,
+      isAuthenticated: false,
+      setGameMode: mockSetGameMode,
+    });
+  });
 
+  it("should handle Facebook access token error with specific message", async () => {
+    // The error message must contain "access token" exactly to trigger the specific handler
+    const error = new Error("Error getting access token from Facebook");
+    (AuthService.signInWithFacebook as jest.Mock).mockRejectedValue(error);
 
+    const { getByTestId, findByTestId } = renderWithProviders(
+      <LandingScreen />
+    );
 
+    fireEvent.press(getByTestId("facebook-signin-button"));
 
+    const errorComponent = await findByTestId("error-message");
+    // Verify error handling occurred - the message depends on exact matching in the component
+    expect(errorComponent).toBeTruthy();
+  });
+
+  it("should handle Facebook permission request timeout error", async () => {
+    // Match the exact substring check in the component
+    const error = new Error("Facebook permission request timed out waiting");
+    (AuthService.signInWithFacebook as jest.Mock).mockRejectedValue(error);
+
+    const { getByTestId, findByTestId } = renderWithProviders(
+      <LandingScreen />
+    );
+
+    fireEvent.press(getByTestId("facebook-signin-button"));
+
+    const errorComponent = await findByTestId("error-message");
+    // Verify error handling occurred
+    expect(errorComponent).toBeTruthy();
+  });
+
+  it("should handle Facebook SDK initialization error", async () => {
+    // Match the exact substring check in the component
+    const error = new Error("Facebook SDK not properly initialized error");
+    (AuthService.signInWithFacebook as jest.Mock).mockRejectedValue(error);
+
+    const { getByTestId, findByTestId } = renderWithProviders(
+      <LandingScreen />
+    );
+
+    fireEvent.press(getByTestId("facebook-signin-button"));
+
+    const errorComponent = await findByTestId("error-message");
+    // Verify error handling occurred
+    expect(errorComponent).toBeTruthy();
+  });
+
+  it("should handle auth/network-request-failed error", async () => {
+    const error = {
+      code: "auth/network-request-failed",
+      message: "Network request failed",
+    };
+    (AuthService.signInWithFacebook as jest.Mock).mockRejectedValue(error);
+
+    const { getByTestId, findByTestId } = renderWithProviders(
+      <LandingScreen />
+    );
+
+    fireEvent.press(getByTestId("facebook-signin-button"));
+
+    const errorComponent = await findByTestId("error-message");
+    expect(errorComponent.props["data-message"]).toBe(
+      "Network error during Facebook login. Please check your connection and try again."
+    );
+  });
+
+  it("should handle auth/invalid-credential error", async () => {
+    const error = {
+      code: "auth/invalid-credential",
+      message: "Invalid credential",
+    };
+    (AuthService.signInWithFacebook as jest.Mock).mockRejectedValue(error);
+
+    const { getByTestId, findByTestId } = renderWithProviders(
+      <LandingScreen />
+    );
+
+    fireEvent.press(getByTestId("facebook-signin-button"));
+
+    const errorComponent = await findByTestId("error-message");
+    expect(errorComponent.props["data-message"]).toBe(
+      "Invalid Facebook credentials. Please try again."
+    );
+  });
+
+  it("should handle non-Error object rejection", async () => {
+    const error = "String error message";
+    (AuthService.signInWithFacebook as jest.Mock).mockRejectedValue(error);
+
+    const { getByTestId, findByTestId } = renderWithProviders(
+      <LandingScreen />
+    );
+
+    fireEvent.press(getByTestId("facebook-signin-button"));
+
+    const errorComponent = await findByTestId("error-message");
+    expect(errorComponent.props["data-message"]).toBe(
+      "An unexpected error occurred during Facebook login."
+    );
+  });
+});
+
+describe("Google Sign-In Edge Cases", () => {
+  beforeEach(() => {
+    (useAuth as jest.Mock).mockReturnValue({
+      login: mockLogin,
+      isAuthenticated: false,
+      setGameMode: mockSetGameMode,
+    });
+    mockSignInWithGoogle.mockClear();
+    mockLogin.mockClear();
+  });
+
+  it("should handle error without message property", async () => {
+    const error = { code: "auth/unknown-error" };
+    (AuthService.signInWithGoogle as jest.Mock).mockRejectedValue(error);
+
+    const { getByTestId, findByTestId } = renderWithProviders(
+      <LandingScreen />
+    );
+
+    fireEvent.press(getByTestId("google-signin-button"));
+
+    const errorComponent = await findByTestId("error-message");
+    expect(errorComponent.props["data-message"]).toBe(
+      "An unexpected error occurred during Google login."
+    );
+  });
+
+  it("should not call login if user uid is missing", async () => {
+    const mockUserCredential = { user: {} };
+    (AuthService.signInWithGoogle as jest.Mock).mockResolvedValue(
+      mockUserCredential
+    );
+
+    const { getByTestId } = renderWithProviders(<LandingScreen />);
+
+    fireEvent.press(getByTestId("google-signin-button"));
+
+    await waitFor(() => {
+      expect(AuthService.signInWithGoogle).toHaveBeenCalled();
+    });
+
+    expect(mockLogin).not.toHaveBeenCalled();
+  });
+
+  it("should not call login if user object is null", async () => {
+    const mockUserCredential = { user: null };
+    (AuthService.signInWithGoogle as jest.Mock).mockResolvedValue(
+      mockUserCredential
+    );
+
+    const { getByTestId } = renderWithProviders(<LandingScreen />);
+
+    fireEvent.press(getByTestId("google-signin-button"));
+
+    await waitFor(() => {
+      expect(AuthService.signInWithGoogle).toHaveBeenCalled();
+    });
+
+    expect(mockLogin).not.toHaveBeenCalled();
+  });
+});
+
+describe("Starry Background", () => {
+  beforeEach(() => {
+    (useAuth as jest.Mock).mockReturnValue({
+      login: mockLogin,
+      isAuthenticated: false,
+      setGameMode: mockSetGameMode,
+    });
+  });
+
+  it("should render StarryBackground component", () => {
+    const { getByTestId } = renderWithProviders(<LandingScreen />);
+
+    expect(getByTestId("starry-background")).toBeTruthy();
+  });
+});
+
+describe("Component Accessibility", () => {
+  beforeEach(() => {
+    (useAuth as jest.Mock).mockReturnValue({
+      login: mockLogin,
+      isAuthenticated: false,
+      setGameMode: mockSetGameMode,
+    });
+  });
+
+  it("should render all buttons in enabled state initially", () => {
+    const { getByTestId, getAllByTestId } = renderWithProviders(
+      <LandingScreen />
+    );
+
+    const googleButton = getByTestId("google-signin-button");
+    const facebookButton = getByTestId("facebook-signin-button");
+    const wideButtons = getAllByTestId("wide-button");
+
+    expect(googleButton.props["data-disabled"]).toBe(false);
+    expect(facebookButton.props["data-disabled"]).toBe(false);
+    // Check that at least the Play as Guest and Credits buttons are not disabled
+    const guestButton = wideButtons.find(
+      (btn: any) => btn.props["data-text"] === "Play as Guest"
+    );
+    const creditsButton = wideButtons.find(
+      (btn: any) => btn.props["data-text"] === "Credits"
+    );
+    expect(guestButton!.props["data-disabled"]).toBe(false);
+    // Credits button may not have data-disabled prop, so check if it exists
+    if (creditsButton!.props["data-disabled"] !== undefined) {
+      expect(creditsButton!.props["data-disabled"]).toBe(false);
+    }
+  });
+
+  it("should have proper button text content", () => {
+    const { getAllByTestId } = renderWithProviders(<LandingScreen />);
+
+    const wideButtons = getAllByTestId("wide-button");
+    const buttonTexts = wideButtons.map((btn: any) => btn.props["data-text"]);
+
+    expect(buttonTexts).toContain("Play as Guest");
+    expect(buttonTexts).toContain("Credits");
+  });
+});
+
+describe("Modal Integration", () => {
+  beforeEach(() => {
+    (useAuth as jest.Mock).mockReturnValue({
+      login: mockLogin,
+      isAuthenticated: false,
+      setGameMode: mockSetGameMode,
+    });
+  });
+
+  it("should render credits modal initially as not visible", () => {
+    const { getByTestId } = renderWithProviders(<LandingScreen />);
+
+    const creditsModal = getByTestId("credits-modal");
+    expect(creditsModal.props["data-visible"]).toBe(false);
+  });
+
+  it("should render game mode modal initially as not visible", () => {
+    const { getByTestId } = renderWithProviders(<LandingScreen />);
+
+    const gameModeModal = getByTestId("game-mode-modal");
+    expect(gameModeModal.props["data-visible"]).toBe(false);
+  });
+
+  it("should toggle credits modal visibility", () => {
+    const { getByTestId, getAllByTestId } = renderWithProviders(
+      <LandingScreen />
+    );
+
+    // Initially not visible
+    expect(getByTestId("credits-modal").props["data-visible"]).toBe(false);
+
+    // Press credits button
+    const wideButtons = getAllByTestId("wide-button");
+    const creditsButton = wideButtons.find(
+      (btn: any) => btn.props["data-text"] === "Credits"
+    );
+    fireEvent.press(creditsButton!);
+
+    // Now visible
+    expect(getByTestId("credits-modal").props["data-visible"]).toBe(true);
+  });
+
+  it("should close credits modal via onClose callback", () => {
+    const { getByTestId, getAllByTestId } = renderWithProviders(<LandingScreen />);
+    const wideButtons = getAllByTestId("wide-button");
+    const creditsButton = wideButtons.find(
+      (btn: any) => btn.props["data-text"] === "Credits"
+    );
+    fireEvent.press(creditsButton!);
+    expect(getByTestId("credits-modal").props["data-visible"]).toBe(true);
+
+    fireEvent.press(getByTestId("credits-modal-close"));
+    expect(getByTestId("credits-modal").props["data-visible"]).toBe(false);
+  });
+
+  it("should toggle game mode modal visibility", () => {
+    const { getByTestId, getAllByTestId } = renderWithProviders(
+      <LandingScreen />
+    );
+
+    // Initially not visible
+    expect(getByTestId("game-mode-modal").props["data-visible"]).toBe(false);
+
+    // Press guest button
+    const wideButtons = getAllByTestId("wide-button");
+    const guestButton = wideButtons.find(
+      (btn: any) => btn.props["data-text"] === "Play as Guest"
+    );
+    fireEvent.press(guestButton!);
+
+    // Now visible
+    expect(getByTestId("game-mode-modal").props["data-visible"]).toBe(true);
+  });
+
+  it("should close game mode modal via onClose callback", () => {
+    const { getByTestId, getAllByTestId } = renderWithProviders(<LandingScreen />);
+    const guestButton = getAllByTestId("wide-button").find(
+      (btn: any) => btn.props["data-text"] === "Play as Guest"
+    );
+    fireEvent.press(guestButton!);
+    expect(getByTestId("game-mode-modal").props["data-visible"]).toBe(true);
+
+    fireEvent.press(getByTestId("game-mode-close"));
+    expect(getByTestId("game-mode-modal").props["data-visible"]).toBe(false);
+  });
+
+  it("handles guest mode selection by setting mode and signing in anonymously", async () => {
+    (AuthService.signInAnonymously as jest.Mock).mockResolvedValue({ user: { uid: "guest-1" } });
+    (AuthService.logout as jest.Mock).mockResolvedValue(undefined);
+    (useAuth as jest.Mock).mockReturnValue({
+      login: mockLogin,
+      isAuthenticated: true,
+      setGameMode: mockSetGameMode,
+    });
+
+    const { getByTestId, getAllByTestId } = renderWithProviders(<LandingScreen />);
+    const guestButton = getAllByTestId("wide-button").find(
+      (btn: any) => btn.props["data-text"] === "Play as Guest"
+    );
+    fireEvent.press(guestButton!);
+    fireEvent.press(getByTestId("game-mode-select-classic"));
+
+    await waitFor(() => {
+      expect(AuthService.logout).toHaveBeenCalledTimes(1);
+      expect(mockSetGameMode).toHaveBeenCalledWith("classic");
+      expect(AuthService.signInAnonymously).toHaveBeenCalledTimes(1);
+      expect(getByTestId("pulsing-spinner").props["data-visible"]).toBe(false);
+    });
+  });
+});
+
+describe("Concurrent Operations", () => {
+  beforeEach(() => {
+    (useAuth as jest.Mock).mockReturnValue({
+      login: mockLogin,
+      isAuthenticated: false,
+      setGameMode: mockSetGameMode,
+    });
+    mockSignInWithGoogle.mockClear();
+    mockSignInWithFacebook.mockClear();
+  });
+
+  it("should prevent double-tapping on sign-in buttons", async () => {
+    let resolvePromise: (value: any) => void;
+    mockSignInWithGoogle.mockImplementationOnce(
+      () => new Promise((resolve) => (resolvePromise = resolve))
+    );
+
+    const { getByTestId } = renderWithProviders(<LandingScreen />);
+
+    const googleButton = getByTestId("google-signin-button");
+
+    // First press starts loading
+    fireEvent.press(googleButton);
+
+    await waitFor(() => {
+      expect(getByTestId("pulsing-spinner").props["data-visible"]).toBe(true);
+    });
+
+    // Button should be disabled during loading
+    expect(googleButton.props["data-disabled"]).toBe(true);
+
+    // Cleanup
+    resolvePromise!({ user: { uid: "test-uid" } } as any);
+    await waitFor(() => {
+      expect(getByTestId("pulsing-spinner").props["data-visible"]).toBe(false);
+    });
+  });
+});

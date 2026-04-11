@@ -11,6 +11,8 @@ import {
   SpecialOffer,
   RegionalPrice,
 } from "../ProductPricingService";
+import { getDocs } from "@react-native-firebase/firestore";
+import { captureException } from "../../utils/sentry";
 
 // Mock Firebase modules
 jest.mock("@react-native-firebase/firestore", () => ({
@@ -20,6 +22,10 @@ jest.mock("@react-native-firebase/firestore", () => ({
   query: jest.fn(),
   where: jest.fn(),
   orderBy: jest.fn(),
+}));
+
+jest.mock("../../utils/sentry", () => ({
+  captureException: jest.fn(),
 }));
 
 describe("ProductPricingService", () => {
@@ -300,6 +306,49 @@ describe("ProductPricingService", () => {
 
       const found = ProductPricingService.findByProductId(featured, "featured_2");
       expect(found?.featuredBadge).toBe("BEST DEAL");
+    });
+  });
+
+  describe("getActiveProducts", () => {
+    it("fetches active products and then serves cached data", async () => {
+      const docs = [
+        { data: () => createMockProduct({ productId: "p1" }) },
+        { data: () => createMockProduct({ productId: "p2" }) },
+      ];
+      (getDocs as jest.Mock).mockResolvedValue({ docs });
+
+      const first = await ProductPricingService.getActiveProducts();
+      const second = await ProductPricingService.getActiveProducts();
+
+      expect(first).toHaveLength(2);
+      expect(second).toEqual(first);
+      expect(getDocs).toHaveBeenCalledTimes(1);
+    });
+
+    it("returns stale cache when fetch fails", async () => {
+      const nowSpy = jest.spyOn(Date, "now");
+      nowSpy.mockReturnValueOnce(1_000_000);
+      (getDocs as jest.Mock).mockResolvedValueOnce({
+        docs: [{ data: () => createMockProduct({ productId: "cached" }) }],
+      });
+      await ProductPricingService.getActiveProducts();
+
+      const err = new Error("fetch failed");
+      nowSpy.mockReturnValueOnce(1_000_000 + 5 * 60 * 1000 + 1);
+      (getDocs as jest.Mock).mockRejectedValueOnce(err);
+      const result = await ProductPricingService.getActiveProducts();
+
+      expect(result.map((p) => p.productId)).toEqual(["cached"]);
+      expect(captureException).toHaveBeenCalledWith(err);
+      nowSpy.mockRestore();
+    });
+
+    it("returns empty array on first fetch failure with no cache", async () => {
+      const err = new Error("first fetch failed");
+      (getDocs as jest.Mock).mockRejectedValueOnce(err);
+
+      const result = await ProductPricingService.getActiveProducts();
+      expect(result).toEqual([]);
     });
   });
 });

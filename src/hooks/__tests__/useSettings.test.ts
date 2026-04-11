@@ -6,10 +6,15 @@ import { renderHook, act, waitFor } from "@testing-library/react-native";
 
 const mockGetItem = jest.fn();
 const mockSetItem = jest.fn();
+// Use a simple object to hold mutable state that can be changed by tests
+const setItemConfig = { shouldFail: false };
 jest.mock("@react-native-async-storage/async-storage", () => ({
   getItem: (...args: unknown[]) => mockGetItem(...args),
   setItem: (...args: unknown[]) => {
     mockSetItem(...args);
+    if (setItemConfig.shouldFail) {
+      return Promise.reject(new Error("Storage write error"));
+    }
     return Promise.resolve();
   },
   removeItem: jest.fn(),
@@ -35,6 +40,11 @@ jest.mock("../../utils/timing", () => ({
 const mockLoggerError = jest.fn();
 jest.mock("../../utils/logger", () => ({
   logger: { error: (...args: unknown[]) => mockLoggerError(...args) },
+}));
+
+const mockCaptureException = jest.fn();
+jest.mock("../../utils/sentry", () => ({
+  captureException: (...args: unknown[]) => mockCaptureException(...args),
 }));
 
 import { useSettings } from "../useSettings";
@@ -203,6 +213,70 @@ describe("useSettings", () => {
       "isHardMode",
       JSON.stringify(false)
     );
+  });
+
+  describe("setItem error handling", () => {
+    beforeEach(() => {
+      setItemConfig.shouldFail = true;
+    });
+
+    afterEach(() => {
+      setItemConfig.shouldFail = false;
+    });
+
+    it("should log error and capture exception when sound setting fails to save", async () => {
+      mockGetItem.mockResolvedValue(null);
+      const { result } = renderHook(() => useSettings());
+      await waitFor(() => expect(result.current.isSoundEnabled).toBe(true));
+
+      act(() => {
+        result.current.toggleSoundEnabled(false);
+      });
+
+      await waitFor(() => {
+        expect(mockLoggerError).toHaveBeenCalledWith(
+          "Error saving sound setting:",
+          expect.any(Error)
+        );
+        expect(mockCaptureException).toHaveBeenCalled();
+      });
+    });
+
+    it("should log error and capture exception when haptics setting fails to save", async () => {
+      mockGetItem.mockResolvedValue(null);
+      const { result } = renderHook(() => useSettings());
+      await waitFor(() => expect(result.current.isHapticsEnabled).toBe(true));
+
+      act(() => {
+        result.current.toggleHapticsEnabled(false);
+      });
+
+      await waitFor(() => {
+        expect(mockLoggerError).toHaveBeenCalledWith(
+          "Error saving haptics setting:",
+          expect.any(Error)
+        );
+        expect(mockCaptureException).toHaveBeenCalled();
+      });
+    });
+
+    it("should log error and capture exception when hard mode setting fails to save", async () => {
+      mockGetItem.mockResolvedValue(null);
+      const { result } = renderHook(() => useSettings());
+      await waitFor(() => expect(result.current.isHardMode).toBe(false));
+
+      act(() => {
+        result.current.toggleHardMode(true);
+      });
+
+      await waitFor(() => {
+        expect(mockLoggerError).toHaveBeenCalledWith(
+          "Error saving hard mode setting:",
+          expect.any(Error)
+        );
+        expect(mockCaptureException).toHaveBeenCalled();
+      });
+    });
   });
 });
 

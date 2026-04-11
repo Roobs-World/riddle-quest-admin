@@ -24,31 +24,24 @@ import {
   MeshBasicMaterial,
   DoubleSide,
   Texture,
-  LinearFilter,
 } from "three";
-import { Asset } from "expo-asset";
 import { logger } from "../utils/logger";
 import { captureException } from "../utils/sentry";
-
-/**
- * Creates a Three.js texture from an expo-asset that works with expo-gl.
- * This mimics expo-three's parseTexture but without the problematic imports.
- */
-function createTextureFromAsset(asset: Asset): Texture {
-  const texture = new Texture();
-  // expo-gl expects this specific image format with the asset as data
-  (texture.image as unknown) = {
-    data: asset,
-    width: asset.width,
-    height: asset.height,
-  };
-  texture.needsUpdate = true;
-  // isDataTexture forces expo-gl to pass data to gl.texImage2D verbatim
-  (texture as unknown as { isDataTexture: boolean }).isDataTexture = true;
-  // LinearFilter handles non-power-of-two textures
-  texture.minFilter = LinearFilter;
-  return texture;
-}
+import {
+  PlanetConfig,
+  SOLAR_SYSTEM_CONFIG,
+  SOLAR_TEXTURE_MAPPING,
+} from "./solar/solarSystemConfig";
+import { loadTextureFromAsset } from "./solar/textureLoader";
+import {
+  createTextureCache,
+  disposeAndClearTextureCache,
+} from "./solar/textureCache";
+import {
+  addEnhancedLights,
+  addSunMeshes,
+  createSceneSetup,
+} from "./solar/sceneFactory";
 
 /**
  * Solar System Preloader Service - v2.4.0 EXPO ASSET SYSTEM
@@ -59,53 +52,6 @@ function createTextureFromAsset(asset: Asset): Texture {
  *
  * This ensures reliable texture loading and guaranteed visibility with realistic textures.
  */
-
-// Import textures using relative path to assets
-// REMOVED texPlanetR import due to loading issues
-import texPlanetV from "../../assets/3d/tex_planet_v.png";
-import texPlanetA from "../../assets/3d/tex_planet_a.png";
-import texPlanetD from "../../assets/3d/tex_planet_d.png";
-import texPlanetK from "../../assets/3d/tex_planet_k.png";
-
-import texMoonH from "../../assets/3d/tex_moon_h.png";
-import texMoonF from "../../assets/3d/tex_moon_f.png";
-import texMoonG from "../../assets/3d/tex_moon_g.png";
-import texMoonC from "../../assets/3d/tex_moon_c.png";
-import texMoonD from "../../assets/3d/tex_moon_d.png";
-
-import texRingA from "../../assets/3d/tex_ring_a.png";
-import texRingB from "../../assets/3d/tex_ring_b.png";
-
-// Gradient textures for glowing effects
-import texGradientCircle from "../../assets/3d/tex_gradient_circle.png";
-import texGradientCircleSun from "../../assets/3d/tex_gradient_circle_sun.png";
-import texGradientCircleI from "../../assets/3d/tex_gradient_circle_i.png";
-import texGradientCircleSunI from "../../assets/3d/tex_gradient_circle_sun_i.png";
-
-export interface PlanetConfig {
-  id: string;
-  texture: string;
-  orbitRadius: number;
-  orbitSpeed: number;
-  rotationSpeed: number;
-  radius: number;
-  materialType: "basic" | "phong";
-  moons?: MoonConfig[];
-  rings?: RingConfig;
-}
-
-export interface MoonConfig {
-  texture: string;
-  orbitRadius: number;
-  orbitSpeed: number;
-  radius: number;
-}
-
-export interface RingConfig {
-  texture: string;
-  innerRadius: number;
-  outerRadius: number;
-}
 
 export interface TexturePreloadProgress {
   loaded: number;
@@ -138,123 +84,11 @@ export class SolarSystemPreloader {
   private static preloadedSystem: PreloadedSolarSystem | null = null;
   private static isPreloading = false;
   private static isPreloaded = false;
-  private static textureCache = new Map<string, Texture | null>();
+  private static textureCache = createTextureCache();
   private static readonly texturePreloadConcurrency = 4;
 
-  // Define texture mapping for solar system - matching notes.txt structure
-  private static readonly textureMapping = [
-    // Planet textures (matching notes.txt) - REMOVED planet_r due to loading issues
-    { key: "planet_a", path: texPlanetA },
-    { key: "planet_d", path: texPlanetD },
-    { key: "planet_v", path: texPlanetV },
-    { key: "planet_k", path: texPlanetK },
-    // Ring textures (using consistent naming)
-    { key: "ring_planet_v", path: texRingA },
-    { key: "ring_planet_k", path: texRingB },
-    // Moon textures (matching notes.txt assignments)
-    { key: "moon_a_h", path: texMoonH }, // moon for planet_a
-    { key: "moon_d_f", path: texMoonF }, // first moon for planet_d
-    { key: "moon_d_g", path: texMoonG }, // second moon for planet_d
-    { key: "moon_k_c", path: texMoonC }, // first moon for planet_k
-    { key: "moon_k_d", path: texMoonD }, // second moon for planet_k
-    // Gradient textures for glowing effects
-    { key: "glow_planet", path: texGradientCircle },
-    { key: "glow_sun", path: texGradientCircleSun },
-    { key: "glow_planet_intense", path: texGradientCircleI },
-    { key: "glow_sun_intense", path: texGradientCircleSunI },
-  ];
-
-  // Solar system configuration - ULTRA FAST MOVING planets for extreme visibility
-  // Safe orbital distances from sun (radius 15) with EXTREME speed increases
-  private static readonly solarSystemConfig: PlanetConfig[] = [
-    // REMOVED Mercury (planet_r) due to texture loading issues
-    // Venus - first planet with moon (blue) - MUCH CLOSER TO SUN
-    {
-      id: "planet_a",
-      texture: texPlanetA,
-      orbitRadius: 35, // CLOSE to sun (was 75) - 15 unit clearance from sun surface
-      orbitSpeed: 0.7, // ULTRA FAST - 2.8x faster than before (was 0.25)
-      rotationSpeed: 0.015,
-      radius: 5.0, // Slightly larger than Mercury
-      materialType: "phong",
-      moons: [
-        {
-          texture: texMoonH,
-          orbitRadius: 8, // Closer moon orbit (was 10)
-          orbitSpeed: 2.0, // EXTREMELY fast moon - 2.5x faster than before (was 0.8)
-          radius: 2.0, // Small moon
-        },
-      ],
-    },
-    // Mars - red planet with 2 moons (orange) - MUCH CLOSER TO SUN
-    {
-      id: "planet_d",
-      texture: texPlanetD,
-      orbitRadius: 45, // CLOSE to sun (was 105) - compact spacing
-      orbitSpeed: 0.6, // ULTRA FAST - 3x faster than before (was 0.2)
-      rotationSpeed: 0.012,
-      radius: 4.5, // Small rocky planet
-      materialType: "phong",
-      moons: [
-        {
-          texture: texMoonF,
-          orbitRadius: 10, // Closer first moon (was 12)
-          orbitSpeed: 1.5, // EXTREMELY fast moon - 2.5x faster than before (was 0.6)
-          radius: 1.8, // Small moon
-        },
-        {
-          texture: texMoonG,
-          orbitRadius: 13, // Closer second moon (was 16)
-          orbitSpeed: 1.2, // EXTREMELY fast moon - 2.4x faster than before (was 0.5)
-          radius: 2.0, // Slightly larger moon
-        },
-      ],
-    },
-    // Jupiter - gas giant with rings (blue) - MUCH CLOSER TO SUN
-    {
-      id: "planet_v",
-      texture: texPlanetV,
-      orbitRadius: 60, // CLOSE to sun (was 140) - compact gas giant
-      orbitSpeed: 0.45, // ULTRA FAST - 3x faster than before (was 0.15)
-      rotationSpeed: 0.008,
-      radius: 8.0, // Large gas giant
-      materialType: "phong",
-      rings: {
-        texture: texRingA,
-        innerRadius: 10.0, // Ring system
-        outerRadius: 14.0,
-      },
-    },
-    // Saturn - outermost with rings and moons (green) - MUCH CLOSER TO SUN
-    {
-      id: "planet_k",
-      texture: texPlanetK,
-      orbitRadius: 75, // CLOSE to sun (was 185) - compact outer planet
-      orbitSpeed: 0.3, // ULTRA FAST - 3x faster than before (was 0.1)
-      rotationSpeed: 0.006,
-      radius: 7.5, // Large but smaller than Jupiter
-      materialType: "phong",
-      moons: [
-        {
-          texture: texMoonC,
-          orbitRadius: 15, // Closer first moon (was 18)
-          orbitSpeed: 1.0, // EXTREMELY fast moon - 2.5x faster than before (was 0.4)
-          radius: 2.5, // Larger moon
-        },
-        {
-          texture: texMoonD,
-          orbitRadius: 20, // Closer outer moon (was 25)
-          orbitSpeed: 0.9, // EXTREMELY fast moon - 2.57x faster than before (was 0.35)
-          radius: 2.2, // Slightly smaller
-        },
-      ],
-      rings: {
-        texture: texRingB,
-        innerRadius: 12.0, // Prominent ring system
-        outerRadius: 18.0,
-      },
-    },
-  ];
+  private static readonly textureMapping = SOLAR_TEXTURE_MAPPING;
+  private static readonly solarSystemConfig: PlanetConfig[] = SOLAR_SYSTEM_CONFIG;
 
   /**
    * Preload all solar system textures - WITH FALLBACKS for system stability
@@ -287,7 +121,7 @@ export class SolarSystemPreloader {
 
         const { key, path } = nextTexture;
         try {
-          const texturePromise = this.loadTextureFromAsset(path, key);
+          const texturePromise = loadTextureFromAsset(path, key);
           const timeoutPromise = new Promise<never>((_, reject) => {
             setTimeout(
               () => reject(new Error(`Texture ${key} timeout after 3 seconds`)),
@@ -329,34 +163,6 @@ export class SolarSystemPreloader {
       } will use fallback colors`
     );
     return this.textureCache;
-  }
-
-  /**
-   * Load texture from bundled asset using expo-asset directly.
-   * Creates textures compatible with expo-gl without requiring expo-three.
-   */
-  private static async loadTextureFromAsset(
-    assetPath: string | number,
-    cacheKey: string
-  ): Promise<Texture> {
-    try {
-      const imageAsset = Asset.fromModule(assetPath);
-
-      if (!imageAsset.downloaded) {
-        await imageAsset.downloadAsync();
-      }
-
-      // Create texture directly using expo-gl compatible format
-      const texture = createTextureFromAsset(imageAsset);
-
-      return texture;
-    } catch (error) {
-      logger.error(`Texture loading failed for ${cacheKey}:`, error);
-      captureException(error);
-      throw new Error(
-        `Texture loading failed for ${cacheKey}: ${error}`
-      );
-    }
   }
 
   /**
@@ -748,133 +554,16 @@ export class SolarSystemPreloader {
     textures: Map<string, Texture | null>,
     onProgress?: (loaded: number, total: number, current: string) => void
   ): Promise<PreloadedSolarSystem> {
-    // Initialize scene
-    const scene = new Scene();
-    const camera = new PerspectiveCamera(
-      90, // Wider field of view for better solar system visibility
-      1, // Aspect ratio (will be updated by component)
-      0.1, // Near plane
-      800 // Increased far plane for larger view distance
-    );
-
-    // Position camera for optimal centered view of the compact solar system
-    camera.position.set(90, 60, 90); // Closer position for compact orbital radii (35-75 units)
-    camera.lookAt(0, 0, 0); // Look at center where sun is
-
-    logger.debug(
-      `📷 Camera positioned at (90, 60, 90) looking at center (0, 0, 0) for optimal compact solar system view`
-    );
+    const { scene, camera } = createSceneSetup();
 
     const meshes: Mesh[] = [];
     const lights: (DirectionalLight | AmbientLight | PointLight)[] = [];
 
     onProgress?.(1, 10, "Scene setup");
-
-    // Setup enhanced lighting for better texture visibility
-    // 1. Ambient light for overall scene illumination - INCREASED for MeshPhongMaterial
-    const ambientLight = new AmbientLight(0x404080, 1.2); // Increased from 0.4 to 1.2
-    scene.add(ambientLight);
-    lights.push(ambientLight);
-
-    // 2. Main sun light - directional light from sun - INCREASED for MeshPhongMaterial
-    const sunLight = new DirectionalLight(0xffffff, 4.0); // Increased from 1.8 to 4.0
-    sunLight.position.set(10, 5, 10); // Position away from sun for better illumination
-    sunLight.target.position.set(0, 0, 0);
-    sunLight.castShadow = false; // Disable shadows for performance
-    scene.add(sunLight);
-    scene.add(sunLight.target);
-    lights.push(sunLight);
-
-    // 3. Sun point light - central illumination from sun position - INCREASED for MeshPhongMaterial
-    const sunPointLight = new PointLight(0xffffff, 5.0, 300); // Increased from 2.5 to 5.0
-    sunPointLight.position.set(0, 0, 0);
-    sunPointLight.castShadow = false; // Disable shadows for performance
-    scene.add(sunPointLight);
-    lights.push(sunPointLight);
-
-    // 4. Additional rim lighting for planet definition - INCREASED for MeshPhongMaterial
-    const rimLight1 = new DirectionalLight(0x8888ff, 0.8); // Increased from 0.3 to 0.8
-    rimLight1.position.set(-20, 10, -20);
-    rimLight1.target.position.set(0, 0, 0);
-    scene.add(rimLight1);
-    scene.add(rimLight1.target);
-    lights.push(rimLight1);
-
-    const rimLight2 = new DirectionalLight(0xff8888, 0.6); // Increased from 0.2 to 0.6
-    rimLight2.position.set(20, -10, 20);
-    rimLight2.target.position.set(0, 0, 0);
-    scene.add(rimLight2);
-    scene.add(rimLight2.target);
-    lights.push(rimLight2);
-
-    logger.debug(
-      `💡 Enhanced lighting setup for MeshPhongMaterial: Ambient(1.2), Sun Directional(4.0), Sun Point(5.0), Rim Lights(0.8, 0.6)`
-    );
+    addEnhancedLights(scene, lights);
 
     onProgress?.(2, 10, "Enhanced lighting setup");
-
-    // Create sun - use geometry
-    const sunGeometry = geometries.get("sun");
-    const sunGlowTextures = [
-      textures.get("glow_sun"),
-      textures.get("glow_sun_intense"),
-      textures.get("glow_planet"),
-      textures.get("glow_planet_intense"),
-    ];
-    const sunMeshes: Mesh[] = [];
-    try {
-      if (sunGeometry) {
-        const sunScales = [1.0, 1.1, 1.2, 1.3];
-        for (let i = 0; i < sunGlowTextures.length; i++) {
-          const sunMaterial = new MeshPhongMaterial({
-            map: sunGlowTextures[i] || undefined,
-            color: 0xffff00,
-            emissive: 0xffff00,
-            emissiveIntensity: 1.5,
-            shininess: 100,
-            transparent: true,
-            opacity: 0.7 - i * 0.15,
-            depthWrite: false,
-          });
-          const sunMesh = new Mesh(sunGeometry, sunMaterial);
-          sunMesh.position.set(0, 0, 0);
-          sunMesh.scale.setScalar(sunScales[i]);
-          sunMesh.userData = { isSun: true, sunLayer: i };
-          scene.add(sunMesh);
-          meshes.push(sunMesh);
-          sunMeshes.push(sunMesh);
-        }
-        logger.debug("☀️ Sun (multi-layered glow) added to scene.");
-      } else {
-        logger.error("❌ Sun geometry missing! Using fallback sphere.");
-        const fallbackSun = new Mesh(
-          new SphereGeometry(20.0, 16, 16),
-          new MeshBasicMaterial({ color: 0xffff00 })
-        );
-        fallbackSun.position.set(0, 0, 0);
-        fallbackSun.userData = { isSun: true, isFallback: true };
-        scene.add(fallbackSun);
-        meshes.push(fallbackSun);
-        sunMeshes.push(fallbackSun);
-        logger.debug("☀️ Emergency fallback sun added to scene.");
-      }
-    } catch (err) {
-      logger.error("❌ Exception while creating sun mesh:", err);
-      captureException(err);
-      const fallbackSun = new Mesh(
-        new SphereGeometry(20.0, 16, 16),
-        new MeshBasicMaterial({ color: 0xffff00 })
-      );
-      fallbackSun.position.set(0, 0, 0);
-      fallbackSun.userData = { isSun: true, isFallback: true };
-      scene.add(fallbackSun);
-      meshes.push(fallbackSun);
-      sunMeshes.push(fallbackSun);
-      logger.debug("☀️ Emergency fallback sun added to scene.");
-    }
-    if (!sunMeshes.length) {
-      logger.error("❌ No sun mesh present in scene after all attempts!");
-    }
+    addSunMeshes(scene, geometries, textures, meshes);
     onProgress?.(3, 10, "Sun created");
 
     // Add planets group
@@ -1140,14 +829,7 @@ export class SolarSystemPreloader {
     logger.debug("SolarSystemPreloader: Clearing all caches...");
 
     // Dispose textures before clearing references.
-    this.textureCache.forEach((texture) => {
-      if (texture) {
-        texture.dispose();
-      }
-    });
-
-    // Clear all cached data
-    this.textureCache.clear();
+    disposeAndClearTextureCache(this.textureCache);
     this.preloadedSystem = null;
     this.isPreloaded = false;
     this.isPreloading = false;
@@ -1155,3 +837,5 @@ export class SolarSystemPreloader {
     logger.debug("SolarSystemPreloader: All caches cleared successfully");
   }
 }
+
+

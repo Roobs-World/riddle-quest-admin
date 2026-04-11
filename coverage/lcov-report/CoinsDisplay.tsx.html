@@ -1,0 +1,616 @@
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Code coverage report for CoinsDisplay.tsx</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="prettify.css" />
+    <link rel="stylesheet" href="base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
+        <h1><a href="index.html">All files</a> CoinsDisplay.tsx</h1>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>9/9</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>4/4</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>1/1</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>9/9</span>
+            </div>
+        
+            
+        </div>
+        <p class="quiet">
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
+        </p>
+        <template id="filterTemplate">
+            <div class="quiet">
+                Filter:
+                <input type="search" id="fileSearch">
+            </div>
+        </template>
+    </div>
+    <div class='status-line high'></div>
+    <pre><table class="coverage">
+<tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
+<a name='L2'></a><a href='#L2'>2</a>
+<a name='L3'></a><a href='#L3'>3</a>
+<a name='L4'></a><a href='#L4'>4</a>
+<a name='L5'></a><a href='#L5'>5</a>
+<a name='L6'></a><a href='#L6'>6</a>
+<a name='L7'></a><a href='#L7'>7</a>
+<a name='L8'></a><a href='#L8'>8</a>
+<a name='L9'></a><a href='#L9'>9</a>
+<a name='L10'></a><a href='#L10'>10</a>
+<a name='L11'></a><a href='#L11'>11</a>
+<a name='L12'></a><a href='#L12'>12</a>
+<a name='L13'></a><a href='#L13'>13</a>
+<a name='L14'></a><a href='#L14'>14</a>
+<a name='L15'></a><a href='#L15'>15</a>
+<a name='L16'></a><a href='#L16'>16</a>
+<a name='L17'></a><a href='#L17'>17</a>
+<a name='L18'></a><a href='#L18'>18</a>
+<a name='L19'></a><a href='#L19'>19</a>
+<a name='L20'></a><a href='#L20'>20</a>
+<a name='L21'></a><a href='#L21'>21</a>
+<a name='L22'></a><a href='#L22'>22</a>
+<a name='L23'></a><a href='#L23'>23</a>
+<a name='L24'></a><a href='#L24'>24</a>
+<a name='L25'></a><a href='#L25'>25</a>
+<a name='L26'></a><a href='#L26'>26</a>
+<a name='L27'></a><a href='#L27'>27</a>
+<a name='L28'></a><a href='#L28'>28</a>
+<a name='L29'></a><a href='#L29'>29</a>
+<a name='L30'></a><a href='#L30'>30</a>
+<a name='L31'></a><a href='#L31'>31</a>
+<a name='L32'></a><a href='#L32'>32</a>
+<a name='L33'></a><a href='#L33'>33</a>
+<a name='L34'></a><a href='#L34'>34</a>
+<a name='L35'></a><a href='#L35'>35</a>
+<a name='L36'></a><a href='#L36'>36</a>
+<a name='L37'></a><a href='#L37'>37</a>
+<a name='L38'></a><a href='#L38'>38</a>
+<a name='L39'></a><a href='#L39'>39</a>
+<a name='L40'></a><a href='#L40'>40</a>
+<a name='L41'></a><a href='#L41'>41</a>
+<a name='L42'></a><a href='#L42'>42</a>
+<a name='L43'></a><a href='#L43'>43</a>
+<a name='L44'></a><a href='#L44'>44</a>
+<a name='L45'></a><a href='#L45'>45</a>
+<a name='L46'></a><a href='#L46'>46</a>
+<a name='L47'></a><a href='#L47'>47</a>
+<a name='L48'></a><a href='#L48'>48</a>
+<a name='L49'></a><a href='#L49'>49</a>
+<a name='L50'></a><a href='#L50'>50</a>
+<a name='L51'></a><a href='#L51'>51</a>
+<a name='L52'></a><a href='#L52'>52</a>
+<a name='L53'></a><a href='#L53'>53</a>
+<a name='L54'></a><a href='#L54'>54</a>
+<a name='L55'></a><a href='#L55'>55</a>
+<a name='L56'></a><a href='#L56'>56</a>
+<a name='L57'></a><a href='#L57'>57</a>
+<a name='L58'></a><a href='#L58'>58</a>
+<a name='L59'></a><a href='#L59'>59</a>
+<a name='L60'></a><a href='#L60'>60</a>
+<a name='L61'></a><a href='#L61'>61</a>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a>
+<a name='L72'></a><a href='#L72'>72</a>
+<a name='L73'></a><a href='#L73'>73</a>
+<a name='L74'></a><a href='#L74'>74</a>
+<a name='L75'></a><a href='#L75'>75</a>
+<a name='L76'></a><a href='#L76'>76</a>
+<a name='L77'></a><a href='#L77'>77</a>
+<a name='L78'></a><a href='#L78'>78</a>
+<a name='L79'></a><a href='#L79'>79</a>
+<a name='L80'></a><a href='#L80'>80</a>
+<a name='L81'></a><a href='#L81'>81</a>
+<a name='L82'></a><a href='#L82'>82</a>
+<a name='L83'></a><a href='#L83'>83</a>
+<a name='L84'></a><a href='#L84'>84</a>
+<a name='L85'></a><a href='#L85'>85</a>
+<a name='L86'></a><a href='#L86'>86</a>
+<a name='L87'></a><a href='#L87'>87</a>
+<a name='L88'></a><a href='#L88'>88</a>
+<a name='L89'></a><a href='#L89'>89</a>
+<a name='L90'></a><a href='#L90'>90</a>
+<a name='L91'></a><a href='#L91'>91</a>
+<a name='L92'></a><a href='#L92'>92</a>
+<a name='L93'></a><a href='#L93'>93</a>
+<a name='L94'></a><a href='#L94'>94</a>
+<a name='L95'></a><a href='#L95'>95</a>
+<a name='L96'></a><a href='#L96'>96</a>
+<a name='L97'></a><a href='#L97'>97</a>
+<a name='L98'></a><a href='#L98'>98</a>
+<a name='L99'></a><a href='#L99'>99</a>
+<a name='L100'></a><a href='#L100'>100</a>
+<a name='L101'></a><a href='#L101'>101</a>
+<a name='L102'></a><a href='#L102'>102</a>
+<a name='L103'></a><a href='#L103'>103</a>
+<a name='L104'></a><a href='#L104'>104</a>
+<a name='L105'></a><a href='#L105'>105</a>
+<a name='L106'></a><a href='#L106'>106</a>
+<a name='L107'></a><a href='#L107'>107</a>
+<a name='L108'></a><a href='#L108'>108</a>
+<a name='L109'></a><a href='#L109'>109</a>
+<a name='L110'></a><a href='#L110'>110</a>
+<a name='L111'></a><a href='#L111'>111</a>
+<a name='L112'></a><a href='#L112'>112</a>
+<a name='L113'></a><a href='#L113'>113</a>
+<a name='L114'></a><a href='#L114'>114</a>
+<a name='L115'></a><a href='#L115'>115</a>
+<a name='L116'></a><a href='#L116'>116</a>
+<a name='L117'></a><a href='#L117'>117</a>
+<a name='L118'></a><a href='#L118'>118</a>
+<a name='L119'></a><a href='#L119'>119</a>
+<a name='L120'></a><a href='#L120'>120</a>
+<a name='L121'></a><a href='#L121'>121</a>
+<a name='L122'></a><a href='#L122'>122</a>
+<a name='L123'></a><a href='#L123'>123</a>
+<a name='L124'></a><a href='#L124'>124</a>
+<a name='L125'></a><a href='#L125'>125</a>
+<a name='L126'></a><a href='#L126'>126</a>
+<a name='L127'></a><a href='#L127'>127</a>
+<a name='L128'></a><a href='#L128'>128</a>
+<a name='L129'></a><a href='#L129'>129</a>
+<a name='L130'></a><a href='#L130'>130</a>
+<a name='L131'></a><a href='#L131'>131</a>
+<a name='L132'></a><a href='#L132'>132</a>
+<a name='L133'></a><a href='#L133'>133</a>
+<a name='L134'></a><a href='#L134'>134</a>
+<a name='L135'></a><a href='#L135'>135</a>
+<a name='L136'></a><a href='#L136'>136</a>
+<a name='L137'></a><a href='#L137'>137</a>
+<a name='L138'></a><a href='#L138'>138</a>
+<a name='L139'></a><a href='#L139'>139</a>
+<a name='L140'></a><a href='#L140'>140</a>
+<a name='L141'></a><a href='#L141'>141</a>
+<a name='L142'></a><a href='#L142'>142</a>
+<a name='L143'></a><a href='#L143'>143</a>
+<a name='L144'></a><a href='#L144'>144</a>
+<a name='L145'></a><a href='#L145'>145</a>
+<a name='L146'></a><a href='#L146'>146</a>
+<a name='L147'></a><a href='#L147'>147</a>
+<a name='L148'></a><a href='#L148'>148</a>
+<a name='L149'></a><a href='#L149'>149</a>
+<a name='L150'></a><a href='#L150'>150</a>
+<a name='L151'></a><a href='#L151'>151</a>
+<a name='L152'></a><a href='#L152'>152</a>
+<a name='L153'></a><a href='#L153'>153</a>
+<a name='L154'></a><a href='#L154'>154</a>
+<a name='L155'></a><a href='#L155'>155</a>
+<a name='L156'></a><a href='#L156'>156</a>
+<a name='L157'></a><a href='#L157'>157</a>
+<a name='L158'></a><a href='#L158'>158</a>
+<a name='L159'></a><a href='#L159'>159</a>
+<a name='L160'></a><a href='#L160'>160</a>
+<a name='L161'></a><a href='#L161'>161</a>
+<a name='L162'></a><a href='#L162'>162</a>
+<a name='L163'></a><a href='#L163'>163</a>
+<a name='L164'></a><a href='#L164'>164</a>
+<a name='L165'></a><a href='#L165'>165</a>
+<a name='L166'></a><a href='#L166'>166</a>
+<a name='L167'></a><a href='#L167'>167</a>
+<a name='L168'></a><a href='#L168'>168</a>
+<a name='L169'></a><a href='#L169'>169</a>
+<a name='L170'></a><a href='#L170'>170</a>
+<a name='L171'></a><a href='#L171'>171</a>
+<a name='L172'></a><a href='#L172'>172</a>
+<a name='L173'></a><a href='#L173'>173</a>
+<a name='L174'></a><a href='#L174'>174</a>
+<a name='L175'></a><a href='#L175'>175</a>
+<a name='L176'></a><a href='#L176'>176</a>
+<a name='L177'></a><a href='#L177'>177</a>
+<a name='L178'></a><a href='#L178'>178</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">82x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">82x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">82x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">82x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">82x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">71x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
+ * @fileoverview CoinsDisplay component for showing player's coin balance in Qwordly.
+ *
+ * This component displays the player's current coin balance with a custom SVG
+ * coin icon. It supports both read-only display and interactive modes that
+ * open the coin shop when tapped. The component includes proper accessibility
+ * support and visual feedback for user interactions.
+ *
+ * @author Qwordly Development Team
+ * @version 1.0.0
+ * @since 2024
+ */
+&nbsp;
+import React from "react";
+import { View, Text, TouchableOpacity } from "react-native";
+import { SvgXml } from "react-native-svg";
+import { COIN_DISPLAY_ICON_SIZE } from "../../constants/layout";
+import { TYPOGRAPHY, SPACING } from "../../styles";
+&nbsp;
+/**
+ * Embedded SVG icon for the coin display.
+ *
+ * This SVG represents a stack of gold coins with shadows and highlights
+ * to create a 3D effect. The icon uses the app's primary orange color
+ * scheme and includes decorative plus symbols around the coins.
+ *
+ * Visual features:
+ * - Multiple coin layers for depth perception
+ * - Gold/orange gradient coloring
+ * - 3D shading and highlights
+ * - Decorative plus symbols
+ * - Optimized for 24x24 to 48x48 pixel display
+ */
+const coinSvg = `&lt;svg width="24" height="24" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+&lt;path fill-rule="evenodd" clip-rule="evenodd" d="M24.6523 84.8488C24.6523 75.8092 45.1995 68.4873 70.5531 68.4873C95.9066 68.4873 116.461 75.8089 116.461 84.8488V99.8809C116.461 108.921 95.9066 116.242 70.5531 116.242C45.1995 116.242 24.6523 108.921 24.6523 99.8809C24.6523 94.8702 24.6523 89.8595 24.6523 84.8488Z" fill="#FE9923"/&gt;
+&lt;path fill-rule="evenodd" clip-rule="evenodd" d="M70.5531 68.4873C95.9063 68.4873 116.461 75.8089 116.461 84.8488C116.461 93.8816 95.9066 101.21 70.5531 101.21C45.1995 101.21 24.6523 93.8818 24.6523 84.8488C24.6523 75.8092 45.1995 68.4873 70.5531 68.4873Z" fill="#FECD3D"/&gt;
+&lt;path fill-rule="evenodd" clip-rule="evenodd" d="M70.5528 68.4873C78.2698 68.4873 85.5439 69.1623 91.925 70.3621V71.4461C91.925 80.4857 71.371 87.8075 46.0243 87.8075C38.348 87.8075 31.115 87.1396 24.7545 85.9532C24.6863 85.5852 24.6523 85.217 24.6523 84.8488C24.6521 75.8092 45.1993 68.4873 70.5528 68.4873Z" fill="#CEA732"/&gt;
+&lt;path fill-rule="evenodd" clip-rule="evenodd" d="M70.5533 76.1299C90.7255 76.1299 107.073 80.0362 107.073 84.8491C107.073 89.6622 90.7255 93.5615 70.5533 93.5615C50.3879 93.5615 34.0332 89.662 34.0332 84.8491C34.0332 80.0362 50.3877 76.1299 70.5533 76.1299Z" fill="#FEA832"/&gt;
+&lt;path fill-rule="evenodd" clip-rule="evenodd" d="M70.5533 76.1299C77.2341 76.1299 83.4992 76.5595 88.8917 77.3093C82.2723 83.4515 65.5768 87.8078 46.0248 87.8078C42.4388 87.8078 38.9553 87.6646 35.608 87.3853C34.5854 86.5809 34.0332 85.7287 34.0332 84.8493C34.0332 80.0362 50.3877 76.1299 70.5533 76.1299Z" fill="#CE8829"/&gt;
+&lt;path d="M104.046 103.064V111.068C105.457 110.529 106.773 109.963 107.973 109.357V103.058L104.046 103.064ZM93.786 113.993C92.518 114.258 91.2091 114.504 89.8661 114.729V107.101L93.786 107.107V113.993ZM79.6061 115.922C78.3177 116.017 77.0087 116.085 75.6862 116.14V108.859L79.6061 108.873V115.922ZM65.4262 116.14C64.0968 116.085 62.7878 116.017 61.4995 115.922V108.866H65.4262V116.14ZM51.2395 114.729C49.8965 114.504 48.5875 114.258 47.3195 113.992V107.1L51.2395 107.107V114.729ZM37.0595 111.068C35.6484 110.529 34.3326 109.964 33.1328 109.357V103.065L37.0595 103.058V111.068Z" fill="#C85929"/&gt;
+&lt;path fill-rule="evenodd" clip-rule="evenodd" d="M0.117188 52.4874C0.117188 43.4478 20.6712 36.1191 46.0247 36.1191C71.3712 36.1191 91.9254 43.4478 91.9254 52.4874V67.5195C91.9254 76.5523 71.3714 83.881 46.0247 83.881C20.6712 83.881 0.117188 76.5523 0.117188 67.5195C0.117188 62.5088 0.117188 57.4981 0.117188 52.4874Z" fill="#FE9923"/&gt;
+&lt;path fill-rule="evenodd" clip-rule="evenodd" d="M46.0247 36.1191C71.3712 36.1191 91.9254 43.4478 91.9254 52.4874C91.9254 61.5202 71.3714 68.8487 46.0247 68.8487C20.6712 68.8489 0.117188 61.5205 0.117188 52.4874C0.117188 43.4478 20.6712 36.1191 46.0247 36.1191Z" fill="#FECD3D"/&gt;
+&lt;path fill-rule="evenodd" clip-rule="evenodd" d="M46.0248 36.1191C71.3713 36.1191 91.9255 43.4478 91.9255 52.4874C91.9255 53.3736 91.7277 54.2462 91.3394 55.0984C86.4923 55.6505 81.3248 55.9437 75.9597 55.9437C47.9748 55.9437 25.2871 47.8585 25.2871 37.8849C31.5109 36.7599 38.5598 36.1191 46.0248 36.1191Z" fill="#CEA732"/&gt;
+&lt;path fill-rule="evenodd" clip-rule="evenodd" d="M46.024 43.7686C66.1894 43.7686 82.5441 47.6749 82.5441 52.4878C82.5441 57.3007 66.1894 61.2002 46.024 61.2002C25.8518 61.2002 9.50391 57.3007 9.50391 52.4878C9.50391 47.6749 25.8516 43.7686 46.024 43.7686Z" fill="#FEA832"/&gt;
+&lt;path fill-rule="evenodd" clip-rule="evenodd" d="M46.0239 43.7686C66.1893 43.7686 82.544 47.6749 82.544 52.4878C82.544 53.6943 81.5078 54.8533 79.633 55.8963C78.4197 55.9305 77.1925 55.9441 75.9585 55.9441C54.8045 55.9441 36.6843 51.3288 29.0898 44.7637C34.1549 44.1297 39.9088 43.7686 46.0239 43.7686Z" fill="#CE8829"/&gt;
+&lt;path d="M79.5177 70.7031V78.7065C80.9288 78.1679 82.2446 77.5954 83.4444 76.9954V70.6963L79.5177 70.7031ZM69.2577 81.6311C67.9897 81.8968 66.6807 82.1425 65.3377 82.3672V74.7388L69.2577 74.7456V81.6311ZM55.0709 83.5604C53.7826 83.6558 52.4804 83.724 51.151 83.7786V76.4978L55.0709 76.5046V83.5604ZM40.891 83.7784C39.5684 83.7238 38.2595 83.6556 36.9643 83.5602V76.5046L40.891 76.4978V83.7784ZM26.7043 82.3672C25.3613 82.1422 24.0591 81.8968 22.7844 81.6311V74.7388L26.7043 74.7456V82.3672ZM12.5312 78.7065C11.1132 78.1679 9.80422 77.5954 8.59766 76.9954V70.7031L12.5312 70.6963V78.7065Z" fill="#C85929"/&gt;
+&lt;path d="M116.366 55.0576V58.5821H119.884V61.9499H116.366V65.4676H112.998V61.9499H109.48V58.5821H112.998V55.0576H116.366Z" fill="#FEA832"/&gt;
+&lt;path d="M10.8005 90.8076V94.3254H14.3182V97.6931H10.8005V101.211H7.43273V97.6931H3.9082V94.3254H7.43273V90.8076H10.8005Z" fill="#FEA832"/&gt;
+&lt;path d="M10.8005 17.2148V20.7326H14.3182V24.1003H10.8005V27.6248H7.43273V24.1003H3.9082V20.7326H7.43273V17.2148H10.8005Z" fill="#FEA832"/&gt;
+&lt;path fill-rule="evenodd" clip-rule="evenodd" d="M24.6523 20.1193C24.6523 11.0865 45.1995 3.75781 70.5531 3.75781C95.9066 3.75781 116.461 11.0863 116.461 20.1193V35.1582C116.461 44.191 95.9066 51.5197 70.5531 51.5197C45.1995 51.5197 24.6523 44.1912 24.6523 35.1582C24.6523 30.1475 24.6523 25.13 24.6523 20.1193Z" fill="#FE9923"/&gt;
+&lt;path fill-rule="evenodd" clip-rule="evenodd" d="M70.5531 3.75781C95.9063 3.75781 116.461 11.0863 116.461 20.1193C116.461 29.1589 95.9066 36.4876 70.5531 36.4876C45.1995 36.4876 24.6523 29.1589 24.6523 20.1193C24.6523 11.0865 45.1995 3.75781 70.5531 3.75781Z" fill="#FECD3D"/&gt;
+&lt;path fill-rule="evenodd" clip-rule="evenodd" d="M70.5533 11.4072C90.7255 11.4072 107.073 15.3068 107.073 20.1196C107.073 24.9396 90.7255 28.8389 70.5533 28.8389C50.3879 28.8389 34.0332 24.9393 34.0332 20.1196C34.0332 15.3068 50.3877 11.4072 70.5533 11.4072Z" fill="#FEA832"/&gt;
+&lt;path d="M104.046 38.3418V46.3452C105.457 45.8066 106.773 45.234 107.973 44.634V38.335L104.046 38.3418ZM93.786 49.2697C92.518 49.5355 91.2091 49.7811 89.8661 49.9991V42.3775L93.786 42.3843V49.2697ZM79.6061 51.1991C78.3177 51.2877 77.0087 51.3627 75.6862 51.4173V44.1364L79.6061 44.1432V51.1991ZM65.4262 51.4173C64.0968 51.3627 62.7878 51.2877 61.4995 51.1991V44.1432L65.4262 44.1364V51.4173ZM51.2395 49.9991C49.8965 49.7809 48.5875 49.5355 47.3195 49.2697V42.3775L51.2395 42.3843V49.9991ZM37.0595 46.3452C35.6484 45.8066 34.3326 45.234 33.1328 44.634V38.3418L37.0595 38.335V46.3452Z" fill="#C85929"/&gt;
+&lt;/svg&gt;`;
+&nbsp;
+/**
+ * Props interface for the CoinsDisplay component.
+ *
+ * @property {number} coins - Current coin balance to display
+ * @property {() =&gt; void} [onPress] - Optional callback when component is tapped
+ */
+interface CoinsDisplayProps {
+  /** The number of coins to display (non-negative integer) */
+  coins: number;
+&nbsp;
+  /**
+   * Optional function to call when the coins are pressed.
+   * If provided, makes the component interactive and typically opens the coin shop.
+   */
+  onPress?: () =&gt; void;
+}
+&nbsp;
+/**
+ * CoinsDisplay Component
+ *
+ * A component that displays the player's current coin balance with an attractive
+ * coin icon. Supports both read-only display and interactive modes for accessing
+ * the coin shop. The component provides proper accessibility support and visual
+ * feedback for user interactions.
+ *
+ * Visual Design:
+ * - Custom SVG coin icon with 3D appearance
+ * - Bold typography for coin count
+ * - Horizontal layout with icon and number
+ * - Consistent spacing and alignment
+ *
+ * Interaction Modes:
+ * - Read-only: Displays coin balance without interaction
+ * - Interactive: Tappable area that triggers onPress callback
+ * - Accessibility: Proper labels and roles for screen readers
+ *
+ * Features:
+ * - Animated SVG coin icon with gradient coloring
+ * - Proper pluralization (coin vs coins)
+ * - Touch feedback when interactive
+ * - Test ID support for automated testing
+ * - Comprehensive accessibility labeling
+ * - Responsive sizing for different screen sizes
+ *
+ * Usage Examples:
+ * ```tsx
+ * // Read-only coin display
+ * &lt;CoinsDisplay coins={150} /&gt;
+ *
+ * // Interactive coin display that opens shop
+ * &lt;CoinsDisplay coins={42} onPress={openCoinShop} /&gt;
+ *
+ * // In a header or status bar
+ * &lt;View className="flex-row justify-between"&gt;
+ *   &lt;ScreenTitle title="Game" /&gt;
+ *   &lt;CoinsDisplay coins={playerCoins} onPress={handleShopOpen} /&gt;
+ * &lt;/View&gt;
+ * ```
+ *
+ * @param {CoinsDisplayProps} props - Component props
+ * @returns {JSX.Element} Rendered coin display component
+ */
+const CoinsDisplay: React.FC&lt;CoinsDisplayProps&gt; = ({ coins, onPress }) =&gt; {
+  /** Generate appropriate text for singular/plural coin count */
+  const coinText = coins === 1 ? "coin" : "coins";
+&nbsp;
+  /** Accessibility label for read-only mode */
+  const accessibilityLabel = `You have ${coins} ${coinText}`;
+&nbsp;
+  /** Accessibility label for interactive mode */
+  const touchableAccessibilityLabel = `Open coin shop. ${accessibilityLabel}`;
+&nbsp;
+  /**
+   * Core content component showing coin icon and count.
+   * This is rendered the same way regardless of interaction mode.
+   */
+  const content = (
+    &lt;View
+      className="flex-row items-center"
+      testID="coins-display"
+      accessible={true}
+      accessibilityLabel={accessibilityLabel}
+    &gt;
+      &lt;Text style={{ fontFamily: TYPOGRAPHY.fontPrimary, color: "#ffffff", fontSize: TYPOGRAPHY.fontSize.lg, marginRight: SPACING.xs }}&gt;
+        {String(coins)}
+      &lt;/Text&gt;
+      &lt;SvgXml xml={coinSvg} width={COIN_DISPLAY_ICON_SIZE} height={COIN_DISPLAY_ICON_SIZE} testID="coin-icon" /&gt;
+    &lt;/View&gt;
+  );
+&nbsp;
+  /**
+   * Interactive Mode Rendering
+   *
+   * When onPress is provided, wraps the content in a TouchableOpacity
+   * to enable tap interactions (typically for opening the coin shop).
+   */
+  if (onPress) {
+    return (
+      &lt;TouchableOpacity
+        onPress={onPress}
+        className="flex-row items-center"
+        testID="coins-display-touchable"
+        accessible={true}
+        accessibilityRole="button"
+        accessibilityLabel={touchableAccessibilityLabel}
+      &gt;
+        {content}
+      &lt;/TouchableOpacity&gt;
+    );
+  }
+&nbsp;
+  /**
+   * Read-Only Mode Rendering
+   *
+   * When no onPress is provided, returns the content directly
+   * for display-only purposes.
+   */
+  return content;
+};
+&nbsp;
+export default CoinsDisplay;
+&nbsp;
+&nbsp;</pre></td></tr></table></pre>
+
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+                at 2026-04-11T02:22:52.251Z
+            </div>
+        <script src="prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="sorter.js"></script>
+        <script src="block-navigation.js"></script>
+    </body>
+</html>
+    

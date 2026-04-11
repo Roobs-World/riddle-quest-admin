@@ -8,6 +8,7 @@ import { TYPOGRAPHY, SPACING } from "../../styles";
  * @property {string} riddleText - The text of the riddle to display.
  */
 type RiddleTextProps = {
+  /** Localized riddle prompt shown above the guess grid. */
   riddleText: string;
 };
 
@@ -25,7 +26,7 @@ const styles = StyleSheet.create({
  * The component that displays the riddle text for the Wordle-style game.
  *
  * @param {RiddleTextProps} props - The props for the component.
- * @returns {React.FC<RiddleTextProps>} The rendered RiddleText component.
+ * @returns {JSX.Element} The rendered riddle text wrapper.
  */
 const RiddleText: React.FC<RiddleTextProps> = ({ riddleText }) => {
   return (
@@ -44,4 +45,3 @@ const RiddleText: React.FC<RiddleTextProps> = ({ riddleText }) => {
 };
 
 export default RiddleText;
-

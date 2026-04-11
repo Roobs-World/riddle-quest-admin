@@ -2,7 +2,37 @@ import {
   AUDIO_QUALITY_PRESETS,
   getOptimalAudioConfig,
   AudioQualityConfig,
+  configureHighQualityAudioSession,
+  createHighQualitySound,
+  monitorAudioQuality,
+  validateAudioQuality,
+  applyAudioEnhancements,
 } from "../audioOptimization";
+import type { AudioPlayer } from "expo-audio";
+
+// Mock expo-audio
+const mockSetAudioModeAsync = jest.fn().mockResolvedValue(undefined);
+const mockCreateAudioPlayer = jest.fn();
+
+jest.mock("expo-audio", () => ({
+  setAudioModeAsync: (...args: unknown[]) => mockSetAudioModeAsync(...args),
+  createAudioPlayer: (...args: unknown[]) => mockCreateAudioPlayer(...args),
+}));
+
+// Mock logger
+jest.mock("../logger", () => ({
+  logger: {
+    debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+  },
+}));
+
+// Mock sentry
+jest.mock("../sentry", () => ({
+  captureException: jest.fn(),
+}));
 
 // Mutable Platform mock - override Platform in react-native for this test file
 const platformMock: { OS: string; Version?: number } = {
@@ -285,6 +315,218 @@ describe("audioOptimization utility", () => {
       expect(ultra.bufferSize).toBeGreaterThan(high.bufferSize);
       expect(high.bufferSize).toBeGreaterThan(adaptive.bufferSize);
       expect(adaptive.bufferSize).toBeGreaterThan(standard.bufferSize);
+    });
+  });
+
+  describe("configureHighQualityAudioSession", () => {
+    beforeEach(() => {
+      mockSetAudioModeAsync.mockClear();
+      mockSetAudioModeAsync.mockResolvedValue(undefined);
+    });
+
+    it("should configure audio session with correct options", async () => {
+      await configureHighQualityAudioSession();
+
+      expect(mockSetAudioModeAsync).toHaveBeenCalledWith({
+        playsInSilentMode: true,
+        shouldPlayInBackground: false,
+        interruptionMode: "doNotMix",
+      });
+    });
+
+    it("should throw when setAudioModeAsync fails", async () => {
+      const error = new Error("Audio mode error");
+      mockSetAudioModeAsync.mockRejectedValueOnce(error);
+
+      await expect(configureHighQualityAudioSession()).rejects.toThrow("Audio mode error");
+    });
+
+    it("should capture exception when setAudioModeAsync fails", async () => {
+      const { captureException } = require("../sentry");
+      const error = new Error("Audio mode error");
+      mockSetAudioModeAsync.mockRejectedValueOnce(error);
+
+      try {
+        await configureHighQualityAudioSession();
+      } catch {
+        // Expected
+      }
+
+      expect(captureException).toHaveBeenCalledWith(error);
+    });
+  });
+
+  describe("createHighQualitySound", () => {
+    const mockPlayer = {
+      loop: false,
+      volume: 1.0,
+      isLoaded: true,
+      duration: 1000,
+      play: jest.fn(),
+      pause: jest.fn(),
+    };
+
+    beforeEach(() => {
+      mockCreateAudioPlayer.mockClear();
+      mockCreateAudioPlayer.mockReturnValue(mockPlayer);
+    });
+
+    it("should create audio player with source", async () => {
+      const source = { uri: "test.mp3" };
+      const result = await createHighQualitySound(source);
+
+      expect(mockCreateAudioPlayer).toHaveBeenCalledWith(source);
+      expect(result.sound).toBe(mockPlayer);
+    });
+
+    it("should set loop option when provided", async () => {
+      const source = { uri: "test.mp3" };
+      await createHighQualitySound(source, { loop: true });
+
+      expect(mockPlayer.loop).toBe(true);
+    });
+
+    it("should set volume option when provided", async () => {
+      const source = { uri: "test.mp3" };
+      await createHighQualitySound(source, { volume: 0.5 });
+
+      expect(mockPlayer.volume).toBe(0.5);
+    });
+
+    it("should use default values when options not provided", async () => {
+      const freshPlayer = { loop: false, volume: 1.0 };
+      mockCreateAudioPlayer.mockReturnValue(freshPlayer);
+
+      await createHighQualitySound({ uri: "test.mp3" });
+
+      expect(freshPlayer.loop).toBe(false);
+      expect(freshPlayer.volume).toBe(1.0);
+    });
+
+    it("should throw when createAudioPlayer fails", async () => {
+      const error = new Error("Player creation error");
+      mockCreateAudioPlayer.mockImplementationOnce(() => {
+        throw error;
+      });
+
+      await expect(createHighQualitySound({ uri: "test.mp3" })).rejects.toThrow(
+        "Player creation error"
+      );
+    });
+
+    it("should capture exception when createAudioPlayer fails", async () => {
+      const { captureException } = require("../sentry");
+      const error = new Error("Player creation error");
+      mockCreateAudioPlayer.mockImplementationOnce(() => {
+        throw error;
+      });
+
+      try {
+        await createHighQualitySound({ uri: "test.mp3" });
+      } catch {
+        // Expected
+      }
+
+      expect(captureException).toHaveBeenCalledWith(error);
+    });
+  });
+
+  describe("monitorAudioQuality", () => {
+    it("should be a no-op function for API compatibility", () => {
+      const mockSound = {} as AudioPlayer;
+
+      // Should not throw
+      expect(() => monitorAudioQuality(mockSound)).not.toThrow();
+    });
+  });
+
+  describe("validateAudioQuality", () => {
+    it("should return true for valid loaded sound", async () => {
+      const mockSound = {
+        isLoaded: true,
+        duration: 1000,
+      } as AudioPlayer;
+
+      const result = await validateAudioQuality(mockSound);
+      expect(result).toBe(true);
+    });
+
+    it("should return false when sound is not loaded", async () => {
+      const mockSound = {
+        isLoaded: false,
+        duration: 1000,
+      } as AudioPlayer;
+
+      const result = await validateAudioQuality(mockSound);
+      expect(result).toBe(false);
+    });
+
+    it("should return false when duration is 0", async () => {
+      const mockSound = {
+        isLoaded: true,
+        duration: 0,
+      } as AudioPlayer;
+
+      const result = await validateAudioQuality(mockSound);
+      expect(result).toBe(false);
+    });
+
+    it("should return false when duration is negative", async () => {
+      const mockSound = {
+        isLoaded: true,
+        duration: -1,
+      } as AudioPlayer;
+
+      const result = await validateAudioQuality(mockSound);
+      expect(result).toBe(false);
+    });
+
+    it("should return false and capture exception on error", async () => {
+      const { captureException } = require("../sentry");
+      const mockSound = {
+        get isLoaded() {
+          throw new Error("Access error");
+        },
+      } as unknown as AudioPlayer;
+
+      const result = await validateAudioQuality(mockSound);
+      expect(result).toBe(false);
+      expect(captureException).toHaveBeenCalled();
+    });
+  });
+
+  describe("applyAudioEnhancements", () => {
+    it("should set volume to 1.0", async () => {
+      const mockSound = {
+        volume: 0.5,
+        playbackRate: 0.5,
+      } as AudioPlayer;
+
+      await applyAudioEnhancements(mockSound);
+      expect(mockSound.volume).toBe(1.0);
+    });
+
+    it("should set playbackRate to 1.0", async () => {
+      const mockSound = {
+        volume: 0.5,
+        playbackRate: 0.5,
+      } as AudioPlayer;
+
+      await applyAudioEnhancements(mockSound);
+      expect(mockSound.playbackRate).toBe(1.0);
+    });
+
+    it("should capture exception on error", async () => {
+      const { captureException } = require("../sentry");
+      const mockSound = {
+        set volume(_: number) {
+          throw new Error("Volume error");
+        },
+        playbackRate: 1.0,
+      } as unknown as AudioPlayer;
+
+      await applyAudioEnhancements(mockSound);
+      expect(captureException).toHaveBeenCalled();
     });
   });
 });

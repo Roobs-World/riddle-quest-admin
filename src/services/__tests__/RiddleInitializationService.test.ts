@@ -60,7 +60,6 @@ jest.mock("../../utils/logger", () => ({
 describe("RiddleInitializationService", () => {
   let RiddleInitializationService: typeof import("../RiddleInitializationService").RiddleInitializationService;
   let consoleLogSpy: jest.SpyInstance;
-  let consoleErrorSpy: jest.SpyInstance;
 
   beforeEach(() => {
     jest.resetModules();
@@ -91,12 +90,10 @@ describe("RiddleInitializationService", () => {
     });
 
     consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
-    consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
   });
 
   afterEach(() => {
     consoleLogSpy.mockRestore();
-    consoleErrorSpy.mockRestore();
   });
 
   describe("getInitializationStatus", () => {

@@ -107,9 +107,8 @@ describe("Keyboard", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    // Clear console.log and console.error
+    // Clear console.log to reduce noise
     jest.spyOn(console, "log").mockImplementation(() => {});
-    jest.spyOn(console, "error").mockImplementation(() => {});
   });
 
   afterEach(() => {

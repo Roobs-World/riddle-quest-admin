@@ -29,6 +29,10 @@ jest.mock("../firestoreService", () => ({
   getUser: jest.fn<(...args: any[]) => Promise<Player | undefined>>().mockResolvedValue(undefined), // Default to undefined for user not found
 }));
 
+jest.mock("../riddleGeneration", () => ({
+  generateTodaysDailyChallenge: jest.fn().mockResolvedValue(undefined),
+}));
+
 // Define types for mocked Firestore objects to improve type checking
 interface MockDocumentSnapshot<T> {
   exists: boolean;
@@ -397,12 +401,8 @@ describe("Daily Challenge Functions", () => {
         date: "2023-01-01",
         questions: [
           {riddleId: "q1", text: "Question 1?", questionNumber: 1},
-          {riddleId: "q2", text: "Question 2?", questionNumber: 2},
-          {riddleId: "q3", text: "Question 3?", questionNumber: 3},
-          {riddleId: "q4", text: "Question 4?", questionNumber: 4},
-          {riddleId: "q5", text: "Question 5?", questionNumber: 5},
         ],
-        totalQuestions: 5,
+        totalQuestions: 1,
       });
       expect(result.hasCompletedToday).toBe(false); // Player has no lastDailyChallengeCompletedAt
       expect(result.currentQuestion).toBe(0);
@@ -417,7 +417,7 @@ describe("Daily Challenge Functions", () => {
         progress: {
           classicIndex: 0,
           dailyChallengeIndex: 0,
-          dailyChallengeCurrentQuestion: 5, // Completed all 5 questions
+          dailyChallengeCurrentQuestion: 1, // Completed today's single question
           tutorialIndex: 0,
         },
       });
@@ -447,16 +447,12 @@ describe("Daily Challenge Functions", () => {
         date: "2023-01-01",
         questions: [
           {riddleId: "q1", text: "Question 1?", questionNumber: 1},
-          {riddleId: "q2", text: "Question 2?", questionNumber: 2},
-          {riddleId: "q3", text: "Question 3?", questionNumber: 3},
-          {riddleId: "q4", text: "Question 4?", questionNumber: 4},
-          {riddleId: "q5", text: "Question 5?", questionNumber: 5},
         ],
-        totalQuestions: 5,
+        totalQuestions: 1,
       });
       expect(result.hasCompletedToday).toBe(true); // Player completed today
-      expect(result.currentQuestion).toBe(5);
-      expect(result.questionsCompleted).toBe(5);
+      expect(result.currentQuestion).toBe(1);
+      expect(result.questionsCompleted).toBe(1);
     });
 
     it("should return challenge and undefined completion if getUser fails for authenticated user", async () => {
@@ -512,12 +508,8 @@ describe("Daily Challenge Functions", () => {
         date: "2023-01-01",
         questions: [
           {riddleId: "q1", text: "Question 1?", questionNumber: 1},
-          {riddleId: "q2", text: "Question 2?", questionNumber: 2},
-          {riddleId: "q3", text: "Question 3?", questionNumber: 3},
-          {riddleId: "q4", text: "Question 4?", questionNumber: 4},
-          {riddleId: "q5", text: "Question 5?", questionNumber: 5},
         ],
-        totalQuestions: 5,
+        totalQuestions: 1,
       });
       expect(result.hasCompletedToday).toBeUndefined(); // Not authenticated means no completion status
       expect(mockGetUser).not.toHaveBeenCalled();
@@ -552,12 +544,8 @@ describe("Daily Challenge Functions", () => {
         date: "2023-01-02",
         questions: [
           {riddleId: "q1", text: "Question 1?", questionNumber: 1},
-          {riddleId: "q2", text: "Question 2?", questionNumber: 2},
-          {riddleId: "q3", text: "Question 3?", questionNumber: 3},
-          {riddleId: "q4", text: "Question 4?", questionNumber: 4},
-          {riddleId: "q5", text: "Question 5?", questionNumber: 5},
         ],
-        totalQuestions: 5,
+        totalQuestions: 1,
       });
       expect(result.hasCompletedToday).toBe(false); // Challenge is not for today
     });
@@ -566,11 +554,8 @@ describe("Daily Challenge Functions", () => {
       // Test case where document exists but is missing questions array or has wrong number of questions
       const mockDailyChallengeIncomplete = {
         date: "2023-01-01",
-        questions: [
-          {riddleId: "q1", text: "Question 1?"},
-          {riddleId: "q2", text: "Question 2?"},
-        ], // Only 2 questions instead of 5
-        totalQuestions: 2,
+        questions: [],
+        totalQuestions: 0,
       };
       mockAdminFirestoreGet.mockResolvedValue({
         exists: true,
@@ -580,9 +565,9 @@ describe("Daily Challenge Functions", () => {
       const mockRequest = {auth: undefined} as CallableRequest<unknown>;
       const result = await getCurrentDailyChallenge(mockRequest);
 
-      expect(result.error).toBe("Daily challenge data is incomplete. Expected 5 questions.");
+      expect(result.error).toBe("Daily challenge data is incomplete. Expected 1 question.");
       expect(mockFirebaseFunctionsV1.logger.error).toHaveBeenCalledWith(
-        "Daily challenge document is missing required 5 questions.",
+        "Daily challenge document is missing required question data.",
         mockDailyChallengeIncomplete,
       );
     });
@@ -597,9 +582,9 @@ describe("Daily Challenge Functions", () => {
       const mockRequest = {auth: undefined} as CallableRequest<unknown>;
       const result = await getCurrentDailyChallenge(mockRequest);
 
-      expect(result.error).toBe("Daily challenge data is incomplete. Expected 5 questions.");
+      expect(result.error).toBe("Daily challenge data is incomplete. Expected 1 question.");
       expect(mockFirebaseFunctionsV1.logger.error).toHaveBeenCalledWith(
-        "Daily challenge document is missing required 5 questions.",
+        "Daily challenge document is missing required question data.",
         null,
       );
     });
@@ -640,12 +625,8 @@ describe("Daily Challenge Functions", () => {
       date: "2023-01-01",
       questions: [
         {riddleId: "q1", text: "Question 1?"},
-        {riddleId: "q2", text: "Question 2?"},
-        {riddleId: "q3", text: "Question 3?"},
-        {riddleId: "q4", text: "Question 4?"},
-        {riddleId: "q5", text: "Question 5?"},
       ],
-      totalQuestions: 5,
+      totalQuestions: 1,
     };
 
     beforeEach(() => {
@@ -667,14 +648,14 @@ describe("Daily Challenge Functions", () => {
       );
     });
 
-    it("should return isCompleted true when user has completed all 5 questions", async () => {
+    it("should return isCompleted true when user has completed today's question", async () => {
       const mockUserId = "completedUser";
       mockGetUser.mockResolvedValue(
         getDefaultPlayer(mockUserId, {
           progress: {
             classicIndex: 0,
             dailyChallengeIndex: 0,
-            dailyChallengeCurrentQuestion: 5,
+            dailyChallengeCurrentQuestion: 1,
             tutorialIndex: 0,
           },
         }),
@@ -682,8 +663,8 @@ describe("Daily Challenge Functions", () => {
       const mockRequest = {auth: {uid: mockUserId}, data: {}} as CallableRequest<unknown>;
       const result = await getCurrentDailyChallengeQuestion(mockRequest);
       expect(result).toEqual({
-        questionIndex: 5,
-        totalQuestions: 5,
+        questionIndex: 1,
+        totalQuestions: 1,
         isCompleted: true,
       });
     });
@@ -695,7 +676,7 @@ describe("Daily Challenge Functions", () => {
           progress: {
             classicIndex: 0,
             dailyChallengeIndex: 0,
-            dailyChallengeCurrentQuestion: 2,
+            dailyChallengeCurrentQuestion: 0,
             tutorialIndex: 0,
           },
         }),
@@ -726,14 +707,14 @@ describe("Daily Challenge Functions", () => {
         exists: true,
         data: () => ({
           date: "2023-01-01",
-          questions: [{riddleId: "q1", text: "Only one?"}],
-          totalQuestions: 1,
+          questions: [],
+          totalQuestions: 0,
         }),
       } as MockDocumentSnapshot<any>);
 
       const mockRequest = {auth: {uid: mockUserId}, data: {}} as CallableRequest<unknown>;
       const result = await getCurrentDailyChallengeQuestion(mockRequest);
-      expect(result).toEqual({error: "Daily challenge data is incomplete. Expected 5 questions."});
+      expect(result).toEqual({error: "Daily challenge data is incomplete. Expected 1 question."});
     });
 
     it("should return error when daily challenge data is null", async () => {
@@ -755,7 +736,7 @@ describe("Daily Challenge Functions", () => {
 
       const mockRequest = {auth: {uid: mockUserId}, data: {}} as CallableRequest<unknown>;
       const result = await getCurrentDailyChallengeQuestion(mockRequest);
-      expect(result).toEqual({error: "Daily challenge data is incomplete. Expected 5 questions."});
+      expect(result).toEqual({error: "Daily challenge data is incomplete. Expected 1 question."});
     });
 
     it("should return error when question not found for current index", async () => {
@@ -765,24 +746,18 @@ describe("Daily Challenge Functions", () => {
           progress: {
             classicIndex: 0,
             dailyChallengeIndex: 0,
-            dailyChallengeCurrentQuestion: 4,
+            dailyChallengeCurrentQuestion: 0,
             tutorialIndex: 0,
           },
         }),
       );
-      const questionsWithHole = [
-        {riddleId: "q1", text: "Question 1?"},
-        {riddleId: "q2", text: "Question 2?"},
-        {riddleId: "q3", text: "Question 3?"},
-        {riddleId: "q4", text: "Question 4?"},
-        undefined, // Sparse array — index 4 is undefined
-      ];
+      const questionsWithHole = [undefined];
       mockAdminFirestoreGet.mockResolvedValue({
         exists: true,
         data: () => ({
           date: "2023-01-01",
           questions: questionsWithHole,
-          totalQuestions: 5,
+          totalQuestions: 1,
         }),
       } as MockDocumentSnapshot<any>);
 
@@ -798,7 +773,7 @@ describe("Daily Challenge Functions", () => {
           progress: {
             classicIndex: 0,
             dailyChallengeIndex: 0,
-            dailyChallengeCurrentQuestion: 2,
+            dailyChallengeCurrentQuestion: 0,
             tutorialIndex: 0,
           },
         }),
@@ -811,9 +786,9 @@ describe("Daily Challenge Functions", () => {
       const mockRequest = {auth: {uid: mockUserId}, data: {}} as CallableRequest<unknown>;
       const result = await getCurrentDailyChallengeQuestion(mockRequest);
       expect(result).toEqual({
-        question: {riddleId: "q3", text: "Question 3?"},
-        questionIndex: 2,
-        totalQuestions: 5,
+        question: {riddleId: "q1", text: "Question 1?", questionNumber: 1},
+        questionIndex: 0,
+        totalQuestions: 1,
         isCompleted: false,
       });
     });
@@ -829,9 +804,9 @@ describe("Daily Challenge Functions", () => {
       const mockRequest = {auth: {uid: mockUserId}, data: {}} as CallableRequest<unknown>;
       const result = await getCurrentDailyChallengeQuestion(mockRequest);
       expect(result).toEqual({
-        question: {riddleId: "q1", text: "Question 1?"},
+        question: {riddleId: "q1", text: "Question 1?", questionNumber: 1},
         questionIndex: 0,
-        totalQuestions: 5,
+        totalQuestions: 1,
         isCompleted: false,
       });
     });
@@ -900,14 +875,14 @@ describe("Daily Challenge Functions", () => {
       );
     });
 
-    it("should return already completed when currentQuestionIndex >= 5", async () => {
+    it("should return already completed when currentQuestionIndex >= 1", async () => {
       const mockUserId = "completedUser";
       mockGetUser.mockResolvedValue(
         getDefaultPlayer(mockUserId, {
           progress: {
             classicIndex: 0,
             dailyChallengeIndex: 0,
-            dailyChallengeCurrentQuestion: 5,
+            dailyChallengeCurrentQuestion: 1,
             tutorialIndex: 0,
           },
         }),
@@ -916,21 +891,21 @@ describe("Daily Challenge Functions", () => {
       const mockRequest = {auth: {uid: mockUserId}, data: {}} as CallableRequest<unknown>;
       const result = await advanceDailyChallengeProgress(mockRequest);
       expect(result).toEqual({
-        newQuestionIndex: 5,
+        newQuestionIndex: 1,
         isFullyCompleted: true,
         message: "Daily challenge already completed.",
       });
       expect(mockUserUpdate).not.toHaveBeenCalled();
     });
 
-    it("should advance to next question when not final", async () => {
+    it("should complete challenge when not yet completed", async () => {
       const mockUserId = "progressUser";
       mockGetUser.mockResolvedValue(
         getDefaultPlayer(mockUserId, {
           progress: {
             classicIndex: 0,
             dailyChallengeIndex: 0,
-            dailyChallengeCurrentQuestion: 2,
+            dailyChallengeCurrentQuestion: 0,
             tutorialIndex: 0,
           },
         }),
@@ -939,23 +914,25 @@ describe("Daily Challenge Functions", () => {
       const mockRequest = {auth: {uid: mockUserId}, data: {}} as CallableRequest<unknown>;
       const result = await advanceDailyChallengeProgress(mockRequest);
       expect(result).toEqual({
-        newQuestionIndex: 3,
-        isFullyCompleted: false,
-        message: "Advanced to question 4/5.",
+        newQuestionIndex: 1,
+        isFullyCompleted: true,
+        message: "Daily challenge completed! 1 riddle finished.",
       });
-      expect(mockUserUpdate).toHaveBeenCalledWith({
-        "progress.dailyChallengeCurrentQuestion": 3,
-      });
+      expect(mockUserUpdate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          "progress.dailyChallengeCurrentQuestion": 1,
+        }),
+      );
     });
 
-    it("should mark fully completed when advancing to question 5", async () => {
+    it("should mark fully completed when advancing from question 0", async () => {
       const mockUserId = "almostDoneUser";
       mockGetUser.mockResolvedValue(
         getDefaultPlayer(mockUserId, {
           progress: {
             classicIndex: 0,
             dailyChallengeIndex: 0,
-            dailyChallengeCurrentQuestion: 4,
+            dailyChallengeCurrentQuestion: 0,
             tutorialIndex: 0,
           },
         }),
@@ -964,14 +941,13 @@ describe("Daily Challenge Functions", () => {
       const mockRequest = {auth: {uid: mockUserId}, data: {}} as CallableRequest<unknown>;
       const result = await advanceDailyChallengeProgress(mockRequest);
       expect(result).toEqual({
-        newQuestionIndex: 5,
+        newQuestionIndex: 1,
         isFullyCompleted: true,
-        message: "Daily challenge completed! All 5 questions finished.",
+        message: "Daily challenge completed! 1 riddle finished.",
       });
       expect(mockUserUpdate).toHaveBeenCalledWith(
         expect.objectContaining({
-          "progress.dailyChallengeCurrentQuestion": 5,
-          lastDailyChallengeCompletedAt: expect.any(String),
+          "progress.dailyChallengeCurrentQuestion": 1,
         }),
       );
     });
@@ -984,12 +960,14 @@ describe("Daily Challenge Functions", () => {
       const result = await advanceDailyChallengeProgress(mockRequest);
       expect(result).toEqual({
         newQuestionIndex: 1,
-        isFullyCompleted: false,
-        message: "Advanced to question 2/5.",
+        isFullyCompleted: true,
+        message: "Daily challenge completed! 1 riddle finished.",
       });
-      expect(mockUserUpdate).toHaveBeenCalledWith({
-        "progress.dailyChallengeCurrentQuestion": 1,
-      });
+      expect(mockUserUpdate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          "progress.dailyChallengeCurrentQuestion": 1,
+        }),
+      );
     });
 
     it("should wrap non-HttpsError in internal HttpsError", async () => {
@@ -1024,3 +1002,4 @@ describe("Daily Challenge Functions", () => {
 //   data,
 //   auth,
 // });
+

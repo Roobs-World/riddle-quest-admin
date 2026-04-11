@@ -176,6 +176,71 @@ describe("responsive utilities", () => {
     });
   });
 
+  describe("module initialization and listeners", () => {
+    it("logs when Dimensions.get throws during module init", () => {
+      jest.isolateModules(() => {
+        const mockError = jest.fn();
+        jest.doMock("../logger", () => ({
+          logger: { error: mockError, warn: jest.fn(), info: jest.fn(), debug: jest.fn() },
+        }));
+        jest.doMock("react-native", () => ({
+          Dimensions: {
+            get: () => {
+              throw new Error("no dimensions");
+            },
+            addEventListener: jest.fn(() => ({ remove: jest.fn() })),
+          },
+        }));
+
+        require("../responsive");
+        expect(mockError).toHaveBeenCalledWith("dimensions not found");
+      });
+    });
+
+    it("returns largeTablet fallback on desktop when desktop value is missing", () => {
+      jest.isolateModules(() => {
+        jest.doMock("../logger", () => ({
+          logger: { error: jest.fn(), warn: jest.fn(), info: jest.fn(), debug: jest.fn() },
+        }));
+        jest.doMock("react-native", () => ({
+          Dimensions: {
+            get: () => ({ width: 1280, height: 900 }),
+            addEventListener: jest.fn(() => ({ remove: jest.fn() })),
+          },
+        }));
+
+        const responsive = require("../responsive");
+        expect(
+          responsive.responsiveValue({
+            phone: "phone",
+            tablet: "tablet",
+            largeTablet: "large-tablet",
+          })
+        ).toBe("large-tablet");
+      });
+    });
+
+    it("removes orientation listener subscription", () => {
+      const remove = jest.fn();
+      jest.isolateModules(() => {
+        jest.doMock("../logger", () => ({
+          logger: { error: jest.fn(), warn: jest.fn(), info: jest.fn(), debug: jest.fn() },
+        }));
+        jest.doMock("react-native", () => ({
+          Dimensions: {
+            get: () => ({ width: 390, height: 844 }),
+            addEventListener: jest.fn(() => ({ remove })),
+          },
+        }));
+
+        const responsive = require("../responsive");
+        const cleanup = responsive.addOrientationChangeListener(jest.fn());
+        cleanup();
+      });
+      expect(remove).toHaveBeenCalled();
+    });
+  });
+
   describe("dimensions object", () => {
     it("should have screenWidth as a positive number", () => {
       expect(typeof dimensions.screenWidth).toBe("number");

@@ -381,6 +381,50 @@ describe("useModal", () => {
 
       expect(typeof result.current.showInfoModal).toBe("function");
     });
+
+    it("should open modals through all convenience wrapper methods", () => {
+      const { result } = renderHook(() => useModal(), {
+        wrapper: createWrapper(),
+      });
+
+      act(() => {
+        result.current.showVictoryModal({} as any);
+        result.current.showLossModal({} as any);
+        result.current.showSettingsModal({} as any);
+        result.current.showHintModal({} as any);
+        result.current.showSkipModal({} as any);
+        result.current.showWelcomeModal();
+        result.current.showInstructionsModal();
+        result.current.showCreditsModal();
+        result.current.showCoinShopModal({} as any);
+        result.current.showCoinPurchaseFanfareModal({} as any);
+        result.current.showFullProfileDetailsModal({} as any);
+        result.current.showChangePasswordModal({} as any);
+        result.current.showUpdateUsernameModal({} as any);
+        result.current.showAvatarOptionsModal({} as any);
+        result.current.showPreloadedAvatarsModal({} as any);
+        result.current.showGameModeModal({} as any);
+        result.current.showInfoModal({} as any);
+      });
+
+      expect(result.current.isModalOpen("victory")).toBe(true);
+      expect(result.current.isModalOpen("loss")).toBe(true);
+      expect(result.current.isModalOpen("settings")).toBe(true);
+      expect(result.current.isModalOpen("hint")).toBe(true);
+      expect(result.current.isModalOpen("skip")).toBe(true);
+      expect(result.current.isModalOpen("welcome")).toBe(true);
+      expect(result.current.isModalOpen("instructions")).toBe(true);
+      expect(result.current.isModalOpen("credits")).toBe(true);
+      expect(result.current.isModalOpen("coinShop")).toBe(true);
+      expect(result.current.isModalOpen("coinPurchaseFanfare")).toBe(true);
+      expect(result.current.isModalOpen("fullProfileDetails")).toBe(true);
+      expect(result.current.isModalOpen("changePassword")).toBe(true);
+      expect(result.current.isModalOpen("updateUsername")).toBe(true);
+      expect(result.current.isModalOpen("avatarOptions")).toBe(true);
+      expect(result.current.isModalOpen("preloadedAvatars")).toBe(true);
+      expect(result.current.isModalOpen("gameMode")).toBe(true);
+      expect(result.current.isModalOpen("info")).toBe(true);
+    });
   });
 
   describe("openGameModal", () => {

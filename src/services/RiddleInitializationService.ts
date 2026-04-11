@@ -15,16 +15,17 @@ import { captureException, startTransaction } from "../utils/sentry";
  * during app startup if it's empty.
  */
 export class RiddleInitializationService {
-  /**
-   * Static flag to track if initialization has been attempted
-   * to prevent duplicate Firebase function calls
-   */
+  /** True while initialization flow is currently running. */
   private static isInitializing: boolean = false;
+  /** True once initialization has completed successfully at least once. */
   private static hasInitialized: boolean = false;
+  /** True when the latest initialization attempt failed. */
   private static initializationFailed: boolean = false;
 
   /**
    * Gets the current initialization status
+   *
+   * @returns Snapshot of initialization lifecycle flags.
    */
   static getInitializationStatus(): {
     isInitializing: boolean;
@@ -41,6 +42,8 @@ export class RiddleInitializationService {
   /**
    * Checks if the riddle database has any riddles and initializes it if empty.
    * This should be called during app startup to ensure riddles are available.
+   *
+   * @returns Promise resolved after initialization check/attempt is complete.
    */
   static async checkAndInitializeRiddles(): Promise<void> {
     // Prevent duplicate initialization calls
@@ -196,6 +199,8 @@ export class RiddleInitializationService {
 
   /**
    * Checks if there are sufficient classic riddles for gameplay.
+   *
+   * @param minimumCount Minimum required riddle count.
    * @returns true if there are enough riddles, false otherwise
    */
   static async hasEnoughRiddles(minimumCount: number = 10): Promise<boolean> {
@@ -212,4 +217,3 @@ export class RiddleInitializationService {
     }
   }
 }
-

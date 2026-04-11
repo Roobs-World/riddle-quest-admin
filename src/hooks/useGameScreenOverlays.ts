@@ -4,6 +4,11 @@ import {
   GameScreenOverlayActions,
 } from "../types/OverlayTypes";
 
+/**
+ * Centralized state hook for all gameplay overlay visibility flags.
+ *
+ * @returns Overlay visibility state plus typed setter actions.
+ */
 const useGameScreenOverlays = (): GameScreenOverlayState &
   GameScreenOverlayActions => {
   const [isVictoryModalVisible, setIsVictoryModalVisible] = useState(false);
@@ -34,4 +39,3 @@ const useGameScreenOverlays = (): GameScreenOverlayState &
 };
 
 export default useGameScreenOverlays;
-

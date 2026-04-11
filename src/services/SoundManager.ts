@@ -58,6 +58,7 @@ export const SoundManager = {
   init: async () => {
     try {
       logger.debug("SoundManager: Starting music system initialization...");
+      appState = AppState.currentState;
 
       const handleAppStateChange = (nextAppState: AppStateStatus) => {
         if (nextAppState === appState) return;
@@ -248,6 +249,7 @@ export const SoundManager = {
       }
 
       isInitialized = false;
+      appState = AppState.currentState;
       logger.info("SoundManager: Music unloaded");
     } catch (error) {
       logger.error("Error unloading music:", error);

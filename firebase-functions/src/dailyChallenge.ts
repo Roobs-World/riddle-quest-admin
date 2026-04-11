@@ -7,6 +7,12 @@ import {captureException} from "./sentry";
 
 const DAILY_CHALLENGE_QUESTION_COUNT = 1;
 
+/**
+ * Converts unknown date-like input to an ISO UTC day string (`YYYY-MM-DD`).
+ *
+ * @param value Candidate date value.
+ * @returns UTC date string or `null` when parsing fails.
+ */
 function toUtcDateString(value: unknown): string | null {
   if (!value) return null;
   const date = new Date(value as string | number | Date);
@@ -14,6 +20,12 @@ function toUtcDateString(value: unknown): string | null {
   return date.toISOString().split("T")[0];
 }
 
+/**
+ * Checks whether a completion timestamp belongs to the current UTC day.
+ *
+ * @param lastCompletedAt Last completion timestamp/value.
+ * @returns True when the value falls on today's UTC date.
+ */
 function isCompletedToday(lastCompletedAt: unknown): boolean {
   const lastCompletedDay = toUtcDateString(lastCompletedAt);
   if (!lastCompletedDay) return false;
@@ -21,6 +33,11 @@ function isCompletedToday(lastCompletedAt: unknown): boolean {
   return lastCompletedDay === today;
 }
 
+/**
+ * Ensures a usable "current" daily challenge document exists for today.
+ *
+ * @returns Fresh challenge snapshot plus today's UTC date string.
+ */
 async function getFreshDailyChallengeDoc(): Promise<{
   dailyChallengeDoc: FirebaseFirestore.DocumentSnapshot<FirebaseFirestore.DocumentData>;
   todayDateString: string;
@@ -116,22 +133,33 @@ export const hasCompletedDailyChallenge = onCall(
 );
 
 interface DailyChallengeQuestion {
+  /** Riddle document id for this question. */
   riddleId: string;
+  /** Prompt text shown to the user. */
   text: string;
+  /** One-based ordinal number in the daily challenge. */
   questionNumber: number;
 }
 
 interface DailyChallengeData {
+  /** UTC date string (`YYYY-MM-DD`) for this challenge. */
   date: string;
+  /** Ordered list of questions for the day. */
   questions: DailyChallengeQuestion[];
+  /** Total number of daily challenge questions. */
   totalQuestions: number;
 }
 
 interface GetCurrentDailyChallengeResponse {
+  /** Daily challenge payload for today, when available. */
   challenge?: DailyChallengeData;
+  /** User's current question progress index. */
   currentQuestion?: number;
+  /** True when the user already completed today's challenge. */
   hasCompletedToday?: boolean;
+  /** Number of questions completed today. */
   questionsCompleted?: number;
+  /** Error message when challenge retrieval fails. */
   error?: string;
 }
 

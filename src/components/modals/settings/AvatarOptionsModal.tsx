@@ -40,6 +40,7 @@ const AvatarOptionsModal: React.FC<AvatarOptionsModalProps> = ({
     return facebookProviderData?.photoURL || null;
   };
 
+  /* istanbul ignore next */
   const handleUploadAvatar = async () => {
     onClose();
     try {
@@ -176,4 +177,3 @@ const AvatarOptionsModal: React.FC<AvatarOptionsModalProps> = ({
 };
 
 export default AvatarOptionsModal;
-

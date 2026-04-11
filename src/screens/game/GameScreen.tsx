@@ -67,15 +67,25 @@ import { getHardModeConstraints, validateHardModeGuess } from "../../utils/hardM
 import { computeLetterStates } from "../../utils/letterStates";
 import { getTutorialRiddleCount } from "../../services/FirestoreService";
 import { ACHIEVEMENT_DEFINITIONS } from "../../constants/achievements";
+import { useGameSessionController } from "../../features/game-session/useGameSessionController";
+import { createGameModalActions } from "../../features/game-session/gameModalActions";
 
 interface GuessResult {
+  /** High-level result classification returned after guess processing. */
   outcome: "win" | "loss" | "continue" | "attemptLimitReached";
+  /** Per-letter feedback for the submitted guess, when available. */
   feedback?: ("green" | "yellow" | "red")[];
+  /** Correct answer returned for terminal outcomes. */
   correctAnswer?: string;
+  /** Coin reward awarded by backend on win. */
   coinsEarned?: number;
+  /** Score reward awarded by backend on win. */
   scoreEarned?: number;
+  /** Indicates whether rewarded-ad continue can be offered. */
   canOfferRewardedAd?: boolean;
+  /** Indicates whether coin-spend continue can be offered. */
   canOfferCoinContinue?: boolean;
+  /** Remaining attempts for non-terminal continue outcomes. */
   attemptsRemaining?: number;
   /** Server-returned achievement IDs newly unlocked by this guess. */
   newlyUnlockedAchievementIds?: string[];
@@ -95,18 +105,29 @@ const hapticOptions = {
  * Props required to render a game session for a particular riddle.
  */
 interface GameScreenProps {
+  /** Active riddle document id. */
   riddleId: string;
+  /** Localized riddle prompt text shown to the player. */
   riddleText: string;
   /** The correct answer, cached from Firestore. Used for local feedback computation. */
   answer: string;
+  /** Number of letters expected in the answer. */
   answerLength: number;
+  /** Current player coin balance for hint/skip/shop interactions. */
   userCoins: number;
+  /** Cost in coins for a single hint in this session. */
   hintCost: number;
+  /** Invoked when a win is finalized. */
   onGameWin: (attempts: number, coinsEarned: number, scoreEarned: number) => void;
+  /** Invoked when a loss is finalized with the revealed answer. */
   onGameLoss: (correctAnswer: string) => void;
+  /** Invoked after successfully spending coins for a hint. */
   onHintUsed: (cost: number) => void;
+  /** Invoked after successfully spending coins to skip. */
   onSkipUsed: (cost: number) => void;
+  /** Loads the next playable riddle. */
   onNextLevel: () => void;
+  /** Current gameplay mode (classic, daily, tutorial). */
   gameMode: GameMode;
 }
 
@@ -143,8 +164,9 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguage>(
     getAppLanguage()
   );
-  const [activeServerRequests, setActiveServerRequests] = useState(0);
   const [activeSlotIndex, setActiveSlotIndex] = useState(0);
+  const { isLoading, runWithServerLoading } = useGameSessionController();
+  const modalActions = useMemo(() => createGameModalActions(modal), [modal]);
 
   // Guard against re-running game-over logic when modal context re-renders.
   // The `modal` object from useModal() gets a new reference every time any
@@ -188,16 +210,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   // Using a ref so it is readable synchronously inside the hint callback without
   // needing to appear in useCallback dep arrays.
   const hintRevealedIndicesRef = useRef<number[]>([]);
-  const isLoading = activeServerRequests > 0;
-
-  const runWithServerLoading = useCallback(async <T,>(work: () => Promise<T> | T) => {
-    setActiveServerRequests((count) => count + 1);
-    try {
-      return await Promise.resolve(work());
-    } finally {
-      setActiveServerRequests((count) => Math.max(0, count - 1));
-    }
-  }, []);
 
   // Reset hint tracking whenever the riddle or game mode changes.
   useEffect(() => {
@@ -650,7 +662,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           if (isHapticsEnabled) {
             ReactNativeHapticFeedback.trigger("notificationWarning", hapticOptions);
           }
-          modal.showInfoModal({ title: "Hard Mode", message: violation.message });
+          modalActions.showHardModeViolation(violation.message);
           return;
         }
       }
@@ -680,6 +692,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     isHardMode,
     guesses,
     modal,
+    modalActions,
     setLastGuessResult,
     runWithServerLoading,
   ]);
@@ -873,7 +886,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         } catch (error) {
           logger.error("Error spending coins for skip:", error);
           captureException(error);
-          modal.showInfoModal({ title: "Error", message: "Could not spend coins. Please try again." });
+          modalActions.showSpendCoinsError();
         }
       },
     });
@@ -885,6 +898,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     onNextLevel,
     onSkipUsed,
     runWithServerLoading,
+    modalActions,
   ]);
 
   const handleSettingsPress = useCallback(() => {
@@ -983,9 +997,9 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     if (cheapestProduct) {
       handlePurchaseProduct(cheapestProduct.id);
     } else {
-      modal.showInfoModal({ title: "No Products Available", message: "Please try again later." });
+      modalActions.showNoProductsAvailable();
     }
-  }, [iapProducts, handlePurchaseProduct, modal]);
+  }, [iapProducts, handlePurchaseProduct, modalActions]);
 
   const handleWatchAdForCoins = useCallback(async () => {
     logger.debug("Watch ad for coins button pressed");
@@ -997,20 +1011,14 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         logger.debug("Rewarded ad for coins shown successfully");
       } else {
         logger.warn("Rewarded ad was not ready to be shown");
-        modal.showInfoModal({
-          title: "Ad Not Ready",
-          message: "The rewarded ad couldn't be loaded at this time. Please try again later.",
-        });
+        modalActions.showAdNotReady();
       }
     } catch (error) {
       logger.error("Error showing rewarded ad for coins:", error);
       captureException(error);
-      modal.showInfoModal({
-        title: "Ad Error",
-        message: "An error occurred while trying to show the rewarded ad.",
-      });
+      modalActions.showAdError();
     }
-  }, [modal, showRewardedAd]);
+  }, [modal, showRewardedAd, modalActions]);
 
   const handleCoinsPress = useCallback(() => {
     logger.debug("Opening coin shop modal with:", {

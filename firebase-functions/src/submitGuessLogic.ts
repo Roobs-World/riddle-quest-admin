@@ -30,6 +30,7 @@ import {
 
 // Define a type for potential top-level updates to the Player document
 type PlayerTopLevelUpdate = {
+  /** Daily challenge completion timestamp for challenge mode wins. */
   lastDailyChallengeCompletedAt?: number | admin.firestore.FieldValue;
   // Add other top-level fields here if they are updated similarly
 };
@@ -38,29 +39,45 @@ type PlayerTopLevelUpdate = {
 export type FeedbackColor = "green" | "yellow" | "red";
 
 interface SubmitGuessRequestData {
+  /** Guess text submitted by the client. */
   guess: string;
+  /** Active riddle id being solved. */
   riddleId: string;
+  /** Game mode controlling scoring/progression rules. */
   gameMode: "challenge" | "classic" | "tutorial";
+  /** One-based attempt number for this submission. */
   attempts: number;
 }
 
 interface SubmitGuessAuthContext {
+  /** Authenticated Firebase UID. */
   uid: string;
   // Potentially include other auth details if your core logic needs them,
   // e.g., token for further verification, although uid is usually sufficient.
 }
 
 interface SubmitGuessResponseData {
+  /** Per-letter feedback produced by server validation logic. */
   feedback: FeedbackItem[];
+  /** True when the submitted guess is correct. */
   isCorrect: boolean;
+  /** True when the game reached a terminal state. */
   gameOver: boolean;
+  /** Correct answer revealed only when game is over. */
   correctAnswer?: string;
+  /** Coins awarded for a successful solve. */
   coinsEarned?: number;
   /** Achievement IDs newly unlocked by this guess (server-authoritative). */
   newlyUnlockedAchievementIds?: string[];
 }
 
-// Core logic, now separated and exportable for testing
+/**
+ * Core server-side guess handling logic, exported for unit testing.
+ *
+ * @param data Callable request payload.
+ * @param auth Auth context (uid).
+ * @returns Guess feedback and game outcome payload.
+ */
 export async function handleGuessLogic(
   data: SubmitGuessRequestData,
   auth: SubmitGuessAuthContext,
@@ -367,23 +384,40 @@ export const submitGuess = onCall<SubmitGuessRequestData, Promise<SubmitGuessRes
 // ---------------------------------------------------------------------------
 
 interface CompleteGameRequestData {
+  /** Active riddle id being finalized. */
   riddleId: string;
+  /** Game mode controlling reward/progression rules. */
   gameMode: "challenge" | "classic" | "tutorial";
   /** Total number of guesses made during the game. */
   attempts: number;
+  /** Whether the player solved the riddle. */
   isCorrect: boolean;
 }
 
 interface CompleteGameResponseData {
+  /** Coins awarded for this game completion. */
   coinsEarned: number;
+  /** IDs of achievements unlocked by this completion. */
   newlyUnlockedAchievementIds: string[];
+  /** Score value awarded for this completion. */
   scoreEarned: number;
+  /** XP awarded for this completion. */
   xpEarned: number;
+  /** Player XP total after applying reward. */
   newXp: number;
+  /** Player level after applying reward. */
   newLevel: number;
+  /** Indicates whether the completion triggered level-up. */
   leveledUp: boolean;
 }
 
+/**
+ * Finalizes server-side game side effects for a completed win/loss.
+ *
+ * @param data Completion payload.
+ * @param auth Auth context (uid).
+ * @returns Rewards and progression snapshot.
+ */
 export async function handleCompleteGameLogic(
   data: CompleteGameRequestData,
   auth: {uid: string},
@@ -585,4 +619,3 @@ export const completeGame = onCall<CompleteGameRequestData, Promise<CompleteGame
   }
   return handleCompleteGameLogic(request.data, request.auth);
 });
-

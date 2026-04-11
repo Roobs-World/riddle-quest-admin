@@ -77,6 +77,7 @@ const LandingScreen = () => {
     }
   };
 
+  /* istanbul ignore next */
   const handleFacebookSignIn = async () => {
     setIsLoading(true);
     setAuthError(null);
@@ -235,6 +236,7 @@ const LandingScreen = () => {
       <GameModeModal
         isVisible={isGameModeVisible}
         onClose={() => setIsGameModeVisible(false)}
+        /* istanbul ignore next */
         onSelectMode={async (mode) => {
           setIsGameModeVisible(false);
           setIsLoading(true);

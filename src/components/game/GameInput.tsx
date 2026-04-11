@@ -6,14 +6,28 @@ import { GameInputButton } from "./GameInputButton";
 import HintIcon from "../../../assets/images/hint.svg";
 import ForwardIcon from "../../../assets/images/forward.svg";
 
+/**
+ * Props for the gameplay action row beneath the board.
+ */
 type GameInputProps = {
+  /** Disables submit interactions while the current guess is invalid. */
   isSubmitDisabled: boolean;
+  /** Disables actions that should not run after the game has ended. */
   gameOver: boolean;
+  /** Commits the current guess. */
   handleSubmit: () => void;
+  /** Opens the hint flow for the current riddle. */
   handleHint: () => void;
+  /** Opens skip/next-level flow. */
   handleNext: () => void;
 };
 
+/**
+ * Renders hint, submit, and next action buttons used during gameplay.
+ *
+ * @param props Input action handlers and disabled flags.
+ * @returns Three-button input action row.
+ */
 const GameInputComponent = ({
   isSubmitDisabled,
   gameOver,
@@ -45,4 +59,3 @@ const GameInputComponent = ({
 };
 
 export const GameInput = React.memo(GameInputComponent);
-

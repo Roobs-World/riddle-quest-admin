@@ -342,7 +342,7 @@ describe("Game Logic Functions", () => {
         if (e instanceof HttpsErrorV2) {
           expect(e).toBeInstanceOf(HttpsErrorV2);
           expect(e.code).toBe("invalid-argument");
-          expect(e.message).toBe("Invalid reason specified. Must be 'hint' or 'skip'.");
+          expect(e.message).toBe("Invalid reason specified. Must be 'hint', 'skip', or 'continue'.");
         } else {
           throw e;
         }

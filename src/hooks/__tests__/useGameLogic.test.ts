@@ -270,6 +270,343 @@ describe("useGameLogic", () => {
       expect((processResult as { outcome: string }).outcome).toBe("win");
       expect((processResult as { coinsEarned: number }).coinsEarned).toBe(0);
     });
+
+    it("should gracefully handle completeGame server failure on loss", async () => {
+      mockCompleteGameCallable.mockRejectedValueOnce(new Error("Firebase error"));
+
+      const { result } = renderHook(() => useGameLogic(defaultProps));
+      const wrong = ["F", "A", "I", "L", "S"];
+
+      // Use up initial 3 attempts
+      for (let i = 0; i < 3; i++) {
+        await act(async () => {
+          await result.current.processGuess(wrong);
+        });
+      }
+
+      // Grant continue
+      act(() => {
+        result.current.continueGame();
+      });
+
+      // Use up the 3 extra attempts
+      for (let i = 0; i < 3; i++) {
+        await act(async () => {
+          await result.current.processGuess(wrong);
+        });
+      }
+
+      // Game still ends — error is swallowed so the user isn't blocked
+      expect(result.current.gameOver).toBe(true);
+      expect(result.current.guesses.length).toBe(6);
+    });
+  });
+
+  describe("computeFeedback (via processGuess)", () => {
+    it("should compute all-green feedback for exact match", async () => {
+      const { result } = renderHook(() =>
+        useGameLogic({ ...defaultProps, answer: "HELLO" })
+      );
+
+      await act(async () => {
+        await result.current.processGuess(["H", "E", "L", "L", "O"]);
+      });
+
+      expect(result.current.guesses[0].feedback).toEqual([
+        "green", "green", "green", "green", "green"
+      ]);
+    });
+
+    it("should compute yellow feedback for letters in wrong position", async () => {
+      const { result } = renderHook(() =>
+        useGameLogic({ ...defaultProps, answer: "HELLO" })
+      );
+
+      // OLEHL has all letters of HELLO but in wrong positions
+      await act(async () => {
+        await result.current.processGuess(["O", "L", "E", "H", "L"]);
+      });
+
+      // O is in position 0, should be in position 4 -> yellow
+      // L is in position 1, should be in position 2 or 3 -> yellow
+      // E is in position 2, should be in position 1 -> yellow
+      // H is in position 3, should be in position 0 -> yellow
+      // L is in position 4, should be in position 2 or 3 -> yellow
+      expect(result.current.guesses[0].feedback).toEqual([
+        "yellow", "yellow", "yellow", "yellow", "yellow"
+      ]);
+    });
+
+    it("should handle duplicate letters correctly - excess duplicates are red", async () => {
+      const { result } = renderHook(() =>
+        useGameLogic({ ...defaultProps, answer: "HELLO" })
+      );
+
+      // LLLLL - only 2 L's in HELLO at positions 2 and 3
+      await act(async () => {
+        await result.current.processGuess(["L", "L", "L", "L", "L"]);
+      });
+
+      // Position 2 and 3 are green (L's in HELLO at positions 2,3)
+      // Green pass uses up the 2 L counts
+      // No L's left for yellows, so positions 0, 1, 4 are all red
+      expect(result.current.guesses[0].feedback).toEqual([
+        "red", "red", "green", "green", "red"
+      ]);
+    });
+
+    it("should handle case insensitivity", async () => {
+      const { result } = renderHook(() =>
+        useGameLogic({ ...defaultProps, answer: "hello" })
+      );
+
+      await act(async () => {
+        await result.current.processGuess(["H", "E", "L", "L", "O"]);
+      });
+
+      expect(result.current.guesses[0].feedback).toEqual([
+        "green", "green", "green", "green", "green"
+      ]);
+    });
+
+    it("should handle mixed case guess against lowercase answer", async () => {
+      const { result } = renderHook(() =>
+        useGameLogic({ ...defaultProps, answer: "WORLD" })
+      );
+
+      await act(async () => {
+        await result.current.processGuess(["w", "o", "r", "l", "d"]);
+      });
+
+      expect(result.current.guesses[0].feedback).toEqual([
+        "green", "green", "green", "green", "green"
+      ]);
+    });
+
+    it("should mark green before yellow to prevent double counting", async () => {
+      // Answer: ABBEY (A at 0, B at 1 and 2, E at 3, Y at 4)
+      const { result } = renderHook(() =>
+        useGameLogic({ ...defaultProps, answer: "ABBEY" })
+      );
+
+      // BABES: B at 0 (yellow, should be at 1/2), A at 1 (yellow), B at 2 (green), E at 3 (green), S at 4 (red)
+      await act(async () => {
+        await result.current.processGuess(["B", "A", "B", "E", "S"]);
+      });
+
+      expect(result.current.guesses[0].feedback).toEqual([
+        "yellow", "yellow", "green", "green", "red"
+      ]);
+    });
+  });
+
+  describe("attemptsUsed and attemptsRemaining", () => {
+    it("should track attempts correctly", async () => {
+      const { result } = renderHook(() => useGameLogic(defaultProps));
+
+      expect(result.current.attemptsUsed).toBe(0);
+      expect(result.current.attemptsRemaining).toBe(3);
+
+      await act(async () => {
+        await result.current.processGuess(["F", "A", "I", "L", "S"]);
+      });
+
+      expect(result.current.attemptsUsed).toBe(1);
+      expect(result.current.attemptsRemaining).toBe(2);
+
+      await act(async () => {
+        await result.current.processGuess(["F", "A", "I", "L", "S"]);
+      });
+
+      expect(result.current.attemptsUsed).toBe(2);
+      expect(result.current.attemptsRemaining).toBe(1);
+    });
+
+    it("should increase max attempts after continueGame", async () => {
+      const { result } = renderHook(() => useGameLogic(defaultProps));
+      const wrong = ["F", "A", "I", "L", "S"];
+
+      // Use up initial 3 attempts
+      for (let i = 0; i < 3; i++) {
+        await act(async () => {
+          await result.current.processGuess(wrong);
+        });
+      }
+
+      expect(result.current.attemptsUsed).toBe(3);
+      expect(result.current.attemptsRemaining).toBe(0);
+
+      // Continue game
+      act(() => {
+        result.current.continueGame();
+      });
+
+      expect(result.current.attemptsUsed).toBe(3);
+      expect(result.current.attemptsRemaining).toBe(3); // 3 more attempts granted
+    });
+
+    it("should reset attempts counter on resetGame", async () => {
+      const { result } = renderHook(() => useGameLogic(defaultProps));
+
+      await act(async () => {
+        await result.current.processGuess(["F", "A", "I", "L", "S"]);
+      });
+
+      expect(result.current.attemptsUsed).toBe(1);
+
+      act(() => {
+        result.current.resetGame();
+      });
+
+      expect(result.current.attemptsUsed).toBe(0);
+      expect(result.current.attemptsRemaining).toBe(3);
+    });
+  });
+
+  describe("hasUsedContinue", () => {
+    it("should be false initially", () => {
+      const { result } = renderHook(() => useGameLogic(defaultProps));
+      expect(result.current.hasUsedContinue).toBe(false);
+    });
+
+    it("should be true after continueGame is called", async () => {
+      const { result } = renderHook(() => useGameLogic(defaultProps));
+      const wrong = ["F", "A", "I", "L", "S"];
+
+      // Use up initial 3 attempts
+      for (let i = 0; i < 3; i++) {
+        await act(async () => {
+          await result.current.processGuess(wrong);
+        });
+      }
+
+      act(() => {
+        result.current.continueGame();
+      });
+
+      expect(result.current.hasUsedContinue).toBe(true);
+    });
+
+    it("should be reset to false on resetGame", async () => {
+      const { result } = renderHook(() => useGameLogic(defaultProps));
+      const wrong = ["F", "A", "I", "L", "S"];
+
+      for (let i = 0; i < 3; i++) {
+        await act(async () => {
+          await result.current.processGuess(wrong);
+        });
+      }
+
+      act(() => {
+        result.current.continueGame();
+      });
+
+      expect(result.current.hasUsedContinue).toBe(true);
+
+      act(() => {
+        result.current.resetGame();
+      });
+
+      expect(result.current.hasUsedContinue).toBe(false);
+    });
+  });
+
+  describe("continueGame", () => {
+    it("should set gameOver to false", async () => {
+      const { result } = renderHook(() => useGameLogic(defaultProps));
+      const wrong = ["F", "A", "I", "L", "S"];
+
+      for (let i = 0; i < 3; i++) {
+        await act(async () => {
+          await result.current.processGuess(wrong);
+        });
+      }
+
+      expect(result.current.gameOver).toBe(true);
+
+      act(() => {
+        result.current.continueGame();
+      });
+
+      expect(result.current.gameOver).toBe(false);
+    });
+
+    it("should preserve existing guesses", async () => {
+      const { result } = renderHook(() => useGameLogic(defaultProps));
+      const wrong = ["F", "A", "I", "L", "S"];
+
+      for (let i = 0; i < 3; i++) {
+        await act(async () => {
+          await result.current.processGuess(wrong);
+        });
+      }
+
+      const guessesBeforeContinue = result.current.guesses.length;
+
+      act(() => {
+        result.current.continueGame();
+      });
+
+      expect(result.current.guesses.length).toBe(guessesBeforeContinue);
+    });
+  });
+
+  describe("tutorial game mode", () => {
+    it("should work correctly with tutorial game mode", async () => {
+      mockCompleteGameCallable.mockResolvedValueOnce({
+        data: { coinsEarned: 5, newlyUnlockedAchievementIds: [] },
+      });
+
+      const tutorialProps = {
+        riddleId: "tutorialRiddle",
+        gameMode: "tutorial" as "classic" | "challenge" | "tutorial",
+        answer: "HELLO",
+      };
+
+      const { result } = renderHook(() => useGameLogic(tutorialProps));
+
+      await act(async () => {
+        await result.current.processGuess(["H", "E", "L", "L", "O"]);
+      });
+
+      expect(mockCompleteGameCallable).toHaveBeenCalledWith({
+        riddleId: "tutorialRiddle",
+        gameMode: "tutorial",
+        attempts: 1,
+        isCorrect: true,
+      });
+      expect(result.current.gameOver).toBe(true);
+    });
+  });
+
+  describe("win with achievements", () => {
+    it("should return unlocked achievement IDs from server", async () => {
+      mockCompleteGameCallable.mockResolvedValueOnce({
+        data: {
+          coinsEarned: 100,
+          scoreEarned: 500,
+          newlyUnlockedAchievementIds: ["first_win", "speed_demon"],
+        },
+      });
+
+      const { result } = renderHook(() =>
+        useGameLogic({ ...defaultProps, answer: "GUESS" })
+      );
+
+      let processResult: unknown;
+      await act(async () => {
+        processResult = await result.current.processGuess(["G", "U", "E", "S", "S"]);
+      });
+
+      expect(processResult).toEqual({
+        outcome: "win",
+        feedback: ["green", "green", "green", "green", "green"],
+        coinsEarned: 100,
+        scoreEarned: 500,
+        correctAnswer: "GUESS",
+        newlyUnlockedAchievementIds: ["first_win", "speed_demon"],
+      });
+    });
   });
 });
 

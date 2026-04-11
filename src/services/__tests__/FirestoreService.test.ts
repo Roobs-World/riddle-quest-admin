@@ -264,6 +264,26 @@ describe("FirestoreService", () => {
       expect(result).toBeNull();
     });
 
+    it("handles non-Zod validation error path", async () => {
+      const nonZod = new Error("unexpected parse error");
+      mockGetDoc.mockResolvedValue({
+        exists: () => true,
+        data: () => mockUserData,
+      });
+      (PlayerSchema.parse as jest.Mock).mockImplementation(() => {
+        throw nonZod;
+      });
+
+      const result = await FirestoreService.loadUserProgressFromFirestore(
+        mockUserId
+      );
+      expect(logger.error).toHaveBeenCalledWith(
+        "Unexpected error during player data validation:",
+        nonZod
+      );
+      expect(result).toBeNull();
+    });
+
     it("should handle Firestore errors", async () => {
       const error = new Error("Firestore error");
       mockGetDoc.mockRejectedValue(error);
@@ -366,6 +386,34 @@ describe("FirestoreService", () => {
       expect(result).toBeNull();
     });
 
+    it("serves daily riddle from cache on second request", async () => {
+      mockGetDocs.mockResolvedValue({
+        empty: false,
+        docs: [{ data: () => mockRiddleData }],
+      });
+      const first = await FirestoreService.fetchDailyRiddleFromFirestore(dailyIndex);
+      const second = await FirestoreService.fetchDailyRiddleFromFirestore(dailyIndex);
+      expect(first).toEqual(second);
+      expect(mockGetDocs).toHaveBeenCalledTimes(1);
+    });
+
+    it("handles non-Zod daily riddle parse error path", async () => {
+      const parseErr = new Error("bad parse");
+      mockGetDocs.mockResolvedValue({
+        empty: false,
+        docs: [{ data: () => mockRiddleData }],
+      });
+      (FirestoreRiddleSchema.parse as jest.Mock).mockImplementation(() => {
+        throw parseErr;
+      });
+      const result = await FirestoreService.fetchDailyRiddleFromFirestore(dailyIndex);
+      expect(result).toBeNull();
+      expect(logger.error).toHaveBeenCalledWith(
+        "Unexpected error during daily riddle data validation:",
+        parseErr
+      );
+    });
+
     it("should handle Firestore errors", async () => {
       const error = new Error("Firestore connection failed");
       mockGetDocs.mockRejectedValue(error);
@@ -436,6 +484,30 @@ describe("FirestoreService", () => {
         `No classic riddle found for index: ${classicIndex}`
       );
     });
+
+    it("handles classic riddle zod and non-zod parse errors", async () => {
+      const zodError = new ZodError([]);
+      mockGetDocs.mockResolvedValue({
+        empty: false,
+        docs: [{ data: () => mockRiddleData }],
+      });
+      (FirestoreRiddleSchema.parse as jest.Mock).mockImplementationOnce(() => {
+        throw zodError;
+      });
+      const zodResult = await FirestoreService.fetchClassicRiddleFromFirestore(classicIndex);
+      expect(zodResult).toBeNull();
+
+      const otherErr = new Error("other parse");
+      (FirestoreRiddleSchema.parse as jest.Mock).mockImplementationOnce(() => {
+        throw otherErr;
+      });
+      const otherResult = await FirestoreService.fetchClassicRiddleFromFirestore(classicIndex + 1);
+      expect(otherResult).toBeNull();
+      expect(logger.error).toHaveBeenCalledWith(
+        "Unexpected error during classic riddle data validation:",
+        otherErr
+      );
+    });
   });
 
   describe("fetchDailyRiddleForDate", () => {
@@ -484,6 +556,32 @@ describe("FirestoreService", () => {
       expect(logger.debug).toHaveBeenCalledWith(
         "No daily riddle found for date:",
         dateString
+      );
+    });
+
+    it("handles date riddle zod and non-zod parse errors", async () => {
+      mockGetDocs.mockResolvedValue({
+        empty: false,
+        docs: [{ data: () => mockRiddleData }],
+      });
+      (FirestoreRiddleSchema.parse as jest.Mock).mockImplementationOnce(() => {
+        throw new ZodError([]);
+      });
+      const zodResult = await FirestoreService.fetchDailyRiddleForDate(dateString);
+      expect(zodResult).toBeNull();
+
+      const otherErr = new Error("date parse error");
+      (FirestoreRiddleSchema.parse as jest.Mock).mockImplementationOnce(() => {
+        throw otherErr;
+      });
+      const otherResult = await FirestoreService.fetchDailyRiddleForDate(
+        `${dateString}-x`
+      );
+      expect(otherResult).toBeNull();
+      expect(logger.error).toHaveBeenCalledWith(
+        "Unexpected error during daily riddle data validation for date:",
+        `${dateString}-x`,
+        otherErr
       );
     });
 
@@ -602,6 +700,27 @@ describe("FirestoreService", () => {
         tutorialIndex
       );
     });
+
+    it("handles tutorial riddle parse errors and cache hits", async () => {
+      mockGetDocs.mockResolvedValue({
+        empty: false,
+        docs: [{ data: () => mockRiddleData }],
+      });
+      const first = await FirestoreService.fetchTutorialRiddleFromFirestore(tutorialIndex);
+      const second = await FirestoreService.fetchTutorialRiddleFromFirestore(tutorialIndex);
+      expect(first).toEqual(second);
+      expect(mockGetDocs).toHaveBeenCalledTimes(1);
+
+      const otherErr = new Error("tutorial parse");
+      FirestoreService.clearRiddleCache();
+      (FirestoreRiddleSchema.parse as jest.Mock).mockImplementationOnce(() => {
+        throw otherErr;
+      });
+      const invalidResult = await FirestoreService.fetchTutorialRiddleFromFirestore(
+        tutorialIndex + 1
+      );
+      expect(invalidResult).toBeNull();
+    });
   });
 
   describe("getTutorialRiddleCount", () => {
@@ -669,6 +788,14 @@ describe("FirestoreService", () => {
       );
       expect(mockUpdateDoc).not.toHaveBeenCalled();
     });
+
+    it("throws on update errors", async () => {
+      const err = new Error("classic update failed");
+      mockUpdateDoc.mockRejectedValueOnce(err);
+      await expect(
+        FirestoreService.updateClassicIndexInFirestore(mockUserId, classicIndex)
+      ).rejects.toThrow("classic update failed");
+    });
   });
 
   describe("updateDailyChallengeIndexInFirestore", () => {
@@ -700,6 +827,17 @@ describe("FirestoreService", () => {
         "Attempted to update daily challenge index in Firestore without a userId."
       );
       expect(mockUpdateDoc).not.toHaveBeenCalled();
+    });
+
+    it("throws on daily challenge update errors", async () => {
+      const err = new Error("daily update failed");
+      mockUpdateDoc.mockRejectedValueOnce(err);
+      await expect(
+        FirestoreService.updateDailyChallengeIndexInFirestore(
+          mockUserId,
+          dailyChallengeIndex
+        )
+      ).rejects.toThrow("daily update failed");
     });
   });
 
@@ -735,6 +873,14 @@ describe("FirestoreService", () => {
         "Attempted to update tutorial index in Firestore without a userId."
       );
       expect(mockUpdateDoc).not.toHaveBeenCalled();
+    });
+
+    it("throws on tutorial update errors", async () => {
+      const err = new Error("tutorial update failed");
+      mockUpdateDoc.mockRejectedValueOnce(err);
+      await expect(
+        FirestoreService.updateTutorialIndexInFirestore(mockUserId, tutorialIndex)
+      ).rejects.toThrow("tutorial update failed");
     });
   });
 
@@ -822,6 +968,14 @@ describe("FirestoreService", () => {
       );
 
       expect(mockTransaction.update).toHaveBeenCalled();
+    });
+
+    it("throws when updating stats fails", async () => {
+      const err = new Error("stats failed");
+      mockUpdateDoc.mockRejectedValueOnce(err);
+      await expect(FirestoreService.updateUserStats(mockUserId, mockStats)).rejects.toThrow(
+        "stats failed"
+      );
     });
   });
 
@@ -950,4 +1104,3 @@ describe("FirestoreService", () => {
     });
   });
 });
-

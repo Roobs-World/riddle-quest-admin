@@ -21,10 +21,13 @@ import { captureException } from "../utils/sentry";
  * Service for managing riddle data in Firestore
  */
 export class RiddleDataService implements IRiddleDataService {
+  /** Firestore collection containing classic/daily/tutorial riddle documents. */
   private static readonly RIDDLES_COLLECTION = "riddles";
 
   /**
    * Fetches the current daily riddle.
+   *
+   * @returns Today's daily riddle, or `null` when unavailable.
    */
   async fetchDailyRiddle(): Promise<FirestoreRiddle | null> {
     try {
@@ -66,6 +69,9 @@ export class RiddleDataService implements IRiddleDataService {
 
   /**
    * Fetches a specific classic mode riddle by its level.
+   *
+   * @param level One-based classic level index.
+   * @returns Matching classic riddle, or `null` when missing.
    */
   async fetchClassicRiddle(level: number): Promise<FirestoreRiddle | null> {
     logger.debug(`Fetching classic riddle for level ${level} from Firestore`);
@@ -114,6 +120,9 @@ export class RiddleDataService implements IRiddleDataService {
 
   /**
    * Fetches a specific tutorial mode riddle by its level.
+   *
+   * @param level One-based tutorial level index.
+   * @returns Matching tutorial riddle, or `null` when missing.
    */
   async fetchTutorialRiddle(level: number): Promise<FirestoreRiddle | null> {
     logger.debug(`Fetching tutorial riddle for level ${level} from Firestore`);
@@ -165,6 +174,9 @@ export class RiddleDataService implements IRiddleDataService {
 
   /**
    * Fetches a riddle by its ID.
+   *
+   * @param riddleId Firestore document id for the riddle.
+   * @returns Matching riddle, or `null` if not found.
    */
   async fetchRiddleById(riddleId: string): Promise<FirestoreRiddle | null> {
     if (!riddleId || !riddleId.trim()) {
@@ -209,6 +221,8 @@ export class RiddleDataService implements IRiddleDataService {
 
   /**
    * Gets the count of available classic riddles.
+   *
+   * @returns Number of classic riddles currently available.
    */
   async getClassicRiddleCount(): Promise<number> {
     try {
@@ -226,6 +240,8 @@ export class RiddleDataService implements IRiddleDataService {
 
   /**
    * Gets the count of available tutorial riddles.
+   *
+   * @returns Number of tutorial riddles currently available.
    */
   async getTutorialRiddleCount(): Promise<number> {
     try {
@@ -241,4 +257,3 @@ export class RiddleDataService implements IRiddleDataService {
     }
   }
 }
-

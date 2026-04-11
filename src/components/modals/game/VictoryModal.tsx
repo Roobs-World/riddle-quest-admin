@@ -20,17 +20,34 @@ import {
   MODAL_BUTTON_SPACER,
 } from "../../../constants/layout";
 
+/**
+ * Props for the victory feedback modal shown after a successful solve.
+ */
 interface VictoryModalProps {
+  /** Controls modal visibility state. */
   isVisible: boolean;
+  /** Number of attempts used to solve the riddle. */
   attempts: number;
+  /** Coin reward earned for this win. */
   coinsEarned: number;
+  /** Optional list of achievement names unlocked by this win. */
   unlockedAchievementNames?: string[];
+  /** Callback for advancing to the next level/riddle. */
   onNextLevel: () => void;
+  /** Submitted guesses used to build shareable emoji summary. */
   guesses: SubmittedGuess[];
+  /** Game mode label included in share analytics/payload. */
   gameMode?: "daily" | "classic";
+  /** Closes the modal. */
   onClose: () => void;
 }
 
+/**
+ * Celebratory modal with rewards, optional achievement fanfare, and sharing CTA.
+ *
+ * @param props Victory details and user action callbacks.
+ * @returns Animated victory modal view.
+ */
 const VictoryModal: React.FC<VictoryModalProps> = ({
   isVisible,
   attempts,
@@ -53,6 +70,11 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
 
   const emojiSummary = generateFeedbackEmojiGrid(guesses);
 
+  /**
+   * Shares the win summary through the selected sharing channel.
+   *
+   * @param platform Destination share channel.
+   */
   const handleShare = async (platform: "facebook" | "x" | "system") => {
     try {
       const shareContent = {
@@ -68,6 +90,9 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
     }
   };
 
+  /**
+   * Advances to the next level and closes the modal afterward.
+   */
   const handleNextLevel = async () => {
     await Promise.resolve(onNextLevel?.());
     onClose?.();
@@ -298,4 +323,3 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
 };
 
 export default VictoryModal;
-

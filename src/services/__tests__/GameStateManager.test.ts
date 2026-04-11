@@ -1,8 +1,9 @@
-import { GameStateManager } from "../GameStateManager";
+import { GameStateManager, useGameStateManager } from "../GameStateManager";
 import { GameMode } from "../../contexts/AuthContext";
 import { RiddleService } from "../RiddleService";
 import { serviceRegistry } from "../ServiceRegistry";
 import { IAudioFeedbackService } from "../interfaces/IAudioFeedbackService";
+import { renderHook, act } from "@testing-library/react-native";
 
 // Mock dependencies
 jest.mock("../RiddleService", () => ({
@@ -666,6 +667,113 @@ describe("GameStateManager", () => {
         });
       }).not.toThrow();
     });
+  });
+});
+
+describe("useGameStateManager hook", () => {
+  const defaultConfig = {
+    mode: "classic" as GameMode,
+    maxGuesses: 6,
+    riddleId: "test-riddle-id",
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    (serviceRegistry.getAudioFeedbackService as jest.Mock).mockReturnValue(mockAudioFeedback);
+  });
+
+  it("should return gameState, actions, and utils", () => {
+    const { result } = renderHook(() => useGameStateManager(defaultConfig));
+
+    expect(result.current).toHaveProperty("gameState");
+    expect(result.current).toHaveProperty("actions");
+    expect(result.current).toHaveProperty("utils");
+  });
+
+  it("should return initial gameState with playing status", () => {
+    const { result } = renderHook(() => useGameStateManager(defaultConfig));
+
+    expect(result.current.gameState.gameStatus).toBe("playing");
+    expect(result.current.gameState.currentGuess).toBe("");
+    expect(result.current.gameState.guesses).toEqual([]);
+  });
+
+  it("should expose addLetter action", () => {
+    const { result } = renderHook(() => useGameStateManager(defaultConfig));
+
+    act(() => {
+      result.current.actions.addLetter("A");
+    });
+
+    expect(result.current.gameState.currentGuess).toBe("a");
+  });
+
+  it("should expose removeLetter action", () => {
+    const { result } = renderHook(() => useGameStateManager(defaultConfig));
+
+    act(() => {
+      result.current.actions.addLetter("A");
+      result.current.actions.addLetter("B");
+      result.current.actions.removeLetter();
+    });
+
+    expect(result.current.gameState.currentGuess).toBe("a");
+  });
+
+  it("should expose resetGame action", () => {
+    const { result } = renderHook(() => useGameStateManager(defaultConfig));
+
+    act(() => {
+      result.current.actions.addLetter("A");
+      result.current.actions.resetGame();
+    });
+
+    expect(result.current.gameState.currentGuess).toBe("");
+    expect(result.current.gameState.guesses).toEqual([]);
+  });
+
+  it("should expose canSubmitGuess utility", () => {
+    const { result } = renderHook(() => useGameStateManager(defaultConfig));
+
+    // Initially cannot submit (no letters)
+    expect(result.current.utils.canSubmitGuess()).toBe(false);
+
+    // Add 5 letters
+    act(() => {
+      result.current.actions.addLetter("H");
+      result.current.actions.addLetter("E");
+      result.current.actions.addLetter("L");
+      result.current.actions.addLetter("L");
+      result.current.actions.addLetter("O");
+    });
+
+    // Now can submit
+    expect(result.current.utils.canSubmitGuess()).toBe(true);
+  });
+
+  it("should expose getCurrentRow utility", () => {
+    const { result } = renderHook(() => useGameStateManager(defaultConfig));
+
+    expect(result.current.utils.getCurrentRow()).toBe(0);
+  });
+
+  it("should expose getRemainingGuesses utility", () => {
+    const { result } = renderHook(() => useGameStateManager(defaultConfig));
+
+    expect(result.current.utils.getRemainingGuesses()).toBe(6);
+  });
+
+  it("should maintain stable GameStateManager across re-renders", () => {
+    const { result, rerender } = renderHook(() =>
+      useGameStateManager(defaultConfig)
+    );
+
+    const initialGameStatus = result.current.gameState.gameStatus;
+
+    rerender();
+
+    // GameStateManager instance should be stable
+    expect(result.current.gameState.gameStatus).toBe(initialGameStatus);
   });
 });
 

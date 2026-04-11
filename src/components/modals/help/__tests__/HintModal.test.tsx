@@ -1,244 +1,111 @@
 import React from "react";
-import { render } from "@testing-library/react-native";
+import { fireEvent, render } from "@testing-library/react-native";
+
 import HintModal from "../HintModal";
 
-// Mock dependencies
-jest.mock("../../../buttons/CloseButton", () => "CloseButton");
-jest.mock("react-native", () => ({
-  View: "View",
-  Text: "Text",
-  Modal: "Modal",
-  TouchableOpacity: "TouchableOpacity",
-  Dimensions: {
-    get: jest.fn().mockReturnValue({ width: 390, height: 844 }),
-    addEventListener: jest.fn().mockReturnValue({ remove: jest.fn() }),
-  },
-  StyleSheet: {
-    create: jest.fn((styles) => styles),
-  },
-}));
+jest.mock("../../../buttons/CloseButton", () => {
+  const React = require("react");
+  const { TouchableOpacity } = require("react-native");
+  return function MockCloseButton({ onPress }: { onPress: () => void }) {
+    return <TouchableOpacity testID="close-button" onPress={onPress} />;
+  };
+});
+
+jest.mock("src/components/buttons/WideButton", () => {
+  const React = require("react");
+  const { Text, TouchableOpacity } = require("react-native");
+  return function MockWideButton({
+    buttonText,
+    onPress,
+    disabled,
+  }: {
+    buttonText: string;
+    onPress: () => void;
+    disabled: boolean;
+  }) {
+    return (
+      <TouchableOpacity
+        testID={`wide-button-${buttonText}`}
+        accessibilityState={{ disabled }}
+        disabled={disabled}
+        onPress={onPress}
+      >
+        <Text>{buttonText}</Text>
+      </TouchableOpacity>
+    );
+  };
+});
+
+jest.mock("../../../../assets/images/modal-bg.svg", () => {
+  const React = require("react");
+  const { View } = require("react-native");
+  return function MockModalBg() {
+    return <View testID="modal-bg" />;
+  };
+});
 
 describe("HintModal", () => {
-  const mockOnShowHint = jest.fn();
-  const mockOnClose = jest.fn();
+  const onShowHint = jest.fn();
+  const onClose = jest.fn();
+
+  const renderModal = (props?: Partial<React.ComponentProps<typeof HintModal>>) =>
+    render(
+      <HintModal
+        isVisible={true}
+        userCoins={100}
+        hintCost={50}
+        onShowHint={onShowHint}
+        onClose={onClose}
+        {...props}
+      />
+    );
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  describe("Component Rendering", () => {
-    it("should render without crashing when visible", () => {
-      expect(() =>
-        render(
-          <HintModal
-            isVisible={true}
-            userCoins={100}
-            hintCost={50}
-            onShowHint={mockOnShowHint}
-            onClose={mockOnClose}
-          />
-        )
-      ).not.toThrow();
-    });
+  it("renders title and dynamic coin copy", () => {
+    const { getByText, getByTestId } = renderModal({ userCoins: 250, hintCost: 75 });
 
-    it("should render without crashing when not visible", () => {
-      expect(() =>
-        render(
-          <HintModal
-            isVisible={false}
-            userCoins={100}
-            hintCost={50}
-            onShowHint={mockOnShowHint}
-            onClose={mockOnClose}
-          />
-        )
-      ).not.toThrow();
-    });
+    expect(getByText("Use a Hint?")).toBeTruthy();
+    expect(getByText("Cost: 75 Coins. You have: 250 Coins.")).toBeTruthy();
+    expect(getByTestId("modal-bg")).toBeTruthy();
   });
 
-  describe("Affordability Logic", () => {
-    it("should handle case when user can afford hint", () => {
-      render(
-        <HintModal
-          isVisible={true}
-          userCoins={100}
-          hintCost={50}
-          onShowHint={mockOnShowHint}
-          onClose={mockOnClose}
-        />
-      );
-      // Component should render without showing insufficient funds message
-      expect(true).toBe(true);
-    });
+  it("shows insufficient-funds warning and disables SHOW HINT when user cannot afford", () => {
+    const { getByText, getByTestId } = renderModal({ userCoins: 30, hintCost: 50 });
 
-    it("should handle case when user cannot afford hint", () => {
-      render(
-        <HintModal
-          isVisible={true}
-          userCoins={30}
-          hintCost={50}
-          onShowHint={mockOnShowHint}
-          onClose={mockOnClose}
-        />
-      );
-      // Component should render with insufficient funds logic
-      expect(true).toBe(true);
-    });
-
-    it("should handle exact coin amount match", () => {
-      render(
-        <HintModal
-          isVisible={true}
-          userCoins={50}
-          hintCost={50}
-          onShowHint={mockOnShowHint}
-          onClose={mockOnClose}
-        />
-      );
-      // Component should render as affordable when coins exactly match cost
-      expect(true).toBe(true);
-    });
-
-    it("should handle zero coins scenario", () => {
-      render(
-        <HintModal
-          isVisible={true}
-          userCoins={0}
-          hintCost={50}
-          onShowHint={mockOnShowHint}
-          onClose={mockOnClose}
-        />
-      );
-      // Component should render as not affordable when user has no coins
-      expect(true).toBe(true);
-    });
+    expect(getByText("You do not have enough coins for a hint.")).toBeTruthy();
+    expect(getByTestId("wide-button-SHOW HINT").props.accessibilityState.disabled).toBe(
+      true
+    );
   });
 
-  describe("Props Validation", () => {
-    it("should handle all required props correctly", () => {
-      expect(() =>
-        render(
-          <HintModal
-            isVisible={true}
-            userCoins={100}
-            hintCost={50}
-            onShowHint={mockOnShowHint}
-            onClose={mockOnClose}
-          />
-        )
-      ).not.toThrow();
-    });
+  it("hides warning and enables SHOW HINT when user can afford exact cost", () => {
+    const { queryByText, getByTestId } = renderModal({ userCoins: 50, hintCost: 50 });
 
-    it("should handle function props correctly", () => {
-      render(
-        <HintModal
-          isVisible={true}
-          userCoins={100}
-          hintCost={50}
-          onShowHint={mockOnShowHint}
-          onClose={mockOnClose}
-        />
-      );
-      // Component should accept function props
-      expect(mockOnShowHint).toBeDefined();
-      expect(mockOnClose).toBeDefined();
-    });
+    expect(queryByText("You do not have enough coins for a hint.")).toBeNull();
+    expect(getByTestId("wide-button-SHOW HINT").props.accessibilityState.disabled).toBe(
+      false
+    );
   });
 
-  describe("Visibility Behavior", () => {
-    it("should handle visible state correctly", () => {
-      render(
-        <HintModal
-          isVisible={true}
-          userCoins={100}
-          hintCost={50}
-          onShowHint={mockOnShowHint}
-          onClose={mockOnClose}
-        />
-      );
-      // Component should handle visible state
-      expect(true).toBe(true);
-    });
+  it("closes and then triggers hint callback when SHOW HINT is pressed", () => {
+    const { getByTestId } = renderModal();
+    fireEvent.press(getByTestId("wide-button-SHOW HINT"));
 
-    it("should handle invisible state correctly", () => {
-      render(
-        <HintModal
-          isVisible={false}
-          userCoins={100}
-          hintCost={50}
-          onShowHint={mockOnShowHint}
-          onClose={mockOnClose}
-        />
-      );
-      // Component should handle invisible state
-      expect(true).toBe(true);
-    });
-
-    it("should handle state changes correctly", () => {
-      const { rerender } = render(
-        <HintModal
-          isVisible={false}
-          userCoins={100}
-          hintCost={50}
-          onShowHint={mockOnShowHint}
-          onClose={mockOnClose}
-        />
-      );
-
-      // Show overlay
-      rerender(
-        <HintModal
-          isVisible={true}
-          userCoins={100}
-          hintCost={50}
-          onShowHint={mockOnShowHint}
-          onClose={mockOnClose}
-        />
-      );
-      expect(true).toBe(true); // Re-render successful
-
-      // Hide overlay
-      rerender(
-        <HintModal
-          isVisible={false}
-          userCoins={100}
-          hintCost={50}
-          onShowHint={mockOnShowHint}
-          onClose={mockOnClose}
-        />
-      );
-      expect(true).toBe(true); // Re-render successful
-    });
+    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(onShowHint).toHaveBeenCalledTimes(1);
+    expect(onClose.mock.invocationCallOrder[0]).toBeLessThan(
+      onShowHint.mock.invocationCallOrder[0]
+    );
   });
 
-  describe("Dynamic Content", () => {
-    it("should handle different coin amounts", () => {
-      render(
-        <HintModal
-          isVisible={true}
-          userCoins={250}
-          hintCost={75}
-          onShowHint={mockOnShowHint}
-          onClose={mockOnClose}
-        />
-      );
-      // Component should display different coin amounts dynamically
-      expect(true).toBe(true);
-    });
+  it("calls onClose from CLOSE button and close icon", () => {
+    const { getByTestId } = renderModal();
+    fireEvent.press(getByTestId("wide-button-CLOSE"));
+    fireEvent.press(getByTestId("close-button"));
 
-    it("should handle different hint costs", () => {
-      render(
-        <HintModal
-          isVisible={true}
-          userCoins={100}
-          hintCost={25}
-          onShowHint={mockOnShowHint}
-          onClose={mockOnClose}
-        />
-      );
-      // Component should display different hint costs dynamically
-      expect(true).toBe(true);
-    });
+    expect(onClose).toHaveBeenCalledTimes(2);
   });
 });
-
