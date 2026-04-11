@@ -23,8 +23,6 @@ interface HeaderProps {
   userCoins: number;
   /** Opens the coin shop when the coin display is pressed. */
   onCoinsPress: () => void;
-  /** Optional callback for tapping the logo icon (currently hint entry point). */
-  onHintPress?: () => void;
   /** Optional mode label (e.g. "Daily Challenge"). */
   modeLabel?: string;
 }
@@ -41,7 +39,6 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({
   userCoins,
   onCoinsPress,
-  onHintPress,
   modeLabel,
 }) => {
   const showModeLabel = !!modeLabel;
@@ -99,16 +96,7 @@ const Header: React.FC<HeaderProps> = ({
         testID="header-left-side"
         onLayout={handleLeftAnchorLayout}
       >
-        <TouchableOpacity
-          className="items-center"
-          testID="logo-button"
-          accessible={true}
-          accessibilityRole="button"
-          accessibilityLabel="logo"
-          onPress={onHintPress}
-        >
-          <LogoIcon width={HEADER_LOGO_SIZE} height={HEADER_LOGO_SIZE} color="#ffffff" />
-        </TouchableOpacity>
+        <LogoIcon width={HEADER_LOGO_SIZE} height={HEADER_LOGO_SIZE} color="#ffffff" />
       </View>
 
       {showModeLabel && (
