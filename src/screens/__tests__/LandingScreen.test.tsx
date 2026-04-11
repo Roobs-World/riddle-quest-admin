@@ -5,6 +5,7 @@ jest.unmock("../LandingScreen"); // Explicitly unmock to ensure coverage
 import { AuthService } from "../../services/AuthService";
 import { useAuth } from "../../contexts/AuthContext";
 import { ModalProvider } from "../../contexts/ModalContext";
+import { SoundManager } from "../../services/SoundManager";
 
 // Mock navigation
 const mockNavigate = jest.fn();
@@ -29,6 +30,15 @@ jest.mock("../../services/AuthService", () => ({
     signInWithFacebook: jest.fn(),
     signInAnonymously: jest.fn(),
     logout: jest.fn(),
+  },
+}));
+
+jest.mock("../../services/SoundManager", () => ({
+  SoundManager: {
+    getSoundEnabled: jest.fn(() => true),
+    setSoundEnabled: jest.fn(),
+    playBackgroundMusic: jest.fn(() => Promise.resolve()),
+    pauseBackgroundMusic: jest.fn(() => Promise.resolve()),
   },
 }));
 
@@ -80,6 +90,18 @@ jest.mock("../../components/buttons/WideButton", () => {
       testID: "wide-button",
       onPress: disabled ? undefined : onPress,
       "data-text": buttonText,
+      "data-disabled": disabled,
+    });
+  };
+});
+
+jest.mock("../../components/buttons/MuteButton", () => {
+  const React = require("react");
+  return function MockMuteButton({ onToggle, isMuted, disabled }: any) {
+    return React.createElement("View", {
+      testID: "mute-button",
+      onPress: disabled ? undefined : onToggle,
+      "data-muted": isMuted,
       "data-disabled": disabled,
     });
   };
@@ -254,8 +276,18 @@ describe("LandingScreen", () => {
       expect(getAllByTestId("wide-button").length).toBeGreaterThanOrEqual(1);
       expect(getByTestId("google-signin-button")).toBeTruthy();
       expect(getByTestId("facebook-signin-button")).toBeTruthy();
+      expect(getByTestId("mute-button")).toBeTruthy();
       expect(getByTestId("pulsing-spinner")).toBeTruthy();
       expect(getByText("Test Tagline 1")).toBeTruthy();
+    });
+
+    it("should toggle mute state when mute button is pressed", () => {
+      const { getByTestId } = renderWithProviders(<LandingScreen />);
+
+      expect(getByTestId("mute-button").props["data-muted"]).toBe(false);
+      fireEvent.press(getByTestId("mute-button"));
+
+      expect(SoundManager.setSoundEnabled).toHaveBeenCalledWith(false);
     });
 
     it("should render subtitle component with correct text", () => {

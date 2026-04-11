@@ -22,7 +22,6 @@ export type AchievementCriteriaType =
   | "classic_10"
   | "daily_completed"
   | "perfect_guess"
-  | "tutorial_started"
   | "hint_user"
   | "first_purchase";
 
@@ -127,15 +126,6 @@ export const ACHIEVEMENT_DEFINITIONS: AchievementDefinition[] = [
     getProgress: () => 0,
   },
   {
-    id: "tutorial_started",
-    name: "Learner",
-    description: "Complete a tutorial step",
-    criteriaType: "tutorial_started",
-    threshold: 1,
-    icon: "📚",
-    getProgress: (p) => p.progress?.tutorialIndex ?? 0,
-  },
-  {
     id: "hint_user",
     name: "Need a Clue",
     description: "Use a hint",
@@ -169,4 +159,3 @@ export function getAchievementProgress(
   if (!def) return 0;
   return def.getProgress({ stats, progress, hasPurchasedApp });
 }
-

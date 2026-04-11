@@ -5,7 +5,6 @@ export const GameModeSchema = z.union([
   z.literal("daily"),
   z.literal("classic"),
   z.literal("challenge"),
-  z.literal("tutorial"),
 ]);
 
 // Schemas for functions identified in firebase-functions/index.ts
@@ -89,7 +88,7 @@ export const GuessFeedbackSchema = z.union([
 export const SubmitGuessInputSchema = z.object({
   guess: z.string().min(1, "Guess cannot be empty"),
   riddleId: z.string().min(1, "Riddle ID is required"),
-  gameMode: z.enum(["challenge", "classic", "tutorial"]),
+  gameMode: z.enum(["challenge", "classic"]),
   attempts: z.number().int().positive("Attempts must be a positive integer"),
 });
 

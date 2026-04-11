@@ -125,6 +125,9 @@ const EN_APP_STRINGS = {
     THANK_YOU_TEXT:
       "Special thanks to all our contributors who made Qwordly possible. Your creativity, dedication, and passion brought this project to life.",
   },
+  WelcomeModal: {
+    LETS_PLAY: "Let's Play",
+  },
   Profile: {
     LOADING_MESSAGE: "Loading profile data...",
     TITLE: "Profile",

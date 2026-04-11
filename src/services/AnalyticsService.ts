@@ -120,7 +120,7 @@ export class AnalyticsService {
    * Log when the user starts a new game (any mode).
    */
   async logGameStart(params: {
-    gameMode: "daily" | "classic" | "tutorial";
+    gameMode: "daily" | "classic";
     riddleId: string;
   }): Promise<void> {
     await this.logEvent("game_start", params);

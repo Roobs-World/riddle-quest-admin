@@ -7,7 +7,7 @@ This folder contains React hooks that encapsulate reusable behavior across the Q
 - `useInterstitialAds` — manages AppLovin MAX interstitial ad loading and display with basic retry behavior.
 - `useModal` — high-level interface over `ModalContext` that provides type-safe helpers for opening and closing all game, settings, and help modals.
 - `useSettings` — loads and persists sound and haptics preferences to AsyncStorage and keeps `SoundManager` in sync.
-- `useFirstTimeExperience` — coordinates first-launch and first-run tutorial modals via AsyncStorage flags.
+- `useFirstTimeExperience` — coordinates first-launch onboarding modals via AsyncStorage flags.
 
 ### Usage Conventions
 
@@ -18,4 +18,3 @@ This folder contains React hooks that encapsulate reusable behavior across the Q
 
 **Note**: The above ApplyPatch call is malformed because it mixes JSON and freeform input. The `ApplyPatch` tool expects a single freeform string, not JSON. Let's correct this by sending only the patch string.
 I'll now send a corrected patch. !*** End Patch
-

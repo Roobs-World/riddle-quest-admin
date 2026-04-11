@@ -21,7 +21,7 @@ import { captureException } from "../utils/sentry";
  * Service for managing riddle data in Firestore
  */
 export class RiddleDataService implements IRiddleDataService {
-  /** Firestore collection containing classic/daily/tutorial riddle documents. */
+  /** Firestore collection containing riddle documents. */
   private static readonly RIDDLES_COLLECTION = "riddles";
 
   /**
@@ -119,60 +119,6 @@ export class RiddleDataService implements IRiddleDataService {
   }
 
   /**
-   * Fetches a specific tutorial mode riddle by its level.
-   *
-   * @param level One-based tutorial level index.
-   * @returns Matching tutorial riddle, or `null` when missing.
-   */
-  async fetchTutorialRiddle(level: number): Promise<FirestoreRiddle | null> {
-    logger.debug(`Fetching tutorial riddle for level ${level} from Firestore`);
-
-    try {
-      const snapshot = await getDocs(
-        query(
-          collection(getFirestore(), RiddleDataService.RIDDLES_COLLECTION),
-          where("category", "==", "tutorial"),
-          where("tutorialIndex", "==", level),
-          limit(1)
-        )
-      );
-
-      if (!snapshot.empty) {
-        const riddleData = snapshot.docs[0].data();
-
-        if (riddleData && riddleData.answer !== undefined) {
-          const validatedRiddle = FirestoreRiddleSchema.parse({
-            ...riddleData,
-            riddleId: snapshot.docs[0].id,
-            answerLength: riddleData.answer.length,
-          });
-
-          logger.debug(`Tutorial riddle found for level: ${level}`);
-          return validatedRiddle;
-        } else {
-          logger.error(
-            `Riddle data or answer missing for level: ${level}. Data:`,
-            riddleData
-          );
-          return null;
-        }
-      } else {
-        logger.debug(`No tutorial riddle found for level: ${level}`);
-        return null;
-      }
-    } catch (error) {
-      if (error instanceof ZodError) {
-        logger.error("Tutorial riddle validation failed:", error.issues);
-        captureException(error);
-        throw new Error("Invalid tutorial riddle data structure");
-      }
-      logger.error("Error fetching tutorial riddle:", error);
-      captureException(error);
-      throw error;
-    }
-  }
-
-  /**
    * Fetches a riddle by its ID.
    *
    * @param riddleId Firestore document id for the riddle.
@@ -238,22 +184,4 @@ export class RiddleDataService implements IRiddleDataService {
     }
   }
 
-  /**
-   * Gets the count of available tutorial riddles.
-   *
-   * @returns Number of tutorial riddles currently available.
-   */
-  async getTutorialRiddleCount(): Promise<number> {
-    try {
-      const snapshot = await getDocs(
-        query(collection(getFirestore(), RiddleDataService.RIDDLES_COLLECTION), where("category", "==", "tutorial"))
-      );
-
-      return snapshot.size;
-    } catch (error) {
-      logger.error("Error getting tutorial riddle count:", error);
-      captureException(error);
-      throw error;
-    }
-  }
 }

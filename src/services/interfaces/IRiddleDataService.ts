@@ -20,14 +20,6 @@ export interface IRiddleDataService {
   fetchClassicRiddle(level: number): Promise<FirestoreRiddle | null>;
 
   /**
-   * Fetches a specific tutorial mode riddle by its level.
-   *
-   * @param level One-based tutorial level index.
-   * @returns Tutorial riddle document or `null` when no match exists.
-   */
-  fetchTutorialRiddle(level: number): Promise<FirestoreRiddle | null>;
-
-  /**
    * Fetches a riddle by its document ID.
    *
    * @param riddleId Firestore riddle document id.
@@ -42,10 +34,4 @@ export interface IRiddleDataService {
    */
   getClassicRiddleCount(): Promise<number>;
 
-  /**
-   * Counts available tutorial riddles.
-   *
-   * @returns Number of tutorial riddles.
-   */
-  getTutorialRiddleCount(): Promise<number>;
 }

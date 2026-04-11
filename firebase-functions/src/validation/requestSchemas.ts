@@ -17,8 +17,7 @@ export interface SubmitGuessRequestData {
 
 export interface SubmitGuessAuthContext {
   uid: string;
-  // Potentially include other auth details if your core logic needs them,
-  // e.g., token for further verification, although uid is usually sufficient.
+  isAnonymous?: boolean;
 }
 
 export interface SubmitGuessResponseData {

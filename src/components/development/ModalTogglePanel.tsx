@@ -71,7 +71,6 @@ const generateMockData = (
       classicIndex: 25,
       dailyChallengeIndex: 10,
       dailyChallengeCurrentQuestion: 0,
-      tutorialIndex: 5,
     },
     stats: {
       xp: 0,
@@ -467,4 +466,3 @@ const styles = StyleSheet.create({
 });
 
 export default React.memo(ModalTogglePanel);
-

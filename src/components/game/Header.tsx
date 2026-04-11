@@ -1,11 +1,9 @@
 /**
  * @fileoverview
- * Game header component showing the Qwordly logo, coin balance, and optional
- * tutorial progress indicator.
+ * Game header component showing the Qwordly logo, coin balance, and mode label.
  *
  * This header is used at the top of the main `GameScreen` and is responsible
- * for providing quick access to the coin shop as well as surfacing tutorial
- * context when the user is in guided onboarding.
+ * for providing quick access to the coin shop and surfacing current mode context.
  */
 import React, { useMemo, useState } from "react";
 import { LayoutChangeEvent, View, TouchableOpacity, Text } from "react-native";
@@ -19,9 +17,6 @@ import { HEADER_LOGO_SIZE } from "../../constants/layout";
  * @property {number} userCoins - The current user's coin balance.
  * @property {() => void} onCoinsPress - Function to call when the coins are pressed (opens shop).
  * @property {() => void} onHintPress - Function to call when the hint button is pressed.
- * @property {boolean} isTutorial - When true, shows "Tutorial" and step indicator in the center.
- * @property {number} tutorialStep - 1-based current tutorial step (only when isTutorial).
- * @property {number} tutorialTotalSteps - Total tutorial steps for "Step X of Y" (optional).
  */
 interface HeaderProps {
   /** Current coin balance shown on the right side of the header. */
@@ -30,37 +25,26 @@ interface HeaderProps {
   onCoinsPress: () => void;
   /** Optional callback for tapping the logo icon (currently hint entry point). */
   onHintPress?: () => void;
-  /** Enables tutorial-specific label and progress indicator. */
-  isTutorial?: boolean;
-  /** One-based tutorial step index. */
-  tutorialStep?: number;
-  /** Total number of tutorial steps for "Step X of Y". */
-  tutorialTotalSteps?: number;
-  /** Optional mode label (e.g. "Daily Challenge") shown when not in tutorial. */
+  /** Optional mode label (e.g. "Daily Challenge"). */
   modeLabel?: string;
 }
 
 /**
  * Header component for the main game screen.
  *
- * Renders the Qwordly logo, current coin balance, and — when in tutorial
- * mode — a centered label and step indicator (e.g. "Step 2 of 5"). Callers
- * are expected to wire `onCoinsPress` to open the coin shop and may use
- * `onHintPress` for future logo interactions.
+ * Renders the Qwordly logo, current coin balance, and an optional centered
+ * mode label. Callers are expected to wire `onCoinsPress` to open the coin
+ * shop and may use `onHintPress` for future logo interactions.
  *
- * @param props Props controlling coin display and optional tutorial UI.
+ * @param props Props controlling coin display and optional mode label.
  */
 const Header: React.FC<HeaderProps> = ({
   userCoins,
   onCoinsPress,
   onHintPress,
-  isTutorial = false,
-  tutorialStep = 1,
-  tutorialTotalSteps,
   modeLabel,
 }) => {
-  const showTutorialCues = isTutorial && tutorialStep >= 1;
-  const showModeLabel = !showTutorialCues && !!modeLabel;
+  const showModeLabel = !!modeLabel;
   const [headerWidth, setHeaderWidth] = useState(0);
   const [leftAnchor, setLeftAnchor] = useState({ x: SPACING.md, width: HEADER_LOGO_SIZE });
   const [rightAnchor, setRightAnchor] = useState({ x: 0, width: 0 });
@@ -107,11 +91,7 @@ const Header: React.FC<HeaderProps> = ({
       onLayout={handleHeaderLayout}
       accessible={true}
       accessibilityRole="none"
-      accessibilityLabel={
-        showTutorialCues
-          ? `Tutorial step ${tutorialStep} of ${tutorialTotalSteps ?? "?"}`
-          : "Game header with logo and coin balance"
-      }
+      accessibilityLabel="Game header with logo and coin balance"
     >
       {/* Logo Icon in top-left corner - positioned absolutely like CloseButton */}
       <View
@@ -131,37 +111,6 @@ const Header: React.FC<HeaderProps> = ({
         </TouchableOpacity>
       </View>
 
-      {/* Center: Tutorial cues (or current game mode when not in tutorial) */}
-      {showTutorialCues && (
-        <View
-          className="absolute left-0 right-0 items-center justify-center z-0"
-          style={{ top: SPACING.xs }}
-          testID="header-tutorial-cues"
-        >
-          <Text
-            style={{
-              fontFamily: TYPOGRAPHY.fontPrimary,
-              fontSize: TYPOGRAPHY.fontSize.sm,
-              color: "#ffffff",
-            }}
-            testID="header-tutorial-label"
-          >
-            Tutorial
-          </Text>
-          <Text
-            style={{
-              fontFamily: TYPOGRAPHY.fontSecondary,
-              fontSize: TYPOGRAPHY.fontSize.xs,
-              color: "rgba(255,255,255,0.9)",
-            }}
-            testID="header-tutorial-step-text"
-          >
-            {tutorialTotalSteps != null && tutorialTotalSteps > 0
-              ? `Step ${tutorialStep} of ${tutorialTotalSteps}`
-              : `Step ${tutorialStep}`}
-          </Text>
-        </View>
-      )}
       {showModeLabel && (
         <View
           key={`mode-label-${layoutRecalcKey}`}

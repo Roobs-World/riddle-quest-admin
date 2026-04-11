@@ -9,9 +9,6 @@ export const SKIP_COST_DAILY = 150;
 /** Coin cost to skip a level in Classic mode. */
 export const SKIP_COST_CLASSIC = 100;
 
-/** Coin cost to skip a level in Tutorial mode. */
-export const SKIP_COST_TUTORIAL = 25;
-
 /**
  * XP curve configuration.
  * Each new level needs a slightly larger XP amount than the previous level.

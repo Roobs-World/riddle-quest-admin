@@ -598,6 +598,28 @@ describe("GameScreen", () => {
       });
     });
 
+    it("should show guest warning modal instead of welcome modal for guest users", async () => {
+      const originalEmail = mockPlayerData.email;
+      const originalUsername = mockPlayerData.username;
+      mockPlayerData.email = "guest_test-user-123@guest.qwordly.com";
+      mockPlayerData.username = "Guest";
+
+      render(<GameScreen {...defaultProps} />);
+
+      await waitFor(() => {
+        expect(mockShowInfoModal).toHaveBeenCalledWith(
+          expect.objectContaining({
+            title: "Guest Mode Notice",
+            message: expect.stringContaining("progress could be lost"),
+          })
+        );
+      });
+      expect(mockShowWelcomeModal).not.toHaveBeenCalled();
+
+      mockPlayerData.email = originalEmail;
+      mockPlayerData.username = originalUsername;
+    });
+
     it("should have access to modal functions", () => {
       // Verify the mocked modal functions are accessible
       expect(mockShowVictoryModal).toBeDefined();

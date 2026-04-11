@@ -264,6 +264,12 @@ describe("handleGuessLogic", () => {
       expect(result.newlyUnlockedAchievementIds).toEqual(["first_win", "wins_5"]);
     });
 
+    test("should not update leaderboard entry for anonymous guest users", async () => {
+      const guestAuthContext: SubmitGuessAuthContext = {uid: "test-user-id", isAnonymous: true};
+      await handleGuessLogic(requestData, guestAuthContext);
+      expect(leaderboard.updateLeaderboardEntry).not.toHaveBeenCalled();
+    });
+
     test("should update user stats correctly", async () => {
       await handleGuessLogic(requestData, authContext);
       const expectedStatsUpdate: Record<string, unknown> = {
@@ -963,6 +969,20 @@ describe("handleGuessLogic", () => {
       };
 
       await handleCompleteGameLogic(requestData, authContext);
+
+      expect(leaderboard.updateLeaderboardEntry).not.toHaveBeenCalled();
+    });
+
+    test("should not update leaderboard entry for guest users even when game is won", async () => {
+      const requestData = {
+        riddleId: "riddle-123",
+        gameMode: "classic" as const,
+        attempts: 1,
+        isCorrect: true,
+      };
+      const guestAuthContext: SubmitGuessAuthContext = {uid: "test-user-id", isAnonymous: true};
+
+      await handleCompleteGameLogic(requestData, guestAuthContext);
 
       expect(leaderboard.updateLeaderboardEntry).not.toHaveBeenCalled();
     });

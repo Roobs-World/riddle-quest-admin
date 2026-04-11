@@ -184,44 +184,6 @@ export const RiddleService = {
   },
 
   /**
-   * Fetches a specific tutorial mode riddle by its level.
-   * @param {number} level - The level of the tutorial riddle to fetch.
-   * @returns A Promise resolving to the tutorial riddle data, or null if not found.
-   */
-  async fetchTutorialRiddle(level: number) {
-    logger.debug(`Fetching tutorial riddle for level ${level} from Firestore`);
-    try {
-      const snapshot = await getDocs(
-        query(collection(getFirestore(), "tutorialRiddles"), where("tutorialIndex", "==", level), limit(1))
-      );
-
-      if (!snapshot.empty) {
-        const riddleData = snapshot.docs[0].data();
-        if (riddleData && riddleData.answer !== undefined) {
-          return {
-            ...riddleData,
-            riddleId: snapshot.docs[0].id,
-            answerLength: riddleData.answer.length,
-          };
-        } else {
-          logger.error(
-            `Tutorial riddle data or answer missing for level: ${level}. Data:`,
-            riddleData
-          );
-          return null;
-        }
-      } else {
-        logger.debug(`No tutorial riddle found for level: ${level}`);
-        return null;
-      }
-    } catch (error) {
-      logger.error("Error fetching tutorial riddle:", error);
-      captureException(error);
-      throw error;
-    }
-  },
-
-  /**
    * Submits a user's guess for a riddle to the backend for validation.
    * @param {z.infer<typeof SubmitGuessInputSchema>} guessData - The guess data to submit.
    * @returns A Promise resolving to the validation result from the backend.

@@ -24,13 +24,11 @@ import {
   MODAL_BUTTON_SPACER,
 } from "../../../constants/layout";
 import { SPACING } from "../../../styles";
+import { AppStrings, getAppLanguage } from "../../../constants/AppStrings";
 
 interface WelcomeModalProps {
   isVisible: boolean;
   onClose: () => void;
-  onStartTutorial?: () => void;
-  /** When false, "Start Tutorial" is not shown (e.g. no tutorial riddles available). Defaults to true when onStartTutorial is provided. */
-  showStartTutorial?: boolean;
   /** Optional callback fired after the welcome modal is dismissed. */
   onDismiss?: () => void;
 }
@@ -38,8 +36,6 @@ interface WelcomeModalProps {
 const WelcomeModal: React.FC<WelcomeModalProps> = ({
   isVisible,
   onClose,
-  onStartTutorial,
-  showStartTutorial = true,
   onDismiss,
 }) => {
   const rotation = useSharedValue(0);
@@ -65,13 +61,10 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({
     onClose();
     onDismiss?.();
   };
-
-  const handleStartTutorial = () => {
-    onStartTutorial?.();
-    handleDismiss();
-  };
-
-  const canShowStartTutorial = Boolean(onStartTutorial && showStartTutorial);
+  const letsPlayText =
+    getAppLanguage() === "en"
+      ? AppStrings.WelcomeModal.LETS_PLAY
+      : AppStrings.Navigation.PLAY_BUTTON;
 
   return (
     <Modal
@@ -178,20 +171,7 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({
 
             {/* Buttons */}
             <View style={{ width: "100%", gap: MODAL_BUTTON_SPACER }}>
-              {canShowStartTutorial ? (
-                <>
-                  <WideButton buttonText="Start Tutorial" onPress={handleStartTutorial} />
-                  <WideButton
-                    buttonText="Skip to Play"
-                    onPress={handleDismiss}
-                  />
-                </>
-              ) : (
-                <WideButton
-                  buttonText="Let's Play!"
-                  onPress={handleDismiss}
-                />
-              )}
+              <WideButton buttonText={letsPlayText} onPress={handleDismiss} />
             </View>
           </View>
         </View>

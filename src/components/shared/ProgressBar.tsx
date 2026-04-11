@@ -3,7 +3,7 @@
  *
  * This component renders a horizontal progress bar using individual step indicators.
  * It supports custom colors for each step and provides visual feedback for
- * multi-step processes like tutorials, game levels, or form completion.
+ * multi-step processes like game levels or form completion.
  *
  * @author Qwordly Development Team
  * @version 1.0.0
@@ -74,8 +74,8 @@ interface ProgressBarProps {
  *   stepColors={["bg-green-500", "bg-blue-500", "bg-red-500", "bg-purple-500"]}
  * />
  *
- * // Tutorial progress indication
- * <ProgressBar activeStep={currentTutorialStep} totalSteps={tutorialSteps.length} />
+ * // Level progress indication
+ * <ProgressBar activeStep={currentLevelStep} totalSteps={levelSteps.length} />
  * ```
  *
  * @param {ProgressBarProps} props - Component props
@@ -107,4 +107,3 @@ const ProgressBar = ({
 );
 
 export default ProgressBar;
-

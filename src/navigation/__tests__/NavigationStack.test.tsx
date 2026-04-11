@@ -540,6 +540,42 @@ describe("NavigationStack", () => {
     expect(fetchCurrentRiddle).toHaveBeenCalledWith(playerData, "daily");
   });
 
+  it("does not write tutorial progress to Firestore for guest users", async () => {
+    const playerData = {
+      userId: "guest-1",
+      email: "guest_guest-1@guest.qwordly.com",
+      username: "Guest",
+      progress: { tutorialIndex: 0 },
+      coins: 30,
+      stats: { xp: 0, level: 1 },
+    };
+    const setCurrentRiddle = jest.fn();
+    mockedFetchTutorial.mockResolvedValue({
+      riddleId: "tutorial-2",
+      text: "Tutorial 2",
+      answer: "TEST",
+    } as any);
+
+    mockedUseAuth.mockReturnValue(
+      createAuthState({
+        isAuthenticated: true,
+        gameMode: "tutorial",
+        playerData,
+        currentRiddle: { riddleId: "tutorial-1", text: "T1", answer: "ONE" },
+        setCurrentRiddle,
+      }) as any
+    );
+
+    const { getByTestId } = render(<Navigation />);
+    fireEvent.press(getByTestId("trigger-next-level"));
+
+    await waitFor(() => expect(mockedFetchTutorial).toHaveBeenCalledWith(1));
+    expect(mockedUpdateTutorial).not.toHaveBeenCalled();
+    expect(setCurrentRiddle).toHaveBeenCalledWith(
+      expect.objectContaining({ riddleId: "tutorial-2" })
+    );
+  });
+
   it("handles next level in classic mode with a next riddle", async () => {
     const playerData = {
       userId: "u6a",

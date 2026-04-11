@@ -4,7 +4,7 @@
  *
  * This module defines the authenticated and unauthenticated navigation flows,
  * wires the `GameScreen` into `AuthContext` state via `GameScreenWrapper`,
- * and centralizes riddle progression behavior for daily, classic, and tutorial
+ * and centralizes riddle progression behavior for daily and classic
  * modes.
  */
 import React, { useEffect, useRef, useState } from "react";
@@ -26,8 +26,6 @@ import { AppStrings } from "../constants/AppStrings";
 import { View, Text, TouchableOpacity } from "react-native";
 import {
   fetchClassicRiddleFromFirestore,
-  fetchTutorialRiddleFromFirestore,
-  updateTutorialIndexInFirestore,
 } from "../services/FirestoreService";
 import { styles, TYPOGRAPHY, SPACING } from "../styles";
 import { scale } from "../utils/responsive";
@@ -39,6 +37,7 @@ import { logger } from "../utils/logger";
 import { captureException, addBreadcrumb } from "../utils/sentry";
 import { analyticsService } from "../services/AnalyticsService";
 import { useNotificationNavigation } from "../hooks/useNotificationNavigation";
+import { isGuestPlayer } from "../features/auth/sessionBootstrap";
 
 const Stack = createNativeStackNavigator();
 
@@ -48,7 +47,7 @@ const Stack = createNativeStackNavigator();
  *
  * It is responsible for:
  * - Ensuring the user is authenticated before rendering gameplay.
- * - Driving level progression across daily, classic, and tutorial modes.
+ * - Driving level progression across daily and classic modes.
  * - Handling riddle initialization failures and retry flows.
  */
 const GameScreenWrapper = () => {
@@ -65,6 +64,7 @@ const GameScreenWrapper = () => {
     fetchCurrentRiddle,
     updatePlayerDataLocally,
   } = useAuth();
+  const isGuestMode = isGuestPlayer(playerData);
 
   // State for daily challenge completion modal
   const [showCompletionModal, setShowCompletionModal] = useState(false);
@@ -114,6 +114,17 @@ const GameScreenWrapper = () => {
   // Function to check if user completed today's single daily challenge
   const checkDailyChallengeCompletion = async () => {
     if (!playerData || gameMode !== "daily") return false;
+    if (isGuestMode) {
+      const lastCompletedDate = playerData.lastDailyChallengeCompletedAt
+        ? new Date(playerData.lastDailyChallengeCompletedAt)
+        : null;
+      if (!lastCompletedDate) return false;
+      const todayUtc = new Date();
+      todayUtc.setUTCHours(0, 0, 0, 0);
+      const lastCompletedUtc = new Date(lastCompletedDate);
+      lastCompletedUtc.setUTCHours(0, 0, 0, 0);
+      return todayUtc.getTime() <= lastCompletedUtc.getTime();
+    }
 
     try {
       const getCurrentDailyChallengeCallable = httpsCallable(
@@ -150,40 +161,19 @@ const GameScreenWrapper = () => {
       if (isCompleted) {
         logger.debug("Daily challenge completed. Switching to classic mode.");
         setGameMode("classic");
+        if (isGuestMode) {
+          updatePlayerDataLocally({
+            progress: {
+              ...playerData.progress,
+              dailyChallengeIndex: (playerData.progress?.dailyChallengeIndex ?? 0) + 1,
+            },
+          });
+        }
         await fetchCurrentRiddle(playerData, "classic");
         return;
       }
       logger.debug("Daily challenge mode active and not completed yet.");
       await fetchCurrentRiddle(playerData, "daily");
-      return;
-    }
-
-    // For tutorial mode, advance to next tutorial level or switch to daily
-    if (gameMode === "tutorial") {
-      const nextTutorialIndex =
-        (playerData.progress?.tutorialIndex ?? 0) + 1;
-      try {
-        await updateTutorialIndexInFirestore(
-          playerData.userId,
-          nextTutorialIndex
-        );
-        const nextRiddle =
-          await fetchTutorialRiddleFromFirestore(nextTutorialIndex);
-        if (nextRiddle) {
-          setCurrentRiddle(nextRiddle);
-        } else {
-          logger.debug(
-            "NavigationStack: No more tutorial riddles, switching to daily mode."
-          );
-          setGameMode("daily");
-          await fetchCurrentRiddle(playerData, "daily");
-        }
-      } catch (error) {
-        logger.error("Error advancing tutorial level:", error);
-        captureException(error);
-        setGameMode("daily");
-        await fetchCurrentRiddle(playerData, "daily");
-      }
       return;
     }
 
@@ -208,6 +198,14 @@ const GameScreenWrapper = () => {
           nextRiddle.riddleId
         );
         setCurrentRiddle(nextRiddle);
+        if (isGuestMode) {
+          updatePlayerDataLocally({
+            progress: {
+              ...playerData.progress,
+              classicIndex: nextClassicIndex,
+            },
+          });
+        }
       } else {
         logger.debug(
           AppStrings.NavigationMessages.NO_CLASSIC_RIDDLE_FOUND +
@@ -372,6 +370,8 @@ const GameScreenWrapper = () => {
                 wins: (playerData.stats?.wins ?? 0) + 1,
                 totalWins: (playerData.stats?.totalWins ?? 0) + 1,
               },
+              lastDailyChallengeCompletedAt:
+                gameMode === "daily" ? Date.now() : playerData.lastDailyChallengeCompletedAt,
             });
 
             // Check if user completed today's daily challenge

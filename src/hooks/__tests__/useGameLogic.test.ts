@@ -300,6 +300,54 @@ describe("useGameLogic", () => {
       expect(result.current.gameOver).toBe(true);
       expect(result.current.guesses.length).toBe(6);
     });
+
+    it("should keep guest wins local and skip completeGame calls", async () => {
+      const { result } = renderHook(() =>
+        useGameLogic({ ...defaultProps, answer: "GUESS", isGuestMode: true })
+      );
+
+      let processResult: unknown;
+      await act(async () => {
+        processResult = await result.current.processGuess(guessWord);
+      });
+
+      expect(mockCompleteGameCallable).not.toHaveBeenCalled();
+      expect(processResult).toEqual({
+        outcome: "win",
+        feedback: ["green", "green", "green", "green", "green"],
+        coinsEarned: 10,
+        scoreEarned: 100,
+        correctAnswer: "GUESS",
+        newlyUnlockedAchievementIds: [],
+      });
+    });
+
+    it("should keep guest final losses local and skip completeGame calls", async () => {
+      const { result } = renderHook(() =>
+        useGameLogic({ ...defaultProps, isGuestMode: true })
+      );
+      const wrong = ["F", "A", "I", "L", "S"];
+
+      for (let i = 0; i < 3; i++) {
+        await act(async () => {
+          await result.current.processGuess(wrong);
+        });
+      }
+
+      act(() => {
+        result.current.continueGame();
+      });
+
+      for (let i = 0; i < 3; i++) {
+        await act(async () => {
+          await result.current.processGuess(wrong);
+        });
+      }
+
+      expect(mockCompleteGameCallable).not.toHaveBeenCalled();
+      expect(result.current.gameOver).toBe(true);
+      expect(result.current.guesses.length).toBe(6);
+    });
   });
 
   describe("computeFeedback (via processGuess)", () => {
@@ -609,4 +657,3 @@ describe("useGameLogic", () => {
     });
   });
 });
-

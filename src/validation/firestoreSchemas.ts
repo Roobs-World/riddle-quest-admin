@@ -38,7 +38,6 @@ const PlayerProgressSchema = z.object({
   classicIndex: z.number().int().nonnegative().default(1),
   dailyChallengeIndex: z.number().int().nonnegative().default(0),
   dailyChallengeCurrentQuestion: z.number().int().nonnegative().default(0),
-  tutorialIndex: z.number().int().nonnegative().default(0),
 });
 
 // Define the structure for player stats
@@ -110,7 +109,6 @@ export const PlayerSchema = z.object({
     classicIndex: 1,
     dailyChallengeIndex: 0,
     dailyChallengeCurrentQuestion: 0,
-    tutorialIndex: 0,
   })),
   unlockedAchievements: z.array(UnlockedAchievementSchema).optional().default([]),
   hasPurchasedApp: z.boolean().optional().default(false),
@@ -132,4 +130,3 @@ export type FirestoreRiddle = z.infer<typeof FirestoreRiddleSchema>;
 
 export type PlayerProgress = z.infer<typeof PlayerProgressSchema>;
 export type PlayerStats = z.infer<typeof PlayerStatsSchema>;
-

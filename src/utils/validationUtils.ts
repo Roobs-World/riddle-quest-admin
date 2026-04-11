@@ -209,11 +209,10 @@ export class ValidationUtils {
    */
   static isValidGameMode(
     mode: unknown
-  ): mode is "daily" | "classic" | "tutorial" {
+  ): mode is "daily" | "classic" {
     return (
       typeof mode === "string" &&
-      ["daily", "classic", "tutorial"].includes(mode)
+      ["daily", "classic"].includes(mode)
     );
   }
 }
-

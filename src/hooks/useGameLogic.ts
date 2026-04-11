@@ -30,7 +30,17 @@ interface UseGameLogicProps {
    */
   answer: string;
   /** Backend mode key used for analytics and completion submission. */
-  gameMode: "challenge" | "classic" | "tutorial";
+  gameMode: "challenge" | "classic";
+  /** True when this game session is running in guest mode (local-only progress). */
+  isGuestMode?: boolean;
+}
+
+function getLocalRewards(gameMode: "challenge" | "classic", attempts: number): { coins: number; score: number } {
+  const scoreMaxAttempts = 5;
+  const baseScore = gameMode === "challenge" ? 100 : 50;
+  const attemptsBonus = Math.max(0, (scoreMaxAttempts - attempts + 1) * 10);
+  const coins = gameMode === "challenge" ? Math.max(0, 20 - (attempts - 1) * 5) : 10;
+  return { coins, score: baseScore + attemptsBonus };
 }
 
 /**
@@ -81,7 +91,7 @@ function computeFeedback(guess: string, answer: string): Feedback[] {
  * @param props Riddle identity, answer cache, and backend game mode key.
  * @returns Gameplay state plus actions used by `GameScreen`.
  */
-const useGameLogic = ({ riddleId, answer, gameMode }: UseGameLogicProps) => {
+const useGameLogic = ({ riddleId, answer, gameMode, isGuestMode = false }: UseGameLogicProps) => {
   const [guesses, setGuesses] = useState<SubmittedGuess[]>([]);
   const [currentGuess, setCurrentGuess] = useState<string[]>([]);
   const [gameOver, setGameOver] = useState(false);
@@ -141,33 +151,39 @@ const useGameLogic = ({ riddleId, answer, gameMode }: UseGameLogicProps) => {
           attempts: currentAttempt,
         });
 
-        // Notify server once.
         let coinsEarned = 0;
         let scoreEarned = 0;
         let newlyUnlockedAchievementIds: string[] = [];
-        const txn = startTransaction("completeGame", "http.client");
-        try {
-          const result = await httpsCallable(getFunctions(getApp()), "completeGame")({
-            riddleId,
-            gameMode,
-            attempts: currentAttempt,
-            isCorrect: true,
-          });
-          const data = result.data as { coinsEarned: number; newlyUnlockedAchievementIds: string[]; scoreEarned: number };
-          coinsEarned = data.coinsEarned ?? 0;
-          scoreEarned = data.scoreEarned ?? 0;
-          newlyUnlockedAchievementIds = data.newlyUnlockedAchievementIds ?? [];
-          gameEventBus.emit<import("../services/GameEventBus").GameCompletedEvent>({
-            type: "GAME_COMPLETED",
-            outcome: "won",
-            attempts: currentAttempt,
-            coinsEarned,
-          });
-        } catch (err) {
-          logger.error("Error calling completeGame on win:", err);
-          captureException(err);
-        } finally {
-          txn.finish();
+        if (isGuestMode) {
+          const rewards = getLocalRewards(gameMode, currentAttempt);
+          coinsEarned = rewards.coins;
+          scoreEarned = rewards.score;
+        } else {
+          // Notify server once.
+          const txn = startTransaction("completeGame", "http.client");
+          try {
+            const result = await httpsCallable(getFunctions(getApp()), "completeGame")({
+              riddleId,
+              gameMode,
+              attempts: currentAttempt,
+              isCorrect: true,
+            });
+            const data = result.data as { coinsEarned: number; newlyUnlockedAchievementIds: string[]; scoreEarned: number };
+            coinsEarned = data.coinsEarned ?? 0;
+            scoreEarned = data.scoreEarned ?? 0;
+            newlyUnlockedAchievementIds = data.newlyUnlockedAchievementIds ?? [];
+            gameEventBus.emit<import("../services/GameEventBus").GameCompletedEvent>({
+              type: "GAME_COMPLETED",
+              outcome: "won",
+              attempts: currentAttempt,
+              coinsEarned,
+            });
+          } catch (err) {
+            logger.error("Error calling completeGame on win:", err);
+            captureException(err);
+          } finally {
+            txn.finish();
+          }
         }
 
         return {
@@ -186,7 +202,7 @@ const useGameLogic = ({ riddleId, answer, gameMode }: UseGameLogicProps) => {
         setGameOver(true);
 
         if (hasUsedContinue) {
-          // Final loss — notify server.
+          // Final loss — notify server (except guest/local-only mode).
           addBreadcrumb("game", "Game lost", { attempts: currentAttempt, riddleId, gameMode });
           gameEventBus.emit<import("../services/GameEventBus").GameCompletedEvent>({
             type: "GAME_COMPLETED",
@@ -194,16 +210,18 @@ const useGameLogic = ({ riddleId, answer, gameMode }: UseGameLogicProps) => {
             attempts: currentAttempt,
           });
 
-          try {
-            await httpsCallable(getFunctions(getApp()), "completeGame")({
-              riddleId,
-              gameMode,
-              attempts: currentAttempt,
-              isCorrect: false,
-            });
-          } catch (err) {
-            logger.error("Error calling completeGame on loss:", err);
-            captureException(err);
+          if (!isGuestMode) {
+            try {
+              await httpsCallable(getFunctions(getApp()), "completeGame")({
+                riddleId,
+                gameMode,
+                attempts: currentAttempt,
+                isCorrect: false,
+              });
+            } catch (err) {
+              logger.error("Error calling completeGame on loss:", err);
+              captureException(err);
+            }
           }
 
           return {
@@ -234,7 +252,7 @@ const useGameLogic = ({ riddleId, answer, gameMode }: UseGameLogicProps) => {
         attemptsRemaining: maxAttempts - currentAttempt,
       };
     },
-    [riddleId, answer, gameMode, hasUsedContinue, attemptsUsed]
+    [riddleId, answer, gameMode, hasUsedContinue, attemptsUsed, isGuestMode]
   );
 
   /**

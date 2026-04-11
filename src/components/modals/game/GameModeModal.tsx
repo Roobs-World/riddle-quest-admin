@@ -26,6 +26,8 @@ interface GameModeModalProps {
   onSelectMode: (mode: "classic" | "daily") => void;
   /** Optional classic level badge shown next to the Classic button. */
   currentLevel?: number;
+  /** Optional fixed control rendered at the modal's top-right corner. */
+  topRightControl?: React.ReactNode;
 }
 
 /**
@@ -39,6 +41,7 @@ const GameModeModal: React.FC<GameModeModalProps> = ({
   onClose,
   onSelectMode,
   currentLevel,
+  topRightControl,
 }) => {
   return (
     <Modal
@@ -55,6 +58,19 @@ const GameModeModal: React.FC<GameModeModalProps> = ({
           backgroundColor: "rgba(0,0,0,0.5)",
         }}
       >
+        {topRightControl ? (
+          <View
+            style={{
+              position: "absolute",
+              top: SPACING.md,
+              right: SPACING.md,
+              zIndex: 1000,
+            }}
+          >
+            {topRightControl}
+          </View>
+        ) : null}
+
         <View
           style={{
             width: MODAL_WIDTH,

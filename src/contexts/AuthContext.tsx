@@ -21,11 +21,11 @@ import React, {
   useMemo,
   useRef,
 } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   loadUserProgressFromFirestore,
   fetchDailyRiddleFromFirestore,
   fetchClassicRiddleFromFirestore,
-  fetchTutorialRiddleFromFirestore,
   updateClassicIndexInFirestore,
   updateUserDocumentInFirestore,
   createUserDocumentInFirestore,
@@ -45,8 +45,11 @@ import {
   resolveInitialGameMode,
   resolveUserEmail,
 } from "../features/auth/sessionBootstrap";
+import { isGuestPlayer } from "../features/auth/sessionBootstrap";
 
-export type GameMode = "daily" | "classic" | "challenge" | "tutorial";
+const GUEST_PROGRESS_STORAGE_KEY = "@guest_player_progress_v1";
+
+export type GameMode = "daily" | "classic" | "challenge";
 
 /**
  * Shape of the value exposed by `AuthContext` and returned from `useAuth`.
@@ -123,6 +126,44 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [gameMode, setGameMode] = useState<GameMode>("daily");
   const [isRiddlesInitializing, setIsRiddlesInitializing] = useState(false);
 
+  const saveGuestProfileToLocal = useCallback(async (player: Player): Promise<void> => {
+    try {
+      await AsyncStorage.setItem(GUEST_PROGRESS_STORAGE_KEY, JSON.stringify(player));
+    } catch (error) {
+      logger.error("Error saving guest progress locally:", error);
+      captureException(error);
+    }
+  }, []);
+
+  const loadGuestProfileFromLocal = useCallback(async (uid: string): Promise<Player | null> => {
+    try {
+      const raw = await AsyncStorage.getItem(GUEST_PROGRESS_STORAGE_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw) as Partial<Player>;
+      const guestBase = createGuestPlayer(uid);
+      return {
+        ...guestBase,
+        coins: typeof parsed.coins === "number" ? parsed.coins : guestBase.coins,
+        progress: {
+          ...guestBase.progress,
+          ...(parsed.progress ?? {}),
+        },
+        stats: {
+          ...guestBase.stats,
+          ...(parsed.stats ?? {}),
+        },
+        lastDailyChallengeCompletedAt:
+          typeof parsed.lastDailyChallengeCompletedAt === "number"
+            ? parsed.lastDailyChallengeCompletedAt
+            : undefined,
+      };
+    } catch (error) {
+      logger.error("Error loading guest progress locally:", error);
+      captureException(error);
+      return null;
+    }
+  }, []);
+
   // Ref keeps the current gameMode accessible inside the auth listener without
   // making it a dependency (which would re-subscribe on every mode change).
   const gameModeRef = useRef<GameMode>("daily");
@@ -141,6 +182,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const hasCompletedDailyChallengeToday = useCallback(
     async (player: Player | null): Promise<boolean> => {
       if (!player) return false;
+      if (isGuestPlayer(player)) {
+        const lastCompletedDate = player.lastDailyChallengeCompletedAt
+          ? new Date(player.lastDailyChallengeCompletedAt)
+          : null;
+        if (!lastCompletedDate) return false;
+        const todayUtc = new Date();
+        todayUtc.setUTCHours(0, 0, 0, 0);
+        const lastCompletedUtc = new Date(lastCompletedDate);
+        lastCompletedUtc.setUTCHours(0, 0, 0, 0);
+        return todayUtc.getTime() <= lastCompletedUtc.getTime();
+      }
 
       try {
         const getCurrentDailyChallengeCallable = httpsCallable(
@@ -247,21 +299,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           if (!fetchedRiddle) {
             logger.debug(
               "No daily challenge riddle available, falling back to classic mode riddle."
-            );
-            if (player.progress?.classicIndex !== undefined) {
-              fetchedRiddle = await fetchClassicRiddleFromFirestore(
-                player.progress.classicIndex
-              );
-              setGameMode("classic");
-            }
-          }
-        } else if (mode === "tutorial") {
-          const tutorialIndex = player.progress?.tutorialIndex ?? 0;
-          fetchedRiddle =
-            await fetchTutorialRiddleFromFirestore(tutorialIndex);
-          if (!fetchedRiddle) {
-            logger.debug(
-              "No tutorial riddle available, falling back to classic mode riddle."
             );
             if (player.progress?.classicIndex !== undefined) {
               fetchedRiddle = await fetchClassicRiddleFromFirestore(
@@ -383,8 +420,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             setIsRiddlesInitializing(true);
             await RiddleInitializationService.checkAndInitializeRiddles();
             setIsRiddlesInitializing(false);
-            const guestPlayer: Player = createGuestPlayer(user.uid);
+            const guestPlayer: Player =
+              (await loadGuestProfileFromLocal(user.uid)) ?? createGuestPlayer(user.uid);
             setPlayerData(guestPlayer);
+            await saveGuestProfileToLocal(guestPlayer);
 
             const guestCompletedToday =
               await hasCompletedDailyChallengeToday(guestPlayer);
@@ -395,7 +434,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             setGameMode(guestInitialMode);
             await fetchCurrentRiddle(guestPlayer, guestInitialMode);
             setIsLoading(false);
-            return;
+          return;
           }
 
           // Run riddle initialization and user data load in parallel —
@@ -523,7 +562,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     return subscriber;
     // fetchCurrentRiddle is stable (its own deps are React state setters).
     // gameModeRef.current is read at call time so gameMode need not be a dep.
-  }, [fetchCurrentRiddle, hasCompletedDailyChallengeToday]);
+  }, [fetchCurrentRiddle, hasCompletedDailyChallengeToday, loadGuestProfileFromLocal, saveGuestProfileToLocal]);
 
   // Wrapped in useCallback so these are stable references and don't invalidate
   // the PlayerContext memo on every render.
@@ -531,12 +570,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     async (newIndex: number): Promise<void> => {
       if (!playerData?.userId) return;
       try {
-        await updateClassicIndexInFirestore(playerData.userId, newIndex);
-        setPlayerData((prevData: Player | null) =>
-          prevData
-            ? { ...prevData, progress: { ...prevData.progress, classicIndex: newIndex } }
-            : null
-        );
+        if (!isGuestPlayer(playerData)) {
+          await updateClassicIndexInFirestore(playerData.userId, newIndex);
+        }
+        const nextPlayer = {
+          ...playerData,
+          progress: { ...playerData.progress, classicIndex: newIndex },
+        };
+        setPlayerData(nextPlayer);
+        if (isGuestPlayer(playerData)) {
+          await saveGuestProfileToLocal(nextPlayer);
+        }
         logger.debug("AuthContext: Player classic index updated locally and in Firestore.");
         await fetchCurrentRiddle(
           { ...playerData, progress: { ...playerData.progress, classicIndex: newIndex } },
@@ -548,7 +592,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         throw error;
       }
     },
-    [playerData, fetchCurrentRiddle]
+    [playerData, fetchCurrentRiddle, saveGuestProfileToLocal]
   );
 
   const updatePlayerData = useCallback(
@@ -558,27 +602,39 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         return;
       }
       try {
-        await updateUserDocumentInFirestore(playerData.userId, updates);
-        setPlayerData((prevData: Player | null) =>
-          prevData ? { ...prevData, ...updates } : null
-        );
-        logger.debug("AuthContext: Player data updated locally and in Firestore.");
+        if (!isGuestPlayer(playerData)) {
+          await updateUserDocumentInFirestore(playerData.userId, updates);
+          setPlayerData((prevData: Player | null) =>
+            prevData ? { ...prevData, ...updates } : null
+          );
+          logger.debug("AuthContext: Player data updated locally and in Firestore.");
+          return;
+        }
+        const nextPlayer = { ...playerData, ...updates };
+        setPlayerData(nextPlayer);
+        await saveGuestProfileToLocal(nextPlayer);
+        logger.debug("AuthContext: Guest player data updated locally.");
       } catch (error) {
         logger.error("AuthContext: Error updating player data:", error);
         captureException(error);
         throw error;
       }
     },
-    [playerData]
+    [playerData, saveGuestProfileToLocal]
   );
 
   const updatePlayerDataLocally = useCallback(
     (updates: Partial<Player>): void => {
-      setPlayerData((prevData: Player | null) =>
-        prevData ? { ...prevData, ...updates } : null
-      );
+      setPlayerData((prevData: Player | null) => {
+        if (!prevData) return null;
+        const nextPlayer = { ...prevData, ...updates };
+        if (isGuestPlayer(prevData)) {
+          void saveGuestProfileToLocal(nextPlayer);
+        }
+        return nextPlayer;
+      });
     },
-    []
+    [saveGuestProfileToLocal]
   );
 
   // Placeholder login function (keep for now, onAuthStateChanged listener handles state)

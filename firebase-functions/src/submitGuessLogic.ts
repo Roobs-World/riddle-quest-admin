@@ -52,8 +52,8 @@ interface SubmitGuessRequestData {
 interface SubmitGuessAuthContext {
   /** Authenticated Firebase UID. */
   uid: string;
-  // Potentially include other auth details if your core logic needs them,
-  // e.g., token for further verification, although uid is usually sufficient.
+  /** True when this session uses Firebase anonymous auth (guest). */
+  isAnonymous?: boolean;
 }
 
 interface SubmitGuessResponseData {
@@ -253,20 +253,22 @@ export async function handleGuessLogic(
         statsUpdate.bestStreak = (currentStats.winStreak || 0) + 1;
       }
 
-      // Update leaderboard entry with computed post-win stats (non-blocking)
-      try {
-        const newTotalXp = (currentStats.xp ?? 0) + scoreEarned;
-        const newTotalWins = (currentStats.totalWins ?? 0) + 1;
-        const newBestStreak = Math.max((currentStats.bestStreak ?? 0), (currentStats.winStreak ?? 0) + 1);
-        await updateLeaderboardEntry(
-          userId,
-          user.username,
-          {level: newLevel, xp: newTotalXp, totalWins: newTotalWins, bestStreak: newBestStreak},
-          user.avatarUrl ?? null,
-        );
-      } catch (error) {
-        functions.logger.error("Error updating leaderboard entry:", error);
-        captureException(error);
+      if (!auth.isAnonymous) {
+        // Update leaderboard entry with computed post-win stats (non-blocking)
+        try {
+          const newTotalXp = (currentStats.xp ?? 0) + scoreEarned;
+          const newTotalWins = (currentStats.totalWins ?? 0) + 1;
+          const newBestStreak = Math.max((currentStats.bestStreak ?? 0), (currentStats.winStreak ?? 0) + 1);
+          await updateLeaderboardEntry(
+            userId,
+            user.username,
+            {level: newLevel, xp: newTotalXp, totalWins: newTotalWins, bestStreak: newBestStreak},
+            user.avatarUrl ?? null,
+          );
+        } catch (error) {
+          functions.logger.error("Error updating leaderboard entry:", error);
+          captureException(error);
+        }
       }
     } else if (gameOver) {
       statsUpdate.winStreak = 0;
@@ -374,7 +376,10 @@ export const submitGuess = onCall<SubmitGuessRequestData, Promise<SubmitGuessRes
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
   }
-  return handleGuessLogic(request.data, request.auth);
+  return handleGuessLogic(request.data, {
+    uid: request.auth.uid,
+    isAnonymous: request.auth.token?.firebase?.sign_in_provider === "anonymous",
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -420,7 +425,7 @@ interface CompleteGameResponseData {
  */
 export async function handleCompleteGameLogic(
   data: CompleteGameRequestData,
-  auth: {uid: string},
+  auth: {uid: string; isAnonymous?: boolean},
 ): Promise<CompleteGameResponseData> {
   const {riddleId, gameMode, attempts, isCorrect} = data;
   const userId = auth.uid;
@@ -523,21 +528,23 @@ export async function handleCompleteGameLogic(
         statsUpdate.bestStreak = (currentStats.winStreak || 0) + 1;
       }
 
-      // Update leaderboard entry with computed post-win stats (non-blocking)
-      try {
-        const scoreEarned = xpEarned;
-        const newTotalXp = (currentStats.xp ?? 0) + scoreEarned;
-        const newTotalWins = (currentStats.totalWins ?? 0) + 1;
-        const newBestStreak = Math.max((currentStats.bestStreak ?? 0), (currentStats.winStreak ?? 0) + 1);
-        await updateLeaderboardEntry(
-          userId,
-          user.username,
-          {level: newLevel, xp: newTotalXp, totalWins: newTotalWins, bestStreak: newBestStreak},
-          user.avatarUrl ?? null,
-        );
-      } catch (error) {
-        functions.logger.error("Error updating leaderboard entry:", error);
-        captureException(error);
+      if (!auth.isAnonymous) {
+        // Update leaderboard entry with computed post-win stats (non-blocking)
+        try {
+          const scoreEarned = xpEarned;
+          const newTotalXp = (currentStats.xp ?? 0) + scoreEarned;
+          const newTotalWins = (currentStats.totalWins ?? 0) + 1;
+          const newBestStreak = Math.max((currentStats.bestStreak ?? 0), (currentStats.winStreak ?? 0) + 1);
+          await updateLeaderboardEntry(
+            userId,
+            user.username,
+            {level: newLevel, xp: newTotalXp, totalWins: newTotalWins, bestStreak: newBestStreak},
+            user.avatarUrl ?? null,
+          );
+        } catch (error) {
+          functions.logger.error("Error updating leaderboard entry:", error);
+          captureException(error);
+        }
       }
 
       if (gameMode === "classic") {
@@ -617,5 +624,8 @@ export const completeGame = onCall<CompleteGameRequestData, Promise<CompleteGame
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
   }
-  return handleCompleteGameLogic(request.data, request.auth);
+  return handleCompleteGameLogic(request.data, {
+    uid: request.auth.uid,
+    isAnonymous: request.auth.token?.firebase?.sign_in_provider === "anonymous",
+  });
 });

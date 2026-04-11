@@ -4,7 +4,6 @@ export type Player = {
   userId: string;
   progress: {
     dailyChallengeIndex: number;
-    tutorialIndex: number;
     classicIndex: number;
   };
   coins: number;
@@ -43,4 +42,3 @@ export interface PurchaseValidationResponse {
   success: boolean;
   newCoins?: number;
 }
-

@@ -40,7 +40,6 @@ import PulsingSpinner from "../../components/loading/PulsingSpinner";
 import {
   SKIP_COST_CLASSIC,
   SKIP_COST_DAILY,
-  SKIP_COST_TUTORIAL,
   CONTINUE_COST_COINS,
   MODAL_CLOSE_DELAY_MS,
   SOUND_RESUME_DELAY_MS,
@@ -65,10 +64,10 @@ import { logger } from "../../utils/logger";
 import { captureException } from "../../utils/sentry";
 import { getHardModeConstraints, validateHardModeGuess } from "../../utils/hardMode";
 import { computeLetterStates } from "../../utils/letterStates";
-import { getTutorialRiddleCount } from "../../services/FirestoreService";
 import { ACHIEVEMENT_DEFINITIONS } from "../../constants/achievements";
 import { useGameSessionController } from "../../features/game-session/useGameSessionController";
 import { createGameModalActions } from "../../features/game-session/gameModalActions";
+import { isGuestPlayer } from "../../features/auth/sessionBootstrap";
 
 interface GuessResult {
   /** High-level result classification returned after guess processing. */
@@ -127,7 +126,7 @@ interface GameScreenProps {
   onSkipUsed: (cost: number) => void;
   /** Loads the next playable riddle. */
   onNextLevel: () => void;
-  /** Current gameplay mode (classic, daily, tutorial). */
+  /** Current gameplay mode (classic or daily). */
   gameMode: GameMode;
 }
 
@@ -151,8 +150,9 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   onNextLevel,
   gameMode,
 }) => {
-  const { playerData, logout, setGameMode, fetchCurrentRiddle } = useAuth();
+  const { playerData, logout, setGameMode, fetchCurrentRiddle, updatePlayerDataLocally } = useAuth();
   const modal = useModal();
+  const isGuestMode = isGuestPlayer(playerData);
 
   // Simplified state - no more massive overlay state object!
   const [lastGuessResult, setLastGuessResult] = useState<GuessResult | null>(
@@ -182,11 +182,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const [productPricingLoading, setProductPricingLoading] = useState(false);
   const [productPricingError, setProductPricingError] = useState<string | null>(null);
 
-  // Tutorial total steps (for header step indicator when in tutorial mode)
-  const [tutorialTotalSteps, setTutorialTotalSteps] = useState<number | null>(
-    null
-  );
-
   const {
     guesses,
     currentGuess,
@@ -198,12 +193,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   } = useGameLogic({
     riddleId,
     answer,
-    gameMode:
-      gameMode === "daily"
-        ? "challenge"
-        : gameMode === "tutorial"
-          ? "tutorial"
-          : "classic",
+    gameMode: gameMode === "daily" ? "challenge" : "classic",
+    isGuestMode,
   });
 
   // Tracks which answer positions have already been revealed by a hint this game.
@@ -222,19 +213,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     // Reset the game when game mode changes
     resetGame();
   }, [gameMode, resetGame]);
-
-  // Fetch tutorial total steps when in tutorial mode (for header step indicator)
-  useEffect(() => {
-    if (gameMode !== "tutorial") {
-      setTutorialTotalSteps(null);
-      return;
-    }
-    runWithServerLoading(() => getTutorialRiddleCount())
-      .then(setTutorialTotalSteps)
-      .catch((err) => {
-        logger.warn("Could not get tutorial riddle count for header:", err);
-      });
-  }, [gameMode, runWithServerLoading]);
 
   // Check if any modal is currently open
   const isAnyModalVisible = modal.modals.length > 0;
@@ -299,35 +277,32 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   // Initialize onboarding flow — always show welcome first, then instructions.
   // Guard with a ref so this only runs once per screen mount.
   const firstTimeCheckDone = useRef(false);
-  const { showWelcomeModal, showInstructionsModal } = useModal();
+  const { showWelcomeModal, showInstructionsModal, showInfoModal } = useModal();
   useEffect(() => {
     if (firstTimeCheckDone.current) return;
     firstTimeCheckDone.current = true;
 
     const runOnboardingFlow = async () => {
       try {
-        let showStartTutorial = true;
-        try {
-          const count = await runWithServerLoading(() => getTutorialRiddleCount());
-          showStartTutorial = count > 0;
-        } catch (err) {
-          logger.warn("Could not get tutorial riddle count, hiding Start Tutorial:", err);
-          showStartTutorial = false;
+        const isGuestUser =
+          playerData?.email?.endsWith("@guest.qwordly.com") === true ||
+          playerData?.username === "Guest";
+
+        if (isGuestUser) {
+          showInfoModal({
+            title: "Guest Mode Notice",
+            message:
+              "Your progress could be lost in guest mode, and some features like the leaderboard are unavailable.",
+            onConfirm: () => {
+              safeDelay(MODAL_CLOSE_DELAY_MS).then(() => {
+                showInstructionsModal();
+              });
+            },
+          });
+          return;
         }
 
         showWelcomeModal({
-          onStartTutorial: () => {
-            setGameMode("tutorial");
-            if (playerData) {
-              runWithServerLoading(() => fetchCurrentRiddle(playerData, "tutorial")).catch(
-                (error) => {
-                  logger.error("Error fetching tutorial riddle:", error);
-                  captureException(error);
-                }
-              );
-            }
-          },
-          showStartTutorial,
           onDismiss: () => {
             safeDelay(MODAL_CLOSE_DELAY_MS).then(() => {
               showInstructionsModal();
@@ -343,11 +318,9 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     runOnboardingFlow();
   }, [
     playerData,
-    setGameMode,
-    fetchCurrentRiddle,
     showWelcomeModal,
     showInstructionsModal,
-    runWithServerLoading,
+    showInfoModal,
   ]);
 
   // Load settings — batch all keys in a single AsyncStorage call
@@ -489,19 +462,25 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const handleCoinContinue = useCallback(async () => {
     modal.closeModalByType("loss");
     try {
-      await runWithServerLoading(() =>
-        httpsCallable(getFunctions(getApp()), "spendCoins")({
-          amount: CONTINUE_COST_COINS,
-          reason: "continue",
-        })
-      );
+      if (!isGuestMode) {
+        await runWithServerLoading(() =>
+          httpsCallable(getFunctions(getApp()), "spendCoins")({
+            amount: CONTINUE_COST_COINS,
+            reason: "continue",
+          })
+        );
+      } else if (playerData) {
+        updatePlayerDataLocally({
+          coins: Math.max(0, (playerData.coins ?? 0) - CONTINUE_COST_COINS),
+        });
+      }
       continueGame();
     } catch (error) {
       logger.error("Error spending coins for continue:", error);
       captureException(error);
       modal.showInfoModal({ title: "Error", message: "Could not spend coins. Please try again." });
     }
-  }, [modal, continueGame, runWithServerLoading]);
+  }, [modal, continueGame, runWithServerLoading, isGuestMode, playerData, updatePlayerDataLocally]);
 
   // Handle game over states
   useEffect(() => {
@@ -865,21 +844,21 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     const skipCost =
       gameMode === "daily"
         ? SKIP_COST_DAILY
-        : gameMode === "classic"
-          ? SKIP_COST_CLASSIC
-          : SKIP_COST_TUTORIAL;
+        : SKIP_COST_CLASSIC;
 
     modal.showSkipModal({
       userCoins,
       skipCost,
       onSkipLevel: async () => {
         try {
-          await runWithServerLoading(() =>
-            httpsCallable(getFunctions(getApp()), "spendCoins")({
-              amount: skipCost,
-              reason: "skip",
-            })
-          );
+          if (!isGuestMode) {
+            await runWithServerLoading(() =>
+              httpsCallable(getFunctions(getApp()), "spendCoins")({
+                amount: skipCost,
+                reason: "skip",
+              })
+            );
+          }
           onSkipUsed(skipCost);
           resetGame();
           await runWithServerLoading(() => onNextLevel());
@@ -899,6 +878,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     onSkipUsed,
     runWithServerLoading,
     modalActions,
+    isGuestMode,
   ]);
 
   const handleSettingsPress = useCallback(() => {
@@ -1077,9 +1057,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           <Header
             userCoins={userCoins}
             onCoinsPress={handleCoinsPress}
-            isTutorial={gameMode === "tutorial"}
-            tutorialStep={(playerData?.progress?.tutorialIndex ?? 0) + 1}
-            tutorialTotalSteps={tutorialTotalSteps ?? undefined}
             modeLabel={headerModeLabel}
           />
 

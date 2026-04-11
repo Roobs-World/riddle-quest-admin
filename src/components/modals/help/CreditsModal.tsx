@@ -24,6 +24,7 @@ import { SPACING } from "../../../styles";
 interface CreditsModalProps {
   isVisible: boolean;
   onClose: () => void;
+  topRightControl?: React.ReactNode;
 }
 
 interface TeamMember {
@@ -47,7 +48,11 @@ const renderTeamMember = ({ item }: { item: TeamMember }) => (
 
 const keyExtractor = (item: TeamMember) => item.name;
 
-const CreditsModal: React.FC<CreditsModalProps> = ({ isVisible, onClose }) => {
+const CreditsModal: React.FC<CreditsModalProps> = ({
+  isVisible,
+  onClose,
+  topRightControl,
+}) => {
 
   return (
     <Modal
@@ -64,6 +69,19 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isVisible, onClose }) => {
           backgroundColor: "rgba(0,0,0,0.5)",
         }}
       >
+        {topRightControl ? (
+          <View
+            style={{
+              position: "absolute",
+              top: SPACING.md,
+              right: SPACING.md,
+              zIndex: 1000,
+            }}
+          >
+            {topRightControl}
+          </View>
+        ) : null}
+
         <View
           style={{
             width: MODAL_WIDTH,
@@ -152,4 +170,3 @@ const TeamMemberCard = ({ member }: { member: TeamMember }) => (
 );
 
 export default CreditsModal;
-

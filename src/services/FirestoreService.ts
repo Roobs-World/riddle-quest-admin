@@ -341,82 +341,6 @@ export const updateLastDailyChallengeCompletedAt = async (
   }
 };
 
-/**
- * Fetches a tutorial mode riddle from Firestore based on the user's tutorial index.
- *
- * @param tutorialIndex The tutorial index from the player's progress.
- * @returns A Promise resolving to the FirestoreRiddle data or null if not found.
- */
-export const fetchTutorialRiddleFromFirestore = async (
-  tutorialIndex: number
-): Promise<FirestoreRiddle | null> => {
-  const cacheKey = `tutorial:${tutorialIndex}`;
-  const cached = getCachedRiddle(cacheKey);
-  if (cached) {
-    logger.debug(`Tutorial riddle for index ${tutorialIndex} served from cache`);
-    return cached;
-  }
-
-  try {
-    const riddleQuerySnapshot = await getDocs(
-      query(collection(getFirestore(), "riddles"), where("tutorialIndex", "==", tutorialIndex), limit(1))
-    );
-
-    if (!riddleQuerySnapshot.empty) {
-      const riddleDoc = riddleQuerySnapshot.docs[0];
-      const riddleData = riddleDoc.data();
-      if (riddleData) {
-        try {
-          const validatedRiddle = FirestoreRiddleSchema.parse(riddleData);
-          setCachedRiddle(cacheKey, validatedRiddle);
-          logger.debug(
-            "Tutorial riddle fetched and validated successfully:",
-            validatedRiddle
-          );
-          return validatedRiddle;
-        } catch (zodError) {
-          if (zodError instanceof ZodError) {
-            logger.error(
-              "Zod validation error for tutorial riddle data:",
-              zodError.issues
-            );
-          } else {
-            logger.error(
-              "Unexpected error during tutorial riddle data validation:",
-              zodError
-            );
-          }
-          captureException(zodError);
-          return null;
-        }
-      }
-    } else {
-      logger.debug("No tutorial riddle found for index:", tutorialIndex);
-    }
-    return null;
-  } catch (error) {
-    logger.error("Error fetching tutorial riddle from Firestore:", error);
-    captureException(error);
-    throw error;
-  }
-};
-
-/**
- * Returns the number of tutorial riddles in Firestore (for gating "Start Tutorial" etc.).
- * Queries riddles collection where category === "tutorial".
- */
-export const getTutorialRiddleCount = async (): Promise<number> => {
-  try {
-    const snapshot = await getDocs(
-      query(collection(getFirestore(), "riddles"), where("category", "==", "tutorial"))
-    );
-    return snapshot.size;
-  } catch (error) {
-    logger.error("Error getting tutorial riddle count from Firestore:", error);
-    captureException(error);
-    throw error;
-  }
-};
 
 /**
  * Updates the user's classic progress index in Firestore.
@@ -486,39 +410,6 @@ export const updateDailyChallengeIndexInFirestore = async (
   }
 };
 
-/**
- * Updates the user's tutorial progress index in Firestore.
- *
- * @param userId The ID of the user.
- * @param tutorialIndex The new tutorial index.
- * @returns A Promise that resolves when the update is complete.
- */
-export const updateTutorialIndexInFirestore = async (
-  userId: string,
-  tutorialIndex: number
-): Promise<void> => {
-  if (!userId) {
-    logger.warn(
-      "Attempted to update tutorial index in Firestore without a userId."
-    );
-    return;
-  }
-  try {
-    await updateDoc(doc(getFirestore(), "users", userId), {
-      "progress.tutorialIndex": tutorialIndex,
-    });
-    logger.info(
-      "Tutorial index updated successfully for user:",
-      userId,
-      "to",
-      tutorialIndex
-    );
-  } catch (error) {
-    logger.error("Error updating tutorial index in Firestore:", error);
-    captureException(error);
-    throw error;
-  }
-};
 
 /**
  * Updates fields in the user document in Firestore, allowing for FieldValue in stats.
@@ -624,7 +515,6 @@ export const createUserDocumentInFirestore = async (
         classicIndex: 1,
         dailyChallengeIndex: 0,
         dailyChallengeCurrentQuestion: 0,
-        tutorialIndex: 0,
       },
       stats: {
         xp: 0,
@@ -678,4 +568,3 @@ export const createUserDocumentInFirestore = async (
     throw error;
   }
 };
-

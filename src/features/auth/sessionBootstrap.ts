@@ -32,7 +32,6 @@ export const createGuestPlayer = (uid: string): Player => ({
     classicIndex: 1,
     dailyChallengeIndex: 0,
     dailyChallengeCurrentQuestion: 0,
-    tutorialIndex: 0,
   },
   stats: {
     xp: 0,
@@ -55,6 +54,17 @@ export const createGuestPlayer = (uid: string): Player => ({
   unlockedAchievements: [],
   hasPurchasedApp: false,
 });
+
+/**
+ * True when a player profile represents guest mode.
+ */
+export const isGuestPlayer = (
+  player: Pick<Player, "email" | "username"> | null | undefined
+): boolean => {
+  const email = typeof player?.email === "string" ? player.email : "";
+  const username = typeof player?.username === "string" ? player.username : "";
+  return email.endsWith("@guest.qwordly.com") || username === "Guest";
+};
 
 /**
  * Resolves a user's email across direct auth payload, providerData fallback,

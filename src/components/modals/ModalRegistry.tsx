@@ -158,7 +158,7 @@ type ModalRegistryEntry = {
  * - `hint` - Game hint purchase and display
  * - `skip` - Level skip purchase and confirmation
  * - `welcome` - First-time user onboarding
- * - `instructions` - Game rules and tutorial
+ * - `instructions` - Game rules and help
  * - `credits` - App credits and attribution
  *
  * **Shop Modals:**
@@ -338,7 +338,7 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
   /**
    * Help Modals
    *
-   * Modals providing assistance, tutorials, and informational content.
+   * Modals providing assistance and informational content.
    */
   info: createModalWrapper(InfoModal, (props: BaseModalProps & ModalData) => ({
     isVisible: props.isVisible,
@@ -371,7 +371,7 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
     (props: BaseModalProps & ModalData) => ({
       isVisible: props.isVisible,
       onClose: props.onClose,
-      onStartTutorial: (props as { onStartTutorial?: () => void }).onStartTutorial,
+      onDismiss: (props as { onDismiss?: () => void }).onDismiss,
     })
   ),
 
