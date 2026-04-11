@@ -971,7 +971,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       hasCallback: typeof handlePurchaseProduct === "function",
     });
 
-    modal.showCoinShopModal({
+    modal.showCoinShop({
       products: iapProducts,
       firestoreProducts,
       currentCoins: userCoins,

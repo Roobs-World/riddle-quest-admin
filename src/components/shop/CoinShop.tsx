@@ -27,6 +27,7 @@ import {
 } from "../../constants/layout";
 import CoinSvg from "../../../assets/images/coin.svg";
 import BuyCoinsBg from "../../../assets/images/buy-coins.svg";
+import BuyCoinsBasicBg from "../../../assets/images/buy-coins-basic.svg";
 import ModalBg from "../../../assets/images/modal-bg.svg";
 import { logger } from "../../utils/logger";
 import CloseButton from "../buttons/CloseButton";
@@ -34,7 +35,7 @@ import CloseButton from "../buttons/CloseButton";
 const { screenHeight } = dimensions;
 const GRID_COIN_ICON_SIZE = moderateScale(54);
 
-interface CoinShopModalProps {
+interface CoinShopProps {
   isVisible: boolean;
   onClose: () => void;
   onPurchaseProduct: (productId: string) => void;
@@ -47,7 +48,7 @@ interface CoinShopModalProps {
   currentCoins?: number;
 }
 
-const CoinShopModal: React.FC<CoinShopModalProps> = ({
+const CoinShop: React.FC<CoinShopProps> = ({
   isVisible,
   onClose,
   onPurchaseProduct,
@@ -165,12 +166,6 @@ const CoinShopModal: React.FC<CoinShopModalProps> = ({
             accessibilityLabel="Close coin shop"
           />
 
-          <ScrollView
-            style={styles.scroll}
-            contentContainerStyle={styles.scrollContent}
-            showsVerticalScrollIndicator={false}
-            bounces={false}
-          >
             <View style={styles.headerRow}>
               <Text style={styles.title}>COIN SHOP</Text>
             </View>
@@ -194,6 +189,13 @@ const CoinShopModal: React.FC<CoinShopModalProps> = ({
             )}
             {error && <Text style={styles.errorText}>{error}</Text>}
 
+            <ScrollView
+              style={styles.scroll}
+              contentContainerStyle={styles.scrollContent}
+              showsVerticalScrollIndicator={false}
+              bounces={true}
+            >
+
             {!loading && !error && sortedProducts.length > 0 && (
               <View style={styles.grid}>
                 {sortedProducts.map((product) => {
@@ -207,28 +209,45 @@ const CoinShopModal: React.FC<CoinShopModalProps> = ({
                       activeOpacity={0.8}
                       testID={`pack-card-${product.productId}`}
                     >
-                      <BuyCoinsBg
-                        width="100%"
-                        height="100%"
-                        style={styles.gridCardBackground}
-                        preserveAspectRatio="xMidYMid slice"
-                        pointerEvents="none"
-                      />
+                      
+                    {product.featuredBadge && (
+                        <BuyCoinsBg
+                          width="100%"
+                          height="100%"
+                          style={styles.gridCardBackground}
+                          preserveAspectRatio="xMidYMid slice"
+                          pointerEvents="none"
+                        />
+                      )}
                       {product.featuredBadge && (
                         <View style={styles.badge}>
                           <Text style={styles.badgeText}>{product.featuredBadge}</Text>
                         </View>
                       )}
+                      
+                      {!product.featuredBadge && (
+                        <BuyCoinsBasicBg
+                          width="100%"
+                          height="100%"
+                          style={styles.gridCardBackground}
+                          preserveAspectRatio="xMidYMid slice"
+                          pointerEvents="none"
+                        />
+                      )}
+
+
                       <CoinSvg
                         width={GRID_COIN_ICON_SIZE}
                         height={GRID_COIN_ICON_SIZE}
                       />
-                      <Text style={styles.productCoins}>
-                        {product.coins.toLocaleString()} coins
-                      </Text>
                       <View style={styles.productPriceButton}>
                         <Text style={styles.productPriceText}>{displayPrice}</Text>
                       </View>
+
+                      <Text style={styles.productCoins}>
+                        {product.coins.toLocaleString()} coins
+                      </Text>
+                      
                     </TouchableOpacity>
                   );
                 })}
@@ -239,21 +258,23 @@ const CoinShopModal: React.FC<CoinShopModalProps> = ({
               <Text style={styles.errorText}>No coin packs are available right now.</Text>
             )}
 
-            <View style={styles.bottomButtons}>
-              <TouchableOpacity
-                style={[
-                  styles.purchaseButton,
-                  (loading || !selectedProductId) && styles.purchaseButtonDisabled,
-                ]}
-                onPress={handlePurchasePress}
-                disabled={loading || !selectedProductId}
-                activeOpacity={0.7}
-                testID="purchase-button"
-              >
-                <Text style={styles.purchaseButtonText}>PURCHASE</Text>
-              </TouchableOpacity>
-            </View>
+            
           </ScrollView>
+
+          <View style={styles.bottomButtons}>
+            <TouchableOpacity
+              style={[
+                styles.purchaseButton,
+                (loading || !selectedProductId) && styles.purchaseButtonDisabled,
+              ]}
+              onPress={handlePurchasePress}
+              disabled={loading || !selectedProductId}
+              activeOpacity={0.7}
+              testID="purchase-button"
+            >
+              <Text style={styles.purchaseButtonText}>PURCHASE</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </Modal>
@@ -261,8 +282,6 @@ const CoinShopModal: React.FC<CoinShopModalProps> = ({
 };
 
 const FEATURED_CARD_BORDER = "#E91E8C";
-const PRICE_BUTTON_BG = "#2D1B69";
-const PURCHASE_BG = "#F9A8D4";
 
 const styles = StyleSheet.create({
   backdrop: {
@@ -270,9 +289,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.5)",
   },
   badge: {
-    backgroundColor: FEATURED_CARD_BORDER,
-    borderBottomRightRadius: moderateScale(10),
-    borderTopLeftRadius: moderateScale(14),
     left: 0,
     paddingHorizontal: scale(8),
     paddingVertical: verticalScale(4),
@@ -292,6 +308,7 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     ...MODAL_CLOSE_BUTTON_POSITION,
+    top: verticalScale(28)
   },
   coinsPill: {
     alignItems: "center",
@@ -304,6 +321,8 @@ const styles = StyleSheet.create({
     marginBottom: verticalScale(16),
     paddingHorizontal: scale(16),
     paddingVertical: verticalScale(8),
+    marginLeft: scale(12),
+    marginRight: scale(12)
   },
   coinsPillAmount: {
     color: COLORS.gray800,
@@ -339,15 +358,13 @@ const styles = StyleSheet.create({
   },
   gridCard: {
     alignItems: "center",
-    backgroundColor: COLORS.figmaCream,
-    borderColor: COLORS.gray200,
     borderRadius: moderateScale(16),
-    borderWidth: 1,
+    borderWidth: 2,
+    borderColor: COLORS.black,
     marginBottom: verticalScale(10),
     overflow: "hidden",
     paddingBottom: verticalScale(14),
-    paddingHorizontal: scale(10),
-    paddingTop: verticalScale(18),
+    paddingTop: verticalScale(36),
     width: "48%",
   },
   gridCardSelected: {
@@ -359,6 +376,7 @@ const styles = StyleSheet.create({
   },
   headerRow: {
     alignItems: "center",
+    marginTop: verticalScale(24),
     marginBottom: verticalScale(12),
   },
   loadingContainer: {
@@ -382,9 +400,12 @@ const styles = StyleSheet.create({
   },
   purchaseButton: {
     alignItems: "center",
-    backgroundColor: PURCHASE_BG,
+    backgroundColor: COLORS.primaryOrange,
     borderRadius: moderateScale(50),
     paddingVertical: verticalScale(14),
+    marginBottom: verticalScale(24),
+    marginLeft: scale(12),
+    marginRight: scale(12)
   },
   purchaseButtonDisabled: {
     backgroundColor: COLORS.gray300,
@@ -397,22 +418,22 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
   },
   productCoins: {
-    color: COLORS.gray800,
+    color: COLORS.white,
     fontFamily: TYPOGRAPHY.fontPrimary,
     fontSize: TYPOGRAPHY.fontSize.base,
     fontWeight: "700",
-    marginTop: verticalScale(8),
+    paddingTop:verticalScale(18), 
+    marginTop: verticalScale(14),
     textAlign: "center",
   },
   productPriceButton: {
-    backgroundColor: PRICE_BUTTON_BG,
-    borderRadius: moderateScale(10),
     marginTop: verticalScale(10),
+    marginBottom: verticalScale(24),
     paddingHorizontal: scale(16),
     paddingVertical: verticalScale(8),
   },
   productPriceText: {
-    color: COLORS.white,
+    color: COLORS.black,
     fontFamily: TYPOGRAPHY.fontPrimary,
     fontSize: TYPOGRAPHY.fontSize.sm,
     fontWeight: "700",
@@ -436,4 +457,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CoinShopModal;
+export default CoinShop;

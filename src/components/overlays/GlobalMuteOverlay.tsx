@@ -48,7 +48,9 @@ const GlobalMuteOverlay = () => {
     void SoundManager.pauseBackgroundMusic();
   }, [isMuted]);
 
-  return (
+  return null;
+  
+  (
     <Modal
       transparent={true}
       visible={true}

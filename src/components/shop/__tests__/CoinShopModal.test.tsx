@@ -1,7 +1,7 @@
 import React from "react";
 import { fireEvent, render, waitFor } from "@testing-library/react-native";
 
-import CoinShopModal from "../CoinShopModal";
+import CoinShopModal from "../CoinShop";
 import { analyticsService } from "../../../services/AnalyticsService";
 
 jest.mock("react-native/Libraries/Components/Touchable/TouchableOpacity", () => {

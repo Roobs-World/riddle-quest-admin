@@ -363,7 +363,7 @@ describe("useModal", () => {
         wrapper: createWrapper(),
       });
 
-      expect(typeof result.current.showCoinShopModal).toBe("function");
+      expect(typeof result.current.showCoinShop).toBe("function");
     });
 
     it("should have showGameModeModal method", () => {
@@ -396,7 +396,7 @@ describe("useModal", () => {
         result.current.showWelcomeModal();
         result.current.showInstructionsModal();
         result.current.showCreditsModal();
-        result.current.showCoinShopModal({} as any);
+        result.current.showCoinShop({} as any);
         result.current.showCoinPurchaseFanfareModal({} as any);
         result.current.showFullProfileDetailsModal({} as any);
         result.current.showChangePasswordModal({} as any);

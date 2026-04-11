@@ -72,7 +72,7 @@ import WelcomeModal from "./help/WelcomeModal";
 import InstructionsModal from "./help/InstructionsModal";
 import CreditsModal from "./help/CreditsModal";
 
-import CoinShopModal from "../shop/CoinShopModal";
+import CoinShopModal from "../shop/CoinShop";
 import CoinPurchaseFanfareModal from "./shop/CoinPurchaseFanfareModal";
 
 /**

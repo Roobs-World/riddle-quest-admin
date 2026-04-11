@@ -176,7 +176,7 @@ export const useModal = () => {
     [openGameModal]
   );
 
-  const showCoinShopModal = useCallback(
+  const showCoinShop = useCallback(
     (data: ModalDataType<"coinShop">, options?: ModalOptions): string => {
       return openGameModal("coinShop", data, options);
     },
@@ -271,7 +271,7 @@ export const useModal = () => {
     showWelcomeModal,
     showInstructionsModal,
     showCreditsModal,
-    showCoinShopModal,
+    showCoinShop,
     showCoinPurchaseFanfareModal,
     showFullProfileDetailsModal,
     showChangePasswordModal,
