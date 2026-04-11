@@ -49,6 +49,7 @@ export const RiddleService = {
     }
 
     const today = new Date().toISOString().slice(0, 10);
+    const dailyChallengeDocId = "current";
 
     try {
       const userDoc = await getDoc(doc(getFirestore(), "users", userId));
@@ -74,10 +75,14 @@ export const RiddleService = {
         }
       }
 
-      const dailyChallengeDoc = await getDoc(doc(getFirestore(), "dailyChallenge", today));
+      const dailyChallengeDoc = await getDoc(
+        doc(getFirestore(), "dailyChallenge", dailyChallengeDocId)
+      );
 
       if (!dailyChallengeDoc.exists()) {
-        logger.debug(`No daily challenge found for date: ${today}`);
+        logger.debug(
+          `No current daily challenge found (docId: ${dailyChallengeDocId}) for date: ${today}`
+        );
         return null;
       }
 

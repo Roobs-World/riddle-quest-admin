@@ -14,6 +14,7 @@ jest.mock("../../utils/sentry", () => ({
 
 jest.mock("../solar/solarSystemConfig", () => ({
   SOLAR_TEXTURE_MAPPING: [
+    { key: "sun", path: "sun.png" },
     { key: "planet_a", path: "a.png" },
     { key: "moon_a_h", path: "h.png" },
     { key: "ring_planet_v", path: "r.png" },
@@ -185,7 +186,12 @@ describe("SolarSystemPreloader", () => {
   });
 
   it("keeps going when texture loading fails and stores fallback null", async () => {
-    loadTextureFromAsset.mockRejectedValueOnce(new Error("texture fail"));
+    loadTextureFromAsset.mockImplementation(async (_path: string, key: string) => {
+      if (key === "planet_a") {
+        throw new Error("texture fail");
+      }
+      return { isMockTexture: true };
+    });
 
     const system = await SolarSystemPreloader.preloadSolarSystem();
 

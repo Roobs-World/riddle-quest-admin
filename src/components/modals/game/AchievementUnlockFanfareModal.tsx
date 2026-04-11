@@ -4,6 +4,7 @@ import ModalBg from "../../../../assets/images/modal-bg.svg";
 import WheelBg from "../../../../assets/images/wheel-bg.svg";
 import WideButton from "../../buttons/WideButton";
 import { TYPOGRAPHY } from "../../../styles";
+import { AchievementUnlockFanfareItem } from "../../../types/ModalTypes";
 import {
   MODAL_WIDTH,
   MODAL_HEIGHT,
@@ -14,13 +15,14 @@ import {
 
 interface AchievementUnlockFanfareModalProps {
   isVisible: boolean;
-  achievementNames: string[];
+  achievementNames?: string[];
+  achievements?: AchievementUnlockFanfareItem[];
   onClose: () => void;
 }
 
 const AchievementUnlockFanfareModal: React.FC<
   AchievementUnlockFanfareModalProps
-> = ({ isVisible, achievementNames, onClose }) => {
+> = ({ isVisible, achievementNames = [], achievements = [], onClose }) => {
   const [rotationAnim] = useState(() => new Animated.Value(0));
 
   const spin = useMemo(() => {
@@ -53,8 +55,15 @@ const AchievementUnlockFanfareModal: React.FC<
     };
   }, [isVisible, rotationAnim]);
 
-  const primaryAchievement = achievementNames[0] ?? "New Achievement";
-  const extraCount = Math.max(0, achievementNames.length - 1);
+  const hasAchievementDetails = achievements.length > 0;
+  const primaryAchievementName =
+    achievements[0]?.name ?? achievementNames[0] ?? "New Achievement";
+  const primaryAchievementDescription = achievements[0]?.description ?? "";
+  const primaryAchievementIcon = achievements[0]?.icon ?? "";
+  const achievementCount = hasAchievementDetails
+    ? achievements.length
+    : achievementNames.length;
+  const extraCount = Math.max(0, achievementCount - 1);
 
   return (
     <Modal transparent animationType="fade" visible={isVisible} onRequestClose={onClose}>
@@ -124,6 +133,16 @@ const AchievementUnlockFanfareModal: React.FC<
             </Text>
 
             <View style={{ alignItems: "center", maxWidth: "90%" }}>
+              {primaryAchievementIcon ? (
+                <Text
+                  style={{
+                    fontSize: TYPOGRAPHY.fontSize["4xl"],
+                    marginBottom: 8,
+                  }}
+                >
+                  {primaryAchievementIcon}
+                </Text>
+              ) : null}
               <Text
                 style={{
                   fontFamily: TYPOGRAPHY.fontSecondaryBold,
@@ -132,8 +151,21 @@ const AchievementUnlockFanfareModal: React.FC<
                   textAlign: "center",
                 }}
               >
-                {primaryAchievement}
+                {primaryAchievementName}
               </Text>
+              {primaryAchievementDescription ? (
+                <Text
+                  style={{
+                    fontFamily: TYPOGRAPHY.fontSecondary,
+                    fontSize: TYPOGRAPHY.fontSize.base,
+                    color: "black",
+                    marginTop: 6,
+                    textAlign: "center",
+                  }}
+                >
+                  {primaryAchievementDescription}
+                </Text>
+              ) : null}
               {extraCount > 0 ? (
                 <Text
                   style={{

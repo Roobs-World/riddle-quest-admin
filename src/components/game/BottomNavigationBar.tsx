@@ -41,9 +41,6 @@ interface BottomNavigationBarProps {
 
   /** Function called when the Settings icon is pressed - opens settings overlay */
   onSettingsPress: () => void;
-
-  /** Function called when the Hint button (center) is pressed - shows gameplay hint */
-  onChangeGameModePress: () => void;
 }
 
 /**
@@ -83,7 +80,6 @@ interface BottomNavigationBarProps {
  * <BottomNavigationBar
  *   onProfilePress={() => setOverlay('profile')}
  *   onSettingsPress={() => setOverlay('settings')}
- *   onChangeGameModePress={() => onChangeGameModePress()}
  * />
  * ```
  *
@@ -93,7 +89,6 @@ interface BottomNavigationBarProps {
 const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
   onProfilePress,
   onSettingsPress,
-  onChangeGameModePress,
 }) => {
   return (
     <View
@@ -122,9 +117,7 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
         <SettingsIcon color="#401F40" />
       </TouchableOpacity>
 
-      {/* Center - Change Game Mode Button (large dark purple circle) */}
       <TouchableOpacity
-        onPress={() => onChangeGameModePress()}
         accessible={true}
         accessibilityRole="button"
         accessibilityLabel="Change game mode"
@@ -143,7 +136,7 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
           elevation: 6,
         }}
       >
-        <LetsPlayIcon width={scale(24)} height={scale(24)} />
+        <LetsPlayIcon width="100%" />
       </TouchableOpacity>
 
       {/* Right Side - Profile Button */}

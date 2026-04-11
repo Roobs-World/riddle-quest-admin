@@ -244,13 +244,6 @@ export const useModal = () => {
     [openGameModal]
   );
 
-  const showGameModeModal = useCallback(
-    (data: ModalDataType<"gameMode">, options?: ModalOptions): string => {
-      return openGameModal("gameMode", data, options);
-    },
-    [openGameModal]
-  );
-
   const showInfoModal = useCallback(
     (data: ModalDataType<"info">, options?: ModalOptions): string => {
       return openGameModal("info", data, options);
@@ -289,7 +282,6 @@ export const useModal = () => {
     showUpdateUsernameModal,
     showAvatarOptionsModal,
     showPreloadedAvatarsModal,
-    showGameModeModal,
     showInfoModal,
   };
 };

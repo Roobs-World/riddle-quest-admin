@@ -10,7 +10,6 @@ const mockGetModalComponent = jest.fn();
 const expectedModalTypes = [
   "victory",
   "loss",
-  "gameMode",
   "settings",
   "fullProfileDetails",
   "achievements",
@@ -35,7 +34,6 @@ jest.mock("../../modals/ModalRegistry", () => ({
   modalRegistry: {
     victory: {},
     loss: {},
-    gameMode: {},
     settings: {},
     fullProfileDetails: {},
     achievements: {},
@@ -147,7 +145,6 @@ describe("ModalTogglePanel", () => {
 
     expect(queryByTestId("active-victory")).toBeTruthy();
     expect(queryByTestId("active-loss")).toBeTruthy();
-    expect(queryByTestId("active-gameMode")).toBeTruthy();
     expect(queryByTestId("active-settings")).toBeTruthy();
     expect(queryByTestId("active-info")).toBeTruthy();
     expect(queryByTestId("active-coinShop")).toBeTruthy();
@@ -189,7 +186,6 @@ describe("ModalTogglePanel", () => {
 
     fireEvent.press(getByTestId("invoke-settings"));
     fireEvent.press(getByTestId("invoke-victory"));
-    fireEvent.press(getByTestId("invoke-gameMode"));
     fireEvent.press(getByTestId("invoke-updateUsername"));
     fireEvent.press(getByTestId("invoke-avatarOptions"));
     fireEvent.press(getByTestId("invoke-preloadedAvatars"));
@@ -224,7 +220,7 @@ describe("ModalTogglePanel", () => {
       fireEvent.press(getByText(/Modal Testing/));
 
       const switches = UNSAFE_getAllByType(Switch);
-      fireEvent(switches[3], "valueChange", true); // settings
+      fireEvent(switches[2], "valueChange", true); // settings
 
       await act(async () => {
         jest.advanceTimersByTime(120);

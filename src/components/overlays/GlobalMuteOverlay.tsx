@@ -3,22 +3,30 @@ import { StyleSheet, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import MuteButton from "../buttons/MuteButton";
 import { SoundManager } from "../../services/SoundManager";
+import { verticalScale } from "@/utils/responsive";
 
 const SOUND_ENABLED_STORAGE_KEY = "isSoundEnabled";
-const OVERLAY_TOP_OFFSET = 56;
+const OVERLAY_TOP_OFFSET = verticalScale(64);
 const OVERLAY_RIGHT_OFFSET = 16;
 
+const getCurrentSoundEnabled = (): boolean => {
+  if (typeof SoundManager.getSoundEnabled === "function") {
+    return SoundManager.getSoundEnabled();
+  }
+  return true;
+};
+
 const parseSoundPreference = (rawValue: string | null): boolean => {
-  if (rawValue === null) return SoundManager.getSoundEnabled();
+  if (rawValue === null) return getCurrentSoundEnabled();
   try {
     return JSON.parse(rawValue);
   } catch {
-    return SoundManager.getSoundEnabled();
+    return getCurrentSoundEnabled();
   }
 };
 
 const GlobalMuteOverlay = () => {
-  const [isMuted, setIsMuted] = useState(!SoundManager.getSoundEnabled());
+  const [isMuted, setIsMuted] = useState(!getCurrentSoundEnabled());
 
   useEffect(() => {
     const syncFromStorage = async () => {
@@ -51,28 +59,17 @@ const GlobalMuteOverlay = () => {
   }, [isMuted]);
 
   return (
-    <View pointerEvents="box-none" style={styles.touchThroughRoot}>
-      <View
-        pointerEvents="box-none"
-        style={[
-          styles.buttonContainer,
-          { top: OVERLAY_TOP_OFFSET, right: OVERLAY_RIGHT_OFFSET },
-        ]}
-      >
-        <MuteButton isMuted={isMuted} onToggle={handleToggleMute} />
-      </View>
+    <View style={[styles.buttonContainer, { top: OVERLAY_TOP_OFFSET, right: OVERLAY_RIGHT_OFFSET }]}>
+      <MuteButton isMuted={isMuted} onToggle={handleToggleMute} />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  touchThroughRoot: {
-    ...StyleSheet.absoluteFillObject,
-    zIndex: 2147483647,
-    elevation: 9999,
-  },
   buttonContainer: {
     position: "absolute",
+    zIndex: 1000,
+    elevation: 1000,
   },
 });
 

@@ -373,16 +373,6 @@ describe("ModalTypes", () => {
       expect(lossData.coinContinueCost).toBe(50);
     });
 
-    it("should define gameMode modal type", () => {
-      const gameModeData: GameModalTypes["gameMode"] = {
-        onSelectMode: jest.fn(),
-        currentLevel: 5,
-      };
-
-      expect(typeof gameModeData.onSelectMode).toBe("function");
-      expect(gameModeData.currentLevel).toBe(5);
-    });
-
     it("should define settings modal type", () => {
       const settingsData: GameModalTypes["settings"] = {
         isSoundEnabled: true,

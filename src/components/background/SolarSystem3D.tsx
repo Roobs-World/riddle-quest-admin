@@ -140,8 +140,9 @@ const Sun: React.FC = React.memo(() => {
     () =>
       new MeshPhongMaterial({
         map: sunTexture || undefined,
+        color: 0xffffff,
         emissive: 0xffa500,
-        emissiveIntensity: 1.5,
+        emissiveIntensity: 0.75,
         // emissiveMap intentionally omitted — same texture as map would sample it twice per fragment
       }),
     [sunTexture]

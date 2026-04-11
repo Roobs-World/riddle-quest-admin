@@ -208,12 +208,6 @@ const generateMockData = (
         onPressCredits: () => logger.debug("Credits pressed"),
         playerData: mockPlayer,
       };
-    case "gameMode":
-      return {
-        onSelectMode: (mode: "classic" | "daily") =>
-          logger.debug("Selected mode:", mode),
-        currentLevel: 26,
-      };
     case "fullProfileDetails":
       return { playerData: mockPlayer };
     case "achievements":

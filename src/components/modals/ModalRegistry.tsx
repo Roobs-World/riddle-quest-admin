@@ -38,7 +38,11 @@
  */
 
 import React from "react";
-import { BaseModalProps, ModalData } from "../../types/ModalTypes";
+import {
+  AchievementUnlockFanfareItem,
+  BaseModalProps,
+  ModalData,
+} from "../../types/ModalTypes";
 import { SubmittedGuess } from "../../hooks/types";
 import { Player } from "../../validation/firestoreSchemas";
 import * as RNIap from "react-native-iap";
@@ -52,7 +56,6 @@ import {
 // Import all modal components
 import VictoryModal from "./game/VictoryModal";
 import LossModal from "./game/LossModal";
-import GameModeModal from "./game/GameModeModal";
 import AchievementUnlockFanfareModal from "./game/AchievementUnlockFanfareModal";
 // Note: OutOfAttemptsModal, WatchAdForChanceModal, and DailyChallengeCompletionModal have been removed
 
@@ -205,25 +208,15 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
     correctAnswer: (props.correctAnswer as string) || "",
     onNext: (props.onNext as () => void) || (() => {}),
     onHome: (props.onHome as () => void) || (() => {}),
+    onOpenShop: props.onOpenShop as (() => void) | undefined,
     onClose: props.onClose,
     onWatchAdContinue: props.onWatchAdContinue as (() => void) | undefined,
     onCoinContinue: props.onCoinContinue as (() => void) | undefined,
     coinContinueCost: props.coinContinueCost as number | undefined,
+    skipLevelCost: props.skipLevelCost as number | undefined,
     canWatchAd: props.canWatchAd as boolean | undefined,
     canUseCoin: props.canUseCoin as boolean | undefined,
   })),
-
-  gameMode: createModalWrapper(
-    GameModeModal,
-    (props: BaseModalProps & ModalData) => ({
-      isVisible: props.isVisible,
-      onClose: props.onClose,
-      onSelectMode:
-        (props.onSelectMode as (mode: "classic" | "daily") => void) ||
-        (() => {}),
-      currentLevel: props.currentLevel as number | undefined,
-    })
-  ),
 
   /**
    * Settings Modals
@@ -249,7 +242,6 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
       onPressLogout: (props.onPressLogout as () => void) || (() => {}),
       onPressHelp: (props.onPressHelp as () => void) || (() => {}),
       onPressCredits: (props.onPressCredits as () => void) || (() => {}),
-      playerData: (props.playerData as Player) ?? null,
     })
   ),
 
@@ -427,6 +419,9 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
       isVisible: props.isVisible,
       onClose: props.onClose,
       achievementNames: (props.achievementNames as string[] | undefined) ?? [],
+      achievements:
+        (props.achievements as AchievementUnlockFanfareItem[] | undefined) ??
+        [],
     })
   ),
 };

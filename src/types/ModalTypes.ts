@@ -55,6 +55,12 @@ export interface ModalOptions {
   replace?: boolean; // If true, closes all modals of the same type before opening
 }
 
+export interface AchievementUnlockFanfareItem {
+  name: string;
+  description: string;
+  icon: string;
+}
+
 // Game-specific modal types for type safety
 export interface GameModalTypes {
   // Game modals
@@ -72,22 +78,20 @@ export interface GameModalTypes {
     correctAnswer: string;
     onNext: () => void;
     onHome: () => void;
+    /** Opens the coin shop modal from the loss flow. */
+    onOpenShop?: () => void;
     /** If provided, a "Watch Ad to Continue" button is shown. */
     onWatchAdContinue?: () => void | boolean | Promise<void | boolean>;
     /** If provided, a "Use Coins to Continue" button is shown. */
     onCoinContinue?: () => void | boolean | Promise<void | boolean>;
     /** Coin cost displayed on the coin-continue button. */
     coinContinueCost?: number;
+    /** Coin cost displayed on the skip-level button. */
+    skipLevelCost?: number;
     /** Whether the rewarded ad is ready to show. */
     canWatchAd?: boolean;
     /** Whether the user has enough coins to continue. */
     canUseCoin?: boolean;
-  };
-
-  // Game mode selection modal
-  gameMode: {
-    onSelectMode: (mode: "classic" | "daily") => void;
-    currentLevel?: number;
   };
 
   // Settings modals
@@ -184,7 +188,8 @@ export interface GameModalTypes {
   };
 
   achievementUnlockFanfare: {
-    achievementNames: string[];
+    achievementNames?: string[];
+    achievements?: AchievementUnlockFanfareItem[];
   };
 }
 

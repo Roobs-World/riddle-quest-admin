@@ -150,27 +150,6 @@ jest.mock("../../components/modals/help/CreditsModal", () => {
   };
 });
 
-jest.mock("../../components/modals/game/GameModeModal", () => {
-  const React = require("react");
-  return function MockGameModeModal({ isVisible, onClose, onSelectMode }: any) {
-    return React.createElement(
-      "View",
-      {
-        testID: "game-mode-modal",
-        "data-visible": isVisible,
-      },
-      React.createElement("View", {
-        testID: "game-mode-close",
-        onPress: onClose,
-      }),
-      React.createElement("View", {
-        testID: "game-mode-select-classic",
-        onPress: () => onSelectMode?.("classic"),
-      })
-    );
-  };
-});
-
 // Mock HomeBgSvg
 jest.mock("../../../assets/images/home-bg.svg", () => {
   const React = require("react");
@@ -296,7 +275,10 @@ describe("LandingScreen", () => {
   });
 
   describe("Modal Triggers", () => {
-    it("should open game mode modal when guest button is pressed", () => {
+    it("should sign in anonymously when guest button is pressed", async () => {
+      (AuthService.signInAnonymously as jest.Mock).mockResolvedValue({
+        user: { uid: "guest-1" },
+      });
       const { getAllByTestId } = renderWithProviders(
         <LandingScreen />
       );
@@ -307,9 +289,9 @@ describe("LandingScreen", () => {
       );
       fireEvent.press(guestButton!);
 
-      expect(getAllByTestId("game-mode-modal")[0].props["data-visible"]).toBe(
-        true
-      );
+      await waitFor(() => {
+        expect(AuthService.signInAnonymously).toHaveBeenCalledTimes(1);
+      });
     });
 
     it("should open credits modal when credits button is pressed", () => {
@@ -1252,13 +1234,6 @@ describe("Modal Integration", () => {
     expect(creditsModal.props["data-visible"]).toBe(false);
   });
 
-  it("should render game mode modal initially as not visible", () => {
-    const { getByTestId } = renderWithProviders(<LandingScreen />);
-
-    const gameModeModal = getByTestId("game-mode-modal");
-    expect(gameModeModal.props["data-visible"]).toBe(false);
-  });
-
   it("should toggle credits modal visibility", () => {
     const { getByTestId, getAllByTestId } = renderWithProviders(
       <LandingScreen />
@@ -1291,38 +1266,28 @@ describe("Modal Integration", () => {
     expect(getByTestId("credits-modal").props["data-visible"]).toBe(false);
   });
 
-  it("should toggle game mode modal visibility", () => {
-    const { getByTestId, getAllByTestId } = renderWithProviders(
-      <LandingScreen />
-    );
+  it("signs in anonymously for guest play", async () => {
+    (AuthService.signInAnonymously as jest.Mock).mockResolvedValue({ user: { uid: "guest-1" } });
+    (useAuth as jest.Mock).mockReturnValue({
+      login: mockLogin,
+      isAuthenticated: false,
+      setGameMode: mockSetGameMode,
+    });
 
-    // Initially not visible
-    expect(getByTestId("game-mode-modal").props["data-visible"]).toBe(false);
-
-    // Press guest button
-    const wideButtons = getAllByTestId("wide-button");
-    const guestButton = wideButtons.find(
-      (btn: any) => btn.props["data-text"] === "Play as Guest"
-    );
-    fireEvent.press(guestButton!);
-
-    // Now visible
-    expect(getByTestId("game-mode-modal").props["data-visible"]).toBe(true);
-  });
-
-  it("should close game mode modal via onClose callback", () => {
     const { getByTestId, getAllByTestId } = renderWithProviders(<LandingScreen />);
     const guestButton = getAllByTestId("wide-button").find(
       (btn: any) => btn.props["data-text"] === "Play as Guest"
     );
     fireEvent.press(guestButton!);
-    expect(getByTestId("game-mode-modal").props["data-visible"]).toBe(true);
 
-    fireEvent.press(getByTestId("game-mode-close"));
-    expect(getByTestId("game-mode-modal").props["data-visible"]).toBe(false);
+    await waitFor(() => {
+      expect(AuthService.logout).not.toHaveBeenCalled();
+      expect(AuthService.signInAnonymously).toHaveBeenCalledTimes(1);
+      expect(getByTestId("pulsing-spinner").props["data-visible"]).toBe(false);
+    });
   });
 
-  it("handles guest mode selection by setting mode and signing in anonymously", async () => {
+  it("logs out before guest sign in when already authenticated", async () => {
     (AuthService.signInAnonymously as jest.Mock).mockResolvedValue({ user: { uid: "guest-1" } });
     (AuthService.logout as jest.Mock).mockResolvedValue(undefined);
     (useAuth as jest.Mock).mockReturnValue({
@@ -1336,12 +1301,10 @@ describe("Modal Integration", () => {
       (btn: any) => btn.props["data-text"] === "Play as Guest"
     );
     fireEvent.press(guestButton!);
-    fireEvent.press(getByTestId("game-mode-select-classic"));
 
     await waitFor(() => {
-      expect(AuthService.logout).toHaveBeenCalledTimes(1);
-      expect(mockSetGameMode).toHaveBeenCalledWith("classic");
-      expect(AuthService.signInAnonymously).toHaveBeenCalledTimes(1);
+      expect(AuthService.logout).toHaveBeenCalled();
+      expect(AuthService.signInAnonymously).toHaveBeenCalled();
       expect(getByTestId("pulsing-spinner").props["data-visible"]).toBe(false);
     });
   });

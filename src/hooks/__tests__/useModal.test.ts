@@ -366,14 +366,6 @@ describe("useModal", () => {
       expect(typeof result.current.showCoinShop).toBe("function");
     });
 
-    it("should have showGameModeModal method", () => {
-      const { result } = renderHook(() => useModal(), {
-        wrapper: createWrapper(),
-      });
-
-      expect(typeof result.current.showGameModeModal).toBe("function");
-    });
-
     it("should have showAchievementUnlockFanfareModal method", () => {
       const { result } = renderHook(() => useModal(), {
         wrapper: createWrapper(),
@@ -413,7 +405,6 @@ describe("useModal", () => {
         result.current.showUpdateUsernameModal({} as any);
         result.current.showAvatarOptionsModal({} as any);
         result.current.showPreloadedAvatarsModal({} as any);
-        result.current.showGameModeModal({} as any);
         result.current.showInfoModal({} as any);
         result.current.showAchievementUnlockFanfareModal({} as any);
       });
@@ -433,7 +424,6 @@ describe("useModal", () => {
       expect(result.current.isModalOpen("updateUsername")).toBe(true);
       expect(result.current.isModalOpen("avatarOptions")).toBe(true);
       expect(result.current.isModalOpen("preloadedAvatars")).toBe(true);
-      expect(result.current.isModalOpen("gameMode")).toBe(true);
       expect(result.current.isModalOpen("info")).toBe(true);
       expect(result.current.isModalOpen("achievementUnlockFanfare")).toBe(true);
     });

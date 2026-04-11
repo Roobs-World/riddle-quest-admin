@@ -93,7 +93,7 @@ describe("CoinShopModal", () => {
   });
 
   it("renders loading state and suppresses impressions while loading", () => {
-    const { getByText } = render(
+    const { getByTestId, getByText, queryByText } = render(
       <CoinShopModal
         {...baseProps}
         loading={true}
@@ -101,7 +101,9 @@ describe("CoinShopModal", () => {
       />
     );
 
-    expect(getByText("COIN SHOP")).toBeTruthy();
+    expect(getByTestId("coin-shop-loading")).toBeTruthy();
+    expect(getByText("Loading shop...")).toBeTruthy();
+    expect(queryByText("COIN SHOP")).toBeNull();
     expect(mockAnalytics.logShopPackImpression).not.toHaveBeenCalled();
   });
 

@@ -58,8 +58,10 @@ jest.mock("../../../services/ProductPricingService", () => ({
 }));
 
 // Mock FirestoreService
+const mockLoadUserProgressFromFirestore = jest.fn();
 jest.mock("../../../services/FirestoreService", () => ({
-  
+  loadUserProgressFromFirestore: (...args: unknown[]) =>
+    mockLoadUserProgressFromFirestore(...args),
 }));
 
 // Mock SoundManager
@@ -75,6 +77,7 @@ jest.mock("../../../services/SoundManager", () => ({
 const mockLogout = jest.fn();
 const mockSetGameMode = jest.fn();
 const mockFetchCurrentRiddle = jest.fn(() => Promise.resolve());
+const mockUpdatePlayerDataLocally = jest.fn();
 const mockPlayerData = {
   userId: "test-user-123",
   username: "testuser",
@@ -92,6 +95,7 @@ jest.mock("../../../contexts/AuthContext", () => ({
     logout: mockLogout,
     setGameMode: mockSetGameMode,
     fetchCurrentRiddle: mockFetchCurrentRiddle,
+    updatePlayerDataLocally: mockUpdatePlayerDataLocally,
   }),
   GameMode: {},
 }));
@@ -102,7 +106,6 @@ const mockShowLossModal = jest.fn();
 const mockShowHintModal = jest.fn();
 const mockShowSkipModal = jest.fn();
 const mockShowSettingsModal = jest.fn();
-const mockShowGameModeModal = jest.fn();
 const mockShowCoinShopModal = jest.fn();
 const mockShowInfoModal = jest.fn();
 const mockShowWelcomeModal = jest.fn();
@@ -121,7 +124,6 @@ jest.mock("../../../hooks/useModal", () => ({
     showHintModal: mockShowHintModal,
     showSkipModal: mockShowSkipModal,
     showSettingsModal: mockShowSettingsModal,
-    showGameModeModal: mockShowGameModeModal,
     showCoinShop: mockShowCoinShopModal,
     showCoinShopModal: mockShowCoinShopModal,
     showInfoModal: mockShowInfoModal,
@@ -363,6 +365,7 @@ describe("GameScreen", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockLoadUserProgressFromFirestore.mockResolvedValue(mockPlayerData);
     mockUseGameLogic.guesses = [];
     mockUseGameLogic.currentGuess = [];
     mockUseGameLogic.gameOver = false;
@@ -894,37 +897,38 @@ describe("GameScreen", () => {
       ]);
     });
 
-    it("opens game mode modal and switches to daily when selected", async () => {
+    it("toggles game mode from classic to daily", async () => {
       render(<GameScreen {...defaultProps} />);
 
       const bottomNavProps = getLatestProps(mockBottomNavigationBar);
-      bottomNavProps.onChangeGameModePress();
-
-      expect(mockShowGameModeModal).toHaveBeenCalled();
-      const modalConfig = mockShowGameModeModal.mock.calls[0][0];
-
-      await modalConfig.onSelectMode("daily");
+      await bottomNavProps.onChangeGameModePress();
 
       expect(mockUseGameLogic.resetGame).toHaveBeenCalled();
       expect(mockSetGameMode).toHaveBeenCalledWith("daily");
       expect(mockFetchCurrentRiddle).toHaveBeenCalledWith(mockPlayerData, "daily");
     });
 
-    it("opens settings modal and supports help/credits transitions", async () => {
+    it("opens support email on help and supports credits transition", async () => {
       jest.useFakeTimers();
       render(<GameScreen {...defaultProps} />);
+      const { Linking } = require("react-native");
+      const openURLSpy = jest
+        .spyOn(Linking, "openURL")
+        .mockResolvedValueOnce(true);
 
       const bottomNavProps = getLatestProps(mockBottomNavigationBar);
       bottomNavProps.onSettingsPress();
 
       const config = mockShowSettingsModal.mock.calls[0][0];
       config.onPressHelp();
+      expect(openURLSpy).toHaveBeenCalledWith("mailto:support@adspeq.com");
       config.onPressCredits();
 
       expect(mockCloseModalByType).toHaveBeenCalledWith("settings");
       jest.runAllTimers();
-      expect(mockShowInstructionsModal).toHaveBeenCalled();
+      expect(mockShowInstructionsModal).not.toHaveBeenCalled();
       expect(mockShowCreditsModal).toHaveBeenCalled();
+      openURLSpy.mockRestore();
       jest.useRealTimers();
     });
 
@@ -1026,9 +1030,11 @@ describe("GameScreen", () => {
 
       await config.onWatchAdContinue();
       await config.onCoinContinue();
+      config.onOpenShop();
 
       expect(mockUseGameLogic.continueGame).toHaveBeenCalledTimes(2);
       expect(spendCoins).toHaveBeenCalledWith({ amount: 20, reason: "continue" });
+      expect(mockShowCoinShopModal).toHaveBeenCalled();
     });
 
     it("shows ad-not-ready info when continue ad does not complete", async () => {
@@ -1134,14 +1140,19 @@ describe("GameScreen", () => {
       expect(updater([])).toEqual(["A"]);
     });
 
-    it("opens profile modal from bottom navigation", () => {
+    it("opens profile modal from bottom navigation after refreshing player data", async () => {
       render(<GameScreen {...defaultProps} />);
       const bottomNavProps = getLatestProps(mockBottomNavigationBar);
-      bottomNavProps.onProfilePress();
+      await bottomNavProps.onProfilePress();
 
-      expect(mockShowFullProfileDetailsModal).toHaveBeenCalledWith(
-        expect.objectContaining({ playerData: expect.any(Object) })
-      );
+      await waitFor(() => {
+        expect(mockLoadUserProgressFromFirestore).toHaveBeenCalledWith(
+          mockPlayerData.userId
+        );
+        expect(mockShowFullProfileDetailsModal).toHaveBeenCalledWith(
+          expect.objectContaining({ playerData: expect.any(Object) })
+        );
+      });
     });
 
     it("opens coin shop and handles pay-and-play fallback when no products", () => {
@@ -1154,6 +1165,24 @@ describe("GameScreen", () => {
       config.onPayAndPlay();
 
       expect(mockShowNoProductsAvailable).toHaveBeenCalled();
+    });
+
+    it("opens coin shop in loading state while shop products are still fetching", () => {
+      const { IapService } = require("../../../services/IapService");
+      const { ProductPricingService } = require("../../../services/ProductPricingService");
+
+      IapService.getProducts.mockImplementationOnce(() => new Promise(() => {}));
+      ProductPricingService.getActiveProducts.mockImplementationOnce(
+        () => new Promise(() => {})
+      );
+
+      render(<GameScreen {...defaultProps} />);
+      const headerProps = getLatestProps(mockHeader);
+      headerProps.onCoinsPress();
+
+      const config =
+        mockShowCoinShopModal.mock.calls[mockShowCoinShopModal.mock.calls.length - 1][0];
+      expect(config.loading).toBe(true);
     });
 
     it("handles coin shop purchase success and failure branches", async () => {
@@ -1309,7 +1338,12 @@ describe("GameScreen", () => {
       const { logger } = require("../../../utils/logger");
       const { captureException } = require("../../../utils/sentry");
       const failingNextLevel = jest.fn(() => Promise.reject(new Error("next fail")));
-      ACHIEVEMENT_DEFINITIONS.push({ id: "ach-1", name: "First Win" });
+      ACHIEVEMENT_DEFINITIONS.push({
+        id: "ach-1",
+        name: "First Win",
+        description: "Win your first riddle",
+        icon: "*",
+      });
 
       mockUseGameLogic.currentGuess = ["K", "E", "Y", "B", "O", "A", "R", "D"];
       mockUseGameLogic.processGuess.mockResolvedValueOnce({
@@ -1336,6 +1370,13 @@ describe("GameScreen", () => {
       expect(config.unlockedAchievementNames).toEqual(["First Win"]);
       expect(mockShowAchievementUnlockFanfareModal).toHaveBeenCalledWith({
         achievementNames: ["First Win"],
+        achievements: [
+          {
+            name: "First Win",
+            description: "Win your first riddle",
+            icon: "*",
+          },
+        ],
       });
       expect(haptics.trigger).toHaveBeenCalledWith("notificationSuccess", expect.any(Object));
 
@@ -1511,32 +1552,33 @@ describe("GameScreen", () => {
       expect(backspaceUpdater(["A", "B", "", ""])).toEqual(["", "B"]);
     });
 
-    it("covers classic and daily mode fetch error branches", async () => {
+    it("covers mode-toggle fetch error branches", async () => {
       const { logger } = require("../../../utils/logger");
       const { captureException } = require("../../../utils/sentry");
       mockFetchCurrentRiddle
-        .mockRejectedValueOnce(new Error("classic fail"))
-        .mockRejectedValueOnce(new Error("daily fail"));
-      render(<GameScreen {...defaultProps} />);
+        .mockRejectedValueOnce(new Error("daily fail"))
+        .mockRejectedValueOnce(new Error("classic fail"));
+      const { rerender } = render(<GameScreen {...defaultProps} />);
 
       const bottomNavProps = getLatestProps(mockBottomNavigationBar);
-      bottomNavProps.onChangeGameModePress();
-      let config = mockShowGameModeModal.mock.calls[mockShowGameModeModal.mock.calls.length - 1][0];
-      await config.onSelectMode("classic");
+      await bottomNavProps.onChangeGameModePress();
       await waitFor(() => {
         expect(logger.error).toHaveBeenCalledWith(
-          "Error fetching classic riddle:",
+          "Error fetching daily riddle:",
           expect.any(Error)
         );
         expect(captureException).toHaveBeenCalledWith(expect.any(Error));
       });
 
-      bottomNavProps.onChangeGameModePress();
-      config = mockShowGameModeModal.mock.calls[mockShowGameModeModal.mock.calls.length - 1][0];
-      await config.onSelectMode("daily");
+      rerender(<GameScreen {...defaultProps} gameMode="daily" />);
+      await waitFor(() => {
+        expect(getLatestProps(mockHeader).modeLabel).toBe("Daily Challenge");
+      });
+      const dailyBottomNavProps = getLatestProps(mockBottomNavigationBar);
+      await dailyBottomNavProps.onChangeGameModePress();
       await waitFor(() => {
         expect(logger.error).toHaveBeenCalledWith(
-          "Error fetching daily riddle:",
+          "Error fetching classic riddle:",
           expect.any(Error)
         );
         expect(captureException).toHaveBeenCalledWith(expect.any(Error));

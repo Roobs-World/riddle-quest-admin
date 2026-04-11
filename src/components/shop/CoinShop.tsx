@@ -4,7 +4,6 @@ import {
   Text,
   Modal,
   TouchableOpacity,
-  ScrollView,
   ActivityIndicator,
   StyleSheet,
 } from "react-native";
@@ -13,7 +12,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as RNIap from "react-native-iap";
 import { ProductPricing } from "../../services/ProductPricingService";
 import { analyticsService } from "../../services/AnalyticsService";
-import { COLORS, TYPOGRAPHY, SPACING, BORDER_RADIUS } from "../../styles";
+import { COLORS, TYPOGRAPHY, BORDER_RADIUS } from "../../styles";
 import {
   scale,
   verticalScale,
@@ -21,7 +20,6 @@ import {
   dimensions,
 } from "../../utils/responsive";
 import {
-  MODAL_CONTENT_PADDING,
   CLOSE_BUTTON_SIZE_LG,
   MODAL_CLOSE_BUTTON_POSITION,
 } from "../../constants/layout";
@@ -173,7 +171,7 @@ const CoinShop: React.FC<CoinShopProps> = ({
           <ModalBg
             width="100%"
             height="100%"
-            style={[StyleSheet.absoluteFill, styles.modalBackground]}
+            style={[StyleSheet.absoluteFill]}
             preserveAspectRatio="none"
           />
           <CloseButton
@@ -183,6 +181,13 @@ const CoinShop: React.FC<CoinShopProps> = ({
             accessibilityLabel="Close coin shop"
           />
 
+          {loading ? (
+            <View style={styles.loadingContainer} testID="coin-shop-loading">
+              <ActivityIndicator size="large" color={COLORS.primaryOrange} />
+              <Text style={styles.loadingText}>Loading shop...</Text>
+            </View>
+          ) : (
+            <>
             <View style={styles.headerRow}>
               <Text style={styles.title}>COIN SHOP</Text>
             </View>
@@ -199,11 +204,6 @@ const CoinShop: React.FC<CoinShopProps> = ({
               </Text>
             </View>
 
-            {loading && (
-              <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color={COLORS.primaryOrange} />
-              </View>
-            )}
             {error && <Text style={styles.errorText}>{error}</Text>}
 
             <View style={styles.scrollContent}>
@@ -259,10 +259,12 @@ const CoinShop: React.FC<CoinShopProps> = ({
               <WideButton
                 buttonText="PURCHASE"
                 onPress={handlePurchasePress}
-                disabled={loading || !selectedProductId}
+                disabled={!selectedProductId}
               />
             </View>
           </View>
+            </>
+          )}
         </View>
       </View>
     </Modal>
@@ -369,7 +371,14 @@ const styles = StyleSheet.create({
   },
   loadingContainer: {
     alignItems: "center",
-    paddingVertical: verticalScale(24),
+    flex: 1,
+    justifyContent: "center",
+    gap: verticalScale(12),
+  },
+  loadingText: {
+    color: COLORS.gray800,
+    fontFamily: TYPOGRAPHY.fontPrimary,
+    fontSize: TYPOGRAPHY.fontSize.base,
   },
   modalContainer: {
     borderRadius: BORDER_RADIUS["2xl"],

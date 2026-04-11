@@ -125,7 +125,7 @@ const InstructionsModal: React.FC<InstructionsModalProps> = ({
               />
             </View>
 
-            <View style={{ width: "100%", marginBottom: verticalScale(20) }}>
+            <View style={{ width: "100%", marginBottom: verticalScale(32) }}>
               <WideButton buttonText="Got It!" onPress={onClose} />
             </View>
           </View>

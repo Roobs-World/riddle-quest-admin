@@ -6,7 +6,6 @@ MockModal.displayName = "MockModal";
 
 jest.mock("../game/VictoryModal", () => MockModal);
 jest.mock("../game/LossModal", () => MockModal);
-jest.mock("../game/GameModeModal", () => MockModal);
 jest.mock("../game/AchievementUnlockFanfareModal", () => MockModal);
 jest.mock("../settings/SettingsModal", () => MockModal);
 jest.mock("../settings/FullProfileDetailsModal", () => MockModal);
@@ -53,7 +52,6 @@ describe("ModalRegistry", () => {
     const requiredModalTypes = [
       "victory",
       "loss",
-      "gameMode",
       "settings",
       "fullProfileDetails",
       "achievements",
@@ -206,19 +204,6 @@ describe("ModalRegistry", () => {
         };
 
         expect(() => LossModal(props)).not.toThrow();
-      });
-    });
-
-    describe("GameMode Modal", () => {
-      it("should map props correctly for gameMode modal", () => {
-        const GameModeModal = getModalComponent("gameMode");
-        const props = {
-          ...createBaseProps(),
-          onSelectMode: jest.fn(),
-          currentLevel: 5,
-        };
-
-        expect(() => GameModeModal(props)).not.toThrow();
       });
     });
 
@@ -456,7 +441,6 @@ describe("ModalRegistry", () => {
       // Game modals
       expect(modalRegistry.victory).toBeDefined();
       expect(modalRegistry.loss).toBeDefined();
-      expect(modalRegistry.gameMode).toBeDefined();
       expect(modalRegistry.achievementUnlockFanfare).toBeDefined();
 
       // Settings modals

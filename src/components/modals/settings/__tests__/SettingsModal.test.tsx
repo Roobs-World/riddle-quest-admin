@@ -13,14 +13,6 @@ jest.mock("@react-native-firebase/app", () => ({
   getApp: jest.fn(() => ({})),
 }));
 
-// Mock useModal hook
-const mockOpenGameModal = jest.fn();
-jest.mock("../../../../hooks/useModal", () => ({
-  useModal: () => ({
-    openGameModal: mockOpenGameModal,
-  }),
-}));
-
 // Mock constants
 jest.mock("../../../../constants/AppStrings", () => ({
   AppStrings: {
@@ -46,6 +38,7 @@ jest.mock("../../../../constants/AppStrings", () => ({
     };
     return labels[code] || code;
   },
+  getAppLanguage: jest.fn(() => "en"),
   SupportedLanguage: "en",
 }));
 
@@ -89,6 +82,8 @@ describe("<SettingsModal />", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    const { getAppLanguage } = require("../../../../constants/AppStrings");
+    getAppLanguage.mockReturnValue("en");
   });
 
   describe("Rendering", () => {
@@ -132,9 +127,9 @@ describe("<SettingsModal />", () => {
       expect(getByText("Help and Support?")).toBeTruthy();
     });
 
-    it("should render details account option", () => {
+    it("should render credits option", () => {
       const { getByText } = render(<SettingsModal {...defaultProps} />);
-      expect(getByText("Details account")).toBeTruthy();
+      expect(getByText("Credits")).toBeTruthy();
     });
 
     it("should render logout button", () => {
@@ -142,9 +137,9 @@ describe("<SettingsModal />", () => {
       expect(getByText("Logout")).toBeTruthy();
     });
 
-    it("should render close button (x)", () => {
-      const { getByText } = render(<SettingsModal {...defaultProps} />);
-      expect(getByText("x")).toBeTruthy();
+    it("should render close button", () => {
+      const { getByLabelText } = render(<SettingsModal {...defaultProps} />);
+      expect(getByLabelText("Close")).toBeTruthy();
     });
   });
 
@@ -181,15 +176,15 @@ describe("<SettingsModal />", () => {
       expect(defaultProps.onPressHelp).toHaveBeenCalledTimes(1);
     });
 
-    it("should call onPressCredits when details account is pressed", () => {
+    it("should call onPressCredits when credits is pressed", () => {
       const { getByText } = render(<SettingsModal {...defaultProps} />);
-      fireEvent.press(getByText("Details account"));
+      fireEvent.press(getByText("Credits"));
       expect(defaultProps.onPressCredits).toHaveBeenCalledTimes(1);
     });
 
     it("should call onClose when close button is pressed", () => {
-      const { getByText } = render(<SettingsModal {...defaultProps} />);
-      fireEvent.press(getByText("x"));
+      const { getByLabelText } = render(<SettingsModal {...defaultProps} />);
+      fireEvent.press(getByLabelText("Close"));
       expect(defaultProps.onClose).toHaveBeenCalledTimes(1);
     });
   });
@@ -322,61 +317,10 @@ describe("<SettingsModal />", () => {
     });
   });
 
-  describe("Achievements", () => {
-    it("should not render achievements option when playerData is null", () => {
-      const { queryByText } = render(
-        <SettingsModal {...defaultProps} playerData={null} />
-      );
+  describe("Menu Options", () => {
+    it("should not render achievements option", () => {
+      const { queryByText } = render(<SettingsModal {...defaultProps} />);
       expect(queryByText("Achievements")).toBeNull();
-    });
-
-    it("should not render achievements option when playerData is undefined", () => {
-      const { queryByText } = render(
-        <SettingsModal {...defaultProps} playerData={undefined} />
-      );
-      expect(queryByText("Achievements")).toBeNull();
-    });
-
-    it("should render achievements option when playerData is provided", () => {
-      const mockPlayerData = {
-        uid: "test-uid",
-        username: "TestUser",
-        email: "test@example.com",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
-      const { getByText } = render(
-        <SettingsModal {...defaultProps} playerData={mockPlayerData as any} />
-      );
-      expect(getByText("Achievements")).toBeTruthy();
-    });
-
-    it("should open achievements modal when achievements is pressed", async () => {
-      jest.useFakeTimers();
-      const mockPlayerData = {
-        uid: "test-uid",
-        username: "TestUser",
-        email: "test@example.com",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
-      const onClose = jest.fn();
-      const { getByText } = render(
-        <SettingsModal
-          {...defaultProps}
-          playerData={mockPlayerData as any}
-          onClose={onClose}
-        />
-      );
-
-      fireEvent.press(getByText("Achievements"));
-      expect(onClose).toHaveBeenCalledTimes(1);
-
-      jest.advanceTimersByTime(100);
-      expect(mockOpenGameModal).toHaveBeenCalledWith("achievements", {
-        playerData: mockPlayerData,
-      });
-      jest.useRealTimers();
     });
   });
 
@@ -466,11 +410,13 @@ describe("<SettingsModal />", () => {
     });
 
     it("should handle different language values", () => {
+      const { getAppLanguage } = require("../../../../constants/AppStrings");
       const { rerender, getByText } = render(
         <SettingsModal {...defaultProps} currentLanguage="en" as any />
       );
       expect(getByText("English")).toBeTruthy();
 
+      getAppLanguage.mockReturnValue("es");
       rerender(<SettingsModal {...defaultProps} currentLanguage="es" as any />);
       expect(getByText("Spanish")).toBeTruthy();
     });

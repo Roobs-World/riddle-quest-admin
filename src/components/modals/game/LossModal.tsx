@@ -2,28 +2,22 @@
  * @fileoverview Loss Modal Component
  *
  * A feedback modal that appears when a player fails to solve a riddle within
- * the allowed attempts. This modal provides closure by revealing the correct
- * answer, offers emotional support through encouraging messaging, and presents
- * clear options for continuing their gaming session.
+ * the allowed attempts. It offers emotional support through encouraging
+ * messaging and presents clear options for continuing gameplay.
  *
  * **Key Features:**
  * - Clear loss state communication with supportive messaging
- * - Correct answer revelation for learning and closure
  * - Immediate next level option to encourage continued engagement
- * - Alternative navigation to main menu for session management
+ * - Optional continue mechanics (watch ad / use coins)
  * - Accessibility support for all interaction elements
  *
  * **Psychology & UX:**
- * - Minimizes frustration by immediately showing the answer
- * - Provides learning opportunity through answer revelation
  * - Encourages immediate re-engagement with prominent next level option
- * - Offers graceful exit without penalty or shame
  * - Uses supportive rather than punitive language and design
  *
  * **Design Patterns:**
  * - Error modal variant with red accent color
- * - Information-focused layout prioritizing answer display
- * - Clear action hierarchy (next level primary, home secondary)
+ * - Clear action hierarchy centered on continuing play
  * - Consistent modal structure and responsive design
  *
  * @author Qwordly Development Team
@@ -43,8 +37,7 @@ import { MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, MODAL_BUTTON_SPACER }
 /**
  * Props interface for the LossModal component.
  *
- * Defines all required properties for rendering the loss state modal
- * with appropriate answer display and navigation options.
+ * Defines all required properties for rendering the loss state modal.
  */
 interface LossModalProps {
   /** Controls the visibility state of the modal */
@@ -56,7 +49,7 @@ interface LossModalProps {
   /** Callback function executed when user chooses to go to the next level */
   onNext: () => void;
 
-  /** Callback function executed when user chooses to return to main menu */
+  /** Retained for compatibility with existing call sites */
   onHome: () => void;
 
   /** Function to close the modal (from BaseModalProps) */
@@ -71,31 +64,36 @@ interface LossModalProps {
   /** Coin cost shown on the coin-continue button */
   coinContinueCost?: number;
 
+  /** Coin cost shown on the skip-level button */
+  skipLevelCost?: number;
+
   /** Whether the rewarded ad is ready (disables the watch-ad button if false) */
   canWatchAd?: boolean;
 
   /** Whether the user has enough coins (disables the coin button if false) */
   canUseCoin?: boolean;
+
+  /** Opens the coin shop modal when present */
+  onOpenShop?: () => void;
 }
 
 /**
  * Loss Modal Component
  *
- * Displays when a player fails to solve a riddle, providing the correct answer
- * and options for next steps. The modal focuses on learning and encouragement
- * rather than punishment, helping maintain player engagement and motivation.
+ * Displays when a player fails to solve a riddle and offers next-step actions
+ * to maintain engagement and momentum.
  */
 const LossModal: React.FC<LossModalProps> = ({
   isVisible,
-  correctAnswer,
   onNext,
-  onHome,
   onClose,
   onWatchAdContinue,
   onCoinContinue,
   coinContinueCost,
+  skipLevelCost,
   canWatchAd,
   canUseCoin,
+  onOpenShop,
 }) => {
   const showContinueOptions = !!(onWatchAdContinue || onCoinContinue);
 
@@ -105,18 +103,6 @@ const LossModal: React.FC<LossModalProps> = ({
   const handleNextLevel = async () => {
     if (typeof onNext === "function") {
       await Promise.resolve(onNext());
-    }
-    if (typeof onClose === "function") {
-      onClose();
-    }
-  };
-
-  /**
-   * Handles returning to lobby/home and closes the modal afterward.
-   */
-  const handleHome = async () => {
-    if (typeof onHome === "function") {
-      await Promise.resolve(onHome());
     }
     if (typeof onClose === "function") {
       onClose();
@@ -151,13 +137,22 @@ const LossModal: React.FC<LossModalProps> = ({
     }
   };
 
+  /**
+   * Opens the coin shop for players who want to buy more coins.
+   */
+  const handleOpenShop = async () => {
+    if (typeof onOpenShop === "function") {
+      await Promise.resolve(onOpenShop());
+    }
+  };
+
   return (
     <Modal
       animationType="fade"
       transparent={true}
       visible={isVisible}
       onRequestClose={onClose}
-      accessibilityLabel="Game loss notification with correct answer"
+      accessibilityLabel="Game loss notification"
     >
       <View
         style={{
@@ -208,17 +203,6 @@ const LossModal: React.FC<LossModalProps> = ({
                   >
                     Out of attempts.
                   </Text>
-                  <Text
-                    style={{
-                      fontFamily: TYPOGRAPHY.fontSecondary,
-                      fontSize: TYPOGRAPHY.fontSize.base,
-                      color: "black",
-                      textAlign: "center",
-                      marginTop: 6,
-                    }}
-                  >
-                    Answer: {correctAnswer}
-                  </Text>
                 </View>
                 <View style={{ flex: 2, justifyContent: "center", width: "100%" }}>
                   {onWatchAdContinue && (
@@ -241,9 +225,16 @@ const LossModal: React.FC<LossModalProps> = ({
                       <View style={{ height: MODAL_BUTTON_SPACER }} />
                     </>
                   )}
-                  <WideButton onPress={handleNextLevel} buttonText="Skip Level" />
-                  <View style={{ height: MODAL_BUTTON_SPACER }} />
-                  <WideButton onPress={handleHome} buttonText="Go to Lobby" />
+                  {onOpenShop && (
+                    <>
+                      <WideButton onPress={handleOpenShop} buttonText="Open Shop" />
+                      <View style={{ height: MODAL_BUTTON_SPACER }} />
+                    </>
+                  )}
+                  <WideButton
+                    onPress={handleNextLevel}
+                    buttonText={`Skip Level (${skipLevelCost ?? 0} Coins)`}
+                  />
                 </View>
               </>
             ) : (
@@ -274,22 +265,15 @@ const LossModal: React.FC<LossModalProps> = ({
                   >
                     Out of attempts.
                   </Text>
-                  <Text
-                    style={{
-                      fontFamily: TYPOGRAPHY.fontSecondary,
-                      fontSize: TYPOGRAPHY.fontSize.base,
-                      color: "black",
-                      textAlign: "center",
-                      marginTop: 6,
-                    }}
-                  >
-                    Answer: {correctAnswer}
-                  </Text>
                 </View>
                 <View style={{ flex: 2, justifyContent: "center", width: "100%" }}>
+                  {onOpenShop && (
+                    <>
+                      <WideButton onPress={handleOpenShop} buttonText="Open Shop" />
+                      <View style={{ height: MODAL_BUTTON_SPACER }} />
+                    </>
+                  )}
                   <WideButton onPress={handleNextLevel} buttonText="Next Level" />
-                  <View style={{ height: MODAL_BUTTON_SPACER }} />
-                  <WideButton onPress={handleHome} buttonText="Go to Lobby" />
                 </View>
               </>
             )}

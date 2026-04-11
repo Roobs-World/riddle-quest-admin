@@ -41,9 +41,9 @@ describe("sceneFactory", () => {
       ["sun", new SphereGeometry(10, 8, 8)],
     ]);
     const textures = new Map<string, Texture | null>([
+      ["sun", new Texture()],
       ["glow_sun", new Texture()],
       ["glow_sun_intense", new Texture()],
-      ["glow_planet", new Texture()],
       ["glow_planet_intense", new Texture()],
     ]);
     const meshes: Mesh[] = [];

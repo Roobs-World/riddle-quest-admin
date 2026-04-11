@@ -103,6 +103,8 @@ describe("StatsModal", () => {
     expect(getByText("5")).toBeTruthy();
     expect(getByText("Highest Classic Level")).toBeTruthy();
     expect(getByText("12")).toBeTruthy();
+    expect(getByText("XP")).toBeTruthy();
+    expect(getByText("0")).toBeTruthy();
   });
 
   it("renders wins and streaks stats with correct values", () => {

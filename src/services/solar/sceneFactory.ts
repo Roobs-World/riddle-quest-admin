@@ -104,9 +104,9 @@ export const addSunMeshes = (
 ): void => {
   const sunGeometry = geometries.get("sun");
   const sunGlowTextures = [
+    textures.get("sun"),
     textures.get("glow_sun"),
     textures.get("glow_sun_intense"),
-    textures.get("glow_planet"),
     textures.get("glow_planet_intense"),
   ];
 

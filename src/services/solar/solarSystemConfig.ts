@@ -19,6 +19,7 @@ import texGradientCircle from "../../../assets/3d/tex_gradient_circle.png";
 import texGradientCircleSun from "../../../assets/3d/tex_gradient_circle_sun.png";
 import texGradientCircleI from "../../../assets/3d/tex_gradient_circle_i.png";
 import texGradientCircleSunI from "../../../assets/3d/tex_gradient_circle_sun_i.png";
+import texSunSpots from "../../../assets/3d/tex_sun_spots_02.png";
 
 /**
  * Config for one planet in the rendered solar system.
@@ -66,6 +67,7 @@ export interface TextureMappingEntry {
  * Canonical texture mapping used by preload and material builders.
  */
 export const SOLAR_TEXTURE_MAPPING: TextureMappingEntry[] = [
+  { key: "sun", path: texSunSpots },
   { key: "planet_a", path: texPlanetA },
   { key: "planet_d", path: texPlanetD },
   { key: "planet_v", path: texPlanetV },

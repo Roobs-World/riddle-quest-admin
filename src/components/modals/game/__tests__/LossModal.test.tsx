@@ -103,12 +103,13 @@ describe("LossModal", () => {
           onWatchAdContinue={jest.fn()}
           onCoinContinue={jest.fn()}
           coinContinueCost={25}
+          skipLevelCost={100}
         />
       );
 
       expect(getByText("Watch Ad to Continue")).toBeTruthy();
       expect(getByText("Use 25 Coins to Continue")).toBeTruthy();
-      expect(getByText("Skip Level")).toBeTruthy();
+      expect(getByText("Skip Level (100 Coins)")).toBeTruthy();
     });
   });
 
@@ -160,6 +161,17 @@ describe("LossModal", () => {
       // Should not crash when button is pressed
       fireEvent.press(getByText("Next Level"));
       // Test passes if no error is thrown
+    });
+
+    it("should call onOpenShop when Open Shop button is pressed", () => {
+      const mockOnOpenShop = jest.fn();
+      const { getByText } = render(
+        <LossModal {...defaultProps} onOpenShop={mockOnOpenShop} />
+      );
+
+      fireEvent.press(getByText("Open Shop"));
+
+      expect(mockOnOpenShop).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -227,10 +239,11 @@ describe("LossModal", () => {
         <LossModal
           {...defaultProps}
           onWatchAdContinue={jest.fn()}
+          skipLevelCost={75}
         />
       );
 
-      expect(getByText("Skip Level")).toBeTruthy();
+      expect(getByText("Skip Level (75 Coins)")).toBeTruthy();
       expect(queryByText("Next Level")).toBeNull();
     });
 
@@ -246,6 +259,18 @@ describe("LossModal", () => {
 
       expect(getByText("Watch Ad to Continue")).toBeTruthy();
       expect(getByText("Use 25 Coins to Continue")).toBeTruthy();
+    });
+
+    it("should show Open Shop in continue-options view when callback is provided", () => {
+      const { getByText } = render(
+        <LossModal
+          {...defaultProps}
+          onWatchAdContinue={jest.fn()}
+          onOpenShop={jest.fn()}
+        />
+      );
+
+      expect(getByText("Open Shop")).toBeTruthy();
     });
 
     it("should call onWatchAdContinue when Watch Ad button is pressed", async () => {
@@ -387,62 +412,23 @@ describe("LossModal", () => {
     });
   });
 
-  describe("Go to Lobby button", () => {
-    it("should call onHome when Go to Lobby button is pressed", () => {
-      const { getByText } = render(<LossModal {...defaultProps} />);
+  describe("Removed loss actions and answer", () => {
+    it("should not render a Go to Lobby button", () => {
+      const { queryByText } = render(<LossModal {...defaultProps} />);
 
-      fireEvent.press(getByText("Go to Lobby"));
-
-      expect(defaultProps.onHome).toHaveBeenCalledTimes(1);
+      expect(queryByText("Go to Lobby")).toBeNull();
     });
 
-    it("should call onClose after onHome when Go to Lobby is pressed", async () => {
-      const mockOnHome = jest.fn().mockResolvedValue(undefined);
-      const mockOnClose = jest.fn();
-
-      const props = {
-        ...defaultProps,
-        onHome: mockOnHome,
-        onClose: mockOnClose,
-      };
-
-      const { getByText } = render(<LossModal {...props} />);
-
-      fireEvent.press(getByText("Go to Lobby"));
-
-      expect(mockOnHome).toHaveBeenCalledTimes(1);
-
-      await waitFor(() => {
-        expect(mockOnClose).toHaveBeenCalledTimes(1);
-      });
-    });
-
-    it("should show Go to Lobby in both continue and non-continue views", () => {
-      // Non-continue view
-      const { getByText: getByTextNoContinue } = render(
-        <LossModal {...defaultProps} />
-      );
-      expect(getByTextNoContinue("Go to Lobby")).toBeTruthy();
-
-      // Continue view
-      const { getByText: getByTextContinue } = render(
-        <LossModal {...defaultProps} onWatchAdContinue={jest.fn()} />
-      );
-      expect(getByTextContinue("Go to Lobby")).toBeTruthy();
-    });
-  });
-
-  describe("Answer Display", () => {
-    it("should display the correct answer in the modal", () => {
-      const { getByText } = render(
+    it("should not render answer text in normal view", () => {
+      const { queryByText } = render(
         <LossModal {...defaultProps} correctAnswer="PUZZLE" />
       );
 
-      expect(getByText("Answer: PUZZLE")).toBeTruthy();
+      expect(queryByText("Answer: PUZZLE")).toBeNull();
     });
 
-    it("should display answer in continue options view", () => {
-      const { getByText } = render(
+    it("should not render answer text in continue-options view", () => {
+      const { queryByText } = render(
         <LossModal
           {...defaultProps}
           correctAnswer="RIDDLE"
@@ -450,7 +436,13 @@ describe("LossModal", () => {
         />
       );
 
-      expect(getByText("Answer: RIDDLE")).toBeTruthy();
+      expect(queryByText("Answer: RIDDLE")).toBeNull();
+    });
+
+    it("should not render Open Shop button when callback is not provided", () => {
+      const { queryByText } = render(<LossModal {...defaultProps} />);
+
+      expect(queryByText("Open Shop")).toBeNull();
     });
   });
 

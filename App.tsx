@@ -53,7 +53,6 @@ import {
   isSharedAnimationBackendEnabled,
   isSharedAnimationBackendFlagRequested,
 } from "./src/config/featureFlags";
-import GlobalMuteOverlay from "./src/components/overlays/GlobalMuteOverlay";
 
 const SOLAR_PRELOAD_TIMEOUT_MS = 15000;
 
@@ -242,7 +241,6 @@ export default Sentry.wrap(function App() {
             <NavigationContainer>
               <Navigation />
             </NavigationContainer>
-            <GlobalMuteOverlay />
           </View>
         </AuthProvider>
       </ModalProvider>

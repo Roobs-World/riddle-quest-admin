@@ -106,12 +106,12 @@ service cloud.firestore {
       allow write: if isServerRequest();
     }
 
-    // Daily Challenge collection - read-only for clients
-    match /dailyChallenge/{date} {
-      // Authenticated users can read daily challenges
+    // Daily Challenge singleton doc - read-only for clients
+    match /dailyChallenge/current {
+      // Authenticated users can read the current daily challenge
       allow read: if isAuthenticated();
       
-      // Only server (Cloud Functions) can manage daily challenges
+      // Only server (Cloud Functions) can manage the current daily challenge
       allow write: if isServerRequest();
     }
 

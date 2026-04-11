@@ -392,7 +392,7 @@ export class SolarSystemPreloader {
       {
         key: "sun",
         create: () => {
-          const sunTexture = textures.get("glow_sun");
+          const sunTexture = textures.get("sun") ?? textures.get("glow_sun");
           return new MeshBasicMaterial({
             map: sunTexture || undefined,
             color: 0xffff00,

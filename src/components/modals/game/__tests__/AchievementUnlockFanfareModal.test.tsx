@@ -75,20 +75,32 @@ describe("AchievementUnlockFanfareModal", () => {
     const { getByText } = render(
       <AchievementUnlockFanfareModal
         isVisible={true}
-        achievementNames={["First Victory"]}
+        achievements={[
+          {
+            name: "First Victory",
+            description: "Win your first game",
+            icon: "*",
+          },
+        ]}
         onClose={jest.fn()}
       />
     );
 
     expect(getByText("Achievement Unlocked!")).toBeTruthy();
+    expect(getByText("*")).toBeTruthy();
     expect(getByText("First Victory")).toBeTruthy();
+    expect(getByText("Win your first game")).toBeTruthy();
   });
 
   it("shows aggregated count when multiple achievements unlock", () => {
     const { getByText } = render(
       <AchievementUnlockFanfareModal
         isVisible={true}
-        achievementNames={["First Victory", "Speed Runner", "No Hint Hero"]}
+        achievements={[
+          { name: "First Victory", description: "Win one game", icon: "*" },
+          { name: "Speed Runner", description: "Solve quickly", icon: "!" },
+          { name: "No Hint Hero", description: "Win without hints", icon: "#" },
+        ]}
         onClose={jest.fn()}
       />
     );
@@ -101,7 +113,13 @@ describe("AchievementUnlockFanfareModal", () => {
     const { getByText } = render(
       <AchievementUnlockFanfareModal
         isVisible={true}
-        achievementNames={["First Victory"]}
+        achievements={[
+          {
+            name: "First Victory",
+            description: "Win your first game",
+            icon: "*",
+          },
+        ]}
         onClose={onClose}
       />
     );

@@ -13,6 +13,7 @@ jest.mock("../../../../assets/3d/tex_gradient_circle.png", () => "tex_gradient_c
 jest.mock("../../../../assets/3d/tex_gradient_circle_sun.png", () => "tex_gradient_circle_sun.png");
 jest.mock("../../../../assets/3d/tex_gradient_circle_i.png", () => "tex_gradient_circle_i.png");
 jest.mock("../../../../assets/3d/tex_gradient_circle_sun_i.png", () => "tex_gradient_circle_sun_i.png");
+jest.mock("../../../../assets/3d/tex_sun_spots_02.png", () => "tex_sun_spots_02.png");
 
 import { SOLAR_SYSTEM_CONFIG, SOLAR_TEXTURE_MAPPING } from "../solarSystemConfig";
 
@@ -20,6 +21,7 @@ describe("solarSystemConfig", () => {
   it("has unique texture keys", () => {
     const keys = SOLAR_TEXTURE_MAPPING.map((entry) => entry.key);
     expect(new Set(keys).size).toBe(keys.length);
+    expect(keys).toContain("sun");
   });
 
   it("defines expected planet count and positive orbital values", () => {

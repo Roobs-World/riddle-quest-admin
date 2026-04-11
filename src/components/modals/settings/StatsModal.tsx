@@ -83,6 +83,7 @@ const StatsModal: React.FC<StatsModalProps> = ({
             <StatRow label="Games Played" value={stats?.gamesPlayed ?? 0} />
             <StatRow label="Daily Puzzles" value={stats?.dailyPuzzlesCompleted ?? 0} />
             <StatRow label="Highest Classic Level" value={stats?.highestLevelClassic ?? 0} />
+            <StatRow label="XP" value={stats?.xp ?? 0} />
 
             <SectionHeader label="Wins & Streaks" />
             <StatRow label="Total Wins" value={stats?.totalWins ?? 0} />

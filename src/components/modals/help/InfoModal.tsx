@@ -48,6 +48,11 @@ const InfoModal: React.FC<InfoModalProps> = ({
           }}
         >
           <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{ position: "absolute" }} />
+          <CloseButton
+              onPress={onClose}
+              size={CLOSE_BUTTON_SIZE}
+              style={MODAL_CLOSE_BUTTON_POSITION}
+            />
           <View
             style={{
               width: "80%",
@@ -55,11 +60,7 @@ const InfoModal: React.FC<InfoModalProps> = ({
               justifyContent: "center",
             }}
           >
-            <CloseButton
-              onPress={onClose}
-              size={CLOSE_BUTTON_SIZE}
-              style={MODAL_CLOSE_BUTTON_POSITION}
-            />
+            
             <Text
               style={{
                 fontFamily: TYPOGRAPHY.fontPrimary,

@@ -11,6 +11,7 @@ import {
   Alert,
   ScrollView,
 } from "react-native";
+import CloseButton from "../../buttons/CloseButton";
 import { getAuth } from "@react-native-firebase/auth";
 import { getApp } from "@react-native-firebase/app";
 import {
@@ -20,8 +21,8 @@ import {
   getLanguageLabel,
 } from "../../../constants/AppStrings";
 import { TYPOGRAPHY } from "../../../styles";
-import { useModal } from "../../../hooks/useModal";
 import { SPACING } from "../../../styles";
+import { verticalScale } from "@/utils/responsive";
 
 interface SettingsModalProps {
   isVisible: boolean;
@@ -35,7 +36,6 @@ interface SettingsModalProps {
   onPressHelp: () => void;
   onPressLogout: () => void;
   onPressCredits: () => void;
-  playerData?: import("../../../validation/firestoreSchemas").Player | null;
 }
 
 const SegmentedToggle = ({
@@ -152,17 +152,22 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
   onPressHelp,
   onPressLogout,
   onPressCredits,
-  playerData,
 }) => {
-  const modal = useModal();
   const [isLanguagePickerOpen, setIsLanguagePickerOpen] = React.useState(false);
+  const [selectedLanguage, setSelectedLanguage] =
+    React.useState<SupportedLanguage>(currentLanguage);
+  const [selectedSoundEnabled, setSelectedSoundEnabled] =
+    React.useState<boolean>(isSoundEnabled);
+  const [selectedHapticsEnabled, setSelectedHapticsEnabled] =
+    React.useState<boolean>(isHapticsEnabled);
 
-  const handleViewAchievements = () => {
-    onClose();
-    setTimeout(() => {
-      modal.openGameModal("achievements", { playerData: playerData ?? null });
-    }, 100);
-  };
+  React.useEffect(() => {
+    if (isVisible) {
+      setSelectedLanguage(currentLanguage);
+      setSelectedSoundEnabled(isSoundEnabled);
+      setSelectedHapticsEnabled(isHapticsEnabled);
+    }
+  }, [isVisible, currentLanguage, isSoundEnabled, isHapticsEnabled]);
 
   return (
     <Modal
@@ -188,17 +193,6 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
             paddingBottom: SPACING["2xl"] ?? 32,
           }}
         >
-          <View style={{ alignItems: "center", paddingTop: 12, paddingBottom: 4 }}>
-            <View
-              style={{
-                width: 36,
-                height: 4,
-                backgroundColor: "#C4B8C4",
-                borderRadius: 2,
-              }}
-            />
-          </View>
-
           <View
             style={{
               flexDirection: "row",
@@ -212,35 +206,21 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
             <Text
               style={{
                 fontFamily: TYPOGRAPHY.fontPrimary,
-                fontSize: TYPOGRAPHY.fontSize.xl,
-                fontWeight: "bold",
+                fontSize: TYPOGRAPHY.fontSize["4xl"],
                 color: "#1A1A1A",
                 letterSpacing: 1,
               }}
             >
               {AppStrings.Settings.TITLE}
             </Text>
-            <TouchableOpacity
+            <CloseButton
               onPress={onClose}
               style={{
                 position: "absolute",
                 right: SPACING.lg,
-                width: 32,
-                height: 32,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 18,
-                  color: "#1A1A1A",
-                  fontWeight: "300",
-                }}
-              >
-                x
-              </Text>
-            </TouchableOpacity>
+                top: verticalScale(32),
+            }}
+            />
           </View>
 
           <View style={{ paddingHorizontal: SPACING.lg }}>
@@ -261,7 +241,13 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
               >
                 {AppStrings.Settings.SOUND_TOGGLE}
               </Text>
-              <SegmentedToggle value={isSoundEnabled} onChange={onToggleSound} />
+              <SegmentedToggle
+                value={selectedSoundEnabled}
+                onChange={(enabled) => {
+                  setSelectedSoundEnabled(enabled);
+                  onToggleSound(enabled);
+                }}
+              />
             </View>
 
             <View style={{ height: 1, backgroundColor: "#E8E0E8" }} />
@@ -283,14 +269,20 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
               >
                 {AppStrings.Settings.HAPTICS_TOGGLE}
               </Text>
-              <SegmentedToggle value={isHapticsEnabled} onChange={onToggleHaptics} />
+              <SegmentedToggle
+                value={selectedHapticsEnabled}
+                onChange={(enabled) => {
+                  setSelectedHapticsEnabled(enabled);
+                  onToggleHaptics(enabled);
+                }}
+              />
             </View>
 
             <View style={{ height: 1, backgroundColor: "#E8E0E8" }} />
 
             <ArrowRow
               label={AppStrings.Settings.LANGUAGE_LABEL}
-              value={getLanguageLabel(currentLanguage)}
+              value={getLanguageLabel(selectedLanguage)}
               onPress={() => setIsLanguagePickerOpen(true)}
             />
 
@@ -300,14 +292,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
 
             <View style={{ height: 1, backgroundColor: "#E8E0E8" }} />
 
-            <ArrowRow label="Details account" onPress={onPressCredits} />
-
-            {playerData != null && (
-              <>
-                <View style={{ height: 1, backgroundColor: "#E8E0E8" }} />
-                <ArrowRow label="Achievements" onPress={handleViewAchievements} />
-              </>
-            )}
+            <ArrowRow label="Credits" onPress={onPressCredits} />
 
             <View style={{ height: 1, backgroundColor: "#E8E0E8" }} />
 
@@ -378,11 +363,12 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
 
             <ScrollView>
               {LANGUAGE_OPTIONS.map((option) => {
-                const isSelected = option.code === currentLanguage;
+                const isSelected = option.code === selectedLanguage;
                 return (
                   <TouchableOpacity
                     key={option.code}
                     onPress={() => {
+                      setSelectedLanguage(option.code);
                       onChangeLanguage(option.code);
                       setIsLanguagePickerOpen(false);
                     }}

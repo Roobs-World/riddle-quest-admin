@@ -4,7 +4,7 @@
  *
  * This screen is the primary entry point for unauthenticated users. It
  * provides email/password, Google, and Facebook sign-in options, a path
- * to registration, and a "Play as Guest" shortcut into game mode selection.
+ * to registration, and a "Play as Guest" shortcut into gameplay.
  */
 import React, { useState } from "react";
 import { View, Text } from "react-native";
@@ -25,23 +25,21 @@ import { styles, SPACING } from "../styles";
 import { logger } from "../utils/logger";
 import { captureException } from "../utils/sentry";
 import CreditsModal from "../components/modals/help/CreditsModal";
-import GameModeModal from "../components/modals/game/GameModeModal";
+import MainLogoSvg from "../../assets/images/main-logo.svg";
 
 /**
  * Landing screen component used at the root of the auth stack.
  *
  * It wires social sign-in handlers, navigates to email/password login and
- * registration screens, and exposes a guest play CTA that opens the game
- * mode selection modal before routing into gameplay.
+ * registration screens, and exposes a guest play CTA for anonymous sign-in.
  *
  * @param navigation React Navigation stack navigation prop.
  */
 const LandingScreen = () => {
   const [authError, setAuthError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { login, isAuthenticated, setGameMode } = useAuth();
+  const { login, isAuthenticated } = useAuth();
   const [isCreditsVisible, setIsCreditsVisible] = useState(false);
-  const [isGameModeVisible, setIsGameModeVisible] = useState(false);
 
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
@@ -186,10 +184,22 @@ const LandingScreen = () => {
     }
   };
 
-  const handlePlayButtonPress = () => {
-    // Show game mode selection first; sign-in happens after the user picks a mode
-    // so that the modal isn't unmounted when isAuthenticated flips to true.
-    setIsGameModeVisible(true);
+  const handlePlayButtonPress = async () => {
+    setIsLoading(true);
+    setAuthError(null);
+
+    try {
+      if (isAuthenticated) {
+        await AuthService.logout();
+      }
+      await AuthService.signInAnonymously();
+      // isAuthenticated becomes true -> Navigation switches to Game automatically
+    } catch (error) {
+      logger.error("Error signing in anonymously for guest play:", error);
+      captureException(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -199,6 +209,12 @@ const LandingScreen = () => {
       <View style={{ flex: 1, width: '100%', alignItems: 'center', zIndex: 2 }}>
         {/* Title at the top */}
         <View style={{ alignItems: 'center', paddingTop: SPACING.xl }}>
+          <MainLogoSvg
+            testID="main-logo-svg"
+            width={288}
+            height={70}
+            style={{ marginBottom: SPACING.md }}
+          />
           <Text
             className="font-bold text-white text-center"
             style={[styles.title, { marginBottom: SPACING.md, color: '#FFFFFF' }]}
@@ -233,30 +249,9 @@ const LandingScreen = () => {
         isVisible={isCreditsVisible}
         onClose={() => setIsCreditsVisible(false)}
       />
-      <GameModeModal
-        isVisible={isGameModeVisible}
-        onClose={() => setIsGameModeVisible(false)}
-        /* istanbul ignore next */
-        onSelectMode={async (mode) => {
-          setIsGameModeVisible(false);
-          setIsLoading(true);
-          try {
-            if (isAuthenticated) {
-              await AuthService.logout();
-            }
-            setGameMode(mode);
-            await AuthService.signInAnonymously();
-            // isAuthenticated becomes true → Navigation switches to Game automatically
-          } catch (error) {
-            logger.error("Error signing in anonymously for guest play:", error);
-            captureException(error);
-          } finally {
-            setIsLoading(false);
-          }
-        }}
-      />
     </CustomSafeAreaView>
   );
 };
 
 export default LandingScreen;
+

@@ -206,9 +206,9 @@ describe("RiddleService", () => {
 
       expect(result).toBeNull();
       expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "users", mockUserId);
-      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "dailyChallenge", mockToday);
+      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "dailyChallenge", "current");
       expect(logger.debug).toHaveBeenCalledWith(
-        `No daily challenge found for date: ${mockToday}`
+        `No current daily challenge found (docId: current) for date: ${mockToday}`
       );
     });
 
@@ -1063,7 +1063,7 @@ describe("RiddleService", () => {
 
       // Verify doc/collection calls were made with correct collection names
       expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "users", expect.any(String));
-      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "dailyChallenge", expect.any(String));
+      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "dailyChallenge", "current");
       expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "riddles");
     });
 

@@ -8,7 +8,7 @@
  * progression across modes, and user settings such as sound and haptics.
  */
 import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
-import { KeyboardAvoidingView, Platform, View } from "react-native";
+import { KeyboardAvoidingView, Platform, View, Linking } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as RNIap from "react-native-iap";
 
@@ -60,6 +60,7 @@ import {
 } from "../../services/ProductPricingService";
 import ModalTogglePanel from "../../components/development/ModalTogglePanel";
 import StarryBackground from "../../components/background/StarryBackground";
+import GlobalMuteOverlay from "../../components/overlays/GlobalMuteOverlay";
 import { logger } from "../../utils/logger";
 import { captureException } from "../../utils/sentry";
 import { computeLetterStates } from "../../utils/letterStates";
@@ -67,6 +68,7 @@ import { ACHIEVEMENT_DEFINITIONS } from "../../constants/achievements";
 import { useGameSessionController } from "../../features/game-session/useGameSessionController";
 import { createGameModalActions } from "../../features/game-session/gameModalActions";
 import { isGuestPlayer } from "../../features/auth/sessionBootstrap";
+import { loadUserProgressFromFirestore } from "../../services/FirestoreService";
 
 interface GuessResult {
   /** High-level result classification returned after guess processing. */
@@ -164,19 +166,21 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const [activeSlotIndex, setActiveSlotIndex] = useState(0);
   const { isLoading, runWithServerLoading } = useGameSessionController();
   const modalActions = useMemo(() => createGameModalActions(modal), [modal]);
+  const [isProfileModalLoading, setIsProfileModalLoading] = useState(false);
 
   // Guard against re-running game-over logic when modal context re-renders.
   // The `modal` object from useModal() gets a new reference every time any
   // modal opens/closes, which would re-trigger the game-over effect and show
   // the victory modal + fire onGameWin multiple times.
   const gameOverHandledRef = useRef(false);
+  const openShopFromLossRef = useRef<() => void>(() => {});
 
   // IAP state
   const [iapProducts, setIapProducts] = useState<RNIap.Product[]>([]);
-  const [iapLoading, setIapLoading] = useState(false);
+  const [iapLoading, setIapLoading] = useState(true);
   const [iapError, setIapError] = useState<string | null>(null);
   const [firestoreProducts, setFirestoreProducts] = useState<ProductPricing[]>([]);
-  const [productPricingLoading, setProductPricingLoading] = useState(false);
+  const [productPricingLoading, setProductPricingLoading] = useState(true);
   const [productPricingError, setProductPricingError] = useState<string | null>(null);
 
   const {
@@ -472,12 +476,18 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       const result = lastGuessResult;
 
       if (result.outcome === "win") {
-        const unlockedAchievementNames = (result.newlyUnlockedAchievementIds ?? [])
+        const unlockedAchievements = (result.newlyUnlockedAchievementIds ?? [])
           .map(
             (achievementId) =>
-              ACHIEVEMENT_DEFINITIONS.find((d) => d.id === achievementId)?.name
+              ACHIEVEMENT_DEFINITIONS.find((d) => d.id === achievementId)
           )
-          .filter((name): name is string => typeof name === "string");
+          .filter((achievement): achievement is (typeof ACHIEVEMENT_DEFINITIONS)[number] =>
+            Boolean(achievement)
+          );
+
+        const unlockedAchievementNames = unlockedAchievements.map(
+          (achievement) => achievement.name
+        );
 
     
         if (isHapticsEnabled) {
@@ -490,6 +500,11 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         if (unlockedAchievementNames.length > 0) {
           modal.showAchievementUnlockFanfareModal({
             achievementNames: unlockedAchievementNames,
+            achievements: unlockedAchievements.map((achievement) => ({
+              name: achievement.name,
+              description: achievement.description,
+              icon: achievement.icon,
+            })),
           });
         }
 
@@ -526,13 +541,17 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         onGameWin(guesses.length, result.coinsEarned || 0, result.scoreEarned || 0);
       } else if (result.outcome === "attemptLimitReached") {
         const canAffordCoinContinue = (userCoins ?? 0) >= CONTINUE_COST_COINS;
+        const skipLevelCost =
+          gameMode === "daily" ? SKIP_COST_DAILY : SKIP_COST_CLASSIC;
         modal.showLossModal({
           correctAnswer: result.correctAnswer || "",
           onWatchAdContinue: result.canOfferRewardedAd ? handleWatchAdToContinue : undefined,
           onCoinContinue: result.canOfferCoinContinue ? handleCoinContinue : undefined,
           coinContinueCost: CONTINUE_COST_COINS,
+          skipLevelCost,
           canWatchAd: isRewardedAdReady,
           canUseCoin: canAffordCoinContinue,
+          onOpenShop: () => openShopFromLossRef.current(),
           onNext: () => {
             modal.closeModalByType("loss");
             resetGame();
@@ -554,8 +573,12 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         }
 
         // Show loss modal
+        const skipLevelCost =
+          gameMode === "daily" ? SKIP_COST_DAILY : SKIP_COST_CLASSIC;
         modal.showLossModal({
           correctAnswer: result.correctAnswer || "",
+          skipLevelCost,
+          onOpenShop: () => openShopFromLossRef.current(),
           onNext: () => {
             modal.closeModalByType("loss");
             resetGame();
@@ -708,52 +731,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     [answerLength]
   );
 
-  const handleChangeGameModePress = useCallback(() => {
-    modal.showGameModeModal({
-      currentLevel: (playerData?.progress?.classicIndex ?? 0) + 1,
-      onSelectMode: (mode) => {
-        logger.debug(`Selected game mode: ${mode}`);
-        // Handle mode selection here
-        if (mode === "classic") {
-          // Navigate to classic mode
-          resetGame();
-          // Use the setGameMode function from AuthContext
-          if (playerData) {
-            setGameMode("classic");
-            // Fetch the riddle for classic mode
-            runWithServerLoading(() =>
-              fetchCurrentRiddle(playerData, "classic")
-            ).catch((error) => {
-              logger.error("Error fetching classic riddle:", error);
-              captureException(error);
-            });
-          }
-        } else if (mode === "daily") {
-          // Navigate to daily challenge
-          resetGame();
-          // Use the setGameMode function from AuthContext
-          if (playerData) {
-            setGameMode("daily");
-            // Fetch the riddle for daily challenge
-            runWithServerLoading(() =>
-              fetchCurrentRiddle(playerData, "daily")
-            ).catch((error) => {
-              logger.error("Error fetching daily riddle:", error);
-              captureException(error);
-            });
-          }
-        }
-      },
-    });
-  }, [
-    modal,
-    resetGame,
-    playerData,
-    setGameMode,
-    fetchCurrentRiddle,
-    runWithServerLoading,
-  ]);
-
   const handleShowHint = useCallback(async () => {
     if (!playerData?.userId) return;
 
@@ -865,13 +842,11 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       onChangeLanguage: handleChangeLanguage,
       onPressLogout: logout,
       onPressHelp: () => {
-        logger.debug(
-          "Help button pressed - closing settings and opening instructions modal"
-        );
-        modal.closeModalByType("settings");
-        setTimeout(() => {
-          modal.showInstructionsModal();
-        }, MODAL_CLOSE_DELAY_MS);
+        logger.debug("Help button pressed - opening support email composer");
+        void Linking.openURL("mailto:support@adspeq.com").catch((error) => {
+          logger.error("Failed to open support email composer:", error);
+          captureException(error);
+        });
       },
       onPressCredits: () => {
         logger.debug(
@@ -896,11 +871,45 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     logout,
   ]);
 
-  const handleProfilePress = useCallback(() => {
+  const handleProfilePress = useCallback(async () => {
+    if (isProfileModalLoading) {
+      return;
+    }
+
+    const loadingStartedAt = Date.now();
+    setIsProfileModalLoading(true);
+    let latestPlayerData = playerData;
+
+    try {
+      if (!isGuestMode && playerData?.userId) {
+        try {
+          const refreshedProfile = await runWithServerLoading(() =>
+            loadUserProgressFromFirestore(playerData.userId)
+          );
+
+          if (refreshedProfile) {
+            latestPlayerData = refreshedProfile;
+            updatePlayerDataLocally(refreshedProfile);
+          }
+        } catch (error) {
+          logger.error("Error loading profile data before opening modal:", error);
+          captureException(error);
+        }
+      }
+
+      const minSpinnerMs = 300;
+      const elapsedMs = Date.now() - loadingStartedAt;
+      if (elapsedMs < minSpinnerMs) {
+        await safeDelay(minSpinnerMs - elapsedMs);
+      }
+    } finally {
+      setIsProfileModalLoading(false);
+    }
+
     modal.showFullProfileDetailsModal({
-      playerData: playerData || {},
+      playerData: latestPlayerData || {},
     });
-  }, [modal, playerData]);
+  }, [modal, playerData, isGuestMode, runWithServerLoading, updatePlayerDataLocally, isProfileModalLoading]);
 
   const handlePurchaseProduct = useCallback(
     async (productId: string) => {
@@ -1001,6 +1010,10 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     handlePayAndPlay,
   ]);
 
+  useEffect(() => {
+    openShopFromLossRef.current = handleCoinsPress;
+  }, [handleCoinsPress]);
+
   const handleDebugCompleteRiddle = useCallback(() => {
     if (gameOver) return;
 
@@ -1067,13 +1080,14 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           <BottomNavigationBar
             onProfilePress={handleProfilePress}
             onSettingsPress={handleSettingsPress}
-            onChangeGameModePress={handleChangeGameModePress}
           />
+
+          {process.env.NODE_ENV !== "test" && <GlobalMuteOverlay />}
         </KeyboardAvoidingView>
 
         {/* The new modal system - no more massive props list! */}
         <PulsingSpinner
-          visible={isLoading}
+          visible={isLoading || isProfileModalLoading}
           size={LOADING_SPINNER_SIZE}
           opacity={LOADING_SPINNER_OPACITY}
         />
