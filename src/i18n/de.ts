@@ -205,6 +205,7 @@ export const deOverrides: LocaleOverrides = {
     COINS_SUFFIX: " Muenzen",
     SHARE_TEXT: "Teilen Sie Ihren Sieg!",
     NEXT_LEVEL_BUTTON: "Naechstes Level",
+    YOU_WON_TITLE: "GEWONNEN!",
   },
   LossModal: {
     TITLE: "Knapp daneben!",
@@ -222,7 +223,15 @@ export const deOverrides: LocaleOverrides = {
     COINS_SUFFIX: " Muenzen",
     AWESOME_BUTTON: "Toll",
   },
+  RewardedAdPrompts: {
+    OUT_OF_GUESSES_PROMPT: "Keine Versuche mehr! Werbung ansehen, um Muenzen zu verdienen?",
+    WATCH_AD_BUTTON: "Werbung ansehen",
+    NO_THANKS_BUTTON: "Nein danke",
+  },
   Achievements: {
+    UNLOCKED_ALERT_TITLE: "Erfolg(e) freigeschaltet!",
+    UNLOCKED_ALERT_MESSAGE: "Profil aufrufen, um neue Erfolge zu sehen.",
+    UNLOCKED_ALERT_OK: "OK",
     MODAL_TITLE: "Erfolge",
     FANFARE_TITLE: "Erfolg freigeschaltet!",
     MORE_UNLOCKED_SUFFIX: " weitere freigeschaltet",
@@ -260,6 +269,8 @@ export const deOverrides: LocaleOverrides = {
   ErrorMessages: {
     UNABLE_TO_LOAD_RIDDLES:
       "Raetsel konnten nicht geladen werden. Verbindung pruefen.",
+    FAILED_TO_LOAD_PRODUCTS: "Produkte konnten nicht geladen werden",
+    FAILED_TO_LOAD_SHOP_PRODUCTS: "Shop-Produkte konnten nicht geladen werden",
   },
   GameScreenAlerts: {
     SUBMIT_GUESS_ERROR_TITLE: "Fehler",
@@ -333,13 +344,6 @@ export const deOverrides: LocaleOverrides = {
     LETTER_PREFIX: "Buchstabe ",
     GAME_HEADER: "Spielkopfzeile mit Logo und Muenzenstand",
     LOADING: "Laden",
-  },
-  VictoryModal: {
-    YOU_WON_TITLE: "GEWONNEN!",
-  },
-  GameScreenAlerts: {
-    SUBMIT_BUTTON: "ABSENDEN",
-    NEXT_BUTTON: "Weiter",
   },
   CoinShop: {
     TITLE: "MUENZENSHOP",
