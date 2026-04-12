@@ -22,10 +22,13 @@ import {
 import {
   CLOSE_BUTTON_SIZE_LG,
   MODAL_CLOSE_BUTTON_POSITION,
+  MODAL_HEIGHT,
+  MODAL_WIDTH,
 } from "../../constants/layout";
 import CoinSvg from "../../../assets/images/coin.svg";
 import LargeCoinStackSvg from "../../../assets/images/large-coin-stack.svg";
 import ModalBg from "../../../assets/images/modal-bg.svg";
+import HomeBg from "../../../assets/images/home-bg.svg";
 import { logger } from "../../utils/logger";
 import CloseButton from "../buttons/CloseButton";
 import WideButton from "../buttons/WideButton";
@@ -173,6 +176,12 @@ const CoinShop: React.FC<CoinShopProps> = ({
             height="100%"
             style={[StyleSheet.absoluteFill]}
             preserveAspectRatio="none"
+          />
+                    {/* Decorative wave — clipped to card bounds */}
+          <HomeBg
+            width={MODAL_WIDTH * 1.1}
+            height={MODAL_HEIGHT * 1.1}
+            style={{ position: "absolute", top: -MODAL_HEIGHT * 0.05, left: -MODAL_WIDTH * 0.05 }}
           />
           <CloseButton
             onPress={onClose}

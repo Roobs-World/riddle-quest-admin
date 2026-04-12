@@ -15,6 +15,7 @@ import UpdateUsernameModal from "./UpdateUsernameModal";
 import AvatarOptionsModal from "./AvatarOptionsModal";
 import PreloadedAvatarsModal from "./PreloadedAvatarsModal";
 import { TYPOGRAPHY, SPACING } from "../../../styles";
+import HomeBg from "../../../assets/images/home-bg.svg";
 import {
   CLOSE_BUTTON_SIZE,
   AVATAR_SIZE_LARGE,
@@ -139,8 +140,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
               <Text
                 style={{
                   fontFamily: TYPOGRAPHY.fontPrimary,
-                  fontSize: TYPOGRAPHY.fontSize.lg,
-                  fontWeight: "bold",
+                  fontSize: TYPOGRAPHY.fontSize["3xl"],
                   color: "#FFFFFF",
                   letterSpacing: 2,
                 }}
@@ -236,11 +236,11 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
                       }}
                     />
                   </View>
-                  <Text style={{ color: GOLD, fontSize: 11, fontFamily: TYPOGRAPHY.fontSecondary }}>
+                  <Text style={{ color: GOLD, fontSize: TYPOGRAPHY.fontSize.lg, fontFamily: TYPOGRAPHY.fontSecondary }}>
                     Lv.{level}
                   </Text>
                 </View>
-                <Text style={{ color: "rgba(255,255,255,0.6)", fontSize: 10, fontFamily: TYPOGRAPHY.fontSecondary, textAlign: "center" }}>
+                <Text style={{ color: "rgba(255,255,255,0.6)", fontSize: TYPOGRAPHY.fontSize.lg, fontFamily: TYPOGRAPHY.fontSecondary, textAlign: "center" }}>
                   {nextLevelXp > 0 ? `${currentXp} / ${nextLevelXp} XP` : "Max Level"}
                 </Text>
               </View>
@@ -257,10 +257,9 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
             <Text
               style={{
                 fontFamily: TYPOGRAPHY.fontPrimary,
-                fontSize: TYPOGRAPHY.fontSize.base,
-                fontWeight: "bold",
+                fontSize: TYPOGRAPHY.fontSize.lg,
                 color: "#1A1A1A",
-                marginBottom: SPACING.sm,
+                marginBottom: SPACING.md,
               }}
             >
               Daily puzzles completed
@@ -292,7 +291,6 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
                 style={{
                   fontFamily: TYPOGRAPHY.fontPrimary,
                   fontSize: TYPOGRAPHY.fontSize["2xl"],
-                  fontWeight: "bold",
                   color: "#1A1A1A",
                   flex: 1,
                 }}
@@ -302,7 +300,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
               <Text
                 style={{
                   fontFamily: TYPOGRAPHY.fontSecondary,
-                  fontSize: TYPOGRAPHY.fontSize.xs,
+                  fontSize: TYPOGRAPHY.fontSize.sm,
                   color: "#6B7280",
                   textAlign: "right",
                 }}
@@ -315,10 +313,9 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
             <Text
               style={{
                 fontFamily: TYPOGRAPHY.fontPrimary,
-                fontSize: TYPOGRAPHY.fontSize.base,
-                fontWeight: "bold",
+                fontSize: TYPOGRAPHY.fontSize.lg,
                 color: "#1A1A1A",
-                marginBottom: SPACING.sm,
+                marginBottom: SPACING.md,
               }}
             >
               Best Strike
@@ -416,7 +413,6 @@ const actionButtonStyle = {
 const actionButtonTextStyle = {
   fontFamily: TYPOGRAPHY.fontPrimary,
   fontSize: TYPOGRAPHY.fontSize.base,
-  fontWeight: "bold" as const,
   color: "#1A1A1A",
 };
 
@@ -443,7 +439,6 @@ const StatBox = ({
       style={{
         fontFamily: TYPOGRAPHY.fontPrimary,
         fontSize: TYPOGRAPHY.fontSize["2xl"],
-        fontWeight: "bold",
         color: "#1A1A1A",
       }}
     >
