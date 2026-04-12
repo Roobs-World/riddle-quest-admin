@@ -414,6 +414,12 @@ const styles = StyleSheet.create({
   gridCardSelected: {
     borderColor: COLORS.primaryOrange,
     borderWidth: 2,
+    overflow: "visible",
+    shadowColor: COLORS.primaryOrange,
+    shadowOpacity: 0.7,
+    shadowRadius: moderateScale(10),
+    shadowOffset: { width: 0, height: 0 },
+    elevation: 10,
   },
   headerRow: {
     alignItems: "center",

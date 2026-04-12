@@ -60,8 +60,14 @@ export function getLevelFromXp(totalXp: number): number {
   return completedLevelUps + 1;
 }
 
-/** Threshold of remaining riddles below which new riddles are auto-generated. */
-export const RIDDLE_GENERATION_THRESHOLD = 10;
+/**
+ * Threshold of remaining classic riddles (based on `totalClassicRiddles - currentClassicIndex`)
+ * below which new riddles are auto-generated.
+ *
+ * With the current semantics (currentClassicIndex is the *next* riddle to play),
+ * a value of 1 means "user is on the penultimate riddle or later".
+ */
+export const RIDDLE_GENERATION_THRESHOLD = 1;
 
-/** Number of new riddles to generate when threshold is reached. */
-export const RIDDLE_GENERATION_BATCH_SIZE = 25;
+/** Number of new classic riddles to generate when threshold is reached. */
+export const RIDDLE_GENERATION_BATCH_SIZE = 5;

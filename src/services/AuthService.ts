@@ -32,6 +32,107 @@ const runOnMainThread = <T>(fn: () => Promise<T>): Promise<T> => {
 };
 
 export const AuthService = {
+  async linkAnonymousWithGoogle(): Promise<FirebaseAuthTypes.UserCredential> {
+    return runOnMainThread(async () => {
+      try {
+        const auth = getAuth(getApp());
+        const user = auth.currentUser;
+        if (!user) {
+          throw new Error("No signed-in user available to link.");
+        }
+        if (!user.isAnonymous) {
+          throw new Error("Only anonymous users can be upgraded via linking.");
+        }
+
+        await GoogleSignin.hasPlayServices({
+          showPlayServicesUpdateDialog: true,
+        });
+
+        const signInResult = await GoogleSignin.signIn();
+
+        if (signInResult.type === "cancelled") {
+          throw Object.assign(new Error("Google sign-in cancelled by user."), {
+            code: "auth/auth-popup-closed-by-user",
+          });
+        }
+
+        const idToken = signInResult.data?.idToken;
+        const googleEmail = signInResult.data?.user?.email;
+
+        if (!idToken) {
+          throw new Error("No ID token received from Google Sign-In");
+        }
+
+        if (!googleEmail) {
+          throw new Error(
+            "Email address not provided by Google. Please use an account with a valid email."
+          );
+        }
+
+        const googleCredential = GoogleAuthProvider.credential(idToken);
+        const userCredential = await user.linkWithCredential(googleCredential);
+
+        logger.debug("✅ Anonymous account linked with Google:", {
+          uid: userCredential.user?.uid,
+          email: userCredential.user?.email,
+          displayName: userCredential.user?.displayName,
+        });
+
+        return userCredential;
+      } catch (error) {
+        logger.error("Error linking anonymous account with Google:", error);
+        captureException(error);
+        throw error;
+      }
+    });
+  },
+
+  async linkAnonymousWithFacebook(): Promise<FirebaseAuthTypes.UserCredential> {
+    try {
+      const auth = getAuth(getApp());
+      const user = auth.currentUser;
+      if (!user) {
+        throw new Error("No signed-in user available to link.");
+      }
+      if (!user.isAnonymous) {
+        throw new Error("Only anonymous users can be upgraded via linking.");
+      }
+
+      const loginResult = await LoginManager.logInWithPermissions([
+        "public_profile",
+        "email",
+      ]);
+
+      if (loginResult.isCancelled) {
+        throw Object.assign(new Error("Facebook login cancelled."), {
+          code: "auth/auth-popup-closed-by-user",
+        });
+      }
+
+      const tokenData = await AccessToken.getCurrentAccessToken();
+      if (!tokenData?.accessToken) {
+        throw new Error("No Facebook access token available.");
+      }
+
+      const facebookCredential = FacebookAuthProvider.credential(
+        tokenData.accessToken
+      );
+      const userCredential = await user.linkWithCredential(facebookCredential);
+
+      logger.debug("✅ Anonymous account linked with Facebook:", {
+        uid: userCredential.user?.uid,
+        email: userCredential.user?.email,
+        displayName: userCredential.user?.displayName,
+      });
+
+      return userCredential;
+    } catch (error) {
+      logger.error("Error linking anonymous account with Facebook:", error);
+      captureException(error);
+      throw error;
+    }
+  },
+
   /**
    * Signs up a user with email and password.
    *

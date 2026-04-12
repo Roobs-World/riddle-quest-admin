@@ -1,6 +1,7 @@
 import { renderHook, act } from "@testing-library/react-native";
 import useGameLogic, { Feedback } from "../useGameLogic";
 import { httpsCallable } from "@react-native-firebase/functions";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const mockHttpsCallable = httpsCallable as jest.MockedFunction<typeof httpsCallable>;
 const mockCompleteGameCallable = jest.fn();
@@ -347,6 +348,52 @@ describe("useGameLogic", () => {
       expect(mockCompleteGameCallable).not.toHaveBeenCalled();
       expect(result.current.gameOver).toBe(true);
       expect(result.current.guesses.length).toBe(6);
+    });
+
+    it("persists guest in-progress sessions to AsyncStorage", async () => {
+      const { result } = renderHook(() =>
+        useGameLogic({ ...defaultProps, isGuestMode: true, answer: "GUESS" })
+      );
+
+      await act(async () => {
+        await result.current.processGuess(guessWord);
+      });
+
+      const calls = (AsyncStorage.setItem as jest.Mock).mock.calls;
+      expect(calls.length).toBeGreaterThan(0);
+      const [key, value] = calls[calls.length - 1] as [string, string];
+      expect(key).toBe("@guest_game_session_v1");
+      expect(JSON.parse(value)).toMatchObject({
+        version: 1,
+        riddleId: defaultProps.riddleId,
+        gameMode: defaultProps.gameMode,
+      });
+    });
+
+    it("restores guest sessions for the same riddle/mode", async () => {
+      (AsyncStorage.getItem as jest.Mock).mockResolvedValueOnce(
+        JSON.stringify({
+          version: 1,
+          riddleId: defaultProps.riddleId,
+          gameMode: defaultProps.gameMode,
+          guesses: [{ guess: ["A"], feedback: ["red"] }],
+          attemptsUsed: 1,
+          hasUsedContinue: true,
+          gameOver: false,
+        })
+      );
+
+      const { result } = renderHook(() =>
+        useGameLogic({ ...defaultProps, isGuestMode: true })
+      );
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      expect(result.current.attemptsUsed).toBe(1);
+      expect(result.current.hasUsedContinue).toBe(true);
+      expect(result.current.guesses).toHaveLength(1);
     });
   });
 

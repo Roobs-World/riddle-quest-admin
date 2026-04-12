@@ -348,10 +348,14 @@ export async function handleGuessLogic(
         );
 
         if (totalClassicRiddles - currentClassicIndex <= RIDDLE_GENERATION_THRESHOLD) {
-          functions.logger.info(`User ${userId} has <= ${RIDDLE_GENERATION_THRESHOLD} classic riddles remaining. Triggering generation of ${RIDDLE_GENERATION_BATCH_SIZE} new riddles.`);
+          functions.logger.info(
+            `User ${userId} has <= ${RIDDLE_GENERATION_THRESHOLD} classic riddles remaining. Triggering generation of ${RIDDLE_GENERATION_BATCH_SIZE} new riddles.`,
+          );
           try {
             await generateAndAppendRiddles(RIDDLE_GENERATION_BATCH_SIZE);
-            functions.logger.info("Successfully triggered generation of 25 new classic riddles.");
+            functions.logger.info(
+              `Successfully triggered generation of ${RIDDLE_GENERATION_BATCH_SIZE} new classic riddles.`,
+            );
           } catch (error) {
             functions.logger.error("Error triggering generation of new classic riddles:", error);
             captureException(error);

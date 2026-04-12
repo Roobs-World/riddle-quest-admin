@@ -248,6 +248,17 @@ const EN_APP_STRINGS = {
     TREASURE_CHEST_TITLE: "Your Treasure Chest",
     TOTAL_COINS_LABEL: "Total Coins:",
     GUEST_USERNAME: "Guest",
+    GUEST_MODE_TITLE: "Playing as a guest",
+    GUEST_MODE_DESCRIPTION:
+      "Upgrade to an account with a provider to keep your progress and access all features.",
+    UPGRADE_ACCOUNT_BUTTON: "Upgrade Account",
+    UPGRADE_ACCOUNT_TITLE: "Upgrade your account",
+    UPGRADE_ACCOUNT_DESCRIPTION:
+      "Choose a provider to link to this guest session. Your progress stays on this device and will be saved to your account.",
+    UPGRADE_ACCOUNT_SUCCESS: "Account upgraded successfully!",
+    UPGRADE_ACCOUNT_ERROR: "Could not upgrade your account. Please try again.",
+    UPGRADE_ACCOUNT_PROVIDER_IN_USE:
+      "That provider account is already in use. Please choose a different provider.",
   },
   TestStrings: {
     MOCK_SVG_TEXT: "Mock SVG Text",

@@ -494,7 +494,8 @@ export const createUserDocumentInFirestore = async (
   userId: string,
   email: string,
   displayName?: string,
-  avatarUrl?: string
+  avatarUrl?: string,
+  seed?: Partial<Player>
 ): Promise<Player> => {
   if (!userId) {
     throw new Error("Cannot create user document without a userId.");
@@ -512,12 +513,18 @@ export const createUserDocumentInFirestore = async (
     const baseUserData = {
       userId,
       email,
-      username: displayName || email.split("@")[0], // Use display name or email prefix as username
-      coins: 100, // Starting coins
+      username:
+        (typeof seed?.username === "string" && seed.username.trim() !== ""
+          ? seed.username.trim()
+          : undefined) ||
+        displayName ||
+        email.split("@")[0], // Prefer guest-chosen username, then provider, then email prefix
+      coins: typeof seed?.coins === "number" ? seed.coins : 100, // Starting coins
       progress: {
         classicIndex: 1,
         dailyChallengeIndex: 0,
         dailyChallengeCurrentQuestion: 0,
+        ...(seed?.progress ?? {}),
       },
       stats: {
         xp: 0,
@@ -536,10 +543,14 @@ export const createUserDocumentInFirestore = async (
         totalWins: 0,
         totalGuessesInWins: 0,
         totalHintsUsed: 0,
+        ...(seed?.stats ?? {}),
       },
-      unlockedAchievements: [],
+      unlockedAchievements: Array.isArray(seed?.unlockedAchievements)
+        ? seed.unlockedAchievements
+        : [],
       createdAt: Date.now(),
-      hasPurchasedApp: false, // Default to false for new users
+      hasPurchasedApp:
+        typeof seed?.hasPurchasedApp === "boolean" ? seed.hasPurchasedApp : false, // Default to false for new users
       // Omit lastDailyChallengeCompletedAt since it's undefined - Firestore doesn't support undefined values
     };
 
@@ -550,6 +561,11 @@ export const createUserDocumentInFirestore = async (
 
     if (avatarUrl) {
       defaultUserData.avatarUrl = avatarUrl;
+    }
+
+    if (typeof seed?.lastDailyChallengeCompletedAt === "number") {
+      defaultUserData.lastDailyChallengeCompletedAt =
+        seed.lastDailyChallengeCompletedAt;
     }
 
     logger.debug(

@@ -962,5 +962,61 @@ describe("FirestoreService", () => {
       );
       expect(result.avatarUrl).toBe(avatarUrl);
     });
+
+    it("seeds new user document from guest progress when provided", async () => {
+      mockSetDoc.mockResolvedValue(undefined);
+
+      const seed = {
+        coins: 777,
+        username: "MyGuestName",
+        progress: {
+          classicIndex: 42,
+          dailyChallengeIndex: 5,
+          dailyChallengeCurrentQuestion: 2,
+        },
+        stats: {
+          winStreak: 3,
+          bestStreak: 9,
+        },
+        unlockedAchievements: ["FIRST_WIN"],
+        lastDailyChallengeCompletedAt: 1710000000000,
+        hasPurchasedApp: true,
+      } as unknown as Player;
+
+      const result = await FirestoreService.createUserDocumentInFirestore(
+        mockUserId,
+        mockEmail,
+        mockDisplayName,
+        undefined,
+        seed
+      );
+
+      expect(mockSetDoc).toHaveBeenCalledWith(
+        expect.any(Object),
+        expect.objectContaining({
+          userId: mockUserId,
+          email: mockEmail,
+          username: seed.username,
+          coins: seed.coins,
+          progress: expect.objectContaining(seed.progress),
+          stats: expect.objectContaining(seed.stats),
+          unlockedAchievements: seed.unlockedAchievements,
+          lastDailyChallengeCompletedAt: seed.lastDailyChallengeCompletedAt,
+          hasPurchasedApp: true,
+        })
+      );
+
+      expect(result).toMatchObject({
+        userId: mockUserId,
+        email: mockEmail,
+        username: seed.username,
+        coins: seed.coins,
+        progress: seed.progress,
+        stats: expect.objectContaining(seed.stats),
+        unlockedAchievements: seed.unlockedAchievements,
+        lastDailyChallengeCompletedAt: seed.lastDailyChallengeCompletedAt,
+        hasPurchasedApp: true,
+      });
+    });
   });
 });

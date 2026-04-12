@@ -305,12 +305,12 @@ describe("handleGuessLogic", () => {
       test("should trigger riddle generation if user is near the end of classic riddles", async () => {
         const userNearEnd = {
           ...mockUser,
-          progress: {...mockUser.progress, classicIndex: 90},
+          progress: {...mockUser.progress, classicIndex: 98},
         };
         (firestoreService.getUser as jest.Mock).mockResolvedValue(JSON.parse(JSON.stringify(userNearEnd)));
 
         mockAdminFirestoreGet.mockResolvedValueOnce({
-          data: () => ({...userNearEnd, progress: {...userNearEnd.progress, classicIndex: 91}}),
+          data: () => ({...userNearEnd, progress: {...userNearEnd.progress, classicIndex: 99}}),
         });
 
         mockAdminFirestoreWhere.mockImplementationOnce(() => ({
@@ -320,10 +320,10 @@ describe("handleGuessLogic", () => {
 
         await handleGuessLogic(baseClassicCorrectRequest, authContext);
 
-        expect(riddleGeneration.generateAndAppendRiddles).toHaveBeenCalledWith(25);
+        expect(riddleGeneration.generateAndAppendRiddles).toHaveBeenCalledWith(5);
         expect(functions.logger.info).toHaveBeenCalledWith(
           expect.stringContaining(
-            "User test-user-id has <= 10 classic riddles remaining. Triggering generation of 25 new riddles.",
+            "User test-user-id has <= 1 classic riddles remaining. Triggering generation of 5 new riddles.",
           ),
         );
       });
@@ -350,11 +350,11 @@ describe("handleGuessLogic", () => {
       test("should handle errors during riddle count check gracefully", async () => {
         const userNearEnd = {
           ...mockUser,
-          progress: {...mockUser.progress, classicIndex: 90},
+          progress: {...mockUser.progress, classicIndex: 98},
         };
         (firestoreService.getUser as jest.Mock).mockResolvedValue(JSON.parse(JSON.stringify(userNearEnd)));
         mockAdminFirestoreGet.mockResolvedValueOnce({
-          data: () => ({...userNearEnd, progress: {...userNearEnd.progress, classicIndex: 91}}),
+          data: () => ({...userNearEnd, progress: {...userNearEnd.progress, classicIndex: 99}}),
         });
         mockAdminFirestoreWhere.mockImplementationOnce(() => ({
           get: jest.fn().mockRejectedValue(new Error("Firestore count error")),
@@ -370,11 +370,11 @@ describe("handleGuessLogic", () => {
       test("should handle errors during generateAndAppendRiddles call gracefully", async () => {
         const userNearEnd = {
           ...mockUser,
-          progress: {...mockUser.progress, classicIndex: 90},
+          progress: {...mockUser.progress, classicIndex: 98},
         };
         (firestoreService.getUser as jest.Mock).mockResolvedValue(JSON.parse(JSON.stringify(userNearEnd)));
         mockAdminFirestoreGet.mockResolvedValueOnce({
-          data: () => ({...userNearEnd, progress: {...userNearEnd.progress, classicIndex: 91}}),
+          data: () => ({...userNearEnd, progress: {...userNearEnd.progress, classicIndex: 99}}),
         });
         mockAdminFirestoreWhere.mockImplementationOnce(() => ({
           get: jest.fn().mockResolvedValue({size: 100}),
@@ -671,12 +671,12 @@ describe("handleGuessLogic", () => {
       // This test targets lines 186-188: error handling in riddle generation
       const userNearEnd = {
         ...mockUser,
-        progress: {...mockUser.progress, classicIndex: 90},
+        progress: {...mockUser.progress, classicIndex: 98},
       };
       (firestoreService.getUser as jest.Mock).mockResolvedValue(JSON.parse(JSON.stringify(userNearEnd)));
 
       mockAdminFirestoreGet.mockResolvedValueOnce({
-        data: () => ({...userNearEnd, progress: {...userNearEnd.progress, classicIndex: 91}}),
+        data: () => ({...userNearEnd, progress: {...userNearEnd.progress, classicIndex: 99}}),
       });
 
       // Mock that we're near the end of riddles

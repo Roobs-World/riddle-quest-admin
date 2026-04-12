@@ -1534,4 +1534,28 @@ describe("AuthService", () => {
       expect(result).toEqual(mockUserCredential);
     });
   });
+
+  describe("linkAnonymousWithGoogle", () => {
+    it("links the current anonymous user with Google credentials", async () => {
+      const linkedCredential = { user: { uid: "linked-uid" } };
+      const linkWithCredential = jest.fn().mockResolvedValue(linkedCredential);
+
+      mockAuthInstance.currentUser = {
+        isAnonymous: true,
+        linkWithCredential,
+      };
+
+      (GoogleSignin.hasPlayServices as jest.Mock).mockResolvedValueOnce(true);
+      (GoogleSignin.signIn as jest.Mock).mockResolvedValueOnce({
+        type: "success",
+        data: { idToken: "GOOGLE_ID_TOKEN", user: { email: "a@b.com" } },
+      });
+
+      const result = await AuthService.linkAnonymousWithGoogle();
+
+      expect(GoogleAuthProvider.credential).toHaveBeenCalledWith("GOOGLE_ID_TOKEN");
+      expect(linkWithCredential).toHaveBeenCalled();
+      expect(result).toEqual(linkedCredential);
+    });
+  });
 });

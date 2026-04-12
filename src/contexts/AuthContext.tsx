@@ -174,6 +174,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, []);
 
+  const clearGuestProfileFromLocal = useCallback(async (): Promise<void> => {
+    try {
+      await AsyncStorage.removeItem(GUEST_PROGRESS_STORAGE_KEY);
+    } catch (error) {
+      logger.warn("Error clearing guest progress locally:", error);
+      captureException(error);
+    }
+  }, []);
+
   // Ref keeps the current gameMode accessible inside the auth listener without
   // making it a dependency (which would re-subscribe on every mode change).
   const gameModeRef = useRef<GameMode>("daily");
@@ -525,18 +534,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
             try {
               const userEmail = await resolveUserEmail(user);
+              const guestSeed = await loadGuestProfileFromLocal(user.uid);
+              const shouldSeedFromGuest = isGuestPlayer(guestSeed);
 
               data = await createUserDocumentInFirestore(
                 user.uid,
                 userEmail,
                 user.displayName || undefined,
-                providerAvatarUrl
+                providerAvatarUrl,
+                shouldSeedFromGuest ? guestSeed ?? undefined : undefined
               );
               logger.debug("✅ New user document created successfully");
               logger.debug(
                 "📄 Created user data:",
                 JSON.stringify(data, null, 2)
               );
+
+              if (shouldSeedFromGuest) {
+                await clearGuestProfileFromLocal();
+                logger.debug("🧳 Migrated guest progress into new account document");
+              }
             } catch (createError) {
               logger.error("❌ Error creating user document:", createError);
               captureException(createError);
@@ -640,6 +657,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     fetchCurrentRiddle,
     hasCompletedDailyChallengeToday,
     loadGuestProfileFromLocal,
+    clearGuestProfileFromLocal,
     saveGuestProfileToLocal,
     getBrokenDailyStreakValue,
   ]);

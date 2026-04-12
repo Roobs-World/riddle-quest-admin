@@ -28,6 +28,7 @@ import { isGuestPlayer } from "@/features/auth/sessionBootstrap";
 import { AppStrings } from "../../../constants/AppStrings";
 import { useAuth } from "@/contexts/AuthContext";
 import PulsingSpinner from "@/components/loading/PulsingSpinner";
+import UpgradeAccountModal from "./UpgradeAccountModal";
 import {
   LOADING_SPINNER_OPACITY,
   LOADING_SPINNER_SIZE,
@@ -56,6 +57,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
       : playerData;
   const isGuestMode = isGuestPlayer(resolvedPlayerData);
   const [isUsernameModalVisible, setIsUsernameModalVisible] = useState(false);
+  const [isUpgradeModalVisible, setIsUpgradeModalVisible] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(
     resolvedPlayerData?.avatarUrl ?? null
@@ -340,6 +342,57 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
             alwaysBounceVertical={true}
             bounces={true}
           >
+            {isGuestMode ? (
+              <View
+                style={{
+                  backgroundColor: "#F5EDD4",
+                  borderRadius: 16,
+                  padding: SPACING.md,
+                  marginBottom: SPACING.lg,
+                }}
+              >
+                <Text
+                  style={{
+                    fontFamily: TYPOGRAPHY.fontPrimary,
+                    fontSize: TYPOGRAPHY.fontSize.lg,
+                    color: "#1A1A1A",
+                    marginBottom: SPACING.sm,
+                  }}
+                >
+                  {AppStrings.Profile.GUEST_MODE_TITLE}
+                </Text>
+                <Text
+                  style={{
+                    fontFamily: TYPOGRAPHY.fontSecondary,
+                    fontSize: TYPOGRAPHY.fontSize.md,
+                    color: "#1A1A1A",
+                    lineHeight: 20,
+                    marginBottom: SPACING.md,
+                  }}
+                >
+                  {AppStrings.Profile.GUEST_MODE_DESCRIPTION}
+                </Text>
+                <TouchableOpacity
+                  onPress={() => setIsUpgradeModalVisible(true)}
+                  style={{
+                    backgroundColor: COLORS.figmaGold,
+                    paddingVertical: SPACING.sm,
+                    borderRadius: 12,
+                    alignItems: "center",
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontFamily: TYPOGRAPHY.fontSecondaryBold,
+                      fontSize: TYPOGRAPHY.fontSize.lg,
+                      color: "#1A1A1A",
+                    }}
+                  >
+                    {AppStrings.Profile.UPGRADE_ACCOUNT_BUTTON}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            ) : null}
             <Text
               style={{
                 fontFamily: TYPOGRAPHY.fontPrimary,
@@ -491,6 +544,11 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
         isVisible={isUsernameModalVisible}
         onClose={() => setIsUsernameModalVisible(false)}
         currentUsername={resolvedPlayerData.username || ""}
+      />
+
+      <UpgradeAccountModal
+        isVisible={isUpgradeModalVisible}
+        onClose={() => setIsUpgradeModalVisible(false)}
       />
 
       <PulsingSpinner

@@ -7,13 +7,14 @@
  * Cloud Function) is called exactly once when the game truly ends — win or final
  * loss — to award coins, update stats, advance progress, and evaluate achievements.
  */
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import type { SubmittedGuess } from "./types";
 import { getFunctions, httpsCallable } from "@react-native-firebase/functions";
 import { getApp } from "@react-native-firebase/app";
 import { logger } from "../utils/logger";
 import { captureException, addBreadcrumb, startTransaction } from "../utils/sentry";
 import { gameEventBus } from "../services/GameEventBus";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export type Feedback = "green" | "yellow" | "red";
 
@@ -43,6 +44,8 @@ interface CompleteGameResponseData {
   newWinStreak?: number;
 }
 
+const GUEST_GAME_SESSION_STORAGE_KEY = "@guest_game_session_v1";
+
 function getLocalRewards(gameMode: "challenge" | "classic", attempts: number): { coins: number; score: number } {
   const scoreMaxAttempts = 5;
   const baseScore = gameMode === "challenge" ? 100 : 50;
@@ -50,6 +53,16 @@ function getLocalRewards(gameMode: "challenge" | "classic", attempts: number): {
   const coins = gameMode === "challenge" ? Math.max(0, 20 - (attempts - 1) * 5) : 10;
   return { coins, score: baseScore + attemptsBonus };
 }
+
+type GuestGameSessionSnapshot = {
+  version: 1;
+  riddleId: string;
+  gameMode: "challenge" | "classic";
+  guesses: SubmittedGuess[];
+  attemptsUsed: number;
+  hasUsedContinue: boolean;
+  gameOver: boolean;
+};
 
 /**
  * Computes green/yellow/red feedback for a guess against the correct answer.
@@ -109,6 +122,64 @@ const useGameLogic = ({ riddleId, answer, gameMode, isGuestMode = false }: UseGa
   const INITIAL_ATTEMPTS = 3;
   const CONTINUE_ATTEMPTS = 3;
 
+  const clearGuestSession = useCallback(async (): Promise<void> => {
+    if (!isGuestMode) return;
+    try {
+      await AsyncStorage.removeItem(GUEST_GAME_SESSION_STORAGE_KEY);
+    } catch (error) {
+      logger.warn("Unable to clear guest session snapshot.", error);
+    }
+  }, [isGuestMode]);
+
+  // Guest-only: restore in-progress game state after app restarts.
+  useEffect(() => {
+    if (!isGuestMode) return;
+    let cancelled = false;
+
+    const restore = async () => {
+      try {
+        const raw = await AsyncStorage.getItem(GUEST_GAME_SESSION_STORAGE_KEY);
+        if (!raw) return;
+        const parsed = JSON.parse(raw) as Partial<GuestGameSessionSnapshot>;
+        if (parsed.version !== 1) return;
+        if (parsed.riddleId !== riddleId) return;
+        if (parsed.gameMode !== gameMode) return;
+        if (cancelled) return;
+
+        setGuesses(Array.isArray(parsed.guesses) ? (parsed.guesses as SubmittedGuess[]) : []);
+        setAttemptsUsed(typeof parsed.attemptsUsed === "number" ? parsed.attemptsUsed : 0);
+        setHasUsedContinue(parsed.hasUsedContinue === true);
+        setGameOver(parsed.gameOver === true);
+      } catch (error) {
+        logger.warn("Guest session restore failed; starting fresh.", error);
+      }
+    };
+
+    void restore();
+    return () => {
+      cancelled = true;
+    };
+  }, [isGuestMode, riddleId, gameMode]);
+
+  // Guest-only: persist in-progress session (so a force-close doesn't lose a run).
+  useEffect(() => {
+    if (!isGuestMode) return;
+
+    const snapshot: GuestGameSessionSnapshot = {
+      version: 1,
+      riddleId,
+      gameMode,
+      guesses,
+      attemptsUsed,
+      hasUsedContinue,
+      gameOver,
+    };
+
+    void AsyncStorage.setItem(GUEST_GAME_SESSION_STORAGE_KEY, JSON.stringify(snapshot)).catch((error) => {
+      logger.warn("Guest session persist failed; progress may be lost.", error);
+    });
+  }, [isGuestMode, riddleId, gameMode, guesses, attemptsUsed, hasUsedContinue, gameOver]);
+
   /**
    * Processes one guess:
    * - Computes feedback locally (no network).
@@ -152,6 +223,7 @@ const useGameLogic = ({ riddleId, answer, gameMode, isGuestMode = false }: UseGa
         logger.debug("Correct guess!");
         setGameOver(true);
         addBreadcrumb("game", "Game won", { attempts: currentAttempt, riddleId, gameMode });
+        void clearGuestSession();
 
         gameEventBus.emit<import("../services/GameEventBus").GameCompletedEvent>({
           type: "GAME_COMPLETED",
@@ -221,6 +293,7 @@ const useGameLogic = ({ riddleId, answer, gameMode, isGuestMode = false }: UseGa
             outcome: "lost",
             attempts: currentAttempt,
           });
+          void clearGuestSession();
 
           if (!isGuestMode) {
             try {
@@ -264,7 +337,7 @@ const useGameLogic = ({ riddleId, answer, gameMode, isGuestMode = false }: UseGa
         attemptsRemaining: maxAttempts - currentAttempt,
       };
     },
-    [riddleId, answer, gameMode, hasUsedContinue, attemptsUsed, isGuestMode]
+    [riddleId, answer, gameMode, hasUsedContinue, attemptsUsed, isGuestMode, clearGuestSession]
   );
 
   /**
@@ -285,7 +358,8 @@ const useGameLogic = ({ riddleId, answer, gameMode, isGuestMode = false }: UseGa
     setGameOver(false);
     setAttemptsUsed(0);
     setHasUsedContinue(false);
-  }, []);
+    void clearGuestSession();
+  }, [clearGuestSession]);
 
   const maxAttempts = hasUsedContinue
     ? INITIAL_ATTEMPTS + CONTINUE_ATTEMPTS
