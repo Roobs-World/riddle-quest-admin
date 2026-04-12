@@ -356,7 +356,7 @@ describe("<SettingsModal />", () => {
       expect(() => {
         rerender(<SettingsModal {...defaultProps} isSoundEnabled={false} />);
         rerender(<SettingsModal {...defaultProps} isHapticsEnabled={false} />);
-        rerender(<SettingsModal {...defaultProps} currentLanguage="es" as any />);
+        rerender(<SettingsModal {...defaultProps} currentLanguage={"es" as any} />);
       }).not.toThrow();
     });
 
@@ -412,12 +412,12 @@ describe("<SettingsModal />", () => {
     it("should handle different language values", () => {
       const { getAppLanguage } = require("../../../../constants/AppStrings");
       const { rerender, getByText } = render(
-        <SettingsModal {...defaultProps} currentLanguage="en" as any />
+        <SettingsModal {...defaultProps} currentLanguage={"en" as any} />
       );
       expect(getByText("English")).toBeTruthy();
 
       getAppLanguage.mockReturnValue("es");
-      rerender(<SettingsModal {...defaultProps} currentLanguage="es" as any />);
+      rerender(<SettingsModal {...defaultProps} currentLanguage={"es" as any} />);
       expect(getByText("Spanish")).toBeTruthy();
     });
   });

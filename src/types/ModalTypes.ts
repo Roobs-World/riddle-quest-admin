@@ -71,13 +71,11 @@ export interface GameModalTypes {
     /** Human-readable names of achievements newly unlocked by this win. */
     unlockedAchievementNames?: string[];
     onNext: () => void;
-    onHome: () => void;
   };
 
   loss: {
     correctAnswer: string;
     onNext: () => void;
-    onHome: () => void;
     /** Opens the coin shop modal from the loss flow. */
     onOpenShop?: () => void;
     /** If provided, a "Watch Ad to Continue" button is shown. */

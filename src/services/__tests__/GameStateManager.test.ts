@@ -770,7 +770,7 @@ describe("useGameStateManager hook", () => {
 
     const initialGameStatus = result.current.gameState.gameStatus;
 
-    rerender();
+    rerender(undefined);
 
     // GameStateManager instance should be stable
     expect(result.current.gameState.gameStatus).toBe(initialGameStatus);

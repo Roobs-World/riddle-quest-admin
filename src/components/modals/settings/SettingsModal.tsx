@@ -299,6 +299,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
             <TouchableOpacity
               onPress={async () => {
                 try {
+                  onClose();
                   await getAuth(getApp()).signOut();
                   if (onPressLogout) onPressLogout();
                 } catch {

@@ -10,6 +10,7 @@ import { Player } from "../../../validation/firestoreSchemas";
 import CloseButton from "../../buttons/CloseButton";
 import { TYPOGRAPHY, SPACING } from "../../../styles";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
+import HomeBg from "../../../../assets/images/home-bg.svg";
 import { MODAL_WIDTH, MODAL_HEIGHT, CLOSE_BUTTON_SIZE, MODAL_CLOSE_BUTTON_POSITION, CARD_BORDER_RADIUS, MODAL_CONTENT_PADDING, MODAL_SCROLLABLE_MAX_HEIGHT } from "../../../constants/layout";
 
 export interface StatsModalProps {
@@ -56,6 +57,12 @@ const StatsModal: React.FC<StatsModalProps> = ({
           }}
         >
           <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{ position: "absolute" }} />
+          {/* Decorative wave — clipped to card bounds */}
+          <HomeBg
+            width={MODAL_WIDTH * 1.1}
+            height={MODAL_HEIGHT * 1.1}
+            style={{ position: "absolute", top: -MODAL_HEIGHT * 0.05, left: -MODAL_WIDTH * 0.05 }}
+          />
           <CloseButton
             onPress={onClose}
             size={CLOSE_BUTTON_SIZE}

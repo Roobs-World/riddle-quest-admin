@@ -324,14 +324,12 @@ describe("ModalTypes", () => {
         coinsEarned: 50,
         guesses: [],
         onNext: jest.fn(),
-        onHome: jest.fn(),
       };
 
       expect(victoryData.attempts).toBe(3);
       expect(victoryData.coinsEarned).toBe(50);
       expect(Array.isArray(victoryData.guesses)).toBe(true);
       expect(typeof victoryData.onNext).toBe("function");
-      expect(typeof victoryData.onHome).toBe("function");
     });
 
     it("should allow optional unlockedAchievementNames in victory", () => {
@@ -341,7 +339,6 @@ describe("ModalTypes", () => {
         guesses: [],
         unlockedAchievementNames: ["First Win", "Perfect Game"],
         onNext: jest.fn(),
-        onHome: jest.fn(),
       };
 
       expect(victoryData.unlockedAchievementNames).toContain("First Win");
@@ -351,7 +348,6 @@ describe("ModalTypes", () => {
       const lossData: GameModalTypes["loss"] = {
         correctAnswer: "HELLO",
         onNext: jest.fn(),
-        onHome: jest.fn(),
       };
 
       expect(lossData.correctAnswer).toBe("HELLO");
@@ -361,7 +357,6 @@ describe("ModalTypes", () => {
       const lossData: GameModalTypes["loss"] = {
         correctAnswer: "WORLD",
         onNext: jest.fn(),
-        onHome: jest.fn(),
         onWatchAdContinue: jest.fn(),
         onCoinContinue: jest.fn(),
         coinContinueCost: 50,
@@ -523,7 +518,6 @@ describe("ModalTypes", () => {
         coinsEarned: 75,
         guesses: [],
         onNext: jest.fn(),
-        onHome: jest.fn(),
       };
 
       expect(victoryData.attempts).toBe(2);

@@ -6,6 +6,7 @@ import CloseButton from "../../buttons/CloseButton";
 import WideButton from "src/components/buttons/WideButton";
 import { TYPOGRAPHY } from "src/styles";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
+import HomeBg from "../../../../assets/images/home-bg.svg";
 import {
   MODAL_WIDTH,
   MODAL_HEIGHT,
@@ -115,12 +116,19 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
           }}
         >
           <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{ position: "absolute" }} />
+          {/* Decorative wave — clipped to card bounds */}
+          <HomeBg
+            width={MODAL_WIDTH * 1.1}
+            height={MODAL_HEIGHT * 1.1}
+            style={{ position: "absolute", top: -MODAL_HEIGHT * 0.05, left: -MODAL_WIDTH * 0.05 }}
+          />
+          <CloseButton
+            onPress={handleClose}
+            size={CLOSE_BUTTON_SIZE}
+            style={MODAL_CLOSE_BUTTON_POSITION}
+          />
           <View style={{ width: "80%", alignItems: "center" }}>
-            <CloseButton
-              onPress={handleClose}
-              size={CLOSE_BUTTON_SIZE}
-              style={MODAL_CLOSE_BUTTON_POSITION}
-            />
+            
             <Text
               style={{
                 fontFamily: TYPOGRAPHY.fontPrimary,

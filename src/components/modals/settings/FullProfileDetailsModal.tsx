@@ -77,7 +77,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
   const totalXp = Number.isFinite(Number(xpFromProfile)) ? Number(xpFromProfile) : 0;
   const { level, progressPct, currentXp, nextLevelXp } = getXpLevel(totalXp);
   const xpProgressWidth = `${Math.round(progressPct * 100)}%` as `${number}%`;
-  logger.warn('is guest mode', isGuestMode)
+
   return (
     <Modal
       visible={isVisible}
@@ -98,7 +98,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
             borderTopLeftRadius: 24,
             borderTopRightRadius: 24,
             flex: 1,
-            maxHeight: "92%",
+            maxHeight: "100%",
           }}
         >
           {/* ── Dark purple header ───────────────────────────── */}

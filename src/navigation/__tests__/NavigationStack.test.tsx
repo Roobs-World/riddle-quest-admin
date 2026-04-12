@@ -255,6 +255,8 @@ describe("NavigationStack", () => {
       .fn()
       .mockResolvedValue({ data: { hasCompletedToday: false } });
     mockedRiddleInitService.getInitializationStatus.mockReturnValue({
+      isInitializing: false,
+      hasInitialized: true,
       initializationFailed: false,
     });
     mockedUseNotificationNavigation.mockImplementation(() => undefined);
@@ -328,6 +330,8 @@ describe("NavigationStack", () => {
     const playerData = { userId: "u2", coins: 10, stats: { level: 1, xp: 0 } };
     const fetchCurrentRiddle = jest.fn().mockResolvedValue(undefined);
     mockedRiddleInitService.getInitializationStatus.mockReturnValue({
+      isInitializing: false,
+      hasInitialized: false,
       initializationFailed: true,
     });
     mockedUseAuth.mockReturnValue(
@@ -351,6 +355,8 @@ describe("NavigationStack", () => {
 
   it("shows spinner when no riddle exists and initialization has not failed", () => {
     mockedRiddleInitService.getInitializationStatus.mockReturnValue({
+      isInitializing: false,
+      hasInitialized: false,
       initializationFailed: false,
     });
     mockedUseAuth.mockReturnValue(

@@ -60,7 +60,6 @@ jest.mock("../../icons/LogoIcon", () => {
 describe("Header", () => {
   const defaultProps = {
     userCoins: 25,
-    onHintPress: jest.fn(),
     onCoinsPress: jest.fn(),
   };
 
@@ -152,15 +151,6 @@ describe("Header", () => {
   });
 
   describe("Button Interactions", () => {
-    it("calls onHintPress when logo button is pressed", () => {
-      const { getByTestId } = render(<Header {...defaultProps} />);
-
-      const logoButton = getByTestId("logo-button");
-      fireEvent.press(logoButton);
-
-      expect(defaultProps.onHintPress).toHaveBeenCalledTimes(1);
-    });
-
     it("calls onCoinsPress when coins display is pressed", () => {
       const { getByTestId } = render(<Header {...defaultProps} />);
 
@@ -168,17 +158,6 @@ describe("Header", () => {
       fireEvent.press(coinsDisplay);
 
       expect(defaultProps.onCoinsPress).toHaveBeenCalledTimes(1);
-    });
-
-    it("handles multiple logo button presses", () => {
-      const { getByTestId } = render(<Header {...defaultProps} />);
-
-      const logoButton = getByTestId("logo-button");
-      fireEvent.press(logoButton);
-      fireEvent.press(logoButton);
-      fireEvent.press(logoButton);
-
-      expect(defaultProps.onHintPress).toHaveBeenCalledTimes(3);
     });
 
     it("handles multiple coins display presses", () => {
@@ -195,15 +174,12 @@ describe("Header", () => {
       const { getByTestId } = render(
         <Header
           userCoins={25}
-          onHintPress={undefined as any}
           onCoinsPress={undefined as any}
         />
       );
 
-      const logoButton = getByTestId("logo-button");
       const coinsDisplay = getByTestId("coins-display");
 
-      expect(() => fireEvent.press(logoButton)).not.toThrow();
       expect(() => fireEvent.press(coinsDisplay)).not.toThrow();
     });
   });
@@ -344,25 +320,12 @@ describe("Header", () => {
           <Header
             {...defaultProps}
             userCoins={i * 10}
-            onHintPress={jest.fn()}
             onCoinsPress={jest.fn()}
           />
         );
       }
 
       expect(true).toBe(true);
-    });
-
-    it("handles rapid button presses efficiently", () => {
-      const { getByTestId } = render(<Header {...defaultProps} />);
-
-      const logoButton = getByTestId("logo-button");
-
-      for (let i = 0; i < 10; i++) {
-        fireEvent.press(logoButton);
-      }
-
-      expect(defaultProps.onHintPress).toHaveBeenCalledTimes(10);
     });
 
     it("maintains component integration through prop changes", () => {

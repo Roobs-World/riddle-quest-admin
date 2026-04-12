@@ -437,9 +437,10 @@ describe("useModal", () => {
 
       act(() => {
         result.current.openGameModal("victory", {
-          answer: "TEST",
-          guessCount: 3,
-          earnedCoins: 10,
+          attempts: 3,
+          coinsEarned: 10,
+          guesses: [],
+          onNext: jest.fn(),
         });
       });
 
@@ -453,7 +454,17 @@ describe("useModal", () => {
 
       let modalId: string;
       act(() => {
-        modalId = result.current.openGameModal("settings", {});
+        modalId = result.current.openGameModal("settings", {
+          isSoundEnabled: true,
+          isHapticsEnabled: true,
+          currentLanguage: "en",
+          onToggleSound: jest.fn(),
+          onToggleHaptics: jest.fn(),
+          onChangeLanguage: jest.fn(),
+          onPressLogout: jest.fn(),
+          onPressHelp: jest.fn(),
+          onPressCredits: jest.fn(),
+        });
       });
 
       expect(typeof modalId!).toBe("string");

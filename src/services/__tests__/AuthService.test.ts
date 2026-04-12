@@ -70,7 +70,7 @@ global.fetch = jest.fn();
 
 // Create mock auth instance before any imports
 const mockAuthInstance = {
-  currentUser: null,
+  currentUser: null as any,
   onAuthStateChanged: jest.fn((callback) => {
     // Call synchronously to avoid Jest teardown "access after torn down" (no setTimeout)
     callback(null);

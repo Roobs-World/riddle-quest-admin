@@ -164,7 +164,6 @@ describe("ModalRegistry", () => {
           guesses: [],
           unlockedAchievementNames: ["First Win"],
           onNext: jest.fn(),
-          onHome: jest.fn(),
         };
 
         expect(() => VictoryModal(props)).not.toThrow();
@@ -185,7 +184,6 @@ describe("ModalRegistry", () => {
           ...createBaseProps(),
           correctAnswer: "HELLO",
           onNext: jest.fn(),
-          onHome: jest.fn(),
           onWatchAdContinue: jest.fn(),
           onCoinContinue: jest.fn(),
           coinContinueCost: 100,
@@ -491,7 +489,6 @@ describe("ModalRegistry", () => {
         onClose: jest.fn(),
         correctAnswer: "TEST",
         onNext: undefined,
-        onHome: undefined,
       };
       expect(() => LossModal(props)).not.toThrow();
     });

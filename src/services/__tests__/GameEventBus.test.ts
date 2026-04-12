@@ -724,12 +724,12 @@ describe("GameEventBus", () => {
       expect(globalListener).toHaveBeenCalledTimes(6);
 
       // Verify each call received the correct event type
-      expect(globalListener.mock.calls[0][0].type).toBe("LETTER_ADDED");
-      expect(globalListener.mock.calls[1][0].type).toBe("LETTER_REMOVED");
-      expect(globalListener.mock.calls[2][0].type).toBe("GUESS_SUBMITTED");
-      expect(globalListener.mock.calls[3][0].type).toBe("GUESS_VALIDATED");
-      expect(globalListener.mock.calls[4][0].type).toBe("GAME_COMPLETED");
-      expect(globalListener.mock.calls[5][0].type).toBe("HINT_REQUESTED");
+      expect((globalListener as jest.Mock).mock.calls[0][0].type).toBe("LETTER_ADDED");
+      expect((globalListener as jest.Mock).mock.calls[1][0].type).toBe("LETTER_REMOVED");
+      expect((globalListener as jest.Mock).mock.calls[2][0].type).toBe("GUESS_SUBMITTED");
+      expect((globalListener as jest.Mock).mock.calls[3][0].type).toBe("GUESS_VALIDATED");
+      expect((globalListener as jest.Mock).mock.calls[4][0].type).toBe("GAME_COMPLETED");
+      expect((globalListener as jest.Mock).mock.calls[5][0].type).toBe("HINT_REQUESTED");
     });
 
     it("should type check LetterRemovedEvent listener", () => {

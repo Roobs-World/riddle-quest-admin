@@ -139,11 +139,11 @@ jest.mock("../../../hooks/useModal", () => ({
 
 // Mock useGameLogic hook
 const mockUseGameLogic = {
-  guesses: [] as string[][],
+  guesses: [] as any[],
   currentGuess: [] as string[],
   gameOver: false,
   setCurrentGuess: jest.fn(),
-  processGuess: jest.fn(() => Promise.resolve({ outcome: "continue" })),
+  processGuess: jest.fn(() => Promise.resolve({ outcome: "continue" })) as jest.Mock,
   continueGame: jest.fn(),
   resetGame: jest.fn(),
 };
@@ -1471,7 +1471,7 @@ describe("GameScreen", () => {
       await waitFor(() => {
         expect(mockShowLossModal).toHaveBeenCalled();
       });
-      config = mockShowLossModal.mock.calls[mockShowLossModal.mock.calls.length - 1][0];
+      const config = mockShowLossModal.mock.calls[mockShowLossModal.mock.calls.length - 1][0];
       config.onNext();
       await waitFor(() => {
         expect(logger.error).toHaveBeenCalledWith(

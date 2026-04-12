@@ -123,7 +123,7 @@ jest.mock("expo-constants", () => ({
 
 // Mock Firebase functions
 const mockCallableFunction = jest.fn().mockResolvedValue({ data: {} });
-const mockHttpsCallable = jest.fn(() => mockCallableFunction);
+const mockHttpsCallable = jest.fn((..._args: unknown[]) => mockCallableFunction);
 jest.mock("@react-native-firebase/functions", () => ({
   __esModule: true,
   getFunctions: jest.fn(() => ({})),

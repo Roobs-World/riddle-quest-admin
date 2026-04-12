@@ -299,17 +299,18 @@ const deepMerge = <T extends Record<string, unknown>>(
   return output as T;
 };
 
+const baseStrings: AppStringsSchema = EN_APP_STRINGS;
 const localizedStrings: Record<SupportedLanguage, AppStringsSchema> = {
-  en: EN_APP_STRINGS,
-  es: deepMerge(EN_APP_STRINGS, esOverrides),
-  pt: deepMerge(EN_APP_STRINGS, ptOverrides),
-  fr: deepMerge(EN_APP_STRINGS, frOverrides),
-  de: deepMerge(EN_APP_STRINGS, deOverrides),
-  ja: deepMerge(EN_APP_STRINGS, jaOverrides),
-  ko: deepMerge(EN_APP_STRINGS, koOverrides),
-  zh: deepMerge(EN_APP_STRINGS, zhOverrides),
-  ru: deepMerge(EN_APP_STRINGS, ruOverrides),
-  tr: deepMerge(EN_APP_STRINGS, trOverrides),
+  en: baseStrings,
+  es: deepMerge(baseStrings, esOverrides),
+  pt: deepMerge(baseStrings, ptOverrides),
+  fr: deepMerge(baseStrings, frOverrides),
+  de: deepMerge(baseStrings, deOverrides),
+  ja: deepMerge(baseStrings, jaOverrides),
+  ko: deepMerge(baseStrings, koOverrides),
+  zh: deepMerge(baseStrings, zhOverrides),
+  ru: deepMerge(baseStrings, ruOverrides),
+  tr: deepMerge(baseStrings, trOverrides),
 };
 
 const lazyLanguagePromises = new Map<

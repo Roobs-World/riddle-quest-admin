@@ -22,6 +22,7 @@ import { getCallableFunction } from "../../../utils/firebaseFunctions";
 import CloseButton from "../../buttons/CloseButton";
 import { TYPOGRAPHY, COLORS, SPACING } from "../../../styles";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
+import HomeBg from "../../../../assets/images/home-bg.svg";
 import {
   MODAL_WIDTH,
   MODAL_HEIGHT,
@@ -146,7 +147,12 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({
           }}
         >
           <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{ position: "absolute" }} />
-
+          {/* Decorative wave — clipped to card bounds */}
+          <HomeBg
+            width={MODAL_WIDTH * 1.1}
+            height={MODAL_HEIGHT * 1.1}
+            style={{ position: "absolute", top: -MODAL_HEIGHT * 0.25, left: -MODAL_WIDTH * 0.05 }}
+          />
           <CloseButton
             onPress={onClose}
             size={CLOSE_BUTTON_SIZE}

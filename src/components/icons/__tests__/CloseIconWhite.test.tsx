@@ -1,7 +1,7 @@
 import React from "react";
 import { render } from "@testing-library/react-native";
 
-const mockCloseSvg = jest.fn(() => null);
+const mockCloseSvg = jest.fn((_props: any) => null);
 
 jest.mock("@images/close-white.svg", () => {
   return (props: any) => mockCloseSvg(props);

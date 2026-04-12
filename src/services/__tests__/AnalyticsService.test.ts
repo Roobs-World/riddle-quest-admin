@@ -464,13 +464,9 @@ describe("AnalyticsService", () => {
       const event: GameCompletedEvent = {
         type: "GAME_COMPLETED",
         timestamp: Date.now(),
-        payload: {
-          won: true,
-          attempts: 3,
-          riddleId: "riddle-123",
-          gameMode: "classic",
-          coinsEarned: 50,
-        },
+        outcome: "won",
+        attempts: 3,
+        coinsEarned: 50,
       };
 
       gameEventBus.emit(event);

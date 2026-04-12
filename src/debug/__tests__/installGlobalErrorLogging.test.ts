@@ -14,8 +14,8 @@ describe("installGlobalErrorLogging", () => {
 
   // Mock global state
   let mockErrorUtils: {
-    getGlobalHandler?: jest.Mock;
-    setGlobalHandler?: jest.Mock;
+    getGlobalHandler: jest.Mock;
+    setGlobalHandler: jest.Mock;
   };
   let mockPreviousHandler: jest.Mock;
 

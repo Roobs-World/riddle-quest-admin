@@ -279,8 +279,8 @@ describe("ModalContext", () => {
         return callCount * 0.1;
       });
 
-      let modalId1: string;
-      let modalId2: string;
+      let modalId1 = "";
+      let modalId2 = "";
       act(() => {
         modalId1 = result.current.openModal("modal-1", { value: 1 });
         modalId2 = result.current.openModal("modal-2", { value: 2 });
@@ -582,7 +582,7 @@ describe("ModalContext", () => {
         return callCount * 0.01;
       });
 
-      let id1: string, id2: string, id3: string;
+      let id1 = "", id2 = "", id3 = "";
       act(() => {
         id1 = result.current.openModal("modal-1");
         id2 = result.current.openModal("modal-2");
