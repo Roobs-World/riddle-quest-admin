@@ -74,7 +74,7 @@ export function getXpLevel(totalScore: number): XpLevelSnapshot {
   return snapshot;
 }
 /** The initial coins a user starts with */
-export const INITIAL_COINS = 500;
+export const INITIAL_COINS = 300;
 
 /** Delay (ms) after closing a modal before opening another, to avoid overlap. */
 export const MODAL_CLOSE_DELAY_MS = 100;

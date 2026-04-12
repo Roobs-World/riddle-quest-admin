@@ -206,7 +206,7 @@ export async function initializeNewUser(
       username: userData.username,
       displayName: userData.displayName,
       avatarUrl: userData.avatarUrl,
-      coins: 100, // Starting coins
+      coins: 300,
       hasPurchasedApp: false,
       createdAt: Date.now(),
       registeredAt: Date.now(),
