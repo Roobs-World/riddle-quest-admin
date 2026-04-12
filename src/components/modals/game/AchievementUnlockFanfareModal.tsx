@@ -58,7 +58,7 @@ const AchievementUnlockFanfareModal: React.FC<
 
   const hasAchievementDetails = achievements.length > 0;
   const primaryAchievementName =
-    achievements[0]?.name ?? achievementNames[0] ?? "New Achievement";
+    achievements[0]?.name ?? achievementNames[0] ?? AppStrings.Achievements.NEW_ACHIEVEMENT;
   const primaryAchievementDescription = achievements[0]?.description ?? "";
   const primaryAchievementIcon = achievements[0]?.icon ?? "";
   const achievementCount = hasAchievementDetails

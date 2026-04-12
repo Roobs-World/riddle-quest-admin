@@ -4,11 +4,9 @@ import {
   Text,
   Modal,
   TouchableOpacity,
-  ActivityIndicator,
   StyleSheet,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-
 import * as RNIap from "react-native-iap";
 import { ProductPricing } from "../../services/ProductPricingService";
 import { analyticsService } from "../../services/AnalyticsService";
@@ -46,7 +44,6 @@ interface CoinShopProps {
   onClose: () => void;
   onPurchaseProduct: (productId: string) => void;
   products: RNIap.Product[];
-  loading: boolean;
   error: string | null;
   onWatchVideo?: () => void;
   onPayAndPlay?: () => void;
@@ -59,7 +56,6 @@ const CoinShop: React.FC<CoinShopProps> = ({
   onClose,
   onPurchaseProduct,
   products,
-  loading,
   error,
   firestoreProducts = [],
   currentCoins = 0,
@@ -92,7 +88,7 @@ const CoinShop: React.FC<CoinShopProps> = ({
       setSelectedProductId(null);
       return;
     }
-    if (loading || error) return;
+    if (error) return;
 
     sortedProducts.forEach((product) => {
       if (trackedImpressionsRef.current.has(product.productId)) return;
@@ -108,7 +104,7 @@ const CoinShop: React.FC<CoinShopProps> = ({
         displayPrice: getDisplayPrice(product),
       });
     });
-  }, [isVisible, loading, error, sortedProducts, getDisplayPrice]);
+  }, [isVisible, error, sortedProducts, getDisplayPrice]);
 
   useEffect(() => {
     if (!selectedProductId) return;
@@ -149,7 +145,6 @@ const CoinShop: React.FC<CoinShopProps> = ({
     <Modal
       visible={isVisible}
       transparent={true}
-      animationType="fade"
       onRequestClose={onClose}
     >
       <View style={styles.overlay}>
@@ -178,7 +173,7 @@ const CoinShop: React.FC<CoinShopProps> = ({
             style={[StyleSheet.absoluteFill]}
             preserveAspectRatio="none"
           />
-                    {/* Decorative wave — clipped to card bounds */}
+          {/* Decorative wave — clipped to card bounds */}
           <HomeBg
             width={MODAL_WIDTH * 1.1}
             height={MODAL_HEIGHT * 1.1}
@@ -191,12 +186,6 @@ const CoinShop: React.FC<CoinShopProps> = ({
             accessibilityLabel={AppStrings.Accessibility.CLOSE_COIN_SHOP}
           />
 
-          {loading ? (
-            <View style={styles.loadingContainer} testID="coin-shop-loading">
-              <ActivityIndicator size="large" color={COLORS.primaryOrange} />
-              <Text style={styles.loadingText}>{AppStrings.CoinShop.LOADING_TEXT}</Text>
-            </View>
-          ) : (
             <>
             <View style={styles.headerRow}>
               <Text style={styles.title}>{AppStrings.CoinShop.TITLE}</Text>
@@ -218,7 +207,7 @@ const CoinShop: React.FC<CoinShopProps> = ({
 
             <View style={styles.scrollContent}>
 
-            {!loading && !error && sortedProducts.length > 0 && (
+            {!error && sortedProducts.length > 0 && (
               <View style={styles.grid}>
                 {sortedProducts.map((product) => {
                   const displayPrice = getDisplayPrice(product);
@@ -248,20 +237,15 @@ const CoinShop: React.FC<CoinShopProps> = ({
                       <View style={styles.productPriceButton}>
                         <Text style={styles.productPriceText}>{displayPrice}</Text>
                       </View>
-
-                      
-                      
                     </TouchableOpacity>
                   );
                 })}
               </View>
             )}
 
-            {!loading && !error && sortedProducts.length === 0 && (
+            {!error && sortedProducts.length === 0 && (
               <Text style={styles.errorText}>{AppStrings.CoinShop.NO_PACKS_AVAILABLE}</Text>
             )}
-
-            
           </View>
 
           <View style={styles.bottomButtons}>
@@ -274,7 +258,6 @@ const CoinShop: React.FC<CoinShopProps> = ({
             </View>
           </View>
             </>
-          )}
         </View>
       </View>
     </Modal>

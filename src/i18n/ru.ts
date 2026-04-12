@@ -86,6 +86,7 @@ export const ruOverrides: LocaleOverrides = {
     XP_LEVEL_PREFIX: "Ur.",
     TREASURE_CHEST_TITLE: "Vash sunduk s sokrovishchami",
     TOTAL_COINS_LABEL: "Vsego monet:",
+    GUEST_USERNAME: "Gost",
   },
   WelcomeModal: {
     WELCOME_TITLE: "Dobro pozhalovat\nv Qwordly!",
@@ -136,6 +137,7 @@ export const ruOverrides: LocaleOverrides = {
     FANFARE_TITLE: "Dostizhenie razblokіrovano!",
     MORE_UNLOCKED_SUFFIX: " eshche razblokіrovano",
     NICE_BUTTON: "Otlichno",
+    NEW_ACHIEVEMENT: "Novoe dostizhenie",
   },
   Leaderboard: {
     TITLE: "Reyting",

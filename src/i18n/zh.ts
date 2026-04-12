@@ -85,6 +85,7 @@ export const zhOverrides: LocaleOverrides = {
     XP_LEVEL_PREFIX: "Lv.",
     TREASURE_CHEST_TITLE: "你的宝箱",
     TOTAL_COINS_LABEL: "总金币：",
+    GUEST_USERNAME: "访客",
   },
   WelcomeModal: {
     WELCOME_TITLE: "欢迎来到\nQwordly！",
@@ -135,6 +136,7 @@ export const zhOverrides: LocaleOverrides = {
     FANFARE_TITLE: "成就解锁！",
     MORE_UNLOCKED_SUFFIX: "项已解锁",
     NICE_BUTTON: "太棒了",
+    NEW_ACHIEVEMENT: "新成就",
   },
   Leaderboard: {
     TITLE: "排行榜",

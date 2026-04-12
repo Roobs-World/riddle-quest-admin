@@ -8,8 +8,6 @@ export { default as SettingsModal } from "./settings/SettingsModal";
 export { default as FullProfileDetailsModal } from "./settings/FullProfileDetailsModal";
 export { default as ChangePasswordModal } from "./settings/ChangePasswordModal";
 export { default as UpdateUsernameModal } from "./settings/UpdateUsernameModal";
-export { default as AvatarOptionsModal } from "./settings/AvatarOptionsModal";
-export { default as PreloadedAvatarsModal } from "./settings/PreloadedAvatarsModal";
 
 // Help Modals
 export { default as HintModal } from "./help/HintModal";

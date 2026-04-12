@@ -85,6 +85,7 @@ export const koOverrides: LocaleOverrides = {
     XP_LEVEL_PREFIX: "Lv.",
     TREASURE_CHEST_TITLE: "나의 보물 상자",
     TOTAL_COINS_LABEL: "총 코인:",
+    GUEST_USERNAME: "게스트",
   },
   WelcomeModal: {
     WELCOME_TITLE: "Qwordly에\n오신 것을 환영합니다!",
@@ -135,6 +136,7 @@ export const koOverrides: LocaleOverrides = {
     FANFARE_TITLE: "업적 달성!",
     MORE_UNLOCKED_SUFFIX: "개 더 달성",
     NICE_BUTTON: "좋아요",
+    NEW_ACHIEVEMENT: "새로운 업적",
   },
   Leaderboard: {
     TITLE: "순위표",

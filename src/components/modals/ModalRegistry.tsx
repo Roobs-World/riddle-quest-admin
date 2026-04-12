@@ -63,8 +63,6 @@ import SettingsModal from "./settings/SettingsModal";
 import FullProfileDetailsModal from "./settings/FullProfileDetailsModal";
 import ChangePasswordModal from "./settings/ChangePasswordModal";
 import UpdateUsernameModal from "./settings/UpdateUsernameModal";
-import AvatarOptionsModal from "./settings/AvatarOptionsModal";
-import PreloadedAvatarsModal from "./settings/PreloadedAvatarsModal";
 import AchievementsModal from "./settings/AchievementsModal";
 import StatsModal from "./settings/StatsModal";
 import LeaderboardModal from "./settings/LeaderboardModal";
@@ -298,30 +296,6 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
       currentUsername: (props.currentUsername as string) || "",
       onUsernameUpdated:
         (props.onUsernameUpdated as (username: string) => void) || (() => {}),
-    })
-  ),
-
-  avatarOptions: createModalWrapper(
-    AvatarOptionsModal,
-    (props: BaseModalProps & ModalData) => ({
-      isVisible: props.isVisible,
-      onClose: props.onClose,
-      onAvatarSelected:
-        (props.onAvatarSelected as (url: string) => void) || (() => {}),
-      onOpenPreloadedAvatars:
-        (props.onOpenPreloadedAvatars as () => void) || (() => {}),
-      userId: (props.userId as string) || "",
-    })
-  ),
-
-  preloadedAvatars: createModalWrapper(
-    PreloadedAvatarsModal,
-    (props: BaseModalProps & ModalData) => ({
-      isVisible: props.isVisible,
-      onClose: props.onClose,
-      onAvatarSelected:
-        (props.onAvatarSelected as (url: string) => void) || (() => {}),
-      onCloseAvatarOptions: props.onClose,
     })
   ),
 

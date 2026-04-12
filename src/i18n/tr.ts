@@ -94,6 +94,7 @@ export const trOverrides: LocaleOverrides = {
     XP_LEVEL_PREFIX: "Sv.",
     TREASURE_CHEST_TITLE: "Hazine sandığin",
     TOTAL_COINS_LABEL: "Toplam para:",
+    GUEST_USERNAME: "Misafir",
   },
   WelcomeModal: {
     WELCOME_TITLE: "Qwordly'e\nHos Geldiniz!",
@@ -144,6 +145,7 @@ export const trOverrides: LocaleOverrides = {
     FANFARE_TITLE: "Basari kilidi acildi!",
     MORE_UNLOCKED_SUFFIX: " daha acildi",
     NICE_BUTTON: "Harika",
+    NEW_ACHIEVEMENT: "Yeni basari",
   },
   Leaderboard: {
     TITLE: "Siralama",

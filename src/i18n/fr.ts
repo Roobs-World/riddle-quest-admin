@@ -69,6 +69,7 @@ export const frOverrides: LocaleOverrides = {
       OPERATION_NOT_ALLOWED_ERROR:
         "Inscription email et mot de passe non activee.",
       WEAK_PASSWORD_ERROR: "Mot de passe trop faible.",
+      SIGNUP_UNEXPECTED_ERROR: "Une erreur inattendue s est produite lors de l inscription.",
     },
     ForgotPassword: {
       TITLE: "Reinitialiser le mot de passe",
@@ -116,6 +117,8 @@ export const frOverrides: LocaleOverrides = {
     TITLE: "Credits",
     SUBTITLE: "Decouvrez l equipe incroyable de Qwordly",
     THANK_YOU_TITLE: "Merci!",
+    THANK_YOU_TEXT:
+      "Un grand merci a tous nos contributeurs qui ont rendu Qwordly possible. Votre creativite, dedication et passion ont donne vie a ce projet.",
   },
   Profile: {
     LOADING_MESSAGE: "Chargement du profil...",
@@ -152,6 +155,26 @@ export const frOverrides: LocaleOverrides = {
     ALERT_AVATAR_UPDATE_SUCCESS: "Avatar mis a jour avec succes!",
     ALERT_PRELOADED_AVATAR_SELECT_FAIL:
       "Echec de selection de l avatar precharge.",
+    ALERT_AVATAR_UPDATE_FACEBOOK_SUCCESS: "Avatar mis a jour avec la photo Facebook!",
+    ALERT_USERNAME_TOO_SHORT: "Le nom d utilisateur doit comporter au moins 3 caracteres.",
+    ALERT_PASSWORD_FIELDS_EMPTY: "Veuillez remplir tous les champs du mot de passe.",
+    ALERT_PASSWORDS_DO_NOT_MATCH: "Les nouveaux mots de passe ne correspondent pas.",
+    ALERT_PASSWORD_TOO_SHORT: "Le nouveau mot de passe doit comporter au moins 6 caracteres.",
+    ALERT_USER_NOT_LOGGED_IN: "Utilisateur non connecte ou email non disponible.",
+    ALERT_PASSWORD_UPDATE_SUCCESS: "Mot de passe mis a jour avec succes!",
+    ALERT_AVATAR_UPDATE_ERROR: "Impossible de mettre a jour l avatar. Reessayez.",
+    ALERT_AN_ERROR_OCCURRED: "Une erreur s est produite.",
+    ALERT_USERNAME_ALREADY_TAKEN: "Ce nom d utilisateur est deja pris.",
+    UPDATE_USERNAME_TITLE: "Modifier le nom d utilisateur",
+    ENTER_NEW_USERNAME_PLACEHOLDER: "Nouveau nom d utilisateur",
+    ALERT_USERNAME_UPDATE_FAILED: "Echec de la mise a jour du nom d utilisateur.",
+    CHANGE_PASSWORD_TITLE: "Changer le mot de passe",
+    CURRENT_PASSWORD_PLACEHOLDER: "Mot de passe actuel",
+    NEW_PASSWORD_PLACEHOLDER: "Nouveau mot de passe",
+    CONFIRM_NEW_PASSWORD_PLACEHOLDER: "Confirmer le nouveau mot de passe",
+    ALERT_PASSWORD_CHANGE_ERROR: "Une erreur s est produite lors du changement de mot de passe.",
+    ALERT_INVALID_CURRENT_PASSWORD: "Mot de passe actuel incorrect.",
+    SELECT_AVATAR_TITLE: "Choisir un avatar",
     UPDATE_AVATAR_TITLE: "Mettre a jour l avatar",
     UPLOAD_FROM_LIBRARY_BUTTON: "Importer depuis la galerie",
     CHOOSE_OUR_AVATARS_BUTTON: "Choisir parmi nos avatars",
@@ -166,6 +189,7 @@ export const frOverrides: LocaleOverrides = {
     XP_LEVEL_PREFIX: "Nv.",
     TREASURE_CHEST_TITLE: "Votre coffre au tresor",
     TOTAL_COINS_LABEL: "Pieces totales:",
+    GUEST_USERNAME: "Invite",
   },
   RewardedAdPrompts: {
     OUT_OF_GUESSES_PROMPT:
@@ -176,6 +200,8 @@ export const frOverrides: LocaleOverrides = {
   ErrorMessages: {
     UNABLE_TO_LOAD_RIDDLES:
       "Impossible de charger les enigmes. Verifiez votre connexion.",
+    FAILED_TO_LOAD_PRODUCTS: "Echec du chargement des produits",
+    FAILED_TO_LOAD_SHOP_PRODUCTS: "Echec du chargement des produits de la boutique",
   },
   GameScreenAlerts: {
     SUBMIT_GUESS_ERROR_TITLE: "Erreur",
@@ -183,6 +209,15 @@ export const frOverrides: LocaleOverrides = {
     NOT_ENOUGH_COINS_TITLE: "Pieces insuffisantes",
     NOT_ENOUGH_COINS_MESSAGE: "Vous avez besoin de plus de pieces.",
     HINT_ERROR_TITLE: "Erreur",
+    GUEST_MODE_NOTICE_TITLE: "Avis sur le mode invite",
+    GUEST_MODE_NOTICE_MESSAGE: "Votre progression peut etre perdue en mode invite et certaines fonctions comme le classement sont indisponibles.",
+    AD_NOT_READY_TITLE: "Publicite non disponible",
+    AD_NOT_READY_MESSAGE: "La pub n a pas pu etre diffusee pour l instant. Reessayez dans un moment.",
+    SPEND_COINS_ERROR_MESSAGE: "Impossible d utiliser les pieces. Reessayez.",
+    HINT_NOT_AVAILABLE_TITLE: "Indice indisponible",
+    HINT_NOT_AVAILABLE_MESSAGE: "Aucune lettre supplementaire ne peut etre revelee.",
+    PURCHASE_FAILED_TITLE: "Achat echoue",
+    PURCHASE_FAILED_MESSAGE: "L achat a echoue. Reessayez.",
     DAILY_CHALLENGE_LABEL: "Defi Quotidien",
     CLASSIC_LABEL: "Classique",
     HINT_MODAL_TITLE: "Utiliser un indice?",
@@ -194,8 +229,15 @@ export const frOverrides: LocaleOverrides = {
     COST_COINS_PREFIX: "Cout: ",
     COST_COINS_MIDDLE: " pieces. Vous avez: ",
     COST_COINS_SUFFIX: " pieces.",
+    SUBMIT_BUTTON: "SOUMETTRE",
+    NEXT_BUTTON: "Suivant",
   },
   CommonAlerts: {
+    ERROR_TITLE: "Erreur",
+    SUCCESS_TITLE: "Succes",
+    INFO_TITLE: "Info",
+    OK_BUTTON: "OK",
+    CANCEL_BUTTON: "Annuler",
     CLOSE_BUTTON: "Fermer",
     UNABLE_TO_OPEN_TITLE: "Impossible d ouvrir",
     CANNOT_OPEN_PREFIX: "Impossible d ouvrir ",
@@ -233,13 +275,6 @@ export const frOverrides: LocaleOverrides = {
     GAME_HEADER: "En-tete du jeu avec logo et solde de pieces",
     LOADING: "Chargement",
   },
-  VictoryModal: {
-    YOU_WON_TITLE: "VOUS AVEZ GAGNE!",
-  },
-  GameScreenAlerts: {
-    SUBMIT_BUTTON: "SOUMETTRE",
-    NEXT_BUTTON: "Suivant",
-  },
   CoinShop: {
     TITLE: "BOUTIQUE DE PIECES",
     YOUR_BALANCE: "Votre solde",
@@ -259,6 +294,7 @@ export const frOverrides: LocaleOverrides = {
   },
   WelcomeModal: {
     WELCOME_TITLE: "Bienvenue sur\nQwordly!",
+    LETS_PLAY: "A nous de jouer",
     SOLVE_RIDDLES_TEXT:
       "Resolvez des enigmes en devinant la reponse lettre par lettre. Utilisez les indices de couleur pour guider chaque tentative.",
     EARN_COINS_TEXT:
@@ -284,6 +320,7 @@ export const frOverrides: LocaleOverrides = {
     COINS_SUFFIX: " pieces",
     SHARE_TEXT: "Partagez votre victoire!",
     NEXT_LEVEL_BUTTON: "Niveau suivant",
+    YOU_WON_TITLE: "VOUS AVEZ GAGNE!",
   },
   LossModal: {
     TITLE: "Presque!",
@@ -337,5 +374,6 @@ export const frOverrides: LocaleOverrides = {
     FANFARE_TITLE: "Succes debloque!",
     MORE_UNLOCKED_SUFFIX: " de plus debloque(s)",
     NICE_BUTTON: "Super",
+    NEW_ACHIEVEMENT: "Nouvelle reussite",
   },
 };

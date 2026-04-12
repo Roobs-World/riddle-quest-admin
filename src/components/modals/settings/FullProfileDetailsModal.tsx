@@ -272,7 +272,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
                     fontFamily: TYPOGRAPHY.fontSecondaryBold,
                   }}
                 >
-                  {playerData.username || "Guest"}
+                  {playerData.username || AppStrings.Profile.GUEST_USERNAME}
                 </Text>
                 <Text style={{ color: GOLD, fontSize: 24 }}>✏</Text>
               </TouchableOpacity>

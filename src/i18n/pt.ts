@@ -37,6 +37,14 @@ export const ptOverrides: LocaleOverrides = {
         "Conta existente com outra credencial. Use outro metodo de login.",
       OPERATION_NOT_SUPPORTED_ERROR: "Operacao nao suportada neste ambiente.",
       LOGIN_FAILED_GENERIC: "Falha no login. Verifique suas credenciais.",
+      GOOGLE_UNEXPECTED_ERROR: "Ocorreu um erro inesperado durante o login com Google.",
+      TWITTER_UNEXPECTED_ERROR: "Ocorreu um erro inesperado durante o login com X.",
+      FACEBOOK_CONFIG_ERROR: "Problema de configuracao do Facebook. Tente novamente ou contate o suporte.",
+      FACEBOOK_TIMEOUT_ERROR: "O login com Facebook expirou. Pode indicar um problema de configuracao. Tente novamente.",
+      FACEBOOK_SDK_ERROR: "O login com Facebook nao esta configurado corretamente. Reinicie o app e tente novamente.",
+      FACEBOOK_NETWORK_ERROR: "Erro de rede durante o login com Facebook. Verifique sua conexao e tente novamente.",
+      FACEBOOK_INVALID_CREDENTIAL_ERROR: "Credenciais do Facebook invalidas. Tente novamente.",
+      FACEBOOK_UNEXPECTED_ERROR: "Ocorreu um erro inesperado durante o login com Facebook.",
     },
     ForgotPassword: {
       TITLE: "Redefinir senha",
@@ -76,6 +84,7 @@ export const ptOverrides: LocaleOverrides = {
       INVALID_EMAIL_ERROR: "O email e invalido.",
       OPERATION_NOT_ALLOWED_ERROR: "Cadastro com email e senha nao habilitado.",
       WEAK_PASSWORD_ERROR: "A senha e fraca.",
+      SIGNUP_UNEXPECTED_ERROR: "Ocorreu um erro inesperado durante o cadastro.",
     },
     NewPassword: {
       TITLE: "Definir nova senha",
@@ -162,6 +171,28 @@ export const ptOverrides: LocaleOverrides = {
     ALERT_AVATAR_UPDATE_SUCCESS: "Avatar atualizado com sucesso!",
     ALERT_PRELOADED_AVATAR_SELECT_FAIL:
       "Falha ao selecionar avatar pre-carregado.",
+    ALERT_AVATAR_UPDATE_FACEBOOK_SUCCESS: "Avatar atualizado com a foto do Facebook!",
+    ALERT_USERNAME_TOO_SHORT: "O nome de usuario deve ter pelo menos 3 caracteres.",
+    ALERT_PASSWORD_FIELDS_EMPTY: "Por favor, preencha todos os campos de senha.",
+    ALERT_PASSWORDS_DO_NOT_MATCH: "As novas senhas nao coincidem.",
+    ALERT_PASSWORD_TOO_SHORT: "A nova senha deve ter pelo menos 6 caracteres.",
+    ALERT_USER_NOT_LOGGED_IN: "Usuario nao conectado ou email nao disponivel.",
+    ALERT_PASSWORD_UPDATE_SUCCESS: "Senha atualizada com sucesso!",
+    ALERT_AVATAR_UPDATE_ERROR: "Nao foi possivel atualizar o avatar. Tente novamente.",
+    ALERT_AN_ERROR_OCCURRED: "Ocorreu um erro.",
+    ALERT_USERNAME_ALREADY_TAKEN: "Nome de usuario ja esta em uso.",
+    ACCOUNT_SETTINGS_TITLE: "Configuracoes da conta",
+    LINK_ACCOUNTS_BUTTON: "Vincular contas",
+    UPDATE_USERNAME_TITLE: "Atualizar nome de usuario",
+    ENTER_NEW_USERNAME_PLACEHOLDER: "Digite o novo nome de usuario",
+    ALERT_USERNAME_UPDATE_FAILED: "Falha ao atualizar o nome de usuario.",
+    SELECT_AVATAR_TITLE: "Selecionar avatar",
+    CHANGE_PASSWORD_TITLE: "Alterar senha",
+    CURRENT_PASSWORD_PLACEHOLDER: "Senha atual",
+    NEW_PASSWORD_PLACEHOLDER: "Nova senha",
+    CONFIRM_NEW_PASSWORD_PLACEHOLDER: "Confirmar nova senha",
+    ALERT_PASSWORD_CHANGE_ERROR: "Ocorreu um erro ao alterar a senha.",
+    ALERT_INVALID_CURRENT_PASSWORD: "Senha atual invalida.",
     UPDATE_AVATAR_TITLE: "Atualizar avatar",
     UPLOAD_FROM_LIBRARY_BUTTON: "Enviar da galeria",
     CHOOSE_OUR_AVATARS_BUTTON: "Escolher nossos avatares",
@@ -176,6 +207,7 @@ export const ptOverrides: LocaleOverrides = {
     XP_LEVEL_PREFIX: "Nv.",
     TREASURE_CHEST_TITLE: "Seu bau do tesouro",
     TOTAL_COINS_LABEL: "Moedas totais:",
+    GUEST_USERNAME: "Convidado",
   },
   RewardedAdPrompts: {
     OUT_OF_GUESSES_PROMPT: "Sem tentativas! Assistir anuncio para ganhar moedas?",
@@ -185,6 +217,8 @@ export const ptOverrides: LocaleOverrides = {
   ErrorMessages: {
     UNABLE_TO_LOAD_RIDDLES:
       "Nao foi possivel carregar enigmas. Verifique sua conexao.",
+    FAILED_TO_LOAD_PRODUCTS: "Falha ao carregar produtos",
+    FAILED_TO_LOAD_SHOP_PRODUCTS: "Falha ao carregar produtos da loja",
   },
   GameMessages: {
     GAME_WON: "Vitoria: Tentativas - ",
@@ -201,6 +235,15 @@ export const ptOverrides: LocaleOverrides = {
     NOT_ENOUGH_COINS_TITLE: "Moedas insuficientes",
     NOT_ENOUGH_COINS_MESSAGE: "Voce precisa de mais moedas para usar dica.",
     HINT_ERROR_TITLE: "Erro",
+    GUEST_MODE_NOTICE_TITLE: "Aviso de modo convidado",
+    GUEST_MODE_NOTICE_MESSAGE: "Seu progresso pode ser perdido no modo convidado e algumas funcoes como o placar estao indisponiveis.",
+    AD_NOT_READY_TITLE: "Anuncio nao disponivel",
+    AD_NOT_READY_MESSAGE: "O anuncio nao pode ser exibido agora. Tente novamente em breve.",
+    SPEND_COINS_ERROR_MESSAGE: "Nao foi possivel gastar moedas. Tente novamente.",
+    HINT_NOT_AVAILABLE_TITLE: "Dica indisponivel",
+    HINT_NOT_AVAILABLE_MESSAGE: "Nao ha mais letras para revelar.",
+    PURCHASE_FAILED_TITLE: "Compra falhou",
+    PURCHASE_FAILED_MESSAGE: "A compra falhou. Tente novamente.",
     DAILY_CHALLENGE_LABEL: "Desafio Diario",
     CLASSIC_LABEL: "Classico",
     HINT_MODAL_TITLE: "Usar dica?",
@@ -212,8 +255,15 @@ export const ptOverrides: LocaleOverrides = {
     COST_COINS_PREFIX: "Custo: ",
     COST_COINS_MIDDLE: " moedas. Voce tem: ",
     COST_COINS_SUFFIX: " moedas.",
+    SUBMIT_BUTTON: "ENVIAR",
+    NEXT_BUTTON: "Proximo",
   },
   CommonAlerts: {
+    ERROR_TITLE: "Erro",
+    SUCCESS_TITLE: "Sucesso",
+    INFO_TITLE: "Informacao",
+    OK_BUTTON: "OK",
+    CANCEL_BUTTON: "Cancelar",
     CLOSE_BUTTON: "Fechar",
     UNABLE_TO_OPEN_TITLE: "Nao foi possivel abrir",
     CANNOT_OPEN_PREFIX: "Nao foi possivel abrir ",
@@ -251,13 +301,6 @@ export const ptOverrides: LocaleOverrides = {
     GAME_HEADER: "Cabecalho do jogo com logo e saldo de moedas",
     LOADING: "Carregando",
   },
-  VictoryModal: {
-    YOU_WON_TITLE: "VOCE GANHOU!",
-  },
-  GameScreenAlerts: {
-    SUBMIT_BUTTON: "ENVIAR",
-    NEXT_BUTTON: "Proximo",
-  },
   CoinShop: {
     TITLE: "LOJA DE MOEDAS",
     YOUR_BALANCE: "Seu saldo",
@@ -268,6 +311,7 @@ export const ptOverrides: LocaleOverrides = {
   },
   WelcomeModal: {
     WELCOME_TITLE: "Bem-vindo ao\nQwordly!",
+    LETS_PLAY: "Vamos Jogar",
     SOLVE_RIDDLES_TEXT:
       "Resolva enigmas adivinhando a resposta letra por letra. Use as pistas de cor para guiar cada tentativa.",
     EARN_COINS_TEXT:
@@ -293,6 +337,7 @@ export const ptOverrides: LocaleOverrides = {
     COINS_SUFFIX: " moedas",
     SHARE_TEXT: "Compartilhe sua vitoria!",
     NEXT_LEVEL_BUTTON: "Proximo nivel",
+    YOU_WON_TITLE: "VOCE GANHOU!",
   },
   LossModal: {
     TITLE: "Quase!",
@@ -346,5 +391,6 @@ export const ptOverrides: LocaleOverrides = {
     FANFARE_TITLE: "Conquista desbloqueada!",
     MORE_UNLOCKED_SUFFIX: " mais desbloqueadas",
     NICE_BUTTON: "Legal",
+    NEW_ACHIEVEMENT: "Nova conquista",
   },
 };

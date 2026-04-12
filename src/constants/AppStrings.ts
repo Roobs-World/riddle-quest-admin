@@ -247,6 +247,7 @@ const EN_APP_STRINGS = {
     XP_LEVEL_PREFIX: "Lv.",
     TREASURE_CHEST_TITLE: "Your Treasure Chest",
     TOTAL_COINS_LABEL: "Total Coins:",
+    GUEST_USERNAME: "Guest",
   },
   TestStrings: {
     MOCK_SVG_TEXT: "Mock SVG Text",
@@ -260,6 +261,8 @@ const EN_APP_STRINGS = {
   ErrorMessages: {
     UNABLE_TO_LOAD_RIDDLES:
       "Unable to load any riddles. Please check your connection and try again.",
+    FAILED_TO_LOAD_PRODUCTS: "Failed to load products",
+    FAILED_TO_LOAD_SHOP_PRODUCTS: "Failed to load shop products",
   },
   GameMessages: {
     GAME_WON: "Game Won: Attempts - ",
@@ -338,6 +341,7 @@ const EN_APP_STRINGS = {
     FANFARE_TITLE: "Achievement Unlocked!",
     MORE_UNLOCKED_SUFFIX: " more unlocked",
     NICE_BUTTON: "Nice",
+    NEW_ACHIEVEMENT: "New Achievement",
   },
   CoinPurchase: {
     TITLE: "Coins Added!",

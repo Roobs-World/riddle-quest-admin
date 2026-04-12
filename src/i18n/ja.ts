@@ -89,6 +89,7 @@ export const jaOverrides: LocaleOverrides = {
     XP_LEVEL_PREFIX: "Lv.",
     TREASURE_CHEST_TITLE: "あなたの宝箱",
     TOTAL_COINS_LABEL: "コイン合計：",
+    GUEST_USERNAME: "ゲスト",
   },
   WelcomeModal: {
     WELCOME_TITLE: "Qwordlyへ\nようこそ！",
@@ -139,6 +140,7 @@ export const jaOverrides: LocaleOverrides = {
     FANFARE_TITLE: "実績解除！",
     MORE_UNLOCKED_SUFFIX: "件解除",
     NICE_BUTTON: "いいね",
+    NEW_ACHIEVEMENT: "新しい実績",
   },
   Leaderboard: {
     TITLE: "ランキング",
