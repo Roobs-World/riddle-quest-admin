@@ -15,7 +15,6 @@ import UpdateUsernameModal from "./UpdateUsernameModal";
 import AvatarOptionsModal from "./AvatarOptionsModal";
 import PreloadedAvatarsModal from "./PreloadedAvatarsModal";
 import { TYPOGRAPHY, SPACING, COLORS } from "../../../styles";
-import HomeBg from "../../../assets/images/home-bg.svg";
 import {
   CLOSE_BUTTON_SIZE,
   AVATAR_SIZE_LARGE,
