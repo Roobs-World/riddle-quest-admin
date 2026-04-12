@@ -19,10 +19,12 @@ import {
   CLOSE_BUTTON_SIZE,
   AVATAR_SIZE_LARGE,
 } from "../../../constants/layout";
-import { moderateScale } from "../../../utils/responsive";
+import { moderateScale, verticalScale } from "../../../utils/responsive";
 import LogoIcon from "../../icons/LogoIcon";
 import TreasureChest from "./TreasureChest";
 import { getXpLevel } from "../../../constants/game";
+import { logger } from "@/utils/logger";
+import { isGuestPlayer } from "@/features/auth/sessionBootstrap";
 
 interface FullProfileDetailsModalProps {
   isVisible: boolean;
@@ -37,9 +39,10 @@ const GOLD = "#FEC880";
 const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
   isVisible,
   onClose,
-  playerData,
+  playerData
 }) => {
   const modal = useModal();
+  const isGuestMode = isGuestPlayer(playerData);
   const [isUsernameModalVisible, setIsUsernameModalVisible] = useState(false);
   const [isPasswordModalVisible, setIsPasswordModalVisible] = useState(false);
   const [isPreloadedAvatarsModalVisible, setIsPreloadedAvatarsModalVisible] =
@@ -74,7 +77,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
   const totalXp = Number.isFinite(Number(xpFromProfile)) ? Number(xpFromProfile) : 0;
   const { level, progressPct, currentXp, nextLevelXp } = getXpLevel(totalXp);
   const xpProgressWidth = `${Math.round(progressPct * 100)}%` as `${number}%`;
-
+  logger.warn('is guest mode', isGuestMode)
   return (
     <Modal
       visible={isVisible}
@@ -251,6 +254,8 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
             style={{ flex: 1 }}
             contentContainerStyle={{ padding: SPACING.lg }}
             showsVerticalScrollIndicator={false}
+            alwaysBounceVertical={true}
+            bounces={true}
           >
             {/* Daily puzzles completed */}
             <Text
@@ -340,12 +345,14 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
             </View>
 
             {/* Action buttons */}
-            <TouchableOpacity
-              onPress={() => setIsPasswordModalVisible(true)}
-              style={actionButtonStyle}
-            >
-              <Text style={actionButtonTextStyle}>Change Password</Text>
-            </TouchableOpacity>
+            {!isGuestMode && (
+              <TouchableOpacity
+                onPress={() => setIsPasswordModalVisible(true)}
+                style={actionButtonStyle}
+              >
+                <Text style={actionButtonTextStyle}>Change Password</Text>
+              </TouchableOpacity>
+            )}
 
             <View style={{ height: SPACING.sm }} />
 
@@ -374,7 +381,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
               <Text style={actionButtonTextStyle}>Leaderboard</Text>
             </TouchableOpacity>
 
-            <View style={{ height: SPACING.xl }} />
+            <View style={{ height: SPACING.xl, marginBottom: verticalScale(24) }} />
           </ScrollView>
         </View>
       </View>
