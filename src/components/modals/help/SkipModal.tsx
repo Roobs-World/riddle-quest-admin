@@ -3,6 +3,7 @@ import { View, Text, Modal } from "react-native";
 import CloseButton from "../../buttons/CloseButton";
 import { TYPOGRAPHY } from "src/styles";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
+import HomeBg from "../../../../assets/images/home-bg.svg";
 import WideButton from "src/components/buttons/WideButton";
 import {
   MODAL_WIDTH,
@@ -52,6 +53,17 @@ const SkipModal: React.FC<SkipModalProps> = ({
           }}
         >
           <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{ position: "absolute" }} />
+          {/* Decorative wave — clipped to card bounds */}
+          <HomeBg
+            width={MODAL_WIDTH * 1.1}
+            height={MODAL_HEIGHT * 1.1}
+            style={{ position: "absolute", top: -MODAL_HEIGHT * 0.05, left: -MODAL_WIDTH * 0.05 }}
+          />
+          <CloseButton
+            onPress={onClose}
+            size={CLOSE_BUTTON_SIZE}
+            style={MODAL_CLOSE_BUTTON_POSITION}
+          />
           <View
             style={{
               width: "80%",
@@ -59,11 +71,6 @@ const SkipModal: React.FC<SkipModalProps> = ({
               justifyContent: "center",
             }}
           >
-            <CloseButton
-              onPress={onClose}
-              size={CLOSE_BUTTON_SIZE}
-              style={MODAL_CLOSE_BUTTON_POSITION}
-            />
             <Text
               style={{
                 fontFamily: TYPOGRAPHY.fontPrimary,

@@ -6,6 +6,7 @@ import type { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import { Player } from "../../validation/firestoreSchemas";
 import { captureException } from "../../utils/sentry";
 import { logger } from "../../utils/logger";
+import { INITIAL_COINS } from "@/constants/game";
 
 /**
  * Resolves initial gameplay mode after auth bootstrap.
@@ -27,7 +28,7 @@ export const createGuestPlayer = (uid: string): Player => ({
   userId: uid,
   email: `guest_${uid}@guest.qwordly.com`,
   username: "Guest",
-  coins: 0,
+  coins: INITIAL_COINS,
   progress: {
     classicIndex: 1,
     dailyChallengeIndex: 0,
