@@ -12,6 +12,7 @@ import { TYPOGRAPHY, SPACING } from "../../../styles";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
 import { MODAL_WIDTH, MODAL_HEIGHT, CLOSE_BUTTON_SIZE, MODAL_CLOSE_BUTTON_POSITION, CARD_BORDER_RADIUS, MODAL_CONTENT_PADDING, MODAL_SCROLLABLE_MAX_HEIGHT } from "../../../constants/layout";
+import { AppStrings } from "../../../constants/AppStrings";
 
 export interface StatsModalProps {
   isVisible: boolean;
@@ -38,7 +39,7 @@ const StatsModal: React.FC<StatsModalProps> = ({
       transparent
       animationType="fade"
       onRequestClose={onClose}
-      accessibilityLabel="Statistics"
+      accessibilityLabel={AppStrings.StatsModal.TITLE}
     >
       <View
         style={{
@@ -67,7 +68,7 @@ const StatsModal: React.FC<StatsModalProps> = ({
             onPress={onClose}
             size={CLOSE_BUTTON_SIZE}
             style={MODAL_CLOSE_BUTTON_POSITION}
-            accessibilityLabel="Close statistics"
+            accessibilityLabel={AppStrings.Accessibility.CLOSE_STATISTICS}
           />
           <Text
             style={{
@@ -79,31 +80,31 @@ const StatsModal: React.FC<StatsModalProps> = ({
             }}
             accessibilityRole="header"
           >
-            Statistics
+            {AppStrings.StatsModal.TITLE}
           </Text>
           <ScrollView
             style={{ maxHeight: MODAL_SCROLLABLE_MAX_HEIGHT, width: "100%" }}
             contentContainerStyle={{ padding: MODAL_CONTENT_PADDING, paddingTop: SPACING.sm, paddingBottom: SPACING.lg }}
             showsVerticalScrollIndicator={false}
           >
-            <SectionHeader label="Gameplay" />
-            <StatRow label="Games Played" value={stats?.gamesPlayed ?? 0} />
-            <StatRow label="Daily Puzzles" value={stats?.dailyPuzzlesCompleted ?? 0} />
-            <StatRow label="Highest Classic Level" value={stats?.highestLevelClassic ?? 0} />
-            <StatRow label="XP" value={stats?.xp ?? 0} />
+            <SectionHeader label={AppStrings.StatsModal.GAMEPLAY_SECTION} />
+            <StatRow label={AppStrings.StatsModal.GAMES_PLAYED} value={stats?.gamesPlayed ?? 0} />
+            <StatRow label={AppStrings.StatsModal.DAILY_PUZZLES} value={stats?.dailyPuzzlesCompleted ?? 0} />
+            <StatRow label={AppStrings.StatsModal.HIGHEST_CLASSIC_LEVEL} value={stats?.highestLevelClassic ?? 0} />
+            <StatRow label={AppStrings.StatsModal.XP} value={stats?.xp ?? 0} />
 
-            <SectionHeader label="Wins & Streaks" />
-            <StatRow label="Total Wins" value={stats?.totalWins ?? 0} />
-            <StatRow label="Win Rate" value={winRate} unit="%" />
-            <StatRow label="Best Streak" value={stats?.bestStreak ?? 0} />
-            <StatRow label="Current Streak" value={stats?.winStreak ?? 0} />
-            <StatRow label="Challenge Wins" value={stats?.challengeWins ?? 0} />
+            <SectionHeader label={AppStrings.StatsModal.WINS_STREAKS_SECTION} />
+            <StatRow label={AppStrings.StatsModal.TOTAL_WINS} value={stats?.totalWins ?? 0} />
+            <StatRow label={AppStrings.StatsModal.WIN_RATE} value={winRate} unit="%" />
+            <StatRow label={AppStrings.StatsModal.BEST_STREAK} value={stats?.bestStreak ?? 0} />
+            <StatRow label={AppStrings.StatsModal.CURRENT_STREAK} value={stats?.winStreak ?? 0} />
+            <StatRow label={AppStrings.StatsModal.CHALLENGE_WINS} value={stats?.challengeWins ?? 0} />
 
-            <SectionHeader label="Performance" />
-            <StatRow label="Avg Guesses (wins)" value={avgGuesses} />
-            <StatRow label="Total Words Guessed" value={stats?.totalWordsGuessed ?? 0} />
-            <StatRow label="Total Score" value={stats?.totalScore ?? 0} />
-            <StatRow label="Hints Used" value={stats?.totalHintsUsed ?? 0} />
+            <SectionHeader label={AppStrings.StatsModal.PERFORMANCE_SECTION} />
+            <StatRow label={AppStrings.StatsModal.AVG_GUESSES} value={avgGuesses} />
+            <StatRow label={AppStrings.StatsModal.TOTAL_WORDS_GUESSED} value={stats?.totalWordsGuessed ?? 0} />
+            <StatRow label={AppStrings.StatsModal.TOTAL_SCORE} value={stats?.totalScore ?? 0} />
+            <StatRow label={AppStrings.StatsModal.HINTS_USED} value={stats?.totalHintsUsed ?? 0} />
           </ScrollView>
         </View>
       </View>

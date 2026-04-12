@@ -19,6 +19,7 @@ import {
   MODAL_CONTENT_PADDING,
   MODAL_BUTTON_SPACER,
 } from "../../../constants/layout";
+import { AppStrings } from "../../../constants/AppStrings";
 
 /**
  * Props for the victory feedback modal shown after a successful solve.
@@ -227,7 +228,7 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
                 color: "black",
               }}
             >
-              Victory!
+              {AppStrings.VictoryModal.TITLE}
             </Text>
 
             {unlockedAchievementNames.length > 0 ? (
@@ -251,7 +252,7 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
                     color: "#92400e",
                   }}
                 >
-                  Achievement Unlocked!
+                  {AppStrings.VictoryModal.ACHIEVEMENT_UNLOCKED}
                 </Text>
                 <Text
                   style={{
@@ -278,7 +279,7 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
                   color: "black",
                 }}
               >
-                +{coinsEarned} Coins
+                +{coinsEarned}{AppStrings.VictoryModal.COINS_SUFFIX}
               </Text>
             </View>
 
@@ -291,7 +292,7 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
                   marginBottom: MODAL_BUTTON_SPACER,
                 }}
               >
-                Share your victory!
+                {AppStrings.VictoryModal.SHARE_TEXT}
               </Text>
 
               <View
@@ -312,7 +313,7 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
             <View style={{ width: "100%" }}>
               <WideButton
                 onPress={handleNextLevel}
-                buttonText="Next Level"
+                buttonText={AppStrings.VictoryModal.NEXT_LEVEL_BUTTON}
               />
             </View>
           </View>

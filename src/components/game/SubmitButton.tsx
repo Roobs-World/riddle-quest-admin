@@ -2,6 +2,7 @@ import { ReactElement } from "react";
 import { Text, TouchableOpacity } from "react-native";
 import { SPACING, TYPOGRAPHY } from "../../styles";
 import { SUBMIT_BUTTON_PADDING_H } from "../../constants/layout";
+import { AppStrings } from "../../constants/AppStrings";
 
 /**
  * Props for the primary guess-submit control.
@@ -43,9 +44,9 @@ export const SubmitButton = ({
       testID="submit-button"
       accessible={true}
       accessibilityRole="button"
-      accessibilityLabel="Submit current guess"
+      accessibilityLabel={AppStrings.Accessibility.SUBMIT_GUESS}
     >
-      <Text style={{ fontSize: TYPOGRAPHY.fontSize.lg, fontFamily: TYPOGRAPHY.fontPrimary, color: "black" }}>SUBMIT</Text>
+      <Text style={{ fontSize: TYPOGRAPHY.fontSize.lg, fontFamily: TYPOGRAPHY.fontPrimary, color: "black" }}>{AppStrings.GameScreenAlerts.SUBMIT_BUTTON}</Text>
     </TouchableOpacity>
   );
 };

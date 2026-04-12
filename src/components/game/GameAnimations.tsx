@@ -1,5 +1,6 @@
 import React from "react";
 import StaticTitle from "../animations/StaticTitle";
+import { AppStrings } from "../../constants/AppStrings";
 
 /**
  * Props controlling conditional game animation rendering.
@@ -20,7 +21,7 @@ const GameAnimations: React.FC<GameAnimationsProps> = ({ isWin }) => {
 
   return (
     <>
-      <StaticTitle title="YOU WON!" />
+      <StaticTitle title={AppStrings.VictoryModal.YOU_WON_TITLE} />
     </>
   );
 };

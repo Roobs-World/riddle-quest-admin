@@ -105,6 +105,10 @@ function useExpoTexture(assetModule: string | number): Texture | null {
         const loaded = createTextureFromAsset(asset);
         if (mounted) {
           textureCache.set(assetModule, loaded);
+
+          loaded.generateMipmaps = false;
+          loaded.minFilter = LinearFilter;
+
           setTexture(loaded);
         }
       } catch (error) {
@@ -387,7 +391,7 @@ const SolarSystem3D: React.FC = () => {
         style={canvasStyle}
         camera={cameraConfig}
         dpr={[1, 1.5]}
-        gl={{ alpha: true }}
+        gl={{ alpha: true, pixelRatio: 1 }}
         onCreated={({ gl, camera }) => {
           gl.setClearColor(0x000000, 0);
           camera.lookAt(0, 0, 0);

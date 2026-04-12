@@ -12,6 +12,7 @@ import TreasureChestRaysSvg from "../../../../assets/images/treasure-chest-rays.
 import TreasureChestSvg from "../../../../assets/images/treasure-chest.svg";
 import { TYPOGRAPHY, SPACING } from "../../../styles";
 import { verticalScale } from "../../../utils/responsive";
+import { AppStrings } from "../../../constants/AppStrings";
 
 export default function TreasureChest({ coins }: { coins: number }) {
   const rotation = useSharedValue(0);
@@ -35,7 +36,7 @@ export default function TreasureChest({ coins }: { coins: number }) {
         className="text-black text-left"
         style={{ fontFamily: TYPOGRAPHY.fontPrimary, fontSize: TYPOGRAPHY.fontSize.lg, marginBottom: SPACING.md }}
       >
-        Your Treasure Chest
+        {AppStrings.Profile.TREASURE_CHEST_TITLE}
       </Text>
       <View
         style={{
@@ -73,7 +74,7 @@ export default function TreasureChest({ coins }: { coins: number }) {
             className="text-black"
             style={{ fontFamily: TYPOGRAPHY.fontPrimary, fontSize: TYPOGRAPHY.fontSize["2xl"], marginBottom: SPACING.xs, marginTop: verticalScale(96) }}
           >
-            Total Coins:
+            {AppStrings.Profile.TOTAL_COINS_LABEL}
           </Text>
           <Text
             className="text-black"

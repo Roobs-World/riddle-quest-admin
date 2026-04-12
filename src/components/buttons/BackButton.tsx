@@ -17,6 +17,7 @@ import BackIcon from "@images/back-icon.svg";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { styles, SPACING } from "../../styles";
 import { BACK_ICON_SIZE } from "../../constants/layout";
+import { AppStrings } from "../../constants/AppStrings";
 
 /**
  * Props interface for the BackButton component.
@@ -96,9 +97,9 @@ const BackButton = <
       style={[styles.backButton, { padding: SPACING.xs }]}
       accessibilityRole="button"
       accessibilityLabel={
-        targetScreen ? `Navigate to ${String(targetScreen)}` : "Go back"
+        targetScreen ? `${AppStrings.Accessibility.NAVIGATE_TO_PREFIX}${String(targetScreen)}` : AppStrings.Accessibility.GO_BACK
       }
-      accessibilityHint="Double tap to navigate back or to the previous screen"
+      accessibilityHint={AppStrings.Accessibility.BACK_BUTTON_HINT}
     >
       <BackIcon width={BACK_ICON_SIZE} height={BACK_ICON_SIZE} />
     </TouchableOpacity>

@@ -32,6 +32,7 @@ import HomeBg from "../../../assets/images/home-bg.svg";
 import { logger } from "../../utils/logger";
 import CloseButton from "../buttons/CloseButton";
 import WideButton from "../buttons/WideButton";
+import { AppStrings } from "../../constants/AppStrings";
 
 const { screenHeight } = dimensions;
 const GRID_COIN_ICON_WIDTH = moderateScale(86);
@@ -187,29 +188,29 @@ const CoinShop: React.FC<CoinShopProps> = ({
             onPress={onClose}
             size={CLOSE_BUTTON_SIZE_LG}
             style={styles.closeButton}
-            accessibilityLabel="Close coin shop"
+            accessibilityLabel={AppStrings.Accessibility.CLOSE_COIN_SHOP}
           />
 
           {loading ? (
             <View style={styles.loadingContainer} testID="coin-shop-loading">
               <ActivityIndicator size="large" color={COLORS.primaryOrange} />
-              <Text style={styles.loadingText}>Loading shop...</Text>
+              <Text style={styles.loadingText}>{AppStrings.CoinShop.LOADING_TEXT}</Text>
             </View>
           ) : (
             <>
             <View style={styles.headerRow}>
-              <Text style={styles.title}>COIN SHOP</Text>
+              <Text style={styles.title}>{AppStrings.CoinShop.TITLE}</Text>
             </View>
 
             <View style={styles.coinsPill}>
               <View style={styles.coinsPillLeft}>
                 <CoinSvg width={moderateScale(32)} height={moderateScale(32)} />
                 <View style={styles.coinsPillText}>
-                  <Text style={styles.coinsPillLabel}>Your balance</Text>
+                  <Text style={styles.coinsPillLabel}>{AppStrings.CoinShop.YOUR_BALANCE}</Text>
                 </View>
               </View>
               <Text style={styles.coinsPillAmount}>
-                {currentCoins.toLocaleString()} coins
+                {currentCoins.toLocaleString()}{AppStrings.CoinShop.COINS_SUFFIX}
               </Text>
             </View>
 
@@ -242,7 +243,7 @@ const CoinShop: React.FC<CoinShopProps> = ({
                         style={styles.gridCoinIcon}
                       />
                       <Text style={styles.productCoins}>
-                        {product.coins.toLocaleString()} coins
+                        {product.coins.toLocaleString()}{AppStrings.CoinShop.COINS_SUFFIX}
                       </Text>
                       <View style={styles.productPriceButton}>
                         <Text style={styles.productPriceText}>{displayPrice}</Text>
@@ -257,7 +258,7 @@ const CoinShop: React.FC<CoinShopProps> = ({
             )}
 
             {!loading && !error && sortedProducts.length === 0 && (
-              <Text style={styles.errorText}>No coin packs are available right now.</Text>
+              <Text style={styles.errorText}>{AppStrings.CoinShop.NO_PACKS_AVAILABLE}</Text>
             )}
 
             
@@ -266,7 +267,7 @@ const CoinShop: React.FC<CoinShopProps> = ({
           <View style={styles.bottomButtons}>
             <View testID="purchase-button" style={styles.purchaseButtonContainer}>
               <WideButton
-                buttonText="PURCHASE"
+                buttonText={AppStrings.CoinShop.PURCHASE_BUTTON}
                 onPress={handlePurchasePress}
                 disabled={!selectedProductId}
               />

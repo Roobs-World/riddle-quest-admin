@@ -12,6 +12,7 @@ import {
   MODAL_BUTTON_SPACER,
   wheelSize,
 } from "../../../constants/layout";
+import { AppStrings } from "../../../constants/AppStrings";
 
 interface AchievementUnlockFanfareModalProps {
   isVisible: boolean;
@@ -129,7 +130,7 @@ const AchievementUnlockFanfareModal: React.FC<
                 textAlign: "center",
               }}
             >
-              Achievement Unlocked!
+              {AppStrings.Achievements.FANFARE_TITLE}
             </Text>
 
             <View style={{ alignItems: "center", maxWidth: "90%" }}>
@@ -176,13 +177,13 @@ const AchievementUnlockFanfareModal: React.FC<
                     textAlign: "center",
                   }}
                 >
-                  +{extraCount} more unlocked
+                  +{extraCount}{AppStrings.Achievements.MORE_UNLOCKED_SUFFIX}
                 </Text>
               ) : null}
             </View>
 
             <View style={{ width: "100%", marginTop: 8 }}>
-              <WideButton buttonText="Nice" onPress={onClose} />
+              <WideButton buttonText={AppStrings.Achievements.NICE_BUTTON} onPress={onClose} />
             </View>
           </View>
         </View>

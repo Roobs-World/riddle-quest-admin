@@ -12,6 +12,7 @@ import {
   MODAL_CLOSE_BUTTON_POSITION,
 } from "../../../constants/layout";
 import { SPACING } from "../../../styles";
+import { AppStrings } from "../../../constants/AppStrings";
 
 interface SkipModalProps {
   isVisible: boolean;
@@ -80,7 +81,7 @@ const SkipModal: React.FC<SkipModalProps> = ({
                 textAlign: "center",
               }}
             >
-              Skip the level?
+              {AppStrings.GameScreenAlerts.SKIP_MODAL_TITLE}
             </Text>
             <Text
               style={{
@@ -91,7 +92,7 @@ const SkipModal: React.FC<SkipModalProps> = ({
                 textAlign: "center",
               }}
             >
-              Cost: {skipCost} Coins. You have: {userCoins} Coins.
+              {AppStrings.GameScreenAlerts.COST_COINS_PREFIX}{skipCost}{AppStrings.GameScreenAlerts.COST_COINS_MIDDLE}{userCoins}{AppStrings.GameScreenAlerts.COST_COINS_SUFFIX}
             </Text>
             {!canAffordSkip && (
               <Text
@@ -103,12 +104,12 @@ const SkipModal: React.FC<SkipModalProps> = ({
                   textAlign: "center",
                 }}
               >
-                You do not have enough coins to skip a level.
+                {AppStrings.GameScreenAlerts.SKIP_NOT_ENOUGH_COINS_MESSAGE}
               </Text>
             )}
             <View style={{ width: "100%", marginTop: SPACING.lg }}>
               <WideButton
-                buttonText="SKIP LEVEL"
+                buttonText={AppStrings.GameScreenAlerts.SKIP_LEVEL_BUTTON}
                 onPress={() => {
                   onClose();
                   onSkipLevel();
@@ -117,7 +118,7 @@ const SkipModal: React.FC<SkipModalProps> = ({
               />
               <View style={{ marginTop: SPACING.md }}>
                 <WideButton
-                  buttonText="CLOSE"
+                  buttonText={AppStrings.CommonAlerts.CLOSE_BUTTON}
                   onPress={onClose}
                   disabled={false}
                 />

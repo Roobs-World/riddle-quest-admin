@@ -16,6 +16,7 @@ import {
   MODAL_CLOSE_BUTTON_POSITION,
 } from "../../../constants/layout";
 import { SPACING } from "../../../styles";
+import { AppStrings } from "../../../constants/AppStrings";
 
 /**
  * Props for the hint purchase modal shown during gameplay.
@@ -99,7 +100,7 @@ const HintModal: React.FC<HintModalProps> = ({
                 textAlign: "center",
               }}
             >
-              Use a Hint?
+              {AppStrings.GameScreenAlerts.HINT_MODAL_TITLE}
             </Text>
 
             <Text
@@ -111,7 +112,7 @@ const HintModal: React.FC<HintModalProps> = ({
                 textAlign: "center",
               }}
             >
-              Cost: {hintCost} Coins. You have: {userCoins} Coins.
+              {AppStrings.GameScreenAlerts.COST_COINS_PREFIX}{hintCost}{AppStrings.GameScreenAlerts.COST_COINS_MIDDLE}{userCoins}{AppStrings.GameScreenAlerts.COST_COINS_SUFFIX}
             </Text>
 
             {!canAffordHint && (
@@ -124,19 +125,19 @@ const HintModal: React.FC<HintModalProps> = ({
                   textAlign: "center",
                 }}
               >
-                You do not have enough coins for a hint.
+                {AppStrings.GameScreenAlerts.HINT_NOT_ENOUGH_COINS_MESSAGE}
               </Text>
             )}
 
             <View style={{ width: "100%", marginTop: SPACING.lg }}>
               <WideButton
-                buttonText="SHOW HINT"
+                buttonText={AppStrings.GameScreenAlerts.HINT_SHOW_BUTTON}
                 onPress={() => { onClose(); onShowHint(); }}
                 disabled={!canAffordHint}
               />
               <View style={{ marginTop: SPACING.md }}>
                 <WideButton
-                  buttonText="CLOSE"
+                  buttonText={AppStrings.CommonAlerts.CLOSE_BUTTON}
                   onPress={onClose}
                   disabled={false}
                 />

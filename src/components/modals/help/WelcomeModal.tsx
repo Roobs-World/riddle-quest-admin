@@ -141,7 +141,7 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({
                 marginTop: SPACING.lg,
               }}
             >
-              Welcome to{"\n"}Qwordly!
+              {AppStrings.WelcomeModal.WELCOME_TITLE}
             </Text>
 
             {/* Body text */}
@@ -154,8 +154,7 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({
                   textAlign: "center",
                 }}
               >
-                Solve engaging riddles by guessing the answer letter by letter.
-                Use the colour clues to narrow down each guess.
+                {AppStrings.WelcomeModal.SOLVE_RIDDLES_TEXT}
               </Text>
               <Text
                 style={{
@@ -165,7 +164,7 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({
                   textAlign: "center",
                 }}
               >
-                Earn coins, beat daily challenges, and climb the leaderboard.
+                {AppStrings.WelcomeModal.EARN_COINS_TEXT}
               </Text>
             </View>
 

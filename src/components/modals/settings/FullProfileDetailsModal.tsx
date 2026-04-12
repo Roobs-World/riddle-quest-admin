@@ -6,15 +6,18 @@ import {
   Modal,
   ScrollView,
   Image,
+  Alert
 } from "react-native";
 import { Player } from "../../../validation/firestoreSchemas";
 import CloseButton from "../../buttons/CloseButton";
 import { useModal } from "../../../hooks/useModal";
 import ChangePasswordModal from "./ChangePasswordModal";
 import UpdateUsernameModal from "./UpdateUsernameModal";
-import AvatarOptionsModal from "./AvatarOptionsModal";
+import * as ImagePicker from "react-native-image-picker";
 import PreloadedAvatarsModal from "./PreloadedAvatarsModal";
 import { TYPOGRAPHY, SPACING, COLORS } from "../../../styles";
+import { getStorage } from "@react-native-firebase/storage";
+import { getApp } from "@react-native-firebase/app";
 import {
   CLOSE_BUTTON_SIZE,
   AVATAR_SIZE_LARGE,
@@ -23,8 +26,11 @@ import { moderateScale, verticalScale } from "../../../utils/responsive";
 import LogoIcon from "../../icons/LogoIcon";
 import TreasureChest from "./TreasureChest";
 import { getXpLevel } from "../../../constants/game";
-import { logger } from "@/utils/logger";
 import { isGuestPlayer } from "@/features/auth/sessionBootstrap";
+import { AppStrings } from "../../../constants/AppStrings";
+import { useAuth } from "@/contexts/AuthContext";
+import PulsingSpinner from "@/components/loading/PulsingSpinner";
+import { LOADING_SPINNER_OPACITY, LOADING_SPINNER_SIZE } from "@/constants/loading";
 
 interface FullProfileDetailsModalProps {
   isVisible: boolean;
@@ -45,23 +51,50 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
   const isGuestMode = isGuestPlayer(playerData);
   const [isUsernameModalVisible, setIsUsernameModalVisible] = useState(false);
   const [isPasswordModalVisible, setIsPasswordModalVisible] = useState(false);
-  const [isPreloadedAvatarsModalVisible, setIsPreloadedAvatarsModalVisible] =
-    useState(false);
-  const [isAvatarOptionsModalVisible, setIsAvatarOptionsModalVisible] =
-    useState(false);
+  const [isUploading, setIsUploading] = useState(false);
 
   if (!playerData) {
     return null;
   }
 
+  const { updatePlayerData } = useAuth();
   const { stats } = playerData;
   const avatarRadius = AVATAR_SIZE_LARGE / 2;
   const initial = playerData.username ? playerData.username.charAt(0).toUpperCase() : "?";
 
-  const handleUpdateAvatarPress = () => setIsAvatarOptionsModalVisible(true);
-  const handleCloseAvatarOptionsModal = () => setIsAvatarOptionsModalVisible(false);
-  const handleOpenPreloadedAvatars = () => setIsPreloadedAvatarsModalVisible(true);
-  const handleClosePreloadedAvatars = () => setIsPreloadedAvatarsModalVisible(false);
+  const handleUploadAvatar = async () => {
+    try {
+      const result = await ImagePicker.launchImageLibrary({
+        mediaType: "photo",
+        maxHeight: 200,
+        maxWidth: 200,
+        includeBase64: false,
+      });
+      
+      if (result.didCancel) {
+        return;
+      }
+      if (result.assets && result.assets.length > 0) {
+        const selectedAsset = result.assets[0];
+        if (selectedAsset.uri && playerData.userId) {
+          const uploadUri = selectedAsset.uri;
+          const filename = uploadUri.substring(uploadUri.lastIndexOf("/") + 1);
+          const storageRef = getStorage(getApp()).ref(
+            `avatars/${playerData.userId}/${filename}`
+          );
+          setIsUploading(true);
+          const task = storageRef.putFile(uploadUri);
+          task.on("state_changed", () => {});
+          await task;
+          const downloadURL = await storageRef.getDownloadURL();
+          await updatePlayerData({ avatarUrl: downloadURL });
+          setIsUploading(false);
+        }
+      }
+    } catch {
+      Alert.alert(AppStrings.CommonAlerts.ERROR_TITLE, AppStrings.Profile.ALERT_AVATAR_UPDATE_ERROR);
+    }
+  };
 
   const winRate = Math.round(stats?.winRate ?? 0);
   const avgGuess = stats?.averageGuesses != null
@@ -147,7 +180,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
                   letterSpacing: 2,
                 }}
               >
-                PROFILE
+                {AppStrings.Profile.PROFILE_HEADER}
               </Text>
               <CloseButton
                 onPress={onClose}
@@ -159,7 +192,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
             {/* Avatar */}
             <View style={{ alignItems: "center", marginTop: SPACING.sm }}>
               <TouchableOpacity
-                onPress={handleUpdateAvatarPress}
+                onPress={handleUploadAvatar}
                 activeOpacity={0.8}
               >
                 {playerData.avatarUrl ? (
@@ -239,7 +272,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
                     />
                   </View>
                   <Text style={{ color: GOLD, fontSize: TYPOGRAPHY.fontSize.lg, fontFamily: TYPOGRAPHY.fontSecondary }}>
-                    Lv.{level}
+                    {AppStrings.Profile.XP_LEVEL_PREFIX}{level}
                   </Text>
                 </View>
                 <Text style={{ color: COLORS.white, fontSize: TYPOGRAPHY.fontSize.lg, fontFamily: TYPOGRAPHY.fontSecondary, textAlign: "center" }}>
@@ -266,7 +299,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
                 marginBottom: SPACING.md,
               }}
             >
-              Daily puzzles completed
+              {AppStrings.Profile.DAILY_PUZZLES_COMPLETED_HEADER}
             </Text>
             <View
               style={{
@@ -310,7 +343,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
                   textAlign: "right",
                 }}
               >
-                Regular Days{"\n"}Completed
+                {AppStrings.Profile.REGULAR_DAYS_LABEL}
               </Text>
             </View>
 
@@ -323,7 +356,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
                 marginBottom: SPACING.md,
               }}
             >
-              Best Strike
+              {AppStrings.Profile.BEST_STRIKE_HEADER}
             </Text>
             <View
               style={{
@@ -333,10 +366,10 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
                 marginBottom: SPACING.lg,
               }}
             >
-              <StatBox value={stats?.bestStreak ?? 0} label="Best streak" />
-              <StatBox value={stats?.wins ?? 0} label="Total words guessed" />
-              <StatBox value={`${winRate}%`} label="Win rate" />
-              <StatBox value={avgGuess} label="Average guess" />
+              <StatBox value={stats?.bestStreak ?? 0} label={AppStrings.StatsModal.BEST_STREAK} />
+              <StatBox value={stats?.wins ?? 0} label={AppStrings.StatsModal.TOTAL_WORDS_GUESSED} />
+              <StatBox value={`${winRate}%`} label={AppStrings.StatsModal.WIN_RATE} />
+              <StatBox value={avgGuess} label={AppStrings.Profile.AVG_GUESS_LABEL} />
             </View>
 
             {/* Treasure chest */}
@@ -350,7 +383,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
                 onPress={() => setIsPasswordModalVisible(true)}
                 style={actionButtonStyle}
               >
-                <Text style={actionButtonTextStyle}>Change Password</Text>
+                <Text style={actionButtonTextStyle}>{AppStrings.Profile.CHANGE_PASSWORD_BUTTON}</Text>
               </TouchableOpacity>
             )}
 
@@ -360,7 +393,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
               onPress={() => modal.openGameModal("achievements", { playerData })}
               style={actionButtonStyle}
             >
-              <Text style={actionButtonTextStyle}>Achievements</Text>
+              <Text style={actionButtonTextStyle}>{AppStrings.Achievements.MODAL_TITLE}</Text>
             </TouchableOpacity>
 
             <View style={{ height: SPACING.sm }} />
@@ -369,7 +402,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
               onPress={() => modal.openGameModal("stats", { playerData })}
               style={actionButtonStyle}
             >
-              <Text style={actionButtonTextStyle}>Statistics</Text>
+              <Text style={actionButtonTextStyle}>{AppStrings.StatsModal.TITLE}</Text>
             </TouchableOpacity>
 
             <View style={{ height: SPACING.sm }} />
@@ -378,7 +411,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
               onPress={() => modal.openGameModal("leaderboard", { currentUserId: playerData.userId })}
               style={actionButtonStyle}
             >
-              <Text style={actionButtonTextStyle}>Leaderboard</Text>
+              <Text style={actionButtonTextStyle}>{AppStrings.Leaderboard.TITLE}</Text>
             </TouchableOpacity>
 
             <View style={{ height: SPACING.xl, marginBottom: verticalScale(24) }} />
@@ -395,16 +428,11 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
         onClose={() => setIsUsernameModalVisible(false)}
         currentUsername={playerData.username || ""}
       />
-      <AvatarOptionsModal
-        isVisible={isAvatarOptionsModalVisible}
-        onClose={handleCloseAvatarOptionsModal}
-        onOpenPreloadedAvatars={handleOpenPreloadedAvatars}
-        userId={playerData.userId}
-      />
-      <PreloadedAvatarsModal
-        isVisible={isPreloadedAvatarsModalVisible}
-        onClose={handleClosePreloadedAvatars}
-        onCloseAvatarOptions={handleCloseAvatarOptionsModal}
+
+      <PulsingSpinner
+        visible={isUploading}
+        size={LOADING_SPINNER_SIZE}
+        opacity={LOADING_SPINNER_OPACITY}
       />
     </Modal>
   );

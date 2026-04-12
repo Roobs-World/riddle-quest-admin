@@ -70,7 +70,7 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
       handleClose();
     } catch (error) {
       const firebaseError = error as FirebaseError;
-      let errorMessage = AppStrings.Profile.ALERT_PASSWORD_CHANGE_ERROR;
+      let errorMessage: string = AppStrings.Profile.ALERT_PASSWORD_CHANGE_ERROR;
       if (firebaseError.code === "auth/invalid-credential") {
         errorMessage = AppStrings.Profile.ALERT_INVALID_CURRENT_PASSWORD;
       }

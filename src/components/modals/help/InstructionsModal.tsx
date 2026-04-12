@@ -20,6 +20,7 @@ import {
 } from "../../../constants/layout";
 import { SPACING } from "../../../styles";
 import { verticalScale } from "@/utils/responsive";
+import { AppStrings } from "../../../constants/AppStrings";
 
 interface InstructionsModalProps {
   isVisible: boolean;
@@ -91,7 +92,7 @@ const InstructionsModal: React.FC<InstructionsModalProps> = ({
                 marginTop: verticalScale(16)
               }}
             >
-              How to Play
+              {AppStrings.Instructions.TITLE}
             </Text>
 
             <View
@@ -100,33 +101,33 @@ const InstructionsModal: React.FC<InstructionsModalProps> = ({
               }}
             >
               <InstructionCard
-                title="The Goal"
-                description="Guess the hidden riddle in 3 tries using the color clues to guide you."
+                title={AppStrings.Instructions.GOAL_TITLE}
+                description={AppStrings.Instructions.GOAL_DESCRIPTION}
               />
-              <InstructionCard title="Color Clues">
+              <InstructionCard title={AppStrings.Instructions.COLOR_CLUES_TITLE}>
                 <View style={{ gap: SPACING.sm, alignItems: "flex-start" }}>
                   <ColorClue
                     color="#22c55e"
-                    text="Letter is correct and in the right position"
+                    text={AppStrings.Instructions.COLOR_CORRECT}
                   />
                   <ColorClue
                     color="#eab308"
-                    text="Letter is in the word but wrong position"
+                    text={AppStrings.Instructions.COLOR_MISPLACED}
                   />
                   <ColorClue
                     color="#ef4444"
-                    text="Letter is not in the word at all"
+                    text={AppStrings.Instructions.COLOR_WRONG}
                   />
                 </View>
               </InstructionCard>
               <InstructionCard
-                title="Tips for Success"
-                description="Start with common letters and use the color feedback to narrow down your guesses. Remember, you only have 3 attempts!"
+                title={AppStrings.Instructions.TIPS_TITLE}
+                description={AppStrings.Instructions.TIPS_DESCRIPTION}
               />
             </View>
 
             <View style={{ width: "100%", marginBottom: verticalScale(32) }}>
-              <WideButton buttonText="Got It!" onPress={onClose} />
+              <WideButton buttonText={AppStrings.Instructions.GOT_IT_BUTTON} onPress={onClose} />
             </View>
           </View>
         </View>

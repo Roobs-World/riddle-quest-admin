@@ -16,6 +16,7 @@ import CloseIcon from "../icons/CloseIcon";
 import CloseIconWhite from "../icons/CloseIconWhite";
 import { SPACING } from "../../styles";
 import { CLOSE_BUTTON_SIZE_LG } from "../../constants/layout";
+import { AppStrings } from "../../constants/AppStrings";
 
 /**
  * Props interface for the CloseButton component.
@@ -103,7 +104,7 @@ const CloseButton = ({
       onPress={onPress}
       className={className}
       style={{ padding: SPACING.sm }}
-      accessibilityLabel="Close"
+      accessibilityLabel={AppStrings.CommonAlerts.CLOSE_BUTTON}
       accessibilityRole="button"
       {...props}
     >

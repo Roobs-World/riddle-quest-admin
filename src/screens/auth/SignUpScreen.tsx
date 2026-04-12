@@ -170,16 +170,16 @@ const SignUpScreen = ({ navigation }: { navigation: NavigationProp }) => {
         await Linking.openURL(url);
       } else {
         Alert.alert(
-          "Unable to Open",
-          `Cannot open ${pageName}. Please visit ${url} in your browser.`
+          AppStrings.CommonAlerts.UNABLE_TO_OPEN_TITLE,
+          `${AppStrings.CommonAlerts.CANNOT_OPEN_PREFIX}${pageName}${AppStrings.CommonAlerts.CANNOT_OPEN_VISIT_SUFFIX}${url}${AppStrings.CommonAlerts.CANNOT_OPEN_BROWSER_SUFFIX}`
         );
       }
     } catch (error) {
       logger.error(`Error opening ${pageName}:`, error);
       captureException(error);
       Alert.alert(
-        "Error",
-        `Could not open ${pageName}. Please try again later.`
+        AppStrings.CommonAlerts.ERROR_TITLE,
+        `${AppStrings.CommonAlerts.COULD_NOT_OPEN_PREFIX}${pageName}${AppStrings.CommonAlerts.COULD_NOT_OPEN_TRY_AGAIN}`
       );
     }
   }, []);
@@ -202,7 +202,7 @@ const SignUpScreen = ({ navigation }: { navigation: NavigationProp }) => {
       signUpSchema.parse(formData);
 
       if (!agreedToTerms) {
-        setAuthError("Please agree to the terms and privacy policy.");
+        setAuthError(AppStrings.AuthStrings.SignUp.MUST_AGREE_TO_TERMS);
         setIsLoading(false);
         return;
       }
@@ -250,13 +250,13 @@ const SignUpScreen = ({ navigation }: { navigation: NavigationProp }) => {
           default:
             setAuthError(
               firebaseError.message ||
-                "An unexpected error occurred during sign up."
+                AppStrings.AuthStrings.SignUp.SIGNUP_UNEXPECTED_ERROR
             );
         }
       } else {
         logger.error("Unexpected sign up error:", error);
         captureException(error);
-        setAuthError("An unexpected error occurred during sign up.");
+        setAuthError(AppStrings.AuthStrings.SignUp.SIGNUP_UNEXPECTED_ERROR);
       }
     } finally {
       setIsLoading(false);
@@ -381,7 +381,7 @@ const SignUpScreen = ({ navigation }: { navigation: NavigationProp }) => {
                   {AppStrings.AuthStrings.SignUp.TERMS_AGREEMENT_PART1}
                 </Text>
                 <TouchableOpacity
-                  onPress={() => openExternalUrl(TERMS_OF_SERVICE_URL, "Terms of Service")}
+                  onPress={() => openExternalUrl(TERMS_OF_SERVICE_URL, AppStrings.AuthStrings.SignUp.TERMS_PAGE_NAME)}
                 >
                   <Text className="text-blue-300 underline">
                     {AppStrings.AuthStrings.SignUp.TERMS_USER_AGREEMENT}
@@ -391,7 +391,7 @@ const SignUpScreen = ({ navigation }: { navigation: NavigationProp }) => {
                   {AppStrings.AuthStrings.SignUp.TERMS_AGREEMENT_PART2}
                 </Text>
                 <TouchableOpacity
-                  onPress={() => openExternalUrl(PRIVACY_POLICY_URL, "Privacy Policy")}
+                  onPress={() => openExternalUrl(PRIVACY_POLICY_URL, AppStrings.AuthStrings.SignUp.PRIVACY_POLICY_PAGE_NAME)}
                 >
                   <Text className="text-blue-300 underline">
                     {AppStrings.AuthStrings.SignUp.TERMS_PRIVACY_POLICY}

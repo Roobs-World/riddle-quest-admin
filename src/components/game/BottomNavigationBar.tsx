@@ -18,6 +18,7 @@ import SettingsIcon from "../icons/SettingsIcon";
 import LetsPlayIcon from "../../../assets/images/lets-play.svg";
 import { SPACING } from "../../styles";
 import { scale } from "../../utils/responsive";
+import { AppStrings } from "../../constants/AppStrings";
 
 /**
  * Type definition for overlay types that can be triggered from the navigation bar.
@@ -111,8 +112,8 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
         testID="settings-button"
         accessible={true}
         accessibilityRole="button"
-        accessibilityLabel="Open settings"
-        accessibilityHint="Access game settings, sound options, and account management"
+        accessibilityLabel={AppStrings.Accessibility.OPEN_SETTINGS}
+        accessibilityHint={AppStrings.Accessibility.OPEN_SETTINGS_HINT}
       >
         <SettingsIcon color="#401F40" />
       </TouchableOpacity>
@@ -120,8 +121,8 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
       <TouchableOpacity
         accessible={true}
         accessibilityRole="button"
-        accessibilityLabel="Change game mode"
-        accessibilityHint="Select Classic or Daily Challenge mode"
+        accessibilityLabel={AppStrings.Accessibility.CHANGE_GAME_MODE}
+        accessibilityHint={AppStrings.Accessibility.CHANGE_GAME_MODE_HINT}
         style={{
           width: scale(56),
           height: scale(56),
@@ -145,8 +146,8 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
         onPress={() => onProfilePress()}
         accessible={true}
         accessibilityRole="button"
-        accessibilityLabel="Open profile"
-        accessibilityHint="View your profile, statistics, and game progress"
+        accessibilityLabel={AppStrings.Accessibility.OPEN_PROFILE}
+        accessibilityHint={AppStrings.Accessibility.OPEN_PROFILE_HINT}
       >
         <ProfileIcon color="#401F40" />
       </TouchableOpacity>

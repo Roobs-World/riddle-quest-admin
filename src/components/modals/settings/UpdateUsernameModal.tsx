@@ -73,7 +73,7 @@ const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({
       }
     } catch (error) {
       const firebaseError = error as FirebaseError;
-      let errorMessage = AppStrings.Profile.ALERT_AN_ERROR_OCCURRED;
+      let errorMessage: string = AppStrings.Profile.ALERT_AN_ERROR_OCCURRED;
       if (firebaseError.code === "already-exists") {
         errorMessage = AppStrings.Profile.ALERT_USERNAME_ALREADY_TAKEN;
       }

@@ -33,6 +33,7 @@ import { TYPOGRAPHY } from "../../../styles";
 import WideButton from "../../buttons/WideButton";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import { MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, MODAL_BUTTON_SPACER } from "../../../constants/layout";
+import { AppStrings } from "../../../constants/AppStrings";
 
 /**
  * Props interface for the LossModal component.
@@ -152,7 +153,7 @@ const LossModal: React.FC<LossModalProps> = ({
       transparent={true}
       visible={isVisible}
       onRequestClose={onClose}
-      accessibilityLabel="Game loss notification"
+      accessibilityLabel={AppStrings.Accessibility.GAME_LOSS_NOTIFICATION}
     >
       <View
         style={{
@@ -191,7 +192,7 @@ const LossModal: React.FC<LossModalProps> = ({
                       textAlign: "center",
                     }}
                   >
-                    So close!
+                    {AppStrings.LossModal.TITLE}
                   </Text>
                   <Text
                     style={{
@@ -201,7 +202,7 @@ const LossModal: React.FC<LossModalProps> = ({
                       textAlign: "center",
                     }}
                   >
-                    Out of attempts.
+                    {AppStrings.LossModal.OUT_OF_ATTEMPTS}
                   </Text>
                 </View>
                 <View style={{ flex: 2, justifyContent: "center", width: "100%" }}>
@@ -209,7 +210,7 @@ const LossModal: React.FC<LossModalProps> = ({
                     <>
                       <WideButton
                         onPress={handleWatchAdContinue}
-                        buttonText="Watch Ad to Continue"
+                        buttonText={AppStrings.LossModal.WATCH_AD_BUTTON}
                         disabled={canWatchAd === false}
                       />
                       <View style={{ height: MODAL_BUTTON_SPACER }} />
@@ -219,7 +220,7 @@ const LossModal: React.FC<LossModalProps> = ({
                     <>
                       <WideButton
                         onPress={handleCoinContinue}
-                        buttonText={`Use ${coinContinueCost ?? 0} Coins to Continue`}
+                        buttonText={`${AppStrings.LossModal.USE_COINS_PREFIX}${coinContinueCost ?? 0}${AppStrings.LossModal.USE_COINS_SUFFIX}`}
                         disabled={canUseCoin === false}
                       />
                       <View style={{ height: MODAL_BUTTON_SPACER }} />
@@ -227,13 +228,13 @@ const LossModal: React.FC<LossModalProps> = ({
                   )}
                   {onOpenShop && (
                     <>
-                      <WideButton onPress={handleOpenShop} buttonText="Open Shop" />
+                      <WideButton onPress={handleOpenShop} buttonText={AppStrings.LossModal.OPEN_SHOP_BUTTON} />
                       <View style={{ height: MODAL_BUTTON_SPACER }} />
                     </>
                   )}
                   <WideButton
                     onPress={handleNextLevel}
-                    buttonText={`Skip Level (${skipLevelCost ?? 0} Coins)`}
+                    buttonText={`${AppStrings.LossModal.SKIP_LEVEL_PREFIX}${skipLevelCost ?? 0}${AppStrings.LossModal.SKIP_LEVEL_SUFFIX}`}
                   />
                 </View>
               </>
@@ -253,7 +254,7 @@ const LossModal: React.FC<LossModalProps> = ({
                       color: "black",
                     }}
                   >
-                    So close!
+                    {AppStrings.LossModal.TITLE}
                   </Text>
                   <Text
                     style={{
@@ -263,17 +264,17 @@ const LossModal: React.FC<LossModalProps> = ({
                       textAlign: "center",
                     }}
                   >
-                    Out of attempts.
+                    {AppStrings.LossModal.OUT_OF_ATTEMPTS}
                   </Text>
                 </View>
                 <View style={{ flex: 2, justifyContent: "center", width: "100%" }}>
                   {onOpenShop && (
                     <>
-                      <WideButton onPress={handleOpenShop} buttonText="Open Shop" />
+                      <WideButton onPress={handleOpenShop} buttonText={AppStrings.LossModal.OPEN_SHOP_BUTTON} />
                       <View style={{ height: MODAL_BUTTON_SPACER }} />
                     </>
                   )}
-                  <WideButton onPress={handleNextLevel} buttonText="Next Level" />
+                  <WideButton onPress={handleNextLevel} buttonText={AppStrings.LossModal.NEXT_LEVEL_BUTTON} />
                 </View>
               </>
             )}

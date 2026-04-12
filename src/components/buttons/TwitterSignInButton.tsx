@@ -3,6 +3,7 @@ import { TouchableOpacity, Text } from "react-native";
 import TwitterXIcon from "../icons/TwitterXIcon";
 import { styles, SIZING, SPACING } from "../../styles";
 import { scale } from "../../utils/responsive";
+import { AppStrings } from "../../constants/AppStrings";
 
 interface TwitterSignInButtonProps {
   onPress: () => void;
@@ -29,7 +30,7 @@ const TwitterSignInButton: React.FC<TwitterSignInButtonProps> = ({
         }`}
         style={[styles.socialButtonText, { marginLeft: SPACING.sm }]}
       >
-        Continue with X
+        {AppStrings.AuthStrings.Login.CONTINUE_WITH_TWITTER}
       </Text>
     </TouchableOpacity>
   );

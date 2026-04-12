@@ -99,7 +99,7 @@ const LoginScreen = ({
         default:
           setAuthError(
             firebaseError.message ||
-              "An unexpected error occurred during Google login."
+              AppStrings.AuthStrings.Login.GOOGLE_UNEXPECTED_ERROR
           );
       }
     } finally {
@@ -137,7 +137,7 @@ const LoginScreen = ({
         default:
           setAuthError(
             firebaseError.message ||
-              "An unexpected error occurred during X login."
+              AppStrings.AuthStrings.Login.TWITTER_UNEXPECTED_ERROR
           );
       }
     } finally {
@@ -179,25 +179,19 @@ const LoginScreen = ({
         // Handle specific Facebook SDK errors
         if (errorMessage.includes("access token")) {
           logger.error("Facebook access token error detected");
-          setAuthError(
-            "Facebook login configuration issue. Please try again or contact support."
-          );
+          setAuthError(AppStrings.AuthStrings.Login.FACEBOOK_CONFIG_ERROR);
           return;
         }
 
         if (errorMessage.includes("Facebook permission request timed out")) {
           logger.error("Facebook login timeout detected");
-          setAuthError(
-            "Facebook login timed out. This may indicate a configuration issue. Please try again."
-          );
+          setAuthError(AppStrings.AuthStrings.Login.FACEBOOK_TIMEOUT_ERROR);
           return;
         }
 
         if (errorMessage.includes("Facebook SDK not properly initialized")) {
           logger.error("Facebook SDK initialization error detected");
-          setAuthError(
-            "Facebook login is not properly configured. Please restart the app and try again."
-          );
+          setAuthError(AppStrings.AuthStrings.Login.FACEBOOK_SDK_ERROR);
           return;
         }
       }
@@ -222,17 +216,15 @@ const LoginScreen = ({
             );
             break;
           case "auth/network-request-failed":
-            setAuthError(
-              "Network error during Facebook login. Please check your connection and try again."
-            );
+            setAuthError(AppStrings.AuthStrings.Login.FACEBOOK_NETWORK_ERROR);
             break;
           case "auth/invalid-credential":
-            setAuthError("Invalid Facebook credentials. Please try again.");
+            setAuthError(AppStrings.AuthStrings.Login.FACEBOOK_INVALID_CREDENTIAL_ERROR);
             break;
           default:
             setAuthError(
               firebaseError.message ||
-                "An unexpected error occurred during Facebook login."
+                AppStrings.AuthStrings.Login.FACEBOOK_UNEXPECTED_ERROR
             );
         }
       } else {
@@ -240,7 +232,7 @@ const LoginScreen = ({
         const errorMessage =
           error instanceof Error
             ? (error as Error).message
-            : "An unexpected error occurred during Facebook login.";
+            : AppStrings.AuthStrings.Login.FACEBOOK_UNEXPECTED_ERROR;
 
         logger.error("Non-Firebase Facebook error:", errorMessage);
         setAuthError(errorMessage);

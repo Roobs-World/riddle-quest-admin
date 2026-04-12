@@ -11,6 +11,7 @@ import {
   CLOSE_BUTTON_SIZE,
   MODAL_CLOSE_BUTTON_POSITION,
 } from "../../../constants/layout";
+import { AppStrings } from "../../../constants/AppStrings";
 
 interface InfoModalProps {
   isVisible: boolean;
@@ -91,7 +92,7 @@ const InfoModal: React.FC<InfoModalProps> = ({
               {message}
             </Text>
             <View style={{ width: "100%", marginTop: SPACING.lg }}>
-              <WideButton buttonText="OK" onPress={onClose} disabled={false} />
+              <WideButton buttonText={AppStrings.CommonAlerts.OK_BUTTON} onPress={onClose} disabled={false} />
             </View>
           </View>
         </View>

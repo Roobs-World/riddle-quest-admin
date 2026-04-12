@@ -20,6 +20,7 @@ import {
 } from "../../../constants/layout";
 import { SPACING } from "../../../styles";
 import { dimensions } from "../../../utils/responsive";
+import { AppStrings } from "../../../constants/AppStrings";
 
 interface CreditsModalProps {
   isVisible: boolean;
@@ -122,7 +123,7 @@ const CreditsModal: React.FC<CreditsModalProps> = ({
                 textAlign: "center",
               }}
             >
-              Credits
+              {AppStrings.Credits.TITLE}
             </Text>
             <FlatList
               data={TEAM_MEMBERS}
@@ -135,7 +136,7 @@ const CreditsModal: React.FC<CreditsModalProps> = ({
               }}
               contentContainerStyle={{ alignItems: "center" }}
             />
-            <WideButton buttonText="Close" onPress={onClose} />
+            <WideButton buttonText={AppStrings.CommonAlerts.CLOSE_BUTTON} onPress={onClose} />
           </View>
         </View>
       </View>

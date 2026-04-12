@@ -65,7 +65,7 @@ const ForgotPasswordScreen = ({ navigation }: ForgotPasswordScreenProps) => {
 
     try {
       await AuthService.sendPasswordResetEmail(email);
-      setSuccessMessage("Password reset email sent! Check your inbox.");
+      setSuccessMessage(AppStrings.AuthStrings.ForgotPassword.SUCCESS_MESSAGE);
       logger.debug("Password reset email sent successfully.");
     } catch (error) {
       const firebaseError = error as FirebaseAuthTypes.NativeFirebaseAuthError;
@@ -74,13 +74,11 @@ const ForgotPasswordScreen = ({ navigation }: ForgotPasswordScreenProps) => {
 
       // Handle specific Firebase errors
       if (firebaseError.code === "auth/user-not-found") {
-        setGeneralError(
-          "No account found with this email address. Please check your email or sign up for a new account."
-        );
+        setGeneralError(AppStrings.AuthStrings.ForgotPassword.USER_NOT_FOUND_ERROR);
       } else {
         setGeneralError(
           firebaseError.message ||
-            "An error occurred while sending the reset email. Please try again."
+            AppStrings.AuthStrings.ForgotPassword.GENERIC_ERROR
         );
       }
     } finally {
@@ -94,7 +92,7 @@ const ForgotPasswordScreen = ({ navigation }: ForgotPasswordScreenProps) => {
       <BackButton navigation={navigation} />
       <AuthLayout>
         <PadlockIcon width={AUTH_ICON_SIZE} height={AUTH_ICON_SIZE} />
-        <ScreenTitle title="Reset Password" />
+        <ScreenTitle title={AppStrings.AuthStrings.ForgotPassword.TITLE} />
         <UserEmailInput
           email={email}
           setEmail={setEmail}
@@ -107,7 +105,7 @@ const ForgotPasswordScreen = ({ navigation }: ForgotPasswordScreenProps) => {
       </AuthLayout>
 
       <WideButton
-        buttonText="Reset Password"
+        buttonText={AppStrings.AuthStrings.ForgotPassword.BUTTON_TEXT}
         onPress={handleResetPassword}
         disabled={isLoading}
       />
@@ -117,7 +115,7 @@ const ForgotPasswordScreen = ({ navigation }: ForgotPasswordScreenProps) => {
         style={{ marginTop: SPACING.md }}
       >
         <Text className="text-center text-blue-300 underline">
-          Back to Login
+          {AppStrings.AuthStrings.ForgotPassword.BACK_TO_LOGIN}
         </Text>
       </TouchableOpacity>
 

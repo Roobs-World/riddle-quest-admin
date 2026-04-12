@@ -1022,7 +1022,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       currentGuess.some((letter) => typeof letter !== "string" || letter.length === 0),
     [currentGuess, answerLength]
   );
-  const headerModeLabel = gameMode === "daily" ? "Daily Challenge" : "Classic";
+  const headerModeLabel = gameMode === "daily" ? AppStrings.GameScreenAlerts.DAILY_CHALLENGE_LABEL : AppStrings.GameScreenAlerts.CLASSIC_LABEL;
 
   return (
     <View style={{ flex: 1 }}>

@@ -25,6 +25,7 @@ import {
 } from "../../constants/layout";
 import { dimensions } from "../../utils/responsive";
 import type { Feedback } from "../../hooks/types";
+import { AppStrings } from "../../constants/AppStrings";
 
 /** QWERTY keyboard layout — defined at module scope so they are never reallocated */
 const TOP_ROW = ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"];
@@ -182,7 +183,7 @@ const Keyboard: React.FC<KeyboardProps> = React.memo(function Keyboard({
         onPressIn={() => keyPressHandler(key)}
         activeOpacity={0.7}
         accessibilityRole="button"
-        accessibilityLabel={`Letter ${key.toUpperCase()}`}
+        accessibilityLabel={`${AppStrings.Accessibility.LETTER_PREFIX}${key.toUpperCase()}`}
       >
         <Text
           style={[
@@ -238,8 +239,8 @@ const Keyboard: React.FC<KeyboardProps> = React.memo(function Keyboard({
             onPressIn={() => handleBackspace()}
             activeOpacity={0.7}
             accessibilityRole="button"
-            accessibilityLabel="Backspace"
-            accessibilityHint="Delete the last entered letter"
+            accessibilityLabel={AppStrings.Accessibility.BACKSPACE}
+            accessibilityHint={AppStrings.Accessibility.DELETE_LAST_LETTER}
           >
             <BackspaceIcon />
           </TouchableOpacity>

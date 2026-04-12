@@ -16,6 +16,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { Animated, Easing, View, Modal } from "react-native";
 import Svg, { Circle } from "react-native-svg";
 import { styles, COLORS } from "../../styles";
+import { AppStrings } from "../../constants/AppStrings";
 
 // Turn the SVG <Circle> into an Animated component
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
@@ -229,7 +230,7 @@ const PulsingSpinner = React.memo(function PulsingSpinner({
             maxHeight: size,
           },
         ]}
-        accessibilityLabel="Loading"
+        accessibilityLabel={AppStrings.Accessibility.LOADING}
         accessibilityRole="progressbar"
       >
         <Svg

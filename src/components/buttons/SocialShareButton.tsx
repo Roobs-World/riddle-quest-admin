@@ -24,6 +24,7 @@ import {
   SOCIAL_BUTTON_MIN_WIDTH_MD,
   SOCIAL_BUTTON_MIN_WIDTH_LG,
 } from "../../constants/layout";
+import { AppStrings } from "../../constants/AppStrings";
 
 interface SocialShareButtonProps {
   platform: "facebook" | "x" | "system";
@@ -91,7 +92,12 @@ const SocialShareButton: React.FC<SocialShareButtonProps> = ({
     fontSize: size === "small" ? TYPOGRAPHY.fontSize.xs : size === "medium" ? TYPOGRAPHY.fontSize.sm : TYPOGRAPHY.fontSize.base,
   };
 
-  const platformLabel = platform === "facebook" ? "Facebook" : platform === "x" ? "X" : "Share";
+  const platformLabel = platform === "facebook" ? "Facebook" : platform === "x" ? "X" : AppStrings.Accessibility.SHARE_SYSTEM;
+  const accessibilityLabel = platform === "facebook"
+    ? AppStrings.Accessibility.SHARE_TO_FACEBOOK
+    : platform === "x"
+    ? AppStrings.Accessibility.SHARE_TO_X
+    : AppStrings.Accessibility.SHARE_SYSTEM;
 
   return (
     <TouchableOpacity
@@ -99,7 +105,7 @@ const SocialShareButton: React.FC<SocialShareButtonProps> = ({
       onPress={disabled ? undefined : onPress}
       disabled={disabled}
       activeOpacity={0.8}
-      accessibilityLabel={`Share to ${platformLabel}`}
+      accessibilityLabel={accessibilityLabel}
       accessibilityRole="button"
     >
       {getIcon()}

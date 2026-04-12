@@ -70,7 +70,7 @@ const SegmentedToggle = ({
           fontWeight: "bold",
         }}
       >
-        On
+        {AppStrings.Settings.TOGGLE_ON}
       </Text>
     </TouchableOpacity>
     <TouchableOpacity
@@ -89,7 +89,7 @@ const SegmentedToggle = ({
           fontWeight: "bold",
         }}
       >
-        Off
+        {AppStrings.Settings.TOGGLE_OFF}
       </Text>
     </TouchableOpacity>
   </View>
@@ -288,11 +288,11 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
 
             <View style={{ height: 1, backgroundColor: "#E8E0E8" }} />
 
-            <ArrowRow label="Help and Support?" onPress={onPressHelp} />
+            <ArrowRow label={AppStrings.Settings.HELP_BUTTON} onPress={onPressHelp} />
 
             <View style={{ height: 1, backgroundColor: "#E8E0E8" }} />
 
-            <ArrowRow label="Credits" onPress={onPressCredits} />
+            <ArrowRow label={AppStrings.Settings.CREDITS_BUTTON} onPress={onPressCredits} />
 
             <View style={{ height: 1, backgroundColor: "#E8E0E8" }} />
 
@@ -303,7 +303,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                   await getAuth(getApp()).signOut();
                   if (onPressLogout) onPressLogout();
                 } catch {
-                  Alert.alert("Error", "Could not log out. Please try again.");
+                  Alert.alert(AppStrings.Settings.LOGOUT_ERROR_TITLE, AppStrings.Settings.LOGOUT_ERROR_MESSAGE);
                 }
               }}
               style={{ paddingVertical: 16 }}
@@ -398,7 +398,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                         color: isSelected ? "#401F40" : "#9CA3AF",
                       }}
                     >
-                      {isSelected ? "Selected" : ""}
+                      {isSelected ? AppStrings.Settings.LANGUAGE_SELECTED : ""}
                     </Text>
                   </TouchableOpacity>
                 );

@@ -16,6 +16,7 @@ import HomeBg from "../../../../assets/images/home-bg.svg";
 import { MODAL_WIDTH, MODAL_HEIGHT, CLOSE_BUTTON_SIZE, MODAL_CLOSE_BUTTON_POSITION, CARD_BORDER_RADIUS, ACHIEVEMENT_ICON_SIZE, MODAL_CONTENT_PADDING, MODAL_SCROLLABLE_MAX_HEIGHT } from "../../../constants/layout";
 import { scale } from "../../../utils/responsive";
 import { ACHIEVEMENT_DEFINITIONS } from "../../../constants/achievements";
+import { AppStrings } from "../../../constants/AppStrings";
 
 export interface AchievementsModalProps {
   isVisible: boolean;
@@ -43,7 +44,7 @@ const AchievementsModal: React.FC<AchievementsModalProps> = ({
       transparent
       animationType="fade"
       onRequestClose={onClose}
-      accessibilityLabel="Achievements"
+      accessibilityLabel={AppStrings.Achievements.MODAL_TITLE}
     >
       <View
         style={{
@@ -72,7 +73,7 @@ const AchievementsModal: React.FC<AchievementsModalProps> = ({
             onPress={onClose}
             size={CLOSE_BUTTON_SIZE}
             style={MODAL_CLOSE_BUTTON_POSITION}
-            accessibilityLabel="Close achievements"
+            accessibilityLabel={AppStrings.Accessibility.CLOSE_ACHIEVEMENTS}
           />
           <Text
             style={{
@@ -84,7 +85,7 @@ const AchievementsModal: React.FC<AchievementsModalProps> = ({
             }}
             accessibilityRole="header"
           >
-            Achievements
+            {AppStrings.Achievements.MODAL_TITLE}
           </Text>
           <ScrollView
             style={{ maxHeight: MODAL_SCROLLABLE_MAX_HEIGHT, width: "100%" }}

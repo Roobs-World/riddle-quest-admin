@@ -13,6 +13,7 @@ import {
   MODAL_BUTTON_SPACER,
   wheelSize,
 } from "../../../constants/layout";
+import { AppStrings } from "../../../constants/AppStrings";
 
 interface CoinPurchaseFanfareModalProps {
   isVisible: boolean;
@@ -121,7 +122,7 @@ const CoinPurchaseFanfareModal: React.FC<CoinPurchaseFanfareModalProps> = ({
                 textAlign: "center",
               }}
             >
-              Coins Added!
+              {AppStrings.CoinPurchase.TITLE}
             </Text>
 
             <View style={{ alignItems: "center" }}>
@@ -137,12 +138,12 @@ const CoinPurchaseFanfareModal: React.FC<CoinPurchaseFanfareModalProps> = ({
                   marginTop: 6,
                 }}
               >
-                +{coinsPurchased} Coins
+                +{coinsPurchased}{AppStrings.CoinPurchase.COINS_SUFFIX}
               </Text>
             </View>
 
             <View style={{ width: "100%", marginTop: 8 }}>
-              <WideButton buttonText="Awesome" onPress={onClose} />
+              <WideButton buttonText={AppStrings.CoinPurchase.AWESOME_BUTTON} onPress={onClose} />
             </View>
           </View>
         </View>

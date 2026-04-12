@@ -5,6 +5,7 @@ import { styles } from "src/styles";
 import { GameInputButton } from "./GameInputButton";
 import HintIcon from "../../../assets/images/hint.svg";
 import ForwardIcon from "../../../assets/images/forward.svg";
+import { AppStrings } from "../../constants/AppStrings";
 
 /**
  * Props for the gameplay action row beneath the board.
@@ -39,7 +40,7 @@ const GameInputComponent = ({
     <View style={styles.gameInput}>
       <GameInputButton
         icon={<HintIcon />}
-        text="Hint"
+        text={AppStrings.Navigation.HINT_BUTTON}
         callback={() => handleHint()}
       />
 
@@ -51,7 +52,7 @@ const GameInputComponent = ({
 
       <GameInputButton
         icon={<ForwardIcon />}
-        text="Next"
+        text={AppStrings.GameScreenAlerts.NEXT_BUTTON}
         callback={() => handleNext()}
       />
     </View>
