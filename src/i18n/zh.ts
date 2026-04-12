@@ -358,4 +358,18 @@ export const zhOverrides: LocaleOverrides = {
     NO_PACKS_AVAILABLE: "目前没有可用的金币包。",
     PURCHASE_BUTTON: "购买",
   },
+  ErrorMessages: {
+    FAILED_TO_INITIALIZE_RIDDLE_DATABASE:
+      "初始化谜题数据库失败。这可能是你第一次使用该应用。",
+    CHECK_INTERNET_AND_TRY_AGAIN: "请检查你的网络连接并重试。",
+  },
+  CommonButtons: {
+    RETRY: "重试",
+  },
+  DevTools: {
+    MODAL_TESTING_HEADER: "模态框测试",
+    COMPLETE_RIDDLE_BUTTON: "完成谜题",
+    GENERATE_DAILY_CHALLENGE_BUTTON: "生成每日挑战",
+    CLEAR_ALL_BUTTON: "全部清除",
+  },
 };

@@ -190,6 +190,11 @@ export interface GameModalTypes {
     achievementNames?: string[];
     achievements?: AchievementUnlockFanfareItem[];
   };
+
+  streakIncreaseFanfare: {
+    streakValue: number;
+    onContinue?: () => void;
+  };
 }
 
 // Helper type for getting modal data type

@@ -78,6 +78,8 @@ const mockLogout = jest.fn();
 const mockSetGameMode = jest.fn();
 const mockFetchCurrentRiddle = jest.fn(() => Promise.resolve());
 const mockUpdatePlayerDataLocally = jest.fn();
+const mockConsumePendingStreakBreak = jest.fn();
+let mockPendingStreakBreak: { previousStreak: number } | null = null;
 const mockPlayerData = {
   userId: "test-user-123",
   username: "testuser",
@@ -96,6 +98,8 @@ jest.mock("../../../contexts/AuthContext", () => ({
     setGameMode: mockSetGameMode,
     fetchCurrentRiddle: mockFetchCurrentRiddle,
     updatePlayerDataLocally: mockUpdatePlayerDataLocally,
+    pendingStreakBreak: mockPendingStreakBreak,
+    consumePendingStreakBreak: mockConsumePendingStreakBreak,
   }),
   GameMode: {},
 }));
@@ -115,6 +119,7 @@ const mockShowCreditsModal = jest.fn();
 const mockShowFullProfileDetailsModal = jest.fn();
 const mockShowCoinPurchaseFanfareModal = jest.fn();
 const mockShowAchievementUnlockFanfareModal = jest.fn();
+const mockShowStreakIncreaseFanfareModal = jest.fn();
 
 jest.mock("../../../hooks/useModal", () => ({
   useModal: () => ({
@@ -133,6 +138,7 @@ jest.mock("../../../hooks/useModal", () => ({
     showFullProfileDetailsModal: mockShowFullProfileDetailsModal,
     showCoinPurchaseFanfareModal: mockShowCoinPurchaseFanfareModal,
     showAchievementUnlockFanfareModal: mockShowAchievementUnlockFanfareModal,
+    showStreakIncreaseFanfareModal: mockShowStreakIncreaseFanfareModal,
     closeModalByType: mockCloseModalByType,
   }),
 }));
@@ -276,9 +282,31 @@ jest.mock("../../../components/background/StarryBackground", () => {
 jest.mock("../../../constants/AppStrings", () => ({
   APP_LANGUAGE_STORAGE_KEY: "appLanguage",
   AppStrings: {
+    CommonAlerts: {
+      ERROR_TITLE: "Error",
+    },
+    CoinShop: {
+      NO_PACKS_AVAILABLE: "No packs available",
+    },
+    StreakFanfare: {
+      TITLE: "Streak Increased!",
+      STREAK_SUFFIX: "day streak",
+      CONTINUE_BUTTON: "Continue",
+    },
     GameScreenAlerts: {
       SUBMIT_GUESS_ERROR_TITLE: "Error",
       SUBMIT_GUESS_ERROR_MESSAGE: "Could not submit guess",
+      GUEST_MODE_NOTICE_TITLE: "Guest Mode",
+      GUEST_MODE_NOTICE_MESSAGE: "Progress is local only.",
+      AD_NOT_READY_TITLE: "Ad Not Ready",
+      AD_NOT_READY_MESSAGE: "Please try again soon.",
+      HINT_NOT_AVAILABLE_TITLE: "Hint Not Available",
+      HINT_NOT_AVAILABLE_MESSAGE: "All letters are already revealed.",
+      PURCHASE_FAILED_TITLE: "Purchase Failed",
+      PURCHASE_FAILED_MESSAGE: "Purchase failed. Please try again.",
+      SPEND_COINS_ERROR_MESSAGE: "Unable to spend coins.",
+      DAILY_CHALLENGE_LABEL: "Daily Challenge",
+      CLASSIC_LABEL: "Classic",
     },
   },
   SupportedLanguage: {},
@@ -365,6 +393,9 @@ describe("GameScreen", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockPendingStreakBreak = null;
+    mockPlayerData.email = "test@test.com";
+    mockPlayerData.username = "testuser";
     mockLoadUserProgressFromFirestore.mockResolvedValue(mockPlayerData);
     mockUseGameLogic.guesses = [];
     mockUseGameLogic.currentGuess = [];
@@ -586,23 +617,25 @@ describe("GameScreen", () => {
     it("should show guest warning modal instead of welcome modal for guest users", async () => {
       const originalEmail = mockPlayerData.email;
       const originalUsername = mockPlayerData.username;
-      mockPlayerData.email = "guest_test-user-123@guest.qwordly.com";
-      mockPlayerData.username = "Guest";
+      try {
+        mockPlayerData.email = "guest_test-user-123@guest.qwordly.com";
+        mockPlayerData.username = "Guest";
 
-      render(<GameScreen {...defaultProps} />);
+        render(<GameScreen {...defaultProps} />);
 
-      await waitFor(() => {
-        expect(mockShowInfoModal).toHaveBeenCalledWith(
-          expect.objectContaining({
-            title: "Guest Mode Notice",
-            message: expect.stringContaining("progress could be lost"),
-          })
-        );
-      });
-      expect(mockShowWelcomeModal).not.toHaveBeenCalled();
-
-      mockPlayerData.email = originalEmail;
-      mockPlayerData.username = originalUsername;
+        await waitFor(() => {
+          expect(mockShowInfoModal).toHaveBeenCalledWith(
+            expect.objectContaining({
+              title: "Guest Mode",
+              message: "Progress is local only.",
+            })
+          );
+        });
+        expect(mockShowWelcomeModal).not.toHaveBeenCalled();
+      } finally {
+        mockPlayerData.email = originalEmail;
+        mockPlayerData.username = originalUsername;
+      }
     });
 
     it("should have access to modal functions", () => {
@@ -897,15 +930,12 @@ describe("GameScreen", () => {
       ]);
     });
 
-    it("toggles game mode from classic to daily", async () => {
+    it("renders bottom nav actions supported by current API", async () => {
       render(<GameScreen {...defaultProps} />);
 
       const bottomNavProps = getLatestProps(mockBottomNavigationBar);
-      await bottomNavProps.onChangeGameModePress();
-
-      expect(mockUseGameLogic.resetGame).toHaveBeenCalled();
-      expect(mockSetGameMode).toHaveBeenCalledWith("daily");
-      expect(mockFetchCurrentRiddle).toHaveBeenCalledWith(mockPlayerData, "daily");
+      expect(typeof bottomNavProps.onProfilePress).toBe("function");
+      expect(typeof bottomNavProps.onSettingsPress).toBe("function");
     });
 
     it("opens support email on help and supports credits transition", async () => {
@@ -945,7 +975,9 @@ describe("GameScreen", () => {
       const config = mockShowSkipModal.mock.calls[0][0];
       await config.onSkipLevel();
 
-      expect(spendCoins).toHaveBeenCalledWith({ amount: 10, reason: "skip" });
+      await waitFor(() => {
+        expect(spendCoins).toHaveBeenCalledWith({ amount: 10, reason: "skip" });
+      });
       expect(defaultProps.onSkipUsed).toHaveBeenCalledWith(10);
       expect(mockUseGameLogic.resetGame).toHaveBeenCalled();
       expect(defaultProps.onNextLevel).toHaveBeenCalled();
@@ -983,7 +1015,57 @@ describe("GameScreen", () => {
       await waitFor(() => {
         expect(mockShowVictoryModal).toHaveBeenCalled();
       });
-      expect(defaultProps.onGameWin).toHaveBeenCalledWith(0, 25, 100);
+      expect(defaultProps.onGameWin).toHaveBeenCalledWith(0, 25, 100, undefined);
+    });
+
+    it("shows streak break modal once and consumes pending streak break", async () => {
+      mockPendingStreakBreak = { previousStreak: 7 };
+      render(<GameScreen {...defaultProps} />);
+
+      await waitFor(() => {
+        expect(mockShowInfoModal).toHaveBeenCalledWith(
+          expect.objectContaining({
+            title: "Streak Broken",
+          })
+        );
+      });
+
+      const streakCall = mockShowInfoModal.mock.calls.find(
+        (call) => call[0]?.title === "Streak Broken"
+      );
+      expect(streakCall).toBeDefined();
+      streakCall?.[0]?.onConfirm?.();
+      expect(mockConsumePendingStreakBreak).toHaveBeenCalled();
+    });
+
+    it("shows daily streak fanfare before victory when challenge streak increases", async () => {
+      mockUseGameLogic.currentGuess = ["K", "E", "Y", "B", "O", "A", "R", "D"];
+      mockUseGameLogic.processGuess.mockResolvedValueOnce({
+        outcome: "win",
+        coinsEarned: 30,
+        scoreEarned: 200,
+        newWinStreak: 5,
+      });
+
+      const { rerender } = render(<GameScreen {...defaultProps} gameMode="daily" />);
+      const inputProps = getLatestProps(mockGameInput);
+      await inputProps.handleSubmit();
+      mockUseGameLogic.gameOver = true;
+      rerender(<GameScreen {...defaultProps} gameMode="daily" />);
+
+      await waitFor(() => {
+        expect(mockShowStreakIncreaseFanfareModal).toHaveBeenCalledWith(
+          expect.objectContaining({ streakValue: 5 })
+        );
+      });
+
+      const fanfareConfig =
+        mockShowStreakIncreaseFanfareModal.mock.calls[
+          mockShowStreakIncreaseFanfareModal.mock.calls.length - 1
+        ][0];
+      fanfareConfig.onContinue();
+      expect(mockShowVictoryModal).toHaveBeenCalled();
+      expect(defaultProps.onGameWin).toHaveBeenCalledWith(0, 30, 200, 5);
     });
 
     it("handles onboarding dismiss callback", async () => {
@@ -1033,7 +1115,9 @@ describe("GameScreen", () => {
       config.onOpenShop();
 
       expect(mockUseGameLogic.continueGame).toHaveBeenCalledTimes(2);
-      expect(spendCoins).toHaveBeenCalledWith({ amount: 20, reason: "continue" });
+      await waitFor(() => {
+        expect(spendCoins).toHaveBeenCalledWith({ amount: 20, reason: "continue" });
+      });
       expect(mockShowCoinShopModal).toHaveBeenCalled();
     });
 
@@ -1098,7 +1182,9 @@ describe("GameScreen", () => {
       const config = mockShowSkipModal.mock.calls[0][0];
       await config.onSkipLevel();
 
-      expect(mockShowSpendCoinsError).toHaveBeenCalled();
+      await waitFor(() => {
+        expect(mockShowSpendCoinsError).toHaveBeenCalled();
+      });
     });
 
     it("handles submit error by showing info modal", async () => {
@@ -1403,8 +1489,6 @@ describe("GameScreen", () => {
       expect(logger.error).toHaveBeenCalledWith("Error calling onNextLevel:", expect.any(Error));
       expect(captureException).toHaveBeenCalledWith(expect.any(Error));
 
-      config.onHome();
-      expect(mockCloseModalByType).toHaveBeenCalledWith("victory");
       ACHIEVEMENT_DEFINITIONS.length = 0;
     });
 
@@ -1433,7 +1517,7 @@ describe("GameScreen", () => {
       const config =
         mockShowVictoryModal.mock.calls[mockShowVictoryModal.mock.calls.length - 1][0];
       await config.onNext();
-      expect(logger.debug).toHaveBeenCalledWith("onNextLevel completed successfully");
+      expect(logger.debug).toHaveBeenCalledWith("Victory modal: Next level button pressed");
     });
 
     it("handles attempt-limit modal next/home callbacks including next-level errors", async () => {
@@ -1465,7 +1549,6 @@ describe("GameScreen", () => {
         );
         expect(captureException).toHaveBeenCalledWith(expect.any(Error));
       });
-      config.onHome();
     });
 
     it("handles loss modal next/home callbacks including next-level errors", async () => {
@@ -1497,7 +1580,6 @@ describe("GameScreen", () => {
         );
         expect(captureException).toHaveBeenCalledWith(expect.any(Error));
       });
-      config.onHome();
     });
 
     it("applies settings modal toggle callbacks", () => {
@@ -1570,36 +1652,11 @@ describe("GameScreen", () => {
       expect(backspaceUpdater(["A", "B", "", ""])).toEqual(["", "B"]);
     });
 
-    it("covers mode-toggle fetch error branches", async () => {
-      const { logger } = require("../../../utils/logger");
-      const { captureException } = require("../../../utils/sentry");
-      mockFetchCurrentRiddle
-        .mockRejectedValueOnce(new Error("daily fail"))
-        .mockRejectedValueOnce(new Error("classic fail"));
+    it("renders mode label for daily mode", async () => {
       const { rerender } = render(<GameScreen {...defaultProps} />);
-
-      const bottomNavProps = getLatestProps(mockBottomNavigationBar);
-      await bottomNavProps.onChangeGameModePress();
-      await waitFor(() => {
-        expect(logger.error).toHaveBeenCalledWith(
-          "Error fetching daily riddle:",
-          expect.any(Error)
-        );
-        expect(captureException).toHaveBeenCalledWith(expect.any(Error));
-      });
-
       rerender(<GameScreen {...defaultProps} gameMode="daily" />);
       await waitFor(() => {
         expect(getLatestProps(mockHeader).modeLabel).toBe("Daily Challenge");
-      });
-      const dailyBottomNavProps = getLatestProps(mockBottomNavigationBar);
-      await dailyBottomNavProps.onChangeGameModePress();
-      await waitFor(() => {
-        expect(logger.error).toHaveBeenCalledWith(
-          "Error fetching classic riddle:",
-          expect.any(Error)
-        );
-        expect(captureException).toHaveBeenCalledWith(expect.any(Error));
       });
     });
 

@@ -351,4 +351,19 @@ export const esOverrides: LocaleOverrides = {
     NO_PACKS_AVAILABLE: "No hay paquetes de monedas disponibles ahora.",
     PURCHASE_BUTTON: "COMPRAR",
   },
+  ErrorMessages: {
+    FAILED_TO_INITIALIZE_RIDDLE_DATABASE:
+      "No se pudo inicializar la base de datos de acertijos. Puede que sea la primera vez que usas la app.",
+    CHECK_INTERNET_AND_TRY_AGAIN:
+      "Comprueba tu conexion a internet e intentalo de nuevo.",
+  },
+  CommonButtons: {
+    RETRY: "Reintentar",
+  },
+  DevTools: {
+    MODAL_TESTING_HEADER: "Pruebas de modales",
+    COMPLETE_RIDDLE_BUTTON: "Completar acertijo",
+    GENERATE_DAILY_CHALLENGE_BUTTON: "Generar desafio diario",
+    CLEAR_ALL_BUTTON: "Borrar todo",
+  },
 };

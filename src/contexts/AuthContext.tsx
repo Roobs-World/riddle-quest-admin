@@ -63,6 +63,8 @@ interface AuthContextType {
   isDailyChallengeAvailable: boolean | undefined;
   gameMode: GameMode; // Add state for current game mode
   setGameMode: (mode: GameMode) => void; // Add function to change game mode
+  pendingStreakBreak: { previousStreak: number } | null;
+  consumePendingStreakBreak: () => void;
   login: () => Promise<void>;
   logout: () => Promise<void>;
   // Removed updatePlayerCoins as coin updates are now handled by backend functions
@@ -83,7 +85,12 @@ type AuthSessionContextType = Pick<
 >;
 type PlayerContextType = Pick<
   AuthContextType,
-  "playerData" | "updatePlayerClassicIndex" | "updatePlayerData" | "updatePlayerDataLocally"
+  | "playerData"
+  | "updatePlayerClassicIndex"
+  | "updatePlayerData"
+  | "updatePlayerDataLocally"
+  | "pendingStreakBreak"
+  | "consumePendingStreakBreak"
 >;
 type RiddleContextType = Pick<
   AuthContextType,
@@ -125,6 +132,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [isDailyChallengeAvailable, setIsDailyChallengeAvailable] = useState<boolean | undefined>(undefined);
   const [gameMode, setGameMode] = useState<GameMode>("daily");
   const [isRiddlesInitializing, setIsRiddlesInitializing] = useState(false);
+  const [pendingStreakBreak, setPendingStreakBreak] = useState<{
+    previousStreak: number;
+  } | null>(null);
 
   const saveGuestProfileToLocal = useCallback(async (player: Player): Promise<void> => {
     try {
@@ -220,6 +230,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     },
     []
   );
+
+  const getBrokenDailyStreakValue = useCallback((player: Player | null): number => {
+    if (!player) return 0;
+    const currentWinStreak = player.stats?.winStreak ?? 0;
+    if (currentWinStreak <= 0) return 0;
+
+    const todayUtc = new Date();
+    todayUtc.setUTCHours(0, 0, 0, 0);
+    const yesterdayUtcStart = todayUtc.getTime() - 24 * 60 * 60 * 1000;
+
+    if (!player.lastDailyChallengeCompletedAt) {
+      return currentWinStreak;
+    }
+
+    const lastCompletedDate = new Date(player.lastDailyChallengeCompletedAt);
+    if (Number.isNaN(lastCompletedDate.getTime())) {
+      return currentWinStreak;
+    }
+    lastCompletedDate.setUTCHours(0, 0, 0, 0);
+
+    return lastCompletedDate.getTime() < yesterdayUtcStart ? currentWinStreak : 0;
+  }, []);
+
+  const consumePendingStreakBreak = useCallback(() => {
+    setPendingStreakBreak(null);
+  }, []);
 
   // Function to fetch riddle based on current game mode and player data
   const fetchCurrentRiddle = useCallback(
@@ -409,8 +445,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             setIsRiddlesInitializing(true);
             await RiddleInitializationService.checkAndInitializeRiddles();
             setIsRiddlesInitializing(false);
-            const guestPlayer: Player =
+            const guestPlayerRaw: Player =
               (await loadGuestProfileFromLocal(user.uid)) ?? createGuestPlayer(user.uid);
+            const brokenGuestStreak = getBrokenDailyStreakValue(guestPlayerRaw);
+            const guestPlayer =
+              brokenGuestStreak > 0
+                ? {
+                    ...guestPlayerRaw,
+                    stats: {
+                      ...guestPlayerRaw.stats,
+                      winStreak: 0,
+                    },
+                  }
+                : guestPlayerRaw;
+            setPendingStreakBreak(
+              brokenGuestStreak > 0
+                ? { previousStreak: brokenGuestStreak }
+                : null
+            );
             setPlayerData(guestPlayer);
             await saveGuestProfileToLocal(guestPlayer);
 
@@ -502,9 +554,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           }
 
           logger.debug("📊 User data loaded successfully:", !!data);
-          setPlayerData(data);
+          const brokenStreak = getBrokenDailyStreakValue(data);
+          const normalizedData =
+            brokenStreak > 0
+              ? {
+                  ...data,
+                  stats: {
+                    ...data.stats,
+                    winStreak: 0,
+                  },
+                }
+              : data;
+          if (brokenStreak > 0) {
+            await updateUserDocumentInFirestore(user.uid, {
+              stats: {
+                ...data.stats,
+                winStreak: 0,
+              },
+            });
+          }
+          setPendingStreakBreak(
+            brokenStreak > 0 ? { previousStreak: brokenStreak } : null
+          );
+          setPlayerData(normalizedData);
 
-          const completedToday = await hasCompletedDailyChallengeToday(data);
+          const completedToday = await hasCompletedDailyChallengeToday(normalizedData);
           const initialMode = resolveInitialGameMode(completedToday) as GameMode;
 
           setGameMode(initialMode);
@@ -512,7 +586,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           // Fetch riddle based on Firebase-backed completion status at launch:
           // daily by default, classic only when today's daily is already complete.
           logger.debug("🧩 Loading riddle for initial game mode:", initialMode);
-          await fetchCurrentRiddle(data, initialMode);
+          await fetchCurrentRiddle(normalizedData, initialMode);
           logger.debug("✅ Riddle loading completed");
 
           // Only set loading to false after everything is complete
@@ -525,6 +599,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           logger.error("❌ Error details:", JSON.stringify(error, null, 2));
           captureException(error);
           setPlayerData(null);
+          setPendingStreakBreak(null);
           setCurrentRiddle(null);
           setIsDailyChallengeAvailable(undefined);
           // Set loading to false even on error so user isn't stuck
@@ -545,6 +620,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         currentUserIdRef.current = null;
         setIsAuthenticated(false);
         setPlayerData(null);
+        setPendingStreakBreak(null);
         setCurrentRiddle(null);
         setIsDailyChallengeAvailable(undefined);
         logger.debug("🏁 Setting isLoading to false");
@@ -560,7 +636,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     return subscriber;
     // fetchCurrentRiddle is stable (its own deps are React state setters).
     // gameModeRef.current is read at call time so gameMode need not be a dep.
-  }, [fetchCurrentRiddle, hasCompletedDailyChallengeToday, loadGuestProfileFromLocal, saveGuestProfileToLocal]);
+  }, [
+    fetchCurrentRiddle,
+    hasCompletedDailyChallengeToday,
+    loadGuestProfileFromLocal,
+    saveGuestProfileToLocal,
+    getBrokenDailyStreakValue,
+  ]);
 
   // Wrapped in useCallback so these are stable references and don't invalidate
   // the PlayerContext memo on every render.
@@ -679,8 +761,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 
   const playerValue = useMemo(
-    () => ({ playerData, updatePlayerClassicIndex, updatePlayerData, updatePlayerDataLocally }),
-    [playerData, updatePlayerClassicIndex, updatePlayerData, updatePlayerDataLocally]
+    () => ({
+      playerData,
+      updatePlayerClassicIndex,
+      updatePlayerData,
+      updatePlayerDataLocally,
+      pendingStreakBreak,
+      consumePendingStreakBreak,
+    }),
+    [
+      playerData,
+      updatePlayerClassicIndex,
+      updatePlayerData,
+      updatePlayerDataLocally,
+      pendingStreakBreak,
+      consumePendingStreakBreak,
+    ]
   );
 
   const riddleValue = useMemo(

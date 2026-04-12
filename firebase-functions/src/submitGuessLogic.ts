@@ -66,6 +66,30 @@ interface SubmitGuessResponseData {
   coinsEarned?: number;
   /** Achievement IDs newly unlocked by this guess (server-authoritative). */
   newlyUnlockedAchievementIds?: string[];
+  /** Updated daily streak value after a successful challenge completion. */
+  newWinStreak?: number;
+}
+
+function getUtcDayString(value: unknown): string | null {
+  if (value === null || value === undefined) return null;
+  const date = new Date(value as string | number | Date);
+  if (Number.isNaN(date.getTime())) return null;
+  return date.toISOString().split("T")[0];
+}
+
+function getYesterdayUtcDayString(): string {
+  const yesterday = new Date();
+  yesterday.setUTCDate(yesterday.getUTCDate() - 1);
+  return yesterday.toISOString().split("T")[0];
+}
+
+function computeNextDailyWinStreak(
+  currentWinStreak: number,
+  lastDailyChallengeCompletedAt: unknown,
+): number {
+  const lastCompletedDay = getUtcDayString(lastDailyChallengeCompletedAt);
+  const yesterdayUtcDay = getYesterdayUtcDayString();
+  return lastCompletedDay === yesterdayUtcDay ? currentWinStreak + 1 : 1;
 }
 
 /**
@@ -192,15 +216,21 @@ export async function handleGuessLogic(
       statsUpdate.gamesPlayed = admin.firestore.FieldValue.increment(1);
     }
 
+    let updatedDailyWinStreak: number | undefined;
+
     if (isCorrect) {
       statsUpdate.wins = admin.firestore.FieldValue.increment(1);
       statsUpdate.totalWins = admin.firestore.FieldValue.increment(1);
-      statsUpdate.winStreak = admin.firestore.FieldValue.increment(1);
       statsUpdate.totalGuessesInWins = admin.firestore.FieldValue.increment(attempts);
 
       const playerProfileUpdate: PlayerTopLevelUpdate = {};
 
       if (gameMode === "challenge") {
+        updatedDailyWinStreak = computeNextDailyWinStreak(
+          currentStats.winStreak || 0,
+          user.lastDailyChallengeCompletedAt,
+        );
+        statsUpdate.winStreak = updatedDailyWinStreak;
         statsUpdate.challengeWins = admin.firestore.FieldValue.increment(1);
         statsUpdate.dailyPuzzlesCompleted = admin.firestore.FieldValue.increment(1);
         coinsEarned = Math.max(0, 20 - (attempts - 1) * 5);
@@ -235,8 +265,12 @@ export async function handleGuessLogic(
         await admin.firestore().collection("users").doc(userId).update(playerProfileUpdate);
       }
 
-      if ((currentStats.winStreak || 0) + 1 > (currentStats.bestStreak || 0)) {
-        statsUpdate.bestStreak = (currentStats.winStreak || 0) + 1;
+      const bestStreakCandidate =
+        gameMode === "challenge"
+          ? (updatedDailyWinStreak ?? (currentStats.winStreak || 0))
+          : (currentStats.bestStreak || 0);
+      if (bestStreakCandidate > (currentStats.bestStreak || 0)) {
+        statsUpdate.bestStreak = bestStreakCandidate;
       }
 
       if (!auth.isAnonymous) {
@@ -244,7 +278,12 @@ export async function handleGuessLogic(
         try {
           const newTotalXp = (currentStats.xp ?? 0) + scoreEarned;
           const newTotalWins = (currentStats.totalWins ?? 0) + 1;
-          const newBestStreak = Math.max((currentStats.bestStreak ?? 0), (currentStats.winStreak ?? 0) + 1);
+          const newBestStreak = Math.max(
+            currentStats.bestStreak ?? 0,
+            gameMode === "challenge"
+              ? (updatedDailyWinStreak ?? 0)
+              : (currentStats.bestStreak ?? 0),
+          );
           await updateLeaderboardEntry(
             userId,
             user.username,
@@ -256,8 +295,6 @@ export async function handleGuessLogic(
           captureException(error);
         }
       }
-    } else if (gameOver) {
-      statsUpdate.winStreak = 0;
     }
 
     const newTotalWins = (currentStats.totalWins || 0) + (isCorrect ? 1 : 0);
@@ -347,6 +384,7 @@ export async function handleGuessLogic(
       correctAnswer: gameOver ? riddle.answer : undefined,
       coinsEarned,
       newlyUnlockedAchievementIds,
+      newWinStreak: updatedDailyWinStreak,
     };
   } catch (error: unknown) {
     functions.logger.error("Error in handleGuessLogic:", error);
@@ -405,6 +443,8 @@ interface CompleteGameResponseData {
   newLevel: number;
   /** Indicates whether the completion triggered level-up. */
   leveledUp: boolean;
+  /** Updated daily streak value after a successful challenge completion. */
+  newWinStreak?: number;
 }
 
 /**
@@ -463,10 +503,11 @@ export async function handleCompleteGameLogic(
     let newLevel = currentStats.level ?? getLevelFromXp(newXp);
     let leveledUp = false;
 
+    let updatedDailyWinStreak: number | undefined;
+
     if (isCorrect) {
       statsUpdate.wins = admin.firestore.FieldValue.increment(1);
       statsUpdate.totalWins = admin.firestore.FieldValue.increment(1);
-      statsUpdate.winStreak = admin.firestore.FieldValue.increment(1);
       statsUpdate.totalGuessesInWins = admin.firestore.FieldValue.increment(attempts);
 
       const playerProfileUpdate: PlayerTopLevelUpdate = {};
@@ -475,6 +516,11 @@ export async function handleCompleteGameLogic(
         gameMode === "challenge" ? MAX_ATTEMPTS_CHALLENGE : MAX_ATTEMPTS_CLASSIC;
 
       if (gameMode === "challenge") {
+        updatedDailyWinStreak = computeNextDailyWinStreak(
+          currentStats.winStreak || 0,
+          user.lastDailyChallengeCompletedAt,
+        );
+        statsUpdate.winStreak = updatedDailyWinStreak;
         statsUpdate.challengeWins = admin.firestore.FieldValue.increment(1);
         statsUpdate.dailyPuzzlesCompleted = admin.firestore.FieldValue.increment(1);
         coinsEarned = Math.max(0, 20 - (attempts - 1) * 5);
@@ -508,8 +554,12 @@ export async function handleCompleteGameLogic(
         await admin.firestore().collection("users").doc(userId).update(playerProfileUpdate);
       }
 
-      if ((currentStats.winStreak || 0) + 1 > (currentStats.bestStreak || 0)) {
-        statsUpdate.bestStreak = (currentStats.winStreak || 0) + 1;
+      const bestStreakCandidate =
+        gameMode === "challenge"
+          ? (updatedDailyWinStreak ?? (currentStats.winStreak || 0))
+          : (currentStats.bestStreak || 0);
+      if (bestStreakCandidate > (currentStats.bestStreak || 0)) {
+        statsUpdate.bestStreak = bestStreakCandidate;
       }
 
       if (!auth.isAnonymous) {
@@ -518,7 +568,12 @@ export async function handleCompleteGameLogic(
           const scoreEarned = xpEarned;
           const newTotalXp = (currentStats.xp ?? 0) + scoreEarned;
           const newTotalWins = (currentStats.totalWins ?? 0) + 1;
-          const newBestStreak = Math.max((currentStats.bestStreak ?? 0), (currentStats.winStreak ?? 0) + 1);
+          const newBestStreak = Math.max(
+            currentStats.bestStreak ?? 0,
+            gameMode === "challenge"
+              ? (updatedDailyWinStreak ?? 0)
+              : (currentStats.bestStreak ?? 0),
+          );
           await updateLeaderboardEntry(
             userId,
             user.username,
@@ -563,8 +618,6 @@ export async function handleCompleteGameLogic(
           captureException(error);
         }
       }
-    } else {
-      statsUpdate.winStreak = 0;
     }
 
     const newTotalWins = (currentStats.totalWins || 0) + (isCorrect ? 1 : 0);
@@ -595,7 +648,16 @@ export async function handleCompleteGameLogic(
 
     const scoreEarned = xpEarned;
 
-    return {coinsEarned, newlyUnlockedAchievementIds, scoreEarned, xpEarned, newXp, newLevel, leveledUp};
+    return {
+      coinsEarned,
+      newlyUnlockedAchievementIds,
+      scoreEarned,
+      xpEarned,
+      newXp,
+      newLevel,
+      leveledUp,
+      newWinStreak: updatedDailyWinStreak,
+    };
   } catch (error: unknown) {
     functions.logger.error("Error in handleCompleteGameLogic:", error);
     captureException(error);

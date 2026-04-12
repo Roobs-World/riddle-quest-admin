@@ -30,15 +30,13 @@ export const scheduledTaskHandler = async (_context: ScheduledEvent) => {
 
 /**
  * Scheduled function to set the daily challenge.
- * Runs hourly at minute 0 UTC.
- * The generation function is idempotent, so this schedule adds reliability:
- * if one run fails, the next hour can self-heal and still create today's riddle.
+ * Runs once per day at 00:00 UTC.
  * Creates exactly 1 daily challenge question per day based on the current date.
  * Uses OpenAI to generate fresh riddles for each day.
  */
 export const dailyChallengeScheduler = onSchedule(
   {
-    schedule: "0 * * * *", // Runs hourly at minute 0 UTC
+    schedule: "0 0 * * *", // Runs once daily at 00:00 UTC
     timeZone: "UTC",
     secrets: ["OPENAI_API_KEY"],
   },

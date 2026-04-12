@@ -353,4 +353,19 @@ export const deOverrides: LocaleOverrides = {
     NO_PACKS_AVAILABLE: "Derzeit keine Muenzenpakete verfuegbar.",
     PURCHASE_BUTTON: "KAUFEN",
   },
+  ErrorMessages: {
+    FAILED_TO_INITIALIZE_RIDDLE_DATABASE:
+      "Die Raetseldatenbank konnte nicht initialisiert werden. Vielleicht nutzt du die App zum ersten Mal.",
+    CHECK_INTERNET_AND_TRY_AGAIN:
+      "Bitte pruefe deine Internetverbindung und versuche es erneut.",
+  },
+  CommonButtons: {
+    RETRY: "Erneut versuchen",
+  },
+  DevTools: {
+    MODAL_TESTING_HEADER: "Modal-Tests",
+    COMPLETE_RIDDLE_BUTTON: "Raetsel abschliessen",
+    GENERATE_DAILY_CHALLENGE_BUTTON: "Taegliche Herausforderung generieren",
+    CLEAR_ALL_BUTTON: "Alles loeschen",
+  },
 };

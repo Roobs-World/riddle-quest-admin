@@ -376,4 +376,19 @@ export const frOverrides: LocaleOverrides = {
     NICE_BUTTON: "Super",
     NEW_ACHIEVEMENT: "Nouvelle reussite",
   },
+  ErrorMessages: {
+    FAILED_TO_INITIALIZE_RIDDLE_DATABASE:
+      "Echec de l initialisation de la base de donnees des enigmes. C est peut-etre votre premiere utilisation de l application.",
+    CHECK_INTERNET_AND_TRY_AGAIN:
+      "Veuillez verifier votre connexion internet et reessayer.",
+  },
+  CommonButtons: {
+    RETRY: "Reessayer",
+  },
+  DevTools: {
+    MODAL_TESTING_HEADER: "Test des modales",
+    COMPLETE_RIDDLE_BUTTON: "Terminer l enigme",
+    GENERATE_DAILY_CHALLENGE_BUTTON: "Generer le defi quotidien",
+    CLEAR_ALL_BUTTON: "Tout effacer",
+  },
 };

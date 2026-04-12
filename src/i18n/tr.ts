@@ -360,4 +360,19 @@ export const trOverrides: LocaleOverrides = {
     NO_PACKS_AVAILABLE: "Su an para paketi mevcut degil.",
     PURCHASE_BUTTON: "SATIN AL",
   },
+  ErrorMessages: {
+    FAILED_TO_INITIALIZE_RIDDLE_DATABASE:
+      "Bilmece veritabani baslatilamadi. Uygulamayi ilk kez kullaniyor olabilirsiniz.",
+    CHECK_INTERNET_AND_TRY_AGAIN:
+      "Internet baglantinizi kontrol edip tekrar deneyin.",
+  },
+  CommonButtons: {
+    RETRY: "Tekrar dene",
+  },
+  DevTools: {
+    MODAL_TESTING_HEADER: "Modal Testi",
+    COMPLETE_RIDDLE_BUTTON: "Bilmeceyi Tamamla",
+    GENERATE_DAILY_CHALLENGE_BUTTON: "Gunluk Meydan Okuma Olustur",
+    CLEAR_ALL_BUTTON: "Hepsini Temizle",
+  },
 };

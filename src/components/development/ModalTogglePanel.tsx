@@ -42,7 +42,7 @@ import * as RNIap from "react-native-iap";
 import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY } from "../../styles";
 import { scale, verticalScale } from "../../utils/responsive";
 import { logger } from "../../utils/logger";
-import { getAppLanguage, SupportedLanguage } from "../../constants/AppStrings";
+import { AppStrings, getAppLanguage, SupportedLanguage } from "../../constants/AppStrings";
 
 /**
  * Type for the updateModalData function
@@ -279,6 +279,10 @@ const generateMockData = (
       return {
         achievementNames: ["First Victory", "Perfect Streak"],
       };
+    case "streakIncreaseFanfare":
+      return {
+        streakValue: 4,
+      };
     default:
       return {};
   }
@@ -417,7 +421,7 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
           onPress={() => setIsExpanded(!isExpanded)}
         >
           <Text style={styles.headerTitle}>
-            🔧 Modal Testing {isExpanded ? "▼" : "▶"}
+            {AppStrings.DevTools.MODAL_TESTING_HEADER} {isExpanded ? "▼" : "▶"}
           </Text>
         </TouchableOpacity>
 
@@ -435,7 +439,9 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
                   void onCompleteRiddle();
                 }}
               >
-                <Text style={styles.completeButtonText}>Complete Riddle</Text>
+                <Text style={styles.completeButtonText}>
+                  {AppStrings.DevTools.COMPLETE_RIDDLE_BUTTON}
+                </Text>
               </TouchableOpacity>
             ) : null}
 
@@ -447,7 +453,7 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
                 }}
               >
                 <Text style={styles.completeButtonText}>
-                  Generate Daily Challenge
+                  {AppStrings.DevTools.GENERATE_DAILY_CHALLENGE_BUTTON}
                 </Text>
               </TouchableOpacity>
             ) : null}
@@ -456,7 +462,9 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
               style={styles.clearButton}
               onPress={() => setModalToggles({})}
             >
-              <Text style={styles.clearButtonText}>Clear All</Text>
+              <Text style={styles.clearButtonText}>
+                {AppStrings.DevTools.CLEAR_ALL_BUTTON}
+              </Text>
             </TouchableOpacity>
           </ScrollView>
         )}

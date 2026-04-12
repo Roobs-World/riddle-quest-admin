@@ -35,6 +35,14 @@ interface UseGameLogicProps {
   isGuestMode?: boolean;
 }
 
+interface CompleteGameResponseData {
+  coinsEarned: number;
+  newlyUnlockedAchievementIds: string[];
+  scoreEarned?: number;
+  xpEarned?: number;
+  newWinStreak?: number;
+}
+
 function getLocalRewards(gameMode: "challenge" | "classic", attempts: number): { coins: number; score: number } {
   const scoreMaxAttempts = 5;
   const baseScore = gameMode === "challenge" ? 100 : 50;
@@ -154,6 +162,7 @@ const useGameLogic = ({ riddleId, answer, gameMode, isGuestMode = false }: UseGa
         let coinsEarned = 0;
         let scoreEarned = 0;
         let newlyUnlockedAchievementIds: string[] = [];
+        let newWinStreak: number | undefined;
         if (isGuestMode) {
           const rewards = getLocalRewards(gameMode, currentAttempt);
           coinsEarned = rewards.coins;
@@ -168,10 +177,12 @@ const useGameLogic = ({ riddleId, answer, gameMode, isGuestMode = false }: UseGa
               attempts: currentAttempt,
               isCorrect: true,
             });
-            const data = result.data as { coinsEarned: number; newlyUnlockedAchievementIds: string[]; scoreEarned: number };
+            const data = result.data as CompleteGameResponseData;
             coinsEarned = data.coinsEarned ?? 0;
-            scoreEarned = data.scoreEarned ?? 0;
+            // Some backend builds return xp as `xpEarned` only.
+            scoreEarned = data.scoreEarned ?? data.xpEarned ?? 0;
             newlyUnlockedAchievementIds = data.newlyUnlockedAchievementIds ?? [];
+            newWinStreak = data.newWinStreak;
             gameEventBus.emit<import("../services/GameEventBus").GameCompletedEvent>({
               type: "GAME_COMPLETED",
               outcome: "won",
@@ -193,6 +204,7 @@ const useGameLogic = ({ riddleId, answer, gameMode, isGuestMode = false }: UseGa
           scoreEarned,
           correctAnswer: answer,
           newlyUnlockedAchievementIds,
+          newWinStreak,
         };
       }
 

@@ -359,4 +359,19 @@ export const jaOverrides: LocaleOverrides = {
     NO_PACKS_AVAILABLE: "現在コインパックはありません。",
     PURCHASE_BUTTON: "購入",
   },
+  ErrorMessages: {
+    FAILED_TO_INITIALIZE_RIDDLE_DATABASE:
+      "なぞなぞデータベースの初期化に失敗しました。初めてのご利用かもしれません。",
+    CHECK_INTERNET_AND_TRY_AGAIN:
+      "インターネット接続を確認して、もう一度お試しください。",
+  },
+  CommonButtons: {
+    RETRY: "再試行",
+  },
+  DevTools: {
+    MODAL_TESTING_HEADER: "モーダルテスト",
+    COMPLETE_RIDDLE_BUTTON: "なぞなぞを完了",
+    GENERATE_DAILY_CHALLENGE_BUTTON: "デイリーチャレンジを生成",
+    CLEAR_ALL_BUTTON: "すべてクリア",
+  },
 };

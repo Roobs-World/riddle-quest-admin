@@ -276,11 +276,10 @@ const GameScreenWrapper = () => {
       return (
         <View style={styles.errorContainer}>
           <Text style={styles.errorMessage}>
-            Failed to initialize the riddle database. This might be your first
-            time using the app.
+            {AppStrings.ErrorMessages.FAILED_TO_INITIALIZE_RIDDLE_DATABASE}
           </Text>
           <Text style={[styles.errorMessage, { fontSize: TYPOGRAPHY.fontSize.sm, marginTop: SPACING.sm }]}>
-            Please check your internet connection and try again.
+            {AppStrings.ErrorMessages.CHECK_INTERNET_AND_TRY_AGAIN}
           </Text>
           <TouchableOpacity
             style={[
@@ -289,7 +288,7 @@ const GameScreenWrapper = () => {
             ]}
             onPress={handleRetryInitialization}
           >
-            <Text style={styles.buttonText}>Retry</Text>
+            <Text style={styles.buttonText}>{AppStrings.CommonButtons.RETRY}</Text>
           </TouchableOpacity>
         </View>
       );
@@ -306,7 +305,7 @@ const GameScreenWrapper = () => {
             ]}
             onPress={handleRetryInitialization}
           >
-            <Text style={styles.buttonText}>Retry</Text>
+            <Text style={styles.buttonText}>{AppStrings.CommonButtons.RETRY}</Text>
           </TouchableOpacity>
         </View>
       );
@@ -334,7 +333,12 @@ const GameScreenWrapper = () => {
           answerLength={currentRiddle.answer.length}
           userCoins={playerData.coins || 0}
           hintCost={HINT_COST_COINS}
-          onGameWin={async (attempts: number, coinsEarned: number, scoreEarned: number) => {
+          onGameWin={async (
+            attempts: number,
+            coinsEarned: number,
+            scoreEarned: number,
+            dailyStreakAfterWin?: number
+          ) => {
             logger.debug(
               AppStrings.GameMessages.GAME_WON +
                 attempts +
@@ -345,6 +349,14 @@ const GameScreenWrapper = () => {
             logger.debug(AppStrings.GameMessages.COINS_EARNED + coinsEarned);
             const newTotalXp = (playerData.stats?.xp ?? playerData.stats?.totalScore ?? 0) + scoreEarned;
             const derivedLevel = getXpLevel(newTotalXp).level;
+            const updatedWinStreak =
+              gameMode === "daily" && typeof dailyStreakAfterWin === "number"
+                ? dailyStreakAfterWin
+                : (playerData.stats?.winStreak ?? 0);
+            const updatedBestStreak = Math.max(
+              playerData.stats?.bestStreak ?? 0,
+              updatedWinStreak
+            );
 
             updatePlayerDataLocally({
               coins: (playerData.coins ?? 0) + coinsEarned,
@@ -354,6 +366,8 @@ const GameScreenWrapper = () => {
                 level: Math.max(playerData.stats?.level ?? 1, derivedLevel),
                 wins: (playerData.stats?.wins ?? 0) + 1,
                 totalWins: (playerData.stats?.totalWins ?? 0) + 1,
+                winStreak: updatedWinStreak,
+                bestStreak: updatedBestStreak,
               },
               lastDailyChallengeCompletedAt:
                 gameMode === "daily" ? Date.now() : playerData.lastDailyChallengeCompletedAt,

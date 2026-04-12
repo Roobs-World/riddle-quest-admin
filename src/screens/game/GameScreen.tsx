@@ -85,6 +85,7 @@ interface GuessResult {
   canOfferCoinContinue?: boolean;
   attemptsRemaining?: number;
   newlyUnlockedAchievementIds?: string[];
+  newWinStreak?: number;
 }
 
 const hapticOptions = {
@@ -99,7 +100,12 @@ interface GameScreenProps {
   answerLength: number;
   userCoins: number;
   hintCost: number;
-  onGameWin: (attempts: number, coinsEarned: number, scoreEarned: number) => void;
+  onGameWin: (
+    attempts: number,
+    coinsEarned: number,
+    scoreEarned: number,
+    dailyStreakAfterWin?: number
+  ) => void;
   onGameLoss: (correctAnswer: string) => void;
   onHintUsed: (cost: number) => void;
   onSkipUsed: (cost: number) => void;
@@ -121,7 +127,13 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   onNextLevel,
   gameMode,
 }) => {
-  const { playerData, logout, updatePlayerDataLocally } = useAuth();
+  const {
+    playerData,
+    logout,
+    updatePlayerDataLocally,
+    pendingStreakBreak,
+    consumePendingStreakBreak,
+  } = useAuth();
   const modal = useModal();
   const isGuestMode = isGuestPlayer(playerData);
 
@@ -246,6 +258,25 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
   const firstTimeCheckDone = useRef(false);
   const { showWelcomeModal, showInstructionsModal, showInfoModal } = useModal();
+  const streakBreakModalShownRef = useRef(false);
+
+  const deriveDailyStreakAfterWin = useCallback((): number => {
+    const currentStreak = playerData?.stats?.winStreak ?? 0;
+    const lastCompletedAt = playerData?.lastDailyChallengeCompletedAt;
+    if (!lastCompletedAt) return 1;
+
+    const lastCompletedDate = new Date(lastCompletedAt);
+    if (Number.isNaN(lastCompletedDate.getTime())) return 1;
+    lastCompletedDate.setUTCHours(0, 0, 0, 0);
+
+    const yesterdayUtc = new Date();
+    yesterdayUtc.setUTCHours(0, 0, 0, 0);
+    yesterdayUtc.setUTCDate(yesterdayUtc.getUTCDate() - 1);
+
+    return lastCompletedDate.getTime() === yesterdayUtc.getTime()
+      ? currentStreak + 1
+      : 1;
+  }, [playerData]);
 
   useEffect(() => {
     if (firstTimeCheckDone.current) return;
@@ -285,6 +316,17 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
     runOnboardingFlow();
   }, [playerData, showWelcomeModal, showInstructionsModal, showInfoModal]);
+
+  useEffect(() => {
+    if (!pendingStreakBreak || streakBreakModalShownRef.current) return;
+    streakBreakModalShownRef.current = true;
+
+    showInfoModal({
+      title: "Streak Broken",
+      message: `Your streak ended at ${pendingStreakBreak.previousStreak} day${pendingStreakBreak.previousStreak === 1 ? "" : "s"}. Complete today's daily challenge to start a new streak.`,
+      onConfirm: consumePendingStreakBreak,
+    });
+  }, [pendingStreakBreak, showInfoModal, consumePendingStreakBreak]);
 
   useEffect(() => {
     const loadSettings = async () => {
@@ -479,29 +521,46 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           });
         }
 
-        modal.showVictoryModal({
-          attempts: guesses.length,
-          coinsEarned: result.coinsEarned || 0,
-          unlockedAchievementNames,
-          guesses,
-          onNext: async () => {
-            logger.debug("Victory modal: Next level button pressed");
-            modal.closeModalByType("victory");
-            resetGame();
+        const showVictoryModal = () => {
+          modal.showVictoryModal({
+            attempts: guesses.length,
+            coinsEarned: result.coinsEarned || 0,
+            unlockedAchievementNames,
+            guesses,
+            onNext: async () => {
+              logger.debug("Victory modal: Next level button pressed");
+              modal.closeModalByType("victory");
+              resetGame();
 
-            try {
-              await runWithServerLoading(() => onNextLevel());
-            } catch (error) {
-              logger.error("Error calling onNextLevel:", error);
-              captureException(error);
-            }
-          },
-        });
+              try {
+                await runWithServerLoading(() => onNextLevel());
+              } catch (error) {
+                logger.error("Error calling onNextLevel:", error);
+                captureException(error);
+              }
+            },
+          });
+        };
+
+        const resolvedDailyStreak =
+          gameMode === "daily"
+            ? (result.newWinStreak ?? deriveDailyStreakAfterWin())
+            : undefined;
+
+        if (gameMode === "daily" && resolvedDailyStreak) {
+          modal.showStreakIncreaseFanfareModal({
+            streakValue: resolvedDailyStreak,
+            onContinue: showVictoryModal,
+          });
+        } else {
+          showVictoryModal();
+        }
 
         onGameWin(
           guesses.length,
           result.coinsEarned || 0,
-          result.scoreEarned || 0
+          result.scoreEarned || 0,
+          resolvedDailyStreak
         );
       } else if (result.outcome === "attemptLimitReached") {
         const canAffordCoinContinue = (userCoins ?? 0) >= CONTINUE_COST_COINS;
@@ -570,6 +629,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     onGameLoss,
     onNextLevel,
     resetGame,
+    deriveDailyStreakAfterWin,
     handleWatchAdToContinue,
     handleCoinContinue,
     runWithServerLoading,

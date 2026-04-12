@@ -627,5 +627,33 @@ describe("useGameLogic", () => {
         newlyUnlockedAchievementIds: ["first_win", "speed_demon"],
       });
     });
+
+    it("should use xpEarned when scoreEarned is missing", async () => {
+      mockCompleteGameCallable.mockResolvedValueOnce({
+        data: {
+          coinsEarned: 25,
+          xpEarned: 140,
+          newlyUnlockedAchievementIds: [],
+        },
+      });
+
+      const { result } = renderHook(() =>
+        useGameLogic({ ...defaultProps, answer: "GUESS" })
+      );
+
+      let processResult: unknown;
+      await act(async () => {
+        processResult = await result.current.processGuess(["G", "U", "E", "S", "S"]);
+      });
+
+      expect(processResult).toEqual({
+        outcome: "win",
+        feedback: ["green", "green", "green", "green", "green"],
+        coinsEarned: 25,
+        scoreEarned: 140,
+        correctAnswer: "GUESS",
+        newlyUnlockedAchievementIds: [],
+      });
+    });
   });
 });

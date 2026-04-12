@@ -353,4 +353,19 @@ export const ruOverrides: LocaleOverrides = {
     NO_PACKS_AVAILABLE: "Pakety monet nedostuny v dannyy moment.",
     PURCHASE_BUTTON: "KUPIT",
   },
+  ErrorMessages: {
+    FAILED_TO_INITIALIZE_RIDDLE_DATABASE:
+      "Ne udalos initsializirovat bazu zagadok. Vozmozhno, vy vpervye ispolzuete prilozhenie.",
+    CHECK_INTERNET_AND_TRY_AGAIN:
+      "Proverte podklyuchenie k internetu i poprobuyte snova.",
+  },
+  CommonButtons: {
+    RETRY: "Povtorit",
+  },
+  DevTools: {
+    MODAL_TESTING_HEADER: "Test modalnykh okon",
+    COMPLETE_RIDDLE_BUTTON: "Zavershit zagadku",
+    GENERATE_DAILY_CHALLENGE_BUTTON: "Sozdat ezhednevnoe ispytanie",
+    CLEAR_ALL_BUTTON: "Ochistit vse",
+  },
 };

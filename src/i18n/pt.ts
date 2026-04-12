@@ -393,4 +393,19 @@ export const ptOverrides: LocaleOverrides = {
     NICE_BUTTON: "Legal",
     NEW_ACHIEVEMENT: "Nova conquista",
   },
+  ErrorMessages: {
+    FAILED_TO_INITIALIZE_RIDDLE_DATABASE:
+      "Falha ao inicializar o banco de enigmas. Talvez seja a primeira vez que voce usa o app.",
+    CHECK_INTERNET_AND_TRY_AGAIN:
+      "Verifique sua conexao com a internet e tente novamente.",
+  },
+  CommonButtons: {
+    RETRY: "Tentar novamente",
+  },
+  DevTools: {
+    MODAL_TESTING_HEADER: "Teste de modais",
+    COMPLETE_RIDDLE_BUTTON: "Concluir enigma",
+    GENERATE_DAILY_CHALLENGE_BUTTON: "Gerar desafio diario",
+    CLEAR_ALL_BUTTON: "Limpar tudo",
+  },
 };

@@ -353,4 +353,19 @@ export const koOverrides: LocaleOverrides = {
     NO_PACKS_AVAILABLE: "현재 코인 팩이 없습니다.",
     PURCHASE_BUTTON: "구매",
   },
+  ErrorMessages: {
+    FAILED_TO_INITIALIZE_RIDDLE_DATABASE:
+      "수수께끼 데이터베이스를 초기화하지 못했습니다. 앱을 처음 사용하는 것일 수 있습니다.",
+    CHECK_INTERNET_AND_TRY_AGAIN:
+      "인터넷 연결을 확인하고 다시 시도하세요.",
+  },
+  CommonButtons: {
+    RETRY: "다시 시도",
+  },
+  DevTools: {
+    MODAL_TESTING_HEADER: "모달 테스트",
+    COMPLETE_RIDDLE_BUTTON: "수수께끼 완료",
+    GENERATE_DAILY_CHALLENGE_BUTTON: "일일 도전 생성",
+    CLEAR_ALL_BUTTON: "모두 지우기",
+  },
 };

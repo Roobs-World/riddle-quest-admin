@@ -75,6 +75,7 @@ import CreditsModal from "./help/CreditsModal";
 
 import CoinShopModal from "../shop/CoinShop";
 import CoinPurchaseFanfareModal from "./shop/CoinPurchaseFanfareModal";
+import StreakIncreaseFanfareModal from "./game/StreakIncreaseFanfareModal";
 
 /**
  * Modal Wrapper Factory Function
@@ -387,6 +388,20 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
       achievements:
         (props.achievements as AchievementUnlockFanfareItem[] | undefined) ??
         [],
+    })
+  ),
+
+  streakIncreaseFanfare: createModalWrapper(
+    StreakIncreaseFanfareModal,
+    (props: BaseModalProps & ModalData) => ({
+      isVisible: props.isVisible,
+      streakValue: (props.streakValue as number) || 0,
+      onClose: () => {
+        if (typeof props.onContinue === "function") {
+          (props.onContinue as () => void)();
+        }
+        props.onClose();
+      },
     })
   ),
 };

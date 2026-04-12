@@ -203,6 +203,16 @@ export const useModal = () => {
     [openGameModal]
   );
 
+  const showStreakIncreaseFanfareModal = useCallback(
+    (
+      data: ModalDataType<"streakIncreaseFanfare">,
+      options?: ModalOptions
+    ): string => {
+      return openGameModal("streakIncreaseFanfare", data, options);
+    },
+    [openGameModal]
+  );
+
   const showFullProfileDetailsModal = useCallback(
     (
       data: ModalDataType<"fullProfileDetails">,
@@ -277,6 +287,7 @@ export const useModal = () => {
     showCoinShop,
     showCoinPurchaseFanfareModal,
     showAchievementUnlockFanfareModal,
+    showStreakIncreaseFanfareModal,
     showFullProfileDetailsModal,
     showChangePasswordModal,
     showUpdateUsernameModal,

@@ -261,8 +261,20 @@ const EN_APP_STRINGS = {
   ErrorMessages: {
     UNABLE_TO_LOAD_RIDDLES:
       "Unable to load any riddles. Please check your connection and try again.",
+    FAILED_TO_INITIALIZE_RIDDLE_DATABASE:
+      "Failed to initialize the riddle database. This might be your first time using the app.",
+    CHECK_INTERNET_AND_TRY_AGAIN: "Please check your internet connection and try again.",
     FAILED_TO_LOAD_PRODUCTS: "Failed to load products",
     FAILED_TO_LOAD_SHOP_PRODUCTS: "Failed to load shop products",
+  },
+  CommonButtons: {
+    RETRY: "Retry",
+  },
+  DevTools: {
+    MODAL_TESTING_HEADER: "Modal Testing",
+    COMPLETE_RIDDLE_BUTTON: "Complete Riddle",
+    GENERATE_DAILY_CHALLENGE_BUTTON: "Generate Daily Challenge",
+    CLEAR_ALL_BUTTON: "Clear All",
   },
   GameMessages: {
     GAME_WON: "Game Won: Attempts - ",
@@ -347,6 +359,11 @@ const EN_APP_STRINGS = {
     TITLE: "Coins Added!",
     COINS_SUFFIX: " Coins",
     AWESOME_BUTTON: "Awesome",
+  },
+  StreakFanfare: {
+    TITLE: "Streak Increased!",
+    STREAK_SUFFIX: "-Day Streak",
+    CONTINUE_BUTTON: "Keep Going",
   },
   Leaderboard: {
     TITLE: "Leaderboard",

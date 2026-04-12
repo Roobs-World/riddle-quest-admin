@@ -277,7 +277,6 @@ describe("handleGuessLogic", () => {
         totalWordsGuessed: "increment(1)", // Added new stat
         wins: "increment(1)",
         totalWins: "increment(1)",
-        winStreak: "increment(1)",
         totalGuessesInWins: "increment(1)",
         xp: "increment(100)",
         level: 2,
@@ -286,9 +285,6 @@ describe("handleGuessLogic", () => {
         ),
         winRate: parseFloat((((mockUser.stats.totalWins! + 1) / (mockUser.stats.gamesPlayed! + 1)) * 100).toFixed(2)),
       };
-      if (mockUser.stats.winStreak! + 1 > mockUser.stats.bestStreak!) {
-        expectedStatsUpdate.bestStreak = mockUser.stats.winStreak! + 1;
-      }
 
       expect(firestoreService.updateUserStats).toHaveBeenCalledWith(authContext.uid, expectedStatsUpdate);
       expect(firestoreService.updateUserCoins).toHaveBeenCalledWith(authContext.uid, 10);
@@ -422,7 +418,7 @@ describe("handleGuessLogic", () => {
         totalWordsGuessed: "increment(1)", // Added new stat
         wins: "increment(1)",
         totalWins: "increment(1)",
-        winStreak: "increment(1)",
+        winStreak: 1,
         totalGuessesInWins: "increment(2)",
         challengeWins: "increment(1)",
         dailyPuzzlesCompleted: "increment(1)", // Added daily puzzles stat
@@ -433,10 +429,6 @@ describe("handleGuessLogic", () => {
         ),
         winRate: parseFloat((((mockUser.stats.totalWins! + 1) / (mockUser.stats.gamesPlayed! + 1)) * 100).toFixed(2)),
       };
-      if (mockUser.stats.winStreak! + 1 > mockUser.stats.bestStreak!) {
-        expectedStatsUpdate.bestStreak = mockUser.stats.winStreak! + 1;
-      }
-
       expect(firestoreService.updateUserStats).toHaveBeenCalledWith(authContext.uid, expectedStatsUpdate);
     });
   });
@@ -489,17 +481,20 @@ describe("handleGuessLogic", () => {
       expect(result.correctAnswer).toBe("keyboard");
     });
 
-    test("should reset winStreak and update gamesPlayed/winRate", async () => {
+    test("should update gamesPlayed/winRate without modifying streak", async () => {
       await handleGuessLogic(requestData, authContext);
       const expectedStatsUpdate: Record<string, unknown> = {
         gamesPlayed: "increment(1)",
         totalWordsGuessed: "increment(1)", // Added new stat for game over incorrect guesses too
-        winStreak: 0,
         winRate: parseFloat(((mockUser.stats.totalWins! / (mockUser.stats.gamesPlayed! + 1)) * 100).toFixed(2)),
       };
       expect(firestoreService.updateUserStats).toHaveBeenCalledWith(
         authContext.uid,
         expect.objectContaining(expectedStatsUpdate),
+      );
+      expect(firestoreService.updateUserStats).not.toHaveBeenCalledWith(
+        authContext.uid,
+        expect.objectContaining({winStreak: 0}),
       );
     });
   });
@@ -524,16 +519,19 @@ describe("handleGuessLogic", () => {
     });
   });
 
-  test("should correctly update bestStreak when current winStreak surpasses it", async () => {
+  test("should correctly update bestStreak when challenge streak surpasses it", async () => {
+    const yesterday = new Date();
+    yesterday.setUTCDate(yesterday.getUTCDate() - 1);
     const userWithLowerBestStreak = {
       ...mockUser,
       stats: {...mockUser.stats, winStreak: 3, bestStreak: 3},
+      lastDailyChallengeCompletedAt: yesterday.toISOString(),
     };
     (firestoreService.getUser as jest.Mock).mockResolvedValue(userWithLowerBestStreak);
     const requestData: SubmitGuessRequestData = {
       guess: "keyboard",
       riddleId: "riddle-123",
-      gameMode: "classic",
+      gameMode: "challenge",
       attempts: 1,
     };
 

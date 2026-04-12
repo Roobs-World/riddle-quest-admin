@@ -28,6 +28,7 @@ const expectedModalTypes = [
   "coinShop",
   "coinPurchaseFanfare",
   "achievementUnlockFanfare",
+  "streakIncreaseFanfare",
 ];
 
 jest.mock("../../modals/ModalRegistry", () => ({
@@ -52,6 +53,7 @@ jest.mock("../../modals/ModalRegistry", () => ({
     coinShop: {},
     coinPurchaseFanfare: {},
     achievementUnlockFanfare: {},
+    streakIncreaseFanfare: {},
   },
   getModalComponent: (...args: any[]) => mockGetModalComponent(...args),
 }));
