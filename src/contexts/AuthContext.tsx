@@ -31,7 +31,7 @@ import {
   createUserDocumentInFirestore,
 } from "../services/FirestoreService";
 import { Player, FirestoreRiddle } from "../validation/firestoreSchemas";
-import { getAuth } from "@react-native-firebase/auth";
+import { getAuth, signOut } from "@react-native-firebase/auth";
 import { getApp } from "@react-native-firebase/app";
 import { getFunctions, httpsCallable } from "@react-native-firebase/functions";
 import { RiddleInitializationService } from "../services/RiddleInitializationService";
@@ -39,7 +39,6 @@ import { logger } from "../utils/logger";
 import { captureException, setUser as sentrySetUser, clearUser as sentryClearUser, addBreadcrumb } from "../utils/sentry";
 import { analyticsService } from "../services/AnalyticsService";
 import { offlineQueue } from "../services/OfflineQueueService";
-import { NotificationService } from "../services/NotificationService";
 import {
   createGuestPlayer,
   resolveInitialGameMode,
@@ -402,17 +401,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         void analyticsService.initialize(user.uid);
         void analyticsService.logAuthEvent("login");
 
-        // Request notification permission and register FCM token (non-blocking).
-        void (async () => {
-          const granted = await NotificationService.requestPermission();
-          if (granted) {
-            await NotificationService.registerToken(user.uid);
-            // Replace any existing token-refresh listener.
-            notifUnsubRef.current?.();
-            notifUnsubRef.current = NotificationService.onTokenRefresh(user.uid);
-          }
-        })();
-
         try {
           // Anonymous (guest) users get a minimal in-memory player — no Firestore read/write needed.
           if (user.isAnonymous) {
@@ -651,11 +639,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       // Unregister FCM token before signing out — must happen while still authenticated
       notifUnsubRef.current?.();
       notifUnsubRef.current = null;
-      if (currentUserIdRef.current) {
-        await NotificationService.unregisterToken(currentUserIdRef.current);
+      const auth = getAuth(getApp());
+      const userIdToUnregister = auth.currentUser?.uid ?? currentUserIdRef.current;
+      if (userIdToUnregister) {
         currentUserIdRef.current = null;
       }
-      await getAuth(getApp()).signOut(); // Trigger Firebase sign out
+      if (auth.currentUser) {
+        await signOut(auth); // Trigger Firebase sign out
+      } else {
+        logger.debug("Logout requested with no current Firebase user; skipping signOut.");
+      }
       // The onAuthStateChanged listener will handle the state update
     } catch (error) {
       logger.error("Error during logout:", error);

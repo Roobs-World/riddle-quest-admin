@@ -12,8 +12,6 @@ import {
   ScrollView,
 } from "react-native";
 import CloseButton from "../../buttons/CloseButton";
-import { getAuth } from "@react-native-firebase/auth";
-import { getApp } from "@react-native-firebase/app";
 import {
   AppStrings,
   LANGUAGE_OPTIONS,
@@ -300,7 +298,6 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
               onPress={async () => {
                 try {
                   onClose();
-                  await getAuth(getApp()).signOut();
                   if (onPressLogout) onPressLogout();
                 } catch {
                   Alert.alert(AppStrings.Settings.LOGOUT_ERROR_TITLE, AppStrings.Settings.LOGOUT_ERROR_MESSAGE);

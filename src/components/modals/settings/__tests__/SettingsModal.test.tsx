@@ -1,27 +1,26 @@
 const React = require("react");
-import { render, fireEvent, waitFor } from "@testing-library/react-native";
+import { render, fireEvent, waitFor, act } from "@testing-library/react-native";
 import SettingsModal from "../SettingsModal";
-
-// Mock Firebase auth
-jest.mock("@react-native-firebase/auth", () => ({
-  getAuth: jest.fn(() => ({
-    signOut: jest.fn(() => Promise.resolve()),
-  })),
-}));
-
-jest.mock("@react-native-firebase/app", () => ({
-  getApp: jest.fn(() => ({})),
-}));
 
 // Mock constants
 jest.mock("../../../../constants/AppStrings", () => ({
   AppStrings: {
+    CommonAlerts: {
+      CLOSE_BUTTON: "Close",
+    },
     Settings: {
       TITLE: "Settings",
       SOUND_TOGGLE: "Sound",
       HAPTICS_TOGGLE: "Haptics",
+      TOGGLE_ON: "On",
+      TOGGLE_OFF: "Off",
       LANGUAGE_LABEL: "Language",
+      LANGUAGE_SELECTED: "Selected",
+      HELP_BUTTON: "Help and Support?",
+      CREDITS_BUTTON: "Credits",
       LOGOUT_BUTTON: "Logout",
+      LOGOUT_ERROR_TITLE: "Logout Error",
+      LOGOUT_ERROR_MESSAGE: "Unable to logout.",
       CLOSE_BUTTON: "Close",
     },
   },
@@ -249,7 +248,9 @@ describe("<SettingsModal />", () => {
 
       // The second modal is the language picker
       if (modals.length > 1 && modals[1].props.onRequestClose) {
-        modals[1].props.onRequestClose();
+        act(() => {
+          modals[1].props.onRequestClose();
+        });
       }
 
       // Language picker should close (Spanish should not be visible)
@@ -283,11 +284,7 @@ describe("<SettingsModal />", () => {
   });
 
   describe("Logout", () => {
-    it("should call signOut and onPressLogout when logout is pressed", async () => {
-      const { getAuth } = require("@react-native-firebase/auth");
-      const mockSignOut = jest.fn(() => Promise.resolve());
-      getAuth.mockReturnValue({ signOut: mockSignOut });
-
+    it("should call onPressLogout when logout is pressed", async () => {
       const onPressLogout = jest.fn();
       const { getByText } = render(
         <SettingsModal {...defaultProps} onPressLogout={onPressLogout} />
@@ -296,22 +293,23 @@ describe("<SettingsModal />", () => {
       fireEvent.press(getByText("Logout"));
 
       await waitFor(() => {
-        expect(mockSignOut).toHaveBeenCalled();
         expect(onPressLogout).toHaveBeenCalled();
       });
     });
 
     it("should show alert when logout fails", async () => {
-      const { getAuth } = require("@react-native-firebase/auth");
-      const mockSignOut = jest.fn(() => Promise.reject(new Error("Logout failed")));
-      getAuth.mockReturnValue({ signOut: mockSignOut });
+      const onPressLogout = jest.fn(() => {
+        throw new Error("Logout failed");
+      });
 
-      const { getByText } = render(<SettingsModal {...defaultProps} />);
+      const { getByText } = render(
+        <SettingsModal {...defaultProps} onPressLogout={onPressLogout} />
+      );
 
       fireEvent.press(getByText("Logout"));
 
       await waitFor(() => {
-        expect(mockSignOut).toHaveBeenCalled();
+        expect(onPressLogout).toHaveBeenCalled();
       });
       // Alert should be called but we can't easily test Alert.alert in RNTL
     });

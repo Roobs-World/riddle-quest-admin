@@ -36,7 +36,6 @@ import { getApp } from "@react-native-firebase/app";
 import { logger } from "../utils/logger";
 import { captureException, addBreadcrumb } from "../utils/sentry";
 import { analyticsService } from "../services/AnalyticsService";
-import { useNotificationNavigation } from "../hooks/useNotificationNavigation";
 import { isGuestPlayer } from "../features/auth/sessionBootstrap";
 
 const Stack = createNativeStackNavigator();
@@ -96,20 +95,6 @@ const GameScreenWrapper = () => {
     fetchCurrentRiddle,
     isAuthenticated,
   ]);
-
-  // Notification deep linking — switch to daily mode when a streak reminder is tapped
-  useNotificationNavigation({
-    enabled: isAuthenticated && !!playerData,
-    onNavigate: ({ destination }) => {
-      if (destination === "daily" && gameMode !== "daily") {
-        logger.info("[NavigationStack] Notification tap → switching to daily challenge");
-        setGameMode("daily");
-        if (playerData) {
-          void fetchCurrentRiddle(playerData, "daily");
-        }
-      }
-    },
-  });
 
   // Function to check if user completed today's single daily challenge
   const checkDailyChallengeCompletion = async () => {

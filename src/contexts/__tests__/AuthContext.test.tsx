@@ -40,6 +40,7 @@ jest.mock("@react-native-firebase/auth", () => {
     __esModule: true,
     default: () => mockAuthInstance,
     getAuth: jest.fn(() => mockAuthInstance),
+    signOut: jest.fn((auth) => auth.signOut()),
     // Expose the instance for test access
     __mockAuthInstance: mockAuthInstance,
   };
@@ -212,6 +213,7 @@ describe("AuthContext", () => {
         (callback: (user: any) => void) => {
           authCallback = callback;
           // Start with authenticated user
+          mockAuthInstance.currentUser = mockUser as any;
           callback(mockUser as any);
           return jest.fn();
         }

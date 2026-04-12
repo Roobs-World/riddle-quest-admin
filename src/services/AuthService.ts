@@ -1,5 +1,6 @@
 import {
   getAuth,
+  signOut,
   signInWithPopup,
   type FirebaseAuthTypes,
   GoogleAuthProvider,
@@ -832,7 +833,7 @@ export const AuthService = {
    */
   async logout(): Promise<void> {
     try {
-      await getAuth(getApp()).signOut();
+      await signOut(getAuth(getApp()));
       logger.debug("User signed out successfully.");
     } catch (error) {
       logger.error("Error signing out:", error);
