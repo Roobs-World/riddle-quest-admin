@@ -73,21 +73,17 @@ export function getXpLevel(totalScore: number): XpLevelSnapshot {
 
   return snapshot;
 }
+
 /** The initial coins a user starts with */
 export const INITIAL_COINS = 300;
-
 /** Delay (ms) after closing a modal before opening another, to avoid overlap. */
 export const MODAL_CLOSE_DELAY_MS = 100;
-
 /** Coin cost to reveal one hint letter (must match backend getHint). */
 export const HINT_COST_COINS = 50;
-
 /** Coin cost to continue after exhausting initial attempts. */
 export const CONTINUE_COST_COINS = 100;
-
 /** Delay (ms) before resuming background music after sound is enabled. */
 export const SOUND_RESUME_DELAY_MS = 500;
-
 /** Win flow: fade-out duration for background music (ms). */
 export const WIN_FADE_OUT_DURATION_MS = 500;
 /** Win flow: delay before playing success sound (ms). */
