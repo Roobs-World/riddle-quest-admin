@@ -86,6 +86,23 @@ describe("useSettings", () => {
     expect(mockSetSoundEnabled).toHaveBeenCalledWith(false);
   });
 
+  it("does not overwrite persisted muted state during initial load", async () => {
+    mockGetItem
+      .mockResolvedValueOnce(JSON.stringify(false))
+      .mockResolvedValueOnce(null);
+
+    const { result } = renderHook(() => useSettings());
+
+    await waitFor(() => {
+      expect(result.current.isSoundEnabled).toBe(false);
+    });
+
+    expect(mockSetItem).not.toHaveBeenCalledWith(
+      "isSoundEnabled",
+      JSON.stringify(true)
+    );
+  });
+
   it("should load persisted haptics setting from AsyncStorage", async () => {
     mockGetItem
       .mockResolvedValueOnce(null)

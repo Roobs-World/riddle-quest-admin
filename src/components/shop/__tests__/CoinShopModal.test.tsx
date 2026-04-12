@@ -1,8 +1,7 @@
 import React from "react";
-import { fireEvent, render, waitFor } from "@testing-library/react-native";
+import { fireEvent, render } from "@testing-library/react-native";
 
 import CoinShopModal from "../CoinShop";
-import { analyticsService } from "../../../services/AnalyticsService";
 
 jest.mock("react-native/Libraries/Components/Touchable/TouchableOpacity", () => {
   const React = require("react");
@@ -17,13 +16,6 @@ jest.mock("react-native/Libraries/Components/Touchable/TouchableOpacity", () => 
 
 jest.mock("react-native-safe-area-context", () => ({
   useSafeAreaInsets: () => ({ top: 10, bottom: 10, left: 0, right: 0 }),
-}));
-
-jest.mock("../../../services/AnalyticsService", () => ({
-  analyticsService: {
-    logShopPackImpression: jest.fn().mockResolvedValue(undefined),
-    logShopPackSelected: jest.fn().mockResolvedValue(undefined),
-  },
 }));
 
 jest.mock("../../../utils/logger", () => ({
@@ -53,8 +45,6 @@ jest.mock("../../buttons/CloseButton", () => {
     );
   };
 });
-
-const mockAnalytics = analyticsService as jest.Mocked<typeof analyticsService>;
 
 type ProductPricing = {
   productId: string;
@@ -92,7 +82,7 @@ describe("CoinShopModal", () => {
     jest.clearAllMocks();
   });
 
-  it("renders loading state and suppresses impressions while loading", () => {
+  it("renders loading state", () => {
     const { getByTestId, getByText, queryByText } = render(
       <CoinShopModal
         {...baseProps}
@@ -104,10 +94,9 @@ describe("CoinShopModal", () => {
     expect(getByTestId("coin-shop-loading")).toBeTruthy();
     expect(getByText("Loading shop...")).toBeTruthy();
     expect(queryByText("COIN SHOP")).toBeNull();
-    expect(mockAnalytics.logShopPackImpression).not.toHaveBeenCalled();
   });
 
-  it("renders error state and suppresses impressions when error is present", () => {
+  it("renders error state", () => {
     const { getByText } = render(
       <CoinShopModal
         {...baseProps}
@@ -117,7 +106,6 @@ describe("CoinShopModal", () => {
     );
 
     expect(getByText("Store unavailable")).toBeTruthy();
-    expect(mockAnalytics.logShopPackImpression).not.toHaveBeenCalled();
   });
 
   it("shows empty state when there are no packs", () => {
@@ -128,7 +116,7 @@ describe("CoinShopModal", () => {
     expect(getByText("No coin packs are available right now.")).toBeTruthy();
   });
 
-  it("tracks impressions in sorted order and uses store price when available", async () => {
+  it("uses store price when available", () => {
     const p1 = createProduct({
       productId: "coins_500",
       productKey: "coins_500",
@@ -144,7 +132,7 @@ describe("CoinShopModal", () => {
       regionalPrices: [{ currency: "USD", displayPrice: "$0.99" }],
     });
 
-    render(
+    const { getByText } = render(
       <CoinShopModal
         {...baseProps}
         products={[
@@ -155,26 +143,8 @@ describe("CoinShopModal", () => {
       />
     );
 
-    await waitFor(() =>
-      expect(mockAnalytics.logShopPackImpression).toHaveBeenCalledTimes(2)
-    );
-
-    expect(mockAnalytics.logShopPackImpression).toHaveBeenNthCalledWith(
-      1,
-      expect.objectContaining({
-        productId: "coins_100",
-        sortOrder: 1,
-        displayPrice: "$1.09",
-      })
-    );
-    expect(mockAnalytics.logShopPackImpression).toHaveBeenNthCalledWith(
-      2,
-      expect.objectContaining({
-        productId: "coins_500",
-        sortOrder: 2,
-        displayPrice: "$5.49",
-      })
-    );
+    expect(getByText("$1.09")).toBeTruthy();
+    expect(getByText("$5.49")).toBeTruthy();
   });
 
   it("falls back to regional USD price and then '-' when store/region prices are missing", () => {
@@ -228,7 +198,7 @@ describe("CoinShopModal", () => {
     expect(onPurchaseProduct).not.toHaveBeenCalled();
   });
 
-  it("selects a pack, logs selection, and purchases selected product", async () => {
+  it("selects a pack and purchases selected product", () => {
     const onPurchaseProduct = jest.fn();
     const product = createProduct({
       productId: "coins_100",
@@ -248,15 +218,6 @@ describe("CoinShopModal", () => {
     );
 
     fireEvent.press(getByTestId("pack-card-coins_100"));
-
-    await waitFor(() =>
-      expect(mockAnalytics.logShopPackSelected).toHaveBeenCalledWith(
-        expect.objectContaining({
-          productId: "coins_100",
-          featured: true,
-        })
-      )
-    );
 
     fireEvent.press(getByTestId("purchase-button"));
     expect(onPurchaseProduct).toHaveBeenCalledWith("coins_100");
@@ -299,15 +260,15 @@ describe("CoinShopModal", () => {
     expect(onPurchaseProduct).toHaveBeenCalledTimes(1);
   });
 
-  it("clears impression cache when hidden and tracks again when re-opened", async () => {
+  it("resets selected pack when hidden and re-opened", async () => {
     const product = createProduct({ productId: "coins_100", sortOrder: 1 });
-    const { rerender } = render(
+    const { rerender, getByTestId } = render(
       <CoinShopModal {...baseProps} isVisible={true} firestoreProducts={[product as any]} />
     );
 
-    await waitFor(() =>
-      expect(mockAnalytics.logShopPackImpression).toHaveBeenCalledTimes(1)
-    );
+    fireEvent.press(getByTestId("pack-card-coins_100"));
+    fireEvent.press(getByTestId("purchase-button"));
+    expect(baseProps.onPurchaseProduct).toHaveBeenCalledWith("coins_100");
 
     rerender(
       <CoinShopModal {...baseProps} isVisible={false} firestoreProducts={[product as any]} />
@@ -316,9 +277,8 @@ describe("CoinShopModal", () => {
       <CoinShopModal {...baseProps} isVisible={true} firestoreProducts={[product as any]} />
     );
 
-    await waitFor(() =>
-      expect(mockAnalytics.logShopPackImpression).toHaveBeenCalledTimes(2)
-    );
+    fireEvent.press(getByTestId("purchase-button"));
+    expect(baseProps.onPurchaseProduct).toHaveBeenCalledTimes(1);
   });
 
   it("uses close button action and renders localized coin balance", () => {

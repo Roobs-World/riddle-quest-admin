@@ -11,7 +11,7 @@ import CloseButton from "../../buttons/CloseButton";
 import { TYPOGRAPHY, SPACING } from "../../../styles";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
-import { MODAL_WIDTH, MODAL_HEIGHT, CLOSE_BUTTON_SIZE, MODAL_CLOSE_BUTTON_POSITION, CARD_BORDER_RADIUS, MODAL_CONTENT_PADDING, MODAL_SCROLLABLE_MAX_HEIGHT } from "../../../constants/layout";
+import { MODAL_WIDTH, MODAL_HEIGHT, CLOSE_BUTTON_SIZE, CARD_BORDER_RADIUS, MODAL_CONTENT_PADDING, MODAL_SCROLLABLE_MAX_HEIGHT } from "../../../constants/layout";
 import { AppStrings } from "../../../constants/AppStrings";
 
 export interface StatsModalProps {
@@ -67,7 +67,12 @@ const StatsModal: React.FC<StatsModalProps> = ({
           <CloseButton
             onPress={onClose}
             size={CLOSE_BUTTON_SIZE}
-            style={MODAL_CLOSE_BUTTON_POSITION}
+            style={{
+              position: "absolute",
+              top: SPACING.sm,
+              right: SPACING.lg,
+              zIndex: 10,
+            }}
             accessibilityLabel={AppStrings.Accessibility.CLOSE_STATISTICS}
           />
           <Text
@@ -115,9 +120,9 @@ const StatsModal: React.FC<StatsModalProps> = ({
 const SectionHeader = ({ label }: { label: string }) => (
   <Text
     style={{
-      fontSize: TYPOGRAPHY.fontSize.xs,
+      fontSize: TYPOGRAPHY.fontSize.lg,
       fontFamily: TYPOGRAPHY.fontSecondaryBold,
-      color: "rgba(0,0,0,0.5)",
+      color: "rgba(0,0,0,1)",
       textTransform: "uppercase",
       letterSpacing: TYPOGRAPHY.letterSpacing.caps,
       marginTop: SPACING.md,

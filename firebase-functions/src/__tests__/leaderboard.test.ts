@@ -18,30 +18,53 @@ jest.mock("firebase-functions", () => ({
 
 const mockSet = jest.fn().mockResolvedValue(undefined);
 const mockOrderBy = jest.fn();
-const mockLimit = jest.fn();
-const mockGet = jest.fn();
+const mockLeaderboardLimit = jest.fn();
+const mockLeaderboardGet = jest.fn();
+const mockUsersLimit = jest.fn();
+const mockUsersGet = jest.fn();
+const mockBatchSet = jest.fn();
+const mockBatchCommit = jest.fn().mockResolvedValue(undefined);
+const mockBatch = jest.fn(() => ({
+  set: mockBatchSet,
+  commit: mockBatchCommit,
+}));
 
 const mockDocRef = {set: mockSet};
 const mockDoc = jest.fn().mockReturnValue(mockDocRef);
 
-const mockQuery = {
+const mockLeaderboardQuery = {
   orderBy: mockOrderBy,
-  limit: mockLimit,
-  get: mockGet,
+  limit: mockLeaderboardLimit,
+  get: mockLeaderboardGet,
 };
 
-mockOrderBy.mockReturnValue(mockQuery);
-mockLimit.mockReturnValue(mockQuery);
+const mockUsersQuery = {
+  get: mockUsersGet,
+};
 
-const mockCollection = jest.fn().mockReturnValue({
-  doc: mockDoc,
-  orderBy: mockOrderBy,
+mockOrderBy.mockReturnValue(mockLeaderboardQuery);
+mockLeaderboardLimit.mockReturnValue(mockLeaderboardQuery);
+mockUsersLimit.mockReturnValue(mockUsersQuery);
+
+const mockCollection = jest.fn((collectionName: string) => {
+  if (collectionName === "leaderboard") {
+    return {
+      doc: mockDoc,
+      orderBy: mockOrderBy,
+    };
+  }
+  if (collectionName === "users") {
+    return {
+      limit: mockUsersLimit,
+    };
+  }
+  return {};
 });
 
 jest.mock("firebase-admin", () => ({
   initializeApp: jest.fn(),
   apps: [],
-  firestore: jest.fn(() => ({collection: mockCollection})),
+  firestore: jest.fn(() => ({collection: mockCollection, batch: mockBatch})),
 }));
 
 // â”€â”€ firebase-functions/v2/https mock â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -172,8 +195,9 @@ describe("getLeaderboard callable", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     // Re-apply chain because clearAllMocks resets return values
-    mockOrderBy.mockReturnValue(mockQuery);
-    mockLimit.mockReturnValue(mockQuery);
+    mockOrderBy.mockReturnValue(mockLeaderboardQuery);
+    mockLeaderboardLimit.mockReturnValue(mockLeaderboardQuery);
+    mockUsersLimit.mockReturnValue(mockUsersQuery);
   });
 
   function callGetLeaderboard(auth: unknown, data: unknown) {
@@ -195,7 +219,7 @@ describe("getLeaderboard callable", () => {
 
   it("returns entries sorted by level + xp progression score", async () => {
     const entries = [makeEntry({xp: 900}), makeEntry({userId: "user-2", xp: 400})];
-    mockGet.mockResolvedValueOnce(makeSnapshot(entries));
+    mockLeaderboardGet.mockResolvedValueOnce(makeSnapshot(entries));
 
     const result = await callGetLeaderboard({uid: "u1"}, {type: "xp"});
 
@@ -204,7 +228,7 @@ describe("getLeaderboard callable", () => {
   });
 
   it("returns entries sorted by totalWins", async () => {
-    mockGet.mockResolvedValueOnce(makeSnapshot([makeEntry()]));
+    mockLeaderboardGet.mockResolvedValueOnce(makeSnapshot([makeEntry()]));
 
     await callGetLeaderboard({uid: "u1"}, {type: "totalWins"});
 
@@ -212,7 +236,7 @@ describe("getLeaderboard callable", () => {
   });
 
   it("returns entries sorted by bestStreak", async () => {
-    mockGet.mockResolvedValueOnce(makeSnapshot([makeEntry()]));
+    mockLeaderboardGet.mockResolvedValueOnce(makeSnapshot([makeEntry()]));
 
     await callGetLeaderboard({uid: "u1"}, {type: "bestStreak"});
 
@@ -220,7 +244,7 @@ describe("getLeaderboard callable", () => {
   });
 
   it("defaults to xp when type is omitted", async () => {
-    mockGet.mockResolvedValueOnce(makeSnapshot([makeEntry()]));
+    mockLeaderboardGet.mockResolvedValueOnce(makeSnapshot([makeEntry()]));
 
     await callGetLeaderboard({uid: "u1"}, {});
 
@@ -228,31 +252,35 @@ describe("getLeaderboard callable", () => {
   });
 
   it("applies the requested limit", async () => {
-    mockGet.mockResolvedValueOnce(makeSnapshot([]));
+    mockLeaderboardGet.mockResolvedValueOnce(makeSnapshot([]));
+    mockUsersGet.mockResolvedValueOnce(makeSnapshot([]));
 
     await callGetLeaderboard({uid: "u1"}, {type: "xp", limit: 10});
 
-    expect(mockLimit).toHaveBeenCalledWith(10);
+    expect(mockLeaderboardLimit).toHaveBeenCalledWith(10);
   });
 
   it("caps limit at 100", async () => {
-    mockGet.mockResolvedValueOnce(makeSnapshot([]));
+    mockLeaderboardGet.mockResolvedValueOnce(makeSnapshot([]));
+    mockUsersGet.mockResolvedValueOnce(makeSnapshot([]));
 
     await callGetLeaderboard({uid: "u1"}, {type: "xp", limit: 9999});
 
-    expect(mockLimit).toHaveBeenCalledWith(100);
+    expect(mockLeaderboardLimit).toHaveBeenCalledWith(100);
   });
 
   it("defaults limit to 50 when not provided", async () => {
-    mockGet.mockResolvedValueOnce(makeSnapshot([]));
+    mockLeaderboardGet.mockResolvedValueOnce(makeSnapshot([]));
+    mockUsersGet.mockResolvedValueOnce(makeSnapshot([]));
 
     await callGetLeaderboard({uid: "u1"}, {type: "xp"});
 
-    expect(mockLimit).toHaveBeenCalledWith(50);
+    expect(mockLeaderboardLimit).toHaveBeenCalledWith(50);
   });
 
   it("returns empty entries array when no data", async () => {
-    mockGet.mockResolvedValueOnce(makeSnapshot([]));
+    mockLeaderboardGet.mockResolvedValueOnce(makeSnapshot([]));
+    mockUsersGet.mockResolvedValueOnce(makeSnapshot([]));
 
     const result = await callGetLeaderboard({uid: "u1"}, {type: "xp"});
 
@@ -260,11 +288,43 @@ describe("getLeaderboard callable", () => {
   });
 
   it("includes requestingUserId in the response", async () => {
-    mockGet.mockResolvedValueOnce(makeSnapshot([makeEntry()]));
+    mockLeaderboardGet.mockResolvedValueOnce(makeSnapshot([makeEntry()]));
 
     const result = await callGetLeaderboard({uid: "my-uid"}, {type: "totalWins"});
 
     expect((result as {requestingUserId: string}).requestingUserId).toBe("my-uid");
+  });
+
+  it("falls back to users collection when leaderboard docs are empty", async () => {
+    mockLeaderboardGet.mockResolvedValueOnce(makeSnapshot([]));
+    mockUsersGet.mockResolvedValueOnce({
+      docs: [
+        {
+          id: "u2",
+          data: () => ({
+            username: "Bob",
+            stats: {level: 1, xp: 300, totalWins: 4, bestStreak: 2},
+          }),
+        },
+        {
+          id: "u1",
+          data: () => ({
+            username: "Alice",
+            stats: {level: 2, xp: 100, totalWins: 10, bestStreak: 7},
+          }),
+        },
+      ],
+    });
+
+    const result = await callGetLeaderboard({uid: "u1"}, {type: "xp", limit: 10});
+    const typedResult = result as {entries: LeaderboardEntry[]; requestingUserId: string};
+
+    expect(typedResult.entries).toHaveLength(2);
+    expect(typedResult.entries[0].userId).toBe("u1");
+    expect(typedResult.entries[1].userId).toBe("u2");
+    expect(mockUsersLimit).toHaveBeenCalledWith(1000);
+    expect(mockBatchSet).toHaveBeenCalledTimes(2);
+    expect(mockBatchCommit).toHaveBeenCalledTimes(1);
   });
 });
 

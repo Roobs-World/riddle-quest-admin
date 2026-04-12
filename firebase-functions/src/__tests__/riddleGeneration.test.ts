@@ -902,7 +902,6 @@ describe("riddleGeneration", () => {
         } as any)
         .mockReturnValueOnce({get: jest.fn().mockResolvedValue(emptySnapshot)} as any)
         .mockReturnValueOnce({get: jest.fn().mockResolvedValue(emptySnapshot)} as any)
-        .mockReturnValueOnce({get: jest.fn().mockResolvedValue(emptySnapshot)} as any)
         .mockReturnValueOnce({
           doc: () => mockDocRef,
           where: jest.fn().mockReturnValue(indexQuery),

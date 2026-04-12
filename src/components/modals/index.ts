@@ -6,7 +6,6 @@ export { default as LossModal } from "./game/LossModal";
 // Settings Modals
 export { default as SettingsModal } from "./settings/SettingsModal";
 export { default as FullProfileDetailsModal } from "./settings/FullProfileDetailsModal";
-export { default as ChangePasswordModal } from "./settings/ChangePasswordModal";
 export { default as UpdateUsernameModal } from "./settings/UpdateUsernameModal";
 
 // Help Modals

@@ -51,6 +51,7 @@ type UpdateModalDataFn = (newData: Record<string, unknown>) => void;
 
 interface ModalTogglePanelProps {
   onCompleteRiddle?: () => void | Promise<void>;
+  onGenerateDailyChallenge?: () => void | Promise<void>;
 }
 
 /**
@@ -288,6 +289,7 @@ const generateMockData = (
  */
 const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
   onCompleteRiddle,
+  onGenerateDailyChallenge,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [modalToggles, setModalToggles] = useState<{
@@ -437,6 +439,19 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
               </TouchableOpacity>
             ) : null}
 
+            {onGenerateDailyChallenge ? (
+              <TouchableOpacity
+                style={styles.dailyChallengeButton}
+                onPress={() => {
+                  void onGenerateDailyChallenge();
+                }}
+              >
+                <Text style={styles.completeButtonText}>
+                  Generate Daily Challenge
+                </Text>
+              </TouchableOpacity>
+            ) : null}
+
             <TouchableOpacity
               style={styles.clearButton}
               onPress={() => setModalToggles({})}
@@ -457,6 +472,13 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
  * Component Styles
  */
 const styles = StyleSheet.create({
+  dailyChallengeButton: {
+    alignItems: "center",
+    backgroundColor: COLORS.primaryOrange,
+    borderRadius: BORDER_RADIUS.sm,
+    marginTop: SPACING.sm,
+    padding: SPACING.xs,
+  },
   completeButton: {
     alignItems: "center",
     backgroundColor: COLORS.success,

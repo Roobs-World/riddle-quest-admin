@@ -8,6 +8,7 @@ const mockIapGetSubscriptions = jest.fn<() => Promise<unknown[]>>().mockResolved
 const mockIapFinishTransaction = jest.fn<(...args: unknown[]) => Promise<void>>().mockResolvedValue(undefined);
 
 const mockGetCoinsForProduct = jest.fn<(...args: unknown[]) => Promise<number | undefined>>();
+const mockIncrementCoinPackPurchaseCount = jest.fn<(...args: unknown[]) => Promise<void>>();
 const mockLogPurchaseAnalytic = jest.fn<(...args: unknown[]) => Promise<void>>().mockResolvedValue(undefined);
 const mockUpdateRegionalSpendingStats = jest.fn<(...args: unknown[]) => Promise<void>>().mockResolvedValue(undefined);
 
@@ -161,6 +162,7 @@ jest.mock("../iapPlatformValidator", () => ({
 
 jest.mock("../productPricingService", () => ({
   getCoinsForProduct: (...args: unknown[]) => mockGetCoinsForProduct(...args),
+  incrementCoinPackPurchaseCount: (...args: unknown[]) => mockIncrementCoinPackPurchaseCount(...args),
   logPurchaseAnalytic: (...args: unknown[]) => mockLogPurchaseAnalytic(...args),
   updateRegionalSpendingStats: (...args: unknown[]) => mockUpdateRegionalSpendingStats(...args),
 }));
@@ -233,6 +235,7 @@ describe("validatePurchase - Unit Tests", () => {
     mockLoggerError.mockReset();
 
     mockGetCoinsForProduct.mockReset();
+    mockIncrementCoinPackPurchaseCount.mockReset();
     mockLogPurchaseAnalytic.mockReset();
     mockUpdateRegionalSpendingStats.mockReset();
     mockLogPurchaseAnalytic.mockResolvedValue(undefined);
@@ -253,6 +256,7 @@ describe("validatePurchase - Unit Tests", () => {
     // setup, getProducts, getSubscriptions, finishTransaction have defaults from their declaration
 
     mockUpdateUserCoins.mockResolvedValue(undefined);
+    mockIncrementCoinPackPurchaseCount.mockResolvedValue(undefined);
     mockFsUpdate.mockResolvedValue(undefined);
     mockFsGet.mockResolvedValue({exists: true, data: () => ({coins: 100, hasPurchasedApp: false})});
   });
@@ -288,6 +292,7 @@ describe("validatePurchase - Unit Tests", () => {
     expect(mockPerformPlatformValidation).toHaveBeenCalledWith("ios", "token_noads", NO_ADS_PRODUCT_ID);
     expect(mockUpdateUserProfile).toHaveBeenCalledWith(testUserId, {hasPurchasedApp: true});
     expect(mockUpdateUserCoins).not.toHaveBeenCalled();
+    expect(mockIncrementCoinPackPurchaseCount).not.toHaveBeenCalled();
     expect(mockMarkPurchaseTokenAsProcessed).toHaveBeenCalledWith(testUserId, "token_noads", NO_ADS_PRODUCT_ID);
     expect(mockGetUser).toHaveBeenCalledTimes(3); // updateUserProfile flow + evaluateAchievements + final balance
     expect(mockLoggerInfo).toHaveBeenCalledWith(
@@ -320,6 +325,7 @@ describe("validatePurchase - Unit Tests", () => {
     expect(mockIsPurchaseTokenAlreadyProcessed).toHaveBeenCalledWith(testUserId, "token_coins");
     expect(mockPerformPlatformValidation).toHaveBeenCalledWith("android", "token_coins", coinProductId);
     expect(mockUpdateUserCoins).toHaveBeenCalledWith(testUserId, coinsToAward);
+    expect(mockIncrementCoinPackPurchaseCount).toHaveBeenCalledWith(coinProductId);
     expect(mockMarkPurchaseTokenAsProcessed).toHaveBeenCalledWith(testUserId, "token_coins", coinProductId);
     expect(mockGetUser).toHaveBeenCalledTimes(2);
     expect(mockLoggerInfo).toHaveBeenCalledWith(

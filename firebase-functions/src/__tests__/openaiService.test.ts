@@ -59,7 +59,7 @@ describe("OpenAI Service", () => {
       expect(result).toEqual(["What flies without wings?", "time"]);
       expect(mockOpenAI).toHaveBeenCalledWith({apiKey: "test-api-key"});
       expect(mockCreate).toHaveBeenCalledWith({
-        model: "gpt-3.5-turbo",
+        model: "gpt-4o-mini",
         messages: expect.arrayContaining([
           expect.objectContaining({role: "system"}),
           expect.objectContaining({role: "user"}),
@@ -86,6 +86,29 @@ describe("OpenAI Service", () => {
       expect(result).toEqual(["What has seven letters?", "rainbow"]);
       expect(mockLogger.info).toHaveBeenCalledWith(
         'Generated valid riddle: "What has seven letters?" → "rainbow" (7 chars)',
+      );
+    });
+
+    test("should use OPENAI_MODEL override when provided", async () => {
+      process.env.OPENAI_MODEL = "gpt-4.1-mini";
+      const mockResponse = {
+        choices: [
+          {
+            message: {
+              content: "Question: What runs but never walks?\nAnswer: river",
+            },
+          },
+        ],
+      };
+
+      (mockCreate as jest.MockedFunction<any>).mockResolvedValue(mockResponse);
+
+      await generateUniqueRiddle();
+
+      expect(mockCreate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          model: "gpt-4.1-mini",
+        }),
       );
     });
 
@@ -274,7 +297,10 @@ describe("OpenAI Service", () => {
       const result = await generateUniqueRiddle();
 
       expect(result).toBeNull();
-      expect(mockLogger.error).toHaveBeenCalledWith("Error generating riddle with OpenAI:", apiError);
+      expect(mockLogger.error).toHaveBeenCalledWith(
+        "Error generating riddle with OpenAI (model: gpt-4o-mini):",
+        apiError,
+      );
     });
 
     test("should throw error when OPENAI_API_KEY is missing", async () => {

@@ -1241,7 +1241,9 @@ describe("GameScreen", () => {
     it("handles settings load and save storage failures", async () => {
       const { logger } = require("../../../utils/logger");
       const { captureException } = require("../../../utils/sentry");
-      (AsyncStorage.multiGet as jest.Mock).mockRejectedValueOnce(new Error("load settings fail"));
+      (AsyncStorage.getItem as jest.Mock).mockRejectedValueOnce(
+        new Error("load settings fail")
+      );
       (AsyncStorage.setItem as jest.Mock)
         .mockRejectedValueOnce(new Error("save sound fail"))
         .mockRejectedValueOnce(new Error("save haptics fail"))
@@ -1275,16 +1277,31 @@ describe("GameScreen", () => {
 
     it("pauses background music when loaded setting disables sound", async () => {
       const { SoundManager } = require("../../../services/SoundManager");
-      (AsyncStorage.multiGet as jest.Mock).mockResolvedValueOnce([
-        ["isSoundEnabled", "false"],
-        ["isHapticsEnabled", "true"],
-        ["appLanguage", "en"],
-      ]);
+      (AsyncStorage.getItem as jest.Mock)
+        .mockResolvedValueOnce("false")
+        .mockResolvedValueOnce("true")
+        .mockResolvedValueOnce("en");
 
       render(<GameScreen {...defaultProps} />);
 
       await waitFor(() => {
         expect(SoundManager.pauseBackgroundMusic).toHaveBeenCalled();
+      });
+    });
+
+    it("does not overwrite persisted muted setting during initial load", async () => {
+      (AsyncStorage.getItem as jest.Mock)
+        .mockResolvedValueOnce("false")
+        .mockResolvedValueOnce("true")
+        .mockResolvedValueOnce("en");
+
+      render(<GameScreen {...defaultProps} />);
+
+      await waitFor(() => {
+        expect(AsyncStorage.setItem).not.toHaveBeenCalledWith(
+          "isSoundEnabled",
+          JSON.stringify(true)
+        );
       });
     });
 
@@ -1512,6 +1529,7 @@ describe("GameScreen", () => {
       const latestProps =
         mockModalTogglePanel.mock.calls[mockModalTogglePanel.mock.calls.length - 1][0];
       expect(typeof latestProps.onCompleteRiddle).toBe("function");
+      expect(typeof latestProps.onGenerateDailyChallenge).toBe("function");
     });
 
     it("debug complete-riddle fills letters without submitting", async () => {

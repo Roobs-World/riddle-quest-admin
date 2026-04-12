@@ -11,7 +11,6 @@ import {
 import { Player } from "../../../validation/firestoreSchemas";
 import CloseButton from "../../buttons/CloseButton";
 import { useModal } from "../../../hooks/useModal";
-import ChangePasswordModal from "./ChangePasswordModal";
 import UpdateUsernameModal from "./UpdateUsernameModal";
 import * as ImagePicker from "react-native-image-picker";
 import { TYPOGRAPHY, SPACING, COLORS } from "../../../styles";
@@ -50,28 +49,30 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
   playerData,
 }) => {
   const modal = useModal();
-  const isGuestMode = isGuestPlayer(playerData);
+  const { updatePlayerData, playerData: authPlayerData } = useAuth();
+  const resolvedPlayerData =
+    authPlayerData && playerData && authPlayerData.userId === playerData.userId
+      ? authPlayerData
+      : playerData;
+  const isGuestMode = isGuestPlayer(resolvedPlayerData);
   const [isUsernameModalVisible, setIsUsernameModalVisible] = useState(false);
-  const [isPasswordModalVisible, setIsPasswordModalVisible] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(
-    playerData?.avatarUrl ?? null
+    resolvedPlayerData?.avatarUrl ?? null
   );
 
-  const { updatePlayerData } = useAuth();
-
   useEffect(() => {
-    setAvatarUrl(playerData?.avatarUrl ?? null);
-  }, [playerData?.avatarUrl]);
+    setAvatarUrl(resolvedPlayerData?.avatarUrl ?? null);
+  }, [resolvedPlayerData?.avatarUrl]);
 
-  if (!playerData) {
+  if (!resolvedPlayerData) {
     return null;
   }
 
-  const { stats } = playerData;
+  const { stats } = resolvedPlayerData;
   const avatarRadius = AVATAR_SIZE_LARGE / 2;
-  const initial = playerData.username
-    ? playerData.username.charAt(0).toUpperCase()
+  const initial = resolvedPlayerData.username
+    ? resolvedPlayerData.username.charAt(0).toUpperCase()
     : "?";
 
   const handleUploadAvatar = async () => {
@@ -90,12 +91,12 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
       if (result.assets && result.assets.length > 0) {
         const selectedAsset = result.assets[0];
 
-        if (selectedAsset.uri && playerData.userId) {
+        if (selectedAsset.uri && resolvedPlayerData.userId) {
           const uploadUri = selectedAsset.uri;
           const uniqueFilename = `avatar_${Date.now()}.jpg`;
 
           const storageRef = getStorage(getApp()).ref(
-            `avatars/${playerData.userId}/${uniqueFilename}`
+            `avatars/${resolvedPlayerData.userId}/${uniqueFilename}`
           );
 
           setIsUploading(true);
@@ -125,8 +126,8 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
       ? Number(stats.averageGuesses).toFixed(1)
       : "—";
   const xpFromProfile =
-    (playerData as unknown as { xp?: unknown; totalXp?: unknown }).xp ??
-    (playerData as unknown as { xp?: unknown; totalXp?: unknown }).totalXp ??
+    (resolvedPlayerData as unknown as { xp?: unknown; totalXp?: unknown }).xp ??
+    (resolvedPlayerData as unknown as { xp?: unknown; totalXp?: unknown }).totalXp ??
     (stats as unknown as { xp?: unknown; totalXp?: unknown })?.xp ??
     (stats as unknown as { xp?: unknown; totalXp?: unknown })?.totalXp ??
     stats?.totalScore ??
@@ -272,7 +273,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
                     fontFamily: TYPOGRAPHY.fontSecondaryBold,
                   }}
                 >
-                  {playerData.username || AppStrings.Profile.GUEST_USERNAME}
+                  {resolvedPlayerData.username || AppStrings.Profile.GUEST_USERNAME}
                 </Text>
                 <Text style={{ color: GOLD, fontSize: 24 }}>✏</Text>
               </TouchableOpacity>
@@ -431,24 +432,17 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
             </View>
 
             <View style={{ marginBottom: SPACING.lg }}>
-              <TreasureChest coins={playerData.coins ?? 0} />
+              <TreasureChest coins={resolvedPlayerData.coins ?? 0} />
             </View>
-
-            {!isGuestMode && (
-              <TouchableOpacity
-                onPress={() => setIsPasswordModalVisible(true)}
-                style={actionButtonStyle}
-              >
-                <Text style={actionButtonTextStyle}>
-                  {AppStrings.Profile.CHANGE_PASSWORD_BUTTON}
-                </Text>
-              </TouchableOpacity>
-            )}
 
             <View style={{ height: SPACING.sm }} />
 
             <TouchableOpacity
-              onPress={() => modal.openGameModal("achievements", { playerData })}
+              onPress={() =>
+                modal.openGameModal("achievements", {
+                  playerData: resolvedPlayerData,
+                })
+              }
               style={actionButtonStyle}
             >
               <Text style={actionButtonTextStyle}>
@@ -459,7 +453,11 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
             <View style={{ height: SPACING.sm }} />
 
             <TouchableOpacity
-              onPress={() => modal.openGameModal("stats", { playerData })}
+              onPress={() =>
+                modal.openGameModal("stats", {
+                  playerData: resolvedPlayerData,
+                })
+              }
               style={actionButtonStyle}
             >
               <Text style={actionButtonTextStyle}>
@@ -472,7 +470,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
             <TouchableOpacity
               onPress={() =>
                 modal.openGameModal("leaderboard", {
-                  currentUserId: playerData.userId,
+                  currentUserId: resolvedPlayerData.userId,
                 })
               }
               style={actionButtonStyle}
@@ -489,14 +487,10 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
         </View>
       </View>
 
-      <ChangePasswordModal
-        isVisible={isPasswordModalVisible}
-        onClose={() => setIsPasswordModalVisible(false)}
-      />
       <UpdateUsernameModal
         isVisible={isUsernameModalVisible}
         onClose={() => setIsUsernameModalVisible(false)}
-        currentUsername={playerData.username || ""}
+        currentUsername={resolvedPlayerData.username || ""}
       />
 
       <PulsingSpinner

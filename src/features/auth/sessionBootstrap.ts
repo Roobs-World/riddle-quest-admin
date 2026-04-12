@@ -134,3 +134,76 @@ export const resolveUserEmail = async (
     "Email is required but not provided by authentication provider. Please ensure email permission is granted."
   );
 };
+
+const isValidAvatarUrl = (value: string | null | undefined): value is string => {
+  if (!value || value.trim() === "") return false;
+  try {
+    const parsed = new URL(value);
+    return parsed.protocol === "https:" || parsed.protocol === "http:";
+  } catch {
+    return false;
+  }
+};
+
+/**
+ * Resolves provider avatar URL from Firebase auth user and provider data.
+ *
+ * @param user Firebase auth user.
+ * @returns A valid avatar URL when available.
+ */
+export const resolveProviderAvatarUrl = async (
+  user: FirebaseAuthTypes.User
+): Promise<string | undefined> => {
+  const hasFacebookProvider = Boolean(
+    user.providerData?.some((provider) => provider.providerId === "facebook.com")
+  );
+
+  if (hasFacebookProvider) {
+    try {
+      const currentToken = await AccessToken.getCurrentAccessToken();
+      if (currentToken?.accessToken) {
+        const graphResponse = await fetch(
+          `https://graph.facebook.com/me/picture?type=large&redirect=false&access_token=${currentToken.accessToken}`
+        );
+
+        if (!graphResponse.ok) {
+          throw new Error(
+            `Facebook avatar Graph API error: ${graphResponse.status} ${graphResponse.statusText}`
+          );
+        }
+
+        const avatarData = await graphResponse.json();
+        const graphAvatarUrl = avatarData?.data?.url as string | undefined;
+        const isSilhouette = avatarData?.data?.is_silhouette === true;
+
+        if (!isSilhouette && isValidAvatarUrl(graphAvatarUrl)) {
+          return graphAvatarUrl;
+        }
+      }
+    } catch (graphError) {
+      logger.warn("Unable to fetch Facebook avatar from Graph API:", graphError);
+      captureException(graphError);
+    }
+  }
+
+  const hasGoogleProvider = Boolean(
+    user.providerData?.some((provider) => provider.providerId === "google.com")
+  );
+
+  if (hasGoogleProvider && isValidAvatarUrl(user.photoURL)) {
+    return user.photoURL;
+  }
+
+  const providerAvatar = user.providerData?.find((provider) => {
+    if (provider.providerId !== "google.com") {
+      return false;
+    }
+    return isValidAvatarUrl(provider.photoURL);
+  })?.photoURL;
+
+  if (isValidAvatarUrl(providerAvatar)) {
+    return providerAvatar;
+  }
+
+  return undefined;
+};

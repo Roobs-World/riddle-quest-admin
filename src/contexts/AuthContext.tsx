@@ -42,6 +42,7 @@ import { offlineQueue } from "../services/OfflineQueueService";
 import {
   createGuestPlayer,
   resolveInitialGameMode,
+  resolveProviderAvatarUrl,
   resolveUserEmail,
 } from "../features/auth/sessionBootstrap";
 import { isGuestPlayer } from "../features/auth/sessionBootstrap";
@@ -437,6 +438,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
           logger.debug("🔍 Checking for existing user document...");
           let data = loadedData;
+          const providerAvatarUrl = await resolveProviderAvatarUrl(user);
 
           // If no user document exists, create one (new user signup)
           if (!data) {
@@ -475,7 +477,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
               data = await createUserDocumentInFirestore(
                 user.uid,
                 userEmail,
-                user.displayName || undefined
+                user.displayName || undefined,
+                providerAvatarUrl
               );
               logger.debug("✅ New user document created successfully");
               logger.debug(
@@ -489,6 +492,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             }
           } else {
             logger.debug("✅ Existing user document found");
+            if (providerAvatarUrl && data.avatarUrl !== providerAvatarUrl) {
+              await updateUserDocumentInFirestore(user.uid, {
+                avatarUrl: providerAvatarUrl,
+              });
+              data = { ...data, avatarUrl: providerAvatarUrl };
+              logger.debug("🖼️ Synced avatar from provider profile");
+            }
           }
 
           logger.debug("📊 User data loaded successfully:", !!data);

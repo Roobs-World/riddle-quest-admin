@@ -407,6 +407,7 @@ export const generateClassicRiddles = onCall(
     cors: true,
     region: "us-central1",
     timeoutSeconds: 540, // 9 minutes for riddle generation
+    secrets: ["OPENAI_API_KEY"],
   } as CallableOptions,
   async (): Promise<{success: boolean; message: string}> => {
     logger.info("generateClassicRiddles function called - entry point reached");
@@ -442,6 +443,7 @@ export const initializeRiddleDatabase = onCall(
     cors: true,
     region: "us-central1",
     timeoutSeconds: 300, // 5 minutes for initial database setup
+    secrets: ["OPENAI_API_KEY"],
   } as CallableOptions,
   async (): Promise<{success: boolean; message: string; riddlesGenerated: number}> => {
     logger.info("initializeRiddleDatabase function called - entry point reached");
@@ -497,6 +499,7 @@ export const generateDailyRiddles = onCall(
     cors: true,
     region: "us-central1",
     timeoutSeconds: 540, // 9 minutes for riddle generation
+    secrets: ["OPENAI_API_KEY"],
   } as CallableOptions,
   async (): Promise<{success: boolean; message: string}> => {
     logger.info("generateDailyRiddles function called - entry point reached");
@@ -712,6 +715,7 @@ export const generateTodaysDailyChallengeFunction = onCall(
     cors: true,
     region: "us-central1",
     timeoutSeconds: 540, // 9 minutes for riddle generation
+    secrets: ["OPENAI_API_KEY"],
   } as CallableOptions,
   async (
     request: CallableRequest<{forceGenerate?: boolean}>,
@@ -741,10 +745,14 @@ export const generateTodaysDailyChallengeFunction = onCall(
     } catch (error) {
       logger.error("Error generating today's daily challenge:", error);
       captureException(error);
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
       if (error instanceof Error) {
         logger.error("Error message:", error.message);
       }
-      throw new functions.https.HttpsError("internal", "Failed to generate today's daily challenge.", error);
+      throw new functions.https.HttpsError(
+        "internal",
+        `Failed to generate today's daily challenge: ${errorMessage}`,
+      );
     }
   },
 );

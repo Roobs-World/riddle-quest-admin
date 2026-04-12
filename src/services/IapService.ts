@@ -142,6 +142,20 @@ export const IapService = {
         } as RNIap.Purchase;
       }
 
+      const availableProducts = await this.getProducts();
+      const availableProductIds = new Set(availableProducts.map((product) => product.id));
+      if (availableProducts.length > 0 && !availableProductIds.has(productId)) {
+        logger.warn("Requested IAP product is not available on this device/account.", {
+          requestedProductId: productId,
+          availableProductIds: Array.from(availableProductIds),
+        });
+        const unavailableError = new Error(
+          `The selected product (${productId}) is not currently available.`
+        ) as IapError;
+        unavailableError.code = "E_ITEM_UNAVAILABLE";
+        throw unavailableError;
+      }
+
       const purchaseResult = await RNIap.requestPurchase({
         type: "in-app",
         request: {
@@ -316,6 +330,4 @@ export const IapService = {
     cachedProducts = null;
     cacheTimestamp = 0;
   },
-
-  // ... existing code ...
 };

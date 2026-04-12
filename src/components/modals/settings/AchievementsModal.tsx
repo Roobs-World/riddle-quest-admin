@@ -72,8 +72,12 @@ const AchievementsModal: React.FC<AchievementsModalProps> = ({
           <CloseButton
             onPress={onClose}
             size={CLOSE_BUTTON_SIZE}
-            style={MODAL_CLOSE_BUTTON_POSITION}
-            accessibilityLabel={AppStrings.Accessibility.CLOSE_ACHIEVEMENTS}
+            style={{
+              position: "absolute",
+              top: SPACING.sm,
+              right: SPACING.lg,
+              zIndex: 10,
+            }}
           />
           <Text
             style={{

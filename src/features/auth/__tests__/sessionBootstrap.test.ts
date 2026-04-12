@@ -35,6 +35,7 @@ import { logger } from "../../../utils/logger";
 import {
   createGuestPlayer,
   resolveInitialGameMode,
+  resolveProviderAvatarUrl,
   resolveUserEmail,
 } from "../sessionBootstrap";
 import type { FirebaseAuthTypes } from "@react-native-firebase/auth";
@@ -84,9 +85,9 @@ describe("sessionBootstrap", () => {
       expect(player.username).toBe("Guest");
     });
 
-    it("initializes coins to 0", () => {
+    it("initializes coins to 300", () => {
       const player = createGuestPlayer(testUid);
-      expect(player.coins).toBe(0);
+      expect(player.coins).toBe(300);
     });
 
     it("initializes hasPurchasedApp to false", () => {
@@ -579,6 +580,123 @@ describe("sessionBootstrap", () => {
         expect(result).toBe("fb@example.com");
         expect(mockFetch).not.toHaveBeenCalled();
       });
+    });
+  });
+
+  describe("resolveProviderAvatarUrl", () => {
+    it("returns user.photoURL when valid for Google provider", async () => {
+      const user = {
+        photoURL: "https://lh3.googleusercontent.com/avatar-main",
+        providerData: [
+          {
+            providerId: "google.com",
+            photoURL: "https://lh3.googleusercontent.com/avatar-provider",
+          },
+        ],
+      } as unknown as FirebaseAuthTypes.User;
+
+      await expect(resolveProviderAvatarUrl(user)).resolves.toBe(
+        "https://lh3.googleusercontent.com/avatar-main"
+      );
+    });
+
+    it("falls back to Google provider photoURL when user.photoURL is missing", async () => {
+      const user = {
+        photoURL: null,
+        providerData: [
+          {
+            providerId: "google.com",
+            photoURL: "https://lh3.googleusercontent.com/avatar-provider",
+          },
+        ],
+      } as unknown as FirebaseAuthTypes.User;
+
+      await expect(resolveProviderAvatarUrl(user)).resolves.toBe(
+        "https://lh3.googleusercontent.com/avatar-provider"
+      );
+    });
+
+    it("fetches current Facebook avatar from Graph API", async () => {
+      const user = {
+        photoURL: null,
+        providerData: [
+          {
+            providerId: "facebook.com",
+            photoURL: "https://platform-lookaside.fbsbx.com/profile.jpg?stale=1",
+          },
+        ],
+      } as unknown as FirebaseAuthTypes.User;
+
+      (AccessToken.getCurrentAccessToken as jest.Mock).mockResolvedValue({
+        accessToken: "fb-access-token",
+      });
+      mockFetch.mockResolvedValue({
+        ok: true,
+        json: () =>
+          Promise.resolve({
+            data: {
+              url: "https://platform-lookaside.fbsbx.com/current-avatar.jpg",
+              is_silhouette: false,
+            },
+          }),
+      });
+
+      await expect(resolveProviderAvatarUrl(user)).resolves.toBe(
+        "https://platform-lookaside.fbsbx.com/current-avatar.jpg"
+      );
+    });
+
+    it("returns undefined for Facebook silhouette avatar", async () => {
+      const user = {
+        photoURL: "https://platform-lookaside.fbsbx.com/profile.jpg",
+        providerData: [{ providerId: "facebook.com", photoURL: null }],
+      } as unknown as FirebaseAuthTypes.User;
+
+      (AccessToken.getCurrentAccessToken as jest.Mock).mockResolvedValue({
+        accessToken: "fb-access-token",
+      });
+      mockFetch.mockResolvedValue({
+        ok: true,
+        json: () =>
+          Promise.resolve({
+            data: {
+              url: "https://platform-lookaside.fbsbx.com/silhouette.jpg",
+              is_silhouette: true,
+            },
+          }),
+      });
+
+      await expect(resolveProviderAvatarUrl(user)).resolves.toBeUndefined();
+    });
+
+    it("returns undefined when avatar URLs are missing or invalid", async () => {
+      const user = {
+        photoURL: "not-a-url",
+        providerData: [
+          {
+            providerId: "google.com",
+            photoURL: "also-not-a-url",
+          },
+        ],
+      } as unknown as FirebaseAuthTypes.User;
+
+      await expect(resolveProviderAvatarUrl(user)).resolves.toBeUndefined();
+    });
+
+    it("handles Facebook Graph API failures gracefully", async () => {
+      const user = {
+        photoURL: null,
+        providerData: [{ providerId: "facebook.com", photoURL: null }],
+      } as unknown as FirebaseAuthTypes.User;
+
+      const graphError = new Error("Graph unavailable");
+      (AccessToken.getCurrentAccessToken as jest.Mock).mockResolvedValue({
+        accessToken: "fb-access-token",
+      });
+      mockFetch.mockRejectedValue(graphError);
+
+      await expect(resolveProviderAvatarUrl(user)).resolves.toBeUndefined();
+      expect(captureException).toHaveBeenCalledWith(graphError);
     });
   });
 });

@@ -1,9 +1,6 @@
 import React from "react";
-import { render, fireEvent, waitFor } from "@testing-library/react-native";
+import { render, fireEvent, waitFor, act } from "@testing-library/react-native";
 import UpdateUsernameModal from "../UpdateUsernameModal";
-import { Alert } from "react-native";
-
-jest.spyOn(Alert, "alert").mockImplementation(jest.fn());
 
 // Mock Firebase Functions
 const mockProcessFormSubmissionCallable = jest.fn();
@@ -82,15 +79,25 @@ jest.mock("../../../../assets/images/modal-bg.svg", () => {
   return MockModalBg;
 });
 jest.mock("src/components/buttons/WideButton", () => {
-  const MockWideButton = ({ buttonText, onPress }: any) => {
+  const MockWideButton = ({ buttonText, onPress, disabled }: any) => {
     const { TouchableOpacity, Text } = require("react-native");
     return (
-      <TouchableOpacity onPress={onPress} testID="save-button">
+      <TouchableOpacity onPress={onPress} testID="save-button" disabled={disabled}>
         <Text>{buttonText}</Text>
       </TouchableOpacity>
     );
   };
   return MockWideButton;
+});
+
+jest.mock("src/components/loading/PulsingSpinner", () => {
+  const React = require("react");
+  const { View } = require("react-native");
+
+  return function MockPulsingSpinner({ visible }: { visible?: boolean }) {
+    if (!visible) return null;
+    return <View testID="username-update-spinner" />;
+  };
 });
 
 describe("UpdateUsernameModal", () => {
@@ -190,7 +197,7 @@ describe("UpdateUsernameModal", () => {
   });
 
   describe("Form Validation", () => {
-    it("should show error when username is empty", async () => {
+    it("should show server-side validation error when username is empty", async () => {
       const { getByPlaceholderText, getByText } = render(
         <UpdateUsernameModal
           isVisible={true}
@@ -203,15 +210,19 @@ describe("UpdateUsernameModal", () => {
       fireEvent.press(getByText("Save"));
 
       await waitFor(() => {
-        expect(Alert.alert).toHaveBeenCalledWith(
-          "Error",
-          "Username cannot be empty."
-        );
+        expect(mockProcessFormSubmissionCallable).toHaveBeenCalledWith({
+          username: "",
+        });
       });
     });
 
-    it("should show error when username is too short", async () => {
-      const { getByPlaceholderText, getByText } = render(
+    it("should display server error inline for short usernames", async () => {
+      mockProcessFormSubmissionCallable.mockRejectedValue({
+        code: "functions/invalid-argument",
+        message: "[functions/invalid-argument] Username must be at least 3 characters long.",
+      });
+
+      const { getByPlaceholderText, getByText, queryByTestId, queryByText } = render(
         <UpdateUsernameModal
           isVisible={true}
           onClose={mockOnClose}
@@ -220,14 +231,12 @@ describe("UpdateUsernameModal", () => {
       );
 
       fireEvent.changeText(getByPlaceholderText("Enter new username"), "ab");
-      fireEvent.press(getByText("Save"));
-
-      await waitFor(() => {
-        expect(Alert.alert).toHaveBeenCalledWith(
-          "Error",
-          "Username must be at least 3 characters long."
-        );
+      await act(async () => {
+        fireEvent.press(getByText("Save"));
       });
+
+      expect(queryByTestId("username-error-text")).toBeTruthy();
+      expect(queryByText("Username must be at least 3 characters long.")).toBeTruthy();
     });
   });
 
@@ -254,21 +263,17 @@ describe("UpdateUsernameModal", () => {
         expect(mockUpdatePlayerData).toHaveBeenCalledWith({
           username: "NewUsername",
         });
-        expect(Alert.alert).toHaveBeenCalledWith(
-          "Success",
-          "Username updated successfully!"
-        );
         expect(mockOnClose).toHaveBeenCalled();
       });
     });
 
     it("should handle server errors", async () => {
       mockProcessFormSubmissionCallable.mockRejectedValue({
-        code: "invalid-argument",
-        message: "Invalid username data provided.",
+        code: "functions/invalid-argument",
+        message: "[functions/invalid-argument] Invalid username data provided.",
       });
 
-      const { getByPlaceholderText, getByText } = render(
+      const { getByPlaceholderText, getByText, queryByTestId, queryByText } = render(
         <UpdateUsernameModal
           isVisible={true}
           onClose={mockOnClose}
@@ -280,14 +285,13 @@ describe("UpdateUsernameModal", () => {
         getByPlaceholderText("Enter new username"),
         "NewUsername"
       );
-      fireEvent.press(getByText("Save"));
-
-      await waitFor(() => {
-        expect(Alert.alert).toHaveBeenCalledWith(
-          "Error",
-          "An error occurred."
-        );
+      await act(async () => {
+        fireEvent.press(getByText("Save"));
       });
+
+      expect(mockProcessFormSubmissionCallable).toHaveBeenCalled();
+      expect(queryByTestId("username-error-text")).toBeTruthy();
+      expect(queryByText("Invalid username data provided.")).toBeTruthy();
     });
 
     it("should handle unsuccessful response from server", async () => {
@@ -295,7 +299,7 @@ describe("UpdateUsernameModal", () => {
         data: { success: false, message: "Username already exists." },
       });
 
-      const { getByPlaceholderText, getByText } = render(
+      const { getByPlaceholderText, getByText, queryByTestId, queryByText } = render(
         <UpdateUsernameModal
           isVisible={true}
           onClose={mockOnClose}
@@ -307,13 +311,43 @@ describe("UpdateUsernameModal", () => {
         getByPlaceholderText("Enter new username"),
         "ExistingUsername"
       );
+      await act(async () => {
+        fireEvent.press(getByText("Save"));
+      });
+
+      expect(mockProcessFormSubmissionCallable).toHaveBeenCalled();
+      expect(queryByTestId("username-error-text")).toBeTruthy();
+      expect(queryByText("Username already exists.")).toBeTruthy();
+    });
+
+    it("should show spinner while username update is in-flight", async () => {
+      let resolvePromise: ((value: { data: { success: boolean; message: string } }) => void) | undefined;
+      mockProcessFormSubmissionCallable.mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            resolvePromise = resolve;
+          })
+      );
+
+      const { getByPlaceholderText, getByText, getByTestId, queryByTestId } = render(
+        <UpdateUsernameModal
+          isVisible={true}
+          onClose={mockOnClose}
+          currentUsername={currentUsername}
+        />
+      );
+
+      fireEvent.changeText(getByPlaceholderText("Enter new username"), "NewUsername");
       fireEvent.press(getByText("Save"));
 
       await waitFor(() => {
-        expect(Alert.alert).toHaveBeenCalledWith(
-          "Error",
-          "Username already exists."
-        );
+        expect(getByTestId("username-update-spinner")).toBeTruthy();
+      });
+
+      resolvePromise?.({ data: { success: true, message: "Username updated successfully!" } });
+
+      await waitFor(() => {
+        expect(queryByTestId("username-update-spinner")).toBeNull();
       });
     });
   });

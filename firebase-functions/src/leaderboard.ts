@@ -70,6 +70,108 @@ export interface GetLeaderboardResponse {
   requestingUserId: string;
 }
 
+interface UserDocForLeaderboard {
+  username?: string;
+  displayName?: string;
+  avatarUrl?: string;
+  stats?: {
+    level?: number;
+    xp?: number;
+    totalWins?: number;
+    bestStreak?: number;
+  };
+}
+
+/**
+ * Converts a Firestore users/{uid} document into leaderboard row format.
+ *
+ * @param userId User document id (Firebase UID).
+ * @param data Raw Firestore user document data.
+ * @returns Leaderboard row with safe defaults.
+ */
+function toLeaderboardEntryFromUserDoc(userId: string, data: UserDocForLeaderboard): LeaderboardEntry {
+  const level = data.stats?.level ?? 1;
+  const xp = data.stats?.xp ?? 0;
+  const totalWins = data.stats?.totalWins ?? 0;
+  const bestStreak = data.stats?.bestStreak ?? 0;
+
+  const entry: LeaderboardEntry = {
+    userId,
+    username: data.username ?? data.displayName ?? "Player",
+    level,
+    xp,
+    progressScore: computeProgressScore(level, xp),
+    totalWins,
+    bestStreak,
+    updatedAt: Date.now(),
+  };
+
+  if (data.avatarUrl) {
+    entry.avatarUrl = data.avatarUrl;
+  }
+
+  return entry;
+}
+
+/**
+ * Sorts leaderboard entries according to leaderboard type.
+ *
+ * @param entries Entries to sort.
+ * @param type Ranking type.
+ * @returns New sorted entries array.
+ */
+function sortEntries(entries: LeaderboardEntry[], type: LeaderboardType): LeaderboardEntry[] {
+  const sorted = [...entries];
+  if (type === "xp") {
+    sorted.sort((a, b) => b.progressScore - a.progressScore);
+    return sorted;
+  }
+  if (type === "totalWins") {
+    sorted.sort((a, b) => b.totalWins - a.totalWins);
+    return sorted;
+  }
+  sorted.sort((a, b) => b.bestStreak - a.bestStreak);
+  return sorted;
+}
+
+/**
+ * Fallback loader: derives leaderboard from users collection when dedicated
+ * leaderboard docs are empty or missing.
+ *
+ * @param type Ranking type.
+ * @param limit Max rows to return.
+ * @returns Derived leaderboard entries.
+ */
+async function buildLeaderboardFromUsers(type: LeaderboardType, limit: number): Promise<LeaderboardEntry[]> {
+  const usersSnapshot = await admin.firestore().collection("users").limit(1000).get();
+  const derived = usersSnapshot.docs.map((doc) => {
+    const data = doc.data() as UserDocForLeaderboard;
+    return toLeaderboardEntryFromUserDoc(doc.id, data);
+  });
+
+  return sortEntries(derived, type).slice(0, limit);
+}
+
+/**
+ * Best-effort self-heal for older projects: backfill leaderboard documents from
+ * derived entries so future reads can use indexed leaderboard queries.
+ *
+ * @param entries Entries to upsert into leaderboard collection.
+ */
+async function backfillLeaderboard(entries: LeaderboardEntry[]): Promise<void> {
+  if (entries.length === 0) {
+    return;
+  }
+
+  const db = admin.firestore();
+  const batch = db.batch();
+  for (const entry of entries) {
+    const ref = db.collection("leaderboard").doc(entry.userId);
+    batch.set(ref, entry, {merge: true});
+  }
+  await batch.commit();
+}
+
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Server-side helper (not a callable â€” called from submitGuessLogic)
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -143,7 +245,19 @@ export const getLeaderboard = onCall(async (request) => {
       ? baseRef.orderBy("progressScore", "desc").limit(limit).get()
       : baseRef.orderBy(type, "desc").limit(limit).get());
 
-    const entries: LeaderboardEntry[] = snapshot.docs.map((doc) => doc.data() as LeaderboardEntry);
+    let entries: LeaderboardEntry[] = snapshot.docs.map((doc) => doc.data() as LeaderboardEntry);
+
+    if (entries.length === 0) {
+      functions.logger.info(`[Leaderboard] No leaderboard docs for type=${type}; deriving from users collection.`);
+      entries = await buildLeaderboardFromUsers(type, limit);
+      try {
+        await backfillLeaderboard(entries);
+        functions.logger.info(`[Leaderboard] Backfilled ${entries.length} leaderboard docs from users.`);
+      } catch (backfillError) {
+        functions.logger.warn("[Leaderboard] Failed to backfill derived leaderboard docs:", backfillError);
+        captureException(backfillError, {type, limit, userId: request.auth.uid, stage: "backfillLeaderboard"});
+      }
+    }
 
     functions.logger.info(`[Leaderboard] Fetched ${entries.length} entries for type=${type}`);
 

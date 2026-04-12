@@ -5,11 +5,11 @@ import {
   Modal,
   TouchableOpacity,
   StyleSheet,
+  ActivityIndicator,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as RNIap from "react-native-iap";
 import { ProductPricing } from "../../services/ProductPricingService";
-import { analyticsService } from "../../services/AnalyticsService";
 import { COLORS, TYPOGRAPHY, BORDER_RADIUS } from "../../styles";
 import {
   scale,
@@ -44,7 +44,9 @@ interface CoinShopProps {
   onClose: () => void;
   onPurchaseProduct: (productId: string) => void;
   products: RNIap.Product[];
+  loading?: boolean;
   error: string | null;
+  onFirstPaint?: () => void;
   onWatchVideo?: () => void;
   onPayAndPlay?: () => void;
   firestoreProducts?: ProductPricing[];
@@ -56,55 +58,50 @@ const CoinShop: React.FC<CoinShopProps> = ({
   onClose,
   onPurchaseProduct,
   products,
+  loading = false,
   error,
+  onFirstPaint,
   firestoreProducts = [],
   currentCoins = 0,
 }) => {
   const insets = useSafeAreaInsets();
   const availableHeight = screenHeight - insets.top - insets.bottom;
-  const trackedImpressionsRef = useRef<Set<string>>(new Set());
+  const hasPaintedForCurrentOpenRef = useRef(false);
+  const deferredRenderFrameRef = useRef<number | null>(null);
+  const shouldDeferContent = process.env.NODE_ENV !== "test";
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+  const [isContentReady, setIsContentReady] = useState(!shouldDeferContent);
 
   const sortedProducts = useMemo(
     () => [...firestoreProducts].sort((a, b) => a.sortOrder - b.sortOrder),
     [firestoreProducts],
   );
 
+  const displayPriceByProductId = useMemo(() => {
+    const priceMap = new Map<string, string>();
+    products.forEach((product) => {
+      priceMap.set(product.id, product.displayPrice);
+    });
+    return priceMap;
+  }, [products]);
+
   const getDisplayPrice = useCallback(
     (product: ProductPricing) => {
-      const storeProduct = products.find((p) => p.id === product.productId);
       return (
-        storeProduct?.displayPrice ??
+        displayPriceByProductId.get(product.productId) ??
         product.regionalPrices.find((r) => r.currency === "USD")?.displayPrice ??
         "-"
       );
     },
-    [products],
+    [displayPriceByProductId],
   );
 
   useEffect(() => {
     if (!isVisible) {
-      trackedImpressionsRef.current.clear();
       setSelectedProductId(null);
       return;
     }
-    if (error) return;
-
-    sortedProducts.forEach((product) => {
-      if (trackedImpressionsRef.current.has(product.productId)) return;
-
-      trackedImpressionsRef.current.add(product.productId);
-      void analyticsService.logShopPackImpression({
-        productId: product.productId,
-        productKey: product.productKey,
-        coins: product.coins,
-        sortOrder: product.sortOrder,
-        featured:
-          product.featuredOrder !== undefined && product.featuredOrder !== null,
-        displayPrice: getDisplayPrice(product),
-      });
-    });
-  }, [isVisible, error, sortedProducts, getDisplayPrice]);
+  }, [isVisible]);
 
   useEffect(() => {
     if (!selectedProductId) return;
@@ -117,6 +114,57 @@ const CoinShop: React.FC<CoinShopProps> = ({
     }
   }, [selectedProductId, sortedProducts]);
 
+  useEffect(() => {
+    if (!isVisible) {
+      hasPaintedForCurrentOpenRef.current = false;
+      return;
+    }
+    if (hasPaintedForCurrentOpenRef.current) {
+      return;
+    }
+
+    const frameId = requestAnimationFrame(() => {
+      if (hasPaintedForCurrentOpenRef.current) {
+        return;
+      }
+      hasPaintedForCurrentOpenRef.current = true;
+      onFirstPaint?.();
+    });
+
+    return () => {
+      cancelAnimationFrame(frameId);
+    };
+  }, [isVisible, onFirstPaint]);
+
+  useEffect(() => {
+    if (!isVisible) {
+      setIsContentReady(false);
+      if (deferredRenderFrameRef.current !== null) {
+        cancelAnimationFrame(deferredRenderFrameRef.current);
+        deferredRenderFrameRef.current = null;
+      }
+      return;
+    }
+
+    if (!shouldDeferContent) {
+      setIsContentReady(true);
+      return;
+    }
+
+    setIsContentReady(false);
+    deferredRenderFrameRef.current = requestAnimationFrame(() => {
+      deferredRenderFrameRef.current = null;
+      setIsContentReady(true);
+    });
+
+    return () => {
+      if (deferredRenderFrameRef.current !== null) {
+        cancelAnimationFrame(deferredRenderFrameRef.current);
+        deferredRenderFrameRef.current = null;
+      }
+    };
+  }, [isVisible, shouldDeferContent]);
+
   const handlePackPress = (product: ProductPricing) => {
     logger.debug("Shop pack tapped:", product.productId);
     if (selectedProductId === product.productId) {
@@ -125,15 +173,6 @@ const CoinShop: React.FC<CoinShopProps> = ({
     }
 
     setSelectedProductId(product.productId);
-    void analyticsService.logShopPackSelected({
-      productId: product.productId,
-      productKey: product.productKey,
-      coins: product.coins,
-      sortOrder: product.sortOrder,
-      featured:
-        product.featuredOrder !== undefined && product.featuredOrder !== null,
-      displayPrice: getDisplayPrice(product),
-    });
   };
 
   const handlePurchasePress = () => {
@@ -186,6 +225,12 @@ const CoinShop: React.FC<CoinShopProps> = ({
             accessibilityLabel={AppStrings.Accessibility.CLOSE_COIN_SHOP}
           />
 
+          {loading ? (
+            <View style={styles.loadingContainer} testID="coin-shop-loading">
+              <ActivityIndicator size="large" color={COLORS.primaryOrange} />
+              <Text style={styles.loadingText}>{AppStrings.CoinShop.LOADING_TEXT}</Text>
+            </View>
+          ) : (
             <>
             <View style={styles.headerRow}>
               <Text style={styles.title}>{AppStrings.CoinShop.TITLE}</Text>
@@ -203,61 +248,74 @@ const CoinShop: React.FC<CoinShopProps> = ({
               </Text>
             </View>
 
-            {error && <Text style={styles.errorText}>{error}</Text>}
-
-            <View style={styles.scrollContent}>
-
-            {!error && sortedProducts.length > 0 && (
-              <View style={styles.grid}>
-                {sortedProducts.map((product) => {
-                  const displayPrice = getDisplayPrice(product);
-                  const isSelected = selectedProductId === product.productId;
-                  return (
-                    <TouchableOpacity
-                      key={product.productId}
-                      style={[styles.gridCard, isSelected && styles.gridCardSelected]}
-                      onPress={() => handlePackPress(product)}
-                      activeOpacity={0.8}
-                      testID={`pack-card-${product.productId}`}
-                    >
-                      {product.featuredBadge && (
-                        <View style={styles.badge}>
-                          <Text style={styles.badgeText}>{product.featuredBadge}</Text>
-                        </View>
-                      )}
-
-                      <LargeCoinStackSvg
-                        width={GRID_COIN_ICON_WIDTH}
-                        height={GRID_COIN_ICON_HEIGHT}
-                        style={styles.gridCoinIcon}
-                      />
-                      <Text style={styles.productCoins}>
-                        {product.coins.toLocaleString()}{AppStrings.CoinShop.COINS_SUFFIX}
-                      </Text>
-                      <View style={styles.productPriceButton}>
-                        <Text style={styles.productPriceText}>{displayPrice}</Text>
-                      </View>
-                    </TouchableOpacity>
-                  );
-                })}
+            {!isContentReady && (
+              <View style={styles.loadingContainer} testID="coin-shop-loading">
+                <ActivityIndicator size="large" color={COLORS.primaryOrange} />
+                <Text style={styles.loadingText}>{AppStrings.CoinShop.LOADING_TEXT}</Text>
               </View>
             )}
 
-            {!error && sortedProducts.length === 0 && (
-              <Text style={styles.errorText}>{AppStrings.CoinShop.NO_PACKS_AVAILABLE}</Text>
-            )}
-          </View>
+            {isContentReady && (
+              <>
+                {error && <Text style={styles.errorText}>{error}</Text>}
 
-          <View style={styles.bottomButtons}>
-            <View testID="purchase-button" style={styles.purchaseButtonContainer}>
-              <WideButton
-                buttonText={AppStrings.CoinShop.PURCHASE_BUTTON}
-                onPress={handlePurchasePress}
-                disabled={!selectedProductId}
-              />
-            </View>
-          </View>
-            </>
+                <View style={styles.scrollContent}>
+
+                {!error && sortedProducts.length > 0 && (
+                  <View style={styles.grid}>
+                    {sortedProducts.map((product) => {
+                      const displayPrice = getDisplayPrice(product);
+                      const isSelected = selectedProductId === product.productId;
+                      return (
+                        <TouchableOpacity
+                          key={product.productId}
+                          style={[styles.gridCard, isSelected && styles.gridCardSelected]}
+                          onPress={() => handlePackPress(product)}
+                          activeOpacity={0.8}
+                          testID={`pack-card-${product.productId}`}
+                        >
+                          {product.featuredBadge && (
+                            <View style={styles.badge}>
+                              <Text style={styles.badgeText}>{product.featuredBadge}</Text>
+                            </View>
+                          )}
+
+                          <LargeCoinStackSvg
+                            width={GRID_COIN_ICON_WIDTH}
+                            height={GRID_COIN_ICON_HEIGHT}
+                            style={styles.gridCoinIcon}
+                          />
+                          <Text style={styles.productCoins}>
+                            {product.coins.toLocaleString()}{AppStrings.CoinShop.COINS_SUFFIX}
+                          </Text>
+                          <View style={styles.productPriceButton}>
+                            <Text style={styles.productPriceText}>{displayPrice}</Text>
+                          </View>
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </View>
+                )}
+
+                {!error && sortedProducts.length === 0 && (
+                  <Text style={styles.errorText}>{AppStrings.CoinShop.NO_PACKS_AVAILABLE}</Text>
+                )}
+              </View>
+
+              <View style={styles.bottomButtons}>
+                <View style={styles.purchaseButtonContainer}>
+                  <WideButton
+                    testID="purchase-button"
+                    buttonText={AppStrings.CoinShop.PURCHASE_BUTTON}
+                    onPress={handlePurchasePress}
+                    disabled={!selectedProductId}
+                  />
+                </View>
+              </View>
+              </>
+            )}
+          </>
+          )}
         </View>
       </View>
     </Modal>

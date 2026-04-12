@@ -1,10 +1,11 @@
-import React, { useState } from "react";
-import { View, Text, Modal, TextInput, Alert } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, Modal, TextInput } from "react-native";
 import { getFunctions, httpsCallable } from "@react-native-firebase/functions";
 import { getApp } from "@react-native-firebase/app";
 import { useAuth } from "../../../contexts/AuthContext";
 import CloseButton from "../../buttons/CloseButton";
 import WideButton from "src/components/buttons/WideButton";
+import PulsingSpinner from "src/components/loading/PulsingSpinner";
 import { TYPOGRAPHY } from "src/styles";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
@@ -38,17 +39,32 @@ const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({
 }) => {
   const { updatePlayerData } = useAuth();
   const [newUsername, setNewUsername] = useState(currentUsername || "");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [usernameError, setUsernameError] = useState("");
+
+  useEffect(() => {
+    if (isVisible) {
+      setNewUsername(currentUsername || "");
+      setUsernameError("");
+    }
+  }, [currentUsername, isVisible]);
+
+  const sanitizeErrorMessage = (message?: string): string => {
+    if (!message) {
+      return AppStrings.Profile.ALERT_USERNAME_UPDATE_FAILED;
+    }
+
+    return message.replace(/^\[[^\]]+\]\s*/, "").trim();
+  };
 
   const handleUpdateUsername = async () => {
-    if (newUsername.trim() === "") {
-      Alert.alert(AppStrings.CommonAlerts.ERROR_TITLE, AppStrings.Profile.ALERT_USERNAME_EMPTY);
+    const trimmedUsername = newUsername.trim();
+    if (isSubmitting) {
       return;
     }
 
-    if (newUsername.trim().length < 3) {
-      Alert.alert(AppStrings.CommonAlerts.ERROR_TITLE, AppStrings.Profile.ALERT_USERNAME_TOO_SHORT);
-      return;
-    }
+    setUsernameError("");
+    setIsSubmitting(true);
 
     try {
       const processFormSubmissionCallable = httpsCallable(
@@ -56,33 +72,41 @@ const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({
         "updateUsername"
       );
       const result = await processFormSubmissionCallable({
-        username: newUsername,
+        username: trimmedUsername,
       });
 
       const responseData = result.data as { success: boolean; message: string };
 
       if (responseData.success) {
-        Alert.alert(AppStrings.CommonAlerts.SUCCESS_TITLE, responseData.message);
-        updatePlayerData({ username: newUsername });
+        await updatePlayerData({ username: trimmedUsername });
         onClose();
       } else {
-        Alert.alert(
-          AppStrings.CommonAlerts.ERROR_TITLE,
+        setUsernameError(
           responseData.message || AppStrings.Profile.ALERT_USERNAME_UPDATE_FAILED
         );
       }
     } catch (error) {
       const firebaseError = error as FirebaseError;
-      let errorMessage: string = AppStrings.Profile.ALERT_AN_ERROR_OCCURRED;
-      if (firebaseError.code === "already-exists") {
+      const normalizedCode = firebaseError.code?.replace(/^functions\//, "");
+      const serverMessage = sanitizeErrorMessage(firebaseError.message);
+      let errorMessage = serverMessage || AppStrings.Profile.ALERT_AN_ERROR_OCCURRED;
+
+      if (normalizedCode === "already-exists") {
         errorMessage = AppStrings.Profile.ALERT_USERNAME_ALREADY_TAKEN;
       }
-      Alert.alert(AppStrings.CommonAlerts.ERROR_TITLE, errorMessage);
+
+      setUsernameError(errorMessage);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const handleClose = () => {
+    if (isSubmitting) {
+      return;
+    }
     setNewUsername(currentUsername || "");
+    setUsernameError("");
     onClose();
   };
 
@@ -143,18 +167,41 @@ const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({
                 fontFamily: TYPOGRAPHY.fontSecondary,
               }}
               value={newUsername}
-              onChangeText={setNewUsername}
+              onChangeText={(value) => {
+                setNewUsername(value);
+                if (usernameError) {
+                  setUsernameError("");
+                }
+              }}
               placeholder={AppStrings.Profile.ENTER_NEW_USERNAME_PLACEHOLDER}
               placeholderTextColor="#888"
               autoCapitalize="none"
             />
-            <WideButton buttonText={AppStrings.Profile.SAVE_BUTTON} onPress={handleUpdateUsername} />
+            {usernameError ? (
+              <Text
+                testID="username-error-text"
+                style={{
+                  width: "100%",
+                  color: "#B42318",
+                  fontFamily: TYPOGRAPHY.fontSecondary,
+                  marginTop: -SPACING.sm,
+                  marginBottom: SPACING.md,
+                }}
+              >
+                {usernameError}
+              </Text>
+            ) : null}
+            <WideButton
+              buttonText={AppStrings.Profile.SAVE_BUTTON}
+              onPress={handleUpdateUsername}
+              disabled={isSubmitting}
+            />
           </View>
         </View>
       </View>
+      <PulsingSpinner visible={isSubmitting} opacity={0.35} />
     </Modal>
   );
 };
 
 export default UpdateUsernameModal;
-

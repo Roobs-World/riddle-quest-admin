@@ -156,3 +156,24 @@ export async function updateRegionalSpendingStats(
     captureException(err);
   }
 }
+
+/**
+ * Increments the purchase counter for a specific coin pack.
+ * Non-critical — failures are logged but do not affect purchase flow.
+ */
+export async function incrementCoinPackPurchaseCount(productId: string): Promise<void> {
+  try {
+    const ref = getDb().collection("productPricing").doc(productId);
+    await ref.set(
+      {
+        productId,
+        purchaseCount: admin.firestore.FieldValue.increment(1),
+        lastPurchaseAt: admin.firestore.FieldValue.serverTimestamp(),
+      },
+      {merge: true},
+    );
+  } catch (err) {
+    functions.logger.error(`Failed to increment purchaseCount for product ${productId}:`, err);
+    captureException(err);
+  }
+}

@@ -11,6 +11,7 @@ interface WideButtonProps {
   disabled?: boolean;
   buttonColor?: string;
   textColor?: string;
+  testID?: string;
 }
 
 /**
@@ -27,6 +28,7 @@ const WideButton: React.FC<WideButtonProps> = ({
   disabled = false,
   buttonColor,
   textColor,
+  testID,
 }) => {
   const bg = buttonColor || "bg-primary-orange";
 
@@ -69,6 +71,7 @@ const WideButton: React.FC<WideButtonProps> = ({
       className={`w-full rounded-lg ${disabled ? "bg-gray-300" : bg}`}
       onPress={handlePress}
       disabled={disabled}
+      testID={testID}
       style={[styles.buttonOpacity, { paddingVertical: verticalScale(12), paddingHorizontal: SPACING.lg }]}
     >
       <Text

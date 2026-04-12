@@ -942,5 +942,25 @@ describe("FirestoreService", () => {
         error
       );
     });
+
+    it("stores avatarUrl when provided", async () => {
+      mockSetDoc.mockResolvedValue(undefined);
+      const avatarUrl = "https://example.com/provider-avatar.png";
+
+      const result = await FirestoreService.createUserDocumentInFirestore(
+        mockUserId,
+        mockEmail,
+        mockDisplayName,
+        avatarUrl
+      );
+
+      expect(mockSetDoc).toHaveBeenCalledWith(
+        expect.any(Object),
+        expect.objectContaining({
+          avatarUrl,
+        })
+      );
+      expect(result.avatarUrl).toBe(avatarUrl);
+    });
   });
 });

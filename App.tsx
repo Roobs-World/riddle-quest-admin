@@ -41,6 +41,7 @@ import { Navigation } from "./src/navigation/NavigationStack";
 import AppLovinMAX, { Configuration } from "react-native-applovin-max";
 import PulsingSpinner from "./src/components/loading/PulsingSpinner";
 import { SolarSystemPreloader } from "./src/services/SolarSystemPreloader";
+import { preloadShopCatalog } from "./src/services/ShopCatalogPreloader";
 import { getCrashlytics } from "@react-native-firebase/crashlytics";
 import { ModalProvider } from "./src/contexts/ModalContext";
 import {
@@ -53,6 +54,10 @@ import {
   isSharedAnimationBackendEnabled,
   isSharedAnimationBackendFlagRequested,
 } from "./src/config/featureFlags";
+import {
+  SOUND_ENABLED_STORAGE_KEY,
+  readBooleanSetting,
+} from "./src/utils/settingsStorage";
 
 const SOLAR_PRELOAD_TIMEOUT_MS = 15000;
 
@@ -68,19 +73,9 @@ const withTimeout = async <T,>(promise: Promise<T>, timeoutMs: number) => {
   ]);
 };
 
-const parseSoundPreference = (rawValue: string | null): boolean => {
-  if (rawValue === null) return true;
-  try {
-    return JSON.parse(rawValue);
-  } catch {
-    return true;
-  }
-};
-
 const initializeSoundInBackground = async (): Promise<void> => {
   await SoundManager.init();
-  const storedSound = await AsyncStorage.getItem("isSoundEnabled");
-  const soundEnabled = parseSoundPreference(storedSound);
+  const soundEnabled = await readBooleanSetting(SOUND_ENABLED_STORAGE_KEY, true);
   SoundManager.setSoundEnabled(soundEnabled);
   if (soundEnabled) {
     await SoundManager.playBackgroundMusic();
@@ -168,6 +163,7 @@ export default Sentry.wrap(function App() {
           SolarSystemPreloader.preloadSolarSystem(),
           SOLAR_PRELOAD_TIMEOUT_MS
         ),
+        preloadShopCatalog(),
         initializeAppLovinInBackground(),
         initializeFacebookSdkInBackground(),
       ];

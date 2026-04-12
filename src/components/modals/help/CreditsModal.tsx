@@ -3,10 +3,11 @@
  */
 
 import React from "react";
-import { View, Text, Modal, FlatList } from "react-native";
+import { View, Text, Modal, FlatList, StyleSheet } from "react-native";
 import CloseButton from "../../buttons/CloseButton";
 import WideButton from "../../buttons/WideButton";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
+import HomeBg from "../../../../assets/images/home-bg.svg";
 import { TYPOGRAPHY } from "../../../styles";
 import {
   MODAL_WIDTH,
@@ -96,11 +97,20 @@ const CreditsModal: React.FC<CreditsModalProps> = ({
             justifyContent: "center",
           }}
         >
+
           <ModalBg
-            width={MODAL_WIDTH}
-            height={CREDITS_MODAL_HEIGHT}
-            style={{ position: "absolute" }}
+            width="100%"
+            height="100%"
+            style={[StyleSheet.absoluteFill]}
+            preserveAspectRatio="none"
           />
+          {/* Decorative wave — clipped to card bounds */}
+          <HomeBg
+            width={MODAL_WIDTH * 1.1}
+            height={MODAL_HEIGHT * 1.1}
+            style={{ position: "absolute", top: -MODAL_HEIGHT * 0.05, left: -MODAL_WIDTH * 0.05 }}
+          />
+
           <View
             style={{
               flex: 1,

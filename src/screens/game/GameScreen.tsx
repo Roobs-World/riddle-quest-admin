@@ -68,6 +68,12 @@ import { useGameSessionController } from "../../features/game-session/useGameSes
 import { createGameModalActions } from "../../features/game-session/gameModalActions";
 import { isGuestPlayer } from "../../features/auth/sessionBootstrap";
 import { loadUserProgressFromFirestore } from "../../services/FirestoreService";
+import {
+  SOUND_ENABLED_STORAGE_KEY,
+  HAPTICS_ENABLED_STORAGE_KEY,
+  readBooleanSetting,
+  writeBooleanSetting,
+} from "../../utils/settingsStorage";
 
 interface GuessResult {
   outcome: "win" | "loss" | "continue" | "attemptLimitReached";
@@ -80,9 +86,6 @@ interface GuessResult {
   attemptsRemaining?: number;
   newlyUnlockedAchievementIds?: string[];
 }
-
-const SOUND_ENABLED_STORAGE_KEY = "isSoundEnabled";
-const HAPTICS_ENABLED_STORAGE_KEY = "isHapticsEnabled";
 
 const hapticOptions = {
   enableVibrateFallback: true,
@@ -125,6 +128,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const [lastGuessResult, setLastGuessResult] = useState<GuessResult | null>(null);
   const [isSoundEnabled, setIsSoundEnabled] = useState(true);
   const [isHapticsEnabled, setIsHapticsEnabled] = useState(true);
+  const [hasLoadedSettings, setHasLoadedSettings] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguage>(
     getAppLanguage()
   );
@@ -132,7 +136,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const { isLoading, runWithServerLoading } = useGameSessionController();
   const modalActions = useMemo(() => createGameModalActions(modal), [modal]);
   const [isProfileModalLoading, setIsProfileModalLoading] = useState(false);
-  const [isShopModalLoading, setIsShopModalLoading] = useState(false);
 
   const gameOverHandledRef = useRef(false);
   const openShopFromLossRef = useRef<() => void>(() => {});
@@ -286,24 +289,15 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   useEffect(() => {
     const loadSettings = async () => {
       try {
-        const [[, soundEnabled], [, hapticsEnabled], [, language]] =
-          await AsyncStorage.multiGet([
-            SOUND_ENABLED_STORAGE_KEY,
-            HAPTICS_ENABLED_STORAGE_KEY,
-            APP_LANGUAGE_STORAGE_KEY,
-          ]);
+        const [soundEnabled, hapticsEnabled, language] = await Promise.all([
+          readBooleanSetting(SOUND_ENABLED_STORAGE_KEY, true),
+          readBooleanSetting(HAPTICS_ENABLED_STORAGE_KEY, true),
+          AsyncStorage.getItem(APP_LANGUAGE_STORAGE_KEY),
+        ]);
 
-        if (soundEnabled !== null) {
-          const parsedSoundEnabled = JSON.parse(soundEnabled);
-          setIsSoundEnabled(parsedSoundEnabled);
-          SoundManager.setSoundEnabled(parsedSoundEnabled);
-        } else {
-          SoundManager.setSoundEnabled(true);
-        }
-
-        if (hapticsEnabled !== null) {
-          setIsHapticsEnabled(JSON.parse(hapticsEnabled));
-        }
+        setIsSoundEnabled(soundEnabled);
+        SoundManager.setSoundEnabled(soundEnabled);
+        setIsHapticsEnabled(hapticsEnabled);
 
         if (language && isSupportedLanguage(language)) {
           setAppLanguage(language);
@@ -312,6 +306,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       } catch (error) {
         logger.error("Error loading settings from AsyncStorage:", error);
         captureException(error);
+      } finally {
+        setHasLoadedSettings(true);
       }
     };
 
@@ -319,24 +315,30 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   }, []);
 
   useEffect(() => {
-    AsyncStorage.setItem(
-      SOUND_ENABLED_STORAGE_KEY,
-      JSON.stringify(isSoundEnabled)
-    ).catch((error: unknown) => {
-      logger.error("Error saving sound setting to AsyncStorage:", error);
-      captureException(error);
-    });
-  }, [isSoundEnabled]);
+    if (!hasLoadedSettings) {
+      return;
+    }
+
+    writeBooleanSetting(SOUND_ENABLED_STORAGE_KEY, isSoundEnabled).catch(
+      (error: unknown) => {
+        logger.error("Error saving sound setting to AsyncStorage:", error);
+        captureException(error);
+      }
+    );
+  }, [hasLoadedSettings, isSoundEnabled]);
 
   useEffect(() => {
-    AsyncStorage.setItem(
-      HAPTICS_ENABLED_STORAGE_KEY,
-      JSON.stringify(isHapticsEnabled)
-    ).catch((error: unknown) => {
-      logger.error("Error saving haptics setting to AsyncStorage:", error);
-      captureException(error);
-    });
-  }, [isHapticsEnabled]);
+    if (!hasLoadedSettings) {
+      return;
+    }
+
+    writeBooleanSetting(HAPTICS_ENABLED_STORAGE_KEY, isHapticsEnabled).catch(
+      (error: unknown) => {
+        logger.error("Error saving haptics setting to AsyncStorage:", error);
+        captureException(error);
+      }
+    );
+  }, [hasLoadedSettings, isHapticsEnabled]);
 
   useEffect(() => {
     AsyncStorage.setItem(APP_LANGUAGE_STORAGE_KEY, currentLanguage).catch(
@@ -934,7 +936,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     }
   }, [modal, showRewardedAd, modalActions]);
 
-  const handleCoinsPress = useCallback(async () => {
+  const handleCoinsPress = useCallback(() => {
     logger.debug("Opening coin shop modal with:", {
       iapProducts: iapProducts.length,
       firestoreProducts: firestoreProducts.length,
@@ -944,44 +946,13 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       productPricingError,
     });
 
-    if (isShopModalLoading) {
-      return;
-    }
-
-    const loadingStartedAt = Date.now();
-    setIsShopModalLoading(true);
-
-    let latestIapProducts = iapProducts;
-    let latestFirestoreProducts = firestoreProducts;
-    let latestCombinedError: string | null = iapError || productPricingError;
-
     try {
-      const [iapResult, firestoreResult] = await Promise.all([
-        loadIapProducts(),
-        loadFirestoreProducts(),
-      ]);
-
-      if (iapResult.products.length > 0 || iapResult.error === null) {
-        latestIapProducts = iapResult.products;
-      }
-
-      if (firestoreResult.products.length > 0 || firestoreResult.error === null) {
-        latestFirestoreProducts = firestoreResult.products;
-      }
-
-      latestCombinedError = iapResult.error || firestoreResult.error;
-
-      const minSpinnerMs = 300;
-      const elapsedMs = Date.now() - loadingStartedAt;
-      if (elapsedMs < minSpinnerMs) {
-        await safeDelay(minSpinnerMs - elapsedMs);
-      }
-
       modal.showCoinShop({
-        products: latestIapProducts,
-        firestoreProducts: latestFirestoreProducts,
+        products: iapProducts,
+        firestoreProducts,
         currentCoins: userCoins,
-        error: latestCombinedError,
+        loading: iapLoading || productPricingLoading,
+        error: iapError || productPricingError,
         onPurchaseProduct: handlePurchaseProduct,
         onWatchVideo: handleWatchAdForCoins,
         onPayAndPlay: handlePayAndPlay,
@@ -993,8 +964,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         title: AppStrings.CommonAlerts.ERROR_TITLE,
         message: AppStrings.CoinShop.NO_PACKS_AVAILABLE,
       });
-    } finally {
-      setIsShopModalLoading(false);
     }
   }, [
     iapProducts,
@@ -1003,9 +972,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     productPricingLoading,
     iapError,
     productPricingError,
-    isShopModalLoading,
-    loadIapProducts,
-    loadFirestoreProducts,
     modal,
     userCoins,
     handlePurchaseProduct,
@@ -1024,6 +990,52 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     setCurrentGuess(solvedGuess);
     setActiveSlotIndex(Math.max(0, answerLength - 1));
   }, [gameOver, answer, answerLength, setCurrentGuess]);
+
+  const handleDebugGenerateDailyChallenge = useCallback(async () => {
+    try {
+      const response = await runWithServerLoading(() =>
+        httpsCallable<
+          { forceGenerate: boolean },
+          { success: boolean; message: string; questionsGenerated: number }
+        >(getFunctions(getApp()), "generateTodaysDailyChallengeFunction")({
+          forceGenerate: true,
+        })
+      );
+
+      modal.showInfoModal({
+        title: "Daily Challenge Generated",
+        message:
+          response.data?.message ??
+          "Successfully generated a new daily challenge.",
+      });
+    } catch (error) {
+      logger.error("Error generating daily challenge from debug panel:", error);
+      captureException(error);
+
+      const errorWithDetails = error as {
+        message?: string;
+        details?: unknown;
+        code?: string;
+      };
+      const detailsMessage =
+        typeof errorWithDetails.details === "string"
+          ? errorWithDetails.details
+          : typeof errorWithDetails.details === "object" &&
+              errorWithDetails.details &&
+              "message" in errorWithDetails.details &&
+              typeof (errorWithDetails.details as {message?: unknown}).message ===
+                "string"
+            ? (errorWithDetails.details as {message: string}).message
+            : null;
+
+      modal.showInfoModal({
+        title: "Daily Challenge Error",
+        message: detailsMessage ??
+          errorWithDetails.message ??
+          "Failed to generate a new daily challenge.",
+      });
+    }
+  }, [runWithServerLoading, modal]);
 
   const isSubmitDisabled = useMemo(
     () =>
@@ -1086,11 +1098,16 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
             onSettingsPress={handleSettingsPress}
           />
 
-          {process.env.NODE_ENV !== "test" && <GlobalMuteOverlay />}
+          {process.env.NODE_ENV !== "test" && (
+            <GlobalMuteOverlay
+              isSoundEnabled={isSoundEnabled}
+              onToggleSound={toggleSoundEnabled}
+            />
+          )}
         </KeyboardAvoidingView>
 
         <PulsingSpinner
-          visible={isLoading || isProfileModalLoading || isShopModalLoading}
+          visible={isLoading || isProfileModalLoading}
           size={LOADING_SPINNER_SIZE}
           opacity={LOADING_SPINNER_OPACITY}
         />
@@ -1103,7 +1120,10 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         />
 
         {__DEV__ && (
-          <ModalTogglePanel onCompleteRiddle={handleDebugCompleteRiddle} />
+          <ModalTogglePanel
+            onCompleteRiddle={handleDebugCompleteRiddle}
+            onGenerateDailyChallenge={handleDebugGenerateDailyChallenge}
+          />
         )}
       </SafeAreaView>
     </View>

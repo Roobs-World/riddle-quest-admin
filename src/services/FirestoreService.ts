@@ -487,12 +487,14 @@ export const updateUserStats = async (
  * @param userId The user's Firebase Auth UID.
  * @param email The user's email address.
  * @param displayName The user's display name (optional).
+ * @param avatarUrl The user's provider avatar URL (optional).
  * @returns A Promise resolving to the created Player object.
  */
 export const createUserDocumentInFirestore = async (
   userId: string,
   email: string,
-  displayName?: string
+  displayName?: string,
+  avatarUrl?: string
 ): Promise<Player> => {
   if (!userId) {
     throw new Error("Cannot create user document without a userId.");
@@ -502,6 +504,7 @@ export const createUserDocumentInFirestore = async (
     userId,
     email,
     displayName,
+    avatarUrl,
   });
 
   try {
@@ -544,6 +547,10 @@ export const createUserDocumentInFirestore = async (
     const defaultUserData: Player = displayName
       ? { ...baseUserData, displayName }
       : baseUserData;
+
+    if (avatarUrl) {
+      defaultUserData.avatarUrl = avatarUrl;
+    }
 
     logger.debug(
       "Default user data prepared:",

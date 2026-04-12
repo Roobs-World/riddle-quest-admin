@@ -5,6 +5,34 @@ import {updateUserProfile} from "./firestoreService";
 import {validateUsernameForProfanity} from "./utils/profanityFilter";
 import {captureException} from "./sentry";
 
+async function syncLeaderboardProfileFields(
+  userId: string,
+  fields: {username?: string; avatarUrl?: string},
+): Promise<void> {
+  const updates: {username?: string; avatarUrl?: string; updatedAt: number} = {
+    updatedAt: Date.now(),
+  };
+
+  if (typeof fields.username === "string") {
+    updates.username = fields.username;
+  }
+
+  if (typeof fields.avatarUrl === "string") {
+    updates.avatarUrl = fields.avatarUrl;
+  }
+
+  if (updates.username === undefined && updates.avatarUrl === undefined) {
+    return;
+  }
+
+  try {
+    await admin.firestore().collection("leaderboard").doc(userId).set(updates, {merge: true});
+  } catch (error) {
+    logger.warn(`Failed to sync leaderboard profile fields for user ${userId}:`, error);
+    captureException(error);
+  }
+}
+
 /**
  * Updates the authenticated user's avatar URL in Firestore.
  * Requires authentication.
@@ -27,6 +55,7 @@ export const updateAvatar = onCall(async (request: CallableRequest<{avatarUrl: s
 
   try {
     await updateUserProfile(userId, {avatarUrl: avatarUrl});
+    await syncLeaderboardProfileFields(userId, {avatarUrl});
     logger.info(`User ${userId} avatar URL updated successfully.`);
     return {success: true, message: "Avatar URL updated successfully."};
   } catch (error) {
@@ -72,6 +101,7 @@ export const updateUsername = onCall(async (request: CallableRequest<{username: 
 
   try {
     await updateUserProfile(userId, {username: trimmed});
+    await syncLeaderboardProfileFields(userId, {username: trimmed});
     logger.info(`User ${userId} username updated to: ${trimmed}`);
     return {success: true, message: "Username updated successfully."};
   } catch (error) {

@@ -21,7 +21,6 @@ import {
   setCompletedDailyChallenge,
   hasCompletedDailyChallenge,
   getCurrentDailyChallenge,
-  getCurrentDailyChallengeQuestion,
   advanceDailyChallengeProgress,
 } from "./dailyChallenge";
 import {
@@ -34,7 +33,6 @@ import {updateAvatar, updateUsername} from "./profile";
 import {submitGuess, completeGame} from "./submitGuessLogic";
 import {dailyChallengeScheduler} from "./dailyScheduler";
 import {initializeUser, ensureUserComplete, updateUserStats} from "./userManagement";
-import {sendNotificationCampaign, registerFcmToken} from "./notificationCampaigns";
 import {notifyRewardedAdCompleted} from "./adClientCallbacks";
 import {getLeaderboard} from "./leaderboard";
 import {dailyStreakReminder} from "./streakNotifications";
@@ -47,7 +45,6 @@ export {
   setCompletedDailyChallenge,
   hasCompletedDailyChallenge,
   getCurrentDailyChallenge,
-  getCurrentDailyChallengeQuestion,
   advanceDailyChallengeProgress,
   generateClassicRiddles,
   initializeRiddleDatabase,
@@ -61,8 +58,6 @@ export {
   initializeUser,
   ensureUserComplete,
   updateUserStats,
-  sendNotificationCampaign,
-  registerFcmToken,
   notifyRewardedAdCompleted,
   getLeaderboard,
   dailyStreakReminder,

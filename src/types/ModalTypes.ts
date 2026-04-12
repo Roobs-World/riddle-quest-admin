@@ -176,6 +176,7 @@ export interface GameModalTypes {
     currentCoins?: number;
     loading?: boolean;
     error?: string | null;
+    onFirstPaint?: () => void;
     onPurchaseProduct: (productId: string) => void;
     onWatchVideo?: () => void;
     onPayAndPlay?: () => void;

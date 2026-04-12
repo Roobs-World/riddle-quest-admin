@@ -1,6 +1,6 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import {onCall, HttpsError} from "firebase-functions/v2/https";
+import {onCall, HttpsError, CallableOptions} from "firebase-functions/v2/https";
 import {
   getUser,
   updateUserCoins,
@@ -358,15 +358,20 @@ export async function handleGuessLogic(
 }
 
 // This is the callable function wrapper
-export const submitGuess = onCall<SubmitGuessRequestData, Promise<SubmitGuessResponseData>>(async (request) => {
-  if (!request.auth) {
-    throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
-  }
-  return handleGuessLogic(request.data, {
-    uid: request.auth.uid,
-    isAnonymous: request.auth.token?.firebase?.sign_in_provider === "anonymous",
-  });
-});
+export const submitGuess = onCall<SubmitGuessRequestData, Promise<SubmitGuessResponseData>>(
+  {
+    secrets: ["OPENAI_API_KEY"],
+  } as CallableOptions,
+  async (request) => {
+    if (!request.auth) {
+      throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
+    }
+    return handleGuessLogic(request.data, {
+      uid: request.auth.uid,
+      isAnonymous: request.auth.token?.firebase?.sign_in_provider === "anonymous",
+    });
+  },
+);
 
 // ---------------------------------------------------------------------------
 // completeGame â€” called once when a game truly ends (win or final loss).
@@ -599,12 +604,17 @@ export async function handleCompleteGameLogic(
   }
 }
 
-export const completeGame = onCall<CompleteGameRequestData, Promise<CompleteGameResponseData>>(async (request) => {
-  if (!request.auth) {
-    throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
-  }
-  return handleCompleteGameLogic(request.data, {
-    uid: request.auth.uid,
-    isAnonymous: request.auth.token?.firebase?.sign_in_provider === "anonymous",
-  });
-});
+export const completeGame = onCall<CompleteGameRequestData, Promise<CompleteGameResponseData>>(
+  {
+    secrets: ["OPENAI_API_KEY"],
+  } as CallableOptions,
+  async (request) => {
+    if (!request.auth) {
+      throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
+    }
+    return handleCompleteGameLogic(request.data, {
+      uid: request.auth.uid,
+      isAnonymous: request.auth.token?.firebase?.sign_in_provider === "anonymous",
+    });
+  },
+);

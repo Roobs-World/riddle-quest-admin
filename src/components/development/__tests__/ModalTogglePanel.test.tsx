@@ -253,4 +253,16 @@ describe("ModalTogglePanel", () => {
 
     expect(onCompleteRiddle).toHaveBeenCalledTimes(1);
   });
+
+  it("invokes onGenerateDailyChallenge when debug action button is pressed", () => {
+    const onGenerateDailyChallenge = jest.fn();
+    const { getByText } = render(
+      <ModalTogglePanel onGenerateDailyChallenge={onGenerateDailyChallenge} />
+    );
+
+    fireEvent.press(getByText(/Modal Testing/));
+    fireEvent.press(getByText("Generate Daily Challenge"));
+
+    expect(onGenerateDailyChallenge).toHaveBeenCalledTimes(1);
+  });
 });

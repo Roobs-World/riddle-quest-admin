@@ -40,6 +40,7 @@ export const dailyChallengeScheduler = onSchedule(
   {
     schedule: "0 * * * *", // Runs hourly at minute 0 UTC
     timeZone: "UTC",
+    secrets: ["OPENAI_API_KEY"],
   },
   scheduledTaskHandler, // Use the exported handler here
 );

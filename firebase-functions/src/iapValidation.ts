@@ -8,7 +8,12 @@ import {evaluateAchievements} from "./achievements";
 import {NO_ADS_PRODUCT_ID, BACKEND_COIN_PRODUCT_DETAILS} from "./iapConfig";
 import {isPurchaseTokenAlreadyProcessed, markPurchaseTokenAsProcessed} from "./iapReceiptService";
 import {performPlatformValidation} from "./iapPlatformValidator";
-import {getCoinsForProduct, logPurchaseAnalytic, updateRegionalSpendingStats} from "./productPricingService";
+import {
+  getCoinsForProduct,
+  incrementCoinPackPurchaseCount,
+  logPurchaseAnalytic,
+  updateRegionalSpendingStats,
+} from "./productPricingService";
 import {captureException} from "./sentry";
 
 /**
@@ -133,6 +138,7 @@ export const validatePurchase = onCall(
           }
 
           await updateUserCoins(userId, awardedCoins);
+          await incrementCoinPackPurchaseCount(validatedProductIdFromReceipt!);
 
           const updatedUserForLog = await getUser(userId);
           functions.logger.info(
@@ -223,6 +229,7 @@ export const grantDevCoinsForPurchase = onCall(
     }
 
     await updateUserCoins(userId, coinsToAward);
+    await incrementCoinPackPurchaseCount(productId);
     const updatedUser = await getUser(userId);
 
     functions.logger.info(

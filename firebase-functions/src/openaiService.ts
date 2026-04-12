@@ -40,10 +40,11 @@ function initializeOpenAIClient(): OpenAI {
  */
 export async function generateUniqueRiddle(): Promise<[string, string] | null> {
   const openai = initializeOpenAIClient();
+  const model = process.env.OPENAI_MODEL || "gpt-4o-mini";
 
   try {
     const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model,
       messages: [
         {
           role: "system",
@@ -118,7 +119,7 @@ export async function generateUniqueRiddle(): Promise<[string, string] | null> {
     functions.logger.info(`Generated valid riddle: "${question}" → "${answer}" (${answer.length} chars)`);
     return [question, answer];
   } catch (error) {
-    functions.logger.error("Error generating riddle with OpenAI:", error);
+    functions.logger.error(`Error generating riddle with OpenAI (model: ${model}):`, error);
     captureException(error);
     return null; // Return null on error to prevent breaking the loop
   }

@@ -61,7 +61,6 @@ import AchievementUnlockFanfareModal from "./game/AchievementUnlockFanfareModal"
 
 import SettingsModal from "./settings/SettingsModal";
 import FullProfileDetailsModal from "./settings/FullProfileDetailsModal";
-import ChangePasswordModal from "./settings/ChangePasswordModal";
 import UpdateUsernameModal from "./settings/UpdateUsernameModal";
 import AchievementsModal from "./settings/AchievementsModal";
 import StatsModal from "./settings/StatsModal";
@@ -279,15 +278,6 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
     })
   ),
 
-  changePassword: createModalWrapper(
-    ChangePasswordModal,
-    (props: BaseModalProps & ModalData) => ({
-      isVisible: props.isVisible,
-      onClose: props.onClose,
-      onPasswordChanged: (props.onPasswordChanged as () => void) || (() => {}),
-    })
-  ),
-
   updateUsername: createModalWrapper(
     UpdateUsernameModal,
     (props: BaseModalProps & ModalData) => ({
@@ -373,6 +363,7 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
         (props.onPurchaseProduct as (productId: string) => void) || (() => {}),
       loading: (props.loading as boolean) || false,
       error: (props.error as string | null) || null,
+      onFirstPaint: (props.onFirstPaint as (() => void) | undefined) || undefined,
       onWatchVideo: (props.onWatchVideo as () => void) || undefined,
       onPayAndPlay: (props.onPayAndPlay as () => void) || undefined,
     })

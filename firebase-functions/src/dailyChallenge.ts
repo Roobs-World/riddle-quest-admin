@@ -169,7 +169,9 @@ interface GetCurrentDailyChallengeResponse {
  * Optionally includes the user's completion status if authenticated.
  */
 export const getCurrentDailyChallenge = onCall(
-  {},
+  {
+    secrets: ["OPENAI_API_KEY"],
+  },
   async (request: CallableRequest<unknown>): Promise<GetCurrentDailyChallengeResponse> => {
     try {
       const {dailyChallengeDoc, todayDateString} = await getFreshDailyChallengeDoc();
@@ -237,85 +239,6 @@ export const getCurrentDailyChallenge = onCall(
         isAuthenticated: !!request.auth,
       });
       return {error: "An error occurred while fetching the daily challenge."};
-    }
-  },
-);
-
-/**
- * Gets the current daily challenge question for the user.
- * Returns only the single question for today's challenge.
- */
-export const getCurrentDailyChallengeQuestion = onCall(
-  {},
-  async (
-    request: CallableRequest<unknown>,
-  ): Promise<{
-    question?: DailyChallengeQuestion;
-    questionIndex?: number;
-    totalQuestions?: number;
-    isCompleted?: boolean;
-    error?: string;
-  }> => {
-    try {
-      if (!request.auth) {
-        throw new HttpsError("unauthenticated", "User must be authenticated to get current question.");
-      }
-
-      const userId = request.auth.uid;
-      const user = await getUser(userId);
-
-      if (!user) {
-        throw new HttpsError("not-found", "User data not found.");
-      }
-
-      const currentQuestionIndex = user.progress?.dailyChallengeCurrentQuestion || 0;
-      const completedToday = isCompletedToday(user.lastDailyChallengeCompletedAt);
-
-      // If user already completed today's challenge
-      if (completedToday || currentQuestionIndex >= DAILY_CHALLENGE_QUESTION_COUNT) {
-        return {
-          questionIndex: DAILY_CHALLENGE_QUESTION_COUNT,
-          totalQuestions: DAILY_CHALLENGE_QUESTION_COUNT,
-          isCompleted: true,
-        };
-      }
-
-      const {dailyChallengeDoc} = await getFreshDailyChallengeDoc();
-
-      if (!dailyChallengeDoc.exists) {
-        return {error: "No daily challenge available at the moment."};
-      }
-
-      const allData = dailyChallengeDoc.data();
-      if (!allData || !allData.questions || !Array.isArray(allData.questions) || allData.questions.length < 1) {
-        return {error: "Daily challenge data is incomplete. Expected 1 question."};
-      }
-
-      const question = allData.questions[0];
-      if (!question) {
-        return {error: "Question not found for current index."};
-      }
-
-      return {
-        question: {
-          riddleId: question.riddleId,
-          text: question.text,
-          questionNumber: 1,
-        },
-        questionIndex: 0,
-        totalQuestions: DAILY_CHALLENGE_QUESTION_COUNT,
-        isCompleted: false,
-      };
-    } catch (error) {
-      if (error instanceof HttpsError) {
-        throw error;
-      }
-      functions.logger.error("Error getting current daily challenge question:", error);
-      captureException(error, {
-        functionName: "getCurrentDailyChallengeQuestion",
-        isAuthenticated: !!request.auth,
-      });
-      throw new HttpsError("internal", "An error occurred while fetching the current question.");
     }
   },
 );

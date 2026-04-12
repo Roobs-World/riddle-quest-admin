@@ -27,11 +27,9 @@ import {
   MODAL_WIDTH,
   MODAL_HEIGHT,
   CLOSE_BUTTON_SIZE,
-  MODAL_CLOSE_BUTTON_POSITION,
   CARD_BORDER_RADIUS,
   MODAL_CONTENT_PADDING,
   AVATAR_SIZE_MEDIUM,
-  MODAL_SCROLLABLE_MAX_HEIGHT,
 } from "../../../constants/layout";
 import { logger } from "../../../utils/logger";
 import { captureException } from "../../../utils/sentry";
@@ -148,9 +146,9 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({
         <View
           style={{
             width: MODAL_WIDTH,
-            maxHeight: "85%",
+            height: MODAL_HEIGHT,
             alignItems: "center",
-            justifyContent: "center",
+            overflow: "hidden",
           }}
         >
           <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{ position: "absolute" }} />
@@ -163,8 +161,12 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({
           <CloseButton
             onPress={onClose}
             size={CLOSE_BUTTON_SIZE}
-            style={MODAL_CLOSE_BUTTON_POSITION}
-            accessibilityLabel={AppStrings.Accessibility.CLOSE_LEADERBOARD}
+            style={{
+              position: "absolute",
+              top: SPACING["2xl"],
+              right: SPACING.lg,
+              zIndex: 10,
+            }}
           />
 
           {/* Title */}
@@ -173,7 +175,7 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({
               fontSize: TYPOGRAPHY.fontSize["2xl"],
               fontFamily: TYPOGRAPHY.fontSecondaryBold,
               color: "black",
-              marginTop: SPACING.lg,
+              marginTop: SPACING["2xl"],
               marginBottom: SPACING.sm,
             }}
             accessibilityRole="header"
@@ -221,80 +223,96 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({
             })}
           </View>
 
-          {/* Content */}
-          {isLoading ? (
-            <View style={{ paddingVertical: SPACING.xl }}>
-              <ActivityIndicator color={PURPLE} size="large" accessibilityLabel={AppStrings.Accessibility.LOADING_LEADERBOARD} />
-            </View>
-          ) : error ? (
-            <View style={{ paddingVertical: SPACING.lg, paddingHorizontal: MODAL_CONTENT_PADDING }}>
-              <Text
+          <View style={{ flex: 1, width: "100%" }}>
+            {/* Content */}
+            {isLoading ? (
+              <View style={{ flex: 1, justifyContent: "center", paddingVertical: SPACING.xl }}>
+                <ActivityIndicator color={PURPLE} size="large" accessibilityLabel={AppStrings.Accessibility.LOADING_LEADERBOARD} />
+              </View>
+            ) : error ? (
+              <View
                 style={{
-                  fontSize: TYPOGRAPHY.fontSize.sm,
-                  fontFamily: TYPOGRAPHY.fontSecondary,
-                  color: COLORS.error ?? "#EF4444",
-                  textAlign: "center",
+                  flex: 1,
+                  justifyContent: "center",
+                  paddingVertical: SPACING.lg,
+                  paddingHorizontal: MODAL_CONTENT_PADDING,
                 }}
-                accessibilityRole="alert"
-              >
-                {error}
-              </Text>
-              <TouchableOpacity
-                onPress={() => void fetchLeaderboard(activeTab)}
-                style={{ marginTop: SPACING.md, alignItems: "center" }}
-                accessibilityRole="button"
-                accessibilityLabel={AppStrings.Leaderboard.RETRY_BUTTON}
               >
                 <Text
                   style={{
                     fontSize: TYPOGRAPHY.fontSize.sm,
-                    fontFamily: TYPOGRAPHY.fontSecondaryBold,
-                    color: PURPLE,
+                    fontFamily: TYPOGRAPHY.fontSecondary,
+                    color: COLORS.error ?? "#EF4444",
+                    textAlign: "center",
                   }}
+                  accessibilityRole="alert"
                 >
-                  {AppStrings.Leaderboard.RETRY_BUTTON}
+                  {error}
                 </Text>
-              </TouchableOpacity>
-            </View>
-          ) : entries.length === 0 ? (
-            <View style={{ paddingVertical: SPACING.xl, paddingHorizontal: MODAL_CONTENT_PADDING }}>
-              <Text
+                <TouchableOpacity
+                  onPress={() => void fetchLeaderboard(activeTab)}
+                  style={{ marginTop: SPACING.md, alignItems: "center" }}
+                  accessibilityRole="button"
+                  accessibilityLabel={AppStrings.Leaderboard.RETRY_BUTTON}
+                >
+                  <Text
+                    style={{
+                      fontSize: TYPOGRAPHY.fontSize.sm,
+                      fontFamily: TYPOGRAPHY.fontSecondaryBold,
+                      color: PURPLE,
+                    }}
+                  >
+                    {AppStrings.Leaderboard.RETRY_BUTTON}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            ) : entries.length === 0 ? (
+              <View
                 style={{
-                  fontSize: TYPOGRAPHY.fontSize.sm,
-                  fontFamily: TYPOGRAPHY.fontSecondary,
-                  color: "rgba(0,0,0,0.5)",
-                  textAlign: "center",
+                  flex: 1,
+                  justifyContent: "center",
+                  paddingVertical: SPACING.xl,
+                  paddingHorizontal: MODAL_CONTENT_PADDING,
                 }}
               >
-                {AppStrings.Leaderboard.NO_SCORES_YET}
-              </Text>
-            </View>
-          ) : (
-            <ScrollView
-              style={{ maxHeight: MODAL_SCROLLABLE_MAX_HEIGHT, width: "100%" }}
-              contentContainerStyle={{
-                paddingHorizontal: MODAL_CONTENT_PADDING,
-                paddingBottom: SPACING.lg,
-              }}
-              showsVerticalScrollIndicator={false}
-            >
-              {entries.map((entry, index) => {
-                const isCurrentUser = entry.userId === currentUserId;
-                const rank = index + 1;
-                const statValue = entry[activeTabConfig.statKey] as number;
+                <Text
+                  style={{
+                    fontSize: TYPOGRAPHY.fontSize.sm,
+                    fontFamily: TYPOGRAPHY.fontSecondary,
+                    color: "rgba(0,0,0,0.5)",
+                    textAlign: "center",
+                  }}
+                >
+                  {AppStrings.Leaderboard.NO_SCORES_YET}
+                </Text>
+              </View>
+            ) : (
+              <ScrollView
+                style={{ flex: 1, width: "100%" }}
+                contentContainerStyle={{
+                  paddingHorizontal: MODAL_CONTENT_PADDING,
+                  paddingBottom: SPACING.lg,
+                }}
+                showsVerticalScrollIndicator={false}
+              >
+                {entries.map((entry, index) => {
+                  const isCurrentUser = entry.userId === currentUserId;
+                  const rank = index + 1;
+                  const statValue = entry[activeTabConfig.statKey] as number;
 
-                return (
-                  <LeaderboardRow
-                    key={entry.userId}
-                    rank={rank}
-                    entry={entry}
-                    statValue={statValue}
-                    isCurrentUser={isCurrentUser}
-                  />
-                );
-              })}
-            </ScrollView>
-          )}
+                  return (
+                    <LeaderboardRow
+                      key={entry.userId}
+                      rank={rank}
+                      entry={entry}
+                      statValue={statValue}
+                      isCurrentUser={isCurrentUser}
+                    />
+                  );
+                })}
+              </ScrollView>
+            )}
+          </View>
         </View>
       </View>
     </Modal>
