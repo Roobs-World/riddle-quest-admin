@@ -291,9 +291,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
         if (isGuestUser) {
           showInfoModal({
-            title: "Guest Mode Notice",
-            message:
-              "Your progress could be lost in guest mode, and some features like the leaderboard are unavailable.",
+            title: AppStrings.GameScreenAlerts.GUEST_MODE_NOTICE_TITLE,
+            message: AppStrings.GameScreenAlerts.GUEST_MODE_NOTICE_MESSAGE,
             onConfirm: () => {
               safeDelay(MODAL_CLOSE_DELAY_MS).then(() => {
                 showInstructionsModal();
@@ -440,8 +439,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       return true;
     }
     modal.showInfoModal({
-      title: "Ad Not Ready",
-      message: "The rewarded ad couldn't be shown at this time. Please try again shortly.",
+      title: AppStrings.GameScreenAlerts.AD_NOT_READY_TITLE,
+      message: AppStrings.GameScreenAlerts.AD_NOT_READY_MESSAGE,
     });
     return false;
   }, [showRewardedAd, continueGame, modal]);
@@ -465,7 +464,10 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     } catch (error) {
       logger.error("Error spending coins for continue:", error);
       captureException(error);
-      modal.showInfoModal({ title: "Error", message: "Could not spend coins. Please try again." });
+      modal.showInfoModal({
+        title: AppStrings.CommonAlerts.ERROR_TITLE,
+        message: AppStrings.GameScreenAlerts.SPEND_COINS_ERROR_MESSAGE,
+      });
     }
   }, [modal, continueGame, runWithServerLoading, isGuestMode, playerData, updatePlayerDataLocally]);
 
@@ -530,12 +532,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
               captureException(error);
             }
           },
-          onHome: () => {
-            logger.debug("Victory modal: Home button pressed");
-            modal.closeModalByType("victory");
-            resetGame();
-            hintRevealedIndicesRef.current = [];
-          },
         });
 
         onGameWin(guesses.length, result.coinsEarned || 0, result.scoreEarned || 0);
@@ -560,11 +556,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
               captureException(error);
             });
           },
-          onHome: () => {
-            modal.closeModalByType("loss");
-            resetGame();
-            hintRevealedIndicesRef.current = [];
-          },
         });
       } else if (result.outcome === "loss") {
       
@@ -586,11 +577,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
               logger.error("Error loading next level after loss:", error);
               captureException(error);
             });
-          },
-          onHome: () => {
-            modal.closeModalByType("loss");
-            resetGame();
-            hintRevealedIndicesRef.current = [];
           },
         });
 
@@ -752,8 +738,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
         if (revealIndex === -1) {
           modal.showInfoModal({
-            title: "Hint Not Available",
-            message: "No more letters can be revealed.",
+            title: AppStrings.GameScreenAlerts.HINT_NOT_AVAILABLE_TITLE,
+            message: AppStrings.GameScreenAlerts.HINT_NOT_AVAILABLE_MESSAGE,
           });
           return;
         }
@@ -936,8 +922,11 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         const errorMessage =
           error instanceof Error
             ? error.message
-            : "Purchase failed. Please try again.";
-        modal.showInfoModal({ title: "Purchase Failed", message: errorMessage });
+            : AppStrings.GameScreenAlerts.PURCHASE_FAILED_MESSAGE;
+        modal.showInfoModal({
+          title: AppStrings.GameScreenAlerts.PURCHASE_FAILED_TITLE,
+          message: errorMessage,
+        });
       } finally {
         setIapLoading(false);
       }

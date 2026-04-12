@@ -8,6 +8,7 @@ import WideButton from "src/components/buttons/WideButton";
 import { TYPOGRAPHY } from "src/styles";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
+import { AppStrings } from "../../../constants/AppStrings";
 import {
   MODAL_WIDTH,
   MODAL_HEIGHT,
@@ -40,12 +41,12 @@ const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({
 
   const handleUpdateUsername = async () => {
     if (newUsername.trim() === "") {
-      Alert.alert("Error", "Username cannot be empty.");
+      Alert.alert(AppStrings.CommonAlerts.ERROR_TITLE, AppStrings.Profile.ALERT_USERNAME_EMPTY);
       return;
     }
 
     if (newUsername.trim().length < 3) {
-      Alert.alert("Error", "Username must be at least 3 characters long.");
+      Alert.alert(AppStrings.CommonAlerts.ERROR_TITLE, AppStrings.Profile.ALERT_USERNAME_TOO_SHORT);
       return;
     }
 
@@ -61,19 +62,22 @@ const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({
       const responseData = result.data as { success: boolean; message: string };
 
       if (responseData.success) {
-        Alert.alert("Success", responseData.message);
+        Alert.alert(AppStrings.CommonAlerts.SUCCESS_TITLE, responseData.message);
         updatePlayerData({ username: newUsername });
         onClose();
       } else {
-        Alert.alert("Error", responseData.message || "Username update failed.");
+        Alert.alert(
+          AppStrings.CommonAlerts.ERROR_TITLE,
+          responseData.message || AppStrings.Profile.ALERT_USERNAME_UPDATE_FAILED
+        );
       }
     } catch (error) {
       const firebaseError = error as FirebaseError;
-      let errorMessage = "An error occurred.";
+      let errorMessage = AppStrings.Profile.ALERT_AN_ERROR_OCCURRED;
       if (firebaseError.code === "already-exists") {
-        errorMessage = "Username already taken.";
+        errorMessage = AppStrings.Profile.ALERT_USERNAME_ALREADY_TAKEN;
       }
-      Alert.alert("Error", errorMessage);
+      Alert.alert(AppStrings.CommonAlerts.ERROR_TITLE, errorMessage);
     }
   };
 
@@ -127,7 +131,7 @@ const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({
                 textAlign: "center",
               }}
             >
-              Update Username
+              {AppStrings.Profile.UPDATE_USERNAME_TITLE}
             </Text>
             <TextInput
               style={{
@@ -140,11 +144,11 @@ const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({
               }}
               value={newUsername}
               onChangeText={setNewUsername}
-              placeholder="Enter new username"
+              placeholder={AppStrings.Profile.ENTER_NEW_USERNAME_PLACEHOLDER}
               placeholderTextColor="#888"
               autoCapitalize="none"
             />
-            <WideButton buttonText="Save" onPress={handleUpdateUsername} />
+            <WideButton buttonText={AppStrings.Profile.SAVE_BUTTON} onPress={handleUpdateUsername} />
           </View>
         </View>
       </View>

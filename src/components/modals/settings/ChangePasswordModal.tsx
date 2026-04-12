@@ -7,6 +7,7 @@ import WideButton from "src/components/buttons/WideButton";
 import { TYPOGRAPHY } from "src/styles";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
+import { AppStrings } from "../../../constants/AppStrings";
 import {
   MODAL_WIDTH,
   MODAL_HEIGHT,
@@ -38,22 +39,22 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
 
   const handleChangePassword = async () => {
     if (!currentPassword || !newPassword || !confirmNewPassword) {
-      Alert.alert("Error", "Please fill in all password fields.");
+      Alert.alert(AppStrings.CommonAlerts.ERROR_TITLE, AppStrings.Profile.ALERT_PASSWORD_FIELDS_EMPTY);
       return;
     }
     if (newPassword !== confirmNewPassword) {
-      Alert.alert("Error", "New passwords do not match.");
+      Alert.alert(AppStrings.CommonAlerts.ERROR_TITLE, AppStrings.Profile.ALERT_PASSWORDS_DO_NOT_MATCH);
       return;
     }
     if (newPassword.length < 6) {
-      Alert.alert("Error", "New password must be at least 6 characters long.");
+      Alert.alert(AppStrings.CommonAlerts.ERROR_TITLE, AppStrings.Profile.ALERT_PASSWORD_TOO_SHORT);
       return;
     }
 
     const user = getAuth(getApp()).currentUser;
 
     if (!user || !user.email) {
-      Alert.alert("Error", "User not logged in or email not available.");
+      Alert.alert(AppStrings.CommonAlerts.ERROR_TITLE, AppStrings.Profile.ALERT_USER_NOT_LOGGED_IN);
       return;
     }
 
@@ -65,15 +66,15 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
       await user.reauthenticateWithCredential(credential);
       await user.updatePassword(newPassword);
 
-      Alert.alert("Success", "Password updated successfully!");
+      Alert.alert(AppStrings.CommonAlerts.SUCCESS_TITLE, AppStrings.Profile.ALERT_PASSWORD_UPDATE_SUCCESS);
       handleClose();
     } catch (error) {
       const firebaseError = error as FirebaseError;
-      let errorMessage = "An error occurred while changing password.";
+      let errorMessage = AppStrings.Profile.ALERT_PASSWORD_CHANGE_ERROR;
       if (firebaseError.code === "auth/invalid-credential") {
-        errorMessage = "Invalid current password.";
+        errorMessage = AppStrings.Profile.ALERT_INVALID_CURRENT_PASSWORD;
       }
-      Alert.alert("Error", errorMessage);
+      Alert.alert(AppStrings.CommonAlerts.ERROR_TITLE, errorMessage);
     }
   };
 
@@ -138,13 +139,13 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
                 textAlign: "center",
               }}
             >
-              Change Password
+              {AppStrings.Profile.CHANGE_PASSWORD_TITLE}
             </Text>
             <TextInput
               style={{ ...inputStyle, marginBottom: SPACING.sm }}
               value={currentPassword}
               onChangeText={setCurrentPassword}
-              placeholder="Current Password"
+              placeholder={AppStrings.Profile.CURRENT_PASSWORD_PLACEHOLDER}
               placeholderTextColor="#888"
               secureTextEntry
             />
@@ -152,7 +153,7 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
               style={{ ...inputStyle, marginBottom: SPACING.sm }}
               value={newPassword}
               onChangeText={setNewPassword}
-              placeholder="New Password"
+              placeholder={AppStrings.Profile.NEW_PASSWORD_PLACEHOLDER}
               placeholderTextColor="#888"
               secureTextEntry
             />
@@ -160,11 +161,11 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
               style={{ ...inputStyle, marginBottom: SPACING.lg }}
               value={confirmNewPassword}
               onChangeText={setConfirmNewPassword}
-              placeholder="Confirm New Password"
+              placeholder={AppStrings.Profile.CONFIRM_NEW_PASSWORD_PLACEHOLDER}
               placeholderTextColor="#888"
               secureTextEntry
             />
-            <WideButton buttonText="Save" onPress={handleChangePassword} />
+            <WideButton buttonText={AppStrings.Profile.SAVE_BUTTON} onPress={handleChangePassword} />
           </View>
         </View>
       </View>

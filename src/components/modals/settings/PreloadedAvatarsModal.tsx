@@ -13,6 +13,7 @@ import CloseButton from "../../buttons/CloseButton";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import { TYPOGRAPHY } from "src/styles";
 import WideButton from "../../buttons/WideButton";
+import { AppStrings } from "../../../constants/AppStrings";
 import {
   MODAL_WIDTH,
   MODAL_HEIGHT,
@@ -48,11 +49,11 @@ const PreloadedAvatarsModal: React.FC<PreloadedAvatarsModalProps> = ({
   const handlePreloadedAvatarSelect = async (avatarUrl: string) => {
     try {
       await updatePlayerData({ avatarUrl });
-      Alert.alert("Success", "Avatar updated successfully!");
+      Alert.alert(AppStrings.CommonAlerts.SUCCESS_TITLE, AppStrings.Profile.ALERT_AVATAR_UPDATE_SUCCESS);
       onClose();
       onCloseAvatarOptions();
     } catch {
-      Alert.alert("Error", "Could not update avatar. Please try again.");
+      Alert.alert(AppStrings.CommonAlerts.ERROR_TITLE, AppStrings.Profile.ALERT_AVATAR_UPDATE_ERROR);
     }
   };
 
@@ -103,7 +104,7 @@ const PreloadedAvatarsModal: React.FC<PreloadedAvatarsModalProps> = ({
                 textAlign: "center",
               }}
             >
-              Select Avatar
+              {AppStrings.Profile.SELECT_AVATAR_TITLE}
             </Text>
             <ScrollView
               style={{ flex: 1, width: "100%", maxHeight: MODAL_SCROLLABLE_MAX_HEIGHT }}
@@ -132,7 +133,7 @@ const PreloadedAvatarsModal: React.FC<PreloadedAvatarsModalProps> = ({
               ))}
             </ScrollView>
             <WideButton
-              buttonText="Cancel"
+              buttonText={AppStrings.Profile.CANCEL_BUTTON}
               onPress={onClose}
             />
           </View>
