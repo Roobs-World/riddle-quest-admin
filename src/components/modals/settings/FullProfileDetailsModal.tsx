@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -6,7 +6,7 @@ import {
   Modal,
   ScrollView,
   Image,
-  Alert
+  Alert,
 } from "react-native";
 import { Player } from "../../../validation/firestoreSchemas";
 import CloseButton from "../../buttons/CloseButton";
@@ -14,7 +14,6 @@ import { useModal } from "../../../hooks/useModal";
 import ChangePasswordModal from "./ChangePasswordModal";
 import UpdateUsernameModal from "./UpdateUsernameModal";
 import * as ImagePicker from "react-native-image-picker";
-import PreloadedAvatarsModal from "./PreloadedAvatarsModal";
 import { TYPOGRAPHY, SPACING, COLORS } from "../../../styles";
 import { getStorage } from "@react-native-firebase/storage";
 import { getApp } from "@react-native-firebase/app";
@@ -30,7 +29,10 @@ import { isGuestPlayer } from "@/features/auth/sessionBootstrap";
 import { AppStrings } from "../../../constants/AppStrings";
 import { useAuth } from "@/contexts/AuthContext";
 import PulsingSpinner from "@/components/loading/PulsingSpinner";
-import { LOADING_SPINNER_OPACITY, LOADING_SPINNER_SIZE } from "@/constants/loading";
+import {
+  LOADING_SPINNER_OPACITY,
+  LOADING_SPINNER_SIZE,
+} from "@/constants/loading";
 
 interface FullProfileDetailsModalProps {
   isVisible: boolean;
@@ -45,22 +47,32 @@ const GOLD = "#FEC880";
 const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
   isVisible,
   onClose,
-  playerData
+  playerData,
 }) => {
   const modal = useModal();
   const isGuestMode = isGuestPlayer(playerData);
   const [isUsernameModalVisible, setIsUsernameModalVisible] = useState(false);
   const [isPasswordModalVisible, setIsPasswordModalVisible] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(
+    playerData?.avatarUrl ?? null
+  );
+
+  const { updatePlayerData } = useAuth();
+
+  useEffect(() => {
+    setAvatarUrl(playerData?.avatarUrl ?? null);
+  }, [playerData?.avatarUrl]);
 
   if (!playerData) {
     return null;
   }
 
-  const { updatePlayerData } = useAuth();
   const { stats } = playerData;
   const avatarRadius = AVATAR_SIZE_LARGE / 2;
-  const initial = playerData.username ? playerData.username.charAt(0).toUpperCase() : "?";
+  const initial = playerData.username
+    ? playerData.username.charAt(0).toUpperCase()
+    : "?";
 
   const handleUploadAvatar = async () => {
     try {
@@ -70,36 +82,48 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
         maxWidth: 200,
         includeBase64: false,
       });
-      
+
       if (result.didCancel) {
         return;
       }
+
       if (result.assets && result.assets.length > 0) {
         const selectedAsset = result.assets[0];
+
         if (selectedAsset.uri && playerData.userId) {
           const uploadUri = selectedAsset.uri;
-          const filename = uploadUri.substring(uploadUri.lastIndexOf("/") + 1);
+          const uniqueFilename = `avatar_${Date.now()}.jpg`;
+
           const storageRef = getStorage(getApp()).ref(
-            `avatars/${playerData.userId}/${filename}`
+            `avatars/${playerData.userId}/${uniqueFilename}`
           );
+
           setIsUploading(true);
-          const task = storageRef.putFile(uploadUri);
-          task.on("state_changed", () => {});
-          await task;
+
+          await storageRef.putFile(uploadUri);
+
           const downloadURL = await storageRef.getDownloadURL();
+
           await updatePlayerData({ avatarUrl: downloadURL });
-          setIsUploading(false);
+
+          setAvatarUrl(`${downloadURL}&cb=${Date.now()}`);
         }
       }
     } catch {
-      Alert.alert(AppStrings.CommonAlerts.ERROR_TITLE, AppStrings.Profile.ALERT_AVATAR_UPDATE_ERROR);
+      Alert.alert(
+        AppStrings.CommonAlerts.ERROR_TITLE,
+        AppStrings.Profile.ALERT_AVATAR_UPDATE_ERROR
+      );
+    } finally {
+      setIsUploading(false);
     }
   };
 
   const winRate = Math.round(stats?.winRate ?? 0);
-  const avgGuess = stats?.averageGuesses != null
-    ? Number(stats.averageGuesses).toFixed(1)
-    : "—";
+  const avgGuess =
+    stats?.averageGuesses != null
+      ? Number(stats.averageGuesses).toFixed(1)
+      : "—";
   const xpFromProfile =
     (playerData as unknown as { xp?: unknown; totalXp?: unknown }).xp ??
     (playerData as unknown as { xp?: unknown; totalXp?: unknown }).totalXp ??
@@ -107,7 +131,9 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
     (stats as unknown as { xp?: unknown; totalXp?: unknown })?.totalXp ??
     stats?.totalScore ??
     0;
-  const totalXp = Number.isFinite(Number(xpFromProfile)) ? Number(xpFromProfile) : 0;
+  const totalXp = Number.isFinite(Number(xpFromProfile))
+    ? Number(xpFromProfile)
+    : 0;
   const { level, progressPct, currentXp, nextLevelXp } = getXpLevel(totalXp);
   const xpProgressWidth = `${Math.round(progressPct * 100)}%` as `${number}%`;
 
@@ -134,7 +160,6 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
             maxHeight: "100%",
           }}
         >
-          {/* ── Dark purple header ───────────────────────────── */}
           <View
             style={{
               backgroundColor: PURPLE,
@@ -144,7 +169,6 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
               overflow: "hidden",
             }}
           >
-            {/* Decorative wave lines */}
             {[0, 1, 2, 3, 4].map((i) => (
               <View
                 key={i}
@@ -160,7 +184,6 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
               />
             ))}
 
-            {/* Top bar: logo | PROFILE | close */}
             <View
               style={{
                 flexDirection: "row",
@@ -189,16 +212,16 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
               />
             </View>
 
-            {/* Avatar */}
             <View style={{ alignItems: "center", marginTop: SPACING.sm }}>
               <TouchableOpacity
                 onPress={handleUploadAvatar}
                 activeOpacity={0.8}
               >
-                {playerData.avatarUrl ? (
+                {avatarUrl ? (
                   <Image
+                    key={avatarUrl}
                     testID="avatar-image"
-                    source={{ uri: playerData.avatarUrl }}
+                    source={{ uri: avatarUrl }}
                     style={{
                       width: AVATAR_SIZE_LARGE,
                       height: AVATAR_SIZE_LARGE,
@@ -233,10 +256,14 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
                 )}
               </TouchableOpacity>
 
-              {/* Username + edit */}
               <TouchableOpacity
                 onPress={() => setIsUsernameModalVisible(true)}
-                style={{ flexDirection: "row", alignItems: "center", marginTop: SPACING.sm, gap: 6 }}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginTop: SPACING.sm,
+                  gap: 6,
+                }}
               >
                 <Text
                   style={{
@@ -250,7 +277,6 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
                 <Text style={{ color: GOLD, fontSize: 24 }}>✏</Text>
               </TouchableOpacity>
 
-              {/* XP progress bar */}
               <View
                 style={{
                   width: "70%",
@@ -258,9 +284,19 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
                   gap: 4,
                 }}
               >
-                <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
-                  <Text style={{ color: GOLD, fontSize: 24  }}>★</Text>
-                  <View style={{ flex: 1, height: 8, backgroundColor: "rgba(255,255,255,0.2)", borderRadius: 4, overflow: "hidden" }}>
+                <View
+                  style={{ flexDirection: "row", alignItems: "center", gap: 6 }}
+                >
+                  <Text style={{ color: GOLD, fontSize: 24 }}>★</Text>
+                  <View
+                    style={{
+                      flex: 1,
+                      height: 8,
+                      backgroundColor: "rgba(255,255,255,0.2)",
+                      borderRadius: 4,
+                      overflow: "hidden",
+                    }}
+                  >
                     <View
                       testID="xp-progress-fill"
                       style={{
@@ -271,18 +307,31 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
                       }}
                     />
                   </View>
-                  <Text style={{ color: GOLD, fontSize: TYPOGRAPHY.fontSize.lg, fontFamily: TYPOGRAPHY.fontSecondary }}>
-                    {AppStrings.Profile.XP_LEVEL_PREFIX}{level}
+                  <Text
+                    style={{
+                      color: GOLD,
+                      fontSize: TYPOGRAPHY.fontSize.lg,
+                      fontFamily: TYPOGRAPHY.fontSecondary,
+                    }}
+                  >
+                    {AppStrings.Profile.XP_LEVEL_PREFIX}
+                    {level}
                   </Text>
                 </View>
-                <Text style={{ color: COLORS.white, fontSize: TYPOGRAPHY.fontSize.lg, fontFamily: TYPOGRAPHY.fontSecondary, textAlign: "center" }}>
-                  {`${currentXp} / ${nextLevelXp} XP` }
+                <Text
+                  style={{
+                    color: COLORS.white,
+                    fontSize: TYPOGRAPHY.fontSize.lg,
+                    fontFamily: TYPOGRAPHY.fontSecondary,
+                    textAlign: "center",
+                  }}
+                >
+                  {`${currentXp} / ${nextLevelXp} XP`}
                 </Text>
               </View>
             </View>
           </View>
 
-          {/* ── Scrollable stats section ─────────────────────── */}
           <ScrollView
             style={{ flex: 1 }}
             contentContainerStyle={{ padding: SPACING.lg }}
@@ -290,7 +339,6 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
             alwaysBounceVertical={true}
             bounces={true}
           >
-            {/* Daily puzzles completed */}
             <Text
               style={{
                 fontFamily: TYPOGRAPHY.fontPrimary,
@@ -316,7 +364,6 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
                 style={{
                   width: 44,
                   height: 44,
-                  
                   backgroundColor: COLORS.figmaGold,
                   borderRadius: 100,
                   alignItems: "center",
@@ -347,7 +394,6 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
               </Text>
             </View>
 
-            {/* Best Strike */}
             <Text
               style={{
                 fontFamily: TYPOGRAPHY.fontPrimary,
@@ -366,24 +412,36 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
                 marginBottom: SPACING.lg,
               }}
             >
-              <StatBox value={stats?.bestStreak ?? 0} label={AppStrings.StatsModal.BEST_STREAK} />
-              <StatBox value={stats?.wins ?? 0} label={AppStrings.StatsModal.TOTAL_WORDS_GUESSED} />
-              <StatBox value={`${winRate}%`} label={AppStrings.StatsModal.WIN_RATE} />
-              <StatBox value={avgGuess} label={AppStrings.Profile.AVG_GUESS_LABEL} />
+              <StatBox
+                value={stats?.bestStreak ?? 0}
+                label={AppStrings.StatsModal.BEST_STREAK}
+              />
+              <StatBox
+                value={stats?.wins ?? 0}
+                label={AppStrings.StatsModal.TOTAL_WORDS_GUESSED}
+              />
+              <StatBox
+                value={`${winRate}%`}
+                label={AppStrings.StatsModal.WIN_RATE}
+              />
+              <StatBox
+                value={avgGuess}
+                label={AppStrings.Profile.AVG_GUESS_LABEL}
+              />
             </View>
 
-            {/* Treasure chest */}
             <View style={{ marginBottom: SPACING.lg }}>
               <TreasureChest coins={playerData.coins ?? 0} />
             </View>
 
-            {/* Action buttons */}
             {!isGuestMode && (
               <TouchableOpacity
                 onPress={() => setIsPasswordModalVisible(true)}
                 style={actionButtonStyle}
               >
-                <Text style={actionButtonTextStyle}>{AppStrings.Profile.CHANGE_PASSWORD_BUTTON}</Text>
+                <Text style={actionButtonTextStyle}>
+                  {AppStrings.Profile.CHANGE_PASSWORD_BUTTON}
+                </Text>
               </TouchableOpacity>
             )}
 
@@ -393,7 +451,9 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
               onPress={() => modal.openGameModal("achievements", { playerData })}
               style={actionButtonStyle}
             >
-              <Text style={actionButtonTextStyle}>{AppStrings.Achievements.MODAL_TITLE}</Text>
+              <Text style={actionButtonTextStyle}>
+                {AppStrings.Achievements.MODAL_TITLE}
+              </Text>
             </TouchableOpacity>
 
             <View style={{ height: SPACING.sm }} />
@@ -402,19 +462,29 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
               onPress={() => modal.openGameModal("stats", { playerData })}
               style={actionButtonStyle}
             >
-              <Text style={actionButtonTextStyle}>{AppStrings.StatsModal.TITLE}</Text>
+              <Text style={actionButtonTextStyle}>
+                {AppStrings.StatsModal.TITLE}
+              </Text>
             </TouchableOpacity>
 
             <View style={{ height: SPACING.sm }} />
 
             <TouchableOpacity
-              onPress={() => modal.openGameModal("leaderboard", { currentUserId: playerData.userId })}
+              onPress={() =>
+                modal.openGameModal("leaderboard", {
+                  currentUserId: playerData.userId,
+                })
+              }
               style={actionButtonStyle}
             >
-              <Text style={actionButtonTextStyle}>{AppStrings.Leaderboard.TITLE}</Text>
+              <Text style={actionButtonTextStyle}>
+                {AppStrings.Leaderboard.TITLE}
+              </Text>
             </TouchableOpacity>
 
-            <View style={{ height: SPACING.xl, marginBottom: verticalScale(24) }} />
+            <View
+              style={{ height: SPACING.xl, marginBottom: verticalScale(24) }}
+            />
           </ScrollView>
         </View>
       </View>
