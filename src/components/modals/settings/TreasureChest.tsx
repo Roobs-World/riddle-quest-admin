@@ -18,7 +18,7 @@ export default function TreasureChest({ coins }: { coins: number }) {
 
   useEffect(() => {
     rotation.value = withRepeat(
-      withTiming(1, { duration: 20000, easing: Easing.linear }),
+      withTiming(1, { duration: 10000, easing: Easing.linear }),
       -1,
       false
     );
@@ -50,10 +50,10 @@ export default function TreasureChest({ coins }: { coins: number }) {
         <Animated.View
           style={[{
             position: "absolute",
-            width: "150%",
-            height: "150%",
-            top: "-25%",
-            left: "-25%",
+            width: "200%",
+            height: "200%",
+            top: "-50%",
+            left: "-50%",
           }, raysStyle]}
           pointerEvents="none"
           shouldRasterizeIOS
