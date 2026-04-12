@@ -14,7 +14,7 @@ import ChangePasswordModal from "./ChangePasswordModal";
 import UpdateUsernameModal from "./UpdateUsernameModal";
 import AvatarOptionsModal from "./AvatarOptionsModal";
 import PreloadedAvatarsModal from "./PreloadedAvatarsModal";
-import { TYPOGRAPHY, SPACING } from "../../../styles";
+import { TYPOGRAPHY, SPACING, COLORS } from "../../../styles";
 import HomeBg from "../../../assets/images/home-bg.svg";
 import {
   CLOSE_BUTTON_SIZE,
@@ -212,7 +212,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
                 >
                   {playerData.username || "Guest"}
                 </Text>
-                <Text style={{ color: GOLD, fontSize: 14 }}>✏</Text>
+                <Text style={{ color: GOLD, fontSize: 24 }}>✏</Text>
               </TouchableOpacity>
 
               {/* XP progress bar */}
@@ -224,7 +224,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
                 }}
               >
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
-                  <Text style={{ color: GOLD, fontSize: 18 }}>★</Text>
+                  <Text style={{ color: GOLD, fontSize: 24  }}>★</Text>
                   <View style={{ flex: 1, height: 8, backgroundColor: "rgba(255,255,255,0.2)", borderRadius: 4, overflow: "hidden" }}>
                     <View
                       testID="xp-progress-fill"
@@ -240,8 +240,8 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
                     Lv.{level}
                   </Text>
                 </View>
-                <Text style={{ color: "rgba(255,255,255,0.6)", fontSize: TYPOGRAPHY.fontSize.lg, fontFamily: TYPOGRAPHY.fontSecondary, textAlign: "center" }}>
-                  {nextLevelXp > 0 ? `${currentXp} / ${nextLevelXp} XP` : "Max Level"}
+                <Text style={{ color: COLORS.white, fontSize: TYPOGRAPHY.fontSize.lg, fontFamily: TYPOGRAPHY.fontSecondary, textAlign: "center" }}>
+                  {`${currentXp} / ${nextLevelXp} XP` }
                 </Text>
               </View>
             </View>
@@ -279,13 +279,14 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
                 style={{
                   width: 44,
                   height: 44,
-                  borderRadius: 22,
-                  backgroundColor: GOLD,
+                  
+                  backgroundColor: COLORS.figmaGold,
+                  borderRadius: 100,
                   alignItems: "center",
                   justifyContent: "center",
                 }}
               >
-                <Text style={{ fontSize: 20 }}>🏅</Text>
+                <Text style={{ fontSize: 24 }}>🏅</Text>
               </View>
               <Text
                 style={{
