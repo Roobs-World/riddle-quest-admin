@@ -973,6 +973,8 @@ describe("GameScreen", () => {
       inputProps.handleNext();
 
       const config = mockShowSkipModal.mock.calls[0][0];
+      config.onOpenShop();
+      expect(mockShowCoinShopModal).toHaveBeenCalled();
       await config.onSkipLevel();
 
       await waitFor(() => {
@@ -1251,6 +1253,35 @@ describe("GameScreen", () => {
       config.onPayAndPlay();
 
       expect(mockShowNoProductsAvailable).toHaveBeenCalled();
+    });
+
+    it("passes only store-backed Firestore packs to coin shop modal", async () => {
+      const { IapService } = require("../../../services/IapService");
+      const { ProductPricingService } = require("../../../services/ProductPricingService");
+
+      IapService.getProducts.mockResolvedValueOnce([
+        { id: "com.qwordly.coinpack1", price: 0.99 } as any,
+      ]);
+      ProductPricingService.getActiveProducts.mockResolvedValueOnce([
+        { productId: "com.qwordly.coinpack1", sortOrder: 1 } as any,
+        { productId: "com.qwordly.coinpack5", sortOrder: 2 } as any,
+      ]);
+
+      render(<GameScreen {...defaultProps} />);
+
+      await waitFor(() => {
+        expect(IapService.getProducts).toHaveBeenCalled();
+        expect(ProductPricingService.getActiveProducts).toHaveBeenCalled();
+      });
+
+      const headerProps = getLatestProps(mockHeader);
+      headerProps.onCoinsPress();
+
+      const config =
+        mockShowCoinShopModal.mock.calls[mockShowCoinShopModal.mock.calls.length - 1][0];
+      expect(config.firestoreProducts).toEqual([
+        expect.objectContaining({ productId: "com.qwordly.coinpack1" }),
+      ]);
     });
 
     it("opens coin shop in loading state while shop products are still fetching", () => {

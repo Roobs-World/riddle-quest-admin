@@ -19,6 +19,7 @@ interface SkipModalProps {
   userCoins: number;
   skipCost: number;
   onSkipLevel: () => void;
+  onOpenShop: () => void;
   onClose: () => void;
 }
 
@@ -27,6 +28,7 @@ const SkipModal: React.FC<SkipModalProps> = ({
   userCoins,
   skipCost,
   onSkipLevel,
+  onOpenShop,
   onClose,
 }) => {
   const canAffordSkip = userCoins >= skipCost;
@@ -109,12 +111,20 @@ const SkipModal: React.FC<SkipModalProps> = ({
             )}
             <View style={{ width: "100%", marginTop: SPACING.lg }}>
               <WideButton
-                buttonText={AppStrings.GameScreenAlerts.SKIP_LEVEL_BUTTON}
+                buttonText={
+                  canAffordSkip
+                    ? AppStrings.GameScreenAlerts.SKIP_LEVEL_BUTTON
+                    : AppStrings.Navigation.BUY_COINS_BUTTON
+                }
                 onPress={() => {
                   onClose();
-                  onSkipLevel();
+                  if (canAffordSkip) {
+                    onSkipLevel();
+                  } else {
+                    onOpenShop();
+                  }
                 }}
-                disabled={!canAffordSkip}
+                disabled={false}
               />
               <View style={{ marginTop: SPACING.md }}>
                 <WideButton

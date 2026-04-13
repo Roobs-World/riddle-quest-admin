@@ -46,6 +46,7 @@ describe("<SkipModal />", () => {
     userCoins: 100,
     skipCost: 50,
     onSkipLevel: jest.fn(),
+    onOpenShop: jest.fn(),
     onClose: jest.fn(),
   };
 
@@ -80,8 +81,8 @@ describe("<SkipModal />", () => {
     });
 
     it("should render CLOSE button", () => {
-      const { getByText } = render(<SkipModal {...defaultProps} />);
-      expect(getByText("CLOSE")).toBeTruthy();
+      const { getByTestId } = render(<SkipModal {...defaultProps} />);
+      expect(getByTestId("wide-button-close")).toBeTruthy();
     });
 
     it("should render close button in header", () => {
@@ -114,12 +115,11 @@ describe("<SkipModal />", () => {
       expect(skipButton.props.accessibilityState?.disabled).toBeFalsy();
     });
 
-    it("should disable skip button when user cannot afford", () => {
+    it("should show buy coins button when user cannot afford", () => {
       const { getByTestId } = render(
         <SkipModal {...defaultProps} userCoins={10} skipCost={50} />
       );
-      const skipButton = getByTestId("wide-button-skip-level");
-      expect(skipButton.props.accessibilityState?.disabled).toBe(true);
+      expect(getByTestId("wide-button-buy-coins")).toBeTruthy();
     });
 
     it("should enable skip button when user can afford", () => {
@@ -170,19 +170,25 @@ describe("<SkipModal />", () => {
       expect(onClose).toHaveBeenCalledTimes(1);
     });
 
-    it("should not call onSkipLevel when skip button is pressed but disabled", () => {
+    it("should open shop instead of skipping when user cannot afford", () => {
       const onSkipLevel = jest.fn();
+      const onOpenShop = jest.fn();
+      const onClose = jest.fn();
       const { getByTestId } = render(
         <SkipModal
           {...defaultProps}
           onSkipLevel={onSkipLevel}
+          onOpenShop={onOpenShop}
+          onClose={onClose}
           userCoins={10}
           skipCost={50}
         />
       );
 
-      fireEvent.press(getByTestId("wide-button-skip-level"));
+      fireEvent.press(getByTestId("wide-button-buy-coins"));
       expect(onSkipLevel).not.toHaveBeenCalled();
+      expect(onClose).toHaveBeenCalledTimes(1);
+      expect(onOpenShop).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -264,8 +270,7 @@ describe("<SkipModal />", () => {
         <SkipModal {...defaultProps} userCoins={49} skipCost={50} />
       );
       expect(getByText("You do not have enough coins to skip a level.")).toBeTruthy();
-      const skipButton = getByTestId("wide-button-skip-level");
-      expect(skipButton.props.accessibilityState?.disabled).toBe(true);
+      expect(getByTestId("wide-button-buy-coins")).toBeTruthy();
     });
 
     it("should handle coin amount exactly one more than skip cost", () => {

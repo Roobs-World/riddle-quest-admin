@@ -144,14 +144,6 @@ const GameScreenWrapper = () => {
       const isCompleted = await checkDailyChallengeCompletion();
       if (isCompleted) {
         logger.debug("Daily challenge completed. Switching to classic mode.");
-        if (isGuestMode) {
-          updatePlayerDataLocally({
-            progress: {
-              ...playerData.progress,
-              dailyChallengeIndex: (playerData.progress?.dailyChallengeIndex ?? 0) + 1,
-            },
-          });
-        }
         await switchToClassicModeAtCurrentIndex();
         return;
       }
@@ -350,9 +342,21 @@ const GameScreenWrapper = () => {
               playerData.stats?.bestStreak ?? 0,
               updatedWinStreak
             );
+            const updatedDailyChallengeIndex =
+              gameMode === "daily" && isGuestMode
+                ? (playerData.progress?.dailyChallengeIndex ?? 0) + 1
+                : (playerData.progress?.dailyChallengeIndex ?? 0);
+            const updatedDailyPuzzlesCompleted =
+              gameMode === "daily"
+                ? (playerData.stats?.dailyPuzzlesCompleted ?? 0) + 1
+                : (playerData.stats?.dailyPuzzlesCompleted ?? 0);
 
             updatePlayerDataLocally({
               coins: (playerData.coins ?? 0) + coinsEarned,
+              progress: {
+                ...playerData.progress,
+                dailyChallengeIndex: updatedDailyChallengeIndex,
+              },
               stats: {
                 ...playerData.stats,
                 xp: newTotalXp,
@@ -361,6 +365,7 @@ const GameScreenWrapper = () => {
                 totalWins: (playerData.stats?.totalWins ?? 0) + 1,
                 winStreak: updatedWinStreak,
                 bestStreak: updatedBestStreak,
+                dailyPuzzlesCompleted: updatedDailyPuzzlesCompleted,
               },
               lastDailyChallengeCompletedAt:
                 gameMode === "daily" ? Date.now() : playerData.lastDailyChallengeCompletedAt,
@@ -368,6 +373,10 @@ const GameScreenWrapper = () => {
 
             // Check if user completed today's daily challenge
             if (gameMode === "daily") {
+              if (isGuestMode) {
+                await handleContinueAfterCompletion();
+                return;
+              }
               const isCompleted = await checkDailyChallengeCompletion();
               if (isCompleted) {
                 await handleContinueAfterCompletion();

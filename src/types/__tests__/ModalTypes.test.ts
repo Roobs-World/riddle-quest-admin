@@ -400,6 +400,7 @@ describe("ModalTypes", () => {
         userCoins: 200,
         skipCost: 50,
         onSkipLevel: jest.fn(),
+        onOpenShop: jest.fn(),
       };
 
       expect(skipData.skipCost).toBe(50);

@@ -5,6 +5,8 @@ jest.mock("react-native-iap", () => ({
   finishTransaction: jest.fn(),
   fetchProducts: jest.fn(),
   requestPurchase: jest.fn(),
+  purchaseUpdatedListener: jest.fn(),
+  purchaseErrorListener: jest.fn(),
 }));
 
 // Mock react-native Platform
@@ -67,6 +69,14 @@ const mockGetProducts = RNIap.fetchProducts as jest.MockedFunction<
 const mockRequestPurchase = RNIap.requestPurchase as jest.MockedFunction<
   typeof RNIap.requestPurchase
 >;
+const mockPurchaseUpdatedListener =
+  RNIap.purchaseUpdatedListener as jest.MockedFunction<
+    typeof RNIap.purchaseUpdatedListener
+  >;
+const mockPurchaseErrorListener =
+  RNIap.purchaseErrorListener as jest.MockedFunction<
+    typeof RNIap.purchaseErrorListener
+  >;
 const mockLogCoinPackPurchased =
   analyticsService.logCoinPackPurchased as jest.MockedFunction<
     typeof analyticsService.logCoinPackPurchased
@@ -98,6 +108,12 @@ describe("IapService", () => {
     mockGetPurchaseHistory.mockResolvedValue([] as any);
     mockFinishTransaction.mockResolvedValue({} as any);
     mockGetProducts.mockResolvedValue([] as any);
+    mockPurchaseUpdatedListener.mockImplementation(() => ({
+      remove: jest.fn(),
+    }));
+    mockPurchaseErrorListener.mockImplementation(() => ({
+      remove: jest.fn(),
+    }));
 
     // Setup default successful Firebase function response
     mockCallableFunction.mockResolvedValue({ data: { success: true } });
@@ -439,6 +455,25 @@ describe("IapService", () => {
       ).resolves.toEqual(mockPurchase);
     });
 
+    it("should resolve purchase from purchaseUpdatedListener when requestPurchase returns null", async () => {
+      mockRequestPurchase.mockResolvedValue(null as any);
+      mockCallableFunction.mockResolvedValue({ data: { success: true } });
+
+      mockPurchaseUpdatedListener.mockImplementation((listener: (purchase: RNIap.Purchase) => void) => {
+        listener({
+          ...mockPurchase,
+          productId: "com.qwordly.coins100",
+        } as RNIap.Purchase);
+        return { remove: jest.fn() };
+      });
+
+      await expect(
+        IapService.purchaseProduct("com.qwordly.coins100")
+      ).resolves.toEqual(
+        expect.objectContaining({ productId: "com.qwordly.coins100" })
+      );
+    });
+
     it("should handle null purchase response", async () => {
       mockRequestPurchase.mockResolvedValue(null as any);
 
@@ -569,6 +604,21 @@ describe("IapService", () => {
 
         const { logger } = require("../../utils/logger");
         expect(logger.debug).toHaveBeenCalledWith("Item unavailable.");
+      });
+
+      it("should handle sku-not-found error", async () => {
+        const error = new Error("SKU not found") as any;
+        error.code = "sku-not-found";
+        mockRequestPurchase.mockRejectedValue(error);
+
+        await expect(
+          IapService.purchaseProduct("com.qwordly.coins100")
+        ).rejects.toThrow("This item is currently unavailable.");
+
+        const { logger } = require("../../utils/logger");
+        expect(logger.debug).toHaveBeenCalledWith(
+          "SKU not found for current store account."
+        );
       });
 
       it("should handle E_NETWORK_ERROR error", async () => {

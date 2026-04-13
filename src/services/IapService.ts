@@ -12,6 +12,8 @@ interface IapError extends Error {
   code?: string;
 }
 
+const PURCHASE_EVENT_TIMEOUT_MS = 1_500;
+
 /**
  * Product IDs for coin packages.
  * These must match the product IDs configured in:
@@ -48,6 +50,80 @@ let cacheTimestamp = 0;
 const PRODUCT_CACHE_TTL_MS = 5 * 60 * 1000;
 
 export const IapService = {
+  async requestPurchaseWithListenerFallback(
+    productId: string
+  ): Promise<RNIap.Purchase | null> {
+    let timeoutHandle: ReturnType<typeof setTimeout> | null = null;
+    let isSettled = false;
+    let purchaseUpdatedSubscription: RNIap.EventSubscription | null = null;
+    let purchaseErrorSubscription: RNIap.EventSubscription | null = null;
+
+    const cleanup = () => {
+      if (purchaseUpdatedSubscription) {
+        purchaseUpdatedSubscription.remove();
+      }
+      if (purchaseErrorSubscription) {
+        purchaseErrorSubscription.remove();
+      }
+      if (timeoutHandle) {
+        clearTimeout(timeoutHandle);
+        timeoutHandle = null;
+      }
+    };
+
+    const listenerResult = new Promise<RNIap.Purchase | null>((resolve, reject) => {
+      purchaseUpdatedSubscription = RNIap.purchaseUpdatedListener((purchase) => {
+        if (isSettled) return;
+        if (purchase.productId !== productId) return;
+
+        isSettled = true;
+        cleanup();
+        resolve(purchase);
+      });
+
+      purchaseErrorSubscription = RNIap.purchaseErrorListener((error) => {
+        if (isSettled) return;
+
+        isSettled = true;
+        cleanup();
+        reject(error);
+      });
+
+      timeoutHandle = setTimeout(() => {
+        if (isSettled) return;
+
+        isSettled = true;
+        cleanup();
+        resolve(null);
+      }, PURCHASE_EVENT_TIMEOUT_MS);
+    });
+
+    try {
+      const purchaseResult = await RNIap.requestPurchase({
+        type: "in-app",
+        request: {
+          apple: { sku: productId },
+          google: { skus: [productId] },
+        },
+      });
+
+      const directPurchase = Array.isArray(purchaseResult)
+        ? purchaseResult[0] ?? null
+        : purchaseResult;
+      if (directPurchase) {
+        isSettled = true;
+        cleanup();
+        return directPurchase;
+      }
+
+      return await listenerResult;
+    } catch (error) {
+      isSettled = true;
+      cleanup();
+      throw error;
+    }
+  },
+
   async grantDevCoinsFallback(
     productId: string
   ): Promise<boolean> {
@@ -158,7 +234,11 @@ export const IapService = {
       }
 
       const availableProducts = await this.getProducts();
-      const availableProductIds = new Set(availableProducts.map((product) => product.id));
+      const availableProductIds = new Set(
+        availableProducts
+          .map((product) => product.id ?? (product as { productId?: string }).productId)
+          .filter((id): id is string => typeof id === "string" && id.length > 0)
+      );
       if (availableProducts.length > 0 && !availableProductIds.has(productId)) {
         logger.warn("Requested IAP product is not available on this device/account.", {
           requestedProductId: productId,
@@ -171,17 +251,7 @@ export const IapService = {
         throw unavailableError;
       }
 
-      const purchaseResult = await RNIap.requestPurchase({
-        type: "in-app",
-        request: {
-          apple: { sku: productId },
-          google: { skus: [productId] },
-        },
-      });
-
-      const purchase = Array.isArray(purchaseResult)
-        ? purchaseResult[0] // Take the first item if it's an array
-        : purchaseResult; // Otherwise use the result directly
+      const purchase = await this.requestPurchaseWithListenerFallback(productId);
 
       if (!purchase) {
         logger.debug("Purchase request did not return a purchase object.");
@@ -264,6 +334,9 @@ export const IapService = {
           "A system error occurred. Please contact support if this persists.";
       } else if ((error as IapError).code === "E_ITEM_UNAVAILABLE") {
         logger.debug("Item unavailable.");
+        userFriendlyMessage = "This item is currently unavailable.";
+      } else if ((error as IapError).code === "sku-not-found") {
+        logger.debug("SKU not found for current store account.");
         userFriendlyMessage = "This item is currently unavailable.";
       } else if ((error as IapError).code === "E_NETWORK_ERROR") {
         logger.debug("Network error during purchase.");

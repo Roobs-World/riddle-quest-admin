@@ -122,6 +122,7 @@ const EN_APP_STRINGS = {
     PROFILE_BUTTON: "Profile",
     SETTINGS_BUTTON: "Settings",
     HINT_BUTTON: "Hint",
+    BUY_COINS_BUTTON: "Buy coins",
   },
   NavigationMessages: {
     NO_CLASSIC_RIDDLE_FOUND: "⚠️ No classic riddle found at index ",

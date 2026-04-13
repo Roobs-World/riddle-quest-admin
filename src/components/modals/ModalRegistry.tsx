@@ -319,6 +319,7 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
     userCoins: (props.userCoins as number) || 0,
     skipCost: (props.skipCost as number) || 0,
     onSkipLevel: (props.onSkipLevel as () => void) || (() => {}),
+    onOpenShop: (props.onOpenShop as () => void) || (() => {}),
   })),
 
   welcome: createModalWrapper(

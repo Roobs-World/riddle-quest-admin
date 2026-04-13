@@ -162,6 +162,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           ...guestBase.stats,
           ...(parsed.stats ?? {}),
         },
+        unlockedAchievements: Array.isArray(parsed.unlockedAchievements)
+          ? parsed.unlockedAchievements
+          : guestBase.unlockedAchievements,
+        hasPurchasedApp:
+          typeof parsed.hasPurchasedApp === "boolean"
+            ? parsed.hasPurchasedApp
+            : guestBase.hasPurchasedApp,
+        avatarUrl:
+          typeof parsed.avatarUrl === "string" ? parsed.avatarUrl : guestBase.avatarUrl,
+        displayName:
+          typeof parsed.displayName === "string"
+            ? parsed.displayName
+            : guestBase.displayName,
         lastDailyChallengeCompletedAt:
           typeof parsed.lastDailyChallengeCompletedAt === "number"
             ? parsed.lastDailyChallengeCompletedAt
@@ -173,6 +186,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       return null;
     }
   }, []);
+
+  useEffect(() => {
+    if (!playerData || !isGuestPlayer(playerData)) return;
+    void saveGuestProfileToLocal(playerData);
+  }, [playerData, saveGuestProfileToLocal]);
 
   const clearGuestProfileFromLocal = useCallback(async (): Promise<void> => {
     try {

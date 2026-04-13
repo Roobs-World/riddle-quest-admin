@@ -254,6 +254,7 @@ const generateMockData = (
         userCoins: 100,
         skipCost: 50,
         onSkipLevel: () => logger.debug("Skip level pressed"),
+        onOpenShop: () => logger.debug("Open shop pressed"),
       };
     case "welcome":
       return {

@@ -562,6 +562,95 @@ describe("NavigationStack", () => {
     );
   });
 
+  it("updates guest daily progress on win and switches to classic without remote completion check", async () => {
+    const playerData = {
+      userId: "guest-1",
+      email: "guest_1@guest.qwordly.com",
+      username: "Guest",
+      progress: { dailyChallengeIndex: 4, classicIndex: 2 },
+      coins: 100,
+      stats: {
+        xp: 10,
+        totalScore: 10,
+        level: 1,
+        wins: 0,
+        totalWins: 0,
+        dailyPuzzlesCompleted: 2,
+      },
+    };
+    const updatePlayerDataLocally = jest.fn();
+    const setGameMode = jest.fn();
+    const fetchCurrentRiddle = jest.fn().mockResolvedValue(undefined);
+    mockedUseAuth.mockReturnValue(
+      createAuthState({
+        isAuthenticated: true,
+        gameMode: "daily",
+        playerData,
+        currentRiddle: { riddleId: "daily-guest", text: "D1", answer: "WORD" },
+        updatePlayerDataLocally,
+        setGameMode,
+        fetchCurrentRiddle,
+      }) as any
+    );
+
+    const { getByTestId } = render(<Navigation />);
+    fireEvent.press(getByTestId("trigger-win"));
+
+    await waitFor(() => expect(setGameMode).toHaveBeenCalledWith("classic"));
+    expect(fetchCurrentRiddle).toHaveBeenCalledWith(playerData, "classic");
+    expect(mockDailyCallable).not.toHaveBeenCalled();
+    expect(updatePlayerDataLocally).toHaveBeenCalledWith(
+      expect.objectContaining({
+        progress: expect.objectContaining({
+          dailyChallengeIndex: 5,
+        }),
+        stats: expect.objectContaining({
+          dailyPuzzlesCompleted: 3,
+        }),
+        lastDailyChallengeCompletedAt: expect.any(Number),
+      })
+    );
+  });
+
+  it("does not increment guest daily challenge index again in next-level handler", async () => {
+    const playerData = {
+      userId: "guest-2",
+      email: "guest_2@guest.qwordly.com",
+      username: "Guest",
+      progress: { dailyChallengeIndex: 9, classicIndex: 3 },
+      coins: 30,
+      stats: { xp: 0, level: 1, dailyPuzzlesCompleted: 0 },
+      lastDailyChallengeCompletedAt: Date.now(),
+    };
+    const updatePlayerDataLocally = jest.fn();
+    const setGameMode = jest.fn();
+    const fetchCurrentRiddle = jest.fn().mockResolvedValue(undefined);
+    mockedUseAuth.mockReturnValue(
+      createAuthState({
+        isAuthenticated: true,
+        gameMode: "daily",
+        playerData,
+        currentRiddle: { riddleId: "daily-2", text: "R", answer: "WORD" },
+        updatePlayerDataLocally,
+        setGameMode,
+        fetchCurrentRiddle,
+      }) as any
+    );
+
+    const { getByTestId } = render(<Navigation />);
+    fireEvent.press(getByTestId("trigger-next-level"));
+
+    await waitFor(() => expect(setGameMode).toHaveBeenCalledWith("classic"));
+    expect(fetchCurrentRiddle).toHaveBeenCalledWith(playerData, "classic");
+    expect(updatePlayerDataLocally).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        progress: expect.objectContaining({
+          dailyChallengeIndex: 10,
+        }),
+      })
+    );
+  });
+
   it("handles notification deep-link navigation to daily challenge", async () => {
     const playerData = { userId: "u8", progress: {}, coins: 1, stats: { xp: 0, level: 1 } };
     const setGameMode = jest.fn();

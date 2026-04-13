@@ -1,5 +1,6 @@
 import React from "react";
 import { renderHook, act, waitFor } from "@testing-library/react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Player, FirestoreRiddle } from "../../validation/firestoreSchemas";
 
 // Mock Firestore before any module imports it
@@ -136,8 +137,9 @@ describe("AuthContext", () => {
     <AuthProvider>{children}</AuthProvider>
   );
 
-  beforeEach(() => {
+  beforeEach(async () => {
     jest.clearAllMocks();
+    await AsyncStorage.clear();
     // Reset auth mock
     mockAuthInstance.currentUser = null;
     mockAuthInstance.onAuthStateChanged.mockClear();
@@ -166,6 +168,78 @@ describe("AuthContext", () => {
   });
 
   describe("Authentication Flow", () => {
+    it("restores guest profile fields from local storage on app open", async () => {
+      const guestUid = "guest-restore-1";
+      const guestStoredPayload = {
+        coins: 777,
+        progress: {
+          classicIndex: 9,
+          dailyChallengeIndex: 12,
+          dailyChallengeCurrentQuestion: 0,
+        },
+        stats: {
+          xp: 321,
+          level: 5,
+          dailyPuzzlesCompleted: 8,
+          bestStreak: 4,
+          totalWordsGuessed: 0,
+          winRate: 0,
+          averageGuesses: 0,
+          totalScore: 0,
+          highestLevelClassic: 0,
+          gamesPlayed: 0,
+          wins: 0,
+          challengeWins: 0,
+          winStreak: 0,
+          totalWins: 0,
+          totalGuessesInWins: 0,
+          totalHintsUsed: 0,
+        },
+        unlockedAchievements: [
+          { achievementId: "daily_completed", unlockedAt: 1710000000000 },
+        ],
+        hasPurchasedApp: true,
+        lastDailyChallengeCompletedAt: 1710000000000,
+      };
+
+      await AsyncStorage.setItem(
+        "@guest_player_progress_v1",
+        JSON.stringify(guestStoredPayload)
+      );
+
+      (fetchClassicRiddleFromFirestore as jest.Mock).mockResolvedValue(
+        mockClassicRiddle
+      );
+
+      mockAuthInstance.onAuthStateChanged.mockImplementation(
+        (callback: (user: any) => void) => {
+          callback({
+            uid: guestUid,
+            isAnonymous: true,
+            email: null,
+            displayName: null,
+          } as any);
+          return jest.fn();
+        }
+      );
+
+      const { result } = renderHook(() => useAuth(), { wrapper });
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      expect(result.current.playerData?.userId).toBe(guestUid);
+      expect(result.current.playerData?.coins).toBe(777);
+      expect(result.current.playerData?.progress.dailyChallengeIndex).toBe(12);
+      expect(result.current.playerData?.stats.xp).toBe(321);
+      expect(result.current.playerData?.stats.dailyPuzzlesCompleted).toBe(8);
+      expect(result.current.playerData?.unlockedAchievements).toEqual([
+        { achievementId: "daily_completed", unlockedAt: 1710000000000 },
+      ]);
+      expect(result.current.playerData?.hasPurchasedApp).toBe(true);
+    });
+
     it("handles user login", async () => {
       // Mock the services
       (loadUserProgressFromFirestore as jest.Mock).mockResolvedValue(

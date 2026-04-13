@@ -118,11 +118,13 @@ describe("AppStrings", () => {
       expect(AppStrings.Navigation).toHaveProperty("PROFILE_BUTTON");
       expect(AppStrings.Navigation).toHaveProperty("SETTINGS_BUTTON");
       expect(AppStrings.Navigation).toHaveProperty("HINT_BUTTON");
+      expect(AppStrings.Navigation).toHaveProperty("BUY_COINS_BUTTON");
 
       expect(typeof AppStrings.Navigation.PLAY_BUTTON).toBe("string");
       expect(typeof AppStrings.Navigation.PROFILE_BUTTON).toBe("string");
       expect(typeof AppStrings.Navigation.SETTINGS_BUTTON).toBe("string");
       expect(typeof AppStrings.Navigation.HINT_BUTTON).toBe("string");
+      expect(typeof AppStrings.Navigation.BUY_COINS_BUTTON).toBe("string");
     });
   });
 
@@ -449,6 +451,7 @@ describe("AppStrings", () => {
       expect(AppStrings.Navigation.PROFILE_BUTTON).toBe("Profile");
       expect(AppStrings.Navigation.SETTINGS_BUTTON).toBe("Settings");
       expect(AppStrings.Navigation.HINT_BUTTON).toBe("Hint");
+      expect(AppStrings.Navigation.BUY_COINS_BUTTON).toBe("Buy coins");
     });
 
     it("should have all strings as non-empty values", () => {

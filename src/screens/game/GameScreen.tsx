@@ -737,8 +737,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const handleBackspace = useCallback(() => {
     if (answerLength <= 0) return;
 
-    const targetIndex = Math.min(
-      Math.max(0, activeSlotIndex - 1),
+    const clampedActiveIndex = Math.min(
+      Math.max(0, activeSlotIndex),
       Math.max(0, answerLength - 1)
     );
 
@@ -746,6 +746,10 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       if (prev.length === 0) {
         return prev;
       }
+
+      const targetIndex = prev[clampedActiveIndex]
+        ? clampedActiveIndex
+        : Math.max(0, clampedActiveIndex - 1);
 
       const next = [...prev];
       next[targetIndex] = "";
@@ -755,7 +759,13 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       return next;
     });
 
-    setActiveSlotIndex((prev) => Math.max(0, prev - 1));
+    setActiveSlotIndex((prev) => {
+      const clampedPrev = Math.min(
+        Math.max(0, prev),
+        Math.max(0, answerLength - 1)
+      );
+      return Math.max(0, clampedPrev - 1);
+    });
   }, [activeSlotIndex, answerLength, setCurrentGuess]);
 
   const handleSelectCurrentGuessSlot = useCallback(
@@ -826,6 +836,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     modal.showSkipModal({
       userCoins,
       skipCost,
+      onOpenShop: handleCoinsPress,
       onSkipLevel: async () => {
         try {
           if (!isGuestMode) {
@@ -851,6 +862,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     gameMode,
     modal,
     userCoins,
+    handleCoinsPress,
     resetGame,
     onNextLevel,
     onSkipUsed,
@@ -1016,9 +1028,15 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   }, [modal, showRewardedAd, modalActions]);
 
   const handleCoinsPress = useCallback(() => {
+    const availableStoreProductIds = new Set(iapProducts.map((product) => product.id));
+    const purchasableFirestoreProducts = firestoreProducts.filter((product) =>
+      availableStoreProductIds.has(product.productId)
+    );
+
     logger.debug("Opening coin shop modal with:", {
       iapProducts: iapProducts.length,
       firestoreProducts: firestoreProducts.length,
+      purchasableFirestoreProducts: purchasableFirestoreProducts.length,
       iapLoading,
       productPricingLoading,
       iapError,
@@ -1028,7 +1046,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     try {
       modal.showCoinShop({
         products: iapProducts,
-        firestoreProducts,
+        firestoreProducts: purchasableFirestoreProducts,
         currentCoins: userCoins,
         loading: iapLoading || productPricingLoading,
         error: iapError || productPricingError,
