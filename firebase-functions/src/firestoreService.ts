@@ -13,6 +13,8 @@ import {RiddleCollections} from "./validation/firestoreSchemas";
 // Removed import for non-existent models.js: import type { GameState } from "./models.js";
 import * as functions from "firebase-functions";
 
+const INITIAL_COINS: number = 300;
+
 // const db = admin.firestore(); // Replaced with lazy initialization
 let dbInstance: admin.firestore.Firestore;
 
@@ -206,7 +208,7 @@ export async function initializeNewUser(
       username: userData.username,
       displayName: userData.displayName,
       avatarUrl: userData.avatarUrl,
-      coins: 300,
+      coins: INITIAL_COINS,
       hasPurchasedApp: false,
       createdAt: Date.now(),
       registeredAt: Date.now(),
@@ -357,7 +359,7 @@ export async function ensureUserDocumentComplete(userId: string): Promise<void> 
 
     // Ensure other required fields exist
     if (userData.coins === undefined) {
-      updates.coins = 100; // Default starting coins
+      updates.coins = INITIAL_COINS; // Default starting coins
     }
 
     if (userData.hasPurchasedApp === undefined) {

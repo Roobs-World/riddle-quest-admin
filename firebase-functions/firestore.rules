@@ -204,8 +204,8 @@ service cloud.firestore {
 
     // Product pricing catalog - readable by clients, writable by server only
     match /productPricing/{productId} {
-      // Coin pack pricing is app catalog data; only authenticated users can read
-      allow read: if isAuthenticated();
+      // Coin pack pricing is public app catalog data.
+      allow read: if true;
 
       // Only server can create/update/delete pricing documents
       allow write: if isServerRequest();

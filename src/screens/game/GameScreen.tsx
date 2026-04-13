@@ -160,6 +160,9 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
   const gameOverHandledRef = useRef(false);
   const openShopFromLossRef = useRef<() => void>(() => {});
+  const coinAnimationSettleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null
+  );
 
   const [iapProducts, setIapProducts] = useState<RNIap.Product[]>([]);
   const [iapLoading, setIapLoading] = useState(true);
@@ -196,6 +199,9 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   }, [gameMode, resetGame]);
 
   const isAnyModalVisible = modal.modals.length > 0;
+  const [canAnimateCoinIncreases, setCanAnimateCoinIncreases] = useState(
+    !isAnyModalVisible
+  );
   const letterStates = useMemo(() => computeLetterStates(guesses), [guesses]);
 
   const { isRewardedAdReady, loadRewardedAd, showRewardedAd } = useRewardedAds();
@@ -203,6 +209,33 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   useEffect(() => {
     loadRewardedAd();
   }, [loadRewardedAd]);
+
+  useEffect(() => {
+    return () => {
+      if (coinAnimationSettleTimeoutRef.current) {
+        clearTimeout(coinAnimationSettleTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (coinAnimationSettleTimeoutRef.current) {
+      clearTimeout(coinAnimationSettleTimeoutRef.current);
+      coinAnimationSettleTimeoutRef.current = null;
+    }
+
+    if (isAnyModalVisible) {
+      setCanAnimateCoinIncreases(false);
+      return;
+    }
+
+    // Wait for modal transitions/next queued modal to settle before allowing
+    // deferred coin count-up animations to start.
+    coinAnimationSettleTimeoutRef.current = setTimeout(() => {
+      setCanAnimateCoinIncreases(true);
+      coinAnimationSettleTimeoutRef.current = null;
+    }, MODAL_CLOSE_DELAY_MS);
+  }, [isAnyModalVisible]);
 
   const loadIapProducts = useCallback(async () => {
     if (shouldUseDevFirestoreCatalog) {
@@ -1249,7 +1282,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
             userCoins={userCoins}
             onCoinsPress={handleCoinsPress}
             modeLabel={headerModeLabel}
-            shouldAnimateCoins={!isAnyModalVisible}
+            shouldAnimateCoins={canAnimateCoinIncreases}
           />
 
           <GameBoard

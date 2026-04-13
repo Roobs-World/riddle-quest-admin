@@ -184,6 +184,7 @@ export default Sentry.wrap(function App() {
     }
 
     hasStartedCriticalInitRef.current = true;
+    startBackgroundInitialization();
     let isMounted = true;
 
     void (async () => {
@@ -213,7 +214,6 @@ export default Sentry.wrap(function App() {
       } finally {
         if (isMounted) {
           setIsInitialized(true);
-          startBackgroundInitialization();
         }
       }
     })();
