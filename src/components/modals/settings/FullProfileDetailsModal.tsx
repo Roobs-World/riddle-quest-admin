@@ -16,6 +16,7 @@ import * as ImagePicker from "react-native-image-picker";
 import { TYPOGRAPHY, SPACING, COLORS } from "../../../styles";
 import { getStorage } from "@react-native-firebase/storage";
 import { getApp } from "@react-native-firebase/app";
+import { getAuth } from "@react-native-firebase/auth";
 import {
   CLOSE_BUTTON_SIZE,
   AVATAR_SIZE_LARGE,
@@ -52,7 +53,10 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
   const modal = useModal();
   const { updatePlayerData, playerData: authPlayerData } = useAuth();
   const resolvedPlayerData = authPlayerData ?? playerData;
-  const isGuestMode = isGuestPlayer(resolvedPlayerData);
+  const firebaseUser = getAuth(getApp()).currentUser;
+  const isGuestMode = firebaseUser
+    ? firebaseUser.isAnonymous
+    : isGuestPlayer(resolvedPlayerData);
   const [isUsernameModalVisible, setIsUsernameModalVisible] = useState(false);
   const [isUpgradeModalVisible, setIsUpgradeModalVisible] = useState(false);
   const [isUploading, setIsUploading] = useState(false);

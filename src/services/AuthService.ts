@@ -82,6 +82,12 @@ export const AuthService = {
 
         const googleCredential = GoogleAuthProvider.credential(idToken);
         const userCredential = await user.linkWithCredential(googleCredential);
+        if (typeof userCredential.user.reload === "function") {
+          await userCredential.user.reload();
+        }
+        if (typeof userCredential.user.getIdToken === "function") {
+          await userCredential.user.getIdToken(true);
+        }
 
         logger.debug("✅ Anonymous account linked with Google:", {
           uid: userCredential.user?.uid,
@@ -129,6 +135,12 @@ export const AuthService = {
         tokenData.accessToken
       );
       const userCredential = await user.linkWithCredential(facebookCredential);
+      if (typeof userCredential.user.reload === "function") {
+        await userCredential.user.reload();
+      }
+      if (typeof userCredential.user.getIdToken === "function") {
+        await userCredential.user.getIdToken(true);
+      }
 
       logger.debug("✅ Anonymous account linked with Facebook:", {
         uid: userCredential.user?.uid,

@@ -31,7 +31,7 @@ import {
   createUserDocumentInFirestore,
 } from "../services/FirestoreService";
 import { Player, FirestoreRiddle } from "../validation/firestoreSchemas";
-import { getAuth, signOut } from "@react-native-firebase/auth";
+import { getAuth, signOut, type FirebaseAuthTypes } from "@react-native-firebase/auth";
 import { getApp } from "@react-native-firebase/app";
 import { getFunctions, httpsCallable } from "@react-native-firebase/functions";
 import { RiddleInitializationService } from "../services/RiddleInitializationService";
@@ -448,7 +448,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     logger.debug("🔧 Setting up Firebase auth listener...");
 
-    const subscriber = getAuth(getApp()).onAuthStateChanged(async (user) => {
+    const auth = getAuth(getApp());
+    const authHandler = async (user: FirebaseAuthTypes.User | null) => {
       logger.debug(
         "🔔 Firebase auth state changed. User:",
         user ? user.uid : "null"
@@ -606,24 +607,42 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             }
           } else {
             logger.debug("✅ Existing user document found");
-            if (providerAvatarUrl && data.avatarUrl !== providerAvatarUrl) {
-              await updateUserDocumentInFirestore(user.uid, {
-                avatarUrl: providerAvatarUrl,
-              });
-              data = { ...data, avatarUrl: providerAvatarUrl };
-              logger.debug("🖼️ Synced avatar from provider profile");
+          }
+
+          const userDocUpdates: Partial<Player> = {};
+
+          if (providerAvatarUrl && data.avatarUrl !== providerAvatarUrl) {
+            userDocUpdates.avatarUrl = providerAvatarUrl;
+          }
+
+          const shouldSyncProviderUsername =
+            upgradedFromAnonymous || (!user.isAnonymous && isGuestPlayer(data));
+          if (shouldSyncProviderUsername) {
+            const providerUsername = resolveProviderUsername(user);
+            if (providerUsername && data.username !== providerUsername) {
+              userDocUpdates.username = providerUsername;
             }
           }
 
-          if (upgradedFromAnonymous) {
-            const providerUsername = resolveProviderUsername(user);
-            if (providerUsername && data.username !== providerUsername) {
-              await updateUserDocumentInFirestore(user.uid, {
-                username: providerUsername,
-              });
-              data = { ...data, username: providerUsername };
-              logger.debug("👤 Synced upgraded account username from provider profile");
+          const shouldSyncProviderEmail = !user.isAnonymous && isGuestPlayer(data);
+          if (shouldSyncProviderEmail) {
+            try {
+              const providerEmail = await resolveUserEmail(user);
+              if (providerEmail && data.email !== providerEmail) {
+                userDocUpdates.email = providerEmail;
+              }
+            } catch (emailError) {
+              logger.warn(
+                "Could not resolve provider email while reconciling upgraded profile.",
+                emailError
+              );
             }
+          }
+
+          if (Object.keys(userDocUpdates).length > 0) {
+            await updateUserDocumentInFirestore(user.uid, userDocUpdates);
+            data = { ...data, ...userDocUpdates };
+            logger.debug("👤 Synced provider profile fields:", userDocUpdates);
           }
 
           logger.debug("📊 User data loaded successfully:", !!data);
@@ -711,7 +730,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       }
 
       logger.debug("✅ Auth state processing completed");
-    });
+    };
+
+    const authWithUserChanged = auth as typeof auth & {
+      onUserChanged?: (
+        listener: (user: FirebaseAuthTypes.User | null) => void
+      ) => () => void;
+    };
+
+    const subscriber =
+      typeof authWithUserChanged.onUserChanged === "function"
+        ? authWithUserChanged.onUserChanged(authHandler)
+        : auth.onAuthStateChanged(authHandler);
 
     logger.debug("🎯 Firebase auth listener set up successfully");
 
