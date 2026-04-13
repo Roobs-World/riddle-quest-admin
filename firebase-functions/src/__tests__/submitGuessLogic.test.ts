@@ -402,8 +402,8 @@ describe("handleGuessLogic", () => {
     test("should calculate challenge coins correctly and update lastDailyChallengeCompletedAt", async () => {
       const result = await handleGuessLogic(requestData, authContext);
       expect(result.isCorrect).toBe(true);
-      expect(result.coinsEarned).toBe(15);
-      expect(firestoreService.updateUserCoins).toHaveBeenCalledWith(authContext.uid, 15);
+      expect(result.coinsEarned).toBe(50);
+      expect(firestoreService.updateUserCoins).toHaveBeenCalledWith(authContext.uid, 50);
       // Check if the admin.firestore().update (which is the mockAdminUpdate in beforeEach) was called
       const adminUpdateMock = (admin.firestore() as unknown as {update: jest.Mock}).update; // Get the mock for this specific call context
       expect(adminUpdateMock).toHaveBeenCalledWith({

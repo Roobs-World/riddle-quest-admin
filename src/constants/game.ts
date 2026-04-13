@@ -82,6 +82,8 @@ export const MODAL_CLOSE_DELAY_MS = 100;
 export const HINT_COST_COINS = 50;
 /** Bonus coins awarded whenever a player levels up. */
 export const LEVEL_UP_COIN_BONUS = 50;
+/** Coins awarded for completing a Daily Challenge. */
+export const DAILY_CHALLENGE_COIN_REWARD = 50;
 /** Coin cost to continue after exhausting initial attempts. */
 export const CONTINUE_COST_COINS = 100;
 /** Delay (ms) before resuming background music after sound is enabled. */

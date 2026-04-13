@@ -67,6 +67,7 @@ export interface GameModalTypes {
   victory: {
     attempts: number;
     coinsEarned: number;
+    totalCoins?: number;
     guesses: import("../hooks/types").SubmittedGuess[];
     /** Human-readable names of achievements newly unlocked by this win. */
     unlockedAchievementNames?: string[];
@@ -195,6 +196,7 @@ export interface GameModalTypes {
 
   streakIncreaseFanfare: {
     streakValue: number;
+    coinsAwarded: number;
     onContinue?: () => void;
   };
 

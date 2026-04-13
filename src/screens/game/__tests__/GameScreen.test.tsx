@@ -325,6 +325,7 @@ jest.mock("../../../constants/game", () => ({
   SKIP_COST_CLASSIC: 10,
   SKIP_COST_DAILY: 15,
   LEVEL_UP_COIN_BONUS: 50,
+  DAILY_CHALLENGE_COIN_REWARD: 50,
   CONTINUE_COST_COINS: 20,
   MODAL_CLOSE_DELAY_MS: 300,
   SOUND_RESUME_DELAY_MS: 100,
@@ -626,7 +627,7 @@ describe("GameScreen", () => {
       });
     });
 
-    it("should show guest warning modal instead of welcome modal for guest users", async () => {
+    it("should still show welcome modal for guest users", async () => {
       const originalEmail = mockPlayerData.email;
       const originalUsername = mockPlayerData.username;
       try {
@@ -636,14 +637,9 @@ describe("GameScreen", () => {
         render(<GameScreen {...defaultProps} />);
 
         await waitFor(() => {
-          expect(mockShowInfoModal).toHaveBeenCalledWith(
-            expect.objectContaining({
-              title: "Guest Mode",
-              message: "Progress is local only.",
-            })
-          );
+          expect(mockShowWelcomeModal).toHaveBeenCalled();
         });
-        expect(mockShowWelcomeModal).not.toHaveBeenCalled();
+        expect(mockShowInfoModal).not.toHaveBeenCalled();
       } finally {
         mockPlayerData.email = originalEmail;
         mockPlayerData.username = originalUsername;
@@ -1029,7 +1025,7 @@ describe("GameScreen", () => {
       await waitFor(() => {
         expect(mockShowVictoryModal).toHaveBeenCalled();
       });
-      expect(defaultProps.onGameWin).toHaveBeenCalledWith(0, 75, 100, undefined, 50);
+      expect(defaultProps.onGameWin).toHaveBeenCalledWith(0, 25, 100, undefined, 50);
     });
 
     it("shows streak break modal once and consumes pending streak break", async () => {
@@ -1069,7 +1065,7 @@ describe("GameScreen", () => {
 
       await waitFor(() => {
         expect(mockShowStreakIncreaseFanfareModal).toHaveBeenCalledWith(
-          expect.objectContaining({ streakValue: 5 })
+          expect.objectContaining({ streakValue: 5, coinsAwarded: 50 })
         );
       });
 
@@ -1079,7 +1075,7 @@ describe("GameScreen", () => {
         ][0];
       fanfareConfig.onContinue();
       expect(mockShowVictoryModal).toHaveBeenCalled();
-      expect(defaultProps.onGameWin).toHaveBeenCalledWith(0, 80, 200, 5, 50);
+      expect(defaultProps.onGameWin).toHaveBeenCalledWith(0, 30, 200, 5, 50);
     });
 
     it("handles onboarding dismiss callback", async () => {
@@ -1658,7 +1654,7 @@ describe("GameScreen", () => {
       expect(typeof latestProps.onClearLocalData).toBe("function");
     });
 
-    it("debug clear-local-data clears AsyncStorage and shows info modal", async () => {
+    it("debug clear-local-data clears AsyncStorage and logs out", async () => {
       render(<GameScreen {...defaultProps} />);
 
       await waitFor(() => {
@@ -1670,10 +1666,10 @@ describe("GameScreen", () => {
       await latestProps.onClearLocalData();
 
       expect(AsyncStorage.clear).toHaveBeenCalled();
-      expect(mockShowInfoModal).toHaveBeenCalledWith({
-        title: "Local Data Cleared",
-        message: "All local AsyncStorage data has been cleared.",
-      });
+      expect(mockLogout).toHaveBeenCalled();
+      expect(mockShowInfoModal).not.toHaveBeenCalledWith(
+        expect.objectContaining({ title: "Local Data Cleared" })
+      );
     });
 
     it("debug complete-riddle fills letters without submitting", async () => {

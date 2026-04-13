@@ -20,7 +20,7 @@ import {
   CLOSE_BUTTON_SIZE,
 } from "../../../constants/layout";
 import { SPACING } from "../../../styles";
-import { dimensions } from "../../../utils/responsive";
+import { dimensions, verticalScale } from "../../../utils/responsive";
 import { AppStrings } from "../../../constants/AppStrings";
 
 interface CreditsModalProps {
@@ -118,6 +118,8 @@ const CreditsModal: React.FC<CreditsModalProps> = ({
               alignItems: "center",
               justifyContent: "space-between",
               padding: MODAL_CONTENT_PADDING,
+              paddingTop: verticalScale(40),
+              paddingBottom: verticalScale(30)
             }}
           >
             <CloseButton

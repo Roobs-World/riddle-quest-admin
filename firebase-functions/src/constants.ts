@@ -17,6 +17,8 @@ export const MAX_ATTEMPTS_CHALLENGE = 5;
 
 /** Coins earned for solving a Classic riddle. */
 export const COINS_REWARD_CLASSIC = 10;
+/** Coins earned for solving a Daily Challenge riddle. */
+export const COINS_REWARD_CHALLENGE = 50;
 
 /** Base score for a Classic win. */
 export const BASE_SCORE_CLASSIC = 50;

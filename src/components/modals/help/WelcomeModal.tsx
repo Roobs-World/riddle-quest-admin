@@ -15,6 +15,7 @@ const WHEEL_SIZE = Math.ceil(Math.sqrt(SCREEN_W * SCREEN_W + SCREEN_H * SCREEN_H
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
 import WheelBg from "../../../../assets/images/wheel-bg.svg";
+import Logo from "../../../../assets/images/main-logo.svg";
 import { TYPOGRAPHY } from "src/styles";
 import WideButton from "../../buttons/WideButton";
 import {
@@ -25,6 +26,7 @@ import {
 } from "../../../constants/layout";
 import { SPACING } from "../../../styles";
 import { AppStrings, getAppLanguage } from "../../../constants/AppStrings";
+import { verticalScale } from "@/utils/responsive";
 
 interface WelcomeModalProps {
   isVisible: boolean;
@@ -132,13 +134,18 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({
             }}
           >
             {/* Title */}
+            <Logo
+              width={"100%"}
+              style={{ position: "absolute", marginTop: SPACING.lg}}
+              
+            />
             <Text
               style={{
                 fontFamily: TYPOGRAPHY.fontPrimary,
-                fontSize: TYPOGRAPHY.fontSize.title,
+                fontSize: TYPOGRAPHY.fontSize["2xl"],
                 color: "black",
                 textAlign: "center",
-                marginTop: SPACING.lg,
+                marginTop: verticalScale(80),
               }}
             >
               {AppStrings.WelcomeModal.WELCOME_TITLE}
@@ -149,7 +156,7 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({
               <Text
                 style={{
                   fontFamily: TYPOGRAPHY.fontSecondary,
-                  fontSize: TYPOGRAPHY.fontSize.sm,
+                  fontSize: TYPOGRAPHY.fontSize.base,
                   color: "black",
                   textAlign: "center",
                 }}
@@ -159,7 +166,7 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({
               <Text
                 style={{
                   fontFamily: TYPOGRAPHY.fontSecondary,
-                  fontSize: TYPOGRAPHY.fontSize.sm,
+                  fontSize: TYPOGRAPHY.fontSize.base,
                   color: "black",
                   textAlign: "center",
                 }}
@@ -169,7 +176,7 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({
             </View>
 
             {/* Buttons */}
-            <View style={{ width: "100%", gap: MODAL_BUTTON_SPACER }}>
+            <View style={{ width: "100%", marginBottom: verticalScale(20) }}>
               <WideButton buttonText={letsPlayText} onPress={handleDismiss} />
             </View>
           </View>

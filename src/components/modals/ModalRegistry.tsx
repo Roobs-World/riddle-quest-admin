@@ -193,6 +193,7 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
       isVisible: props.isVisible,
       attempts: (props.attempts as number) || 0,
       coinsEarned: (props.coinsEarned as number) || 0,
+      totalCoins: props.totalCoins as number | undefined,
       unlockedAchievementNames:
         (props.unlockedAchievementNames as string[] | undefined) ?? [],
       onNextLevel: (props.onNext as () => void) || (() => {}),
@@ -399,6 +400,7 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
     (props: BaseModalProps & ModalData) => ({
       isVisible: props.isVisible,
       streakValue: (props.streakValue as number) || 0,
+      coinsAwarded: (props.coinsAwarded as number) || 0,
       onClose: () => {
         if (typeof props.onContinue === "function") {
           (props.onContinue as () => void)();

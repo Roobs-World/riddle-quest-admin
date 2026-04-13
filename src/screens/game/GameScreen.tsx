@@ -42,6 +42,7 @@ import {
   SKIP_COST_DAILY,
   CONTINUE_COST_COINS,
   LEVEL_UP_COIN_BONUS,
+  DAILY_CHALLENGE_COIN_REWARD,
   MODAL_CLOSE_DELAY_MS,
   SOUND_RESUME_DELAY_MS,
   getXpLevel,
@@ -287,25 +288,21 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
     const runOnboardingFlow = async () => {
       try {
-        const isGuestUser =
-          playerData?.email?.endsWith("@guest.qwordly.com") === true ||
-          playerData?.username === "Guest";
-
-        if (isGuestUser) {
-          showInfoModal({
-            title: AppStrings.GameScreenAlerts.GUEST_MODE_NOTICE_TITLE,
-            message: AppStrings.GameScreenAlerts.GUEST_MODE_NOTICE_MESSAGE,
-            onConfirm: () => {
-              safeDelay(MODAL_CLOSE_DELAY_MS).then(() => {
-                showInstructionsModal();
-              });
-            },
-          });
-          return;
-        }
-
         showWelcomeModal({
           onDismiss: () => {
+            if (isGuestMode) {
+              showInfoModal({
+                title: AppStrings.GameScreenAlerts.GUEST_MODE_NOTICE_TITLE,
+                message: AppStrings.GameScreenAlerts.GUEST_MODE_NOTICE_MESSAGE,
+                onConfirm: () => {
+                  safeDelay(MODAL_CLOSE_DELAY_MS).then(() => {
+                    showInstructionsModal();
+                  });
+                },
+              });
+              return;
+            }
+
             safeDelay(MODAL_CLOSE_DELAY_MS).then(() => {
               showInstructionsModal();
             });
@@ -318,7 +315,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     };
 
     runOnboardingFlow();
-  }, [playerData, showWelcomeModal, showInstructionsModal, showInfoModal]);
+  }, [isGuestMode, showWelcomeModal, showInstructionsModal, showInfoModal]);
 
   useEffect(() => {
     if (!pendingStreakBreak || streakBreakModalShownRef.current || isAnyModalVisible) {
@@ -635,6 +632,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           modal.showVictoryModal({
             attempts: guesses.length,
             coinsEarned: result.coinsEarned || 0,
+            totalCoins: (userCoins ?? 0) + (result.coinsEarned || 0),
             unlockedAchievementNames,
             guesses,
             onNext: async () => {
@@ -663,6 +661,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         if (gameMode === "daily" && resolvedDailyStreak) {
           modal.showStreakIncreaseFanfareModal({
             streakValue: resolvedDailyStreak,
+            coinsAwarded: DAILY_CHALLENGE_COIN_REWARD,
             onContinue: showVictoryModal,
           });
         } else {
@@ -1166,10 +1165,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const handleDebugClearLocalData = useCallback(async () => {
     try {
       await AsyncStorage.clear();
-      modal.showInfoModal({
-        title: "Local Data Cleared",
-        message: "All local AsyncStorage data has been cleared.",
-      });
+      await logout();
     } catch (error) {
       logger.error("Error clearing local data from debug panel:", error);
       captureException(error);
@@ -1178,7 +1174,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         message: "Failed to clear local data.",
       });
     }
-  }, [modal]);
+  }, [logout, modal]);
 
   const isSubmitDisabled = useMemo(
     () =>

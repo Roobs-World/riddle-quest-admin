@@ -18,6 +18,7 @@ import {
   MAX_ATTEMPTS_CLASSIC,
   MAX_ATTEMPTS_CHALLENGE,
   COINS_REWARD_CLASSIC,
+  COINS_REWARD_CHALLENGE,
   BASE_SCORE_CLASSIC,
   BASE_SCORE_CHALLENGE,
   getLevelFromXp,
@@ -233,7 +234,7 @@ export async function handleGuessLogic(
         statsUpdate.winStreak = updatedDailyWinStreak;
         statsUpdate.challengeWins = admin.firestore.FieldValue.increment(1);
         statsUpdate.dailyPuzzlesCompleted = admin.firestore.FieldValue.increment(1);
-        coinsEarned = Math.max(0, 20 - (attempts - 1) * 5);
+        coinsEarned = COINS_REWARD_CHALLENGE;
         playerProfileUpdate.lastDailyChallengeCompletedAt = admin.firestore.FieldValue.serverTimestamp();
 
         await admin
@@ -527,7 +528,7 @@ export async function handleCompleteGameLogic(
         statsUpdate.winStreak = updatedDailyWinStreak;
         statsUpdate.challengeWins = admin.firestore.FieldValue.increment(1);
         statsUpdate.dailyPuzzlesCompleted = admin.firestore.FieldValue.increment(1);
-        coinsEarned = Math.max(0, 20 - (attempts - 1) * 5);
+        coinsEarned = COINS_REWARD_CHALLENGE;
         playerProfileUpdate.lastDailyChallengeCompletedAt = admin.firestore.FieldValue.serverTimestamp();
 
         await admin.firestore().collection("users").doc(userId).update({

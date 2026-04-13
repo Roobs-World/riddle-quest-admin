@@ -15,6 +15,7 @@ import { logger } from "../utils/logger";
 import { captureException, addBreadcrumb, startTransaction } from "../utils/sentry";
 import { gameEventBus } from "../services/GameEventBus";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { DAILY_CHALLENGE_COIN_REWARD } from "../constants/game";
 
 export type Feedback = "green" | "yellow" | "red";
 
@@ -50,7 +51,7 @@ function getLocalRewards(gameMode: "challenge" | "classic", attempts: number): {
   const scoreMaxAttempts = 5;
   const baseScore = gameMode === "challenge" ? 100 : 50;
   const attemptsBonus = Math.max(0, (scoreMaxAttempts - attempts + 1) * 10);
-  const coins = gameMode === "challenge" ? Math.max(0, 20 - (attempts - 1) * 5) : 10;
+  const coins = gameMode === "challenge" ? DAILY_CHALLENGE_COIN_REWARD : 10;
   return { coins, score: baseScore + attemptsBonus };
 }
 

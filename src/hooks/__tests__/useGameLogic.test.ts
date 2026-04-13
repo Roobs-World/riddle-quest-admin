@@ -702,5 +702,31 @@ describe("useGameLogic", () => {
         newlyUnlockedAchievementIds: [],
       });
     });
+
+    it("should award 50 coins for guest challenge wins", async () => {
+      const { result } = renderHook(() =>
+        useGameLogic({
+          ...defaultProps,
+          answer: "GUESS",
+          gameMode: "challenge",
+          isGuestMode: true,
+        })
+      );
+
+      let processResult: unknown;
+      await act(async () => {
+        processResult = await result.current.processGuess([
+          "G",
+          "U",
+          "E",
+          "S",
+          "S",
+        ]);
+      });
+
+      expect(mockCompleteGameCallable).not.toHaveBeenCalled();
+      expect((processResult as { outcome: string }).outcome).toBe("win");
+      expect((processResult as { coinsEarned: number }).coinsEarned).toBe(50);
+    });
   });
 });

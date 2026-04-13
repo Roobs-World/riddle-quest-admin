@@ -125,7 +125,7 @@ const CoinPurchaseFanfareModal: React.FC<CoinPurchaseFanfareModalProps> = ({
               {AppStrings.CoinPurchase.TITLE}
             </Text>
 
-            <View style={{ alignItems: "center" }}>
+            <View style={{ alignItems: "center", marginTop: 12 }}>
               <LargeCoinStackSvg
                 width={COIN_ICON_SIZE_LARGE}
                 height={COIN_ICON_SIZE_LARGE}

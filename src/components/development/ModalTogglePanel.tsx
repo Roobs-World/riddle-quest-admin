@@ -138,6 +138,7 @@ const generateMockData = (
       return {
         attempts: 3,
         coinsEarned: 50,
+        totalCoins: 305,
         guesses: mockGuesses,
         onNext: async () => {
           logger.debug("[VictoryModal Debug] Next level button pressed");
@@ -284,6 +285,7 @@ const generateMockData = (
     case "streakIncreaseFanfare":
       return {
         streakValue: 4,
+        coinsAwarded: 50,
       };
     default:
       return {};

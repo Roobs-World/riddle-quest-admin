@@ -2,12 +2,14 @@ import React, { useMemo, useState, useEffect } from "react";
 import { View, Text, Modal, Animated, Easing } from "react-native";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import WheelBg from "../../../../assets/images/wheel-bg.svg";
+import LargeCoinStackSvg from "../../../../assets/images/large-coin-stack.svg";
 import WideButton from "../../buttons/WideButton";
 import { TYPOGRAPHY } from "../../../styles";
 import {
   MODAL_WIDTH,
   MODAL_HEIGHT,
   MODAL_CONTENT_PADDING,
+  COIN_ICON_SIZE_LARGE,
   MODAL_BUTTON_SPACER,
   wheelSize,
 } from "../../../constants/layout";
@@ -16,12 +18,14 @@ import { AppStrings } from "../../../constants/AppStrings";
 interface StreakIncreaseFanfareModalProps {
   isVisible: boolean;
   streakValue: number;
+  coinsAwarded: number;
   onClose: () => void;
 }
 
 const StreakIncreaseFanfareModal: React.FC<StreakIncreaseFanfareModalProps> = ({
   isVisible,
   streakValue,
+  coinsAwarded,
   onClose,
 }) => {
   const [rotationAnim] = useState(() => new Animated.Value(0));
@@ -133,6 +137,24 @@ const StreakIncreaseFanfareModal: React.FC<StreakIncreaseFanfareModalProps> = ({
             >
               {`${streakValue}${AppStrings.StreakFanfare.STREAK_SUFFIX}`}
             </Text>
+
+            <View style={{ alignItems: "center" }}>
+              <LargeCoinStackSvg
+                width={COIN_ICON_SIZE_LARGE}
+                height={COIN_ICON_SIZE_LARGE}
+              />
+              <Text
+                style={{
+                  fontFamily: TYPOGRAPHY.fontSecondaryBold,
+                  fontSize: TYPOGRAPHY.fontSize["2xl"],
+                  color: "black",
+                  marginTop: 6,
+                }}
+              >
+                +{coinsAwarded}
+                {AppStrings.StreakFanfare.COINS_SUFFIX}
+              </Text>
+            </View>
 
             <View style={{ width: "100%", marginTop: 8 }}>
               <WideButton

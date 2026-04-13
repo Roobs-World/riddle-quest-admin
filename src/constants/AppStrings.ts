@@ -160,7 +160,7 @@ const EN_APP_STRINGS = {
   },
   WelcomeModal: {
     LETS_PLAY: "Let's Play",
-    WELCOME_TITLE: "Welcome to\nQwordly!",
+    WELCOME_TITLE: "Welcome to Qwordly!",
     SOLVE_RIDDLES_TEXT:
       "Solve engaging riddles by guessing the answer letter by letter. Use the colour clues to narrow down each guess.",
     EARN_COINS_TEXT:
@@ -340,12 +340,13 @@ const EN_APP_STRINGS = {
     COST_COINS_SUFFIX: " Coins.",
   },
   VictoryModal: {
-    TITLE: "Victory!",
+    TITLE: "NICE JOB!",
     YOU_WON_TITLE: "YOU WON!",
     ACHIEVEMENT_UNLOCKED: "Achievement Unlocked!",
     COINS_SUFFIX: " Coins",
     SHARE_TEXT: "Share your victory!",
     NEXT_LEVEL_BUTTON: "Next Level",
+    TOTAL_COINS_LABEL: "Total coins",
   },
   LossModal: {
     TITLE: "So close!",
@@ -376,6 +377,7 @@ const EN_APP_STRINGS = {
   StreakFanfare: {
     TITLE: "Streak Increased!",
     STREAK_SUFFIX: "-Day Streak",
+    COINS_SUFFIX: " Coins",
     CONTINUE_BUTTON: "Keep Going",
   },
   LevelUpFanfare: {
