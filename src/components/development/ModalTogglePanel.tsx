@@ -52,6 +52,7 @@ type UpdateModalDataFn = (newData: Record<string, unknown>) => void;
 interface ModalTogglePanelProps {
   onCompleteRiddle?: () => void | Promise<void>;
   onGenerateDailyChallenge?: () => void | Promise<void>;
+  onClearLocalData?: () => void | Promise<void>;
 }
 
 /**
@@ -295,6 +296,7 @@ const generateMockData = (
 const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
   onCompleteRiddle,
   onGenerateDailyChallenge,
+  onClearLocalData,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [modalToggles, setModalToggles] = useState<{
@@ -459,6 +461,19 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
               </TouchableOpacity>
             ) : null}
 
+            {onClearLocalData ? (
+              <TouchableOpacity
+                style={styles.localDataButton}
+                onPress={() => {
+                  void onClearLocalData();
+                }}
+              >
+                <Text style={styles.completeButtonText}>
+                  {AppStrings.DevTools.CLEAR_LOCAL_DATA_BUTTON}
+                </Text>
+              </TouchableOpacity>
+            ) : null}
+
             <TouchableOpacity
               style={styles.clearButton}
               onPress={() => setModalToggles({})}
@@ -526,6 +541,13 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: verticalScale(100),
     zIndex: 9999,
+  },
+  localDataButton: {
+    alignItems: "center",
+    backgroundColor: COLORS.warning,
+    borderRadius: BORDER_RADIUS.sm,
+    marginTop: SPACING.sm,
+    padding: SPACING.xs,
   },
   content: {
     maxHeight: verticalScale(300),

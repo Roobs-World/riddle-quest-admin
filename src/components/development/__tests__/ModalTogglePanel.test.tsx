@@ -267,4 +267,16 @@ describe("ModalTogglePanel", () => {
 
     expect(onGenerateDailyChallenge).toHaveBeenCalledTimes(1);
   });
+
+  it("invokes onClearLocalData when debug action button is pressed", () => {
+    const onClearLocalData = jest.fn();
+    const { getByText } = render(
+      <ModalTogglePanel onClearLocalData={onClearLocalData} />
+    );
+
+    fireEvent.press(getByText(/Modal Testing/));
+    fireEvent.press(getByText("Clear Local Data"));
+
+    expect(onClearLocalData).toHaveBeenCalledTimes(1);
+  });
 });

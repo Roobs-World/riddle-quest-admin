@@ -41,8 +41,10 @@ import {
   SKIP_COST_CLASSIC,
   SKIP_COST_DAILY,
   CONTINUE_COST_COINS,
+  LEVEL_UP_COIN_BONUS,
   MODAL_CLOSE_DELAY_MS,
   SOUND_RESUME_DELAY_MS,
+  getXpLevel,
 } from "../../constants/game";
 import {
   LOADING_SPINNER_OPACITY,
@@ -104,7 +106,8 @@ interface GameScreenProps {
     attempts: number,
     coinsEarned: number,
     scoreEarned: number,
-    dailyStreakAfterWin?: number
+    dailyStreakAfterWin?: number,
+    levelUpBonusCoins?: number
   ) => void;
   onGameLoss: (correctAnswer: string) => void;
   onHintUsed: (cost: number) => void;
@@ -501,6 +504,75 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     updatePlayerDataLocally,
   ]);
 
+  const handlePurchaseProduct = useCallback(
+    async (productId: string) => {
+      logger.debug(`Initiating purchase for product: ${productId}`);
+      setIapLoading(true);
+
+      try {
+        const purchaseResult = await IapService.purchaseProduct(productId);
+
+        if (purchaseResult) {
+          logger.debug("Purchase completed successfully:", purchaseResult);
+          const coinsPurchased = IapService.getCoinsForProduct(productId) ?? 0;
+          modal.closeModalByType("coinShop");
+          modal.showCoinPurchaseFanfareModal({
+            coinsPurchased,
+          });
+        } else {
+          logger.debug("Purchase was cancelled or returned null");
+        }
+      } catch (error) {
+        logger.error("Purchase failed:", error);
+        captureException(error);
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : AppStrings.GameScreenAlerts.PURCHASE_FAILED_MESSAGE;
+        modal.showInfoModal({
+          title: AppStrings.GameScreenAlerts.PURCHASE_FAILED_TITLE,
+          message: errorMessage,
+        });
+      } finally {
+        setIapLoading(false);
+      }
+    },
+    [modal]
+  );
+
+  const handlePayAndPlay = useCallback(() => {
+    logger.debug("Pay and play button pressed");
+
+    const cheapestProduct = [...iapProducts].sort(
+      (a, b) => (a.price ?? 0) - (b.price ?? 0)
+    )[0];
+
+    if (cheapestProduct) {
+      handlePurchaseProduct(cheapestProduct.id);
+    } else {
+      modalActions.showNoProductsAvailable();
+    }
+  }, [iapProducts, handlePurchaseProduct, modalActions]);
+
+  const handleWatchAdForCoins = useCallback(async () => {
+    logger.debug("Watch ad for coins button pressed");
+    modal.closeModalByType("coinShop");
+
+    try {
+      const didCompleteRewardedAd = await showRewardedAd();
+      if (didCompleteRewardedAd) {
+        logger.debug("Rewarded ad for coins shown successfully");
+      } else {
+        logger.warn("Rewarded ad was not ready to be shown");
+        modalActions.showAdNotReady();
+      }
+    } catch (error) {
+      logger.error("Error showing rewarded ad for coins:", error);
+      captureException(error);
+      modalActions.showAdError();
+    }
+  }, [modal, showRewardedAd, modalActions]);
+
   useEffect(() => {
     if (gameOver && lastGuessResult && !gameOverHandledRef.current) {
       gameOverHandledRef.current = true;
@@ -540,23 +612,45 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           });
         }
 
+        const currentXp = playerData?.stats?.xp ?? playerData?.stats?.totalScore ?? 0;
+        const previousLevel = getXpLevel(currentXp).level;
+        const nextLevel = getXpLevel(currentXp + (result.scoreEarned || 0)).level;
+        const didLevelUp = nextLevel > previousLevel;
+        const levelUpBonusCoins = didLevelUp ? LEVEL_UP_COIN_BONUS : 0;
+
         const showVictoryModal = () => {
+
+          const continueToNextLevel = async () => {
+            logger.debug("Victory modal: Next level button pressed");
+            resetGame();
+
+            try {
+              await runWithServerLoading(() => onNextLevel());
+            } catch (error) {
+              logger.error("Error calling onNextLevel:", error);
+              captureException(error);
+            }
+          };
+
           modal.showVictoryModal({
             attempts: guesses.length,
             coinsEarned: result.coinsEarned || 0,
             unlockedAchievementNames,
             guesses,
             onNext: async () => {
-              logger.debug("Victory modal: Next level button pressed");
               modal.closeModalByType("victory");
-              resetGame();
-
-              try {
-                await runWithServerLoading(() => onNextLevel());
-              } catch (error) {
-                logger.error("Error calling onNextLevel:", error);
-                captureException(error);
+              if (didLevelUp) {
+                await safeDelay(MODAL_CLOSE_DELAY_MS);
+                modal.showLevelUpFanfareModal({
+                  newLevel: nextLevel,
+                  coinsAwarded: levelUpBonusCoins,
+                  onContinue: () => {
+                    void continueToNextLevel();
+                  },
+                });
+                return;
               }
+              await continueToNextLevel();
             },
           });
         };
@@ -577,9 +671,10 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
         onGameWin(
           guesses.length,
-          result.coinsEarned || 0,
+          (result.coinsEarned || 0),
           result.scoreEarned || 0,
-          resolvedDailyStreak
+          resolvedDailyStreak,
+          levelUpBonusCoins
         );
       } else if (result.outcome === "attemptLimitReached") {
         const canAffordCoinContinue = (userCoins ?? 0) >= CONTINUE_COST_COINS;
@@ -785,6 +880,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     modal.showHintModal({
       userCoins,
       hintCost,
+      onOpenShop: () => openShopFromLossRef.current(),
       onShowHint: () => {
         const answerLetters = answer.toLowerCase().split("");
         const revealIndex = answerLetters.findIndex(
@@ -825,6 +921,55 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     answer,
     setCurrentGuess,
     onHintUsed,
+  ]);
+
+  const handleCoinsPress = useCallback(() => {
+    const availableStoreProductIds = new Set(iapProducts.map((product) => product.id));
+    const purchasableFirestoreProducts = firestoreProducts.filter((product) =>
+      availableStoreProductIds.has(product.productId)
+    );
+
+    logger.debug("Opening coin shop modal with:", {
+      iapProducts: iapProducts.length,
+      firestoreProducts: firestoreProducts.length,
+      purchasableFirestoreProducts: purchasableFirestoreProducts.length,
+      iapLoading,
+      productPricingLoading,
+      iapError,
+      productPricingError,
+    });
+
+    try {
+      modal.showCoinShop({
+        products: iapProducts,
+        firestoreProducts: purchasableFirestoreProducts,
+        currentCoins: userCoins,
+        loading: iapLoading || productPricingLoading,
+        error: iapError || productPricingError,
+        onPurchaseProduct: handlePurchaseProduct,
+        onWatchVideo: handleWatchAdForCoins,
+        onPayAndPlay: handlePayAndPlay,
+      });
+    } catch (error) {
+      logger.error("Error opening coin shop:", error);
+      captureException(error);
+      modal.showInfoModal({
+        title: AppStrings.CommonAlerts.ERROR_TITLE,
+        message: AppStrings.CoinShop.NO_PACKS_AVAILABLE,
+      });
+    }
+  }, [
+    iapProducts,
+    firestoreProducts,
+    iapLoading,
+    productPricingLoading,
+    iapError,
+    productPricingError,
+    modal,
+    userCoins,
+    handlePurchaseProduct,
+    handleWatchAdForCoins,
+    handlePayAndPlay,
   ]);
 
   const handleOverlayNext = useCallback(() => {
@@ -958,123 +1103,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     isProfileModalLoading,
   ]);
 
-  const handlePurchaseProduct = useCallback(
-    async (productId: string) => {
-      logger.debug(`Initiating purchase for product: ${productId}`);
-      setIapLoading(true);
 
-      try {
-        const purchaseResult = await IapService.purchaseProduct(productId);
-
-        if (purchaseResult) {
-          logger.debug("Purchase completed successfully:", purchaseResult);
-          const coinsPurchased = IapService.getCoinsForProduct(productId) ?? 0;
-          modal.closeModalByType("coinShop");
-          modal.showCoinPurchaseFanfareModal({
-            coinsPurchased,
-          });
-        } else {
-          logger.debug("Purchase was cancelled or returned null");
-        }
-      } catch (error) {
-        logger.error("Purchase failed:", error);
-        captureException(error);
-        const errorMessage =
-          error instanceof Error
-            ? error.message
-            : AppStrings.GameScreenAlerts.PURCHASE_FAILED_MESSAGE;
-        modal.showInfoModal({
-          title: AppStrings.GameScreenAlerts.PURCHASE_FAILED_TITLE,
-          message: errorMessage,
-        });
-      } finally {
-        setIapLoading(false);
-      }
-    },
-    [modal]
-  );
-
-  const handlePayAndPlay = useCallback(() => {
-    logger.debug("Pay and play button pressed");
-
-    const cheapestProduct = [...iapProducts].sort(
-      (a, b) => (a.price ?? 0) - (b.price ?? 0)
-    )[0];
-
-    if (cheapestProduct) {
-      handlePurchaseProduct(cheapestProduct.id);
-    } else {
-      modalActions.showNoProductsAvailable();
-    }
-  }, [iapProducts, handlePurchaseProduct, modalActions]);
-
-  const handleWatchAdForCoins = useCallback(async () => {
-    logger.debug("Watch ad for coins button pressed");
-    modal.closeModalByType("coinShop");
-
-    try {
-      const didCompleteRewardedAd = await showRewardedAd();
-      if (didCompleteRewardedAd) {
-        logger.debug("Rewarded ad for coins shown successfully");
-      } else {
-        logger.warn("Rewarded ad was not ready to be shown");
-        modalActions.showAdNotReady();
-      }
-    } catch (error) {
-      logger.error("Error showing rewarded ad for coins:", error);
-      captureException(error);
-      modalActions.showAdError();
-    }
-  }, [modal, showRewardedAd, modalActions]);
-
-  const handleCoinsPress = useCallback(() => {
-    const availableStoreProductIds = new Set(iapProducts.map((product) => product.id));
-    const purchasableFirestoreProducts = firestoreProducts.filter((product) =>
-      availableStoreProductIds.has(product.productId)
-    );
-
-    logger.debug("Opening coin shop modal with:", {
-      iapProducts: iapProducts.length,
-      firestoreProducts: firestoreProducts.length,
-      purchasableFirestoreProducts: purchasableFirestoreProducts.length,
-      iapLoading,
-      productPricingLoading,
-      iapError,
-      productPricingError,
-    });
-
-    try {
-      modal.showCoinShop({
-        products: iapProducts,
-        firestoreProducts: purchasableFirestoreProducts,
-        currentCoins: userCoins,
-        loading: iapLoading || productPricingLoading,
-        error: iapError || productPricingError,
-        onPurchaseProduct: handlePurchaseProduct,
-        onWatchVideo: handleWatchAdForCoins,
-        onPayAndPlay: handlePayAndPlay,
-      });
-    } catch (error) {
-      logger.error("Error opening coin shop:", error);
-      captureException(error);
-      modal.showInfoModal({
-        title: AppStrings.CommonAlerts.ERROR_TITLE,
-        message: AppStrings.CoinShop.NO_PACKS_AVAILABLE,
-      });
-    }
-  }, [
-    iapProducts,
-    firestoreProducts,
-    iapLoading,
-    productPricingLoading,
-    iapError,
-    productPricingError,
-    modal,
-    userCoins,
-    handlePurchaseProduct,
-    handleWatchAdForCoins,
-    handlePayAndPlay,
-  ]);
 
   useEffect(() => {
     openShopFromLossRef.current = handleCoinsPress;
@@ -1133,6 +1162,23 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       });
     }
   }, [runWithServerLoading, modal]);
+
+  const handleDebugClearLocalData = useCallback(async () => {
+    try {
+      await AsyncStorage.clear();
+      modal.showInfoModal({
+        title: "Local Data Cleared",
+        message: "All local AsyncStorage data has been cleared.",
+      });
+    } catch (error) {
+      logger.error("Error clearing local data from debug panel:", error);
+      captureException(error);
+      modal.showInfoModal({
+        title: "Clear Local Data Error",
+        message: "Failed to clear local data.",
+      });
+    }
+  }, [modal]);
 
   const isSubmitDisabled = useMemo(
     () =>
@@ -1220,6 +1266,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           <ModalTogglePanel
             onCompleteRiddle={handleDebugCompleteRiddle}
             onGenerateDailyChallenge={handleDebugGenerateDailyChallenge}
+            onClearLocalData={handleDebugClearLocalData}
           />
         )}
       </SafeAreaView>

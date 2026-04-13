@@ -286,6 +286,7 @@ const EN_APP_STRINGS = {
     MODAL_TESTING_HEADER: "Modal Testing",
     COMPLETE_RIDDLE_BUTTON: "Complete Riddle",
     GENERATE_DAILY_CHALLENGE_BUTTON: "Generate Daily Challenge",
+    CLEAR_LOCAL_DATA_BUTTON: "Clear Local Data",
     CLEAR_ALL_BUTTON: "Clear All",
   },
   GameMessages: {
@@ -376,6 +377,12 @@ const EN_APP_STRINGS = {
     TITLE: "Streak Increased!",
     STREAK_SUFFIX: "-Day Streak",
     CONTINUE_BUTTON: "Keep Going",
+  },
+  LevelUpFanfare: {
+    TITLE: "Level Up!",
+    LEVEL_PREFIX: "Level ",
+    COINS_SUFFIX: " Coins",
+    CONTINUE_BUTTON: "Awesome",
   },
   Leaderboard: {
     TITLE: "Leaderboard",

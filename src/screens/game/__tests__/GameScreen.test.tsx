@@ -120,6 +120,7 @@ const mockShowFullProfileDetailsModal = jest.fn();
 const mockShowCoinPurchaseFanfareModal = jest.fn();
 const mockShowAchievementUnlockFanfareModal = jest.fn();
 const mockShowStreakIncreaseFanfareModal = jest.fn();
+const mockShowLevelUpFanfareModal = jest.fn();
 
 jest.mock("../../../hooks/useModal", () => ({
   useModal: () => ({
@@ -139,6 +140,7 @@ jest.mock("../../../hooks/useModal", () => ({
     showCoinPurchaseFanfareModal: mockShowCoinPurchaseFanfareModal,
     showAchievementUnlockFanfareModal: mockShowAchievementUnlockFanfareModal,
     showStreakIncreaseFanfareModal: mockShowStreakIncreaseFanfareModal,
+    showLevelUpFanfareModal: mockShowLevelUpFanfareModal,
     closeModalByType: mockCloseModalByType,
   }),
 }));
@@ -288,6 +290,9 @@ jest.mock("../../../constants/AppStrings", () => ({
     CoinShop: {
       NO_PACKS_AVAILABLE: "No packs available",
     },
+    DevTools: {
+      CLEAR_LOCAL_DATA_BUTTON: "Clear Local Data",
+    },
     StreakFanfare: {
       TITLE: "Streak Increased!",
       STREAK_SUFFIX: "day streak",
@@ -319,9 +324,16 @@ jest.mock("../../../constants/AppStrings", () => ({
 jest.mock("../../../constants/game", () => ({
   SKIP_COST_CLASSIC: 10,
   SKIP_COST_DAILY: 15,
+  LEVEL_UP_COIN_BONUS: 50,
   CONTINUE_COST_COINS: 20,
   MODAL_CLOSE_DELAY_MS: 300,
   SOUND_RESUME_DELAY_MS: 100,
+  getXpLevel: (totalScore: number) => ({
+    level: totalScore >= 100 ? 2 : 1,
+    progressPct: 0,
+    currentXp: totalScore,
+    nextLevelXp: 100,
+  }),
 }));
 
 jest.mock("../../../constants/loading", () => ({
@@ -1017,7 +1029,7 @@ describe("GameScreen", () => {
       await waitFor(() => {
         expect(mockShowVictoryModal).toHaveBeenCalled();
       });
-      expect(defaultProps.onGameWin).toHaveBeenCalledWith(0, 25, 100, undefined);
+      expect(defaultProps.onGameWin).toHaveBeenCalledWith(0, 75, 100, undefined, 50);
     });
 
     it("shows streak break modal once and consumes pending streak break", async () => {
@@ -1067,7 +1079,7 @@ describe("GameScreen", () => {
         ][0];
       fanfareConfig.onContinue();
       expect(mockShowVictoryModal).toHaveBeenCalled();
-      expect(defaultProps.onGameWin).toHaveBeenCalledWith(0, 30, 200, 5);
+      expect(defaultProps.onGameWin).toHaveBeenCalledWith(0, 80, 200, 5, 50);
     });
 
     it("handles onboarding dismiss callback", async () => {
@@ -1643,6 +1655,25 @@ describe("GameScreen", () => {
         mockModalTogglePanel.mock.calls[mockModalTogglePanel.mock.calls.length - 1][0];
       expect(typeof latestProps.onCompleteRiddle).toBe("function");
       expect(typeof latestProps.onGenerateDailyChallenge).toBe("function");
+      expect(typeof latestProps.onClearLocalData).toBe("function");
+    });
+
+    it("debug clear-local-data clears AsyncStorage and shows info modal", async () => {
+      render(<GameScreen {...defaultProps} />);
+
+      await waitFor(() => {
+        expect(mockModalTogglePanel).toHaveBeenCalled();
+      });
+
+      const latestProps =
+        mockModalTogglePanel.mock.calls[mockModalTogglePanel.mock.calls.length - 1][0];
+      await latestProps.onClearLocalData();
+
+      expect(AsyncStorage.clear).toHaveBeenCalled();
+      expect(mockShowInfoModal).toHaveBeenCalledWith({
+        title: "Local Data Cleared",
+        message: "All local AsyncStorage data has been cleared.",
+      });
     });
 
     it("debug complete-riddle fills letters without submitting", async () => {

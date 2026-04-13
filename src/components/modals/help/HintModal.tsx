@@ -32,6 +32,8 @@ interface HintModalProps {
   onShowHint: () => void;
   /** Closes the hint modal. */
   onClose: () => void;
+  /** Opens the shop */
+  onOpenShop: () => void;
 }
 
 /**
@@ -46,6 +48,7 @@ const HintModal: React.FC<HintModalProps> = ({
   hintCost,
   onShowHint,
   onClose,
+  onOpenShop
 }) => {
   const canAffordHint = userCoins >= hintCost;
 
@@ -131,10 +134,22 @@ const HintModal: React.FC<HintModalProps> = ({
 
             <View style={{ width: "100%", marginTop: SPACING.lg }}>
               <WideButton
-                buttonText={AppStrings.GameScreenAlerts.HINT_SHOW_BUTTON}
-                onPress={() => { onClose(); onShowHint(); }}
-                disabled={!canAffordHint}
+                buttonText={
+                  canAffordHint
+                    ? AppStrings.GameScreenAlerts.HINT_SHOW_BUTTON
+                    : AppStrings.Navigation.BUY_COINS_BUTTON
+                }
+                onPress={() => {
+                  onClose();
+                  if (canAffordHint) {
+                    onShowHint();
+                  } else {
+                    onOpenShop();
+                  }
+                }}
+                disabled={false}
               />
+
               <View style={{ marginTop: SPACING.md }}>
                 <WideButton
                   buttonText={AppStrings.CommonAlerts.CLOSE_BUTTON}

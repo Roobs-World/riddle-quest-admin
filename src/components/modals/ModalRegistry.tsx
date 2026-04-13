@@ -76,6 +76,7 @@ import CreditsModal from "./help/CreditsModal";
 import CoinShopModal from "../shop/CoinShop";
 import CoinPurchaseFanfareModal from "./shop/CoinPurchaseFanfareModal";
 import StreakIncreaseFanfareModal from "./game/StreakIncreaseFanfareModal";
+import LevelUpFanfareModal from "./game/LevelUpFanfareModal";
 
 /**
  * Modal Wrapper Factory Function
@@ -311,6 +312,7 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
     userCoins: (props.userCoins as number) || 0,
     hintCost: (props.hintCost as number) || 0,
     onShowHint: (props.onShowHint as () => void) || (() => {}),
+    onOpenShop: (props.onOpenShop as (() => void) | undefined) || (() => {}),
   })),
 
   skip: createModalWrapper(SkipModal, (props: BaseModalProps & ModalData) => ({
@@ -397,6 +399,21 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
     (props: BaseModalProps & ModalData) => ({
       isVisible: props.isVisible,
       streakValue: (props.streakValue as number) || 0,
+      onClose: () => {
+        if (typeof props.onContinue === "function") {
+          (props.onContinue as () => void)();
+        }
+        props.onClose();
+      },
+    })
+  ),
+
+  levelUpFanfare: createModalWrapper(
+    LevelUpFanfareModal,
+    (props: BaseModalProps & ModalData) => ({
+      isVisible: props.isVisible,
+      newLevel: (props.newLevel as number) || 1,
+      coinsAwarded: (props.coinsAwarded as number) || 0,
       onClose: () => {
         if (typeof props.onContinue === "function") {
           (props.onContinue as () => void)();

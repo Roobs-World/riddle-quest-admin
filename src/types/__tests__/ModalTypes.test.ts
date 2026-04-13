@@ -449,6 +449,17 @@ describe("ModalTypes", () => {
       expect(fanfareData.coinsPurchased).toBe(1000);
     });
 
+    it("should define levelUpFanfare modal type", () => {
+      const levelUpData: GameModalTypes["levelUpFanfare"] = {
+        newLevel: 2,
+        coinsAwarded: 50,
+        onContinue: jest.fn(),
+      };
+
+      expect(levelUpData.newLevel).toBe(2);
+      expect(levelUpData.coinsAwarded).toBe(50);
+    });
+
     it("should define leaderboard modal type", () => {
       const leaderboardData: GameModalTypes["leaderboard"] = {
         currentUserId: "user-123",

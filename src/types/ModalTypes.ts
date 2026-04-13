@@ -145,6 +145,7 @@ export interface GameModalTypes {
     hintCost: number;
     userCoins: number;
     onShowHint: () => void;
+    onOpenShop?: () => void;
   };
 
   skip: {
@@ -194,6 +195,12 @@ export interface GameModalTypes {
 
   streakIncreaseFanfare: {
     streakValue: number;
+    onContinue?: () => void;
+  };
+
+  levelUpFanfare: {
+    newLevel: number;
+    coinsAwarded: number;
     onContinue?: () => void;
   };
 }

@@ -240,6 +240,35 @@ describe("AuthContext", () => {
       expect(result.current.playerData?.hasPurchasedApp).toBe(true);
     });
 
+    it("starts a fresh guest session with 300 coins", async () => {
+      const guestUid = "guest-fresh-1";
+
+      (fetchDailyRiddleFromFirestore as jest.Mock).mockResolvedValue(
+        mockDailyRiddle
+      );
+
+      mockAuthInstance.onAuthStateChanged.mockImplementation(
+        (callback: (user: any) => void) => {
+          callback({
+            uid: guestUid,
+            isAnonymous: true,
+            email: null,
+            displayName: null,
+          } as any);
+          return jest.fn();
+        }
+      );
+
+      const { result } = renderHook(() => useAuth(), { wrapper });
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      expect(result.current.playerData?.userId).toBe(guestUid);
+      expect(result.current.playerData?.coins).toBe(300);
+    });
+
     it("handles user login", async () => {
       // Mock the services
       (loadUserProgressFromFirestore as jest.Mock).mockResolvedValue(

@@ -1,140 +1,86 @@
-# 💰 In-App Purchase Setup Guide - Qwordly
+# In-App Purchase Setup Guide - Qwordly
 
-## 🎯 **Quick Overview**
+This guide matches the current code in `src/services/IapService.ts` and Firebase Functions config in `firebase-functions/src/iapConfig.ts`.
 
-Your app is now configured to sell 4 coin packs:
+## Quick Overview
 
-- **100 Coins** - $1.99 (`com.qwordly.coins100`)
-- **250 Coins** - $4.99 (`com.qwordly.coins250`)
-- **500 Coins** - $9.99 (`com.qwordly.coins500`)
-- **1000 Coins** - $19.99 (`com.qwordly.coins1000`)
+This repo is configured to sell 5 coin packs (consumable, one-time purchases):
 
-## 📱 **Platform Setup Required**
+| Pack | Coins | Product ID |
+| ---- | ----- | ---------- |
+| Tiny | 50 | `com.qwordly.coinpack1` |
+| Small | 100 | `com.qwordly.coinpack2` |
+| Mid | 250 | `com.qwordly.coinpack3` |
+| Large | 500 | `com.qwordly.coinpack4` |
+| Huge | 1000 | `com.qwordly.coinpack5` |
 
-### **Step 1: iOS - App Store Connect**
+App identifiers:
 
-1. **Login**: https://appstoreconnect.apple.com
-2. **Navigate**: Your App → Features → In-App Purchases
-3. **Create 4 Products**:
+- Android package name: `com.grindhead.qwordly` (from `app.config.js`)
+- iOS bundle identifier: `com.grindhead.qwordly` (from `app.config.js`)
 
-| Product ID              | Name       | Type       | Price  |
-| ----------------------- | ---------- | ---------- | ------ |
-| `com.qwordly.coins100`  | 100 Coins  | Consumable | $1.99  |
-| `com.qwordly.coins250`  | 250 Coins  | Consumable | $4.99  |
-| `com.qwordly.coins500`  | 500 Coins  | Consumable | $9.99  |
-| `com.qwordly.coins1000` | 1000 Coins | Consumable | $19.99 |
+## iOS (App Store Connect)
 
-**Important**:
+1. Log in to App Store Connect.
+2. Go to your app -> Features -> In-App Purchases.
+3. Create 5 products as Consumable using the Product IDs above.
+4. Ensure each product is available for testing/review (metadata complete, screenshot uploaded, etc.).
 
-- ✅ Set status to "Ready to Submit"
-- ✅ Add product descriptions
-- ✅ Upload review screenshot
+## Android (Google Play Console)
 
-### **Step 2: Android - Google Play Console**
+### Create Products
 
-1. **Login**: https://play.google.com/console
-2. **Navigate**: Your App → Products → In-app products
-3. **Create same 4 products** with identical Product IDs and pricing
+1. Log in to Play Console.
+2. Select the app whose package name is `com.grindhead.qwordly`.
+3. Go to Monetize -> Products -> In-app products.
+4. Create 5 in-app products with IDs matching:
+   - `com.qwordly.coinpack1`
+   - `com.qwordly.coinpack2`
+   - `com.qwordly.coinpack3`
+   - `com.qwordly.coinpack4`
+   - `com.qwordly.coinpack5`
+5. Activate each product (not Draft).
 
-## 🧪 **Testing Setup**
+### Testing (avoids "sku-not-found")
 
-### **iOS Testing**
+Android IAP will fail with `sku-not-found` if you test from a local debug/dev build. For Android, test via Play.
 
-1. **Add Test Users**: App Store Connect → Users and Access → Sandbox Testers
-2. **Test on Device**: Sign out of App Store, app will prompt for sandbox account
+1. Add tester accounts:
+   - Play Console -> Setup -> License testing (add your tester Gmail)
+   - Play Console -> Testing -> Internal testing (add same tester Gmail)
+2. Upload an Android App Bundle (AAB) to the Internal testing track and roll out the release (new versionCode required).
+3. Install the build from the Play Internal Testing opt-in link (do not use `expo run:android`, and do not sideload).
+4. Ensure the device is signed into Google Play Store with the tester account.
+5. Wait for Play propagation (often 15 minutes to a few hours) and retry.
 
-### **Android Testing**
+If you still see `sku-not-found`, the usual causes are:
 
-1. **Add Test Accounts**: Google Play Console → Setup → License testing
-2. **Upload APK**: Internal testing track required for IAP testing
+- Wrong Play app selected (package name mismatch with `com.grindhead.qwordly`)
+- Product IDs created under a different app
+- Product not Active
+- Device is logged into a non-tester Play account
+- Propagation delay
 
-## 🔧 **Code Integration** ✅
+## Backend Validation (Firebase Functions)
 
-Your code is already configured! The updates include:
+The app validates purchases server-side via Firebase Functions (`validatePurchase`).
 
-**✅ Updated Product IDs** (`src/services/IapService.ts`):
+Android validation requires Play service account credentials configured as function environment:
 
-```typescript
-const coinProductIds = [
-  "com.qwordly.coins100",
-  "com.qwordly.coins250",
-  "com.qwordly.coins500",
-  "com.qwordly.coins1000",
-];
-```
+- `GOOGLE_SERVICE_ACCOUNT` should be a JSON string containing at least `client_email` and `private_key`.
 
-**✅ Updated Coin Shop Modal** (`src/components/shop/CoinShopModal.tsx`):
+See `firebase-functions/src/iapConfig.ts` for how credentials are read and passed to the `in-app-purchase` library.
 
-- Static coin packs with proper product IDs
-- Dynamic products from app stores
-- Proper error handling and loading states
+## Code Reference
 
-## 🚀 **Testing Your Setup**
+Product IDs and coin mapping:
 
-### **1. Test Product Loading**
+- `src/services/IapService.ts`
+- `firebase-functions/src/iapConfig.ts`
 
-```bash
-# Run your app in development
-npx expo run:ios
-# or
-npx expo run:android
+## Smoke Test Checklist
 
-# Check console for:
-# "Fetched products: [...]"
-```
+- Open coin shop -> products display with prices
+- Tap a pack -> Google purchase sheet opens
+- Complete purchase -> app shows success + coins increase (after server validation)
 
-### **2. Test Purchase Flow**
-
-- Products should appear in coin shop
-- Tap purchase buttons
-- Complete test purchases
-- Verify coins are awarded
-
-## 🔍 **Troubleshooting**
-
-### **No Products Loading**
-
-```typescript
-// Common issues:
-1. Product IDs don't match exactly ❌
-2. Products not "Ready to Submit" ❌
-3. App not signed with distribution certificate ❌
-4. Bundle ID mismatch ❌
-```
-
-### **Purchase Validation Fails**
-
-- Check Firebase Functions logs
-- Verify `validatePurchase` function is deployed
-- Ensure proper receipt validation
-
-### **Development vs Production**
-
-- **Development**: Use sandbox/test accounts
-- **Production**: Real money transactions
-
-## 📊 **Expected User Flow**
-
-1. **User opens coin shop** → Products load from app stores
-2. **User taps purchase** → Native payment UI appears
-3. **User completes payment** → Receipt sent to your server
-4. **Server validates** → Coins added to user account
-5. **Transaction finished** → User sees coin balance update
-
-## 🛡️ **Security Notes**
-
-- ✅ **Server-side validation**: All purchases verified via Firebase Functions
-- ✅ **Receipt verification**: Uses official App Store/Google Play APIs
-- ✅ **Atomic transactions**: Coins only awarded after successful validation
-- ✅ **Duplicate protection**: Transaction IDs tracked to prevent replay attacks
-
-## 🎉 **Next Steps**
-
-1. **Create products** in App Store Connect and Google Play Console
-2. **Test thoroughly** with sandbox accounts
-3. **Deploy to TestFlight/Internal Testing** for final verification
-4. **Submit for review** with IAP functionality working
-
----
-
-Your app is now ready for monetization! 🚀
