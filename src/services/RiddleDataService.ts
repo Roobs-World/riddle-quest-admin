@@ -31,28 +31,36 @@ export class RiddleDataService implements IRiddleDataService {
    */
   async fetchDailyRiddle(): Promise<FirestoreRiddle | null> {
     try {
-      const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD format
-
       const snapshot = await getDocs(
         query(
           collection(getFirestore(), RiddleDataService.RIDDLES_COLLECTION),
           where("category", "==", "daily"),
-          where("date", "==", today),
+          where("date", "==", new Date().toISOString().split("T")[0]),
           limit(1)
         )
       );
 
-      if (!snapshot.empty) {
-        const riddleData = snapshot.docs[0].data();
+      const currentSnapshot = snapshot.empty
+        ? await getDocs(
+            query(
+              collection(getFirestore(), "dailyRiddles"),
+              where("riddleId", "==", "current"),
+              limit(1)
+            )
+          )
+        : snapshot;
+
+      if (!currentSnapshot.empty) {
+        const riddleData = currentSnapshot.docs[0].data();
         const validatedRiddle = FirestoreRiddleSchema.parse({
           ...riddleData,
-          riddleId: snapshot.docs[0].id,
+          riddleId: riddleData?.riddleId ?? currentSnapshot.docs[0].id,
         });
 
-        logger.debug("Daily riddle found for date:", today);
+        logger.debug("Daily riddle found");
         return validatedRiddle;
       } else {
-        logger.debug("No daily riddle found for date:", today);
+        logger.debug("No daily riddle found");
         return null;
       }
     } catch (error) {

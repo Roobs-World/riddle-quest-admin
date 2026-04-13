@@ -389,6 +389,22 @@ describe("Firestore Schemas", () => {
       const result = PlayerSchema.safeParse(incompletePlayer);
       expect(result.success).toBe(false);
     });
+
+    test("should coerce Firestore timestamp-like values to millis", () => {
+      const playerWithTimestamp = {
+        userId: "user123",
+        username: "testuser",
+        lastDailyChallengeCompletedAt: {
+          toMillis: () => 1710000000000,
+        },
+      };
+
+      const result = PlayerSchema.safeParse(playerWithTimestamp);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data.lastDailyChallengeCompletedAt).toBe(1710000000000);
+      }
+    });
   });
 
   describe("FirestoreRiddleSchema", () => {

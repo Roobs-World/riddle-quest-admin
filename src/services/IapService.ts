@@ -112,34 +112,49 @@ export const IapService = {
   ): Promise<RNIap.Purchase | null> {
     addBreadcrumb("iap", "Purchase initiated", { productId });
     void analyticsService.logPurchaseEvent("initiated", { product_id: productId });
-    const shouldUseDevFallback =
-      __DEV__ && typeof process !== "undefined" && !process.env.JEST_WORKER_ID;
+    const isRunningUnderJest =
+      typeof process !== "undefined" && Boolean(process.env.JEST_WORKER_ID);
+    const shouldUseDevFallback = __DEV__ && !isRunningUnderJest;
     try {
       if (shouldUseDevFallback) {
-        logger.debug("Using dev purchase bypass via Firebase callable (store skipped).");
-        const fallbackSucceeded = await this.grantDevCoinsFallback(productId);
-        if (!fallbackSucceeded) {
-          throw new Error(
-            "Development purchase fallback failed. Ensure grantDevCoinsForPurchase is deployed and enabled."
+        logger.debug("Attempting dev purchase bypass via Firebase callable.");
+        try {
+          const fallbackSucceeded = await this.grantDevCoinsFallback(productId);
+          if (fallbackSucceeded) {
+            addBreadcrumb("iap", "Dev purchase fallback succeeded", { productId });
+            void analyticsService.logPurchaseEvent("completed", {
+              product_id: productId,
+              coins: this.getCoinsForProduct(productId) ?? 0,
+              dev_fallback: true,
+            });
+            void analyticsService.logCoinPackPurchased({
+              productId,
+              coins: this.getCoinsForProduct(productId) ?? 0,
+              purchaseCount: 1,
+            });
+
+            return {
+              productId,
+              transactionId: `dev-${productId}-${Date.now()}`,
+            } as RNIap.Purchase;
+          }
+
+          logger.warn(
+            "Dev purchase fallback returned unsuccessful response. Continuing with native store flow.",
+            { productId }
+          );
+        } catch (fallbackError) {
+          logger.warn(
+            "Dev purchase fallback callable failed. Continuing with native store flow.",
+            {
+              productId,
+              error:
+                fallbackError instanceof Error
+                  ? fallbackError.message
+                  : String(fallbackError),
+            }
           );
         }
-
-        addBreadcrumb("iap", "Dev purchase fallback succeeded", { productId });
-        void analyticsService.logPurchaseEvent("completed", {
-          product_id: productId,
-          coins: this.getCoinsForProduct(productId) ?? 0,
-          dev_fallback: true,
-        });
-        void analyticsService.logCoinPackPurchased({
-          productId,
-          coins: this.getCoinsForProduct(productId) ?? 0,
-          purchaseCount: 1,
-        });
-
-        return {
-          productId,
-          transactionId: `dev-${productId}-${Date.now()}`,
-        } as RNIap.Purchase;
       }
 
       const availableProducts = await this.getProducts();

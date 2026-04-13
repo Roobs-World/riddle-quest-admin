@@ -33,6 +33,41 @@ export const signUpSchema = z
 export type LoginFormData = z.infer<typeof loginSchema>;
 export type SignUpFormData = z.infer<typeof signUpSchema>;
 
+type TimestampLike = {
+  toMillis?: () => number;
+  toDate?: () => Date;
+  seconds?: number;
+  nanoseconds?: number;
+};
+
+const coerceTimestampToMillis = (value: unknown): unknown => {
+  if (value == null || typeof value === "number") {
+    return value;
+  }
+  if (value instanceof Date) {
+    return value.getTime();
+  }
+  if (typeof value === "object") {
+    const timestampLike = value as TimestampLike;
+    if (typeof timestampLike.toMillis === "function") {
+      return timestampLike.toMillis();
+    }
+    if (typeof timestampLike.toDate === "function") {
+      return timestampLike.toDate().getTime();
+    }
+    if (typeof timestampLike.seconds === "number") {
+      const nanos =
+        typeof timestampLike.nanoseconds === "number"
+          ? timestampLike.nanoseconds
+          : 0;
+      return timestampLike.seconds * 1000 + Math.floor(nanos / 1_000_000);
+    }
+  }
+  return value;
+};
+
+const TimestampAsMillisSchema = z.preprocess(coerceTimestampToMillis, z.number());
+
 // Define the structure for player progress
 export const PlayerProgressSchema = z.object({
   classicIndex: z.number().int().nonnegative().default(1),
@@ -83,16 +118,16 @@ export const PlayerSchema = z.object({
   avatarUrl: z.string().url().optional(),
   coins: z.number().int().nonnegative().default(0),
   hasPurchasedApp: z.boolean().optional().default(false), // Added hasPurchasedApp for IAP functionality
-  createdAt: z.number().optional(), // Assuming timestamp is stored as a number
-  registeredAt: z.number().optional(), // Assuming timestamp is stored as a number
-  lastLogin: z.number().optional(), // Assuming timestamp is stored as a number
-  lastDailyChallengeCompletedAt: z.number().optional(), // Assuming timestamp is stored as a number
+  createdAt: TimestampAsMillisSchema.optional(),
+  registeredAt: TimestampAsMillisSchema.optional(),
+  lastLogin: TimestampAsMillisSchema.optional(),
+  lastDailyChallengeCompletedAt: TimestampAsMillisSchema.optional(),
   stats: PlayerStatsSchema.default({}), // Use nested stats schema
   progress: PlayerProgressSchema.default({}), // Use nested progress schema
   unlockedAchievements: z.array(UnlockedAchievementSchema).optional().default([]),
   fcmToken: z.string().optional(),
-  fcmTokenUpdatedAt: z.number().optional(),
-  lastStreakReminderSentAt: z.number().optional(),
+  fcmTokenUpdatedAt: TimestampAsMillisSchema.optional(),
+  lastStreakReminderSentAt: TimestampAsMillisSchema.optional(),
   // currentRiddle is not part of the Player document in Firestore, should be managed client-side or in AuthContext state
 });
 
@@ -112,6 +147,7 @@ export const FirestoreRiddleSchema = z.object({
   answer: z.string().min(1),
   // Added optional fields that might be present in riddle documents
   category: z.string().optional(),
+  timestamp: z.unknown().optional(),
 });
 
 // Schema for riddles in the main 'riddles' collection (classic mode)
@@ -130,6 +166,7 @@ export const DailyRiddleSchema = z.object({
   answer: z.string().min(1),
   dailyIndex: z.number().int().nonnegative(),
   category: z.string().default("daily"),
+  timestamp: z.unknown(),
 });
 
 export type FirestoreRiddle = z.infer<typeof FirestoreRiddleSchema>;

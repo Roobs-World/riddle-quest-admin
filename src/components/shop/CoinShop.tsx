@@ -36,6 +36,7 @@ const { screenHeight } = dimensions;
 const GRID_COIN_ICON_WIDTH = moderateScale(86);
 const GRID_COIN_ICON_HEIGHT = verticalScale(51);
 const GRID_CARD_HEIGHT = verticalScale(144);
+const LIST_COIN_ICON_SIZE = moderateScale(34);
 const COIN_SHOP_MODAL_SIDE_INSET = scale(28);
 const COIN_SHOP_SAFE_EDGE_GAP = scale(12);
 
@@ -75,6 +76,20 @@ const CoinShop: React.FC<CoinShopProps> = ({
   const sortedProducts = useMemo(
     () => [...firestoreProducts].sort((a, b) => a.sortOrder - b.sortOrder),
     [firestoreProducts],
+  );
+  const featuredProducts = useMemo(
+    () =>
+      sortedProducts
+        .filter((product) => product.featuredOrder !== undefined && product.featuredOrder !== null)
+        .sort((a, b) => (a.featuredOrder ?? 0) - (b.featuredOrder ?? 0)),
+    [sortedProducts],
+  );
+  const standardProducts = useMemo(
+    () =>
+      sortedProducts.filter(
+        (product) => product.featuredOrder === undefined || product.featuredOrder === null,
+      ),
+    [sortedProducts],
   );
 
   const displayPriceByProductId = useMemo(() => {
@@ -262,39 +277,71 @@ const CoinShop: React.FC<CoinShopProps> = ({
                 <View style={styles.scrollContent}>
 
                 {!error && sortedProducts.length > 0 && (
-                  <View style={styles.grid}>
-                    {sortedProducts.map((product) => {
-                      const displayPrice = getDisplayPrice(product);
-                      const isSelected = selectedProductId === product.productId;
-                      return (
-                        <TouchableOpacity
-                          key={product.productId}
-                          style={[styles.gridCard, isSelected && styles.gridCardSelected]}
-                          onPress={() => handlePackPress(product)}
-                          activeOpacity={0.8}
-                          testID={`pack-card-${product.productId}`}
-                        >
-                          {product.featuredBadge && (
-                            <View style={styles.badge}>
-                              <Text style={styles.badgeText}>{product.featuredBadge}</Text>
-                            </View>
-                          )}
+                  <>
+                    {featuredProducts.length > 0 && (
+                      <View style={styles.grid}>
+                        {featuredProducts.map((product) => {
+                          const displayPrice = getDisplayPrice(product);
+                          const isSelected = selectedProductId === product.productId;
+                          return (
+                            <TouchableOpacity
+                              key={product.productId}
+                              style={[styles.gridCard, isSelected && styles.gridCardSelected]}
+                              onPress={() => handlePackPress(product)}
+                              activeOpacity={0.8}
+                              testID={`pack-card-${product.productId}`}
+                            >
+                              {product.featuredBadge && (
+                                <View style={styles.badge}>
+                                  <Text style={styles.badgeText}>{product.featuredBadge}</Text>
+                                </View>
+                              )}
 
-                          <LargeCoinStackSvg
-                            width={GRID_COIN_ICON_WIDTH}
-                            height={GRID_COIN_ICON_HEIGHT}
-                            style={styles.gridCoinIcon}
-                          />
-                          <Text style={styles.productCoins}>
-                            {product.coins.toLocaleString()}{AppStrings.CoinShop.COINS_SUFFIX}
-                          </Text>
-                          <View style={styles.productPriceButton}>
-                            <Text style={styles.productPriceText}>{displayPrice}</Text>
-                          </View>
-                        </TouchableOpacity>
-                      );
-                    })}
-                  </View>
+                              <LargeCoinStackSvg
+                                width={GRID_COIN_ICON_WIDTH}
+                                height={GRID_COIN_ICON_HEIGHT}
+                                style={styles.gridCoinIcon}
+                              />
+                              <Text style={styles.productCoins}>
+                                {product.coins.toLocaleString()}{AppStrings.CoinShop.COINS_SUFFIX}
+                              </Text>
+                              <View style={styles.productPriceButton}>
+                                <Text style={styles.productPriceText}>{displayPrice}</Text>
+                              </View>
+                            </TouchableOpacity>
+                          );
+                        })}
+                      </View>
+                    )}
+
+                    {standardProducts.length > 0 && (
+                      <View style={styles.listContainer}>
+                        {standardProducts.map((product) => {
+                          const displayPrice = getDisplayPrice(product);
+                          const isSelected = selectedProductId === product.productId;
+                          return (
+                            <TouchableOpacity
+                              key={product.productId}
+                              style={[styles.listCard, isSelected && styles.listCardSelected]}
+                              onPress={() => handlePackPress(product)}
+                              activeOpacity={0.8}
+                              testID={`pack-card-${product.productId}`}
+                            >
+                              <View style={styles.listCardLeft}>
+                                <CoinSvg width={LIST_COIN_ICON_SIZE} height={LIST_COIN_ICON_SIZE} />
+                                <Text style={styles.listCoins}>
+                                  {product.coins.toLocaleString()}{AppStrings.CoinShop.COINS_SUFFIX}
+                                </Text>
+                              </View>
+                              <View style={styles.listPriceButton}>
+                                <Text style={styles.productPriceText}>{displayPrice}</Text>
+                              </View>
+                            </TouchableOpacity>
+                          );
+                        })}
+                      </View>
+                    )}
+                  </>
                 )}
 
                 {!error && sortedProducts.length === 0 && (
@@ -425,6 +472,49 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: verticalScale(30),
     marginBottom: verticalScale(12),
+  },
+  listCard: {
+    alignItems: "center",
+    backgroundColor: "#F8F5EE",
+    borderColor: "#DDD4C2",
+    borderRadius: moderateScale(12),
+    borderWidth: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: verticalScale(8),
+    paddingHorizontal: scale(12),
+    paddingVertical: verticalScale(10),
+  },
+  listCardLeft: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: scale(10),
+  },
+  listCardSelected: {
+    borderColor: COLORS.primaryOrange,
+    shadowColor: COLORS.primaryOrange,
+    shadowOpacity: 0.45,
+    shadowRadius: moderateScale(6),
+    shadowOffset: { width: 0, height: 0 },
+    elevation: 7,
+  },
+  listCoins: {
+    color: COLORS.black,
+    fontFamily: TYPOGRAPHY.fontPrimary,
+    fontSize: TYPOGRAPHY.fontSize.xl,
+  },
+  listContainer: {
+    marginTop: verticalScale(2),
+  },
+  listPriceButton: {
+    alignItems: "center",
+    backgroundColor: "#401F40",
+    borderColor: "#FEC880",
+    borderRadius: moderateScale(10),
+    borderWidth: 1.5,
+    minWidth: scale(72),
+    paddingHorizontal: scale(14),
+    paddingVertical: verticalScale(7),
   },
   loadingContainer: {
     alignItems: "center",

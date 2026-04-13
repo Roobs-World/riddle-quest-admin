@@ -129,14 +129,16 @@ export const fetchDailyRiddleFromFirestore = async (
   const cacheKey = `daily:${dailyIndex}`;
   const cached = getCachedRiddle(cacheKey);
   if (cached) {
-    logger.debug(`Daily riddle for index ${dailyIndex} served from cache`);
+    logger.debug("Daily riddle served from cache");
     return cached;
   }
 
-  logger.debug(`Fetching daily riddle for index ${dailyIndex} from Firestore`);
+  logger.debug(
+    `Fetching daily riddle from Firestore dailyRiddles/current (client index hint: ${dailyIndex})`
+  );
 
   try {
-    const riddleQuerySnapshot = await getDocs(
+    const byDailyIndexSnapshot = await getDocs(
       query(
         collection(getFirestore(), "dailyRiddles"),
         where("dailyIndex", "==", dailyIndex),
@@ -144,12 +146,25 @@ export const fetchDailyRiddleFromFirestore = async (
       )
     );
 
+    const riddleQuerySnapshot = !byDailyIndexSnapshot.empty
+      ? byDailyIndexSnapshot
+      : await getDocs(
+          query(
+            collection(getFirestore(), "dailyRiddles"),
+            where("riddleId", "==", "current"),
+            limit(1)
+          )
+        );
+
     if (!riddleQuerySnapshot.empty) {
       const riddleDoc = riddleQuerySnapshot.docs[0];
       const riddleData = riddleDoc.data();
       if (riddleData) {
         try {
-          const validatedRiddle = FirestoreRiddleSchema.parse(riddleData);
+          const validatedRiddle = FirestoreRiddleSchema.parse({
+            ...riddleData,
+            riddleId: riddleData.riddleId ?? riddleDoc.id,
+          });
           setCachedRiddle(cacheKey, validatedRiddle);
           logger.debug(
             "Daily riddle fetched and validated successfully:",

@@ -33,20 +33,37 @@ jest.mock("firebase-admin", () => {
   };
 });
 
-jest.mock("firebase-functions", () => ({
-  https: {
-    HttpsError: class MockHttpsError extends Error {
-      constructor(
-        public code: string,
-        public message: string,
-        public details?: any,
-      ) {
-        super(message);
-        this.name = "HttpsError";
-      }
+jest.mock("firebase-functions", () => {
+  class MockHttpsError extends Error {
+    constructor(
+      public code: string,
+      public message: string,
+      public details?: any,
+    ) {
+      super(message);
+      this.name = "HttpsError";
+    }
+  }
+
+  const mockModule = {
+    https: {
+      HttpsError: MockHttpsError,
     },
-  },
-}));
+    logger: {
+      info: jest.fn(),
+      warn: jest.fn(),
+      error: jest.fn(),
+      debug: jest.fn(),
+    },
+    config: jest.fn(() => ({})),
+  };
+
+  return {
+    __esModule: true,
+    ...mockModule,
+    default: mockModule,
+  };
+});
 
 jest.mock("firebase-functions/v2", () => ({
   logger: {
@@ -110,8 +127,17 @@ describe("riddleGeneration", () => {
     mockWhere.mockReturnValue(mockQuery);
     mockOrderBy.mockReturnValue(mockQuery);
     mockLimit.mockReturnValue(mockQuery);
-    mockGet.mockResolvedValue(emptySnapshot);
+    mockGet.mockResolvedValue({exists: false, data: () => undefined});
     mockCommit.mockResolvedValue(undefined);
+    mockSet.mockResolvedValue(undefined);
+    mockFirestoreDoc.mockImplementation((documentPath?: string) => ({
+      id: documentPath ?? "test-riddle-id",
+      set: mockSet,
+      get:
+        documentPath === "current"
+          ? mockGet
+          : jest.fn().mockResolvedValue({exists: false, data: () => undefined}),
+    }));
   });
 
   afterEach(() => {
@@ -236,7 +262,7 @@ describe("riddleGeneration", () => {
       await riddleGeneration.generateAndAppendRiddles(1);
 
       expect(mockSet).toHaveBeenCalledWith(
-        mockRiddleRef,
+        expect.anything(),
         expect.objectContaining({
           classicIndex: 1, // Starting from 1 when empty (classic_1 naming convention)
         }),
@@ -262,7 +288,7 @@ describe("riddleGeneration", () => {
       await riddleGeneration.generateAndAppendRiddles(1);
 
       expect(mockSet).toHaveBeenCalledWith(
-        mockRiddleRef,
+        expect.anything(),
         expect.objectContaining({
           classicIndex: 6, // 5 + 1
         }),
@@ -288,7 +314,7 @@ describe("riddleGeneration", () => {
       await riddleGeneration.generateAndAppendRiddles(1);
 
       expect(mockSet).toHaveBeenCalledWith(
-        mockRiddleRef,
+        expect.anything(),
         expect.objectContaining({
           classicIndex: 1, // 0 + 1
         }),
@@ -312,24 +338,13 @@ describe("riddleGeneration", () => {
 
   describe("getNextDailyIndex", () => {
     test("should return 0 when no daily riddles exist", async () => {
-      const indexQuery = {
-        get: jest.fn().mockResolvedValue({empty: true, docs: [], forEach: jest.fn()}),
-        orderBy: jest.fn().mockReturnThis(),
-        limit: jest.fn().mockReturnThis(),
-      };
-
-      (mockFirestoreCollection as any).mockReturnValue({
-        get: jest.fn().mockResolvedValue({empty: true, docs: [], forEach: jest.fn()}),
-        doc: mockFirestoreDoc,
-        where: jest.fn().mockReturnValue(indexQuery),
-      } as any);
+      mockGet.mockResolvedValue({exists: false, data: () => undefined});
 
       (mockGenerateUniqueRiddle as any).mockResolvedValue(["Test question?", "answer"]);
 
       await riddleGeneration.generateAndAppendDailyRiddles(1);
 
       expect(mockSet).toHaveBeenCalledWith(
-        mockRiddleRef,
         expect.objectContaining({
           dailyIndex: 0, // Starting from 0 when empty
         }),
@@ -337,25 +352,13 @@ describe("riddleGeneration", () => {
     });
 
     test("should return next index when daily riddles exist", async () => {
-      const mockDoc = {data: () => ({dailyIndex: 3})};
-      const indexQuery = {
-        get: jest.fn().mockResolvedValue({empty: false, docs: [mockDoc], forEach: jest.fn()}),
-        orderBy: jest.fn().mockReturnThis(),
-        limit: jest.fn().mockReturnThis(),
-      };
-
-      (mockFirestoreCollection as any).mockReturnValue({
-        get: jest.fn().mockResolvedValue({empty: true, docs: [], forEach: jest.fn()}),
-        doc: mockFirestoreDoc,
-        where: jest.fn().mockReturnValue(indexQuery),
-      } as any);
+      mockGet.mockResolvedValue({exists: true, data: () => ({dailyIndex: 3})});
 
       (mockGenerateUniqueRiddle as any).mockResolvedValue(["Test question?", "answer"]);
 
       await riddleGeneration.generateAndAppendDailyRiddles(1);
 
       expect(mockSet).toHaveBeenCalledWith(
-        mockRiddleRef,
         expect.objectContaining({
           dailyIndex: 4, // 3 + 1
         }),
@@ -378,7 +381,7 @@ describe("riddleGeneration", () => {
 
       await riddleGeneration.generateAndAppendRiddles(1);
 
-      expect(mockSet).toHaveBeenCalledWith(mockRiddleRef, {
+      expect(mockSet).toHaveBeenCalledWith(expect.anything(), {
         riddleId: "classic_1",
         text: "What is blue?",
         answer: "sky",
@@ -404,22 +407,18 @@ describe("riddleGeneration", () => {
   describe("storeDailyRiddlesInFirestore", () => {
     test("should store daily riddles with correct data structure", async () => {
       (mockGenerateUniqueRiddle as any).mockResolvedValue(["What is green?", "grass"]);
-      (mockFirestoreCollection as any).mockReturnValue({
-        get: jest.fn().mockResolvedValue({empty: true, docs: [], forEach: jest.fn()}),
-        doc: mockFirestoreDoc,
-        where: mockWhere,
-      } as any);
+      mockGet.mockResolvedValue({exists: false, data: () => undefined});
 
       await riddleGeneration.generateAndAppendDailyRiddles(1);
 
-      expect(mockSet).toHaveBeenCalledWith(mockRiddleRef, {
-        riddleId: "test-riddle-id",
+      expect(mockSet).toHaveBeenCalledWith({
+        riddleId: "current",
         text: "What is green?",
         answer: "grass",
         dailyIndex: 0,
         category: "daily",
+        timestamp: {},
       });
-      expect(mockCommit).toHaveBeenCalled();
     });
   });
 
@@ -470,7 +469,7 @@ describe("riddleGeneration", () => {
 
       expect(mockSet).toHaveBeenCalledTimes(1);
       expect(mockSet).toHaveBeenCalledWith(
-        mockRiddleRef,
+        expect.anything(),
         expect.objectContaining({
           text: "What is red?",
           answer: "fire",
@@ -520,27 +519,24 @@ describe("riddleGeneration", () => {
       await riddleGeneration.generateAndAppendRiddles(2);
 
       expect(mockSet).toHaveBeenCalledTimes(2);
-      expect(mockSet).toHaveBeenNthCalledWith(1, mockRiddleRef, expect.objectContaining({text: "What is blue?"}));
-      expect(mockSet).toHaveBeenNthCalledWith(2, mockRiddleRef, expect.objectContaining({text: "What is red?"}));
+      expect(mockSet).toHaveBeenNthCalledWith(1, expect.anything(), expect.objectContaining({text: "What is blue?"}));
+      expect(mockSet).toHaveBeenNthCalledWith(2, expect.anything(), expect.objectContaining({text: "What is red?"}));
     });
   });
 
   describe("generateAndAppendDailyRiddles", () => {
     test("should successfully generate and store daily riddles", async () => {
       (mockGenerateUniqueRiddle as any).mockResolvedValue(["Daily riddle?", "answer"]);
-      (mockFirestoreCollection as any).mockReturnValue({
-        get: jest.fn().mockResolvedValue({empty: true, docs: [], forEach: jest.fn()}),
-        doc: mockFirestoreDoc,
-        where: mockWhere,
-      } as any);
+      mockGet.mockResolvedValue({exists: false, data: () => undefined});
 
       await riddleGeneration.generateAndAppendDailyRiddles(1);
 
       expect(mockSet).toHaveBeenCalledWith(
-        mockRiddleRef,
         expect.objectContaining({
+          riddleId: "current",
           category: "daily",
           dailyIndex: 0,
+          timestamp: {},
         }),
       );
     });
@@ -572,10 +568,10 @@ describe("riddleGeneration", () => {
       await riddleGeneration.generateAndAppendDailyRiddles(1);
 
       expect(mockSet).toHaveBeenCalledWith(
-        mockRiddleRef,
         expect.objectContaining({
           text: "New daily riddle?",
           answer: "new",
+          timestamp: {},
         }),
       );
     });
@@ -583,13 +579,9 @@ describe("riddleGeneration", () => {
 
   describe("storeDailyRiddlesInFirestore", () => {
     test("should handle batch commit errors", async () => {
-      (mockCommit as any).mockRejectedValue(new Error("Daily commit failed"));
+      (mockSet as any).mockRejectedValueOnce(new Error("Daily set failed"));
       (mockGenerateUniqueRiddle as any).mockResolvedValue(["Daily?", "d"]);
-      (mockFirestoreCollection as any).mockReturnValue({
-        get: jest.fn().mockResolvedValue({empty: true, docs: [], forEach: jest.fn()}),
-        doc: mockFirestoreDoc,
-        where: mockWhere,
-      } as any);
+      mockGet.mockResolvedValue({exists: false, data: () => undefined});
 
       await expect(riddleGeneration.generateAndAppendDailyRiddles(1)).rejects.toThrow(
         "Failed to store daily riddles in Firestore.",
@@ -599,17 +591,7 @@ describe("riddleGeneration", () => {
 
   describe("getNextDailyIndex", () => {
     test("should handle Firestore errors", async () => {
-      const indexQuery = {
-        get: jest.fn().mockRejectedValue(new Error("Daily index error")),
-        orderBy: jest.fn().mockReturnThis(),
-        limit: jest.fn().mockReturnThis(),
-      };
-
-      (mockFirestoreCollection as any).mockReturnValue({
-        get: jest.fn().mockResolvedValue({empty: true, docs: [], forEach: jest.fn()}),
-        doc: mockFirestoreDoc,
-        where: jest.fn().mockReturnValue(indexQuery),
-      } as any);
+      mockGet.mockRejectedValueOnce(new Error("Daily index error"));
 
       await expect(riddleGeneration.generateAndAppendDailyRiddles(1)).rejects.toThrow(
         "Failed to get next daily index.",
@@ -844,18 +826,17 @@ describe("riddleGeneration", () => {
 
   describe("generateTodaysDailyChallenge", () => {
     test("should skip generation when today's challenge already exists with 1 question", async () => {
-      const today = new Date().toISOString().split("T")[0];
-      (mockFirestoreCollection as any).mockReturnValueOnce({
-        doc: () => ({
-          get: jest.fn().mockResolvedValue({
-            exists: true,
-            data: () => ({
-              date: today,
-              questions: [{}],
-            }),
-          }),
+      mockGet.mockResolvedValue({
+        exists: true,
+        data: () => ({
+          riddleId: "current",
+          text: "Existing daily question?",
+          answer: "answer",
+          timestamp: {toDate: () => new Date()},
+          dailyIndex: 7,
+          category: "daily",
         }),
-      } as any);
+      });
 
       await riddleGeneration.generateTodaysDailyChallenge(false);
 
@@ -876,75 +857,46 @@ describe("riddleGeneration", () => {
     });
 
     test("should generate when forceGenerate is true even if doc exists", async () => {
-      const today = new Date().toISOString().split("T")[0];
-      const emptySnapshot = {empty: true, docs: [], forEach: jest.fn()};
-      const indexQuery = {
-        get: jest.fn().mockResolvedValue({empty: true, docs: [], forEach: jest.fn()}),
-        orderBy: jest.fn().mockReturnThis(),
-        limit: jest.fn().mockReturnThis(),
-      };
-      const mockDocRef = {
-        id: "daily-riddle-id",
-        set: jest.fn().mockResolvedValue(undefined),
-      };
-      const mockChallengeDocRef = {
-        get: jest.fn().mockResolvedValue({
-          exists: true,
-          data: () => ({date: today, questions: [{}]}),
+      mockGet.mockResolvedValue({
+        exists: true,
+        data: () => ({
+          riddleId: "current",
+          text: "Existing daily question?",
+          answer: "answer",
+          timestamp: {toDate: () => new Date()},
+          dailyIndex: 1,
+          category: "daily",
         }),
-        set: jest.fn().mockResolvedValue(undefined),
-      };
+      });
       (mockGenerateUniqueRiddle as any).mockResolvedValueOnce(["Q1?", "a1"]);
-
-      (mockFirestoreCollection as any)
-        .mockReturnValueOnce({
-          doc: () => mockChallengeDocRef,
-        } as any)
-        .mockReturnValueOnce({get: jest.fn().mockResolvedValue(emptySnapshot)} as any)
-        .mockReturnValueOnce({get: jest.fn().mockResolvedValue(emptySnapshot)} as any)
-        .mockReturnValueOnce({
-          doc: () => mockDocRef,
-          where: jest.fn().mockReturnValue(indexQuery),
-        } as any)
-        .mockReturnValueOnce({doc: () => mockDocRef} as any)
-        .mockReturnValueOnce({
-          get: jest.fn().mockResolvedValue({
-            empty: false,
-            forEach: jest.fn((cb: (doc: {ref: unknown}) => void) => {
-              cb({ref: {}});
-            }),
-          }),
-        } as any);
 
       await riddleGeneration.generateTodaysDailyChallenge(true);
 
       expect(mockGenerateUniqueRiddle).toHaveBeenCalledTimes(1);
-      expect(mockChallengeDocRef.set).toHaveBeenCalled();
-      expect(mockCommit).toHaveBeenCalled();
+      expect(mockSet).toHaveBeenCalledWith(
+        expect.objectContaining({
+          riddleId: "current",
+          text: "Q1?",
+          answer: "a1",
+          timestamp: {},
+        }),
+      );
     });
   });
 
   describe("generateTodaysDailyChallengeFunction", () => {
     test("should return success and questionsGenerated when challenge is generated", async () => {
-      const today = new Date().toISOString().split("T")[0];
-      const mockChallengeDocRef = {
-        get: jest.fn().mockResolvedValue({
-          exists: true,
-          data: () => ({date: today, questions: [{}]}),
+      mockGet.mockResolvedValue({
+        exists: true,
+        data: () => ({
+          riddleId: "current",
+          text: "Existing daily question?",
+          answer: "answer",
+          timestamp: {toDate: () => new Date()},
+          dailyIndex: 1,
+          category: "daily",
         }),
-        set: jest.fn().mockResolvedValue(undefined),
-      };
-
-      (mockFirestoreCollection as any)
-        .mockReturnValueOnce({doc: () => mockChallengeDocRef} as any)
-        .mockReturnValueOnce({
-          doc: () => ({
-            get: jest.fn().mockResolvedValue({
-              exists: true,
-              data: () => ({questions: [1]}),
-            }),
-          }),
-        } as any);
+      });
 
       const result = await riddleGeneration.generateTodaysDailyChallengeFunction(
         {data: {}} as any,

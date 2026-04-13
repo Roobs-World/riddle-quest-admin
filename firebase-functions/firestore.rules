@@ -45,9 +45,11 @@ service cloud.firestore {
 
     // Validate stats update structure
     function isValidStatsUpdate() {
-      let allowedStats = ['dailyPuzzlesCompleted', 'bestStreak', 'totalWordsGuessed', 'winRate', 'averageGuesses', 'totalScore', 'highestLevelClassic', 'gamesPlayed', 'wins', 'challengeWins', 'winStreak', 'totalWins', 'totalGuessesInWins', 'totalHintsUsed'];
+      let allowedStats = ['xp', 'level', 'dailyPuzzlesCompleted', 'bestStreak', 'totalWordsGuessed', 'winRate', 'averageGuesses', 'totalScore', 'highestLevelClassic', 'gamesPlayed', 'wins', 'challengeWins', 'winStreak', 'totalWins', 'totalGuessesInWins', 'totalHintsUsed'];
 
       return request.resource.data.stats.keys().hasOnly(allowedStats) &&
+             (!('xp' in request.resource.data.stats) || (request.resource.data.stats.xp is number && request.resource.data.stats.xp >= 0)) &&
+             (!('level' in request.resource.data.stats) || (request.resource.data.stats.level is number && request.resource.data.stats.level >= 1)) &&
              (!('dailyPuzzlesCompleted' in request.resource.data.stats) || (request.resource.data.stats.dailyPuzzlesCompleted is number && request.resource.data.stats.dailyPuzzlesCompleted >= 0)) &&
              (!('bestStreak' in request.resource.data.stats) || (request.resource.data.stats.bestStreak is number && request.resource.data.stats.bestStreak >= 0)) &&
              (!('totalWordsGuessed' in request.resource.data.stats) || (request.resource.data.stats.totalWordsGuessed is number && request.resource.data.stats.totalWordsGuessed >= 0)) &&
@@ -81,8 +83,8 @@ service cloud.firestore {
       allow update: if (isOwner(userId) || isServerRequest()) && 
                       isValidUser(userId) && 
                       isValidUserDocument() &&
-                      (!('stats' in resource.data) || isValidStatsUpdate()) &&
-                      (!('progress' in resource.data) || isValidProgressUpdate());
+                      (!('stats' in request.resource.data) || isValidStatsUpdate()) &&
+                      (!('progress' in request.resource.data) || isValidProgressUpdate());
       
       // Prevent client-side deletion - only allow server deletion
       allow delete: if isServerRequest();

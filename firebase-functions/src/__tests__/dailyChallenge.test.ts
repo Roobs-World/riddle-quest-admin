@@ -83,7 +83,7 @@ jest.mock("firebase-admin", () => {
           (documentPath?: string): MockDocumentReference<T> =>
             ({
               get:
-                collectionPath === "dailyChallenge" && documentPath === "current"
+                collectionPath === "dailyRiddles" && documentPath === "current"
                   ? mockAdminFirestoreGet
                   : jest
                       .fn<() => Promise<MockDocumentSnapshot<T>>>()
@@ -180,6 +180,20 @@ const getDefaultPlayer = (userId: string, overrides: Partial<Player> = {}): Play
     ...overrides,
   });
 };
+
+const createTimestampMock = (iso: string) => ({
+  toDate: () => new Date(iso),
+});
+
+const createCurrentDailyRiddleDoc = (
+  overrides: Partial<{riddleId: string; text: string; answer: string; timestamp: unknown}> = {},
+) => ({
+  riddleId: "current",
+  text: "Question 1?",
+  answer: "answer",
+  timestamp: createTimestampMock("2023-01-01T10:00:00.000Z"),
+  ...overrides,
+});
 
 describe("Daily Challenge Functions", () => {
   let mockUpdateUserLastCompletedDailyChallengeDate: jest.MockedFunction<typeof originalUpdateUserDate>;
@@ -375,17 +389,7 @@ describe("Daily Challenge Functions", () => {
 
       mockGetUser.mockResolvedValue(mockPlayer);
 
-      const mockDailyChallenge = {
-        date: "2023-01-01",
-        questions: [
-          {riddleId: "q1", text: "Question 1?"},
-          {riddleId: "q2", text: "Question 2?"},
-          {riddleId: "q3", text: "Question 3?"},
-          {riddleId: "q4", text: "Question 4?"},
-          {riddleId: "q5", text: "Question 5?"},
-        ],
-        totalQuestions: 5,
-      };
+      const mockDailyChallenge = createCurrentDailyRiddleDoc();
       mockAdminFirestoreGet.mockResolvedValue({
         exists: true,
         data: () => mockDailyChallenge,
@@ -397,7 +401,7 @@ describe("Daily Challenge Functions", () => {
       expect(result.challenge).toEqual({
         date: "2023-01-01",
         questions: [
-          {riddleId: "q1", text: "Question 1?", questionNumber: 1},
+          {riddleId: "current", text: "Question 1?", questionNumber: 1},
         ],
         totalQuestions: 1,
       });
@@ -420,17 +424,7 @@ describe("Daily Challenge Functions", () => {
 
       mockGetUser.mockResolvedValue(mockPlayer);
 
-      const mockDailyChallenge = {
-        date: "2023-01-01",
-        questions: [
-          {riddleId: "q1", text: "Question 1?"},
-          {riddleId: "q2", text: "Question 2?"},
-          {riddleId: "q3", text: "Question 3?"},
-          {riddleId: "q4", text: "Question 4?"},
-          {riddleId: "q5", text: "Question 5?"},
-        ],
-        totalQuestions: 5,
-      };
+      const mockDailyChallenge = createCurrentDailyRiddleDoc();
       mockAdminFirestoreGet.mockResolvedValue({
         exists: true,
         data: () => mockDailyChallenge,
@@ -442,7 +436,7 @@ describe("Daily Challenge Functions", () => {
       expect(result.challenge).toEqual({
         date: "2023-01-01",
         questions: [
-          {riddleId: "q1", text: "Question 1?", questionNumber: 1},
+          {riddleId: "current", text: "Question 1?", questionNumber: 1},
         ],
         totalQuestions: 1,
       });
@@ -456,17 +450,7 @@ describe("Daily Challenge Functions", () => {
       const dbError = new Error("DB fetch failed");
       mockGetUser.mockRejectedValue(dbError);
 
-      const mockDailyChallenge = {
-        date: "2023-01-01",
-        questions: [
-          {riddleId: "q1", text: "Question 1?"},
-          {riddleId: "q2", text: "Question 2?"},
-          {riddleId: "q3", text: "Question 3?"},
-          {riddleId: "q4", text: "Question 4?"},
-          {riddleId: "q5", text: "Question 5?"},
-        ],
-        totalQuestions: 5,
-      };
+      const mockDailyChallenge = createCurrentDailyRiddleDoc();
       mockAdminFirestoreGet.mockResolvedValue({
         exists: true,
         data: () => mockDailyChallenge,
@@ -481,17 +465,7 @@ describe("Daily Challenge Functions", () => {
     });
 
     it("should return challenge and false completion if user not authenticated", async () => {
-      const mockDailyChallenge = {
-        date: "2023-01-01",
-        questions: [
-          {riddleId: "q1", text: "Question 1?"},
-          {riddleId: "q2", text: "Question 2?"},
-          {riddleId: "q3", text: "Question 3?"},
-          {riddleId: "q4", text: "Question 4?"},
-          {riddleId: "q5", text: "Question 5?"},
-        ],
-        totalQuestions: 5,
-      };
+      const mockDailyChallenge = createCurrentDailyRiddleDoc();
       mockAdminFirestoreGet.mockResolvedValue({
         exists: true,
         data: () => mockDailyChallenge,
@@ -503,7 +477,7 @@ describe("Daily Challenge Functions", () => {
       expect(result.challenge).toEqual({
         date: "2023-01-01",
         questions: [
-          {riddleId: "q1", text: "Question 1?", questionNumber: 1},
+          {riddleId: "current", text: "Question 1?", questionNumber: 1},
         ],
         totalQuestions: 1,
       });
@@ -517,17 +491,9 @@ describe("Daily Challenge Functions", () => {
 
       mockGetUser.mockResolvedValue(mockPlayer);
 
-      const mockDailyChallenge = {
-        date: "2023-01-02", // Different day
-        questions: [
-          {riddleId: "q1", text: "Question 1?"},
-          {riddleId: "q2", text: "Question 2?"},
-          {riddleId: "q3", text: "Question 3?"},
-          {riddleId: "q4", text: "Question 4?"},
-          {riddleId: "q5", text: "Question 5?"},
-        ],
-        totalQuestions: 5,
-      };
+      const mockDailyChallenge = createCurrentDailyRiddleDoc({
+        timestamp: createTimestampMock("2023-01-02T10:00:00.000Z"),
+      });
       mockAdminFirestoreGet.mockResolvedValue({
         exists: true,
         data: () => mockDailyChallenge,
@@ -539,7 +505,7 @@ describe("Daily Challenge Functions", () => {
       expect(result.challenge).toEqual({
         date: "2023-01-02",
         questions: [
-          {riddleId: "q1", text: "Question 1?", questionNumber: 1},
+          {riddleId: "current", text: "Question 1?", questionNumber: 1},
         ],
         totalQuestions: 1,
       });
@@ -549,9 +515,8 @@ describe("Daily Challenge Functions", () => {
     it("should return error if daily challenge document is missing required fields", async () => {
       // Test case where document exists but is missing questions array or has wrong number of questions
       const mockDailyChallengeIncomplete = {
-        date: "2023-01-01",
-        questions: [],
-        totalQuestions: 0,
+        answer: "answer",
+        timestamp: createTimestampMock("2023-01-01T10:00:00.000Z"),
       };
       mockAdminFirestoreGet.mockResolvedValue({
         exists: true,
@@ -589,17 +554,7 @@ describe("Daily Challenge Functions", () => {
       const mockUserId = "testUserNotFound";
       mockGetUser.mockResolvedValue(undefined);
 
-      const mockDailyChallenge = {
-        date: "2023-01-01",
-        questions: [
-          {riddleId: "q1", text: "Question 1?"},
-          {riddleId: "q2", text: "Question 2?"},
-          {riddleId: "q3", text: "Question 3?"},
-          {riddleId: "q4", text: "Question 4?"},
-          {riddleId: "q5", text: "Question 5?"},
-        ],
-        totalQuestions: 5,
-      };
+      const mockDailyChallenge = createCurrentDailyRiddleDoc();
       mockAdminFirestoreGet.mockResolvedValue({
         exists: true,
         data: () => mockDailyChallenge,
@@ -627,7 +582,7 @@ describe("Daily Challenge Functions", () => {
       adminMock.mockFirestoreCollection.mockImplementation((collectionPath: string) => ({
         doc: jest.fn((docId?: string) => ({
           get:
-            collectionPath === "dailyChallenge" && docId === "current"
+            collectionPath === "dailyRiddles" && docId === "current"
               ? mockAdminFirestoreGet
               : jest.fn().mockResolvedValue({exists: false, data: () => undefined}),
           set: jest.fn().mockResolvedValue(undefined),

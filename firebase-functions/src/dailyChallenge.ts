@@ -6,6 +6,7 @@ import {generateTodaysDailyChallenge} from "./riddleGeneration";
 import {captureException} from "./sentry";
 
 const DAILY_CHALLENGE_QUESTION_COUNT = 1;
+const CURRENT_DAILY_RIDDLE_DOC_ID = "current";
 
 /**
  * Converts unknown date-like input to an ISO UTC day string (`YYYY-MM-DD`).
@@ -43,15 +44,25 @@ async function getFreshDailyChallengeDoc(): Promise<{
   todayDateString: string;
 }> {
   const todayDateString = new Date().toISOString().split("T")[0];
-  const dailyChallengeRef = admin.firestore().collection("dailyChallenge").doc("current");
+  const dailyChallengeRef = admin.firestore().collection("dailyRiddles").doc(CURRENT_DAILY_RIDDLE_DOC_ID);
 
   let dailyChallengeDoc = await dailyChallengeRef.get();
   const challengeData = dailyChallengeDoc.data();
+  const challengeTimestamp = challengeData?.timestamp;
+  let challengeDate: string | null = null;
+  if (challengeTimestamp && typeof challengeTimestamp === "object" && "toDate" in challengeTimestamp) {
+    challengeDate = challengeTimestamp.toDate().toISOString().split("T")[0];
+  } else if (challengeTimestamp) {
+    const parsed = new Date(challengeTimestamp as string | number | Date);
+    challengeDate = Number.isNaN(parsed.getTime()) ? null : parsed.toISOString().split("T")[0];
+  }
 
   const isChallengeUsable = dailyChallengeDoc.exists &&
-    challengeData?.date === todayDateString &&
-    Array.isArray(challengeData.questions) &&
-    challengeData.questions.length >= DAILY_CHALLENGE_QUESTION_COUNT;
+    challengeDate === todayDateString &&
+    typeof challengeData?.text === "string" &&
+    challengeData.text.length > 0 &&
+    typeof challengeData?.answer === "string" &&
+    challengeData.answer.length > 0;
 
   if (!isChallengeUsable) {
     functions.logger.warn(
@@ -142,8 +153,8 @@ interface DailyChallengeQuestion {
 }
 
 interface DailyChallengeData {
-  /** UTC date string (`YYYY-MM-DD`) for this challenge. */
-  date: string;
+  /** UTC date string (`YYYY-MM-DD`) derived from the challenge timestamp. */
+  date?: string;
   /** Ordered list of questions for the day. */
   questions: DailyChallengeQuestion[];
   /** Total number of daily challenge questions. */
@@ -182,23 +193,21 @@ export const getCurrentDailyChallenge = onCall(
       }
 
       const allData = dailyChallengeDoc.data();
-      if (!allData || !allData.questions || !Array.isArray(allData.questions) || allData.questions.length < 1) {
+      if (!allData || typeof allData.text !== "string" || allData.text.length === 0) {
         functions.logger.error("Daily challenge document is missing required question data.", allData);
         return {error: "Daily challenge data is incomplete. Expected 1 question."};
       }
 
-      // Check if the challenge is for today (best-effort validation)
-      if (allData.date && allData.date !== todayDateString) {
-        functions.logger.warn(
-          `Daily challenge date mismatch after regeneration attempt. Expected: ${todayDateString}, Found: ${allData.date}`,
-        );
+      let challengeDate: string | undefined = todayDateString;
+      if (allData.timestamp && typeof allData.timestamp === "object" && "toDate" in allData.timestamp) {
+        challengeDate = allData.timestamp.toDate().toISOString().split("T")[0];
       }
 
       const challengeData: DailyChallengeData = {
-        date: allData.date || todayDateString,
+        date: challengeDate,
         questions: [{
-          riddleId: allData.questions[0].riddleId,
-          text: allData.questions[0].text,
+          riddleId: allData.riddleId || CURRENT_DAILY_RIDDLE_DOC_ID,
+          text: allData.text,
           questionNumber: 1,
         }],
         totalQuestions: DAILY_CHALLENGE_QUESTION_COUNT,

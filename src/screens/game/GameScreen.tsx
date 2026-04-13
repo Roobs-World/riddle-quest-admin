@@ -318,15 +318,34 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   }, [playerData, showWelcomeModal, showInstructionsModal, showInfoModal]);
 
   useEffect(() => {
-    if (!pendingStreakBreak || streakBreakModalShownRef.current) return;
-    streakBreakModalShownRef.current = true;
+    if (!pendingStreakBreak || streakBreakModalShownRef.current || isAnyModalVisible) {
+      return;
+    }
 
-    showInfoModal({
-      title: "Streak Broken",
-      message: `Your streak ended at ${pendingStreakBreak.previousStreak} day${pendingStreakBreak.previousStreak === 1 ? "" : "s"}. Complete today's daily challenge to start a new streak.`,
-      onConfirm: consumePendingStreakBreak,
+    let isCancelled = false;
+    safeDelay(MODAL_CLOSE_DELAY_MS).then(() => {
+      if (isCancelled || streakBreakModalShownRef.current || modal.modals.length > 0) {
+        return;
+      }
+
+      streakBreakModalShownRef.current = true;
+      showInfoModal({
+        title: "Streak Broken",
+        message: `Your streak ended at ${pendingStreakBreak.previousStreak} day${pendingStreakBreak.previousStreak === 1 ? "" : "s"}. Complete today's daily challenge to start a new streak.`,
+        onConfirm: consumePendingStreakBreak,
+      });
     });
-  }, [pendingStreakBreak, showInfoModal, consumePendingStreakBreak]);
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [
+    pendingStreakBreak,
+    isAnyModalVisible,
+    modal.modals.length,
+    showInfoModal,
+    consumePendingStreakBreak,
+  ]);
 
   useEffect(() => {
     const loadSettings = async () => {

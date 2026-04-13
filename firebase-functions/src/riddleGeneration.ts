@@ -141,20 +141,17 @@ async function storeClassicRiddlesInFirestore(
  */
 async function getNextDailyIndex(): Promise<number> {
   try {
-    const riddlesSnapshot = await admin
+    const currentDoc = await admin
       .firestore()
       .collection(RiddleCollections.DAILY_RIDDLES)
-      .where("dailyIndex", ">=", 0)
-      .orderBy("dailyIndex", "desc")
-      .limit(1)
+      .doc("current")
       .get();
 
-    if (riddlesSnapshot.empty) {
-      return 0; // Start from 0 if no daily riddles exist
+    if (!currentDoc.exists) {
+      return 0;
     }
 
-    const highestIndexDoc = riddlesSnapshot.docs[0];
-    const highestIndex = highestIndexDoc.data().dailyIndex || 0;
+    const highestIndex = currentDoc.data()?.dailyIndex || 0;
     return highestIndex + 1;
   } catch (error) {
     logger.error("Error getting next daily index:", error);
@@ -172,24 +169,31 @@ async function storeDailyRiddlesInFirestore(
   riddles: {question: string; answer: string}[],
   startingIndex: number,
 ): Promise<void> {
-  const batch = admin.firestore().batch();
+  if (riddles.length === 0) {
+    logger.warn("No daily riddles provided to store.");
+    return;
+  }
 
-  riddles.forEach((riddle, index) => {
-    const riddleRef = admin.firestore().collection(RiddleCollections.DAILY_RIDDLES).doc();
-    const riddleData: DailyRiddle = {
-      riddleId: riddleRef.id,
-      text: riddle.question,
-      answer: riddle.answer,
-      dailyIndex: startingIndex + index,
-      category: "daily",
-    };
+  if (riddles.length > 1) {
+    logger.warn(
+      `Received ${riddles.length} daily riddles, but schema supports only one. Keeping the first and overwriting dailyRiddles/current.`,
+    );
+  }
 
-    batch.set(riddleRef, riddleData);
-  });
+  const selectedRiddle = riddles[0];
+  const riddleRef = admin.firestore().collection(RiddleCollections.DAILY_RIDDLES).doc("current");
+  const riddleData: DailyRiddle = {
+    riddleId: "current",
+    text: selectedRiddle.question,
+    answer: selectedRiddle.answer,
+    dailyIndex: startingIndex,
+    category: "daily",
+    timestamp: admin.firestore.FieldValue.serverTimestamp(),
+  };
 
   try {
-    await batch.commit();
-    logger.info(`Successfully stored ${riddles.length} new daily riddles in Firestore.`);
+    await riddleRef.set(riddleData);
+    logger.info("Successfully stored daily riddle in dailyRiddles/current.");
   } catch (error) {
     logger.error("Error storing daily riddles in Firestore:", error);
     captureException(error);
@@ -353,9 +357,8 @@ export async function generateAndAppendDailyRiddles(numberOfRiddles: number): Pr
   }
 
   if (newRiddles.length > 0) {
-    // Store daily riddles directly in Firestore
     await storeDailyRiddlesInFirestore(newRiddles, startingIndex);
-    logger.info(`Successfully generated and stored ${newRiddles.length} new daily riddles in Firestore.`);
+    logger.info("Successfully generated and stored a new current daily riddle in Firestore.");
   } else {
     logger.warn("No new unique daily riddles were generated.");
   }
@@ -535,13 +538,24 @@ export async function generateTodaysDailyChallenge(forceGenerate: boolean = fals
   const today = new Date();
   const todayDateString = today.toISOString().split("T")[0]; // YYYY-MM-DD format
 
-  // Check if today's challenge already exists
-  const dailyChallengeRef = admin.firestore().collection("dailyChallenge").doc("current");
-  const existingChallenge = await dailyChallengeRef.get();
+  const currentDailyRiddleRef = admin.firestore().collection(RiddleCollections.DAILY_RIDDLES).doc("current");
+  const existingChallenge = await currentDailyRiddleRef.get();
+
+  const getUtcDateFromStoredTimestamp = (value: unknown): string | null => {
+    if (!value) return null;
+    if (typeof value === "object" && value !== null && "toDate" in (value as object)) {
+      const ts = value as {toDate: () => Date};
+      const parsed = ts.toDate();
+      return Number.isNaN(parsed.getTime()) ? null : parsed.toISOString().split("T")[0];
+    }
+    const parsed = new Date(value as string | number | Date);
+    return Number.isNaN(parsed.getTime()) ? null : parsed.toISOString().split("T")[0];
+  };
 
   if (existingChallenge.exists && !forceGenerate) {
     const existingData = existingChallenge.data();
-    if (existingData?.date === todayDateString && existingData?.questions?.length === dailyChallengeQuestionCount) {
+    const existingChallengeDate = getUtcDateFromStoredTimestamp(existingData?.timestamp);
+    if (existingChallengeDate === todayDateString && existingData?.text && existingData?.answer) {
       logger.info(`Today's daily challenge already exists with ${dailyChallengeQuestionCount} question.`);
       return;
     }
@@ -559,11 +573,7 @@ export async function generateTodaysDailyChallenge(forceGenerate: boolean = fals
   const existing = await getExistingRiddlesFromFirestore();
   const startingDailyIndex = await getNextDailyIndex();
 
-  const dailyChallengeQuestions: {
-    riddleId: string;
-    text: string;
-    answer: string;
-  }[] = [];
+  let selectedDailyChallengeRiddle: {text: string; answer: string} | null = null;
 
   const generatedAttempts: {question: string; answer: string}[] = [];
 
@@ -571,7 +581,7 @@ export async function generateTodaysDailyChallenge(forceGenerate: boolean = fals
   const maxAttempts = dailyChallengeQuestionCount * 10;
   let attemptCount = 0;
 
-  while (dailyChallengeQuestions.length < dailyChallengeQuestionCount && attemptCount < maxAttempts) {
+  while (!selectedDailyChallengeRiddle && attemptCount < maxAttempts) {
     attemptCount++;
 
     // Generate a riddle using the OpenAI service
@@ -592,32 +602,27 @@ export async function generateTodaysDailyChallenge(forceGenerate: boolean = fals
           generatedAttempts.map((r) => r.answer),
         )
       ) {
-        // Create riddle document in dailyRiddles collection
-        const riddleRef = admin.firestore().collection(RiddleCollections.DAILY_RIDDLES).doc();
         const riddleData: DailyRiddle = {
-          riddleId: riddleRef.id,
+          riddleId: "current",
           text: newRiddle.question,
           answer: newRiddle.answer,
-          dailyIndex: startingDailyIndex + dailyChallengeQuestions.length,
+          dailyIndex: startingDailyIndex,
           category: "daily",
+          timestamp: admin.firestore.FieldValue.serverTimestamp(),
         };
 
-        // Store the riddle in the dailyRiddles collection
-        await riddleRef.set(riddleData);
-
-        // Add to daily challenge questions array
-        dailyChallengeQuestions.push({
-          riddleId: riddleRef.id,
+        await currentDailyRiddleRef.set(riddleData);
+        selectedDailyChallengeRiddle = {
           text: newRiddle.question,
           answer: newRiddle.answer,
-        });
+        };
 
         // Add to existing for subsequent duplicate checks within this run
         existing.questions.push(newRiddle.question.toLowerCase());
         existing.answers.push(newRiddle.answer.toLowerCase());
 
         logger.info(
-          `Generated daily challenge question ${dailyChallengeQuestions.length}/${dailyChallengeQuestionCount} (attempt ${attemptCount})`,
+          `Generated daily challenge question 1/${dailyChallengeQuestionCount} (attempt ${attemptCount})`,
         );
       } else {
         logger.warn(`Generated riddle is a duplicate, trying again... (attempt ${attemptCount}/${maxAttempts})`);
@@ -629,36 +634,19 @@ export async function generateTodaysDailyChallenge(forceGenerate: boolean = fals
   }
 
   // Check if we hit the circuit breaker
-  if (dailyChallengeQuestions.length < dailyChallengeQuestionCount && attemptCount >= maxAttempts) {
+  if (!selectedDailyChallengeRiddle && attemptCount >= maxAttempts) {
     logger.warn(
-      `Circuit breaker activated: Only generated ${dailyChallengeQuestions.length}/${dailyChallengeQuestionCount} daily challenge questions after ${maxAttempts} attempts`,
+      `Circuit breaker activated: Only generated 0/${dailyChallengeQuestionCount} daily challenge questions after ${maxAttempts} attempts`,
     );
-    if (dailyChallengeQuestions.length === 0) {
-      throw new Error(`Failed to generate any unique daily challenge questions after ${maxAttempts} attempts`);
-    }
+    throw new Error(`Failed to generate any unique daily challenge questions after ${maxAttempts} attempts`);
   }
 
-  if (dailyChallengeQuestions.length > 0) {
-    // Create the daily challenge document structure
-    const dailyChallengeData = {
-      date: todayDateString,
-      questions: dailyChallengeQuestions.map((q, _index) => ({
-        riddleId: q.riddleId,
-        text: q.text,
-        // Don't include answer in the client-accessible data
-      })),
-      totalQuestions: dailyChallengeQuestions.length,
-      createdAt: admin.firestore.FieldValue.serverTimestamp(),
-    };
-
-    // Store the daily challenge in the dailyChallenge collection
-    await dailyChallengeRef.set(dailyChallengeData);
-
+  if (selectedDailyChallengeRiddle) {
     // Reset all users' daily challenge progress for the new day
     await resetAllUsersDailyChallengeProgress();
 
     logger.info(
-      `Successfully generated and stored ${dailyChallengeQuestions.length} questions for today's daily challenge.`,
+      `Successfully generated and stored the current daily challenge for ${todayDateString}.`,
     );
   } else {
     throw new Error("Failed to generate any daily challenge questions.");
@@ -731,10 +719,12 @@ export const generateTodaysDailyChallengeFunction = onCall(
       logger.info(`Starting daily challenge generation for ${todayDateString}...`);
       await generateTodaysDailyChallenge(forceGenerate);
 
-      // Get the generated challenge to count questions
-      const dailyChallengeRef = admin.firestore().collection("dailyChallenge").doc("current");
-      const challengeDoc = await dailyChallengeRef.get();
-      const questionsGenerated = challengeDoc.exists ? challengeDoc.data()?.questions?.length || 0 : 0;
+      const challengeDoc = await admin
+        .firestore()
+        .collection(RiddleCollections.DAILY_RIDDLES)
+        .doc("current")
+        .get();
+      const questionsGenerated = challengeDoc.exists ? 1 : 0;
 
       logger.info(`Daily challenge generated successfully with ${questionsGenerated} questions.`);
       return {

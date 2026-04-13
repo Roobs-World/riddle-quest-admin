@@ -51,10 +51,52 @@ import sunTextureModule from "../../../assets/3d/tex_sun_spots_02.png";
 
 // Cache for loaded textures
 const textureCache = new Map<string | number, Texture>();
+const sphereGeometryCache = new Map<string, SphereGeometry>();
+let texturedPhongMaterialCache = new WeakMap<Texture, MeshPhongMaterial>();
+let fallbackPhongMaterial: MeshPhongMaterial | null = null;
 
 // Test-only helper to clear module cache between unit tests.
 export const __resetSolarSystem3DTextureCacheForTests = (): void => {
   textureCache.clear();
+  sphereGeometryCache.clear();
+  texturedPhongMaterialCache = new WeakMap<Texture, MeshPhongMaterial>();
+  fallbackPhongMaterial = null;
+};
+
+const getSphereGeometry = (
+  radius: number,
+  widthSegments: number,
+  heightSegments: number
+): SphereGeometry => {
+  const key = `${radius}:${widthSegments}:${heightSegments}`;
+  const cached = sphereGeometryCache.get(key);
+  if (cached) {
+    return cached;
+  }
+
+  const geometry = new SphereGeometry(radius, widthSegments, heightSegments);
+  sphereGeometryCache.set(key, geometry);
+  return geometry;
+};
+
+const getSharedTexturedPhongMaterial = (
+  texture: Texture | null
+): MeshPhongMaterial => {
+  if (!texture) {
+    if (!fallbackPhongMaterial) {
+      fallbackPhongMaterial = new MeshPhongMaterial();
+    }
+    return fallbackPhongMaterial;
+  }
+
+  const cached = texturedPhongMaterialCache.get(texture);
+  if (cached) {
+    return cached;
+  }
+
+  const material = new MeshPhongMaterial({ map: texture });
+  texturedPhongMaterialCache.set(texture, material);
+  return material;
 };
 
 /**
@@ -103,12 +145,11 @@ function useExpoTexture(assetModule: string | number): Texture | null {
           await asset.downloadAsync();
         }
         const loaded = createTextureFromAsset(asset);
+        loaded.generateMipmaps = false;
+        loaded.minFilter = LinearFilter;
+        textureCache.set(assetModule, loaded);
+
         if (mounted) {
-          textureCache.set(assetModule, loaded);
-
-          loaded.generateMipmaps = false;
-          loaded.minFilter = LinearFilter;
-
           setTexture(loaded);
         }
       } catch (error) {
@@ -128,7 +169,7 @@ function useExpoTexture(assetModule: string | number): Texture | null {
 const { screenWidth: SCREEN_WIDTH, screenHeight: SCREEN_HEIGHT } = dimensions;
 
 // Pre-defined shared geometries — lower segment counts are fine for a background
-const sunGeometry = new SphereGeometry(12.0, 48, 48);
+const sunGeometry = getSphereGeometry(12.0, 48, 48);
 
 /**
  * Sun component with enhanced size and brightness for dramatic effect.
@@ -230,11 +271,11 @@ const Moon: React.FC<MoonProps> = React.memo(({ moonConfig }) => {
   const texture = useExpoTexture(moonConfig.textureModule);
 
   const moonGeometry = useMemo(
-    () => new SphereGeometry(moonConfig.size * 1.4, 16, 16),
+    () => getSphereGeometry(moonConfig.size * 1.4, 16, 16),
     [moonConfig.size]
   );
   const moonMaterial = useMemo(
-    () => new MeshPhongMaterial({ map: texture || undefined, color: 0xffffff }),
+    () => getSharedTexturedPhongMaterial(texture),
     [texture]
   );
 
@@ -297,14 +338,11 @@ const Planet: React.FC<PlanetProps> = React.memo(({ config }) => {
   const planetTexture = useExpoTexture(config.textureModule);
 
   const planetGeometry = useMemo(
-    () => new SphereGeometry(config.size, 32, 32),
+    () => getSphereGeometry(config.size, 32, 32),
     [config.size]
   );
   const planetMaterial = useMemo(
-    () =>
-      new MeshPhongMaterial({
-        map: planetTexture || undefined,
-      }),
+    () => getSharedTexturedPhongMaterial(planetTexture),
     [planetTexture]
   );
 

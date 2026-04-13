@@ -7,7 +7,7 @@
  * and centralizes riddle progression behavior for daily and classic
  * modes.
  */
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LandingScreen from "../screens/LandingScreen";
 import LoginScreen from "../screens/auth/LoginScreen";
@@ -30,7 +30,6 @@ import {
 import { styles, TYPOGRAPHY, SPACING } from "../styles";
 import { scale } from "../utils/responsive";
 import { RiddleInitializationService } from "../services/RiddleInitializationService";
-import { VictoryModal } from "../components/modals";
 import { getFunctions, httpsCallable } from "@react-native-firebase/functions";
 import { getApp } from "@react-native-firebase/app";
 import { logger } from "../utils/logger";
@@ -65,12 +64,6 @@ const GameScreenWrapper = () => {
   } = useAuth();
   const isGuestMode = isGuestPlayer(playerData);
 
-  // State for daily challenge completion modal
-  const [showCompletionModal, setShowCompletionModal] = useState(false);
-  const [completionData, setCompletionData] = useState({
-    totalCoinsEarned: 0,
-    questionsCompleted: 1,
-  });
   const lastFetchedModeRef = useRef<typeof gameMode | null>(null);
 
   // Effect to load riddle when dependencies change
@@ -127,6 +120,12 @@ const GameScreenWrapper = () => {
     }
   };
 
+  const switchToClassicModeAtCurrentIndex = async () => {
+    logger.debug("NavigationStack: switching to classic mode at current index");
+    setGameMode("classic");
+    await fetchCurrentRiddle(playerData, "classic");
+  };
+
   const handleNextLevel = async () => {
     logger.debug("NavigationStack: handleNextLevel called");
 
@@ -145,7 +144,6 @@ const GameScreenWrapper = () => {
       const isCompleted = await checkDailyChallengeCompletion();
       if (isCompleted) {
         logger.debug("Daily challenge completed. Switching to classic mode.");
-        setGameMode("classic");
         if (isGuestMode) {
           updatePlayerDataLocally({
             progress: {
@@ -154,7 +152,7 @@ const GameScreenWrapper = () => {
             },
           });
         }
-        await fetchCurrentRiddle(playerData, "classic");
+        await switchToClassicModeAtCurrentIndex();
         return;
       }
       logger.debug("Daily challenge mode active and not completed yet.");
@@ -313,13 +311,8 @@ const GameScreenWrapper = () => {
   }
 
   // Modal handlers
-  const handleContinueAfterCompletion = () => {
-    setShowCompletionModal(false);
-    // Switch to classic mode after daily challenge completion
-    // Note: This would require gameMode switching functionality in AuthContext
-    logger.debug(
-      "User chose to continue with Classic Mode after daily challenge completion"
-    );
+  const handleContinueAfterCompletion = async () => {
+    await switchToClassicModeAtCurrentIndex();
   };
 
   // Render GameScreen with all necessary props only when we have current riddle
@@ -377,11 +370,7 @@ const GameScreenWrapper = () => {
             if (gameMode === "daily") {
               const isCompleted = await checkDailyChallengeCompletion();
               if (isCompleted) {
-                setCompletionData({
-                  totalCoinsEarned: coinsEarned,
-                  questionsCompleted: 1,
-                });
-                setShowCompletionModal(true);
+                await handleContinueAfterCompletion();
               }
             }
           }}
@@ -403,16 +392,6 @@ const GameScreenWrapper = () => {
           gameMode={gameMode}
         />
 
-        {/* Daily Challenge Completion Modal - using VictoryModal instead */}
-        <VictoryModal
-          isVisible={showCompletionModal}
-          attempts={1}
-          coinsEarned={completionData.totalCoinsEarned}
-          onNextLevel={handleContinueAfterCompletion}
-          onClose={() => setShowCompletionModal(false)}
-          guesses={[]}
-          gameMode="daily"
-        />
       </>
     );
   }

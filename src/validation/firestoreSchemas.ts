@@ -33,6 +33,41 @@ export const signUpSchema = z
 export type LoginFormData = z.infer<typeof loginSchema>;
 export type SignUpFormData = z.infer<typeof signUpSchema>;
 
+type TimestampLike = {
+  toMillis?: () => number;
+  toDate?: () => Date;
+  seconds?: number;
+  nanoseconds?: number;
+};
+
+const coerceTimestampToMillis = (value: unknown): unknown => {
+  if (value == null || typeof value === "number") {
+    return value;
+  }
+  if (value instanceof Date) {
+    return value.getTime();
+  }
+  if (typeof value === "object") {
+    const timestampLike = value as TimestampLike;
+    if (typeof timestampLike.toMillis === "function") {
+      return timestampLike.toMillis();
+    }
+    if (typeof timestampLike.toDate === "function") {
+      return timestampLike.toDate().getTime();
+    }
+    if (typeof timestampLike.seconds === "number") {
+      const nanos =
+        typeof timestampLike.nanoseconds === "number"
+          ? timestampLike.nanoseconds
+          : 0;
+      return timestampLike.seconds * 1000 + Math.floor(nanos / 1_000_000);
+    }
+  }
+  return value;
+};
+
+const TimestampAsMillisSchema = z.preprocess(coerceTimestampToMillis, z.number());
+
 // Define the structure for player progress
 const PlayerProgressSchema = z.object({
   classicIndex: z.number().int().nonnegative().default(1),
@@ -83,10 +118,10 @@ export const PlayerSchema = z.object({
   displayName: z.string().optional(),
   avatarUrl: z.string().url().optional(),
   coins: z.number().int().nonnegative().default(0),
-  createdAt: z.number().optional(),
-  registeredAt: z.number().optional(),
-  lastLogin: z.number().optional(),
-  lastDailyChallengeCompletedAt: z.number().optional(),
+  createdAt: TimestampAsMillisSchema.optional(),
+  registeredAt: TimestampAsMillisSchema.optional(),
+  lastLogin: TimestampAsMillisSchema.optional(),
+  lastDailyChallengeCompletedAt: TimestampAsMillisSchema.optional(),
   stats: PlayerStatsSchema.default(() => ({
     xp: 0,
     level: 1,
@@ -123,6 +158,7 @@ export const FirestoreRiddleSchema = z.object({
   text: z.string(),
   answer: z.string().min(1),
   category: z.string().optional(),
+  timestamp: z.unknown().optional(),
 });
 
 export type FirestoreRiddle = z.infer<typeof FirestoreRiddleSchema>;

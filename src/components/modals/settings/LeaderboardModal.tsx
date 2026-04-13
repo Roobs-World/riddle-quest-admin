@@ -75,6 +75,8 @@ const PURPLE = "#401F40";
 const GOLD = "#FEC880";
 const TAB_INACTIVE = "rgba(0,0,0,0.15)";
 const HIGHLIGHT_BG = "rgba(254,200,128,0.25)";
+const MAX_ROWS = 10;
+const TOP_ROWS = 9;
 
 const TABS: { type: LeaderboardType; statKey: keyof LeaderboardEntry }[] = [
   { type: "xp", statKey: "xp" },
@@ -86,6 +88,50 @@ const getTabLabel = (type: LeaderboardType): string => {
   if (type === "xp") return AppStrings.Leaderboard.TAB_XP;
   if (type === "totalWins") return AppStrings.Leaderboard.TAB_WINS;
   return AppStrings.Leaderboard.TAB_STREAK;
+};
+
+const createDevFakeEntry = (index: number): LeaderboardEntry => {
+  const seed = TOP_ROWS - index;
+  return {
+    userId: `dev-fake-${index + 1}`,
+    username: `Player ${index + 1}`,
+    xp: Math.max(0, seed * 100),
+    totalWins: Math.max(0, seed * 3),
+    bestStreak: Math.max(0, seed),
+    updatedAt: Date.now(),
+  };
+};
+
+const createCurrentUserFallback = (currentUserId: string): LeaderboardEntry => ({
+  userId: currentUserId,
+  username: "You",
+  xp: 0,
+  totalWins: 0,
+  bestStreak: 0,
+  updatedAt: Date.now(),
+});
+
+const buildDisplayEntries = (
+  rawEntries: LeaderboardEntry[],
+  currentUserId: string | null
+): LeaderboardEntry[] => {
+  const topEntries = rawEntries.slice(0, TOP_ROWS);
+  const currentUserEntry =
+    currentUserId == null
+      ? null
+      : rawEntries.find((entry) => entry.userId === currentUserId) ??
+        createCurrentUserFallback(currentUserId);
+
+  if (!__DEV__) {
+    return [...topEntries, ...(currentUserEntry ? [currentUserEntry] : [])].slice(0, MAX_ROWS);
+  }
+
+  const paddedTopEntries = [...topEntries];
+  while (paddedTopEntries.length < TOP_ROWS) {
+    paddedTopEntries.push(createDevFakeEntry(paddedTopEntries.length));
+  }
+
+  return [...paddedTopEntries, ...(currentUserEntry ? [currentUserEntry] : [])].slice(0, MAX_ROWS);
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -126,6 +172,7 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({
   }, [isVisible, activeTab, fetchLeaderboard]);
 
   const activeTabConfig = TABS.find((t) => t.type === activeTab)!;
+  const displayEntries = buildDisplayEntries(entries, currentUserId);
 
   return (
     <Modal
@@ -266,7 +313,7 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({
                   </Text>
                 </TouchableOpacity>
               </View>
-            ) : entries.length === 0 ? (
+            ) : displayEntries.length === 0 ? (
               <View
                 style={{
                   flex: 1,
@@ -295,14 +342,14 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({
                 }}
                 showsVerticalScrollIndicator={false}
               >
-                {entries.map((entry, index) => {
+                {displayEntries.map((entry, index) => {
                   const isCurrentUser = entry.userId === currentUserId;
                   const rank = index + 1;
                   const statValue = entry[activeTabConfig.statKey] as number;
 
                   return (
                     <LeaderboardRow
-                      key={entry.userId}
+                      key={`${entry.userId}-${index}`}
                       rank={rank}
                       entry={entry}
                       statValue={statValue}

@@ -522,7 +522,7 @@ describe("NavigationStack", () => {
     expect(mockedCaptureException).toHaveBeenCalled();
   });
 
-  it("handles hint/skip deductions and win completion modal flow", async () => {
+  it("handles hint/skip deductions and auto-switches to classic after daily win completion", async () => {
     const playerData = {
       userId: "u7",
       progress: {},
@@ -530,6 +530,8 @@ describe("NavigationStack", () => {
       stats: { xp: 10, totalScore: 10, level: 1, wins: 0, totalWins: 0 },
     };
     const updatePlayerDataLocally = jest.fn();
+    const setGameMode = jest.fn();
+    const fetchCurrentRiddle = jest.fn().mockResolvedValue(undefined);
     mockDailyCallable.mockResolvedValue({ data: { hasCompletedToday: true } });
     mockedUseAuth.mockReturnValue(
       createAuthState({
@@ -538,28 +540,25 @@ describe("NavigationStack", () => {
         playerData,
         currentRiddle: { riddleId: "daily-1", text: "D1", answer: "WORD" },
         updatePlayerDataLocally,
+        setGameMode,
+        fetchCurrentRiddle,
       }) as any
     );
 
-    const { getByTestId } = render(<Navigation />);
+    const { getByTestId, queryByTestId } = render(<Navigation />);
 
     fireEvent.press(getByTestId("trigger-hint"));
     fireEvent.press(getByTestId("trigger-skip"));
     fireEvent.press(getByTestId("trigger-loss"));
     fireEvent.press(getByTestId("trigger-win"));
 
-    await waitFor(() => expect(getByTestId("victory-modal")).toBeTruthy());
+    await waitFor(() => expect(setGameMode).toHaveBeenCalledWith("classic"));
+    expect(fetchCurrentRiddle).toHaveBeenCalledWith(playerData, "classic");
+    expect(queryByTestId("victory-modal")).toBeNull();
     expect(updatePlayerDataLocally).toHaveBeenCalledWith({ coins: 95 });
     expect(updatePlayerDataLocally).toHaveBeenCalledWith({ coins: 93 });
     expect(updatePlayerDataLocally).toHaveBeenCalledWith(
       expect.objectContaining({ coins: 120 })
-    );
-
-    fireEvent.press(getByTestId("victory-next"));
-    await waitFor(() =>
-      expect(mockedLogger.debug).toHaveBeenCalledWith(
-        expect.stringContaining("continue with Classic Mode")
-      )
     );
   });
 
