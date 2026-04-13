@@ -220,3 +220,35 @@ export const resolveProviderAvatarUrl = async (
 
   return undefined;
 };
+
+/**
+ * Resolves a provider-sourced username for upgraded accounts.
+ *
+ * Priority:
+ * 1) `user.displayName`
+ * 2) first providerData displayName
+ *
+ * Returns `undefined` when no provider username is available.
+ */
+export const resolveProviderUsername = (
+  user: FirebaseAuthTypes.User
+): string | undefined => {
+  const displayName =
+    typeof user.displayName === "string" ? user.displayName.trim() : "";
+  if (displayName !== "") {
+    return displayName;
+  }
+
+  const providerDisplayName = user.providerData?.find(
+    (provider) =>
+      typeof provider.displayName === "string" &&
+      provider.displayName.trim() !== ""
+  )?.displayName;
+
+  if (typeof providerDisplayName === "string") {
+    const normalized = providerDisplayName.trim();
+    return normalized !== "" ? normalized : undefined;
+  }
+
+  return undefined;
+};

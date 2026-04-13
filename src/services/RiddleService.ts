@@ -4,7 +4,6 @@ import {
   doc,
   getDoc,
   getDocs,
-  updateDoc,
   query,
   where,
   limit,
@@ -79,73 +78,24 @@ export const RiddleService = {
         !!currentDailyDoc &&
         typeof currentDailyDoc.exists === "function" &&
         typeof currentDailyDoc.data === "function";
-      const currentDailyData = hasCurrentDocApi ? currentDailyDoc.data() : null;
-      if (hasCurrentDocApi && currentDailyDoc.exists() && currentDailyData && currentDailyData.answer !== undefined) {
-        logger.debug("Fetched current daily riddle from dailyRiddles/current");
-        return {
-          ...currentDailyData,
-          riddleId: currentDailyData.riddleId ?? currentDailyDoc.id,
-          completedToday: false,
-          answerLength: currentDailyData.answer.length,
-        };
-      }
 
-      const dailyChallengeDoc =
-        hasCurrentDocApi && currentDailyDoc.exists()
-          ? currentDailyDoc
-          : await getDoc(doc(getFirestore(), "dailyChallenge", "current"));
-
-      const hasLegacyDocApi =
-        !!dailyChallengeDoc &&
-        typeof dailyChallengeDoc.exists === "function" &&
-        typeof dailyChallengeDoc.data === "function";
-
-      if (!hasLegacyDocApi || !dailyChallengeDoc.exists()) {
+      if (!hasCurrentDocApi || !currentDailyDoc.exists()) {
         logger.debug(`No current daily challenge found (docId: current) for date: ${today}`);
         return null;
       }
-
-      const dailyChallengeData = dailyChallengeDoc.data();
-      const riddleIds = dailyChallengeData?.riddleIds as string[] | undefined;
-
-      if (!riddleIds || riddleIds.length === 0) {
-        logger.debug(`Daily challenge found for ${today}, but no riddleIds array.`);
+      const currentDailyData = currentDailyDoc.data();
+      if (!currentDailyData || currentDailyData.answer === undefined) {
+        logger.error("Current daily riddle data or answer missing:", currentDailyData);
         return null;
       }
 
-      const userAttemptsDoc = await getDoc(doc(getFirestore(), "userDailyChallengeAttempts", `${userId}_${today}`));
-      const userAttemptsData = userAttemptsDoc.data();
-      const completedIndex = (userAttemptsData?.completedIndex as number) ?? 0;
-
-      if (completedIndex < riddleIds.length) {
-        const nextRiddleId = riddleIds[completedIndex];
-        const riddleDoc = await getDoc(doc(getFirestore(), "dailyRiddles", nextRiddleId));
-
-        if (!riddleDoc.exists()) {
-          logger.debug(`Daily riddle document not found for ID: ${nextRiddleId}`);
-          return null;
-        }
-
-        const riddleData = riddleDoc.data();
-        if (riddleData && riddleData.answer !== undefined) {
-          logger.debug(`Fetched daily riddle ID: ${nextRiddleId} at index ${completedIndex}`);
-          return {
-            ...riddleData,
-            riddleId: riddleDoc.id,
-            completedToday: false,
-            answerLength: riddleData.answer.length,
-          };
-        }
-
-        logger.error(`Daily riddle data or answer missing for ID: ${nextRiddleId}. Data:`, riddleData);
-        return null;
-      }
-
-      logger.debug(`User has completed all daily riddles for date: ${today}`);
-      await updateDoc(doc(getFirestore(), "users", userId), {
-        lastDailyChallengeCompletedAt: new Date().toISOString(),
-      });
-      return { completedToday: true };
+      logger.debug("Fetched current daily riddle from dailyRiddles/current");
+      return {
+        ...currentDailyData,
+        riddleId: currentDailyData.riddleId ?? currentDailyDoc.id,
+        completedToday: false,
+        answerLength: currentDailyData.answer.length,
+      };
     } catch (error) {
       logger.error("Error fetching daily riddle:", error);
       captureException(error);

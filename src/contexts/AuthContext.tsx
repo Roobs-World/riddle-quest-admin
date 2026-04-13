@@ -43,6 +43,7 @@ import {
   createGuestPlayer,
   resolveInitialGameMode,
   resolveProviderAvatarUrl,
+  resolveProviderUsername,
   resolveUserEmail,
 } from "../features/auth/sessionBootstrap";
 import { isGuestPlayer } from "../features/auth/sessionBootstrap";
@@ -221,8 +222,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   // Tracks the current authenticated user ID for use inside the auth listener.
   const currentUserIdRef = useRef<string | null>(null);
   // Deduplicates immediate duplicate auth callbacks for the same user.
-  const lastAuthEventRef = useRef<{ uid: string | null; at: number }>({
+  const lastAuthEventRef = useRef<{
+    uid: string | null;
+    isAnonymous: boolean | null;
+    at: number;
+  }>({
     uid: null,
+    isAnonymous: null,
     at: 0,
   });
   const previousAuthSnapshotRef = useRef<{
@@ -450,14 +456,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
       if (user) {
         const previousAuth = previousAuthSnapshotRef.current;
+        const previousImmediateAuthEvent = lastAuthEventRef.current;
         const upgradedFromAnonymous =
-          previousAuth.uid === user.uid &&
-          previousAuth.isAnonymous === true &&
-          user.isAnonymous === false;
+          (previousAuth.uid === user.uid &&
+            previousAuth.isAnonymous === true &&
+            user.isAnonymous === false) ||
+          (previousImmediateAuthEvent.uid === user.uid &&
+            previousImmediateAuthEvent.isAnonymous === true &&
+            user.isAnonymous === false);
 
         const now = Date.now();
         const isDuplicateImmediateAuthEvent =
           lastAuthEventRef.current.uid === user.uid &&
+          lastAuthEventRef.current.isAnonymous === user.isAnonymous &&
           now - lastAuthEventRef.current.at < 1500;
         if (isDuplicateImmediateAuthEvent) {
           logger.debug(
@@ -466,7 +477,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           );
           return;
         }
-        lastAuthEventRef.current = { uid: user.uid, at: now };
+        lastAuthEventRef.current = {
+          uid: user.uid,
+          isAnonymous: user.isAnonymous,
+          at: now,
+        };
 
         // User is signed in
         logger.debug("🔐 User authenticated, loading user data...");
@@ -600,6 +615,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             }
           }
 
+          if (upgradedFromAnonymous) {
+            const providerUsername = resolveProviderUsername(user);
+            if (providerUsername && data.username !== providerUsername) {
+              await updateUserDocumentInFirestore(user.uid, {
+                username: providerUsername,
+              });
+              data = { ...data, username: providerUsername };
+              logger.debug("👤 Synced upgraded account username from provider profile");
+            }
+          }
+
           logger.debug("📊 User data loaded successfully:", !!data);
           const brokenStreak = getBrokenDailyStreakValue(data);
           const normalizedData =
@@ -661,7 +687,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           };
         }
       } else {
-        lastAuthEventRef.current = { uid: null, at: Date.now() };
+        lastAuthEventRef.current = { uid: null, isAnonymous: null, at: Date.now() };
         // User is signed out - no need to load riddles
         logger.debug("🚪 User signed out, clearing data");
         sentryClearUser();

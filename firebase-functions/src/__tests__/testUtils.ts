@@ -100,24 +100,27 @@ export async function deleteTestRiddle(riddleId: string): Promise<void> {
 }
 
 /**
- * Creates a daily challenge in Firestore
+ * Creates the current daily riddle document in Firestore
  * @param date - Date string (YYYY-MM-DD)
  * @param riddleId - The riddle ID for this daily challenge
  */
 export async function createDailyChallenge(date: string, riddleId: string): Promise<void> {
-  await admin.firestore().collection("dailyChallenges").doc(date).set({
-    date,
-    riddleId,
+  await admin.firestore().collection("dailyRiddles").doc("current").set({
+    riddleId: "current",
+    sourceRiddleId: riddleId,
+    dailyIndex: 0,
+    category: "daily",
     createdAt: Date.now(),
+    timestamp: date,
   });
 }
 
 /**
- * Deletes a daily challenge from Firestore
- * @param date - Date string (YYYY-MM-DD)
+ * Deletes the current daily riddle document from Firestore
+ * @param _date - Unused legacy date parameter (kept for call-site compatibility)
  */
-export async function deleteDailyChallenge(date: string): Promise<void> {
-  await admin.firestore().collection("dailyChallenges").doc(date).delete();
+export async function deleteDailyChallenge(_date: string): Promise<void> {
+  await admin.firestore().collection("dailyRiddles").doc("current").delete();
 }
 
 /**

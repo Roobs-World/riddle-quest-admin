@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Alert, Modal, Text, View } from "react-native";
 import { AppStrings } from "@/constants/AppStrings";
 import { AuthService } from "@/services/AuthService";
+import { useModal } from "@/hooks/useModal";
 import CloseButton from "@/components/buttons/CloseButton";
 import GoogleSignInButton from "@/components/buttons/GoogleSignInButton";
 import FacebookSignInButton from "@/components/buttons/FacebookSignInButton";
@@ -22,6 +23,7 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
   onClose,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const { showInfoModal } = useModal();
 
   const handleAuthError = (error: unknown) => {
     const firebaseError = error as FirebaseAuthTypes.NativeFirebaseAuthError;
@@ -53,11 +55,11 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
     setIsLoading(true);
     try {
       await AuthService.linkAnonymousWithGoogle();
-      Alert.alert(
-        AppStrings.Profile.ALERT_SUCCESS_TITLE,
-        AppStrings.Profile.UPGRADE_ACCOUNT_SUCCESS
-      );
       onClose();
+      showInfoModal({
+        title: AppStrings.Profile.ALERT_SUCCESS_TITLE,
+        message: AppStrings.Profile.UPGRADE_ACCOUNT_SUCCESS,
+      });
     } catch (error) {
       logger.error("Upgrade account (Google) error:", error);
       captureException(error);
@@ -71,11 +73,11 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
     setIsLoading(true);
     try {
       await AuthService.linkAnonymousWithFacebook();
-      Alert.alert(
-        AppStrings.Profile.ALERT_SUCCESS_TITLE,
-        AppStrings.Profile.UPGRADE_ACCOUNT_SUCCESS
-      );
       onClose();
+      showInfoModal({
+        title: AppStrings.Profile.ALERT_SUCCESS_TITLE,
+        message: AppStrings.Profile.UPGRADE_ACCOUNT_SUCCESS,
+      });
     } catch (error) {
       logger.error("Upgrade account (Facebook) error:", error);
       captureException(error);
@@ -155,4 +157,3 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
 };
 
 export default UpgradeAccountModal;
-

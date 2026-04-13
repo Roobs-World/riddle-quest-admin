@@ -269,6 +269,60 @@ describe("AuthContext", () => {
       expect(result.current.playerData?.coins).toBe(300);
     });
 
+    it("does not drop anonymous-to-provider upgrade auth event for same uid", async () => {
+      const upgradedUid = "guest-upgrade-1";
+
+      (loadUserProgressFromFirestore as jest.Mock).mockResolvedValue(null);
+      (createUserDocumentInFirestore as jest.Mock).mockResolvedValue({
+        ...mockPlayer,
+        userId: upgradedUid,
+      });
+      (updateUserDocumentInFirestore as jest.Mock).mockResolvedValue(undefined);
+      (fetchDailyRiddleFromFirestore as jest.Mock).mockResolvedValue(
+        mockDailyRiddle
+      );
+
+      mockAuthInstance.onAuthStateChanged.mockImplementation(
+        (callback: (user: any) => void) => {
+          callback({
+            uid: upgradedUid,
+            isAnonymous: true,
+            email: null,
+            displayName: null,
+            providerData: [],
+          } as any);
+          callback({
+            uid: upgradedUid,
+            isAnonymous: false,
+            email: "upgraded@example.com",
+            displayName: "Upgraded User",
+            providerData: [{ providerId: "google.com" }],
+          } as any);
+          return jest.fn();
+        }
+      );
+
+      renderHook(() => useAuth(), { wrapper });
+
+      await waitFor(() => {
+        expect(createUserDocumentInFirestore).toHaveBeenCalledTimes(1);
+      });
+
+      const [uidArg, emailArg, displayNameArg, avatarArg] = (
+        createUserDocumentInFirestore as jest.Mock
+      ).mock.calls[0];
+      expect(uidArg).toBe(upgradedUid);
+      expect(emailArg).toBe("upgraded@example.com");
+      expect(displayNameArg).toBe("Upgraded User");
+      expect(avatarArg).toBeUndefined();
+
+      await waitFor(() => {
+        expect(updateUserDocumentInFirestore).toHaveBeenCalledWith(upgradedUid, {
+          username: "Upgraded User",
+        });
+      });
+    });
+
     it("handles user login", async () => {
       // Mock the services
       (loadUserProgressFromFirestore as jest.Mock).mockResolvedValue(

@@ -108,15 +108,6 @@ service cloud.firestore {
       allow write: if isServerRequest();
     }
 
-    // Daily Challenge singleton doc - read-only for clients
-    match /dailyChallenge/current {
-      // Authenticated users can read the current daily challenge
-      allow read: if isAuthenticated();
-      
-      // Only server (Cloud Functions) can manage the current daily challenge
-      allow write: if isServerRequest();
-    }
-
     // User Classic Progress - strict user ownership
     match /userClassicProgress/{userRiddleId} {
       // Users can only read their own progress

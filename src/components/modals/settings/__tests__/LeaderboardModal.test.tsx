@@ -286,6 +286,24 @@ describe("LeaderboardModal", () => {
     });
   });
 
+  it("orders rows with highest score first", async () => {
+    const entries = [
+      makeEntry({ userId: "u-low", username: "Low", xp: 10 }),
+      makeEntry({ userId: "u-high", username: "High", xp: 1000 }),
+      makeEntry({ userId: "u-mid", username: "Mid", xp: 100 }),
+    ];
+    mockHttpsCallable.mockResolvedValueOnce({ data: { entries } });
+
+    const { getAllByLabelText } = render(<LeaderboardModal {...defaultProps} currentUserId={null} />);
+
+    await waitFor(() => {
+      const rankedRows = getAllByLabelText(/Rank /);
+      expect(rankedRows[0].props.accessibilityLabel).toMatch(/Rank 1: High, score (1,000|1000)/);
+      expect(rankedRows[1].props.accessibilityLabel).toContain("Rank 2: Mid, score 100");
+      expect(rankedRows[2].props.accessibilityLabel).toContain("Rank 3: Low, score 10");
+    });
+  });
+
   it("pins the current user at rank 10", async () => {
     const entries = [
       ...Array.from({ length: 15 }, (_, i) =>

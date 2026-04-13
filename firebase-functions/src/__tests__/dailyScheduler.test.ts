@@ -36,22 +36,6 @@ const mockRiddleDocSet = jest.fn().mockResolvedValue(undefined);
 jest.mock("firebase-admin", () => {
   const mockFirestore = jest.fn(() => ({
     collection: jest.fn((collectionPath: string) => {
-      if (collectionPath === "dailyChallenge") {
-        return {
-          doc: jest.fn((docPath: string) => {
-            if (docPath === "current") {
-              return {
-                get: mockFirestoreGet,
-                set: mockFirestoreSet,
-              };
-            }
-            return {get: jest.fn(), set: jest.fn()};
-          }),
-          where: jest.fn(() => ({
-            get: jest.fn().mockResolvedValue({docs: [], empty: true, size: 0} as MockFirestoreQuerySnapshot<any>),
-          })),
-        };
-      }
       if (
         collectionPath === "riddles" ||
         collectionPath === "dailyRiddles" ||
@@ -59,10 +43,19 @@ jest.mock("firebase-admin", () => {
       ) {
         return {
           get: mockCollectionGet,
-          doc: jest.fn(() => ({
-            id: "mock-riddle-id",
-            set: mockRiddleDocSet,
-          })),
+          doc: jest.fn((docPath?: string) => {
+            if (docPath === "current") {
+              return {
+                id: "current",
+                get: mockFirestoreGet,
+                set: mockFirestoreSet,
+              };
+            }
+            return {
+              id: "mock-riddle-id",
+              set: mockRiddleDocSet,
+            };
+          }),
           where: jest.fn(() => ({
             get: jest.fn().mockResolvedValue({docs: [], empty: true, size: 0} as MockFirestoreQuerySnapshot<any>),
           })),
@@ -167,7 +160,7 @@ describe("dailyChallengeScheduler", () => {
 
     await scheduledTaskHandler(mockScheduledEvent());
 
-    expect(mockLogger.info).toHaveBeenCalledWith("Daily challenge scheduler started.");
+    expect(mockLogger.info).toHaveBeenCalledWith("Daily scheduler started (target: dailyRiddles/current).");
     expect(mockGenerateTodaysDailyChallenge).toHaveBeenCalledWith(false);
   });
 
@@ -181,9 +174,9 @@ describe("dailyChallengeScheduler", () => {
 
       await scheduledTaskHandler(mockScheduledEvent());
 
-      expect(mockLogger.info).toHaveBeenCalledWith("Daily challenge scheduler started.");
+      expect(mockLogger.info).toHaveBeenCalledWith("Daily scheduler started (target: dailyRiddles/current).");
       expect(mockGenerateTodaysDailyChallenge).toHaveBeenCalledWith(false);
-      expect(mockLogger.info).toHaveBeenCalledWith("Daily challenge scheduler finished successfully.");
+      expect(mockLogger.info).toHaveBeenCalledWith("Daily scheduler finished successfully (dailyRiddles/current updated).");
       expect(mockLogger.error).not.toHaveBeenCalled();
     });
 
@@ -192,10 +185,10 @@ describe("dailyChallengeScheduler", () => {
 
       await scheduledTaskHandler(mockScheduledEvent());
 
-      expect(mockLogger.info).toHaveBeenCalledWith("Daily challenge scheduler started.");
+      expect(mockLogger.info).toHaveBeenCalledWith("Daily scheduler started (target: dailyRiddles/current).");
       expect(mockGenerateTodaysDailyChallenge).toHaveBeenCalledWith(false);
       expect(mockLogger.error).not.toHaveBeenCalled();
-      expect(mockLogger.info).toHaveBeenCalledWith("Daily challenge scheduler finished successfully.");
+      expect(mockLogger.info).toHaveBeenCalledWith("Daily scheduler finished successfully (dailyRiddles/current updated).");
     });
   });
 
@@ -211,8 +204,8 @@ describe("dailyChallengeScheduler", () => {
       );
 
       expect(mockGenerateTodaysDailyChallenge).toHaveBeenCalledWith(false);
-      expect(mockLogger.info).toHaveBeenCalledWith("Daily challenge scheduler started.");
-      expect(mockLogger.info).not.toHaveBeenCalledWith("Daily challenge scheduler finished successfully.");
+      expect(mockLogger.info).toHaveBeenCalledWith("Daily scheduler started (target: dailyRiddles/current).");
+      expect(mockLogger.info).not.toHaveBeenCalledWith("Daily scheduler finished successfully (dailyRiddles/current updated).");
     });
 
     test("should log an error and return if riddle generation fails", async () => {
@@ -222,7 +215,7 @@ describe("dailyChallengeScheduler", () => {
       await expect(scheduledTaskHandler(mockScheduledEvent())).rejects.toThrow("Riddle generation failed");
 
       expect(mockGenerateTodaysDailyChallenge).toHaveBeenCalled();
-      expect(mockLogger.info).not.toHaveBeenCalledWith("Daily challenge scheduler finished successfully.");
+      expect(mockLogger.info).not.toHaveBeenCalledWith("Daily scheduler finished successfully (dailyRiddles/current updated).");
     });
   });
 
@@ -237,8 +230,8 @@ describe("dailyChallengeScheduler", () => {
       await expect(scheduledTaskHandler(mockScheduledEvent())).rejects.toThrow("Firestore get failed!");
 
       expect(mockGenerateTodaysDailyChallenge).toHaveBeenCalled();
-      expect(mockLogger.info).toHaveBeenCalledWith("Daily challenge scheduler started.");
-      expect(mockLogger.info).not.toHaveBeenCalledWith("Daily challenge scheduler finished successfully.");
+      expect(mockLogger.info).toHaveBeenCalledWith("Daily scheduler started (target: dailyRiddles/current).");
+      expect(mockLogger.info).not.toHaveBeenCalledWith("Daily scheduler finished successfully (dailyRiddles/current updated).");
     });
 
     test("should log an error if Firestore 'set' operation fails", async () => {
@@ -247,8 +240,8 @@ describe("dailyChallengeScheduler", () => {
       await expect(scheduledTaskHandler(mockScheduledEvent())).rejects.toThrow("Firestore set failed!");
 
       expect(mockGenerateTodaysDailyChallenge).toHaveBeenCalled();
-      expect(mockLogger.info).toHaveBeenCalledWith("Daily challenge scheduler started.");
-      expect(mockLogger.info).not.toHaveBeenCalledWith("Daily challenge scheduler finished successfully.");
+      expect(mockLogger.info).toHaveBeenCalledWith("Daily scheduler started (target: dailyRiddles/current).");
+      expect(mockLogger.info).not.toHaveBeenCalledWith("Daily scheduler finished successfully (dailyRiddles/current updated).");
     });
   });
 });

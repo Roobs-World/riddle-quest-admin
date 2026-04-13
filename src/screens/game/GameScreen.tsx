@@ -1205,7 +1205,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         title: "Daily Challenge Generated",
         message:
           response.data?.message ??
-          "Successfully generated a new daily challenge.",
+          "Successfully generated a new daily challenge in dailyRiddles/current.",
       });
     } catch (error) {
       logger.error("Error generating daily challenge from debug panel:", error);

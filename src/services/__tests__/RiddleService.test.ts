@@ -190,225 +190,70 @@ describe("RiddleService", () => {
       );
     });
 
-    it("should return null when no daily challenge document exists for today", async () => {
+    it("should return null when no current daily riddle document exists", async () => {
       const userDoc = {
         exists: () => false,
       };
-      const dailyChallengeDoc = {
+      const currentDailyDoc = {
         exists: () => false,
       };
 
       mockGetDoc
         .mockResolvedValueOnce(userDoc)
-        .mockResolvedValueOnce(dailyChallengeDoc);
+        .mockResolvedValueOnce(currentDailyDoc);
 
       const result = await RiddleService.fetchDailyRiddle();
 
       expect(result).toBeNull();
       expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "users", mockUserId);
-      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "dailyChallenge", "current");
+      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "dailyRiddles", "current");
       expect(logger.debug).toHaveBeenCalledWith(
         `No current daily challenge found (docId: current) for date: ${mockToday}`
       );
     });
 
-    it("should return null when daily challenge has no riddleIds", async () => {
+    it("should return null when current daily riddle is missing answer", async () => {
       const userDoc = { exists: () => false };
-      const dailyChallengeDoc = {
-        exists: () => true,
-        data: () => ({}),
-      };
-
-      mockGetDoc
-        .mockResolvedValueOnce(userDoc)
-        .mockResolvedValueOnce(dailyChallengeDoc);
-
-      const result = await RiddleService.fetchDailyRiddle();
-
-      expect(result).toBeNull();
-      expect(logger.debug).toHaveBeenCalledWith(
-        `Daily challenge found for ${mockToday}, but no riddleIds array.`
-      );
-    });
-
-    it("should return null when daily challenge has empty riddleIds array", async () => {
-      const userDoc = { exists: () => false };
-      const dailyChallengeDoc = {
-        exists: () => true,
-        data: () => ({ riddleIds: [] }),
-      };
-
-      mockGetDoc
-        .mockResolvedValueOnce(userDoc)
-        .mockResolvedValueOnce(dailyChallengeDoc);
-
-      const result = await RiddleService.fetchDailyRiddle();
-
-      expect(result).toBeNull();
-      expect(logger.debug).toHaveBeenCalledWith(
-        `Daily challenge found for ${mockToday}, but no riddleIds array.`
-      );
-    });
-
-    it("should fetch next daily riddle successfully when user has progress", async () => {
-      const riddleId = "daily-riddle-001";
-      const userDoc = { exists: () => false };
-      const dailyChallengeDoc = {
-        exists: () => true,
-        data: () => ({ riddleIds: [riddleId, "daily-riddle-002"] }),
-      };
-      const userAttemptsDoc = {
-        data: () => ({ completedIndex: 0 }),
-      };
-      const riddleDoc = {
-        exists: () => true,
-        data: () => mockRiddleData,
-        id: riddleId,
-      };
-
-      mockGetDoc
-        .mockResolvedValueOnce(userDoc)
-        .mockResolvedValueOnce(dailyChallengeDoc)
-        .mockResolvedValueOnce(userAttemptsDoc)
-        .mockResolvedValueOnce(riddleDoc);
-
-      const result = await RiddleService.fetchDailyRiddle();
-
-      expect(result).toEqual({
-        ...mockRiddleData,
-        riddleId,
-        completedToday: false,
-        answerLength: 5,
-      });
-      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "userDailyChallengeAttempts", `${mockUserId}_${mockToday}`);
-      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "dailyRiddles", riddleId);
-      expect(logger.debug).toHaveBeenCalledWith(
-        `Fetched daily riddle ID: ${riddleId} at index 0`
-      );
-    });
-
-    it("should fetch first riddle when user has no attempts document", async () => {
-      const riddleId = "daily-riddle-001";
-      const userDoc = { exists: () => false };
-      const dailyChallengeDoc = {
-        exists: () => true,
-        data: () => ({ riddleIds: [riddleId] }),
-      };
-      const userAttemptsDoc = {
-        data: () => null,
-      };
-      const riddleDoc = {
-        exists: () => true,
-        data: () => mockRiddleData,
-        id: riddleId,
-      };
-
-      mockGetDoc
-        .mockResolvedValueOnce(userDoc)
-        .mockResolvedValueOnce(dailyChallengeDoc)
-        .mockResolvedValueOnce(userAttemptsDoc)
-        .mockResolvedValueOnce(riddleDoc);
-
-      const result = await RiddleService.fetchDailyRiddle();
-
-      expect(result).toEqual({
-        ...mockRiddleData,
-        riddleId,
-        completedToday: false,
-        answerLength: 5,
-      });
-    });
-
-    it("should return null when riddle document does not exist", async () => {
-      const riddleId = "nonexistent-riddle";
-      const userDoc = { exists: () => false };
-      const dailyChallengeDoc = {
-        exists: () => true,
-        data: () => ({ riddleIds: [riddleId] }),
-      };
-      const userAttemptsDoc = {
-        data: () => ({ completedIndex: 0 }),
-      };
-      const riddleDoc = {
-        exists: () => false,
-      };
-
-      mockGetDoc
-        .mockResolvedValueOnce(userDoc)
-        .mockResolvedValueOnce(dailyChallengeDoc)
-        .mockResolvedValueOnce(userAttemptsDoc)
-        .mockResolvedValueOnce(riddleDoc);
-
-      const result = await RiddleService.fetchDailyRiddle();
-
-      expect(result).toBeNull();
-      expect(logger.debug).toHaveBeenCalledWith(
-        `Daily riddle document not found for ID: ${riddleId}`
-      );
-    });
-
-    it("should return null when riddle data is missing answer", async () => {
-      const riddleId = "invalid-riddle";
-      const userDoc = { exists: () => false };
-      const dailyChallengeDoc = {
-        exists: () => true,
-        data: () => ({ riddleIds: [riddleId] }),
-      };
-      const userAttemptsDoc = {
-        data: () => ({ completedIndex: 0 }),
-      };
-      const riddleDoc = {
+      const currentDailyDoc = {
         exists: () => true,
         data: () => ({ text: "Incomplete riddle" }),
-        id: riddleId,
       };
 
       mockGetDoc
         .mockResolvedValueOnce(userDoc)
-        .mockResolvedValueOnce(dailyChallengeDoc)
-        .mockResolvedValueOnce(userAttemptsDoc)
-        .mockResolvedValueOnce(riddleDoc);
+        .mockResolvedValueOnce(currentDailyDoc);
 
       const result = await RiddleService.fetchDailyRiddle();
 
       expect(result).toBeNull();
       expect(logger.error).toHaveBeenCalledWith(
-        `Daily riddle data or answer missing for ID: ${riddleId}. Data:`,
+        "Current daily riddle data or answer missing:",
         { text: "Incomplete riddle" }
       );
     });
 
-    it("should mark daily challenge complete and update user when all riddles completed", async () => {
-      const riddleId = "daily-riddle-001";
+    it("should fetch current daily riddle from dailyRiddles/current", async () => {
       const userDoc = { exists: () => false };
-      const dailyChallengeDoc = {
+      const currentDailyDoc = {
         exists: () => true,
-        data: () => ({ riddleIds: [riddleId] }),
-      };
-      const userAttemptsDoc = {
-        data: () => ({ completedIndex: 1 }), // User completed all riddles
+        data: () => mockRiddleData,
+        id: "current",
       };
 
       mockGetDoc
         .mockResolvedValueOnce(userDoc)
-        .mockResolvedValueOnce(dailyChallengeDoc)
-        .mockResolvedValueOnce(userAttemptsDoc);
-
-      mockUpdateDoc.mockResolvedValue(undefined);
+        .mockResolvedValueOnce(currentDailyDoc);
 
       const result = await RiddleService.fetchDailyRiddle();
 
-      expect(result).toEqual({ completedToday: true });
-      expect(mockUpdateDoc).toHaveBeenCalledWith(expect.any(Object), {
-        lastDailyChallengeCompletedAt: mockTodayISO,
+      expect(result).toEqual({
+        ...mockRiddleData,
+        riddleId: "current",
+        completedToday: false,
+        answerLength: 5,
       });
-      expect(logger.debug).toHaveBeenCalledWith(
-        `User has completed all daily riddles for date: ${mockToday}`
-      );
+      expect(logger.debug).toHaveBeenCalledWith("Fetched current daily riddle from dailyRiddles/current");
     });
-
-    // Note: Previous day completion test removed due to Date mocking complexity
-    // The actual functionality works correctly in the real service
 
     it("should handle Firestore errors gracefully and call captureException", async () => {
       const error = new Error("Firestore connection error");
@@ -425,21 +270,12 @@ describe("RiddleService", () => {
       expect(mockCaptureException).toHaveBeenCalledWith(error);
     });
 
-    it("should handle network errors during riddle fetch and call captureException", async () => {
+    it("should handle network errors during current daily riddle fetch and call captureException", async () => {
       const userDoc = { exists: () => false };
-      const dailyChallengeDoc = {
-        exists: () => true,
-        data: () => ({ riddleIds: ["riddle-1"] }),
-      };
-      const userAttemptsDoc = {
-        data: () => ({ completedIndex: 0 }),
-      };
       const networkError = new Error("Network unavailable");
 
       mockGetDoc
         .mockResolvedValueOnce(userDoc)
-        .mockResolvedValueOnce(dailyChallengeDoc)
-        .mockResolvedValueOnce(userAttemptsDoc)
         .mockRejectedValueOnce(networkError);
 
       await expect(RiddleService.fetchDailyRiddle()).rejects.toThrow(
@@ -454,115 +290,78 @@ describe("RiddleService", () => {
     });
 
     it("should proceed when user doc exists but has no lastDailyChallengeCompletedAt", async () => {
-      const riddleId = "daily-riddle-001";
       const userDoc = {
         exists: () => true,
-        data: () => ({ someOtherField: "value" }), // No lastDailyChallengeCompletedAt
+        data: () => ({ someOtherField: "value" }),
       };
-      const dailyChallengeDoc = {
-        exists: () => true,
-        data: () => ({ riddleIds: [riddleId] }),
-      };
-      const userAttemptsDoc = {
-        data: () => ({ completedIndex: 0 }),
-      };
-      const riddleDoc = {
+      const currentDailyDoc = {
         exists: () => true,
         data: () => ({
           text: "Test riddle",
           answer: "TEST",
         }),
-        id: riddleId,
+        id: "current",
       };
 
       mockGetDoc
         .mockResolvedValueOnce(userDoc)
-        .mockResolvedValueOnce(dailyChallengeDoc)
-        .mockResolvedValueOnce(userAttemptsDoc)
-        .mockResolvedValueOnce(riddleDoc);
+        .mockResolvedValueOnce(currentDailyDoc);
 
       const result = await RiddleService.fetchDailyRiddle();
 
       expect(result).toEqual({
         text: "Test riddle",
         answer: "TEST",
-        riddleId,
+        riddleId: "current",
         completedToday: false,
         answerLength: 4,
       });
     });
 
     it("should proceed when user doc exists but userData is null", async () => {
-      const riddleId = "daily-riddle-001";
       const userDoc = {
         exists: () => true,
-        data: () => null, // null userData
+        data: () => null,
       };
-      const dailyChallengeDoc = {
-        exists: () => true,
-        data: () => ({ riddleIds: [riddleId] }),
-      };
-      const userAttemptsDoc = {
-        data: () => ({ completedIndex: 0 }),
-      };
-      const riddleDoc = {
+      const currentDailyDoc = {
         exists: () => true,
         data: () => ({
           text: "Test riddle",
           answer: "TEST",
         }),
-        id: riddleId,
+        id: "current",
       };
 
       mockGetDoc
         .mockResolvedValueOnce(userDoc)
-        .mockResolvedValueOnce(dailyChallengeDoc)
-        .mockResolvedValueOnce(userAttemptsDoc)
-        .mockResolvedValueOnce(riddleDoc);
+        .mockResolvedValueOnce(currentDailyDoc);
 
       const result = await RiddleService.fetchDailyRiddle();
 
       expect(result).toEqual({
         text: "Test riddle",
         answer: "TEST",
-        riddleId,
+        riddleId: "current",
         completedToday: false,
         answerLength: 4,
       });
     });
 
-    it("should return null when riddle data is null", async () => {
-      const riddleId = "invalid-riddle";
+    it("should return null when current daily document uses legacy non-callable shape", async () => {
       const userDoc = { exists: () => false };
-      const dailyChallengeDoc = {
-        exists: () => true,
-        data: () => ({ riddleIds: [riddleId] }),
-      };
-      const userAttemptsDoc = {
-        data: () => ({ completedIndex: 0 }),
-      };
-      const riddleDoc = {
-        exists: () => true,
-        data: () => null, // null riddleData
-        id: riddleId,
-      };
 
       mockGetDoc
         .mockResolvedValueOnce(userDoc)
-        .mockResolvedValueOnce(dailyChallengeDoc)
-        .mockResolvedValueOnce(userAttemptsDoc)
-        .mockResolvedValueOnce(riddleDoc);
+        .mockResolvedValueOnce({ exists: true, data: { answer: "BAD" } } as unknown as ReturnType<typeof getDoc>);
 
       const result = await RiddleService.fetchDailyRiddle();
 
       expect(result).toBeNull();
-      expect(logger.error).toHaveBeenCalledWith(
-        `Daily riddle data or answer missing for ID: ${riddleId}. Data:`,
-        null
+      expect(logger.debug).toHaveBeenCalledWith(
+        `No current daily challenge found (docId: current) for date: ${mockToday}`
       );
     });
   });
-
   describe("fetchClassicRiddle", () => {
     const mockClassicRiddleData = {
       text: "I can be cracked, made, told, and played. What am I?",
@@ -1049,10 +848,10 @@ describe("RiddleService", () => {
 
       // Test fetchDailyRiddle (uses doc() not collection())
       const userDoc = { exists: () => false };
-      const dailyChallengeDoc = { exists: () => false };
+      const currentDailyDoc = { exists: () => false };
       mockGetDoc
         .mockResolvedValueOnce(userDoc)
-        .mockResolvedValueOnce(dailyChallengeDoc);
+        .mockResolvedValueOnce(currentDailyDoc);
 
       await RiddleService.fetchDailyRiddle();
 
@@ -1063,7 +862,7 @@ describe("RiddleService", () => {
 
       // Verify doc/collection calls were made with correct collection names
       expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "users", expect.any(String));
-      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "dailyChallenge", "current");
+      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "dailyRiddles", "current");
       expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "riddles");
     });
 
@@ -1090,3 +889,4 @@ describe("RiddleService", () => {
     });
   });
 });
+

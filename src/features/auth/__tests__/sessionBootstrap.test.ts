@@ -37,6 +37,7 @@ import {
   isGuestPlayer,
   resolveInitialGameMode,
   resolveProviderAvatarUrl,
+  resolveProviderUsername,
   resolveUserEmail,
 } from "../sessionBootstrap";
 import type { FirebaseAuthTypes } from "@react-native-firebase/auth";
@@ -727,6 +728,35 @@ describe("sessionBootstrap", () => {
 
       await expect(resolveProviderAvatarUrl(user)).resolves.toBeUndefined();
       expect(captureException).toHaveBeenCalledWith(graphError);
+    });
+  });
+
+  describe("resolveProviderUsername", () => {
+    it("returns user.displayName when present", () => {
+      const user = {
+        displayName: "Provider Name",
+        providerData: [{ providerId: "google.com", displayName: "Fallback Name" }],
+      } as unknown as FirebaseAuthTypes.User;
+
+      expect(resolveProviderUsername(user)).toBe("Provider Name");
+    });
+
+    it("falls back to providerData displayName when user.displayName is missing", () => {
+      const user = {
+        displayName: null,
+        providerData: [{ providerId: "google.com", displayName: "Google Name" }],
+      } as unknown as FirebaseAuthTypes.User;
+
+      expect(resolveProviderUsername(user)).toBe("Google Name");
+    });
+
+    it("returns undefined when no provider display name exists", () => {
+      const user = {
+        displayName: "   ",
+        providerData: [{ providerId: "google.com", displayName: "   " }],
+      } as unknown as FirebaseAuthTypes.User;
+
+      expect(resolveProviderUsername(user)).toBeUndefined();
     });
   });
 });

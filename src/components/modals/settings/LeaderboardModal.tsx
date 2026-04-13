@@ -113,13 +113,24 @@ const createCurrentUserFallback = (currentUserId: string): LeaderboardEntry => (
 
 const buildDisplayEntries = (
   rawEntries: LeaderboardEntry[],
-  currentUserId: string | null
+  currentUserId: string | null,
+  type: LeaderboardType
 ): LeaderboardEntry[] => {
-  const topEntries = rawEntries.slice(0, TOP_ROWS);
+  const sortedEntries = [...rawEntries].sort((a, b) => {
+    if (type === "totalWins") {
+      return b.totalWins - a.totalWins;
+    }
+    if (type === "bestStreak") {
+      return b.bestStreak - a.bestStreak;
+    }
+    return b.xp - a.xp;
+  });
+
+  const topEntries = sortedEntries.slice(0, TOP_ROWS);
   const currentUserEntry =
     currentUserId == null
       ? null
-      : rawEntries.find((entry) => entry.userId === currentUserId) ??
+      : sortedEntries.find((entry) => entry.userId === currentUserId) ??
         createCurrentUserFallback(currentUserId);
 
   if (!__DEV__) {
@@ -172,7 +183,7 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({
   }, [isVisible, activeTab, fetchLeaderboard]);
 
   const activeTabConfig = TABS.find((t) => t.type === activeTab)!;
-  const displayEntries = buildDisplayEntries(entries, currentUserId);
+  const displayEntries = buildDisplayEntries(entries, currentUserId, activeTab);
 
   return (
     <Modal
