@@ -366,6 +366,7 @@ const EN_APP_STRINGS = {
     MODAL_TITLE: "Achievements",
     FANFARE_TITLE: "Achievement Unlocked!",
     MORE_UNLOCKED_SUFFIX: " more unlocked",
+    COINS_SUFFIX: " Coins",
     NICE_BUTTON: "Nice",
     NEW_ACHIEVEMENT: "New Achievement",
   },

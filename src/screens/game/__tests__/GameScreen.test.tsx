@@ -1511,6 +1511,7 @@ describe("GameScreen", () => {
         mockShowVictoryModal.mock.calls[mockShowVictoryModal.mock.calls.length - 1][0];
       expect(config.unlockedAchievementNames).toEqual(["First Win"]);
       expect(mockShowAchievementUnlockFanfareModal).toHaveBeenCalledWith({
+        coinsEarned: 10,
         achievementNames: ["First Win"],
         achievements: [
           {

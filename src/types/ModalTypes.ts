@@ -190,6 +190,7 @@ export interface GameModalTypes {
   };
 
   achievementUnlockFanfare: {
+    coinsEarned: number;
     achievementNames?: string[];
     achievements?: AchievementUnlockFanfareItem[];
   };

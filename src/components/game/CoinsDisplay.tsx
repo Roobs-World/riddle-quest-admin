@@ -11,8 +11,8 @@
  * @since 2024
  */
 
-import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { View, Text, TouchableOpacity, Animated, Easing } from "react-native";
 import { SvgXml } from "react-native-svg";
 import { COIN_DISPLAY_ICON_SIZE } from "../../constants/layout";
 import { TYPOGRAPHY, SPACING } from "../../styles";
@@ -116,11 +116,74 @@ interface CoinsDisplayProps {
  * @returns {JSX.Element} Rendered coin display component
  */
 const CoinsDisplay: React.FC<CoinsDisplayProps> = ({ coins, onPress }) => {
+  const normalizedCoins = typeof coins === "number" && Number.isFinite(coins) ? coins : 0;
+  const displayedCoinsAnimatedValue = useRef(new Animated.Value(normalizedCoins)).current;
+  const scaleAnimatedValue = useRef(new Animated.Value(1)).current;
+  const previousCoinsRef = useRef(normalizedCoins);
+  const [displayedCoins, setDisplayedCoins] = useState(normalizedCoins);
+
+  useEffect(() => {
+    const listenerId = displayedCoinsAnimatedValue.addListener(({ value }) => {
+      setDisplayedCoins(Math.round(value));
+    });
+
+    return () => {
+      displayedCoinsAnimatedValue.removeListener(listenerId);
+    };
+  }, [displayedCoinsAnimatedValue]);
+
+  useEffect(() => {
+    const previousCoins = previousCoinsRef.current;
+    previousCoinsRef.current = normalizedCoins;
+    const coinsAdded = normalizedCoins - previousCoins;
+
+    displayedCoinsAnimatedValue.stopAnimation();
+    scaleAnimatedValue.stopAnimation();
+
+    const isCountUpAnimationNeeded = coinsAdded > 0;
+    const isTestEnvironment = process.env.NODE_ENV === "test";
+
+    if (!isCountUpAnimationNeeded || isTestEnvironment) {
+      displayedCoinsAnimatedValue.setValue(normalizedCoins);
+      scaleAnimatedValue.setValue(1);
+      setDisplayedCoins(normalizedCoins);
+      return;
+    }
+
+    const coinCountUpDurationMs = Math.min(2500, 400 + Math.sqrt(coinsAdded) * 180);
+
+    Animated.timing(displayedCoinsAnimatedValue, {
+      toValue: normalizedCoins,
+      duration: coinCountUpDurationMs,
+      easing: Easing.out(Easing.cubic),
+      useNativeDriver: false,
+    }).start(({ finished }) => {
+      if (!finished) {
+        return;
+      }
+
+      Animated.sequence([
+        Animated.timing(scaleAnimatedValue, {
+          toValue: 1.15,
+          duration: 250,
+          easing: Easing.out(Easing.cubic),
+          useNativeDriver: true,
+        }),
+        Animated.timing(scaleAnimatedValue, {
+          toValue: 1,
+          duration: 250,
+          easing: Easing.in(Easing.cubic),
+          useNativeDriver: true,
+        }),
+      ]).start();
+    });
+  }, [normalizedCoins, displayedCoinsAnimatedValue, scaleAnimatedValue]);
+
   /** Generate appropriate text for singular/plural coin count */
-  const coinText = coins === 1 ? "coin" : "coins";
+  const coinText = normalizedCoins === 1 ? "coin" : "coins";
 
   /** Accessibility label for read-only mode */
-  const accessibilityLabel = `You have ${coins} ${coinText}`;
+  const accessibilityLabel = `You have ${normalizedCoins} ${coinText}`;
 
   /** Accessibility label for interactive mode */
   const touchableAccessibilityLabel = `Open coin shop. ${accessibilityLabel}`;
@@ -130,17 +193,18 @@ const CoinsDisplay: React.FC<CoinsDisplayProps> = ({ coins, onPress }) => {
    * This is rendered the same way regardless of interaction mode.
    */
   const content = (
-    <View
+    <Animated.View
       className="flex-row items-center"
       testID="coins-display"
       accessible={true}
       accessibilityLabel={accessibilityLabel}
+      style={{ transform: [{ scale: scaleAnimatedValue }] }}
     >
       <Text style={{ fontFamily: TYPOGRAPHY.fontPrimary, color: "#ffffff", fontSize: TYPOGRAPHY.fontSize.lg, marginRight: SPACING.xs }}>
-        {String(coins)}
+        {String(displayedCoins)}
       </Text>
       <SvgXml xml={coinSvg} width={COIN_DISPLAY_ICON_SIZE} height={COIN_DISPLAY_ICON_SIZE} testID="coin-icon" />
-    </View>
+    </Animated.View>
   );
 
   /**

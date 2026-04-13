@@ -2,6 +2,7 @@ import React, { useMemo, useState, useEffect } from "react";
 import { View, Text, Modal, Animated, Easing } from "react-native";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import WheelBg from "../../../../assets/images/wheel-bg.svg";
+import CoinSvg from "../../../../assets/images/coin.svg";
 import WideButton from "../../buttons/WideButton";
 import { TYPOGRAPHY } from "../../../styles";
 import { AchievementUnlockFanfareItem } from "../../../types/ModalTypes";
@@ -16,6 +17,7 @@ import { AppStrings } from "../../../constants/AppStrings";
 
 interface AchievementUnlockFanfareModalProps {
   isVisible: boolean;
+  coinsEarned: number;
   achievementNames?: string[];
   achievements?: AchievementUnlockFanfareItem[];
   onClose: () => void;
@@ -23,7 +25,13 @@ interface AchievementUnlockFanfareModalProps {
 
 const AchievementUnlockFanfareModal: React.FC<
   AchievementUnlockFanfareModalProps
-> = ({ isVisible, achievementNames = [], achievements = [], onClose }) => {
+> = ({
+  isVisible,
+  coinsEarned,
+  achievementNames = [],
+  achievements = [],
+  onClose,
+}) => {
   const [rotationAnim] = useState(() => new Animated.Value(0));
 
   const spin = useMemo(() => {
@@ -181,6 +189,23 @@ const AchievementUnlockFanfareModal: React.FC<
                 </Text>
               ) : null}
             </View>
+
+            {coinsEarned > 0 ? (
+              <View style={{ alignItems: "center" }}>
+                <CoinSvg width={32} height={32} />
+                <Text
+                  style={{
+                    fontFamily: TYPOGRAPHY.fontSecondaryBold,
+                    fontSize: TYPOGRAPHY.fontSize["2xl"],
+                    color: "black",
+                    marginTop: 6,
+                  }}
+                >
+                  +{coinsEarned}
+                  {AppStrings.Achievements.COINS_SUFFIX}
+                </Text>
+              </View>
+            ) : null}
 
             <View style={{ width: "100%", marginTop: 8 }}>
               <WideButton buttonText={AppStrings.Achievements.NICE_BUTTON} onPress={onClose} />

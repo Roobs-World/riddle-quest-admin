@@ -144,7 +144,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
     <Modal
       visible={isVisible}
       transparent={true}
-      animationType="slide"
+      animationType="fade"
       onRequestClose={onClose}
     >
       <View

@@ -28,6 +28,7 @@ describe("Profanity Filter", () => {
         "fuck123",
         "shittyUser",
         "bitchPlayer",
+        "cunt",
         "asshole_gamer",
         "hellBoy",
         "crapUser",
@@ -41,7 +42,7 @@ describe("Profanity Filter", () => {
     });
 
     test("should detect profanity with different cases", () => {
-      const caseVariations = ["FUCK", "Shit", "BiTcH", "aSsHoLe", "DAMN", "Hell", "CrAp", "PiSs"];
+      const caseVariations = ["FUCK", "Shit", "BiTcH", "CunT", "aSsHoLe", "DAMN", "Hell", "CrAp", "PiSs"];
 
       caseVariations.forEach((username) => {
         expect(containsProfanity(username)).toBe(true);
@@ -172,7 +173,7 @@ describe("Profanity Filter", () => {
     });
 
     test("should return error message for profane usernames", () => {
-      const profaneUsernames = ["fuck123", "shittyUser", "bitchPlayer", "asshole_gamer", "hellBoy"];
+      const profaneUsernames = ["fuck123", "shittyUser", "bitchPlayer", "cunt", "asshole_gamer", "hellBoy"];
 
       const expectedErrorMessage = "Username contains inappropriate language. Please choose a different username.";
 
@@ -212,6 +213,7 @@ describe("Profanity Filter", () => {
       const testCases = [
         {username: "cleanUser", shouldBeProfane: false},
         {username: "fuckUser", shouldBeProfane: true},
+        {username: "cunt", shouldBeProfane: true},
         {username: "shittyGamer", shouldBeProfane: true},
         {username: "goodPlayer", shouldBeProfane: false},
         {username: "damn123", shouldBeProfane: true},

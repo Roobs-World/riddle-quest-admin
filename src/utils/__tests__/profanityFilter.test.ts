@@ -35,6 +35,7 @@ describe("profanityFilter", () => {
         "damn",
         "hell",
         "crap",
+        "cunt",
         "badword",
         "adult",
         "kill",
@@ -47,7 +48,7 @@ describe("profanityFilter", () => {
     });
 
     it("should detect profanity in mixed case usernames", () => {
-      const mixedCaseUsernames = ["DAMN", "Hell", "CrAp", "BADWORD", "AdUlT"];
+      const mixedCaseUsernames = ["DAMN", "Hell", "CrAp", "CunT", "BADWORD", "AdUlT"];
 
       mixedCaseUsernames.forEach((username) => {
         expect(containsProfanity(username)).toBe(true);
@@ -141,7 +142,7 @@ describe("profanityFilter", () => {
     });
 
     it("should return error message for profane usernames", () => {
-      const profaneUsernames = ["damn", "hell", "crap", "badword", "adult"];
+      const profaneUsernames = ["damn", "hell", "crap", "cunt", "badword", "adult"];
 
       const expectedMessage =
         "Username contains inappropriate language. Please choose a different username.";
@@ -152,7 +153,7 @@ describe("profanityFilter", () => {
     });
 
     it("should return error message for profane usernames with mixed case", () => {
-      const mixedCaseUsernames = ["DAMN", "Hell", "CrAp", "BADWORD"];
+      const mixedCaseUsernames = ["DAMN", "Hell", "CrAp", "CunT", "BADWORD"];
 
       const expectedMessage =
         "Username contains inappropriate language. Please choose a different username.";
@@ -201,6 +202,7 @@ describe("profanityFilter", () => {
       const testCases = [
         { username: "cleanuser", shouldHaveProfanity: false },
         { username: "damn", shouldHaveProfanity: true },
+        { username: "cunt", shouldHaveProfanity: true },
         { username: "hell", shouldHaveProfanity: true },
         { username: "gooduser123", shouldHaveProfanity: false },
         { username: "usercrap", shouldHaveProfanity: true },

@@ -75,6 +75,7 @@ describe("AchievementUnlockFanfareModal", () => {
     const { getByText } = render(
       <AchievementUnlockFanfareModal
         isVisible={true}
+        coinsEarned={25}
         achievements={[
           {
             name: "First Victory",
@@ -90,12 +91,14 @@ describe("AchievementUnlockFanfareModal", () => {
     expect(getByText("*")).toBeTruthy();
     expect(getByText("First Victory")).toBeTruthy();
     expect(getByText("Win your first game")).toBeTruthy();
+    expect(getByText("+25 Coins")).toBeTruthy();
   });
 
   it("shows aggregated count when multiple achievements unlock", () => {
     const { getByText } = render(
       <AchievementUnlockFanfareModal
         isVisible={true}
+        coinsEarned={50}
         achievements={[
           { name: "First Victory", description: "Win one game", icon: "*" },
           { name: "Speed Runner", description: "Solve quickly", icon: "!" },
@@ -113,6 +116,7 @@ describe("AchievementUnlockFanfareModal", () => {
     const { getByText } = render(
       <AchievementUnlockFanfareModal
         isVisible={true}
+        coinsEarned={10}
         achievements={[
           {
             name: "First Victory",

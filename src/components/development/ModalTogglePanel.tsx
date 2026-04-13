@@ -280,6 +280,7 @@ const generateMockData = (
       };
     case "achievementUnlockFanfare":
       return {
+        coinsEarned: 50,
         achievementNames: ["First Victory", "Perfect Streak"],
       };
     case "streakIncreaseFanfare":

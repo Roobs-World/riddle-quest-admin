@@ -262,6 +262,9 @@ describe("handleGuessLogic", () => {
       (achievements.evaluateAchievements as jest.Mock).mockResolvedValueOnce(["first_win", "wins_5"]);
       const result = await handleGuessLogic(requestData, authContext);
       expect(result.newlyUnlockedAchievementIds).toEqual(["first_win", "wins_5"]);
+      expect(result.coinsEarned).toBe(60);
+      expect(firestoreService.updateUserCoins).toHaveBeenNthCalledWith(1, authContext.uid, 10);
+      expect(firestoreService.updateUserCoins).toHaveBeenNthCalledWith(2, authContext.uid, 50);
     });
 
     test("should not update leaderboard entry for anonymous guest users", async () => {
@@ -854,6 +857,37 @@ describe("handleGuessLogic", () => {
   });
 
   describe("handleCompleteGameLogic - Leaderboard", () => {
+    test("adds achievement bonus coins to balance and response on win", async () => {
+      (achievements.evaluateAchievements as jest.Mock).mockResolvedValueOnce([
+        "first_win",
+        "perfect_guess",
+      ]);
+      const requestData = {
+        riddleId: "riddle-123",
+        gameMode: "classic" as const,
+        attempts: 1,
+        isCorrect: true,
+      };
+
+      const result = await handleCompleteGameLogic(requestData, authContext);
+
+      expect(result.newlyUnlockedAchievementIds).toEqual([
+        "first_win",
+        "perfect_guess",
+      ]);
+      expect(result.coinsEarned).toBe(60);
+      expect(firestoreService.updateUserCoins).toHaveBeenNthCalledWith(
+        1,
+        authContext.uid,
+        10,
+      );
+      expect(firestoreService.updateUserCoins).toHaveBeenNthCalledWith(
+        2,
+        authContext.uid,
+        50,
+      );
+    });
+
     test("should update leaderboard entry when game is won", async () => {
       const requestData = {
         riddleId: "riddle-123",

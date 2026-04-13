@@ -19,6 +19,7 @@ import {
   MAX_ATTEMPTS_CHALLENGE,
   COINS_REWARD_CLASSIC,
   COINS_REWARD_CHALLENGE,
+  ACHIEVEMENT_UNLOCK_COIN_REWARD,
   BASE_SCORE_CLASSIC,
   BASE_SCORE_CHALLENGE,
   getLevelFromXp,
@@ -377,6 +378,13 @@ export async function handleGuessLogic(
         attempts,
         gameOver,
       });
+
+      if (isCorrect && newlyUnlockedAchievementIds.length > 0) {
+        const achievementBonusCoins =
+          newlyUnlockedAchievementIds.length * ACHIEVEMENT_UNLOCK_COIN_REWARD;
+        await updateUserCoins(userId, achievementBonusCoins);
+        coinsEarned += achievementBonusCoins;
+      }
     } catch (error) {
       functions.logger.error("Error evaluating achievements:", error);
       captureException(error);
@@ -646,6 +654,13 @@ export async function handleCompleteGameLogic(
         attempts,
         gameOver: true,
       });
+
+      if (isCorrect && newlyUnlockedAchievementIds.length > 0) {
+        const achievementBonusCoins =
+          newlyUnlockedAchievementIds.length * ACHIEVEMENT_UNLOCK_COIN_REWARD;
+        await updateUserCoins(userId, achievementBonusCoins);
+        coinsEarned += achievementBonusCoins;
+      }
     } catch (error) {
       functions.logger.error("Error evaluating achievements:", error);
       captureException(error);

@@ -171,7 +171,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
     <Modal
       visible={isVisible}
       transparent={true}
-      animationType="slide"
+      animationType="fade"
       onRequestClose={onClose}
     >
       <View

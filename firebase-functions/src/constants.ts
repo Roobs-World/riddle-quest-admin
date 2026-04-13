@@ -19,6 +19,8 @@ export const MAX_ATTEMPTS_CHALLENGE = 5;
 export const COINS_REWARD_CLASSIC = 10;
 /** Coins earned for solving a Daily Challenge riddle. */
 export const COINS_REWARD_CHALLENGE = 50;
+/** Bonus coins awarded per newly unlocked achievement. */
+export const ACHIEVEMENT_UNLOCK_COIN_REWARD = 25;
 
 /** Base score for a Classic win. */
 export const BASE_SCORE_CLASSIC = 50;

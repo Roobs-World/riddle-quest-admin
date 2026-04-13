@@ -600,6 +600,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
         if (unlockedAchievementNames.length > 0) {
           modal.showAchievementUnlockFanfareModal({
+            coinsEarned: result.coinsEarned || 0,
             achievementNames: unlockedAchievementNames,
             achievements: unlockedAchievements.map((achievement) => ({
               name: achievement.name,
