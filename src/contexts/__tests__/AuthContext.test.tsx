@@ -524,6 +524,41 @@ describe("AuthContext", () => {
       expect(result.current.playerData?.coins).toBe(150);
       expect(result.current.playerData?.displayName).toBe("Updated Name");
     });
+
+    it("updatePlayerDataLocally syncs authenticated updates to Firestore", async () => {
+      (loadUserProgressFromFirestore as jest.Mock).mockResolvedValue(
+        mockPlayer
+      );
+      (fetchDailyRiddleFromFirestore as jest.Mock).mockResolvedValue(
+        mockDailyRiddle
+      );
+      (updateUserDocumentInFirestore as jest.Mock).mockResolvedValue(undefined);
+
+      mockAuthInstance.onAuthStateChanged.mockImplementation(
+        (callback: (user: any) => void) => {
+          callback(mockUser as any);
+          return jest.fn();
+        }
+      );
+
+      const { result } = renderHook(() => useAuth(), { wrapper });
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      act(() => {
+        result.current.updatePlayerDataLocally({ coins: 175 });
+      });
+
+      await waitFor(() =>
+        expect(updateUserDocumentInFirestore).toHaveBeenCalledWith(
+          "testUser123",
+          { coins: 175 }
+        )
+      );
+      expect(result.current.playerData?.coins).toBe(175);
+    });
   });
 
   it("setCurrentRiddle updates the current riddle state directly", async () => {

@@ -51,10 +51,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
 }) => {
   const modal = useModal();
   const { updatePlayerData, playerData: authPlayerData } = useAuth();
-  const resolvedPlayerData =
-    authPlayerData && playerData && authPlayerData.userId === playerData.userId
-      ? authPlayerData
-      : playerData;
+  const resolvedPlayerData = authPlayerData ?? playerData;
   const isGuestMode = isGuestPlayer(resolvedPlayerData);
   const [isUsernameModalVisible, setIsUsernameModalVisible] = useState(false);
   const [isUpgradeModalVisible, setIsUpgradeModalVisible] = useState(false);
@@ -66,6 +63,12 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
   useEffect(() => {
     setAvatarUrl(resolvedPlayerData?.avatarUrl ?? null);
   }, [resolvedPlayerData?.avatarUrl]);
+
+  useEffect(() => {
+    if (!isGuestMode) {
+      setIsUpgradeModalVisible(false);
+    }
+  }, [isGuestMode]);
 
   if (!resolvedPlayerData) {
     return null;
@@ -546,10 +549,12 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
         currentUsername={resolvedPlayerData.username || ""}
       />
 
-      <UpgradeAccountModal
-        isVisible={isUpgradeModalVisible}
-        onClose={() => setIsUpgradeModalVisible(false)}
-      />
+      {isGuestMode ? (
+        <UpgradeAccountModal
+          isVisible={isUpgradeModalVisible}
+          onClose={() => setIsUpgradeModalVisible(false)}
+        />
+      ) : null}
 
       <PulsingSpinner
         visible={isUploading}

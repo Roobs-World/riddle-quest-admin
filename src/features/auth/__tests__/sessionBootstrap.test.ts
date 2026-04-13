@@ -34,6 +34,7 @@ import { captureException } from "../../../utils/sentry";
 import { logger } from "../../../utils/logger";
 import {
   createGuestPlayer,
+  isGuestPlayer,
   resolveInitialGameMode,
   resolveProviderAvatarUrl,
   resolveUserEmail,
@@ -224,6 +225,35 @@ describe("sessionBootstrap", () => {
       const player = createGuestPlayer(specialUid);
       expect(player.userId).toBe(specialUid);
       expect(player.email).toBe(`guest_${specialUid}@guest.qwordly.com`);
+    });
+  });
+
+  describe("isGuestPlayer", () => {
+    it("returns true for guest email pattern", () => {
+      expect(
+        isGuestPlayer({
+          email: "guest_abc123@guest.qwordly.com",
+          username: "Whatever",
+        })
+      ).toBe(true);
+    });
+
+    it("returns false for provider users with non-guest email even when username is Guest", () => {
+      expect(
+        isGuestPlayer({
+          email: "player@example.com",
+          username: "Guest",
+        })
+      ).toBe(false);
+    });
+
+    it("falls back to Guest username only when email is missing", () => {
+      expect(
+        isGuestPlayer({
+          email: "",
+          username: "Guest",
+        })
+      ).toBe(true);
     });
   });
 

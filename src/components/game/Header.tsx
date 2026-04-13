@@ -26,6 +26,8 @@ interface HeaderProps {
   onCoinsPress: () => void;
   /** Optional mode label (e.g. "Daily Challenge"). */
   modeLabel?: string;
+  /** Allows coin increase animations when true. */
+  shouldAnimateCoins?: boolean;
 }
 
 /**
@@ -41,6 +43,7 @@ const Header: React.FC<HeaderProps> = ({
   userCoins,
   onCoinsPress,
   modeLabel,
+  shouldAnimateCoins = true,
 }) => {
   const showModeLabel = !!modeLabel;
   const [headerWidth, setHeaderWidth] = useState(0);
@@ -127,7 +130,11 @@ const Header: React.FC<HeaderProps> = ({
         testID="header-right-side"
         onLayout={handleRightAnchorLayout}
       >
-        <CoinsDisplay coins={userCoins} onPress={onCoinsPress} />
+        <CoinsDisplay
+          coins={userCoins}
+          onPress={onCoinsPress}
+          shouldAnimateIncreases={shouldAnimateCoins}
+        />
       </View>
     </View>
   );

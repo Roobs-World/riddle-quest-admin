@@ -121,6 +121,7 @@ const mockShowCoinPurchaseFanfareModal = jest.fn();
 const mockShowAchievementUnlockFanfareModal = jest.fn();
 const mockShowStreakIncreaseFanfareModal = jest.fn();
 const mockShowLevelUpFanfareModal = jest.fn();
+const mockUpgradeAccountModal = jest.fn();
 
 jest.mock("../../../hooks/useModal", () => ({
   useModal: () => ({
@@ -200,6 +201,15 @@ jest.mock("../../../features/game-session/gameModalActions", () => ({
 jest.mock("../../../components/modals/ModalProvider", () => ({
   ModalProvider: ({ children }: any) => children,
 }));
+
+jest.mock("../../../components/modals/settings/UpgradeAccountModal", () => {
+  const React = require("react");
+  const { View } = require("react-native");
+  return function MockUpgradeAccountModal(props: any) {
+    mockUpgradeAccountModal(props);
+    return React.createElement(View, { testID: "mock-upgrade-account-modal" });
+  };
+});
 
 // Mock game components
 const mockHeader = jest.fn();
@@ -289,6 +299,9 @@ jest.mock("../../../constants/AppStrings", () => ({
     },
     CoinShop: {
       NO_PACKS_AVAILABLE: "No packs available",
+    },
+    Profile: {
+      UPGRADE_ACCOUNT_BUTTON: "Upgrade Account",
     },
     DevTools: {
       CLEAR_LOCAL_DATA_BUTTON: "Clear Local Data",
@@ -640,6 +653,53 @@ describe("GameScreen", () => {
           expect(mockShowWelcomeModal).toHaveBeenCalled();
         });
         expect(mockShowInfoModal).not.toHaveBeenCalled();
+      } finally {
+        mockPlayerData.email = originalEmail;
+        mockPlayerData.username = originalUsername;
+      }
+    });
+
+    it("should include upgrade action in guest warning modal and open upgrade modal", async () => {
+      const originalEmail = mockPlayerData.email;
+      const originalUsername = mockPlayerData.username;
+
+      try {
+        mockPlayerData.email = "guest_test-user-456@guest.qwordly.com";
+        mockPlayerData.username = "Guest";
+
+        render(<GameScreen {...defaultProps} />);
+
+        await waitFor(() => {
+          expect(mockShowWelcomeModal).toHaveBeenCalled();
+        });
+
+        const onboardingConfig = mockShowWelcomeModal.mock.calls[0][0];
+        onboardingConfig.onDismiss();
+
+        await waitFor(() => {
+          expect(mockShowInfoModal).toHaveBeenCalledWith(
+            expect.objectContaining({
+              title: "Guest Mode",
+              actionButtonText: "Upgrade Account",
+              onAction: expect.any(Function),
+            })
+          );
+        });
+
+        const guestInfoCall = mockShowInfoModal.mock.calls.find(
+          (call) => call[0]?.title === "Guest Mode"
+        );
+        expect(guestInfoCall).toBeDefined();
+
+        guestInfoCall?.[0]?.onAction?.();
+
+        await waitFor(() => {
+          const latestProps =
+            mockUpgradeAccountModal.mock.calls[
+              mockUpgradeAccountModal.mock.calls.length - 1
+            ][0];
+          expect(latestProps.isVisible).toBe(true);
+        });
       } finally {
         mockPlayerData.email = originalEmail;
         mockPlayerData.username = originalUsername;
@@ -1075,7 +1135,7 @@ describe("GameScreen", () => {
         ][0];
       fanfareConfig.onContinue();
       expect(mockShowVictoryModal).toHaveBeenCalled();
-      expect(defaultProps.onGameWin).toHaveBeenCalledWith(0, 30, 200, 5, 50);
+      expect(defaultProps.onGameWin).toHaveBeenCalledWith(0, 30, 200, 5, 100);
     });
 
     it("handles onboarding dismiss callback", async () => {
@@ -1328,6 +1388,36 @@ describe("GameScreen", () => {
       expect(mockShowInfoModal).toHaveBeenCalledWith(
         expect.objectContaining({ title: "Purchase Failed" })
       );
+    });
+
+    it("shows pulsing spinner while coin purchase is in progress", async () => {
+      const { IapService } = require("../../../services/IapService");
+      let resolvePurchase: ((value: unknown) => void) | null = null;
+      IapService.purchaseProduct.mockImplementationOnce(
+        () =>
+          new Promise((resolve) => {
+            resolvePurchase = resolve;
+          })
+      );
+
+      render(<GameScreen {...defaultProps} />);
+      const headerProps = getLatestProps(mockHeader);
+      headerProps.onCoinsPress();
+      const config =
+        mockShowCoinShopModal.mock.calls[mockShowCoinShopModal.mock.calls.length - 1][0];
+
+      const purchasePromise = config.onPurchaseProduct("com.qwordly.coinpack1");
+
+      await waitFor(() => {
+        expect(getLatestProps(mockPulsingSpinner).visible).toBe(true);
+      });
+
+      resolvePurchase?.(null);
+      await purchasePromise;
+
+      await waitFor(() => {
+        expect(getLatestProps(mockPulsingSpinner).visible).toBe(false);
+      });
     });
 
     it("handles watch-ad-for-coins not-ready and error branches", async () => {

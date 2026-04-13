@@ -11,6 +11,7 @@ import { getApp } from "@react-native-firebase/app";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { AccessToken, LoginManager } from "react-native-fbsdk-next";
 import { InteractionManager, AppState } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { safeTimeout } from "../utils/timing";
 import { logger } from "../utils/logger";
 import { captureException } from "../utils/sentry";
@@ -29,6 +30,16 @@ const runOnMainThread = <T>(fn: () => Promise<T>): Promise<T> => {
       }
     });
   });
+};
+
+const clearLocalAuthData = async (reason: string): Promise<void> => {
+  try {
+    await AsyncStorage.clear();
+    logger.debug(`Cleared local data after auth transition (${reason}).`);
+  } catch (error) {
+    logger.warn(`Failed to clear local data (${reason}).`, error);
+    captureException(error);
+  }
 };
 
 export const AuthService = {
@@ -243,6 +254,7 @@ export const AuthService = {
           email: userCredential.user?.email,
           displayName: userCredential.user?.displayName,
         });
+        await clearLocalAuthData("google-signin");
 
         return userCredential;
       } catch (error) {
@@ -685,6 +697,8 @@ export const AuthService = {
         }
       }
 
+      await clearLocalAuthData("facebook-signin");
+
       return userCredential;
     } catch (error: unknown) {
       logger.error("❌ Facebook login error:", error);
@@ -940,6 +954,8 @@ export const AuthService = {
       logger.error("Error signing out:", error);
       captureException(error);
       throw error;
+    } finally {
+      await clearLocalAuthData("logout");
     }
   },
 

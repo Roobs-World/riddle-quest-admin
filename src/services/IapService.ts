@@ -215,21 +215,20 @@ export const IapService = {
             } as RNIap.Purchase;
           }
 
-          logger.warn(
-            "Dev purchase fallback returned unsuccessful response. Continuing with native store flow.",
-            { productId }
-          );
+          logger.warn("Dev purchase fallback returned unsuccessful response.", {
+            productId,
+          });
+          throw new Error("Dev purchase bypass is disabled.");
         } catch (fallbackError) {
-          logger.warn(
-            "Dev purchase fallback callable failed. Continuing with native store flow.",
-            {
-              productId,
-              error:
-                fallbackError instanceof Error
-                  ? fallbackError.message
-                  : String(fallbackError),
-            }
-          );
+          logger.warn("Dev purchase fallback callable failed.", {
+            productId,
+            error:
+              fallbackError instanceof Error
+                ? fallbackError.message
+                : String(fallbackError),
+          });
+
+          throw fallbackError;
         }
       }
 

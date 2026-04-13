@@ -62,9 +62,22 @@ export const createGuestPlayer = (uid: string): Player => ({
 export const isGuestPlayer = (
   player: Pick<Player, "email" | "username"> | null | undefined
 ): boolean => {
-  const email = typeof player?.email === "string" ? player.email : "";
-  const username = typeof player?.username === "string" ? player.username : "";
-  return email.endsWith("@guest.qwordly.com") || username === "Guest";
+  const email =
+    typeof player?.email === "string" ? player.email.trim().toLowerCase() : "";
+  const username =
+    typeof player?.username === "string"
+      ? player.username.trim().toLowerCase()
+      : "";
+
+  if (email.endsWith("@guest.qwordly.com")) {
+    return true;
+  }
+
+  if (email !== "") {
+    return false;
+  }
+
+  return username === "guest";
 };
 
 /**

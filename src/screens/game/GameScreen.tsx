@@ -71,6 +71,7 @@ import { useGameSessionController } from "../../features/game-session/useGameSes
 import { createGameModalActions } from "../../features/game-session/gameModalActions";
 import { isGuestPlayer } from "../../features/auth/sessionBootstrap";
 import { loadUserProgressFromFirestore } from "../../services/FirestoreService";
+import UpgradeAccountModal from "../../components/modals/settings/UpgradeAccountModal";
 import {
   SOUND_ENABLED_STORAGE_KEY,
   HAPTICS_ENABLED_STORAGE_KEY,
@@ -108,7 +109,7 @@ interface GameScreenProps {
     coinsEarned: number,
     scoreEarned: number,
     dailyStreakAfterWin?: number,
-    levelUpBonusCoins?: number
+    bonusCoinsAwarded?: number
   ) => void;
   onGameLoss: (correctAnswer: string) => void;
   onHintUsed: (cost: number) => void;
@@ -152,12 +153,17 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const { isLoading, runWithServerLoading } = useGameSessionController();
   const modalActions = useMemo(() => createGameModalActions(modal), [modal]);
   const [isProfileModalLoading, setIsProfileModalLoading] = useState(false);
+  const [isUpgradeModalVisible, setIsUpgradeModalVisible] = useState(false);
+  const isRunningUnderJest =
+    typeof process !== "undefined" && Boolean(process.env.JEST_WORKER_ID);
+  const shouldUseDevFirestoreCatalog = __DEV__ && !isRunningUnderJest;
 
   const gameOverHandledRef = useRef(false);
   const openShopFromLossRef = useRef<() => void>(() => {});
 
   const [iapProducts, setIapProducts] = useState<RNIap.Product[]>([]);
   const [iapLoading, setIapLoading] = useState(true);
+  const [isPurchaseInProgress, setIsPurchaseInProgress] = useState(false);
   const [iapError, setIapError] = useState<string | null>(null);
   const [firestoreProducts, setFirestoreProducts] = useState<ProductPricing[]>([]);
   const [productPricingLoading, setProductPricingLoading] = useState(true);
@@ -199,6 +205,16 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   }, [loadRewardedAd]);
 
   const loadIapProducts = useCallback(async () => {
+    if (shouldUseDevFirestoreCatalog) {
+      setIapProducts([]);
+      setIapError(null);
+      setIapLoading(false);
+      return {
+        products: [] as RNIap.Product[],
+        error: null as string | null,
+      };
+    }
+
     setIapLoading(true);
     setIapError(null);
 
@@ -222,7 +238,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     } finally {
       setIapLoading(false);
     }
-  }, [runWithServerLoading]);
+  }, [runWithServerLoading, shouldUseDevFirestoreCatalog]);
 
   const loadFirestoreProducts = useCallback(async () => {
     setProductPricingLoading(true);
@@ -283,6 +299,12 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   }, [playerData]);
 
   useEffect(() => {
+    if (!isGuestMode) {
+      setIsUpgradeModalVisible(false);
+    }
+  }, [isGuestMode]);
+
+  useEffect(() => {
     if (firstTimeCheckDone.current) return;
     firstTimeCheckDone.current = true;
 
@@ -294,6 +316,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
               showInfoModal({
                 title: AppStrings.GameScreenAlerts.GUEST_MODE_NOTICE_TITLE,
                 message: AppStrings.GameScreenAlerts.GUEST_MODE_NOTICE_MESSAGE,
+                actionButtonText: AppStrings.Profile.UPGRADE_ACCOUNT_BUTTON,
+                onAction: () => setIsUpgradeModalVisible(true),
                 onConfirm: () => {
                   safeDelay(MODAL_CLOSE_DELAY_MS).then(() => {
                     showInstructionsModal();
@@ -503,7 +527,13 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
   const handlePurchaseProduct = useCallback(
     async (productId: string) => {
+      if (isPurchaseInProgress) {
+        logger.debug("Purchase already in progress. Ignoring duplicate request.");
+        return;
+      }
+
       logger.debug(`Initiating purchase for product: ${productId}`);
+      setIsPurchaseInProgress(true);
       setIapLoading(true);
 
       try {
@@ -532,9 +562,10 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         });
       } finally {
         setIapLoading(false);
+        setIsPurchaseInProgress(false);
       }
     },
-    [modal]
+    [isPurchaseInProgress, modal]
   );
 
   const handlePayAndPlay = useCallback(() => {
@@ -615,6 +646,15 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         const nextLevel = getXpLevel(currentXp + (result.scoreEarned || 0)).level;
         const didLevelUp = nextLevel > previousLevel;
         const levelUpBonusCoins = didLevelUp ? LEVEL_UP_COIN_BONUS : 0;
+        const resolvedDailyStreak =
+          gameMode === "daily"
+            ? (result.newWinStreak ?? deriveDailyStreakAfterWin())
+            : undefined;
+        const dailyChallengeBonusCoins =
+          gameMode === "daily" && resolvedDailyStreak
+            ? DAILY_CHALLENGE_COIN_REWARD
+            : 0;
+        const totalBonusCoinsAwarded = levelUpBonusCoins + dailyChallengeBonusCoins;
 
         const showVictoryModal = () => {
 
@@ -633,7 +673,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           modal.showVictoryModal({
             attempts: guesses.length,
             coinsEarned: result.coinsEarned || 0,
-            totalCoins: (userCoins ?? 0) + (result.coinsEarned || 0),
+            totalCoins:
+              (userCoins ?? 0) + (result.coinsEarned || 0) + totalBonusCoinsAwarded,
             unlockedAchievementNames,
             guesses,
             onNext: async () => {
@@ -654,11 +695,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           });
         };
 
-        const resolvedDailyStreak =
-          gameMode === "daily"
-            ? (result.newWinStreak ?? deriveDailyStreakAfterWin())
-            : undefined;
-
         if (gameMode === "daily" && resolvedDailyStreak) {
           modal.showStreakIncreaseFanfareModal({
             streakValue: resolvedDailyStreak,
@@ -674,7 +710,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           (result.coinsEarned || 0),
           result.scoreEarned || 0,
           resolvedDailyStreak,
-          levelUpBonusCoins
+          totalBonusCoinsAwarded
         );
       } else if (result.outcome === "attemptLimitReached") {
         const canAffordCoinContinue = (userCoins ?? 0) >= CONTINUE_COST_COINS;
@@ -925,14 +961,17 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
   const handleCoinsPress = useCallback(() => {
     const availableStoreProductIds = new Set(iapProducts.map((product) => product.id));
-    const purchasableFirestoreProducts = firestoreProducts.filter((product) =>
-      availableStoreProductIds.has(product.productId)
-    );
+    const purchasableFirestoreProducts = shouldUseDevFirestoreCatalog
+      ? firestoreProducts
+      : firestoreProducts.filter((product) =>
+          availableStoreProductIds.has(product.productId)
+        );
 
     logger.debug("Opening coin shop modal with:", {
       iapProducts: iapProducts.length,
       firestoreProducts: firestoreProducts.length,
       purchasableFirestoreProducts: purchasableFirestoreProducts.length,
+      shouldUseDevFirestoreCatalog,
       iapLoading,
       productPricingLoading,
       iapError,
@@ -961,6 +1000,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   }, [
     iapProducts,
     firestoreProducts,
+    shouldUseDevFirestoreCatalog,
     iapLoading,
     productPricingLoading,
     iapError,
@@ -1209,6 +1249,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
             userCoins={userCoins}
             onCoinsPress={handleCoinsPress}
             modeLabel={headerModeLabel}
+            shouldAnimateCoins={!isAnyModalVisible}
           />
 
           <GameBoard
@@ -1247,12 +1288,18 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         </KeyboardAvoidingView>
 
         <PulsingSpinner
-          visible={isLoading || isProfileModalLoading}
+          visible={isLoading || isProfileModalLoading || isPurchaseInProgress}
           size={LOADING_SPINNER_SIZE}
           opacity={LOADING_SPINNER_OPACITY}
         />
 
         <ModalProvider />
+        {isGuestMode ? (
+          <UpgradeAccountModal
+            isVisible={isUpgradeModalVisible}
+            onClose={() => setIsUpgradeModalVisible(false)}
+          />
+        ) : null}
 
         <Controls
           onNextPress={handleOverlayNext}

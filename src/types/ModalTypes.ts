@@ -170,6 +170,10 @@ export interface GameModalTypes {
     message: string;
     /** Optional extra callback fired when the user presses OK (before the modal closes). */
     onConfirm?: () => void;
+    /** Optional secondary action button label (e.g. "Upgrade Account"). */
+    actionButtonText?: string;
+    /** Optional callback fired when the secondary action button is pressed. */
+    onAction?: () => void;
   };
 
   // Shop modals

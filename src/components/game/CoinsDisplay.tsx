@@ -68,6 +68,12 @@ interface CoinsDisplayProps {
    * If provided, makes the component interactive and typically opens the coin shop.
    */
   onPress?: () => void;
+
+  /**
+   * Controls whether positive coin-change animations are allowed to run.
+   * When false, coin increases are deferred until this becomes true.
+   */
+  shouldAnimateIncreases?: boolean;
 }
 
 /**
@@ -115,7 +121,11 @@ interface CoinsDisplayProps {
  * @param {CoinsDisplayProps} props - Component props
  * @returns {JSX.Element} Rendered coin display component
  */
-const CoinsDisplay: React.FC<CoinsDisplayProps> = ({ coins, onPress }) => {
+const CoinsDisplay: React.FC<CoinsDisplayProps> = ({
+  coins,
+  onPress,
+  shouldAnimateIncreases = true,
+}) => {
   const normalizedCoins = typeof coins === "number" && Number.isFinite(coins) ? coins : 0;
   const displayedCoinsAnimatedValue = useRef(new Animated.Value(normalizedCoins)).current;
   const scaleAnimatedValue = useRef(new Animated.Value(1)).current;
@@ -134,7 +144,6 @@ const CoinsDisplay: React.FC<CoinsDisplayProps> = ({ coins, onPress }) => {
 
   useEffect(() => {
     const previousCoins = previousCoinsRef.current;
-    previousCoinsRef.current = normalizedCoins;
     const coinsAdded = normalizedCoins - previousCoins;
 
     displayedCoinsAnimatedValue.stopAnimation();
@@ -142,8 +151,20 @@ const CoinsDisplay: React.FC<CoinsDisplayProps> = ({ coins, onPress }) => {
 
     const isCountUpAnimationNeeded = coinsAdded > 0;
     const isTestEnvironment = process.env.NODE_ENV === "test";
+    const canRunCountUpAnimation = shouldAnimateIncreases && !isTestEnvironment;
 
-    if (!isCountUpAnimationNeeded || isTestEnvironment) {
+    if (!shouldAnimateIncreases && isCountUpAnimationNeeded) {
+      // Keep the old value in view while modals are open so we can animate to the
+      // new total once all overlays are dismissed.
+      displayedCoinsAnimatedValue.setValue(previousCoins);
+      scaleAnimatedValue.setValue(1);
+      setDisplayedCoins(previousCoins);
+      return;
+    }
+
+    previousCoinsRef.current = normalizedCoins;
+
+    if (!isCountUpAnimationNeeded || !canRunCountUpAnimation) {
       displayedCoinsAnimatedValue.setValue(normalizedCoins);
       scaleAnimatedValue.setValue(1);
       setDisplayedCoins(normalizedCoins);
@@ -151,6 +172,7 @@ const CoinsDisplay: React.FC<CoinsDisplayProps> = ({ coins, onPress }) => {
     }
 
     const coinCountUpDurationMs = Math.min(2500, 400 + Math.sqrt(coinsAdded) * 180);
+    displayedCoinsAnimatedValue.setValue(previousCoins);
 
     Animated.timing(displayedCoinsAnimatedValue, {
       toValue: normalizedCoins,
@@ -177,7 +199,12 @@ const CoinsDisplay: React.FC<CoinsDisplayProps> = ({ coins, onPress }) => {
         }),
       ]).start();
     });
-  }, [normalizedCoins, displayedCoinsAnimatedValue, scaleAnimatedValue]);
+  }, [
+    normalizedCoins,
+    shouldAnimateIncreases,
+    displayedCoinsAnimatedValue,
+    scaleAnimatedValue,
+  ]);
 
   /** Generate appropriate text for singular/plural coin count */
   const coinText = normalizedCoins === 1 ? "coin" : "coins";

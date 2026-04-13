@@ -67,7 +67,7 @@ const getKeyColors = (
     case "yellow":
       return { bg: "#EAB308", text: "#FFFFFF" };
     case "red":
-      return { bg: "rgba(90,90,90,0.65)", text: "#BBBBBB" };
+      return { bg: "#EF4444", text: "#FFFFFF" };
     default:
       return { bg: "transparent", text: "#FFFFFF" };
   }

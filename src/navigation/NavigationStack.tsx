@@ -60,6 +60,7 @@ const GameScreenWrapper = () => {
     setCurrentRiddle,
     setGameMode,
     fetchCurrentRiddle,
+    updatePlayerData,
     updatePlayerDataLocally,
   } = useAuth();
   const isGuestMode = isGuestPlayer(playerData);
@@ -124,6 +125,16 @@ const GameScreenWrapper = () => {
     logger.debug("NavigationStack: switching to classic mode at current index");
     setGameMode("classic");
     await fetchCurrentRiddle(playerData, "classic");
+  };
+
+  const persistPlayerUpdate = async (
+    updates: Parameters<typeof updatePlayerData>[0]
+  ) => {
+    if (isGuestMode) {
+      updatePlayerDataLocally(updates);
+      return;
+    }
+    await updatePlayerData(updates);
   };
 
   const handleNextLevel = async () => {
@@ -322,7 +333,8 @@ const GameScreenWrapper = () => {
             attempts: number,
             coinsEarned: number,
             scoreEarned: number,
-            dailyStreakAfterWin?: number
+            dailyStreakAfterWin?: number,
+            bonusCoinsAwarded: number = 0
           ) => {
             logger.debug(
               AppStrings.GameMessages.GAME_WON +
@@ -351,8 +363,8 @@ const GameScreenWrapper = () => {
                 ? (playerData.stats?.dailyPuzzlesCompleted ?? 0) + 1
                 : (playerData.stats?.dailyPuzzlesCompleted ?? 0);
 
-            updatePlayerDataLocally({
-              coins: (playerData.coins ?? 0) + coinsEarned,
+            await persistPlayerUpdate({
+              coins: (playerData.coins ?? 0) + coinsEarned + bonusCoinsAwarded,
               progress: {
                 ...playerData.progress,
                 dailyChallengeIndex: updatedDailyChallengeIndex,
@@ -389,12 +401,16 @@ const GameScreenWrapper = () => {
           onHintUsed={async (cost: number) => {
             logger.debug(AppStrings.GameMessages.HINT_USED + cost);
             if (cost > 0) {
-              updatePlayerDataLocally({ coins: Math.max(0, (playerData.coins ?? 0) - cost) });
+              await persistPlayerUpdate({
+                coins: Math.max(0, (playerData.coins ?? 0) - cost),
+              });
             }
           }}
           onSkipUsed={(cost: number) => {
             if (cost > 0) {
-              updatePlayerDataLocally({ coins: Math.max(0, (playerData.coins ?? 0) - cost) });
+              void persistPlayerUpdate({
+                coins: Math.max(0, (playerData.coins ?? 0) - cost),
+              });
             }
           }}
           onNextLevel={handleNextLevel}

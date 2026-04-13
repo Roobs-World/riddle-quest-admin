@@ -416,6 +416,36 @@ describe("NavigationStack", () => {
     expect(setGameMode).not.toHaveBeenCalledWith("classic");
   });
 
+  it("does not switch to classic from local completion state for provider users when remote says not completed", async () => {
+    const playerData = {
+      userId: "u4b-local",
+      progress: {},
+      coins: 30,
+      stats: { xp: 0, level: 1 },
+      lastDailyChallengeCompletedAt: Date.now(),
+    };
+    const setGameMode = jest.fn();
+    const fetchCurrentRiddle = jest.fn().mockResolvedValue(undefined);
+    mockDailyCallable.mockResolvedValue({ data: { hasCompletedToday: false } });
+    mockedUseAuth.mockReturnValue(
+      createAuthState({
+        isAuthenticated: true,
+        gameMode: "daily",
+        playerData,
+        currentRiddle: { riddleId: "r2", text: "R", answer: "WORD" },
+        setGameMode,
+        fetchCurrentRiddle,
+      }) as any
+    );
+
+    const { getByTestId } = render(<Navigation />);
+    fireEvent.press(getByTestId("trigger-next-level"));
+
+    await waitFor(() => expect(fetchCurrentRiddle).toHaveBeenCalledWith(playerData, "daily"));
+    expect(setGameMode).not.toHaveBeenCalledWith("classic");
+    expect(mockDailyCallable).toHaveBeenCalled();
+  });
+
   it("falls back safely when checking daily completion throws", async () => {
     const playerData = { userId: "u4c", progress: {}, coins: 30, stats: { xp: 0, level: 1 } };
     const fetchCurrentRiddle = jest.fn().mockResolvedValue(undefined);
@@ -530,6 +560,7 @@ describe("NavigationStack", () => {
       stats: { xp: 10, totalScore: 10, level: 1, wins: 0, totalWins: 0 },
     };
     const updatePlayerDataLocally = jest.fn();
+    const updatePlayerData = jest.fn().mockResolvedValue(undefined);
     const setGameMode = jest.fn();
     const fetchCurrentRiddle = jest.fn().mockResolvedValue(undefined);
     mockDailyCallable.mockResolvedValue({ data: { hasCompletedToday: true } });
@@ -539,6 +570,7 @@ describe("NavigationStack", () => {
         gameMode: "daily",
         playerData,
         currentRiddle: { riddleId: "daily-1", text: "D1", answer: "WORD" },
+        updatePlayerData,
         updatePlayerDataLocally,
         setGameMode,
         fetchCurrentRiddle,
@@ -555,11 +587,12 @@ describe("NavigationStack", () => {
     await waitFor(() => expect(setGameMode).toHaveBeenCalledWith("classic"));
     expect(fetchCurrentRiddle).toHaveBeenCalledWith(playerData, "classic");
     expect(queryByTestId("victory-modal")).toBeNull();
-    expect(updatePlayerDataLocally).toHaveBeenCalledWith({ coins: 95 });
-    expect(updatePlayerDataLocally).toHaveBeenCalledWith({ coins: 93 });
-    expect(updatePlayerDataLocally).toHaveBeenCalledWith(
+    expect(updatePlayerData).toHaveBeenCalledWith({ coins: 95 });
+    expect(updatePlayerData).toHaveBeenCalledWith({ coins: 93 });
+    expect(updatePlayerData).toHaveBeenCalledWith(
       expect.objectContaining({ coins: 120 })
     );
+    expect(updatePlayerDataLocally).not.toHaveBeenCalled();
   });
 
   it("updates guest daily progress on win and switches to classic without remote completion check", async () => {

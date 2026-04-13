@@ -17,6 +17,8 @@ interface InfoModalProps {
   isVisible: boolean;
   title: string;
   message: string;
+  actionButtonText?: string;
+  onAction?: () => void;
   onClose: () => void;
 }
 
@@ -24,6 +26,8 @@ const InfoModal: React.FC<InfoModalProps> = ({
   isVisible,
   title,
   message,
+  actionButtonText,
+  onAction,
   onClose,
 }) => {
   return (
@@ -92,6 +96,11 @@ const InfoModal: React.FC<InfoModalProps> = ({
               {message}
             </Text>
             <View style={{ width: "100%", marginTop: SPACING.lg }}>
+              {actionButtonText && onAction ? (
+                <View style={{ marginBottom: SPACING.md }}>
+                  <WideButton buttonText={actionButtonText} onPress={onAction} disabled={false} />
+                </View>
+              ) : null}
               <WideButton buttonText={AppStrings.CommonAlerts.OK_BUTTON} onPress={onClose} disabled={false} />
             </View>
           </View>

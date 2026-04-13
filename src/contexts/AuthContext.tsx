@@ -201,6 +201,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, []);
 
+  const clearAllLocalData = useCallback(async (): Promise<void> => {
+    try {
+      await AsyncStorage.clear();
+      logger.debug("Cleared all local app data.");
+    } catch (error) {
+      logger.warn("Error clearing local app data:", error);
+      captureException(error);
+    }
+  }, []);
+
   // Ref keeps the current gameMode accessible inside the auth listener without
   // making it a dependency (which would re-subscribe on every mode change).
   const gameModeRef = useRef<GameMode>("daily");
@@ -215,6 +225,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     uid: null,
     at: 0,
   });
+  const previousAuthSnapshotRef = useRef<{
+    uid: string | null;
+    isAnonymous: boolean | null;
+  }>({ uid: null, isAnonymous: null });
 
   const hasCompletedDailyChallengeToday = useCallback(
     async (player: Player | null): Promise<boolean> => {
@@ -241,18 +255,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         return data.hasCompletedToday === true;
       } catch (error) {
         logger.warn(
-          "Unable to resolve daily completion from Firebase function, falling back to player timestamp check.",
+          "Unable to resolve daily completion from Firebase function for provider-auth user. Defaulting to not completed.",
           error
         );
-        const lastCompletedDate = player.lastDailyChallengeCompletedAt
-          ? new Date(player.lastDailyChallengeCompletedAt)
-          : null;
-        if (!lastCompletedDate) return false;
-        const todayUtc = new Date();
-        todayUtc.setUTCHours(0, 0, 0, 0);
-        const lastCompletedUtc = new Date(lastCompletedDate);
-        lastCompletedUtc.setUTCHours(0, 0, 0, 0);
-        return todayUtc.getTime() <= lastCompletedUtc.getTime();
+        return false;
       }
     },
     []
@@ -443,6 +449,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       );
 
       if (user) {
+        const previousAuth = previousAuthSnapshotRef.current;
+        const upgradedFromAnonymous =
+          previousAuth.uid === user.uid &&
+          previousAuth.isAnonymous === true &&
+          user.isAnonymous === false;
+
         const now = Date.now();
         const isDuplicateImmediateAuthEvent =
           lastAuthEventRef.current.uid === user.uid &&
@@ -628,6 +640,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           logger.debug(
             "🏁 Setting isLoading to false - initialization complete"
           );
+          if (upgradedFromAnonymous) {
+            await clearAllLocalData();
+          }
           setIsLoading(false);
         } catch (error) {
           logger.error("❌ Error loading user data or riddle:", error);
@@ -639,6 +654,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           setIsDailyChallengeAvailable(undefined);
           // Set loading to false even on error so user isn't stuck
           setIsLoading(false);
+        } finally {
+          previousAuthSnapshotRef.current = {
+            uid: user.uid,
+            isAnonymous: user.isAnonymous,
+          };
         }
       } else {
         lastAuthEventRef.current = { uid: null, at: Date.now() };
@@ -658,6 +678,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         setPendingStreakBreak(null);
         setCurrentRiddle(null);
         setIsDailyChallengeAvailable(undefined);
+        await clearAllLocalData();
+        previousAuthSnapshotRef.current = { uid: null, isAnonymous: null };
         logger.debug("🏁 Setting isLoading to false");
         setIsLoading(false);
       }
@@ -676,6 +698,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     hasCompletedDailyChallengeToday,
     loadGuestProfileFromLocal,
     clearGuestProfileFromLocal,
+    clearAllLocalData,
     saveGuestProfileToLocal,
     getBrokenDailyStreakValue,
   ]);
@@ -746,6 +769,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         const nextPlayer = { ...prevData, ...updates };
         if (isGuestPlayer(prevData)) {
           void saveGuestProfileToLocal(nextPlayer);
+        } else {
+          void updateUserDocumentInFirestore(prevData.userId, updates).catch((error) => {
+            logger.error("AuthContext: Error syncing local player update to Firestore:", error);
+            captureException(error);
+          });
         }
         return nextPlayer;
       });

@@ -139,9 +139,9 @@ describe("InfoModal", () => {
     });
 
     it("should render modal background SVG", () => {
-      const { getByTestId } = render(<InfoModal {...defaultProps} />);
+      const { getAllByTestId } = render(<InfoModal {...defaultProps} />);
 
-      expect(getByTestId("modal-bg")).toBeTruthy();
+      expect(getAllByTestId("modal-bg").length).toBeGreaterThan(0);
     });
   });
 
@@ -355,6 +355,24 @@ describe("InfoModal", () => {
 
       const okButton = getByTestId("wide-button");
       expect(okButton.props["data-disabled"]).toBe(false);
+    });
+
+    it("should render and trigger optional action button", () => {
+      const onAction = jest.fn();
+      const { getByText, getAllByTestId } = render(
+        <InfoModal
+          {...defaultProps}
+          actionButtonText="Upgrade Account"
+          onAction={onAction}
+        />
+      );
+
+      expect(getByText("Upgrade Account")).toBeTruthy();
+      const buttons = getAllByTestId("wide-button");
+      expect(buttons).toHaveLength(2);
+      expect(buttons[0].props["data-disabled"]).toBe(false);
+      buttons[0].props.onPress();
+      expect(onAction).toHaveBeenCalledTimes(1);
     });
   });
 });

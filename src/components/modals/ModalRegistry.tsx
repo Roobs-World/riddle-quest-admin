@@ -301,6 +301,14 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
     isVisible: props.isVisible,
     title: (props.title as string) || "",
     message: (props.message as string) || "",
+    actionButtonText: props.actionButtonText as string | undefined,
+    onAction:
+      typeof props.onAction === "function"
+        ? () => {
+            (props.onAction as () => void)();
+            props.onClose();
+          }
+        : undefined,
     onClose: () => {
       if (typeof props.onConfirm === "function") (props.onConfirm as () => void)();
       props.onClose();
