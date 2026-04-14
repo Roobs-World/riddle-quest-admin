@@ -17,6 +17,7 @@ import { MODAL_WIDTH, MODAL_HEIGHT, CLOSE_BUTTON_SIZE, MODAL_CLOSE_BUTTON_POSITI
 import { scale } from "../../../utils/responsive";
 import { ACHIEVEMENT_DEFINITIONS } from "../../../constants/achievements";
 import { AppStrings } from "../../../constants/AppStrings";
+import SlideInModalContent from "../../shared/SlideInModalContent";
 
 export interface AchievementsModalProps {
   isVisible: boolean;
@@ -54,14 +55,15 @@ const AchievementsModal: React.FC<AchievementsModalProps> = ({
           backgroundColor: "rgba(0,0,0,0.5)",
         }}
       >
-        <View
-          style={{
-            width: MODAL_WIDTH,
-            maxHeight: "80%",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
+        <SlideInModalContent isVisible={isVisible}>
+          <View
+            style={{
+              width: MODAL_WIDTH,
+              maxHeight: "80%",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
           <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{ position: "absolute" }} />
           {/* Decorative wave — clipped to card bounds */}
           <HomeBg
@@ -204,7 +206,8 @@ const AchievementsModal: React.FC<AchievementsModalProps> = ({
               );
             })}
           </ScrollView>
-        </View>
+          </View>
+        </SlideInModalContent>
       </View>
     </Modal>
   );

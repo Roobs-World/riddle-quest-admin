@@ -13,6 +13,7 @@ import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
 import { MODAL_WIDTH, MODAL_HEIGHT, CLOSE_BUTTON_SIZE, CARD_BORDER_RADIUS, MODAL_CONTENT_PADDING, MODAL_SCROLLABLE_MAX_HEIGHT } from "../../../constants/layout";
 import { AppStrings } from "../../../constants/AppStrings";
+import SlideInModalContent from "../../shared/SlideInModalContent";
 
 export interface StatsModalProps {
   isVisible: boolean;
@@ -49,14 +50,15 @@ const StatsModal: React.FC<StatsModalProps> = ({
           backgroundColor: "rgba(0,0,0,0.5)",
         }}
       >
-        <View
-          style={{
-            width: MODAL_WIDTH,
-            maxHeight: "80%",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
+        <SlideInModalContent isVisible={isVisible}>
+          <View
+            style={{
+              width: MODAL_WIDTH,
+              maxHeight: "80%",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
           <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{ position: "absolute" }} />
           {/* Decorative wave — clipped to card bounds */}
           <HomeBg
@@ -111,7 +113,8 @@ const StatsModal: React.FC<StatsModalProps> = ({
             <StatRow label={AppStrings.StatsModal.TOTAL_SCORE} value={stats?.totalScore ?? 0} />
             <StatRow label={AppStrings.StatsModal.HINTS_USED} value={stats?.totalHintsUsed ?? 0} />
           </ScrollView>
-        </View>
+          </View>
+        </SlideInModalContent>
       </View>
     </Modal>
   );

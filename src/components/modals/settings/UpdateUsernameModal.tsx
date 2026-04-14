@@ -19,6 +19,7 @@ import {
   INPUT_PADDING,
 } from "../../../constants/layout";
 import { SPACING } from "../../../styles";
+import SlideInModalContent from "../../shared/SlideInModalContent";
 
 interface FirebaseError {
   code: string;
@@ -125,15 +126,16 @@ const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({
           backgroundColor: "rgba(0,0,0,0.5)",
         }}
       >
-        <View
-          style={{
-            width: MODAL_WIDTH,
-            height: MODAL_HEIGHT,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{ position: "absolute" }} />
+        <SlideInModalContent isVisible={isVisible}>
+          <View
+            style={{
+              width: MODAL_WIDTH,
+              height: MODAL_HEIGHT,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{ position: "absolute" }} />
           {/* Decorative wave — clipped to card bounds */}
           <HomeBg
             width={MODAL_WIDTH * 1.1}
@@ -197,7 +199,8 @@ const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({
               disabled={isSubmitting}
             />
           </View>
-        </View>
+          </View>
+        </SlideInModalContent>
       </View>
       <PulsingSpinner visible={isSubmitting} opacity={0.35} />
     </Modal>

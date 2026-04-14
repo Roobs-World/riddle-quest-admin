@@ -14,6 +14,7 @@ import {
   wheelSize,
 } from "../../../constants/layout";
 import { AppStrings } from "../../../constants/AppStrings";
+import SlideInModalContent from "../../shared/SlideInModalContent";
 
 interface AchievementUnlockFanfareModalProps {
   isVisible: boolean;
@@ -84,19 +85,20 @@ const AchievementUnlockFanfareModal: React.FC<
           backgroundColor: "rgba(0,0,0,0.5)",
         }}
       >
-        <View
-          style={{
-            width: MODAL_WIDTH,
-            height: MODAL_HEIGHT,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <ModalBg
-            width={MODAL_WIDTH}
-            height={MODAL_HEIGHT}
-            style={{ position: "absolute" }}
-          />
+        <SlideInModalContent isVisible={isVisible}>
+          <View
+            style={{
+              width: MODAL_WIDTH,
+              height: MODAL_HEIGHT,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <ModalBg
+              width={MODAL_WIDTH}
+              height={MODAL_HEIGHT}
+              style={{ position: "absolute" }}
+            />
 
           <View
             style={{
@@ -211,7 +213,8 @@ const AchievementUnlockFanfareModal: React.FC<
               <WideButton buttonText={AppStrings.Achievements.NICE_BUTTON} onPress={onClose} />
             </View>
           </View>
-        </View>
+          </View>
+        </SlideInModalContent>
       </View>
     </Modal>
   );

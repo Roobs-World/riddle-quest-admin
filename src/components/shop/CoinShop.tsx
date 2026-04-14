@@ -31,6 +31,7 @@ import { logger } from "../../utils/logger";
 import CloseButton from "../buttons/CloseButton";
 import WideButton from "../buttons/WideButton";
 import { AppStrings } from "../../constants/AppStrings";
+import SlideInModalContent from "../shared/SlideInModalContent";
 
 const { screenHeight } = dimensions;
 const GRID_COIN_ICON_WIDTH = moderateScale(86);
@@ -205,7 +206,8 @@ const CoinShop: React.FC<CoinShopProps> = ({
       <View style={styles.overlay}>
         <View style={styles.backdrop} />
 
-        <View
+        <SlideInModalContent
+          isVisible={isVisible}
           style={[
             styles.modalContainer,
             {
@@ -364,7 +366,7 @@ const CoinShop: React.FC<CoinShopProps> = ({
             )}
           </>
           )}
-        </View>
+        </SlideInModalContent>
       </View>
     </Modal>
   );

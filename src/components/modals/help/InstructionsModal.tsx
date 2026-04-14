@@ -21,6 +21,7 @@ import {
 import { SPACING } from "../../../styles";
 import { verticalScale } from "@/utils/responsive";
 import { AppStrings } from "../../../constants/AppStrings";
+import SlideInModalContent from "../../shared/SlideInModalContent";
 
 interface InstructionsModalProps {
   isVisible: boolean;
@@ -48,14 +49,15 @@ const InstructionsModal: React.FC<InstructionsModalProps> = ({
           backgroundColor: "rgba(0,0,0,0.5)",
         }}
       >
-        <View
-          style={{
-            width: MODAL_WIDTH,
-            height: INSTRUCTIONS_MODAL_HEIGHT,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
+        <SlideInModalContent isVisible={isVisible}>
+          <View
+            style={{
+              width: MODAL_WIDTH,
+              height: INSTRUCTIONS_MODAL_HEIGHT,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
           <ModalBg
             width={MODAL_WIDTH}
             height={INSTRUCTIONS_MODAL_HEIGHT}
@@ -130,7 +132,8 @@ const InstructionsModal: React.FC<InstructionsModalProps> = ({
               <WideButton buttonText={AppStrings.Instructions.GOT_IT_BUTTON} onPress={onClose} />
             </View>
           </View>
-        </View>
+          </View>
+        </SlideInModalContent>
       </View>
     </Modal>
   );

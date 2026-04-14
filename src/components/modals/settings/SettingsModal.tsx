@@ -21,6 +21,7 @@ import {
 import { TYPOGRAPHY } from "../../../styles";
 import { SPACING } from "../../../styles";
 import { verticalScale } from "@/utils/responsive";
+import SlideInModalContent from "../../shared/SlideInModalContent";
 
 interface SettingsModalProps {
   isVisible: boolean;
@@ -183,14 +184,15 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
       >
         <TouchableOpacity style={{ flex: 1 }} onPress={onClose} activeOpacity={1} />
 
-        <View
-          style={{
-            backgroundColor: "#FCFAF4",
-            borderTopLeftRadius: 24,
-            borderTopRightRadius: 24,
-            paddingBottom: SPACING["2xl"] ?? 32,
-          }}
-        >
+        <SlideInModalContent isVisible={isVisible}>
+          <View
+            style={{
+              backgroundColor: "#FCFAF4",
+              borderTopLeftRadius: 24,
+              borderTopRightRadius: 24,
+              paddingBottom: SPACING["2xl"] ?? 32,
+            }}
+          >
           <View
             style={{
               flexDirection: "row",
@@ -316,7 +318,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
               </Text>
             </TouchableOpacity>
           </View>
-        </View>
+          </View>
+        </SlideInModalContent>
       </View>
 
       <Modal
@@ -339,14 +342,15 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
             onPress={() => setIsLanguagePickerOpen(false)}
           />
 
-          <View
-            style={{
-              maxHeight: "70%",
-              borderRadius: 20,
-              backgroundColor: "#FCFAF4",
-              padding: SPACING.lg,
-            }}
-          >
+          <SlideInModalContent isVisible={isLanguagePickerOpen}>
+            <View
+              style={{
+                maxHeight: "70%",
+                borderRadius: 20,
+                backgroundColor: "#FCFAF4",
+                padding: SPACING.lg,
+              }}
+            >
             <Text
               style={{
                 fontFamily: TYPOGRAPHY.fontPrimary,
@@ -421,7 +425,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                 {AppStrings.Settings.CLOSE_BUTTON}
               </Text>
             </TouchableOpacity>
-          </View>
+            </View>
+          </SlideInModalContent>
 
           <TouchableOpacity
             style={{ flex: 1 }}

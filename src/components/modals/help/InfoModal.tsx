@@ -12,6 +12,7 @@ import {
   MODAL_CLOSE_BUTTON_POSITION,
 } from "../../../constants/layout";
 import { AppStrings } from "../../../constants/AppStrings";
+import SlideInModalContent from "../../shared/SlideInModalContent";
 
 interface InfoModalProps {
   isVisible: boolean;
@@ -45,15 +46,16 @@ const InfoModal: React.FC<InfoModalProps> = ({
           backgroundColor: "rgba(0,0,0,0.5)",
         }}
       >
-        <View
-          style={{
-            width: MODAL_WIDTH,
-            height: MODAL_HEIGHT,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{ position: "absolute" }} />
+        <SlideInModalContent isVisible={isVisible}>
+          <View
+            style={{
+              width: MODAL_WIDTH,
+              height: MODAL_HEIGHT,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{ position: "absolute" }} />
           {/* Decorative wave — clipped to card bounds */}
           <HomeBg
             width={MODAL_WIDTH * 1.1}
@@ -104,7 +106,8 @@ const InfoModal: React.FC<InfoModalProps> = ({
               <WideButton buttonText={AppStrings.CommonAlerts.OK_BUTTON} onPress={onClose} disabled={false} />
             </View>
           </View>
-        </View>
+          </View>
+        </SlideInModalContent>
       </View>
     </Modal>
   );

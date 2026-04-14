@@ -15,6 +15,7 @@ import {
   wheelSize,
 } from "../../../constants/layout";
 import { AppStrings } from "../../../constants/AppStrings";
+import SlideInModalContent from "../../shared/SlideInModalContent";
 
 
 /**
@@ -110,26 +111,27 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
           backgroundColor: "rgba(0,0,0,0.5)",
         }}
       >
-        <TouchableOpacity
-          testID="victory-card-pressable"
-          accessibilityRole="button"
-          accessibilityLabel={AppStrings.VictoryModal.NEXT_LEVEL_BUTTON}
-          activeOpacity={1}
-          onPress={() => {
-            void handleNextLevel();
-          }}
-          style={{
-            width: MODAL_WIDTH,
-            height: MODAL_HEIGHT,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <ModalBg
-            width={MODAL_WIDTH}
-            height={MODAL_HEIGHT}
-            style={{ position: "absolute" }}
-          />
+        <SlideInModalContent isVisible={isVisible}>
+          <TouchableOpacity
+            testID="victory-card-pressable"
+            accessibilityRole="button"
+            accessibilityLabel={AppStrings.VictoryModal.NEXT_LEVEL_BUTTON}
+            activeOpacity={1}
+            onPress={() => {
+              void handleNextLevel();
+            }}
+            style={{
+              width: MODAL_WIDTH,
+              height: MODAL_HEIGHT,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <ModalBg
+              width={MODAL_WIDTH}
+              height={MODAL_HEIGHT}
+              style={{ position: "absolute" }}
+            />
 
           <View
             style={{
@@ -235,7 +237,8 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
               </Text>
             </View>
           </View>
-        </TouchableOpacity>
+          </TouchableOpacity>
+        </SlideInModalContent>
       </View>
     </Modal>
   );

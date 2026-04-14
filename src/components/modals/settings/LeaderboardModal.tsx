@@ -34,6 +34,7 @@ import {
 import { logger } from "../../../utils/logger";
 import { captureException } from "../../../utils/sentry";
 import { AppStrings } from "../../../constants/AppStrings";
+import SlideInModalContent from "../../shared/SlideInModalContent";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -201,14 +202,15 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({
           backgroundColor: "rgba(0,0,0,0.5)",
         }}
       >
-        <View
-          style={{
-            width: MODAL_WIDTH,
-            height: MODAL_HEIGHT,
-            alignItems: "center",
-            overflow: "hidden",
-          }}
-        >
+        <SlideInModalContent isVisible={isVisible}>
+          <View
+            style={{
+              width: MODAL_WIDTH,
+              height: MODAL_HEIGHT,
+              alignItems: "center",
+              overflow: "hidden",
+            }}
+          >
           <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{ position: "absolute" }} />
           {/* Decorative wave — clipped to card bounds */}
           <HomeBg
@@ -371,7 +373,8 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({
               </ScrollView>
             )}
           </View>
-        </View>
+          </View>
+        </SlideInModalContent>
       </View>
     </Modal>
   );

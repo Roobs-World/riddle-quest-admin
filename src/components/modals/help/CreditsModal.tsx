@@ -22,6 +22,7 @@ import {
 import { SPACING } from "../../../styles";
 import { dimensions, verticalScale } from "../../../utils/responsive";
 import { AppStrings } from "../../../constants/AppStrings";
+import SlideInModalContent from "../../shared/SlideInModalContent";
 
 interface CreditsModalProps {
   isVisible: boolean;
@@ -89,14 +90,15 @@ const CreditsModal: React.FC<CreditsModalProps> = ({
           </View>
         ) : null}
 
-        <View
-          style={{
-            width: MODAL_WIDTH,
-            height: CREDITS_MODAL_HEIGHT,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
+        <SlideInModalContent isVisible={isVisible}>
+          <View
+            style={{
+              width: MODAL_WIDTH,
+              height: CREDITS_MODAL_HEIGHT,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
 
           <ModalBg
             width="100%"
@@ -150,7 +152,8 @@ const CreditsModal: React.FC<CreditsModalProps> = ({
             />
             <WideButton buttonText={AppStrings.CommonAlerts.CLOSE_BUTTON} onPress={onClose} />
           </View>
-        </View>
+          </View>
+        </SlideInModalContent>
       </View>
     </Modal>
   );

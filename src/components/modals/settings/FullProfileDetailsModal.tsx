@@ -34,6 +34,7 @@ import {
   LOADING_SPINNER_OPACITY,
   LOADING_SPINNER_SIZE,
 } from "@/constants/loading";
+import SlideInModalContent from "../../shared/SlideInModalContent";
 
 interface FullProfileDetailsModalProps {
   isVisible: boolean;
@@ -161,15 +162,16 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
           backgroundColor: "rgba(0,0,0,0.5)",
         }}
       >
-        <View
-          style={{
-            backgroundColor: CREAM,
-            borderTopLeftRadius: 24,
-            borderTopRightRadius: 24,
-            flex: 1,
-            maxHeight: "100%",
-          }}
-        >
+        <SlideInModalContent isVisible={isVisible}>
+          <View
+            style={{
+              backgroundColor: CREAM,
+              borderTopLeftRadius: 24,
+              borderTopRightRadius: 24,
+              flex: 1,
+              maxHeight: "100%",
+            }}
+          >
           <View
             style={{
               backgroundColor: PURPLE,
@@ -544,7 +546,8 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
               style={{ height: SPACING.xl, marginBottom: verticalScale(24) }}
             />
           </ScrollView>
-        </View>
+          </View>
+        </SlideInModalContent>
       </View>
 
       <UpdateUsernameModal

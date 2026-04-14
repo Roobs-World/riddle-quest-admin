@@ -14,6 +14,7 @@ import {
   wheelSize,
 } from "../../../constants/layout";
 import { AppStrings } from "../../../constants/AppStrings";
+import SlideInModalContent from "../../shared/SlideInModalContent";
 
 interface LevelUpFanfareModalProps {
   isVisible: boolean;
@@ -70,19 +71,20 @@ const LevelUpFanfareModal: React.FC<LevelUpFanfareModalProps> = ({
           backgroundColor: "rgba(0,0,0,0.5)",
         }}
       >
-        <View
-          style={{
-            width: MODAL_WIDTH,
-            height: MODAL_HEIGHT,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <ModalBg
-            width={MODAL_WIDTH}
-            height={MODAL_HEIGHT}
-            style={{ position: "absolute" }}
-          />
+        <SlideInModalContent isVisible={isVisible}>
+          <View
+            style={{
+              width: MODAL_WIDTH,
+              height: MODAL_HEIGHT,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <ModalBg
+              width={MODAL_WIDTH}
+              height={MODAL_HEIGHT}
+              style={{ position: "absolute" }}
+            />
 
           <View
             style={{
@@ -162,7 +164,8 @@ const LevelUpFanfareModal: React.FC<LevelUpFanfareModalProps> = ({
               />
             </View>
           </View>
-        </View>
+          </View>
+        </SlideInModalContent>
       </View>
     </Modal>
   );

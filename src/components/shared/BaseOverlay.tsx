@@ -3,6 +3,7 @@ import { View, Modal, TouchableOpacity } from "react-native";
 import CloseButton from "../buttons/CloseButton";
 import { styles } from "../../styles";
 import { CLOSE_BUTTON_SIZE } from "../../constants/layout";
+import SlideInModalContent from "./SlideInModalContent";
 
 /**
  * Shared props for lightweight full-screen overlays.
@@ -51,23 +52,25 @@ const BaseOverlay: React.FC<BaseOverlayProps> = ({
         activeOpacity={1}
         onPress={onClose}
       >
-        <TouchableOpacity
-          style={[styles.content, contentStyle]}
-          activeOpacity={1}
-          onPress={(e) => e.stopPropagation()}
-        >
-          {showCloseButton && (
-            <View
-              style={[
-                styles.baseOverlayCloseButtonContainer,
-                styles.topRight,
-              ]}
-            >
-              <CloseButton onPress={onClose} size={CLOSE_BUTTON_SIZE} />
-            </View>
-          )}
-          {children}
-        </TouchableOpacity>
+        <SlideInModalContent isVisible={visible}>
+          <TouchableOpacity
+            style={[styles.content, contentStyle]}
+            activeOpacity={1}
+            onPress={(e) => e.stopPropagation()}
+          >
+            {showCloseButton && (
+              <View
+                style={[
+                  styles.baseOverlayCloseButtonContainer,
+                  styles.topRight,
+                ]}
+              >
+                <CloseButton onPress={onClose} size={CLOSE_BUTTON_SIZE} />
+              </View>
+            )}
+            {children}
+          </TouchableOpacity>
+        </SlideInModalContent>
       </TouchableOpacity>
     </Modal>
   );

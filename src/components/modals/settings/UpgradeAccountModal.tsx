@@ -12,6 +12,7 @@ import { SPACING, TYPOGRAPHY, COLORS } from "@/styles";
 import { captureException } from "@/utils/sentry";
 import { logger } from "@/utils/logger";
 import { type FirebaseAuthTypes } from "@react-native-firebase/auth";
+import SlideInModalContent from "../../shared/SlideInModalContent";
 
 interface UpgradeAccountModalProps {
   isVisible: boolean;
@@ -103,15 +104,14 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
           padding: SPACING.lg,
         }}
       >
-        <View
-          style={{
-            width: "100%",
-            maxWidth: 420,
-            backgroundColor: COLORS.white,
-            borderRadius: 18,
-            padding: SPACING.lg,
-          }}
-        >
+        <SlideInModalContent isVisible={isVisible} style={{ width: "100%", maxWidth: 420 }}>
+          <View
+            style={{
+              backgroundColor: COLORS.white,
+              borderRadius: 18,
+              padding: SPACING.lg,
+            }}
+          >
           <View
             style={{
               flexDirection: "row",
@@ -148,7 +148,8 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
             <GoogleSignInButton onPress={linkWithGoogle} disabled={isLoading} />
             <FacebookSignInButton onPress={linkWithFacebook} disabled={isLoading} />
           </View>
-        </View>
+          </View>
+        </SlideInModalContent>
 
         <PulsingSpinner visible={isLoading} size={LOADING_SPINNER_SIZE} />
       </View>

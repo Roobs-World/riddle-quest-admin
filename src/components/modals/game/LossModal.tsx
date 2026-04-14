@@ -34,6 +34,7 @@ import WideButton from "../../buttons/WideButton";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import { MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, MODAL_BUTTON_SPACER } from "../../../constants/layout";
 import { AppStrings } from "../../../constants/AppStrings";
+import SlideInModalContent from "../../shared/SlideInModalContent";
 
 /**
  * Props interface for the LossModal component.
@@ -163,24 +164,25 @@ const LossModal: React.FC<LossModalProps> = ({
           backgroundColor: "rgba(0,0,0,0.5)",
         }}
       >
-        <View
-          style={{
-            width: MODAL_WIDTH,
-            height: MODAL_HEIGHT,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{ position: "absolute" }} />
+        <SlideInModalContent isVisible={isVisible}>
           <View
             style={{
-              flex: 1,
-              width: "100%",
+              width: MODAL_WIDTH,
+              height: MODAL_HEIGHT,
               alignItems: "center",
-              justifyContent: "space-around",
-              padding: MODAL_CONTENT_PADDING,
+              justifyContent: "center",
             }}
           >
+            <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{ position: "absolute" }} />
+            <View
+              style={{
+                flex: 1,
+                width: "100%",
+                alignItems: "center",
+                justifyContent: "space-around",
+                padding: MODAL_CONTENT_PADDING,
+              }}
+            >
             {showContinueOptions ? (
               <>
                 <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -278,8 +280,9 @@ const LossModal: React.FC<LossModalProps> = ({
                 </View>
               </>
             )}
+            </View>
           </View>
-        </View>
+        </SlideInModalContent>
       </View>
     </Modal>
   );

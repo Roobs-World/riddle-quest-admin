@@ -14,6 +14,7 @@ import {
   wheelSize,
 } from "../../../constants/layout";
 import { AppStrings } from "../../../constants/AppStrings";
+import SlideInModalContent from "../../shared/SlideInModalContent";
 
 interface CoinPurchaseFanfareModalProps {
   isVisible: boolean;
@@ -68,19 +69,20 @@ const CoinPurchaseFanfareModal: React.FC<CoinPurchaseFanfareModalProps> = ({
           backgroundColor: "rgba(0,0,0,0.5)",
         }}
       >
-        <View
-          style={{
-            width: MODAL_WIDTH,
-            height: MODAL_HEIGHT,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <ModalBg
-            width={MODAL_WIDTH}
-            height={MODAL_HEIGHT}
-            style={{ position: "absolute" }}
-          />
+        <SlideInModalContent isVisible={isVisible}>
+          <View
+            style={{
+              width: MODAL_WIDTH,
+              height: MODAL_HEIGHT,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <ModalBg
+              width={MODAL_WIDTH}
+              height={MODAL_HEIGHT}
+              style={{ position: "absolute" }}
+            />
 
           <View
             style={{
@@ -146,7 +148,8 @@ const CoinPurchaseFanfareModal: React.FC<CoinPurchaseFanfareModalProps> = ({
               <WideButton buttonText={AppStrings.CoinPurchase.AWESOME_BUTTON} onPress={onClose} />
             </View>
           </View>
-        </View>
+          </View>
+        </SlideInModalContent>
       </View>
     </Modal>
   );

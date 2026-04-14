@@ -27,6 +27,7 @@ import {
 import { SPACING } from "../../../styles";
 import { AppStrings, getAppLanguage } from "../../../constants/AppStrings";
 import { verticalScale } from "@/utils/responsive";
+import SlideInModalContent from "../../shared/SlideInModalContent";
 
 interface WelcomeModalProps {
   isVisible: boolean;
@@ -97,16 +98,17 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({
         </Animated.View>
 
         {/* Modal card */}
-        <View
-          style={{
-            width: MODAL_WIDTH,
-            height: MODAL_HEIGHT,
-            alignItems: "center",
-            justifyContent: "center",
-            overflow: "hidden",
-            marginBottom: SCREEN_H * 0.15,
-          }}
-        >
+        <SlideInModalContent isVisible={isVisible}>
+          <View
+            style={{
+              width: MODAL_WIDTH,
+              height: MODAL_HEIGHT,
+              alignItems: "center",
+              justifyContent: "center",
+              overflow: "hidden",
+              marginBottom: SCREEN_H * 0.15,
+            }}
+          >
           {/* Card shape background */}
           <ModalBg
             width={MODAL_WIDTH}
@@ -180,7 +182,8 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({
               <WideButton buttonText={letsPlayText} onPress={handleDismiss} />
             </View>
           </View>
-        </View>
+          </View>
+        </SlideInModalContent>
       </View>
     </Modal>
   );
