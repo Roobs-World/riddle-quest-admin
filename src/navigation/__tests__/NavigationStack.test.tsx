@@ -566,7 +566,12 @@ describe("NavigationStack", () => {
     fireEvent.press(getByTestId("trigger-win"));
 
     await waitFor(() => expect(setGameMode).toHaveBeenCalledWith("classic"));
-    expect(fetchCurrentRiddle).toHaveBeenCalledWith(playerData, "classic");
+    expect(fetchCurrentRiddle).toHaveBeenCalledWith(
+      expect.objectContaining({
+        coins: 120,
+      }),
+      "classic"
+    );
     expect(queryByTestId("victory-modal")).toBeNull();
     expect(updatePlayerData).toHaveBeenCalledWith({ coins: 95 });
     expect(updatePlayerData).toHaveBeenCalledWith({ coins: 93 });
@@ -611,7 +616,14 @@ describe("NavigationStack", () => {
     fireEvent.press(getByTestId("trigger-win"));
 
     await waitFor(() => expect(setGameMode).toHaveBeenCalledWith("classic"));
-    expect(fetchCurrentRiddle).toHaveBeenCalledWith(playerData, "classic");
+    expect(fetchCurrentRiddle).toHaveBeenCalledWith(
+      expect.objectContaining({
+        progress: expect.objectContaining({
+          classicIndex: 2,
+        }),
+      }),
+      "classic"
+    );
     expect(mockDailyCallable).not.toHaveBeenCalled();
     expect(updatePlayerDataLocally).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -655,7 +667,14 @@ describe("NavigationStack", () => {
     fireEvent.press(getByTestId("trigger-next-level"));
 
     await waitFor(() => expect(setGameMode).toHaveBeenCalledWith("classic"));
-    expect(fetchCurrentRiddle).toHaveBeenCalledWith(playerData, "classic");
+    expect(fetchCurrentRiddle).toHaveBeenCalledWith(
+      expect.objectContaining({
+        progress: expect.objectContaining({
+          classicIndex: 3,
+        }),
+      }),
+      "classic"
+    );
     expect(updatePlayerDataLocally).not.toHaveBeenCalledWith(
       expect.objectContaining({
         progress: expect.objectContaining({

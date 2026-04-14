@@ -408,6 +408,40 @@ describe("AuthContext", () => {
       expect(result.current.playerData).toBeNull();
       expect(result.current.currentRiddle).toBeNull();
     });
+
+    it("clears local data immediately when guest logs out", async () => {
+      const guestUser = {
+        uid: "guest-logout-1",
+        email: null,
+        displayName: null,
+        isAnonymous: true,
+      };
+      (fetchDailyRiddleFromFirestore as jest.Mock).mockResolvedValue(mockDailyRiddle);
+
+      mockAuthInstance.onAuthStateChanged.mockImplementation(
+        (callback: (user: any) => void) => {
+          mockAuthInstance.currentUser = guestUser as any;
+          callback(guestUser as any);
+          return jest.fn();
+        }
+      );
+      mockAuthInstance.signOut.mockResolvedValue(undefined);
+
+      const { result } = renderHook(() => useAuth(), { wrapper });
+
+      await waitFor(() => {
+        expect(result.current.isAuthenticated).toBe(true);
+      });
+
+      (AsyncStorage.clear as jest.Mock).mockClear();
+
+      await act(async () => {
+        await result.current.logout();
+      });
+
+      expect(AsyncStorage.clear).toHaveBeenCalled();
+      expect(mockAuthInstance.signOut).toHaveBeenCalled();
+    });
   });
 
   describe("Game Mode and Riddle Fetching", () => {

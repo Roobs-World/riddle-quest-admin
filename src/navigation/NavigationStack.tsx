@@ -35,6 +35,7 @@ import { analyticsService } from "../services/AnalyticsService";
 import { isGuestPlayer } from "../features/auth/sessionBootstrap";
 
 const Stack = createNativeStackNavigator();
+const GUEST_CLASSIC_START_INDEX = 1;
 
 /**
  * Wrapper component that connects `GameScreen` to authentication and riddle
@@ -62,6 +63,7 @@ const GameScreenWrapper = () => {
     updatePlayerClassicIndex,
   } = useAuth();
   const isGuestMode = isGuestPlayer(playerData);
+  const hasShownSessionOnboardingRef = useRef(false);
 
   const lastFetchedModeRef = useRef<typeof gameMode | null>(null);
 
@@ -119,10 +121,33 @@ const GameScreenWrapper = () => {
     }
   };
 
-  const switchToClassicModeAtCurrentIndex = async () => {
-    logger.debug("NavigationStack: switching to classic mode at current index");
+  const switchToClassicModeAtCurrentIndex = async (
+    playerSnapshot?: typeof playerData
+  ) => {
+    logger.debug("NavigationStack: switching to classic mode");
+    const sourcePlayer = playerSnapshot ?? playerData;
+    if (!sourcePlayer) {
+      logger.warn(
+        "NavigationStack: unable to switch to classic mode because player data is missing"
+      );
+      return;
+    }
+
+    const sourceIsGuest = isGuestPlayer(sourcePlayer);
+    const nextPlayerForClassic = sourceIsGuest
+      ? {
+          ...sourcePlayer,
+          progress: {
+            ...sourcePlayer.progress,
+            classicIndex:
+              sourcePlayer.progress?.classicIndex ?? GUEST_CLASSIC_START_INDEX,
+          },
+        }
+      : sourcePlayer;
+
+    setCurrentRiddle(null);
     setGameMode("classic");
-    await fetchCurrentRiddle(playerData, "classic");
+    await fetchCurrentRiddle(nextPlayerForClassic, "classic");
   };
 
   const persistPlayerUpdate = async (
@@ -150,6 +175,13 @@ const GameScreenWrapper = () => {
       logger.debug(
         "NavigationStack: handleNextLevel - Daily challenge mode detected"
       );
+      if (isGuestMode) {
+        logger.debug(
+          "NavigationStack: guest daily flow, forcing transition to classic mode."
+        );
+        await switchToClassicModeAtCurrentIndex(playerData);
+        return;
+      }
       const isCompleted = await checkDailyChallengeCompletion();
       if (isCompleted) {
         logger.debug("Daily challenge completed. Switching to classic mode.");
@@ -284,12 +316,16 @@ const GameScreenWrapper = () => {
   }
 
   // Modal handlers
-  const handleContinueAfterCompletion = async () => {
-    await switchToClassicModeAtCurrentIndex();
+  const handleContinueAfterCompletion = async (
+    playerSnapshot?: typeof playerData
+  ) => {
+    await switchToClassicModeAtCurrentIndex(playerSnapshot);
   };
 
   // Render GameScreen with all necessary props only when we have current riddle
   if (currentRiddle) {
+    const suppressOnboarding = hasShownSessionOnboardingRef.current;
+    hasShownSessionOnboardingRef.current = true;
     return (
       <>
         <GameScreen
@@ -328,15 +364,21 @@ const GameScreenWrapper = () => {
               gameMode === "daily" && isGuestMode
                 ? (playerData.progress?.dailyChallengeIndex ?? 0) + 1
                 : (playerData.progress?.dailyChallengeIndex ?? 0);
+            const updatedClassicIndex =
+              gameMode === "daily" && isGuestMode
+                ? (playerData.progress?.classicIndex ??
+                    GUEST_CLASSIC_START_INDEX)
+                : (playerData.progress?.classicIndex ?? GUEST_CLASSIC_START_INDEX);
             const updatedDailyPuzzlesCompleted =
               gameMode === "daily"
                 ? (playerData.stats?.dailyPuzzlesCompleted ?? 0) + 1
                 : (playerData.stats?.dailyPuzzlesCompleted ?? 0);
 
-            await persistPlayerUpdate({
+            const playerUpdatePayload = {
               coins: (playerData.coins ?? 0) + coinsEarned + bonusCoinsAwarded,
               progress: {
                 ...playerData.progress,
+                classicIndex: updatedClassicIndex,
                 dailyChallengeIndex: updatedDailyChallengeIndex,
               },
               stats: {
@@ -351,17 +393,26 @@ const GameScreenWrapper = () => {
               },
               lastDailyChallengeCompletedAt:
                 gameMode === "daily" ? Date.now() : playerData.lastDailyChallengeCompletedAt,
-            });
+            };
+
+            const nextPlayerSnapshot = {
+              ...playerData,
+              ...playerUpdatePayload,
+              progress: playerUpdatePayload.progress,
+              stats: playerUpdatePayload.stats,
+            };
+
+            await persistPlayerUpdate(playerUpdatePayload);
 
             // Check if user completed today's daily challenge
             if (gameMode === "daily") {
               if (isGuestMode) {
-                await handleContinueAfterCompletion();
+                await handleContinueAfterCompletion(nextPlayerSnapshot);
                 return;
               }
               const isCompleted = await checkDailyChallengeCompletion();
               if (isCompleted) {
-                await handleContinueAfterCompletion();
+                await handleContinueAfterCompletion(nextPlayerSnapshot);
               }
             }
           }}
@@ -385,6 +436,7 @@ const GameScreenWrapper = () => {
           }}
           onNextLevel={handleNextLevel}
           gameMode={gameMode}
+          suppressOnboarding={suppressOnboarding}
         />
 
       </>

@@ -116,6 +116,7 @@ interface GameScreenProps {
   onSkipUsed: (cost: number) => void;
   onNextLevel: () => void;
   gameMode: GameMode;
+  suppressOnboarding?: boolean;
 }
 
 const GameScreenInner: React.FC<GameScreenProps> = ({
@@ -131,6 +132,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   onSkipUsed,
   onNextLevel,
   gameMode,
+  suppressOnboarding = false,
 }) => {
   const {
     playerData,
@@ -195,9 +197,11 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   }, [riddleId, gameMode]);
 
   useEffect(() => {
-    logger.debug(`Game mode changed to: ${gameMode}`);
+    logger.debug(
+      `Game session context changed (mode=${gameMode}, riddleId=${riddleId}). Resetting local game state.`
+    );
     resetGame();
-  }, [gameMode, resetGame]);
+  }, [gameMode, riddleId, answer, resetGame]);
 
   const isAnyModalVisible = modal.modals.length > 0;
   const [canAnimateCoinIncreases, setCanAnimateCoinIncreases] = useState(
@@ -362,7 +366,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   }, [isGuestMode]);
 
   useEffect(() => {
-    if (firstTimeCheckDone.current) return;
+    if (suppressOnboarding || firstTimeCheckDone.current) return;
     firstTimeCheckDone.current = true;
 
     const runOnboardingFlow = async () => {
@@ -396,7 +400,13 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     };
 
     runOnboardingFlow();
-  }, [isGuestMode, showWelcomeModal, showInstructionsModal, showInfoModal]);
+  }, [
+    isGuestMode,
+    showWelcomeModal,
+    showInstructionsModal,
+    showInfoModal,
+    suppressOnboarding,
+  ]);
 
   useEffect(() => {
     if (!pendingStreakBreak || streakBreakModalShownRef.current || isAnyModalVisible) {

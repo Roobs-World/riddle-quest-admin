@@ -175,8 +175,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [pendingStreakBreak, setPendingStreakBreak] = useState<{
     previousStreak: number;
   } | null>(null);
+  // Guards against late async guest writes re-populating storage during sign-out.
+  const isGuestSignOutInProgressRef = useRef(false);
+  // Monotonic request ID used to prevent stale riddle fetches from overwriting newer mode/riddle state.
+  const latestRiddleFetchRequestRef = useRef(0);
 
   const saveGuestProfileToLocal = useCallback(async (player: Player): Promise<void> => {
+    if (isGuestSignOutInProgressRef.current) return;
     try {
       await AsyncStorage.setItem(GUEST_PROGRESS_STORAGE_KEY, JSON.stringify(player));
     } catch (error) {
@@ -338,9 +343,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   // Function to fetch riddle based on current game mode and player data
   const fetchCurrentRiddle = useCallback(
     async (player: Player | null, mode: GameMode) => {
+      const requestId = ++latestRiddleFetchRequestRef.current;
+      const isStaleRequest = () => requestId !== latestRiddleFetchRequestRef.current;
+
       if (!player) {
-        setCurrentRiddle(null);
-        setIsDailyChallengeAvailable(undefined); // Set to undefined when no player data
+        if (!isStaleRequest()) {
+          setCurrentRiddle(null);
+          setIsDailyChallengeAvailable(undefined); // Set to undefined when no player data
+        }
         return;
       }
 
@@ -352,6 +362,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       // on stale local timestamps after a completion in the same session.
       const completedToday = await hasCompletedDailyChallengeToday(player);
       const dailyAvailable = !completedToday;
+      if (isStaleRequest()) {
+        logger.debug(
+          "Skipping stale fetchCurrentRiddle request before applying availability."
+        );
+        return;
+      }
       setIsDailyChallengeAvailable(dailyAvailable); // Update availability state
 
       // Helper function to attempt riddle fetch
@@ -381,7 +397,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
               fetchedRiddle = await fetchClassicRiddleFromFirestore(
                 player.progress.classicIndex
               );
-              setGameMode("classic");
+              if (!isStaleRequest()) {
+                setGameMode("classic");
+              }
             } else {
               logger.warn(
                 "Classic index is undefined, cannot load fallback riddle."
@@ -418,7 +436,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
               fetchedRiddle = await fetchClassicRiddleFromFirestore(
                 player.progress.classicIndex
               );
-              setGameMode("classic");
+              if (!isStaleRequest()) {
+                setGameMode("classic");
+              }
             }
           }
         }
@@ -443,6 +463,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
           // Poll for riddles
           while (!fetchedRiddle && attemptCount < maxAttempts) {
+            if (isStaleRequest()) {
+              logger.debug(
+                "Stopping stale fetchCurrentRiddle polling loop."
+              );
+              break;
+            }
             attemptCount++;
             logger.debug(
               `🔄 Polling for riddles... Attempt ${attemptCount}/${maxAttempts}`
@@ -453,6 +479,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
             // Try fetching again
             fetchedRiddle = await attemptFetchRiddle();
+            if (isStaleRequest()) {
+              logger.debug(
+                "Stopping stale fetchCurrentRiddle request after poll attempt."
+              );
+              break;
+            }
 
             // Check if initialization completed or failed
             const currentStatus =
@@ -469,6 +501,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         }
       }
 
+      if (isStaleRequest()) {
+        logger.debug(
+          "Skipping stale fetchCurrentRiddle request before applying current riddle."
+        );
+        return;
+      }
       setCurrentRiddle(fetchedRiddle);
 
       if (!fetchedRiddle) {
@@ -495,6 +533,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       );
 
       if (user) {
+        isGuestSignOutInProgressRef.current = false;
         const previousAuth = previousAuthSnapshotRef.current;
         const previousImmediateAuthEvent = lastAuthEventRef.current;
         const upgradedFromAnonymous =
@@ -925,10 +964,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setIsLoading(true);
     try {
       RiddleInitializationService.resetInitializationFlags();
-      // Unregister FCM token before signing out — must happen while still authenticated
+      // Unregister FCM token before signing out � must happen while still authenticated
       notifUnsubRef.current?.();
       notifUnsubRef.current = null;
       const auth = getAuth(getApp());
+      const isGuestSignOut =
+        auth.currentUser?.isAnonymous === true ||
+        previousAuthSnapshotRef.current.isAnonymous === true;
+      if (isGuestSignOut) {
+        isGuestSignOutInProgressRef.current = true;
+        await clearAllLocalData();
+      }
       const userIdToUnregister = auth.currentUser?.uid ?? currentUserIdRef.current;
       if (userIdToUnregister) {
         currentUserIdRef.current = null;
@@ -942,10 +988,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     } catch (error) {
       logger.error("Error during logout:", error);
       captureException(error);
+      isGuestSignOutInProgressRef.current = false;
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [clearAllLocalData]);
 
   // Three narrow memos — each slice only re-triggers consumers that depend on it.
   // sessionValue  changes only on auth state / loading changes.
@@ -1055,3 +1102,4 @@ export const useRiddleState = () => {
   }
   return context;
 };
+
