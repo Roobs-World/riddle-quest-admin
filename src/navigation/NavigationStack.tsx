@@ -24,9 +24,6 @@ import {
 import { useAuth } from "../contexts/AuthContext";
 import { AppStrings } from "../constants/AppStrings";
 import { View, Text, TouchableOpacity } from "react-native";
-import {
-  fetchClassicRiddleFromFirestore,
-} from "../services/FirestoreService";
 import { styles, TYPOGRAPHY, SPACING } from "../styles";
 import { scale } from "../utils/responsive";
 import { RiddleInitializationService } from "../services/RiddleInitializationService";
@@ -62,6 +59,7 @@ const GameScreenWrapper = () => {
     fetchCurrentRiddle,
     updatePlayerData,
     updatePlayerDataLocally,
+    updatePlayerClassicIndex,
   } = useAuth();
   const isGuestMode = isGuestPlayer(playerData);
 
@@ -171,35 +169,7 @@ const GameScreenWrapper = () => {
     );
 
     try {
-      logger.debug(
-        `NavigationStack: handleNextLevel - Fetching classic riddle with index: ${nextClassicIndex}`
-      );
-      const nextRiddle = await fetchClassicRiddleFromFirestore(
-        nextClassicIndex
-      );
-
-      if (nextRiddle) {
-        logger.debug(
-          "NavigationStack: handleNextLevel - Next riddle fetched successfully:",
-          nextRiddle.riddleId
-        );
-        setCurrentRiddle(nextRiddle);
-        if (isGuestMode) {
-          updatePlayerDataLocally({
-            progress: {
-              ...playerData.progress,
-              classicIndex: nextClassicIndex,
-            },
-          });
-        }
-      } else {
-        logger.debug(
-          AppStrings.NavigationMessages.NO_CLASSIC_RIDDLE_FOUND +
-            nextClassicIndex +
-            AppStrings.NavigationMessages.SERVER_GENERATES_RIDDLES
-        );
-        setCurrentRiddle(null);
-      }
+      await updatePlayerClassicIndex(nextClassicIndex);
     } catch (error) {
       logger.error("Error loading next classic riddle:", error);
       captureException(error);

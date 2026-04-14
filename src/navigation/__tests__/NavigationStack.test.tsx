@@ -3,9 +3,6 @@ import { fireEvent, render, waitFor } from "@testing-library/react-native";
 
 import { Navigation } from "../NavigationStack";
 import { useAuth } from "../../contexts/AuthContext";
-import {
-  fetchClassicRiddleFromFirestore,
-} from "../../services/FirestoreService";
 import { RiddleInitializationService } from "../../services/RiddleInitializationService";
 import { captureException } from "../../utils/sentry";
 import { analyticsService } from "../../services/AnalyticsService";
@@ -24,10 +21,6 @@ jest.mock("@react-native-firebase/app", () => ({
 
 jest.mock("../../contexts/AuthContext", () => ({
   useAuth: jest.fn(),
-}));
-
-jest.mock("../../services/FirestoreService", () => ({
-  fetchClassicRiddleFromFirestore: jest.fn(),
 }));
 
 jest.mock("../../services/RiddleInitializationService", () => ({
@@ -207,9 +200,6 @@ jest.mock("@react-navigation/native-stack", () => ({
 }));
 
 const mockedUseAuth = useAuth as jest.MockedFunction<typeof useAuth>;
-const mockedFetchClassic = fetchClassicRiddleFromFirestore as jest.MockedFunction<
-  typeof fetchClassicRiddleFromFirestore
->;
 const mockedRiddleInitService = RiddleInitializationService as jest.Mocked<
   typeof RiddleInitializationService
 >;
@@ -467,32 +457,24 @@ describe("NavigationStack", () => {
       coins: 30,
       stats: { xp: 0, level: 1 },
     };
-    const setCurrentRiddle = jest.fn();
-    mockedFetchClassic.mockResolvedValue({
-      riddleId: "classic-3",
-      text: "C3",
-      answer: "NEXT",
-    } as any);
+    const updatePlayerClassicIndex = jest.fn().mockResolvedValue(undefined);
     mockedUseAuth.mockReturnValue(
       createAuthState({
         isAuthenticated: true,
         gameMode: "classic",
         playerData,
         currentRiddle: { riddleId: "classic-2", text: "C2", answer: "WORD" },
-        setCurrentRiddle,
+        updatePlayerClassicIndex,
       }) as any
     );
 
     const { getByTestId } = render(<Navigation />);
     fireEvent.press(getByTestId("trigger-next-level"));
 
-    await waitFor(() => expect(mockedFetchClassic).toHaveBeenCalledWith(3));
-    expect(setCurrentRiddle).toHaveBeenCalledWith(
-      expect.objectContaining({ riddleId: "classic-3" })
-    );
+    await waitFor(() => expect(updatePlayerClassicIndex).toHaveBeenCalledWith(3));
   });
 
-  it("handles next level in classic mode when no riddle is returned", async () => {
+  it("sets current riddle to null when classic progression update fails", async () => {
     const playerData = {
       userId: "u6b",
       progress: { classicIndex: 2 },
@@ -500,7 +482,9 @@ describe("NavigationStack", () => {
       stats: { xp: 0, level: 1 },
     };
     const setCurrentRiddle = jest.fn();
-    mockedFetchClassic.mockResolvedValue(null as any);
+    const updatePlayerClassicIndex = jest
+      .fn()
+      .mockRejectedValue(new Error("classic-progression-failed"));
     mockedUseAuth.mockReturnValue(
       createAuthState({
         isAuthenticated: true,
@@ -508,17 +492,18 @@ describe("NavigationStack", () => {
         playerData,
         currentRiddle: { riddleId: "classic-2", text: "C2", answer: "WORD" },
         setCurrentRiddle,
+        updatePlayerClassicIndex,
       }) as any
     );
 
     const { getByTestId } = render(<Navigation />);
     fireEvent.press(getByTestId("trigger-next-level"));
 
-    await waitFor(() => expect(mockedFetchClassic).toHaveBeenCalledWith(3));
+    await waitFor(() => expect(updatePlayerClassicIndex).toHaveBeenCalledWith(3));
     expect(setCurrentRiddle).toHaveBeenCalledWith(null);
   });
 
-  it("handles next level in classic mode and captures fetch errors", async () => {
+  it("handles next level in classic mode and captures update errors", async () => {
     const playerData = {
       userId: "u6",
       progress: { classicIndex: 2 },
@@ -526,7 +511,9 @@ describe("NavigationStack", () => {
       stats: { xp: 0, level: 1 },
     };
     const setCurrentRiddle = jest.fn();
-    mockedFetchClassic.mockRejectedValue(new Error("classic-failure"));
+    const updatePlayerClassicIndex = jest
+      .fn()
+      .mockRejectedValue(new Error("classic-failure"));
     mockedUseAuth.mockReturnValue(
       createAuthState({
         isAuthenticated: true,
@@ -534,13 +521,14 @@ describe("NavigationStack", () => {
         playerData,
         currentRiddle: { riddleId: "classic-2", text: "C2", answer: "WORD" },
         setCurrentRiddle,
+        updatePlayerClassicIndex,
       }) as any
     );
 
     const { getByTestId } = render(<Navigation />);
     fireEvent.press(getByTestId("trigger-next-level"));
 
-    await waitFor(() => expect(mockedFetchClassic).toHaveBeenCalledWith(3));
+    await waitFor(() => expect(updatePlayerClassicIndex).toHaveBeenCalledWith(3));
     expect(setCurrentRiddle).toHaveBeenCalledWith(null);
     expect(mockedCaptureException).toHaveBeenCalled();
   });

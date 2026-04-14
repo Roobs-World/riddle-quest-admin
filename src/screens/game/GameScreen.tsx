@@ -163,6 +163,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const coinAnimationSettleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
     null
   );
+  const hasSeenPostSubmitModalRef = useRef(false);
 
   const [iapProducts, setIapProducts] = useState<RNIap.Product[]>([]);
   const [iapLoading, setIapLoading] = useState(true);
@@ -202,6 +203,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const [canAnimateCoinIncreases, setCanAnimateCoinIncreases] = useState(
     !isAnyModalVisible
   );
+  const [isAwaitingPostSubmitModalClose, setIsAwaitingPostSubmitModalClose] =
+    useState(false);
   const letterStates = useMemo(() => computeLetterStates(guesses), [guesses]);
 
   const { isRewardedAdReady, loadRewardedAd, showRewardedAd } = useRewardedAds();
@@ -224,6 +227,27 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       coinAnimationSettleTimeoutRef.current = null;
     }
 
+    if (isAwaitingPostSubmitModalClose) {
+      setCanAnimateCoinIncreases(false);
+
+      if (isAnyModalVisible) {
+        hasSeenPostSubmitModalRef.current = true;
+        return;
+      }
+
+      if (!hasSeenPostSubmitModalRef.current) {
+        return;
+      }
+
+      coinAnimationSettleTimeoutRef.current = setTimeout(() => {
+        setCanAnimateCoinIncreases(true);
+        setIsAwaitingPostSubmitModalClose(false);
+        hasSeenPostSubmitModalRef.current = false;
+        coinAnimationSettleTimeoutRef.current = null;
+      }, MODAL_CLOSE_DELAY_MS);
+      return;
+    }
+
     if (isAnyModalVisible) {
       setCanAnimateCoinIncreases(false);
       return;
@@ -235,7 +259,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       setCanAnimateCoinIncreases(true);
       coinAnimationSettleTimeoutRef.current = null;
     }, MODAL_CLOSE_DELAY_MS);
-  }, [isAnyModalVisible]);
+  }, [isAnyModalVisible, isAwaitingPostSubmitModalClose]);
 
   const loadIapProducts = useCallback(async () => {
     if (shouldUseDevFirestoreCatalog) {
@@ -865,9 +889,14 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           processGuess(currentGuess)
         )) as GuessResult;
         setLastGuessResult(result);
+        const willOpenResultModal = result.outcome !== "continue";
+        hasSeenPostSubmitModalRef.current = false;
+        setIsAwaitingPostSubmitModalClose(willOpenResultModal);
       } catch (error) {
         logger.error("Error processing guess in GameScreen:", error);
         captureException(error);
+        hasSeenPostSubmitModalRef.current = false;
+        setIsAwaitingPostSubmitModalClose(false);
         modal.showInfoModal({
           title: AppStrings.GameScreenAlerts.SUBMIT_GUESS_ERROR_TITLE,
           message: AppStrings.GameScreenAlerts.SUBMIT_GUESS_ERROR_MESSAGE,
