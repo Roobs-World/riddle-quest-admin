@@ -941,5 +941,31 @@ describe("handleGuessLogic", () => {
 
       expect(leaderboard.updateLeaderboardEntry).not.toHaveBeenCalled();
     });
+
+    test("generates 5 classic riddles when user reaches the penultimate threshold", async () => {
+      const requestData = {
+        riddleId: "riddle-123",
+        gameMode: "classic" as const,
+        attempts: 1,
+        isCorrect: true,
+      };
+
+      const userNearEnd = {
+        ...mockUser,
+        progress: {...mockUser.progress, classicIndex: 98},
+      };
+      (firestoreService.getUser as jest.Mock).mockResolvedValue(JSON.parse(JSON.stringify(userNearEnd)));
+      mockAdminFirestoreGet.mockResolvedValueOnce({
+        data: () => ({...userNearEnd, progress: {...userNearEnd.progress, classicIndex: 99}}),
+      });
+      mockAdminFirestoreWhere.mockImplementationOnce(() => ({
+        get: jest.fn().mockResolvedValue({size: 100}),
+      }));
+      (riddleGeneration.generateAndAppendRiddles as jest.Mock).mockResolvedValue(undefined);
+
+      await handleCompleteGameLogic(requestData, authContext);
+
+      expect(riddleGeneration.generateAndAppendRiddles).toHaveBeenCalledWith(5);
+    });
   });
 });

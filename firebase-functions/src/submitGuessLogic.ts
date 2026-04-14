@@ -8,7 +8,7 @@ import {
   getRiddleByGameMode,
   ensureUserDocumentComplete,
 } from "./firestoreService";
-import {PlayerStats, PlayerStatsUpdate, PlayerSchema} from "./validation/firestoreSchemas";
+import {PlayerStats, PlayerStatsUpdate} from "./validation/firestoreSchemas";
 import type {FeedbackItem} from "./validation/requestSchemas";
 import {generateAndAppendRiddles, initializeRiddleDatabaseIfEmpty} from "./riddleGeneration";
 import {evaluateAchievements} from "./achievements";
@@ -92,6 +92,45 @@ function computeNextDailyWinStreak(
   const lastCompletedDay = getUtcDayString(lastDailyChallengeCompletedAt);
   const yesterdayUtcDay = getYesterdayUtcDayString();
   return lastCompletedDay === yesterdayUtcDay ? currentWinStreak + 1 : 1;
+}
+
+/**
+ * Generates additional classic riddles when a user is at the configured low-supply threshold.
+ * This keeps progression seamless as players approach the end of the current Firestore set.
+ */
+async function triggerClassicRiddleGenerationIfNeeded(userId: string, currentClassicIndex: number): Promise<void> {
+  try {
+    const classicRiddlesSnapshot = await admin
+      .firestore()
+      .collection("riddles")
+      .where("classicIndex", ">=", 0)
+      .get();
+
+    const totalClassicRiddles = classicRiddlesSnapshot.size;
+    const remainingClassicRiddles = totalClassicRiddles - currentClassicIndex;
+
+    functions.logger.info(
+      `User ${userId} currentClassicIndex: ${currentClassicIndex}, totalClassicRiddles: ${totalClassicRiddles}, remainingClassicRiddles: ${remainingClassicRiddles}`,
+    );
+
+    if (remainingClassicRiddles <= RIDDLE_GENERATION_THRESHOLD) {
+      functions.logger.info(
+        `User ${userId} has <= ${RIDDLE_GENERATION_THRESHOLD} classic riddles remaining. Triggering generation of ${RIDDLE_GENERATION_BATCH_SIZE} new riddles.`,
+      );
+      try {
+        await generateAndAppendRiddles(RIDDLE_GENERATION_BATCH_SIZE);
+        functions.logger.info(
+          `Successfully triggered generation of ${RIDDLE_GENERATION_BATCH_SIZE} new classic riddles.`,
+        );
+      } catch (error) {
+        functions.logger.error("Error triggering generation of new classic riddles:", error);
+        captureException(error);
+      }
+    }
+  } catch (error) {
+    functions.logger.error("Error checking classic riddle count:", error);
+    captureException(error);
+  }
 }
 
 /**
@@ -330,44 +369,10 @@ export async function handleGuessLogic(
         });
       }
 
-      // Check if new riddles need to be generated
       const updatedUserDoc = await userRef.get();
-      const updatedPlayerData = PlayerSchema.parse(updatedUserDoc.data());
-      const currentClassicIndex = updatedPlayerData.progress?.classicIndex || 0;
-
-      try {
-        // Count total classic riddles in Firestore
-        const classicRiddlesSnapshot = await admin
-          .firestore()
-          .collection("riddles")
-          .where("classicIndex", ">=", 0)
-          .get();
-
-        const totalClassicRiddles = classicRiddlesSnapshot.size;
-
-        functions.logger.info(
-          `User ${userId} currentClassicIndex: ${currentClassicIndex}, totalClassicRiddles: ${totalClassicRiddles}`,
-        );
-
-        if (totalClassicRiddles - currentClassicIndex <= RIDDLE_GENERATION_THRESHOLD) {
-          functions.logger.info(
-            `User ${userId} has <= ${RIDDLE_GENERATION_THRESHOLD} classic riddles remaining. Triggering generation of ${RIDDLE_GENERATION_BATCH_SIZE} new riddles.`,
-          );
-          try {
-            await generateAndAppendRiddles(RIDDLE_GENERATION_BATCH_SIZE);
-            functions.logger.info(
-              `Successfully triggered generation of ${RIDDLE_GENERATION_BATCH_SIZE} new classic riddles.`,
-            );
-          } catch (error) {
-            functions.logger.error("Error triggering generation of new classic riddles:", error);
-            captureException(error);
-            // Decide if this error should be surfaced to the client or just logged
-          }
-        }
-      } catch (error) {
-        functions.logger.error("Error checking classic riddle count:", error);
-        captureException(error);
-      }
+      const updatedUserData = updatedUserDoc.data() as {progress?: {classicIndex?: number}} | undefined;
+      const currentClassicIndex = updatedUserData?.progress?.classicIndex || 0;
+      await triggerClassicRiddleGenerationIfNeeded(userId, currentClassicIndex);
     }
 
     let newlyUnlockedAchievementIds: string[] = [];
@@ -609,27 +614,10 @@ export async function handleCompleteGameLogic(
           await updateUserStats(userId, {highestLevelClassic: newClassicLevel});
         }
 
-        try {
-          const updatedUserDoc = await userRef.get();
-          const updatedPlayerData = PlayerSchema.parse(updatedUserDoc.data());
-          const currentClassicIndex = updatedPlayerData.progress?.classicIndex || 0;
-
-          const classicRiddlesSnapshot = await admin
-            .firestore()
-            .collection("riddles")
-            .where("classicIndex", ">=", 0)
-            .get();
-
-          if (classicRiddlesSnapshot.size - currentClassicIndex <= RIDDLE_GENERATION_THRESHOLD) {
-            functions.logger.info(
-              `User ${userId} has <= ${RIDDLE_GENERATION_THRESHOLD} classic riddles remaining. Triggering generation.`,
-            );
-            await generateAndAppendRiddles(RIDDLE_GENERATION_BATCH_SIZE);
-          }
-        } catch (error) {
-          functions.logger.error("Error checking classic riddle count:", error);
-          captureException(error);
-        }
+        const updatedUserDoc = await userRef.get();
+        const updatedUserData = updatedUserDoc.data() as {progress?: {classicIndex?: number}} | undefined;
+        const currentClassicIndex = updatedUserData?.progress?.classicIndex || 0;
+        await triggerClassicRiddleGenerationIfNeeded(userId, currentClassicIndex);
       }
     }
 

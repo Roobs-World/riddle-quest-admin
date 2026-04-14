@@ -2,7 +2,13 @@ import {logger} from "firebase-functions/v2";
 import * as admin from "firebase-admin";
 import {onCall, HttpsError, CallableRequest} from "firebase-functions/v2/https";
 import {updateUserCoins, getUser, getRiddleByGameMode} from "./firestoreService";
-import {SKIP_COST_CLASSIC, SKIP_COST_DAILY} from "./constants";
+import {
+  SKIP_COST_CLASSIC,
+  SKIP_COST_DAILY,
+  RIDDLE_GENERATION_THRESHOLD,
+  RIDDLE_GENERATION_BATCH_SIZE,
+} from "./constants";
+import {generateAndAppendRiddles} from "./riddleGeneration";
 import {captureException} from "./sentry";
 
 /**
@@ -110,6 +116,26 @@ export const skipRiddle = onCall(
         await userRef.update({
           "progress.classicIndex": newClassicIndex,
         });
+
+        try {
+          const classicRiddlesSnapshot = await admin
+            .firestore()
+            .collection("riddles")
+            .where("classicIndex", ">=", 0)
+            .get();
+          const totalClassicRiddles = classicRiddlesSnapshot.size;
+          const remainingClassicRiddles = totalClassicRiddles - newClassicIndex;
+
+          if (remainingClassicRiddles <= RIDDLE_GENERATION_THRESHOLD) {
+            logger.info(
+              `User ${currentUserId} has <= ${RIDDLE_GENERATION_THRESHOLD} classic riddles remaining after skip. Triggering generation of ${RIDDLE_GENERATION_BATCH_SIZE} new riddles.`,
+            );
+            await generateAndAppendRiddles(RIDDLE_GENERATION_BATCH_SIZE);
+          }
+        } catch (error) {
+          logger.error("Error checking/generating classic riddles after skip:", error);
+          captureException(error);
+        }
 
         // Update stats
         await userRef.update({
