@@ -236,6 +236,9 @@ jest.mock("../../../constants/AppStrings", () => ({
         TERMS_USER_AGREEMENT: "user agreement",
         TERMS_AGREEMENT_PART2: " and ",
         TERMS_PRIVACY_POLICY: "privacy policy",
+        TERMS_PAGE_NAME: "Terms of Service",
+        PRIVACY_PAGE_NAME: "Privacy Policy",
+        MUST_AGREE_TO_TERMS: "Please agree to the terms and privacy policy.",
         NEXT_BUTTON: "Next",
         HAS_ACCOUNT_PROMPT: "Do you have an account? ",
         LOGIN_NOW: "Log in now",
@@ -244,6 +247,7 @@ jest.mock("../../../constants/AppStrings", () => ({
         OPERATION_NOT_ALLOWED_ERROR:
           "Email and password sign-up is not enabled.",
         WEAK_PASSWORD_ERROR: "The password is too weak.",
+        SIGNUP_UNEXPECTED_ERROR: "An unexpected error occurred during sign up.",
       },
     },
   },

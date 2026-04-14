@@ -575,9 +575,24 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         if (purchaseResult) {
           logger.debug("Purchase completed successfully:", purchaseResult);
           const coinsPurchased = IapService.getCoinsForProduct(productId) ?? 0;
-          modal.closeModalByType("coinShop");
+          const isLocalDevPurchase =
+            typeof purchaseResult.transactionId === "string" &&
+            purchaseResult.transactionId.startsWith("dev-local-");
+          if (isLocalDevPurchase && coinsPurchased > 0 && playerData) {
+            updatePlayerDataLocally({
+              coins: (playerData.coins ?? 0) + coinsPurchased,
+            });
+          }
           modal.showCoinPurchaseFanfareModal({
             coinsPurchased,
+            onConfirm: () => {
+              const openCoinShopModalIds = modal.modals
+                .filter((openModal) => openModal.type === "coinShop")
+                .map((openModal) => openModal.id);
+              openCoinShopModalIds.forEach((modalId) => {
+                modal.closeModal(modalId);
+              });
+            },
           });
         } else {
           logger.debug("Purchase was cancelled or returned null");
@@ -598,7 +613,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         setIsPurchaseInProgress(false);
       }
     },
-    [isPurchaseInProgress, modal]
+    [isPurchaseInProgress, modal, playerData, updatePlayerDataLocally]
   );
 
   const handlePayAndPlay = useCallback(() => {

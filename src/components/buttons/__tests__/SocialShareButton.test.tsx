@@ -124,7 +124,7 @@ describe("<SocialShareButton />", () => {
       const { getByLabelText } = render(
         <SocialShareButton {...defaultProps} platform="system" />
       );
-      expect(getByLabelText("Share to Share")).toBeTruthy();
+      expect(getByLabelText("Share")).toBeTruthy();
     });
   });
 

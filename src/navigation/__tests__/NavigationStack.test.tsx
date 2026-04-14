@@ -7,7 +7,6 @@ import {
   fetchClassicRiddleFromFirestore,
 } from "../../services/FirestoreService";
 import { RiddleInitializationService } from "../../services/RiddleInitializationService";
-import { useNotificationNavigation } from "../../hooks/useNotificationNavigation";
 import { captureException } from "../../utils/sentry";
 import { analyticsService } from "../../services/AnalyticsService";
 import { logger } from "../../utils/logger";
@@ -44,10 +43,6 @@ jest.mock("../../services/AnalyticsService", () => ({
     logScreenView: jest.fn().mockResolvedValue(undefined),
     logShare: jest.fn().mockResolvedValue(undefined),
   },
-}));
-
-jest.mock("../../hooks/useNotificationNavigation", () => ({
-  useNotificationNavigation: jest.fn(),
 }));
 
 jest.mock("../../utils/sentry", () => ({
@@ -218,10 +213,6 @@ const mockedFetchClassic = fetchClassicRiddleFromFirestore as jest.MockedFunctio
 const mockedRiddleInitService = RiddleInitializationService as jest.Mocked<
   typeof RiddleInitializationService
 >;
-const mockedUseNotificationNavigation =
-  useNotificationNavigation as jest.MockedFunction<
-    typeof useNotificationNavigation
-  >;
 const mockedCaptureException = captureException as jest.MockedFunction<
   typeof captureException
 >;
@@ -259,7 +250,6 @@ describe("NavigationStack", () => {
       hasInitialized: true,
       initializationFailed: false,
     });
-    mockedUseNotificationNavigation.mockImplementation(() => undefined);
   });
 
   it("shows loading overlay while auth state is loading", () => {
@@ -415,6 +405,9 @@ describe("NavigationStack", () => {
     await waitFor(() => expect(fetchCurrentRiddle).toHaveBeenCalledWith(playerData, "daily"));
     expect(setGameMode).not.toHaveBeenCalledWith("classic");
   });
+
+  // Notification-driven deep link navigation is handled elsewhere; the previous
+  // test depended on a removed `useNotificationNavigation` hook.
 
   it("does not switch to classic from local completion state for provider users when remote says not completed", async () => {
     const playerData = {
@@ -682,34 +675,6 @@ describe("NavigationStack", () => {
         }),
       })
     );
-  });
-
-  it("handles notification deep-link navigation to daily challenge", async () => {
-    const playerData = { userId: "u8", progress: {}, coins: 1, stats: { xp: 0, level: 1 } };
-    const setGameMode = jest.fn();
-    const fetchCurrentRiddle = jest.fn().mockResolvedValue(undefined);
-    mockedUseNotificationNavigation.mockImplementation(
-      ({ enabled, onNavigate }: any) => {
-        if (enabled) {
-          onNavigate({ destination: "daily" });
-        }
-      }
-    );
-    mockedUseAuth.mockReturnValue(
-      createAuthState({
-        isAuthenticated: true,
-        gameMode: "classic",
-        playerData,
-        currentRiddle: { riddleId: "classic", text: "R", answer: "WORD" },
-        setGameMode,
-        fetchCurrentRiddle,
-      }) as any
-    );
-
-    render(<Navigation />);
-
-    await waitFor(() => expect(setGameMode).toHaveBeenCalledWith("daily"));
-    expect(fetchCurrentRiddle).toHaveBeenCalledWith(playerData, "daily");
   });
 
   it("does not refetch riddle when mode is unchanged and current riddle already exists", async () => {

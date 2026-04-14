@@ -33,7 +33,7 @@ describe("AppStrings i18n support", () => {
     setAppLanguage("es");
 
     expect(AppStrings.Achievements.UNLOCKED_ALERT_TITLE).toBe(
-      "Achievement(s) Unlocked!"
+      "Logro(s) desbloqueado(s)!"
     );
   });
 

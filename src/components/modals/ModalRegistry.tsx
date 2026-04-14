@@ -386,7 +386,12 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
     CoinPurchaseFanfareModal,
     (props: BaseModalProps & ModalData) => ({
       isVisible: props.isVisible,
-      onClose: props.onClose,
+      onClose: () => {
+        if (typeof props.onConfirm === "function") {
+          (props.onConfirm as () => void)();
+        }
+        props.onClose();
+      },
       coinsPurchased: (props.coinsPurchased as number) || 0,
     })
   ),

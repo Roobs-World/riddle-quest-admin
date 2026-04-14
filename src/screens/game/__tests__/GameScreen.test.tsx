@@ -115,6 +115,7 @@ const mockShowInfoModal = jest.fn();
 const mockShowWelcomeModal = jest.fn();
 const mockShowInstructionsModal = jest.fn();
 const mockCloseModalByType = jest.fn();
+const mockCloseModal = jest.fn();
 const mockShowCreditsModal = jest.fn();
 const mockShowFullProfileDetailsModal = jest.fn();
 const mockShowCoinPurchaseFanfareModal = jest.fn();
@@ -143,6 +144,7 @@ jest.mock("../../../hooks/useModal", () => ({
     showStreakIncreaseFanfareModal: mockShowStreakIncreaseFanfareModal,
     showLevelUpFanfareModal: mockShowLevelUpFanfareModal,
     closeModalByType: mockCloseModalByType,
+    closeModal: mockCloseModal,
   }),
 }));
 
@@ -1380,8 +1382,13 @@ describe("GameScreen", () => {
       let config = mockShowCoinShopModal.mock.calls[mockShowCoinShopModal.mock.calls.length - 1][0];
       await config.onPurchaseProduct("pack_1");
 
-      expect(mockCloseModalByType).toHaveBeenCalledWith("coinShop");
       expect(mockShowCoinPurchaseFanfareModal).toHaveBeenCalled();
+      expect(mockShowCoinPurchaseFanfareModal).toHaveBeenCalledWith(
+        expect.objectContaining({
+          coinsPurchased: expect.any(Number),
+          onConfirm: expect.any(Function),
+        })
+      );
 
       IapService.purchaseProduct.mockRejectedValueOnce(new Error("boom"));
       await config.onPurchaseProduct("pack_2");

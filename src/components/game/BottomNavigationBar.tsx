@@ -42,6 +42,9 @@ interface BottomNavigationBarProps {
 
   /** Function called when the Settings icon is pressed - opens settings overlay */
   onSettingsPress: () => void;
+
+  /** Function called when the center button is pressed - toggles game mode */
+  onChangeGameModePress: () => void;
 }
 
 /**
@@ -90,6 +93,7 @@ interface BottomNavigationBarProps {
 const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
   onProfilePress,
   onSettingsPress,
+  onChangeGameModePress,
 }) => {
   return (
     <View
@@ -123,6 +127,8 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
         accessibilityRole="button"
         accessibilityLabel={AppStrings.Accessibility.CHANGE_GAME_MODE}
         accessibilityHint={AppStrings.Accessibility.CHANGE_GAME_MODE_HINT}
+        onPress={() => onChangeGameModePress()}
+        testID="change-game-mode-button"
         style={{
           width: scale(56),
           height: scale(56),

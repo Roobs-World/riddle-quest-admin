@@ -54,7 +54,7 @@ export const CLOSE_BUTTON_SIZE = scale(20);
 /** Standard top-right placement for modal close buttons. */
 export const MODAL_CLOSE_BUTTON_POSITION = {
   position: "absolute" as const,
-  top: verticalScale(48),
+  top: CLOSE_BUTTON_INSET,
   right: CLOSE_BUTTON_INSET,
   zIndex: 10,
 };

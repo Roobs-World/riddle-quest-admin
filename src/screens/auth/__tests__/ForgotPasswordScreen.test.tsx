@@ -153,6 +153,17 @@ jest.mock("../../../constants/AppStrings", () => ({
     Navigation: {
       LOGIN: "Login",
     },
+    AuthStrings: {
+      ForgotPassword: {
+        TITLE: "Reset Password",
+        BUTTON_TEXT: "Reset Password",
+        BACK_TO_LOGIN: "Back to Login",
+        SUCCESS_MESSAGE: "Password reset email sent! Check your inbox.",
+        USER_NOT_FOUND_ERROR:
+          "No account found with this email address. Please check your email or sign up for a new account.",
+        GENERIC_ERROR: "Something went wrong.",
+      },
+    },
   },
 }));
 

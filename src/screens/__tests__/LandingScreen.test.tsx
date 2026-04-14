@@ -172,6 +172,25 @@ jest.mock("../../constants/AppStrings", () => ({
         SIGN_IN_BUTTON: "Sign In",
         OR_SIGN_IN_WITH: "Or sign in with",
         NO_ACCOUNT_PROMPT: "No account?",
+        PLAY_AS_GUEST: "Play as Guest",
+        CREDITS_BUTTON: "Credits",
+      },
+      Login: {
+        ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL:
+          "Account exists with different credential. Please use a different login method.",
+        GOOGLE_UNEXPECTED_ERROR:
+          "An unexpected error occurred during Google login.",
+        FACEBOOK_CONFIG_ERROR: "Facebook is not configured correctly.",
+        FACEBOOK_TIMEOUT_ERROR: "Facebook login timed out.",
+        FACEBOOK_SDK_ERROR: "Facebook SDK error occurred.",
+        OPERATION_NOT_SUPPORTED_ERROR:
+          "Facebook login is not supported in this environment.",
+        FACEBOOK_NETWORK_ERROR:
+          "Network error during Facebook login. Please check your connection and try again.",
+        FACEBOOK_INVALID_CREDENTIAL_ERROR:
+          "Invalid Facebook credentials. Please try again.",
+        FACEBOOK_UNEXPECTED_ERROR:
+          "An unexpected error occurred during Facebook login.",
       },
     },
     Navigation: {

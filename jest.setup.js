@@ -158,13 +158,24 @@ jest.mock("react-native/Libraries/Utilities/Platform", () => ({
 // Mock NativeEventEmitter to avoid "requires a non-null argument" (iOS) and AggregateError
 jest.mock("react-native/Libraries/EventEmitter/NativeEventEmitter", () => {
   const { EventEmitter } = require("events");
-  const MockEmitter = class MockNativeEventEmitter extends EventEmitter {
+  class MockNativeEventEmitter extends EventEmitter {
     constructor() {
       super();
       this.setMaxListeners(20); // Avoid MaxListenersExceededWarning for Keyboard listeners
     }
-  };
-  return { __esModule: true, default: MockEmitter };
+
+    addListener(eventType, listener, context) {
+      // RN expects a subscription object with a callable `remove()`.
+      super.addListener(eventType, listener, context);
+      return {
+        remove: () => {
+          this.removeListener(eventType, listener);
+        },
+      };
+    }
+  }
+
+  return { __esModule: true, default: MockNativeEventEmitter };
 });
 
 // Mock NativeAnimatedModule to avoid "Native animated module is not available" (ScrollView/Animated)
@@ -301,4 +312,34 @@ jest.mock("@react-native-firebase/auth", () => ({
     signOut: jest.fn(),
     onAuthStateChanged: jest.fn(),
   })),
+}));
+
+jest.mock("@react-native-firebase/storage", () => {
+  const mockRef = {
+    putFile: jest.fn(() => Promise.resolve()),
+    getDownloadURL: jest.fn(() => Promise.resolve("https://example.com/avatar.jpg")),
+  };
+
+  return {
+    __esModule: true,
+    getStorage: jest.fn(() => ({
+      ref: jest.fn(() => mockRef),
+    })),
+  };
+});
+
+jest.mock("@react-native-firebase/firestore", () => ({
+  __esModule: true,
+  getFirestore: jest.fn(() => ({})),
+  collection: jest.fn(),
+  doc: jest.fn(),
+  getDoc: jest.fn(),
+  getDocs: jest.fn(),
+  setDoc: jest.fn(),
+  updateDoc: jest.fn(),
+  query: jest.fn(),
+  where: jest.fn(),
+  limit: jest.fn(),
+  serverTimestamp: jest.fn(() => ({ __type: "serverTimestamp" })),
+  FirebaseFirestoreTypes: {},
 }));

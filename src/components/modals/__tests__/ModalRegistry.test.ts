@@ -7,12 +7,11 @@ MockModal.displayName = "MockModal";
 jest.mock("../game/VictoryModal", () => MockModal);
 jest.mock("../game/LossModal", () => MockModal);
 jest.mock("../game/AchievementUnlockFanfareModal", () => MockModal);
+jest.mock("../game/StreakIncreaseFanfareModal", () => MockModal);
+jest.mock("../game/LevelUpFanfareModal", () => MockModal);
 jest.mock("../settings/SettingsModal", () => MockModal);
 jest.mock("../settings/FullProfileDetailsModal", () => MockModal);
-jest.mock("../settings/ChangePasswordModal", () => MockModal);
 jest.mock("../settings/UpdateUsernameModal", () => MockModal);
-jest.mock("../settings/AvatarOptionsModal", () => MockModal);
-jest.mock("../settings/PreloadedAvatarsModal", () => MockModal);
 jest.mock("../settings/AchievementsModal", () => MockModal);
 jest.mock("../settings/StatsModal", () => MockModal);
 jest.mock("../settings/LeaderboardModal", () => MockModal);
@@ -57,10 +56,7 @@ describe("ModalRegistry", () => {
       "achievements",
       "stats",
       "leaderboard",
-      "changePassword",
       "updateUsername",
-      "avatarOptions",
-      "preloadedAvatars",
       "info",
       "hint",
       "skip",
@@ -70,6 +66,8 @@ describe("ModalRegistry", () => {
       "coinShop",
       "coinPurchaseFanfare",
       "achievementUnlockFanfare",
+      "streakIncreaseFanfare",
+      "levelUpFanfare",
     ];
 
     it("should register all required modal types", () => {
@@ -300,28 +298,6 @@ describe("ModalRegistry", () => {
 
         expect(() => FullProfileDetailsModal(props)).not.toThrow();
       });
-
-      it("should map props correctly for avatarOptions modal", () => {
-        const AvatarOptionsModal = getModalComponent("avatarOptions");
-        const props = {
-          ...createBaseProps(),
-          onAvatarSelected: jest.fn(),
-          onOpenPreloadedAvatars: jest.fn(),
-          userId: "test-user-id",
-        };
-
-        expect(() => AvatarOptionsModal(props)).not.toThrow();
-      });
-
-      it("should map props correctly for preloadedAvatars modal", () => {
-        const PreloadedAvatarsModal = getModalComponent("preloadedAvatars");
-        const props = {
-          ...createBaseProps(),
-          onAvatarSelected: jest.fn(),
-        };
-
-        expect(() => PreloadedAvatarsModal(props)).not.toThrow();
-      });
     });
 
     describe("Stats and Achievements Modals", () => {
@@ -357,16 +333,6 @@ describe("ModalRegistry", () => {
     });
 
     describe("Account Management Modals", () => {
-      it("should map props correctly for changePassword modal", () => {
-        const ChangePasswordModal = getModalComponent("changePassword");
-        const props = {
-          ...createBaseProps(),
-          onPasswordChanged: jest.fn(),
-        };
-
-        expect(() => ChangePasswordModal(props)).not.toThrow();
-      });
-
       it("should map props correctly for updateUsername modal", () => {
         const UpdateUsernameModal = getModalComponent("updateUsername");
         const props = {
@@ -440,17 +406,17 @@ describe("ModalRegistry", () => {
       expect(modalRegistry.victory).toBeDefined();
       expect(modalRegistry.loss).toBeDefined();
       expect(modalRegistry.achievementUnlockFanfare).toBeDefined();
+      expect(modalRegistry.streakIncreaseFanfare).toBeDefined();
+      expect(modalRegistry.levelUpFanfare).toBeDefined();
 
       // Settings modals
       expect(modalRegistry.settings).toBeDefined();
       expect(modalRegistry.fullProfileDetails).toBeDefined();
-      expect(modalRegistry.changePassword).toBeDefined();
       expect(modalRegistry.updateUsername).toBeDefined();
-      expect(modalRegistry.avatarOptions).toBeDefined();
-      expect(modalRegistry.preloadedAvatars).toBeDefined();
 
       // Help modals
       expect(modalRegistry.hint).toBeDefined();
+      expect(modalRegistry.info).toBeDefined();
       expect(modalRegistry.skip).toBeDefined();
       expect(modalRegistry.welcome).toBeDefined();
       expect(modalRegistry.instructions).toBeDefined();

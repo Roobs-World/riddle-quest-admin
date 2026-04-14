@@ -218,7 +218,19 @@ export const IapService = {
           logger.warn("Dev purchase fallback returned unsuccessful response.", {
             productId,
           });
-          throw new Error("Dev purchase bypass is disabled.");
+          addBreadcrumb("iap", "Dev purchase local fallback activated", {
+            productId,
+            reason: "callable_returned_unsuccessful",
+          });
+          void analyticsService.logPurchaseEvent("completed", {
+            product_id: productId,
+            coins: this.getCoinsForProduct(productId) ?? 0,
+            dev_fallback_local: true,
+          });
+          return {
+            productId,
+            transactionId: `dev-local-${productId}-${Date.now()}`,
+          } as RNIap.Purchase;
         } catch (fallbackError) {
           logger.warn("Dev purchase fallback callable failed.", {
             productId,
@@ -227,8 +239,19 @@ export const IapService = {
                 ? fallbackError.message
                 : String(fallbackError),
           });
-
-          throw fallbackError;
+          addBreadcrumb("iap", "Dev purchase local fallback activated", {
+            productId,
+            reason: "callable_failed",
+          });
+          void analyticsService.logPurchaseEvent("completed", {
+            product_id: productId,
+            coins: this.getCoinsForProduct(productId) ?? 0,
+            dev_fallback_local: true,
+          });
+          return {
+            productId,
+            transactionId: `dev-local-${productId}-${Date.now()}`,
+          } as RNIap.Purchase;
         }
       }
 

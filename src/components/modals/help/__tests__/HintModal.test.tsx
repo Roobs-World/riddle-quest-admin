@@ -47,6 +47,7 @@ jest.mock("../../../../assets/images/modal-bg.svg", () => {
 describe("HintModal", () => {
   const onShowHint = jest.fn();
   const onClose = jest.fn();
+  const onOpenShop = jest.fn();
 
   const renderModal = (props?: Partial<React.ComponentProps<typeof HintModal>>) =>
     render(
@@ -56,6 +57,7 @@ describe("HintModal", () => {
         hintCost={50}
         onShowHint={onShowHint}
         onClose={onClose}
+        onOpenShop={onOpenShop}
         {...props}
       />
     );
@@ -65,32 +67,28 @@ describe("HintModal", () => {
   });
 
   it("renders title and dynamic coin copy", () => {
-    const { getByText, getByTestId } = renderModal({ userCoins: 250, hintCost: 75 });
+    const { getByText, getAllByTestId } = renderModal({ userCoins: 250, hintCost: 75 });
 
     expect(getByText("Use a Hint?")).toBeTruthy();
     expect(getByText("Cost: 75 Coins. You have: 250 Coins.")).toBeTruthy();
-    expect(getByTestId("modal-bg")).toBeTruthy();
+    expect(getAllByTestId("modal-bg").length).toBeGreaterThan(0);
   });
 
-  it("shows insufficient-funds warning and disables SHOW HINT when user cannot afford", () => {
+  it("shows insufficient-funds warning and shows Buy coins CTA when user cannot afford", () => {
     const { getByText, getByTestId } = renderModal({ userCoins: 30, hintCost: 50 });
 
     expect(getByText("You do not have enough coins for a hint.")).toBeTruthy();
-    expect(getByTestId("wide-button-SHOW HINT").props.accessibilityState.disabled).toBe(
-      true
-    );
+    expect(getByTestId("wide-button-Buy coins")).toBeTruthy();
   });
 
-  it("hides warning and enables SHOW HINT when user can afford exact cost", () => {
+  it("hides warning and shows hint CTA when user can afford exact cost", () => {
     const { queryByText, getByTestId } = renderModal({ userCoins: 50, hintCost: 50 });
 
     expect(queryByText("You do not have enough coins for a hint.")).toBeNull();
-    expect(getByTestId("wide-button-SHOW HINT").props.accessibilityState.disabled).toBe(
-      false
-    );
+    expect(getByTestId("wide-button-SHOW HINT")).toBeTruthy();
   });
 
-  it("closes and then triggers hint callback when SHOW HINT is pressed", () => {
+  it("closes and then triggers hint callback when hint CTA is pressed", () => {
     const { getByTestId } = renderModal();
     fireEvent.press(getByTestId("wide-button-SHOW HINT"));
 
@@ -101,9 +99,20 @@ describe("HintModal", () => {
     );
   });
 
-  it("calls onClose from CLOSE button and close icon", () => {
+  it("closes and then opens shop when Buy coins is pressed", () => {
+    const { getByTestId } = renderModal({ userCoins: 30, hintCost: 50 });
+    fireEvent.press(getByTestId("wide-button-Buy coins"));
+
+    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(onOpenShop).toHaveBeenCalledTimes(1);
+    expect(onClose.mock.invocationCallOrder[0]).toBeLessThan(
+      onOpenShop.mock.invocationCallOrder[0]
+    );
+  });
+
+  it("calls onClose from Close button and close icon", () => {
     const { getByTestId } = renderModal();
-    fireEvent.press(getByTestId("wide-button-CLOSE"));
+    fireEvent.press(getByTestId("wide-button-Close"));
     fireEvent.press(getByTestId("close-button"));
 
     expect(onClose).toHaveBeenCalledTimes(2);

@@ -191,6 +191,7 @@ export interface GameModalTypes {
 
   coinPurchaseFanfare: {
     coinsPurchased: number;
+    onConfirm?: () => void;
   };
 
   achievementUnlockFanfare: {

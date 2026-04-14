@@ -3,6 +3,29 @@ import { fireEvent } from "@testing-library/react-native";
 import { renderWithModalProvider } from "../../../../test-utils";
 import FullProfileDetailsModal from "../FullProfileDetailsModal";
 import { Player } from "../../../../validation/firestoreSchemas";
+import * as ImagePicker from "react-native-image-picker";
+
+jest.mock("../../../../contexts/AuthContext", () => ({
+  useAuth: () => ({
+    updatePlayerData: jest.fn(),
+    playerData: null,
+  }),
+}));
+
+jest.mock("@/components/loading/PulsingSpinner", () => {
+  const React = require("react");
+  const { View } = require("react-native");
+  return {
+    __esModule: true,
+    default: function MockPulsingSpinner({ visible }: any) {
+      return visible ? React.createElement(View, { testID: "pulsing-spinner" }) : null;
+    },
+  };
+});
+
+jest.mock("react-native-image-picker", () => ({
+  launchImageLibrary: jest.fn().mockResolvedValue({ didCancel: true }),
+}));
 
 // Mock react-native-safe-area-context
 jest.mock("react-native-safe-area-context", () => ({
@@ -38,6 +61,12 @@ jest.mock("../../../../styles", () => ({
     letterSpacing: { tight: -0.1, normal: 0, wide: 0.025 },
   },
   SPACING: { xs: 4, sm: 8, md: 16, lg: 24, xl: 32 },
+  COLORS: {
+    white: "#FFFFFF",
+    black: "#000000",
+    purple: "#401F40",
+    gold: "#FEC880",
+  },
 }));
 jest.mock("../../../../assets/images/modal-bg.svg", () => {
   const React = require("react");
@@ -73,24 +102,6 @@ jest.mock("../../../buttons/CloseButton", () => {
   };
 });
 
-jest.mock("../ChangePasswordModal", () => {
-  return function MockChangePasswordModal({ isVisible, onClose }: any) {
-    const React = require("react");
-    const { View, Text, TouchableOpacity } = require("react-native");
-    if (!isVisible) return null;
-    return React.createElement(
-      View,
-      { testID: "change-password-modal" },
-      React.createElement(Text, {}, "Change Password Modal"),
-      React.createElement(
-        TouchableOpacity,
-        { testID: "change-password-close", onPress: onClose },
-        React.createElement(Text, {}, "Close Change Password")
-      )
-    );
-  };
-});
-
 jest.mock("../UpdateUsernameModal", () => {
   return function MockUpdateUsernameModal({ isVisible, onClose }: any) {
     const React = require("react");
@@ -109,28 +120,20 @@ jest.mock("../UpdateUsernameModal", () => {
   };
 });
 
-jest.mock("../AvatarOptionsModal", () => {
-  return function MockAvatarOptionsModal({ isVisible, onClose }: any) {
+jest.mock("../UpgradeAccountModal", () => {
+  return function MockUpgradeAccountModal({ isVisible, onClose }: any) {
     const React = require("react");
-    const { View, Text } = require("react-native");
+    const { View, Text, TouchableOpacity } = require("react-native");
     if (!isVisible) return null;
     return React.createElement(
       View,
-      { testID: "avatar-options-modal" },
-      React.createElement(Text, {}, "Avatar Options Modal")
-    );
-  };
-});
-
-jest.mock("../PreloadedAvatarsModal", () => {
-  return function MockPreloadedAvatarsModal({ isVisible, onClose }: any) {
-    const React = require("react");
-    const { View, Text } = require("react-native");
-    if (!isVisible) return null;
-    return React.createElement(
-      View,
-      { testID: "preloaded-avatars-modal" },
-      React.createElement(Text, {}, "Preloaded Avatars Modal")
+      { testID: "upgrade-account-modal" },
+      React.createElement(Text, {}, "Upgrade Account Modal"),
+      React.createElement(
+        TouchableOpacity,
+        { testID: "upgrade-account-close", onPress: onClose },
+        React.createElement(Text, {}, "Close Upgrade Account")
+      )
     );
   };
 });
@@ -260,22 +263,13 @@ describe("FullProfileDetailsModal", () => {
     expect(getByTestId("update-username-modal")).toBeTruthy();
   });
 
-  it("opens change password modal when button is pressed", () => {
-    const { getByText, getByTestId } = renderWithModalProvider(
-      <FullProfileDetailsModal {...defaultProps} />
-    );
-
-    fireEvent.press(getByText("Change Password"));
-    expect(getByTestId("change-password-modal")).toBeTruthy();
-  });
-
-  it("opens avatar options modal when avatar is pressed", () => {
+  it("launches the image picker when avatar is pressed", () => {
     const { getByTestId } = renderWithModalProvider(
       <FullProfileDetailsModal {...defaultProps} />
     );
 
     fireEvent.press(getByTestId("avatar-image"));
-    expect(getByTestId("avatar-options-modal")).toBeTruthy();
+    expect(ImagePicker.launchImageLibrary).toHaveBeenCalled();
   });
 
   it("renders with proper positioning", () => {
@@ -388,17 +382,6 @@ describe("FullProfileDetailsModal", () => {
     fireEvent.press(getByText("Leaderboard"));
     // The modal.openGameModal is called - we verify the button exists and is pressable
     expect(getByText("Leaderboard")).toBeTruthy();
-  });
-
-  it("closes change password modal via onClose callback", () => {
-    const { getByText, queryByTestId, getByTestId } = renderWithModalProvider(
-      <FullProfileDetailsModal {...defaultProps} />
-    );
-
-    fireEvent.press(getByText("Change Password"));
-    expect(getByTestId("change-password-modal")).toBeTruthy();
-    fireEvent.press(getByTestId("change-password-close"));
-    expect(queryByTestId("change-password-modal")).toBeNull();
   });
 
   it("closes update username modal via onClose callback", () => {
