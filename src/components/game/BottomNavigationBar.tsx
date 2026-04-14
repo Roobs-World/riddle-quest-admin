@@ -44,7 +44,7 @@ interface BottomNavigationBarProps {
   onSettingsPress: () => void;
 
   /** Function called when the center button is pressed - toggles game mode */
-  onChangeGameModePress: () => void;
+  onChangeGameModePress?: () => void;
 }
 
 /**
@@ -127,7 +127,7 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
         accessibilityRole="button"
         accessibilityLabel={AppStrings.Accessibility.CHANGE_GAME_MODE}
         accessibilityHint={AppStrings.Accessibility.CHANGE_GAME_MODE_HINT}
-        onPress={() => onChangeGameModePress()}
+        onPress={() => onChangeGameModePress?.()}
         testID="change-game-mode-button"
         style={{
           width: scale(56),

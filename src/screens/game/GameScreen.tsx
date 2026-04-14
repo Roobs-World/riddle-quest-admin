@@ -1191,7 +1191,9 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
           if (refreshedProfile) {
             latestPlayerData = refreshedProfile;
-            updatePlayerDataLocally(refreshedProfile);
+            updatePlayerDataLocally(refreshedProfile, {
+              syncToFirestore: false,
+            });
           }
         } catch (error) {
           logger.error("Error loading profile data before opening modal:", error);
@@ -1206,7 +1208,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       }
 
       modal.showFullProfileDetailsModal({
-        playerData: latestPlayerData || {},
+        playerData: latestPlayerData ?? null,
       });
     } finally {
       setIsProfileModalLoading(false);

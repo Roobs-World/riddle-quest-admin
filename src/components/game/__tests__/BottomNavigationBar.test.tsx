@@ -123,6 +123,18 @@ describe("BottomNavigationBar", () => {
       expect(defaultProps.onChangeGameModePress).toHaveBeenCalledTimes(1);
       expect(defaultProps.onProfilePress).toHaveBeenCalledTimes(1);
     });
+
+    it("does not crash when center button callback is omitted", () => {
+      const { getAllByRole } = render(
+        <BottomNavigationBar
+          onProfilePress={defaultProps.onProfilePress}
+          onSettingsPress={defaultProps.onSettingsPress}
+        />
+      );
+
+      const buttons = getAllByRole("button");
+      expect(() => fireEvent.press(buttons[1])).not.toThrow();
+    });
   });
 
   describe("Accessibility", () => {

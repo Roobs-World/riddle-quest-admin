@@ -25,6 +25,99 @@ import { captureException } from "../utils/sentry";
 const RIDDLE_CACHE_MAX_SIZE = 50;
 const riddleCache = new Map<string, FirestoreRiddle>();
 
+const ALLOWED_USER_UPDATE_FIELDS = new Set<string>([
+  "userId",
+  "username",
+  "email",
+  "coins",
+  "displayName",
+  "avatarUrl",
+  "hasPurchasedApp",
+  "createdAt",
+  "registeredAt",
+  "lastLogin",
+  "lastDailyChallengeCompletedAt",
+  "stats",
+  "progress",
+  "unlockedAchievements",
+  "fcmToken",
+  "fcmTokenUpdatedAt",
+  "lastStreakReminderSentAt",
+] as const);
+
+const ALLOWED_STATS_UPDATE_FIELDS = new Set<string>([
+  "xp",
+  "level",
+  "dailyPuzzlesCompleted",
+  "bestStreak",
+  "totalWordsGuessed",
+  "winRate",
+  "averageGuesses",
+  "totalScore",
+  "highestLevelClassic",
+  "gamesPlayed",
+  "wins",
+  "challengeWins",
+  "winStreak",
+  "totalWins",
+  "totalGuessesInWins",
+  "totalHintsUsed",
+] as const);
+
+const ALLOWED_PROGRESS_UPDATE_FIELDS = new Set<string>([
+  "classicIndex",
+  "dailyChallengeIndex",
+  "dailyChallengeCurrentQuestion",
+  "tutorialIndex",
+] as const);
+
+const stripUndefined = <T extends Record<string, unknown>>(
+  value: T
+): Partial<T> =>
+  Object.fromEntries(
+    Object.entries(value).filter(([, nestedValue]) => nestedValue !== undefined)
+  ) as Partial<T>;
+
+const sanitizeUserDocumentUpdates = (updates: Partial<Player>): Partial<Player> => {
+  const topLevel = stripUndefined(updates as Record<string, unknown>);
+  const sanitized: Record<string, unknown> = {};
+
+  for (const [key, value] of Object.entries(topLevel)) {
+    if (!ALLOWED_USER_UPDATE_FIELDS.has(key)) {
+      continue;
+    }
+
+    if (key === "stats" && value && typeof value === "object" && !Array.isArray(value)) {
+      const stats = stripUndefined(value as Record<string, unknown>);
+      sanitized.stats = Object.fromEntries(
+        Object.entries(stats).filter(([statsKey]) =>
+          ALLOWED_STATS_UPDATE_FIELDS.has(statsKey)
+        )
+      );
+      continue;
+    }
+
+    if (
+      key === "progress" &&
+      value &&
+      typeof value === "object" &&
+      !Array.isArray(value)
+    ) {
+      const progress = stripUndefined(value as Record<string, unknown>);
+      sanitized.progress = Object.fromEntries(
+        Object.entries(progress).filter(([progressKey]) =>
+          ALLOWED_PROGRESS_UPDATE_FIELDS.has(progressKey)
+        )
+      );
+      continue;
+    }
+
+    sanitized[key] = value;
+  }
+
+  return sanitized as Partial<Player>;
+};
+
 function getCachedRiddle(key: string): FirestoreRiddle | undefined {
   return riddleCache.get(key);
 }
@@ -444,10 +537,15 @@ export const updateUserDocumentInFirestore = async (
     return;
   }
   try {
-    // No Zod validation here as FieldValue is not directly parsable by Zod
-    // PlayerSchema.partial().parse(updates); // Remove Zod parse
+    const sanitizedUpdates = sanitizeUserDocumentUpdates(updates);
+    if (Object.keys(sanitizedUpdates).length === 0) {
+      logger.warn(
+        "Skipping Firestore user update because payload had no allowed fields."
+      );
+      return;
+    }
 
-    await updateDoc(doc(getFirestore(), "users", userId), updates);
+    await updateDoc(doc(getFirestore(), "users", userId), sanitizedUpdates);
     logger.info("User document updated successfully for user:", userId);
   } catch (error) {
     if (error instanceof ZodError) {

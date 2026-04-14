@@ -72,7 +72,10 @@ interface AuthContextType {
   // updatePlayerCoins: (newCoins: number) => Promise<void>;
   updatePlayerClassicIndex: (newIndex: number) => Promise<void>;
   updatePlayerData: (updates: Partial<Player>) => Promise<void>;
-  updatePlayerDataLocally: (updates: Partial<Player>) => void;
+  updatePlayerDataLocally: (
+    updates: Partial<Player>,
+    options?: { syncToFirestore?: boolean }
+  ) => void;
   // Add setCurrentRiddle to the interface
   setCurrentRiddle: React.Dispatch<
     React.SetStateAction<FirestoreRiddle | null>
@@ -103,6 +106,42 @@ type RiddleContextType = Pick<
   | "setGameMode"
   | "isRiddlesInitializing"
 >;
+
+const sanitizePlayerUpdates = (updates: Partial<Player>): Partial<Player> =>
+  Object.fromEntries(
+    Object.entries(updates).filter(([, value]) => value !== undefined)
+  ) as Partial<Player>;
+
+const buildFirestoreUserUpdates = (
+  basePlayer: Player,
+  updates: Partial<Player>
+): Partial<Player> => {
+  const sanitizedUpdates = sanitizePlayerUpdates(updates);
+  const resolvedUsername =
+    typeof sanitizedUpdates.username === "string" &&
+    sanitizedUpdates.username.trim() !== ""
+      ? sanitizedUpdates.username
+      : basePlayer.username;
+  const resolvedEmail =
+    typeof sanitizedUpdates.email === "string" &&
+    sanitizedUpdates.email.trim() !== ""
+      ? sanitizedUpdates.email
+      : basePlayer.email;
+  const resolvedCoins =
+    typeof sanitizedUpdates.coins === "number" &&
+    Number.isFinite(sanitizedUpdates.coins) &&
+    sanitizedUpdates.coins >= 0
+      ? sanitizedUpdates.coins
+      : basePlayer.coins;
+
+  return {
+    ...sanitizedUpdates,
+    userId: basePlayer.userId,
+    username: resolvedUsername,
+    email: resolvedEmail,
+    coins: resolvedCoins,
+  };
+};
 
 // Legacy merged context for compatibility.
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -640,7 +679,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           }
 
           if (Object.keys(userDocUpdates).length > 0) {
-            await updateUserDocumentInFirestore(user.uid, userDocUpdates);
+            const safeProviderUpdates = buildFirestoreUserUpdates(
+              data,
+              userDocUpdates
+            );
+            await updateUserDocumentInFirestore(user.uid, safeProviderUpdates);
             data = { ...data, ...userDocUpdates };
             logger.debug("👤 Synced provider profile fields:", userDocUpdates);
           }
@@ -658,12 +701,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
                 }
               : data;
           if (brokenStreak > 0) {
-            await updateUserDocumentInFirestore(user.uid, {
+            const safeStreakResetUpdates = buildFirestoreUserUpdates(data, {
               stats: {
                 ...data.stats,
                 winStreak: 0,
               },
             });
+            await updateUserDocumentInFirestore(user.uid, safeStreakResetUpdates);
           }
           setPendingStreakBreak(
             brokenStreak > 0 ? { previousStreak: brokenStreak } : null
@@ -796,16 +840,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         logger.warn("Attempted to update player data without a userId.");
         return;
       }
+      const sanitizedUpdates = sanitizePlayerUpdates(updates);
+      if (Object.keys(sanitizedUpdates).length === 0) {
+        return;
+      }
       try {
         if (!isGuestPlayer(playerData)) {
-          await updateUserDocumentInFirestore(playerData.userId, updates);
+          const safeUpdates = buildFirestoreUserUpdates(
+            playerData,
+            sanitizedUpdates
+          );
+          await updateUserDocumentInFirestore(playerData.userId, safeUpdates);
           setPlayerData((prevData: Player | null) =>
-            prevData ? { ...prevData, ...updates } : null
+            prevData ? { ...prevData, ...sanitizedUpdates } : null
           );
           logger.debug("AuthContext: Player data updated locally and in Firestore.");
           return;
         }
-        const nextPlayer = { ...playerData, ...updates };
+        const nextPlayer = { ...playerData, ...sanitizedUpdates };
         setPlayerData(nextPlayer);
         await saveGuestProfileToLocal(nextPlayer);
         logger.debug("AuthContext: Guest player data updated locally.");
@@ -819,17 +871,42 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 
   const updatePlayerDataLocally = useCallback(
-    (updates: Partial<Player>): void => {
+    (
+      updates: Partial<Player>,
+      options?: { syncToFirestore?: boolean }
+    ): void => {
+      const shouldSyncToFirestore = options?.syncToFirestore ?? true;
+      const sanitizedUpdates = sanitizePlayerUpdates(updates);
+      if (Object.keys(sanitizedUpdates).length === 0) {
+        return;
+      }
       setPlayerData((prevData: Player | null) => {
         if (!prevData) return null;
-        const nextPlayer = { ...prevData, ...updates };
+        const nextPlayer = { ...prevData, ...sanitizedUpdates };
         if (isGuestPlayer(prevData)) {
           void saveGuestProfileToLocal(nextPlayer);
-        } else {
-          void updateUserDocumentInFirestore(prevData.userId, updates).catch((error) => {
-            logger.error("AuthContext: Error syncing local player update to Firestore:", error);
-            captureException(error);
-          });
+        } else if (shouldSyncToFirestore) {
+          const authUid = getAuth(getApp()).currentUser?.uid;
+          if (authUid && authUid !== prevData.userId) {
+            logger.warn(
+              "AuthContext: Skipping Firestore sync for local player update due to auth/user mismatch.",
+              { authUid, playerUserId: prevData.userId }
+            );
+            return nextPlayer;
+          }
+          const safeUpdates = buildFirestoreUserUpdates(
+            prevData,
+            sanitizedUpdates
+          );
+          void updateUserDocumentInFirestore(prevData.userId, safeUpdates).catch(
+            (error) => {
+              logger.error(
+                "AuthContext: Error syncing local player update to Firestore:",
+                error
+              );
+              captureException(error);
+            }
+          );
         }
         return nextPlayer;
       });

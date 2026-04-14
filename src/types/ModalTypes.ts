@@ -109,7 +109,7 @@ export interface GameModalTypes {
   };
 
   fullProfileDetails: {
-    playerData: Record<string, unknown>; // Could be more strictly typed based on your user data model
+    playerData: import("../validation/firestoreSchemas").Player | null;
   };
 
   achievements: {

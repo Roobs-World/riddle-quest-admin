@@ -317,9 +317,15 @@ describe("AuthContext", () => {
       expect(avatarArg).toBeUndefined();
 
       await waitFor(() => {
-        expect(updateUserDocumentInFirestore).toHaveBeenCalledWith(upgradedUid, {
-          username: "Upgraded User",
-        });
+        expect(updateUserDocumentInFirestore).toHaveBeenCalledWith(
+          upgradedUid,
+          expect.objectContaining({
+            userId: upgradedUid,
+            username: "Upgraded User",
+            email: "test@example.com",
+            coins: 100,
+          })
+        );
       });
     });
 
@@ -573,7 +579,13 @@ describe("AuthContext", () => {
 
       expect(updateUserDocumentInFirestore).toHaveBeenCalledWith(
         "testUser123",
-        updates
+        expect.objectContaining({
+          ...updates,
+          userId: "testUser123",
+          username: "TestUser",
+          email: "test@example.com",
+          coins: 150,
+        })
       );
       expect(result.current.playerData?.coins).toBe(150);
       expect(result.current.playerData?.displayName).toBe("Updated Name");
@@ -608,7 +620,12 @@ describe("AuthContext", () => {
       await waitFor(() =>
         expect(updateUserDocumentInFirestore).toHaveBeenCalledWith(
           "testUser123",
-          { coins: 175 }
+          expect.objectContaining({
+            userId: "testUser123",
+            username: "TestUser",
+            email: "test@example.com",
+            coins: 175,
+          })
         )
       );
       expect(result.current.playerData?.coins).toBe(175);

@@ -250,7 +250,7 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
     (props: BaseModalProps & ModalData) => ({
       isVisible: props.isVisible,
       onClose: props.onClose,
-      playerData: (props.playerData as Player) || null,
+      playerData: (props.playerData as Player | null) ?? null,
     })
   ),
 
