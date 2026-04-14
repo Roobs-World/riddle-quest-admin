@@ -169,6 +169,10 @@ describe("IapService", () => {
         id: "com.qwordly.coinpack5",
         coins: 1000,
       });
+      expect(COIN_PRODUCT_DETAILS.COIN_PACK_MEGA).toEqual({
+        id: "com.qwordly.coinpack6",
+        coins: 2000,
+      });
     });
 
     it("should have unique product IDs", () => {
@@ -241,6 +245,7 @@ describe("IapService", () => {
           "com.qwordly.coinpack3",
           "com.qwordly.coinpack4",
           "com.qwordly.coinpack5",
+          "com.qwordly.coinpack6",
         ],
       });
       expect(result).toEqual(mockProducts);
@@ -283,6 +288,7 @@ describe("IapService", () => {
           "com.qwordly.coinpack3",
           "com.qwordly.coinpack4",
           "com.qwordly.coinpack5",
+          "com.qwordly.coinpack6",
         ],
       });
       expect(result).toEqual(mockProducts);
@@ -413,6 +419,28 @@ describe("IapService", () => {
         productId: "com.qwordly.coins100",
         platform: "ios",
       });
+    });
+  });
+
+  describe("grantDevCoinsFallback", () => {
+    it("should call backend fallback even when local coin mapping is missing", async () => {
+      mockCallableFunction.mockResolvedValue({ data: { success: true } });
+      const unknownProductId = "com.qwordly.coinpack999";
+
+      const result = await IapService.grantDevCoinsFallback(unknownProductId);
+
+      expect(result).toBe(true);
+      expect(httpsCallable).toHaveBeenCalledWith(
+        expect.anything(),
+        "grantDevCoinsForPurchase"
+      );
+      expect(mockCallableFunction).toHaveBeenCalledWith({
+        productId: unknownProductId,
+      });
+      const { logger } = require("../../utils/logger");
+      expect(logger.warn).toHaveBeenCalledWith(
+        `No local coin mapping found for dev fallback product: ${unknownProductId}; attempting backend fallback anyway.`
+      );
     });
   });
 
@@ -678,6 +706,7 @@ describe("IapService", () => {
       expect(IapService.getCoinsForProduct("com.qwordly.coinpack3")).toBe(250);
       expect(IapService.getCoinsForProduct("com.qwordly.coinpack4")).toBe(500);
       expect(IapService.getCoinsForProduct("com.qwordly.coinpack5")).toBe(1000);
+      expect(IapService.getCoinsForProduct("com.qwordly.coinpack6")).toBe(2000);
     });
 
     it("should return undefined for invalid product ID", () => {

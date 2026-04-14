@@ -184,6 +184,7 @@ export const BACKEND_COIN_PRODUCT_DETAILS: {
   COIN_PACK_MID:   {id: "com.qwordly.coinpack3", coins: 250},
   COIN_PACK_LARGE: {id: "com.qwordly.coinpack4", coins: 500},
   COIN_PACK_HUGE:  {id: "com.qwordly.coinpack5", coins: 1000},
+  COIN_PACK_MEGA:  {id: "com.qwordly.coinpack6", coins: 2000},
 };
 
 // Automatically initialize if not in a Jest test environment

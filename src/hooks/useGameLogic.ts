@@ -57,7 +57,7 @@ function getLocalRewards(gameMode: "challenge" | "classic", attempts: number): {
 }
 
 type GuestGameSessionSnapshot = {
-  version: 1;
+  version: 2;
   riddleId: string;
   gameMode: "challenge" | "classic";
   guesses: SubmittedGuess[];
@@ -143,7 +143,9 @@ const useGameLogic = ({ riddleId, answer, gameMode, isGuestMode = false }: UseGa
         const raw = await AsyncStorage.getItem(GUEST_GAME_SESSION_STORAGE_KEY);
         if (!raw) return;
         const parsed = JSON.parse(raw) as Partial<GuestGameSessionSnapshot>;
-        if (parsed.version !== 1) return;
+        // Ignore legacy snapshot formats so stale pre-migration states
+        // cannot keep the submit button locked.
+        if (parsed.version !== 2) return;
         if (parsed.riddleId !== riddleId) return;
         if (parsed.gameMode !== gameMode) return;
         if (cancelled) return;
@@ -168,7 +170,7 @@ const useGameLogic = ({ riddleId, answer, gameMode, isGuestMode = false }: UseGa
     if (!isGuestMode) return;
 
     const snapshot: GuestGameSessionSnapshot = {
-      version: 1,
+      version: 2,
       riddleId,
       gameMode,
       guesses,

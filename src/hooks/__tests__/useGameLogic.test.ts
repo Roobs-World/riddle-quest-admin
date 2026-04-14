@@ -212,8 +212,8 @@ describe("useGameLogic", () => {
       const { result } = renderHook(() => useGameLogic(defaultProps));
       const wrong = ["F", "A", "I", "L", "S"];
 
-      // Use up initial 3 attempts
-      for (let i = 0; i < 3; i++) {
+      // Use up initial 4 attempts
+      for (let i = 0; i < 4; i++) {
         await act(async () => {
           await result.current.processGuess(wrong);
         });
@@ -241,7 +241,7 @@ describe("useGameLogic", () => {
       expect(mockCompleteGameCallable).toHaveBeenCalledWith({
         riddleId: defaultProps.riddleId,
         gameMode: defaultProps.gameMode,
-        attempts: 6,
+        attempts: 7,
         isCorrect: false,
       });
       expect(result.current.gameOver).toBe(true);
@@ -278,8 +278,8 @@ describe("useGameLogic", () => {
       const { result } = renderHook(() => useGameLogic(defaultProps));
       const wrong = ["F", "A", "I", "L", "S"];
 
-      // Use up initial 3 attempts
-      for (let i = 0; i < 3; i++) {
+      // Use up initial 4 attempts
+      for (let i = 0; i < 4; i++) {
         await act(async () => {
           await result.current.processGuess(wrong);
         });
@@ -299,7 +299,7 @@ describe("useGameLogic", () => {
 
       // Game still ends — error is swallowed so the user isn't blocked
       expect(result.current.gameOver).toBe(true);
-      expect(result.current.guesses.length).toBe(6);
+      expect(result.current.guesses.length).toBe(7);
     });
 
     it("should keep guest wins local and skip completeGame calls", async () => {
@@ -329,7 +329,7 @@ describe("useGameLogic", () => {
       );
       const wrong = ["F", "A", "I", "L", "S"];
 
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < 4; i++) {
         await act(async () => {
           await result.current.processGuess(wrong);
         });
@@ -347,7 +347,7 @@ describe("useGameLogic", () => {
 
       expect(mockCompleteGameCallable).not.toHaveBeenCalled();
       expect(result.current.gameOver).toBe(true);
-      expect(result.current.guesses.length).toBe(6);
+      expect(result.current.guesses.length).toBe(7);
     });
 
     it("persists guest in-progress sessions to AsyncStorage", async () => {
@@ -364,7 +364,7 @@ describe("useGameLogic", () => {
       const [key, value] = calls[calls.length - 1] as [string, string];
       expect(key).toBe("@guest_game_session_v1");
       expect(JSON.parse(value)).toMatchObject({
-        version: 1,
+        version: 2,
         riddleId: defaultProps.riddleId,
         gameMode: defaultProps.gameMode,
       });
@@ -373,7 +373,7 @@ describe("useGameLogic", () => {
     it("restores guest sessions for the same riddle/mode", async () => {
       (AsyncStorage.getItem as jest.Mock).mockResolvedValueOnce(
         JSON.stringify({
-          version: 1,
+          version: 2,
           riddleId: defaultProps.riddleId,
           gameMode: defaultProps.gameMode,
           guesses: [{ guess: ["A"], feedback: ["red"] }],
@@ -394,6 +394,32 @@ describe("useGameLogic", () => {
       expect(result.current.attemptsUsed).toBe(1);
       expect(result.current.hasUsedContinue).toBe(true);
       expect(result.current.guesses).toHaveLength(1);
+    });
+
+    it("ignores legacy guest snapshots from older schema versions", async () => {
+      (AsyncStorage.getItem as jest.Mock).mockResolvedValueOnce(
+        JSON.stringify({
+          version: 1,
+          riddleId: defaultProps.riddleId,
+          gameMode: defaultProps.gameMode,
+          guesses: [{ guess: ["A"], feedback: ["red"] }],
+          attemptsUsed: 3,
+          hasUsedContinue: false,
+          gameOver: true,
+        })
+      );
+
+      const { result } = renderHook(() =>
+        useGameLogic({ ...defaultProps, isGuestMode: true })
+      );
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      expect(result.current.attemptsUsed).toBe(0);
+      expect(result.current.gameOver).toBe(false);
+      expect(result.current.guesses).toHaveLength(0);
     });
   });
 
@@ -500,35 +526,35 @@ describe("useGameLogic", () => {
       const { result } = renderHook(() => useGameLogic(defaultProps));
 
       expect(result.current.attemptsUsed).toBe(0);
-      expect(result.current.attemptsRemaining).toBe(3);
+      expect(result.current.attemptsRemaining).toBe(4);
 
       await act(async () => {
         await result.current.processGuess(["F", "A", "I", "L", "S"]);
       });
 
       expect(result.current.attemptsUsed).toBe(1);
-      expect(result.current.attemptsRemaining).toBe(2);
+      expect(result.current.attemptsRemaining).toBe(3);
 
       await act(async () => {
         await result.current.processGuess(["F", "A", "I", "L", "S"]);
       });
 
       expect(result.current.attemptsUsed).toBe(2);
-      expect(result.current.attemptsRemaining).toBe(1);
+      expect(result.current.attemptsRemaining).toBe(2);
     });
 
     it("should increase max attempts after continueGame", async () => {
       const { result } = renderHook(() => useGameLogic(defaultProps));
       const wrong = ["F", "A", "I", "L", "S"];
 
-      // Use up initial 3 attempts
-      for (let i = 0; i < 3; i++) {
+      // Use up initial 4 attempts
+      for (let i = 0; i < 4; i++) {
         await act(async () => {
           await result.current.processGuess(wrong);
         });
       }
 
-      expect(result.current.attemptsUsed).toBe(3);
+      expect(result.current.attemptsUsed).toBe(4);
       expect(result.current.attemptsRemaining).toBe(0);
 
       // Continue game
@@ -536,7 +562,7 @@ describe("useGameLogic", () => {
         result.current.continueGame();
       });
 
-      expect(result.current.attemptsUsed).toBe(3);
+      expect(result.current.attemptsUsed).toBe(4);
       expect(result.current.attemptsRemaining).toBe(3); // 3 more attempts granted
     });
 
@@ -554,7 +580,7 @@ describe("useGameLogic", () => {
       });
 
       expect(result.current.attemptsUsed).toBe(0);
-      expect(result.current.attemptsRemaining).toBe(3);
+      expect(result.current.attemptsRemaining).toBe(4);
     });
   });
 
@@ -568,8 +594,8 @@ describe("useGameLogic", () => {
       const { result } = renderHook(() => useGameLogic(defaultProps));
       const wrong = ["F", "A", "I", "L", "S"];
 
-      // Use up initial 3 attempts
-      for (let i = 0; i < 3; i++) {
+      // Use up initial 4 attempts
+      for (let i = 0; i < 4; i++) {
         await act(async () => {
           await result.current.processGuess(wrong);
         });
@@ -586,7 +612,7 @@ describe("useGameLogic", () => {
       const { result } = renderHook(() => useGameLogic(defaultProps));
       const wrong = ["F", "A", "I", "L", "S"];
 
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < 4; i++) {
         await act(async () => {
           await result.current.processGuess(wrong);
         });
@@ -611,7 +637,7 @@ describe("useGameLogic", () => {
       const { result } = renderHook(() => useGameLogic(defaultProps));
       const wrong = ["F", "A", "I", "L", "S"];
 
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < 4; i++) {
         await act(async () => {
           await result.current.processGuess(wrong);
         });
@@ -630,7 +656,7 @@ describe("useGameLogic", () => {
       const { result } = renderHook(() => useGameLogic(defaultProps));
       const wrong = ["F", "A", "I", "L", "S"];
 
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < 4; i++) {
         await act(async () => {
           await result.current.processGuess(wrong);
         });

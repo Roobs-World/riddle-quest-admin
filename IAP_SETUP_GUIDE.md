@@ -4,7 +4,7 @@ This guide matches the current code in `src/services/IapService.ts` and Firebase
 
 ## Quick Overview
 
-This repo is configured to sell 5 coin packs (consumable, one-time purchases):
+This repo is configured to sell 6 coin packs (consumable, one-time purchases):
 
 | Pack | Coins | Product ID |
 | ---- | ----- | ---------- |
@@ -13,6 +13,7 @@ This repo is configured to sell 5 coin packs (consumable, one-time purchases):
 | Mid | 250 | `com.qwordly.coinpack3` |
 | Large | 500 | `com.qwordly.coinpack4` |
 | Huge | 1000 | `com.qwordly.coinpack5` |
+| Mega | 2000 | `com.qwordly.coinpack6` |
 
 App identifiers:
 
@@ -23,7 +24,7 @@ App identifiers:
 
 1. Log in to App Store Connect.
 2. Go to your app -> Features -> In-App Purchases.
-3. Create 5 products as Consumable using the Product IDs above.
+3. Create 6 products as Consumable using the Product IDs above.
 4. Ensure each product is available for testing/review (metadata complete, screenshot uploaded, etc.).
 
 ## Android (Google Play Console)
@@ -33,12 +34,13 @@ App identifiers:
 1. Log in to Play Console.
 2. Select the app whose package name is `com.grindhead.qwordly`.
 3. Go to Monetize -> Products -> In-app products.
-4. Create 5 in-app products with IDs matching:
+4. Create 6 in-app products with IDs matching:
    - `com.qwordly.coinpack1`
    - `com.qwordly.coinpack2`
    - `com.qwordly.coinpack3`
    - `com.qwordly.coinpack4`
    - `com.qwordly.coinpack5`
+   - `com.qwordly.coinpack6`
 5. Activate each product (not Draft).
 
 ### Testing (avoids "sku-not-found")
@@ -83,4 +85,3 @@ Product IDs and coin mapping:
 - Open coin shop -> products display with prices
 - Tap a pack -> Google purchase sheet opens
 - Complete purchase -> app shows success + coins increase (after server validation)
-

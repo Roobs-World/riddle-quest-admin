@@ -28,6 +28,7 @@ const coinProductIds = [
   "com.qwordly.coinpack3",
   "com.qwordly.coinpack4",
   "com.qwordly.coinpack5",
+  "com.qwordly.coinpack6",
 ];
 
 /**
@@ -42,6 +43,7 @@ export const COIN_PRODUCT_DETAILS: {
   COIN_PACK_MID:   { id: "com.qwordly.coinpack3", coins: 250 },
   COIN_PACK_LARGE: { id: "com.qwordly.coinpack4", coins: 500 },
   COIN_PACK_HUGE:  { id: "com.qwordly.coinpack5", coins: 1000 },
+  COIN_PACK_MEGA:  { id: "com.qwordly.coinpack6", coins: 2000 },
 };
 
 /** Cached product list with a 5-minute TTL to avoid redundant store round-trips. */
@@ -129,8 +131,9 @@ export const IapService = {
   ): Promise<boolean> {
     const coins = this.getCoinsForProduct(productId);
     if (!coins || coins <= 0) {
-      logger.error(`No coin mapping found for dev fallback product: ${productId}`);
-      return false;
+      logger.warn(
+        `No local coin mapping found for dev fallback product: ${productId}; attempting backend fallback anyway.`
+      );
     }
 
     const result = await httpsCallable<
