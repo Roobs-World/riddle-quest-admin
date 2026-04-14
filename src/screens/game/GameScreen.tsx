@@ -684,7 +684,11 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   }, [modal, showRewardedAd, modalActions]);
 
   useEffect(() => {
-    if (gameOver && lastGuessResult && !gameOverHandledRef.current) {
+    if (
+      lastGuessResult &&
+      lastGuessResult.outcome !== "continue" &&
+      !gameOverHandledRef.current
+    ) {
       gameOverHandledRef.current = true;
       const result = lastGuessResult;
 
@@ -830,8 +834,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         );
       } else if (result.outcome === "attemptLimitReached") {
         const canAffordCoinContinue = (userCoins ?? 0) >= CONTINUE_COST_COINS;
-        const skipLevelCost =
-          gameMode === "daily" ? SKIP_COST_DAILY : SKIP_COST_CLASSIC;
+        const skipLevelCost = SKIP_COST_CLASSIC;
 
         modal.showLossModal({
           correctAnswer: result.correctAnswer || "",
@@ -860,8 +863,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           ReactNativeHapticFeedback.trigger("notificationError", hapticOptions);
         }
 
-        const skipLevelCost =
-          gameMode === "daily" ? SKIP_COST_DAILY : SKIP_COST_CLASSIC;
+        const skipLevelCost = SKIP_COST_CLASSIC;
 
         modal.showLossModal({
           correctAnswer: result.correctAnswer || "",
@@ -929,6 +931,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
     if (isGuessComplete) {
       try {
+        // Always allow the next completed guess result to trigger exactly one modal flow.
+        gameOverHandledRef.current = false;
         // Pause header coin count-up immediately so modal-driven result flows
         // can decide exactly when deferred animations should resume.
         setCanAnimateCoinIncreases(false);
