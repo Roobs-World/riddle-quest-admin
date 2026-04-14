@@ -138,15 +138,15 @@ describe("useGameLogic", () => {
       expect(processResult).toEqual({
         outcome: "continue",
         feedback: allRedFeedback,
-        attemptsRemaining: 2,
+        attemptsRemaining: 3,
       });
     });
 
-    it("should reach attemptLimitReached after 3 wrong guesses (classic)", async () => {
+    it("should reach attemptLimitReached after 4 wrong guesses (classic)", async () => {
       const { result } = renderHook(() => useGameLogic(defaultProps));
       const wrong = ["F", "A", "I", "L", "S"]; // no letters in THORN
 
-      for (let i = 0; i < 2; i++) {
+      for (let i = 0; i < 3; i++) {
         await act(async () => {
           await result.current.processGuess(wrong);
         });
@@ -159,7 +159,7 @@ describe("useGameLogic", () => {
 
       // completeGame NOT called yet (user can still continue)
       expect(mockCompleteGameCallable).not.toHaveBeenCalled();
-      expect(result.current.guesses.length).toBe(3);
+      expect(result.current.guesses.length).toBe(4);
       expect(result.current.gameOver).toBe(true);
       expect(processResult).toEqual({
         outcome: "attemptLimitReached",
@@ -171,7 +171,7 @@ describe("useGameLogic", () => {
       });
     });
 
-    it("should reach attemptLimitReached after 3 wrong guesses (challenge)", async () => {
+    it("should reach attemptLimitReached after 4 wrong guesses (challenge)", async () => {
       const challengeProps = {
         riddleId: "challengeRiddle456",
         gameMode: "challenge" as "classic" | "challenge",
@@ -180,7 +180,7 @@ describe("useGameLogic", () => {
       const { result } = renderHook(() => useGameLogic(challengeProps));
       const wrong = ["F", "A", "I", "L", "S"];
 
-      for (let i = 0; i < 2; i++) {
+      for (let i = 0; i < 3; i++) {
         await act(async () => {
           await result.current.processGuess(wrong);
         });
@@ -192,7 +192,7 @@ describe("useGameLogic", () => {
       });
 
       expect(mockCompleteGameCallable).not.toHaveBeenCalled();
-      expect(result.current.guesses.length).toBe(3);
+      expect(result.current.guesses.length).toBe(4);
       expect(result.current.gameOver).toBe(true);
       expect(processResult).toEqual({
         outcome: "attemptLimitReached",
@@ -316,7 +316,7 @@ describe("useGameLogic", () => {
       expect(processResult).toEqual({
         outcome: "win",
         feedback: ["green", "green", "green", "green", "green"],
-        coinsEarned: 10,
+        coinsEarned: 15,
         scoreEarned: 100,
         correctAnswer: "GUESS",
         newlyUnlockedAchievementIds: [],

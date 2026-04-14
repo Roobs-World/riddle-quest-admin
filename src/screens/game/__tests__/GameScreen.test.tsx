@@ -1090,6 +1090,44 @@ describe("GameScreen", () => {
       expect(defaultProps.onGameWin).toHaveBeenCalledWith(0, 25, 100, undefined, 50);
     });
 
+    it("does not show level-up fanfare when earned XP does not increase level", async () => {
+      const originalStats = (mockPlayerData as { stats?: Record<string, unknown> }).stats;
+      (mockPlayerData as { stats?: Record<string, unknown> }).stats = {
+        xp: 0,
+        totalScore: 100,
+        level: 2,
+      };
+
+      try {
+        mockUseGameLogic.currentGuess = ["K", "E", "Y", "B", "O", "A", "R", "D"];
+        mockUseGameLogic.processGuess.mockResolvedValueOnce({
+          outcome: "win",
+          coinsEarned: 25,
+          scoreEarned: 100,
+        });
+
+        const { rerender } = render(<GameScreen {...defaultProps} />);
+
+        const inputProps = getLatestProps(mockGameInput);
+        await inputProps.handleSubmit();
+
+        mockUseGameLogic.gameOver = true;
+        rerender(<GameScreen {...defaultProps} />);
+
+        await waitFor(() => {
+          expect(mockShowVictoryModal).toHaveBeenCalled();
+        });
+
+        const victoryConfig =
+          mockShowVictoryModal.mock.calls[mockShowVictoryModal.mock.calls.length - 1][0];
+        await victoryConfig.onNext();
+
+        expect(mockShowLevelUpFanfareModal).not.toHaveBeenCalled();
+      } finally {
+        (mockPlayerData as { stats?: Record<string, unknown> }).stats = originalStats;
+      }
+    });
+
     it("shows streak break modal once and consumes pending streak break", async () => {
       mockPendingStreakBreak = { previousStreak: 7 };
       render(<GameScreen {...defaultProps} />);

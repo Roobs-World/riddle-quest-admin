@@ -253,7 +253,7 @@ describe("handleGuessLogic", () => {
       const result = await handleGuessLogic(requestData, authContext);
       expect(result.isCorrect).toBe(true);
       expect(result.feedback).toEqual(mockRiddle.answer!.split("").map((l) => ({letter: l, status: "green"})));
-      expect(result.coinsEarned).toBe(10);
+      expect(result.coinsEarned).toBe(15);
       expect(result.correctAnswer).toBe("keyboard");
       expect(Array.isArray(result.newlyUnlockedAchievementIds)).toBe(true);
     });
@@ -262,8 +262,8 @@ describe("handleGuessLogic", () => {
       (achievements.evaluateAchievements as jest.Mock).mockResolvedValueOnce(["first_win", "wins_5"]);
       const result = await handleGuessLogic(requestData, authContext);
       expect(result.newlyUnlockedAchievementIds).toEqual(["first_win", "wins_5"]);
-      expect(result.coinsEarned).toBe(60);
-      expect(firestoreService.updateUserCoins).toHaveBeenNthCalledWith(1, authContext.uid, 10);
+      expect(result.coinsEarned).toBe(65);
+      expect(firestoreService.updateUserCoins).toHaveBeenNthCalledWith(1, authContext.uid, 15);
       expect(firestoreService.updateUserCoins).toHaveBeenNthCalledWith(2, authContext.uid, 50);
     });
 
@@ -290,7 +290,7 @@ describe("handleGuessLogic", () => {
       };
 
       expect(firestoreService.updateUserStats).toHaveBeenCalledWith(authContext.uid, expectedStatsUpdate);
-      expect(firestoreService.updateUserCoins).toHaveBeenCalledWith(authContext.uid, 10);
+      expect(firestoreService.updateUserCoins).toHaveBeenCalledWith(authContext.uid, 15);
       // Verify direct Firestore update for classicIndex
       expect(mockAdminFirestoreUpdate).toHaveBeenCalledWith({
         "progress.classicIndex": mockIncrement(1),
@@ -875,11 +875,11 @@ describe("handleGuessLogic", () => {
         "first_win",
         "perfect_guess",
       ]);
-      expect(result.coinsEarned).toBe(60);
+      expect(result.coinsEarned).toBe(65);
       expect(firestoreService.updateUserCoins).toHaveBeenNthCalledWith(
         1,
         authContext.uid,
-        10,
+        15,
       );
       expect(firestoreService.updateUserCoins).toHaveBeenNthCalledWith(
         2,

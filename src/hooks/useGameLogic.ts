@@ -15,7 +15,8 @@ import { logger } from "../utils/logger";
 import { captureException, addBreadcrumb, startTransaction } from "../utils/sentry";
 import { gameEventBus } from "../services/GameEventBus";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { DAILY_CHALLENGE_COIN_REWARD } from "../constants/game";
+import { CLASSIC_RIDDLE_COIN_REWARD, DAILY_CHALLENGE_COIN_REWARD } from "../constants/game";
+import { NUM_GUESSES } from "../utils/constants";
 
 export type Feedback = "green" | "yellow" | "red";
 
@@ -51,7 +52,7 @@ function getLocalRewards(gameMode: "challenge" | "classic", attempts: number): {
   const scoreMaxAttempts = 5;
   const baseScore = gameMode === "challenge" ? 100 : 50;
   const attemptsBonus = Math.max(0, (scoreMaxAttempts - attempts + 1) * 10);
-  const coins = gameMode === "challenge" ? DAILY_CHALLENGE_COIN_REWARD : 10;
+  const coins = gameMode === "challenge" ? DAILY_CHALLENGE_COIN_REWARD : CLASSIC_RIDDLE_COIN_REWARD;
   return { coins, score: baseScore + attemptsBonus };
 }
 
@@ -120,7 +121,7 @@ const useGameLogic = ({ riddleId, answer, gameMode, isGuestMode = false }: UseGa
   const [attemptsUsed, setAttemptsUsed] = useState(0);
   const [hasUsedContinue, setHasUsedContinue] = useState(false);
 
-  const INITIAL_ATTEMPTS = 3;
+  const INITIAL_ATTEMPTS = NUM_GUESSES;
   const CONTINUE_ATTEMPTS = 3;
 
   const clearGuestSession = useCallback(async (): Promise<void> => {

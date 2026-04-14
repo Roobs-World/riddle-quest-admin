@@ -723,10 +723,16 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           });
         }
 
-        const currentXp = playerData?.stats?.xp ?? playerData?.stats?.totalScore ?? 0;
+        const xpValue = Number(playerData?.stats?.xp ?? 0);
+        const totalScoreValue = Number(playerData?.stats?.totalScore ?? 0);
+        const currentXp = Math.max(
+          Number.isFinite(xpValue) ? xpValue : 0,
+          Number.isFinite(totalScoreValue) ? totalScoreValue : 0
+        );
+        const earnedXp = Math.max(0, Number(result.scoreEarned || 0));
         const previousLevel = getXpLevel(currentXp).level;
-        const nextLevel = getXpLevel(currentXp + (result.scoreEarned || 0)).level;
-        const didLevelUp = nextLevel > previousLevel;
+        const nextLevel = getXpLevel(currentXp + earnedXp).level;
+        const didLevelUp = earnedXp > 0 && nextLevel > previousLevel;
         const levelUpBonusCoins = didLevelUp ? LEVEL_UP_COIN_BONUS : 0;
         const resolvedDailyStreak =
           gameMode === "daily"
@@ -737,6 +743,28 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
             ? DAILY_CHALLENGE_COIN_REWARD
             : 0;
         const totalBonusCoinsAwarded = levelUpBonusCoins + dailyChallengeBonusCoins;
+        const totalCoinsToAnimate =
+          (result.coinsEarned || 0) + totalBonusCoinsAwarded;
+        const coinCountUpDurationMs =
+          Math.min(2500, 400 + Math.sqrt(Math.max(0, totalCoinsToAnimate)) * 180) +
+          500;
+
+        const playDeferredCoinAnimation = async () => {
+          if (totalCoinsToAnimate <= 0) {
+            return;
+          }
+
+          if (coinAnimationSettleTimeoutRef.current) {
+            clearTimeout(coinAnimationSettleTimeoutRef.current);
+            coinAnimationSettleTimeoutRef.current = null;
+          }
+
+          // Explicitly resume deferred coin animation after final modal dismissal.
+          setIsAwaitingPostSubmitModalClose(false);
+          hasSeenPostSubmitModalRef.current = false;
+          setCanAnimateCoinIncreases(true);
+          await safeDelay(coinCountUpDurationMs);
+        };
 
         const showVictoryModal = () => {
 
@@ -767,11 +795,17 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
                   newLevel: nextLevel,
                   coinsAwarded: levelUpBonusCoins,
                   onContinue: () => {
-                    void continueToNextLevel();
+                    void (async () => {
+                      await safeDelay(MODAL_CLOSE_DELAY_MS);
+                      await playDeferredCoinAnimation();
+                      await continueToNextLevel();
+                    })();
                   },
                 });
                 return;
               }
+              await safeDelay(MODAL_CLOSE_DELAY_MS);
+              await playDeferredCoinAnimation();
               await continueToNextLevel();
             },
           });
@@ -895,6 +929,9 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
     if (isGuessComplete) {
       try {
+        // Pause header coin count-up immediately so modal-driven result flows
+        // can decide exactly when deferred animations should resume.
+        setCanAnimateCoinIncreases(false);
         const result = (await runWithServerLoading(() =>
           processGuess(currentGuess)
         )) as GuessResult;
@@ -902,11 +939,16 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         const willOpenResultModal = result.outcome !== "continue";
         hasSeenPostSubmitModalRef.current = false;
         setIsAwaitingPostSubmitModalClose(willOpenResultModal);
+        if (!willOpenResultModal) {
+          // No win/loss modal sequence is coming, so re-enable right away.
+          setCanAnimateCoinIncreases(true);
+        }
       } catch (error) {
         logger.error("Error processing guess in GameScreen:", error);
         captureException(error);
         hasSeenPostSubmitModalRef.current = false;
         setIsAwaitingPostSubmitModalClose(false);
+        setCanAnimateCoinIncreases(true);
         modal.showInfoModal({
           title: AppStrings.GameScreenAlerts.SUBMIT_GUESS_ERROR_TITLE,
           message: AppStrings.GameScreenAlerts.SUBMIT_GUESS_ERROR_MESSAGE,

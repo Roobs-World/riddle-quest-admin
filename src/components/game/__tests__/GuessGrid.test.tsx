@@ -187,7 +187,7 @@ describe("GuessGrid", () => {
       }).not.toThrow();
     });
 
-    it("should not display current guess when all rows are filled", () => {
+    it("should display current guess when only the final row is remaining", () => {
       const guesses: SubmittedGuess[] = [
         {
           guess: ["T", "E", "S", "T"],
@@ -202,17 +202,51 @@ describe("GuessGrid", () => {
           feedback: ["red", "red", "red", "red"],
         },
       ];
-      const currentGuess = ["H", "E"];
+      const currentGuess = ["Q", "Z"];
 
-      expect(() => {
-        render(
-          <GuessGrid
-            {...defaultProps}
-            guesses={guesses}
-            currentGuess={currentGuess}
-          />
-        );
-      }).not.toThrow();
+      const { getByText } = render(
+        <GuessGrid
+          {...defaultProps}
+          guesses={guesses}
+          currentGuess={currentGuess}
+        />
+      );
+
+      expect(getByText("Q")).toBeTruthy();
+      expect(getByText("Z")).toBeTruthy();
+    });
+
+    it("should not display current guess when all rows are filled", () => {
+      const guesses: SubmittedGuess[] = [
+        {
+          guess: ["T", "E", "S", "T"],
+          feedback: ["green", "yellow", "red", "green"],
+        },
+        {
+          guess: ["W", "O", "R", "D"],
+          feedback: ["red", "green", "yellow", "green"],
+        },
+        {
+          guess: ["F", "I", "N", "A"],
+          feedback: ["red", "red", "red", "red"],
+        },
+        {
+          guess: ["L", "A", "S", "T"],
+          feedback: ["red", "red", "red", "red"],
+        },
+      ];
+      const currentGuess = ["Q", "Z"];
+
+      const { queryByText } = render(
+        <GuessGrid
+          {...defaultProps}
+          guesses={guesses}
+          currentGuess={currentGuess}
+        />
+      );
+
+      expect(queryByText("Q")).toBeNull();
+      expect(queryByText("Z")).toBeNull();
     });
   });
 

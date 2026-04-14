@@ -103,7 +103,7 @@ const GuessGrid: React.FC<GuessGridProps> = memo(function GuessGrid({
     const rows: { letters: (string | null)[]; feedback: (Feedback | null)[] }[] =
       guesses.map((sg: SubmittedGuess) => ({ letters: sg.guess, feedback: sg.feedback }));
 
-    if (rows.length < 3 && currentGuess.length > 0) {
+    if (rows.length < NUM_GUESSES && currentGuess.length > 0) {
       const currentGuessRow: (string | null)[] = [...currentGuess];
       while (currentGuessRow.length < answerLength) currentGuessRow.push(null);
       const currentGuessFeedback: (Feedback | null)[] = Array(answerLength)
