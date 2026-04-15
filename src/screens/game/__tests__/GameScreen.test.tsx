@@ -167,18 +167,6 @@ jest.mock("../../../hooks/useGameLogic", () => ({
   default: () => mockUseGameLogic,
 }));
 
-// Mock useRewardedAds hook
-const mockLoadRewardedAd = jest.fn();
-const mockShowRewardedAd = jest.fn(() => Promise.resolve(false));
-jest.mock("../../../hooks/useRewardedAds", () => ({
-  __esModule: true,
-  default: () => ({
-    isRewardedAdReady: false,
-    loadRewardedAd: mockLoadRewardedAd,
-    showRewardedAd: mockShowRewardedAd,
-  }),
-}));
-
 // Mock useGameSessionController - runWithServerLoading must return a Promise
 const mockRunWithServerLoading = jest.fn((fn) => Promise.resolve(fn()));
 jest.mock("../../../features/game-session/useGameSessionController", () => ({
@@ -938,17 +926,6 @@ describe("GameScreen", () => {
     });
   });
 
-  describe("Rewarded Ads Integration", () => {
-    it("should work with rewarded ads hook", async () => {
-      // The hook is already mocked in the test setup
-      const { queryByTestId } = render(<GameScreen {...defaultProps} />);
-
-      await waitFor(() => {
-        expect(queryByTestId("mock-header")).toBeTruthy();
-      });
-    });
-  });
-
   describe("Loading States", () => {
     it("should render with loading indicator available", async () => {
       // The loading state comes from useGameSessionController which is mocked
@@ -975,12 +952,13 @@ describe("GameScreen", () => {
     const getLatestProps = (mockFn: jest.Mock) =>
       mockFn.mock.calls[mockFn.mock.calls.length - 1][0];
 
-    it("loads rewarded ads on mount", async () => {
-      const { rerender } = render(<GameScreen {...defaultProps} />);
-
-      await waitFor(() => {
-        expect(mockLoadRewardedAd).toHaveBeenCalledTimes(1);
-      });
+    it("does not pass a watch-video handler to coin shop", async () => {
+      render(<GameScreen {...defaultProps} />);
+      const headerProps = getLatestProps(mockHeader);
+      headerProps.onCoinsPress();
+      const config =
+        mockShowCoinShopModal.mock.calls[mockShowCoinShopModal.mock.calls.length - 1][0];
+      expect(config.onWatchVideo).toBeUndefined();
     });
 
     it("submits a completed guess and stores the result", async () => {
@@ -1229,12 +1207,10 @@ describe("GameScreen", () => {
       const { httpsCallable } = require("@react-native-firebase/functions");
       const spendCoins = jest.fn(() => Promise.resolve({ data: {} }));
       httpsCallable.mockReturnValue(spendCoins);
-      mockShowRewardedAd.mockResolvedValueOnce(true);
       mockUseGameLogic.currentGuess = ["K", "E", "Y", "B", "O", "A", "R", "D"];
       mockUseGameLogic.processGuess.mockResolvedValueOnce({
         outcome: "attemptLimitReached",
         correctAnswer: "ANSWER",
-        canOfferRewardedAd: true,
         canOfferCoinContinue: true,
       });
 
@@ -1250,13 +1226,12 @@ describe("GameScreen", () => {
       const config = mockShowLossModal.mock.calls[mockShowLossModal.mock.calls.length - 1][0];
 
       expect(config.canUseCoin).toBe(true);
-      expect(config.canWatchAd).toBe(false);
-
-      await config.onWatchAdContinue();
+      expect(config.canWatchAd).toBeUndefined();
+      expect(config.onWatchAdContinue).toBeUndefined();
       await config.onCoinContinue();
       config.onOpenShop();
 
-      expect(mockUseGameLogic.continueGame).toHaveBeenCalledTimes(2);
+      expect(mockUseGameLogic.continueGame).toHaveBeenCalledTimes(1);
       await waitFor(() => {
         expect(spendCoins).toHaveBeenCalledWith({ amount: 20, reason: "continue" });
       });
@@ -1295,32 +1270,6 @@ describe("GameScreen", () => {
       await waitFor(() => {
         expect(mockShowLossModal).toHaveBeenCalledTimes(1);
       });
-    });
-
-    it("shows ad-not-ready info when continue ad does not complete", async () => {
-      mockShowRewardedAd.mockResolvedValueOnce(false);
-      mockUseGameLogic.currentGuess = ["K", "E", "Y", "B", "O", "A", "R", "D"];
-      mockUseGameLogic.processGuess.mockResolvedValueOnce({
-        outcome: "attemptLimitReached",
-        correctAnswer: "ANSWER",
-        canOfferRewardedAd: true,
-      });
-
-      const { rerender } = render(<GameScreen {...defaultProps} />);
-      const inputProps = getLatestProps(mockGameInput);
-      await inputProps.handleSubmit();
-      mockUseGameLogic.gameOver = true;
-      rerender(<GameScreen {...defaultProps} />);
-
-      await waitFor(() => {
-        expect(mockShowLossModal).toHaveBeenCalled();
-      });
-
-      const config = mockShowLossModal.mock.calls[mockShowLossModal.mock.calls.length - 1][0];
-      await config.onWatchAdContinue();
-      expect(mockShowInfoModal).toHaveBeenCalledWith(
-        expect.objectContaining({ title: "Ad Not Ready" })
-      );
     });
 
     it("shows loss modal for terminal loss and triggers onGameLoss", async () => {
@@ -1545,21 +1494,6 @@ describe("GameScreen", () => {
       await waitFor(() => {
         expect(getLatestProps(mockPulsingSpinner).visible).toBe(false);
       });
-    });
-
-    it("handles watch-ad-for-coins not-ready and error branches", async () => {
-      render(<GameScreen {...defaultProps} />);
-      const headerProps = getLatestProps(mockHeader);
-      headerProps.onCoinsPress();
-      const config = mockShowCoinShopModal.mock.calls[mockShowCoinShopModal.mock.calls.length - 1][0];
-
-      mockShowRewardedAd.mockResolvedValueOnce(false);
-      await config.onWatchVideo();
-      expect(mockShowAdNotReady).toHaveBeenCalled();
-
-      mockShowRewardedAd.mockRejectedValueOnce(new Error("ad crash"));
-      await config.onWatchVideo();
-      expect(mockShowAdError).toHaveBeenCalled();
     });
 
     it("handles onboarding flow outer catch when welcome modal throws", async () => {
@@ -2017,15 +1951,13 @@ describe("GameScreen", () => {
       );
     });
 
-    it("handles purchase-null branch, pay-and-play cheapest product, and rewarded-ad success", async () => {
+    it("handles purchase-null branch and pay-and-play cheapest product", async () => {
       const { IapService } = require("../../../services/IapService");
-      const { logger } = require("../../../utils/logger");
       IapService.getProducts.mockResolvedValueOnce([
         { id: "expensive", price: 9.99 },
         { id: "cheap", price: 1.99 },
       ]);
       IapService.purchaseProduct.mockResolvedValueOnce(null);
-      mockShowRewardedAd.mockResolvedValueOnce(true);
 
       render(<GameScreen {...defaultProps} />);
       await waitFor(() => {
@@ -2041,9 +1973,6 @@ describe("GameScreen", () => {
       await waitFor(() => {
         expect(IapService.purchaseProduct).toHaveBeenCalledWith("cheap");
       });
-
-      await config.onWatchVideo();
-      expect(logger.debug).toHaveBeenCalledWith("Rewarded ad for coins shown successfully");
     });
   });
 });

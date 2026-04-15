@@ -104,11 +104,6 @@ jest.mock("firebase-functions", () => {
         apple_shared_secret: "test-apple-secret",
         google_service_account: JSON.stringify({type: "service_account", project_id: "test-project"}),
       },
-      applovin: {
-        sdk_key: "test-sdk-key",
-        interstitial_ad_unit_id: "test-interstitial-id",
-        rewarded_ad_unit_id: "test-rewarded-id",
-      },
     }),
     logger: {
       info: jest.fn(),
@@ -185,7 +180,6 @@ describe("Firebase Functions", () => {
 
   describe("Exported Functions Existence", () => {
     const expectedFunctions = [
-      "awardedAdCallback",
       "validatePurchase",
       "spendCoins",
       "setCompletedDailyChallenge",

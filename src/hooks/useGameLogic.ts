@@ -328,7 +328,7 @@ const useGameLogic = ({ riddleId, answer, gameMode, isGuestMode = false }: UseGa
           feedback,
           correctAnswer: answer,
           coinsEarned: 0,
-          canOfferRewardedAd: true,
+          canOfferRewardedAd: false,
           canOfferCoinContinue: true,
         };
       }

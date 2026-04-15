@@ -163,7 +163,7 @@ profanityFilter.ts, firestoreSchemas.ts, openaiService.ts, profile.ts, iapReceip
 ## Lint (March 2026)
 
 - **Pre-commit**: Lint + RN tests + Firebase Functions tests all pass (25 lint errors fixed).
-- Fixes applied: clear-cache.js global window; unused imports/vars (firestoreService.test, migrationScript.test, SettingsIcon, SoundManager, audioOptimization); mock displayName in 4 modal tests; useRewardedAds dependency array `[playerData]` for React Compiler; StarryBackground star generation moved to useState lazy init; PulsingSpinner animValues changed from useRef to useState for refs-during-render rule.
+- Fixes applied: clear-cache.js global window; unused imports/vars (firestoreService.test, migrationScript.test, SettingsIcon, SoundManager, audioOptimization); mock displayName in 4 modal tests; StarryBackground star generation moved to useState lazy init; PulsingSpinner animValues changed from useRef to useState for refs-during-render rule.
 
 ---
 
@@ -174,7 +174,7 @@ profanityFilter.ts, firestoreSchemas.ts, openaiService.ts, profile.ts, iapReceip
 - Terms & Privacy Policy navigation (external URLs via Linking API)
 - Admin authorization check (custom claims + Firestore fallback)
 - IAP Product ID configuration and environment variables
-- Ad client callback correlation (full S2S with AppLovin MAX)
+- Ad client callback correlation (full S2S)
 - validatePurchase placeholder removed
 - Console.log cleanup — all production files use logger
 - Test coverage improved to 61.65%

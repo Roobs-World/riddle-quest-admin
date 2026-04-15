@@ -336,9 +336,9 @@ describe("AnalyticsService", () => {
 
   describe("logAdEvent", () => {
     it("logs rewarded_ad_loaded event", async () => {
-      await service.logAdEvent("loaded", { network_name: "AppLovin" });
+      await service.logAdEvent("loaded", { network_name: "TestNetwork" });
       expect(mockLogEvent).toHaveBeenCalledWith("rewarded_ad_loaded", {
-        network_name: "AppLovin",
+        network_name: "TestNetwork",
       });
     });
 
@@ -350,9 +350,9 @@ describe("AnalyticsService", () => {
     });
 
     it("logs rewarded_ad_displayed event", async () => {
-      await service.logAdEvent("displayed", { network_name: "AppLovin" });
+      await service.logAdEvent("displayed", { network_name: "TestNetwork" });
       expect(mockLogEvent).toHaveBeenCalledWith("rewarded_ad_displayed", {
-        network_name: "AppLovin",
+        network_name: "TestNetwork",
       });
     });
 

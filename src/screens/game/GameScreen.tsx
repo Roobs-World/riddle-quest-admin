@@ -23,7 +23,6 @@ import { getFunctions, httpsCallable } from "@react-native-firebase/functions";
 import { getApp } from "@react-native-firebase/app";
 import { GameMode } from "../../contexts/AuthContext";
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
-import useRewardedAds from "../../hooks/useRewardedAds";
 
 import { useAuth } from "../../contexts/AuthContext";
 import {
@@ -85,7 +84,6 @@ interface GuessResult {
   correctAnswer?: string;
   coinsEarned?: number;
   scoreEarned?: number;
-  canOfferRewardedAd?: boolean;
   canOfferCoinContinue?: boolean;
   attemptsRemaining?: number;
   newlyUnlockedAchievementIds?: string[];
@@ -209,12 +207,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const [isAwaitingPostSubmitModalClose, setIsAwaitingPostSubmitModalClose] =
     useState(false);
   const letterStates = useMemo(() => computeLetterStates(guesses), [guesses]);
-
-  const { isRewardedAdReady, loadRewardedAd, showRewardedAd } = useRewardedAds();
-
-  useEffect(() => {
-    loadRewardedAd();
-  }, [loadRewardedAd]);
 
   useEffect(() => {
     return () => {
@@ -538,20 +530,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     });
   }, [answerLength, currentGuess]);
 
-  const handleWatchAdToContinue = useCallback(async () => {
-    const didCompleteRewardedAd = await showRewardedAd();
-    if (didCompleteRewardedAd) {
-      continueGame();
-      return true;
-    }
-
-    modal.showInfoModal({
-      title: AppStrings.GameScreenAlerts.AD_NOT_READY_TITLE,
-      message: AppStrings.GameScreenAlerts.AD_NOT_READY_MESSAGE,
-    });
-    return false;
-  }, [showRewardedAd, continueGame, modal]);
-
   const handleCoinContinue = useCallback(async () => {
     const isInsufficientCoinsError = (error: unknown): boolean => {
       if (!error || typeof error !== "object") {
@@ -699,25 +677,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       modalActions.showNoProductsAvailable();
     }
   }, [iapProducts, handlePurchaseProduct, modalActions]);
-
-  const handleWatchAdForCoins = useCallback(async () => {
-    logger.debug("Watch ad for coins button pressed");
-    modal.closeModalByType("coinShop");
-
-    try {
-      const didCompleteRewardedAd = await showRewardedAd();
-      if (didCompleteRewardedAd) {
-        logger.debug("Rewarded ad for coins shown successfully");
-      } else {
-        logger.warn("Rewarded ad was not ready to be shown");
-        modalActions.showAdNotReady();
-      }
-    } catch (error) {
-      logger.error("Error showing rewarded ad for coins:", error);
-      captureException(error);
-      modalActions.showAdError();
-    }
-  }, [modal, showRewardedAd, modalActions]);
 
   useEffect(() => {
     if (
@@ -897,15 +856,11 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
         modal.showLossModal({
           correctAnswer: result.correctAnswer || "",
-          onWatchAdContinue: result.canOfferRewardedAd
-            ? handleWatchAdToContinue
-            : undefined,
           onCoinContinue: result.canOfferCoinContinue
             ? handleCoinContinue
             : undefined,
           coinContinueCost: CONTINUE_COST_COINS,
           skipLevelCost,
-          canWatchAd: isRewardedAdReady,
           canUseCoin: canAffordCoinContinue,
           onOpenShop: () => openShopFromLossRef.current(),
           onNext: () => {
@@ -949,7 +904,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     modal,
     guesses,
     isHapticsEnabled,
-    isRewardedAdReady,
     userCoins,
     gameMode,
     onGameWin,
@@ -957,7 +911,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     onNextLevel,
     resetGame,
     deriveDailyStreakAfterWin,
-    handleWatchAdToContinue,
     handleCoinContinue,
     runWithServerLoading,
   ]);
@@ -1176,7 +1129,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         loading: iapLoading || productPricingLoading,
         error: iapError || productPricingError,
         onPurchaseProduct: handlePurchaseProduct,
-        onWatchVideo: handleWatchAdForCoins,
         onPayAndPlay: handlePayAndPlay,
       });
     } catch (error) {
@@ -1198,7 +1150,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     modal,
     userCoins,
     handlePurchaseProduct,
-    handleWatchAdForCoins,
     handlePayAndPlay,
   ]);
 

@@ -17,7 +17,7 @@
 - **Game constants**: Added `src/constants/game.ts` — `SKIP_COST_DAILY = 150`, `SKIP_COST_CLASSIC = 100`, `SKIP_COST_TUTORIAL = 25`, `MODAL_CLOSE_DELAY_MS = 100`. GameScreen now uses these for skip costs and settings/help modal transition delay.
 - **NavigationStack PulsingSpinner mock**: Mock now uses `accessibilityLabel="Loading"` and `accessibilityRole="progressbar"` to match real PulsingSpinner. Tests assert on these a11y props instead of visible/opacity/size in the label. Resolves known issue in progress.md (mock vs real alignment).
 - **PulsingSpinner accessibility**: (previous) Added `accessibilityLabel="Loading"` and `accessibilityRole="progressbar"` to the spinner container.
-- **Timing constants**: (previous) `useInterstitialAds` — `INTERSTITIAL_RETRY_DELAY_MS = 5000`; `useSettings` — `SOUND_RESUME_DELAY_MS = 500`.
+- **Timing constants**: (previous) `useSettings` — `SOUND_RESUME_DELAY_MS = 500`.
 - **useSettings tests**: (previous) 8 tests in `src/hooks/__tests__/useSettings.test.ts`.
 
 ---
@@ -39,7 +39,7 @@
 ### Documentation Pass Completed ✅
 
 - **Standards**: Added a “Code Documentation Standards” section to `memory-bank/systemPatterns.md`, defining TSDoc expectations, `@fileoverview` usage, and when to add folder-level READMEs.
-- **Hooks**: Documented `useGameLogic`, `useRewardedAds`, `useInterstitialAds`, `useModal`, `useSettings`, and `useFirstTimeExperience` with file overviews and TSDoc describing inputs, outputs, and side effects.
+- **Hooks**: Documented `useGameLogic`, `useModal`, `useSettings`, and `useFirstTimeExperience` with file overviews and TSDoc describing inputs, outputs, and side effects.
 - **Contexts & Navigation**: Added file-level overviews and hook docs for `AuthContext`/`useAuth` and `NavigationStack`, clarifying their orchestration roles.
 - **Services**: Topped up documentation for `GameStateManager`, `AudioFeedbackManager`, `SolarSystemPreloader`, and `TextureDebugger`, and added a `src/services/README.md` describing service responsibilities.
 - **Components & Screens**: Ensured key game UI components and auth screens (`Header`, `GuessGrid`, `Keyboard`, `BottomNavigationBar`, `CoinsDisplay`, `LandingScreen`, `LoginScreen`, `SignUpScreen`, `ForgotPasswordScreen`, `GameScreen`) have clear file overviews and/or TSDoc summaries.
@@ -65,7 +65,7 @@
 
 ### Lint & Pre-commit (March 2026)
 
-- Fixed 25 lint errors that were blocking pre-commit: unused vars/imports, mock displayName, React Compiler memoization in useRewardedAds, react-hooks/purity in StarryBackground (useState lazy init), react-hooks/refs in PulsingSpinner (useState for animValues). Pre-commit (lint + 2,111 RN + 386 Functions tests) now passes.
+- Fixed 25 lint errors that were blocking pre-commit: unused vars/imports, mock displayName, react-hooks/purity in StarryBackground (useState lazy init), react-hooks/refs in PulsingSpinner (useState for animValues). Pre-commit (lint + 2,111 RN + 386 Functions tests) now passes.
 
 ---
 
@@ -214,7 +214,7 @@ Successfully updated all npm packages to latest versions with full compatibility
 
 ### 🟢 Feature Roadmap (Verified)
 
-- **Server-side Ad Validation**: ✅ Complete with AppLovin MAX signature verification
+- **Server-side Ad Validation**: ✅ Completed in prior architecture
 - **IAP Validation**: ✅ Complete with platform validation
 - **User Statistics**: ✅ Reviewed and fixed — `gamesPlayed` and `winRate` now accurate
 - **Hint Tracking**: ✅ Reviewed and implemented — `totalHintsUsed` tracked in stats

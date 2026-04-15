@@ -54,7 +54,6 @@ This document details the technologies, development setup, technical constraints
 
 - **React Native Firebase**: 23.8.6 - Native Firebase SDK integration (modular API)
 - **Google Sign-In**: 16.1.2 - Google authentication
-- **AppLovin MAX**: 9.5.0 - Mobile advertising platform
 - **Facebook SDK**: 13.4.3 - Facebook integration
 - **React Native IAP**: 14.7.12 - In-app purchases
 
@@ -123,7 +122,7 @@ This document details the technologies, development setup, technical constraints
 - **tsconfig.json**: TypeScript compiler configuration with "bundler" module resolution for Metro compatibility
 - **app.config.js**: Expo app configuration and build settings with edge-to-edge enabled for Android
 - **firebase.json**: Firebase services configuration
-- **.env files (recommended)**: For managing Firebase Functions environment variables locally (e.g., `.env.local`, `.env.dev`, `.env.prod`). Ensure these are gitignored. Environment variables include `OPENAI_API_KEY`, `GOOGLE_SERVICE_ACCOUNT` (JSON string for IAP), `APPLE_SHARED_SECRET`, `APPLOVIN_SDK_KEY`, `APPLOVIN_INTERSTITIAL_AD_UNIT_ID`, `APPLOVIN_REWARDED_AD_UNIT_ID`, `FIREBASE_API_KEY`, `FIREBASE_APP_ID`, `FIREBASE_AUTH_DOMAIN`, `FIREBASE_MESSAGING_SENDER_ID`, `FIREBASE_PROJECT_ID`, `FIREBASE_STORAGE_BUCKET`, `FACEBOOK_APP_ID`, `FACEBOOK_APP_SECRET`, `FACEBOOK_CLIENT_TOKEN`.
+- **.env files (recommended)**: For managing Firebase Functions environment variables locally (e.g., `.env.local`, `.env.dev`, `.env.prod`). Ensure these are gitignored. Environment variables include `OPENAI_API_KEY`, `GOOGLE_SERVICE_ACCOUNT` (JSON string for IAP), `APPLE_SHARED_SECRET`, `FIREBASE_API_KEY`, `FIREBASE_APP_ID`, `FIREBASE_AUTH_DOMAIN`, `FIREBASE_MESSAGING_SENDER_ID`, `FIREBASE_PROJECT_ID`, `FIREBASE_STORAGE_BUCKET`, `FACEBOOK_APP_ID`, `FACEBOOK_APP_SECRET`, `FACEBOOK_CLIENT_TOKEN`.
 
 ## Core Technologies:
 

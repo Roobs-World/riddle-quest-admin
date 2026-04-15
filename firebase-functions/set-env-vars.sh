@@ -36,14 +36,6 @@ else
     echo "$APPLE_SHARED_SECRET" | firebase functions:secrets:set APPLE_SHARED_SECRET
 fi
 
-# AppLovin SDK Key (required for ad callbacks)
-echo "Setting APPLOVIN_SDK_KEY..."
-if [ -z "$APPLOVIN_SDK_KEY" ] || [ "$APPLOVIN_SDK_KEY" = "YOUR_APPLOVIN_SDK_KEY" ]; then
-    echo "WARNING: APPLOVIN_SDK_KEY not set. Ad callbacks will not work."
-else
-    echo "$APPLOVIN_SDK_KEY" | firebase functions:secrets:set APPLOVIN_SDK_KEY
-fi
-
 # Google Service Account (required for IAP validation)
 echo "Setting GOOGLE_SERVICE_ACCOUNT..."
 if [ -z "$GOOGLE_SERVICE_ACCOUNT" ] || [ "$GOOGLE_SERVICE_ACCOUNT" = "YOUR_GOOGLE_SERVICE_ACCOUNT_JSON" ]; then

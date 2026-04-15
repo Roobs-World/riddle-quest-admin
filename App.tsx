@@ -38,7 +38,6 @@ import { Settings } from "react-native-fbsdk-next";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { AuthProvider } from "./src/contexts/AuthContext";
 import { Navigation } from "./src/navigation/NavigationStack";
-import AppLovinMAX, { Configuration } from "react-native-applovin-max";
 import PulsingSpinner from "./src/components/loading/PulsingSpinner";
 import { SolarSystemPreloader } from "./src/services/SolarSystemPreloader";
 import { preloadShopCatalog } from "./src/services/ShopCatalogPreloader";
@@ -100,18 +99,6 @@ const configureGoogleSignIn = (): void => {
   });
 };
 
-const initializeAppLovinInBackground = async (): Promise<void> => {
-  const applovinSdkKey = Constants.expoConfig?.extra?.APPLOVIN_SDK_KEY;
-  if (!applovinSdkKey || applovinSdkKey === "YOUR_APPLOVIN_SDK_KEY") {
-    logger.warn("AppLovin SDK key not configured. Ads will not initialize.");
-    return;
-  }
-  const configuration: Configuration = await AppLovinMAX.initialize(
-    applovinSdkKey
-  );
-  logger.debug("AppLovin initialized:", configuration);
-};
-
 const initializeFacebookSdkInBackground = async (): Promise<void> => {
   const facebookAppId = Constants.expoConfig?.extra?.FACEBOOK_APP_ID;
   const facebookClientToken = Constants.expoConfig?.extra?.FACEBOOK_CLIENT_TOKEN;
@@ -164,7 +151,6 @@ export default Sentry.wrap(function App() {
           SOLAR_PRELOAD_TIMEOUT_MS
         ),
         preloadShopCatalog(),
-        initializeAppLovinInBackground(),
         initializeFacebookSdkInBackground(),
       ];
 

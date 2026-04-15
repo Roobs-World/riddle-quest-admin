@@ -166,7 +166,7 @@ describe("useGameLogic", () => {
         feedback: allRedFeedback,
         correctAnswer: defaultProps.answer,
         coinsEarned: 0,
-        canOfferRewardedAd: true,
+        canOfferRewardedAd: false,
         canOfferCoinContinue: true,
       });
     });
@@ -199,7 +199,7 @@ describe("useGameLogic", () => {
         feedback: allRedFeedback,
         correctAnswer: challengeProps.answer,
         coinsEarned: 0,
-        canOfferRewardedAd: true,
+        canOfferRewardedAd: false,
         canOfferCoinContinue: true,
       });
     });

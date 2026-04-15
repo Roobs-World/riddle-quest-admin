@@ -344,20 +344,6 @@ module.exports = {
       process.env.FACEBOOK_CLIENT_TOKEN || "YOUR_FACEBOOK_CLIENT_TOKEN",
 
     /**
-     * AppLovin MAX Advertising Configuration
-     *
-     * Ad unit IDs and SDK key for rewarded and interstitial ads.
-     * All values loaded from environment variables.
-     */
-    APPLOVIN_SDK_KEY: process.env.APPLOVIN_SDK_KEY || "YOUR_APPLOVIN_SDK_KEY",
-    APPLOVIN_INTERSTITIAL_AD_UNIT_ID:
-      process.env.APPLOVIN_INTERSTITIAL_AD_UNIT_ID ||
-      "YOUR_INTERSTITIAL_AD_UNIT_ID_HERE",
-    APPLOVIN_REWARDED_AD_UNIT_ID:
-      process.env.APPLOVIN_REWARDED_AD_UNIT_ID ||
-      "YOUR_REWARDED_AD_UNIT_ID_HERE",
-
-    /**
      * In-App Purchase Configuration
      *
      * Apple and Google Play Store IAP validation credentials.

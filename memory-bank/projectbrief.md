@@ -20,7 +20,7 @@ Build a riddle-based Wordle-clone mobile game using React Native, NativeWind, an
 - Server-side riddle generation and guess validation.
 - Two primary game modes: Daily Challenge and Classic Mode.
 - In-app purchase system for coins and ad removal.
-- AppLovin MAX integration for rewarded and interstitial ads.
+- Optional ad-based incentives for rewarded progression.
 - User profiles with statistics and customizable avatars.
 - Game win 'shattering title' animation.
 
@@ -101,9 +101,9 @@ Build a riddle-based Wordle-clone mobile game using React Native, NativeWind, an
 
 ### 2.5. Advertising
 
-- **Ad Network:** AppLovin MAX
+- **Ad Network:** TBD
 - **Types:** Rewarded Ads (for coins/hints), Interstitial Ads (shown between levels if the user has not purchased the app).
-- **Environment Variables:** `APPLOVIN_SDK_KEY`, `APPLOVIN_INTERSTITIAL_AD_UNIT_ID`, `APPLOVIN_REWARDED_AD_UNIT_ID`, `APPLE_SHARED_SECRET`, `GOOGLE_SERVICE_ACCOUNT` (JSON string for IAP), `OPENAI_API_KEY`, `FIREBASE_API_KEY`, `FIREBASE_APP_ID`, `FIREBASE_AUTH_DOMAIN`, `FIREBASE_MESSAGING_SENDER_ID`, `FIREBASE_PROJECT_ID`, `FIREBASE_STORAGE_BUCKET`, `FACEBOOK_APP_ID`, `FACEBOOK_APP_SECRET`, `FACEBOOK_CLIENT_TOKEN`.
+- **Environment Variables:** `APPLE_SHARED_SECRET`, `GOOGLE_SERVICE_ACCOUNT` (JSON string for IAP), `OPENAI_API_KEY`, `FIREBASE_API_KEY`, `FIREBASE_APP_ID`, `FIREBASE_AUTH_DOMAIN`, `FIREBASE_MESSAGING_SENDER_ID`, `FIREBASE_PROJECT_ID`, `FIREBASE_STORAGE_BUCKET`, `FACEBOOK_APP_ID`, `FACEBOOK_APP_SECRET`, `FACEBOOK_CLIENT_TOKEN`.
 
 ### 2.6. User Profiles & Stats
 

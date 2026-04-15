@@ -70,7 +70,7 @@ Qwordly addresses the gap in mobile puzzle gaming by combining traditional word 
 ### **Technical Features**
 
 - Firebase backend for data persistence and user management
-- AppLovin MAX for ad serving (interstitial and rewarded)
+- Monetization via in-app purchases and optional ad-based incentives
 - Automatic content generation and scaling
 - Server-side validation and anti-cheat measures
 

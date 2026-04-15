@@ -11,7 +11,7 @@ React Native App (iOS/Android)
 │
 ├── Screens (LandingScreen, GameScreen, Auth screens)
 ├── Components (modals, game UI, buttons)
-├── Hooks (useGameLogic, useRewardedAds, useInterstitialAds, useModal, useSettings)
+├── Hooks (useGameLogic, useModal, useSettings)
 ├── Contexts (AuthContext)
 ├── Services
 │   ├── FirestoreService — CRUD operations on Firestore

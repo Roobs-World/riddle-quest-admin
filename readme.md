@@ -160,12 +160,6 @@ Before running the Qwordly app, you need to configure the environment variables 
 - `FACEBOOK_APP_SECRET` - Facebook App Secret from Facebook Developers Console
 - `FACEBOOK_CLIENT_TOKEN` - Facebook Client Token from Facebook Developers Console
 
-#### AppLovin MAX Advertising (Optional)
-
-- `APPLOVIN_SDK_KEY` - AppLovin MAX SDK key
-- `APPLOVIN_INTERSTITIAL_AD_UNIT_ID` - Interstitial ad unit ID
-- `APPLOVIN_REWARDED_AD_UNIT_ID` - Rewarded ad unit ID
-
 #### In-App Purchases (Optional)
 
 - `APPLE_SHARED_SECRET` - Apple App Store shared secret for receipt validation
@@ -203,13 +197,6 @@ Before running the Qwordly app, you need to configure the environment variables 
 2. Create a new app or select existing app
 3. Add Facebook Login product
 4. Copy the App ID, App Secret, and Client Token
-
-### AppLovin MAX Setup
-
-1. Go to [AppLovin MAX](https://dash.applovin.com/)
-2. Create an account and set up your app
-3. Generate ad unit IDs for your app
-4. Copy the SDK key and ad unit IDs
 
 ## Troubleshooting
 

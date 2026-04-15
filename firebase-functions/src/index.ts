@@ -14,7 +14,6 @@ import * as admin from "firebase-admin";
 admin.initializeApp();
 
 // Explicitly import and export functions from sub-modules
-import {awardedAdCallback} from "./adCallbacks";
 import {validatePurchase, grantDevCoinsForPurchase} from "./iapValidation";
 import {spendCoins, skipRiddle} from "./gameLogic";
 import {
@@ -33,11 +32,9 @@ import {updateAvatar, updateUsername} from "./profile";
 import {submitGuess, completeGame} from "./submitGuessLogic";
 import {dailyChallengeScheduler} from "./dailyScheduler";
 import {initializeUser, ensureUserComplete, updateUserStats} from "./userManagement";
-import {notifyRewardedAdCompleted} from "./adClientCallbacks";
 import {getLeaderboard} from "./leaderboard";
 import {dailyStreakReminder} from "./streakNotifications";
 export {
-  awardedAdCallback,
   validatePurchase,
   grantDevCoinsForPurchase,
   spendCoins,
@@ -58,7 +55,6 @@ export {
   initializeUser,
   ensureUserComplete,
   updateUserStats,
-  notifyRewardedAdCompleted,
   getLeaderboard,
   dailyStreakReminder,
 };
