@@ -12,13 +12,13 @@
  */
 
 import React from "react";
-import { View, TouchableOpacity } from "react-native";
+import {View, TouchableOpacity} from "react-native";
 import ProfileIcon from "../icons/ProfileIcon";
 import SettingsIcon from "../icons/SettingsIcon";
 import LetsPlayIcon from "../../../assets/images/lets-play.svg";
-import { SPACING } from "../../styles";
-import { scale } from "../../utils/responsive";
-import { AppStrings } from "../../constants/AppStrings";
+import {SPACING} from "../../styles";
+import {scale} from "../../utils/responsive";
+import {AppStrings} from "../../constants/AppStrings";
 
 /**
  * Type definition for overlay types that can be triggered from the navigation bar.
@@ -111,7 +111,7 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
     >
       {/* Left Side - Settings Button */}
       <TouchableOpacity
-        style={{ marginLeft: scale(20), padding: scale(8) }}
+        style={{marginLeft: scale(20), padding: scale(8)}}
         onPress={() => onSettingsPress()}
         testID="settings-button"
         accessible={true}
@@ -122,33 +122,9 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
         <SettingsIcon color="#401F40" />
       </TouchableOpacity>
 
-      <TouchableOpacity
-        accessible={true}
-        accessibilityRole="button"
-        accessibilityLabel={AppStrings.Accessibility.CHANGE_GAME_MODE}
-        accessibilityHint={AppStrings.Accessibility.CHANGE_GAME_MODE_HINT}
-        onPress={() => onChangeGameModePress?.()}
-        testID="change-game-mode-button"
-        style={{
-          width: scale(56),
-          height: scale(56),
-          borderRadius: scale(28),
-          backgroundColor: "#401F40",
-          alignItems: "center",
-          justifyContent: "center",
-          shadowColor: "#401F40",
-          shadowOffset: { width: 0, height: 4 },
-          shadowOpacity: 0.3,
-          shadowRadius: 8,
-          elevation: 6,
-        }}
-      >
-        <LetsPlayIcon width="100%" />
-      </TouchableOpacity>
-
       {/* Right Side - Profile Button */}
       <TouchableOpacity
-        style={{ marginRight: scale(20), padding: scale(8) }}
+        style={{marginRight: scale(20), padding: scale(8)}}
         onPress={() => onProfilePress()}
         accessible={true}
         accessibilityRole="button"

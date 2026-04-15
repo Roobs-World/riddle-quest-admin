@@ -12,6 +12,7 @@ import {
   MODAL_CONTENT_PADDING,
   MODAL_BUTTON_SPACER,
   wheelSize,
+  COIN_ICON_SIZE_LARGE,
 } from "../../../constants/layout";
 import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
@@ -178,12 +179,12 @@ const AchievementUnlockFanfareModal: React.FC<AchievementUnlockFanfareModalProps
 
                 {coinsEarned > 0 ? (
                   <View style={{alignItems: "center"}}>
-                    <CoinSvg width={32} height={32} />
+                    <CoinSvg width={COIN_ICON_SIZE_LARGE * 1.5} height={COIN_ICON_SIZE_LARGE * 1.5} />
                     <Text
                       style={{
                         fontFamily: TYPOGRAPHY.fontSecondaryBold,
-                        fontSize: TYPOGRAPHY.fontSize["2xl"],
-                        color: "black",
+                        fontSize: TYPOGRAPHY.fontSize["3xl"],
+                        color: "#FB9A2B",
                         marginTop: 6,
                       }}
                     >

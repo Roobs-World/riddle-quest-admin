@@ -38,6 +38,7 @@ import { modalRegistry, getModalComponent } from "../modals/ModalRegistry";
 import { ModalData } from "../../types/ModalTypes";
 import { SubmittedGuess } from "../../hooks/types";
 import { Player } from "../../validation/firestoreSchemas";
+import { useAuth } from "../../contexts/AuthContext";
 import * as RNIap from "react-native-iap";
 import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY } from "../../styles";
 import { scale, verticalScale } from "../../utils/responsive";
@@ -67,7 +68,8 @@ interface ExtendedModalData extends ModalData {
  */
 const generateMockData = (
   modalType: string,
-  closeModalFn?: (type: string) => void
+  closeModalFn?: (type: string) => void,
+  livePlayerData?: Player | null
 ): ExtendedModalData => {
   const mockPlayer: Player = {
     userId: "test-user-123",
@@ -82,19 +84,19 @@ const generateMockData = (
     stats: {
       xp: 0,
       level: 1,
-      gamesPlayed: 100,
-      wins: 75,
-      totalScore: 2500,
-      bestStreak: 10,
-      winStreak: 3,
-      averageGuesses: 3.2,
-      dailyPuzzlesCompleted: 15,
-      totalWordsGuessed: 300,
-      winRate: 0.75,
-      highestLevelClassic: 25,
-      challengeWins: 10,
-      totalWins: 75,
-      totalGuessesInWins: 240,
+      gamesPlayed: 0,
+      wins: 0,
+      totalScore: 0,
+      bestStreak: 0,
+      winStreak: 0,
+      averageGuesses: 0,
+      dailyPuzzlesCompleted: 0,
+      totalWordsGuessed: 0,
+      winRate: 0,
+      highestLevelClassic: 0,
+      challengeWins: 0,
+      totalWins: 0,
+      totalGuessesInWins: 0,
       totalHintsUsed: 0,
     },
     avatarUrl: "https://example.com/avatar.jpg",
@@ -132,6 +134,8 @@ const generateMockData = (
       type: "in-app",
     } as RNIap.ProductAndroid,
   ];
+
+  const resolvedPlayer = livePlayerData ?? mockPlayer;
 
   switch (modalType) {
     case "victory":
@@ -209,16 +213,16 @@ const generateMockData = (
         onPressLogout: () => logger.debug("Logout pressed"),
         onPressHelp: () => logger.debug("Help pressed"),
         onPressCredits: () => logger.debug("Credits pressed"),
-        playerData: mockPlayer,
+        playerData: resolvedPlayer,
       };
     case "fullProfileDetails":
-      return { playerData: mockPlayer };
+      return { playerData: resolvedPlayer };
     case "achievements":
-      return { playerData: mockPlayer };
+      return { playerData: resolvedPlayer };
     case "stats":
-      return { playerData: mockPlayer };
+      return { playerData: resolvedPlayer };
     case "leaderboard":
-      return { currentUserId: mockPlayer.userId };
+      return { currentUserId: resolvedPlayer.userId };
     case "changePassword":
       return { onPasswordChanged: () => logger.debug("Password changed") };
     case "updateUsername":
@@ -301,6 +305,7 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
   onGenerateDailyChallenge,
   onClearLocalData,
 }) => {
+  const { playerData } = useAuth();
   const [isExpanded, setIsExpanded] = useState(false);
   const [modalToggles, setModalToggles] = useState<{
     [key: string]: boolean | Record<string, unknown>;
@@ -346,7 +351,7 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
       const ModalComponent = getModalComponent(modalType);
       if (!ModalComponent) return null;
 
-      const mockData = generateMockData(modalType, closeModal);
+      const mockData = generateMockData(modalType, closeModal, playerData);
 
       // Check if this modal needs to fetch server data
       if (

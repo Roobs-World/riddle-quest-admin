@@ -3,12 +3,12 @@
  */
 
 import React from "react";
-import { View, Text, Modal, FlatList, StyleSheet } from "react-native";
+import {View, Text, Modal, FlatList, StyleSheet} from "react-native";
 import CloseButton from "../../buttons/CloseButton";
 import WideButton from "../../buttons/WideButton";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
-import { TYPOGRAPHY } from "../../../styles";
+import {TYPOGRAPHY} from "../../../styles";
 import {
   MODAL_WIDTH,
   MODAL_HEIGHT,
@@ -19,9 +19,9 @@ import {
   CARD_MARGIN_BOTTOM,
   CLOSE_BUTTON_SIZE,
 } from "../../../constants/layout";
-import { SPACING } from "../../../styles";
-import { dimensions, verticalScale } from "../../../utils/responsive";
-import { AppStrings } from "../../../constants/AppStrings";
+import {SPACING} from "../../../styles";
+import {dimensions, verticalScale} from "../../../utils/responsive";
+import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 
 interface CreditsModalProps {
@@ -37,38 +37,23 @@ interface TeamMember {
 }
 
 const TEAM_MEMBERS: TeamMember[] = [
-  { name: "Craig Beswetherick", role: "Lead Developer & Game Design" },
-  { name: "Reuben Beswetherick", role: "Inspiration" },
-  { name: "Thomas Lemrond", role: "Game Designer, Publisher, Overall Hero" },
-  { name: "Gavin Harrison", role: "Sound Design" },
-  { name: "Nathalia", role: "Design" },
-  { name: "Mr Ben", role: "Design" },
+  {name: "Craig Beswetherick", role: "Lead Developer & Game Design"},
+  {name: "Reuben Beswetherick", role: "Inspiration"},
+  {name: "Thomas Lemrond", role: "Game Designer, Publisher, Overall Hero"},
+  {name: "Gavin Harrison", role: "Sound Design"},
+  {name: "Nathalia", role: "Design"},
+  {name: "Mr Ben", role: "Design"},
 ];
 
-const renderTeamMember = ({ item }: { item: TeamMember }) => (
-  <TeamMemberCard member={item} />
-);
+const renderTeamMember = ({item}: {item: TeamMember}) => <TeamMemberCard member={item} />;
 
 const keyExtractor = (item: TeamMember) => item.name;
 
-const CREDITS_MODAL_HEIGHT = Math.min(
-  MODAL_HEIGHT * 1.2,
-  dimensions.screenHeight * 0.9
-);
+const CREDITS_MODAL_HEIGHT = Math.min(MODAL_HEIGHT * 1.2, dimensions.screenHeight * 0.9);
 
-const CreditsModal: React.FC<CreditsModalProps> = ({
-  isVisible,
-  onClose,
-  topRightControl,
-}) => {
-
+const CreditsModal: React.FC<CreditsModalProps> = ({isVisible, onClose, topRightControl}) => {
   return (
-    <Modal
-      animationType="fade"
-      transparent={true}
-      visible={isVisible}
-      onRequestClose={onClose}
-    >
+    <Modal animationType="fade" transparent={true} visible={isVisible} onRequestClose={onClose}>
       <View
         style={{
           flex: 1,
@@ -99,59 +84,53 @@ const CreditsModal: React.FC<CreditsModalProps> = ({
               justifyContent: "center",
             }}
           >
-
-          <ModalBg
-            width="100%"
-            height="100%"
-            style={[StyleSheet.absoluteFill]}
-            preserveAspectRatio="none"
-          />
-          {/* Decorative wave — clipped to card bounds */}
-          <HomeBg
-            width={MODAL_WIDTH * 1.1}
-            height={MODAL_HEIGHT * 1.1}
-            style={{ position: "absolute", top: -MODAL_HEIGHT * 0.05, left: -MODAL_WIDTH * 0.05 }}
-          />
-
-          <View
-            style={{
-              flex: 1,
-              width: "100%",
-              alignItems: "center",
-              justifyContent: "space-between",
-              padding: MODAL_CONTENT_PADDING,
-              paddingTop: verticalScale(40),
-              paddingBottom: verticalScale(30)
-            }}
-          >
-            <CloseButton
-              onPress={onClose}
-              size={CLOSE_BUTTON_SIZE}
-              style={MODAL_CLOSE_BUTTON_POSITION}
+            <ModalBg width="100%" height="100%" style={[StyleSheet.absoluteFill]} preserveAspectRatio="none" />
+            {/* Decorative wave — clipped to card bounds */}
+            <HomeBg
+              width={MODAL_WIDTH * 1.1}
+              height={MODAL_HEIGHT * 1.1}
+              style={{position: "absolute", top: -MODAL_HEIGHT * 0.05, left: -MODAL_WIDTH * 0.05}}
             />
-            <Text
-              style={{
-                fontFamily: TYPOGRAPHY.fontPrimary,
-                fontSize: TYPOGRAPHY.fontSize.title,
-                color: "black",
-                textAlign: "center",
-              }}
-            >
-              {AppStrings.Credits.TITLE}
-            </Text>
-            <FlatList
-              data={TEAM_MEMBERS}
-              renderItem={renderTeamMember}
-              keyExtractor={keyExtractor}
+
+            <View
               style={{
                 flex: 1,
                 width: "100%",
-                marginTop: SPACING.sm,
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: MODAL_CONTENT_PADDING,
+                paddingTop: verticalScale(40),
+                paddingBottom: verticalScale(30),
               }}
-              contentContainerStyle={{ alignItems: "center" }}
-            />
-            <WideButton buttonText={AppStrings.CommonAlerts.CLOSE_BUTTON} onPress={onClose} />
-          </View>
+            >
+              <CloseButton
+                onPress={onClose}
+                size={CLOSE_BUTTON_SIZE}
+                style={{...MODAL_CLOSE_BUTTON_POSITION, marginTop: verticalScale(28)}}
+              />
+              <Text
+                style={{
+                  fontFamily: TYPOGRAPHY.fontPrimary,
+                  fontSize: TYPOGRAPHY.fontSize.title,
+                  color: "black",
+                  textAlign: "center",
+                }}
+              >
+                {AppStrings.Credits.TITLE}
+              </Text>
+              <FlatList
+                data={TEAM_MEMBERS}
+                renderItem={renderTeamMember}
+                keyExtractor={keyExtractor}
+                style={{
+                  flex: 1,
+                  width: "100%",
+                  marginTop: SPACING.sm,
+                }}
+                contentContainerStyle={{alignItems: "center"}}
+              />
+              <WideButton buttonText={AppStrings.CommonAlerts.CLOSE_BUTTON} onPress={onClose} />
+            </View>
           </View>
         </SlideInModalContent>
       </View>
@@ -159,7 +138,7 @@ const CreditsModal: React.FC<CreditsModalProps> = ({
   );
 };
 
-const TeamMemberCard = ({ member }: { member: TeamMember }) => (
+const TeamMemberCard = ({member}: {member: TeamMember}) => (
   <View
     style={{
       borderRadius: CARD_BORDER_RADIUS,

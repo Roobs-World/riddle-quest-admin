@@ -60,6 +60,12 @@ jest.mock("../../modals/ModalRegistry", () => ({
 
 jest.mock("react-native-iap", () => ({}));
 
+jest.mock("../../../contexts/AuthContext", () => ({
+  useAuth: () => ({
+    playerData: null,
+  }),
+}));
+
 jest.mock("../../../utils/logger", () => ({
   logger: {
     debug: (...args: any[]) => mockDebug(...args),

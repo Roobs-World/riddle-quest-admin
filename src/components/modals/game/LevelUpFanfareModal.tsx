@@ -1,10 +1,9 @@
-import React, { useMemo, useState, useEffect } from "react";
-import { View, Text, Modal, Animated, Easing } from "react-native";
+import React, {useMemo, useState, useEffect} from "react";
+import {View, Text, Modal, Animated, Easing, TouchableOpacity} from "react-native";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import WheelBg from "../../../../assets/images/wheel-bg.svg";
 import LargeCoinStackSvg from "../../../../assets/images/large-coin-stack.svg";
-import WideButton from "../../buttons/WideButton";
-import { TYPOGRAPHY } from "../../../styles";
+import {TYPOGRAPHY} from "../../../styles";
 import {
   MODAL_WIDTH,
   MODAL_HEIGHT,
@@ -13,7 +12,7 @@ import {
   MODAL_BUTTON_SPACER,
   wheelSize,
 } from "../../../constants/layout";
-import { AppStrings } from "../../../constants/AppStrings";
+import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 
 interface LevelUpFanfareModalProps {
@@ -23,12 +22,7 @@ interface LevelUpFanfareModalProps {
   onClose: () => void;
 }
 
-const LevelUpFanfareModal: React.FC<LevelUpFanfareModalProps> = ({
-  isVisible,
-  newLevel,
-  coinsAwarded,
-  onClose,
-}) => {
+const LevelUpFanfareModal: React.FC<LevelUpFanfareModalProps> = ({isVisible, newLevel, coinsAwarded, onClose}) => {
   const [rotationAnim] = useState(() => new Animated.Value(0));
 
   const spin = useMemo(() => {
@@ -49,7 +43,7 @@ const LevelUpFanfareModal: React.FC<LevelUpFanfareModalProps> = ({
           duration: 12000,
           easing: Easing.linear,
           useNativeDriver: true,
-        })
+        }),
       );
       animation.start();
     }
@@ -72,99 +66,87 @@ const LevelUpFanfareModal: React.FC<LevelUpFanfareModalProps> = ({
         }}
       >
         <SlideInModalContent isVisible={isVisible}>
-          <View
-            style={{
-              width: MODAL_WIDTH,
-              height: MODAL_HEIGHT,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <ModalBg
-              width={MODAL_WIDTH}
-              height={MODAL_HEIGHT}
-              style={{ position: "absolute" }}
-            />
-
-          <View
-            style={{
-              position: "absolute",
-              width: MODAL_WIDTH,
-              height: MODAL_HEIGHT,
-              overflow: "hidden",
-              borderRadius: 30,
-            }}
-          >
-            <Animated.View
+          <TouchableOpacity key={"coin-purchase-modal"} onPress={onClose}>
+            <View
               style={{
-                position: "absolute",
-                left: (MODAL_WIDTH - wheelSize) / 2,
-                top: (MODAL_HEIGHT - wheelSize) / 2,
-                opacity: 0.25,
-                transform: [{ rotate: spin }],
+                width: MODAL_WIDTH,
+                height: MODAL_HEIGHT,
+                alignItems: "center",
+                justifyContent: "center",
               }}
             >
-              <WheelBg width={wheelSize} height={wheelSize} />
-            </Animated.View>
-          </View>
+              <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{position: "absolute"}} />
 
-          <View
-            style={{
-              flex: 1,
-              width: "100%",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: MODAL_BUTTON_SPACER * 2,
-              padding: MODAL_CONTENT_PADDING,
-            }}
-          >
-            <Text
-              style={{
-                fontFamily: TYPOGRAPHY.fontPrimary,
-                fontSize: TYPOGRAPHY.fontSize["3xl"],
-                color: "black",
-                textAlign: "center",
-              }}
-            >
-              {AppStrings.LevelUpFanfare.TITLE}
-            </Text>
-
-            <View style={{ alignItems: "center" }}>
-              <Text
+              <View
                 style={{
-                  fontFamily: TYPOGRAPHY.fontSecondaryBold,
-                  fontSize: TYPOGRAPHY.fontSize["2xl"],
-                  color: "black",
-                  marginBottom: 6,
+                  position: "absolute",
+                  width: MODAL_WIDTH,
+                  height: MODAL_HEIGHT,
+                  overflow: "hidden",
+                  borderRadius: 30,
                 }}
               >
-                {`${AppStrings.LevelUpFanfare.LEVEL_PREFIX}${newLevel}`}
-              </Text>
-              <LargeCoinStackSvg
-                width={COIN_ICON_SIZE_LARGE}
-                height={COIN_ICON_SIZE_LARGE}
-              />
-              <Text
+                <Animated.View
+                  style={{
+                    position: "absolute",
+                    left: (MODAL_WIDTH - wheelSize) / 2,
+                    top: (MODAL_HEIGHT - wheelSize) / 2,
+                    opacity: 0.25,
+                    transform: [{rotate: spin}],
+                  }}
+                >
+                  <WheelBg width={wheelSize} height={wheelSize} />
+                </Animated.View>
+              </View>
+
+              <View
                 style={{
-                  fontFamily: TYPOGRAPHY.fontSecondaryBold,
-                  fontSize: TYPOGRAPHY.fontSize["2xl"],
-                  color: "black",
-                  marginTop: 6,
+                  flex: 1,
+                  width: "100%",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: MODAL_BUTTON_SPACER * 2,
+                  padding: MODAL_CONTENT_PADDING,
                 }}
               >
-                +{coinsAwarded}
-                {AppStrings.LevelUpFanfare.COINS_SUFFIX}
-              </Text>
-            </View>
+                <Text
+                  style={{
+                    fontFamily: TYPOGRAPHY.fontPrimary,
+                    fontSize: TYPOGRAPHY.fontSize["3xl"],
+                    color: "black",
+                    textAlign: "center",
+                  }}
+                >
+                  {AppStrings.LevelUpFanfare.TITLE}
+                </Text>
 
-            <View style={{ width: "100%", marginTop: 8 }}>
-              <WideButton
-                buttonText={AppStrings.LevelUpFanfare.CONTINUE_BUTTON}
-                onPress={onClose}
-              />
+                <View style={{alignItems: "center"}}>
+                  <Text
+                    style={{
+                      fontFamily: TYPOGRAPHY.fontSecondaryBold,
+                      fontSize: TYPOGRAPHY.fontSize["2xl"],
+                      color: "black",
+                      marginBottom: 6,
+                    }}
+                  >
+                    {`${AppStrings.LevelUpFanfare.LEVEL_PREFIX}${newLevel}`}
+                  </Text>
+                  <LargeCoinStackSvg width={COIN_ICON_SIZE_LARGE * 1.5} height={COIN_ICON_SIZE_LARGE * 1.5} />
+                  <Text
+                    style={{
+                      fontFamily: TYPOGRAPHY.fontSecondaryBold,
+                      fontSize: TYPOGRAPHY.fontSize["3xl"],
+                      color: "#FB9A2B",
+                      marginTop: 6,
+                    }}
+                  >
+                    +{coinsAwarded}
+                    {AppStrings.LevelUpFanfare.COINS_SUFFIX}
+                  </Text>
+                </View>
+              </View>
             </View>
-          </View>
-          </View>
+          </TouchableOpacity>
         </SlideInModalContent>
       </View>
     </Modal>
