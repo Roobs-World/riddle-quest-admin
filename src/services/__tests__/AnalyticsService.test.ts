@@ -20,7 +20,6 @@ import {
 const mockSetUserId = jest.fn().mockResolvedValue(undefined);
 const mockSetAnalyticsCollectionEnabled = jest.fn().mockResolvedValue(undefined);
 const mockLogEvent = jest.fn().mockResolvedValue(undefined);
-const mockLogLevelEnd = jest.fn().mockResolvedValue(undefined);
 const mockLogShare = jest.fn().mockResolvedValue(undefined);
 const mockSetUserProperty = jest.fn().mockResolvedValue(undefined);
 
@@ -28,7 +27,6 @@ const mockAnalyticsInstance = {
   setUserId: mockSetUserId,
   setAnalyticsCollectionEnabled: mockSetAnalyticsCollectionEnabled,
   logEvent: mockLogEvent,
-  logLevelEnd: mockLogLevelEnd,
   logShare: mockLogShare,
   setUserProperty: mockSetUserProperty,
 };
@@ -43,9 +41,6 @@ jest.mock("@react-native-firebase/analytics", () => ({
   ),
   logEvent: jest.fn((instance: typeof mockAnalyticsInstance, name: string, params: unknown) =>
     instance.logEvent(name, params)
-  ),
-  logLevelEnd: jest.fn((instance: typeof mockAnalyticsInstance, opts: unknown) =>
-    instance.logLevelEnd(opts)
   ),
   logShare: jest.fn((instance: typeof mockAnalyticsInstance, opts: unknown) =>
     instance.logShare(opts)
@@ -202,7 +197,7 @@ describe("AnalyticsService", () => {
       });
     });
 
-    it("logs game_completed and logLevelEnd when GAME_COMPLETED with won fires", async () => {
+    it("logs game_completed and level_end when GAME_COMPLETED with won fires", async () => {
       gameEventBus.emit<GameCompletedEvent>({
         type: "GAME_COMPLETED",
         outcome: "won",
@@ -215,10 +210,13 @@ describe("AnalyticsService", () => {
         attempts: 3,
         coins_earned: 150,
       });
-      expect(mockLogLevelEnd).toHaveBeenCalledWith({ level: 3, success: "true" });
+      expect(mockLogEvent).toHaveBeenCalledWith("level_end", {
+        level: 3,
+        success: "true",
+      });
     });
 
-    it("logs game_completed without logLevelEnd when GAME_COMPLETED with lost fires", async () => {
+    it("logs game_completed without level_end when GAME_COMPLETED with lost fires", async () => {
       gameEventBus.emit<GameCompletedEvent>({
         type: "GAME_COMPLETED",
         outcome: "lost",
@@ -230,7 +228,10 @@ describe("AnalyticsService", () => {
         attempts: 6,
         coins_earned: 0,
       });
-      expect(mockLogLevelEnd).not.toHaveBeenCalled();
+      expect(mockLogEvent).not.toHaveBeenCalledWith(
+        "level_end",
+        expect.any(Object)
+      );
     });
 
     it("stops forwarding events after reset", async () => {
@@ -458,8 +459,10 @@ describe("AnalyticsService", () => {
       ).resolves.not.toThrow();
     });
 
-    it("does not throw when logLevelEnd fails in game completed handler", async () => {
-      mockLogLevelEnd.mockRejectedValueOnce(new Error("LevelEnd error"));
+    it("does not throw when level_end event logging fails in game completed handler", async () => {
+      mockLogEvent
+        .mockResolvedValueOnce(undefined)
+        .mockRejectedValueOnce(new Error("LevelEnd error"));
 
       const event: GameCompletedEvent = {
         type: "GAME_COMPLETED",

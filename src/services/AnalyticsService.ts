@@ -20,7 +20,6 @@ import {
   getAnalytics,
   logEvent,
   logShare,
-  logLevelEnd,
   setUserId,
   setAnalyticsCollectionEnabled,
   setUserProperty,
@@ -329,17 +328,11 @@ export class AnalyticsService {
     });
 
     if (event.outcome === "won") {
-      // Also log the standard Firebase Analytics `level_end` event so the
-      // game appears in the Firebase "Games" dashboard.
-      try {
-        await logLevelEnd(getAnalytics(), {
-          level: event.attempts,
-          success: "true",
-        });
-      } catch (error) {
-        logger.error("[Analytics] logLevelEnd failed", error);
-        captureException(error);
-      }
+      // Also log the standard Firebase Analytics `level_end` event.
+      await this.logEvent("level_end", {
+        level: event.attempts,
+        success: "true",
+      });
     }
   }
 

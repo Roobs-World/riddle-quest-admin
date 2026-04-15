@@ -31,7 +31,7 @@ export const SubmitButton = ({
     <TouchableOpacity
       className={`rounded-full ${
         isSubmitDisabled || gameOver
-          ? "bg-secondary-orange"
+          ? "bg-gray-300"
           : "bg-primary-orange"
       }`}
       style={{ paddingHorizontal: SUBMIT_BUTTON_PADDING_H, paddingVertical: SPACING.md }}

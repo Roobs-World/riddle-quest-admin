@@ -885,13 +885,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       }
       try {
         if (!isGuestPlayer(playerData)) {
+          const authUid = getAuth(getApp()).currentUser?.uid;
+          const targetUserId = authUid ?? playerData.userId;
+          if (authUid && authUid !== playerData.userId) {
+            logger.warn(
+              "AuthContext: Detected auth/userId mismatch during player update. Using auth uid for Firestore write.",
+              { authUid, playerUserId: playerData.userId }
+            );
+          }
           const safeUpdates = buildFirestoreUserUpdates(
             playerData,
             sanitizedUpdates
           );
-          await updateUserDocumentInFirestore(playerData.userId, safeUpdates);
+          await updateUserDocumentInFirestore(targetUserId, safeUpdates);
           setPlayerData((prevData: Player | null) =>
-            prevData ? { ...prevData, ...sanitizedUpdates } : null
+            prevData
+              ? { ...prevData, ...sanitizedUpdates, userId: targetUserId }
+              : null
           );
           logger.debug("AuthContext: Player data updated locally and in Firestore.");
           return;

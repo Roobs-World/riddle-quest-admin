@@ -154,12 +154,11 @@ describe("<SubmitButton />", () => {
   });
 
   describe("Styling", () => {
-    it("should apply secondary-orange class when disabled", () => {
+    it("should apply gray class when disabled", () => {
       const { getByTestId } = render(
         <SubmitButton {...defaultProps} isSubmitDisabled={true} />
       );
-      // Note: NativeWind classes are applied but not directly accessible in test environment
-      expect(getByTestId("submit-button")).toBeTruthy();
+      expect(getByTestId("submit-button").props.accessibilityState?.disabled).toBe(true);
     });
 
     it("should apply primary-orange class when enabled", () => {

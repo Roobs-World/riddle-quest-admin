@@ -74,14 +74,10 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
       setIsUpgradeModalVisible(false);
     }
   }, [isGuestMode]);
-
-  if (!resolvedPlayerData) {
-    return null;
-  }
-
-  const { stats } = resolvedPlayerData;
+  const hasProfileData = Boolean(resolvedPlayerData);
+  const stats = resolvedPlayerData?.stats;
   const avatarRadius = AVATAR_SIZE_LARGE / 2;
-  const initial = resolvedPlayerData.username
+  const initial = resolvedPlayerData?.username
     ? resolvedPlayerData.username.charAt(0).toUpperCase()
     : "?";
 
@@ -136,8 +132,16 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
       ? Number(stats.averageGuesses).toFixed(1)
       : "—";
   const xpFromProfile =
-    (resolvedPlayerData as unknown as { xp?: unknown; totalXp?: unknown }).xp ??
-    (resolvedPlayerData as unknown as { xp?: unknown; totalXp?: unknown }).totalXp ??
+    (
+      resolvedPlayerData as unknown as
+        | { xp?: unknown; totalXp?: unknown }
+        | null
+    )?.xp ??
+    (
+      resolvedPlayerData as unknown as
+        | { xp?: unknown; totalXp?: unknown }
+        | null
+    )?.totalXp ??
     (stats as unknown as { xp?: unknown; totalXp?: unknown })?.xp ??
     (stats as unknown as { xp?: unknown; totalXp?: unknown })?.totalXp ??
     stats?.totalScore ??
@@ -162,7 +166,10 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
           backgroundColor: "rgba(0,0,0,0.5)",
         }}
       >
-        <SlideInModalContent isVisible={isVisible}>
+        <SlideInModalContent
+          isVisible={isVisible}
+          style={{ flex: 1, width: "100%", justifyContent: "flex-end" }}
+        >
           <View
             style={{
               backgroundColor: CREAM,
@@ -284,7 +291,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
                     fontFamily: TYPOGRAPHY.fontSecondaryBold,
                   }}
                 >
-                  {resolvedPlayerData.username || AppStrings.Profile.GUEST_USERNAME}
+                  {resolvedPlayerData?.username || AppStrings.Profile.GUEST_USERNAME}
                 </Text>
                 <Text style={{ color: GOLD, fontSize: 24 }}>✏</Text>
               </TouchableOpacity>
@@ -351,7 +358,28 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
             alwaysBounceVertical={true}
             bounces={true}
           >
-            {isGuestMode ? (
+            {!hasProfileData ? (
+              <View
+                style={{
+                  backgroundColor: "#F5EDD4",
+                  borderRadius: 16,
+                  padding: SPACING.md,
+                  marginBottom: SPACING.lg,
+                }}
+              >
+                <Text
+                  style={{
+                    fontFamily: TYPOGRAPHY.fontSecondary,
+                    fontSize: TYPOGRAPHY.fontSize.base,
+                    color: "#1A1A1A",
+                    lineHeight: 22,
+                  }}
+                >
+                  {AppStrings.Profile.LOADING_MESSAGE}
+                </Text>
+              </View>
+            ) : null}
+            {hasProfileData && isGuestMode ? (
               <View
                 style={{
                   backgroundColor: "#F5EDD4",
@@ -494,18 +522,20 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
             </View>
 
             <View style={{ marginBottom: SPACING.lg }}>
-              <TreasureChest coins={resolvedPlayerData.coins ?? 0} />
+              <TreasureChest coins={resolvedPlayerData?.coins ?? 0} />
             </View>
 
             <View style={{ height: SPACING.sm }} />
 
             <TouchableOpacity
-              onPress={() =>
+              disabled={!hasProfileData}
+              onPress={() => {
+                if (!resolvedPlayerData) return;
                 modal.openGameModal("achievements", {
                   playerData: resolvedPlayerData,
-                })
-              }
-              style={actionButtonStyle}
+                });
+              }}
+              style={[actionButtonStyle, !hasProfileData ? actionButtonDisabledStyle : null]}
             >
               <Text style={actionButtonTextStyle}>
                 {AppStrings.Achievements.MODAL_TITLE}
@@ -515,12 +545,14 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
             <View style={{ height: SPACING.sm }} />
 
             <TouchableOpacity
-              onPress={() =>
+              disabled={!hasProfileData}
+              onPress={() => {
+                if (!resolvedPlayerData) return;
                 modal.openGameModal("stats", {
                   playerData: resolvedPlayerData,
-                })
-              }
-              style={actionButtonStyle}
+                });
+              }}
+              style={[actionButtonStyle, !hasProfileData ? actionButtonDisabledStyle : null]}
             >
               <Text style={actionButtonTextStyle}>
                 {AppStrings.StatsModal.TITLE}
@@ -530,12 +562,14 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
             <View style={{ height: SPACING.sm }} />
 
             <TouchableOpacity
-              onPress={() =>
+              disabled={!hasProfileData}
+              onPress={() => {
+                if (!resolvedPlayerData) return;
                 modal.openGameModal("leaderboard", {
                   currentUserId: resolvedPlayerData.userId,
-                })
-              }
-              style={actionButtonStyle}
+                });
+              }}
+              style={[actionButtonStyle, !hasProfileData ? actionButtonDisabledStyle : null]}
             >
               <Text style={actionButtonTextStyle}>
                 {AppStrings.Leaderboard.TITLE}
@@ -553,7 +587,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
       <UpdateUsernameModal
         isVisible={isUsernameModalVisible}
         onClose={() => setIsUsernameModalVisible(false)}
-        currentUsername={resolvedPlayerData.username || ""}
+        currentUsername={resolvedPlayerData?.username || ""}
       />
 
       {isGuestMode ? (
@@ -577,6 +611,10 @@ const actionButtonStyle = {
   borderRadius: 14,
   paddingVertical: 14,
   alignItems: "center" as const,
+};
+
+const actionButtonDisabledStyle = {
+  opacity: 0.55,
 };
 
 const actionButtonTextStyle = {

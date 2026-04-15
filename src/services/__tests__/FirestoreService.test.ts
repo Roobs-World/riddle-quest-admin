@@ -742,7 +742,13 @@ describe("FirestoreService", () => {
       );
 
       expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "users", mockUserId);
-      expect(mockUpdateDoc).toHaveBeenCalledWith(expect.any(Object), mockUpdates);
+      expect(mockUpdateDoc).toHaveBeenCalledWith(
+        expect.any(Object),
+        expect.objectContaining({
+          ...mockUpdates,
+          userId: mockUserId,
+        })
+      );
       expect(logger.info).toHaveBeenCalledWith(
         "User document updated successfully for user:",
         mockUserId

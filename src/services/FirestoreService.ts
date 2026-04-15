@@ -75,7 +75,9 @@ const stripUndefined = <T extends Record<string, unknown>>(
   value: T
 ): Partial<T> =>
   Object.fromEntries(
-    Object.entries(value).filter(([, nestedValue]) => nestedValue !== undefined)
+    Object.entries(value).filter(
+      ([, nestedValue]) => nestedValue !== undefined && nestedValue !== null
+    )
   ) as Partial<T>;
 
 const sanitizeUserDocumentUpdates = (updates: Partial<Player>): Partial<Player> => {
@@ -536,15 +538,17 @@ export const updateUserDocumentInFirestore = async (
     );
     return;
   }
+  const sanitizedUpdates = sanitizeUserDocumentUpdates({
+    ...updates,
+    userId,
+  });
+  if (Object.keys(sanitizedUpdates).length === 0) {
+    logger.warn(
+      "Skipping Firestore user update because payload had no allowed fields."
+    );
+    return;
+  }
   try {
-    const sanitizedUpdates = sanitizeUserDocumentUpdates(updates);
-    if (Object.keys(sanitizedUpdates).length === 0) {
-      logger.warn(
-        "Skipping Firestore user update because payload had no allowed fields."
-      );
-      return;
-    }
-
     await updateDoc(doc(getFirestore(), "users", userId), sanitizedUpdates);
     logger.info("User document updated successfully for user:", userId);
   } catch (error) {

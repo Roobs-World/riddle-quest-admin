@@ -195,11 +195,12 @@ describe("FullProfileDetailsModal", () => {
     expect(getByTestId("close-button")).toBeTruthy();
   });
 
-  it("does not render when player data is null", () => {
-    const { queryByText } = renderWithModalProvider(
+  it("renders loading state when player data is null", () => {
+    const { getByText, queryByText } = renderWithModalProvider(
       <FullProfileDetailsModal {...defaultProps} playerData={null} />
     );
 
+    expect(getByText("Loading profile data...")).toBeTruthy();
     expect(queryByText("TestUser")).toBeNull();
   });
 

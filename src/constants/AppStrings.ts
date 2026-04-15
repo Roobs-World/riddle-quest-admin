@@ -319,6 +319,8 @@ const EN_APP_STRINGS = {
     AD_NOT_READY_MESSAGE:
       "The rewarded ad couldn't be shown at this time. Please try again shortly.",
     SPEND_COINS_ERROR_MESSAGE: "Could not spend coins. Please try again.",
+    CONTINUE_NOT_ENOUGH_COINS_MESSAGE:
+      "You do not have enough coins to continue.",
     HINT_NOT_AVAILABLE_TITLE: "Hint Not Available",
     HINT_NOT_AVAILABLE_MESSAGE: "No more letters can be revealed.",
     PURCHASE_FAILED_TITLE: "Purchase Failed",

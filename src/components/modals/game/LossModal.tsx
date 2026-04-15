@@ -27,12 +27,14 @@
  * @see {@link VictoryModal} For success state counterpart
  */
 
-import React from "react";
-import { View, Text, Modal } from "react-native";
+import React, { useMemo, useState } from "react";
+import { View, Text, Modal, Animated, Easing } from "react-native";
 import { TYPOGRAPHY } from "../../../styles";
 import WideButton from "../../buttons/WideButton";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
-import { MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, MODAL_BUTTON_SPACER } from "../../../constants/layout";
+import WheelBg from "../../../../assets/images/wheel-bg.svg";
+import CoinSvg from "../../../../assets/images/coin.svg";
+import { MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, MODAL_BUTTON_SPACER, wheelSize, COIN_ICON_SIZE_LARGE } from "../../../constants/layout";
 import { AppStrings } from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 
@@ -66,10 +68,10 @@ interface LossModalProps {
   /** Coin cost shown on the coin-continue button */
   coinContinueCost?: number;
 
-  /** Coin cost shown on the skip-level button */
+  /** Retained for compatibility with existing call sites */
   skipLevelCost?: number;
 
-  /** Whether the rewarded ad is ready (disables the watch-ad button if false) */
+  /** Whether the rewarded ad is ready */
   canWatchAd?: boolean;
 
   /** Whether the user has enough coins (disables the coin button if false) */
@@ -92,12 +94,22 @@ const LossModal: React.FC<LossModalProps> = ({
   onWatchAdContinue,
   onCoinContinue,
   coinContinueCost,
-  skipLevelCost,
   canWatchAd,
   canUseCoin,
   onOpenShop,
 }) => {
   const showContinueOptions = !!(onWatchAdContinue || onCoinContinue);
+  const isWatchAdDisabled = canWatchAd === false;
+  const isCoinContinueDisabled = canUseCoin === false;
+
+  const [rotationAnim] = useState(() => new Animated.Value(0));
+
+  const spin = useMemo(() => {
+    return rotationAnim.interpolate({
+      inputRange: [0, 1],
+      outputRange: ["0deg", "360deg"],
+    });
+  }, [rotationAnim]);
 
   /**
    * Handles skipping to the next level and closes the modal afterward.
@@ -174,6 +186,33 @@ const LossModal: React.FC<LossModalProps> = ({
             }}
           >
             <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{ position: "absolute" }} />
+            <CoinSvg
+              width={COIN_ICON_SIZE_LARGE * 1.5}
+              height={COIN_ICON_SIZE_LARGE * 1.5}
+            />
+
+          <View
+            style={{
+              position: "absolute",
+              width: MODAL_WIDTH,
+              height: MODAL_HEIGHT,
+              overflow: "hidden",
+              borderRadius: 30,
+            }}
+          >
+            <Animated.View
+              style={{
+                position: "absolute",
+                left: (MODAL_WIDTH - wheelSize) / 2,
+                top: (MODAL_HEIGHT - wheelSize) / 2,
+                opacity: 0.25,
+                transform: [{ rotate: spin }],
+              }}
+            >
+              <WheelBg width={wheelSize} height={wheelSize} />
+            </Animated.View>
+          </View>
+
             <View
               style={{
                 flex: 1,
@@ -207,13 +246,16 @@ const LossModal: React.FC<LossModalProps> = ({
                     {AppStrings.LossModal.OUT_OF_ATTEMPTS}
                   </Text>
                 </View>
+
+               
+
                 <View style={{ flex: 2, justifyContent: "center", width: "100%" }}>
                   {onWatchAdContinue && (
                     <>
                       <WideButton
                         onPress={handleWatchAdContinue}
                         buttonText={AppStrings.LossModal.WATCH_AD_BUTTON}
-                        disabled={canWatchAd === false}
+                        disabled={isWatchAdDisabled}
                       />
                       <View style={{ height: MODAL_BUTTON_SPACER }} />
                     </>
@@ -223,7 +265,7 @@ const LossModal: React.FC<LossModalProps> = ({
                       <WideButton
                         onPress={handleCoinContinue}
                         buttonText={`${AppStrings.LossModal.USE_COINS_PREFIX}${coinContinueCost ?? 0}${AppStrings.LossModal.USE_COINS_SUFFIX}`}
-                        disabled={canUseCoin === false}
+                        disabled={isCoinContinueDisabled}
                       />
                       <View style={{ height: MODAL_BUTTON_SPACER }} />
                     </>
@@ -234,10 +276,6 @@ const LossModal: React.FC<LossModalProps> = ({
                       <View style={{ height: MODAL_BUTTON_SPACER }} />
                     </>
                   )}
-                  <WideButton
-                    onPress={handleNextLevel}
-                    buttonText={`${AppStrings.LossModal.SKIP_LEVEL_PREFIX}${skipLevelCost ?? 0}${AppStrings.LossModal.SKIP_LEVEL_SUFFIX}`}
-                  />
                 </View>
               </>
             ) : (

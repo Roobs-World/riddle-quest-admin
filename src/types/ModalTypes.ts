@@ -198,6 +198,7 @@ export interface GameModalTypes {
     coinsEarned: number;
     achievementNames?: string[];
     achievements?: AchievementUnlockFanfareItem[];
+    onContinue?: () => void;
   };
 
   streakIncreaseFanfare: {

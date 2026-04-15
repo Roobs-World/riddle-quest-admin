@@ -401,6 +401,7 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
     (props: BaseModalProps & ModalData) => ({
       isVisible: props.isVisible,
       onClose: props.onClose,
+      onContinue: (props.onContinue as (() => void) | undefined) ?? undefined,
       coinsEarned: (props.coinsEarned as number) || 0,
       achievementNames: (props.achievementNames as string[] | undefined) ?? [],
       achievements:

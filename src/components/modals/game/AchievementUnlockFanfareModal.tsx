@@ -21,6 +21,7 @@ interface AchievementUnlockFanfareModalProps {
   coinsEarned: number;
   achievementNames?: string[];
   achievements?: AchievementUnlockFanfareItem[];
+  onContinue?: () => void;
   onClose: () => void;
 }
 
@@ -31,6 +32,7 @@ const AchievementUnlockFanfareModal: React.FC<
   coinsEarned,
   achievementNames = [],
   achievements = [],
+  onContinue,
   onClose,
 }) => {
   const [rotationAnim] = useState(() => new Animated.Value(0));
@@ -70,10 +72,10 @@ const AchievementUnlockFanfareModal: React.FC<
     achievements[0]?.name ?? achievementNames[0] ?? AppStrings.Achievements.NEW_ACHIEVEMENT;
   const primaryAchievementDescription = achievements[0]?.description ?? "";
   const primaryAchievementIcon = achievements[0]?.icon ?? "";
-  const achievementCount = hasAchievementDetails
-    ? achievements.length
-    : achievementNames.length;
-  const extraCount = Math.max(0, achievementCount - 1);
+  const handleClose = () => {
+    onContinue?.();
+    onClose();
+  };
 
   return (
     <Modal transparent animationType="fade" visible={isVisible} onRequestClose={onClose}>
@@ -177,19 +179,6 @@ const AchievementUnlockFanfareModal: React.FC<
                   {primaryAchievementDescription}
                 </Text>
               ) : null}
-              {extraCount > 0 ? (
-                <Text
-                  style={{
-                    fontFamily: TYPOGRAPHY.fontSecondary,
-                    fontSize: TYPOGRAPHY.fontSize.base,
-                    color: "black",
-                    marginTop: 6,
-                    textAlign: "center",
-                  }}
-                >
-                  +{extraCount}{AppStrings.Achievements.MORE_UNLOCKED_SUFFIX}
-                </Text>
-              ) : null}
             </View>
 
             {coinsEarned > 0 ? (
@@ -210,7 +199,10 @@ const AchievementUnlockFanfareModal: React.FC<
             ) : null}
 
             <View style={{ width: "100%", marginTop: 8 }}>
-              <WideButton buttonText={AppStrings.Achievements.NICE_BUTTON} onPress={onClose} />
+              <WideButton
+                buttonText={AppStrings.Achievements.NICE_BUTTON}
+                onPress={handleClose}
+              />
             </View>
           </View>
           </View>

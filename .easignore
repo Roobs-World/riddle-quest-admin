@@ -17,6 +17,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .gradle/
+.gradle-local/
 !gradle-wrapper.jar # Include gradle wrapper jar for android builds
 !gradlew # Include gradlew script for android builds
 !gradlew.bat # Include gradlew.bat script for android builds
@@ -29,6 +30,11 @@ yarn-error.log*
 
 firebase-functions
 memory-bank
+coverage
+dist
+.claude
+.agents
+.cursor
 
 # You might want to add other large or unnecessary files/folders here
 # For example, if you have a large assets folder used only for development

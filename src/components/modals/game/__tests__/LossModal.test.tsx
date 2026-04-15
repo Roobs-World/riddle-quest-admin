@@ -18,19 +18,19 @@ jest.mock("../../../buttons/CloseButton", () => {
 // Mock the WideButton component
 jest.mock("../../../buttons/WideButton", () => {
   const { TouchableOpacity, Text } = require("react-native");
-  const MockWideButton = ({
+  const MockWideButton = jest.fn(({
     buttonText,
     onPress,
-    buttonColor,
+    disabled,
   }: {
     buttonText: string;
     onPress: () => void;
-    buttonColor?: string;
+    disabled?: boolean;
   }) => (
-    <TouchableOpacity testID="wide-button" onPress={onPress}>
+    <TouchableOpacity testID={`wide-button-${buttonText}`} onPress={onPress} disabled={disabled}>
       <Text>{buttonText}</Text>
     </TouchableOpacity>
-  );
+  ));
   return MockWideButton;
 });
 
@@ -49,6 +49,11 @@ describe("LossModal", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
+
+  const getWideButtonMockCalls = () => {
+    const wideButtonMock = require("../../../buttons/WideButton");
+    return wideButtonMock.mock.calls.map(([props]: [{ buttonText?: string; disabled?: boolean }]) => props);
+  };
 
   describe("Rendering", () => {
     it("should render correctly when visible", () => {
@@ -103,13 +108,11 @@ describe("LossModal", () => {
           onWatchAdContinue={jest.fn()}
           onCoinContinue={jest.fn()}
           coinContinueCost={25}
-          skipLevelCost={100}
         />
       );
 
       expect(getByText("Watch Ad to Continue")).toBeTruthy();
       expect(getByText("Use 25 Coins to Continue")).toBeTruthy();
-      expect(getByText("Skip Level (100 Coins)")).toBeTruthy();
     });
   });
 
@@ -234,16 +237,16 @@ describe("LossModal", () => {
       expect(getByText("Use 0 Coins to Continue")).toBeTruthy();
     });
 
-    it("should show Skip Level instead of Next Level when continue options are available", () => {
+    it("should not show Skip Level or Next Level when continue options are available", () => {
       const { getByText, queryByText } = render(
         <LossModal
           {...defaultProps}
           onWatchAdContinue={jest.fn()}
-          skipLevelCost={75}
         />
       );
 
-      expect(getByText("Skip Level (75 Coins)")).toBeTruthy();
+      expect(getByText("Watch Ad to Continue")).toBeTruthy();
+      expect(queryByText("Skip Level (75 Coins)")).toBeNull();
       expect(queryByText("Next Level")).toBeNull();
     });
 
@@ -369,30 +372,47 @@ describe("LossModal", () => {
   });
 
   describe("canWatchAd and canUseCoin props", () => {
-    it("should pass disabled state to Watch Ad button when canWatchAd is false", () => {
+    it("should keep Watch Ad button visible but disabled when canWatchAd is false", () => {
+      const mockWatchAd = jest.fn();
       const { getByText } = render(
         <LossModal
           {...defaultProps}
-          onWatchAdContinue={jest.fn()}
+          onWatchAdContinue={mockWatchAd}
           canWatchAd={false}
         />
       );
 
-      // The button should still be rendered
       expect(getByText("Watch Ad to Continue")).toBeTruthy();
+      const calls = getWideButtonMockCalls();
+      expect(calls).toContainEqual(expect.objectContaining({
+        buttonText: "Watch Ad to Continue",
+        disabled: true,
+      }));
+
+      fireEvent.press(getByText("Watch Ad to Continue"));
+      expect(mockWatchAd).not.toHaveBeenCalled();
     });
 
-    it("should pass disabled state to Coin button when canUseCoin is false", () => {
+    it("should disable coin continue button when canUseCoin is false", () => {
+      const mockCoinContinue = jest.fn();
       const { getByText } = render(
         <LossModal
           {...defaultProps}
-          onCoinContinue={jest.fn()}
+          onCoinContinue={mockCoinContinue}
           coinContinueCost={50}
           canUseCoin={false}
         />
       );
 
       expect(getByText("Use 50 Coins to Continue")).toBeTruthy();
+      const calls = getWideButtonMockCalls();
+      expect(calls).toContainEqual(expect.objectContaining({
+        buttonText: "Use 50 Coins to Continue",
+        disabled: true,
+      }));
+
+      fireEvent.press(getByText("Use 50 Coins to Continue"));
+      expect(mockCoinContinue).not.toHaveBeenCalled();
     });
 
     it("should enable buttons when canWatchAd and canUseCoin are true", () => {

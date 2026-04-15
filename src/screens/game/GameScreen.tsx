@@ -560,7 +560,36 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   }, [showRewardedAd, continueGame, modal]);
 
   const handleCoinContinue = useCallback(async () => {
-    modal.closeModalByType("loss");
+    const isInsufficientCoinsError = (error: unknown): boolean => {
+      if (!error || typeof error !== "object") {
+        return false;
+      }
+
+      const maybeCode =
+        "code" in error && typeof (error as { code?: unknown }).code === "string"
+          ? ((error as { code: string }).code || "").toLowerCase()
+          : "";
+      const maybeMessage =
+        "message" in error &&
+        typeof (error as { message?: unknown }).message === "string"
+          ? ((error as { message: string }).message || "").toLowerCase()
+          : "";
+
+      return (
+        maybeCode.includes("failed-precondition") ||
+        maybeCode.includes("resource-exhausted") ||
+        maybeMessage.includes("insufficient coins")
+      );
+    };
+
+    if ((userCoins ?? 0) < CONTINUE_COST_COINS) {
+      modal.showInfoModal({
+        title: AppStrings.GameScreenAlerts.NOT_ENOUGH_COINS_TITLE,
+        message: AppStrings.GameScreenAlerts.CONTINUE_NOT_ENOUGH_COINS_MESSAGE,
+      });
+      return false;
+    }
+
     try {
       if (!isGuestMode) {
         await runWithServerLoading(() =>
@@ -575,13 +604,24 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         });
       }
       continueGame();
+      return true;
     } catch (error) {
+      if (isInsufficientCoinsError(error)) {
+        logger.warn("Insufficient coins for continue attempt");
+        modal.showInfoModal({
+          title: AppStrings.GameScreenAlerts.NOT_ENOUGH_COINS_TITLE,
+          message: AppStrings.GameScreenAlerts.CONTINUE_NOT_ENOUGH_COINS_MESSAGE,
+        });
+        return false;
+      }
+
       logger.error("Error spending coins for continue:", error);
       captureException(error);
       modal.showInfoModal({
         title: AppStrings.CommonAlerts.ERROR_TITLE,
         message: AppStrings.GameScreenAlerts.SPEND_COINS_ERROR_MESSAGE,
       });
+      return false;
     }
   }, [
     modal,
@@ -590,6 +630,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     isGuestMode,
     playerData,
     updatePlayerDataLocally,
+    userCoins,
   ]);
 
   const handlePurchaseProduct = useCallback(
@@ -685,6 +726,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
   useEffect(() => {
     if (
+      gameOver &&
       lastGuessResult &&
       lastGuessResult.outcome !== "continue" &&
       !gameOverHandledRef.current
@@ -715,17 +757,13 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           }
         }
 
-        if (unlockedAchievementNames.length > 0) {
-          modal.showAchievementUnlockFanfareModal({
-            coinsEarned: result.coinsEarned || 0,
-            achievementNames: unlockedAchievementNames,
-            achievements: unlockedAchievements.map((achievement) => ({
-              name: achievement.name,
-              description: achievement.description,
-              icon: achievement.icon,
-            })),
-          });
-        }
+        const unlockedAchievementFanfareItems = unlockedAchievements.map(
+          (achievement) => ({
+            name: achievement.name,
+            description: achievement.description,
+            icon: achievement.icon,
+          })
+        );
 
         const xpValue = Number(playerData?.stats?.xp ?? 0);
         const totalScoreValue = Number(playerData?.stats?.totalScore ?? 0);
@@ -771,7 +809,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         };
 
         const showVictoryModal = () => {
-
           const continueToNextLevel = async () => {
             logger.debug("Victory modal: Next level button pressed");
             resetGame();
@@ -815,14 +852,42 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           });
         };
 
-        if (gameMode === "daily" && resolvedDailyStreak) {
-          modal.showStreakIncreaseFanfareModal({
-            streakValue: resolvedDailyStreak,
-            coinsAwarded: DAILY_CHALLENGE_COIN_REWARD,
-            onContinue: showVictoryModal,
-          });
-        } else {
+        const showPostAchievementWinFlow = () => {
+          if (gameMode === "daily" && resolvedDailyStreak) {
+            modal.showStreakIncreaseFanfareModal({
+              streakValue: resolvedDailyStreak,
+              coinsAwarded: DAILY_CHALLENGE_COIN_REWARD,
+              onContinue: showVictoryModal,
+            });
+            return;
+          }
+
           showVictoryModal();
+        };
+
+        const showAchievementFanfareAtIndex = (index: number) => {
+          if (index >= unlockedAchievementFanfareItems.length) {
+            showPostAchievementWinFlow();
+            return;
+          }
+
+          const achievement = unlockedAchievementFanfareItems[index];
+          modal.showAchievementUnlockFanfareModal({
+            coinsEarned: index === 0 ? result.coinsEarned || 0 : 0,
+            achievementNames: [achievement.name],
+            achievements: [achievement],
+            onContinue: () => {
+              void safeDelay(MODAL_CLOSE_DELAY_MS).then(() => {
+                showAchievementFanfareAtIndex(index + 1);
+              });
+            },
+          });
+        };
+
+        if (unlockedAchievementFanfareItems.length > 0) {
+          showAchievementFanfareAtIndex(0);
+        } else {
+          showPostAchievementWinFlow();
         }
 
         onGameWin(
@@ -1264,7 +1329,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       }
 
       modal.showFullProfileDetailsModal({
-        playerData: latestPlayerData ?? null,
+        playerData: latestPlayerData,
       });
     } finally {
       setIsProfileModalLoading(false);

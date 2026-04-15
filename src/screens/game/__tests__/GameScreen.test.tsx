@@ -90,16 +90,19 @@ const mockPlayerData = {
     dailyIndex: 0,
   },
 };
+let mockAuthPlayerData: typeof mockPlayerData | null = mockPlayerData;
+let mockAuthLoading = false;
 
 jest.mock("../../../contexts/AuthContext", () => ({
   useAuth: () => ({
-    playerData: mockPlayerData,
+    playerData: mockAuthPlayerData,
     logout: mockLogout,
     setGameMode: mockSetGameMode,
     fetchCurrentRiddle: mockFetchCurrentRiddle,
     updatePlayerDataLocally: mockUpdatePlayerDataLocally,
     pendingStreakBreak: mockPendingStreakBreak,
     consumePendingStreakBreak: mockConsumePendingStreakBreak,
+    isLoading: mockAuthLoading,
   }),
   GameMode: {},
 }));
@@ -316,6 +319,7 @@ jest.mock("../../../constants/AppStrings", () => ({
     GameScreenAlerts: {
       SUBMIT_GUESS_ERROR_TITLE: "Error",
       SUBMIT_GUESS_ERROR_MESSAGE: "Could not submit guess",
+      NOT_ENOUGH_COINS_TITLE: "Not enough coins",
       GUEST_MODE_NOTICE_TITLE: "Guest Mode",
       GUEST_MODE_NOTICE_MESSAGE: "Progress is local only.",
       AD_NOT_READY_TITLE: "Ad Not Ready",
@@ -325,6 +329,8 @@ jest.mock("../../../constants/AppStrings", () => ({
       PURCHASE_FAILED_TITLE: "Purchase Failed",
       PURCHASE_FAILED_MESSAGE: "Purchase failed. Please try again.",
       SPEND_COINS_ERROR_MESSAGE: "Unable to spend coins.",
+      CONTINUE_NOT_ENOUGH_COINS_MESSAGE:
+        "You do not have enough coins to continue.",
       DAILY_CHALLENGE_LABEL: "Daily Challenge",
       CLASSIC_LABEL: "Classic",
     },
@@ -422,6 +428,8 @@ describe("GameScreen", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockPendingStreakBreak = null;
+    mockAuthPlayerData = mockPlayerData;
+    mockAuthLoading = false;
     mockPlayerData.email = "test@test.com";
     mockPlayerData.username = "testuser";
     mockLoadUserProgressFromFirestore.mockResolvedValue(mockPlayerData);
@@ -1231,6 +1239,37 @@ describe("GameScreen", () => {
       expect(mockShowCoinShopModal).toHaveBeenCalled();
     });
 
+    it("does not re-open loss modal after coin continue clears game-over state", async () => {
+      const { httpsCallable } = require("@react-native-firebase/functions");
+      const spendCoins = jest.fn(() => Promise.resolve({ data: {} }));
+      httpsCallable.mockReturnValue(spendCoins);
+      mockUseGameLogic.currentGuess = ["K", "E", "Y", "B", "O", "A", "R", "D"];
+      mockUseGameLogic.processGuess.mockResolvedValueOnce({
+        outcome: "attemptLimitReached",
+        correctAnswer: "ANSWER",
+        canOfferCoinContinue: true,
+      });
+
+      const { rerender } = render(<GameScreen {...defaultProps} userCoins={100} />);
+      const inputProps = getLatestProps(mockGameInput);
+      await inputProps.handleSubmit();
+      mockUseGameLogic.gameOver = true;
+      rerender(<GameScreen {...defaultProps} userCoins={100} />);
+
+      await waitFor(() => {
+        expect(mockShowLossModal).toHaveBeenCalledTimes(1);
+      });
+      const config = mockShowLossModal.mock.calls[0][0];
+      await config.onCoinContinue();
+
+      mockUseGameLogic.gameOver = false;
+      rerender(<GameScreen {...defaultProps} userCoins={100} />);
+
+      await waitFor(() => {
+        expect(mockShowLossModal).toHaveBeenCalledTimes(1);
+      });
+    });
+
     it("shows ad-not-ready info when continue ad does not complete", async () => {
       mockShowRewardedAd.mockResolvedValueOnce(false);
       mockUseGameLogic.currentGuess = ["K", "E", "Y", "B", "O", "A", "R", "D"];
@@ -1349,6 +1388,22 @@ describe("GameScreen", () => {
           expect.objectContaining({ playerData: expect.any(Object) })
         );
       });
+    });
+
+    it("opens profile modal with null data when auth profile is unavailable", async () => {
+      mockAuthPlayerData = null;
+      render(<GameScreen {...defaultProps} />);
+      const bottomNavProps = getLatestProps(mockBottomNavigationBar);
+      await bottomNavProps.onProfilePress();
+
+      await waitFor(() => {
+        expect(mockShowFullProfileDetailsModal).toHaveBeenCalledWith({
+          playerData: null,
+        });
+      });
+      expect(mockShowInfoModal).not.toHaveBeenCalledWith(
+        expect.objectContaining({ title: "Profile" })
+      );
     });
 
     it("opens coin shop and handles pay-and-play fallback when no products", () => {
@@ -1609,7 +1664,42 @@ describe("GameScreen", () => {
       );
     });
 
-    it("maps unlocked achievements and triggers success haptic; handles victory modal callbacks", async () => {
+    it("shows not-enough-coins info and returns false when spendCoins reports insufficient coins", async () => {
+      const { httpsCallable } = require("@react-native-firebase/functions");
+      const spendCoins = jest.fn(() =>
+        Promise.reject(new Error("Insufficient coins to spend."))
+      );
+      httpsCallable.mockReturnValue(spendCoins);
+      mockUseGameLogic.currentGuess = ["K", "E", "Y", "B", "O", "A", "R", "D"];
+      mockUseGameLogic.processGuess.mockResolvedValueOnce({
+        outcome: "attemptLimitReached",
+        correctAnswer: "ANSWER",
+        canOfferCoinContinue: true,
+      });
+
+      const { rerender } = render(<GameScreen {...defaultProps} userCoins={100} />);
+      const inputProps = getLatestProps(mockGameInput);
+      await inputProps.handleSubmit();
+      mockUseGameLogic.gameOver = true;
+      rerender(<GameScreen {...defaultProps} userCoins={100} />);
+
+      await waitFor(() => {
+        expect(mockShowLossModal).toHaveBeenCalled();
+      });
+      const config =
+        mockShowLossModal.mock.calls[mockShowLossModal.mock.calls.length - 1][0];
+      const shouldClose = await config.onCoinContinue();
+
+      expect(shouldClose).toBe(false);
+      expect(mockShowInfoModal).toHaveBeenCalledWith(
+        expect.objectContaining({
+          title: "Not enough coins",
+          message: "You do not have enough coins to continue.",
+        })
+      );
+    });
+
+    it("maps unlocked achievements and shows each achievement fanfare in sequence", async () => {
       const haptics = require("react-native-haptic-feedback");
       const { ACHIEVEMENT_DEFINITIONS } = require("../../../constants/achievements");
       const { logger } = require("../../../utils/logger");
@@ -1621,13 +1711,19 @@ describe("GameScreen", () => {
         description: "Win your first riddle",
         icon: "*",
       });
+      ACHIEVEMENT_DEFINITIONS.push({
+        id: "ach-2",
+        name: "Speed Runner",
+        description: "Solve quickly",
+        icon: "!",
+      });
 
       mockUseGameLogic.currentGuess = ["K", "E", "Y", "B", "O", "A", "R", "D"];
       mockUseGameLogic.processGuess.mockResolvedValueOnce({
         outcome: "win",
         coinsEarned: 10,
         scoreEarned: 20,
-        newlyUnlockedAchievementIds: ["ach-1", "missing"],
+        newlyUnlockedAchievementIds: ["ach-1", "ach-2", "missing"],
       });
 
       const { rerender } = render(
@@ -1639,12 +1735,8 @@ describe("GameScreen", () => {
       rerender(<GameScreen {...defaultProps} onNextLevel={failingNextLevel} />);
 
       await waitFor(() => {
-        expect(mockShowVictoryModal).toHaveBeenCalled();
+        expect(mockShowAchievementUnlockFanfareModal).toHaveBeenCalled();
       });
-
-      const config =
-        mockShowVictoryModal.mock.calls[mockShowVictoryModal.mock.calls.length - 1][0];
-      expect(config.unlockedAchievementNames).toEqual(["First Win"]);
       expect(mockShowAchievementUnlockFanfareModal).toHaveBeenCalledWith({
         coinsEarned: 10,
         achievementNames: ["First Win"],
@@ -1655,7 +1747,33 @@ describe("GameScreen", () => {
             icon: "*",
           },
         ],
+        onContinue: expect.any(Function),
       });
+      const firstFanfareConfig = mockShowAchievementUnlockFanfareModal.mock.calls[0][0];
+      await firstFanfareConfig.onContinue();
+      await waitFor(() => {
+        expect(mockShowAchievementUnlockFanfareModal).toHaveBeenCalledTimes(2);
+      });
+      expect(mockShowAchievementUnlockFanfareModal.mock.calls[1][0]).toEqual({
+        coinsEarned: 0,
+        achievementNames: ["Speed Runner"],
+        achievements: [
+          {
+            name: "Speed Runner",
+            description: "Solve quickly",
+            icon: "!",
+          },
+        ],
+        onContinue: expect.any(Function),
+      });
+      const secondFanfareConfig = mockShowAchievementUnlockFanfareModal.mock.calls[1][0];
+      await secondFanfareConfig.onContinue();
+      await waitFor(() => {
+        expect(mockShowVictoryModal).toHaveBeenCalled();
+      });
+      const config =
+        mockShowVictoryModal.mock.calls[mockShowVictoryModal.mock.calls.length - 1][0];
+      expect(config.unlockedAchievementNames).toEqual(["First Win", "Speed Runner"]);
       expect(haptics.trigger).toHaveBeenCalledWith("notificationSuccess", expect.any(Object));
 
       await config.onNext();

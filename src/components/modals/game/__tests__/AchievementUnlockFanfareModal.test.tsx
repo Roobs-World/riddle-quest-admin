@@ -94,8 +94,8 @@ describe("AchievementUnlockFanfareModal", () => {
     expect(getByText("+25 Coins")).toBeTruthy();
   });
 
-  it("shows aggregated count when multiple achievements unlock", () => {
-    const { getByText } = render(
+  it("does not show aggregated count text when multiple achievements are passed", () => {
+    const { queryByText } = render(
       <AchievementUnlockFanfareModal
         isVisible={true}
         coinsEarned={50}
@@ -108,11 +108,12 @@ describe("AchievementUnlockFanfareModal", () => {
       />
     );
 
-    expect(getByText("+2 more unlocked")).toBeTruthy();
+    expect(queryByText("+2 more unlocked")).toBeNull();
   });
 
-  it("fires onClose when the CTA button is pressed", () => {
+  it("fires onContinue and onClose when the CTA button is pressed", () => {
     const onClose = jest.fn();
+    const onContinue = jest.fn();
     const { getByText } = render(
       <AchievementUnlockFanfareModal
         isVisible={true}
@@ -124,11 +125,13 @@ describe("AchievementUnlockFanfareModal", () => {
             icon: "*",
           },
         ]}
+        onContinue={onContinue}
         onClose={onClose}
       />
     );
 
     fireEvent.press(getByText("Nice"));
+    expect(onContinue).toHaveBeenCalledTimes(1);
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 });

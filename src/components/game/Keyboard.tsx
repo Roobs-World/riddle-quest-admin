@@ -11,8 +11,15 @@
  * @since 2024
  */
 
-import React, { useState, useCallback } from "react";
-import { View, Text, TouchableOpacity, LayoutChangeEvent } from "react-native";
+import React, { useState, useCallback, useRef, useEffect } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  LayoutChangeEvent,
+  Animated,
+  Easing,
+} from "react-native";
 import BackspaceIcon from "../icons/BackspaceIcon";
 import { gameStyles, TYPOGRAPHY } from "../../styles";
 import {
@@ -31,6 +38,10 @@ import { AppStrings } from "../../constants/AppStrings";
 const TOP_ROW = ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"];
 const MID_ROW = ["a", "s", "d", "f", "g", "h", "j", "k", "l"];
 const BOTTOM_ROW = ["z", "x", "c", "v", "b", "n", "m"];
+const KEY_BOUNCE_MIN_SCALE = 0.78;
+const KEY_BOUNCE_PEAK_SCALE = 1.2;
+const KEY_BOUNCE_UP_DURATION_MS = 105;
+const KEY_COLOR_TWEEN_DURATION_MS = 220;
 
 /**
  * Props interface for the Keyboard component.
@@ -72,6 +83,101 @@ const getKeyColors = (
       return { bg: "transparent", text: "#FFFFFF" };
   }
 };
+
+interface KeyboardLetterKeyProps {
+  keyLabel: string;
+  keyWidth: number;
+  fontSize: number;
+  state: Feedback | undefined;
+  onPress: (key: string) => void;
+  createScaleValueForKey: (key: string) => Animated.Value;
+  triggerBounce: (scaleValue: Animated.Value) => void;
+}
+
+const KeyboardLetterKey: React.FC<KeyboardLetterKeyProps> = React.memo(
+  function KeyboardLetterKey({
+    keyLabel,
+    keyWidth,
+    fontSize,
+    state,
+    onPress,
+    createScaleValueForKey,
+    triggerBounce,
+  }) {
+    const scale = createScaleValueForKey(keyLabel);
+    const { bg: currentBg, text } = getKeyColors(state);
+
+    const colorProgress = useRef(new Animated.Value(1)).current;
+    const [colorFrom, setColorFrom] = useState(currentBg);
+    const [colorTo, setColorTo] = useState(currentBg);
+
+    useEffect(() => {
+      if (currentBg === colorTo) {
+        return;
+      }
+
+      setColorFrom(colorTo);
+      setColorTo(currentBg);
+      colorProgress.stopAnimation();
+      colorProgress.setValue(0);
+      Animated.timing(colorProgress, {
+        toValue: 1,
+        duration: KEY_COLOR_TWEEN_DURATION_MS,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: false,
+      }).start();
+    }, [colorProgress, colorTo, currentBg]);
+
+    const animatedBackgroundColor = colorProgress.interpolate({
+      inputRange: [0, 1],
+      outputRange: [colorFrom, colorTo],
+    });
+
+    return (
+      <Animated.View style={{ transform: [{ scale }] }}>
+        <TouchableOpacity
+          style={[
+            gameStyles.keyButton,
+            {
+              borderRadius: KEYBOARD_KEY_BORDER_RADIUS,
+              height: KEYBOARD_KEY_HEIGHT,
+              width: keyWidth,
+              margin: KEYBOARD_KEY_MARGIN,
+            },
+          ]}
+          onPressIn={() => {
+            onPress(keyLabel);
+            triggerBounce(scale);
+          }}
+          activeOpacity={0.7}
+          accessibilityRole="button"
+          accessibilityLabel={`${AppStrings.Accessibility.LETTER_PREFIX}${keyLabel.toUpperCase()}`}
+        >
+          <Animated.View
+            pointerEvents="none"
+            style={{
+              position: "absolute",
+              top: 0,
+              right: 0,
+              bottom: 0,
+              left: 0,
+              borderRadius: KEYBOARD_KEY_BORDER_RADIUS,
+              backgroundColor: animatedBackgroundColor,
+            }}
+          />
+          <Text
+            style={[
+              gameStyles.keyText,
+              { fontSize, color: text },
+            ]}
+          >
+            {keyLabel}
+          </Text>
+        </TouchableOpacity>
+      </Animated.View>
+    );
+  }
+);
 
 /**
  * Keyboard Component
@@ -145,6 +251,8 @@ const Keyboard: React.FC<KeyboardProps> = React.memo(function Keyboard({
   letterStates,
 }) {
   const fontSize = TYPOGRAPHY.fontSize.lg;
+  const keyScaleByLabelRef = useRef<Record<string, Animated.Value>>({});
+  const backspaceScale = useRef(new Animated.Value(1)).current;
 
   // Track the actual rendered container width so keys never overflow the x axis.
   const [containerWidth, setContainerWidth] = useState(dimensions.screenWidth);
@@ -161,41 +269,49 @@ const Keyboard: React.FC<KeyboardProps> = React.memo(function Keyboard({
   // Use onKeyPress as a fallback if submitKeyPress is not provided
   const keyPressHandler = submitKeyPress || onKeyPress || (() => {});
 
+  const getScaleValueForKey = useCallback((key: string) => {
+    if (!keyScaleByLabelRef.current[key]) {
+      keyScaleByLabelRef.current[key] = new Animated.Value(1);
+    }
+    return keyScaleByLabelRef.current[key];
+  }, []);
+
+  const triggerBounce = useCallback((scaleValue: Animated.Value) => {
+    scaleValue.stopAnimation();
+    scaleValue.setValue(KEY_BOUNCE_MIN_SCALE);
+
+    Animated.sequence([
+      Animated.timing(scaleValue, {
+        toValue: KEY_BOUNCE_PEAK_SCALE,
+        duration: KEY_BOUNCE_UP_DURATION_MS,
+        easing: Easing.out(Easing.quad),
+        useNativeDriver: true,
+      }),
+      Animated.spring(scaleValue, {
+        toValue: 1,
+        friction: 3.8,
+        tension: 150,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
+
   if (!isVisible) {
     return null;
   }
 
-  const renderKey = (key: string) => {
-    const { bg, text } = getKeyColors(letterStates?.[key]);
-    return (
-      <TouchableOpacity
-        key={key}
-        style={[
-          gameStyles.keyButton,
-          {
-            borderRadius: KEYBOARD_KEY_BORDER_RADIUS,
-            height: KEYBOARD_KEY_HEIGHT,
-            width: keyWidth,
-            margin: KEYBOARD_KEY_MARGIN,
-            backgroundColor: bg,
-          },
-        ]}
-        onPressIn={() => keyPressHandler(key)}
-        activeOpacity={0.7}
-        accessibilityRole="button"
-        accessibilityLabel={`${AppStrings.Accessibility.LETTER_PREFIX}${key.toUpperCase()}`}
-      >
-        <Text
-          style={[
-            gameStyles.keyText,
-            { fontSize, color: text },
-          ]}
-        >
-          {key}
-        </Text>
-      </TouchableOpacity>
-    );
-  };
+  const renderKey = (key: string) => (
+    <KeyboardLetterKey
+      key={key}
+      keyLabel={key}
+      keyWidth={keyWidth}
+      fontSize={fontSize}
+      state={letterStates?.[key]}
+      onPress={keyPressHandler}
+      createScaleValueForKey={getScaleValueForKey}
+      triggerBounce={triggerBounce}
+    />
+  );
 
   return (
     <View style={gameStyles.keyboardContainer} onLayout={onContainerLayout}>
@@ -229,21 +345,26 @@ const Keyboard: React.FC<KeyboardProps> = React.memo(function Keyboard({
           {BOTTOM_ROW.map(renderKey)}
 
           {/* Backspace Key with Icon */}
-          <TouchableOpacity
-            key="delete"
-            style={{
-              height: KEYBOARD_KEY_HEIGHT,
-              width: KEYBOARD_BOTTOM_OFFSET,
-              margin: KEYBOARD_KEY_MARGIN,
-            }}
-            onPressIn={() => handleBackspace()}
-            activeOpacity={0.7}
-            accessibilityRole="button"
-            accessibilityLabel={AppStrings.Accessibility.BACKSPACE}
-            accessibilityHint={AppStrings.Accessibility.DELETE_LAST_LETTER}
-          >
-            <BackspaceIcon />
-          </TouchableOpacity>
+          <Animated.View style={{ transform: [{ scale: backspaceScale }] }}>
+            <TouchableOpacity
+              key="delete"
+              style={{
+                height: KEYBOARD_KEY_HEIGHT,
+                width: KEYBOARD_BOTTOM_OFFSET,
+                margin: KEYBOARD_KEY_MARGIN,
+              }}
+              onPressIn={() => {
+                handleBackspace();
+                triggerBounce(backspaceScale);
+              }}
+              activeOpacity={0.7}
+              accessibilityRole="button"
+              accessibilityLabel={AppStrings.Accessibility.BACKSPACE}
+              accessibilityHint={AppStrings.Accessibility.DELETE_LAST_LETTER}
+            >
+              <BackspaceIcon />
+            </TouchableOpacity>
+          </Animated.View>
         </View>
       </View>
     </View>
