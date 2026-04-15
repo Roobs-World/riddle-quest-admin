@@ -44,6 +44,12 @@ import { Asset } from "expo-asset";
 // Expo's EXGL doesn't support UNPACK_COLORSPACE_CONVERSION_WEBGL which Three.js
 // r152+ tries to set when color management is enabled.
 ColorManagement.enabled = false;
+
+const EXGL_UNSUPPORTED_PIXEL_STORE_PARAMETERS = new Set<number>([
+  0x9240, // UNPACK_FLIP_Y_WEBGL
+  0x9241, // UNPACK_PREMULTIPLY_ALPHA_WEBGL
+  0x9243, // UNPACK_COLORSPACE_CONVERSION_WEBGL
+]);
 import { SOLAR_SYSTEM_CONFIG } from "./SolarSystemConfig";
 import { dimensions } from "../../utils/responsive";
 // Import texture assets
@@ -431,6 +437,16 @@ const SolarSystem3D: React.FC = () => {
         dpr={[1, 1.5]}
         gl={{ alpha: true, pixelRatio: 1 }}
         onCreated={({ gl, camera }) => {
+          const originalPixelStorei = gl.pixelStorei?.bind(gl);
+          if (originalPixelStorei) {
+            gl.pixelStorei = ((pname: number, param: number) => {
+              if (EXGL_UNSUPPORTED_PIXEL_STORE_PARAMETERS.has(pname)) {
+                return;
+              }
+              originalPixelStorei(pname, param);
+            }) as typeof gl.pixelStorei;
+          }
+
           gl.setClearColor(0x000000, 0);
           camera.lookAt(0, 0, 0);
         }}

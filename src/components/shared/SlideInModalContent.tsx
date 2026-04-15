@@ -12,8 +12,8 @@ interface SlideInModalContentProps {
   style?: StyleProp<ViewStyle>;
 }
 
-const ENTRY_OFFSET = 28;
-const ENTRY_DURATION_MS = 220;
+const ENTRY_OFFSET = 72;
+const ENTRY_DURATION_MS = 320;
 
 const SlideInModalContent: React.FC<SlideInModalContentProps> = ({
   isVisible,

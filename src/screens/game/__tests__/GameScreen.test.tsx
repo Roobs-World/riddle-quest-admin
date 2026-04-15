@@ -1,5 +1,5 @@
 import React from "react";
-import { render, waitFor, cleanup } from "@testing-library/react-native";
+import { render, waitFor, cleanup, act } from "@testing-library/react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Mock all external dependencies before importing the component
@@ -1008,6 +1008,30 @@ describe("GameScreen", () => {
       ]);
     });
 
+    it("re-enables coin animation after submit settle delay even when modal visibility is not reported", async () => {
+      jest.useFakeTimers();
+      mockUseGameLogic.currentGuess = ["K", "E", "Y", "B", "O", "A", "R", "D"];
+      mockUseGameLogic.processGuess.mockResolvedValueOnce({
+        outcome: "win",
+        coinsEarned: 25,
+        scoreEarned: 10,
+      });
+
+      render(<GameScreen {...defaultProps} />);
+
+      const inputProps = getLatestProps(mockGameInput);
+      await act(async () => {
+        await inputProps.handleSubmit();
+      });
+
+      await act(async () => {
+        jest.runOnlyPendingTimers();
+      });
+
+      expect(getLatestProps(mockHeader).shouldAnimateCoins).toBe(true);
+      jest.useRealTimers();
+    });
+
     it("renders bottom nav actions supported by current API", async () => {
       render(<GameScreen {...defaultProps} />);
 
@@ -1236,6 +1260,9 @@ describe("GameScreen", () => {
       await waitFor(() => {
         expect(spendCoins).toHaveBeenCalledWith({ amount: 20, reason: "continue" });
       });
+      expect(mockUpdatePlayerDataLocally).toHaveBeenCalledWith(
+        expect.objectContaining({ coins: 80 })
+      );
       expect(mockShowCoinShopModal).toHaveBeenCalled();
     });
 

@@ -186,10 +186,7 @@ const LossModal: React.FC<LossModalProps> = ({
             }}
           >
             <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{ position: "absolute" }} />
-            <CoinSvg
-              width={COIN_ICON_SIZE_LARGE * 1.5}
-              height={COIN_ICON_SIZE_LARGE * 1.5}
-            />
+     
 
           <View
             style={{
@@ -247,7 +244,10 @@ const LossModal: React.FC<LossModalProps> = ({
                   </Text>
                 </View>
 
-               
+                <CoinSvg
+                  width={COIN_ICON_SIZE_LARGE * 1.5}
+                  height={COIN_ICON_SIZE_LARGE * 1.5}
+                />               
 
                 <View style={{ flex: 2, justifyContent: "center", width: "100%" }}>
                   {onWatchAdContinue && (
