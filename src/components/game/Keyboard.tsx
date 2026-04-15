@@ -11,7 +11,7 @@
  * @since 2024
  */
 
-import React, { useState, useCallback, useRef, useEffect } from "react";
+import React, { useState, useCallback, useRef } from "react";
 import {
   View,
   Text,
@@ -41,7 +41,6 @@ const BOTTOM_ROW = ["z", "x", "c", "v", "b", "n", "m"];
 const KEY_BOUNCE_MIN_SCALE = 0.78;
 const KEY_BOUNCE_PEAK_SCALE = 1.2;
 const KEY_BOUNCE_UP_DURATION_MS = 105;
-const KEY_COLOR_TWEEN_DURATION_MS = 220;
 
 /**
  * Props interface for the Keyboard component.
@@ -105,33 +104,7 @@ const KeyboardLetterKey: React.FC<KeyboardLetterKeyProps> = React.memo(
     triggerBounce,
   }) {
     const scale = createScaleValueForKey(keyLabel);
-    const { bg: currentBg, text } = getKeyColors(state);
-
-    const colorProgress = useRef(new Animated.Value(1)).current;
-    const [colorFrom, setColorFrom] = useState(currentBg);
-    const [colorTo, setColorTo] = useState(currentBg);
-
-    useEffect(() => {
-      if (currentBg === colorTo) {
-        return;
-      }
-
-      setColorFrom(colorTo);
-      setColorTo(currentBg);
-      colorProgress.stopAnimation();
-      colorProgress.setValue(0);
-      Animated.timing(colorProgress, {
-        toValue: 1,
-        duration: KEY_COLOR_TWEEN_DURATION_MS,
-        easing: Easing.out(Easing.cubic),
-        useNativeDriver: false,
-      }).start();
-    }, [colorProgress, colorTo, currentBg]);
-
-    const animatedBackgroundColor = colorProgress.interpolate({
-      inputRange: [0, 1],
-      outputRange: [colorFrom, colorTo],
-    });
+    const { bg, text } = getKeyColors(state);
 
     return (
       <Animated.View style={{ transform: [{ scale }] }}>
@@ -162,7 +135,7 @@ const KeyboardLetterKey: React.FC<KeyboardLetterKeyProps> = React.memo(
               bottom: 0,
               left: 0,
               borderRadius: KEYBOARD_KEY_BORDER_RADIUS,
-              backgroundColor: animatedBackgroundColor,
+              backgroundColor: bg,
             }}
           />
           <Text
