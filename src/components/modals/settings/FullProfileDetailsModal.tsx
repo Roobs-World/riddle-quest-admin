@@ -566,7 +566,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
               onPress={() => {
                 if (!resolvedPlayerData) return;
                 modal.openGameModal("leaderboard", {
-                  currentUserId: resolvedPlayerData.userId,
+                  currentUserId: firebaseUser?.uid ?? resolvedPlayerData.userId,
                 });
               }}
               style={[actionButtonStyle, !hasProfileData ? actionButtonDisabledStyle : null]}

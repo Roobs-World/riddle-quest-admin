@@ -68,6 +68,11 @@ export interface LeaderboardModalProps {
   currentUserId: string | null;
 }
 
+interface GetLeaderboardResult {
+  entries?: LeaderboardEntry[];
+  requestingUserId?: string;
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Constants
 // ─────────────────────────────────────────────────────────────────────────────
@@ -157,8 +162,15 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<LeaderboardType>("xp");
   const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
+  const [requestingUserId, setRequestingUserId] = useState<string | null>(
+    currentUserId
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setRequestingUserId(currentUserId);
+  }, [currentUserId]);
 
   const fetchLeaderboard = useCallback(async (type: LeaderboardType) => {
     setIsLoading(true);
@@ -166,8 +178,9 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({
     try {
       const callable = getCallableFunction("getLeaderboard");
       const result = await callable({ type, limit: 50 });
-      const data = result.data as { entries: LeaderboardEntry[] };
+      const data = result.data as GetLeaderboardResult;
       setEntries(data.entries ?? []);
+      setRequestingUserId(data.requestingUserId ?? currentUserId);
     } catch (err) {
       logger.error("[LeaderboardModal] Failed to fetch leaderboard:", err);
       captureException(err);
@@ -175,7 +188,7 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [currentUserId]);
 
   useEffect(() => {
     if (isVisible) {
@@ -184,7 +197,12 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({
   }, [isVisible, activeTab, fetchLeaderboard]);
 
   const activeTabConfig = TABS.find((t) => t.type === activeTab)!;
-  const displayEntries = buildDisplayEntries(entries, currentUserId, activeTab);
+  const effectiveCurrentUserId = requestingUserId ?? currentUserId;
+  const displayEntries = buildDisplayEntries(
+    entries,
+    effectiveCurrentUserId,
+    activeTab
+  );
 
   return (
     <Modal
@@ -356,7 +374,7 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({
                 showsVerticalScrollIndicator={false}
               >
                 {displayEntries.map((entry, index) => {
-                  const isCurrentUser = entry.userId === currentUserId;
+                  const isCurrentUser = entry.userId === effectiveCurrentUserId;
                   const rank = index + 1;
                   const statValue = entry[activeTabConfig.statKey] as number;
 

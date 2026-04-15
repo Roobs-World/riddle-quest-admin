@@ -328,6 +328,9 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
     isVisible: props.isVisible,
     onClose: props.onClose,
     userCoins: (props.userCoins as number) || 0,
+    totalCoins:
+      (props.totalCoins as number | undefined) ??
+      ((props.userCoins as number) || 0),
     skipCost: (props.skipCost as number) || 0,
     onSkipLevel: (props.onSkipLevel as () => void) || (() => {}),
     onOpenShop: (props.onOpenShop as () => void) || (() => {}),

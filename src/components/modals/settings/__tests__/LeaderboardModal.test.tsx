@@ -243,6 +243,21 @@ describe("LeaderboardModal", () => {
     });
   });
 
+  it("uses requestingUserId from backend when it differs from passed currentUserId", async () => {
+    const entries = [makeEntry({ userId: "auth-uid", username: "Alice" })];
+    mockHttpsCallable.mockResolvedValueOnce({
+      data: { entries, requestingUserId: "auth-uid" },
+    });
+
+    const { getAllByText } = render(
+      <LeaderboardModal {...defaultProps} currentUserId="stale-local-id" />
+    );
+
+    await waitFor(() => {
+      expect(getAllByText("Alice (you)").length).toBeGreaterThan(0);
+    });
+  });
+
   it("does not append '(you)' for other users' rows", async () => {
     const entries = [makeEntry({ userId: "user-2", username: "Bob" })];
     mockHttpsCallable.mockResolvedValueOnce({ data: { entries } });

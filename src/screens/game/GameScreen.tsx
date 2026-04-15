@@ -1161,6 +1161,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
     modal.showSkipModal({
       userCoins,
+      totalCoins: userCoins,
       skipCost,
       onOpenShop: handleCoinsPress,
       onSkipLevel: async () => {

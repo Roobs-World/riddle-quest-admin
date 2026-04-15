@@ -151,6 +151,7 @@ export interface GameModalTypes {
 
   skip: {
     userCoins: number;
+    totalCoins?: number;
     skipCost: number;
     onSkipLevel: () => void;
     onOpenShop: () => void;
