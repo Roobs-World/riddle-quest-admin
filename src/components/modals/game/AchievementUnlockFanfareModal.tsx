@@ -3,24 +3,24 @@ import {View, Text, Modal, Animated, Easing} from "react-native";
 import MaskedView from "@react-native-masked-view/masked-view";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import WheelBg from "../../../../assets/images/wheel-bg.svg";
-import CoinSvg from "../../../../assets/images/coin.svg";
-import WideButton from "../../buttons/WideButton";
 import {TYPOGRAPHY} from "../../../styles";
 import {AchievementUnlockFanfareItem} from "../../../types/ModalTypes";
+import WideButton from "../../buttons/WideButton";
 import {
   MODAL_WIDTH,
   MODAL_HEIGHT,
   MODAL_CONTENT_PADDING,
   MODAL_BUTTON_SPACER,
   wheelSize,
-  COIN_ICON_SIZE_LARGE,
 } from "../../../constants/layout";
 import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
+import {NewCoins} from "@/components/shared/NewCoins";
 
 interface AchievementUnlockFanfareModalProps {
   isVisible: boolean;
   coinsEarned: number;
+  totalCoins: number;
   achievementNames?: string[];
   achievements?: AchievementUnlockFanfareItem[];
   onContinue?: () => void;
@@ -30,6 +30,7 @@ interface AchievementUnlockFanfareModalProps {
 const AchievementUnlockFanfareModal: React.FC<AchievementUnlockFanfareModalProps> = ({
   isVisible,
   coinsEarned,
+  totalCoins,
   achievementNames = [],
   achievements = [],
   onContinue,
@@ -73,10 +74,6 @@ const AchievementUnlockFanfareModal: React.FC<AchievementUnlockFanfareModalProps
     achievements[0]?.name ?? achievementNames[0] ?? AppStrings.Achievements.NEW_ACHIEVEMENT;
   const primaryAchievementDescription = achievements[0]?.description ?? "";
   const primaryAchievementIcon = achievements[0]?.icon ?? "";
-  const handleClose = () => {
-    onContinue?.();
-    onClose();
-  };
 
   return (
     <Modal transparent animationType="fade" visible={isVisible} onRequestClose={onClose}>
@@ -209,25 +206,16 @@ const AchievementUnlockFanfareModal: React.FC<AchievementUnlockFanfareModalProps
                 ) : null}
               </View>
 
-              {coinsEarned > 0 ? (
-                <View style={{alignItems: "center"}}>
-                  <CoinSvg width={COIN_ICON_SIZE_LARGE} height={COIN_ICON_SIZE_LARGE} />
-                  <Text
-                    style={{
-                      fontFamily: TYPOGRAPHY.fontSecondaryBold,
-                      fontSize: TYPOGRAPHY.fontSize["3xl"],
-                      color: "#FB9A2B",
-                      marginTop: 6,
-                    }}
-                  >
-                    +{coinsEarned}
-                    {AppStrings.Achievements.COINS_SUFFIX}
-                  </Text>
-                </View>
-              ) : null}
+              <NewCoins coinsEarned={coinsEarned} totalCoins={totalCoins} />
 
               <View style={{width: "100%"}}>
-                <WideButton buttonText={AppStrings.Achievements.NICE_BUTTON} onPress={handleClose} />
+                <WideButton
+                  buttonText={AppStrings.Achievements.NICE_BUTTON}
+                  onPress={() => {
+                    onContinue?.();
+                    onClose();
+                  }}
+                />
               </View>
             </View>
           </View>

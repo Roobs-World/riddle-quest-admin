@@ -2,28 +2,34 @@ import React, {useMemo, useState, useEffect} from "react";
 import {View, Text, Modal, Animated, Easing, TouchableOpacity} from "react-native";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import WheelBg from "../../../../assets/images/wheel-bg.svg";
-import LargeCoinStackSvg from "../../../../assets/images/large-coin-stack.svg";
 import {TYPOGRAPHY} from "../../../styles";
 import {
   MODAL_WIDTH,
   MODAL_HEIGHT,
   MODAL_CONTENT_PADDING,
-  COIN_ICON_SIZE_LARGE,
   MODAL_BUTTON_SPACER,
   wheelSize,
 } from "../../../constants/layout";
 import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {verticalScale} from "@/utils/responsive";
+import {NewCoins} from "@/components/shared/NewCoins";
 
 interface LevelUpFanfareModalProps {
   isVisible: boolean;
   newLevel: number;
   coinsAwarded: number;
+  totalCoins: number;
   onClose: () => void;
 }
 
-const LevelUpFanfareModal: React.FC<LevelUpFanfareModalProps> = ({isVisible, newLevel, coinsAwarded, onClose}) => {
+const LevelUpFanfareModal: React.FC<LevelUpFanfareModalProps> = ({
+  isVisible,
+  newLevel,
+  coinsAwarded,
+  totalCoins,
+  onClose,
+}) => {
   const [rotationAnim] = useState(() => new Animated.Value(0));
 
   const spin = useMemo(() => {
@@ -133,18 +139,8 @@ const LevelUpFanfareModal: React.FC<LevelUpFanfareModalProps> = ({isVisible, new
                   >
                     {`${AppStrings.LevelUpFanfare.LEVEL_PREFIX}${newLevel}`}
                   </Text>
-                  <LargeCoinStackSvg width={COIN_ICON_SIZE_LARGE * 1.5} height={COIN_ICON_SIZE_LARGE * 1.5} />
-                  <Text
-                    style={{
-                      fontFamily: TYPOGRAPHY.fontSecondaryBold,
-                      fontSize: TYPOGRAPHY.fontSize["3xl"],
-                      color: "#FB9A2B",
-                      marginTop: 6,
-                    }}
-                  >
-                    +{coinsAwarded}
-                    {AppStrings.LevelUpFanfare.COINS_SUFFIX}
-                  </Text>
+
+                  <NewCoins coinsEarned={coinsAwarded} totalCoins={totalCoins} />
                 </View>
               </View>
             </View>

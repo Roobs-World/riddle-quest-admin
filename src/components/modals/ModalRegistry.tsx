@@ -397,6 +397,7 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
         props.onClose();
       },
       coinsPurchased: (props.coinsPurchased as number) || 0,
+      totalCoins: (props.totalCoins as number) || 0,
     })
   ),
 
@@ -407,6 +408,7 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
       onClose: props.onClose,
       onContinue: (props.onContinue as (() => void) | undefined) ?? undefined,
       coinsEarned: (props.coinsEarned as number) || 0,
+      totalCoins: (props.totalCoins as number) || 0,
       achievementNames: (props.achievementNames as string[] | undefined) ?? [],
       achievements:
         (props.achievements as AchievementUnlockFanfareItem[] | undefined) ??
@@ -420,6 +422,7 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
       isVisible: props.isVisible,
       streakValue: (props.streakValue as number) || 0,
       coinsAwarded: (props.coinsAwarded as number) || 0,
+      totalCoins: (props.totalCoins as number) || 0,
       onClose: () => {
         if (typeof props.onContinue === "function") {
           (props.onContinue as () => void)();
@@ -435,6 +438,7 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
       isVisible: props.isVisible,
       newLevel: (props.newLevel as number) || 1,
       coinsAwarded: (props.coinsAwarded as number) || 0,
+      totalCoins: (props.totalCoins as number) || 0,
       onClose: () => {
         if (typeof props.onContinue === "function") {
           (props.onContinue as () => void)();

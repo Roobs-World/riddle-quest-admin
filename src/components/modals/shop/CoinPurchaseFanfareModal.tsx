@@ -3,28 +3,32 @@ import {View, Text, Modal, Animated, Easing} from "react-native";
 import MaskedView from "@react-native-masked-view/masked-view";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import WheelBg from "../../../../assets/images/wheel-bg.svg";
-import LargeCoinStackSvg from "../../../../assets/images/large-coin-stack.svg";
-import WideButton from "../../buttons/WideButton";
 import {TYPOGRAPHY} from "../../../styles";
 import {
   MODAL_WIDTH,
   MODAL_HEIGHT,
   MODAL_CONTENT_PADDING,
-  COIN_ICON_SIZE_LARGE,
   MODAL_BUTTON_SPACER,
   wheelSize,
 } from "../../../constants/layout";
 import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
-import {verticalScale} from "@/utils/responsive";
+import {NewCoins} from "@/components/shared/NewCoins";
 
 interface CoinPurchaseFanfareModalProps {
   isVisible: boolean;
   coinsPurchased: number;
+  totalCoins: number;
   onClose: () => void;
 }
 
-const CoinPurchaseFanfareModal: React.FC<CoinPurchaseFanfareModalProps> = ({isVisible, coinsPurchased, onClose}) => {
+const CoinPurchaseFanfareModal: React.FC<CoinPurchaseFanfareModalProps> = ({
+  isVisible,
+  coinsPurchased,
+  totalCoins,
+  onClose,
+}) => {
+  const modalHeight = MODAL_HEIGHT * 1.2;
   const [rotationAnim] = useState(() => new Animated.Value(0));
 
   const spin = useMemo(() => {
@@ -66,47 +70,53 @@ const CoinPurchaseFanfareModal: React.FC<CoinPurchaseFanfareModalProps> = ({isVi
           alignItems: "center",
           backgroundColor: "rgba(0,0,0,0.5)",
         }}
+        onTouchEnd={onClose}
       >
         <SlideInModalContent isVisible={isVisible}>
           <View
             style={{
               width: MODAL_WIDTH,
-              height: MODAL_HEIGHT,
+              height: modalHeight,
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{position: "absolute"}} />
+            <ModalBg
+              width={MODAL_WIDTH}
+              height={modalHeight}
+              preserveAspectRatio="none"
+              style={{position: "absolute"}}
+            />
 
             <View
               style={{
                 position: "absolute",
                 width: MODAL_WIDTH,
-                height: MODAL_HEIGHT,
+                height: modalHeight,
               }}
             >
               <MaskedView
                 style={{
                   width: MODAL_WIDTH,
-                  height: MODAL_HEIGHT,
+                  height: modalHeight,
                 }}
                 maskElement={
                   <View
                     style={{
                       width: MODAL_WIDTH,
-                      height: MODAL_HEIGHT,
+                      height: modalHeight,
                       alignItems: "center",
                       justifyContent: "center",
                     }}
                   >
-                    <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} preserveAspectRatio="none" />
+                    <ModalBg width={MODAL_WIDTH} height={modalHeight} preserveAspectRatio="none" />
                   </View>
                 }
               >
                 <View
                   style={{
                     width: MODAL_WIDTH,
-                    height: MODAL_HEIGHT,
+                    height: modalHeight,
                     alignItems: "center",
                     justifyContent: "center",
                   }}
@@ -128,7 +138,7 @@ const CoinPurchaseFanfareModal: React.FC<CoinPurchaseFanfareModalProps> = ({isVi
               style={{
                 position: "absolute",
                 width: MODAL_WIDTH,
-                height: MODAL_HEIGHT,
+                height: modalHeight,
                 alignItems: "center",
                 justifyContent: "center",
                 gap: MODAL_BUTTON_SPACER,
@@ -146,28 +156,7 @@ const CoinPurchaseFanfareModal: React.FC<CoinPurchaseFanfareModalProps> = ({isVi
                 {AppStrings.CoinPurchase.TITLE}
               </Text>
 
-              <View style={{alignItems: "center"}}>
-                <LargeCoinStackSvg width={COIN_ICON_SIZE_LARGE * 1.5} height={COIN_ICON_SIZE_LARGE * 1.5} />
-                <Text
-                  style={{
-                    fontFamily: TYPOGRAPHY.fontSecondaryBold,
-                    fontSize: TYPOGRAPHY.fontSize["3xl"],
-                    color: "#FB9A2B",
-                    marginTop: 6,
-                  }}
-                >
-                  +{coinsPurchased}
-                  {AppStrings.CoinPurchase.COINS_SUFFIX}
-                </Text>
-              </View>
-
-              <View style={{width: "100%", marginTop: verticalScale(20)}}>
-                <WideButton
-                  buttonText={AppStrings.CoinPurchase.AWESOME_BUTTON}
-                  onPress={onClose}
-                  testID="wide-button"
-                />
-              </View>
+              <NewCoins coinsEarned={coinsPurchased} totalCoins={totalCoins} />
             </View>
           </View>
         </SlideInModalContent>

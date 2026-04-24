@@ -444,20 +444,49 @@ describe("ModalTypes", () => {
     it("should define coinPurchaseFanfare modal type", () => {
       const fanfareData: GameModalTypes["coinPurchaseFanfare"] = {
         coinsPurchased: 1000,
+        totalCoins: 3000,
       };
 
       expect(fanfareData.coinsPurchased).toBe(1000);
+      expect(fanfareData.totalCoins).toBe(3000);
+    });
+
+    it("should define achievementUnlockFanfare modal type", () => {
+      const achievementData: GameModalTypes["achievementUnlockFanfare"] = {
+        coinsEarned: 50,
+        totalCoins: 250,
+        achievementNames: ["First Win"],
+      };
+
+      expect(achievementData.coinsEarned).toBe(50);
+      expect(achievementData.totalCoins).toBe(250);
+      expect(achievementData.achievementNames).toEqual(["First Win"]);
+    });
+
+    it("should define streakIncreaseFanfare modal type", () => {
+      const streakData: GameModalTypes["streakIncreaseFanfare"] = {
+        streakValue: 5,
+        coinsAwarded: 50,
+        totalCoins: 250,
+        onContinue: jest.fn(),
+      };
+
+      expect(streakData.streakValue).toBe(5);
+      expect(streakData.coinsAwarded).toBe(50);
+      expect(streakData.totalCoins).toBe(250);
     });
 
     it("should define levelUpFanfare modal type", () => {
       const levelUpData: GameModalTypes["levelUpFanfare"] = {
         newLevel: 2,
         coinsAwarded: 50,
+        totalCoins: 250,
         onContinue: jest.fn(),
       };
 
       expect(levelUpData.newLevel).toBe(2);
       expect(levelUpData.coinsAwarded).toBe(50);
+      expect(levelUpData.totalCoins).toBe(250);
     });
 
     it("should define leaderboard modal type", () => {

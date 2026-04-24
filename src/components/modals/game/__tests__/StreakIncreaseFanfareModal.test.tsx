@@ -1,5 +1,5 @@
 import React from "react";
-import {render, fireEvent} from "@testing-library/react-native";
+import {render} from "@testing-library/react-native";
 import StreakIncreaseFanfareModal from "../StreakIncreaseFanfareModal";
 
 jest.mock("react-native/Libraries/Animated/Animated", () => {
@@ -61,27 +61,8 @@ jest.mock("react-native/Libraries/Modal/Modal", () => {
   };
 });
 
-jest.mock("../../../buttons/WideButton", () => {
-  const React = require("react");
-  const {TouchableOpacity, Text} = require("react-native");
-  return function MockWideButton({
-    buttonText,
-    onPress,
-  }: {
-    buttonText: string;
-    onPress: () => void;
-  }) {
-    return React.createElement(
-      TouchableOpacity,
-      {testID: "wide-button", accessibilityRole: "button", onPress},
-      React.createElement(Text, null, buttonText),
-    );
-  };
-});
-
 jest.mock("../../../../assets/images/modal-bg.svg", () => "ModalBgSvg");
 jest.mock("../../../../assets/images/wheel-bg.svg", () => "WheelBgSvg");
-jest.mock("../../../../assets/images/large-coin-stack.svg", () => "CoinStackSvg");
 
 describe("StreakIncreaseFanfareModal", () => {
   it("renders streak and coin reward values", () => {
@@ -90,6 +71,7 @@ describe("StreakIncreaseFanfareModal", () => {
         isVisible={true}
         streakValue={4}
         coinsAwarded={50}
+        totalCoins={250}
         onClose={jest.fn()}
       />,
     );
@@ -97,20 +79,21 @@ describe("StreakIncreaseFanfareModal", () => {
     expect(getByText("Streak Increased!")).toBeTruthy();
     expect(getByText("4-Day Streak")).toBeTruthy();
     expect(getByText("+50 Coins")).toBeTruthy();
+    expect(getByText("Total coins")).toBeTruthy();
+    expect(getByText("250")).toBeTruthy();
   });
 
-  it("fires onClose when the CTA button is pressed", () => {
-    const onClose = jest.fn();
-    const {getByText} = render(
+  it("does not render content when hidden", () => {
+    const {queryByText} = render(
       <StreakIncreaseFanfareModal
-        isVisible={true}
+        isVisible={false}
         streakValue={2}
         coinsAwarded={50}
-        onClose={onClose}
+        totalCoins={150}
+        onClose={jest.fn()}
       />,
     );
 
-    fireEvent.press(getByText("Keep Going"));
-    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(queryByText("Streak Increased!")).toBeNull();
   });
 });

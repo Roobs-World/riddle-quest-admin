@@ -88,6 +88,7 @@ describe("AchievementUnlockFanfareModal", () => {
       <AchievementUnlockFanfareModal
         isVisible={true}
         coinsEarned={25}
+        totalCoins={125}
         achievements={[
           {
             name: "First Victory",
@@ -111,6 +112,7 @@ describe("AchievementUnlockFanfareModal", () => {
       <AchievementUnlockFanfareModal
         isVisible={true}
         coinsEarned={50}
+        totalCoins={150}
         achievements={[
           {name: "First Victory", description: "Win one game", icon: "*"},
           {name: "Speed Runner", description: "Solve quickly", icon: "!"},
@@ -130,6 +132,7 @@ describe("AchievementUnlockFanfareModal", () => {
       <AchievementUnlockFanfareModal
         isVisible={true}
         coinsEarned={10}
+        totalCoins={110}
         achievements={[
           {
             name: "First Victory",

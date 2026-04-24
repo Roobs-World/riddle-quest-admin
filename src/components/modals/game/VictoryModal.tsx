@@ -8,6 +8,7 @@ import {MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, wheelSize} from "../..
 import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {NewCoins} from "@/components/shared/NewCoins";
+import {verticalScale} from "@/utils/responsive";
 
 /**
  * Props for the victory feedback modal shown after a successful solve.
@@ -40,6 +41,7 @@ interface VictoryModalProps {
  * @returns Animated victory modal view.
  */
 const VictoryModal: React.FC<VictoryModalProps> = ({isVisible, coinsEarned, totalCoins, onNextLevel, onClose}) => {
+  const modalHeight = MODAL_HEIGHT * 1.2;
   const [rotationAnim] = useState(() => new Animated.Value(0));
 
   const spin = useMemo(() => {
@@ -101,18 +103,23 @@ const VictoryModal: React.FC<VictoryModalProps> = ({isVisible, coinsEarned, tota
             }}
             style={{
               width: MODAL_WIDTH,
-              height: MODAL_HEIGHT,
+              height: modalHeight,
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{position: "absolute"}} />
+            <ModalBg
+              width={MODAL_WIDTH}
+              height={modalHeight}
+              preserveAspectRatio="none"
+              style={{position: "absolute"}}
+            />
 
             <View
               style={{
                 position: "absolute",
                 width: MODAL_WIDTH,
-                height: MODAL_HEIGHT,
+                height: modalHeight,
                 overflow: "hidden",
                 borderRadius: 30,
               }}
@@ -121,7 +128,7 @@ const VictoryModal: React.FC<VictoryModalProps> = ({isVisible, coinsEarned, tota
                 style={{
                   position: "absolute",
                   left: (MODAL_WIDTH - wheelSize) / 2,
-                  top: (MODAL_HEIGHT - wheelSize) / 2,
+                  top: (modalHeight - wheelSize) / 2,
                   opacity: 0.25,
                   transform: [{rotate: spin}],
                 }}
@@ -137,6 +144,7 @@ const VictoryModal: React.FC<VictoryModalProps> = ({isVisible, coinsEarned, tota
                 alignItems: "center",
                 justifyContent: "space-between",
                 padding: MODAL_CONTENT_PADDING,
+                marginBottom: verticalScale(20),
               }}
             >
               <Text

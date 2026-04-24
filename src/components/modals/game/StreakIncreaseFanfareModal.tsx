@@ -2,24 +2,23 @@ import React, {useMemo, useState, useEffect} from "react";
 import {View, Text, Modal, Animated, Easing} from "react-native";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import WheelBg from "../../../../assets/images/wheel-bg.svg";
-import LargeCoinStackSvg from "../../../../assets/images/large-coin-stack.svg";
-import WideButton from "../../buttons/WideButton";
 import {TYPOGRAPHY} from "../../../styles";
 import {
   MODAL_WIDTH,
   MODAL_HEIGHT,
   MODAL_CONTENT_PADDING,
-  COIN_ICON_SIZE_LARGE,
   MODAL_BUTTON_SPACER,
   wheelSize,
 } from "../../../constants/layout";
 import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
+import {NewCoins} from "@/components/shared/NewCoins";
 
 interface StreakIncreaseFanfareModalProps {
   isVisible: boolean;
   streakValue: number;
   coinsAwarded: number;
+  totalCoins: number;
   onClose: () => void;
 }
 
@@ -27,6 +26,7 @@ const StreakIncreaseFanfareModal: React.FC<StreakIncreaseFanfareModalProps> = ({
   isVisible,
   streakValue,
   coinsAwarded,
+  totalCoins,
   onClose,
 }) => {
   const [rotationAnim] = useState(() => new Animated.Value(0));
@@ -137,24 +137,7 @@ const StreakIncreaseFanfareModal: React.FC<StreakIncreaseFanfareModalProps> = ({
                 {`${streakValue}${AppStrings.StreakFanfare.STREAK_SUFFIX}`}
               </Text>
 
-              <View style={{alignItems: "center"}}>
-                <LargeCoinStackSvg width={COIN_ICON_SIZE_LARGE * 1.5} height={COIN_ICON_SIZE_LARGE * 1.5} />
-                <Text
-                  style={{
-                    fontFamily: TYPOGRAPHY.fontSecondaryBold,
-                    fontSize: TYPOGRAPHY.fontSize["3xl"],
-                    color: "#FB9A2B",
-                    marginTop: 6,
-                  }}
-                >
-                  +{coinsAwarded}
-                  {AppStrings.StreakFanfare.COINS_SUFFIX}
-                </Text>
-              </View>
-
-              <View style={{width: "100%"}}>
-                <WideButton buttonText={AppStrings.StreakFanfare.CONTINUE_BUTTON} onPress={onClose} />
-              </View>
+              <NewCoins coinsEarned={coinsAwarded} totalCoins={totalCoins} />
             </View>
           </View>
         </SlideInModalContent>

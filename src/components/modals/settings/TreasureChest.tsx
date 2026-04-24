@@ -1,43 +1,44 @@
-import { useEffect } from "react";
-import { View, Text } from "react-native";
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withRepeat,
-  withTiming,
-  cancelAnimation,
-  Easing,
-} from "react-native-reanimated";
+import {useEffect, useMemo, useState} from "react";
+import {View, Text, Animated, Easing} from "react-native";
 import TreasureChestRaysSvg from "../../../../assets/images/treasure-chest-rays.svg";
-import TreasureChestSvg from "../../../../assets/images/treasure-chest.svg";
-import { TYPOGRAPHY, SPACING } from "../../../styles";
-import { verticalScale } from "../../../utils/responsive";
-import { AppStrings } from "../../../constants/AppStrings";
+import TreasureChestSvg from "../../../../assets/images/chest.svg";
+import {TYPOGRAPHY, SPACING} from "../../../styles";
+import {verticalScale} from "../../../utils/responsive";
+import {AppStrings} from "../../../constants/AppStrings";
 
-export default function TreasureChest({ coins }: { coins: number }) {
-  const rotation = useSharedValue(0);
+export default function TreasureChest({coins}: {coins: number}) {
+  const [rotationAnim] = useState(() => new Animated.Value(0));
 
   useEffect(() => {
-    rotation.value = withRepeat(
-      withTiming(1, { duration: 10000, easing: Easing.linear }),
-      -1,
-      false
+    rotationAnim.setValue(0);
+    const animation = Animated.loop(
+      Animated.timing(rotationAnim, {
+        toValue: 1,
+        duration: 10000,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      }),
     );
-    return () => cancelAnimation(rotation);
-  }, [rotation]);
+    animation.start();
 
-  const raysStyle = useAnimatedStyle(() => ({
-    transform: [{ rotate: `${rotation.value * 360}deg` }],
-  }));
+    return () => {
+      animation.stop();
+      rotationAnim.stopAnimation();
+      rotationAnim.setValue(0);
+    };
+  }, [rotationAnim]);
+
+  const spin = useMemo(
+    () =>
+      rotationAnim.interpolate({
+        inputRange: [0, 1],
+        outputRange: ["0deg", "360deg"],
+      }),
+    [rotationAnim],
+  );
 
   return (
     <View className="w-full">
-      <Text
-        className="text-black text-left"
-        style={{ fontFamily: TYPOGRAPHY.fontPrimary, fontSize: TYPOGRAPHY.fontSize.lg, marginBottom: SPACING.md }}
-      >
-        {AppStrings.Profile.TREASURE_CHEST_TITLE}
-      </Text>
       <View
         style={{
           width: "100%",
@@ -45,17 +46,19 @@ export default function TreasureChest({ coins }: { coins: number }) {
           borderRadius: 16,
           backgroundColor: "#E2DCC7",
           overflow: "hidden",
+          marginTop: verticalScale(20),
         }}
       >
         {/* Rotating background rays — oversized so corners stay covered at all angles */}
         <Animated.View
-          style={[{
+          style={{
             position: "absolute",
             width: "200%",
             height: "200%",
             top: "-50%",
             left: "-50%",
-          }, raysStyle]}
+            transform: [{rotate: spin}],
+          }}
           pointerEvents="none"
           shouldRasterizeIOS
           renderToHardwareTextureAndroid
@@ -64,21 +67,37 @@ export default function TreasureChest({ coins }: { coins: number }) {
         </Animated.View>
 
         {/* Static chest graphic (transparent background) */}
-        <View style={{ position: "absolute", width: "100%", height: "100%" }}>
-          <TreasureChestSvg width="100%" height="100%" />
+        <View
+          style={{
+            position: "absolute",
+            width: "100%",
+            height: "100%",
+            alignContent: "center",
+            alignItems: "center",
+            paddingTop: verticalScale(25),
+          }}
+        >
+          <TreasureChestSvg width="50%" height="50%" style={{borderWidth: 0}} />
         </View>
 
         {/* Coins text */}
-        <View style={{ position: "absolute", width: "100%", height: "100%", alignItems: "center", justifyContent: "center" }}>
+        <View
+          style={{position: "absolute", width: "100%", height: "100%", alignItems: "center", justifyContent: "center"}}
+        >
           <Text
             className="text-black"
-            style={{ fontFamily: TYPOGRAPHY.fontPrimary, fontSize: TYPOGRAPHY.fontSize["2xl"], marginBottom: SPACING.xs, marginTop: verticalScale(96) }}
+            style={{
+              fontFamily: TYPOGRAPHY.fontPrimary,
+              fontSize: TYPOGRAPHY.fontSize["2xl"],
+              marginBottom: SPACING.xs,
+              marginTop: verticalScale(96),
+            }}
           >
             {AppStrings.Profile.TOTAL_COINS_LABEL}
           </Text>
           <Text
             className="text-black"
-            style={{ fontFamily: TYPOGRAPHY.fontPrimary, fontSize: TYPOGRAPHY.fontSize["2xl"] }}
+            style={{fontFamily: TYPOGRAPHY.fontPrimary, fontSize: TYPOGRAPHY.fontSize["2xl"]}}
           >
             {coins}
           </Text>
@@ -87,4 +106,3 @@ export default function TreasureChest({ coins }: { coins: number }) {
     </View>
   );
 }
-

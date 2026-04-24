@@ -312,21 +312,25 @@ const generateMockData = (
     case "coinPurchaseFanfare":
       return {
         coinsPurchased: 100,
+        totalCoins: currentCoins + 100,
       };
     case "achievementUnlockFanfare":
       return {
         coinsEarned: 50,
+        totalCoins: currentCoins + 50,
         achievementNames: ["First Victory", "Perfect Streak"],
       };
     case "streakIncreaseFanfare":
       return {
         streakValue: 4,
         coinsAwarded: 50,
+        totalCoins: currentCoins + 50,
       };
     case "levelUpFanfare":
       return {
         newLevel: 2,
         coinsAwarded: LEVEL_UP_COIN_BONUS,
+        totalCoins: currentCoins + LEVEL_UP_COIN_BONUS,
       };
     default:
       return {};

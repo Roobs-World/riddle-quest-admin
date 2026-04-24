@@ -681,6 +681,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       }
       modal.showCoinPurchaseFanfareModal({
         coinsPurchased: CONTINUE_REWARDED_AD_COIN_REWARD,
+        totalCoins: currentUserCoins + CONTINUE_REWARDED_AD_COIN_REWARD,
       });
       continueGame();
       return true;
@@ -727,6 +728,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           }
           modal.showCoinPurchaseFanfareModal({
             coinsPurchased,
+            totalCoins: currentUserCoins + coinsPurchased,
             onConfirm: () => {
               const openCoinShopModalIds = modal.modals
                 .filter((openModal) => openModal.type === "coinShop")
@@ -755,7 +757,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         setIsPurchaseInProgress(false);
       }
     },
-    [isPurchaseInProgress, modal, playerData, updatePlayerDataLocally]
+    [isPurchaseInProgress, modal, playerData, updatePlayerDataLocally, currentUserCoins]
   );
 
   const handlePayAndPlay = useCallback(() => {
@@ -852,6 +854,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
             ? DAILY_CHALLENGE_COIN_REWARD
             : 0;
         const totalBonusCoinsAwarded = levelUpBonusCoins + dailyChallengeBonusCoins;
+        const totalCoinsAfterWin =
+          currentUserCoins + (result.coinsEarned || 0) + totalBonusCoinsAwarded;
         const totalCoinsToAnimate =
           (result.coinsEarned || 0) + totalBonusCoinsAwarded;
         const coinCountUpDurationMs =
@@ -890,8 +894,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           modal.showVictoryModal({
             attempts: guesses.length,
             coinsEarned: result.coinsEarned || 0,
-            totalCoins:
-              currentUserCoins + (result.coinsEarned || 0) + totalBonusCoinsAwarded,
+            totalCoins: totalCoinsAfterWin,
             unlockedAchievementNames,
             guesses,
             onNext: async () => {
@@ -901,6 +904,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
                 modal.showLevelUpFanfareModal({
                   newLevel: nextLevel,
                   coinsAwarded: LEVEL_UP_COIN_BONUS,
+                  totalCoins: totalCoinsAfterWin,
                   onContinue: () => {
                     void (async () => {
                       await safeDelay(MODAL_CLOSE_DELAY_MS);
@@ -923,6 +927,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
             modal.showStreakIncreaseFanfareModal({
               streakValue: resolvedDailyStreak,
               coinsAwarded: DAILY_CHALLENGE_COIN_REWARD,
+              totalCoins: totalCoinsAfterWin,
               onContinue: showVictoryModal,
             });
             return;
@@ -940,6 +945,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           const achievement = unlockedAchievementFanfareItems[index];
           modal.showAchievementUnlockFanfareModal({
             coinsEarned: index === 0 ? result.coinsEarned || 0 : 0,
+            totalCoins: totalCoinsAfterWin,
             achievementNames: [achievement.name],
             achievements: [achievement],
             onContinue: () => {

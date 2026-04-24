@@ -34,20 +34,17 @@ import {TYPOGRAPHY} from "../../../styles";
 import WideButton from "../../buttons/WideButton";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import WheelBg from "../../../../assets/images/wheel-bg.svg";
-import CoinSvg from "../../../../assets/images/coin.svg";
+
 import {
   MODAL_WIDTH,
   MODAL_HEIGHT,
   MODAL_CONTENT_PADDING,
   MODAL_BUTTON_SPACER,
   wheelSize,
-  COIN_ICON_SIZE_LARGE,
 } from "../../../constants/layout";
 import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
-import ChestSvg from "../../../../assets/images/chest.svg";
-import SegmentBgSvg from "../../../../assets/images/segment-bg.svg";
-import {verticalScale} from "@/utils/responsive";
+import {NewCoins} from "@/components/shared/NewCoins";
 
 /**
  * Props interface for the LossModal component.
@@ -80,7 +77,7 @@ interface LossModalProps {
   coinContinueCost?: number;
 
   /** Player's current total coin balance */
-  totalCoins?: number;
+  totalCoins: number;
 
   /** Retained for compatibility with existing call sites */
   skipLevelCost?: number;
@@ -117,15 +114,7 @@ const LossModal: React.FC<LossModalProps> = ({
   const isWatchAdDisabled = canWatchAd === false;
   const isCoinContinueDisabled = canUseCoin === false;
   const [rotationAnim] = useState(() => new Animated.Value(0));
-  const displayTotalCoins = useMemo(() => {
-    const parsed = Number(totalCoins);
-    if (Number.isFinite(parsed)) {
-      return Math.max(0, parsed);
-    }
-
-    return 0;
-  }, [totalCoins]);
-  const lossModalHeight = MODAL_HEIGHT * 1.5;
+  const lossModalHeight = MODAL_HEIGHT * 1.2;
   const wheelBackgroundSize = wheelSize * 1.8;
 
   const spin = useMemo(() => {
@@ -319,56 +308,7 @@ const LossModal: React.FC<LossModalProps> = ({
                     </Text>
                   </View>
 
-                  <CoinSvg
-                    width={COIN_ICON_SIZE_LARGE * 1.5}
-                    height={COIN_ICON_SIZE_LARGE * 1.5}
-                    style={{marginBottom: verticalScale(30)}}
-                  />
-
-                  <View
-                    style={{
-                      width: "100%",
-                      alignItems: "center",
-                      marginBottom: 20,
-                    }}
-                  >
-                    <View style={{width: "100%", alignItems: "center"}}>
-                      <SegmentBgSvg width={MODAL_WIDTH - MODAL_CONTENT_PADDING * 2} height={86} />
-                    </View>
-                    <View
-                      style={{
-                        position: "absolute",
-                        left: 22,
-                        top: 9,
-                      }}
-                    >
-                      <ChestSvg width={62} height={62} />
-                    </View>
-                    <Text
-                      style={{
-                        position: "absolute",
-                        left: 175,
-                        top: 15,
-                        fontFamily: TYPOGRAPHY.fontSecondaryBold,
-                        fontSize: TYPOGRAPHY.fontSize.base,
-                        color: "#7D7E84",
-                      }}
-                    >
-                      {AppStrings.VictoryModal.TOTAL_COINS_LABEL}
-                    </Text>
-                    <Text
-                      style={{
-                        position: "absolute",
-                        left: 175,
-                        top: 35,
-                        fontFamily: TYPOGRAPHY.fontSecondaryBold,
-                        fontSize: TYPOGRAPHY.fontSize["3xl"],
-                        color: "#000000",
-                      }}
-                    >
-                      {displayTotalCoins}
-                    </Text>
-                  </View>
+                  <NewCoins coinsEarned={0} totalCoins={totalCoins} />
 
                   <View style={{flex: 2, justifyContent: "center", width: "100%"}}>
                     {onWatchAdContinue && (

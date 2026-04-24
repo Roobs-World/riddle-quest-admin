@@ -1218,7 +1218,11 @@ describe("GameScreen", () => {
 
       await waitFor(() => {
         expect(mockShowStreakIncreaseFanfareModal).toHaveBeenCalledWith(
-          expect.objectContaining({ streakValue: 5, coinsAwarded: 50 })
+          expect.objectContaining({
+            streakValue: 5,
+            coinsAwarded: 50,
+            totalCoins: 230,
+          })
         );
       });
 
@@ -1778,6 +1782,7 @@ describe("GameScreen", () => {
       });
       expect(mockShowAchievementUnlockFanfareModal).toHaveBeenCalledWith({
         coinsEarned: 10,
+        totalCoins: 110,
         achievementNames: ["First Win"],
         achievements: [
           {
@@ -1795,6 +1800,7 @@ describe("GameScreen", () => {
       });
       expect(mockShowAchievementUnlockFanfareModal.mock.calls[1][0]).toEqual({
         coinsEarned: 0,
+        totalCoins: 110,
         achievementNames: ["Speed Runner"],
         achievements: [
           {

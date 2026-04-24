@@ -193,11 +193,13 @@ export interface GameModalTypes {
 
   coinPurchaseFanfare: {
     coinsPurchased: number;
+    totalCoins: number;
     onConfirm?: () => void;
   };
 
   achievementUnlockFanfare: {
     coinsEarned: number;
+    totalCoins: number;
     achievementNames?: string[];
     achievements?: AchievementUnlockFanfareItem[];
     onContinue?: () => void;
@@ -206,12 +208,14 @@ export interface GameModalTypes {
   streakIncreaseFanfare: {
     streakValue: number;
     coinsAwarded: number;
+    totalCoins: number;
     onContinue?: () => void;
   };
 
   levelUpFanfare: {
     newLevel: number;
     coinsAwarded: number;
+    totalCoins: number;
     onContinue?: () => void;
   };
 }

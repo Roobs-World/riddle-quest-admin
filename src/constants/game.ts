@@ -40,11 +40,8 @@ interface XpLevelSnapshot {
 export function getXpThresholdForLevel(level: number): number {
   if (level <= 1) return 0;
   const completedLevelUps = level - 1;
-  const { basePerLevel, growthPerLevel } = XP_LEVEL_THRESHOLDS;
-  return (
-    completedLevelUps * basePerLevel +
-    ((completedLevelUps - 1) * completedLevelUps * growthPerLevel) / 2
-  );
+  const {basePerLevel, growthPerLevel} = XP_LEVEL_THRESHOLDS;
+  return completedLevelUps * basePerLevel + ((completedLevelUps - 1) * completedLevelUps * growthPerLevel) / 2;
 }
 
 /**
@@ -53,7 +50,7 @@ export function getXpThresholdForLevel(level: number): number {
  */
 export function getXpLevel(totalScore: number): XpLevelSnapshot {
   const score = Math.max(totalScore, 0);
-  const { basePerLevel, growthPerLevel } = XP_LEVEL_THRESHOLDS;
+  const {basePerLevel, growthPerLevel} = XP_LEVEL_THRESHOLDS;
   const a = growthPerLevel / 2;
   const b = basePerLevel - growthPerLevel / 2;
   const discriminant = b * b + 4 * a * score;
@@ -85,11 +82,11 @@ export const LEVEL_UP_COIN_BONUS = 50;
 /** Coins awarded for completing a Daily Challenge. */
 export const DAILY_CHALLENGE_COIN_REWARD = 50;
 /** Coins awarded for completing a Classic riddle. */
-export const CLASSIC_RIDDLE_COIN_REWARD = 15;
+export const CLASSIC_RIDDLE_COIN_REWARD = 25;
 /** Coin cost to continue after exhausting initial attempts. */
 export const CONTINUE_COST_COINS = 100;
 /** Coins awarded after a fully watched rewarded ad from the loss flow. */
-export const CONTINUE_REWARDED_AD_COIN_REWARD = 100;
+export const CONTINUE_REWARDED_AD_COIN_REWARD = 25;
 /** Delay (ms) before resuming background music after sound is enabled. */
 export const SOUND_RESUME_DELAY_MS = 500;
 /** Win flow: fade-out duration for background music (ms). */

@@ -96,6 +96,7 @@ describe("CoinPurchaseFanfareModal", () => {
   const defaultProps = {
     isVisible: true,
     coinsPurchased: 100,
+    totalCoins: 1000,
     onClose: mockOnClose,
   };
 
@@ -195,6 +196,7 @@ describe("CoinPurchaseFanfareModal", () => {
           <CoinPurchaseFanfareModal
             isVisible={true}
             coinsPurchased={50}
+            totalCoins={1050}
             onClose={mockOnClose}
           />
         )
