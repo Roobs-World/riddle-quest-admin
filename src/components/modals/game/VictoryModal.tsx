@@ -214,7 +214,7 @@ const VictoryModal: React.FC<VictoryModalProps> = ({isVisible, coinsEarned, tota
                     color: "#000000",
                   }}
                 >
-                  {typeof totalCoins === "number" ? totalCoins : coinsEarned}
+                  {totalCoins}
                 </Text>
               </View>
             </View>

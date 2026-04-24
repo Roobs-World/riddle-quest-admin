@@ -27,16 +27,25 @@
  * @see {@link VictoryModal} For success state counterpart
  */
 
-import React, { useMemo, useState } from "react";
-import { View, Text, Modal, Animated } from "react-native";
-import { TYPOGRAPHY } from "../../../styles";
+import React, {useMemo, useState} from "react";
+import {View, Text, Modal, Animated} from "react-native";
+import {TYPOGRAPHY} from "../../../styles";
 import WideButton from "../../buttons/WideButton";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import WheelBg from "../../../../assets/images/wheel-bg.svg";
 import CoinSvg from "../../../../assets/images/coin.svg";
-import { MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, MODAL_BUTTON_SPACER, wheelSize, COIN_ICON_SIZE_LARGE } from "../../../constants/layout";
-import { AppStrings } from "../../../constants/AppStrings";
+import {
+  MODAL_WIDTH,
+  MODAL_HEIGHT,
+  MODAL_CONTENT_PADDING,
+  MODAL_BUTTON_SPACER,
+  wheelSize,
+  COIN_ICON_SIZE_LARGE,
+} from "../../../constants/layout";
+import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
+import ChestSvg from "../../../../assets/images/chest.svg";
+import SegmentBgSvg from "../../../../assets/images/segment-bg.svg";
 
 /**
  * Props interface for the LossModal component.
@@ -68,6 +77,9 @@ interface LossModalProps {
   /** Coin cost shown on the coin-continue button */
   coinContinueCost?: number;
 
+  /** Player's current total coin balance */
+  totalCoins?: number;
+
   /** Retained for compatibility with existing call sites */
   skipLevelCost?: number;
 
@@ -94,6 +106,7 @@ const LossModal: React.FC<LossModalProps> = ({
   onWatchAdContinue,
   onCoinContinue,
   coinContinueCost,
+  totalCoins,
   canWatchAd,
   canUseCoin,
   onOpenShop,
@@ -101,7 +114,6 @@ const LossModal: React.FC<LossModalProps> = ({
   const showContinueOptions = !!(onWatchAdContinue || onCoinContinue);
   const isWatchAdDisabled = canWatchAd === false;
   const isCoinContinueDisabled = canUseCoin === false;
-
   const [rotationAnim] = useState(() => new Animated.Value(0));
 
   const spin = useMemo(() => {
@@ -180,35 +192,39 @@ const LossModal: React.FC<LossModalProps> = ({
           <View
             style={{
               width: MODAL_WIDTH,
-              height: MODAL_HEIGHT,
+              height: MODAL_HEIGHT * 1.5,
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{ position: "absolute" }} />
-     
+            <ModalBg
+              width={MODAL_WIDTH}
+              height={MODAL_HEIGHT * 1.5}
+              preserveAspectRatio="none"
+              style={{position: "absolute"}}
+            />
 
-          <View
-            style={{
-              position: "absolute",
-              width: MODAL_WIDTH,
-              height: MODAL_HEIGHT,
-              overflow: "hidden",
-              borderRadius: 30,
-            }}
-          >
-            <Animated.View
+            <View
               style={{
                 position: "absolute",
-                left: (MODAL_WIDTH - wheelSize) / 2,
-                top: (MODAL_HEIGHT - wheelSize) / 2,
-                opacity: 0.25,
-                transform: [{ rotate: spin }],
+                width: MODAL_WIDTH,
+                height: MODAL_HEIGHT,
+                overflow: "hidden",
+                borderRadius: 30,
               }}
             >
-              <WheelBg width={wheelSize} height={wheelSize} />
-            </Animated.View>
-          </View>
+              <Animated.View
+                style={{
+                  position: "absolute",
+                  left: (MODAL_WIDTH - wheelSize) / 2,
+                  top: (MODAL_HEIGHT - wheelSize) / 2,
+                  opacity: 0.25,
+                  transform: [{rotate: spin}],
+                }}
+              >
+                <WheelBg width={wheelSize} height={wheelSize} />
+              </Animated.View>
+            </View>
 
             <View
               style={{
@@ -219,105 +235,147 @@ const LossModal: React.FC<LossModalProps> = ({
                 padding: MODAL_CONTENT_PADDING,
               }}
             >
-            {showContinueOptions ? (
-              <>
-                <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                  <Text
-                    style={{
-                      fontFamily: TYPOGRAPHY.fontPrimary,
-                      fontSize: TYPOGRAPHY.fontSize.display,
-                      color: "black",
-                      textAlign: "center",
-                    }}
-                  >
-                    {AppStrings.LossModal.TITLE}
-                  </Text>
-                  <Text
-                    style={{
-                      fontFamily: TYPOGRAPHY.fontSecondary,
-                      fontSize: TYPOGRAPHY.fontSize.xl,
-                      color: "black",
-                      textAlign: "center",
-                    }}
-                  >
-                    {AppStrings.LossModal.OUT_OF_ATTEMPTS}
-                  </Text>
-                </View>
+              {showContinueOptions ? (
+                <>
+                  <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
+                    <Text
+                      style={{
+                        fontFamily: TYPOGRAPHY.fontPrimary,
+                        fontSize: TYPOGRAPHY.fontSize.display,
+                        color: "black",
+                        textAlign: "center",
+                      }}
+                    >
+                      {AppStrings.LossModal.TITLE}
+                    </Text>
+                    <Text
+                      style={{
+                        fontFamily: TYPOGRAPHY.fontSecondary,
+                        fontSize: TYPOGRAPHY.fontSize.xl,
+                        color: "black",
+                        textAlign: "center",
+                      }}
+                    >
+                      {AppStrings.LossModal.OUT_OF_ATTEMPTS}
+                    </Text>
+                  </View>
 
-                <CoinSvg
-                  width={COIN_ICON_SIZE_LARGE * 1.5}
-                  height={COIN_ICON_SIZE_LARGE * 1.5}
-                />               
+                  <CoinSvg width={COIN_ICON_SIZE_LARGE * 1.5} height={COIN_ICON_SIZE_LARGE * 1.5} />
 
-                <View style={{ flex: 2, justifyContent: "center", width: "100%" }}>
-                  {onWatchAdContinue && (
-                    <>
-                      <WideButton
-                        onPress={handleWatchAdContinue}
-                        buttonText={AppStrings.LossModal.WATCH_AD_BUTTON}
-                        disabled={isWatchAdDisabled}
-                      />
-                      <View style={{ height: MODAL_BUTTON_SPACER }} />
-                    </>
-                  )}
-                  {onCoinContinue && (
-                    <>
-                      <WideButton
-                        onPress={handleCoinContinue}
-                        buttonText={`${AppStrings.LossModal.USE_COINS_PREFIX}${coinContinueCost ?? 0}${AppStrings.LossModal.USE_COINS_SUFFIX}`}
-                        disabled={isCoinContinueDisabled}
-                      />
-                      <View style={{ height: MODAL_BUTTON_SPACER }} />
-                    </>
-                  )}
-                  {onOpenShop && (
-                    <>
-                      <WideButton onPress={handleOpenShop} buttonText={AppStrings.LossModal.OPEN_SHOP_BUTTON} />
-                      <View style={{ height: MODAL_BUTTON_SPACER }} />
-                    </>
-                  )}
-                </View>
-              </>
-            ) : (
-              <>
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Text
+                  <View
                     style={{
-                      fontFamily: TYPOGRAPHY.fontPrimary,
-                      fontSize: TYPOGRAPHY.fontSize.display,
-                      color: "black",
+                      width: "100%",
+                      alignItems: "center",
+                      marginBottom: 20,
                     }}
                   >
-                    {AppStrings.LossModal.TITLE}
-                  </Text>
-                  <Text
+                    <View style={{width: "100%", alignItems: "center"}}>
+                      <SegmentBgSvg width={MODAL_WIDTH - MODAL_CONTENT_PADDING * 2} height={86} />
+                    </View>
+                    <View
+                      style={{
+                        position: "absolute",
+                        left: 22,
+                        top: 9,
+                      }}
+                    >
+                      <ChestSvg width={62} height={62} />
+                    </View>
+                    <Text
+                      style={{
+                        position: "absolute",
+                        left: 175,
+                        top: 15,
+                        fontFamily: TYPOGRAPHY.fontSecondaryBold,
+                        fontSize: TYPOGRAPHY.fontSize.base,
+                        color: "#7D7E84",
+                      }}
+                    >
+                      {AppStrings.VictoryModal.TOTAL_COINS_LABEL}
+                    </Text>
+                    <Text
+                      style={{
+                        position: "absolute",
+                        left: 175,
+                        top: 35,
+                        fontFamily: TYPOGRAPHY.fontSecondaryBold,
+                        fontSize: TYPOGRAPHY.fontSize["3xl"],
+                        color: "#000000",
+                      }}
+                    >
+                      {totalCoins}
+                    </Text>
+                  </View>
+
+                  <View style={{flex: 2, justifyContent: "center", width: "100%"}}>
+                    {onWatchAdContinue && (
+                      <>
+                        <WideButton
+                          onPress={handleWatchAdContinue}
+                          buttonText={AppStrings.LossModal.WATCH_AD_BUTTON}
+                          disabled={isWatchAdDisabled}
+                        />
+                        <View style={{height: MODAL_BUTTON_SPACER}} />
+                      </>
+                    )}
+                    {onCoinContinue && (
+                      <>
+                        <WideButton
+                          onPress={handleCoinContinue}
+                          buttonText={`${AppStrings.LossModal.USE_COINS_PREFIX}${coinContinueCost ?? 0}${AppStrings.LossModal.USE_COINS_SUFFIX}`}
+                          disabled={isCoinContinueDisabled}
+                        />
+                        <View style={{height: MODAL_BUTTON_SPACER}} />
+                      </>
+                    )}
+                    {onOpenShop && (
+                      <>
+                        <WideButton onPress={handleOpenShop} buttonText={AppStrings.LossModal.OPEN_SHOP_BUTTON} />
+                        <View style={{height: MODAL_BUTTON_SPACER}} />
+                      </>
+                    )}
+                  </View>
+                </>
+              ) : (
+                <>
+                  <View
                     style={{
-                      fontFamily: TYPOGRAPHY.fontSecondary,
-                      fontSize: TYPOGRAPHY.fontSize.xl,
-                      color: "black",
-                      textAlign: "center",
+                      flex: 1,
+                      justifyContent: "center",
+                      alignItems: "center",
                     }}
                   >
-                    {AppStrings.LossModal.OUT_OF_ATTEMPTS}
-                  </Text>
-                </View>
-                <View style={{ flex: 2, justifyContent: "center", width: "100%" }}>
-                  {onOpenShop && (
-                    <>
-                      <WideButton onPress={handleOpenShop} buttonText={AppStrings.LossModal.OPEN_SHOP_BUTTON} />
-                      <View style={{ height: MODAL_BUTTON_SPACER }} />
-                    </>
-                  )}
-                  <WideButton onPress={handleNextLevel} buttonText={AppStrings.LossModal.NEXT_LEVEL_BUTTON} />
-                </View>
-              </>
-            )}
+                    <Text
+                      style={{
+                        fontFamily: TYPOGRAPHY.fontPrimary,
+                        fontSize: TYPOGRAPHY.fontSize.display,
+                        color: "black",
+                      }}
+                    >
+                      {AppStrings.LossModal.TITLE}
+                    </Text>
+                    <Text
+                      style={{
+                        fontFamily: TYPOGRAPHY.fontSecondary,
+                        fontSize: TYPOGRAPHY.fontSize.xl,
+                        color: "black",
+                        textAlign: "center",
+                      }}
+                    >
+                      {AppStrings.LossModal.OUT_OF_ATTEMPTS}
+                    </Text>
+                  </View>
+                  <View style={{flex: 2, justifyContent: "center", width: "100%"}}>
+                    {onOpenShop && (
+                      <>
+                        <WideButton onPress={handleOpenShop} buttonText={AppStrings.LossModal.OPEN_SHOP_BUTTON} />
+                        <View style={{height: MODAL_BUTTON_SPACER}} />
+                      </>
+                    )}
+                    <WideButton onPress={handleNextLevel} buttonText={AppStrings.LossModal.NEXT_LEVEL_BUTTON} />
+                  </View>
+                </>
+              )}
             </View>
           </View>
         </SlideInModalContent>

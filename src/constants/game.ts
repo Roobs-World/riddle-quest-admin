@@ -88,6 +88,8 @@ export const DAILY_CHALLENGE_COIN_REWARD = 50;
 export const CLASSIC_RIDDLE_COIN_REWARD = 15;
 /** Coin cost to continue after exhausting initial attempts. */
 export const CONTINUE_COST_COINS = 100;
+/** Coins awarded after a fully watched rewarded ad from the loss flow. */
+export const CONTINUE_REWARDED_AD_COIN_REWARD = 100;
 /** Delay (ms) before resuming background music after sound is enabled. */
 export const SOUND_RESUME_DELAY_MS = 500;
 /** Win flow: fade-out duration for background music (ms). */

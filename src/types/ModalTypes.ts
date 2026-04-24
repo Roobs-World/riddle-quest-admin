@@ -76,6 +76,7 @@ export interface GameModalTypes {
 
   loss: {
     correctAnswer: string;
+    totalCoins?: number;
     onNext: () => void;
     /** Opens the coin shop modal from the loss flow. */
     onOpenShop?: () => void;

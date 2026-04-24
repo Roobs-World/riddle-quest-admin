@@ -206,6 +206,7 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
   loss: createModalWrapper(LossModal, (props: BaseModalProps & ModalData) => ({
     isVisible: props.isVisible,
     correctAnswer: (props.correctAnswer as string) || "",
+    totalCoins: props.totalCoins as number | undefined,
     onNext: (props.onNext as () => void) || (() => {}),
     onHome: (props.onHome as () => void) || (() => {}),
     onOpenShop: props.onOpenShop as (() => void) | undefined,

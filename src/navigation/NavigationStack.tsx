@@ -33,9 +33,21 @@ import { logger } from "../utils/logger";
 import { captureException, addBreadcrumb } from "../utils/sentry";
 import { analyticsService } from "../services/AnalyticsService";
 import { isGuestPlayer } from "../features/auth/sessionBootstrap";
+import { loadUserProgressFromFirestore } from "../services/FirestoreService";
+import { Player } from "../validation/firestoreSchemas";
 
 const Stack = createNativeStackNavigator();
 const GUEST_CLASSIC_START_INDEX = 1;
+
+const toNonNegativeNumber = (value: unknown, fallback = 0): number => {
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    return fallback;
+  }
+  return Math.max(0, value);
+};
+
+const roundToTwo = (value: number): number =>
+  Math.round((value + Number.EPSILON) * 100) / 100;
 
 /**
  * Wrapper component that connects `GameScreen` to authentication and riddle
@@ -157,6 +169,107 @@ const GameScreenWrapper = () => {
       return;
     }
     await updatePlayerData(updates);
+  };
+
+  const buildPostGameStatsUpdate = (
+    basePlayer: Player,
+    options: {
+      attempts: number;
+      scoreEarned: number;
+      won: boolean;
+      resolvedDailyStreak?: number;
+    }
+  ): Player["stats"] => {
+    const previousStats = basePlayer.stats;
+    const attempts = Math.max(0, Math.floor(options.attempts));
+    const previousTotalWins = toNonNegativeNumber(previousStats?.totalWins);
+    const previousGamesPlayed = toNonNegativeNumber(previousStats?.gamesPlayed);
+    const previousTotalGuessesInWins = toNonNegativeNumber(
+      previousStats?.totalGuessesInWins
+    );
+    const nextTotalWins = previousTotalWins + (options.won ? 1 : 0);
+    const nextGamesPlayed = previousGamesPlayed + 1;
+    const nextTotalGuessesInWins =
+      previousTotalGuessesInWins + (options.won ? attempts : 0);
+    const nextXp =
+      toNonNegativeNumber(previousStats?.xp ?? previousStats?.totalScore) +
+      Math.max(0, options.scoreEarned);
+
+    const nextWinStreak =
+      gameMode === "daily"
+        ? options.won
+          ? toNonNegativeNumber(
+              options.resolvedDailyStreak,
+              toNonNegativeNumber(previousStats?.winStreak) + 1
+            )
+          : toNonNegativeNumber(previousStats?.winStreak)
+        : toNonNegativeNumber(previousStats?.winStreak);
+
+    return {
+      ...previousStats,
+      xp: nextXp,
+      totalScore: nextXp,
+      level: Math.max(
+        toNonNegativeNumber(previousStats?.level, 1),
+        getXpLevel(nextXp).level
+      ),
+      gamesPlayed: nextGamesPlayed,
+      totalWordsGuessed:
+        toNonNegativeNumber(previousStats?.totalWordsGuessed) + attempts,
+      wins: toNonNegativeNumber(previousStats?.wins) + (options.won ? 1 : 0),
+      totalWins: nextTotalWins,
+      totalGuessesInWins: nextTotalGuessesInWins,
+      averageGuesses:
+        nextTotalWins > 0
+          ? roundToTwo(nextTotalGuessesInWins / nextTotalWins)
+          : 0,
+      winRate:
+        nextGamesPlayed > 0
+          ? roundToTwo((nextTotalWins / nextGamesPlayed) * 100)
+          : 0,
+      challengeWins:
+        gameMode === "daily"
+          ? toNonNegativeNumber(previousStats?.challengeWins) +
+            (options.won ? 1 : 0)
+          : toNonNegativeNumber(previousStats?.challengeWins),
+      dailyPuzzlesCompleted:
+        gameMode === "daily"
+          ? toNonNegativeNumber(previousStats?.dailyPuzzlesCompleted) +
+            (options.won ? 1 : 0)
+          : toNonNegativeNumber(previousStats?.dailyPuzzlesCompleted),
+      winStreak: nextWinStreak,
+      bestStreak: Math.max(
+        toNonNegativeNumber(previousStats?.bestStreak),
+        nextWinStreak
+      ),
+      highestLevelClassic:
+        gameMode === "classic" && options.won
+          ? Math.max(
+              toNonNegativeNumber(previousStats?.highestLevelClassic),
+              toNonNegativeNumber(basePlayer.progress?.classicIndex)
+            )
+          : toNonNegativeNumber(previousStats?.highestLevelClassic),
+    };
+  };
+
+  const persistAuthenticatedBonusCoins = async (bonusCoins: number) => {
+    if (!playerData || isGuestMode || bonusCoins <= 0) {
+      return;
+    }
+
+    try {
+      const latestServerPlayer = await loadUserProgressFromFirestore(
+        playerData.userId
+      );
+      const serverCoins = toNonNegativeNumber(
+        latestServerPlayer?.coins,
+        toNonNegativeNumber(playerData.coins)
+      );
+      await updatePlayerData({ coins: serverCoins + bonusCoins });
+    } catch (error) {
+      logger.error("Failed to persist authenticated bonus coins:", error);
+      captureException(error);
+    }
   };
 
   const handleNextLevel = async () => {
@@ -339,6 +452,10 @@ const GameScreenWrapper = () => {
             dailyStreakAfterWin?: number,
             bonusCoinsAwarded: number = 0
           ) => {
+            if (!playerData) {
+              return;
+            }
+
             logger.debug(
               AppStrings.GameMessages.GAME_WON +
                 attempts +
@@ -347,59 +464,79 @@ const GameScreenWrapper = () => {
                 AppStrings.GameMessages.MODE_SUFFIX
             );
             logger.debug(AppStrings.GameMessages.COINS_EARNED + coinsEarned);
-            const newTotalXp = (playerData.stats?.xp ?? playerData.stats?.totalScore ?? 0) + scoreEarned;
-            const derivedLevel = getXpLevel(newTotalXp).level;
-            const updatedWinStreak =
-              gameMode === "daily" && typeof dailyStreakAfterWin === "number"
-                ? dailyStreakAfterWin
-                : (playerData.stats?.winStreak ?? 0);
-            const updatedBestStreak = Math.max(
-              playerData.stats?.bestStreak ?? 0,
-              updatedWinStreak
-            );
-            const updatedDailyChallengeIndex =
-              gameMode === "daily" && isGuestMode
-                ? (playerData.progress?.dailyChallengeIndex ?? 0) + 1
-                : (playerData.progress?.dailyChallengeIndex ?? 0);
-            const updatedClassicIndex =
-              gameMode === "daily" && isGuestMode
-                ? (playerData.progress?.classicIndex ??
-                    GUEST_CLASSIC_START_INDEX)
-                : (playerData.progress?.classicIndex ?? GUEST_CLASSIC_START_INDEX);
-            const updatedDailyPuzzlesCompleted =
+
+            const resolvedDailyStreak =
               gameMode === "daily"
-                ? (playerData.stats?.dailyPuzzlesCompleted ?? 0) + 1
-                : (playerData.stats?.dailyPuzzlesCompleted ?? 0);
+                ? toNonNegativeNumber(
+                    dailyStreakAfterWin,
+                    toNonNegativeNumber(playerData.stats?.winStreak) + 1
+                  )
+                : undefined;
 
-            const playerUpdatePayload = {
-              coins: (playerData.coins ?? 0) + coinsEarned + bonusCoinsAwarded,
-              progress: {
-                ...playerData.progress,
-                classicIndex: updatedClassicIndex,
-                dailyChallengeIndex: updatedDailyChallengeIndex,
-              },
-              stats: {
-                ...playerData.stats,
-                xp: newTotalXp,
-                level: Math.max(playerData.stats?.level ?? 1, derivedLevel),
-                wins: (playerData.stats?.wins ?? 0) + 1,
-                totalWins: (playerData.stats?.totalWins ?? 0) + 1,
-                winStreak: updatedWinStreak,
-                bestStreak: updatedBestStreak,
-                dailyPuzzlesCompleted: updatedDailyPuzzlesCompleted,
-              },
-              lastDailyChallengeCompletedAt:
-                gameMode === "daily" ? Date.now() : playerData.lastDailyChallengeCompletedAt,
+            const nextStats = buildPostGameStatsUpdate(playerData, {
+              attempts,
+              scoreEarned,
+              won: true,
+              resolvedDailyStreak,
+            });
+
+            const nextLocalCoins =
+              toNonNegativeNumber(playerData.coins) +
+              Math.max(0, coinsEarned) +
+              Math.max(0, bonusCoinsAwarded);
+
+            const baseProgress = {
+              ...playerData.progress,
+              classicIndex: toNonNegativeNumber(
+                playerData.progress?.classicIndex,
+                GUEST_CLASSIC_START_INDEX
+              ),
+              dailyChallengeIndex: toNonNegativeNumber(
+                playerData.progress?.dailyChallengeIndex
+              ),
             };
 
-            const nextPlayerSnapshot = {
+            const nextProgress =
+              gameMode === "daily" && isGuestMode
+                ? {
+                    ...baseProgress,
+                    dailyChallengeIndex: baseProgress.dailyChallengeIndex + 1,
+                  }
+                : baseProgress;
+
+            const nextPlayerSnapshot: Player = {
               ...playerData,
-              ...playerUpdatePayload,
-              progress: playerUpdatePayload.progress,
-              stats: playerUpdatePayload.stats,
+              coins: nextLocalCoins,
+              progress: nextProgress,
+              stats: nextStats,
+              lastDailyChallengeCompletedAt:
+                gameMode === "daily"
+                  ? Date.now()
+                  : playerData.lastDailyChallengeCompletedAt,
             };
 
-            await persistPlayerUpdate(playerUpdatePayload);
+            if (isGuestMode) {
+              await persistPlayerUpdate({
+                coins: nextPlayerSnapshot.coins,
+                progress: nextPlayerSnapshot.progress,
+                stats: nextPlayerSnapshot.stats,
+                lastDailyChallengeCompletedAt:
+                  nextPlayerSnapshot.lastDailyChallengeCompletedAt,
+              });
+            } else {
+              updatePlayerDataLocally(
+                {
+                  coins: nextPlayerSnapshot.coins,
+                  stats: nextPlayerSnapshot.stats,
+                  lastDailyChallengeCompletedAt:
+                    nextPlayerSnapshot.lastDailyChallengeCompletedAt,
+                },
+                { syncToFirestore: false }
+              );
+              await persistAuthenticatedBonusCoins(
+                Math.max(0, bonusCoinsAwarded)
+              );
+            }
 
             // Check if user completed today's daily challenge
             if (gameMode === "daily") {
@@ -413,14 +550,46 @@ const GameScreenWrapper = () => {
               }
             }
           }}
-          onGameLoss={(correctAnswer: string) => {
+          onGameLoss={(correctAnswer: string, attempts: number) => {
+            if (!playerData) {
+              return;
+            }
             logger.debug(AppStrings.GameMessages.GAME_LOST + correctAnswer);
+
+            const nextStats = buildPostGameStatsUpdate(playerData, {
+              attempts,
+              scoreEarned: 0,
+              won: false,
+            });
+
+            if (isGuestMode) {
+              void persistPlayerUpdate({
+                stats: nextStats,
+              });
+            } else {
+              updatePlayerDataLocally(
+                {
+                  stats: nextStats,
+                },
+                { syncToFirestore: false }
+              );
+            }
           }}
           onHintUsed={async (cost: number) => {
+            if (!playerData) {
+              return;
+            }
+
             logger.debug(AppStrings.GameMessages.HINT_USED + cost);
             if (cost > 0) {
+              const nextStats: Player["stats"] = {
+                ...playerData.stats,
+                totalHintsUsed:
+                  toNonNegativeNumber(playerData.stats?.totalHintsUsed) + 1,
+              };
               await persistPlayerUpdate({
-                coins: Math.max(0, (playerData.coins ?? 0) - cost),
+                coins: Math.max(0, toNonNegativeNumber(playerData.coins) - cost),
+                stats: nextStats,
               });
             }
           }}

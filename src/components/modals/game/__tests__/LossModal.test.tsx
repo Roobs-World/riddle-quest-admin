@@ -108,11 +108,13 @@ describe("LossModal", () => {
           onWatchAdContinue={jest.fn()}
           onCoinContinue={jest.fn()}
           coinContinueCost={25}
+          totalCoins={305}
         />
       );
 
       expect(getByText("Watch Ad to Continue")).toBeTruthy();
       expect(getByText("Use 25 Coins to Continue")).toBeTruthy();
+      expect(getByText("305")).toBeTruthy();
     });
   });
 

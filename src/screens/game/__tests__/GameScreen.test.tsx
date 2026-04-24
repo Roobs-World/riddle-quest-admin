@@ -1319,7 +1319,7 @@ describe("GameScreen", () => {
         expect(mockShowLossModal).toHaveBeenCalled();
       });
       expect(haptics.notificationAsync).toHaveBeenCalledWith("error");
-      expect(defaultProps.onGameLoss).toHaveBeenCalledWith("ANSWER");
+      expect(defaultProps.onGameLoss).toHaveBeenCalledWith("ANSWER", 0);
     });
 
     it("shows spend-coins error when skip purchase fails", async () => {

@@ -41,6 +41,7 @@ import {
   SKIP_COST_CLASSIC,
   SKIP_COST_DAILY,
   CONTINUE_COST_COINS,
+  CONTINUE_REWARDED_AD_COIN_REWARD,
   LEVEL_UP_COIN_BONUS,
   DAILY_CHALLENGE_COIN_REWARD,
   MODAL_CLOSE_DELAY_MS,
@@ -106,7 +107,7 @@ interface GameScreenProps {
     dailyStreakAfterWin?: number,
     bonusCoinsAwarded?: number
   ) => void;
-  onGameLoss: (correctAnswer: string) => void;
+  onGameLoss: (correctAnswer: string, attempts: number) => void;
   onHintUsed: (cost: number) => void;
   onSkipUsed: (cost: number) => void;
   onNextLevel: () => void;
@@ -611,6 +612,17 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const handleWatchAdToContinue = useCallback(async () => {
     const didCompleteRewardedAd = await showRewardedAd();
     if (didCompleteRewardedAd) {
+      if (playerData) {
+        const currentCoins =
+          typeof playerData.coins === "number" && Number.isFinite(playerData.coins)
+            ? playerData.coins
+            : typeof userCoins === "number" && Number.isFinite(userCoins)
+              ? userCoins
+              : 0;
+        updatePlayerDataLocally({
+          coins: currentCoins + CONTINUE_REWARDED_AD_COIN_REWARD,
+        });
+      }
       continueGame();
       return true;
     }
@@ -620,7 +632,14 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       message: AppStrings.GameScreenAlerts.AD_NOT_READY_MESSAGE,
     });
     return false;
-  }, [showRewardedAd, continueGame, modal]);
+  }, [
+    showRewardedAd,
+    continueGame,
+    modal,
+    playerData,
+    updatePlayerDataLocally,
+    userCoins,
+  ]);
 
   const handlePurchaseProduct = useCallback(
     async (productId: string) => {
@@ -891,6 +910,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
         modal.showLossModal({
           correctAnswer: result.correctAnswer || "",
+          totalCoins: userCoins,
           onWatchAdContinue: result.canOfferRewardedAd
             ? handleWatchAdToContinue
             : undefined,
@@ -920,6 +940,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
         modal.showLossModal({
           correctAnswer: result.correctAnswer || "",
+          totalCoins: userCoins,
           skipLevelCost,
           onOpenShop: () => openShopFromLossRef.current(),
           onNext: () => {
@@ -933,7 +954,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         });
 
         if (result.correctAnswer) {
-          onGameLoss(result.correctAnswer);
+          onGameLoss(result.correctAnswer, guesses.length);
         }
       }
     }

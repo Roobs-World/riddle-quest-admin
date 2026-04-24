@@ -1,24 +1,26 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, Modal, TextInput } from "react-native";
-import { getFunctions, httpsCallable } from "@react-native-firebase/functions";
-import { getApp } from "@react-native-firebase/app";
-import { useAuth } from "../../../contexts/AuthContext";
+import React, {useEffect, useState} from "react";
+import {View, Text, Modal, TextInput} from "react-native";
+import {getFunctions, httpsCallable} from "@react-native-firebase/functions";
+import {getApp} from "@react-native-firebase/app";
+import {useAuth} from "../../../contexts/AuthContext";
 import CloseButton from "../../buttons/CloseButton";
 import WideButton from "src/components/buttons/WideButton";
 import PulsingSpinner from "src/components/loading/PulsingSpinner";
-import { TYPOGRAPHY } from "src/styles";
+import {TYPOGRAPHY} from "src/styles";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
-import { AppStrings } from "../../../constants/AppStrings";
+import {AppStrings} from "../../../constants/AppStrings";
 import {
   MODAL_WIDTH,
   MODAL_HEIGHT,
   CLOSE_BUTTON_SIZE,
   INPUT_BORDER_RADIUS,
   INPUT_PADDING,
+  CLOSE_BUTTON_INSET,
 } from "../../../constants/layout";
-import { SPACING } from "../../../styles";
+import {SPACING} from "../../../styles";
 import SlideInModalContent from "../../shared/SlideInModalContent";
+import {verticalScale} from "@/utils/responsive";
 
 interface FirebaseError {
   code: string;
@@ -32,13 +34,9 @@ interface UpdateUsernameModalProps {
   currentUsername: string;
 }
 
-const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({
-  isVisible,
-  onClose,
-  currentUsername,
-}) => {
-  const COMPACT_MODAL_HEIGHT = MODAL_HEIGHT *0.75;
-  const { updatePlayerData } = useAuth();
+const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({isVisible, onClose, currentUsername}) => {
+  const COMPACT_MODAL_HEIGHT = MODAL_HEIGHT * 0.75;
+  const {updatePlayerData} = useAuth();
   const [newUsername, setNewUsername] = useState(currentUsername || "");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [usernameError, setUsernameError] = useState("");
@@ -68,23 +66,18 @@ const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({
     setIsSubmitting(true);
 
     try {
-      const processFormSubmissionCallable = httpsCallable(
-        getFunctions(getApp()),
-        "updateUsername"
-      );
+      const processFormSubmissionCallable = httpsCallable(getFunctions(getApp()), "updateUsername");
       const result = await processFormSubmissionCallable({
         username: trimmedUsername,
       });
 
-      const responseData = result.data as { success: boolean; message: string };
+      const responseData = result.data as {success: boolean; message: string};
 
       if (responseData.success) {
-        await updatePlayerData({ username: trimmedUsername });
+        await updatePlayerData({username: trimmedUsername});
         onClose();
       } else {
-        setUsernameError(
-          responseData.message || AppStrings.Profile.ALERT_USERNAME_UPDATE_FAILED
-        );
+        setUsernameError(responseData.message || AppStrings.Profile.ALERT_USERNAME_UPDATE_FAILED);
       }
     } catch (error) {
       const firebaseError = error as FirebaseError;
@@ -112,12 +105,7 @@ const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({
   };
 
   return (
-    <Modal
-      visible={isVisible}
-      transparent={true}
-      animationType="fade"
-      onRequestClose={handleClose}
-    >
+    <Modal visible={isVisible} transparent={true} animationType="fade" onRequestClose={handleClose}>
       <View
         style={{
           flex: 1,
@@ -139,81 +127,81 @@ const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({
             <ModalBg
               width={MODAL_WIDTH}
               height={MODAL_HEIGHT * 0.5}
-              style={{ position: "absolute" }}
+              style={{position: "absolute"}}
               preserveAspectRatio="none"
             />
-          {/* Decorative wave — clipped to card bounds */}
-          <HomeBg
-            width={MODAL_WIDTH * 1.1}
-            height={MODAL_HEIGHT * 1.1}
-            style={{
-              position: "absolute",
-              top: -MODAL_HEIGHT * 0.05,
-              left: -MODAL_WIDTH * 0.05,
-            }}
-          />
-          <CloseButton
-            onPress={handleClose}
-            size={CLOSE_BUTTON_SIZE}
-            style={
-              position: "absolute" as const,
-              marginTop: verticalScale(32),
-              right: CLOSE_BUTTON_INSET,
-              zIndex: 10,
-            }
-          />
-          <View style={{ width: "80%", alignItems: "center" }}>
-            <Text
+            {/* Decorative wave — clipped to card bounds */}
+            <HomeBg
+              width={MODAL_WIDTH * 1.1}
+              height={MODAL_HEIGHT * 1.1}
               style={{
-                fontFamily: TYPOGRAPHY.fontPrimary,
-                fontSize: TYPOGRAPHY.fontSize["2xl"],
-                color: "black",
-                marginBottom: SPACING.lg,
-                textAlign: "center",
+                position: "absolute",
+                top: -MODAL_HEIGHT * 0.05,
+                left: -MODAL_WIDTH * 0.05,
               }}
-            >
-              {AppStrings.Profile.UPDATE_USERNAME_TITLE}
-            </Text>
-            <TextInput
-              style={{
-                backgroundColor: "white",
-                width: "100%",
-                borderRadius: INPUT_BORDER_RADIUS,
-                padding: INPUT_PADDING,
-                marginBottom: SPACING.lg,
-                fontFamily: TYPOGRAPHY.fontSecondary,
-              }}
-              value={newUsername}
-              onChangeText={(value) => {
-                setNewUsername(value);
-                if (usernameError) {
-                  setUsernameError("");
-                }
-              }}
-              placeholder={AppStrings.Profile.ENTER_NEW_USERNAME_PLACEHOLDER}
-              placeholderTextColor="#888"
-              autoCapitalize="none"
             />
-            {usernameError ? (
+            <CloseButton
+              onPress={handleClose}
+              size={CLOSE_BUTTON_SIZE}
+              style={{
+                position: "absolute",
+                marginTop: verticalScale(32),
+                right: CLOSE_BUTTON_INSET,
+                zIndex: 10,
+              }}
+            />
+            <View style={{width: "80%", alignItems: "center"}}>
               <Text
-                testID="username-error-text"
                 style={{
-                  width: "100%",
-                  color: "#B42318",
-                  fontFamily: TYPOGRAPHY.fontSecondary,
-                  marginTop: -SPACING.sm,
-                  marginBottom: SPACING.md,
+                  fontFamily: TYPOGRAPHY.fontPrimary,
+                  fontSize: TYPOGRAPHY.fontSize["2xl"],
+                  color: "black",
+                  marginBottom: SPACING.lg,
+                  textAlign: "center",
                 }}
               >
-                {usernameError}
+                {AppStrings.Profile.UPDATE_USERNAME_TITLE}
               </Text>
-            ) : null}
-            <WideButton
-              buttonText={AppStrings.Profile.SAVE_BUTTON}
-              onPress={handleUpdateUsername}
-              disabled={isSubmitting}
-            />
-          </View>
+              <TextInput
+                style={{
+                  backgroundColor: "white",
+                  width: "100%",
+                  borderRadius: INPUT_BORDER_RADIUS,
+                  padding: INPUT_PADDING,
+                  marginBottom: SPACING.lg,
+                  fontFamily: TYPOGRAPHY.fontSecondary,
+                }}
+                value={newUsername}
+                onChangeText={(value) => {
+                  setNewUsername(value);
+                  if (usernameError) {
+                    setUsernameError("");
+                  }
+                }}
+                placeholder={AppStrings.Profile.ENTER_NEW_USERNAME_PLACEHOLDER}
+                placeholderTextColor="#888"
+                autoCapitalize="none"
+              />
+              {usernameError ? (
+                <Text
+                  testID="username-error-text"
+                  style={{
+                    width: "100%",
+                    color: "#B42318",
+                    fontFamily: TYPOGRAPHY.fontSecondary,
+                    marginTop: -SPACING.sm,
+                    marginBottom: SPACING.md,
+                  }}
+                >
+                  {usernameError}
+                </Text>
+              ) : null}
+              <WideButton
+                buttonText={AppStrings.Profile.SAVE_BUTTON}
+                onPress={handleUpdateUsername}
+                disabled={isSubmitting}
+              />
+            </View>
           </View>
         </SlideInModalContent>
       </View>

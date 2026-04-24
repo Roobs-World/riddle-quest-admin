@@ -41,6 +41,7 @@ import { Navigation } from "./src/navigation/NavigationStack";
 import PulsingSpinner from "./src/components/loading/PulsingSpinner";
 import { SolarSystemPreloader } from "./src/services/SolarSystemPreloader";
 import { preloadShopCatalog } from "./src/services/ShopCatalogPreloader";
+import { initializeRewardedAds } from "./src/services/RewardedAdService";
 import { getCrashlytics } from "@react-native-firebase/crashlytics";
 import { ModalProvider } from "./src/contexts/ModalContext";
 import {
@@ -158,6 +159,7 @@ export default Sentry.wrap(function App() {
           SOLAR_PRELOAD_TIMEOUT_MS
         ),
         preloadShopCatalog(),
+        initializeRewardedAds(),
         initializeFacebookSdkInBackground(),
       ];
 

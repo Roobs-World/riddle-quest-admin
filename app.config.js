@@ -188,6 +188,20 @@ module.exports = {
       : []),
     /** Google Sign-In authentication */
     "./plugins/withReactNativeGoogleSignin.js",
+    /**
+     * Google Mobile Ads (AdMob) configuration for rewarded ads.
+     * Uses official Google test app IDs by default for safe development builds.
+     */
+    [
+      "react-native-google-mobile-ads",
+      {
+        androidAppId:
+          process.env.ADMOB_ANDROID_APP_ID ||
+          "ca-app-pub-3940256099942544~3347511713",
+        iosAppId:
+          process.env.ADMOB_IOS_APP_ID || "ca-app-pub-3940256099942544~1458002511",
+      },
+    ],
 
     /**
      * Facebook SDK Configuration

@@ -343,3 +343,54 @@ jest.mock("@react-native-firebase/firestore", () => ({
   serverTimestamp: jest.fn(() => ({ __type: "serverTimestamp" })),
   FirebaseFirestoreTypes: {},
 }));
+
+jest.mock("react-native-google-mobile-ads", () => {
+  const createRewardedAdMock = () => {
+    const listeners = new Map();
+    const addAdEventListener = jest.fn((eventType, listener) => {
+      const existing = listeners.get(eventType) ?? new Set();
+      existing.add(listener);
+      listeners.set(eventType, existing);
+      return () => {
+        const current = listeners.get(eventType);
+        current?.delete(listener);
+      };
+    });
+
+    const emit = (eventType, payload) => {
+      const handlers = listeners.get(eventType);
+      handlers?.forEach((handler) => handler(payload));
+    };
+
+    return {
+      addAdEventListener,
+      load: jest.fn(() => {
+        emit("loaded");
+      }),
+      show: jest.fn(async () => {
+        emit("earned_reward", { amount: 1, type: "coin" });
+        emit("closed");
+      }),
+    };
+  };
+
+  const initialize = jest.fn(() => Promise.resolve({}));
+  const mobileAdsFactory = jest.fn(() => ({ initialize }));
+
+  return {
+    __esModule: true,
+    default: mobileAdsFactory,
+    mobileAds: mobileAdsFactory,
+    RewardedAd: {
+      createForAdRequest: jest.fn(() => createRewardedAdMock()),
+    },
+    RewardedAdEventType: {
+      LOADED: "loaded",
+      EARNED_REWARD: "earned_reward",
+    },
+    AdEventType: {
+      CLOSED: "closed",
+      ERROR: "error",
+    },
+  };
+});

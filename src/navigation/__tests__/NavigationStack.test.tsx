@@ -120,7 +120,7 @@ jest.mock("../../screens/game/GameScreen", () => {
         </Pressable>
         <Pressable
           testID="trigger-loss"
-          onPress={() => props.onGameLoss?.("ANSWER")}
+          onPress={() => props.onGameLoss?.("ANSWER", 2)}
         >
           <Text>Loss</Text>
         </Pressable>
@@ -573,12 +573,69 @@ describe("NavigationStack", () => {
       "classic"
     );
     expect(queryByTestId("victory-modal")).toBeNull();
-    expect(updatePlayerData).toHaveBeenCalledWith({ coins: 95 });
-    expect(updatePlayerData).toHaveBeenCalledWith({ coins: 93 });
     expect(updatePlayerData).toHaveBeenCalledWith(
-      expect.objectContaining({ coins: 120 })
+      expect.objectContaining({ coins: 95 })
     );
-    expect(updatePlayerDataLocally).not.toHaveBeenCalled();
+    expect(updatePlayerData).toHaveBeenCalledWith(
+      expect.objectContaining({
+        stats: expect.objectContaining({
+          totalHintsUsed: 1,
+        }),
+      })
+    );
+    expect(updatePlayerData).toHaveBeenCalledWith({ coins: 93 });
+    expect(updatePlayerDataLocally).toHaveBeenCalledWith(
+      expect.objectContaining({ coins: 120 }),
+      { syncToFirestore: false }
+    );
+  });
+
+  it("keeps daily win streak unchanged on loss for authenticated users", async () => {
+    const playerData = {
+      userId: "u-loss",
+      progress: {},
+      coins: 50,
+      stats: {
+        xp: 100,
+        totalScore: 100,
+        level: 2,
+        wins: 4,
+        totalWins: 4,
+        gamesPlayed: 7,
+        totalWordsGuessed: 21,
+        totalGuessesInWins: 14,
+        challengeWins: 2,
+        dailyPuzzlesCompleted: 2,
+        winStreak: 5,
+        bestStreak: 8,
+      },
+    };
+    const updatePlayerDataLocally = jest.fn();
+    mockedUseAuth.mockReturnValue(
+      createAuthState({
+        isAuthenticated: true,
+        gameMode: "daily",
+        playerData,
+        currentRiddle: { riddleId: "daily-loss", text: "D", answer: "WORD" },
+        updatePlayerDataLocally,
+      }) as any
+    );
+
+    const { getByTestId } = render(<Navigation />);
+    fireEvent.press(getByTestId("trigger-loss"));
+
+    await waitFor(() =>
+      expect(updatePlayerDataLocally).toHaveBeenCalledWith(
+        expect.objectContaining({
+          stats: expect.objectContaining({
+            winStreak: 5,
+            gamesPlayed: 8,
+            totalWordsGuessed: 23,
+          }),
+        }),
+        { syncToFirestore: false }
+      )
+    );
   });
 
   it("updates guest daily progress on win and switches to classic without remote completion check", async () => {

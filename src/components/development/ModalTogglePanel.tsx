@@ -44,6 +44,7 @@ import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY } from "../../styles";
 import { scale, verticalScale } from "../../utils/responsive";
 import { logger } from "../../utils/logger";
 import { AppStrings, getAppLanguage, SupportedLanguage } from "../../constants/AppStrings";
+import { loadRewardedAd, showRewardedAd } from "../../services/RewardedAdService";
 
 /**
  * Type for the updateModalData function
@@ -168,9 +169,20 @@ const generateMockData = (
     case "loss":
       return {
         correctAnswer: "HIDDEN",
-        onWatchAdContinue: () => {
+        onWatchAdContinue: async () => {
           logger.debug("[LossModal Debug] Watch ad to continue pressed");
+          loadRewardedAd();
+          const didCompleteRewardedAd = await showRewardedAd();
+          if (!didCompleteRewardedAd) {
+            logger.warn(
+              "[LossModal Debug] Rewarded ad did not complete or was not ready"
+            );
+            return false;
+          }
+
+          logger.debug("[LossModal Debug] Rewarded ad completed");
           if (closeModalFn) closeModalFn("loss");
+          return true;
         },
         onCoinContinue: () => {
           logger.debug("[LossModal Debug] Use coins to continue pressed");

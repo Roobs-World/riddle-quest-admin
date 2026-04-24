@@ -1,0 +1,227 @@
+import { Platform } from "react-native";
+import mobileAds, {
+  AdEventType,
+  RewardedAd,
+  RewardedAdEventType,
+} from "react-native-google-mobile-ads";
+import { logger } from "../utils/logger";
+import { captureException } from "../utils/sentry";
+
+const REWARDED_AD_TEST_UNIT_ID = "ca-app-pub-3940256099942544/5224354917";
+const MAX_LOAD_RETRY_ATTEMPTS = 3;
+const LOAD_RETRY_DELAY_MS = 1500;
+const SHOW_WAIT_TIMEOUT_MS = 4000;
+
+let rewardedAd: RewardedAd | null = null;
+let initializePromise: Promise<void> | null = null;
+let isServiceInitialized = false;
+let isRewardedAdReady = false;
+let isRewardedAdLoading = false;
+let loadRetryAttemptCount = 0;
+let loadRetryTimeout: ReturnType<typeof setTimeout> | null = null;
+
+const readinessSubscribers = new Set<(isReady: boolean) => void>();
+
+const isSupportedPlatform = (): boolean =>
+  Platform.OS === "android" || Platform.OS === "ios";
+
+const publishReadiness = (): void => {
+  readinessSubscribers.forEach((subscriber) => {
+    try {
+      subscriber(isRewardedAdReady);
+    } catch (error) {
+      logger.warn("Rewarded-ad readiness subscriber failed", error);
+      captureException(error);
+    }
+  });
+};
+
+const clearLoadRetryTimeout = (): void => {
+  if (!loadRetryTimeout) {
+    return;
+  }
+  clearTimeout(loadRetryTimeout);
+  loadRetryTimeout = null;
+};
+
+const scheduleLoadRetry = (): void => {
+  if (loadRetryTimeout) {
+    return;
+  }
+  if (loadRetryAttemptCount >= MAX_LOAD_RETRY_ATTEMPTS) {
+    logger.warn(
+      `Rewarded ad load retry limit reached (${MAX_LOAD_RETRY_ATTEMPTS}). Waiting for next manual load trigger.`
+    );
+    return;
+  }
+
+  loadRetryAttemptCount += 1;
+  const retryAttempt = loadRetryAttemptCount;
+  loadRetryTimeout = setTimeout(() => {
+    loadRetryTimeout = null;
+    logger.warn(`Retrying rewarded ad load (attempt ${retryAttempt}/${MAX_LOAD_RETRY_ATTEMPTS})`);
+    loadRewardedAd();
+  }, LOAD_RETRY_DELAY_MS);
+};
+
+const setReadyState = (isReady: boolean): void => {
+  if (isRewardedAdReady === isReady) {
+    return;
+  }
+  isRewardedAdReady = isReady;
+  publishReadiness();
+};
+
+const ensureRewardedAdInstance = (): void => {
+  if (rewardedAd || !isSupportedPlatform()) {
+    return;
+  }
+
+  rewardedAd = RewardedAd.createForAdRequest(REWARDED_AD_TEST_UNIT_ID, {
+    requestNonPersonalizedAdsOnly: true,
+  });
+
+  rewardedAd.addAdEventListener(RewardedAdEventType.LOADED, () => {
+    isRewardedAdLoading = false;
+    loadRetryAttemptCount = 0;
+    clearLoadRetryTimeout();
+    setReadyState(true);
+  });
+
+  rewardedAd.addAdEventListener(AdEventType.CLOSED, () => {
+    isRewardedAdLoading = false;
+    setReadyState(false);
+    loadRewardedAd();
+  });
+
+  rewardedAd.addAdEventListener(AdEventType.ERROR, (error) => {
+    isRewardedAdLoading = false;
+    setReadyState(false);
+    logger.warn("Rewarded ad failed to load or show", error);
+    captureException(error);
+    scheduleLoadRetry();
+  });
+};
+
+const waitForRewardedAdReady = async (timeoutMs = SHOW_WAIT_TIMEOUT_MS): Promise<boolean> =>
+  new Promise((resolve) => {
+    if (isRewardedAdReady) {
+      resolve(true);
+      return;
+    }
+
+    const timeout = setTimeout(() => {
+      unsubscribe();
+      resolve(false);
+    }, timeoutMs);
+
+    const unsubscribe = subscribeToRewardedAdReadiness((isReady) => {
+      if (!isReady) {
+        return;
+      }
+
+      clearTimeout(timeout);
+      unsubscribe();
+      resolve(true);
+    });
+  });
+
+export const initializeRewardedAds = async (): Promise<void> => {
+  if (!isSupportedPlatform()) {
+    return;
+  }
+
+  if (!initializePromise) {
+    initializePromise = (async () => {
+      try {
+        await mobileAds().initialize();
+        isServiceInitialized = true;
+        ensureRewardedAdInstance();
+        loadRewardedAd();
+      } catch (error) {
+        initializePromise = null;
+        logger.error("Failed to initialize Google Mobile Ads", error);
+        captureException(error);
+      }
+    })();
+  }
+
+  await initializePromise;
+};
+
+export const loadRewardedAd = (): void => {
+  if (!isSupportedPlatform()) {
+    return;
+  }
+
+  clearLoadRetryTimeout();
+
+  void initializeRewardedAds()
+    .then(() => {
+      if (!isServiceInitialized || !rewardedAd || isRewardedAdReady || isRewardedAdLoading) {
+        return;
+      }
+
+      isRewardedAdLoading = true;
+      rewardedAd.load();
+    })
+    .catch((error) => {
+      logger.error("Failed to start rewarded-ad preload", error);
+      captureException(error);
+    });
+};
+
+export const showRewardedAd = async (): Promise<boolean> => {
+  if (!isSupportedPlatform()) {
+    return false;
+  }
+
+  await initializeRewardedAds();
+
+  if (!rewardedAd) {
+    loadRewardedAd();
+    return false;
+  }
+
+  if (!isRewardedAdReady) {
+    loadRewardedAd();
+    const becameReadyInTime = await waitForRewardedAdReady();
+    if (!becameReadyInTime || !isRewardedAdReady) {
+      return false;
+    }
+  }
+
+  let didEarnReward = false;
+  const unsubscribeReward = rewardedAd.addAdEventListener(
+    RewardedAdEventType.EARNED_REWARD,
+    () => {
+      didEarnReward = true;
+    }
+  );
+
+  try {
+    await rewardedAd.show();
+    return didEarnReward;
+  } catch (error) {
+    logger.error("Failed to show rewarded ad", error);
+    captureException(error);
+    return false;
+  } finally {
+    unsubscribeReward();
+    setReadyState(false);
+    loadRewardedAd();
+  }
+};
+
+export const subscribeToRewardedAdReadiness = (
+  subscriber: (isReady: boolean) => void
+): (() => void) => {
+  readinessSubscribers.add(subscriber);
+  subscriber(isRewardedAdReady);
+
+  return () => {
+    readinessSubscribers.delete(subscriber);
+  };
+};
+
+export const getRewardedAdReadiness = (): boolean => isRewardedAdReady;

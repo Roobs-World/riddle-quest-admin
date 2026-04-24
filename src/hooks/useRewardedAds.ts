@@ -1,4 +1,10 @@
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
+import {
+  getRewardedAdReadiness,
+  loadRewardedAd as loadRewardedAdService,
+  showRewardedAd as showRewardedAdService,
+  subscribeToRewardedAdReadiness,
+} from "../services/RewardedAdService";
 
 interface UseRewardedAds {
   isRewardedAdReady: boolean;
@@ -7,16 +13,24 @@ interface UseRewardedAds {
 }
 
 const useRewardedAds = (): UseRewardedAds => {
+  const [isRewardedAdReady, setIsRewardedAdReady] = useState<boolean>(
+    getRewardedAdReadiness()
+  );
+
+  useEffect(() => {
+    return subscribeToRewardedAdReadiness(setIsRewardedAdReady);
+  }, []);
+
   const loadRewardedAd = useCallback(() => {
-    // Rewarded ads are disabled.
+    loadRewardedAdService();
   }, []);
 
   const showRewardedAd = useCallback(async (): Promise<boolean> => {
-    return false;
+    return showRewardedAdService();
   }, []);
 
   return {
-    isRewardedAdReady: false,
+    isRewardedAdReady,
     loadRewardedAd,
     showRewardedAd,
   };
