@@ -1,8 +1,9 @@
 import React, {useMemo, useState, useEffect} from "react";
-import {View, Text, Modal, Animated, Easing, TouchableOpacity} from "react-native";
+import {View, Text, Modal, Animated, Easing} from "react-native";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import WheelBg from "../../../../assets/images/wheel-bg.svg";
 import LargeCoinStackSvg from "../../../../assets/images/large-coin-stack.svg";
+import WideButton from "../../buttons/WideButton";
 import {TYPOGRAPHY} from "../../../styles";
 import {
   MODAL_WIDTH,
@@ -71,88 +72,89 @@ const StreakIncreaseFanfareModal: React.FC<StreakIncreaseFanfareModalProps> = ({
         }}
       >
         <SlideInModalContent isVisible={isVisible}>
-          <TouchableOpacity key={"coin-purchase-modal"} onPress={onClose}>
+          <View
+            style={{
+              width: MODAL_WIDTH,
+              height: MODAL_HEIGHT,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{position: "absolute"}} />
+
             <View
               style={{
                 width: MODAL_WIDTH,
                 height: MODAL_HEIGHT,
-                alignItems: "center",
-                justifyContent: "center",
+                overflow: "hidden",
+                borderRadius: 30,
               }}
             >
-              <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{position: "absolute"}} />
-
-              <View
+              <Animated.View
                 style={{
                   position: "absolute",
-                  width: MODAL_WIDTH,
-                  height: MODAL_HEIGHT,
-                  overflow: "hidden",
-                  borderRadius: 30,
+                  left: (MODAL_WIDTH - wheelSize) / 2,
+                  top: (MODAL_HEIGHT - wheelSize) / 2,
+                  opacity: 0.25,
+                  transform: [{rotate: spin}],
                 }}
               >
-                <Animated.View
-                  style={{
-                    position: "absolute",
-                    left: (MODAL_WIDTH - wheelSize) / 2,
-                    top: (MODAL_HEIGHT - wheelSize) / 2,
-                    opacity: 0.25,
-                    transform: [{rotate: spin}],
-                  }}
-                >
-                  <WheelBg width={wheelSize} height={wheelSize} />
-                </Animated.View>
-              </View>
+                <WheelBg width={wheelSize} height={wheelSize} />
+              </Animated.View>
+            </View>
 
-              <View
+            <View
+              style={{
+                flex: 1,
+                width: "100%",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: MODAL_BUTTON_SPACER * 2,
+                padding: MODAL_CONTENT_PADDING,
+              }}
+            >
+              <Text
                 style={{
-                  flex: 1,
-                  width: "100%",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: MODAL_BUTTON_SPACER * 2,
-                  padding: MODAL_CONTENT_PADDING,
+                  fontFamily: TYPOGRAPHY.fontPrimary,
+                  fontSize: TYPOGRAPHY.fontSize["3xl"],
+                  color: "black",
+                  textAlign: "center",
                 }}
               >
-                <Text
-                  style={{
-                    fontFamily: TYPOGRAPHY.fontPrimary,
-                    fontSize: TYPOGRAPHY.fontSize["3xl"],
-                    color: "black",
-                    textAlign: "center",
-                  }}
-                >
-                  {AppStrings.StreakFanfare.TITLE}
-                </Text>
+                {AppStrings.StreakFanfare.TITLE}
+              </Text>
 
+              <Text
+                style={{
+                  fontFamily: TYPOGRAPHY.fontSecondaryBold,
+                  fontSize: TYPOGRAPHY.fontSize["2xl"],
+                  color: "black",
+                  textAlign: "center",
+                }}
+              >
+                {`${streakValue}${AppStrings.StreakFanfare.STREAK_SUFFIX}`}
+              </Text>
+
+              <View style={{alignItems: "center"}}>
+                <LargeCoinStackSvg width={COIN_ICON_SIZE_LARGE * 1.5} height={COIN_ICON_SIZE_LARGE * 1.5} />
                 <Text
                   style={{
                     fontFamily: TYPOGRAPHY.fontSecondaryBold,
-                    fontSize: TYPOGRAPHY.fontSize["2xl"],
-                    color: "black",
-                    textAlign: "center",
+                    fontSize: TYPOGRAPHY.fontSize["3xl"],
+                    color: "#FB9A2B",
+                    marginTop: 6,
                   }}
                 >
-                  {`${streakValue}${AppStrings.StreakFanfare.STREAK_SUFFIX}`}
+                  +{coinsAwarded}
+                  {AppStrings.StreakFanfare.COINS_SUFFIX}
                 </Text>
+              </View>
 
-                <View style={{alignItems: "center"}}>
-                  <LargeCoinStackSvg width={COIN_ICON_SIZE_LARGE * 1.5} height={COIN_ICON_SIZE_LARGE * 1.5} />
-                  <Text
-                    style={{
-                      fontFamily: TYPOGRAPHY.fontSecondaryBold,
-                      fontSize: TYPOGRAPHY.fontSize["3xl"],
-                      color: "#FB9A2B",
-                      marginTop: 6,
-                    }}
-                  >
-                    +{coinsAwarded}
-                    {AppStrings.StreakFanfare.COINS_SUFFIX}
-                  </Text>
-                </View>
+              <View style={{width: "100%"}}>
+                <WideButton buttonText={AppStrings.StreakFanfare.CONTINUE_BUTTON} onPress={onClose} />
               </View>
             </View>
-          </TouchableOpacity>
+          </View>
         </SlideInModalContent>
       </View>
     </Modal>

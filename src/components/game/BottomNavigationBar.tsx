@@ -122,10 +122,24 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
         <SettingsIcon color="#401F40" />
       </TouchableOpacity>
 
+      {/* Center - Change game mode button */}
+      <TouchableOpacity
+        style={{padding: scale(8)}}
+        onPress={() => onChangeGameModePress?.()}
+        testID="change-game-mode-button"
+        accessible={true}
+        accessibilityRole="button"
+        accessibilityLabel={AppStrings.Accessibility.CHANGE_GAME_MODE}
+        accessibilityHint={AppStrings.Accessibility.CHANGE_GAME_MODE_HINT}
+      >
+        <LetsPlayIcon width={scale(68)} height={scale(34)} />
+      </TouchableOpacity>
+
       {/* Right Side - Profile Button */}
       <TouchableOpacity
         style={{marginRight: scale(20), padding: scale(8)}}
         onPress={() => onProfilePress()}
+        testID="profile-button"
         accessible={true}
         accessibilityRole="button"
         accessibilityLabel={AppStrings.Accessibility.OPEN_PROFILE}

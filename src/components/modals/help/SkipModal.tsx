@@ -96,7 +96,7 @@ const SkipModal: React.FC<SkipModalProps> = ({
           >
             <ModalBg
               width={MODAL_WIDTH}
-              height={MODAL_HEIGHT * 1.3}
+              height={MODAL_HEIGHT * 1.2}
               style={{position: "absolute"}}
               preserveAspectRatio="none"
             />
@@ -154,11 +154,23 @@ const SkipModal: React.FC<SkipModalProps> = ({
                 height={COIN_ICON_SIZE_LARGE * 1.5}
                 style={{marginBottom: verticalScale(24), marginTop: verticalScale(12)}}
               />
+              <Text
+                style={{
+                  fontFamily: TYPOGRAPHY.fontSecondary,
+                  fontSize: TYPOGRAPHY.fontSize["3xl"],
+                  color: "#FB9A2B",
+                  textAlign: "center",
+                }}
+              >
+                {AppStrings.GameScreenAlerts.COST_COINS_PREFIX}
+                {skipCost + "\n\n"}
+              </Text>
               <View
                 style={{
                   width: "100%",
                   marginBottom: 20,
                   alignItems: "center",
+                  marginTop: verticalScale(-50)
                 }}
               >
                 <View style={{width: "100%"}}>
@@ -200,30 +212,8 @@ const SkipModal: React.FC<SkipModalProps> = ({
                 </Text>
               </View>
 
-              <Text
-                style={{
-                  fontFamily: TYPOGRAPHY.fontSecondary,
-                  fontSize: TYPOGRAPHY.fontSize["3xl"],
-                  color: "#FB9A2B",
-                  textAlign: "center",
-                }}
-              >
-                {AppStrings.GameScreenAlerts.COST_COINS_PREFIX}
-                {skipCost + "\n\n"}
-              </Text>
-              <Text
-                style={{
-                  fontFamily: TYPOGRAPHY.fontSecondary,
-                  fontSize: TYPOGRAPHY.fontSize.lg,
-                  color: "black",
-                  textAlign: "center",
-                  marginTop: verticalScale(-36),
-                }}
-              >
-                {AppStrings.GameScreenAlerts.COST_COINS_MIDDLE}
-                {userCoins}
-                {AppStrings.GameScreenAlerts.COST_COINS_SUFFIX}
-              </Text>
+              
+              
               {!canAffordSkip && (
                 <Text
                   style={{
@@ -237,7 +227,7 @@ const SkipModal: React.FC<SkipModalProps> = ({
                   {AppStrings.GameScreenAlerts.SKIP_NOT_ENOUGH_COINS_MESSAGE}
                 </Text>
               )}
-              <View style={{width: "100%", marginTop: SPACING.lg}}>
+              <View style={{width: "100%", marginTop: SPACING.sm}}>
                 <WideButton
                   buttonText={
                     canAffordSkip

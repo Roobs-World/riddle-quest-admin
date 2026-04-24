@@ -7,7 +7,7 @@
  * Cloud Function) is called exactly once when the game truly ends — win or final
  * loss — to award coins, update stats, advance progress, and evaluate achievements.
  */
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import type { SubmittedGuess } from "./types";
 import { getFunctions, httpsCallable } from "@react-native-firebase/functions";
 import { getApp } from "@react-native-firebase/app";
@@ -47,6 +47,8 @@ interface CompleteGameResponseData {
 }
 
 const GUEST_GAME_SESSION_STORAGE_KEY = "@guest_game_session_v1";
+const INITIAL_ATTEMPTS = NUM_GUESSES;
+const CONTINUE_ATTEMPTS = 3;
 
 function getLocalRewards(gameMode: "challenge" | "classic", attempts: number): { coins: number; score: number } {
   const scoreMaxAttempts = 5;
@@ -120,14 +122,18 @@ const useGameLogic = ({ riddleId, answer, gameMode, isGuestMode = false }: UseGa
   const [gameOver, setGameOver] = useState(false);
   const [attemptsUsed, setAttemptsUsed] = useState(0);
   const [hasUsedContinue, setHasUsedContinue] = useState(false);
-
-  const INITIAL_ATTEMPTS = NUM_GUESSES;
-  const CONTINUE_ATTEMPTS = 3;
+  const lastPersistedGuestSnapshotRef = useRef<string | null>(null);
+  const normalizedAnswer = useMemo(() => answer.toLowerCase(), [answer]);
+  const completeGame = useMemo(
+    () => httpsCallable(getFunctions(getApp()), "completeGame"),
+    []
+  );
 
   const clearGuestSession = useCallback(async (): Promise<void> => {
     if (!isGuestMode) return;
     try {
       await AsyncStorage.removeItem(GUEST_GAME_SESSION_STORAGE_KEY);
+      lastPersistedGuestSnapshotRef.current = null;
     } catch (error) {
       logger.warn("Unable to clear guest session snapshot.", error);
     }
@@ -149,6 +155,7 @@ const useGameLogic = ({ riddleId, answer, gameMode, isGuestMode = false }: UseGa
         if (parsed.riddleId !== riddleId) return;
         if (parsed.gameMode !== gameMode) return;
         if (cancelled) return;
+        lastPersistedGuestSnapshotRef.current = raw;
 
         setGuesses(Array.isArray(parsed.guesses) ? (parsed.guesses as SubmittedGuess[]) : []);
         setAttemptsUsed(typeof parsed.attemptsUsed === "number" ? parsed.attemptsUsed : 0);
@@ -168,6 +175,7 @@ const useGameLogic = ({ riddleId, answer, gameMode, isGuestMode = false }: UseGa
   // Guest-only: persist in-progress session (so a force-close doesn't lose a run).
   useEffect(() => {
     if (!isGuestMode) return;
+    if (gameOver) return;
 
     const snapshot: GuestGameSessionSnapshot = {
       version: 2,
@@ -178,10 +186,21 @@ const useGameLogic = ({ riddleId, answer, gameMode, isGuestMode = false }: UseGa
       hasUsedContinue,
       gameOver,
     };
+    const snapshotRaw = JSON.stringify(snapshot);
+    if (lastPersistedGuestSnapshotRef.current === snapshotRaw) {
+      return;
+    }
 
-    void AsyncStorage.setItem(GUEST_GAME_SESSION_STORAGE_KEY, JSON.stringify(snapshot)).catch((error) => {
-      logger.warn("Guest session persist failed; progress may be lost.", error);
-    });
+    void AsyncStorage.setItem(
+      GUEST_GAME_SESSION_STORAGE_KEY,
+      snapshotRaw
+    )
+      .then(() => {
+        lastPersistedGuestSnapshotRef.current = snapshotRaw;
+      })
+      .catch((error) => {
+        logger.warn("Guest session persist failed; progress may be lost.", error);
+      });
   }, [isGuestMode, riddleId, gameMode, guesses, attemptsUsed, hasUsedContinue, gameOver]);
 
   /**
@@ -194,6 +213,7 @@ const useGameLogic = ({ riddleId, answer, gameMode, isGuestMode = false }: UseGa
   const processGuess = useCallback(
     async (guess: string[]) => {
       const guessString = guess.join("");
+      const normalizedGuess = guessString.toLowerCase();
       const maxAttempts = hasUsedContinue
         ? INITIAL_ATTEMPTS + CONTINUE_ATTEMPTS
         : INITIAL_ATTEMPTS;
@@ -207,8 +227,8 @@ const useGameLogic = ({ riddleId, answer, gameMode, isGuestMode = false }: UseGa
       });
 
       // Compute feedback entirely on the client.
-      const feedback = computeFeedback(guessString, answer);
-      const isCorrect = guessString.toLowerCase() === answer.toLowerCase();
+      const feedback = computeFeedback(normalizedGuess, normalizedAnswer);
+      const isCorrect = normalizedGuess === normalizedAnswer;
 
       const newSubmittedGuess: SubmittedGuess = { guess, feedback };
       setGuesses((prev) => [...prev, newSubmittedGuess]);
@@ -247,7 +267,7 @@ const useGameLogic = ({ riddleId, answer, gameMode, isGuestMode = false }: UseGa
           // Notify server once.
           const txn = startTransaction("completeGame", "http.client");
           try {
-            const result = await httpsCallable(getFunctions(getApp()), "completeGame")({
+            const result = await completeGame({
               riddleId,
               gameMode,
               attempts: currentAttempt,
@@ -301,7 +321,7 @@ const useGameLogic = ({ riddleId, answer, gameMode, isGuestMode = false }: UseGa
 
           if (!isGuestMode) {
             try {
-              await httpsCallable(getFunctions(getApp()), "completeGame")({
+              await completeGame({
                 riddleId,
                 gameMode,
                 attempts: currentAttempt,
@@ -328,7 +348,7 @@ const useGameLogic = ({ riddleId, answer, gameMode, isGuestMode = false }: UseGa
           feedback,
           correctAnswer: answer,
           coinsEarned: 0,
-          canOfferRewardedAd: false,
+          canOfferRewardedAd: true,
           canOfferCoinContinue: true,
         };
       }
@@ -341,7 +361,17 @@ const useGameLogic = ({ riddleId, answer, gameMode, isGuestMode = false }: UseGa
         attemptsRemaining: maxAttempts - currentAttempt,
       };
     },
-    [riddleId, answer, gameMode, hasUsedContinue, attemptsUsed, isGuestMode, clearGuestSession]
+    [
+      riddleId,
+      answer,
+      normalizedAnswer,
+      gameMode,
+      hasUsedContinue,
+      attemptsUsed,
+      isGuestMode,
+      clearGuestSession,
+      completeGame,
+    ]
   );
 
   /**

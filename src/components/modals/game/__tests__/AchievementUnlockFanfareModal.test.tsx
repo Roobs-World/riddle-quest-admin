@@ -1,31 +1,42 @@
 import React from "react";
-import { render, fireEvent } from "@testing-library/react-native";
+import {render, fireEvent} from "@testing-library/react-native";
 import AchievementUnlockFanfareModal from "../AchievementUnlockFanfareModal";
 
 jest.mock("react-native/Libraries/Animated/Animated", () => {
-  const { View } = require("react-native");
+  const {View} = require("react-native");
   class MockAnimatedValue {
     private _value: number;
+
     setValue = jest.fn((val: number) => {
       this._value = val;
     });
+
     stopAnimation = jest.fn((callback?: (value: number) => void) => {
       callback?.(this._value);
     });
+
+    resetAnimation = jest.fn((callback?: (value: number) => void) => {
+      this._value = 0;
+      callback?.(this._value);
+    });
+
     constructor(initial: number) {
       this._value = initial;
     }
-    interpolate(config: { inputRange: number[]; outputRange: string[] }) {
+
+    interpolate(config: {inputRange: number[]; outputRange: string[]}) {
       return config?.outputRange?.[0] ?? "0deg";
     }
   }
-  const simpleAnim = () => ({ start: jest.fn(), stop: jest.fn() });
+
+  const simpleAnim = () => ({start: jest.fn(), stop: jest.fn()});
   const Animated = {
     View,
     Value: MockAnimatedValue,
     timing: jest.fn(simpleAnim),
     loop: jest.fn(simpleAnim),
   };
+
   return {
     __esModule: true,
     default: Animated,
@@ -52,6 +63,7 @@ jest.mock("react-native/Libraries/Modal/Modal", () => {
 
 jest.mock("../../../buttons/WideButton", () => {
   const React = require("react");
+  const {TouchableOpacity, Text} = require("react-native");
   return function MockWideButton({
     buttonText,
     onPress,
@@ -60,9 +72,9 @@ jest.mock("../../../buttons/WideButton", () => {
     onPress: () => void;
   }) {
     return React.createElement(
-      "View",
-      { accessible: true, onPress },
-      React.createElement("Text", null, buttonText)
+      TouchableOpacity,
+      {testID: "wide-button", accessibilityRole: "button", onPress},
+      React.createElement(Text, null, buttonText),
     );
   };
 });
@@ -72,7 +84,7 @@ jest.mock("../../../../assets/images/wheel-bg.svg", () => "WheelBgSvg");
 
 describe("AchievementUnlockFanfareModal", () => {
   it("renders the unlocked achievement text", () => {
-    const { getByText } = render(
+    const {getByText} = render(
       <AchievementUnlockFanfareModal
         isVisible={true}
         coinsEarned={25}
@@ -84,7 +96,7 @@ describe("AchievementUnlockFanfareModal", () => {
           },
         ]}
         onClose={jest.fn()}
-      />
+      />,
     );
 
     expect(getByText("Achievement Unlocked!")).toBeTruthy();
@@ -95,17 +107,17 @@ describe("AchievementUnlockFanfareModal", () => {
   });
 
   it("does not show aggregated count text when multiple achievements are passed", () => {
-    const { queryByText } = render(
+    const {queryByText} = render(
       <AchievementUnlockFanfareModal
         isVisible={true}
         coinsEarned={50}
         achievements={[
-          { name: "First Victory", description: "Win one game", icon: "*" },
-          { name: "Speed Runner", description: "Solve quickly", icon: "!" },
-          { name: "No Hint Hero", description: "Win without hints", icon: "#" },
+          {name: "First Victory", description: "Win one game", icon: "*"},
+          {name: "Speed Runner", description: "Solve quickly", icon: "!"},
+          {name: "No Hint Hero", description: "Win without hints", icon: "#"},
         ]}
         onClose={jest.fn()}
-      />
+      />,
     );
 
     expect(queryByText("+2 more unlocked")).toBeNull();
@@ -114,7 +126,7 @@ describe("AchievementUnlockFanfareModal", () => {
   it("fires onContinue and onClose when the CTA button is pressed", () => {
     const onClose = jest.fn();
     const onContinue = jest.fn();
-    const { getByText } = render(
+    const {getByText} = render(
       <AchievementUnlockFanfareModal
         isVisible={true}
         coinsEarned={10}
@@ -127,7 +139,7 @@ describe("AchievementUnlockFanfareModal", () => {
         ]}
         onContinue={onContinue}
         onClose={onClose}
-      />
+      />,
     );
 
     fireEvent.press(getByText("Nice"));

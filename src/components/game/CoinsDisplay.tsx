@@ -12,7 +12,7 @@
  */
 
 import React, { useEffect, useRef, useState } from "react";
-import { View, Text, TouchableOpacity, Animated, Easing } from "react-native";
+import { Text, TouchableOpacity, Animated, Easing } from "react-native";
 import { SvgXml } from "react-native-svg";
 import { COIN_DISPLAY_ICON_SIZE } from "../../constants/layout";
 import { TYPOGRAPHY, SPACING } from "../../styles";
@@ -127,8 +127,10 @@ const CoinsDisplay: React.FC<CoinsDisplayProps> = ({
   shouldAnimateIncreases = true,
 }) => {
   const normalizedCoins = typeof coins === "number" && Number.isFinite(coins) ? coins : 0;
-  const displayedCoinsAnimatedValue = useRef(new Animated.Value(normalizedCoins)).current;
-  const scaleAnimatedValue = useRef(new Animated.Value(1)).current;
+  const [displayedCoinsAnimatedValue] = useState(
+    () => new Animated.Value(normalizedCoins)
+  );
+  const [scaleAnimatedValue] = useState(() => new Animated.Value(1));
   const previousCoinsRef = useRef(normalizedCoins);
   const [displayedCoins, setDisplayedCoins] = useState(normalizedCoins);
 

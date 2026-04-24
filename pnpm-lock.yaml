@@ -119,6 +119,9 @@ importers:
       expo-gl:
         specifier: 56.0.0-canary-20260409-6fc2991
         version: 56.0.0-canary-20260409-6fc2991(c67bdca784c2743f4948b40ae1599ab1)
+      expo-haptics:
+        specifier: 56.0.0-canary-20260409-6fc2991
+        version: 56.0.0-canary-20260409-6fc2991(expo@56.0.0-canary-20260409-6fc2991)
       expo-status-bar:
         specifier: 56.0.0-canary-20260409-6fc2991
         version: 56.0.0-canary-20260409-6fc2991(expo@56.0.0-canary-20260409-6fc2991)(react-native@0.85.0(@babel/core@7.29.0)(@react-native-community/cli@20.1.3(typescript@5.9.3))(@react-native/jest-preset@0.85.0(@babel/core@7.29.0)(react@19.2.3))(@react-native/metro-config@0.85.0(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.3))(react@19.2.3)
@@ -179,9 +182,6 @@ importers:
       react-native-gesture-handler:
         specifier: ~2.30.1
         version: 2.30.1(react-native@0.85.0(@babel/core@7.29.0)(@react-native-community/cli@20.1.3(typescript@5.9.3))(@react-native/jest-preset@0.85.0(@babel/core@7.29.0)(react@19.2.3))(@react-native/metro-config@0.85.0(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.3))(react@19.2.3)
-      react-native-haptic-feedback:
-        specifier: ^2.3.4
-        version: 2.3.4(react-native@0.85.0(@babel/core@7.29.0)(@react-native-community/cli@20.1.3(typescript@5.9.3))(@react-native/jest-preset@0.85.0(@babel/core@7.29.0)(react@19.2.3))(@react-native/metro-config@0.85.0(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.3))
       react-native-iap:
         specifier: ^14.7.20
         version: 14.7.20(react-native-nitro-modules@0.35.2(react-native@0.85.0(@babel/core@7.29.0)(@react-native-community/cli@20.1.3(typescript@5.9.3))(@react-native/jest-preset@0.85.0(@babel/core@7.29.0)(react@19.2.3))(@react-native/metro-config@0.85.0(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.3))(react@19.2.3))(react-native@0.85.0(@babel/core@7.29.0)(@react-native-community/cli@20.1.3(typescript@5.9.3))(@react-native/jest-preset@0.85.0(@babel/core@7.29.0)(react@19.2.3))(@react-native/metro-config@0.85.0(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.3))(react@19.2.3)
@@ -3746,6 +3746,11 @@ packages:
       react-native-web:
         optional: true
 
+  expo-haptics@56.0.0-canary-20260409-6fc2991:
+    resolution: {integrity: sha512-lp9XyvBIrT5F964JfR8H47wamV2U+FKZjCg2SCSAiH7JF0relhVK8Po1wCNb/JWPHnQKq1Pk3E25YIa/ItfG/w==}
+    peerDependencies:
+      expo: 56.0.0-canary-20260409-6fc2991
+
   expo-json-utils@56.0.0-canary-20260409-6fc2991:
     resolution: {integrity: sha512-MobLvNKkwmEFZjpzBPSjr1Z7CTFeKYrT+fAmrfpk5KpUc8DHEb5BAmr458EKnu2Mz/THpmO5lKd5YTLLgC0oFw==}
 
@@ -5857,11 +5862,6 @@ packages:
     peerDependencies:
       react: '*'
       react-native: '*'
-
-  react-native-haptic-feedback@2.3.4:
-    resolution: {integrity: sha512-3nHECsi+pL1c2TKNpOD5aPtAfFzrkjpABjioi6OUBb6OVeuUObQlx9idoXSbj1h/L7TCaC13LqKT5ILl0xxHjQ==}
-    peerDependencies:
-      react-native: '>=0.60.0'
 
   react-native-iap@14.7.20:
     resolution: {integrity: sha512-Qj32bpX3Jl1GsLCbnFCBxbDObgUq4dZtt0Eq++g0G1IZw9519uSSq9VpbscFPGL+2T19Q3BEq7uWIzgR2T7EVA==}
@@ -11690,6 +11690,10 @@ snapshots:
       react-native-reanimated: 4.3.0(react-native-worklets@0.8.1(@babel/core@7.29.0)(@react-native/metro-config@0.85.0(@babel/core@7.29.0))(react-native@0.85.0(@babel/core@7.29.0)(@react-native-community/cli@20.1.3(typescript@5.9.3))(@react-native/jest-preset@0.85.0(@babel/core@7.29.0)(react@19.2.3))(@react-native/metro-config@0.85.0(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.3))(react@19.2.3))(react-native@0.85.0(@babel/core@7.29.0)(@react-native-community/cli@20.1.3(typescript@5.9.3))(@react-native/jest-preset@0.85.0(@babel/core@7.29.0)(react@19.2.3))(@react-native/metro-config@0.85.0(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.3))(react@19.2.3)
       react-native-web: 0.21.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
 
+  expo-haptics@56.0.0-canary-20260409-6fc2991(expo@56.0.0-canary-20260409-6fc2991):
+    dependencies:
+      expo: 56.0.0-canary-20260409-6fc2991(@babel/core@7.29.0)(@expo/dom-webview@56.0.0-canary-20260409-6fc2991)(@expo/metro-runtime@56.0.0-canary-20260409-6fc2991)(react-dom@19.2.3(react@19.2.3))(react-native-web@0.21.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-native-worklets@0.8.1(@babel/core@7.29.0)(@react-native/metro-config@0.85.0(@babel/core@7.29.0))(react-native@0.85.0(@babel/core@7.29.0)(@react-native-community/cli@20.1.3(typescript@5.9.3))(@react-native/jest-preset@0.85.0(@babel/core@7.29.0)(react@19.2.3))(@react-native/metro-config@0.85.0(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.3))(react@19.2.3))(react-native@0.85.0(@babel/core@7.29.0)(@react-native-community/cli@20.1.3(typescript@5.9.3))(@react-native/jest-preset@0.85.0(@babel/core@7.29.0)(react@19.2.3))(@react-native/metro-config@0.85.0(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.3))(react@19.2.3)(typescript@5.9.3)
+
   expo-json-utils@56.0.0-canary-20260409-6fc2991: {}
 
   expo-keep-awake@56.0.0-canary-20260409-6fc2991(expo@56.0.0-canary-20260409-6fc2991)(react@19.2.3):
@@ -14324,10 +14328,6 @@ snapshots:
       hoist-non-react-statics: 3.3.2
       invariant: 2.2.4
       react: 19.2.3
-      react-native: 0.85.0(@babel/core@7.29.0)(@react-native-community/cli@20.1.3(typescript@5.9.3))(@react-native/jest-preset@0.85.0(@babel/core@7.29.0)(react@19.2.3))(@react-native/metro-config@0.85.0(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.3)
-
-  react-native-haptic-feedback@2.3.4(react-native@0.85.0(@babel/core@7.29.0)(@react-native-community/cli@20.1.3(typescript@5.9.3))(@react-native/jest-preset@0.85.0(@babel/core@7.29.0)(react@19.2.3))(@react-native/metro-config@0.85.0(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.3)):
-    dependencies:
       react-native: 0.85.0(@babel/core@7.29.0)(@react-native-community/cli@20.1.3(typescript@5.9.3))(@react-native/jest-preset@0.85.0(@babel/core@7.29.0)(react@19.2.3))(@react-native/metro-config@0.85.0(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.3)
 
   react-native-iap@14.7.20(react-native-nitro-modules@0.35.2(react-native@0.85.0(@babel/core@7.29.0)(@react-native-community/cli@20.1.3(typescript@5.9.3))(@react-native/jest-preset@0.85.0(@babel/core@7.29.0)(react@19.2.3))(@react-native/metro-config@0.85.0(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.3))(react@19.2.3))(react-native@0.85.0(@babel/core@7.29.0)(@react-native-community/cli@20.1.3(typescript@5.9.3))(@react-native/jest-preset@0.85.0(@babel/core@7.29.0)(react@19.2.3))(@react-native/metro-config@0.85.0(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.3))(react@19.2.3):

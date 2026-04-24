@@ -11,6 +11,8 @@ import React, { useState, useEffect, useCallback, useMemo, useRef } from "react"
 import { KeyboardAvoidingView, Platform, View, Linking } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as RNIap from "react-native-iap";
+import * as Haptics from "expo-haptics";
+import useRewardedAds from "../../hooks/useRewardedAds";
 
 import Header from "../../components/game/Header";
 import Controls from "../../components/game/Controls";
@@ -22,7 +24,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getFunctions, httpsCallable } from "@react-native-firebase/functions";
 import { getApp } from "@react-native-firebase/app";
 import { GameMode } from "../../contexts/AuthContext";
-import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 
 import { useAuth } from "../../contexts/AuthContext";
 import {
@@ -84,16 +85,12 @@ interface GuessResult {
   correctAnswer?: string;
   coinsEarned?: number;
   scoreEarned?: number;
+  canOfferRewardedAd?: boolean;
   canOfferCoinContinue?: boolean;
   attemptsRemaining?: number;
   newlyUnlockedAchievementIds?: string[];
   newWinStreak?: number;
 }
-
-const hapticOptions = {
-  enableVibrateFallback: true,
-  ignoreAndroidSystemSettings: false,
-};
 
 interface GameScreenProps {
   riddleId: string;
@@ -171,6 +168,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const [firestoreProducts, setFirestoreProducts] = useState<ProductPricing[]>([]);
   const [productPricingLoading, setProductPricingLoading] = useState(true);
   const [productPricingError, setProductPricingError] = useState<string | null>(null);
+  const { isRewardedAdReady, loadRewardedAd, showRewardedAd } = useRewardedAds();
 
   const {
     guesses,
@@ -192,6 +190,10 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   useEffect(() => {
     hintRevealedIndicesRef.current = [];
   }, [riddleId, gameMode]);
+
+  useEffect(() => {
+    loadRewardedAd();
+  }, [loadRewardedAd]);
 
   useEffect(() => {
     logger.debug(
@@ -606,6 +608,20 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     userCoins,
   ]);
 
+  const handleWatchAdToContinue = useCallback(async () => {
+    const didCompleteRewardedAd = await showRewardedAd();
+    if (didCompleteRewardedAd) {
+      continueGame();
+      return true;
+    }
+
+    modal.showInfoModal({
+      title: AppStrings.GameScreenAlerts.AD_NOT_READY_TITLE,
+      message: AppStrings.GameScreenAlerts.AD_NOT_READY_MESSAGE,
+    });
+    return false;
+  }, [showRewardedAd, continueGame, modal]);
+
   const handlePurchaseProduct = useCallback(
     async (productId: string) => {
       if (isPurchaseInProgress) {
@@ -678,6 +694,25 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     }
   }, [iapProducts, handlePurchaseProduct, modalActions]);
 
+  const handleWatchAdForCoins = useCallback(async () => {
+    logger.debug("Watch ad for coins button pressed");
+    modal.closeModalByType("coinShop");
+
+    try {
+      const didCompleteRewardedAd = await showRewardedAd();
+      if (didCompleteRewardedAd) {
+        logger.debug("Rewarded ad for coins shown successfully");
+      } else {
+        logger.warn("Rewarded ad was not ready to be shown");
+        modalActions.showAdNotReady();
+      }
+    } catch (error) {
+      logger.error("Error showing rewarded ad for coins:", error);
+      captureException(error);
+      modalActions.showAdError();
+    }
+  }, [modal, showRewardedAd, modalActions]);
+
   useEffect(() => {
     if (
       gameOver &&
@@ -705,9 +740,9 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         );
 
         if (isHapticsEnabled) {
-          ReactNativeHapticFeedback.trigger("impactHeavy", hapticOptions);
+          void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
           if (unlockedAchievementNames.length > 0) {
-            ReactNativeHapticFeedback.trigger("notificationSuccess", hapticOptions);
+            void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
           }
         }
 
@@ -856,11 +891,15 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
         modal.showLossModal({
           correctAnswer: result.correctAnswer || "",
+          onWatchAdContinue: result.canOfferRewardedAd
+            ? handleWatchAdToContinue
+            : undefined,
           onCoinContinue: result.canOfferCoinContinue
             ? handleCoinContinue
             : undefined,
           coinContinueCost: CONTINUE_COST_COINS,
           skipLevelCost,
+          canWatchAd: isRewardedAdReady,
           canUseCoin: canAffordCoinContinue,
           onOpenShop: () => openShopFromLossRef.current(),
           onNext: () => {
@@ -874,7 +913,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         });
       } else if (result.outcome === "loss") {
         if (isHapticsEnabled) {
-          ReactNativeHapticFeedback.trigger("notificationError", hapticOptions);
+          void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
         }
 
         const skipLevelCost = SKIP_COST_CLASSIC;
@@ -911,8 +950,12 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     onNextLevel,
     resetGame,
     deriveDailyStreakAfterWin,
+    handleWatchAdToContinue,
     handleCoinContinue,
+    isRewardedAdReady,
     runWithServerLoading,
+    playerData?.stats?.xp,
+    playerData?.stats?.totalScore,
   ]);
 
   const toggleSoundEnabled = useCallback((isEnabled: boolean) => {
@@ -969,7 +1012,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         });
       }
     } else if (isHapticsEnabled) {
-      ReactNativeHapticFeedback.trigger("notificationWarning", hapticOptions);
+      void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
     }
   }, [
     currentGuess,
@@ -1129,6 +1172,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         loading: iapLoading || productPricingLoading,
         error: iapError || productPricingError,
         onPurchaseProduct: handlePurchaseProduct,
+        onWatchVideo: handleWatchAdForCoins,
         onPayAndPlay: handlePayAndPlay,
       });
     } catch (error) {
@@ -1150,6 +1194,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     modal,
     userCoins,
     handlePurchaseProduct,
+    handleWatchAdForCoins,
     handlePayAndPlay,
   ]);
 

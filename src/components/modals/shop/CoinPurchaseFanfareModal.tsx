@@ -1,5 +1,5 @@
 import React, {useMemo, useState, useEffect} from "react";
-import {View, Text, Modal, Animated, Easing, Touchable, TouchableOpacity} from "react-native";
+import {View, Text, Modal, Animated, Easing} from "react-native";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import WheelBg from "../../../../assets/images/wheel-bg.svg";
 import LargeCoinStackSvg from "../../../../assets/images/large-coin-stack.svg";
@@ -9,7 +9,6 @@ import {
   MODAL_WIDTH,
   MODAL_HEIGHT,
   MODAL_CONTENT_PADDING,
-  COIN_ICON_SIZE_LARGE,
   MODAL_BUTTON_SPACER,
   wheelSize,
 } from "../../../constants/layout";
@@ -66,79 +65,84 @@ const CoinPurchaseFanfareModal: React.FC<CoinPurchaseFanfareModalProps> = ({isVi
           backgroundColor: "rgba(0,0,0,0.5)",
         }}
       >
-        <TouchableOpacity key={"coin-purchase-modal"} onPress={onClose}>
-          <SlideInModalContent isVisible={isVisible}>
+        <SlideInModalContent isVisible={isVisible}>
+          <View
+            style={{
+              width: MODAL_WIDTH,
+              height: MODAL_HEIGHT,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{position: "absolute"}} />
+
             <View
               style={{
                 width: MODAL_WIDTH,
                 height: MODAL_HEIGHT,
-                alignItems: "center",
-                justifyContent: "center",
+                overflow: "hidden",
+                borderRadius: 30,
               }}
             >
-              <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{position: "absolute"}} />
-
-              <View
+              <Animated.View
                 style={{
                   position: "absolute",
-                  width: MODAL_WIDTH,
-                  height: MODAL_HEIGHT,
-                  overflow: "hidden",
-                  borderRadius: 30,
+                  left: (MODAL_WIDTH - wheelSize) / 2,
+                  top: (MODAL_HEIGHT - wheelSize) / 2,
+                  opacity: 0.25,
+                  transform: [{rotate: spin}],
                 }}
               >
-                <Animated.View
-                  style={{
-                    position: "absolute",
-                    left: (MODAL_WIDTH - wheelSize) / 2,
-                    top: (MODAL_HEIGHT - wheelSize) / 2,
-                    opacity: 0.25,
-                    transform: [{rotate: spin}],
-                  }}
-                >
-                  <WheelBg width={wheelSize} height={wheelSize} />
-                </Animated.View>
-              </View>
+                <WheelBg width={wheelSize} height={wheelSize} />
+              </Animated.View>
+            </View>
 
-              <View
+            <View
+              style={{
+                flex: 1,
+                width: "100%",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: MODAL_BUTTON_SPACER * 2,
+                padding: MODAL_CONTENT_PADDING,
+              }}
+            >
+              <Text
                 style={{
-                  flex: 1,
-                  width: "100%",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: MODAL_BUTTON_SPACER * 2,
-                  padding: MODAL_CONTENT_PADDING,
+                  fontFamily: TYPOGRAPHY.fontPrimary,
+                  fontSize: TYPOGRAPHY.fontSize["3xl"],
+                  color: "black",
+                  textAlign: "center",
                 }}
               >
+                {AppStrings.CoinPurchase.TITLE}
+              </Text>
+
+              <View style={{alignItems: "center"}}>
+                <LargeCoinStackSvg width={verticalScale(200)} height={verticalScale(200)} />
                 <Text
                   style={{
-                    fontFamily: TYPOGRAPHY.fontPrimary,
+                    fontFamily: TYPOGRAPHY.fontSecondaryBold,
                     fontSize: TYPOGRAPHY.fontSize["3xl"],
-                    color: "black",
-                    textAlign: "center",
+                    color: "#FB9A2B",
+                    marginTop: 6,
                   }}
                 >
-                  {AppStrings.CoinPurchase.TITLE}
+                  +{coinsPurchased}
+                  {AppStrings.CoinPurchase.COINS_SUFFIX}
                 </Text>
+              </View>
 
-                <View style={{alignItems: "center"}}>
-                  <LargeCoinStackSvg width={verticalScale(200)} height={verticalScale(200)} />
-                  <Text
-                    style={{
-                      fontFamily: TYPOGRAPHY.fontSecondaryBold,
-                      fontSize: TYPOGRAPHY.fontSize["3xl"],
-                      color: "#FB9A2B",
-                      marginTop: 6,
-                    }}
-                  >
-                    +{coinsPurchased}
-                    {AppStrings.CoinPurchase.COINS_SUFFIX}
-                  </Text>
-                </View>
+              <View style={{width: "100%"}}>
+                <WideButton
+                  buttonText={AppStrings.CoinPurchase.AWESOME_BUTTON}
+                  onPress={onClose}
+                  testID="wide-button"
+                />
               </View>
             </View>
-          </SlideInModalContent>
-        </TouchableOpacity>
+          </View>
+        </SlideInModalContent>
       </View>
     </Modal>
   );

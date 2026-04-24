@@ -69,10 +69,7 @@ const CoinShop: React.FC<CoinShopProps> = ({
   const insets = useSafeAreaInsets();
   const availableHeight = screenHeight - insets.top - insets.bottom;
   const hasPaintedForCurrentOpenRef = useRef(false);
-  const deferredRenderFrameRef = useRef<number | null>(null);
-  const shouldDeferContent = process.env.NODE_ENV !== "test";
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
-  const [isContentReady, setIsContentReady] = useState(!shouldDeferContent);
 
   const sortedProducts = useMemo(
     () => [...firestoreProducts].sort((a, b) => a.sortOrder - b.sortOrder),
@@ -114,24 +111,6 @@ const CoinShop: React.FC<CoinShopProps> = ({
 
   useEffect(() => {
     if (!isVisible) {
-      setSelectedProductId(null);
-      return;
-    }
-  }, [isVisible]);
-
-  useEffect(() => {
-    if (!selectedProductId) return;
-
-    const selectedProductStillAvailable = sortedProducts.some(
-      (product) => product.productId === selectedProductId,
-    );
-    if (!selectedProductStillAvailable) {
-      setSelectedProductId(null);
-    }
-  }, [selectedProductId, sortedProducts]);
-
-  useEffect(() => {
-    if (!isVisible) {
       hasPaintedForCurrentOpenRef.current = false;
       return;
     }
@@ -152,38 +131,28 @@ const CoinShop: React.FC<CoinShopProps> = ({
     };
   }, [isVisible, onFirstPaint]);
 
+  const selectedProductStillAvailable =
+    selectedProductId === null ||
+    sortedProducts.some((product) => product.productId === selectedProductId);
+  const effectiveSelectedProductId = selectedProductStillAvailable ? selectedProductId : null;
+
   useEffect(() => {
-    if (!isVisible) {
-      setIsContentReady(false);
-      if (deferredRenderFrameRef.current !== null) {
-        cancelAnimationFrame(deferredRenderFrameRef.current);
-        deferredRenderFrameRef.current = null;
-      }
+    if (isVisible || selectedProductId === null) {
       return;
     }
+    // Keep selection scoped to a single visible session.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setSelectedProductId(null);
+  }, [isVisible, selectedProductId]);
 
-    if (!shouldDeferContent) {
-      setIsContentReady(true);
-      return;
-    }
-
-    setIsContentReady(false);
-    deferredRenderFrameRef.current = requestAnimationFrame(() => {
-      deferredRenderFrameRef.current = null;
-      setIsContentReady(true);
-    });
-
-    return () => {
-      if (deferredRenderFrameRef.current !== null) {
-        cancelAnimationFrame(deferredRenderFrameRef.current);
-        deferredRenderFrameRef.current = null;
-      }
-    };
-  }, [isVisible, shouldDeferContent]);
+  const handleClose = useCallback(() => {
+    setSelectedProductId(null);
+    onClose();
+  }, [onClose]);
 
   const handlePackPress = (product: ProductPricing) => {
     logger.debug("Shop pack tapped:", product.productId);
-    if (selectedProductId === product.productId) {
+    if (effectiveSelectedProductId === product.productId) {
       setSelectedProductId(null);
       return;
     }
@@ -192,8 +161,8 @@ const CoinShop: React.FC<CoinShopProps> = ({
   };
 
   const handlePurchasePress = () => {
-    if (!selectedProductId) return;
-    onPurchaseProduct(selectedProductId);
+    if (!effectiveSelectedProductId) return;
+    onPurchaseProduct(effectiveSelectedProductId);
   };
 
   return (
@@ -201,7 +170,7 @@ const CoinShop: React.FC<CoinShopProps> = ({
       visible={isVisible}
       transparent={true}
       animationType="fade"
-      onRequestClose={onClose}
+      onRequestClose={handleClose}
     >
       <View style={styles.overlay}>
         <View style={styles.backdrop} />
@@ -227,7 +196,7 @@ const CoinShop: React.FC<CoinShopProps> = ({
           <ModalBg
             width="100%"
             height="100%"
-            style={[StyleSheet.absoluteFill]}
+            style={StyleSheet.absoluteFill}
             preserveAspectRatio="none"
           />
           {/* Decorative wave — clipped to card bounds */}
@@ -237,7 +206,7 @@ const CoinShop: React.FC<CoinShopProps> = ({
             style={{ position: "absolute", top: -MODAL_HEIGHT * 0.05, left: -MODAL_WIDTH * 0.05 }}
           />
           <CloseButton
-            onPress={onClose}
+            onPress={handleClose}
             size={CLOSE_BUTTON_SIZE_LG}
             style={styles.closeButton}
             accessibilityLabel={AppStrings.Accessibility.CLOSE_COIN_SHOP}
@@ -266,15 +235,6 @@ const CoinShop: React.FC<CoinShopProps> = ({
               </Text>
             </View>
 
-            {!isContentReady && (
-              <View style={styles.loadingContainer} testID="coin-shop-loading">
-                <ActivityIndicator size="large" color={COLORS.primaryOrange} />
-                <Text style={styles.loadingText}>{AppStrings.CoinShop.LOADING_TEXT}</Text>
-              </View>
-            )}
-
-            {isContentReady && (
-              <>
                 {error && <Text style={styles.errorText}>{error}</Text>}
 
                 <View style={styles.scrollContent}>
@@ -285,7 +245,7 @@ const CoinShop: React.FC<CoinShopProps> = ({
                       <View style={styles.grid}>
                         {featuredProducts.map((product) => {
                           const displayPrice = getDisplayPrice(product);
-                          const isSelected = selectedProductId === product.productId;
+                          const isSelected = effectiveSelectedProductId === product.productId;
                           return (
                             <TouchableOpacity
                               key={product.productId}
@@ -321,7 +281,7 @@ const CoinShop: React.FC<CoinShopProps> = ({
                       <View style={styles.listContainer}>
                         {standardProducts.map((product) => {
                           const displayPrice = getDisplayPrice(product);
-                          const isSelected = selectedProductId === product.productId;
+                          const isSelected = effectiveSelectedProductId === product.productId;
                           return (
                             <TouchableOpacity
                               key={product.productId}
@@ -358,12 +318,10 @@ const CoinShop: React.FC<CoinShopProps> = ({
                     testID="purchase-button"
                     buttonText={AppStrings.CoinShop.PURCHASE_BUTTON}
                     onPress={handlePurchasePress}
-                    disabled={!selectedProductId}
+                    disabled={!effectiveSelectedProductId}
                   />
                 </View>
               </View>
-              </>
-            )}
           </>
           )}
         </SlideInModalContent>
@@ -409,10 +367,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: verticalScale(8),
-    paddingHorizontal: scale(16),
-    paddingVertical: verticalScale(8),
     marginLeft: scale(12),
-    marginRight: scale(12)
+    marginRight: scale(12),
+    paddingHorizontal: scale(16),
+    paddingVertical: verticalScale(8)
   },
   coinsPillAmount: {
     color: COLORS.gray800,
@@ -447,8 +405,8 @@ const styles = StyleSheet.create({
   gridCard: {
     alignItems: "center",
     backgroundColor: "#EAE1C4",
-    borderRadius: moderateScale(16),
     borderColor: "#F54160",
+    borderRadius: moderateScale(16),
     borderWidth: 2,
     height: GRID_CARD_HEIGHT,
     justifyContent: "flex-start",
@@ -458,23 +416,23 @@ const styles = StyleSheet.create({
     position: "relative",
     width: "48%",
   },
-  gridCoinIcon: {
-    marginBottom: 0,
-  },
   gridCardSelected: {
     borderColor: COLORS.primaryOrange,
     borderWidth: 2,
+    elevation: 10,
     overflow: "visible",
     shadowColor: COLORS.primaryOrange,
+    shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.7,
     shadowRadius: moderateScale(10),
-    shadowOffset: { width: 0, height: 0 },
-    elevation: 10,
+  },
+  gridCoinIcon: {
+    marginBottom: 0,
   },
   headerRow: {
     alignItems: "center",
-    marginTop: verticalScale(30),
     marginBottom: verticalScale(12),
+    marginTop: verticalScale(30),
   },
   listCard: {
     alignItems: "center",
@@ -495,11 +453,11 @@ const styles = StyleSheet.create({
   },
   listCardSelected: {
     borderColor: COLORS.primaryOrange,
+    elevation: 7,
     shadowColor: COLORS.primaryOrange,
+    shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.45,
     shadowRadius: moderateScale(6),
-    shadowOffset: { width: 0, height: 0 },
-    elevation: 7,
   },
   listCoins: {
     color: COLORS.black,
@@ -522,8 +480,8 @@ const styles = StyleSheet.create({
   loadingContainer: {
     alignItems: "center",
     flex: 1,
-    justifyContent: "center",
     gap: verticalScale(12),
+    justifyContent: "center",
   },
   loadingText: {
     color: COLORS.gray800,
@@ -542,11 +500,6 @@ const styles = StyleSheet.create({
   },
   overlay: {
     flex: 1,
-  },
-  purchaseButtonContainer: {
-    marginBottom: verticalScale(48),
-    marginLeft: scale(12),
-    marginRight: scale(12),
   },
   productCoins: {
     color: COLORS.black,
@@ -572,8 +525,10 @@ const styles = StyleSheet.create({
     fontFamily: TYPOGRAPHY.fontPrimary,
     fontSize: TYPOGRAPHY.fontSize.sm,
   },
-  scroll: {
-    flex: 1,
+  purchaseButtonContainer: {
+    marginBottom: verticalScale(48),
+    marginLeft: scale(12),
+    marginRight: scale(12),
   },
   scrollContent: {
     flexGrow: 1,

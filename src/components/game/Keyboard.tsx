@@ -225,7 +225,7 @@ const Keyboard: React.FC<KeyboardProps> = React.memo(function Keyboard({
 }) {
   const fontSize = TYPOGRAPHY.fontSize.lg;
   const keyScaleByLabelRef = useRef<Record<string, Animated.Value>>({});
-  const backspaceScale = useRef(new Animated.Value(1)).current;
+  const [backspaceScale] = useState(() => new Animated.Value(1));
 
   // Track the actual rendered container width so keys never overflow the x axis.
   const [containerWidth, setContainerWidth] = useState(dimensions.screenWidth);

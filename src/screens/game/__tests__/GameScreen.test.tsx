@@ -31,9 +31,20 @@ jest.mock("react-native-iap", () => ({
   requestPurchase: jest.fn(() => Promise.resolve()),
 }));
 
-// Mock react-native-haptic-feedback
-jest.mock("react-native-haptic-feedback", () => ({
-  trigger: jest.fn(),
+// Mock expo-haptics
+jest.mock("expo-haptics", () => ({
+  impactAsync: jest.fn(() => Promise.resolve()),
+  notificationAsync: jest.fn(() => Promise.resolve()),
+  ImpactFeedbackStyle: {
+    Light: "light",
+    Medium: "medium",
+    Heavy: "heavy",
+  },
+  NotificationFeedbackType: {
+    Success: "success",
+    Warning: "warning",
+    Error: "error",
+  },
 }));
 
 // Mock IapService
@@ -165,6 +176,18 @@ const mockUseGameLogic = {
 jest.mock("../../../hooks/useGameLogic", () => ({
   __esModule: true,
   default: () => mockUseGameLogic,
+}));
+
+const mockLoadRewardedAd = jest.fn();
+const mockShowRewardedAd = jest.fn(() => Promise.resolve(false));
+let mockIsRewardedAdReady = true;
+jest.mock("../../../hooks/useRewardedAds", () => ({
+  __esModule: true,
+  default: () => ({
+    isRewardedAdReady: mockIsRewardedAdReady,
+    loadRewardedAd: mockLoadRewardedAd,
+    showRewardedAd: mockShowRewardedAd,
+  }),
 }));
 
 // Mock useGameSessionController - runWithServerLoading must return a Promise
@@ -428,6 +451,10 @@ describe("GameScreen", () => {
     mockUseGameLogic.setCurrentGuess.mockReset();
     mockUseGameLogic.continueGame.mockReset();
     mockUseGameLogic.resetGame.mockReset();
+    mockLoadRewardedAd.mockReset();
+    mockShowRewardedAd.mockReset();
+    mockShowRewardedAd.mockResolvedValue(false);
+    mockIsRewardedAdReady = true;
   });
 
   afterEach(() => {
@@ -952,13 +979,13 @@ describe("GameScreen", () => {
     const getLatestProps = (mockFn: jest.Mock) =>
       mockFn.mock.calls[mockFn.mock.calls.length - 1][0];
 
-    it("does not pass a watch-video handler to coin shop", async () => {
+    it("passes a watch-video handler to coin shop", async () => {
       render(<GameScreen {...defaultProps} />);
       const headerProps = getLatestProps(mockHeader);
       headerProps.onCoinsPress();
       const config =
         mockShowCoinShopModal.mock.calls[mockShowCoinShopModal.mock.calls.length - 1][0];
-      expect(config.onWatchVideo).toBeUndefined();
+      expect(typeof config.onWatchVideo).toBe("function");
     });
 
     it("submits a completed guess and stores the result", async () => {
@@ -1211,6 +1238,7 @@ describe("GameScreen", () => {
       mockUseGameLogic.processGuess.mockResolvedValueOnce({
         outcome: "attemptLimitReached",
         correctAnswer: "ANSWER",
+        canOfferRewardedAd: true,
         canOfferCoinContinue: true,
       });
 
@@ -1226,8 +1254,8 @@ describe("GameScreen", () => {
       const config = mockShowLossModal.mock.calls[mockShowLossModal.mock.calls.length - 1][0];
 
       expect(config.canUseCoin).toBe(true);
-      expect(config.canWatchAd).toBeUndefined();
-      expect(config.onWatchAdContinue).toBeUndefined();
+      expect(config.canWatchAd).toBe(true);
+      expect(typeof config.onWatchAdContinue).toBe("function");
       await config.onCoinContinue();
       config.onOpenShop();
 
@@ -1249,6 +1277,7 @@ describe("GameScreen", () => {
       mockUseGameLogic.processGuess.mockResolvedValueOnce({
         outcome: "attemptLimitReached",
         correctAnswer: "ANSWER",
+        canOfferRewardedAd: true,
         canOfferCoinContinue: true,
       });
 
@@ -1273,7 +1302,7 @@ describe("GameScreen", () => {
     });
 
     it("shows loss modal for terminal loss and triggers onGameLoss", async () => {
-      const haptics = require("react-native-haptic-feedback");
+      const haptics = require("expo-haptics");
       mockUseGameLogic.currentGuess = ["K", "E", "Y", "B", "O", "A", "R", "D"];
       mockUseGameLogic.processGuess.mockResolvedValueOnce({
         outcome: "loss",
@@ -1289,10 +1318,7 @@ describe("GameScreen", () => {
       await waitFor(() => {
         expect(mockShowLossModal).toHaveBeenCalled();
       });
-      expect(haptics.trigger).toHaveBeenCalledWith(
-        "notificationError",
-        expect.any(Object)
-      );
+      expect(haptics.notificationAsync).toHaveBeenCalledWith("error");
       expect(defaultProps.onGameLoss).toHaveBeenCalledWith("ANSWER");
     });
 
@@ -1313,7 +1339,6 @@ describe("GameScreen", () => {
     });
 
     it("handles submit error by showing info modal", async () => {
-      const haptics = require("react-native-haptic-feedback");
       mockUseGameLogic.currentGuess = ["K", "E", "Y", "B", "O", "A", "R", "D"];
       mockUseGameLogic.processGuess.mockRejectedValueOnce(new Error("submit failed"));
       render(<GameScreen {...defaultProps} />);
@@ -1326,15 +1351,12 @@ describe("GameScreen", () => {
     });
 
     it("triggers haptic warning for incomplete guess submit", async () => {
-      const haptics = require("react-native-haptic-feedback");
+      const haptics = require("expo-haptics");
       mockUseGameLogic.currentGuess = ["K", "E"];
       render(<GameScreen {...defaultProps} />);
       const inputProps = getLatestProps(mockGameInput);
       await inputProps.handleSubmit();
-      expect(haptics.trigger).toHaveBeenCalledWith(
-        "notificationWarning",
-        expect.any(Object)
-      );
+      expect(haptics.notificationAsync).toHaveBeenCalledWith("warning");
     });
 
     it("routes keyboard and slot handlers to game logic setters", () => {
@@ -1661,7 +1683,7 @@ describe("GameScreen", () => {
     });
 
     it("maps unlocked achievements and shows each achievement fanfare in sequence", async () => {
-      const haptics = require("react-native-haptic-feedback");
+      const haptics = require("expo-haptics");
       const { ACHIEVEMENT_DEFINITIONS } = require("../../../constants/achievements");
       const { logger } = require("../../../utils/logger");
       const { captureException } = require("../../../utils/sentry");
@@ -1735,7 +1757,7 @@ describe("GameScreen", () => {
       const config =
         mockShowVictoryModal.mock.calls[mockShowVictoryModal.mock.calls.length - 1][0];
       expect(config.unlockedAchievementNames).toEqual(["First Win", "Speed Runner"]);
-      expect(haptics.trigger).toHaveBeenCalledWith("notificationSuccess", expect.any(Object));
+      expect(haptics.notificationAsync).toHaveBeenCalledWith("success");
 
       await config.onNext();
       expect(mockCloseModalByType).toHaveBeenCalledWith("victory");
@@ -1976,3 +1998,4 @@ describe("GameScreen", () => {
     });
   });
 });
+

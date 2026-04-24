@@ -1,5 +1,5 @@
 import React, {useMemo, useState, useEffect} from "react";
-import {View, Text, Modal, Animated, Easing, TouchableOpacity} from "react-native";
+import {View, Text, Modal, Animated, Easing} from "react-native";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import WheelBg from "../../../../assets/images/wheel-bg.svg";
 import CoinSvg from "../../../../assets/images/coin.svg";
@@ -66,7 +66,6 @@ const AchievementUnlockFanfareModal: React.FC<AchievementUnlockFanfareModalProps
     };
   }, [isVisible, rotationAnim]);
 
-  const hasAchievementDetails = achievements.length > 0;
   const primaryAchievementName =
     achievements[0]?.name ?? achievementNames[0] ?? AppStrings.Achievements.NEW_ACHIEVEMENT;
   const primaryAchievementDescription = achievements[0]?.description ?? "";
@@ -87,115 +86,116 @@ const AchievementUnlockFanfareModal: React.FC<AchievementUnlockFanfareModalProps
         }}
       >
         <SlideInModalContent isVisible={isVisible}>
-          <TouchableOpacity key={"coin-purchase-modal"} onPress={onClose}>
+          <View
+            style={{
+              width: MODAL_WIDTH,
+              height: MODAL_HEIGHT,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{position: "absolute"}} />
+
             <View
               style={{
                 width: MODAL_WIDTH,
                 height: MODAL_HEIGHT,
-                alignItems: "center",
-                justifyContent: "center",
+                overflow: "hidden",
+                borderRadius: 30,
               }}
             >
-              <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{position: "absolute"}} />
-
-              <View
+              <Animated.View
                 style={{
                   position: "absolute",
-                  width: MODAL_WIDTH,
-                  height: MODAL_HEIGHT,
-                  overflow: "hidden",
-                  borderRadius: 30,
+                  left: (MODAL_WIDTH - wheelSize) / 2,
+                  top: (MODAL_HEIGHT - wheelSize) / 2,
+                  opacity: 0.25,
+                  transform: [{rotate: spin}],
                 }}
               >
-                <Animated.View
-                  style={{
-                    position: "absolute",
-                    left: (MODAL_WIDTH - wheelSize) / 2,
-                    top: (MODAL_HEIGHT - wheelSize) / 2,
-                    opacity: 0.25,
-                    transform: [{rotate: spin}],
-                  }}
-                >
-                  <WheelBg width={wheelSize} height={wheelSize} />
-                </Animated.View>
-              </View>
+                <WheelBg width={wheelSize} height={wheelSize} />
+              </Animated.View>
+            </View>
 
-              <View
+            <View
+              style={{
+                flex: 1,
+                width: "100%",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: MODAL_BUTTON_SPACER * 2,
+                padding: MODAL_CONTENT_PADDING,
+              }}
+            >
+              <Text
                 style={{
-                  flex: 1,
-                  width: "100%",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: MODAL_BUTTON_SPACER * 2,
-                  padding: MODAL_CONTENT_PADDING,
+                  fontFamily: TYPOGRAPHY.fontPrimary,
+                  fontSize: TYPOGRAPHY.fontSize["3xl"],
+                  color: "black",
+                  textAlign: "center",
                 }}
               >
+                {AppStrings.Achievements.FANFARE_TITLE}
+              </Text>
+
+              <View style={{alignItems: "center", maxWidth: "90%"}}>
+                {primaryAchievementIcon ? (
+                  <Text
+                    style={{
+                      fontSize: TYPOGRAPHY.fontSize["4xl"],
+                      marginBottom: 8,
+                    }}
+                  >
+                    {primaryAchievementIcon}
+                  </Text>
+                ) : null}
                 <Text
                   style={{
-                    fontFamily: TYPOGRAPHY.fontPrimary,
-                    fontSize: TYPOGRAPHY.fontSize["3xl"],
+                    fontFamily: TYPOGRAPHY.fontSecondaryBold,
+                    fontSize: TYPOGRAPHY.fontSize["2xl"],
                     color: "black",
                     textAlign: "center",
                   }}
                 >
-                  {AppStrings.Achievements.FANFARE_TITLE}
+                  {primaryAchievementName}
                 </Text>
-
-                <View style={{alignItems: "center", maxWidth: "90%"}}>
-                  {primaryAchievementIcon ? (
-                    <Text
-                      style={{
-                        fontSize: TYPOGRAPHY.fontSize["4xl"],
-                        marginBottom: 8,
-                      }}
-                    >
-                      {primaryAchievementIcon}
-                    </Text>
-                  ) : null}
+                {primaryAchievementDescription ? (
                   <Text
                     style={{
-                      fontFamily: TYPOGRAPHY.fontSecondaryBold,
-                      fontSize: TYPOGRAPHY.fontSize["2xl"],
+                      fontFamily: TYPOGRAPHY.fontSecondary,
+                      fontSize: TYPOGRAPHY.fontSize.base,
                       color: "black",
+                      marginTop: 6,
                       textAlign: "center",
                     }}
                   >
-                    {primaryAchievementName}
+                    {primaryAchievementDescription}
                   </Text>
-                  {primaryAchievementDescription ? (
-                    <Text
-                      style={{
-                        fontFamily: TYPOGRAPHY.fontSecondary,
-                        fontSize: TYPOGRAPHY.fontSize.base,
-                        color: "black",
-                        marginTop: 6,
-                        textAlign: "center",
-                      }}
-                    >
-                      {primaryAchievementDescription}
-                    </Text>
-                  ) : null}
-                </View>
-
-                {coinsEarned > 0 ? (
-                  <View style={{alignItems: "center"}}>
-                    <CoinSvg width={COIN_ICON_SIZE_LARGE * 1.5} height={COIN_ICON_SIZE_LARGE * 1.5} />
-                    <Text
-                      style={{
-                        fontFamily: TYPOGRAPHY.fontSecondaryBold,
-                        fontSize: TYPOGRAPHY.fontSize["3xl"],
-                        color: "#FB9A2B",
-                        marginTop: 6,
-                      }}
-                    >
-                      +{coinsEarned}
-                      {AppStrings.Achievements.COINS_SUFFIX}
-                    </Text>
-                  </View>
                 ) : null}
               </View>
+
+              {coinsEarned > 0 ? (
+                <View style={{alignItems: "center"}}>
+                  <CoinSvg width={COIN_ICON_SIZE_LARGE * 1.5} height={COIN_ICON_SIZE_LARGE * 1.5} />
+                  <Text
+                    style={{
+                      fontFamily: TYPOGRAPHY.fontSecondaryBold,
+                      fontSize: TYPOGRAPHY.fontSize["3xl"],
+                      color: "#FB9A2B",
+                      marginTop: 6,
+                    }}
+                  >
+                    +{coinsEarned}
+                    {AppStrings.Achievements.COINS_SUFFIX}
+                  </Text>
+                </View>
+              ) : null}
+
+              <View style={{width: "100%"}}>
+                <WideButton buttonText={AppStrings.Achievements.NICE_BUTTON} onPress={handleClose} />
+              </View>
             </View>
-          </TouchableOpacity>
+          </View>
         </SlideInModalContent>
       </View>
     </Modal>

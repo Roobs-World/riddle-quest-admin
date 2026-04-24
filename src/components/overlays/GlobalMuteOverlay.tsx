@@ -28,9 +28,9 @@ const GlobalMuteOverlay: React.FC<GlobalMuteOverlayProps> = ({
 
 const styles = StyleSheet.create({
   buttonContainer: {
+    elevation: 1000,
     position: "absolute",
     zIndex: 1000,
-    elevation: 1000,
   },
 });
 

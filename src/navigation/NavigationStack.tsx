@@ -63,7 +63,6 @@ const GameScreenWrapper = () => {
     updatePlayerClassicIndex,
   } = useAuth();
   const isGuestMode = isGuestPlayer(playerData);
-  const hasShownSessionOnboardingRef = useRef(false);
 
   const lastFetchedModeRef = useRef<typeof gameMode | null>(null);
 
@@ -324,8 +323,6 @@ const GameScreenWrapper = () => {
 
   // Render GameScreen with all necessary props only when we have current riddle
   if (currentRiddle) {
-    const suppressOnboarding = hasShownSessionOnboardingRef.current;
-    hasShownSessionOnboardingRef.current = true;
     return (
       <>
         <GameScreen
@@ -436,7 +433,7 @@ const GameScreenWrapper = () => {
           }}
           onNextLevel={handleNextLevel}
           gameMode={gameMode}
-          suppressOnboarding={suppressOnboarding}
+          suppressOnboarding={false}
         />
 
       </>

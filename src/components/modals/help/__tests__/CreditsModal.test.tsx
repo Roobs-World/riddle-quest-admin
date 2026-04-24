@@ -18,7 +18,7 @@ describe("CreditsModal", () => {
     expect(screen.getByText("Credits")).toBeTruthy();
     expect(screen.getByText("Craig Beswetherick")).toBeTruthy();
     expect(screen.getByText("Lead Developer & Game Design")).toBeTruthy();
-    expect(screen.getByText("Thomas Lemrond")).toBeTruthy();
+    expect(screen.getByText("Mike Hawkyard")).toBeTruthy();
     expect(
       screen.getByText("Game Designer, Publisher, Overall Hero")
     ).toBeTruthy();
@@ -57,7 +57,7 @@ describe("CreditsModal", () => {
     const expectedMembers = [
       "Craig Beswetherick",
       "Reuben Beswetherick",
-      "Thomas Lemrond",
+      "Mike Hawkyard",
       "Gavin Harrison",
       "Nathalia",
       "Mr Ben",
@@ -76,3 +76,4 @@ describe("CreditsModal", () => {
     expect(screen.getAllByText("Design").length).toBeGreaterThanOrEqual(1);
   });
 });
+

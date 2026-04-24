@@ -22,6 +22,8 @@ const mockLeaderboardLimit = jest.fn();
 const mockLeaderboardGet = jest.fn();
 const mockUsersLimit = jest.fn();
 const mockUsersGet = jest.fn();
+const mockUsersDoc = jest.fn();
+const mockUsersDocGet = jest.fn();
 const mockBatchSet = jest.fn();
 const mockBatchCommit = jest.fn().mockResolvedValue(undefined);
 const mockBatch = jest.fn(() => ({
@@ -42,9 +44,14 @@ const mockUsersQuery = {
   get: mockUsersGet,
 };
 
+const mockUsersDocRef = {
+  get: mockUsersDocGet,
+};
+
 mockOrderBy.mockReturnValue(mockLeaderboardQuery);
 mockLeaderboardLimit.mockReturnValue(mockLeaderboardQuery);
 mockUsersLimit.mockReturnValue(mockUsersQuery);
+mockUsersDoc.mockReturnValue(mockUsersDocRef);
 
 const mockCollection = jest.fn((collectionName: string) => {
   if (collectionName === "leaderboard") {
@@ -56,6 +63,7 @@ const mockCollection = jest.fn((collectionName: string) => {
   if (collectionName === "users") {
     return {
       limit: mockUsersLimit,
+      doc: mockUsersDoc,
     };
   }
   return {};
@@ -111,7 +119,7 @@ function makeEntry(overrides: Partial<LeaderboardEntry> = {}): LeaderboardEntry 
 
 function makeSnapshot(entries: LeaderboardEntry[]) {
   return {
-    docs: entries.map((e) => ({data: () => e})),
+    docs: entries.map((e) => ({id: e.userId, data: () => e})),
   };
 }
 
@@ -198,6 +206,11 @@ describe("getLeaderboard callable", () => {
     mockOrderBy.mockReturnValue(mockLeaderboardQuery);
     mockLeaderboardLimit.mockReturnValue(mockLeaderboardQuery);
     mockUsersLimit.mockReturnValue(mockUsersQuery);
+    mockUsersDoc.mockReturnValue(mockUsersDocRef);
+    mockUsersDocGet.mockResolvedValue({
+      exists: false,
+      data: () => ({}),
+    });
   });
 
   function callGetLeaderboard(auth: unknown, data: unknown) {
@@ -222,9 +235,22 @@ describe("getLeaderboard callable", () => {
     mockLeaderboardGet.mockResolvedValueOnce(makeSnapshot(entries));
 
     const result = await callGetLeaderboard({uid: "u1"}, {type: "xp"});
+    const typedResult = result as {entries: LeaderboardEntry[]; requestingUserId: string};
 
     expect(mockOrderBy).toHaveBeenCalledWith("progressScore", "desc");
-    expect(result).toMatchObject({entries, requestingUserId: "u1"});
+    expect(typedResult.requestingUserId).toBe("u1");
+    expect(typedResult.entries).toMatchObject([
+      expect.objectContaining({
+        userId: "user-1",
+        xp: 900,
+        progressScore: 2_000_000_900,
+      }),
+      expect.objectContaining({
+        userId: "user-2",
+        xp: 400,
+        progressScore: 2_000_000_400,
+      }),
+    ]);
   });
 
   it("returns entries sorted by totalWins", async () => {
@@ -325,6 +351,41 @@ describe("getLeaderboard callable", () => {
     expect(mockUsersLimit).toHaveBeenCalledWith(1000);
     expect(mockBatchSet).toHaveBeenCalledTimes(2);
     expect(mockBatchCommit).toHaveBeenCalledTimes(1);
+  });
+
+  it("dedupes requesting user when legacy duplicate ids share username", async () => {
+    const entries = [
+      makeEntry({userId: "u1", username: "Me", xp: 700, progressScore: 2_000_000_700}),
+      makeEntry({userId: "legacy-u1", username: "Me", xp: 650, progressScore: 2_000_000_650}),
+      makeEntry({userId: "u2", username: "Other", xp: 600, progressScore: 2_000_000_600}),
+    ];
+    mockLeaderboardGet.mockResolvedValueOnce(makeSnapshot(entries));
+
+    const result = await callGetLeaderboard({uid: "u1"}, {type: "xp"});
+    const typedResult = result as {entries: LeaderboardEntry[]};
+
+    expect(typedResult.entries.filter((entry) => entry.username === "Me")).toHaveLength(1);
+    expect(typedResult.entries.find((entry) => entry.username === "Me")?.userId).toBe("u1");
+  });
+
+  it("dedupes requesting user via users/{uid} fallback when canonical uid row is missing", async () => {
+    const entries = [
+      makeEntry({userId: "legacy-1", username: "Me", xp: 820, progressScore: 2_000_000_820}),
+      makeEntry({userId: "legacy-2", username: "Me", xp: 700, progressScore: 2_000_000_700}),
+      makeEntry({userId: "u2", username: "Other", xp: 600, progressScore: 2_000_000_600}),
+    ];
+    mockLeaderboardGet.mockResolvedValueOnce(makeSnapshot(entries));
+    mockUsersDocGet.mockResolvedValueOnce({
+      exists: true,
+      data: () => ({username: "Me"}),
+    });
+
+    const result = await callGetLeaderboard({uid: "u1"}, {type: "xp"});
+    const typedResult = result as {entries: LeaderboardEntry[]};
+
+    expect(mockUsersDoc).toHaveBeenCalledWith("u1");
+    expect(typedResult.entries.filter((entry) => entry.username === "Me")).toHaveLength(1);
+    expect(typedResult.entries.find((entry) => entry.username === "Me")?.userId).toBe("u1");
   });
 });
 

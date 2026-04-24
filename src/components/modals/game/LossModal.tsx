@@ -28,7 +28,7 @@
  */
 
 import React, { useMemo, useState } from "react";
-import { View, Text, Modal, Animated, Easing } from "react-native";
+import { View, Text, Modal, Animated } from "react-native";
 import { TYPOGRAPHY } from "../../../styles";
 import WideButton from "../../buttons/WideButton";
 import ModalBg from "../../../../assets/images/modal-bg.svg";

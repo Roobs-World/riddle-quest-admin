@@ -91,7 +91,7 @@ export const isGuestPlayer = (
 export const resolveUserEmail = async (
   user: FirebaseAuthTypes.User
 ): Promise<string> => {
-  let userEmail = user.email ?? "";
+  const userEmail = user.email ?? "";
 
   if (userEmail.trim() !== "") {
     return userEmail;

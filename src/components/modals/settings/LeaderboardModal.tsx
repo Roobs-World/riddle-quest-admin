@@ -18,6 +18,8 @@ import {
   ActivityIndicator,
   Image,
 } from "react-native";
+import { getApp } from "@react-native-firebase/app";
+import { getAuth } from "@react-native-firebase/auth";
 import { getCallableFunction } from "../../../utils/firebaseFunctions";
 import CloseButton from "../../buttons/CloseButton";
 import { TYPOGRAPHY, COLORS, SPACING } from "../../../styles";
@@ -73,6 +75,25 @@ interface GetLeaderboardResult {
   requestingUserId?: string;
 }
 
+const normalizeUserId = (value: string | null | undefined): string | null => {
+  if (typeof value !== "string") return null;
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : null;
+};
+
+const buildUserIdCandidates = (
+  userIds: Array<string | null | undefined>
+): string[] => {
+  const candidates: string[] = [];
+  for (const rawUserId of userIds) {
+    const normalizedUserId = normalizeUserId(rawUserId);
+    if (normalizedUserId && !candidates.includes(normalizedUserId)) {
+      candidates.push(normalizedUserId);
+    }
+  }
+  return candidates;
+};
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Constants
 // ─────────────────────────────────────────────────────────────────────────────
@@ -119,9 +140,20 @@ const createCurrentUserFallback = (currentUserId: string): LeaderboardEntry => (
 
 const buildDisplayEntries = (
   rawEntries: LeaderboardEntry[],
-  currentUserId: string | null,
+  currentUserIds: string[],
+  fallbackCurrentUserId: string | null,
   type: LeaderboardType
 ): LeaderboardEntry[] => {
+  const normalizedCurrentUserIds = new Set(
+    currentUserIds
+      .map((value) => normalizeUserId(value))
+      .filter((value): value is string => value != null)
+  );
+  const isCurrentUserEntry = (entry: LeaderboardEntry): boolean => {
+    const normalizedEntryUserId = normalizeUserId(entry.userId);
+    return normalizedEntryUserId != null && normalizedCurrentUserIds.has(normalizedEntryUserId);
+  };
+
   const sortedEntries = [...rawEntries].sort((a, b) => {
     if (type === "totalWins") {
       return b.totalWins - a.totalWins;
@@ -132,12 +164,18 @@ const buildDisplayEntries = (
     return b.xp - a.xp;
   });
 
-  const topEntries = sortedEntries.slice(0, TOP_ROWS);
   const currentUserEntry =
-    currentUserId == null
+    normalizedCurrentUserIds.size === 0
       ? null
-      : sortedEntries.find((entry) => entry.userId === currentUserId) ??
-        createCurrentUserFallback(currentUserId);
+      : sortedEntries.find((entry) => isCurrentUserEntry(entry)) ??
+        (fallbackCurrentUserId
+          ? createCurrentUserFallback(fallbackCurrentUserId)
+          : null);
+  const topEntries = (
+    currentUserEntry
+      ? sortedEntries.filter((entry) => !isCurrentUserEntry(entry))
+      : sortedEntries
+  ).slice(0, TOP_ROWS);
 
   if (!__DEV__) {
     return [...topEntries, ...(currentUserEntry ? [currentUserEntry] : [])].slice(0, MAX_ROWS);
@@ -160,17 +198,20 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({
   onClose,
   currentUserId,
 }) => {
+  const authUserId = normalizeUserId(getAuth(getApp()).currentUser?.uid ?? null);
+  const normalizedCurrentUserId = normalizeUserId(currentUserId);
+  const shouldUseAuthUserIdFallback = normalizedCurrentUserId != null;
   const [activeTab, setActiveTab] = useState<LeaderboardType>("xp");
   const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
   const [requestingUserId, setRequestingUserId] = useState<string | null>(
-    currentUserId
+    normalizedCurrentUserId
   );
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    setRequestingUserId(currentUserId);
-  }, [currentUserId]);
+    setRequestingUserId(normalizedCurrentUserId);
+  }, [normalizedCurrentUserId]);
 
   const fetchLeaderboard = useCallback(async (type: LeaderboardType) => {
     setIsLoading(true);
@@ -180,7 +221,11 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({
       const result = await callable({ type, limit: 50 });
       const data = result.data as GetLeaderboardResult;
       setEntries(data.entries ?? []);
-      setRequestingUserId(data.requestingUserId ?? currentUserId);
+      setRequestingUserId(
+        normalizeUserId(data.requestingUserId) ??
+          (shouldUseAuthUserIdFallback ? authUserId : null) ??
+          normalizedCurrentUserId
+      );
     } catch (err) {
       logger.error("[LeaderboardModal] Failed to fetch leaderboard:", err);
       captureException(err);
@@ -188,7 +233,7 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({
     } finally {
       setIsLoading(false);
     }
-  }, [currentUserId]);
+  }, [authUserId, normalizedCurrentUserId, shouldUseAuthUserIdFallback]);
 
   useEffect(() => {
     if (isVisible) {
@@ -197,10 +242,19 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({
   }, [isVisible, activeTab, fetchLeaderboard]);
 
   const activeTabConfig = TABS.find((t) => t.type === activeTab)!;
-  const effectiveCurrentUserId = requestingUserId ?? currentUserId;
+  const currentUserIdCandidates = buildUserIdCandidates([
+    requestingUserId,
+    normalizedCurrentUserId,
+    shouldUseAuthUserIdFallback ? authUserId : null,
+  ]);
+  const fallbackCurrentUserId =
+    requestingUserId ??
+    normalizedCurrentUserId ??
+    (shouldUseAuthUserIdFallback ? authUserId : null);
   const displayEntries = buildDisplayEntries(
     entries,
-    effectiveCurrentUserId,
+    currentUserIdCandidates,
+    fallbackCurrentUserId,
     activeTab
   );
 
@@ -374,7 +428,7 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({
                 showsVerticalScrollIndicator={false}
               >
                 {displayEntries.map((entry, index) => {
-                  const isCurrentUser = entry.userId === effectiveCurrentUserId;
+                  const isCurrentUser = currentUserIdCandidates.includes(entry.userId);
                   const rank = index + 1;
                   const statValue = entry[activeTabConfig.statKey] as number;
 

@@ -14,7 +14,6 @@ import {
   MODAL_WIDTH,
   MODAL_HEIGHT,
   CLOSE_BUTTON_SIZE,
-  MODAL_CLOSE_BUTTON_POSITION,
   INPUT_BORDER_RADIUS,
   INPUT_PADDING,
 } from "../../../constants/layout";
@@ -38,6 +37,7 @@ const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({
   onClose,
   currentUsername,
 }) => {
+  const COMPACT_MODAL_HEIGHT = MODAL_HEIGHT *0.75;
   const { updatePlayerData } = useAuth();
   const [newUsername, setNewUsername] = useState(currentUsername || "");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -130,22 +130,37 @@ const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({
           <View
             style={{
               width: MODAL_WIDTH,
-              height: MODAL_HEIGHT,
+              height: COMPACT_MODAL_HEIGHT * 0.75,
               alignItems: "center",
               justifyContent: "center",
+              overflow: "hidden",
             }}
           >
-            <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{ position: "absolute" }} />
+            <ModalBg
+              width={MODAL_WIDTH}
+              height={MODAL_HEIGHT * 0.5}
+              style={{ position: "absolute" }}
+              preserveAspectRatio="none"
+            />
           {/* Decorative wave — clipped to card bounds */}
           <HomeBg
             width={MODAL_WIDTH * 1.1}
             height={MODAL_HEIGHT * 1.1}
-            style={{ position: "absolute", top: -MODAL_HEIGHT * 0.05, left: -MODAL_WIDTH * 0.05 }}
+            style={{
+              position: "absolute",
+              top: -MODAL_HEIGHT * 0.05,
+              left: -MODAL_WIDTH * 0.05,
+            }}
           />
           <CloseButton
             onPress={handleClose}
             size={CLOSE_BUTTON_SIZE}
-            style={MODAL_CLOSE_BUTTON_POSITION}
+            style={
+              position: "absolute" as const,
+              marginTop: verticalScale(32),
+              right: CLOSE_BUTTON_INSET,
+              zIndex: 10,
+            }
           />
           <View style={{ width: "80%", alignItems: "center" }}>
             <Text

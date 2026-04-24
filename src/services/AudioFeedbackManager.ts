@@ -10,7 +10,7 @@
  * that keeps behavior consistent across the app.
  */
 import { SoundManager } from "./SoundManager";
-import ReactNativeHapticFeedback from "react-native-haptic-feedback";
+import * as Haptics from "expo-haptics";
 import {
   IAudioFeedbackService,
   FeedbackType,
@@ -41,7 +41,7 @@ export class AudioFeedbackManager implements IAudioFeedbackService {
       }
 
       if (finalConfig.playHaptic) {
-        ReactNativeHapticFeedback.trigger("impactLight");
+        await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
       }
     } catch (error) {
       logger.error("Error playing neutral feedback:", error);
@@ -61,7 +61,7 @@ export class AudioFeedbackManager implements IAudioFeedbackService {
       }
 
       if (finalConfig.playHaptic) {
-        ReactNativeHapticFeedback.trigger("notificationSuccess");
+        await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       }
     } catch (error) {
       logger.error("Error playing success feedback:", error);
@@ -84,7 +84,7 @@ export class AudioFeedbackManager implements IAudioFeedbackService {
       }
 
       if (finalConfig.playHaptic) {
-        ReactNativeHapticFeedback.trigger("notificationError");
+        await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
       }
     } catch (error) {
       logger.error("Error playing error feedback:", error);
@@ -107,7 +107,7 @@ export class AudioFeedbackManager implements IAudioFeedbackService {
       }
 
       if (finalConfig.playHaptic) {
-        ReactNativeHapticFeedback.trigger("impactMedium");
+        await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
       }
     } catch (error) {
       logger.error("Error playing wrong guess feedback:", error);

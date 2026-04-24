@@ -63,6 +63,14 @@ jest.mock("@react-native-firebase/app", () => ({
   getApp: jest.fn(),
 }));
 
+const mockGetAuth = jest.fn(() => ({
+  currentUser: { uid: "auth-uid" },
+}));
+
+jest.mock("@react-native-firebase/auth", () => ({
+  getAuth: () => mockGetAuth(),
+}));
+
 jest.mock("../../../../utils/logger", () => ({
   logger: { debug: jest.fn(), info: jest.fn(), warn: jest.fn(), error: jest.fn() },
 }));
@@ -102,6 +110,7 @@ const defaultProps = {
 describe("LeaderboardModal", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetAuth.mockReturnValue({ currentUser: { uid: "auth-uid" } });
   });
 
   it("shows a loading indicator while fetching", async () => {
@@ -258,6 +267,21 @@ describe("LeaderboardModal", () => {
     });
   });
 
+  it("falls back to Firebase auth uid when requestingUserId is missing", async () => {
+    const entries = [makeEntry({ userId: "auth-uid", username: "Alice" })];
+    mockHttpsCallable.mockResolvedValueOnce({
+      data: { entries },
+    });
+
+    const { getAllByText } = render(
+      <LeaderboardModal {...defaultProps} currentUserId="stale-local-id" />
+    );
+
+    await waitFor(() => {
+      expect(getAllByText("Alice (you)").length).toBeGreaterThan(0);
+    });
+  });
+
   it("does not append '(you)' for other users' rows", async () => {
     const entries = [makeEntry({ userId: "user-2", username: "Bob" })];
     mockHttpsCallable.mockResolvedValueOnce({ data: { entries } });
@@ -337,6 +361,54 @@ describe("LeaderboardModal", () => {
     await waitFor(() => {
       expect(getByLabelText("Rank 10: Me, score 42, you")).toBeTruthy();
     });
+  });
+
+  it("does not duplicate the current user when they are already in the top rows", async () => {
+    const entries = [
+      makeEntry({ userId: "me", username: "Me", xp: 10_000 }),
+      ...Array.from({ length: 15 }, (_, i) =>
+        makeEntry({
+          userId: `top-${i + 1}`,
+          username: `Top ${i + 1}`,
+          xp: 9000 - i,
+        })
+      ),
+    ];
+    mockHttpsCallable.mockResolvedValueOnce({ data: { entries } });
+
+    const { getAllByText, getByLabelText } = render(
+      <LeaderboardModal {...defaultProps} currentUserId="me" />
+    );
+
+    await waitFor(() => {
+      expect(getAllByText("Me (you)")).toHaveLength(1);
+      expect(getByLabelText(/Rank 10: Me, score (10,000|10000), you/)).toBeTruthy();
+    });
+  });
+
+  it("does not duplicate the current user when leaderboard has multiple ids for them", async () => {
+    const originalDev = (global as any).__DEV__;
+    (global as any).__DEV__ = false;
+    try {
+      const entries = [
+        makeEntry({ userId: "auth-uid", username: "Me", xp: 10_000 }),
+        makeEntry({ userId: "stale-local-id", username: "Me", xp: 9_900 }),
+        makeEntry({ userId: "other-1", username: "Other 1", xp: 8_000 }),
+      ];
+      mockHttpsCallable.mockResolvedValueOnce({
+        data: { entries, requestingUserId: "stale-local-id" },
+      });
+
+      const { getAllByText } = render(
+        <LeaderboardModal {...defaultProps} currentUserId="stale-local-id" />
+      );
+
+      await waitFor(() => {
+        expect(getAllByText("Me (you)")).toHaveLength(1);
+      });
+    } finally {
+      (global as any).__DEV__ = originalDev;
+    }
   });
 
   it("fills missing rows with fake entries in dev mode", async () => {

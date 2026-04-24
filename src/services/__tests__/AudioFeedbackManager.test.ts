@@ -1,6 +1,6 @@
 import { AudioFeedbackManager } from "../AudioFeedbackManager";
 import { SoundManager } from "../SoundManager";
-import ReactNativeHapticFeedback from "react-native-haptic-feedback";
+import * as Haptics from "expo-haptics";
 import {
   FeedbackConfig,
   FeedbackType,
@@ -15,10 +15,24 @@ jest.mock("../SoundManager", () => ({
   },
 }));
 
-// Mock ReactNativeHapticFeedback
-jest.mock("react-native-haptic-feedback", () => ({
-  trigger: jest.fn(),
-}));
+// Mock expo-haptics with a shared trigger-style mock to keep assertions concise
+jest.mock("expo-haptics", () => {
+  const mockTrigger = jest.fn(() => Promise.resolve());
+  return {
+    impactAsync: mockTrigger,
+    notificationAsync: mockTrigger,
+    ImpactFeedbackStyle: {
+      Light: "impactLight",
+      Medium: "impactMedium",
+      Heavy: "impactHeavy",
+    },
+    NotificationFeedbackType: {
+      Success: "notificationSuccess",
+      Warning: "notificationWarning",
+      Error: "notificationError",
+    },
+  };
+});
 
 describe("AudioFeedbackManager", () => {
   let audioFeedbackManager: AudioFeedbackManager;
@@ -30,7 +44,7 @@ describe("AudioFeedbackManager", () => {
     typeof SoundManager.playNegativeWithFadeIn
   >;
   let mockHapticTrigger: jest.MockedFunction<
-    typeof ReactNativeHapticFeedback.trigger
+    typeof Haptics.impactAsync
   >;
   let consoleErrorSpy: jest.SpyInstance;
   let consoleWarnSpy: jest.SpyInstance;
@@ -54,15 +68,15 @@ describe("AudioFeedbackManager", () => {
         typeof SoundManager.playNegativeWithFadeIn
       >;
     mockHapticTrigger =
-      ReactNativeHapticFeedback.trigger as jest.MockedFunction<
-        typeof ReactNativeHapticFeedback.trigger
+      Haptics.impactAsync as jest.MockedFunction<
+        typeof Haptics.impactAsync
       >;
 
     // Set up default mock implementations
     mockPlayBackgroundMusic.mockResolvedValue(undefined);
     mockPlaySuccess.mockResolvedValue(undefined);
     mockPlayNegativeWithFadeIn.mockResolvedValue(undefined);
-    mockHapticTrigger.mockReturnValue(undefined);
+    mockHapticTrigger.mockResolvedValue(undefined);
 
     consoleErrorSpy = jest.spyOn(console, "error");
     consoleWarnSpy = jest.spyOn(console, "warn");

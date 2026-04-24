@@ -209,7 +209,6 @@ module.exports = {
         isAutoInitEnabled: true,
       },
     ],
-
     /** Custom plugin for Android IAP store selection */
     "./plugins/withAndroidIapStoreSelection.js",
 

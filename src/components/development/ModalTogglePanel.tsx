@@ -504,12 +504,18 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
  * Component Styles
  */
 const styles = StyleSheet.create({
-  dailyChallengeButton: {
+  clearButton: {
     alignItems: "center",
-    backgroundColor: COLORS.primaryOrange,
+    backgroundColor: COLORS.error,
     borderRadius: BORDER_RADIUS.sm,
     marginTop: SPACING.sm,
     padding: SPACING.xs,
+  },
+  clearButtonText: {
+    color: COLORS.white,
+    fontFamily: TYPOGRAPHY.fontSecondary,
+    fontSize: TYPOGRAPHY.fontSize.sm,
+    fontWeight: "600",
   },
   completeButton: {
     alignItems: "center",
@@ -524,42 +530,29 @@ const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.fontSize.sm,
     fontWeight: "600",
   },
-  clearButton: {
-    alignItems: "center",
-    backgroundColor: COLORS.error,
-    borderRadius: BORDER_RADIUS.sm,
-    marginTop: SPACING.sm,
-    padding: SPACING.xs,
-  },
-  clearButtonText: {
-    color: COLORS.white,
-    fontFamily: TYPOGRAPHY.fontSecondary,
-    fontSize: TYPOGRAPHY.fontSize.sm,
-    fontWeight: "600",
-  },
   container: {
     backgroundColor: COLORS.white,
     borderColor: COLORS.gray300,
     borderRadius: BORDER_RADIUS.md,
     borderWidth: 1,
     elevation: 10,
+    left: scale(10),
     maxHeight: verticalScale(400),
     minWidth: scale(200),
-    left: scale(10),
     position: "absolute",
     top: verticalScale(100),
     zIndex: 9999,
   },
-  localDataButton: {
-    alignItems: "center",
-    backgroundColor: COLORS.warning,
-    borderRadius: BORDER_RADIUS.sm,
-    marginTop: SPACING.sm,
-    padding: SPACING.xs,
-  },
   content: {
     maxHeight: verticalScale(300),
     padding: SPACING.sm,
+  },
+  dailyChallengeButton: {
+    alignItems: "center",
+    backgroundColor: COLORS.primaryOrange,
+    borderRadius: BORDER_RADIUS.sm,
+    marginTop: SPACING.sm,
+    padding: SPACING.xs,
   },
   header: {
     backgroundColor: COLORS.primaryOrange,
@@ -572,6 +565,13 @@ const styles = StyleSheet.create({
     fontFamily: TYPOGRAPHY.fontSecondary,
     fontSize: TYPOGRAPHY.fontSize.sm,
     fontWeight: "600",
+  },
+  localDataButton: {
+    alignItems: "center",
+    backgroundColor: COLORS.warning,
+    borderRadius: BORDER_RADIUS.sm,
+    marginTop: SPACING.sm,
+    padding: SPACING.xs,
   },
   toggleLabel: {
     color: COLORS.textPrimary,

@@ -72,7 +72,8 @@ describe("<SkipModal />", () => {
 
     it("should render cost information", () => {
       const { getByText } = render(<SkipModal {...defaultProps} />);
-      expect(getByText("Cost: 50 Coins. You have: 100 Coins.")).toBeTruthy();
+      expect(getByText(/Cost:\s*50/)).toBeTruthy();
+      expect(getByText(/Coins\. You have:\s*100 Coins\./)).toBeTruthy();
     });
 
     it("should render SKIP LEVEL button", () => {
@@ -82,7 +83,7 @@ describe("<SkipModal />", () => {
 
     it("should render CLOSE button", () => {
       const { getByTestId } = render(<SkipModal {...defaultProps} />);
-      expect(getByTestId("wide-button-close")).toBeTruthy();
+      expect(getByTestId("close-button")).toBeTruthy();
     });
 
     it("should render close button in header", () => {
@@ -156,7 +157,7 @@ describe("<SkipModal />", () => {
         <SkipModal {...defaultProps} onClose={onClose} />
       );
 
-      fireEvent.press(getByTestId("wide-button-close"));
+      fireEvent.press(getByTestId("close-button"));
       expect(onClose).toHaveBeenCalledTimes(1);
     });
 
@@ -197,14 +198,16 @@ describe("<SkipModal />", () => {
       const { getByText } = render(
         <SkipModal {...defaultProps} userCoins={250} skipCost={75} />
       );
-      expect(getByText("Cost: 75 Coins. You have: 250 Coins.")).toBeTruthy();
+      expect(getByText(/Cost:\s*75/)).toBeTruthy();
+      expect(getByText(/Coins\. You have:\s*250 Coins\./)).toBeTruthy();
     });
 
     it("should display zero coins correctly", () => {
       const { getByText } = render(
         <SkipModal {...defaultProps} userCoins={0} skipCost={100} />
       );
-      expect(getByText("Cost: 100 Coins. You have: 0 Coins.")).toBeTruthy();
+      expect(getByText(/Cost:\s*100/)).toBeTruthy();
+      expect(getByText(/Coins\. You have:\s*0 Coins\./)).toBeTruthy();
     });
   });
 
@@ -245,7 +248,8 @@ describe("<SkipModal />", () => {
       const { getByText } = render(
         <SkipModal {...defaultProps} userCoins={0} skipCost={50} />
       );
-      expect(getByText("Cost: 50 Coins. You have: 0 Coins.")).toBeTruthy();
+      expect(getByText(/Cost:\s*50/)).toBeTruthy();
+      expect(getByText(/Coins\. You have:\s*0 Coins\./)).toBeTruthy();
       expect(getByText("You do not have enough coins to skip a level.")).toBeTruthy();
     });
 
@@ -253,7 +257,8 @@ describe("<SkipModal />", () => {
       const { getByText, queryByText } = render(
         <SkipModal {...defaultProps} userCoins={0} skipCost={0} />
       );
-      expect(getByText("Cost: 0 Coins. You have: 0 Coins.")).toBeTruthy();
+      expect(getByText(/Cost:\s*0/)).toBeTruthy();
+      expect(getByText(/Coins\. You have:\s*0 Coins\./)).toBeTruthy();
       // User can afford skip when cost is 0
       expect(queryByText("You do not have enough coins to skip a level.")).toBeNull();
     });
@@ -262,7 +267,8 @@ describe("<SkipModal />", () => {
       const { getByText } = render(
         <SkipModal {...defaultProps} userCoins={999999} skipCost={1000} />
       );
-      expect(getByText("Cost: 1000 Coins. You have: 999999 Coins.")).toBeTruthy();
+      expect(getByText(/Cost:\s*1000/)).toBeTruthy();
+      expect(getByText(/Coins\. You have:\s*999999 Coins\./)).toBeTruthy();
     });
 
     it("should handle coin amount exactly one less than skip cost", () => {

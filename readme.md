@@ -51,7 +51,7 @@ This is a mobile game that combines the popular Wordle-style gameplay with chall
 - **Caching:** AsyncStorage or MMKV
 - **Animations:** Reanimated & Gesture Handler
 - **Sound:** expo-av
-- **Haptics:** react-native-haptic-feedback
+- **Haptics:** expo-haptics
 - **Backend:** Firebase (Authentication, Firestore, Storage, Cloud Functions)
 - **Data Storage:** Firestore (riddles, user data, game state)
 - **IAP:** `react-native-iap`

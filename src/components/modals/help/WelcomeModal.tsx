@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {View, Text, Modal, Dimensions, TouchableOpacity} from "react-native";
+import {View, Text, Modal, Dimensions} from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -16,6 +16,7 @@ import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
 import WheelBg from "../../../../assets/images/wheel-bg.svg";
 import Logo from "../../../../assets/images/main-logo.svg";
+import WideButton from "../../buttons/WideButton";
 import {TYPOGRAPHY} from "src/styles";
 import {MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, MODAL_BUTTON_SPACER} from "../../../constants/layout";
 import {SPACING} from "../../../styles";
@@ -50,6 +51,7 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({isVisible, onClose, onDismis
     onClose();
     onDismiss?.();
   };
+
   const letsPlayText =
     getAppLanguage() === "en" ? AppStrings.WelcomeModal.LETS_PLAY : AppStrings.Navigation.PLAY_BUTTON;
 
@@ -72,89 +74,92 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({isVisible, onClose, onDismis
         >
           <WheelBg width={WHEEL_SIZE} height={WHEEL_SIZE} />
         </Animated.View>
-        <TouchableOpacity key={"welcome-modal"} onPress={onClose}>
-          {/* Modal card */}
-          <SlideInModalContent isVisible={isVisible}>
+
+        {/* Modal card */}
+        <SlideInModalContent isVisible={isVisible}>
+          <View
+            style={{
+              width: MODAL_WIDTH,
+              height: MODAL_HEIGHT,
+              alignItems: "center",
+              justifyContent: "center",
+              overflow: "hidden",
+              marginBottom: SCREEN_H * 0.15,
+            }}
+          >
+            {/* Card shape background */}
+            <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{position: "absolute"}} />
+
+            {/* Decorative wave - clipped to card bounds */}
+            <HomeBg
+              width={MODAL_WIDTH * 1.1}
+              height={MODAL_HEIGHT * 1.1}
+              style={{position: "absolute", top: -MODAL_HEIGHT * 0.05, left: -MODAL_WIDTH * 0.05}}
+            />
+
+            {/* Content */}
             <View
               style={{
-                width: MODAL_WIDTH,
-                height: MODAL_HEIGHT,
+                flex: 1,
+                width: "100%",
                 alignItems: "center",
-                justifyContent: "center",
-                overflow: "hidden",
-                marginBottom: SCREEN_H * 0.15,
+                justifyContent: "space-between",
+                padding: MODAL_CONTENT_PADDING,
+                paddingTop: MODAL_CONTENT_PADDING,
               }}
             >
-              {/* Card shape background */}
-              <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{position: "absolute"}} />
-
-              {/* Decorative wave — clipped to card bounds */}
-              <HomeBg
-                width={MODAL_WIDTH * 1.1}
-                height={MODAL_HEIGHT * 1.1}
-                style={{position: "absolute", top: -MODAL_HEIGHT * 0.05, left: -MODAL_WIDTH * 0.05}}
-              />
-
-              {/* Content */}
-              <View
+              {/* Title */}
+              <Logo width={"100%"} style={{position: "absolute", marginTop: SPACING.lg}} />
+              <Text
                 style={{
-                  flex: 1,
-                  width: "100%",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  padding: MODAL_CONTENT_PADDING,
-                  paddingTop: MODAL_CONTENT_PADDING,
+                  fontFamily: TYPOGRAPHY.fontPrimary,
+                  fontSize: TYPOGRAPHY.fontSize["2xl"],
+                  color: "black",
+                  textAlign: "center",
+                  marginTop: verticalScale(80),
                 }}
               >
-                {/* Title */}
-                <Logo width={"100%"} style={{position: "absolute", marginTop: SPACING.lg}} />
+                {AppStrings.WelcomeModal.WELCOME_TITLE}
+              </Text>
+
+              {/* Body text */}
+              <View
+                style={{
+                  width: "80%",
+                  position: "absolute",
+                  marginTop: verticalScale(170),
+                }}
+              >
                 <Text
                   style={{
-                    fontFamily: TYPOGRAPHY.fontPrimary,
-                    fontSize: TYPOGRAPHY.fontSize["2xl"],
+                    fontFamily: TYPOGRAPHY.fontSecondary,
+                    fontSize: TYPOGRAPHY.fontSize.base,
                     color: "black",
                     textAlign: "center",
+                    position: "absolute",
                     marginTop: verticalScale(80),
                   }}
                 >
-                  {AppStrings.WelcomeModal.WELCOME_TITLE}
+                  {AppStrings.WelcomeModal.SOLVE_RIDDLES_TEXT}
                 </Text>
-
-                {/* Body text */}
-                <View
+                <Text
                   style={{
-                    width: "80%",
-                    position: "absolute",
-                    marginTop: verticalScale(170),
+                    fontFamily: TYPOGRAPHY.fontSecondary,
+                    fontSize: TYPOGRAPHY.fontSize.base,
+                    color: "black",
+                    textAlign: "center",
                   }}
                 >
-                  <Text
-                    style={{
-                      fontFamily: TYPOGRAPHY.fontSecondary,
-                      fontSize: TYPOGRAPHY.fontSize.base,
-                      color: "black",
-                      textAlign: "center",
-                      position: "absolute",
-                      marginTop: verticalScale(80),
-                    }}
-                  >
-                    {AppStrings.WelcomeModal.SOLVE_RIDDLES_TEXT}
-                  </Text>
-                  <Text
-                    style={{
-                      fontFamily: TYPOGRAPHY.fontSecondary,
-                      fontSize: TYPOGRAPHY.fontSize.base,
-                      color: "black",
-                      textAlign: "center",
-                    }}
-                  >
-                    {AppStrings.WelcomeModal.EARN_COINS_TEXT}
-                  </Text>
-                </View>
+                  {AppStrings.WelcomeModal.EARN_COINS_TEXT}
+                </Text>
+              </View>
+
+              <View style={{width: "100%", marginBottom: MODAL_BUTTON_SPACER}}>
+                <WideButton buttonText={letsPlayText} onPress={handleDismiss} />
               </View>
             </View>
-          </SlideInModalContent>
-        </TouchableOpacity>
+          </View>
+        </SlideInModalContent>
       </View>
     </Modal>
   );

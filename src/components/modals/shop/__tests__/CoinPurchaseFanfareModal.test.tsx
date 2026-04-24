@@ -13,6 +13,10 @@ jest.mock("react-native/Libraries/Animated/Animated", () => {
     stopAnimation = jest.fn((callback?: (value: number) => void) => {
       callback?.(this._value);
     });
+    resetAnimation = jest.fn((callback?: (value: number) => void) => {
+      this._value = 0;
+      callback?.(this._value);
+    });
     constructor(initial: number) {
       this._value = initial;
     }
@@ -62,6 +66,7 @@ jest.mock("react-native/Libraries/Modal/Modal", () => {
 // Mock WideButton component
 jest.mock("../../../buttons/WideButton", () => {
   const React = require("react");
+  const { TouchableOpacity, Text } = require("react-native");
   return function MockWideButton({
     buttonText,
     onPress,
@@ -70,9 +75,9 @@ jest.mock("../../../buttons/WideButton", () => {
     onPress: () => void;
   }) {
     return React.createElement(
-      "View",
-      { testID: "wide-button", accessible: true, onPress },
-      React.createElement("Text", null, buttonText)
+      TouchableOpacity,
+      { testID: "wide-button", accessibilityRole: "button", onPress },
+      React.createElement(Text, null, buttonText)
     );
   };
 });

@@ -39,7 +39,7 @@ interface TeamMember {
 const TEAM_MEMBERS: TeamMember[] = [
   {name: "Craig Beswetherick", role: "Lead Developer & Game Design"},
   {name: "Reuben Beswetherick", role: "Inspiration"},
-  {name: "Thomas Lemrond", role: "Game Designer, Publisher, Overall Hero"},
+  {name: "Mike Hawkyard", role: "Game Designer, Publisher, Overall Hero"},
   {name: "Gavin Harrison", role: "Sound Design"},
   {name: "Nathalia", role: "Design"},
   {name: "Mr Ben", role: "Design"},
@@ -84,7 +84,7 @@ const CreditsModal: React.FC<CreditsModalProps> = ({isVisible, onClose, topRight
               justifyContent: "center",
             }}
           >
-            <ModalBg width="100%" height="100%" style={[StyleSheet.absoluteFill]} preserveAspectRatio="none" />
+            <ModalBg width="100%" height="100%" style={StyleSheet.absoluteFill} preserveAspectRatio="none" />
             {/* Decorative wave — clipped to card bounds */}
             <HomeBg
               width={MODAL_WIDTH * 1.1}

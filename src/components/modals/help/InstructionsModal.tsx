@@ -1,6 +1,7 @@
 import React from "react";
-import {View, Text, Modal, TouchableOpacity} from "react-native";
+import {View, Text, Modal} from "react-native";
 import CloseButton from "../../buttons/CloseButton";
+import WideButton from "../../buttons/WideButton";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
 import {TYPOGRAPHY} from "src/styles";
@@ -41,77 +42,81 @@ const InstructionsModal: React.FC<InstructionsModalProps> = ({isVisible, onClose
         }}
       >
         <SlideInModalContent isVisible={isVisible}>
-          <TouchableOpacity key={"instructions-modal"} onPress={onClose}>
+          <View
+            style={{
+              width: MODAL_WIDTH,
+              height: INSTRUCTIONS_MODAL_HEIGHT,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <ModalBg
+              width={MODAL_WIDTH}
+              height={INSTRUCTIONS_MODAL_HEIGHT}
+              preserveAspectRatio="none"
+              style={{position: "absolute"}}
+            />
+            {/* Decorative wave - clipped to card bounds */}
+            <HomeBg
+              width={MODAL_WIDTH * 1.1}
+              height={MODAL_HEIGHT * 1.1}
+              style={{position: "absolute", top: -MODAL_HEIGHT * 0.05, left: -MODAL_WIDTH * 0.05}}
+            />
             <View
               style={{
-                width: MODAL_WIDTH,
-                height: INSTRUCTIONS_MODAL_HEIGHT,
+                flex: 1,
+                width: "100%",
                 alignItems: "center",
-                justifyContent: "center",
+                justifyContent: "space-between",
+                padding: MODAL_CONTENT_PADDING,
+                paddingBottom: MODAL_CONTENT_PADDING + SPACING.md,
               }}
             >
-              <ModalBg
-                width={MODAL_WIDTH}
-                height={INSTRUCTIONS_MODAL_HEIGHT}
-                preserveAspectRatio="none"
-                style={{position: "absolute"}}
+              <CloseButton
+                onPress={onClose}
+                size={CLOSE_BUTTON_SIZE}
+                style={{...MODAL_CLOSE_BUTTON_POSITION, marginTop: verticalScale(28)}}
               />
-              {/* Decorative wave — clipped to card bounds */}
-              <HomeBg
-                width={MODAL_WIDTH * 1.1}
-                height={MODAL_HEIGHT * 1.1}
-                style={{position: "absolute", top: -MODAL_HEIGHT * 0.05, left: -MODAL_WIDTH * 0.05}}
-              />
-              <View
+              <Text
                 style={{
-                  flex: 1,
-                  width: "100%",
-                  alignItems: "center",
-                  padding: MODAL_CONTENT_PADDING,
+                  fontFamily: TYPOGRAPHY.fontPrimary,
+                  fontSize: TYPOGRAPHY.fontSize.title,
+                  color: "black",
+                  textAlign: "center",
+                  marginTop: verticalScale(16),
+                  marginBottom: verticalScale(24),
                 }}
               >
-                <CloseButton
-                  onPress={onClose}
-                  size={CLOSE_BUTTON_SIZE}
-                  style={{...MODAL_CLOSE_BUTTON_POSITION, marginTop: verticalScale(28)}}
-                />
-                <Text
-                  style={{
-                    fontFamily: TYPOGRAPHY.fontPrimary,
-                    fontSize: TYPOGRAPHY.fontSize.title,
-                    color: "black",
-                    textAlign: "center",
-                    marginTop: verticalScale(16),
-                    marginBottom: verticalScale(24),
-                  }}
-                >
-                  {AppStrings.Instructions.TITLE}
-                </Text>
+                {AppStrings.Instructions.TITLE}
+              </Text>
 
-                <View
-                  style={{
-                    width: "100%",
-                  }}
-                >
-                  <InstructionCard
-                    title={AppStrings.Instructions.GOAL_TITLE}
-                    description={AppStrings.Instructions.GOAL_DESCRIPTION}
-                  />
-                  <InstructionCard title={AppStrings.Instructions.COLOR_CLUES_TITLE}>
-                    <View style={{gap: SPACING.sm, alignItems: "flex-start"}}>
-                      <ColorClue color="#22c55e" text={AppStrings.Instructions.COLOR_CORRECT} />
-                      <ColorClue color="#eab308" text={AppStrings.Instructions.COLOR_MISPLACED} />
-                      <ColorClue color="#ef4444" text={AppStrings.Instructions.COLOR_WRONG} />
-                    </View>
-                  </InstructionCard>
-                  <InstructionCard
-                    title={AppStrings.Instructions.TIPS_TITLE}
-                    description={AppStrings.Instructions.TIPS_DESCRIPTION}
-                  />
-                </View>
+              <View
+                style={{
+                  width: "100%",
+                }}
+              >
+                <InstructionCard
+                  title={AppStrings.Instructions.GOAL_TITLE}
+                  description={AppStrings.Instructions.GOAL_DESCRIPTION}
+                />
+                <InstructionCard title={AppStrings.Instructions.COLOR_CLUES_TITLE}>
+                  <View style={{gap: SPACING.sm, alignItems: "flex-start"}}>
+                    <ColorClue color="#22c55e" text={AppStrings.Instructions.COLOR_CORRECT} />
+                    <ColorClue color="#eab308" text={AppStrings.Instructions.COLOR_MISPLACED} />
+                    <ColorClue color="#ef4444" text={AppStrings.Instructions.COLOR_WRONG} />
+                  </View>
+                </InstructionCard>
+                <InstructionCard
+                  title={AppStrings.Instructions.TIPS_TITLE}
+                  description={AppStrings.Instructions.TIPS_DESCRIPTION}
+                />
+              </View>
+
+              <View style={{width: "100%"}}>
+                <WideButton buttonText={AppStrings.Instructions.GOT_IT_BUTTON} onPress={onClose} />
               </View>
             </View>
-          </TouchableOpacity>
+          </View>
         </SlideInModalContent>
       </View>
     </Modal>

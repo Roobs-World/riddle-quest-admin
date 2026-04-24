@@ -4,6 +4,7 @@ const path = require("path");
 const {
   getSentryExpoConfig
 } = require("@sentry/react-native/metro");
+const inlineRequiresEnabled = process.env.EXPO_METRO_INLINE_REQUIRES !== "false";
 
 // Load default Expo Metro config
 const config = getSentryExpoConfig(__dirname, {
@@ -47,7 +48,7 @@ config.resolver.platforms = ["ios", "android", "native", "web"];
 config.transformer.getTransformOptions = async () => ({
   transform: {
     experimentalImportSupport: false,
-    inlineRequires: false,
+    inlineRequires: inlineRequiresEnabled,
   },
 });
 
@@ -96,7 +97,7 @@ windConfig.transformer.babelTransformerPath = require.resolve(
   "react-native-svg-transformer/expo"
 );
 
-windConfig.transformer.inlineRequires = false;
+windConfig.transformer.inlineRequires = inlineRequiresEnabled;
 
 windConfig.resolver.assetExts = windConfig.resolver.assetExts.filter(
   (ext) => ext !== "svg"
@@ -139,10 +140,16 @@ const escapedFirebasePath = firebaseNodeModulesPath.replace(
   /[.*+?^${}()|[\\]\\]/g,
   "\\$&"
 );
+const gradleLocalPath = path.resolve(__dirname, ".gradle-local");
+const escapedGradleLocalPath = gradleLocalPath.replace(
+  /[.*+?^${}()|[\\]\\]/g,
+  "\\$&"
+);
 
 windConfig.resolver.blockList = [
   new RegExp(/(\/__tests__\/.*)$/.source),
   new RegExp(escapedFirebasePath + "/.*"),
+  new RegExp(escapedGradleLocalPath + "[/\\\\].*"),
 ];
 
 module.exports = windConfig;

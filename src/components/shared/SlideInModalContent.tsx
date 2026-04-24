@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Animated,
   Easing,
@@ -20,7 +20,7 @@ const SlideInModalContent: React.FC<SlideInModalContentProps> = ({
   children,
   style,
 }) => {
-  const translateY = useRef(new Animated.Value(ENTRY_OFFSET)).current;
+  const [translateY] = useState(() => new Animated.Value(ENTRY_OFFSET));
 
   useEffect(() => {
     if (!isVisible) {

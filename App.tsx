@@ -61,15 +61,22 @@ import {
 const SOLAR_PRELOAD_TIMEOUT_MS = 15000;
 
 const withTimeout = async <T,>(promise: Promise<T>, timeoutMs: number) => {
-  return Promise.race([
-    promise,
-    new Promise<never>((_, reject) => {
-      setTimeout(
-        () => reject(new Error(`Operation timed out after ${timeoutMs}ms`)),
-        timeoutMs
-      );
-    }),
-  ]);
+  let timeoutId: ReturnType<typeof setTimeout> | null = null;
+  try {
+    return await Promise.race([
+      promise,
+      new Promise<never>((_, reject) => {
+        timeoutId = setTimeout(
+          () => reject(new Error(`Operation timed out after ${timeoutMs}ms`)),
+          timeoutMs
+        );
+      }),
+    ]);
+  } finally {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+  }
 };
 
 const initializeSoundInBackground = async (): Promise<void> => {
