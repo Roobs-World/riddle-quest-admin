@@ -1,5 +1,6 @@
 import React, {useMemo, useState, useEffect} from "react";
 import {View, Text, Modal, Animated, Easing} from "react-native";
+import MaskedView from "@react-native-masked-view/masked-view";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import WheelBg from "../../../../assets/images/wheel-bg.svg";
 import LargeCoinStackSvg from "../../../../assets/images/large-coin-stack.svg";
@@ -15,6 +16,7 @@ import {
 } from "../../../constants/layout";
 import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
+import {verticalScale} from "@/utils/responsive";
 
 interface CoinPurchaseFanfareModalProps {
   isVisible: boolean;
@@ -78,29 +80,55 @@ const CoinPurchaseFanfareModal: React.FC<CoinPurchaseFanfareModalProps> = ({isVi
 
             <View
               style={{
+                position: "absolute",
                 width: MODAL_WIDTH,
                 height: MODAL_HEIGHT,
-                overflow: "hidden",
-                borderRadius: 30,
               }}
             >
-              <Animated.View
+              <MaskedView
                 style={{
-                  position: "absolute",
-                  left: (MODAL_WIDTH - wheelSize) / 2,
-                  top: (MODAL_HEIGHT - wheelSize) / 2,
-                  opacity: 0.25,
-                  transform: [{rotate: spin}],
+                  width: MODAL_WIDTH,
+                  height: MODAL_HEIGHT,
                 }}
+                maskElement={
+                  <View
+                    style={{
+                      width: MODAL_WIDTH,
+                      height: MODAL_HEIGHT,
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} preserveAspectRatio="none" />
+                  </View>
+                }
               >
-                <WheelBg width={wheelSize} height={wheelSize} />
-              </Animated.View>
+                <View
+                  style={{
+                    width: MODAL_WIDTH,
+                    height: MODAL_HEIGHT,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Animated.View
+                    style={{
+                      position: "absolute",
+                      opacity: 0.25,
+                      transform: [{rotate: spin}],
+                    }}
+                  >
+                    <WheelBg width={wheelSize} height={wheelSize} />
+                  </Animated.View>
+                </View>
+              </MaskedView>
             </View>
 
             <View
               style={{
-                flex: 1,
-                width: "100%",
+                position: "absolute",
+                width: MODAL_WIDTH,
+                height: MODAL_HEIGHT,
                 alignItems: "center",
                 justifyContent: "center",
                 gap: MODAL_BUTTON_SPACER,
@@ -133,7 +161,7 @@ const CoinPurchaseFanfareModal: React.FC<CoinPurchaseFanfareModalProps> = ({isVi
                 </Text>
               </View>
 
-              <View style={{width: "100%"}}>
+              <View style={{width: "100%", marginTop: verticalScale(20)}}>
                 <WideButton
                   buttonText={AppStrings.CoinPurchase.AWESOME_BUTTON}
                   onPress={onClose}

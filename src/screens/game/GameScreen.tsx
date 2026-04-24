@@ -900,7 +900,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
                 await safeDelay(MODAL_CLOSE_DELAY_MS);
                 modal.showLevelUpFanfareModal({
                   newLevel: nextLevel,
-                  coinsAwarded: levelUpBonusCoins,
+                  coinsAwarded: LEVEL_UP_COIN_BONUS,
                   onContinue: () => {
                     void (async () => {
                       await safeDelay(MODAL_CLOSE_DELAY_MS);

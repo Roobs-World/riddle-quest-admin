@@ -1,7 +1,10 @@
 import React from "react";
 import { render, waitFor, cleanup, act } from "@testing-library/react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { CONTINUE_REWARDED_AD_COIN_REWARD } from "../../../constants/game";
+import {
+  CONTINUE_REWARDED_AD_COIN_REWARD,
+  LEVEL_UP_COIN_BONUS,
+} from "../../../constants/game";
 
 // Mock all external dependencies before importing the component
 
@@ -1127,6 +1130,17 @@ describe("GameScreen", () => {
         expect(mockShowVictoryModal).toHaveBeenCalled();
       });
       expect(defaultProps.onGameWin).toHaveBeenCalledWith(0, 25, 100, undefined, 50);
+
+      const victoryConfig =
+        mockShowVictoryModal.mock.calls[mockShowVictoryModal.mock.calls.length - 1][0];
+      await act(async () => {
+        await victoryConfig.onNext();
+      });
+      await waitFor(() => {
+        expect(mockShowLevelUpFanfareModal).toHaveBeenCalledWith(
+          expect.objectContaining({ coinsAwarded: LEVEL_UP_COIN_BONUS })
+        );
+      });
     });
 
     it("does not show level-up fanfare when earned XP does not increase level", async () => {

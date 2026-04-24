@@ -1,5 +1,6 @@
 import React, {useMemo, useState, useEffect} from "react";
 import {View, Text, Modal, Animated, Easing} from "react-native";
+import MaskedView from "@react-native-masked-view/masked-view";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import WheelBg from "../../../../assets/images/wheel-bg.svg";
 import CoinSvg from "../../../../assets/images/coin.svg";
@@ -35,6 +36,8 @@ const AchievementUnlockFanfareModal: React.FC<AchievementUnlockFanfareModalProps
   onClose,
 }) => {
   const [rotationAnim] = useState(() => new Animated.Value(0));
+  const modalBgHeight = MODAL_HEIGHT * 1.2;
+  const modalBgOffsetY = -(modalBgHeight - MODAL_HEIGHT) / 2;
 
   const spin = useMemo(() => {
     return rotationAnim.interpolate({
@@ -94,33 +97,65 @@ const AchievementUnlockFanfareModal: React.FC<AchievementUnlockFanfareModalProps
               justifyContent: "center",
             }}
           >
-            <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{position: "absolute"}} />
+            <ModalBg
+              width={MODAL_WIDTH}
+              height={modalBgHeight}
+              preserveAspectRatio="none"
+              style={{position: "absolute", top: modalBgOffsetY}}
+            />
 
             <View
               style={{
+                position: "absolute",
                 width: MODAL_WIDTH,
-                height: MODAL_HEIGHT,
-                overflow: "hidden",
-                borderRadius: 30,
+                height: modalBgHeight,
+                top: modalBgOffsetY,
               }}
             >
-              <Animated.View
+              <MaskedView
                 style={{
-                  position: "absolute",
-                  left: (MODAL_WIDTH - wheelSize) / 2,
-                  top: (MODAL_HEIGHT - wheelSize) / 2,
-                  opacity: 0.25,
-                  transform: [{rotate: spin}],
+                  width: MODAL_WIDTH,
+                  height: modalBgHeight,
                 }}
+                maskElement={
+                  <View
+                    style={{
+                      width: MODAL_WIDTH,
+                      height: modalBgHeight,
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <ModalBg width={MODAL_WIDTH} height={modalBgHeight} preserveAspectRatio="none" />
+                  </View>
+                }
               >
-                <WheelBg width={wheelSize} height={wheelSize} />
-              </Animated.View>
+                <View
+                  style={{
+                    width: MODAL_WIDTH,
+                    height: modalBgHeight,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Animated.View
+                    style={{
+                      position: "absolute",
+                      opacity: 0.25,
+                      transform: [{rotate: spin}],
+                    }}
+                  >
+                    <WheelBg width={wheelSize} height={wheelSize} />
+                  </Animated.View>
+                </View>
+              </MaskedView>
             </View>
 
             <View
               style={{
-                flex: 1,
-                width: "100%",
+                position: "absolute",
+                width: MODAL_WIDTH,
+                height: MODAL_HEIGHT,
                 alignItems: "center",
                 justifyContent: "center",
                 gap: MODAL_BUTTON_SPACER * 2,

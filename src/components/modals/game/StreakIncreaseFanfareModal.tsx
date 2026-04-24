@@ -84,6 +84,7 @@ const StreakIncreaseFanfareModal: React.FC<StreakIncreaseFanfareModalProps> = ({
 
             <View
               style={{
+                position: "absolute",
                 width: MODAL_WIDTH,
                 height: MODAL_HEIGHT,
                 overflow: "hidden",
@@ -105,8 +106,9 @@ const StreakIncreaseFanfareModal: React.FC<StreakIncreaseFanfareModalProps> = ({
 
             <View
               style={{
-                flex: 1,
-                width: "100%",
+                position: "absolute",
+                width: MODAL_WIDTH,
+                height: MODAL_HEIGHT,
                 alignItems: "center",
                 justifyContent: "center",
                 gap: MODAL_BUTTON_SPACER * 2,
