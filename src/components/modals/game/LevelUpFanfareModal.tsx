@@ -14,6 +14,7 @@ import {
 } from "../../../constants/layout";
 import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
+import {verticalScale} from "@/utils/responsive";
 
 interface LevelUpFanfareModalProps {
   isVisible: boolean;
@@ -115,6 +116,7 @@ const LevelUpFanfareModal: React.FC<LevelUpFanfareModalProps> = ({isVisible, new
                     fontSize: TYPOGRAPHY.fontSize["3xl"],
                     color: "black",
                     textAlign: "center",
+                    marginTop: verticalScale(-40),
                   }}
                 >
                   {AppStrings.LevelUpFanfare.TITLE}

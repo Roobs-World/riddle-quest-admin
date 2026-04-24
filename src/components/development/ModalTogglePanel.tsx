@@ -44,6 +44,7 @@ import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY } from "../../styles";
 import { scale, verticalScale } from "../../utils/responsive";
 import { logger } from "../../utils/logger";
 import { AppStrings, getAppLanguage, SupportedLanguage } from "../../constants/AppStrings";
+import { LEVEL_UP_COIN_BONUS } from "../../constants/game";
 import { loadRewardedAd, showRewardedAd } from "../../services/RewardedAdService";
 
 /**
@@ -321,6 +322,11 @@ const generateMockData = (
       return {
         streakValue: 4,
         coinsAwarded: 50,
+      };
+    case "levelUpFanfare":
+      return {
+        newLevel: 2,
+        coinsAwarded: LEVEL_UP_COIN_BONUS,
       };
     default:
       return {};

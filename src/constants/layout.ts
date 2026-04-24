@@ -7,8 +7,8 @@
  * rather than repeating the calculation inline.
  */
 
-import { scale, verticalScale, moderateScale, dimensions } from "../utils/responsive";
-import { SIZING } from "../styles/tokens/sizing";
+import {scale, verticalScale, moderateScale, dimensions} from "../utils/responsive";
+import {SIZING} from "../styles/tokens/sizing";
 
 // ---------------------------------------------------------------------------
 // Modals — container
@@ -26,7 +26,7 @@ export const MODAL_MAX_SCREEN_FRACTION = 0.9;
 /** Responsive modal width — use this in every modal container. */
 export const MODAL_WIDTH = Math.min(
   moderateScale(MODAL_BASE_WIDTH),
-  dimensions.screenWidth * MODAL_MAX_SCREEN_FRACTION
+  dimensions.screenWidth * MODAL_MAX_SCREEN_FRACTION,
 );
 
 /** Responsive modal height — preserves the exact SVG aspect ratio. */
@@ -168,7 +168,7 @@ export const GUESS_TILE_MAX_SIZE = SIZING.tile.size;
  */
 export const GUESS_GRID_EFFECTIVE_WIDTH = Math.min(
   dimensions.screenWidth,
-  dimensions.isLargeTablet ? MAX_CONTENT_WIDTH : dimensions.screenWidth
+  dimensions.isLargeTablet ? MAX_CONTENT_WIDTH : dimensions.screenWidth,
 );
 
 /** Horizontal padding subtracted from screen width when computing tile size. */
@@ -220,7 +220,7 @@ export const BACK_ICON_SIZE = moderateScale(35);
 // ---------------------------------------------------------------------------
 
 /** Width/height of the large coin-stack icon in VictoryModal. */
-export const COIN_ICON_SIZE_LARGE = moderateScale(80);
+export const COIN_ICON_SIZE_LARGE = moderateScale(100);
 
 /** Width/height of the coin icon in the in-game header coins display. */
 export const COIN_DISPLAY_ICON_SIZE = moderateScale(36);
@@ -295,6 +295,4 @@ export const KEYBOARD_ROW_SPACER = moderateScale(16);
 /** Width of the spacer that centres the bottom row, and of the backspace key. */
 export const KEYBOARD_BOTTOM_OFFSET = moderateScale(48);
 
-export const wheelSize = Math.ceil(
-  Math.sqrt(MODAL_WIDTH ** 2 + MODAL_HEIGHT ** 2) * 1.2
-);
+export const wheelSize = Math.ceil(Math.sqrt(MODAL_WIDTH ** 2 + MODAL_HEIGHT ** 2) * 1.2);
