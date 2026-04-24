@@ -115,6 +115,54 @@ interface GameScreenProps {
   suppressOnboarding?: boolean;
 }
 
+const parseCoinBalance = (value: unknown): number | null => {
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return Math.max(0, value);
+  }
+
+  if (typeof value === "string") {
+    const normalized = value.trim().replace(/,/g, "");
+    const directParsed = Number(normalized);
+    if (Number.isFinite(directParsed)) {
+      return Math.max(0, directParsed);
+    }
+
+    const numericMatch = normalized.match(/-?\d+(\.\d+)?/);
+    if (numericMatch) {
+      const parsedMatch = Number(numericMatch[0]);
+      if (Number.isFinite(parsedMatch)) {
+        return Math.max(0, parsedMatch);
+      }
+    }
+  }
+
+  if (typeof value === "object" && value !== null) {
+    const maybeValueOf = (value as { valueOf?: () => unknown }).valueOf;
+    if (typeof maybeValueOf === "function") {
+      const fromValueOf = maybeValueOf.call(value);
+      if (fromValueOf !== value) {
+        const parsedFromValueOf = parseCoinBalance(fromValueOf);
+        if (parsedFromValueOf !== null) {
+          return parsedFromValueOf;
+        }
+      }
+    }
+
+    const maybeToString = (value as { toString?: () => string }).toString;
+    if (typeof maybeToString === "function") {
+      const asString = maybeToString.call(value);
+      if (typeof asString === "string" && asString !== "[object Object]") {
+        const parsedFromString = parseCoinBalance(asString);
+        if (parsedFromString !== null) {
+          return parsedFromString;
+        }
+      }
+    }
+  }
+
+  return null;
+};
+
 const GameScreenInner: React.FC<GameScreenProps> = ({
   riddleId,
   riddleText,
@@ -185,6 +233,20 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     gameMode: gameMode === "daily" ? "challenge" : "classic",
     isGuestMode,
   });
+
+  const currentUserCoins = useMemo(() => {
+    const authCoins = parseCoinBalance(playerData?.coins);
+    if (authCoins !== null) {
+      return authCoins;
+    }
+
+    const propCoins = parseCoinBalance(userCoins);
+    if (propCoins !== null) {
+      return propCoins;
+    }
+
+    return 0;
+  }, [playerData?.coins, userCoins]);
 
   const hintRevealedIndicesRef = useRef<number[]>([]);
 
@@ -556,7 +618,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       );
     };
 
-    if ((userCoins ?? 0) < CONTINUE_COST_COINS) {
+    if (currentUserCoins < CONTINUE_COST_COINS) {
       modal.showInfoModal({
         title: AppStrings.GameScreenAlerts.NOT_ENOUGH_COINS_TITLE,
         message: AppStrings.GameScreenAlerts.CONTINUE_NOT_ENOUGH_COINS_MESSAGE,
@@ -606,23 +668,20 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     isGuestMode,
     playerData,
     updatePlayerDataLocally,
-    userCoins,
+    currentUserCoins,
   ]);
 
-  const handleWatchAdToContinue = useCallback(async () => {
+  const runRewardedAdContinueFlow = useCallback(async () => {
     const didCompleteRewardedAd = await showRewardedAd();
     if (didCompleteRewardedAd) {
       if (playerData) {
-        const currentCoins =
-          typeof playerData.coins === "number" && Number.isFinite(playerData.coins)
-            ? playerData.coins
-            : typeof userCoins === "number" && Number.isFinite(userCoins)
-              ? userCoins
-              : 0;
         updatePlayerDataLocally({
-          coins: currentCoins + CONTINUE_REWARDED_AD_COIN_REWARD,
+          coins: currentUserCoins + CONTINUE_REWARDED_AD_COIN_REWARD,
         });
       }
+      modal.showCoinPurchaseFanfareModal({
+        coinsPurchased: CONTINUE_REWARDED_AD_COIN_REWARD,
+      });
       continueGame();
       return true;
     }
@@ -638,7 +697,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     modal,
     playerData,
     updatePlayerDataLocally,
-    userCoins,
+    currentUserCoins,
   ]);
 
   const handlePurchaseProduct = useCallback(
@@ -832,7 +891,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
             attempts: guesses.length,
             coinsEarned: result.coinsEarned || 0,
             totalCoins:
-              (userCoins ?? 0) + (result.coinsEarned || 0) + totalBonusCoinsAwarded,
+              currentUserCoins + (result.coinsEarned || 0) + totalBonusCoinsAwarded,
             unlockedAchievementNames,
             guesses,
             onNext: async () => {
@@ -905,14 +964,18 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           totalBonusCoinsAwarded
         );
       } else if (result.outcome === "attemptLimitReached") {
-        const canAffordCoinContinue = (userCoins ?? 0) >= CONTINUE_COST_COINS;
+        const canAffordCoinContinue = currentUserCoins >= CONTINUE_COST_COINS;
         const skipLevelCost = SKIP_COST_CLASSIC;
 
         modal.showLossModal({
           correctAnswer: result.correctAnswer || "",
-          totalCoins: userCoins,
+          totalCoins: currentUserCoins,
           onWatchAdContinue: result.canOfferRewardedAd
-            ? handleWatchAdToContinue
+            ? () => {
+                modal.closeModalByType("loss");
+                void runRewardedAdContinueFlow();
+                return true;
+              }
             : undefined,
           onCoinContinue: result.canOfferCoinContinue
             ? handleCoinContinue
@@ -940,7 +1003,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
         modal.showLossModal({
           correctAnswer: result.correctAnswer || "",
-          totalCoins: userCoins,
+          totalCoins: currentUserCoins,
           skipLevelCost,
           onOpenShop: () => openShopFromLossRef.current(),
           onNext: () => {
@@ -964,14 +1027,14 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     modal,
     guesses,
     isHapticsEnabled,
-    userCoins,
+    currentUserCoins,
     gameMode,
     onGameWin,
     onGameLoss,
     onNextLevel,
     resetGame,
     deriveDailyStreakAfterWin,
-    handleWatchAdToContinue,
+    runRewardedAdContinueFlow,
     handleCoinContinue,
     isRewardedAdReady,
     runWithServerLoading,
@@ -1121,7 +1184,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     logger.debug("Showing hint modal for riddle:", riddleId);
 
     modal.showHintModal({
-      userCoins,
+      userCoins: currentUserCoins,
       hintCost,
       onOpenShop: () => openShopFromLossRef.current(),
       onShowHint: () => {
@@ -1159,7 +1222,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     playerData?.userId,
     riddleId,
     modal,
-    userCoins,
+    currentUserCoins,
     hintCost,
     answer,
     setCurrentGuess,
@@ -1189,7 +1252,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       modal.showCoinShop({
         products: iapProducts,
         firestoreProducts: purchasableFirestoreProducts,
-        currentCoins: userCoins,
+        currentCoins: currentUserCoins,
         loading: iapLoading || productPricingLoading,
         error: iapError || productPricingError,
         onPurchaseProduct: handlePurchaseProduct,
@@ -1213,7 +1276,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     iapError,
     productPricingError,
     modal,
-    userCoins,
+    currentUserCoins,
     handlePurchaseProduct,
     handleWatchAdForCoins,
     handlePayAndPlay,
@@ -1226,8 +1289,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       gameMode === "daily" ? SKIP_COST_DAILY : SKIP_COST_CLASSIC;
 
     modal.showSkipModal({
-      userCoins,
-      totalCoins: userCoins,
+      userCoins: currentUserCoins,
+      totalCoins: currentUserCoins,
       skipCost,
       onOpenShop: handleCoinsPress,
       onSkipLevel: async () => {
@@ -1254,7 +1317,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   }, [
     gameMode,
     modal,
-    userCoins,
+    currentUserCoins,
     handleCoinsPress,
     resetGame,
     onNextLevel,
@@ -1456,7 +1519,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
           <Header
-            userCoins={userCoins}
+            userCoins={currentUserCoins}
             onCoinsPress={handleCoinsPress}
             modeLabel={headerModeLabel}
             shouldAnimateCoins={canAnimateCoinIncreases}

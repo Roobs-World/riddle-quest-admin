@@ -25,7 +25,7 @@
  * @since 2024
  */
 
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   View,
   Text,
@@ -70,7 +70,8 @@ interface ExtendedModalData extends ModalData {
 const generateMockData = (
   modalType: string,
   closeModalFn?: (type: string) => void,
-  livePlayerData?: Player | null
+  livePlayerData?: Player | null,
+  onDebugSpendCoins?: (amount: number) => boolean
 ): ExtendedModalData => {
   const mockPlayer: Player = {
     userId: "test-user-123",
@@ -137,13 +138,17 @@ const generateMockData = (
   ];
 
   const resolvedPlayer = livePlayerData ?? mockPlayer;
+  const currentCoins =
+    typeof resolvedPlayer.coins === "number" && Number.isFinite(resolvedPlayer.coins)
+      ? resolvedPlayer.coins
+      : 0;
 
   switch (modalType) {
     case "victory":
       return {
         attempts: 3,
         coinsEarned: 50,
-        totalCoins: 305,
+        totalCoins: currentCoins,
         guesses: mockGuesses,
         onNext: async () => {
           logger.debug("[VictoryModal Debug] Next level button pressed");
@@ -166,9 +171,11 @@ const generateMockData = (
           if (closeModalFn) closeModalFn("victory");
         },
       };
-    case "loss":
+    case "loss": {
+      const coinContinueCost = 25;
       return {
         correctAnswer: "HIDDEN",
+        totalCoins: currentCoins,
         onWatchAdContinue: async () => {
           logger.debug("[LossModal Debug] Watch ad to continue pressed");
           loadRewardedAd();
@@ -181,16 +188,25 @@ const generateMockData = (
           }
 
           logger.debug("[LossModal Debug] Rewarded ad completed");
-          if (closeModalFn) closeModalFn("loss");
           return true;
         },
         onCoinContinue: () => {
           logger.debug("[LossModal Debug] Use coins to continue pressed");
-          if (closeModalFn) closeModalFn("loss");
+          if (!onDebugSpendCoins) {
+            return true;
+          }
+
+          const didSpendCoins = onDebugSpendCoins(coinContinueCost);
+          if (!didSpendCoins) {
+            logger.warn("[LossModal Debug] Not enough coins to continue");
+            return false;
+          }
+
+          return true;
         },
-        coinContinueCost: 25,
+        coinContinueCost,
         canWatchAd: true,
-        canUseCoin: true,
+        canUseCoin: currentCoins >= coinContinueCost,
         onNext: async () => {
           logger.debug("[LossModal Debug] Next level button pressed");
           // Close the modal first
@@ -211,6 +227,7 @@ const generateMockData = (
           if (closeModalFn) closeModalFn("loss");
         },
       };
+    }
     // outOfAttempts and watchAdForChance cases removed - using loss modal instead
     // dailyChallengeCompletion case removed - using victory modal instead
     case "settings":
@@ -257,7 +274,7 @@ const generateMockData = (
       };
     case "hint":
       return {
-        userCoins: 100,
+        userCoins: currentCoins,
         hintCost: 20,
         onShowHint: () => logger.debug("Show hint pressed"),
       };
@@ -269,7 +286,8 @@ const generateMockData = (
       };
     case "skip":
       return {
-        userCoins: 100,
+        userCoins: currentCoins,
+        totalCoins: currentCoins,
         skipCost: 50,
         onSkipLevel: () => logger.debug("Skip level pressed"),
         onOpenShop: () => logger.debug("Open shop pressed"),
@@ -317,7 +335,7 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
   onGenerateDailyChallenge,
   onClearLocalData,
 }) => {
-  const { playerData } = useAuth();
+  const { playerData, updatePlayerDataLocally } = useAuth();
   const [isExpanded, setIsExpanded] = useState(false);
   const [modalToggles, setModalToggles] = useState<{
     [key: string]: boolean | Record<string, unknown>;
@@ -330,6 +348,32 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
   }
 
   const modalTypes = Object.keys(modalRegistry);
+
+  const spendDebugCoins = useCallback(
+    (amount: number): boolean => {
+      if (!playerData) {
+        return false;
+      }
+
+      const currentCoins =
+        typeof playerData.coins === "number" && Number.isFinite(playerData.coins)
+          ? playerData.coins
+          : 0;
+
+      if (currentCoins < amount) {
+        return false;
+      }
+
+      updatePlayerDataLocally(
+        {
+          coins: Math.max(0, currentCoins - amount),
+        },
+        { syncToFirestore: false }
+      );
+      return true;
+    },
+    [playerData, updatePlayerDataLocally]
+  );
 
   /**
    * Toggle Modal Visibility
@@ -363,7 +407,12 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
       const ModalComponent = getModalComponent(modalType);
       if (!ModalComponent) return null;
 
-      const mockData = generateMockData(modalType, closeModal, playerData);
+      const mockData = generateMockData(
+        modalType,
+        closeModal,
+        playerData,
+        spendDebugCoins
+      );
 
       // Check if this modal needs to fetch server data
       if (

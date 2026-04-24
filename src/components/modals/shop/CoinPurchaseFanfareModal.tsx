@@ -9,12 +9,12 @@ import {
   MODAL_WIDTH,
   MODAL_HEIGHT,
   MODAL_CONTENT_PADDING,
+  COIN_ICON_SIZE_LARGE,
   MODAL_BUTTON_SPACER,
   wheelSize,
 } from "../../../constants/layout";
 import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
-import {verticalScale} from "@/utils/responsive";
 
 interface CoinPurchaseFanfareModalProps {
   isVisible: boolean;
@@ -103,7 +103,7 @@ const CoinPurchaseFanfareModal: React.FC<CoinPurchaseFanfareModalProps> = ({isVi
                 width: "100%",
                 alignItems: "center",
                 justifyContent: "center",
-                gap: MODAL_BUTTON_SPACER * 2,
+                gap: MODAL_BUTTON_SPACER,
                 padding: MODAL_CONTENT_PADDING,
               }}
             >
@@ -119,7 +119,7 @@ const CoinPurchaseFanfareModal: React.FC<CoinPurchaseFanfareModalProps> = ({isVi
               </Text>
 
               <View style={{alignItems: "center"}}>
-                <LargeCoinStackSvg width={verticalScale(200)} height={verticalScale(200)} />
+                <LargeCoinStackSvg width={COIN_ICON_SIZE_LARGE * 1.5} height={COIN_ICON_SIZE_LARGE * 1.5} />
                 <Text
                   style={{
                     fontFamily: TYPOGRAPHY.fontSecondaryBold,

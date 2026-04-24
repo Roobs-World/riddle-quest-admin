@@ -27,8 +27,9 @@
  * @see {@link VictoryModal} For success state counterpart
  */
 
-import React, {useMemo, useState} from "react";
-import {View, Text, Modal, Animated} from "react-native";
+import React, {useEffect, useMemo, useState} from "react";
+import {View, Text, Modal, Animated, Easing} from "react-native";
+import MaskedView from "@react-native-masked-view/masked-view";
 import {TYPOGRAPHY} from "../../../styles";
 import WideButton from "../../buttons/WideButton";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
@@ -46,6 +47,7 @@ import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import ChestSvg from "../../../../assets/images/chest.svg";
 import SegmentBgSvg from "../../../../assets/images/segment-bg.svg";
+import {verticalScale} from "@/utils/responsive";
 
 /**
  * Props interface for the LossModal component.
@@ -115,6 +117,16 @@ const LossModal: React.FC<LossModalProps> = ({
   const isWatchAdDisabled = canWatchAd === false;
   const isCoinContinueDisabled = canUseCoin === false;
   const [rotationAnim] = useState(() => new Animated.Value(0));
+  const displayTotalCoins = useMemo(() => {
+    const parsed = Number(totalCoins);
+    if (Number.isFinite(parsed)) {
+      return Math.max(0, parsed);
+    }
+
+    return 0;
+  }, [totalCoins]);
+  const lossModalHeight = MODAL_HEIGHT * 1.5;
+  const wheelBackgroundSize = wheelSize * 1.8;
 
   const spin = useMemo(() => {
     return rotationAnim.interpolate({
@@ -122,6 +134,29 @@ const LossModal: React.FC<LossModalProps> = ({
       outputRange: ["0deg", "360deg"],
     });
   }, [rotationAnim]);
+
+  useEffect(() => {
+    let animation: Animated.CompositeAnimation | null = null;
+
+    if (isVisible) {
+      rotationAnim.setValue(0);
+      animation = Animated.loop(
+        Animated.timing(rotationAnim, {
+          toValue: 1,
+          duration: 12000,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+      );
+      animation.start();
+    }
+
+    return () => {
+      animation?.stop();
+      rotationAnim.stopAnimation();
+      rotationAnim.setValue(0);
+    };
+  }, [isVisible, rotationAnim]);
 
   /**
    * Handles skipping to the next level and closes the modal afterward.
@@ -192,14 +227,14 @@ const LossModal: React.FC<LossModalProps> = ({
           <View
             style={{
               width: MODAL_WIDTH,
-              height: MODAL_HEIGHT * 1.5,
+              height: lossModalHeight,
               alignItems: "center",
               justifyContent: "center",
             }}
           >
             <ModalBg
               width={MODAL_WIDTH}
-              height={MODAL_HEIGHT * 1.5}
+              height={lossModalHeight}
               preserveAspectRatio="none"
               style={{position: "absolute"}}
             />
@@ -208,22 +243,46 @@ const LossModal: React.FC<LossModalProps> = ({
               style={{
                 position: "absolute",
                 width: MODAL_WIDTH,
-                height: MODAL_HEIGHT,
-                overflow: "hidden",
-                borderRadius: 30,
+                height: lossModalHeight,
               }}
             >
-              <Animated.View
+              <MaskedView
                 style={{
-                  position: "absolute",
-                  left: (MODAL_WIDTH - wheelSize) / 2,
-                  top: (MODAL_HEIGHT - wheelSize) / 2,
-                  opacity: 0.25,
-                  transform: [{rotate: spin}],
+                  width: MODAL_WIDTH,
+                  height: lossModalHeight,
                 }}
+                maskElement={
+                  <View
+                    style={{
+                      width: MODAL_WIDTH,
+                      height: lossModalHeight,
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <ModalBg width={MODAL_WIDTH} height={lossModalHeight} preserveAspectRatio="none" />
+                  </View>
+                }
               >
-                <WheelBg width={wheelSize} height={wheelSize} />
-              </Animated.View>
+                <View
+                  style={{
+                    width: MODAL_WIDTH,
+                    height: lossModalHeight,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Animated.View
+                    style={{
+                      position: "absolute",
+                      opacity: 0.25,
+                      transform: [{rotate: spin}],
+                    }}
+                  >
+                    <WheelBg width={wheelBackgroundSize} height={wheelBackgroundSize} />
+                  </Animated.View>
+                </View>
+              </MaskedView>
             </View>
 
             <View
@@ -260,7 +319,11 @@ const LossModal: React.FC<LossModalProps> = ({
                     </Text>
                   </View>
 
-                  <CoinSvg width={COIN_ICON_SIZE_LARGE * 1.5} height={COIN_ICON_SIZE_LARGE * 1.5} />
+                  <CoinSvg
+                    width={COIN_ICON_SIZE_LARGE * 1.5}
+                    height={COIN_ICON_SIZE_LARGE * 1.5}
+                    style={{marginBottom: verticalScale(30)}}
+                  />
 
                   <View
                     style={{
@@ -303,7 +366,7 @@ const LossModal: React.FC<LossModalProps> = ({
                         color: "#000000",
                       }}
                     >
-                      {totalCoins}
+                      {displayTotalCoins}
                     </Text>
                   </View>
 

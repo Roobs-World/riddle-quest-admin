@@ -1,6 +1,7 @@
 import React from "react";
 import { render, waitFor, cleanup, act } from "@testing-library/react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { CONTINUE_REWARDED_AD_COIN_REWARD } from "../../../constants/game";
 
 // Mock all external dependencies before importing the component
 
@@ -443,6 +444,7 @@ describe("GameScreen", () => {
     mockAuthLoading = false;
     mockPlayerData.email = "test@test.com";
     mockPlayerData.username = "testuser";
+    mockPlayerData.coins = 100;
     mockLoadUserProgressFromFirestore.mockResolvedValue(mockPlayerData);
     mockUseGameLogic.guesses = [];
     mockUseGameLogic.currentGuess = [];
@@ -1230,10 +1232,13 @@ describe("GameScreen", () => {
       });
     });
 
-    it("opens loss modal for attempt limit and handles continue actions", async () => {
+    it("opens loss modal for attempt limit using live auth coin balance and handles continue actions", async () => {
       const { httpsCallable } = require("@react-native-firebase/functions");
       const spendCoins = jest.fn(() => Promise.resolve({ data: {} }));
       httpsCallable.mockReturnValue(spendCoins);
+      (mockPlayerData as { coins: unknown }).coins = {
+        toString: () => "300",
+      };
       mockUseGameLogic.currentGuess = ["K", "E", "Y", "B", "O", "A", "R", "D"];
       mockUseGameLogic.processGuess.mockResolvedValueOnce({
         outcome: "attemptLimitReached",
@@ -1255,6 +1260,7 @@ describe("GameScreen", () => {
 
       expect(config.canUseCoin).toBe(true);
       expect(config.canWatchAd).toBe(true);
+      expect(config.totalCoins).toBe(300);
       expect(typeof config.onWatchAdContinue).toBe("function");
       await config.onCoinContinue();
       config.onOpenShop();
@@ -1264,9 +1270,45 @@ describe("GameScreen", () => {
         expect(spendCoins).toHaveBeenCalledWith({ amount: 20, reason: "continue" });
       });
       expect(mockUpdatePlayerDataLocally).toHaveBeenCalledWith(
-        expect.objectContaining({ coins: 80 })
+        expect.objectContaining({ coins: 280 })
       );
       expect(mockShowCoinShopModal).toHaveBeenCalled();
+    });
+
+    it("closes loss modal immediately on watch-ad continue and shows ad reward fanfare on completion", async () => {
+      mockShowRewardedAd.mockResolvedValueOnce(true);
+      mockUseGameLogic.currentGuess = ["K", "E", "Y", "B", "O", "A", "R", "D"];
+      mockUseGameLogic.processGuess.mockResolvedValueOnce({
+        outcome: "attemptLimitReached",
+        correctAnswer: "ANSWER",
+        canOfferRewardedAd: true,
+      });
+
+      const { rerender } = render(<GameScreen {...defaultProps} userCoins={5} />);
+      const inputProps = getLatestProps(mockGameInput);
+      await inputProps.handleSubmit();
+      mockUseGameLogic.gameOver = true;
+      rerender(<GameScreen {...defaultProps} userCoins={5} />);
+
+      await waitFor(() => {
+        expect(mockShowLossModal).toHaveBeenCalled();
+      });
+      const config = mockShowLossModal.mock.calls[mockShowLossModal.mock.calls.length - 1][0];
+
+      const shouldClose = config.onWatchAdContinue();
+      expect(shouldClose).toBe(true);
+      expect(mockCloseModalByType).toHaveBeenCalledWith("loss");
+
+      await waitFor(() => {
+        expect(mockShowCoinPurchaseFanfareModal).toHaveBeenCalledWith(
+          expect.objectContaining({
+            coinsPurchased: CONTINUE_REWARDED_AD_COIN_REWARD,
+          })
+        );
+      });
+      expect(mockShowRewardedAd).toHaveBeenCalled();
+      expect(mockUseGameLogic.continueGame).toHaveBeenCalled();
+      expect(mockUpdatePlayerDataLocally).toHaveBeenCalled();
     });
 
     it("does not re-open loss modal after coin continue clears game-over state", async () => {
