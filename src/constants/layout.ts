@@ -220,7 +220,7 @@ export const BACK_ICON_SIZE = moderateScale(35);
 // ---------------------------------------------------------------------------
 
 /** Width/height of the large coin-stack icon in VictoryModal. */
-export const COIN_ICON_SIZE_LARGE = moderateScale(100);
+export const COIN_ICON_SIZE_LARGE = moderateScale(125);
 
 /** Width/height of the coin icon in the in-game header coins display. */
 export const COIN_DISPLAY_ICON_SIZE = moderateScale(36);

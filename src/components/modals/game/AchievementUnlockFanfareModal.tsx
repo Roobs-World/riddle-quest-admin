@@ -211,7 +211,7 @@ const AchievementUnlockFanfareModal: React.FC<AchievementUnlockFanfareModalProps
 
               {coinsEarned > 0 ? (
                 <View style={{alignItems: "center"}}>
-                  <CoinSvg width={COIN_ICON_SIZE_LARGE * 1.5} height={COIN_ICON_SIZE_LARGE * 1.5} />
+                  <CoinSvg width={COIN_ICON_SIZE_LARGE} height={COIN_ICON_SIZE_LARGE} />
                   <Text
                     style={{
                       fontFamily: TYPOGRAPHY.fontSecondaryBold,
