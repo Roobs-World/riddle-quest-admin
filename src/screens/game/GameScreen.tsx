@@ -306,7 +306,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     useState(false);
   const isRunningUnderJest =
     typeof process !== "undefined" && Boolean(process.env.JEST_WORKER_ID);
-  const shouldUseDevFirestoreCatalog = __DEV__ && !isRunningUnderJest;
+  const shouldUseFullFirestoreCatalog = !isRunningUnderJest;
 
   const gameOverHandledRef = useRef(false);
   const lastSubmittedAttemptRef = useRef<number | null>(null);
@@ -481,7 +481,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   }, [isAnyModalVisible, isAwaitingPostSubmitModalClose]);
 
   const loadIapProducts = useCallback(async () => {
-    if (shouldUseDevFirestoreCatalog) {
+    if (shouldUseFullFirestoreCatalog) {
       setIapProducts([]);
       setIapError(null);
       setIapLoading(false);
@@ -514,7 +514,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     } finally {
       setIapLoading(false);
     }
-  }, [shouldUseDevFirestoreCatalog]);
+  }, [shouldUseFullFirestoreCatalog]);
 
   const loadFirestoreProducts = useCallback(async () => {
     setProductPricingLoading(true);
@@ -1646,9 +1646,11 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     }
 
     const availableStoreProductIds = new Set(
-      productsForModal.map((product) => product.id)
+      productsForModal
+        .map((product) => product.id ?? (product as { productId?: string }).productId)
+        .filter((productId): productId is string => typeof productId === "string")
     );
-    const purchasableFirestoreProducts = shouldUseDevFirestoreCatalog
+    const purchasableFirestoreProducts = shouldUseFullFirestoreCatalog
       ? firestoreProductsForModal
       : firestoreProductsForModal.filter((product) =>
           availableStoreProductIds.has(product.productId)
@@ -1659,7 +1661,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         iapProducts: productsForModal.length,
         firestoreProducts: firestoreProductsForModal.length,
         purchasableFirestoreProducts: purchasableFirestoreProducts.length,
-        shouldUseDevFirestoreCatalog,
+        shouldUseFullFirestoreCatalog,
         iapLoading,
         productPricingLoading,
         iapError,
@@ -1690,7 +1692,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     ensureShopCatalogLoaded,
     iapProducts,
     firestoreProducts,
-    shouldUseDevFirestoreCatalog,
+    shouldUseFullFirestoreCatalog,
     iapLoading,
     productPricingLoading,
     iapError,

@@ -147,6 +147,26 @@ describe("CoinShopModal", () => {
     expect(getByText("$5.49")).toBeTruthy();
   });
 
+  it("uses store price from productId-shaped IAP products", () => {
+    const product = createProduct({
+      productId: "coins_100",
+      productKey: "coins_100",
+      coins: 100,
+      sortOrder: 1,
+      regionalPrices: [{ currency: "USD", displayPrice: "$0.99" }],
+    });
+
+    const { getByText } = render(
+      <CoinShopModal
+        {...baseProps}
+        products={[{ productId: "coins_100", localizedPrice: "$1.19" }] as any}
+        firestoreProducts={[product as any]}
+      />
+    );
+
+    expect(getByText("$1.19")).toBeTruthy();
+  });
+
   it("falls back to regional USD price and then '-' when store/region prices are missing", () => {
     const withUsdFallback = createProduct({
       productId: "coins_200",

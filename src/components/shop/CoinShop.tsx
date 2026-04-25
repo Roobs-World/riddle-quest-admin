@@ -73,7 +73,14 @@ const CoinShop: React.FC<CoinShopProps> = ({
   const displayPriceByProductId = useMemo(() => {
     const priceMap = new Map<string, string>();
     products.forEach((product) => {
-      priceMap.set(product.id, product.displayPrice);
+      const productId = product.id ?? (product as {productId?: string}).productId;
+      const displayPrice =
+        product.displayPrice ??
+        (product as {localizedPrice?: string; price?: string}).localizedPrice ??
+        (product as {localizedPrice?: string; price?: string}).price;
+      if (productId && displayPrice) {
+        priceMap.set(productId, displayPrice);
+      }
     });
     return priceMap;
   }, [products]);
