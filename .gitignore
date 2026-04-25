@@ -24,6 +24,7 @@ expo-env.d.ts
 android/
 ios/
 releases/
+.gradle-user/
 
 # Metro
 .metro-health-check*

@@ -18,6 +18,7 @@ yarn-debug.log*
 yarn-error.log*
 .gradle/
 .gradle-local/
+.gradle-user/
 !gradle-wrapper.jar # Include gradle wrapper jar for android builds
 !gradlew # Include gradlew script for android builds
 !gradlew.bat # Include gradlew.bat script for android builds

@@ -38,9 +38,6 @@ module.exports = {
   /** URL-friendly app identifier used by Expo */
   slug: "riddle-quest",
 
-  /** SDK version - using canary, so asset resolution warnings are expected */
-  sdkVersion: "56.0.0-canary-20260409-6fc2991",
-
   /** Application version for app stores and updates */
   version: "1.0.0",
 

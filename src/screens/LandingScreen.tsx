@@ -7,7 +7,7 @@
  * to registration, and a "Play as Guest" shortcut into gameplay.
  */
 import React, {useState} from "react";
-import {View, Text, Linking} from "react-native";
+import {View, Text, Linking, Image} from "react-native";
 import CustomSafeAreaView from "../components/layouts/CustomSafeAreaView";
 import GoogleSignInButton from "../components/buttons/GoogleSignInButton";
 import FacebookSignInButton from "../components/buttons/FacebookSignInButton";
@@ -25,7 +25,7 @@ import {styles, SPACING} from "../styles";
 import {logger} from "../utils/logger";
 import {captureException} from "../utils/sentry";
 import CreditsModal from "../components/modals/help/CreditsModal";
-import MainLogoSvg from "../../assets/images/logo.png";
+import MainLogoPng from "../../assets/images/logo.png";
 
 /**
  * Landing screen component used at the root of the auth stack.
@@ -187,7 +187,12 @@ const LandingScreen = () => {
       <View style={{flex: 1, width: "100%", alignItems: "center", zIndex: 2}}>
         {/* Title at the top */}
         <View style={{alignItems: "center", paddingTop: SPACING.xl}}>
-          <MainLogoSvg testID="main-logo-svg" width={288} height={70} style={{marginBottom: SPACING.md}} />
+          <Image
+            testID="main-logo-svg"
+            source={MainLogoPng}
+            style={{width: 288, height: 70, marginBottom: SPACING.md}}
+            resizeMode="contain"
+          />
           <Text
             className="font-bold text-white text-center"
             style={[styles.title, {marginBottom: SPACING.md, color: "#FFFFFF"}]}
