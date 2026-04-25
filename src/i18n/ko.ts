@@ -6,7 +6,7 @@ import type { LocaleOverrides } from "./types";
 export const koOverrides: LocaleOverrides = {
   AuthStrings: {
     Landing: {
-      TAGLINE_1: "수백만 명과 함께 QWORDLY를 즐겨보세요.",
+      TAGLINE_1: "수백만 명과 함께 Riddle Quest를 즐겨보세요.",
       TAGLINE_2: "재미있게 두뇌를 훈련할 준비가 되셨나요?",
       SIGN_IN_BUTTON: "로그인",
       OR_SIGN_IN_WITH: "또는",
@@ -119,10 +119,10 @@ export const koOverrides: LocaleOverrides = {
   },
   Credits: {
     TITLE: "크레딧",
-    SUBTITLE: "Qwordly를 만든 놀라운 팀을 소개합니다",
+    SUBTITLE: "Riddle Quest를 만든 놀라운 팀을 소개합니다",
     THANK_YOU_TITLE: "감사합니다!",
     THANK_YOU_TEXT:
-      "Qwordly를 가능하게 해준 모든 기여자 여러분께 특별한 감사를 드립니다.",
+      "Riddle Quest를 가능하게 해준 모든 기여자 여러분께 특별한 감사를 드립니다.",
   },
   Profile: {
     LOADING_MESSAGE: "프로필 데이터를 불러오는 중...",
@@ -184,7 +184,7 @@ export const koOverrides: LocaleOverrides = {
     SELECT_AVATAR_TITLE: "아바타 선택",
   },
   WelcomeModal: {
-    WELCOME_TITLE: "Qwordly에\n오신 것을 환영합니다!",
+    WELCOME_TITLE: "Riddle Quest에\n오신 것을 환영합니다!",
     LETS_PLAY: "시작하기",
     SOLVE_RIDDLES_TEXT:
       "글자 하나씩 답을 추측하며 수수께끼를 풀어보세요. 색깔 힌트로 각 시도를 안내받으세요.",

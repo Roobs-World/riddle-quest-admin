@@ -3,7 +3,7 @@
  *
  * Comprehensive styling system for modal dialogs, overlays, and popup components.
  * Provides consistent design patterns, accessibility features, and responsive
- * styling for all modal types in the Qwordly application.
+ * styling for all modal types in the Riddle Quest application.
  *
  * Features:
  * - Consistent visual hierarchy and spacing using design tokens
@@ -15,7 +15,7 @@
  * - Form and input styling within modals
  * - Progress indicators and status displays
  *
- * @author Qwordly Development Team
+ * @author Riddle Quest Development Team
  * @version 2.0.0
  * @since 2024
  */

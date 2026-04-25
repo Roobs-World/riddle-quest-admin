@@ -1,6 +1,6 @@
 /**
  * @fileoverview
- * Application navigation stack and game screen wrapper for Qwordly.
+ * Application navigation stack and game screen wrapper for Riddle Quest.
  *
  * This module defines the authenticated and unauthenticated navigation flows,
  * wires the `GameScreen` into `AuthContext` state via `GameScreenWrapper`,
@@ -637,7 +637,7 @@ const GameScreenWrapper = () => {
 
 /**
  * Root navigation component that declares the main authentication and app
- * stacks for Qwordly.
+ * stacks for Riddle Quest.
  *
  * It routes between landing/auth flows and the main `GameScreenWrapper`
  * based on the authentication state exposed by `AuthContext` and shows

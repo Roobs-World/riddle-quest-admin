@@ -16,7 +16,7 @@ const FIREBASE_PROJECT_ID = process.env.FIREBASE_PROJECT_ID;
 const FIRESTORE_EMULATOR_HOST = process.env.FIRESTORE_EMULATOR_HOST;
 
 // 🚨 ABSOLUTE SAFETY: This test MUST NEVER run against production
-if (FIREBASE_PROJECT_ID === "qwordly-6ba44" && !FIRESTORE_EMULATOR_HOST) {
+if (FIREBASE_PROJECT_ID === "Riddle Quest-6ba44" && !FIRESTORE_EMULATOR_HOST) {
   throw new Error(`
 🚨🚨🚨 CRITICAL SAFETY VIOLATION 🚨🚨🚨
 
@@ -29,7 +29,7 @@ Integration tests can modify or delete production data!
 Running this test against production DESTROYS USER DATA!
 
 TO FIX:
-1. Change FIREBASE_PROJECT_ID to a test project (NOT qwordly-6ba44)
+1. Change FIREBASE_PROJECT_ID to a test project (NOT Riddle Quest-6ba44)
 2. Use a dedicated test Firebase project
 3. NEVER run integration tests against production
 

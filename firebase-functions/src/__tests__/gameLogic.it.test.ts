@@ -29,7 +29,7 @@ const FIRESTORE_EMULATOR_HOST = process.env.FIRESTORE_EMULATOR_HOST;
 
 // 🚨 ABSOLUTE SAFETY: This test MUST NEVER run against production
 // This test deletes riddles with classicIndex 0, 1, 2 - destroying essential game data!
-if (FIREBASE_PROJECT_ID === "qwordly-6ba44" && !FIRESTORE_EMULATOR_HOST) {
+if (FIREBASE_PROJECT_ID === "Riddle Quest-6ba44" && !FIRESTORE_EMULATOR_HOST) {
   throw new Error(`
 🚨🚨🚨 CRITICAL SAFETY VIOLATION 🚨🚨🚨
 
@@ -42,7 +42,7 @@ This test DELETES essential riddles (classicIndex 0, 1, 2) that new users need t
 Running this test against production DESTROYS USER DATA and breaks the game!
 
 TO FIX:
-1. Change FIREBASE_PROJECT_ID to a test project (NOT qwordly-6ba44)
+1. Change FIREBASE_PROJECT_ID to a test project (NOT Riddle Quest-6ba44)
 2. Use a dedicated test Firebase project
 3. NEVER run integration tests against production
 

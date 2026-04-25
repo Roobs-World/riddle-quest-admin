@@ -1,11 +1,11 @@
 /**
- * @fileoverview ScreenTitle component for consistent page headings in Qwordly.
+ * @fileoverview ScreenTitle component for consistent page headings in Riddle Quest.
  *
  * This component provides standardized title text styling across all screens
  * in the application. It ensures consistent typography, spacing, and visual
  * hierarchy for screen headers and main page titles.
  *
- * @author Qwordly Development Team
+ * @author Riddle Quest Development Team
  * @version 1.0.0
  * @since 2024
  */
@@ -32,7 +32,7 @@ interface ScreenTitleProps {
  * ScreenTitle Component
  *
  * A standardized title component that provides consistent typography and
- * styling for screen headers throughout the Qwordly application. This
+ * styling for screen headers throughout the Riddle Quest application. This
  * component ensures visual hierarchy and maintains the app's design language.
  *
  * Default Styling:
@@ -52,7 +52,7 @@ interface ScreenTitleProps {
  * Usage Examples:
  * ```tsx
  * // Basic screen title
- * <ScreenTitle title="Welcome to Qwordly" />
+ * <ScreenTitle title="Welcome to Riddle Quest" />
  *
  * // With custom styling
  * <ScreenTitle

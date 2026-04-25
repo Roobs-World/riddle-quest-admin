@@ -1,11 +1,11 @@
 /**
- * @fileoverview CloseButton component for dismissing modals and overlays in Qwordly.
+ * @fileoverview CloseButton component for dismissing modals and overlays in Riddle Quest.
  *
  * This component provides a standardized close button with customizable sizing
  * and styling. It uses the CloseIcon component and follows accessibility best
  * practices for dismissive actions.
  *
- * @author Qwordly Development Team
+ * @author Riddle Quest Development Team
  * @version 1.0.0
  * @since 2024
  */

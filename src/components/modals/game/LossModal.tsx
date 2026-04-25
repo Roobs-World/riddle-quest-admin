@@ -20,7 +20,7 @@
  * - Clear action hierarchy centered on continuing play
  * - Consistent modal structure and responsive design
  *
- * @author Qwordly Development Team
+ * @author Riddle Quest Development Team
  * @version 1.0.0
  * @since 2024
  *

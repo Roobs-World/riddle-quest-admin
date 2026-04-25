@@ -12,17 +12,17 @@ describe("iapConfig", () => {
 
   describe("Constants", () => {
     test("should export NO_ADS_PRODUCT_ID", () => {
-      expect(iapConfig.NO_ADS_PRODUCT_ID).toBe("com.qwordly.no_ads");
+      expect(iapConfig.NO_ADS_PRODUCT_ID).toBe("com.Riddle Quest.no_ads");
     });
 
     test("should export BACKEND_COIN_PRODUCT_DETAILS", () => {
       expect(iapConfig.BACKEND_COIN_PRODUCT_DETAILS).toEqual({
-        COIN_PACK_TINY:  {id: "com.qwordly.coinpack1", coins: 50},
-        COIN_PACK_SMALL: {id: "com.qwordly.coinpack2", coins: 100},
-        COIN_PACK_MID:   {id: "com.qwordly.coinpack3", coins: 250},
-        COIN_PACK_LARGE: {id: "com.qwordly.coinpack4", coins: 500},
-        COIN_PACK_HUGE:  {id: "com.qwordly.coinpack5", coins: 1000},
-        COIN_PACK_MEGA:  {id: "com.qwordly.coinpack6", coins: 2000},
+        COIN_PACK_TINY:  {id: "com.Riddle Quest.coinpack1", coins: 50},
+        COIN_PACK_SMALL: {id: "com.Riddle Quest.coinpack2", coins: 100},
+        COIN_PACK_MID:   {id: "com.Riddle Quest.coinpack3", coins: 250},
+        COIN_PACK_LARGE: {id: "com.Riddle Quest.coinpack4", coins: 500},
+        COIN_PACK_HUGE:  {id: "com.Riddle Quest.coinpack5", coins: 1000},
+        COIN_PACK_MEGA:  {id: "com.Riddle Quest.coinpack6", coins: 2000},
       });
     });
   });

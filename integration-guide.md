@@ -2,7 +2,7 @@
 
 ## Overview
 
-This guide explains how to integrate your high-quality 3D planet textures into the existing SolarSystemBackground component in Qwordly.
+This guide explains how to integrate your high-quality 3D planet textures into the existing SolarSystemBackground component in Riddle Quest.
 
 ## Asset Analysis
 

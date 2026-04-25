@@ -1,22 +1,22 @@
 # Product Context
 
-This document describes the 'why' behind the Qwordly project, the problems it solves, how it should work from a user perspective, and key user experience goals.
+This document describes the 'why' behind the Riddle Quest project, the problems it solves, how it should work from a user perspective, and key user experience goals.
 
-## Why Qwordly Exists:
+## Why Riddle Quest Exists:
 
-Qwordly addresses the gap in mobile puzzle gaming by combining traditional word games with engaging riddle mechanics. While standard word games can become repetitive, Qwordly adds contextual clues that make each puzzle feel like a mini-mystery to solve.
+Riddle Quest addresses the gap in mobile puzzle gaming by combining traditional word games with engaging riddle mechanics. While standard word games can become repetitive, Riddle Quest adds contextual clues that make each puzzle feel like a mini-mystery to solve.
 
 ## Problems Solved:
 
-1. **Puzzle Fatigue**: Traditional word games can become monotonous. Qwordly's riddle format keeps each puzzle fresh and engaging.
+1. **Puzzle Fatigue**: Traditional word games can become monotonous. Riddle Quest's riddle format keeps each puzzle fresh and engaging.
 
-2. **Lack of Progressive Challenge**: Many word games have flat difficulty curves. Qwordly's classic mode provides structured progression through increasingly challenging levels.
+2. **Lack of Progressive Challenge**: Many word games have flat difficulty curves. Riddle Quest's classic mode provides structured progression through increasingly challenging levels.
 
-3. **Limited Engagement Models**: Most word games rely solely on intrinsic motivation. Qwordly combines this with extrinsic rewards (coins, stats, daily challenges) to maintain long-term engagement.
+3. **Limited Engagement Models**: Most word games rely solely on intrinsic motivation. Riddle Quest combines this with extrinsic rewards (coins, stats, daily challenges) to maintain long-term engagement.
 
-4. **Monetization Balance**: Finding the right balance between free gameplay and revenue generation. Qwordly's 3-attempt system with optional continues provides choice without forcing spending.
+4. **Monetization Balance**: Finding the right balance between free gameplay and revenue generation. Riddle Quest's 3-attempt system with optional continues provides choice without forcing spending.
 
-## How Qwordly Should Work (User Flow):
+## How Riddle Quest Should Work (User Flow):
 
 1. **App Launch** → Landing screen with sign-in options
 2. **Authentication** → Email/password, Google, or Facebook sign-in

@@ -1,19 +1,21 @@
 import React from "react";
-import LogoSvg from "@images/logo.svg";
+import {Image} from "react-native";
+import LogoPng from "@images/icon.png";
 
 interface LogoIconProps {
   width?: number;
   height?: number;
-  color?: string;
 }
 
-const LogoIcon: React.FC<LogoIconProps> = ({
-  width = 24,
-  height = 24,
-  color = "#fcfaf4",
-}) => {
-  return <LogoSvg width={width} height={height} fill={color} />;
+const LogoIcon: React.FC<LogoIconProps> = ({width = 24, height = 24}) => {
+  return (
+    <Image
+      source={LogoPng}
+      style={{width, height}}
+      resizeMode="contain"
+      accessibilityIgnoresInvertColors={true}
+    />
+  );
 };
 
 export default LogoIcon;
-

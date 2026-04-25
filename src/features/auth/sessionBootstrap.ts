@@ -26,7 +26,7 @@ export const resolveInitialGameMode = (
  */
 export const createGuestPlayer = (uid: string): Player => ({
   userId: uid,
-  email: `guest_${uid}@guest.qwordly.com`,
+  email: `guest_${uid}@guest.Riddle Quest.com`,
   username: "Guest",
   coins: INITIAL_COINS,
   progress: {
@@ -69,7 +69,7 @@ export const isGuestPlayer = (
       ? player.username.trim().toLowerCase()
       : "";
 
-  if (email.endsWith("@guest.qwordly.com")) {
+  if (email.endsWith("@guest.Riddle Quest.com")) {
     return true;
   }
 

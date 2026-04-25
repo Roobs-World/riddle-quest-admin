@@ -31,7 +31,7 @@ jest.mock("../../utils/sentry", () => ({
 describe("ProductPricingService", () => {
   // Sample test data
   const createMockProduct = (overrides: Partial<ProductPricing> = {}): ProductPricing => ({
-    productId: "com.qwordly.coins.100",
+    productId: "com.Riddle Quest.coins.100",
     productKey: "coins_100",
     name: "100 Coins",
     description: "A small pack of coins",
@@ -266,7 +266,7 @@ describe("ProductPricingService", () => {
   describe("integration scenarios", () => {
     it("should handle a complete product with all features", () => {
       const fullProduct = createMockProduct({
-        productId: "com.qwordly.coins.premium",
+        productId: "com.Riddle Quest.coins.premium",
         name: "Premium Pack",
         coins: 1000,
         featuredOrder: 1,
@@ -281,7 +281,7 @@ describe("ProductPricingService", () => {
       expect(ProductPricingService.getPriceForCurrency(fullProduct, "USD")).toBeDefined();
       expect(ProductPricingService.getActiveSpecialOffer(fullProduct)).toBeDefined();
       expect(
-        ProductPricingService.findByProductId([fullProduct], "com.qwordly.coins.premium")
+        ProductPricingService.findByProductId([fullProduct], "com.Riddle Quest.coins.premium")
       ).toBeDefined();
       expect(ProductPricingService.getFeaturedProducts([fullProduct])).toHaveLength(1);
     });

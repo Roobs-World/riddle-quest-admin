@@ -1,5 +1,5 @@
 /**
- * @fileoverview Daily streak reminder notifications for Qwordly.
+ * @fileoverview Daily streak reminder notifications for Riddle Quest.
  *
  * A scheduled Cloud Function runs at 18:00 UTC every day. It queries all users
  * who have an FCM token registered, skips those who have already completed

@@ -1,6 +1,6 @@
-# Qwordly Design System
+# Riddle Quest Design System
 
-A modular, scalable design system for the Qwordly React Native app.
+A modular, scalable design system for the Riddle Quest React Native app.
 
 ## Architecture Overview
 

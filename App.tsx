@@ -1,5 +1,5 @@
 /**
- * @fileoverview Main application component for Qwordly - a riddle-based Wordle clone.
+ * @fileoverview Main application component for Riddle Quest - a riddle-based Wordle clone.
  *
  * This file serves as the entry point for the React Native application, responsible for:
  * - Initializing all core services (Firebase, auth providers, ads, 3D system)
@@ -10,7 +10,7 @@
  * The app follows a comprehensive initialization sequence to ensure all services
  * are properly configured before presenting the UI to users.
  *
- * @author Qwordly Development Team
+ * @author Riddle Quest Development Team
  * @version 1.0.0
  * @since 2024
  */

@@ -5,7 +5,7 @@
  * It provides a lightweight alternative to SVG icons for back navigation,
  * maintaining consistent styling with the app's typography system.
  *
- * @author Qwordly Development Team
+ * @author Riddle Quest Development Team
  * @version 1.0.0
  * @since 2024
  */

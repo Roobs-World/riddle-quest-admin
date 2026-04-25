@@ -1,6 +1,6 @@
 /**
  * Shadow Design Tokens
- * Elevation and shadow definitions for the Qwordly app
+ * Elevation and shadow definitions for the Riddle Quest app
  */
 
 import { COLORS } from "./colors";

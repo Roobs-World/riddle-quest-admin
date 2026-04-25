@@ -6,6 +6,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Animated, Easing, Modal, StyleSheet, View } from "react-native";
 import { styles, COLORS } from "../../styles";
 import { AppStrings } from "../../constants/AppStrings";
+import SlideInModalContent from "../shared/SlideInModalContent";
 
 interface PulsingSpinnerProps {
   size?: number;
@@ -165,7 +166,7 @@ const PulsingSpinner = React.memo(function PulsingSpinner({
             },
           ]}
         >
-          {spinnerContent}
+          <SlideInModalContent isVisible={visible}>{spinnerContent}</SlideInModalContent>
         </View>
       </Modal>
     );

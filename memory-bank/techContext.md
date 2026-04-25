@@ -1,6 +1,6 @@
 # Tech Context
 
-This document details the technologies, development setup, technical constraints, dependencies, and tool usage patterns for the Qwordly project.
+This document details the technologies, development setup, technical constraints, dependencies, and tool usage patterns for the Riddle Quest project.
 
 ## Technologies Used:
 

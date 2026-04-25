@@ -123,7 +123,7 @@ This project utilizes a `memory-bank` directory containing detailed documentatio
 
 ## Prerequisites
 
-Before running the Qwordly app, you need to configure the environment variables with your actual API keys and configuration values.
+Before running the Riddle Quest app, you need to configure the environment variables with your actual API keys and configuration values.
 
 ## Setup Instructions
 

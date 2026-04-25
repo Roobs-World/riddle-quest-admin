@@ -6,7 +6,7 @@ import type { LocaleOverrides } from "./types";
 export const jaOverrides: LocaleOverrides = {
   AuthStrings: {
     Landing: {
-      TAGLINE_1: "何百万人ものユーザーと一緒にQWORDLYを楽しもう。",
+      TAGLINE_1: "何百万人ものユーザーと一緒にRiddle Questを楽しもう。",
       TAGLINE_2: "遊びながら頭を鍛える準備はできていますか？",
       SIGN_IN_BUTTON: "ログイン",
       OR_SIGN_IN_WITH: "または",
@@ -119,10 +119,10 @@ export const jaOverrides: LocaleOverrides = {
   },
   Credits: {
     TITLE: "クレジット",
-    SUBTITLE: "Qwordlyを支えた素晴らしいチームをご紹介します",
+    SUBTITLE: "Riddle Questを支えた素晴らしいチームをご紹介します",
     THANK_YOU_TITLE: "ありがとうございます！",
     THANK_YOU_TEXT:
-      "Qwordlyを実現してくれたすべての貢献者の皆様に特別な感謝を申し上げます。",
+      "Riddle Questを実現してくれたすべての貢献者の皆様に特別な感謝を申し上げます。",
   },
   Profile: {
     LOADING_MESSAGE: "プロフィールデータを読み込み中...",
@@ -184,7 +184,7 @@ export const jaOverrides: LocaleOverrides = {
     SELECT_AVATAR_TITLE: "アバターを選択",
   },
   WelcomeModal: {
-    WELCOME_TITLE: "Qwordlyへ\nようこそ！",
+    WELCOME_TITLE: "Riddle Questへ\nようこそ！",
     LETS_PLAY: "プレイ開始",
     SOLVE_RIDDLES_TEXT:
       "文字ごとに答えを推測してなぞなぞを解きましょう。色のヒントで各ターンをガイドします。",

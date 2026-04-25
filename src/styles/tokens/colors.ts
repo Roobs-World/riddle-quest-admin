@@ -1,6 +1,6 @@
 /**
  * Color Design Tokens
- * Centralized color definitions for the Qwordly app
+ * Centralized color definitions for the Riddle Quest app
  */
 
 export const COLORS = {

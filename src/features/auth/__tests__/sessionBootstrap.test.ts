@@ -79,7 +79,7 @@ describe("sessionBootstrap", () => {
 
     it("creates a player with a guest email format", () => {
       const player = createGuestPlayer(testUid);
-      expect(player.email).toBe(`guest_${testUid}@guest.qwordly.com`);
+      expect(player.email).toBe(`guest_${testUid}@guest.Riddle Quest.com`);
     });
 
     it("sets username to Guest", () => {
@@ -218,14 +218,14 @@ describe("sessionBootstrap", () => {
     it("handles empty string uid", () => {
       const player = createGuestPlayer("");
       expect(player.userId).toBe("");
-      expect(player.email).toBe("guest_@guest.qwordly.com");
+      expect(player.email).toBe("guest_@guest.Riddle Quest.com");
     });
 
     it("handles uid with special characters", () => {
       const specialUid = "user-123_abc.xyz";
       const player = createGuestPlayer(specialUid);
       expect(player.userId).toBe(specialUid);
-      expect(player.email).toBe(`guest_${specialUid}@guest.qwordly.com`);
+      expect(player.email).toBe(`guest_${specialUid}@guest.Riddle Quest.com`);
     });
   });
 
@@ -233,7 +233,7 @@ describe("sessionBootstrap", () => {
     it("returns true for guest email pattern", () => {
       expect(
         isGuestPlayer({
-          email: "guest_abc123@guest.qwordly.com",
+          email: "guest_abc123@guest.Riddle Quest.com",
           username: "Whatever",
         })
       ).toBe(true);

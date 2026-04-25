@@ -1,4 +1,4 @@
-# In-App Purchase Setup Guide - Qwordly
+# In-App Purchase Setup Guide - Riddle Quest
 
 This guide matches the current code in `src/services/IapService.ts` and Firebase Functions config in `firebase-functions/src/iapConfig.ts`.
 
@@ -8,17 +8,17 @@ This repo is configured to sell 6 coin packs (consumable, one-time purchases):
 
 | Pack | Coins | Product ID |
 | ---- | ----- | ---------- |
-| Tiny | 50 | `com.qwordly.coinpack1` |
-| Small | 100 | `com.qwordly.coinpack2` |
-| Mid | 250 | `com.qwordly.coinpack3` |
-| Large | 500 | `com.qwordly.coinpack4` |
-| Huge | 1000 | `com.qwordly.coinpack5` |
-| Mega | 2000 | `com.qwordly.coinpack6` |
+| Tiny | 50 | `com.Riddle Quest.coinpack1` |
+| Small | 100 | `com.Riddle Quest.coinpack2` |
+| Mid | 250 | `com.Riddle Quest.coinpack3` |
+| Large | 500 | `com.Riddle Quest.coinpack4` |
+| Huge | 1000 | `com.Riddle Quest.coinpack5` |
+| Mega | 2000 | `com.Riddle Quest.coinpack6` |
 
 App identifiers:
 
-- Android package name: `com.grindhead.qwordly` (from `app.config.js`)
-- iOS bundle identifier: `com.grindhead.qwordly` (from `app.config.js`)
+- Android package name: `com.grindhead.Riddle Quest` (from `app.config.js`)
+- iOS bundle identifier: `com.grindhead.Riddle Quest` (from `app.config.js`)
 
 ## iOS (App Store Connect)
 
@@ -32,15 +32,15 @@ App identifiers:
 ### Create Products
 
 1. Log in to Play Console.
-2. Select the app whose package name is `com.grindhead.qwordly`.
+2. Select the app whose package name is `com.grindhead.Riddle Quest`.
 3. Go to Monetize -> Products -> In-app products.
 4. Create 6 in-app products with IDs matching:
-   - `com.qwordly.coinpack1`
-   - `com.qwordly.coinpack2`
-   - `com.qwordly.coinpack3`
-   - `com.qwordly.coinpack4`
-   - `com.qwordly.coinpack5`
-   - `com.qwordly.coinpack6`
+   - `com.Riddle Quest.coinpack1`
+   - `com.Riddle Quest.coinpack2`
+   - `com.Riddle Quest.coinpack3`
+   - `com.Riddle Quest.coinpack4`
+   - `com.Riddle Quest.coinpack5`
+   - `com.Riddle Quest.coinpack6`
 5. Activate each product (not Draft).
 
 ### Testing (avoids "sku-not-found")
@@ -57,7 +57,7 @@ Android IAP will fail with `sku-not-found` if you test from a local debug/dev bu
 
 If you still see `sku-not-found`, the usual causes are:
 
-- Wrong Play app selected (package name mismatch with `com.grindhead.qwordly`)
+- Wrong Play app selected (package name mismatch with `com.grindhead.Riddle Quest`)
 - Product IDs created under a different app
 - Product not Active
 - Device is logged into a non-tester Play account

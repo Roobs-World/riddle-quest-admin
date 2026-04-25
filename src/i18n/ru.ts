@@ -6,7 +6,7 @@ import type { LocaleOverrides } from "./types";
 export const ruOverrides: LocaleOverrides = {
   AuthStrings: {
     Landing: {
-      TAGLINE_1: "Prisoedinyaites k millionam igrokov QWORDLY.",
+      TAGLINE_1: "Prisoedinyaites k millionam igrokov Riddle Quest.",
       TAGLINE_2: "Gotovy veselitsya i trenirovat um?",
       SIGN_IN_BUTTON: "Voiti",
       OR_SIGN_IN_WITH: "ili voiti cherez",
@@ -119,10 +119,10 @@ export const ruOverrides: LocaleOverrides = {
   },
   Credits: {
     TITLE: "Avtory",
-    SUBTITLE: "Poznakomtes s udivitelnoy komandoy Qwordly",
+    SUBTITLE: "Poznakomtes s udivitelnoy komandoy Riddle Quest",
     THANK_YOU_TITLE: "Spasibo!",
     THANK_YOU_TEXT:
-      "Osobaya blagodarnost vsem vnesshim vklad v sozdanie Qwordly. Vasha kreativnost i strast ozhivili etot proekt.",
+      "Osobaya blagodarnost vsem vnesshim vklad v sozdanie Riddle Quest. Vasha kreativnost i strast ozhivili etot proekt.",
   },
   Profile: {
     LOADING_MESSAGE: "Zagruzka dannykh profilya...",
@@ -184,7 +184,7 @@ export const ruOverrides: LocaleOverrides = {
     SELECT_AVATAR_TITLE: "Vybrat avatar",
   },
   WelcomeModal: {
-    WELCOME_TITLE: "Dobro pozhalovat\nv Qwordly!",
+    WELCOME_TITLE: "Dobro pozhalovat\nv Riddle Quest!",
     LETS_PLAY: "Igrat",
     SOLVE_RIDDLES_TEXT:
       "Reshayte zagadki, ugadyvaya otvet bukva za bukvoy. Ispolzuyte tsvetovye podskazki dlya kazhdoy popytki.",

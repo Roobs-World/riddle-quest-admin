@@ -6,7 +6,7 @@ import type { LocaleOverrides } from "./types";
 export const trOverrides: LocaleOverrides = {
   AuthStrings: {
     Landing: {
-      TAGLINE_1: "QWORDLY oynamak icin milyonlara katilin.",
+      TAGLINE_1: "Riddle Quest oynamak icin milyonlara katilin.",
       TAGLINE_2: "Eglenceli sekilde zihninizi calistirmaya hazir misiniz?",
       SIGN_IN_BUTTON: "Giris yap",
       OR_SIGN_IN_WITH: "veya su ile giris yap",
@@ -120,10 +120,10 @@ export const trOverrides: LocaleOverrides = {
   },
   Credits: {
     TITLE: "Ekip",
-    SUBTITLE: "Qwordly'nin arkasindaki harika ekiple tanisin",
+    SUBTITLE: "Riddle Quest'nin arkasindaki harika ekiple tanisin",
     THANK_YOU_TITLE: "Tesekkurler!",
     THANK_YOU_TEXT:
-      "Qwordly'yi mumkun kilan tum katkilarcilarimiza ozel tesekkurler. Yaraticiliginiiz ve tutkunuz bu projeyi hayata gecirdi.",
+      "Riddle Quest'yi mumkun kilan tum katkilarcilarimiza ozel tesekkurler. Yaraticiliginiiz ve tutkunuz bu projeyi hayata gecirdi.",
   },
   Profile: {
     LOADING_MESSAGE: "Profil verisi yukleniyor...",
@@ -185,7 +185,7 @@ export const trOverrides: LocaleOverrides = {
     SELECT_AVATAR_TITLE: "Avatar Sec",
   },
   WelcomeModal: {
-    WELCOME_TITLE: "Qwordly'e\nHos Geldiniz!",
+    WELCOME_TITLE: "Riddle Quest'e\nHos Geldiniz!",
     LETS_PLAY: "Oynayalim",
     SOLVE_RIDDLES_TEXT:
       "Cevabi harf harf tahmin ederek bilmeceleri cozun. Renk ipuclari her tahmininize rehberlik eder.",

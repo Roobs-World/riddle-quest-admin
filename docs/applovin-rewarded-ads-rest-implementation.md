@@ -1,6 +1,6 @@
 # AppLovin Rewarded Ads: Remaining Implementation Guide
 
-This guide covers what is still required to fully ship rewarded AppLovin ads in Qwordly.
+This guide covers what is still required to fully ship rewarded AppLovin ads in Riddle Quest.
 
 ## What Is Already In Place
 
@@ -86,7 +86,7 @@ pnpm exec eas build --profile development --platform android
 
 ## 5. Configure AppLovin Dashboard Correctly
 
-- Ensure ad unit IDs match the app package (`com.grindhead.qwordly`).
+- Ensure ad unit IDs match the app package (`com.grindhead.Riddle Quest`).
 - Ensure the same IDs are used for the correct environment.
 - Add test devices / test mode.
 - Verify waterfall/mediation setup is active for rewarded inventory.

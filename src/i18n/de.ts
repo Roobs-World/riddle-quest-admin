@@ -6,7 +6,7 @@ import type { LocaleOverrides } from "./types";
 export const deOverrides: LocaleOverrides = {
   AuthStrings: {
     Landing: {
-      TAGLINE_1: "Spiele mit Millionen Menschen QWORDLY.",
+      TAGLINE_1: "Spiele mit Millionen Menschen Riddle Quest.",
       TAGLINE_2: "Bereit fur Spass und Gehirntraining?",
       SIGN_IN_BUTTON: "Anmelden",
       OR_SIGN_IN_WITH: "oder anmelden mit",
@@ -178,7 +178,7 @@ export const deOverrides: LocaleOverrides = {
     GUEST_USERNAME: "Gast",
   },
   WelcomeModal: {
-    WELCOME_TITLE: "Willkommen bei\nQwordly!",
+    WELCOME_TITLE: "Willkommen bei\nRiddle Quest!",
     LETS_PLAY: "Los geht's",
     SOLVE_RIDDLES_TEXT:
       "Losen Sie Raetsel, indem Sie die Antwort Buchstabe fuer Buchstabe erraten. Nutzen Sie die Farbhinweise fuer jeden Versuch.",

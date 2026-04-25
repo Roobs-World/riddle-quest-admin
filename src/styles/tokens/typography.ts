@@ -1,6 +1,6 @@
 /**
  * Typography Design Tokens
- * Font families, sizes, and text styling for the Qwordly app
+ * Font families, sizes, and text styling for the Riddle Quest app
  */
 
 import { responsiveSizes, moderateScale } from "../../utils/responsive";

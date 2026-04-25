@@ -22,11 +22,11 @@ import * as functions from "firebase-functions";
 jest.mock("../iapConfig", () => {
   return {
     __esModule: true,
-    NO_ADS_PRODUCT_ID: "com.qwordly.noads.unitmock.v4",
+    NO_ADS_PRODUCT_ID: "com.Riddle Quest.noads.unitmock.v4",
     BACKEND_COIN_PRODUCT_DETAILS: {
-      COIN_PACK_SMALL: {id: "com.qwordly.coins.small.unitmock.v4", coins: 50},
-      COIN_PACK_MEDIUM: {id: "com.qwordly.coins.medium.unitmock.v4", coins: 250},
-      COIN_PACK_LARGE: {id: "com.qwordly.coins.large.unitmock.v4", coins: 600},
+      COIN_PACK_SMALL: {id: "com.Riddle Quest.coins.small.unitmock.v4", coins: 50},
+      COIN_PACK_MEDIUM: {id: "com.Riddle Quest.coins.medium.unitmock.v4", coins: 250},
+      COIN_PACK_LARGE: {id: "com.Riddle Quest.coins.large.unitmock.v4", coins: 600},
     },
     initializeIapConfig: jest.fn(),
   };

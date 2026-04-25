@@ -20,7 +20,7 @@ import { logger } from "../utils/logger";
 import { captureException } from "../utils/sentry";
 
 /**
- * Default implementation of `IAudioFeedbackService` for Qwordly.
+ * Default implementation of `IAudioFeedbackService` for Riddle Quest.
  */
 export class AudioFeedbackManager implements IAudioFeedbackService {
   private defaultConfig: Required<FeedbackConfig> = {

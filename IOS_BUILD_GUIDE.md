@@ -1,6 +1,6 @@
 # iOS Build and Testing Guide for Windows
 
-This guide explains how to build and test your Qwordly iOS app from Windows using EAS Build.
+This guide explains how to build and test your Riddle Quest iOS app from Windows using EAS Build.
 
 ## Prerequisites
 
@@ -68,7 +68,7 @@ When you run your first iOS build, EAS will:
    - No need for a Mac!
 
 3. **Register your app's bundle identifier**
-   - Current: `com.grindhead.qwordly`
+   - Current: `com.grindhead.Riddle Quest`
 
 ## Testing Your iOS App from Windows
 
@@ -224,7 +224,7 @@ eas submit --platform ios
 
 3. **Monitor build progress**:
    - Watch the terminal
-   - Or check https://expo.dev/accounts/[YOUR_ACCOUNT]/projects/qwordly/builds
+   - Or check https://expo.dev/accounts/[YOUR_ACCOUNT]/projects/Riddle Quest/builds
 
 ## Tips for Windows iOS Development
 

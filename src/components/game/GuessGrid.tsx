@@ -1,6 +1,6 @@
 /**
  * @fileoverview
- * Presentational guess grid component for the Qwordly game.
+ * Presentational guess grid component for the Riddle Quest game.
  *
  * This component renders a fixed number of rows representing past guesses,
  * the current in-progress guess, and any remaining empty rows. It is kept

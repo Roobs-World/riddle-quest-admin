@@ -209,7 +209,7 @@ export const SUBMIT_BUTTON_PADDING_H = scale(32);
 // Header
 // ---------------------------------------------------------------------------
 
-/** Width/height of the Qwordly logo icon in the game header. */
+/** Width/height of the Riddle Quest logo icon in the game header. */
 export const HEADER_LOGO_SIZE = moderateScale(48);
 
 /** Width/height of the back-navigation arrow icon on auth/stack screens. */

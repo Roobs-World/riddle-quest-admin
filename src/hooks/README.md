@@ -1,6 +1,6 @@
 ## Hooks Overview
 
-This folder contains React hooks that encapsulate reusable behavior across the Qwordly app.
+This folder contains React hooks that encapsulate reusable behavior across the Riddle Quest app.
 
 - `useGameLogic` - orchestrates client-side game state around the server-authoritative `submitGuess` Firebase Function. It exposes guess state, outcome handling, and helpers to continue or reset a game session.
 - `useModal` - high-level interface over `ModalContext` that provides type-safe helpers for opening and closing all game, settings, and help modals.

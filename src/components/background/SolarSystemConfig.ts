@@ -19,7 +19,7 @@
  * - Varied orbital planes for 3D depth perception
  * - Optimized texture usage across celestial bodies
  *
- * @author Qwordly Development Team
+ * @author Riddle Quest Development Team
  * @version 1.0.0
  * @since 2024
  */

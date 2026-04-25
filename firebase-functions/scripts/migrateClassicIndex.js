@@ -1,5 +1,5 @@
 const admin = require("firebase-admin");
-const serviceAccount = require("../qwordly-admin-sdk.json");
+const serviceAccount = require("../Riddle Quest-admin-sdk.json");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),

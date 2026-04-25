@@ -5,7 +5,7 @@
  * with platform-specific icons and styling. It follows the existing button
  * design patterns established in the app.
  *
- * @author Qwordly Development Team
+ * @author Riddle Quest Development Team
  * @version 1.0.0
  * @since 2024
  */

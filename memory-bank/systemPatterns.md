@@ -1,6 +1,6 @@
 # System Patterns
 
-This document outlines the system architecture, key technical decisions, design patterns, and component relationships within the Qwordly project.
+This document outlines the system architecture, key technical decisions, design patterns, and component relationships within the Riddle Quest project.
 
 ## System Architecture:
 

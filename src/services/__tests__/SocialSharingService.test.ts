@@ -69,7 +69,7 @@ describe("SocialSharingService", () => {
       expect(result).toContain("Daily Challenge");
       expect(result).toContain("3 attempts");
       expect(result).toContain("🟩🟨🟩🟩🟩");
-      expect(result).toContain("#Qwordly");
+      expect(result).toContain("#Riddle Quest");
     });
 
     it("should generate share text for classic mode", () => {
@@ -117,7 +117,7 @@ describe("SocialSharingService", () => {
 
       const result = SocialSharingService.generateShareText(content);
 
-      expect(result).toContain("#Qwordly");
+      expect(result).toContain("#Riddle Quest");
       expect(result).toContain("#WordPuzzle");
       expect(result).toContain("#BrainGame");
     });
@@ -168,7 +168,7 @@ describe("SocialSharingService", () => {
       expect(result).toBe(true);
       expect(Share.share).toHaveBeenCalledWith({
         message: expect.stringContaining("Daily Challenge"),
-        title: "Check out my Qwordly result!",
+        title: "Check out my Riddle Quest result!",
       });
     });
 
@@ -219,7 +219,7 @@ describe("SocialSharingService", () => {
       expect(result).toBe(true);
       expect(ShareDialog.canShow).toHaveBeenCalledWith({
         contentType: "link",
-        contentUrl: "https://qwordly.app",
+        contentUrl: "https://Riddle Quest.app",
         quote: expect.stringContaining("Daily Challenge"),
       });
       expect(ShareDialog.show).toHaveBeenCalled();

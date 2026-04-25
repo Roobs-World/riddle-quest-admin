@@ -1,12 +1,12 @@
 /**
- * @fileoverview BottomNavigationBar component for game screen navigation in Qwordly.
+ * @fileoverview BottomNavigationBar component for game screen navigation in Riddle Quest.
  *
  * This component provides a fixed bottom navigation bar with three main actions:
  * profile access, hint functionality, and settings access. It's designed to be
  * always visible during gameplay to provide quick access to essential game features.
  * The component uses SVG icons and maintains consistent spacing and accessibility.
  *
- * @author Qwordly Development Team
+ * @author Riddle Quest Development Team
  * @version 1.0.0
  * @since 2024
  */

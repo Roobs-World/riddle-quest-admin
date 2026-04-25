@@ -1,7 +1,7 @@
 /**
  * @fileoverview Modal Registry System
  *
- * Centralized modal management system for the Qwordly application that provides
+ * Centralized modal management system for the Riddle Quest application that provides
  * a unified interface for registering, accessing, and rendering modal components.
  * This registry pattern enables consistent modal handling across the entire app
  * while maintaining type safety and component isolation.
@@ -28,7 +28,7 @@
  * <ModalComponent isVisible={true} {...modalData} />
  * ```
  *
- * @author Qwordly Development Team
+ * @author Riddle Quest Development Team
  * @version 1.0.0
  * @since 2024
  *
@@ -71,6 +71,7 @@ import HintModal from "./help/HintModal";
 import InfoModal from "./help/InfoModal";
 import SkipModal from "./help/SkipModal";
 import WelcomeModal from "./help/WelcomeModal";
+import WelcomeBackModal from "./help/WelcomeBackModal";
 import InstructionsModal from "./help/InstructionsModal";
 import CreditsModal from "./help/CreditsModal";
 
@@ -343,6 +344,16 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
     (props: BaseModalProps & ModalData) => ({
       isVisible: props.isVisible,
       onClose: props.onClose,
+      onDismiss: (props as { onDismiss?: () => void }).onDismiss,
+    })
+  ),
+
+  welcomeBack: createModalWrapper(
+    WelcomeBackModal,
+    (props: BaseModalProps & ModalData) => ({
+      isVisible: props.isVisible,
+      onClose: props.onClose,
+      username: (props.username as string) || "",
       onDismiss: (props as { onDismiss?: () => void }).onDismiss,
     })
   ),

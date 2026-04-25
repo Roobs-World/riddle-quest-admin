@@ -269,37 +269,37 @@ describe("AnalyticsService", () => {
 
   describe("logPurchaseEvent", () => {
     it("logs iap_purchase_initiated event", async () => {
-      await service.logPurchaseEvent("initiated", { product_id: "com.qwordly.coinpack1" });
+      await service.logPurchaseEvent("initiated", { product_id: "com.Riddle Quest.coinpack1" });
       expect(mockLogEvent).toHaveBeenCalledWith("iap_purchase_initiated", {
-        product_id: "com.qwordly.coinpack1",
+        product_id: "com.Riddle Quest.coinpack1",
       });
     });
 
     it("logs iap_purchase_validated event", async () => {
-      await service.logPurchaseEvent("validated", { product_id: "com.qwordly.coinpack1" });
+      await service.logPurchaseEvent("validated", { product_id: "com.Riddle Quest.coinpack1" });
       expect(mockLogEvent).toHaveBeenCalledWith("iap_purchase_validated", {
-        product_id: "com.qwordly.coinpack1",
+        product_id: "com.Riddle Quest.coinpack1",
       });
     });
 
     it("logs iap_purchase_completed with coins", async () => {
       await service.logPurchaseEvent("completed", {
-        product_id: "com.qwordly.coinpack2",
+        product_id: "com.Riddle Quest.coinpack2",
         coins: 100,
       });
       expect(mockLogEvent).toHaveBeenCalledWith("iap_purchase_completed", {
-        product_id: "com.qwordly.coinpack2",
+        product_id: "com.Riddle Quest.coinpack2",
         coins: 100,
       });
     });
 
     it("logs iap_purchase_failed with error code", async () => {
       await service.logPurchaseEvent("failed", {
-        product_id: "com.qwordly.coinpack1",
+        product_id: "com.Riddle Quest.coinpack1",
         error_code: "E_USER_CANCELLED",
       });
       expect(mockLogEvent).toHaveBeenCalledWith("iap_purchase_failed", {
-        product_id: "com.qwordly.coinpack1",
+        product_id: "com.Riddle Quest.coinpack1",
         error_code: "E_USER_CANCELLED",
       });
     });
@@ -308,12 +308,12 @@ describe("AnalyticsService", () => {
   describe("logCoinPackPurchased", () => {
     it("logs coin_pack_purchased with a default purchase count", async () => {
       await service.logCoinPackPurchased({
-        productId: "com.qwordly.coinpack2",
+        productId: "com.Riddle Quest.coinpack2",
         coins: 100,
       });
 
       expect(mockLogEvent).toHaveBeenCalledWith("coin_pack_purchased", {
-        product_id: "com.qwordly.coinpack2",
+        product_id: "com.Riddle Quest.coinpack2",
         coins: 100,
         purchase_count: 1,
       });
@@ -321,13 +321,13 @@ describe("AnalyticsService", () => {
 
     it("logs coin_pack_purchased with an explicit purchase count", async () => {
       await service.logCoinPackPurchased({
-        productId: "com.qwordly.coinpack5",
+        productId: "com.Riddle Quest.coinpack5",
         coins: 1000,
         purchaseCount: 3,
       });
 
       expect(mockLogEvent).toHaveBeenCalledWith("coin_pack_purchased", {
-        product_id: "com.qwordly.coinpack5",
+        product_id: "com.Riddle Quest.coinpack5",
         coins: 1000,
         purchase_count: 3,
       });
@@ -380,7 +380,7 @@ describe("AnalyticsService", () => {
   describe("shop pack events", () => {
     it("logs shop_pack_impression", async () => {
       await service.logShopPackImpression({
-        productId: "com.qwordly.coinpack1",
+        productId: "com.Riddle Quest.coinpack1",
         productKey: "COIN_PACK_TINY",
         coins: 50,
         sortOrder: 1,
@@ -389,7 +389,7 @@ describe("AnalyticsService", () => {
       });
 
       expect(mockLogEvent).toHaveBeenCalledWith("shop_pack_impression", {
-        product_id: "com.qwordly.coinpack1",
+        product_id: "com.Riddle Quest.coinpack1",
         product_key: "COIN_PACK_TINY",
         coins: 50,
         sort_order: 1,
@@ -400,7 +400,7 @@ describe("AnalyticsService", () => {
 
     it("logs shop_pack_selected", async () => {
       await service.logShopPackSelected({
-        productId: "com.qwordly.coinpack2",
+        productId: "com.Riddle Quest.coinpack2",
         productKey: "COIN_PACK_SMALL",
         coins: 100,
         sortOrder: 2,
@@ -409,7 +409,7 @@ describe("AnalyticsService", () => {
       });
 
       expect(mockLogEvent).toHaveBeenCalledWith("shop_pack_selected", {
-        product_id: "com.qwordly.coinpack2",
+        product_id: "com.Riddle Quest.coinpack2",
         product_key: "COIN_PACK_SMALL",
         coins: 100,
         sort_order: 2,

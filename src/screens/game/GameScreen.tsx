@@ -1,6 +1,6 @@
 /**
  * @fileoverview
- * Main gameplay screen for Qwordly.
+ * Main gameplay screen for Riddle Quest.
  *
  * `GameScreen` composes the core game UI (header, board, controls, bottom
  * navigation) and wires it to `useGameLogic`, ads, IAP, hints, and the
@@ -197,6 +197,12 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     consumePendingStreakBreak,
   } = useAuth();
   const modal = useModal();
+  const {
+    showWelcomeModal,
+    showWelcomeBackModal,
+    showInstructionsModal,
+    showInfoModal,
+  } = modal;
   const isGuestMode = isGuestPlayer(playerData);
 
   const [lastGuessResult, setLastGuessResult] = useState<GuessResult | null>(null);
@@ -343,7 +349,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     setIapError(null);
 
     try {
-      const products = await runWithServerLoading(() => IapService.getProducts());
+      const products = await IapService.getProducts();
       setIapProducts(products);
       return {
         products,
@@ -362,16 +368,14 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     } finally {
       setIapLoading(false);
     }
-  }, [runWithServerLoading, shouldUseDevFirestoreCatalog]);
+  }, [shouldUseDevFirestoreCatalog]);
 
   const loadFirestoreProducts = useCallback(async () => {
     setProductPricingLoading(true);
     setProductPricingError(null);
 
     try {
-      const products = await runWithServerLoading(() =>
-        ProductPricingService.getActiveProducts()
-      );
+      const products = await ProductPricingService.getActiveProducts();
       setFirestoreProducts(products);
       return {
         products,
@@ -390,7 +394,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     } finally {
       setProductPricingLoading(false);
     }
-  }, [runWithServerLoading]);
+  }, []);
 
   useEffect(() => {
     void loadIapProducts();
@@ -401,7 +405,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   }, [loadFirestoreProducts]);
 
   const firstTimeCheckDone = useRef(false);
-  const { showWelcomeModal, showInstructionsModal, showInfoModal } = useModal();
   const streakBreakModalShownRef = useRef(false);
 
   const deriveDailyStreakAfterWin = useCallback((): number => {
@@ -429,12 +432,24 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   }, [isGuestMode]);
 
   useEffect(() => {
-    if (suppressOnboarding || firstTimeCheckDone.current) return;
+    if (suppressOnboarding || firstTimeCheckDone.current || !playerData) return;
     firstTimeCheckDone.current = true;
     let isCancelled = false;
 
     const runOnboardingFlow = async () => {
       try {
+        if (isCancelled) {
+          return;
+        }
+
+        // Provider-authenticated users should always see a lightweight welcome-back
+        // modal when they enter the game.
+        if (!isGuestMode) {
+          const username = playerData?.username?.trim() || "";
+          showWelcomeBackModal({ username });
+          return;
+        }
+
         const onboardingSeenStorageKey = getOnboardingSeenStorageKey(
           playerData?.userId
         );
@@ -486,8 +501,10 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     };
   }, [
     isGuestMode,
+    playerData,
     playerData?.userId,
     showWelcomeModal,
+    showWelcomeBackModal,
     showInstructionsModal,
     showInfoModal,
     suppressOnboarding,

@@ -1,5 +1,5 @@
 /**
- * @fileoverview Server-side achievement evaluation for Qwordly.
+ * @fileoverview Server-side achievement evaluation for Riddle Quest.
  *
  * Evaluates unlock criteria after game actions (e.g. submitGuess) and appends
  * newly unlocked achievements to the user document. All authority is server-side

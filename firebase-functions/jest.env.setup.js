@@ -8,12 +8,12 @@ process.env.NODE_ENV = "test";
 // Set up Firebase credentials for integration tests
 if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
   // Use the existing service account file for integration tests
-  process.env.GOOGLE_APPLICATION_CREDENTIALS = __dirname + "/qwordly-admin-sdk.json";
+  process.env.GOOGLE_APPLICATION_CREDENTIALS = __dirname + "/Riddle Quest-admin-sdk.json";
 }
 
 // Set Firebase project for integration tests - use test project for safety
 if (!process.env.FIREBASE_PROJECT_ID) {
-  process.env.FIREBASE_PROJECT_ID = "qwordly-test-project"; // Use test project instead of production
+  process.env.FIREBASE_PROJECT_ID = "Riddle Quest-test-project"; // Use test project instead of production
 }
 
 // Ensure Firestore emulator is used for integration tests

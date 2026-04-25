@@ -1,12 +1,12 @@
 /**
- * @fileoverview Error component for displaying error messages in Qwordly.
+ * @fileoverview Error component for displaying error messages in Riddle Quest.
  *
  * This component provides a standardized way to display error messages with
  * consistent styling and accessibility features. It's designed to be used
  * throughout the app for form validation errors, API errors, and general
  * error messaging.
  *
- * @author Qwordly Development Team
+ * @author Riddle Quest Development Team
  * @version 1.0.0
  * @since 2024
  */

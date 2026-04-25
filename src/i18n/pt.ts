@@ -6,7 +6,7 @@ import type { LocaleOverrides } from "./types";
 export const ptOverrides: LocaleOverrides = {
   AuthStrings: {
     Landing: {
-      TAGLINE_1: "Junte-se a milhoes de pessoas para jogar QWORDLY.",
+      TAGLINE_1: "Junte-se a milhoes de pessoas para jogar Riddle Quest.",
       TAGLINE_2: "Pronto para se divertir enquanto treina sua mente?",
       SIGN_IN_BUTTON: "Entrar",
       OR_SIGN_IN_WITH: "ou entre com",
@@ -132,10 +132,10 @@ export const ptOverrides: LocaleOverrides = {
   },
   Credits: {
     TITLE: "Creditos",
-    SUBTITLE: "Conheca a equipe incrivel por tras do Qwordly",
+    SUBTITLE: "Conheca a equipe incrivel por tras do Riddle Quest",
     THANK_YOU_TITLE: "Obrigado!",
     THANK_YOU_TEXT:
-      "Agradecimento especial a todos os contribuidores que tornaram o Qwordly possivel.",
+      "Agradecimento especial a todos os contribuidores que tornaram o Riddle Quest possivel.",
   },
   Profile: {
     LOADING_MESSAGE: "Carregando dados do perfil...",
@@ -310,7 +310,7 @@ export const ptOverrides: LocaleOverrides = {
     PURCHASE_BUTTON: "COMPRAR",
   },
   WelcomeModal: {
-    WELCOME_TITLE: "Bem-vindo ao\nQwordly!",
+    WELCOME_TITLE: "Bem-vindo ao\nRiddle Quest!",
     LETS_PLAY: "Vamos Jogar",
     SOLVE_RIDDLES_TEXT:
       "Resolva enigmas adivinhando a resposta letra por letra. Use as pistas de cor para guiar cada tentativa.",

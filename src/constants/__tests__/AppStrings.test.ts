@@ -290,7 +290,7 @@ describe("AppStrings", () => {
     describe("Landing", () => {
       it("should have all required landing strings", () => {
         expect(AppStrings.AuthStrings.Landing.TAGLINE_1).toBe(
-          "Join millions of people to play QWORDLY."
+          "Join millions of people to play Riddle Quest."
         );
         expect(AppStrings.AuthStrings.Landing.TAGLINE_2).toBe(
           "Ready to have fun while training your mind?"
@@ -513,11 +513,11 @@ describe("AppStrings", () => {
     it("should have credits screen strings", () => {
       expect(AppStrings.Credits.TITLE).toBe("Credits");
       expect(AppStrings.Credits.SUBTITLE).toBe(
-        "Meet the amazing team behind Qwordly"
+        "Meet the amazing team behind Riddle Quest"
       );
       expect(AppStrings.Credits.THANK_YOU_TITLE).toBe("Thank You!");
       expect(AppStrings.Credits.THANK_YOU_TEXT).toBe(
-        "Special thanks to all our contributors who made Qwordly possible. Your creativity, dedication, and passion brought this project to life."
+        "Special thanks to all our contributors who made Riddle Quest possible. Your creativity, dedication, and passion brought this project to life."
       );
     });
 

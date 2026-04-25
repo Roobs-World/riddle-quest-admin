@@ -10,7 +10,7 @@ import { captureException } from "./sentry";
 
 /**
  * Audio Quality Optimization Utility
- * Provides enhanced audio configuration for Qwordly (expo-audio / SDK 55)
+ * Provides enhanced audio configuration for Riddle Quest (expo-audio / SDK 55)
  */
 
 export interface AudioQualityConfig {

@@ -4,7 +4,7 @@
 - Status: Accepted
 
 ## Context
-Qwordly currently has two modal mapping paths:
+Riddle Quest currently has two modal mapping paths:
 - Runtime rendering in `src/components/modals/ModalProvider.tsx`
 - Registry/wrapper mapping in `src/components/modals/ModalRegistry.tsx`
 

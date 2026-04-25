@@ -1,12 +1,12 @@
 /**
- * @fileoverview CoinsDisplay component for showing player's coin balance in Qwordly.
+ * @fileoverview CoinsDisplay component for showing player's coin balance in Riddle Quest.
  *
  * This component displays the player's current coin balance with a custom SVG
  * coin icon. It supports both read-only display and interactive modes that
  * open the coin shop when tapped. The component includes proper accessibility
  * support and visual feedback for user interactions.
  *
- * @author Qwordly Development Team
+ * @author Riddle Quest Development Team
  * @version 1.0.0
  * @since 2024
  */

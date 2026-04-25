@@ -213,7 +213,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
                 paddingBottom: SPACING.sm,
               }}
             >
-              <LogoIcon width={32} height={32} color="#FFFFFF" />
+              <LogoIcon width={32} height={32} />
               <Text
                 style={{
                   fontFamily: TYPOGRAPHY.fontPrimary,

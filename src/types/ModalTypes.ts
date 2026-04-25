@@ -163,6 +163,12 @@ export interface GameModalTypes {
     onDismiss?: () => void;
   };
 
+  welcomeBack: {
+    username: string;
+    /** Optional callback fired after the welcome-back modal is dismissed. */
+    onDismiss?: () => void;
+  };
+
   instructions: Record<string, never>;
 
   credits: Record<string, never>;

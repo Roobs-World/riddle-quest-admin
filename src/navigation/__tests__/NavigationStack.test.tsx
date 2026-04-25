@@ -641,7 +641,7 @@ describe("NavigationStack", () => {
   it("updates guest daily progress on win and switches to classic without remote completion check", async () => {
     const playerData = {
       userId: "guest-1",
-      email: "guest_1@guest.qwordly.com",
+      email: "guest_1@guest.Riddle Quest.com",
       username: "Guest",
       progress: { dailyChallengeIndex: 4, classicIndex: 2 },
       coins: 100,
@@ -698,7 +698,7 @@ describe("NavigationStack", () => {
   it("does not increment guest daily challenge index again in next-level handler", async () => {
     const playerData = {
       userId: "guest-2",
-      email: "guest_2@guest.qwordly.com",
+      email: "guest_2@guest.Riddle Quest.com",
       username: "Guest",
       progress: { dailyChallengeIndex: 9, classicIndex: 3 },
       coins: 30,

@@ -1,31 +1,31 @@
 /**
  * @fileoverview
- * Landing screen for the Qwordly authentication flow.
+ * Landing screen for the Riddle Quest authentication flow.
  *
  * This screen is the primary entry point for unauthenticated users. It
  * provides email/password, Google, and Facebook sign-in options, a path
  * to registration, and a "Play as Guest" shortcut into gameplay.
  */
-import React, { useState } from "react";
-import { View, Text } from "react-native";
+import React, {useState} from "react";
+import {View, Text, Linking} from "react-native";
 import CustomSafeAreaView from "../components/layouts/CustomSafeAreaView";
 import GoogleSignInButton from "../components/buttons/GoogleSignInButton";
 import FacebookSignInButton from "../components/buttons/FacebookSignInButton";
 import WideButton from "../components/buttons/WideButton";
 import StarryBackground from "../components/background/StarryBackground";
 import PulsingSpinner from "../components/loading/PulsingSpinner";
-import { AppStrings } from "../constants/AppStrings";
-import { LOADING_SPINNER_SIZE } from "../constants/loading";
+import {AppStrings} from "../constants/AppStrings";
+import {LOADING_SPINNER_SIZE} from "../constants/loading";
 import Subtitle from "../components/text/Subtitle";
-import { AuthService } from "../services/AuthService";
-import { useAuth } from "../contexts/AuthContext";
+import {AuthService} from "../services/AuthService";
+import {useAuth} from "../contexts/AuthContext";
 import Error from "../components/text/Error";
-import { type FirebaseAuthTypes } from "@react-native-firebase/auth";
-import { styles, SPACING } from "../styles";
-import { logger } from "../utils/logger";
-import { captureException } from "../utils/sentry";
+import {type FirebaseAuthTypes} from "@react-native-firebase/auth";
+import {styles, SPACING} from "../styles";
+import {logger} from "../utils/logger";
+import {captureException} from "../utils/sentry";
 import CreditsModal from "../components/modals/help/CreditsModal";
-import MainLogoSvg from "../../assets/images/main-logo.svg";
+import MainLogoSvg from "../../assets/images/logo.png";
 
 /**
  * Landing screen component used at the root of the auth stack.
@@ -38,7 +38,7 @@ import MainLogoSvg from "../../assets/images/main-logo.svg";
 const LandingScreen = () => {
   const [authError, setAuthError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { login, isAuthenticated } = useAuth();
+  const {login, isAuthenticated} = useAuth();
   const [isCreditsVisible, setIsCreditsVisible] = useState(false);
 
   const handleGoogleSignIn = async () => {
@@ -57,18 +57,13 @@ const LandingScreen = () => {
       captureException(error);
       switch (firebaseError.code) {
         case "auth/account-exists-with-different-credential":
-          setAuthError(
-            AppStrings.AuthStrings.Login.ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL
-          );
+          setAuthError(AppStrings.AuthStrings.Login.ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL);
           break;
         case "auth/auth-popup-closed-by-user":
           logger.debug("Auth popup closed by user.");
           break;
         default:
-          setAuthError(
-            firebaseError.message ||
-              AppStrings.AuthStrings.Login.GOOGLE_UNEXPECTED_ERROR
-          );
+          setAuthError(firebaseError.message || AppStrings.AuthStrings.Login.GOOGLE_UNEXPECTED_ERROR);
       }
     } finally {
       setIsLoading(false);
@@ -95,10 +90,7 @@ const LandingScreen = () => {
         const errorMessage = (error as Error).message;
 
         // Check for exact cancellation messages
-        if (
-          errorMessage === "User cancelled the login process" ||
-          errorMessage === "Facebook login cancelled."
-        ) {
+        if (errorMessage === "User cancelled the login process" || errorMessage === "Facebook login cancelled.") {
           logger.debug("Facebook login cancelled by user.");
           // Don't show error for cancellation - it's expected behavior
           return;
@@ -133,13 +125,10 @@ const LandingScreen = () => {
 
       // Handle Firebase auth errors
       if (error && typeof error === "object" && "code" in error) {
-        const firebaseError =
-          error as FirebaseAuthTypes.NativeFirebaseAuthError;
+        const firebaseError = error as FirebaseAuthTypes.NativeFirebaseAuthError;
         switch (firebaseError.code) {
           case "auth/account-exists-with-different-credential":
-            setAuthError(
-              AppStrings.AuthStrings.Login.ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL
-            );
+            setAuthError(AppStrings.AuthStrings.Login.ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL);
             break;
           case "auth/auth-popup-closed-by-user":
             logger.debug("Auth popup closed by user.");
@@ -154,17 +143,12 @@ const LandingScreen = () => {
             setAuthError(AppStrings.AuthStrings.Login.FACEBOOK_INVALID_CREDENTIAL_ERROR);
             break;
           default:
-            setAuthError(
-              firebaseError.message ||
-                AppStrings.AuthStrings.Login.FACEBOOK_UNEXPECTED_ERROR
-            );
+            setAuthError(firebaseError.message || AppStrings.AuthStrings.Login.FACEBOOK_UNEXPECTED_ERROR);
         }
       } else {
         // Handle other types of errors with better fallback
         const errorMessage =
-          error instanceof Error
-            ? (error as Error).message
-            : AppStrings.AuthStrings.Login.FACEBOOK_UNEXPECTED_ERROR;
+          error instanceof Error ? (error as Error).message : AppStrings.AuthStrings.Login.FACEBOOK_UNEXPECTED_ERROR;
 
         logger.error("Non-Firebase Facebook error:", errorMessage);
         setAuthError(errorMessage);
@@ -192,22 +176,21 @@ const LandingScreen = () => {
     }
   };
 
+  const handleRoobsWorldPress = () => {
+    void Linking.openURL("https://www.roobsworld.com");
+  };
+
   return (
     <CustomSafeAreaView className="justify-start">
       <StarryBackground />
 
-      <View style={{ flex: 1, width: '100%', alignItems: 'center', zIndex: 2 }}>
+      <View style={{flex: 1, width: "100%", alignItems: "center", zIndex: 2}}>
         {/* Title at the top */}
-        <View style={{ alignItems: 'center', paddingTop: SPACING.xl }}>
-          <MainLogoSvg
-            testID="main-logo-svg"
-            width={288}
-            height={70}
-            style={{ marginBottom: SPACING.md }}
-          />
+        <View style={{alignItems: "center", paddingTop: SPACING.xl}}>
+          <MainLogoSvg testID="main-logo-svg" width={288} height={70} style={{marginBottom: SPACING.md}} />
           <Text
             className="font-bold text-white text-center"
-            style={[styles.title, { marginBottom: SPACING.md, color: '#FFFFFF' }]}
+            style={[styles.title, {marginBottom: SPACING.md, color: "#FFFFFF"}]}
           >
             {AppStrings.AuthStrings.Landing.TAGLINE_1}
           </Text>
@@ -215,10 +198,10 @@ const LandingScreen = () => {
         </View>
 
         {/* Spacer — solar system visible here */}
-        <View style={{ flex: 1, minHeight: 0 }} />
+        <View style={{flex: 1, minHeight: 0}} />
 
         {/* Buttons at the bottom */}
-        <View style={{ width: '100%', alignItems: 'center', gap: SPACING.md, paddingBottom: SPACING.xl }}>
+        <View style={{width: "100%", alignItems: "center", gap: SPACING.md, paddingBottom: SPACING.xl}}>
           <GoogleSignInButton onPress={handleGoogleSignIn} disabled={isLoading} />
           <FacebookSignInButton onPress={handleFacebookSignIn} disabled={isLoading} />
           {authError && <Error message={authError} />}
@@ -231,17 +214,14 @@ const LandingScreen = () => {
             buttonText={AppStrings.AuthStrings.Landing.CREDITS_BUTTON}
             onPress={() => setIsCreditsVisible(true)}
           />
+          <WideButton buttonText="Made by Roobs World" onPress={handleRoobsWorldPress} />
         </View>
       </View>
 
       <PulsingSpinner visible={isLoading} size={LOADING_SPINNER_SIZE} />
-      <CreditsModal
-        isVisible={isCreditsVisible}
-        onClose={() => setIsCreditsVisible(false)}
-      />
+      <CreditsModal isVisible={isCreditsVisible} onClose={() => setIsCreditsVisible(false)} />
     </CustomSafeAreaView>
   );
 };
 
 export default LandingScreen;
-

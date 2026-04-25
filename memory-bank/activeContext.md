@@ -1,4 +1,4 @@
-# Active Context - Qwordly Development
+# Active Context - Riddle Quest Development
 
 ## Current Work Focus: Constants & Correctness (March 2026)
 

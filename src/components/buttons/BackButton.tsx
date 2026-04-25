@@ -1,12 +1,12 @@
 /**
- * @fileoverview BackButton component for navigation in Qwordly app.
+ * @fileoverview BackButton component for navigation in Riddle Quest app.
  *
  * This component provides a reusable back button that can either navigate to a
  * specific screen or go back to the previous screen in the navigation stack.
  * It uses an SVG icon and handles both targeted navigation and stack-based
  * navigation patterns.
  *
- * @author Qwordly Development Team
+ * @author Riddle Quest Development Team
  * @version 1.0.0
  * @since 2024
  */

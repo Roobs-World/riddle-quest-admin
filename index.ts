@@ -1,5 +1,5 @@
 /**
- * @fileoverview Application entry point for Qwordly - React Native app registration.
+ * @fileoverview Application entry point for Riddle Quest - React Native app registration.
  *
  * This file serves as the bridge between the Expo/React Native runtime and the
  * main App component. It handles the registration of the root component with
@@ -10,7 +10,7 @@
  * setup and environment configuration, making the app compatible with various
  * deployment targets.
  *
- * @author Qwordly Development Team
+ * @author Riddle Quest Development Team
  * @version 1.0.0
  * @since 2024
  */

@@ -1,11 +1,11 @@
 /**
- * @fileoverview ProgressBar component for visual progress indication in Qwordly.
+ * @fileoverview ProgressBar component for visual progress indication in Riddle Quest.
  *
  * This component renders a horizontal progress bar using individual step indicators.
  * It supports custom colors for each step and provides visual feedback for
  * multi-step processes like game levels or form completion.
  *
- * @author Qwordly Development Team
+ * @author Riddle Quest Development Team
  * @version 1.0.0
  * @since 2024
  */

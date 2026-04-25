@@ -1,11 +1,11 @@
 /**
- * @fileoverview Controls component for game progression actions in Qwordly.
+ * @fileoverview Controls component for game progression actions in Riddle Quest.
  *
  * This component provides context-sensitive control buttons that appear based on
  * game state. Currently manages the "Next Level" button that appears after winning
  * a level, allowing players to progress to subsequent challenges.
  *
-m * @author Qwordly Development Team
+m * @author Riddle Quest Development Team
  * @version 1.0.0
  * @since 2024
  */

@@ -132,6 +132,7 @@ const mockShowSettingsModal = jest.fn();
 const mockShowCoinShopModal = jest.fn();
 const mockShowInfoModal = jest.fn();
 const mockShowWelcomeModal = jest.fn();
+const mockShowWelcomeBackModal = jest.fn();
 const mockShowInstructionsModal = jest.fn();
 const mockCloseModalByType = jest.fn();
 const mockCloseModal = jest.fn();
@@ -155,6 +156,7 @@ jest.mock("../../../hooks/useModal", () => ({
     showCoinShopModal: mockShowCoinShopModal,
     showInfoModal: mockShowInfoModal,
     showWelcomeModal: mockShowWelcomeModal,
+    showWelcomeBackModal: mockShowWelcomeBackModal,
     showInstructionsModal: mockShowInstructionsModal,
     showCreditsModal: mockShowCreditsModal,
     showFullProfileDetailsModal: mockShowFullProfileDetailsModal,
@@ -666,12 +668,32 @@ describe("GameScreen", () => {
   });
 
   describe("Modal Integration", () => {
-    it("should trigger welcome modal on mount", async () => {
+    it("should trigger welcome-back modal on mount for provider users", async () => {
       const { rerender } = render(<GameScreen {...defaultProps} />);
 
       await waitFor(() => {
-        expect(mockShowWelcomeModal).toHaveBeenCalled();
+        expect(mockShowWelcomeBackModal).toHaveBeenCalledWith(
+          expect.objectContaining({
+            username: "testuser",
+          })
+        );
       });
+      expect(mockShowWelcomeModal).not.toHaveBeenCalled();
+    });
+
+    it("should show welcome-back modal instead of onboarding for provider users", async () => {
+      render(<GameScreen {...defaultProps} />);
+
+      await waitFor(() => {
+        expect(mockShowWelcomeBackModal).toHaveBeenCalledWith(
+          expect.objectContaining({
+            username: "testuser",
+          })
+        );
+      });
+
+      expect(mockShowWelcomeModal).not.toHaveBeenCalled();
+      expect(mockShowInstructionsModal).not.toHaveBeenCalled();
     });
 
     it("should skip onboarding modals when onboarding was already seen", async () => {
@@ -680,8 +702,10 @@ describe("GameScreen", () => {
       render(<GameScreen {...defaultProps} />);
 
       await waitFor(() => {
-        expect(AsyncStorage.getItem).toHaveBeenCalledWith(
-          "gameScreenOnboardingSeen:test-user-123"
+        expect(mockShowWelcomeBackModal).toHaveBeenCalledWith(
+          expect.objectContaining({
+            username: "testuser",
+          })
         );
       });
       expect(mockShowWelcomeModal).not.toHaveBeenCalled();
@@ -692,10 +716,10 @@ describe("GameScreen", () => {
       render(<GameScreen {...defaultProps} />);
 
       await waitFor(() => {
-        expect(mockShowWelcomeModal).toHaveBeenCalled();
+        expect(mockShowWelcomeBackModal).toHaveBeenCalled();
       });
 
-      expect(AsyncStorage.setItem).toHaveBeenCalledWith(
+      expect(AsyncStorage.setItem).not.toHaveBeenCalledWith(
         "gameScreenOnboardingSeen:test-user-123",
         "true"
       );
@@ -705,7 +729,7 @@ describe("GameScreen", () => {
       const originalEmail = mockPlayerData.email;
       const originalUsername = mockPlayerData.username;
       try {
-        mockPlayerData.email = "guest_test-user-123@guest.qwordly.com";
+        mockPlayerData.email = "";
         mockPlayerData.username = "Guest";
 
         render(<GameScreen {...defaultProps} />);
@@ -725,7 +749,7 @@ describe("GameScreen", () => {
       const originalUsername = mockPlayerData.username;
 
       try {
-        mockPlayerData.email = "guest_test-user-456@guest.qwordly.com";
+        mockPlayerData.email = "";
         mockPlayerData.username = "Guest";
 
         render(<GameScreen {...defaultProps} />);
@@ -1312,18 +1336,35 @@ describe("GameScreen", () => {
     });
 
     it("handles onboarding dismiss callback", async () => {
-      render(<GameScreen {...defaultProps} />);
+      const originalEmail = mockPlayerData.email;
+      const originalUsername = mockPlayerData.username;
+      try {
+        mockPlayerData.email = "";
+        mockPlayerData.username = "Guest";
 
-      await waitFor(() => {
-        expect(mockShowWelcomeModal).toHaveBeenCalled();
-      });
+        render(<GameScreen {...defaultProps} />);
 
-      const onboardingConfig = mockShowWelcomeModal.mock.calls[0][0];
-      onboardingConfig.onDismiss();
+        await waitFor(() => {
+          expect(mockShowWelcomeModal).toHaveBeenCalled();
+        });
 
-      await waitFor(() => {
-        expect(mockShowInstructionsModal).toHaveBeenCalled();
-      });
+        const onboardingConfig = mockShowWelcomeModal.mock.calls[0][0];
+        onboardingConfig.onDismiss();
+
+        await waitFor(() => {
+          expect(mockShowInfoModal).toHaveBeenCalled();
+        });
+
+        const guestNotice = mockShowInfoModal.mock.calls[0][0];
+        guestNotice.onConfirm?.();
+
+        await waitFor(() => {
+          expect(mockShowInstructionsModal).toHaveBeenCalled();
+        });
+      } finally {
+        mockPlayerData.email = originalEmail;
+        mockPlayerData.username = originalUsername;
+      }
     });
 
     it("opens loss modal for attempt limit using live auth coin balance and handles continue actions", async () => {
@@ -1557,11 +1598,11 @@ describe("GameScreen", () => {
       const { ProductPricingService } = require("../../../services/ProductPricingService");
 
       IapService.getProducts.mockResolvedValueOnce([
-        { id: "com.qwordly.coinpack1", price: 0.99 } as any,
+        { id: "com.Riddle Quest.coinpack1", price: 0.99 } as any,
       ]);
       ProductPricingService.getActiveProducts.mockResolvedValueOnce([
-        { productId: "com.qwordly.coinpack1", sortOrder: 1 } as any,
-        { productId: "com.qwordly.coinpack5", sortOrder: 2 } as any,
+        { productId: "com.Riddle Quest.coinpack1", sortOrder: 1 } as any,
+        { productId: "com.Riddle Quest.coinpack5", sortOrder: 2 } as any,
       ]);
 
       render(<GameScreen {...defaultProps} />);
@@ -1577,7 +1618,7 @@ describe("GameScreen", () => {
       const config =
         mockShowCoinShopModal.mock.calls[mockShowCoinShopModal.mock.calls.length - 1][0];
       expect(config.firestoreProducts).toEqual([
-        expect.objectContaining({ productId: "com.qwordly.coinpack1" }),
+        expect.objectContaining({ productId: "com.Riddle Quest.coinpack1" }),
       ]);
     });
 
@@ -1714,7 +1755,7 @@ describe("GameScreen", () => {
       const config =
         mockShowCoinShopModal.mock.calls[mockShowCoinShopModal.mock.calls.length - 1][0];
 
-      const purchasePromise = config.onPurchaseProduct("com.qwordly.coinpack1");
+      const purchasePromise = config.onPurchaseProduct("com.Riddle Quest.coinpack1");
 
       await waitFor(() => {
         expect(getLatestProps(mockPulsingSpinner).visible).toBe(true);
@@ -1776,27 +1817,34 @@ describe("GameScreen", () => {
     it("handles onboarding flow outer catch when welcome modal throws", async () => {
       const { logger } = require("../../../utils/logger");
       const { captureException } = require("../../../utils/sentry");
+      const originalEmail = mockPlayerData.email;
+      const originalUsername = mockPlayerData.username;
       mockShowWelcomeModal.mockImplementationOnce(() => {
         throw new Error("welcome crash");
       });
 
-      render(<GameScreen {...defaultProps} />);
+      try {
+        mockPlayerData.email = "";
+        mockPlayerData.username = "Guest";
 
-      await waitFor(() => {
-        expect(logger.error).toHaveBeenCalledWith(
-          "Error running onboarding flow:",
-          expect.any(Error)
-        );
-        expect(captureException).toHaveBeenCalledWith(expect.any(Error));
-      });
+        render(<GameScreen {...defaultProps} />);
+
+        await waitFor(() => {
+          expect(logger.error).toHaveBeenCalledWith(
+            "Error running onboarding flow:",
+            expect.any(Error)
+          );
+          expect(captureException).toHaveBeenCalledWith(expect.any(Error));
+        });
+      } finally {
+        mockPlayerData.email = originalEmail;
+        mockPlayerData.username = originalUsername;
+      }
     });
 
     it("handles settings load and save storage failures", async () => {
       const { logger } = require("../../../utils/logger");
       const { captureException } = require("../../../utils/sentry");
-      (AsyncStorage.getItem as jest.Mock).mockRejectedValueOnce(
-        null
-      );
       (AsyncStorage.getItem as jest.Mock).mockRejectedValueOnce(
         new Error("load settings fail")
       );
@@ -1834,7 +1882,6 @@ describe("GameScreen", () => {
     it("pauses background music when loaded setting disables sound", async () => {
       const { SoundManager } = require("../../../services/SoundManager");
       (AsyncStorage.getItem as jest.Mock)
-        .mockResolvedValueOnce("true")
         .mockResolvedValueOnce("false")
         .mockResolvedValueOnce("true")
         .mockResolvedValueOnce("en");
@@ -1848,7 +1895,6 @@ describe("GameScreen", () => {
 
     it("does not overwrite persisted muted setting during initial load", async () => {
       (AsyncStorage.getItem as jest.Mock)
-        .mockResolvedValueOnce("true")
         .mockResolvedValueOnce("false")
         .mockResolvedValueOnce("true")
         .mockResolvedValueOnce("en");

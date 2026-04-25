@@ -4,7 +4,7 @@
  *
  * This hook exposes a type-safe API for opening and closing both generic
  * and game-specific modals, plus convenience helpers for the most common
- * modal types used throughout Qwordly (victory, loss, settings, hints, etc.).
+ * modal types used throughout Riddle Quest (victory, loss, settings, hints, etc.).
  *
  * It does not render any UI itself; instead it delegates to the underlying
  * `ModalProvider` and `ModalRegistry` to render appropriate components.
@@ -21,7 +21,7 @@ import { logger } from "../utils/logger";
 
 /**
  * Custom hook that wraps `ModalContext` with a typed, ergonomic interface
- * for working with Qwordly modals.
+ * for working with Riddle Quest modals.
  *
  * @returns An object containing core modal operations, current modal state,
  * and convenience helpers for frequently used modal types.
@@ -147,6 +147,16 @@ export const useModal = () => {
   const showWelcomeModal = useCallback(
     (data: ModalDataType<"welcome"> = {}, options?: ModalOptions): string => {
       return openGameModal("welcome", data, options);
+    },
+    [openGameModal]
+  );
+
+  const showWelcomeBackModal = useCallback(
+    (
+      data: ModalDataType<"welcomeBack">,
+      options?: ModalOptions
+    ): string => {
+      return openGameModal("welcomeBack", data, options);
     },
     [openGameModal]
   );
@@ -289,6 +299,7 @@ export const useModal = () => {
     showHintModal,
     showSkipModal,
     showWelcomeModal,
+    showWelcomeBackModal,
     showInstructionsModal,
     showCreditsModal,
     showCoinShop,

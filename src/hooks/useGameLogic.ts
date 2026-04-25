@@ -1,6 +1,6 @@
 /**
  * @fileoverview
- * Core client-side game logic hook for Qwordly.
+ * Core client-side game logic hook for Riddle Quest.
  *
  * Feedback (green/yellow/red) is computed locally from the cached riddle answer,
  * eliminating a server round-trip on every guess. The server (`completeGame`

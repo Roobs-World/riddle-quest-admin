@@ -1,5 +1,5 @@
 /**
- * @fileoverview Expo application configuration for Qwordly - riddle-based Wordle clone.
+ * @fileoverview Expo application configuration for Riddle Quest - riddle-based Wordle clone.
  *
  * This configuration file defines all aspects of the Expo/EAS build process including:
  * - Basic app metadata (name, version, icons)
@@ -12,7 +12,7 @@
  * environments with optimized settings for audio quality, 3D rendering,
  * and cross-platform compatibility.
  *
- * @author Qwordly Development Team
+ * @author Riddle Quest Development Team
  * @version 1.0.0
  * @since 2024
  */
@@ -33,10 +33,10 @@ const useSentryExpoPlugin = Boolean(sentryOrg && sentryProject);
  */
 module.exports = {
   /** Application display name shown to users */
-  name: "Qwordly",
+  name: "Riddle Quest",
 
   /** URL-friendly app identifier used by Expo */
-  slug: "qwordly",
+  slug: "Riddle Quest",
 
   /** SDK version - using canary, so asset resolution warnings are expected */
   sdkVersion: "56.0.0-canary-20260409-6fc2991",
@@ -76,7 +76,7 @@ module.exports = {
     supportsTablet: true,
 
     /** Unique iOS bundle identifier for App Store */
-    bundleIdentifier: "com.grindhead.qwordly",
+    bundleIdentifier: "com.grindhead.Riddle Quest",
 
     /** Firebase configuration file for iOS */
     googleServicesFile: "./GoogleService-Info.plist",
@@ -129,12 +129,12 @@ module.exports = {
      * allowing the icon to adapt to different device themes and shapes.
      */
     adaptiveIcon: {
-      foregroundImage: "./assets/images/adaptive-icon.png",
+      foregroundImage: "./assets/images/icon.png",
       backgroundColor: "#ffffff",
     },
 
     /** Unique Android package name for Google Play Store */
-    package: "com.grindhead.qwordly",
+    package: "com.grindhead.Riddle Quest",
 
     /** Firebase configuration file for Android */
     googleServicesFile: "./google-services.json",
@@ -216,7 +216,7 @@ module.exports = {
         appID: process.env.FACEBOOK_APP_ID || "YOUR_FACEBOOK_APP_ID",
         clientToken:
           process.env.FACEBOOK_CLIENT_TOKEN || "YOUR_FACEBOOK_CLIENT_TOKEN",
-        displayName: "Qwordly",
+        displayName: "Riddle Quest",
         scheme: `fb${process.env.FACEBOOK_APP_ID || "YOUR_FACEBOOK_APP_ID"}`,
         advertiserIDCollectionEnabled: false,
         autoLogAppEventsEnabled: false,

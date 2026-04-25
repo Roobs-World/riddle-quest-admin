@@ -20,6 +20,7 @@ jest.mock("../help/HintModal", () => MockModal);
 jest.mock("../help/InfoModal", () => MockModal);
 jest.mock("../help/SkipModal", () => MockModal);
 jest.mock("../help/WelcomeModal", () => MockModal);
+jest.mock("../help/WelcomeBackModal", () => MockModal);
 jest.mock("../help/InstructionsModal", () => MockModal);
 jest.mock("../help/CreditsModal", () => MockModal);
 jest.mock("../../shop/CoinShop", () => MockModal);
@@ -63,6 +64,7 @@ describe("ModalRegistry", () => {
       "hint",
       "skip",
       "welcome",
+      "welcomeBack",
       "instructions",
       "credits",
       "coinShop",

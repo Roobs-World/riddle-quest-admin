@@ -1,12 +1,12 @@
 /**
- * @fileoverview GameBoard component - Main game display area for Qwordly riddle gameplay.
+ * @fileoverview GameBoard component - Main game display area for Riddle Quest riddle gameplay.
  *
  * This component serves as the primary game interface, orchestrating the display
  * of the riddle, guess grid, and keyboard. It follows the Single Responsibility
  * Principle by focusing solely on game board presentation while delegating
  * specific functionality to specialized child components.
  *
- * @author Qwordly Development Team
+ * @author Riddle Quest Development Team
  * @version 1.0.0
  * @since 2024
  */

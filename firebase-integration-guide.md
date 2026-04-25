@@ -1,4 +1,4 @@
-# Firebase Functions Integration Guide - Qwordly
+# Firebase Functions Integration Guide - Riddle Quest
 
 ## 📊 **Complete Statistics Support**
 

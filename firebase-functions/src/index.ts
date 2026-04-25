@@ -1,6 +1,6 @@
 /**
  * @fileoverview
- * Firebase Functions entrypoint for Qwordly.
+ * Firebase Functions entrypoint for Riddle Quest.
  *
  * This module initializes the Firebase Admin SDK once and re-exports all
  * callable and scheduled Cloud Functions from their feature-specific

@@ -1,6 +1,6 @@
 /**
  * @fileoverview
- * Game header component showing the Qwordly logo, coin balance, and mode label.
+ * Game header component showing the Riddle Quest logo, coin balance, and mode label.
  *
  * This header is used at the top of the main `GameScreen` and is responsible
  * for providing quick access to the coin shop and surfacing current mode context.
@@ -35,7 +35,7 @@ interface HeaderProps {
 /**
  * Header component for the main game screen.
  *
- * Renders the Qwordly logo, current coin balance, and an optional centered
+ * Renders the Riddle Quest logo, current coin balance, and an optional centered
  * mode label. Callers are expected to wire `onCoinsPress` to open the coin
  * shop and may use `onHintPress` for future logo interactions.
  *
@@ -111,7 +111,7 @@ const Header: React.FC<HeaderProps> = ({
           onPress={onHintPress ?? (() => {})}
           activeOpacity={0.8}
         >
-          <LogoIcon width={HEADER_LOGO_SIZE} height={HEADER_LOGO_SIZE} color="#ffffff" />
+          <LogoIcon width={HEADER_LOGO_SIZE} height={HEADER_LOGO_SIZE} />
         </TouchableOpacity>
       </View>
 

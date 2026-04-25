@@ -1,6 +1,6 @@
 /**
  * @fileoverview
- * Email/password and social login screen for Qwordly.
+ * Email/password and social login screen for Riddle Quest.
  *
  * This screen allows existing users to authenticate via email + password
  * or via Google/Facebook OAuth, handling validation, error messaging, and

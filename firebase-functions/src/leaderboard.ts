@@ -1,5 +1,5 @@
 /**
- * @fileoverview Leaderboard Cloud Functions for Qwordly.
+ * @fileoverview Leaderboard Cloud Functions for Riddle Quest.
  *
  * Maintains a `leaderboard` collection with one document per user (keyed by
  * userId). Documents are written server-side only after a win in submitGuess.

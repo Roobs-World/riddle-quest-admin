@@ -11,12 +11,14 @@ describe("PulsingSpinner", () => {
     jest.clearAllMocks();
     start = jest.fn();
     stop = jest.fn();
+    const animationMock = { start, stop } as any;
 
-    jest.spyOn(Animated, "timing").mockReturnValue({} as any);
-    jest.spyOn(Animated, "stagger").mockReturnValue({} as any);
-    jest.spyOn(Animated, "delay").mockReturnValue({} as any);
-    jest.spyOn(Animated, "sequence").mockReturnValue({} as any);
-    jest.spyOn(Animated, "loop").mockReturnValue({ start, stop } as any);
+    jest.spyOn(Animated, "timing").mockReturnValue(animationMock);
+    jest.spyOn(Animated, "stagger").mockReturnValue(animationMock);
+    jest.spyOn(Animated, "delay").mockReturnValue(animationMock);
+    jest.spyOn(Animated, "sequence").mockReturnValue(animationMock);
+    jest.spyOn(Animated, "parallel").mockReturnValue(animationMock);
+    jest.spyOn(Animated, "loop").mockReturnValue(animationMock);
   });
 
   afterEach(() => {

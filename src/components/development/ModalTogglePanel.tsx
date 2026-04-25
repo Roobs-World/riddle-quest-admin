@@ -20,7 +20,7 @@
  *
  * **⚠️ IMPORTANT: This component is for development only and will not render in production builds.**
  *
- * @author Qwordly Development Team
+ * @author Riddle Quest Development Team
  * @version 1.0.0
  * @since 2024
  */

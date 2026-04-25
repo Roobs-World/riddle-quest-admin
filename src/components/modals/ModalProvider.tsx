@@ -1,5 +1,5 @@
 /**
- * @fileoverview ModalProvider component - runtime modal renderer for Qwordly.
+ * @fileoverview ModalProvider component - runtime modal renderer for Riddle Quest.
  *
  * This provider now delegates all modal component resolution and prop mapping
  * to `ModalRegistry`, making the registry the single source of truth.

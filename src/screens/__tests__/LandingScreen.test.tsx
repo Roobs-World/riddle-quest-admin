@@ -1,5 +1,6 @@
 import React from "react";
 import { render, fireEvent, waitFor } from "@testing-library/react-native";
+import { Linking } from "react-native";
 import LandingScreen from "../LandingScreen";
 jest.unmock("../LandingScreen"); // Explicitly unmock to ensure coverage
 import { AuthService } from "../../services/AuthService";
@@ -325,6 +326,21 @@ describe("LandingScreen", () => {
       fireEvent.press(creditsButton!);
 
       expect(getByTestId("credits-modal").props["data-visible"]).toBe(true);
+    });
+
+    it("should open Roobs World website when the button is pressed", () => {
+      const openUrlSpy = jest.spyOn(Linking, "openURL").mockResolvedValue();
+      const { getAllByTestId } = renderWithProviders(<LandingScreen />);
+
+      const wideButtons = getAllByTestId("wide-button");
+      const roobsWorldButton = wideButtons.find(
+        (btn: any) => btn.props["data-text"] === "Made by Roobs World"
+      );
+
+      fireEvent.press(roobsWorldButton!);
+
+      expect(openUrlSpy).toHaveBeenCalledWith("https://www.roobsworld.com");
+      openUrlSpy.mockRestore();
     });
   });
 
@@ -1234,6 +1250,7 @@ describe("Component Accessibility", () => {
 
     expect(buttonTexts).toContain("Play as Guest");
     expect(buttonTexts).toContain("Credits");
+    expect(buttonTexts).toContain("Made by Roobs World");
   });
 });
 

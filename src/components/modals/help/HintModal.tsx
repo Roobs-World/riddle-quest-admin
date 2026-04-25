@@ -1,5 +1,5 @@
 /**
- * @fileoverview HintModal component - Modal for purchasing gameplay hints in Qwordly.
+ * @fileoverview HintModal component - Modal for purchasing gameplay hints in Riddle Quest.
  */
 
 import React from "react";

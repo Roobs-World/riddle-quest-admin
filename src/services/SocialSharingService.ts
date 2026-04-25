@@ -5,7 +5,7 @@
  * including Facebook and Twitter. It handles the generation of shareable content
  * and platform-specific sharing mechanisms.
  *
- * @author Qwordly Development Team
+ * @author Riddle Quest Development Team
  * @version 1.0.0
  * @since 2024
  */
@@ -32,7 +32,7 @@ export class SocialSharingService {
       gameMode === "daily" ? "Daily Challenge" : "Classic Mode";
     const attemptText = attempts === 1 ? "attempt" : "attempts";
 
-    return `🎯 I solved today's Qwordly ${gameTypeText} in ${attempts} ${attemptText}!\n\n${emojiGrid}\n\nCan you beat my score? 🤔\n\n#Qwordly #WordPuzzle #BrainGame`;
+    return `🎯 I solved today's Riddle Quest ${gameTypeText} in ${attempts} ${attemptText}!\n\n${emojiGrid}\n\nCan you beat my score? 🤔\n\n#Riddle Quest #WordPuzzle #BrainGame`;
   }
 
   /**
@@ -44,7 +44,7 @@ export class SocialSharingService {
 
       const result = await Share.share({
         message: shareText,
-        title: "Check out my Qwordly result!",
+        title: "Check out my Riddle Quest result!",
       });
 
       return result.action === Share.sharedAction;
@@ -65,14 +65,14 @@ export class SocialSharingService {
       // Check if ShareDialog is available
       const canShow = await ShareDialog.canShow({
         contentType: "link",
-        contentUrl: "https://qwordly.app", // Replace with your actual app URL
+        contentUrl: "https://Riddle Quest.app", // Replace with your actual app URL
         quote: shareText,
       });
 
       if (canShow) {
         const result = await ShareDialog.show({
           contentType: "link",
-          contentUrl: "https://qwordly.app", // Replace with your actual app URL
+          contentUrl: "https://Riddle Quest.app", // Replace with your actual app URL
           quote: shareText,
         });
 

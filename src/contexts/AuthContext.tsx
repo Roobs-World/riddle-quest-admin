@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 /**
  * @fileoverview
- * Authentication and player session context for Qwordly.
+ * Authentication and player session context for Riddle Quest.
  *
  * This provider wraps the navigation tree and exposes a unified view of the
  * authenticated user, their progress, the currently active riddle, and the
@@ -998,7 +998,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setIsLoading(true);
     try {
       RiddleInitializationService.resetInitializationFlags();
-      // Unregister FCM token before signing out — must happen while still authenticated
+      // Unregister FCM token before signing out - must happen while still authenticated
       notifUnsubRef.current?.();
       notifUnsubRef.current = null;
       const auth = getAuth(getApp());

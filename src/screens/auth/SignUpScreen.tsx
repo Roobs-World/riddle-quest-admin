@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 /**
  * @fileoverview
- * Account creation screen for Qwordly.
+ * Account creation screen for Riddle Quest.
  *
  * This screen collects username, email, and password inputs, enforces
  * validation via Zod schemas, and requires users to agree to the terms
@@ -137,8 +137,8 @@ function passwordReducer(
  * @param navigation React Navigation stack navigation prop.
  */
 // URLs for legal pages - update these with your actual URLs
-const TERMS_OF_SERVICE_URL = "https://qwordly.com/terms";
-const PRIVACY_POLICY_URL = "https://qwordly.com/privacy";
+const TERMS_OF_SERVICE_URL = "https://Riddle Quest.com/terms";
+const PRIVACY_POLICY_URL = "https://Riddle Quest.com/privacy";
 
 const SignUpScreen = ({ navigation }: { navigation: NavigationProp }) => {
   const [username, setUsername] = useState("");

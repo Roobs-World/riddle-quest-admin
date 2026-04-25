@@ -4,7 +4,7 @@
     <metrics statements="1141" coveredstatements="922" conditionals="499" coveredconditionals="306" methods="140" coveredmethods="126" elements="1780" coveredelements="1354" complexity="0" loc="1141" ncloc="1141" packages="9" files="12" classes="12"/>
     <package name="components.modals.help">
       <metrics statements="18" coveredstatements="18" conditionals="7" coveredconditionals="7" methods="6" coveredmethods="6"/>
-      <file name="WelcomeModal.tsx" path="C:\Users\craig\work\qwordly\src\components\modals\help\WelcomeModal.tsx">
+      <file name="WelcomeModal.tsx" path="C:\Users\craig\work\Riddle Quest\src\components\modals\help\WelcomeModal.tsx">
         <metrics statements="18" coveredstatements="18" conditionals="7" coveredconditionals="7" methods="6" coveredmethods="6"/>
         <line num="12" count="1" type="stmt"/>
         <line num="13" count="1" type="stmt"/>
@@ -28,7 +28,7 @@
     </package>
     <package name="components.modals.settings">
       <metrics statements="75" coveredstatements="61" conditionals="50" coveredconditionals="26" methods="21" coveredmethods="17"/>
-      <file name="AvatarOptionsModal.tsx" path="C:\Users\craig\work\qwordly\src\components\modals\settings\AvatarOptionsModal.tsx">
+      <file name="AvatarOptionsModal.tsx" path="C:\Users\craig\work\Riddle Quest\src\components\modals\settings\AvatarOptionsModal.tsx">
         <metrics statements="38" coveredstatements="24" conditionals="16" coveredconditionals="6" methods="7" coveredmethods="6"/>
         <line num="28" count="1" type="stmt"/>
         <line num="34" count="13" type="stmt"/>
@@ -69,7 +69,7 @@
         <line num="102" count="1" type="stmt"/>
         <line num="105" count="13" type="stmt"/>
       </file>
-      <file name="FullProfileDetailsModal.tsx" path="C:\Users\craig\work\qwordly\src\components\modals\settings\FullProfileDetailsModal.tsx">
+      <file name="FullProfileDetailsModal.tsx" path="C:\Users\craig\work\Riddle Quest\src\components\modals\settings\FullProfileDetailsModal.tsx">
         <metrics statements="37" coveredstatements="37" conditionals="34" coveredconditionals="20" methods="14" coveredmethods="11"/>
         <line num="33" count="1" type="stmt"/>
         <line num="34" count="1" type="stmt"/>
@@ -112,7 +112,7 @@
     </package>
     <package name="constants">
       <metrics statements="93" coveredstatements="72" conditionals="50" coveredconditionals="33" methods="19" coveredmethods="17"/>
-      <file name="AppStrings.ts" path="C:\Users\craig\work\qwordly\src\constants\AppStrings.ts">
+      <file name="AppStrings.ts" path="C:\Users\craig\work\Riddle Quest\src\constants\AppStrings.ts">
         <metrics statements="93" coveredstatements="72" conditionals="50" coveredconditionals="33" methods="19" coveredmethods="17"/>
         <line num="13" count="4" type="stmt"/>
         <line num="234" count="4" type="stmt"/>
@@ -211,7 +211,7 @@
     </package>
     <package name="contexts">
       <metrics statements="263" coveredstatements="156" conditionals="94" coveredconditionals="28" methods="26" coveredmethods="18"/>
-      <file name="AuthContext.tsx" path="C:\Users\craig\work\qwordly\src\contexts\AuthContext.tsx">
+      <file name="AuthContext.tsx" path="C:\Users\craig\work\Riddle Quest\src\contexts\AuthContext.tsx">
         <metrics statements="263" coveredstatements="156" conditionals="94" coveredconditionals="28" methods="26" coveredmethods="18"/>
         <line num="96" count="1" type="stmt"/>
         <line num="97" count="1" type="stmt"/>
@@ -480,7 +480,7 @@
     </package>
     <package name="screens">
       <metrics statements="88" coveredstatements="66" conditionals="42" coveredconditionals="23" methods="8" coveredmethods="8"/>
-      <file name="LandingScreen.tsx" path="C:\Users\craig\work\qwordly\src\screens\LandingScreen.tsx">
+      <file name="LandingScreen.tsx" path="C:\Users\craig\work\Riddle Quest\src\screens\LandingScreen.tsx">
         <metrics statements="88" coveredstatements="66" conditionals="42" coveredconditionals="23" methods="8" coveredmethods="8"/>
         <line num="39" count="1" type="stmt"/>
         <line num="40" count="138" type="stmt"/>
@@ -574,7 +574,7 @@
     </package>
     <package name="screens.auth">
       <metrics statements="225" coveredstatements="186" conditionals="124" coveredconditionals="84" methods="21" coveredmethods="21"/>
-      <file name="LoginScreen.tsx" path="C:\Users\craig\work\qwordly\src\screens\auth\LoginScreen.tsx">
+      <file name="LoginScreen.tsx" path="C:\Users\craig\work\Riddle Quest\src\screens\auth\LoginScreen.tsx">
         <metrics statements="134" coveredstatements="102" conditionals="64" coveredconditionals="33" methods="9" coveredmethods="9"/>
         <line num="59" count="1" type="stmt"/>
         <line num="64" count="87" type="stmt"/>
@@ -711,7 +711,7 @@
         <line num="340" count="1" type="stmt"/>
         <line num="377" count="1" type="stmt"/>
       </file>
-      <file name="SignUpScreen.tsx" path="C:\Users\craig\work\qwordly\src\screens\auth\SignUpScreen.tsx">
+      <file name="SignUpScreen.tsx" path="C:\Users\craig\work\Riddle Quest\src\screens\auth\SignUpScreen.tsx">
         <metrics statements="91" coveredstatements="84" conditionals="60" coveredconditionals="51" methods="12" coveredmethods="12"/>
         <line num="67" count="1" type="stmt"/>
         <line num="102" count="34" type="cond" truecount="2" falsecount="1"/>
@@ -808,7 +808,7 @@
     </package>
     <package name="services">
       <metrics statements="263" coveredstatements="248" conditionals="90" coveredconditionals="75" methods="28" coveredmethods="28"/>
-      <file name="FirestoreService.ts" path="C:\Users\craig\work\qwordly\src\services\FirestoreService.ts">
+      <file name="FirestoreService.ts" path="C:\Users\craig\work\Riddle Quest\src\services\FirestoreService.ts">
         <metrics statements="233" coveredstatements="218" conditionals="70" coveredconditionals="57" methods="17" coveredmethods="17"/>
         <line num="25" count="2" type="stmt"/>
         <line num="26" count="2" type="stmt"/>
@@ -1044,7 +1044,7 @@
         <line num="677" count="1" type="stmt"/>
         <line num="678" count="1" type="stmt"/>
       </file>
-      <file name="ProductPricingService.ts" path="C:\Users\craig\work\qwordly\src\services\ProductPricingService.ts">
+      <file name="ProductPricingService.ts" path="C:\Users\craig\work\Riddle Quest\src\services\ProductPricingService.ts">
         <metrics statements="30" coveredstatements="30" conditionals="20" coveredconditionals="18" methods="11" coveredmethods="11"/>
         <line num="45" count="1" type="stmt"/>
         <line num="46" count="1" type="stmt"/>
@@ -1080,7 +1080,7 @@
     </package>
     <package name="services.solar">
       <metrics statements="72" coveredstatements="71" conditionals="6" coveredconditionals="4" methods="3" coveredmethods="3"/>
-      <file name="sceneFactory.ts" path="C:\Users\craig\work\qwordly\src\services\solar\sceneFactory.ts">
+      <file name="sceneFactory.ts" path="C:\Users\craig\work\Riddle Quest\src\services\solar\sceneFactory.ts">
         <metrics statements="72" coveredstatements="71" conditionals="6" coveredconditionals="4" methods="3" coveredmethods="3"/>
         <line num="31" count="1" type="stmt"/>
         <line num="32" count="1" type="stmt"/>
@@ -1158,7 +1158,7 @@
     </package>
     <package name="utils">
       <metrics statements="44" coveredstatements="44" conditionals="36" coveredconditionals="26" methods="8" coveredmethods="8"/>
-      <file name="responsive.ts" path="C:\Users\craig\work\qwordly\src\utils\responsive.ts">
+      <file name="responsive.ts" path="C:\Users\craig\work\Riddle Quest\src\utils\responsive.ts">
         <metrics statements="44" coveredstatements="44" conditionals="36" coveredconditionals="26" methods="8" coveredmethods="8"/>
         <line num="38" count="5" type="stmt"/>
         <line num="39" count="5" type="stmt"/>

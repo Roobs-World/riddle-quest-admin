@@ -46,9 +46,9 @@ describe("StaticTitle", () => {
     });
 
     it("should display the provided title text", () => {
-      const { getByText } = render(<StaticTitle title="QWORDLY" />);
+      const { getByText } = render(<StaticTitle title="Riddle Quest" />);
 
-      expect(getByText("QWORDLY")).toBeTruthy();
+      expect(getByText("Riddle Quest")).toBeTruthy();
     });
 
     it("should render with empty title", () => {

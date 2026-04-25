@@ -1218,7 +1218,7 @@ const FIRESTORE_EMULATOR_HOST = <span class="cstat-no" title="statement not cove
 &nbsp;
 // 🚨 ABSOLUTE SAFETY: This test MUST NEVER run against production
 // This test deletes riddles with classicIndex 0, 1, 2 - destroying essential game data!
-<span class="cstat-no" title="statement not covered" ><span class="missing-if-branch" title="if path not taken" >I</span>if (FIREBASE_PROJECT_ID === "qwordly-6ba44" &amp;&amp; !FIRESTORE_EMULATOR_HOST) {</span>
+<span class="cstat-no" title="statement not covered" ><span class="missing-if-branch" title="if path not taken" >I</span>if (FIREBASE_PROJECT_ID === "Riddle Quest-6ba44" &amp;&amp; !FIRESTORE_EMULATOR_HOST) {</span>
 <span class="cstat-no" title="statement not covered" >  throw new Error(`</span>
 🚨🚨🚨 CRITICAL SAFETY VIOLATION 🚨🚨🚨
 &nbsp;
@@ -1231,7 +1231,7 @@ This test DELETES essential riddles (classicIndex 0, 1, 2) that new users need t
 Running this test against production DESTROYS USER DATA and breaks the game!
 &nbsp;
 TO FIX:
-1. Change FIREBASE_PROJECT_ID to a test project (NOT qwordly-6ba44)
+1. Change FIREBASE_PROJECT_ID to a test project (NOT Riddle Quest-6ba44)
 2. Use a dedicated test Firebase project
 3. NEVER run integration tests against production
 &nbsp;

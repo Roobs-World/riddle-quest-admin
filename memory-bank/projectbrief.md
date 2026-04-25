@@ -4,7 +4,7 @@ This document outlines the core requirements and goals for the project.
 
 ## Project Name:
 
-Qwordly (inferred from workspace path)
+Riddle Quest (inferred from workspace path)
 
 ## Project Description:
 
@@ -26,7 +26,7 @@ Build a riddle-based Wordle-clone mobile game using React Native, NativeWind, an
 
 ## Goals:
 
-- To build a fully functional riddle-based Wordle-clone mobile game, Qwordly.
+- To build a fully functional riddle-based Wordle-clone mobile game, Riddle Quest.
 - Implement all core features including user authentication, persistent backend, multiple game modes, in-app purchases, and customizable user profiles.
 - Ensure successful deployment and operation of Firebase Functions for backend logic.
 - Achieve comprehensive test coverage for both client and server-side code.

@@ -91,7 +91,7 @@ jest.spyOn(console, "warn").mockImplementation(() => {});
 describe("IapService", () => {
   // Mock purchase object used across multiple test suites
   const mockPurchase: RNIap.Purchase = {
-    productId: "com.qwordly.coins100",
+    productId: "com.Riddle Quest.coins100",
     transactionReceipt: "ios-receipt-123",
     purchaseToken: "android-token-123",
     transactionId: "txn-123",
@@ -150,27 +150,27 @@ describe("IapService", () => {
 
     it("should have correct product details", () => {
       expect(COIN_PRODUCT_DETAILS.COIN_PACK_TINY).toEqual({
-        id: "com.qwordly.coinpack1",
+        id: "com.Riddle Quest.coinpack1",
         coins: 50,
       });
       expect(COIN_PRODUCT_DETAILS.COIN_PACK_SMALL).toEqual({
-        id: "com.qwordly.coinpack2",
+        id: "com.Riddle Quest.coinpack2",
         coins: 100,
       });
       expect(COIN_PRODUCT_DETAILS.COIN_PACK_MID).toEqual({
-        id: "com.qwordly.coinpack3",
+        id: "com.Riddle Quest.coinpack3",
         coins: 250,
       });
       expect(COIN_PRODUCT_DETAILS.COIN_PACK_LARGE).toEqual({
-        id: "com.qwordly.coinpack4",
+        id: "com.Riddle Quest.coinpack4",
         coins: 500,
       });
       expect(COIN_PRODUCT_DETAILS.COIN_PACK_HUGE).toEqual({
-        id: "com.qwordly.coinpack5",
+        id: "com.Riddle Quest.coinpack5",
         coins: 1000,
       });
       expect(COIN_PRODUCT_DETAILS.COIN_PACK_MEGA).toEqual({
-        id: "com.qwordly.coinpack6",
+        id: "com.Riddle Quest.coinpack6",
         coins: 2000,
       });
     });
@@ -193,7 +193,7 @@ describe("IapService", () => {
   describe("getProducts", () => {
     const mockProducts: RNIap.Product[] = [
       {
-        productId: "com.qwordly.coins100",
+        productId: "com.Riddle Quest.coins100",
         price: "$0.99",
         title: "Small Coin Pack",
         description: "100 coins",
@@ -202,7 +202,7 @@ describe("IapService", () => {
         type: "inapp",
       } as any,
       {
-        productId: "com.qwordly.coins250",
+        productId: "com.Riddle Quest.coins250",
         price: "$2.99",
         title: "Medium Coin Pack",
         description: "250 coins",
@@ -211,7 +211,7 @@ describe("IapService", () => {
         type: "inapp",
       } as any,
       {
-        productId: "com.qwordly.coins500",
+        productId: "com.Riddle Quest.coins500",
         price: "$4.99",
         title: "Large Coin Pack",
         description: "500 coins",
@@ -220,7 +220,7 @@ describe("IapService", () => {
         type: "inapp",
       } as any,
       {
-        productId: "com.qwordly.coins1000",
+        productId: "com.Riddle Quest.coins1000",
         price: "$9.99",
         title: "Premium Coin Pack",
         description: "1000 coins",
@@ -240,12 +240,12 @@ describe("IapService", () => {
       expect(mockGetPurchaseHistory).not.toHaveBeenCalled(); // Only called on Android
       expect(mockGetProducts).toHaveBeenCalledWith({
         skus: [
-          "com.qwordly.coinpack1",
-          "com.qwordly.coinpack2",
-          "com.qwordly.coinpack3",
-          "com.qwordly.coinpack4",
-          "com.qwordly.coinpack5",
-          "com.qwordly.coinpack6",
+          "com.Riddle Quest.coinpack1",
+          "com.Riddle Quest.coinpack2",
+          "com.Riddle Quest.coinpack3",
+          "com.Riddle Quest.coinpack4",
+          "com.Riddle Quest.coinpack5",
+          "com.Riddle Quest.coinpack6",
         ],
       });
       expect(result).toEqual(mockProducts);
@@ -255,13 +255,13 @@ describe("IapService", () => {
       mockPlatform.OS = "android";
       const mockPurchaseHistory: RNIap.Purchase[] = [
         {
-          productId: "com.qwordly.coinpack1",
+          productId: "com.Riddle Quest.coinpack1",
           purchaseToken: "token1",
           transactionDate: Date.now(),
           transactionReceipt: "receipt1",
         } as any,
         {
-          productId: "com.qwordly.coinpack2",
+          productId: "com.Riddle Quest.coinpack2",
           purchaseToken: "token2",
           transactionDate: Date.now(),
           transactionReceipt: "receipt2",
@@ -283,12 +283,12 @@ describe("IapService", () => {
       });
       expect(mockGetProducts).toHaveBeenCalledWith({
         skus: [
-          "com.qwordly.coinpack1",
-          "com.qwordly.coinpack2",
-          "com.qwordly.coinpack3",
-          "com.qwordly.coinpack4",
-          "com.qwordly.coinpack5",
-          "com.qwordly.coinpack6",
+          "com.Riddle Quest.coinpack1",
+          "com.Riddle Quest.coinpack2",
+          "com.Riddle Quest.coinpack3",
+          "com.Riddle Quest.coinpack4",
+          "com.Riddle Quest.coinpack5",
+          "com.Riddle Quest.coinpack6",
         ],
       });
       expect(result).toEqual(mockProducts);
@@ -346,7 +346,7 @@ describe("IapService", () => {
 
       const result = await IapService.validatePurchase(
         "test-token",
-        "com.qwordly.coins100"
+        "com.Riddle Quest.coins100"
       );
 
       // Modular API: httpsCallable(functionsInstance, "validatePurchase")
@@ -356,7 +356,7 @@ describe("IapService", () => {
       );
       expect(mockCallableFunction).toHaveBeenCalledWith({
         purchaseToken: "test-token",
-        productId: "com.qwordly.coins100",
+        productId: "com.Riddle Quest.coins100",
         platform: "ios",
       });
       expect(result).toEqual({
@@ -373,7 +373,7 @@ describe("IapService", () => {
 
       const result = await IapService.validatePurchase(
         "invalid-token",
-        "com.qwordly.coins100"
+        "com.Riddle Quest.coins100"
       );
 
       expect(result).toEqual({
@@ -388,7 +388,7 @@ describe("IapService", () => {
       mockCallableFunction.mockRejectedValue(error);
 
       await expect(
-        IapService.validatePurchase("test-token", "com.qwordly.coins100")
+        IapService.validatePurchase("test-token", "com.Riddle Quest.coins100")
       ).rejects.toThrow("Network error");
 
       const { logger } = require("../../utils/logger");
@@ -406,12 +406,12 @@ describe("IapService", () => {
 
       await IapService.validatePurchase(
         "android-token",
-        "com.qwordly.coins250"
+        "com.Riddle Quest.coins250"
       );
 
       expect(mockCallableFunction).toHaveBeenCalledWith({
         purchaseToken: "android-token",
-        productId: "com.qwordly.coins250",
+        productId: "com.Riddle Quest.coins250",
         platform: "android",
       });
     });
@@ -421,10 +421,10 @@ describe("IapService", () => {
         data: { success: false },
       });
 
-      await IapService.validatePurchase("", "com.qwordly.coins100");
+      await IapService.validatePurchase("", "com.Riddle Quest.coins100");
       expect(mockCallableFunction).toHaveBeenCalledWith({
         purchaseToken: "",
-        productId: "com.qwordly.coins100",
+        productId: "com.Riddle Quest.coins100",
         platform: "ios",
       });
     });
@@ -433,7 +433,7 @@ describe("IapService", () => {
   describe("grantDevCoinsFallback", () => {
     it("should call backend fallback even when local coin mapping is missing", async () => {
       mockCallableFunction.mockResolvedValue({ data: { success: true } });
-      const unknownProductId = "com.qwordly.coinpack999";
+      const unknownProductId = "com.Riddle Quest.coinpack999";
 
       const result = await IapService.grantDevCoinsFallback(unknownProductId);
 
@@ -466,10 +466,10 @@ describe("IapService", () => {
       });
 
       await expect(
-        IapService.purchaseProduct("com.qwordly.coins100")
+        IapService.purchaseProduct("com.Riddle Quest.coins100")
       ).resolves.toEqual(expect.objectContaining({ ...mockPurchase }));
       expect(mockLogCoinPackPurchased).toHaveBeenCalledWith({
-        productId: "com.qwordly.coins100",
+        productId: "com.Riddle Quest.coins100",
         coins: 0,
         purchaseCount: 1,
       });
@@ -483,7 +483,7 @@ describe("IapService", () => {
       });
 
       await expect(
-        IapService.purchaseProduct("com.qwordly.coins100")
+        IapService.purchaseProduct("com.Riddle Quest.coins100")
       ).resolves.toEqual(expect.objectContaining({ ...mockPurchase }));
     });
 
@@ -492,7 +492,7 @@ describe("IapService", () => {
       mockCallableFunction.mockResolvedValue({ data: { success: true } });
 
       await expect(
-        IapService.purchaseProduct("com.qwordly.coins100")
+        IapService.purchaseProduct("com.Riddle Quest.coins100")
       ).resolves.toEqual(expect.objectContaining({ ...mockPurchase }));
     });
 
@@ -503,22 +503,22 @@ describe("IapService", () => {
       mockPurchaseUpdatedListener.mockImplementation((listener: (purchase: RNIap.Purchase) => void) => {
         listener({
           ...mockPurchase,
-          productId: "com.qwordly.coins100",
+          productId: "com.Riddle Quest.coins100",
         } as RNIap.Purchase);
         return { remove: jest.fn() };
       });
 
       await expect(
-        IapService.purchaseProduct("com.qwordly.coins100")
+        IapService.purchaseProduct("com.Riddle Quest.coins100")
       ).resolves.toEqual(
-        expect.objectContaining({ productId: "com.qwordly.coins100" })
+        expect.objectContaining({ productId: "com.Riddle Quest.coins100" })
       );
     });
 
     it("should handle null purchase response", async () => {
       mockRequestPurchase.mockResolvedValue(null as any);
 
-      const result = await IapService.purchaseProduct("com.qwordly.coins100");
+      const result = await IapService.purchaseProduct("com.Riddle Quest.coins100");
 
       expect(result).toBe(null);
       const { logger } = require("../../utils/logger");
@@ -531,7 +531,7 @@ describe("IapService", () => {
     it("should handle empty array purchase response", async () => {
       mockRequestPurchase.mockResolvedValue([] as any);
 
-      const result = await IapService.purchaseProduct("com.qwordly.coins100");
+      const result = await IapService.purchaseProduct("com.Riddle Quest.coins100");
 
       expect(result).toBe(null);
     });
@@ -546,7 +546,7 @@ describe("IapService", () => {
       mockRequestPurchase.mockResolvedValue(purchaseWithoutToken as any);
 
       await expect(
-        IapService.purchaseProduct("com.qwordly.coins100")
+        IapService.purchaseProduct("com.Riddle Quest.coins100")
       ).rejects.toThrow(
         "Could not process purchase token. Please try purchasing again."
       );
@@ -560,7 +560,7 @@ describe("IapService", () => {
       mockRequestPurchase.mockResolvedValue(purchaseWithoutToken as any);
 
       await expect(
-        IapService.purchaseProduct("com.qwordly.coins100")
+        IapService.purchaseProduct("com.Riddle Quest.coins100")
       ).rejects.toThrow(
         "Could not process purchase token. Please try purchasing again."
       );
@@ -571,7 +571,7 @@ describe("IapService", () => {
       mockCallableFunction.mockResolvedValue({ data: { success: false } });
 
       await expect(
-        IapService.purchaseProduct("com.qwordly.coins100")
+        IapService.purchaseProduct("com.Riddle Quest.coins100")
       ).rejects.toThrow(
         "A network error occurred during purchase validation. Please check your internet connection."
       );
@@ -584,7 +584,7 @@ describe("IapService", () => {
       mockCallableFunction.mockRejectedValue(new Error("Network error"));
 
       await expect(
-        IapService.purchaseProduct("com.qwordly.coins100")
+        IapService.purchaseProduct("com.Riddle Quest.coins100")
       ).rejects.toThrow(
         "A network error occurred during purchase validation. Please check your internet connection."
       );
@@ -599,7 +599,7 @@ describe("IapService", () => {
         mockRequestPurchase.mockRejectedValue(error);
 
         await expect(
-          IapService.purchaseProduct("com.qwordly.coins100")
+          IapService.purchaseProduct("com.Riddle Quest.coins100")
         ).rejects.toThrow("Purchase cancelled.");
 
         const { logger } = require("../../utils/logger");
@@ -612,7 +612,7 @@ describe("IapService", () => {
         mockRequestPurchase.mockRejectedValue(error);
 
         await expect(
-          IapService.purchaseProduct("com.qwordly.coins100")
+          IapService.purchaseProduct("com.Riddle Quest.coins100")
         ).rejects.toThrow("You already own this item.");
 
         const { logger } = require("../../utils/logger");
@@ -625,7 +625,7 @@ describe("IapService", () => {
         mockRequestPurchase.mockRejectedValue(error);
 
         await expect(
-          IapService.purchaseProduct("com.qwordly.coins100")
+          IapService.purchaseProduct("com.Riddle Quest.coins100")
         ).rejects.toThrow(
           "A system error occurred. Please contact support if this persists."
         );
@@ -640,7 +640,7 @@ describe("IapService", () => {
         mockRequestPurchase.mockRejectedValue(error);
 
         await expect(
-          IapService.purchaseProduct("com.qwordly.coins100")
+          IapService.purchaseProduct("com.Riddle Quest.coins100")
         ).rejects.toThrow("This item is currently unavailable.");
 
         const { logger } = require("../../utils/logger");
@@ -653,7 +653,7 @@ describe("IapService", () => {
         mockRequestPurchase.mockRejectedValue(error);
 
         await expect(
-          IapService.purchaseProduct("com.qwordly.coins100")
+          IapService.purchaseProduct("com.Riddle Quest.coins100")
         ).rejects.toThrow("This item is currently unavailable.");
 
         const { logger } = require("../../utils/logger");
@@ -668,7 +668,7 @@ describe("IapService", () => {
         mockRequestPurchase.mockRejectedValue(error);
 
         await expect(
-          IapService.purchaseProduct("com.qwordly.coins100")
+          IapService.purchaseProduct("com.Riddle Quest.coins100")
         ).rejects.toThrow(
           "Network error. Please check your connection and try again."
         );
@@ -684,7 +684,7 @@ describe("IapService", () => {
         mockRequestPurchase.mockRejectedValue(error);
 
         await expect(
-          IapService.purchaseProduct("com.qwordly.coins100")
+          IapService.purchaseProduct("com.Riddle Quest.coins100")
         ).rejects.toThrow(
           "An unexpected error occurred during the purchase process. Please try again."
         );
@@ -704,7 +704,7 @@ describe("IapService", () => {
         mockCallableFunction.mockRejectedValue(validationError);
 
         await expect(
-          IapService.purchaseProduct("com.qwordly.coins100")
+          IapService.purchaseProduct("com.Riddle Quest.coins100")
         ).rejects.toThrow(
           "A network error occurred during purchase validation. Please check your internet connection."
         );
@@ -714,12 +714,12 @@ describe("IapService", () => {
 
   describe("getCoinsForProduct", () => {
     it("should return correct coins for valid product ID", () => {
-      expect(IapService.getCoinsForProduct("com.qwordly.coinpack1")).toBe(50);
-      expect(IapService.getCoinsForProduct("com.qwordly.coinpack2")).toBe(100);
-      expect(IapService.getCoinsForProduct("com.qwordly.coinpack3")).toBe(250);
-      expect(IapService.getCoinsForProduct("com.qwordly.coinpack4")).toBe(500);
-      expect(IapService.getCoinsForProduct("com.qwordly.coinpack5")).toBe(1000);
-      expect(IapService.getCoinsForProduct("com.qwordly.coinpack6")).toBe(2000);
+      expect(IapService.getCoinsForProduct("com.Riddle Quest.coinpack1")).toBe(50);
+      expect(IapService.getCoinsForProduct("com.Riddle Quest.coinpack2")).toBe(100);
+      expect(IapService.getCoinsForProduct("com.Riddle Quest.coinpack3")).toBe(250);
+      expect(IapService.getCoinsForProduct("com.Riddle Quest.coinpack4")).toBe(500);
+      expect(IapService.getCoinsForProduct("com.Riddle Quest.coinpack5")).toBe(1000);
+      expect(IapService.getCoinsForProduct("com.Riddle Quest.coinpack6")).toBe(2000);
     });
 
     it("should return undefined for invalid product ID", () => {
@@ -752,19 +752,19 @@ describe("IapService", () => {
         IapService.getCoinsForProduct("yourgame.coinpack1")
       ).toBeUndefined();
       expect(
-        IapService.getCoinsForProduct("com.qwordly.coins100.extra")
+        IapService.getCoinsForProduct("com.Riddle Quest.coins100.extra")
       ).toBeUndefined();
     });
 
     it("should handle special characters", () => {
       expect(
-        IapService.getCoinsForProduct("com.qwordly.coins100!")
+        IapService.getCoinsForProduct("com.Riddle Quest.coins100!")
       ).toBeUndefined();
       expect(
-        IapService.getCoinsForProduct("com.qwordly.coins100 ")
+        IapService.getCoinsForProduct("com.Riddle Quest.coins100 ")
       ).toBeUndefined();
       expect(
-        IapService.getCoinsForProduct(" com.qwordly.coins100")
+        IapService.getCoinsForProduct(" com.Riddle Quest.coins100")
       ).toBeUndefined();
     });
   });
@@ -806,13 +806,13 @@ describe("IapService", () => {
       });
 
       await expect(
-        IapService.purchaseProduct("com.qwordly.coins100")
+        IapService.purchaseProduct("com.Riddle Quest.coins100")
       ).resolves.toEqual(expect.objectContaining({ ...mockPurchase }));
     });
 
     it("should handle product lookup and purchase", async () => {
       const products: RNIap.Product[] = [
-        { id: "com.qwordly.coinpack2", price: "$0.99" } as any,
+        { id: "com.Riddle Quest.coinpack2", price: "$0.99" } as any,
       ];
       mockGetProducts.mockResolvedValue(products);
       mockRequestPurchase.mockResolvedValue(mockPurchase);

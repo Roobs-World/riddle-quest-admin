@@ -245,7 +245,7 @@ describe("ScreenTitle", () => {
     });
 
     it("handles title with unicode characters", () => {
-      const unicodeTitle = "Welcome 👋 to Qwordly 🎮";
+      const unicodeTitle = "Welcome 👋 to Riddle Quest 🎮";
       const { getByText } = render(<ScreenTitle title={unicodeTitle} />);
 
       expect(getByText(unicodeTitle)).toBeTruthy();

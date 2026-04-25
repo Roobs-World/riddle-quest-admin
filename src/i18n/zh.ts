@@ -6,7 +6,7 @@ import type { LocaleOverrides } from "./types";
 export const zhOverrides: LocaleOverrides = {
   AuthStrings: {
     Landing: {
-      TAGLINE_1: "加入数百万人一起玩QWORDLY。",
+      TAGLINE_1: "加入数百万人一起玩Riddle Quest。",
       TAGLINE_2: "准备好在娱乐中锻炼思维了吗？",
       SIGN_IN_BUTTON: "登录",
       OR_SIGN_IN_WITH: "或使用",
@@ -119,10 +119,10 @@ export const zhOverrides: LocaleOverrides = {
   },
   Credits: {
     TITLE: "制作名单",
-    SUBTITLE: "认识Qwordly背后的精彩团队",
+    SUBTITLE: "认识Riddle Quest背后的精彩团队",
     THANK_YOU_TITLE: "感谢！",
     THANK_YOU_TEXT:
-      "特别感谢所有让Qwordly成为可能的贡献者，你们的创造力、热情和奉献精神使这个项目得以实现。",
+      "特别感谢所有让Riddle Quest成为可能的贡献者，你们的创造力、热情和奉献精神使这个项目得以实现。",
   },
   Profile: {
     LOADING_MESSAGE: "正在加载个人资料...",
@@ -184,7 +184,7 @@ export const zhOverrides: LocaleOverrides = {
     SELECT_AVATAR_TITLE: "选择头像",
   },
   WelcomeModal: {
-    WELCOME_TITLE: "欢迎来到\nQwordly！",
+    WELCOME_TITLE: "欢迎来到\nRiddle Quest！",
     LETS_PLAY: "开始游戏",
     SOLVE_RIDDLES_TEXT:
       "逐个猜测字母来解答谜题。利用颜色提示引导每次尝试。",

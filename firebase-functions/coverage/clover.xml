@@ -2,7 +2,7 @@
 <coverage generated="1773013857310" clover="3.2.0">
   <project timestamp="1773013857310" name="All files">
     <metrics statements="362" coveredstatements="332" conditionals="105" coveredconditionals="79" methods="35" coveredmethods="32" elements="502" coveredelements="443" complexity="0" loc="362" ncloc="362" packages="1" files="1" classes="1"/>
-    <file name="riddleGeneration.ts" path="C:\Users\craig\work\qwordly\firebase-functions\src\riddleGeneration.ts">
+    <file name="riddleGeneration.ts" path="C:\Users\craig\work\Riddle Quest\firebase-functions\src\riddleGeneration.ts">
       <metrics statements="362" coveredstatements="332" conditionals="105" coveredconditionals="79" methods="35" coveredmethods="32"/>
       <line num="1" count="1" type="stmt"/>
       <line num="2" count="1" type="stmt"/>

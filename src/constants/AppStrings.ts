@@ -13,7 +13,7 @@ import {
 const EN_APP_STRINGS = {
   AuthStrings: {
     Landing: {
-      TAGLINE_1: "Join millions of people to play QWORDLY.",
+      TAGLINE_1: "Join millions of people to play Riddle Quest.",
       TAGLINE_2: "Ready to have fun while training your mind?",
       SIGN_IN_BUTTON: "Sign in",
       OR_SIGN_IN_WITH: "or Sign in with",
@@ -144,17 +144,21 @@ const EN_APP_STRINGS = {
   },
   Credits: {
     TITLE: "Credits",
-    SUBTITLE: "Meet the amazing team behind Qwordly",
+    SUBTITLE: "Meet the amazing team behind Riddle Quest",
     THANK_YOU_TITLE: "Thank You!",
     THANK_YOU_TEXT:
-      "Special thanks to all our contributors who made Qwordly possible. Your creativity, dedication, and passion brought this project to life.",
+      "Special thanks to all our contributors who made Riddle Quest possible. Your creativity, dedication, and passion brought this project to life.",
   },
   WelcomeModal: {
     LETS_PLAY: "Let's Play",
-    WELCOME_TITLE: "Welcome to Qwordly!",
+    WELCOME_TITLE: "Welcome to Riddle Quest!",
     SOLVE_RIDDLES_TEXT:
       "Solve engaging riddles by guessing the answer letter by letter. Use the colour clues to narrow down each guess.",
     EARN_COINS_TEXT: "Earn coins, beat daily challenges, and climb the leaderboard.",
+  },
+  WelcomeBackModal: {
+    TITLE: "Welcome back",
+    TAP_TO_CONTINUE: "Tap to continue",
   },
   Instructions: {
     TITLE: "How to Play",

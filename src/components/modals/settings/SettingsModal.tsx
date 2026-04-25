@@ -1,5 +1,5 @@
-﻿/**
- * @fileoverview SettingsModal component - Bottom sheet settings modal for Qwordly.
+/**
+ * @fileoverview SettingsModal component - Bottom sheet settings modal for Riddle Quest.
  */
 
 import React from "react";

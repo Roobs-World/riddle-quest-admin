@@ -1,5 +1,5 @@
 /**
- * Qwordly Design System
+ * Riddle Quest Design System
  * Modular styles architecture for the React Native app
  *
  * This is the main entry point for all styles, design tokens, and utilities.
