@@ -508,7 +508,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
                 label={AppStrings.StatsModal.BEST_STREAK}
               />
               <StatBox
-                value={stats?.wins ?? 0}
+                value={stats?.totalWordsGuessed ?? 0}
                 label={AppStrings.StatsModal.TOTAL_WORDS_GUESSED}
               />
               <StatBox

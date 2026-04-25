@@ -137,7 +137,7 @@ export const ACHIEVEMENT_DEFINITIONS: AchievementDefinition[] = [
   {
     id: "first_purchase",
     name: "Supporter",
-    description: "Remove ads with a purchase",
+    description: "Buy an item from the shop",
     criteriaType: "first_purchase",
     threshold: 1,
     icon: "❤️",

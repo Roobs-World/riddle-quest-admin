@@ -313,6 +313,9 @@ const GameScreenWrapper = () => {
     );
 
     try {
+      // Clear the currently rendered riddle before fetching the next one so
+      // GameScreenWrapper immediately switches to its loading spinner.
+      setCurrentRiddle(null);
       await updatePlayerClassicIndex(nextClassicIndex);
     } catch (error) {
       logger.error("Error loading next classic riddle:", error);
@@ -577,21 +580,40 @@ const GameScreenWrapper = () => {
           }}
           onHintUsed={async (cost: number) => {
             if (!playerData) {
-              return;
+              return [];
             }
 
             logger.debug(AppStrings.GameMessages.HINT_USED + cost);
             if (cost > 0) {
+              const nextUnlockedAchievements = [
+                ...(playerData.unlockedAchievements ?? []),
+              ];
+              const newlyUnlockedAchievementIds: string[] = [];
               const nextStats: Player["stats"] = {
                 ...playerData.stats,
                 totalHintsUsed:
                   toNonNegativeNumber(playerData.stats?.totalHintsUsed) + 1,
               };
+
+              const hasHintUserAchievement = nextUnlockedAchievements.some(
+                (achievement) => achievement.achievementId === "hint_user"
+              );
+              if (!hasHintUserAchievement && nextStats.totalHintsUsed >= 1) {
+                nextUnlockedAchievements.push({
+                  achievementId: "hint_user",
+                  unlockedAt: Date.now(),
+                });
+                newlyUnlockedAchievementIds.push("hint_user");
+              }
+
               await persistPlayerUpdate({
                 coins: Math.max(0, toNonNegativeNumber(playerData.coins) - cost),
                 stats: nextStats,
+                unlockedAchievements: nextUnlockedAchievements,
               });
+              return newlyUnlockedAchievementIds;
             }
+            return [];
           }}
           onSkipUsed={(cost: number) => {
             if (cost > 0) {

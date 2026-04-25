@@ -11,6 +11,7 @@ jest.mock("../game/StreakIncreaseFanfareModal", () => MockModal);
 jest.mock("../game/LevelUpFanfareModal", () => MockModal);
 jest.mock("../settings/SettingsModal", () => MockModal);
 jest.mock("../settings/FullProfileDetailsModal", () => MockModal);
+jest.mock("../settings/UpgradeAccountModal", () => MockModal);
 jest.mock("../settings/UpdateUsernameModal", () => MockModal);
 jest.mock("../settings/AchievementsModal", () => MockModal);
 jest.mock("../settings/StatsModal", () => MockModal);
@@ -53,6 +54,7 @@ describe("ModalRegistry", () => {
       "loss",
       "settings",
       "fullProfileDetails",
+      "upgradeAccount",
       "achievements",
       "stats",
       "leaderboard",

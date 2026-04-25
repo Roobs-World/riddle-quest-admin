@@ -39,6 +39,7 @@ const mockUpdateUserProfile = jest.fn<(...args: unknown[]) => Promise<void>>();
 const mockMarkPurchaseTokenAsProcessed = jest.fn<(...args: unknown[]) => Promise<void>>();
 const mockIsPurchaseTokenAlreadyProcessed = jest.fn<(...args: unknown[]) => Promise<boolean>>();
 const mockPerformPlatformValidation = jest.fn<(...args: unknown[]) => Promise<{valid: boolean; data?: unknown}>>();
+const mockEvaluateAchievements = jest.fn<(...args: unknown[]) => Promise<string[]>>();
 
 const mockLoggerInfo = jest.fn<(...args: unknown[]) => void>();
 const mockLoggerWarn = jest.fn<(...args: unknown[]) => void>();
@@ -160,6 +161,10 @@ jest.mock("../iapPlatformValidator", () => ({
   performPlatformValidation: (...args: unknown[]) => mockPerformPlatformValidation(...args),
 }));
 
+jest.mock("../achievements", () => ({
+  evaluateAchievements: (...args: unknown[]) => mockEvaluateAchievements(...args),
+}));
+
 jest.mock("../productPricingService", () => ({
   getCoinsForProduct: (...args: unknown[]) => mockGetCoinsForProduct(...args),
   incrementCoinPackPurchaseCount: (...args: unknown[]) => mockIncrementCoinPackPurchaseCount(...args),
@@ -197,7 +202,7 @@ const iapController = {
 
 const validatePurchase = originalValidatePurchase as unknown as (
   request: CallableRequest<ValidatePurchaseData>,
-) => Promise<{success: boolean; newCoins?: number}>;
+) => Promise<{success: boolean; newCoins?: number; newlyUnlockedAchievementIds?: string[]}>;
 
 describe("validatePurchase - Unit Tests", () => {
   const testUserId = "testUser123";
@@ -211,6 +216,7 @@ describe("validatePurchase - Unit Tests", () => {
     mockIsPurchaseTokenAlreadyProcessed.mockReset();
     mockMarkPurchaseTokenAsProcessed.mockReset();
     mockPerformPlatformValidation.mockReset();
+    mockEvaluateAchievements.mockReset();
 
     iapController.isValidated.mockReset();
     iapController.getPurchaseData.mockReset();
@@ -248,6 +254,7 @@ describe("validatePurchase - Unit Tests", () => {
     mockUpdateUserProfile.mockResolvedValue(undefined);
     mockIsPurchaseTokenAlreadyProcessed.mockResolvedValue(false);
     mockPerformPlatformValidation.mockResolvedValue({valid: true, data: "platform_validation_response"});
+    mockEvaluateAchievements.mockResolvedValue([]);
 
     iapController.isValidated.mockReturnValue(true);
     iapController.getPurchaseData.mockReturnValue([
@@ -287,14 +294,24 @@ describe("validatePurchase - Unit Tests", () => {
 
     const result = await validatePurchase(request);
 
-    expect(result).toEqual({success: true, newCoins: 100});
+    expect(result).toEqual({
+      success: true,
+      newCoins: 100,
+      newlyUnlockedAchievementIds: [],
+    });
     expect(mockIsPurchaseTokenAlreadyProcessed).toHaveBeenCalledWith(testUserId, "token_noads");
     expect(mockPerformPlatformValidation).toHaveBeenCalledWith("ios", "token_noads", NO_ADS_PRODUCT_ID);
     expect(mockUpdateUserProfile).toHaveBeenCalledWith(testUserId, {hasPurchasedApp: true});
+    expect(mockEvaluateAchievements).toHaveBeenCalledWith(testUserId, {
+      gameMode: "classic",
+      isCorrect: false,
+      attempts: 0,
+      gameOver: false,
+    });
     expect(mockUpdateUserCoins).not.toHaveBeenCalled();
     expect(mockIncrementCoinPackPurchaseCount).not.toHaveBeenCalled();
     expect(mockMarkPurchaseTokenAsProcessed).toHaveBeenCalledWith(testUserId, "token_noads", NO_ADS_PRODUCT_ID);
-    expect(mockGetUser).toHaveBeenCalledTimes(3); // updateUserProfile flow + evaluateAchievements + final balance
+    expect(mockGetUser).toHaveBeenCalledTimes(2);
     expect(mockLoggerInfo).toHaveBeenCalledWith(
       `Purchase validated and product ID matched for user ${testUserId}: ${NO_ADS_PRODUCT_ID}`,
     );
@@ -321,11 +338,22 @@ describe("validatePurchase - Unit Tests", () => {
 
     const result = await validatePurchase(request);
 
-    expect(result).toEqual({success: true, newCoins: initialUserCoins + coinsToAward});
+    expect(result).toEqual({
+      success: true,
+      newCoins: initialUserCoins + coinsToAward,
+      newlyUnlockedAchievementIds: [],
+    });
     expect(mockIsPurchaseTokenAlreadyProcessed).toHaveBeenCalledWith(testUserId, "token_coins");
     expect(mockPerformPlatformValidation).toHaveBeenCalledWith("android", "token_coins", coinProductId);
     expect(mockUpdateUserCoins).toHaveBeenCalledWith(testUserId, coinsToAward);
     expect(mockIncrementCoinPackPurchaseCount).toHaveBeenCalledWith(coinProductId);
+    expect(mockUpdateUserProfile).toHaveBeenCalledWith(testUserId, {hasPurchasedApp: true});
+    expect(mockEvaluateAchievements).toHaveBeenCalledWith(testUserId, {
+      gameMode: "classic",
+      isCorrect: false,
+      attempts: 0,
+      gameOver: false,
+    });
     expect(mockMarkPurchaseTokenAsProcessed).toHaveBeenCalledWith(testUserId, "token_coins", coinProductId);
     expect(mockGetUser).toHaveBeenCalledTimes(2);
     expect(mockLoggerInfo).toHaveBeenCalledWith(

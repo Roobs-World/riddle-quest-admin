@@ -664,6 +664,54 @@ describe("AuthContext", () => {
       );
       expect(result.current.playerData?.coins).toBe(175);
     });
+
+    it("updatePlayerClassicIndex advances guest highest classic level locally", async () => {
+      const guestUser = {
+        uid: "guest-classic-1",
+        email: null,
+        displayName: null,
+        isAnonymous: true,
+      };
+      const guestClassicRiddle: FirestoreRiddle = {
+        ...mockClassicRiddle,
+        classicIndex: 3,
+        riddleId: "classicRiddle03",
+      };
+
+      (fetchDailyRiddleFromFirestore as jest.Mock).mockResolvedValue(
+        mockDailyRiddle
+      );
+      (fetchClassicRiddleFromFirestore as jest.Mock).mockResolvedValue(
+        guestClassicRiddle
+      );
+      (updateClassicIndexInFirestore as jest.Mock).mockResolvedValue(undefined);
+
+      mockAuthInstance.onAuthStateChanged.mockImplementation(
+        (callback: (user: any) => void) => {
+          mockAuthInstance.currentUser = guestUser as any;
+          callback(guestUser as any);
+          return jest.fn();
+        }
+      );
+
+      const { result } = renderHook(() => useAuth(), { wrapper });
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      act(() => {
+        result.current.setGameMode("classic");
+      });
+
+      await act(async () => {
+        await result.current.updatePlayerClassicIndex(3);
+      });
+
+      expect(updateClassicIndexInFirestore).not.toHaveBeenCalled();
+      expect(fetchClassicRiddleFromFirestore).toHaveBeenCalledWith(3);
+      expect(result.current.playerData?.stats.highestLevelClassic).toBe(3);
+    });
   });
 
   it("setCurrentRiddle updates the current riddle state directly", async () => {

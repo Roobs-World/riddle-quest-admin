@@ -49,9 +49,9 @@ export async function generateUniqueRiddle(): Promise<[string, string] | null> {
         {
           role: "system",
           content:
-            "You are a creative riddle designer for a mobile word game. Generate a single original, engaging riddle that feels fresh and accessible to a broad audience. " +
+            "You are a creative riddle designer for a mobile word game. Generate a single original, engaging pub-quiz style riddle question that feels fresh and accessible to a broad audience. " +
             "To increase variety, internally pick one category and one clue style before writing. " +
-            "Rotate across categories such as nature, everyday objects, food, jobs, places, science, technology, sports, arts, history, mythology, and emotions. " +
+            "Always pick exactly one of these core pub-quiz categories for each riddle: history, science, music, or popular culture. Rotate these categories over time. " +
             "Vary clue styles: metaphor, personification, mini-scene, compare/contrast, misdirection, playful logic, or subtle wordplay. " +
             "Do not rely on the same opening pattern every time, especially not repeated 'What am I?' phrasing. " +
             "Keep clues solvable, fair, and fun for mobile players.",
@@ -66,6 +66,8 @@ export async function generateUniqueRiddle(): Promise<[string, string] | null> {
             "- Question: 10-90 characters, use natural language with proper grammar and punctuation\n" +
             "- Answer: MAXIMUM 7 characters, use ONLY lowercase letters (a-z), absolutely NO punctuation, NO numbers, NO special characters, NO apostrophes, NO hyphens\n" +
             "- Content: Engaging and suitable for mobile game players of all ages\n" +
+            "- Topic scope: The riddle must be rooted in one pub-quiz category: history, science, music, or popular culture\n" +
+            "- Pub quiz feel: Ask as a clue-based trivia style prompt while still feeling like a riddle\n" +
             "- Style diversity: Use a less common riddle angle, avoid generic textbook riddles, and avoid repeating familiar tropes\n" +
             "- Question pattern variety: Prefer alternatives to plain 'What am I?' prompts (use first-person voice, situation-based clues, or indirect questions when possible)\n" +
             "- Originality: Must be completely unique, not a common or well-known riddle\n\n" +

@@ -245,6 +245,9 @@ const EN_APP_STRINGS = {
     UPGRADE_ACCOUNT_SUCCESS: "Account upgraded successfully!",
     UPGRADE_ACCOUNT_ERROR: "Could not upgrade your account. Please try again.",
     UPGRADE_ACCOUNT_PROVIDER_IN_USE: "That provider account is already in use. Please choose a different provider.",
+    UPGRADE_ACCOUNT_EXISTING_ACCOUNT_TITLE: "Account already exists",
+    UPGRADE_ACCOUNT_EXISTING_ACCOUNT_DESCRIPTION:
+      "That account already exists. Would you like to log out and sign in with it instead?",
   },
   TestStrings: {
     MOCK_SVG_TEXT: "Mock SVG Text",

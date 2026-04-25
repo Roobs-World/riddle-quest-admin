@@ -221,6 +221,27 @@ describe("FullProfileDetailsModal", () => {
     expect(getByText("Best Strike")).toBeTruthy();
   });
 
+  it("uses totalWordsGuessed for the total words guessed stat tile", () => {
+    const playerWithDistinctGuessAndWins: Player = {
+      ...mockPlayerData,
+      stats: {
+        ...mockPlayerData.stats,
+        totalWordsGuessed: 123,
+        wins: 7,
+      },
+    };
+
+    const { getByText, queryByText } = renderWithModalProvider(
+      <FullProfileDetailsModal
+        {...defaultProps}
+        playerData={playerWithDistinctGuessAndWins}
+      />
+    );
+
+    expect(getByText("123")).toBeTruthy();
+    expect(queryByText("7")).toBeNull();
+  });
+
   it("displays avatar image when avatarUrl is provided", () => {
     const { getByTestId } = renderWithModalProvider(
       <FullProfileDetailsModal {...defaultProps} />

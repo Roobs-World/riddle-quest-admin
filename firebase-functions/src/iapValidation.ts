@@ -46,7 +46,11 @@ export const validatePurchase = onCall(
       productId: string;
       platform: string;
     }>,
-  ): Promise<{success: boolean; newCoins: number | undefined}> => {
+  ): Promise<{
+    success: boolean;
+    newCoins: number | undefined;
+    newlyUnlockedAchievementIds?: string[];
+  }> => {
     if (!request.auth) {
       throw new functions.https.HttpsError("unauthenticated", "The function must be called while authenticated.");
     }
@@ -108,21 +112,11 @@ export const validatePurchase = onCall(
         functions.logger.info(`Purchase validated and product ID matched for user ${userId}: ${productId}`);
 
         let awardedCoins: number | undefined;
+        let newlyUnlockedAchievementIds: string[] = [];
 
         if (validatedProductIdFromReceipt === NO_ADS_PRODUCT_ID) {
           await updateUserProfile(userId, {hasPurchasedApp: true});
           functions.logger.info(`User ${userId} has purchased ad removal.`);
-          try {
-            await evaluateAchievements(userId, {
-              gameMode: "classic",
-              isCorrect: false,
-              attempts: 0,
-              gameOver: false,
-            });
-          } catch (err) {
-            functions.logger.error("Error evaluating achievements after purchase:", err);
-            captureException(err);
-          }
           const updatedUser = await getUser(userId);
           awardedCoins = updatedUser?.coins;
         } else {
@@ -160,6 +154,21 @@ export const validatePurchase = onCall(
 
           // Update regional spending stats (non-critical)
           await updateRegionalSpendingStats("US", "USD", 0);
+
+          // Mark as purchaser for first-purchase achievement semantics.
+          await updateUserProfile(userId, {hasPurchasedApp: true});
+        }
+
+        try {
+          newlyUnlockedAchievementIds = await evaluateAchievements(userId, {
+            gameMode: "classic",
+            isCorrect: false,
+            attempts: 0,
+            gameOver: false,
+          });
+        } catch (err) {
+          functions.logger.error("Error evaluating achievements after purchase:", err);
+          captureException(err);
         }
 
         await markPurchaseTokenAsProcessed(userId, purchaseToken, validatedProductIdFromReceipt);
@@ -167,7 +176,11 @@ export const validatePurchase = onCall(
         const finalUser = await getUser(userId);
         const finalNewCoins = finalUser ? finalUser.coins : undefined;
 
-        return {success: true, newCoins: finalNewCoins};
+        return {
+          success: true,
+          newCoins: finalNewCoins,
+          newlyUnlockedAchievementIds,
+        };
       } else {
         functions.logger.error(
           `Purchase validation failed or product ID mismatch for user ${userId}. ` +
@@ -200,7 +213,12 @@ export const grantDevCoinsForPurchase = onCall(
     request: functions.https.CallableRequest<{
       productId: string;
     }>,
-  ): Promise<{success: boolean; newCoins: number; coinsAwarded: number}> => {
+  ): Promise<{
+    success: boolean;
+    newCoins: number;
+    coinsAwarded: number;
+    newlyUnlockedAchievementIds?: string[];
+  }> => {
     if (!request.auth) {
       throw new functions.https.HttpsError(
         "unauthenticated",
@@ -230,6 +248,13 @@ export const grantDevCoinsForPurchase = onCall(
 
     await updateUserCoins(userId, coinsToAward);
     await incrementCoinPackPurchaseCount(productId);
+    await updateUserProfile(userId, {hasPurchasedApp: true});
+    const newlyUnlockedAchievementIds = await evaluateAchievements(userId, {
+      gameMode: "classic",
+      isCorrect: false,
+      attempts: 0,
+      gameOver: false,
+    });
     const updatedUser = await getUser(userId);
 
     functions.logger.info(
@@ -240,6 +265,7 @@ export const grantDevCoinsForPurchase = onCall(
       success: true,
       newCoins: updatedUser?.coins ?? 0,
       coinsAwarded: coinsToAward,
+      newlyUnlockedAchievementIds,
     };
   },
 );

@@ -851,17 +851,41 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         if (!isGuestPlayer(playerData)) {
           await updateClassicIndexInFirestore(playerData.userId, newIndex);
         }
-        const nextPlayer = {
-          ...playerData,
-          progress: { ...playerData.progress, classicIndex: newIndex },
-        };
-        setPlayerData(nextPlayer);
-        if (isGuestPlayer(playerData)) {
-          await saveGuestProfileToLocal(nextPlayer);
+        let nextPlayerSnapshot: Player | null = null;
+        setPlayerData((prevData: Player | null) => {
+          if (!prevData) return null;
+          const normalizedClassicIndex =
+            typeof newIndex === "number" && Number.isFinite(newIndex)
+              ? Math.max(0, newIndex)
+              : 0;
+          const existingHighestLevelClassic =
+            typeof prevData.stats?.highestLevelClassic === "number" &&
+            Number.isFinite(prevData.stats.highestLevelClassic)
+              ? Math.max(0, prevData.stats.highestLevelClassic)
+              : 0;
+          const nextPlayer = {
+            ...prevData,
+            progress: { ...prevData.progress, classicIndex: newIndex },
+            stats: {
+              ...prevData.stats,
+              highestLevelClassic: Math.max(
+                existingHighestLevelClassic,
+                normalizedClassicIndex
+              ),
+            },
+          };
+          nextPlayerSnapshot = nextPlayer;
+          return nextPlayer;
+        });
+        if (isGuestPlayer(playerData) && nextPlayerSnapshot) {
+          await saveGuestProfileToLocal(nextPlayerSnapshot);
         }
         logger.debug("AuthContext: Player classic index updated locally and in Firestore.");
         await fetchCurrentRiddle(
-          { ...playerData, progress: { ...playerData.progress, classicIndex: newIndex } },
+          nextPlayerSnapshot ?? {
+            ...playerData,
+            progress: { ...playerData.progress, classicIndex: newIndex },
+          },
           "classic"
         );
       } catch (error) {
@@ -1112,4 +1136,3 @@ export const useRiddleState = () => {
   }
   return context;
 };
-

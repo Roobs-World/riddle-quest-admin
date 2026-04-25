@@ -38,7 +38,7 @@ import { Settings } from "react-native-fbsdk-next";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { AuthProvider } from "./src/contexts/AuthContext";
 import { Navigation } from "./src/navigation/NavigationStack";
-import PulsingSpinner from "./src/components/loading/PulsingSpinner";
+import PulsingSpinner from "@/components/loading/PulsingSpinner";
 import { SolarSystemPreloader } from "./src/services/SolarSystemPreloader";
 import { preloadShopCatalog } from "./src/services/ShopCatalogPreloader";
 import { initializeRewardedAds } from "./src/services/RewardedAdService";

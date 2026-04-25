@@ -41,4 +41,5 @@ export type Riddle = {
 export interface PurchaseValidationResponse {
   success: boolean;
   newCoins?: number;
+  newlyUnlockedAchievementIds?: string[];
 }

@@ -73,6 +73,7 @@ import { createGameModalActions } from "../../features/game-session/gameModalAct
 import { isGuestPlayer } from "../../features/auth/sessionBootstrap";
 import { loadUserProgressFromFirestore } from "../../services/FirestoreService";
 import UpgradeAccountModal from "../../components/modals/settings/UpgradeAccountModal";
+import type { Player } from "../../validation/firestoreSchemas";
 import {
   SOUND_ENABLED_STORAGE_KEY,
   HAPTICS_ENABLED_STORAGE_KEY,
@@ -108,12 +109,22 @@ interface GameScreenProps {
     bonusCoinsAwarded?: number
   ) => void;
   onGameLoss: (correctAnswer: string, attempts: number) => void;
-  onHintUsed: (cost: number) => void;
+  onHintUsed: (cost: number) => void | string[] | Promise<void | string[]>;
   onSkipUsed: (cost: number) => void;
   onNextLevel: () => void;
   gameMode: GameMode;
   suppressOnboarding?: boolean;
 }
+
+const ONBOARDING_SEEN_STORAGE_KEY_PREFIX = "gameScreenOnboardingSeen";
+
+const getOnboardingSeenStorageKey = (userId?: string): string => {
+  if (userId) {
+    return `${ONBOARDING_SEEN_STORAGE_KEY_PREFIX}:${userId}`;
+  }
+
+  return `${ONBOARDING_SEEN_STORAGE_KEY_PREFIX}:anonymous`;
+};
 
 const parseCoinBalance = (value: unknown): number | null => {
   if (typeof value === "number" && Number.isFinite(value)) {
@@ -200,6 +211,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const modalActions = useMemo(() => createGameModalActions(modal), [modal]);
   const [isProfileModalLoading, setIsProfileModalLoading] = useState(false);
   const [isUpgradeModalVisible, setIsUpgradeModalVisible] = useState(false);
+  const [isTransitioningToNextLevel, setIsTransitioningToNextLevel] =
+    useState(false);
   const isRunningUnderJest =
     typeof process !== "undefined" && Boolean(process.env.JEST_WORKER_ID);
   const shouldUseDevFirestoreCatalog = __DEV__ && !isRunningUnderJest;
@@ -418,9 +431,19 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   useEffect(() => {
     if (suppressOnboarding || firstTimeCheckDone.current) return;
     firstTimeCheckDone.current = true;
+    let isCancelled = false;
 
     const runOnboardingFlow = async () => {
       try {
+        const onboardingSeenStorageKey = getOnboardingSeenStorageKey(
+          playerData?.userId
+        );
+        const hasSeenOnboarding =
+          (await AsyncStorage.getItem(onboardingSeenStorageKey)) === "true";
+        if (isCancelled || hasSeenOnboarding) {
+          return;
+        }
+
         showWelcomeModal({
           onDismiss: () => {
             if (isGuestMode) {
@@ -443,15 +466,27 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
             });
           },
         });
+
+        AsyncStorage.setItem(onboardingSeenStorageKey, "true").catch(
+          (error: unknown) => {
+            logger.error("Error saving onboarding seen state:", error);
+            captureException(error);
+          }
+        );
       } catch (error) {
         logger.error("Error running onboarding flow:", error);
         captureException(error);
       }
     };
 
-    runOnboardingFlow();
+    void runOnboardingFlow();
+
+    return () => {
+      isCancelled = true;
+    };
   }, [
     isGuestMode,
+    playerData?.userId,
     showWelcomeModal,
     showInstructionsModal,
     showInfoModal,
@@ -718,17 +753,89 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         if (purchaseResult) {
           logger.debug("Purchase completed successfully:", purchaseResult);
           const coinsPurchased = IapService.getCoinsForProduct(productId) ?? 0;
+          const resolvedNewCoins = parseCoinBalance(purchaseResult.newCoins);
+          const unlockedAchievementIds = Array.isArray(
+            purchaseResult.newlyUnlockedAchievementIds
+          )
+            ? purchaseResult.newlyUnlockedAchievementIds ?? []
+            : [];
+          const unlockedAchievements = unlockedAchievementIds
+            .map((achievementId) =>
+              ACHIEVEMENT_DEFINITIONS.find((achievement) => achievement.id === achievementId)
+            )
+            .filter(
+              (
+                achievement
+              ): achievement is (typeof ACHIEVEMENT_DEFINITIONS)[number] => Boolean(achievement)
+            );
+          const totalCoinsAfterPurchase =
+            resolvedNewCoins ?? currentUserCoins + coinsPurchased;
           const isLocalDevPurchase =
             typeof purchaseResult.transactionId === "string" &&
             purchaseResult.transactionId.startsWith("dev-local-");
-          if (isLocalDevPurchase && coinsPurchased > 0 && playerData) {
-            updatePlayerDataLocally({
-              coins: (playerData.coins ?? 0) + coinsPurchased,
-            });
+
+          if (playerData) {
+            const existingUnlockedAchievements = Array.isArray(
+              playerData.unlockedAchievements
+            )
+              ? playerData.unlockedAchievements
+              : [];
+            const existingAchievementIds = new Set(
+              existingUnlockedAchievements.map((entry) => entry.achievementId)
+            );
+            const unlockedAt = Date.now();
+            const newlyUnlockedEntries = unlockedAchievements
+              .filter((achievement) => !existingAchievementIds.has(achievement.id))
+              .map((achievement) => ({
+                achievementId: achievement.id,
+                unlockedAt,
+              }));
+
+            const nextPlayerUpdates: Partial<Player> = {};
+            if (resolvedNewCoins !== null) {
+              nextPlayerUpdates.coins = resolvedNewCoins;
+            } else if (isLocalDevPurchase && coinsPurchased > 0) {
+              nextPlayerUpdates.coins = (playerData.coins ?? 0) + coinsPurchased;
+            }
+            if (newlyUnlockedEntries.length > 0) {
+              nextPlayerUpdates.unlockedAchievements = [
+                ...existingUnlockedAchievements,
+                ...newlyUnlockedEntries,
+              ];
+            }
+            if (playerData.hasPurchasedApp !== true) {
+              nextPlayerUpdates.hasPurchasedApp = true;
+            }
+
+            if (Object.keys(nextPlayerUpdates).length > 0) {
+              updatePlayerDataLocally(nextPlayerUpdates, {
+                syncToFirestore: false,
+              });
+            }
           }
+
+          const showPurchaseAchievementFanfareAtIndex = (index: number): void => {
+            if (index >= unlockedAchievements.length) {
+              return;
+            }
+
+            const achievement = unlockedAchievements[index];
+            modal.showAchievementUnlockFanfareModal({
+              coinsEarned: 0,
+              totalCoins: totalCoinsAfterPurchase,
+              achievementNames: [achievement.name],
+              achievements: [achievement],
+              onContinue: () => {
+                void safeDelay(MODAL_CLOSE_DELAY_MS).then(() => {
+                  showPurchaseAchievementFanfareAtIndex(index + 1);
+                });
+              },
+            });
+          };
+
           modal.showCoinPurchaseFanfareModal({
             coinsPurchased,
-            totalCoins: currentUserCoins + coinsPurchased,
+            totalCoins: totalCoinsAfterPurchase,
             onConfirm: () => {
               const openCoinShopModalIds = modal.modals
                 .filter((openModal) => openModal.type === "coinShop")
@@ -736,6 +843,10 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
               openCoinShopModalIds.forEach((modalId) => {
                 modal.closeModal(modalId);
               });
+
+              if (unlockedAchievements.length > 0) {
+                showPurchaseAchievementFanfareAtIndex(0);
+              }
             },
           });
         } else {
@@ -819,6 +930,38 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           (achievement) => achievement.name
         );
 
+        if (playerData && unlockedAchievements.length > 0) {
+          const existingUnlockedAchievements = Array.isArray(
+            playerData.unlockedAchievements
+          )
+            ? playerData.unlockedAchievements
+            : [];
+          const existingAchievementIds = new Set(
+            existingUnlockedAchievements.map((entry) => entry.achievementId)
+          );
+          const unlockedAt = Date.now();
+          const newlyUnlockedEntries = unlockedAchievements
+            .filter(
+              (achievement) => !existingAchievementIds.has(achievement.id)
+            )
+            .map((achievement) => ({
+              achievementId: achievement.id,
+              unlockedAt,
+            }));
+
+          if (newlyUnlockedEntries.length > 0) {
+            updatePlayerDataLocally(
+              {
+                unlockedAchievements: [
+                  ...existingUnlockedAchievements,
+                  ...newlyUnlockedEntries,
+                ],
+              },
+              { syncToFirestore: false }
+            );
+          }
+        }
+
         if (isHapticsEnabled) {
           void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
           if (unlockedAchievementNames.length > 0) {
@@ -888,6 +1031,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
             } catch (error) {
               logger.error("Error calling onNextLevel:", error);
               captureException(error);
+            } finally {
+              setIsTransitioningToNextLevel(false);
             }
           };
 
@@ -907,16 +1052,16 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
                   totalCoins: totalCoinsAfterWin,
                   onContinue: () => {
                     void (async () => {
-                      await safeDelay(MODAL_CLOSE_DELAY_MS);
-                      await playDeferredCoinAnimation();
+                      setIsTransitioningToNextLevel(true);
+                      void playDeferredCoinAnimation();
                       await continueToNextLevel();
                     })();
                   },
                 });
                 return;
               }
-              await safeDelay(MODAL_CLOSE_DELAY_MS);
-              await playDeferredCoinAnimation();
+              setIsTransitioningToNextLevel(true);
+              void playDeferredCoinAnimation();
               await continueToNextLevel();
             },
           });
@@ -1044,8 +1189,10 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     handleCoinContinue,
     isRewardedAdReady,
     runWithServerLoading,
+    playerData,
     playerData?.stats?.xp,
     playerData?.stats?.totalScore,
+    updatePlayerDataLocally,
   ]);
 
   const toggleSoundEnabled = useCallback((isEnabled: boolean) => {
@@ -1221,7 +1368,57 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           return newGuess;
         });
 
-        onHintUsed(hintCost);
+        Promise.resolve(onHintUsed(hintCost))
+          .then((newlyUnlockedAchievementIds) => {
+            if (!Array.isArray(newlyUnlockedAchievementIds)) {
+              return;
+            }
+
+            const unlockedAchievements = newlyUnlockedAchievementIds
+              .map((achievementId) =>
+                ACHIEVEMENT_DEFINITIONS.find((definition) => definition.id === achievementId)
+              )
+              .filter(
+                (
+                  achievement
+                ): achievement is (typeof ACHIEVEMENT_DEFINITIONS)[number] => Boolean(achievement)
+              );
+
+            if (unlockedAchievements.length === 0) {
+              return;
+            }
+
+            const showAchievementFanfareAtIndex = (index: number) => {
+              if (index >= unlockedAchievements.length) {
+                return;
+              }
+
+              const achievement = unlockedAchievements[index];
+              modal.showAchievementUnlockFanfareModal({
+                coinsEarned: 0,
+                totalCoins: currentUserCoins,
+                achievementNames: [achievement.name],
+                achievements: [
+                  {
+                    name: achievement.name,
+                    description: achievement.description,
+                    icon: achievement.icon,
+                  },
+                ],
+                onContinue: () => {
+                  void safeDelay(MODAL_CLOSE_DELAY_MS).then(() => {
+                    showAchievementFanfareAtIndex(index + 1);
+                  });
+                },
+              });
+            };
+
+            showAchievementFanfareAtIndex(0);
+          })
+          .catch((error: unknown) => {
+            logger.error("Error handling hint achievement unlock fanfare:", error);
+            captureException(error);
+          });
       },
     });
   }, [
@@ -1233,6 +1430,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     answer,
     setCurrentGuess,
     onHintUsed,
+    currentUserCoins,
   ]);
 
   const handleCoinsPress = useCallback(() => {
@@ -1509,6 +1707,10 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     gameMode === "daily"
       ? AppStrings.GameScreenAlerts.DAILY_CHALLENGE_LABEL
       : AppStrings.GameScreenAlerts.CLASSIC_LABEL;
+  const spinnerSize = isTransitioningToNextLevel ? 120 : LOADING_SPINNER_SIZE;
+  const spinnerOpacity = isTransitioningToNextLevel
+    ? 0.8
+    : LOADING_SPINNER_OPACITY;
 
   return (
     <View style={{ flex: 1 }}>
@@ -1567,9 +1769,14 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         </KeyboardAvoidingView>
 
         <PulsingSpinner
-          visible={isLoading || isProfileModalLoading || isPurchaseInProgress}
-          size={LOADING_SPINNER_SIZE}
-          opacity={LOADING_SPINNER_OPACITY}
+          visible={
+            isLoading ||
+            isProfileModalLoading ||
+            isPurchaseInProgress ||
+            isTransitioningToNextLevel
+          }
+          size={spinnerSize}
+          opacity={spinnerOpacity}
         />
 
         <ModalProvider />

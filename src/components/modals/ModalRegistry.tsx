@@ -61,6 +61,7 @@ import AchievementUnlockFanfareModal from "./game/AchievementUnlockFanfareModal"
 
 import SettingsModal from "./settings/SettingsModal";
 import FullProfileDetailsModal from "./settings/FullProfileDetailsModal";
+import UpgradeAccountModal from "./settings/UpgradeAccountModal";
 import UpdateUsernameModal from "./settings/UpdateUsernameModal";
 import AchievementsModal from "./settings/AchievementsModal";
 import StatsModal from "./settings/StatsModal";
@@ -252,6 +253,14 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
       isVisible: props.isVisible,
       onClose: props.onClose,
       playerData: (props.playerData as Player | null) ?? null,
+    })
+  ),
+
+  upgradeAccount: createModalWrapper(
+    UpgradeAccountModal,
+    (props: BaseModalProps & ModalData) => ({
+      isVisible: props.isVisible,
+      onClose: props.onClose,
     })
   ),
 

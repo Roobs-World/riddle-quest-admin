@@ -247,6 +247,8 @@ const generateMockData = (
       };
     case "fullProfileDetails":
       return { playerData: resolvedPlayer };
+    case "upgradeAccount":
+      return {};
     case "achievements":
       return { playerData: resolvedPlayer };
     case "stats":

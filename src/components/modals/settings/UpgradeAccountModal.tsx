@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Alert, Modal, Text, View } from "react-native";
+import { Alert, Modal, Text, TouchableOpacity, View } from "react-native";
 import { AppStrings } from "@/constants/AppStrings";
 import { AuthService } from "@/services/AuthService";
 import { useModal } from "@/hooks/useModal";
@@ -24,25 +24,47 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
   onClose,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [isExistingAccountModalVisible, setIsExistingAccountModalVisible] =
+    useState(false);
   const { showInfoModal } = useModal();
+
+  const isAccountAlreadyInUseError = (
+    code: string,
+    message: string
+  ): boolean => {
+    const normalizedCode = code.toLowerCase();
+    const normalizedMessage = message.toLowerCase();
+
+    if (
+      normalizedCode === "auth/credential-already-in-use" ||
+      normalizedCode === "auth/email-already-in-use" ||
+      normalizedCode === "auth/account-exists-with-different-credential"
+    ) {
+      return true;
+    }
+
+    return (
+      normalizedMessage.includes("auth/credential-already-in-use") ||
+      normalizedMessage.includes("auth/email-already-in-use") ||
+      normalizedMessage.includes(
+        "auth/account-exists-with-different-credential"
+      ) ||
+      normalizedMessage.includes("credential is already associated")
+    );
+  };
 
   const handleAuthError = (error: unknown) => {
     const firebaseError = error as FirebaseAuthTypes.NativeFirebaseAuthError;
     const code = typeof firebaseError?.code === "string" ? firebaseError.code : "";
+    const message =
+      typeof firebaseError?.message === "string" ? firebaseError.message : "";
 
     if (code === "auth/auth-popup-closed-by-user") {
       return;
     }
 
-    if (
-      code === "auth/credential-already-in-use" ||
-      code === "auth/email-already-in-use" ||
-      code === "auth/account-exists-with-different-credential"
-    ) {
-      Alert.alert(
-        AppStrings.CommonAlerts.ERROR_TITLE,
-        AppStrings.Profile.UPGRADE_ACCOUNT_PROVIDER_IN_USE
-      );
+    if (isAccountAlreadyInUseError(code, message)) {
+      setIsExistingAccountModalVisible(true);
       return;
     }
 
@@ -83,6 +105,24 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
       logger.error("Upgrade account (Facebook) error:", error);
       captureException(error);
       handleAuthError(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleLogoutForExistingAccount = async () => {
+    setIsLoading(true);
+    try {
+      await AuthService.logout();
+      setIsExistingAccountModalVisible(false);
+      onClose();
+    } catch (error) {
+      logger.error("Upgrade account existing-account logout error:", error);
+      captureException(error);
+      Alert.alert(
+        AppStrings.Settings.LOGOUT_ERROR_TITLE,
+        AppStrings.Settings.LOGOUT_ERROR_MESSAGE
+      );
     } finally {
       setIsLoading(false);
     }
@@ -152,6 +192,99 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
         </SlideInModalContent>
 
         <PulsingSpinner visible={isLoading} size={LOADING_SPINNER_SIZE} />
+
+        <Modal
+          visible={isExistingAccountModalVisible}
+          transparent={true}
+          animationType="fade"
+          onRequestClose={() => setIsExistingAccountModalVisible(false)}
+        >
+          <View
+            style={{
+              flex: 1,
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "rgba(0,0,0,0.55)",
+              padding: SPACING.lg,
+            }}
+          >
+            <View
+              style={{
+                width: "100%",
+                maxWidth: 360,
+                backgroundColor: COLORS.white,
+                borderRadius: 16,
+                padding: SPACING.lg,
+              }}
+            >
+              <Text
+                style={{
+                  fontFamily: TYPOGRAPHY.fontPrimary,
+                  fontSize: TYPOGRAPHY.fontSize.xl,
+                  color: COLORS.black,
+                  marginBottom: SPACING.sm,
+                }}
+              >
+                {AppStrings.Profile.UPGRADE_ACCOUNT_EXISTING_ACCOUNT_TITLE}
+              </Text>
+              <Text
+                style={{
+                  fontFamily: TYPOGRAPHY.fontSecondary,
+                  fontSize: TYPOGRAPHY.fontSize.base,
+                  color: "#333333",
+                  lineHeight: 22,
+                }}
+              >
+                {AppStrings.Profile.UPGRADE_ACCOUNT_EXISTING_ACCOUNT_DESCRIPTION}
+              </Text>
+
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "flex-end",
+                  gap: SPACING.sm,
+                  marginTop: SPACING.lg,
+                }}
+              >
+                <TouchableOpacity
+                  onPress={() => setIsExistingAccountModalVisible(false)}
+                  style={{
+                    paddingVertical: SPACING.sm,
+                    paddingHorizontal: SPACING.md,
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontFamily: TYPOGRAPHY.fontSecondary,
+                      fontSize: TYPOGRAPHY.fontSize.base,
+                      color: "#4B5563",
+                    }}
+                  >
+                    {AppStrings.CommonAlerts.CANCEL_BUTTON}
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={handleLogoutForExistingAccount}
+                  style={{
+                    paddingVertical: SPACING.sm,
+                    paddingHorizontal: SPACING.md,
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontFamily: TYPOGRAPHY.fontSecondary,
+                      fontSize: TYPOGRAPHY.fontSize.base,
+                      color: "#DC2626",
+                    }}
+                  >
+                    {AppStrings.Settings.LOGOUT_BUTTON}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
       </View>
     </Modal>
   );

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   Animated,
+  Dimensions,
   Easing,
   StyleProp,
   ViewStyle,
@@ -13,29 +14,37 @@ interface SlideInModalContentProps {
 }
 
 const ENTRY_OFFSET = 72;
-const ENTRY_DURATION_MS = 320;
+const ENTRY_DURATION_MS = 420;
+const OFFSCREEN_TRANSLATE_Y = Dimensions.get("window").height + ENTRY_OFFSET;
 
 const SlideInModalContent: React.FC<SlideInModalContentProps> = ({
   isVisible,
   children,
   style,
 }) => {
-  const [translateY] = useState(() => new Animated.Value(ENTRY_OFFSET));
+  const [translateY] = useState(() => new Animated.Value(OFFSCREEN_TRANSLATE_Y));
+  const [opacity] = useState(() => new Animated.Value(0));
 
   useEffect(() => {
-    if (!isVisible) {
-      translateY.setValue(ENTRY_OFFSET);
-      return;
-    }
+    const toValue = isVisible ? 0 : OFFSCREEN_TRANSLATE_Y;
+    const opacityTarget = isVisible ? 1 : 0;
+    const easing = isVisible ? Easing.out(Easing.cubic) : Easing.in(Easing.cubic);
 
-    translateY.setValue(ENTRY_OFFSET);
-    Animated.timing(translateY, {
-      toValue: 0,
-      duration: ENTRY_DURATION_MS,
-      easing: Easing.out(Easing.cubic),
-      useNativeDriver: true,
-    }).start();
-  }, [isVisible, translateY]);
+    Animated.parallel([
+      Animated.timing(translateY, {
+        toValue,
+        duration: ENTRY_DURATION_MS,
+        easing,
+        useNativeDriver: true,
+      }),
+      Animated.timing(opacity, {
+        toValue: opacityTarget,
+        duration: ENTRY_DURATION_MS,
+        easing,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [isVisible, opacity, translateY]);
 
   return (
     <Animated.View
@@ -43,6 +52,7 @@ const SlideInModalContent: React.FC<SlideInModalContentProps> = ({
         style,
         {
           transform: [{ translateY }],
+          opacity,
         },
       ]}
     >

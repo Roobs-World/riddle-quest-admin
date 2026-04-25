@@ -359,7 +359,11 @@ describe("IapService", () => {
         productId: "com.qwordly.coins100",
         platform: "ios",
       });
-      expect(result).toBe(true);
+      expect(result).toEqual({
+        success: true,
+        newCoins: 100,
+        newlyUnlockedAchievementIds: [],
+      });
     });
 
     it("should handle validation failure", async () => {
@@ -372,7 +376,11 @@ describe("IapService", () => {
         "com.qwordly.coins100"
       );
 
-      expect(result).toBe(false);
+      expect(result).toEqual({
+        success: false,
+        newCoins: undefined,
+        newlyUnlockedAchievementIds: [],
+      });
     });
 
     it("should handle Firebase function call failure", async () => {
@@ -429,7 +437,12 @@ describe("IapService", () => {
 
       const result = await IapService.grantDevCoinsFallback(unknownProductId);
 
-      expect(result).toBe(true);
+      expect(result).toEqual({
+        success: true,
+        newCoins: 0,
+        coinsAwarded: 0,
+        newlyUnlockedAchievementIds: [],
+      });
       expect(httpsCallable).toHaveBeenCalledWith(
         expect.anything(),
         "grantDevCoinsForPurchase"
@@ -454,7 +467,7 @@ describe("IapService", () => {
 
       await expect(
         IapService.purchaseProduct("com.qwordly.coins100")
-      ).resolves.toEqual(mockPurchase);
+      ).resolves.toEqual(expect.objectContaining({ ...mockPurchase }));
       expect(mockLogCoinPackPurchased).toHaveBeenCalledWith({
         productId: "com.qwordly.coins100",
         coins: 0,
@@ -471,7 +484,7 @@ describe("IapService", () => {
 
       await expect(
         IapService.purchaseProduct("com.qwordly.coins100")
-      ).resolves.toEqual(mockPurchase);
+      ).resolves.toEqual(expect.objectContaining({ ...mockPurchase }));
     });
 
     it("should handle array response from requestPurchase", async () => {
@@ -480,7 +493,7 @@ describe("IapService", () => {
 
       await expect(
         IapService.purchaseProduct("com.qwordly.coins100")
-      ).resolves.toEqual(mockPurchase);
+      ).resolves.toEqual(expect.objectContaining({ ...mockPurchase }));
     });
 
     it("should resolve purchase from purchaseUpdatedListener when requestPurchase returns null", async () => {
@@ -794,7 +807,7 @@ describe("IapService", () => {
 
       await expect(
         IapService.purchaseProduct("com.qwordly.coins100")
-      ).resolves.toEqual(mockPurchase);
+      ).resolves.toEqual(expect.objectContaining({ ...mockPurchase }));
     });
 
     it("should handle product lookup and purchase", async () => {
@@ -813,7 +826,9 @@ describe("IapService", () => {
 
       await expect(
         IapService.purchaseProduct(fetchedProducts[0].id)
-      ).resolves.toEqual(mockPurchase);
+      ).resolves.toEqual(expect.objectContaining({ ...mockPurchase }));
     });
   });
 });
+
+

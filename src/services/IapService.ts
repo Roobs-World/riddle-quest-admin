@@ -12,6 +12,15 @@ interface IapError extends Error {
   code?: string;
 }
 
+type PurchaseValidationResult = PurchaseValidationResponse & {
+  newlyUnlockedAchievementIds?: string[];
+};
+
+export type PurchaseResult = RNIap.Purchase & {
+  newCoins?: number;
+  newlyUnlockedAchievementIds?: string[];
+};
+
 const PURCHASE_EVENT_TIMEOUT_MS = 1_500;
 
 /**
@@ -128,7 +137,12 @@ export const IapService = {
 
   async grantDevCoinsFallback(
     productId: string
-  ): Promise<boolean> {
+  ): Promise<{
+    success: boolean;
+    newCoins: number;
+    coinsAwarded: number;
+    newlyUnlockedAchievementIds?: string[];
+  }> {
     const coins = this.getCoinsForProduct(productId);
     if (!coins || coins <= 0) {
       logger.warn(
@@ -138,12 +152,23 @@ export const IapService = {
 
     const result = await httpsCallable<
       { productId: string },
-      { success: boolean; newCoins: number; coinsAwarded: number }
+      {
+        success: boolean;
+        newCoins: number;
+        coinsAwarded: number;
+        newlyUnlockedAchievementIds?: string[];
+      }
     >(getFunctions(getApp()), "grantDevCoinsForPurchase")({
       productId,
     });
 
-    return result.data?.success === true;
+    return {
+      success: result.data?.success === true,
+      newCoins: result.data?.newCoins ?? 0,
+      coinsAwarded: result.data?.coinsAwarded ?? 0,
+      newlyUnlockedAchievementIds:
+        result.data?.newlyUnlockedAchievementIds ?? [],
+    };
   },
 
   /**
@@ -188,7 +213,7 @@ export const IapService = {
    */
   async purchaseProduct(
     productId: string
-  ): Promise<RNIap.Purchase | null> {
+  ): Promise<PurchaseResult | null> {
     addBreadcrumb("iap", "Purchase initiated", { productId });
     void analyticsService.logPurchaseEvent("initiated", { product_id: productId });
     const isRunningUnderJest =
@@ -198,8 +223,8 @@ export const IapService = {
       if (shouldUseDevFallback) {
         logger.debug("Attempting dev purchase bypass via Firebase callable.");
         try {
-          const fallbackSucceeded = await this.grantDevCoinsFallback(productId);
-          if (fallbackSucceeded) {
+          const fallbackResult = await this.grantDevCoinsFallback(productId);
+          if (fallbackResult.success) {
             addBreadcrumb("iap", "Dev purchase fallback succeeded", { productId });
             void analyticsService.logPurchaseEvent("completed", {
               product_id: productId,
@@ -215,7 +240,10 @@ export const IapService = {
             return {
               productId,
               transactionId: `dev-${productId}-${Date.now()}`,
-            } as RNIap.Purchase;
+              newCoins: fallbackResult.newCoins,
+              newlyUnlockedAchievementIds:
+                fallbackResult.newlyUnlockedAchievementIds ?? [],
+            } as PurchaseResult;
           }
 
           logger.warn("Dev purchase fallback returned unsuccessful response.", {
@@ -233,7 +261,8 @@ export const IapService = {
           return {
             productId,
             transactionId: `dev-local-${productId}-${Date.now()}`,
-          } as RNIap.Purchase;
+            newlyUnlockedAchievementIds: [],
+          } as PurchaseResult;
         } catch (fallbackError) {
           logger.warn("Dev purchase fallback callable failed.", {
             productId,
@@ -254,7 +283,8 @@ export const IapService = {
           return {
             productId,
             transactionId: `dev-local-${productId}-${Date.now()}`,
-          } as RNIap.Purchase;
+            newlyUnlockedAchievementIds: [],
+          } as PurchaseResult;
         }
       }
 
@@ -290,7 +320,11 @@ export const IapService = {
       if (purchaseToken) {
         const iapTxn = startTransaction("validatePurchase", "http.client");
         try {
-          const isValid = await this.validatePurchase(purchaseToken, productId);
+          const validationResult = await this.validatePurchase(
+            purchaseToken,
+            productId
+          );
+          const isValid = validationResult.success === true;
 
           if (isValid) {
             logger.debug(
@@ -309,7 +343,12 @@ export const IapService = {
               coins: this.getCoinsForProduct(productId) ?? 0,
               purchaseCount: 1,
             });
-            return purchase; // Return the purchase details
+            return {
+              ...purchase,
+              newCoins: validationResult.newCoins,
+              newlyUnlockedAchievementIds:
+                validationResult.newlyUnlockedAchievementIds ?? [],
+            }; // Return purchase details plus validation metadata.
           } else {
             logger.warn("Purchase validation failed for product:", productId);
             // Do NOT finish the transaction if validation fails.
@@ -405,7 +444,7 @@ export const IapService = {
   async validatePurchase(
     purchaseToken: string,
     productId: string
-  ): Promise<boolean> {
+  ): Promise<PurchaseValidationResult> {
     // Call the Firebase Cloud Function for server-side validation
     // The server validates with App Store/Google Play and awards coins
     try {
@@ -418,7 +457,12 @@ export const IapService = {
         platform: Platform.OS,
       });
 
-      return result.data.success;
+      return {
+        success: result.data.success === true,
+        newCoins: result.data.newCoins,
+        newlyUnlockedAchievementIds:
+          result.data.newlyUnlockedAchievementIds ?? [],
+      };
     } catch (error) {
       logger.error("Error calling validatePurchase Firebase Function:", error);
       captureException(error);

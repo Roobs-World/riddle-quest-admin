@@ -3,22 +3,6 @@ import { render } from "@testing-library/react-native";
 import { Animated } from "react-native";
 import PulsingSpinner from "../PulsingSpinner";
 
-jest.mock("react-native-svg", () => {
-  const React = require("react");
-  const { View } = require("react-native");
-
-  const Svg = ({ children, ...props }: any) =>
-    React.createElement(View, { testID: "spinner-svg", ...props }, children);
-  const Circle = ({ ...props }: any) =>
-    React.createElement(View, { testID: "spinner-dot", ...props });
-
-  return {
-    __esModule: true,
-    default: Svg,
-    Circle,
-  };
-});
-
 describe("PulsingSpinner", () => {
   let start: jest.Mock;
   let stop: jest.Mock;
@@ -40,24 +24,23 @@ describe("PulsingSpinner", () => {
   });
 
   it("renders inline spinner by default", () => {
-    const { getByLabelText, getByTestId, getAllByTestId } = render(
-      <PulsingSpinner />
-    );
+    const { getByLabelText, getByTestId, getAllByTestId } = render(<PulsingSpinner />);
 
     expect(getByLabelText("Loading")).toBeTruthy();
-    expect(getByTestId("spinner-svg")).toBeTruthy();
+    expect(getByTestId("spinner-ring")).toBeTruthy();
     expect(getAllByTestId("spinner-dot")).toHaveLength(8);
     expect(start).toHaveBeenCalledTimes(1);
   });
 
   it("supports custom dot count and size", () => {
-    const { getByTestId, getAllByTestId } = render(
-      <PulsingSpinner size={120} dotCount={5} />
-    );
+    const { getByTestId, getAllByTestId } = render(<PulsingSpinner size={120} dotCount={5} />);
 
-    const svg = getByTestId("spinner-svg");
-    expect(svg.props.width).toBe(120);
-    expect(svg.props.height).toBe(120);
+    const ring = getByTestId("spinner-ring");
+    const flattenedStyle = Array.isArray(ring.props.style)
+      ? Object.assign({}, ...ring.props.style)
+      : ring.props.style;
+    expect(flattenedStyle.width).toBe(120);
+    expect(flattenedStyle.height).toBe(120);
     expect(getAllByTestId("spinner-dot")).toHaveLength(5);
   });
 

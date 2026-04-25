@@ -100,6 +100,7 @@ const mockPlayerData = {
   username: "testuser",
   email: "test@test.com",
   coins: 100,
+  unlockedAchievements: [] as Array<{ achievementId: string; unlockedAt: number }>,
   progress: {
     classicIndex: 0,
     dailyIndex: 0,
@@ -442,12 +443,15 @@ describe("GameScreen", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    (AsyncStorage.getItem as jest.Mock).mockImplementation(async () => null);
+    (AsyncStorage.setItem as jest.Mock).mockResolvedValue(null);
     mockPendingStreakBreak = null;
     mockAuthPlayerData = mockPlayerData;
     mockAuthLoading = false;
     mockPlayerData.email = "test@test.com";
     mockPlayerData.username = "testuser";
     mockPlayerData.coins = 100;
+    mockPlayerData.unlockedAchievements = [];
     mockLoadUserProgressFromFirestore.mockResolvedValue(mockPlayerData);
     mockUseGameLogic.guesses = [];
     mockUseGameLogic.currentGuess = [];
@@ -668,6 +672,33 @@ describe("GameScreen", () => {
       await waitFor(() => {
         expect(mockShowWelcomeModal).toHaveBeenCalled();
       });
+    });
+
+    it("should skip onboarding modals when onboarding was already seen", async () => {
+      (AsyncStorage.getItem as jest.Mock).mockResolvedValueOnce("true");
+
+      render(<GameScreen {...defaultProps} />);
+
+      await waitFor(() => {
+        expect(AsyncStorage.getItem).toHaveBeenCalledWith(
+          "gameScreenOnboardingSeen:test-user-123"
+        );
+      });
+      expect(mockShowWelcomeModal).not.toHaveBeenCalled();
+      expect(mockShowInstructionsModal).not.toHaveBeenCalled();
+    });
+
+    it("should persist onboarding seen state after first modal display", async () => {
+      render(<GameScreen {...defaultProps} />);
+
+      await waitFor(() => {
+        expect(mockShowWelcomeModal).toHaveBeenCalled();
+      });
+
+      expect(AsyncStorage.setItem).toHaveBeenCalledWith(
+        "gameScreenOnboardingSeen:test-user-123",
+        "true"
+      );
     });
 
     it("should still show welcome modal for guest users", async () => {
@@ -1110,6 +1141,51 @@ describe("GameScreen", () => {
       expect(defaultProps.onHintUsed).toHaveBeenCalledWith(10);
     });
 
+    it("shows achievement unlock fanfare when hint usage unlocks an achievement", async () => {
+      const { ACHIEVEMENT_DEFINITIONS } = require("../../../constants/achievements");
+      ACHIEVEMENT_DEFINITIONS.push({
+        id: "hint_user",
+        name: "Need a Clue",
+        description: "Use a hint",
+        icon: "💡",
+      });
+
+      const onHintUsed = jest.fn().mockResolvedValue(["hint_user"]);
+      try {
+        render(
+          <GameScreen
+            {...defaultProps}
+            onHintUsed={onHintUsed}
+            answer="TEST"
+            answerLength={4}
+          />
+        );
+
+        const inputProps = getLatestProps(mockGameInput);
+        await inputProps.handleHint();
+        const config = mockShowHintModal.mock.calls[0][0];
+        config.onShowHint();
+
+        await waitFor(() => {
+          expect(mockShowAchievementUnlockFanfareModal).toHaveBeenCalledWith({
+            coinsEarned: 0,
+            totalCoins: 100,
+            achievementNames: ["Need a Clue"],
+            achievements: [
+              {
+                name: "Need a Clue",
+                description: "Use a hint",
+                icon: "💡",
+              },
+            ],
+            onContinue: expect.any(Function),
+          });
+        });
+      } finally {
+        ACHIEVEMENT_DEFINITIONS.length = 0;
+      }
+    });
+
     it("shows victory modal and calls onGameWin when game ends with win", async () => {
       mockUseGameLogic.currentGuess = ["K", "E", "Y", "B", "O", "A", "R", "D"];
       mockUseGameLogic.processGuess.mockResolvedValueOnce({
@@ -1525,7 +1601,18 @@ describe("GameScreen", () => {
 
     it("handles coin shop purchase success and failure branches", async () => {
       const { IapService } = require("../../../services/IapService");
-      IapService.purchaseProduct.mockResolvedValueOnce({ transactionId: "1" });
+      const { ACHIEVEMENT_DEFINITIONS } = require("../../../constants/achievements");
+      ACHIEVEMENT_DEFINITIONS.push({
+        id: "first_purchase",
+        name: "Supporter",
+        description: "Buy an item from the shop",
+        icon: "H",
+      });
+      IapService.purchaseProduct.mockResolvedValueOnce({
+        transactionId: "1",
+        newCoins: 250,
+        newlyUnlockedAchievementIds: ["first_purchase"],
+      });
 
       render(<GameScreen {...defaultProps} />);
       const headerProps = getLatestProps(mockHeader);
@@ -1540,12 +1627,30 @@ describe("GameScreen", () => {
           onConfirm: expect.any(Function),
         })
       );
+      const purchaseFanfareConfig =
+        mockShowCoinPurchaseFanfareModal.mock.calls[
+          mockShowCoinPurchaseFanfareModal.mock.calls.length - 1
+        ][0];
+      purchaseFanfareConfig.onConfirm();
+      expect(mockShowAchievementUnlockFanfareModal).toHaveBeenCalledWith(
+        expect.objectContaining({
+          achievementNames: ["Supporter"],
+        })
+      );
+      expect(mockUpdatePlayerDataLocally).toHaveBeenCalledWith(
+        expect.objectContaining({
+          coins: 250,
+          hasPurchasedApp: true,
+        }),
+        { syncToFirestore: false }
+      );
 
       IapService.purchaseProduct.mockRejectedValueOnce(new Error("boom"));
       await config.onPurchaseProduct("pack_2");
       expect(mockShowInfoModal).toHaveBeenCalledWith(
         expect.objectContaining({ title: "Purchase Failed" })
       );
+      ACHIEVEMENT_DEFINITIONS.length = 0;
     });
 
     it("shows pulsing spinner while coin purchase is in progress", async () => {
@@ -1578,6 +1683,51 @@ describe("GameScreen", () => {
       });
     });
 
+    it("shows pulsing spinner while transitioning from victory modal to next riddle", async () => {
+      let resolveNextLevel: (() => void) | null = null;
+      const deferredNextLevel = jest.fn(
+        () =>
+          new Promise<void>((resolve) => {
+            resolveNextLevel = resolve;
+          })
+      );
+
+      mockUseGameLogic.currentGuess = ["K", "E", "Y", "B", "O", "A", "R", "D"];
+      mockUseGameLogic.processGuess.mockResolvedValueOnce({
+        outcome: "win",
+        coinsEarned: 5,
+        scoreEarned: 0,
+      });
+
+      const { rerender } = render(
+        <GameScreen {...defaultProps} onNextLevel={deferredNextLevel} />
+      );
+      const inputProps = getLatestProps(mockGameInput);
+      await inputProps.handleSubmit();
+
+      mockUseGameLogic.gameOver = true;
+      rerender(<GameScreen {...defaultProps} onNextLevel={deferredNextLevel} />);
+
+      await waitFor(() => {
+        expect(mockShowVictoryModal).toHaveBeenCalled();
+      });
+
+      const victoryConfig =
+        mockShowVictoryModal.mock.calls[mockShowVictoryModal.mock.calls.length - 1][0];
+      const nextPromise = victoryConfig.onNext();
+
+      await waitFor(() => {
+        expect(getLatestProps(mockPulsingSpinner).visible).toBe(true);
+      });
+
+      resolveNextLevel?.();
+      await nextPromise;
+
+      await waitFor(() => {
+        expect(getLatestProps(mockPulsingSpinner).visible).toBe(false);
+      });
+    });
+
     it("handles onboarding flow outer catch when welcome modal throws", async () => {
       const { logger } = require("../../../utils/logger");
       const { captureException } = require("../../../utils/sentry");
@@ -1599,6 +1749,9 @@ describe("GameScreen", () => {
     it("handles settings load and save storage failures", async () => {
       const { logger } = require("../../../utils/logger");
       const { captureException } = require("../../../utils/sentry");
+      (AsyncStorage.getItem as jest.Mock).mockRejectedValueOnce(
+        null
+      );
       (AsyncStorage.getItem as jest.Mock).mockRejectedValueOnce(
         new Error("load settings fail")
       );
@@ -1636,6 +1789,7 @@ describe("GameScreen", () => {
     it("pauses background music when loaded setting disables sound", async () => {
       const { SoundManager } = require("../../../services/SoundManager");
       (AsyncStorage.getItem as jest.Mock)
+        .mockResolvedValueOnce("true")
         .mockResolvedValueOnce("false")
         .mockResolvedValueOnce("true")
         .mockResolvedValueOnce("en");
@@ -1649,6 +1803,7 @@ describe("GameScreen", () => {
 
     it("does not overwrite persisted muted setting during initial load", async () => {
       (AsyncStorage.getItem as jest.Mock)
+        .mockResolvedValueOnce("true")
         .mockResolvedValueOnce("false")
         .mockResolvedValueOnce("true")
         .mockResolvedValueOnce("en");
@@ -1820,12 +1975,64 @@ describe("GameScreen", () => {
         mockShowVictoryModal.mock.calls[mockShowVictoryModal.mock.calls.length - 1][0];
       expect(config.unlockedAchievementNames).toEqual(["First Win", "Speed Runner"]);
       expect(haptics.notificationAsync).toHaveBeenCalledWith("success");
+      expect(mockUpdatePlayerDataLocally).toHaveBeenCalledWith(
+        {
+          unlockedAchievements: [
+            expect.objectContaining({ achievementId: "ach-1" }),
+            expect.objectContaining({ achievementId: "ach-2" }),
+          ],
+        },
+        { syncToFirestore: false }
+      );
 
       await config.onNext();
       expect(mockCloseModalByType).toHaveBeenCalledWith("victory");
       expect(mockUseGameLogic.resetGame).toHaveBeenCalled();
       expect(logger.error).toHaveBeenCalledWith("Error calling onNextLevel:", expect.any(Error));
       expect(captureException).toHaveBeenCalledWith(expect.any(Error));
+
+      ACHIEVEMENT_DEFINITIONS.length = 0;
+    });
+
+    it("shows achievement fanfare when perfect_guess (First Try) unlocks", async () => {
+      const { ACHIEVEMENT_DEFINITIONS } = require("../../../constants/achievements");
+      ACHIEVEMENT_DEFINITIONS.push({
+        id: "perfect_guess",
+        name: "First Try",
+        description: "Solve a riddle on your first guess",
+        icon: "*",
+      });
+
+      mockUseGameLogic.currentGuess = ["K", "E", "Y", "B", "O", "A", "R", "D"];
+      mockUseGameLogic.processGuess.mockResolvedValueOnce({
+        outcome: "win",
+        coinsEarned: 10,
+        scoreEarned: 20,
+        newlyUnlockedAchievementIds: ["perfect_guess"],
+      });
+
+      const { rerender } = render(<GameScreen {...defaultProps} />);
+      const inputProps = getLatestProps(mockGameInput);
+      await inputProps.handleSubmit();
+      mockUseGameLogic.gameOver = true;
+      rerender(<GameScreen {...defaultProps} />);
+
+      await waitFor(() => {
+        expect(mockShowAchievementUnlockFanfareModal).toHaveBeenCalled();
+      });
+
+      expect(mockShowAchievementUnlockFanfareModal).toHaveBeenCalledWith(
+        expect.objectContaining({
+          achievementNames: ["First Try"],
+          achievements: [
+            expect.objectContaining({
+              name: "First Try",
+              description: "Solve a riddle on your first guess",
+              icon: "*",
+            }),
+          ],
+        })
+      );
 
       ACHIEVEMENT_DEFINITIONS.length = 0;
     });
