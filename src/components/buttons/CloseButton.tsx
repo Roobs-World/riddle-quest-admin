@@ -95,6 +95,7 @@ const CloseButton = ({
   size = CLOSE_BUTTON_SIZE_LG,
   className = "",
   color = "black",
+  style,
   ...props
 }: CloseButtonProps) => {
   const IconComponent = color === "white" ? CloseIconWhite : CloseIcon;
@@ -103,7 +104,17 @@ const CloseButton = ({
     <TouchableOpacity
       onPress={onPress}
       className={className}
-      style={{ padding: SPACING.sm }}
+      style={[
+        {
+          padding: SPACING.sm,
+          minWidth: 44,
+          minHeight: 44,
+          alignItems: "center",
+          justifyContent: "center",
+        },
+        style,
+      ]}
+      hitSlop={{ top: 8, right: 8, bottom: 8, left: 8 }}
       accessibilityLabel={AppStrings.CommonAlerts.CLOSE_BUTTON}
       accessibilityRole="button"
       {...props}

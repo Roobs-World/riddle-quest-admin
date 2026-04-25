@@ -1,39 +1,22 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  View,
-  Text,
-  Modal,
-  TouchableOpacity,
-  StyleSheet,
-  ActivityIndicator,
-} from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
+import {View, Text, Modal, TouchableOpacity, StyleSheet, ActivityIndicator} from "react-native";
+import {useSafeAreaInsets} from "react-native-safe-area-context";
 import * as RNIap from "react-native-iap";
-import { ProductPricing } from "../../services/ProductPricingService";
-import { COLORS, TYPOGRAPHY, BORDER_RADIUS } from "../../styles";
-import {
-  scale,
-  verticalScale,
-  moderateScale,
-  dimensions,
-} from "../../utils/responsive";
-import {
-  CLOSE_BUTTON_SIZE_LG,
-  MODAL_CLOSE_BUTTON_POSITION,
-  MODAL_HEIGHT,
-  MODAL_WIDTH,
-} from "../../constants/layout";
+import {ProductPricing} from "../../services/ProductPricingService";
+import {COLORS, TYPOGRAPHY, BORDER_RADIUS} from "../../styles";
+import {scale, verticalScale, moderateScale, dimensions} from "../../utils/responsive";
+import {CLOSE_BUTTON_SIZE_LG, MODAL_CLOSE_BUTTON_POSITION, MODAL_HEIGHT, MODAL_WIDTH} from "../../constants/layout";
 import CoinSvg from "../../../assets/images/coin.svg";
 import LargeCoinStackSvg from "../../../assets/images/large-coin-stack.svg";
 import ModalBg from "../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../assets/images/home-bg.svg";
-import { logger } from "../../utils/logger";
+import {logger} from "../../utils/logger";
 import CloseButton from "../buttons/CloseButton";
 import WideButton from "../buttons/WideButton";
-import { AppStrings } from "../../constants/AppStrings";
+import {AppStrings} from "../../constants/AppStrings";
 import SlideInModalContent from "../shared/SlideInModalContent";
 
-const { screenHeight } = dimensions;
+const {screenHeight} = dimensions;
 const GRID_COIN_ICON_WIDTH = moderateScale(86);
 const GRID_COIN_ICON_HEIGHT = verticalScale(51);
 const GRID_CARD_HEIGHT = verticalScale(144);
@@ -83,10 +66,7 @@ const CoinShop: React.FC<CoinShopProps> = ({
     [sortedProducts],
   );
   const standardProducts = useMemo(
-    () =>
-      sortedProducts.filter(
-        (product) => product.featuredOrder === undefined || product.featuredOrder === null,
-      ),
+    () => sortedProducts.filter((product) => product.featuredOrder === undefined || product.featuredOrder === null),
     [sortedProducts],
   );
 
@@ -132,8 +112,7 @@ const CoinShop: React.FC<CoinShopProps> = ({
   }, [isVisible, onFirstPaint]);
 
   const selectedProductStillAvailable =
-    selectedProductId === null ||
-    sortedProducts.some((product) => product.productId === selectedProductId);
+    selectedProductId === null || sortedProducts.some((product) => product.productId === selectedProductId);
   const effectiveSelectedProductId = selectedProductStillAvailable ? selectedProductId : null;
 
   useEffect(() => {
@@ -166,12 +145,7 @@ const CoinShop: React.FC<CoinShopProps> = ({
   };
 
   return (
-    <Modal
-      visible={isVisible}
-      transparent={true}
-      animationType="fade"
-      onRequestClose={handleClose}
-    >
+    <Modal visible={isVisible} transparent={true} animationType="fade" onRequestClose={handleClose}>
       <View style={styles.overlay}>
         <View style={styles.backdrop} />
 
@@ -180,30 +154,19 @@ const CoinShop: React.FC<CoinShopProps> = ({
           style={[
             styles.modalContainer,
             {
-              left: Math.max(
-                COIN_SHOP_MODAL_SIDE_INSET,
-                insets.left + COIN_SHOP_SAFE_EDGE_GAP,
-              ),
-              right: Math.max(
-                COIN_SHOP_MODAL_SIDE_INSET,
-                insets.right + COIN_SHOP_SAFE_EDGE_GAP,
-              ),
+              left: Math.max(COIN_SHOP_MODAL_SIDE_INSET, insets.left + COIN_SHOP_SAFE_EDGE_GAP),
+              right: Math.max(COIN_SHOP_MODAL_SIDE_INSET, insets.right + COIN_SHOP_SAFE_EDGE_GAP),
               top: insets.top + availableHeight * 0.05,
               bottom: insets.bottom + availableHeight * 0.05,
             },
           ]}
         >
-          <ModalBg
-            width="100%"
-            height="100%"
-            style={StyleSheet.absoluteFill}
-            preserveAspectRatio="none"
-          />
+          <ModalBg width="100%" height="100%" style={StyleSheet.absoluteFill} preserveAspectRatio="none" />
           {/* Decorative wave — clipped to card bounds */}
           <HomeBg
             width={MODAL_WIDTH * 1.1}
             height={MODAL_HEIGHT * 1.1}
-            style={{ position: "absolute", top: -MODAL_HEIGHT * 0.05, left: -MODAL_WIDTH * 0.05 }}
+            style={{position: "absolute", top: -MODAL_HEIGHT * 0.05, left: -MODAL_WIDTH * 0.05}}
           />
           <CloseButton
             onPress={handleClose}
@@ -219,26 +182,26 @@ const CoinShop: React.FC<CoinShopProps> = ({
             </View>
           ) : (
             <>
-            <View style={styles.headerRow}>
-              <Text style={styles.title}>{AppStrings.CoinShop.TITLE}</Text>
-            </View>
-
-            <View style={styles.coinsPill}>
-              <View style={styles.coinsPillLeft}>
-                <CoinSvg width={moderateScale(32)} height={moderateScale(32)} />
-                <View style={styles.coinsPillText}>
-                  <Text style={styles.coinsPillLabel}>{AppStrings.CoinShop.YOUR_BALANCE}</Text>
-                </View>
+              <View style={styles.headerRow}>
+                <Text style={styles.title}>{AppStrings.CoinShop.TITLE}</Text>
               </View>
-              <Text style={styles.coinsPillAmount}>
-                {currentCoins.toLocaleString()}{AppStrings.CoinShop.COINS_SUFFIX}
-              </Text>
-            </View>
 
-                {error && <Text style={styles.errorText}>{error}</Text>}
+              <View style={styles.coinsPill}>
+                <View style={styles.coinsPillLeft}>
+                  <CoinSvg width={moderateScale(32)} height={moderateScale(32)} />
+                  <View style={styles.coinsPillText}>
+                    <Text style={styles.coinsPillLabel}>{AppStrings.CoinShop.YOUR_BALANCE}</Text>
+                  </View>
+                </View>
+                <Text style={styles.coinsPillAmount}>
+                  {currentCoins.toLocaleString()}
+                  {AppStrings.CoinShop.COINS_SUFFIX}
+                </Text>
+              </View>
 
-                <View style={styles.scrollContent}>
+              {error && <Text style={styles.errorText}>{error}</Text>}
 
+              <View style={styles.scrollContent}>
                 {!error && sortedProducts.length > 0 && (
                   <>
                     {featuredProducts.length > 0 && (
@@ -266,7 +229,8 @@ const CoinShop: React.FC<CoinShopProps> = ({
                                 style={styles.gridCoinIcon}
                               />
                               <Text style={styles.productCoins}>
-                                {product.coins.toLocaleString()}{AppStrings.CoinShop.COINS_SUFFIX}
+                                {product.coins.toLocaleString()}
+                                {AppStrings.CoinShop.COINS_SUFFIX}
                               </Text>
                               <View style={styles.productPriceButton}>
                                 <Text style={styles.productPriceText}>{displayPrice}</Text>
@@ -293,7 +257,8 @@ const CoinShop: React.FC<CoinShopProps> = ({
                               <View style={styles.listCardLeft}>
                                 <CoinSvg width={LIST_COIN_ICON_SIZE} height={LIST_COIN_ICON_SIZE} />
                                 <Text style={styles.listCoins}>
-                                  {product.coins.toLocaleString()}{AppStrings.CoinShop.COINS_SUFFIX}
+                                  {product.coins.toLocaleString()}
+                                  {AppStrings.CoinShop.COINS_SUFFIX}
                                 </Text>
                               </View>
                               <View style={styles.listPriceButton}>
@@ -322,7 +287,7 @@ const CoinShop: React.FC<CoinShopProps> = ({
                   />
                 </View>
               </View>
-          </>
+            </>
           )}
         </SlideInModalContent>
       </View>
@@ -356,7 +321,7 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     ...MODAL_CLOSE_BUTTON_POSITION,
-    top: verticalScale(36)
+    top: verticalScale(24),
   },
   coinsPill: {
     alignItems: "center",
@@ -370,7 +335,7 @@ const styles = StyleSheet.create({
     marginLeft: scale(12),
     marginRight: scale(12),
     paddingHorizontal: scale(16),
-    paddingVertical: verticalScale(8)
+    paddingVertical: verticalScale(8),
   },
   coinsPillAmount: {
     color: COLORS.gray800,
@@ -422,7 +387,7 @@ const styles = StyleSheet.create({
     elevation: 10,
     overflow: "visible",
     shadowColor: COLORS.primaryOrange,
-    shadowOffset: { width: 0, height: 0 },
+    shadowOffset: {width: 0, height: 0},
     shadowOpacity: 0.7,
     shadowRadius: moderateScale(10),
   },
@@ -455,7 +420,7 @@ const styles = StyleSheet.create({
     borderColor: COLORS.primaryOrange,
     elevation: 7,
     shadowColor: COLORS.primaryOrange,
-    shadowOffset: { width: 0, height: 0 },
+    shadowOffset: {width: 0, height: 0},
     shadowOpacity: 0.45,
     shadowRadius: moderateScale(6),
   },
@@ -494,7 +459,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     position: "absolute",
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: {width: 0, height: 4},
     shadowOpacity: 0.25,
     shadowRadius: 8,
   },

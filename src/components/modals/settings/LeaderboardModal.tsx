@@ -8,21 +8,13 @@
  *
  * Entry point: FullProfileDetailsModal ("Leaderboard" button).
  */
-import React, { useEffect, useState, useCallback } from "react";
-import {
-  View,
-  Text,
-  Modal,
-  ScrollView,
-  TouchableOpacity,
-  ActivityIndicator,
-  Image,
-} from "react-native";
-import { getApp } from "@react-native-firebase/app";
-import { getAuth } from "@react-native-firebase/auth";
-import { getCallableFunction } from "../../../utils/firebaseFunctions";
+import React, {useEffect, useState, useCallback} from "react";
+import {View, Text, Modal, ScrollView, TouchableOpacity, ActivityIndicator, Image} from "react-native";
+import {getApp} from "@react-native-firebase/app";
+import {getAuth} from "@react-native-firebase/auth";
+import {getCallableFunction} from "../../../utils/firebaseFunctions";
 import CloseButton from "../../buttons/CloseButton";
-import { TYPOGRAPHY, COLORS, SPACING } from "../../../styles";
+import {TYPOGRAPHY, COLORS, SPACING} from "../../../styles";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
 import {
@@ -33,10 +25,11 @@ import {
   MODAL_CONTENT_PADDING,
   AVATAR_SIZE_MEDIUM,
 } from "../../../constants/layout";
-import { logger } from "../../../utils/logger";
-import { captureException } from "../../../utils/sentry";
-import { AppStrings } from "../../../constants/AppStrings";
+import {logger} from "../../../utils/logger";
+import {captureException} from "../../../utils/sentry";
+import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
+import {verticalScale} from "@/utils/responsive";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -81,9 +74,7 @@ const normalizeUserId = (value: string | null | undefined): string | null => {
   return trimmed.length > 0 ? trimmed : null;
 };
 
-const buildUserIdCandidates = (
-  userIds: Array<string | null | undefined>
-): string[] => {
+const buildUserIdCandidates = (userIds: Array<string | null | undefined>): string[] => {
   const candidates: string[] = [];
   for (const rawUserId of userIds) {
     const normalizedUserId = normalizeUserId(rawUserId);
@@ -105,10 +96,10 @@ const HIGHLIGHT_BG = "rgba(254,200,128,0.25)";
 const MAX_ROWS = 10;
 const TOP_ROWS = 9;
 
-const TABS: { type: LeaderboardType; statKey: keyof LeaderboardEntry }[] = [
-  { type: "xp", statKey: "xp" },
-  { type: "totalWins", statKey: "totalWins" },
-  { type: "bestStreak", statKey: "bestStreak" },
+const TABS: {type: LeaderboardType; statKey: keyof LeaderboardEntry}[] = [
+  {type: "xp", statKey: "xp"},
+  {type: "totalWins", statKey: "totalWins"},
+  {type: "bestStreak", statKey: "bestStreak"},
 ];
 
 const getTabLabel = (type: LeaderboardType): string => {
@@ -142,12 +133,10 @@ const buildDisplayEntries = (
   rawEntries: LeaderboardEntry[],
   currentUserIds: string[],
   fallbackCurrentUserId: string | null,
-  type: LeaderboardType
+  type: LeaderboardType,
 ): LeaderboardEntry[] => {
   const normalizedCurrentUserIds = new Set(
-    currentUserIds
-      .map((value) => normalizeUserId(value))
-      .filter((value): value is string => value != null)
+    currentUserIds.map((value) => normalizeUserId(value)).filter((value): value is string => value != null),
   );
   const isCurrentUserEntry = (entry: LeaderboardEntry): boolean => {
     const normalizedEntryUserId = normalizeUserId(entry.userId);
@@ -167,45 +156,45 @@ const buildDisplayEntries = (
   const currentUserEntry =
     normalizedCurrentUserIds.size === 0
       ? null
-      : sortedEntries.find((entry) => isCurrentUserEntry(entry)) ??
-        (fallbackCurrentUserId
-          ? createCurrentUserFallback(fallbackCurrentUserId)
-          : null);
-  const topEntries = (
-    currentUserEntry
-      ? sortedEntries.filter((entry) => !isCurrentUserEntry(entry))
-      : sortedEntries
-  ).slice(0, TOP_ROWS);
+      : (sortedEntries.find((entry) => isCurrentUserEntry(entry)) ??
+        (fallbackCurrentUserId ? createCurrentUserFallback(fallbackCurrentUserId) : null));
+  const nonCurrentUserEntries = sortedEntries.filter((entry) => !isCurrentUserEntry(entry));
+  const currentUserRank = currentUserEntry ? sortedEntries.findIndex((entry) => isCurrentUserEntry(entry)) : -1;
+
+  let rankedEntries: LeaderboardEntry[];
+  if (!currentUserEntry) {
+    rankedEntries = sortedEntries.slice(0, MAX_ROWS);
+  } else if (currentUserRank >= 0 && currentUserRank < MAX_ROWS) {
+    rankedEntries = [...nonCurrentUserEntries];
+    rankedEntries.splice(currentUserRank, 0, currentUserEntry);
+    rankedEntries = rankedEntries.slice(0, MAX_ROWS);
+  } else {
+    rankedEntries = [...nonCurrentUserEntries.slice(0, TOP_ROWS), currentUserEntry].slice(0, MAX_ROWS);
+  }
 
   if (!__DEV__) {
-    return [...topEntries, ...(currentUserEntry ? [currentUserEntry] : [])].slice(0, MAX_ROWS);
+    return rankedEntries;
   }
 
-  const paddedTopEntries = [...topEntries];
-  while (paddedTopEntries.length < TOP_ROWS) {
-    paddedTopEntries.push(createDevFakeEntry(paddedTopEntries.length));
+  const paddedEntries = [...rankedEntries];
+  while (paddedEntries.length < MAX_ROWS) {
+    paddedEntries.push(createDevFakeEntry(paddedEntries.length));
   }
 
-  return [...paddedTopEntries, ...(currentUserEntry ? [currentUserEntry] : [])].slice(0, MAX_ROWS);
+  return paddedEntries.slice(0, MAX_ROWS);
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Component
 // ─────────────────────────────────────────────────────────────────────────────
 
-const LeaderboardModal: React.FC<LeaderboardModalProps> = ({
-  isVisible,
-  onClose,
-  currentUserId,
-}) => {
+const LeaderboardModal: React.FC<LeaderboardModalProps> = ({isVisible, onClose, currentUserId}) => {
   const authUserId = normalizeUserId(getAuth(getApp()).currentUser?.uid ?? null);
   const normalizedCurrentUserId = normalizeUserId(currentUserId);
   const shouldUseAuthUserIdFallback = normalizedCurrentUserId != null;
   const [activeTab, setActiveTab] = useState<LeaderboardType>("xp");
   const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
-  const [requestingUserId, setRequestingUserId] = useState<string | null>(
-    normalizedCurrentUserId
-  );
+  const [requestingUserId, setRequestingUserId] = useState<string | null>(normalizedCurrentUserId);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -213,27 +202,30 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({
     setRequestingUserId(normalizedCurrentUserId);
   }, [normalizedCurrentUserId]);
 
-  const fetchLeaderboard = useCallback(async (type: LeaderboardType) => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const callable = getCallableFunction("getLeaderboard");
-      const result = await callable({ type, limit: 50 });
-      const data = result.data as GetLeaderboardResult;
-      setEntries(data.entries ?? []);
-      setRequestingUserId(
-        normalizeUserId(data.requestingUserId) ??
-          (shouldUseAuthUserIdFallback ? authUserId : null) ??
-          normalizedCurrentUserId
-      );
-    } catch (err) {
-      logger.error("[LeaderboardModal] Failed to fetch leaderboard:", err);
-      captureException(err);
-      setError(AppStrings.Leaderboard.LOAD_ERROR);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [authUserId, normalizedCurrentUserId, shouldUseAuthUserIdFallback]);
+  const fetchLeaderboard = useCallback(
+    async (type: LeaderboardType) => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const callable = getCallableFunction("getLeaderboard");
+        const result = await callable({type, limit: 50});
+        const data = result.data as GetLeaderboardResult;
+        setEntries(data.entries ?? []);
+        setRequestingUserId(
+          normalizeUserId(data.requestingUserId) ??
+            (shouldUseAuthUserIdFallback ? authUserId : null) ??
+            normalizedCurrentUserId,
+        );
+      } catch (err) {
+        logger.error("[LeaderboardModal] Failed to fetch leaderboard:", err);
+        captureException(err);
+        setError(AppStrings.Leaderboard.LOAD_ERROR);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [authUserId, normalizedCurrentUserId, shouldUseAuthUserIdFallback],
+  );
 
   useEffect(() => {
     if (isVisible) {
@@ -248,15 +240,8 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({
     shouldUseAuthUserIdFallback ? authUserId : null,
   ]);
   const fallbackCurrentUserId =
-    requestingUserId ??
-    normalizedCurrentUserId ??
-    (shouldUseAuthUserIdFallback ? authUserId : null);
-  const displayEntries = buildDisplayEntries(
-    entries,
-    currentUserIdCandidates,
-    fallbackCurrentUserId,
-    activeTab
-  );
+    requestingUserId ?? normalizedCurrentUserId ?? (shouldUseAuthUserIdFallback ? authUserId : null);
+  const displayEntries = buildDisplayEntries(entries, currentUserIdCandidates, fallbackCurrentUserId, activeTab);
 
   return (
     <Modal
@@ -283,168 +268,172 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({
               overflow: "hidden",
             }}
           >
-          <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{ position: "absolute" }} />
-          {/* Decorative wave — clipped to card bounds */}
-          <HomeBg
-            width={MODAL_WIDTH * 1.1}
-            height={MODAL_HEIGHT * 1.1}
-            style={{ position: "absolute", top: -MODAL_HEIGHT * 0.25, left: -MODAL_WIDTH * 0.05 }}
-          />
-          <CloseButton
-            onPress={onClose}
-            size={CLOSE_BUTTON_SIZE}
-            style={{
-              position: "absolute",
-              top: SPACING["2xl"],
-              right: SPACING.lg,
-              zIndex: 10,
-            }}
-          />
+            <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{position: "absolute"}} />
+            {/* Decorative wave — clipped to card bounds */}
+            <HomeBg
+              width={MODAL_WIDTH * 1.1}
+              height={MODAL_HEIGHT * 1.1}
+              style={{position: "absolute", top: -MODAL_HEIGHT * 0.25, left: -MODAL_WIDTH * 0.05}}
+            />
+            <CloseButton
+              onPress={onClose}
+              size={CLOSE_BUTTON_SIZE}
+              style={{
+                position: "absolute",
+                marginTop: verticalScale(42),
+                right: SPACING.lg,
+                zIndex: 10,
+              }}
+            />
 
-          {/* Title */}
-          <Text
-            style={{
-              fontSize: TYPOGRAPHY.fontSize["2xl"],
-              fontFamily: TYPOGRAPHY.fontSecondaryBold,
-              color: "black",
-              marginTop: SPACING["2xl"],
-              marginBottom: SPACING.sm,
-            }}
-            accessibilityRole="header"
-          >
-            {AppStrings.Leaderboard.TITLE}
-          </Text>
+            {/* Title */}
+            <Text
+              style={{
+                fontSize: TYPOGRAPHY.fontSize["2xl"],
+                fontFamily: TYPOGRAPHY.fontSecondaryBold,
+                color: "black",
+                marginTop: SPACING["2xl"],
+                marginBottom: SPACING.sm,
+              }}
+              accessibilityRole="header"
+            >
+              {AppStrings.Leaderboard.TITLE}
+            </Text>
 
-          {/* Tabs */}
-          <View
-            style={{
-              flexDirection: "row",
-              marginBottom: SPACING.sm,
-              backgroundColor: TAB_INACTIVE,
-              borderRadius: CARD_BORDER_RADIUS,
-              padding: 3,
-            }}
-          >
-            {TABS.map((tab) => {
-              const isActive = tab.type === activeTab;
-              return (
-                <TouchableOpacity
-                  key={tab.type}
-                  onPress={() => setActiveTab(tab.type)}
+            {/* Tabs */}
+            <View
+              style={{
+                flexDirection: "row",
+                marginBottom: SPACING.sm,
+                backgroundColor: TAB_INACTIVE,
+                borderRadius: CARD_BORDER_RADIUS,
+                padding: 3,
+              }}
+            >
+              {TABS.map((tab) => {
+                const isActive = tab.type === activeTab;
+                return (
+                  <TouchableOpacity
+                    key={tab.type}
+                    onPress={() => setActiveTab(tab.type)}
+                    style={{
+                      paddingVertical: SPACING.xs,
+                      paddingHorizontal: SPACING.md,
+                      borderRadius: CARD_BORDER_RADIUS - 2,
+                      backgroundColor: isActive ? PURPLE : "transparent",
+                    }}
+                    accessibilityRole="tab"
+                    accessibilityState={{selected: isActive}}
+                    accessibilityLabel={getTabLabel(tab.type)}
+                  >
+                    <Text
+                      style={{
+                        fontSize: TYPOGRAPHY.fontSize.sm,
+                        fontFamily: isActive ? TYPOGRAPHY.fontSecondaryBold : TYPOGRAPHY.fontSecondary,
+                        color: isActive ? GOLD : "rgba(0,0,0,0.6)",
+                      }}
+                    >
+                      {getTabLabel(tab.type)}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+
+            <View style={{flex: 1, width: "100%"}}>
+              {/* Content */}
+              {isLoading ? (
+                <View style={{flex: 1, justifyContent: "center", paddingVertical: SPACING.xl}}>
+                  <ActivityIndicator
+                    color={PURPLE}
+                    size="large"
+                    accessibilityLabel={AppStrings.Accessibility.LOADING_LEADERBOARD}
+                  />
+                </View>
+              ) : error ? (
+                <View
                   style={{
-                    paddingVertical: SPACING.xs,
-                    paddingHorizontal: SPACING.md,
-                    borderRadius: CARD_BORDER_RADIUS - 2,
-                    backgroundColor: isActive ? PURPLE : "transparent",
+                    flex: 1,
+                    justifyContent: "center",
+                    paddingVertical: SPACING.lg,
+                    paddingHorizontal: MODAL_CONTENT_PADDING,
                   }}
-                  accessibilityRole="tab"
-                  accessibilityState={{ selected: isActive }}
-                  accessibilityLabel={getTabLabel(tab.type)}
                 >
                   <Text
                     style={{
                       fontSize: TYPOGRAPHY.fontSize.sm,
-                      fontFamily: isActive ? TYPOGRAPHY.fontSecondaryBold : TYPOGRAPHY.fontSecondary,
-                      color: isActive ? GOLD : "rgba(0,0,0,0.6)",
+                      fontFamily: TYPOGRAPHY.fontSecondary,
+                      color: COLORS.error ?? "#EF4444",
+                      textAlign: "center",
                     }}
+                    accessibilityRole="alert"
                   >
-                    {getTabLabel(tab.type)}
+                    {error}
                   </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-
-          <View style={{ flex: 1, width: "100%" }}>
-            {/* Content */}
-            {isLoading ? (
-              <View style={{ flex: 1, justifyContent: "center", paddingVertical: SPACING.xl }}>
-                <ActivityIndicator color={PURPLE} size="large" accessibilityLabel={AppStrings.Accessibility.LOADING_LEADERBOARD} />
-              </View>
-            ) : error ? (
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: "center",
-                  paddingVertical: SPACING.lg,
-                  paddingHorizontal: MODAL_CONTENT_PADDING,
-                }}
-              >
-                <Text
+                  <TouchableOpacity
+                    onPress={() => void fetchLeaderboard(activeTab)}
+                    style={{marginTop: SPACING.md, alignItems: "center"}}
+                    accessibilityRole="button"
+                    accessibilityLabel={AppStrings.Leaderboard.RETRY_BUTTON}
+                  >
+                    <Text
+                      style={{
+                        fontSize: TYPOGRAPHY.fontSize.sm,
+                        fontFamily: TYPOGRAPHY.fontSecondaryBold,
+                        color: PURPLE,
+                      }}
+                    >
+                      {AppStrings.Leaderboard.RETRY_BUTTON}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              ) : displayEntries.length === 0 ? (
+                <View
                   style={{
-                    fontSize: TYPOGRAPHY.fontSize.sm,
-                    fontFamily: TYPOGRAPHY.fontSecondary,
-                    color: COLORS.error ?? "#EF4444",
-                    textAlign: "center",
+                    flex: 1,
+                    justifyContent: "center",
+                    paddingVertical: SPACING.xl,
+                    paddingHorizontal: MODAL_CONTENT_PADDING,
                   }}
-                  accessibilityRole="alert"
-                >
-                  {error}
-                </Text>
-                <TouchableOpacity
-                  onPress={() => void fetchLeaderboard(activeTab)}
-                  style={{ marginTop: SPACING.md, alignItems: "center" }}
-                  accessibilityRole="button"
-                  accessibilityLabel={AppStrings.Leaderboard.RETRY_BUTTON}
                 >
                   <Text
                     style={{
                       fontSize: TYPOGRAPHY.fontSize.sm,
-                      fontFamily: TYPOGRAPHY.fontSecondaryBold,
-                      color: PURPLE,
+                      fontFamily: TYPOGRAPHY.fontSecondary,
+                      color: "rgba(0,0,0,0.5)",
+                      textAlign: "center",
                     }}
                   >
-                    {AppStrings.Leaderboard.RETRY_BUTTON}
+                    {AppStrings.Leaderboard.NO_SCORES_YET}
                   </Text>
-                </TouchableOpacity>
-              </View>
-            ) : displayEntries.length === 0 ? (
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: "center",
-                  paddingVertical: SPACING.xl,
-                  paddingHorizontal: MODAL_CONTENT_PADDING,
-                }}
-              >
-                <Text
-                  style={{
-                    fontSize: TYPOGRAPHY.fontSize.sm,
-                    fontFamily: TYPOGRAPHY.fontSecondary,
-                    color: "rgba(0,0,0,0.5)",
-                    textAlign: "center",
+                </View>
+              ) : (
+                <ScrollView
+                  style={{flex: 1, width: "100%"}}
+                  contentContainerStyle={{
+                    paddingHorizontal: MODAL_CONTENT_PADDING,
+                    paddingBottom: SPACING.lg,
                   }}
+                  showsVerticalScrollIndicator={false}
                 >
-                  {AppStrings.Leaderboard.NO_SCORES_YET}
-                </Text>
-              </View>
-            ) : (
-              <ScrollView
-                style={{ flex: 1, width: "100%" }}
-                contentContainerStyle={{
-                  paddingHorizontal: MODAL_CONTENT_PADDING,
-                  paddingBottom: SPACING.lg,
-                }}
-                showsVerticalScrollIndicator={false}
-              >
-                {displayEntries.map((entry, index) => {
-                  const isCurrentUser = currentUserIdCandidates.includes(entry.userId);
-                  const rank = index + 1;
-                  const statValue = entry[activeTabConfig.statKey] as number;
+                  {displayEntries.map((entry, index) => {
+                    const isCurrentUser = currentUserIdCandidates.includes(entry.userId);
+                    const rank = index + 1;
+                    const statValue = entry[activeTabConfig.statKey] as number;
 
-                  return (
-                    <LeaderboardRow
-                      key={`${entry.userId}-${index}`}
-                      rank={rank}
-                      entry={entry}
-                      statValue={statValue}
-                      isCurrentUser={isCurrentUser}
-                    />
-                  );
-                })}
-              </ScrollView>
-            )}
-          </View>
+                    return (
+                      <LeaderboardRow
+                        key={`${entry.userId}-${index}`}
+                        rank={rank}
+                        entry={entry}
+                        statValue={statValue}
+                        isCurrentUser={isCurrentUser}
+                      />
+                    );
+                  })}
+                </ScrollView>
+              )}
+            </View>
           </View>
         </SlideInModalContent>
       </View>
@@ -473,12 +462,7 @@ const RANK_COLORS: Record<number, string> = {
   3: "#CD7F32",
 };
 
-const LeaderboardRow: React.FC<LeaderboardRowProps> = ({
-  rank,
-  entry,
-  statValue,
-  isCurrentUser,
-}) => {
+const LeaderboardRow: React.FC<LeaderboardRowProps> = ({rank, entry, statValue, isCurrentUser}) => {
   const rankColor = RANK_COLORS[rank] ?? "rgba(0,0,0,0.4)";
   const avatarSize = AVATAR_SIZE_MEDIUM * 0.6;
 
@@ -513,7 +497,7 @@ const LeaderboardRow: React.FC<LeaderboardRowProps> = ({
       {/* Avatar */}
       {entry.avatarUrl ? (
         <Image
-          source={{ uri: entry.avatarUrl }}
+          source={{uri: entry.avatarUrl}}
           style={{
             width: avatarSize,
             height: avatarSize,

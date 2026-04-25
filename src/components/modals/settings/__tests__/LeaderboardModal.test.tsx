@@ -382,7 +382,7 @@ describe("LeaderboardModal", () => {
 
     await waitFor(() => {
       expect(getAllByText("Me (you)")).toHaveLength(1);
-      expect(getByLabelText(/Rank 10: Me, score (10,000|10000), you/)).toBeTruthy();
+      expect(getByLabelText(/Rank 1: Me, score (10,000|10000), you/)).toBeTruthy();
     });
   });
 

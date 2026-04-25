@@ -39,11 +39,11 @@ const StatsModal: React.FC<StatsModalProps> = ({isVisible, onClose, playerData})
   const avgGuesses = stats?.averageGuesses != null ? stats.averageGuesses.toFixed(1) : "0.0";
   const dailyPuzzlesCompleted = toNonNegativeStat(stats?.dailyPuzzlesCompleted);
   const highestClassicLevel = toNonNegativeStat(stats?.highestLevelClassic);
+  const totalWordsGuessed = dailyPuzzlesCompleted + highestClassicLevel;
   const totalWins = toNonNegativeStat(stats?.totalWins ?? stats?.wins);
   const recordedGamesPlayed = toNonNegativeStat(stats?.gamesPlayed);
   const failedAttempts = Math.max(0, recordedGamesPlayed - totalWins);
-  const calculatedGamesPlayed =
-    dailyPuzzlesCompleted + highestClassicLevel + failedAttempts;
+  const calculatedGamesPlayed = dailyPuzzlesCompleted + highestClassicLevel + failedAttempts;
 
   return (
     <Modal
@@ -81,7 +81,7 @@ const StatsModal: React.FC<StatsModalProps> = ({isVisible, onClose, playerData})
             <CloseButton
               onPress={onClose}
               size={CLOSE_BUTTON_SIZE}
-              style={{...MODAL_CLOSE_BUTTON_POSITION, marginTop: verticalScale(28)}}
+              style={{...MODAL_CLOSE_BUTTON_POSITION, marginTop: verticalScale(14)}}
               accessibilityLabel={AppStrings.Accessibility.CLOSE_STATISTICS}
             />
             <Text
@@ -120,7 +120,7 @@ const StatsModal: React.FC<StatsModalProps> = ({isVisible, onClose, playerData})
 
               <SectionHeader label={AppStrings.StatsModal.PERFORMANCE_SECTION} />
               <StatRow label={AppStrings.StatsModal.AVG_GUESSES} value={avgGuesses} />
-              <StatRow label={AppStrings.StatsModal.TOTAL_WORDS_GUESSED} value={stats?.totalWordsGuessed ?? 0} />
+              <StatRow label={AppStrings.StatsModal.TOTAL_WORDS_GUESSED} value={totalWordsGuessed} />
               <StatRow label={AppStrings.StatsModal.TOTAL_SCORE} value={stats?.totalScore ?? 0} />
               <StatRow label={AppStrings.StatsModal.HINTS_USED} value={stats?.totalHintsUsed ?? 0} />
             </ScrollView>

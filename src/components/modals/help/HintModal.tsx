@@ -78,7 +78,7 @@ const HintModal: React.FC<HintModalProps> = ({isVisible, userCoins, hintCost, on
             <CloseButton
               onPress={onClose}
               size={CLOSE_BUTTON_SIZE}
-              style={{...MODAL_CLOSE_BUTTON_POSITION, marginTop: verticalScale(22)}}
+              style={{...MODAL_CLOSE_BUTTON_POSITION, marginTop: verticalScale(12)}}
             />
             <View
               style={{

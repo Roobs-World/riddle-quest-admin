@@ -3,24 +3,12 @@
  */
 
 import React from "react";
-import {
-  View,
-  Text,
-  Modal,
-  TouchableOpacity,
-  Alert,
-  ScrollView,
-} from "react-native";
+import {View, Text, Modal, TouchableOpacity, Alert, ScrollView} from "react-native";
 import CloseButton from "../../buttons/CloseButton";
-import {
-  AppStrings,
-  LANGUAGE_OPTIONS,
-  SupportedLanguage,
-  getLanguageLabel,
-} from "../../../constants/AppStrings";
-import { TYPOGRAPHY } from "../../../styles";
-import { SPACING } from "../../../styles";
-import { verticalScale } from "@/utils/responsive";
+import {AppStrings, LANGUAGE_OPTIONS, SupportedLanguage, getLanguageLabel} from "../../../constants/AppStrings";
+import {TYPOGRAPHY} from "../../../styles";
+import {SPACING} from "../../../styles";
+import {verticalScale} from "@/utils/responsive";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 
 interface SettingsModalProps {
@@ -37,13 +25,7 @@ interface SettingsModalProps {
   onPressCredits: () => void;
 }
 
-const SegmentedToggle = ({
-  value,
-  onChange,
-}: {
-  value: boolean;
-  onChange: (v: boolean) => void;
-}) => (
+const SegmentedToggle = ({value, onChange}: {value: boolean; onChange: (v: boolean) => void}) => (
   <View
     style={{
       flexDirection: "row",
@@ -94,15 +76,7 @@ const SegmentedToggle = ({
   </View>
 );
 
-const ArrowRow = ({
-  label,
-  value,
-  onPress,
-}: {
-  label: string;
-  value?: string;
-  onPress: () => void;
-}) => (
+const ArrowRow = ({label, value, onPress}: {label: string; value?: string; onPress: () => void}) => (
   <TouchableOpacity
     onPress={onPress}
     style={{
@@ -121,7 +95,7 @@ const ArrowRow = ({
     >
       {label}
     </Text>
-    <View style={{ flexDirection: "row", alignItems: "center" }}>
+    <View style={{flexDirection: "row", alignItems: "center"}}>
       {value ? (
         <Text
           style={{
@@ -134,7 +108,7 @@ const ArrowRow = ({
           {value}
         </Text>
       ) : null}
-      <Text style={{ fontSize: 20, color: "#9CA3AF" }}>{">"}</Text>
+      <Text style={{fontSize: 20, color: "#9CA3AF"}}>{">"}</Text>
     </View>
   </TouchableOpacity>
 );
@@ -153,12 +127,9 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
   onPressCredits,
 }) => {
   const [isLanguagePickerOpen, setIsLanguagePickerOpen] = React.useState(false);
-  const [selectedLanguage, setSelectedLanguage] =
-    React.useState<SupportedLanguage>(currentLanguage);
-  const [selectedSoundEnabled, setSelectedSoundEnabled] =
-    React.useState<boolean>(isSoundEnabled);
-  const [selectedHapticsEnabled, setSelectedHapticsEnabled] =
-    React.useState<boolean>(isHapticsEnabled);
+  const [selectedLanguage, setSelectedLanguage] = React.useState<SupportedLanguage>(currentLanguage);
+  const [selectedSoundEnabled, setSelectedSoundEnabled] = React.useState<boolean>(isSoundEnabled);
+  const [selectedHapticsEnabled, setSelectedHapticsEnabled] = React.useState<boolean>(isHapticsEnabled);
 
   React.useEffect(() => {
     if (isVisible) {
@@ -169,12 +140,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
   }, [isVisible, currentLanguage, isSoundEnabled, isHapticsEnabled]);
 
   return (
-    <Modal
-      visible={isVisible}
-      transparent={true}
-      animationType="fade"
-      onRequestClose={onClose}
-    >
+    <Modal visible={isVisible} transparent={true} animationType="fade" onRequestClose={onClose}>
       <View
         style={{
           flex: 1,
@@ -182,7 +148,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
           backgroundColor: "rgba(0,0,0,0.5)",
         }}
       >
-        <TouchableOpacity style={{ flex: 1 }} onPress={onClose} activeOpacity={1} />
+        <TouchableOpacity style={{flex: 1}} onPress={onClose} activeOpacity={1} />
 
         <SlideInModalContent isVisible={isVisible}>
           <View
@@ -193,131 +159,131 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
               paddingBottom: SPACING["2xl"] ?? 32,
             }}
           >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-              paddingHorizontal: SPACING.lg,
-              paddingVertical: SPACING.md,
-              position: "relative",
-            }}
-          >
-            <Text
-              style={{
-                fontFamily: TYPOGRAPHY.fontPrimary,
-                fontSize: TYPOGRAPHY.fontSize["4xl"],
-                color: "#1A1A1A",
-                letterSpacing: 1,
-              }}
-            >
-              {AppStrings.Settings.TITLE}
-            </Text>
-            <CloseButton
-              onPress={onClose}
-              style={{
-                position: "absolute",
-                right: SPACING.lg,
-                top: verticalScale(32),
-            }}
-            />
-          </View>
-
-          <View style={{ paddingHorizontal: SPACING.lg }}>
             <View
               style={{
                 flexDirection: "row",
                 alignItems: "center",
-                justifyContent: "space-between",
-                paddingVertical: 16,
+                justifyContent: "center",
+                paddingHorizontal: SPACING.lg,
+                paddingVertical: SPACING.md,
+                position: "relative",
               }}
             >
               <Text
                 style={{
-                  fontFamily: TYPOGRAPHY.fontSecondary,
-                  fontSize: TYPOGRAPHY.fontSize.base,
+                  fontFamily: TYPOGRAPHY.fontPrimary,
+                  fontSize: TYPOGRAPHY.fontSize["4xl"],
                   color: "#1A1A1A",
+                  letterSpacing: 1,
                 }}
               >
-                {AppStrings.Settings.SOUND_TOGGLE}
+                {AppStrings.Settings.TITLE}
               </Text>
-              <SegmentedToggle
-                value={selectedSoundEnabled}
-                onChange={(enabled) => {
-                  setSelectedSoundEnabled(enabled);
-                  onToggleSound(enabled);
+              <CloseButton
+                onPress={onClose}
+                style={{
+                  position: "absolute",
+                  right: SPACING.lg,
+                  top: verticalScale(22),
                 }}
               />
             </View>
 
-            <View style={{ height: 1, backgroundColor: "#E8E0E8" }} />
-
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-                paddingVertical: 16,
-              }}
-            >
-              <Text
+            <View style={{paddingHorizontal: SPACING.lg}}>
+              <View
                 style={{
-                  fontFamily: TYPOGRAPHY.fontSecondary,
-                  fontSize: TYPOGRAPHY.fontSize.base,
-                  color: "#1A1A1A",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  paddingVertical: 16,
                 }}
               >
-                {AppStrings.Settings.HAPTICS_TOGGLE}
-              </Text>
-              <SegmentedToggle
-                value={selectedHapticsEnabled}
-                onChange={(enabled) => {
-                  setSelectedHapticsEnabled(enabled);
-                  onToggleHaptics(enabled);
+                <Text
+                  style={{
+                    fontFamily: TYPOGRAPHY.fontSecondary,
+                    fontSize: TYPOGRAPHY.fontSize.base,
+                    color: "#1A1A1A",
+                  }}
+                >
+                  {AppStrings.Settings.SOUND_TOGGLE}
+                </Text>
+                <SegmentedToggle
+                  value={selectedSoundEnabled}
+                  onChange={(enabled) => {
+                    setSelectedSoundEnabled(enabled);
+                    onToggleSound(enabled);
+                  }}
+                />
+              </View>
+
+              <View style={{height: 1, backgroundColor: "#E8E0E8"}} />
+
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  paddingVertical: 16,
                 }}
+              >
+                <Text
+                  style={{
+                    fontFamily: TYPOGRAPHY.fontSecondary,
+                    fontSize: TYPOGRAPHY.fontSize.base,
+                    color: "#1A1A1A",
+                  }}
+                >
+                  {AppStrings.Settings.HAPTICS_TOGGLE}
+                </Text>
+                <SegmentedToggle
+                  value={selectedHapticsEnabled}
+                  onChange={(enabled) => {
+                    setSelectedHapticsEnabled(enabled);
+                    onToggleHaptics(enabled);
+                  }}
+                />
+              </View>
+
+              <View style={{height: 1, backgroundColor: "#E8E0E8"}} />
+
+              <ArrowRow
+                label={AppStrings.Settings.LANGUAGE_LABEL}
+                value={getLanguageLabel(selectedLanguage)}
+                onPress={() => setIsLanguagePickerOpen(true)}
               />
-            </View>
 
-            <View style={{ height: 1, backgroundColor: "#E8E0E8" }} />
+              <View style={{height: 1, backgroundColor: "#E8E0E8"}} />
 
-            <ArrowRow
-              label={AppStrings.Settings.LANGUAGE_LABEL}
-              value={getLanguageLabel(selectedLanguage)}
-              onPress={() => setIsLanguagePickerOpen(true)}
-            />
+              <ArrowRow label={AppStrings.Settings.HELP_BUTTON} onPress={onPressHelp} />
 
-            <View style={{ height: 1, backgroundColor: "#E8E0E8" }} />
+              <View style={{height: 1, backgroundColor: "#E8E0E8"}} />
 
-            <ArrowRow label={AppStrings.Settings.HELP_BUTTON} onPress={onPressHelp} />
+              <ArrowRow label={AppStrings.Settings.CREDITS_BUTTON} onPress={onPressCredits} />
 
-            <View style={{ height: 1, backgroundColor: "#E8E0E8" }} />
+              <View style={{height: 1, backgroundColor: "#E8E0E8"}} />
 
-            <ArrowRow label={AppStrings.Settings.CREDITS_BUTTON} onPress={onPressCredits} />
-
-            <View style={{ height: 1, backgroundColor: "#E8E0E8" }} />
-
-            <TouchableOpacity
-              onPress={async () => {
-                try {
-                  onClose();
-                  if (onPressLogout) onPressLogout();
-                } catch {
-                  Alert.alert(AppStrings.Settings.LOGOUT_ERROR_TITLE, AppStrings.Settings.LOGOUT_ERROR_MESSAGE);
-                }
-              }}
-              style={{ paddingVertical: 16 }}
-            >
-              <Text
-                style={{
-                  fontFamily: TYPOGRAPHY.fontSecondary,
-                  fontSize: TYPOGRAPHY.fontSize.base,
-                  color: "#F54160",
+              <TouchableOpacity
+                onPress={async () => {
+                  try {
+                    onClose();
+                    if (onPressLogout) onPressLogout();
+                  } catch {
+                    Alert.alert(AppStrings.Settings.LOGOUT_ERROR_TITLE, AppStrings.Settings.LOGOUT_ERROR_MESSAGE);
+                  }
                 }}
+                style={{paddingVertical: 16}}
               >
-                {AppStrings.Settings.LOGOUT_BUTTON}
-              </Text>
-            </TouchableOpacity>
-          </View>
+                <Text
+                  style={{
+                    fontFamily: TYPOGRAPHY.fontSecondary,
+                    fontSize: TYPOGRAPHY.fontSize.base,
+                    color: "#F54160",
+                  }}
+                >
+                  {AppStrings.Settings.LOGOUT_BUTTON}
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </SlideInModalContent>
       </View>
@@ -336,11 +302,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
             paddingHorizontal: SPACING.lg,
           }}
         >
-          <TouchableOpacity
-            style={{ flex: 1 }}
-            activeOpacity={1}
-            onPress={() => setIsLanguagePickerOpen(false)}
-          />
+          <TouchableOpacity style={{flex: 1}} activeOpacity={1} onPress={() => setIsLanguagePickerOpen(false)} />
 
           <SlideInModalContent isVisible={isLanguagePickerOpen}>
             <View
@@ -351,88 +313,84 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                 padding: SPACING.lg,
               }}
             >
-            <Text
-              style={{
-                fontFamily: TYPOGRAPHY.fontPrimary,
-                fontSize: TYPOGRAPHY.fontSize.lg,
-                fontWeight: "bold",
-                color: "#1A1A1A",
-                marginBottom: SPACING.md,
-              }}
-            >
-              {AppStrings.Settings.LANGUAGE_LABEL}
-            </Text>
-
-            <ScrollView>
-              {LANGUAGE_OPTIONS.map((option) => {
-                const isSelected = option.code === selectedLanguage;
-                return (
-                  <TouchableOpacity
-                    key={option.code}
-                    onPress={() => {
-                      setSelectedLanguage(option.code);
-                      onChangeLanguage(option.code);
-                      setIsLanguagePickerOpen(false);
-                    }}
-                    style={{
-                      paddingVertical: 12,
-                      borderBottomWidth: 1,
-                      borderBottomColor: "#E8E0E8",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Text
-                      style={{
-                        fontFamily: TYPOGRAPHY.fontSecondary,
-                        fontSize: TYPOGRAPHY.fontSize.base,
-                        color: "#1A1A1A",
-                      }}
-                    >
-                      {option.label}
-                    </Text>
-                    <Text
-                      style={{
-                        fontFamily: TYPOGRAPHY.fontSecondary,
-                        fontSize: TYPOGRAPHY.fontSize.sm,
-                        color: isSelected ? "#401F40" : "#9CA3AF",
-                      }}
-                    >
-                      {isSelected ? AppStrings.Settings.LANGUAGE_SELECTED : ""}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </ScrollView>
-
-            <TouchableOpacity
-              onPress={() => setIsLanguagePickerOpen(false)}
-              style={{
-                alignSelf: "flex-end",
-                marginTop: SPACING.md,
-                paddingVertical: 8,
-                paddingHorizontal: 12,
-              }}
-            >
               <Text
                 style={{
-                  fontFamily: TYPOGRAPHY.fontSecondary,
-                  fontSize: TYPOGRAPHY.fontSize.base,
-                  color: "#401F40",
+                  fontFamily: TYPOGRAPHY.fontPrimary,
+                  fontSize: TYPOGRAPHY.fontSize.lg,
+                  fontWeight: "bold",
+                  color: "#1A1A1A",
+                  marginBottom: SPACING.md,
                 }}
               >
-                {AppStrings.Settings.CLOSE_BUTTON}
+                {AppStrings.Settings.LANGUAGE_LABEL}
               </Text>
-            </TouchableOpacity>
+
+              <ScrollView>
+                {LANGUAGE_OPTIONS.map((option) => {
+                  const isSelected = option.code === selectedLanguage;
+                  return (
+                    <TouchableOpacity
+                      key={option.code}
+                      onPress={() => {
+                        setSelectedLanguage(option.code);
+                        onChangeLanguage(option.code);
+                        setIsLanguagePickerOpen(false);
+                      }}
+                      style={{
+                        paddingVertical: 12,
+                        borderBottomWidth: 1,
+                        borderBottomColor: "#E8E0E8",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Text
+                        style={{
+                          fontFamily: TYPOGRAPHY.fontSecondary,
+                          fontSize: TYPOGRAPHY.fontSize.base,
+                          color: "#1A1A1A",
+                        }}
+                      >
+                        {option.label}
+                      </Text>
+                      <Text
+                        style={{
+                          fontFamily: TYPOGRAPHY.fontSecondary,
+                          fontSize: TYPOGRAPHY.fontSize.sm,
+                          color: isSelected ? "#401F40" : "#9CA3AF",
+                        }}
+                      >
+                        {isSelected ? AppStrings.Settings.LANGUAGE_SELECTED : ""}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </ScrollView>
+
+              <TouchableOpacity
+                onPress={() => setIsLanguagePickerOpen(false)}
+                style={{
+                  alignSelf: "flex-end",
+                  marginTop: SPACING.md,
+                  paddingVertical: 8,
+                  paddingHorizontal: 12,
+                }}
+              >
+                <Text
+                  style={{
+                    fontFamily: TYPOGRAPHY.fontSecondary,
+                    fontSize: TYPOGRAPHY.fontSize.base,
+                    color: "#401F40",
+                  }}
+                >
+                  {AppStrings.Settings.CLOSE_BUTTON}
+                </Text>
+              </TouchableOpacity>
             </View>
           </SlideInModalContent>
 
-          <TouchableOpacity
-            style={{ flex: 1 }}
-            activeOpacity={1}
-            onPress={() => setIsLanguagePickerOpen(false)}
-          />
+          <TouchableOpacity style={{flex: 1}} activeOpacity={1} onPress={() => setIsLanguagePickerOpen(false)} />
         </View>
       </Modal>
     </Modal>

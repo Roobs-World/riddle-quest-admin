@@ -142,11 +142,27 @@ describe("StatsModal", () => {
     expect(getByText("Avg Guesses (wins)")).toBeTruthy();
     expect(getByText("2.5")).toBeTruthy();
     expect(getByText("Total Words Guessed")).toBeTruthy();
-    expect(getByText("80")).toBeTruthy();
+    expect(getByText("17")).toBeTruthy();
     expect(getByText("Total Score")).toBeTruthy();
     expect(getByText("1200")).toBeTruthy();
     expect(getByText("Hints Used")).toBeTruthy();
     expect(getByText("2")).toBeTruthy();
+  });
+
+  it("derives total words guessed from daily puzzles + highest classic level", () => {
+    const playerData: Player = {
+      ...mockPlayerData,
+      stats: {
+        ...mockPlayerData.stats!,
+        dailyPuzzlesCompleted: 2,
+        highestLevelClassic: 6,
+        totalWordsGuessed: 10,
+      },
+    };
+
+    const { getByText, queryByText } = render(<StatsModal {...defaultProps} playerData={playerData} />);
+    expect(getByText("8")).toBeTruthy();
+    expect(queryByText("10")).toBeNull();
   });
 
   it("calls onClose when close button is pressed", () => {

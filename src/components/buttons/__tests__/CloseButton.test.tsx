@@ -114,6 +114,24 @@ describe("CloseButton", () => {
       const icon = getByTestId("close-icon-white");
       expect(icon).toBeTruthy();
     });
+
+    it("uses a larger touch target for easier tapping", () => {
+      const { getByLabelText } = render(<CloseButton {...defaultProps} />);
+      const button = getByLabelText("Close");
+
+      expect(button.props.hitSlop).toEqual({
+        top: 8,
+        right: 8,
+        bottom: 8,
+        left: 8,
+      });
+      expect(button.props.style).toEqual(
+        expect.objectContaining({
+          minWidth: 44,
+          minHeight: 44,
+        })
+      );
+    });
   });
 
   describe("Accessibility", () => {

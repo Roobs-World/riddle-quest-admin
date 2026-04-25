@@ -80,7 +80,7 @@ const AchievementsModal: React.FC<AchievementsModalProps> = ({isVisible, onClose
             <CloseButton
               onPress={onClose}
               size={CLOSE_BUTTON_SIZE}
-              style={{...MODAL_CLOSE_BUTTON_POSITION, marginTop: verticalScale(28)}}
+              style={{...MODAL_CLOSE_BUTTON_POSITION, marginTop: verticalScale(14)}}
             />
             <Text
               style={{

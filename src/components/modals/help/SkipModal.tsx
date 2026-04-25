@@ -78,7 +78,7 @@ const SkipModal: React.FC<SkipModalProps> = ({
             <CloseButton
               onPress={onClose}
               size={CLOSE_BUTTON_SIZE}
-              style={{...MODAL_CLOSE_BUTTON_POSITION, marginTop: verticalScale(24)}}
+              style={{...MODAL_CLOSE_BUTTON_POSITION, marginTop: verticalScale(4)}}
             />
             <View
               style={{
