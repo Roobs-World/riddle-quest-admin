@@ -20,13 +20,13 @@ import SlideInModalContent from "../../shared/SlideInModalContent";
 import {verticalScale} from "@/utils/responsive";
 import SegmentBgSvg from "../../../../assets/images/segment-bg.svg";
 import ChestSvg from "../../../../assets/images/chest.svg";
-import WheelBg from "../../../../assets/images/wheel-bg.svg";
 import CoinSvg from "../../../../assets/images/coin.svg";
+import {NewCoins} from "@/components/shared/NewCoins";
 
 interface SkipModalProps {
   isVisible: boolean;
   userCoins: number;
-  totalCoins?: number;
+  totalCoins: number;
   skipCost: number;
   onSkipLevel: () => void;
   onOpenShop: () => void;
@@ -42,39 +42,10 @@ const SkipModal: React.FC<SkipModalProps> = ({
   onOpenShop,
   onClose,
 }) => {
-  const [rotationAnim] = useState(() => new Animated.Value(0));
+  const canAffordSkip = false; //userCoins >= skipCost;
 
-  const spin = useMemo(() => {
-    return rotationAnim.interpolate({
-      inputRange: [0, 1],
-      outputRange: ["0deg", "360deg"],
-    });
-  }, [rotationAnim]);
+  console.log(canAffordSkip);
 
-  useEffect(() => {
-    let animation: Animated.CompositeAnimation | null = null;
-
-    if (isVisible) {
-      rotationAnim.setValue(0);
-      animation = Animated.loop(
-        Animated.timing(rotationAnim, {
-          toValue: 1,
-          duration: 12000,
-          easing: Easing.linear,
-          useNativeDriver: true,
-        }),
-      );
-      animation.start();
-    }
-
-    return () => {
-      animation?.stop();
-      rotationAnim.stopAnimation();
-      rotationAnim.setValue(0);
-    };
-  }, [isVisible, rotationAnim]);
-
-  const canAffordSkip = userCoins >= skipCost;
   return (
     <Modal visible={isVisible} transparent={true} animationType="fade" onRequestClose={onClose}>
       <View
@@ -89,14 +60,14 @@ const SkipModal: React.FC<SkipModalProps> = ({
           <View
             style={{
               width: MODAL_WIDTH,
-              height: MODAL_HEIGHT,
+              height: !canAffordSkip ? MODAL_HEIGHT * 1.6 : MODAL_HEIGHT * 1.4,
               alignItems: "center",
               paddingTop: verticalScale(36),
             }}
           >
             <ModalBg
               width={MODAL_WIDTH}
-              height={MODAL_HEIGHT * 1.2}
+              height={!canAffordSkip ? MODAL_HEIGHT * 1.6 : MODAL_HEIGHT * 1.4}
               style={{position: "absolute"}}
               preserveAspectRatio="none"
             />
@@ -106,27 +77,6 @@ const SkipModal: React.FC<SkipModalProps> = ({
               style={{position: "absolute", top: -MODAL_HEIGHT * 0.05, left: -MODAL_WIDTH * 0.05}}
             />
 
-            <View
-              style={{
-                position: "absolute",
-                width: MODAL_WIDTH,
-                height: MODAL_HEIGHT,
-                overflow: "hidden",
-                borderRadius: 30,
-              }}
-            >
-              <Animated.View
-                style={{
-                  position: "absolute",
-                  left: (MODAL_WIDTH - wheelSize) / 2,
-                  top: (MODAL_HEIGHT - wheelSize) / 2,
-                  opacity: 0.25,
-                  transform: [{rotate: spin}],
-                }}
-              >
-                <WheelBg width={wheelSize} height={wheelSize} />
-              </Animated.View>
-            </View>
             <CloseButton
               onPress={onClose}
               size={CLOSE_BUTTON_SIZE}
@@ -149,71 +99,9 @@ const SkipModal: React.FC<SkipModalProps> = ({
               >
                 {AppStrings.GameScreenAlerts.SKIP_MODAL_TITLE}
               </Text>
-              <CoinSvg
-                width={COIN_ICON_SIZE_LARGE * 1.5}
-                height={COIN_ICON_SIZE_LARGE * 1.5}
-                style={{marginBottom: verticalScale(24), marginTop: verticalScale(12)}}
-              />
-              <Text
-                style={{
-                  fontFamily: TYPOGRAPHY.fontSecondary,
-                  fontSize: TYPOGRAPHY.fontSize["3xl"],
-                  color: "#FB9A2B",
-                  textAlign: "center",
-                }}
-              >
-                {AppStrings.GameScreenAlerts.COST_COINS_PREFIX}
-                {skipCost + "\n\n"}
-              </Text>
-              <View
-                style={{
-                  width: "100%",
-                  marginBottom: 20,
-                  alignItems: "center",
-                  marginTop: verticalScale(-50)
-                }}
-              >
-                <View style={{width: "100%"}}>
-                  <SegmentBgSvg width={MODAL_WIDTH - MODAL_CONTENT_PADDING * 2} height={86} />
-                </View>
-                <View
-                  style={{
-                    position: "absolute",
-                    left: 22,
-                    top: 9,
-                  }}
-                >
-                  <ChestSvg width={62} height={62} />
-                </View>
 
-                <Text
-                  style={{
-                    position: "absolute",
-                    left: 175,
-                    top: 15,
-                    fontFamily: TYPOGRAPHY.fontSecondaryBold,
-                    fontSize: TYPOGRAPHY.fontSize.base,
-                    color: "#7D7E84",
-                  }}
-                >
-                  {AppStrings.VictoryModal.TOTAL_COINS_LABEL}
-                </Text>
-                <Text
-                  style={{
-                    position: "absolute",
-                    left: 175,
-                    top: 35,
-                    fontFamily: TYPOGRAPHY.fontSecondaryBold,
-                    fontSize: TYPOGRAPHY.fontSize["3xl"],
-                    color: "#000000",
-                  }}
-                >
-                  {typeof totalCoins === "number" ? totalCoins : userCoins}
-                </Text>
-              </View>
+              <NewCoins coinsEarned={-skipCost} totalCoins={totalCoins} />
 
-              
-              
               {!canAffordSkip && (
                 <Text
                   style={{
@@ -221,13 +109,14 @@ const SkipModal: React.FC<SkipModalProps> = ({
                     fontSize: TYPOGRAPHY.fontSize.base,
                     color: "black",
                     marginBottom: SPACING.lg,
+                    marginTop: SPACING.lg,
                     textAlign: "center",
                   }}
                 >
                   {AppStrings.GameScreenAlerts.SKIP_NOT_ENOUGH_COINS_MESSAGE}
                 </Text>
               )}
-              <View style={{width: "100%", marginTop: SPACING.sm}}>
+              <View style={{width: "100%", marginTop: SPACING.md}}>
                 <WideButton
                   buttonText={
                     canAffordSkip
