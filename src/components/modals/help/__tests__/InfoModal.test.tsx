@@ -18,23 +18,6 @@ jest.mock("react-native/Libraries/Modal/Modal", () => {
   };
 });
 
-// Mock the CloseButton component
-jest.mock("../../../buttons/CloseButton", () => {
-  const React = require("react");
-  return function MockCloseButton({ onPress, size, style }: any) {
-    return React.createElement(
-      "View",
-      {
-        testID: "close-button",
-        accessible: true,
-        onPress,
-        "data-size": size,
-      },
-      React.createElement("Text", null, "Close")
-    );
-  };
-});
-
 // Mock the WideButton component
 jest.mock("../../../buttons/WideButton", () => {
   const React = require("react");
@@ -103,7 +86,6 @@ describe("InfoModal", () => {
       expect(getByTestId("modal")).toBeTruthy();
       expect(getByText("Test Title")).toBeTruthy();
       expect(getByText("Test message content")).toBeTruthy();
-      expect(getByTestId("close-button")).toBeTruthy();
       expect(getByTestId("wide-button")).toBeTruthy();
     });
 
@@ -146,18 +128,6 @@ describe("InfoModal", () => {
   });
 
   describe("Interactions", () => {
-    it("should call onClose when close button is pressed", () => {
-      const mockOnClose = jest.fn();
-      const { getByTestId } = render(
-        <InfoModal {...defaultProps} onClose={mockOnClose} />
-      );
-
-      const closeButton = getByTestId("close-button");
-      fireEvent.press(closeButton);
-
-      expect(mockOnClose).toHaveBeenCalledTimes(1);
-    });
-
     it("should call onClose when OK button is pressed", () => {
       const mockOnClose = jest.fn();
       const { getByTestId } = render(
@@ -302,10 +272,10 @@ describe("InfoModal", () => {
         <InfoModal {...defaultProps} onClose={mockOnClose} />
       );
 
-      const closeButton = getByTestId("close-button");
-      fireEvent.press(closeButton);
-      fireEvent.press(closeButton);
-      fireEvent.press(closeButton);
+      const okButton = getByTestId("wide-button");
+      fireEvent.press(okButton);
+      fireEvent.press(okButton);
+      fireEvent.press(okButton);
 
       expect(mockOnClose).toHaveBeenCalledTimes(3);
     });
@@ -334,15 +304,6 @@ describe("InfoModal", () => {
     });
   });
 
-  describe("Close Button Configuration", () => {
-    it("should pass correct size to close button", () => {
-      const { getByTestId } = render(<InfoModal {...defaultProps} />);
-
-      const closeButton = getByTestId("close-button");
-      expect(closeButton.props["data-size"]).toBe(24);
-    });
-  });
-
   describe("OK Button", () => {
     it("should render OK button with correct text", () => {
       const { getByText } = render(<InfoModal {...defaultProps} />);
@@ -359,11 +320,13 @@ describe("InfoModal", () => {
 
     it("should render and trigger optional action button", () => {
       const onAction = jest.fn();
+      const onClose = jest.fn();
       const { getByText, getAllByTestId } = render(
         <InfoModal
           {...defaultProps}
           actionButtonText="Upgrade Account"
           onAction={onAction}
+          onClose={onClose}
         />
       );
 
@@ -373,6 +336,33 @@ describe("InfoModal", () => {
       expect(buttons[0].props["data-disabled"]).toBe(false);
       buttons[0].props.onPress();
       expect(onAction).toHaveBeenCalledTimes(1);
+      expect(onClose).toHaveBeenCalledTimes(1);
+    });
+
+    it("should trigger onConfirm before closing when OK is pressed", () => {
+      const onConfirm = jest.fn();
+      const onClose = jest.fn();
+      const { getByText } = render(
+        <InfoModal {...defaultProps} onConfirm={onConfirm} onClose={onClose} />
+      );
+
+      fireEvent.press(getByText("OK"));
+
+      expect(onConfirm).toHaveBeenCalledTimes(1);
+      expect(onClose).toHaveBeenCalledTimes(1);
+    });
+
+    it("should trigger onConfirm before closing on request close", () => {
+      const onConfirm = jest.fn();
+      const onClose = jest.fn();
+      const { getByTestId } = render(
+        <InfoModal {...defaultProps} onConfirm={onConfirm} onClose={onClose} />
+      );
+
+      getByTestId("modal").props.onRequestClose();
+
+      expect(onConfirm).toHaveBeenCalledTimes(1);
+      expect(onClose).toHaveBeenCalledTimes(1);
     });
   });
 });

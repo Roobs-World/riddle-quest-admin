@@ -14,6 +14,7 @@ interface StreakIncreaseFanfareModalProps {
   streakValue: number;
   coinsAwarded: number;
   totalCoins: number;
+  onContinue?: () => void;
   onClose: () => void;
 }
 
@@ -22,12 +23,17 @@ const StreakIncreaseFanfareModal: React.FC<StreakIncreaseFanfareModalProps> = ({
   streakValue,
   coinsAwarded,
   totalCoins,
+  onContinue,
   onClose,
 }) => {
   const streakModalHeight = MODAL_HEIGHT * 1.4;
+  const handleContinue = () => {
+    onContinue?.();
+    onClose();
+  };
 
   return (
-    <Modal transparent animationType="fade" visible={isVisible} onRequestClose={onClose}>
+    <Modal transparent animationType="fade" visible={isVisible} onRequestClose={handleContinue}>
       <View
         style={{
           flex: 1,
@@ -38,7 +44,7 @@ const StreakIncreaseFanfareModal: React.FC<StreakIncreaseFanfareModalProps> = ({
       >
         <RotatingWheelBackground isVisible={isVisible} />
         <SlideInModalContent isVisible={isVisible}>
-          <TouchableOpacity key={"streak-increase-fanfare-modal"} onPress={onClose}>
+          <TouchableOpacity key={"streak-increase-fanfare-modal"} onPress={handleContinue}>
             <View
               style={{
                 width: MODAL_WIDTH,

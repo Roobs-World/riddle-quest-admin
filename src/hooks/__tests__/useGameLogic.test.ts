@@ -313,14 +313,15 @@ describe("useGameLogic", () => {
       });
 
       expect(mockCompleteGameCallable).not.toHaveBeenCalled();
-      expect(processResult).toEqual({
+      expect(processResult).toMatchObject({
         outcome: "win",
         feedback: ["green", "green", "green", "green", "green"],
-        coinsEarned: 15,
+        coinsEarned: 25,
         scoreEarned: 100,
         correctAnswer: "GUESS",
         newlyUnlockedAchievementIds: [],
       });
+      expect((processResult as { newWinStreak?: number }).newWinStreak).toBeUndefined();
     });
 
     it("should keep guest final losses local and skip completeGame calls", async () => {

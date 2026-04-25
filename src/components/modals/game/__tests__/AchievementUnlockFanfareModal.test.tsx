@@ -109,6 +109,7 @@ describe("AchievementUnlockFanfareModal", () => {
 
   it("closes when the user taps the modal", () => {
     const onClose = jest.fn();
+    const onContinue = jest.fn();
     const {getByTestId} = render(
       <AchievementUnlockFanfareModal
         isVisible={true}
@@ -121,11 +122,13 @@ describe("AchievementUnlockFanfareModal", () => {
             icon: "*",
           },
         ]}
+        onContinue={onContinue}
         onClose={onClose}
       />,
     );
 
     fireEvent.press(getByTestId("achievement-unlock-fanfare-modal"));
+    expect(onContinue).toHaveBeenCalledTimes(1);
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 });

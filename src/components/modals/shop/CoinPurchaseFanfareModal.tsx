@@ -14,6 +14,7 @@ interface CoinPurchaseFanfareModalProps {
   isVisible: boolean;
   coinsPurchased: number;
   totalCoins: number;
+  onConfirm?: () => void;
   onClose: () => void;
 }
 
@@ -21,12 +22,17 @@ const CoinPurchaseFanfareModal: React.FC<CoinPurchaseFanfareModalProps> = ({
   isVisible,
   coinsPurchased,
   totalCoins,
+  onConfirm,
   onClose,
 }) => {
   const modalHeight = MODAL_HEIGHT * 1.2;
+  const handleConfirm = () => {
+    onConfirm?.();
+    onClose();
+  };
 
   return (
-    <Modal transparent animationType="fade" visible={isVisible} onRequestClose={onClose}>
+    <Modal transparent animationType="fade" visible={isVisible} onRequestClose={handleConfirm}>
       <View
         style={{
           flex: 1,
@@ -34,7 +40,7 @@ const CoinPurchaseFanfareModal: React.FC<CoinPurchaseFanfareModalProps> = ({
           alignItems: "center",
           backgroundColor: "rgba(0,0,0,0.5)",
         }}
-        onTouchEnd={onClose}
+        onTouchEnd={handleConfirm}
       >
         <RotatingWheelBackground isVisible={isVisible} />
         <SlideInModalContent isVisible={isVisible}>

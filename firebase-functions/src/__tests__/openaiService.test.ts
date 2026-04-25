@@ -59,7 +59,7 @@ describe("OpenAI Service", () => {
       expect(result).toEqual(["What flies without wings?", "time"]);
       expect(mockOpenAI).toHaveBeenCalledWith({apiKey: "test-api-key"});
       expect(mockCreate).toHaveBeenCalledWith({
-        model: "gpt-4o-mini",
+        model: "gpt-5.5",
         messages: expect.arrayContaining([
           expect.objectContaining({role: "system"}),
           expect.objectContaining({role: "user"}),
@@ -298,7 +298,7 @@ describe("OpenAI Service", () => {
 
       expect(result).toBeNull();
       expect(mockLogger.error).toHaveBeenCalledWith(
-        "Error generating riddle with OpenAI (model: gpt-4o-mini):",
+        "Error generating riddle with OpenAI (model: gpt-5.5):",
         apiError,
       );
     });

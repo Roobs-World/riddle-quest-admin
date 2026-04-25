@@ -26,6 +26,7 @@ const AchievementUnlockFanfareModal: React.FC<AchievementUnlockFanfareModalProps
   totalCoins,
   achievementNames = [],
   achievements = [],
+  onContinue,
   onClose,
 }) => {
   const modalBgHeight = MODAL_HEIGHT * 1.6;
@@ -35,9 +36,13 @@ const AchievementUnlockFanfareModal: React.FC<AchievementUnlockFanfareModalProps
     achievements[0]?.name ?? achievementNames[0] ?? AppStrings.Achievements.NEW_ACHIEVEMENT;
   const primaryAchievementDescription = achievements[0]?.description ?? "";
   const primaryAchievementIcon = achievements[0]?.icon ?? "";
+  const handleContinue = () => {
+    onContinue?.();
+    onClose();
+  };
 
   return (
-    <Modal transparent animationType="fade" visible={isVisible} onRequestClose={onClose}>
+    <Modal transparent animationType="fade" visible={isVisible} onRequestClose={handleContinue}>
       <View
         style={{
           flex: 1,
@@ -48,7 +53,7 @@ const AchievementUnlockFanfareModal: React.FC<AchievementUnlockFanfareModalProps
       >
         <RotatingWheelBackground isVisible={isVisible} />
         <SlideInModalContent isVisible={isVisible}>
-          <TouchableOpacity testID="achievement-unlock-fanfare-modal" onPress={onClose}>
+          <TouchableOpacity testID="achievement-unlock-fanfare-modal" onPress={handleContinue}>
             <View
               style={{
                 width: MODAL_WIDTH,

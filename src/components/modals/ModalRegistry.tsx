@@ -303,17 +303,9 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
     title: (props.title as string) || "",
     message: (props.message as string) || "",
     actionButtonText: props.actionButtonText as string | undefined,
-    onAction:
-      typeof props.onAction === "function"
-        ? () => {
-            (props.onAction as () => void)();
-            props.onClose();
-          }
-        : undefined,
-    onClose: () => {
-      if (typeof props.onConfirm === "function") (props.onConfirm as () => void)();
-      props.onClose();
-    },
+    onAction: (props.onAction as (() => void) | undefined) ?? undefined,
+    onConfirm: (props.onConfirm as (() => void) | undefined) ?? undefined,
+    onClose: props.onClose,
   })),
 
   hint: createModalWrapper(HintModal, (props: BaseModalProps & ModalData) => ({
@@ -390,12 +382,8 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
     CoinPurchaseFanfareModal,
     (props: BaseModalProps & ModalData) => ({
       isVisible: props.isVisible,
-      onClose: () => {
-        if (typeof props.onConfirm === "function") {
-          (props.onConfirm as () => void)();
-        }
-        props.onClose();
-      },
+      onConfirm: (props.onConfirm as (() => void) | undefined) ?? undefined,
+      onClose: props.onClose,
       coinsPurchased: (props.coinsPurchased as number) || 0,
       totalCoins: (props.totalCoins as number) || 0,
     })
@@ -423,12 +411,8 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
       streakValue: (props.streakValue as number) || 0,
       coinsAwarded: (props.coinsAwarded as number) || 0,
       totalCoins: (props.totalCoins as number) || 0,
-      onClose: () => {
-        if (typeof props.onContinue === "function") {
-          (props.onContinue as () => void)();
-        }
-        props.onClose();
-      },
+      onContinue: (props.onContinue as (() => void) | undefined) ?? undefined,
+      onClose: props.onClose,
     })
   ),
 
@@ -439,12 +423,8 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
       newLevel: (props.newLevel as number) || 1,
       coinsAwarded: (props.coinsAwarded as number) || 0,
       totalCoins: (props.totalCoins as number) || 0,
-      onClose: () => {
-        if (typeof props.onContinue === "function") {
-          (props.onContinue as () => void)();
-        }
-        props.onClose();
-      },
+      onContinue: (props.onContinue as (() => void) | undefined) ?? undefined,
+      onClose: props.onClose,
     })
   ),
 };

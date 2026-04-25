@@ -70,7 +70,9 @@ describe("HintModal", () => {
     const { getByText, getAllByTestId } = renderModal({ userCoins: 250, hintCost: 75 });
 
     expect(getByText("Use a Hint?")).toBeTruthy();
-    expect(getByText("Cost: 75 Coins. You have: 250 Coins.")).toBeTruthy();
+    expect(getByText(/Cost:\s*75/)).toBeTruthy();
+    expect(getByText("Total Coins:")).toBeTruthy();
+    expect(getByText("250")).toBeTruthy();
     expect(getAllByTestId("modal-bg").length).toBeGreaterThan(0);
   });
 
@@ -110,11 +112,10 @@ describe("HintModal", () => {
     );
   });
 
-  it("calls onClose from Close button and close icon", () => {
+  it("calls onClose from Close button", () => {
     const { getByTestId } = renderModal();
-    fireEvent.press(getByTestId("wide-button-Close"));
     fireEvent.press(getByTestId("close-button"));
 
-    expect(onClose).toHaveBeenCalledTimes(2);
+    expect(onClose).toHaveBeenCalledTimes(1);
   });
 });

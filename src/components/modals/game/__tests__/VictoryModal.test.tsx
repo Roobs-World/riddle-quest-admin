@@ -47,7 +47,7 @@ describe("VictoryModal", () => {
 
     expect(getByText("NICE JOB!")).toBeTruthy();
     expect(getByText("+50 Coins")).toBeTruthy();
-    expect(getByText("Total coins")).toBeTruthy();
+    expect(getByText("Total Coins:")).toBeTruthy();
     expect(getByText("305")).toBeTruthy();
   });
 

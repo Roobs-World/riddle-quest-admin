@@ -15,12 +15,31 @@ interface InfoModalProps {
   message: string;
   actionButtonText?: string;
   onAction?: () => void;
+  onConfirm?: () => void;
   onClose: () => void;
 }
 
-const InfoModal: React.FC<InfoModalProps> = ({isVisible, title, message, actionButtonText, onAction, onClose}) => {
+const InfoModal: React.FC<InfoModalProps> = ({
+  isVisible,
+  title,
+  message,
+  actionButtonText,
+  onAction,
+  onConfirm,
+  onClose,
+}) => {
+  const handleConfirm = () => {
+    onConfirm?.();
+    onClose();
+  };
+
+  const handleAction = () => {
+    onAction?.();
+    onClose();
+  };
+
   return (
-    <Modal visible={isVisible} transparent={true} animationType="fade" onRequestClose={onClose}>
+    <Modal visible={isVisible} transparent={true} animationType="fade" onRequestClose={handleConfirm}>
       <View
         style={{
           flex: 1,
@@ -78,10 +97,14 @@ const InfoModal: React.FC<InfoModalProps> = ({isVisible, title, message, actionB
               <View style={{width: "100%", marginTop: SPACING.lg}}>
                 {actionButtonText && onAction ? (
                   <View style={{marginBottom: SPACING.md}}>
-                    <WideButton buttonText={actionButtonText} onPress={onAction} disabled={false} />
+                    <WideButton buttonText={actionButtonText} onPress={handleAction} disabled={false} />
                   </View>
                 ) : null}
-                <WideButton buttonText={AppStrings.CommonAlerts.OK_BUTTON} onPress={onClose} disabled={false} />
+                <WideButton
+                  buttonText={AppStrings.CommonAlerts.OK_BUTTON}
+                  onPress={handleConfirm}
+                  disabled={false}
+                />
               </View>
             </View>
           </View>

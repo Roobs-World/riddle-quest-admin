@@ -15,6 +15,7 @@ interface LevelUpFanfareModalProps {
   newLevel: number;
   coinsAwarded: number;
   totalCoins: number;
+  onContinue?: () => void;
   onClose: () => void;
 }
 
@@ -25,10 +26,16 @@ const LevelUpFanfareModal: React.FC<LevelUpFanfareModalProps> = ({
   newLevel,
   coinsAwarded,
   totalCoins,
+  onContinue,
   onClose,
 }) => {
+  const handleContinue = () => {
+    onContinue?.();
+    onClose();
+  };
+
   return (
-    <Modal transparent animationType="fade" visible={isVisible} onRequestClose={onClose}>
+    <Modal transparent animationType="fade" visible={isVisible} onRequestClose={handleContinue}>
       <View
         style={{
           flex: 1,
@@ -41,7 +48,7 @@ const LevelUpFanfareModal: React.FC<LevelUpFanfareModalProps> = ({
         <RotatingWheelBackground isVisible={isVisible} />
 
         <SlideInModalContent isVisible={isVisible}>
-          <TouchableOpacity key={"coin-purchase-modal"} onPress={onClose}>
+          <TouchableOpacity key={"coin-purchase-modal"} onPress={handleContinue}>
             <View
               style={{
                 width: MODAL_WIDTH,

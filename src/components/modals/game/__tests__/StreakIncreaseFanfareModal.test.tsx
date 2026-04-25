@@ -1,5 +1,5 @@
 import React from "react";
-import {render} from "@testing-library/react-native";
+import {render, fireEvent} from "@testing-library/react-native";
 import StreakIncreaseFanfareModal from "../StreakIncreaseFanfareModal";
 
 jest.mock("react-native/Libraries/Animated/Animated", () => {
@@ -79,7 +79,7 @@ describe("StreakIncreaseFanfareModal", () => {
     expect(getByText("Streak Increased!")).toBeTruthy();
     expect(getByText("4-Day Streak")).toBeTruthy();
     expect(getByText("+50 Coins")).toBeTruthy();
-    expect(getByText("Total coins")).toBeTruthy();
+    expect(getByText("Total Coins:")).toBeTruthy();
     expect(getByText("250")).toBeTruthy();
   });
 
@@ -95,5 +95,25 @@ describe("StreakIncreaseFanfareModal", () => {
     );
 
     expect(queryByText("Streak Increased!")).toBeNull();
+  });
+
+  it("runs continue flow then closes when tapped", () => {
+    const onContinue = jest.fn();
+    const onClose = jest.fn();
+    const {getByText} = render(
+      <StreakIncreaseFanfareModal
+        isVisible={true}
+        streakValue={3}
+        coinsAwarded={20}
+        totalCoins={200}
+        onContinue={onContinue}
+        onClose={onClose}
+      />,
+    );
+
+    fireEvent.press(getByText("Streak Increased!"));
+
+    expect(onContinue).toHaveBeenCalledTimes(1);
+    expect(onClose).toHaveBeenCalledTimes(1);
   });
 });

@@ -42,9 +42,7 @@ const SkipModal: React.FC<SkipModalProps> = ({
   onOpenShop,
   onClose,
 }) => {
-  const canAffordSkip = false; //userCoins >= skipCost;
-
-  console.log(canAffordSkip);
+  const canAffordSkip = userCoins >= skipCost;
 
   return (
     <Modal visible={isVisible} transparent={true} animationType="fade" onRequestClose={onClose}>
