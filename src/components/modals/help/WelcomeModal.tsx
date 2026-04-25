@@ -16,7 +16,6 @@ import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
 import WheelBg from "../../../../assets/images/wheel-bg.svg";
 import Logo from "../../../../assets/images/main-logo.svg";
-import WideButton from "../../buttons/WideButton";
 import {TYPOGRAPHY} from "src/styles";
 import {MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, MODAL_BUTTON_SPACER} from "../../../constants/layout";
 import {SPACING} from "../../../styles";
@@ -63,6 +62,7 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({isVisible, onClose, onDismis
           justifyContent: "center",
           alignItems: "center",
           backgroundColor: "rgba(0,0,0,0.5)",
+          paddingTop: verticalScale(30),
         }}
       >
         {/* Rotating background wheel */}
@@ -85,6 +85,7 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({isVisible, onClose, onDismis
               justifyContent: "center",
               overflow: "hidden",
               marginBottom: SCREEN_H * 0.15,
+              paddingTop: verticalScale(30),
             }}
           >
             {/* Card shape background */}
@@ -152,10 +153,6 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({isVisible, onClose, onDismis
                 >
                   {AppStrings.WelcomeModal.EARN_COINS_TEXT}
                 </Text>
-              </View>
-
-              <View style={{width: "100%", marginBottom: MODAL_BUTTON_SPACER}}>
-                <WideButton buttonText={letsPlayText} onPress={handleDismiss} />
               </View>
             </View>
           </View>
