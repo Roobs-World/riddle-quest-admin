@@ -381,7 +381,7 @@ export const AuthService = {
                 "   → Add: Xo8WBi6jzSxKDVR4drqm84yr9iU=\n" +
                 "   → Location: Facebook Console → Settings → Basic → Android Platform\n" +
                 "2. Facebook app not in Development mode\n" +
-                "3. Package name mismatch (com.grindhead.Riddle Quest)\n" +
+                "3. Package name mismatch (com.roobsworld.riddlequest)\n" +
                 "4. App restrictions in Facebook Developer Console\n" +
                 "5. Firebase project not configured for Facebook auth"
             )
@@ -1072,14 +1072,14 @@ export const AuthService = {
       "2. Add Android Key Hash: Xo8WBi6jzSxKDVR4drqm84yr9iU= to Facebook Console",
       "3. Check Facebook App ID: 1249521063516632 matches in Developer Console",
       "4. Verify Client Token in Facebook Console matches: [NEW_CLIENT_TOKEN]",
-      "5. Ensure package name com.grindhead.Riddle Quest is configured in Facebook Console",
+      "5. Ensure package name com.roobsworld.riddlequest is configured in Facebook Console",
       "6. Add OAuth Redirect URI: fb1249521063516632://authorize",
       "7. Add your Facebook account as Developer or Test User",
       "8. Verify public_profile and email permissions are approved",
       "9. Test on a real device (Facebook login may not work in emulators)",
       "10. Check Facebook app permissions: public_profile and email should be approved",
       "11. Verify Facebook app is not restricted or in review mode",
-      "12. Ensure Android platform has Class Name: com.grindhead.Riddle Quest.MainActivity",
+      "12. Ensure Android platform has Class Name: com.roobsworld.riddlequest.MainActivity",
     ];
 
     const keyHashInfo =
@@ -1109,4 +1109,6 @@ export const AuthService = {
     };
   },
 };
+
+
 

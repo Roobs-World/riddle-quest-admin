@@ -17,8 +17,8 @@ This repo is configured to sell 6 coin packs (consumable, one-time purchases):
 
 App identifiers:
 
-- Android package name: `com.grindhead.Riddle Quest` (from `app.config.js`)
-- iOS bundle identifier: `com.grindhead.Riddle Quest` (from `app.config.js`)
+- Android package name: `com.roobsworld.Riddle Quest` (from `app.config.js`)
+- iOS bundle identifier: `com.roobsworld.Riddle Quest` (from `app.config.js`)
 
 ## iOS (App Store Connect)
 
@@ -32,7 +32,7 @@ App identifiers:
 ### Create Products
 
 1. Log in to Play Console.
-2. Select the app whose package name is `com.grindhead.Riddle Quest`.
+2. Select the app whose package name is `com.roobsworld.Riddle Quest`.
 3. Go to Monetize -> Products -> In-app products.
 4. Create 6 in-app products with IDs matching:
    - `com.Riddle Quest.coinpack1`
@@ -57,7 +57,7 @@ Android IAP will fail with `sku-not-found` if you test from a local debug/dev bu
 
 If you still see `sku-not-found`, the usual causes are:
 
-- Wrong Play app selected (package name mismatch with `com.grindhead.Riddle Quest`)
+- Wrong Play app selected (package name mismatch with `com.roobsworld.Riddle Quest`)
 - Product IDs created under a different app
 - Product not Active
 - Device is logged into a non-tester Play account
@@ -85,3 +85,5 @@ Product IDs and coin mapping:
 - Open coin shop -> products display with prices
 - Tap a pack -> Google purchase sheet opens
 - Complete purchase -> app shows success + coins increase (after server validation)
+
+

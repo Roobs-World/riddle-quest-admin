@@ -86,7 +86,7 @@ pnpm exec eas build --profile development --platform android
 
 ## 5. Configure AppLovin Dashboard Correctly
 
-- Ensure ad unit IDs match the app package (`com.grindhead.Riddle Quest`).
+- Ensure ad unit IDs match the app package (`com.roobsworld.Riddle Quest`).
 - Ensure the same IDs are used for the correct environment.
 - Add test devices / test mode.
 - Verify waterfall/mediation setup is active for rewarded inventory.
@@ -124,3 +124,5 @@ pnpm exec expo config --type public
 ```
 
 Use `expo config --type public` output to confirm `extra.APPLOVIN_*` values resolve correctly for your active environment.
+
+

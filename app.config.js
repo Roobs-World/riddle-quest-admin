@@ -36,7 +36,7 @@ module.exports = {
   name: "Riddle Quest",
 
   /** URL-friendly app identifier used by Expo */
-  slug: "Riddle Quest",
+  slug: "riddle-quest",
 
   /** SDK version - using canary, so asset resolution warnings are expected */
   sdkVersion: "56.0.0-canary-20260409-6fc2991",
@@ -76,7 +76,7 @@ module.exports = {
     supportsTablet: true,
 
     /** Unique iOS bundle identifier for App Store */
-    bundleIdentifier: "com.grindhead.Riddle Quest",
+    bundleIdentifier: "com.roobsworld.riddlequest",
 
     /** Firebase configuration file for iOS */
     googleServicesFile: "./GoogleService-Info.plist",
@@ -134,7 +134,7 @@ module.exports = {
     },
 
     /** Unique Android package name for Google Play Store */
-    package: "com.grindhead.Riddle Quest",
+    package: "com.roobsworld.riddlequest",
 
     /** Firebase configuration file for Android */
     googleServicesFile: "./google-services.json",
@@ -307,7 +307,7 @@ module.exports = {
     /** EAS (Expo Application Services) project identifier */
     eas: {
       projectId:
-        process.env.EAS_PROJECT_ID || "492989b0-124c-46ac-a328-0ec513a3130f",
+        process.env.EAS_PROJECT_ID || "c564618a-a464-435d-847c-9c51fc695145",
     },
 
     /** Development and testing flags */
@@ -376,3 +376,6 @@ module.exports = {
    */
   assetBundlePatterns: ["**/*"],
 };
+
+
+

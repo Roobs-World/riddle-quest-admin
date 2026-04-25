@@ -68,7 +68,7 @@ When you run your first iOS build, EAS will:
    - No need for a Mac!
 
 3. **Register your app's bundle identifier**
-   - Current: `com.grindhead.Riddle Quest`
+   - Current: `com.roobsworld.Riddle Quest`
 
 ## Testing Your iOS App from Windows
 
@@ -256,3 +256,5 @@ eas submit --platform ios
 - **Missing features**: Some features need development builds
 
 Remember: EAS Build handles all the complex iOS certificate and provisioning profile management, making it possible to build iOS apps without a Mac!
+
+

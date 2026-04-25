@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:26666910831:android:38c5f64b1df8df7168799a",
         "android_client_info": {
-          "package_name": "com.grindhead.Riddle Quest"
+          "package_name": "com.roobsworld.riddlequest"
         }
       },
       "oauth_client": [
@@ -17,7 +17,7 @@
           "client_id": "26666910831-7h513ejqom1rga1dmfq66iv2jb6krib6.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.grindhead.Riddle Quest",
+            "package_name": "com.roobsworld.riddlequest",
             "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
           }
         },
@@ -25,7 +25,7 @@
           "client_id": "26666910831-ab9ffnlspl2kh6hko9sueb21mhbjacht.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.grindhead.Riddle Quest",
+            "package_name": "com.roobsworld.riddlequest",
             "certificate_hash": "e6b882431442aa5dd83522f480b245900201bd6d"
           }
         },
@@ -53,3 +53,4 @@
   ],
   "configuration_version": "1"
 }
+
