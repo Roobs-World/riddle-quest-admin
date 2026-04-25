@@ -78,6 +78,26 @@ const GameScreenWrapper = () => {
   const isDailyChallengeMode = gameMode === "daily" || gameMode === "challenge";
 
   const lastFetchedModeRef = useRef<typeof gameMode | null>(null);
+  const onboardingUserIdRef = useRef<string | null>(null);
+  const suppressOnboardingRef = useRef(false);
+
+  useEffect(() => {
+    const userId = playerData?.userId ?? null;
+    if (onboardingUserIdRef.current !== userId) {
+      onboardingUserIdRef.current = userId;
+      suppressOnboardingRef.current = false;
+    }
+  }, [playerData?.userId]);
+
+  useEffect(() => {
+    if (!playerData || !currentRiddle) {
+      return;
+    }
+
+    // Show onboarding/welcome once per signed-in session. Subsequent GameScreen
+    // remounts (for example, after completing a riddle) should suppress it.
+    suppressOnboardingRef.current = true;
+  }, [playerData, currentRiddle]);
 
   // Effect to load riddle when dependencies change
   useEffect(() => {
@@ -681,7 +701,7 @@ const GameScreenWrapper = () => {
           }}
           onNextLevel={handleNextLevel}
           gameMode={gameMode}
-          suppressOnboarding={false}
+          suppressOnboarding={suppressOnboardingRef.current}
         />
 
       </>

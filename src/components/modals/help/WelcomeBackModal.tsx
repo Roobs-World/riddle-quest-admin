@@ -76,8 +76,8 @@ const WelcomeBackModal: React.FC<WelcomeBackModalProps> = ({isVisible, onClose, 
                     testID="welcome-back-avatar-image"
                     source={{uri: avatarUrl}}
                     style={{
-                      width: AVATAR_SIZE_LARGE,
-                      height: AVATAR_SIZE_LARGE,
+                      width: AVATAR_SIZE_LARGE * 2,
+                      height: AVATAR_SIZE_LARGE * 2,
                       borderRadius: avatarRadius,
                       borderWidth: moderateScale(3),
                       borderColor: "#FFFFFF",

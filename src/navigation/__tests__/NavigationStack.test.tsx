@@ -282,6 +282,33 @@ describe("NavigationStack", () => {
     expect(mockedAnalytics.logScreenView).toHaveBeenCalled();
   });
 
+  it("suppresses onboarding on remount after first game screen mount in-session", () => {
+    let authState = createAuthState({
+      isAuthenticated: true,
+      playerData: { userId: "u-onboarding", coins: 100, stats: { level: 1, xp: 0 } },
+      currentRiddle: { riddleId: "r1", text: "R1", answer: "WORD" },
+      gameMode: "classic",
+    });
+    mockedUseAuth.mockImplementation(() => authState as any);
+
+    const { rerender } = render(<Navigation />);
+    expect(latestGameScreenProps?.suppressOnboarding).toBe(false);
+
+    authState = createAuthState({
+      ...authState,
+      currentRiddle: null,
+    });
+    rerender(<Navigation />);
+
+    authState = createAuthState({
+      ...authState,
+      currentRiddle: { riddleId: "r2", text: "R2", answer: "WORDS" },
+    });
+    rerender(<Navigation />);
+
+    expect(latestGameScreenProps?.suppressOnboarding).toBe(true);
+  });
+
   it("shows spinner in wrapper when authenticated but player data is missing", () => {
     mockedUseAuth.mockReturnValue(
       createAuthState({
