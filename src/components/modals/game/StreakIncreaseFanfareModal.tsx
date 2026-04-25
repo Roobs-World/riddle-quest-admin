@@ -7,6 +7,7 @@ import {MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, MODAL_BUTTON_SPACER} f
 import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {NewCoins} from "@/components/shared/NewCoins";
+import RotatingWheelBackground from "@/components/shared/RotatingWheelBackground";
 
 interface StreakIncreaseFanfareModalProps {
   isVisible: boolean;
@@ -35,6 +36,7 @@ const StreakIncreaseFanfareModal: React.FC<StreakIncreaseFanfareModalProps> = ({
           backgroundColor: "rgba(0,0,0,0.5)",
         }}
       >
+        <RotatingWheelBackground isVisible={isVisible} />
         <SlideInModalContent isVisible={isVisible}>
           <TouchableOpacity key={"streak-increase-fanfare-modal"} onPress={onClose}>
             <View

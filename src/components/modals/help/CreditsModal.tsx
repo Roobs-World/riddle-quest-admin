@@ -23,6 +23,7 @@ import {SPACING} from "../../../styles";
 import {dimensions, verticalScale} from "../../../utils/responsive";
 import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
+import RotatingWheelBackground from "@/components/shared/RotatingWheelBackground";
 
 interface CreditsModalProps {
   isVisible: boolean;
@@ -74,7 +75,7 @@ const CreditsModal: React.FC<CreditsModalProps> = ({isVisible, onClose, topRight
             {topRightControl}
           </View>
         ) : null}
-
+        <RotatingWheelBackground isVisible={isVisible} />
         <SlideInModalContent isVisible={isVisible}>
           <View
             style={{

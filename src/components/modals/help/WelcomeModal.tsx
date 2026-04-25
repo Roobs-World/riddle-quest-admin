@@ -1,27 +1,17 @@
-import React, {useEffect} from "react";
+import React from "react";
 import {View, Text, Modal, Dimensions, Pressable} from "react-native";
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withRepeat,
-  withTiming,
-  cancelAnimation,
-  Easing,
-} from "react-native-reanimated";
-
-const {width: SCREEN_W, height: SCREEN_H} = Dimensions.get("window");
-const WHEEL_SIZE = Math.ceil(Math.sqrt(SCREEN_W * SCREEN_W + SCREEN_H * SCREEN_H));
+const {height: SCREEN_H} = Dimensions.get("window");
 
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
-import WheelBg from "../../../../assets/images/wheel-bg.svg";
 import Logo from "../../../../assets/images/main-logo.svg";
 import {TYPOGRAPHY} from "src/styles";
-import {MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, MODAL_BUTTON_SPACER} from "../../../constants/layout";
+import {MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING} from "../../../constants/layout";
 import {SPACING} from "../../../styles";
-import {AppStrings, getAppLanguage} from "../../../constants/AppStrings";
+import {AppStrings} from "../../../constants/AppStrings";
 import {verticalScale} from "@/utils/responsive";
 import SlideInModalContent from "../../shared/SlideInModalContent";
+import RotatingWheelBackground from "../../shared/RotatingWheelBackground";
 
 interface WelcomeModalProps {
   isVisible: boolean;
@@ -31,21 +21,6 @@ interface WelcomeModalProps {
 }
 
 const WelcomeModal: React.FC<WelcomeModalProps> = ({isVisible, onClose, onDismiss}) => {
-  const rotation = useSharedValue(0);
-
-  useEffect(() => {
-    if (isVisible) {
-      rotation.value = withRepeat(withTiming(1, {duration: 12000, easing: Easing.linear}), -1, false);
-    } else {
-      cancelAnimation(rotation);
-    }
-    return () => cancelAnimation(rotation);
-  }, [isVisible, rotation]);
-
-  const wheelStyle = useAnimatedStyle(() => ({
-    transform: [{rotate: `${rotation.value * 360}deg`}],
-  }));
-
   const handleDismiss = () => {
     onClose();
     onDismiss?.();
@@ -62,15 +37,7 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({isVisible, onClose, onDismis
           paddingTop: verticalScale(30),
         }}
       >
-        {/* Rotating background wheel */}
-        <Animated.View
-          style={[{position: "absolute", width: WHEEL_SIZE, height: WHEEL_SIZE}, wheelStyle]}
-          pointerEvents="none"
-          shouldRasterizeIOS
-          renderToHardwareTextureAndroid
-        >
-          <WheelBg width={WHEEL_SIZE} height={WHEEL_SIZE} />
-        </Animated.View>
+        <RotatingWheelBackground isVisible={isVisible} />
 
         {/* Modal card */}
         <SlideInModalContent isVisible={isVisible}>

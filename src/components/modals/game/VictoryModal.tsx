@@ -1,14 +1,15 @@
-import React, {useEffect, useMemo, useState} from "react";
-import {View, Text, Modal, TouchableOpacity, Animated, Easing} from "react-native";
+import React from "react";
+import {View, Text, Modal, TouchableOpacity} from "react-native";
 import type {SubmittedGuess} from "../../../hooks/types";
 import {TYPOGRAPHY} from "../../../styles";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
-import WheelBg from "../../../../assets/images/wheel-bg.svg";
-import {MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, wheelSize} from "../../../constants/layout";
+import {MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING} from "../../../constants/layout";
 import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {NewCoins} from "@/components/shared/NewCoins";
 import {verticalScale} from "@/utils/responsive";
+import RotatingWheelBackground from "@/components/shared/RotatingWheelBackground";
+import HomeBg from "../../../../assets/images/home-bg.svg";
 
 /**
  * Props for the victory feedback modal shown after a successful solve.
@@ -42,37 +43,6 @@ interface VictoryModalProps {
  */
 const VictoryModal: React.FC<VictoryModalProps> = ({isVisible, coinsEarned, totalCoins, onNextLevel, onClose}) => {
   const modalHeight = MODAL_HEIGHT * 1.2;
-  const [rotationAnim] = useState(() => new Animated.Value(0));
-
-  const spin = useMemo(() => {
-    return rotationAnim.interpolate({
-      inputRange: [0, 1],
-      outputRange: ["0deg", "360deg"],
-    });
-  }, [rotationAnim]);
-
-  useEffect(() => {
-    let animation: Animated.CompositeAnimation | null = null;
-
-    if (isVisible) {
-      rotationAnim.setValue(0);
-      animation = Animated.loop(
-        Animated.timing(rotationAnim, {
-          toValue: 1,
-          duration: 12000,
-          easing: Easing.linear,
-          useNativeDriver: true,
-        }),
-      );
-      animation.start();
-    }
-
-    return () => {
-      animation?.stop();
-      rotationAnim.stopAnimation();
-      rotationAnim.setValue(0);
-    };
-  }, [isVisible, rotationAnim]);
 
   /**
    * Advances to the next level and closes the modal afterward.
@@ -92,6 +62,7 @@ const VictoryModal: React.FC<VictoryModalProps> = ({isVisible, coinsEarned, tota
           backgroundColor: "rgba(0,0,0,0.5)",
         }}
       >
+        <RotatingWheelBackground isVisible={isVisible} />
         <SlideInModalContent isVisible={isVisible}>
           <TouchableOpacity
             testID="victory-card-pressable"
@@ -114,28 +85,11 @@ const VictoryModal: React.FC<VictoryModalProps> = ({isVisible, coinsEarned, tota
               preserveAspectRatio="none"
               style={{position: "absolute"}}
             />
-
-            <View
-              style={{
-                position: "absolute",
-                width: MODAL_WIDTH,
-                height: modalHeight,
-                overflow: "hidden",
-                borderRadius: 30,
-              }}
-            >
-              <Animated.View
-                style={{
-                  position: "absolute",
-                  left: (MODAL_WIDTH - wheelSize) / 2,
-                  top: (modalHeight - wheelSize) / 2,
-                  opacity: 0.25,
-                  transform: [{rotate: spin}],
-                }}
-              >
-                <WheelBg width={wheelSize} height={wheelSize} />
-              </Animated.View>
-            </View>
+            <HomeBg
+              width={MODAL_WIDTH * 1.1}
+              height={MODAL_HEIGHT * 1.1}
+              style={{position: "absolute", top: -MODAL_HEIGHT * 0.1, left: -MODAL_WIDTH * 0.05}}
+            />
 
             <View
               style={{

@@ -61,24 +61,6 @@ jest.mock("react-native/Libraries/Modal/Modal", () => {
   };
 });
 
-jest.mock("../../../buttons/WideButton", () => {
-  const React = require("react");
-  const {TouchableOpacity, Text} = require("react-native");
-  return function MockWideButton({
-    buttonText,
-    onPress,
-  }: {
-    buttonText: string;
-    onPress: () => void;
-  }) {
-    return React.createElement(
-      TouchableOpacity,
-      {testID: "wide-button", accessibilityRole: "button", onPress},
-      React.createElement(Text, null, buttonText),
-    );
-  };
-});
-
 jest.mock("../../../../assets/images/modal-bg.svg", () => "ModalBgSvg");
 jest.mock("../../../../assets/images/wheel-bg.svg", () => "WheelBgSvg");
 
@@ -125,10 +107,9 @@ describe("AchievementUnlockFanfareModal", () => {
     expect(queryByText("+2 more unlocked")).toBeNull();
   });
 
-  it("fires onContinue and onClose when the CTA button is pressed", () => {
+  it("closes when the user taps the modal", () => {
     const onClose = jest.fn();
-    const onContinue = jest.fn();
-    const {getByText} = render(
+    const {getByTestId} = render(
       <AchievementUnlockFanfareModal
         isVisible={true}
         coinsEarned={10}
@@ -140,13 +121,11 @@ describe("AchievementUnlockFanfareModal", () => {
             icon: "*",
           },
         ]}
-        onContinue={onContinue}
         onClose={onClose}
       />,
     );
 
-    fireEvent.press(getByText("Nice"));
-    expect(onContinue).toHaveBeenCalledTimes(1);
+    fireEvent.press(getByTestId("achievement-unlock-fanfare-modal"));
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 });
