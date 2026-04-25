@@ -777,7 +777,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           setIsLoading(false);
         } catch (error) {
           logger.error("❌ Error loading user data or riddle:", error);
-          logger.error("❌ Error details:", JSON.stringify(error, null, 2));
+          logger.error("❌ Error details:", {
+            code:
+              typeof error === "object" &&
+              error !== null &&
+              "code" in error
+                ? (error as { code?: unknown }).code
+                : undefined,
+            message: error instanceof Error ? error.message : String(error),
+            stack: error instanceof Error ? error.stack : undefined,
+          });
           captureException(error);
           setPlayerData(null);
           setPendingStreakBreak(null);
