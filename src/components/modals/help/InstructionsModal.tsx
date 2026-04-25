@@ -84,7 +84,6 @@ const InstructionsModal: React.FC<InstructionsModalProps> = ({isVisible, onClose
                   color: "black",
                   textAlign: "center",
                   marginTop: verticalScale(16),
-                  marginBottom: verticalScale(24),
                 }}
               >
                 {AppStrings.Instructions.TITLE}

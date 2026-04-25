@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {View, Text, Modal, Dimensions} from "react-native";
+import {View, Text, Modal, Dimensions, Pressable} from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -77,85 +77,104 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({isVisible, onClose, onDismis
 
         {/* Modal card */}
         <SlideInModalContent isVisible={isVisible}>
-          <View
-            style={{
-              width: MODAL_WIDTH,
-              height: MODAL_HEIGHT,
-              alignItems: "center",
-              justifyContent: "center",
-              overflow: "hidden",
-              marginBottom: SCREEN_H * 0.15,
-              paddingTop: verticalScale(30),
-            }}
+          <Pressable
+            onPress={handleDismiss}
+            accessibilityRole="button"
+            accessibilityLabel={letsPlayText}
+            testID="welcome-modal-touch-target"
           >
-            {/* Card shape background */}
-            <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{position: "absolute"}} />
-
-            {/* Decorative wave - clipped to card bounds */}
-            <HomeBg
-              width={MODAL_WIDTH * 1.1}
-              height={MODAL_HEIGHT * 1.1}
-              style={{position: "absolute", top: -MODAL_HEIGHT * 0.05, left: -MODAL_WIDTH * 0.05}}
-            />
-
-            {/* Content */}
             <View
               style={{
-                flex: 1,
-                width: "100%",
+                width: MODAL_WIDTH,
+                height: MODAL_HEIGHT,
                 alignItems: "center",
-                justifyContent: "space-between",
-                padding: MODAL_CONTENT_PADDING,
-                paddingTop: MODAL_CONTENT_PADDING,
+                justifyContent: "center",
+                overflow: "hidden",
+                marginBottom: SCREEN_H * 0.15,
+                paddingTop: verticalScale(30),
               }}
             >
-              {/* Title */}
-              <Logo width={"100%"} style={{position: "absolute", marginTop: SPACING.lg}} />
-              <Text
-                style={{
-                  fontFamily: TYPOGRAPHY.fontPrimary,
-                  fontSize: TYPOGRAPHY.fontSize["2xl"],
-                  color: "black",
-                  textAlign: "center",
-                  marginTop: verticalScale(80),
-                }}
-              >
-                {AppStrings.WelcomeModal.WELCOME_TITLE}
-              </Text>
+              {/* Card shape background */}
+              <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{position: "absolute"}} />
 
-              {/* Body text */}
+              {/* Decorative wave - clipped to card bounds */}
+              <HomeBg
+                width={MODAL_WIDTH * 1.1}
+                height={MODAL_HEIGHT * 1.1}
+                style={{position: "absolute", top: -MODAL_HEIGHT * 0.05, left: -MODAL_WIDTH * 0.05}}
+              />
+
+              {/* Content */}
               <View
                 style={{
-                  width: "80%",
-                  position: "absolute",
-                  marginTop: verticalScale(170),
+                  flex: 1,
+                  width: "100%",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: MODAL_CONTENT_PADDING,
+                  paddingTop: MODAL_CONTENT_PADDING,
                 }}
               >
+                {/* Title */}
+                <Logo width={"100%"} style={{position: "absolute", marginTop: SPACING.lg}} />
                 <Text
                   style={{
-                    fontFamily: TYPOGRAPHY.fontSecondary,
-                    fontSize: TYPOGRAPHY.fontSize.base,
+                    fontFamily: TYPOGRAPHY.fontPrimary,
+                    fontSize: TYPOGRAPHY.fontSize["2xl"],
                     color: "black",
                     textAlign: "center",
-                    position: "absolute",
                     marginTop: verticalScale(80),
                   }}
                 >
-                  {AppStrings.WelcomeModal.SOLVE_RIDDLES_TEXT}
+                  {AppStrings.WelcomeModal.WELCOME_TITLE}
                 </Text>
-                <Text
+
+                {/* Body text */}
+                <View
                   style={{
-                    fontFamily: TYPOGRAPHY.fontSecondary,
-                    fontSize: TYPOGRAPHY.fontSize.base,
-                    color: "black",
-                    textAlign: "center",
+                    width: "80%",
+                    position: "absolute",
+                    marginTop: verticalScale(170),
                   }}
                 >
-                  {AppStrings.WelcomeModal.EARN_COINS_TEXT}
+                  <Text
+                    style={{
+                      fontFamily: TYPOGRAPHY.fontSecondary,
+                      fontSize: TYPOGRAPHY.fontSize.base,
+                      color: "black",
+                      textAlign: "center",
+                      position: "absolute",
+                      marginTop: verticalScale(80),
+                    }}
+                  >
+                    {AppStrings.WelcomeModal.SOLVE_RIDDLES_TEXT}
+                  </Text>
+                  <Text
+                    style={{
+                      fontFamily: TYPOGRAPHY.fontSecondary,
+                      fontSize: TYPOGRAPHY.fontSize.base,
+                      color: "black",
+                      textAlign: "center",
+                    }}
+                  >
+                    {AppStrings.WelcomeModal.EARN_COINS_TEXT}
+                  </Text>
+                </View>
+
+                <Text
+                  style={{
+                    fontFamily: TYPOGRAPHY.fontPrimary,
+                    fontSize: TYPOGRAPHY.fontSize.xl,
+                    color: "black",
+                    textAlign: "center",
+                    marginBottom: MODAL_BUTTON_SPACER,
+                  }}
+                >
+                  {letsPlayText}
                 </Text>
               </View>
             </View>
-          </View>
+          </Pressable>
         </SlideInModalContent>
       </View>
     </Modal>

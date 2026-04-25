@@ -16,6 +16,7 @@ import {
 import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {NewCoins} from "@/components/shared/NewCoins";
+import {verticalScale} from "@/utils/responsive";
 
 interface AchievementUnlockFanfareModalProps {
   isVisible: boolean;
@@ -37,7 +38,7 @@ const AchievementUnlockFanfareModal: React.FC<AchievementUnlockFanfareModalProps
   onClose,
 }) => {
   const [rotationAnim] = useState(() => new Animated.Value(0));
-  const modalBgHeight = MODAL_HEIGHT * 1.2;
+  const modalBgHeight = MODAL_HEIGHT * 1.6;
   const modalBgOffsetY = -(modalBgHeight - MODAL_HEIGHT) / 2;
 
   const spin = useMemo(() => {
@@ -140,9 +141,10 @@ const AchievementUnlockFanfareModal: React.FC<AchievementUnlockFanfareModalProps
                       position: "absolute",
                       opacity: 0.25,
                       transform: [{rotate: spin}],
+                      marginTop: verticalScale(-90),
                     }}
                   >
-                    <WheelBg width={wheelSize} height={wheelSize} />
+                    <WheelBg width={wheelSize * 1.4} height={wheelSize * 1.4} />
                   </Animated.View>
                 </View>
               </MaskedView>
