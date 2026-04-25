@@ -12,17 +12,17 @@ describe("iapConfig", () => {
 
   describe("Constants", () => {
     test("should export NO_ADS_PRODUCT_ID", () => {
-      expect(iapConfig.NO_ADS_PRODUCT_ID).toBe("com.Riddle Quest.no_ads");
+      expect(iapConfig.NO_ADS_PRODUCT_ID).toBe("com.roobsworld.riddlequest.no_ads");
     });
 
     test("should export BACKEND_COIN_PRODUCT_DETAILS", () => {
       expect(iapConfig.BACKEND_COIN_PRODUCT_DETAILS).toEqual({
-        COIN_PACK_TINY:  {id: "com.Riddle Quest.coinpack1", coins: 50},
-        COIN_PACK_SMALL: {id: "com.Riddle Quest.coinpack2", coins: 100},
-        COIN_PACK_MID:   {id: "com.Riddle Quest.coinpack3", coins: 250},
-        COIN_PACK_LARGE: {id: "com.Riddle Quest.coinpack4", coins: 500},
-        COIN_PACK_HUGE:  {id: "com.Riddle Quest.coinpack5", coins: 1000},
-        COIN_PACK_MEGA:  {id: "com.Riddle Quest.coinpack6", coins: 2000},
+        COIN_PACK_TINY:  {id: "com.roobsworld.riddlequest.coinpack1", coins: 50},
+        COIN_PACK_SMALL: {id: "com.roobsworld.riddlequest.coinpack2", coins: 100},
+        COIN_PACK_MID:   {id: "com.roobsworld.riddlequest.coinpack3", coins: 250},
+        COIN_PACK_LARGE: {id: "com.roobsworld.riddlequest.coinpack4", coins: 500},
+        COIN_PACK_HUGE:  {id: "com.roobsworld.riddlequest.coinpack5", coins: 1000},
+        COIN_PACK_MEGA:  {id: "com.roobsworld.riddlequest.coinpack6", coins: 2000},
       });
     });
   });

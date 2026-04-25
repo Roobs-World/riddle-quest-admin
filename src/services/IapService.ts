@@ -29,15 +29,15 @@ const PURCHASE_EVENT_TIMEOUT_MS = 1_500;
  * - App Store Connect (iOS)
  * - Google Play Console (Android)
  *
- * Format: com.Riddle Quest.coins{amount}
+ * Format: com.roobsworld.riddlequest.coins{amount}
  */
 const coinProductIds = [
-  "com.Riddle Quest.coinpack1",
-  "com.Riddle Quest.coinpack2",
-  "com.Riddle Quest.coinpack3",
-  "com.Riddle Quest.coinpack4",
-  "com.Riddle Quest.coinpack5",
-  "com.Riddle Quest.coinpack6",
+  "com.roobsworld.riddlequest.coinpack1",
+  "com.roobsworld.riddlequest.coinpack2",
+  "com.roobsworld.riddlequest.coinpack3",
+  "com.roobsworld.riddlequest.coinpack4",
+  "com.roobsworld.riddlequest.coinpack5",
+  "com.roobsworld.riddlequest.coinpack6",
 ];
 
 /**
@@ -47,12 +47,12 @@ const coinProductIds = [
 export const COIN_PRODUCT_DETAILS: {
   [key: string]: { id: string; coins: number };
 } = {
-  COIN_PACK_TINY:  { id: "com.Riddle Quest.coinpack1", coins: 50 },
-  COIN_PACK_SMALL: { id: "com.Riddle Quest.coinpack2", coins: 100 },
-  COIN_PACK_MID:   { id: "com.Riddle Quest.coinpack3", coins: 250 },
-  COIN_PACK_LARGE: { id: "com.Riddle Quest.coinpack4", coins: 500 },
-  COIN_PACK_HUGE:  { id: "com.Riddle Quest.coinpack5", coins: 1000 },
-  COIN_PACK_MEGA:  { id: "com.Riddle Quest.coinpack6", coins: 2000 },
+  COIN_PACK_TINY:  { id: "com.roobsworld.riddlequest.coinpack1", coins: 50 },
+  COIN_PACK_SMALL: { id: "com.roobsworld.riddlequest.coinpack2", coins: 100 },
+  COIN_PACK_MID:   { id: "com.roobsworld.riddlequest.coinpack3", coins: 250 },
+  COIN_PACK_LARGE: { id: "com.roobsworld.riddlequest.coinpack4", coins: 500 },
+  COIN_PACK_HUGE:  { id: "com.roobsworld.riddlequest.coinpack5", coins: 1000 },
+  COIN_PACK_MEGA:  { id: "com.roobsworld.riddlequest.coinpack6", coins: 2000 },
 };
 
 /** Cached product list with a 5-minute TTL to avoid redundant store round-trips. */

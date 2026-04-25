@@ -8,17 +8,17 @@ This repo is configured to sell 6 coin packs (consumable, one-time purchases):
 
 | Pack | Coins | Product ID |
 | ---- | ----- | ---------- |
-| Tiny | 50 | `com.Riddle Quest.coinpack1` |
-| Small | 100 | `com.Riddle Quest.coinpack2` |
-| Mid | 250 | `com.Riddle Quest.coinpack3` |
-| Large | 500 | `com.Riddle Quest.coinpack4` |
-| Huge | 1000 | `com.Riddle Quest.coinpack5` |
-| Mega | 2000 | `com.Riddle Quest.coinpack6` |
+| Tiny | 50 | `com.roobsworld.riddlequest.coinpack1` |
+| Small | 100 | `com.roobsworld.riddlequest.coinpack2` |
+| Mid | 250 | `com.roobsworld.riddlequest.coinpack3` |
+| Large | 500 | `com.roobsworld.riddlequest.coinpack4` |
+| Huge | 1000 | `com.roobsworld.riddlequest.coinpack5` |
+| Mega | 2000 | `com.roobsworld.riddlequest.coinpack6` |
 
 App identifiers:
 
-- Android package name: `com.roobsworld.Riddle Quest` (from `app.config.js`)
-- iOS bundle identifier: `com.roobsworld.Riddle Quest` (from `app.config.js`)
+- Android package name: `com.roobsworld.riddlequest` (from `app.config.js`)
+- iOS bundle identifier: `com.roobsworld.riddlequest` (from `app.config.js`)
 
 ## iOS (App Store Connect)
 
@@ -32,15 +32,15 @@ App identifiers:
 ### Create Products
 
 1. Log in to Play Console.
-2. Select the app whose package name is `com.roobsworld.Riddle Quest`.
+2. Select the app whose package name is `com.roobsworld.riddlequest`.
 3. Go to Monetize -> Products -> In-app products.
 4. Create 6 in-app products with IDs matching:
-   - `com.Riddle Quest.coinpack1`
-   - `com.Riddle Quest.coinpack2`
-   - `com.Riddle Quest.coinpack3`
-   - `com.Riddle Quest.coinpack4`
-   - `com.Riddle Quest.coinpack5`
-   - `com.Riddle Quest.coinpack6`
+   - `com.roobsworld.riddlequest.coinpack1`
+   - `com.roobsworld.riddlequest.coinpack2`
+   - `com.roobsworld.riddlequest.coinpack3`
+   - `com.roobsworld.riddlequest.coinpack4`
+   - `com.roobsworld.riddlequest.coinpack5`
+   - `com.roobsworld.riddlequest.coinpack6`
 5. Activate each product (not Draft).
 
 ### Testing (avoids "sku-not-found")
@@ -57,7 +57,7 @@ Android IAP will fail with `sku-not-found` if you test from a local debug/dev bu
 
 If you still see `sku-not-found`, the usual causes are:
 
-- Wrong Play app selected (package name mismatch with `com.roobsworld.Riddle Quest`)
+- Wrong Play app selected (package name mismatch with `com.roobsworld.riddlequest`)
 - Product IDs created under a different app
 - Product not Active
 - Device is logged into a non-tester Play account

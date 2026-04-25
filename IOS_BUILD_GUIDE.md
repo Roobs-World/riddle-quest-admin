@@ -68,7 +68,7 @@ When you run your first iOS build, EAS will:
    - No need for a Mac!
 
 3. **Register your app's bundle identifier**
-   - Current: `com.roobsworld.Riddle Quest`
+   - Current: `com.roobsworld.riddlequest`
 
 ## Testing Your iOS App from Windows
 

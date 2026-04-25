@@ -30,7 +30,7 @@ const SlideInModalContent: React.FC<SlideInModalContentProps> = ({
     const opacityTarget = isVisible ? 1 : 0;
     const easing = isVisible ? Easing.out(Easing.cubic) : Easing.in(Easing.cubic);
 
-    Animated.parallel([
+    const animations = [
       Animated.timing(translateY, {
         toValue,
         duration: ENTRY_DURATION_MS,
@@ -43,7 +43,14 @@ const SlideInModalContent: React.FC<SlideInModalContentProps> = ({
         easing,
         useNativeDriver: true,
       }),
-    ]).start();
+    ];
+
+    if (typeof Animated.parallel === "function") {
+      Animated.parallel(animations).start();
+      return;
+    }
+
+    animations.forEach((animation) => animation.start());
   }, [isVisible, opacity, translateY]);
 
   return (

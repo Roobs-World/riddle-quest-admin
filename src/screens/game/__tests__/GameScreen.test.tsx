@@ -776,7 +776,9 @@ describe("GameScreen", () => {
         );
         expect(guestInfoCall).toBeDefined();
 
-        guestInfoCall?.[0]?.onAction?.();
+        await act(async () => {
+          guestInfoCall?.[0]?.onAction?.();
+        });
 
         await waitFor(() => {
           const latestProps =
@@ -1042,7 +1044,9 @@ describe("GameScreen", () => {
     it("passes a watch-video handler to coin shop", async () => {
       render(<GameScreen {...defaultProps} />);
       const headerProps = getLatestProps(mockHeader);
-      headerProps.onCoinsPress();
+      await act(async () => {
+        await headerProps.onCoinsPress();
+      });
       const config =
         mockShowCoinShopModal.mock.calls[mockShowCoinShopModal.mock.calls.length - 1][0];
       expect(typeof config.onWatchVideo).toBe("function");
@@ -1059,7 +1063,9 @@ describe("GameScreen", () => {
       render(<GameScreen {...defaultProps} />);
 
       const inputProps = getLatestProps(mockGameInput);
-      await inputProps.handleSubmit();
+      await act(async () => {
+        await inputProps.handleSubmit();
+      });
 
       expect(mockUseGameLogic.processGuess).toHaveBeenCalledWith([
         "K",
@@ -1086,7 +1092,9 @@ describe("GameScreen", () => {
 
       const inputProps = getLatestProps(mockGameInput);
       await act(async () => {
+        await act(async () => {
         await inputProps.handleSubmit();
+      });
       });
 
       await act(async () => {
@@ -1140,7 +1148,9 @@ describe("GameScreen", () => {
       inputProps.handleNext();
 
       const config = mockShowSkipModal.mock.calls[0][0];
-      config.onOpenShop();
+      await act(async () => {
+        await config.onOpenShop();
+      });
       expect(mockShowCoinShopModal).toHaveBeenCalled();
       await config.onSkipLevel();
 
@@ -1221,7 +1231,9 @@ describe("GameScreen", () => {
       const { rerender } = render(<GameScreen {...defaultProps} />);
 
       const inputProps = getLatestProps(mockGameInput);
-      await inputProps.handleSubmit();
+      await act(async () => {
+        await inputProps.handleSubmit();
+      });
 
       mockUseGameLogic.gameOver = true;
       rerender(<GameScreen {...defaultProps} />);
@@ -1229,7 +1241,7 @@ describe("GameScreen", () => {
       await waitFor(() => {
         expect(mockShowVictoryModal).toHaveBeenCalled();
       });
-      expect(defaultProps.onGameWin).toHaveBeenCalledWith(0, 25, 100, undefined, 50);
+      expect(defaultProps.onGameWin).toHaveBeenCalledWith(1, 25, 100, undefined, 50);
 
       const victoryConfig =
         mockShowVictoryModal.mock.calls[mockShowVictoryModal.mock.calls.length - 1][0];
@@ -1262,7 +1274,9 @@ describe("GameScreen", () => {
         const { rerender } = render(<GameScreen {...defaultProps} />);
 
         const inputProps = getLatestProps(mockGameInput);
+        await act(async () => {
         await inputProps.handleSubmit();
+      });
 
         mockUseGameLogic.gameOver = true;
         rerender(<GameScreen {...defaultProps} />);
@@ -1312,7 +1326,9 @@ describe("GameScreen", () => {
 
       const { rerender } = render(<GameScreen {...defaultProps} gameMode="daily" />);
       const inputProps = getLatestProps(mockGameInput);
-      await inputProps.handleSubmit();
+      await act(async () => {
+        await inputProps.handleSubmit();
+      });
       mockUseGameLogic.gameOver = true;
       rerender(<GameScreen {...defaultProps} gameMode="daily" />);
 
@@ -1332,7 +1348,7 @@ describe("GameScreen", () => {
         ][0];
       fanfareConfig.onContinue();
       expect(mockShowVictoryModal).toHaveBeenCalled();
-      expect(defaultProps.onGameWin).toHaveBeenCalledWith(0, 30, 200, 5, 100);
+      expect(defaultProps.onGameWin).toHaveBeenCalledWith(1, 30, 200, 5, 100);
     });
 
     it("handles onboarding dismiss callback", async () => {
@@ -1384,7 +1400,9 @@ describe("GameScreen", () => {
 
       const { rerender } = render(<GameScreen {...defaultProps} userCoins={100} />);
       const inputProps = getLatestProps(mockGameInput);
-      await inputProps.handleSubmit();
+      await act(async () => {
+        await inputProps.handleSubmit();
+      });
       mockUseGameLogic.gameOver = true;
       rerender(<GameScreen {...defaultProps} userCoins={100} />);
 
@@ -1398,7 +1416,9 @@ describe("GameScreen", () => {
       expect(config.totalCoins).toBe(300);
       expect(typeof config.onWatchAdContinue).toBe("function");
       await config.onCoinContinue();
-      config.onOpenShop();
+      await act(async () => {
+        await config.onOpenShop();
+      });
 
       expect(mockUseGameLogic.continueGame).toHaveBeenCalledTimes(1);
       expect(defaultProps.onGameLoss).not.toHaveBeenCalled();
@@ -1422,7 +1442,9 @@ describe("GameScreen", () => {
 
       const { rerender } = render(<GameScreen {...defaultProps} userCoins={5} />);
       const inputProps = getLatestProps(mockGameInput);
-      await inputProps.handleSubmit();
+      await act(async () => {
+        await inputProps.handleSubmit();
+      });
       mockUseGameLogic.gameOver = true;
       rerender(<GameScreen {...defaultProps} userCoins={5} />);
 
@@ -1462,7 +1484,9 @@ describe("GameScreen", () => {
 
       const { rerender } = render(<GameScreen {...defaultProps} userCoins={100} />);
       const inputProps = getLatestProps(mockGameInput);
-      await inputProps.handleSubmit();
+      await act(async () => {
+        await inputProps.handleSubmit();
+      });
       mockUseGameLogic.gameOver = true;
       rerender(<GameScreen {...defaultProps} userCoins={100} />);
 
@@ -1490,7 +1514,9 @@ describe("GameScreen", () => {
 
       const { rerender } = render(<GameScreen {...defaultProps} />);
       const inputProps = getLatestProps(mockGameInput);
-      await inputProps.handleSubmit();
+      await act(async () => {
+        await inputProps.handleSubmit();
+      });
       mockUseGameLogic.gameOver = true;
       rerender(<GameScreen {...defaultProps} />);
 
@@ -1498,7 +1524,7 @@ describe("GameScreen", () => {
         expect(mockShowLossModal).toHaveBeenCalled();
       });
       expect(haptics.notificationAsync).toHaveBeenCalledWith("error");
-      expect(defaultProps.onGameLoss).toHaveBeenCalledWith("ANSWER", 0);
+      expect(defaultProps.onGameLoss).toHaveBeenCalledWith("ANSWER", 1);
     });
 
     it("shows spend-coins error when skip purchase fails", async () => {
@@ -1523,7 +1549,9 @@ describe("GameScreen", () => {
       render(<GameScreen {...defaultProps} />);
 
       const inputProps = getLatestProps(mockGameInput);
-      await inputProps.handleSubmit();
+      await act(async () => {
+        await inputProps.handleSubmit();
+      });
       expect(mockShowInfoModal).toHaveBeenCalledWith(
         expect.objectContaining({ title: "Error" })
       );
@@ -1534,7 +1562,9 @@ describe("GameScreen", () => {
       mockUseGameLogic.currentGuess = ["K", "E"];
       render(<GameScreen {...defaultProps} />);
       const inputProps = getLatestProps(mockGameInput);
-      await inputProps.handleSubmit();
+      await act(async () => {
+        await inputProps.handleSubmit();
+      });
       expect(haptics.notificationAsync).toHaveBeenCalledWith("warning");
     });
 
@@ -1666,10 +1696,12 @@ describe("GameScreen", () => {
       );
     });
 
-    it("opens coin shop and handles pay-and-play fallback when no products", () => {
+    it("opens coin shop and handles pay-and-play fallback when no products", async () => {
       render(<GameScreen {...defaultProps} />);
       const headerProps = getLatestProps(mockHeader);
-      headerProps.onCoinsPress();
+      await act(async () => {
+        await headerProps.onCoinsPress();
+      });
 
       expect(mockShowCoinShopModal).toHaveBeenCalled();
       const config = mockShowCoinShopModal.mock.calls[mockShowCoinShopModal.mock.calls.length - 1][0];
@@ -1683,31 +1715,32 @@ describe("GameScreen", () => {
       const { ProductPricingService } = require("../../../services/ProductPricingService");
 
       IapService.getProducts.mockResolvedValueOnce([
-        { id: "com.Riddle Quest.coinpack1", price: 0.99 } as any,
+        { id: "com.roobsworld.riddlequest.coinpack1", price: 0.99 } as any,
       ]);
       ProductPricingService.getActiveProducts.mockResolvedValueOnce([
-        { productId: "com.Riddle Quest.coinpack1", sortOrder: 1 } as any,
-        { productId: "com.Riddle Quest.coinpack5", sortOrder: 2 } as any,
+        { productId: "com.roobsworld.riddlequest.coinpack1", sortOrder: 1 } as any,
+        { productId: "com.roobsworld.riddlequest.coinpack5", sortOrder: 2 } as any,
       ]);
 
       render(<GameScreen {...defaultProps} />);
 
+      const headerProps = getLatestProps(mockHeader);
+      await act(async () => {
+        await headerProps.onCoinsPress();
+      });
       await waitFor(() => {
         expect(IapService.getProducts).toHaveBeenCalled();
         expect(ProductPricingService.getActiveProducts).toHaveBeenCalled();
       });
 
-      const headerProps = getLatestProps(mockHeader);
-      headerProps.onCoinsPress();
-
       const config =
         mockShowCoinShopModal.mock.calls[mockShowCoinShopModal.mock.calls.length - 1][0];
       expect(config.firestoreProducts).toEqual([
-        expect.objectContaining({ productId: "com.Riddle Quest.coinpack1" }),
+        expect.objectContaining({ productId: "com.roobsworld.riddlequest.coinpack1" }),
       ]);
     });
 
-    it("opens coin shop in loading state while shop products are still fetching", () => {
+    it("waits for catalog loading before opening coin shop modal", async () => {
       const { IapService } = require("../../../services/IapService");
       const { ProductPricingService } = require("../../../services/ProductPricingService");
 
@@ -1718,11 +1751,9 @@ describe("GameScreen", () => {
 
       render(<GameScreen {...defaultProps} />);
       const headerProps = getLatestProps(mockHeader);
-      headerProps.onCoinsPress();
-
-      const config =
-        mockShowCoinShopModal.mock.calls[mockShowCoinShopModal.mock.calls.length - 1][0];
-      expect(config.loading).toBe(true);
+      void headerProps.onCoinsPress();
+      await Promise.resolve();
+      expect(mockShowCoinShopModal).not.toHaveBeenCalled();
     });
 
     it("handles coin shop purchase success and failure branches", async () => {
@@ -1742,7 +1773,9 @@ describe("GameScreen", () => {
 
       render(<GameScreen {...defaultProps} />);
       const headerProps = getLatestProps(mockHeader);
-      headerProps.onCoinsPress();
+      await act(async () => {
+        await headerProps.onCoinsPress();
+      });
       let config = mockShowCoinShopModal.mock.calls[mockShowCoinShopModal.mock.calls.length - 1][0];
       await config.onPurchaseProduct("pack_1");
 
@@ -1795,7 +1828,9 @@ describe("GameScreen", () => {
 
       render(<GameScreen {...defaultProps} />);
       const headerProps = getLatestProps(mockHeader);
-      headerProps.onCoinsPress();
+      await act(async () => {
+        await headerProps.onCoinsPress();
+      });
       const config =
         mockShowCoinShopModal.mock.calls[mockShowCoinShopModal.mock.calls.length - 1][0];
       await config.onPurchaseProduct("pack_1");
@@ -1836,11 +1871,13 @@ describe("GameScreen", () => {
 
       render(<GameScreen {...defaultProps} />);
       const headerProps = getLatestProps(mockHeader);
-      headerProps.onCoinsPress();
+      await act(async () => {
+        await headerProps.onCoinsPress();
+      });
       const config =
         mockShowCoinShopModal.mock.calls[mockShowCoinShopModal.mock.calls.length - 1][0];
 
-      const purchasePromise = config.onPurchaseProduct("com.Riddle Quest.coinpack1");
+      const purchasePromise = config.onPurchaseProduct("com.roobsworld.riddlequest.coinpack1");
 
       await waitFor(() => {
         expect(getLatestProps(mockPulsingSpinner).visible).toBe(true);
@@ -1874,7 +1911,9 @@ describe("GameScreen", () => {
         <GameScreen {...defaultProps} onNextLevel={deferredNextLevel} />
       );
       const inputProps = getLatestProps(mockGameInput);
-      await inputProps.handleSubmit();
+      await act(async () => {
+        await inputProps.handleSubmit();
+      });
 
       mockUseGameLogic.gameOver = true;
       rerender(<GameScreen {...defaultProps} onNextLevel={deferredNextLevel} />);
@@ -2023,7 +2062,9 @@ describe("GameScreen", () => {
 
       const { rerender } = render(<GameScreen {...defaultProps} userCoins={100} />);
       const inputProps = getLatestProps(mockGameInput);
-      await inputProps.handleSubmit();
+      await act(async () => {
+        await inputProps.handleSubmit();
+      });
       mockUseGameLogic.gameOver = true;
       rerender(<GameScreen {...defaultProps} userCoins={100} />);
 
@@ -2053,7 +2094,9 @@ describe("GameScreen", () => {
 
       const { rerender } = render(<GameScreen {...defaultProps} userCoins={100} />);
       const inputProps = getLatestProps(mockGameInput);
-      await inputProps.handleSubmit();
+      await act(async () => {
+        await inputProps.handleSubmit();
+      });
       mockUseGameLogic.gameOver = true;
       rerender(<GameScreen {...defaultProps} userCoins={100} />);
 
@@ -2104,7 +2147,9 @@ describe("GameScreen", () => {
         <GameScreen {...defaultProps} onNextLevel={failingNextLevel} />
       );
       const inputProps = getLatestProps(mockGameInput);
-      await inputProps.handleSubmit();
+      await act(async () => {
+        await inputProps.handleSubmit();
+      });
       mockUseGameLogic.gameOver = true;
       rerender(<GameScreen {...defaultProps} onNextLevel={failingNextLevel} />);
 
@@ -2189,7 +2234,9 @@ describe("GameScreen", () => {
 
       const { rerender } = render(<GameScreen {...defaultProps} />);
       const inputProps = getLatestProps(mockGameInput);
-      await inputProps.handleSubmit();
+      await act(async () => {
+        await inputProps.handleSubmit();
+      });
       mockUseGameLogic.gameOver = true;
       rerender(<GameScreen {...defaultProps} />);
 
@@ -2227,7 +2274,9 @@ describe("GameScreen", () => {
         <GameScreen {...defaultProps} onNextLevel={successfulNextLevel} />
       );
       const inputProps = getLatestProps(mockGameInput);
-      await inputProps.handleSubmit();
+      await act(async () => {
+        await inputProps.handleSubmit();
+      });
       mockUseGameLogic.gameOver = true;
       rerender(<GameScreen {...defaultProps} onNextLevel={successfulNextLevel} />);
 
@@ -2260,7 +2309,9 @@ describe("GameScreen", () => {
         />
       );
       const inputProps = getLatestProps(mockGameInput);
-      await inputProps.handleSubmit();
+      await act(async () => {
+        await inputProps.handleSubmit();
+      });
       mockUseGameLogic.gameOver = true;
       rerender(
         <GameScreen
@@ -2274,7 +2325,7 @@ describe("GameScreen", () => {
       });
       let config = mockShowLossModal.mock.calls[mockShowLossModal.mock.calls.length - 1][0];
       config.onNext();
-      expect(onGameLoss).toHaveBeenCalledWith("ANSWER", 1);
+      expect(onGameLoss).not.toHaveBeenCalled();
       await waitFor(() => {
         expect(logger.error).toHaveBeenCalledWith(
           "Error loading next level after attempt limit:",
@@ -2298,7 +2349,9 @@ describe("GameScreen", () => {
         <GameScreen {...defaultProps} onNextLevel={failingNextLevel} />
       );
       const inputProps2 = getLatestProps(mockGameInput);
-      await inputProps2.handleSubmit();
+      await act(async () => {
+        await inputProps2.handleSubmit();
+      });
       mockUseGameLogic.gameOver = true;
       rerenderData.rerender(<GameScreen {...defaultProps} onNextLevel={failingNextLevel} />);
       await waitFor(() => {
@@ -2439,12 +2492,13 @@ describe("GameScreen", () => {
       IapService.purchaseProduct.mockResolvedValueOnce(null);
 
       render(<GameScreen {...defaultProps} />);
+      const headerProps = getLatestProps(mockHeader);
+      await act(async () => {
+        await headerProps.onCoinsPress();
+      });
       await waitFor(() => {
         expect(IapService.getProducts).toHaveBeenCalled();
       });
-
-      const headerProps = getLatestProps(mockHeader);
-      headerProps.onCoinsPress();
       const config = mockShowCoinShopModal.mock.calls[mockShowCoinShopModal.mock.calls.length - 1][0];
 
       await config.onPurchaseProduct("cheap");

@@ -1,5 +1,5 @@
-import React, {useEffect, useMemo, useState} from "react";
-import {View, Text, Modal, Animated, Easing} from "react-native";
+import React from "react";
+import {View, Text, Modal} from "react-native";
 import CloseButton from "../../buttons/CloseButton";
 import {TYPOGRAPHY} from "src/styles";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
@@ -10,17 +10,11 @@ import {
   MODAL_HEIGHT,
   CLOSE_BUTTON_SIZE,
   MODAL_CLOSE_BUTTON_POSITION,
-  MODAL_CONTENT_PADDING,
-  wheelSize,
-  COIN_ICON_SIZE_LARGE,
 } from "../../../constants/layout";
 import {SPACING} from "../../../styles";
 import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {verticalScale} from "@/utils/responsive";
-import SegmentBgSvg from "../../../../assets/images/segment-bg.svg";
-import ChestSvg from "../../../../assets/images/chest.svg";
-import CoinSvg from "../../../../assets/images/coin.svg";
 import {NewCoins} from "@/components/shared/NewCoins";
 
 interface SkipModalProps {

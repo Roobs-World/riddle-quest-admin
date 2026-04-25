@@ -1,6 +1,6 @@
 import React from "react";
 import { render } from "@testing-library/react-native";
-import HintIcon from "../LogoIcon";
+import HintIcon from "../HintIcon";
 
 // Mock the SVG import
 jest.mock("@images/hint.svg", () => {

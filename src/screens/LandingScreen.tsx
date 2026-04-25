@@ -26,7 +26,6 @@ import {logger} from "../utils/logger";
 import {captureException} from "../utils/sentry";
 import CreditsModal from "../components/modals/help/CreditsModal";
 import MainLogoPng from "../../assets/images/logo.png";
-import {verticalScale} from "@/utils/responsive";
 
 /**
  * Landing screen component used at the root of the auth stack.

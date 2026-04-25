@@ -701,6 +701,7 @@ const GameScreenWrapper = () => {
           }}
           onNextLevel={handleNextLevel}
           gameMode={gameMode}
+          // eslint-disable-next-line react-hooks/refs
           suppressOnboarding={suppressOnboardingRef.current}
         />
 

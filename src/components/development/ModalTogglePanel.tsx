@@ -352,13 +352,6 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
   const [modalToggles, setModalToggles] = useState<{
     [key: string]: boolean | Record<string, unknown>;
   }>({});
-
-  // CRITICAL: Only render in development builds
-  if (!__DEV__) {
-    logger.warn("ModalTogglePanel should not be used in production builds");
-    return null;
-  }
-
   const modalTypes = Object.keys(modalRegistry);
 
   const spendDebugCoins = useCallback(
@@ -386,6 +379,12 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
     },
     [playerData, updatePlayerDataLocally]
   );
+
+  // CRITICAL: Only render in development builds
+  if (!__DEV__) {
+    logger.warn("ModalTogglePanel should not be used in production builds");
+    return null;
+  }
 
   /**
    * Toggle Modal Visibility

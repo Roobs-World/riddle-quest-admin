@@ -1,11 +1,10 @@
 import React from "react";
 import {View, Text, Modal} from "react-native";
-import CloseButton from "../../buttons/CloseButton";
 import {TYPOGRAPHY, SPACING} from "../../../styles";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
 import WideButton from "../../buttons/WideButton";
-import {MODAL_WIDTH, MODAL_HEIGHT, CLOSE_BUTTON_SIZE, MODAL_CLOSE_BUTTON_POSITION} from "../../../constants/layout";
+import {MODAL_WIDTH, MODAL_HEIGHT} from "../../../constants/layout";
 import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 

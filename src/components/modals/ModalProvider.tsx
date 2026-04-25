@@ -17,19 +17,17 @@ interface RenderedModalProps {
 
 const RenderedModal = React.memo(
   ({ modal, closeModal }: RenderedModalProps) => {
-    const ModalComponent = getModalComponent(modal.type);
-    if (!ModalComponent) {
+    const modalComponent = getModalComponent(modal.type);
+    if (!modalComponent) {
       logger.warn(`Skipping unknown modal type "${modal.type}"`);
       return null;
     }
 
-    return (
-      <ModalComponent
-        isVisible={true}
-        onClose={() => closeModal(modal.id)}
-        {...modal.data}
-      />
-    );
+    return React.createElement(modalComponent, {
+      isVisible: true,
+      onClose: () => closeModal(modal.id),
+      ...modal.data,
+    });
   },
   (prevProps, nextProps) =>
     prevProps.modal === nextProps.modal &&
