@@ -23,6 +23,7 @@ expo-env.d.ts
 
 android/
 ios/
+releases/
 
 # Metro
 .metro-health-check*
