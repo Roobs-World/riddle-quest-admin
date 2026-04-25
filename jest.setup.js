@@ -394,3 +394,13 @@ jest.mock("react-native-google-mobile-ads", () => {
     },
   };
 });
+
+jest.mock("@react-native-community/netinfo", () => ({
+  __esModule: true,
+  default: {
+    addEventListener: jest.fn(() => jest.fn()),
+    fetch: jest.fn(() =>
+      Promise.resolve({ isConnected: true, isInternetReachable: true })
+    ),
+  },
+}));

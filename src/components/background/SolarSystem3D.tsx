@@ -60,6 +60,26 @@ const textureCache = new Map<string | number, Texture>();
 const sphereGeometryCache = new Map<string, SphereGeometry>();
 let texturedPhongMaterialCache = new WeakMap<Texture, MeshPhongMaterial>();
 let fallbackPhongMaterial: MeshPhongMaterial | null = null;
+type AssetModuleReference =
+  | string
+  | number
+  | { default?: string | number; uri?: string };
+
+const resolveAssetModule = (assetModule: AssetModuleReference): string | number => {
+  if (typeof assetModule === "number" || typeof assetModule === "string") {
+    return assetModule;
+  }
+
+  if (
+    assetModule &&
+    (typeof assetModule.default === "number" ||
+      typeof assetModule.default === "string")
+  ) {
+    return assetModule.default;
+  }
+
+  throw new Error("Unsupported texture asset module reference");
+};
 
 // Test-only helper to clear module cache between unit tests.
 export const __resetSolarSystem3DTextureCacheForTests = (): void => {
@@ -110,17 +130,22 @@ const getSharedTexturedPhongMaterial = (
  * This mimics expo-three's parseTexture but without the problematic imports.
  */
 function createTextureFromAsset(asset: Asset): Texture {
+  const uri = asset.localUri ?? asset.uri;
+  if (!uri) {
+    throw new Error("Texture asset has no localUri/uri after load");
+  }
+
   const texture = new Texture();
-  // expo-gl expects this specific image format with the asset as data
+  // Use URI-backed image metadata to keep Expo GL texture uploads reliable in release builds.
   (texture.image as unknown) = {
-    data: asset,
-    width: asset.width,
-    height: asset.height,
+    localUri: uri,
+    uri,
+    width: asset.width ?? 1,
+    height: asset.height ?? 1,
   };
   texture.needsUpdate = true;
-  // isDataTexture forces expo-gl to pass data to gl.texImage2D verbatim
-  (texture as unknown as { isDataTexture: boolean }).isDataTexture = true;
-  // LinearFilter handles non-power-of-two textures
+  texture.flipY = false;
+  // LinearFilter handles non-power-of-two textures.
   texture.minFilter = LinearFilter;
   return texture;
 }
@@ -129,16 +154,21 @@ function createTextureFromAsset(asset: Asset): Texture {
  * Custom hook to load textures for React Native using expo-asset directly.
  * Avoids expo-three's problematic loader imports.
  */
-function useExpoTexture(assetModule: string | number): Texture | null {
+function useExpoTexture(assetModule: AssetModuleReference): Texture | null {
+  const resolvedModule = useMemo(
+    () => resolveAssetModule(assetModule),
+    [assetModule]
+  );
+
   const [texture, setTexture] = useState<Texture | null>(() => {
-    return textureCache.get(assetModule) || null;
+    return textureCache.get(resolvedModule) || null;
   });
 
   useEffect(() => {
     let mounted = true;
     const loadTexture = async () => {
       try {
-        const cached = textureCache.get(assetModule);
+        const cached = textureCache.get(resolvedModule);
         if (cached) {
           if (mounted) {
             setTexture(cached);
@@ -146,14 +176,15 @@ function useExpoTexture(assetModule: string | number): Texture | null {
           return;
         }
 
-        const asset = Asset.fromModule(assetModule);
-        if (!asset.downloaded) {
-          await asset.downloadAsync();
+        const [asset] = await Asset.loadAsync(resolvedModule);
+        if (!asset) {
+          throw new Error("Asset.loadAsync returned no asset");
         }
+
         const loaded = createTextureFromAsset(asset);
         loaded.generateMipmaps = false;
         loaded.minFilter = LinearFilter;
-        textureCache.set(assetModule, loaded);
+        textureCache.set(resolvedModule, loaded);
 
         if (mounted) {
           setTexture(loaded);
@@ -167,7 +198,7 @@ function useExpoTexture(assetModule: string | number): Texture | null {
     return () => {
       mounted = false;
     };
-  }, [assetModule]);
+  }, [resolvedModule]);
 
   return texture;
 }

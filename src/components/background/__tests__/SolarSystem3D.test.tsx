@@ -4,8 +4,7 @@ import { ColorManagement } from "three";
 
 const mockSetClearColor = jest.fn();
 const mockLookAt = jest.fn();
-const mockDownloadAsync = jest.fn().mockResolvedValue(undefined);
-const mockFromModule = jest.fn();
+const mockLoadAsync = jest.fn();
 const frameCallbacks: Array<() => void> = [];
 
 jest.mock("@react-three/fiber", () => {
@@ -31,7 +30,7 @@ jest.mock("@react-three/fiber", () => {
 
 jest.mock("expo-asset", () => ({
   Asset: {
-    fromModule: (...args: any[]) => mockFromModule(...args),
+    loadAsync: (...args: any[]) => mockLoadAsync(...args),
   },
 }));
 
@@ -48,20 +47,20 @@ describe("SolarSystem3D", () => {
     jest.clearAllMocks();
     frameCallbacks.length = 0;
     __resetSolarSystem3DTextureCacheForTests();
-    mockFromModule.mockReturnValue({
-      downloaded: false,
+    mockLoadAsync.mockResolvedValue([
+      {
+        localUri: "file:///mock-texture.png",
       width: 64,
       height: 64,
-      downloadAsync: mockDownloadAsync,
-    });
+      },
+    ]);
   });
 
-  it("loads textures via expo-asset when not downloaded", async () => {
+  it("loads textures via expo-asset", async () => {
     render(<SolarSystem3D />);
 
     await waitFor(() => {
-      expect(mockFromModule).toHaveBeenCalled();
-      expect(mockDownloadAsync).toHaveBeenCalled();
+      expect(mockLoadAsync).toHaveBeenCalled();
     });
   });
 
@@ -90,9 +89,7 @@ describe("SolarSystem3D", () => {
     const warnSpy = jest.spyOn(console, "warn").mockImplementation(() => undefined);
 
     __resetSolarSystem3DTextureCacheForTests();
-    mockFromModule.mockImplementation(() => {
-      throw new Error("asset failure");
-    });
+    mockLoadAsync.mockRejectedValue(new Error("asset failure"));
 
     expect(() => render(<SolarSystem3D />)).not.toThrow();
 
@@ -108,14 +105,14 @@ describe("SolarSystem3D", () => {
 
   it("reuses cached textures on subsequent mounts", async () => {
     const first = render(<SolarSystem3D />);
-    await waitFor(() => expect(mockFromModule).toHaveBeenCalled());
-    const callCountAfterFirst = mockFromModule.mock.calls.length;
+    await waitFor(() => expect(mockLoadAsync).toHaveBeenCalled());
+    const callCountAfterFirst = mockLoadAsync.mock.calls.length;
 
     first.unmount();
     render(<SolarSystem3D />);
 
     await waitFor(() => {
-      expect(mockFromModule.mock.calls.length).toBe(callCountAfterFirst);
+      expect(mockLoadAsync.mock.calls.length).toBe(callCountAfterFirst);
     });
   });
 

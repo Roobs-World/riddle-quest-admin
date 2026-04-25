@@ -12,6 +12,7 @@ import { KeyboardAvoidingView, Platform, View, Linking } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as RNIap from "react-native-iap";
 import * as Haptics from "expo-haptics";
+import NetInfo from "@react-native-community/netinfo";
 import useRewardedAds from "../../hooks/useRewardedAds";
 
 import Header from "../../components/game/Header";
@@ -81,6 +82,7 @@ import {
   writeBooleanSetting,
 } from "../../utils/settingsStorage";
 import type { Feedback } from "../../hooks/types";
+import OfflineBlockingModal from "../../components/modals/system/OfflineBlockingModal";
 
 interface GuessResult {
   outcome: "win" | "loss" | "continue" | "attemptLimitReached";
@@ -287,6 +289,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const isGuestMode = isGuestPlayer(playerData);
 
   const [lastGuessResult, setLastGuessResult] = useState<GuessResult | null>(null);
+  const [isOffline, setIsOffline] = useState(false);
   const [isSoundEnabled, setIsSoundEnabled] = useState(true);
   const [isHapticsEnabled, setIsHapticsEnabled] = useState(true);
   const [hasLoadedSettings, setHasLoadedSettings] = useState(false);
@@ -383,6 +386,30 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   }, [riddleId, gameMode]);
 
   useEffect(() => {
+    const updateConnectivity = (nextState: {
+      isConnected: boolean | null;
+      isInternetReachable: boolean | null;
+    }) => {
+      const disconnected = nextState.isConnected === false;
+      const internetUnavailable = nextState.isInternetReachable === false;
+      setIsOffline(disconnected || internetUnavailable);
+    };
+
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      updateConnectivity(state);
+    });
+
+    void NetInfo.fetch().then(updateConnectivity).catch(() => {
+      // If initial reachability check fails, treat as offline to protect game state.
+      setIsOffline(true);
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
     loadRewardedAd();
   }, [loadRewardedAd]);
 
@@ -394,6 +421,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   }, [gameMode, riddleId, answer, resetRoundState]);
 
   const isAnyModalVisible = modal.modals.length > 0;
+  const isInteractionBlocked = isAnyModalVisible || isOffline;
   const [canAnimateCoinIncreases, setCanAnimateCoinIncreases] = useState(
     !isAnyModalVisible
   );
@@ -1932,7 +1960,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
             answerLength={answerLength}
             handleKeyPress={handleKeyPress}
             handleBackspace={handleBackspace}
-            isAnyOverlayVisible={isAnyModalVisible}
+            isAnyOverlayVisible={isInteractionBlocked}
             letterStates={letterStates}
             hintRevealedIndices={hintRevealedIndicesRef.current}
             activeSlotIndex={activeSlotIndex}
@@ -1972,6 +2000,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         />
 
         <ModalProvider />
+        <OfflineBlockingModal isVisible={isOffline} />
         {isGuestMode ? (
           <UpgradeAccountModal
             isVisible={isUpgradeModalVisible}
