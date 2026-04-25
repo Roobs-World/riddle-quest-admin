@@ -15,7 +15,6 @@ import React from "react";
 import {View, TouchableOpacity} from "react-native";
 import ProfileIcon from "../icons/ProfileIcon";
 import SettingsIcon from "../icons/SettingsIcon";
-import LetsPlayIcon from "../../../assets/images/lets-play.svg";
 import {SPACING} from "../../styles";
 import {scale} from "../../utils/responsive";
 import {AppStrings} from "../../constants/AppStrings";
@@ -42,9 +41,6 @@ interface BottomNavigationBarProps {
 
   /** Function called when the Settings icon is pressed - opens settings overlay */
   onSettingsPress: () => void;
-
-  /** Function called when the center button is pressed - toggles game mode */
-  onChangeGameModePress?: () => void;
 }
 
 /**
@@ -90,11 +86,7 @@ interface BottomNavigationBarProps {
  * @param {BottomNavigationBarProps} props - Navigation callback functions
  * @returns {JSX.Element} Rendered bottom navigation bar with three action buttons
  */
-const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
-  onProfilePress,
-  onSettingsPress,
-  onChangeGameModePress,
-}) => {
+const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({onProfilePress, onSettingsPress}) => {
   return (
     <View
       style={{
@@ -120,19 +112,6 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
         accessibilityHint={AppStrings.Accessibility.OPEN_SETTINGS_HINT}
       >
         <SettingsIcon color="#401F40" />
-      </TouchableOpacity>
-
-      {/* Center - Change game mode button */}
-      <TouchableOpacity
-        style={{padding: scale(8)}}
-        onPress={onChangeGameModePress}
-        testID="change-game-mode-button"
-        accessible={true}
-        accessibilityRole="button"
-        accessibilityLabel={AppStrings.Accessibility.CHANGE_GAME_MODE}
-        accessibilityHint={AppStrings.Accessibility.CHANGE_GAME_MODE_HINT}
-      >
-        <LetsPlayIcon width={scale(68)} height={scale(34)} />
       </TouchableOpacity>
 
       {/* Right Side - Profile Button */}

@@ -146,16 +146,32 @@ const GameScreenWrapper = () => {
     }
 
     const sourceIsGuest = isGuestPlayer(sourcePlayer);
-    const nextPlayerForClassic = sourceIsGuest
-      ? {
-          ...sourcePlayer,
-          progress: {
-            ...sourcePlayer.progress,
-            classicIndex:
-              sourcePlayer.progress?.classicIndex ?? GUEST_CLASSIC_START_INDEX,
-          },
+    let nextPlayerForClassic = sourcePlayer;
+
+    if (!sourceIsGuest && sourcePlayer.userId) {
+      try {
+        const latestServerPlayer = await loadUserProgressFromFirestore(
+          sourcePlayer.userId
+        );
+        if (latestServerPlayer) {
+          nextPlayerForClassic = latestServerPlayer;
         }
-      : sourcePlayer;
+      } catch (error) {
+        logger.warn(
+          "NavigationStack: failed to refresh classic index from Firestore before switching mode.",
+          error
+        );
+      }
+    } else {
+      nextPlayerForClassic = {
+        ...sourcePlayer,
+        progress: {
+          ...sourcePlayer.progress,
+          classicIndex:
+            sourcePlayer.progress?.classicIndex ?? GUEST_CLASSIC_START_INDEX,
+        },
+      };
+    }
 
     setCurrentRiddle(null);
     setGameMode("classic");
@@ -321,7 +337,26 @@ const GameScreenWrapper = () => {
 
     // For classic mode, advance to next level
     logger.debug("NavigationStack: handleNextLevel - Classic mode detected");
-    const nextClassicIndex = (playerData.progress?.classicIndex || 0) + 1;
+    let resolvedClassicIndex = toNonNegativeNumber(
+      playerData.progress?.classicIndex
+    );
+    if (!isGuestMode && playerData.userId) {
+      try {
+        const latestServerPlayer = await loadUserProgressFromFirestore(
+          playerData.userId
+        );
+        resolvedClassicIndex = toNonNegativeNumber(
+          latestServerPlayer?.progress?.classicIndex,
+          resolvedClassicIndex
+        );
+      } catch (error) {
+        logger.warn(
+          "NavigationStack: failed to refresh classic index from Firestore before advancing level.",
+          error
+        );
+      }
+    }
+    const nextClassicIndex = resolvedClassicIndex + 1;
     logger.debug(
       `NavigationStack: handleNextLevel - Moving to classic index: ${nextClassicIndex}`
     );

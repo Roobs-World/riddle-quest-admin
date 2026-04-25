@@ -112,6 +112,9 @@ const sanitizePlayerUpdates = (updates: Partial<Player>): Partial<Player> =>
     Object.entries(updates).filter(([, value]) => value !== undefined)
   ) as Partial<Player>;
 
+const isAnonymousAuthSession = (): boolean =>
+  getAuth(getApp()).currentUser?.isAnonymous === true;
+
 const buildFirestoreUserUpdates = (
   basePlayer: Player,
   updates: Partial<Player>
@@ -233,7 +236,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   }, []);
 
   useEffect(() => {
-    if (!playerData || !isGuestPlayer(playerData)) return;
+    if (!playerData || !isAnonymousAuthSession()) return;
     void saveGuestProfileToLocal(playerData);
   }, [playerData, saveGuestProfileToLocal]);
 
@@ -848,7 +851,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     async (newIndex: number): Promise<void> => {
       if (!playerData?.userId) return;
       try {
-        if (!isGuestPlayer(playerData)) {
+        const isAnonymousSession = isAnonymousAuthSession();
+        if (!isAnonymousSession) {
           await updateClassicIndexInFirestore(playerData.userId, newIndex);
         }
         let nextPlayerSnapshot: Player | null = null;
@@ -861,7 +865,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           nextPlayerSnapshot = nextPlayer;
           return nextPlayer;
         });
-        if (isGuestPlayer(playerData) && nextPlayerSnapshot) {
+        if (isAnonymousSession && nextPlayerSnapshot) {
           await saveGuestProfileToLocal(nextPlayerSnapshot);
         }
         logger.debug("AuthContext: Player classic index updated locally and in Firestore.");
@@ -892,7 +896,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         return;
       }
       try {
-        if (!isGuestPlayer(playerData)) {
+        const isAnonymousSession = isAnonymousAuthSession();
+        if (!isAnonymousSession) {
           const authUid = getAuth(getApp()).currentUser?.uid;
           const targetUserId = authUid ?? playerData.userId;
           if (authUid && authUid !== playerData.userId) {
@@ -940,7 +945,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setPlayerData((prevData: Player | null) => {
         if (!prevData) return null;
         const nextPlayer = { ...prevData, ...sanitizedUpdates };
-        if (isGuestPlayer(prevData)) {
+        if (isAnonymousAuthSession()) {
           void saveGuestProfileToLocal(nextPlayer);
         } else if (shouldSyncToFirestore) {
           const authUid = getAuth(getApp()).currentUser?.uid;
