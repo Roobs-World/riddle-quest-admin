@@ -1,5 +1,6 @@
 import React from "react";
 import { render, fireEvent, screen } from "@testing-library/react-native";
+import { Linking } from "react-native";
 import CreditsModal from "../CreditsModal";
 
 // Mock SVG component
@@ -7,9 +8,14 @@ jest.mock("../../../../assets/images/home-bg.svg", () => "HomeBgSvg");
 
 describe("CreditsModal", () => {
   const mockOnClose = jest.fn();
+  const mockOpenURL = jest.spyOn(Linking, "openURL").mockResolvedValue();
 
   beforeEach(() => {
     jest.clearAllMocks();
+  });
+
+  afterAll(() => {
+    mockOpenURL.mockRestore();
   });
 
   it("renders correctly when visible", () => {
@@ -74,6 +80,16 @@ describe("CreditsModal", () => {
     expect(screen.getByText("Inspiration")).toBeTruthy();
     expect(screen.getByText("Sound Design")).toBeTruthy();
     expect(screen.getAllByText("Design").length).toBeGreaterThanOrEqual(1);
+  });
+
+  it("opens roobsworld when pressing Craig or Reuben", () => {
+    render(<CreditsModal isVisible={true} onClose={mockOnClose} />);
+
+    fireEvent.press(screen.getByLabelText("Craig Beswetherick website"));
+    expect(mockOpenURL).toHaveBeenCalledWith("https://www.roobsworld.com");
+
+    fireEvent.press(screen.getByLabelText("Reuben Beswetherick website"));
+    expect(mockOpenURL).toHaveBeenCalledWith("https://www.roobsworld.com");
   });
 });
 

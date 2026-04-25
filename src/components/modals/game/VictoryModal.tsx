@@ -1,15 +1,18 @@
 import React from "react";
-import {View, Text, Modal, TouchableOpacity} from "react-native";
+import {View, Text, Modal} from "react-native";
 import type {SubmittedGuess} from "../../../hooks/types";
 import {TYPOGRAPHY} from "../../../styles";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
-import {MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING} from "../../../constants/layout";
+import {MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, MODAL_BUTTON_SPACER} from "../../../constants/layout";
 import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {NewCoins} from "@/components/shared/NewCoins";
 import {verticalScale} from "@/utils/responsive";
 import RotatingWheelBackground from "@/components/shared/RotatingWheelBackground";
 import HomeBg from "../../../../assets/images/home-bg.svg";
+import WideButton from "../../buttons/WideButton";
+import {generateFeedbackEmojiGrid} from "../../../utils/gameUtils";
+import {SocialSharingService} from "../../../services/SocialSharingService";
 
 /**
  * Props for the victory feedback modal shown after a successful solve.
@@ -41,7 +44,16 @@ interface VictoryModalProps {
  * @param props Victory details and user action callbacks.
  * @returns Animated victory modal view.
  */
-const VictoryModal: React.FC<VictoryModalProps> = ({isVisible, coinsEarned, totalCoins, onNextLevel, onClose}) => {
+const VictoryModal: React.FC<VictoryModalProps> = ({
+  isVisible,
+  attempts,
+  coinsEarned,
+  totalCoins,
+  onNextLevel,
+  guesses,
+  gameMode,
+  onClose,
+}) => {
   const modalHeight = MODAL_HEIGHT * 1.2;
 
   /**
@@ -50,6 +62,17 @@ const VictoryModal: React.FC<VictoryModalProps> = ({isVisible, coinsEarned, tota
   const handleNextLevel = async () => {
     await Promise.resolve(onNextLevel?.());
     onClose?.();
+  };
+
+  /**
+   * Shares the current win summary using the platform-native share sheet.
+   */
+  const handleShare = async () => {
+    await SocialSharingService.share("system", {
+      attempts,
+      emojiGrid: generateFeedbackEmojiGrid(guesses),
+      gameMode: gameMode ?? "daily",
+    });
   };
 
   return (
@@ -64,14 +87,7 @@ const VictoryModal: React.FC<VictoryModalProps> = ({isVisible, coinsEarned, tota
       >
         <RotatingWheelBackground isVisible={isVisible} />
         <SlideInModalContent isVisible={isVisible}>
-          <TouchableOpacity
-            testID="victory-card-pressable"
-            accessibilityRole="button"
-            accessibilityLabel={AppStrings.VictoryModal.NEXT_LEVEL_BUTTON}
-            activeOpacity={1}
-            onPress={() => {
-              void handleNextLevel();
-            }}
+          <View
             style={{
               width: MODAL_WIDTH,
               height: modalHeight,
@@ -113,8 +129,26 @@ const VictoryModal: React.FC<VictoryModalProps> = ({isVisible, coinsEarned, tota
               </Text>
 
               <NewCoins coinsEarned={coinsEarned} totalCoins={totalCoins} />
+
+              <View style={{width: "100%"}}>
+                <WideButton
+                  buttonText={AppStrings.VictoryModal.SHARE_TEXT}
+                  onPress={() => {
+                    void handleShare();
+                  }}
+                  testID="victory-share-button"
+                />
+                <View style={{height: MODAL_BUTTON_SPACER}} />
+                <WideButton
+                  buttonText={AppStrings.VictoryModal.NEXT_LEVEL_BUTTON}
+                  onPress={() => {
+                    void handleNextLevel();
+                  }}
+                  testID="victory-next-level-button"
+                />
+              </View>
             </View>
-          </TouchableOpacity>
+          </View>
         </SlideInModalContent>
       </View>
     </Modal>

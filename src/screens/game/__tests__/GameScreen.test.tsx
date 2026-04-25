@@ -1641,15 +1641,60 @@ describe("GameScreen", () => {
         expect.objectContaining({
           coins: 250,
           hasPurchasedApp: true,
-        }),
-        { syncToFirestore: false }
+        })
       );
+      expect(mockCloseModalByType).toHaveBeenCalledWith("coinShop");
 
       IapService.purchaseProduct.mockRejectedValueOnce(new Error("boom"));
       await config.onPurchaseProduct("pack_2");
       expect(mockShowInfoModal).toHaveBeenCalledWith(
         expect.objectContaining({ title: "Purchase Failed" })
       );
+      ACHIEVEMENT_DEFINITIONS.length = 0;
+    });
+
+    it("falls back to first_purchase unlock on successful purchase when backend IDs are missing", async () => {
+      const { IapService } = require("../../../services/IapService");
+      const { ACHIEVEMENT_DEFINITIONS } = require("../../../constants/achievements");
+      ACHIEVEMENT_DEFINITIONS.push({
+        id: "first_purchase",
+        name: "Supporter",
+        description: "Buy an item from the shop",
+        icon: "H",
+      });
+      IapService.purchaseProduct.mockResolvedValueOnce({
+        transactionId: "2",
+        newCoins: 300,
+      });
+
+      render(<GameScreen {...defaultProps} />);
+      const headerProps = getLatestProps(mockHeader);
+      headerProps.onCoinsPress();
+      const config =
+        mockShowCoinShopModal.mock.calls[mockShowCoinShopModal.mock.calls.length - 1][0];
+      await config.onPurchaseProduct("pack_1");
+
+      const purchaseFanfareConfig =
+        mockShowCoinPurchaseFanfareModal.mock.calls[
+          mockShowCoinPurchaseFanfareModal.mock.calls.length - 1
+        ][0];
+      purchaseFanfareConfig.onConfirm();
+
+      expect(mockShowAchievementUnlockFanfareModal).toHaveBeenCalledWith(
+        expect.objectContaining({
+          achievementNames: ["Supporter"],
+        })
+      );
+      expect(mockUpdatePlayerDataLocally).toHaveBeenCalledWith(
+        expect.objectContaining({
+          coins: 300,
+          hasPurchasedApp: true,
+          unlockedAchievements: expect.arrayContaining([
+            expect.objectContaining({ achievementId: "first_purchase" }),
+          ]),
+        })
+      );
+
       ACHIEVEMENT_DEFINITIONS.length = 0;
     });
 

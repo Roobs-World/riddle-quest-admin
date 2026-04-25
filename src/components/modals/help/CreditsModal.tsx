@@ -3,7 +3,7 @@
  */
 
 import React from "react";
-import {View, Text, Modal, FlatList, StyleSheet} from "react-native";
+import {View, Text, Modal, FlatList, StyleSheet, Linking, Pressable} from "react-native";
 import CloseButton from "../../buttons/CloseButton";
 import WideButton from "../../buttons/WideButton";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
@@ -38,8 +38,8 @@ interface TeamMember {
 }
 
 const TEAM_MEMBERS: TeamMember[] = [
-  {name: "Craig Beswetherick", role: "Lead Developer & Game Design"},
-  {name: "Reuben Beswetherick", role: "Inspiration"},
+  {name: "Craig Beswetherick", role: "Lead Developer & Game Design", website: "https://www.roobsworld.com"},
+  {name: "Reuben Beswetherick", role: "Inspiration", website: "https://www.roobsworld.com"},
   {name: "Mike Hawkyard", role: "Game Designer, Publisher, Overall Hero"},
   {name: "Gavin Harrison", role: "Sound Design"},
   {name: "Nathalia", role: "Design"},
@@ -139,38 +139,71 @@ const CreditsModal: React.FC<CreditsModalProps> = ({isVisible, onClose, topRight
   );
 };
 
-const TeamMemberCard = ({member}: {member: TeamMember}) => (
-  <View
-    style={{
-      borderRadius: CARD_BORDER_RADIUS,
-      padding: CARD_PADDING,
-      marginBottom: CARD_MARGIN_BOTTOM,
-      width: "100%",
-      alignItems: "center",
-    }}
-  >
-    <Text
+const TeamMemberCard = ({member}: {member: TeamMember}) => {
+  const handlePress = () => {
+    if (member.website) {
+      void Linking.openURL(member.website);
+    }
+  };
+
+  const cardContent = (
+    <>
+      <Text
+        style={{
+          fontFamily: TYPOGRAPHY.fontSecondaryBold,
+          fontSize: TYPOGRAPHY.fontSize.lg,
+          color: "black",
+          textAlign: "center",
+        }}
+      >
+        {member.name}
+      </Text>
+      <Text
+        style={{
+          fontFamily: TYPOGRAPHY.fontSecondary,
+          fontSize: TYPOGRAPHY.fontSize.sm,
+          color: "rgba(0,0,0,0.6)",
+          textAlign: "center",
+          marginTop: SPACING.xs,
+        }}
+      >
+        {member.role}
+      </Text>
+    </>
+  );
+
+  if (member.website) {
+    return (
+      <Pressable
+        onPress={handlePress}
+        accessibilityRole="link"
+        accessibilityLabel={`${member.name} website`}
+        style={{
+          borderRadius: CARD_BORDER_RADIUS,
+          padding: CARD_PADDING,
+          marginBottom: CARD_MARGIN_BOTTOM,
+          width: "100%",
+          alignItems: "center",
+        }}
+      >
+        {cardContent}
+      </Pressable>
+    );
+  }
+
+  return (
+    <View
       style={{
-        fontFamily: TYPOGRAPHY.fontSecondaryBold,
-        fontSize: TYPOGRAPHY.fontSize.lg,
-        color: "black",
-        textAlign: "center",
+        borderRadius: CARD_BORDER_RADIUS,
+        padding: CARD_PADDING,
+        marginBottom: CARD_MARGIN_BOTTOM,
+        width: "100%",
+        alignItems: "center",
       }}
     >
-      {member.name}
-    </Text>
-    <Text
-      style={{
-        fontFamily: TYPOGRAPHY.fontSecondary,
-        fontSize: TYPOGRAPHY.fontSize.sm,
-        color: "rgba(0,0,0,0.6)",
-        textAlign: "center",
-        marginTop: SPACING.xs,
-      }}
-    >
-      {member.role}
-    </Text>
-  </View>
-);
+      {cardContent}
+    </View>
+  );
+};
 
 export default CreditsModal;

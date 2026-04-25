@@ -2,6 +2,7 @@ import React from "react";
 import { render, fireEvent, waitFor } from "@testing-library/react-native";
 import VictoryModal from "../VictoryModal";
 import type { SubmittedGuess, Feedback } from "../../../../hooks/types";
+import { SocialSharingService } from "../../../../services/SocialSharingService";
 
 jest.mock("react-native/Libraries/Modal/Modal", () => {
   const React = require("react");
@@ -18,6 +19,11 @@ jest.mock("../../../../assets/images/modal-bg.svg", () => "ModalBgSvg");
 jest.mock("../../../../assets/images/coin.svg", () => "CoinSvg");
 jest.mock("../../../../assets/images/chest.svg", () => "ChestSvg");
 jest.mock("../../../../assets/images/segment-bg.svg", () => "SegmentBgSvg");
+jest.mock("../../../../services/SocialSharingService", () => ({
+  SocialSharingService: {
+    share: jest.fn().mockResolvedValue(true),
+  },
+}));
 
 describe("VictoryModal", () => {
   const mockOnNextLevel = jest.fn();
@@ -59,14 +65,28 @@ describe("VictoryModal", () => {
     expect(getByText("50")).toBeTruthy();
   });
 
-  it("advances when the modal card is pressed", async () => {
+  it("advances when the next level button is pressed", async () => {
     const { getByTestId } = render(<VictoryModal {...defaultProps} />);
 
-    fireEvent.press(getByTestId("victory-card-pressable"));
+    fireEvent.press(getByTestId("victory-next-level-button"));
 
     expect(mockOnNextLevel).toHaveBeenCalledTimes(1);
     await waitFor(() => {
       expect(mockOnClose).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it("shares victory results when share button is pressed", async () => {
+    const { getByTestId } = render(<VictoryModal {...defaultProps} />);
+
+    fireEvent.press(getByTestId("victory-share-button"));
+
+    await waitFor(() => {
+      expect(SocialSharingService.share).toHaveBeenCalledWith("system", {
+        attempts: 3,
+        emojiGrid: "🟩🟩🟩🟩🟩",
+        gameMode: "daily",
+      });
     });
   });
 });

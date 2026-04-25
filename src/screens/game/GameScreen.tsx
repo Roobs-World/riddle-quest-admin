@@ -754,11 +754,23 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           logger.debug("Purchase completed successfully:", purchaseResult);
           const coinsPurchased = IapService.getCoinsForProduct(productId) ?? 0;
           const resolvedNewCoins = parseCoinBalance(purchaseResult.newCoins);
-          const unlockedAchievementIds = Array.isArray(
+          const backendUnlockedAchievementIds = Array.isArray(
             purchaseResult.newlyUnlockedAchievementIds
           )
             ? purchaseResult.newlyUnlockedAchievementIds ?? []
             : [];
+          const isAlreadySupporter = Boolean(
+            playerData?.unlockedAchievements?.some(
+              (achievement) => achievement.achievementId === "first_purchase"
+            )
+          );
+          // Fallback: if backend hasn't returned first_purchase yet, unlock it client-side once
+          // after the first successful shop purchase.
+          const unlockedAchievementIds = isAlreadySupporter
+            ? backendUnlockedAchievementIds
+            : Array.from(
+                new Set([...backendUnlockedAchievementIds, "first_purchase"])
+              );
           const unlockedAchievements = unlockedAchievementIds
             .map((achievementId) =>
               ACHIEVEMENT_DEFINITIONS.find((achievement) => achievement.id === achievementId)
@@ -808,11 +820,12 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
             }
 
             if (Object.keys(nextPlayerUpdates).length > 0) {
-              updatePlayerDataLocally(nextPlayerUpdates, {
-                syncToFirestore: false,
-              });
+              updatePlayerDataLocally(nextPlayerUpdates);
             }
           }
+
+          // Close shop immediately after successful purchase.
+          modal.closeModalByType("coinShop");
 
           const showPurchaseAchievementFanfareAtIndex = (index: number): void => {
             if (index >= unlockedAchievements.length) {
@@ -837,13 +850,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
             coinsPurchased,
             totalCoins: totalCoinsAfterPurchase,
             onConfirm: () => {
-              const openCoinShopModalIds = modal.modals
-                .filter((openModal) => openModal.type === "coinShop")
-                .map((openModal) => openModal.id);
-              openCoinShopModalIds.forEach((modalId) => {
-                modal.closeModal(modalId);
-              });
-
               if (unlockedAchievements.length > 0) {
                 showPurchaseAchievementFanfareAtIndex(0);
               }
