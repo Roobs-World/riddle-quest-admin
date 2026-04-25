@@ -1,45 +1,57 @@
-# Ignore the node_modules directory as EAS installs dependencies
+# Dependencies are installed by EAS from the lockfile.
 node_modules/
+.pnpm-store/
 
-# Ignore native build output directories
-/android/build/
-/ios/build/
+# Native projects and build output are generated during EAS prebuild.
+android/
+ios/
+build/
+dist/
 
-# Ignore version control history
-.git/
-
-# Ignore common cache and temporary directories
-.expo/
-.vscode/
-*.iml
-.DS_Store
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+# Local Gradle, Metro, Expo, and package-manager caches.
 .gradle/
 .gradle-local/
 .gradle-user/
-!gradle-wrapper.jar # Include gradle wrapper jar for android builds
-!gradlew # Include gradlew script for android builds
-!gradlew.bat # Include gradlew.bat script for android builds
-
-# Ignore potential metro cache
 .metro/
+.expo/
+.eas-inspect-archive/
+.expo-shared/
+.npm/
+.yarn/
 
-# Ignore local environment variables if not managed via EAS Secrets
+# Version control, editor metadata, and agent/tooling state.
+.git/
+.git/**
+.github/
+.vscode/
+.idea/
+.cursor/
+.claude/
+.agents/
+*.iml
+.DS_Store
+
+# Local environment files should be provided by EAS env vars/secrets.
 .env
+.env.*
+!.env.example
 
-firebase-functions
-memory-bank
-coverage
-dist
-.claude
-.agents
-.cursor
+# Test, coverage, and debug output.
+coverage/
+test-results.json
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
-# You might want to add other large or unnecessary files/folders here
-# For example, if you have a large assets folder used only for development
-# assets/large-dev-only-assets/
+# Non-app workspace content.
+docs/
+memory-bank/
+firebase-functions/
 
-/android
-/ios 
+# Store and local build artifacts; these are already generated outputs.
+releases/
+*.apk
+*.aab
+*.ipa
