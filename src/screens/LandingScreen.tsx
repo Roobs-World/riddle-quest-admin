@@ -26,6 +26,7 @@ import {logger} from "../utils/logger";
 import {captureException} from "../utils/sentry";
 import CreditsModal from "../components/modals/help/CreditsModal";
 import MainLogoPng from "../../assets/images/logo.png";
+import {verticalScale} from "@/utils/responsive";
 
 /**
  * Landing screen component used at the root of the auth stack.
@@ -187,12 +188,7 @@ const LandingScreen = () => {
       <View style={{flex: 1, width: "100%", alignItems: "center", zIndex: 2}}>
         {/* Title at the top */}
         <View style={{alignItems: "center", paddingTop: SPACING.xl}}>
-          <Image
-            testID="main-logo-svg"
-            source={MainLogoPng}
-            style={{width: 288, height: 70, marginBottom: SPACING.md}}
-            resizeMode="contain"
-          />
+          <Image testID="main-logo-svg" source={MainLogoPng} style={{width: 320, height: 150}} resizeMode="contain" />
           <Text
             className="font-bold text-white text-center"
             style={[styles.title, {marginBottom: SPACING.md, color: "#FFFFFF"}]}
