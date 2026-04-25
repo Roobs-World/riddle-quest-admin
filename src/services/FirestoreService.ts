@@ -470,14 +470,18 @@ export const updateClassicIndexInFirestore = async (
     return;
   }
   try {
+    const normalizedClassicIndex =
+      typeof classicIndex === "number" && Number.isFinite(classicIndex)
+        ? Math.max(0, Math.floor(classicIndex))
+        : 0;
     await updateDoc(doc(getFirestore(), "users", userId), {
-      "progress.classicIndex": classicIndex,
+      "progress.classicIndex": normalizedClassicIndex,
     });
     logger.info(
       "Classic index updated successfully for user:",
       userId,
       "to",
-      classicIndex
+      normalizedClassicIndex
     );
   } catch (error) {
     logger.error("Error updating classic index in Firestore:", error);
@@ -585,11 +589,19 @@ export const updateUserStats = async (
     return;
   }
   const userRef = doc(getFirestore(), "users", userId);
+  const statsFieldUpdates = Object.fromEntries(
+    Object.entries(stats).flatMap(([key, value]) =>
+      value === undefined ? [] : [[`stats.${key}`, value]]
+    )
+  );
+  if (Object.keys(statsFieldUpdates).length === 0) {
+    return;
+  }
 
   try {
     await (transaction
-      ? transaction.update(userRef, { stats })
-      : updateDoc(userRef, { stats }));
+      ? transaction.update(userRef, statsFieldUpdates)
+      : updateDoc(userRef, statsFieldUpdates));
   } catch (error) {
     logger.error("Error updating user stats in Firestore:", error);
     captureException(error);

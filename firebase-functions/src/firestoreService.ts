@@ -144,17 +144,23 @@ export async function updateUserStats(
 ): Promise<void> {
   const userRef = getDb().collection("users").doc(userId);
 
+  const statsFieldUpdates = Object.fromEntries(
+    Object.entries(statsUpdate).flatMap(([key, value]) =>
+      value === undefined ? [] : [[`stats.${key}`, value]],
+    ),
+  ) as Record<string, unknown>;
+
   const updateOperation = async (txn: admin.firestore.Transaction) => {
-    // Fetch the current stats within the transaction to merge updates
     const userDoc = await txn.get(userRef);
     if (!userDoc.exists) {
       const errorMessage = `User with ID ${userId} not found during transaction for updateUserStats.`;
       functions.logger.error(errorMessage, new Error(errorMessage));
       throw new Error(`User with ID ${userId} not found.`);
     }
-    const currentStats = userDoc.data()?.stats || {};
-
-    txn.update(userRef, {stats: {...currentStats, ...statsUpdate}});
+    if (Object.keys(statsFieldUpdates).length === 0) {
+      return;
+    }
+    txn.update(userRef, statsFieldUpdates);
   };
 
   if (transaction) {

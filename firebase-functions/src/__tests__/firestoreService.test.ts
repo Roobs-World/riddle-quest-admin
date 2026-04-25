@@ -278,11 +278,9 @@ describe("FirestoreService", () => {
       expect(mockFirestore.runTransaction).toHaveBeenCalled();
       expect(mockTransaction.get).toHaveBeenCalled();
       expect(mockTransaction.update).toHaveBeenCalledWith(expect.any(Object), {
-        stats: {
-          gamesPlayed: 11,
-          wins: 6,
-          winRate: 0.55,
-        },
+        "stats.gamesPlayed": 11,
+        "stats.wins": 6,
+        "stats.winRate": 0.55,
       });
       expect(mockLogger.info).toHaveBeenCalledWith(`Stats for user ${testUserId} updated.`);
     });
@@ -305,10 +303,8 @@ describe("FirestoreService", () => {
       await updateUserStats(testUserId, statsUpdate);
 
       expect(mockTransaction.update).toHaveBeenCalledWith(expect.any(Object), {
-        stats: {
-          gamesPlayed: 1,
-          wins: 1,
-        },
+        "stats.gamesPlayed": 1,
+        "stats.wins": 1,
       });
     });
 
@@ -471,9 +467,7 @@ describe("FirestoreService", () => {
 
       await updateUserStats(testUserId, {});
 
-      expect(mockTransaction.update).toHaveBeenCalledWith(expect.any(Object), {
-        stats: {gamesPlayed: 5},
-      });
+      expect(mockTransaction.update).not.toHaveBeenCalled();
     });
 
     test("should log specific error for insufficient coins with exact error message", async () => {
@@ -558,7 +552,7 @@ describe("FirestoreService", () => {
       expect(mockFirestore.runTransaction).not.toHaveBeenCalled();
       expect(externalTransaction.get).toHaveBeenCalled();
       expect(externalTransaction.update).toHaveBeenCalledWith(expect.any(Object), {
-        stats: {gamesPlayed: 6, wins: 2},
+        "stats.gamesPlayed": 6,
       });
     });
   });

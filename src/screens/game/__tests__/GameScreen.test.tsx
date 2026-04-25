@@ -1565,6 +1565,89 @@ describe("GameScreen", () => {
       });
     });
 
+    it("preserves newer local stats when refreshed profile has stale games played", async () => {
+      const originalStats = (mockPlayerData as { stats?: Record<string, unknown> })
+        .stats;
+      (mockPlayerData as { stats?: Record<string, unknown> }).stats = {
+        gamesPlayed: 6,
+        totalWins: 4,
+      };
+
+      mockLoadUserProgressFromFirestore.mockResolvedValueOnce({
+        ...mockPlayerData,
+        stats: {
+          gamesPlayed: 1,
+          totalWins: 1,
+        },
+      });
+
+      render(<GameScreen {...defaultProps} />);
+      const bottomNavProps = getLatestProps(mockBottomNavigationBar);
+      await bottomNavProps.onProfilePress();
+
+      await waitFor(() => {
+        expect(mockUpdatePlayerDataLocally).toHaveBeenCalledWith(
+          expect.objectContaining({
+            stats: expect.objectContaining({ gamesPlayed: 6, totalWins: 4 }),
+          }),
+          { syncToFirestore: false }
+        );
+      });
+
+      (mockPlayerData as { stats?: Record<string, unknown> }).stats = originalStats;
+    });
+
+    it("preserves highest classic level from refreshed profile when local stats are stale", async () => {
+      const originalStats = (mockPlayerData as { stats?: Record<string, unknown> })
+        .stats;
+      const originalProgress = (mockPlayerData as { progress?: Record<string, unknown> })
+        .progress;
+
+      (mockPlayerData as { stats?: Record<string, unknown> }).stats = {
+        gamesPlayed: 6,
+        totalWins: 4,
+        highestLevelClassic: 0,
+      };
+      (mockPlayerData as { progress?: Record<string, unknown> }).progress = {
+        classicIndex: 0,
+        dailyIndex: 0,
+      };
+
+      mockLoadUserProgressFromFirestore.mockResolvedValueOnce({
+        ...mockPlayerData,
+        progress: {
+          classicIndex: 9,
+          dailyIndex: 0,
+        },
+        stats: {
+          gamesPlayed: 1,
+          totalWins: 1,
+          highestLevelClassic: 9,
+        },
+      });
+
+      render(<GameScreen {...defaultProps} />);
+      const bottomNavProps = getLatestProps(mockBottomNavigationBar);
+      await bottomNavProps.onProfilePress();
+
+      await waitFor(() => {
+        expect(mockUpdatePlayerDataLocally).toHaveBeenCalledWith(
+          expect.objectContaining({
+            stats: expect.objectContaining({
+              gamesPlayed: 6,
+              totalWins: 4,
+              highestLevelClassic: 9,
+            }),
+          }),
+          { syncToFirestore: false }
+        );
+      });
+
+      (mockPlayerData as { stats?: Record<string, unknown> }).stats = originalStats;
+      (mockPlayerData as { progress?: Record<string, unknown> }).progress =
+        originalProgress;
+    });
+
     it("opens profile modal with null data when auth profile is unavailable", async () => {
       mockAuthPlayerData = null;
       render(<GameScreen {...defaultProps} />);

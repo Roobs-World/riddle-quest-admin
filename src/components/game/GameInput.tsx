@@ -41,19 +41,19 @@ const GameInputComponent = ({
       <GameInputButton
         icon={<HintIcon />}
         text={AppStrings.Navigation.HINT_BUTTON}
-        callback={() => handleHint()}
+        callback={handleHint}
       />
 
       <SubmitButton
         isSubmitDisabled={isSubmitDisabled}
         gameOver={gameOver}
-        handleKeyPress={() => handleSubmit()}
+        handleKeyPress={handleSubmit}
       />
 
       <GameInputButton
         icon={<ForwardIcon />}
         text={AppStrings.GameScreenAlerts.NEXT_BUTTON}
-        callback={() => handleNext()}
+        callback={handleNext}
       />
     </View>
   );

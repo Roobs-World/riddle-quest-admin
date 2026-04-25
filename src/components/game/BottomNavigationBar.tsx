@@ -112,7 +112,7 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
       {/* Left Side - Settings Button */}
       <TouchableOpacity
         style={{marginLeft: scale(20), padding: scale(8)}}
-        onPress={() => onSettingsPress()}
+        onPress={onSettingsPress}
         testID="settings-button"
         accessible={true}
         accessibilityRole="button"
@@ -125,7 +125,7 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
       {/* Center - Change game mode button */}
       <TouchableOpacity
         style={{padding: scale(8)}}
-        onPress={() => onChangeGameModePress?.()}
+        onPress={onChangeGameModePress}
         testID="change-game-mode-button"
         accessible={true}
         accessibilityRole="button"
@@ -138,7 +138,7 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
       {/* Right Side - Profile Button */}
       <TouchableOpacity
         style={{marginRight: scale(20), padding: scale(8)}}
-        onPress={() => onProfilePress()}
+        onPress={onProfilePress}
         testID="profile-button"
         accessible={true}
         accessibilityRole="button"

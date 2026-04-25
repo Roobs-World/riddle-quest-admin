@@ -75,6 +75,7 @@ const GameScreenWrapper = () => {
     updatePlayerClassicIndex,
   } = useAuth();
   const isGuestMode = isGuestPlayer(playerData);
+  const isDailyChallengeMode = gameMode === "daily" || gameMode === "challenge";
 
   const lastFetchedModeRef = useRef<typeof gameMode | null>(null);
 
@@ -103,7 +104,7 @@ const GameScreenWrapper = () => {
 
   // Function to check if user completed today's single daily challenge
   const checkDailyChallengeCompletion = async () => {
-    if (!playerData || gameMode !== "daily") return false;
+    if (!playerData || !isDailyChallengeMode) return false;
     if (isGuestMode) {
       const lastCompletedDate = playerData.lastDailyChallengeCompletedAt
         ? new Date(playerData.lastDailyChallengeCompletedAt)
@@ -194,9 +195,19 @@ const GameScreenWrapper = () => {
     const nextXp =
       toNonNegativeNumber(previousStats?.xp ?? previousStats?.totalScore) +
       Math.max(0, options.scoreEarned);
+    const combinedWinStreakFromStats = toNonNegativeNumber(
+      (previousStats as { combinedWinStreak?: unknown } | undefined)
+        ?.combinedWinStreak,
+      -1
+    );
+    const previousCombinedWinStreak =
+      combinedWinStreakFromStats >= 0
+        ? combinedWinStreakFromStats
+        : toNonNegativeNumber(previousStats?.winStreak);
+    const nextCombinedWinStreak = options.won ? previousCombinedWinStreak + 1 : 0;
 
     const nextWinStreak =
-      gameMode === "daily"
+      isDailyChallengeMode
         ? options.won
           ? toNonNegativeNumber(
               options.resolvedDailyStreak,
@@ -228,20 +239,23 @@ const GameScreenWrapper = () => {
           ? roundToTwo((nextTotalWins / nextGamesPlayed) * 100)
           : 0,
       challengeWins:
-        gameMode === "daily"
+        isDailyChallengeMode
           ? toNonNegativeNumber(previousStats?.challengeWins) +
             (options.won ? 1 : 0)
           : toNonNegativeNumber(previousStats?.challengeWins),
       dailyPuzzlesCompleted:
-        gameMode === "daily"
+        isDailyChallengeMode
           ? toNonNegativeNumber(previousStats?.dailyPuzzlesCompleted) +
-            (options.won ? 1 : 0)
+            1
           : toNonNegativeNumber(previousStats?.dailyPuzzlesCompleted),
       winStreak: nextWinStreak,
       bestStreak: Math.max(
         toNonNegativeNumber(previousStats?.bestStreak),
-        nextWinStreak
+        nextCombinedWinStreak
       ),
+      ...( {
+        combinedWinStreak: nextCombinedWinStreak,
+      } as Record<string, number>),
       highestLevelClassic:
         gameMode === "classic" && options.won
           ? Math.max(
@@ -283,7 +297,7 @@ const GameScreenWrapper = () => {
     }
 
     // For daily challenge mode, switch back to classic after completion
-    if (gameMode === "daily") {
+    if (isDailyChallengeMode) {
       logger.debug(
         "NavigationStack: handleNextLevel - Daily challenge mode detected"
       );
@@ -301,7 +315,7 @@ const GameScreenWrapper = () => {
         return;
       }
       logger.debug("Daily challenge mode active and not completed yet.");
-      await fetchCurrentRiddle(playerData, "daily");
+      await fetchCurrentRiddle(playerData, gameMode);
       return;
     }
 
@@ -469,7 +483,7 @@ const GameScreenWrapper = () => {
             logger.debug(AppStrings.GameMessages.COINS_EARNED + coinsEarned);
 
             const resolvedDailyStreak =
-              gameMode === "daily"
+              isDailyChallengeMode
                 ? toNonNegativeNumber(
                     dailyStreakAfterWin,
                     toNonNegativeNumber(playerData.stats?.winStreak) + 1
@@ -500,7 +514,7 @@ const GameScreenWrapper = () => {
             };
 
             const nextProgress =
-              gameMode === "daily" && isGuestMode
+              isDailyChallengeMode && isGuestMode
                 ? {
                     ...baseProgress,
                     dailyChallengeIndex: baseProgress.dailyChallengeIndex + 1,
@@ -513,7 +527,7 @@ const GameScreenWrapper = () => {
               progress: nextProgress,
               stats: nextStats,
               lastDailyChallengeCompletedAt:
-                gameMode === "daily"
+                isDailyChallengeMode
                   ? Date.now()
                   : playerData.lastDailyChallengeCompletedAt,
             };
@@ -536,13 +550,18 @@ const GameScreenWrapper = () => {
                 },
                 { syncToFirestore: false }
               );
+              await persistPlayerUpdate({
+                stats: nextPlayerSnapshot.stats,
+                lastDailyChallengeCompletedAt:
+                  nextPlayerSnapshot.lastDailyChallengeCompletedAt,
+              });
               await persistAuthenticatedBonusCoins(
                 Math.max(0, bonusCoinsAwarded)
               );
             }
 
             // Check if user completed today's daily challenge
-            if (gameMode === "daily") {
+            if (isDailyChallengeMode) {
               if (isGuestMode) {
                 await handleContinueAfterCompletion(nextPlayerSnapshot);
                 return;
@@ -576,6 +595,9 @@ const GameScreenWrapper = () => {
                 },
                 { syncToFirestore: false }
               );
+              void persistPlayerUpdate({
+                stats: nextStats,
+              });
             }
           }}
           onHintUsed={async (cost: number) => {

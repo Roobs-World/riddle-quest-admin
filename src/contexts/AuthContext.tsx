@@ -854,25 +854,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         let nextPlayerSnapshot: Player | null = null;
         setPlayerData((prevData: Player | null) => {
           if (!prevData) return null;
-          const normalizedClassicIndex =
-            typeof newIndex === "number" && Number.isFinite(newIndex)
-              ? Math.max(0, newIndex)
-              : 0;
-          const existingHighestLevelClassic =
-            typeof prevData.stats?.highestLevelClassic === "number" &&
-            Number.isFinite(prevData.stats.highestLevelClassic)
-              ? Math.max(0, prevData.stats.highestLevelClassic)
-              : 0;
           const nextPlayer = {
             ...prevData,
             progress: { ...prevData.progress, classicIndex: newIndex },
-            stats: {
-              ...prevData.stats,
-              highestLevelClassic: Math.max(
-                existingHighestLevelClassic,
-                normalizedClassicIndex
-              ),
-            },
           };
           nextPlayerSnapshot = nextPlayer;
           return nextPlayer;

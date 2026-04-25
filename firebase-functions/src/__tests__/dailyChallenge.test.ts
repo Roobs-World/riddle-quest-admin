@@ -317,6 +317,21 @@ describe("Daily Challenge Functions", () => {
       expect(mockGetUser).toHaveBeenCalledWith(mockUserId);
     });
 
+    it("should return true when completion is a Firestore Timestamp-like object", async () => {
+      const mockUserId = "testUserTimestampToday";
+      const mockRequest = {data: {id: mockUserId}} as CallableRequest<MockHasCompletedDailyChallengeData>;
+      const playerWithTimestamp = {
+        ...getDefaultPlayer(mockUserId),
+        lastDailyChallengeCompletedAt: createTimestampMock("2023-01-01T08:00:00.000Z"),
+      } as unknown as Player;
+
+      mockGetUser.mockResolvedValue(playerWithTimestamp);
+
+      const result = await hasCompletedDailyChallenge(mockRequest);
+
+      expect(result).toBe(true);
+    });
+
     it("should return false if user completed challenge yesterday", async () => {
       const mockUserId = "testUserYesterday";
       // Create yesterday's timestamp manually since Date constructor is mocked
@@ -442,6 +457,33 @@ describe("Daily Challenge Functions", () => {
       });
       expect(result.hasCompletedToday).toBe(true); // Player completed today
       expect(result.currentQuestion).toBe(1);
+      expect(result.questionsCompleted).toBe(1);
+    });
+
+    it("should treat Timestamp-like completion values as completed today", async () => {
+      const mockUserId = "testUserTimestampGetCurrent";
+      const mockPlayer = {
+        ...getDefaultPlayer(mockUserId),
+        lastDailyChallengeCompletedAt: createTimestampMock("2023-01-01T06:00:00.000Z"),
+        progress: {
+          classicIndex: 0,
+          dailyChallengeIndex: 0,
+          dailyChallengeCurrentQuestion: 1,
+        },
+      } as unknown as Player;
+
+      mockGetUser.mockResolvedValue(mockPlayer);
+
+      const mockDailyChallenge = createCurrentDailyRiddleDoc();
+      mockAdminFirestoreGet.mockResolvedValue({
+        exists: true,
+        data: () => mockDailyChallenge,
+      } as MockDocumentSnapshot<any>);
+
+      const mockRequest = {auth: {uid: mockUserId}} as CallableRequest<unknown>;
+      const result = await getCurrentDailyChallenge(mockRequest);
+
+      expect(result.hasCompletedToday).toBe(true);
       expect(result.questionsCompleted).toBe(1);
     });
 

@@ -655,7 +655,9 @@ describe("FirestoreService", () => {
       expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "users", mockUserId);
       expect(mockUpdateDoc).toHaveBeenCalledWith(
         expect.any(Object),
-        { "progress.classicIndex": classicIndex }
+        {
+          "progress.classicIndex": classicIndex,
+        }
       );
       expect(logger.info).toHaveBeenCalledWith(
         "Classic index updated successfully for user:",
@@ -792,7 +794,10 @@ describe("FirestoreService", () => {
       await FirestoreService.updateUserStats(mockUserId, mockStats);
 
       expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "users", mockUserId);
-      expect(mockUpdateDoc).toHaveBeenCalledWith(expect.any(Object), { stats: mockStats });
+      expect(mockUpdateDoc).toHaveBeenCalledWith(expect.any(Object), {
+        "stats.totalScore": 1500,
+        "stats.winRate": 0.8,
+      });
     });
 
     it("should handle empty userId gracefully", async () => {

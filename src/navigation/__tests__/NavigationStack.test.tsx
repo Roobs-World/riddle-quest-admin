@@ -631,6 +631,101 @@ describe("NavigationStack", () => {
             winStreak: 5,
             gamesPlayed: 8,
             totalWordsGuessed: 23,
+            challengeWins: 2,
+            dailyPuzzlesCompleted: 3,
+          }),
+        }),
+        { syncToFirestore: false }
+      )
+    );
+  });
+
+  it("increments best streak after a classic win", async () => {
+    const playerData = {
+      userId: "u-classic-win",
+      progress: { classicIndex: 4 },
+      coins: 40,
+      stats: {
+        xp: 70,
+        totalScore: 70,
+        level: 2,
+        wins: 3,
+        totalWins: 3,
+        gamesPlayed: 5,
+        totalWordsGuessed: 14,
+        totalGuessesInWins: 9,
+        challengeWins: 1,
+        dailyPuzzlesCompleted: 1,
+        winStreak: 1,
+        bestStreak: 1,
+      },
+    };
+    const updatePlayerDataLocally = jest.fn();
+    mockedUseAuth.mockReturnValue(
+      createAuthState({
+        isAuthenticated: true,
+        gameMode: "classic",
+        playerData,
+        currentRiddle: { riddleId: "classic-win", text: "R", answer: "WORD" },
+        updatePlayerDataLocally,
+      }) as any
+    );
+
+    const { getByTestId } = render(<Navigation />);
+    fireEvent.press(getByTestId("trigger-win"));
+
+    await waitFor(() =>
+      expect(updatePlayerDataLocally).toHaveBeenCalledWith(
+        expect.objectContaining({
+          stats: expect.objectContaining({
+            bestStreak: 2,
+          }),
+        }),
+        { syncToFirestore: false }
+      )
+    );
+  });
+
+  it("increments challenge wins in challenge mode", async () => {
+    const playerData = {
+      userId: "u-challenge-win",
+      progress: { dailyChallengeIndex: 10, classicIndex: 4 },
+      coins: 40,
+      stats: {
+        xp: 70,
+        totalScore: 70,
+        level: 2,
+        wins: 3,
+        totalWins: 3,
+        gamesPlayed: 5,
+        totalWordsGuessed: 14,
+        totalGuessesInWins: 9,
+        challengeWins: 1,
+        dailyPuzzlesCompleted: 1,
+        winStreak: 1,
+        bestStreak: 1,
+      },
+    };
+    const updatePlayerDataLocally = jest.fn();
+    mockedUseAuth.mockReturnValue(
+      createAuthState({
+        isAuthenticated: true,
+        gameMode: "challenge",
+        playerData,
+        currentRiddle: { riddleId: "challenge-win", text: "R", answer: "WORD" },
+        updatePlayerDataLocally,
+      }) as any
+    );
+
+    const { getByTestId } = render(<Navigation />);
+    fireEvent.press(getByTestId("trigger-win"));
+
+    await waitFor(() =>
+      expect(updatePlayerDataLocally).toHaveBeenCalledWith(
+        expect.objectContaining({
+          stats: expect.objectContaining({
+            challengeWins: 2,
+            dailyPuzzlesCompleted: 2,
           }),
         }),
         { syncToFirestore: false }

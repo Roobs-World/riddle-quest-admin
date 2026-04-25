@@ -36,9 +36,13 @@ export const useModal = () => {
       data: ModalDataType<T>,
       options?: ModalOptions
     ): string => {
-      logger.debug(`Opening modal of type: ${type}`, { data, options });
+      if (__DEV__) {
+        logger.debug(`Opening modal of type: ${type}`, { data, options });
+      }
       const modalId = context.openModal(type, data, options);
-      logger.debug(`Modal ${type} opened with ID: ${modalId}`);
+      if (__DEV__) {
+        logger.debug(`Modal ${type} opened with ID: ${modalId}`);
+      }
       return modalId;
     },
     [context]
@@ -67,13 +71,19 @@ export const useModal = () => {
   // Close modal by type (closes the first modal of that type)
   const closeModalByType = useCallback(
     (type: string): void => {
-      logger.debug(`Attempting to close modal of type: ${type}`);
+      if (__DEV__) {
+        logger.debug(`Attempting to close modal of type: ${type}`);
+      }
       const modal = context.modals.find((m) => m.type === type);
       if (modal) {
-        logger.debug(`Found modal with ID: ${modal.id}, closing it`);
+        if (__DEV__) {
+          logger.debug(`Found modal with ID: ${modal.id}, closing it`);
+        }
         context.closeModal(modal.id);
       } else {
-        logger.debug(`No modal of type ${type} found to close`);
+        if (__DEV__) {
+          logger.debug(`No modal of type ${type} found to close`);
+        }
       }
     },
     [context]
@@ -166,14 +176,18 @@ export const useModal = () => {
       data: ModalDataType<"instructions"> = {},
       options?: ModalOptions
     ): string => {
-      logger.debug(
-        "showInstructionsModal called with data:",
-        data,
-        "options:",
-        options
-      );
+      if (__DEV__) {
+        logger.debug(
+          "showInstructionsModal called with data:",
+          data,
+          "options:",
+          options
+        );
+      }
       const modalId = openGameModal("instructions", data, options);
-      logger.debug("Instructions modal opened with ID:", modalId);
+      if (__DEV__) {
+        logger.debug("Instructions modal opened with ID:", modalId);
+      }
       return modalId;
     },
     [openGameModal]

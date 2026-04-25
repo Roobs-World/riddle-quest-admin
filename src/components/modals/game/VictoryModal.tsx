@@ -1,9 +1,9 @@
 import React from "react";
-import {View, Text, Modal} from "react-native";
+import {View, Text, Modal, Pressable} from "react-native";
 import type {SubmittedGuess} from "../../../hooks/types";
 import {TYPOGRAPHY} from "../../../styles";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
-import {MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, MODAL_BUTTON_SPACER} from "../../../constants/layout";
+import {MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING} from "../../../constants/layout";
 import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {NewCoins} from "@/components/shared/NewCoins";
@@ -54,7 +54,7 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
   gameMode,
   onClose,
 }) => {
-  const modalHeight = MODAL_HEIGHT * 1.2;
+  const modalHeight = MODAL_HEIGHT * 1.4;
 
   /**
    * Advances to the next level and closes the modal afterward.
@@ -87,13 +87,17 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
       >
         <RotatingWheelBackground isVisible={isVisible} />
         <SlideInModalContent isVisible={isVisible}>
-          <View
+          <Pressable
             style={{
               width: MODAL_WIDTH,
               height: modalHeight,
               alignItems: "center",
               justifyContent: "center",
             }}
+            onPress={() => {
+              void handleNextLevel();
+            }}
+            testID="victory-modal-tap-target"
           >
             <ModalBg
               width={MODAL_WIDTH}
@@ -138,17 +142,9 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
                   }}
                   testID="victory-share-button"
                 />
-                <View style={{height: MODAL_BUTTON_SPACER}} />
-                <WideButton
-                  buttonText={AppStrings.VictoryModal.NEXT_LEVEL_BUTTON}
-                  onPress={() => {
-                    void handleNextLevel();
-                  }}
-                  testID="victory-next-level-button"
-                />
               </View>
             </View>
-          </View>
+          </Pressable>
         </SlideInModalContent>
       </View>
     </Modal>

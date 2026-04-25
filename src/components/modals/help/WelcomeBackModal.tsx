@@ -1,13 +1,14 @@
 import React from "react";
-import {Modal, Pressable, Text, View} from "react-native";
+import {Image, Modal, Pressable, Text, View} from "react-native";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
 import {AppStrings} from "../../../constants/AppStrings";
 import {TYPOGRAPHY, SPACING} from "../../../styles";
-import {MODAL_CONTENT_PADDING, MODAL_HEIGHT, MODAL_WIDTH} from "../../../constants/layout";
+import {AVATAR_SIZE_LARGE, MODAL_CONTENT_PADDING, MODAL_HEIGHT, MODAL_WIDTH} from "../../../constants/layout";
 import SlideInModalContent from "../../shared/SlideInModalContent";
-import {verticalScale} from "../../../utils/responsive";
+import {moderateScale, verticalScale} from "../../../utils/responsive";
 import RotatingWheelBackground from "@/components/shared/RotatingWheelBackground";
+import {useAuth} from "@/contexts/AuthContext";
 
 interface WelcomeBackModalProps {
   isVisible: boolean;
@@ -17,6 +18,11 @@ interface WelcomeBackModalProps {
 }
 
 const WelcomeBackModal: React.FC<WelcomeBackModalProps> = ({isVisible, onClose, username, onDismiss}) => {
+  const {playerData} = useAuth();
+  const avatarUrl = playerData?.avatarUrl ?? null;
+  const avatarRadius = AVATAR_SIZE_LARGE / 2;
+  const initial = (username || AppStrings.Profile.GUEST_USERNAME).charAt(0).toUpperCase();
+
   const handleDismiss = () => {
     onClose();
     onDismiss?.();
@@ -64,6 +70,46 @@ const WelcomeBackModal: React.FC<WelcomeBackModalProps> = ({isVisible, onClose, 
                   padding: MODAL_CONTENT_PADDING,
                 }}
               >
+                {avatarUrl ? (
+                  <Image
+                    key={avatarUrl}
+                    testID="welcome-back-avatar-image"
+                    source={{uri: avatarUrl}}
+                    style={{
+                      width: AVATAR_SIZE_LARGE,
+                      height: AVATAR_SIZE_LARGE,
+                      borderRadius: avatarRadius,
+                      borderWidth: moderateScale(3),
+                      borderColor: "#FFFFFF",
+                      marginBottom: verticalScale(12),
+                    }}
+                  />
+                ) : (
+                  <View
+                    style={{
+                      width: AVATAR_SIZE_LARGE,
+                      height: AVATAR_SIZE_LARGE,
+                      borderRadius: avatarRadius,
+                      backgroundColor: "rgba(255,255,255,0.15)",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      borderWidth: moderateScale(3),
+                      borderColor: "#FFFFFF",
+                      marginBottom: verticalScale(12),
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: "#FFFFFF",
+                        fontSize: TYPOGRAPHY.fontSize.display,
+                        fontFamily: TYPOGRAPHY.fontSecondaryBold,
+                      }}
+                    >
+                      {initial}
+                    </Text>
+                  </View>
+                )}
+
                 <Text
                   style={{
                     fontFamily: TYPOGRAPHY.fontPrimary,

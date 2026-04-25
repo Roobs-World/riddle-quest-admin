@@ -72,9 +72,65 @@ interface SubmitGuessResponseData {
   newWinStreak?: number;
 }
 
-function getUtcDayString(value: unknown): string | null {
+type TimestampLike = {
+  toDate?: () => Date;
+  toMillis?: () => number;
+  seconds?: number;
+  nanoseconds?: number;
+  _seconds?: number;
+  _nanoseconds?: number;
+};
+
+function coerceToDate(value: unknown): Date | null {
   if (value === null || value === undefined) return null;
-  const date = new Date(value as string | number | Date);
+
+  if (value instanceof Date) {
+    return value;
+  }
+
+  if (typeof value === "number" || typeof value === "string") {
+    const parsed = new Date(value);
+    return Number.isNaN(parsed.getTime()) ? null : parsed;
+  }
+
+  if (typeof value === "object") {
+    const timestampLike = value as TimestampLike;
+
+    if (typeof timestampLike.toDate === "function") {
+      const parsed = timestampLike.toDate();
+      return Number.isNaN(parsed.getTime()) ? null : parsed;
+    }
+
+    if (typeof timestampLike.toMillis === "function") {
+      const parsed = new Date(timestampLike.toMillis());
+      return Number.isNaN(parsed.getTime()) ? null : parsed;
+    }
+
+    const seconds =
+      typeof timestampLike.seconds === "number"
+        ? timestampLike.seconds
+        : typeof timestampLike._seconds === "number"
+          ? timestampLike._seconds
+          : null;
+
+    if (seconds !== null) {
+      const nanos =
+        typeof timestampLike.nanoseconds === "number"
+          ? timestampLike.nanoseconds
+          : typeof timestampLike._nanoseconds === "number"
+            ? timestampLike._nanoseconds
+            : 0;
+      const parsed = new Date(seconds * 1000 + Math.floor(nanos / 1_000_000));
+      return Number.isNaN(parsed.getTime()) ? null : parsed;
+    }
+  }
+
+  return null;
+}
+
+function getUtcDayString(value: unknown): string | null {
+  const date = coerceToDate(value);
+  if (!date) return null;
   if (Number.isNaN(date.getTime())) return null;
   return date.toISOString().split("T")[0];
 }

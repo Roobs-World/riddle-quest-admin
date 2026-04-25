@@ -52,7 +52,6 @@ const Header: React.FC<HeaderProps> = ({
   const [headerWidth, setHeaderWidth] = useState(0);
   const [leftAnchor, setLeftAnchor] = useState({ x: SPACING.md, width: HEADER_LOGO_SIZE });
   const [rightAnchor, setRightAnchor] = useState({ x: 0, width: 0 });
-  const layoutRecalcKey = `${userCoins}-${modeLabel ?? ""}`;
 
   const modeLabelContainerStyle = useMemo(() => {
     const leftBoundary = leftAnchor.x + leftAnchor.width;
@@ -69,17 +68,28 @@ const Header: React.FC<HeaderProps> = ({
   }, [headerWidth, leftAnchor, rightAnchor]);
 
   const handleHeaderLayout = (event: LayoutChangeEvent) => {
-    setHeaderWidth(event.nativeEvent.layout.width);
+    const { width } = event.nativeEvent.layout;
+    setHeaderWidth((previousWidth) =>
+      previousWidth === width ? previousWidth : width
+    );
   };
 
   const handleLeftAnchorLayout = (event: LayoutChangeEvent) => {
     const { x, width } = event.nativeEvent.layout;
-    setLeftAnchor({ x, width });
+    setLeftAnchor((previousAnchor) =>
+      previousAnchor.x === x && previousAnchor.width === width
+        ? previousAnchor
+        : { x, width }
+    );
   };
 
   const handleRightAnchorLayout = (event: LayoutChangeEvent) => {
     const { x, width } = event.nativeEvent.layout;
-    setRightAnchor({ x, width });
+    setRightAnchor((previousAnchor) =>
+      previousAnchor.x === x && previousAnchor.width === width
+        ? previousAnchor
+        : { x, width }
+    );
   };
 
   return (
@@ -117,7 +127,6 @@ const Header: React.FC<HeaderProps> = ({
 
       {showModeLabel && (
         <View
-          key={`mode-label-${layoutRecalcKey}`}
           className="absolute left-0 right-0 items-center justify-center z-0"
           style={modeLabelContainerStyle}
           testID="header-mode-label-container"
@@ -137,7 +146,6 @@ const Header: React.FC<HeaderProps> = ({
 
       {/* Right side: Coins */}
       <View
-        key={`coins-anchor-${layoutRecalcKey}`}
         style={{ position: "absolute", top: SPACING.md, right: SPACING.md, zIndex: 10 }}
         testID="header-right-side"
         onLayout={handleRightAnchorLayout}

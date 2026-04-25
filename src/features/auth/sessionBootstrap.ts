@@ -69,7 +69,8 @@ export const isGuestPlayer = (
       ? player.username.trim().toLowerCase()
       : "";
 
-  if (email.endsWith("@guest.Riddle Quest.com")) {
+  // Support legacy guest emails that were stored with mixed-case domain text.
+  if (email.endsWith("@guest.riddle quest.com")) {
     return true;
   }
 

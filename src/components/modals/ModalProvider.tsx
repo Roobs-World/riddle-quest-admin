@@ -8,6 +8,35 @@ import React from "react";
 import { useModalContext } from "../../contexts/ModalContext";
 import { getModalComponent } from "./ModalRegistry";
 import { logger } from "../../utils/logger";
+import { ModalInstance } from "../../types/ModalTypes";
+
+interface RenderedModalProps {
+  modal: ModalInstance;
+  closeModal: (id: string) => void;
+}
+
+const RenderedModal = React.memo(
+  ({ modal, closeModal }: RenderedModalProps) => {
+    const ModalComponent = getModalComponent(modal.type);
+    if (!ModalComponent) {
+      logger.warn(`Skipping unknown modal type "${modal.type}"`);
+      return null;
+    }
+
+    return (
+      <ModalComponent
+        isVisible={true}
+        onClose={() => closeModal(modal.id)}
+        {...modal.data}
+      />
+    );
+  },
+  (prevProps, nextProps) =>
+    prevProps.modal === nextProps.modal &&
+    prevProps.closeModal === nextProps.closeModal
+);
+
+RenderedModal.displayName = "RenderedModal";
 
 export const ModalProvider: React.FC = () => {
   const { modals, closeModal } = useModalContext();
@@ -15,19 +44,7 @@ export const ModalProvider: React.FC = () => {
   return (
     <>
       {modals.map((modal) => {
-        const ModalComponent = getModalComponent(modal.type);
-        if (!ModalComponent) {
-          logger.warn(`Skipping unknown modal type "${modal.type}"`);
-          return null;
-        }
-        return (
-          <ModalComponent
-            key={modal.id}
-            isVisible={true}
-            onClose={() => closeModal(modal.id)}
-            {...modal.data}
-          />
-        );
+        return <RenderedModal key={modal.id} modal={modal} closeModal={closeModal} />;
       })}
     </>
   );

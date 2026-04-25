@@ -710,7 +710,7 @@ describe("AuthContext", () => {
 
       expect(updateClassicIndexInFirestore).not.toHaveBeenCalled();
       expect(fetchClassicRiddleFromFirestore).toHaveBeenCalledWith(3);
-      expect(result.current.playerData?.stats.highestLevelClassic).toBe(3);
+      expect(result.current.playerData?.stats.highestLevelClassic).toBe(0);
     });
   });
 

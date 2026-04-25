@@ -65,10 +65,10 @@ describe("VictoryModal", () => {
     expect(getByText("50")).toBeTruthy();
   });
 
-  it("advances when the next level button is pressed", async () => {
+  it("advances when the modal is tapped", async () => {
     const { getByTestId } = render(<VictoryModal {...defaultProps} />);
 
-    fireEvent.press(getByTestId("victory-next-level-button"));
+    fireEvent.press(getByTestId("victory-modal-tap-target"));
 
     expect(mockOnNextLevel).toHaveBeenCalledTimes(1);
     await waitFor(() => {

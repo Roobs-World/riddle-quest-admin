@@ -174,6 +174,56 @@ const parseCoinBalance = (value: unknown): number | null => {
   return null;
 };
 
+const toNonNegativeStatValue = (value: unknown): number =>
+  typeof value === "number" && Number.isFinite(value) ? Math.max(0, value) : 0;
+
+const resolveProfileSnapshot = (
+  localPlayer: Player | null,
+  refreshedPlayer: Player
+): Player => {
+  if (!localPlayer) {
+    return refreshedPlayer;
+  }
+
+  const localHighestLevelClassic = Math.max(
+    toNonNegativeStatValue(localPlayer.stats?.highestLevelClassic),
+    toNonNegativeStatValue(localPlayer.progress?.classicIndex)
+  );
+  const refreshedHighestLevelClassic = Math.max(
+    toNonNegativeStatValue(refreshedPlayer.stats?.highestLevelClassic),
+    toNonNegativeStatValue(refreshedPlayer.progress?.classicIndex)
+  );
+  const mergedHighestLevelClassic = Math.max(
+    localHighestLevelClassic,
+    refreshedHighestLevelClassic
+  );
+
+  const localGamesPlayed = toNonNegativeStatValue(localPlayer.stats?.gamesPlayed);
+  const refreshedGamesPlayed = toNonNegativeStatValue(
+    refreshedPlayer.stats?.gamesPlayed
+  );
+
+  // Prefer in-session local stats when they are ahead of a stale server refresh.
+  if (localGamesPlayed > refreshedGamesPlayed) {
+    return {
+      ...refreshedPlayer,
+      stats: {
+        ...(refreshedPlayer.stats ?? {}),
+        ...(localPlayer.stats ?? {}),
+        highestLevelClassic: mergedHighestLevelClassic,
+      },
+    };
+  }
+
+  return {
+    ...refreshedPlayer,
+    stats: {
+      ...(refreshedPlayer.stats ?? {}),
+      highestLevelClassic: mergedHighestLevelClassic,
+    },
+  };
+};
+
 const GameScreenInner: React.FC<GameScreenProps> = ({
   riddleId,
   riddleText,
@@ -224,17 +274,19 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const shouldUseDevFirestoreCatalog = __DEV__ && !isRunningUnderJest;
 
   const gameOverHandledRef = useRef(false);
+  const lastSubmittedAttemptRef = useRef<number | null>(null);
   const openShopFromLossRef = useRef<() => void>(() => {});
   const coinAnimationSettleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
     null
   );
+  const hasLoadedShopCatalogRef = useRef(false);
 
   const [iapProducts, setIapProducts] = useState<RNIap.Product[]>([]);
-  const [iapLoading, setIapLoading] = useState(true);
+  const [iapLoading, setIapLoading] = useState(false);
   const [isPurchaseInProgress, setIsPurchaseInProgress] = useState(false);
   const [iapError, setIapError] = useState<string | null>(null);
   const [firestoreProducts, setFirestoreProducts] = useState<ProductPricing[]>([]);
-  const [productPricingLoading, setProductPricingLoading] = useState(true);
+  const [productPricingLoading, setProductPricingLoading] = useState(false);
   const [productPricingError, setProductPricingError] = useState<string | null>(null);
   const { isRewardedAdReady, loadRewardedAd, showRewardedAd } = useRewardedAds();
 
@@ -307,29 +359,31 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     }
 
     if (isAwaitingPostSubmitModalClose) {
-      setCanAnimateCoinIncreases(false);
+      setCanAnimateCoinIncreases((previous) => (previous ? false : previous));
 
       if (isAnyModalVisible) {
         return;
       }
 
       coinAnimationSettleTimeoutRef.current = setTimeout(() => {
-        setCanAnimateCoinIncreases(true);
-        setIsAwaitingPostSubmitModalClose(false);
+        setCanAnimateCoinIncreases((previous) => (previous ? previous : true));
+        setIsAwaitingPostSubmitModalClose((previous) =>
+          previous ? false : previous
+        );
         coinAnimationSettleTimeoutRef.current = null;
       }, MODAL_CLOSE_DELAY_MS);
       return;
     }
 
     if (isAnyModalVisible) {
-      setCanAnimateCoinIncreases(false);
+      setCanAnimateCoinIncreases((previous) => (previous ? false : previous));
       return;
     }
 
     // Wait for modal transitions/next queued modal to settle before allowing
     // deferred coin count-up animations to start.
     coinAnimationSettleTimeoutRef.current = setTimeout(() => {
-      setCanAnimateCoinIncreases(true);
+      setCanAnimateCoinIncreases((previous) => (previous ? previous : true));
       coinAnimationSettleTimeoutRef.current = null;
     }, MODAL_CLOSE_DELAY_MS);
   }, [isAnyModalVisible, isAwaitingPostSubmitModalClose]);
@@ -396,13 +450,38 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     }
   }, []);
 
-  useEffect(() => {
-    void loadIapProducts();
-  }, [loadIapProducts]);
+  const ensureShopCatalogLoaded = useCallback(async () => {
+    if (hasLoadedShopCatalogRef.current) {
+      return {
+        iapResult: {
+          products: iapProducts,
+          error: iapError,
+        },
+        firestoreResult: {
+          products: firestoreProducts,
+          error: productPricingError,
+        },
+      };
+    }
 
-  useEffect(() => {
-    void loadFirestoreProducts();
-  }, [loadFirestoreProducts]);
+    const [iapResult, firestoreResult] = await Promise.all([
+      loadIapProducts(),
+      loadFirestoreProducts(),
+    ]);
+
+    if (!iapResult.error && !firestoreResult.error) {
+      hasLoadedShopCatalogRef.current = true;
+    }
+
+    return { iapResult, firestoreResult };
+  }, [
+    iapProducts,
+    iapError,
+    firestoreProducts,
+    productPricingError,
+    loadIapProducts,
+    loadFirestoreProducts,
+  ]);
 
   const firstTimeCheckDone = useRef(false);
   const streakBreakModalShownRef = useRef(false);
@@ -938,6 +1017,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       const result = lastGuessResult;
 
       if (result.outcome === "win") {
+        const resolvedAttempts = lastSubmittedAttemptRef.current ?? guesses.length;
         const unlockedAchievements = (result.newlyUnlockedAchievementIds ?? [])
           .map((achievementId) =>
             ACHIEVEMENT_DEFINITIONS.find((d) => d.id === achievementId)
@@ -1060,7 +1140,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           };
 
           modal.showVictoryModal({
-            attempts: guesses.length,
+            attempts: resolvedAttempts,
             coinsEarned: result.coinsEarned || 0,
             totalCoins: totalCoinsAfterWin,
             unlockedAchievementNames,
@@ -1131,7 +1211,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         }
 
         onGameWin(
-          guesses.length,
+          resolvedAttempts,
           (result.coinsEarned || 0),
           result.scoreEarned || 0,
           resolvedDailyStreak,
@@ -1169,6 +1249,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           },
         });
       } else if (result.outcome === "loss") {
+        const resolvedAttempts = lastSubmittedAttemptRef.current ?? guesses.length;
         if (isHapticsEnabled) {
           void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
         }
@@ -1191,7 +1272,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         });
 
         if (result.correctAnswer) {
-          onGameLoss(result.correctAnswer, guesses.length);
+          onGameLoss(result.correctAnswer, resolvedAttempts);
         }
       }
     }
@@ -1248,6 +1329,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       try {
         // Always allow the next completed guess result to trigger exactly one modal flow.
         gameOverHandledRef.current = false;
+        lastSubmittedAttemptRef.current = guesses.length + 1;
         // Pause header coin count-up immediately so modal-driven result flows
         // can decide exactly when deferred animations should resume.
         setCanAnimateCoinIncreases(false);
@@ -1276,6 +1358,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     }
   }, [
     currentGuess,
+    guesses.length,
     answerLength,
     processGuess,
     isHapticsEnabled,
@@ -1456,28 +1539,41 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     currentUserCoins,
   ]);
 
-  const handleCoinsPress = useCallback(() => {
-    const availableStoreProductIds = new Set(iapProducts.map((product) => product.id));
+  const handleCoinsPress = useCallback(async () => {
+    let productsForModal = iapProducts;
+    let firestoreProductsForModal = firestoreProducts;
+
+    if (!hasLoadedShopCatalogRef.current) {
+      const { iapResult, firestoreResult } = await ensureShopCatalogLoaded();
+      productsForModal = iapResult.products;
+      firestoreProductsForModal = firestoreResult.products;
+    }
+
+    const availableStoreProductIds = new Set(
+      productsForModal.map((product) => product.id)
+    );
     const purchasableFirestoreProducts = shouldUseDevFirestoreCatalog
-      ? firestoreProducts
-      : firestoreProducts.filter((product) =>
+      ? firestoreProductsForModal
+      : firestoreProductsForModal.filter((product) =>
           availableStoreProductIds.has(product.productId)
         );
 
-    logger.debug("Opening coin shop modal with:", {
-      iapProducts: iapProducts.length,
-      firestoreProducts: firestoreProducts.length,
-      purchasableFirestoreProducts: purchasableFirestoreProducts.length,
-      shouldUseDevFirestoreCatalog,
-      iapLoading,
-      productPricingLoading,
-      iapError,
-      productPricingError,
-    });
+    if (__DEV__) {
+      logger.debug("Opening coin shop modal with:", {
+        iapProducts: productsForModal.length,
+        firestoreProducts: firestoreProductsForModal.length,
+        purchasableFirestoreProducts: purchasableFirestoreProducts.length,
+        shouldUseDevFirestoreCatalog,
+        iapLoading,
+        productPricingLoading,
+        iapError,
+        productPricingError,
+      });
+    }
 
     try {
       modal.showCoinShop({
-        products: iapProducts,
+        products: productsForModal,
         firestoreProducts: purchasableFirestoreProducts,
         currentCoins: currentUserCoins,
         loading: iapLoading || productPricingLoading,
@@ -1495,6 +1591,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       });
     }
   }, [
+    ensureShopCatalogLoaded,
     iapProducts,
     firestoreProducts,
     shouldUseDevFirestoreCatalog,
@@ -1611,8 +1708,12 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           );
 
           if (refreshedProfile) {
-            latestPlayerData = refreshedProfile;
-            updatePlayerDataLocally(refreshedProfile, {
+            const resolvedProfile = resolveProfileSnapshot(
+              playerData,
+              refreshedProfile
+            );
+            latestPlayerData = resolvedProfile;
+            updatePlayerDataLocally(resolvedProfile, {
               syncToFirestore: false,
             });
           }

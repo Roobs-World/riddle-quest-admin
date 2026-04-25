@@ -857,6 +857,44 @@ describe("handleGuessLogic", () => {
   });
 
   describe("handleCompleteGameLogic - Leaderboard", () => {
+    test("increments challenge streak when last completion is a Firestore timestamp-like object", async () => {
+      const yesterday = new Date();
+      yesterday.setUTCDate(yesterday.getUTCDate() - 1);
+      yesterday.setUTCHours(12, 0, 0, 0);
+
+      const userWithTimestampLastCompletion = {
+        ...mockUser,
+        stats: {
+          ...mockUser.stats,
+          winStreak: 4,
+          bestStreak: 4,
+        },
+        lastDailyChallengeCompletedAt: {
+          _seconds: Math.floor(yesterday.getTime() / 1000),
+          _nanoseconds: 0,
+        },
+      };
+      (firestoreService.getUser as jest.Mock).mockResolvedValue(userWithTimestampLastCompletion);
+
+      const requestData = {
+        riddleId: "riddle-123",
+        gameMode: "challenge" as const,
+        attempts: 2,
+        isCorrect: true,
+      };
+
+      const result = await handleCompleteGameLogic(requestData, authContext);
+
+      expect(result.newWinStreak).toBe(5);
+      expect(firestoreService.updateUserStats).toHaveBeenCalledWith(
+        authContext.uid,
+        expect.objectContaining({
+          winStreak: 5,
+          bestStreak: 5,
+        }),
+      );
+    });
+
     test("adds achievement bonus coins to balance and response on win", async () => {
       (achievements.evaluateAchievements as jest.Mock).mockResolvedValueOnce([
         "first_win",

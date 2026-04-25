@@ -53,6 +53,18 @@ const coinSvg = `<svg width="24" height="24" viewBox="0 0 120 120" fill="none" x
 <path d="M104.046 38.3418V46.3452C105.457 45.8066 106.773 45.234 107.973 44.634V38.335L104.046 38.3418ZM93.786 49.2697C92.518 49.5355 91.2091 49.7811 89.8661 49.9991V42.3775L93.786 42.3843V49.2697ZM79.6061 51.1991C78.3177 51.2877 77.0087 51.3627 75.6862 51.4173V44.1364L79.6061 44.1432V51.1991ZM65.4262 51.4173C64.0968 51.3627 62.7878 51.2877 61.4995 51.1991V44.1432L65.4262 44.1364V51.4173ZM51.2395 49.9991C49.8965 49.7809 48.5875 49.5355 47.3195 49.2697V42.3775L51.2395 42.3843V49.9991ZM37.0595 46.3452C35.6484 45.8066 34.3326 45.234 33.1328 44.634V38.3418L37.0595 38.335V46.3452Z" fill="#C85929"/>
 </svg>`;
 
+const CoinIcon = React.memo(() => (
+  <SvgXml
+    xml={coinSvg}
+    width={COIN_DISPLAY_ICON_SIZE}
+    height={COIN_DISPLAY_ICON_SIZE}
+    testID="coin-icon"
+  />
+));
+
+CoinIcon.displayName = "CoinIcon";
+const COIN_TEXT_UPDATE_INTERVAL_MS = 33;
+
 /**
  * Props interface for the CoinsDisplay component.
  *
@@ -132,11 +144,28 @@ const CoinsDisplay: React.FC<CoinsDisplayProps> = ({
   );
   const [scaleAnimatedValue] = useState(() => new Animated.Value(1));
   const previousCoinsRef = useRef(normalizedCoins);
+  const displayedCoinsRef = useRef(normalizedCoins);
+  const isCountUpAnimationRunningRef = useRef(false);
+  const lastAnimatedTextUpdateAtRef = useRef(0);
   const [displayedCoins, setDisplayedCoins] = useState(normalizedCoins);
 
   useEffect(() => {
     const listenerId = displayedCoinsAnimatedValue.addListener(({ value }) => {
-      setDisplayedCoins(Math.round(value));
+      const roundedValue = Math.round(value);
+      if (roundedValue === displayedCoinsRef.current) {
+        return;
+      }
+
+      if (isCountUpAnimationRunningRef.current) {
+        const now = Date.now();
+        if (now - lastAnimatedTextUpdateAtRef.current < COIN_TEXT_UPDATE_INTERVAL_MS) {
+          return;
+        }
+        lastAnimatedTextUpdateAtRef.current = now;
+      }
+
+      displayedCoinsRef.current = roundedValue;
+      setDisplayedCoins(roundedValue);
     });
 
     return () => {
@@ -158,8 +187,10 @@ const CoinsDisplay: React.FC<CoinsDisplayProps> = ({
     if (!shouldAnimateIncreases && isCountUpAnimationNeeded) {
       // Keep the old value in view while modals are open so we can animate to the
       // new total once all overlays are dismissed.
+      isCountUpAnimationRunningRef.current = false;
       displayedCoinsAnimatedValue.setValue(previousCoins);
       scaleAnimatedValue.setValue(1);
+      displayedCoinsRef.current = previousCoins;
       setDisplayedCoins(previousCoins);
       return;
     }
@@ -167,13 +198,17 @@ const CoinsDisplay: React.FC<CoinsDisplayProps> = ({
     previousCoinsRef.current = normalizedCoins;
 
     if (!isCountUpAnimationNeeded || !canRunCountUpAnimation) {
+      isCountUpAnimationRunningRef.current = false;
       displayedCoinsAnimatedValue.setValue(normalizedCoins);
       scaleAnimatedValue.setValue(1);
+      displayedCoinsRef.current = normalizedCoins;
       setDisplayedCoins(normalizedCoins);
       return;
     }
 
     const coinCountUpDurationMs = Math.min(2500, 400 + Math.sqrt(coinsAdded) * 180);
+    isCountUpAnimationRunningRef.current = true;
+    lastAnimatedTextUpdateAtRef.current = 0;
     displayedCoinsAnimatedValue.setValue(previousCoins);
 
     Animated.timing(displayedCoinsAnimatedValue, {
@@ -182,9 +217,14 @@ const CoinsDisplay: React.FC<CoinsDisplayProps> = ({
       easing: Easing.out(Easing.cubic),
       useNativeDriver: false,
     }).start(({ finished }) => {
+      isCountUpAnimationRunningRef.current = false;
+
       if (!finished) {
         return;
       }
+
+      displayedCoinsRef.current = normalizedCoins;
+      setDisplayedCoins(normalizedCoins);
 
       Animated.sequence([
         Animated.timing(scaleAnimatedValue, {
@@ -232,7 +272,7 @@ const CoinsDisplay: React.FC<CoinsDisplayProps> = ({
       <Text style={{ fontFamily: TYPOGRAPHY.fontPrimary, color: "#ffffff", fontSize: TYPOGRAPHY.fontSize.lg, marginRight: SPACING.xs }}>
         {String(displayedCoins)}
       </Text>
-      <SvgXml xml={coinSvg} width={COIN_DISPLAY_ICON_SIZE} height={COIN_DISPLAY_ICON_SIZE} testID="coin-icon" />
+      <CoinIcon />
     </Animated.View>
   );
 

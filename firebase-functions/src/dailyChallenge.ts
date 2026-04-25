@@ -16,6 +16,42 @@ const CURRENT_DAILY_RIDDLE_DOC_ID = "current";
  */
 function toUtcDateString(value: unknown): string | null {
   if (!value) return null;
+
+  if (typeof value === "object") {
+    const timestampLike = value as {
+      toDate?: () => Date;
+      toMillis?: () => number;
+      seconds?: number;
+      _seconds?: number;
+      nanoseconds?: number;
+      _nanoseconds?: number;
+    };
+
+    if (typeof timestampLike.toDate === "function") {
+      const date = timestampLike.toDate();
+      return Number.isNaN(date.getTime()) ? null : date.toISOString().split("T")[0];
+    }
+
+    if (typeof timestampLike.toMillis === "function") {
+      const date = new Date(timestampLike.toMillis());
+      return Number.isNaN(date.getTime()) ? null : date.toISOString().split("T")[0];
+    }
+
+    const secondsValue =
+      typeof timestampLike.seconds === "number" ? timestampLike.seconds :
+      typeof timestampLike._seconds === "number" ? timestampLike._seconds :
+      undefined;
+    if (typeof secondsValue === "number") {
+      const nanosValue =
+        typeof timestampLike.nanoseconds === "number" ? timestampLike.nanoseconds :
+        typeof timestampLike._nanoseconds === "number" ? timestampLike._nanoseconds :
+        0;
+      const millis = secondsValue * 1000 + Math.floor(nanosValue / 1_000_000);
+      const date = new Date(millis);
+      return Number.isNaN(date.getTime()) ? null : date.toISOString().split("T")[0];
+    }
+  }
+
   const date = new Date(value as string | number | Date);
   if (Number.isNaN(date.getTime())) return null;
   return date.toISOString().split("T")[0];
