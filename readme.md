@@ -1,16 +1,18 @@
-
 npx eas-cli build --profile development --platform android
 
 pnpm exec expo start --clear ( clears metro cache )
 pnpm exec expo run:android
 
+if the build breaks, then:
 
-if the build breaks, then: 
 1. npx expo prebuild --clean in root
-2. ./gradlew clean in the android directory 
-3. try a new build 
+2. ./gradlew clean in the android directory
+3. try a new build
 
 use firebase functions:config:get to return the config settings used
+
+to create a preview build for distribution run:
+pnpm exec eas build --platform android --profile preview
 
 ## RN 0.85 Upgrade Notes
 
