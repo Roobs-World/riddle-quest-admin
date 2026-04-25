@@ -376,11 +376,14 @@ const useGameLogic = ({ riddleId, answer, gameMode, isGuestMode = false }: UseGa
 
   /**
    * Marks that the player has used their one-time continue option and re-opens
-   * the game with an expanded attempt limit.
+   * the game with an expanded attempt limit. The visible grid is cleared so
+   * the continuation run starts fresh.
    */
   const continueGame = useCallback(() => {
     setHasUsedContinue(true);
     setGameOver(false);
+    setGuesses([]);
+    setCurrentGuess([]);
   }, []);
 
   /**

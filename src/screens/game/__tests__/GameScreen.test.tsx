@@ -1401,6 +1401,7 @@ describe("GameScreen", () => {
       config.onOpenShop();
 
       expect(mockUseGameLogic.continueGame).toHaveBeenCalledTimes(1);
+      expect(defaultProps.onGameLoss).not.toHaveBeenCalled();
       await waitFor(() => {
         expect(spendCoins).toHaveBeenCalledWith({ amount: 20, reason: "continue" });
       });
@@ -1443,6 +1444,7 @@ describe("GameScreen", () => {
       });
       expect(mockShowRewardedAd).toHaveBeenCalled();
       expect(mockUseGameLogic.continueGame).toHaveBeenCalled();
+      expect(defaultProps.onGameLoss).not.toHaveBeenCalled();
       expect(mockUpdatePlayerDataLocally).toHaveBeenCalled();
     });
 
@@ -2243,6 +2245,7 @@ describe("GameScreen", () => {
       const { logger } = require("../../../utils/logger");
       const { captureException } = require("../../../utils/sentry");
       const failingNextLevel = jest.fn(() => Promise.reject(new Error("next fail")));
+      const onGameLoss = jest.fn();
       mockUseGameLogic.currentGuess = ["K", "E", "Y", "B", "O", "A", "R", "D"];
 
       mockUseGameLogic.processGuess.mockResolvedValueOnce({
@@ -2250,17 +2253,28 @@ describe("GameScreen", () => {
         correctAnswer: "ANSWER",
       });
       const { rerender } = render(
-        <GameScreen {...defaultProps} onNextLevel={failingNextLevel} />
+        <GameScreen
+          {...defaultProps}
+          onGameLoss={onGameLoss}
+          onNextLevel={failingNextLevel}
+        />
       );
       const inputProps = getLatestProps(mockGameInput);
       await inputProps.handleSubmit();
       mockUseGameLogic.gameOver = true;
-      rerender(<GameScreen {...defaultProps} onNextLevel={failingNextLevel} />);
+      rerender(
+        <GameScreen
+          {...defaultProps}
+          onGameLoss={onGameLoss}
+          onNextLevel={failingNextLevel}
+        />
+      );
       await waitFor(() => {
         expect(mockShowLossModal).toHaveBeenCalled();
       });
       let config = mockShowLossModal.mock.calls[mockShowLossModal.mock.calls.length - 1][0];
       config.onNext();
+      expect(onGameLoss).toHaveBeenCalledWith("ANSWER", 1);
       await waitFor(() => {
         expect(logger.error).toHaveBeenCalledWith(
           "Error loading next level after attempt limit:",

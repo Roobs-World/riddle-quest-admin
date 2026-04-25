@@ -98,13 +98,29 @@ describe("StatsModal", () => {
   it("renders gameplay stats with correct values", () => {
     const { getByText } = render(<StatsModal {...defaultProps} />);
     expect(getByText("Games Played")).toBeTruthy();
-    expect(getByText("20")).toBeTruthy();
+    expect(getByText("22")).toBeTruthy();
     expect(getByText("Daily Puzzles")).toBeTruthy();
     expect(getByText("5")).toBeTruthy();
     expect(getByText("Highest Classic Level")).toBeTruthy();
     expect(getByText("12")).toBeTruthy();
     expect(getByText("XP")).toBeTruthy();
     expect(getByText("0")).toBeTruthy();
+  });
+
+  it("calculates games played from daily puzzles + highest classic level + failed attempts", () => {
+    const playerData: Player = {
+      ...mockPlayerData,
+      stats: {
+        ...mockPlayerData.stats!,
+        dailyPuzzlesCompleted: 2,
+        highestLevelClassic: 6,
+        totalWins: 5,
+        gamesPlayed: 9, // 4 failed attempts
+      },
+    };
+
+    const { getByText } = render(<StatsModal {...defaultProps} playerData={playerData} />);
+    expect(getByText("12")).toBeTruthy(); // 2 + 6 + (9 - 5)
   });
 
   it("renders wins and streaks stats with correct values", () => {

@@ -80,6 +80,7 @@ import {
   readBooleanSetting,
   writeBooleanSetting,
 } from "../../utils/settingsStorage";
+import type { Feedback } from "../../hooks/types";
 
 interface GuessResult {
   outcome: "win" | "loss" | "continue" | "attemptLimitReached";
@@ -177,6 +178,36 @@ const parseCoinBalance = (value: unknown): number | null => {
 const toNonNegativeStatValue = (value: unknown): number =>
   typeof value === "number" && Number.isFinite(value) ? Math.max(0, value) : 0;
 
+const LETTER_STATE_PRIORITY: Record<Feedback, number> = {
+  green: 3,
+  yellow: 2,
+  red: 1,
+};
+
+const mergeLetterStates = (
+  existing: Record<string, Feedback>,
+  incoming: Record<string, Feedback>
+): Record<string, Feedback> => {
+  if (Object.keys(existing).length === 0) {
+    return { ...incoming };
+  }
+  if (Object.keys(incoming).length === 0) {
+    return { ...existing };
+  }
+
+  const merged = { ...existing };
+  for (const [letter, feedback] of Object.entries(incoming)) {
+    const currentFeedback = merged[letter];
+    if (
+      !currentFeedback ||
+      LETTER_STATE_PRIORITY[feedback] > LETTER_STATE_PRIORITY[currentFeedback]
+    ) {
+      merged[letter] = feedback;
+    }
+  }
+  return merged;
+};
+
 const resolveProfileSnapshot = (
   localPlayer: Player | null,
   refreshedPlayer: Player
@@ -263,6 +294,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     getAppLanguage()
   );
   const [activeSlotIndex, setActiveSlotIndex] = useState(0);
+  const activeSlotIndexRef = useRef(0);
   const { isLoading, runWithServerLoading } = useGameSessionController();
   const modalActions = useMemo(() => createGameModalActions(modal), [modal]);
   const [isProfileModalLoading, setIsProfileModalLoading] = useState(false);
@@ -288,7 +320,23 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const [firestoreProducts, setFirestoreProducts] = useState<ProductPricing[]>([]);
   const [productPricingLoading, setProductPricingLoading] = useState(false);
   const [productPricingError, setProductPricingError] = useState<string | null>(null);
+  const [preservedLetterStates, setPreservedLetterStates] = useState<
+    Record<string, Feedback>
+  >({});
   const { isRewardedAdReady, loadRewardedAd, showRewardedAd } = useRewardedAds();
+  const setActiveSlotIndexSynced = useCallback(
+    (value: React.SetStateAction<number>) => {
+      setActiveSlotIndex((prev) => {
+        const resolved =
+          typeof value === "function"
+            ? (value as (previous: number) => number)(prev)
+            : value;
+        activeSlotIndexRef.current = resolved;
+        return resolved;
+      });
+    },
+    []
+  );
 
   const {
     guesses,
@@ -320,6 +368,15 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   }, [playerData?.coins, userCoins]);
 
   const hintRevealedIndicesRef = useRef<number[]>([]);
+  const preserveKeyboardLetterStates = useCallback(() => {
+    setPreservedLetterStates((existing) =>
+      mergeLetterStates(existing, computeLetterStates(guesses))
+    );
+  }, [guesses]);
+  const resetRoundState = useCallback(() => {
+    setPreservedLetterStates({});
+    resetGame();
+  }, [resetGame]);
 
   useEffect(() => {
     hintRevealedIndicesRef.current = [];
@@ -333,8 +390,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     logger.debug(
       `Game session context changed (mode=${gameMode}, riddleId=${riddleId}). Resetting local game state.`
     );
-    resetGame();
-  }, [gameMode, riddleId, answer, resetGame]);
+    resetRoundState();
+  }, [gameMode, riddleId, answer, resetRoundState]);
 
   const isAnyModalVisible = modal.modals.length > 0;
   const [canAnimateCoinIncreases, setCanAnimateCoinIncreases] = useState(
@@ -342,7 +399,14 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   );
   const [isAwaitingPostSubmitModalClose, setIsAwaitingPostSubmitModalClose] =
     useState(false);
-  const letterStates = useMemo(() => computeLetterStates(guesses), [guesses]);
+  const currentRoundLetterStates = useMemo(
+    () => computeLetterStates(guesses),
+    [guesses]
+  );
+  const letterStates = useMemo(
+    () => mergeLetterStates(preservedLetterStates, currentRoundLetterStates),
+    [preservedLetterStates, currentRoundLetterStates]
+  );
 
   useEffect(() => {
     return () => {
@@ -701,11 +765,11 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
   useEffect(() => {
     if (answerLength <= 0) {
-      setActiveSlotIndex(0);
+      setActiveSlotIndexSynced(0);
       return;
     }
 
-    setActiveSlotIndex((prev) => {
+    setActiveSlotIndexSynced((prev) => {
       const maxIndex = Math.max(0, answerLength - 1);
       const clampedPrev = Math.min(Math.max(0, prev), maxIndex);
 
@@ -724,7 +788,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
       return clampedPrev;
     });
-  }, [answerLength, currentGuess]);
+  }, [answerLength, currentGuess, setActiveSlotIndexSynced]);
 
   const handleCoinContinue = useCallback(async () => {
     const isInsufficientCoinsError = (error: unknown): boolean => {
@@ -772,6 +836,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           coins: Math.max(0, (playerData.coins ?? 0) - CONTINUE_COST_COINS),
         });
       }
+      preserveKeyboardLetterStates();
       continueGame();
       return true;
     } catch (error) {
@@ -795,6 +860,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   }, [
     modal,
     continueGame,
+    preserveKeyboardLetterStates,
     runWithServerLoading,
     isGuestMode,
     playerData,
@@ -814,6 +880,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         coinsPurchased: CONTINUE_REWARDED_AD_COIN_REWARD,
         totalCoins: currentUserCoins + CONTINUE_REWARDED_AD_COIN_REWARD,
       });
+      preserveKeyboardLetterStates();
       continueGame();
       return true;
     }
@@ -826,6 +893,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   }, [
     showRewardedAd,
     continueGame,
+    preserveKeyboardLetterStates,
     modal,
     playerData,
     updatePlayerDataLocally,
@@ -1127,7 +1195,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         const showVictoryModal = () => {
           const continueToNextLevel = async () => {
             logger.debug("Victory modal: Next level button pressed");
-            resetGame();
+            resetRoundState();
 
             try {
               await runWithServerLoading(() => onNextLevel());
@@ -1220,6 +1288,11 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       } else if (result.outcome === "attemptLimitReached") {
         const canAffordCoinContinue = currentUserCoins >= CONTINUE_COST_COINS;
         const skipLevelCost = SKIP_COST_CLASSIC;
+        // Cache keyboard hints as soon as the loss modal opens so they survive
+        // any continue/close timing differences while the grid resets.
+        setPreservedLetterStates((existing) =>
+          mergeLetterStates(existing, computeLetterStates(guesses))
+        );
 
         modal.showLossModal({
           correctAnswer: result.correctAnswer || "",
@@ -1241,7 +1314,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           onOpenShop: () => openShopFromLossRef.current(),
           onNext: () => {
             modal.closeModalByType("loss");
-            resetGame();
+            resetRoundState();
             runWithServerLoading(() => onNextLevel()).catch((error) => {
               logger.error("Error loading next level after attempt limit:", error);
               captureException(error);
@@ -1263,7 +1336,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           onOpenShop: () => openShopFromLossRef.current(),
           onNext: () => {
             modal.closeModalByType("loss");
-            resetGame();
+            resetRoundState();
             runWithServerLoading(() => onNextLevel()).catch((error) => {
               logger.error("Error loading next level after loss:", error);
               captureException(error);
@@ -1287,7 +1360,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     onGameWin,
     onGameLoss,
     onNextLevel,
-    resetGame,
+    resetRoundState,
     deriveDailyStreakAfterWin,
     runRewardedAdContinueFlow,
     handleCoinContinue,
@@ -1369,10 +1442,11 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const handleKeyPress = useCallback(
     (key: string) => {
       if (answerLength <= 0) return;
+      const maxIndex = Math.max(0, answerLength - 1);
 
       const targetIndex = Math.min(
-        Math.max(0, activeSlotIndex),
-        Math.max(0, answerLength - 1)
+        Math.max(0, activeSlotIndexRef.current),
+        maxIndex
       );
 
       setCurrentGuess((prev: string[]) => {
@@ -1387,19 +1461,19 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         return next;
       });
 
-      setActiveSlotIndex((prev) =>
-        Math.min(Math.max(0, answerLength - 1), prev + 1)
-      );
+      const nextActiveSlotIndex = Math.min(maxIndex, targetIndex + 1);
+      setActiveSlotIndexSynced(nextActiveSlotIndex);
     },
-    [activeSlotIndex, answerLength, setCurrentGuess]
+    [answerLength, setCurrentGuess, setActiveSlotIndexSynced]
   );
 
   const handleBackspace = useCallback(() => {
     if (answerLength <= 0) return;
+    const maxIndex = Math.max(0, answerLength - 1);
 
     const clampedActiveIndex = Math.min(
-      Math.max(0, activeSlotIndex),
-      Math.max(0, answerLength - 1)
+      Math.max(0, activeSlotIndexRef.current),
+      maxIndex
     );
 
     setCurrentGuess((prev: string[]) => {
@@ -1419,22 +1493,16 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       return next;
     });
 
-    setActiveSlotIndex((prev) => {
-      const clampedPrev = Math.min(
-        Math.max(0, prev),
-        Math.max(0, answerLength - 1)
-      );
-      return Math.max(0, clampedPrev - 1);
-    });
-  }, [activeSlotIndex, answerLength, setCurrentGuess]);
+    setActiveSlotIndexSynced(Math.max(0, clampedActiveIndex - 1));
+  }, [answerLength, setCurrentGuess, setActiveSlotIndexSynced]);
 
   const handleSelectCurrentGuessSlot = useCallback(
     (slotIndex: number) => {
       if (answerLength <= 0) return;
       if (slotIndex < 0 || slotIndex >= answerLength) return;
-      setActiveSlotIndex(slotIndex);
+      setActiveSlotIndexSynced(slotIndex);
     },
-    [answerLength]
+    [answerLength, setActiveSlotIndexSynced]
   );
 
   const handleShowHint = useCallback(async () => {
@@ -1629,7 +1697,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           }
 
           onSkipUsed(skipCost);
-          resetGame();
+          resetRoundState();
           await runWithServerLoading(() => onNextLevel());
         } catch (error) {
           logger.error("Error spending coins for skip:", error);
@@ -1643,7 +1711,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     modal,
     currentUserCoins,
     handleCoinsPress,
-    resetGame,
+    resetRoundState,
     onNextLevel,
     onSkipUsed,
     runWithServerLoading,
@@ -1755,8 +1823,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
     const solvedGuess = answer.toUpperCase().split("");
     setCurrentGuess(solvedGuess);
-    setActiveSlotIndex(Math.max(0, answerLength - 1));
-  }, [gameOver, answer, answerLength, setCurrentGuess]);
+    setActiveSlotIndexSynced(Math.max(0, answerLength - 1));
+  }, [gameOver, answer, answerLength, setCurrentGuess, setActiveSlotIndexSynced]);
 
   const handleDebugGenerateDailyChallenge = useCallback(async () => {
     try {

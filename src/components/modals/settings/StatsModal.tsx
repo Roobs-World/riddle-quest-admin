@@ -32,9 +32,18 @@ export interface StatsModalProps {
 
 const StatsModal: React.FC<StatsModalProps> = ({isVisible, onClose, playerData}) => {
   const stats = playerData?.stats;
+  const toNonNegativeStat = (value: unknown): number =>
+    typeof value === "number" && Number.isFinite(value) ? Math.max(0, value) : 0;
 
   const winRate = Math.round(stats?.winRate ?? 0);
   const avgGuesses = stats?.averageGuesses != null ? stats.averageGuesses.toFixed(1) : "0.0";
+  const dailyPuzzlesCompleted = toNonNegativeStat(stats?.dailyPuzzlesCompleted);
+  const highestClassicLevel = toNonNegativeStat(stats?.highestLevelClassic);
+  const totalWins = toNonNegativeStat(stats?.totalWins ?? stats?.wins);
+  const recordedGamesPlayed = toNonNegativeStat(stats?.gamesPlayed);
+  const failedAttempts = Math.max(0, recordedGamesPlayed - totalWins);
+  const calculatedGamesPlayed =
+    dailyPuzzlesCompleted + highestClassicLevel + failedAttempts;
 
   return (
     <Modal
@@ -97,9 +106,9 @@ const StatsModal: React.FC<StatsModalProps> = ({isVisible, onClose, playerData})
               showsVerticalScrollIndicator={false}
             >
               <SectionHeader label={AppStrings.StatsModal.GAMEPLAY_SECTION} />
-              <StatRow label={AppStrings.StatsModal.GAMES_PLAYED} value={stats?.gamesPlayed ?? 0} />
-              <StatRow label={AppStrings.StatsModal.DAILY_PUZZLES} value={stats?.dailyPuzzlesCompleted ?? 0} />
-              <StatRow label={AppStrings.StatsModal.HIGHEST_CLASSIC_LEVEL} value={stats?.highestLevelClassic ?? 0} />
+              <StatRow label={AppStrings.StatsModal.GAMES_PLAYED} value={calculatedGamesPlayed} />
+              <StatRow label={AppStrings.StatsModal.DAILY_PUZZLES} value={dailyPuzzlesCompleted} />
+              <StatRow label={AppStrings.StatsModal.HIGHEST_CLASSIC_LEVEL} value={highestClassicLevel} />
               <StatRow label={AppStrings.StatsModal.XP} value={stats?.xp ?? 0} />
 
               <SectionHeader label={AppStrings.StatsModal.WINS_STREAKS_SECTION} />

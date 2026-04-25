@@ -290,7 +290,7 @@ describe("useGameLogic", () => {
         result.current.continueGame();
       });
 
-      // Use up the 3 extra attempts
+      // Use up the 3 extra attempts on the fresh continuation grid
       for (let i = 0; i < 3; i++) {
         await act(async () => {
           await result.current.processGuess(wrong);
@@ -299,7 +299,7 @@ describe("useGameLogic", () => {
 
       // Game still ends — error is swallowed so the user isn't blocked
       expect(result.current.gameOver).toBe(true);
-      expect(result.current.guesses.length).toBe(7);
+      expect(result.current.guesses.length).toBe(3);
     });
 
     it("should keep guest wins local and skip completeGame calls", async () => {
@@ -348,7 +348,7 @@ describe("useGameLogic", () => {
 
       expect(mockCompleteGameCallable).not.toHaveBeenCalled();
       expect(result.current.gameOver).toBe(true);
-      expect(result.current.guesses.length).toBe(7);
+      expect(result.current.guesses.length).toBe(3);
     });
 
     it("persists guest in-progress sessions to AsyncStorage", async () => {
@@ -653,7 +653,7 @@ describe("useGameLogic", () => {
       expect(result.current.gameOver).toBe(false);
     });
 
-    it("should preserve existing guesses", async () => {
+    it("should clear existing guesses for a fresh continuation grid", async () => {
       const { result } = renderHook(() => useGameLogic(defaultProps));
       const wrong = ["F", "A", "I", "L", "S"];
 
@@ -663,13 +663,14 @@ describe("useGameLogic", () => {
         });
       }
 
-      const guessesBeforeContinue = result.current.guesses.length;
+      expect(result.current.guesses.length).toBeGreaterThan(0);
 
       act(() => {
         result.current.continueGame();
       });
 
-      expect(result.current.guesses.length).toBe(guessesBeforeContinue);
+      expect(result.current.guesses).toEqual([]);
+      expect(result.current.currentGuess).toEqual([]);
     });
   });
 
