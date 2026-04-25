@@ -43,19 +43,14 @@ const EN_APP_STRINGS = {
       USER_DISABLED_ERROR: "This account has been disabled.",
       ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL:
         "Account exists with different credential. Please use a different login method.",
-      OPERATION_NOT_SUPPORTED_ERROR:
-        "Operation not supported in this environment.",
+      OPERATION_NOT_SUPPORTED_ERROR: "Operation not supported in this environment.",
       LOGIN_FAILED_GENERIC: "Login failed. Please check your credentials.",
       GOOGLE_UNEXPECTED_ERROR: "An unexpected error occurred during Google login.",
       TWITTER_UNEXPECTED_ERROR: "An unexpected error occurred during X login.",
-      FACEBOOK_CONFIG_ERROR:
-        "Facebook login configuration issue. Please try again or contact support.",
-      FACEBOOK_TIMEOUT_ERROR:
-        "Facebook login timed out. This may indicate a configuration issue. Please try again.",
-      FACEBOOK_SDK_ERROR:
-        "Facebook login is not properly configured. Please restart the app and try again.",
-      FACEBOOK_NETWORK_ERROR:
-        "Network error during Facebook login. Please check your connection and try again.",
+      FACEBOOK_CONFIG_ERROR: "Facebook login configuration issue. Please try again or contact support.",
+      FACEBOOK_TIMEOUT_ERROR: "Facebook login timed out. This may indicate a configuration issue. Please try again.",
+      FACEBOOK_SDK_ERROR: "Facebook login is not properly configured. Please restart the app and try again.",
+      FACEBOOK_NETWORK_ERROR: "Network error during Facebook login. Please check your connection and try again.",
       FACEBOOK_INVALID_CREDENTIAL_ERROR: "Invalid Facebook credentials. Please try again.",
       FACEBOOK_UNEXPECTED_ERROR: "An unexpected error occurred during Facebook login.",
     },
@@ -91,8 +86,7 @@ const EN_APP_STRINGS = {
     },
     NewPassword: {
       TITLE: "Set New Password",
-      NEW_PASSWORD_DESCRIPTION:
-        "Reset your password to recovery & login to your account.",
+      NEW_PASSWORD_DESCRIPTION: "Reset your password to recovery & login to your account.",
       NEW_PASSWORD_LABEL: "New Password",
       NEW_PASSWORD_PLACEHOLDER: "Enter your new password",
       CONFIRM_PASSWORD_LABEL: "Confirm New Password",
@@ -105,8 +99,7 @@ const EN_APP_STRINGS = {
       SUCCESS_MESSAGE: "Password reset email sent! Check your inbox.",
       USER_NOT_FOUND_ERROR:
         "No account found with this email address. Please check your email or sign up for a new account.",
-      GENERIC_ERROR:
-        "An error occurred while sending the reset email. Please try again.",
+      GENERIC_ERROR: "An error occurred while sending the reset email. Please try again.",
       BACK_TO_LOGIN: "Back to Login",
     },
   },
@@ -126,8 +119,7 @@ const EN_APP_STRINGS = {
   },
   NavigationMessages: {
     NO_CLASSIC_RIDDLE_FOUND: "⚠️ No classic riddle found at index ",
-    SERVER_GENERATES_RIDDLES:
-      ". Server will generate new riddles automatically when you submit guesses.",
+    SERVER_GENERATES_RIDDLES: ". Server will generate new riddles automatically when you submit guesses.",
     ERROR_LOADING_NEXT_RIDDLE: "Error loading next classic riddle:",
   },
   Settings: {
@@ -140,8 +132,7 @@ const EN_APP_STRINGS = {
     CREDITS_BUTTON: "Credits",
     TEST_CRASH_BUTTON: "Test Crash",
     TEST_CRASH_ALERT_TITLE: "Test Crash",
-    TEST_CRASH_ALERT_MESSAGE:
-      "This will crash the app to test Firebase Crashlytics. Continue?",
+    TEST_CRASH_ALERT_MESSAGE: "This will crash the app to test Firebase Crashlytics. Continue?",
     TEST_CRASH_ALERT_CANCEL: "Cancel",
     TEST_CRASH_ALERT_CRASH: "Crash",
     CLOSE_BUTTON: "Close",
@@ -163,14 +154,12 @@ const EN_APP_STRINGS = {
     WELCOME_TITLE: "Welcome to Qwordly!",
     SOLVE_RIDDLES_TEXT:
       "Solve engaging riddles by guessing the answer letter by letter. Use the colour clues to narrow down each guess.",
-    EARN_COINS_TEXT:
-      "Earn coins, beat daily challenges, and climb the leaderboard.",
+    EARN_COINS_TEXT: "Earn coins, beat daily challenges, and climb the leaderboard.",
   },
   Instructions: {
     TITLE: "How to Play",
     GOAL_TITLE: "The Goal",
-    GOAL_DESCRIPTION:
-      "Guess the hidden riddle in 3 tries using the color clues to guide you.",
+    GOAL_DESCRIPTION: "Guess the hidden riddle in 3 tries using the color clues to guide you.",
     COLOR_CLUES_TITLE: "Color Clues",
     COLOR_CORRECT: "Letter is correct and in the right position",
     COLOR_MISPLACED: "Letter is in the word but wrong position",
@@ -211,8 +200,7 @@ const EN_APP_STRINGS = {
     CANCEL_BUTTON: "Cancel",
     ALERT_AVATAR_SELECT_FAIL: "Could not select avatar. Please try again.",
     ALERT_AVATAR_UPDATE_SUCCESS: "Avatar updated successfully!",
-    ALERT_PRELOADED_AVATAR_SELECT_FAIL:
-      "Failed to select preloaded avatar. Please try again.",
+    ALERT_PRELOADED_AVATAR_SELECT_FAIL: "Failed to select preloaded avatar. Please try again.",
     ALERT_AVATAR_UPDATE_FACEBOOK_SUCCESS: "Avatar updated to Facebook photo!",
     ALERT_USERNAME_TOO_SHORT: "Username must be at least 3 characters long.",
     ALERT_PASSWORD_FIELDS_EMPTY: "Please fill in all password fields.",
@@ -238,8 +226,7 @@ const EN_APP_STRINGS = {
     CHOOSE_OUR_AVATARS_BUTTON: "Choose from Our Avatars",
     USE_FACEBOOK_PHOTO_BUTTON: "Use Facebook Photo",
     ALERT_FACEBOOK_AVATAR_SET_FAIL: "Could not set Facebook avatar. Please try again.",
-    ALERT_NO_FACEBOOK_PHOTO:
-      "No Facebook photo available. Please link your Facebook account first.",
+    ALERT_NO_FACEBOOK_PHOTO: "No Facebook photo available. Please link your Facebook account first.",
     PROFILE_HEADER: "PROFILE",
     DAILY_PUZZLES_COMPLETED_HEADER: "Daily puzzles completed",
     REGULAR_DAYS_LABEL: "Regular Days\nCompleted",
@@ -250,29 +237,25 @@ const EN_APP_STRINGS = {
     TOTAL_COINS_LABEL: "Total Coins:",
     GUEST_USERNAME: "Guest",
     GUEST_MODE_TITLE: "Playing as a guest",
-    GUEST_MODE_DESCRIPTION:
-      "Upgrade to an account with a provider to keep your progress and access all features.",
+    GUEST_MODE_DESCRIPTION: "Upgrade to an account with a provider to keep your progress and access all features.",
     UPGRADE_ACCOUNT_BUTTON: "Upgrade Account",
     UPGRADE_ACCOUNT_TITLE: "Upgrade your account",
     UPGRADE_ACCOUNT_DESCRIPTION:
       "Choose a provider to link to this guest session. Your progress stays on this device and will be saved to your account.",
     UPGRADE_ACCOUNT_SUCCESS: "Account upgraded successfully!",
     UPGRADE_ACCOUNT_ERROR: "Could not upgrade your account. Please try again.",
-    UPGRADE_ACCOUNT_PROVIDER_IN_USE:
-      "That provider account is already in use. Please choose a different provider.",
+    UPGRADE_ACCOUNT_PROVIDER_IN_USE: "That provider account is already in use. Please choose a different provider.",
   },
   TestStrings: {
     MOCK_SVG_TEXT: "Mock SVG Text",
   },
   RewardedAdPrompts: {
-    OUT_OF_GUESSES_PROMPT:
-      "You're out of guesses! Watch an ad to earn some coins?",
+    OUT_OF_GUESSES_PROMPT: "You're out of guesses! Watch an ad to earn some coins?",
     WATCH_AD_BUTTON: "Watch Ad",
     NO_THANKS_BUTTON: "No Thanks",
   },
   ErrorMessages: {
-    UNABLE_TO_LOAD_RIDDLES:
-      "Unable to load any riddles. Please check your connection and try again.",
+    UNABLE_TO_LOAD_RIDDLES: "Unable to load any riddles. Please check your connection and try again.",
     FAILED_TO_INITIALIZE_RIDDLE_DATABASE:
       "Failed to initialize the riddle database. This might be your first time using the app.",
     CHECK_INTERNET_AND_TRY_AGAIN: "Please check your internet connection and try again.",
@@ -299,11 +282,9 @@ const EN_APP_STRINGS = {
     RETRY_BUTTON_PRESSED: "Retry button pressed",
   },
   LogMessages: {
-    SHOWING_LOADING_SPINNER_USER_DATA:
-      "⏳ Showing loading spinner - Loading user data...",
+    SHOWING_LOADING_SPINNER_USER_DATA: "⏳ Showing loading spinner - Loading user data...",
     TIMESTAMP: "timestamp:",
-    SHOWING_LOADING_SPINNER_AUTH:
-      "⏳ Showing loading spinner - authentication state being determined",
+    SHOWING_LOADING_SPINNER_AUTH: "⏳ Showing loading spinner - authentication state being determined",
     NAVIGATION_RENDERING: "🧭 Navigation rendering - isAuthenticated:",
     IS_LOADING: "isLoading:",
     SHOWING_NAVIGATION_STACK: "🎯 Showing navigation stack - initialRoute:",
@@ -316,11 +297,9 @@ const EN_APP_STRINGS = {
     HINT_ERROR_TITLE: "Error",
     GUEST_MODE_NOTICE_TITLE: "Guest Mode Notice",
     AD_NOT_READY_TITLE: "Ad Not Ready",
-    AD_NOT_READY_MESSAGE:
-      "The rewarded ad couldn't be shown at this time. Please try again shortly.",
+    AD_NOT_READY_MESSAGE: "The rewarded ad couldn't be shown at this time. Please try again shortly.",
     SPEND_COINS_ERROR_MESSAGE: "Could not spend coins. Please try again.",
-    CONTINUE_NOT_ENOUGH_COINS_MESSAGE:
-      "You do not have enough coins to continue.",
+    CONTINUE_NOT_ENOUGH_COINS_MESSAGE: "You do not have enough coins to continue.",
     HINT_NOT_AVAILABLE_TITLE: "Hint Not Available",
     HINT_NOT_AVAILABLE_MESSAGE: "No more letters can be revealed.",
     PURCHASE_FAILED_TITLE: "Purchase Failed",
@@ -338,7 +317,7 @@ const EN_APP_STRINGS = {
     SKIP_NOT_ENOUGH_COINS_MESSAGE: "You do not have enough coins to skip a level.",
     SKIP_LEVEL_BUTTON: "SKIP LEVEL",
     COST_COINS_PREFIX: "Cost: ",
-    COST_COINS_MIDDLE: " Coins. You have: ",
+    COST_COINS_MIDDLE: " Coins.",
     COST_COINS_SUFFIX: " Coins.",
   },
   VictoryModal: {
@@ -443,8 +422,7 @@ const EN_APP_STRINGS = {
     MUTE_SOUND: "Mute sound",
     UNMUTE_SOUND: "Unmute sound",
     OPEN_SETTINGS: "Open settings",
-    OPEN_SETTINGS_HINT:
-      "Access game settings, sound options, and account management",
+    OPEN_SETTINGS_HINT: "Access game settings, sound options, and account management",
     CHANGE_GAME_MODE: "Change game mode",
     CHANGE_GAME_MODE_HINT: "Select Classic or Daily Challenge mode",
     OPEN_PROFILE: "Open profile",
@@ -481,21 +459,11 @@ type WidenLiteral<T> = T extends string
     : T extends boolean
       ? boolean
       : T extends object
-        ? { [K in keyof T]: WidenLiteral<T[K]> }
+        ? {[K in keyof T]: WidenLiteral<T[K]>}
         : T;
 
 export type AppStringsSchema = WidenLiteral<typeof EN_APP_STRINGS>;
-export type SupportedLanguage =
-  | "en"
-  | "es"
-  | "pt"
-  | "fr"
-  | "de"
-  | "ja"
-  | "ko"
-  | "zh"
-  | "ru"
-  | "tr";
+export type SupportedLanguage = "en" | "es" | "pt" | "fr" | "de" | "ja" | "ko" | "zh" | "ru" | "tr";
 
 export const SUPPORTED_LANGUAGES: ReadonlyArray<SupportedLanguage> = [
   "en",
@@ -516,31 +484,28 @@ export const LANGUAGE_OPTIONS: ReadonlyArray<{
   code: SupportedLanguage;
   label: string;
 }> = [
-  { code: "en", label: "English" },
-  { code: "es", label: "Español" },
-  { code: "pt", label: "Português" },
-  { code: "fr", label: "Français" },
-  { code: "de", label: "Deutsch" },
-  { code: "ja", label: "日本語" },
-  { code: "ko", label: "한국어" },
-  { code: "zh", label: "简体中文" },
-  { code: "ru", label: "Русский" },
-  { code: "tr", label: "Türkçe" },
+  {code: "en", label: "English"},
+  {code: "es", label: "Español"},
+  {code: "pt", label: "Português"},
+  {code: "fr", label: "Français"},
+  {code: "de", label: "Deutsch"},
+  {code: "ja", label: "日本語"},
+  {code: "ko", label: "한국어"},
+  {code: "zh", label: "简体中文"},
+  {code: "ru", label: "Русский"},
+  {code: "tr", label: "Türkçe"},
 ] as const;
 
 const isPlainObject = (value: unknown): value is Record<string, unknown> => {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 };
 
-const deepMerge = <T extends Record<string, unknown>>(
-  base: T,
-  overrides?: DeepPartial<T>
-): T => {
+const deepMerge = <T extends Record<string, unknown>>(base: T, overrides?: DeepPartial<T>): T => {
   if (!overrides) {
     return base;
   }
 
-  const output: Record<string, unknown> = { ...base };
+  const output: Record<string, unknown> = {...base};
 
   Object.entries(overrides).forEach(([key, value]) => {
     if (value === undefined) {
@@ -550,10 +515,7 @@ const deepMerge = <T extends Record<string, unknown>>(
     const baseValue = output[key];
 
     if (isPlainObject(baseValue) && isPlainObject(value)) {
-      output[key] = deepMerge(
-        baseValue as Record<string, unknown>,
-        value as DeepPartial<Record<string, unknown>>
-      );
+      output[key] = deepMerge(baseValue as Record<string, unknown>, value as DeepPartial<Record<string, unknown>>);
       return;
     }
 
@@ -577,10 +539,7 @@ const localizedStrings: Record<SupportedLanguage, AppStringsSchema> = {
   tr: deepMerge(baseStrings, trOverrides),
 };
 
-const lazyLanguagePromises = new Map<
-  SupportedLanguage,
-  Promise<AppStringsSchema>
->();
+const lazyLanguagePromises = new Map<SupportedLanguage, Promise<AppStringsSchema>>();
 
 /* istanbul ignore next */
 const getLanguageOverride = (
@@ -595,7 +554,7 @@ const getLanguageOverride = (
     zhOverrides: DeepPartial<AppStringsSchema>;
     ruOverrides: DeepPartial<AppStringsSchema>;
     trOverrides: DeepPartial<AppStringsSchema>;
-  }
+  },
 ): DeepPartial<AppStringsSchema> | undefined => {
   switch (language) {
     case "es":
@@ -657,9 +616,7 @@ const normalizeLanguage = (language: string): SupportedLanguage => {
   return "en";
 };
 
-export const isSupportedLanguage = (
-  language: string
-): language is SupportedLanguage => {
+export const isSupportedLanguage = (language: string): language is SupportedLanguage => {
   return (SUPPORTED_LANGUAGES as readonly string[]).includes(language);
 };
 
@@ -674,9 +631,7 @@ export const setAppLanguage = (language: SupportedLanguage): void => {
   currentLanguage = language;
 };
 
-export const loadAppStringsForLanguage = async (
-  language: SupportedLanguage
-): Promise<AppStringsSchema> => {
+export const loadAppStringsForLanguage = async (language: SupportedLanguage): Promise<AppStringsSchema> => {
   if (localizedStrings[language]) {
     return localizedStrings[language];
   }
@@ -690,9 +645,7 @@ export const loadAppStringsForLanguage = async (
   /* istanbul ignore next */
   const loader = import("../i18n/languageOverrides").then((module) => {
     const override = getLanguageOverride(language, module);
-    const merged = override
-      ? deepMerge(EN_APP_STRINGS, override)
-      : EN_APP_STRINGS;
+    const merged = override ? deepMerge(EN_APP_STRINGS, override) : EN_APP_STRINGS;
     localizedStrings[language] = merged;
     return merged;
   });
@@ -701,16 +654,13 @@ export const loadAppStringsForLanguage = async (
   return loader;
 };
 
-export const setAppLanguageAsync = async (
-  language: SupportedLanguage
-): Promise<void> => {
+export const setAppLanguageAsync = async (language: SupportedLanguage): Promise<void> => {
   await loadAppStringsForLanguage(language);
   setAppLanguage(language);
 };
 
 export const detectDeviceLanguage = (locale?: string): SupportedLanguage => {
-  const resolvedLocale =
-    locale ?? Intl.DateTimeFormat().resolvedOptions().locale ?? "en";
+  const resolvedLocale = locale ?? Intl.DateTimeFormat().resolvedOptions().locale ?? "en";
   const language = normalizeLanguage(resolvedLocale);
   currentLanguage = language;
   return currentLanguage;
@@ -719,15 +669,11 @@ export const detectDeviceLanguage = (locale?: string): SupportedLanguage => {
 // Backward-compatible alias. Prefer detectDeviceLanguage in non-hook contexts.
 export const useDeviceLanguage = detectDeviceLanguage;
 
-export const getAppStrings = (): AppStringsSchema =>
-  localizedStrings[currentLanguage];
+export const getAppStrings = (): AppStringsSchema => localizedStrings[currentLanguage];
 
-const getTypedAppStrings = (): typeof EN_APP_STRINGS =>
-  getAppStrings() as typeof EN_APP_STRINGS;
+const getTypedAppStrings = (): typeof EN_APP_STRINGS => getAppStrings() as typeof EN_APP_STRINGS;
 
-export const AppStrings: typeof EN_APP_STRINGS = new Proxy(
-  {} as typeof EN_APP_STRINGS,
-  {
+export const AppStrings: typeof EN_APP_STRINGS = new Proxy({} as typeof EN_APP_STRINGS, {
   get(_target, prop) {
     return Reflect.get(getTypedAppStrings(), prop);
   },
@@ -737,5 +683,4 @@ export const AppStrings: typeof EN_APP_STRINGS = new Proxy(
   getOwnPropertyDescriptor(_target, prop) {
     return Object.getOwnPropertyDescriptor(getTypedAppStrings(), prop);
   },
-}
-);
+});

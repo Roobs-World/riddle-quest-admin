@@ -33,6 +33,24 @@ export const NewCoins = ({coinsEarned, totalCoins}: NewCoinsProps): React.JSX.El
           </Text>
         </View>
       )}
+
+      {coinsEarned < 0 && (
+        <View style={{alignItems: "center", marginTop: 5}}>
+          <CoinSvg width={COIN_ICON_SIZE_LARGE} height={COIN_ICON_SIZE_LARGE} />
+          <Text
+            style={{
+              fontFamily: TYPOGRAPHY.fontSecondaryBold,
+              fontSize: TYPOGRAPHY.fontSize["4xl"],
+              color: "#FB9A2B",
+              marginTop: 10,
+            }}
+          >
+            Cost: {Math.abs(coinsEarned)}
+            {AppStrings.VictoryModal.COINS_SUFFIX}
+          </Text>
+        </View>
+      )}
+
       <TreasureChest coins={displayTotalCoins} />
     </View>
   );

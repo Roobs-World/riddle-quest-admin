@@ -145,7 +145,7 @@ const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({isVisible, onC
               size={CLOSE_BUTTON_SIZE}
               style={{
                 position: "absolute",
-                marginTop: verticalScale(32),
+                marginTop: verticalScale(-130),
                 right: CLOSE_BUTTON_INSET,
                 zIndex: 10,
               }}

@@ -44,7 +44,7 @@ import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY } from "../../styles";
 import { scale, verticalScale } from "../../utils/responsive";
 import { logger } from "../../utils/logger";
 import { AppStrings, getAppLanguage, SupportedLanguage } from "../../constants/AppStrings";
-import { LEVEL_UP_COIN_BONUS } from "../../constants/game";
+import { HINT_COST_COINS, LEVEL_UP_COIN_BONUS } from "../../constants/game";
 import { loadRewardedAd, showRewardedAd } from "../../services/RewardedAdService";
 
 /**
@@ -276,7 +276,7 @@ const generateMockData = (
     case "hint":
       return {
         userCoins: currentCoins,
-        hintCost: 20,
+        hintCost: HINT_COST_COINS,
         onShowHint: () => logger.debug("Show hint pressed"),
       };
     case "info":

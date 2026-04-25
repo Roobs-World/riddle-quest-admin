@@ -3,21 +3,18 @@
  */
 
 import React from "react";
-import { View, Text, Modal } from "react-native";
+import {View, Text, Modal} from "react-native";
 import CloseButton from "../../buttons/CloseButton";
-import { TYPOGRAPHY } from "../../../styles";
+import {TYPOGRAPHY} from "../../../styles";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
 import WideButton from "src/components/buttons/WideButton";
-import {
-  MODAL_WIDTH,
-  MODAL_HEIGHT,
-  CLOSE_BUTTON_SIZE,
-  MODAL_CLOSE_BUTTON_POSITION,
-} from "../../../constants/layout";
-import { SPACING } from "../../../styles";
-import { AppStrings } from "../../../constants/AppStrings";
+import {MODAL_WIDTH, MODAL_HEIGHT, CLOSE_BUTTON_SIZE, MODAL_CLOSE_BUTTON_POSITION} from "../../../constants/layout";
+import {SPACING} from "../../../styles";
+import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
+import {verticalScale} from "../../../utils/responsive";
+import {NewCoins} from "@/components/shared/NewCoins";
 
 /**
  * Props for the hint purchase modal shown during gameplay.
@@ -43,23 +40,12 @@ interface HintModalProps {
  * @param props Coin and action handlers for hint flow.
  * @returns Hint confirmation modal.
  */
-const HintModal: React.FC<HintModalProps> = ({
-  isVisible,
-  userCoins,
-  hintCost,
-  onShowHint,
-  onClose,
-  onOpenShop
-}) => {
+const HintModal: React.FC<HintModalProps> = ({isVisible, userCoins, hintCost, onShowHint, onClose, onOpenShop}) => {
   const canAffordHint = userCoins >= hintCost;
+  const hintModalHeight = MODAL_HEIGHT * 1.4;
 
   return (
-    <Modal
-      visible={isVisible}
-      transparent={true}
-      animationType="fade"
-      onRequestClose={onClose}
-    >
+    <Modal visible={isVisible} transparent={true} animationType="fade" onRequestClose={onClose}>
       <View
         style={{
           flex: 1,
@@ -72,95 +58,82 @@ const HintModal: React.FC<HintModalProps> = ({
           <View
             style={{
               width: MODAL_WIDTH,
-              height: MODAL_HEIGHT,
+              height: hintModalHeight,
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{ position: "absolute" }} />
-          {/* Decorative wave — clipped to card bounds */}
-          <HomeBg
-            width={MODAL_WIDTH * 1.1}
-            height={MODAL_HEIGHT * 1.1}
-            style={{ position: "absolute", top: -MODAL_HEIGHT * 0.05, left: -MODAL_WIDTH * 0.05 }}
-          />
-          <CloseButton
-            onPress={onClose}
-            size={CLOSE_BUTTON_SIZE}
-            style={MODAL_CLOSE_BUTTON_POSITION}
-          />
-          <View
-            style={{
-              width: "80%",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Text
+            <ModalBg
+              width={MODAL_WIDTH}
+              height={hintModalHeight}
+              style={{position: "absolute"}}
+              preserveAspectRatio="none"
+            />
+            {/* Decorative wave — clipped to card bounds */}
+            <HomeBg
+              width={MODAL_WIDTH * 1.1}
+              height={MODAL_HEIGHT * 1.1}
+              style={{position: "absolute", top: -MODAL_HEIGHT * 0.05, left: -MODAL_WIDTH * 0.05}}
+            />
+            <CloseButton
+              onPress={onClose}
+              size={CLOSE_BUTTON_SIZE}
+              style={{...MODAL_CLOSE_BUTTON_POSITION, marginTop: verticalScale(22)}}
+            />
+            <View
               style={{
-                fontFamily: TYPOGRAPHY.fontPrimary,
-                fontSize: TYPOGRAPHY.fontSize.title,
-                color: "black",
-                marginBottom: SPACING.lg,
-                textAlign: "center",
+                width: "80%",
+                alignItems: "center",
+                justifyContent: "center",
               }}
             >
-              {AppStrings.GameScreenAlerts.HINT_MODAL_TITLE}
-            </Text>
-
-            <Text
-              style={{
-                fontFamily: TYPOGRAPHY.fontSecondary,
-                fontSize: TYPOGRAPHY.fontSize.lg,
-                color: "black",
-                marginBottom: SPACING.lg,
-                textAlign: "center",
-              }}
-            >
-              {AppStrings.GameScreenAlerts.COST_COINS_PREFIX}{hintCost}{AppStrings.GameScreenAlerts.COST_COINS_MIDDLE}{userCoins}{AppStrings.GameScreenAlerts.COST_COINS_SUFFIX}
-            </Text>
-
-            {!canAffordHint && (
               <Text
                 style={{
-                  fontFamily: TYPOGRAPHY.fontSecondary,
-                  fontSize: TYPOGRAPHY.fontSize.base,
-                  color: "#FF6B6B",
+                  fontFamily: TYPOGRAPHY.fontPrimary,
+                  fontSize: TYPOGRAPHY.fontSize.title,
+                  color: "black",
                   marginBottom: SPACING.lg,
                   textAlign: "center",
                 }}
               >
-                {AppStrings.GameScreenAlerts.HINT_NOT_ENOUGH_COINS_MESSAGE}
+                {AppStrings.GameScreenAlerts.HINT_MODAL_TITLE}
               </Text>
-            )}
 
-            <View style={{ width: "100%", marginTop: SPACING.lg }}>
-              <WideButton
-                buttonText={
-                  canAffordHint
-                    ? AppStrings.GameScreenAlerts.HINT_SHOW_BUTTON
-                    : AppStrings.Navigation.BUY_COINS_BUTTON
-                }
-                onPress={() => {
-                  onClose();
-                  if (canAffordHint) {
-                    onShowHint();
-                  } else {
-                    onOpenShop();
-                  }
-                }}
-                disabled={false}
-              />
+              <NewCoins coinsEarned={-hintCost} totalCoins={userCoins} />
 
-              <View style={{ marginTop: SPACING.md }}>
+              {!canAffordHint && (
+                <Text
+                  style={{
+                    fontFamily: TYPOGRAPHY.fontSecondary,
+                    fontSize: TYPOGRAPHY.fontSize.base,
+                    color: "#FF6B6B",
+                    marginBottom: SPACING.lg,
+                    textAlign: "center",
+                  }}
+                >
+                  {AppStrings.GameScreenAlerts.HINT_NOT_ENOUGH_COINS_MESSAGE}
+                </Text>
+              )}
+
+              <View style={{width: "100%", marginTop: SPACING.lg}}>
                 <WideButton
-                  buttonText={AppStrings.CommonAlerts.CLOSE_BUTTON}
-                  onPress={onClose}
+                  buttonText={
+                    canAffordHint
+                      ? AppStrings.GameScreenAlerts.HINT_SHOW_BUTTON
+                      : AppStrings.Navigation.BUY_COINS_BUTTON
+                  }
+                  onPress={() => {
+                    onClose();
+                    if (canAffordHint) {
+                      onShowHint();
+                    } else {
+                      onOpenShop();
+                    }
+                  }}
                   disabled={false}
                 />
               </View>
             </View>
-          </View>
           </View>
         </SlideInModalContent>
       </View>
