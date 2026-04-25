@@ -33,20 +33,17 @@ const resolveAssetModule = (assetPath: AssetModuleReference): string | number =>
  * @returns Texture configured for expo-gl compatibility.
  */
 export const createTextureFromAsset = (asset: Asset): Texture => {
-  const uri = asset.localUri ?? asset.uri;
-  if (!uri) {
-    throw new Error("Texture asset has no localUri/uri after load");
-  }
-
+  const uri = asset.localUri ?? asset.uri ?? null;
   const texture = new Texture();
   (texture.image as unknown) = {
+    data: asset,
     localUri: uri,
     uri,
     width: asset.width ?? 1,
     height: asset.height ?? 1,
   };
   texture.needsUpdate = true;
-  texture.flipY = false;
+  (texture as unknown as { isDataTexture: boolean }).isDataTexture = true;
   texture.minFilter = LinearFilter;
   return texture;
 };

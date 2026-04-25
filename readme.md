@@ -16,6 +16,8 @@ use firebase functions:config:get to return the config settings used
 to create a preview build for distribution run:
 pnpm exec eas build --platform android --profile preview
 
+adb install path/to/app.apk
+
 ## RN 0.85 Upgrade Notes
 
 - Runtime now targets React Native `0.85.0` with Expo SDK 56 canary.

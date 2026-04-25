@@ -130,21 +130,18 @@ const getSharedTexturedPhongMaterial = (
  * This mimics expo-three's parseTexture but without the problematic imports.
  */
 function createTextureFromAsset(asset: Asset): Texture {
-  const uri = asset.localUri ?? asset.uri;
-  if (!uri) {
-    throw new Error("Texture asset has no localUri/uri after load");
-  }
-
+  const uri = asset.localUri ?? asset.uri ?? null;
   const texture = new Texture();
-  // Use URI-backed image metadata to keep Expo GL texture uploads reliable in release builds.
+  // Match expo-three's parseTexture shape for reliable Expo GL uploads.
   (texture.image as unknown) = {
+    data: asset,
     localUri: uri,
     uri,
     width: asset.width ?? 1,
     height: asset.height ?? 1,
   };
   texture.needsUpdate = true;
-  texture.flipY = false;
+  (texture as unknown as { isDataTexture: boolean }).isDataTexture = true;
   // LinearFilter handles non-power-of-two textures.
   texture.minFilter = LinearFilter;
   return texture;
@@ -222,10 +219,10 @@ const Sun: React.FC = React.memo(() => {
     () =>
       new MeshPhongMaterial({
         map: sunTexture || undefined,
+        emissiveMap: sunTexture || undefined,
         color: 0xffffff,
-        emissive: 0xffa500,
-        emissiveIntensity: 0.75,
-        // emissiveMap intentionally omitted — same texture as map would sample it twice per fragment
+        emissive: 0xffffff,
+        emissiveIntensity: 0.85,
       }),
     [sunTexture]
   );
@@ -501,3 +498,4 @@ const styles = StyleSheet.create({
 });
 
 export default React.memo(SolarSystem3D);
+

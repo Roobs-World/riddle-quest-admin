@@ -28,7 +28,6 @@ describe("textureLoader", () => {
 
   it("creates a texture from resolved asset metadata", () => {
     const asset = {
-      localUri: "file:///mock-texture.png",
       width: 100,
       height: 200,
     } as any;
@@ -36,7 +35,7 @@ describe("textureLoader", () => {
     const texture = createTextureFromAsset(asset);
     expect(texture.version).toBeGreaterThan(0);
     expect(texture.minFilter).toBe(LinearFilter);
-    expect((texture.image as any).localUri).toBe("file:///mock-texture.png");
+    expect((texture as any).isDataTexture).toBe(true);
     expect((texture.image as any).width).toBe(100);
   });
 
