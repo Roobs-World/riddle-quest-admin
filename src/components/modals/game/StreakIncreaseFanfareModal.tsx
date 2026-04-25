@@ -1,15 +1,9 @@
-import React, {useMemo, useState, useEffect} from "react";
-import {View, Text, Modal, Animated, Easing} from "react-native";
+import React from "react";
+import {View, Text, Modal, TouchableOpacity} from "react-native";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
-import WheelBg from "../../../../assets/images/wheel-bg.svg";
+import HomeBg from "../../../../assets/images/home-bg.svg";
 import {TYPOGRAPHY} from "../../../styles";
-import {
-  MODAL_WIDTH,
-  MODAL_HEIGHT,
-  MODAL_CONTENT_PADDING,
-  MODAL_BUTTON_SPACER,
-  wheelSize,
-} from "../../../constants/layout";
+import {MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, MODAL_BUTTON_SPACER} from "../../../constants/layout";
 import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {NewCoins} from "@/components/shared/NewCoins";
@@ -29,37 +23,7 @@ const StreakIncreaseFanfareModal: React.FC<StreakIncreaseFanfareModalProps> = ({
   totalCoins,
   onClose,
 }) => {
-  const [rotationAnim] = useState(() => new Animated.Value(0));
-
-  const spin = useMemo(() => {
-    return rotationAnim.interpolate({
-      inputRange: [0, 1],
-      outputRange: ["0deg", "360deg"],
-    });
-  }, [rotationAnim]);
-
-  useEffect(() => {
-    let animation: Animated.CompositeAnimation | null = null;
-
-    if (isVisible) {
-      rotationAnim.setValue(0);
-      animation = Animated.loop(
-        Animated.timing(rotationAnim, {
-          toValue: 1,
-          duration: 12000,
-          easing: Easing.linear,
-          useNativeDriver: true,
-        }),
-      );
-      animation.start();
-    }
-
-    return () => {
-      animation?.stop();
-      rotationAnim.stopAnimation();
-      rotationAnim.setValue(0);
-    };
-  }, [isVisible, rotationAnim]);
+  const streakModalHeight = MODAL_HEIGHT * 1.4;
 
   return (
     <Modal transparent animationType="fade" visible={isVisible} onRequestClose={onClose}>
@@ -72,74 +36,65 @@ const StreakIncreaseFanfareModal: React.FC<StreakIncreaseFanfareModalProps> = ({
         }}
       >
         <SlideInModalContent isVisible={isVisible}>
-          <View
-            style={{
-              width: MODAL_WIDTH,
-              height: MODAL_HEIGHT,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{position: "absolute"}} />
-
+          <TouchableOpacity key={"streak-increase-fanfare-modal"} onPress={onClose}>
             <View
               style={{
-                position: "absolute",
                 width: MODAL_WIDTH,
-                height: MODAL_HEIGHT,
-                overflow: "hidden",
-                borderRadius: 30,
-              }}
-            >
-              <Animated.View
-                style={{
-                  position: "absolute",
-                  left: (MODAL_WIDTH - wheelSize) / 2,
-                  top: (MODAL_HEIGHT - wheelSize) / 2,
-                  opacity: 0.25,
-                  transform: [{rotate: spin}],
-                }}
-              >
-                <WheelBg width={wheelSize} height={wheelSize} />
-              </Animated.View>
-            </View>
-
-            <View
-              style={{
-                position: "absolute",
-                width: MODAL_WIDTH,
-                height: MODAL_HEIGHT,
+                height: streakModalHeight,
                 alignItems: "center",
                 justifyContent: "center",
-                gap: MODAL_BUTTON_SPACER * 2,
-                padding: MODAL_CONTENT_PADDING,
               }}
             >
-              <Text
+              <ModalBg
+                width={MODAL_WIDTH}
+                height={streakModalHeight}
+                style={{position: "absolute"}}
+                preserveAspectRatio="none"
+              />
+              {/* Decorative wave - clipped to card bounds */}
+              <HomeBg
+                width={MODAL_WIDTH * 1.1}
+                height={MODAL_HEIGHT * 1.1}
+                style={{position: "absolute", top: -MODAL_HEIGHT * 0.05, left: -MODAL_WIDTH * 0.05}}
+              />
+
+              <View
                 style={{
-                  fontFamily: TYPOGRAPHY.fontPrimary,
-                  fontSize: TYPOGRAPHY.fontSize["3xl"],
-                  color: "black",
-                  textAlign: "center",
+                  position: "absolute",
+                  width: MODAL_WIDTH,
+                  height: streakModalHeight,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: MODAL_BUTTON_SPACER * 2,
+                  padding: MODAL_CONTENT_PADDING,
                 }}
               >
-                {AppStrings.StreakFanfare.TITLE}
-              </Text>
+                <Text
+                  style={{
+                    fontFamily: TYPOGRAPHY.fontPrimary,
+                    fontSize: TYPOGRAPHY.fontSize["3xl"],
+                    color: "black",
+                    textAlign: "center",
+                  }}
+                >
+                  {AppStrings.StreakFanfare.TITLE}
+                </Text>
 
-              <Text
-                style={{
-                  fontFamily: TYPOGRAPHY.fontSecondaryBold,
-                  fontSize: TYPOGRAPHY.fontSize["2xl"],
-                  color: "black",
-                  textAlign: "center",
-                }}
-              >
-                {`${streakValue}${AppStrings.StreakFanfare.STREAK_SUFFIX}`}
-              </Text>
+                <Text
+                  style={{
+                    fontFamily: TYPOGRAPHY.fontSecondaryBold,
+                    fontSize: TYPOGRAPHY.fontSize["2xl"],
+                    color: "black",
+                    textAlign: "center",
+                  }}
+                >
+                  {`${streakValue}${AppStrings.StreakFanfare.STREAK_SUFFIX}`}
+                </Text>
 
-              <NewCoins coinsEarned={coinsAwarded} totalCoins={totalCoins} />
+                <NewCoins coinsEarned={coinsAwarded} totalCoins={totalCoins} />
+              </View>
             </View>
-          </View>
+          </TouchableOpacity>
         </SlideInModalContent>
       </View>
     </Modal>

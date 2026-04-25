@@ -51,9 +51,6 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({isVisible, onClose, onDismis
     onDismiss?.();
   };
 
-  const letsPlayText =
-    getAppLanguage() === "en" ? AppStrings.WelcomeModal.LETS_PLAY : AppStrings.Navigation.PLAY_BUTTON;
-
   return (
     <Modal animationType="fade" transparent={true} visible={isVisible} onRequestClose={handleDismiss}>
       <View
@@ -77,12 +74,7 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({isVisible, onClose, onDismis
 
         {/* Modal card */}
         <SlideInModalContent isVisible={isVisible}>
-          <Pressable
-            onPress={handleDismiss}
-            accessibilityRole="button"
-            accessibilityLabel={letsPlayText}
-            testID="welcome-modal-touch-target"
-          >
+          <Pressable onPress={handleDismiss} accessibilityRole="button" testID="welcome-modal-touch-target">
             <View
               style={{
                 width: MODAL_WIDTH,
@@ -160,18 +152,6 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({isVisible, onClose, onDismis
                     {AppStrings.WelcomeModal.EARN_COINS_TEXT}
                   </Text>
                 </View>
-
-                <Text
-                  style={{
-                    fontFamily: TYPOGRAPHY.fontPrimary,
-                    fontSize: TYPOGRAPHY.fontSize.xl,
-                    color: "black",
-                    textAlign: "center",
-                    marginBottom: MODAL_BUTTON_SPACER,
-                  }}
-                >
-                  {letsPlayText}
-                </Text>
               </View>
             </View>
           </Pressable>
