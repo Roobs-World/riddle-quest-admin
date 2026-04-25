@@ -219,10 +219,9 @@ const Sun: React.FC = React.memo(() => {
     () =>
       new MeshPhongMaterial({
         map: sunTexture || undefined,
-        emissiveMap: sunTexture || undefined,
         color: 0xffffff,
-        emissive: 0xffffff,
-        emissiveIntensity: 0.85,
+        emissive: 0xffa500,
+        emissiveIntensity: 0.75,
       }),
     [sunTexture]
   );
