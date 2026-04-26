@@ -44,6 +44,14 @@ const modalReducer = (
     case "CLOSE_MODAL":
       return state.filter((modal) => modal.id !== action.payload);
 
+    case "CLOSE_MODAL_BY_TYPE": {
+      const modalToClose = state.find((modal) => modal.type === action.payload);
+      if (!modalToClose) {
+        return state;
+      }
+      return state.filter((modal) => modal.id !== modalToClose.id);
+    }
+
     case "CLOSE_ALL_MODALS":
       return [];
 
@@ -104,6 +112,10 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({
     dispatch({ type: "CLOSE_MODAL", payload: id });
   }, []);
 
+  const closeModalByType = useCallback((type: string): void => {
+    dispatch({ type: "CLOSE_MODAL_BY_TYPE", payload: type });
+  }, []);
+
   // Close all modals function
   const closeAllModals = useCallback((): void => {
     dispatch({ type: "CLOSE_ALL_MODALS" });
@@ -140,6 +152,7 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({
       modals,
       openModal,
       closeModal,
+      closeModalByType,
       closeAllModals,
       isModalOpen,
       getModalData,
@@ -149,6 +162,7 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({
       modals,
       openModal,
       closeModal,
+      closeModalByType,
       closeAllModals,
       isModalOpen,
       getModalData,

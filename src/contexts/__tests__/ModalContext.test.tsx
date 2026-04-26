@@ -51,6 +51,7 @@ describe("ModalContext", () => {
       expect(result.current.modals).toEqual([]);
       expect(typeof result.current.openModal).toBe("function");
       expect(typeof result.current.closeModal).toBe("function");
+      expect(typeof result.current.closeModalByType).toBe("function");
       expect(typeof result.current.closeAllModals).toBe("function");
       expect(typeof result.current.isModalOpen).toBe("function");
       expect(typeof result.current.getModalData).toBe("function");
@@ -311,6 +312,48 @@ describe("ModalContext", () => {
       });
 
       expect(result.current.modals.length).toBe(1);
+    });
+  });
+
+  describe("closeModalByType", () => {
+    it("should close the first modal matching the provided type", () => {
+      const { result } = renderHook(() => useModalContext(), { wrapper });
+
+      let callCount = 0;
+      jest.spyOn(Math, "random").mockImplementation(() => {
+        callCount++;
+        return callCount * 0.1;
+      });
+
+      act(() => {
+        result.current.openModal("coinShop", { index: 1 });
+        result.current.openModal("coinShop", { index: 2 });
+        result.current.openModal("info", { index: 3 });
+      });
+
+      act(() => {
+        result.current.closeModalByType("coinShop");
+      });
+
+      expect(result.current.modals).toHaveLength(2);
+      expect(result.current.modals[0].data).toEqual({ index: 2 });
+      expect(result.current.modals[1].type).toBe("info");
+    });
+
+    it("should not change state when closing a type that is not open", () => {
+      const { result } = renderHook(() => useModalContext(), { wrapper });
+
+      act(() => {
+        result.current.openModal("coinShop");
+      });
+
+      const existingModals = result.current.modals;
+
+      act(() => {
+        result.current.closeModalByType("settings");
+      });
+
+      expect(result.current.modals).toBe(existingModals);
     });
   });
 

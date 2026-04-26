@@ -19,11 +19,38 @@
 
 // Load environment variables
 require("dotenv").config();
+const fs = require("fs");
 
 const sentryOrg = process.env.SENTRY_ORG || process.env.SENTRY_ORGANIZATION;
 const sentryProject = process.env.SENTRY_PROJECT;
 const sentryUrl = process.env.SENTRY_URL || "https://sentry.io/";
 const useSentryExpoPlugin = Boolean(sentryOrg && sentryProject);
+const getGoogleWebClientId = () => {
+  if (process.env.GOOGLE_WEB_CLIENT_ID) {
+    return process.env.GOOGLE_WEB_CLIENT_ID;
+  }
+  if (process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID) {
+    return process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID;
+  }
+
+  try {
+    const googleServices = JSON.parse(
+      fs.readFileSync("./google-services.json", "utf8")
+    );
+    const oauthClients = googleServices.client?.flatMap(
+      (client) => client.oauth_client || []
+    );
+    const webClient = oauthClients?.find((client) => client.client_type === 3);
+    if (webClient?.client_id) {
+      return webClient.client_id;
+    }
+  } catch (error) {
+    console.warn("Unable to derive Google web client ID.", error);
+  }
+
+  return "YOUR_GOOGLE_WEB_CLIENT_ID";
+};
+const googleWebClientId = getGoogleWebClientId();
 
 /**
  * Expo Configuration Object
@@ -338,8 +365,7 @@ module.exports = {
      *
      * Google Sign-In web client ID from Firebase console.
      */
-    GOOGLE_WEB_CLIENT_ID:
-      process.env.GOOGLE_WEB_CLIENT_ID || "YOUR_GOOGLE_WEB_CLIENT_ID",
+    GOOGLE_WEB_CLIENT_ID: googleWebClientId,
 
     /**
      * Facebook Authentication Configuration

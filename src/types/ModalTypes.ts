@@ -42,6 +42,7 @@ export interface ModalContextState {
     options?: ModalOptions
   ) => string;
   closeModal: (id: string) => void;
+  closeModalByType: (type: string) => void;
   closeAllModals: () => void;
   isModalOpen: (type: string) => boolean;
   getModalData: <T extends ModalData>(type: string) => T | null;
@@ -233,6 +234,7 @@ export type ModalDataType<T extends keyof GameModalTypes> = GameModalTypes[T];
 export type ModalAction =
   | { type: "OPEN_MODAL"; payload: ModalInstance }
   | { type: "CLOSE_MODAL"; payload: string }
+  | { type: "CLOSE_MODAL_BY_TYPE"; payload: string }
   | { type: "CLOSE_ALL_MODALS" }
   | {
       type: "UPDATE_MODAL_DATA";

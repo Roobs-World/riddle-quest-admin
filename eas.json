@@ -19,7 +19,8 @@
       },
       "env": {
         "EXPO_NO_AUDIO_COMPRESSION": "1",
-        "EXPO_PRESERVE_AUDIO_QUALITY": "1"
+        "EXPO_PRESERVE_AUDIO_QUALITY": "1",
+        "GOOGLE_WEB_CLIENT_ID": "26666910831-20c5akqranakimukl895h7bpdc9pf5c5.apps.googleusercontent.com"
       },
       "ios": {
         "buildConfiguration": "Release"
@@ -29,7 +30,8 @@
       "autoIncrement": true,
       "env": {
         "EXPO_NO_AUDIO_COMPRESSION": "1",
-        "EXPO_PRESERVE_AUDIO_QUALITY": "1"
+        "EXPO_PRESERVE_AUDIO_QUALITY": "1",
+        "GOOGLE_WEB_CLIENT_ID": "26666910831-20c5akqranakimukl895h7bpdc9pf5c5.apps.googleusercontent.com"
       },
       "ios": {
         "buildConfiguration": "Release"

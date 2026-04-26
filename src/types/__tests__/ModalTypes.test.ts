@@ -208,6 +208,7 @@ describe("ModalTypes", () => {
         modals: [],
         openModal: jest.fn(() => "modal-id"),
         closeModal: jest.fn(),
+        closeModalByType: jest.fn(),
         closeAllModals: jest.fn(),
         isModalOpen: jest.fn(() => false),
         getModalData: jest.fn(() => null),
@@ -217,6 +218,7 @@ describe("ModalTypes", () => {
       expect(Array.isArray(mockState.modals)).toBe(true);
       expect(typeof mockState.openModal).toBe("function");
       expect(typeof mockState.closeModal).toBe("function");
+      expect(typeof mockState.closeModalByType).toBe("function");
       expect(typeof mockState.closeAllModals).toBe("function");
       expect(typeof mockState.isModalOpen).toBe("function");
       expect(typeof mockState.getModalData).toBe("function");
@@ -230,6 +232,7 @@ describe("ModalTypes", () => {
         modals: [],
         openModal,
         closeModal: jest.fn(),
+        closeModalByType: jest.fn(),
         closeAllModals: jest.fn(),
         isModalOpen: jest.fn(),
         getModalData: jest.fn(),
@@ -249,6 +252,7 @@ describe("ModalTypes", () => {
         modals: [],
         openModal,
         closeModal: jest.fn(),
+        closeModalByType: jest.fn(),
         closeAllModals: jest.fn(),
         isModalOpen: jest.fn(),
         getModalData: jest.fn(),
@@ -274,6 +278,7 @@ describe("ModalTypes", () => {
         ],
         openModal: jest.fn(() => "id"),
         closeModal: jest.fn(),
+        closeModalByType: jest.fn(),
         closeAllModals: jest.fn(),
         isModalOpen: jest.fn(),
         getModalData: jest.fn(),

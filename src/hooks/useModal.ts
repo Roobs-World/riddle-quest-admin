@@ -74,17 +74,7 @@ export const useModal = () => {
       if (__DEV__) {
         logger.debug(`Attempting to close modal of type: ${type}`);
       }
-      const modal = context.modals.find((m) => m.type === type);
-      if (modal) {
-        if (__DEV__) {
-          logger.debug(`Found modal with ID: ${modal.id}, closing it`);
-        }
-        context.closeModal(modal.id);
-      } else {
-        if (__DEV__) {
-          logger.debug(`No modal of type ${type} found to close`);
-        }
-      }
+      context.closeModalByType(type);
     },
     [context]
   );

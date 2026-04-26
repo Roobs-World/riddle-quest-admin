@@ -7,14 +7,14 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:26666910831:android:38c5f64b1df8df7168799a",
+        "mobilesdk_app_id": "1:26666910831:android:0bfd4159f6845e6768799a",
         "android_client_info": {
           "package_name": "com.roobsworld.riddlequest"
         }
       },
       "oauth_client": [
         {
-          "client_id": "26666910831-7h513ejqom1rga1dmfq66iv2jb6krib6.apps.googleusercontent.com",
+          "client_id": "26666910831-9ack625lppchph6tiak6p8kpqheiocdj.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.roobsworld.riddlequest",
@@ -22,11 +22,11 @@
           }
         },
         {
-          "client_id": "26666910831-ab9ffnlspl2kh6hko9sueb21mhbjacht.apps.googleusercontent.com",
+          "client_id": "26666910831-a741gau29j6cfghif7taa5t8np841kqn.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.roobsworld.riddlequest",
-            "certificate_hash": "e6b882431442aa5dd83522f480b245900201bd6d"
+            "certificate_hash": "5d806b7bc47ee9494e097199ef1d105a738ac541"
           }
         },
         {
@@ -53,4 +53,3 @@
   ],
   "configuration_version": "1"
 }
-

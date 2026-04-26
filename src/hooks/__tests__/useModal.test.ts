@@ -167,6 +167,26 @@ describe("useModal", () => {
 
       expect(result.current.modals).toHaveLength(1);
     });
+
+    it("should close a modal from a callback captured before that modal opened", () => {
+      const { result } = renderHook(() => useModal(), {
+        wrapper: createWrapper(),
+      });
+
+      const closeCoinShop = result.current.closeModalByType;
+
+      act(() => {
+        result.current.openModal("coinShop", {});
+      });
+
+      expect(result.current.modals).toHaveLength(1);
+
+      act(() => {
+        closeCoinShop("coinShop");
+      });
+
+      expect(result.current.modals).toHaveLength(0);
+    });
   });
 
   describe("closeAllModals", () => {
