@@ -37,9 +37,11 @@ import {
   ColorManagement,
   Texture,
   LinearFilter,
+  ClampToEdgeWrapping,
 } from "three";
 import { View, StyleSheet } from "react-native";
 import { Asset } from "expo-asset";
+import { requireNativeModule } from "expo-modules-core";
 
 // Expo's EXGL doesn't support UNPACK_COLORSPACE_CONVERSION_WEBGL which Three.js
 // r152+ tries to set when color management is enabled.
@@ -64,6 +66,55 @@ type AssetModuleReference =
   | string
   | number
   | { default?: string | number; uri?: string };
+
+const isTextureDebugEnabled =
+  process.env.EXPO_PUBLIC_TEXTURE_DEBUG === "1";
+
+const ExpoAssetModule = requireNativeModule("ExpoAsset") as {
+  downloadAsync: (
+    uri: string,
+    md5Hash: string | null,
+    type: string
+  ) => Promise<string>;
+};
+
+const textureDebugLog = (
+  level: "log" | "warn" | "error",
+  message: string,
+  details?: Record<string, unknown>
+): void => {
+  if (!isTextureDebugEnabled) {
+    return;
+  }
+
+  const payload = details ? ` ${JSON.stringify(details)}` : "";
+  console[level](`[SolarTexture] ${message}${payload}`);
+};
+
+const describeAsset = (asset: Asset): Record<string, unknown> => ({
+  downloaded: asset.downloaded,
+  hash: asset.hash,
+  height: asset.height,
+  localUri: asset.localUri,
+  name: asset.name,
+  type: asset.type,
+  uri: asset.uri,
+  width: asset.width,
+});
+
+const ensureFileUriAsset = async (asset: Asset): Promise<Asset> => {
+  if (asset.localUri?.startsWith("file://")) {
+    return asset;
+  }
+
+  const copiedUri = await ExpoAssetModule.downloadAsync(
+    asset.uri,
+    asset.hash,
+    asset.type
+  );
+  asset.localUri = copiedUri;
+  return asset;
+};
 
 const resolveAssetModule = (assetModule: AssetModuleReference): string | number => {
   if (typeof assetModule === "number" || typeof assetModule === "string") {
@@ -125,25 +176,55 @@ const getSharedTexturedPhongMaterial = (
   return material;
 };
 
+const createSunMaterial = (texture: Texture | null): MeshPhongMaterial =>
+  new MeshPhongMaterial({
+    map: texture || undefined,
+    emissiveMap: texture || undefined,
+    color: 0xffffff,
+    emissive: 0xffa500,
+    emissiveIntensity: texture ? 0.95 : 0.75,
+    shininess: 0,
+  });
+
+export const __createSunMaterialForTests = createSunMaterial;
+
 /**
  * Creates a Three.js texture from an expo-asset that works with expo-gl.
  * This mimics expo-three's parseTexture but without the problematic imports.
  */
 function createTextureFromAsset(asset: Asset): Texture {
-  const uri = asset.localUri ?? asset.uri ?? null;
-  const texture = new Texture();
-  // Match expo-three's parseTexture shape for reliable Expo GL uploads.
-  (texture.image as unknown) = {
-    data: asset,
+  const uri = asset.localUri ?? null;
+  if (!uri?.startsWith("file://")) {
+    throw new Error(
+      `Texture asset ${asset.name || "unknown"} did not resolve to a file:// localUri`
+    );
+  }
+
+  const image = {
     localUri: uri,
     uri,
     width: asset.width ?? 1,
     height: asset.height ?? 1,
   };
+
+  const texture = new Texture();
+  // Expo GL's native Android image loader reads `localUri` from the object
+  // passed to texImage2D. Keep this as a plain object so JSI can read it
+  // consistently from embedded release assets.
+  (texture.image as unknown) = {
+    data: image,
+    ...image,
+  };
   texture.needsUpdate = true;
   (texture as unknown as { isDataTexture: boolean }).isDataTexture = true;
   // LinearFilter handles non-power-of-two textures.
+  texture.generateMipmaps = false;
   texture.minFilter = LinearFilter;
+  texture.magFilter = LinearFilter;
+  texture.wrapS = ClampToEdgeWrapping;
+  texture.wrapT = ClampToEdgeWrapping;
+  texture.flipY = false;
+  texture.unpackAlignment = 1;
   return texture;
 }
 
@@ -178,15 +259,31 @@ function useExpoTexture(assetModule: AssetModuleReference): Texture | null {
           throw new Error("Asset.loadAsync returned no asset");
         }
 
-        const loaded = createTextureFromAsset(asset);
-        loaded.generateMipmaps = false;
-        loaded.minFilter = LinearFilter;
+        const fileAsset = await ensureFileUriAsset(asset);
+
+        textureDebugLog("log", "asset loaded", {
+          module: resolvedModule,
+          asset: describeAsset(fileAsset),
+        });
+
+        const loaded = createTextureFromAsset(fileAsset);
         textureCache.set(resolvedModule, loaded);
+
+        textureDebugLog("log", "three texture created", {
+          module: resolvedModule,
+          hasImage: Boolean(loaded.image),
+          image: loaded.image as Record<string, unknown>,
+          needsUpdate: loaded.needsUpdate,
+        });
 
         if (mounted) {
           setTexture(loaded);
         }
       } catch (error) {
+        textureDebugLog("error", "asset load failed", {
+          module: resolvedModule,
+          error: error instanceof Error ? error.message : String(error),
+        });
         console.warn("Failed to load texture:", error);
       }
     };
@@ -215,16 +312,7 @@ const Sun: React.FC = React.memo(() => {
   const sunRef = useRef<Mesh>(null);
   const sunTexture = useExpoTexture(sunTextureModule);
 
-  const sunMaterial = useMemo(
-    () =>
-      new MeshPhongMaterial({
-        map: sunTexture || undefined,
-        color: 0xffffff,
-        emissive: 0xffa500,
-        emissiveIntensity: 0.75,
-      }),
-    [sunTexture]
-  );
+  const sunMaterial = useMemo(() => createSunMaterial(sunTexture), [sunTexture]);
 
   useFrame(() => {
     __applySunFrameUpdateForTests(

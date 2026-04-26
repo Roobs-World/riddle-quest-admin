@@ -194,7 +194,6 @@ const LandingScreen = () => {
           >
             {AppStrings.AuthStrings.Landing.TAGLINE_1}
           </Text>
-          <Subtitle text={AppStrings.AuthStrings.Landing.TAGLINE_2} />
         </View>
 
         {/* Spacer — solar system visible here */}
@@ -219,7 +218,6 @@ const LandingScreen = () => {
       </View>
 
       <PulsingSpinner visible={isLoading} size={LOADING_SPINNER_SIZE} />
-      <CreditsModal isVisible={isCreditsVisible} onClose={() => setIsCreditsVisible(false)} />
     </CustomSafeAreaView>
   );
 };

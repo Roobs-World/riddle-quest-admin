@@ -5,6 +5,7 @@ import { ColorManagement } from "three";
 const mockSetClearColor = jest.fn();
 const mockLookAt = jest.fn();
 const mockLoadAsync = jest.fn();
+const mockNativeDownloadAsync = jest.fn();
 const frameCallbacks: Array<() => void> = [];
 
 jest.mock("@react-three/fiber", () => {
@@ -34,9 +35,16 @@ jest.mock("expo-asset", () => ({
   },
 }));
 
+jest.mock("expo-modules-core", () => ({
+  requireNativeModule: () => ({
+    downloadAsync: (...args: any[]) => mockNativeDownloadAsync(...args),
+  }),
+}));
+
 const {
   default: SolarSystem3D,
   __resetSolarSystem3DTextureCacheForTests,
+  __createSunMaterialForTests,
   __applySunFrameUpdateForTests,
   __applyMoonFrameUpdateForTests,
   __applyPlanetFrameUpdateForTests,
@@ -47,6 +55,7 @@ describe("SolarSystem3D", () => {
     jest.clearAllMocks();
     frameCallbacks.length = 0;
     __resetSolarSystem3DTextureCacheForTests();
+    mockNativeDownloadAsync.mockResolvedValue("file:///mock-downloaded-texture.png");
     mockLoadAsync.mockResolvedValue([
       {
         localUri: "file:///mock-texture.png",
@@ -61,6 +70,31 @@ describe("SolarSystem3D", () => {
 
     await waitFor(() => {
       expect(mockLoadAsync).toHaveBeenCalled();
+    });
+  });
+
+  it("copies embedded Android drawable resources to file uris for expo-gl", async () => {
+    mockLoadAsync.mockResolvedValue([
+      {
+        downloaded: true,
+        hash: "asset-hash",
+        height: 64,
+        localUri: "assets_3d_tex_planet_a",
+        name: "tex_planet_a",
+        type: "png",
+        uri: "assets_3d_tex_planet_a",
+        width: 64,
+      },
+    ]);
+
+    render(<SolarSystem3D />);
+
+    await waitFor(() => {
+      expect(mockNativeDownloadAsync).toHaveBeenCalledWith(
+        "assets_3d_tex_planet_a",
+        "asset-hash",
+        "png"
+      );
     });
   });
 
@@ -83,6 +117,15 @@ describe("SolarSystem3D", () => {
   it("disables Three color management for expo-gl compatibility", () => {
     render(<SolarSystem3D />);
     expect(ColorManagement.enabled).toBe(false);
+  });
+
+  it("uses the sun texture for both diffuse and emissive material channels", () => {
+    const texture = { isTexture: true };
+    const material = __createSunMaterialForTests(texture);
+
+    expect(material.map).toBe(texture);
+    expect(material.emissiveMap).toBe(texture);
+    expect(material.shininess).toBe(0);
   });
 
   it("handles texture loading failures without crashing", async () => {
