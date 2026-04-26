@@ -209,10 +209,6 @@ const LandingScreen = () => {
             onPress={handlePlayButtonPress}
             disabled={isLoading}
           />
-          <WideButton
-            buttonText={AppStrings.AuthStrings.Landing.CREDITS_BUTTON}
-            onPress={() => setIsCreditsVisible(true)}
-          />
           <WideButton buttonText="Made by Roobs World" onPress={handleRoobsWorldPress} />
         </View>
       </View>
