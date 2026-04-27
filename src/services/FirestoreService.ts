@@ -12,18 +12,16 @@ import {
   serverTimestamp,
   FirebaseFirestoreTypes,
 } from "@react-native-firebase/firestore";
-import { Player, PlayerSchema } from "../validation/firestoreSchemas";
-import {
-  FirestoreRiddle,
-  FirestoreRiddleSchema,
-} from "../validation/firestoreSchemas";
-import { ZodError } from "zod";
-import { logger } from "../utils/logger";
-import { captureException } from "../utils/sentry";
+import {Player, PlayerSchema} from "../validation/firestoreSchemas";
+import {FirestoreRiddle, FirestoreRiddleSchema} from "../validation/firestoreSchemas";
+import {ZodError} from "zod";
+import {logger} from "../utils/logger";
+import {captureException} from "../utils/sentry";
 
 /** Session cache for riddle fetches to avoid repeated Firestore reads (e.g. mode switch). */
 const RIDDLE_CACHE_MAX_SIZE = 50;
 const riddleCache = new Map<string, FirestoreRiddle>();
+const DAILY_RIDDLE_DOC_ID = "current";
 const FIRESTORE_RETRYABLE_CODES = new Set<string>([
   "firestore/unavailable",
   "unavailable",
@@ -81,13 +79,9 @@ const ALLOWED_PROGRESS_UPDATE_FIELDS = new Set<string>([
   "tutorialIndex",
 ] as const);
 
-const stripUndefined = <T extends Record<string, unknown>>(
-  value: T
-): Partial<T> =>
+const stripUndefined = <T extends Record<string, unknown>>(value: T): Partial<T> =>
   Object.fromEntries(
-    Object.entries(value).filter(
-      ([, nestedValue]) => nestedValue !== undefined && nestedValue !== null
-    )
+    Object.entries(value).filter(([, nestedValue]) => nestedValue !== undefined && nestedValue !== null),
   ) as Partial<T>;
 
 const sanitizeUserDocumentUpdates = (updates: Partial<Player>): Partial<Player> => {
@@ -102,24 +96,15 @@ const sanitizeUserDocumentUpdates = (updates: Partial<Player>): Partial<Player> 
     if (key === "stats" && value && typeof value === "object" && !Array.isArray(value)) {
       const stats = stripUndefined(value as Record<string, unknown>);
       sanitized.stats = Object.fromEntries(
-        Object.entries(stats).filter(([statsKey]) =>
-          ALLOWED_STATS_UPDATE_FIELDS.has(statsKey)
-        )
+        Object.entries(stats).filter(([statsKey]) => ALLOWED_STATS_UPDATE_FIELDS.has(statsKey)),
       );
       continue;
     }
 
-    if (
-      key === "progress" &&
-      value &&
-      typeof value === "object" &&
-      !Array.isArray(value)
-    ) {
+    if (key === "progress" && value && typeof value === "object" && !Array.isArray(value)) {
       const progress = stripUndefined(value as Record<string, unknown>);
       sanitized.progress = Object.fromEntries(
-        Object.entries(progress).filter(([progressKey]) =>
-          ALLOWED_PROGRESS_UPDATE_FIELDS.has(progressKey)
-        )
+        Object.entries(progress).filter(([progressKey]) => ALLOWED_PROGRESS_UPDATE_FIELDS.has(progressKey)),
       );
       continue;
     }
@@ -142,8 +127,7 @@ function setCachedRiddle(key: string, riddle: FirestoreRiddle): void {
   riddleCache.set(key, riddle);
 }
 
-const wait = (ms: number): Promise<void> =>
-  new Promise((resolve) => setTimeout(resolve, ms));
+const wait = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
 
 const normalizeFirestoreErrorCode = (error: unknown): string | null => {
   if (!error || typeof error !== "object") {
@@ -151,17 +135,14 @@ const normalizeFirestoreErrorCode = (error: unknown): string | null => {
   }
 
   const code =
-    "code" in error && typeof (error as { code?: unknown }).code === "string"
-      ? (error as { code: string }).code
-      : null;
+    "code" in error && typeof (error as {code?: unknown}).code === "string" ? (error as {code: string}).code : null;
   if (code) {
     return code;
   }
 
   const message =
-    "message" in error &&
-    typeof (error as { message?: unknown }).message === "string"
-      ? (error as { message: string }).message
+    "message" in error && typeof (error as {message?: unknown}).message === "string"
+      ? (error as {message: string}).message
       : "";
   const match = message.match(/\[(firestore\/[^\]]+)\]/i);
   return match?.[1]?.toLowerCase() ?? null;
@@ -173,8 +154,7 @@ const isRetryableFirestoreReadError = (error: unknown): boolean => {
     return true;
   }
 
-  const message =
-    error instanceof Error ? error.message.toLowerCase() : String(error).toLowerCase();
+  const message = error instanceof Error ? error.message.toLowerCase() : String(error).toLowerCase();
   return (
     message.includes("service is currently unavailable") ||
     message.includes("transient condition") ||
@@ -182,10 +162,7 @@ const isRetryableFirestoreReadError = (error: unknown): boolean => {
   );
 };
 
-async function withFirestoreReadRetry<T>(
-  operationName: string,
-  operation: () => Promise<T>
-): Promise<T> {
+async function withFirestoreReadRetry<T>(operationName: string, operation: () => Promise<T>): Promise<T> {
   let lastError: unknown = null;
 
   for (let attempt = 1; attempt <= MAX_READ_RETRY_ATTEMPTS; attempt++) {
@@ -193,15 +170,13 @@ async function withFirestoreReadRetry<T>(
       return await operation();
     } catch (error) {
       lastError = error;
-      const shouldRetry =
-        attempt < MAX_READ_RETRY_ATTEMPTS && isRetryableFirestoreReadError(error);
+      const shouldRetry = attempt < MAX_READ_RETRY_ATTEMPTS && isRetryableFirestoreReadError(error);
 
       if (!shouldRetry) {
         throw error;
       }
 
-      const delay =
-        BASE_RETRY_DELAY_MS * 2 ** (attempt - 1) + Math.floor(Math.random() * 120);
+      const delay = BASE_RETRY_DELAY_MS * 2 ** (attempt - 1) + Math.floor(Math.random() * 120);
       logger.warn(`${operationName} transient Firestore error. Retrying...`, {
         attempt,
         nextDelayMs: delay,
@@ -225,24 +200,14 @@ export function clearRiddleCache(): void {
  * @param userId The user's unique identifier.
  * @param progress The progress data to save.
  */
-export const saveUserProgressToFirestore = async (
-  userId: string,
-  progress: Player["progress"]
-): Promise<void> => {
+export const saveUserProgressToFirestore = async (userId: string, progress: Player["progress"]): Promise<void> => {
   if (!userId) {
     logger.warn("Attempted to save progress to Firestore without a userId.");
     return;
   }
   try {
-    await setDoc(
-      doc(getFirestore(), "users", userId),
-      { progress: progress },
-      { merge: true }
-    );
-    logger.info(
-      "Player progress saved to Firestore successfully for user:",
-      userId
-    );
+    await setDoc(doc(getFirestore(), "users", userId), {progress: progress}, {merge: true});
+    logger.info("Player progress saved to Firestore successfully for user:", userId);
   } catch (error) {
     logger.error("Error saving player progress to Firestore:", error);
     captureException(error);
@@ -250,17 +215,14 @@ export const saveUserProgressToFirestore = async (
   }
 };
 
-export const loadUserProgressFromFirestore = async (
-  userId: string
-): Promise<Player | null> => {
+export const loadUserProgressFromFirestore = async (userId: string): Promise<Player | null> => {
   if (!userId) {
     logger.warn("Attempted to load progress from Firestore without a userId.");
     return null;
   }
   try {
-    const userDoc = await withFirestoreReadRetry(
-      "loadUserProgressFromFirestore",
-      () => getDoc(doc(getFirestore(), "users", userId))
+    const userDoc = await withFirestoreReadRetry("loadUserProgressFromFirestore", () =>
+      getDoc(doc(getFirestore(), "users", userId)),
     );
     if (userDoc.exists()) {
       const userData = userDoc.data();
@@ -272,15 +234,9 @@ export const loadUserProgressFromFirestore = async (
           return validatedPlayer;
         } catch (zodError) {
           if (zodError instanceof ZodError) {
-            logger.error(
-              "Zod validation error for player data:",
-              zodError.issues
-            );
+            logger.error("Zod validation error for player data:", zodError.issues);
           } else {
-            logger.error(
-              "Unexpected error during player data validation:",
-              zodError
-            );
+            logger.error("Unexpected error during player data validation:", zodError);
           }
           captureException(zodError);
           return null;
@@ -297,94 +253,51 @@ export const loadUserProgressFromFirestore = async (
 };
 
 /**
- * Fetches a daily riddle from Firestore based on the daily index.
+ * Fetches today's single daily riddle from Firestore.
  * This function only fetches riddles and does not trigger generation.
  *
- * @param dailyIndex The daily challenge index from the player's progress.
+ * @param dailyIndex Legacy client progress value retained for API compatibility.
  * @returns A Promise resolving to the FirestoreRiddle data or null if not found.
  */
-export const fetchDailyRiddleFromFirestore = async (
-  dailyIndex: number
-): Promise<FirestoreRiddle | null> => {
-  const cacheKey = `daily:${dailyIndex}`;
-  const cached = getCachedRiddle(cacheKey);
-  if (cached) {
-    logger.debug("Daily riddle served from cache");
-    return cached;
-  }
-
+export const fetchDailyRiddleFromFirestore = async (dailyIndex: number): Promise<FirestoreRiddle | null> => {
   logger.debug(
-    `Fetching daily riddle from Firestore dailyRiddles/current (client index hint: ${dailyIndex})`
+    `Fetching current daily riddle from Firestore dailyRiddles/${DAILY_RIDDLE_DOC_ID} (client index hint: ${dailyIndex})`,
   );
 
   try {
-    const byDailyIndexSnapshot = await withFirestoreReadRetry(
-      "fetchDailyRiddleFromFirestore.byDailyIndex",
-      () =>
-        getDocs(
-          query(
-            collection(getFirestore(), "dailyRiddles"),
-            where("dailyIndex", "==", dailyIndex),
-            limit(1)
-          )
-        )
+    const currentDailyDoc = await withFirestoreReadRetry("fetchDailyRiddleFromFirestore.current", () =>
+      getDoc(doc(getFirestore(), "dailyRiddles", DAILY_RIDDLE_DOC_ID)),
     );
 
-    const riddleQuerySnapshot = !byDailyIndexSnapshot.empty
-      ? byDailyIndexSnapshot
-      : await withFirestoreReadRetry(
-          "fetchDailyRiddleFromFirestore.currentFallback",
-          () =>
-            getDocs(
-              query(
-                collection(getFirestore(), "dailyRiddles"),
-                where("riddleId", "==", "current"),
-                limit(1)
-              )
-            )
-        );
-
-    if (!riddleQuerySnapshot.empty) {
-      const riddleDoc = riddleQuerySnapshot.docs[0];
-      const riddleData = riddleDoc.data();
+    if (currentDailyDoc.exists()) {
+      const riddleData = currentDailyDoc.data();
       if (riddleData) {
         try {
           const validatedRiddle = FirestoreRiddleSchema.parse({
             ...riddleData,
-            riddleId: riddleData.riddleId ?? riddleDoc.id,
+            riddleId: riddleData.riddleId ?? currentDailyDoc.id ?? DAILY_RIDDLE_DOC_ID,
           });
-          setCachedRiddle(cacheKey, validatedRiddle);
-          logger.debug(
-            "Daily riddle fetched and validated successfully:",
-            validatedRiddle
-          );
+          logger.debug("Current daily riddle fetched and validated successfully:", validatedRiddle);
           return validatedRiddle;
         } catch (zodError) {
           if (zodError instanceof ZodError) {
-            logger.error(
-              "Zod validation error for daily riddle data:",
-              zodError.issues
-            );
+            logger.error("Zod validation error for daily riddle data:", zodError.issues);
           } else {
-            logger.error(
-              "Unexpected error during daily riddle data validation:",
-              zodError
-            );
+            logger.error("Unexpected error during daily riddle data validation:", zodError);
           }
           captureException(zodError);
           return null;
         }
       }
-    } else {
-      logger.debug(`No daily riddle found for index: ${dailyIndex}`);
-      return null;
     }
+
+    logger.debug(`No current daily riddle found at dailyRiddles/${DAILY_RIDDLE_DOC_ID}`);
+    return null;
   } catch (error) {
     logger.error("Error fetching daily riddle from Firestore:", error);
     captureException(error);
     throw error;
   }
-  return null;
 };
 
 /**
@@ -394,9 +307,7 @@ export const fetchDailyRiddleFromFirestore = async (
  * @param classicIndex The classic challenge index from the player's progress.
  * @returns A Promise resolving to the FirestoreRiddle data or null if not found.
  */
-export const fetchClassicRiddleFromFirestore = async (
-  classicIndex: number
-): Promise<FirestoreRiddle | null> => {
+export const fetchClassicRiddleFromFirestore = async (classicIndex: number): Promise<FirestoreRiddle | null> => {
   const cacheKey = `classic:${classicIndex}`;
   const cached = getCachedRiddle(cacheKey);
   if (cached) {
@@ -404,21 +315,11 @@ export const fetchClassicRiddleFromFirestore = async (
     return cached;
   }
 
-  logger.debug(
-    `Fetching classic riddle for index ${classicIndex} from Firestore`
-  );
+  logger.debug(`Fetching classic riddle for index ${classicIndex} from Firestore`);
 
   try {
-    const riddleQuerySnapshot = await withFirestoreReadRetry(
-      "fetchClassicRiddleFromFirestore",
-      () =>
-        getDocs(
-          query(
-            collection(getFirestore(), "riddles"),
-            where("classicIndex", "==", classicIndex),
-            limit(1)
-          )
-        )
+    const riddleQuerySnapshot = await withFirestoreReadRetry("fetchClassicRiddleFromFirestore", () =>
+      getDocs(query(collection(getFirestore(), "riddles"), where("classicIndex", "==", classicIndex), limit(1))),
     );
 
     if (!riddleQuerySnapshot.empty) {
@@ -428,22 +329,13 @@ export const fetchClassicRiddleFromFirestore = async (
         try {
           const validatedRiddle = FirestoreRiddleSchema.parse(riddleData);
           setCachedRiddle(cacheKey, validatedRiddle);
-          logger.debug(
-            "Classic riddle fetched and validated successfully:",
-            validatedRiddle
-          );
+          logger.debug("Classic riddle fetched and validated successfully:", validatedRiddle);
           return validatedRiddle;
         } catch (zodError) {
           if (zodError instanceof ZodError) {
-            logger.error(
-              "Zod validation error for classic riddle data:",
-              zodError.issues
-            );
+            logger.error("Zod validation error for classic riddle data:", zodError.issues);
           } else {
-            logger.error(
-              "Unexpected error during classic riddle data validation:",
-              zodError
-            );
+            logger.error("Unexpected error during classic riddle data validation:", zodError);
           }
           captureException(zodError);
           return null;
@@ -466,22 +358,12 @@ export const fetchClassicRiddleFromFirestore = async (
  * @param dateString The date string for which to fetch the daily riddle (e.g., YYYY-MM-DD).
  * @returns A Promise resolving to the FirestoreRiddle data or null if not found.
  */
-export const fetchDailyRiddleForDate = async (
-  dateString: string
-): Promise<FirestoreRiddle | null> => {
+export const fetchDailyRiddleForDate = async (dateString: string): Promise<FirestoreRiddle | null> => {
   try {
     // Assuming daily riddles are stored in a subcollection or have a field referencing the date
     // For now, let's assume they are in the 'riddles' collection with a 'date' field.
-    const riddleQuerySnapshot = await withFirestoreReadRetry(
-      "fetchDailyRiddleForDate",
-      () =>
-        getDocs(
-          query(
-            collection(getFirestore(), "riddles"),
-            where("date", "==", dateString),
-            limit(1)
-          )
-        )
+    const riddleQuerySnapshot = await withFirestoreReadRetry("fetchDailyRiddleForDate", () =>
+      getDocs(query(collection(getFirestore(), "riddles"), where("date", "==", dateString), limit(1))),
     );
 
     if (!riddleQuerySnapshot.empty) {
@@ -490,24 +372,13 @@ export const fetchDailyRiddleForDate = async (
       if (riddleData) {
         try {
           const validatedRiddle = FirestoreRiddleSchema.parse(riddleData);
-          logger.debug(
-            "Daily riddle fetched and validated successfully for date:",
-            dateString
-          );
+          logger.debug("Daily riddle fetched and validated successfully for date:", dateString);
           return validatedRiddle;
         } catch (zodError) {
           if (zodError instanceof ZodError) {
-            logger.error(
-              "Zod validation error for daily riddle data for date:",
-              dateString,
-              zodError.issues
-            );
+            logger.error("Zod validation error for daily riddle data for date:", dateString, zodError.issues);
           } else {
-            logger.error(
-              "Unexpected error during daily riddle data validation for date:",
-              dateString,
-              zodError
-            );
+            logger.error("Unexpected error during daily riddle data validation for date:", dateString, zodError);
           }
           captureException(zodError);
           return null;
@@ -518,10 +389,7 @@ export const fetchDailyRiddleForDate = async (
     }
     return null;
   } catch (error) {
-    logger.error(
-      "Error fetching daily riddle for date from Firestore:",
-      error
-    );
+    logger.error("Error fetching daily riddle for date from Firestore:", error);
     captureException(error);
     throw error;
   }
@@ -533,33 +401,22 @@ export const fetchDailyRiddleForDate = async (
  * @param userId The ID of the user.
  * @returns A Promise that resolves when the update is complete.
  */
-export const updateLastDailyChallengeCompletedAt = async (
-  userId: string
-): Promise<void> => {
+export const updateLastDailyChallengeCompletedAt = async (userId: string): Promise<void> => {
   if (!userId) {
-    logger.warn(
-      "Attempted to update daily challenge completion timestamp without a userId."
-    );
+    logger.warn("Attempted to update daily challenge completion timestamp without a userId.");
     return;
   }
   try {
     await updateDoc(doc(getFirestore(), "users", userId), {
       lastDailyChallengeCompletedAt: serverTimestamp(),
     });
-    logger.info(
-      "Last daily challenge completed timestamp updated successfully for user:",
-      userId
-    );
+    logger.info("Last daily challenge completed timestamp updated successfully for user:", userId);
   } catch (error) {
-    logger.error(
-      "Error updating last daily challenge completed timestamp in Firestore:",
-      error
-    );
+    logger.error("Error updating last daily challenge completed timestamp in Firestore:", error);
     captureException(error);
     throw error;
   }
 };
-
 
 /**
  * Updates the user's classic progress index in Firestore.
@@ -568,30 +425,18 @@ export const updateLastDailyChallengeCompletedAt = async (
  * @param classicIndex The new classic index.
  * @returns A Promise that resolves when the update is complete.
  */
-export const updateClassicIndexInFirestore = async (
-  userId: string,
-  classicIndex: number
-): Promise<void> => {
+export const updateClassicIndexInFirestore = async (userId: string, classicIndex: number): Promise<void> => {
   if (!userId) {
-    logger.warn(
-      "Attempted to update classic index in Firestore without a userId."
-    );
+    logger.warn("Attempted to update classic index in Firestore without a userId.");
     return;
   }
   try {
     const normalizedClassicIndex =
-      typeof classicIndex === "number" && Number.isFinite(classicIndex)
-        ? Math.max(0, Math.floor(classicIndex))
-        : 0;
+      typeof classicIndex === "number" && Number.isFinite(classicIndex) ? Math.max(0, Math.floor(classicIndex)) : 0;
     await updateDoc(doc(getFirestore(), "users", userId), {
       "progress.classicIndex": normalizedClassicIndex,
     });
-    logger.info(
-      "Classic index updated successfully for user:",
-      userId,
-      "to",
-      normalizedClassicIndex
-    );
+    logger.info("Classic index updated successfully for user:", userId, "to", normalizedClassicIndex);
   } catch (error) {
     logger.error("Error updating classic index in Firestore:", error);
     captureException(error);
@@ -608,31 +453,23 @@ export const updateClassicIndexInFirestore = async (
  */
 export const updateDailyChallengeIndexInFirestore = async (
   userId: string,
-  dailyChallengeIndex: number
+  dailyChallengeIndex: number,
 ): Promise<void> => {
   if (!userId) {
-    logger.warn(
-      "Attempted to update daily challenge index in Firestore without a userId."
-    );
+    logger.warn("Attempted to update daily challenge index in Firestore without a userId.");
     return;
   }
   try {
     await updateDoc(doc(getFirestore(), "users", userId), {
       "progress.dailyChallengeIndex": dailyChallengeIndex,
     });
-    logger.info(
-      "Daily challenge index updated successfully for user:",
-      userId,
-      "to",
-      dailyChallengeIndex
-    );
+    logger.info("Daily challenge index updated successfully for user:", userId, "to", dailyChallengeIndex);
   } catch (error) {
     logger.error("Error updating daily challenge index in Firestore:", error);
     captureException(error);
     throw error;
   }
 };
-
 
 /**
  * Updates fields in the user document in Firestore, allowing for FieldValue in stats.
@@ -641,14 +478,9 @@ export const updateDailyChallengeIndexInFirestore = async (
  * @param updates An object containing the fields to update, potentially with FieldValue.
  * @returns A Promise that resolves when the update is complete.
  */
-export const updateUserDocumentInFirestore = async (
-  userId: string,
-  updates: Partial<Player>
-): Promise<void> => {
+export const updateUserDocumentInFirestore = async (userId: string, updates: Partial<Player>): Promise<void> => {
   if (!userId) {
-    logger.warn(
-      "Attempted to update user document in Firestore without a userId."
-    );
+    logger.warn("Attempted to update user document in Firestore without a userId.");
     return;
   }
   const sanitizedUpdates = sanitizeUserDocumentUpdates({
@@ -656,9 +488,7 @@ export const updateUserDocumentInFirestore = async (
     userId,
   });
   if (Object.keys(sanitizedUpdates).length === 0) {
-    logger.warn(
-      "Skipping Firestore user update because payload had no allowed fields."
-    );
+    logger.warn("Skipping Firestore user update because payload had no allowed fields.");
     return;
   }
   try {
@@ -666,10 +496,7 @@ export const updateUserDocumentInFirestore = async (
     logger.info("User document updated successfully for user:", userId);
   } catch (error) {
     if (error instanceof ZodError) {
-      logger.error(
-        "Zod validation error for user document updates:",
-        error.issues
-      );
+      logger.error("Zod validation error for user document updates:", error.issues);
       captureException(error);
       throw new Error("Invalid user document update data provided.");
     } else {
@@ -691,7 +518,7 @@ export const updateUserDocumentInFirestore = async (
 export const updateUserStats = async (
   userId: string,
   stats: Partial<Player["stats"]>,
-  transaction?: FirebaseFirestoreTypes.Transaction
+  transaction?: FirebaseFirestoreTypes.Transaction,
 ): Promise<void> => {
   if (!userId) {
     logger.warn("Attempted to update user stats without a userId.");
@@ -699,18 +526,14 @@ export const updateUserStats = async (
   }
   const userRef = doc(getFirestore(), "users", userId);
   const statsFieldUpdates = Object.fromEntries(
-    Object.entries(stats).flatMap(([key, value]) =>
-      value === undefined ? [] : [[`stats.${key}`, value]]
-    )
+    Object.entries(stats).flatMap(([key, value]) => (value === undefined ? [] : [[`stats.${key}`, value]])),
   );
   if (Object.keys(statsFieldUpdates).length === 0) {
     return;
   }
 
   try {
-    await (transaction
-      ? transaction.update(userRef, statsFieldUpdates)
-      : updateDoc(userRef, statsFieldUpdates));
+    await (transaction ? transaction.update(userRef, statsFieldUpdates) : updateDoc(userRef, statsFieldUpdates));
   } catch (error) {
     logger.error("Error updating user stats in Firestore:", error);
     captureException(error);
@@ -733,7 +556,7 @@ export const createUserDocumentInFirestore = async (
   email: string,
   displayName?: string,
   avatarUrl?: string,
-  seed?: Partial<Player>
+  seed?: Partial<Player>,
 ): Promise<Player> => {
   if (!userId) {
     throw new Error("Cannot create user document without a userId.");
@@ -752,9 +575,7 @@ export const createUserDocumentInFirestore = async (
       userId,
       email,
       username:
-        (typeof seed?.username === "string" && seed.username.trim() !== ""
-          ? seed.username.trim()
-          : undefined) ||
+        (typeof seed?.username === "string" && seed.username.trim() !== "" ? seed.username.trim() : undefined) ||
         displayName ||
         email.split("@")[0], // Prefer guest-chosen username, then provider, then email prefix
       coins: typeof seed?.coins === "number" ? seed.coins : 100, // Starting coins
@@ -783,33 +604,24 @@ export const createUserDocumentInFirestore = async (
         totalHintsUsed: 0,
         ...(seed?.stats ?? {}),
       },
-      unlockedAchievements: Array.isArray(seed?.unlockedAchievements)
-        ? seed.unlockedAchievements
-        : [],
+      unlockedAchievements: Array.isArray(seed?.unlockedAchievements) ? seed.unlockedAchievements : [],
       createdAt: Date.now(),
-      hasPurchasedApp:
-        typeof seed?.hasPurchasedApp === "boolean" ? seed.hasPurchasedApp : false, // Default to false for new users
+      hasPurchasedApp: typeof seed?.hasPurchasedApp === "boolean" ? seed.hasPurchasedApp : false, // Default to false for new users
       // Omit lastDailyChallengeCompletedAt since it's undefined - Firestore doesn't support undefined values
     };
 
     // Add displayName only if it's defined
-    const defaultUserData: Player = displayName
-      ? { ...baseUserData, displayName }
-      : baseUserData;
+    const defaultUserData: Player = displayName ? {...baseUserData, displayName} : baseUserData;
 
     if (avatarUrl) {
       defaultUserData.avatarUrl = avatarUrl;
     }
 
     if (typeof seed?.lastDailyChallengeCompletedAt === "number") {
-      defaultUserData.lastDailyChallengeCompletedAt =
-        seed.lastDailyChallengeCompletedAt;
+      defaultUserData.lastDailyChallengeCompletedAt = seed.lastDailyChallengeCompletedAt;
     }
 
-    logger.debug(
-      "Default user data prepared:",
-      JSON.stringify(defaultUserData, null, 2)
-    );
+    logger.debug("Default user data prepared:", JSON.stringify(defaultUserData, null, 2));
 
     // Validate the data before saving
     const validatedUserData = PlayerSchema.parse(defaultUserData);
@@ -823,7 +635,7 @@ export const createUserDocumentInFirestore = async (
     logger.error(
       "Error details:",
       error instanceof Error ? error.message : "Unknown error",
-      error instanceof Error ? error.stack : "No stack trace"
+      error instanceof Error ? error.stack : "No stack trace",
     );
     captureException(error);
     throw error;
