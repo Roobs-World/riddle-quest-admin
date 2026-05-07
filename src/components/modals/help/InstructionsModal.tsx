@@ -22,15 +22,22 @@ import {SPACING} from "../../../styles";
 import {verticalScale} from "@/utils/responsive";
 import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
+import OnboardingProgressBadge from "../OnboardingProgressBadge";
+import {OnboardingProgress} from "../../../types/ModalTypes";
 
 interface InstructionsModalProps {
   isVisible: boolean;
   onClose: () => void;
+  onboardingProgress?: OnboardingProgress;
 }
 
 const INSTRUCTIONS_MODAL_HEIGHT = MODAL_HEIGHT * 1.5;
 
-const InstructionsModal: React.FC<InstructionsModalProps> = ({isVisible, onClose}) => {
+const InstructionsModal: React.FC<InstructionsModalProps> = ({
+  isVisible,
+  onClose,
+  onboardingProgress,
+}) => {
   return (
     <Modal animationType="fade" transparent={true} visible={isVisible} onRequestClose={onClose}>
       <View
@@ -62,6 +69,9 @@ const InstructionsModal: React.FC<InstructionsModalProps> = ({isVisible, onClose
               height={MODAL_HEIGHT * 1.1}
               style={{position: "absolute", top: -MODAL_HEIGHT * 0.05, left: -MODAL_WIDTH * 0.05}}
             />
+            {onboardingProgress ? (
+              <OnboardingProgressBadge {...onboardingProgress} />
+            ) : null}
             <View
               style={{
                 flex: 1,
@@ -75,7 +85,11 @@ const InstructionsModal: React.FC<InstructionsModalProps> = ({isVisible, onClose
               <CloseButton
                 onPress={onClose}
                 size={CLOSE_BUTTON_SIZE}
-                style={{...MODAL_CLOSE_BUTTON_POSITION, marginTop: verticalScale(28)}}
+                style={{
+                  ...MODAL_CLOSE_BUTTON_POSITION,
+                  ...(onboardingProgress ? {right: undefined, left: MODAL_CLOSE_BUTTON_POSITION.right} : {}),
+                  marginTop: verticalScale(28),
+                }}
               />
               <Text
                 style={{

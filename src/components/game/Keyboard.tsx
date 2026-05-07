@@ -321,11 +321,14 @@ const Keyboard: React.FC<KeyboardProps> = React.memo(function Keyboard({
           <Animated.View style={{ transform: [{ scale: backspaceScale }] }}>
             <TouchableOpacity
               key="delete"
-              style={{
-                height: KEYBOARD_KEY_HEIGHT,
-                width: KEYBOARD_BOTTOM_OFFSET,
-                margin: KEYBOARD_KEY_MARGIN,
-              }}
+              style={[
+                gameStyles.backspaceKey,
+                {
+                  height: KEYBOARD_KEY_HEIGHT,
+                  width: KEYBOARD_BOTTOM_OFFSET,
+                  margin: KEYBOARD_KEY_MARGIN,
+                },
+              ]}
               onPressIn={() => {
                 handleBackspace();
                 triggerBounce(backspaceScale);

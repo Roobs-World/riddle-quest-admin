@@ -77,7 +77,7 @@ interface LossModalProps {
   coinContinueCost?: number;
 
   /** Player's current total coin balance */
-  totalCoins: number;
+  totalCoins?: number;
 
   /** Retained for compatibility with existing call sites */
   skipLevelCost?: number;
@@ -100,12 +100,13 @@ interface LossModalProps {
  */
 const LossModal: React.FC<LossModalProps> = ({
   isVisible,
+  correctAnswer,
   onNext,
   onClose,
   onWatchAdContinue,
   onCoinContinue,
   coinContinueCost,
-  totalCoins,
+  totalCoins = 0,
   canWatchAd,
   canUseCoin,
   onOpenShop,
@@ -304,7 +305,7 @@ const LossModal: React.FC<LossModalProps> = ({
                         textAlign: "center",
                       }}
                     >
-                      {AppStrings.LossModal.OUT_OF_ATTEMPTS}
+                      {AppStrings.LossModal.EXTRA_GUESSES_PROMPT}
                     </Text>
                   </View>
 
@@ -325,7 +326,7 @@ const LossModal: React.FC<LossModalProps> = ({
                       <>
                         <WideButton
                           onPress={handleCoinContinue}
-                          buttonText={`${AppStrings.LossModal.USE_COINS_PREFIX}${coinContinueCost ?? 0}${AppStrings.LossModal.USE_COINS_SUFFIX}`}
+                          buttonText={`${AppStrings.LossModal.EXTRA_GUESSES_PREFIX}${coinContinueCost ?? 0}${AppStrings.LossModal.EXTRA_GUESSES_SUFFIX}`}
                           disabled={isCoinContinueDisabled}
                         />
                         <View style={{height: MODAL_BUTTON_SPACER}} />
@@ -337,6 +338,10 @@ const LossModal: React.FC<LossModalProps> = ({
                         <View style={{height: MODAL_BUTTON_SPACER}} />
                       </>
                     )}
+                    <WideButton
+                      onPress={handleNextLevel}
+                      buttonText={AppStrings.LossModal.SKIP_PUZZLE_BUTTON}
+                    />
                   </View>
                 </>
               ) : (
@@ -367,6 +372,19 @@ const LossModal: React.FC<LossModalProps> = ({
                     >
                       {AppStrings.LossModal.OUT_OF_ATTEMPTS}
                     </Text>
+                    {correctAnswer ? (
+                      <Text
+                        style={{
+                          fontFamily: TYPOGRAPHY.fontSecondaryBold,
+                          fontSize: TYPOGRAPHY.fontSize.lg,
+                          color: "black",
+                          marginTop: 12,
+                          textAlign: "center",
+                        }}
+                      >
+                        {`${AppStrings.LossModal.ANSWER_PREFIX}${correctAnswer.toUpperCase()}`}
+                      </Text>
+                    ) : null}
                   </View>
                   <View style={{flex: 2, justifyContent: "center", width: "100%"}}>
                     {onOpenShop && (

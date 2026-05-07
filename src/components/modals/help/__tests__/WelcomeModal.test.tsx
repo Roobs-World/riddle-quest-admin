@@ -23,6 +23,19 @@ describe("WelcomeModal", () => {
     expect(getByText(AppStrings.WelcomeModal.EARN_COINS_TEXT)).toBeTruthy();
   });
 
+  it("renders onboarding progress when provided", () => {
+    const {getByText, getByTestId} = render(
+      <WelcomeModal
+        isVisible={true}
+        onClose={mockOnClose}
+        onboardingProgress={{current: 1, total: 3}}
+      />,
+    );
+
+    expect(getByTestId("onboarding-progress-badge")).toBeTruthy();
+    expect(getByText("1/3")).toBeTruthy();
+  });
+
   it("does not render content when not visible", () => {
     const {queryByText} = render(<WelcomeModal isVisible={false} onClose={mockOnClose} />);
 

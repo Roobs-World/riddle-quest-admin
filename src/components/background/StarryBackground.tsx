@@ -302,6 +302,7 @@ const styles = StyleSheet.create({
   solarSystemContainer: {
     bottom: 0,
     left: 0,
+    opacity: 0.42,
     position: "absolute",
     right: 0,
     top: 0,

@@ -27,7 +27,7 @@ interface VictoryModalProps {
   /** Optional list of achievement names unlocked by this win. */
   unlockedAchievementNames?: string[];
   /** Optional current wallet balance shown in the summary strip. */
-  totalCoins: number;
+  totalCoins?: number;
   /** Callback for advancing to the next level/riddle. */
   onNextLevel: () => void;
   /** Submitted guesses used to build shareable emoji summary. */
@@ -48,7 +48,7 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
   isVisible,
   attempts,
   coinsEarned,
-  totalCoins,
+  totalCoins = coinsEarned,
   onNextLevel,
   guesses,
   gameMode,
@@ -141,6 +141,14 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
                     void handleShare();
                   }}
                   testID="victory-share-button"
+                />
+                <View style={{height: verticalScale(10)}} />
+                <WideButton
+                  buttonText={AppStrings.VictoryModal.NEXT_LEVEL_BUTTON}
+                  onPress={() => {
+                    void handleNextLevel();
+                  }}
+                  testID="victory-next-button"
                 />
               </View>
             </View>

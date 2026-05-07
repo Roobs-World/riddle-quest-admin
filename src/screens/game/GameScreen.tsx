@@ -83,6 +83,11 @@ import {
 } from "../../utils/settingsStorage";
 import type { Feedback } from "../../hooks/types";
 import OfflineBlockingModal from "../../components/modals/system/OfflineBlockingModal";
+import {
+  resolveBackspaceGuessSlot,
+  resolveEditableGuessSlot,
+  resolveNextActiveGuessSlot,
+} from "../../utils/guessSlots";
 
 interface GuessResult {
   outcome: "win" | "loss" | "continue" | "attemptLimitReached";
@@ -120,6 +125,8 @@ interface GameScreenProps {
 }
 
 const ONBOARDING_SEEN_STORAGE_KEY_PREFIX = "gameScreenOnboardingSeen";
+const RESULT_MODAL_REVEAL_DELAY_MS = 850;
+const ONBOARDING_PROGRESS_TOTAL = 3;
 
 const getOnboardingSeenStorageKey = (userId?: string): string => {
   if (userId) {
@@ -309,6 +316,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const shouldUseFullFirestoreCatalog = !isRunningUnderJest;
 
   const gameOverHandledRef = useRef(false);
+  const isMountedRef = useRef(true);
+  const latestResultRef = useRef<GuessResult | null>(null);
   const lastSubmittedAttemptRef = useRef<number | null>(null);
   const openShopFromLossRef = useRef<() => void>(() => {});
   const coinAnimationSettleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
@@ -631,16 +640,26 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         }
 
         showWelcomeModal({
+          onboardingProgress: { current: 1, total: ONBOARDING_PROGRESS_TOTAL },
           onDismiss: () => {
             if (isGuestMode) {
               showInfoModal({
                 title: AppStrings.GameScreenAlerts.GUEST_MODE_NOTICE_TITLE,
                 message: AppStrings.GameScreenAlerts.GUEST_MODE_NOTICE_MESSAGE,
                 actionButtonText: AppStrings.Profile.UPGRADE_ACCOUNT_BUTTON,
+                onboardingProgress: {
+                  current: 2,
+                  total: ONBOARDING_PROGRESS_TOTAL,
+                },
                 onAction: () => setIsUpgradeModalVisible(true),
                 onConfirm: () => {
                   safeDelay(MODAL_CLOSE_DELAY_MS).then(() => {
-                    showInstructionsModal();
+                    showInstructionsModal({
+                      onboardingProgress: {
+                        current: 3,
+                        total: ONBOARDING_PROGRESS_TOTAL,
+                      },
+                    });
                   });
                 },
               });
@@ -648,7 +667,12 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
             }
 
             safeDelay(MODAL_CLOSE_DELAY_MS).then(() => {
-              showInstructionsModal();
+              showInstructionsModal({
+                onboardingProgress: {
+                  current: 2,
+                  total: ONBOARDING_PROGRESS_TOTAL,
+                },
+              });
             });
           },
         });
@@ -792,6 +816,16 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   }, [gameOver]);
 
   useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    latestResultRef.current = lastGuessResult;
+  }, [lastGuessResult]);
+
+  useEffect(() => {
     if (answerLength <= 0) {
       setActiveSlotIndexSynced(0);
       return;
@@ -864,6 +898,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           coins: Math.max(0, (playerData.coins ?? 0) - CONTINUE_COST_COINS),
         });
       }
+      setLastGuessResult(null);
       preserveKeyboardLetterStates();
       continueGame();
       return true;
@@ -908,6 +943,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         coinsPurchased: CONTINUE_REWARDED_AD_COIN_REWARD,
         totalCoins: currentUserCoins + CONTINUE_REWARDED_AD_COIN_REWARD,
       });
+      setLastGuessResult(null);
       preserveKeyboardLetterStates();
       continueGame();
       return true;
@@ -1322,32 +1358,38 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           mergeLetterStates(existing, computeLetterStates(guesses))
         );
 
-        modal.showLossModal({
-          correctAnswer: result.correctAnswer || "",
-          totalCoins: currentUserCoins,
-          onWatchAdContinue: result.canOfferRewardedAd
-            ? () => {
-                modal.closeModalByType("loss");
-                void runRewardedAdContinueFlow();
-                return true;
-              }
-            : undefined,
-          onCoinContinue: result.canOfferCoinContinue
-            ? handleCoinContinue
-            : undefined,
-          coinContinueCost: CONTINUE_COST_COINS,
-          skipLevelCost,
-          canWatchAd: isRewardedAdReady,
-          canUseCoin: canAffordCoinContinue,
-          onOpenShop: () => openShopFromLossRef.current(),
-          onNext: () => {
-            modal.closeModalByType("loss");
-            resetRoundState();
-            runWithServerLoading(() => onNextLevel()).catch((error) => {
-              logger.error("Error loading next level after attempt limit:", error);
-              captureException(error);
-            });
-          },
+        void safeDelay(RESULT_MODAL_REVEAL_DELAY_MS).then(() => {
+          if (!isMountedRef.current || latestResultRef.current !== result) {
+            return;
+          }
+
+          modal.showLossModal({
+            correctAnswer: result.correctAnswer || "",
+            totalCoins: currentUserCoins,
+            onWatchAdContinue: result.canOfferRewardedAd
+              ? () => {
+                  modal.closeModalByType("loss");
+                  void runRewardedAdContinueFlow();
+                  return true;
+                }
+              : undefined,
+            onCoinContinue: result.canOfferCoinContinue
+              ? handleCoinContinue
+              : undefined,
+            coinContinueCost: CONTINUE_COST_COINS,
+            skipLevelCost,
+            canWatchAd: isRewardedAdReady,
+            canUseCoin: canAffordCoinContinue,
+            onOpenShop: () => openShopFromLossRef.current(),
+            onNext: () => {
+              modal.closeModalByType("loss");
+              resetRoundState();
+              runWithServerLoading(() => onNextLevel()).catch((error) => {
+                logger.error("Error loading next level after attempt limit:", error);
+                captureException(error);
+              });
+            },
+          });
         });
       } else if (result.outcome === "loss") {
         const resolvedAttempts = lastSubmittedAttemptRef.current ?? guesses.length;
@@ -1357,19 +1399,25 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
         const skipLevelCost = SKIP_COST_CLASSIC;
 
-        modal.showLossModal({
-          correctAnswer: result.correctAnswer || "",
-          totalCoins: currentUserCoins,
-          skipLevelCost,
-          onOpenShop: () => openShopFromLossRef.current(),
-          onNext: () => {
-            modal.closeModalByType("loss");
-            resetRoundState();
-            runWithServerLoading(() => onNextLevel()).catch((error) => {
-              logger.error("Error loading next level after loss:", error);
-              captureException(error);
-            });
-          },
+        void safeDelay(RESULT_MODAL_REVEAL_DELAY_MS).then(() => {
+          if (!isMountedRef.current || latestResultRef.current !== result) {
+            return;
+          }
+
+          modal.showLossModal({
+            correctAnswer: result.correctAnswer || "",
+            totalCoins: currentUserCoins,
+            skipLevelCost,
+            onOpenShop: () => openShopFromLossRef.current(),
+            onNext: () => {
+              modal.closeModalByType("loss");
+              resetRoundState();
+              runWithServerLoading(() => onNextLevel()).catch((error) => {
+                logger.error("Error loading next level after loss:", error);
+                captureException(error);
+              });
+            },
+          });
         });
 
         if (result.correctAnswer) {
@@ -1430,6 +1478,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       try {
         // Always allow the next completed guess result to trigger exactly one modal flow.
         gameOverHandledRef.current = false;
+        setLastGuessResult(null);
         lastSubmittedAttemptRef.current = guesses.length + 1;
         // Pause header coin count-up immediately so modal-driven result flows
         // can decide exactly when deferred animations should resume.
@@ -1470,12 +1519,12 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const handleKeyPress = useCallback(
     (key: string) => {
       if (answerLength <= 0) return;
-      const maxIndex = Math.max(0, answerLength - 1);
-
-      const targetIndex = Math.min(
-        Math.max(0, activeSlotIndexRef.current),
-        maxIndex
+      const targetIndex = resolveEditableGuessSlot(
+        activeSlotIndexRef.current,
+        answerLength,
+        hintRevealedIndicesRef.current
       );
+      if (targetIndex === null) return;
 
       setCurrentGuess((prev: string[]) => {
         const next = [...prev];
@@ -1489,30 +1538,28 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         return next;
       });
 
-      const nextActiveSlotIndex = Math.min(maxIndex, targetIndex + 1);
-      setActiveSlotIndexSynced(nextActiveSlotIndex);
+      setActiveSlotIndexSynced(
+        resolveNextActiveGuessSlot(
+          targetIndex,
+          answerLength,
+          hintRevealedIndicesRef.current
+        )
+      );
     },
     [answerLength, setCurrentGuess, setActiveSlotIndexSynced]
   );
 
   const handleBackspace = useCallback(() => {
     if (answerLength <= 0) return;
-    const maxIndex = Math.max(0, answerLength - 1);
-
-    const clampedActiveIndex = Math.min(
-      Math.max(0, activeSlotIndexRef.current),
-      maxIndex
+    const targetIndex = resolveBackspaceGuessSlot(
+      activeSlotIndexRef.current,
+      currentGuess,
+      answerLength,
+      hintRevealedIndicesRef.current
     );
+    if (targetIndex === null) return;
 
     setCurrentGuess((prev: string[]) => {
-      if (prev.length === 0) {
-        return prev;
-      }
-
-      const targetIndex = prev[clampedActiveIndex]
-        ? clampedActiveIndex
-        : Math.max(0, clampedActiveIndex - 1);
-
       const next = [...prev];
       next[targetIndex] = "";
       while (next.length > 0 && !next[next.length - 1]) {
@@ -1521,14 +1568,20 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       return next;
     });
 
-    setActiveSlotIndexSynced(Math.max(0, clampedActiveIndex - 1));
-  }, [answerLength, setCurrentGuess, setActiveSlotIndexSynced]);
+    setActiveSlotIndexSynced(targetIndex);
+  }, [answerLength, currentGuess, setCurrentGuess, setActiveSlotIndexSynced]);
 
   const handleSelectCurrentGuessSlot = useCallback(
     (slotIndex: number) => {
       if (answerLength <= 0) return;
       if (slotIndex < 0 || slotIndex >= answerLength) return;
-      setActiveSlotIndexSynced(slotIndex);
+      const editableSlotIndex = resolveEditableGuessSlot(
+        slotIndex,
+        answerLength,
+        hintRevealedIndicesRef.current
+      );
+      if (editableSlotIndex === null) return;
+      setActiveSlotIndexSynced(editableSlotIndex);
     },
     [answerLength, setActiveSlotIndexSynced]
   );
@@ -1556,10 +1609,11 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           return;
         }
 
-        hintRevealedIndicesRef.current = [
+        const nextHintRevealedIndices = [
           ...hintRevealedIndicesRef.current,
           revealIndex,
         ];
+        hintRevealedIndicesRef.current = nextHintRevealedIndices;
 
         setCurrentGuess((prev: string[]) => {
           const newGuess = [...prev];
@@ -1569,6 +1623,13 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           newGuess[revealIndex] = answerLetters[revealIndex];
           return newGuess;
         });
+        setActiveSlotIndexSynced(
+          resolveEditableGuessSlot(
+            activeSlotIndexRef.current,
+            answerLength,
+            nextHintRevealedIndices
+          ) ?? Math.max(0, Math.min(answerLength - 1, activeSlotIndexRef.current))
+        );
 
         Promise.resolve(onHintUsed(hintCost))
           .then((newlyUnlockedAchievementIds) => {
@@ -1630,7 +1691,9 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     currentUserCoins,
     hintCost,
     answer,
+    answerLength,
     setCurrentGuess,
+    setActiveSlotIndexSynced,
     onHintUsed,
     currentUserCoins,
   ]);

@@ -145,10 +145,8 @@ export async function updateUserStats(
   const userRef = getDb().collection("users").doc(userId);
 
   const statsFieldUpdates = Object.fromEntries(
-    Object.entries(statsUpdate).flatMap(([key, value]) =>
-      value === undefined ? [] : [[`stats.${key}`, value]],
-    ),
-  ) as Record<string, unknown>;
+    Object.entries(statsUpdate).flatMap(([key, value]) => (value === undefined ? [] : [[`stats.${key}`, value]])),
+  ) as admin.firestore.UpdateData<Player>;
 
   const updateOperation = async (txn: admin.firestore.Transaction) => {
     const userDoc = await txn.get(userRef);
@@ -396,10 +394,7 @@ export async function ensureUserDocumentComplete(userId: string): Promise<void> 
  * @param newEntries - Array of { achievementId, unlockedAt } to append.
  * @return A promise that resolves when the update is complete.
  */
-export async function appendUnlockedAchievements(
-  userId: string,
-  newEntries: UnlockedAchievement[],
-): Promise<void> {
+export async function appendUnlockedAchievements(userId: string, newEntries: UnlockedAchievement[]): Promise<void> {
   if (newEntries.length === 0) return;
   const userRef = getDb().collection("users").doc(userId);
   const userDoc = await userRef.get();

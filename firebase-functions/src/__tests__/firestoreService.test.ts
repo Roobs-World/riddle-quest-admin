@@ -7,7 +7,7 @@ const mockFirestore = {
   runTransaction: jest.fn(),
 };
 const firestoreWithFieldValue = Object.assign(() => mockFirestore, {
-  FieldValue: { arrayUnion: (...args: any[]) => args },
+  FieldValue: {arrayUnion: (...args: any[]) => args},
 });
 
 const mockCollection = {
@@ -401,9 +401,7 @@ describe("FirestoreService", () => {
       const result = await getRiddle(testRiddleId);
 
       expect(result).toBeUndefined();
-      expect(mockLogger.info).toHaveBeenCalledWith(
-        `Classic riddle data is null for ID ${testRiddleId}`,
-      );
+      expect(mockLogger.info).toHaveBeenCalledWith(`Classic riddle data is null for ID ${testRiddleId}`);
     });
 
     test("should add riddleId to data if missing", async () => {
@@ -576,7 +574,7 @@ describe("FirestoreService", () => {
           userId: testUserId,
           email: testUserData.email,
           username: testUserData.username,
-          coins: 100,
+          coins: 300,
           hasPurchasedApp: false,
           stats: expect.objectContaining({
             dailyPuzzlesCompleted: 0,
@@ -619,10 +617,7 @@ describe("FirestoreService", () => {
       (mockDoc.set as jest.MockedFunction<any>).mockRejectedValue(testError);
 
       await expect(initializeNewUser(testUserId, testUserData)).rejects.toThrow("Firestore write failed");
-      expect(mockLogger.error).toHaveBeenCalledWith(
-        `Error initializing new user ${testUserId}:`,
-        testError,
-      );
+      expect(mockLogger.error).toHaveBeenCalledWith(`Error initializing new user ${testUserId}:`, testError);
     });
   });
 
@@ -877,7 +872,7 @@ describe("FirestoreService", () => {
 
       expect(mockDoc.update).toHaveBeenCalledWith(
         expect.objectContaining({
-          coins: 100,
+          coins: 300,
         }),
       );
     });
@@ -946,20 +941,16 @@ describe("FirestoreService", () => {
     });
 
     test("should do nothing and warn when user document does not exist", async () => {
-      (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue({ exists: false });
+      (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue({exists: false});
 
-      await appendUnlockedAchievements(testUserId, [
-        { achievementId: "first_win", unlockedAt: 1000 },
-      ]);
+      await appendUnlockedAchievements(testUserId, [{achievementId: "first_win", unlockedAt: 1000}]);
 
-      expect(mockLogger.warn).toHaveBeenCalledWith(
-        `Cannot append achievements: user ${testUserId} not found`,
-      );
+      expect(mockLogger.warn).toHaveBeenCalledWith(`Cannot append achievements: user ${testUserId} not found`);
       expect(mockDoc.update).not.toHaveBeenCalled();
     });
 
     test("should append new achievements when user exists and has no existing unlocks", async () => {
-      const userData = { unlockedAchievements: [] };
+      const userData = {unlockedAchievements: []};
       (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue({
         exists: true,
         data: () => userData,
@@ -967,8 +958,8 @@ describe("FirestoreService", () => {
       (mockDoc.update as jest.MockedFunction<any>).mockResolvedValue(undefined);
 
       const newEntries = [
-        { achievementId: "first_win", unlockedAt: 1000 },
-        { achievementId: "wins_5", unlockedAt: 1001 },
+        {achievementId: "first_win", unlockedAt: 1000},
+        {achievementId: "wins_5", unlockedAt: 1001},
       ];
 
       await appendUnlockedAchievements(testUserId, newEntries);
@@ -979,14 +970,12 @@ describe("FirestoreService", () => {
           unlockedAchievements: expect.anything(),
         }),
       );
-      expect(mockLogger.info).toHaveBeenCalledWith(
-        `Appended 2 achievements for user ${testUserId}`,
-      );
+      expect(mockLogger.info).toHaveBeenCalledWith(`Appended 2 achievements for user ${testUserId}`);
     });
 
     test("should not duplicate already unlocked achievement ids", async () => {
       const userData = {
-        unlockedAchievements: [{ achievementId: "first_win", unlockedAt: 999 }],
+        unlockedAchievements: [{achievementId: "first_win", unlockedAt: 999}],
       };
       (mockDoc.get as jest.MockedFunction<any>).mockResolvedValue({
         exists: true,
@@ -994,9 +983,7 @@ describe("FirestoreService", () => {
       });
       (mockDoc.update as jest.MockedFunction<any>).mockResolvedValue(undefined);
 
-      await appendUnlockedAchievements(testUserId, [
-        { achievementId: "first_win", unlockedAt: 1000 },
-      ]);
+      await appendUnlockedAchievements(testUserId, [{achievementId: "first_win", unlockedAt: 1000}]);
 
       expect(mockDoc.update).not.toHaveBeenCalled();
     });
@@ -1015,9 +1002,7 @@ describe("FirestoreService", () => {
       const result = await getDailyRiddle(testRiddleId);
 
       expect(result).toBeUndefined();
-      expect(mockLogger.info).toHaveBeenCalledWith(
-        `Daily riddle data is null for ID ${testRiddleId}`,
-      );
+      expect(mockLogger.info).toHaveBeenCalledWith(`Daily riddle data is null for ID ${testRiddleId}`);
     });
 
     test("should return riddle data when daily riddle exists", async () => {

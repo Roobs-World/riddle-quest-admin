@@ -735,7 +735,11 @@ describe("GameScreen", () => {
         render(<GameScreen {...defaultProps} />);
 
         await waitFor(() => {
-          expect(mockShowWelcomeModal).toHaveBeenCalled();
+          expect(mockShowWelcomeModal).toHaveBeenCalledWith(
+            expect.objectContaining({
+              onboardingProgress: { current: 1, total: 3 },
+            })
+          );
         });
         expect(mockShowInfoModal).not.toHaveBeenCalled();
       } finally {
@@ -766,6 +770,7 @@ describe("GameScreen", () => {
             expect.objectContaining({
               title: "Guest Mode",
               actionButtonText: "Upgrade Account",
+              onboardingProgress: { current: 2, total: 3 },
               onAction: expect.any(Function),
             })
           );
@@ -1502,6 +1507,54 @@ describe("GameScreen", () => {
       await waitFor(() => {
         expect(mockShowLossModal).toHaveBeenCalledTimes(1);
       });
+    });
+
+    it("shows victory instead of a stale loss after a successful post-continue guess", async () => {
+      const { httpsCallable } = require("@react-native-firebase/functions");
+      const spendCoins = jest.fn(() => Promise.resolve({ data: {} }));
+      httpsCallable.mockReturnValue(spendCoins);
+      mockUseGameLogic.currentGuess = ["K", "E", "Y", "B", "O", "A", "R", "D"];
+      mockUseGameLogic.processGuess
+        .mockResolvedValueOnce({
+          outcome: "attemptLimitReached",
+          correctAnswer: "ANSWER",
+          canOfferCoinContinue: true,
+        })
+        .mockResolvedValueOnce({
+          outcome: "win",
+          coinsEarned: 10,
+          scoreEarned: 20,
+        });
+
+      const { rerender } = render(<GameScreen {...defaultProps} userCoins={100} />);
+      let inputProps = getLatestProps(mockGameInput);
+      await act(async () => {
+        await inputProps.handleSubmit();
+      });
+      mockUseGameLogic.gameOver = true;
+      rerender(<GameScreen {...defaultProps} userCoins={100} />);
+
+      await waitFor(() => {
+        expect(mockShowLossModal).toHaveBeenCalledTimes(1);
+      });
+      const config = mockShowLossModal.mock.calls[0][0];
+      await config.onCoinContinue();
+
+      mockShowLossModal.mockClear();
+      mockUseGameLogic.gameOver = false;
+      rerender(<GameScreen {...defaultProps} userCoins={100} />);
+
+      inputProps = getLatestProps(mockGameInput);
+      await act(async () => {
+        await inputProps.handleSubmit();
+      });
+      mockUseGameLogic.gameOver = true;
+      rerender(<GameScreen {...defaultProps} userCoins={100} />);
+
+      await waitFor(() => {
+        expect(mockShowVictoryModal).toHaveBeenCalled();
+      });
+      expect(mockShowLossModal).not.toHaveBeenCalled();
     });
 
     it("shows loss modal for terminal loss and triggers onGameLoss", async () => {
@@ -2444,6 +2497,7 @@ describe("GameScreen", () => {
     });
 
     it("covers keypress truncation and backspace updater branches", () => {
+      mockUseGameLogic.currentGuess = ["A", "B"];
       render(<GameScreen {...defaultProps} answerLength={4} answer="TEST" />);
       const boardProps = getLatestProps(mockGameBoard);
       boardProps.handleKeyPress("Z");

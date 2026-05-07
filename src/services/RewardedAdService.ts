@@ -11,6 +11,7 @@ const REWARDED_AD_TEST_UNIT_ID = "ca-app-pub-3940256099942544/5224354917";
 const MAX_LOAD_RETRY_ATTEMPTS = 3;
 const LOAD_RETRY_DELAY_MS = 1500;
 const SHOW_WAIT_TIMEOUT_MS = 4000;
+const REWARD_CONFIRMATION_TIMEOUT_MS = 1500;
 
 let rewardedAd: RewardedAd | null = null;
 let initializePromise: Promise<void> | null = null;
@@ -192,22 +193,41 @@ export const showRewardedAd = async (): Promise<boolean> => {
   }
 
   let didEarnReward = false;
+  let resolveRewardConfirmation: ((didEarnReward: boolean) => void) | null = null;
+  const rewardConfirmation = new Promise<boolean>((resolve) => {
+    resolveRewardConfirmation = resolve;
+  });
+
+  const rewardConfirmationTimeout = setTimeout(() => {
+    resolveRewardConfirmation?.(didEarnReward);
+    resolveRewardConfirmation = null;
+  }, REWARD_CONFIRMATION_TIMEOUT_MS);
+
   const unsubscribeReward = rewardedAd.addAdEventListener(
     RewardedAdEventType.EARNED_REWARD,
     () => {
       didEarnReward = true;
+      resolveRewardConfirmation?.(true);
+      resolveRewardConfirmation = null;
     }
   );
 
+  const unsubscribeClosed = rewardedAd.addAdEventListener(AdEventType.CLOSED, () => {
+    resolveRewardConfirmation?.(didEarnReward);
+    resolveRewardConfirmation = null;
+  });
+
   try {
     await rewardedAd.show();
-    return didEarnReward;
+    return await rewardConfirmation;
   } catch (error) {
     logger.error("Failed to show rewarded ad", error);
     captureException(error);
     return false;
   } finally {
+    clearTimeout(rewardConfirmationTimeout);
     unsubscribeReward();
+    unsubscribeClosed();
     setReadyState(false);
     loadRewardedAd();
   }

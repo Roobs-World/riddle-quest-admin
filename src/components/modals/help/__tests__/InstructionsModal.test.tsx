@@ -51,6 +51,19 @@ describe("InstructionsModal", () => {
 
       expect(getByTestId("close-button")).toBeTruthy();
     });
+
+    it("renders onboarding progress when provided", () => {
+      const { getByText, getByTestId } = render(
+        <InstructionsModal
+          isVisible={true}
+          onClose={mockOnClose}
+          onboardingProgress={{ current: 3, total: 3 }}
+        />
+      );
+
+      expect(getByTestId("onboarding-progress-badge")).toBeTruthy();
+      expect(getByText("3/3")).toBeTruthy();
+    });
   });
 
   describe("Visibility", () => {

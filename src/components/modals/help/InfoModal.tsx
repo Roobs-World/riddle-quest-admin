@@ -7,6 +7,8 @@ import WideButton from "../../buttons/WideButton";
 import {MODAL_WIDTH, MODAL_HEIGHT} from "../../../constants/layout";
 import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
+import OnboardingProgressBadge from "../OnboardingProgressBadge";
+import {OnboardingProgress} from "../../../types/ModalTypes";
 
 interface InfoModalProps {
   isVisible: boolean;
@@ -16,6 +18,7 @@ interface InfoModalProps {
   onAction?: () => void;
   onConfirm?: () => void;
   onClose: () => void;
+  onboardingProgress?: OnboardingProgress;
 }
 
 const InfoModal: React.FC<InfoModalProps> = ({
@@ -26,6 +29,7 @@ const InfoModal: React.FC<InfoModalProps> = ({
   onAction,
   onConfirm,
   onClose,
+  onboardingProgress,
 }) => {
   const handleConfirm = () => {
     onConfirm?.();
@@ -63,6 +67,9 @@ const InfoModal: React.FC<InfoModalProps> = ({
               height={MODAL_HEIGHT * 1.1}
               style={{position: "absolute", top: -MODAL_HEIGHT * 0.05, left: -MODAL_WIDTH * 0.05}}
             />
+            {onboardingProgress ? (
+              <OnboardingProgressBadge {...onboardingProgress} />
+            ) : null}
 
             <View
               style={{

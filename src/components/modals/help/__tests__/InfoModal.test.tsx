@@ -52,7 +52,8 @@ jest.mock("../../../../styles", () => ({
   TYPOGRAPHY: {
     fontPrimary: "System",
     fontSecondary: "System",
-    fontSize: { lg: 18, title: 24 },
+    fontSecondaryBold: "System-Bold",
+    fontSize: { sm: 12, lg: 18, title: 24 },
   },
   SPACING: { lg: 24 },
 }));
@@ -124,6 +125,18 @@ describe("InfoModal", () => {
       const { getAllByTestId } = render(<InfoModal {...defaultProps} />);
 
       expect(getAllByTestId("modal-bg").length).toBeGreaterThan(0);
+    });
+
+    it("should render onboarding progress when provided", () => {
+      const { getByText, getByTestId } = render(
+        <InfoModal
+          {...defaultProps}
+          onboardingProgress={{ current: 2, total: 3 }}
+        />
+      );
+
+      expect(getByTestId("onboarding-progress-badge")).toBeTruthy();
+      expect(getByText("2/3")).toBeTruthy();
     });
   });
 

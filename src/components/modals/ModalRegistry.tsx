@@ -42,6 +42,7 @@ import {
   AchievementUnlockFanfareItem,
   BaseModalProps,
   ModalData,
+  OnboardingProgress,
 } from "../../types/ModalTypes";
 import { SubmittedGuess } from "../../hooks/types";
 import { Player } from "../../validation/firestoreSchemas";
@@ -315,6 +316,9 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
     actionButtonText: props.actionButtonText as string | undefined,
     onAction: (props.onAction as (() => void) | undefined) ?? undefined,
     onConfirm: (props.onConfirm as (() => void) | undefined) ?? undefined,
+    onboardingProgress: props.onboardingProgress as
+      | OnboardingProgress
+      | undefined,
     onClose: props.onClose,
   })),
 
@@ -345,6 +349,9 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
       isVisible: props.isVisible,
       onClose: props.onClose,
       onDismiss: (props as { onDismiss?: () => void }).onDismiss,
+      onboardingProgress: props.onboardingProgress as
+        | OnboardingProgress
+        | undefined,
     })
   ),
 
@@ -363,6 +370,9 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
     (props: BaseModalProps & ModalData) => ({
       isVisible: props.isVisible,
       onClose: props.onClose,
+      onboardingProgress: props.onboardingProgress as
+        | OnboardingProgress
+        | undefined,
     })
   ),
 

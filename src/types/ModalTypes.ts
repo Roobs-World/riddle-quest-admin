@@ -62,6 +62,11 @@ export interface AchievementUnlockFanfareItem {
   icon: string;
 }
 
+export interface OnboardingProgress {
+  current: number;
+  total: number;
+}
+
 // Game-specific modal types for type safety
 export interface GameModalTypes {
   // Game modals
@@ -162,6 +167,7 @@ export interface GameModalTypes {
   welcome: {
     /** Optional callback fired after the welcome modal is dismissed. */
     onDismiss?: () => void;
+    onboardingProgress?: OnboardingProgress;
   };
 
   welcomeBack: {
@@ -170,7 +176,9 @@ export interface GameModalTypes {
     onDismiss?: () => void;
   };
 
-  instructions: Record<string, never>;
+  instructions: {
+    onboardingProgress?: OnboardingProgress;
+  };
 
   credits: Record<string, never>;
 
@@ -183,6 +191,7 @@ export interface GameModalTypes {
     actionButtonText?: string;
     /** Optional callback fired when the secondary action button is pressed. */
     onAction?: () => void;
+    onboardingProgress?: OnboardingProgress;
   };
 
   // Shop modals

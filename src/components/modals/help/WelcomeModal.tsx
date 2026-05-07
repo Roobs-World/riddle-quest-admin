@@ -12,15 +12,23 @@ import {AppStrings} from "../../../constants/AppStrings";
 import {verticalScale} from "@/utils/responsive";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import RotatingWheelBackground from "../../shared/RotatingWheelBackground";
+import OnboardingProgressBadge from "../OnboardingProgressBadge";
+import {OnboardingProgress} from "../../../types/ModalTypes";
 
 interface WelcomeModalProps {
   isVisible: boolean;
   onClose: () => void;
   /** Optional callback fired after the welcome modal is dismissed. */
   onDismiss?: () => void;
+  onboardingProgress?: OnboardingProgress;
 }
 
-const WelcomeModal: React.FC<WelcomeModalProps> = ({isVisible, onClose, onDismiss}) => {
+const WelcomeModal: React.FC<WelcomeModalProps> = ({
+  isVisible,
+  onClose,
+  onDismiss,
+  onboardingProgress,
+}) => {
   const handleDismiss = () => {
     onClose();
     onDismiss?.();
@@ -62,6 +70,9 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({isVisible, onClose, onDismis
                 height={MODAL_HEIGHT * 1.1}
                 style={{position: "absolute", top: -MODAL_HEIGHT * 0.05, left: -MODAL_WIDTH * 0.05}}
               />
+              {onboardingProgress ? (
+                <OnboardingProgressBadge {...onboardingProgress} />
+              ) : null}
 
               {/* Content */}
               <View
