@@ -33,6 +33,12 @@ import {
   COLOR_CLUE_MARGIN_RIGHT,
   SETTINGS_PANEL_BORDER_RADIUS,
   MAX_CONTENT_WIDTH,
+  AUTH_CONTENT_MAX_WIDTH,
+  LANDING_LOGO_WIDTH,
+  LANDING_LOGO_HEIGHT,
+  GAME_HEADER_SLOT_HEIGHT,
+  RIDDLE_CONTAINER_SLOT_HEIGHT,
+  GUESS_GRID_SLOT_HEIGHT,
   GUESS_TILE_MAX_SIZE,
   GUESS_GRID_EFFECTIVE_WIDTH,
   GUESS_GRID_H_PADDING,
@@ -212,6 +218,33 @@ describe("layout constants", () => {
     it("should be a reasonable desktop/tablet width", () => {
       expect(MAX_CONTENT_WIDTH).toBeGreaterThanOrEqual(400);
       expect(MAX_CONTENT_WIDTH).toBeLessThanOrEqual(800);
+    });
+
+    it("should cap auth content below full game content width", () => {
+      expect(AUTH_CONTENT_MAX_WIDTH).toBeGreaterThanOrEqual(360);
+      expect(AUTH_CONTENT_MAX_WIDTH).toBeLessThan(MAX_CONTENT_WIDTH);
+    });
+
+    it("should preserve the landing logo aspect ratio", () => {
+      expect(LANDING_LOGO_WIDTH).toBeGreaterThan(0);
+      expect(LANDING_LOGO_HEIGHT).toBeCloseTo(LANDING_LOGO_WIDTH * (150 / 320));
+      expect(LANDING_LOGO_WIDTH).toBeLessThanOrEqual(AUTH_CONTENT_MAX_WIDTH);
+    });
+  });
+
+  describe("game vertical slots", () => {
+    it("should expose percentage slot heights", () => {
+      expect(GAME_HEADER_SLOT_HEIGHT).toMatch(/^\d+%$/);
+      expect(RIDDLE_CONTAINER_SLOT_HEIGHT).toMatch(/^\d+%$/);
+      expect(GUESS_GRID_SLOT_HEIGHT).toMatch(/^\d+%$/);
+    });
+
+    it("should keep fixed game slots within the viewport budget", () => {
+      const header = Number.parseInt(String(GAME_HEADER_SLOT_HEIGHT), 10);
+      const riddle = Number.parseInt(String(RIDDLE_CONTAINER_SLOT_HEIGHT), 10);
+      const grid = Number.parseInt(String(GUESS_GRID_SLOT_HEIGHT), 10);
+
+      expect(header + riddle + grid).toBeLessThanOrEqual(70);
     });
   });
 

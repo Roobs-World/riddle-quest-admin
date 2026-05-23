@@ -37,6 +37,8 @@ import {
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import { useTooltip } from "../../../contexts/TooltipContext";
 import type { TooltipId } from "../../tooltips/types";
+import DeleteAccountConfirmationModal from "./DeleteAccountConfirmationModal";
+import { getCallableFunction } from "../../../utils/firebaseFunctions";
 
 interface FullProfileDetailsModalProps {
   isVisible: boolean;
@@ -108,7 +110,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
 }) => {
   const modal = useModal();
   const tooltip = useTooltip();
-  const { updatePlayerData, playerData: authPlayerData } = useAuth();
+  const { logout, updatePlayerData, playerData: authPlayerData } = useAuth();
   const resolvedPlayerData = authPlayerData ?? playerData;
   const firebaseUser = getAuth(getApp()).currentUser;
   const isGuestMode = firebaseUser
@@ -117,6 +119,8 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
   const [isUsernameModalVisible, setIsUsernameModalVisible] = useState(false);
   const [isUpgradeModalVisible, setIsUpgradeModalVisible] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [isDeleteConfirmVisible, setIsDeleteConfirmVisible] = useState(false);
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(
     resolvedPlayerData?.avatarUrl ?? null
   );
@@ -192,6 +196,29 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
       );
     } finally {
       setIsUploading(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (isDeletingAccount) {
+      return;
+    }
+
+    try {
+      setIsDeletingAccount(true);
+      const deleteAccountCallable = getCallableFunction("deleteAccount");
+      await deleteAccountCallable({});
+      setIsDeleteConfirmVisible(false);
+      onClose();
+      await logout();
+    } catch {
+      setIsDeleteConfirmVisible(false);
+      modal.showInfoModal({
+        title: AppStrings.Profile.DELETE_ACCOUNT_ERROR_TITLE,
+        message: AppStrings.Profile.DELETE_ACCOUNT_ERROR_MESSAGE,
+      });
+    } finally {
+      setIsDeletingAccount(false);
     }
   };
 
@@ -672,6 +699,24 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
               </View>
             </TouchableOpacity>
 
+            <View style={{ height: SPACING.md }} />
+
+            <TouchableOpacity
+              disabled={!hasProfileData || isDeletingAccount}
+              onPress={() => setIsDeleteConfirmVisible(true)}
+              testID="delete-account-button"
+              style={[
+                deleteAccountButtonStyle,
+                !hasProfileData || isDeletingAccount
+                  ? actionButtonDisabledStyle
+                  : null,
+              ]}
+            >
+              <Text style={deleteAccountButtonTextStyle}>
+                {AppStrings.Profile.DELETE_ACCOUNT_BUTTON}
+              </Text>
+            </TouchableOpacity>
+
             <View
               style={{ height: SPACING.xl, marginBottom: verticalScale(24) }}
             />
@@ -692,6 +737,13 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
           onClose={() => setIsUpgradeModalVisible(false)}
         />
       ) : null}
+
+      <DeleteAccountConfirmationModal
+        isVisible={isDeleteConfirmVisible}
+        isDeleting={isDeletingAccount}
+        onCancel={() => setIsDeleteConfirmVisible(false)}
+        onConfirm={handleDeleteAccount}
+      />
 
       <PulsingSpinner
         visible={isUploading}
@@ -724,6 +776,19 @@ const actionButtonTextStyle = {
   fontFamily: TYPOGRAPHY.fontPrimary,
   fontSize: TYPOGRAPHY.fontSize.base,
   color: "#1A1A1A",
+};
+
+const deleteAccountButtonStyle = {
+  backgroundColor: "#C93535",
+  borderRadius: 14,
+  paddingVertical: 14,
+  alignItems: "center" as const,
+};
+
+const deleteAccountButtonTextStyle = {
+  fontFamily: TYPOGRAPHY.fontPrimary,
+  fontSize: TYPOGRAPHY.fontSize.base,
+  color: "#FFFFFF",
 };
 
 const ProfileHelpButton = ({

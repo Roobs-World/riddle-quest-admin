@@ -344,15 +344,20 @@ const LoginScreen = ({
         </TouchableOpacity>
       </AuthLayout>
 
-      <WideButton
-        buttonText={AppStrings.AuthStrings.Login.LOGIN_BUTTON}
-        onPress={handleLogin}
-        disabled={isLoading}
-      />
+      <View style={styles.authContentContainer}>
+        <WideButton
+          buttonText={AppStrings.AuthStrings.Login.LOGIN_BUTTON}
+          onPress={handleLogin}
+          disabled={isLoading}
+        />
 
-      {authError && <Error message={authError} />}
+        {authError && <Error message={authError} />}
+      </View>
 
-      <View className="w-full items-center" style={{ marginTop: SPACING.xl }}>
+      <View
+        className="w-full items-center"
+        style={[styles.authContentContainer, { marginTop: SPACING.xl }]}
+      >
         <Text className="text-center text-white" style={{ marginBottom: SPACING.md }}>
           {AppStrings.AuthStrings.Login.OR_LOGIN_WITH}
         </Text>
@@ -364,7 +369,10 @@ const LoginScreen = ({
         />
       </View>
 
-      <View className="flex-row items-center justify-center" style={{ marginTop: SPACING.lg }}>
+      <View
+        className="flex-row items-center justify-center"
+        style={[styles.authContentContainer, { marginTop: SPACING.lg }]}
+      >
         <Text className="text-white" style={{ fontSize: TYPOGRAPHY.fontSize.sm }}>
           {AppStrings.AuthStrings.Login.NO_ACCOUNT_PROMPT}
         </Text>

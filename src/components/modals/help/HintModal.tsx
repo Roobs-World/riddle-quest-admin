@@ -9,7 +9,7 @@ import {TYPOGRAPHY} from "../../../styles";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
 import WideButton from "src/components/buttons/WideButton";
-import {MODAL_WIDTH, MODAL_HEIGHT, CLOSE_BUTTON_SIZE, MODAL_CLOSE_BUTTON_POSITION} from "../../../constants/layout";
+import {MODAL_WIDTH, MODAL_HEIGHT, CLOSE_BUTTON_SIZE, MODAL_CLOSE_BUTTON_POSITION, getResponsiveModalHeight} from "../../../constants/layout";
 import {SPACING} from "../../../styles";
 import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
@@ -42,7 +42,7 @@ interface HintModalProps {
  */
 const HintModal: React.FC<HintModalProps> = ({isVisible, userCoins, hintCost, onShowHint, onClose, onOpenShop}) => {
   const canAffordHint = userCoins >= hintCost;
-  const hintModalHeight = MODAL_HEIGHT * 1.4;
+  const hintModalHeight = getResponsiveModalHeight(1.4);
 
   return (
     <Modal visible={isVisible} transparent={true} animationType="none" onRequestClose={onClose}>
@@ -54,7 +54,7 @@ const HintModal: React.FC<HintModalProps> = ({isVisible, userCoins, hintCost, on
           backgroundColor: "rgba(0,0,0,0.5)",
         }}
       >
-        <SlideInModalContent isVisible={isVisible}>
+        <SlideInModalContent isVisible={isVisible} style={{alignItems: "center"}}>
           <View
             style={{
               width: MODAL_WIDTH,
@@ -72,8 +72,8 @@ const HintModal: React.FC<HintModalProps> = ({isVisible, userCoins, hintCost, on
             {/* Decorative wave — clipped to card bounds */}
             <HomeBg
               width={MODAL_WIDTH * 1.1}
-              height={MODAL_HEIGHT * 1.1}
-              style={{position: "absolute", top: -MODAL_HEIGHT * 0.05, left: -MODAL_WIDTH * 0.05}}
+              height={hintModalHeight * 1.05}
+              style={{position: "absolute", top: -hintModalHeight * 0.05, left: -MODAL_WIDTH * 0.05}}
             />
             <CloseButton
               onPress={onClose}

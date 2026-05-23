@@ -80,6 +80,7 @@ jest.mock("firebase-functions/v2/https", () => ({
 import * as riddleGeneration from "../riddleGeneration";
 
 describe("riddleGeneration", () => {
+  const adminCallableRequest = {auth: {uid: "admin-user", token: {admin: true}}, data: {}} as any;
   const mockRiddleRef = {id: "test-riddle-id"};
   const mockBatch = {
     set: mockSet,
@@ -712,7 +713,7 @@ describe("riddleGeneration", () => {
           where: mockWhere,
         } as any);
 
-        const result = await riddleGeneration.generateClassicRiddles({} as any, {} as any);
+        const result = await riddleGeneration.generateClassicRiddles(adminCallableRequest);
 
         expect(result).toEqual({
           success: true,
@@ -723,7 +724,7 @@ describe("riddleGeneration", () => {
       test("should handle errors and throw HttpsError", async () => {
         (mockGenerateUniqueRiddle as any).mockRejectedValue(new Error("Generation failed"));
 
-        await expect(riddleGeneration.generateClassicRiddles({} as any, {} as any)).rejects.toThrow();
+        await expect(riddleGeneration.generateClassicRiddles(adminCallableRequest)).rejects.toThrow();
       });
     });
 
@@ -742,7 +743,7 @@ describe("riddleGeneration", () => {
           where: jest.fn().mockReturnValue(existenceQuery),
         } as any);
 
-        const result = await riddleGeneration.initializeRiddleDatabase({} as any, {} as any);
+        const result = await riddleGeneration.initializeRiddleDatabase(adminCallableRequest);
 
         expect(result).toEqual({
           success: true,
@@ -774,7 +775,7 @@ describe("riddleGeneration", () => {
 
         (mockGenerateUniqueRiddle as any).mockResolvedValue(["Init riddle?", "init"]);
 
-        const result = await riddleGeneration.initializeRiddleDatabase({} as any, {} as any);
+        const result = await riddleGeneration.initializeRiddleDatabase(adminCallableRequest);
 
         expect(result).toEqual({
           success: true,
@@ -793,7 +794,7 @@ describe("riddleGeneration", () => {
           where: jest.fn().mockReturnValue(existenceQuery),
         } as any);
 
-        await expect(riddleGeneration.initializeRiddleDatabase({} as any, {} as any)).rejects.toThrow();
+        await expect(riddleGeneration.initializeRiddleDatabase(adminCallableRequest)).rejects.toThrow();
       });
     });
 
@@ -806,7 +807,7 @@ describe("riddleGeneration", () => {
           where: mockWhere,
         } as any);
 
-        const result = await riddleGeneration.generateDailyRiddles({} as any, {} as any);
+        const result = await riddleGeneration.generateDailyRiddles(adminCallableRequest);
 
         expect(result).toEqual({
           success: true,
@@ -819,7 +820,7 @@ describe("riddleGeneration", () => {
           throw new Error("Firestore error");
         });
 
-        await expect(riddleGeneration.generateDailyRiddles({} as any, {} as any)).rejects.toThrow();
+        await expect(riddleGeneration.generateDailyRiddles(adminCallableRequest)).rejects.toThrow();
       });
     });
   });
@@ -899,8 +900,7 @@ describe("riddleGeneration", () => {
       });
 
       const result = await riddleGeneration.generateTodaysDailyChallengeFunction(
-        {data: {}} as any,
-        {} as any,
+        adminCallableRequest,
       );
 
       expect(result.success).toBe(true);
@@ -915,7 +915,7 @@ describe("riddleGeneration", () => {
       } as any);
 
       await expect(
-        riddleGeneration.generateTodaysDailyChallengeFunction({data: {}} as any, {} as any),
+        riddleGeneration.generateTodaysDailyChallengeFunction(adminCallableRequest),
       ).rejects.toThrow();
     });
   });

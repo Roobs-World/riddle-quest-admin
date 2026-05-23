@@ -4,7 +4,7 @@ import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
 import {TYPOGRAPHY} from "../../../styles";
 import {AchievementUnlockFanfareItem} from "../../../types/ModalTypes";
-import {MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, MODAL_BUTTON_SPACER} from "../../../constants/layout";
+import {MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, MODAL_BUTTON_SPACER, getResponsiveModalHeight} from "../../../constants/layout";
 import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {NewCoins} from "@/components/shared/NewCoins";
@@ -34,7 +34,8 @@ const AchievementUnlockFanfareModal: React.FC<AchievementUnlockFanfareModalProps
   onContinue,
   onClose,
 }) => {
-  const modalBgHeight = MODAL_HEIGHT * 1.6;
+  const modalHeight = getResponsiveModalHeight(1);
+  const modalBgHeight = getResponsiveModalHeight(1.6);
   const modalBgOffsetY = -(modalBgHeight - MODAL_HEIGHT) / 2;
 
   const primaryAchievementName =
@@ -59,12 +60,12 @@ const AchievementUnlockFanfareModal: React.FC<AchievementUnlockFanfareModalProps
         }}
       >
         <RotatingWheelBackground isVisible={isVisible} />
-        <SlideInModalContent isVisible={isVisible}>
+        <SlideInModalContent isVisible={isVisible} style={{alignItems: "center"}}>
           <TouchableOpacity testID="achievement-unlock-fanfare-modal" onPress={handleContinue}>
             <View
               style={{
                 width: MODAL_WIDTH,
-                height: MODAL_HEIGHT,
+                height: modalHeight,
                 alignItems: "center",
                 justifyContent: "center",
               }}
@@ -77,15 +78,15 @@ const AchievementUnlockFanfareModal: React.FC<AchievementUnlockFanfareModalProps
               />
               <HomeBg
                 width={MODAL_WIDTH * 1.1}
-                height={MODAL_HEIGHT * 1.1}
-                style={{position: "absolute", top: -MODAL_HEIGHT * 0.25, left: -MODAL_WIDTH * 0.05}}
+                height={modalHeight * 1.1}
+                style={{position: "absolute", top: -modalHeight * 0.25, left: -MODAL_WIDTH * 0.05}}
               />
 
               <View
                 style={{
                   position: "absolute",
                   width: MODAL_WIDTH,
-                  height: MODAL_HEIGHT,
+                  height: modalHeight,
                   alignItems: "center",
                   justifyContent: "center",
                   gap: MODAL_BUTTON_SPACER,

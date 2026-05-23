@@ -23,6 +23,85 @@ interface InitializeUserResponseData {
   userId: string;
 }
 
+interface DeleteAccountResponseData {
+  success: boolean;
+  message: string;
+}
+
+const USER_ID_FIELD_COLLECTIONS = ["purchaseAnalytics", "notificationHistory"] as const;
+const USER_STORAGE_PREFIXES = ["avatars", "exports"] as const;
+
+const isAuthUserNotFoundError = (error: unknown): boolean => {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    (error as {code?: string}).code === "auth/user-not-found"
+  );
+};
+
+const deleteUserOwnedCollectionDocs = async (
+  collectionName: string,
+  userId: string,
+): Promise<number> => {
+  const db = admin.firestore();
+  let deletedCount = 0;
+  const pageSize = 450;
+
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    const snapshot = await db
+      .collection(collectionName)
+      .where("userId", "==", userId)
+      .limit(pageSize)
+      .get();
+
+    if (snapshot.empty) {
+      return deletedCount;
+    }
+
+    const batch = db.batch();
+    snapshot.docs.forEach((doc) => {
+      batch.delete(doc.ref);
+    });
+    await batch.commit();
+    deletedCount += snapshot.size;
+  }
+};
+
+export const deleteAccountForUser = async (userId: string): Promise<void> => {
+  const db = admin.firestore();
+  const userRef = db.collection("users").doc(userId);
+
+  await db.recursiveDelete(userRef);
+  await db.collection("leaderboard").doc(userId).delete();
+
+  await Promise.all(
+    USER_ID_FIELD_COLLECTIONS.map(async (collectionName) => {
+      const deleted = await deleteUserOwnedCollectionDocs(collectionName, userId);
+      if (deleted > 0) {
+        functions.logger.info(`Deleted ${deleted} ${collectionName} docs for user ${userId}.`);
+      }
+    }),
+  );
+
+  await Promise.all(
+    USER_STORAGE_PREFIXES.map(async (folder) => {
+      const prefix = `${folder}/${userId}/`;
+      await admin.storage().bucket().deleteFiles({prefix});
+    }),
+  );
+
+  try {
+    await admin.auth().deleteUser(userId);
+  } catch (error) {
+    if (!isAuthUserNotFoundError(error)) {
+      throw error;
+    }
+    functions.logger.info(`Auth user ${userId} was already missing during account deletion.`);
+  }
+};
+
 /**
  * Callable function to initialize a new user document with default stats and progress.
  * This should be called when a new user account is created to ensure proper data structure.
@@ -106,6 +185,34 @@ export const ensureUserComplete = onCall<object, Promise<{success: boolean; mess
     }
     throw new HttpsError("internal", "An unexpected error occurred while ensuring user completeness.", error);
   }
+  },
+);
+
+export const deleteAccount = onCall<object, Promise<DeleteAccountResponseData>>(
+  {enforceAppCheck: true},
+  async (request) => {
+    try {
+      if (!request.auth) {
+        throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
+      }
+
+      const userId = request.auth.uid;
+      await deleteAccountForUser(userId);
+
+      functions.logger.info(`Successfully deleted account for ${userId}.`);
+
+      return {
+        success: true,
+        message: "Account deleted successfully.",
+      };
+    } catch (error: unknown) {
+      functions.logger.error("Error in deleteAccount:", error);
+      captureException(error);
+      if (error instanceof HttpsError) {
+        throw error;
+      }
+      throw new HttpsError("internal", "An unexpected error occurred while deleting account.", error);
+    }
   },
 );
 

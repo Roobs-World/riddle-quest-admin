@@ -4,7 +4,7 @@ import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
 import {AppStrings} from "../../../constants/AppStrings";
 import {TYPOGRAPHY, SPACING} from "../../../styles";
-import {AVATAR_SIZE_LARGE, MODAL_CONTENT_PADDING, MODAL_HEIGHT, MODAL_WIDTH} from "../../../constants/layout";
+import {AVATAR_SIZE_LARGE, MODAL_CONTENT_PADDING, MODAL_WIDTH, getResponsiveModalHeight} from "../../../constants/layout";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {moderateScale, verticalScale} from "../../../utils/responsive";
 import RotatingWheelBackground from "@/components/shared/RotatingWheelBackground";
@@ -18,6 +18,7 @@ interface WelcomeBackModalProps {
 }
 
 const WelcomeBackModal: React.FC<WelcomeBackModalProps> = ({isVisible, onClose, username, onDismiss}) => {
+  const modalHeight = getResponsiveModalHeight();
   const {playerData} = useAuth();
   const avatarUrl = playerData?.avatarUrl ?? null;
   const avatarRadius = AVATAR_SIZE_LARGE / 2;
@@ -39,24 +40,24 @@ const WelcomeBackModal: React.FC<WelcomeBackModalProps> = ({isVisible, onClose, 
         }}
       >
         <RotatingWheelBackground isVisible={isVisible} />
-        <SlideInModalContent isVisible={isVisible}>
+        <SlideInModalContent isVisible={isVisible} style={{alignItems: "center"}}>
           <Pressable onPress={handleDismiss} accessibilityRole="button" testID="welcome-back-modal-touch-target">
             <View
               style={{
                 width: MODAL_WIDTH,
-                height: MODAL_HEIGHT,
+                height: modalHeight,
                 alignItems: "center",
                 justifyContent: "center",
                 overflow: "hidden",
               }}
             >
-              <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{position: "absolute"}} />
+              <ModalBg width={MODAL_WIDTH} height={modalHeight} style={{position: "absolute"}} />
               <HomeBg
                 width={MODAL_WIDTH * 1.1}
-                height={MODAL_HEIGHT * 1.1}
+                height={modalHeight * 1.1}
                 style={{
                   position: "absolute",
-                  top: -MODAL_HEIGHT * 0.05,
+                  top: -modalHeight * 0.05,
                   left: -MODAL_WIDTH * 0.05,
                 }}
               />

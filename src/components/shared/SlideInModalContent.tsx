@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import {
   Animated,
-  Dimensions,
   Easing,
   StyleProp,
   ViewStyle,
 } from "react-native";
+import { dimensions } from "../../utils/responsive";
 
 interface SlideInModalContentProps {
   isVisible: boolean;
@@ -15,7 +15,7 @@ interface SlideInModalContentProps {
 
 const ENTRY_OFFSET = 72;
 const ENTRY_DURATION_MS = 420;
-const OFFSCREEN_TRANSLATE_Y = Dimensions.get("window").height + ENTRY_OFFSET;
+const OFFSCREEN_TRANSLATE_Y = dimensions.screenHeight + ENTRY_OFFSET;
 
 const SlideInModalContent: React.FC<SlideInModalContentProps> = ({
   isVisible,

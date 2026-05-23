@@ -7,8 +7,13 @@
  * rather than repeating the calculation inline.
  */
 
-import {scale, verticalScale, moderateScale, dimensions} from "../utils/responsive";
-import {SIZING} from "../styles/tokens/sizing";
+import type { DimensionValue } from "react-native";
+import {
+  scale,
+  verticalScale,
+  moderateScale,
+  dimensions,
+} from "../utils/responsive";
 
 // ---------------------------------------------------------------------------
 // Modals — container
@@ -31,6 +36,19 @@ export const MODAL_WIDTH = Math.min(
 
 /** Responsive modal height — preserves the exact SVG aspect ratio. */
 export const MODAL_HEIGHT = MODAL_WIDTH * (MODAL_BASE_HEIGHT / MODAL_BASE_WIDTH);
+
+/** Maximum fraction of screen height any modal card/background should occupy. */
+export const MODAL_MAX_SCREEN_HEIGHT_FRACTION = 0.88;
+
+/** Maximum modal height in logical pixels for the current screen. */
+export const MODAL_MAX_HEIGHT =
+  dimensions.screenHeight * MODAL_MAX_SCREEN_HEIGHT_FRACTION;
+
+/** Returns a modal height scaled from MODAL_HEIGHT but clamped to the viewport. */
+export const getResponsiveModalHeight = (
+  multiplier = 1,
+  maxScreenFraction = MODAL_MAX_SCREEN_HEIGHT_FRACTION,
+): number => Math.min(MODAL_HEIGHT * multiplier, dimensions.screenHeight * maxScreenFraction);
 
 // ---------------------------------------------------------------------------
 // Modals — content layout
@@ -151,15 +169,57 @@ export const SETTINGS_PANEL_BORDER_RADIUS = moderateScale(15);
  */
 export const MAX_CONTENT_WIDTH = 560;
 
+/**
+ * Maximum width for auth and landing-page controls.
+ * Keeps sign-in forms and button stacks readable on iPad / Android tablets
+ * while still allowing phones to use the available safe-area width.
+ */
+export const AUTH_CONTENT_MAX_WIDTH = 430;
+
+/** Responsive logo width for the unauthenticated landing screen. */
+export const LANDING_LOGO_WIDTH = Math.min(
+  moderateScale(320),
+  dimensions.screenWidth * 0.82,
+  AUTH_CONTENT_MAX_WIDTH,
+);
+
+/** Responsive logo height preserving the source image aspect ratio. */
+export const LANDING_LOGO_HEIGHT = LANDING_LOGO_WIDTH * (150 / 320);
+
+// ---------------------------------------------------------------------------
+// Game vertical slots
+// ---------------------------------------------------------------------------
+
+/** Header slot height as a percentage string, tuned per device tier. */
+export const GAME_HEADER_SLOT_HEIGHT: DimensionValue = "8%";
+
+/** Riddle area height as a percentage string, with more room on tablets. */
+export const RIDDLE_CONTAINER_SLOT_HEIGHT: DimensionValue = dimensions.isDesktop
+  ? "26%"
+  : dimensions.isLargeTablet
+    ? "26%"
+    : dimensions.isTablet
+      ? "24%"
+      : "20%";
+
+/** Guess grid height as a percentage string, balanced against riddle growth. */
+export const GUESS_GRID_SLOT_HEIGHT: DimensionValue = dimensions.isDesktop
+  ? "32%"
+  : dimensions.isLargeTablet
+    ? "32%"
+    : dimensions.isTablet
+      ? "34%"
+      : "36%";
+
 // ---------------------------------------------------------------------------
 // Guess Grid (game board)
 // ---------------------------------------------------------------------------
 
 /**
  * Maximum tile size before it is constrained by screen width or answer length.
- * Derived from SIZING.tile.size so both stay in sync automatically.
+ * Matches the base tile token while avoiding a constants/styles import cycle.
  */
-export const GUESS_TILE_MAX_SIZE = SIZING.tile.size;
+export const GUESS_TILE_MAX_SIZE = scale(56);
 
 /**
  * Effective grid width for tile-size calculations.

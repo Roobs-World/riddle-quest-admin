@@ -275,6 +275,17 @@ const EN_APP_STRINGS = {
     UPGRADE_ACCOUNT_EXISTING_ACCOUNT_TITLE: "Account already exists",
     UPGRADE_ACCOUNT_EXISTING_ACCOUNT_DESCRIPTION:
       "That account already exists. Would you like to log out and sign in with it instead?",
+    DELETE_ACCOUNT_BUTTON: "Delete Account",
+    DELETE_ACCOUNT_CONFIRM_TITLE: "Delete account?",
+    DELETE_ACCOUNT_CONFIRM_MESSAGE:
+      "This permanently deletes your account, profile, progress, leaderboard entry, and saved guest data. This cannot be undone.",
+    DELETE_ACCOUNT_CANCEL_BUTTON: "Cancel",
+    DELETE_ACCOUNT_CONFIRM_BUTTON: "Delete Account",
+    DELETE_ACCOUNT_LOADING: "Deleting...",
+    DELETE_ACCOUNT_SUCCESS_TITLE: "Account deleted",
+    DELETE_ACCOUNT_SUCCESS_MESSAGE: "Your account has been deleted.",
+    DELETE_ACCOUNT_ERROR_TITLE: "Could not delete account",
+    DELETE_ACCOUNT_ERROR_MESSAGE: "Please check your connection and try again.",
   },
   TestStrings: {
     MOCK_SVG_TEXT: "Mock SVG Text",

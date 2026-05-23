@@ -40,6 +40,7 @@ import {
   MODAL_HEIGHT,
   MODAL_CONTENT_PADDING,
   MODAL_BUTTON_SPACER,
+  getResponsiveModalHeight,
   wheelSize,
 } from "../../../constants/layout";
 import {AppStrings} from "../../../constants/AppStrings";
@@ -115,7 +116,7 @@ const LossModal: React.FC<LossModalProps> = ({
   const isWatchAdDisabled = canWatchAd === false;
   const isCoinContinueDisabled = canUseCoin === false;
   const [rotationAnim] = useState(() => new Animated.Value(0));
-  const lossModalHeight = MODAL_HEIGHT * 1.2;
+  const lossModalHeight = getResponsiveModalHeight(1.2);
   const wheelBackgroundSize = wheelSize * 1.8;
 
   const spin = useMemo(() => {
@@ -213,7 +214,7 @@ const LossModal: React.FC<LossModalProps> = ({
           backgroundColor: "rgba(0,0,0,0.5)",
         }}
       >
-        <SlideInModalContent isVisible={isVisible}>
+        <SlideInModalContent isVisible={isVisible} style={{alignItems: "center"}}>
           <View
             style={{
               width: MODAL_WIDTH,

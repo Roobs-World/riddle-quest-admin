@@ -30,11 +30,29 @@ export const GameInputButton = React.forwardRef<View, GameInputButtonProps>(({
     <TouchableOpacity
       ref={ref}
       className="rounded-full bg-key-bg flex-row items-center justify-center"
-      style={{ height: GAME_INPUT_BUTTON_HEIGHT, paddingHorizontal: SPACING.md, gap: SPACING.sm }}
+      style={{
+        height: GAME_INPUT_BUTTON_HEIGHT,
+        paddingHorizontal: SPACING.md,
+        gap: SPACING.sm,
+        flex: 1,
+        minWidth: 0,
+      }}
       onPress={callback}
     >
       {icon}
-      <Text style={{ fontSize: TYPOGRAPHY.fontSize.lg, fontFamily: TYPOGRAPHY.fontPrimary, color: "black" }}>{text}</Text>
+      <Text
+        numberOfLines={1}
+        adjustsFontSizeToFit
+        minimumFontScale={0.78}
+        style={{
+          fontSize: TYPOGRAPHY.fontSize.lg,
+          fontFamily: TYPOGRAPHY.fontPrimary,
+          color: "black",
+          flexShrink: 1,
+        }}
+      >
+        {text}
+      </Text>
     </TouchableOpacity>
   );
 });

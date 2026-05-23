@@ -10,7 +10,7 @@ import { LayoutChangeEvent, View, TouchableOpacity, Text } from "react-native";
 import CoinsDisplay from "./CoinsDisplay";
 import LogoIcon from "../icons/LogoIcon";
 import { TYPOGRAPHY, SPACING } from "../../styles";
-import { HEADER_LOGO_SIZE } from "../../constants/layout";
+import { GAME_HEADER_SLOT_HEIGHT, HEADER_LOGO_SIZE } from "../../constants/layout";
 import { AppStrings } from "../../constants/AppStrings";
 
 /**
@@ -98,9 +98,9 @@ const Header: React.FC<HeaderProps> = ({
     <View
       className="w-full flex-row items-center justify-between relative"
       style={{
-        minHeight: "8%",
-        maxHeight: "8%",
-        height: "8%",
+        minHeight: GAME_HEADER_SLOT_HEIGHT,
+        maxHeight: GAME_HEADER_SLOT_HEIGHT,
+        height: GAME_HEADER_SLOT_HEIGHT,
         paddingHorizontal: SPACING.md,
       }}
       testID="header"

@@ -3,7 +3,7 @@ import {View, Text, Modal, Pressable} from "react-native";
 import type {SubmittedGuess} from "../../../hooks/types";
 import {TYPOGRAPHY} from "../../../styles";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
-import {MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING} from "../../../constants/layout";
+import {MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, getResponsiveModalHeight} from "../../../constants/layout";
 import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {NewCoins} from "@/components/shared/NewCoins";
@@ -58,7 +58,7 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
   sequenceProgress,
   onClose,
 }) => {
-  const modalHeight = MODAL_HEIGHT * 1.4;
+  const modalHeight = getResponsiveModalHeight(1.4);
   const nextButtonText =
     sequenceProgress?.primaryActionText ?? AppStrings.VictoryModal.NEXT_LEVEL_BUTTON;
 
@@ -92,7 +92,7 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
         }}
       >
         <RotatingWheelBackground isVisible={isVisible} />
-        <SlideInModalContent isVisible={isVisible}>
+        <SlideInModalContent isVisible={isVisible} style={{alignItems: "center"}}>
           <Pressable
             style={{
               width: MODAL_WIDTH,
@@ -113,8 +113,8 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
             />
             <HomeBg
               width={MODAL_WIDTH * 1.1}
-              height={MODAL_HEIGHT * 1.1}
-              style={{position: "absolute", top: -MODAL_HEIGHT * 0.1, left: -MODAL_WIDTH * 0.05}}
+              height={modalHeight * 1.05}
+              style={{position: "absolute", top: -modalHeight * 0.08, left: -MODAL_WIDTH * 0.05}}
             />
 
             <View

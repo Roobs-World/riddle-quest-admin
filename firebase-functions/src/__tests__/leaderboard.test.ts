@@ -88,7 +88,17 @@ class MockHttpsError extends Error {
 const mockOnCall = jest.fn();
 
 jest.mock("firebase-functions/v2/https", () => ({
-  onCall: (handler: (req: unknown) => unknown) => {
+  onCall: (
+    optionsOrHandler: unknown,
+    maybeHandler?: (req: unknown) => unknown,
+  ) => {
+    const handler =
+      typeof optionsOrHandler === "function"
+        ? optionsOrHandler
+        : maybeHandler;
+    if (!handler) {
+      throw new Error("onCall mock requires a handler");
+    }
     mockOnCall.mockImplementation(handler);
     return mockOnCall;
   },

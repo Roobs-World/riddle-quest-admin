@@ -17,6 +17,7 @@ import {
   INPUT_BORDER_RADIUS,
   INPUT_PADDING,
   CLOSE_BUTTON_INSET,
+  getResponsiveModalHeight,
 } from "../../../constants/layout";
 import {SPACING} from "../../../styles";
 import SlideInModalContent from "../../shared/SlideInModalContent";
@@ -35,7 +36,8 @@ interface UpdateUsernameModalProps {
 }
 
 const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({isVisible, onClose, currentUsername}) => {
-  const COMPACT_MODAL_HEIGHT = MODAL_HEIGHT * 0.75;
+  const COMPACT_MODAL_HEIGHT = getResponsiveModalHeight(0.75);
+  const compactContentHeight = getResponsiveModalHeight(0.56);
   const {updatePlayerData} = useAuth();
   const [newUsername, setNewUsername] = useState(currentUsername || "");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -114,11 +116,11 @@ const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({isVisible, onC
           backgroundColor: "rgba(0,0,0,0.5)",
         }}
       >
-        <SlideInModalContent isVisible={isVisible}>
+        <SlideInModalContent isVisible={isVisible} style={{alignItems: "center"}}>
           <View
             style={{
               width: MODAL_WIDTH,
-              height: COMPACT_MODAL_HEIGHT * 0.75,
+              height: compactContentHeight,
               alignItems: "center",
               justifyContent: "center",
               overflow: "hidden",
@@ -126,17 +128,17 @@ const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({isVisible, onC
           >
             <ModalBg
               width={MODAL_WIDTH}
-              height={MODAL_HEIGHT * 0.5}
+              height={compactContentHeight}
               style={{position: "absolute"}}
               preserveAspectRatio="none"
             />
             {/* Decorative wave — clipped to card bounds */}
             <HomeBg
               width={MODAL_WIDTH * 1.1}
-              height={MODAL_HEIGHT * 1.1}
+              height={COMPACT_MODAL_HEIGHT * 1.1}
               style={{
                 position: "absolute",
-                top: -MODAL_HEIGHT * 0.05,
+                top: -COMPACT_MODAL_HEIGHT * 0.05,
                 left: -MODAL_WIDTH * 0.05,
               }}
             />

@@ -10,6 +10,7 @@ import {AppStrings, getAppLanguage} from "../../../constants/AppStrings";
 import {getLegalUrl, LegalUrlKey} from "../../../constants/legal";
 import {SPACING, TYPOGRAPHY} from "../../../styles";
 import {verticalScale} from "@/utils/responsive";
+import {AUTH_CONTENT_MAX_WIDTH, MODAL_MAX_HEIGHT} from "../../../constants/layout";
 
 const Linking = require("react-native/Libraries/Linking/Linking") as {
   openURL: (url: string) => Promise<void>;
@@ -58,9 +59,12 @@ const AboutLegalModal: React.FC<AboutLegalModalProps> = ({isVisible, onClose}) =
       >
         <TouchableOpacity style={{flex: 1}} onPress={onClose} activeOpacity={1} />
 
-        <SlideInModalContent isVisible={isVisible}>
+        <SlideInModalContent isVisible={isVisible} style={{width: "100%", alignItems: "center"}}>
           <View
             style={{
+              width: "100%",
+              maxWidth: AUTH_CONTENT_MAX_WIDTH,
+              maxHeight: MODAL_MAX_HEIGHT,
               backgroundColor: "#FCFAF4",
               borderTopLeftRadius: 24,
               borderTopRightRadius: 24,

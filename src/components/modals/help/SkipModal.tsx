@@ -10,6 +10,7 @@ import {
   MODAL_HEIGHT,
   CLOSE_BUTTON_SIZE,
   MODAL_CLOSE_BUTTON_POSITION,
+  getResponsiveModalHeight,
 } from "../../../constants/layout";
 import {SPACING} from "../../../styles";
 import {AppStrings} from "../../../constants/AppStrings";
@@ -37,6 +38,7 @@ const SkipModal: React.FC<SkipModalProps> = ({
   onClose,
 }) => {
   const canAffordSkip = userCoins >= skipCost;
+  const skipModalHeight = getResponsiveModalHeight(!canAffordSkip ? 1.6 : 1.4);
 
   return (
     <Modal visible={isVisible} transparent={true} animationType="none" onRequestClose={onClose}>
@@ -48,25 +50,25 @@ const SkipModal: React.FC<SkipModalProps> = ({
           backgroundColor: "rgba(0,0,0,0.5)",
         }}
       >
-        <SlideInModalContent isVisible={isVisible}>
+        <SlideInModalContent isVisible={isVisible} style={{alignItems: "center"}}>
           <View
             style={{
               width: MODAL_WIDTH,
-              height: !canAffordSkip ? MODAL_HEIGHT * 1.6 : MODAL_HEIGHT * 1.4,
+              height: skipModalHeight,
               alignItems: "center",
               paddingTop: verticalScale(36),
             }}
           >
             <ModalBg
               width={MODAL_WIDTH}
-              height={!canAffordSkip ? MODAL_HEIGHT * 1.6 : MODAL_HEIGHT * 1.4}
+              height={skipModalHeight}
               style={{position: "absolute"}}
               preserveAspectRatio="none"
             />
             {/* Decorative wave — clipped to card bounds */}
             <HomeBg
               width={MODAL_WIDTH * 1.1}
-              style={{position: "absolute", top: -MODAL_HEIGHT * 0.05, left: -MODAL_WIDTH * 0.05}}
+              style={{position: "absolute", top: -skipModalHeight * 0.05, left: -MODAL_WIDTH * 0.05}}
             />
 
             <CloseButton

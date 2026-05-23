@@ -17,6 +17,7 @@ import {
   GUESS_TILE_MARGIN,
   GUESS_TILE_ROW_GAP,
   GUESS_GRID_EFFECTIVE_WIDTH,
+  GUESS_GRID_SLOT_HEIGHT,
 } from "../../constants/layout";
 import { TYPOGRAPHY } from "../../styles/tokens/typography";
 import { NUM_GUESSES } from "../../utils/constants";
@@ -125,9 +126,9 @@ const GuessGrid: React.FC<GuessGridProps> = memo(function GuessGrid({
     <View
       className="w-full items-center justify-center"
       style={{
-        height: "36%",
-        minHeight: "36%",
-        maxHeight: "36%",
+        height: GUESS_GRID_SLOT_HEIGHT,
+        minHeight: GUESS_GRID_SLOT_HEIGHT,
+        maxHeight: GUESS_GRID_SLOT_HEIGHT,
         width: "100%",
       }}
     >

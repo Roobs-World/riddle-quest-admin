@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Legal And Security Release Todo List</title>
+    <style>
+      :root {
+        --bg: #101624;
+        --panel: #f8fafc;
+        --card: #ffffff;
+        --text: #172033;
+        --muted: #64748b;
+        --border: #dbe3ef;
+        --accent: #2563eb;
+        --active: #b86b00;
+        --code: #eef2f7;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        padding: 24px;
+        background: var(--bg);
+        color: var(--text);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+      }
+
+      main {
+        width: min(100%, 980px);
+        margin: 0 auto;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--panel);
+        padding: 24px;
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: clamp(24px, 5vw, 34px);
+        line-height: 1.1;
+      }
+
+      h2 {
+        margin: 0 0 12px;
+        font-size: 18px;
+        line-height: 1.2;
+      }
+
+      p {
+        line-height: 1.45;
+      }
+
+      .summary,
+      .meta,
+      .note {
+        color: var(--muted);
+      }
+
+      .summary {
+        margin: 0 0 14px;
+      }
+
+      .meta {
+        margin: 0 0 20px;
+        font-size: 14px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 14px;
+      }
+
+      section {
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--card);
+        padding: 16px;
+      }
+
+      ul {
+        display: grid;
+        gap: 10px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      li {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 10px;
+        align-items: start;
+        line-height: 1.4;
+      }
+
+      input {
+        width: 18px;
+        height: 18px;
+        margin-top: 1px;
+        accent-color: var(--accent);
+      }
+
+      code {
+        border-radius: 4px;
+        background: var(--code);
+        padding: 1px 5px;
+        font-size: 0.95em;
+      }
+
+      .active {
+        color: var(--active);
+        font-weight: 700;
+      }
+
+      .note {
+        margin: 18px 0 0;
+        font-size: 14px;
+      }
+
+      @media (max-width: 560px) {
+        body {
+          padding: 12px;
+        }
+
+        main {
+          padding: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Legal And Security Release Todo List</h1>
+      <p class="summary">
+        Release-blocking checklist for Firestore write controls, callable function protection, dependency audit cleanup,
+        and app-store/legal disclosure readiness.
+      </p>
+      <p class="meta">Last updated: 2026-05-23. Status: open checklist.</p>
+
+      <div class="grid">
+        <section>
+          <h2>Firestore Write Controls</h2>
+          <ul>
+            <li>
+              <input type="checkbox" />
+              <span class="active">Lock Firestore economy, progress, and stats writes to Cloud Functions only.</span>
+            </li>
+            <li>
+              <input type="checkbox" />
+              <span>Review Firestore rules for all client-writable economy/progress/stats paths and deny direct client writes.</span>
+            </li>
+            <li>
+              <input type="checkbox" />
+              <span>Confirm Cloud Functions use server-side validation and trusted user ids from auth context only.</span>
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Callable Function Protection</h2>
+          <ul>
+            <li>
+              <input type="checkbox" />
+              <span class="active">Add auth/admin checks and App Check to generation and admin callables.</span>
+            </li>
+            <li>
+              <input type="checkbox" />
+              <span>Require <code>request.auth</code> for user-scoped generation callables.</span>
+            </li>
+            <li>
+              <input type="checkbox" />
+              <span>Require explicit admin claims for admin-only callables and reject non-admin users.</span>
+            </li>
+            <li>
+              <input type="checkbox" />
+              <span>Set <code>enforceAppCheck: true</code> on protected callables where supported.</span>
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Dependency Audit</h2>
+          <ul>
+            <li>
+              <input type="checkbox" />
+              <span class="active">Patch or override vulnerable dependencies.</span>
+            </li>
+            <li>
+              <input type="checkbox" />
+              <span>Use the Expo-recommended install flow for Expo package changes.</span>
+            </li>
+            <li>
+              <input type="checkbox" />
+              <span>Rerun <code>pnpm audit --prod</code> and record the remaining findings, if any.</span>
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Legal And Store Readiness</h2>
+          <ul>
+            <li>
+              <input type="checkbox" />
+              <span class="active">Add privacy policy, terms/EULA, third-party notices, data deletion/export paths, and accurate Apple/Google store disclosures.</span>
+            </li>
+            <li>
+              <input type="checkbox" />
+              <span>Publish or link the privacy policy and terms/EULA from the app and store listings.</span>
+            </li>
+            <li>
+              <input type="checkbox" />
+              <span>Document third-party services, SDKs, licenses, data categories, and purposes in third-party notices.</span>
+            </li>
+            <li>
+              <input type="checkbox" />
+              <span>Verify account deletion and data export request paths are discoverable and functional.</span>
+            </li>
+            <li>
+              <input type="checkbox" />
+              <span>Ensure Apple App Privacy and Google Play Data Safety answers match actual app behavior.</span>
+            </li>
+          </ul>
+        </section>
+      </div>
+
+      <p class="note">
+        Check items only after implementation, audit evidence, and store/legal review are complete.
+      </p>
+    </main>
+  </body>
+</html>

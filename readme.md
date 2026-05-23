@@ -42,6 +42,141 @@ This is a mobile game that combines the popular Wordle-style gameplay with chall
 
 The 90-day pre-launch marketing package lives in [docs/marketing/README.md](docs/marketing/README.md). It implements the multilingual launch plan for Riddle Quest with store metadata, ASO experiments, creator outreach templates, a content calendar, press kit copy, tracking/KPI definitions, and a static pre-launch landing page at [docs/marketing/prelaunch-landing-page.html](docs/marketing/prelaunch-landing-page.html).
 
+## Release Readiness Checklist
+
+Use this checklist to track the manual security, privacy, store, and account-deletion work that still needs to happen before release. Keep evidence for each completed task: date completed, person responsible, console screenshots where useful, deployed versions, and any follow-up notes.
+
+### Off-repo security tasks
+
+- [ ] Rotate exposed credentials
+  - Follow [docs/credential-rotation-runbook.md](docs/credential-rotation-runbook.md).
+  - In Google Cloud Console, open IAM and Admin > Service Accounts.
+  - Find the Firebase Admin SDK service account used by this project.
+  - Disable and delete the exposed service account key.
+  - Create a replacement key only if a local admin script still needs one, and store it outside the repository.
+  - Rotate every value that appeared in tracked `.env`, `firebase-functions/.env.default.backup`, and `firebase-functions/.runtimeconfig.json`.
+  - Rotate provider-side credentials in OpenAI, Apple, Meta/Facebook, Google Cloud, and Firebase as applicable.
+  - Confirm old keys are revoked or disabled before marking this complete.
+
+- [ ] Set fresh Firebase Functions secrets
+  - Set fresh production values with the Firebase CLI:
+
+    ```bash
+    firebase functions:secrets:set OPENAI_API_KEY
+    firebase functions:secrets:set APPLE_SHARED_SECRET
+    firebase functions:secrets:set GOOGLE_SERVICE_ACCOUNT
+    firebase functions:secrets:set FACEBOOK_APP_SECRET
+    ```
+
+  - Redeploy Firebase Functions after the secret versions are updated:
+
+    ```bash
+    firebase deploy --only functions
+    ```
+
+  - Smoke test the flows that depend on these secrets: riddle generation, Apple purchase validation, Google purchase validation, and Facebook auth/server integrations.
+
+- [ ] Purge secrets from git history
+  - Follow [docs/git-history-secret-purge.md](docs/git-history-secret-purge.md).
+  - Use a fresh clone, not this current dirty worktree.
+  - Coordinate with anyone else using the repo before rewriting history.
+  - Remove historical copies of:
+    - `.env`
+    - `firebase-functions/.env.default.backup`
+    - `firebase-functions/.runtimeconfig.json`
+    - `firebase-functions/qwordly-admin-sdk.json`
+  - Recommended command from the purge plan:
+
+    ```bash
+    git filter-repo --force \
+      --path .env \
+      --path firebase-functions/.env.default.backup \
+      --path firebase-functions/.runtimeconfig.json \
+      --path firebase-functions/qwordly-admin-sdk.json \
+      --invert-paths
+    ```
+
+  - Force-push only after coordination:
+
+    ```bash
+    git push --force-with-lease --all
+    git push --force-with-lease --tags
+    ```
+
+  - After the rewrite, have collaborators reclone or hard-reset, then run a secret scanner against the rewritten history.
+
+- [ ] Enable Firebase App Check enforcement
+  - Configure valid Firebase App Check providers for both iOS and Android in the Firebase Console.
+  - Confirm the released clients can request and send App Check tokens.
+  - Enable enforcement for sensitive deployed callable Functions only after client verification.
+  - Smoke test callable Function flows from real iOS and Android builds after enforcement is enabled.
+
+### Legal and store compliance tasks
+
+- [ ] Publish legal and support pages
+  - Publish real public URLs for:
+    - Privacy Policy
+    - Terms of Use
+    - Licenses / third-party notices
+    - Account deletion request
+    - Data export request
+  - If the final URLs differ from the current `roobsworld.com` paths, update `src/constants/legal.ts`.
+  - Verify the links from sign-up and Settings on device before release.
+
+- [ ] Complete Apple App Privacy
+  - Use [docs/app-store-privacy-disclosures.md](docs/app-store-privacy-disclosures.md) as the draft.
+  - Complete App Privacy in App Store Connect.
+  - Confirm the answers match the final production SDK list, analytics configuration, ads configuration, auth providers, crash reporting, messaging, purchases, and backend processing.
+  - Re-review after any SDK or tracking setting changes.
+
+- [ ] Complete Google Play Data Safety
+  - Use [docs/google-play-data-safety.md](docs/google-play-data-safety.md) as the draft.
+  - Complete Data Safety in Play Console.
+  - Confirm the answers match the final production SDK list, analytics configuration, ads configuration, auth providers, crash reporting, messaging, purchases, and backend processing.
+  - Re-review after any SDK or tracking setting changes.
+
+- [ ] Make the ATT/ad tracking release decision
+  - Use [docs/att-review.md](docs/att-review.md).
+  - Choose one release posture:
+    - Keep tracking disabled, do not access IDFA, and confirm SDK dashboards match the no-tracking setup.
+    - Or add an ATT consent flow before any tracking SDK can access IDFA or cross-app tracking data.
+  - If tracking is enabled, gate ad personalization and tracking SDK initialization on consent and update App Store privacy answers.
+
+### Account deletion implementation tasks
+
+- [ ] Add the profile modal delete account entry point
+  - Add a "Delete account" button at the bottom of the profile modal.
+  - Keep the visual language consistent with the existing modal buttons and destructive actions.
+  - Make sure the button remains reachable on small screens and does not crowd existing profile actions.
+
+- [ ] Add the confirmation modal
+  - Show an "Are you sure?" confirmation modal after the delete button is tapped.
+  - Reuse the existing modal background, animation, typography, and button treatment used elsewhere.
+  - Let the modal height fit its content instead of forcing the full profile modal height.
+  - Include a cancel action and a clearly destructive confirm action.
+
+- [ ] Add the Firebase deletion Function
+  - Implement a callable Firebase Function for hard account deletion.
+  - Require an authenticated user context.
+  - Delete Firebase Auth user data and owned Firestore/Storage data for the caller.
+  - Include the guest cleanup path for anonymous users.
+  - Make the function idempotent enough that retrying after a partial failure does not corrupt state.
+  - Avoid logging personal data, tokens, or raw deletion payloads.
+
+- [ ] Wire the client flow
+  - Call the deletion Function from the confirmation modal.
+  - Show loading, success, and failure states.
+  - On success, clear local user/session state and return the app to the signed-out or onboarding flow.
+  - On failure, keep the user signed in and show a recoverable error message.
+
+- [ ] Verify account deletion
+  - Test the flow for an email/password user, social-login user where available, and anonymous guest user.
+  - Confirm Firestore user-owned documents are deleted.
+  - Confirm Firebase Storage avatar files are deleted.
+  - Confirm the Firebase Auth user is removed.
+  - Confirm local guest/user state is cleared on the device.
+  - Verify the UI in the simulator when local Expo MCP capabilities are available.
+
 ## Features
 
 - **Riddle-based Gameplay:** Guess 5-letter answers to intriguing riddles within 6 attempts.

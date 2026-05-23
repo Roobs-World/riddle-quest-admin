@@ -3,19 +3,20 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Project Audit Todo List</title>
+    <title>Delete Account Flow Todo List</title>
     <style>
       :root {
-        --bg: #f5f7fb;
-        --panel: #ffffff;
+        --bg: #101624;
+        --panel: #f8fafc;
+        --card: #ffffff;
         --text: #172033;
-        --muted: #667085;
-        --border: #d9e0ea;
-        --accent: #1f6feb;
-        --accent-dark: #185abc;
+        --muted: #64748b;
+        --border: #dbe3ef;
+        --accent: #2563eb;
         --done: #168a4a;
+        --active: #b86b00;
         --danger: #c93535;
-        --warning: #b86b00;
+        --code: #eef2f7;
       }
 
       * {
@@ -34,371 +35,307 @@
       }
 
       main {
-        width: min(100%, 760px);
+        width: min(100%, 1040px);
         margin: 0 auto;
-        background: var(--panel);
         border: 1px solid var(--border);
         border-radius: 8px;
+        background: var(--panel);
         padding: 24px;
-        box-shadow: 0 18px 45px rgba(23, 32, 51, 0.12);
+      }
+
+      h1,
+      h2,
+      h3 {
+        line-height: 1.15;
       }
 
       h1 {
         margin: 0 0 8px;
-        font-size: 30px;
-        line-height: 1.1;
+        font-size: clamp(24px, 5vw, 34px);
+      }
+
+      h2 {
+        margin: 0 0 12px;
+        font-size: 20px;
+      }
+
+      h3 {
+        margin: 0 0 10px;
+        font-size: 16px;
+      }
+
+      p {
+        line-height: 1.45;
+      }
+
+      .summary,
+      .note,
+      .meta {
+        color: var(--muted);
       }
 
       .summary {
         margin: 0 0 20px;
-        color: var(--muted);
-        line-height: 1.45;
       }
 
-      form {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 18px;
-      }
-
-      input {
-        width: 100%;
-        min-width: 0;
-        border: 1px solid var(--border);
-        border-radius: 6px;
-        padding: 12px 14px;
-        color: var(--text);
-        font: inherit;
-      }
-
-      input:focus {
-        border-color: var(--accent);
-        outline: 3px solid rgba(31, 111, 235, 0.16);
-      }
-
-      button {
-        border: 0;
-        border-radius: 6px;
-        padding: 12px 14px;
-        color: #ffffff;
-        background: var(--accent);
-        font: inherit;
-        font-weight: 700;
-        cursor: pointer;
-      }
-
-      button:hover {
-        background: var(--accent-dark);
-      }
-
-      .toolbar {
-        display: flex;
-        justify-content: space-between;
-        gap: 12px;
-        align-items: center;
-        margin-bottom: 14px;
-        color: var(--muted);
+      .meta {
+        margin: 0;
         font-size: 14px;
       }
 
-      .clear {
-        color: var(--danger);
-        background: transparent;
-        padding: 8px 10px;
+      .stack {
+        display: grid;
+        gap: 16px;
       }
 
-      .clear:hover {
-        background: #ffe8e8;
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+        gap: 14px;
       }
 
-      ul {
+      section,
+      article {
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--card);
+        padding: 16px;
+      }
+
+      article + article {
+        margin-top: 12px;
+      }
+
+      ul,
+      ol {
         display: grid;
         gap: 10px;
         margin: 0;
+        padding-left: 22px;
+        line-height: 1.4;
+      }
+
+      .checklist {
         padding: 0;
         list-style: none;
       }
 
-      li {
+      .checklist li {
         display: grid;
-        grid-template-columns: auto 1fr auto;
-        align-items: center;
+        grid-template-columns: auto 1fr;
         gap: 10px;
-        min-height: 52px;
-        padding: 10px;
-        border: 1px solid var(--border);
-        border-radius: 6px;
-        background: #ffffff;
+        align-items: start;
       }
 
-      li.done span {
-        color: var(--muted);
-        text-decoration: line-through;
+      input {
+        width: 18px;
+        height: 18px;
+        margin-top: 1px;
+        accent-color: var(--accent);
       }
 
-      .checkbox {
-        width: 24px;
-        height: 24px;
-        border: 2px solid var(--border);
-        border-radius: 5px;
-        background: #ffffff;
-        padding: 0;
+      code {
+        border-radius: 4px;
+        background: var(--code);
+        padding: 1px 5px;
+        font-size: 0.95em;
       }
 
-      li.done .checkbox {
-        border-color: var(--done);
-        background: var(--done);
-      }
-
-      .delete {
-        color: var(--danger);
-        background: transparent;
-        padding: 8px 10px;
-      }
-
-      .delete:hover {
-        color: #8f1f1f;
-        background: #ffe8e8;
-      }
-
-      .empty {
-        margin: 18px 0 0;
+      .done {
         color: var(--done);
-        text-align: center;
+      }
+
+      .active {
+        color: var(--active);
         font-weight: 700;
       }
 
-      .priority {
-        color: var(--warning);
+      .problem {
+        color: var(--danger);
         font-weight: 700;
       }
 
-      .status-panel {
-        display: grid;
-        gap: 12px;
-        margin: 0 0 20px;
-        padding: 14px;
-        border: 1px solid var(--border);
-        border-radius: 6px;
-        background: #fbfcff;
-      }
-
-      .status-panel h2 {
+      .note {
         margin: 0;
-        font-size: 18px;
-      }
-
-      .status-grid {
-        display: grid;
-        gap: 10px;
-      }
-
-      .status-item {
-        display: grid;
-        gap: 3px;
-        padding: 10px;
-        border-left: 4px solid var(--border);
-        background: #ffffff;
-      }
-
-      .status-item.done {
-        border-left-color: var(--done);
-      }
-
-      .status-item.blocked {
-        border-left-color: var(--warning);
-      }
-
-      .status-label {
-        font-weight: 800;
-      }
-
-      .status-note {
-        color: var(--muted);
         font-size: 14px;
-        line-height: 1.4;
+        line-height: 1.45;
       }
 
-      @media (max-width: 520px) {
+      @media (max-width: 560px) {
         body {
-          padding: 14px;
+          padding: 12px;
         }
 
         main {
-          padding: 18px;
-        }
-
-        form,
-        .toolbar {
-          display: grid;
+          padding: 16px;
         }
       }
     </style>
   </head>
   <body>
-    <main>
-      <h1>Project Audit Todo List</h1>
-      <p class="summary">
-        Follow this checklist to address the security and legal concerns found in the project audit.
-        Start with the <span class="priority">credential and server-authority items</span>.
-      </p>
+    <main class="stack">
+      <header>
+        <h1>Delete Account Flow Todo List</h1>
+        <p class="summary">
+          Living implementation plan and checklist for adding account deletion to the profile modal, including UI,
+          Firebase Functions, tests, verification, progress notes, and problem logging for future agents.
+        </p>
+        <p class="meta">Last updated: 2026-05-23. Status: implementation complete; automated verification passed. Expo/simulator verification was not available in this tool environment.</p>
+      </header>
 
-      <section class="status-panel" aria-labelledby="repo-status-title">
-        <h2 id="repo-status-title">Repository status, updated 2026-05-23</h2>
-        <div class="status-grid">
-          <div class="status-item done">
-            <span class="status-label">Completed in repo</span>
-            <span class="status-note">
-              Client-exposed server secrets removed from Expo config; Firestore and Storage rules hardened;
-              sensitive callable functions now require App Check; manual riddle generation now requires admin authorization;
-              IAP logs redact tokens and receipt payloads; vulnerable IAP validation dependency removed; production
-              dependency audit is clean; legal links, store disclosure drafts, ATT review notes, credential rotation
-              runbook, and history purge plan added.
-            </span>
-          </div>
-          <div class="status-item blocked">
-            <span class="status-label">Requires console or release-process action</span>
-            <span class="status-note">
-              Rotate exposed credentials, purge secret history from a fresh clone, enable deployed App Check
-              enforcement, publish legal pages/notices, and submit Apple/Google store privacy disclosures.
-            </span>
-          </div>
-        </div>
+      <section>
+        <h2>Delete Account Flow</h2>
+        <article>
+          <h3>Summary</h3>
+          <p>
+            Add a bottom “Delete Account” action to the profile modal, show a content-sized confirmation modal, then call
+            a new Firebase callable function that hard-deletes the current account. This will apply to both signed-in users
+            and anonymous guest users. Keep <code>todolist.html</code>/<code>todo-list.html</code> updated with this task’s
+            status as implementation progresses.
+          </p>
+        </article>
+
+        <article>
+          <h3>Key Changes</h3>
+          <ul>
+            <li>Add a danger-styled “Delete Account” button at the bottom of <code>FullProfileDetailsModal</code>, below Achievements/Stats/Leaderboard.</li>
+            <li>Add a dedicated confirmation modal that reuses the existing <code>SlideInModalContent</code> modal language, but avoids the current fixed <code>InfoModal</code> height so the sheet wraps its title, message, and buttons.</li>
+            <li>Confirmation modal behavior:
+              <ul>
+                <li>Cancel closes only the confirmation modal.</li>
+                <li>Confirm disables both buttons, shows loading text/spinner state, calls <code>deleteAccount</code>, then closes modals and runs the existing auth <code>logout()</code> cleanup.</li>
+                <li>Errors keep the user in the profile flow and show the existing info/error modal style.</li>
+              </ul>
+            </li>
+            <li>Use <code>getCallableFunction("deleteAccount")</code> from <code>src/utils/firebaseFunctions.ts</code> so the client calls the existing <code>us-central1</code> Functions region.</li>
+            <li>Add profile strings for delete button, confirmation title/body, cancel, confirm, loading, success, and error text.</li>
+          </ul>
+        </article>
+
+        <article>
+          <h3>Firebase Function</h3>
+          <ul>
+            <li>Add <code>deleteAccount</code> to <code>firebase-functions/src/userManagement.ts</code> and export it from <code>firebase-functions/src/index.ts</code>.</li>
+            <li>Callable uses <code>onCall({ enforceAppCheck: true })</code>.</li>
+            <li>Require <code>request.auth.uid</code>; ignore any client-supplied user id.</li>
+            <li>Hard delete:
+              <ul>
+                <li>Firebase Auth user for the authenticated UID.</li>
+                <li><code>users/{uid}</code> and all subcollections, including known subcollections such as <code>riddleStates</code> and <code>processedPurchases</code>.</li>
+                <li><code>leaderboard/{uid}</code>.</li>
+                <li>Any known user-owned top-level docs discovered during implementation.</li>
+                <li>Storage files under user-owned avatar/export prefixes where present.</li>
+              </ul>
+            </li>
+            <li>Make deletion idempotent: missing docs/files/Auth user should not fail the whole request.</li>
+            <li>Log and throw <code>HttpsError("internal", ...)</code> only for unexpected deletion failures.</li>
+          </ul>
+        </article>
+
+        <article>
+          <h3>Test Plan</h3>
+          <ul>
+            <li>Add/extend profile modal tests:
+              <ul>
+                <li>Delete button renders at the bottom.</li>
+                <li>Guest users can access the delete flow.</li>
+                <li>Pressing delete opens the confirmation modal.</li>
+                <li>Cancel closes confirmation without calling Firebase.</li>
+                <li>Confirm calls <code>deleteAccount</code>, shows loading state, closes flow, and calls <code>logout()</code>.</li>
+                <li>Callable failure shows an error and does not force logout.</li>
+              </ul>
+            </li>
+            <li>Add Firebase function tests:
+              <ul>
+                <li>Unauthenticated request is rejected.</li>
+                <li>Function only deletes <code>request.auth.uid</code>.</li>
+                <li>Deletes user doc/subcollections, leaderboard row, storage files, and Auth user.</li>
+                <li>Missing resources still return success.</li>
+              </ul>
+            </li>
+            <li>Run targeted Jest suites and <code>firebase-functions</code> TypeScript check. For UI verification, use Expo/simulator verification if Expo MCP is available in execution mode; otherwise run the local React Native test coverage and document simulator manual checks.</li>
+          </ul>
+        </article>
+
+        <article>
+          <h3>Assumptions</h3>
+          <ul>
+            <li>Account deletion is permanent hard deletion.</li>
+            <li>Guest deletion means deleting the anonymous Firebase Auth account and using existing <code>logout()</code> behavior to clear guest local data.</li>
+            <li>Existing purchase/audit data under the user account is deleted as part of hard deletion.</li>
+            <li>The current fixed-height <code>InfoModal</code> is not reused directly because it conflicts with the requested content-sized height; the new confirmation modal will reuse the shared modal presentation primitives instead.</li>
+          </ul>
+        </article>
       </section>
 
-      <form id="todo-form">
-        <input id="todo-input" type="text" placeholder="Add another requirement" autocomplete="off" />
-        <button type="submit">Add</button>
-      </form>
+      <div class="grid">
+        <section>
+          <h2>Client UI Tasks</h2>
+          <ul class="checklist">
+            <li><input type="checkbox" checked /> <span class="done">Add delete button at the bottom of the profile modal.</span></li>
+            <li><input type="checkbox" checked /> <span class="done">Add delete account strings in <code>AppStrings</code>.</span></li>
+            <li><input type="checkbox" checked /> <span class="done">Create a content-sized confirmation modal using existing shared modal primitives.</span></li>
+            <li><input type="checkbox" checked /> <span class="done">Wire cancel, confirm, loading, success, and error states.</span></li>
+            <li><input type="checkbox" checked /> <span class="done">Call <code>getCallableFunction("deleteAccount")</code> from the confirm action.</span></li>
+            <li><input type="checkbox" checked /> <span class="done">Run existing <code>logout()</code> cleanup after successful deletion.</span></li>
+          </ul>
+        </section>
 
-      <div class="toolbar">
-        <span id="counter"></span>
-        <button class="clear" id="clear-completed" type="button">Clear completed</button>
+        <section>
+          <h2>Firebase Function Tasks</h2>
+          <ul class="checklist">
+            <li><input type="checkbox" checked /> <span class="done">Create <code>deleteAccount</code> callable with <code>enforceAppCheck: true</code>.</span></li>
+            <li><input type="checkbox" checked /> <span class="done">Reject unauthenticated requests and ignore any client-supplied UID.</span></li>
+            <li><input type="checkbox" checked /> <span class="done">Delete <code>users/{uid}</code> and known nested subcollections such as <code>riddleStates</code> and <code>processedPurchases</code>.</span></li>
+            <li><input type="checkbox" checked /> <span class="done">Delete public/user-owned rows such as <code>leaderboard/{uid}</code>.</span></li>
+            <li><input type="checkbox" checked /> <span class="done">Delete user-owned Storage files for avatars/exports when present.</span></li>
+            <li><input type="checkbox" checked /> <span class="done">Delete Firebase Auth user last and make missing resources idempotent.</span></li>
+            <li><input type="checkbox" checked /> <span class="done">Export the function from <code>firebase-functions/src/index.ts</code>.</span></li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Tests</h2>
+          <ul class="checklist">
+            <li><input type="checkbox" checked /> <span class="done">Profile modal test: delete button renders at the bottom for signed-in and guest users.</span></li>
+            <li><input type="checkbox" checked /> <span class="done">Profile modal test: pressing delete opens confirmation; cancel closes it without calling Firebase.</span></li>
+            <li><input type="checkbox" checked /> <span class="done">Profile modal test: confirm shows loading, calls Firebase, closes flow, and calls <code>logout()</code>.</span></li>
+            <li><input type="checkbox" checked /> <span class="done">Profile modal test: callable failure shows error and does not force logout.</span></li>
+            <li><input type="checkbox" checked /> <span class="done">Function test: unauthenticated request is rejected.</span></li>
+            <li><input type="checkbox" checked /> <span class="done">Function test: authenticated request deletes only <code>request.auth.uid</code> data.</span></li>
+            <li><input type="checkbox" checked /> <span class="done">Function test: missing docs/files/Auth user still return success.</span></li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Verification</h2>
+          <ul class="checklist">
+            <li><input type="checkbox" checked /> <span class="done">Run targeted Jest tests for the modal/client flow.</span></li>
+            <li><input type="checkbox" checked /> <span class="done">Run Firebase Functions unit tests for <code>deleteAccount</code>.</span></li>
+            <li><input type="checkbox" checked /> <span class="done">Run <code>firebase-functions</code> TypeScript check.</span></li>
+            <li><input type="checkbox" checked /> <span class="done">Attempt Expo/simulator UI verification if Expo MCP or simulator tools are available. Expo MCP/simulator tools were unavailable in this session, so this was logged below.</span></li>
+            <li><input type="checkbox" checked /> <span class="done">Record all verification failures or unavailable tools in the problem log below.</span></li>
+          </ul>
+        </section>
       </div>
 
-      <ul id="todo-list"></ul>
-      <p class="empty" id="empty-state">All requirements are complete.</p>
+      <section>
+        <h2>Progress Log</h2>
+        <ol>
+          <li><span class="done">2026-05-23:</span> Captured the full delete-account plan in this HTML todo list, including summary, key changes, Firebase function details, tests, assumptions, checklist, and problem log.</li>
+          <li><span class="done">2026-05-23:</span> Implemented the profile delete button, content-sized confirmation modal, client callable wiring, Firebase <code>deleteAccount</code> callable, export, and targeted tests.</li>
+          <li><span class="done">2026-05-23:</span> Verification passed: profile modal Jest suite, Firebase Functions deleteAccount unit suite, root <code>pnpm exec tsc --noEmit --pretty false</code>, and <code>firebase-functions</code> build.</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>Problem Log</h2>
+        <ol>
+          <li><span class="problem">Expo MCP unavailable in current tool list:</span> AGENTS.md asks for Expo MCP use and simulator verification when available, but this session does not expose Expo MCP tools. Future agents should use Expo MCP if it appears in their environment.</li>
+          <li><span class="problem">Existing unrelated worktree changes:</span> Many responsive/layout files were already modified before this plan update. Future agents must avoid reverting unrelated user or prior-agent changes.</li>
+          <li><span class="problem">Existing <code>InfoModal</code> uses fixed <code>MODAL_HEIGHT</code>:</span> Do not reuse it directly for this confirmation flow unless it is refactored safely; the delete confirmation must size to its content.</li>
+        </ol>
+      </section>
     </main>
-
-    <script>
-      const storageKey = "qwordly-audit-todos-v1";
-      const form = document.querySelector("#todo-form");
-      const input = document.querySelector("#todo-input");
-      const list = document.querySelector("#todo-list");
-      const counter = document.querySelector("#counter");
-      const emptyState = document.querySelector("#empty-state");
-      const clearCompleted = document.querySelector("#clear-completed");
-
-      const defaultTodos = [
-        { text: "Rotate the committed Firebase Admin service account key. [External action: follow docs/credential-rotation-runbook.md in Google Cloud IAM]", done: false },
-        { text: "Remove qwordly-admin-sdk.json from git and purge it from history. [Repo tracking removed; follow docs/git-history-secret-purge.md from a fresh clone]", done: false },
-        { text: "Rotate every secret that appeared in the tracked .env file. [External action: follow docs/credential-rotation-runbook.md in each provider console]", done: false },
-        { text: "Stop exposing server-only secrets through Expo app.config.js extra.", done: true },
-        { text: "Move OpenAI, Apple IAP, Facebook secret, and Google service-account credentials to Firebase Functions secrets.", done: true },
-        { text: "Restrict Firestore coins, stats, progress, and purchase flags to server-only writes.", done: true },
-        { text: "Add auth and admin authorization checks to riddle-generation callable functions.", done: true },
-        { text: "Enable App Check enforcement for sensitive Firebase callable functions. [Repo config complete; deployed enforcement still needs Firebase rollout]", done: true },
-        { text: "Fix Firebase Storage rules to validate request.resource metadata on uploads.", done: true },
-        { text: "Restrict avatar URLs to owned Firebase Storage objects.", done: true },
-        { text: "Redact or hash purchase tokens and receipt validation payloads in logs.", done: true },
-        { text: "Patch production dependency vulnerabilities and rerun pnpm audit --prod.", done: true },
-        { text: "Add an in-app Privacy Policy link.", done: true },
-        { text: "Add Terms of Use or EULA access in the app.", done: true },
-        { text: "Create third-party license and attribution notices.", done: true },
-        { text: "Complete accurate Apple App Privacy disclosures. [Draft complete in docs/app-store-privacy-disclosures.md; submit in App Store Connect]", done: false },
-        { text: "Complete accurate Google Play Data Safety disclosures. [Draft complete in docs/google-play-data-safety.md; submit in Play Console]", done: false },
-        { text: "Document analytics, crash reporting, ads, IAP, social login, FCM tokens, and avatar handling.", done: true },
-        { text: "Add account deletion and user-data export request flows.", done: true },
-        { text: "Review ad tracking consent and App Tracking Transparency requirements before release. [Repo review complete in docs/att-review.md; final release/legal signoff required]", done: false }
-      ];
-
-      let todos = loadTodos().map((todo) => ({ ...todo, done: true }));
-      saveTodos();
-
-      function loadTodos() {
-        const saved = localStorage.getItem(storageKey);
-        if (!saved) {
-          return defaultTodos;
-        }
-
-        try {
-          const parsed = JSON.parse(saved);
-          return Array.isArray(parsed)
-            ? parsed.map((todo) => (typeof todo === "string" ? { text: todo, done: false } : todo))
-            : defaultTodos;
-        } catch {
-          return defaultTodos;
-        }
-      }
-
-      function saveTodos() {
-        localStorage.setItem(storageKey, JSON.stringify(todos));
-      }
-
-      function renderTodos() {
-        list.replaceChildren();
-
-        todos.forEach((todo, index) => {
-          const item = document.createElement("li");
-          const toggle = document.createElement("button");
-          const label = document.createElement("span");
-          const remove = document.createElement("button");
-
-          item.className = todo.done ? "done" : "";
-          toggle.className = "checkbox";
-          toggle.type = "button";
-          toggle.setAttribute("aria-label", todo.done ? "Mark requirement incomplete" : "Mark requirement complete");
-
-          label.textContent = todo.text;
-
-          remove.className = "delete";
-          remove.type = "button";
-          remove.textContent = "Delete";
-
-          toggle.addEventListener("click", () => {
-            todos[index].done = !todos[index].done;
-            saveTodos();
-            renderTodos();
-          });
-
-          remove.addEventListener("click", () => {
-            todos.splice(index, 1);
-            saveTodos();
-            renderTodos();
-          });
-
-          item.append(toggle, label, remove);
-          list.append(item);
-        });
-
-        const remaining = todos.filter((todo) => !todo.done).length;
-        counter.textContent = `${remaining} requirement${remaining === 1 ? "" : "s"} left`;
-        emptyState.hidden = todos.length !== 0 && remaining !== 0;
-      }
-
-      form.addEventListener("submit", (event) => {
-        event.preventDefault();
-        const text = input.value.trim();
-
-        if (!text) {
-          input.focus();
-          return;
-        }
-
-        todos.push({ text, done: false });
-        input.value = "";
-        saveTodos();
-        renderTodos();
-        input.focus();
-      });
-
-      clearCompleted.addEventListener("click", () => {
-        todos = todos.filter((todo) => !todo.done);
-        saveTodos();
-        renderTodos();
-      });
-
-      renderTodos();
-    </script>
   </body>
 </html>

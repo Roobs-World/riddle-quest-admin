@@ -3,7 +3,7 @@ import {View, Text, Modal, TouchableOpacity} from "react-native";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
 import {TYPOGRAPHY} from "../../../styles";
-import {MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, MODAL_BUTTON_SPACER} from "../../../constants/layout";
+import {MODAL_WIDTH, MODAL_CONTENT_PADDING, MODAL_BUTTON_SPACER, getResponsiveModalHeight} from "../../../constants/layout";
 import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {verticalScale} from "@/utils/responsive";
@@ -23,7 +23,7 @@ interface LevelUpFanfareModalProps {
   onClose: () => void;
 }
 
-const LEVEL_UP_FANFARE_MODAL_HEIGHT = MODAL_HEIGHT * 1.4;
+const LEVEL_UP_FANFARE_MODAL_HEIGHT = getResponsiveModalHeight(1.4);
 
 const LevelUpFanfareModal: React.FC<LevelUpFanfareModalProps> = ({
   isVisible,
@@ -54,7 +54,7 @@ const LevelUpFanfareModal: React.FC<LevelUpFanfareModalProps> = ({
       >
         <RotatingWheelBackground isVisible={isVisible} />
 
-        <SlideInModalContent isVisible={isVisible}>
+        <SlideInModalContent isVisible={isVisible} style={{alignItems: "center"}}>
           <TouchableOpacity key={"coin-purchase-modal"} onPress={handleContinue}>
             <View
               style={{

@@ -17,6 +17,7 @@ import {
   COLOR_CLUE_BORDER_RADIUS,
   COLOR_CLUE_MARGIN_RIGHT,
   CLOSE_BUTTON_SIZE,
+  getResponsiveModalHeight,
 } from "../../../constants/layout";
 import {SPACING} from "../../../styles";
 import {verticalScale} from "@/utils/responsive";
@@ -31,7 +32,7 @@ interface InstructionsModalProps {
   onboardingProgress?: OnboardingProgress;
 }
 
-const INSTRUCTIONS_MODAL_HEIGHT = MODAL_HEIGHT * 1.5;
+const INSTRUCTIONS_MODAL_HEIGHT = getResponsiveModalHeight(1.5);
 
 const InstructionsModal: React.FC<InstructionsModalProps> = ({
   isVisible,
@@ -48,7 +49,7 @@ const InstructionsModal: React.FC<InstructionsModalProps> = ({
           backgroundColor: "rgba(0,0,0,0.5)",
         }}
       >
-        <SlideInModalContent isVisible={isVisible}>
+        <SlideInModalContent isVisible={isVisible} style={{alignItems: "center"}}>
           <View
             style={{
               width: MODAL_WIDTH,
@@ -66,8 +67,8 @@ const InstructionsModal: React.FC<InstructionsModalProps> = ({
             {/* Decorative wave - clipped to card bounds */}
             <HomeBg
               width={MODAL_WIDTH * 1.1}
-              height={MODAL_HEIGHT * 1.1}
-              style={{position: "absolute", top: -MODAL_HEIGHT * 0.05, left: -MODAL_WIDTH * 0.05}}
+              height={INSTRUCTIONS_MODAL_HEIGHT * 1.05}
+              style={{position: "absolute", top: -INSTRUCTIONS_MODAL_HEIGHT * 0.05, left: -MODAL_WIDTH * 0.05}}
             />
             {onboardingProgress ? (
               <OnboardingProgressBadge {...onboardingProgress} />

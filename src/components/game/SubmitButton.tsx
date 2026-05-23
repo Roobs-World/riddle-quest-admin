@@ -35,7 +35,13 @@ export const SubmitButton = React.forwardRef<View, SubmitButtonProps>(({
           ? "bg-gray-300"
           : "bg-primary-orange"
       }`}
-      style={{ paddingHorizontal: SUBMIT_BUTTON_PADDING_H, paddingVertical: SPACING.md }}
+      style={{
+        paddingHorizontal: SUBMIT_BUTTON_PADDING_H,
+        paddingVertical: SPACING.md,
+        flex: 1.15,
+        minWidth: 0,
+        alignItems: "center",
+      }}
       onPress={() => {
         if (!isSubmitDisabled && !gameOver) {
           handleKeyPress("ENTER");
@@ -47,7 +53,18 @@ export const SubmitButton = React.forwardRef<View, SubmitButtonProps>(({
       accessibilityRole="button"
       accessibilityLabel={AppStrings.Accessibility.SUBMIT_GUESS}
     >
-      <Text style={{ fontSize: TYPOGRAPHY.fontSize.lg, fontFamily: TYPOGRAPHY.fontPrimary, color: "black" }}>{AppStrings.GameScreenAlerts.SUBMIT_BUTTON}</Text>
+      <Text
+        numberOfLines={1}
+        adjustsFontSizeToFit
+        minimumFontScale={0.78}
+        style={{
+          fontSize: TYPOGRAPHY.fontSize.lg,
+          fontFamily: TYPOGRAPHY.fontPrimary,
+          color: "black",
+        }}
+      >
+        {AppStrings.GameScreenAlerts.SUBMIT_BUTTON}
+      </Text>
     </TouchableOpacity>
   );
 });

@@ -3,7 +3,7 @@ import {View, Text, Modal, TouchableOpacity} from "react-native";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
 import {TYPOGRAPHY} from "../../../styles";
-import {MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, MODAL_BUTTON_SPACER} from "../../../constants/layout";
+import {MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, MODAL_BUTTON_SPACER, getResponsiveModalHeight} from "../../../constants/layout";
 import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {NewCoins} from "@/components/shared/NewCoins";
@@ -31,7 +31,7 @@ const StreakIncreaseFanfareModal: React.FC<StreakIncreaseFanfareModalProps> = ({
   onContinue,
   onClose,
 }) => {
-  const streakModalHeight = MODAL_HEIGHT * 1.4;
+  const streakModalHeight = getResponsiveModalHeight(1.4);
   const continueButtonText =
     sequenceProgress?.primaryActionText ?? AppStrings.StreakFanfare.CONTINUE_BUTTON;
   const handleContinue = () => {
@@ -50,7 +50,7 @@ const StreakIncreaseFanfareModal: React.FC<StreakIncreaseFanfareModalProps> = ({
         }}
       >
         <RotatingWheelBackground isVisible={isVisible} />
-        <SlideInModalContent isVisible={isVisible}>
+        <SlideInModalContent isVisible={isVisible} style={{alignItems: "center"}}>
           <TouchableOpacity key={"streak-increase-fanfare-modal"} onPress={handleContinue}>
             <View
               style={{
@@ -69,8 +69,8 @@ const StreakIncreaseFanfareModal: React.FC<StreakIncreaseFanfareModalProps> = ({
               {/* Decorative wave - clipped to card bounds */}
               <HomeBg
                 width={MODAL_WIDTH * 1.1}
-                height={MODAL_HEIGHT * 1.1}
-                style={{position: "absolute", top: -MODAL_HEIGHT * 0.05, left: -MODAL_WIDTH * 0.05}}
+                height={streakModalHeight * 1.05}
+                style={{position: "absolute", top: -streakModalHeight * 0.05, left: -MODAL_WIDTH * 0.05}}
               />
 
               <View

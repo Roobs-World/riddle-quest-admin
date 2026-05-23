@@ -10,6 +10,7 @@ import {TYPOGRAPHY} from "../../../styles";
 import {SPACING} from "../../../styles";
 import {verticalScale} from "@/utils/responsive";
 import SlideInModalContent from "../../shared/SlideInModalContent";
+import {AUTH_CONTENT_MAX_WIDTH, MODAL_MAX_HEIGHT} from "../../../constants/layout";
 
 interface SettingsModalProps {
   isVisible: boolean;
@@ -152,9 +153,12 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
       >
         <TouchableOpacity style={{flex: 1}} onPress={onClose} activeOpacity={1} />
 
-        <SlideInModalContent isVisible={isVisible}>
+        <SlideInModalContent isVisible={isVisible} style={{width: "100%", alignItems: "center"}}>
           <View
             style={{
+              width: "100%",
+              maxWidth: AUTH_CONTENT_MAX_WIDTH,
+              maxHeight: MODAL_MAX_HEIGHT,
               backgroundColor: "#FCFAF4",
               borderTopLeftRadius: 24,
               borderTopRightRadius: 24,
@@ -191,7 +195,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
               />
             </View>
 
-            <View style={{paddingHorizontal: SPACING.lg}}>
+            <ScrollView style={{width: "100%"}} contentContainerStyle={{paddingHorizontal: SPACING.lg}}>
               <View
                 style={{
                   flexDirection: "row",
@@ -289,7 +293,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                   {AppStrings.Settings.LOGOUT_BUTTON}
                 </Text>
               </TouchableOpacity>
-            </View>
+            </ScrollView>
           </View>
         </SlideInModalContent>
       </View>
@@ -310,10 +314,12 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
         >
           <TouchableOpacity style={{flex: 1}} activeOpacity={1} onPress={() => setIsLanguagePickerOpen(false)} />
 
-          <SlideInModalContent isVisible={isLanguagePickerOpen}>
+          <SlideInModalContent isVisible={isLanguagePickerOpen} style={{width: "100%", alignItems: "center"}}>
             <View
               style={{
-                maxHeight: "70%",
+                width: "100%",
+                maxWidth: AUTH_CONTENT_MAX_WIDTH,
+                maxHeight: MODAL_MAX_HEIGHT * 0.8,
                 borderRadius: 20,
                 backgroundColor: "#FCFAF4",
                 padding: SPACING.lg,

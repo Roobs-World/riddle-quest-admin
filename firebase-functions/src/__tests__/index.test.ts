@@ -187,6 +187,7 @@ describe("Firebase Functions", () => {
       "getCurrentDailyChallenge",
       "generateClassicRiddles",
       "updateAvatar",
+      "deleteAccount",
       "submitGuess",
     ];
 

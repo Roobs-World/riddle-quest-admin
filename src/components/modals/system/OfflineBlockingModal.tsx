@@ -1,6 +1,8 @@
 import React from "react";
 import { Modal, StyleSheet, Text, View } from "react-native";
 import SlideInModalContent from "../../shared/SlideInModalContent";
+import { AUTH_CONTENT_MAX_WIDTH } from "../../../constants/layout";
+import { SPACING, TYPOGRAPHY } from "../../../styles";
 
 interface OfflineBlockingModalProps {
   isVisible: boolean;
@@ -38,33 +40,33 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.75)",
     alignItems: "center",
     justifyContent: "center",
-    padding: 24,
+    padding: SPACING.lg,
   },
   content: {
     width: "100%",
-    maxWidth: 420,
+    maxWidth: AUTH_CONTENT_MAX_WIDTH,
   },
   card: {
     width: "100%",
     backgroundColor: "#161616",
     borderRadius: 16,
-    paddingHorizontal: 20,
-    paddingVertical: 24,
+    paddingHorizontal: SPACING.lg,
+    paddingVertical: SPACING.lg,
     borderWidth: 1,
     borderColor: "#5C5C5C",
   },
   title: {
     color: "#FFFFFF",
-    fontSize: 24,
+    fontSize: TYPOGRAPHY.fontSize["2xl"],
     fontWeight: "700",
     textAlign: "center",
-    marginBottom: 12,
+    marginBottom: SPACING.sm,
   },
   message: {
     color: "#D9D9D9",
-    fontSize: 16,
+    fontSize: TYPOGRAPHY.fontSize.base,
     textAlign: "center",
-    lineHeight: 22,
+    lineHeight: TYPOGRAPHY.fontSize.base * TYPOGRAPHY.lineHeight.normal,
   },
 });
 

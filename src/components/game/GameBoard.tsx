@@ -12,7 +12,7 @@
  */
 
 import React from "react";
-import { View } from "react-native";
+import { View, type DimensionValue } from "react-native";
 import RiddleText from "./RiddleText";
 import GuessGrid from "./GuessGrid";
 import Keyboard from "./Keyboard";
@@ -162,6 +162,11 @@ const GameBoard: React.FC<GameBoardProps> = ({
 }) => {
   // Use onKeyPress as a fallback if handleKeyPress is not provided
   const keyPressHandler = handleKeyPress || onKeyPress || (() => {});
+  const riddleContainerSlotHeight: DimensionValue = isLargeTablet
+    ? "26%"
+    : isTablet
+      ? "24%"
+      : "20%";
 
   return (
     <>
@@ -172,10 +177,10 @@ const GameBoard: React.FC<GameBoardProps> = ({
           isTablet && styles.riddleContainerTablet,
           isLargeTablet && styles.riddleContainerLargeTablet,
           {
-            maxHeight: "20%",
-            height: "20%",
+            maxHeight: riddleContainerSlotHeight,
+            height: riddleContainerSlotHeight,
             width: "100%",
-            minHeight: "20%",
+            minHeight: riddleContainerSlotHeight,
             justifyContent: "center",
             alignItems: "center",
           },

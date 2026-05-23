@@ -31,7 +31,7 @@ import {
 import {updateAvatar, updateUsername} from "./profile";
 import {submitGuess, completeGame} from "./submitGuessLogic";
 import {dailyChallengeScheduler} from "./dailyScheduler";
-import {initializeUser, ensureUserComplete, updateUserStats} from "./userManagement";
+import {initializeUser, ensureUserComplete, updateUserStats, deleteAccount} from "./userManagement";
 import {getLeaderboard} from "./leaderboard";
 import {dailyStreakReminder} from "./streakNotifications";
 export {
@@ -55,6 +55,7 @@ export {
   initializeUser,
   ensureUserComplete,
   updateUserStats,
+  deleteAccount,
   getLeaderboard,
   dailyStreakReminder,
 };

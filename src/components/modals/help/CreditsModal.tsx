@@ -18,9 +18,10 @@ import {
   CARD_PADDING,
   CARD_MARGIN_BOTTOM,
   CLOSE_BUTTON_SIZE,
+  getResponsiveModalHeight,
 } from "../../../constants/layout";
 import {SPACING} from "../../../styles";
-import {dimensions, verticalScale} from "../../../utils/responsive";
+import {verticalScale} from "../../../utils/responsive";
 import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import RotatingWheelBackground from "@/components/shared/RotatingWheelBackground";
@@ -50,7 +51,7 @@ const renderTeamMember = ({item}: {item: TeamMember}) => <TeamMemberCard member=
 
 const keyExtractor = (item: TeamMember) => item.name;
 
-const CREDITS_MODAL_HEIGHT = Math.min(MODAL_HEIGHT * 1.2, dimensions.screenHeight * 0.9);
+const CREDITS_MODAL_HEIGHT = getResponsiveModalHeight(1.2);
 
 const CreditsModal: React.FC<CreditsModalProps> = ({isVisible, onClose, topRightControl}) => {
   return (
@@ -76,7 +77,7 @@ const CreditsModal: React.FC<CreditsModalProps> = ({isVisible, onClose, topRight
           </View>
         ) : null}
         <RotatingWheelBackground isVisible={isVisible} />
-        <SlideInModalContent isVisible={isVisible}>
+        <SlideInModalContent isVisible={isVisible} style={{alignItems: "center"}}>
           <View
             style={{
               width: MODAL_WIDTH,
@@ -89,8 +90,8 @@ const CreditsModal: React.FC<CreditsModalProps> = ({isVisible, onClose, topRight
             {/* Decorative wave — clipped to card bounds */}
             <HomeBg
               width={MODAL_WIDTH * 1.1}
-              height={MODAL_HEIGHT * 1.1}
-              style={{position: "absolute", top: -MODAL_HEIGHT * 0.05, left: -MODAL_WIDTH * 0.05}}
+              height={CREDITS_MODAL_HEIGHT * 1.05}
+              style={{position: "absolute", top: -CREDITS_MODAL_HEIGHT * 0.05, left: -MODAL_WIDTH * 0.05}}
             />
 
             <View

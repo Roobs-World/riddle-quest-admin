@@ -24,6 +24,7 @@ import {
   CARD_BORDER_RADIUS,
   MODAL_CONTENT_PADDING,
   AVATAR_SIZE_MEDIUM,
+  getResponsiveModalHeight,
 } from "../../../constants/layout";
 import {logger} from "../../../utils/logger";
 import {captureException} from "../../../utils/sentry";
@@ -189,6 +190,7 @@ const buildDisplayEntries = (
 // ─────────────────────────────────────────────────────────────────────────────
 
 const LeaderboardModal: React.FC<LeaderboardModalProps> = ({isVisible, onClose, currentUserId}) => {
+  const modalHeight = getResponsiveModalHeight();
   const authUserId = normalizeUserId(getAuth(getApp()).currentUser?.uid ?? null);
   const normalizedCurrentUserId = normalizeUserId(currentUserId);
   const shouldUseAuthUserIdFallback = normalizedCurrentUserId != null;
@@ -259,21 +261,21 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({isVisible, onClose, 
           backgroundColor: "rgba(0,0,0,0.5)",
         }}
       >
-        <SlideInModalContent isVisible={isVisible}>
+        <SlideInModalContent isVisible={isVisible} style={{alignItems: "center"}}>
           <View
             style={{
               width: MODAL_WIDTH,
-              height: MODAL_HEIGHT,
+              height: modalHeight,
               alignItems: "center",
               overflow: "hidden",
             }}
           >
-            <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{position: "absolute"}} />
+            <ModalBg width={MODAL_WIDTH} height={modalHeight} style={{position: "absolute"}} />
             {/* Decorative wave — clipped to card bounds */}
             <HomeBg
               width={MODAL_WIDTH * 1.1}
-              height={MODAL_HEIGHT * 1.1}
-              style={{position: "absolute", top: -MODAL_HEIGHT * 0.25, left: -MODAL_WIDTH * 0.05}}
+              height={modalHeight * 1.1}
+              style={{position: "absolute", top: -modalHeight * 0.25, left: -MODAL_WIDTH * 0.05}}
             />
             <CloseButton
               onPress={onClose}

@@ -22,6 +22,7 @@ import {
   ACHIEVEMENT_ICON_SIZE,
   MODAL_CONTENT_PADDING,
   MODAL_SCROLLABLE_MAX_HEIGHT,
+  getResponsiveModalHeight,
 } from "../../../constants/layout";
 import {scale, verticalScale} from "../../../utils/responsive";
 import {ACHIEVEMENT_DEFINITIONS} from "../../../constants/achievements";
@@ -43,6 +44,7 @@ const AchievementsModal: React.FC<AchievementsModalProps> = ({isVisible, onClose
   const unlocked = unlockedSet(playerData);
   const stats = playerData?.stats;
   const progress = playerData?.progress;
+  const modalHeight = getResponsiveModalHeight();
 
   return (
     <Modal
@@ -60,22 +62,22 @@ const AchievementsModal: React.FC<AchievementsModalProps> = ({isVisible, onClose
           backgroundColor: "rgba(0,0,0,0.5)",
         }}
       >
-        <SlideInModalContent isVisible={isVisible}>
+        <SlideInModalContent isVisible={isVisible} style={{alignItems: "center"}}>
           <View
             style={{
               width: MODAL_WIDTH,
-              height: MODAL_HEIGHT,
+              height: modalHeight,
               alignItems: "center",
               justifyContent: "flex-start",
               overflow: "hidden",
             }}
           >
-            <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{position: "absolute"}} />
+            <ModalBg width={MODAL_WIDTH} height={modalHeight} style={{position: "absolute"}} />
             {/* Decorative wave — clipped to card bounds */}
             <HomeBg
               width={MODAL_WIDTH * 1.1}
-              height={MODAL_HEIGHT * 1.1}
-              style={{position: "absolute", top: -MODAL_HEIGHT * 0.05, left: -MODAL_WIDTH * 0.05}}
+              height={modalHeight * 1.1}
+              style={{position: "absolute", top: -modalHeight * 0.05, left: -MODAL_WIDTH * 0.05}}
             />
             <CloseButton
               onPress={onClose}

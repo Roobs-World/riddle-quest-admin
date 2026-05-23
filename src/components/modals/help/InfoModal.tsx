@@ -4,7 +4,7 @@ import {TYPOGRAPHY, SPACING} from "../../../styles";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
 import WideButton from "../../buttons/WideButton";
-import {MODAL_WIDTH, MODAL_HEIGHT} from "../../../constants/layout";
+import {MODAL_WIDTH, MODAL_HEIGHT, getResponsiveModalHeight} from "../../../constants/layout";
 import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import OnboardingProgressBadge from "../OnboardingProgressBadge";
@@ -31,6 +31,7 @@ const InfoModal: React.FC<InfoModalProps> = ({
   onClose,
   onboardingProgress,
 }) => {
+  const modalHeight = getResponsiveModalHeight();
   const handleConfirm = () => {
     onConfirm?.();
     onClose();
@@ -51,21 +52,21 @@ const InfoModal: React.FC<InfoModalProps> = ({
           backgroundColor: "rgba(0,0,0,0.5)",
         }}
       >
-        <SlideInModalContent isVisible={isVisible}>
+        <SlideInModalContent isVisible={isVisible} style={{alignItems: "center"}}>
           <View
             style={{
               width: MODAL_WIDTH,
-              height: MODAL_HEIGHT,
+              height: modalHeight,
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{position: "absolute"}} />
+            <ModalBg width={MODAL_WIDTH} height={modalHeight} style={{position: "absolute"}} />
             {/* Decorative wave — clipped to card bounds */}
             <HomeBg
               width={MODAL_WIDTH * 1.1}
-              height={MODAL_HEIGHT * 1.1}
-              style={{position: "absolute", top: -MODAL_HEIGHT * 0.05, left: -MODAL_WIDTH * 0.05}}
+              height={modalHeight * 1.1}
+              style={{position: "absolute", top: -modalHeight * 0.05, left: -MODAL_WIDTH * 0.05}}
             />
             {onboardingProgress ? (
               <OnboardingProgressBadge {...onboardingProgress} />

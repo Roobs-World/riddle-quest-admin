@@ -20,7 +20,7 @@
 import { StyleSheet, ViewStyle, ImageStyle } from "react-native";
 import { SPACING } from "../tokens/spacing";
 import { COLORS } from "../tokens/colors";
-import { MAX_CONTENT_WIDTH } from "../../constants/layout";
+import { AUTH_CONTENT_MAX_WIDTH, MAX_CONTENT_WIDTH } from "../../constants/layout";
 
 export const layoutStyles = StyleSheet.create({
   activityIndicator: {
@@ -48,6 +48,12 @@ export const layoutStyles = StyleSheet.create({
   centerContainerTablet: {
     alignSelf: "center",
     maxWidth: MAX_CONTENT_WIDTH,
+    width: "100%",
+  } as ViewStyle,
+
+  authContentContainer: {
+    alignSelf: "center",
+    maxWidth: AUTH_CONTENT_MAX_WIDTH,
     width: "100%",
   } as ViewStyle,
 
@@ -110,6 +116,7 @@ export const layoutStyles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: SPACING.md,
     gap: SPACING.sm,
+    flexShrink: 0,
   } as ViewStyle,
 
   // ── Riddle container ──────────────────────────────────────────────────────

@@ -4,7 +4,7 @@ import {View, Text, Modal} from "react-native";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
 import {TYPOGRAPHY} from "../../../styles";
-import {MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, MODAL_BUTTON_SPACER} from "../../../constants/layout";
+import {MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, MODAL_BUTTON_SPACER, getResponsiveModalHeight} from "../../../constants/layout";
 import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {NewCoins} from "@/components/shared/NewCoins";
@@ -25,7 +25,7 @@ const CoinPurchaseFanfareModal: React.FC<CoinPurchaseFanfareModalProps> = ({
   onConfirm,
   onClose,
 }) => {
-  const modalHeight = MODAL_HEIGHT * 1.2;
+  const modalHeight = getResponsiveModalHeight(1.2);
   const handleConfirm = () => {
     onConfirm?.();
     onClose();
@@ -43,7 +43,7 @@ const CoinPurchaseFanfareModal: React.FC<CoinPurchaseFanfareModalProps> = ({
         onTouchEnd={handleConfirm}
       >
         <RotatingWheelBackground isVisible={isVisible} />
-        <SlideInModalContent isVisible={isVisible}>
+        <SlideInModalContent isVisible={isVisible} style={{alignItems: "center"}}>
           <View
             style={{
               width: MODAL_WIDTH,
@@ -60,8 +60,8 @@ const CoinPurchaseFanfareModal: React.FC<CoinPurchaseFanfareModalProps> = ({
             />
             <HomeBg
               width={MODAL_WIDTH * 1.1}
-              height={MODAL_HEIGHT * 1.1}
-              style={{position: "absolute", top: -MODAL_HEIGHT * 0.1, left: -MODAL_WIDTH * 0.05}}
+              height={modalHeight * 1.05}
+              style={{position: "absolute", top: -modalHeight * 0.08, left: -MODAL_WIDTH * 0.05}}
             />
 
             <View

@@ -1,17 +1,29 @@
 import React from "react";
-import { fireEvent } from "@testing-library/react-native";
+import { fireEvent, waitFor } from "@testing-library/react-native";
 import { renderWithModalProvider } from "../../../../test-utils";
 import FullProfileDetailsModal from "../FullProfileDetailsModal";
 import { Player } from "../../../../validation/firestoreSchemas";
 import * as ImagePicker from "react-native-image-picker";
 
 const mockShowTooltip = jest.fn(() => Promise.resolve());
+const mockLogout = jest.fn(() => Promise.resolve());
+const mockUpdatePlayerData = jest.fn();
+const mockDeleteAccountCallable = jest.fn(() => Promise.resolve({ data: { success: true } }));
+const mockGetCallableFunction = jest.fn(
+  (_functionName: string) => mockDeleteAccountCallable
+);
 
 jest.mock("../../../../contexts/AuthContext", () => ({
   useAuth: () => ({
-    updatePlayerData: jest.fn(),
+    logout: mockLogout,
+    updatePlayerData: mockUpdatePlayerData,
     playerData: null,
   }),
+}));
+
+jest.mock("../../../../utils/firebaseFunctions", () => ({
+  getCallableFunction: (functionName: string) =>
+    mockGetCallableFunction(functionName),
 }));
 
 jest.mock("@/components/loading/PulsingSpinner", () => {
@@ -151,6 +163,34 @@ jest.mock("../UpgradeAccountModal", () => {
   };
 });
 
+jest.mock("../DeleteAccountConfirmationModal", () => {
+  return function MockDeleteAccountConfirmationModal({
+    isVisible,
+    isDeleting,
+    onCancel,
+    onConfirm,
+  }: any) {
+    const React = require("react");
+    const { View, Text, TouchableOpacity } = require("react-native");
+    if (!isVisible) return null;
+    return React.createElement(
+      View,
+      { testID: "delete-account-confirmation-modal" },
+      React.createElement(Text, {}, isDeleting ? "Deleting..." : "Delete account?"),
+      React.createElement(
+        TouchableOpacity,
+        { testID: "delete-account-confirm-button", onPress: onConfirm },
+        React.createElement(Text, {}, "Delete Account")
+      ),
+      React.createElement(
+        TouchableOpacity,
+        { testID: "delete-account-cancel-button", onPress: onCancel },
+        React.createElement(Text, {}, "Cancel")
+      )
+    );
+  };
+});
+
 describe("FullProfileDetailsModal", () => {
   const mockPlayerData: Player = {
     userId: "test-user-123",
@@ -196,6 +236,7 @@ describe("FullProfileDetailsModal", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockDeleteAccountCallable.mockResolvedValue({ data: { success: true } });
   });
 
   it("renders correctly when visible with player data", () => {
@@ -460,5 +501,81 @@ describe("FullProfileDetailsModal", () => {
     expect(getByTestId("update-username-modal")).toBeTruthy();
     fireEvent.press(getByTestId("update-username-close"));
     expect(queryByTestId("update-username-modal")).toBeNull();
+  });
+
+  it("renders the delete account button at the bottom of the profile actions", () => {
+    const { getByTestId, getByText } = renderWithModalProvider(
+      <FullProfileDetailsModal {...defaultProps} />
+    );
+
+    expect(getByTestId("delete-account-button")).toBeTruthy();
+    expect(getByText("Delete Account")).toBeTruthy();
+  });
+
+  it("allows guest users to access the delete account flow", () => {
+    const guestPlayer: Player = {
+      ...mockPlayerData,
+      userId: "guest-delete-user",
+      email: "guest_guest-delete-user@guest.Riddle Quest.com",
+      username: "Guest",
+    };
+
+    const { getByTestId } = renderWithModalProvider(
+      <FullProfileDetailsModal {...defaultProps} playerData={guestPlayer} />
+    );
+
+    fireEvent.press(getByTestId("delete-account-button"));
+
+    expect(getByTestId("delete-account-confirmation-modal")).toBeTruthy();
+  });
+
+  it("opens and cancels the delete confirmation without calling Firebase", () => {
+    const { getByTestId, queryByTestId } = renderWithModalProvider(
+      <FullProfileDetailsModal {...defaultProps} />
+    );
+
+    fireEvent.press(getByTestId("delete-account-button"));
+    expect(getByTestId("delete-account-confirmation-modal")).toBeTruthy();
+
+    fireEvent.press(getByTestId("delete-account-cancel-button"));
+
+    expect(queryByTestId("delete-account-confirmation-modal")).toBeNull();
+    expect(mockGetCallableFunction).not.toHaveBeenCalled();
+    expect(mockDeleteAccountCallable).not.toHaveBeenCalled();
+  });
+
+  it("confirms delete account, calls Firebase, closes, and logs out", async () => {
+    const mockOnClose = jest.fn();
+    const { getByTestId, findByText } = renderWithModalProvider(
+      <FullProfileDetailsModal {...defaultProps} onClose={mockOnClose} />
+    );
+
+    fireEvent.press(getByTestId("delete-account-button"));
+    fireEvent.press(getByTestId("delete-account-confirm-button"));
+
+    expect(await findByText("Deleting...")).toBeTruthy();
+    await waitFor(() => {
+      expect(mockGetCallableFunction).toHaveBeenCalledWith("deleteAccount");
+      expect(mockDeleteAccountCallable).toHaveBeenCalledWith({});
+      expect(mockOnClose).toHaveBeenCalledTimes(1);
+      expect(mockLogout).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it("shows an error and does not force logout when delete account fails", async () => {
+    mockDeleteAccountCallable.mockRejectedValueOnce(new Error("network"));
+    const mockOnClose = jest.fn();
+    const { getByTestId } = renderWithModalProvider(
+      <FullProfileDetailsModal {...defaultProps} onClose={mockOnClose} />
+    );
+
+    fireEvent.press(getByTestId("delete-account-button"));
+    fireEvent.press(getByTestId("delete-account-confirm-button"));
+
+    await waitFor(() => {
+      expect(mockDeleteAccountCallable).toHaveBeenCalledWith({});
+    });
+    expect(mockOnClose).not.toHaveBeenCalled();
+    expect(mockLogout).not.toHaveBeenCalled();
   });
 });

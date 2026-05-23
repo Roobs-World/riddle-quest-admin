@@ -1,12 +1,11 @@
 import React from "react";
-import {View, Text, Modal, Dimensions, Pressable} from "react-native";
-const {height: SCREEN_H} = Dimensions.get("window");
+import {View, Text, Modal, Pressable} from "react-native";
 
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
 import Logo from "../../../../assets/images/main-logo.svg";
 import {TYPOGRAPHY} from "src/styles";
-import {MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING} from "../../../constants/layout";
+import {MODAL_WIDTH, MODAL_CONTENT_PADDING, getResponsiveModalHeight} from "../../../constants/layout";
 import {SPACING} from "../../../styles";
 import {AppStrings} from "../../../constants/AppStrings";
 import {verticalScale} from "@/utils/responsive";
@@ -29,6 +28,7 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({
   onDismiss,
   onboardingProgress,
 }) => {
+  const modalHeight = getResponsiveModalHeight();
   const handleDismiss = () => {
     onClose();
     onDismiss?.();
@@ -48,27 +48,27 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({
         <RotatingWheelBackground isVisible={isVisible} />
 
         {/* Modal card */}
-        <SlideInModalContent isVisible={isVisible}>
+        <SlideInModalContent isVisible={isVisible} style={{alignItems: "center"}}>
           <Pressable onPress={handleDismiss} accessibilityRole="button" testID="welcome-modal-touch-target">
             <View
               style={{
                 width: MODAL_WIDTH,
-                height: MODAL_HEIGHT,
+                height: modalHeight,
                 alignItems: "center",
                 justifyContent: "center",
                 overflow: "hidden",
-                marginBottom: SCREEN_H * 0.15,
+                marginBottom: modalHeight * 0.28,
                 paddingTop: verticalScale(30),
               }}
             >
               {/* Card shape background */}
-              <ModalBg width={MODAL_WIDTH} height={MODAL_HEIGHT} style={{position: "absolute"}} />
+              <ModalBg width={MODAL_WIDTH} height={modalHeight} style={{position: "absolute"}} />
 
               {/* Decorative wave - clipped to card bounds */}
               <HomeBg
                 width={MODAL_WIDTH * 1.1}
-                height={MODAL_HEIGHT * 1.1}
-                style={{position: "absolute", top: -MODAL_HEIGHT * 0.05, left: -MODAL_WIDTH * 0.05}}
+                height={modalHeight * 1.1}
+                style={{position: "absolute", top: -modalHeight * 0.05, left: -MODAL_WIDTH * 0.05}}
               />
               {onboardingProgress ? (
                 <OnboardingProgressBadge {...onboardingProgress} />

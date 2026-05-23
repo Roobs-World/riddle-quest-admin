@@ -52,7 +52,10 @@ const BaseOverlay: React.FC<BaseOverlayProps> = ({
         activeOpacity={1}
         onPress={onClose}
       >
-        <SlideInModalContent isVisible={visible}>
+        <SlideInModalContent
+          isVisible={visible}
+          style={{ width: "100%", alignItems: "center" }}
+        >
           <TouchableOpacity
             style={[styles.content, contentStyle]}
             activeOpacity={1}

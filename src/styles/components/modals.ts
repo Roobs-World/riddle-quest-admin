@@ -26,6 +26,10 @@ import { BORDER_RADIUS } from "../tokens/borderRadius";
 import { COLORS } from "../tokens/colors";
 import { SHADOWS } from "../tokens/shadows";
 import { TYPOGRAPHY } from "../tokens/typography";
+import {
+  AUTH_CONTENT_MAX_WIDTH,
+  MODAL_MAX_HEIGHT,
+} from "../../constants/layout";
 
 /**
  * Modal Styles Configuration
@@ -177,10 +181,11 @@ export const modalStyles = StyleSheet.create({
     backgroundColor: COLORS.backgroundDark,
     borderRadius: BORDER_RADIUS.lg,
     margin: SPACING.md,
-    maxHeight: "80%",
-    maxWidth: "90%",
+    maxHeight: MODAL_MAX_HEIGHT,
+    maxWidth: AUTH_CONTENT_MAX_WIDTH,
     padding: SPACING.lg,
     position: "relative",
+    width: "90%",
   } as ViewStyle,
 
   /**
@@ -200,7 +205,7 @@ export const modalStyles = StyleSheet.create({
    * ensuring modals remain usable with varying content lengths.
    */
   contentScrollable: {
-    maxHeight: "70%",
+    maxHeight: MODAL_MAX_HEIGHT * 0.82,
     width: "100%",
   } as ViewStyle,
 
@@ -427,9 +432,10 @@ export const modalStyles = StyleSheet.create({
     backgroundColor: COLORS.white,
     borderRadius: BORDER_RADIUS.lg,
     justifyContent: "center",
-    maxWidth: "90%",
+    maxWidth: AUTH_CONTENT_MAX_WIDTH,
     minWidth: "80%",
     padding: SPACING.lg,
+    width: "90%",
     ...SHADOWS.lg,
   } as ViewStyle,
 
