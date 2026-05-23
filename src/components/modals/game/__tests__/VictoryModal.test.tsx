@@ -49,12 +49,31 @@ describe("VictoryModal", () => {
   });
 
   it("renders the updated design content", () => {
-    const { getByText } = render(<VictoryModal {...defaultProps} />);
+    const { getByText, queryByTestId } = render(<VictoryModal {...defaultProps} />);
 
     expect(getByText("NICE JOB!")).toBeTruthy();
     expect(getByText("+50 Coins")).toBeTruthy();
     expect(getByText("Total Coins:")).toBeTruthy();
     expect(getByText("305")).toBeTruthy();
+    expect(queryByTestId("modal-sequence-breadcrumb")).toBeNull();
+  });
+
+  it("shows sequence progress and Next text for an intermediate popup", () => {
+    const { getByTestId, getByText } = render(
+      <VictoryModal
+        {...defaultProps}
+        sequenceProgress={{
+          currentPopupIndex: 2,
+          totalPopups: 3,
+          hasNextPopup: true,
+          primaryActionText: "Next",
+        }}
+      />
+    );
+
+    expect(getByTestId("modal-sequence-breadcrumb")).toBeTruthy();
+    expect(getByText("2/3")).toBeTruthy();
+    expect(getByText("Next")).toBeTruthy();
   });
 
   it("falls back to earned coins when totalCoins is not provided", () => {

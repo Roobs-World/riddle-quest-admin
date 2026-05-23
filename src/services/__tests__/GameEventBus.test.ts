@@ -1,15 +1,14 @@
 import {
+  AnyGameEvent,
+  GameCompletedEvent,
   GameEventBus,
   gameEventBus,
-  GameEvent,
-  LetterAddedEvent,
-  LetterRemovedEvent,
+  GameEventListener,
   GuessSubmittedEvent,
   GuessValidatedEvent,
-  GameCompletedEvent,
   HintRequestedEvent,
-  AnyGameEvent,
-  GameEventListener,
+  LetterAddedEvent,
+  LetterRemovedEvent,
 } from "../GameEventBus";
 
 describe("GameEventBus", () => {

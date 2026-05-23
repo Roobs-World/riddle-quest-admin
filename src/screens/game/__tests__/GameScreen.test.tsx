@@ -137,12 +137,16 @@ const mockShowInstructionsModal = jest.fn();
 const mockCloseModalByType = jest.fn();
 const mockCloseModal = jest.fn();
 const mockShowCreditsModal = jest.fn();
+const mockShowAboutLegalModal = jest.fn();
 const mockShowFullProfileDetailsModal = jest.fn();
 const mockShowCoinPurchaseFanfareModal = jest.fn();
 const mockShowAchievementUnlockFanfareModal = jest.fn();
 const mockShowStreakIncreaseFanfareModal = jest.fn();
 const mockShowLevelUpFanfareModal = jest.fn();
 const mockUpgradeAccountModal = jest.fn();
+const mockShowTooltipOnce = jest.fn(() => Promise.resolve(true));
+const mockShowTooltip = jest.fn(() => Promise.resolve());
+const mockDismissTooltip = jest.fn();
 
 jest.mock("../../../hooks/useModal", () => ({
   useModal: () => ({
@@ -159,6 +163,7 @@ jest.mock("../../../hooks/useModal", () => ({
     showWelcomeBackModal: mockShowWelcomeBackModal,
     showInstructionsModal: mockShowInstructionsModal,
     showCreditsModal: mockShowCreditsModal,
+    showAboutLegalModal: mockShowAboutLegalModal,
     showFullProfileDetailsModal: mockShowFullProfileDetailsModal,
     showCoinPurchaseFanfareModal: mockShowCoinPurchaseFanfareModal,
     showAchievementUnlockFanfareModal: mockShowAchievementUnlockFanfareModal,
@@ -166,6 +171,15 @@ jest.mock("../../../hooks/useModal", () => ({
     showLevelUpFanfareModal: mockShowLevelUpFanfareModal,
     closeModalByType: mockCloseModalByType,
     closeModal: mockCloseModal,
+  }),
+}));
+
+jest.mock("../../../contexts/TooltipContext", () => ({
+  useTooltip: () => ({
+    activeTooltipId: null,
+    showTooltip: mockShowTooltip,
+    showTooltipOnce: mockShowTooltipOnce,
+    dismissTooltip: mockDismissTooltip,
   }),
 }));
 
@@ -352,6 +366,21 @@ jest.mock("../../../constants/AppStrings", () => ({
       DAILY_CHALLENGE_LABEL: "Daily Challenge",
       CLASSIC_LABEL: "Classic",
     },
+    Tooltips: {
+      SUBMIT_ANSWER_TITLE: "Submit your answer",
+      SUBMIT_ANSWER_BODY: "Tap submit.",
+      HINT_AFTER_WRONG_TITLE: "Need a clue?",
+      HINT_AFTER_WRONG_BODY: "Tap hint.",
+      SHOP_OUT_OF_COINS_TITLE: "Grab more coins",
+      SHOP_OUT_OF_COINS_BODY: "Open shop.",
+      ACHIEVEMENT_EARNED_TITLE: "Achievement unlocked",
+      ACHIEVEMENT_EARNED_BODY: "Open profile.",
+      LEADERBOARD_FIFTH_CORRECT_TITLE: "Climb the leaderboard",
+      LEADERBOARD_FIFTH_CORRECT_BODY: "Open profile.",
+      CLASSIC_FROM_DAILY_TITLE: "Classic mode",
+      CLASSIC_FROM_DAILY_BODY: "Keep playing.",
+      GOT_IT_BUTTON: "Got it",
+    },
   },
   SupportedLanguage: {},
   getAppLanguage: () => "en",
@@ -465,6 +494,9 @@ describe("GameScreen", () => {
     mockLoadRewardedAd.mockReset();
     mockShowRewardedAd.mockReset();
     mockShowRewardedAd.mockResolvedValue(false);
+    mockShowTooltipOnce.mockClear();
+    mockShowTooltip.mockClear();
+    mockDismissTooltip.mockClear();
     mockIsRewardedAdReady = true;
   });
 
@@ -1082,6 +1114,37 @@ describe("GameScreen", () => {
         "R",
         "D",
       ]);
+      expect(mockShowTooltipOnce).toHaveBeenCalledWith(
+        expect.objectContaining({ id: "hintAfterWrongGuess" })
+      );
+    });
+
+    it("passes tooltip target refs into game controls", () => {
+      render(<GameScreen {...defaultProps} />);
+
+      const inputProps = getLatestProps(mockGameInput);
+      const headerProps = getLatestProps(mockHeader);
+      const bottomNavProps = getLatestProps(mockBottomNavigationBar);
+
+      expect(inputProps.submitButtonRef).toBeDefined();
+      expect(inputProps.hintButtonRef).toBeDefined();
+      expect(inputProps.nextButtonRef).toBeDefined();
+      expect(headerProps.coinsButtonRef).toBeDefined();
+      expect(bottomNavProps.profileButtonRef).toBeDefined();
+    });
+
+    it("shows the shop tooltip when trying to use a hint without enough coins", async () => {
+      mockAuthPlayerData = { ...mockPlayerData, coins: 0 };
+      render(<GameScreen {...defaultProps} userCoins={0} />);
+
+      const inputProps = getLatestProps(mockGameInput);
+      await act(async () => {
+        await inputProps.handleHint();
+      });
+
+      expect(mockShowTooltipOnce).toHaveBeenCalledWith(
+        expect.objectContaining({ id: "shopOutOfCoins" })
+      );
     });
 
     it("re-enables coin animation after submit settle delay even when modal visibility is not reported", async () => {
@@ -1139,6 +1202,22 @@ describe("GameScreen", () => {
       expect(mockShowInstructionsModal).not.toHaveBeenCalled();
       expect(mockShowCreditsModal).toHaveBeenCalled();
       openURLSpy.mockRestore();
+      jest.useRealTimers();
+    });
+
+    it("opens about/legal modal from settings", async () => {
+      jest.useFakeTimers();
+      render(<GameScreen {...defaultProps} />);
+
+      const bottomNavProps = getLatestProps(mockBottomNavigationBar);
+      bottomNavProps.onSettingsPress();
+
+      const config = mockShowSettingsModal.mock.calls[0][0];
+      config.onPressAbout();
+
+      expect(mockCloseModalByType).toHaveBeenCalledWith("settings");
+      jest.runAllTimers();
+      expect(mockShowAboutLegalModal).toHaveBeenCalled();
       jest.useRealTimers();
     });
 
@@ -1352,7 +1431,9 @@ describe("GameScreen", () => {
           mockShowStreakIncreaseFanfareModal.mock.calls.length - 1
         ][0];
       fanfareConfig.onContinue();
-      expect(mockShowVictoryModal).toHaveBeenCalled();
+      await waitFor(() => {
+        expect(mockShowVictoryModal).toHaveBeenCalled();
+      });
       expect(defaultProps.onGameWin).toHaveBeenCalledWith(1, 30, 200, 5, 100);
     });
 
@@ -1936,7 +2017,7 @@ describe("GameScreen", () => {
         expect(getLatestProps(mockPulsingSpinner).visible).toBe(true);
       });
 
-      resolvePurchase?.(null);
+      (resolvePurchase as ((value: unknown) => void) | null)?.(null);
       await purchasePromise;
 
       await waitFor(() => {
@@ -1983,7 +2064,7 @@ describe("GameScreen", () => {
         expect(getLatestProps(mockPulsingSpinner).visible).toBe(true);
       });
 
-      resolveNextLevel?.();
+      (resolveNextLevel as (() => void) | null)?.();
       await nextPromise;
 
       await waitFor(() => {
@@ -2209,37 +2290,53 @@ describe("GameScreen", () => {
       await waitFor(() => {
         expect(mockShowAchievementUnlockFanfareModal).toHaveBeenCalled();
       });
-      expect(mockShowAchievementUnlockFanfareModal).toHaveBeenCalledWith({
-        coinsEarned: 10,
-        totalCoins: 110,
-        achievementNames: ["First Win"],
-        achievements: [
-          {
-            name: "First Win",
-            description: "Win your first riddle",
-            icon: "*",
-          },
-        ],
-        onContinue: expect.any(Function),
-      });
+      expect(mockShowAchievementUnlockFanfareModal).toHaveBeenCalledWith(
+        expect.objectContaining({
+          coinsEarned: 10,
+          totalCoins: 110,
+          achievementNames: ["First Win"],
+          achievements: [
+            {
+              name: "First Win",
+              description: "Win your first riddle",
+              icon: "*",
+            },
+          ],
+          sequenceProgress: expect.objectContaining({
+            currentPopupIndex: 1,
+            totalPopups: 3,
+            hasNextPopup: true,
+            primaryActionText: "Next",
+          }),
+          onContinue: expect.any(Function),
+        })
+      );
       const firstFanfareConfig = mockShowAchievementUnlockFanfareModal.mock.calls[0][0];
       await firstFanfareConfig.onContinue();
       await waitFor(() => {
         expect(mockShowAchievementUnlockFanfareModal).toHaveBeenCalledTimes(2);
       });
-      expect(mockShowAchievementUnlockFanfareModal.mock.calls[1][0]).toEqual({
-        coinsEarned: 0,
-        totalCoins: 110,
-        achievementNames: ["Speed Runner"],
-        achievements: [
-          {
-            name: "Speed Runner",
-            description: "Solve quickly",
-            icon: "!",
-          },
-        ],
-        onContinue: expect.any(Function),
-      });
+      expect(mockShowAchievementUnlockFanfareModal.mock.calls[1][0]).toEqual(
+        expect.objectContaining({
+          coinsEarned: 0,
+          totalCoins: 110,
+          achievementNames: ["Speed Runner"],
+          achievements: [
+            {
+              name: "Speed Runner",
+              description: "Solve quickly",
+              icon: "!",
+            },
+          ],
+          sequenceProgress: expect.objectContaining({
+            currentPopupIndex: 2,
+            totalPopups: 3,
+            hasNextPopup: true,
+            primaryActionText: "Next",
+          }),
+          onContinue: expect.any(Function),
+        })
+      );
       const secondFanfareConfig = mockShowAchievementUnlockFanfareModal.mock.calls[1][0];
       await secondFanfareConfig.onContinue();
       await waitFor(() => {

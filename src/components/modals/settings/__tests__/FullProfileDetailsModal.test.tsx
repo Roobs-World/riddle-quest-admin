@@ -5,6 +5,8 @@ import FullProfileDetailsModal from "../FullProfileDetailsModal";
 import { Player } from "../../../../validation/firestoreSchemas";
 import * as ImagePicker from "react-native-image-picker";
 
+const mockShowTooltip = jest.fn(() => Promise.resolve());
+
 jest.mock("../../../../contexts/AuthContext", () => ({
   useAuth: () => ({
     updatePlayerData: jest.fn(),
@@ -66,7 +68,18 @@ jest.mock("../../../../styles", () => ({
     black: "#000000",
     purple: "#401F40",
     gold: "#FEC880",
+    figmaGold: "#FEC880",
   },
+}));
+
+jest.mock("../../../../contexts/TooltipContext", () => ({
+  TooltipProvider: ({ children }: { children: React.ReactNode }) => children,
+  useTooltip: () => ({
+    activeTooltipId: null,
+    showTooltip: mockShowTooltip,
+    showTooltipOnce: jest.fn(() => Promise.resolve(true)),
+    dismissTooltip: jest.fn(),
+  }),
 }));
 jest.mock("../../../../assets/images/modal-bg.svg", () => {
   const React = require("react");
@@ -193,6 +206,38 @@ describe("FullProfileDetailsModal", () => {
     expect(getByText("TestUser")).toBeTruthy();
     expect(getByText("5")).toBeTruthy();
     expect(getByTestId("close-button")).toBeTruthy();
+  });
+
+  it("renders profile section help buttons", () => {
+    const { getByTestId } = renderWithModalProvider(
+      <FullProfileDetailsModal {...defaultProps} />
+    );
+
+    expect(getByTestId("profile-help-identity")).toBeTruthy();
+    expect(getByTestId("profile-help-daily-puzzles")).toBeTruthy();
+    expect(getByTestId("profile-help-stats")).toBeTruthy();
+    expect(getByTestId("profile-help-coins")).toBeTruthy();
+    expect(getByTestId("profile-help-achievements")).toBeTruthy();
+    expect(getByTestId("profile-help-statistics")).toBeTruthy();
+    expect(getByTestId("profile-help-leaderboard")).toBeTruthy();
+  });
+
+  it("opens a localized tooltip from a profile help button", () => {
+    const { getByTestId } = renderWithModalProvider(
+      <FullProfileDetailsModal {...defaultProps} />
+    );
+
+    fireEvent.press(getByTestId("profile-help-daily-puzzles"));
+
+    expect(mockShowTooltip).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: "profileDailyPuzzles",
+        content: expect.objectContaining({
+          title: "Daily puzzles",
+          body: "This shows how many daily challenges you have completed.",
+        }),
+      })
+    );
   });
 
   it("renders loading state when player data is null", () => {

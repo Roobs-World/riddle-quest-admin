@@ -9,6 +9,7 @@
 import * as functions from "firebase-functions";
 import {getUser, appendUnlockedAchievements} from "./firestoreService";
 import {captureException} from "./sentry";
+import {MAX_ATTEMPTS_CHALLENGE, MAX_ATTEMPTS_CLASSIC} from "./constants";
 import type {Player, UnlockedAchievement} from "./validation/firestoreSchemas";
 
 /** Context passed from submitGuess (or other callers) for achievement evaluation. */
@@ -40,6 +41,34 @@ const ACHIEVEMENT_RULES: Array<{id: string; rule: AchievementRule}> = [
     rule: (user) => (user.stats?.totalWins ?? 0) >= 25,
   },
   {
+    id: "wins_50",
+    rule: (user) => (user.stats?.totalWins ?? 0) >= 50,
+  },
+  {
+    id: "wins_100",
+    rule: (user) => (user.stats?.totalWins ?? 0) >= 100,
+  },
+  {
+    id: "win_rate_80",
+    rule: (user) =>
+      (user.stats?.gamesPlayed ?? 0) >= 10 &&
+      (user.stats?.winRate ?? 0) >= 80,
+  },
+  {
+    id: "efficient_10",
+    rule: (user) =>
+      (user.stats?.totalWins ?? 0) >= 10 &&
+      (user.stats?.averageGuesses ?? Number.POSITIVE_INFINITY) <= 3,
+  },
+  {
+    id: "games_25",
+    rule: (user) => (user.stats?.gamesPlayed ?? 0) >= 25,
+  },
+  {
+    id: "games_100",
+    rule: (user) => (user.stats?.gamesPlayed ?? 0) >= 100,
+  },
+  {
     id: "streak_3",
     rule: (user) => (user.stats?.bestStreak ?? 0) >= 3,
   },
@@ -48,20 +77,140 @@ const ACHIEVEMENT_RULES: Array<{id: string; rule: AchievementRule}> = [
     rule: (user) => (user.stats?.bestStreak ?? 0) >= 7,
   },
   {
+    id: "streak_14",
+    rule: (user) => (user.stats?.bestStreak ?? 0) >= 14,
+  },
+  {
+    id: "streak_30",
+    rule: (user) => (user.stats?.bestStreak ?? 0) >= 30,
+  },
+  {
     id: "classic_10",
     rule: (user) => (user.stats?.highestLevelClassic ?? 0) >= 10,
+  },
+  {
+    id: "classic_25",
+    rule: (user) => (user.stats?.highestLevelClassic ?? 0) >= 25,
+  },
+  {
+    id: "classic_50",
+    rule: (user) => (user.stats?.highestLevelClassic ?? 0) >= 50,
+  },
+  {
+    id: "classic_100",
+    rule: (user) => (user.stats?.highestLevelClassic ?? 0) >= 100,
   },
   {
     id: "daily_completed",
     rule: (user) => (user.stats?.dailyPuzzlesCompleted ?? 0) >= 1,
   },
   {
+    id: "daily_7",
+    rule: (user) => (user.stats?.dailyPuzzlesCompleted ?? 0) >= 7,
+  },
+  {
+    id: "daily_30",
+    rule: (user) => (user.stats?.dailyPuzzlesCompleted ?? 0) >= 30,
+  },
+  {
+    id: "daily_100",
+    rule: (user) => (user.stats?.dailyPuzzlesCompleted ?? 0) >= 100,
+  },
+  {
+    id: "challenge_5",
+    rule: (user) => (user.stats?.challengeWins ?? 0) >= 5,
+  },
+  {
+    id: "challenge_25",
+    rule: (user) => (user.stats?.challengeWins ?? 0) >= 25,
+  },
+  {
+    id: "challenge_50",
+    rule: (user) => (user.stats?.challengeWins ?? 0) >= 50,
+  },
+  {
     id: "perfect_guess",
     rule: (user, ctx) => ctx.isCorrect && ctx.attempts === 1,
   },
   {
+    id: "classic_perfect",
+    rule: (user, ctx) =>
+      ctx.gameMode === "classic" &&
+      ctx.isCorrect &&
+      ctx.attempts === 1,
+  },
+  {
+    id: "challenge_perfect",
+    rule: (user, ctx) =>
+      ctx.gameMode === "challenge" &&
+      ctx.isCorrect &&
+      ctx.attempts === 1,
+  },
+  {
+    id: "last_chance",
+    rule: (user, ctx) => {
+      const maxAttempts =
+        ctx.gameMode === "challenge" ? MAX_ATTEMPTS_CHALLENGE : MAX_ATTEMPTS_CLASSIC;
+      return ctx.isCorrect && ctx.attempts === maxAttempts;
+    },
+  },
+  {
+    id: "classic_last_chance",
+    rule: (user, ctx) =>
+      ctx.gameMode === "classic" &&
+      ctx.isCorrect &&
+      ctx.attempts === MAX_ATTEMPTS_CLASSIC,
+  },
+  {
+    id: "challenge_last_chance",
+    rule: (user, ctx) =>
+      ctx.gameMode === "challenge" &&
+      ctx.isCorrect &&
+      ctx.attempts === MAX_ATTEMPTS_CHALLENGE,
+  },
+  {
+    id: "lesson_learned",
+    rule: (user, ctx) => ctx.gameOver && !ctx.isCorrect,
+  },
+  {
     id: "hint_user",
     rule: (user) => (user.stats?.totalHintsUsed ?? 0) >= 1,
+  },
+  {
+    id: "hints_10",
+    rule: (user) => (user.stats?.totalHintsUsed ?? 0) >= 10,
+  },
+  {
+    id: "hints_25",
+    rule: (user) => (user.stats?.totalHintsUsed ?? 0) >= 25,
+  },
+  {
+    id: "level_5",
+    rule: (user) => (user.stats?.level ?? 1) >= 5,
+  },
+  {
+    id: "level_10",
+    rule: (user) => (user.stats?.level ?? 1) >= 10,
+  },
+  {
+    id: "level_20",
+    rule: (user) => (user.stats?.level ?? 1) >= 20,
+  },
+  {
+    id: "xp_1000",
+    rule: (user) => (user.stats?.xp ?? 0) >= 1000,
+  },
+  {
+    id: "xp_5000",
+    rule: (user) => (user.stats?.xp ?? 0) >= 5000,
+  },
+  {
+    id: "coin_hoarder",
+    rule: (user) => (user.coins ?? 0) >= 1000,
+  },
+  {
+    id: "treasure_vault",
+    rule: (user) => (user.coins ?? 0) >= 2500,
   },
   {
     id: "first_purchase",

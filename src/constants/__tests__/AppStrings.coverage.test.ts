@@ -13,6 +13,7 @@ describe("AppStrings internal coverage paths", () => {
         jaOverrides: {},
         koOverrides: {},
         zhOverrides: {},
+        hiOverrides: {},
         ruOverrides: {},
         trOverrides: {},
       }));

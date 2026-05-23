@@ -32,7 +32,7 @@ const CoinPurchaseFanfareModal: React.FC<CoinPurchaseFanfareModalProps> = ({
   };
 
   return (
-    <Modal transparent animationType="fade" visible={isVisible} onRequestClose={handleConfirm}>
+    <Modal transparent animationType="none" visible={isVisible} onRequestClose={handleConfirm}>
       <View
         style={{
           flex: 1,

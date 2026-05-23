@@ -31,5 +31,14 @@ export default {
     "valid-jsdoc": "off",
     "require-jsdoc": "off",
     "prettier/prettier": "error",
+    "@typescript-eslint/no-explicit-any": "error",
   },
+  overrides: [
+    {
+      files: ["src/__tests__/**/*.ts", "src/**/*.test.ts", "src/**/*.spec.ts"],
+      rules: {
+        "@typescript-eslint/no-explicit-any": "off",
+      },
+    },
+  ],
 };

@@ -17,6 +17,12 @@ jest.mock("../../../../constants/AppStrings", () => ({
       LANGUAGE_LABEL: "Language",
       LANGUAGE_SELECTED: "Selected",
       HELP_BUTTON: "Help and Support?",
+      ABOUT_BUTTON: "About",
+      PRIVACY_POLICY_BUTTON: "Privacy Policy",
+      TERMS_BUTTON: "Terms of Use",
+      LICENSES_BUTTON: "Licenses",
+      ACCOUNT_DELETION_BUTTON: "Delete Account",
+      DATA_EXPORT_BUTTON: "Export My Data",
       CREDITS_BUTTON: "Credits",
       LOGOUT_BUTTON: "Logout",
       LOGOUT_ERROR_TITLE: "Logout Error",
@@ -75,6 +81,7 @@ describe("<SettingsModal />", () => {
     currentLanguage: "en" as const,
     onChangeLanguage: jest.fn(),
     onPressHelp: jest.fn(),
+    onPressAbout: jest.fn(),
     onPressLogout: jest.fn(),
     onPressCredits: jest.fn(),
   };
@@ -131,6 +138,11 @@ describe("<SettingsModal />", () => {
       expect(getByText("Credits")).toBeTruthy();
     });
 
+    it("should render about option", () => {
+      const { getByText } = render(<SettingsModal {...defaultProps} />);
+      expect(getByText("About")).toBeTruthy();
+    });
+
     it("should render logout button", () => {
       const { getByText } = render(<SettingsModal {...defaultProps} />);
       expect(getByText("Logout")).toBeTruthy();
@@ -179,6 +191,12 @@ describe("<SettingsModal />", () => {
       const { getByText } = render(<SettingsModal {...defaultProps} />);
       fireEvent.press(getByText("Credits"));
       expect(defaultProps.onPressCredits).toHaveBeenCalledTimes(1);
+    });
+
+    it("should call onPressAbout when about is pressed", () => {
+      const { getByText } = render(<SettingsModal {...defaultProps} />);
+      fireEvent.press(getByText("About"));
+      expect(defaultProps.onPressAbout).toHaveBeenCalledTimes(1);
     });
 
     it("should call onClose when close button is pressed", () => {

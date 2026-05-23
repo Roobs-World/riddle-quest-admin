@@ -434,7 +434,7 @@ export async function updateLeaderboardEntry(
  * Request: `{ type: LeaderboardType, limit?: number }` (limit capped at 100)
  * Response: `{ entries: LeaderboardEntry[], requestingUserId: string }`
  */
-export const getLeaderboard = onCall(async (request) => {
+export const getLeaderboard = onCall({enforceAppCheck: true}, async (request) => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "Must be authenticated to view the leaderboard.");
   }

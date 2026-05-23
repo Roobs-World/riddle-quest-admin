@@ -242,6 +242,7 @@ const generateMockData = (
           logger.debug("Language:", language),
         onPressLogout: () => logger.debug("Logout pressed"),
         onPressHelp: () => logger.debug("Help pressed"),
+        onPressAbout: () => logger.debug("About pressed"),
         onPressCredits: () => logger.debug("Credits pressed"),
         playerData: resolvedPlayer,
       };

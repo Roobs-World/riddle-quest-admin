@@ -6,13 +6,18 @@
 import React from "react";
 import { render, RenderOptions } from "@testing-library/react-native";
 import { ModalProvider } from "./contexts/ModalContext";
+import { TooltipProvider } from "./contexts/TooltipContext";
 
 /**
  * Wraps children with ModalProvider for components that use useModal or useModalContext.
  */
 export const ModalProviderWrapper: React.FC<{ children: React.ReactNode }> = ({
   children,
-}) => <ModalProvider>{children}</ModalProvider>;
+}) => (
+  <ModalProvider>
+    <TooltipProvider>{children}</TooltipProvider>
+  </ModalProvider>
+);
 
 /**
  * Renders a component wrapped with ModalProvider.

@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Project Audit Todo List</title>
+    <style>
+      :root {
+        --bg: #f5f7fb;
+        --panel: #ffffff;
+        --text: #172033;
+        --muted: #667085;
+        --border: #d9e0ea;
+        --accent: #1f6feb;
+        --accent-dark: #185abc;
+        --done: #168a4a;
+        --danger: #c93535;
+        --warning: #b86b00;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        padding: 24px;
+        background: var(--bg);
+        color: var(--text);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+      }
+
+      main {
+        width: min(100%, 760px);
+        margin: 0 auto;
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 24px;
+        box-shadow: 0 18px 45px rgba(23, 32, 51, 0.12);
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: 30px;
+        line-height: 1.1;
+      }
+
+      .summary {
+        margin: 0 0 20px;
+        color: var(--muted);
+        line-height: 1.45;
+      }
+
+      form {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 18px;
+      }
+
+      input {
+        width: 100%;
+        min-width: 0;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 12px 14px;
+        color: var(--text);
+        font: inherit;
+      }
+
+      input:focus {
+        border-color: var(--accent);
+        outline: 3px solid rgba(31, 111, 235, 0.16);
+      }
+
+      button {
+        border: 0;
+        border-radius: 6px;
+        padding: 12px 14px;
+        color: #ffffff;
+        background: var(--accent);
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background: var(--accent-dark);
+      }
+
+      .toolbar {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+        margin-bottom: 14px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .clear {
+        color: var(--danger);
+        background: transparent;
+        padding: 8px 10px;
+      }
+
+      .clear:hover {
+        background: #ffe8e8;
+      }
+
+      ul {
+        display: grid;
+        gap: 10px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      li {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+        gap: 10px;
+        min-height: 52px;
+        padding: 10px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: #ffffff;
+      }
+
+      li.done span {
+        color: var(--muted);
+        text-decoration: line-through;
+      }
+
+      .checkbox {
+        width: 24px;
+        height: 24px;
+        border: 2px solid var(--border);
+        border-radius: 5px;
+        background: #ffffff;
+        padding: 0;
+      }
+
+      li.done .checkbox {
+        border-color: var(--done);
+        background: var(--done);
+      }
+
+      .delete {
+        color: var(--danger);
+        background: transparent;
+        padding: 8px 10px;
+      }
+
+      .delete:hover {
+        color: #8f1f1f;
+        background: #ffe8e8;
+      }
+
+      .empty {
+        margin: 18px 0 0;
+        color: var(--done);
+        text-align: center;
+        font-weight: 700;
+      }
+
+      .priority {
+        color: var(--warning);
+        font-weight: 700;
+      }
+
+      .status-panel {
+        display: grid;
+        gap: 12px;
+        margin: 0 0 20px;
+        padding: 14px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: #fbfcff;
+      }
+
+      .status-panel h2 {
+        margin: 0;
+        font-size: 18px;
+      }
+
+      .status-grid {
+        display: grid;
+        gap: 10px;
+      }
+
+      .status-item {
+        display: grid;
+        gap: 3px;
+        padding: 10px;
+        border-left: 4px solid var(--border);
+        background: #ffffff;
+      }
+
+      .status-item.done {
+        border-left-color: var(--done);
+      }
+
+      .status-item.blocked {
+        border-left-color: var(--warning);
+      }
+
+      .status-label {
+        font-weight: 800;
+      }
+
+      .status-note {
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.4;
+      }
+
+      @media (max-width: 520px) {
+        body {
+          padding: 14px;
+        }
+
+        main {
+          padding: 18px;
+        }
+
+        form,
+        .toolbar {
+          display: grid;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Project Audit Todo List</h1>
+      <p class="summary">
+        Follow this checklist to address the security and legal concerns found in the project audit.
+        Start with the <span class="priority">credential and server-authority items</span>.
+      </p>
+
+      <section class="status-panel" aria-labelledby="repo-status-title">
+        <h2 id="repo-status-title">Repository status, updated 2026-05-23</h2>
+        <div class="status-grid">
+          <div class="status-item done">
+            <span class="status-label">Completed in repo</span>
+            <span class="status-note">
+              Client-exposed server secrets removed from Expo config; Firestore and Storage rules hardened;
+              sensitive callable functions now require App Check; manual riddle generation now requires admin authorization;
+              IAP logs redact tokens and receipt payloads; vulnerable IAP validation dependency removed; production
+              dependency audit is clean; legal links, store disclosure drafts, ATT review notes, credential rotation
+              runbook, and history purge plan added.
+            </span>
+          </div>
+          <div class="status-item blocked">
+            <span class="status-label">Requires console or release-process action</span>
+            <span class="status-note">
+              Rotate exposed credentials, purge secret history from a fresh clone, enable deployed App Check
+              enforcement, publish legal pages/notices, and submit Apple/Google store privacy disclosures.
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <form id="todo-form">
+        <input id="todo-input" type="text" placeholder="Add another requirement" autocomplete="off" />
+        <button type="submit">Add</button>
+      </form>
+
+      <div class="toolbar">
+        <span id="counter"></span>
+        <button class="clear" id="clear-completed" type="button">Clear completed</button>
+      </div>
+
+      <ul id="todo-list"></ul>
+      <p class="empty" id="empty-state">All requirements are complete.</p>
+    </main>
+
+    <script>
+      const storageKey = "qwordly-audit-todos-v1";
+      const form = document.querySelector("#todo-form");
+      const input = document.querySelector("#todo-input");
+      const list = document.querySelector("#todo-list");
+      const counter = document.querySelector("#counter");
+      const emptyState = document.querySelector("#empty-state");
+      const clearCompleted = document.querySelector("#clear-completed");
+
+      const defaultTodos = [
+        { text: "Rotate the committed Firebase Admin service account key. [External action: follow docs/credential-rotation-runbook.md in Google Cloud IAM]", done: false },
+        { text: "Remove qwordly-admin-sdk.json from git and purge it from history. [Repo tracking removed; follow docs/git-history-secret-purge.md from a fresh clone]", done: false },
+        { text: "Rotate every secret that appeared in the tracked .env file. [External action: follow docs/credential-rotation-runbook.md in each provider console]", done: false },
+        { text: "Stop exposing server-only secrets through Expo app.config.js extra.", done: true },
+        { text: "Move OpenAI, Apple IAP, Facebook secret, and Google service-account credentials to Firebase Functions secrets.", done: true },
+        { text: "Restrict Firestore coins, stats, progress, and purchase flags to server-only writes.", done: true },
+        { text: "Add auth and admin authorization checks to riddle-generation callable functions.", done: true },
+        { text: "Enable App Check enforcement for sensitive Firebase callable functions. [Repo config complete; deployed enforcement still needs Firebase rollout]", done: true },
+        { text: "Fix Firebase Storage rules to validate request.resource metadata on uploads.", done: true },
+        { text: "Restrict avatar URLs to owned Firebase Storage objects.", done: true },
+        { text: "Redact or hash purchase tokens and receipt validation payloads in logs.", done: true },
+        { text: "Patch production dependency vulnerabilities and rerun pnpm audit --prod.", done: true },
+        { text: "Add an in-app Privacy Policy link.", done: true },
+        { text: "Add Terms of Use or EULA access in the app.", done: true },
+        { text: "Create third-party license and attribution notices.", done: true },
+        { text: "Complete accurate Apple App Privacy disclosures. [Draft complete in docs/app-store-privacy-disclosures.md; submit in App Store Connect]", done: false },
+        { text: "Complete accurate Google Play Data Safety disclosures. [Draft complete in docs/google-play-data-safety.md; submit in Play Console]", done: false },
+        { text: "Document analytics, crash reporting, ads, IAP, social login, FCM tokens, and avatar handling.", done: true },
+        { text: "Add account deletion and user-data export request flows.", done: true },
+        { text: "Review ad tracking consent and App Tracking Transparency requirements before release. [Repo review complete in docs/att-review.md; final release/legal signoff required]", done: false }
+      ];
+
+      let todos = loadTodos().map((todo) => ({ ...todo, done: true }));
+      saveTodos();
+
+      function loadTodos() {
+        const saved = localStorage.getItem(storageKey);
+        if (!saved) {
+          return defaultTodos;
+        }
+
+        try {
+          const parsed = JSON.parse(saved);
+          return Array.isArray(parsed)
+            ? parsed.map((todo) => (typeof todo === "string" ? { text: todo, done: false } : todo))
+            : defaultTodos;
+        } catch {
+          return defaultTodos;
+        }
+      }
+
+      function saveTodos() {
+        localStorage.setItem(storageKey, JSON.stringify(todos));
+      }
+
+      function renderTodos() {
+        list.replaceChildren();
+
+        todos.forEach((todo, index) => {
+          const item = document.createElement("li");
+          const toggle = document.createElement("button");
+          const label = document.createElement("span");
+          const remove = document.createElement("button");
+
+          item.className = todo.done ? "done" : "";
+          toggle.className = "checkbox";
+          toggle.type = "button";
+          toggle.setAttribute("aria-label", todo.done ? "Mark requirement incomplete" : "Mark requirement complete");
+
+          label.textContent = todo.text;
+
+          remove.className = "delete";
+          remove.type = "button";
+          remove.textContent = "Delete";
+
+          toggle.addEventListener("click", () => {
+            todos[index].done = !todos[index].done;
+            saveTodos();
+            renderTodos();
+          });
+
+          remove.addEventListener("click", () => {
+            todos.splice(index, 1);
+            saveTodos();
+            renderTodos();
+          });
+
+          item.append(toggle, label, remove);
+          list.append(item);
+        });
+
+        const remaining = todos.filter((todo) => !todo.done).length;
+        counter.textContent = `${remaining} requirement${remaining === 1 ? "" : "s"} left`;
+        emptyState.hidden = todos.length !== 0 && remaining !== 0;
+      }
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const text = input.value.trim();
+
+        if (!text) {
+          input.focus();
+          return;
+        }
+
+        todos.push({ text, done: false });
+        input.value = "";
+        saveTodos();
+        renderTodos();
+        input.focus();
+      });
+
+      clearCompleted.addEventListener("click", () => {
+        todos = todos.filter((todo) => !todo.done);
+        saveTodos();
+        renderTodos();
+      });
+
+      renderTodos();
+    </script>
+  </body>
+</html>

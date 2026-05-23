@@ -1,4 +1,3 @@
-import iap from "in-app-purchase";
 import fs from "fs";
 import path from "path";
 import { captureException } from "./sentry";
@@ -98,9 +97,9 @@ export function initializeIapConfig(): void {
       finalGoogleServiceAccountForIap = undefined;
     }
   } else if (isJestEnvironment && !serviceAccountPathFromEnv) {
-    // Jest unit tests - iap.config() will be skipped/mocked.
+    // Jest unit tests can use placeholder credentials.
     console.log(
-      "[iapConfig Jest Unit Test] GOOGLE_SERVICE_ACCOUNT_JSON_PATH not set. This is okay for unit tests as iap.config() is skipped.",
+      "[iapConfig Jest Unit Test] GOOGLE_SERVICE_ACCOUNT_JSON_PATH not set. This is okay for unit tests.",
     ); // Changed to console.log
     finalGoogleServiceAccountForIap = {privateKey: "JEST_UNIT_TEST_PLACEHOLDER_KEY"};
   }
@@ -134,7 +133,7 @@ export function initializeIapConfig(): void {
 
   if (!iapGoogleCredentials) {
     console.log(
-      "[iapConfig Shared] iapGoogleCredentials object is UNDEFINED. This will likely cause iap.config to fail for Google Play.",
+      "[iapConfig Shared] iapGoogleCredentials object is UNDEFINED. Google Play validation will fail until configured.",
     ); // Changed to console.log - expected in Jest environment
     if (finalGoogleServiceAccountForIap) {
       console.log(
@@ -149,26 +148,6 @@ export function initializeIapConfig(): void {
     console.log(
       `[iapConfig Shared] iapGoogleCredentials CONSTRUCTED. Client Email: ${iapGoogleCredentials.clientEmail}`,
     ); // Changed to console.log
-  }
-
-  if (!isJestEnvironment) {
-    try {
-      console.log("[iapConfig Attempting iap.config()] Test mode for iap.config: ", isFirebaseFunctionsTestEnv); // Changed to console.log
-      iap.config({
-        test: isFirebaseFunctionsTestEnv,
-        applePassword: appleSharedSecret, // from process.env
-        googleServiceAccount: iapGoogleCredentials, // from process.env or test file
-      });
-      console.log("[iapConfig] iap.config() called successfully."); // Changed to console.log
-    } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : "Unknown error";
-      console.error(
-        `[iapConfig] CRITICAL: Error calling iap.config(): ${errorMessage}. Stack: ${error instanceof Error ? error.stack : "N/A"}`,
-      ); // Keep as error - actual problem
-      captureException(error);
-    }
-  } else {
-    console.log("[iapConfig Jest Unit Test] SKIPPING iap.config() call as module should be mocked by test."); // Changed to console.log
   }
 
   isIapInitialized = true;
@@ -192,10 +171,9 @@ if (process.env.JEST_WORKER_ID === undefined) {
   console.log("[iapConfig] Not in Jest environment, auto-initializing."); // Changed to console.log
   initializeIapConfig();
 } else {
-  // For Jest, initialization is expected to be called explicitly by test setup if needed,
-  // but iap.config() itself will be skipped as per logic above / mocked by tests.
+  // For Jest, initialization is expected to be called explicitly by test setup if needed.
   console.log(
-    "[iapConfig] In Jest environment, explicit initializeIapConfig() call needed by tests (iap.config() will be skipped/mocked).",
+    "[iapConfig] In Jest environment, explicit initializeIapConfig() call needed by tests.",
   ); // Changed to console.log
 }
 

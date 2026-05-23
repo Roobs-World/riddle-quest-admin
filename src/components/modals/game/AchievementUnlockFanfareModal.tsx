@@ -9,6 +9,9 @@ import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {NewCoins} from "@/components/shared/NewCoins";
 import RotatingWheelBackground from "@/components/shared/RotatingWheelBackground";
+import type {ModalSequenceProgress} from "../../../types/ModalTypes";
+import ModalSequenceBreadcrumb from "../ModalSequenceBreadcrumb";
+import WideButton from "../../buttons/WideButton";
 
 interface AchievementUnlockFanfareModalProps {
   isVisible: boolean;
@@ -16,6 +19,7 @@ interface AchievementUnlockFanfareModalProps {
   totalCoins: number;
   achievementNames?: string[];
   achievements?: AchievementUnlockFanfareItem[];
+  sequenceProgress?: ModalSequenceProgress;
   onContinue?: () => void;
   onClose: () => void;
 }
@@ -26,6 +30,7 @@ const AchievementUnlockFanfareModal: React.FC<AchievementUnlockFanfareModalProps
   totalCoins,
   achievementNames = [],
   achievements = [],
+  sequenceProgress,
   onContinue,
   onClose,
 }) => {
@@ -36,13 +41,15 @@ const AchievementUnlockFanfareModal: React.FC<AchievementUnlockFanfareModalProps
     achievements[0]?.name ?? achievementNames[0] ?? AppStrings.Achievements.NEW_ACHIEVEMENT;
   const primaryAchievementDescription = achievements[0]?.description ?? "";
   const primaryAchievementIcon = achievements[0]?.icon ?? "";
+  const continueButtonText =
+    sequenceProgress?.primaryActionText ?? AppStrings.Achievements.NICE_BUTTON;
   const handleContinue = () => {
     onContinue?.();
     onClose();
   };
 
   return (
-    <Modal transparent animationType="fade" visible={isVisible} onRequestClose={handleContinue}>
+    <Modal transparent animationType="none" visible={isVisible} onRequestClose={handleContinue}>
       <View
         style={{
           flex: 1,
@@ -81,10 +88,11 @@ const AchievementUnlockFanfareModal: React.FC<AchievementUnlockFanfareModalProps
                   height: MODAL_HEIGHT,
                   alignItems: "center",
                   justifyContent: "center",
-                  gap: MODAL_BUTTON_SPACER * 2,
+                  gap: MODAL_BUTTON_SPACER,
                   padding: MODAL_CONTENT_PADDING,
                 }}
               >
+                <ModalSequenceBreadcrumb sequenceProgress={sequenceProgress} />
                 <Text
                   style={{
                     fontFamily: TYPOGRAPHY.fontPrimary,
@@ -133,6 +141,14 @@ const AchievementUnlockFanfareModal: React.FC<AchievementUnlockFanfareModalProps
                 </View>
 
                 <NewCoins coinsEarned={coinsEarned} totalCoins={totalCoins} />
+
+                <View style={{width: "100%"}}>
+                  <WideButton
+                    buttonText={continueButtonText}
+                    onPress={handleContinue}
+                    testID="achievement-unlock-continue-button"
+                  />
+                </View>
               </View>
             </View>
           </TouchableOpacity>

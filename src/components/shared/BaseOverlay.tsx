@@ -42,7 +42,7 @@ const BaseOverlay: React.FC<BaseOverlayProps> = ({
 }) => {
   return (
     <Modal
-      animationType="fade"
+      animationType="none"
       transparent={true}
       visible={visible}
       onRequestClose={onClose}

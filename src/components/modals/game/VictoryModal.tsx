@@ -13,6 +13,8 @@ import HomeBg from "../../../../assets/images/home-bg.svg";
 import WideButton from "../../buttons/WideButton";
 import {generateFeedbackEmojiGrid} from "../../../utils/gameUtils";
 import {SocialSharingService} from "../../../services/SocialSharingService";
+import type {ModalSequenceProgress} from "../../../types/ModalTypes";
+import ModalSequenceBreadcrumb from "../ModalSequenceBreadcrumb";
 
 /**
  * Props for the victory feedback modal shown after a successful solve.
@@ -34,6 +36,7 @@ interface VictoryModalProps {
   guesses: SubmittedGuess[];
   /** Game mode label included in share analytics/payload. */
   gameMode?: "daily" | "classic";
+  sequenceProgress?: ModalSequenceProgress;
   /** Closes the modal. */
   onClose: () => void;
 }
@@ -52,9 +55,12 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
   onNextLevel,
   guesses,
   gameMode,
+  sequenceProgress,
   onClose,
 }) => {
   const modalHeight = MODAL_HEIGHT * 1.4;
+  const nextButtonText =
+    sequenceProgress?.primaryActionText ?? AppStrings.VictoryModal.NEXT_LEVEL_BUTTON;
 
   /**
    * Advances to the next level and closes the modal afterward.
@@ -76,7 +82,7 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
   };
 
   return (
-    <Modal transparent animationType="fade" visible={isVisible} onRequestClose={onClose}>
+    <Modal transparent animationType="none" visible={isVisible} onRequestClose={onClose}>
       <View
         style={{
           flex: 1,
@@ -121,12 +127,14 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
                 marginBottom: verticalScale(20),
               }}
             >
+              <View style={{marginTop: 20}}>
+                <ModalSequenceBreadcrumb sequenceProgress={sequenceProgress} />
+              </View>
               <Text
                 style={{
                   fontFamily: TYPOGRAPHY.fontPrimary,
                   fontSize: TYPOGRAPHY.fontSize["4xl"],
                   color: "black",
-                  marginTop: 20,
                 }}
               >
                 {AppStrings.VictoryModal.TITLE}
@@ -144,7 +152,7 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
                 />
                 <View style={{height: verticalScale(10)}} />
                 <WideButton
-                  buttonText={AppStrings.VictoryModal.NEXT_LEVEL_BUTTON}
+                  buttonText={nextButtonText}
                   onPress={() => {
                     void handleNextLevel();
                   }}

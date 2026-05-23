@@ -35,7 +35,7 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({
   };
 
   return (
-    <Modal animationType="fade" transparent={true} visible={isVisible} onRequestClose={handleDismiss}>
+    <Modal animationType="none" transparent={true} visible={isVisible} onRequestClose={handleDismiss}>
       <View
         style={{
           flex: 1,

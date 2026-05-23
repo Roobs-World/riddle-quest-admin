@@ -38,6 +38,10 @@ adb install path/to/app.apk
 
 This is a mobile game that combines the popular Wordle-style gameplay with challenging riddles. Built using React Native and Firebase, the game features user authentication, multiple game modes, in-app purchases for a coin system, and customizable user profiles.
 
+## Marketing Kit
+
+The 90-day pre-launch marketing package lives in [docs/marketing/README.md](docs/marketing/README.md). It implements the multilingual launch plan for Riddle Quest with store metadata, ASO experiments, creator outreach templates, a content calendar, press kit copy, tracking/KPI definitions, and a static pre-launch landing page at [docs/marketing/prelaunch-landing-page.html](docs/marketing/prelaunch-landing-page.html).
+
 ## Features
 
 - **Riddle-based Gameplay:** Guess 5-letter answers to intriguing riddles within 6 attempts.
@@ -107,6 +111,10 @@ npm run android
 ## Memory Bank
 
 This project utilizes a `memory-bank` directory containing detailed documentation on project context, technical decisions, system patterns, and progress. Refer to these documents (`projectbrief.md`, `productContext.md`, `techContext.md`, `systemPatterns.md`, `activeContext.md`, `progress.md`) for in-depth information.
+
+## Funding Pack
+
+Funding materials for the pre-launch beta are maintained in `docs/funding/`. This pack implements the under-GBP 30k funding plan for Riddle Quest/Qwordly, including the one-page summary, pitch deck outline, GBP 24,500 budget, UKGF grant checklist, beta validation plan, publisher/investor outreach scripts, pitch video script, outreach tracker, and 90-day execution plan. Start with `docs/funding/README.md`.
 
 ## TODO
 

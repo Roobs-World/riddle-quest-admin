@@ -378,6 +378,14 @@ describe("useModal", () => {
       expect(typeof result.current.showCreditsModal).toBe("function");
     });
 
+    it("should have showAboutLegalModal method", () => {
+      const { result } = renderHook(() => useModal(), {
+        wrapper: createWrapper(),
+      });
+
+      expect(typeof result.current.showAboutLegalModal).toBe("function");
+    });
+
     it("should have showCoinShopModal method", () => {
       const { result } = renderHook(() => useModal(), {
         wrapper: createWrapper(),
@@ -418,6 +426,7 @@ describe("useModal", () => {
         result.current.showWelcomeModal();
         result.current.showInstructionsModal();
         result.current.showCreditsModal();
+        result.current.showAboutLegalModal();
         result.current.showCoinShop({} as any);
         result.current.showCoinPurchaseFanfareModal({} as any);
         result.current.showFullProfileDetailsModal({} as any);
@@ -485,6 +494,7 @@ describe("useModal", () => {
           onChangeLanguage: jest.fn(),
           onPressLogout: jest.fn(),
           onPressHelp: jest.fn(),
+          onPressAbout: jest.fn(),
           onPressCredits: jest.fn(),
         });
       });

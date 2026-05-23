@@ -1,7 +1,4 @@
 import { ServiceRegistry, serviceRegistry } from "../ServiceRegistry";
-import { IUserDataService } from "../interfaces/IUserDataService";
-import { IRiddleDataService } from "../interfaces/IRiddleDataService";
-import { IAudioFeedbackService } from "../interfaces/IAudioFeedbackService";
 
 // Mock the service implementations
 jest.mock("../UserDataService", () => ({

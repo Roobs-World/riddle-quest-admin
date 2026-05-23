@@ -67,6 +67,13 @@ export interface OnboardingProgress {
   total: number;
 }
 
+export interface ModalSequenceProgress {
+  currentPopupIndex: number;
+  totalPopups: number;
+  hasNextPopup: boolean;
+  primaryActionText?: string;
+}
+
 // Game-specific modal types for type safety
 export interface GameModalTypes {
   // Game modals
@@ -77,6 +84,7 @@ export interface GameModalTypes {
     guesses: import("../hooks/types").SubmittedGuess[];
     /** Human-readable names of achievements newly unlocked by this win. */
     unlockedAchievementNames?: string[];
+    sequenceProgress?: ModalSequenceProgress;
     onNext: () => void;
   };
 
@@ -110,6 +118,7 @@ export interface GameModalTypes {
     onChangeLanguage: (language: SupportedLanguage) => void;
     onPressLogout: () => void;
     onPressHelp: () => void;
+    onPressAbout: () => void;
     onPressCredits: () => void;
     /** When provided, a "View Achievements" button is shown that opens the achievements modal. */
     playerData?: import("../validation/firestoreSchemas").Player | null;
@@ -182,6 +191,8 @@ export interface GameModalTypes {
 
   credits: Record<string, never>;
 
+  aboutLegal: Record<string, never>;
+
   info: {
     title: string;
     message: string;
@@ -218,6 +229,7 @@ export interface GameModalTypes {
     totalCoins: number;
     achievementNames?: string[];
     achievements?: AchievementUnlockFanfareItem[];
+    sequenceProgress?: ModalSequenceProgress;
     onContinue?: () => void;
   };
 
@@ -225,6 +237,7 @@ export interface GameModalTypes {
     streakValue: number;
     coinsAwarded: number;
     totalCoins: number;
+    sequenceProgress?: ModalSequenceProgress;
     onContinue?: () => void;
   };
 
@@ -232,6 +245,7 @@ export interface GameModalTypes {
     newLevel: number;
     coinsAwarded: number;
     totalCoins: number;
+    sequenceProgress?: ModalSequenceProgress;
     onContinue?: () => void;
   };
 }

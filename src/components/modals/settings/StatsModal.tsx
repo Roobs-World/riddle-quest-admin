@@ -49,7 +49,7 @@ const StatsModal: React.FC<StatsModalProps> = ({isVisible, onClose, playerData})
     <Modal
       visible={isVisible}
       transparent
-      animationType="fade"
+      animationType="none"
       onRequestClose={onClose}
       accessibilityLabel={AppStrings.StatsModal.TITLE}
     >

@@ -190,6 +190,13 @@ export const useModal = () => {
     [openGameModal]
   );
 
+  const showAboutLegalModal = useCallback(
+    (data: ModalDataType<"aboutLegal"> = {}, options?: ModalOptions): string => {
+      return openGameModal("aboutLegal", data, options);
+    },
+    [openGameModal]
+  );
+
   const showCoinShop = useCallback(
     (data: ModalDataType<"coinShop">, options?: ModalOptions): string => {
       return openGameModal("coinShop", data, options);
@@ -306,6 +313,7 @@ export const useModal = () => {
     showWelcomeBackModal,
     showInstructionsModal,
     showCreditsModal,
+    showAboutLegalModal,
     showCoinShop,
     showCoinPurchaseFanfareModal,
     showAchievementUnlockFanfareModal,

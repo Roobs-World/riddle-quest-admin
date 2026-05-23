@@ -82,7 +82,10 @@ import {
   writeBooleanSetting,
 } from "../../utils/settingsStorage";
 import type { Feedback } from "../../hooks/types";
+import type { ModalSequenceProgress } from "../../types/ModalTypes";
 import OfflineBlockingModal from "../../components/modals/system/OfflineBlockingModal";
+import { useTooltip } from "../../contexts/TooltipContext";
+import type { TooltipId, TooltipTargetRef } from "../../components/tooltips/types";
 import {
   resolveBackspaceGuessSlot,
   resolveEditableGuessSlot,
@@ -127,6 +130,7 @@ interface GameScreenProps {
 const ONBOARDING_SEEN_STORAGE_KEY_PREFIX = "gameScreenOnboardingSeen";
 const RESULT_MODAL_REVEAL_DELAY_MS = 850;
 const ONBOARDING_PROGRESS_TOTAL = 3;
+const FIFTH_CORRECT_ANSWER_COUNT = 5;
 
 const getOnboardingSeenStorageKey = (userId?: string): string => {
   if (userId) {
@@ -134,6 +138,53 @@ const getOnboardingSeenStorageKey = (userId?: string): string => {
   }
 
   return `${ONBOARDING_SEEN_STORAGE_KEY_PREFIX}:anonymous`;
+};
+
+const getTooltipContent = (id: TooltipId) => {
+  switch (id) {
+    case "submitAnswer":
+      return {
+        title: AppStrings.Tooltips.SUBMIT_ANSWER_TITLE,
+        body: AppStrings.Tooltips.SUBMIT_ANSWER_BODY,
+        action: AppStrings.Tooltips.GOT_IT_BUTTON,
+      };
+    case "hintAfterWrongGuess":
+      return {
+        title: AppStrings.Tooltips.HINT_AFTER_WRONG_TITLE,
+        body: AppStrings.Tooltips.HINT_AFTER_WRONG_BODY,
+        action: AppStrings.Tooltips.GOT_IT_BUTTON,
+      };
+    case "shopOutOfCoins":
+      return {
+        title: AppStrings.Tooltips.SHOP_OUT_OF_COINS_TITLE,
+        body: AppStrings.Tooltips.SHOP_OUT_OF_COINS_BODY,
+        action: AppStrings.Tooltips.GOT_IT_BUTTON,
+      };
+    case "achievementEarned":
+      return {
+        title: AppStrings.Tooltips.ACHIEVEMENT_EARNED_TITLE,
+        body: AppStrings.Tooltips.ACHIEVEMENT_EARNED_BODY,
+        action: AppStrings.Tooltips.GOT_IT_BUTTON,
+      };
+    case "leaderboardFifthCorrectAnswer":
+      return {
+        title: AppStrings.Tooltips.LEADERBOARD_FIFTH_CORRECT_TITLE,
+        body: AppStrings.Tooltips.LEADERBOARD_FIFTH_CORRECT_BODY,
+        action: AppStrings.Tooltips.GOT_IT_BUTTON,
+      };
+    case "classicFromDaily":
+      return {
+        title: AppStrings.Tooltips.CLASSIC_FROM_DAILY_TITLE,
+        body: AppStrings.Tooltips.CLASSIC_FROM_DAILY_BODY,
+        action: AppStrings.Tooltips.GOT_IT_BUTTON,
+      };
+    default:
+      return {
+        title: AppStrings.CommonAlerts.INFO_TITLE,
+        body: "",
+        action: AppStrings.Tooltips.GOT_IT_BUTTON,
+      };
+  }
 };
 
 const parseCoinBalance = (value: unknown): number | null => {
@@ -287,6 +338,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     consumePendingStreakBreak,
   } = useAuth();
   const modal = useModal();
+  const tooltip = useTooltip();
   const {
     showWelcomeModal,
     showWelcomeBackModal,
@@ -314,15 +366,51 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const isRunningUnderJest =
     typeof process !== "undefined" && Boolean(process.env.JEST_WORKER_ID);
   const shouldUseFullFirestoreCatalog = !isRunningUnderJest;
+  const currentTooltipUserId = playerData?.userId ?? null;
+
+  const showTooltipOnce = useCallback(
+    (id: TooltipId, targetRef?: TooltipTargetRef | null) =>
+      tooltip.showTooltipOnce({
+        id,
+        targetRef,
+        content: getTooltipContent(id),
+        userId: currentTooltipUserId,
+      }),
+    [currentTooltipUserId, tooltip]
+  );
 
   const gameOverHandledRef = useRef(false);
   const isMountedRef = useRef(true);
   const latestResultRef = useRef<GuessResult | null>(null);
   const lastSubmittedAttemptRef = useRef<number | null>(null);
+  const submitButtonRef = useRef<View>(null);
+  const hintButtonRef = useRef<View>(null);
+  const nextButtonRef = useRef<View>(null);
+  const coinsButtonRef = useRef<View>(null);
+  const profileButtonRef = useRef<View>(null);
+  const previousGameModeRef = useRef<GameMode>(gameMode);
   const openShopFromLossRef = useRef<() => void>(() => {});
   const coinAnimationSettleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
     null
   );
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      void showTooltipOnce("submitAnswer", submitButtonRef);
+    }, 650);
+
+    return () => clearTimeout(timeoutId);
+  }, [showTooltipOnce]);
+
+  useEffect(() => {
+    const previousGameMode = previousGameModeRef.current;
+    previousGameModeRef.current = gameMode;
+    if (previousGameMode === "daily" && gameMode === "classic") {
+      void safeDelay(650).then(() => {
+        void showTooltipOnce("classicFromDaily", nextButtonRef);
+      });
+    }
+  }, [gameMode, showTooltipOnce]);
   const hasLoadedShopCatalogRef = useRef(false);
 
   const [iapProducts, setIapProducts] = useState<RNIap.Product[]>([]);
@@ -1211,6 +1299,11 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
             icon: achievement.icon,
           })
         );
+        const existingCorrectAnswers = Math.max(
+          toNonNegativeStatValue(playerData?.stats?.totalWins),
+          toNonNegativeStatValue(playerData?.stats?.challengeWins)
+        );
+        const correctAnswersAfterWin = existingCorrectAnswers + 1;
 
         const xpValue = Number(playerData?.stats?.xp ?? 0);
         const totalScoreValue = Number(playerData?.stats?.totalScore ?? 0);
@@ -1256,91 +1349,139 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           await safeDelay(coinCountUpDurationMs);
         };
 
-        const showVictoryModal = () => {
-          const continueToNextLevel = async () => {
-            logger.debug("Victory modal: Next level button pressed");
-            resetRoundState();
+        const continueToNextLevel = async () => {
+          logger.debug("Victory modal: Next level button pressed");
+          resetRoundState();
 
-            try {
-              await runWithServerLoading(() => onNextLevel());
-            } catch (error) {
-              logger.error("Error calling onNextLevel:", error);
-              captureException(error);
-            } finally {
-              setIsTransitioningToNextLevel(false);
-            }
+          try {
+            await runWithServerLoading(() => onNextLevel());
+          } catch (error) {
+            logger.error("Error calling onNextLevel:", error);
+            captureException(error);
+          } finally {
+            setIsTransitioningToNextLevel(false);
+          }
+        };
+
+        type CompletionPopup = {
+          open: (
+            sequenceProgress: ModalSequenceProgress,
+            onContinue: () => void | Promise<void>
+          ) => void;
+        };
+
+        const completionPopupSequence: CompletionPopup[] = [
+          ...unlockedAchievementFanfareItems.map((achievement, index) => ({
+            open: (
+              sequenceProgress: ModalSequenceProgress,
+              onContinue: () => void | Promise<void>
+            ) => {
+              modal.showAchievementUnlockFanfareModal({
+                coinsEarned: index === 0 ? result.coinsEarned || 0 : 0,
+                totalCoins: totalCoinsAfterWin,
+                achievementNames: [achievement.name],
+                achievements: [achievement],
+                sequenceProgress,
+                onContinue,
+              });
+            },
+          })),
+          ...(gameMode === "daily" && resolvedDailyStreak
+            ? [
+                {
+                  open: (
+                    sequenceProgress: ModalSequenceProgress,
+                    onContinue: () => void | Promise<void>
+                  ) => {
+                    modal.showStreakIncreaseFanfareModal({
+                      streakValue: resolvedDailyStreak,
+                      coinsAwarded: DAILY_CHALLENGE_COIN_REWARD,
+                      totalCoins: totalCoinsAfterWin,
+                      sequenceProgress,
+                      onContinue,
+                    });
+                  },
+                },
+              ]
+            : []),
+          {
+            open: (
+              sequenceProgress: ModalSequenceProgress,
+              onContinue: () => void | Promise<void>
+            ) => {
+              modal.showVictoryModal({
+                attempts: resolvedAttempts,
+                coinsEarned: result.coinsEarned || 0,
+                totalCoins: totalCoinsAfterWin,
+                unlockedAchievementNames,
+                guesses,
+                sequenceProgress,
+                onNext: async () => {
+                  modal.closeModalByType("victory");
+                  await Promise.resolve(onContinue());
+                },
+              });
+            },
+          },
+          ...(didLevelUp
+            ? [
+                {
+                  open: (
+                    sequenceProgress: ModalSequenceProgress,
+                    onContinue: () => void | Promise<void>
+                  ) => {
+                    modal.showLevelUpFanfareModal({
+                      newLevel: nextLevel,
+                      coinsAwarded: LEVEL_UP_COIN_BONUS,
+                      totalCoins: totalCoinsAfterWin,
+                      sequenceProgress,
+                      onContinue,
+                    });
+                  },
+                },
+              ]
+            : []),
+        ];
+
+        const showCompletionPopupAtIndex = (index: number): void => {
+          const popup = completionPopupSequence[index];
+          if (!popup) {
+            return;
+          }
+
+          const hasNextPopup = index < completionPopupSequence.length - 1;
+          const sequenceProgress: ModalSequenceProgress = {
+            currentPopupIndex: index + 1,
+            totalPopups: completionPopupSequence.length,
+            hasNextPopup,
+            primaryActionText: hasNextPopup
+              ? AppStrings.GameScreenAlerts.NEXT_BUTTON ?? "Next"
+              : undefined,
           };
 
-          modal.showVictoryModal({
-            attempts: resolvedAttempts,
-            coinsEarned: result.coinsEarned || 0,
-            totalCoins: totalCoinsAfterWin,
-            unlockedAchievementNames,
-            guesses,
-            onNext: async () => {
-              modal.closeModalByType("victory");
-              if (didLevelUp) {
-                await safeDelay(MODAL_CLOSE_DELAY_MS);
-                modal.showLevelUpFanfareModal({
-                  newLevel: nextLevel,
-                  coinsAwarded: LEVEL_UP_COIN_BONUS,
-                  totalCoins: totalCoinsAfterWin,
-                  onContinue: () => {
-                    void (async () => {
-                      setIsTransitioningToNextLevel(true);
-                      void playDeferredCoinAnimation();
-                      await continueToNextLevel();
-                    })();
-                  },
-                });
-                return;
-              }
+          popup.open(sequenceProgress, () => {
+            if (hasNextPopup) {
+              void safeDelay(MODAL_CLOSE_DELAY_MS).then(() => {
+                showCompletionPopupAtIndex(index + 1);
+              });
+              return;
+            }
+
+            void (async () => {
               setIsTransitioningToNextLevel(true);
               void playDeferredCoinAnimation();
               await continueToNextLevel();
-            },
+              if (unlockedAchievementFanfareItems.length > 0) {
+                void showTooltipOnce("achievementEarned", profileButtonRef);
+              }
+              if (correctAnswersAfterWin >= FIFTH_CORRECT_ANSWER_COUNT) {
+                void showTooltipOnce("leaderboardFifthCorrectAnswer", profileButtonRef);
+              }
+            })();
           });
         };
 
-        const showPostAchievementWinFlow = () => {
-          if (gameMode === "daily" && resolvedDailyStreak) {
-            modal.showStreakIncreaseFanfareModal({
-              streakValue: resolvedDailyStreak,
-              coinsAwarded: DAILY_CHALLENGE_COIN_REWARD,
-              totalCoins: totalCoinsAfterWin,
-              onContinue: showVictoryModal,
-            });
-            return;
-          }
-
-          showVictoryModal();
-        };
-
-        const showAchievementFanfareAtIndex = (index: number) => {
-          if (index >= unlockedAchievementFanfareItems.length) {
-            showPostAchievementWinFlow();
-            return;
-          }
-
-          const achievement = unlockedAchievementFanfareItems[index];
-          modal.showAchievementUnlockFanfareModal({
-            coinsEarned: index === 0 ? result.coinsEarned || 0 : 0,
-            totalCoins: totalCoinsAfterWin,
-            achievementNames: [achievement.name],
-            achievements: [achievement],
-            onContinue: () => {
-              void safeDelay(MODAL_CLOSE_DELAY_MS).then(() => {
-                showAchievementFanfareAtIndex(index + 1);
-              });
-            },
-          });
-        };
-
-        if (unlockedAchievementFanfareItems.length > 0) {
-          showAchievementFanfareAtIndex(0);
-        } else {
-          showPostAchievementWinFlow();
-        }
+        showCompletionPopupAtIndex(0);
 
         onGameWin(
           resolvedAttempts,
@@ -1352,6 +1493,9 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       } else if (result.outcome === "attemptLimitReached") {
         const canAffordCoinContinue = currentUserCoins >= CONTINUE_COST_COINS;
         const skipLevelCost = SKIP_COST_CLASSIC;
+        if (!canAffordCoinContinue) {
+          void showTooltipOnce("shopOutOfCoins", coinsButtonRef);
+        }
         // Cache keyboard hints as soon as the loss modal opens so they survive
         // any continue/close timing differences while the grid resets.
         setPreservedLetterStates((existing) =>
@@ -1393,6 +1537,9 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         });
       } else if (result.outcome === "loss") {
         const resolvedAttempts = lastSubmittedAttemptRef.current ?? guesses.length;
+        if (currentUserCoins < SKIP_COST_CLASSIC) {
+          void showTooltipOnce("shopOutOfCoins", coinsButtonRef);
+        }
         if (isHapticsEnabled) {
           void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
         }
@@ -1445,7 +1592,10 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     playerData,
     playerData?.stats?.xp,
     playerData?.stats?.totalScore,
+    playerData?.stats?.totalWins,
+    playerData?.stats?.challengeWins,
     updatePlayerDataLocally,
+    showTooltipOnce,
   ]);
 
   const toggleSoundEnabled = useCallback((isEnabled: boolean) => {
@@ -1468,6 +1618,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   }, []);
 
   const handleSubmit = useCallback(async () => {
+    tooltip.dismissTooltip("submitAnswer");
     const isGuessComplete =
       currentGuess.length === answerLength &&
       currentGuess.every(
@@ -1487,6 +1638,9 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           processGuess(currentGuess)
         )) as GuessResult;
         setLastGuessResult(result);
+        if (result.outcome === "continue") {
+          void showTooltipOnce("hintAfterWrongGuess", hintButtonRef);
+        }
         const willOpenResultModal = result.outcome !== "continue";
         setIsAwaitingPostSubmitModalClose(willOpenResultModal);
         if (!willOpenResultModal) {
@@ -1514,6 +1668,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     isHapticsEnabled,
     modal,
     runWithServerLoading,
+    showTooltipOnce,
+    tooltip,
   ]);
 
   const handleKeyPress = useCallback(
@@ -1588,6 +1744,11 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
   const handleShowHint = useCallback(async () => {
     if (!playerData?.userId) return;
+    tooltip.dismissTooltip("hintAfterWrongGuess");
+
+    if (currentUserCoins < hintCost) {
+      void showTooltipOnce("shopOutOfCoins", coinsButtonRef);
+    }
 
     logger.debug("Showing hint modal for riddle:", riddleId);
 
@@ -1695,10 +1856,12 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     setCurrentGuess,
     setActiveSlotIndexSynced,
     onHintUsed,
-    currentUserCoins,
+    showTooltipOnce,
+    tooltip,
   ]);
 
   const handleCoinsPress = useCallback(async () => {
+    tooltip.dismissTooltip("shopOutOfCoins");
     let productsForModal = iapProducts;
     let firestoreProductsForModal = firestoreProducts;
 
@@ -1765,9 +1928,11 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     handlePurchaseProduct,
     handleWatchAdForCoins,
     handlePayAndPlay,
+    tooltip,
   ]);
 
   const handleOverlayNext = useCallback(() => {
+    tooltip.dismissTooltip("classicFromDaily");
     logger.debug("Next button pressed - opening skip modal");
 
     const skipCost =
@@ -1810,6 +1975,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     runWithServerLoading,
     modalActions,
     isGuestMode,
+    tooltip,
   ]);
 
   const handleSettingsPress = useCallback(() => {
@@ -1838,6 +2004,15 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           modal.showCreditsModal();
         }, MODAL_CLOSE_DELAY_MS);
       },
+      onPressAbout: () => {
+        logger.debug(
+          "About button pressed - closing settings and opening about/legal modal"
+        );
+        modal.closeModalByType("settings");
+        setTimeout(() => {
+          modal.showAboutLegalModal();
+        }, MODAL_CLOSE_DELAY_MS);
+      },
       playerData: playerData ?? null,
     });
   }, [
@@ -1853,6 +2028,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   ]);
 
   const handleProfilePress = useCallback(async () => {
+    tooltip.dismissTooltip("achievementEarned");
+    tooltip.dismissTooltip("leaderboardFifthCorrectAnswer");
     if (isProfileModalLoading) {
       return;
     }
@@ -1903,6 +2080,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     runWithServerLoading,
     updatePlayerDataLocally,
     isProfileModalLoading,
+    tooltip,
   ]);
 
 
@@ -2016,6 +2194,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
             onCoinsPress={handleCoinsPress}
             modeLabel={headerModeLabel}
             shouldAnimateCoins={canAnimateCoinIncreases}
+            coinsButtonRef={coinsButtonRef}
           />
 
           <GameBoard
@@ -2038,11 +2217,15 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
             handleSubmit={handleSubmit}
             handleHint={handleShowHint}
             handleNext={handleOverlayNext}
+            hintButtonRef={hintButtonRef}
+            submitButtonRef={submitButtonRef}
+            nextButtonRef={nextButtonRef}
           />
 
           <BottomNavigationBar
             onProfilePress={handleProfilePress}
             onSettingsPress={handleSettingsPress}
+            profileButtonRef={profileButtonRef}
           />
 
           {process.env.NODE_ENV !== "test" && (

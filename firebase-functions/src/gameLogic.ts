@@ -10,6 +10,14 @@ import {
 } from "./constants";
 import {generateAndAppendRiddles} from "./riddleGeneration";
 import {captureException} from "./sentry";
+import type {PlayerProgress} from "./validation/firestoreSchemas";
+
+type SkipRiddleResponse = {
+  success: boolean;
+  newProgress?: PlayerProgress | null;
+  message: string;
+  costDeducted: number;
+};
 
 /**
  * Skips the current riddle by marking it as completed and advancing to the next level/question.
@@ -20,10 +28,10 @@ import {captureException} from "./sentry";
  * @return An object containing success status and new progress information.
  */
 export const skipRiddle = onCall(
-  {},
+  {enforceAppCheck: true},
   async (
     request: CallableRequest<{riddleId: string; gameMode: "classic" | "challenge"}>,
-  ): Promise<{success: boolean; newProgress?: any; message: string; costDeducted: number}> => {
+  ): Promise<SkipRiddleResponse> => {
     try {
       if (!request.auth) {
         throw new HttpsError("unauthenticated", "The user must be authenticated to skip a riddle.");
@@ -101,7 +109,7 @@ export const skipRiddle = onCall(
       const userDoc = await userRef.get();
       const userData = userDoc.data();
 
-      let newProgress = null;
+      let newProgress: PlayerProgress | null = null;
       let progressMessage = "";
 
       if (gameMode === "classic") {
@@ -158,7 +166,10 @@ export const skipRiddle = onCall(
           dailyChallengeCurrentQuestion: newQuestionIndex,
         };
 
-        const updates: any = {
+        const updates: admin.firestore.UpdateData<{
+          progress: Pick<PlayerProgress, "dailyChallengeCurrentQuestion">;
+          lastDailyChallengeCompletedAt?: admin.firestore.FieldValue;
+        }> = {
           "progress.dailyChallengeCurrentQuestion": newQuestionIndex,
         };
 
@@ -210,7 +221,7 @@ export const skipRiddle = onCall(
  * balance.
  */
 export const spendCoins = onCall(
-  {},
+  {enforceAppCheck: true},
   async (request: CallableRequest<{amount: number; reason: string}>): Promise<{newCoins: number}> => {
     if (!request.auth) {
       throw new HttpsError("unauthenticated", "The function must be called while authenticated.");

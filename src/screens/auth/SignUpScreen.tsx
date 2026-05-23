@@ -13,7 +13,7 @@ import { View, Text, TouchableOpacity, ScrollView, Linking, Alert } from "react-
 import ProgressBar from "../../components/shared/ProgressBar";
 import CheckboxIcon from "../../components/icons/CheckboxIcon";
 import CustomSafeAreaView from "../../components/layouts/CustomSafeAreaView";
-import { AppStrings } from "../../constants/AppStrings";
+import { AppStrings, getAppLanguage } from "../../constants/AppStrings";
 import ScreenTitle from "../../components/text/ScreenTitle";
 import WideButton from "../../components/buttons/WideButton";
 import AuthLayout from "../../components/layouts/AuthLayout";
@@ -34,6 +34,7 @@ import { styles, SPACING, TYPOGRAPHY } from "../../styles";
 import { verticalScale } from "../../utils/responsive";
 import { logger } from "../../utils/logger";
 import { captureException } from "../../utils/sentry";
+import { getLegalUrl } from "../../constants/legal";
 
 /**
  * Defines the structure of the password state managed by the reducer.
@@ -136,10 +137,6 @@ function passwordReducer(
  *
  * @param navigation React Navigation stack navigation prop.
  */
-// URLs for legal pages - update these with your actual URLs
-const TERMS_OF_SERVICE_URL = "https://Riddle Quest.com/terms";
-const PRIVACY_POLICY_URL = "https://Riddle Quest.com/privacy";
-
 const SignUpScreen = ({ navigation }: { navigation: NavigationProp }) => {
   const [username, setUsername] = useState("");
   const [passwordState, dispatch] = useReducer(
@@ -381,7 +378,9 @@ const SignUpScreen = ({ navigation }: { navigation: NavigationProp }) => {
                   {AppStrings.AuthStrings.SignUp.TERMS_AGREEMENT_PART1}
                 </Text>
                 <TouchableOpacity
-                  onPress={() => openExternalUrl(TERMS_OF_SERVICE_URL, AppStrings.AuthStrings.SignUp.TERMS_PAGE_NAME)}
+                  onPress={() =>
+                    openExternalUrl(getLegalUrl("termsOfUse", getAppLanguage()), AppStrings.AuthStrings.SignUp.TERMS_PAGE_NAME)
+                  }
                 >
                   <Text className="text-blue-300 underline">
                     {AppStrings.AuthStrings.SignUp.TERMS_USER_AGREEMENT}
@@ -391,7 +390,12 @@ const SignUpScreen = ({ navigation }: { navigation: NavigationProp }) => {
                   {AppStrings.AuthStrings.SignUp.TERMS_AGREEMENT_PART2}
                 </Text>
                 <TouchableOpacity
-                  onPress={() => openExternalUrl(PRIVACY_POLICY_URL, AppStrings.AuthStrings.SignUp.PRIVACY_POLICY_PAGE_NAME)}
+                  onPress={() =>
+                    openExternalUrl(
+                      getLegalUrl("privacyPolicy", getAppLanguage()),
+                      AppStrings.AuthStrings.SignUp.PRIVACY_POLICY_PAGE_NAME
+                    )
+                  }
                 >
                   <Text className="text-blue-300 underline">
                     {AppStrings.AuthStrings.SignUp.TERMS_PRIVACY_POLICY}

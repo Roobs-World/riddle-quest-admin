@@ -552,14 +552,15 @@ const SolarSystem3D: React.FC = () => {
         dpr={[1, 1.5]}
         gl={{ alpha: true, pixelRatio: 1 }}
         onCreated={({ gl, camera }) => {
-          const originalPixelStorei = gl.pixelStorei?.bind(gl);
+          const webglContext = gl.getContext();
+          const originalPixelStorei = webglContext.pixelStorei.bind(webglContext);
           if (originalPixelStorei) {
-            gl.pixelStorei = ((pname: number, param: number) => {
+            webglContext.pixelStorei = ((pname, param) => {
               if (EXGL_UNSUPPORTED_PIXEL_STORE_PARAMETERS.has(pname)) {
                 return;
               }
               originalPixelStorei(pname, param);
-            }) as typeof gl.pixelStorei;
+            }) as typeof webglContext.pixelStorei;
           }
 
           gl.setClearColor(0x000000, 0);

@@ -48,7 +48,7 @@ const AchievementsModal: React.FC<AchievementsModalProps> = ({isVisible, onClose
     <Modal
       visible={isVisible}
       transparent
-      animationType="fade"
+      animationType="none"
       onRequestClose={onClose}
       accessibilityLabel={AppStrings.Achievements.MODAL_TITLE}
     >
@@ -108,6 +108,7 @@ const AchievementsModal: React.FC<AchievementsModalProps> = ({isVisible, onClose
                 const current = def.getProgress({
                   stats,
                   progress,
+                  coins: playerData?.coins,
                   hasPurchasedApp: playerData?.hasPurchasedApp,
                 });
                 const progressPct = isUnlocked ? 1 : Math.min(current / def.threshold, 1);

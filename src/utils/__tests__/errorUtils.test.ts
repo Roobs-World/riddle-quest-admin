@@ -3,13 +3,12 @@
 // Import the error utilities to test
 import {
   AppError,
-  ValidationError,
-  NetworkError,
   AuthenticationError,
-  NotFoundError,
   ErrorUtils,
-  isFirebaseError,
   isZodError,
+  NetworkError,
+  NotFoundError,
+  ValidationError,
 } from "../errorUtils";
 
 // Import ZodError for testing

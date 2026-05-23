@@ -247,7 +247,7 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({isVisible, onClose, 
     <Modal
       visible={isVisible}
       transparent
-      animationType="fade"
+      animationType="none"
       onRequestClose={onClose}
       accessibilityLabel={AppStrings.Leaderboard.TITLE}
     >

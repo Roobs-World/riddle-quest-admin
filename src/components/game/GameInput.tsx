@@ -21,6 +21,9 @@ type GameInputProps = {
   handleHint: () => void;
   /** Opens skip/next-level flow. */
   handleNext: () => void;
+  hintButtonRef?: React.Ref<View>;
+  submitButtonRef?: React.Ref<View>;
+  nextButtonRef?: React.Ref<View>;
 };
 
 /**
@@ -35,22 +38,28 @@ const GameInputComponent = ({
   handleSubmit,
   handleHint,
   handleNext,
+  hintButtonRef,
+  submitButtonRef,
+  nextButtonRef,
 }: GameInputProps): React.JSX.Element => {
   return (
     <View style={styles.gameInput}>
       <GameInputButton
+        ref={hintButtonRef}
         icon={<HintIcon />}
         text={AppStrings.Navigation.HINT_BUTTON}
         callback={handleHint}
       />
 
       <SubmitButton
+        ref={submitButtonRef}
         isSubmitDisabled={isSubmitDisabled}
         gameOver={gameOver}
         handleKeyPress={handleSubmit}
       />
 
       <GameInputButton
+        ref={nextButtonRef}
         icon={<ForwardIcon />}
         text={AppStrings.GameScreenAlerts.NEXT_BUTTON}
         callback={handleNext}

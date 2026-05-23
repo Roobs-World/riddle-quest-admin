@@ -199,7 +199,7 @@ const LossModal: React.FC<LossModalProps> = ({
 
   return (
     <Modal
-      animationType="fade"
+      animationType="none"
       transparent={true}
       visible={isVisible}
       onRequestClose={onClose}

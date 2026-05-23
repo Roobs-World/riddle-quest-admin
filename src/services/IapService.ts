@@ -262,7 +262,7 @@ export const IapService = {
             productId,
             transactionId: `dev-local-${productId}-${Date.now()}`,
             newlyUnlockedAchievementIds: [],
-          } as PurchaseResult;
+          } as unknown as PurchaseResult;
         } catch (fallbackError) {
           logger.warn("Dev purchase fallback callable failed.", {
             productId,
@@ -284,7 +284,7 @@ export const IapService = {
             productId,
             transactionId: `dev-local-${productId}-${Date.now()}`,
             newlyUnlockedAchievementIds: [],
-          } as PurchaseResult;
+          } as unknown as PurchaseResult;
         }
       }
 

@@ -1,8 +1,7 @@
+import { fireEvent, render } from "@testing-library/react-native";
 import React from "react";
-import { render, fireEvent } from "@testing-library/react-native";
-import { View } from "react-native";
-import GuessGrid from "../GuessGrid";
 import type { SubmittedGuess } from "../../../hooks/types";
+import GuessGrid from "../GuessGrid";
 
 // Mock useTileCapture hook
 jest.mock("../../../hooks/useTileCapture", () => ({

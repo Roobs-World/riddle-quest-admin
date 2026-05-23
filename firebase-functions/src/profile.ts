@@ -39,7 +39,7 @@ async function syncLeaderboardProfileFields(
  * @param data - The request data containing the new avatar URL.
  * @param data.avatarUrl - The new URL of the user's avatar in Firebase Storage.
  */
-export const updateAvatar = onCall(async (request: CallableRequest<{avatarUrl: string}>) => {
+export const updateAvatar = onCall({enforceAppCheck: true}, async (request: CallableRequest<{avatarUrl: string}>) => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
   }
@@ -69,7 +69,7 @@ export const updateAvatar = onCall(async (request: CallableRequest<{avatarUrl: s
  * Updates the authenticated user's username in Firestore.
  * Validates for profanity and uniqueness before saving.
  */
-export const updateUsername = onCall(async (request: CallableRequest<{username: string}>) => {
+export const updateUsername = onCall({enforceAppCheck: true}, async (request: CallableRequest<{username: string}>) => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
   }

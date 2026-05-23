@@ -1,5 +1,3 @@
-import { getCallableFunction } from "../../utils/firebaseFunctions";
-
 // Mock refs assigned in jest.mock factory (must use let for hoisting)
 let mockGetDocs: jest.Mock;
 let mockCollection: jest.Mock;

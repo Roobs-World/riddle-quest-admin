@@ -21,8 +21,6 @@ jest.mock("react-native", () => ({
   },
 }));
 
-import { Platform } from "react-native";
-
 describe("featureFlags", () => {
   beforeEach(() => {
     jest.resetModules();

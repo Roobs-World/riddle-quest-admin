@@ -30,6 +30,7 @@ interface HeaderProps {
   modeLabel?: string;
   /** Allows coin increase animations when true. */
   shouldAnimateCoins?: boolean;
+  coinsButtonRef?: React.Ref<View>;
 }
 
 /**
@@ -47,6 +48,7 @@ const Header: React.FC<HeaderProps> = ({
   onHintPress,
   modeLabel,
   shouldAnimateCoins = true,
+  coinsButtonRef,
 }) => {
   const showModeLabel = !!modeLabel;
   const [headerWidth, setHeaderWidth] = useState(0);
@@ -146,6 +148,7 @@ const Header: React.FC<HeaderProps> = ({
 
       {/* Right side: Coins */}
       <View
+        ref={coinsButtonRef}
         style={{ position: "absolute", top: SPACING.md, right: SPACING.md, zIndex: 10 }}
         testID="header-right-side"
         onLayout={handleRightAnchorLayout}

@@ -66,7 +66,7 @@ jest.mock("../../../../assets/images/wheel-bg.svg", () => "WheelBgSvg");
 
 describe("StreakIncreaseFanfareModal", () => {
   it("renders streak and coin reward values", () => {
-    const {getByText} = render(
+    const {getByText, queryByTestId} = render(
       <StreakIncreaseFanfareModal
         isVisible={true}
         streakValue={4}
@@ -77,10 +77,33 @@ describe("StreakIncreaseFanfareModal", () => {
     );
 
     expect(getByText("Streak Increased!")).toBeTruthy();
+    expect(queryByTestId("modal-sequence-breadcrumb")).toBeNull();
     expect(getByText("4-Day Streak")).toBeTruthy();
     expect(getByText("+50 Coins")).toBeTruthy();
     expect(getByText("Total Coins:")).toBeTruthy();
     expect(getByText("250")).toBeTruthy();
+  });
+
+  it("shows sequence progress and Next text for an intermediate popup", () => {
+    const {getByTestId, getByText} = render(
+      <StreakIncreaseFanfareModal
+        isVisible={true}
+        streakValue={4}
+        coinsAwarded={50}
+        totalCoins={250}
+        sequenceProgress={{
+          currentPopupIndex: 2,
+          totalPopups: 4,
+          hasNextPopup: true,
+          primaryActionText: "Next",
+        }}
+        onClose={jest.fn()}
+      />,
+    );
+
+    expect(getByTestId("modal-sequence-breadcrumb")).toBeTruthy();
+    expect(getByText("2/4")).toBeTruthy();
+    expect(getByText("Next")).toBeTruthy();
   });
 
   it("does not render content when hidden", () => {

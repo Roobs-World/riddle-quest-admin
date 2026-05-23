@@ -45,7 +45,7 @@ const HintModal: React.FC<HintModalProps> = ({isVisible, userCoins, hintCost, on
   const hintModalHeight = MODAL_HEIGHT * 1.4;
 
   return (
-    <Modal visible={isVisible} transparent={true} animationType="fade" onRequestClose={onClose}>
+    <Modal visible={isVisible} transparent={true} animationType="none" onRequestClose={onClose}>
       <View
         style={{
           flex: 1,

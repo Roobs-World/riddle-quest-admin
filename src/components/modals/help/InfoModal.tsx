@@ -42,7 +42,7 @@ const InfoModal: React.FC<InfoModalProps> = ({
   };
 
   return (
-    <Modal visible={isVisible} transparent={true} animationType="fade" onRequestClose={handleConfirm}>
+    <Modal visible={isVisible} transparent={true} animationType="none" onRequestClose={handleConfirm}>
       <View
         style={{
           flex: 1,

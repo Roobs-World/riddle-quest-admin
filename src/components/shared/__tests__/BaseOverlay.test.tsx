@@ -193,7 +193,7 @@ describe("BaseOverlay", () => {
       const Modal = require("react-native").Modal;
       const modal = UNSAFE_getByType(Modal);
 
-      expect(modal.props.animationType).toBe("fade");
+      expect(modal.props.animationType).toBe("none");
       expect(modal.props.transparent).toBe(true);
       expect(modal.props.visible).toBe(true);
       expect(modal.props.onRequestClose).toBe(defaultProps.onClose);

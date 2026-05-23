@@ -105,7 +105,7 @@ const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({isVisible, onC
   };
 
   return (
-    <Modal visible={isVisible} transparent={true} animationType="fade" onRequestClose={handleClose}>
+    <Modal visible={isVisible} transparent={true} animationType="none" onRequestClose={handleClose}>
       <View
         style={{
           flex: 1,

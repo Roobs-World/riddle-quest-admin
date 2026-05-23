@@ -13,17 +13,23 @@ service firebase.storage {
 
     function isValidImageFile() {
       // Allow common image formats
-      return resource.contentType != null && 
-             (resource.contentType.matches('image/jpeg') ||
-              resource.contentType.matches('image/png') ||
-              resource.contentType.matches('image/gif') ||
-              resource.contentType.matches('image/webp') ||
-              resource.contentType.matches('image/bmp'));
+      return request.resource != null &&
+             request.resource.contentType != null && 
+             (request.resource.contentType.matches('image/jpeg') ||
+              request.resource.contentType.matches('image/png') ||
+              request.resource.contentType.matches('image/webp'));
     }
 
     function isValidFileSize() {
       // Limit avatar images to 5MB
-      return resource.size < 5 * 1024 * 1024;
+      return request.resource != null &&
+             request.resource.size < 5 * 1024 * 1024;
+    }
+
+    function hasValidAvatarMetadata(userId) {
+      return request.resource != null &&
+             request.resource.metadata.ownerUid == userId &&
+             request.resource.metadata.purpose == 'avatar';
     }
 
     function isValidFileName(filename) {
@@ -44,13 +50,15 @@ service firebase.storage {
       allow create: if isOwner(userId) && 
                       isValidFileName(filename) &&
                       isValidImageFile() &&
-                      isValidFileSize();
+                      isValidFileSize() &&
+                      hasValidAvatarMetadata(userId);
 
       // Users can update their own avatars with same validation
       allow update: if isOwner(userId) && 
                       isValidFileName(filename) &&
                       isValidImageFile() &&
-                      isValidFileSize();
+                      isValidFileSize() &&
+                      hasValidAvatarMetadata(userId);
 
       // Users can delete their own avatars
       allow delete: if isOwner(userId);
@@ -62,7 +70,8 @@ service firebase.storage {
       allow create: if isOwner(userId) && 
                       isValidFileName(filename) &&
                       isValidImageFile() &&
-                      isValidFileSize();
+                      isValidFileSize() &&
+                      hasValidAvatarMetadata(userId);
 
       // Users can read their own temp files
       allow read: if isOwner(userId);

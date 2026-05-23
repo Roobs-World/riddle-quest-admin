@@ -8,12 +8,16 @@ import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {NewCoins} from "@/components/shared/NewCoins";
 import RotatingWheelBackground from "@/components/shared/RotatingWheelBackground";
+import type {ModalSequenceProgress} from "../../../types/ModalTypes";
+import ModalSequenceBreadcrumb from "../ModalSequenceBreadcrumb";
+import WideButton from "../../buttons/WideButton";
 
 interface StreakIncreaseFanfareModalProps {
   isVisible: boolean;
   streakValue: number;
   coinsAwarded: number;
   totalCoins: number;
+  sequenceProgress?: ModalSequenceProgress;
   onContinue?: () => void;
   onClose: () => void;
 }
@@ -23,17 +27,20 @@ const StreakIncreaseFanfareModal: React.FC<StreakIncreaseFanfareModalProps> = ({
   streakValue,
   coinsAwarded,
   totalCoins,
+  sequenceProgress,
   onContinue,
   onClose,
 }) => {
   const streakModalHeight = MODAL_HEIGHT * 1.4;
+  const continueButtonText =
+    sequenceProgress?.primaryActionText ?? AppStrings.StreakFanfare.CONTINUE_BUTTON;
   const handleContinue = () => {
     onContinue?.();
     onClose();
   };
 
   return (
-    <Modal transparent animationType="fade" visible={isVisible} onRequestClose={handleContinue}>
+    <Modal transparent animationType="none" visible={isVisible} onRequestClose={handleContinue}>
       <View
         style={{
           flex: 1,
@@ -73,10 +80,11 @@ const StreakIncreaseFanfareModal: React.FC<StreakIncreaseFanfareModalProps> = ({
                   height: streakModalHeight,
                   alignItems: "center",
                   justifyContent: "center",
-                  gap: MODAL_BUTTON_SPACER * 2,
+                  gap: MODAL_BUTTON_SPACER,
                   padding: MODAL_CONTENT_PADDING,
                 }}
               >
+                <ModalSequenceBreadcrumb sequenceProgress={sequenceProgress} />
                 <Text
                   style={{
                     fontFamily: TYPOGRAPHY.fontPrimary,
@@ -100,6 +108,14 @@ const StreakIncreaseFanfareModal: React.FC<StreakIncreaseFanfareModalProps> = ({
                 </Text>
 
                 <NewCoins coinsEarned={coinsAwarded} totalCoins={totalCoins} />
+
+                <View style={{width: "100%"}}>
+                  <WideButton
+                    buttonText={continueButtonText}
+                    onPress={handleContinue}
+                    testID="streak-increase-continue-button"
+                  />
+                </View>
               </View>
             </View>
           </TouchableOpacity>

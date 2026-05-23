@@ -339,9 +339,6 @@ module.exports = {
     EXPO_PUBLIC_ENABLE_SHARED_ANIMATION_BACKEND:
       process.env.EXPO_PUBLIC_ENABLE_SHARED_ANIMATION_BACKEND || "false",
 
-    /** OpenAI API key for riddle generation */
-    OPENAI_API_KEY: process.env.OPENAI_API_KEY || "YOUR_OPENAI_API_KEY_HERE",
-
     /**
      * Firebase Configuration Variables
      *
@@ -374,20 +371,8 @@ module.exports = {
      * All values loaded from environment variables for security.
      */
     FACEBOOK_APP_ID: process.env.FACEBOOK_APP_ID || "YOUR_FACEBOOK_APP_ID",
-    FACEBOOK_APP_SECRET:
-      process.env.FACEBOOK_APP_SECRET || "YOUR_FACEBOOK_APP_SECRET",
     FACEBOOK_CLIENT_TOKEN:
       process.env.FACEBOOK_CLIENT_TOKEN || "YOUR_FACEBOOK_CLIENT_TOKEN",
-
-    /**
-     * In-App Purchase Configuration
-     *
-     * Apple and Google Play Store IAP validation credentials.
-     */
-    APPLE_SHARED_SECRET:
-      process.env.APPLE_SHARED_SECRET || "YOUR_APPLE_SHARED_SECRET",
-    GOOGLE_SERVICE_ACCOUNT:
-      process.env.GOOGLE_SERVICE_ACCOUNT || "YOUR_GOOGLE_SERVICE_ACCOUNT_JSON",
   },
 
   /**

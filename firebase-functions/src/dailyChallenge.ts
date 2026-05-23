@@ -126,7 +126,7 @@ async function getFreshDailyChallengeDoc(): Promise<{
  * @return A message indicating the success of the operation.
  */
 export const setCompletedDailyChallenge = onCall(
-  {},
+  {enforceAppCheck: true},
   async (request: CallableRequest<unknown>): Promise<{message: string}> => {
     try {
       if (!request.auth) {
@@ -161,7 +161,7 @@ export const setCompletedDailyChallenge = onCall(
  * @return A promise that resolves to true if the user completed today's challenge.
  */
 export const hasCompletedDailyChallenge = onCall(
-  {},
+  {enforceAppCheck: true},
   async (request: CallableRequest<{id: string}>): Promise<boolean> => {
     try {
       const {id: currentUserId} = request.data;
@@ -217,6 +217,7 @@ interface GetCurrentDailyChallengeResponse {
  */
 export const getCurrentDailyChallenge = onCall(
   {
+    enforceAppCheck: true,
     secrets: ["OPENAI_API_KEY"],
   },
   async (request: CallableRequest<unknown>): Promise<GetCurrentDailyChallengeResponse> => {
@@ -293,7 +294,7 @@ export const getCurrentDailyChallenge = onCall(
  * For the single-riddle challenge, this marks completion.
  */
 export const advanceDailyChallengeProgress = onCall(
-  {},
+  {enforceAppCheck: true},
   async (
     request: CallableRequest<unknown>,
   ): Promise<{
@@ -329,7 +330,10 @@ export const advanceDailyChallengeProgress = onCall(
 
       // Update progress
       const userRef = admin.firestore().collection("users").doc(userId);
-      const updates: any = {
+      const updates: admin.firestore.UpdateData<{
+        progress: {dailyChallengeCurrentQuestion: number};
+        lastDailyChallengeCompletedAt: admin.firestore.FieldValue;
+      }> = {
         "progress.dailyChallengeCurrentQuestion": newQuestionIndex,
       };
 

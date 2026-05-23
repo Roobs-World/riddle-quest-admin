@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -35,6 +35,8 @@ import {
   LOADING_SPINNER_SIZE,
 } from "@/constants/loading";
 import SlideInModalContent from "../../shared/SlideInModalContent";
+import { useTooltip } from "../../../contexts/TooltipContext";
+import type { TooltipId } from "../../tooltips/types";
 
 interface FullProfileDetailsModalProps {
   isVisible: boolean;
@@ -46,12 +48,66 @@ const PURPLE = "#401F40";
 const CREAM = "#FCFAF4";
 const GOLD = "#FEC880";
 
+const getProfileTooltipContent = (id: TooltipId) => {
+  switch (id) {
+    case "profileIdentity":
+      return {
+        title: AppStrings.Tooltips.PROFILE_IDENTITY_TITLE,
+        body: AppStrings.Tooltips.PROFILE_IDENTITY_BODY,
+        action: AppStrings.Tooltips.GOT_IT_BUTTON,
+      };
+    case "profileDailyPuzzles":
+      return {
+        title: AppStrings.Tooltips.PROFILE_DAILY_PUZZLES_TITLE,
+        body: AppStrings.Tooltips.PROFILE_DAILY_PUZZLES_BODY,
+        action: AppStrings.Tooltips.GOT_IT_BUTTON,
+      };
+    case "profileStats":
+      return {
+        title: AppStrings.Tooltips.PROFILE_STATS_TITLE,
+        body: AppStrings.Tooltips.PROFILE_STATS_BODY,
+        action: AppStrings.Tooltips.GOT_IT_BUTTON,
+      };
+    case "profileCoins":
+      return {
+        title: AppStrings.Tooltips.PROFILE_COINS_TITLE,
+        body: AppStrings.Tooltips.PROFILE_COINS_BODY,
+        action: AppStrings.Tooltips.GOT_IT_BUTTON,
+      };
+    case "profileAchievements":
+      return {
+        title: AppStrings.Tooltips.PROFILE_ACHIEVEMENTS_TITLE,
+        body: AppStrings.Tooltips.PROFILE_ACHIEVEMENTS_BODY,
+        action: AppStrings.Tooltips.GOT_IT_BUTTON,
+      };
+    case "profileStatistics":
+      return {
+        title: AppStrings.Tooltips.PROFILE_STATISTICS_TITLE,
+        body: AppStrings.Tooltips.PROFILE_STATISTICS_BODY,
+        action: AppStrings.Tooltips.GOT_IT_BUTTON,
+      };
+    case "profileLeaderboard":
+      return {
+        title: AppStrings.Tooltips.PROFILE_LEADERBOARD_TITLE,
+        body: AppStrings.Tooltips.PROFILE_LEADERBOARD_BODY,
+        action: AppStrings.Tooltips.GOT_IT_BUTTON,
+      };
+    default:
+      return {
+        title: AppStrings.CommonAlerts.INFO_TITLE,
+        body: "",
+        action: AppStrings.Tooltips.GOT_IT_BUTTON,
+      };
+  }
+};
+
 const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
   isVisible,
   onClose,
   playerData,
 }) => {
   const modal = useModal();
+  const tooltip = useTooltip();
   const { updatePlayerData, playerData: authPlayerData } = useAuth();
   const resolvedPlayerData = authPlayerData ?? playerData;
   const firebaseUser = getAuth(getApp()).currentUser;
@@ -64,6 +120,13 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
   const [avatarUrl, setAvatarUrl] = useState<string | null>(
     resolvedPlayerData?.avatarUrl ?? null
   );
+  const showProfileTooltip = (id: TooltipId, targetRef: React.RefObject<View | null>) => {
+    void tooltip.showTooltip({
+      id,
+      targetRef,
+      content: getProfileTooltipContent(id),
+    });
+  };
 
   useEffect(() => {
     setAvatarUrl(resolvedPlayerData?.avatarUrl ?? null);
@@ -97,17 +160,23 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
       if (result.assets && result.assets.length > 0) {
         const selectedAsset = result.assets[0];
 
-        if (selectedAsset.uri && resolvedPlayerData.userId) {
+        const userId = resolvedPlayerData?.userId;
+        if (selectedAsset.uri && userId) {
           const uploadUri = selectedAsset.uri;
           const uniqueFilename = `avatar_${Date.now()}.jpg`;
 
           const storageRef = getStorage(getApp()).ref(
-            `avatars/${resolvedPlayerData.userId}/${uniqueFilename}`
+            `avatars/${userId}/${uniqueFilename}`
           );
 
           setIsUploading(true);
 
-          await storageRef.putFile(uploadUri);
+          await storageRef.putFile(uploadUri, {
+            customMetadata: {
+              ownerUid: userId,
+              purpose: "avatar",
+            },
+          });
 
           const downloadURL = await storageRef.getDownloadURL();
 
@@ -156,7 +225,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
     <Modal
       visible={isVisible}
       transparent={true}
-      animationType="fade"
+      animationType="none"
       onRequestClose={onClose}
     >
       <View
@@ -224,11 +293,19 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
               >
                 {AppStrings.Profile.PROFILE_HEADER}
               </Text>
-              <CloseButton
-                onPress={onClose}
-                size={CLOSE_BUTTON_SIZE}
-                color="white"
-              />
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                <ProfileHelpButton
+                  tooltipId="profileIdentity"
+                  onPress={showProfileTooltip}
+                  inverse
+                  testID="profile-help-identity"
+                />
+                <CloseButton
+                  onPress={onClose}
+                  size={CLOSE_BUTTON_SIZE}
+                  color="white"
+                />
+              </View>
             </View>
 
             <View style={{ alignItems: "center", marginTop: SPACING.sm }}>
@@ -401,7 +478,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
                 <Text
                   style={{
                     fontFamily: TYPOGRAPHY.fontSecondary,
-                    fontSize: TYPOGRAPHY.fontSize.md,
+                    fontSize: TYPOGRAPHY.fontSize.base,
                     color: "#1A1A1A",
                     lineHeight: 20,
                     marginBottom: SPACING.md,
@@ -430,16 +507,12 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
                 </TouchableOpacity>
               </View>
             ) : null}
-            <Text
-              style={{
-                fontFamily: TYPOGRAPHY.fontPrimary,
-                fontSize: TYPOGRAPHY.fontSize.lg,
-                color: "#1A1A1A",
-                marginBottom: SPACING.md,
-              }}
-            >
-              {AppStrings.Profile.DAILY_PUZZLES_COMPLETED_HEADER}
-            </Text>
+            <SectionHeader
+              title={AppStrings.Profile.DAILY_PUZZLES_COMPLETED_HEADER}
+              tooltipId="profileDailyPuzzles"
+              onPressHelp={showProfileTooltip}
+              testID="profile-help-daily-puzzles"
+            />
             <View
               style={{
                 backgroundColor: "#F5EDD4",
@@ -485,16 +558,12 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
               </Text>
             </View>
 
-            <Text
-              style={{
-                fontFamily: TYPOGRAPHY.fontPrimary,
-                fontSize: TYPOGRAPHY.fontSize.lg,
-                color: "#1A1A1A",
-                marginBottom: SPACING.md,
-              }}
-            >
-              {AppStrings.Profile.BEST_STRIKE_HEADER}
-            </Text>
+            <SectionHeader
+              title={AppStrings.Profile.BEST_STRIKE_HEADER}
+              tooltipId="profileStats"
+              onPressHelp={showProfileTooltip}
+              testID="profile-help-stats"
+            />
             <View
               style={{
                 flexDirection: "row",
@@ -522,6 +591,12 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
             </View>
 
             <View style={{ marginBottom: SPACING.lg }}>
+              <SectionHeader
+                title={AppStrings.Profile.TREASURE_CHEST_TITLE}
+                tooltipId="profileCoins"
+                onPressHelp={showProfileTooltip}
+                testID="profile-help-coins"
+              />
               <TreasureChest coins={resolvedPlayerData?.coins ?? 0} />
             </View>
 
@@ -537,9 +612,16 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
               }}
               style={[actionButtonStyle, !hasProfileData ? actionButtonDisabledStyle : null]}
             >
-              <Text style={actionButtonTextStyle}>
-                {AppStrings.Achievements.MODAL_TITLE}
-              </Text>
+              <View style={actionButtonContentStyle}>
+                <Text style={actionButtonTextStyle}>
+                  {AppStrings.Achievements.MODAL_TITLE}
+                </Text>
+                <ProfileHelpButton
+                  tooltipId="profileAchievements"
+                  onPress={showProfileTooltip}
+                  testID="profile-help-achievements"
+                />
+              </View>
             </TouchableOpacity>
 
             <View style={{ height: SPACING.sm }} />
@@ -554,9 +636,16 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
               }}
               style={[actionButtonStyle, !hasProfileData ? actionButtonDisabledStyle : null]}
             >
-              <Text style={actionButtonTextStyle}>
-                {AppStrings.StatsModal.TITLE}
-              </Text>
+              <View style={actionButtonContentStyle}>
+                <Text style={actionButtonTextStyle}>
+                  {AppStrings.StatsModal.TITLE}
+                </Text>
+                <ProfileHelpButton
+                  tooltipId="profileStatistics"
+                  onPress={showProfileTooltip}
+                  testID="profile-help-statistics"
+                />
+              </View>
             </TouchableOpacity>
 
             <View style={{ height: SPACING.sm }} />
@@ -571,9 +660,16 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
               }}
               style={[actionButtonStyle, !hasProfileData ? actionButtonDisabledStyle : null]}
             >
-              <Text style={actionButtonTextStyle}>
-                {AppStrings.Leaderboard.TITLE}
-              </Text>
+              <View style={actionButtonContentStyle}>
+                <Text style={actionButtonTextStyle}>
+                  {AppStrings.Leaderboard.TITLE}
+                </Text>
+                <ProfileHelpButton
+                  tooltipId="profileLeaderboard"
+                  onPress={showProfileTooltip}
+                  testID="profile-help-leaderboard"
+                />
+              </View>
             </TouchableOpacity>
 
             <View
@@ -613,6 +709,13 @@ const actionButtonStyle = {
   alignItems: "center" as const,
 };
 
+const actionButtonContentStyle = {
+  flexDirection: "row" as const,
+  alignItems: "center" as const,
+  justifyContent: "center" as const,
+  gap: 8,
+};
+
 const actionButtonDisabledStyle = {
   opacity: 0.55,
 };
@@ -622,6 +725,91 @@ const actionButtonTextStyle = {
   fontSize: TYPOGRAPHY.fontSize.base,
   color: "#1A1A1A",
 };
+
+const ProfileHelpButton = ({
+  tooltipId,
+  onPress,
+  inverse = false,
+  testID,
+}: {
+  tooltipId: TooltipId;
+  onPress: (id: TooltipId, targetRef: React.RefObject<View | null>) => void;
+  inverse?: boolean;
+  testID: string;
+}) => {
+  const ref = useRef<View>(null);
+
+  return (
+    <TouchableOpacity
+      ref={ref}
+      onPress={(event) => {
+        event?.stopPropagation?.();
+        onPress(tooltipId, ref);
+      }}
+      accessibilityRole="button"
+      accessibilityLabel={`${AppStrings.Tooltips.HELP_BUTTON_LABEL}: ${getProfileTooltipContent(tooltipId).title}`}
+      testID={testID}
+      style={{
+        width: 26,
+        height: 26,
+        borderRadius: 13,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: inverse ? "rgba(255,255,255,0.18)" : "#FFFFFF",
+        borderWidth: 1,
+        borderColor: inverse ? "#FFFFFF" : "#E4D8B8",
+      }}
+    >
+      <Text
+        style={{
+          fontFamily: TYPOGRAPHY.fontSecondaryBold,
+          fontSize: TYPOGRAPHY.fontSize.base,
+          color: inverse ? "#FFFFFF" : "#401F40",
+        }}
+      >
+        ?
+      </Text>
+    </TouchableOpacity>
+  );
+};
+
+const SectionHeader = ({
+  title,
+  tooltipId,
+  onPressHelp,
+  testID,
+}: {
+  title: string;
+  tooltipId: TooltipId;
+  onPressHelp: (id: TooltipId, targetRef: React.RefObject<View | null>) => void;
+  testID: string;
+}) => (
+  <View
+    style={{
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      marginBottom: SPACING.md,
+      gap: SPACING.sm,
+    }}
+  >
+    <Text
+      style={{
+        fontFamily: TYPOGRAPHY.fontPrimary,
+        fontSize: TYPOGRAPHY.fontSize.lg,
+        color: "#1A1A1A",
+        flex: 1,
+      }}
+    >
+      {title}
+    </Text>
+    <ProfileHelpButton
+      tooltipId={tooltipId}
+      onPress={onPressHelp}
+      testID={testID}
+    />
+  </View>
+);
 
 const StatBox = ({
   value,

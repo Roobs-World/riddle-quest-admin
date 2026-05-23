@@ -9,12 +9,16 @@ import SlideInModalContent from "../../shared/SlideInModalContent";
 import {verticalScale} from "@/utils/responsive";
 import {NewCoins} from "@/components/shared/NewCoins";
 import RotatingWheelBackground from "../../shared/RotatingWheelBackground";
+import type {ModalSequenceProgress} from "../../../types/ModalTypes";
+import ModalSequenceBreadcrumb from "../ModalSequenceBreadcrumb";
+import WideButton from "../../buttons/WideButton";
 
 interface LevelUpFanfareModalProps {
   isVisible: boolean;
   newLevel: number;
   coinsAwarded: number;
   totalCoins: number;
+  sequenceProgress?: ModalSequenceProgress;
   onContinue?: () => void;
   onClose: () => void;
 }
@@ -26,16 +30,19 @@ const LevelUpFanfareModal: React.FC<LevelUpFanfareModalProps> = ({
   newLevel,
   coinsAwarded,
   totalCoins,
+  sequenceProgress,
   onContinue,
   onClose,
 }) => {
+  const continueButtonText =
+    sequenceProgress?.primaryActionText ?? AppStrings.LevelUpFanfare.CONTINUE_BUTTON;
   const handleContinue = () => {
     onContinue?.();
     onClose();
   };
 
   return (
-    <Modal transparent animationType="fade" visible={isVisible} onRequestClose={handleContinue}>
+    <Modal transparent animationType="none" visible={isVisible} onRequestClose={handleContinue}>
       <View
         style={{
           flex: 1,
@@ -80,10 +87,11 @@ const LevelUpFanfareModal: React.FC<LevelUpFanfareModalProps> = ({
                   width: "100%",
                   alignItems: "center",
                   justifyContent: "center",
-                  gap: MODAL_BUTTON_SPACER * 2,
+                  gap: MODAL_BUTTON_SPACER,
                   padding: MODAL_CONTENT_PADDING,
                 }}
               >
+                <ModalSequenceBreadcrumb sequenceProgress={sequenceProgress} />
                 <Text
                   style={{
                     fontFamily: TYPOGRAPHY.fontPrimary,
@@ -109,6 +117,14 @@ const LevelUpFanfareModal: React.FC<LevelUpFanfareModalProps> = ({
                   </Text>
 
                   <NewCoins coinsEarned={coinsAwarded} totalCoins={totalCoins} />
+                </View>
+
+                <View style={{width: "100%"}}>
+                  <WideButton
+                    buttonText={continueButtonText}
+                    onPress={handleContinue}
+                    testID="level-up-continue-button"
+                  />
                 </View>
               </View>
             </View>

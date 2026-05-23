@@ -322,36 +322,6 @@ describe("iapConfig", () => {
       consoleLogSpy.mockRestore();
     });
 
-    it("should handle iap.config() throwing an error in non-Jest environment", () => {
-      const originalJestWorker = process.env.JEST_WORKER_ID;
-      delete process.env.JEST_WORKER_ID;
-
-      const iap = require("in-app-purchase").default || require("in-app-purchase");
-      const originalConfig = iap.config;
-      iap.config = () => {
-        throw new Error("iap.config exploded");
-      };
-
-      const consoleLogSpy = jest.spyOn(console, "log").mockImplementation();
-      const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
-
-      iapConfig.initializeIapConfig();
-
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        expect.stringContaining("CRITICAL: Error calling iap.config()"),
-      );
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        expect.stringContaining("iap.config exploded"),
-      );
-
-      iap.config = originalConfig;
-      if (originalJestWorker) {
-        process.env.JEST_WORKER_ID = originalJestWorker;
-      }
-      consoleLogSpy.mockRestore();
-      consoleErrorSpy.mockRestore();
-    });
-
     it("should handle credentials with partial configuration", () => {
       // Override Jest detection temporarily
       const originalJestWorker = process.env.JEST_WORKER_ID;

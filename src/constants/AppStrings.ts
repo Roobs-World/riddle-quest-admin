@@ -6,8 +6,15 @@ import {
   jaOverrides,
   koOverrides,
   zhOverrides,
+  hiOverrides,
   ruOverrides,
   trOverrides,
+  arOverrides,
+  idOverrides,
+  itOverrides,
+  nlOverrides,
+  plOverrides,
+  viOverrides,
 } from "../i18n/languageOverrides";
 
 const EN_APP_STRINGS = {
@@ -128,6 +135,12 @@ const EN_APP_STRINGS = {
     HAPTICS_TOGGLE: "Haptics",
     LANGUAGE_LABEL: "Language",
     HELP_BUTTON: "Help",
+    ABOUT_BUTTON: "About",
+    PRIVACY_POLICY_BUTTON: "Privacy Policy",
+    TERMS_BUTTON: "Terms of Use",
+    LICENSES_BUTTON: "Licenses",
+    ACCOUNT_DELETION_BUTTON: "Delete Account",
+    DATA_EXPORT_BUTTON: "Export My Data",
     LOGOUT_BUTTON: "Logout",
     CREDITS_BUTTON: "Credits",
     TEST_CRASH_BUTTON: "Test Crash",
@@ -141,6 +154,16 @@ const EN_APP_STRINGS = {
     TOGGLE_ON: "On",
     TOGGLE_OFF: "Off",
     LANGUAGE_SELECTED: "Selected",
+  },
+  AboutLegal: {
+    TITLE: "About / Legal",
+    RIDDLE_QUEST_WEBSITE: "Riddle Quest Website",
+    PRIVACY_POLICY: "Privacy Policy",
+    TERMS_OF_USE: "Terms of Use",
+    ACCOUNT_DELETION: "Account Deletion",
+    DATA_EXPORT: "Data Export",
+    THIRD_PARTY_LICENSES: "Third-Party Licenses",
+    SUPPORT: "Support",
   },
   Credits: {
     TITLE: "Credits",
@@ -327,6 +350,36 @@ const EN_APP_STRINGS = {
     COST_COINS_MIDDLE: " Coins.",
     COST_COINS_SUFFIX: " Coins.",
   },
+  Tooltips: {
+    SUBMIT_ANSWER_TITLE: "Submit your answer",
+    SUBMIT_ANSWER_BODY: "When every slot is filled, tap Submit to check your guess.",
+    HINT_AFTER_WRONG_TITLE: "Need a clue?",
+    HINT_AFTER_WRONG_BODY: "That guess missed. Tap Hint to reveal a helpful letter and keep going.",
+    SHOP_OUT_OF_COINS_TITLE: "Grab more coins",
+    SHOP_OUT_OF_COINS_BODY: "You are out of coins for this action. Open the shop to buy or earn more.",
+    ACHIEVEMENT_EARNED_TITLE: "Achievement unlocked",
+    ACHIEVEMENT_EARNED_BODY: "Open your profile to view your achievements and track your progress.",
+    LEADERBOARD_FIFTH_CORRECT_TITLE: "Climb the leaderboard",
+    LEADERBOARD_FIFTH_CORRECT_BODY: "Five correct answers! Open your profile to see how you rank.",
+    CLASSIC_FROM_DAILY_TITLE: "Classic mode",
+    CLASSIC_FROM_DAILY_BODY: "Daily challenge complete. Classic mode lets you keep solving riddles at your own pace.",
+    PROFILE_IDENTITY_TITLE: "Profile",
+    PROFILE_IDENTITY_BODY: "Your avatar, username, XP level, and level progress live here.",
+    PROFILE_DAILY_PUZZLES_TITLE: "Daily puzzles",
+    PROFILE_DAILY_PUZZLES_BODY: "This shows how many daily challenges you have completed.",
+    PROFILE_STATS_TITLE: "Stats snapshot",
+    PROFILE_STATS_BODY: "These cards summarize your streak, words guessed, win rate, and average guesses.",
+    PROFILE_COINS_TITLE: "Treasure chest",
+    PROFILE_COINS_BODY: "Your coin balance is shown here. Spend coins on hints, skips, and extra chances.",
+    PROFILE_ACHIEVEMENTS_TITLE: "Achievements",
+    PROFILE_ACHIEVEMENTS_BODY: "Open this section to see every achievement you have unlocked.",
+    PROFILE_STATISTICS_TITLE: "Statistics",
+    PROFILE_STATISTICS_BODY: "Open statistics for a deeper breakdown of your gameplay performance.",
+    PROFILE_LEADERBOARD_TITLE: "Leaderboard",
+    PROFILE_LEADERBOARD_BODY: "Open the leaderboard to compare XP, wins, and streaks with other players.",
+    GOT_IT_BUTTON: "Got it",
+    HELP_BUTTON_LABEL: "Help",
+  },
   VictoryModal: {
     TITLE: "NICE JOB!",
     YOU_WON_TITLE: "YOU WON!",
@@ -475,7 +528,24 @@ type WidenLiteral<T> = T extends string
         : T;
 
 export type AppStringsSchema = WidenLiteral<typeof EN_APP_STRINGS>;
-export type SupportedLanguage = "en" | "es" | "pt" | "fr" | "de" | "ja" | "ko" | "zh" | "ru" | "tr";
+export type SupportedLanguage =
+  | "en"
+  | "es"
+  | "pt"
+  | "fr"
+  | "de"
+  | "ja"
+  | "ko"
+  | "zh"
+  | "hi"
+  | "ru"
+  | "tr"
+  | "ar"
+  | "id"
+  | "it"
+  | "nl"
+  | "pl"
+  | "vi";
 
 export const SUPPORTED_LANGUAGES: ReadonlyArray<SupportedLanguage> = [
   "en",
@@ -486,8 +556,15 @@ export const SUPPORTED_LANGUAGES: ReadonlyArray<SupportedLanguage> = [
   "ja",
   "ko",
   "zh",
+  "hi",
   "ru",
   "tr",
+  "ar",
+  "id",
+  "it",
+  "nl",
+  "pl",
+  "vi",
 ] as const;
 
 export const APP_LANGUAGE_STORAGE_KEY = "appLanguage";
@@ -504,8 +581,15 @@ export const LANGUAGE_OPTIONS: ReadonlyArray<{
   {code: "ja", label: "日本語"},
   {code: "ko", label: "한국어"},
   {code: "zh", label: "简体中文"},
+  {code: "hi", label: "\u0939\u093f\u0928\u094d\u0926\u0940"},
   {code: "ru", label: "Русский"},
   {code: "tr", label: "Türkçe"},
+  {code: "ar", label: "العربية"},
+  {code: "id", label: "Bahasa Indonesia"},
+  {code: "it", label: "Italiano"},
+  {code: "nl", label: "Nederlands"},
+  {code: "pl", label: "Polski"},
+  {code: "vi", label: "Tiếng Việt"},
 ] as const;
 
 const isPlainObject = (value: unknown): value is Record<string, unknown> => {
@@ -547,8 +631,15 @@ const localizedStrings: Record<SupportedLanguage, AppStringsSchema> = {
   ja: deepMerge(baseStrings, jaOverrides),
   ko: deepMerge(baseStrings, koOverrides),
   zh: deepMerge(baseStrings, zhOverrides),
+  hi: deepMerge(baseStrings, hiOverrides),
   ru: deepMerge(baseStrings, ruOverrides),
   tr: deepMerge(baseStrings, trOverrides),
+  ar: deepMerge(baseStrings, arOverrides),
+  id: deepMerge(baseStrings, idOverrides),
+  it: deepMerge(baseStrings, itOverrides),
+  nl: deepMerge(baseStrings, nlOverrides),
+  pl: deepMerge(baseStrings, plOverrides),
+  vi: deepMerge(baseStrings, viOverrides),
 };
 
 const lazyLanguagePromises = new Map<SupportedLanguage, Promise<AppStringsSchema>>();
@@ -564,8 +655,15 @@ const getLanguageOverride = (
     jaOverrides: DeepPartial<AppStringsSchema>;
     koOverrides: DeepPartial<AppStringsSchema>;
     zhOverrides: DeepPartial<AppStringsSchema>;
+    hiOverrides: DeepPartial<AppStringsSchema>;
     ruOverrides: DeepPartial<AppStringsSchema>;
     trOverrides: DeepPartial<AppStringsSchema>;
+    arOverrides: DeepPartial<AppStringsSchema>;
+    idOverrides: DeepPartial<AppStringsSchema>;
+    itOverrides: DeepPartial<AppStringsSchema>;
+    nlOverrides: DeepPartial<AppStringsSchema>;
+    plOverrides: DeepPartial<AppStringsSchema>;
+    viOverrides: DeepPartial<AppStringsSchema>;
   },
 ): DeepPartial<AppStringsSchema> | undefined => {
   switch (language) {
@@ -583,10 +681,24 @@ const getLanguageOverride = (
       return overrides.koOverrides;
     case "zh":
       return overrides.zhOverrides;
+    case "hi":
+      return overrides.hiOverrides;
     case "ru":
       return overrides.ruOverrides;
     case "tr":
       return overrides.trOverrides;
+    case "ar":
+      return overrides.arOverrides;
+    case "id":
+      return overrides.idOverrides;
+    case "it":
+      return overrides.itOverrides;
+    case "nl":
+      return overrides.nlOverrides;
+    case "pl":
+      return overrides.plOverrides;
+    case "vi":
+      return overrides.viOverrides;
     default:
       return undefined;
   }
@@ -618,11 +730,32 @@ const normalizeLanguage = (language: string): SupportedLanguage => {
   if (lower.startsWith("zh")) {
     return "zh";
   }
+  if (lower.startsWith("hi")) {
+    return "hi";
+  }
   if (lower.startsWith("ru")) {
     return "ru";
   }
   if (lower.startsWith("tr")) {
     return "tr";
+  }
+  if (lower.startsWith("ar")) {
+    return "ar";
+  }
+  if (lower.startsWith("id") || lower.startsWith("in")) {
+    return "id";
+  }
+  if (lower.startsWith("it")) {
+    return "it";
+  }
+  if (lower.startsWith("nl")) {
+    return "nl";
+  }
+  if (lower.startsWith("pl")) {
+    return "pl";
+  }
+  if (lower.startsWith("vi")) {
+    return "vi";
   }
 
   return "en";

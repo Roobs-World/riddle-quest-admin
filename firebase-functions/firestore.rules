@@ -17,7 +17,25 @@ service cloud.firestore {
 
     // Check if the request is from a Firebase Cloud Function (admin SDK)
     function isServerRequest() {
-      return request.auth.token.firebase.sign_in_provider == 'custom';
+      return request.auth != null &&
+             request.auth.token.firebase.sign_in_provider == 'custom';
+    }
+
+    function isOwnedStorageAvatarUrl(userId, avatarUrl) {
+      return avatarUrl is string &&
+             avatarUrl.matches('^https://firebasestorage.googleapis.com/v0/b/[^/]+/o/avatars%2F' + userId + '%2F[^?]+\\?.*$');
+    }
+
+    function hasOnlyClientEditableUserFields() {
+      return !request.resource.data.diff(resource.data).affectedKeys().hasAny([
+        'coins',
+        'stats',
+        'progress',
+        'hasPurchasedApp',
+        'unlockedAchievements',
+        'lastDailyChallengeCompletedAt',
+        'lastStreakReminderSentAt'
+      ]);
     }
 
     // Validate user document structure on creation/update
@@ -39,7 +57,7 @@ service cloud.firestore {
              request.resource.data.coins is number &&
              request.resource.data.coins >= 0 &&
              (!('displayName' in request.resource.data) || (request.resource.data.displayName is string && request.resource.data.displayName.size() <= 100)) &&
-              (!('avatarUrl' in request.resource.data) || (request.resource.data.avatarUrl is string)) &&
+              (!('avatarUrl' in request.resource.data) || isOwnedStorageAvatarUrl(request.auth.uid, request.resource.data.avatarUrl)) &&
               (!('hasPurchasedApp' in request.resource.data) || request.resource.data.hasPurchasedApp is bool);
     }
 
@@ -70,7 +88,7 @@ service cloud.firestore {
                 request.resource.data.displayName.size() <= 100)) &&
              (!changedKeys.hasAny(['avatarUrl']) ||
                !('avatarUrl' in request.resource.data) ||
-               request.resource.data.avatarUrl is string) &&
+               isOwnedStorageAvatarUrl(userId, request.resource.data.avatarUrl)) &&
              (!changedKeys.hasAny(['hasPurchasedApp']) ||
                !('hasPurchasedApp' in request.resource.data) ||
                request.resource.data.hasPurchasedApp is bool);
@@ -113,11 +131,10 @@ service cloud.firestore {
       
       // Users can update their own document with validation
       // Server requests (Cloud Functions) can also update for game logic
-      allow update: if (isOwner(userId) || isServerRequest()) && 
+      allow update: if isOwner(userId) && 
                       isValidUser(userId) && 
                       isValidUserDocumentUpdate(userId) &&
-                      (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['stats']) || isValidStatsUpdate()) &&
-                      (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['progress']) || isValidProgressUpdate());
+                      hasOnlyClientEditableUserFields();
       
       // Prevent client-side deletion - only allow server deletion
       allow delete: if isServerRequest();
@@ -154,8 +171,7 @@ service cloud.firestore {
                       request.resource.data.keys().hasOnly(['userId', 'riddleId', 'completed', 'attempts', 'completedAt']);
       
       // Users can update their own progress, server can also update
-      allow update: if (isAuthenticated() && resource.data.userId == request.auth.uid) || 
-                      isServerRequest();
+      allow update: if false;
       
       // Only server can delete progress entries
       allow delete: if isServerRequest();
@@ -174,8 +190,7 @@ service cloud.firestore {
                       request.resource.data.keys().hasOnly(['userId', 'date', 'completed', 'attempts', 'completedAt']);
       
       // Users can update their own attempts, server can also update
-      allow update: if (isAuthenticated() && resource.data.userId == request.auth.uid) || 
-                      isServerRequest();
+      allow update: if false;
       
       // Only server can delete challenge attempts
       allow delete: if isServerRequest();

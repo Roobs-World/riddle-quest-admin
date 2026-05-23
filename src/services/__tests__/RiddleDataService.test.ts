@@ -1,8 +1,7 @@
-import { RiddleDataService } from "../RiddleDataService";
-import { getApp } from "@react-native-firebase/app";
 import { getFirestore } from "@react-native-firebase/firestore";
-import { FirestoreRiddleSchema } from "../../validation/firestoreSchemas";
 import { ZodError } from "zod";
+import { FirestoreRiddleSchema } from "../../validation/firestoreSchemas";
+import { RiddleDataService } from "../RiddleDataService";
 
 // Standalone modular mock function references (assigned in jest.mock factories)
 let mockGetDocs: jest.Mock;

@@ -14,21 +14,21 @@ declare module "*.m4a" {
 }
 
 declare module "*.fbx" {
-  const value: any;
+  const value: unknown;
   export default value;
 }
 
 declare module "*.gltf" {
-  const value: any;
+  const value: unknown;
   export default value;
 }
 
 declare module "*.glb" {
-  const value: any;
+  const value: unknown;
   export default value;
 }
 
 declare module "*.obj" {
-  const value: any;
+  const value: unknown;
   export default value;
 }

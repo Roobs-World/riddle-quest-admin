@@ -122,8 +122,8 @@ export const PlayerSchema = z.object({
   registeredAt: TimestampAsMillisSchema.optional(),
   lastLogin: TimestampAsMillisSchema.optional(),
   lastDailyChallengeCompletedAt: TimestampAsMillisSchema.optional(),
-  stats: PlayerStatsSchema.default({}), // Use nested stats schema
-  progress: PlayerProgressSchema.default({}), // Use nested progress schema
+  stats: PlayerStatsSchema.default(() => PlayerStatsSchema.parse({})), // Use nested stats schema
+  progress: PlayerProgressSchema.default(() => PlayerProgressSchema.parse({})), // Use nested progress schema
   unlockedAchievements: z.array(UnlockedAchievementSchema).optional().default([]),
   fcmToken: z.string().optional(),
   fcmTokenUpdatedAt: TimestampAsMillisSchema.optional(),

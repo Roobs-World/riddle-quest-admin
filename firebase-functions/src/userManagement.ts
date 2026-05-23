@@ -31,6 +31,7 @@ interface InitializeUserResponseData {
  * @returns A promise resolving to initialization status
  */
 export const initializeUser = onCall<InitializeUserRequestData, Promise<InitializeUserResponseData>>(
+  {enforceAppCheck: true},
   async (request) => {
     try {
       if (!request.auth) {
@@ -78,7 +79,9 @@ export const initializeUser = onCall<InitializeUserRequestData, Promise<Initiali
  * @param request - The request (no data required, uses authenticated user)
  * @returns A promise resolving to completion status
  */
-export const ensureUserComplete = onCall<object, Promise<{success: boolean; message: string}>>(async (request) => {
+export const ensureUserComplete = onCall<object, Promise<{success: boolean; message: string}>>(
+  {enforceAppCheck: true},
+  async (request) => {
   try {
     if (!request.auth) {
       throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
@@ -103,7 +106,8 @@ export const ensureUserComplete = onCall<object, Promise<{success: boolean; mess
     }
     throw new HttpsError("internal", "An unexpected error occurred while ensuring user completeness.", error);
   }
-});
+  },
+);
 
 /**
  * Request data for updating user stats (admin function)
@@ -160,6 +164,7 @@ async function isUserAdmin(auth: {uid: string; token: {admin?: boolean}}): Promi
  * @returns A promise resolving to update status
  */
 export const updateUserStats = onCall<UpdateUserStatsRequestData, Promise<{success: boolean; message: string}>>(
+  {enforceAppCheck: true},
   async (request) => {
     try {
       if (!request.auth) {

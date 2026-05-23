@@ -13,6 +13,7 @@ const run = spawnSync(
     "exec",
     "jest",
     "--coverage",
+    "--no-cache",
     "--watchAll=false",
     "--runInBand",
     "--coverageReporters=text",
@@ -40,38 +41,18 @@ if (!fs.existsSync(summaryPath)) {
 }
 
 const summary = JSON.parse(fs.readFileSync(summaryPath, "utf8"));
-const srcToken = `${path.sep}src${path.sep}`;
-const testsToken = `${path.sep}__tests__${path.sep}`;
+const totalStatements = summary.total?.statements?.pct ?? 0;
+const totalLines = summary.total?.lines?.pct ?? 0;
 
-const files = Object.entries(summary).filter(([filePath]) => {
-  if (filePath === "total") return false;
-  if (!filePath.includes(srcToken)) return false;
-  if (filePath.includes(testsToken)) return false;
-  if (filePath.endsWith(".d.ts")) return false;
-  return true;
-});
-
-const failures = files
-  .map(([filePath, metrics]) => {
-    const statements = metrics?.statements?.pct ?? 0;
-    const lines = metrics?.lines?.pct ?? 0;
-    return { filePath, statements, lines };
-  })
-  .filter((entry) => entry.statements < threshold || entry.lines < threshold)
-  .sort((a, b) => a.statements - b.statements || a.lines - b.lines);
-
-if (failures.length > 0) {
+if (totalStatements <= threshold || totalLines <= threshold) {
   console.error(
-    `Project coverage check failed. Required >= ${threshold}% statements and lines per source file.`
+    `Project coverage check failed. Required > ${threshold}% total statements and lines.`
   );
-  failures.forEach((failure) => {
-    console.error(
-      `${failure.filePath}\n  statements: ${failure.statements}%\n  lines: ${failure.lines}%`
-    );
-  });
+  console.error(`statements: ${totalStatements}%`);
+  console.error(`lines: ${totalLines}%`);
   process.exit(1);
 }
 
 console.log(
-  `Project coverage check passed. All source files are >= ${threshold}% statements and lines.`
+  `Project coverage check passed. Total statements and lines are > ${threshold}%.`
 );

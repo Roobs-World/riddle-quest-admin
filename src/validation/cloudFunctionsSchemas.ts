@@ -117,7 +117,7 @@ export const SkipRiddleInputSchema = z.object({
 
 export const SkipRiddleOutputSchema = z.object({
   success: z.boolean(),
-  newProgress: z.any().optional(),
+  newProgress: z.unknown().optional(),
   message: z.string(),
   costDeducted: z.number(),
 });

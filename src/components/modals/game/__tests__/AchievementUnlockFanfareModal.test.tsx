@@ -66,7 +66,7 @@ jest.mock("../../../../assets/images/wheel-bg.svg", () => "WheelBgSvg");
 
 describe("AchievementUnlockFanfareModal", () => {
   it("renders the unlocked achievement text", () => {
-    const {getByText} = render(
+    const {getByText, queryByTestId} = render(
       <AchievementUnlockFanfareModal
         isVisible={true}
         coinsEarned={25}
@@ -83,10 +83,39 @@ describe("AchievementUnlockFanfareModal", () => {
     );
 
     expect(getByText("Achievement Unlocked!")).toBeTruthy();
+    expect(queryByTestId("modal-sequence-breadcrumb")).toBeNull();
     expect(getByText("*")).toBeTruthy();
     expect(getByText("First Victory")).toBeTruthy();
     expect(getByText("Win your first game")).toBeTruthy();
     expect(getByText("+25 Coins")).toBeTruthy();
+  });
+
+  it("shows sequence progress and Next text for an intermediate popup", () => {
+    const {getByTestId, getByText} = render(
+      <AchievementUnlockFanfareModal
+        isVisible={true}
+        coinsEarned={25}
+        totalCoins={125}
+        achievements={[
+          {
+            name: "First Victory",
+            description: "Win your first game",
+            icon: "*",
+          },
+        ]}
+        sequenceProgress={{
+          currentPopupIndex: 1,
+          totalPopups: 2,
+          hasNextPopup: true,
+          primaryActionText: "Next",
+        }}
+        onClose={jest.fn()}
+      />,
+    );
+
+    expect(getByTestId("modal-sequence-breadcrumb")).toBeTruthy();
+    expect(getByText("1/2")).toBeTruthy();
+    expect(getByText("Next")).toBeTruthy();
   });
 
   it("does not show aggregated count text when multiple achievements are passed", () => {

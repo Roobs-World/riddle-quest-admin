@@ -37,6 +37,7 @@ import Constants from "expo-constants";
 import { Settings } from "react-native-fbsdk-next";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { AuthProvider } from "./src/contexts/AuthContext";
+import { TooltipProvider } from "./src/contexts/TooltipContext";
 import { Navigation } from "./src/navigation/NavigationStack";
 import PulsingSpinner from "@/components/loading/PulsingSpinner";
 import { SolarSystemPreloader } from "./src/services/SolarSystemPreloader";
@@ -228,11 +229,13 @@ export default Sentry.wrap(function App() {
     >
       <ModalProvider>
         <AuthProvider>
-          <View style={{ flex: 1 }}>
-            <NavigationContainer>
-              <Navigation />
-            </NavigationContainer>
-          </View>
+          <TooltipProvider>
+            <View style={{ flex: 1 }}>
+              <NavigationContainer>
+                <Navigation />
+              </NavigationContainer>
+            </View>
+          </TooltipProvider>
         </AuthProvider>
       </ModalProvider>
     </Sentry.ErrorBoundary>

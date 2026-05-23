@@ -1,5 +1,5 @@
-import { ReactElement } from "react";
-import { Text, TouchableOpacity } from "react-native";
+import React, { ReactElement } from "react";
+import { Text, TouchableOpacity, View } from "react-native";
 import { SPACING, TYPOGRAPHY } from "../../styles";
 import { SUBMIT_BUTTON_PADDING_H } from "../../constants/layout";
 import { AppStrings } from "../../constants/AppStrings";
@@ -22,13 +22,14 @@ type SubmitButtonProps = {
  * @param props Submit state flags and keyboard submit callback.
  * @returns Styled submit button with disabled-state handling.
  */
-export const SubmitButton = ({
+export const SubmitButton = React.forwardRef<View, SubmitButtonProps>(({
   isSubmitDisabled,
   gameOver,
   handleKeyPress,
-}: SubmitButtonProps): ReactElement => {
+}, ref): ReactElement => {
   return (
     <TouchableOpacity
+      ref={ref}
       className={`rounded-full ${
         isSubmitDisabled || gameOver
           ? "bg-gray-300"
@@ -49,4 +50,6 @@ export const SubmitButton = ({
       <Text style={{ fontSize: TYPOGRAPHY.fontSize.lg, fontFamily: TYPOGRAPHY.fontPrimary, color: "black" }}>{AppStrings.GameScreenAlerts.SUBMIT_BUTTON}</Text>
     </TouchableOpacity>
   );
-};
+});
+
+SubmitButton.displayName = "SubmitButton";

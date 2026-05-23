@@ -257,16 +257,7 @@ describe("LandingScreen", () => {
       expect(getByText("Test Tagline 1")).toBeTruthy();
     });
 
-    it("should render subtitle component with correct text", () => {
-      const { getByTestId } = renderWithProviders(
-        <LandingScreen />
-      );
-
-      const subtitle = getByTestId("subtitle");
-      expect(subtitle.props["data-text"]).toBe("Test Tagline 2");
-    });
-
-    it("should render guest and credits buttons", () => {
+    it("should render guest and Roobs World buttons", () => {
       const { getAllByTestId } = renderWithProviders(
         <LandingScreen />
       );
@@ -275,12 +266,12 @@ describe("LandingScreen", () => {
       const guestButton = wideButtons.find(
         (btn: any) => btn.props["data-text"] === "Play as Guest"
       );
-      const creditsButton = wideButtons.find(
-        (btn: any) => btn.props["data-text"] === "Credits"
+      const roobsWorldButton = wideButtons.find(
+        (btn: any) => btn.props["data-text"] === "Made by Roobs World"
       );
       expect(guestButton).toBeTruthy();
       expect(guestButton!.props["data-disabled"]).toBe(false);
-      expect(creditsButton).toBeTruthy();
+      expect(roobsWorldButton).toBeTruthy();
     });
 
     it("should render spinner as not visible initially", () => {
@@ -314,22 +305,8 @@ describe("LandingScreen", () => {
       });
     });
 
-    it("should open credits modal when credits button is pressed", () => {
-      const { getAllByTestId, getByTestId } = renderWithProviders(
-        <LandingScreen />
-      );
-
-      const wideButtons = getAllByTestId("wide-button");
-      const creditsButton = wideButtons.find(
-        (btn: any) => btn.props["data-text"] === "Credits"
-      );
-      fireEvent.press(creditsButton!);
-
-      expect(getByTestId("credits-modal").props["data-visible"]).toBe(true);
-    });
-
     it("should open Roobs World website when the button is pressed", () => {
-      const openUrlSpy = jest.spyOn(Linking, "openURL").mockResolvedValue();
+      const openUrlSpy = jest.spyOn(Linking, "openURL").mockResolvedValue(undefined);
       const { getAllByTestId } = renderWithProviders(<LandingScreen />);
 
       const wideButtons = getAllByTestId("wide-button");
@@ -1228,18 +1205,15 @@ describe("Component Accessibility", () => {
 
     expect(googleButton.props["data-disabled"]).toBe(false);
     expect(facebookButton.props["data-disabled"]).toBe(false);
-    // Check that at least the Play as Guest and Credits buttons are not disabled
+    // Check that at least the Play as Guest and Roobs World buttons render.
     const guestButton = wideButtons.find(
       (btn: any) => btn.props["data-text"] === "Play as Guest"
     );
-    const creditsButton = wideButtons.find(
-      (btn: any) => btn.props["data-text"] === "Credits"
+    const roobsWorldButton = wideButtons.find(
+      (btn: any) => btn.props["data-text"] === "Made by Roobs World"
     );
     expect(guestButton!.props["data-disabled"]).toBe(false);
-    // Credits button may not have data-disabled prop, so check if it exists
-    if (creditsButton!.props["data-disabled"] !== undefined) {
-      expect(creditsButton!.props["data-disabled"]).toBe(false);
-    }
+    expect(roobsWorldButton).toBeTruthy();
   });
 
   it("should have proper button text content", () => {
@@ -1249,7 +1223,6 @@ describe("Component Accessibility", () => {
     const buttonTexts = wideButtons.map((btn: any) => btn.props["data-text"]);
 
     expect(buttonTexts).toContain("Play as Guest");
-    expect(buttonTexts).toContain("Credits");
     expect(buttonTexts).toContain("Made by Roobs World");
   });
 });
@@ -1261,45 +1234,6 @@ describe("Modal Integration", () => {
       isAuthenticated: false,
       setGameMode: mockSetGameMode,
     });
-  });
-
-  it("should render credits modal initially as not visible", () => {
-    const { getByTestId } = renderWithProviders(<LandingScreen />);
-
-    const creditsModal = getByTestId("credits-modal");
-    expect(creditsModal.props["data-visible"]).toBe(false);
-  });
-
-  it("should toggle credits modal visibility", () => {
-    const { getByTestId, getAllByTestId } = renderWithProviders(
-      <LandingScreen />
-    );
-
-    // Initially not visible
-    expect(getByTestId("credits-modal").props["data-visible"]).toBe(false);
-
-    // Press credits button
-    const wideButtons = getAllByTestId("wide-button");
-    const creditsButton = wideButtons.find(
-      (btn: any) => btn.props["data-text"] === "Credits"
-    );
-    fireEvent.press(creditsButton!);
-
-    // Now visible
-    expect(getByTestId("credits-modal").props["data-visible"]).toBe(true);
-  });
-
-  it("should close credits modal via onClose callback", () => {
-    const { getByTestId, getAllByTestId } = renderWithProviders(<LandingScreen />);
-    const wideButtons = getAllByTestId("wide-button");
-    const creditsButton = wideButtons.find(
-      (btn: any) => btn.props["data-text"] === "Credits"
-    );
-    fireEvent.press(creditsButton!);
-    expect(getByTestId("credits-modal").props["data-visible"]).toBe(true);
-
-    fireEvent.press(getByTestId("credits-modal-close"));
-    expect(getByTestId("credits-modal").props["data-visible"]).toBe(false);
   });
 
   it("signs in anonymously for guest play", async () => {

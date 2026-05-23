@@ -72,6 +72,23 @@ async function getExistingRiddlesFromFirestore(): Promise<{questions: string[]; 
   }
 }
 
+async function requireAdmin(request: CallableRequest<unknown>): Promise<void> {
+  if (!request.auth) {
+    throw new functions.https.HttpsError("unauthenticated", "The function must be called while authenticated.");
+  }
+
+  if (request.auth.token?.admin === true) {
+    return;
+  }
+
+  const adminDoc = await admin.firestore().collection("admins").doc(request.auth.uid).get();
+  if (adminDoc.exists) {
+    return;
+  }
+
+  throw new functions.https.HttpsError("permission-denied", "This operation requires admin privileges.");
+}
+
 /**
  * Gets the next available classic index for new riddles.
  * @returns The next available classic index.
@@ -406,16 +423,17 @@ export async function initializeRiddleDatabaseIfEmpty(initialRiddleCount: number
  */
 export const generateClassicRiddles = onCall(
   {
-    enforceAppCheck: false,
+    enforceAppCheck: true,
     cors: true,
     region: "us-central1",
     timeoutSeconds: 540, // 9 minutes for riddle generation
     secrets: ["OPENAI_API_KEY"],
   } as CallableOptions,
-  async (): Promise<{success: boolean; message: string}> => {
+  async (request: CallableRequest<unknown>): Promise<{success: boolean; message: string}> => {
     logger.info("generateClassicRiddles function called - entry point reached");
 
     try {
+      await requireAdmin(request);
       logger.info("Starting riddle generation process with 10 riddles...");
       await generateAndAppendRiddles(10);
       logger.info("Classic Mode riddles generated and stored in Firestore successfully.");
@@ -442,16 +460,17 @@ export const generateClassicRiddles = onCall(
  */
 export const initializeRiddleDatabase = onCall(
   {
-    enforceAppCheck: false,
+    enforceAppCheck: true,
     cors: true,
     region: "us-central1",
     timeoutSeconds: 300, // 5 minutes for initial database setup
     secrets: ["OPENAI_API_KEY"],
   } as CallableOptions,
-  async (): Promise<{success: boolean; message: string; riddlesGenerated: number}> => {
+  async (request: CallableRequest<unknown>): Promise<{success: boolean; message: string; riddlesGenerated: number}> => {
     logger.info("initializeRiddleDatabase function called - entry point reached");
 
     try {
+      await requireAdmin(request);
       // Check if any classic riddles already exist
       const existingRiddlesSnapshot = await admin
         .firestore()
@@ -498,16 +517,17 @@ export const initializeRiddleDatabase = onCall(
  */
 export const generateDailyRiddles = onCall(
   {
-    enforceAppCheck: false,
+    enforceAppCheck: true,
     cors: true,
     region: "us-central1",
     timeoutSeconds: 540, // 9 minutes for riddle generation
     secrets: ["OPENAI_API_KEY"],
   } as CallableOptions,
-  async (): Promise<{success: boolean; message: string}> => {
+  async (request: CallableRequest<unknown>): Promise<{success: boolean; message: string}> => {
     logger.info("generateDailyRiddles function called - entry point reached");
 
     try {
+      await requireAdmin(request);
       logger.info("Starting daily riddle generation process with 10 riddles...");
       await generateAndAppendDailyRiddles(10);
       logger.info("Daily Mode riddles generated and stored in Firestore successfully.");
@@ -699,7 +719,7 @@ async function resetAllUsersDailyChallengeProgress(): Promise<void> {
  */
 export const generateTodaysDailyChallengeFunction = onCall(
   {
-    enforceAppCheck: false,
+    enforceAppCheck: true,
     cors: true,
     region: "us-central1",
     timeoutSeconds: 540, // 9 minutes for riddle generation
@@ -711,6 +731,7 @@ export const generateTodaysDailyChallengeFunction = onCall(
     logger.info("generateTodaysDailyChallengeFunction called - entry point reached");
 
     try {
+      await requireAdmin(request);
       const {forceGenerate = false} = request.data || {};
 
       const today = new Date();

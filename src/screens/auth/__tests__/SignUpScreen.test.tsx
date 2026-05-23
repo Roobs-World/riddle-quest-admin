@@ -251,6 +251,7 @@ jest.mock("../../../constants/AppStrings", () => ({
       },
     },
   },
+  getAppLanguage: jest.fn(() => "en"),
 }));
 
 jest.mock("../../../constants/loading", () => ({

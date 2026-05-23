@@ -1,5 +1,5 @@
+import { render, waitFor } from "@testing-library/react-native";
 import React from "react";
-import { render, waitFor, act } from "@testing-library/react-native";
 import { ColorManagement } from "three";
 
 const mockSetClearColor = jest.fn();

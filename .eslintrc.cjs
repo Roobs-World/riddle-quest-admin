@@ -47,6 +47,7 @@ module.exports = {
     "react-native/no-inline-styles": "off",
     "react-native/no-color-literals": "off",
     "react-native/no-raw-text": "warn",
+    "@typescript-eslint/no-explicit-any": "error",
   },
 
   overrides: [
@@ -70,7 +71,7 @@ module.exports = {
     {
       files: ["firebase-functions/src/**/*"],
       rules: {
-        "@typescript-eslint/no-explicit-any": "warn",
+        "@typescript-eslint/no-explicit-any": "error",
         "@typescript-eslint/no-unused-vars": [
           "error",
           { argsIgnorePattern: "^_" },

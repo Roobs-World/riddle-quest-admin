@@ -41,6 +41,7 @@ interface BottomNavigationBarProps {
 
   /** Function called when the Settings icon is pressed - opens settings overlay */
   onSettingsPress: () => void;
+  profileButtonRef?: React.Ref<View>;
 }
 
 /**
@@ -86,7 +87,7 @@ interface BottomNavigationBarProps {
  * @param {BottomNavigationBarProps} props - Navigation callback functions
  * @returns {JSX.Element} Rendered bottom navigation bar with three action buttons
  */
-const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({onProfilePress, onSettingsPress}) => {
+const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({onProfilePress, onSettingsPress, profileButtonRef}) => {
   return (
     <View
       style={{
@@ -116,6 +117,7 @@ const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({onProfilePress
 
       {/* Right Side - Profile Button */}
       <TouchableOpacity
+        ref={profileButtonRef}
         style={{marginRight: scale(20), padding: scale(8)}}
         onPress={onProfilePress}
         testID="profile-button"

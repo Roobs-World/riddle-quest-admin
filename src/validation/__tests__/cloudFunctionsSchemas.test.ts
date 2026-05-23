@@ -1,15 +1,13 @@
 import {
   GameModeSchema,
-  GetQuestionInputSchema,
-  GetQuestionOutputSchema,
-  GetAnswerInputSchema,
-  GetAnswerOutputSchema,
-  SubmitGuessInputSchema,
-  SubmitGuessOutputSchema,
   GenerateClassicRiddlesInputSchema,
   GenerateClassicRiddlesOutputSchema,
   GetHintInputSchema,
   GetHintOutputSchema,
+  GetQuestionInputSchema,
+  GetQuestionOutputSchema,
+  SubmitGuessInputSchema,
+  SubmitGuessOutputSchema,
 } from "../cloudFunctionsSchemas";
 
 describe("cloudFunctionsSchemas", () => {

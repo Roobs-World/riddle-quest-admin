@@ -1,5 +1,6 @@
 import React from "react";
 import { Modal, StyleSheet, Text, View } from "react-native";
+import SlideInModalContent from "../../shared/SlideInModalContent";
 
 interface OfflineBlockingModalProps {
   isVisible: boolean;
@@ -12,18 +13,20 @@ const OfflineBlockingModal: React.FC<OfflineBlockingModalProps> = ({
     <Modal
       visible={isVisible}
       transparent
-      animationType="fade"
+      animationType="none"
       statusBarTranslucent
       onRequestClose={() => {}}
       testID="offline-blocking-modal"
     >
       <View style={styles.backdrop}>
-        <View style={styles.card}>
-          <Text style={styles.title}>No Internet Connection</Text>
-          <Text style={styles.message}>
-            Please reconnect to continue playing.
-          </Text>
-        </View>
+        <SlideInModalContent isVisible={isVisible} style={styles.content}>
+          <View style={styles.card}>
+            <Text style={styles.title}>No Internet Connection</Text>
+            <Text style={styles.message}>
+              Please reconnect to continue playing.
+            </Text>
+          </View>
+        </SlideInModalContent>
       </View>
     </Modal>
   );
@@ -37,9 +40,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 24,
   },
-  card: {
+  content: {
     width: "100%",
     maxWidth: 420,
+  },
+  card: {
+    width: "100%",
     backgroundColor: "#161616",
     borderRadius: 16,
     paddingHorizontal: 20,

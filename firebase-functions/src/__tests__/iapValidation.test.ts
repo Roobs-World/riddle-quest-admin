@@ -38,7 +38,9 @@ const mockUpdateUserCoins = jest.fn<(...args: unknown[]) => Promise<void>>();
 const mockUpdateUserProfile = jest.fn<(...args: unknown[]) => Promise<void>>();
 const mockMarkPurchaseTokenAsProcessed = jest.fn<(...args: unknown[]) => Promise<void>>();
 const mockIsPurchaseTokenAlreadyProcessed = jest.fn<(...args: unknown[]) => Promise<boolean>>();
-const mockPerformPlatformValidation = jest.fn<(...args: unknown[]) => Promise<{valid: boolean; data?: unknown}>>();
+const mockPerformPlatformValidation = jest.fn<
+  (...args: unknown[]) => Promise<{isValid: boolean; productId: string; transactionId: string}>
+>();
 const mockEvaluateAchievements = jest.fn<(...args: unknown[]) => Promise<string[]>>();
 
 const mockLoggerInfo = jest.fn<(...args: unknown[]) => void>();
@@ -141,7 +143,7 @@ jest.mock("firebase-functions/v2/https", () => {
     "firebase-functions/v2/https",
   ) as typeof import("firebase-functions/v2/https");
   return {
-    onCall: jest.fn((handler) => handler),
+    onCall: jest.fn((optionsOrHandler, maybeHandler) => maybeHandler ?? optionsOrHandler),
     HttpsError: actualV2Https.HttpsError,
   };
 });
@@ -253,7 +255,11 @@ describe("validatePurchase - Unit Tests", () => {
     mockGetUser.mockResolvedValue({coins: 100, hasPurchasedApp: false});
     mockUpdateUserProfile.mockResolvedValue(undefined);
     mockIsPurchaseTokenAlreadyProcessed.mockResolvedValue(false);
-    mockPerformPlatformValidation.mockResolvedValue({valid: true, data: "platform_validation_response"});
+    mockPerformPlatformValidation.mockResolvedValue({
+      isValid: true,
+      productId: "mock.product.id",
+      transactionId: "mockToken",
+    });
     mockEvaluateAchievements.mockResolvedValue([]);
 
     iapController.isValidated.mockReturnValue(true);
@@ -286,9 +292,11 @@ describe("validatePurchase - Unit Tests", () => {
       data: {purchaseToken: "token_noads", productId: NO_ADS_PRODUCT_ID, platform: "ios"},
     } as CallableRequest<ValidatePurchaseData>;
 
-    iapController.getPurchaseData.mockReturnValue([
-      {productId: NO_ADS_PRODUCT_ID, transactionId: "token_noads_tx", originalTransactionIdIOS: "token_noads_orig_tx"},
-    ]);
+    mockPerformPlatformValidation.mockResolvedValueOnce({
+      isValid: true,
+      productId: NO_ADS_PRODUCT_ID,
+      transactionId: "token_noads_tx",
+    });
     mockGetUser.mockResolvedValueOnce({coins: 100, hasPurchasedApp: false});
     mockGetUser.mockResolvedValueOnce({coins: 100, hasPurchasedApp: true});
 
@@ -331,7 +339,11 @@ describe("validatePurchase - Unit Tests", () => {
       data: {purchaseToken: "token_coins", productId: coinProductId, platform: "android"},
     } as CallableRequest<ValidatePurchaseData>;
 
-    iapController.getPurchaseData.mockReturnValue([{productId: coinProductId, transactionId: "token_coins_tx"}]);
+    mockPerformPlatformValidation.mockResolvedValueOnce({
+      isValid: true,
+      productId: coinProductId,
+      transactionId: "token_coins_tx",
+    });
     mockGetCoinsForProduct.mockResolvedValueOnce(coinsToAward);
     mockGetUser.mockResolvedValueOnce({coins: initialUserCoins + coinsToAward, hasPurchasedApp: false});
     mockGetUser.mockResolvedValueOnce({coins: initialUserCoins + coinsToAward, hasPurchasedApp: false});
@@ -390,40 +402,44 @@ describe("validatePurchase - Unit Tests", () => {
       new functions.https.HttpsError("already-exists", "This purchase has already been processed."),
     );
     expect(mockLoggerWarn).toHaveBeenCalledWith(
-      `IAP purchase token duplicate_token already processed for user ${testUserId}.`,
+      "IAP purchase token already processed.",
+      {userId: testUserId, productId: "test_product"},
     );
   });
 
-  it("should throw internal error if purchase data array is empty or invalid", async () => {
+  it("should throw failed-precondition if platform validation does not return a product", async () => {
     const auth = {uid: testUserId} as CallableRequest<ValidatePurchaseData>["auth"];
     const request = {
       auth,
       data: {purchaseToken: "token_empty", productId: "test_product", platform: "ios"},
     } as CallableRequest<ValidatePurchaseData>;
 
-    iapController.isValidated.mockReturnValue(true);
-    iapController.getPurchaseData.mockReturnValue([]); // Empty array covers lines 59-60
+    mockPerformPlatformValidation.mockResolvedValueOnce({
+      isValid: true,
+      productId: "",
+      transactionId: "token_empty_tx",
+    });
 
     await expect(validatePurchase(request)).rejects.toThrow(
-      new functions.https.HttpsError("internal", "Could not extract purchase data from validation response."),
-    );
-    expect(mockLoggerError).toHaveBeenCalledWith(
-      expect.stringContaining("iap.getPurchaseData did not return valid array"),
+      new functions.https.HttpsError("failed-precondition", "Purchase validation failed or product ID mismatch."),
     );
   });
 
-  it("should throw internal error if purchase data is not an array", async () => {
+  it("should throw failed-precondition if platform validation is not valid", async () => {
     const auth = {uid: testUserId} as CallableRequest<ValidatePurchaseData>["auth"];
     const request = {
       auth,
       data: {purchaseToken: "token_not_array", productId: "test_product", platform: "ios"},
     } as CallableRequest<ValidatePurchaseData>;
 
-    iapController.isValidated.mockReturnValue(true);
-    iapController.getPurchaseData.mockReturnValue(null); // Not an array covers lines 59-60
+    mockPerformPlatformValidation.mockResolvedValueOnce({
+      isValid: false,
+      productId: "test_product",
+      transactionId: "token_not_array_tx",
+    });
 
     await expect(validatePurchase(request)).rejects.toThrow(
-      new functions.https.HttpsError("internal", "Could not extract purchase data from validation response."),
+      new functions.https.HttpsError("failed-precondition", "Purchase validation failed or product ID mismatch."),
     );
   });
 
@@ -434,8 +450,11 @@ describe("validatePurchase - Unit Tests", () => {
       data: {purchaseToken: "token_mismatch", productId: "expected_product", platform: "ios"},
     } as CallableRequest<ValidatePurchaseData>;
 
-    iapController.isValidated.mockReturnValue(true);
-    iapController.getPurchaseData.mockReturnValue([{productId: "different_product"}]); // Mismatch covers lines 72-77
+    mockPerformPlatformValidation.mockResolvedValueOnce({
+      isValid: true,
+      productId: "different_product",
+      transactionId: "token_mismatch_tx",
+    });
 
     await expect(validatePurchase(request)).rejects.toThrow(
       new functions.https.HttpsError("failed-precondition", "Purchase validation failed or product ID mismatch."),
@@ -453,8 +472,11 @@ describe("validatePurchase - Unit Tests", () => {
       data: {purchaseToken: "token_unknown", productId: unknownProductId, platform: "ios"},
     } as CallableRequest<ValidatePurchaseData>;
 
-    iapController.isValidated.mockReturnValue(true);
-    iapController.getPurchaseData.mockReturnValue([{productId: unknownProductId}]); // Product not in BACKEND_COIN_PRODUCT_DETAILS covers lines 104-108
+    mockPerformPlatformValidation.mockResolvedValueOnce({
+      isValid: true,
+      productId: unknownProductId,
+      transactionId: "token_unknown_tx",
+    });
 
     await expect(validatePurchase(request)).rejects.toThrow(
       new functions.https.HttpsError("internal", "Product configuration error on backend."),
@@ -478,7 +500,12 @@ describe("validatePurchase - Unit Tests", () => {
     );
     expect(mockLoggerError).toHaveBeenCalledWith(
       expect.stringContaining("IAP validation process failed"),
-      expect.any(Error),
+      expect.objectContaining({
+        userId: testUserId,
+        productId: "test_product",
+        platform: "ios",
+        error: expect.any(Error),
+      }),
     );
   });
 
@@ -506,14 +533,18 @@ describe("validatePurchase - Unit Tests", () => {
     );
   });
 
-  it("should throw failed-precondition when iap.isValidated returns false", async () => {
+  it("should throw failed-precondition when platform validation returns invalid", async () => {
     const auth = {uid: testUserId} as CallableRequest<ValidatePurchaseData>["auth"];
     const request = {
       auth,
       data: {purchaseToken: "token_invalid", productId: "test_product", platform: "ios"},
     } as CallableRequest<ValidatePurchaseData>;
 
-    iapController.isValidated.mockReturnValue(false);
+    mockPerformPlatformValidation.mockResolvedValueOnce({
+      isValid: false,
+      productId: "test_product",
+      transactionId: "token_invalid_tx",
+    });
 
     await expect(validatePurchase(request)).rejects.toThrow(
       new functions.https.HttpsError("failed-precondition", "Purchase validation failed or product ID mismatch."),

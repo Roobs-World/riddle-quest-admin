@@ -1,12 +1,19 @@
 import {
+  arOverrides,
   deOverrides,
   esOverrides,
   frOverrides,
+  hiOverrides,
+  idOverrides,
+  itOverrides,
   jaOverrides,
   koOverrides,
+  nlOverrides,
+  plOverrides,
   ptOverrides,
   ruOverrides,
   trOverrides,
+  viOverrides,
   zhOverrides,
 } from "../languageOverrides";
 
@@ -20,8 +27,15 @@ describe("languageOverrides", () => {
       jaOverrides,
       koOverrides,
       zhOverrides,
+      hiOverrides,
       ruOverrides,
       trOverrides,
+      arOverrides,
+      idOverrides,
+      itOverrides,
+      nlOverrides,
+      plOverrides,
+      viOverrides,
     ];
 
     bundles.forEach((bundle) => {
@@ -33,6 +47,10 @@ describe("languageOverrides", () => {
   it("contains representative translated labels", () => {
     expect(esOverrides.Settings?.TITLE).toBe("Configuracion");
     expect(deOverrides.Settings?.TITLE).toBe("Einstellungen");
+    expect(hiOverrides.Settings?.TITLE).toBe("सेटिंग्स");
     expect(trOverrides.Settings?.TITLE).toBe("Ayarlar");
+    expect(arOverrides.Settings?.TITLE).toBe("الإعدادات");
+    expect(idOverrides.Settings?.TITLE).toBe("Pengaturan");
+    expect(itOverrides.Settings?.TITLE).toBe("Impostazioni");
   });
 });

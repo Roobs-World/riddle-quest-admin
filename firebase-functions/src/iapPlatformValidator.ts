@@ -1,6 +1,7 @@
 import * as functions from "firebase-functions";
-import iap from "in-app-purchase";
 import { captureException } from "./sentry";
+import {google} from "googleapis";
+import {getAppleSharedSecret, getIapGoogleCredentials, initializeIapConfig} from "./iapConfig";
 
 interface AppleReceiptInfo {
   quantity: string;
@@ -23,20 +24,6 @@ interface AppleReceiptInfo {
   cancellation_date_pst?: string;
 }
 
-interface AppleValidationResponse {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  receipt: {[key: string]: any}; // Simplified as the structure can be complex
-  latest_receipt_info?: AppleReceiptInfo[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  pending_renewal_info?: {[key: string]: any}[]; // Simplified
-  transactionId: string;
-  productId: string;
-  platform: "apple";
-  environment: string;
-  status: number; // Add status field from documentation
-  service: typeof iap.APPLE; // Required by in-app-purchase library
-}
-
 interface GooglePurchaseReceipt {
   kind: string;
   purchaseTimeMillis: string;
@@ -44,27 +31,33 @@ interface GooglePurchaseReceipt {
   consumptionState: number;
   developerPayload: string;
   // Add other potential fields if needed based on Google Play Developer API
+  orderId?: string;
 }
 
-interface GoogleValidationResponse {
-  receipt: GooglePurchaseReceipt;
+export interface IapValidationResponse {
+  isValid: boolean;
   transactionId: string;
   productId: string;
-  platform: "google";
-  // Add other potential fields if needed
-  status: number; // Required by in-app-purchase library (changed from optional)
-  service: typeof iap.GOOGLE; // Required by in-app-purchase library
+  platform: "apple" | "google";
+  status?: number;
+  rawResponse?: unknown;
 }
-
-type ValidationResponse = AppleValidationResponse | GoogleValidationResponse;
 
 interface IapValidationError extends Error {
   code?: string;
   // Add other potential fields if needed
 }
 
+function fingerprint(value: string): string {
+  if (value.length <= 8) {
+    return "[redacted]";
+  }
+
+  return `${value.slice(0, 4)}...${value.slice(-4)}`;
+}
+
 /**
- * Performs platform-specific IAP validation using the 'in-app-purchase' library.
+ * Performs platform-specific IAP validation through Apple and Google APIs.
  *
  * @param {string} platform - Platform ('ios' or 'android').
  * @param {string} purchaseToken - The purchase token/receipt data.
@@ -78,7 +71,7 @@ export async function performPlatformValidation(
   platform: string,
   purchaseToken: string,
   productId: string,
-): Promise<ValidationResponse> {
+): Promise<IapValidationResponse> {
   // Handle unsupported platform first, outside the main try-catch for iap.validate
   if (platform !== "ios" && platform !== "android") {
     functions.logger.error("Unsupported platform for IAP validation:", platform);
@@ -86,66 +79,64 @@ export async function performPlatformValidation(
   }
 
   try {
+    initializeIapConfig();
+
     if (platform === "ios") {
-      const response: AppleValidationResponse = await new Promise((resolve, reject) => {
-        iap.validate(iap.APPLE, purchaseToken, (err: Error | null, res: unknown) => {
-          if (err) reject(err);
-          else {
-            const appleResponse = res as Omit<AppleValidationResponse, "service">;
-            // Ensure the service property is included for library compatibility
-            resolve({
-              ...appleResponse,
-              service: iap.APPLE,
-            });
-          }
-        });
-      });
-      // Perform basic validation check for Apple
+      const response = await verifyAppleReceipt(purchaseToken);
       if (response.status !== 0) {
         const error = new Error(`Apple validation failed with status ${response.status}`);
         (error as IapValidationError).code = `APPLE_VALIDATION_ERROR_${response.status}`;
         throw error;
       }
-      return response;
+
+      const purchase = findApplePurchase(response, productId);
+      if (!purchase) {
+        throw new functions.https.HttpsError("failed-precondition", "Purchase validation failed or product ID mismatch.");
+      }
+
+      return {
+        isValid: true,
+        productId,
+        transactionId: purchase.transaction_id ?? purchase.original_transaction_id ?? purchaseToken,
+        platform: "apple",
+        status: response.status,
+        rawResponse: response,
+      };
     } else if (platform === "android") {
-      // This condition is now guaranteed because of the check above, but kept for clarity
-      const response: GoogleValidationResponse = await new Promise((resolve, reject) => {
-        iap.validate(
-          iap.GOOGLE,
-          {
-            receipt: purchaseToken, // This is the purchaseToken for Google
-            productId: productId,
-          },
-          (err: Error | null, res: unknown) => {
-            if (err) reject(err);
-            else {
-              const googleResponse = res as Omit<GoogleValidationResponse, "service" | "status">;
-              // Ensure the service property is included for library compatibility
-              // Google responses may not always have a status, so default to 0 (success)
-              const responseWithStatus = googleResponse as GoogleValidationResponse & {status?: number};
-              resolve({
-                ...googleResponse,
-                service: iap.GOOGLE,
-                status: responseWithStatus.status ?? 0,
-              });
-            }
-          },
-        );
-      });
-      // Perform basic validation check for Google (status might not always be present or 0 for success in the same way as Apple)
-      // Relying on the promise rejection for errors from the library itself for now.
-      // Additional checks based on GooglePurchaseReceipt structure can be added here if needed.
-      return response;
+      const response = await verifyGooglePurchase(purchaseToken, productId);
+      if (response.purchaseState !== 0) {
+        throw new functions.https.HttpsError("failed-precondition", "Purchase validation failed or product ID mismatch.");
+      }
+
+      return {
+        isValid: true,
+        productId,
+        transactionId: response.orderId ?? purchaseToken,
+        platform: "google",
+        status: 0,
+        rawResponse: response,
+      };
     }
     // Should not be reached due to the initial platform check
     // but as a fallback, or if logic changes, ensuring an error is thrown.
     throw new Error("Internal logic error: Platform should have been handled.");
   } catch (validationError: unknown) {
     functions.logger.error(
-      `Platform IAP validation failed for ${platform}, ` + `token ${purchaseToken}, ` + `product ${productId}:`,
+      `Platform IAP validation failed for ${platform}. ` +
+        `Product=${productId}, TokenFingerprint=${fingerprint(purchaseToken)}.`,
       validationError,
     );
     captureException(validationError);
+
+    if (
+      validationError &&
+      typeof validationError === "object" &&
+      "code" in validationError &&
+      "message" in validationError &&
+      (validationError as {name?: string}).name === "HttpsError"
+    ) {
+      throw validationError;
+    }
 
     // Determine HttpsError code based on the validationError from iap.validate
     let errorCode: functions.https.FunctionsErrorCode = "internal";
@@ -171,4 +162,68 @@ export async function performPlatformValidation(
 
     throw new functions.https.HttpsError(errorCode, friendlyMessage, validationError);
   }
+}
+
+type AppleVerifyReceiptResponse = {
+  status: number;
+  latest_receipt_info?: AppleReceiptInfo[];
+  receipt?: {
+    in_app?: AppleReceiptInfo[];
+  };
+};
+
+async function verifyAppleReceipt(receiptData: string): Promise<AppleVerifyReceiptResponse> {
+  const password = getAppleSharedSecret();
+  const payload = {
+    "receipt-data": receiptData,
+    ...(password ? {password} : {}),
+    "exclude-old-transactions": true,
+  };
+  const production = await postAppleReceipt("https://buy.itunes.apple.com/verifyReceipt", payload);
+  if (production.status === 21007) {
+    return postAppleReceipt("https://sandbox.itunes.apple.com/verifyReceipt", payload);
+  }
+  return production;
+}
+
+async function postAppleReceipt(url: string, payload: Record<string, unknown>): Promise<AppleVerifyReceiptResponse> {
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) {
+    const error = new Error(`Apple receipt endpoint returned ${response.status}`);
+    (error as IapValidationError).code = "CONNECTION_ERROR";
+    throw error;
+  }
+  return response.json() as Promise<AppleVerifyReceiptResponse>;
+}
+
+function findApplePurchase(response: AppleVerifyReceiptResponse, productId: string): AppleReceiptInfo | undefined {
+  return [...(response.latest_receipt_info ?? []), ...(response.receipt?.in_app ?? [])].find(
+    (item) => item.product_id === productId,
+  );
+}
+
+async function verifyGooglePurchase(purchaseToken: string, productId: string): Promise<GooglePurchaseReceipt> {
+  const credentials = getIapGoogleCredentials();
+  if (!credentials) {
+    throw new functions.https.HttpsError("failed-precondition", "Google Play service account is not configured.");
+  }
+
+  const auth = new google.auth.JWT({
+    email: credentials.clientEmail,
+    key: credentials.privateKey,
+    scopes: ["https://www.googleapis.com/auth/androidpublisher"],
+  });
+  const androidpublisher = google.androidpublisher({version: "v3", auth});
+  const packageName = process.env.GOOGLE_PLAY_PACKAGE_NAME || "com.roobsworld.riddlequest";
+  const result = await androidpublisher.purchases.products.get({
+    packageName,
+    productId,
+    token: purchaseToken,
+  });
+
+  return result.data as GooglePurchaseReceipt;
 }

@@ -1,14 +1,12 @@
-import { RiddleService } from "../RiddleService";
-import { getFirestore } from "@react-native-firebase/firestore";
-import { getAuth } from "@react-native-firebase/auth";
-import { getFunctions } from "@react-native-firebase/functions";
 import { getApp } from "@react-native-firebase/app";
+import { getAuth } from "@react-native-firebase/auth";
+import { ZodError } from "zod";
+import { logger } from "../../utils/logger";
 import {
   SubmitGuessInputSchema,
   SubmitGuessOutputSchema,
 } from "../../validation/cloudFunctionsSchemas";
-import { ZodError } from "zod";
-import { logger } from "../../utils/logger";
+import { RiddleService } from "../RiddleService";
 
 // Standalone modular mock function references (assigned in jest.mock factories)
 let mockGetDoc: jest.Mock;
@@ -352,7 +350,7 @@ describe("RiddleService", () => {
 
       mockGetDoc
         .mockResolvedValueOnce(userDoc)
-        .mockResolvedValueOnce({ exists: true, data: { answer: "BAD" } } as unknown as ReturnType<typeof getDoc>);
+        .mockResolvedValueOnce({ exists: true, data: { answer: "BAD" } });
 
       const result = await RiddleService.fetchDailyRiddle();
 

@@ -39,7 +39,7 @@ const InstructionsModal: React.FC<InstructionsModalProps> = ({
   onboardingProgress,
 }) => {
   return (
-    <Modal animationType="fade" transparent={true} visible={isVisible} onRequestClose={onClose}>
+    <Modal animationType="none" transparent={true} visible={isVisible} onRequestClose={onClose}>
       <View
         style={{
           flex: 1,

@@ -1,9 +1,7 @@
-import { UserDataService } from "../UserDataService";
-import { getFirestore } from "@react-native-firebase/firestore";
-import { getApp } from "@react-native-firebase/app";
-import { Player, PlayerSchema } from "../../validation/firestoreSchemas";
 import { ZodError } from "zod";
 import { logger } from "../../utils/logger";
+import { Player, PlayerSchema } from "../../validation/firestoreSchemas";
+import { UserDataService } from "../UserDataService";
 
 // Mock refs assigned in jest.mock factory (must use let for hoisting)
 let mockGetDoc: jest.Mock;

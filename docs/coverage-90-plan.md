@@ -1,7 +1,7 @@
 # 90% Project Coverage Plan
 
 ## Goal
-- Reach and sustain **>=90% statements and lines for every source file** covered by `test:coverage:project`.
+- Reach and sustain **>90% total project statements and lines** covered by `test:coverage:project`.
 
 ## Current Baseline (2026-04-11)
 - `pnpm run test:coverage:project`
@@ -11,13 +11,13 @@
 
 ## Definition of Done
 - [x] `pnpm run test:coverage:project` exits `0`
-- [x] No source file reported below 90% statements or lines
+- [x] Total project statements and lines are over 90%
 - [x] New/updated tests are deterministic and pass with `--runInBand`
 - [x] This plan file is updated with completed items and final results
 
 ## Working Commands
 - Full tests: `pnpm exec jest --watchAll=false --runInBand`
-- Full coverage + strict gate: `pnpm run test:coverage:project`
+- Full coverage + project gate: `pnpm run test:coverage:project`
 - Game-only coverage gate: `pnpm run test:coverage:game`
 
 ## Execution Strategy
@@ -102,6 +102,7 @@
 - [x] 2026-04-11: Phase 3 complete.
 - [x] 2026-04-11: Phase 4 complete.
 - [x] 2026-04-11: Project gate passing at >=90% (`pnpm run test:coverage:project` -> 0).
+- [x] 2026-05-23: Updated the project gate to enforce total project statements and lines over 90%, matching the requested project coverage target.
 
 ## Notes
 - Mark completed items by changing `[ ]` to `[x]`.

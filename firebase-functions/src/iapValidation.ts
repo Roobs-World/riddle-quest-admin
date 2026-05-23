@@ -1,6 +1,5 @@
 import * as functions from "firebase-functions";
 import {onCall} from "firebase-functions/v2/https";
-import iap from "in-app-purchase"; // Keep for iap.isValidated and iap.getPurchaseData
 
 import {getUser, updateUserCoins, updateUserProfile} from "./firestoreService";
 import {evaluateAchievements} from "./achievements";
@@ -40,6 +39,7 @@ import {captureException} from "./sentry";
  * @return A Promise resolving to an object indicating success and potentially the new coin balance.
  */
 export const validatePurchase = onCall(
+  {enforceAppCheck: true},
   async (
     request: functions.https.CallableRequest<{
       purchaseToken: string;
@@ -71,42 +71,23 @@ export const validatePurchase = onCall(
       throw new functions.https.HttpsError("invalid-argument", "Invalid purchase token, product ID, or platform.");
     }
 
-    functions.logger.info(
-      `Attempting to validate purchase for user ${userId} on ${platform}: ` +
-        `Token=${purchaseToken}, Product=${productId}`,
-    );
+    functions.logger.info("Attempting to validate purchase.", {
+      userId,
+      platform,
+      productId,
+    });
 
     try {
       const alreadyProcessed = await isPurchaseTokenAlreadyProcessed(userId, purchaseToken);
       if (alreadyProcessed) {
-        functions.logger.warn(`IAP purchase token ${purchaseToken} already processed for user ${userId}.`);
+        functions.logger.warn("IAP purchase token already processed.", {userId, productId});
         throw new functions.https.HttpsError("already-exists", "This purchase has already been processed.");
       }
 
       const validationResponse = await performPlatformValidation(platform, purchaseToken, productId);
 
-      let isPurchaseValid = false;
-      let validatedProductIdFromReceipt: string | undefined;
-
-      if (iap.isValidated(validationResponse)) {
-        const purchaseDataList = iap.getPurchaseData(validationResponse);
-
-        if (!Array.isArray(purchaseDataList) || purchaseDataList.length === 0) {
-          functions.logger.error(
-            `iap.getPurchaseData did not return valid array for user ${userId}, ` +
-              `token ${purchaseToken}. Response: ` +
-              `${JSON.stringify(validationResponse)}`,
-          );
-          throw new functions.https.HttpsError("internal", "Could not extract purchase data from validation response.");
-        }
-
-        const purchaseDetails = purchaseDataList.find((item) => (item as {productId: string}).productId === productId);
-
-        if (purchaseDetails) {
-          isPurchaseValid = true;
-          validatedProductIdFromReceipt = purchaseDetails.productId;
-        }
-      }
+      const isPurchaseValid = validationResponse.isValid === true;
+      const validatedProductIdFromReceipt = validationResponse.productId;
 
       if (isPurchaseValid && validatedProductIdFromReceipt === productId) {
         functions.logger.info(`Purchase validated and product ID matched for user ${userId}: ${productId}`);
@@ -185,8 +166,8 @@ export const validatePurchase = onCall(
         functions.logger.error(
           `Purchase validation failed or product ID mismatch for user ${userId}. ` +
             `Expected ${productId}, got ${validatedProductIdFromReceipt}. ` +
-            `Validated: ${iap.isValidated(validationResponse)}. ` +
-            `Response: ${JSON.stringify(validationResponse)}`,
+            `Validated: ${validationResponse.isValid}. ` +
+            "Validation response omitted because it can contain receipt data.",
         );
         throw new functions.https.HttpsError(
           "failed-precondition",
@@ -194,7 +175,7 @@ export const validatePurchase = onCall(
         );
       }
     } catch (error: unknown) {
-      functions.logger.error(`IAP validation process failed for user ${userId}, product ${productId}:`, error);
+      functions.logger.error("IAP validation process failed.", {userId, productId, platform, error});
       captureException(error);
       if (error instanceof functions.https.HttpsError) {
         throw error;
@@ -209,6 +190,7 @@ export const validatePurchase = onCall(
  * This is intentionally gated to emulator or explicit opt-in via ALLOW_DEV_IAP_BYPASS=true.
  */
 export const grantDevCoinsForPurchase = onCall(
+  {enforceAppCheck: true},
   async (
     request: functions.https.CallableRequest<{
       productId: string;

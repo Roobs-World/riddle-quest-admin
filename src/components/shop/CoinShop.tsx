@@ -152,7 +152,7 @@ const CoinShop: React.FC<CoinShopProps> = ({
   };
 
   return (
-    <Modal visible={isVisible} transparent={true} animationType="fade" onRequestClose={handleClose}>
+    <Modal visible={isVisible} transparent={true} animationType="none" onRequestClose={handleClose}>
       <View style={styles.overlay}>
         <View style={styles.backdrop} />
 

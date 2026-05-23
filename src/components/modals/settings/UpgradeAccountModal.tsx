@@ -132,7 +132,7 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
     <Modal
       visible={isVisible}
       transparent={true}
-      animationType="fade"
+      animationType="none"
       onRequestClose={onClose}
     >
       <View
@@ -169,7 +169,7 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
             >
               {AppStrings.Profile.UPGRADE_ACCOUNT_TITLE}
             </Text>
-            <CloseButton onPress={onClose} size={24} color={COLORS.black} />
+            <CloseButton onPress={onClose} size={24} color="black" />
           </View>
 
           <Text
@@ -196,7 +196,7 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
         <Modal
           visible={isExistingAccountModalVisible}
           transparent={true}
-          animationType="fade"
+          animationType="none"
           onRequestClose={() => setIsExistingAccountModalVisible(false)}
         >
           <View

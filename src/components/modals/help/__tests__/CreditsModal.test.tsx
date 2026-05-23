@@ -8,7 +8,7 @@ jest.mock("../../../../assets/images/home-bg.svg", () => "HomeBgSvg");
 
 describe("CreditsModal", () => {
   const mockOnClose = jest.fn();
-  const mockOpenURL = jest.spyOn(Linking, "openURL").mockResolvedValue();
+  const mockOpenURL = jest.spyOn(Linking, "openURL").mockResolvedValue(undefined);
 
   beforeEach(() => {
     jest.clearAllMocks();

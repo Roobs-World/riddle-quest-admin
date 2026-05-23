@@ -1,5 +1,5 @@
-import { ReactElement } from "react";
-import { Text, TouchableOpacity } from "react-native";
+import React, { ReactElement } from "react";
+import { Text, TouchableOpacity, View } from "react-native";
 import { GAME_INPUT_BUTTON_HEIGHT } from "../../constants/layout";
 import { SPACING, TYPOGRAPHY } from "../../styles";
 
@@ -21,13 +21,14 @@ type GameInputButtonProps = {
  * @param props Button content and press callback.
  * @returns Styled touchable action button.
  */
-export const GameInputButton = ({
+export const GameInputButton = React.forwardRef<View, GameInputButtonProps>(({
   text,
   icon,
   callback,
-}: GameInputButtonProps): ReactElement => {
+}, ref): ReactElement => {
   return (
     <TouchableOpacity
+      ref={ref}
       className="rounded-full bg-key-bg flex-row items-center justify-center"
       style={{ height: GAME_INPUT_BUTTON_HEIGHT, paddingHorizontal: SPACING.md, gap: SPACING.sm }}
       onPress={callback}
@@ -36,4 +37,6 @@ export const GameInputButton = ({
       <Text style={{ fontSize: TYPOGRAPHY.fontSize.lg, fontFamily: TYPOGRAPHY.fontPrimary, color: "black" }}>{text}</Text>
     </TouchableOpacity>
   );
-};
+});
+
+GameInputButton.displayName = "GameInputButton";

@@ -21,6 +21,7 @@ interface SettingsModalProps {
   currentLanguage: SupportedLanguage;
   onChangeLanguage: (language: SupportedLanguage) => void;
   onPressHelp: () => void;
+  onPressAbout: () => void;
   onPressLogout: () => void;
   onPressCredits: () => void;
 }
@@ -123,6 +124,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
   currentLanguage,
   onChangeLanguage,
   onPressHelp,
+  onPressAbout,
   onPressLogout,
   onPressCredits,
 }) => {
@@ -140,7 +142,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
   }, [isVisible, currentLanguage, isSoundEnabled, isHapticsEnabled]);
 
   return (
-    <Modal visible={isVisible} transparent={true} animationType="fade" onRequestClose={onClose}>
+    <Modal visible={isVisible} transparent={true} animationType="none" onRequestClose={onClose}>
       <View
         style={{
           flex: 1,
@@ -262,6 +264,10 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
 
               <View style={{height: 1, backgroundColor: "#E8E0E8"}} />
 
+              <ArrowRow label={AppStrings.Settings.ABOUT_BUTTON} onPress={onPressAbout} />
+
+              <View style={{height: 1, backgroundColor: "#E8E0E8"}} />
+
               <TouchableOpacity
                 onPress={async () => {
                   try {
@@ -291,7 +297,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
       <Modal
         visible={isLanguagePickerOpen}
         transparent={true}
-        animationType="fade"
+        animationType="none"
         onRequestClose={() => setIsLanguagePickerOpen(false)}
       >
         <View

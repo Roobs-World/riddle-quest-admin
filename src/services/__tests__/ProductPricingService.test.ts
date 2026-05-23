@@ -5,14 +5,13 @@
  * currency lookup, product finding, and featured product filtering.
  */
 
-import {
-  ProductPricingService,
-  ProductPricing,
-  SpecialOffer,
-  RegionalPrice,
-} from "../ProductPricingService";
 import { getDocs } from "@react-native-firebase/firestore";
 import { captureException } from "../../utils/sentry";
+import {
+  ProductPricing,
+  ProductPricingService,
+  SpecialOffer,
+} from "../ProductPricingService";
 
 // Mock Firebase modules
 jest.mock("@react-native-firebase/firestore", () => ({

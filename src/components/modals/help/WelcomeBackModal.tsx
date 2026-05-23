@@ -29,7 +29,7 @@ const WelcomeBackModal: React.FC<WelcomeBackModalProps> = ({isVisible, onClose, 
   };
 
   return (
-    <Modal animationType="fade" transparent={true} visible={isVisible} onRequestClose={handleDismiss}>
+    <Modal animationType="none" transparent={true} visible={isVisible} onRequestClose={handleDismiss}>
       <View
         style={{
           flex: 1,

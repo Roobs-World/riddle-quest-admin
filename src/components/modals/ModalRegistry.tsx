@@ -42,6 +42,7 @@ import {
   AchievementUnlockFanfareItem,
   BaseModalProps,
   ModalData,
+  ModalSequenceProgress,
   OnboardingProgress,
 } from "../../types/ModalTypes";
 import { SubmittedGuess } from "../../hooks/types";
@@ -75,6 +76,7 @@ import WelcomeModal from "./help/WelcomeModal";
 import WelcomeBackModal from "./help/WelcomeBackModal";
 import InstructionsModal from "./help/InstructionsModal";
 import CreditsModal from "./help/CreditsModal";
+import AboutLegalModal from "./help/AboutLegalModal";
 
 import CoinShopModal from "../shop/CoinShop";
 import CoinPurchaseFanfareModal from "./shop/CoinPurchaseFanfareModal";
@@ -202,6 +204,9 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
       onNextLevel: (props.onNext as () => void) || (() => {}),
       onHome: (props.onHome as () => void) || (() => {}),
       guesses: (props.guesses as SubmittedGuess[]) || [],
+      sequenceProgress: props.sequenceProgress as
+        | ModalSequenceProgress
+        | undefined,
       onClose: props.onClose,
     })
   ),
@@ -245,6 +250,7 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
         (() => {}),
       onPressLogout: (props.onPressLogout as () => void) || (() => {}),
       onPressHelp: (props.onPressHelp as () => void) || (() => {}),
+      onPressAbout: (props.onPressAbout as () => void) || (() => {}),
       onPressCredits: (props.onPressCredits as () => void) || (() => {}),
     })
   ),
@@ -384,6 +390,14 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
     })
   ),
 
+  aboutLegal: createModalWrapper(
+    AboutLegalModal,
+    (props: BaseModalProps & ModalData) => ({
+      isVisible: props.isVisible,
+      onClose: props.onClose,
+    })
+  ),
+
   /**
    * Shop Modals
    *
@@ -431,6 +445,9 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
       achievements:
         (props.achievements as AchievementUnlockFanfareItem[] | undefined) ??
         [],
+      sequenceProgress: props.sequenceProgress as
+        | ModalSequenceProgress
+        | undefined,
     })
   ),
 
@@ -441,6 +458,9 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
       streakValue: (props.streakValue as number) || 0,
       coinsAwarded: (props.coinsAwarded as number) || 0,
       totalCoins: (props.totalCoins as number) || 0,
+      sequenceProgress: props.sequenceProgress as
+        | ModalSequenceProgress
+        | undefined,
       onContinue: (props.onContinue as (() => void) | undefined) ?? undefined,
       onClose: props.onClose,
     })
@@ -453,6 +473,9 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
       newLevel: (props.newLevel as number) || 1,
       coinsAwarded: (props.coinsAwarded as number) || 0,
       totalCoins: (props.totalCoins as number) || 0,
+      sequenceProgress: props.sequenceProgress as
+        | ModalSequenceProgress
+        | undefined,
       onContinue: (props.onContinue as (() => void) | undefined) ?? undefined,
       onClose: props.onClose,
     })

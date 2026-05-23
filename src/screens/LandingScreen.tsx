@@ -16,7 +16,6 @@ import StarryBackground from "../components/background/StarryBackground";
 import PulsingSpinner from "../components/loading/PulsingSpinner";
 import {AppStrings} from "../constants/AppStrings";
 import {LOADING_SPINNER_SIZE} from "../constants/loading";
-import Subtitle from "../components/text/Subtitle";
 import {AuthService} from "../services/AuthService";
 import {useAuth} from "../contexts/AuthContext";
 import Error from "../components/text/Error";
@@ -24,7 +23,6 @@ import {type FirebaseAuthTypes} from "@react-native-firebase/auth";
 import {styles, SPACING} from "../styles";
 import {logger} from "../utils/logger";
 import {captureException} from "../utils/sentry";
-import CreditsModal from "../components/modals/help/CreditsModal";
 import MainLogoPng from "../../assets/images/logo.png";
 
 /**
@@ -39,7 +37,6 @@ const LandingScreen = () => {
   const [authError, setAuthError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const {login, isAuthenticated} = useAuth();
-  const [isCreditsVisible, setIsCreditsVisible] = useState(false);
 
   const handleGoogleSignIn = async () => {
     setIsLoading(true);

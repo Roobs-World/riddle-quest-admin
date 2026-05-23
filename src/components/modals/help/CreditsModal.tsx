@@ -54,7 +54,7 @@ const CREDITS_MODAL_HEIGHT = Math.min(MODAL_HEIGHT * 1.2, dimensions.screenHeigh
 
 const CreditsModal: React.FC<CreditsModalProps> = ({isVisible, onClose, topRightControl}) => {
   return (
-    <Modal animationType="fade" transparent={true} visible={isVisible} onRequestClose={onClose}>
+    <Modal animationType="none" transparent={true} visible={isVisible} onRequestClose={onClose}>
       <View
         style={{
           flex: 1,

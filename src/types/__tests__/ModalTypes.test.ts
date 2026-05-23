@@ -383,6 +383,7 @@ describe("ModalTypes", () => {
         onChangeLanguage: jest.fn(),
         onPressLogout: jest.fn(),
         onPressHelp: jest.fn(),
+        onPressAbout: jest.fn(),
         onPressCredits: jest.fn(),
       };
 
@@ -550,7 +551,37 @@ describe("ModalTypes", () => {
 
     it("should define fullProfileDetails modal type", () => {
       const profileData: GameModalTypes["fullProfileDetails"] = {
-        playerData: { username: "testuser", level: 10 },
+        playerData: {
+          userId: "user-123",
+          email: "test@example.com",
+          username: "testuser",
+          coins: 100,
+          stats: {
+            xp: 0,
+            level: 10,
+            dailyPuzzlesCompleted: 0,
+            bestStreak: 0,
+            totalWordsGuessed: 0,
+            winRate: 0,
+            averageGuesses: 0,
+            totalScore: 0,
+            highestLevelClassic: 0,
+            gamesPlayed: 0,
+            wins: 0,
+            challengeWins: 0,
+            winStreak: 0,
+            totalWins: 0,
+            totalGuessesInWins: 0,
+            totalHintsUsed: 0,
+          },
+          progress: {
+            classicIndex: 1,
+            dailyChallengeIndex: 0,
+            dailyChallengeCurrentQuestion: 0,
+          },
+          unlockedAchievements: [],
+          hasPurchasedApp: false,
+        },
       };
 
       expect(profileData.playerData).toHaveProperty("username");
@@ -579,6 +610,7 @@ describe("ModalTypes", () => {
         onChangeLanguage: jest.fn(),
         onPressLogout: jest.fn(),
         onPressHelp: jest.fn(),
+        onPressAbout: jest.fn(),
         onPressCredits: jest.fn(),
       };
 
