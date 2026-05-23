@@ -14,6 +14,7 @@
         --accent: #2563eb;
         --done: #168a4a;
         --active: #b86b00;
+        --blocked: #b42318;
       }
 
       * {
@@ -102,6 +103,11 @@
         font-weight: 700;
       }
 
+      .blocked {
+        color: var(--blocked);
+        font-weight: 700;
+      }
+
       .note {
         margin-top: 18px;
         color: var(--muted);
@@ -124,7 +130,7 @@
     <main>
       <h1>Responsive App QA Todo List</h1>
       <p class="summary">
-        Planning checklist for making every screen and modal scale correctly on Android and iOS phones and tablets.
+        Planning checklist for making every screen and modal scale correctly on Android and iOS phones and tablets. Last updated to include the required test rewrite for the new responsive layout behavior.
       </p>
 
       <div class="grid">
@@ -132,9 +138,9 @@
           <h2>Shared Foundations</h2>
           <ul>
             <li><input type="checkbox" checked /> <span class="done">Central responsive layout constants for content, auth, game slots, and modal dimensions.</span></li>
-            <li><input type="checkbox" /> <span class="active">Modal height clamping for tall fanfare/help/settings/shop modals.</span></li>
-            <li><input type="checkbox" /> <span>Shared overlay/content wrappers cap width and height on tablet and small phones.</span></li>
-            <li><input type="checkbox" /> <span>Safe-area wrappers use responsive padding instead of fixed screen assumptions.</span></li>
+            <li><input type="checkbox" checked /> <span class="done">Modal height clamping for tall fanfare/help/settings/shop modals.</span></li>
+            <li><input type="checkbox" checked /> <span class="done">Shared overlay/content wrappers cap width and height on tablet and small phones.</span></li>
+            <li><input type="checkbox" checked /> <span class="done">Safe-area wrappers use responsive padding instead of fixed screen assumptions.</span></li>
           </ul>
         </section>
 
@@ -147,6 +153,20 @@
             <li><input type="checkbox" /> <span>NewPasswordScreen: test icon, title, description, password fields, and set-password CTA on every emulator size.</span></li>
             <li><input type="checkbox" /> <span>SignUpScreen: test progress bar, username/email/password fields, legal agreement row, validation errors, CTA, and login link on every emulator size.</span></li>
             <li><input type="checkbox" /> <span>GameScreen: test header, riddle area, guess grid, keyboard, action buttons, bottom navigation, loading states, overlays, and tooltips on every emulator size.</span></li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Responsive Test Rewrite</h2>
+          <ul>
+            <li><input type="checkbox" /> <span class="active">Audit existing screen and modal tests for fixed-size assumptions, stale responsive mocks, and assertions that no longer represent the new responsive layout.</span></li>
+            <li><input type="checkbox" /> <span>Create a reusable responsive test harness that can mock small phone, standard phone, large phone, foldable, and tablet viewport profiles.</span></li>
+            <li><input type="checkbox" /> <span>Rewrite layout constant tests to assert modal width, modal height clamping, auth width, landing logo sizing, and game slot behavior across mocked viewport profiles.</span></li>
+            <li><input type="checkbox" /> <span>Rewrite auth and landing screen tests to verify responsive content width, logo scale, safe-area padding, text wrapping, and CTA layout across viewport profiles.</span></li>
+            <li><input type="checkbox" /> <span>Rewrite GameScreen tests to verify header, riddle slot, guess grid, keyboard, action buttons, overlays, and bottom navigation under the responsive layout.</span></li>
+            <li><input type="checkbox" /> <span>Rewrite every modal test to validate max width, max height, scroll behavior, close controls, and content wrapping under small phone and tablet profiles.</span></li>
+            <li><input type="checkbox" /> <span>Update mocked responsive modules so tests provide the same dimensions object and device-tier flags used by production code.</span></li>
+            <li><input type="checkbox" /> <span>Run the rewritten responsive tests and update this checklist with the new pass/fail result before emulator matrix signoff.</span></li>
           </ul>
         </section>
 
@@ -211,32 +231,37 @@
         <section>
           <h2>Verification</h2>
           <ul>
-            <li><input type="checkbox" /> <span>Focused responsive/layout tests pass.</span></li>
-            <li><input type="checkbox" /> <span>TypeScript check passes.</span></li>
+            <li><input type="checkbox" checked /> <span class="done">Focused responsive/layout tests pass.</span></li>
+            <li><input type="checkbox" checked /> <span class="done">TypeScript check passes.</span></li>
+            <li><input type="checkbox" checked /> <span class="done">All screen and modal Jest suites pass: 29 suites, 567 tests.</span></li>
+            <li><input type="checkbox" /> <span class="active">Responsive layout tests are rewritten to exercise the new responsive behavior across mocked phone, foldable, and tablet profiles.</span></li>
+            <li><input type="checkbox" checked /> <span class="done">Android emulator matrix AVDs are installed and discoverable.</span></li>
+            <li><input type="checkbox" checked /> <span class="done">Active Android emulator smoke attempted against emulator-5554.</span></li>
+            <li><input type="checkbox" /> <span class="blocked">Android emulator smoke is blocked by native startup crash in the current debug APK: missing libreactnative.so on x86_64 emulator.</span></li>
             <li><input type="checkbox" /> <span>Known unrelated full-suite failures are documented.</span></li>
             <li><input type="checkbox" /> <span>Android emulator matrix is tested for responsive layout regressions.</span></li>
             <li><input type="checkbox" /> <span>iOS simulator verification is completed when local simulator tooling is available.</span></li>
-            <li><input type="checkbox" /> <span class="active">No skipped screens or modals: every checkbox in Screen Test Checklist, Game Modals, Help And Onboarding Modals, Settings And Profile Modals, Shop And System Modals, and Modal Infrastructure is completed.</span></li>
+            <li><input type="checkbox" /> <span class="active">No skipped device checks: every checkbox in Screen Test Checklist, Game Modals, Help And Onboarding Modals, Settings And Profile Modals, Shop And System Modals, Modal Infrastructure, and Android Emulator Matrix still needs emulator/simulator confirmation.</span></li>
           </ul>
         </section>
 
         <section>
           <h2>Android Emulator Matrix</h2>
           <ul>
-            <li><input type="checkbox" /> <span>Small phone: Pixel 4a-class.</span></li>
-            <li><input type="checkbox" /> <span>Standard phone: Pixel 7-class.</span></li>
-            <li><input type="checkbox" /> <span>Large phone: Pixel 8 Pro-class.</span></li>
-            <li><input type="checkbox" /> <span>Foldable outer display.</span></li>
-            <li><input type="checkbox" /> <span>Foldable unfolded/tablet display.</span></li>
-            <li><input type="checkbox" /> <span>Small tablet: 7-8 inch.</span></li>
-            <li><input type="checkbox" /> <span>Large tablet: 10-11 inch.</span></li>
-            <li><input type="checkbox" /> <span>Low-density tablet, if available.</span></li>
+            <li><input type="checkbox" /> <span class="active">Small phone: Pixel 4a-class. AVD available as rq_pixel_4a_api_36_1; responsive pass pending app launch fix.</span></li>
+            <li><input type="checkbox" /> <span class="active">Standard phone: Pixel 7-class. AVD available as rq_pixel_7_api_36_1; responsive pass pending app launch fix.</span></li>
+            <li><input type="checkbox" /> <span class="active">Large phone: Pixel 8 Pro-class. AVD available as rq_pixel_8_pro_api_36_1; responsive pass pending app launch fix.</span></li>
+            <li><input type="checkbox" /> <span class="active">Foldable outer display. AVD available as rq_pixel_fold_outer_api_36_1; responsive pass pending app launch fix.</span></li>
+            <li><input type="checkbox" /> <span class="active">Foldable unfolded/tablet display. AVD available as rq_pixel_fold_unfolded_api_36_1; responsive pass pending app launch fix.</span></li>
+            <li><input type="checkbox" /> <span class="active">Small tablet: 7-8 inch. AVD available as rq_small_tablet_api_36_1; responsive pass pending app launch fix.</span></li>
+            <li><input type="checkbox" /> <span class="active">Large tablet: 10-11 inch. AVD available as rq_large_tablet_api_36_1; responsive pass pending app launch fix.</span></li>
+            <li><input type="checkbox" /> <span class="active">Low-density tablet, if available. AVD available as rq_low_density_tablet_api_36_1; responsive pass pending app launch fix.</span></li>
           </ul>
         </section>
       </div>
 
       <p class="note">
-        The responsive design must be tested against the emulator matrix above to confirm every page and modal works as expected across Android phone, foldable, and tablet classes.
+        The responsive implementation and automated screen/modal tests are complete. The responsive design still must be run manually against the emulator matrix above once the Android debug build launches successfully on the active emulator.
       </p>
     </main>
   </body>

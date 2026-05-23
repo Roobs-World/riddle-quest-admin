@@ -3,7 +3,7 @@ import {View, Text, Modal, Pressable} from "react-native";
 import type {SubmittedGuess} from "../../../hooks/types";
 import {TYPOGRAPHY} from "../../../styles";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
-import {MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, getResponsiveModalHeight} from "../../../constants/layout";
+import {MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, MODAL_MAX_HEIGHT} from "../../../constants/layout";
 import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {NewCoins} from "@/components/shared/NewCoins";
@@ -58,7 +58,7 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
   sequenceProgress,
   onClose,
 }) => {
-  const modalHeight = getResponsiveModalHeight(1.4);
+  const modalHeight = Math.min(MODAL_HEIGHT * 1.4, MODAL_MAX_HEIGHT ?? MODAL_HEIGHT * 1.4);
   const nextButtonText =
     sequenceProgress?.primaryActionText ?? AppStrings.VictoryModal.NEXT_LEVEL_BUTTON;
 

@@ -9,7 +9,7 @@ import {TYPOGRAPHY} from "../../../styles";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
 import WideButton from "src/components/buttons/WideButton";
-import {MODAL_WIDTH, MODAL_HEIGHT, CLOSE_BUTTON_SIZE, MODAL_CLOSE_BUTTON_POSITION, getResponsiveModalHeight} from "../../../constants/layout";
+import {MODAL_WIDTH, MODAL_HEIGHT, CLOSE_BUTTON_SIZE, MODAL_CLOSE_BUTTON_POSITION, MODAL_MAX_HEIGHT} from "../../../constants/layout";
 import {SPACING} from "../../../styles";
 import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
@@ -42,7 +42,7 @@ interface HintModalProps {
  */
 const HintModal: React.FC<HintModalProps> = ({isVisible, userCoins, hintCost, onShowHint, onClose, onOpenShop}) => {
   const canAffordHint = userCoins >= hintCost;
-  const hintModalHeight = getResponsiveModalHeight(1.4);
+  const hintModalHeight = Math.min(MODAL_HEIGHT * 1.4, MODAL_MAX_HEIGHT ?? MODAL_HEIGHT * 1.4);
 
   return (
     <Modal visible={isVisible} transparent={true} animationType="none" onRequestClose={onClose}>

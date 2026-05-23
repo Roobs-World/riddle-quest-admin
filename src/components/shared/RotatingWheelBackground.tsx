@@ -1,5 +1,4 @@
 import React, {useEffect} from "react";
-import {Dimensions} from "react-native";
 import Animated, {
   cancelAnimation,
   Easing,
@@ -9,6 +8,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import WheelBg from "../../../assets/images/wheel-bg.svg";
+import {dimensions} from "../../utils/responsive";
 
 interface RotatingWheelBackgroundProps {
   isVisible: boolean;
@@ -16,7 +16,7 @@ interface RotatingWheelBackgroundProps {
   opacity?: number;
 }
 
-const {width: SCREEN_W, height: SCREEN_H} = Dimensions.get("window");
+const {screenWidth: SCREEN_W, screenHeight: SCREEN_H} = dimensions;
 const WHEEL_SIZE = Math.ceil(Math.sqrt(SCREEN_W * SCREEN_W + SCREEN_H * SCREEN_H));
 
 const RotatingWheelBackground: React.FC<RotatingWheelBackgroundProps> = ({

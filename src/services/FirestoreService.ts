@@ -4,12 +4,10 @@ import {
   doc,
   getDoc,
   getDocs,
-  setDoc,
   updateDoc,
   query,
   where,
   limit,
-  serverTimestamp,
   FirebaseFirestoreTypes,
 } from "@react-native-firebase/firestore";
 import {Player, PlayerSchema} from "../validation/firestoreSchemas";
@@ -17,6 +15,7 @@ import {FirestoreRiddle, FirestoreRiddleSchema} from "../validation/firestoreSch
 import {ZodError} from "zod";
 import {logger} from "../utils/logger";
 import {captureException} from "../utils/sentry";
+import {getCallableFunction} from "../utils/firebaseFunctions";
 
 /** Session cache for riddle fetches to avoid repeated Firestore reads (e.g. mode switch). */
 const RIDDLE_CACHE_MAX_SIZE = 50;
@@ -37,46 +36,13 @@ const ALLOWED_USER_UPDATE_FIELDS = new Set<string>([
   "userId",
   "username",
   "email",
-  "coins",
   "displayName",
   "avatarUrl",
-  "hasPurchasedApp",
   "createdAt",
   "registeredAt",
   "lastLogin",
-  "lastDailyChallengeCompletedAt",
-  "stats",
-  "progress",
-  "unlockedAchievements",
   "fcmToken",
   "fcmTokenUpdatedAt",
-  "lastStreakReminderSentAt",
-] as const);
-
-const ALLOWED_STATS_UPDATE_FIELDS = new Set<string>([
-  "xp",
-  "level",
-  "dailyPuzzlesCompleted",
-  "bestStreak",
-  "totalWordsGuessed",
-  "winRate",
-  "averageGuesses",
-  "totalScore",
-  "highestLevelClassic",
-  "gamesPlayed",
-  "wins",
-  "challengeWins",
-  "winStreak",
-  "totalWins",
-  "totalGuessesInWins",
-  "totalHintsUsed",
-] as const);
-
-const ALLOWED_PROGRESS_UPDATE_FIELDS = new Set<string>([
-  "classicIndex",
-  "dailyChallengeIndex",
-  "dailyChallengeCurrentQuestion",
-  "tutorialIndex",
 ] as const);
 
 const stripUndefined = <T extends Record<string, unknown>>(value: T): Partial<T> =>
@@ -90,22 +56,6 @@ const sanitizeUserDocumentUpdates = (updates: Partial<Player>): Partial<Player> 
 
   for (const [key, value] of Object.entries(topLevel)) {
     if (!ALLOWED_USER_UPDATE_FIELDS.has(key)) {
-      continue;
-    }
-
-    if (key === "stats" && value && typeof value === "object" && !Array.isArray(value)) {
-      const stats = stripUndefined(value as Record<string, unknown>);
-      sanitized.stats = Object.fromEntries(
-        Object.entries(stats).filter(([statsKey]) => ALLOWED_STATS_UPDATE_FIELDS.has(statsKey)),
-      );
-      continue;
-    }
-
-    if (key === "progress" && value && typeof value === "object" && !Array.isArray(value)) {
-      const progress = stripUndefined(value as Record<string, unknown>);
-      sanitized.progress = Object.fromEntries(
-        Object.entries(progress).filter(([progressKey]) => ALLOWED_PROGRESS_UPDATE_FIELDS.has(progressKey)),
-      );
       continue;
     }
 
@@ -205,14 +155,10 @@ export const saveUserProgressToFirestore = async (userId: string, progress: Play
     logger.warn("Attempted to save progress to Firestore without a userId.");
     return;
   }
-  try {
-    await setDoc(doc(getFirestore(), "users", userId), {progress: progress}, {merge: true});
-    logger.info("Player progress saved to Firestore successfully for user:", userId);
-  } catch (error) {
-    logger.error("Error saving player progress to Firestore:", error);
-    captureException(error);
-    throw error;
-  }
+  logger.warn(
+    "Skipping direct client progress write; player progress is persisted by Cloud Functions.",
+    {userId, progress},
+  );
 };
 
 export const loadUserProgressFromFirestore = async (userId: string): Promise<Player | null> => {
@@ -406,16 +352,10 @@ export const updateLastDailyChallengeCompletedAt = async (userId: string): Promi
     logger.warn("Attempted to update daily challenge completion timestamp without a userId.");
     return;
   }
-  try {
-    await updateDoc(doc(getFirestore(), "users", userId), {
-      lastDailyChallengeCompletedAt: serverTimestamp(),
-    });
-    logger.info("Last daily challenge completed timestamp updated successfully for user:", userId);
-  } catch (error) {
-    logger.error("Error updating last daily challenge completed timestamp in Firestore:", error);
-    captureException(error);
-    throw error;
-  }
+  logger.warn(
+    "Skipping direct client daily completion timestamp write; completion is persisted by Cloud Functions.",
+    {userId},
+  );
 };
 
 /**
@@ -430,18 +370,12 @@ export const updateClassicIndexInFirestore = async (userId: string, classicIndex
     logger.warn("Attempted to update classic index in Firestore without a userId.");
     return;
   }
-  try {
-    const normalizedClassicIndex =
-      typeof classicIndex === "number" && Number.isFinite(classicIndex) ? Math.max(0, Math.floor(classicIndex)) : 0;
-    await updateDoc(doc(getFirestore(), "users", userId), {
-      "progress.classicIndex": normalizedClassicIndex,
-    });
-    logger.info("Classic index updated successfully for user:", userId, "to", normalizedClassicIndex);
-  } catch (error) {
-    logger.error("Error updating classic index in Firestore:", error);
-    captureException(error);
-    throw error;
-  }
+  const normalizedClassicIndex =
+    typeof classicIndex === "number" && Number.isFinite(classicIndex) ? Math.max(0, Math.floor(classicIndex)) : 0;
+  logger.warn(
+    "Skipping direct client classic progress write; classic progress is persisted by Cloud Functions.",
+    {userId, classicIndex: normalizedClassicIndex},
+  );
 };
 
 /**
@@ -459,16 +393,10 @@ export const updateDailyChallengeIndexInFirestore = async (
     logger.warn("Attempted to update daily challenge index in Firestore without a userId.");
     return;
   }
-  try {
-    await updateDoc(doc(getFirestore(), "users", userId), {
-      "progress.dailyChallengeIndex": dailyChallengeIndex,
-    });
-    logger.info("Daily challenge index updated successfully for user:", userId, "to", dailyChallengeIndex);
-  } catch (error) {
-    logger.error("Error updating daily challenge index in Firestore:", error);
-    captureException(error);
-    throw error;
-  }
+  logger.warn(
+    "Skipping direct client daily progress write; daily progress is persisted by Cloud Functions.",
+    {userId, dailyChallengeIndex},
+  );
 };
 
 /**
@@ -524,7 +452,6 @@ export const updateUserStats = async (
     logger.warn("Attempted to update user stats without a userId.");
     return;
   }
-  const userRef = doc(getFirestore(), "users", userId);
   const statsFieldUpdates = Object.fromEntries(
     Object.entries(stats).flatMap(([key, value]) => (value === undefined ? [] : [[`stats.${key}`, value]])),
   );
@@ -532,13 +459,13 @@ export const updateUserStats = async (
     return;
   }
 
-  try {
-    await (transaction ? transaction.update(userRef, statsFieldUpdates) : updateDoc(userRef, statsFieldUpdates));
-  } catch (error) {
-    logger.error("Error updating user stats in Firestore:", error);
-    captureException(error);
-    throw error;
+  if (transaction) {
+    throw new Error("Client-side Firestore transactions cannot update server-managed user stats.");
   }
+  logger.warn(
+    "Skipping direct client stats write; player stats are persisted by Cloud Functions.",
+    {userId, stats: statsFieldUpdates},
+  );
 };
 
 /**
@@ -626,10 +553,20 @@ export const createUserDocumentInFirestore = async (
     // Validate the data before saving
     const validatedUserData = PlayerSchema.parse(defaultUserData);
 
-    // Save to Firestore
-    await setDoc(doc(getFirestore(), "users", userId), validatedUserData);
-    logger.info("New user document created successfully for user:", userId);
-    return validatedUserData;
+    const initializeUserCallable = getCallableFunction("initializeUser");
+    const result = await initializeUserCallable({
+      email: validatedUserData.email,
+      username: validatedUserData.username,
+      displayName: validatedUserData.displayName,
+      avatarUrl: validatedUserData.avatarUrl,
+      seed: validatedUserData,
+    });
+    const initialized = result.data as {player?: Player};
+    if (!initialized.player) {
+      throw new Error("initializeUser did not return initialized player data.");
+    }
+    logger.info("New user document created successfully via Cloud Function for user:", userId);
+    return PlayerSchema.parse(initialized.player);
   } catch (error) {
     logger.error("Error creating user document in Firestore:", error);
     logger.error(

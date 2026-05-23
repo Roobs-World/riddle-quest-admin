@@ -17,7 +17,7 @@ import {
   COLOR_CLUE_BORDER_RADIUS,
   COLOR_CLUE_MARGIN_RIGHT,
   CLOSE_BUTTON_SIZE,
-  getResponsiveModalHeight,
+  MODAL_MAX_HEIGHT,
 } from "../../../constants/layout";
 import {SPACING} from "../../../styles";
 import {verticalScale} from "@/utils/responsive";
@@ -32,7 +32,7 @@ interface InstructionsModalProps {
   onboardingProgress?: OnboardingProgress;
 }
 
-const INSTRUCTIONS_MODAL_HEIGHT = getResponsiveModalHeight(1.5);
+const INSTRUCTIONS_MODAL_HEIGHT = Math.min(MODAL_HEIGHT * 1.5, MODAL_MAX_HEIGHT ?? MODAL_HEIGHT * 1.5);
 
 const InstructionsModal: React.FC<InstructionsModalProps> = ({
   isVisible,

@@ -130,19 +130,21 @@ const buildFirestoreUserUpdates = (
     sanitizedUpdates.email.trim() !== ""
       ? sanitizedUpdates.email
       : basePlayer.email;
-  const resolvedCoins =
-    typeof sanitizedUpdates.coins === "number" &&
-    Number.isFinite(sanitizedUpdates.coins) &&
-    sanitizedUpdates.coins >= 0
-      ? sanitizedUpdates.coins
-      : basePlayer.coins;
+  const {
+    coins: _coins,
+    progress: _progress,
+    stats: _stats,
+    hasPurchasedApp: _hasPurchasedApp,
+    unlockedAchievements: _unlockedAchievements,
+    lastDailyChallengeCompletedAt: _lastDailyChallengeCompletedAt,
+    ...clientEditableUpdates
+  } = sanitizedUpdates;
 
   return {
-    ...sanitizedUpdates,
+    ...clientEditableUpdates,
     userId: basePlayer.userId,
     username: resolvedUsername,
     email: resolvedEmail,
-    coins: resolvedCoins,
   };
 };
 

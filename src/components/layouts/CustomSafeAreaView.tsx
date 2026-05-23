@@ -14,7 +14,7 @@
 import React from "react";
 import { ViewProps } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { SPACING } from "../../styles";
+import { SPACING } from "../../styles/tokens/spacing";
 
 /**
  * Props interface for the CustomSafeAreaView component.

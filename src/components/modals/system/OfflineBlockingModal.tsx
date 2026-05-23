@@ -2,7 +2,7 @@ import React from "react";
 import { Modal, StyleSheet, Text, View } from "react-native";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import { AUTH_CONTENT_MAX_WIDTH } from "../../../constants/layout";
-import { SPACING, TYPOGRAPHY } from "../../../styles";
+import { scale, verticalScale } from "../../../utils/responsive";
 
 interface OfflineBlockingModalProps {
   isVisible: boolean;
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.75)",
     alignItems: "center",
     justifyContent: "center",
-    padding: SPACING.lg,
+    padding: scale(24),
   },
   content: {
     width: "100%",
@@ -50,23 +50,23 @@ const styles = StyleSheet.create({
     width: "100%",
     backgroundColor: "#161616",
     borderRadius: 16,
-    paddingHorizontal: SPACING.lg,
-    paddingVertical: SPACING.lg,
+    paddingHorizontal: scale(24),
+    paddingVertical: verticalScale(24),
     borderWidth: 1,
     borderColor: "#5C5C5C",
   },
   title: {
     color: "#FFFFFF",
-    fontSize: TYPOGRAPHY.fontSize["2xl"],
+    fontSize: scale(24),
     fontWeight: "700",
     textAlign: "center",
-    marginBottom: SPACING.sm,
+    marginBottom: verticalScale(8),
   },
   message: {
     color: "#D9D9D9",
-    fontSize: TYPOGRAPHY.fontSize.base,
+    fontSize: scale(16),
     textAlign: "center",
-    lineHeight: TYPOGRAPHY.fontSize.base * TYPOGRAPHY.lineHeight.normal,
+    lineHeight: scale(16) * 1.5,
   },
 });
 

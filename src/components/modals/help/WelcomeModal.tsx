@@ -5,7 +5,7 @@ import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
 import Logo from "../../../../assets/images/main-logo.svg";
 import {TYPOGRAPHY} from "src/styles";
-import {MODAL_WIDTH, MODAL_CONTENT_PADDING, getResponsiveModalHeight} from "../../../constants/layout";
+import {MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, MODAL_MAX_HEIGHT} from "../../../constants/layout";
 import {SPACING} from "../../../styles";
 import {AppStrings} from "../../../constants/AppStrings";
 import {verticalScale} from "@/utils/responsive";
@@ -28,7 +28,7 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({
   onDismiss,
   onboardingProgress,
 }) => {
-  const modalHeight = getResponsiveModalHeight();
+  const modalHeight = Math.min(MODAL_HEIGHT, MODAL_MAX_HEIGHT ?? MODAL_HEIGHT);
   const handleDismiss = () => {
     onClose();
     onDismiss?.();

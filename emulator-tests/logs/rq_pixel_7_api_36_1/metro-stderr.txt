@@ -1,0 +1,23 @@
+[33m[1mWarning: [22mRoot-level [1m"expo"[22m object found. Ignoring extra key in Expo config: "react-native-google-mobile-ads"
+[90mLearn more: https://expo.fyi/root-expo-object[0m[0m
+E:\qwordly\node_modules\@expo\cli\build\src\utils\errors.js:130
+    throw error;
+    ^
+
+Error: ENOENT: no such file or directory, watch 'E:\qwordly\node_modules\react-native-gesture-handler\android\.cxx\Debug\2t633q4u\x86_64\CMakeFiles\CMakeTmp\CMakeFiles\cmTC_0cea4.dir'
+    at FSWatcher.<computed> (node:internal/fs/watchers:254:19)
+    at Object.watch (node:fs:2554:36)
+    at FallbackWatcher.#watchdir (E:\qwordly\node_modules\metro-file-map\src\watchers\FallbackWatcher.js:123:33)
+    at E:\qwordly\node_modules\metro-file-map\src\watchers\FallbackWatcher.js:223:31
+    at Walker.<anonymous> (E:\qwordly\node_modules\metro-file-map\src\watchers\FallbackWatcher.js:362:5)
+    at Walker.emit (node:events:519:28)
+    at E:\qwordly\node_modules\walker\lib\walker.js:69:16
+    at FSReqCallback.oncomplete (node:fs:186:23) {
+  errno: -4058,
+  syscall: 'watch',
+  code: 'ENOENT',
+  path: 'E:\\qwordly\\node_modules\\react-native-gesture-handler\\android\\.cxx\\Debug\\2t633q4u\\x86_64\\CMakeFiles\\CMakeTmp\\CMakeFiles\\cmTC_0cea4.dir',
+  filename: 'E:\\qwordly\\node_modules\\react-native-gesture-handler\\android\\.cxx\\Debug\\2t633q4u\\x86_64\\CMakeFiles\\CMakeTmp\\CMakeFiles\\cmTC_0cea4.dir'
+}
+
+Node.js v22.22.2

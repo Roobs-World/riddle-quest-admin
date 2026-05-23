@@ -11,6 +11,9 @@ import {
   MODAL_MAX_SCREEN_FRACTION,
   MODAL_WIDTH,
   MODAL_HEIGHT,
+  MODAL_MAX_SCREEN_HEIGHT_FRACTION,
+  MODAL_MAX_HEIGHT,
+  getResponsiveModalHeight,
   MODAL_CONTENT_PADDING,
   MODAL_SCROLLABLE_MAX_HEIGHT,
   MODAL_BUTTON_SPACER,
@@ -101,6 +104,13 @@ describe("layout constants", () => {
       const expectedAspectRatio = MODAL_BASE_HEIGHT / MODAL_BASE_WIDTH;
       const actualAspectRatio = MODAL_HEIGHT / MODAL_WIDTH;
       expect(actualAspectRatio).toBeCloseTo(expectedAspectRatio, 5);
+    });
+
+    it("should clamp oversized modal heights to the screen budget", () => {
+      expect(MODAL_MAX_SCREEN_HEIGHT_FRACTION).toBeGreaterThan(0);
+      expect(MODAL_MAX_SCREEN_HEIGHT_FRACTION).toBeLessThanOrEqual(1);
+      expect(MODAL_MAX_HEIGHT).toBeGreaterThan(0);
+      expect(getResponsiveModalHeight(10)).toBeLessThanOrEqual(MODAL_MAX_HEIGHT);
     });
   });
 

@@ -7,6 +7,7 @@ import {
   View,
 } from "react-native";
 import { AppStrings } from "../../../constants/AppStrings";
+import { AUTH_CONTENT_MAX_WIDTH } from "../../../constants/layout";
 import { COLORS, SPACING, TYPOGRAPHY } from "../../../styles";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 
@@ -38,7 +39,7 @@ const DeleteAccountConfirmationModal: React.FC<
       >
         <SlideInModalContent
           isVisible={isVisible}
-          style={{ width: "100%", maxWidth: 420 }}
+          style={{ width: "100%", maxWidth: AUTH_CONTENT_MAX_WIDTH }}
         >
           <View
             style={{
@@ -66,7 +67,7 @@ const DeleteAccountConfirmationModal: React.FC<
                 fontFamily: TYPOGRAPHY.fontSecondary,
                 fontSize: TYPOGRAPHY.fontSize.base,
                 color: "#1A1A1A",
-                lineHeight: 22,
+                lineHeight: TYPOGRAPHY.fontSize.base * TYPOGRAPHY.lineHeight.normal,
                 marginBottom: SPACING.lg,
                 textAlign: "center",
               }}

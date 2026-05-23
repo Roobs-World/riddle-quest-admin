@@ -3,6 +3,7 @@ import * as admin from "firebase-admin";
 import {onCall, HttpsError} from "firebase-functions/v2/https";
 import {initializeNewUser, ensureUserDocumentComplete} from "./firestoreService";
 import {captureException} from "./sentry";
+import type {Player} from "./validation/firestoreSchemas";
 
 /**
  * Request data for initializing a new user
@@ -12,6 +13,7 @@ interface InitializeUserRequestData {
   username: string;
   displayName?: string;
   avatarUrl?: string;
+  seed?: Partial<Player>;
 }
 
 /**
@@ -21,6 +23,7 @@ interface InitializeUserResponseData {
   success: boolean;
   message: string;
   userId: string;
+  player: Player;
 }
 
 interface DeleteAccountResponseData {
@@ -131,7 +134,14 @@ export const initializeUser = onCall<InitializeUserRequestData, Promise<Initiali
         username,
         displayName,
         avatarUrl,
+        seed: request.data.seed,
       });
+
+      const userDoc = await admin.firestore().collection("users").doc(userId).get();
+      const player = userDoc.data() as Player | undefined;
+      if (!player) {
+        throw new HttpsError("internal", "User document was not available after initialization.");
+      }
 
       functions.logger.info(`Successfully initialized user document for ${userId}`);
 
@@ -139,6 +149,7 @@ export const initializeUser = onCall<InitializeUserRequestData, Promise<Initiali
         success: true,
         message: "User document initialized successfully with default stats and progress.",
         userId,
+        player,
       };
     } catch (error: unknown) {
       functions.logger.error("Error in initializeUser:", error);

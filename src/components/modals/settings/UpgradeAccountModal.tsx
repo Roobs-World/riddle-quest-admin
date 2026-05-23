@@ -8,6 +8,10 @@ import GoogleSignInButton from "@/components/buttons/GoogleSignInButton";
 import FacebookSignInButton from "@/components/buttons/FacebookSignInButton";
 import PulsingSpinner from "@/components/loading/PulsingSpinner";
 import { LOADING_SPINNER_SIZE } from "@/constants/loading";
+import {
+  AUTH_CONTENT_MAX_WIDTH,
+  MODAL_CONTENT_PADDING,
+} from "@/constants/layout";
 import { SPACING, TYPOGRAPHY, COLORS } from "@/styles";
 import { captureException } from "@/utils/sentry";
 import { logger } from "@/utils/logger";
@@ -144,7 +148,10 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
           padding: SPACING.lg,
         }}
       >
-        <SlideInModalContent isVisible={isVisible} style={{ width: "100%", maxWidth: 420 }}>
+        <SlideInModalContent
+          isVisible={isVisible}
+          style={{ width: "100%", maxWidth: AUTH_CONTENT_MAX_WIDTH }}
+        >
           <View
             style={{
               backgroundColor: COLORS.white,
@@ -178,7 +185,7 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
               fontSize: TYPOGRAPHY.fontSize.lg,
               color: "#333333",
               marginBottom: SPACING.lg,
-              lineHeight: 22,
+              lineHeight: TYPOGRAPHY.fontSize.lg * TYPOGRAPHY.lineHeight.normal,
             }}
           >
             {AppStrings.Profile.UPGRADE_ACCOUNT_DESCRIPTION}
@@ -211,10 +218,10 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
             <View
               style={{
                 width: "100%",
-                maxWidth: 360,
+                maxWidth: AUTH_CONTENT_MAX_WIDTH,
                 backgroundColor: COLORS.white,
                 borderRadius: 16,
-                padding: SPACING.lg,
+                padding: MODAL_CONTENT_PADDING,
               }}
             >
               <Text
@@ -232,7 +239,7 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
                   fontFamily: TYPOGRAPHY.fontSecondary,
                   fontSize: TYPOGRAPHY.fontSize.base,
                   color: "#333333",
-                  lineHeight: 22,
+                  lineHeight: TYPOGRAPHY.fontSize.base * TYPOGRAPHY.lineHeight.normal,
                 }}
               >
                 {AppStrings.Profile.UPGRADE_ACCOUNT_EXISTING_ACCOUNT_DESCRIPTION}

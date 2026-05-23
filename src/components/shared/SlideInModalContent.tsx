@@ -15,7 +15,7 @@ interface SlideInModalContentProps {
 
 const ENTRY_OFFSET = 72;
 const ENTRY_DURATION_MS = 420;
-const OFFSCREEN_TRANSLATE_Y = dimensions.screenHeight + ENTRY_OFFSET;
+const OFFSCREEN_TRANSLATE_Y = (dimensions?.screenHeight ?? 800) + ENTRY_OFFSET;
 
 const SlideInModalContent: React.FC<SlideInModalContentProps> = ({
   isVisible,

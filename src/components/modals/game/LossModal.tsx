@@ -40,7 +40,7 @@ import {
   MODAL_HEIGHT,
   MODAL_CONTENT_PADDING,
   MODAL_BUTTON_SPACER,
-  getResponsiveModalHeight,
+  MODAL_MAX_HEIGHT,
   wheelSize,
 } from "../../../constants/layout";
 import {AppStrings} from "../../../constants/AppStrings";
@@ -116,7 +116,7 @@ const LossModal: React.FC<LossModalProps> = ({
   const isWatchAdDisabled = canWatchAd === false;
   const isCoinContinueDisabled = canUseCoin === false;
   const [rotationAnim] = useState(() => new Animated.Value(0));
-  const lossModalHeight = getResponsiveModalHeight(1.2);
+  const lossModalHeight = Math.min(MODAL_HEIGHT * 1.2, MODAL_MAX_HEIGHT ?? MODAL_HEIGHT * 1.2);
   const wheelBackgroundSize = wheelSize * 1.8;
 
   const spin = useMemo(() => {

@@ -18,7 +18,7 @@ import {
   CARD_PADDING,
   CARD_MARGIN_BOTTOM,
   CLOSE_BUTTON_SIZE,
-  getResponsiveModalHeight,
+  MODAL_MAX_HEIGHT,
 } from "../../../constants/layout";
 import {SPACING} from "../../../styles";
 import {verticalScale} from "../../../utils/responsive";
@@ -51,7 +51,7 @@ const renderTeamMember = ({item}: {item: TeamMember}) => <TeamMemberCard member=
 
 const keyExtractor = (item: TeamMember) => item.name;
 
-const CREDITS_MODAL_HEIGHT = getResponsiveModalHeight(1.2);
+const CREDITS_MODAL_HEIGHT = Math.min(MODAL_HEIGHT * 1.2, MODAL_MAX_HEIGHT ?? MODAL_HEIGHT * 1.2);
 
 const CreditsModal: React.FC<CreditsModalProps> = ({isVisible, onClose, topRightControl}) => {
   return (

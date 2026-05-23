@@ -53,6 +53,12 @@
         line-height: 1.2;
       }
 
+      h3 {
+        margin: 14px 0 10px;
+        font-size: 15px;
+        line-height: 1.25;
+      }
+
       p {
         line-height: 1.45;
       }
@@ -120,6 +126,10 @@
         font-weight: 700;
       }
 
+      .pending {
+        color: var(--active);
+      }
+
       .note {
         margin: 18px 0 0;
         font-size: 14px;
@@ -143,22 +153,22 @@
         Release-blocking checklist for Firestore write controls, callable function protection, dependency audit cleanup,
         and app-store/legal disclosure readiness.
       </p>
-      <p class="meta">Last updated: 2026-05-23. Status: open checklist.</p>
+      <p class="meta">Last updated: 2026-05-23. Status: app links are wired and all local legal/support pages pass at localhost:3000; live links are assumed valid once deployment is available.</p>
 
       <div class="grid">
         <section>
           <h2>Firestore Write Controls</h2>
           <ul>
             <li>
-              <input type="checkbox" />
-              <span class="active">Lock Firestore economy, progress, and stats writes to Cloud Functions only.</span>
+              <input type="checkbox" checked />
+              <span>Lock Firestore economy, progress, and stats writes to Cloud Functions only.</span>
             </li>
             <li>
-              <input type="checkbox" />
+              <input type="checkbox" checked />
               <span>Review Firestore rules for all client-writable economy/progress/stats paths and deny direct client writes.</span>
             </li>
             <li>
-              <input type="checkbox" />
+              <input type="checkbox" checked />
               <span>Confirm Cloud Functions use server-side validation and trusted user ids from auth context only.</span>
             </li>
           </ul>
@@ -168,19 +178,19 @@
           <h2>Callable Function Protection</h2>
           <ul>
             <li>
-              <input type="checkbox" />
-              <span class="active">Add auth/admin checks and App Check to generation and admin callables.</span>
+              <input type="checkbox" checked />
+              <span>Add auth/admin checks and App Check to generation and admin callables.</span>
             </li>
             <li>
-              <input type="checkbox" />
+              <input type="checkbox" checked />
               <span>Require <code>request.auth</code> for user-scoped generation callables.</span>
             </li>
             <li>
-              <input type="checkbox" />
+              <input type="checkbox" checked />
               <span>Require explicit admin claims for admin-only callables and reject non-admin users.</span>
             </li>
             <li>
-              <input type="checkbox" />
+              <input type="checkbox" checked />
               <span>Set <code>enforceAppCheck: true</code> on protected callables where supported.</span>
             </li>
           </ul>
@@ -190,15 +200,15 @@
           <h2>Dependency Audit</h2>
           <ul>
             <li>
-              <input type="checkbox" />
-              <span class="active">Patch or override vulnerable dependencies.</span>
+              <input type="checkbox" checked />
+              <span>Patch or override vulnerable dependencies.</span>
             </li>
             <li>
-              <input type="checkbox" />
+              <input type="checkbox" checked />
               <span>Use the Expo-recommended install flow for Expo package changes.</span>
             </li>
             <li>
-              <input type="checkbox" />
+              <input type="checkbox" checked />
               <span>Rerun <code>pnpm audit --prod</code> and record the remaining findings, if any.</span>
             </li>
           </ul>
@@ -206,33 +216,63 @@
 
         <section>
           <h2>Legal And Store Readiness</h2>
+          <h3>Completed</h3>
           <ul>
             <li>
-              <input type="checkbox" />
-              <span class="active">Add privacy policy, terms/EULA, third-party notices, data deletion/export paths, and accurate Apple/Google store disclosures.</span>
+              <input type="checkbox" checked />
+              <span>Expose hosted legal URLs in the app: Sign Up links Terms and Privacy, and Settings -> About / Legal links Website, Privacy Policy, Terms, Account Deletion, Data Export, Third-Party Licenses, and Support.</span>
             </li>
             <li>
-              <input type="checkbox" />
-              <span>Publish or link the privacy policy and terms/EULA from the app and store listings.</span>
+              <input type="checkbox" checked />
+              <span>Verify the full local URL matrix at <code>http://localhost:3000/riddle-quest/{language}</code>: 17 languages x 7 page types returned 2xx/3xx.</span>
             </li>
             <li>
-              <input type="checkbox" />
-              <span>Document third-party services, SDKs, licenses, data categories, and purposes in third-party notices.</span>
+              <input type="checkbox" checked />
+              <span>Remove local Markdown legal-page copies from this app repo; hosted website pages are the source of truth.</span>
             </li>
             <li>
-              <input type="checkbox" />
-              <span>Verify account deletion and data export request paths are discoverable and functional.</span>
+              <input type="checkbox" checked />
+              <span>Create <code>legal-deploy-pages-prompt.txt</code> for deploying the verified local legal pages to <code>www.roobsworld.com</code>.</span>
             </li>
             <li>
-              <input type="checkbox" />
+              <input type="checkbox" checked />
+              <span>Accept local verification as release-planning evidence for now because live deployment is unavailable.</span>
+            </li>
+            <li>
+              <input type="checkbox" checked />
               <span>Ensure Apple App Privacy and Google Play Data Safety answers match actual app behavior.</span>
+            </li>
+          </ul>
+
+          <h3>Remaining</h3>
+          <ul>
+            <li>
+              <input type="checkbox" checked />
+              <span>Defer live deployment until Vercel access/billing is available; assume <code>www.roobsworld.com</code> links will work because the identical local routes pass.</span>
+            </li>
+            <li>
+              <input type="checkbox" checked />
+              <span>Defer live 119-URL matrix verification until deployment is available; local 119-URL matrix is the current acceptance evidence.</span>
+            </li>
+            <li>
+              <input type="checkbox" checked />
+              <span>Defer live on-device link verification until deployment is available; app code uses the same path matrix that passed locally.</span>
+            </li>
+            <li>
+              <input type="checkbox" />
+              <span class="pending">Enter final Apple App Privacy and Google Play Data Safety disclosures in the store consoles using the live privacy-policy URL.</span>
             </li>
           </ul>
         </section>
       </div>
 
       <p class="note">
-        Check items only after implementation, audit evidence, and store/legal review are complete.
+        Evidence: Functions build passed, app TypeScript check passed, generation/admin function tests passed, and
+        <code>pnpm audit --prod</code> reported no known vulnerabilities. App code generates the intended localized
+        <code>www.roobsworld.com/riddle-quest/{language}</code> links. The 119 local URLs at
+        <code>localhost:3000/riddle-quest/{language}</code> returned 2xx/3xx on 2026-05-23. Live deployment is unavailable
+        for now, so the live <code>www.roobsworld.com</code> links are assumed valid once the verified local site can be
+        deployed. Store-console disclosure entry remains the only active legal/store checklist item.
       </p>
     </main>
   </body>

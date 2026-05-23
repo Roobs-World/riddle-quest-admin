@@ -19,7 +19,7 @@ import {
   CARD_BORDER_RADIUS,
   MODAL_CONTENT_PADDING,
   MODAL_SCROLLABLE_MAX_HEIGHT,
-  getResponsiveModalHeight,
+  MODAL_MAX_HEIGHT,
 } from "../../../constants/layout";
 import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
@@ -32,7 +32,7 @@ export interface StatsModalProps {
 }
 
 const StatsModal: React.FC<StatsModalProps> = ({isVisible, onClose, playerData}) => {
-  const modalHeight = getResponsiveModalHeight();
+  const modalHeight = Math.min(MODAL_HEIGHT, MODAL_MAX_HEIGHT ?? MODAL_HEIGHT);
   const stats = playerData?.stats;
   const toNonNegativeStat = (value: unknown): number =>
     typeof value === "number" && Number.isFinite(value) ? Math.max(0, value) : 0;

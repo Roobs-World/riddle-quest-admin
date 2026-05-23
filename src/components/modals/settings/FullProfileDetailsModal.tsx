@@ -20,6 +20,8 @@ import { getAuth } from "@react-native-firebase/auth";
 import {
   CLOSE_BUTTON_SIZE,
   AVATAR_SIZE_LARGE,
+  AUTH_CONTENT_MAX_WIDTH,
+  MODAL_MAX_HEIGHT,
 } from "../../../constants/layout";
 import { moderateScale, verticalScale } from "../../../utils/responsive";
 import LogoIcon from "../../icons/LogoIcon";
@@ -264,15 +266,17 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
       >
         <SlideInModalContent
           isVisible={isVisible}
-          style={{ flex: 1, width: "100%", justifyContent: "flex-end" }}
+          style={{ flex: 1, width: "100%", justifyContent: "flex-end", alignItems: "center" }}
         >
           <View
             style={{
+              width: "100%",
+              maxWidth: AUTH_CONTENT_MAX_WIDTH,
               backgroundColor: CREAM,
               borderTopLeftRadius: 24,
               borderTopRightRadius: 24,
               flex: 1,
-              maxHeight: "100%",
+              maxHeight: MODAL_MAX_HEIGHT,
             }}
           >
           <View
@@ -553,8 +557,8 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
             >
               <View
                 style={{
-                  width: 44,
-                  height: 44,
+                  width: AVATAR_SIZE_LARGE * 0.55,
+                  height: AVATAR_SIZE_LARGE * 0.55,
                   backgroundColor: COLORS.figmaGold,
                   borderRadius: 100,
                   alignItems: "center",
@@ -815,9 +819,9 @@ const ProfileHelpButton = ({
       accessibilityLabel={`${AppStrings.Tooltips.HELP_BUTTON_LABEL}: ${getProfileTooltipContent(tooltipId).title}`}
       testID={testID}
       style={{
-        width: 26,
-        height: 26,
-        borderRadius: 13,
+        width: moderateScale(26),
+        height: moderateScale(26),
+        borderRadius: moderateScale(13),
         alignItems: "center",
         justifyContent: "center",
         backgroundColor: inverse ? "rgba(255,255,255,0.18)" : "#FFFFFF",

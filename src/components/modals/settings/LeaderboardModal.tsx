@@ -24,13 +24,13 @@ import {
   CARD_BORDER_RADIUS,
   MODAL_CONTENT_PADDING,
   AVATAR_SIZE_MEDIUM,
-  getResponsiveModalHeight,
+  MODAL_MAX_HEIGHT,
 } from "../../../constants/layout";
 import {logger} from "../../../utils/logger";
 import {captureException} from "../../../utils/sentry";
 import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
-import {verticalScale} from "@/utils/responsive";
+import {scale, verticalScale} from "@/utils/responsive";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -190,7 +190,7 @@ const buildDisplayEntries = (
 // ─────────────────────────────────────────────────────────────────────────────
 
 const LeaderboardModal: React.FC<LeaderboardModalProps> = ({isVisible, onClose, currentUserId}) => {
-  const modalHeight = getResponsiveModalHeight();
+  const modalHeight = Math.min(MODAL_HEIGHT, MODAL_MAX_HEIGHT ?? MODAL_HEIGHT);
   const authUserId = normalizeUserId(getAuth(getApp()).currentUser?.uid ?? null);
   const normalizedCurrentUserId = normalizeUserId(currentUserId);
   const shouldUseAuthUserIdFallback = normalizedCurrentUserId != null;
@@ -486,7 +486,7 @@ const LeaderboardRow: React.FC<LeaderboardRowProps> = ({rank, entry, statValue, 
       {/* Rank */}
       <Text
         style={{
-          width: 28,
+          width: scale(28),
           fontSize: rank <= 3 ? TYPOGRAPHY.fontSize.base : TYPOGRAPHY.fontSize.sm,
           fontFamily: TYPOGRAPHY.fontSecondaryBold,
           color: rankColor,

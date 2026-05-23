@@ -15,6 +15,14 @@ import {
   dimensions,
 } from "../utils/responsive";
 
+const viewport = dimensions ?? {
+  screenWidth: 390,
+  screenHeight: 844,
+  isDesktop: false,
+  isLargeTablet: false,
+  isTablet: false,
+};
+
 // ---------------------------------------------------------------------------
 // Modals — container
 // ---------------------------------------------------------------------------
@@ -31,7 +39,7 @@ export const MODAL_MAX_SCREEN_FRACTION = 0.9;
 /** Responsive modal width — use this in every modal container. */
 export const MODAL_WIDTH = Math.min(
   moderateScale(MODAL_BASE_WIDTH),
-  dimensions.screenWidth * MODAL_MAX_SCREEN_FRACTION,
+  viewport.screenWidth * MODAL_MAX_SCREEN_FRACTION,
 );
 
 /** Responsive modal height — preserves the exact SVG aspect ratio. */
@@ -42,13 +50,13 @@ export const MODAL_MAX_SCREEN_HEIGHT_FRACTION = 0.88;
 
 /** Maximum modal height in logical pixels for the current screen. */
 export const MODAL_MAX_HEIGHT =
-  dimensions.screenHeight * MODAL_MAX_SCREEN_HEIGHT_FRACTION;
+  viewport.screenHeight * MODAL_MAX_SCREEN_HEIGHT_FRACTION;
 
 /** Returns a modal height scaled from MODAL_HEIGHT but clamped to the viewport. */
 export const getResponsiveModalHeight = (
   multiplier = 1,
   maxScreenFraction = MODAL_MAX_SCREEN_HEIGHT_FRACTION,
-): number => Math.min(MODAL_HEIGHT * multiplier, dimensions.screenHeight * maxScreenFraction);
+): number => Math.min(MODAL_HEIGHT * multiplier, viewport.screenHeight * maxScreenFraction);
 
 // ---------------------------------------------------------------------------
 // Modals — content layout
@@ -179,7 +187,7 @@ export const AUTH_CONTENT_MAX_WIDTH = 430;
 /** Responsive logo width for the unauthenticated landing screen. */
 export const LANDING_LOGO_WIDTH = Math.min(
   moderateScale(320),
-  dimensions.screenWidth * 0.82,
+  viewport.screenWidth * 0.82,
   AUTH_CONTENT_MAX_WIDTH,
 );
 
@@ -194,20 +202,20 @@ export const LANDING_LOGO_HEIGHT = LANDING_LOGO_WIDTH * (150 / 320);
 export const GAME_HEADER_SLOT_HEIGHT: DimensionValue = "8%";
 
 /** Riddle area height as a percentage string, with more room on tablets. */
-export const RIDDLE_CONTAINER_SLOT_HEIGHT: DimensionValue = dimensions.isDesktop
+export const RIDDLE_CONTAINER_SLOT_HEIGHT: DimensionValue = viewport.isDesktop
   ? "26%"
-  : dimensions.isLargeTablet
+  : viewport.isLargeTablet
     ? "26%"
-    : dimensions.isTablet
+    : viewport.isTablet
       ? "24%"
       : "20%";
 
 /** Guess grid height as a percentage string, balanced against riddle growth. */
-export const GUESS_GRID_SLOT_HEIGHT: DimensionValue = dimensions.isDesktop
+export const GUESS_GRID_SLOT_HEIGHT: DimensionValue = viewport.isDesktop
   ? "32%"
-  : dimensions.isLargeTablet
+  : viewport.isLargeTablet
     ? "32%"
-    : dimensions.isTablet
+    : viewport.isTablet
       ? "34%"
       : "36%";
 
@@ -227,8 +235,8 @@ export const GUESS_TILE_MAX_SIZE = scale(56);
  * content column is capped at MAX_CONTENT_WIDTH so tiles don't grow too large.
  */
 export const GUESS_GRID_EFFECTIVE_WIDTH = Math.min(
-  dimensions.screenWidth,
-  dimensions.isLargeTablet ? MAX_CONTENT_WIDTH : dimensions.screenWidth,
+  viewport.screenWidth,
+  viewport.isLargeTablet ? MAX_CONTENT_WIDTH : viewport.screenWidth,
 );
 
 /** Horizontal padding subtracted from screen width when computing tile size. */
@@ -253,7 +261,7 @@ export const RIDDLE_TEXT_MAX_WIDTH_FRACTION = 0.8;
  * riddle text must not exceed that cap × the width fraction.
  */
 export const RIDDLE_TEXT_MAX_WIDTH =
-  Math.min(dimensions.screenWidth, MAX_CONTENT_WIDTH) * RIDDLE_TEXT_MAX_WIDTH_FRACTION;
+  Math.min(viewport.screenWidth, MAX_CONTENT_WIDTH) * RIDDLE_TEXT_MAX_WIDTH_FRACTION;
 
 // ---------------------------------------------------------------------------
 // Game Input Bar

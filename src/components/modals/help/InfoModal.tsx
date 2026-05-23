@@ -4,7 +4,7 @@ import {TYPOGRAPHY, SPACING} from "../../../styles";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
 import WideButton from "../../buttons/WideButton";
-import {MODAL_WIDTH, MODAL_HEIGHT, getResponsiveModalHeight} from "../../../constants/layout";
+import {MODAL_WIDTH, MODAL_HEIGHT, MODAL_MAX_HEIGHT} from "../../../constants/layout";
 import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import OnboardingProgressBadge from "../OnboardingProgressBadge";
@@ -31,7 +31,7 @@ const InfoModal: React.FC<InfoModalProps> = ({
   onClose,
   onboardingProgress,
 }) => {
-  const modalHeight = getResponsiveModalHeight();
+  const modalHeight = Math.min(MODAL_HEIGHT, MODAL_MAX_HEIGHT ?? MODAL_HEIGHT);
   const handleConfirm = () => {
     onConfirm?.();
     onClose();

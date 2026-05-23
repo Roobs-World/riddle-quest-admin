@@ -10,7 +10,7 @@ import {
   MODAL_HEIGHT,
   CLOSE_BUTTON_SIZE,
   MODAL_CLOSE_BUTTON_POSITION,
-  getResponsiveModalHeight,
+  MODAL_MAX_HEIGHT,
 } from "../../../constants/layout";
 import {SPACING} from "../../../styles";
 import {AppStrings} from "../../../constants/AppStrings";
@@ -38,7 +38,11 @@ const SkipModal: React.FC<SkipModalProps> = ({
   onClose,
 }) => {
   const canAffordSkip = userCoins >= skipCost;
-  const skipModalHeight = getResponsiveModalHeight(!canAffordSkip ? 1.6 : 1.4);
+  const skipModalHeightMultiplier = canAffordSkip ? 1.4 : 1.6;
+  const skipModalHeight = Math.min(
+    MODAL_HEIGHT * skipModalHeightMultiplier,
+    MODAL_MAX_HEIGHT ?? MODAL_HEIGHT * skipModalHeightMultiplier,
+  );
 
   return (
     <Modal visible={isVisible} transparent={true} animationType="none" onRequestClose={onClose}>

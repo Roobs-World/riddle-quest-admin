@@ -444,6 +444,9 @@ export const generateClassicRiddles = onCall(
     } catch (error) {
       logger.error("Error generating Classic Mode riddles:", error);
       captureException(error);
+      if (error instanceof functions.https.HttpsError) {
+        throw error;
+      }
       if (error instanceof Error) {
         logger.error("Error message:", error.message);
       }
@@ -502,6 +505,9 @@ export const initializeRiddleDatabase = onCall(
     } catch (error) {
       logger.error("Error initializing riddle database:", error);
       captureException(error);
+      if (error instanceof functions.https.HttpsError) {
+        throw error;
+      }
       if (error instanceof Error) {
         logger.error("Error message:", error.message);
       }
@@ -538,6 +544,9 @@ export const generateDailyRiddles = onCall(
     } catch (error) {
       logger.error("Error generating Daily Mode riddles:", error);
       captureException(error);
+      if (error instanceof functions.https.HttpsError) {
+        throw error;
+      }
       if (error instanceof Error) {
         logger.error("Error message:", error.message);
       }
@@ -756,6 +765,9 @@ export const generateTodaysDailyChallengeFunction = onCall(
     } catch (error) {
       logger.error("Error generating today's daily challenge:", error);
       captureException(error);
+      if (error instanceof functions.https.HttpsError) {
+        throw error;
+      }
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
       if (error instanceof Error) {
         logger.error("Error message:", error.message);

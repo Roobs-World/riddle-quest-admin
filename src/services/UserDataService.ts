@@ -2,16 +2,28 @@ import {
   getFirestore,
   doc,
   getDoc,
-  setDoc,
   updateDoc,
 } from "@react-native-firebase/firestore";
-import { getFunctions, httpsCallable } from "@react-native-firebase/functions";
-import { getApp } from "@react-native-firebase/app";
 import { Player, PlayerSchema } from "../validation/firestoreSchemas";
 import { ZodError } from "zod";
 import { IUserDataService } from "./interfaces/IUserDataService";
 import { logger } from "../utils/logger";
 import { captureException } from "../utils/sentry";
+import { getCallableFunction } from "../utils/firebaseFunctions";
+
+const stripServerManagedUserFields = (updates: Partial<Player>): Partial<Player> => {
+  const {
+    coins: _coins,
+    progress: _progress,
+    stats: _stats,
+    hasPurchasedApp: _hasPurchasedApp,
+    unlockedAchievements: _unlockedAchievements,
+    lastDailyChallengeCompletedAt: _lastDailyChallengeCompletedAt,
+    ...clientEditableUpdates
+  } = updates;
+
+  return clientEditableUpdates;
+};
 
 /**
  * Service for managing user data in Firestore
@@ -32,15 +44,9 @@ export class UserDataService implements IUserDataService {
     }
 
     try {
-      await setDoc(
-        doc(getFirestore(), UserDataService.USERS_COLLECTION, userId),
-        { progress },
-        { merge: true }
-      );
-
-      logger.info(
-        "Player progress saved to Firestore successfully for user:",
-        userId
+      logger.warn(
+        "Skipping direct client progress write; player progress is persisted by Cloud Functions.",
+        { userId, progress }
       );
     } catch (error) {
       logger.error("Error saving player progress to Firestore:", error);
@@ -105,9 +111,16 @@ export class UserDataService implements IUserDataService {
       // Validate the user data before saving
       const validatedData = PlayerSchema.parse(userData);
 
-      await setDoc(doc(getFirestore(), UserDataService.USERS_COLLECTION, userId), validatedData);
+      const initializeUserCallable = getCallableFunction("initializeUser");
+      await initializeUserCallable({
+        email: validatedData.email,
+        username: validatedData.username,
+        displayName: validatedData.displayName,
+        avatarUrl: validatedData.avatarUrl,
+        seed: validatedData,
+      });
 
-      logger.info("User document created successfully for user:", userId);
+      logger.info("User document created successfully via Cloud Function for user:", userId);
     } catch (error) {
       if (error instanceof ZodError) {
         logger.error(
@@ -135,7 +148,15 @@ export class UserDataService implements IUserDataService {
     }
 
     try {
-      await updateDoc(doc(getFirestore(), UserDataService.USERS_COLLECTION, userId), updates);
+      const clientEditableUpdates = stripServerManagedUserFields(updates);
+      if (Object.keys(clientEditableUpdates).length === 0) {
+        logger.warn(
+          "Skipping user document update because it only contained server-managed fields.",
+          { userId }
+        );
+        return;
+      }
+      await updateDoc(doc(getFirestore(), UserDataService.USERS_COLLECTION, userId), clientEditableUpdates);
 
       logger.info("User document updated successfully for user:", userId);
     } catch (error) {
@@ -154,11 +175,10 @@ export class UserDataService implements IUserDataService {
     }
 
     try {
-      await updateDoc(doc(getFirestore(), UserDataService.USERS_COLLECTION, userId), {
-        "progress.classicIndex": newIndex,
-      });
-
-      logger.info(`Classic index updated to ${newIndex} for user:`, userId);
+      logger.warn(
+        "Skipping direct client classic progress write; classic progress is persisted by Cloud Functions.",
+        { userId, newIndex }
+      );
     } catch (error) {
       logger.error("Error updating classic index:", error);
       captureException(error);
@@ -179,11 +199,10 @@ export class UserDataService implements IUserDataService {
     }
 
     try {
-      await updateDoc(doc(getFirestore(), UserDataService.USERS_COLLECTION, userId), {
-        coins: newCoinAmount,
-      });
-
-      logger.info(`Coins updated to ${newCoinAmount} for user:`, userId);
+      logger.warn(
+        "Skipping direct client coin write; economy changes are persisted by Cloud Functions.",
+        { userId, newCoinAmount }
+      );
     } catch (error) {
       logger.error("Error updating user coins:", error);
       captureException(error);
@@ -221,7 +240,7 @@ export class UserDataService implements IUserDataService {
     avatarUrl?: string;
   }): Promise<{ success: boolean; message: string; userId: string }> {
     try {
-      const initializeUserCallable = httpsCallable(getFunctions(getApp()), "initializeUser");
+      const initializeUserCallable = getCallableFunction("initializeUser");
       const result = await initializeUserCallable(userData);
 
       logger.info("User initialized successfully:", result.data);
@@ -246,7 +265,7 @@ export class UserDataService implements IUserDataService {
     message: string;
   }> {
     try {
-      const ensureUserCompleteCallable = httpsCallable(getFunctions(getApp()), "ensureUserComplete");
+      const ensureUserCompleteCallable = getCallableFunction("ensureUserComplete");
       const result = await ensureUserCompleteCallable({});
 
       logger.info("User document completeness ensured:", result.data);
@@ -281,7 +300,7 @@ export class UserDataService implements IUserDataService {
     }
   ): Promise<{ success: boolean; message: string }> {
     try {
-      const updateUserStatsCallable = httpsCallable(getFunctions(getApp()), "updateUserStats");
+      const updateUserStatsCallable = getCallableFunction("updateUserStats");
       const result = await updateUserStatsCallable({
         targetUserId,
         statsUpdate,

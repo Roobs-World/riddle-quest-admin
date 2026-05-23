@@ -1,0 +1,872 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Riddle Quest Exhaustive Android Emulator and Firebase QA Plan</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f7f9fc;
+        --panel: #ffffff;
+        --ink: #172033;
+        --muted: #5c667a;
+        --line: #dce3ef;
+        --accent: #0b6bcb;
+        --accent-soft: #e8f2ff;
+        --warn: #8a4b00;
+        --warn-soft: #fff4df;
+        --pass: #0f6b45;
+        --pass-soft: #e8f7f0;
+        --fail: #9d1c24;
+        --fail-soft: #ffe8eb;
+        --code: #0f172a;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        line-height: 1.55;
+      }
+
+      main {
+        width: min(1180px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 32px 0 56px;
+      }
+
+      header,
+      section {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 24px;
+        margin-bottom: 18px;
+      }
+
+      h1,
+      h2,
+      h3 {
+        line-height: 1.2;
+        margin: 0 0 12px;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      h2 {
+        font-size: 1.35rem;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      h3 {
+        font-size: 1rem;
+        margin-top: 20px;
+      }
+
+      p {
+        margin: 0 0 12px;
+      }
+
+      ul,
+      ol {
+        margin: 8px 0 16px 22px;
+        padding: 0;
+      }
+
+      li {
+        margin: 5px 0;
+      }
+
+      code,
+      pre {
+        font-family:
+          "Cascadia Code", "SFMono-Regular", Consolas, "Liberation Mono",
+          monospace;
+      }
+
+      code {
+        background: #eef3f9;
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        color: var(--code);
+        padding: 1px 5px;
+      }
+
+      pre {
+        overflow: auto;
+        white-space: pre-wrap;
+        background: #0f172a;
+        color: #e5eefc;
+        border-radius: 8px;
+        padding: 18px;
+        border: 1px solid #23314f;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 12px 0 18px;
+        font-size: 0.95rem;
+      }
+
+      th,
+      td {
+        text-align: left;
+        vertical-align: top;
+        border: 1px solid var(--line);
+        padding: 9px 10px;
+      }
+
+      th {
+        background: #eef3f9;
+      }
+
+      .summary {
+        font-size: 1.04rem;
+        color: var(--muted);
+        max-width: 86ch;
+      }
+
+      .badge {
+        display: inline-block;
+        border-radius: 999px;
+        padding: 3px 10px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+      }
+
+      .badge.required {
+        background: var(--accent-soft);
+        color: var(--accent);
+      }
+
+      .badge.warn {
+        background: var(--warn-soft);
+        color: var(--warn);
+      }
+
+      .badge.pass {
+        background: var(--pass-soft);
+        color: var(--pass);
+      }
+
+      .callout {
+        border-left: 4px solid var(--accent);
+        background: var(--accent-soft);
+        padding: 12px 14px;
+        margin: 14px 0;
+      }
+
+      .warning {
+        border-left-color: var(--warn);
+        background: var(--warn-soft);
+      }
+
+      .grid {
+        display: grid;
+        gap: 14px;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      }
+
+      .card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 14px;
+        background: #fbfdff;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <p><span class="badge required">QA STRATEGY</span></p>
+        <h1>Riddle Quest Exhaustive Android Emulator and Firebase QA Plan</h1>
+        <p class="summary">
+          This document defines the testing strategy for validating every
+          meaningful piece of functionality in the Riddle Quest/Qwordly Expo
+          React Native project. The goal is to leave nothing to chance: every
+          page requested for coverage, every registered modal, every gameplay
+          branch, every Firebase write path, every persistence path, and every
+          expected error or edge state must be exercised, evidenced, and logged
+          for both guest users and provider-authenticated users.
+        </p>
+        <div class="callout warning">
+          <strong>Important:</strong> Forgot Password, New Password, and Game
+          screen are intentionally excluded as standalone page coverage items per
+          user request. Gameplay functionality is still fully in scope because
+          Firebase progress, wins/losses, hints, skips, coins, stats, and modal
+          flows cannot be verified without exercising gameplay.
+        </div>
+      </header>
+
+      <section>
+        <h2>Execution Rules</h2>
+        <ul>
+          <li>
+            Use Android Studio MCP for Android SDK setup, emulator downloads,
+            AVD creation, emulator launch, screenshots, and logs when available.
+          </li>
+          <li>
+            Use Expo MCP for Expo, React Native, EAS, simulator, and React
+            Native DevTools tasks when available.
+          </li>
+          <li>
+            If MCP tools are unavailable, use Android SDK, emulator, ADB, and
+            Expo CLI fallbacks. Record the fallback in this HTML file.
+          </li>
+          <li>
+            Maintain this HTML file continuously. It is the single source of
+            truth for strategy, progress, blockers, defects, skipped items,
+            Firebase snapshots, screenshots, logs, and handoff notes.
+          </li>
+          <li>
+            Save screenshots under
+            <code>emulator-tests/images/{device-name}/</code> and logs under
+            <code>emulator-tests/logs/{device-name}/</code>.
+          </li>
+          <li>
+            Do not deploy Firebase Functions, change Firestore rules, or edit
+            live production data outside the disposable QA account.
+          </li>
+          <li>
+            Do not mark an item passed without evidence. Evidence means a
+            screenshot, log, Firestore before/after snapshot, UI tree snippet, or
+            a precise written observation in the todo file.
+          </li>
+          <li>
+            Every functional test must be executed for both personas unless the
+            feature is explicitly persona-specific: guest/anonymous user and
+            provider-authenticated user. If a flow only applies to one persona,
+            mark the other persona <code>SKIPPED</code> with the reason.
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>User Persona Matrix</h2>
+        <p>
+          All coverage must be evaluated against both user models. Do not assume
+          a feature that works for one user type works for the other.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Persona</th>
+              <th>How To Enter</th>
+              <th>Persistence Expectations</th>
+              <th>Backend Expectations</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Guest / anonymous user</td>
+              <td>Use the Play as Guest path from Landing.</td>
+              <td>Guest profile and in-progress session persist locally; deletion clears local guest data and restart must not restore deleted guest progress.</td>
+              <td>Guest gameplay must not be used to prove <code>completeGame</code> Firestore writes. Auth user deletion should remove the anonymous Firebase Auth user where applicable.</td>
+            </tr>
+            <tr>
+              <td>Provider-authenticated user</td>
+              <td>Use a disposable Google/Facebook/provider account available to the tester, or the app's supported provider auth path.</td>
+              <td>Profile refresh and app restart must reflect Firestore-backed data; deleted provider account must not restore old progress on later sign-in.</td>
+              <td>All backend write verification must use this persona: game completion, coins, stats, progress, achievements, leaderboard, profile updates, and account deletion cleanup.</td>
+            </tr>
+          </tbody>
+        </table>
+        <ul>
+          <li>For each page, modal, and function, record separate status for guest and provider-auth personas in the Embedded Run Tracker.</li>
+          <li>Capture separate screenshots when UI differs by persona, especially profile, upgrade account, settings/logout, account deletion, coin shop, leaderboard, achievements, and post-game flows.</li>
+          <li>Use separate Firebase/local-storage evidence for persona-specific persistence behavior.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Embedded Todo And Issue Log</h2>
+        <p>
+          Before and during testing, update the embedded tracker in this HTML
+          file. Use these exact status values:
+          <code>TODO</code>, <code>IN_PROGRESS</code>, <code>PASS</code>,
+          <code>FAIL</code>, <code>BLOCKED</code>, <code>SKIPPED</code>, and
+          <code>UNREACHABLE</code>.
+        </p>
+        <ul>
+          <li>
+            Track run metadata: date, tester/agent, branch, commit if relevant,
+            app version, Firebase project, account UID, emulator matrix, and
+            tool fallback notes.
+          </li>
+          <li>
+            Track environment setup: SDK packages, system images, AVD creation,
+            boot verification, ADB readiness, and launch method.
+          </li>
+          <li>
+            Track device coverage: one checklist per emulator with API level,
+            resolution, density, serial, screenshot directory, log directory,
+            and pass/fail status.
+          </li>
+          <li>
+            Track page, modal, feature, Firebase, persistence, accessibility,
+            visual, and performance coverage separately.
+          </li>
+          <li>
+            Log every issue with defect id, device, screen/modal/function,
+            reproduction steps, expected behavior, actual behavior, severity,
+            screenshot paths, log paths, and current status.
+          </li>
+          <li>
+            Never delete issue history. Append updates so future agents can
+            understand the trail.
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Device Matrix</h2>
+        <p>
+          Test the widest feasible Android matrix. At minimum, every critical
+          flow must pass on a small phone, standard phone, large phone, foldable
+          unfolded viewport, small tablet, and large tablet. Any reduced matrix
+          must be justified in this HTML file.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Class</th>
+              <th>Preferred AVD</th>
+              <th>Purpose</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Small phone</td>
+              <td><code>rq_pixel_4a_api_36_1</code></td>
+              <td>Small viewport, tight vertical layout, button fit.</td>
+            </tr>
+            <tr>
+              <td>Standard phone</td>
+              <td><code>rq_pixel_7_api_36_1</code></td>
+              <td>Baseline phone acceptance target.</td>
+            </tr>
+            <tr>
+              <td>Large phone</td>
+              <td><code>rq_pixel_8_pro_api_36_1</code></td>
+              <td>Large phone scaling and safe-area behavior.</td>
+            </tr>
+            <tr>
+              <td>Foldable outer</td>
+              <td><code>rq_pixel_fold_outer_api_36_1</code></td>
+              <td>Foldable/narrow interaction constraints.</td>
+            </tr>
+            <tr>
+              <td>Foldable unfolded</td>
+              <td><code>rq_pixel_fold_unfolded_api_36_1</code></td>
+              <td>Tablet-like foldable layout and modal sizing.</td>
+            </tr>
+            <tr>
+              <td>Small tablet</td>
+              <td><code>rq_small_tablet_api_36_1</code></td>
+              <td>7-8 inch tablet density and scaling.</td>
+            </tr>
+            <tr>
+              <td>Large tablet</td>
+              <td><code>rq_large_tablet_api_36_1</code></td>
+              <td>10-11 inch tablet layout and empty space handling.</td>
+            </tr>
+            <tr>
+              <td>Low-density tablet</td>
+              <td><code>rq_low_density_tablet_api_36_1</code></td>
+              <td>Legacy/low-density constraints and text fit.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>Page Coverage</h2>
+        <p>
+          The following requested page states must be verified on every device
+          class unless a state cannot be triggered. Untriggerable states must be
+          marked <code>UNREACHABLE</code> or <code>SKIPPED</code> with evidence
+          and rationale.
+        </p>
+        <ul>
+          <li>Initial loading/auth spinner.</li>
+          <li>Landing screen.</li>
+          <li>Login screen.</li>
+          <li>Sign Up screen if reachable from current navigation.</li>
+          <li>Riddle loading state.</li>
+          <li>Initialization retry/error state when triggerable.</li>
+          <li>Offline blocking state when triggerable.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Modal Coverage</h2>
+        <p>
+          Every modal registered in <code>ModalRegistry.tsx</code> must be
+          tested. For each modal: open it through the normal user path if
+          possible, verify content, primary action, secondary action, close/back
+          behavior, state transitions, layout, screenshots, and logs. If the
+          normal path is not reachable, use the dev modal toggle panel if
+          available. If still unreachable, record it as
+          <code>UNREACHABLE</code> with evidence.
+        </p>
+        <div class="grid">
+          <div class="card">
+            <h3>Onboarding And Help</h3>
+            <ul>
+              <li><code>welcome</code></li>
+              <li><code>welcomeBack</code></li>
+              <li><code>instructions</code></li>
+              <li><code>info</code></li>
+              <li><code>hint</code></li>
+              <li><code>skip</code></li>
+              <li><code>credits</code></li>
+              <li><code>aboutLegal</code></li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Gameplay Results</h3>
+            <ul>
+              <li><code>victory</code></li>
+              <li><code>loss</code></li>
+              <li><code>achievementUnlockFanfare</code></li>
+              <li><code>streakIncreaseFanfare</code></li>
+              <li><code>levelUpFanfare</code></li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Profile And Settings</h3>
+            <ul>
+              <li><code>settings</code></li>
+              <li><code>fullProfileDetails</code></li>
+              <li><code>upgradeAccount</code></li>
+              <li><code>updateUsername</code></li>
+              <li><code>DeleteAccountConfirmationModal</code> nested inside profile details</li>
+              <li><code>achievements</code></li>
+              <li><code>stats</code></li>
+              <li><code>leaderboard</code></li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Shop</h3>
+            <ul>
+              <li><code>coinShop</code></li>
+              <li><code>coinPurchaseFanfare</code></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Functionality Coverage</h2>
+        <p>
+          The testing strategy must treat the project as a whole product, not
+          only a happy-path game loop. Every item below must be tested, marked
+          with a status, and backed by evidence.
+        </p>
+
+        <h3>Authentication And Session</h3>
+        <ul>
+          <li>Cold launch with no authenticated user.</li>
+          <li>Guest/anonymous entry and guest-only local behavior.</li>
+          <li>Disposable non-guest account for live Firebase writes.</li>
+          <li>Email/password login if available.</li>
+          <li>Sign up if reachable.</li>
+          <li>Invalid auth inputs and visible error messages.</li>
+          <li>Social auth buttons render and either work or fail gracefully.</li>
+          <li>Logout returns to unauthenticated flow and clears local state as expected.</li>
+          <li>Upgrade account flow from guest profile path.</li>
+          <li>Guest account deletion from profile details opens confirmation, supports cancel, confirms deletion, signs out, clears local guest state, and returns to the unauthenticated flow.</li>
+          <li>Auth-provider account deletion from profile details opens confirmation, supports cancel, confirms deletion through the <code>deleteAccount</code> callable, signs out, and prevents the deleted provider account from silently restoring stale app data.</li>
+          <li>Account deletion failure path shows the expected error modal and does not force logout or leave the profile modal in a broken loading state.</li>
+          <li>App restart after login restores expected session.</li>
+          <li>Every shared session function is validated for both guest and provider-auth personas, including navigation state, profile state, settings state, logout/delete state, and restart behavior.</li>
+        </ul>
+
+        <h3>Riddle Loading And Mode Selection</h3>
+        <ul>
+          <li>Daily Challenge available path.</li>
+          <li>Daily Challenge already completed/unavailable fallback to Classic.</li>
+          <li>Classic mode riddle fetch by <code>progress.classicIndex</code>.</li>
+          <li>Riddle initialization/loading spinner behavior.</li>
+          <li>Riddle initialization retry/error behavior if triggerable.</li>
+          <li>Current riddle changes after win, skip, or next level.</li>
+          <li>Mode label renders correctly for Daily/Classic states.</li>
+        </ul>
+
+        <h3>Core Gameplay</h3>
+        <ul>
+          <li>All gameplay paths below must be tested once as guest and once as provider-authenticated user, with persona-specific persistence expectations.</li>
+          <li>Letter input through on-screen keyboard.</li>
+          <li>Backspace behavior on empty and populated guesses.</li>
+          <li>Tapping guess slots changes active slot correctly.</li>
+          <li>Submit disabled for incomplete guesses.</li>
+          <li>Submit enabled for complete guesses.</li>
+          <li>Incorrect guess feedback with red/yellow/green states.</li>
+          <li>Duplicate-letter feedback where a suitable riddle/guess exists.</li>
+          <li>Correct guess win path.</li>
+          <li>Loss after exhausting attempts.</li>
+          <li>Continue offer after initial attempt limit.</li>
+          <li>Coin continue path.</li>
+          <li>Rewarded-ad continue path if ad is available.</li>
+          <li>Final loss after continue attempts.</li>
+          <li>Next level after win.</li>
+          <li>Skip level from controls.</li>
+          <li>Keyboard color/state preservation across guesses and mode changes.</li>
+          <li>Game state reset between riddles.</li>
+        </ul>
+
+        <h3>Economy, Rewards, And Shop</h3>
+        <ul>
+          <li>All economy and shop paths must be tested for both guest and provider-authenticated users; record where purchases, ads, or backend writes differ by persona.</li>
+          <li>Coin display reads current balance.</li>
+          <li>Coin animation after rewards and purchases.</li>
+          <li>Hint purchase spends coins and reveals one unrevealed letter.</li>
+          <li>Multiple hints reveal different slots until no hint remains.</li>
+          <li>Insufficient coin behavior for hint, skip, and continue.</li>
+          <li>Skip spends correct mode-specific coin amount.</li>
+          <li>Coin continue spends correct amount.</li>
+          <li>Victory rewards display correct coins and total.</li>
+          <li>Achievement bonus coins display and persist.</li>
+          <li>Coin shop opens from header and insufficient-coin paths.</li>
+          <li>Coin shop product loading, empty, error, watch-video, pay/play, and purchase attempt states.</li>
+          <li>Coin purchase fanfare where triggerable.</li>
+        </ul>
+
+        <h3>Profile, Stats, Achievements, Leaderboard</h3>
+        <ul>
+          <li>All profile surfaces must be tested for both guest and provider-authenticated users, including upgrade prompts for guests and backend refresh for provider-auth users.</li>
+          <li>Profile modal opens and refreshes latest Firestore-backed player data.</li>
+          <li>Delete Account button is present in profile actions for guest users and auth-provider users.</li>
+          <li>Delete account confirmation text, destructive styling, cancel action, confirm action, loading state, and close/back behavior are correct.</li>
+          <li>Stats modal renders games, wins, streaks, XP, level, and averages correctly.</li>
+          <li>Achievements modal shows locked and unlocked states correctly.</li>
+          <li>Achievement unlock fanfare appears when achievements unlock.</li>
+          <li>Leaderboard opens, loads data, switches tabs, and handles empty/error states.</li>
+          <li>Update username modal opens where reachable, validates input, saves, and reflects the updated name.</li>
+        </ul>
+
+        <h3>Settings, Preferences, And System UI</h3>
+        <ul>
+          <li>All settings and system UI paths must be tested for both guest and provider-authenticated users.</li>
+          <li>Settings modal opens and closes.</li>
+          <li>Sound toggle updates UI, persists, and controls mute overlay behavior.</li>
+          <li>Haptics toggle updates UI and persists.</li>
+          <li>Language selector changes visible strings or logs unsupported behavior.</li>
+          <li>Help/support email link is invoked or fails gracefully.</li>
+          <li>Credits modal opens from settings.</li>
+          <li>About/Legal modal opens from settings.</li>
+          <li>Back button behavior closes modals and does not corrupt game state.</li>
+          <li>Offline modal appears when connectivity is disabled and clears after reconnection.</li>
+        </ul>
+
+        <h3>Persistence And Recovery</h3>
+        <ul>
+          <li>Persistence must be verified separately for local guest storage and provider-auth Firestore-backed data.</li>
+          <li>Guest progress persists locally across app restart.</li>
+          <li>Guest progress remains local and does not create backend game-completion writes.</li>
+          <li>Non-guest progress refreshes from Firestore.</li>
+          <li>Settings persist across app restart.</li>
+          <li>In-progress guest session restore works where applicable.</li>
+          <li>Network interruptions do not leave the UI permanently stuck.</li>
+          <li>Loading spinners appear and disappear correctly.</li>
+          <li>Crash-free behavior through all tested flows.</li>
+        </ul>
+
+        <h3>Visual, Accessibility, And Device Fit</h3>
+        <ul>
+          <li>Visual and accessibility checks must cover both personas where content differs.</li>
+          <li>No clipped text, overlapped UI, unreachable buttons, or off-screen modals.</li>
+          <li>Safe-area behavior is correct on every device profile.</li>
+          <li>Tablet and foldable layouts scale intentionally in portrait.</li>
+          <li>Touch targets are large enough and consistently tappable.</li>
+          <li>Accessibility labels exist for critical controls where exposed in UI tree.</li>
+          <li>Dynamic content does not resize controls unexpectedly.</li>
+          <li>Animations do not block interaction or cause stuck loading states.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Live Firebase Verification</h2>
+        <p>
+          Use the live Firebase project <code>qwordly-6ba44</code> with a
+          disposable non-guest QA account. Guest mode is not valid for backend
+          write verification because guest gameplay is local-only and skips
+          <code>completeGame</code>.
+        </p>
+        <h3>Baseline Snapshot</h3>
+        <p>Capture these fields before every backend-mutating flow:</p>
+        <ul>
+          <li><code>coins</code></li>
+          <li><code>progress.classicIndex</code></li>
+          <li><code>progress.dailyChallengeIndex</code></li>
+          <li><code>stats.xp</code>, <code>stats.level</code></li>
+          <li><code>stats.gamesPlayed</code>, <code>stats.wins</code>, <code>stats.totalWins</code></li>
+          <li><code>stats.totalWordsGuessed</code>, <code>stats.totalGuessesInWins</code></li>
+          <li><code>stats.dailyPuzzlesCompleted</code>, <code>stats.challengeWins</code></li>
+          <li><code>stats.totalHintsUsed</code></li>
+          <li><code>stats.winStreak</code>, <code>stats.bestStreak</code></li>
+          <li><code>lastDailyChallengeCompletedAt</code></li>
+          <li><code>unlockedAchievements</code></li>
+        </ul>
+        <h3>Expected Mutation Checks</h3>
+        <ul>
+          <li>Classic win reward: <code>15</code> coins plus achievement bonuses.</li>
+          <li>Daily win reward: <code>50</code> coins plus achievement bonuses.</li>
+          <li>Achievement unlock reward: <code>25</code> coins each.</li>
+          <li>Hint cost: <code>50</code> coins and increments <code>stats.totalHintsUsed</code>.</li>
+          <li>Classic skip cost: <code>100</code> coins.</li>
+          <li>Daily skip cost: <code>150</code> coins.</li>
+          <li>Coin continue cost: <code>100</code> coins.</li>
+          <li>Wins increment games, wins, total wins, guesses, XP, progress, and streak fields as appropriate.</li>
+          <li>Loss increments games and total guesses but not win counters.</li>
+          <li>Leaderboard entry updates for non-anonymous users when applicable.</li>
+          <li>Account deletion removes <code>users/{uid}</code>, <code>leaderboard/{uid}</code>, user-owned <code>purchaseAnalytics</code> and <code>notificationHistory</code> docs, avatar/export storage prefixes, and the Firebase Auth user.</li>
+          <li>Guest account deletion must remove the anonymous Firebase Auth user and local guest data without leaving a restorable guest profile on app restart.</li>
+          <li>Provider-auth account deletion must remove the provider-backed Firebase Auth user and Firestore profile data; a later sign-in with the same provider should create a fresh account/profile rather than reviving deleted progress.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Acceptance Criteria</h2>
+        <ul>
+          <li>Every device in the agreed matrix has screenshots and logs.</li>
+          <li>Every requested page has PASS, FAIL, SKIPPED, BLOCKED, or UNREACHABLE status with evidence.</li>
+          <li>Every registered modal has PASS, FAIL, SKIPPED, BLOCKED, or UNREACHABLE status with evidence.</li>
+          <li>Every functionality item in this strategy is accounted for in this HTML file.</li>
+          <li>Every shared functionality item has separate guest and provider-auth status, or a documented persona-specific skip reason.</li>
+          <li>Every live Firebase write path has before/after snapshots and expected-vs-actual deltas.</li>
+          <li>Guest and auth-provider account deletion are both verified with UI evidence, local-session evidence, and Firebase/Auth cleanup evidence.</li>
+          <li>No issue is left as a vague note; each issue has reproduction steps and evidence.</li>
+          <li>The final QA report references screenshot directories, log paths, Firebase UID, deltas, pass/fail summary, defects, and cleanup.</li>
+        </ul>
+      </section>
+
+      <section id="run-tracker">
+        <h2>Embedded Run Tracker</h2>
+        <p>
+          This section replaces <code>emulator-tests/todo.md</code>. Future
+          agents must update this section directly so the HTML remains the
+          single source of truth.
+        </p>
+
+        <h3>Run Metadata</h3>
+        <ul>
+          <li>Date: 2026-05-23</li>
+          <li>Tester/agent: Codex</li>
+          <li>Workspace: <code>E:\qwordly</code></li>
+          <li>Firebase project: <code>qwordly-6ba44</code></li>
+          <li>Mode: Live Firebase verification with disposable non-guest account for backend writes.</li>
+          <li>Tooling note: Android Studio MCP was requested, but no Android Studio MCP tool is exposed in this session. Android SDK, emulator, and ADB CLI fallbacks were used.</li>
+          <li>Status key: TODO, IN_PROGRESS, PASS, FAIL, BLOCKED, SKIPPED, UNREACHABLE.</li>
+        </ul>
+
+        <h3>Environment Setup</h3>
+        <ul>
+          <li>PASS: Inventory Android SDK, emulator, platform tools, command-line tools, and existing AVDs.</li>
+          <li>PASS: Required SDK packages are present: platform-tools 37.0.0, emulator 36.5.11, platforms android-36/android-36.1, build-tools 36.0.0/36.1.0, system-images android-36.1 google_apis_playstore x86_64.</li>
+          <li>PASS: Created missing AVDs for the comprehensive device matrix.</li>
+          <li>PASS: Booted and adb-verified each emulator. Captured setup screenshots and logcat files for all AVDs.</li>
+        </ul>
+
+        <h3>Device Matrix Progress</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Device</th>
+              <th>Evidence</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>PASS</td>
+              <td><code>rq_pixel_4a_api_36_1</code></td>
+              <td><code>emulator-tests/images/rq_pixel_4a_api_36_1/00-boot-home.png</code>; <code>emulator-tests/logs/rq_pixel_4a_api_36_1/00-boot-logcat.txt</code></td>
+            </tr>
+            <tr>
+              <td>PASS</td>
+              <td><code>rq_pixel_7_api_36_1</code></td>
+              <td><code>emulator-tests/images/rq_pixel_7_api_36_1/00-boot-home.png</code>; <code>emulator-tests/logs/rq_pixel_7_api_36_1/00-boot-logcat.txt</code></td>
+            </tr>
+            <tr>
+              <td>PASS</td>
+              <td><code>rq_pixel_8_pro_api_36_1</code></td>
+              <td><code>emulator-tests/images/rq_pixel_8_pro_api_36_1/00-boot-home.png</code>; <code>emulator-tests/logs/rq_pixel_8_pro_api_36_1/00-boot-logcat.txt</code></td>
+            </tr>
+            <tr>
+              <td>PASS</td>
+              <td><code>rq_pixel_fold_outer_api_36_1</code></td>
+              <td><code>emulator-tests/images/rq_pixel_fold_outer_api_36_1/00-boot-home.png</code>; <code>emulator-tests/logs/rq_pixel_fold_outer_api_36_1/00-boot-logcat.txt</code></td>
+            </tr>
+            <tr>
+              <td>PASS</td>
+              <td><code>rq_pixel_fold_unfolded_api_36_1</code></td>
+              <td><code>emulator-tests/images/rq_pixel_fold_unfolded_api_36_1/00-boot-home.png</code>; <code>emulator-tests/logs/rq_pixel_fold_unfolded_api_36_1/00-boot-logcat.txt</code></td>
+            </tr>
+            <tr>
+              <td>PASS</td>
+              <td><code>rq_small_tablet_api_36_1</code></td>
+              <td><code>emulator-tests/images/rq_small_tablet_api_36_1/00-boot-home.png</code>; <code>emulator-tests/logs/rq_small_tablet_api_36_1/00-boot-logcat.txt</code></td>
+            </tr>
+            <tr>
+              <td>PASS</td>
+              <td><code>rq_large_tablet_api_36_1</code></td>
+              <td><code>emulator-tests/images/rq_large_tablet_api_36_1/00-boot-home.png</code>; <code>emulator-tests/logs/rq_large_tablet_api_36_1/00-boot-logcat.txt</code></td>
+            </tr>
+            <tr>
+              <td>PASS</td>
+              <td><code>rq_low_density_tablet_api_36_1</code></td>
+              <td><code>emulator-tests/images/rq_low_density_tablet_api_36_1/00-boot-home.png</code>; <code>emulator-tests/logs/rq_low_density_tablet_api_36_1/00-boot-logcat.txt</code></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Page Coverage Progress</h3>
+        <ul>
+          <li>TODO: Initial loading/auth spinner.</li>
+          <li>TODO: Landing screen.</li>
+          <li>TODO: Login screen.</li>
+          <li>UNREACHABLE: Sign Up screen if reachable. Evidence: `src/screens/auth/SignUpScreen.tsx` exists and `LoginScreen` navigates to `AppStrings.Navigation.SIGN_UP`, but `src/navigation/NavigationStack.tsx` does not register a Sign Up stack screen in the unauthenticated navigator.</li>
+          <li>TODO: Riddle loading state.</li>
+          <li>TODO: Initialization retry/error state when triggerable.</li>
+          <li>TODO: Offline blocking state when triggerable.</li>
+        </ul>
+
+        <h3>Modal Coverage Progress</h3>
+        <ul>
+          <li>TODO: welcome</li>
+          <li>TODO: welcomeBack</li>
+          <li>TODO: instructions</li>
+          <li>TODO: info</li>
+          <li>TODO: hint</li>
+          <li>TODO: skip</li>
+          <li>TODO: victory</li>
+          <li>TODO: loss</li>
+          <li>TODO: coinShop</li>
+          <li>TODO: coinPurchaseFanfare</li>
+          <li>TODO: achievementUnlockFanfare</li>
+          <li>TODO: streakIncreaseFanfare</li>
+          <li>TODO: levelUpFanfare</li>
+          <li>TODO: settings</li>
+          <li>TODO: fullProfileDetails</li>
+          <li>TODO: upgradeAccount</li>
+          <li>TODO: updateUsername</li>
+          <li>TODO: DeleteAccountConfirmationModal</li>
+          <li>TODO: achievements</li>
+          <li>TODO: stats</li>
+          <li>TODO: leaderboard</li>
+          <li>TODO: credits</li>
+          <li>TODO: aboutLegal</li>
+        </ul>
+
+        <h3>Functionality Coverage Progress</h3>
+        <p>
+          Each item below must track guest and provider-auth results
+          separately. Suggested inline format:
+          <code>Guest: TODO/PASS/FAIL</code> and
+          <code>Provider-auth: TODO/PASS/FAIL</code>.
+        </p>
+        <ul>
+          <li>TODO: Guest entry for UI-only guest behavior. Guest: TODO. Provider-auth: SKIPPED, guest-only entry path.</li>
+          <li>TODO: Disposable provider-auth account for live Firebase write verification. Guest: SKIPPED, backend write verification must not use guest mode. Provider-auth: TODO.</li>
+          <li>TODO: Email/password login if available. Guest: SKIPPED, provider/auth-only flow. Provider-auth: TODO.</li>
+          <li>UNREACHABLE: Signup if reachable. Guest: SKIPPED, provider/auth-only flow. Provider-auth: UNREACHABLE. Evidence: `SignUpScreen.tsx` exists, but the Sign Up route is not registered in `NavigationStack.tsx`.</li>
+          <li>TODO: Logout. Guest: TODO. Provider-auth: TODO.</li>
+          <li>TODO: Upgrade account. Guest: TODO. Provider-auth: SKIPPED when already upgraded/provider-authenticated.</li>
+          <li>TODO: Guest account deletion: profile flow, confirmation modal, cancel, confirm, sign-out, local guest data cleanup, restart does not restore deleted guest. Guest: TODO. Provider-auth: SKIPPED, covered by provider deletion item.</li>
+          <li>TODO: Auth-provider account deletion: profile flow, confirmation modal, cancel, confirm, deleteAccount callable, sign-out, Auth/Firestore cleanup, later provider sign-in creates fresh profile instead of restoring deleted progress. Guest: SKIPPED, covered by guest deletion item. Provider-auth: TODO.</li>
+          <li>TODO: Account deletion failure path if triggerable: error modal appears and user is not forced into a broken logout/loading state.</li>
+          <li>TODO: Daily Challenge. Guest: TODO. Provider-auth: TODO.</li>
+          <li>TODO: Classic mode. Guest: TODO. Provider-auth: TODO.</li>
+          <li>TODO: Daily fallback to Classic. Guest: TODO. Provider-auth: TODO.</li>
+          <li>TODO: Correct win. Guest: TODO. Provider-auth: TODO.</li>
+          <li>TODO: Incorrect guess feedback. Guest: TODO. Provider-auth: TODO.</li>
+          <li>TODO: Duplicate-letter feedback where possible. Guest: TODO. Provider-auth: TODO.</li>
+          <li>TODO: Loss and continue paths. Guest: TODO. Provider-auth: TODO.</li>
+          <li>TODO: Next level. Guest: TODO. Provider-auth: TODO.</li>
+          <li>TODO: Skip. Guest: TODO. Provider-auth: TODO.</li>
+          <li>TODO: Hint. Guest: TODO. Provider-auth: TODO.</li>
+          <li>TODO: Insufficient coins. Guest: TODO. Provider-auth: TODO.</li>
+          <li>TODO: Keyboard input, backspace, slot tapping, submit disabled/enabled. Guest: TODO. Provider-auth: TODO.</li>
+          <li>TODO: Coin display and animation. Guest: TODO. Provider-auth: TODO.</li>
+          <li>TODO: Profile, settings, mute, sound/haptics, language selector. Guest: TODO. Provider-auth: TODO.</li>
+          <li>TODO: Support email, credits, about/legal. Guest: TODO. Provider-auth: TODO.</li>
+          <li>TODO: Stats, achievements, leaderboard tabs. Guest: TODO. Provider-auth: TODO.</li>
+          <li>TODO: Coin shop states and actions. Guest: TODO. Provider-auth: TODO.</li>
+          <li>TODO: App restart persistence and profile refresh. Guest: TODO local persistence. Provider-auth: TODO Firestore-backed persistence.</li>
+        </ul>
+
+        <h3>Firebase Snapshots Progress</h3>
+        <ul>
+          <li>TODO: Capture before snapshot for disposable non-guest QA account.</li>
+          <li>TODO: Capture after snapshots for Classic win, Daily win if available, hint, skip, continue, loss, and achievements.</li>
+          <li>TODO: Capture before/after snapshots for guest account deletion and auth-provider account deletion. Verify deletion of users/{uid}, leaderboard/{uid}, user-owned purchaseAnalytics and notificationHistory docs, avatar/export storage prefixes, and Firebase Auth user where applicable.</li>
+        </ul>
+
+        <h3>Issues And Blockers</h3>
+        <ul>
+          <li>INFO: Android Studio MCP requested but unavailable in active tools. Continuing with SDK/ADB fallback unless a matching MCP tool becomes available.</li>
+          <li>INFO: Existing AVDs before setup: Medium_Phone_API_36.1 and Medium_Tablet.</li>
+          <li>INFO: Boot-check script emitted one PowerShell null-trim warning after boot polling, but every target AVD reported BOOT_PASS and wrote screenshot/log evidence.</li>
+          <li>INFO: First Expo Android install attempt was interrupted by the user after running for approximately 12 minutes. Cleanup stopped leftover Java/Node build processes. No APK was produced and `com.roobsworld.riddlequest` was not installed on `emulator-5554`.</li>
+          <li>PASS: Retried Android build with a hard 10-minute command timeout. Build produced `android/app/build/outputs/apk/debug/app-debug.apk`.</li>
+          <li>INFO: Expo attempted to install the APK on connected physical device `R5CT811CNFE` instead of emulator and failed with `INSTALL_FAILED_VERSION_DOWNGRADE`. Workaround: manually installed the generated APK to `emulator-5554` with `adb -s emulator-5554 install -r -d android/app/build/outputs/apk/debug/app-debug.apk`; install succeeded.</li>
+          <li>IN_PROGRESS: Start Metro/dev server with hard timeout and launch installed app on `emulator-5554`.</li>
+        </ul>
+
+        <h3>Skipped Or Unreachable</h3>
+        <ul>
+          <li>UNREACHABLE: Sign Up page/provider signup flow. `LoginScreen` references `AppStrings.Navigation.SIGN_UP`, but `NavigationStack.tsx` omits a corresponding `Stack.Screen`; this prevents normal navigation to `SignUpScreen`.</li>
+        </ul>
+
+        <h3>Handoff Notes</h3>
+        <ul>
+          <li>PASS: Emulator setup completed by inventorying local SDK and existing AVDs, creating the requested AVD matrix, and boot-verifying all AVDs.</li>
+          <li>PASS: Created exhaustive QA strategy artifact at <code>docs/android-emulator-firebase-qa-plan.html</code>.</li>
+          <li>INFO: Strategy now requires every functionality item to be tested or explicitly marked <code>BLOCKED</code>, <code>SKIPPED</code>, or <code>UNREACHABLE</code> with evidence. Coverage includes pages requested by the user, every registered modal, all gameplay branches, auth/session behavior, account deletion, economy/shop, profile/stats/achievements/leaderboard, settings/preferences, persistence/recovery, visual/device fit, accessibility, logs, screenshots, and live Firebase deltas.</li>
+          <li>PASS: Updated QA strategy so all shared functionality must be tested for both guest/anonymous users and provider-authenticated users, with separate statuses and persona-specific persistence/backend expectations.</li>
+          <li>PASS: Updated QA strategy to require account deletion testing for guest users and auth-provider users, including UI confirmation/cancel/confirm paths, failure handling, sign-out behavior, local cleanup, Firebase Auth deletion, Firestore cleanup, storage cleanup, and restart/re-sign-in verification.</li>
+          <li>PASS: Merged <code>emulator-tests/todo.md</code> into this HTML file so this document is now the single source of truth.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Copy-Ready Prompt</h2>
+        <pre>You are working in E:\qwordly, an Expo React Native game called Riddle Quest/Qwordly. Follow AGENTS.md: use Expo MCP for Expo, React Native, EAS, simulator, and React Native DevTools tasks when available. Use Android Studio MCP for Android SDK setup, emulator downloads, AVD creation, emulator boot, device inspection, screenshots, and logs when available.
+
+This is an exhaustive QA run. Leave nothing to chance. Every single piece of functionality in the project must be tested or explicitly marked BLOCKED, SKIPPED, or UNREACHABLE with evidence and rationale. Every shared flow must be tested for both user personas: guest/anonymous user and provider-authenticated user. Track separate guest and provider-auth statuses for each page, modal, and function. If a feature only applies to one persona, mark the other persona SKIPPED with a precise reason.
+
+Before starting, update the Embedded Run Tracker section in docs/android-emulator-firebase-qa-plan.html. Keep this HTML file updated continuously as the single source of truth for strategy, progress, blockers, defects, skipped items, Firebase snapshots, screenshot paths, log paths, and handoff notes. Use statuses TODO, IN_PROGRESS, PASS, FAIL, BLOCKED, SKIPPED, and UNREACHABLE. Do not delete issue history; append updates so future agents can understand what happened.
+
+Download and set up any missing Android SDK components, Platform Tools, Android Emulator, target SDK 36 platform/build tools, and Google Play/Google APIs system images. Create or reuse a wide Android emulator matrix: small phone, standard phone, large phone, foldable outer display, foldable unfolded/tablet, small tablet, large tablet, and low-density tablet where feasible. At minimum, test small phone, standard phone, large phone, foldable unfolded, small tablet, and large tablet.
+
+Run the app on every emulator. Prefer Expo MCP for the Expo/React Native development flow; fall back to pnpm run android and pnpm run start only if MCP tools are unavailable. Capture screenshots for every requested page, modal, and meaningful state under emulator-tests/images/{device-name}/ with ordered descriptive filenames. Capture logs under emulator-tests/logs/{device-name}/. Record every screenshot and log path in the Embedded Run Tracker section of docs/android-emulator-firebase-qa-plan.html.
+
+Test requested pages: loading/auth spinner, Landing, Login, Sign Up if reachable, riddle loading, initialization retry/error, and offline blocking state. Do not include Forgot Password screen, New Password screen, or Game screen as standalone page coverage items. If Sign Up or another requested screen exists in source but is unreachable, record that as a defect in the Embedded Run Tracker section of docs/android-emulator-firebase-qa-plan.html.
+
+Test every registered modal: welcome, welcomeBack, instructions, info, hint, skip, victory, loss, coinShop, coinPurchaseFanfare, achievementUnlockFanfare, streakIncreaseFanfare, levelUpFanfare, settings, fullProfileDetails, upgradeAccount, updateUsername, achievements, stats, leaderboard, credits, and aboutLegal. Also test the DeleteAccountConfirmationModal nested inside the profile details flow. For each modal verify open path, content, primary and secondary actions, close/back behavior, layout, and screenshots. If a modal is registered but has no normal user path, use the dev modal toggle panel if available; otherwise mark it UNREACHABLE with evidence in the Embedded Run Tracker section of docs/android-emulator-firebase-qa-plan.html.
+
+Test all functionality for both guest and provider-auth personas, not only the happy path: cold launch, guest entry, provider auth, email/password login if available, signup if reachable, invalid auth inputs, social auth button behavior, logout, upgrade account, guest account deletion, auth-provider account deletion, account deletion cancel path, account deletion failure path if triggerable, app restart session restore, Daily Challenge, Classic mode, daily fallback to Classic, riddle loading/retry/error states, correct win, incorrect guess feedback, duplicate-letter feedback where possible, loss, continue offer, coin continue, rewarded-ad continue if available, final loss, next level, skip, hint, multiple hints, no-hint-remaining behavior, insufficient coins, keyboard input, backspace, tapping guess slots, disabled/enabled submit, coin display, coin animation, profile refresh, settings, sound mute, haptics, language selector, support email link, credits, about/legal, stats, achievements, leaderboard tabs, coin shop loading/error/empty states, purchase attempt, watch video, pay/play, all fanfare modals, offline blocking/recovery, app restart persistence, guest local persistence, provider-auth Firestore refresh, loading spinner recovery, crash-free behavior, visual layout, accessibility labels, and touch target behavior. For guest, verify local-only persistence and no invalid backend-completion assumptions. For provider-auth, verify Firestore-backed state, live Firebase deltas, leaderboard behavior, and provider account lifecycle.
+
+Use the live Firebase project qwordly-6ba44 with a disposable non-guest QA account for backend verification. Do not use guest mode for Firebase write verification because guest gameplay is local-only and skips completeGame. Before gameplay, capture users/{uid}: coins, progress.classicIndex, progress.dailyChallengeIndex, stats.xp, stats.level, stats.gamesPlayed, stats.wins, stats.totalWins, stats.totalWordsGuessed, stats.totalGuessesInWins, stats.dailyPuzzlesCompleted, stats.challengeWins, stats.totalHintsUsed, stats.winStreak, stats.bestStreak, lastDailyChallengeCompletedAt, and unlockedAchievements. Store before/after snapshots and expected-vs-actual deltas in the Embedded Run Tracker section of docs/android-emulator-firebase-qa-plan.html.
+
+After Classic wins, Daily wins, hints, skips, continues, losses, achievement unlocks, guest account deletion, and auth-provider account deletion, re-read Firestore/Auth state and compare expected vs actual deltas. Use server constants as source of truth: Classic win reward 15 coins, Daily win reward 50 coins, achievement unlock reward 25 coins each, hint cost 50, Classic skip cost 100, Daily skip cost 150, and coin continue cost 100. For account deletion, verify users/{uid}, leaderboard/{uid}, user-owned purchaseAnalytics and notificationHistory docs, avatar/export storage prefixes, and the Firebase Auth user are deleted where applicable. Verify a deleted guest cannot restore local guest progress after restart, and a deleted provider-auth account does not silently restore deleted progress on a later sign-in.
+
+Produce a final QA report listing emulator names, API levels, screen sizes, launch method, screenshot directories, log paths, Auth UID, before/after Firebase snapshots, expected-vs-actual Firebase deltas, pass/fail for every requested page, modal, and function, defects found with reproduction steps, and cleanup performed or recommended. Ensure docs/android-emulator-firebase-qa-plan.html is fully up to date before finishing. Do not deploy Firebase Functions, change Firestore rules, edit production data outside the disposable QA account, or make source changes unless explicitly requested.</pre>
+      </section>
+    </main>
+  </body>
+</html>

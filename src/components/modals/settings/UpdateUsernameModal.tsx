@@ -17,7 +17,7 @@ import {
   INPUT_BORDER_RADIUS,
   INPUT_PADDING,
   CLOSE_BUTTON_INSET,
-  getResponsiveModalHeight,
+  MODAL_MAX_HEIGHT,
 } from "../../../constants/layout";
 import {SPACING} from "../../../styles";
 import SlideInModalContent from "../../shared/SlideInModalContent";
@@ -36,8 +36,8 @@ interface UpdateUsernameModalProps {
 }
 
 const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({isVisible, onClose, currentUsername}) => {
-  const COMPACT_MODAL_HEIGHT = getResponsiveModalHeight(0.75);
-  const compactContentHeight = getResponsiveModalHeight(0.56);
+  const COMPACT_MODAL_HEIGHT = Math.min(MODAL_HEIGHT * 0.75, MODAL_MAX_HEIGHT ?? MODAL_HEIGHT * 0.75);
+  const compactContentHeight = Math.min(MODAL_HEIGHT * 0.56, MODAL_MAX_HEIGHT ?? MODAL_HEIGHT * 0.56);
   const {updatePlayerData} = useAuth();
   const [newUsername, setNewUsername] = useState(currentUsername || "");
   const [isSubmitting, setIsSubmitting] = useState(false);

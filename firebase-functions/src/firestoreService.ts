@@ -9,7 +9,7 @@ import type {
   DailyRiddle,
   UnlockedAchievement,
 } from "./validation/firestoreSchemas";
-import {RiddleCollections} from "./validation/firestoreSchemas";
+import {PlayerSchema, RiddleCollections} from "./validation/firestoreSchemas";
 // Removed import for non-existent models.js: import type { GameState } from "./models.js";
 import * as functions from "firebase-functions";
 
@@ -203,20 +203,30 @@ export async function initializeNewUser(
     username: string;
     displayName?: string;
     avatarUrl?: string;
+    seed?: Partial<Player>;
   },
 ): Promise<void> {
   try {
+    const seed = userData.seed ?? {};
+    const seedCoins =
+      typeof seed.coins === "number" && Number.isInteger(seed.coins) && seed.coins >= 0
+        ? seed.coins
+        : INITIAL_COINS;
+    const seedStats = seed.stats && typeof seed.stats === "object" ? seed.stats : {};
+    const seedProgress = seed.progress && typeof seed.progress === "object" ? seed.progress : {};
+    const seedAchievements = Array.isArray(seed.unlockedAchievements) ? seed.unlockedAchievements : [];
+    const now = Date.now();
     const defaultUserData: Player = {
       userId,
       email: userData.email,
       username: userData.username,
       displayName: userData.displayName,
       avatarUrl: userData.avatarUrl,
-      coins: INITIAL_COINS,
-      hasPurchasedApp: false,
-      createdAt: Date.now(),
-      registeredAt: Date.now(),
-      lastLogin: Date.now(),
+      coins: seedCoins,
+      hasPurchasedApp: typeof seed.hasPurchasedApp === "boolean" ? seed.hasPurchasedApp : false,
+      createdAt: now,
+      registeredAt: now,
+      lastLogin: now,
       stats: {
         xp: 0,
         level: 1,
@@ -234,16 +244,23 @@ export async function initializeNewUser(
         totalWins: 0,
         totalGuessesInWins: 0,
         totalHintsUsed: 0,
+        ...seedStats,
       },
-      unlockedAchievements: [],
+      unlockedAchievements: seedAchievements,
       progress: {
         classicIndex: 1,
         dailyChallengeIndex: 0,
         dailyChallengeCurrentQuestion: 0,
+        ...seedProgress,
       },
     };
 
-    await getDb().collection("users").doc(userId).set(defaultUserData);
+    if (typeof seed.lastDailyChallengeCompletedAt === "number") {
+      defaultUserData.lastDailyChallengeCompletedAt = seed.lastDailyChallengeCompletedAt;
+    }
+
+    const validatedUserData = PlayerSchema.parse(defaultUserData);
+    await getDb().collection("users").doc(userId).set(validatedUserData);
     functions.logger.info(`Initialized new user document for ${userId} with default stats and progress`);
   } catch (error) {
     functions.logger.error(`Error initializing new user ${userId}:`, error);

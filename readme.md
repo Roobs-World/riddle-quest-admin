@@ -113,15 +113,29 @@ Use this checklist to track the manual security, privacy, store, and account-del
 
 ### Legal and store compliance tasks
 
-- [ ] Publish legal and support pages
-  - Publish real public URLs for:
+- [x] Verify localized legal and support pages locally
+  - App code is wired for `https://www.roobsworld.com` in all supported app languages.
+  - The 2026-05-23 local reachability check passed for all 119 URLs at `http://localhost:3000/riddle-quest/{language}`.
+  - Production deploy from `E:\portfolio` was attempted with `pnpm dlx vercel@latest deploy --prod --yes`, but Vercel blocked it because the team/account is suspended pending a valid payment method.
+  - Live deployment is unavailable at the moment, so the `www.roobsworld.com` links are assumed valid once the verified local site can be deployed.
+  - Keep [legal-deploy-pages-prompt.txt](legal-deploy-pages-prompt.txt) for the eventual deploy.
+  - Required hosted page types:
     - Privacy Policy
     - Terms of Use
     - Licenses / third-party notices
     - Account deletion request
     - Data export request
-  - If the final URLs differ from the current `roobsworld.com` paths, update `src/constants/legal.ts`.
-  - Verify the links from sign-up and Settings on device before release.
+    - Support
+  - URL format: `/riddle-quest/{language}`, `/privacy-policy`, `/terms-of-use`, `/account-deletion`, `/data-export`, `/third-party-licenses`, and `/support`.
+  - Supported hosted languages: `en`, `es`, `pt`, `fr`, `de`, `ja`, `ko`, `zh`, `hi`, `ru`, `tr`, `ar`, `id`, `it`, `nl`, `pl`, `vi`.
+  - `src/constants/legal.ts` already generates these localized `www.roobsworld.com` paths.
+  - Do not keep local Markdown copies of hosted legal pages in this repository.
+  - Deferred until deployment is available: live 119-URL matrix verification and live on-device link verification from Sign Up and Settings.
+
+- [ ] Enter final store-console legal/privacy disclosures
+  - This is the only active legal/store checklist item while live deployment is unavailable.
+  - Use the locally verified `www.roobsworld.com/riddle-quest/{language}` URL plan as the intended production URL set.
+  - Use `https://www.roobsworld.com/riddle-quest/en/privacy-policy` as the canonical privacy policy URL where a store console requires one URL.
 
 - [ ] Complete Apple App Privacy
   - Use [docs/app-store-privacy-disclosures.md](docs/app-store-privacy-disclosures.md) as the draft.

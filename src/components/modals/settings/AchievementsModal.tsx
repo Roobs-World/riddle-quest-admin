@@ -22,7 +22,7 @@ import {
   ACHIEVEMENT_ICON_SIZE,
   MODAL_CONTENT_PADDING,
   MODAL_SCROLLABLE_MAX_HEIGHT,
-  getResponsiveModalHeight,
+  MODAL_MAX_HEIGHT,
 } from "../../../constants/layout";
 import {scale, verticalScale} from "../../../utils/responsive";
 import {ACHIEVEMENT_DEFINITIONS} from "../../../constants/achievements";
@@ -44,7 +44,7 @@ const AchievementsModal: React.FC<AchievementsModalProps> = ({isVisible, onClose
   const unlocked = unlockedSet(playerData);
   const stats = playerData?.stats;
   const progress = playerData?.progress;
-  const modalHeight = getResponsiveModalHeight();
+  const modalHeight = Math.min(MODAL_HEIGHT, MODAL_MAX_HEIGHT ?? MODAL_HEIGHT);
 
   return (
     <Modal
@@ -97,7 +97,10 @@ const AchievementsModal: React.FC<AchievementsModalProps> = ({isVisible, onClose
               {AppStrings.Achievements.MODAL_TITLE}
             </Text>
             <ScrollView
-              style={{maxHeight: MODAL_SCROLLABLE_MAX_HEIGHT, width: "100%"}}
+              style={{
+                maxHeight: Math.min(MODAL_SCROLLABLE_MAX_HEIGHT, modalHeight * 0.74),
+                width: "100%",
+              }}
               contentContainerStyle={{
                 paddingHorizontal: MODAL_CONTENT_PADDING,
                 paddingTop: SPACING.xs,
@@ -167,7 +170,7 @@ const AchievementsModal: React.FC<AchievementsModalProps> = ({isVisible, onClose
                       {/* Progress bar */}
                       <View
                         style={{
-                          height: 4,
+                          height: verticalScale(4),
                           backgroundColor: "rgba(0,0,0,0.1)",
                           borderRadius: 2,
                           marginTop: scale(6),
