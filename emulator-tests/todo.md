@@ -13,17 +13,17 @@
 - PASS: Inventory Android SDK, emulator, platform tools, command-line tools, and existing AVDs.
 - PASS: Required SDK packages are present: platform-tools 37.0.0, emulator 36.5.11, platforms android-36/android-36.1, build-tools 36.0.0/36.1.0, system-images android-36.1 google_apis_playstore x86_64.
 - PASS: Created missing AVDs for the comprehensive device matrix.
-- IN_PROGRESS: Boot and verify each emulator with adb.
+- PASS: Booted and adb-verified each emulator. Captured setup screenshots and logcat files for all AVDs.
 
 ## Device Matrix
 - PASS: Small phone, Pixel 4a-class AVD created and boot-verified as `rq_pixel_4a_api_36_1`; setup screenshot `emulator-tests/images/rq_pixel_4a_api_36_1/00-boot-home.png`; setup log `emulator-tests/logs/rq_pixel_4a_api_36_1/00-boot-logcat.txt`.
-- PASS: Standard phone, Pixel 7-class AVD created as `rq_pixel_7_api_36_1`; screenshot dir `emulator-tests/images/rq_pixel_7_api_36_1`; log dir `emulator-tests/logs/rq_pixel_7_api_36_1`.
-- PASS: Large phone, Pixel 8 Pro-class AVD created as `rq_pixel_8_pro_api_36_1`; screenshot dir `emulator-tests/images/rq_pixel_8_pro_api_36_1`; log dir `emulator-tests/logs/rq_pixel_8_pro_api_36_1`.
-- PASS: Foldable outer display AVD created as `rq_pixel_fold_outer_api_36_1`; screenshot dir `emulator-tests/images/rq_pixel_fold_outer_api_36_1`; log dir `emulator-tests/logs/rq_pixel_fold_outer_api_36_1`.
-- PASS: Foldable unfolded/tablet display AVD created as `rq_pixel_fold_unfolded_api_36_1`; screenshot dir `emulator-tests/images/rq_pixel_fold_unfolded_api_36_1`; log dir `emulator-tests/logs/rq_pixel_fold_unfolded_api_36_1`.
-- PASS: Small tablet, 7-8 inch AVD created as `rq_small_tablet_api_36_1`; screenshot dir `emulator-tests/images/rq_small_tablet_api_36_1`; log dir `emulator-tests/logs/rq_small_tablet_api_36_1`.
-- PASS: Large tablet, 10-11 inch AVD created as `rq_large_tablet_api_36_1`; screenshot dir `emulator-tests/images/rq_large_tablet_api_36_1`; log dir `emulator-tests/logs/rq_large_tablet_api_36_1`.
-- PASS: Low-density tablet AVD created as `rq_low_density_tablet_api_36_1`; screenshot dir `emulator-tests/images/rq_low_density_tablet_api_36_1`; log dir `emulator-tests/logs/rq_low_density_tablet_api_36_1`.
+- PASS: Standard phone, Pixel 7-class AVD created and boot-verified as `rq_pixel_7_api_36_1`; setup screenshot `emulator-tests/images/rq_pixel_7_api_36_1/00-boot-home.png`; setup log `emulator-tests/logs/rq_pixel_7_api_36_1/00-boot-logcat.txt`.
+- PASS: Large phone, Pixel 8 Pro-class AVD created and boot-verified as `rq_pixel_8_pro_api_36_1`; setup screenshot `emulator-tests/images/rq_pixel_8_pro_api_36_1/00-boot-home.png`; setup log `emulator-tests/logs/rq_pixel_8_pro_api_36_1/00-boot-logcat.txt`.
+- PASS: Foldable outer display AVD created and boot-verified as `rq_pixel_fold_outer_api_36_1`; setup screenshot `emulator-tests/images/rq_pixel_fold_outer_api_36_1/00-boot-home.png`; setup log `emulator-tests/logs/rq_pixel_fold_outer_api_36_1/00-boot-logcat.txt`.
+- PASS: Foldable unfolded/tablet display AVD created and boot-verified as `rq_pixel_fold_unfolded_api_36_1`; setup screenshot `emulator-tests/images/rq_pixel_fold_unfolded_api_36_1/00-boot-home.png`; setup log `emulator-tests/logs/rq_pixel_fold_unfolded_api_36_1/00-boot-logcat.txt`.
+- PASS: Small tablet, 7-8 inch AVD created and boot-verified as `rq_small_tablet_api_36_1`; setup screenshot `emulator-tests/images/rq_small_tablet_api_36_1/00-boot-home.png`; setup log `emulator-tests/logs/rq_small_tablet_api_36_1/00-boot-logcat.txt`.
+- PASS: Large tablet, 10-11 inch AVD created and boot-verified as `rq_large_tablet_api_36_1`; setup screenshot `emulator-tests/images/rq_large_tablet_api_36_1/00-boot-home.png`; setup log `emulator-tests/logs/rq_large_tablet_api_36_1/00-boot-logcat.txt`.
+- PASS: Low-density tablet AVD created and boot-verified as `rq_low_density_tablet_api_36_1`; setup screenshot `emulator-tests/images/rq_low_density_tablet_api_36_1/00-boot-home.png`; setup log `emulator-tests/logs/rq_low_density_tablet_api_36_1/00-boot-logcat.txt`.
 
 ## Page Coverage
 - TODO: Initial loading/auth spinner.
@@ -91,6 +91,7 @@
 ## Issues And Blockers
 - INFO: Android Studio MCP requested but unavailable in active tools. Continuing with SDK/ADB fallback unless a matching MCP tool becomes available.
 - INFO: Existing AVDs before setup: Medium_Phone_API_36.1 and Medium_Tablet.
+- INFO: Boot-check script emitted one PowerShell null-trim warning after boot polling, but every target AVD reported BOOT_PASS and wrote screenshot/log evidence.
 
 ## Skipped Or Unreachable
 - TODO: Fill as testing progresses.
