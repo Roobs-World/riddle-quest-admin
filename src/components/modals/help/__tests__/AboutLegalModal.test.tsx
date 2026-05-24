@@ -1,9 +1,7 @@
 import React from "react";
-import {Alert} from "react-native";
+import {Alert, Linking} from "react-native";
 import {fireEvent, render, waitFor} from "@testing-library/react-native";
 import AboutLegalModal from "../AboutLegalModal";
-
-const Linking = require("react-native/Libraries/Linking/Linking");
 
 jest.mock("../../../../constants/AppStrings", () => ({
   AppStrings: {
@@ -27,10 +25,6 @@ jest.mock("../../../../constants/AppStrings", () => ({
   getAppLanguage: jest.fn(() => "en"),
 }));
 
-jest.mock("react-native/Libraries/Linking/Linking", () => ({
-  openURL: jest.fn(),
-}));
-
 jest.mock("../../../../styles", () => ({
   TYPOGRAPHY: {
     fontPrimary: "PoetsenOne",
@@ -49,6 +43,8 @@ jest.mock("../../../../styles", () => ({
 }));
 
 describe("<AboutLegalModal />", () => {
+  const mockOpenURL = jest.spyOn(Linking, "openURL").mockResolvedValue(undefined);
+
   const defaultProps = {
     isVisible: true,
     onClose: jest.fn(),
@@ -66,10 +62,14 @@ describe("<AboutLegalModal />", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    (Linking.openURL as jest.Mock).mockResolvedValue(undefined);
+    mockOpenURL.mockResolvedValue(undefined);
     jest.spyOn(Alert, "alert").mockImplementation(jest.fn());
     const {getAppLanguage} = require("../../../../constants/AppStrings");
     getAppLanguage.mockReturnValue("en");
+  });
+
+  afterAll(() => {
+    mockOpenURL.mockRestore();
   });
 
   it("renders all expected legal link labels", () => {
@@ -104,7 +104,7 @@ describe("<AboutLegalModal />", () => {
   });
 
   it("handles URL open failures without crashing", async () => {
-    (Linking.openURL as jest.Mock).mockRejectedValueOnce(new Error("No browser"));
+    mockOpenURL.mockRejectedValueOnce(new Error("No browser"));
     const {getByText} = render(<AboutLegalModal {...defaultProps} />);
 
     expect(() => fireEvent.press(getByText("Support"))).not.toThrow();

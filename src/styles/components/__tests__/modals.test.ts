@@ -1,4 +1,8 @@
 import { modalStyles } from "../modals";
+import {
+  AUTH_CONTENT_MAX_WIDTH,
+  MODAL_MAX_HEIGHT,
+} from "../../../constants/layout";
 
 describe("modalStyles", () => {
   describe("Structure", () => {
@@ -40,8 +44,9 @@ describe("modalStyles", () => {
     it("has correct background and sizing", () => {
       const style = modalStyles.content;
       expect(style.backgroundColor).toBeDefined();
-      expect(style.maxHeight).toBe("80%");
-      expect(style.maxWidth).toBe("90%");
+      expect(style.maxHeight).toBe(MODAL_MAX_HEIGHT);
+      expect(style.maxWidth).toBe(AUTH_CONTENT_MAX_WIDTH);
+      expect(style.width).toBe("90%");
       expect(style.position).toBe("relative");
     });
 
@@ -61,7 +66,8 @@ describe("modalStyles", () => {
       const style = modalStyles.modalContainer;
       expect(style.alignItems).toBe("center");
       expect(style.justifyContent).toBe("center");
-      expect(style.maxWidth).toBe("90%");
+      expect(style.maxWidth).toBe(AUTH_CONTENT_MAX_WIDTH);
+      expect(style.width).toBe("90%");
     });
 
     it("has background and visual styling", () => {
@@ -196,8 +202,10 @@ describe("modalStyles", () => {
     });
 
     it("maintains responsive sizing", () => {
-      expect(modalStyles.content.maxWidth).toBe("90%");
-      expect(modalStyles.modalContainer.maxWidth).toBe("90%");
+      expect(modalStyles.content.maxHeight).toBe(MODAL_MAX_HEIGHT);
+      expect(modalStyles.content.maxWidth).toBe(AUTH_CONTENT_MAX_WIDTH);
+      expect(modalStyles.contentScrollable.maxHeight).toBe(MODAL_MAX_HEIGHT * 0.82);
+      expect(modalStyles.modalContainer.maxWidth).toBe(AUTH_CONTENT_MAX_WIDTH);
     });
   });
 

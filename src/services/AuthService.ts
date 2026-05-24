@@ -42,6 +42,60 @@ const clearLocalAuthData = async (reason: string): Promise<void> => {
   }
 };
 
+const FACEBOOK_CANCELLATION_CODES = new Set([
+  "auth/auth-popup-closed-by-user",
+  "auth/cancelled-popup-request",
+]);
+
+const FACEBOOK_CANCELLATION_MESSAGES = [
+  "User cancelled the login process",
+  "Facebook login cancelled.",
+  "User cancelled the login flow",
+  "Account linking cancelled by user",
+];
+
+export const isFacebookLoginCancellation = (error: unknown): boolean => {
+  if (!error) {
+    return false;
+  }
+
+  if (error instanceof Error) {
+    return FACEBOOK_CANCELLATION_MESSAGES.some((message) =>
+      error.message.includes(message)
+    );
+  }
+
+  if (typeof error !== "object") {
+    return false;
+  }
+
+  const maybeError = error as {
+    code?: unknown;
+    isCancelled?: unknown;
+    message?: unknown;
+  };
+
+  if (maybeError.isCancelled === true) {
+    return true;
+  }
+
+  if (
+    typeof maybeError.code === "string" &&
+    FACEBOOK_CANCELLATION_CODES.has(maybeError.code)
+  ) {
+    return true;
+  }
+
+  if (typeof maybeError.message !== "string") {
+    return false;
+  }
+
+  const errorMessage = maybeError.message;
+  return FACEBOOK_CANCELLATION_MESSAGES.some((message) =>
+    errorMessage.includes(message)
+  );
+};
+
 export const AuthService = {
   async linkAnonymousWithGoogle(): Promise<FirebaseAuthTypes.UserCredential> {
     return runOnMainThread(async () => {
@@ -104,7 +158,7 @@ export const AuthService = {
     });
   },
 
-  async linkAnonymousWithFacebook(): Promise<FirebaseAuthTypes.UserCredential> {
+  async linkAnonymousWithFacebook(): Promise<FirebaseAuthTypes.UserCredential | null> {
     try {
       const auth = getAuth(getApp());
       const user = auth.currentUser;
@@ -121,9 +175,7 @@ export const AuthService = {
       ]);
 
       if (loginResult.isCancelled) {
-        throw Object.assign(new Error("Facebook login cancelled."), {
-          code: "auth/auth-popup-closed-by-user",
-        });
+        return null;
       }
 
       const tokenData = await AccessToken.getCurrentAccessToken();
@@ -150,6 +202,10 @@ export const AuthService = {
 
       return userCredential;
     } catch (error) {
+      if (isFacebookLoginCancellation(error)) {
+        return null;
+      }
+
       logger.error("Error linking anonymous account with Facebook:", error);
       captureException(error);
       throw error;
@@ -311,7 +367,13 @@ export const AuthService = {
    *
    * @returns A Promise resolving to the UserCredential.
    */
-  async signInWithFacebook(): Promise<FirebaseAuthTypes.UserCredential> {
+  async signInWithFacebook(): Promise<FirebaseAuthTypes.UserCredential | null> {
+    let appStateListener: { remove: () => void } | null = null;
+    const cleanupAppStateListener = () => {
+      appStateListener?.remove();
+      appStateListener = null;
+    };
+
     try {
       logger.debug("🔐 Starting Facebook login process...");
 
@@ -349,7 +411,7 @@ export const AuthService = {
       logger.debug("⏰ Setting 30-second timeout for permission request...");
 
       // Add AppState monitoring to track background/foreground transitions
-      const appStateListener = AppState.addEventListener(
+      appStateListener = AppState.addEventListener(
         "change",
         (nextAppState) => {
           logger.debug(`🔄 App state changed to: ${nextAppState}`);
@@ -373,7 +435,7 @@ export const AuthService = {
       // Create a timeout promise
       const timeoutPromise = new Promise((_, reject) => {
         safeTimeout(() => {
-          appStateListener?.remove();
+          cleanupAppStateListener();
           reject(
             new Error(
               "Facebook permission request timed out after 30 seconds. On real device this usually indicates:\n" +
@@ -404,6 +466,10 @@ export const AuthService = {
             return res;
           })
           .catch((err) => {
+            if (isFacebookLoginCancellation(err)) {
+              throw err;
+            }
+
             logger.error(
               "❌ LoginManager.logInWithPermissions rejected:",
               err
@@ -446,8 +512,7 @@ export const AuthService = {
       }
 
       if (result.isCancelled) {
-        logger.debug("👤 User cancelled Facebook login");
-        throw new Error("User cancelled the login process");
+        return null;
       }
 
       // Get Facebook access token
@@ -713,13 +778,18 @@ export const AuthService = {
 
       return userCredential;
     } catch (error: unknown) {
+      cleanupAppStateListener();
+
+      if (isFacebookLoginCancellation(error)) {
+        return null;
+      }
+
       logger.error("❌ Facebook login error:", error);
       captureException(error);
 
       // Clean up AppState listener on error
       try {
-        // @ts-expect-error - appStateListener may be undefined in this scope
-        appStateListener?.remove();
+        cleanupAppStateListener();
         logger.debug("🧹 Cleaned up AppState listener on error");
       } catch (cleanupError) {
         logger.warn("⚠️ Failed to cleanup AppState listener:", cleanupError);
@@ -846,6 +916,10 @@ export const AuthService = {
                   "Please sign in with that method first to link Facebook."
               );
             } catch (linkError) {
+              if (isFacebookLoginCancellation(linkError)) {
+                return null;
+              }
+
               logger.error("❌ Account linking failed:", linkError);
               captureException(linkError);
 

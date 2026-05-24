@@ -3,11 +3,11 @@
  * Landing screen for the Riddle Quest authentication flow.
  *
  * This screen is the primary entry point for unauthenticated users. It
- * provides email/password, Google, and Facebook sign-in options, a path
- * to registration, and a "Play as Guest" shortcut into gameplay.
+ * provides Google and Facebook sign-in options plus a "Play as Guest" shortcut
+ * into gameplay.
  */
 import React, {useState} from "react";
-import {View, Text, Linking, Image} from "react-native";
+import {View, Text, Linking, Image, TouchableOpacity} from "react-native";
 import CustomSafeAreaView from "../components/layouts/CustomSafeAreaView";
 import GoogleSignInButton from "../components/buttons/GoogleSignInButton";
 import FacebookSignInButton from "../components/buttons/FacebookSignInButton";
@@ -16,7 +16,7 @@ import StarryBackground from "../components/background/StarryBackground";
 import PulsingSpinner from "../components/loading/PulsingSpinner";
 import {AppStrings} from "../constants/AppStrings";
 import {LOADING_SPINNER_SIZE} from "../constants/loading";
-import {AuthService} from "../services/AuthService";
+import {AuthService, isFacebookLoginCancellation} from "../services/AuthService";
 import {useAuth} from "../contexts/AuthContext";
 import Error from "../components/text/Error";
 import {type FirebaseAuthTypes} from "@react-native-firebase/auth";
@@ -29,10 +29,8 @@ import {LANDING_LOGO_HEIGHT, LANDING_LOGO_WIDTH} from "../constants/layout";
 /**
  * Landing screen component used at the root of the auth stack.
  *
- * It wires social sign-in handlers, navigates to email/password login and
- * registration screens, and exposes a guest play CTA for anonymous sign-in.
- *
- * @param navigation React Navigation stack navigation prop.
+ * It wires social sign-in handlers and exposes a guest play CTA for anonymous
+ * sign-in.
  */
 const LandingScreen = () => {
   const [authError, setAuthError] = useState<string | null>(null);
@@ -76,23 +74,19 @@ const LandingScreen = () => {
     try {
       const userCredential = await AuthService.signInWithFacebook();
       logger.debug("Facebook login success:", userCredential);
-      if (userCredential.user?.uid) {
+      if (userCredential?.user?.uid) {
         login();
       }
     } catch (error: unknown) {
+      if (isFacebookLoginCancellation(error)) {
+        return;
+      }
+
       logger.error("Facebook login error:", error);
       captureException(error);
 
-      // Check if the error is a user cancellation first (more specific matching)
       if (error instanceof Error) {
         const errorMessage = (error as Error).message;
-
-        // Check for exact cancellation messages
-        if (errorMessage === "User cancelled the login process" || errorMessage === "Facebook login cancelled.") {
-          logger.debug("Facebook login cancelled by user.");
-          // Don't show error for cancellation - it's expected behavior
-          return;
-        }
 
         // Handle specific Facebook SDK errors
         if (errorMessage.includes("access token")) {
@@ -217,7 +211,19 @@ const LandingScreen = () => {
             onPress={handlePlayButtonPress}
             disabled={isLoading}
           />
-          <WideButton buttonText="Made by Roobs World" onPress={handleRoobsWorldPress} />
+          <TouchableOpacity
+            accessibilityLabel="Made by Roobs World"
+            accessibilityRole="link"
+            onPress={handleRoobsWorldPress}
+            testID="roobs-world-link"
+          >
+            <Text
+              className="text-white text-center"
+              style={[styles.creditsLink, {opacity: 0.85}]}
+            >
+              Made by Roobs World
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
 

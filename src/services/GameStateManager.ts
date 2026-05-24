@@ -47,6 +47,8 @@ interface GameState {
 interface GameConfig {
   /** Selected game mode for this session. */
   mode: GameMode;
+  /** Required answer length for the active riddle. Defaults to legacy 5. */
+  answerLength?: number;
   /** Maximum guesses allowed before loss. */
   maxGuesses: number;
   /** Optional riddle id required for server-backed submit flow. */
@@ -78,6 +80,11 @@ export class GameStateManager {
   private config: GameConfig;
   private listeners: Set<() => void> = new Set();
   private audioFeedback: IAudioFeedbackService;
+
+  private getAnswerLength(): number {
+    const configuredLength = this.config.answerLength ?? 5;
+    return Math.max(0, configuredLength);
+  }
 
   /**
    * Creates a new game state manager with the supplied configuration.
@@ -138,7 +145,7 @@ export class GameStateManager {
    */
   addLetter = (letter: string): void => {
     if (
-      this.state.currentGuess.length < 5 &&
+      this.state.currentGuess.length < this.getAnswerLength() &&
       this.state.gameStatus === "playing"
     ) {
       this.setState({
@@ -171,7 +178,7 @@ export class GameStateManager {
    */
   submitGuess = async (): Promise<void> => {
     if (
-      this.state.currentGuess.length !== 5 ||
+      this.state.currentGuess.length !== this.getAnswerLength() ||
       this.state.gameStatus !== "playing" ||
       !this.config.riddleId
     ) {
@@ -274,7 +281,7 @@ export class GameStateManager {
    */
   canSubmitGuess(): boolean {
     return (
-      this.state.currentGuess.length === 5 &&
+      this.state.currentGuess.length === this.getAnswerLength() &&
       this.state.gameStatus === "playing" &&
       !this.state.isLoading
     );

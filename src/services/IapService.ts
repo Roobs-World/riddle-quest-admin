@@ -55,6 +55,22 @@ export const COIN_PRODUCT_DETAILS: {
   COIN_PACK_MEGA:  { id: "com.roobsworld.riddlequest.coinpack6", coins: 2000 },
 };
 
+const COIN_PRODUCT_ALIASES: Record<string, string> = {
+  "com.qwordly.coinpack1": "com.roobsworld.riddlequest.coinpack1",
+  "com.qwordly.coinpack2": "com.roobsworld.riddlequest.coinpack2",
+  "com.qwordly.coinpack3": "com.roobsworld.riddlequest.coinpack3",
+  "com.qwordly.coinpack4": "com.roobsworld.riddlequest.coinpack4",
+  "com.qwordly.coinpack5": "com.roobsworld.riddlequest.coinpack5",
+  "com.qwordly.coinpack6": "com.roobsworld.riddlequest.coinpack6",
+};
+
+const toStoreProductId = (productId: unknown): string | undefined => {
+  if (typeof productId !== "string" || productId.length === 0) {
+    return undefined;
+  }
+  return COIN_PRODUCT_ALIASES[productId] ?? productId;
+};
+
 /** Cached product list with a 5-minute TTL to avoid redundant store round-trips. */
 let cachedProducts: RNIap.Product[] | null = null;
 let cacheTimestamp = 0;
@@ -143,7 +159,8 @@ export const IapService = {
     coinsAwarded: number;
     newlyUnlockedAchievementIds?: string[];
   }> {
-    const coins = this.getCoinsForProduct(productId);
+    const storeProductId = this.getStoreProductId(productId) ?? productId;
+    const coins = this.getCoinsForProduct(storeProductId);
     if (!coins || coins <= 0) {
       logger.warn(
         `No local coin mapping found for dev fallback product: ${productId}; attempting backend fallback anyway.`
@@ -159,7 +176,7 @@ export const IapService = {
         newlyUnlockedAchievementIds?: string[];
       }
     >(getFunctions(getApp()), "grantDevCoinsForPurchase")({
-      productId,
+      productId: storeProductId,
     });
 
     return {
@@ -214,8 +231,12 @@ export const IapService = {
   async purchaseProduct(
     productId: string
   ): Promise<PurchaseResult | null> {
-    addBreadcrumb("iap", "Purchase initiated", { productId });
-    void analyticsService.logPurchaseEvent("initiated", { product_id: productId });
+    const storeProductId = this.getStoreProductId(productId) ?? productId;
+    addBreadcrumb("iap", "Purchase initiated", {
+      productId: storeProductId,
+      selectedProductId: productId,
+    });
+    void analyticsService.logPurchaseEvent("initiated", { product_id: storeProductId });
     const isRunningUnderJest =
       typeof process !== "undefined" && Boolean(process.env.JEST_WORKER_ID);
     const shouldUseDevFallback = __DEV__ && !isRunningUnderJest;
@@ -223,23 +244,23 @@ export const IapService = {
       if (shouldUseDevFallback) {
         logger.debug("Attempting dev purchase bypass via Firebase callable.");
         try {
-          const fallbackResult = await this.grantDevCoinsFallback(productId);
+          const fallbackResult = await this.grantDevCoinsFallback(storeProductId);
           if (fallbackResult.success) {
-            addBreadcrumb("iap", "Dev purchase fallback succeeded", { productId });
+            addBreadcrumb("iap", "Dev purchase fallback succeeded", { productId: storeProductId });
             void analyticsService.logPurchaseEvent("completed", {
-              product_id: productId,
-              coins: this.getCoinsForProduct(productId) ?? 0,
+              product_id: storeProductId,
+              coins: this.getCoinsForProduct(storeProductId) ?? 0,
               dev_fallback: true,
             });
             void analyticsService.logCoinPackPurchased({
-              productId,
-              coins: this.getCoinsForProduct(productId) ?? 0,
+              productId: storeProductId,
+              coins: this.getCoinsForProduct(storeProductId) ?? 0,
               purchaseCount: 1,
             });
 
             return {
-              productId,
-              transactionId: `dev-${productId}-${Date.now()}`,
+              productId: storeProductId,
+              transactionId: `dev-${storeProductId}-${Date.now()}`,
               newCoins: fallbackResult.newCoins,
               newlyUnlockedAchievementIds:
                 fallbackResult.newlyUnlockedAchievementIds ?? [],
@@ -247,42 +268,61 @@ export const IapService = {
           }
 
           logger.warn("Dev purchase fallback returned unsuccessful response.", {
-            productId,
+            productId: storeProductId,
           });
+          const localFallbackCoins = this.getCoinsForProduct(storeProductId);
+          if (!localFallbackCoins || localFallbackCoins <= 0) {
+            const unavailableError = new Error(
+              `The selected product (${productId}) is not currently available.`
+            ) as IapError;
+            unavailableError.code = "E_ITEM_UNAVAILABLE";
+            throw unavailableError;
+          }
           addBreadcrumb("iap", "Dev purchase local fallback activated", {
-            productId,
+            productId: storeProductId,
             reason: "callable_returned_unsuccessful",
           });
           void analyticsService.logPurchaseEvent("completed", {
-            product_id: productId,
-            coins: this.getCoinsForProduct(productId) ?? 0,
+            product_id: storeProductId,
+            coins: localFallbackCoins,
             dev_fallback_local: true,
           });
           return {
-            productId,
-            transactionId: `dev-local-${productId}-${Date.now()}`,
+            productId: storeProductId,
+            transactionId: `dev-local-${storeProductId}-${Date.now()}`,
             newlyUnlockedAchievementIds: [],
           } as unknown as PurchaseResult;
         } catch (fallbackError) {
+          if ((fallbackError as IapError).code === "E_ITEM_UNAVAILABLE") {
+            throw fallbackError;
+          }
           logger.warn("Dev purchase fallback callable failed.", {
-            productId,
+            productId: storeProductId,
             error:
               fallbackError instanceof Error
                 ? fallbackError.message
                 : String(fallbackError),
           });
+          const localFallbackCoins = this.getCoinsForProduct(storeProductId);
+          if (!localFallbackCoins || localFallbackCoins <= 0) {
+            const unavailableError = new Error(
+              `The selected product (${productId}) is not currently available.`
+            ) as IapError;
+            unavailableError.code = "E_ITEM_UNAVAILABLE";
+            throw unavailableError;
+          }
           addBreadcrumb("iap", "Dev purchase local fallback activated", {
-            productId,
+            productId: storeProductId,
             reason: "callable_failed",
           });
           void analyticsService.logPurchaseEvent("completed", {
-            product_id: productId,
-            coins: this.getCoinsForProduct(productId) ?? 0,
+            product_id: storeProductId,
+            coins: localFallbackCoins,
             dev_fallback_local: true,
           });
           return {
-            productId,
-            transactionId: `dev-local-${productId}-${Date.now()}`,
+            productId: storeProductId,
+            transactionId: `dev-local-${storeProductId}-${Date.now()}`,
             newlyUnlockedAchievementIds: [],
           } as unknown as PurchaseResult;
         }
@@ -294,9 +334,9 @@ export const IapService = {
           .map((product) => product.id ?? (product as { productId?: string }).productId)
           .filter((id): id is string => typeof id === "string" && id.length > 0)
       );
-      if (availableProducts.length > 0 && !availableProductIds.has(productId)) {
+      if (availableProducts.length > 0 && !availableProductIds.has(storeProductId)) {
         logger.warn("Requested IAP product is not available on this device/account.", {
-          requestedProductId: productId,
+          requestedProductId: storeProductId,
           availableProductIds: Array.from(availableProductIds),
         });
         const unavailableError = new Error(
@@ -306,7 +346,7 @@ export const IapService = {
         throw unavailableError;
       }
 
-      const purchase = await this.requestPurchaseWithListenerFallback(productId);
+      const purchase = await this.requestPurchaseWithListenerFallback(storeProductId);
 
       if (!purchase) {
         logger.debug("Purchase request did not return a purchase object.");
@@ -322,7 +362,7 @@ export const IapService = {
         try {
           const validationResult = await this.validatePurchase(
             purchaseToken,
-            productId
+            storeProductId
           );
           const isValid = validationResult.success === true;
 
@@ -330,17 +370,17 @@ export const IapService = {
             logger.debug(
               "Server validation successful. Coins awarded (handled server-side)."
             );
-            addBreadcrumb("iap", "Purchase validated", { productId });
-            void analyticsService.logPurchaseEvent("validated", { product_id: productId });
+            addBreadcrumb("iap", "Purchase validated", { productId: storeProductId });
+            void analyticsService.logPurchaseEvent("validated", { product_id: storeProductId });
             await RNIap.finishTransaction({ purchase: purchase });
-            addBreadcrumb("iap", "Purchase completed", { productId });
+            addBreadcrumb("iap", "Purchase completed", { productId: storeProductId });
             void analyticsService.logPurchaseEvent("completed", {
-              product_id: productId,
-              coins: this.getCoinsForProduct(productId) ?? 0,
+              product_id: storeProductId,
+              coins: this.getCoinsForProduct(storeProductId) ?? 0,
             });
             void analyticsService.logCoinPackPurchased({
-              productId,
-              coins: this.getCoinsForProduct(productId) ?? 0,
+              productId: storeProductId,
+              coins: this.getCoinsForProduct(storeProductId) ?? 0,
               purchaseCount: 1,
             });
             return {
@@ -350,7 +390,7 @@ export const IapService = {
                 validationResult.newlyUnlockedAchievementIds ?? [],
             }; // Return purchase details plus validation metadata.
           } else {
-            logger.warn("Purchase validation failed for product:", productId);
+            logger.warn("Purchase validation failed for product:", storeProductId);
             // Do NOT finish the transaction if validation fails.
             throw new Error(
               "Your purchase could not be validated. Please try again or contact support."
@@ -377,9 +417,9 @@ export const IapService = {
     } catch (error: unknown) {
       logger.error("Error purchasing product:", error);
       captureException(error);
-      addBreadcrumb("iap", "Purchase failed", { productId }, "error");
+      addBreadcrumb("iap", "Purchase failed", { productId: storeProductId }, "error");
       void analyticsService.logPurchaseEvent("failed", {
-        product_id: productId,
+        product_id: storeProductId,
         error_code: (error as { code?: string }).code ?? "unknown",
       });
       // Refer to RNIap documentation for error codes.
@@ -476,10 +516,21 @@ export const IapService = {
    * @returns The number of coins for the product, or undefined if not found.
    */
   getCoinsForProduct(productId: string): number | undefined {
+    const storeProductId = this.getStoreProductId(productId);
+    if (!storeProductId) {
+      return undefined;
+    }
     const productDetail = Object.values(COIN_PRODUCT_DETAILS).find(
-      (detail) => detail.id === productId
+      (detail) => detail.id === storeProductId
     );
     return productDetail?.coins;
+  },
+
+  /**
+   * Returns the store/backend product ID for a selected shop product.
+   */
+  getStoreProductId(productId: string): string | undefined {
+    return toStoreProductId(productId);
   },
 
   /** Clears the product cache. Intended for use in tests only. */

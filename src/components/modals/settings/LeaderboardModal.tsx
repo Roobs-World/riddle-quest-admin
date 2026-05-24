@@ -69,6 +69,23 @@ interface GetLeaderboardResult {
   requestingUserId?: string;
 }
 
+const isUnauthenticatedLeaderboardError = (error: unknown): boolean => {
+  if (!error || typeof error !== "object") {
+    return false;
+  }
+
+  const maybeError = error as { code?: unknown; message?: unknown };
+  const code = typeof maybeError.code === "string" ? maybeError.code.toLowerCase() : "";
+  const message =
+    typeof maybeError.message === "string" ? maybeError.message.toLowerCase() : "";
+
+  return (
+    code === "unauthenticated" ||
+    code === "functions/unauthenticated" ||
+    message.includes("unauthenticated")
+  );
+};
+
 const normalizeUserId = (value: string | null | undefined): string | null => {
   if (typeof value !== "string") return null;
   const trimmed = value.trim();
@@ -199,6 +216,7 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({isVisible, onClose, 
   const [requestingUserId, setRequestingUserId] = useState<string | null>(normalizedCurrentUserId);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isGuestUnavailable, setIsGuestUnavailable] = useState(false);
 
   useEffect(() => {
     setRequestingUserId(normalizedCurrentUserId);
@@ -208,7 +226,15 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({isVisible, onClose, 
     async (type: LeaderboardType) => {
       setIsLoading(true);
       setError(null);
+      setIsGuestUnavailable(false);
       try {
+        if (!authUserId) {
+          setEntries([]);
+          setRequestingUserId(normalizedCurrentUserId);
+          setIsGuestUnavailable(true);
+          return;
+        }
+
         const callable = getCallableFunction("getLeaderboard");
         const result = await callable({type, limit: 50});
         const data = result.data as GetLeaderboardResult;
@@ -219,6 +245,13 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({isVisible, onClose, 
             normalizedCurrentUserId,
         );
       } catch (err) {
+        if (isUnauthenticatedLeaderboardError(err)) {
+          setEntries([]);
+          setRequestingUserId(normalizedCurrentUserId);
+          setIsGuestUnavailable(true);
+          return;
+        }
+
         logger.error("[LeaderboardModal] Failed to fetch leaderboard:", err);
         captureException(err);
         setError(AppStrings.Leaderboard.LOAD_ERROR);
@@ -351,6 +384,26 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({isVisible, onClose, 
                     size="large"
                     accessibilityLabel={AppStrings.Accessibility.LOADING_LEADERBOARD}
                   />
+                </View>
+              ) : isGuestUnavailable ? (
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: "center",
+                    paddingVertical: SPACING.xl,
+                    paddingHorizontal: MODAL_CONTENT_PADDING,
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: TYPOGRAPHY.fontSize.sm,
+                      fontFamily: TYPOGRAPHY.fontSecondary,
+                      color: "rgba(0,0,0,0.55)",
+                      textAlign: "center",
+                    }}
+                  >
+                    {AppStrings.Leaderboard.GUEST_UNAVAILABLE}
+                  </Text>
                 </View>
               ) : error ? (
                 <View

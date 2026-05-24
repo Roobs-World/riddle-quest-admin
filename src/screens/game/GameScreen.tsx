@@ -91,6 +91,7 @@ import {
   resolveEditableGuessSlot,
   resolveNextActiveGuessSlot,
 } from "../../utils/guessSlots";
+import { resolvePlayableRiddleText } from "../../utils/riddleClues";
 
 interface GuessResult {
   outcome: "win" | "loss" | "continue" | "attemptLimitReached";
@@ -367,6 +368,12 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     typeof process !== "undefined" && Boolean(process.env.JEST_WORKER_ID);
   const shouldUseFullFirestoreCatalog = !isRunningUnderJest;
   const currentTooltipUserId = playerData?.userId ?? null;
+  const playableAnswer = useMemo(() => answer.trim(), [answer]);
+  const playableAnswerLength = playableAnswer.length;
+  const playableRiddleText = useMemo(
+    () => resolvePlayableRiddleText(riddleText, playableAnswer),
+    [riddleText, playableAnswer]
+  );
 
   const showTooltipOnce = useCallback(
     (id: TooltipId, targetRef?: TooltipTargetRef | null) =>
@@ -448,7 +455,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     resetGame,
   } = useGameLogic({
     riddleId,
-    answer,
+    answer: playableAnswer,
     gameMode: gameMode === "daily" ? "challenge" : "classic",
     isGuestMode,
   });
@@ -914,13 +921,23 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   }, [lastGuessResult]);
 
   useEffect(() => {
-    if (answerLength <= 0) {
+    if (currentGuess.length <= playableAnswerLength) {
+      return;
+    }
+
+    setCurrentGuess((prev: string[]) => {
+      return prev.slice(0, playableAnswerLength);
+    });
+  }, [currentGuess.length, playableAnswerLength, setCurrentGuess]);
+
+  useEffect(() => {
+    if (playableAnswerLength <= 0) {
       setActiveSlotIndexSynced(0);
       return;
     }
 
     setActiveSlotIndexSynced((prev) => {
-      const maxIndex = Math.max(0, answerLength - 1);
+      const maxIndex = Math.max(0, playableAnswerLength - 1);
       const clampedPrev = Math.min(Math.max(0, prev), maxIndex);
 
       if (currentGuess.length === 0) {
@@ -938,7 +955,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
       return clampedPrev;
     });
-  }, [answerLength, currentGuess, setActiveSlotIndexSynced]);
+  }, [playableAnswerLength, currentGuess, setActiveSlotIndexSynced]);
 
   const handleCoinContinue = useCallback(async () => {
     const isInsufficientCoinsError = (error: unknown): boolean => {
@@ -1068,8 +1085,25 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
         if (purchaseResult) {
           logger.debug("Purchase completed successfully:", purchaseResult);
-          const coinsPurchased = IapService.getCoinsForProduct(productId) ?? 0;
+          const mappedCoinsForProduct = IapService.getCoinsForProduct(productId) ?? 0;
           const resolvedNewCoins = parseCoinBalance(purchaseResult.newCoins);
+          const balanceDeltaCoins =
+            resolvedNewCoins !== null
+              ? Math.max(resolvedNewCoins - currentUserCoins, 0)
+              : null;
+          const coinsPurchased =
+            mappedCoinsForProduct > 0
+              ? mappedCoinsForProduct
+              : balanceDeltaCoins ?? 0;
+          if (coinsPurchased <= 0) {
+            logger.warn("Purchase result did not resolve to a positive coin award.", {
+              productId,
+              transactionId: purchaseResult.transactionId,
+              resolvedNewCoins,
+              currentUserCoins,
+            });
+            throw new Error(AppStrings.GameScreenAlerts.PURCHASE_FAILED_MESSAGE);
+          }
           const backendUnlockedAchievementIds = Array.isArray(
             purchaseResult.newlyUnlockedAchievementIds
           )
@@ -1493,9 +1527,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       } else if (result.outcome === "attemptLimitReached") {
         const canAffordCoinContinue = currentUserCoins >= CONTINUE_COST_COINS;
         const skipLevelCost = SKIP_COST_CLASSIC;
-        if (!canAffordCoinContinue) {
-          void showTooltipOnce("shopOutOfCoins", coinsButtonRef);
-        }
         // Cache keyboard hints as soon as the loss modal opens so they survive
         // any continue/close timing differences while the grid resets.
         setPreservedLetterStates((existing) =>
@@ -1537,9 +1568,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         });
       } else if (result.outcome === "loss") {
         const resolvedAttempts = lastSubmittedAttemptRef.current ?? guesses.length;
-        if (currentUserCoins < SKIP_COST_CLASSIC) {
-          void showTooltipOnce("shopOutOfCoins", coinsButtonRef);
-        }
         if (isHapticsEnabled) {
           void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
         }
@@ -1620,7 +1648,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const handleSubmit = useCallback(async () => {
     tooltip.dismissTooltip("submitAnswer");
     const isGuessComplete =
-      currentGuess.length === answerLength &&
+      currentGuess.length === playableAnswerLength &&
       currentGuess.every(
         (letter) => typeof letter === "string" && letter.length > 0
       );
@@ -1663,7 +1691,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   }, [
     currentGuess,
     guesses.length,
-    answerLength,
+    playableAnswerLength,
     processGuess,
     isHapticsEnabled,
     modal,
@@ -1674,10 +1702,10 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
   const handleKeyPress = useCallback(
     (key: string) => {
-      if (answerLength <= 0) return;
+      if (playableAnswerLength <= 0) return;
       const targetIndex = resolveEditableGuessSlot(
         activeSlotIndexRef.current,
-        answerLength,
+        playableAnswerLength,
         hintRevealedIndicesRef.current
       );
       if (targetIndex === null) return;
@@ -1688,8 +1716,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           next.push("");
         }
         next[targetIndex] = key;
-        if (next.length > answerLength) {
-          next.length = answerLength;
+        if (next.length > playableAnswerLength) {
+          next.length = playableAnswerLength;
         }
         return next;
       });
@@ -1697,20 +1725,20 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       setActiveSlotIndexSynced(
         resolveNextActiveGuessSlot(
           targetIndex,
-          answerLength,
+          playableAnswerLength,
           hintRevealedIndicesRef.current
         )
       );
     },
-    [answerLength, setCurrentGuess, setActiveSlotIndexSynced]
+    [playableAnswerLength, setCurrentGuess, setActiveSlotIndexSynced]
   );
 
   const handleBackspace = useCallback(() => {
-    if (answerLength <= 0) return;
+    if (playableAnswerLength <= 0) return;
     const targetIndex = resolveBackspaceGuessSlot(
       activeSlotIndexRef.current,
       currentGuess,
-      answerLength,
+      playableAnswerLength,
       hintRevealedIndicesRef.current
     );
     if (targetIndex === null) return;
@@ -1725,21 +1753,21 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     });
 
     setActiveSlotIndexSynced(targetIndex);
-  }, [answerLength, currentGuess, setCurrentGuess, setActiveSlotIndexSynced]);
+  }, [playableAnswerLength, currentGuess, setCurrentGuess, setActiveSlotIndexSynced]);
 
   const handleSelectCurrentGuessSlot = useCallback(
     (slotIndex: number) => {
-      if (answerLength <= 0) return;
-      if (slotIndex < 0 || slotIndex >= answerLength) return;
+      if (playableAnswerLength <= 0) return;
+      if (slotIndex < 0 || slotIndex >= playableAnswerLength) return;
       const editableSlotIndex = resolveEditableGuessSlot(
         slotIndex,
-        answerLength,
+        playableAnswerLength,
         hintRevealedIndicesRef.current
       );
       if (editableSlotIndex === null) return;
       setActiveSlotIndexSynced(editableSlotIndex);
     },
-    [answerLength, setActiveSlotIndexSynced]
+    [playableAnswerLength, setActiveSlotIndexSynced]
   );
 
   const handleShowHint = useCallback(async () => {
@@ -1757,7 +1785,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       hintCost,
       onOpenShop: () => openShopFromLossRef.current(),
       onShowHint: () => {
-        const answerLetters = answer.toLowerCase().split("");
+        const answerLetters = playableAnswer.toLowerCase().split("");
         const revealIndex = answerLetters.findIndex(
           (_, i) => !hintRevealedIndicesRef.current.includes(i)
         );
@@ -1770,6 +1798,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           return;
         }
 
+        const totalCoinsAfterHint = Math.max(0, currentUserCoins - hintCost);
         const nextHintRevealedIndices = [
           ...hintRevealedIndicesRef.current,
           revealIndex,
@@ -1787,9 +1816,9 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         setActiveSlotIndexSynced(
           resolveEditableGuessSlot(
             activeSlotIndexRef.current,
-            answerLength,
+            playableAnswerLength,
             nextHintRevealedIndices
-          ) ?? Math.max(0, Math.min(answerLength - 1, activeSlotIndexRef.current))
+          ) ?? Math.max(0, Math.min(playableAnswerLength - 1, activeSlotIndexRef.current))
         );
 
         Promise.resolve(onHintUsed(hintCost))
@@ -1820,7 +1849,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
               const achievement = unlockedAchievements[index];
               modal.showAchievementUnlockFanfareModal({
                 coinsEarned: 0,
-                totalCoins: currentUserCoins,
+                totalCoins: totalCoinsAfterHint,
                 achievementNames: [achievement.name],
                 achievements: [
                   {
@@ -1851,8 +1880,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     modal,
     currentUserCoins,
     hintCost,
-    answer,
-    answerLength,
+    playableAnswer,
+    playableAnswerLength,
     setCurrentGuess,
     setActiveSlotIndexSynced,
     onHintUsed,
@@ -2092,10 +2121,10 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const handleDebugCompleteRiddle = useCallback(() => {
     if (gameOver) return;
 
-    const solvedGuess = answer.toUpperCase().split("");
+    const solvedGuess = playableAnswer.toUpperCase().split("");
     setCurrentGuess(solvedGuess);
-    setActiveSlotIndexSynced(Math.max(0, answerLength - 1));
-  }, [gameOver, answer, answerLength, setCurrentGuess, setActiveSlotIndexSynced]);
+    setActiveSlotIndexSynced(Math.max(0, playableAnswerLength - 1));
+  }, [gameOver, playableAnswer, playableAnswerLength, setCurrentGuess, setActiveSlotIndexSynced]);
 
   const handleDebugGenerateDailyChallenge = useCallback(async () => {
     try {
@@ -2159,11 +2188,11 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
   const isSubmitDisabled = useMemo(
     () =>
-      currentGuess.length !== answerLength ||
+      currentGuess.length !== playableAnswerLength ||
       currentGuess.some(
         (letter) => typeof letter !== "string" || letter.length === 0
       ),
-    [currentGuess, answerLength]
+    [currentGuess, playableAnswerLength]
   );
 
   const headerModeLabel =
@@ -2198,10 +2227,10 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           />
 
           <GameBoard
-            riddleText={riddleText}
+            riddleText={playableRiddleText}
             guesses={guesses}
             currentGuess={currentGuess}
-            answerLength={answerLength}
+            answerLength={playableAnswerLength}
             handleKeyPress={handleKeyPress}
             handleBackspace={handleBackspace}
             isAnyOverlayVisible={isInteractionBlocked}

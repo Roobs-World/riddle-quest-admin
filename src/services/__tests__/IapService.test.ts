@@ -455,6 +455,28 @@ describe("IapService", () => {
         `No local coin mapping found for dev fallback product: ${unknownProductId}; attempting backend fallback anyway.`
       );
     });
+
+    it("should canonicalize live Firestore coin pack IDs before calling backend fallback", async () => {
+      mockCallableFunction.mockResolvedValue({
+        data: {
+          success: true,
+          newCoins: 125,
+          coinsAwarded: 50,
+        },
+      });
+
+      const result = await IapService.grantDevCoinsFallback("com.qwordly.coinpack1");
+
+      expect(result).toEqual({
+        success: true,
+        newCoins: 125,
+        coinsAwarded: 50,
+        newlyUnlockedAchievementIds: [],
+      });
+      expect(mockCallableFunction).toHaveBeenCalledWith({
+        productId: "com.roobsworld.riddlequest.coinpack1",
+      });
+    });
   });
 
   describe("purchaseProduct", () => {
@@ -526,6 +548,55 @@ describe("IapService", () => {
         "Purchase request did not return a purchase object."
       );
       expect(mockFinishTransaction).not.toHaveBeenCalled();
+    });
+
+    it("uses local dev fallback for aliased Firestore coin pack IDs", async () => {
+      const originalWorkerId = process.env.JEST_WORKER_ID;
+      delete process.env.JEST_WORKER_ID;
+      mockCallableFunction.mockRejectedValueOnce(new Error("Unauthenticated"));
+
+      try {
+        await expect(
+          IapService.purchaseProduct("com.qwordly.coinpack1")
+        ).resolves.toEqual(
+          expect.objectContaining({
+            productId: "com.roobsworld.riddlequest.coinpack1",
+            transactionId: expect.stringContaining(
+              "dev-local-com.roobsworld.riddlequest.coinpack1"
+            ),
+          })
+        );
+        expect(mockRequestPurchase).not.toHaveBeenCalled();
+        expect(mockCallableFunction).toHaveBeenCalledWith({
+          productId: "com.roobsworld.riddlequest.coinpack1",
+        });
+        expect(mockLogCoinPackPurchased).not.toHaveBeenCalled();
+      } finally {
+        if (originalWorkerId === undefined) {
+          delete process.env.JEST_WORKER_ID;
+        } else {
+          process.env.JEST_WORKER_ID = originalWorkerId;
+        }
+      }
+    });
+
+    it("rejects local dev fallback when the product has no coin mapping", async () => {
+      const originalWorkerId = process.env.JEST_WORKER_ID;
+      delete process.env.JEST_WORKER_ID;
+      mockCallableFunction.mockRejectedValueOnce(new Error("Unauthenticated"));
+
+      try {
+        await expect(
+          IapService.purchaseProduct("com.qwordly.coinpack999")
+        ).rejects.toThrow("This item is currently unavailable.");
+        expect(mockRequestPurchase).not.toHaveBeenCalled();
+      } finally {
+        if (originalWorkerId === undefined) {
+          delete process.env.JEST_WORKER_ID;
+        } else {
+          process.env.JEST_WORKER_ID = originalWorkerId;
+        }
+      }
     });
 
     it("should handle empty array purchase response", async () => {
@@ -720,6 +791,15 @@ describe("IapService", () => {
       expect(IapService.getCoinsForProduct("com.roobsworld.riddlequest.coinpack4")).toBe(500);
       expect(IapService.getCoinsForProduct("com.roobsworld.riddlequest.coinpack5")).toBe(1000);
       expect(IapService.getCoinsForProduct("com.roobsworld.riddlequest.coinpack6")).toBe(2000);
+    });
+
+    it("should return coins for live Firestore coin pack aliases", () => {
+      expect(IapService.getCoinsForProduct("com.qwordly.coinpack1")).toBe(50);
+      expect(IapService.getCoinsForProduct("com.qwordly.coinpack2")).toBe(100);
+      expect(IapService.getCoinsForProduct("com.qwordly.coinpack3")).toBe(250);
+      expect(IapService.getCoinsForProduct("com.qwordly.coinpack4")).toBe(500);
+      expect(IapService.getCoinsForProduct("com.qwordly.coinpack5")).toBe(1000);
+      expect(IapService.getCoinsForProduct("com.qwordly.coinpack6")).toBe(2000);
     });
 
     it("should return undefined for invalid product ID", () => {

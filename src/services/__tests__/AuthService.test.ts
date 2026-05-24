@@ -743,12 +743,10 @@ describe("AuthService", () => {
         isCancelled: true,
       });
 
-      await expect(AuthService.signInWithFacebook()).rejects.toThrow(
-        "User cancelled the login process"
-      );
-      expect(logger.debug).toHaveBeenCalledWith(
-        "👤 User cancelled Facebook login"
-      );
+      await expect(AuthService.signInWithFacebook()).resolves.toBeNull();
+      expect(AccessToken.getCurrentAccessToken).not.toHaveBeenCalled();
+      expect(logger.error).not.toHaveBeenCalled();
+      expect(captureException).not.toHaveBeenCalled();
     });
 
     it("should handle Facebook login cancellation via rejection", async () => {
@@ -756,13 +754,9 @@ describe("AuthService", () => {
         new Error("User cancelled the login process")
       );
 
-      await expect(AuthService.signInWithFacebook()).rejects.toThrow(
-        "User cancelled the login process"
-      );
-      expect(logger.error).toHaveBeenCalledWith(
-        "❌ Facebook login error:",
-        expect.any(Error)
-      );
+      await expect(AuthService.signInWithFacebook()).resolves.toBeNull();
+      expect(logger.error).not.toHaveBeenCalled();
+      expect(captureException).not.toHaveBeenCalled();
     });
 
     it("should handle Facebook access token retrieval failure", async () => {
@@ -863,7 +857,7 @@ describe("AuthService", () => {
       );
     });
 
-    it("should handle auth/auth-popup-closed-by-user error", async () => {
+    it("should handle auth/auth-popup-closed-by-user error as a quiet cancellation", async () => {
       const firebaseError = {
         code: "auth/auth-popup-closed-by-user",
         message: "User closed popup",
@@ -872,9 +866,9 @@ describe("AuthService", () => {
         firebaseError
       );
 
-      await expect(AuthService.signInWithFacebook()).rejects.toThrow(
-        "Facebook login cancelled."
-      );
+      await expect(AuthService.signInWithFacebook()).resolves.toBeNull();
+      expect(logger.error).not.toHaveBeenCalled();
+      expect(captureException).not.toHaveBeenCalled();
     });
 
     it("should handle auth/operation-not-supported-in-this-environment error", async () => {
@@ -1095,9 +1089,7 @@ describe("AuthService", () => {
         new Error("User cancelled the login flow")
       );
 
-      await expect(AuthService.signInWithFacebook()).rejects.toThrow(
-        "Account linking cancelled by user"
-      );
+      await expect(AuthService.signInWithFacebook()).resolves.toBeNull();
     });
   });
 
@@ -1556,6 +1548,26 @@ describe("AuthService", () => {
       expect(GoogleAuthProvider.credential).toHaveBeenCalledWith("GOOGLE_ID_TOKEN");
       expect(linkWithCredential).toHaveBeenCalled();
       expect(result).toEqual(linkedCredential);
+    });
+  });
+
+  describe("linkAnonymousWithFacebook", () => {
+    it("returns null without logging when Facebook linking is cancelled", async () => {
+      const linkWithCredential = jest.fn();
+      mockAuthInstance.currentUser = {
+        isAnonymous: true,
+        linkWithCredential,
+      };
+
+      (LoginManager.logInWithPermissions as jest.Mock).mockResolvedValueOnce({
+        isCancelled: true,
+      });
+
+      await expect(AuthService.linkAnonymousWithFacebook()).resolves.toBeNull();
+      expect(AccessToken.getCurrentAccessToken).not.toHaveBeenCalled();
+      expect(linkWithCredential).not.toHaveBeenCalled();
+      expect(logger.error).not.toHaveBeenCalled();
+      expect(captureException).not.toHaveBeenCalled();
     });
   });
 });

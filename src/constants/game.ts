@@ -82,7 +82,7 @@ export const LEVEL_UP_COIN_BONUS = 50;
 /** Coins awarded for completing a Daily Challenge. */
 export const DAILY_CHALLENGE_COIN_REWARD = 50;
 /** Coins awarded for completing a Classic riddle. */
-export const CLASSIC_RIDDLE_COIN_REWARD = 25;
+export const CLASSIC_RIDDLE_COIN_REWARD = 15;
 /** Coin cost to continue after exhausting initial attempts. */
 export const CONTINUE_COST_COINS = 100;
 /** Coins awarded after a fully watched rewarded ad from the loss flow. */

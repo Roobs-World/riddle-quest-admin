@@ -1,6 +1,8 @@
 import React from "react";
 import { render, fireEvent, waitFor, act } from "@testing-library/react-native";
 import LeaderboardModal, { LeaderboardEntry } from "../LeaderboardModal";
+import { logger } from "../../../../utils/logger";
+import { captureException } from "../../../../utils/sentry";
 
 // ── Mocks ────────────────────────────────────────────────────────────────────
 
@@ -63,7 +65,7 @@ jest.mock("@react-native-firebase/app", () => ({
   getApp: jest.fn(),
 }));
 
-const mockGetAuth = jest.fn(() => ({
+const mockGetAuth = jest.fn((): { currentUser: { uid: string } | null } => ({
   currentUser: { uid: "auth-uid" },
 }));
 
@@ -73,6 +75,10 @@ jest.mock("@react-native-firebase/auth", () => ({
 
 jest.mock("../../../../utils/logger", () => ({
   logger: { debug: jest.fn(), info: jest.fn(), warn: jest.fn(), error: jest.fn() },
+}));
+
+jest.mock("../../../../utils/sentry", () => ({
+  captureException: jest.fn(),
 }));
 
 jest.mock("../../../../constants/layout", () => ({
@@ -113,6 +119,12 @@ describe("LeaderboardModal", () => {
     mockGetAuth.mockReturnValue({ currentUser: { uid: "auth-uid" } });
   });
 
+  afterEach(async () => {
+    await act(async () => {
+      await Promise.resolve();
+    });
+  });
+
   it("shows a loading indicator while fetching", async () => {
     // Never resolves during this test
     mockHttpsCallable.mockReturnValue(new Promise(() => {}));
@@ -125,19 +137,28 @@ describe("LeaderboardModal", () => {
   it("renders the Leaderboard title and close button", async () => {
     mockHttpsCallable.mockResolvedValueOnce({ data: { entries: [] } });
 
-    const { getByText, getByTestId } = render(<LeaderboardModal {...defaultProps} />);
+    const { getByText, getByTestId, queryByLabelText } = render(
+      <LeaderboardModal {...defaultProps} />
+    );
 
     expect(getByText("Leaderboard")).toBeTruthy();
     expect(getByTestId("close-button")).toBeTruthy();
+    await waitFor(() => {
+      expect(queryByLabelText("Loading leaderboard")).toBeNull();
+    });
   });
 
   it("calls onClose when close button is pressed", async () => {
     mockHttpsCallable.mockResolvedValueOnce({ data: { entries: [] } });
     const onClose = jest.fn();
 
-    const { getByTestId } = render(<LeaderboardModal {...defaultProps} onClose={onClose} />);
+    const { getByTestId, queryByLabelText } = render(
+      <LeaderboardModal {...defaultProps} onClose={onClose} />
+    );
 
-    await waitFor(() => {});
+    await waitFor(() => {
+      expect(queryByLabelText("Loading leaderboard")).toBeNull();
+    });
     fireEvent.press(getByTestId("close-button"));
     expect(onClose).toHaveBeenCalledTimes(1);
   });
@@ -145,11 +166,16 @@ describe("LeaderboardModal", () => {
   it("renders three tab buttons", async () => {
     mockHttpsCallable.mockResolvedValue({ data: { entries: [] } });
 
-    const { getByLabelText } = render(<LeaderboardModal {...defaultProps} />);
+    const { getByLabelText, queryByLabelText } = render(
+      <LeaderboardModal {...defaultProps} />
+    );
 
     expect(getByLabelText("XP")).toBeTruthy();
     expect(getByLabelText("Wins")).toBeTruthy();
     expect(getByLabelText("Streak")).toBeTruthy();
+    await waitFor(() => {
+      expect(queryByLabelText("Loading leaderboard")).toBeNull();
+    });
   });
 
   it("displays entries after successful fetch", async () => {
@@ -193,6 +219,37 @@ describe("LeaderboardModal", () => {
     });
   });
 
+  it("shows a quiet guest-unavailable state when there is no auth user", async () => {
+    mockGetAuth.mockReturnValue({ currentUser: null });
+
+    const { getByText, queryByLabelText } = render(
+      <LeaderboardModal {...defaultProps} currentUserId="guest-local-id" />
+    );
+
+    await waitFor(() => {
+      expect(getByText(/Sign in to compare XP, wins, and streaks/)).toBeTruthy();
+    });
+
+    expect(mockHttpsCallable).not.toHaveBeenCalled();
+    expect(queryByLabelText("Retry")).toBeNull();
+    expect(logger.error).not.toHaveBeenCalled();
+    expect(captureException).not.toHaveBeenCalled();
+  });
+
+  it("handles unauthenticated leaderboard responses without logging a LogBox-worthy error", async () => {
+    mockHttpsCallable.mockRejectedValueOnce(new Error("Unauthenticated"));
+
+    const { getByText, queryByLabelText } = render(<LeaderboardModal {...defaultProps} />);
+
+    await waitFor(() => {
+      expect(getByText(/Sign in to compare XP, wins, and streaks/)).toBeTruthy();
+    });
+
+    expect(queryByLabelText("Retry")).toBeNull();
+    expect(logger.error).not.toHaveBeenCalled();
+    expect(captureException).not.toHaveBeenCalled();
+  });
+
   it("shows a Retry button on error", async () => {
     mockHttpsCallable.mockRejectedValueOnce(new Error("fail"));
 
@@ -224,7 +281,9 @@ describe("LeaderboardModal", () => {
 
     const { getByLabelText } = render(<LeaderboardModal {...defaultProps} />);
 
-    await waitFor(() => {});
+    await waitFor(() => {
+      expect(mockHttpsCallable).toHaveBeenCalledTimes(1);
+    });
 
     await act(async () => {
       fireEvent.press(getByLabelText("Wins"));

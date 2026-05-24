@@ -1,8 +1,10 @@
 import React from "react";
-import { render, fireEvent, waitFor } from "@testing-library/react-native";
+import { render, fireEvent, waitFor, act } from "@testing-library/react-native";
 import LoginScreen from "../LoginScreen";
 import { AuthService } from "../../../services/AuthService";
 import { useAuth } from "../../../contexts/AuthContext";
+import { logger } from "../../../utils/logger";
+import { captureException } from "../../../utils/sentry";
 
 // Mock navigation
 const mockNavigate = jest.fn();
@@ -28,6 +30,15 @@ jest.mock("../../../services/AuthService", () => ({
     signInWithFacebook: jest.fn(),
     signInWithTwitter: jest.fn(),
   },
+  isFacebookLoginCancellation: jest.fn(
+    (error: unknown) =>
+      (error instanceof Error &&
+        error.message === "User cancelled the login process") ||
+      (typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        error.code === "auth/auth-popup-closed-by-user")
+  ),
 }));
 
 // Mock useAuth hook
@@ -256,6 +267,20 @@ jest.mock("../../../styles", () => ({
 
 // Mock responsive utils
 jest.mock("../../../utils/responsive", () => ({
+  dimensions: {
+    screenWidth: 390,
+    screenHeight: 844,
+    isPhone: true,
+    isTablet: false,
+    isLargeTablet: false,
+    isDesktop: false,
+  },
+  isPhone: true,
+  isTablet: false,
+  isLargeTablet: false,
+  isDesktop: false,
+  scale: jest.fn((size) => size),
+  moderateScale: jest.fn((size) => size),
   verticalScale: jest.fn((size) => size),
 }));
 
@@ -282,6 +307,13 @@ const mockSignInWithTwitter =
     typeof AuthService.signInWithTwitter
   >;
 const mockUseAuth = useAuth as jest.MockedFunction<typeof useAuth>;
+
+async function pressAndFlush(element: any) {
+  await act(async () => {
+    fireEvent.press(element);
+    await Promise.resolve();
+  });
+}
 
 describe("LoginScreen", () => {
   const mockLogin = jest.fn();
@@ -531,7 +563,7 @@ describe("LoginScreen", () => {
       );
 
       const googleButton = getByTestId("google-signin-button");
-      fireEvent.press(googleButton);
+      await pressAndFlush(googleButton);
 
       await waitFor(() => {
         expect(mockSignInWithGoogle).toHaveBeenCalled();
@@ -550,7 +582,7 @@ describe("LoginScreen", () => {
       );
 
       const googleButton = getByTestId("google-signin-button");
-      fireEvent.press(googleButton);
+      await pressAndFlush(googleButton);
 
       await waitFor(() => {
         expect(mockSignInWithGoogle).toHaveBeenCalled();
@@ -571,7 +603,7 @@ describe("LoginScreen", () => {
       );
 
       const facebookButton = getByTestId("facebook-signin-button");
-      fireEvent.press(facebookButton);
+      await pressAndFlush(facebookButton);
 
       await waitFor(() => {
         expect(mockSignInWithFacebook).toHaveBeenCalled();
@@ -589,13 +621,15 @@ describe("LoginScreen", () => {
       );
 
       const facebookButton = getByTestId("facebook-signin-button");
-      fireEvent.press(facebookButton);
+      await pressAndFlush(facebookButton);
 
       await waitFor(() => {
         expect(mockSignInWithFacebook).toHaveBeenCalled();
         // No error should be shown for cancellation
         expect(queryByTestId("error-message")).toBeNull();
       });
+      expect(logger.error).not.toHaveBeenCalled();
+      expect(captureException).not.toHaveBeenCalled();
     });
 
     it("should handle Twitter sign-in success", async () => {
@@ -608,7 +642,7 @@ describe("LoginScreen", () => {
       );
 
       const twitterButton = getByTestId("twitter-signin-button");
-      fireEvent.press(twitterButton);
+      await pressAndFlush(twitterButton);
 
       await waitFor(() => {
         expect(mockSignInWithTwitter).toHaveBeenCalled();
@@ -622,7 +656,7 @@ describe("LoginScreen", () => {
         message: "exists",
       });
       const { getByTestId } = render(<LoginScreen navigation={mockNavigation} />);
-      fireEvent.press(getByTestId("twitter-signin-button"));
+      await pressAndFlush(getByTestId("twitter-signin-button"));
 
       await waitFor(() => {
         expect(getByTestId("error-message").props["data-message"]).toBe(
@@ -639,7 +673,7 @@ describe("LoginScreen", () => {
       const { getByTestId, queryByTestId } = render(
         <LoginScreen navigation={mockNavigation} />
       );
-      fireEvent.press(getByTestId("twitter-signin-button"));
+      await pressAndFlush(getByTestId("twitter-signin-button"));
 
       await waitFor(() => {
         expect(mockSignInWithTwitter).toHaveBeenCalled();
@@ -653,7 +687,7 @@ describe("LoginScreen", () => {
         message: "twitter generic",
       });
       const { getByTestId } = render(<LoginScreen navigation={mockNavigation} />);
-      fireEvent.press(getByTestId("twitter-signin-button"));
+      await pressAndFlush(getByTestId("twitter-signin-button"));
 
       await waitFor(() => {
         expect(getByTestId("error-message").props["data-message"]).toBe(
@@ -743,7 +777,7 @@ describe("LoginScreen", () => {
       );
 
       const googleButton = getByTestId("google-signin-button");
-      fireEvent.press(googleButton);
+      await pressAndFlush(googleButton);
 
       await waitFor(() => {
         expect(getByTestId("google-signin-button").props["data-disabled"]).toBe(
@@ -757,7 +791,10 @@ describe("LoginScreen", () => {
         );
       });
 
-      resolvePromise!();
+      await act(async () => {
+        resolvePromise!();
+        await promise;
+      });
     });
   });
 

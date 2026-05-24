@@ -40,8 +40,13 @@ import { captureException, setUser as sentrySetUser, clearUser as sentryClearUse
 import { analyticsService } from "../services/AnalyticsService";
 import { offlineQueue } from "../services/OfflineQueueService";
 import {
+  ACTIVE_GAME_SESSION_STORAGE_KEY,
+  type ActiveGameSessionSnapshot,
   createGuestPlayer,
+  getUtcDateKey,
+  normalizeRestorableGameMode,
   resolveInitialGameMode,
+  resolveLaunchGameMode,
   resolveProviderAvatarUrl,
   resolveProviderUsername,
   resolveUserEmail,
@@ -260,6 +265,84 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       captureException(error);
     }
   }, []);
+
+  const loadActiveGameSessionFromLocal = useCallback(
+    async (uid: string): Promise<ActiveGameSessionSnapshot | null> => {
+      try {
+        const raw = await AsyncStorage.getItem(ACTIVE_GAME_SESSION_STORAGE_KEY);
+        if (!raw) return null;
+
+        const parsed = JSON.parse(raw) as Partial<ActiveGameSessionSnapshot>;
+        if (parsed.version !== 1) return null;
+        if (parsed.userId !== uid) return null;
+        if (parsed.savedUtcDate !== getUtcDateKey()) return null;
+
+        const gameMode = normalizeRestorableGameMode(parsed.gameMode);
+        if (!gameMode) return null;
+
+        return {
+          version: 1,
+          userId: uid,
+          gameMode,
+          savedAt: typeof parsed.savedAt === "number" ? parsed.savedAt : 0,
+          savedUtcDate: parsed.savedUtcDate,
+          riddleId:
+            typeof parsed.riddleId === "string" ? parsed.riddleId : undefined,
+          classicIndex:
+            typeof parsed.classicIndex === "number"
+              ? parsed.classicIndex
+              : undefined,
+          dailyIndex:
+            typeof parsed.dailyIndex === "number" ? parsed.dailyIndex : undefined,
+        };
+      } catch (error) {
+        logger.warn("Error loading active game session locally:", error);
+        captureException(error);
+        return null;
+      }
+    },
+    []
+  );
+
+  const saveActiveGameSessionToLocal = useCallback(
+    async (
+      player: Player,
+      mode: GameMode,
+      riddle: FirestoreRiddle
+    ): Promise<void> => {
+      try {
+        const snapshot: ActiveGameSessionSnapshot = {
+          version: 1,
+          userId: player.userId,
+          gameMode: mode,
+          savedAt: Date.now(),
+          savedUtcDate: getUtcDateKey(),
+          riddleId: riddle.riddleId,
+          classicIndex:
+            typeof riddle.classicIndex === "number"
+              ? riddle.classicIndex
+              : player.progress?.classicIndex,
+          dailyIndex:
+            typeof riddle.dailyIndex === "number"
+              ? riddle.dailyIndex
+              : player.progress?.dailyChallengeIndex,
+        };
+        await AsyncStorage.setItem(
+          ACTIVE_GAME_SESSION_STORAGE_KEY,
+          JSON.stringify(snapshot)
+        );
+      } catch (error) {
+        logger.warn("Error saving active game session locally:", error);
+        captureException(error);
+      }
+    },
+    []
+  );
+
+  useEffect(() => {
+    if (!playerData || !currentRiddle) return;
+    void saveActiveGameSessionToLocal(playerData, gameMode, currentRiddle);
+  }, [playerData, gameMode, currentRiddle, saveActiveGameSessionToLocal]);
 
   // Ref keeps the current gameMode accessible inside the auth listener without
   // making it a dependency (which would re-subscribe on every mode change).
@@ -606,9 +689,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
             const guestCompletedToday =
               await hasCompletedDailyChallengeToday(guestPlayer);
-            const guestInitialMode = resolveInitialGameMode(
-              guestCompletedToday
-            ) as GameMode;
+            const guestDefaultMode = resolveInitialGameMode(guestCompletedToday);
+            const guestStoredSession = await loadActiveGameSessionFromLocal(
+              user.uid
+            );
+            const guestInitialMode = resolveLaunchGameMode({
+              defaultMode: guestDefaultMode,
+              restoredMode: guestStoredSession?.gameMode,
+              dailyAvailable: !guestCompletedToday,
+            }) as GameMode;
 
             setGameMode(guestInitialMode);
             await fetchCurrentRiddle(guestPlayer, guestInitialMode);
@@ -759,7 +848,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           setPlayerData(normalizedData);
 
           const completedToday = await hasCompletedDailyChallengeToday(normalizedData);
-          const initialMode = resolveInitialGameMode(completedToday) as GameMode;
+          const defaultMode = resolveInitialGameMode(completedToday);
+          const storedSession = await loadActiveGameSessionFromLocal(user.uid);
+          const initialMode = resolveLaunchGameMode({
+            defaultMode,
+            restoredMode: storedSession?.gameMode,
+            dailyAvailable: !completedToday,
+          }) as GameMode;
 
           setGameMode(initialMode);
 
@@ -854,6 +949,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     clearAllLocalData,
     saveGuestProfileToLocal,
     getBrokenDailyStreakValue,
+    loadActiveGameSessionFromLocal,
   ]);
 
   // Wrapped in useCallback so these are stable references and don't invalidate

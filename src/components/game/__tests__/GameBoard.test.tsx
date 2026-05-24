@@ -6,10 +6,18 @@ import GameBoard from "../GameBoard";
 jest.mock("../../../utils/responsive", () => ({
   scale: (n: number) => n,
   moderateScale: (n: number) => n,
+  isPhone: true,
   isTablet: false,
   isLargeTablet: false,
   isDesktop: false,
-  dimensions: { screenWidth: 390, screenHeight: 844 },
+  dimensions: {
+    screenWidth: 390,
+    screenHeight: 844,
+    isPhone: true,
+    isTablet: false,
+    isLargeTablet: false,
+    isDesktop: false,
+  },
 }));
 
 // Mock styles

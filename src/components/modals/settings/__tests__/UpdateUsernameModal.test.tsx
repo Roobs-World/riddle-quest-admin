@@ -39,7 +39,18 @@ jest.mock("src/utils/responsive", () => ({
   scale: (n: number) => n,
   moderateScale: (n: number) => n,
   verticalScale: (n: number) => n,
-  dimensions: { screenWidth: 390, screenHeight: 844, isLargeTablet: false },
+  isPhone: true,
+  isTablet: false,
+  isLargeTablet: false,
+  isDesktop: false,
+  dimensions: {
+    screenWidth: 390,
+    screenHeight: 844,
+    isPhone: true,
+    isTablet: false,
+    isLargeTablet: false,
+    isDesktop: false,
+  },
   responsiveSizes: {
     textXs: 12, textSm: 14, textBase: 16, textLg: 18, textXl: 20,
     text2xl: 24, text3xl: 30, text4xl: 36, textTitle: 28, textDisplay: 32, textTile: 28,
@@ -197,8 +208,8 @@ describe("UpdateUsernameModal", () => {
   });
 
   describe("Form Validation", () => {
-    it("should show server-side validation error when username is empty", async () => {
-      const { getByPlaceholderText, getByText } = render(
+    it("should show local validation error when username is empty", async () => {
+      const { getByPlaceholderText, getByText, queryByText } = render(
         <UpdateUsernameModal
           isVisible={true}
           onClose={mockOnClose}
@@ -209,19 +220,11 @@ describe("UpdateUsernameModal", () => {
       fireEvent.changeText(getByPlaceholderText("Enter new username"), "");
       fireEvent.press(getByText("Save"));
 
-      await waitFor(() => {
-        expect(mockProcessFormSubmissionCallable).toHaveBeenCalledWith({
-          username: "",
-        });
-      });
+      expect(mockProcessFormSubmissionCallable).not.toHaveBeenCalled();
+      expect(queryByText("Username cannot be empty.")).toBeTruthy();
     });
 
-    it("should display server error inline for short usernames", async () => {
-      mockProcessFormSubmissionCallable.mockRejectedValue({
-        code: "functions/invalid-argument",
-        message: "[functions/invalid-argument] Username must be at least 3 characters long.",
-      });
-
+    it("should show local validation error for short usernames", async () => {
       const { getByPlaceholderText, getByText, queryByTestId, queryByText } = render(
         <UpdateUsernameModal
           isVisible={true}
@@ -235,6 +238,7 @@ describe("UpdateUsernameModal", () => {
         fireEvent.press(getByText("Save"));
       });
 
+      expect(mockProcessFormSubmissionCallable).not.toHaveBeenCalled();
       expect(queryByTestId("username-error-text")).toBeTruthy();
       expect(queryByText("Username must be at least 3 characters long.")).toBeTruthy();
     });

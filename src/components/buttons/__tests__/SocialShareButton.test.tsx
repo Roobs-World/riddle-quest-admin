@@ -53,6 +53,18 @@ jest.mock("../../../styles/tokens/typography", () => ({
 }));
 
 jest.mock("../../../utils/responsive", () => ({
+  dimensions: {
+    screenWidth: 390,
+    screenHeight: 844,
+    isPhone: true,
+    isTablet: false,
+    isLargeTablet: false,
+    isDesktop: false,
+  },
+  isPhone: true,
+  isTablet: false,
+  isLargeTablet: false,
+  isDesktop: false,
   moderateScale: (size: number) => size,
 }));
 

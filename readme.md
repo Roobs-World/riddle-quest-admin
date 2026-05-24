@@ -158,37 +158,43 @@ Use this checklist to track the manual security, privacy, store, and account-del
 
 ### Account deletion implementation tasks
 
-- [ ] Add the profile modal delete account entry point
-  - Add a "Delete account" button at the bottom of the profile modal.
-  - Keep the visual language consistent with the existing modal buttons and destructive actions.
-  - Make sure the button remains reachable on small screens and does not crowd existing profile actions.
+- [x] Add the profile modal delete account entry point
+  - Implemented in `src/components/modals/settings/FullProfileDetailsModal.tsx`.
+  - The "Delete Account" button appears at the bottom of the full profile modal actions.
+  - The button is disabled while deletion is in progress or when profile data is unavailable.
+  - Focused test coverage exists in `src/components/modals/settings/__tests__/FullProfileDetailsModal.test.tsx`.
 
-- [ ] Add the confirmation modal
-  - Show an "Are you sure?" confirmation modal after the delete button is tapped.
-  - Reuse the existing modal background, animation, typography, and button treatment used elsewhere.
-  - Let the modal height fit its content instead of forcing the full profile modal height.
-  - Include a cancel action and a clearly destructive confirm action.
+- [x] Add the confirmation modal
+  - Implemented in `src/components/modals/settings/DeleteAccountConfirmationModal.tsx`.
+  - The modal opens after tapping "Delete Account" and supports cancel/confirm actions.
+  - The modal uses destructive confirm styling, a loading label, and content-sized layout rather than the full profile sheet height.
+  - Guest users can access the same confirmation path.
 
-- [ ] Add the Firebase deletion Function
-  - Implement a callable Firebase Function for hard account deletion.
-  - Require an authenticated user context.
-  - Delete Firebase Auth user data and owned Firestore/Storage data for the caller.
-  - Include the guest cleanup path for anonymous users.
-  - Make the function idempotent enough that retrying after a partial failure does not corrupt state.
-  - Avoid logging personal data, tokens, or raw deletion payloads.
+- [x] Add the Firebase deletion Function
+  - Implemented as the `deleteAccount` callable in `firebase-functions/src/userManagement.ts`.
+  - Exported from `firebase-functions/src/index.ts`.
+  - Requires `request.auth` and always deletes data for `request.auth.uid`, ignoring any client-supplied user id.
+  - Deletes the user's Firestore profile subtree, leaderboard document, user-owned `purchaseAnalytics` and `notificationHistory` documents, avatar/export storage prefixes, and Firebase Auth user.
+  - Handles `auth/user-not-found` as a successful idempotent retry case.
+  - Uses Firebase App Check enforcement on the callable.
+  - Focused backend test coverage exists in `firebase-functions/src/__tests__/userManagement.test.ts`.
 
-- [ ] Wire the client flow
-  - Call the deletion Function from the confirmation modal.
-  - Show loading, success, and failure states.
-  - On success, clear local user/session state and return the app to the signed-out or onboarding flow.
-  - On failure, keep the user signed in and show a recoverable error message.
+- [x] Wire the client flow
+  - The confirmation modal calls `getCallableFunction("deleteAccount")`.
+  - On success, the profile modal closes and `logout()` runs to clear the local session.
+  - On failure, the app keeps the user signed in and shows the existing info-modal error message.
+  - Focused UI tests cover open, cancel, confirm, loading, success/logout, and failure/no-logout behavior.
 
-- [ ] Verify account deletion
-  - Test the flow for an email/password user, social-login user where available, and anonymous guest user.
-  - Confirm Firestore user-owned documents are deleted.
-  - Confirm Firebase Storage avatar files are deleted.
+- [ ] Verify account deletion end to end
+  - Current emulator evidence covers guest profile discoverability, confirmation modal open, and cancel path.
+  - Evidence recorded in `docs/android-emulator-firebase-qa-plan.html` references screenshots `79-continue-delete-account-confirmation.png` and `80-continue-delete-account-cancelled.png`.
+  - Still needs destructive confirm-path verification for a disposable guest account.
+  - Still needs destructive confirm-path verification for a disposable provider-auth account.
+  - Confirm Firestore user-owned documents are deleted: `users/{uid}`, `leaderboard/{uid}`, user-owned purchase analytics, and notification history.
+  - Confirm Firebase Storage avatar/export prefixes are deleted.
   - Confirm the Firebase Auth user is removed.
   - Confirm local guest/user state is cleared on the device.
+  - Confirm app restart or provider re-sign-in creates a fresh account/profile and does not restore deleted progress.
   - Verify the UI in the simulator when local Expo MCP capabilities are available.
 
 ## Features
@@ -257,6 +263,32 @@ npm run android
 # or yarn android
 ```
 
+### Android Emulator Test Matrix
+
+Use the Android matrix command to run the on-emulator suite across the supported AVDs one by one:
+
+```bash
+pnpm run test:android:matrix
+```
+
+The command runs these emulators sequentially:
+
+- `rq_pixel_4a_api_36_1`
+- `rq_pixel_7_api_36_1`
+- `rq_pixel_8_pro_api_36_1`
+- `rq_pixel_fold_outer_api_36_1`
+- `rq_pixel_fold_unfolded_api_36_1`
+- `rq_small_tablet_api_36_1`
+- `rq_large_tablet_api_36_1`
+
+Before the first run, set up the test environment:
+
+```bash
+pnpm run setup:tests
+```
+
+If Android Studio shows friendly names with spaces, use the underscore AVD IDs above for command-line runs.
+
 ## Memory Bank
 
 This project utilizes a `memory-bank` directory containing detailed documentation on project context, technical decisions, system patterns, and progress. Refer to these documents (`projectbrief.md`, `productContext.md`, `techContext.md`, `systemPatterns.md`, `activeContext.md`, `progress.md`) for in-depth information.
@@ -270,7 +302,6 @@ Funding materials for the pre-launch beta are maintained in `docs/funding/`. Thi
 - [ ] Update team member website links in the Credits screen (`src/screens/CreditsScreen.tsx`)
   - Craig Beswetherick - Lead Developer & Game Design
   - Reuben Beswetherick - Inspiration
-  - Thomas Lemrond - Game Designer, Publisher, Overall Hero
   - Gavin Harrison - Sound Design
   - Nathalia - Design
 

@@ -316,7 +316,7 @@ describe("useGameLogic", () => {
       expect(processResult).toMatchObject({
         outcome: "win",
         feedback: ["green", "green", "green", "green", "green"],
-        coinsEarned: 25,
+        coinsEarned: 15,
         scoreEarned: 100,
         correctAnswer: "GUESS",
         newlyUnlockedAchievementIds: [],

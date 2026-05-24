@@ -58,6 +58,18 @@ const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({isVisible, onC
     return message.replace(/^\[[^\]]+\]\s*/, "").trim();
   };
 
+  const validateUsername = (username: string): string | null => {
+    if (!username) {
+      return AppStrings.Profile.ALERT_USERNAME_EMPTY;
+    }
+
+    if (username.length < 3) {
+      return AppStrings.Profile.ALERT_USERNAME_TOO_SHORT;
+    }
+
+    return null;
+  };
+
   const handleUpdateUsername = async () => {
     const trimmedUsername = newUsername.trim();
     if (isSubmitting) {
@@ -65,6 +77,12 @@ const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({isVisible, onC
     }
 
     setUsernameError("");
+    const validationError = validateUsername(trimmedUsername);
+    if (validationError) {
+      setUsernameError(validationError);
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -183,6 +201,8 @@ const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({isVisible, onC
                 placeholder={AppStrings.Profile.ENTER_NEW_USERNAME_PLACEHOLDER}
                 placeholderTextColor="#888"
                 autoCapitalize="none"
+                testID="update-username-input"
+                accessibilityLabel={AppStrings.Profile.ENTER_NEW_USERNAME_PLACEHOLDER}
               />
               {usernameError ? (
                 <Text
@@ -202,6 +222,7 @@ const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({isVisible, onC
                 buttonText={AppStrings.Profile.SAVE_BUTTON}
                 onPress={handleUpdateUsername}
                 disabled={isSubmitting}
+                testID="update-username-save-button"
               />
             </View>
           </View>

@@ -1,0 +1,1452 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Qwordly Design And QA Issues</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f8fafc;
+        --surface: #ffffff;
+        --ink: #172033;
+        --muted: #5c667a;
+        --line: #d8dee8;
+        --fail: #a32626;
+        --blocked: #8a5a00;
+        --todo: #315f9d;
+        --fixed: #1d6b4a;
+        --info: #5b5570;
+        --shadow: 0 12px 36px rgba(20, 31, 48, 0.08);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        line-height: 1.5;
+      }
+
+      main {
+        width: min(1180px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 36px 0 56px;
+      }
+
+      header {
+        margin-bottom: 24px;
+      }
+
+      h1,
+      h2,
+      h3 {
+        line-height: 1.15;
+        margin: 0;
+      }
+
+      h1 {
+        font-size: 2.2rem;
+        margin-bottom: 10px;
+      }
+
+      h2 {
+        font-size: 1.35rem;
+        margin-bottom: 14px;
+      }
+
+      h3 {
+        font-size: 1rem;
+        margin-bottom: 8px;
+      }
+
+      p {
+        margin: 0 0 12px;
+      }
+
+      a {
+        color: #245ea8;
+      }
+
+      code {
+        background: #eef2f7;
+        border: 1px solid #dde4ee;
+        border-radius: 4px;
+        padding: 0.08rem 0.28rem;
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+        font-size: 0.9em;
+      }
+
+      section {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+        margin: 18px 0;
+        padding: 20px;
+      }
+
+      .lede {
+        color: var(--muted);
+        max-width: 880px;
+      }
+
+      .summary-grid {
+        display: grid;
+        gap: 12px;
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+        margin-top: 16px;
+      }
+
+      .summary-card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 14px;
+      }
+
+      .summary-card strong {
+        display: block;
+        font-size: 1.45rem;
+      }
+
+      .summary-card span {
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+
+      th,
+      td {
+        border-bottom: 1px solid var(--line);
+        padding: 11px 10px;
+        text-align: left;
+        vertical-align: top;
+      }
+
+      th {
+        background: #f1f4f8;
+        color: #354057;
+        font-size: 0.82rem;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+      }
+
+      tr:last-child td {
+        border-bottom: 0;
+      }
+
+      ul {
+        margin: 8px 0 0 20px;
+        padding: 0;
+      }
+
+      li {
+        margin: 6px 0;
+      }
+
+      .badge {
+        border-radius: 999px;
+        display: inline-block;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        padding: 0.18rem 0.48rem;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+
+      .fail {
+        background: #fde8e8;
+        color: var(--fail);
+      }
+
+      .blocked {
+        background: #fff2cc;
+        color: var(--blocked);
+      }
+
+      .todo {
+        background: #e8f1ff;
+        color: var(--todo);
+      }
+
+      .fixed {
+        background: #e5f6ee;
+        color: var(--fixed);
+      }
+
+      .info {
+        background: #eeedf7;
+        color: var(--info);
+      }
+
+      .priority {
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      .meta {
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      @media (max-width: 760px) {
+        main {
+          width: min(100% - 20px, 1180px);
+          padding-top: 24px;
+        }
+
+        section {
+          padding: 14px;
+        }
+
+        table,
+        thead,
+        tbody,
+        tr,
+        th,
+        td {
+          display: block;
+        }
+
+        thead {
+          display: none;
+        }
+
+        tr {
+          border-bottom: 1px solid var(--line);
+          padding: 10px 0;
+        }
+
+        td {
+          border-bottom: 0;
+          padding: 5px 0;
+        }
+
+        td::before {
+          color: var(--muted);
+          content: attr(data-label);
+          display: block;
+          font-size: 0.75rem;
+          font-weight: 700;
+          letter-spacing: 0.04em;
+          text-transform: uppercase;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>Qwordly Design And QA Issues</h1>
+        <p class="lede">
+          Consolidated issue register from the Android emulator, dev-client,
+          legal, and Firebase QA work captured in
+          <a href="./android-emulator-firebase-qa-plan.html">android-emulator-firebase-qa-plan.html</a>.
+          This file keeps defects and open verification gaps visible without
+          removing checks from the full QA plan.
+        </p>
+        <p class="meta">
+          Last updated: 2026-05-24. Workspace: <code>E:\qwordly</code>.
+        </p>
+
+        <div class="summary-grid" aria-label="Issue summary">
+          <div class="summary-card">
+            <strong>2</strong>
+            <span>open defects, blockers, or unreachable paths</span>
+          </div>
+          <div class="summary-card">
+            <strong>2</strong>
+            <span>legal, store, or navigation blockers</span>
+          </div>
+          <div class="summary-card">
+            <strong>23</strong>
+            <span>fixed source or infrastructure defects needing regression awareness</span>
+          </div>
+          <div class="summary-card">
+            <strong>30+</strong>
+            <span>open functional verification gaps retained as TODOs</span>
+          </div>
+        </div>
+      </header>
+
+      <section>
+        <h2>Open Defects And Blockers</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Status</th>
+              <th>Priority</th>
+              <th>Issue</th>
+              <th>Evidence</th>
+              <th>Next Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td data-label="ID"><code>DSI-006</code></td>
+              <td data-label="Status"><span class="badge blocked">Blocked</span></td>
+              <td data-label="Priority" class="priority">P2</td>
+              <td data-label="Issue">
+                Live production legal page reachability is still blocked or
+                deferred. Localhost legal routes pass, and emulator evidence
+                verifies production URL construction, but live Terms and
+                Privacy Policy evidence shows hosted 404 pages.
+              </td>
+              <td data-label="Evidence">
+                <code>72-continue-privacy-link-after-chrome-prompt.png</code>
+                showed <code>roobsworld.com/riddle-quest/en/privacy-policy</code>
+                returning <code>Not found | Roobs World</code>. Sign Up replay
+                added <code>173-signup-terms-link-open.png</code>,
+                <code>176-signup-privacy-link-after-load.png</code>, and
+                matching logcat with captured production URLs. Localhost
+                119-route matrix and the LAN <code>localhost:3000</code> server
+                checks pass.
+              </td>
+              <td data-label="Next Action">
+                Deploy or repair the production legal pages, then rerun the
+                live <code>www.roobsworld.com</code> reachability matrix.
+              </td>
+            </tr>
+
+            <tr>
+              <td data-label="ID"><code>DSI-007</code></td>
+              <td data-label="Status"><span class="badge blocked">Blocked</span></td>
+              <td data-label="Priority" class="priority">P2</td>
+              <td data-label="Issue">
+                Apple App Privacy and Google Play Data Safety comparison cannot
+                be marked pass. The required draft/final disclosure text or
+                console access is missing, and provider-auth Firebase behavior
+                is not fully captured yet.
+              </td>
+              <td data-label="Evidence">
+                QA tracker marks Apple App Privacy, Google Play Data Safety,
+                and legal evidence completeness audit as blocked.
+              </td>
+              <td data-label="Next Action">
+                Provide App Store Connect and Play Console disclosure entries
+                or drafts, then compare them against observed guest/provider
+                behavior and Firebase deltas.
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>Fixed Defects To Regression-Test</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Status</th>
+              <th>Issue</th>
+              <th>Fix / Verification</th>
+              <th>Regression Need</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td data-label="ID"><code>DSI-001</code></td>
+              <td data-label="Status"><span class="badge fixed">Fixed / Guest Replay Passed</span></td>
+              <td data-label="Issue">
+                Hint use triggered an achievement fanfare with a stale coin
+                total. The header correctly dropped from <code>300</code> to
+                <code>250</code>, but the intermediate achievement modal still
+                reported <code>Total Coins: 300</code>.
+              </td>
+              <td data-label="Fix / Verification">
+                <code>GameScreen</code> now computes the post-hint balance and
+                passes it to <code>showAchievementUnlockFanfareModal</code>.
+                Focused Jest now expects <code>totalCoins: 90</code> after a
+                <code>10</code>-coin hint from <code>100</code>. The combined
+                navigation/game focused suite passed.
+              </td>
+              <td data-label="Regression Need">
+                Rerun hint, achievement fanfare, persistence/stat deltas, and
+                provider-auth backend deltas in the emulator.
+              </td>
+            </tr>
+
+            <tr>
+              <td data-label="ID"><code>DSI-002</code></td>
+              <td data-label="Status"><span class="badge fixed">Fixed</span></td>
+              <td data-label="Issue">
+                Guest Leaderboard called <code>getLeaderboard</code> and logged
+                an unauthenticated backend error, creating a retry/error state
+                and LogBox risk instead of a deliberate guest experience.
+              </td>
+              <td data-label="Fix / Verification">
+                <code>LeaderboardModal</code> now detects missing Firebase auth
+                users and unauthenticated callable responses, skips
+                <code>logger.error</code>/<code>captureException</code>, and
+                shows a neutral sign-in message. Focused
+                <code>LeaderboardModal</code> Jest coverage passed. Emulator
+                guest replay also passed: <code>158-guest-leaderboard-postfix.png</code>
+                opened the modal, then <code>159-guest-leaderboard-after-wait.png</code>
+                settled to the sign-in-required message without LogBox,
+                unauthenticated leaderboard errors, RN-IAP failures, asset
+                download failures, fatal exceptions, or unexpected-stream
+                matches in the matching logcat.
+              </td>
+              <td data-label="Regression Need">
+                Provider-auth still needs a disposable authenticated account,
+                tab coverage, and live Firebase evidence.
+              </td>
+            </tr>
+
+            <tr>
+              <td data-label="ID"><code>DSI-003</code></td>
+              <td data-label="Status"><span class="badge fixed">Fixed</span></td>
+              <td data-label="Issue">
+                In-app purchase initialization failed in emulator/dev-client and
+                created a collapsed LogBox that covered bottom navigation.
+              </td>
+              <td data-label="Fix / Verification">
+                The game now uses the full Firestore catalog outside Jest, so
+                emulator/dev-client shop opening does not initialize billing or
+                call <code>IapService.getProducts</code>. The startup
+                <code>ShopCatalogPreloader</code> also skips native IAP while
+                <code>__DEV__</code> is true and still preloads Firestore
+                pricing. Focused GameScreen and ShopCatalogPreloader Jest
+                coverage passed, and <code>pnpm run test:android:matrix</code>
+                now runs the focused Android source-regression suite before
+                emulator build/health/run. Emulator relaunch evidence
+                <code>156-relaunch-after-shop-preloader-fix-logcat.txt</code>
+                had no RN-IAP initialization failure, product-fetch error,
+                PurchaseError, LogBox, fatal, asset-download, or
+                unexpected-stream match.
+              </td>
+              <td data-label="Regression Need">
+                Profile and Coin Shop header-entry replay now pass without the
+                old billing LogBox. Google Mobile Ads is present and emulator
+                logs show AdMob initialization plus test-device requests, so
+                ads are not blocked by SDK absence. The low-balance loss modal
+                regression now passes for guest: it shows both <code>Watch Ad
+                for 3 Extra Guesses</code> and <code>Open Shop</code> while the
+                paid coin-continue action is disabled below the
+                <code>100</code>-coin cost; the Google full-screen rewarded test
+                ad displayed, reached <code>Reward granted</code>, and returned
+                to a continued puzzle state with the expected <code>25</code>
+                rewarded-ad coin bonus. Post-fix guest purchase replay also
+                passes for <code>DSI-024</code>: the <code>50 coins</code> pack
+                awards <code>+50 Coins</code>, updates the balance from
+                <code>75</code> to <code>125</code>, and persists after restart.
+                Settings, production-like billing, provider-auth shop behavior,
+                and provider-auth ad replay remain open regression checks.
+              </td>
+            </tr>
+
+            <tr>
+              <td data-label="ID"><code>DSI-004</code></td>
+              <td data-label="Status"><span class="badge fixed">Fixed</span></td>
+              <td data-label="Issue">
+                Coin Shop normal header entry appeared blocked because tapping
+                the visible coin balance opened the Expo dev menu instead of
+                the app modal.
+              </td>
+              <td data-label="Fix / Verification">
+                Root cause was the Expo Dev Client Tools overlay hit area:
+                <code>[838,44][1036,303]</code>, which overlapped the app coin
+                button <code>[836,180][1036,279]</code>. The blocker was
+                reproduced in <code>162-coinshop-header-entry.png</code>.
+                Turning off the Dev Client <code>Tools button</code> in
+                <code>163-dev-tools-toggle-off.png</code> allowed the same
+                header coordinate to open the app Coin Shop in
+                <code>164-coinshop-header-after-tools-off.png</code>, with
+                visible product offers and clean app logcat for RN-IAP,
+                PurchaseError, LogBox, asset-download, fatal, and
+                unexpected-stream signatures.
+              </td>
+              <td data-label="Regression Need">
+                Keep the Tools button disabled for dev-client coordinate tests.
+                Product selection and the DSI-024 purchase defect now have
+                evidence, source coverage, and post-fix guest replay; pay/play,
+                production-like billing, backend deltas, and provider-auth shop
+                behavior remain TODO. Full rewarded-ad
+                playback/reward completion is not a Coin Shop action; it now
+                passes for the guest low-balance loss modal, where both
+                <code>Watch Ad for 3 Extra Guesses</code> and
+                <code>Open Shop</code> are offered. Provider-auth ad replay
+                remains TODO. The ad SDK itself is already initialized in
+                emulator logs and uses Google's rewarded test ad unit.
+              </td>
+            </tr>
+
+            <tr>
+              <td data-label="ID"><code>DSI-005</code></td>
+              <td data-label="Status"><span class="badge fixed">Fixed</span></td>
+              <td data-label="Issue">
+                Facebook provider cancellation surfaced as thrown/logged errors,
+                leaving stacked React Native LogBox overlays in the dev-client
+                session.
+              </td>
+              <td data-label="Fix / Verification">
+                <code>AuthService.signInWithFacebook</code> and
+                <code>linkAnonymousWithFacebook</code> now return
+                <code>null</code> for user cancellation, and Login, Landing, and
+                upgrade-account callers skip error logging and Sentry capture
+                for known cancel codes/messages. Focused AuthService,
+                LoginScreen, LandingScreen, and UpgradeAccountModal Jest suites
+                passed.
+              </td>
+              <td data-label="Regression Need">
+                Replay Facebook handoff/cancel from Login, Landing, and
+                Profile upgrade paths in the emulator and confirm no LogBox
+                overlay appears.
+              </td>
+            </tr>
+
+            <tr>
+              <td data-label="ID"><code>DSI-008</code></td>
+              <td data-label="Status"><span class="badge fixed">Fixed</span></td>
+              <td data-label="Issue">
+                Sign Up page and provider signup flow were unreachable through
+                normal navigation because the unauthenticated stack did not
+                register <code>SignUpScreen</code>.
+              </td>
+              <td data-label="Fix / Verification">
+                Registered <code>SignUpScreen</code> in
+                <code>NavigationStack</code> and added focused navigation
+                coverage for <code>stack-screen-signup</code>. The combined
+                navigation/game focused suite passed. Later emulator replay
+                reached Sign Up from Landing through Login and captured
+                <code>172-signup-from-login.png</code>.
+              </td>
+              <td data-label="Regression Need">
+                Provider signup attempt and live Firebase/Auth deltas remain
+                TODO with a disposable account. Sign Up UI, invalid-input
+                gating, and English Terms/Privacy outbound handoff now have
+                emulator evidence.
+              </td>
+            </tr>
+
+            <tr>
+              <td data-label="ID"><code>DSI-009</code></td>
+              <td data-label="Status"><span class="badge fixed">Fixed</span></td>
+              <td data-label="Issue">
+                Metro/dev-client asset downloads failed from the emulator
+                because the app was launched with Expo's default LAN URL
+                (<code>192.168.1.235:8081</code>) instead of the stable Android
+                emulator host route.
+              </td>
+              <td data-label="Fix / Verification">
+                <code>pnpm run test:android:matrix</code> now routes launches
+                through <code>scripts/android-emulator-run-matrix.ps1</code>,
+                forces <code>10.0.2.2:8081</code>, probes
+                <code>Poppins-Bold.ttf</code> from host and emulator, and now
+                also probes the Metro control websockets used by the dev
+                client. <code>pnpm run test:android:matrix:run -ProbeOnly</code>
+                passed. Latest probe evidence
+                <code>emulator-tests/logs/android-matrix-metro-websocket-probe-pnpm.stdout.txt</code>
+                passed against host <code>localhost:8081</code> and emulator
+                <code>10.0.2.2:8081</code>.
+              </td>
+              <td data-label="Regression Need">
+                Rerun the full UI flow and confirm clean asset/font logcat
+                before moving visual QA to final pass.
+              </td>
+            </tr>
+
+            <tr>
+              <td data-label="ID"><code>DSI-010</code></td>
+              <td data-label="Status"><span class="badge fixed">Fixed</span></td>
+              <td data-label="Issue">
+                About/Legal outbound links initially failed at runtime with an
+                <code>Unable to Open</code> app alert.
+              </td>
+              <td data-label="Fix / Verification">
+                Switched <code>AboutLegalModal.tsx</code> to public React Native
+                <code>Linking</code> export and updated tests. Focused Jest
+                passed, and emulator evidence shows Chrome opening the expected
+                Privacy Policy URL.
+              </td>
+              <td data-label="Regression Need">
+                Keep all seven About/Legal rows covered for guest and
+                provider-auth personas across selected locales.
+              </td>
+            </tr>
+
+            <tr>
+              <td data-label="ID"><code>DSI-011</code></td>
+              <td data-label="Status"><span class="badge fixed">Fixed</span></td>
+              <td data-label="Issue">
+                First emulator APK crashed before React Native UI rendered with
+                <code>SoLoaderDSONotFoundError</code> for
+                <code>libreactnative.so</code>.
+              </td>
+              <td data-label="Fix / Verification">
+                Root cause was missing <code>x86_64</code> native libraries.
+                Rebuilt with
+                <code>./gradlew.bat :app:assembleDebug -PreactNativeArchitectures=x86_64 --console=plain</code>;
+                Pixel 7 app smoke installed and launched successfully.
+              </td>
+              <td data-label="Regression Need">
+                Keep <code>android:assemble:emulator</code> before emulator QA
+                and verify APK ABI compatibility before installs.
+              </td>
+            </tr>
+
+            <tr>
+              <td data-label="ID"><code>DSI-012</code></td>
+              <td data-label="Status"><span class="badge fixed">Fixed</span></td>
+              <td data-label="Issue">
+                Android Emulator 36.5.11 crash dump pointed at the Windows,
+                NVIDIA, OpenGL, and gfxstream rendering path.
+              </td>
+              <td data-label="Fix / Verification">
+                Updated emulator to 36.6.9, pinned <code>rq_*</code> AVDs to
+                <code>swiftshader_indirect</code>, launched health checks with
+                SwiftShader, and boot-verified all eight AVDs.
+              </td>
+              <td data-label="Regression Need">
+                Keep SwiftShader unless a newer emulator is proven stable with
+                host GPU rendering.
+              </td>
+            </tr>
+
+            <tr>
+              <td data-label="ID"><code>DSI-013</code></td>
+              <td data-label="Status"><span class="badge fixed">Fixed</span></td>
+              <td data-label="Issue">
+                Emulator cleanup produced a race where a process could exit
+                while cleanup was checking it, causing noisy and potentially
+                misleading shutdown output.
+              </td>
+              <td data-label="Fix / Verification">
+                The health script now waits for the launched process,
+                AVD-specific QEMU child, and newly-created emulator host
+                processes to drain before removing locks or force-stopping.
+              </td>
+              <td data-label="Regression Need">
+                Continue treating cleanup noise as a script correctness issue,
+                not something to suppress without root cause.
+              </td>
+            </tr>
+
+            <tr>
+              <td data-label="ID"><code>DSI-014</code></td>
+              <td data-label="Status"><span class="badge fixed">Fixed</span></td>
+              <td data-label="Issue">
+                Expo attempted to install the APK on a connected physical
+                device instead of the emulator and hit
+                <code>INSTALL_FAILED_VERSION_DOWNGRADE</code>.
+              </td>
+              <td data-label="Fix / Verification">
+                QA flow now emphasizes explicit emulator serials or Expo
+                <code>--device</code> targets. Manual emulator install with
+                <code>adb -s emulator-5554 install -r -d</code> succeeded.
+              </td>
+              <td data-label="Regression Need">
+                Keep physical-device attachment from contaminating emulator
+                matrix runs.
+              </td>
+            </tr>
+
+            <tr>
+              <td data-label="ID"><code>DSI-015</code></td>
+              <td data-label="Status"><span class="badge fixed">Fixed</span></td>
+              <td data-label="Issue">
+                The focused Android matrix unit gate passed but emitted React
+                <code>act(...)</code> warnings from async state updates in
+                <code>GameScreenInner</code>, <code>LeaderboardModal</code>, and
+                <code>LoginScreen</code>.
+              </td>
+              <td data-label="Fix / Verification">
+                Updated the focused tests to await async modal fetches, wrap
+                social sign-in button presses and GameScreen modal callbacks in
+                <code>act</code>, keep unrelated connectivity/settings promises
+                from resolving outside test ownership, and make the active-slot
+                rerender check drive a real memoized parent refresh instead of
+                relying on incidental async updates. Verification:
+                <code>pnpm run test:android:matrix:unit</code> now includes
+                <code>SignUpScreen.test.tsx</code> and
+                <code>UpdateUsernameModal.test.tsx</code> and
+                <code>FullProfileDetailsModal.test.tsx</code> and passed 11
+                suites and 406 tests. Clean evidence files
+                <code>emulator-tests/logs/test-android-matrix-unit-with-update-username-profile.stdout.txt</code>
+                and
+                <code>emulator-tests/logs/test-android-matrix-unit-with-update-username-profile.stderr.txt</code>
+                contain no <code>act(</code>, <code>Warning:</code>,
+                <code>console.error</code>, unexpected-stream,
+                process-not-found, <code>NativeCommandError</code>, or
+                <code>FAIL</code> matches.
+              </td>
+              <td data-label="Regression Need">
+                Keep the focused source-regression suite chained into
+                <code>pnpm run test:android:matrix</code> and preserve these
+                behavioral checks when adding emulator UI coverage.
+              </td>
+            </tr>
+
+            <tr>
+              <td data-label="ID"><code>DSI-016</code></td>
+              <td data-label="Status"><span class="badge fixed">Fixed</span></td>
+              <td data-label="Issue">
+                Normal auth navigation was incomplete even after the Sign Up
+                stack route existed: <code>LandingScreen</code> had provider
+                buttons and guest entry but no visible email/password Sign In
+                or Sign Up entry point.
+              </td>
+              <td data-label="Fix / Verification">
+                <code>LandingScreen</code> now accepts the unauthenticated stack
+                navigation prop, exposes <code>Sign In</code> and
+                <code>Sign up</code> controls, and navigates to
+                <code>Login</code> and <code>SignUp</code>. Focused Landing and
+                Navigation tests passed, and emulator evidence
+                <code>170-landing-after-auth-entry-fix.png</code>,
+                <code>171-login-after-landing-signin.png</code>, and
+                <code>172-signup-from-login.png</code> proves the route is
+                reachable through normal UI.
+              </td>
+              <td data-label="Regression Need">
+                Keep the auth entry controls in the Android matrix unit gate
+                and rerun provider-auth/email-password live flows once a
+                disposable account is available.
+              </td>
+            </tr>
+
+            <tr>
+              <td data-label="ID"><code>DSI-017</code></td>
+              <td data-label="Status"><span class="badge fixed">Fixed</span></td>
+              <td data-label="Issue">
+                The Update Username modal submitted blank or too-short
+                usernames to the backend and relied on the callable to reject
+                obviously invalid input.
+              </td>
+              <td data-label="Fix / Verification">
+                <code>UpdateUsernameModal</code> now trims and validates before
+                setting the submitting state or calling
+                <code>updateUsername</code>. Empty names show
+                <code>Username cannot be empty.</code>; names shorter than
+                three characters show
+                <code>Username must be at least 3 characters long.</code>.
+                Added stable test IDs/accessibility labels for the Profile
+                username entry and Update Username input/save controls.
+                Verification:
+                <code>pnpm test src/components/modals/settings/__tests__/UpdateUsernameModal.test.tsx -- --runInBand</code>
+                and
+                <code>pnpm test src/components/modals/settings/__tests__/FullProfileDetailsModal.test.tsx -- --runInBand</code>
+                passed. The matrix unit gate includes the update-username and
+                profile modal suites and passed 11 suites / 406 tests with
+                clean stdout/stderr. Fresh-bundle emulator replay now also
+                passes the local short-name validation: evidence
+                <code>189-update-username-open-fresh-retry.png</code>,
+                <code>190-update-username-short-validation-fresh.png</code>,
+                and matching XML/logcat shows the modal open after JS reload,
+                input value <code>ab</code>, inline error
+                <code>Username must be at least 3 characters long.</code>, and
+                no backend submission required for that invalid input.
+              </td>
+              <td data-label="Regression Need">
+                Complete successful save, persistence, and live Firebase
+                callable evidence with a disposable account.
+              </td>
+            </tr>
+
+            <tr>
+              <td data-label="ID"><code>DSI-018</code></td>
+              <td data-label="Status"><span class="badge fixed">Fixed</span></td>
+              <td data-label="Issue">
+                After a JS reload and update-username replay, logcat showed
+                Expo/RN dev-client websocket aborts such as
+                <code>ReconnectingWebSocket</code>,
+                <code>Software caused connection abort</code>, and a temporary
+                <code>Cannot connect to Expo CLI</code> warning. This needed
+                root-cause work instead of quieting the output.
+              </td>
+              <td data-label="Fix / Verification">
+                Root cause narrowed to reload/probe-window dev-client socket
+                churn rather than a persistent unreachable server: Metro asset
+                fetches pass from host and emulator, real host websocket clients
+                held <code>/message</code> and
+                <code>/inspector/network</code> open for 10 seconds, idle
+                logcat after clearing produced no matching signatures, and a
+                controlled matrix probe after log clear produced no reconnect,
+                asset, LogBox, fatal, or unexpected-stream matches. The matrix
+                runner now probes both Metro asset delivery and host/emulator
+                websocket upgrades, and its remote emulator probe files use
+                unique names so parallel probes cannot delete each other's
+                request payloads. Evidence:
+                <code>emulator-tests/logs/metro-host-websocket-hold-20260524.txt</code>,
+                <code>emulator-tests/logs/android-matrix-metro-websocket-probe-after-clear.stdout.txt</code>,
+                <code>emulator-tests/logs/rq_pixel_4a_api_36_1/193-idle-after-logcat-clear.txt</code>,
+                <code>emulator-tests/logs/rq_pixel_4a_api_36_1/194-after-controlled-probe-logcat.txt</code>,
+                and
+                <code>emulator-tests/logs/rq_pixel_4a_api_36_1/194-after-controlled-probe-signature-scan.txt</code>.
+                Fresh Credits website handoff replay reproduced the same
+                transient dev-client websocket pattern while the app was
+                backgrounded to Chrome, but host and LAN
+                <code>/status</code> endpoints both returned
+                <code>packager-status:running</code>, port <code>8081</code>
+                was owned by Node, and cleared 15-second idle evidence after
+                returning to the app
+                (<code>399-after-credits-return-15s-idle-logcat.txt</code>)
+                had no reconnect, fatal, LogBox, NativeAnimated,
+                unexpected-stream, or process-not-found signatures.
+              </td>
+              <td data-label="Regression Need">
+                Treat any future repeated Expo CLI websocket, unexpected-stream,
+                or asset-download signature during matrix execution as a real
+                blocker. Keep the websocket probe in
+                <code>pnpm run test:android:matrix</code>.
+              </td>
+            </tr>
+
+            <tr>
+              <td data-label="ID"><code>DSI-019</code></td>
+              <td data-label="Status"><span class="badge fixed">Fixed / Guest Replay Passed</span></td>
+              <td data-label="Issue">
+                Restart persistence after a skip is only partial. The guest coin
+                balance survived a force-stop/relaunch, but the app reopened on
+                a fresh <code>Daily Challenge</code> board instead of the
+                <code>Classic</code> riddle reached after the paid skip flow.
+                Root cause: guest progress persisted coin/index data, but
+                launch mode was recomputed from daily availability instead of
+                restoring the same-day active gameplay session.
+              </td>
+              <td data-label="Fix / Verification">
+                Pre-fix evidence:
+                <code>210-skip-balance0-result.png</code>/<code>.xml</code>
+                showed the post-skip Classic board with <code>50</code> coins.
+                <code>213-skip-restart-persistence.png</code> captured the
+                dev-client loading state after relaunch, then
+                <code>214-skip-restart-settled.png</code>/<code>.xml</code>
+                showed a settled <code>Daily Challenge</code> board with the
+                same <code>50</code> coin balance. Source fix:
+                <code>sessionBootstrap.ts</code> now persists a date-scoped
+                active game-session snapshot and resolves launch mode from that
+                snapshot when it belongs to the current UTC day; stale snapshots
+                are ignored so the next day's Daily Challenge can still take
+                precedence. <code>AuthContext.tsx</code> saves the active
+                mode/riddle context for guest and provider-auth sessions and
+                uses the new resolver during bootstrap. Verification:
+                <code>pnpm test src/features/auth/__tests__/sessionBootstrap.test.ts src/contexts/__tests__/AuthContext.test.tsx -- --runInBand</code>
+                passed, and <code>pnpm run test:android:matrix:unit</code>
+                passed 15 suites / 530 tests with the session bootstrap and
+                AuthContext regressions included. Matrix evidence:
+                <code>emulator-tests/logs/test-android-matrix-unit-dsi019-dsi023-pass.stdout.txt</code>
+                and
+                <code>emulator-tests/logs/test-android-matrix-unit-dsi019-dsi023-pass.stderr.txt</code>.
+                Fresh guest emulator replay passed after resetting a
+                Daily session to <code>300</code> coins:
+                <code>268-dsi019-skip-modal-open-ui-derived.png</code> shows
+                the skip modal at <code>Total Coins: 300</code>,
+                <code>270-dsi019-after-daily-skip-classic-150.png</code> /
+                <code>.xml</code> show the app advanced to
+                <code>Classic</code> with <code>150</code> coins, and
+                <code>272-dsi019-after-restart-extra-wait.png</code> /
+                <code>.xml</code> show force-stop/relaunch restoring
+                <code>Classic</code> with <code>150</code> coins. Focused
+                logcat
+                <code>272-dsi019-after-restart-extra-wait-logcat.txt</code>
+                records <code>classic_1</code> being restored and has no fatal,
+                LogBox, NativeAnimated, asset-download, websocket,
+                unexpected-stream, or process-not-found signatures.
+              </td>
+              <td data-label="Regression Need">
+                DSI-019 is closed for the guest skip restart defect. Keep
+                provider-auth skip restart coverage, backend deltas, and broader
+                continue/loss restart replays open until captured with
+                before/after screenshots, UI XML, and stored state or backend
+                snapshots.
+              </td>
+            </tr>
+
+            <tr>
+              <td data-label="ID"><code>DSI-020</code></td>
+              <td data-label="Status"><span class="badge fixed">Fixed / Guest Replay Passed</span></td>
+              <td data-label="Issue">
+                The guest loss/continue flow is reachable, but the low-balance
+                branch stacks the insufficient-coins info modal with the loss
+                modal. After four wrong guesses at <code>50</code> coins, the
+                app first showed <code>Grab more coins</code>, then revealed
+                the <code>So close!</code> loss modal with the info modal still
+                visible behind it. Pressing Android Back dismissed the loss
+                modal first, leaving the info modal; dismissing that info modal
+                returned to the completed board with <code>Next</code> exposed
+                and no loss actions visible. Root cause: <code>GameScreen.tsx</code>
+                launched <code>showTooltipOnce("shopOutOfCoins")</code> in the
+                attempt-limit and terminal-loss branches before the delayed loss
+                modal reveal, so the generic tooltip stayed active behind the
+                loss modal.
+              </td>
+              <td data-label="Fix / Verification">
+                Evidence:
+                <code>217-loss-after-fourth-wrong-guess.png</code> shows the
+                final wrong row plus <code>Grab more coins</code>;
+                <code>218-loss-modal-after-out-of-coins-dismiss.png</code>
+                shows <code>So close!</code>, <code>Total Coins: 50</code>, an
+                enabled <code>Watch Ad for 3 Extra Guesses</code>, disabled
+                <code>3 Extra Guesses - 100 Coins</code>, <code>Open Shop</code>,
+                and <code>Skip Puzzle</code> while the info modal remains
+                behind it. <code>220-loss-after-back-clears-info-layer.png</code>
+                / <code>.xml</code> and
+                <code>221-loss-after-info-dismiss-recoverability.png</code> /
+                <code>.xml</code> show the Back/dismiss recovery problem. The
+                focused logcat files record <code>Out of attempts!</code> and
+                <code>Opening modal of type: loss</code> with
+                <code>canWatchAd: true</code>, <code>canUseCoin: false</code>,
+                <code>coinContinueCost: 100</code>, and
+                <code>totalCoins: 50</code>, with no app LogBox, fatal,
+                asset-download, websocket, unexpected-stream, or
+                process-not-found signatures. Source fix: removed the automatic
+                low-balance shop tooltip from the attempt-limit and terminal-loss
+                branches so the loss modal is the only authoritative surface for
+                continue, Open Shop, Skip Puzzle, and Next choices. Focused
+                regression coverage now verifies low-balance attempt-limit and
+                terminal-loss flows do not call the <code>shopOutOfCoins</code>
+                tooltip while still opening the loss modal. Verification:
+                <code>pnpm test src/screens/game/__tests__/GameScreen.test.tsx -- --runInBand</code>
+                passed 102 tests, and
+                <code>pnpm run test:android:matrix:unit</code> passed 12 suites
+                / 440 tests so the regression runs when
+                <code>pnpm run test:android:matrix</code> starts. Fresh guest
+                emulator replay after source reload also passed:
+                <code>224-after-dsi020-reload-wait.png</code> captured the
+                low-balance puzzle setup after reload,
+                <code>227-dsi020-loss-modal-settled-source-fix.png</code>
+                showed only the <code>So close!</code> loss modal with no
+                visible <code>Grab more coins</code> layer, and
+                <code>228-dsi020-after-back-source-fix.png</code> /
+                <code>.xml</code> showed Android Back returning to the
+                completed board without a lingering info overlay. Focused
+                <code>227</code>/<code>228</code> log scans found the expected
+                <code>Out of attempts!</code> and
+                <code>Opening modal of type: loss</code> entries only, with no
+                <code>shopOutOfCoins</code>, <code>Grab more coins</code>,
+                LogBox, fatal, asset-download, websocket, unexpected-stream, or
+                process-not-found signatures. The animated
+                <code>227</code> UI-tree dump returned
+                <code>ERROR: could not get idle state</code>, so the settled
+                screenshot and valid after-Back XML are authoritative.
+              </td>
+              <td data-label="Regression Need">
+                DSI-020 is closed for the guest stacked-modal defect. The
+                follow-on hardware Back terminal-loss escape is tracked
+                separately as <code>DSI-021</code>. Guest rewarded-ad continue
+                is now covered by the <code>292</code>-<code>296</code>
+                emulator replay. Sufficient-balance coin continue is now
+                covered by <code>327-loss-modal-sufficient-balance-ready.png</code>
+                and <code>328-loss-paid-coin-continue-result.png</code>, and
+                final-loss <code>Open Shop</code>/close/<code>Next Level</code>
+                plus restart persistence are covered by the <code>298</code>
+                through <code>304</code> replay. The distinct first-loss
+                <code>Skip Puzzle</code> action is covered by
+                <code>337-loss-modal-skip-puzzle-ready-settled.png</code> and
+                <code>338-loss-modal-skip-puzzle-result.png</code>. Keep the
+                broader loss-flow checklist open for provider-auth replay and
+                backend/local deltas.
+              </td>
+            </tr>
+
+            <tr>
+              <td data-label="ID"><code>DSI-021</code></td>
+              <td data-label="Status"><span class="badge fixed">Fixed / Guest Replay Passed</span></td>
+              <td data-label="Issue">
+                After the <code>DSI-020</code> source replay, pressing Android
+                Back on the terminal <code>So close!</code> loss modal dismissed
+                the modal without choosing a loss action. The completed board
+                was left visible with a <code>Next</code> action; tapping it
+                opened the paid <code>Skip the level?</code> modal at
+                <code>Total Coins: 50</code> instead of restoring the required
+                loss decision point. Root cause: <code>LossModal.tsx</code>
+                passed <code>onClose</code> to React Native
+                <code>Modal.onRequestClose</code>, so Android hardware Back
+                could silently close a terminal modal. The underlying game input
+                then exposed the normal right-side <code>Next</code> button,
+                whose handler opens the skip modal.
+              </td>
+              <td data-label="Fix / Verification">
+                Evidence:
+                <code>229-continue-todos-current-state.png</code> shows the
+                stranded completed board with <code>Next</code> after Back, and
+                <code>230-loss-next-after-dsi020.png</code> shows tapping that
+                <code>Next</code> opened <code>Skip the level?</code> with
+                insufficient coins. Focused logcat
+                <code>230-loss-next-after-dsi020-logcat.txt</code> records
+                <code>Next button pressed - opening skip modal</code> and
+                <code>Opening modal of type: skip</code>. Source fix:
+                <code>LossModal</code> now ignores
+                <code>onRequestClose</code> so Android Back cannot dismiss the
+                terminal loss action set. Verification:
+                <code>pnpm test src/components/modals/game/__tests__/LossModal.test.tsx -- --runInBand</code>
+                passed 33 tests, including a regression that invokes the
+                underlying <code>Modal.onRequestClose</code> and asserts neither
+                <code>onClose</code> nor <code>onNext</code> runs.
+                <code>pnpm run test:android:matrix:unit</code> now includes the
+                LossModal suite and passed 12 suites / 440 tests. Fresh guest
+                emulator replay also passed:
+                <code>234-dsi021-loss-modal-before-back.png</code> shows the
+                terminal loss modal with ad continue enabled, coin continue
+                disabled at <code>50</code> coins, <code>Open Shop</code>, and
+                <code>Skip Puzzle</code>; after pressing Android Back,
+                <code>235-dsi021-after-back-loss-modal-still-visible.png</code>
+                and matching XML show the same loss modal still visible instead
+                of the completed board or paid skip modal. Focused logcat for
+                <code>235</code> contains the expected <code>Out of attempts!</code>
+                and <code>Opening modal of type: loss</code> entries with no
+                <code>Next button pressed</code>, skip modal, lingering
+                <code>shopOutOfCoins</code>, <code>Grab more coins</code>,
+                LogBox, fatal, asset-download, unexpected-stream, or
+                process-not-found signatures. The dev-client websocket aborts
+                observed in the same log are covered by the fixed/monitor
+                test-harness item <code>DSI-022</code>.
+              </td>
+              <td data-label="Regression Need">
+                The guest hardware Back escape is closed. Continue exercising
+                each explicit loss action and keep provider-auth/backend deltas
+                open until captured.
+              </td>
+            </tr>
+
+            <tr>
+              <td data-label="ID"><code>DSI-022</code></td>
+              <td data-label="Status"><span class="badge fixed">Fixed In Test Harness / Monitor</span></td>
+              <td data-label="Issue">
+                The Expo dev-client control websocket warning reappeared during
+                the fresh <code>DSI-021</code> replay. The app stayed usable
+                and Metro served the bundle, but focused logcat recorded
+                <code>ReconnectingWebSocket</code>,
+                <code>Software caused connection abort</code>, and
+                <code>Cannot connect to Expo CLI</code> for the
+                <code>10.0.2.2:8081</code> <code>/message</code> and
+                <code>/inspector/network</code> sockets. The earlier matrix
+                probe only proved that Metro accepted an HTTP 101 websocket
+                upgrade, so it could miss an early stream close.
+              </td>
+              <td data-label="Fix / Verification">
+                Investigation showed this was not a simple unreachable-port or
+                bundle-serving failure: <code>233-current-after-loading-diagnosis.png</code>
+                and logcat show the bundle loaded and
+                <code>Running "main"</code> executed; the original probe
+                evidence <code>android-matrix-metro-websocket-probe-dsi022-20260524.txt</code>
+                passed asset and websocket upgrade checks from both host and
+                emulator. Fix: <code>scripts/android-emulator-run-matrix.ps1</code>
+                now keeps the host and emulator <code>/message</code> and
+                <code>/inspector/network</code> websocket probes open for a
+                10-second hold and fails if either socket closes during that
+                window. Verification:
+                <code>emulator-tests/logs/android-matrix-metro-websocket-hold-probe-dsi022-20260524.txt</code>
+                passed against <code>localhost:8081</code> and
+                <code>10.0.2.2:8081</code>; after clearing logcat and idling,
+                <code>237-dsi022-after-hardened-probe-idle-logcat.txt</code>
+                had no <code>ReconnectingWebSocket</code>,
+                <code>Cannot connect to Expo CLI</code>, unexpected-stream,
+                asset-download, LogBox, fatal, or process-not-found matches.
+                Latest Classic reward follow-up replay still saw a transient
+                LAN websocket abort in
+                <code>353-after-levelup-awesome-next-level-logcat.txt</code>
+                after Android <code>ConnectivityService</code> destroyed
+                sockets during network churn. That recurrence is documented
+                as monitored, not ignored: the app recovered, and
+                <code>354-after-levelup-settled.png</code> / <code>.xml</code>
+                show the next Classic riddle loaded with the header balance at
+                <code>115</code>.
+              </td>
+              <td data-label="Regression Need">
+                Keep the hold probe in <code>pnpm run test:android:matrix</code>
+                and treat any future repeated, fatal, or non-recovering Expo
+                CLI websocket abort during a focused UI replay as a new failing
+                runtime issue with logcat evidence. The remaining functional
+                gameplay/provider-auth TODOs are still open.
+              </td>
+            </tr>
+
+            <tr>
+              <td data-label="ID"><code>DSI-023</code></td>
+              <td data-label="Status"><span class="badge fixed">Fixed / Guest Replay Passed</span></td>
+              <td data-label="Issue">
+                During the DSI-019 replay, the dev-client showed a native
+                project-load crash:
+                <code>java.lang.IllegalStateException: Calculated frame index should never be lower than 0</code>
+                from React Native's frame-based animation driver. Root cause:
+                <code>PulsingSpinner</code> started a native
+                <code>Animated.loop</code> even when rendered with
+                <code>visible={false}</code> and returning <code>null</code>.
+                The hidden native loop could survive reload/display timing and
+                trip the frame index assertion.
+              </td>
+              <td data-label="Fix / Verification">
+                Evidence:
+                <code>263-dsi019-current-state-before-replay.png</code> showed
+                the dev-client error screen, and
+                <code>263-dev-client-native-animation-crash-logcat.txt</code>
+                captured the <code>Calculated frame index</code> stack. Source
+                fix: hidden <code>PulsingSpinner</code> instances now skip
+                animation startup entirely. Verification:
+                <code>pnpm test src/components/loading/__tests__/PulsingSpinner.test.tsx -- --runInBand</code>
+                passed with a regression asserting hidden spinners do not call
+                <code>Animated.loop</code>, and
+                <code>pnpm run test:android:matrix:unit</code> passed with the
+                spinner test included. Matrix evidence:
+                <code>emulator-tests/logs/test-android-matrix-unit-dsi019-dsi023-pass.stdout.txt</code>
+                and
+                <code>emulator-tests/logs/test-android-matrix-unit-dsi019-dsi023-pass.stderr.txt</code>.
+                Emulator reload replay passed:
+                <code>264-after-spinner-native-loop-fix-reload.png</code> shows
+                the reload spinner after the fix, and
+                <code>265-after-spinner-native-loop-fix-settled.png</code> /
+                <code>.xml</code> show the app returning to the game screen.
+                Focused log scans
+                <code>264-after-spinner-native-loop-fix-reload-logcat.txt</code>
+                and
+                <code>265-after-spinner-native-loop-fix-settled-logcat.txt</code>
+                had no <code>Calculated frame</code>, NativeAnimated, fatal,
+                LogBox, asset-download, websocket, unexpected-stream, or
+                process-not-found signatures.
+              </td>
+              <td data-label="Regression Need">
+                Keep <code>PulsingSpinner.test.tsx</code> in
+                <code>test:android:matrix:unit</code> and continue scanning
+                reload/restart emulator logs for NativeAnimated frame-index
+                signatures.
+              </td>
+            </tr>
+
+            <tr>
+              <td data-label="ID"><code>DSI-024</code></td>
+              <td data-label="Status"><span class="badge fixed">Fixed</span></td>
+              <td data-label="Issue">
+                Coin Shop purchase replay found a real no-op success bug. After
+                selecting the <code>50 coins</code> pack from the header-opened
+                shop, the dev fallback callable failed unauthenticated and the
+                selected live Firestore product ID
+                <code>com.qwordly.coinpack1</code> had no local coin mapping.
+                The app still logged purchase success and opened
+                <code>coinPurchaseFanfare</code> with
+                <code>coinsPurchased: 0</code> and unchanged
+                <code>totalCoins: 75</code>.
+              </td>
+              <td data-label="Fix / Verification">
+                <code>IapService</code> now canonicalizes the live
+                <code>com.qwordly.coinpack*</code> Firestore IDs to the store
+                and backend IDs <code>com.roobsworld.riddlequest.coinpack*</code>
+                before dev fallback, billing availability checks, purchase
+                requests, validation, analytics, and coin lookup. Local dev
+                fallback now refuses unknown products instead of returning a
+                zero-coin success. <code>GameScreen</code> also guards the UI
+                boundary so a purchase result must resolve to a positive coin
+                award or positive backend balance delta before closing the shop
+                or showing the success fanfare. Emulator evidence:
+                <code>306-coinshop-header-after-tools-off-retry.png</code>
+                opened the shop from the header,
+                <code>307-coinshop-product-selected.png</code> selected
+                <code>50 coins</code>, and
+                <code>308-coinshop-purchase-attempt-result.png</code> captured
+                the pre-fix zero-coin fanfare. Post-fix replay passed:
+                <code>318-dsi024-postfix-coinshop-open.png</code> reopened the
+                header shop at <code>75 coins</code>,
+                <code>319-dsi024-postfix-product-selected.png</code> selected
+                the <code>50 coins</code> pack,
+                <code>320-dsi024-postfix-purchase-result.png</code> showed
+                <code>Coins Added!</code>, <code>+50 Coins</code>, and
+                <code>Total Coins: 125</code>,
+                <code>321-dsi024-after-purchase-fanfare-dismiss.png</code>
+                plus XML showed the game header/accessibility state at
+                <code>125</code>, and
+                <code>324-dsi024-purchase-restart-restored-settled.png</code>
+                plus XML showed the same balance after force-stop/relaunch.
+                <code>320-dsi024-postfix-purchase-result-logcat.txt</code>
+                records the canonical
+                <code>com.roobsworld.riddlequest.coinpack1</code> transaction
+                and <code>coinsPurchased: 50</code>, with no
+                <code>No local coin mapping</code> or
+                <code>coinsPurchased: 0</code> success signature. Source
+                verification passed:
+                <code>pnpm test src/services/__tests__/IapService.test.ts src/screens/game/__tests__/GameScreen.test.tsx -- --runInBand</code>
+                and <code>pnpm run test:android:matrix:unit</code> passed
+                15 suites / 531 tests. Evidence:
+                <code>emulator-tests/logs/test-android-matrix-unit-dsi024.stdout.txt</code>
+                and
+                <code>emulator-tests/logs/test-android-matrix-unit-dsi024.stderr.txt</code>.
+              </td>
+              <td data-label="Regression Need">
+                Production billing, provider-auth backend deltas, pay/play,
+                and store account behavior still need live emulator evidence.
+              </td>
+            </tr>
+
+            <tr>
+              <td data-label="ID"><code>DSI-025</code></td>
+              <td data-label="Status"><span class="badge fixed">Fixed / Guest Replay Passed</span></td>
+              <td data-label="Issue">
+                Guest Classic victory replay exposed a client/server economy
+                mismatch. Pre-fix evidence
+                <code>343-classic-solve-words-victory.png</code> and
+                <code>343-classic-solve-words-victory-logcat.txt</code> showed
+                <code>coinsEarned: 25</code>, while the QA/server source of
+                truth is <code>15</code> Classic coins. The same replay also
+                made the final total look suspicious because the first victory
+                popup showed a total that already included a queued level-up
+                bonus before the level-up popup explained that extra award.
+              </td>
+              <td data-label="Fix / Verification">
+                Root cause: <code>src/constants/game.ts</code> still had
+                <code>CLASSIC_RIDDLE_COIN_REWARD = 25</code> after the server
+                constants moved to <code>15</code>. Source fix changed the
+                client constant to <code>15</code> and updated
+                <code>src/hooks/__tests__/useGameLogic.test.ts</code> plus
+                <code>src/screens/game/__tests__/GameScreen.test.tsx</code>.
+                Fresh emulator replay passed:
+                <code>350-classic-reward-fix-spider-victory.png</code> and
+                <code>350-classic-reward-fix-spider-victory-logcat.txt</code>
+                show <code>+15 Coins</code> and <code>coinsEarned: 15</code>.
+                The apparent <code>Total Coins: 115</code> jump was also
+                root-caused: <code>352-classic-reward-fix-levelup-followup-pull.png</code>
+                shows the queued <code>Level Up!</code> popup awarding
+                <code>+50 Coins</code>, and
+                <code>354-after-levelup-settled.png</code> / <code>.xml</code>
+                show the final header balance at <code>115</code>. Matrix
+                coverage now includes both <code>useGameLogic.test.ts</code>
+                and <code>GameScreen.test.tsx</code>; latest evidence
+                <code>emulator-tests/logs/test-android-matrix-unit-classic-reward-20260524.txt</code>
+                passed 16 suites / 564 tests.
+              </td>
+              <td data-label="Regression Need">
+                Keep both Classic reward suites in
+                <code>test:android:matrix:unit</code> so the guard runs when
+                <code>pnpm run test:android:matrix</code> starts. Provider-auth
+                Firebase/backend Classic win deltas remain open. UX follow-up:
+                decide whether the victory modal should show only the current
+                popup's total or explicitly mention the queued level-up bonus
+                before the follow-up fanfare appears.
+              </td>
+            </tr>
+
+            <tr>
+              <td data-label="ID"><code>DSI-026</code></td>
+              <td data-label="Status"><span class="badge fixed">Fixed / Guest Replay Passed</span></td>
+              <td data-label="Issue">
+                The Statistics modal rendered derived counters instead of the
+                persisted profile stats. Pre-fix emulator evidence
+                <code>370-statistics-post-restart-open.png</code> and
+                <code>370-statistics-post-restart-open.xml</code> showed
+                <code>Games Played: 8</code> and
+                <code>Total Words Guessed: 6</code>, while the persisted
+                profile/log evidence showed <code>gamesPlayed: 4</code> and
+                the profile card showed <code>Total Words Guessed: 9</code>.
+              </td>
+              <td data-label="Fix / Verification">
+                Root cause: <code>StatsModal.tsx</code> recomputed games
+                played and words guessed from daily/classic/failure counters
+                instead of using <code>stats.gamesPlayed</code> and
+                <code>stats.totalWordsGuessed</code>, which
+                <code>NavigationStack.tsx</code> already persists after games.
+                Fix: render the persisted stats directly and update
+                <code>StatsModal.test.tsx</code> expectations. Fresh emulator
+                replay <code>381-statistics-postfix-open.png</code> /
+                <code>.xml</code> now shows <code>Games Played: 4</code> and
+                <code>Total Words Guessed: 9</code>. The focused log scan for
+                <code>LogBox</code>, fatal, websocket reconnect,
+                unexpected-stream, process-not-found, and NativeAnimated
+                signatures returned no matches.
+              </td>
+              <td data-label="Regression Need">
+                Keep <code>src/components/modals/settings/__tests__/StatsModal.test.tsx</code>
+                in <code>test:android:matrix:unit</code> so this guard runs
+                when <code>pnpm run test:android:matrix</code> starts.
+                Latest evidence
+                <code>emulator-tests/logs/test-android-matrix-unit-stats-fix-20260524.txt</code>
+                passed 17 suites / 575 tests. Provider-auth stat persistence
+                and backend/Firebase deltas remain open.
+              </td>
+            </tr>
+
+            <tr>
+              <td data-label="ID"><code>DSI-027</code></td>
+              <td data-label="Status"><span class="badge todo">Open / Investigating</span></td>
+              <td data-label="Issue">
+                Selecting the Expo dev-client LAN bundle after a force-stop can
+                leave Qwordly on the app <code>Loading</code> screen for roughly
+                30 seconds before it settles. This happened after provider-auth
+                relaunch and again after provider logout relaunch.
+              </td>
+              <td data-label="Fix / Verification">
+                Evidence: <code>415-google-provider-after-relaunch-bundle-open.png</code>
+                / <code>.xml</code> still showed only <code>Loading</code>
+                after the bundle was selected, then <code>416-google-provider-after-relaunch-waited.png</code>
+                / <code>.xml</code> later reached the app. The post-logout
+                replay similarly stayed on <code>Loading</code> in
+                <code>425-google-provider-post-logout-relaunch-landing.png</code>
+                / <code>.xml</code> and only reached unauthenticated Landing in
+                <code>426-google-provider-post-logout-relaunch-waited.png</code>
+                / <code>.xml</code>. Logcat from the <code>415</code> run shows
+                Metro was reachable and JavaScript started:
+                <code>isMetroRunning(): Async result = true</code>,
+                <code>loadJSBundleFromMetro()</code>, and
+                <code>Running "main"</code>. That narrows the current
+                investigation to app/dev-client initialization after JS start
+                rather than a simple dead Metro server.
+              </td>
+              <td data-label="Regression Need">
+                Add a timed cold-start/dev-client-reopen measurement from
+                bundle selection to first real app screen. Capture auth
+                hydration, profile fetch, riddle fetch, preloader, and
+                render-gate milestones so the root cause is fixed rather than
+                hidden behind longer waits or quieter output. Restart-related
+                QA stays open until the loading phase is bounded and has
+                deterministic failure/error UI.
+              </td>
+            </tr>
+
+            <tr>
+              <td data-label="ID"><code>DSI-028</code></td>
+              <td data-label="Status"><span class="badge fixed">Fixed / Matrix Unit Passed</span></td>
+              <td data-label="Issue">
+                Riddle play could use a stale <code>answerLength</code> prop
+                instead of the actual answer text. A four-letter answer such
+                as <code>JOKE</code> could render five slots and accept an
+                overlong entry like <code>JOKES</code>. Separately, generated
+                or stored riddle text could reveal the literal answer, for
+                example a clue of <code>joke</code> for answer
+                <code>joke</code>.
+              </td>
+              <td data-label="Fix / Verification">
+                Root cause: <code>GameScreen</code>, <code>GuessGrid</code>,
+                and legacy <code>GameStateManager</code> trusted configured
+                answer length or historical five-letter defaults for slot
+                count and submit gating. The generation path also validated
+                answer shape but did not reject literal-answer clues. Fix:
+                gameplay now derives the playable slot count from the trimmed
+                answer, trims overlong current guesses, clamps grid rows to the
+                playable length, and uses the trimmed answer for guess
+                processing and hints. Literal-answer clues are replaced at
+                render time with a fallback clue, and Firebase riddle
+                generation now uses a named maximum-answer-character constant
+                in the OpenAI prompt and validation before rejecting or
+                retrying prompts whose question reveals the answer word.
+                Verification: focused
+                <code>GameScreen</code>, <code>GuessGrid</code>, and
+                <code>GameStateManager</code> Jest coverage passed; Functions
+                <code>openaiService</code> and <code>riddleGeneration</code>
+                tests passed, including a prompt-payload assertion for the
+                maximum answer character limit; <code>pnpm run
+                test:android:matrix:unit</code> passed 19 suites / 654 tests
+                with these checks included; and Firebase Functions TypeScript
+                passed.
+              </td>
+              <td data-label="Regression Need">
+                Keep <code>GameScreen.test.tsx</code>,
+                <code>GuessGrid.test.tsx</code>, and
+                <code>GameStateManager.test.ts</code> in
+                <code>test:android:matrix:unit</code> so
+                <code>pnpm run test:android:matrix</code> continues to catch
+                slot-count and overlong-entry regressions. Existing stored
+                riddles should still be audited or regenerated if a literal
+                answer clue is found; the UI fallback prevents leaking the
+                answer, but it does not rewrite already-persisted Firestore
+                content.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>Open Functionality Verification Gaps</h2>
+        <p>
+          These are not removed checks. They are the remaining TODO or
+          IN_PROGRESS coverage items called out by the QA tracker.
+        </p>
+        <ul>
+          <li>Login screen is reachable from Landing and matrix unit coverage exercises local validation, error mapping, loading state, provider cancel/error handling, and auth navigation. Live Google provider handoff/result now has emulator evidence (<code>406</code>/<code>407</code>/<code>410</code>/<code>413</code>); email/password valid/invalid attempts, Facebook/Twitter paths, provider cancel paths, and backend/Auth UID evidence remain open.</li>
+          <li>Email/password login live valid/invalid attempts remain open with a disposable account and backend/Auth evidence.</li>
+          <li>Sign Up provider account creation, provider-auth Firebase deltas, and localized non-English Sign Up legal-link spot checks.</li>
+          <li>Provider-auth Google sign-in setup is no longer the blocker because <code>craigbeswetherick@gmail.com</code> completed user-assisted Google login; Auth UID capture and live Firebase before/after snapshots remain open.</li>
+          <li>Provider-auth Google handoff/success is covered by <code>406</code>/<code>407</code>/<code>410</code>/<code>413</code>. Facebook/Twitter handoff, cancellation, and error states remain open.</li>
+          <li>Guest logout is now covered: <code>400-settings-open-for-guest-logout.png</code>/<code>.xml</code> show the Settings <code>Logout</code> row, <code>401-guest-logout-result.png</code>/<code>.xml</code> show unauthenticated Landing after logout, <code>401-guest-logout-result-logcat.txt</code> records <code>FirebaseAuth</code> sign-out and navigation changing to unauthenticated, and <code>403-guest-logout-after-restart-settled.png</code>/<code>.xml</code> plus <code>404-guest-logout-after-restart-app-pid-idle-logcat.txt</code> prove force-stop/relaunch stays on Landing without app-PID errors. Provider-auth logout is now covered at the UI/session level by <code>421</code>/<code>422</code>/<code>426</code>/<code>427</code>; Auth/backend cleanup remains under account-deletion TODOs.</li>
+          <li>Guest account deletion confirm path, cleanup proof, restart proof, and failure path.</li>
+          <li>Auth-provider account deletion confirm path, Auth cleanup, Firestore cleanup, storage-prefix check, and re-sign-in proof.</li>
+          <li>Riddle loading, initialization retry/error state, and offline blocking state. Provider-auth relaunch loading is an open investigation under <code>DSI-027</code> because <code>415</code> and <code>425</code> stayed on <code>Loading</code> far longer than expected even though Metro was reachable and JS had started.</li>
+          <li>Guest Classic solve/reward is now covered by <code>DSI-025</code>; Daily fallback to Classic and provider-auth replay for Classic reward, incorrect, duplicate-letter, loss, ad continue, and continue behavior remain open. Guest loss trigger, visible continue offer, disabled coin-continue low-balance state, sufficient-balance coin continue, loss-modal <code>Skip Puzzle</code>, low-balance loss rewarded-ad playback/reward/continue, final-loss after ad-continue exhaustion, final-loss Open Shop/close/Next Level, restart persistence after Next Level, the DSI-020 stacked-modal fix, and the DSI-021 Android Back terminal-loss fix are covered by source/unit/matrix plus fresh emulator evidence.</li>
+          <li>Skip provider-auth coverage and backend deltas remain open; guest skip open/cancel/confirm, local coin deduction, Classic transition, insufficient-coins messaging, low-balance Coin Shop handoff, loss low-balance gating, and DSI-019 guest mode/riddle restart persistence are covered by source/unit/matrix plus fresh emulator evidence.</li>
+          <li>Hint persistence and provider-auth backend deltas remain open. Guest Statistics post-restart values are fixed and covered by <code>DSI-026</code>; post-fix evidence <code>381-statistics-postfix-open.png</code>/<code>.xml</code> verifies persisted <code>Games Played: 4</code> and <code>Total Words Guessed: 9</code>.</li>
+          <li>Provider-auth replay for keyboard backspace, answer-slot tapping, and submit gating remains open; the answer-length mismatch, overlong-entry, and literal-answer clue regressions are fixed in source and covered by <code>DSI-028</code> matrix-unit tests.</li>
+          <li>Coin Shop purchase attempt has emulator evidence, a fixed source regression, and a post-fix guest replay for the zero-coin success bug (<code>DSI-024</code>); pay/play behavior, production-like billing, loading/error edge states, provider-auth states, and backend/Firebase deltas remain open. Rewarded-ad playback is a separate low-balance loss-modal check; guest now passes, and provider-auth remains TODO. The loss modal should show both <code>Watch Ad for 3 Extra Guesses</code> and <code>Open Shop</code> when the user has fewer than <code>100</code> coins.</li>
+          <li>Coin purchase fanfare and level-up fanfare guest dev-panel open/dismiss/Back behavior now have emulator evidence; real guest purchase-trigger coin state now passes through DSI-024 with <code>+50 Coins</code>, <code>Total Coins: 125</code>, and restart persistence. Natural guest XP/level-up now passes through DSI-025 with <code>+50 Coins</code> and final balance <code>115</code>. Provider-auth/backend deltas, provider-auth persistence proof, production billing replay, and the victory-total UX clarification remain open.</li>
+          <li>Welcome-back modal and standalone info modal guest dev-panel open/primary-action/Back behavior now have emulator evidence; natural provider-auth welcome-back replay is covered by <code>410</code>/<code>411</code>. Non-debug info trigger paths remain open. The DSI-020 loss-triggered info/loss modal recovery fix and DSI-021 terminal loss hardware-Back fix have source, unit, matrix, and guest emulator replay evidence.</li>
+          <li>Guest Settings sound/haptics preference persistence after force-stop/relaunch now has emulator evidence; provider-auth Settings surface reachability is covered by <code>421</code>. Provider-auth settings toggle persistence, language persistence, and backend-backed settings behavior remain open.</li>
+          <li>Guest profile top-state and bottom-scroll persistence after force-stop/relaunch now has emulator evidence; provider-auth profile surface data is covered by screenshot evidence <code>419</code>. Backend/Firebase profile refresh and delta proof remain open.</li>
+          <li>Update username source validation, modal open path, and fresh-bundle emulator invalid-input validation replay are covered; successful save, persistence, and Firebase evidence remain open.</li>
+          <li>Guest Achievements modal content after restart is covered; provider-auth achievement state and provider-auth persistence remain open.</li>
+          <li>Guest Statistics modal post-restart source mismatch is fixed and covered by <code>DSI-026</code>; provider-auth statistics state and backend/Firebase deltas remain open.</li>
+          <li>Provider-auth leaderboard backend state and tab coverage.</li>
+          <li>Guest Credits external website handoff now has emulator evidence: <code>395-credits-open-for-website-retry.png</code>/<code>.xml</code> show the accessible <code>Craig Beswetherick website</code> row, <code>396-credits-website-craig-tap-retry.png</code> shows Chrome on <code>roobsworld.com</code>, <code>396-credits-website-craig-tap-retry-logcat.txt</code> records the <code>android.intent.action.VIEW</code> handoff to <code>https://www.roobsworld.com/...</code>, and <code>399-after-credits-return-15s-idle-logcat.txt</code> proves the app resumed cleanly after a cleared idle window.</li>
+          <li>Guest Settings Help support-email handoff now has emulator evidence: <code>385-support-email-after-help-tap.png</code>/<code>.xml</code> show Gmail receiving the handoff, <code>385-support-email-after-help-tap-logcat.txt</code> records the <code>mailto:</code> intent to <code>com.google.android.gm/.ComposeActivityGmailExternal</code>, and <code>386</code>/<code>387</code> prove the app resumes cleanly after the external Gmail screen. Provider-auth Support behavior remains open.</li>
+          <li>Provider-auth About/Legal coverage and language spot checks.</li>
+          <li>Account Deletion, Data Export, Third-Party Licenses, and Support fulfillment beyond row discoverability.</li>
+          <li>App restart persistence has guest coverage for DSI-019 skip/mode restore, final-loss <code>Next Level</code> restore, Settings sound/haptics persistence, Profile bottom-scroll refresh, Achievements/Statistics post-restart checks, and explicit logout-to-Landing restart proof. Provider-auth UI/session restart is covered by <code>414</code>/<code>416</code>/<code>417</code>, and provider-auth post-logout restart is covered by <code>424</code>/<code>426</code>/<code>427</code>. Firestore-backed provider snapshots/deltas and the slow-loading root cause from <code>DSI-027</code> remain open.</li>
+          <li>Full UI rerun after the Metro host-alias fix to confirm clean asset/font logs. Fresh Credits/browser-return evidence confirms the transient websocket abort is tied to backgrounding/resume rather than a dead Metro server, but broader UI rerun coverage remains open.</li>
+          <li>Full legal evidence completeness audit after provider-auth, production reachability, and disclosure comparison artifacts are available.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Testability And Evidence Notes</h2>
+        <ul>
+          <li>
+            Animated reward, profile, hint, and achievement states can make
+            <code>uiautomator dump</code> return
+            <code>ERROR: could not get idle state</code>. Use screenshot and
+            logcat evidence for animated states, then rerun XML capture after
+            the UI settles when possible.
+          </li>
+          <li>
+            Do not run overlapping <code>uiautomator dump</code> sessions. The
+            <code>389-credits-website-after-craig-tap-logcat.txt</code> crash
+            was investigated and traced to Android's shell
+            <code>com.android.commands.uiautomator.Launcher</code> process
+            (<code>uid 2000</code>) throwing
+            <code>UiAutomationService ... already registered</code> after two
+            dump sessions overlapped. It is a harness artifact, not a
+            <code>com.roobsworld.riddlequest</code> crash, and future captures
+            should serialize UI dumps before treating logcat as app evidence.
+          </li>
+          <li>
+            Legal-link automation drift was not counted as a pass. Spanish,
+            Japanese, and Arabic retries were captured only after verifying the
+            expected About/Legal surface was visible again.
+          </li>
+          <li>
+            The Expo Dev Client Tools overlay can intercept taps in the app
+            header. For dev-client coordinate tests, turn off the
+            <code>Tools button</code> before tapping the coin balance; otherwise
+            the overlay hit area can open the Expo dev menu even when the app's
+            <code>coins-display-touchable</code> node is present underneath.
+          </li>
+          <li>
+            The first dev-client server-selection attempt exited after Google
+            Play Services forced a measurement module restart. Relaunch
+            recovered successfully, so this is tracked as runtime evidence
+            rather than a Qwordly crash.
+          </li>
+          <li>
+            App smoke log exposed a non-fatal Expo dev launcher entry for
+            missing <code>expo.modules.splashscreen.SplashScreenManager</code>.
+            The full Metro/dev-client UI rerun should confirm whether this is
+            only noise or has user-visible splash/loading impact.
+          </li>
+          <li>
+            Expo MCP and Android Studio MCP were requested by repo instructions
+            where available, but no matching MCP tools were exposed in the
+            session. Metro, Android SDK, emulator, and ADB CLI fallbacks were
+            used and recorded in the QA tracker.
+          </li>
+        </ul>
+      </section>
+    </main>
+  </body>
+</html>

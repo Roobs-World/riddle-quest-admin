@@ -21,7 +21,10 @@ import FacebookSignInButton from "../../components/buttons/FacebookSignInButton"
 import TwitterSignInButton from "../../components/buttons/TwitterSignInButton";
 import Error from "../../components/text/Error";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { AuthService } from "../../services/AuthService";
+import {
+  AuthService,
+  isFacebookLoginCancellation,
+} from "../../services/AuthService";
 import { useAuth } from "../../contexts/AuthContext";
 import PulsingSpinner from "../../components/loading/PulsingSpinner";
 import { LOADING_SPINNER_SIZE } from "../../constants/loading";
@@ -155,26 +158,19 @@ const LoginScreen = ({
     try {
       const userCredential = await AuthService.signInWithFacebook();
       logger.debug("Facebook login success:", userCredential);
-      if (userCredential.user?.uid) {
+      if (userCredential?.user?.uid) {
         login();
       }
     } catch (error: unknown) {
+      if (isFacebookLoginCancellation(error)) {
+        return;
+      }
+
       logger.error("Facebook login error:", error);
       captureException(error);
 
-      // Check if the error is a user cancellation first (more specific matching)
       if (error instanceof Error) {
         const errorMessage = (error as Error).message;
-
-        // Check for exact cancellation messages
-        if (
-          errorMessage === "User cancelled the login process" ||
-          errorMessage === "Facebook login cancelled."
-        ) {
-          logger.debug("Facebook login cancelled by user.");
-          // Don't show error for cancellation - it's expected behavior
-          return;
-        }
 
         // Handle specific Facebook SDK errors
         if (errorMessage.includes("access token")) {

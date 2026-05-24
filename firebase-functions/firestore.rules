@@ -37,29 +37,6 @@ service cloud.firestore {
       ]);
     }
 
-    // Validate user document structure on creation/update
-    // Uses request.resource.data (the incoming data) rather than resource.data
-    // (the existing document, which is null for create operations).
-    function isValidUserDocument() {
-      let requiredFields = ['userId', 'username', 'email', 'coins'];
-      let optionalFields = ['displayName', 'avatarUrl', 'hasPurchasedApp', 'createdAt', 'registeredAt', 'lastLogin', 'lastDailyChallengeCompletedAt', 'stats', 'progress', 'unlockedAchievements', 'fcmToken', 'fcmTokenUpdatedAt', 'lastStreakReminderSentAt'];
-      let allFields = requiredFields.concat(optionalFields);
-
-      return request.resource.data.keys().hasAll(requiredFields) &&
-             request.resource.data.keys().hasOnly(allFields) &&
-             request.resource.data.userId is string &&
-             request.resource.data.username is string &&
-             request.resource.data.username.size() >= 1 &&
-             request.resource.data.username.size() <= 50 &&
-             request.resource.data.email is string &&
-             request.resource.data.email.matches('.*@.*\\..*') &&
-             request.resource.data.coins is number &&
-             request.resource.data.coins >= 0 &&
-             (!('displayName' in request.resource.data) || (request.resource.data.displayName is string && request.resource.data.displayName.size() <= 100)) &&
-              (!('avatarUrl' in request.resource.data) || isOwnedStorageAvatarUrl(request.auth.uid, request.resource.data.avatarUrl)) &&
-              (!('hasPurchasedApp' in request.resource.data) || request.resource.data.hasPurchasedApp is bool);
-    }
-
     // Validate user document updates without forcing unchanged legacy data to pass
     // strict validation every time.
     function isValidUserDocumentUpdate(userId) {
@@ -91,31 +68,6 @@ service cloud.firestore {
              (!changedKeys.hasAny(['hasPurchasedApp']) ||
                !('hasPurchasedApp' in request.resource.data) ||
                request.resource.data.hasPurchasedApp is bool);
-    }
-
-    // Validate stats update structure
-    function isValidStatsUpdate() {
-      let allowedStats = ['xp', 'level', 'dailyPuzzlesCompleted', 'bestStreak', 'totalWordsGuessed', 'winRate', 'averageGuesses', 'totalScore', 'highestLevelClassic', 'gamesPlayed', 'wins', 'challengeWins', 'winStreak', 'totalWins', 'totalGuessesInWins', 'totalHintsUsed'];
-
-      return request.resource.data.stats.keys().hasOnly(allowedStats) &&
-             (!('xp' in request.resource.data.stats) || (request.resource.data.stats.xp is number && request.resource.data.stats.xp >= 0)) &&
-             (!('level' in request.resource.data.stats) || (request.resource.data.stats.level is number && request.resource.data.stats.level >= 1)) &&
-             (!('dailyPuzzlesCompleted' in request.resource.data.stats) || (request.resource.data.stats.dailyPuzzlesCompleted is number && request.resource.data.stats.dailyPuzzlesCompleted >= 0)) &&
-             (!('bestStreak' in request.resource.data.stats) || (request.resource.data.stats.bestStreak is number && request.resource.data.stats.bestStreak >= 0)) &&
-             (!('totalWordsGuessed' in request.resource.data.stats) || (request.resource.data.stats.totalWordsGuessed is number && request.resource.data.stats.totalWordsGuessed >= 0)) &&
-             (!('winRate' in request.resource.data.stats) || (request.resource.data.stats.winRate is number && request.resource.data.stats.winRate >= 0 && request.resource.data.stats.winRate <= 100)) &&
-             (!('totalScore' in request.resource.data.stats) || (request.resource.data.stats.totalScore is number && request.resource.data.stats.totalScore >= 0)) &&
-             (!('gamesPlayed' in request.resource.data.stats) || (request.resource.data.stats.gamesPlayed is number && request.resource.data.stats.gamesPlayed >= 0));
-    }
-
-    // Validate progress update structure
-    function isValidProgressUpdate() {
-      let allowedProgress = ['classicIndex', 'dailyChallengeIndex', 'dailyChallengeCurrentQuestion', 'tutorialIndex'];
-
-      return request.resource.data.progress.keys().hasOnly(allowedProgress) &&
-             (!('classicIndex' in request.resource.data.progress) || (request.resource.data.progress.classicIndex is number && request.resource.data.progress.classicIndex >= 0)) &&
-             (!('dailyChallengeIndex' in request.resource.data.progress) || (request.resource.data.progress.dailyChallengeIndex is number && request.resource.data.progress.dailyChallengeIndex >= 0)) &&
-             (!('tutorialIndex' in request.resource.data.progress) || (request.resource.data.progress.tutorialIndex is number && request.resource.data.progress.tutorialIndex >= 0));
     }
 
     // Users collection - strict privacy controls

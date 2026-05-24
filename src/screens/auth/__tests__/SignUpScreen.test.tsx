@@ -1,5 +1,6 @@
 import React from "react";
-import { render, fireEvent, waitFor } from "@testing-library/react-native";
+import { Alert, Linking } from "react-native";
+import { act, render, fireEvent, waitFor } from "@testing-library/react-native";
 import SignUpScreen from "../SignUpScreen";
 import { AuthService } from "../../../services/AuthService";
 
@@ -39,17 +40,6 @@ jest.mock("../../../utils/logger", () => ({
 // Mock sentry
 jest.mock("../../../utils/sentry", () => ({
   captureException: jest.fn(),
-}));
-
-// Mock Linking
-jest.mock("react-native/Libraries/Linking/Linking", () => ({
-  canOpenURL: jest.fn().mockResolvedValue(true),
-  openURL: jest.fn().mockResolvedValue(undefined),
-}));
-
-// Mock Alert
-jest.mock("react-native/Libraries/Alert/Alert", () => ({
-  alert: jest.fn(),
 }));
 
 // Mock components
@@ -237,7 +227,7 @@ jest.mock("../../../constants/AppStrings", () => ({
         TERMS_AGREEMENT_PART2: " and ",
         TERMS_PRIVACY_POLICY: "privacy policy",
         TERMS_PAGE_NAME: "Terms of Service",
-        PRIVACY_PAGE_NAME: "Privacy Policy",
+        PRIVACY_POLICY_PAGE_NAME: "Privacy Policy",
         MUST_AGREE_TO_TERMS: "Please agree to the terms and privacy policy.",
         NEXT_BUTTON: "Next",
         HAS_ACCOUNT_PROMPT: "Do you have an account? ",
@@ -249,6 +239,15 @@ jest.mock("../../../constants/AppStrings", () => ({
         WEAK_PASSWORD_ERROR: "The password is too weak.",
         SIGNUP_UNEXPECTED_ERROR: "An unexpected error occurred during sign up.",
       },
+    },
+    CommonAlerts: {
+      UNABLE_TO_OPEN_TITLE: "Unable to Open",
+      CANNOT_OPEN_PREFIX: "Cannot open ",
+      CANNOT_OPEN_VISIT_SUFFIX: ". Visit ",
+      CANNOT_OPEN_BROWSER_SUFFIX: " in your browser.",
+      ERROR_TITLE: "Error",
+      COULD_NOT_OPEN_PREFIX: "Could not open ",
+      COULD_NOT_OPEN_TRY_AGAIN: ". Please try again.",
     },
   },
   getAppLanguage: jest.fn(() => "en"),
@@ -276,6 +275,20 @@ jest.mock("../../../styles", () => ({
 
 // Mock responsive utils
 jest.mock("../../../utils/responsive", () => ({
+  dimensions: {
+    screenWidth: 390,
+    screenHeight: 844,
+    isPhone: true,
+    isTablet: false,
+    isLargeTablet: false,
+    isDesktop: false,
+  },
+  isPhone: true,
+  isTablet: false,
+  isLargeTablet: false,
+  isDesktop: false,
+  scale: jest.fn((size) => size),
+  moderateScale: jest.fn((size) => size),
   verticalScale: jest.fn((size) => size),
 }));
 
@@ -293,9 +306,23 @@ const mockSignUpWithEmail = AuthService.signUpWithEmail as jest.MockedFunction<
 >;
 
 describe("SignUpScreen", () => {
+  const mockCanOpenURL = jest.spyOn(Linking, "canOpenURL");
+  const mockOpenURL = jest.spyOn(Linking, "openURL");
+  const mockAlert = jest.spyOn(Alert, "alert").mockImplementation(jest.fn());
+
   beforeEach(() => {
     jest.clearAllMocks();
     mockSignUpWithEmail.mockResolvedValue(undefined as any);
+    mockCanOpenURL.mockResolvedValue(true);
+    mockOpenURL.mockResolvedValue(undefined);
+    const { getAppLanguage } = require("../../../constants/AppStrings");
+    getAppLanguage.mockReturnValue("en");
+  });
+
+  afterAll(() => {
+    mockCanOpenURL.mockRestore();
+    mockOpenURL.mockRestore();
+    mockAlert.mockRestore();
   });
 
   describe("Component Rendering", () => {
@@ -517,6 +544,57 @@ describe("SignUpScreen", () => {
       });
     });
 
+    it("should open the terms of use URL for the current app language", async () => {
+      const { getByText } = render(
+        <SignUpScreen navigation={mockNavigation} />
+      );
+
+      fireEvent.press(getByText("user agreement"));
+
+      await waitFor(() => {
+        expect(Linking.canOpenURL).toHaveBeenCalledWith(
+          "https://www.roobsworld.com/riddle-quest/en/terms-of-use"
+        );
+        expect(Linking.openURL).toHaveBeenCalledWith(
+          "https://www.roobsworld.com/riddle-quest/en/terms-of-use"
+        );
+      });
+    });
+
+    it("should open the privacy policy URL for the current app language", async () => {
+      const { getAppLanguage } = require("../../../constants/AppStrings");
+      getAppLanguage.mockReturnValue("es");
+      const { getByText } = render(
+        <SignUpScreen navigation={mockNavigation} />
+      );
+
+      fireEvent.press(getByText("privacy policy"));
+
+      await waitFor(() => {
+        expect(Linking.canOpenURL).toHaveBeenCalledWith(
+          "https://www.roobsworld.com/riddle-quest/es/privacy-policy"
+        );
+        expect(Linking.openURL).toHaveBeenCalledWith(
+          "https://www.roobsworld.com/riddle-quest/es/privacy-policy"
+        );
+      });
+    });
+
+    it("should show an alert when the legal URL cannot be opened", async () => {
+      mockCanOpenURL.mockResolvedValueOnce(false);
+      const { getByText } = render(
+        <SignUpScreen navigation={mockNavigation} />
+      );
+
+      fireEvent.press(getByText("privacy policy"));
+
+      await waitFor(() => {
+        expect(Alert.alert).toHaveBeenCalledWith(
+          "Unable to Open",
+          "Cannot open Privacy Policy. Visit https://www.roobsworld.com/riddle-quest/en/privacy-policy in your browser."
+        );
+      });
+    });
   });
 
   describe("Progress Bar Updates", () => {
@@ -978,7 +1056,14 @@ describe("SignUpScreen", () => {
         expect(getByTestId("wide-button").props["data-disabled"]).toBe(true);
       });
 
-      resolvePromise!();
+      await act(async () => {
+        resolvePromise!();
+        await promise;
+      });
+
+      await waitFor(() => {
+        expect(getByTestId("wide-button").props["data-disabled"]).toBe(false);
+      });
     });
   });
 

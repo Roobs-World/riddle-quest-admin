@@ -63,8 +63,13 @@ const PulsingSpinner = React.memo(function PulsingSpinner({
       })),
     [animValues]
   );
+  const shouldAnimate = visible !== false;
 
   useEffect(() => {
+    if (!shouldAnimate) {
+      return;
+    }
+
     const dotAnimationDuration = (duration * 2) / dotCount;
     const staggerDelay = duration / dotCount;
 
@@ -96,7 +101,7 @@ const PulsingSpinner = React.memo(function PulsingSpinner({
 
     loopAnimation.start();
     return () => loopAnimation.stop();
-  }, [animValues, duration, dotCount]);
+  }, [animValues, duration, dotCount, shouldAnimate]);
 
   const spinnerContent = useMemo(
     () => (

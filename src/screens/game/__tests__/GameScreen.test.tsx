@@ -1,6 +1,7 @@
 import React from "react";
 import { render, waitFor, cleanup, act } from "@testing-library/react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import NetInfo from "@react-native-community/netinfo";
 import {
   CONTINUE_REWARDED_AD_COIN_REWARD,
   LEVEL_UP_COIN_BONUS,
@@ -416,9 +417,18 @@ jest.mock("../../../constants/achievements", () => ({
 
 // Mock utilities
 jest.mock("../../../utils/responsive", () => ({
+  isPhone: true,
   isTablet: false,
   isLargeTablet: false,
   isDesktop: false,
+  dimensions: {
+    screenWidth: 390,
+    screenHeight: 844,
+    isPhone: true,
+    isTablet: false,
+    isLargeTablet: false,
+    isDesktop: false,
+  },
   moderateScale: (size: number) => size,
   scale: (size: number) => size,
   verticalScale: (size: number) => size,
@@ -456,6 +466,20 @@ jest.mock("../../../styles", () => ({
 // Import component after all mocks
 import GameScreen from "../GameScreen";
 
+const pendingPromise = <T,>() => new Promise<T>(() => {});
+
+async function invokeGameAction<T>(action: () => T | Promise<T>): Promise<T> {
+  let result: T | undefined;
+  await act(async () => {
+    result = await action();
+  });
+  return result as T;
+}
+
+function getLatestMockProps(mockFn: jest.Mock) {
+  return mockFn.mock.calls[mockFn.mock.calls.length - 1][0];
+}
+
 describe("GameScreen", () => {
   const defaultProps = {
     riddleId: "riddle-123",
@@ -474,8 +498,16 @@ describe("GameScreen", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    (AsyncStorage.getItem as jest.Mock).mockImplementation(async () => null);
+    (AsyncStorage.getItem as jest.Mock).mockImplementation((key: string) => {
+      if (key.startsWith("gameScreenOnboardingSeen")) {
+        return Promise.resolve(null);
+      }
+      return pendingPromise<string | null>();
+    });
     (AsyncStorage.setItem as jest.Mock).mockResolvedValue(null);
+    (NetInfo.fetch as jest.Mock).mockReturnValue(
+      pendingPromise<{ isConnected: boolean; isInternetReachable: boolean }>()
+    );
     mockPendingStreakBreak = null;
     mockAuthPlayerData = mockPlayerData;
     mockAuthLoading = false;
@@ -500,7 +532,10 @@ describe("GameScreen", () => {
     mockIsRewardedAdReady = true;
   });
 
-  afterEach(() => {
+  afterEach(async () => {
+    await act(async () => {
+      await Promise.resolve();
+    });
     cleanup();
   });
 
@@ -915,6 +950,39 @@ describe("GameScreen", () => {
   });
 
   describe("Answer Length Edge Cases", () => {
+    it("derives playable slots from the actual answer instead of stale props", async () => {
+      mockUseGameLogic.currentGuess = ["J", "O", "K", "E", "S"];
+
+      render(
+        <GameScreen
+          {...defaultProps}
+          riddleText="A short gag that lands with a laugh."
+          answer="JOKE"
+          answerLength={5}
+        />
+      );
+
+      const boardProps = getLatestMockProps(mockGameBoard);
+      expect(boardProps.answerLength).toBe(4);
+
+      await waitFor(() => {
+        expect(mockUseGameLogic.setCurrentGuess).toHaveBeenCalled();
+      });
+      const trimUpdater = mockUseGameLogic.setCurrentGuess.mock.calls[0][0];
+      expect(trimUpdater(["J", "O", "K", "E", "S"])).toEqual([
+        "J",
+        "O",
+        "K",
+        "E",
+      ]);
+
+      const inputProps = getLatestMockProps(mockGameInput);
+      await act(async () => {
+        await inputProps.handleSubmit();
+      });
+      expect(mockUseGameLogic.processGuess).not.toHaveBeenCalled();
+    });
+
     it("should handle zero answer length", async () => {
       const { queryByTestId } = render(
         <GameScreen {...defaultProps} answerLength={0} />
@@ -933,6 +1001,22 @@ describe("GameScreen", () => {
       await waitFor(() => {
         expect(queryByTestId("mock-header")).toBeTruthy();
       });
+    });
+  });
+
+  describe("Riddle Clue Safety", () => {
+    it("does not pass a literal answer clue through to the game board", () => {
+      render(
+        <GameScreen
+          {...defaultProps}
+          riddleText="joke"
+          answer="joke"
+          answerLength={4}
+        />
+      );
+
+      const boardProps = getLatestMockProps(mockGameBoard);
+      expect(boardProps.riddleText).toBe("Solve this 4-letter word.");
     });
   });
 
@@ -1152,7 +1236,7 @@ describe("GameScreen", () => {
       mockUseGameLogic.currentGuess = ["K", "E", "Y", "B", "O", "A", "R", "D"];
       mockUseGameLogic.processGuess.mockResolvedValueOnce({
         outcome: "win",
-        coinsEarned: 25,
+        coinsEarned: 15,
         scoreEarned: 10,
       });
 
@@ -1198,7 +1282,9 @@ describe("GameScreen", () => {
       config.onPressCredits();
 
       expect(mockCloseModalByType).toHaveBeenCalledWith("settings");
-      jest.runAllTimers();
+      await act(async () => {
+        jest.runAllTimers();
+      });
       expect(mockShowInstructionsModal).not.toHaveBeenCalled();
       expect(mockShowCreditsModal).toHaveBeenCalled();
       openURLSpy.mockRestore();
@@ -1216,7 +1302,9 @@ describe("GameScreen", () => {
       config.onPressAbout();
 
       expect(mockCloseModalByType).toHaveBeenCalledWith("settings");
-      jest.runAllTimers();
+      await act(async () => {
+        jest.runAllTimers();
+      });
       expect(mockShowAboutLegalModal).toHaveBeenCalled();
       jest.useRealTimers();
     });
@@ -1236,7 +1324,7 @@ describe("GameScreen", () => {
         await config.onOpenShop();
       });
       expect(mockShowCoinShopModal).toHaveBeenCalled();
-      await config.onSkipLevel();
+      await invokeGameAction(() => config.onSkipLevel());
 
       await waitFor(() => {
         expect(spendCoins).toHaveBeenCalledWith({ amount: 10, reason: "skip" });
@@ -1250,10 +1338,10 @@ describe("GameScreen", () => {
       render(<GameScreen {...defaultProps} answer="TEST" answerLength={4} />);
 
       const inputProps = getLatestProps(mockGameInput);
-      await inputProps.handleHint();
+      await invokeGameAction(() => inputProps.handleHint());
 
       const config = mockShowHintModal.mock.calls[0][0];
-      config.onShowHint();
+      await invokeGameAction(() => config.onShowHint());
 
       expect(mockUseGameLogic.setCurrentGuess).toHaveBeenCalled();
       expect(defaultProps.onHintUsed).toHaveBeenCalledWith(10);
@@ -1280,14 +1368,14 @@ describe("GameScreen", () => {
         );
 
         const inputProps = getLatestProps(mockGameInput);
-        await inputProps.handleHint();
+        await invokeGameAction(() => inputProps.handleHint());
         const config = mockShowHintModal.mock.calls[0][0];
-        config.onShowHint();
+        await invokeGameAction(() => config.onShowHint());
 
         await waitFor(() => {
           expect(mockShowAchievementUnlockFanfareModal).toHaveBeenCalledWith({
             coinsEarned: 0,
-            totalCoins: 100,
+            totalCoins: 90,
             achievementNames: ["Need a Clue"],
             achievements: [
               {
@@ -1308,7 +1396,7 @@ describe("GameScreen", () => {
       mockUseGameLogic.currentGuess = ["K", "E", "Y", "B", "O", "A", "R", "D"];
       mockUseGameLogic.processGuess.mockResolvedValueOnce({
         outcome: "win",
-        coinsEarned: 25,
+        coinsEarned: 15,
         scoreEarned: 100,
       });
 
@@ -1325,7 +1413,7 @@ describe("GameScreen", () => {
       await waitFor(() => {
         expect(mockShowVictoryModal).toHaveBeenCalled();
       });
-      expect(defaultProps.onGameWin).toHaveBeenCalledWith(1, 25, 100, undefined, 50);
+      expect(defaultProps.onGameWin).toHaveBeenCalledWith(1, 15, 100, undefined, 50);
 
       const victoryConfig =
         mockShowVictoryModal.mock.calls[mockShowVictoryModal.mock.calls.length - 1][0];
@@ -1351,7 +1439,7 @@ describe("GameScreen", () => {
         mockUseGameLogic.currentGuess = ["K", "E", "Y", "B", "O", "A", "R", "D"];
         mockUseGameLogic.processGuess.mockResolvedValueOnce({
           outcome: "win",
-          coinsEarned: 25,
+          coinsEarned: 15,
           scoreEarned: 100,
         });
 
@@ -1371,7 +1459,7 @@ describe("GameScreen", () => {
 
         const victoryConfig =
           mockShowVictoryModal.mock.calls[mockShowVictoryModal.mock.calls.length - 1][0];
-        await victoryConfig.onNext();
+        await invokeGameAction(() => victoryConfig.onNext());
 
         expect(mockShowLevelUpFanfareModal).not.toHaveBeenCalled();
       } finally {
@@ -1430,7 +1518,7 @@ describe("GameScreen", () => {
         mockShowStreakIncreaseFanfareModal.mock.calls[
           mockShowStreakIncreaseFanfareModal.mock.calls.length - 1
         ][0];
-      fanfareConfig.onContinue();
+      await invokeGameAction(() => fanfareConfig.onContinue());
       await waitFor(() => {
         expect(mockShowVictoryModal).toHaveBeenCalled();
       });
@@ -1501,7 +1589,7 @@ describe("GameScreen", () => {
       expect(config.canWatchAd).toBe(true);
       expect(config.totalCoins).toBe(300);
       expect(typeof config.onWatchAdContinue).toBe("function");
-      await config.onCoinContinue();
+      await invokeGameAction(() => config.onCoinContinue());
       await act(async () => {
         await config.onOpenShop();
       });
@@ -1515,6 +1603,38 @@ describe("GameScreen", () => {
         expect.objectContaining({ coins: 280 })
       );
       expect(mockShowCoinShopModal).toHaveBeenCalled();
+    });
+
+    it("opens low-balance attempt-limit loss modal without stacking shop tooltip", async () => {
+      mockPlayerData.coins = 5;
+      mockUseGameLogic.currentGuess = ["K", "E", "Y", "B", "O", "A", "R", "D"];
+      mockUseGameLogic.processGuess.mockResolvedValueOnce({
+        outcome: "attemptLimitReached",
+        correctAnswer: "ANSWER",
+        canOfferRewardedAd: true,
+        canOfferCoinContinue: true,
+      });
+
+      const { rerender } = render(<GameScreen {...defaultProps} userCoins={5} />);
+      const inputProps = getLatestProps(mockGameInput);
+      await act(async () => {
+        await inputProps.handleSubmit();
+      });
+      mockUseGameLogic.gameOver = true;
+      rerender(<GameScreen {...defaultProps} userCoins={5} />);
+
+      await waitFor(() => {
+        expect(mockShowLossModal).toHaveBeenCalled();
+      });
+      const config = mockShowLossModal.mock.calls[mockShowLossModal.mock.calls.length - 1][0];
+
+      expect(config.totalCoins).toBe(5);
+      expect(config.canUseCoin).toBe(false);
+      expect(config.coinContinueCost).toBe(20);
+      expect(typeof config.onOpenShop).toBe("function");
+      expect(mockShowTooltipOnce).not.toHaveBeenCalledWith(
+        expect.objectContaining({ id: "shopOutOfCoins" })
+      );
     });
 
     it("closes loss modal immediately on watch-ad continue and shows ad reward fanfare on completion", async () => {
@@ -1580,7 +1700,7 @@ describe("GameScreen", () => {
         expect(mockShowLossModal).toHaveBeenCalledTimes(1);
       });
       const config = mockShowLossModal.mock.calls[0][0];
-      await config.onCoinContinue();
+      await invokeGameAction(() => config.onCoinContinue());
 
       mockUseGameLogic.gameOver = false;
       rerender(<GameScreen {...defaultProps} userCoins={100} />);
@@ -1619,7 +1739,7 @@ describe("GameScreen", () => {
         expect(mockShowLossModal).toHaveBeenCalledTimes(1);
       });
       const config = mockShowLossModal.mock.calls[0][0];
-      await config.onCoinContinue();
+      await invokeGameAction(() => config.onCoinContinue());
 
       mockShowLossModal.mockClear();
       mockUseGameLogic.gameOver = false;
@@ -1640,6 +1760,7 @@ describe("GameScreen", () => {
 
     it("shows loss modal for terminal loss and triggers onGameLoss", async () => {
       const haptics = require("expo-haptics");
+      mockPlayerData.coins = 5;
       mockUseGameLogic.currentGuess = ["K", "E", "Y", "B", "O", "A", "R", "D"];
       mockUseGameLogic.processGuess.mockResolvedValueOnce({
         outcome: "loss",
@@ -1657,6 +1778,11 @@ describe("GameScreen", () => {
       await waitFor(() => {
         expect(mockShowLossModal).toHaveBeenCalled();
       });
+      const config = mockShowLossModal.mock.calls[mockShowLossModal.mock.calls.length - 1][0];
+      expect(config.totalCoins).toBe(5);
+      expect(mockShowTooltipOnce).not.toHaveBeenCalledWith(
+        expect.objectContaining({ id: "shopOutOfCoins" })
+      );
       expect(haptics.notificationAsync).toHaveBeenCalledWith("error");
       expect(defaultProps.onGameLoss).toHaveBeenCalledWith("ANSWER", 1);
     });
@@ -1670,7 +1796,7 @@ describe("GameScreen", () => {
       const inputProps = getLatestProps(mockGameInput);
       inputProps.handleNext();
       const config = mockShowSkipModal.mock.calls[0][0];
-      await config.onSkipLevel();
+      await invokeGameAction(() => config.onSkipLevel());
 
       await waitFor(() => {
         expect(mockShowSpendCoinsError).toHaveBeenCalled();
@@ -1702,13 +1828,15 @@ describe("GameScreen", () => {
       expect(haptics.notificationAsync).toHaveBeenCalledWith("warning");
     });
 
-    it("routes keyboard and slot handlers to game logic setters", () => {
+    it("routes keyboard and slot handlers to game logic setters", async () => {
       render(<GameScreen {...defaultProps} answerLength={4} answer="TEST" />);
       const boardProps = getLatestProps(mockGameBoard);
 
-      boardProps.handleKeyPress("A");
-      boardProps.handleBackspace();
-      boardProps.onSelectCurrentGuessSlot(2);
+      await invokeGameAction(() => {
+        boardProps.handleKeyPress("A");
+        boardProps.handleBackspace();
+        boardProps.onSelectCurrentGuessSlot(2);
+      });
 
       expect(mockUseGameLogic.setCurrentGuess).toHaveBeenCalled();
       const updater = mockUseGameLogic.setCurrentGuess.mock.calls[0][0];
@@ -1719,7 +1847,7 @@ describe("GameScreen", () => {
     it("opens profile modal from bottom navigation after refreshing player data", async () => {
       render(<GameScreen {...defaultProps} />);
       const bottomNavProps = getLatestProps(mockBottomNavigationBar);
-      await bottomNavProps.onProfilePress();
+      await invokeGameAction(() => bottomNavProps.onProfilePress());
 
       await waitFor(() => {
         expect(mockLoadUserProgressFromFirestore).toHaveBeenCalledWith(
@@ -1749,7 +1877,7 @@ describe("GameScreen", () => {
 
       render(<GameScreen {...defaultProps} />);
       const bottomNavProps = getLatestProps(mockBottomNavigationBar);
-      await bottomNavProps.onProfilePress();
+      await invokeGameAction(() => bottomNavProps.onProfilePress());
 
       await waitFor(() => {
         expect(mockUpdatePlayerDataLocally).toHaveBeenCalledWith(
@@ -1794,7 +1922,7 @@ describe("GameScreen", () => {
 
       render(<GameScreen {...defaultProps} />);
       const bottomNavProps = getLatestProps(mockBottomNavigationBar);
-      await bottomNavProps.onProfilePress();
+      await invokeGameAction(() => bottomNavProps.onProfilePress());
 
       await waitFor(() => {
         expect(mockUpdatePlayerDataLocally).toHaveBeenCalledWith(
@@ -1818,7 +1946,7 @@ describe("GameScreen", () => {
       mockAuthPlayerData = null;
       render(<GameScreen {...defaultProps} />);
       const bottomNavProps = getLatestProps(mockBottomNavigationBar);
-      await bottomNavProps.onProfilePress();
+      await invokeGameAction(() => bottomNavProps.onProfilePress());
 
       await waitFor(() => {
         expect(mockShowFullProfileDetailsModal).toHaveBeenCalledWith({
@@ -1839,9 +1967,50 @@ describe("GameScreen", () => {
 
       expect(mockShowCoinShopModal).toHaveBeenCalled();
       const config = mockShowCoinShopModal.mock.calls[mockShowCoinShopModal.mock.calls.length - 1][0];
-      config.onPayAndPlay();
+      await invokeGameAction(() => config.onPayAndPlay());
 
       expect(mockShowNoProductsAvailable).toHaveBeenCalled();
+    });
+
+    it("uses Firestore catalog outside Jest without initializing IAP", async () => {
+      const { IapService } = require("../../../services/IapService");
+      const { ProductPricingService } = require("../../../services/ProductPricingService");
+      const originalWorkerId = process.env.JEST_WORKER_ID;
+
+      delete process.env.JEST_WORKER_ID;
+      ProductPricingService.getActiveProducts.mockResolvedValueOnce([
+        { productId: "com.roobsworld.riddlequest.coinpack1", sortOrder: 1 } as any,
+        { productId: "com.roobsworld.riddlequest.coinpack5", sortOrder: 2 } as any,
+      ]);
+
+      try {
+        render(<GameScreen {...defaultProps} />);
+        const headerProps = getLatestProps(mockHeader);
+        await act(async () => {
+          await headerProps.onCoinsPress();
+        });
+
+        expect(IapService.getProducts).not.toHaveBeenCalled();
+        expect(ProductPricingService.getActiveProducts).toHaveBeenCalled();
+
+        const config =
+          mockShowCoinShopModal.mock.calls[mockShowCoinShopModal.mock.calls.length - 1][0];
+        expect(config.firestoreProducts).toEqual([
+          expect.objectContaining({
+            productId: "com.roobsworld.riddlequest.coinpack1",
+          }),
+          expect.objectContaining({
+            productId: "com.roobsworld.riddlequest.coinpack5",
+          }),
+        ]);
+        expect(config.error).toBeNull();
+      } finally {
+        if (originalWorkerId === undefined) {
+          delete process.env.JEST_WORKER_ID;
+        } else {
+          process.env.JEST_WORKER_ID = originalWorkerId;
+        }
+      }
     });
 
     it("passes only store-backed Firestore packs to coin shop modal", async () => {
@@ -1885,7 +2054,9 @@ describe("GameScreen", () => {
 
       render(<GameScreen {...defaultProps} />);
       const headerProps = getLatestProps(mockHeader);
-      void headerProps.onCoinsPress();
+      act(() => {
+        void headerProps.onCoinsPress();
+      });
       await Promise.resolve();
       expect(mockShowCoinShopModal).not.toHaveBeenCalled();
     });
@@ -1911,7 +2082,7 @@ describe("GameScreen", () => {
         await headerProps.onCoinsPress();
       });
       let config = mockShowCoinShopModal.mock.calls[mockShowCoinShopModal.mock.calls.length - 1][0];
-      await config.onPurchaseProduct("pack_1");
+      await invokeGameAction(() => config.onPurchaseProduct("pack_1"));
 
       expect(mockShowCoinPurchaseFanfareModal).toHaveBeenCalled();
       expect(mockShowCoinPurchaseFanfareModal).toHaveBeenCalledWith(
@@ -1924,7 +2095,7 @@ describe("GameScreen", () => {
         mockShowCoinPurchaseFanfareModal.mock.calls[
           mockShowCoinPurchaseFanfareModal.mock.calls.length - 1
         ][0];
-      purchaseFanfareConfig.onConfirm();
+      await invokeGameAction(() => purchaseFanfareConfig.onConfirm());
       expect(mockShowAchievementUnlockFanfareModal).toHaveBeenCalledWith(
         expect.objectContaining({
           achievementNames: ["Supporter"],
@@ -1939,11 +2110,38 @@ describe("GameScreen", () => {
       expect(mockCloseModalByType).toHaveBeenCalledWith("coinShop");
 
       IapService.purchaseProduct.mockRejectedValueOnce(new Error("boom"));
-      await config.onPurchaseProduct("pack_2");
+      await invokeGameAction(() => config.onPurchaseProduct("pack_2"));
       expect(mockShowInfoModal).toHaveBeenCalledWith(
         expect.objectContaining({ title: "Purchase Failed" })
       );
       ACHIEVEMENT_DEFINITIONS.length = 0;
+    });
+
+    it("does not show purchase fanfare when purchase result awards zero coins", async () => {
+      const { IapService } = require("../../../services/IapService");
+      IapService.purchaseProduct.mockResolvedValueOnce({
+        transactionId: "dev-local-com.qwordly.unknown",
+      });
+      IapService.getCoinsForProduct.mockReturnValueOnce(undefined);
+
+      render(<GameScreen {...defaultProps} />);
+      const headerProps = getLatestProps(mockHeader);
+      await act(async () => {
+        await headerProps.onCoinsPress();
+      });
+      const config =
+        mockShowCoinShopModal.mock.calls[mockShowCoinShopModal.mock.calls.length - 1][0];
+
+      await invokeGameAction(() => config.onPurchaseProduct("com.qwordly.unknown"));
+
+      expect(mockShowCoinPurchaseFanfareModal).not.toHaveBeenCalled();
+      expect(mockCloseModalByType).not.toHaveBeenCalledWith("coinShop");
+      expect(mockUpdatePlayerDataLocally).not.toHaveBeenCalledWith(
+        expect.objectContaining({ hasPurchasedApp: true })
+      );
+      expect(mockShowInfoModal).toHaveBeenCalledWith(
+        expect.objectContaining({ title: "Purchase Failed" })
+      );
     });
 
     it("falls back to first_purchase unlock on successful purchase when backend IDs are missing", async () => {
@@ -1967,13 +2165,13 @@ describe("GameScreen", () => {
       });
       const config =
         mockShowCoinShopModal.mock.calls[mockShowCoinShopModal.mock.calls.length - 1][0];
-      await config.onPurchaseProduct("pack_1");
+      await invokeGameAction(() => config.onPurchaseProduct("pack_1"));
 
       const purchaseFanfareConfig =
         mockShowCoinPurchaseFanfareModal.mock.calls[
           mockShowCoinPurchaseFanfareModal.mock.calls.length - 1
         ][0];
-      purchaseFanfareConfig.onConfirm();
+      await invokeGameAction(() => purchaseFanfareConfig.onConfirm());
 
       expect(mockShowAchievementUnlockFanfareModal).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -2011,14 +2209,22 @@ describe("GameScreen", () => {
       const config =
         mockShowCoinShopModal.mock.calls[mockShowCoinShopModal.mock.calls.length - 1][0];
 
-      const purchasePromise = config.onPurchaseProduct("com.roobsworld.riddlequest.coinpack1");
+      let purchasePromise: Promise<unknown> = Promise.resolve();
+      await act(async () => {
+        purchasePromise = config.onPurchaseProduct(
+          "com.roobsworld.riddlequest.coinpack1"
+        );
+        await Promise.resolve();
+      });
 
       await waitFor(() => {
         expect(getLatestProps(mockPulsingSpinner).visible).toBe(true);
       });
 
-      (resolvePurchase as ((value: unknown) => void) | null)?.(null);
-      await purchasePromise;
+      await act(async () => {
+        (resolvePurchase as ((value: unknown) => void) | null)?.(null);
+        await purchasePromise;
+      });
 
       await waitFor(() => {
         expect(getLatestProps(mockPulsingSpinner).visible).toBe(false);
@@ -2058,14 +2264,20 @@ describe("GameScreen", () => {
 
       const victoryConfig =
         mockShowVictoryModal.mock.calls[mockShowVictoryModal.mock.calls.length - 1][0];
-      const nextPromise = victoryConfig.onNext();
+      let nextPromise: Promise<void> = Promise.resolve();
+      await act(async () => {
+        nextPromise = victoryConfig.onNext();
+        await Promise.resolve();
+      });
 
       await waitFor(() => {
         expect(getLatestProps(mockPulsingSpinner).visible).toBe(true);
       });
 
-      (resolveNextLevel as (() => void) | null)?.();
-      await nextPromise;
+      await act(async () => {
+        (resolveNextLevel as (() => void) | null)?.();
+        await nextPromise;
+      });
 
       await waitFor(() => {
         expect(getLatestProps(mockPulsingSpinner).visible).toBe(false);
@@ -2176,7 +2388,16 @@ describe("GameScreen", () => {
       expect(boardProps.activeSlotIndex).toBe(0);
 
       mockUseGameLogic.currentGuess = ["A", "", "C"];
-      rerender(<GameScreen {...defaultProps} answerLength={4} answer="TEST" />);
+      await act(async () => {
+        rerender(
+          <GameScreen
+            {...defaultProps}
+            answerLength={4}
+            answer="TEST"
+            userCoins={101}
+          />
+        );
+      });
       await waitFor(() => {
         boardProps = getLatestProps(mockGameBoard);
         expect(boardProps.activeSlotIndex).toBe(1);
@@ -2206,7 +2427,7 @@ describe("GameScreen", () => {
         expect(mockShowLossModal).toHaveBeenCalled();
       });
       const config = mockShowLossModal.mock.calls[mockShowLossModal.mock.calls.length - 1][0];
-      await config.onCoinContinue();
+      await invokeGameAction(() => config.onCoinContinue());
 
       expect(mockShowInfoModal).toHaveBeenCalledWith(
         expect.objectContaining({ title: "Error" })
@@ -2239,7 +2460,7 @@ describe("GameScreen", () => {
       });
       const config =
         mockShowLossModal.mock.calls[mockShowLossModal.mock.calls.length - 1][0];
-      const shouldClose = await config.onCoinContinue();
+      const shouldClose = await invokeGameAction(() => config.onCoinContinue());
 
       expect(shouldClose).toBe(false);
       expect(mockShowInfoModal).toHaveBeenCalledWith(
@@ -2312,7 +2533,7 @@ describe("GameScreen", () => {
         })
       );
       const firstFanfareConfig = mockShowAchievementUnlockFanfareModal.mock.calls[0][0];
-      await firstFanfareConfig.onContinue();
+      await invokeGameAction(() => firstFanfareConfig.onContinue());
       await waitFor(() => {
         expect(mockShowAchievementUnlockFanfareModal).toHaveBeenCalledTimes(2);
       });
@@ -2338,7 +2559,7 @@ describe("GameScreen", () => {
         })
       );
       const secondFanfareConfig = mockShowAchievementUnlockFanfareModal.mock.calls[1][0];
-      await secondFanfareConfig.onContinue();
+      await invokeGameAction(() => secondFanfareConfig.onContinue());
       await waitFor(() => {
         expect(mockShowVictoryModal).toHaveBeenCalled();
       });
@@ -2356,7 +2577,7 @@ describe("GameScreen", () => {
         { syncToFirestore: false }
       );
 
-      await config.onNext();
+      await invokeGameAction(() => config.onNext());
       expect(mockCloseModalByType).toHaveBeenCalledWith("victory");
       expect(mockUseGameLogic.resetGame).toHaveBeenCalled();
       expect(logger.error).toHaveBeenCalledWith("Error calling onNextLevel:", expect.any(Error));
@@ -2436,7 +2657,7 @@ describe("GameScreen", () => {
 
       const config =
         mockShowVictoryModal.mock.calls[mockShowVictoryModal.mock.calls.length - 1][0];
-      await config.onNext();
+      await invokeGameAction(() => config.onNext());
       expect(logger.debug).toHaveBeenCalledWith("Victory modal: Next level button pressed");
     });
 
@@ -2474,7 +2695,7 @@ describe("GameScreen", () => {
         expect(mockShowLossModal).toHaveBeenCalled();
       });
       let config = mockShowLossModal.mock.calls[mockShowLossModal.mock.calls.length - 1][0];
-      config.onNext();
+      await invokeGameAction(() => config.onNext());
       expect(onGameLoss).not.toHaveBeenCalled();
       await waitFor(() => {
         expect(logger.error).toHaveBeenCalledWith(
@@ -2508,7 +2729,7 @@ describe("GameScreen", () => {
         expect(mockShowLossModal).toHaveBeenCalled();
       });
       const config = mockShowLossModal.mock.calls[mockShowLossModal.mock.calls.length - 1][0];
-      config.onNext();
+      await invokeGameAction(() => config.onNext());
       await waitFor(() => {
         expect(logger.error).toHaveBeenCalledWith(
           "Error loading next level after loss:",
@@ -2518,7 +2739,7 @@ describe("GameScreen", () => {
       });
     });
 
-    it("applies settings modal toggle callbacks", () => {
+    it("applies settings modal toggle callbacks", async () => {
       const { SoundManager } = require("../../../services/SoundManager");
       const { setAppLanguage } = require("../../../constants/AppStrings");
       render(<GameScreen {...defaultProps} />);
@@ -2527,10 +2748,12 @@ describe("GameScreen", () => {
       bottomNavProps.onSettingsPress();
       const config = mockShowSettingsModal.mock.calls[mockShowSettingsModal.mock.calls.length - 1][0];
 
-      config.onToggleSound(false);
-      config.onToggleSound(true);
-      config.onToggleHaptics(false);
-      config.onChangeLanguage("es");
+      await invokeGameAction(() => {
+        config.onToggleSound(false);
+        config.onToggleSound(true);
+        config.onToggleHaptics(false);
+        config.onChangeLanguage("es");
+      });
 
       expect(SoundManager.pauseBackgroundMusic).toHaveBeenCalled();
       expect(SoundManager.playBackgroundMusic).toHaveBeenCalled();
@@ -2560,7 +2783,7 @@ describe("GameScreen", () => {
 
       const latestProps =
         mockModalTogglePanel.mock.calls[mockModalTogglePanel.mock.calls.length - 1][0];
-      await latestProps.onClearLocalData();
+      await invokeGameAction(() => latestProps.onClearLocalData());
 
       expect(AsyncStorage.clear).toHaveBeenCalled();
       expect(mockLogout).toHaveBeenCalled();
@@ -2578,7 +2801,7 @@ describe("GameScreen", () => {
 
       const latestProps =
         mockModalTogglePanel.mock.calls[mockModalTogglePanel.mock.calls.length - 1][0];
-      latestProps.onCompleteRiddle();
+      await invokeGameAction(() => latestProps.onCompleteRiddle());
 
       expect(mockUseGameLogic.setCurrentGuess).toHaveBeenCalledWith([
         "K",
@@ -2593,12 +2816,14 @@ describe("GameScreen", () => {
       expect(mockUseGameLogic.processGuess).not.toHaveBeenCalled();
     });
 
-    it("covers keypress truncation and backspace updater branches", () => {
+    it("covers keypress truncation and backspace updater branches", async () => {
       mockUseGameLogic.currentGuess = ["A", "B"];
       render(<GameScreen {...defaultProps} answerLength={4} answer="TEST" />);
       const boardProps = getLatestProps(mockGameBoard);
-      boardProps.handleKeyPress("Z");
-      boardProps.handleBackspace();
+      await invokeGameAction(() => {
+        boardProps.handleKeyPress("Z");
+        boardProps.handleBackspace();
+      });
 
       const keyUpdater = mockUseGameLogic.setCurrentGuess.mock.calls[0][0];
       expect(keyUpdater(["A", "B", "C", "D", "E"])).toEqual(["Z", "B", "C", "D"]);
@@ -2620,15 +2845,15 @@ describe("GameScreen", () => {
       render(<GameScreen {...defaultProps} answer="A" answerLength={1} />);
       const inputProps = getLatestProps(mockGameInput);
 
-      await inputProps.handleHint();
+      await invokeGameAction(() => inputProps.handleHint());
       let config = mockShowHintModal.mock.calls[mockShowHintModal.mock.calls.length - 1][0];
-      config.onShowHint();
+      await invokeGameAction(() => config.onShowHint());
       const hintUpdater = mockUseGameLogic.setCurrentGuess.mock.calls[mockUseGameLogic.setCurrentGuess.mock.calls.length - 1][0];
       expect(hintUpdater([])).toEqual(["a"]);
 
-      await inputProps.handleHint();
+      await invokeGameAction(() => inputProps.handleHint());
       config = mockShowHintModal.mock.calls[mockShowHintModal.mock.calls.length - 1][0];
-      config.onShowHint();
+      await invokeGameAction(() => config.onShowHint());
       expect(mockShowInfoModal).toHaveBeenCalledWith(
         expect.objectContaining({ title: "Hint Not Available" })
       );
@@ -2652,8 +2877,8 @@ describe("GameScreen", () => {
       });
       const config = mockShowCoinShopModal.mock.calls[mockShowCoinShopModal.mock.calls.length - 1][0];
 
-      await config.onPurchaseProduct("cheap");
-      config.onPayAndPlay();
+      await invokeGameAction(() => config.onPurchaseProduct("cheap"));
+      await invokeGameAction(() => config.onPayAndPlay());
       await waitFor(() => {
         expect(IapService.purchaseProduct).toHaveBeenCalledWith("cheap");
       });

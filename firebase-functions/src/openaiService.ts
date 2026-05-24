@@ -1,6 +1,8 @@
 import OpenAI from "openai";
 import * as functions from "firebase-functions";
 import {captureException} from "./sentry";
+import {clueContainsLiteralAnswer} from "./riddleQuality";
+import {MAX_RIDDLE_ANSWER_CHARACTERS} from "./constants";
 
 // Lazy initialization variable
 let openaiClient: OpenAI | null = null;
@@ -50,9 +52,11 @@ export async function generateUniqueRiddle(): Promise<[string, string] | null> {
           role: "system",
           content:
             "You are a creative riddle designer for a mobile word game. Generate a single original, engaging pub-quiz style riddle question that feels fresh and accessible to a broad audience. " +
-            "To increase variety, internally pick one category and one clue style before writing. " +
-            "Always pick exactly one of these core pub-quiz categories for each riddle: history, science, music, or popular culture. Rotate these categories over time. " +
-            "Vary clue styles: metaphor, personification, mini-scene, compare/contrast, misdirection, playful logic, or subtle wordplay. " +
+            "To increase variety, internally pick one broad pub-quiz subject and one clue style before writing. " +
+            "Use subjects people normally encounter at pub quizzes, including music, history, science, film and TV, sport, geography, literature and language, food and drink, art and culture, general knowledge, nature, technology, and everyday life. " +
+            "Rotate subjects over time and avoid overusing any single category. " +
+            "Vary clue styles: mini-scene, indirect trivia clue, compare/contrast, personification, light misdirection, playful logic, metaphor, or subtle wordplay. " +
+            "Make each clue fair, specific, and solvable with one clear answer; avoid obscure specialist trivia, vague clues, and clues that could fit many answers. " +
             "Do not rely on the same opening pattern every time, especially not repeated 'What am I?' phrasing. " +
             "Keep clues solvable, fair, and fun for mobile players.",
         },
@@ -64,14 +68,18 @@ export async function generateUniqueRiddle(): Promise<[string, string] | null> {
             "Answer: [your answer here]\n\n" +
             "Requirements:\n" +
             "- Question: 10-90 characters, use natural language with proper grammar and punctuation\n" +
-            "- Answer: MAXIMUM 7 characters, use ONLY lowercase letters (a-z), absolutely NO punctuation, NO numbers, NO special characters, NO apostrophes, NO hyphens\n" +
-            "- Content: Engaging and suitable for mobile game players of all ages\n" +
-            "- Topic scope: The riddle must be rooted in one pub-quiz category: history, science, music, or popular culture\n" +
+            "- Question must be a clue, not the answer itself, and must not include the answer word anywhere\n" +
+            `- Answer: MAXIMUM ${MAX_RIDDLE_ANSWER_CHARACTERS} characters, use ONLY lowercase letters (a-z), absolutely NO punctuation, NO numbers, NO special characters, NO apostrophes, NO hyphens\n` +
+            "- Content: Engaging, all-ages, and suitable for a wide audience of casual mobile game players\n" +
+            "- Topic scope: Root the riddle in one broad pub-quiz subject such as music, history, general knowledge, film and TV, sport, geography, science, literature and language, food and drink, art and culture, nature, technology, or everyday life\n" +
             "- Pub quiz feel: Ask as a clue-based trivia style prompt while still feeling like a riddle\n" +
-            "- Style diversity: Use a less common riddle angle, avoid generic textbook riddles, and avoid repeating familiar tropes\n" +
+            "- Clue quality: Give enough concrete detail to point to one clear answer, but do not make the solution obvious\n" +
+            "- Accessibility: Prefer familiar knowledge over niche facts, obscure proper nouns, or specialist trivia\n" +
+            "- Safety against spoilers: Do not include the answer, close variants, plurals, or obvious word stems in the question\n" +
+            "- Style diversity: Use a less common riddle angle, avoid generic textbook riddles, vague clues, and familiar tropes\n" +
             "- Question pattern variety: Prefer alternatives to plain 'What am I?' prompts (use first-person voice, situation-based clues, or indirect questions when possible)\n" +
             "- Originality: Must be completely unique, not a common or well-known riddle\n\n" +
-            "The answer length and format are critical: it must never exceed 7 characters and must contain only lowercase letters.",
+            `The answer length and format are critical: it must never exceed ${MAX_RIDDLE_ANSWER_CHARACTERS} characters and must contain only lowercase letters.`,
         },
       ],
     });
@@ -101,9 +109,14 @@ export async function generateUniqueRiddle(): Promise<[string, string] | null> {
       return null;
     }
 
+    if (clueContainsLiteralAnswer(question, answer)) {
+      functions.logger.warn(`Question reveals the literal answer: "${question}" -> "${answer}".`);
+      return null;
+    }
+
     // Validate answer length (critical requirement)
-    if (answer.length > 7) {
-      functions.logger.warn(`Answer too long: "${answer}" (${answer.length} characters). Must be 7 or fewer.`);
+    if (answer.length > MAX_RIDDLE_ANSWER_CHARACTERS) {
+      functions.logger.warn(`Answer too long: "${answer}" (${answer.length} characters). Must be ${MAX_RIDDLE_ANSWER_CHARACTERS} or fewer.`);
       return null;
     }
 

@@ -564,13 +564,13 @@ describe("riddleGeneration", () => {
 
       (mockGenerateUniqueRiddle as any)
         .mockResolvedValueOnce(["Daily riddle?", "answer"]) // Duplicate
-        .mockResolvedValueOnce(["New daily riddle?", "new"]);
+        .mockResolvedValueOnce(["Fresh daily riddle?", "new"]);
 
       await riddleGeneration.generateAndAppendDailyRiddles(1);
 
       expect(mockSet).toHaveBeenCalledWith(
         expect.objectContaining({
-          text: "New daily riddle?",
+          text: "Fresh daily riddle?",
           answer: "new",
           timestamp: {},
         }),
@@ -706,7 +706,7 @@ describe("riddleGeneration", () => {
   describe("Callable Functions", () => {
     describe("generateClassicRiddles", () => {
       test("should return success when riddles are generated", async () => {
-        (mockGenerateUniqueRiddle as any).mockResolvedValue(["Classic riddle?", "classic"]);
+        (mockGenerateUniqueRiddle as any).mockResolvedValue(["Old-mode riddle?", "classic"]);
         (mockFirestoreCollection as any).mockReturnValue({
           get: jest.fn().mockResolvedValue({empty: true, docs: [], forEach: jest.fn()}),
           doc: mockFirestoreDoc,
@@ -773,7 +773,7 @@ describe("riddleGeneration", () => {
             .mockReturnValue(indexQuery), // For index queries
         } as any);
 
-        (mockGenerateUniqueRiddle as any).mockResolvedValue(["Init riddle?", "init"]);
+        (mockGenerateUniqueRiddle as any).mockResolvedValue(["Opening riddle?", "init"]);
 
         const result = await riddleGeneration.initializeRiddleDatabase(adminCallableRequest);
 
@@ -800,7 +800,7 @@ describe("riddleGeneration", () => {
 
     describe("generateDailyRiddles", () => {
       test("should return success when daily riddles are generated", async () => {
-        (mockGenerateUniqueRiddle as any).mockResolvedValue(["Daily riddle?", "daily"]);
+        (mockGenerateUniqueRiddle as any).mockResolvedValue(["Today-only riddle?", "daily"]);
         (mockFirestoreCollection as any).mockReturnValue({
           get: jest.fn().mockResolvedValue({empty: true, docs: [], forEach: jest.fn()}),
           doc: mockFirestoreDoc,
@@ -975,7 +975,7 @@ describe("riddleGeneration", () => {
       (mockGenerateUniqueRiddle as any).mockImplementation(() => {
         callCount++;
         if (callCount <= 3) return Promise.resolve(null);
-        return Promise.resolve(["Final riddle?", "final"]);
+        return Promise.resolve(["Last riddle?", "final"]);
       });
 
       (mockFirestoreCollection as any).mockReturnValue({
@@ -988,6 +988,29 @@ describe("riddleGeneration", () => {
 
       expect(mockGenerateUniqueRiddle).toHaveBeenCalledTimes(4);
       expect(mockSet).toHaveBeenCalledTimes(1);
+    });
+
+    test("should retry when a generated riddle reveals the answer", async () => {
+      (mockGenerateUniqueRiddle as any)
+        .mockResolvedValueOnce(["joke", "joke"])
+        .mockResolvedValueOnce(["A quick line that makes people laugh.", "joke"]);
+
+      (mockFirestoreCollection as any).mockReturnValue({
+        get: jest.fn().mockResolvedValue({empty: true, docs: [], forEach: jest.fn()}),
+        doc: mockFirestoreDoc,
+        where: mockWhere,
+      } as any);
+
+      await riddleGeneration.generateAndAppendRiddles(1);
+
+      expect(mockGenerateUniqueRiddle).toHaveBeenCalledTimes(2);
+      expect(mockSet).toHaveBeenCalledTimes(1);
+      expect(mockSet.mock.calls[0][1]).toEqual(
+        expect.objectContaining({
+          text: "A quick line that makes people laugh.",
+          answer: "joke",
+        }),
+      );
     });
 
     test("should activate circuit breaker when too many failures occur", async () => {
@@ -1009,7 +1032,7 @@ describe("riddleGeneration", () => {
 
     test("should activate circuit breaker with duplicate riddles", async () => {
       // Mock to always return the same riddle (simulating persistent duplicates)
-      (mockGenerateUniqueRiddle as any).mockResolvedValue(["Same riddle?", "same"]);
+      (mockGenerateUniqueRiddle as any).mockResolvedValue(["Repeated riddle?", "same"]);
 
       const existingSnapshot: any = {
         empty: false,
@@ -1041,7 +1064,7 @@ describe("riddleGeneration", () => {
       let callCount = 0;
       (mockGenerateUniqueRiddle as any).mockImplementation(() => {
         callCount++;
-        if (callCount === 1) return Promise.resolve(["First riddle?", "first"]);
+        if (callCount === 1) return Promise.resolve(["Opening riddle?", "first"]);
         return Promise.resolve(null); // All subsequent calls fail
       });
 
@@ -1060,8 +1083,8 @@ describe("riddleGeneration", () => {
 
     test("should handle batch operations with multiple riddles", async () => {
       (mockGenerateUniqueRiddle as any)
-        .mockResolvedValueOnce(["First riddle?", "first"])
-        .mockResolvedValueOnce(["Second riddle?", "second"]);
+        .mockResolvedValueOnce(["Opening riddle?", "first"])
+        .mockResolvedValueOnce(["Follow-up riddle?", "second"]);
 
       await riddleGeneration.generateAndAppendRiddles(2);
 

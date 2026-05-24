@@ -269,6 +269,71 @@ describe("AuthContext", () => {
       expect(result.current.playerData?.coins).toBe(300);
     });
 
+    it("restores a same-day guest classic session instead of defaulting back to daily", async () => {
+      const guestUid = "guest-active-classic-1";
+      const storedClassicRiddle: FirestoreRiddle = {
+        ...mockClassicRiddle,
+        riddleId: "classicRiddle03",
+        classicIndex: 3,
+      };
+
+      await AsyncStorage.setItem(
+        "@guest_player_progress_v1",
+        JSON.stringify({
+          coins: 50,
+          progress: {
+            classicIndex: 3,
+            dailyChallengeIndex: 0,
+            dailyChallengeCurrentQuestion: 0,
+          },
+          stats: mockPlayer.stats,
+        })
+      );
+      await AsyncStorage.setItem(
+        "@active_game_session_v1",
+        JSON.stringify({
+          version: 1,
+          userId: guestUid,
+          gameMode: "classic",
+          riddleId: "classicRiddle03",
+          classicIndex: 3,
+          savedAt: Date.now(),
+          savedUtcDate: new Date().toISOString().slice(0, 10),
+        })
+      );
+
+      (fetchDailyRiddleFromFirestore as jest.Mock).mockResolvedValue(
+        mockDailyRiddle
+      );
+      (fetchClassicRiddleFromFirestore as jest.Mock).mockResolvedValue(
+        storedClassicRiddle
+      );
+
+      mockAuthInstance.onAuthStateChanged.mockImplementation(
+        (callback: (user: any) => void) => {
+          mockAuthInstance.currentUser = {
+            uid: guestUid,
+            isAnonymous: true,
+            email: null,
+            displayName: null,
+          } as any;
+          callback(mockAuthInstance.currentUser);
+          return jest.fn();
+        }
+      );
+
+      const { result } = renderHook(() => useAuth(), { wrapper });
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      expect(result.current.playerData?.coins).toBe(50);
+      expect(result.current.gameMode).toBe("classic");
+      expect(fetchClassicRiddleFromFirestore).toHaveBeenCalledWith(3);
+      expect(result.current.currentRiddle).toEqual(storedClassicRiddle);
+    });
+
     it("does not drop anonymous-to-provider upgrade auth event for same uid", async () => {
       const upgradedUid = "guest-upgrade-1";
 
@@ -323,7 +388,6 @@ describe("AuthContext", () => {
             userId: upgradedUid,
             username: "Upgraded User",
             email: "test@example.com",
-            coins: 100,
           })
         );
       });
@@ -614,11 +678,10 @@ describe("AuthContext", () => {
       expect(updateUserDocumentInFirestore).toHaveBeenCalledWith(
         "testUser123",
         expect.objectContaining({
-          ...updates,
           userId: "testUser123",
           username: "TestUser",
           email: "test@example.com",
-          coins: 150,
+          displayName: "Updated Name",
         })
       );
       expect(result.current.playerData?.coins).toBe(150);
@@ -658,7 +721,6 @@ describe("AuthContext", () => {
             userId: "testUser123",
             username: "TestUser",
             email: "test@example.com",
-            coins: 175,
           })
         )
       );

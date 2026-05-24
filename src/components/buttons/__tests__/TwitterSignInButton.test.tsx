@@ -17,6 +17,18 @@ jest.mock("../../../styles", () => ({
 }));
 
 jest.mock("../../../utils/responsive", () => ({
+  dimensions: {
+    screenWidth: 390,
+    screenHeight: 844,
+    isPhone: true,
+    isTablet: false,
+    isLargeTablet: false,
+    isDesktop: false,
+  },
+  isPhone: true,
+  isTablet: false,
+  isLargeTablet: false,
+  isDesktop: false,
   scale: (value: number) => value,
 }));
 

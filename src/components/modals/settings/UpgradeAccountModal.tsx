@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Alert, Modal, Text, TouchableOpacity, View } from "react-native";
 import { AppStrings } from "@/constants/AppStrings";
-import { AuthService } from "@/services/AuthService";
+import { AuthService, isFacebookLoginCancellation } from "@/services/AuthService";
 import { useModal } from "@/hooks/useModal";
 import CloseButton from "@/components/buttons/CloseButton";
 import GoogleSignInButton from "@/components/buttons/GoogleSignInButton";
@@ -88,6 +88,11 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
         message: AppStrings.Profile.UPGRADE_ACCOUNT_SUCCESS,
       });
     } catch (error) {
+      if (isFacebookLoginCancellation(error)) {
+        handleAuthError(error);
+        return;
+      }
+
       logger.error("Upgrade account (Google) error:", error);
       captureException(error);
       handleAuthError(error);
@@ -99,13 +104,22 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
   const linkWithFacebook = async () => {
     setIsLoading(true);
     try {
-      await AuthService.linkAnonymousWithFacebook();
+      const userCredential = await AuthService.linkAnonymousWithFacebook();
+      if (!userCredential) {
+        return;
+      }
+
       onClose();
       showInfoModal({
         title: AppStrings.Profile.ALERT_SUCCESS_TITLE,
         message: AppStrings.Profile.UPGRADE_ACCOUNT_SUCCESS,
       });
     } catch (error) {
+      if (isFacebookLoginCancellation(error)) {
+        handleAuthError(error);
+        return;
+      }
+
       logger.error("Upgrade account (Facebook) error:", error);
       captureException(error);
       handleAuthError(error);

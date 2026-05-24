@@ -3,7 +3,7 @@
  */
 
 import React from "react";
-import {Alert, Modal, ScrollView, Text, TouchableOpacity, View} from "react-native";
+import {Alert, Linking, Modal, ScrollView, Text, TouchableOpacity, View} from "react-native";
 import CloseButton from "../../buttons/CloseButton";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {AppStrings, getAppLanguage} from "../../../constants/AppStrings";
@@ -11,10 +11,6 @@ import {getLegalUrl, LegalUrlKey} from "../../../constants/legal";
 import {SPACING, TYPOGRAPHY} from "../../../styles";
 import {verticalScale} from "@/utils/responsive";
 import {AUTH_CONTENT_MAX_WIDTH, MODAL_MAX_HEIGHT} from "../../../constants/layout";
-
-const Linking = require("react-native/Libraries/Linking/Linking") as {
-  openURL: (url: string) => Promise<void>;
-};
 
 interface AboutLegalModalProps {
   isVisible: boolean;

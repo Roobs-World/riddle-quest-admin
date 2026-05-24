@@ -30,6 +30,18 @@ jest.mock("../../../constants/layout", () => ({
 }));
 
 jest.mock("../../../utils/responsive", () => ({
+  dimensions: {
+    screenWidth: 390,
+    screenHeight: 844,
+    isPhone: true,
+    isTablet: false,
+    isLargeTablet: false,
+    isDesktop: false,
+  },
+  isPhone: true,
+  isTablet: false,
+  isLargeTablet: false,
+  isDesktop: false,
   moderateScale: jest.fn((size: number) => size),
 }));
 

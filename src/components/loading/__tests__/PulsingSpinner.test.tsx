@@ -49,6 +49,8 @@ describe("PulsingSpinner", () => {
   it("returns null when overlay mode is hidden", () => {
     const { toJSON } = render(<PulsingSpinner visible={false} />);
     expect(toJSON()).toBeNull();
+    expect(start).not.toHaveBeenCalled();
+    expect(Animated.loop).not.toHaveBeenCalled();
   });
 
   it("renders overlay mode when visible", () => {

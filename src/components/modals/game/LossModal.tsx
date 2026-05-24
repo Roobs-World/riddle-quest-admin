@@ -203,7 +203,10 @@ const LossModal: React.FC<LossModalProps> = ({
       animationType="none"
       transparent={true}
       visible={isVisible}
-      onRequestClose={onClose}
+      onRequestClose={() => {
+        // Loss is a terminal decision point; hardware Back must not strand the
+        // user on the completed board without the loss actions.
+      }}
       accessibilityLabel={AppStrings.Accessibility.GAME_LOSS_NOTIFICATION}
     >
       <View

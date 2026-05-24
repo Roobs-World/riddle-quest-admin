@@ -56,7 +56,18 @@ jest.mock("src/utils/responsive", () => ({
   scale: (n: number) => n,
   moderateScale: (n: number) => n,
   verticalScale: (n: number) => n,
-  dimensions: { screenWidth: 390, screenHeight: 844, isLargeTablet: false },
+  isPhone: true,
+  isTablet: false,
+  isLargeTablet: false,
+  isDesktop: false,
+  dimensions: {
+    screenWidth: 390,
+    screenHeight: 844,
+    isPhone: true,
+    isTablet: false,
+    isLargeTablet: false,
+    isDesktop: false,
+  },
   responsiveSizes: {
     textXs: 12, textSm: 14, textBase: 16, textLg: 18, textXl: 20,
     text2xl: 24, text3xl: 30, text4xl: 36, textTitle: 28, textDisplay: 32, textTile: 28,
@@ -381,9 +392,36 @@ describe("FullProfileDetailsModal", () => {
   });
 
   it("renders with proper positioning", () => {
-    const { getByText } = renderWithModalProvider(<FullProfileDetailsModal {...defaultProps} />);
+    const { getByTestId, getByText } = renderWithModalProvider(
+      <FullProfileDetailsModal {...defaultProps} />
+    );
 
     expect(getByText("TestUser")).toBeTruthy();
+    expect(getByTestId("profile-modal-header").props.style).toEqual(
+      expect.objectContaining({
+        flexShrink: 0,
+        position: "relative",
+      })
+    );
+    expect(getByTestId("profile-modal-body").props.style).toEqual(
+      expect.objectContaining({
+        flex: 1,
+        backgroundColor: "#FCFAF4",
+        overflow: "hidden",
+      })
+    );
+    expect(getByTestId("profile-modal-body-scroll").props.style).toEqual(
+      expect.objectContaining({
+        flex: 1,
+      })
+    );
+    expect(
+      getByTestId("profile-modal-body-scroll").props.contentContainerStyle
+    ).toEqual(
+      expect.objectContaining({
+        paddingTop: 32,
+      })
+    );
   });
 
   it("renders modal without gestures", () => {

@@ -6,22 +6,8 @@ jest.unmock("../LandingScreen"); // Explicitly unmock to ensure coverage
 import { AuthService } from "../../services/AuthService";
 import { useAuth } from "../../contexts/AuthContext";
 import { ModalProvider } from "../../contexts/ModalContext";
-
-// Mock navigation
-const mockNavigate = jest.fn();
-const mockNavigation = {
-  navigate: mockNavigate,
-  goBack: jest.fn(),
-  reset: jest.fn(),
-  setParams: jest.fn(),
-  dispatch: jest.fn(),
-  setOptions: jest.fn(),
-  isFocused: jest.fn(),
-  canGoBack: jest.fn(),
-  getId: jest.fn(),
-  getParent: jest.fn(),
-  getState: jest.fn(),
-} as any;
+import { logger } from "../../utils/logger";
+import { captureException } from "../../utils/sentry";
 
 // Mock AuthService
 jest.mock("../../services/AuthService", () => ({
@@ -31,6 +17,28 @@ jest.mock("../../services/AuthService", () => ({
     signInAnonymously: jest.fn(),
     logout: jest.fn(),
   },
+  isFacebookLoginCancellation: jest.fn(
+    (error: unknown) =>
+      (error instanceof Error &&
+        error.message === "User cancelled the login process") ||
+      (typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        error.code === "auth/auth-popup-closed-by-user")
+  ),
+}));
+
+jest.mock("../../utils/logger", () => ({
+  logger: {
+    debug: jest.fn(),
+    error: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+  },
+}));
+
+jest.mock("../../utils/sentry", () => ({
+  captureException: jest.fn(),
 }));
 
 // Mock useAuth hook
@@ -175,6 +183,7 @@ jest.mock("../../constants/AppStrings", () => ({
         NO_ACCOUNT_PROMPT: "No account?",
         PLAY_AS_GUEST: "Play as Guest",
         CREDITS_BUTTON: "Credits",
+        SIGN_UP_BUTTON: "Sign up",
       },
       Login: {
         ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL:
@@ -257,8 +266,8 @@ describe("LandingScreen", () => {
       expect(getByText("Test Tagline 1")).toBeTruthy();
     });
 
-    it("should render guest and Roobs World buttons", () => {
-      const { getAllByTestId } = renderWithProviders(
+    it("should render the guest button and Roobs World text link", () => {
+      const { getAllByTestId, getByTestId } = renderWithProviders(
         <LandingScreen />
       );
 
@@ -266,12 +275,12 @@ describe("LandingScreen", () => {
       const guestButton = wideButtons.find(
         (btn: any) => btn.props["data-text"] === "Play as Guest"
       );
-      const roobsWorldButton = wideButtons.find(
-        (btn: any) => btn.props["data-text"] === "Made by Roobs World"
-      );
       expect(guestButton).toBeTruthy();
       expect(guestButton!.props["data-disabled"]).toBe(false);
-      expect(roobsWorldButton).toBeTruthy();
+      expect(getByTestId("roobs-world-link")).toBeTruthy();
+      expect(
+        wideButtons.some((btn: any) => btn.props["data-text"] === "Made by Roobs World")
+      ).toBe(false);
     });
 
     it("should render spinner as not visible initially", () => {
@@ -286,6 +295,27 @@ describe("LandingScreen", () => {
   });
 
   describe("Modal Triggers", () => {
+    it("should not render an email sign in button on the landing screen", () => {
+      const { getAllByTestId } = renderWithProviders(
+        <LandingScreen />
+      );
+
+      const signInButton = getAllByTestId("wide-button").find(
+        (btn: any) => btn.props["data-text"] === "Sign In"
+      );
+
+      expect(signInButton).toBeFalsy();
+    });
+
+    it("should not render a sign up button on the landing screen", () => {
+      const { queryByText } = renderWithProviders(
+        <LandingScreen />
+      );
+
+      expect(queryByText("No account?")).toBeNull();
+      expect(queryByText("Sign up")).toBeNull();
+    });
+
     it("should sign in anonymously when guest button is pressed", async () => {
       (AuthService.signInAnonymously as jest.Mock).mockResolvedValue({
         user: { uid: "guest-1" },
@@ -305,16 +335,11 @@ describe("LandingScreen", () => {
       });
     });
 
-    it("should open Roobs World website when the button is pressed", () => {
+    it("should open Roobs World website when the text link is pressed", () => {
       const openUrlSpy = jest.spyOn(Linking, "openURL").mockResolvedValue(undefined);
-      const { getAllByTestId } = renderWithProviders(<LandingScreen />);
+      const { getByTestId } = renderWithProviders(<LandingScreen />);
 
-      const wideButtons = getAllByTestId("wide-button");
-      const roobsWorldButton = wideButtons.find(
-        (btn: any) => btn.props["data-text"] === "Made by Roobs World"
-      );
-
-      fireEvent.press(roobsWorldButton!);
+      fireEvent.press(getByTestId("roobs-world-link"));
 
       expect(openUrlSpy).toHaveBeenCalledWith("https://www.roobsworld.com");
       openUrlSpy.mockRestore();
@@ -682,13 +707,18 @@ describe("LandingScreen", () => {
   });
 
   describe("Text Content", () => {
-    it("should not display legacy separator text", () => {
-      const { queryByText } = renderWithProviders(
+    it("should not display email auth navigation or provider separator text", () => {
+      const { getAllByTestId, queryByText } = renderWithProviders(
         <LandingScreen />
       );
+      const signInButton = getAllByTestId("wide-button").find(
+        (btn: any) => btn.props["data-text"] === "Sign In"
+      );
 
+      expect(signInButton).toBeFalsy();
       expect(queryByText("Or sign in with")).toBeNull();
       expect(queryByText("No account?")).toBeNull();
+      expect(queryByText("Sign up")).toBeNull();
     });
 
     it("should display taglines from constants", () => {
@@ -812,9 +842,8 @@ describe("Google Sign-In", () => {
 
 describe("Facebook Sign-In", () => {
   beforeEach(() => {
+    jest.clearAllMocks();
     (useAuth as jest.Mock).mockReturnValue({ login: mockLogin, isAuthenticated: false, setGameMode: mockSetGameMode });
-    mockSignInWithFacebook.mockClear();
-    mockLogin.mockClear();
   });
 
   it("should handle successful Facebook sign-in", async () => {
@@ -896,6 +925,8 @@ describe("Facebook Sign-In", () => {
     );
 
     expect(queryByTestId("error-message")).toBeNull();
+    expect(logger.error).not.toHaveBeenCalled();
+    expect(captureException).not.toHaveBeenCalled();
   });
 
   it("should handle Facebook sign-in failure with 'auth/operation-not-supported-in-this-environment'", async () => {
@@ -1205,7 +1236,7 @@ describe("Component Accessibility", () => {
 
     expect(googleButton.props["data-disabled"]).toBe(false);
     expect(facebookButton.props["data-disabled"]).toBe(false);
-    // Check that at least the Play as Guest and Roobs World buttons render.
+    // Check that Play as Guest renders as a button and Roobs World does not.
     const guestButton = wideButtons.find(
       (btn: any) => btn.props["data-text"] === "Play as Guest"
     );
@@ -1213,17 +1244,18 @@ describe("Component Accessibility", () => {
       (btn: any) => btn.props["data-text"] === "Made by Roobs World"
     );
     expect(guestButton!.props["data-disabled"]).toBe(false);
-    expect(roobsWorldButton).toBeTruthy();
+    expect(roobsWorldButton).toBeFalsy();
   });
 
   it("should have proper button text content", () => {
-    const { getAllByTestId } = renderWithProviders(<LandingScreen />);
+    const { getAllByTestId, getByText } = renderWithProviders(<LandingScreen />);
 
     const wideButtons = getAllByTestId("wide-button");
     const buttonTexts = wideButtons.map((btn: any) => btn.props["data-text"]);
 
     expect(buttonTexts).toContain("Play as Guest");
-    expect(buttonTexts).toContain("Made by Roobs World");
+    expect(buttonTexts).not.toContain("Made by Roobs World");
+    expect(getByText("Made by Roobs World")).toBeTruthy();
   });
 });
 

@@ -8,6 +8,31 @@ import { captureException } from "../../utils/sentry";
 import { logger } from "../../utils/logger";
 import { INITIAL_COINS } from "@/constants/game";
 
+export type RestorableGameMode = "daily" | "classic" | "challenge";
+
+export const ACTIVE_GAME_SESSION_STORAGE_KEY = "@active_game_session_v1";
+
+export type ActiveGameSessionSnapshot = {
+  version: 1;
+  userId: string;
+  gameMode: RestorableGameMode;
+  savedAt: number;
+  savedUtcDate: string;
+  riddleId?: string;
+  classicIndex?: number;
+  dailyIndex?: number;
+};
+
+export const getUtcDateKey = (date: Date = new Date()): string =>
+  date.toISOString().slice(0, 10);
+
+export const normalizeRestorableGameMode = (
+  value: unknown
+): RestorableGameMode | null =>
+  value === "daily" || value === "classic" || value === "challenge"
+    ? value
+    : null;
+
 /**
  * Resolves initial gameplay mode after auth bootstrap.
  *
@@ -17,6 +42,26 @@ import { INITIAL_COINS } from "@/constants/game";
 export const resolveInitialGameMode = (
   hasCompletedToday: boolean
 ): "classic" | "daily" => (hasCompletedToday ? "classic" : "daily");
+
+export const resolveLaunchGameMode = ({
+  defaultMode,
+  restoredMode,
+  dailyAvailable,
+}: {
+  defaultMode: "daily" | "classic";
+  restoredMode?: RestorableGameMode | null;
+  dailyAvailable: boolean;
+}): RestorableGameMode => {
+  if (!restoredMode) {
+    return defaultMode;
+  }
+
+  if (restoredMode === "classic") {
+    return "classic";
+  }
+
+  return dailyAvailable ? restoredMode : "classic";
+};
 
 /**
  * Builds the default in-memory player profile for anonymous users.

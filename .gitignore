@@ -25,6 +25,7 @@ android/
 ios/
 releases/
 .gradle-user/
+emulator-tests/
 
 # Metro
 .metro-health-check*

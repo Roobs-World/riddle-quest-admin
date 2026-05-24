@@ -88,26 +88,44 @@ const GuessGrid: React.FC<GuessGridProps> = memo(function GuessGrid({
   activeSlotIndex = 0,
   onSelectCurrentGuessSlot,
 }) {
+  const slotCount = Math.max(0, answerLength);
   // Tile sizing — only recalculate when answerLength changes.
   const { TILE_SIZE, ROW_HEIGHT } = useMemo(() => {
+    if (slotCount <= 0) {
+      return {
+        TILE_SIZE: 0,
+        ROW_HEIGHT: GUESS_TILE_ROW_GAP,
+      };
+    }
+
     const availableWidth = GUESS_GRID_EFFECTIVE_WIDTH - GUESS_GRID_H_PADDING;
-    const maxTileFromWidth = Math.floor(availableWidth / answerLength) - GUESS_TILE_MARGIN * 2;
+    const maxTileFromWidth = Math.floor(availableWidth / slotCount) - GUESS_TILE_MARGIN * 2;
     const tileSize = Math.min(GUESS_TILE_MAX_SIZE, maxTileFromWidth);
     return {
       TILE_SIZE: tileSize,
       ROW_HEIGHT: tileSize + GUESS_TILE_MARGIN * 2 + GUESS_TILE_ROW_GAP,
     };
-  }, [answerLength]);
+  }, [slotCount]);
 
   // Build display rows — recalculates when guesses or currentGuess change.
   const displayRows = useMemo(() => {
+    const buildFixedLengthRow = <T,>(values: T[], filler: T): T[] => {
+      const row = values.slice(0, slotCount);
+      while (row.length < slotCount) row.push(filler);
+      return row;
+    };
     const rows: { letters: (string | null)[]; feedback: (Feedback | null)[] }[] =
-      guesses.map((sg: SubmittedGuess) => ({ letters: sg.guess, feedback: sg.feedback }));
+      guesses.map((sg: SubmittedGuess) => ({
+        letters: buildFixedLengthRow<string | null>(sg.guess, null),
+        feedback: buildFixedLengthRow<Feedback | null>(sg.feedback, null),
+      }));
 
     if (rows.length < NUM_GUESSES && currentGuess.length > 0) {
-      const currentGuessRow: (string | null)[] = [...currentGuess];
-      while (currentGuessRow.length < answerLength) currentGuessRow.push(null);
-      const currentGuessFeedback: (Feedback | null)[] = Array(answerLength)
+      const currentGuessRow = buildFixedLengthRow<string | null>(
+        currentGuess,
+        null
+      );
+      const currentGuessFeedback: (Feedback | null)[] = Array(slotCount)
         .fill(null)
         .map((_, i) => (hintRevealedIndices.includes(i) ? "green" : null));
       rows.push({ letters: currentGuessRow, feedback: currentGuessFeedback });
@@ -115,12 +133,12 @@ const GuessGrid: React.FC<GuessGridProps> = memo(function GuessGrid({
 
     while (rows.length < NUM_GUESSES) {
       rows.push({
-        letters: Array(answerLength).fill(null),
-        feedback: Array(answerLength).fill(null),
+        letters: Array(slotCount).fill(null),
+        feedback: Array(slotCount).fill(null),
       });
     }
     return rows;
-  }, [guesses, currentGuess, answerLength, hintRevealedIndices]);
+  }, [guesses, currentGuess, slotCount, hintRevealedIndices]);
 
   return (
     <View

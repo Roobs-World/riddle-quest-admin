@@ -18,9 +18,6 @@
 import { registerRootComponent } from "expo";
 
 import App from "./App";
-import { installGlobalErrorLogging } from "./src/debug/installGlobalErrorLogging";
-
-installGlobalErrorLogging();
 
 /**
  * Registers the main App component as the root component for the React Native application.

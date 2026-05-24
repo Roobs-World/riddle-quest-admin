@@ -452,6 +452,8 @@ const EN_APP_STRINGS = {
     LOAD_ERROR: "Could not load leaderboard. Please try again.",
     RETRY_BUTTON: "Retry",
     NO_SCORES_YET: "No scores yet — be the first to make the board!",
+    GUEST_UNAVAILABLE:
+      "Sign in to compare XP, wins, and streaks on the leaderboard.",
   },
   StatsModal: {
     TITLE: "Statistics",

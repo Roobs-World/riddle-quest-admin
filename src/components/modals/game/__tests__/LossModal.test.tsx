@@ -1,6 +1,7 @@
 // Use require syntax for React to fix TypeScript error with esModuleInterop
 const React = require("react");
 import { render, fireEvent, waitFor } from "@testing-library/react-native";
+import { Modal } from "react-native";
 import LossModal from "../LossModal";
 
 // Mock child components with working React Native Testing Library approach
@@ -176,6 +177,24 @@ describe("LossModal", () => {
       fireEvent.press(getByText("Open Shop"));
 
       expect(mockOnOpenShop).toHaveBeenCalledTimes(1);
+    });
+
+    it("should not dismiss from Android Back without choosing a loss action", () => {
+      const mockOnClose = jest.fn();
+      const mockOnNext = jest.fn();
+      const { UNSAFE_getByType } = render(
+        <LossModal
+          {...defaultProps}
+          onClose={mockOnClose}
+          onNext={mockOnNext}
+          onWatchAdContinue={jest.fn()}
+        />
+      );
+
+      UNSAFE_getByType(Modal).props.onRequestClose();
+
+      expect(mockOnClose).not.toHaveBeenCalled();
+      expect(mockOnNext).not.toHaveBeenCalled();
     });
   });
 

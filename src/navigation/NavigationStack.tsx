@@ -11,6 +11,7 @@ import React, { useEffect, useRef } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LandingScreen from "../screens/LandingScreen";
 import LoginScreen from "../screens/auth/LoginScreen";
+import SignUpScreen from "../screens/auth/SignUpScreen";
 import ForgotPasswordScreen from "../screens/auth/ForgotPasswordScreen";
 import NewPasswordScreen from "../screens/auth/NewPasswordScreen";
 import GameScreen from "../screens/game/GameScreen";
@@ -789,6 +790,10 @@ export const Navigation = () => {
           <Stack.Screen
             name={AppStrings.Navigation.LOGIN}
             component={LoginScreen}
+          />
+          <Stack.Screen
+            name={AppStrings.Navigation.SIGN_UP}
+            component={SignUpScreen}
           />
           <Stack.Screen
             name={AppStrings.Navigation.FORGOT_PASSWORD}

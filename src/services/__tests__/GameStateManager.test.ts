@@ -168,6 +168,22 @@ describe("GameStateManager", () => {
       expect(mockAudioFeedback.playNeutralFeedback).toHaveBeenCalledTimes(5); // Not 6
     });
 
+    it("should respect configured answer length instead of always using five slots", () => {
+      const fourLetterManager = new GameStateManager({
+        ...defaultConfig,
+        answerLength: 4,
+      });
+
+      fourLetterManager.addLetter("J");
+      fourLetterManager.addLetter("O");
+      fourLetterManager.addLetter("K");
+      fourLetterManager.addLetter("E");
+      fourLetterManager.addLetter("S");
+
+      expect(fourLetterManager.getState().currentGuess).toBe("joke");
+      expect(fourLetterManager.canSubmitGuess()).toBe(true);
+    });
+
     it("should not add letter when game is not playing", () => {
       // Force game to won state
       gameStateManager.resetGame();

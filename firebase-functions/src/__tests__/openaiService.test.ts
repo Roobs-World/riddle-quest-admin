@@ -22,6 +22,7 @@ jest.mock("openai", () => ({
 
 // 3. Import the module after mocking
 import {generateUniqueRiddle, resetOpenAIClient} from "../openaiService";
+import {MAX_RIDDLE_ANSWER_CHARACTERS} from "../constants";
 
 describe("OpenAI Service", () => {
   const originalEnv = process.env;
@@ -66,6 +67,42 @@ describe("OpenAI Service", () => {
         ]),
       });
       expect(mockLogger.info).toHaveBeenCalledWith('Generated valid riddle: "What flies without wings?" → "time" (4 chars)');
+    });
+
+    test("should include riddle rules and broad pub quiz guidance in the OpenAI prompt", async () => {
+      const mockResponse = {
+        choices: [
+          {
+            message: {
+              content: "Question: What flies without wings?\nAnswer: time",
+            },
+          },
+        ],
+      };
+
+      (mockCreate as jest.MockedFunction<any>).mockResolvedValue(mockResponse);
+
+      await generateUniqueRiddle();
+
+      const request = mockCreate.mock.calls[0][0] as {
+        messages: {role: string; content: string}[];
+      };
+      const userPrompt = request.messages.find((message) => message.role === "user")?.content;
+      const systemPrompt = request.messages.find((message) => message.role === "system")?.content;
+
+      expect(userPrompt).toContain(`Answer: MAXIMUM ${MAX_RIDDLE_ANSWER_CHARACTERS} characters`);
+      expect(userPrompt).toContain(`must never exceed ${MAX_RIDDLE_ANSWER_CHARACTERS} characters`);
+      expect(userPrompt).toContain("must contain only lowercase letters");
+      expect(userPrompt).toContain("must not include the answer word anywhere");
+      expect(userPrompt).toContain("wide audience");
+      expect(userPrompt).toContain("music, history, general knowledge, film and TV, sport, geography, science");
+      expect(userPrompt).toContain("food and drink");
+      expect(userPrompt).toContain("one clear answer");
+      expect(userPrompt).toContain("vague clues");
+      expect(userPrompt).toContain("obscure proper nouns");
+      expect(systemPrompt).toContain("pub quizzes");
+      expect(systemPrompt).toContain("Rotate subjects over time");
+      expect(systemPrompt).toContain("avoid obscure specialist trivia");
     });
 
     test("should handle riddle with maximum answer length (7 characters)", async () => {
@@ -199,7 +236,7 @@ describe("OpenAI Service", () => {
         choices: [
           {
             message: {
-              content: "**Question:** What is bold?\n**Answer:** bold",
+              content: "**Question:** Which word describes heavy type?\n**Answer:** bold",
             },
           },
         ],
@@ -209,7 +246,28 @@ describe("OpenAI Service", () => {
 
       const result = await generateUniqueRiddle();
 
-      expect(result).toEqual(["What is bold?", "bold"]);
+      expect(result).toEqual(["Which word describes heavy type?", "bold"]);
+    });
+
+    test("should reject a question that reveals the literal answer", async () => {
+      const mockResponse = {
+        choices: [
+          {
+            message: {
+              content: "Question: A joke makes people laugh.\nAnswer: joke",
+            },
+          },
+        ],
+      };
+
+      (mockCreate as jest.MockedFunction<any>).mockResolvedValue(mockResponse);
+
+      const result = await generateUniqueRiddle();
+
+      expect(result).toBeNull();
+      expect(mockLogger.warn).toHaveBeenCalledWith(
+        'Question reveals the literal answer: "A joke makes people laugh." -> "joke".',
+      );
     });
 
     test("should return null when OpenAI returns empty content", async () => {
@@ -395,7 +453,7 @@ describe("OpenAI Service", () => {
         choices: [
           {
             message: {
-              content: "Question: What has exactly seven letters?\nAnswer: exactly",
+              content: "Question: Which seven-letter word means exact?\nAnswer: precise",
             },
           },
         ],
@@ -405,9 +463,9 @@ describe("OpenAI Service", () => {
 
       const result = await generateUniqueRiddle();
 
-      expect(result).toEqual(["What has exactly seven letters?", "exactly"]);
+      expect(result).toEqual(["Which seven-letter word means exact?", "precise"]);
       expect(mockLogger.info).toHaveBeenCalledWith(
-        'Generated valid riddle: "What has exactly seven letters?" → "exactly" (7 chars)',
+        'Generated valid riddle: "Which seven-letter word means exact?" → "precise" (7 chars)',
       );
     });
   });

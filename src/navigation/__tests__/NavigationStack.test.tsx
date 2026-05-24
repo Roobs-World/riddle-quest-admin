@@ -73,6 +73,14 @@ jest.mock("../../screens/auth/LoginScreen", () => {
   };
 });
 
+jest.mock("../../screens/auth/SignUpScreen", () => {
+  const React = require("react");
+  const { View } = require("react-native");
+  return function MockSignUpScreen() {
+    return <View testID="signup-screen" />;
+  };
+});
+
 jest.mock("../../screens/auth/ForgotPasswordScreen", () => {
   const React = require("react");
   const { View } = require("react-native");
@@ -254,6 +262,7 @@ describe("NavigationStack", () => {
 
     expect(getByTestId("stack-screen-landing")).toBeTruthy();
     expect(getByTestId("stack-screen-login")).toBeTruthy();
+    expect(getByTestId("stack-screen-signup")).toBeTruthy();
     expect(getByTestId("stack-screen-forgotpassword")).toBeTruthy();
     expect(getByTestId("stack-screen-newpassword")).toBeTruthy();
     expect(queryByTestId("stack-screen-game")).toBeNull();

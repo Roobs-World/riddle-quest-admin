@@ -41,11 +41,9 @@ const StatsModal: React.FC<StatsModalProps> = ({isVisible, onClose, playerData})
   const avgGuesses = stats?.averageGuesses != null ? stats.averageGuesses.toFixed(1) : "0.0";
   const dailyPuzzlesCompleted = toNonNegativeStat(stats?.dailyPuzzlesCompleted);
   const highestClassicLevel = toNonNegativeStat(stats?.highestLevelClassic);
-  const totalWordsGuessed = dailyPuzzlesCompleted + highestClassicLevel;
+  const totalWordsGuessed = toNonNegativeStat(stats?.totalWordsGuessed);
   const totalWins = toNonNegativeStat(stats?.totalWins ?? stats?.wins);
-  const recordedGamesPlayed = toNonNegativeStat(stats?.gamesPlayed);
-  const failedAttempts = Math.max(0, recordedGamesPlayed - totalWins);
-  const calculatedGamesPlayed = dailyPuzzlesCompleted + highestClassicLevel + failedAttempts;
+  const gamesPlayed = toNonNegativeStat(stats?.gamesPlayed);
 
   return (
     <Modal
@@ -108,13 +106,13 @@ const StatsModal: React.FC<StatsModalProps> = ({isVisible, onClose, playerData})
               showsVerticalScrollIndicator={false}
             >
               <SectionHeader label={AppStrings.StatsModal.GAMEPLAY_SECTION} />
-              <StatRow label={AppStrings.StatsModal.GAMES_PLAYED} value={calculatedGamesPlayed} />
+              <StatRow label={AppStrings.StatsModal.GAMES_PLAYED} value={gamesPlayed} />
               <StatRow label={AppStrings.StatsModal.DAILY_PUZZLES} value={dailyPuzzlesCompleted} />
               <StatRow label={AppStrings.StatsModal.HIGHEST_CLASSIC_LEVEL} value={highestClassicLevel} />
               <StatRow label={AppStrings.StatsModal.XP} value={stats?.xp ?? 0} />
 
               <SectionHeader label={AppStrings.StatsModal.WINS_STREAKS_SECTION} />
-              <StatRow label={AppStrings.StatsModal.TOTAL_WINS} value={stats?.totalWins ?? 0} />
+              <StatRow label={AppStrings.StatsModal.TOTAL_WINS} value={totalWins} />
               <StatRow label={AppStrings.StatsModal.WIN_RATE} value={winRate} unit="%" />
               <StatRow label={AppStrings.StatsModal.BEST_STREAK} value={stats?.bestStreak ?? 0} />
               <StatRow label={AppStrings.StatsModal.CURRENT_STREAK} value={stats?.winStreak ?? 0} />

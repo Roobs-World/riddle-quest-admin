@@ -6,6 +6,7 @@ import {generateUniqueRiddle} from "./openaiService";
 import {captureException} from "./sentry";
 import type {ClassicRiddle, DailyRiddle} from "./validation/firestoreSchemas";
 import {RiddleCollections} from "./validation/firestoreSchemas";
+import {clueContainsLiteralAnswer} from "./riddleQuality";
 
 /**
  * Checks if a riddle already exists in the provided lists of questions and
@@ -25,6 +26,10 @@ function riddleExists(
   const normalizedAnswer = riddle.answer.toLowerCase();
 
   return existingQuestions.includes(normalizedQuestion) || existingAnswers.includes(normalizedAnswer);
+}
+
+function riddleHasPlayableClue(riddle: {question: string; answer: string}): boolean {
+  return !clueContainsLiteralAnswer(riddle.question, riddle.answer);
 }
 
 /**
@@ -258,6 +263,11 @@ export async function generateAndAppendRiddles(numberOfRiddles: number): Promise
         answer: riddle[1],
       };
 
+      if (!riddleHasPlayableClue(newRiddle)) {
+        logger.warn(`Generated riddle reveals its answer, trying again... (attempt ${attemptCount}/${maxAttempts})`);
+        continue;
+      }
+
       // Check for duplicates against existing and newly generated riddles
       if (
         !riddleExists(newRiddle, existing.questions, existing.answers) &&
@@ -339,6 +349,11 @@ export async function generateAndAppendDailyRiddles(numberOfRiddles: number): Pr
         question: riddle[0],
         answer: riddle[1],
       };
+
+      if (!riddleHasPlayableClue(newRiddle)) {
+        logger.warn(`Generated daily riddle reveals its answer, trying again... (attempt ${attemptCount}/${maxAttempts})`);
+        continue;
+      }
 
       // Check for duplicates against existing and newly generated riddles
       if (

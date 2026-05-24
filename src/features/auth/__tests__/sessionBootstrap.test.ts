@@ -36,6 +36,7 @@ import {
   createGuestPlayer,
   isGuestPlayer,
   resolveInitialGameMode,
+  resolveLaunchGameMode,
   resolveProviderAvatarUrl,
   resolveProviderUsername,
   resolveUserEmail,
@@ -66,6 +67,38 @@ describe("sessionBootstrap", () => {
 
     it("handles falsy values correctly", () => {
       expect(resolveInitialGameMode(false)).toBe("daily");
+    });
+  });
+
+  describe("resolveLaunchGameMode", () => {
+    it("uses the default mode when no same-day session mode was restored", () => {
+      expect(
+        resolveLaunchGameMode({
+          defaultMode: "daily",
+          restoredMode: null,
+          dailyAvailable: true,
+        })
+      ).toBe("daily");
+    });
+
+    it("restores active classic mode even when daily is still available", () => {
+      expect(
+        resolveLaunchGameMode({
+          defaultMode: "daily",
+          restoredMode: "classic",
+          dailyAvailable: true,
+        })
+      ).toBe("classic");
+    });
+
+    it("falls back to classic when a restored daily mode is no longer available", () => {
+      expect(
+        resolveLaunchGameMode({
+          defaultMode: "daily",
+          restoredMode: "daily",
+          dailyAvailable: false,
+        })
+      ).toBe("classic");
     });
   });
 

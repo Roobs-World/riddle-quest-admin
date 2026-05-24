@@ -1,6 +1,8 @@
 import React from "react";
 import { fireEvent, render, waitFor } from "@testing-library/react-native";
 import UpgradeAccountModal from "../UpgradeAccountModal";
+import { logger } from "@/utils/logger";
+import { captureException } from "@/utils/sentry";
 
 const mockShowInfoModal = jest.fn();
 const mockLinkAnonymousWithGoogle = jest.fn();
@@ -21,6 +23,13 @@ jest.mock("@/services/AuthService", () => ({
       mockLinkAnonymousWithFacebook(...args),
     logout: (...args: unknown[]) => mockLogout(...args),
   },
+  isFacebookLoginCancellation: (error: unknown) =>
+    (typeof error === "object" &&
+      error !== null &&
+      "code" in error &&
+      error.code === "auth/auth-popup-closed-by-user") ||
+    (error instanceof Error &&
+      error.message === "User cancelled the login process"),
 }));
 
 jest.mock("@/utils/logger", () => ({
@@ -151,6 +160,30 @@ describe("<UpgradeAccountModal />", () => {
         )
       ).toBeTruthy();
     });
+  });
+
+  it("does not log or alert when Facebook account linking is cancelled", async () => {
+    mockLinkAnonymousWithFacebook.mockRejectedValue({
+      code: "auth/auth-popup-closed-by-user",
+      message: "Popup closed",
+    });
+
+    const onClose = jest.fn();
+    const { getByText, queryByText } = render(
+      <UpgradeAccountModal {...defaultProps} onClose={onClose} />
+    );
+
+    fireEvent.press(getByText("Continue with Facebook"));
+
+    await waitFor(() => {
+      expect(mockLinkAnonymousWithFacebook).toHaveBeenCalledTimes(1);
+    });
+
+    expect(queryByText("Account already exists")).toBeNull();
+    expect(onClose).not.toHaveBeenCalled();
+    expect(mockShowInfoModal).not.toHaveBeenCalled();
+    expect(logger.error).not.toHaveBeenCalled();
+    expect(captureException).not.toHaveBeenCalled();
   });
 
   it("shows existing-account logout modal when only message contains bracketed auth code", async () => {

@@ -15,7 +15,14 @@ jest.mock("../../../utils/responsive", () => ({
   scale: (size: number) => size,
   moderateScale: (size: number) => size,
   responsiveValue: (values: { phone: unknown }) => values.phone,
-  dimensions: { screenWidth: 390, screenHeight: 844 },
+  dimensions: {
+    screenWidth: 390,
+    screenHeight: 844,
+    isPhone: true,
+    isTablet: false,
+    isLargeTablet: false,
+    isDesktop: false,
+  },
   isPhone: true,
   isTablet: false,
   isLargeTablet: false,
@@ -302,6 +309,20 @@ describe("GuessGrid", () => {
           <GuessGrid {...defaultProps} guesses={guesses} answerLength={8} />
         );
       }).not.toThrow();
+    });
+
+    it("should clamp overlong current guesses to the answer length", () => {
+      const { getByTestId, queryByTestId, queryByText } = render(
+        <GuessGrid
+          {...defaultProps}
+          answerLength={4}
+          currentGuess={["J", "O", "K", "E", "S"]}
+        />
+      );
+
+      expect(getByTestId("guess-cell-0-3")).toBeTruthy();
+      expect(queryByTestId("guess-cell-0-4")).toBeNull();
+      expect(queryByText("S")).toBeNull();
     });
   });
 

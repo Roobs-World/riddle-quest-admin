@@ -277,6 +277,8 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
               borderTopRightRadius: 24,
               flex: 1,
               maxHeight: MODAL_MAX_HEIGHT,
+              overflow: "hidden",
+              flexDirection: "column",
             }}
           >
           <View
@@ -285,8 +287,11 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
               borderTopLeftRadius: 24,
               borderTopRightRadius: 24,
               paddingBottom: SPACING.xl,
+              flexShrink: 0,
               overflow: "hidden",
+              position: "relative",
             }}
+            testID="profile-modal-header"
           >
             {[0, 1, 2, 3, 4].map((i) => (
               <View
@@ -385,6 +390,9 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
 
               <TouchableOpacity
                 onPress={() => setIsUsernameModalVisible(true)}
+                accessibilityRole="button"
+                accessibilityLabel={AppStrings.Profile.UPDATE_USERNAME_TITLE}
+                testID="profile-username-button"
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
@@ -459,13 +467,27 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
             </View>
           </View>
 
-          <ScrollView
-            style={{ flex: 1 }}
-            contentContainerStyle={{ padding: SPACING.lg }}
-            showsVerticalScrollIndicator={false}
-            alwaysBounceVertical={true}
-            bounces={true}
+          <View
+            testID="profile-modal-body"
+            style={{
+              flex: 1,
+              backgroundColor: CREAM,
+              overflow: "hidden",
+              position: "relative",
+            }}
           >
+            <ScrollView
+              testID="profile-modal-body-scroll"
+              style={{ flex: 1 }}
+              contentContainerStyle={{
+                paddingHorizontal: SPACING.lg,
+                paddingTop: SPACING.xl,
+                paddingBottom: SPACING.lg,
+              }}
+              showsVerticalScrollIndicator={false}
+              alwaysBounceVertical={true}
+              bounces={true}
+            >
             {!hasProfileData ? (
               <View
                 style={{
@@ -724,7 +746,8 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({
             <View
               style={{ height: SPACING.xl, marginBottom: verticalScale(24) }}
             />
-          </ScrollView>
+            </ScrollView>
+          </View>
           </View>
         </SlideInModalContent>
       </View>
