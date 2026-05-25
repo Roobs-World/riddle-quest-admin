@@ -115,6 +115,8 @@ export const QA_MODAL_SURFACE_TO_REGISTRY_TYPE = {
   "modal-achievement-unlock-fanfare-sequence": "achievementUnlockFanfare",
   "modal-streak-increase-fanfare-sequence": "streakIncreaseFanfare",
   "modal-level-up-fanfare-sequence": "levelUpFanfare",
+  "modal-settings-language-picker": "settings",
+  "modal-upgrade-account-existing-account": "upgradeAccount",
 } as const;
 
 export const QA_SURFACES = [

@@ -47,7 +47,7 @@ $QASurfaceExpectedTexts = @{
   "modal-hint" = @("Use a Hint?", "SHOW HINT")
   "modal-skip" = @("Skip the level?", "SKIP LEVEL")
   "modal-victory" = @("NICE JOB!", "Next Level")
-  "modal-loss" = @("So close!", "Watch Ad for 3 Extra Guesses", "Open Shop")
+  "modal-loss" = @("Watch Ad for 3 Extra Guesses", "3 Extra Guesses - 25 Coins", "Skip Puzzle")
   "modal-coin-shop" = @("COIN SHOP", "Your balance", "PURCHASE")
   "modal-coin-purchase-fanfare" = @("Coins Added!", "Awesome")
   "modal-achievement-unlock-fanfare" = @("Achievement Unlocked!", "Nice")
@@ -67,8 +67,8 @@ $QASurfaceExpectedTexts = @{
   "modal-info-onboarding-upgrade-action" = @("Guest Mode Notice", "Upgrade Account", "2/3", "OK")
   "modal-hint-insufficient-coins" = @("Use a Hint?", "You do not have enough coins for a hint.", "Buy coins")
   "modal-skip-insufficient-coins" = @("Skip the level?", "You do not have enough coins to skip a level.", "Buy coins")
-  "modal-loss-no-continue-options" = @("So close!", "Out of attempts.", "Answer: HIDDEN", "Next Level")
-  "modal-loss-coin-continue" = @("So close!", "3 Extra Guesses - 25 Coins", "Skip Puzzle")
+  "modal-loss-no-continue-options" = @("Answer: HIDDEN", "Open Shop", "Next Level")
+  "modal-loss-coin-continue" = @("3 Extra Guesses - 25 Coins", "Open Shop", "Skip Puzzle")
   "modal-coin-shop-loading" = @("Loading shop...")
   "modal-coin-shop-error" = @("COIN SHOP", "Failed to load shop products")
   "modal-coin-shop-empty" = @("COIN SHOP", "No coin packs are available right now.", "PURCHASE")
@@ -104,7 +104,10 @@ function Get-QASurfaceIdsFromSource {
   }
 
   try {
-    return @($output | ConvertFrom-Json)
+    $parsedSurfaceIds = ($output -join "`n") | ConvertFrom-Json
+    foreach ($surfaceId in $parsedSurfaceIds) {
+      [string]$surfaceId
+    }
   } catch {
     Fail "Failed to parse QA surface ids emitted by scripts/verify-android-matrix-coverage.js. node output: $($output -join "`n")"
   }
@@ -866,6 +869,41 @@ function Get-FirstNodeCenterByText($uiText, $text) {
   }
 }
 
+function Test-AndroidSystemUiAnrDialog($uiText) {
+  return (
+    $uiText -match [regex]::Escape("System UI isn't responding") -and
+    (
+      $uiText -match [regex]::Escape('resource-id="android:id/aerr_wait"') -or
+      $uiText -match [regex]::Escape('text="Wait"')
+    )
+  )
+}
+
+function Dismiss-AndroidSystemUiAnrDialogIfPresent($adb, $serial, $context, $uiText = $null) {
+  $candidateUiText = $uiText
+  if ($null -eq $candidateUiText) {
+    $uiDump = Get-UiTreeDump $adb $serial
+    if ($uiDump.ExitCode -ne 0) {
+      return $false
+    }
+    $candidateUiText = $uiDump.Text
+  }
+
+  if (-not (Test-AndroidSystemUiAnrDialog $candidateUiText)) {
+    return $false
+  }
+
+  $waitCenter = Get-FirstNodeCenterByText $candidateUiText "Wait"
+  if (-not $waitCenter) {
+    Fail "Android System UI ANR dialog is covering $context on $serial, but the Wait control was not found in the UI tree."
+  }
+
+  Write-Host "WARN: Android System UI ANR dialog is covering $context on $serial; tapping Wait and retrying."
+  & $adb -s $serial shell input tap $waitCenter.X $waitCenter.Y | Out-Null
+  Start-Sleep -Seconds 3
+  return $true
+}
+
 function Dismiss-ExpoDeveloperMenuIfPresent($adb, $serial, $avdName) {
   for ($attempt = 1; $attempt -le 2; $attempt++) {
     $uiDump = Get-UiTreeDump $adb $serial
@@ -913,6 +951,7 @@ function Capture-AppEvidence($adb, $serial, $avdName) {
   Ensure-DevClientForeground $adb $serial $avdName
 
   Dismiss-ExpoDeveloperMenuIfPresent $adb $serial $avdName
+  Dismiss-AndroidSystemUiAnrDialogIfPresent $adb $serial "post-launch app evidence for $avdName" | Out-Null
 
   try {
     Capture-AndroidScreenshot $adb $serial $screenshot "post-launch app evidence for $avdName" $AndroidPackageName 3
@@ -1011,6 +1050,14 @@ function Wait-ForQASurfaceReady($adb, $serial, $surfaceId, $timeoutSeconds = 25)
   do {
     $dump = Get-UiTreeDump $adb $serial
     $lastDump = $dump
+    if (
+      $dump.ExitCode -eq 0 -and
+      (Dismiss-AndroidSystemUiAnrDialogIfPresent $adb $serial "QA surface $surfaceId" $dump.Text)
+    ) {
+      $lastDump = $null
+      continue
+    }
+
     if ($dump.ExitCode -eq 0 -and $dump.Text -match $expectedMarker) {
       return $dump
     }
@@ -1024,6 +1071,10 @@ function Wait-ForQASurfaceReady($adb, $serial, $surfaceId, $timeoutSeconds = 25)
 
   if ($lastDump -and $lastDump.Text -match "developer menu") {
     Fail "$serial is showing the Expo developer menu while waiting for QA surface $surfaceId."
+  }
+
+  if ($lastDump -and (Test-AndroidSystemUiAnrDialog $lastDump.Text)) {
+    Fail "$serial is still showing an Android System UI ANR dialog while waiting for QA surface $surfaceId."
   }
 
   $snippet = if ($lastDump) { $lastDump.Text.Substring(0, [Math]::Min(1000, $lastDump.Text.Length)) } else { "" }
@@ -1102,18 +1153,40 @@ function Capture-QASurfaceEvidence($adb, $serial, $avdName, $surfaceId, $index) 
 
   Remove-Item $screenshot, $uiTree, $logcat -Force -ErrorAction SilentlyContinue
 
-  try {
-    Open-QASurface $adb $serial $surfaceId
-    if ($QASurfaceScreenshotDelaySeconds -gt 0) {
-      Start-Sleep -Seconds $QASurfaceScreenshotDelaySeconds
+  $uiDump = $null
+  $maxReadyAttempts = 3
+  for ($readyAttempt = 1; $readyAttempt -le $maxReadyAttempts; $readyAttempt++) {
+    try {
+      Open-QASurface $adb $serial $surfaceId
+      if ($QASurfaceScreenshotDelaySeconds -gt 0) {
+        Start-Sleep -Seconds $QASurfaceScreenshotDelaySeconds
+      }
+      Dismiss-AndroidSystemUiAnrDialogIfPresent $adb $serial "QA surface $surfaceId before readiness" | Out-Null
+      Dismiss-ExpoDeveloperMenuIfPresent $adb $serial $avdName
+      $uiDump = Wait-ForQASurfaceReady $adb $serial $surfaceId
+      Assert-QASurfaceFunctionalText $surfaceId $uiDump.Text $serial
+      break
+    } catch {
+      $message = $_.Exception.Message
+      if (
+        $message -match "null root node returned by UiTestAutomationBridge" -and
+        $readyAttempt -lt $maxReadyAttempts
+      ) {
+        Write-Host "WARN: UI tree bridge returned a null root for $surfaceId on $serial; reopening surface and retrying readiness check ($readyAttempt/$maxReadyAttempts)."
+        Start-Sleep -Seconds 2
+        continue
+      }
+
+      Save-QASurfaceFailureEvidence $adb $serial $avdName $surfaceId $fileStem
+      throw
     }
-    Dismiss-ExpoDeveloperMenuIfPresent $adb $serial $avdName
-    $uiDump = Wait-ForQASurfaceReady $adb $serial $surfaceId
-    Assert-QASurfaceFunctionalText $surfaceId $uiDump.Text $serial
-  } catch {
-    Save-QASurfaceFailureEvidence $adb $serial $avdName $surfaceId $fileStem
-    throw
   }
+
+  if (-not $uiDump) {
+    Save-QASurfaceFailureEvidence $adb $serial $avdName $surfaceId $fileStem
+    Fail "QA surface $surfaceId did not produce a UI dump after $maxReadyAttempts readiness attempt(s) on $serial."
+  }
+
   $uiDump.Text | Out-File -FilePath $uiTree -Encoding utf8
 
   Capture-AndroidScreenshot $adb $serial $screenshot "QA surface $surfaceId for $avdName" $AndroidPackageName 3

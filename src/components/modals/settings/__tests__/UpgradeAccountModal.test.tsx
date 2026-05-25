@@ -103,6 +103,16 @@ describe("<UpgradeAccountModal />", () => {
     mockLogout.mockResolvedValue(undefined);
   });
 
+  it("can open the existing-account prompt after the parent modal is visible", async () => {
+    const {getByText} = render(<UpgradeAccountModal {...defaultProps} initialExistingAccountPromptVisible={true} />);
+
+    await waitFor(() => {
+      expect(getByText("Account already exists")).toBeTruthy();
+      expect(getByText("Cancel")).toBeTruthy();
+      expect(getByText("Logout")).toBeTruthy();
+    });
+  });
+
   it("shows existing-account logout modal when Google link returns an in-use account error", async () => {
     mockLinkAnonymousWithGoogle.mockRejectedValue({
       code: "auth/credential-already-in-use",

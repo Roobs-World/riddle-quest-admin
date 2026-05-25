@@ -334,7 +334,7 @@ const renderSubmitTooltipSurface = () => (
       content={{
         title: AppStrings.Tooltips.SUBMIT_ANSWER_TITLE,
         body: AppStrings.Tooltips.SUBMIT_ANSWER_BODY,
-        action: AppStrings.CommonAlerts.OK_BUTTON,
+        action: AppStrings.Tooltips.GOT_IT_BUTTON,
       }}
       onDismiss={noop}
     />

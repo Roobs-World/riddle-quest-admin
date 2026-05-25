@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Alert, Modal, Text, TouchableOpacity, View} from "react-native";
 import {AppStrings} from "@/constants/AppStrings";
 import {AuthService, isFacebookLoginCancellation} from "@/services/AuthService";
@@ -27,10 +27,25 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
   initialExistingAccountPromptVisible = false,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [isExistingAccountModalVisible, setIsExistingAccountModalVisible] = useState(
-    initialExistingAccountPromptVisible,
-  );
+  const [isExistingAccountModalVisible, setIsExistingAccountModalVisible] = useState(false);
   const {showInfoModal} = useModal();
+
+  useEffect(() => {
+    if (!isVisible) {
+      setIsExistingAccountModalVisible(false);
+      return;
+    }
+
+    if (!initialExistingAccountPromptVisible) {
+      return;
+    }
+
+    const openPrompt = setTimeout(() => {
+      setIsExistingAccountModalVisible(true);
+    }, 0);
+
+    return () => clearTimeout(openPrompt);
+  }, [initialExistingAccountPromptVisible, isVisible]);
 
   const isAccountAlreadyInUseError = (code: string, message: string): boolean => {
     const normalizedCode = code.toLowerCase();
