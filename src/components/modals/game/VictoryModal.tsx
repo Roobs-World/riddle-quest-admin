@@ -3,7 +3,12 @@ import {View, Text, Modal, Pressable} from "react-native";
 import type {SubmittedGuess} from "../../../hooks/types";
 import {TYPOGRAPHY} from "../../../styles";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
-import {MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, MODAL_MAX_HEIGHT} from "../../../constants/layout";
+import {
+  MODAL_WIDTH,
+  MODAL_CONTENT_PADDING,
+  MODAL_MAX_SCREEN_HEIGHT_FRACTION,
+  getResponsiveModalHeight,
+} from "../../../constants/layout";
 import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {NewCoins} from "@/components/shared/NewCoins";
@@ -41,6 +46,8 @@ interface VictoryModalProps {
   onClose: () => void;
 }
 
+export const VICTORY_MODAL_HEIGHT_MULTIPLIER = 1.55;
+
 /**
  * Celebratory modal with rewards, optional achievement fanfare, and sharing CTA.
  *
@@ -58,7 +65,10 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
   sequenceProgress,
   onClose,
 }) => {
-  const modalHeight = Math.min(MODAL_HEIGHT * 1.4, MODAL_MAX_HEIGHT ?? MODAL_HEIGHT * 1.4);
+  const modalHeight = getResponsiveModalHeight(
+    VICTORY_MODAL_HEIGHT_MULTIPLIER,
+    MODAL_MAX_SCREEN_HEIGHT_FRACTION,
+  );
   const nextButtonText =
     sequenceProgress?.primaryActionText ?? AppStrings.VictoryModal.NEXT_LEVEL_BUTTON;
 
@@ -106,6 +116,7 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
             testID="victory-modal-tap-target"
           >
             <ModalBg
+              testID="victory-modal-background"
               width={MODAL_WIDTH}
               height={modalHeight}
               preserveAspectRatio="none"
@@ -124,7 +135,7 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
                 alignItems: "center",
                 justifyContent: "space-between",
                 padding: MODAL_CONTENT_PADDING,
-                marginBottom: verticalScale(20),
+                paddingBottom: MODAL_CONTENT_PADDING + verticalScale(20),
               }}
             >
               <View style={{marginTop: 20}}>

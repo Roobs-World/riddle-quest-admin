@@ -1,8 +1,13 @@
 import React from "react";
 import { render, fireEvent, waitFor } from "@testing-library/react-native";
-import VictoryModal from "../VictoryModal";
+import VictoryModal, { VICTORY_MODAL_HEIGHT_MULTIPLIER } from "../VictoryModal";
 import type { SubmittedGuess, Feedback } from "../../../../hooks/types";
 import { SocialSharingService } from "../../../../services/SocialSharingService";
+import {
+  MODAL_MAX_SCREEN_HEIGHT_FRACTION,
+  MODAL_WIDTH,
+  getResponsiveModalHeight,
+} from "../../../../constants/layout";
 
 jest.mock("react-native/Libraries/Modal/Modal", () => {
   const React = require("react");
@@ -56,6 +61,25 @@ describe("VictoryModal", () => {
     expect(getByText("Total Coins:")).toBeTruthy();
     expect(getByText("305")).toBeTruthy();
     expect(queryByTestId("modal-sequence-breadcrumb")).toBeNull();
+  });
+
+  it("uses the taller DSI-035 decorative background frame", () => {
+    const { getByTestId } = render(<VictoryModal {...defaultProps} />);
+    const expectedHeight = getResponsiveModalHeight(
+      VICTORY_MODAL_HEIGHT_MULTIPLIER,
+      MODAL_MAX_SCREEN_HEIGHT_FRACTION,
+    );
+    const previousHeight = getResponsiveModalHeight(1.4, MODAL_MAX_SCREEN_HEIGHT_FRACTION);
+
+    expect(expectedHeight).toBeGreaterThan(previousHeight);
+    expect(getByTestId("victory-modal-tap-target").props.style).toEqual(
+      expect.objectContaining({
+        width: MODAL_WIDTH,
+        height: expectedHeight,
+      }),
+    );
+    expect(getByTestId("victory-modal-background").props.height).toBe(expectedHeight);
+    expect(getByTestId("victory-modal-background").props.preserveAspectRatio).toBe("none");
   });
 
   it("shows sequence progress and Next text for an intermediate popup", () => {

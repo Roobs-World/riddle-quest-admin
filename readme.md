@@ -20,7 +20,7 @@ adb install path/to/app.apk
 
 ## RN 0.85 Upgrade Notes
 
-- Runtime now targets React Native `0.85.0` with Expo SDK 56 canary.
+- Runtime now targets React Native `0.85.1` with Expo SDK 56 canary.
 - Node.js minimum version is `20.19.4` (`.nvmrc` and `package.json` engines).
 - Run upgrade guardrails:
   - `pnpm run check:rn-upgrade`
@@ -32,7 +32,7 @@ adb install path/to/app.apk
   - optional `METRO_TLS_CA_PATH`
 - Shared Animation Backend flag:
   - `EXPO_PUBLIC_ENABLE_SHARED_ANIMATION_BACKEND=true`
-  - Keep disabled until RN `0.85.1+` is available and experimental channel is enabled.
+  - RN `0.85.1+` is now available in this project; keep the flag disabled by default and enable it only for targeted experimental-channel test builds.
 
 ## Project Overview
 

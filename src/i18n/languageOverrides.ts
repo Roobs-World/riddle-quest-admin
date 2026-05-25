@@ -12,12 +12,12 @@ import {hiOverrides as hiBaseOverrides} from "./hi";
 import {jaOverrides as jaBaseOverrides} from "./ja";
 import {koOverrides as koBaseOverrides} from "./ko";
 import {
-  arOverrides,
-  idOverrides,
-  itOverrides,
-  nlOverrides,
-  plOverrides,
-  viOverrides,
+  arOverrides as arBaseOverrides,
+  idOverrides as idBaseOverrides,
+  itOverrides as itBaseOverrides,
+  nlOverrides as nlBaseOverrides,
+  plOverrides as plBaseOverrides,
+  viOverrides as viBaseOverrides,
 } from "./popularOverrides";
 import {ptOverrides as ptBaseOverrides} from "./pt";
 import {ruOverrides as ruBaseOverrides} from "./ru";
@@ -29,6 +29,7 @@ import {
   jaSupplementalOverrides,
   koSupplementalOverrides,
   ptSupplementalOverrides,
+  releaseReadinessSupplementalOverrides,
   ruSupplementalOverrides,
   trSupplementalOverrides,
   zhSupplementalOverrides,
@@ -61,16 +62,89 @@ const deepMerge = <T extends LocaleOverrides>(base: T, supplement: LocaleOverrid
   return output as T;
 };
 
-export const esOverrides = deepMerge(esBaseOverrides, esSupplementalOverrides);
-export const ptOverrides = deepMerge(ptBaseOverrides, ptSupplementalOverrides);
-export const frOverrides = deepMerge(frBaseOverrides, frSupplementalOverrides);
-export const deOverrides = deepMerge(deBaseOverrides, deSupplementalOverrides);
-export const jaOverrides = deepMerge(jaBaseOverrides, jaSupplementalOverrides);
-export const koOverrides = deepMerge(koBaseOverrides, koSupplementalOverrides);
-export const zhOverrides = deepMerge(zhBaseOverrides, zhSupplementalOverrides);
-export const hiOverrides = deepMerge(hiBaseOverrides, hiSupplementalOverrides);
-export const ruOverrides = deepMerge(ruBaseOverrides, ruSupplementalOverrides);
-export const trOverrides = deepMerge(trBaseOverrides, trSupplementalOverrides);
-export {arOverrides, idOverrides, itOverrides, nlOverrides, plOverrides, viOverrides};
+const applySupplements = <T extends LocaleOverrides>(
+  base: T,
+  ...supplements: LocaleOverrides[]
+): T => {
+  return supplements.reduce<T>(
+    (merged, supplement) => deepMerge(merged, supplement),
+    base
+  );
+};
+
+export const esOverrides = applySupplements(
+  esBaseOverrides,
+  esSupplementalOverrides,
+  releaseReadinessSupplementalOverrides.es
+);
+export const ptOverrides = applySupplements(
+  ptBaseOverrides,
+  ptSupplementalOverrides,
+  releaseReadinessSupplementalOverrides.pt
+);
+export const frOverrides = applySupplements(
+  frBaseOverrides,
+  frSupplementalOverrides,
+  releaseReadinessSupplementalOverrides.fr
+);
+export const deOverrides = applySupplements(
+  deBaseOverrides,
+  deSupplementalOverrides,
+  releaseReadinessSupplementalOverrides.de
+);
+export const jaOverrides = applySupplements(
+  jaBaseOverrides,
+  jaSupplementalOverrides,
+  releaseReadinessSupplementalOverrides.ja
+);
+export const koOverrides = applySupplements(
+  koBaseOverrides,
+  koSupplementalOverrides,
+  releaseReadinessSupplementalOverrides.ko
+);
+export const zhOverrides = applySupplements(
+  zhBaseOverrides,
+  zhSupplementalOverrides,
+  releaseReadinessSupplementalOverrides.zh
+);
+export const hiOverrides = applySupplements(
+  hiBaseOverrides,
+  hiSupplementalOverrides,
+  releaseReadinessSupplementalOverrides.hi
+);
+export const ruOverrides = applySupplements(
+  ruBaseOverrides,
+  ruSupplementalOverrides,
+  releaseReadinessSupplementalOverrides.ru
+);
+export const trOverrides = applySupplements(
+  trBaseOverrides,
+  trSupplementalOverrides,
+  releaseReadinessSupplementalOverrides.tr
+);
+export const arOverrides = applySupplements(
+  arBaseOverrides,
+  releaseReadinessSupplementalOverrides.ar
+);
+export const idOverrides = applySupplements(
+  idBaseOverrides,
+  releaseReadinessSupplementalOverrides.id
+);
+export const itOverrides = applySupplements(
+  itBaseOverrides,
+  releaseReadinessSupplementalOverrides.it
+);
+export const nlOverrides = applySupplements(
+  nlBaseOverrides,
+  releaseReadinessSupplementalOverrides.nl
+);
+export const plOverrides = applySupplements(
+  plBaseOverrides,
+  releaseReadinessSupplementalOverrides.pl
+);
+export const viOverrides = applySupplements(
+  viBaseOverrides,
+  releaseReadinessSupplementalOverrides.vi
+);
 
 export type { LocaleOverrides, DeepPartial } from "./types";

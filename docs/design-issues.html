@@ -359,8 +359,10 @@
                 2026-05-25 checks did not reproduce it:
                 <code>emulator-tests/logs/metro-react-native-module-check-20260525.txt</code>
                 records Metro <code>packager-status:running</code>, Android
-                bundle HTTP 200 with <code>21077490</code> bytes, and installed
-                <code>react-native@0.85.0</code>. The complete guarded
+                bundle HTTP 200 with <code>21077490</code> bytes, and the then-installed
+                <code>react-native@0.85.0</code>. The runtime was later
+                advanced to <code>react-native@0.85.1</code>, so any recurrence
+                needs fresh bundle/version evidence. The complete guarded
                 <code>pnpm run test:android:matrix</code> replay also passed on
                 all eight configured AVDs with per-device Metro asset and
                 websocket probes, and
@@ -480,7 +482,10 @@
                 awards <code>+50 Coins</code>, updates the balance from
                 <code>75</code> to <code>125</code>, and persists after restart.
                 Settings, production-like billing, provider-auth shop behavior,
-                and provider-auth ad replay remain open regression checks.
+                and live provider-auth ad replay remain open regression checks.
+                Source/unit coverage now confirms authenticated rewarded-ad
+                rewards call <code>awardedAdCallback</code> and use backend
+                <code>newCoins</code> before updating local state.
               </td>
             </tr>
 
@@ -1669,31 +1674,34 @@
 
             <tr>
               <td data-label="ID"><code>DSI-035</code></td>
-              <td data-label="Status"><span class="badge todo">TODO / Modal Background Fit</span></td>
+              <td data-label="Status"><span class="badge fixed">Fixed / All-Device Focused Replay Passed</span></td>
               <td data-label="Issue">
                 The <code>victory</code> / "Nice job" modal and
-                <code>levelUpFanfare</code> modal backgrounds are still too
-                short for their content on at least one tested viewport. The
-                content appears to push outside the decorative background, so
-                the previous screenshot coverage proves reachability but not
-                acceptable layout fit for these two modals.
+                <code>levelUpFanfare</code> modal backgrounds were too short for
+                their content on at least one tested viewport. Source now uses
+                taller responsive decorative frames for both modals, and the
+                victory modal keeps its extra bottom spacing inside the frame
+                padding.
               </td>
               <td data-label="Next Action">
-                Next agent should start here. Make the <code>VictoryModal</code> and
-                <code>LevelUpFanfareModal</code> background frames taller without
-                breaking the existing centered content, breadcrumb, and CTA
-                positions. Add or update focused modal layout/unit coverage,
-                then rerun focused Android captures for
-                <code>modal-victory</code> and
-                <code>modal-level-up-fanfare</code> across the full AVD matrix.
-                If the fix touches shared modal frame/layout code, rerun the
-                complete guarded <code>pnpm run test:android:matrix</code>.
+                Closed on 2026-05-25. Continue to watch these surfaces in the
+                regular matrix, but no DSI-035-specific follow-up is required
+                unless a fresh screenshot shows content leaving the decorative
+                frame again.
               </td>
               <td data-label="Regression Need">
-                Keep the existing full matrix screenshot inventory, but do not
-                close this item until the "Nice job" and level-up screenshots
-                show all modal content contained inside the taller backgrounds on
-                every configured Android device.
+                Evidence:
+                <code>emulator-tests/logs/test-android-matrix-unit-dsi035-20260525.txt</code>
+                passed 48 suites / 984 tests;
+                <code>emulator-tests/logs/typescript-check-dsi035-20260525.txt</code>
+                passed with no output; focused replay
+                <code>emulator-tests/logs/test-android-matrix-dsi035-focused-20260525.txt</code>
+                captured <code>modal-victory</code> and
+                <code>modal-level-up-fanfare</code> on all eight configured AVDs
+                with zero WARN/FAIL lines. New screenshots:
+                <code>emulator-tests/images/&lt;device&gt;/surfaces/06-01-modal-victory.png</code>
+                and
+                <code>emulator-tests/images/&lt;device&gt;/surfaces/06-02-modal-level-up-fanfare.png</code>.
               </td>
             </tr>
           </tbody>
@@ -1721,8 +1729,8 @@
           <li>Skip provider-auth coverage and backend deltas remain open; guest skip open/cancel/confirm, local coin deduction, Classic transition, insufficient-coins messaging, low-balance Coin Shop handoff, loss low-balance gating, and DSI-019 guest mode/riddle restart persistence are covered by source/unit/matrix plus fresh emulator evidence.</li>
           <li>Hint persistence and provider-auth backend deltas remain open. Guest Statistics post-restart values are fixed and covered by <code>DSI-026</code>; post-fix evidence <code>381-statistics-postfix-open.png</code>/<code>.xml</code> verifies persisted <code>Games Played: 4</code> and <code>Total Words Guessed: 9</code>.</li>
           <li>Provider-auth replay for keyboard backspace, answer-slot tapping, and submit gating remains open; the answer-length mismatch, overlong-entry, and literal-answer clue regressions are fixed in source and covered by <code>DSI-028</code> matrix-unit tests. The seven-letter <code>page-game</code> riddle background fit issue is fixed under <code>DSI-033</code> with Pixel 4a, all-device focused matrix, and full DSI-034 matrix evidence; the runner/harness blockers found during that replay are fixed under <code>DSI-034</code> and verified by the complete guarded matrix.</li>
-          <li>Coin Shop purchase attempt has emulator evidence, a fixed source regression, and a post-fix guest replay for the zero-coin success bug (<code>DSI-024</code>); pay/play behavior, production-like billing, loading/error edge states, provider-auth states, and backend/Firebase deltas remain open. Rewarded-ad playback is a separate low-balance loss-modal check; guest now passes, and provider-auth remains TODO. The loss modal should show both <code>Watch Ad for 3 Extra Guesses</code> and <code>Open Shop</code> when the user has fewer than <code>100</code> coins.</li>
-          <li>Coin purchase fanfare and level-up fanfare guest dev-panel open/dismiss/Back behavior now have emulator evidence; real guest purchase-trigger coin state now passes through DSI-024 with <code>+50 Coins</code>, <code>Total Coins: 125</code>, and restart persistence. The coin-purchase fanfare background-framing defect is fixed under <code>DSI-029</code> with focused Pixel 4a/fold-outer screenshots and full 8-device matrix fanfare screenshots. The fold-unfolded landing failure from the latest full matrix attempt is fixed separately under <code>DSI-030</code> as a Play Store / Google Play Services update interruption, not as a removed UI check, and the complete rerun passed. Natural guest XP/level-up now passes through DSI-025 with <code>+50 Coins</code> and final balance <code>115</code>. New layout defect <code>DSI-035</code> remains open because the "Nice job" victory and level-up fanfare backgrounds need to be taller so their content fits inside the frame. Provider-auth/backend deltas, provider-auth persistence proof, production billing replay, and the victory-total UX clarification remain open.</li>
+          <li>Coin Shop purchase attempt has emulator evidence, a fixed source regression, and a post-fix guest replay for the zero-coin success bug (<code>DSI-024</code>); pay/play behavior, production-like billing, loading/error edge states, provider-auth states, and backend/Firebase deltas remain open. Rewarded-ad playback is a separate low-balance loss-modal check; guest now passes, and authenticated client/backend source coverage now confirms <code>awardedAdCallback</code> is used for <code>loss_continue</code> and the existing <code>coin_shop</code> handler/dev/future UI entry. The current Coin Shop UI intentionally does not render a watch-ad action. Live provider-auth emulator replay and Firebase delta proof remain TODO. The loss modal should show both <code>Watch Ad for 3 Extra Guesses</code> and <code>Open Shop</code> when the user has fewer than <code>100</code> coins.</li>
+          <li>Coin purchase fanfare and level-up fanfare guest dev-panel open/dismiss/Back behavior now have emulator evidence; real guest purchase-trigger coin state now passes through DSI-024 with <code>+50 Coins</code>, <code>Total Coins: 125</code>, and restart persistence. The coin-purchase fanfare background-framing defect is fixed under <code>DSI-029</code> with focused Pixel 4a/fold-outer screenshots and full 8-device matrix fanfare screenshots. The fold-unfolded landing failure from the latest full matrix attempt is fixed separately under <code>DSI-030</code> as a Play Store / Google Play Services update interruption, not as a removed UI check, and the complete rerun passed. Natural guest XP/level-up now passes through DSI-025 with <code>+50 Coins</code> and final balance <code>115</code>. The "Nice job" victory and level-up fanfare background-fit defect is fixed under <code>DSI-035</code> with taller frames, matrix-unit coverage, TypeScript, and focused all-device <code>modal-victory</code>/<code>modal-level-up-fanfare</code> screenshots. Provider-auth/backend deltas, provider-auth persistence proof, production billing replay, and the victory-total UX clarification remain open.</li>
           <li>Welcome-back modal and standalone info modal guest dev-panel open/primary-action/Back behavior now have emulator evidence; natural provider-auth welcome-back replay is covered by <code>410</code>/<code>411</code>. Non-debug info trigger paths remain open. The DSI-020 loss-triggered info/loss modal recovery fix and DSI-021 terminal loss hardware-Back fix have source, unit, matrix, and guest emulator replay evidence.</li>
           <li>Modal infrastructure coverage drift is fixed under <code>DSI-031</code>: registry, provider, debug panel, breadcrumb, focused screen/modal/component tests, coin shop modal, and QA surface inventory tests now run in <code>test:android:matrix:unit</code>. Remaining modal TODOs are natural/persona/backend trigger coverage, not missing registry, unit, or screenshot inventory checks.</li>
           <li>Guest Settings sound/haptics preference persistence after force-stop/relaunch now has emulator evidence; provider-auth Settings surface reachability is covered by <code>421</code>, and provider-auth Sound/Haptics persistence now passes with <code>516</code>/<code>521</code> screenshot, XML, and logcat evidence for <code>craigbeswetherick@gmail.com</code>. Provider-auth language persistence and backend-backed settings deltas remain open.</li>

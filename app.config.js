@@ -25,6 +25,18 @@ const sentryOrg = process.env.SENTRY_ORG || process.env.SENTRY_ORGANIZATION;
 const sentryProject = process.env.SENTRY_PROJECT;
 const sentryUrl = process.env.SENTRY_URL || "https://sentry.io/";
 const useSentryExpoPlugin = Boolean(sentryOrg && sentryProject);
+const GOOGLE_MOBILE_ADS_ANDROID_TEST_APP_ID =
+  "ca-app-pub-3940256099942544~3347511713";
+const GOOGLE_MOBILE_ADS_IOS_TEST_APP_ID =
+  "ca-app-pub-3940256099942544~1458002511";
+const googleMobileAdsAndroidAppId =
+  process.env.GOOGLE_MOBILE_ADS_ANDROID_APP_ID ||
+  process.env.ADMOB_ANDROID_APP_ID ||
+  GOOGLE_MOBILE_ADS_ANDROID_TEST_APP_ID;
+const googleMobileAdsIosAppId =
+  process.env.GOOGLE_MOBILE_ADS_IOS_APP_ID ||
+  process.env.ADMOB_IOS_APP_ID ||
+  GOOGLE_MOBILE_ADS_IOS_TEST_APP_ID;
 const getGoogleWebClientId = () => {
   if (process.env.GOOGLE_WEB_CLIENT_ID) {
     return process.env.GOOGLE_WEB_CLIENT_ID;
@@ -219,11 +231,8 @@ module.exports = {
     [
       "react-native-google-mobile-ads",
       {
-        androidAppId:
-          process.env.ADMOB_ANDROID_APP_ID ||
-          "ca-app-pub-3940256099942544~3347511713",
-        iosAppId:
-          process.env.ADMOB_IOS_APP_ID || "ca-app-pub-3940256099942544~1458002511",
+        androidAppId: googleMobileAdsAndroidAppId,
+        iosAppId: googleMobileAdsIosAppId,
       },
     ],
 

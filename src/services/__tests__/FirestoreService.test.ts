@@ -15,6 +15,8 @@ let mockCollection: jest.Mock;
 let mockQuery: jest.Mock;
 let mockServerTimestamp: jest.Mock;
 let mockGetFirestore: jest.Mock;
+let mockGetCallableFunction: jest.Mock;
+let mockCallableFunction: jest.Mock;
 
 // Keep legacy aliases for assertions that still use v8-style names
 let mockGet: jest.Mock;
@@ -76,6 +78,15 @@ jest.mock("../../utils/logger", () => ({
   },
 }));
 
+jest.mock("../../utils/firebaseFunctions", () => {
+  mockCallableFunction = jest.fn();
+  mockGetCallableFunction = jest.fn(() => mockCallableFunction);
+
+  return {
+    getCallableFunction: mockGetCallableFunction,
+  };
+});
+
 describe("FirestoreService", () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -93,6 +104,8 @@ describe("FirestoreService", () => {
     mockQuery.mockReset();
     mockServerTimestamp.mockReset();
     mockGetFirestore.mockReset();
+    mockGetCallableFunction.mockReset();
+    mockCallableFunction.mockReset();
 
     // Setup defaults: standalone functions return their arg or {}
     mockDoc.mockReturnValue({});
@@ -102,6 +115,7 @@ describe("FirestoreService", () => {
     mockLimit.mockReturnValue({});
     mockGetFirestore.mockReturnValue({});
     mockServerTimestamp.mockReturnValue("MOCK_SERVER_TIMESTAMP");
+    mockGetCallableFunction.mockReturnValue(mockCallableFunction);
 
     // Default: schema parse returns input (identity)
     (PlayerSchema.parse as jest.Mock).mockImplementation((x: unknown) => x);
@@ -115,14 +129,15 @@ describe("FirestoreService", () => {
       dailyChallengeIndex: 2,
     } as Player["progress"];
 
-    it("should save user progress successfully", async () => {
-      mockSetDoc.mockResolvedValue(undefined);
-
+    it("skips direct client progress writes", async () => {
       await FirestoreService.saveUserProgressToFirestore(mockUserId, mockProgress);
 
-      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "users", mockUserId);
-      expect(mockSetDoc).toHaveBeenCalledWith(expect.any(Object), {progress: mockProgress}, {merge: true});
-      expect(logger.info).toHaveBeenCalledWith("Player progress saved to Firestore successfully for user:", mockUserId);
+      expect(mockDoc).not.toHaveBeenCalled();
+      expect(mockSetDoc).not.toHaveBeenCalled();
+      expect(logger.warn).toHaveBeenCalledWith(
+        "Skipping direct client progress write; player progress is persisted by Cloud Functions.",
+        {userId: mockUserId, progress: mockProgress},
+      );
     });
 
     it("should handle empty userId gracefully", async () => {
@@ -139,15 +154,12 @@ describe("FirestoreService", () => {
       expect(mockSetDoc).not.toHaveBeenCalled();
     });
 
-    it("should handle Firestore errors", async () => {
-      const error = new Error("Firestore error");
-      mockSetDoc.mockRejectedValue(error);
+    it("does not surface Firestore write errors because no direct write is attempted", async () => {
+      mockSetDoc.mockRejectedValue(new Error("Firestore error"));
 
-      await expect(FirestoreService.saveUserProgressToFirestore(mockUserId, mockProgress)).rejects.toThrow(
-        "Firestore error",
-      );
+      await expect(FirestoreService.saveUserProgressToFirestore(mockUserId, mockProgress)).resolves.toBeUndefined();
 
-      expect(logger.error).toHaveBeenCalledWith("Error saving player progress to Firestore:", error);
+      expect(mockSetDoc).not.toHaveBeenCalled();
     });
   });
 
@@ -485,19 +497,15 @@ describe("FirestoreService", () => {
   describe("updateLastDailyChallengeCompletedAt", () => {
     const mockUserId = "test-user-id";
 
-    it("should update last daily challenge timestamp successfully", async () => {
-      mockUpdateDoc.mockResolvedValue(undefined);
-
+    it("skips direct client daily completion timestamp writes", async () => {
       await FirestoreService.updateLastDailyChallengeCompletedAt(mockUserId);
 
-      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "users", mockUserId);
-      expect(mockServerTimestamp).toHaveBeenCalled();
-      expect(mockUpdateDoc).toHaveBeenCalledWith(expect.any(Object), {
-        lastDailyChallengeCompletedAt: "MOCK_SERVER_TIMESTAMP",
-      });
-      expect(logger.info).toHaveBeenCalledWith(
-        "Last daily challenge completed timestamp updated successfully for user:",
-        mockUserId,
+      expect(mockDoc).not.toHaveBeenCalled();
+      expect(mockServerTimestamp).not.toHaveBeenCalled();
+      expect(mockUpdateDoc).not.toHaveBeenCalled();
+      expect(logger.warn).toHaveBeenCalledWith(
+        "Skipping direct client daily completion timestamp write; completion is persisted by Cloud Functions.",
+        {userId: mockUserId},
       );
     });
 
@@ -510,16 +518,12 @@ describe("FirestoreService", () => {
       expect(mockUpdateDoc).not.toHaveBeenCalled();
     });
 
-    it("should handle Firestore errors", async () => {
-      const error = new Error("Update failed");
-      mockUpdateDoc.mockRejectedValue(error);
+    it("does not surface daily timestamp write errors because no direct write is attempted", async () => {
+      mockUpdateDoc.mockRejectedValue(new Error("Update failed"));
 
-      await expect(FirestoreService.updateLastDailyChallengeCompletedAt(mockUserId)).rejects.toThrow("Update failed");
+      await expect(FirestoreService.updateLastDailyChallengeCompletedAt(mockUserId)).resolves.toBeUndefined();
 
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error updating last daily challenge completed timestamp in Firestore:",
-        error,
-      );
+      expect(mockUpdateDoc).not.toHaveBeenCalled();
     });
   });
 
@@ -527,20 +531,14 @@ describe("FirestoreService", () => {
     const mockUserId = "test-user-id";
     const classicIndex = 15;
 
-    it("should update classic index successfully", async () => {
-      mockUpdateDoc.mockResolvedValue(undefined);
-
+    it("skips direct client classic progress writes", async () => {
       await FirestoreService.updateClassicIndexInFirestore(mockUserId, classicIndex);
 
-      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "users", mockUserId);
-      expect(mockUpdateDoc).toHaveBeenCalledWith(expect.any(Object), {
-        "progress.classicIndex": classicIndex,
-      });
-      expect(logger.info).toHaveBeenCalledWith(
-        "Classic index updated successfully for user:",
-        mockUserId,
-        "to",
-        classicIndex,
+      expect(mockDoc).not.toHaveBeenCalled();
+      expect(mockUpdateDoc).not.toHaveBeenCalled();
+      expect(logger.warn).toHaveBeenCalledWith(
+        "Skipping direct client classic progress write; classic progress is persisted by Cloud Functions.",
+        {userId: mockUserId, classicIndex},
       );
     });
 
@@ -551,11 +549,13 @@ describe("FirestoreService", () => {
       expect(mockUpdateDoc).not.toHaveBeenCalled();
     });
 
-    it("throws on update errors", async () => {
-      const err = new Error("classic update failed");
-      mockUpdateDoc.mockRejectedValueOnce(err);
-      await expect(FirestoreService.updateClassicIndexInFirestore(mockUserId, classicIndex)).rejects.toThrow(
-        "classic update failed",
+    it("normalizes classic index before logging skipped writes", async () => {
+      await FirestoreService.updateClassicIndexInFirestore(mockUserId, -4.8);
+
+      expect(mockUpdateDoc).not.toHaveBeenCalled();
+      expect(logger.warn).toHaveBeenCalledWith(
+        "Skipping direct client classic progress write; classic progress is persisted by Cloud Functions.",
+        {userId: mockUserId, classicIndex: 0},
       );
     });
   });
@@ -564,15 +564,15 @@ describe("FirestoreService", () => {
     const mockUserId = "test-user-id";
     const dailyChallengeIndex = 8;
 
-    it("should update daily challenge index successfully", async () => {
-      mockUpdateDoc.mockResolvedValue(undefined);
-
+    it("skips direct client daily progress writes", async () => {
       await FirestoreService.updateDailyChallengeIndexInFirestore(mockUserId, dailyChallengeIndex);
 
-      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "users", mockUserId);
-      expect(mockUpdateDoc).toHaveBeenCalledWith(expect.any(Object), {
-        "progress.dailyChallengeIndex": dailyChallengeIndex,
-      });
+      expect(mockDoc).not.toHaveBeenCalled();
+      expect(mockUpdateDoc).not.toHaveBeenCalled();
+      expect(logger.warn).toHaveBeenCalledWith(
+        "Skipping direct client daily progress write; daily progress is persisted by Cloud Functions.",
+        {userId: mockUserId, dailyChallengeIndex},
+      );
     });
 
     it("should handle empty userId gracefully", async () => {
@@ -584,12 +584,14 @@ describe("FirestoreService", () => {
       expect(mockUpdateDoc).not.toHaveBeenCalled();
     });
 
-    it("throws on daily challenge update errors", async () => {
-      const err = new Error("daily update failed");
-      mockUpdateDoc.mockRejectedValueOnce(err);
+    it("does not surface daily progress write errors because no direct write is attempted", async () => {
+      mockUpdateDoc.mockRejectedValueOnce(new Error("daily update failed"));
+
       await expect(
         FirestoreService.updateDailyChallengeIndexInFirestore(mockUserId, dailyChallengeIndex),
-      ).rejects.toThrow("daily update failed");
+      ).resolves.toBeUndefined();
+
+      expect(mockUpdateDoc).not.toHaveBeenCalled();
     });
   });
 
@@ -609,9 +611,13 @@ describe("FirestoreService", () => {
       expect(mockUpdateDoc).toHaveBeenCalledWith(
         expect.any(Object),
         expect.objectContaining({
-          ...mockUpdates,
+          displayName: mockUpdates.displayName,
           userId: mockUserId,
         }),
+      );
+      expect(mockUpdateDoc).not.toHaveBeenCalledWith(
+        expect.any(Object),
+        expect.objectContaining({coins: mockUpdates.coins}),
       );
       expect(logger.info).toHaveBeenCalledWith("User document updated successfully for user:", mockUserId);
     });
@@ -642,16 +648,21 @@ describe("FirestoreService", () => {
       winRate: 0.8,
     };
 
-    it("should update user stats successfully", async () => {
-      mockUpdateDoc.mockResolvedValue(undefined);
-
+    it("skips direct client stats writes", async () => {
       await FirestoreService.updateUserStats(mockUserId, mockStats);
 
-      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "users", mockUserId);
-      expect(mockUpdateDoc).toHaveBeenCalledWith(expect.any(Object), {
-        "stats.totalScore": 1500,
-        "stats.winRate": 0.8,
-      });
+      expect(mockDoc).not.toHaveBeenCalled();
+      expect(mockUpdateDoc).not.toHaveBeenCalled();
+      expect(logger.warn).toHaveBeenCalledWith(
+        "Skipping direct client stats write; player stats are persisted by Cloud Functions.",
+        {
+          userId: mockUserId,
+          stats: {
+            "stats.totalScore": 1500,
+            "stats.winRate": 0.8,
+          },
+        },
+      );
     });
 
     it("should handle empty userId gracefully", async () => {
@@ -661,20 +672,23 @@ describe("FirestoreService", () => {
       expect(mockUpdateDoc).not.toHaveBeenCalled();
     });
 
-    it("should update user stats with transaction", async () => {
+    it("throws when a client transaction is supplied for server-managed stats", async () => {
       const mockTransaction = {
         update: jest.fn(),
       };
 
-      await FirestoreService.updateUserStats(mockUserId, mockStats, mockTransaction as any);
-
-      expect(mockTransaction.update).toHaveBeenCalled();
+      await expect(FirestoreService.updateUserStats(mockUserId, mockStats, mockTransaction as any)).rejects.toThrow(
+        "Client-side Firestore transactions cannot update server-managed user stats.",
+      );
+      expect(mockTransaction.update).not.toHaveBeenCalled();
     });
 
-    it("throws when updating stats fails", async () => {
-      const err = new Error("stats failed");
-      mockUpdateDoc.mockRejectedValueOnce(err);
-      await expect(FirestoreService.updateUserStats(mockUserId, mockStats)).rejects.toThrow("stats failed");
+    it("does not surface stats write errors because no direct write is attempted", async () => {
+      mockUpdateDoc.mockRejectedValueOnce(new Error("stats failed"));
+
+      await expect(FirestoreService.updateUserStats(mockUserId, mockStats)).resolves.toBeUndefined();
+
+      expect(mockUpdateDoc).not.toHaveBeenCalled();
     });
   });
 
@@ -683,8 +697,7 @@ describe("FirestoreService", () => {
     const mockEmail = "test@example.com";
     const mockDisplayName = "Test User";
 
-    it("should create user document successfully", async () => {
-      mockSetDoc.mockResolvedValue(undefined);
+    it("should create user document through the initialization callable", async () => {
       const mockValidatedUser = {
         userId: mockUserId,
         email: mockEmail,
@@ -711,11 +724,25 @@ describe("FirestoreService", () => {
           totalGuessesInWins: 0,
         },
       } as Player;
+      mockCallableFunction.mockResolvedValue({data: {player: mockValidatedUser}});
 
       const result = await FirestoreService.createUserDocumentInFirestore(mockUserId, mockEmail, mockDisplayName);
 
-      expect(mockDoc).toHaveBeenCalledWith(expect.any(Object), "users", mockUserId);
-      expect(mockSetDoc).toHaveBeenCalled();
+      expect(mockDoc).not.toHaveBeenCalled();
+      expect(mockSetDoc).not.toHaveBeenCalled();
+      expect(mockGetCallableFunction).toHaveBeenCalledWith("initializeUser");
+      expect(mockCallableFunction).toHaveBeenCalledWith(
+        expect.objectContaining({
+          email: mockEmail,
+          username: mockDisplayName,
+          displayName: mockDisplayName,
+          seed: expect.objectContaining({
+            userId: mockUserId,
+            email: mockEmail,
+            username: mockDisplayName,
+          }),
+        }),
+      );
       expect(result).toMatchObject({
         userId: mockUserId,
         email: mockEmail,
@@ -725,7 +752,10 @@ describe("FirestoreService", () => {
         progress: mockValidatedUser.progress,
         stats: mockValidatedUser.stats,
       });
-      expect(logger.info).toHaveBeenCalledWith("New user document created successfully for user:", mockUserId);
+      expect(logger.info).toHaveBeenCalledWith(
+        "New user document created successfully via Cloud Function for user:",
+        mockUserId,
+      );
     });
 
     it("should throw error for empty userId", async () => {
@@ -735,7 +765,6 @@ describe("FirestoreService", () => {
     });
 
     it("should create user document without displayName", async () => {
-      mockSetDoc.mockResolvedValue(undefined);
       const mockValidatedUser = {
         userId: mockUserId,
         email: mockEmail,
@@ -762,10 +791,21 @@ describe("FirestoreService", () => {
         },
       } as Player;
 
-      // (PlayerSchema.parse as jest.Mock).mockReturnValue(mockValidatedUser); // This line is removed as per the edit hint
+      mockCallableFunction.mockResolvedValue({data: {player: mockValidatedUser}});
 
       const result = await FirestoreService.createUserDocumentInFirestore(mockUserId, mockEmail);
 
+      expect(mockCallableFunction).toHaveBeenCalledWith(
+        expect.objectContaining({
+          email: mockEmail,
+          username: "test",
+          seed: expect.objectContaining({
+            userId: mockUserId,
+            email: mockEmail,
+            username: "test",
+          }),
+        }),
+      );
       expect(result).toMatchObject({
         userId: mockUserId,
         email: mockEmail,
@@ -776,9 +816,9 @@ describe("FirestoreService", () => {
       });
     });
 
-    it("should handle Firestore errors", async () => {
+    it("should handle initialization callable errors", async () => {
       const error = new Error("Creation failed");
-      mockSetDoc.mockRejectedValue(error);
+      mockCallableFunction.mockRejectedValue(error);
 
       await expect(FirestoreService.createUserDocumentInFirestore(mockUserId, mockEmail)).rejects.toThrow(
         "Creation failed",
@@ -788,8 +828,41 @@ describe("FirestoreService", () => {
     });
 
     it("stores avatarUrl when provided", async () => {
-      mockSetDoc.mockResolvedValue(undefined);
       const avatarUrl = "https://example.com/provider-avatar.png";
+      const mockValidatedUser = {
+        userId: mockUserId,
+        email: mockEmail,
+        displayName: mockDisplayName,
+        username: mockDisplayName,
+        avatarUrl,
+        coins: 100,
+        progress: {
+          classicIndex: 1,
+          dailyChallengeIndex: 0,
+          dailyChallengeCurrentQuestion: 0,
+        },
+        stats: {
+          xp: 0,
+          level: 1,
+          dailyPuzzlesCompleted: 0,
+          bestStreak: 0,
+          totalWordsGuessed: 0,
+          winRate: 0,
+          averageGuesses: 0,
+          totalScore: 0,
+          highestLevelClassic: 0,
+          gamesPlayed: 0,
+          wins: 0,
+          challengeWins: 0,
+          winStreak: 0,
+          totalWins: 0,
+          totalGuessesInWins: 0,
+          totalHintsUsed: 0,
+        },
+        unlockedAchievements: [],
+        hasPurchasedApp: false,
+      } as Player;
+      mockCallableFunction.mockResolvedValue({data: {player: mockValidatedUser}});
 
       const result = await FirestoreService.createUserDocumentInFirestore(
         mockUserId,
@@ -798,18 +871,17 @@ describe("FirestoreService", () => {
         avatarUrl,
       );
 
-      expect(mockSetDoc).toHaveBeenCalledWith(
-        expect.any(Object),
+      expect(mockSetDoc).not.toHaveBeenCalled();
+      expect(mockCallableFunction).toHaveBeenCalledWith(
         expect.objectContaining({
           avatarUrl,
+          seed: expect.objectContaining({avatarUrl}),
         }),
       );
       expect(result.avatarUrl).toBe(avatarUrl);
     });
 
     it("seeds new user document from guest progress when provided", async () => {
-      mockSetDoc.mockResolvedValue(undefined);
-
       const seed = {
         coins: 777,
         username: "MyGuestName",
@@ -826,6 +898,36 @@ describe("FirestoreService", () => {
         lastDailyChallengeCompletedAt: 1710000000000,
         hasPurchasedApp: true,
       } as unknown as Player;
+      const mockValidatedUser = {
+        userId: mockUserId,
+        email: mockEmail,
+        displayName: mockDisplayName,
+        username: seed.username,
+        coins: seed.coins,
+        progress: seed.progress,
+        stats: {
+          xp: 0,
+          level: 1,
+          dailyPuzzlesCompleted: 0,
+          totalWordsGuessed: 0,
+          winRate: 0,
+          averageGuesses: 0,
+          totalScore: 0,
+          highestLevelClassic: 0,
+          gamesPlayed: 0,
+          wins: 0,
+          challengeWins: 0,
+          winStreak: 0,
+          totalWins: 0,
+          totalGuessesInWins: 0,
+          totalHintsUsed: 0,
+          ...(seed.stats as Record<string, unknown>),
+        },
+        unlockedAchievements: seed.unlockedAchievements,
+        lastDailyChallengeCompletedAt: seed.lastDailyChallengeCompletedAt,
+        hasPurchasedApp: true,
+      } as Player;
+      mockCallableFunction.mockResolvedValue({data: {player: mockValidatedUser}});
 
       const result = await FirestoreService.createUserDocumentInFirestore(
         mockUserId,
@@ -835,18 +937,23 @@ describe("FirestoreService", () => {
         seed,
       );
 
-      expect(mockSetDoc).toHaveBeenCalledWith(
-        expect.any(Object),
+      expect(mockSetDoc).not.toHaveBeenCalled();
+      expect(mockCallableFunction).toHaveBeenCalledWith(
         expect.objectContaining({
-          userId: mockUserId,
           email: mockEmail,
           username: seed.username,
-          coins: seed.coins,
-          progress: expect.objectContaining(seed.progress),
-          stats: expect.objectContaining(seed.stats),
-          unlockedAchievements: seed.unlockedAchievements,
-          lastDailyChallengeCompletedAt: seed.lastDailyChallengeCompletedAt,
-          hasPurchasedApp: true,
+          displayName: mockDisplayName,
+          seed: expect.objectContaining({
+            userId: mockUserId,
+            email: mockEmail,
+            username: seed.username,
+            coins: seed.coins,
+            progress: expect.objectContaining(seed.progress),
+            stats: expect.objectContaining(seed.stats),
+            unlockedAchievements: seed.unlockedAchievements,
+            lastDailyChallengeCompletedAt: seed.lastDailyChallengeCompletedAt,
+            hasPurchasedApp: true,
+          }),
         }),
       );
 

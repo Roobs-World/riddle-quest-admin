@@ -6,7 +6,7 @@ const packageJsonPath = path.join(projectRoot, "package.json");
 const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
 
 const requiredDeps = {
-  "react-native": "0.85.0",
+  "react-native": "0.85.1",
   expo: "56.0.0-canary-20260409-6fc2991",
   "@expo/metro-runtime": "56.0.0-canary-20260409-6fc2991",
   "react-native-reanimated": "4.3.0",
@@ -14,7 +14,7 @@ const requiredDeps = {
 };
 
 const requiredDevDeps = {
-  "@react-native/jest-preset": "0.85.0",
+  "@react-native/jest-preset": "0.85.1",
   "jest-expo": "56.0.0-canary-20260409-6fc2991",
 };
 

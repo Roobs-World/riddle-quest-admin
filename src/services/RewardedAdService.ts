@@ -4,6 +4,9 @@ import mobileAds, {
   RewardedAd,
   RewardedAdEventType,
 } from "react-native-google-mobile-ads";
+import { getApp } from "@react-native-firebase/app";
+import { getAuth } from "@react-native-firebase/auth";
+import { getFunctions, httpsCallable } from "@react-native-firebase/functions";
 import { logger } from "../utils/logger";
 import { captureException } from "../utils/sentry";
 
@@ -12,6 +15,18 @@ const MAX_LOAD_RETRY_ATTEMPTS = 3;
 const LOAD_RETRY_DELAY_MS = 1500;
 const SHOW_WAIT_TIMEOUT_MS = 4000;
 const REWARD_CONFIRMATION_TIMEOUT_MS = 1500;
+
+export type RewardedAdPlacement = "loss_continue" | "coin_shop";
+
+export type AwardedAdCallbackResponse = {
+  success: boolean;
+  placement: RewardedAdPlacement;
+  callbackId: string;
+  rewardCoins: number;
+  newCoins: number;
+  alreadyProcessed: boolean;
+  message: string;
+};
 
 let rewardedAd: RewardedAd | null = null;
 let initializePromise: Promise<void> | null = null;
@@ -245,3 +260,35 @@ export const subscribeToRewardedAdReadiness = (
 };
 
 export const getRewardedAdReadiness = (): boolean => isRewardedAdReady;
+
+export const createRewardedAdCallbackId = (
+  placement: RewardedAdPlacement
+): string =>
+  `${placement}-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+
+export const recordRewardedAdCompletion = async (
+  placement: RewardedAdPlacement,
+  callbackId = createRewardedAdCallbackId(placement)
+): Promise<AwardedAdCallbackResponse> => {
+  const userId = getAuth(getApp()).currentUser?.uid;
+  if (!userId) {
+    throw new Error("Cannot record rewarded ad completion without an authenticated user.");
+  }
+
+  const result = await httpsCallable<
+    {
+      userId: string;
+      placement: RewardedAdPlacement;
+      callbackId: string;
+      provider: string;
+    },
+    AwardedAdCallbackResponse
+  >(getFunctions(getApp()), "awardedAdCallback")({
+    userId,
+    placement,
+    callbackId,
+    provider: "google-mobile-ads",
+  });
+
+  return result.data;
+};

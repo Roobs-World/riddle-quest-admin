@@ -430,7 +430,12 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const [preservedLetterStates, setPreservedLetterStates] = useState<
     Record<string, Feedback>
   >({});
-  const { isRewardedAdReady, loadRewardedAd, showRewardedAd } = useRewardedAds();
+  const {
+    isRewardedAdReady,
+    loadRewardedAd,
+    showRewardedAd,
+    recordRewardedAdCompletion,
+  } = useRewardedAds();
   const setActiveSlotIndexSynced = useCallback(
     (value: React.SetStateAction<number>) => {
       setActiveSlotIndex((prev) => {
@@ -1042,17 +1047,58 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     currentUserCoins,
   ]);
 
+  const confirmRewardedAdReward = useCallback(
+    async (placement: "loss_continue" | "coin_shop") => {
+      if (!isGuestMode) {
+        const rewardResult = await recordRewardedAdCompletion(placement);
+        if (playerData) {
+          updatePlayerDataLocally(
+            { coins: rewardResult.newCoins },
+            { syncToFirestore: false }
+          );
+        }
+        return {
+          rewardCoins: rewardResult.rewardCoins,
+          totalCoins: rewardResult.newCoins,
+        };
+      }
+
+      const totalCoins = currentUserCoins + CONTINUE_REWARDED_AD_COIN_REWARD;
+      if (playerData) {
+        updatePlayerDataLocally({
+          coins: totalCoins,
+        });
+      }
+      return {
+        rewardCoins: CONTINUE_REWARDED_AD_COIN_REWARD,
+        totalCoins,
+      };
+    },
+    [
+      currentUserCoins,
+      isGuestMode,
+      playerData,
+      recordRewardedAdCompletion,
+      updatePlayerDataLocally,
+    ]
+  );
+
   const runRewardedAdContinueFlow = useCallback(async () => {
     const didCompleteRewardedAd = await showRewardedAd();
     if (didCompleteRewardedAd) {
-      if (playerData) {
-        updatePlayerDataLocally({
-          coins: currentUserCoins + CONTINUE_REWARDED_AD_COIN_REWARD,
-        });
+      let rewardResult: { rewardCoins: number; totalCoins: number };
+      try {
+        rewardResult = await confirmRewardedAdReward("loss_continue");
+      } catch (error) {
+        logger.error("Error confirming rewarded ad continue:", error);
+        captureException(error);
+        modalActions.showAdError();
+        return false;
       }
+
       modal.showCoinPurchaseFanfareModal({
-        coinsPurchased: CONTINUE_REWARDED_AD_COIN_REWARD,
-        totalCoins: currentUserCoins + CONTINUE_REWARDED_AD_COIN_REWARD,
+        coinsPurchased: rewardResult.rewardCoins,
+        totalCoins: rewardResult.totalCoins,
       });
       setLastGuessResult(null);
       preserveKeyboardLetterStates();
@@ -1067,12 +1113,11 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     return false;
   }, [
     showRewardedAd,
+    confirmRewardedAdReward,
     continueGame,
     preserveKeyboardLetterStates,
     modal,
-    playerData,
-    updatePlayerDataLocally,
-    currentUserCoins,
+    modalActions,
   ]);
 
   const handlePurchaseProduct = useCallback(
@@ -1254,6 +1299,11 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     try {
       const didCompleteRewardedAd = await showRewardedAd();
       if (didCompleteRewardedAd) {
+        const rewardResult = await confirmRewardedAdReward("coin_shop");
+        modal.showCoinPurchaseFanfareModal({
+          coinsPurchased: rewardResult.rewardCoins,
+          totalCoins: rewardResult.totalCoins,
+        });
         logger.debug("Rewarded ad for coins shown successfully");
       } else {
         logger.warn("Rewarded ad was not ready to be shown");
@@ -1264,7 +1314,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       captureException(error);
       modalActions.showAdError();
     }
-  }, [modal, showRewardedAd, modalActions]);
+  }, [modal, showRewardedAd, confirmRewardedAdReward, modalActions]);
 
   useEffect(() => {
     if (

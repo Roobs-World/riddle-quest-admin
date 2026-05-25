@@ -4,6 +4,10 @@ import { ColorManagement } from "three";
 
 const mockSetClearColor = jest.fn();
 const mockLookAt = jest.fn();
+const mockPixelStorei = jest.fn();
+const mockGetContext = jest.fn(() => ({
+  pixelStorei: mockPixelStorei,
+}));
 const mockLoadAsync = jest.fn();
 const mockNativeDownloadAsync = jest.fn();
 const frameCallbacks: Array<() => void> = [];
@@ -16,7 +20,7 @@ jest.mock("@react-three/fiber", () => {
     Canvas: ({ children, onCreated, ...props }: any) => {
       if (onCreated) {
         onCreated({
-          gl: { setClearColor: mockSetClearColor },
+          gl: { getContext: mockGetContext, setClearColor: mockSetClearColor },
           camera: { lookAt: mockLookAt },
         });
       }
@@ -55,6 +59,9 @@ describe("SolarSystem3D", () => {
     jest.clearAllMocks();
     frameCallbacks.length = 0;
     __resetSolarSystem3DTextureCacheForTests();
+    mockGetContext.mockReturnValue({
+      pixelStorei: mockPixelStorei,
+    });
     mockNativeDownloadAsync.mockResolvedValue("file:///mock-downloaded-texture.png");
     mockLoadAsync.mockResolvedValue([
       {
@@ -111,6 +118,7 @@ describe("SolarSystem3D", () => {
     expect(canvas.props.frameloop).toBe("always");
 
     expect(mockSetClearColor).toHaveBeenCalledWith(0x000000, 0);
+    expect(mockGetContext).toHaveBeenCalled();
     expect(mockLookAt).toHaveBeenCalledWith(0, 0, 0);
   });
 

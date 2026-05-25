@@ -1,6 +1,13 @@
 import React from "react";
 import {fireEvent, render} from "@testing-library/react-native";
-import LevelUpFanfareModal from "../LevelUpFanfareModal";
+import LevelUpFanfareModal, {
+  LEVEL_UP_FANFARE_MODAL_HEIGHT_MULTIPLIER,
+} from "../LevelUpFanfareModal";
+import {
+  MODAL_MAX_SCREEN_HEIGHT_FRACTION,
+  MODAL_WIDTH,
+  getResponsiveModalHeight,
+} from "../../../../constants/layout";
 
 jest.mock("react-native/Libraries/Animated/Animated", () => {
   const {View} = require("react-native");
@@ -80,6 +87,33 @@ describe("LevelUpFanfareModal", () => {
     expect(getByText("Level 4")).toBeTruthy();
     expect(getByText("+50 Coins")).toBeTruthy();
     expect(queryByTestId("modal-sequence-breadcrumb")).toBeNull();
+  });
+
+  it("uses the taller DSI-035 decorative background frame", () => {
+    const {getByTestId} = render(
+      <LevelUpFanfareModal
+        isVisible={true}
+        newLevel={4}
+        coinsAwarded={50}
+        totalCoins={250}
+        onClose={jest.fn()}
+      />,
+    );
+    const expectedHeight = getResponsiveModalHeight(
+      LEVEL_UP_FANFARE_MODAL_HEIGHT_MULTIPLIER,
+      MODAL_MAX_SCREEN_HEIGHT_FRACTION,
+    );
+    const previousHeight = getResponsiveModalHeight(1.4, MODAL_MAX_SCREEN_HEIGHT_FRACTION);
+
+    expect(expectedHeight).toBeGreaterThan(previousHeight);
+    expect(getByTestId("level-up-fanfare-frame").props.style).toEqual(
+      expect.objectContaining({
+        width: MODAL_WIDTH,
+        height: expectedHeight,
+      }),
+    );
+    expect(getByTestId("level-up-fanfare-background").props.height).toBe(expectedHeight);
+    expect(getByTestId("level-up-fanfare-background").props.preserveAspectRatio).toBe("none");
   });
 
   it("shows sequence progress and final action text", () => {

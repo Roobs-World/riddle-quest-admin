@@ -202,6 +202,7 @@ jest.mock("../../../hooks/useGameLogic", () => ({
 
 const mockLoadRewardedAd = jest.fn();
 const mockShowRewardedAd = jest.fn(() => Promise.resolve(false));
+const mockRecordRewardedAdCompletion = jest.fn();
 let mockIsRewardedAdReady = true;
 jest.mock("../../../hooks/useRewardedAds", () => ({
   __esModule: true,
@@ -209,6 +210,7 @@ jest.mock("../../../hooks/useRewardedAds", () => ({
     isRewardedAdReady: mockIsRewardedAdReady,
     loadRewardedAd: mockLoadRewardedAd,
     showRewardedAd: mockShowRewardedAd,
+    recordRewardedAdCompletion: mockRecordRewardedAdCompletion,
   }),
 }));
 
@@ -396,6 +398,7 @@ jest.mock("../../../constants/game", () => ({
   LEVEL_UP_COIN_BONUS: 50,
   DAILY_CHALLENGE_COIN_REWARD: 50,
   CONTINUE_COST_COINS: 20,
+  CONTINUE_REWARDED_AD_COIN_REWARD: 25,
   MODAL_CLOSE_DELAY_MS: 300,
   SOUND_RESUME_DELAY_MS: 100,
   getXpLevel: (totalScore: number) => ({
@@ -526,6 +529,16 @@ describe("GameScreen", () => {
     mockLoadRewardedAd.mockReset();
     mockShowRewardedAd.mockReset();
     mockShowRewardedAd.mockResolvedValue(false);
+    mockRecordRewardedAdCompletion.mockReset();
+    mockRecordRewardedAdCompletion.mockResolvedValue({
+      success: true,
+      placement: "loss_continue",
+      callbackId: "reward-callback",
+      rewardCoins: 25,
+      newCoins: 125,
+      alreadyProcessed: false,
+      message: "Rewarded ad reward applied.",
+    });
     mockShowTooltipOnce.mockClear();
     mockShowTooltip.mockClear();
     mockDismissTooltip.mockClear();
@@ -1173,6 +1186,42 @@ describe("GameScreen", () => {
       expect(typeof config.onWatchVideo).toBe("function");
     });
 
+    it("records authenticated coin-shop rewarded ads before showing the reward fanfare", async () => {
+      mockShowRewardedAd.mockResolvedValueOnce(true);
+      mockRecordRewardedAdCompletion.mockResolvedValueOnce({
+        success: true,
+        placement: "coin_shop",
+        callbackId: "coin-shop-callback",
+        rewardCoins: 25,
+        newCoins: 150,
+        alreadyProcessed: false,
+        message: "Rewarded ad reward applied.",
+      });
+
+      render(<GameScreen {...defaultProps} />);
+      const headerProps = getLatestProps(mockHeader);
+      await act(async () => {
+        await headerProps.onCoinsPress();
+      });
+      const config =
+        mockShowCoinShopModal.mock.calls[mockShowCoinShopModal.mock.calls.length - 1][0];
+
+      await invokeGameAction(() => config.onWatchVideo());
+
+      expect(mockCloseModalByType).toHaveBeenCalledWith("coinShop");
+      expect(mockRecordRewardedAdCompletion).toHaveBeenCalledWith("coin_shop");
+      expect(mockUpdatePlayerDataLocally).toHaveBeenCalledWith(
+        { coins: 150 },
+        { syncToFirestore: false }
+      );
+      expect(mockShowCoinPurchaseFanfareModal).toHaveBeenCalledWith(
+        expect.objectContaining({
+          coinsPurchased: 25,
+          totalCoins: 150,
+        })
+      );
+    });
+
     it("submits a completed guess and stores the result", async () => {
       const result = {
         outcome: "continue",
@@ -1684,13 +1733,93 @@ describe("GameScreen", () => {
         expect(mockShowCoinPurchaseFanfareModal).toHaveBeenCalledWith(
           expect.objectContaining({
             coinsPurchased: CONTINUE_REWARDED_AD_COIN_REWARD,
+            totalCoins: 125,
           })
         );
       });
       expect(mockShowRewardedAd).toHaveBeenCalled();
+      expect(mockRecordRewardedAdCompletion).toHaveBeenCalledWith("loss_continue");
       expect(mockUseGameLogic.continueGame).toHaveBeenCalled();
       expect(defaultProps.onGameLoss).not.toHaveBeenCalled();
-      expect(mockUpdatePlayerDataLocally).toHaveBeenCalled();
+      expect(mockUpdatePlayerDataLocally).toHaveBeenCalledWith(
+        { coins: 125 },
+        { syncToFirestore: false }
+      );
+    });
+
+    it("keeps rewarded-ad continue local-only for guest players", async () => {
+      mockPlayerData.email = "guest_test-user-123@guest.Riddle Quest.com";
+      mockPlayerData.username = "Guest";
+      mockShowRewardedAd.mockResolvedValueOnce(true);
+      mockUseGameLogic.currentGuess = ["K", "E", "Y", "B", "O", "A", "R", "D"];
+      mockUseGameLogic.processGuess.mockResolvedValueOnce({
+        outcome: "attemptLimitReached",
+        correctAnswer: "ANSWER",
+        canOfferRewardedAd: true,
+      });
+
+      try {
+        const { rerender } = render(<GameScreen {...defaultProps} userCoins={5} />);
+        const inputProps = getLatestProps(mockGameInput);
+        await act(async () => {
+          await inputProps.handleSubmit();
+        });
+        mockUseGameLogic.gameOver = true;
+        rerender(<GameScreen {...defaultProps} userCoins={5} />);
+
+        await waitFor(() => {
+          expect(mockShowLossModal).toHaveBeenCalled();
+        });
+        const config = mockShowLossModal.mock.calls[mockShowLossModal.mock.calls.length - 1][0];
+
+        config.onWatchAdContinue();
+
+        await waitFor(() => {
+          expect(mockShowCoinPurchaseFanfareModal).toHaveBeenCalledWith(
+            expect.objectContaining({
+              coinsPurchased: CONTINUE_REWARDED_AD_COIN_REWARD,
+              totalCoins: 125,
+            })
+          );
+        });
+        expect(mockRecordRewardedAdCompletion).not.toHaveBeenCalled();
+        expect(mockUpdatePlayerDataLocally).toHaveBeenCalledWith({ coins: 125 });
+      } finally {
+        mockPlayerData.email = "test@test.com";
+        mockPlayerData.username = "testuser";
+      }
+    });
+
+    it("does not continue after an authenticated rewarded ad when backend confirmation fails", async () => {
+      mockShowRewardedAd.mockResolvedValueOnce(true);
+      mockRecordRewardedAdCompletion.mockRejectedValueOnce(new Error("callback failed"));
+      mockUseGameLogic.currentGuess = ["K", "E", "Y", "B", "O", "A", "R", "D"];
+      mockUseGameLogic.processGuess.mockResolvedValueOnce({
+        outcome: "attemptLimitReached",
+        correctAnswer: "ANSWER",
+        canOfferRewardedAd: true,
+      });
+
+      const { rerender } = render(<GameScreen {...defaultProps} userCoins={5} />);
+      const inputProps = getLatestProps(mockGameInput);
+      await act(async () => {
+        await inputProps.handleSubmit();
+      });
+      mockUseGameLogic.gameOver = true;
+      rerender(<GameScreen {...defaultProps} userCoins={5} />);
+
+      await waitFor(() => {
+        expect(mockShowLossModal).toHaveBeenCalled();
+      });
+      const config = mockShowLossModal.mock.calls[mockShowLossModal.mock.calls.length - 1][0];
+
+      config.onWatchAdContinue();
+
+      await waitFor(() => {
+        expect(mockShowAdError).toHaveBeenCalled();
+      });
+      expect(mockUseGameLogic.continueGame).not.toHaveBeenCalled();
+      expect(mockShowCoinPurchaseFanfareModal).not.toHaveBeenCalled();
     });
 
     it("does not re-open loss modal after coin continue clears game-over state", async () => {

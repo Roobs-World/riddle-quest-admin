@@ -4,6 +4,470 @@
  */
 import type { LocaleOverrides } from "./types";
 
+type ReleaseReadinessLanguage =
+  | "es"
+  | "pt"
+  | "fr"
+  | "de"
+  | "ja"
+  | "ko"
+  | "zh"
+  | "hi"
+  | "ru"
+  | "tr"
+  | "ar"
+  | "id"
+  | "it"
+  | "nl"
+  | "pl"
+  | "vi";
+
+type ReleaseReadinessCopy = {
+  aboutButton: string;
+  aboutTitle: string;
+  website: string;
+  privacyPolicy: string;
+  termsOfUse: string;
+  accountDeletion: string;
+  dataExport: string;
+  thirdPartyLicenses: string;
+  support: string;
+  deleteAccountButton: string;
+  deleteAccountConfirmTitle: string;
+  deleteAccountConfirmMessage: string;
+  deleteAccountCancelButton: string;
+  deleteAccountConfirmButton: string;
+  deleteAccountLoading: string;
+  deleteAccountSuccessTitle: string;
+  deleteAccountSuccessMessage: string;
+  deleteAccountErrorTitle: string;
+  deleteAccountErrorMessage: string;
+  leaderboardGuestUnavailable: string;
+};
+
+const buildReleaseReadinessSupplement = (
+  copy: ReleaseReadinessCopy
+): LocaleOverrides => ({
+  Settings: {
+    ABOUT_BUTTON: copy.aboutButton,
+  },
+  AboutLegal: {
+    TITLE: copy.aboutTitle,
+    RIDDLE_QUEST_WEBSITE: copy.website,
+    PRIVACY_POLICY: copy.privacyPolicy,
+    TERMS_OF_USE: copy.termsOfUse,
+    ACCOUNT_DELETION: copy.accountDeletion,
+    DATA_EXPORT: copy.dataExport,
+    THIRD_PARTY_LICENSES: copy.thirdPartyLicenses,
+    SUPPORT: copy.support,
+  },
+  Profile: {
+    DELETE_ACCOUNT_BUTTON: copy.deleteAccountButton,
+    DELETE_ACCOUNT_CONFIRM_TITLE: copy.deleteAccountConfirmTitle,
+    DELETE_ACCOUNT_CONFIRM_MESSAGE: copy.deleteAccountConfirmMessage,
+    DELETE_ACCOUNT_CANCEL_BUTTON: copy.deleteAccountCancelButton,
+    DELETE_ACCOUNT_CONFIRM_BUTTON: copy.deleteAccountConfirmButton,
+    DELETE_ACCOUNT_LOADING: copy.deleteAccountLoading,
+    DELETE_ACCOUNT_SUCCESS_TITLE: copy.deleteAccountSuccessTitle,
+    DELETE_ACCOUNT_SUCCESS_MESSAGE: copy.deleteAccountSuccessMessage,
+    DELETE_ACCOUNT_ERROR_TITLE: copy.deleteAccountErrorTitle,
+    DELETE_ACCOUNT_ERROR_MESSAGE: copy.deleteAccountErrorMessage,
+  },
+  Leaderboard: {
+    GUEST_UNAVAILABLE: copy.leaderboardGuestUnavailable,
+  },
+});
+
+export const releaseReadinessSupplementalOverrides: Record<
+  ReleaseReadinessLanguage,
+  LocaleOverrides
+> = {
+  es: buildReleaseReadinessSupplement({
+    aboutButton: "Acerca de",
+    aboutTitle: "Acerca de / Legal",
+    website: "Sitio web de Riddle Quest",
+    privacyPolicy: "Politica de privacidad",
+    termsOfUse: "Terminos de uso",
+    accountDeletion: "Eliminacion de cuenta",
+    dataExport: "Exportar datos",
+    thirdPartyLicenses: "Licencias de terceros",
+    support: "Soporte",
+    deleteAccountButton: "Eliminar cuenta",
+    deleteAccountConfirmTitle: "Eliminar cuenta?",
+    deleteAccountConfirmMessage:
+      "Esto elimina permanentemente tu cuenta, perfil, progreso, clasificacion y datos de invitado. No se puede deshacer.",
+    deleteAccountCancelButton: "Cancelar",
+    deleteAccountConfirmButton: "Eliminar cuenta",
+    deleteAccountLoading: "Eliminando...",
+    deleteAccountSuccessTitle: "Cuenta eliminada",
+    deleteAccountSuccessMessage: "Tu cuenta ha sido eliminada.",
+    deleteAccountErrorTitle: "No se pudo eliminar la cuenta",
+    deleteAccountErrorMessage: "Revisa tu conexion e intenta de nuevo.",
+    leaderboardGuestUnavailable:
+      "Inicia sesion para comparar XP, victorias y rachas en la clasificacion.",
+  }),
+  pt: buildReleaseReadinessSupplement({
+    aboutButton: "Sobre",
+    aboutTitle: "Sobre / Legal",
+    website: "Site do Riddle Quest",
+    privacyPolicy: "Politica de privacidade",
+    termsOfUse: "Termos de uso",
+    accountDeletion: "Exclusao de conta",
+    dataExport: "Exportacao de dados",
+    thirdPartyLicenses: "Licencas de terceiros",
+    support: "Suporte",
+    deleteAccountButton: "Excluir conta",
+    deleteAccountConfirmTitle: "Excluir conta?",
+    deleteAccountConfirmMessage:
+      "Isto exclui permanentemente sua conta, perfil, progresso, classificacao e dados de convidado. Nao pode ser desfeito.",
+    deleteAccountCancelButton: "Cancelar",
+    deleteAccountConfirmButton: "Excluir conta",
+    deleteAccountLoading: "Excluindo...",
+    deleteAccountSuccessTitle: "Conta excluida",
+    deleteAccountSuccessMessage: "Sua conta foi excluida.",
+    deleteAccountErrorTitle: "Nao foi possivel excluir a conta",
+    deleteAccountErrorMessage: "Verifique sua conexao e tente novamente.",
+    leaderboardGuestUnavailable:
+      "Entre para comparar XP, vitorias e sequencias no ranking.",
+  }),
+  fr: buildReleaseReadinessSupplement({
+    aboutButton: "A propos",
+    aboutTitle: "A propos / Legal",
+    website: "Site web Riddle Quest",
+    privacyPolicy: "Politique de confidentialite",
+    termsOfUse: "Conditions d utilisation",
+    accountDeletion: "Suppression du compte",
+    dataExport: "Export des donnees",
+    thirdPartyLicenses: "Licences tierces",
+    support: "Assistance",
+    deleteAccountButton: "Supprimer le compte",
+    deleteAccountConfirmTitle: "Supprimer le compte?",
+    deleteAccountConfirmMessage:
+      "Cela supprime definitivement votre compte, profil, progression, classement et donnees invite. Cette action est irreversible.",
+    deleteAccountCancelButton: "Annuler",
+    deleteAccountConfirmButton: "Supprimer le compte",
+    deleteAccountLoading: "Suppression...",
+    deleteAccountSuccessTitle: "Compte supprime",
+    deleteAccountSuccessMessage: "Votre compte a ete supprime.",
+    deleteAccountErrorTitle: "Impossible de supprimer le compte",
+    deleteAccountErrorMessage: "Verifiez votre connexion et reessayez.",
+    leaderboardGuestUnavailable:
+      "Connectez-vous pour comparer XP, victoires et series dans le classement.",
+  }),
+  de: buildReleaseReadinessSupplement({
+    aboutButton: "Info",
+    aboutTitle: "Info / Rechtliches",
+    website: "Riddle Quest Website",
+    privacyPolicy: "Datenschutzrichtlinie",
+    termsOfUse: "Nutzungsbedingungen",
+    accountDeletion: "Konto loeschen",
+    dataExport: "Datenexport",
+    thirdPartyLicenses: "Drittanbieter-Lizenzen",
+    support: "Support",
+    deleteAccountButton: "Konto loeschen",
+    deleteAccountConfirmTitle: "Konto loeschen?",
+    deleteAccountConfirmMessage:
+      "Dies loescht Konto, Profil, Fortschritt, Ranglisteneintrag und Gastdaten dauerhaft. Dies kann nicht rueckgaengig gemacht werden.",
+    deleteAccountCancelButton: "Abbrechen",
+    deleteAccountConfirmButton: "Konto loeschen",
+    deleteAccountLoading: "Loeschen...",
+    deleteAccountSuccessTitle: "Konto geloescht",
+    deleteAccountSuccessMessage: "Ihr Konto wurde geloescht.",
+    deleteAccountErrorTitle: "Konto konnte nicht geloescht werden",
+    deleteAccountErrorMessage: "Pruefen Sie die Verbindung und versuchen Sie es erneut.",
+    leaderboardGuestUnavailable:
+      "Melden Sie sich an, um XP, Siege und Serien in der Rangliste zu vergleichen.",
+  }),
+  ja: buildReleaseReadinessSupplement({
+    aboutButton: "About",
+    aboutTitle: "About / Legal",
+    website: "Riddle Quest Website",
+    privacyPolicy: "Privacy Policy",
+    termsOfUse: "Terms of Use",
+    accountDeletion: "Account Deletion",
+    dataExport: "Data Export",
+    thirdPartyLicenses: "Third-Party Licenses",
+    support: "Support",
+    deleteAccountButton: "Delete Account",
+    deleteAccountConfirmTitle: "Delete account?",
+    deleteAccountConfirmMessage:
+      "This permanently deletes your account, profile, progress, leaderboard entry, and guest data. This cannot be undone.",
+    deleteAccountCancelButton: "Cancel",
+    deleteAccountConfirmButton: "Delete Account",
+    deleteAccountLoading: "Deleting...",
+    deleteAccountSuccessTitle: "Account deleted",
+    deleteAccountSuccessMessage: "Your account has been deleted.",
+    deleteAccountErrorTitle: "Could not delete account",
+    deleteAccountErrorMessage: "Please check your connection and try again.",
+    leaderboardGuestUnavailable:
+      "Sign in to compare XP, wins, and streaks on the leaderboard.",
+  }),
+  ko: buildReleaseReadinessSupplement({
+    aboutButton: "About",
+    aboutTitle: "About / Legal",
+    website: "Riddle Quest Website",
+    privacyPolicy: "Privacy Policy",
+    termsOfUse: "Terms of Use",
+    accountDeletion: "Account Deletion",
+    dataExport: "Data Export",
+    thirdPartyLicenses: "Third-Party Licenses",
+    support: "Support",
+    deleteAccountButton: "Delete Account",
+    deleteAccountConfirmTitle: "Delete account?",
+    deleteAccountConfirmMessage:
+      "This permanently deletes your account, profile, progress, leaderboard entry, and guest data. This cannot be undone.",
+    deleteAccountCancelButton: "Cancel",
+    deleteAccountConfirmButton: "Delete Account",
+    deleteAccountLoading: "Deleting...",
+    deleteAccountSuccessTitle: "Account deleted",
+    deleteAccountSuccessMessage: "Your account has been deleted.",
+    deleteAccountErrorTitle: "Could not delete account",
+    deleteAccountErrorMessage: "Please check your connection and try again.",
+    leaderboardGuestUnavailable:
+      "Sign in to compare XP, wins, and streaks on the leaderboard.",
+  }),
+  zh: buildReleaseReadinessSupplement({
+    aboutButton: "About",
+    aboutTitle: "About / Legal",
+    website: "Riddle Quest Website",
+    privacyPolicy: "Privacy Policy",
+    termsOfUse: "Terms of Use",
+    accountDeletion: "Account Deletion",
+    dataExport: "Data Export",
+    thirdPartyLicenses: "Third-Party Licenses",
+    support: "Support",
+    deleteAccountButton: "Delete Account",
+    deleteAccountConfirmTitle: "Delete account?",
+    deleteAccountConfirmMessage:
+      "This permanently deletes your account, profile, progress, leaderboard entry, and guest data. This cannot be undone.",
+    deleteAccountCancelButton: "Cancel",
+    deleteAccountConfirmButton: "Delete Account",
+    deleteAccountLoading: "Deleting...",
+    deleteAccountSuccessTitle: "Account deleted",
+    deleteAccountSuccessMessage: "Your account has been deleted.",
+    deleteAccountErrorTitle: "Could not delete account",
+    deleteAccountErrorMessage: "Please check your connection and try again.",
+    leaderboardGuestUnavailable:
+      "Sign in to compare XP, wins, and streaks on the leaderboard.",
+  }),
+  hi: buildReleaseReadinessSupplement({
+    aboutButton: "About",
+    aboutTitle: "About / Legal",
+    website: "Riddle Quest Website",
+    privacyPolicy: "Privacy Policy",
+    termsOfUse: "Terms of Use",
+    accountDeletion: "Account Deletion",
+    dataExport: "Data Export",
+    thirdPartyLicenses: "Third-Party Licenses",
+    support: "Support",
+    deleteAccountButton: "Delete Account",
+    deleteAccountConfirmTitle: "Delete account?",
+    deleteAccountConfirmMessage:
+      "This permanently deletes your account, profile, progress, leaderboard entry, and guest data. This cannot be undone.",
+    deleteAccountCancelButton: "Cancel",
+    deleteAccountConfirmButton: "Delete Account",
+    deleteAccountLoading: "Deleting...",
+    deleteAccountSuccessTitle: "Account deleted",
+    deleteAccountSuccessMessage: "Your account has been deleted.",
+    deleteAccountErrorTitle: "Could not delete account",
+    deleteAccountErrorMessage: "Please check your connection and try again.",
+    leaderboardGuestUnavailable:
+      "Sign in to compare XP, wins, and streaks on the leaderboard.",
+  }),
+  ru: buildReleaseReadinessSupplement({
+    aboutButton: "O prilozhenii",
+    aboutTitle: "O prilozhenii / Pravovaya informatsiya",
+    website: "Sait Riddle Quest",
+    privacyPolicy: "Politika konfidentsialnosti",
+    termsOfUse: "Usloviya ispolzovaniya",
+    accountDeletion: "Udalenie akkaunta",
+    dataExport: "Eksport dannyh",
+    thirdPartyLicenses: "Litsenzii tretyih storon",
+    support: "Podderzhka",
+    deleteAccountButton: "Udalit akkaunt",
+    deleteAccountConfirmTitle: "Udalit akkaunt?",
+    deleteAccountConfirmMessage:
+      "Eto navsegda udalit akkaunt, profil, progress, zapis v reitinge i gostevye dannye. Deystvie nelzya otmenit.",
+    deleteAccountCancelButton: "Otmena",
+    deleteAccountConfirmButton: "Udalit akkaunt",
+    deleteAccountLoading: "Udalenie...",
+    deleteAccountSuccessTitle: "Akkaunt udalen",
+    deleteAccountSuccessMessage: "Vash akkaunt udalen.",
+    deleteAccountErrorTitle: "Ne udalos udalit akkaunt",
+    deleteAccountErrorMessage: "Proverte podklyuchenie i povtorite popytku.",
+    leaderboardGuestUnavailable:
+      "Voidite, chtoby sravnit XP, pobedy i serii v tablitse liderov.",
+  }),
+  tr: buildReleaseReadinessSupplement({
+    aboutButton: "Hakkinda",
+    aboutTitle: "Hakkinda / Yasal",
+    website: "Riddle Quest web sitesi",
+    privacyPolicy: "Gizlilik politikasi",
+    termsOfUse: "Kullanim sartlari",
+    accountDeletion: "Hesap silme",
+    dataExport: "Veri disa aktarma",
+    thirdPartyLicenses: "Ucuncu taraf lisanslari",
+    support: "Destek",
+    deleteAccountButton: "Hesabi sil",
+    deleteAccountConfirmTitle: "Hesap silinsin mi?",
+    deleteAccountConfirmMessage:
+      "Bu islem hesabini, profilini, ilerlemeni, liderlik kaydini ve misafir verilerini kalici olarak siler. Geri alinamaz.",
+    deleteAccountCancelButton: "Iptal",
+    deleteAccountConfirmButton: "Hesabi sil",
+    deleteAccountLoading: "Siliniyor...",
+    deleteAccountSuccessTitle: "Hesap silindi",
+    deleteAccountSuccessMessage: "Hesabin silindi.",
+    deleteAccountErrorTitle: "Hesap silinemedi",
+    deleteAccountErrorMessage: "Baglantini kontrol edip tekrar dene.",
+    leaderboardGuestUnavailable:
+      "Liderlik tablosunda XP, galibiyet ve serileri karsilastirmak icin giris yap.",
+  }),
+  ar: buildReleaseReadinessSupplement({
+    aboutButton: "About",
+    aboutTitle: "About / Legal",
+    website: "Riddle Quest Website",
+    privacyPolicy: "Privacy Policy",
+    termsOfUse: "Terms of Use",
+    accountDeletion: "Account Deletion",
+    dataExport: "Data Export",
+    thirdPartyLicenses: "Third-Party Licenses",
+    support: "Support",
+    deleteAccountButton: "Delete Account",
+    deleteAccountConfirmTitle: "Delete account?",
+    deleteAccountConfirmMessage:
+      "This permanently deletes your account, profile, progress, leaderboard entry, and guest data. This cannot be undone.",
+    deleteAccountCancelButton: "Cancel",
+    deleteAccountConfirmButton: "Delete Account",
+    deleteAccountLoading: "Deleting...",
+    deleteAccountSuccessTitle: "Account deleted",
+    deleteAccountSuccessMessage: "Your account has been deleted.",
+    deleteAccountErrorTitle: "Could not delete account",
+    deleteAccountErrorMessage: "Please check your connection and try again.",
+    leaderboardGuestUnavailable:
+      "Sign in to compare XP, wins, and streaks on the leaderboard.",
+  }),
+  id: buildReleaseReadinessSupplement({
+    aboutButton: "Tentang",
+    aboutTitle: "Tentang / Legal",
+    website: "Situs Riddle Quest",
+    privacyPolicy: "Kebijakan privasi",
+    termsOfUse: "Ketentuan penggunaan",
+    accountDeletion: "Penghapusan akun",
+    dataExport: "Ekspor data",
+    thirdPartyLicenses: "Lisensi pihak ketiga",
+    support: "Dukungan",
+    deleteAccountButton: "Hapus akun",
+    deleteAccountConfirmTitle: "Hapus akun?",
+    deleteAccountConfirmMessage:
+      "Ini menghapus akun, profil, progres, entri papan peringkat, dan data tamu secara permanen. Tindakan ini tidak dapat dibatalkan.",
+    deleteAccountCancelButton: "Batal",
+    deleteAccountConfirmButton: "Hapus akun",
+    deleteAccountLoading: "Menghapus...",
+    deleteAccountSuccessTitle: "Akun dihapus",
+    deleteAccountSuccessMessage: "Akun Anda telah dihapus.",
+    deleteAccountErrorTitle: "Tidak dapat menghapus akun",
+    deleteAccountErrorMessage: "Periksa koneksi Anda dan coba lagi.",
+    leaderboardGuestUnavailable:
+      "Masuk untuk membandingkan XP, kemenangan, dan streak di papan peringkat.",
+  }),
+  it: buildReleaseReadinessSupplement({
+    aboutButton: "Informazioni",
+    aboutTitle: "Informazioni / Legale",
+    website: "Sito Riddle Quest",
+    privacyPolicy: "Informativa privacy",
+    termsOfUse: "Termini di utilizzo",
+    accountDeletion: "Eliminazione account",
+    dataExport: "Esportazione dati",
+    thirdPartyLicenses: "Licenze di terze parti",
+    support: "Supporto",
+    deleteAccountButton: "Elimina account",
+    deleteAccountConfirmTitle: "Eliminare account?",
+    deleteAccountConfirmMessage:
+      "Questo elimina definitivamente account, profilo, progressi, voce classifica e dati ospite. Non puo essere annullato.",
+    deleteAccountCancelButton: "Annulla",
+    deleteAccountConfirmButton: "Elimina account",
+    deleteAccountLoading: "Eliminazione...",
+    deleteAccountSuccessTitle: "Account eliminato",
+    deleteAccountSuccessMessage: "Il tuo account e stato eliminato.",
+    deleteAccountErrorTitle: "Impossibile eliminare account",
+    deleteAccountErrorMessage: "Controlla la connessione e riprova.",
+    leaderboardGuestUnavailable:
+      "Accedi per confrontare XP, vittorie e serie nella classifica.",
+  }),
+  nl: buildReleaseReadinessSupplement({
+    aboutButton: "Over",
+    aboutTitle: "Over / Juridisch",
+    website: "Riddle Quest website",
+    privacyPolicy: "Privacybeleid",
+    termsOfUse: "Gebruiksvoorwaarden",
+    accountDeletion: "Account verwijderen",
+    dataExport: "Gegevens exporteren",
+    thirdPartyLicenses: "Licenties van derden",
+    support: "Ondersteuning",
+    deleteAccountButton: "Account verwijderen",
+    deleteAccountConfirmTitle: "Account verwijderen?",
+    deleteAccountConfirmMessage:
+      "Dit verwijdert je account, profiel, voortgang, scorebordvermelding en gastgegevens permanent. Dit kan niet ongedaan worden gemaakt.",
+    deleteAccountCancelButton: "Annuleren",
+    deleteAccountConfirmButton: "Account verwijderen",
+    deleteAccountLoading: "Verwijderen...",
+    deleteAccountSuccessTitle: "Account verwijderd",
+    deleteAccountSuccessMessage: "Je account is verwijderd.",
+    deleteAccountErrorTitle: "Kon account niet verwijderen",
+    deleteAccountErrorMessage: "Controleer je verbinding en probeer opnieuw.",
+    leaderboardGuestUnavailable:
+      "Log in om XP, overwinningen en reeksen op het scorebord te vergelijken.",
+  }),
+  pl: buildReleaseReadinessSupplement({
+    aboutButton: "O aplikacji",
+    aboutTitle: "O aplikacji / Prawne",
+    website: "Strona Riddle Quest",
+    privacyPolicy: "Polityka prywatnosci",
+    termsOfUse: "Warunki uzytkowania",
+    accountDeletion: "Usuniecie konta",
+    dataExport: "Eksport danych",
+    thirdPartyLicenses: "Licencje stron trzecich",
+    support: "Pomoc",
+    deleteAccountButton: "Usun konto",
+    deleteAccountConfirmTitle: "Usunac konto?",
+    deleteAccountConfirmMessage:
+      "To trwale usuwa konto, profil, postep, wpis w rankingu i dane goscia. Tej operacji nie mozna cofnac.",
+    deleteAccountCancelButton: "Anuluj",
+    deleteAccountConfirmButton: "Usun konto",
+    deleteAccountLoading: "Usuwanie...",
+    deleteAccountSuccessTitle: "Konto usuniete",
+    deleteAccountSuccessMessage: "Twoje konto zostalo usuniete.",
+    deleteAccountErrorTitle: "Nie mozna usunac konta",
+    deleteAccountErrorMessage: "Sprawdz polaczenie i sprobuj ponownie.",
+    leaderboardGuestUnavailable:
+      "Zaloguj sie, aby porownac XP, zwyciestwa i serie w rankingu.",
+  }),
+  vi: buildReleaseReadinessSupplement({
+    aboutButton: "Gioi thieu",
+    aboutTitle: "Gioi thieu / Phap ly",
+    website: "Trang web Riddle Quest",
+    privacyPolicy: "Chinh sach rieng tu",
+    termsOfUse: "Dieu khoan su dung",
+    accountDeletion: "Xoa tai khoan",
+    dataExport: "Xuat du lieu",
+    thirdPartyLicenses: "Giay phep ben thu ba",
+    support: "Ho tro",
+    deleteAccountButton: "Xoa tai khoan",
+    deleteAccountConfirmTitle: "Xoa tai khoan?",
+    deleteAccountConfirmMessage:
+      "Thao tac nay xoa vinh vien tai khoan, ho so, tien trinh, muc bang xep hang va du lieu khach. Khong the hoan tac.",
+    deleteAccountCancelButton: "Huy",
+    deleteAccountConfirmButton: "Xoa tai khoan",
+    deleteAccountLoading: "Dang xoa...",
+    deleteAccountSuccessTitle: "Da xoa tai khoan",
+    deleteAccountSuccessMessage: "Tai khoan cua ban da duoc xoa.",
+    deleteAccountErrorTitle: "Khong the xoa tai khoan",
+    deleteAccountErrorMessage: "Kiem tra ket noi va thu lai.",
+    leaderboardGuestUnavailable:
+      "Dang nhap de so sanh XP, chien thang va chuoi tren bang xep hang.",
+  }),
+};
+
 export const esSupplementalOverrides: LocaleOverrides = {
   Navigation: {
     LOGIN: "Iniciar sesion",

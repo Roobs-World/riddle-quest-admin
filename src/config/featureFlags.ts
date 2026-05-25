@@ -3,7 +3,7 @@ import { Platform } from "react-native";
 export const featureFlags = {
   /**
    * Shared Animation Backend requires RN 0.85.1+ with experimental release channel.
-   * Keep disabled until that version is available in this project.
+   * Keep disabled by default; enable only for targeted experimental builds.
    */
   sharedAnimationBackendExperimental:
     process.env.EXPO_PUBLIC_ENABLE_SHARED_ANIMATION_BACKEND === "true",

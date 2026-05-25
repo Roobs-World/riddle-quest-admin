@@ -189,6 +189,7 @@ describe("Firebase Functions", () => {
       "updateAvatar",
       "deleteAccount",
       "submitGuess",
+      "awardedAdCallback",
     ];
 
     expectedFunctions.forEach((funcName) => {

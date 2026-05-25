@@ -21,6 +21,12 @@ export const COINS_REWARD_CLASSIC = 15;
 export const COINS_REWARD_CHALLENGE = 50;
 /** Bonus coins awarded per newly unlocked achievement. */
 export const ACHIEVEMENT_UNLOCK_COIN_REWARD = 25;
+/** Coins awarded after a completed rewarded ad. Must match client src/constants/game.ts. */
+export const REWARDED_AD_COIN_REWARD = 25;
+/** Minimum time between rewarded-ad coin grants for the same user and placement. */
+export const REWARDED_AD_REWARD_COOLDOWN_MS = 30_000;
+/** Fallback idempotency window when an older client omits a callback id. */
+export const REWARDED_AD_IDEMPOTENCY_WINDOW_MS = 5 * 60_000;
 
 /** Base score for a Classic win. */
 export const BASE_SCORE_CLASSIC = 50;

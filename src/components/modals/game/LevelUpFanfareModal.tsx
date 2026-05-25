@@ -3,7 +3,13 @@ import {View, Text, Modal, TouchableOpacity} from "react-native";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
 import {TYPOGRAPHY} from "../../../styles";
-import {MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, MODAL_BUTTON_SPACER, MODAL_MAX_HEIGHT} from "../../../constants/layout";
+import {
+  MODAL_WIDTH,
+  MODAL_CONTENT_PADDING,
+  MODAL_BUTTON_SPACER,
+  MODAL_MAX_SCREEN_HEIGHT_FRACTION,
+  getResponsiveModalHeight,
+} from "../../../constants/layout";
 import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {verticalScale} from "@/utils/responsive";
@@ -23,7 +29,12 @@ interface LevelUpFanfareModalProps {
   onClose: () => void;
 }
 
-const LEVEL_UP_FANFARE_MODAL_HEIGHT = Math.min(MODAL_HEIGHT * 1.4, MODAL_MAX_HEIGHT ?? MODAL_HEIGHT * 1.4);
+export const LEVEL_UP_FANFARE_MODAL_HEIGHT_MULTIPLIER = 1.55;
+
+const LEVEL_UP_FANFARE_MODAL_HEIGHT = getResponsiveModalHeight(
+  LEVEL_UP_FANFARE_MODAL_HEIGHT_MULTIPLIER,
+  MODAL_MAX_SCREEN_HEIGHT_FRACTION,
+);
 
 const LevelUpFanfareModal: React.FC<LevelUpFanfareModalProps> = ({
   isVisible,
@@ -57,6 +68,7 @@ const LevelUpFanfareModal: React.FC<LevelUpFanfareModalProps> = ({
         <SlideInModalContent isVisible={isVisible} style={{alignItems: "center"}}>
           <TouchableOpacity key={"coin-purchase-modal"} onPress={handleContinue}>
             <View
+              testID="level-up-fanfare-frame"
               style={{
                 width: MODAL_WIDTH,
                 height: LEVEL_UP_FANFARE_MODAL_HEIGHT,
@@ -66,6 +78,7 @@ const LevelUpFanfareModal: React.FC<LevelUpFanfareModalProps> = ({
               }}
             >
               <ModalBg
+                testID="level-up-fanfare-background"
                 width={MODAL_WIDTH}
                 height={LEVEL_UP_FANFARE_MODAL_HEIGHT}
                 style={{position: "absolute"}}

@@ -34,6 +34,7 @@ import {dailyChallengeScheduler} from "./dailyScheduler";
 import {initializeUser, ensureUserComplete, updateUserStats, deleteAccount} from "./userManagement";
 import {getLeaderboard} from "./leaderboard";
 import {dailyStreakReminder} from "./streakNotifications";
+import {awardedAdCallback} from "./ads";
 export {
   validatePurchase,
   grantDevCoinsForPurchase,
@@ -58,4 +59,5 @@ export {
   deleteAccount,
   getLeaderboard,
   dailyStreakReminder,
+  awardedAdCallback,
 };

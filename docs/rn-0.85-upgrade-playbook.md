@@ -1,7 +1,7 @@
 # React Native 0.85 Upgrade Playbook
 
 ## Current State
-- Runtime aligned to `react-native@0.85.0` on Expo SDK 56 canary.
+- Runtime aligned to `react-native@0.85.1` on Expo SDK 56 canary.
 - Node policy is `>=20.19.4` (`.nvmrc` and `package.json` engines).
 - Jest preset migrated to `@react-native/jest-preset`.
 - Removed deprecated `StyleSheet.absoluteFillObject`.
@@ -11,7 +11,7 @@
 - Baseline + branch: complete (baseline template added, upgrade branch active).
 - Core version alignment: complete.
 - Breaking changes sweep: complete.
-- Shared animation backend adoption: blocked by upstream version availability (`0.85.1+` not published).
+- Shared animation backend adoption: unblocked at the version gate; `react-native@0.85.1` and `@react-native/jest-preset@0.85.1` are installed. The runtime flag remains off by default for targeted experimental-channel builds only.
 - Reanimated/Animated optimization pass: complete for compatibility and safety guards.
 - DevTools workflow upgrade: documented.
 - Metro TLS enablement: complete.
@@ -22,11 +22,11 @@
 ## New Features Adoption
 
 ### 1. Shared Animation Backend
-- Status: blocked on `react-native@0.85.1+` availability.
-- Current package registry check shows `0.85.1` is not published yet.
-- Action when available:
-  1. Upgrade to `react-native@0.85.1+`.
-  2. Enable the experimental RN release channel for test builds.
+- Status: version gate complete; runtime is now on `react-native@0.85.1`.
+- Keep `EXPO_PUBLIC_ENABLE_SHARED_ANIMATION_BACKEND=false` by default.
+- Action for targeted experimental test builds:
+  1. Enable `EXPO_PUBLIC_ENABLE_SHARED_ANIMATION_BACKEND=true`.
+  2. Enable the experimental RN release channel for that build.
   3. Validate layout animations with native driver on key screens.
 
 ### 2. Metro TLS
@@ -49,6 +49,32 @@
 - `pnpm run lint`
 - `pnpm run test:rn -- --runInBand`
 - `pnpm exec expo install --check`
+
+## 2026-05-25 Continuation Notes
+
+- Read all 52 files under `docs/` before continuing this task.
+- Verified package availability with `pnpm view react-native@0.85.1 version` and `pnpm view @react-native/jest-preset@0.85.1 version`; both returned `0.85.1`.
+- Before the upgrade, `pnpm exec expo install --check` reported dependencies up to date, with the canary-SDK reliability caveat.
+- Used the Expo-recommended install path first for `react-native@0.85.1` because this is an Expo/React Native project and no Expo MCP tool is exposed in this session.
+- Issue encountered: running the React Native install and Jest preset install concurrently on Windows caused pnpm `ENOTEMPTY` / `EPERM` rename failures in `node_modules`.
+- Resolution: updated the declared versions to `react-native@0.85.1` and `@react-native/jest-preset@0.85.1`, rebuilt the lockfile with `pnpm install --lockfile-only`, then reconciled `node_modules` with a single sequential `pnpm install --prefer-offline`.
+- Issue encountered: after the deliberate RN patch upgrade, `pnpm exec expo install --check` failed because the Expo SDK 56 canary dependency validator still expects `react-native@0.85.0`.
+- Resolution: added `react-native` to `expo.install.exclude` in `package.json`, matching the Expo CLI guidance for explicitly provided versions; `pnpm exec expo install --check` then passed and reported `react-native` as intentionally skipped.
+- Guardrail updated: `scripts/check-rn-upgrade.js` now expects the 0.85.1 runtime and Jest preset versions.
+- Verification passed: `pnpm run check:rn-upgrade`, `pnpm exec jest src/config/__tests__/featureFlags.test.ts --runInBand` (26 tests), `pnpm exec tsc --noEmit --pretty false`, and `pnpm exec expo install --check`.
+- Full RN suite follow-up: the first `pnpm run test:rn -- --runInBand` pass after the version bump failed in stale unit-test areas, not from the RN patch itself.
+- Issue encountered: `UserDataService.test.ts` and `FirestoreService.test.ts` still expected direct client writes for progress, economy, stats, and daily/classic progress fields. The current architecture delegates those server-managed writes to Cloud Functions and intentionally logs skipped direct writes.
+- Resolution: updated the service tests to assert the server-authoritative write contract, including the `initializeUser` callable path and sanitized client-editable user updates.
+- Issue encountered: `AppStrings.i18n.test.ts` caught missing explicit locale values for new About/Legal, account deletion, and leaderboard guest strings.
+- Resolution: added release-readiness locale supplements and merged them into all non-English override exports, including the popular-language bundles.
+- Issue encountered: `responsive-surface-coverage.test.ts` still looked for LoginScreen's old `authContentContainer` marker after the screen moved to the current `AuthLayout` + `isWideAuthLayout` responsive path.
+- Resolution: refreshed the marker to the current `isWideAuthLayout` hook.
+- Issue encountered: `SolarSystem3D.test.tsx` mocked the R3F `gl` object without the newer `getContext().pixelStorei` shape used to suppress unsupported Expo GL pixel-store flags.
+- Resolution: extended the test mock with `gl.getContext()` and `pixelStorei`.
+- Issue encountered: a TypeScript fixture cleanup was needed after the Firestore test update because a seeded stats spread could overwrite explicitly declared stat keys.
+- Resolution: cast the spread portion to a generic record in the fixture, preserving the runtime assertion while satisfying `tsc`.
+- Final verification passed on 2026-05-25: `pnpm run test:rn -- --runInBand` (175 suites, 3614 tests), `pnpm exec tsc --noEmit --pretty false`, `pnpm run check:rn-upgrade`, and `pnpm exec expo install --check`.
+- Note for future agents: the full RN suite still prints expected console noise from tests that intentionally exercise error paths and from async SolarSystem3D texture updates, but Jest exits 0 with all suites passing.
 
 ## Baseline + Rollout
 - Generate baseline template: `pnpm run baseline:report`
