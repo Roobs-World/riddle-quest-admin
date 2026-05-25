@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react-native";
+import {render} from "@testing-library/react-native";
 import React from "react";
 import Controls from "../Controls";
 
@@ -11,15 +11,11 @@ describe("Controls", () => {
 
   describe("Component Rendering", () => {
     it("should render without crashing when isWin is true", () => {
-      expect(() =>
-        render(<Controls onNextPress={mockOnNextPress} isWin={true} />)
-      ).not.toThrow();
+      expect(() => render(<Controls onNextPress={mockOnNextPress} isWin={true} />)).not.toThrow();
     });
 
     it("should render without crashing when isWin is false", () => {
-      expect(() =>
-        render(<Controls onNextPress={mockOnNextPress} isWin={false} />)
-      ).not.toThrow();
+      expect(() => render(<Controls onNextPress={mockOnNextPress} isWin={false} />)).not.toThrow();
     });
   });
 
@@ -39,21 +35,15 @@ describe("Controls", () => {
 
   describe("Props Validation", () => {
     it("should handle onNextPress function prop correctly", () => {
-      expect(() =>
-        render(<Controls onNextPress={mockOnNextPress} isWin={true} />)
-      ).not.toThrow();
+      expect(() => render(<Controls onNextPress={mockOnNextPress} isWin={true} />)).not.toThrow();
     });
 
     it("should handle isWin boolean prop correctly", () => {
       // Test true case
-      expect(() =>
-        render(<Controls onNextPress={mockOnNextPress} isWin={true} />)
-      ).not.toThrow();
+      expect(() => render(<Controls onNextPress={mockOnNextPress} isWin={true} />)).not.toThrow();
 
       // Test false case
-      expect(() =>
-        render(<Controls onNextPress={mockOnNextPress} isWin={false} />)
-      ).not.toThrow();
+      expect(() => render(<Controls onNextPress={mockOnNextPress} isWin={false} />)).not.toThrow();
     });
   });
 
@@ -65,9 +55,7 @@ describe("Controls", () => {
     });
 
     it("should handle state changes correctly", () => {
-      const { rerender } = render(
-        <Controls onNextPress={mockOnNextPress} isWin={false} />
-      );
+      const {rerender} = render(<Controls onNextPress={mockOnNextPress} isWin={false} />);
 
       // Change to win state
       rerender(<Controls onNextPress={mockOnNextPress} isWin={true} />);

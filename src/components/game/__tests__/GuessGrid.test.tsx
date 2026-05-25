@@ -1,6 +1,6 @@
-import { fireEvent, render } from "@testing-library/react-native";
+import {fireEvent, render} from "@testing-library/react-native";
 import React from "react";
-import type { SubmittedGuess } from "../../../hooks/types";
+import type {SubmittedGuess} from "../../../hooks/types";
 import GuessGrid from "../GuessGrid";
 
 // Mock useTileCapture hook
@@ -14,7 +14,7 @@ jest.mock("../../../hooks/useTileCapture", () => ({
 jest.mock("../../../utils/responsive", () => ({
   scale: (size: number) => size,
   moderateScale: (size: number) => size,
-  responsiveValue: (values: { phone: unknown }) => values.phone,
+  responsiveValue: (values: {phone: unknown}) => values.phone,
   dimensions: {
     screenWidth: 390,
     screenHeight: 844,
@@ -28,19 +28,27 @@ jest.mock("../../../utils/responsive", () => ({
   isLargeTablet: false,
   isDesktop: false,
   responsiveSizes: {
-    textXs: 12, textSm: 14, textBase: 16, textLg: 18, textXl: 20,
-    text2xl: 24, text3xl: 30, text4xl: 36, textTitle: 28, textDisplay: 32,
+    textXs: 12,
+    textSm: 14,
+    textBase: 16,
+    textLg: 18,
+    textXl: 20,
+    text2xl: 24,
+    text3xl: 30,
+    text4xl: 36,
+    textTitle: 28,
+    textDisplay: 32,
   },
 }));
 
 // Mock styles
 jest.mock("../../../styles", () => ({
-  styles: { maskingContainer: { overflow: "hidden" } },
+  styles: {maskingContainer: {overflow: "hidden"}},
   TYPOGRAPHY: {
     fontPrimary: "PoetsenOne",
-    fontSize: { xs: 12, sm: 14, base: 16, lg: 18, xl: 20, "2xl": 24, "3xl": 30, "4xl": 36, title: 28, display: 32 },
-    lineHeight: { tight: 1.25, snug: 1.375, normal: 1.5, relaxed: 1.625, loose: 2 },
-    letterSpacing: { tight: -0.104, normal: 0, wide: 0.025 },
+    fontSize: {xs: 12, sm: 14, base: 16, lg: 18, xl: 20, "2xl": 24, "3xl": 30, "4xl": 36, title: 28, display: 32},
+    lineHeight: {tight: 1.25, snug: 1.375, normal: 1.5, relaxed: 1.625, loose: 2},
+    letterSpacing: {tight: -0.104, normal: 0, wide: 0.025},
   },
 }));
 
@@ -61,14 +69,10 @@ jest.mock("react-native-reanimated", () => {
   return {
     __esModule: true,
     default: {
-      View: ({ children, style, className }: any) =>
-        React.createElement(
-          "View",
-          { style, className, testID: "animated-view" },
-          children
-        ),
+      View: ({children, style, className}: any) =>
+        React.createElement("View", {style, className, testID: "animated-view"}, children),
     },
-    useSharedValue: () => ({ value: 0 }),
+    useSharedValue: () => ({value: 0}),
     withSequence: (...args: any[]) => args[args.length - 1],
     withTiming: (value: any) => value,
     withSpring: (value: any) => value,
@@ -97,7 +101,7 @@ describe("GuessGrid", () => {
     });
 
     it("should render rows matching NUM_GUESSES", () => {
-      const { toJSON } = render(<GuessGrid {...defaultProps} />);
+      const {toJSON} = render(<GuessGrid {...defaultProps} />);
       const tree = toJSON();
       const first = Array.isArray(tree) ? tree[0] : tree;
       const gridContainer = first && typeof first === "object" ? first.children?.[0] : null;
@@ -120,9 +124,7 @@ describe("GuessGrid", () => {
         },
       ];
 
-      const { getAllByText, getByText } = render(
-        <GuessGrid {...defaultProps} guesses={guesses} />
-      );
+      const {getAllByText, getByText} = render(<GuessGrid {...defaultProps} guesses={guesses} />);
 
       expect(getAllByText("T")).toHaveLength(2); // T appears twice
       expect(getByText("E")).toBeTruthy();
@@ -141,9 +143,7 @@ describe("GuessGrid", () => {
         },
       ];
 
-      const { getAllByText, getByText } = render(
-        <GuessGrid {...defaultProps} guesses={guesses} />
-      );
+      const {getAllByText, getByText} = render(<GuessGrid {...defaultProps} guesses={guesses} />);
 
       expect(getAllByText("T")).toHaveLength(2); // T appears twice in first guess
       expect(getByText("E")).toBeTruthy();
@@ -183,13 +183,7 @@ describe("GuessGrid", () => {
       const currentGuess = ["H", "E"];
 
       expect(() => {
-        render(
-          <GuessGrid
-            {...defaultProps}
-            guesses={guesses}
-            currentGuess={currentGuess}
-          />
-        );
+        render(<GuessGrid {...defaultProps} guesses={guesses} currentGuess={currentGuess} />);
       }).not.toThrow();
     });
 
@@ -210,13 +204,7 @@ describe("GuessGrid", () => {
       ];
       const currentGuess = ["Q", "Z"];
 
-      const { getByText } = render(
-        <GuessGrid
-          {...defaultProps}
-          guesses={guesses}
-          currentGuess={currentGuess}
-        />
-      );
+      const {getByText} = render(<GuessGrid {...defaultProps} guesses={guesses} currentGuess={currentGuess} />);
 
       expect(getByText("Q")).toBeTruthy();
       expect(getByText("Z")).toBeTruthy();
@@ -243,13 +231,7 @@ describe("GuessGrid", () => {
       ];
       const currentGuess = ["Q", "Z"];
 
-      const { queryByText } = render(
-        <GuessGrid
-          {...defaultProps}
-          guesses={guesses}
-          currentGuess={currentGuess}
-        />
-      );
+      const {queryByText} = render(<GuessGrid {...defaultProps} guesses={guesses} currentGuess={currentGuess} />);
 
       expect(queryByText("Q")).toBeNull();
       expect(queryByText("Z")).toBeNull();
@@ -266,9 +248,7 @@ describe("GuessGrid", () => {
       ];
 
       expect(() => {
-        render(
-          <GuessGrid {...defaultProps} guesses={guesses} answerLength={5} />
-        );
+        render(<GuessGrid {...defaultProps} guesses={guesses} answerLength={5} />);
       }).not.toThrow();
     });
 
@@ -281,9 +261,7 @@ describe("GuessGrid", () => {
       ];
 
       expect(() => {
-        render(
-          <GuessGrid {...defaultProps} guesses={guesses} answerLength={2} />
-        );
+        render(<GuessGrid {...defaultProps} guesses={guesses} answerLength={2} />);
       }).not.toThrow();
     });
 
@@ -291,33 +269,18 @@ describe("GuessGrid", () => {
       const guesses: SubmittedGuess[] = [
         {
           guess: ["S", "U", "P", "E", "R", "C", "A", "L"],
-          feedback: [
-            "green",
-            "yellow",
-            "red",
-            "green",
-            "yellow",
-            "red",
-            "green",
-            "yellow",
-          ],
+          feedback: ["green", "yellow", "red", "green", "yellow", "red", "green", "yellow"],
         },
       ];
 
       expect(() => {
-        render(
-          <GuessGrid {...defaultProps} guesses={guesses} answerLength={8} />
-        );
+        render(<GuessGrid {...defaultProps} guesses={guesses} answerLength={8} />);
       }).not.toThrow();
     });
 
     it("should clamp overlong current guesses to the answer length", () => {
-      const { getByTestId, queryByTestId, queryByText } = render(
-        <GuessGrid
-          {...defaultProps}
-          answerLength={4}
-          currentGuess={["J", "O", "K", "E", "S"]}
-        />
+      const {getByTestId, queryByTestId, queryByText} = render(
+        <GuessGrid {...defaultProps} answerLength={4} currentGuess={["J", "O", "K", "E", "S"]} />,
       );
 
       expect(getByTestId("guess-cell-0-3")).toBeTruthy();
@@ -362,9 +325,7 @@ describe("GuessGrid", () => {
       ];
 
       expect(() => {
-        render(
-          <GuessGrid {...defaultProps} guesses={guesses} answerLength={5} />
-        );
+        render(<GuessGrid {...defaultProps} guesses={guesses} answerLength={5} />);
       }).not.toThrow();
     });
 
@@ -377,9 +338,7 @@ describe("GuessGrid", () => {
       ];
 
       expect(() => {
-        render(
-          <GuessGrid {...defaultProps} guesses={guesses} answerLength={5} />
-        );
+        render(<GuessGrid {...defaultProps} guesses={guesses} answerLength={5} />);
       }).not.toThrow();
     });
 
@@ -392,9 +351,7 @@ describe("GuessGrid", () => {
       ];
 
       expect(() => {
-        render(
-          <GuessGrid {...defaultProps} guesses={guesses} answerLength={5} />
-        );
+        render(<GuessGrid {...defaultProps} guesses={guesses} answerLength={5} />);
       }).not.toThrow();
     });
   });
@@ -442,7 +399,7 @@ describe("GuessGrid", () => {
 
   describe("Performance Testing", () => {
     it("should handle multiple rerenders", () => {
-      const { rerender } = render(<GuessGrid {...defaultProps} />);
+      const {rerender} = render(<GuessGrid {...defaultProps} />);
 
       for (let i = 0; i < 10; i++) {
         rerender(<GuessGrid {...defaultProps} />);
@@ -453,12 +410,7 @@ describe("GuessGrid", () => {
   describe("Active Slot Selection", () => {
     it("should allow tapping a cell in the active row to select the slot", () => {
       const onSelectCurrentGuessSlot = jest.fn();
-      const { getByTestId } = render(
-        <GuessGrid
-          {...defaultProps}
-          onSelectCurrentGuessSlot={onSelectCurrentGuessSlot}
-        />
-      );
+      const {getByTestId} = render(<GuessGrid {...defaultProps} onSelectCurrentGuessSlot={onSelectCurrentGuessSlot} />);
 
       fireEvent.press(getByTestId("guess-cell-0-2"));
       expect(onSelectCurrentGuessSlot).toHaveBeenCalledWith(2);
@@ -472,13 +424,13 @@ describe("GuessGrid", () => {
           feedback: ["green", "yellow", "red", "green"],
         },
       ];
-      const { getByTestId } = render(
+      const {getByTestId} = render(
         <GuessGrid
           {...defaultProps}
           guesses={guesses}
           currentGuess={["A"]}
           onSelectCurrentGuessSlot={onSelectCurrentGuessSlot}
-        />
+        />,
       );
 
       fireEvent(getByTestId("guess-cell-0-1"), "press");

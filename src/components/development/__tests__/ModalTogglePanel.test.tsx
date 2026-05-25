@@ -1,8 +1,8 @@
 import React from "react";
-import { render, fireEvent, waitFor, act } from "@testing-library/react-native";
-import { Switch } from "react-native";
+import {render, fireEvent, waitFor, act} from "@testing-library/react-native";
+import {Switch} from "react-native";
 import ModalTogglePanel from "../ModalTogglePanel";
-import { MODAL_REGISTRY_TYPES } from "../../modals/modalTypes";
+import {MODAL_REGISTRY_TYPES} from "../../modals/modalTypes";
 
 const mockDebug = jest.fn();
 const mockWarn = jest.fn();
@@ -11,11 +11,9 @@ const mockGetModalComponent = jest.fn();
 const expectedModalTypes = [...MODAL_REGISTRY_TYPES];
 
 jest.mock("../../modals/ModalRegistry", () => {
-  const { MODAL_REGISTRY_TYPES } = jest.requireActual("../../modals/modalTypes");
+  const {MODAL_REGISTRY_TYPES} = jest.requireActual("../../modals/modalTypes");
   return {
-    modalRegistry: Object.fromEntries(
-      MODAL_REGISTRY_TYPES.map((modalType: string) => [modalType, {}])
-    ),
+    modalRegistry: Object.fromEntries(MODAL_REGISTRY_TYPES.map((modalType: string) => [modalType, {}])),
     getModalComponent: (...args: any[]) => mockGetModalComponent(...args),
   };
 });
@@ -48,9 +46,9 @@ describe("ModalTogglePanel", () => {
     jest.clearAllMocks();
 
     mockGetModalComponent.mockImplementation((modalType: string) => {
-      return ({ onClose, ...props }: any) => {
+      return ({onClose, ...props}: any) => {
         const React = require("react");
-        const { TouchableOpacity, Text } = require("react-native");
+        const {TouchableOpacity, Text} = require("react-native");
         return React.createElement(
           React.Fragment,
           null,
@@ -60,7 +58,7 @@ describe("ModalTogglePanel", () => {
               testID: `active-${modalType}`,
               onPress: onClose,
             },
-            React.createElement(Text, null, JSON.stringify(props).slice(0, 20))
+            React.createElement(Text, null, JSON.stringify(props).slice(0, 20)),
           ),
           React.createElement(
             TouchableOpacity,
@@ -78,8 +76,8 @@ describe("ModalTogglePanel", () => {
                 });
               },
             },
-            React.createElement(Text, null, "invoke")
-          )
+            React.createElement(Text, null, "invoke"),
+          ),
         );
       };
     });
@@ -89,20 +87,16 @@ describe("ModalTogglePanel", () => {
     const originalDev = (global as any).__DEV__;
     (global as any).__DEV__ = false;
 
-    const { toJSON } = render(<ModalTogglePanel />);
+    const {toJSON} = render(<ModalTogglePanel />);
 
     expect(toJSON()).toBeNull();
-    expect(mockWarn).toHaveBeenCalledWith(
-      "ModalTogglePanel should not be used in production builds"
-    );
+    expect(mockWarn).toHaveBeenCalledWith("ModalTogglePanel should not be used in production builds");
 
     (global as any).__DEV__ = originalDev;
   });
 
   it("expands panel, toggles modals, and clears all", () => {
-    const { getByText, UNSAFE_getAllByType, queryByTestId } = render(
-      <ModalTogglePanel />
-    );
+    const {getByText, UNSAFE_getAllByType, queryByTestId} = render(<ModalTogglePanel />);
 
     fireEvent.press(getByText(/Modal Testing/));
 
@@ -125,8 +119,7 @@ describe("ModalTogglePanel", () => {
   });
 
   it("closes an active modal via onClose callback", () => {
-    const { getByText, UNSAFE_getAllByType, getByTestId, queryByTestId } =
-      render(<ModalTogglePanel />);
+    const {getByText, UNSAFE_getAllByType, getByTestId, queryByTestId} = render(<ModalTogglePanel />);
 
     fireEvent.press(getByText(/Modal Testing/));
 
@@ -140,9 +133,7 @@ describe("ModalTogglePanel", () => {
   });
 
   it("executes modal-specific mock actions without throwing", () => {
-    const { getByText, UNSAFE_getAllByType, getByTestId } = render(
-      <ModalTogglePanel />
-    );
+    const {getByText, UNSAFE_getAllByType, getByTestId} = render(<ModalTogglePanel />);
 
     fireEvent.press(getByText(/Modal Testing/));
 
@@ -162,17 +153,13 @@ describe("ModalTogglePanel", () => {
     const prototype = Object.prototype as Record<string, unknown>;
     const originalFetch = prototype.__fetchServerData;
 
-    prototype.__fetchServerData = async (
-      updateFn: (data: Record<string, unknown>) => void
-    ) => {
+    prototype.__fetchServerData = async (updateFn: (data: Record<string, unknown>) => void) => {
       delete prototype.__fetchServerData;
-      updateFn({ fetched: true, source: "server" });
+      updateFn({fetched: true, source: "server"});
     };
 
     try {
-      const { getByText, UNSAFE_getAllByType, getByTestId } = render(
-        <ModalTogglePanel />
-      );
+      const {getByText, UNSAFE_getAllByType, getByTestId} = render(<ModalTogglePanel />);
 
       fireEvent.press(getByText(/Modal Testing/));
 
@@ -188,7 +175,7 @@ describe("ModalTogglePanel", () => {
       });
       expect(mockDebug).toHaveBeenCalledWith(
         expect.stringContaining("Updating modal data for settings:"),
-        expect.objectContaining({ fetched: true })
+        expect.objectContaining({fetched: true}),
       );
     } finally {
       if (originalFetch === undefined) {
@@ -201,9 +188,7 @@ describe("ModalTogglePanel", () => {
 
   it("invokes onCompleteRiddle when debug action button is pressed", () => {
     const onCompleteRiddle = jest.fn();
-    const { getByText } = render(
-      <ModalTogglePanel onCompleteRiddle={onCompleteRiddle} />
-    );
+    const {getByText} = render(<ModalTogglePanel onCompleteRiddle={onCompleteRiddle} />);
 
     fireEvent.press(getByText(/Modal Testing/));
     fireEvent.press(getByText("Complete Riddle"));
@@ -213,9 +198,7 @@ describe("ModalTogglePanel", () => {
 
   it("invokes onGenerateDailyChallenge when debug action button is pressed", () => {
     const onGenerateDailyChallenge = jest.fn();
-    const { getByText } = render(
-      <ModalTogglePanel onGenerateDailyChallenge={onGenerateDailyChallenge} />
-    );
+    const {getByText} = render(<ModalTogglePanel onGenerateDailyChallenge={onGenerateDailyChallenge} />);
 
     fireEvent.press(getByText(/Modal Testing/));
     fireEvent.press(getByText("Generate Daily Challenge"));
@@ -225,9 +208,7 @@ describe("ModalTogglePanel", () => {
 
   it("invokes onClearLocalData when debug action button is pressed", () => {
     const onClearLocalData = jest.fn();
-    const { getByText } = render(
-      <ModalTogglePanel onClearLocalData={onClearLocalData} />
-    );
+    const {getByText} = render(<ModalTogglePanel onClearLocalData={onClearLocalData} />);
 
     fireEvent.press(getByText(/Modal Testing/));
     fireEvent.press(getByText("Clear Local Data"));

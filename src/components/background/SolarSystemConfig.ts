@@ -248,4 +248,3 @@ export const SOLAR_SYSTEM_CONFIG: PlanetConfig[] = [
     moons: [],
   },
 ];
-

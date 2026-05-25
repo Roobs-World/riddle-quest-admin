@@ -13,8 +13,7 @@ const readGoogleMobileAdsPluginConfig = () => {
   jest.resetModules();
   const appConfig = require("../../../app.config.js");
   const plugin = appConfig.plugins.find(
-    (entry) =>
-      Array.isArray(entry) && entry[0] === "react-native-google-mobile-ads"
+    (entry) => Array.isArray(entry) && entry[0] === "react-native-google-mobile-ads",
   );
 
   return plugin[1];

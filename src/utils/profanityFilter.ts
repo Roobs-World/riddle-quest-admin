@@ -1,7 +1,7 @@
 // Simple profanity filter for usernames
 // This is a basic implementation that can be enhanced with more sophisticated filtering
 
-import { PROFANE_WORDS } from "./profanityWords";
+import {PROFANE_WORDS} from "./profanityWords";
 
 /**
  * Checks if the given username contains profanity or inappropriate content.
@@ -23,9 +23,7 @@ export function containsProfanity(username: string): boolean {
     // Substring matching catches things like "fuck" in "fucker", but some terms
     // create too many false positives (e.g. "anus" in "cleanuser", "anal" in "analysis").
     const boundaryOnly = new Set(["anal", "anus", "tit", "tits"]);
-    const substringMatch = boundaryOnly.has(word)
-      ? false
-      : cleanUsername.includes(word.toLowerCase());
+    const substringMatch = boundaryOnly.has(word) ? false : cleanUsername.includes(word.toLowerCase());
 
     return exactMatch || substringMatch;
   });
@@ -42,4 +40,3 @@ export function validateUsernameForProfanity(username: string): string {
   }
   return "";
 }
-

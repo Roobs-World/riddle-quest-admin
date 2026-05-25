@@ -1,14 +1,8 @@
 import React from "react";
-import {
-  ActivityIndicator,
-  Modal,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { AppStrings } from "../../../constants/AppStrings";
-import { AUTH_CONTENT_MAX_WIDTH } from "../../../constants/layout";
-import { COLORS, SPACING, TYPOGRAPHY } from "../../../styles";
+import {ActivityIndicator, Modal, Text, TouchableOpacity, View} from "react-native";
+import {AppStrings} from "../../../constants/AppStrings";
+import {AUTH_CONTENT_MAX_WIDTH} from "../../../constants/layout";
+import {COLORS, SPACING, TYPOGRAPHY} from "../../../styles";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 
 interface DeleteAccountConfirmationModalProps {
@@ -18,9 +12,12 @@ interface DeleteAccountConfirmationModalProps {
   onConfirm: () => void;
 }
 
-const DeleteAccountConfirmationModal: React.FC<
-  DeleteAccountConfirmationModalProps
-> = ({ isVisible, isDeleting, onCancel, onConfirm }) => {
+const DeleteAccountConfirmationModal: React.FC<DeleteAccountConfirmationModalProps> = ({
+  isVisible,
+  isDeleting,
+  onCancel,
+  onConfirm,
+}) => {
   return (
     <Modal
       visible={isVisible}
@@ -37,10 +34,7 @@ const DeleteAccountConfirmationModal: React.FC<
           backgroundColor: "rgba(0,0,0,0.55)",
         }}
       >
-        <SlideInModalContent
-          isVisible={isVisible}
-          style={{ width: "100%", maxWidth: AUTH_CONTENT_MAX_WIDTH }}
-        >
+        <SlideInModalContent isVisible={isVisible} style={{width: "100%", maxWidth: AUTH_CONTENT_MAX_WIDTH}}>
           <View
             style={{
               width: "100%",
@@ -75,7 +69,7 @@ const DeleteAccountConfirmationModal: React.FC<
               {AppStrings.Profile.DELETE_ACCOUNT_CONFIRM_MESSAGE}
             </Text>
 
-            <View style={{ gap: SPACING.sm }}>
+            <View style={{gap: SPACING.sm}}>
               <TouchableOpacity
                 accessibilityRole="button"
                 disabled={isDeleting}

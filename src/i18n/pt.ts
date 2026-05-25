@@ -1,7 +1,7 @@
 /**
  * @fileoverview Portuguese (pt) locale overrides.
  */
-import type { LocaleOverrides } from "./types";
+import type {LocaleOverrides} from "./types";
 
 export const ptOverrides: LocaleOverrides = {
   AuthStrings: {
@@ -33,14 +33,14 @@ export const ptOverrides: LocaleOverrides = {
       USER_NOT_FOUND_ERROR: "Usuario nao encontrado. Verifique seu email.",
       WRONG_PASSWORD_ERROR: "Senha incorreta. Tente novamente.",
       USER_DISABLED_ERROR: "Esta conta foi desativada.",
-      ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL:
-        "Conta existente com outra credencial. Use outro metodo de login.",
+      ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL: "Conta existente com outra credencial. Use outro metodo de login.",
       OPERATION_NOT_SUPPORTED_ERROR: "Operacao nao suportada neste ambiente.",
       LOGIN_FAILED_GENERIC: "Falha no login. Verifique suas credenciais.",
       GOOGLE_UNEXPECTED_ERROR: "Ocorreu um erro inesperado durante o login com Google.",
       TWITTER_UNEXPECTED_ERROR: "Ocorreu um erro inesperado durante o login com X.",
       FACEBOOK_CONFIG_ERROR: "Problema de configuracao do Facebook. Tente novamente ou contate o suporte.",
-      FACEBOOK_TIMEOUT_ERROR: "O login com Facebook expirou. Pode indicar um problema de configuracao. Tente novamente.",
+      FACEBOOK_TIMEOUT_ERROR:
+        "O login com Facebook expirou. Pode indicar um problema de configuracao. Tente novamente.",
       FACEBOOK_SDK_ERROR: "O login com Facebook nao esta configurado corretamente. Reinicie o app e tente novamente.",
       FACEBOOK_NETWORK_ERROR: "Erro de rede durante o login com Facebook. Verifique sua conexao e tente novamente.",
       FACEBOOK_INVALID_CREDENTIAL_ERROR: "Credenciais do Facebook invalidas. Tente novamente.",
@@ -50,10 +50,8 @@ export const ptOverrides: LocaleOverrides = {
       TITLE: "Redefinir senha",
       BUTTON_TEXT: "Redefinir senha",
       SUCCESS_MESSAGE: "Email de redefinicao enviado! Verifique sua caixa de entrada.",
-      USER_NOT_FOUND_ERROR:
-        "Nenhuma conta encontrada com este email. Verifique ou crie uma nova conta.",
-      GENERIC_ERROR:
-        "Ocorreu um erro ao enviar o email. Tente novamente.",
+      USER_NOT_FOUND_ERROR: "Nenhuma conta encontrada com este email. Verifique ou crie uma nova conta.",
+      GENERIC_ERROR: "Ocorreu um erro ao enviar o email. Tente novamente.",
       BACK_TO_LOGIN: "Voltar ao login",
     },
     SignUp: {
@@ -88,8 +86,7 @@ export const ptOverrides: LocaleOverrides = {
     },
     NewPassword: {
       TITLE: "Definir nova senha",
-      NEW_PASSWORD_DESCRIPTION:
-        "Redefina sua senha para recuperar e entrar na sua conta.",
+      NEW_PASSWORD_DESCRIPTION: "Redefina sua senha para recuperar e entrar na sua conta.",
       NEW_PASSWORD_LABEL: "Nova senha",
       NEW_PASSWORD_PLACEHOLDER: "Digite sua nova senha",
       CONFIRM_PASSWORD_LABEL: "Confirmar nova senha",
@@ -105,8 +102,7 @@ export const ptOverrides: LocaleOverrides = {
   },
   NavigationMessages: {
     NO_CLASSIC_RIDDLE_FOUND: "Nenhum enigma classico no indice ",
-    SERVER_GENERATES_RIDDLES:
-      ". O servidor gera novos enigmas quando voce envia tentativas.",
+    SERVER_GENERATES_RIDDLES: ". O servidor gera novos enigmas quando voce envia tentativas.",
     ERROR_LOADING_NEXT_RIDDLE: "Erro ao carregar o proximo enigma classico:",
   },
   Settings: {
@@ -119,8 +115,7 @@ export const ptOverrides: LocaleOverrides = {
     CREDITS_BUTTON: "Creditos",
     TEST_CRASH_BUTTON: "Testar falha",
     TEST_CRASH_ALERT_TITLE: "Testar falha",
-    TEST_CRASH_ALERT_MESSAGE:
-      "Isso vai travar o app para testar o Crashlytics. Continuar?",
+    TEST_CRASH_ALERT_MESSAGE: "Isso vai travar o app para testar o Crashlytics. Continuar?",
     TEST_CRASH_ALERT_CANCEL: "Cancelar",
     TEST_CRASH_ALERT_CRASH: "Falhar",
     CLOSE_BUTTON: "Fechar",
@@ -134,8 +129,7 @@ export const ptOverrides: LocaleOverrides = {
     TITLE: "Creditos",
     SUBTITLE: "Conheca a equipe incrivel por tras do Riddle Quest",
     THANK_YOU_TITLE: "Obrigado!",
-    THANK_YOU_TEXT:
-      "Agradecimento especial a todos os contribuidores que tornaram o Riddle Quest possivel.",
+    THANK_YOU_TEXT: "Agradecimento especial a todos os contribuidores que tornaram o Riddle Quest possivel.",
   },
   Profile: {
     LOADING_MESSAGE: "Carregando dados do perfil...",
@@ -160,8 +154,7 @@ export const ptOverrides: LocaleOverrides = {
     ALERT_USERNAME_EMPTY: "Nome de usuario nao pode estar vazio.",
     ALERT_SUCCESS_TITLE: "Sucesso",
     ALERT_USERNAME_UPDATE_SUCCESS: "Nome de usuario atualizado com sucesso!",
-    ALERT_USERNAME_UPDATE_FAIL:
-      "Falha ao atualizar nome de usuario. Tente novamente.",
+    ALERT_USERNAME_UPDATE_FAIL: "Falha ao atualizar nome de usuario. Tente novamente.",
     CHANGE_AVATAR_TITLE: "Alterar avatar",
     SELECT_PRELOADED_AVATAR_SUBTITLE: "Selecione um avatar pre-carregado:",
     UPLOAD_CUSTOM_AVATAR_SUBTITLE: "Ou envie o seu:",
@@ -169,8 +162,7 @@ export const ptOverrides: LocaleOverrides = {
     CANCEL_BUTTON: "Cancelar",
     ALERT_AVATAR_SELECT_FAIL: "Nao foi possivel selecionar avatar.",
     ALERT_AVATAR_UPDATE_SUCCESS: "Avatar atualizado com sucesso!",
-    ALERT_PRELOADED_AVATAR_SELECT_FAIL:
-      "Falha ao selecionar avatar pre-carregado.",
+    ALERT_PRELOADED_AVATAR_SELECT_FAIL: "Falha ao selecionar avatar pre-carregado.",
     ALERT_AVATAR_UPDATE_FACEBOOK_SUCCESS: "Avatar atualizado com a foto do Facebook!",
     ALERT_USERNAME_TOO_SHORT: "O nome de usuario deve ter pelo menos 3 caracteres.",
     ALERT_PASSWORD_FIELDS_EMPTY: "Por favor, preencha todos os campos de senha.",
@@ -213,8 +205,7 @@ export const ptOverrides: LocaleOverrides = {
     NO_THANKS_BUTTON: "Agora nao",
   },
   ErrorMessages: {
-    UNABLE_TO_LOAD_RIDDLES:
-      "Nao foi possivel carregar enigmas. Verifique sua conexao.",
+    UNABLE_TO_LOAD_RIDDLES: "Nao foi possivel carregar enigmas. Verifique sua conexao.",
     FAILED_TO_LOAD_PRODUCTS: "Falha ao carregar produtos",
     FAILED_TO_LOAD_SHOP_PRODUCTS: "Falha ao carregar produtos da loja",
   },
@@ -234,7 +225,8 @@ export const ptOverrides: LocaleOverrides = {
     NOT_ENOUGH_COINS_MESSAGE: "Voce precisa de mais moedas para usar dica.",
     HINT_ERROR_TITLE: "Erro",
     GUEST_MODE_NOTICE_TITLE: "Aviso de modo convidado",
-    GUEST_MODE_NOTICE_MESSAGE: "Seu progresso pode ser perdido no modo convidado e algumas funcoes como o placar estao indisponiveis.",
+    GUEST_MODE_NOTICE_MESSAGE:
+      "Seu progresso pode ser perdido no modo convidado e algumas funcoes como o placar estao indisponiveis.",
     AD_NOT_READY_TITLE: "Anuncio nao disponivel",
     AD_NOT_READY_MESSAGE: "O anuncio nao pode ser exibido agora. Tente novamente em breve.",
     SPEND_COINS_ERROR_MESSAGE: "Nao foi possivel gastar moedas. Tente novamente.",
@@ -312,14 +304,12 @@ export const ptOverrides: LocaleOverrides = {
     LETS_PLAY: "Vamos Jogar",
     SOLVE_RIDDLES_TEXT:
       "Resolva enigmas adivinhando a resposta letra por letra. Use as pistas de cor para guiar cada tentativa.",
-    EARN_COINS_TEXT:
-      "Ganhe moedas, supere desafios diarios e suba no placar.",
+    EARN_COINS_TEXT: "Ganhe moedas, supere desafios diarios e suba no placar.",
   },
   Instructions: {
     TITLE: "Como Jogar",
     GOAL_TITLE: "O Objetivo",
-    GOAL_DESCRIPTION:
-      "Adivinhe o enigma oculto em 3 tentativas usando as pistas de cor.",
+    GOAL_DESCRIPTION: "Adivinhe o enigma oculto em 3 tentativas usando as pistas de cor.",
     COLOR_CLUES_TITLE: "Pistas de Cor",
     COLOR_CORRECT: "A letra esta correta e na posicao certa",
     COLOR_MISPLACED: "A letra esta na palavra mas na posicao errada",
@@ -406,7 +396,8 @@ export const ptOverrides: LocaleOverrides = {
     LEADERBOARD_FIFTH_CORRECT_TITLE: "Suba no ranking",
     LEADERBOARD_FIFTH_CORRECT_BODY: "Cinco respostas corretas! Abra seu perfil para ver sua posicao.",
     CLASSIC_FROM_DAILY_TITLE: "Modo Classico",
-    CLASSIC_FROM_DAILY_BODY: "Desafio diario concluido. O modo Classico permite continuar resolvendo enigmas no seu ritmo.",
+    CLASSIC_FROM_DAILY_BODY:
+      "Desafio diario concluido. O modo Classico permite continuar resolvendo enigmas no seu ritmo.",
     PROFILE_IDENTITY_TITLE: "Perfil",
     PROFILE_IDENTITY_BODY: "Seu avatar, nome de usuario, nivel de XP e progresso de nivel ficam aqui.",
     PROFILE_DAILY_PUZZLES_TITLE: "Desafios diarios",

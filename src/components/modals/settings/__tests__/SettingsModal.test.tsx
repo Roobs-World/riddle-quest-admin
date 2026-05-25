@@ -1,5 +1,5 @@
 const React = require("react");
-import { render, fireEvent, waitFor, act } from "@testing-library/react-native";
+import {render, fireEvent, waitFor, act} from "@testing-library/react-native";
 import SettingsModal from "../SettingsModal";
 
 // Mock constants
@@ -31,9 +31,9 @@ jest.mock("../../../../constants/AppStrings", () => ({
     },
   },
   LANGUAGE_OPTIONS: [
-    { code: "en", label: "English" },
-    { code: "es", label: "Spanish" },
-    { code: "fr", label: "French" },
+    {code: "en", label: "English"},
+    {code: "es", label: "Spanish"},
+    {code: "fr", label: "French"},
   ],
   getLanguageLabel: (code: string) => {
     const labels: Record<string, string> = {
@@ -88,7 +88,7 @@ describe("<SettingsModal />", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    const { getAppLanguage } = require("../../../../constants/AppStrings");
+    const {getAppLanguage} = require("../../../../constants/AppStrings");
     getAppLanguage.mockReturnValue("en");
   });
 
@@ -98,65 +98,63 @@ describe("<SettingsModal />", () => {
     });
 
     it("should render without crashing when not visible", () => {
-      expect(() =>
-        render(<SettingsModal {...defaultProps} isVisible={false} />)
-      ).not.toThrow();
+      expect(() => render(<SettingsModal {...defaultProps} isVisible={false} />)).not.toThrow();
     });
 
     it("should render title", () => {
-      const { getByText } = render(<SettingsModal {...defaultProps} />);
+      const {getByText} = render(<SettingsModal {...defaultProps} />);
       expect(getByText("Settings")).toBeTruthy();
     });
 
     it("should render sound toggle", () => {
-      const { getByText } = render(<SettingsModal {...defaultProps} />);
+      const {getByText} = render(<SettingsModal {...defaultProps} />);
       expect(getByText("Sound")).toBeTruthy();
     });
 
     it("should render haptics toggle", () => {
-      const { getByText } = render(<SettingsModal {...defaultProps} />);
+      const {getByText} = render(<SettingsModal {...defaultProps} />);
       expect(getByText("Haptics")).toBeTruthy();
     });
 
     it("should render language option", () => {
-      const { getByText } = render(<SettingsModal {...defaultProps} />);
+      const {getByText} = render(<SettingsModal {...defaultProps} />);
       expect(getByText("Language")).toBeTruthy();
     });
 
     it("should render current language label", () => {
-      const { getByText } = render(<SettingsModal {...defaultProps} />);
+      const {getByText} = render(<SettingsModal {...defaultProps} />);
       expect(getByText("English")).toBeTruthy();
     });
 
     it("should render help and support option", () => {
-      const { getByText } = render(<SettingsModal {...defaultProps} />);
+      const {getByText} = render(<SettingsModal {...defaultProps} />);
       expect(getByText("Help and Support?")).toBeTruthy();
     });
 
     it("should render credits option", () => {
-      const { getByText } = render(<SettingsModal {...defaultProps} />);
+      const {getByText} = render(<SettingsModal {...defaultProps} />);
       expect(getByText("Credits")).toBeTruthy();
     });
 
     it("should render about option", () => {
-      const { getByText } = render(<SettingsModal {...defaultProps} />);
+      const {getByText} = render(<SettingsModal {...defaultProps} />);
       expect(getByText("About")).toBeTruthy();
     });
 
     it("should render logout button", () => {
-      const { getByText } = render(<SettingsModal {...defaultProps} />);
+      const {getByText} = render(<SettingsModal {...defaultProps} />);
       expect(getByText("Logout")).toBeTruthy();
     });
 
     it("should render close button", () => {
-      const { getByLabelText } = render(<SettingsModal {...defaultProps} />);
+      const {getByLabelText} = render(<SettingsModal {...defaultProps} />);
       expect(getByLabelText("Close")).toBeTruthy();
     });
   });
 
   describe("Toggle Interactions", () => {
     it("should call onToggleSound when sound On is pressed", () => {
-      const { getAllByText } = render(<SettingsModal {...defaultProps} />);
+      const {getAllByText} = render(<SettingsModal {...defaultProps} />);
       const onButtons = getAllByText("On");
       // First On button is for Sound
       fireEvent.press(onButtons[0]);
@@ -164,7 +162,7 @@ describe("<SettingsModal />", () => {
     });
 
     it("should call onToggleSound with false when sound Off is pressed", () => {
-      const { getAllByText } = render(<SettingsModal {...defaultProps} />);
+      const {getAllByText} = render(<SettingsModal {...defaultProps} />);
       const offButtons = getAllByText("Off");
       // First Off button is for Sound
       fireEvent.press(offButtons[0]);
@@ -172,7 +170,7 @@ describe("<SettingsModal />", () => {
     });
 
     it("should call onToggleHaptics when haptics toggle is pressed", () => {
-      const { getAllByText } = render(<SettingsModal {...defaultProps} />);
+      const {getAllByText} = render(<SettingsModal {...defaultProps} />);
       const onButtons = getAllByText("On");
       // Second On button is for Haptics
       fireEvent.press(onButtons[1]);
@@ -182,25 +180,25 @@ describe("<SettingsModal />", () => {
 
   describe("Navigation Interactions", () => {
     it("should call onPressHelp when help option is pressed", () => {
-      const { getByText } = render(<SettingsModal {...defaultProps} />);
+      const {getByText} = render(<SettingsModal {...defaultProps} />);
       fireEvent.press(getByText("Help and Support?"));
       expect(defaultProps.onPressHelp).toHaveBeenCalledTimes(1);
     });
 
     it("should call onPressCredits when credits is pressed", () => {
-      const { getByText } = render(<SettingsModal {...defaultProps} />);
+      const {getByText} = render(<SettingsModal {...defaultProps} />);
       fireEvent.press(getByText("Credits"));
       expect(defaultProps.onPressCredits).toHaveBeenCalledTimes(1);
     });
 
     it("should call onPressAbout when about is pressed", () => {
-      const { getByText } = render(<SettingsModal {...defaultProps} />);
+      const {getByText} = render(<SettingsModal {...defaultProps} />);
       fireEvent.press(getByText("About"));
       expect(defaultProps.onPressAbout).toHaveBeenCalledTimes(1);
     });
 
     it("should call onClose when close button is pressed", () => {
-      const { getByLabelText } = render(<SettingsModal {...defaultProps} />);
+      const {getByLabelText} = render(<SettingsModal {...defaultProps} />);
       fireEvent.press(getByLabelText("Close"));
       expect(defaultProps.onClose).toHaveBeenCalledTimes(1);
     });
@@ -208,7 +206,7 @@ describe("<SettingsModal />", () => {
 
   describe("Language Picker", () => {
     it("should open language picker when language row is pressed", () => {
-      const { getByText, queryByText } = render(<SettingsModal {...defaultProps} />);
+      const {getByText, queryByText} = render(<SettingsModal {...defaultProps} />);
       fireEvent.press(getByText("Language"));
       // After opening, the language picker should show language options
       expect(queryByText("Spanish")).toBeTruthy();
@@ -216,7 +214,7 @@ describe("<SettingsModal />", () => {
     });
 
     it("should call onChangeLanguage when a language is selected", () => {
-      const { getByText } = render(<SettingsModal {...defaultProps} />);
+      const {getByText} = render(<SettingsModal {...defaultProps} />);
       // Open language picker
       fireEvent.press(getByText("Language"));
       // Select Spanish
@@ -225,7 +223,7 @@ describe("<SettingsModal />", () => {
     });
 
     it("should close language picker when a language is selected", () => {
-      const { getByText, queryAllByText } = render(<SettingsModal {...defaultProps} />);
+      const {getByText, queryAllByText} = render(<SettingsModal {...defaultProps} />);
       fireEvent.press(getByText("Language"));
       fireEvent.press(getByText("Spanish"));
       // Language picker should close after selection
@@ -233,9 +231,7 @@ describe("<SettingsModal />", () => {
     });
 
     it("should close language picker when close button is pressed", () => {
-      const { getByText, queryByText, getAllByText } = render(
-        <SettingsModal {...defaultProps} />
-      );
+      const {getByText, queryByText, getAllByText} = render(<SettingsModal {...defaultProps} />);
       fireEvent.press(getByText("Language"));
       // Press close button in language picker
       const closeButtons = getAllByText("Close");
@@ -244,24 +240,20 @@ describe("<SettingsModal />", () => {
     });
 
     it("should show selected indicator for current language", () => {
-      const { getByText, queryByText } = render(
-        <SettingsModal {...defaultProps} currentLanguage="en" />
-      );
+      const {getByText, queryByText} = render(<SettingsModal {...defaultProps} currentLanguage="en" />);
       fireEvent.press(getByText("Language"));
       // English should be marked as selected
       expect(queryByText("Selected")).toBeTruthy();
     });
 
     it("should handle onRequestClose of language picker modal", () => {
-      const { getByText, UNSAFE_queryAllByType } = render(
-        <SettingsModal {...defaultProps} />
-      );
+      const {getByText, UNSAFE_queryAllByType} = render(<SettingsModal {...defaultProps} />);
 
       // Open the language picker
       fireEvent.press(getByText("Language"));
 
       // Get the Modal component and trigger onRequestClose
-      const { Modal } = require("react-native");
+      const {Modal} = require("react-native");
       const modals = UNSAFE_queryAllByType(Modal);
 
       // The second modal is the language picker
@@ -275,24 +267,19 @@ describe("<SettingsModal />", () => {
     });
 
     it("should close language picker when backdrop TouchableOpacity is pressed", () => {
-      const { getByText, queryByText, UNSAFE_queryAllByType } = render(
-        <SettingsModal {...defaultProps} />
-      );
+      const {getByText, queryByText, UNSAFE_queryAllByType} = render(<SettingsModal {...defaultProps} />);
 
       // Open the language picker
       fireEvent.press(getByText("Language"));
       expect(queryByText("Spanish")).toBeTruthy();
 
       // Find and press the backdrop TouchableOpacity
-      const { TouchableOpacity } = require("react-native");
+      const {TouchableOpacity} = require("react-native");
       const touchables = UNSAFE_queryAllByType(TouchableOpacity);
 
       // Find the backdrop touchable (has flex: 1 style and activeOpacity: 1)
       const backdrop = touchables.find(
-        (t: any) =>
-          t.props.style?.flex === 1 &&
-          t.props.activeOpacity === 1 &&
-          t.props.onPress
+        (t: any) => t.props.style?.flex === 1 && t.props.activeOpacity === 1 && t.props.onPress,
       );
 
       if (backdrop?.props.onPress) {
@@ -304,9 +291,7 @@ describe("<SettingsModal />", () => {
   describe("Logout", () => {
     it("should call onPressLogout when logout is pressed", async () => {
       const onPressLogout = jest.fn();
-      const { getByText } = render(
-        <SettingsModal {...defaultProps} onPressLogout={onPressLogout} />
-      );
+      const {getByText} = render(<SettingsModal {...defaultProps} onPressLogout={onPressLogout} />);
 
       fireEvent.press(getByText("Logout"));
 
@@ -320,9 +305,7 @@ describe("<SettingsModal />", () => {
         throw new Error("Logout failed");
       });
 
-      const { getByText } = render(
-        <SettingsModal {...defaultProps} onPressLogout={onPressLogout} />
-      );
+      const {getByText} = render(<SettingsModal {...defaultProps} onPressLogout={onPressLogout} />);
 
       fireEvent.press(getByText("Logout"));
 
@@ -335,39 +318,33 @@ describe("<SettingsModal />", () => {
 
   describe("Menu Options", () => {
     it("should not render achievements option", () => {
-      const { queryByText } = render(<SettingsModal {...defaultProps} />);
+      const {queryByText} = render(<SettingsModal {...defaultProps} />);
       expect(queryByText("Achievements")).toBeNull();
     });
   });
 
   describe("Toggle State Display", () => {
     it("should show correct state for sound toggle when enabled", () => {
-      const { getAllByText } = render(
-        <SettingsModal {...defaultProps} isSoundEnabled={true} />
-      );
+      const {getAllByText} = render(<SettingsModal {...defaultProps} isSoundEnabled={true} />);
       // On button should be styled as selected
       expect(getAllByText("On").length).toBeGreaterThan(0);
     });
 
     it("should show correct state for sound toggle when disabled", () => {
-      const { getAllByText } = render(
-        <SettingsModal {...defaultProps} isSoundEnabled={false} />
-      );
+      const {getAllByText} = render(<SettingsModal {...defaultProps} isSoundEnabled={false} />);
       // Off button should be styled as selected
       expect(getAllByText("Off").length).toBeGreaterThan(0);
     });
 
     it("should show correct state for haptics toggle when enabled", () => {
-      const { getAllByText } = render(
-        <SettingsModal {...defaultProps} isHapticsEnabled={true} />
-      );
+      const {getAllByText} = render(<SettingsModal {...defaultProps} isHapticsEnabled={true} />);
       expect(getAllByText("On").length).toBeGreaterThan(0);
     });
   });
 
   describe("Component Lifecycle", () => {
     it("should handle prop updates correctly", () => {
-      const { rerender } = render(<SettingsModal {...defaultProps} />);
+      const {rerender} = render(<SettingsModal {...defaultProps} />);
 
       expect(() => {
         rerender(<SettingsModal {...defaultProps} isSoundEnabled={false} />);
@@ -377,14 +354,12 @@ describe("<SettingsModal />", () => {
     });
 
     it("should handle unmount correctly", () => {
-      const { unmount } = render(<SettingsModal {...defaultProps} />);
+      const {unmount} = render(<SettingsModal {...defaultProps} />);
       expect(() => unmount()).not.toThrow();
     });
 
     it("should handle visibility changes", () => {
-      const { rerender, getByText, queryByText } = render(
-        <SettingsModal {...defaultProps} isVisible={true} />
-      );
+      const {rerender, getByText, queryByText} = render(<SettingsModal {...defaultProps} isVisible={true} />);
       expect(getByText("Settings")).toBeTruthy();
 
       rerender(<SettingsModal {...defaultProps} isVisible={false} />);
@@ -404,32 +379,18 @@ describe("<SettingsModal />", () => {
 
   describe("Edge Cases", () => {
     it("should handle all toggles being disabled", () => {
-      const { getByText } = render(
-        <SettingsModal
-          {...defaultProps}
-          isSoundEnabled={false}
-          isHapticsEnabled={false}
-        />
-      );
+      const {getByText} = render(<SettingsModal {...defaultProps} isSoundEnabled={false} isHapticsEnabled={false} />);
       expect(getByText("Settings")).toBeTruthy();
     });
 
     it("should handle all toggles being enabled", () => {
-      const { getByText } = render(
-        <SettingsModal
-          {...defaultProps}
-          isSoundEnabled={true}
-          isHapticsEnabled={true}
-        />
-      );
+      const {getByText} = render(<SettingsModal {...defaultProps} isSoundEnabled={true} isHapticsEnabled={true} />);
       expect(getByText("Settings")).toBeTruthy();
     });
 
     it("should handle different language values", () => {
-      const { getAppLanguage } = require("../../../../constants/AppStrings");
-      const { rerender, getByText } = render(
-        <SettingsModal {...defaultProps} currentLanguage={"en" as any} />
-      );
+      const {getAppLanguage} = require("../../../../constants/AppStrings");
+      const {rerender, getByText} = render(<SettingsModal {...defaultProps} currentLanguage={"en" as any} />);
       expect(getByText("English")).toBeTruthy();
 
       getAppLanguage.mockReturnValue("es");

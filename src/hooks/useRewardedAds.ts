@@ -1,8 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
-import type {
-  AwardedAdCallbackResponse,
-  RewardedAdPlacement,
-} from "../services/RewardedAdService";
+import {useCallback, useEffect, useState} from "react";
+import type {AwardedAdCallbackResponse, RewardedAdPlacement} from "../services/RewardedAdService";
 import {
   getRewardedAdReadiness,
   loadRewardedAd as loadRewardedAdService,
@@ -17,14 +14,12 @@ interface UseRewardedAds {
   showRewardedAd: () => Promise<boolean>;
   recordRewardedAdCompletion: (
     placement: RewardedAdPlacement,
-    callbackId?: string
+    callbackId?: string,
   ) => Promise<AwardedAdCallbackResponse>;
 }
 
 const useRewardedAds = (): UseRewardedAds => {
-  const [isRewardedAdReady, setIsRewardedAdReady] = useState<boolean>(
-    getRewardedAdReadiness()
-  );
+  const [isRewardedAdReady, setIsRewardedAdReady] = useState<boolean>(getRewardedAdReadiness());
 
   useEffect(() => {
     return subscribeToRewardedAdReadiness(setIsRewardedAdReady);
@@ -39,12 +34,9 @@ const useRewardedAds = (): UseRewardedAds => {
   }, []);
 
   const recordRewardedAdCompletion = useCallback(
-    (
-      placement: RewardedAdPlacement,
-      callbackId?: string
-    ): Promise<AwardedAdCallbackResponse> =>
+    (placement: RewardedAdPlacement, callbackId?: string): Promise<AwardedAdCallbackResponse> =>
       recordRewardedAdCompletionService(placement, callbackId),
-    []
+    [],
   );
 
   return {

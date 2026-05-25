@@ -1,21 +1,17 @@
 import React from "react";
-import { render, fireEvent, waitFor } from "@testing-library/react-native";
-import VictoryModal, { VICTORY_MODAL_HEIGHT_MULTIPLIER } from "../VictoryModal";
-import type { SubmittedGuess, Feedback } from "../../../../hooks/types";
-import { SocialSharingService } from "../../../../services/SocialSharingService";
-import {
-  MODAL_MAX_SCREEN_HEIGHT_FRACTION,
-  MODAL_WIDTH,
-  getResponsiveModalHeight,
-} from "../../../../constants/layout";
+import {render, fireEvent, waitFor} from "@testing-library/react-native";
+import VictoryModal, {VICTORY_MODAL_HEIGHT_MULTIPLIER} from "../VictoryModal";
+import type {SubmittedGuess, Feedback} from "../../../../hooks/types";
+import {SocialSharingService} from "../../../../services/SocialSharingService";
+import {MODAL_MAX_SCREEN_HEIGHT_FRACTION, MODAL_WIDTH, getResponsiveModalHeight} from "../../../../constants/layout";
 
 jest.mock("react-native/Libraries/Modal/Modal", () => {
   const React = require("react");
   return {
     __esModule: true,
-    default: function MockModal({ children, visible }: any) {
+    default: function MockModal({children, visible}: any) {
       if (!visible) return null;
-      return React.createElement("View", { testID: "modal" }, children);
+      return React.createElement("View", {testID: "modal"}, children);
     },
   };
 });
@@ -54,7 +50,7 @@ describe("VictoryModal", () => {
   });
 
   it("renders the updated design content", () => {
-    const { getByText, queryByTestId } = render(<VictoryModal {...defaultProps} />);
+    const {getByText, queryByTestId} = render(<VictoryModal {...defaultProps} />);
 
     expect(getByText("NICE JOB!")).toBeTruthy();
     expect(getByText("+50 Coins")).toBeTruthy();
@@ -64,11 +60,8 @@ describe("VictoryModal", () => {
   });
 
   it("uses the taller DSI-035 decorative background frame", () => {
-    const { getByTestId } = render(<VictoryModal {...defaultProps} />);
-    const expectedHeight = getResponsiveModalHeight(
-      VICTORY_MODAL_HEIGHT_MULTIPLIER,
-      MODAL_MAX_SCREEN_HEIGHT_FRACTION,
-    );
+    const {getByTestId} = render(<VictoryModal {...defaultProps} />);
+    const expectedHeight = getResponsiveModalHeight(VICTORY_MODAL_HEIGHT_MULTIPLIER, MODAL_MAX_SCREEN_HEIGHT_FRACTION);
     const previousHeight = getResponsiveModalHeight(1.4, MODAL_MAX_SCREEN_HEIGHT_FRACTION);
 
     expect(expectedHeight).toBeGreaterThan(previousHeight);
@@ -83,7 +76,7 @@ describe("VictoryModal", () => {
   });
 
   it("shows sequence progress and Next text for an intermediate popup", () => {
-    const { getByTestId, getByText, queryByText } = render(
+    const {getByTestId, getByText, queryByText} = render(
       <VictoryModal
         {...defaultProps}
         sequenceProgress={{
@@ -92,7 +85,7 @@ describe("VictoryModal", () => {
           hasNextPopup: true,
           primaryActionText: "Next",
         }}
-      />
+      />,
     );
 
     expect(getByTestId("modal-sequence-breadcrumb")).toBeTruthy();
@@ -101,15 +94,13 @@ describe("VictoryModal", () => {
   });
 
   it("falls back to earned coins when totalCoins is not provided", () => {
-    const { getByText } = render(
-      <VictoryModal {...defaultProps} totalCoins={undefined} />
-    );
+    const {getByText} = render(<VictoryModal {...defaultProps} totalCoins={undefined} />);
 
     expect(getByText("50")).toBeTruthy();
   });
 
   it("advances when the modal is tapped", async () => {
-    const { getByTestId } = render(<VictoryModal {...defaultProps} />);
+    const {getByTestId} = render(<VictoryModal {...defaultProps} />);
 
     fireEvent.press(getByTestId("victory-modal-tap-target"));
 
@@ -120,7 +111,7 @@ describe("VictoryModal", () => {
   });
 
   it("shares victory results when share button is pressed", async () => {
-    const { getByTestId } = render(<VictoryModal {...defaultProps} />);
+    const {getByTestId} = render(<VictoryModal {...defaultProps} />);
 
     fireEvent.press(getByTestId("victory-share-button"));
 

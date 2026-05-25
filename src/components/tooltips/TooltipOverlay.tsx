@@ -1,15 +1,8 @@
-import React, { useEffect, useMemo, useState } from "react";
-import {
-  Animated,
-  Dimensions,
-  Easing,
-  Pressable,
-  Text,
-  View,
-} from "react-native";
-import { AppStrings } from "../../constants/AppStrings";
-import { COLORS, SPACING, TYPOGRAPHY } from "../../styles";
-import type { TargetRect, TooltipContent } from "./types";
+import React, {useEffect, useMemo, useState} from "react";
+import {Animated, Dimensions, Easing, Pressable, Text, View} from "react-native";
+import {AppStrings} from "../../constants/AppStrings";
+import {COLORS, SPACING, TYPOGRAPHY} from "../../styles";
+import type {TargetRect, TooltipContent} from "./types";
 
 interface TooltipOverlayProps {
   visible: boolean;
@@ -24,16 +17,8 @@ const TARGET_PADDING = 8;
 const PANEL_WIDTH = Math.min(Dimensions.get("window").width - SCREEN_PADDING * 2, 340);
 const ANIMATION_DURATION_MS = 360;
 
-const TooltipOverlay: React.FC<TooltipOverlayProps> = ({
-  visible,
-  targetRect,
-  content,
-  onDismiss,
-  onExited,
-}) => {
-  const [translateY] = useState(
-    () => new Animated.Value(Dimensions.get("window").height + 80)
-  );
+const TooltipOverlay: React.FC<TooltipOverlayProps> = ({visible, targetRect, content, onDismiss, onExited}) => {
+  const [translateY] = useState(() => new Animated.Value(Dimensions.get("window").height + 80));
   const [opacity] = useState(() => new Animated.Value(0));
 
   useEffect(() => {
@@ -54,7 +39,7 @@ const TooltipOverlay: React.FC<TooltipOverlayProps> = ({
         easing,
         useNativeDriver: true,
       }),
-    ]).start(({ finished }) => {
+    ]).start(({finished}) => {
       if (finished && !visible) {
         onExited?.();
       }
@@ -62,7 +47,7 @@ const TooltipOverlay: React.FC<TooltipOverlayProps> = ({
   }, [onExited, opacity, translateY, visible]);
 
   const cutout = useMemo(() => {
-    const { width, height } = Dimensions.get("window");
+    const {width, height} = Dimensions.get("window");
     if (!targetRect) {
       return null;
     }
@@ -83,7 +68,7 @@ const TooltipOverlay: React.FC<TooltipOverlayProps> = ({
   }, [targetRect]);
 
   const panelPosition = useMemo(() => {
-    const { height, width } = Dimensions.get("window");
+    const {height, width} = Dimensions.get("window");
     if (!targetRect) {
       return {
         left: SCREEN_PADDING,
@@ -98,10 +83,10 @@ const TooltipOverlay: React.FC<TooltipOverlayProps> = ({
     const targetCenter = targetRect.x + targetRect.width / 2;
     const panelLeft = Math.min(
       width - PANEL_WIDTH - SCREEN_PADDING,
-      Math.max(SCREEN_PADDING, targetCenter - PANEL_WIDTH / 2)
+      Math.max(SCREEN_PADDING, targetCenter - PANEL_WIDTH / 2),
     );
 
-    return { left: panelLeft, top: panelTop };
+    return {left: panelLeft, top: panelTop};
   }, [targetRect]);
 
   return (
@@ -209,7 +194,7 @@ const TooltipOverlay: React.FC<TooltipOverlayProps> = ({
           width: PANEL_WIDTH,
           left: panelPosition.left,
           top: panelPosition.top,
-          transform: [{ translateY }],
+          transform: [{translateY}],
           opacity,
           backgroundColor: "#FCFAF4",
           borderRadius: 16,
@@ -219,7 +204,7 @@ const TooltipOverlay: React.FC<TooltipOverlayProps> = ({
           shadowColor: "#000",
           shadowOpacity: 0.2,
           shadowRadius: 12,
-          shadowOffset: { width: 0, height: 8 },
+          shadowOffset: {width: 0, height: 8},
           elevation: 10,
         }}
         testID="tooltip-panel"

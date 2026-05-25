@@ -1,5 +1,5 @@
 import React from "react";
-import { fireEvent, render } from "@testing-library/react-native";
+import {fireEvent, render} from "@testing-library/react-native";
 import CoinPurchaseFanfareModal from "../CoinPurchaseFanfareModal";
 
 jest.mock("react-native/Libraries/Modal/Modal", () => {
@@ -16,7 +16,7 @@ jest.mock("react-native/Libraries/Modal/Modal", () => {
       onRequestClose?: () => void;
     }) {
       if (!visible) return null;
-      return React.createElement("View", { testID: "modal", onRequestClose }, children);
+      return React.createElement("View", {testID: "modal", onRequestClose}, children);
     },
   };
 });
@@ -41,7 +41,7 @@ describe("CoinPurchaseFanfareModal", () => {
   });
 
   it("renders title and coin summary when visible", () => {
-    const { getByText } = render(<CoinPurchaseFanfareModal {...defaultProps} />);
+    const {getByText} = render(<CoinPurchaseFanfareModal {...defaultProps} />);
     expect(getByText("Coins Added!")).toBeTruthy();
     expect(getByText("+100 Coins")).toBeTruthy();
     expect(getByText("Total Coins:")).toBeTruthy();
@@ -50,7 +50,7 @@ describe("CoinPurchaseFanfareModal", () => {
   });
 
   it("does not render content when hidden", () => {
-    const { queryByText } = render(<CoinPurchaseFanfareModal {...defaultProps} isVisible={false} />);
+    const {queryByText} = render(<CoinPurchaseFanfareModal {...defaultProps} isVisible={false} />);
     expect(queryByText("Coins Added!")).toBeNull();
     expect(queryByText("+100 Coins")).toBeNull();
   });
@@ -58,8 +58,8 @@ describe("CoinPurchaseFanfareModal", () => {
   it("calls onConfirm before onClose on request close", () => {
     const onConfirm = jest.fn();
     const onClose = jest.fn();
-    const { getByTestId } = render(
-      <CoinPurchaseFanfareModal {...defaultProps} onConfirm={onConfirm} onClose={onClose} />
+    const {getByTestId} = render(
+      <CoinPurchaseFanfareModal {...defaultProps} onConfirm={onConfirm} onClose={onClose} />,
     );
 
     getByTestId("modal").props.onRequestClose();
@@ -70,8 +70,8 @@ describe("CoinPurchaseFanfareModal", () => {
   it("calls onConfirm before onClose when the visible action is pressed", () => {
     const onConfirm = jest.fn();
     const onClose = jest.fn();
-    const { getByTestId } = render(
-      <CoinPurchaseFanfareModal {...defaultProps} onConfirm={onConfirm} onClose={onClose} />
+    const {getByTestId} = render(
+      <CoinPurchaseFanfareModal {...defaultProps} onConfirm={onConfirm} onClose={onClose} />,
     );
 
     fireEvent.press(getByTestId("coin-purchase-fanfare-confirm-button"));
@@ -80,7 +80,7 @@ describe("CoinPurchaseFanfareModal", () => {
   });
 
   it("formats negative purchases as cost copy", () => {
-    const { getByText } = render(<CoinPurchaseFanfareModal {...defaultProps} coinsPurchased={-50} />);
+    const {getByText} = render(<CoinPurchaseFanfareModal {...defaultProps} coinsPurchased={-50} />);
     expect(getByText(/Cost:\s*50/)).toBeTruthy();
   });
 });

@@ -1,7 +1,7 @@
-import { ZodError } from "zod";
-import { ValidationUtils } from "./validationUtils";
-import { logger } from "./logger";
-import { captureException } from "./sentry";
+import {ZodError} from "zod";
+import {ValidationUtils} from "./validationUtils";
+import {logger} from "./logger";
+import {captureException} from "./sentry";
 
 /**
  * Custom error types for the application
@@ -10,7 +10,7 @@ export class AppError extends Error {
   constructor(
     message: string,
     public code: string,
-    public statusCode: number = 500
+    public statusCode: number = 500,
   ) {
     super(message);
     this.name = "AppError";
@@ -18,7 +18,10 @@ export class AppError extends Error {
 }
 
 export class ValidationError extends AppError {
-  constructor(message: string, public details?: string[]) {
+  constructor(
+    message: string,
+    public details?: string[],
+  ) {
     super(message, "VALIDATION_ERROR", 400);
     this.name = "ValidationError";
   }
@@ -52,16 +55,14 @@ export class ErrorUtils {
   /**
    * Checks if an error is a Firebase error
    */
-  static isFirebaseError(
-    error: unknown
-  ): error is { code: string; message: string } {
+  static isFirebaseError(error: unknown): error is {code: string; message: string} {
     return (
       typeof error === "object" &&
       error !== null &&
       "code" in error &&
       "message" in error &&
-      typeof (error as { code: unknown }).code === "string" &&
-      typeof (error as { message: unknown }).message === "string"
+      typeof (error as {code: unknown}).code === "string" &&
+      typeof (error as {message: unknown}).message === "string"
     );
   }
 
@@ -128,35 +129,23 @@ export class ErrorUtils {
   /**
    * Gets a user-friendly message for Firebase errors
    */
-  private static getFirebaseErrorMessage(error: {
-    code: string;
-    message: string;
-  }): string {
+  private static getFirebaseErrorMessage(error: {code: string; message: string}): string {
     const errorMappings: Record<string, string> = {
       "auth/user-not-found": "No account found with this email address.",
       "auth/wrong-password": "Incorrect password. Please try again.",
       "auth/email-already-in-use": "An account with this email already exists.",
       "auth/weak-password": "Password should be at least 6 characters long.",
       "auth/invalid-email": "Please enter a valid email address.",
-      "auth/network-request-failed":
-        "Network error. Please check your connection.",
-      "auth/too-many-requests":
-        "Too many failed attempts. Please try again later.",
-      "firestore/permission-denied":
-        "You do not have permission to perform this action.",
-      "firestore/unavailable":
-        "Service temporarily unavailable. Please try again.",
+      "auth/network-request-failed": "Network error. Please check your connection.",
+      "auth/too-many-requests": "Too many failed attempts. Please try again later.",
+      "firestore/permission-denied": "You do not have permission to perform this action.",
+      "firestore/unavailable": "Service temporarily unavailable. Please try again.",
       "functions/not-found": "The requested function was not found.",
-      "functions/permission-denied":
-        "You do not have permission to call this function.",
+      "functions/permission-denied": "You do not have permission to call this function.",
       "functions/unauthenticated": "Please sign in to continue.",
     };
 
-    return (
-      errorMappings[error.code] ||
-      error.message ||
-      "An error occurred. Please try again."
-    );
+    return errorMappings[error.code] || error.message || "An error occurred. Please try again.";
   }
 
   /**
@@ -164,7 +153,7 @@ export class ErrorUtils {
    */
   static logError(error: unknown, context?: string): void {
     const prefix = context ? `[${context}]` : "";
-    captureException(error, context ? { context } : undefined);
+    captureException(error, context ? {context} : undefined);
 
     if (error instanceof AppError) {
       logger.error(`${prefix} AppError:`, {
@@ -174,10 +163,7 @@ export class ErrorUtils {
         statusCode: error.statusCode,
       });
     } else if (this.isZodError(error)) {
-      logger.error(
-        `${prefix} Validation Error:`,
-        ValidationUtils.formatZodError(error)
-      );
+      logger.error(`${prefix} Validation Error:`, ValidationUtils.formatZodError(error));
     } else if (this.isFirebaseError(error)) {
       logger.error(`${prefix} Firebase Error:`, {
         code: error.code,
@@ -199,7 +185,7 @@ export class ErrorUtils {
    */
   static createErrorResponse(
     error: unknown,
-    context?: string
+    context?: string,
   ): {
     success: false;
     error: {
@@ -214,11 +200,7 @@ export class ErrorUtils {
       success: false,
       error: {
         message: this.getUserFriendlyMessage(error),
-        code: this.isFirebaseError(error)
-          ? error.code
-          : error instanceof AppError
-          ? error.code
-          : undefined,
+        code: this.isFirebaseError(error) ? error.code : error instanceof AppError ? error.code : undefined,
         details: this.isZodError(error) ? error.issues : undefined,
       },
     };
@@ -229,11 +211,11 @@ export class ErrorUtils {
    */
   static async withErrorHandling<T>(
     fn: () => Promise<T>,
-    context?: string
-  ): Promise<{ success: true; data: T } | { success: false; error: unknown }> {
+    context?: string,
+  ): Promise<{success: true; data: T} | {success: false; error: unknown}> {
     try {
       const data = await fn();
-      return { success: true, data };
+      return {success: true, data};
     } catch (error) {
       return this.createErrorResponse(error, context);
     }
@@ -243,4 +225,3 @@ export class ErrorUtils {
 // Export helper functions for easier usage
 export const isFirebaseError = ErrorUtils.isFirebaseError;
 export const isZodError = ErrorUtils.isZodError;
-

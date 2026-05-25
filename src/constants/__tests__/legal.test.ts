@@ -14,7 +14,7 @@ describe("legal URL helpers", () => {
   it.each(SUPPORTED_LEGAL_LANGUAGES)("builds localized legal URLs for %s", (language) => {
     Object.entries(expectedPaths).forEach(([key, suffix]) => {
       expect(getLegalUrl(key as keyof typeof expectedPaths, language)).toBe(
-        `https://www.roobsworld.com/riddle-quest/${language}${suffix}`
+        `https://www.roobsworld.com/riddle-quest/${language}${suffix}`,
       );
     });
   });

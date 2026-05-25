@@ -5,13 +5,9 @@
  * currency lookup, product finding, and featured product filtering.
  */
 
-import { getDocs } from "@react-native-firebase/firestore";
-import { captureException } from "../../utils/sentry";
-import {
-  ProductPricing,
-  ProductPricingService,
-  SpecialOffer,
-} from "../ProductPricingService";
+import {getDocs} from "@react-native-firebase/firestore";
+import {captureException} from "../../utils/sentry";
+import {ProductPricing, ProductPricingService, SpecialOffer} from "../ProductPricingService";
 
 // Mock Firebase modules
 jest.mock("@react-native-firebase/firestore", () => ({
@@ -38,9 +34,9 @@ describe("ProductPricingService", () => {
     isActive: true,
     sortOrder: 1,
     regionalPrices: [
-      { amount: 0.99, currency: "USD", displayPrice: "$0.99", symbol: "$" },
-      { amount: 0.89, currency: "GBP", displayPrice: "£0.89", symbol: "£" },
-      { amount: 0.99, currency: "EUR", displayPrice: "€0.99", symbol: "€" },
+      {amount: 0.99, currency: "USD", displayPrice: "$0.99", symbol: "$"},
+      {amount: 0.89, currency: "GBP", displayPrice: "£0.89", symbol: "£"},
+      {amount: 0.99, currency: "EUR", displayPrice: "€0.99", symbol: "€"},
     ],
     ...overrides,
   });
@@ -69,7 +65,7 @@ describe("ProductPricingService", () => {
 
     it("should return undefined when offer is not active", () => {
       const product = createMockProduct({
-        specialOffer: createMockOffer({ isActive: false }),
+        specialOffer: createMockOffer({isActive: false}),
       });
       const result = ProductPricingService.getActiveSpecialOffer(product);
       expect(result).toBeUndefined();
@@ -99,7 +95,7 @@ describe("ProductPricingService", () => {
 
     it("should return the offer when it is active and within valid period", () => {
       const offer = createMockOffer();
-      const product = createMockProduct({ specialOffer: offer });
+      const product = createMockProduct({specialOffer: offer});
       const result = ProductPricingService.getActiveSpecialOffer(product);
       expect(result).toEqual(offer);
     });
@@ -110,7 +106,7 @@ describe("ProductPricingService", () => {
         validFrom: now,
         validTo: now + 1000 * 60 * 60,
       });
-      const product = createMockProduct({ specialOffer: offer });
+      const product = createMockProduct({specialOffer: offer});
       const result = ProductPricingService.getActiveSpecialOffer(product);
       expect(result).toEqual(offer);
     });
@@ -148,7 +144,7 @@ describe("ProductPricingService", () => {
     });
 
     it("should return undefined for empty regionalPrices", () => {
-      const product = createMockProduct({ regionalPrices: [] });
+      const product = createMockProduct({regionalPrices: []});
       const result = ProductPricingService.getPriceForCurrency(product, "USD");
       expect(result).toBeUndefined();
     });
@@ -157,19 +153,16 @@ describe("ProductPricingService", () => {
   describe("findByProductId", () => {
     it("should find a product by productId", () => {
       const products = [
-        createMockProduct({ productId: "product_1" }),
-        createMockProduct({ productId: "product_2" }),
-        createMockProduct({ productId: "product_3" }),
+        createMockProduct({productId: "product_1"}),
+        createMockProduct({productId: "product_2"}),
+        createMockProduct({productId: "product_3"}),
       ];
       const result = ProductPricingService.findByProductId(products, "product_2");
       expect(result?.productId).toBe("product_2");
     });
 
     it("should return undefined when product is not found", () => {
-      const products = [
-        createMockProduct({ productId: "product_1" }),
-        createMockProduct({ productId: "product_2" }),
-      ];
+      const products = [createMockProduct({productId: "product_1"}), createMockProduct({productId: "product_2"})];
       const result = ProductPricingService.findByProductId(products, "product_99");
       expect(result).toBeUndefined();
     });
@@ -181,8 +174,8 @@ describe("ProductPricingService", () => {
 
     it("should return the first match if duplicates exist", () => {
       const products = [
-        createMockProduct({ productId: "duplicate", name: "First" }),
-        createMockProduct({ productId: "duplicate", name: "Second" }),
+        createMockProduct({productId: "duplicate", name: "First"}),
+        createMockProduct({productId: "duplicate", name: "Second"}),
       ];
       const result = ProductPricingService.findByProductId(products, "duplicate");
       expect(result?.name).toBe("First");
@@ -192,10 +185,10 @@ describe("ProductPricingService", () => {
   describe("getFeaturedProducts", () => {
     it("should return only products with featuredOrder", () => {
       const products = [
-        createMockProduct({ productId: "p1", featuredOrder: 1 }),
-        createMockProduct({ productId: "p2" }), // No featuredOrder
-        createMockProduct({ productId: "p3", featuredOrder: 2 }),
-        createMockProduct({ productId: "p4" }), // No featuredOrder
+        createMockProduct({productId: "p1", featuredOrder: 1}),
+        createMockProduct({productId: "p2"}), // No featuredOrder
+        createMockProduct({productId: "p3", featuredOrder: 2}),
+        createMockProduct({productId: "p4"}), // No featuredOrder
       ];
       const result = ProductPricingService.getFeaturedProducts(products);
       expect(result).toHaveLength(2);
@@ -204,19 +197,16 @@ describe("ProductPricingService", () => {
 
     it("should sort by featuredOrder ascending", () => {
       const products = [
-        createMockProduct({ productId: "p1", featuredOrder: 3 }),
-        createMockProduct({ productId: "p2", featuredOrder: 1 }),
-        createMockProduct({ productId: "p3", featuredOrder: 2 }),
+        createMockProduct({productId: "p1", featuredOrder: 3}),
+        createMockProduct({productId: "p2", featuredOrder: 1}),
+        createMockProduct({productId: "p3", featuredOrder: 2}),
       ];
       const result = ProductPricingService.getFeaturedProducts(products);
       expect(result.map((p) => p.productId)).toEqual(["p2", "p3", "p1"]);
     });
 
     it("should return empty array when no products are featured", () => {
-      const products = [
-        createMockProduct({ productId: "p1" }),
-        createMockProduct({ productId: "p2" }),
-      ];
+      const products = [createMockProduct({productId: "p1"}), createMockProduct({productId: "p2"})];
       const result = ProductPricingService.getFeaturedProducts(products);
       expect(result).toEqual([]);
     });
@@ -228,9 +218,9 @@ describe("ProductPricingService", () => {
 
     it("should exclude products with null featuredOrder", () => {
       const products = [
-        createMockProduct({ productId: "p1", featuredOrder: 1 }),
-        createMockProduct({ productId: "p2", featuredOrder: null as any }),
-        createMockProduct({ productId: "p3", featuredOrder: undefined }),
+        createMockProduct({productId: "p1", featuredOrder: 1}),
+        createMockProduct({productId: "p2", featuredOrder: null as any}),
+        createMockProduct({productId: "p3", featuredOrder: undefined}),
       ];
       const result = ProductPricingService.getFeaturedProducts(products);
       expect(result).toHaveLength(1);
@@ -239,9 +229,9 @@ describe("ProductPricingService", () => {
 
     it("should handle featuredOrder of 0", () => {
       const products = [
-        createMockProduct({ productId: "p1", featuredOrder: 2 }),
-        createMockProduct({ productId: "p2", featuredOrder: 0 }),
-        createMockProduct({ productId: "p3", featuredOrder: 1 }),
+        createMockProduct({productId: "p1", featuredOrder: 2}),
+        createMockProduct({productId: "p2", featuredOrder: 0}),
+        createMockProduct({productId: "p3", featuredOrder: 1}),
       ];
       const result = ProductPricingService.getFeaturedProducts(products);
       expect(result.map((p) => p.productId)).toEqual(["p2", "p3", "p1"]);
@@ -280,7 +270,7 @@ describe("ProductPricingService", () => {
       expect(ProductPricingService.getPriceForCurrency(fullProduct, "USD")).toBeDefined();
       expect(ProductPricingService.getActiveSpecialOffer(fullProduct)).toBeDefined();
       expect(
-        ProductPricingService.findByProductId([fullProduct], "com.roobsworld.riddlequest.coins.premium")
+        ProductPricingService.findByProductId([fullProduct], "com.roobsworld.riddlequest.coins.premium"),
       ).toBeDefined();
       expect(ProductPricingService.getFeaturedProducts([fullProduct])).toHaveLength(1);
     });
@@ -297,7 +287,7 @@ describe("ProductPricingService", () => {
           featuredOrder: 2,
           featuredBadge: "BEST DEAL",
         }),
-        createMockProduct({ productId: "regular_1" }),
+        createMockProduct({productId: "regular_1"}),
       ];
 
       const featured = ProductPricingService.getFeaturedProducts(products);
@@ -311,10 +301,10 @@ describe("ProductPricingService", () => {
   describe("getActiveProducts", () => {
     it("fetches active products and then serves cached data", async () => {
       const docs = [
-        { data: () => createMockProduct({ productId: "p1" }) },
-        { data: () => createMockProduct({ productId: "p2" }) },
+        {data: () => createMockProduct({productId: "p1"})},
+        {data: () => createMockProduct({productId: "p2"})},
       ];
-      (getDocs as jest.Mock).mockResolvedValue({ docs });
+      (getDocs as jest.Mock).mockResolvedValue({docs});
 
       const first = await ProductPricingService.getActiveProducts();
       const second = await ProductPricingService.getActiveProducts();
@@ -328,7 +318,7 @@ describe("ProductPricingService", () => {
       const nowSpy = jest.spyOn(Date, "now");
       nowSpy.mockReturnValueOnce(1_000_000);
       (getDocs as jest.Mock).mockResolvedValueOnce({
-        docs: [{ data: () => createMockProduct({ productId: "cached" }) }],
+        docs: [{data: () => createMockProduct({productId: "cached"})}],
       });
       await ProductPricingService.getActiveProducts();
 

@@ -5,15 +5,15 @@
  * AppState-triggered draining, network error detection, and singleton pattern.
  */
 
-import { OfflineQueueService, offlineQueue, QueuedCall } from "../OfflineQueueService";
+import {OfflineQueueService, offlineQueue, QueuedCall} from "../OfflineQueueService";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { AppState, AppStateStatus } from "react-native";
+import {AppState, AppStateStatus} from "react-native";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Mocks
 // ─────────────────────────────────────────────────────────────────────────────
 
-const mockCallable = jest.fn().mockResolvedValue({ data: { ok: true } });
+const mockCallable = jest.fn().mockResolvedValue({data: {ok: true}});
 const mockHttpsCallableFn = jest.fn().mockReturnValue(mockCallable);
 
 jest.mock("@react-native-firebase/functions", () => ({
@@ -24,7 +24,7 @@ jest.mock("@react-native-firebase/app", () => ({
   getApp: jest.fn().mockReturnValue({}),
 }));
 jest.mock("@react-native-async-storage/async-storage", () =>
-  require("@react-native-async-storage/async-storage/jest/async-storage-mock")
+  require("@react-native-async-storage/async-storage/jest/async-storage-mock"),
 );
 
 const mockCaptureException = jest.fn();
@@ -42,7 +42,7 @@ jest.mock("../../utils/logger", () => ({
 }));
 
 // Get the mocked logger for assertions
-import { logger } from "../../utils/logger";
+import {logger} from "../../utils/logger";
 const mockLogger = logger as jest.Mocked<typeof logger>;
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -57,7 +57,7 @@ function createService(): OfflineQueueService {
 }
 
 function makeNetworkError(message = "Network request failed", code?: string): Error {
-  const e = new Error(message) as Error & { code?: string };
+  const e = new Error(message) as Error & {code?: string};
   if (code) {
     e.code = code;
   }
@@ -68,7 +68,7 @@ function makeQueuedCall(overrides: Partial<QueuedCall> = {}): QueuedCall {
   return {
     id: `${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
     functionName: "testFunction",
-    payload: { test: true },
+    payload: {test: true},
     enqueuedAt: Date.now(),
     attempts: 0,
     ...overrides,
@@ -85,7 +85,7 @@ describe("OfflineQueueService", () => {
   beforeEach(async () => {
     jest.clearAllMocks();
     mockCallable.mockReset();
-    mockCallable.mockResolvedValue({ data: { ok: true } });
+    mockCallable.mockResolvedValue({data: {ok: true}});
     mockHttpsCallableFn.mockReset();
     mockHttpsCallableFn.mockReturnValue(mockCallable);
     await AsyncStorage.clear();
@@ -114,13 +114,13 @@ describe("OfflineQueueService", () => {
 
   describe("enqueue", () => {
     it("adds a call to the queue", async () => {
-      await service.enqueue("submitGuess", { guess: "APPLE" });
+      await service.enqueue("submitGuess", {guess: "APPLE"});
       expect(await service.queueSize()).toBe(1);
     });
 
     it("adds multiple calls in order", async () => {
-      await service.enqueue("submitGuess", { guess: "APPLE" });
-      await service.enqueue("updateStats", { score: 100 });
+      await service.enqueue("submitGuess", {guess: "APPLE"});
+      await service.enqueue("updateStats", {score: 100});
       expect(await service.queueSize()).toBe(2);
     });
 
@@ -135,13 +135,13 @@ describe("OfflineQueueService", () => {
 
     it("sets correct metadata on queued call", async () => {
       const beforeEnqueue = Date.now();
-      await service.enqueue("testFn", { data: "value" });
+      await service.enqueue("testFn", {data: "value"});
       const afterEnqueue = Date.now();
 
       const raw = await AsyncStorage.getItem(STORAGE_KEY);
       const queue = JSON.parse(raw!) as QueuedCall[];
       expect(queue[0].functionName).toBe("testFn");
-      expect(queue[0].payload).toEqual({ data: "value" });
+      expect(queue[0].payload).toEqual({data: "value"});
       expect(queue[0].attempts).toBe(0);
       expect(queue[0].enqueuedAt).toBeGreaterThanOrEqual(beforeEnqueue);
       expect(queue[0].enqueuedAt).toBeLessThanOrEqual(afterEnqueue);
@@ -149,9 +149,7 @@ describe("OfflineQueueService", () => {
 
     it("logs info when item is enqueued", async () => {
       await service.enqueue("submitGuess", {});
-      expect(mockLogger.info).toHaveBeenCalledWith(
-        expect.stringContaining("[OfflineQueue] Enqueued submitGuess")
-      );
+      expect(mockLogger.info).toHaveBeenCalledWith(expect.stringContaining("[OfflineQueue] Enqueued submitGuess"));
     });
 
     it("handles AsyncStorage errors gracefully and logs error", async () => {
@@ -162,10 +160,7 @@ describe("OfflineQueueService", () => {
 
       // loadQueue intentionally treats storage read failures as empty queue fallback.
       expect(await service.queueSize()).toBe(1);
-      expect(mockLogger.error).not.toHaveBeenCalledWith(
-        "[OfflineQueue] Failed to enqueue call",
-        mockError
-      );
+      expect(mockLogger.error).not.toHaveBeenCalledWith("[OfflineQueue] Failed to enqueue call", mockError);
     });
 
     it("handles AsyncStorage setItem errors gracefully", async () => {
@@ -174,10 +169,7 @@ describe("OfflineQueueService", () => {
 
       await service.enqueue("testFn", {});
 
-      expect(mockLogger.error).toHaveBeenCalledWith(
-        "[OfflineQueue] Failed to enqueue call",
-        mockError
-      );
+      expect(mockLogger.error).toHaveBeenCalledWith("[OfflineQueue] Failed to enqueue call", mockError);
       expect(mockCaptureException).toHaveBeenCalledWith(mockError);
     });
   });
@@ -206,15 +198,15 @@ describe("OfflineQueueService", () => {
 
   describe("call", () => {
     it("invokes the firebase callable and returns data", async () => {
-      mockCallable.mockResolvedValueOnce({ data: { result: "ok" } });
-      const result = await service.call("myFunction", { foo: "bar" });
-      expect(result).toEqual({ result: "ok" });
+      mockCallable.mockResolvedValueOnce({data: {result: "ok"}});
+      const result = await service.call("myFunction", {foo: "bar"});
+      expect(result).toEqual({result: "ok"});
       expect(mockHttpsCallableFn).toHaveBeenCalledWith(expect.any(Object), "myFunction");
     });
 
     it("passes the correct payload to callable", async () => {
-      const payload = { guess: "HELLO", gameId: "123" };
-      mockCallable.mockResolvedValueOnce({ data: {} });
+      const payload = {guess: "HELLO", gameId: "123"};
+      mockCallable.mockResolvedValueOnce({data: {}});
       await service.call("submitGuess", payload);
       expect(mockCallable).toHaveBeenCalledWith(payload);
     });
@@ -222,7 +214,7 @@ describe("OfflineQueueService", () => {
     it("triggers drain after successful call", async () => {
       // Pre-populate queue
       await service.enqueue("queuedFn", {});
-      mockCallable.mockResolvedValue({ data: {} });
+      mockCallable.mockResolvedValue({data: {}});
 
       await service.call("newFn", {});
 
@@ -235,7 +227,7 @@ describe("OfflineQueueService", () => {
 
     it("queues the call when a network error is thrown", async () => {
       mockCallable.mockRejectedValueOnce(makeNetworkError());
-      const result = await service.call("submitGuess", { guess: "HELLO" });
+      const result = await service.call("submitGuess", {guess: "HELLO"});
       expect(result).toBeNull();
       expect(await service.queueSize()).toBe(1);
     });
@@ -244,7 +236,7 @@ describe("OfflineQueueService", () => {
       mockCallable.mockRejectedValueOnce(makeNetworkError());
       await service.call("submitGuess", {});
       expect(mockLogger.warn).toHaveBeenCalledWith(
-        expect.stringContaining("[OfflineQueue] Network error calling submitGuess")
+        expect.stringContaining("[OfflineQueue] Network error calling submitGuess"),
       );
     });
 
@@ -317,55 +309,53 @@ describe("OfflineQueueService", () => {
 
   describe("drain", () => {
     it("replays queued calls successfully", async () => {
-      await service.enqueue("submitGuess", { guess: "APPLE" });
-      mockCallable.mockResolvedValueOnce({ data: {} });
+      await service.enqueue("submitGuess", {guess: "APPLE"});
+      mockCallable.mockResolvedValueOnce({data: {}});
       await service.drain();
       expect(await service.queueSize()).toBe(0);
       expect(mockCallable).toHaveBeenCalledTimes(1);
     });
 
     it("replays multiple queued calls in order", async () => {
-      await service.enqueue("fn1", { order: 1 });
-      await service.enqueue("fn2", { order: 2 });
-      await service.enqueue("fn3", { order: 3 });
-      mockCallable.mockResolvedValue({ data: {} });
+      await service.enqueue("fn1", {order: 1});
+      await service.enqueue("fn2", {order: 2});
+      await service.enqueue("fn3", {order: 3});
+      mockCallable.mockResolvedValue({data: {}});
 
       await service.drain();
 
       expect(mockCallable).toHaveBeenCalledTimes(3);
-      expect(mockCallable).toHaveBeenNthCalledWith(1, { order: 1 });
-      expect(mockCallable).toHaveBeenNthCalledWith(2, { order: 2 });
-      expect(mockCallable).toHaveBeenNthCalledWith(3, { order: 3 });
+      expect(mockCallable).toHaveBeenNthCalledWith(1, {order: 1});
+      expect(mockCallable).toHaveBeenNthCalledWith(2, {order: 2});
+      expect(mockCallable).toHaveBeenNthCalledWith(3, {order: 3});
     });
 
     it("logs info when starting drain with items", async () => {
       await service.enqueue("fn1", {});
       await service.enqueue("fn2", {});
-      mockCallable.mockResolvedValue({ data: {} });
+      mockCallable.mockResolvedValue({data: {}});
       await service.drain();
-      expect(mockLogger.info).toHaveBeenCalledWith(
-        "[OfflineQueue] Draining 2 queued call(s)"
-      );
+      expect(mockLogger.info).toHaveBeenCalledWith("[OfflineQueue] Draining 2 queued call(s)");
     });
 
     it("logs info after successful replay", async () => {
       await service.enqueue("submitGuess", {});
-      mockCallable.mockResolvedValueOnce({ data: {} });
+      mockCallable.mockResolvedValueOnce({data: {}});
       await service.drain();
       expect(mockLogger.info).toHaveBeenCalledWith(
-        expect.stringContaining("[OfflineQueue] Successfully replayed submitGuess")
+        expect.stringContaining("[OfflineQueue] Successfully replayed submitGuess"),
       );
     });
 
     it("keeps items in queue when drain fails with network error", async () => {
-      await service.enqueue("submitGuess", { guess: "APPLE" });
+      await service.enqueue("submitGuess", {guess: "APPLE"});
       mockCallable.mockRejectedValueOnce(makeNetworkError());
       await service.drain();
       expect(await service.queueSize()).toBe(1);
     });
 
     it("increments attempt count after each failed drain", async () => {
-      await service.enqueue("submitGuess", { guess: "APPLE" });
+      await service.enqueue("submitGuess", {guess: "APPLE"});
       mockCallable.mockRejectedValue(makeNetworkError());
       await service.drain();
       const raw = await AsyncStorage.getItem(STORAGE_KEY);
@@ -374,7 +364,7 @@ describe("OfflineQueueService", () => {
     });
 
     it("discards a call after MAX_ATTEMPTS (5) failed drains", async () => {
-      await service.enqueue("submitGuess", { guess: "APPLE" });
+      await service.enqueue("submitGuess", {guess: "APPLE"});
       mockCallable.mockRejectedValue(makeNetworkError());
       // Run drain 5 times to exhaust attempts
       for (let i = 0; i < 5; i++) {
@@ -387,13 +377,13 @@ describe("OfflineQueueService", () => {
 
     it("logs warning when discarding stale call due to max attempts", async () => {
       // Manually insert call with attempts=5
-      const staleCall = makeQueuedCall({ attempts: 5, functionName: "staleFn" });
+      const staleCall = makeQueuedCall({attempts: 5, functionName: "staleFn"});
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify([staleCall]));
 
       await service.drain();
 
       expect(mockLogger.warn).toHaveBeenCalledWith(
-        expect.stringContaining("[OfflineQueue] Discarding stale call staleFn")
+        expect.stringContaining("[OfflineQueue] Discarding stale call staleFn"),
       );
     });
 
@@ -429,7 +419,7 @@ describe("OfflineQueueService", () => {
         enqueuedAt: Date.now() - underTwentyFourHoursMs,
       });
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify([freshCall]));
-      mockCallable.mockResolvedValueOnce({ data: {} });
+      mockCallable.mockResolvedValueOnce({data: {}});
 
       await service.drain();
 
@@ -455,7 +445,7 @@ describe("OfflineQueueService", () => {
       await service.drain();
       expect(mockLogger.warn).toHaveBeenCalledWith(
         expect.stringContaining("[OfflineQueue] Discarding badCall due to non-network error"),
-        badError
+        badError,
       );
     });
 
@@ -471,12 +461,12 @@ describe("OfflineQueueService", () => {
 
     it("resets isDraining flag after drain completes", async () => {
       await service.enqueue("fn1", {});
-      mockCallable.mockResolvedValueOnce({ data: {} });
+      mockCallable.mockResolvedValueOnce({data: {}});
       await service.drain();
 
       // Should be able to drain again
       await service.enqueue("fn2", {});
-      mockCallable.mockResolvedValueOnce({ data: {} });
+      mockCallable.mockResolvedValueOnce({data: {}});
       await service.drain();
 
       expect(mockCallable).toHaveBeenCalledTimes(2);
@@ -490,7 +480,7 @@ describe("OfflineQueueService", () => {
 
       // Should be able to drain again
       await service.enqueue("fn1", {});
-      mockCallable.mockResolvedValueOnce({ data: {} });
+      mockCallable.mockResolvedValueOnce({data: {}});
       await service.drain();
 
       expect(mockCallable).toHaveBeenCalledTimes(1);
@@ -499,23 +489,19 @@ describe("OfflineQueueService", () => {
     it("returns early when queue is empty", async () => {
       await service.drain();
       expect(mockCallable).not.toHaveBeenCalled();
-      expect(mockLogger.info).not.toHaveBeenCalledWith(
-        expect.stringContaining("Draining")
-      );
+      expect(mockLogger.info).not.toHaveBeenCalledWith(expect.stringContaining("Draining"));
     });
 
     it("logs summary after partial drain completion", async () => {
       await service.enqueue("fn1", {});
       await service.enqueue("fn2", {});
       mockCallable
-        .mockResolvedValueOnce({ data: {} }) // fn1 succeeds
+        .mockResolvedValueOnce({data: {}}) // fn1 succeeds
         .mockRejectedValueOnce(makeNetworkError()); // fn2 fails
 
       await service.drain();
 
-      expect(mockLogger.info).toHaveBeenCalledWith(
-        "[OfflineQueue] Drain complete. 1 calls replayed, 1 still queued."
-      );
+      expect(mockLogger.info).toHaveBeenCalledWith("[OfflineQueue] Drain complete. 1 calls replayed, 1 still queued.");
     });
 
     it("handles errors during drain and logs/captures them", async () => {
@@ -525,20 +511,17 @@ describe("OfflineQueueService", () => {
       await service.drain();
 
       // loadQueue intentionally swallows storage read errors and returns empty queue.
-      expect(mockLogger.error).not.toHaveBeenCalledWith(
-        "[OfflineQueue] Drain failed",
-        mockError
-      );
+      expect(mockLogger.error).not.toHaveBeenCalledWith("[OfflineQueue] Drain failed", mockError);
       expect(mockCaptureException).not.toHaveBeenCalledWith(mockError);
     });
 
     it("processes mixed success/fail/stale calls correctly", async () => {
       // Fresh call that will succeed
-      const freshSuccess = makeQueuedCall({ id: "1", functionName: "success" });
+      const freshSuccess = makeQueuedCall({id: "1", functionName: "success"});
       // Fresh call that will fail with network error
-      const freshNetworkFail = makeQueuedCall({ id: "2", functionName: "networkFail" });
+      const freshNetworkFail = makeQueuedCall({id: "2", functionName: "networkFail"});
       // Fresh call that will fail with non-network error
-      const freshBadCall = makeQueuedCall({ id: "3", functionName: "badCall" });
+      const freshBadCall = makeQueuedCall({id: "3", functionName: "badCall"});
       // Stale call (too old)
       const staleCall = makeQueuedCall({
         id: "4",
@@ -554,11 +537,11 @@ describe("OfflineQueueService", () => {
 
       await AsyncStorage.setItem(
         STORAGE_KEY,
-        JSON.stringify([freshSuccess, freshNetworkFail, freshBadCall, staleCall, exhaustedCall])
+        JSON.stringify([freshSuccess, freshNetworkFail, freshBadCall, staleCall, exhaustedCall]),
       );
 
       mockCallable
-        .mockResolvedValueOnce({ data: {} }) // success
+        .mockResolvedValueOnce({data: {}}) // success
         .mockRejectedValueOnce(makeNetworkError()) // networkFail
         .mockRejectedValueOnce(makeNetworkError("Not found", "not-found")); // badCall
 
@@ -628,7 +611,7 @@ describe("OfflineQueueService", () => {
       const mockRemove = jest.fn();
       jest
         .spyOn(AppState, "addEventListener")
-        .mockReturnValue({ remove: mockRemove } as ReturnType<typeof AppState.addEventListener>);
+        .mockReturnValue({remove: mockRemove} as ReturnType<typeof AppState.addEventListener>);
       service.initialize();
       service.teardown();
       expect(mockRemove).toHaveBeenCalled();
@@ -641,7 +624,7 @@ describe("OfflineQueueService", () => {
 
     it("drains immediately on initialize", async () => {
       await service.enqueue("pendingCall", {});
-      mockCallable.mockResolvedValueOnce({ data: {} });
+      mockCallable.mockResolvedValueOnce({data: {}});
 
       service.initialize();
 
@@ -659,11 +642,11 @@ describe("OfflineQueueService", () => {
       let capturedListener: ((state: AppStateStatus) => void) | null = null;
       jest.spyOn(AppState, "addEventListener").mockImplementation((_event, listener) => {
         capturedListener = listener;
-        return { remove: jest.fn() } as ReturnType<typeof AppState.addEventListener>;
+        return {remove: jest.fn()} as ReturnType<typeof AppState.addEventListener>;
       });
 
       await service.enqueue("pendingCall", {});
-      mockCallable.mockResolvedValueOnce({ data: {} });
+      mockCallable.mockResolvedValueOnce({data: {}});
 
       service.initialize();
       // Clear the immediate drain call
@@ -671,7 +654,7 @@ describe("OfflineQueueService", () => {
 
       // Re-enqueue for the AppState trigger test
       await service.enqueue("newCall", {});
-      mockCallable.mockResolvedValueOnce({ data: {} });
+      mockCallable.mockResolvedValueOnce({data: {}});
 
       // Simulate AppState change to active
       expect(capturedListener).not.toBeNull();
@@ -686,7 +669,7 @@ describe("OfflineQueueService", () => {
       let capturedListener: ((state: AppStateStatus) => void) | null = null;
       jest.spyOn(AppState, "addEventListener").mockImplementation((_event, listener) => {
         capturedListener = listener;
-        return { remove: jest.fn() } as ReturnType<typeof AppState.addEventListener>;
+        return {remove: jest.fn()} as ReturnType<typeof AppState.addEventListener>;
       });
 
       service.initialize();
@@ -713,7 +696,7 @@ describe("OfflineQueueService", () => {
       let capturedListener: ((state: AppStateStatus) => void) | null = null;
       jest.spyOn(AppState, "addEventListener").mockImplementation((_event, listener) => {
         capturedListener = listener;
-        return { remove: jest.fn() } as ReturnType<typeof AppState.addEventListener>;
+        return {remove: jest.fn()} as ReturnType<typeof AppState.addEventListener>;
       });
 
       service.initialize();
@@ -738,13 +721,13 @@ describe("OfflineQueueService", () => {
         success: boolean;
         count: number;
       }
-      mockCallable.mockResolvedValueOnce({ data: { success: true, count: 42 } });
+      mockCallable.mockResolvedValueOnce({data: {success: true, count: 42}});
       const result = await service.call<MyResult>("typedFn", {});
-      expect(result).toEqual({ success: true, count: 42 });
+      expect(result).toEqual({success: true, count: 42});
     });
 
     it("handles various payload types", async () => {
-      mockCallable.mockResolvedValue({ data: {} });
+      mockCallable.mockResolvedValue({data: {}});
 
       // String payload
       await service.call("fn", "string payload");

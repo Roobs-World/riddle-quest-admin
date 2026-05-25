@@ -163,11 +163,7 @@ async function storeClassicRiddlesInFirestore(
  */
 async function getNextDailyIndex(): Promise<number> {
   try {
-    const currentDoc = await admin
-      .firestore()
-      .collection(RiddleCollections.DAILY_RIDDLES)
-      .doc("current")
-      .get();
+    const currentDoc = await admin.firestore().collection(RiddleCollections.DAILY_RIDDLES).doc("current").get();
 
     if (!currentDoc.exists) {
       return 0;
@@ -351,7 +347,9 @@ export async function generateAndAppendDailyRiddles(numberOfRiddles: number): Pr
       };
 
       if (!riddleHasPlayableClue(newRiddle)) {
-        logger.warn(`Generated daily riddle reveals its answer, trying again... (attempt ${attemptCount}/${maxAttempts})`);
+        logger.warn(
+          `Generated daily riddle reveals its answer, trying again... (attempt ${attemptCount}/${maxAttempts})`,
+        );
         continue;
       }
 
@@ -665,9 +663,7 @@ export async function generateTodaysDailyChallenge(forceGenerate: boolean = fals
         existing.questions.push(newRiddle.question.toLowerCase());
         existing.answers.push(newRiddle.answer.toLowerCase());
 
-        logger.info(
-          `Generated daily challenge question 1/${dailyChallengeQuestionCount} (attempt ${attemptCount})`,
-        );
+        logger.info(`Generated daily challenge question 1/${dailyChallengeQuestionCount} (attempt ${attemptCount})`);
       } else {
         logger.warn(`Generated riddle is a duplicate, trying again... (attempt ${attemptCount}/${maxAttempts})`);
       }
@@ -689,9 +685,7 @@ export async function generateTodaysDailyChallenge(forceGenerate: boolean = fals
     // Reset all users' daily challenge progress for the new day
     await resetAllUsersDailyChallengeProgress();
 
-    logger.info(
-      `Successfully generated and stored the current daily challenge for ${todayDateString}.`,
-    );
+    logger.info(`Successfully generated and stored the current daily challenge for ${todayDateString}.`);
   } else {
     throw new Error("Failed to generate any daily challenge questions.");
   }
@@ -764,11 +758,7 @@ export const generateTodaysDailyChallengeFunction = onCall(
       logger.info(`Starting daily challenge generation for ${todayDateString}...`);
       await generateTodaysDailyChallenge(forceGenerate);
 
-      const challengeDoc = await admin
-        .firestore()
-        .collection(RiddleCollections.DAILY_RIDDLES)
-        .doc("current")
-        .get();
+      const challengeDoc = await admin.firestore().collection(RiddleCollections.DAILY_RIDDLES).doc("current").get();
       const questionsGenerated = challengeDoc.exists ? 1 : 0;
 
       logger.info(`Daily challenge generated successfully with ${questionsGenerated} questions.`);
@@ -787,10 +777,7 @@ export const generateTodaysDailyChallengeFunction = onCall(
       if (error instanceof Error) {
         logger.error("Error message:", error.message);
       }
-      throw new functions.https.HttpsError(
-        "internal",
-        `Failed to generate today's daily challenge: ${errorMessage}`,
-      );
+      throw new functions.https.HttpsError("internal", `Failed to generate today's daily challenge: ${errorMessage}`);
     }
   },
 );

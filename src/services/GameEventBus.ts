@@ -51,7 +51,7 @@ export interface GuessValidatedEvent extends GameEvent {
   /** Submitted guess string that was validated. */
   guess: string;
   /** Per-letter validation status aligned to guess indices. */
-  feedback: { letter: string; status: "green" | "yellow" | "red" }[];
+  feedback: {letter: string; status: "green" | "yellow" | "red"}[];
   /** True when the guess solved the riddle. */
   isCorrect: boolean;
 }
@@ -94,9 +94,7 @@ export type AnyGameEvent =
 /**
  * Event listener type
  */
-export type GameEventListener<T extends GameEvent = AnyGameEvent> = (
-  event: T
-) => void;
+export type GameEventListener<T extends GameEvent = AnyGameEvent> = (event: T) => void;
 
 /**
  * Event bus for game events following the Open/Closed Principle
@@ -130,10 +128,7 @@ export class GameEventBus {
    * @param listener Handler invoked whenever that event type is emitted.
    * @returns Unsubscribe function.
    */
-  on<T extends AnyGameEvent>(
-    eventType: T["type"],
-    listener: GameEventListener<T>
-  ): () => void {
+  on<T extends AnyGameEvent>(eventType: T["type"], listener: GameEventListener<T>): () => void {
     if (!this.listeners.has(eventType)) {
       this.listeners.set(eventType, new Set());
     }

@@ -5,12 +5,7 @@ jest.mock("../../modals", () => ({
   SkipModal: "SkipModalMock",
 }));
 
-import {
-  VictoryModal,
-  LossModal,
-  HintModal,
-  SkipModal,
-} from "../GameOverlays";
+import {VictoryModal, LossModal, HintModal, SkipModal} from "../GameOverlays";
 
 describe("GameOverlays", () => {
   it("re-exports expected modal components", () => {

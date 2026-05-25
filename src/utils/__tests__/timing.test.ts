@@ -5,7 +5,7 @@
  * for thread-safe delays compatible with React Native Reanimated.
  */
 
-import { safeDelay, safeTimeout } from "../timing";
+import {safeDelay, safeTimeout} from "../timing";
 
 // Mock requestAnimationFrame and performance.now for testing
 const originalRAF = global.requestAnimationFrame;

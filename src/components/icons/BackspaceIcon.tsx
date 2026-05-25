@@ -8,13 +8,8 @@ interface BackspaceIconProps {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const BackspaceIcon: React.FC<BackspaceIconProps> = ({
-  width = 32,
-  height = 32,
-  color,
-}) => {
+const BackspaceIcon: React.FC<BackspaceIconProps> = ({width = 32, height = 32, color}) => {
   return <BackspaceSvg width={width} height={height} color={color} />;
 };
 
 export default BackspaceIcon;
-

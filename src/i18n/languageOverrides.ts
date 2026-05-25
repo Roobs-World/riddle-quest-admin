@@ -62,89 +62,65 @@ const deepMerge = <T extends LocaleOverrides>(base: T, supplement: LocaleOverrid
   return output as T;
 };
 
-const applySupplements = <T extends LocaleOverrides>(
-  base: T,
-  ...supplements: LocaleOverrides[]
-): T => {
-  return supplements.reduce<T>(
-    (merged, supplement) => deepMerge(merged, supplement),
-    base
-  );
+const applySupplements = <T extends LocaleOverrides>(base: T, ...supplements: LocaleOverrides[]): T => {
+  return supplements.reduce<T>((merged, supplement) => deepMerge(merged, supplement), base);
 };
 
 export const esOverrides = applySupplements(
   esBaseOverrides,
   esSupplementalOverrides,
-  releaseReadinessSupplementalOverrides.es
+  releaseReadinessSupplementalOverrides.es,
 );
 export const ptOverrides = applySupplements(
   ptBaseOverrides,
   ptSupplementalOverrides,
-  releaseReadinessSupplementalOverrides.pt
+  releaseReadinessSupplementalOverrides.pt,
 );
 export const frOverrides = applySupplements(
   frBaseOverrides,
   frSupplementalOverrides,
-  releaseReadinessSupplementalOverrides.fr
+  releaseReadinessSupplementalOverrides.fr,
 );
 export const deOverrides = applySupplements(
   deBaseOverrides,
   deSupplementalOverrides,
-  releaseReadinessSupplementalOverrides.de
+  releaseReadinessSupplementalOverrides.de,
 );
 export const jaOverrides = applySupplements(
   jaBaseOverrides,
   jaSupplementalOverrides,
-  releaseReadinessSupplementalOverrides.ja
+  releaseReadinessSupplementalOverrides.ja,
 );
 export const koOverrides = applySupplements(
   koBaseOverrides,
   koSupplementalOverrides,
-  releaseReadinessSupplementalOverrides.ko
+  releaseReadinessSupplementalOverrides.ko,
 );
 export const zhOverrides = applySupplements(
   zhBaseOverrides,
   zhSupplementalOverrides,
-  releaseReadinessSupplementalOverrides.zh
+  releaseReadinessSupplementalOverrides.zh,
 );
 export const hiOverrides = applySupplements(
   hiBaseOverrides,
   hiSupplementalOverrides,
-  releaseReadinessSupplementalOverrides.hi
+  releaseReadinessSupplementalOverrides.hi,
 );
 export const ruOverrides = applySupplements(
   ruBaseOverrides,
   ruSupplementalOverrides,
-  releaseReadinessSupplementalOverrides.ru
+  releaseReadinessSupplementalOverrides.ru,
 );
 export const trOverrides = applySupplements(
   trBaseOverrides,
   trSupplementalOverrides,
-  releaseReadinessSupplementalOverrides.tr
+  releaseReadinessSupplementalOverrides.tr,
 );
-export const arOverrides = applySupplements(
-  arBaseOverrides,
-  releaseReadinessSupplementalOverrides.ar
-);
-export const idOverrides = applySupplements(
-  idBaseOverrides,
-  releaseReadinessSupplementalOverrides.id
-);
-export const itOverrides = applySupplements(
-  itBaseOverrides,
-  releaseReadinessSupplementalOverrides.it
-);
-export const nlOverrides = applySupplements(
-  nlBaseOverrides,
-  releaseReadinessSupplementalOverrides.nl
-);
-export const plOverrides = applySupplements(
-  plBaseOverrides,
-  releaseReadinessSupplementalOverrides.pl
-);
-export const viOverrides = applySupplements(
-  viBaseOverrides,
-  releaseReadinessSupplementalOverrides.vi
-);
+export const arOverrides = applySupplements(arBaseOverrides, releaseReadinessSupplementalOverrides.ar);
+export const idOverrides = applySupplements(idBaseOverrides, releaseReadinessSupplementalOverrides.id);
+export const itOverrides = applySupplements(itBaseOverrides, releaseReadinessSupplementalOverrides.it);
+export const nlOverrides = applySupplements(nlBaseOverrides, releaseReadinessSupplementalOverrides.nl);
+export const plOverrides = applySupplements(plBaseOverrides, releaseReadinessSupplementalOverrides.pl);
+export const viOverrides = applySupplements(viBaseOverrides, releaseReadinessSupplementalOverrides.vi);
 
-export type { LocaleOverrides, DeepPartial } from "./types";
+export type {LocaleOverrides, DeepPartial} from "./types";

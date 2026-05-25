@@ -197,12 +197,7 @@ const LandingScreen = () => {
         <View style={{flex: 1, minHeight: 0}} />
 
         {/* Buttons at the bottom */}
-        <View
-          style={[
-            styles.authContentContainer,
-            {alignItems: "center", gap: SPACING.md, paddingBottom: SPACING.xl},
-          ]}
-        >
+        <View style={[styles.authContentContainer, {alignItems: "center", gap: SPACING.md, paddingBottom: SPACING.xl}]}>
           <GoogleSignInButton onPress={handleGoogleSignIn} disabled={isLoading} />
           <FacebookSignInButton onPress={handleFacebookSignIn} disabled={isLoading} />
           {authError && <Error message={authError} />}
@@ -217,10 +212,7 @@ const LandingScreen = () => {
             onPress={handleRoobsWorldPress}
             testID="roobs-world-link"
           >
-            <Text
-              className="text-white text-center"
-              style={[styles.creditsLink, {opacity: 0.85}]}
-            >
+            <Text className="text-white text-center" style={[styles.creditsLink, {opacity: 0.85}]}>
               Made by Roobs World
             </Text>
           </TouchableOpacity>

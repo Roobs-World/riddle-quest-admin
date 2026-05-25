@@ -1,8 +1,8 @@
 import React from "react";
-import { render, fireEvent, waitFor, act } from "@testing-library/react-native";
-import LeaderboardModal, { LeaderboardEntry } from "../LeaderboardModal";
-import { logger } from "../../../../utils/logger";
-import { captureException } from "../../../../utils/sentry";
+import {render, fireEvent, waitFor, act} from "@testing-library/react-native";
+import LeaderboardModal, {LeaderboardEntry} from "../LeaderboardModal";
+import {logger} from "../../../../utils/logger";
+import {captureException} from "../../../../utils/sentry";
 
 // ── Mocks ────────────────────────────────────────────────────────────────────
 
@@ -21,8 +21,8 @@ jest.mock("../../../../styles", () => ({
       "3xl": 30,
       "4xl": 36,
     },
-    lineHeight: { tight: 1.25, snug: 1.375, normal: 1.5, relaxed: 1.625, loose: 2 },
-    letterSpacing: { tight: -0.1, normal: 0, wide: 0.025, caps: 1 },
+    lineHeight: {tight: 1.25, snug: 1.375, normal: 1.5, relaxed: 1.625, loose: 2},
+    letterSpacing: {tight: -0.1, normal: 0, wide: 0.025, caps: 1},
   },
   COLORS: {
     white: "#FFFFFF",
@@ -30,26 +30,25 @@ jest.mock("../../../../styles", () => ({
     success: "#10B981",
     gray600: "#4B5563",
   },
-  SPACING: { xs: 4, sm: 8, md: 16, lg: 24, xl: 32 },
+  SPACING: {xs: 4, sm: 8, md: 16, lg: 24, xl: 32},
 }));
 
 jest.mock("../../../../assets/images/modal-bg.svg", () => {
   const React = require("react");
-  const { View } = require("react-native");
-  const MockModalBg = (props: any) =>
-    React.createElement(View, { testID: "modal-bg", ...props });
+  const {View} = require("react-native");
+  const MockModalBg = (props: any) => React.createElement(View, {testID: "modal-bg", ...props});
   MockModalBg.displayName = "MockModalBg";
   return MockModalBg;
 });
 
 jest.mock("../../../buttons/CloseButton", () => {
-  return function MockCloseButton({ onPress, accessibilityLabel }: any) {
+  return function MockCloseButton({onPress, accessibilityLabel}: any) {
     const React = require("react");
-    const { TouchableOpacity, Text } = require("react-native");
+    const {TouchableOpacity, Text} = require("react-native");
     return React.createElement(
       TouchableOpacity,
-      { onPress, testID: "close-button", accessibilityLabel },
-      React.createElement(Text, {}, "×")
+      {onPress, testID: "close-button", accessibilityLabel},
+      React.createElement(Text, {}, "×"),
     );
   };
 });
@@ -65,8 +64,8 @@ jest.mock("@react-native-firebase/app", () => ({
   getApp: jest.fn(),
 }));
 
-const mockGetAuth = jest.fn((): { currentUser: { uid: string } | null } => ({
-  currentUser: { uid: "auth-uid" },
+const mockGetAuth = jest.fn((): {currentUser: {uid: string} | null} => ({
+  currentUser: {uid: "auth-uid"},
 }));
 
 jest.mock("@react-native-firebase/auth", () => ({
@@ -74,7 +73,7 @@ jest.mock("@react-native-firebase/auth", () => ({
 }));
 
 jest.mock("../../../../utils/logger", () => ({
-  logger: { debug: jest.fn(), info: jest.fn(), warn: jest.fn(), error: jest.fn() },
+  logger: {debug: jest.fn(), info: jest.fn(), warn: jest.fn(), error: jest.fn()},
 }));
 
 jest.mock("../../../../utils/sentry", () => ({
@@ -116,7 +115,7 @@ const defaultProps = {
 describe("LeaderboardModal", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockGetAuth.mockReturnValue({ currentUser: { uid: "auth-uid" } });
+    mockGetAuth.mockReturnValue({currentUser: {uid: "auth-uid"}});
   });
 
   afterEach(async () => {
@@ -129,17 +128,15 @@ describe("LeaderboardModal", () => {
     // Never resolves during this test
     mockHttpsCallable.mockReturnValue(new Promise(() => {}));
 
-    const { getByLabelText } = render(<LeaderboardModal {...defaultProps} />);
+    const {getByLabelText} = render(<LeaderboardModal {...defaultProps} />);
 
     expect(getByLabelText("Loading leaderboard")).toBeTruthy();
   });
 
   it("renders the Leaderboard title and close button", async () => {
-    mockHttpsCallable.mockResolvedValueOnce({ data: { entries: [] } });
+    mockHttpsCallable.mockResolvedValueOnce({data: {entries: []}});
 
-    const { getByText, getByTestId, queryByLabelText } = render(
-      <LeaderboardModal {...defaultProps} />
-    );
+    const {getByText, getByTestId, queryByLabelText} = render(<LeaderboardModal {...defaultProps} />);
 
     expect(getByText("Leaderboard")).toBeTruthy();
     expect(getByTestId("close-button")).toBeTruthy();
@@ -149,12 +146,10 @@ describe("LeaderboardModal", () => {
   });
 
   it("calls onClose when close button is pressed", async () => {
-    mockHttpsCallable.mockResolvedValueOnce({ data: { entries: [] } });
+    mockHttpsCallable.mockResolvedValueOnce({data: {entries: []}});
     const onClose = jest.fn();
 
-    const { getByTestId, queryByLabelText } = render(
-      <LeaderboardModal {...defaultProps} onClose={onClose} />
-    );
+    const {getByTestId, queryByLabelText} = render(<LeaderboardModal {...defaultProps} onClose={onClose} />);
 
     await waitFor(() => {
       expect(queryByLabelText("Loading leaderboard")).toBeNull();
@@ -164,11 +159,9 @@ describe("LeaderboardModal", () => {
   });
 
   it("renders three tab buttons", async () => {
-    mockHttpsCallable.mockResolvedValue({ data: { entries: [] } });
+    mockHttpsCallable.mockResolvedValue({data: {entries: []}});
 
-    const { getByLabelText, queryByLabelText } = render(
-      <LeaderboardModal {...defaultProps} />
-    );
+    const {getByLabelText, queryByLabelText} = render(<LeaderboardModal {...defaultProps} />);
 
     expect(getByLabelText("XP")).toBeTruthy();
     expect(getByLabelText("Wins")).toBeTruthy();
@@ -180,12 +173,12 @@ describe("LeaderboardModal", () => {
 
   it("displays entries after successful fetch", async () => {
     const entries = [
-      makeEntry({ userId: "user-1", username: "Alice", xp: 500 }),
-      makeEntry({ userId: "user-2", username: "Bob", xp: 300 }),
+      makeEntry({userId: "user-1", username: "Alice", xp: 500}),
+      makeEntry({userId: "user-2", username: "Bob", xp: 300}),
     ];
-    mockHttpsCallable.mockResolvedValueOnce({ data: { entries } });
+    mockHttpsCallable.mockResolvedValueOnce({data: {entries}});
 
-    const { getAllByText, getByText } = render(<LeaderboardModal {...defaultProps} />);
+    const {getAllByText, getByText} = render(<LeaderboardModal {...defaultProps} />);
 
     await waitFor(() => {
       expect(getAllByText("Alice (you)").length).toBeGreaterThan(0);
@@ -197,9 +190,9 @@ describe("LeaderboardModal", () => {
     const originalDev = (global as any).__DEV__;
     (global as any).__DEV__ = false;
     try {
-      mockHttpsCallable.mockResolvedValueOnce({ data: { entries: [] } });
+      mockHttpsCallable.mockResolvedValueOnce({data: {entries: []}});
 
-      const { getByText } = render(<LeaderboardModal {...defaultProps} currentUserId={null} />);
+      const {getByText} = render(<LeaderboardModal {...defaultProps} currentUserId={null} />);
 
       await waitFor(() => {
         expect(getByText(/No scores yet/)).toBeTruthy();
@@ -212,7 +205,7 @@ describe("LeaderboardModal", () => {
   it("shows an error message on fetch failure", async () => {
     mockHttpsCallable.mockRejectedValueOnce(new Error("Network error"));
 
-    const { getByText } = render(<LeaderboardModal {...defaultProps} />);
+    const {getByText} = render(<LeaderboardModal {...defaultProps} />);
 
     await waitFor(() => {
       expect(getByText(/Could not load leaderboard/)).toBeTruthy();
@@ -220,11 +213,9 @@ describe("LeaderboardModal", () => {
   });
 
   it("shows a quiet guest-unavailable state when there is no auth user", async () => {
-    mockGetAuth.mockReturnValue({ currentUser: null });
+    mockGetAuth.mockReturnValue({currentUser: null});
 
-    const { getByText, queryByLabelText } = render(
-      <LeaderboardModal {...defaultProps} currentUserId="guest-local-id" />
-    );
+    const {getByText, queryByLabelText} = render(<LeaderboardModal {...defaultProps} currentUserId="guest-local-id" />);
 
     await waitFor(() => {
       expect(getByText(/Sign in to compare XP, wins, and streaks/)).toBeTruthy();
@@ -239,7 +230,7 @@ describe("LeaderboardModal", () => {
   it("handles unauthenticated leaderboard responses without logging a LogBox-worthy error", async () => {
     mockHttpsCallable.mockRejectedValueOnce(new Error("Unauthenticated"));
 
-    const { getByText, queryByLabelText } = render(<LeaderboardModal {...defaultProps} />);
+    const {getByText, queryByLabelText} = render(<LeaderboardModal {...defaultProps} />);
 
     await waitFor(() => {
       expect(getByText(/Sign in to compare XP, wins, and streaks/)).toBeTruthy();
@@ -253,7 +244,7 @@ describe("LeaderboardModal", () => {
   it("shows a Retry button on error", async () => {
     mockHttpsCallable.mockRejectedValueOnce(new Error("fail"));
 
-    const { getByLabelText } = render(<LeaderboardModal {...defaultProps} />);
+    const {getByLabelText} = render(<LeaderboardModal {...defaultProps} />);
 
     await waitFor(() => {
       expect(getByLabelText("Retry")).toBeTruthy();
@@ -261,11 +252,9 @@ describe("LeaderboardModal", () => {
   });
 
   it("retries fetch when Retry button is pressed", async () => {
-    mockHttpsCallable
-      .mockRejectedValueOnce(new Error("fail"))
-      .mockResolvedValueOnce({ data: { entries: [] } });
+    mockHttpsCallable.mockRejectedValueOnce(new Error("fail")).mockResolvedValueOnce({data: {entries: []}});
 
-    const { getByLabelText } = render(<LeaderboardModal {...defaultProps} />);
+    const {getByLabelText} = render(<LeaderboardModal {...defaultProps} />);
 
     await waitFor(() => getByLabelText("Retry"));
 
@@ -277,9 +266,9 @@ describe("LeaderboardModal", () => {
   });
 
   it("fetches new data when switching tabs", async () => {
-    mockHttpsCallable.mockResolvedValue({ data: { entries: [] } });
+    mockHttpsCallable.mockResolvedValue({data: {entries: []}});
 
-    const { getByLabelText } = render(<LeaderboardModal {...defaultProps} />);
+    const {getByLabelText} = render(<LeaderboardModal {...defaultProps} />);
 
     await waitFor(() => {
       expect(mockHttpsCallable).toHaveBeenCalledTimes(1);
@@ -299,12 +288,10 @@ describe("LeaderboardModal", () => {
   });
 
   it("labels the current user's row with '(you)'", async () => {
-    const entries = [makeEntry({ userId: "user-1", username: "Alice" })];
-    mockHttpsCallable.mockResolvedValueOnce({ data: { entries } });
+    const entries = [makeEntry({userId: "user-1", username: "Alice"})];
+    mockHttpsCallable.mockResolvedValueOnce({data: {entries}});
 
-    const { getAllByText } = render(
-      <LeaderboardModal {...defaultProps} currentUserId="user-1" />
-    );
+    const {getAllByText} = render(<LeaderboardModal {...defaultProps} currentUserId="user-1" />);
 
     await waitFor(() => {
       expect(getAllByText("Alice (you)").length).toBeGreaterThan(0);
@@ -312,14 +299,12 @@ describe("LeaderboardModal", () => {
   });
 
   it("uses requestingUserId from backend when it differs from passed currentUserId", async () => {
-    const entries = [makeEntry({ userId: "auth-uid", username: "Alice" })];
+    const entries = [makeEntry({userId: "auth-uid", username: "Alice"})];
     mockHttpsCallable.mockResolvedValueOnce({
-      data: { entries, requestingUserId: "auth-uid" },
+      data: {entries, requestingUserId: "auth-uid"},
     });
 
-    const { getAllByText } = render(
-      <LeaderboardModal {...defaultProps} currentUserId="stale-local-id" />
-    );
+    const {getAllByText} = render(<LeaderboardModal {...defaultProps} currentUserId="stale-local-id" />);
 
     await waitFor(() => {
       expect(getAllByText("Alice (you)").length).toBeGreaterThan(0);
@@ -327,14 +312,12 @@ describe("LeaderboardModal", () => {
   });
 
   it("falls back to Firebase auth uid when requestingUserId is missing", async () => {
-    const entries = [makeEntry({ userId: "auth-uid", username: "Alice" })];
+    const entries = [makeEntry({userId: "auth-uid", username: "Alice"})];
     mockHttpsCallable.mockResolvedValueOnce({
-      data: { entries },
+      data: {entries},
     });
 
-    const { getAllByText } = render(
-      <LeaderboardModal {...defaultProps} currentUserId="stale-local-id" />
-    );
+    const {getAllByText} = render(<LeaderboardModal {...defaultProps} currentUserId="stale-local-id" />);
 
     await waitFor(() => {
       expect(getAllByText("Alice (you)").length).toBeGreaterThan(0);
@@ -342,12 +325,10 @@ describe("LeaderboardModal", () => {
   });
 
   it("does not append '(you)' for other users' rows", async () => {
-    const entries = [makeEntry({ userId: "user-2", username: "Bob" })];
-    mockHttpsCallable.mockResolvedValueOnce({ data: { entries } });
+    const entries = [makeEntry({userId: "user-2", username: "Bob"})];
+    mockHttpsCallable.mockResolvedValueOnce({data: {entries}});
 
-    const { getByText, queryByText } = render(
-      <LeaderboardModal {...defaultProps} currentUserId="user-1" />
-    );
+    const {getByText, queryByText} = render(<LeaderboardModal {...defaultProps} currentUserId="user-1" />);
 
     await waitFor(() => {
       expect(getByText("Bob")).toBeTruthy();
@@ -356,10 +337,10 @@ describe("LeaderboardModal", () => {
   });
 
   it("displays stat values as localized numbers", async () => {
-    const entries = [makeEntry({ xp: 1000 })];
-    mockHttpsCallable.mockResolvedValueOnce({ data: { entries } });
+    const entries = [makeEntry({xp: 1000})];
+    mockHttpsCallable.mockResolvedValueOnce({data: {entries}});
 
-    const { getAllByText } = render(<LeaderboardModal {...defaultProps} />);
+    const {getAllByText} = render(<LeaderboardModal {...defaultProps} />);
 
     await waitFor(() => {
       // toLocaleString on 1000 → "1,000" on most locales, but just check it renders
@@ -368,16 +349,16 @@ describe("LeaderboardModal", () => {
   });
 
   it("shows at most 10 rows", async () => {
-    const entries = Array.from({ length: 30 }, (_, i) =>
+    const entries = Array.from({length: 30}, (_, i) =>
       makeEntry({
         userId: `user-${i + 1}`,
         username: `User ${i + 1}`,
         xp: 10_000 - i,
-      })
+      }),
     );
-    mockHttpsCallable.mockResolvedValueOnce({ data: { entries } });
+    mockHttpsCallable.mockResolvedValueOnce({data: {entries}});
 
-    const { getAllByLabelText } = render(<LeaderboardModal {...defaultProps} currentUserId="user-30" />);
+    const {getAllByLabelText} = render(<LeaderboardModal {...defaultProps} currentUserId="user-30" />);
 
     await waitFor(() => {
       expect(getAllByLabelText(/Rank /).length).toBe(10);
@@ -386,13 +367,13 @@ describe("LeaderboardModal", () => {
 
   it("orders rows with highest score first", async () => {
     const entries = [
-      makeEntry({ userId: "u-low", username: "Low", xp: 10 }),
-      makeEntry({ userId: "u-high", username: "High", xp: 1000 }),
-      makeEntry({ userId: "u-mid", username: "Mid", xp: 100 }),
+      makeEntry({userId: "u-low", username: "Low", xp: 10}),
+      makeEntry({userId: "u-high", username: "High", xp: 1000}),
+      makeEntry({userId: "u-mid", username: "Mid", xp: 100}),
     ];
-    mockHttpsCallable.mockResolvedValueOnce({ data: { entries } });
+    mockHttpsCallable.mockResolvedValueOnce({data: {entries}});
 
-    const { getAllByLabelText } = render(<LeaderboardModal {...defaultProps} currentUserId={null} />);
+    const {getAllByLabelText} = render(<LeaderboardModal {...defaultProps} currentUserId={null} />);
 
     await waitFor(() => {
       const rankedRows = getAllByLabelText(/Rank /);
@@ -404,18 +385,18 @@ describe("LeaderboardModal", () => {
 
   it("pins the current user at rank 10", async () => {
     const entries = [
-      ...Array.from({ length: 15 }, (_, i) =>
+      ...Array.from({length: 15}, (_, i) =>
         makeEntry({
           userId: `top-${i + 1}`,
           username: `Top ${i + 1}`,
           xp: 5000 - i,
-        })
+        }),
       ),
-      makeEntry({ userId: "me", username: "Me", xp: 42 }),
+      makeEntry({userId: "me", username: "Me", xp: 42}),
     ];
-    mockHttpsCallable.mockResolvedValueOnce({ data: { entries } });
+    mockHttpsCallable.mockResolvedValueOnce({data: {entries}});
 
-    const { getByLabelText } = render(<LeaderboardModal {...defaultProps} currentUserId="me" />);
+    const {getByLabelText} = render(<LeaderboardModal {...defaultProps} currentUserId="me" />);
 
     await waitFor(() => {
       expect(getByLabelText("Rank 10: Me, score 42, you")).toBeTruthy();
@@ -424,20 +405,18 @@ describe("LeaderboardModal", () => {
 
   it("does not duplicate the current user when they are already in the top rows", async () => {
     const entries = [
-      makeEntry({ userId: "me", username: "Me", xp: 10_000 }),
-      ...Array.from({ length: 15 }, (_, i) =>
+      makeEntry({userId: "me", username: "Me", xp: 10_000}),
+      ...Array.from({length: 15}, (_, i) =>
         makeEntry({
           userId: `top-${i + 1}`,
           username: `Top ${i + 1}`,
           xp: 9000 - i,
-        })
+        }),
       ),
     ];
-    mockHttpsCallable.mockResolvedValueOnce({ data: { entries } });
+    mockHttpsCallable.mockResolvedValueOnce({data: {entries}});
 
-    const { getAllByText, getByLabelText } = render(
-      <LeaderboardModal {...defaultProps} currentUserId="me" />
-    );
+    const {getAllByText, getByLabelText} = render(<LeaderboardModal {...defaultProps} currentUserId="me" />);
 
     await waitFor(() => {
       expect(getAllByText("Me (you)")).toHaveLength(1);
@@ -450,17 +429,15 @@ describe("LeaderboardModal", () => {
     (global as any).__DEV__ = false;
     try {
       const entries = [
-        makeEntry({ userId: "auth-uid", username: "Me", xp: 10_000 }),
-        makeEntry({ userId: "stale-local-id", username: "Me", xp: 9_900 }),
-        makeEntry({ userId: "other-1", username: "Other 1", xp: 8_000 }),
+        makeEntry({userId: "auth-uid", username: "Me", xp: 10_000}),
+        makeEntry({userId: "stale-local-id", username: "Me", xp: 9_900}),
+        makeEntry({userId: "other-1", username: "Other 1", xp: 8_000}),
       ];
       mockHttpsCallable.mockResolvedValueOnce({
-        data: { entries, requestingUserId: "stale-local-id" },
+        data: {entries, requestingUserId: "stale-local-id"},
       });
 
-      const { getAllByText } = render(
-        <LeaderboardModal {...defaultProps} currentUserId="stale-local-id" />
-      );
+      const {getAllByText} = render(<LeaderboardModal {...defaultProps} currentUserId="stale-local-id" />);
 
       await waitFor(() => {
         expect(getAllByText("Me (you)")).toHaveLength(1);
@@ -471,10 +448,10 @@ describe("LeaderboardModal", () => {
   });
 
   it("fills missing rows with fake entries in dev mode", async () => {
-    const entries = [makeEntry({ userId: "u-1", username: "Alice", xp: 500 })];
-    mockHttpsCallable.mockResolvedValueOnce({ data: { entries } });
+    const entries = [makeEntry({userId: "u-1", username: "Alice", xp: 500})];
+    mockHttpsCallable.mockResolvedValueOnce({data: {entries}});
 
-    const { getAllByLabelText, getByText } = render(<LeaderboardModal {...defaultProps} currentUserId="u-1" />);
+    const {getAllByLabelText, getByText} = render(<LeaderboardModal {...defaultProps} currentUserId="u-1" />);
 
     await waitFor(() => {
       expect(getAllByLabelText(/Rank /).length).toBe(10);
@@ -482,4 +459,3 @@ describe("LeaderboardModal", () => {
     });
   });
 });
-

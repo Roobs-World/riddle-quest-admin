@@ -29,7 +29,7 @@ jest.mock("@react-native-firebase/firestore", () => {
 });
 
 jest.mock("@react-native-firebase/app", () => ({
-  getApp: jest.fn(() => ({ name: "mocked-app", options: {} })),
+  getApp: jest.fn(() => ({name: "mocked-app", options: {}})),
 }));
 
 // Mocks for callable functions
@@ -38,11 +38,9 @@ const mockGenerateClassicRiddles = jest.fn();
 
 jest.mock("../../utils/firebaseFunctions", () => ({
   getCallableFunction: jest.fn((functionName: string) => {
-    if (functionName === "initializeRiddleDatabase")
-      return mockInitializeRiddleDatabase;
-    if (functionName === "generateClassicRiddles")
-      return mockGenerateClassicRiddles;
-    return jest.fn(() => Promise.resolve({ data: {} }));
+    if (functionName === "initializeRiddleDatabase") return mockInitializeRiddleDatabase;
+    if (functionName === "generateClassicRiddles") return mockGenerateClassicRiddles;
+    return jest.fn(() => Promise.resolve({data: {}}));
   }),
 }));
 
@@ -81,10 +79,10 @@ describe("RiddleInitializationService", () => {
     mockQuery.mockReturnValue({});
 
     mockInitializeRiddleDatabase.mockResolvedValue({
-      data: { success: true, message: "DB Initialized via mock (default)" },
+      data: {success: true, message: "DB Initialized via mock (default)"},
     });
     mockGenerateClassicRiddles.mockResolvedValue({
-      data: { success: true, message: "Riddles Generated via mock (default)" },
+      data: {success: true, message: "Riddles Generated via mock (default)"},
     });
 
     consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
@@ -104,9 +102,7 @@ describe("RiddleInitializationService", () => {
     });
 
     it("should reflect changes in status flags", async () => {
-      mockGet
-        .mockResolvedValueOnce({ empty: true, size: 0 })
-        .mockResolvedValueOnce({ empty: false, size: 1 });
+      mockGet.mockResolvedValueOnce({empty: true, size: 0}).mockResolvedValueOnce({empty: false, size: 1});
 
       await RiddleInitializationService.checkAndInitializeRiddles();
       expect(RiddleInitializationService.getInitializationStatus()).toEqual({
@@ -141,7 +137,7 @@ describe("RiddleInitializationService", () => {
       expect(mockGet).not.toHaveBeenCalled();
       expect(mockInitializeRiddleDatabase).not.toHaveBeenCalled();
       expect(loggerMock.debug).toHaveBeenCalledWith(
-        "Riddle initialization already in progress or completed, skipping..."
+        "Riddle initialization already in progress or completed, skipping...",
       );
       (RiddleInitializationService as any).isInitializing = false;
     });
@@ -153,14 +149,14 @@ describe("RiddleInitializationService", () => {
       expect(mockGet).not.toHaveBeenCalled();
       expect(mockInitializeRiddleDatabase).not.toHaveBeenCalled();
       expect(loggerMock.debug).toHaveBeenCalledWith(
-        "Riddle initialization already in progress or completed, skipping..."
+        "Riddle initialization already in progress or completed, skipping...",
       );
       (RiddleInitializationService as any).hasInitialized = false;
     });
 
     it("should skip initialization if riddles already exist in DB", async () => {
       const loggerMock = require("../../utils/logger").logger;
-      mockGet.mockResolvedValueOnce({ empty: false, size: 10 });
+      mockGet.mockResolvedValueOnce({empty: false, size: 10});
 
       await RiddleInitializationService.checkAndInitializeRiddles();
 
@@ -172,23 +168,19 @@ describe("RiddleInitializationService", () => {
         initializationFailed: false,
       });
       expect(loggerMock.debug).toHaveBeenCalledWith(
-        "Classic riddles database already has riddles - no initialization needed"
+        "Classic riddles database already has riddles - no initialization needed",
       );
     });
 
     it("should call initializeRiddleDatabase if db is empty and function succeeds", async () => {
       const loggerMock = require("../../utils/logger").logger;
-      mockGet
-        .mockResolvedValueOnce({ empty: true, size: 0 })
-        .mockResolvedValueOnce({ empty: false, size: 10 });
+      mockGet.mockResolvedValueOnce({empty: true, size: 0}).mockResolvedValueOnce({empty: false, size: 10});
 
       await RiddleInitializationService.checkAndInitializeRiddles();
 
       expect(mockInitializeRiddleDatabase).toHaveBeenCalledWith({});
       expect(mockGenerateClassicRiddles).not.toHaveBeenCalled();
-      expect(loggerMock.info).toHaveBeenCalledWith(
-        "Classic riddles database successfully initialized!"
-      );
+      expect(loggerMock.info).toHaveBeenCalledWith("Classic riddles database successfully initialized!");
       expect(RiddleInitializationService.getInitializationStatus()).toEqual({
         isInitializing: false,
         hasInitialized: true,
@@ -198,13 +190,9 @@ describe("RiddleInitializationService", () => {
 
     it("should call fallback generateClassicRiddles if initializeRiddleDatabase fails", async () => {
       const loggerMock = require("../../utils/logger").logger;
-      mockGet
-        .mockResolvedValueOnce({ empty: true, size: 0 })
-        .mockResolvedValueOnce({ empty: false, size: 5 });
+      mockGet.mockResolvedValueOnce({empty: true, size: 0}).mockResolvedValueOnce({empty: false, size: 5});
 
-      mockInitializeRiddleDatabase.mockRejectedValueOnce(
-        new Error("Cloud function failed")
-      );
+      mockInitializeRiddleDatabase.mockRejectedValueOnce(new Error("Cloud function failed"));
 
       await RiddleInitializationService.checkAndInitializeRiddles();
 
@@ -212,7 +200,7 @@ describe("RiddleInitializationService", () => {
       expect(mockGenerateClassicRiddles).toHaveBeenCalledWith({});
       expect(loggerMock.info).toHaveBeenCalledWith(
         expect.stringContaining("Classic riddles generation result:"),
-        expect.anything()
+        expect.anything(),
       );
       expect(RiddleInitializationService.getInitializationStatus()).toEqual({
         isInitializing: false,
@@ -222,14 +210,10 @@ describe("RiddleInitializationService", () => {
     });
 
     it("should set initializationFailed if both callable functions fail", async () => {
-      mockGet.mockResolvedValueOnce({ empty: true, size: 0 });
+      mockGet.mockResolvedValueOnce({empty: true, size: 0});
 
-      mockInitializeRiddleDatabase.mockRejectedValueOnce(
-        new Error("Cloud function failed")
-      );
-      mockGenerateClassicRiddles.mockRejectedValueOnce(
-        new Error("Fallback also failed")
-      );
+      mockInitializeRiddleDatabase.mockRejectedValueOnce(new Error("Cloud function failed"));
+      mockGenerateClassicRiddles.mockRejectedValueOnce(new Error("Fallback also failed"));
 
       await RiddleInitializationService.checkAndInitializeRiddles();
 
@@ -243,9 +227,7 @@ describe("RiddleInitializationService", () => {
     });
 
     it("should set initializationFailed if initialization completes but no riddles found", async () => {
-      mockGet
-        .mockResolvedValueOnce({ empty: true, size: 0 })
-        .mockResolvedValueOnce({ empty: true, size: 0 });
+      mockGet.mockResolvedValueOnce({empty: true, size: 0}).mockResolvedValueOnce({empty: true, size: 0});
 
       await RiddleInitializationService.checkAndInitializeRiddles();
 
@@ -263,10 +245,7 @@ describe("RiddleInitializationService", () => {
 
       await RiddleInitializationService.checkAndInitializeRiddles();
 
-      expect(logger.error).toHaveBeenCalledWith(
-        "❌ Error during riddle initialization check:",
-        expect.any(Error)
-      );
+      expect(logger.error).toHaveBeenCalledWith("❌ Error during riddle initialization check:", expect.any(Error));
       expect(mockInitializeRiddleDatabase).not.toHaveBeenCalled();
       expect(RiddleInitializationService.getInitializationStatus()).toEqual({
         isInitializing: false,
@@ -278,7 +257,7 @@ describe("RiddleInitializationService", () => {
 
   describe("hasEnoughRiddles", () => {
     it("should return true if riddle count is >= specified minimum (default 10)", async () => {
-      mockGet.mockResolvedValueOnce({ empty: false, size: 10 });
+      mockGet.mockResolvedValueOnce({empty: false, size: 10});
       const result = await RiddleInitializationService.hasEnoughRiddles();
       expect(result).toBe(true);
       expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "riddles");
@@ -287,7 +266,7 @@ describe("RiddleInitializationService", () => {
     });
 
     it("should return false if riddle count is < specified minimum (default 10)", async () => {
-      mockGet.mockResolvedValueOnce({ empty: false, size: 5 });
+      mockGet.mockResolvedValueOnce({empty: false, size: 5});
       const result = await RiddleInitializationService.hasEnoughRiddles();
       expect(result).toBe(false);
       expect(mockCollection).toHaveBeenCalledWith(expect.any(Object), "riddles");
@@ -296,7 +275,7 @@ describe("RiddleInitializationService", () => {
     });
 
     it("should return false if database is empty for hasEnoughRiddles", async () => {
-      mockGet.mockResolvedValueOnce({ empty: true, size: 0 });
+      mockGet.mockResolvedValueOnce({empty: true, size: 0});
       const result = await RiddleInitializationService.hasEnoughRiddles();
       expect(result).toBe(false);
     });
@@ -306,21 +285,17 @@ describe("RiddleInitializationService", () => {
       const logger = require("../../utils/logger").logger;
       const result = await RiddleInitializationService.hasEnoughRiddles();
       expect(result).toBe(false);
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error checking riddle count:",
-        expect.any(Error)
-      );
+      expect(logger.error).toHaveBeenCalledWith("Error checking riddle count:", expect.any(Error));
     });
 
     it("should query with the provided minimumCount or its default", async () => {
-      mockGet.mockResolvedValueOnce({ empty: false, size: 60 });
+      mockGet.mockResolvedValueOnce({empty: false, size: 60});
       await RiddleInitializationService.hasEnoughRiddles();
       expect(mockLimit).toHaveBeenCalledWith(10);
 
-      mockGet.mockResolvedValueOnce({ empty: false, size: 60 });
+      mockGet.mockResolvedValueOnce({empty: false, size: 60});
       await RiddleInitializationService.hasEnoughRiddles(5);
       expect(mockLimit).toHaveBeenCalledWith(5);
     });
   });
 });
-

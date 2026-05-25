@@ -155,10 +155,10 @@ export const saveUserProgressToFirestore = async (userId: string, progress: Play
     logger.warn("Attempted to save progress to Firestore without a userId.");
     return;
   }
-  logger.warn(
-    "Skipping direct client progress write; player progress is persisted by Cloud Functions.",
-    {userId, progress},
-  );
+  logger.warn("Skipping direct client progress write; player progress is persisted by Cloud Functions.", {
+    userId,
+    progress,
+  });
 };
 
 export const loadUserProgressFromFirestore = async (userId: string): Promise<Player | null> => {
@@ -352,10 +352,9 @@ export const updateLastDailyChallengeCompletedAt = async (userId: string): Promi
     logger.warn("Attempted to update daily challenge completion timestamp without a userId.");
     return;
   }
-  logger.warn(
-    "Skipping direct client daily completion timestamp write; completion is persisted by Cloud Functions.",
-    {userId},
-  );
+  logger.warn("Skipping direct client daily completion timestamp write; completion is persisted by Cloud Functions.", {
+    userId,
+  });
 };
 
 /**
@@ -372,10 +371,10 @@ export const updateClassicIndexInFirestore = async (userId: string, classicIndex
   }
   const normalizedClassicIndex =
     typeof classicIndex === "number" && Number.isFinite(classicIndex) ? Math.max(0, Math.floor(classicIndex)) : 0;
-  logger.warn(
-    "Skipping direct client classic progress write; classic progress is persisted by Cloud Functions.",
-    {userId, classicIndex: normalizedClassicIndex},
-  );
+  logger.warn("Skipping direct client classic progress write; classic progress is persisted by Cloud Functions.", {
+    userId,
+    classicIndex: normalizedClassicIndex,
+  });
 };
 
 /**
@@ -393,10 +392,10 @@ export const updateDailyChallengeIndexInFirestore = async (
     logger.warn("Attempted to update daily challenge index in Firestore without a userId.");
     return;
   }
-  logger.warn(
-    "Skipping direct client daily progress write; daily progress is persisted by Cloud Functions.",
-    {userId, dailyChallengeIndex},
-  );
+  logger.warn("Skipping direct client daily progress write; daily progress is persisted by Cloud Functions.", {
+    userId,
+    dailyChallengeIndex,
+  });
 };
 
 /**
@@ -462,10 +461,10 @@ export const updateUserStats = async (
   if (transaction) {
     throw new Error("Client-side Firestore transactions cannot update server-managed user stats.");
   }
-  logger.warn(
-    "Skipping direct client stats write; player stats are persisted by Cloud Functions.",
-    {userId, stats: statsFieldUpdates},
-  );
+  logger.warn("Skipping direct client stats write; player stats are persisted by Cloud Functions.", {
+    userId,
+    stats: statsFieldUpdates,
+  });
 };
 
 /**

@@ -3,12 +3,12 @@
  * Game-specific UI elements including tiles, keyboard, and game layout
  */
 
-import { StyleSheet, ViewStyle, TextStyle } from "react-native";
-import { SPACING } from "../tokens/spacing";
-import { BORDER_RADIUS } from "../tokens/borderRadius";
-import { COLORS } from "../tokens/colors";
-import { SIZING } from "../tokens/sizing";
-import { TYPOGRAPHY } from "../tokens/typography";
+import {StyleSheet, ViewStyle, TextStyle} from "react-native";
+import {SPACING} from "../tokens/spacing";
+import {BORDER_RADIUS} from "../tokens/borderRadius";
+import {COLORS} from "../tokens/colors";
+import {SIZING} from "../tokens/sizing";
+import {TYPOGRAPHY} from "../tokens/typography";
 
 export const gameStyles = StyleSheet.create({
   backspaceKey: {

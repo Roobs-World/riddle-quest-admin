@@ -1,5 +1,5 @@
-import { getFunctions, httpsCallable } from "@react-native-firebase/functions";
-import { getApp } from "@react-native-firebase/app";
+import {getFunctions, httpsCallable} from "@react-native-firebase/functions";
+import {getApp} from "@react-native-firebase/app";
 
 /**
  * Get Firebase Functions instance configured for the correct region.
@@ -24,4 +24,3 @@ export const getCallableFunction = (functionName: string) => {
 
   return callable;
 };
-

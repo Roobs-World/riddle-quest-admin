@@ -53,7 +53,7 @@ Firebase Backend
 - **Logger Abstraction**: `src/utils/logger.ts` gates verbose logging behind `__DEV__` to prevent JSI crashes in production
 - **Zod Schema Validation**: Firestore documents validated on read/write via shared Zod schemas
 - **Riddle Session Cache**: `FirestoreService` maintains an in-memory cache (max 50 entries) for daily/classic/tutorial riddle fetches to avoid repeated Firestore reads in the same session; `clearRiddleCache()` exported for tests
-- **Backend Game Constants**: `firebase-functions/src/constants.ts` holds HINT_COST_COINS and SKIP_COST_*; must stay in sync with client `src/constants/game.ts`. gameLogic (getHint, skipRiddle) uses these to avoid magic numbers and drift.
+- **Backend Game Constants**: `firebase-functions/src/constants.ts` holds HINT*COST_COINS and SKIP_COST*\*; must stay in sync with client `src/constants/game.ts`. gameLogic (getHint, skipRiddle) uses these to avoid magic numbers and drift.
 
 ## Component Relationships:
 
@@ -93,7 +93,7 @@ interface UserData {
     totalHintsUsed: number;
     // ... other stats (winRate, currentStreak, etc.)
   };
-  unlockedAchievements?: { achievementId: string; unlockedAt: number }[];
+  unlockedAchievements?: {achievementId: string; unlockedAt: number}[];
 }
 ```
 
@@ -156,14 +156,14 @@ interface Riddle {
 
 ### Testing Priorities (March 2026)
 
-| File | Current | Target | Notes |
-|------|---------|--------|-------|
-| riddleGeneration.ts | 53.59% | 70%+ | Complex Firebase mocking — roadmap item |
-| submitGuessLogic.ts | 94.65% | ~95% | Remaining lines are dead code |
-| iapConfig.ts | 97.82% | ~98% | Lines 185-186 structurally unreachable |
-| iapPlatformValidator.ts | 97.72% | ~98% | Line 141 is dead code |
-| firestoreService.ts | 100% | ✅ Done | Partial progress merge test added |
-| dailyChallenge.ts | 100% | ✅ Done | All functions fully covered |
+| File                    | Current | Target  | Notes                                   |
+| ----------------------- | ------- | ------- | --------------------------------------- |
+| riddleGeneration.ts     | 53.59%  | 70%+    | Complex Firebase mocking — roadmap item |
+| submitGuessLogic.ts     | 94.65%  | ~95%    | Remaining lines are dead code           |
+| iapConfig.ts            | 97.82%  | ~98%    | Lines 185-186 structurally unreachable  |
+| iapPlatformValidator.ts | 97.72%  | ~98%    | Line 141 is dead code                   |
+| firestoreService.ts     | 100%    | ✅ Done | Partial progress merge test added       |
+| dailyChallenge.ts       | 100%    | ✅ Done | All functions fully covered             |
 
 ### Files at 100% Line Coverage (11 files)
 

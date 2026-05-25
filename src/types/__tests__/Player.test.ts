@@ -1,9 +1,4 @@
-import {
-  Player,
-  PlayerStats,
-  Riddle,
-  PurchaseValidationResponse,
-} from "../Player";
+import {Player, PlayerStats, Riddle, PurchaseValidationResponse} from "../Player";
 
 describe("Player Types", () => {
   describe("Player", () => {
@@ -159,9 +154,9 @@ describe("Player Types", () => {
 
     it("should accept various answer formats", () => {
       const riddles: Riddle[] = [
-        { answer: "HELLO", text: "A greeting" },
-        { answer: "PEACE", text: "Harmony" },
-        { answer: "SMILE", text: "Happy expression" },
+        {answer: "HELLO", text: "A greeting"},
+        {answer: "PEACE", text: "Harmony"},
+        {answer: "SMILE", text: "Happy expression"},
       ];
 
       riddles.forEach((riddle) => {
@@ -203,5 +198,3 @@ describe("Player Types", () => {
     });
   });
 });
-
-

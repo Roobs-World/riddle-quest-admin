@@ -43,21 +43,14 @@ const isAuthUserNotFoundError = (error: unknown): boolean => {
   );
 };
 
-const deleteUserOwnedCollectionDocs = async (
-  collectionName: string,
-  userId: string,
-): Promise<number> => {
+const deleteUserOwnedCollectionDocs = async (collectionName: string, userId: string): Promise<number> => {
   const db = admin.firestore();
   let deletedCount = 0;
   const pageSize = 450;
 
   // eslint-disable-next-line no-constant-condition
   while (true) {
-    const snapshot = await db
-      .collection(collectionName)
-      .where("userId", "==", userId)
-      .limit(pageSize)
-      .get();
+    const snapshot = await db.collection(collectionName).where("userId", "==", userId).limit(pageSize).get();
 
     if (snapshot.empty) {
       return deletedCount;
@@ -172,30 +165,30 @@ export const initializeUser = onCall<InitializeUserRequestData, Promise<Initiali
 export const ensureUserComplete = onCall<object, Promise<{success: boolean; message: string}>>(
   {enforceAppCheck: true},
   async (request) => {
-  try {
-    if (!request.auth) {
-      throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
+    try {
+      if (!request.auth) {
+        throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
+      }
+
+      const userId = request.auth.uid;
+
+      // Ensure the user document has all required fields
+      await ensureUserDocumentComplete(userId);
+
+      functions.logger.info(`Successfully ensured user document completeness for ${userId}`);
+
+      return {
+        success: true,
+        message: "User document verified/updated with all required fields.",
+      };
+    } catch (error: unknown) {
+      functions.logger.error("Error in ensureUserComplete:", error);
+      captureException(error);
+      if (error instanceof HttpsError) {
+        throw error;
+      }
+      throw new HttpsError("internal", "An unexpected error occurred while ensuring user completeness.", error);
     }
-
-    const userId = request.auth.uid;
-
-    // Ensure the user document has all required fields
-    await ensureUserDocumentComplete(userId);
-
-    functions.logger.info(`Successfully ensured user document completeness for ${userId}`);
-
-    return {
-      success: true,
-      message: "User document verified/updated with all required fields.",
-    };
-  } catch (error: unknown) {
-    functions.logger.error("Error in ensureUserComplete:", error);
-    captureException(error);
-    if (error instanceof HttpsError) {
-      throw error;
-    }
-    throw new HttpsError("internal", "An unexpected error occurred while ensuring user completeness.", error);
-  }
   },
 );
 

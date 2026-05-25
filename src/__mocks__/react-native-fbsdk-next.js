@@ -1,7 +1,7 @@
 // Mock for react-native-fbsdk-next
 export const ShareDialog = {
   canShow: jest.fn(() => Promise.resolve(true)),
-  show: jest.fn(() => Promise.resolve({ isCancelled: false })),
+  show: jest.fn(() => Promise.resolve({isCancelled: false})),
 };
 
 export const AccessToken = {
@@ -9,9 +9,7 @@ export const AccessToken = {
 };
 
 export const LoginManager = {
-  logInWithPermissions: jest.fn(() =>
-    Promise.resolve({ isCancelled: false, grantedPermissions: [] })
-  ),
+  logInWithPermissions: jest.fn(() => Promise.resolve({isCancelled: false, grantedPermissions: []})),
   logOut: jest.fn(),
 };
 

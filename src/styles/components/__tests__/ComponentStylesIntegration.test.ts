@@ -19,7 +19,7 @@ jest.mock("react-native", () => ({
     select: (obj: any) => obj.ios,
   },
   Dimensions: {
-    get: () => ({ width: 375, height: 812 }),
+    get: () => ({width: 375, height: 812}),
   },
 }));
 
@@ -372,12 +372,12 @@ describe("Component Styles Integration Tests", () => {
   describe("Integration with React Native StyleSheet", () => {
     it("should be compatible with StyleSheet.create patterns", () => {
       // Test that styles can be used with StyleSheet.create
-      const { StyleSheet } = require("react-native");
+      const {StyleSheet} = require("react-native");
 
       expect(() => {
         StyleSheet.create({
           ...layoutStyles,
-          customStyle: { flex: 1 },
+          customStyle: {flex: 1},
         });
       }).not.toThrow();
     });
@@ -385,14 +385,9 @@ describe("Component Styles Integration Tests", () => {
     it("should support style composition patterns", () => {
       // Test that styles can be composed together
       expect(() => {
-        const composedStyle = [
-          layoutStyles.centerContainer,
-          buttonStyles.backButton,
-          { customProperty: "value" },
-        ];
+        const composedStyle = [layoutStyles.centerContainer, buttonStyles.backButton, {customProperty: "value"}];
         return composedStyle;
       }).not.toThrow();
     });
   });
 });
-

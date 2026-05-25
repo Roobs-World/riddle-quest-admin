@@ -23,10 +23,7 @@ if (dsn) {
  * @param error - Any caught value (Error, string, unknown).
  * @param context - Optional key/value pairs attached as extra context.
  */
-export function captureException(
-  error: unknown,
-  context?: Record<string, unknown>
-): void {
+export function captureException(error: unknown, context?: Record<string, unknown>): void {
   if (!dsn) return;
   if (context) {
     Sentry.withScope((scope) => {
@@ -44,10 +41,7 @@ export function captureException(
  * @param message - Human-readable message.
  * @param level   - Sentry severity level (defaults to "info").
  */
-export function captureMessage(
-  message: string,
-  level: "info" | "warning" | "error" = "info"
-): void {
+export function captureMessage(message: string, level: "info" | "warning" | "error" = "info"): void {
   if (!dsn) return;
   Sentry.captureMessage(message, level);
 }
@@ -62,16 +56,12 @@ export function captureMessage(
  * @param email    - User email address (optional).
  * @param username - Display username (optional).
  */
-export function setUser(
-  id: string,
-  email?: string | null,
-  username?: string | null
-): void {
+export function setUser(id: string, email?: string | null, username?: string | null): void {
   if (!dsn) return;
   Sentry.setUser({
     id,
-    ...(email ? { email } : {}),
-    ...(username ? { username } : {}),
+    ...(email ? {email} : {}),
+    ...(username ? {username} : {}),
   });
 }
 
@@ -101,10 +91,10 @@ export function addBreadcrumb(
   category: string,
   message: string,
   data?: Record<string, unknown>,
-  level: "debug" | "info" | "warning" | "error" = "info"
+  level: "debug" | "info" | "warning" | "error" = "info",
 ): void {
   if (!dsn) return;
-  Sentry.addBreadcrumb({ category, message, data, level });
+  Sentry.addBreadcrumb({category, message, data, level});
 }
 
 /**
@@ -118,16 +108,12 @@ export function addBreadcrumb(
  * @returns    A transaction object with a `finish()` method. Call `finish()`
  *             when the measured operation completes.
  */
-export function startTransaction(
-  name: string,
-  op: string
-): { finish: () => void } {
-  if (!dsn) return { finish: () => {} };
-  const transaction = Sentry.startInactiveSpan({ name, op });
+export function startTransaction(name: string, op: string): {finish: () => void} {
+  if (!dsn) return {finish: () => {}};
+  const transaction = Sentry.startInactiveSpan({name, op});
   return {
     finish: () => {
       transaction?.end();
     },
   };
 }
-

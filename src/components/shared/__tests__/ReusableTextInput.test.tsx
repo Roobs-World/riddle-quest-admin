@@ -1,5 +1,5 @@
 import React from "react";
-import { render } from "@testing-library/react-native";
+import {render} from "@testing-library/react-native";
 import ReusableTextInput from "../ReusableTextInput";
 
 // Mock React Native components for testing
@@ -52,12 +52,8 @@ describe("ReusableTextInput", () => {
     });
 
     it("should render a TextInput element", () => {
-      const { getByTestId } = render(
-        <ReusableTextInput
-          value="test"
-          onChangeText={() => {}}
-          testID="reusable-text-input"
-        />
+      const {getByTestId} = render(
+        <ReusableTextInput value="test" onChangeText={() => {}} testID="reusable-text-input" />,
       );
       expect(getByTestId("reusable-text-input")).toBeTruthy();
     });
@@ -86,13 +82,8 @@ describe("ReusableTextInput", () => {
     });
 
     it("should properly destructure className from props", () => {
-      const { getByTestId } = render(
-        <ReusableTextInput
-          value="test"
-          onChangeText={() => {}}
-          className="test-class"
-          testID="destructure-test"
-        />
+      const {getByTestId} = render(
+        <ReusableTextInput value="test" onChangeText={() => {}} className="test-class" testID="destructure-test" />,
       );
 
       const textInput = getByTestId("destructure-test");
@@ -109,9 +100,7 @@ describe("ReusableTextInput", () => {
         testID: "spread-test",
       };
 
-      const { getByTestId } = render(
-        <ReusableTextInput {...additionalProps} />
-      );
+      const {getByTestId} = render(<ReusableTextInput {...additionalProps} />);
 
       const textInput = getByTestId("spread-test");
       expect(textInput.props.value).toBe("spread test");
@@ -122,7 +111,7 @@ describe("ReusableTextInput", () => {
     });
 
     it("should handle both className and spread props together", () => {
-      const { getByTestId } = render(
+      const {getByTestId} = render(
         <ReusableTextInput
           value="combined test"
           onChangeText={() => {}}
@@ -130,7 +119,7 @@ describe("ReusableTextInput", () => {
           placeholder="Combined placeholder"
           secureTextEntry={true}
           testID="combined-test"
-        />
+        />,
       );
 
       const textInput = getByTestId("combined-test");
@@ -153,13 +142,13 @@ describe("ReusableTextInput", () => {
     });
 
     it("should handle undefined className explicitly", () => {
-      const { getByTestId } = render(
+      const {getByTestId} = render(
         <ReusableTextInput
           value="undefined test"
           onChangeText={() => {}}
           className={undefined}
           testID="undefined-class-test"
-        />
+        />,
       );
 
       const textInput = getByTestId("undefined-class-test");
@@ -170,21 +159,13 @@ describe("ReusableTextInput", () => {
   describe("props handling", () => {
     it("should pass value prop correctly", () => {
       const testValue = "test value";
-      const { getByDisplayValue } = render(
-        <ReusableTextInput value={testValue} onChangeText={() => {}} />
-      );
+      const {getByDisplayValue} = render(<ReusableTextInput value={testValue} onChangeText={() => {}} />);
       expect(getByDisplayValue(testValue)).toBeTruthy();
     });
 
     it("should pass onChangeText prop correctly", () => {
       const mockOnChangeText = jest.fn();
-      const { getByTestId } = render(
-        <ReusableTextInput
-          value=""
-          onChangeText={mockOnChangeText}
-          testID="text-input"
-        />
-      );
+      const {getByTestId} = render(<ReusableTextInput value="" onChangeText={mockOnChangeText} testID="text-input" />);
 
       const textInput = getByTestId("text-input");
       // Simulate text change
@@ -195,13 +176,8 @@ describe("ReusableTextInput", () => {
 
     it("should pass className prop correctly", () => {
       const customClassName = "custom-class";
-      const { getByTestId } = render(
-        <ReusableTextInput
-          value=""
-          onChangeText={() => {}}
-          className={customClassName}
-          testID="text-input"
-        />
+      const {getByTestId} = render(
+        <ReusableTextInput value="" onChangeText={() => {}} className={customClassName} testID="text-input" />,
       );
 
       const textInput = getByTestId("text-input");
@@ -226,7 +202,7 @@ describe("ReusableTextInput", () => {
         testID: "text-input",
       };
 
-      const { getByTestId } = render(<ReusableTextInput {...props} />);
+      const {getByTestId} = render(<ReusableTextInput {...props} />);
       const textInput = getByTestId("text-input");
 
       expect(textInput.props.placeholder).toBe("Enter text");
@@ -237,14 +213,9 @@ describe("ReusableTextInput", () => {
     });
 
     it("should pass custom style props", () => {
-      const customStyle = { fontSize: 16, color: "red" };
-      const { getByTestId } = render(
-        <ReusableTextInput
-          value=""
-          onChangeText={() => {}}
-          style={customStyle}
-          testID="text-input"
-        />
+      const customStyle = {fontSize: 16, color: "red"};
+      const {getByTestId} = render(
+        <ReusableTextInput value="" onChangeText={() => {}} style={customStyle} testID="text-input" />,
       );
 
       const textInput = getByTestId("text-input");
@@ -254,28 +225,18 @@ describe("ReusableTextInput", () => {
 
     it("should handle null and undefined values gracefully", () => {
       expect(() => {
-        render(
-          <ReusableTextInput value={null as any} onChangeText={() => {}} />
-        );
+        render(<ReusableTextInput value={null as any} onChangeText={() => {}} />);
       }).not.toThrow();
 
       expect(() => {
-        render(
-          <ReusableTextInput value={undefined as any} onChangeText={() => {}} />
-        );
+        render(<ReusableTextInput value={undefined as any} onChangeText={() => {}} />);
       }).not.toThrow();
     });
   });
 
   describe("styling", () => {
     it("should apply styles.input from imported styles", () => {
-      const { getByTestId } = render(
-        <ReusableTextInput
-          value=""
-          onChangeText={() => {}}
-          testID="text-input"
-        />
-      );
+      const {getByTestId} = render(<ReusableTextInput value="" onChangeText={() => {}} testID="text-input" />);
 
       const textInput = getByTestId("text-input");
       expect(textInput.props.style).toEqual({
@@ -288,7 +249,7 @@ describe("ReusableTextInput", () => {
     });
 
     it("should always apply base styles regardless of other props", () => {
-      const { getByTestId } = render(
+      const {getByTestId} = render(
         <ReusableTextInput
           value=""
           onChangeText={() => {}}
@@ -296,7 +257,7 @@ describe("ReusableTextInput", () => {
           multiline={true}
           numberOfLines={4}
           testID="text-input"
-        />
+        />,
       );
 
       const textInput = getByTestId("text-input");
@@ -353,18 +314,14 @@ describe("ReusableTextInput", () => {
         testID: "text-input",
       };
 
-      const { getByTestId } = render(<ReusableTextInput {...eventHandlers} />);
+      const {getByTestId} = render(<ReusableTextInput {...eventHandlers} />);
       const textInput = getByTestId("text-input");
 
       expect(textInput.props.onFocus).toBe(eventHandlers.onFocus);
       expect(textInput.props.onBlur).toBe(eventHandlers.onBlur);
-      expect(textInput.props.onSubmitEditing).toBe(
-        eventHandlers.onSubmitEditing
-      );
+      expect(textInput.props.onSubmitEditing).toBe(eventHandlers.onSubmitEditing);
       expect(textInput.props.onKeyPress).toBe(eventHandlers.onKeyPress);
-      expect(textInput.props.onSelectionChange).toBe(
-        eventHandlers.onSelectionChange
-      );
+      expect(textInput.props.onSelectionChange).toBe(eventHandlers.onSelectionChange);
     });
 
     it("should support accessibility props", () => {
@@ -377,9 +334,7 @@ describe("ReusableTextInput", () => {
         testID: "text-input",
       };
 
-      const { getByTestId } = render(
-        <ReusableTextInput {...accessibilityProps} />
-      );
+      const {getByTestId} = render(<ReusableTextInput {...accessibilityProps} />);
       const textInput = getByTestId("text-input");
 
       expect(textInput.props.accessibilityLabel).toBe("Username input");
@@ -396,13 +351,8 @@ describe("ReusableTextInput", () => {
     });
 
     it("should handle undefined className", () => {
-      const { getByTestId } = render(
-        <ReusableTextInput
-          value=""
-          onChangeText={() => {}}
-          className={undefined}
-          testID="text-input"
-        />
+      const {getByTestId} = render(
+        <ReusableTextInput value="" onChangeText={() => {}} className={undefined} testID="text-input" />,
       );
 
       const textInput = getByTestId("text-input");
@@ -410,13 +360,8 @@ describe("ReusableTextInput", () => {
     });
 
     it("should handle null className", () => {
-      const { getByTestId } = render(
-        <ReusableTextInput
-          value=""
-          onChangeText={() => {}}
-          className={null as any}
-          testID="text-input"
-        />
+      const {getByTestId} = render(
+        <ReusableTextInput value="" onChangeText={() => {}} className={null as any} testID="text-input" />,
       );
 
       const textInput = getByTestId("text-input");
@@ -433,34 +378,26 @@ describe("ReusableTextInput", () => {
     it("should handle special characters in value", () => {
       const specialChars = "!@#$%^&*()_+-=[]{}|;:,.<>?";
       expect(() => {
-        render(
-          <ReusableTextInput value={specialChars} onChangeText={() => {}} />
-        );
+        render(<ReusableTextInput value={specialChars} onChangeText={() => {}} />);
       }).not.toThrow();
     });
 
     it("should handle unicode characters", () => {
       const unicodeText = "🎮🎯🎨 Hello 世界 مرحبا 🚀";
       expect(() => {
-        render(
-          <ReusableTextInput value={unicodeText} onChangeText={() => {}} />
-        );
+        render(<ReusableTextInput value={unicodeText} onChangeText={() => {}} />);
       }).not.toThrow();
     });
 
     it("should handle numeric values as strings", () => {
       const numericValue = "12345.67";
-      const { getByDisplayValue } = render(
-        <ReusableTextInput value={numericValue} onChangeText={() => {}} />
-      );
+      const {getByDisplayValue} = render(<ReusableTextInput value={numericValue} onChangeText={() => {}} />);
       expect(getByDisplayValue(numericValue)).toBeTruthy();
     });
 
     it("should handle boolean string values", () => {
       const boolValue = "true";
-      const { getByDisplayValue } = render(
-        <ReusableTextInput value={boolValue} onChangeText={() => {}} />
-      );
+      const {getByDisplayValue} = render(<ReusableTextInput value={boolValue} onChangeText={() => {}} />);
       expect(getByDisplayValue(boolValue)).toBeTruthy();
     });
   });
@@ -476,7 +413,7 @@ describe("ReusableTextInput", () => {
         testID: "text-input",
       };
 
-      const { getByTestId } = render(<ReusableTextInput {...customProps} />);
+      const {getByTestId} = render(<ReusableTextInput {...customProps} />);
       const textInput = getByTestId("text-input");
 
       expect(textInput.props.placeholder).toBe("Test placeholder");
@@ -485,11 +422,9 @@ describe("ReusableTextInput", () => {
     });
 
     it("should maintain consistent behavior across renders", () => {
-      const props = { value: "test", onChangeText: jest.fn() };
+      const props = {value: "test", onChangeText: jest.fn()};
 
-      const { rerender, getByDisplayValue } = render(
-        <ReusableTextInput {...props} />
-      );
+      const {rerender, getByDisplayValue} = render(<ReusableTextInput {...props} />);
 
       expect(getByDisplayValue("test")).toBeTruthy();
 
@@ -499,15 +434,13 @@ describe("ReusableTextInput", () => {
     });
 
     it("should handle prop updates correctly", () => {
-      const initialProps = { value: "initial", onChangeText: jest.fn() };
-      const { rerender, getByDisplayValue, queryByDisplayValue } = render(
-        <ReusableTextInput {...initialProps} />
-      );
+      const initialProps = {value: "initial", onChangeText: jest.fn()};
+      const {rerender, getByDisplayValue, queryByDisplayValue} = render(<ReusableTextInput {...initialProps} />);
 
       expect(getByDisplayValue("initial")).toBeTruthy();
 
       // Update props
-      const updatedProps = { value: "updated", onChangeText: jest.fn() };
+      const updatedProps = {value: "updated", onChangeText: jest.fn()};
       rerender(<ReusableTextInput {...updatedProps} />);
 
       expect(queryByDisplayValue("initial")).toBeNull();
@@ -515,37 +448,21 @@ describe("ReusableTextInput", () => {
     });
 
     it("should handle className updates", () => {
-      const { rerender, getByTestId } = render(
-        <ReusableTextInput
-          value=""
-          onChangeText={() => {}}
-          className="initial-class"
-          testID="text-input"
-        />
+      const {rerender, getByTestId} = render(
+        <ReusableTextInput value="" onChangeText={() => {}} className="initial-class" testID="text-input" />,
       );
 
       expect(getByTestId("text-input").props.className).toBe("initial-class");
 
-      rerender(
-        <ReusableTextInput
-          value=""
-          onChangeText={() => {}}
-          className="updated-class"
-          testID="text-input"
-        />
-      );
+      rerender(<ReusableTextInput value="" onChangeText={() => {}} className="updated-class" testID="text-input" />);
 
       expect(getByTestId("text-input").props.className).toBe("updated-class");
     });
 
     it("should handle onChangeText callback updates", () => {
       const initialCallback = jest.fn();
-      const { rerender, getByTestId } = render(
-        <ReusableTextInput
-          value=""
-          onChangeText={initialCallback}
-          testID="text-input"
-        />
+      const {rerender, getByTestId} = render(
+        <ReusableTextInput value="" onChangeText={initialCallback} testID="text-input" />,
       );
 
       const textInput = getByTestId("text-input");
@@ -553,13 +470,7 @@ describe("ReusableTextInput", () => {
       expect(initialCallback).toHaveBeenCalledWith("test1");
 
       const updatedCallback = jest.fn();
-      rerender(
-        <ReusableTextInput
-          value=""
-          onChangeText={updatedCallback}
-          testID="text-input"
-        />
-      );
+      rerender(<ReusableTextInput value="" onChangeText={updatedCallback} testID="text-input" />);
 
       const updatedTextInput = getByTestId("text-input");
       updatedTextInput.props.onChangeText("test2");
@@ -570,11 +481,11 @@ describe("ReusableTextInput", () => {
 
   describe("performance and reliability", () => {
     it("should not cause memory leaks with multiple renders", () => {
-      const props = { value: "test", onChangeText: jest.fn() };
+      const props = {value: "test", onChangeText: jest.fn()};
 
       // Render multiple times to ensure no memory issues
       for (let i = 0; i < 10; i++) {
-        const { unmount } = render(<ReusableTextInput {...props} />);
+        const {unmount} = render(<ReusableTextInput {...props} />);
         unmount();
       }
 
@@ -583,28 +494,18 @@ describe("ReusableTextInput", () => {
     });
 
     it("should handle rapid prop changes", () => {
-      const { rerender } = render(
-        <ReusableTextInput value="1" onChangeText={() => {}} />
-      );
+      const {rerender} = render(<ReusableTextInput value="1" onChangeText={() => {}} />);
 
       // Rapidly change props
       for (let i = 2; i <= 10; i++) {
-        rerender(
-          <ReusableTextInput value={i.toString()} onChangeText={() => {}} />
-        );
+        rerender(<ReusableTextInput value={i.toString()} onChangeText={() => {}} />);
       }
 
       expect(true).toBe(true);
     });
 
     it("should maintain stable component structure", () => {
-      const { getByTestId } = render(
-        <ReusableTextInput
-          value="test"
-          onChangeText={() => {}}
-          testID="text-input"
-        />
-      );
+      const {getByTestId} = render(<ReusableTextInput value="test" onChangeText={() => {}} testID="text-input" />);
 
       const textInput = getByTestId("text-input");
       expect(textInput).toBeTruthy();
@@ -621,13 +522,7 @@ describe("ReusableTextInput", () => {
         return isValid;
       });
 
-      const { getByTestId } = render(
-        <ReusableTextInput
-          value=""
-          onChangeText={mockOnChangeText}
-          testID="text-input"
-        />
-      );
+      const {getByTestId} = render(<ReusableTextInput value="" onChangeText={mockOnChangeText} testID="text-input" />);
 
       const textInput = getByTestId("text-input");
       textInput.props.onChangeText("hi");
@@ -638,16 +533,10 @@ describe("ReusableTextInput", () => {
     it("should work with controlled input patterns", () => {
       const ControlledInput = () => {
         const [value, setValue] = React.useState("");
-        return (
-          <ReusableTextInput
-            value={value}
-            onChangeText={setValue}
-            testID="controlled-input"
-          />
-        );
+        return <ReusableTextInput value={value} onChangeText={setValue} testID="controlled-input" />;
       };
 
-      const { getByTestId } = render(<ControlledInput />);
+      const {getByTestId} = render(<ControlledInput />);
       const textInput = getByTestId("controlled-input");
 
       textInput.props.onChangeText("controlled");
@@ -679,15 +568,13 @@ describe("ReusableTextInput", () => {
         render(<ReusableTextInput {...complexProps} />);
       }).not.toThrow();
 
-      const { getByTestId } = render(<ReusableTextInput {...complexProps} />);
+      const {getByTestId} = render(<ReusableTextInput {...complexProps} />);
       const textInput = getByTestId("complex-input");
 
       // Verify all props are passed through correctly
       Object.keys(complexProps).forEach((key) => {
         if (key !== "className" && key !== "testID") {
-          expect(textInput.props[key]).toBe(
-            complexProps[key as keyof typeof complexProps]
-          );
+          expect(textInput.props[key]).toBe(complexProps[key as keyof typeof complexProps]);
         }
       });
     });
@@ -726,28 +613,15 @@ describe("ReusableTextInput", () => {
     it("should test all possible prop combinations", () => {
       // Test with className present
       const withClassName = render(
-        <ReusableTextInput
-          value="test1"
-          onChangeText={() => {}}
-          className="test-class"
-          testID="with-class"
-        />
+        <ReusableTextInput value="test1" onChangeText={() => {}} className="test-class" testID="with-class" />,
       );
-      expect(withClassName.getByTestId("with-class").props.className).toBe(
-        "test-class"
-      );
+      expect(withClassName.getByTestId("with-class").props.className).toBe("test-class");
 
       // Test without className
       const withoutClassName = render(
-        <ReusableTextInput
-          value="test2"
-          onChangeText={() => {}}
-          testID="without-class"
-        />
+        <ReusableTextInput value="test2" onChangeText={() => {}} testID="without-class" />,
       );
-      expect(
-        withoutClassName.getByTestId("without-class").props.className
-      ).toBeUndefined();
+      expect(withoutClassName.getByTestId("without-class").props.className).toBeUndefined();
 
       // Test with many additional props
       const manyProps = render(
@@ -760,7 +634,7 @@ describe("ReusableTextInput", () => {
           numberOfLines={3}
           autoCapitalize="words"
           testID="many-props"
-        />
+        />,
       );
       const textInput = manyProps.getByTestId("many-props");
       expect(textInput.props.placeholder).toBe("Many props");
@@ -772,13 +646,7 @@ describe("ReusableTextInput", () => {
 
     it("should verify JSX return statement execution", () => {
       // This test ensures the return statement in the component is executed
-      const result = render(
-        <ReusableTextInput
-          value="jsx test"
-          onChangeText={() => {}}
-          testID="jsx-test"
-        />
-      );
+      const result = render(<ReusableTextInput value="jsx test" onChangeText={() => {}} testID="jsx-test" />);
 
       // The component should render successfully and we can query it
       const textInput = result.getByTestId("jsx-test");

@@ -87,7 +87,11 @@ interface BottomNavigationBarProps {
  * @param {BottomNavigationBarProps} props - Navigation callback functions
  * @returns {JSX.Element} Rendered bottom navigation bar with three action buttons
  */
-const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({onProfilePress, onSettingsPress, profileButtonRef}) => {
+const BottomNavigationBar: React.FC<BottomNavigationBarProps> = ({
+  onProfilePress,
+  onSettingsPress,
+  profileButtonRef,
+}) => {
   return (
     <View
       style={{

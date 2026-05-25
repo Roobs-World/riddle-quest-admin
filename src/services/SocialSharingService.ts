@@ -10,10 +10,10 @@
  * @since 2024
  */
 
-import { Share, Linking } from "react-native";
-import { ShareDialog } from "react-native-fbsdk-next";
-import { logger } from "../utils/logger";
-import { captureException } from "../utils/sentry";
+import {Share, Linking} from "react-native";
+import {ShareDialog} from "react-native-fbsdk-next";
+import {logger} from "../utils/logger";
+import {captureException} from "../utils/sentry";
 
 export interface ShareContent {
   attempts: number;
@@ -26,10 +26,9 @@ export class SocialSharingService {
    * Generate shareable text content for game results
    */
   static generateShareText(content: ShareContent): string {
-    const { attempts, emojiGrid, gameMode = "daily" } = content;
+    const {attempts, emojiGrid, gameMode = "daily"} = content;
 
-    const gameTypeText =
-      gameMode === "daily" ? "Daily Challenge" : "Classic Mode";
+    const gameTypeText = gameMode === "daily" ? "Daily Challenge" : "Classic Mode";
     const attemptText = attempts === 1 ? "attempt" : "attempts";
 
     return `🎯 I solved today's Riddle Quest ${gameTypeText} in ${attempts} ${attemptText}!\n\n${emojiGrid}\n\nCan you beat my score? 🤔\n\n#Riddle Quest #WordPuzzle #BrainGame`;
@@ -129,10 +128,7 @@ export class SocialSharingService {
    * Generic share function that tries platform-specific sharing first,
    * then falls back to system share
    */
-  static async share(
-    platform: "facebook" | "x" | "system",
-    content: ShareContent
-  ): Promise<boolean> {
+  static async share(platform: "facebook" | "x" | "system", content: ShareContent): Promise<boolean> {
     switch (platform) {
       case "facebook":
         return this.shareToFacebook(content);
@@ -144,4 +140,3 @@ export class SocialSharingService {
     }
   }
 }
-

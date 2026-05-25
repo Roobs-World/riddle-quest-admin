@@ -174,9 +174,7 @@ export async function sendStreakReminders(todayUtcDate: string): Promise<StreakR
     await writeBatch.commit();
   }
 
-  functions.logger.info(
-    `[StreakReminder] ${todayUtcDate}: sent=${sent}, skipped=${skipped}, failed=${failed}`,
-  );
+  functions.logger.info(`[StreakReminder] ${todayUtcDate}: sent=${sent}, skipped=${skipped}, failed=${failed}`);
 
   return {sent, skipped, failed};
 }

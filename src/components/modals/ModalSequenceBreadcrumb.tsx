@@ -1,24 +1,19 @@
 import React from "react";
-import { View } from "react-native";
-import type { ModalSequenceProgress } from "../../types/ModalTypes";
-import { moderateScale, verticalScale } from "../../utils/responsive";
+import {View} from "react-native";
+import type {ModalSequenceProgress} from "../../types/ModalTypes";
+import {moderateScale, verticalScale} from "../../utils/responsive";
 
 interface ModalSequenceBreadcrumbProps {
   sequenceProgress?: ModalSequenceProgress;
 }
 
-const ModalSequenceBreadcrumb: React.FC<ModalSequenceBreadcrumbProps> = ({
-  sequenceProgress,
-}) => {
+const ModalSequenceBreadcrumb: React.FC<ModalSequenceBreadcrumbProps> = ({sequenceProgress}) => {
   if (!sequenceProgress || sequenceProgress.totalPopups <= 1) {
     return null;
   }
 
   const total = sequenceProgress.totalPopups;
-  const current = Math.min(
-    Math.max(1, sequenceProgress.currentPopupIndex),
-    total
-  );
+  const current = Math.min(Math.max(1, sequenceProgress.currentPopupIndex), total);
 
   return (
     <View
@@ -34,7 +29,7 @@ const ModalSequenceBreadcrumb: React.FC<ModalSequenceBreadcrumbProps> = ({
         gap: moderateScale(6),
       }}
     >
-      {Array.from({ length: total }, (_, index) => {
+      {Array.from({length: total}, (_, index) => {
         const isActive = index + 1 === current;
         return (
           <View

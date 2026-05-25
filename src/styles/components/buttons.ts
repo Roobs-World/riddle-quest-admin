@@ -3,9 +3,9 @@
  * All button-related styling including back buttons, close buttons, etc.
  */
 
-import { StyleSheet, ViewStyle, TextStyle } from "react-native";
-import { SPACING } from "../tokens/spacing";
-import { TYPOGRAPHY } from "../tokens/typography";
+import {StyleSheet, ViewStyle, TextStyle} from "react-native";
+import {SPACING} from "../tokens/spacing";
+import {TYPOGRAPHY} from "../tokens/typography";
 
 export const buttonStyles = StyleSheet.create({
   backButton: {

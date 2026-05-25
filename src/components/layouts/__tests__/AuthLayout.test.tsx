@@ -1,35 +1,35 @@
 import React from "react";
-import { render } from "@testing-library/react-native";
-import { Text } from "react-native";
+import {render} from "@testing-library/react-native";
+import {Text} from "react-native";
 import AuthLayout from "../AuthLayout";
 
 describe("AuthLayout", () => {
   describe("Rendering", () => {
     it("renders correctly with children", () => {
-      const { getByText } = render(
+      const {getByText} = render(
         <AuthLayout>
           <Text>Test Content</Text>
-        </AuthLayout>
+        </AuthLayout>,
       );
 
       expect(getByText("Test Content")).toBeTruthy();
     });
 
     it("renders as a View component", () => {
-      const { UNSAFE_getByType } = render(
+      const {UNSAFE_getByType} = render(
         <AuthLayout>
           <Text>Test</Text>
-        </AuthLayout>
+        </AuthLayout>,
       );
       const View = require("react-native").View;
       expect(UNSAFE_getByType(View)).toBeTruthy();
     });
 
     it("applies correct styling classes", () => {
-      const { UNSAFE_getByType } = render(
+      const {UNSAFE_getByType} = render(
         <AuthLayout>
           <Text>Test</Text>
-        </AuthLayout>
+        </AuthLayout>,
       );
       const View = require("react-native").View;
       const viewComponent = UNSAFE_getByType(View);
@@ -40,21 +40,21 @@ describe("AuthLayout", () => {
 
   describe("Children Handling", () => {
     it("renders single child correctly", () => {
-      const { getByText } = render(
+      const {getByText} = render(
         <AuthLayout>
           <Text>Single Child</Text>
-        </AuthLayout>
+        </AuthLayout>,
       );
 
       expect(getByText("Single Child")).toBeTruthy();
     });
 
     it("renders multiple children correctly", () => {
-      const { getByText } = render(
+      const {getByText} = render(
         <AuthLayout>
           <Text>First Child</Text>
           <Text>Second Child</Text>
-        </AuthLayout>
+        </AuthLayout>,
       );
 
       expect(getByText("First Child")).toBeTruthy();
@@ -62,12 +62,12 @@ describe("AuthLayout", () => {
     });
 
     it("renders complex nested children", () => {
-      const { getByText, getByTestId } = render(
+      const {getByText, getByTestId} = render(
         <AuthLayout>
           <Text>Header</Text>
           <Text testID="nested-content">Nested Content</Text>
           <Text>Footer</Text>
-        </AuthLayout>
+        </AuthLayout>,
       );
 
       expect(getByText("Header")).toBeTruthy();
@@ -76,7 +76,7 @@ describe("AuthLayout", () => {
     });
 
     it("handles empty children gracefully", () => {
-      const { UNSAFE_getByType } = render(<AuthLayout>{null}</AuthLayout>);
+      const {UNSAFE_getByType} = render(<AuthLayout>{null}</AuthLayout>);
       const View = require("react-native").View;
       expect(UNSAFE_getByType(View)).toBeTruthy();
     });
@@ -84,10 +84,10 @@ describe("AuthLayout", () => {
 
   describe("Component Structure", () => {
     it("has correct component hierarchy", () => {
-      const { UNSAFE_getAllByType } = render(
+      const {UNSAFE_getAllByType} = render(
         <AuthLayout>
           <Text>Test</Text>
-        </AuthLayout>
+        </AuthLayout>,
       );
       const View = require("react-native").View;
       const TextComponent = require("react-native").Text;
@@ -97,10 +97,10 @@ describe("AuthLayout", () => {
     });
 
     it("renders single View container", () => {
-      const { UNSAFE_getAllByType } = render(
+      const {UNSAFE_getAllByType} = render(
         <AuthLayout>
           <Text>Test</Text>
-        </AuthLayout>
+        </AuthLayout>,
       );
       const View = require("react-native").View;
       const views = UNSAFE_getAllByType(View);
@@ -109,10 +109,10 @@ describe("AuthLayout", () => {
     });
 
     it("contains children within View", () => {
-      const { getByText, UNSAFE_getByType } = render(
+      const {getByText, UNSAFE_getByType} = render(
         <AuthLayout>
           <Text>Contained Content</Text>
-        </AuthLayout>
+        </AuthLayout>,
       );
       const View = require("react-native").View;
       const viewComponent = UNSAFE_getByType(View);
@@ -124,10 +124,10 @@ describe("AuthLayout", () => {
 
   describe("Styling", () => {
     it("applies flex-1 for full height", () => {
-      const { UNSAFE_getByType } = render(
+      const {UNSAFE_getByType} = render(
         <AuthLayout>
           <Text>Test</Text>
-        </AuthLayout>
+        </AuthLayout>,
       );
       const View = require("react-native").View;
       const viewComponent = UNSAFE_getByType(View);
@@ -136,10 +136,10 @@ describe("AuthLayout", () => {
     });
 
     it("applies items-center for centering", () => {
-      const { UNSAFE_getByType } = render(
+      const {UNSAFE_getByType} = render(
         <AuthLayout>
           <Text>Test</Text>
-        </AuthLayout>
+        </AuthLayout>,
       );
       const View = require("react-native").View;
       const viewComponent = UNSAFE_getByType(View);
@@ -148,10 +148,10 @@ describe("AuthLayout", () => {
     });
 
     it("applies w-full for full width", () => {
-      const { UNSAFE_getByType } = render(
+      const {UNSAFE_getByType} = render(
         <AuthLayout>
           <Text>Test</Text>
-        </AuthLayout>
+        </AuthLayout>,
       );
       const View = require("react-native").View;
       const viewComponent = UNSAFE_getByType(View);
@@ -160,10 +160,10 @@ describe("AuthLayout", () => {
     });
 
     it("applies complete className string", () => {
-      const { UNSAFE_getByType } = render(
+      const {UNSAFE_getByType} = render(
         <AuthLayout>
           <Text>Test</Text>
-        </AuthLayout>
+        </AuthLayout>,
       );
       const View = require("react-native").View;
       const viewComponent = UNSAFE_getByType(View);
@@ -174,10 +174,10 @@ describe("AuthLayout", () => {
 
   describe("Performance", () => {
     it("re-renders correctly when children change", () => {
-      const { rerender, getByText, queryByText } = render(
+      const {rerender, getByText, queryByText} = render(
         <AuthLayout>
           <Text>Initial Content</Text>
-        </AuthLayout>
+        </AuthLayout>,
       );
 
       expect(getByText("Initial Content")).toBeTruthy();
@@ -185,7 +185,7 @@ describe("AuthLayout", () => {
       rerender(
         <AuthLayout>
           <Text>Updated Content</Text>
-        </AuthLayout>
+        </AuthLayout>,
       );
 
       expect(getByText("Updated Content")).toBeTruthy();
@@ -193,10 +193,10 @@ describe("AuthLayout", () => {
     });
 
     it("maintains component structure across re-renders", () => {
-      const { rerender, UNSAFE_getAllByType } = render(
+      const {rerender, UNSAFE_getAllByType} = render(
         <AuthLayout>
           <Text>Test</Text>
-        </AuthLayout>
+        </AuthLayout>,
       );
 
       const View = require("react-native").View;
@@ -205,7 +205,7 @@ describe("AuthLayout", () => {
       rerender(
         <AuthLayout>
           <Text>Different Content</Text>
-        </AuthLayout>
+        </AuthLayout>,
       );
 
       const finalViewCount = UNSAFE_getAllByType(View).length;
@@ -213,10 +213,10 @@ describe("AuthLayout", () => {
     });
 
     it("handles rapid re-renders", () => {
-      const { rerender } = render(
+      const {rerender} = render(
         <AuthLayout>
           <Text>Initial</Text>
-        </AuthLayout>
+        </AuthLayout>,
       );
 
       // Rapid re-renders
@@ -224,7 +224,7 @@ describe("AuthLayout", () => {
         rerender(
           <AuthLayout>
             <Text>Content {i}</Text>
-          </AuthLayout>
+          </AuthLayout>,
         );
       }
 
@@ -234,33 +234,29 @@ describe("AuthLayout", () => {
 
   describe("Edge Cases", () => {
     it("handles undefined children", () => {
-      const { UNSAFE_getByType } = render(<AuthLayout>{undefined}</AuthLayout>);
+      const {UNSAFE_getByType} = render(<AuthLayout>{undefined}</AuthLayout>);
       const View = require("react-native").View;
       expect(UNSAFE_getByType(View)).toBeTruthy();
     });
 
     it("handles false children", () => {
-      const { UNSAFE_getByType } = render(<AuthLayout>{false}</AuthLayout>);
+      const {UNSAFE_getByType} = render(<AuthLayout>{false}</AuthLayout>);
       const View = require("react-native").View;
       expect(UNSAFE_getByType(View)).toBeTruthy();
     });
 
     it("handles conditional children", () => {
       const showContent = true;
-      const { getByText } = render(
-        <AuthLayout>
-          {showContent && <Text>Conditional Content</Text>}
-        </AuthLayout>
-      );
+      const {getByText} = render(<AuthLayout>{showContent && <Text>Conditional Content</Text>}</AuthLayout>);
 
       expect(getByText("Conditional Content")).toBeTruthy();
     });
 
     it("works without explicit children prop", () => {
-      const { UNSAFE_getByType } = render(
+      const {UNSAFE_getByType} = render(
         <AuthLayout>
           <Text>Implicit children</Text>
-        </AuthLayout>
+        </AuthLayout>,
       );
       const View = require("react-native").View;
       expect(UNSAFE_getByType(View)).toBeTruthy();
@@ -273,7 +269,7 @@ describe("AuthLayout", () => {
         render(
           <AuthLayout>
             <Text>Required children</Text>
-          </AuthLayout>
+          </AuthLayout>,
         );
       }).not.toThrow();
     });
@@ -281,7 +277,7 @@ describe("AuthLayout", () => {
     it("works with React.ReactNode children", () => {
       const nodes = [<Text key="1">First</Text>, <Text key="2">Second</Text>];
 
-      const { getByText } = render(<AuthLayout>{nodes}</AuthLayout>);
+      const {getByText} = render(<AuthLayout>{nodes}</AuthLayout>);
 
       expect(getByText("First")).toBeTruthy();
       expect(getByText("Second")).toBeTruthy();
@@ -290,20 +286,20 @@ describe("AuthLayout", () => {
 
   describe("Accessibility", () => {
     it("is accessible as a container", () => {
-      const { UNSAFE_getByType } = render(
+      const {UNSAFE_getByType} = render(
         <AuthLayout>
           <Text>Accessible content</Text>
-        </AuthLayout>
+        </AuthLayout>,
       );
       const View = require("react-native").View;
       expect(UNSAFE_getByType(View)).toBeTruthy();
     });
 
     it("preserves child accessibility", () => {
-      const { getByText } = render(
+      const {getByText} = render(
         <AuthLayout>
           <Text accessibilityLabel="Accessible text">Content</Text>
-        </AuthLayout>
+        </AuthLayout>,
       );
 
       const textElement = getByText("Content");

@@ -1,10 +1,10 @@
-import { createButtonStyle } from "../createButtonStyle";
-import { COLORS } from "../../tokens/colors";
-import { TYPOGRAPHY } from "../../tokens/typography";
-import { SPACING } from "../../tokens/spacing";
-import { BORDER_RADIUS } from "../../tokens/borderRadius";
-import { SIZING } from "../../tokens/sizing";
-import { SHADOWS } from "../../tokens/shadows";
+import {createButtonStyle} from "../createButtonStyle";
+import {COLORS} from "../../tokens/colors";
+import {TYPOGRAPHY} from "../../tokens/typography";
+import {SPACING} from "../../tokens/spacing";
+import {BORDER_RADIUS} from "../../tokens/borderRadius";
+import {SIZING} from "../../tokens/sizing";
+import {SHADOWS} from "../../tokens/shadows";
 
 describe("createButtonStyle", () => {
   describe("default behavior", () => {
@@ -44,11 +44,7 @@ describe("createButtonStyle", () => {
     it("should create solid button with custom colors", () => {
       const backgroundColor = "#ff0000";
       const textColor = "#ffffff";
-      const buttonStyle = createButtonStyle(
-        backgroundColor,
-        textColor,
-        "solid"
-      );
+      const buttonStyle = createButtonStyle(backgroundColor, textColor, "solid");
 
       expect(buttonStyle.button.backgroundColor).toBe(backgroundColor);
       expect(buttonStyle.text.color).toBe(textColor);
@@ -209,33 +205,17 @@ describe("createButtonStyle", () => {
       expect(solidStyle.button.alignItems).toBe(outlineStyle.button.alignItems);
       expect(solidStyle.button.alignItems).toBe(ghostStyle.button.alignItems);
 
-      expect(solidStyle.button.justifyContent).toBe(
-        outlineStyle.button.justifyContent
-      );
-      expect(solidStyle.button.justifyContent).toBe(
-        ghostStyle.button.justifyContent
-      );
+      expect(solidStyle.button.justifyContent).toBe(outlineStyle.button.justifyContent);
+      expect(solidStyle.button.justifyContent).toBe(ghostStyle.button.justifyContent);
 
-      expect(solidStyle.button.paddingHorizontal).toBe(
-        outlineStyle.button.paddingHorizontal
-      );
-      expect(solidStyle.button.paddingHorizontal).toBe(
-        ghostStyle.button.paddingHorizontal
-      );
+      expect(solidStyle.button.paddingHorizontal).toBe(outlineStyle.button.paddingHorizontal);
+      expect(solidStyle.button.paddingHorizontal).toBe(ghostStyle.button.paddingHorizontal);
 
-      expect(solidStyle.button.paddingVertical).toBe(
-        outlineStyle.button.paddingVertical
-      );
-      expect(solidStyle.button.paddingVertical).toBe(
-        ghostStyle.button.paddingVertical
-      );
+      expect(solidStyle.button.paddingVertical).toBe(outlineStyle.button.paddingVertical);
+      expect(solidStyle.button.paddingVertical).toBe(ghostStyle.button.paddingVertical);
 
-      expect(solidStyle.button.borderRadius).toBe(
-        outlineStyle.button.borderRadius
-      );
-      expect(solidStyle.button.borderRadius).toBe(
-        ghostStyle.button.borderRadius
-      );
+      expect(solidStyle.button.borderRadius).toBe(outlineStyle.button.borderRadius);
+      expect(solidStyle.button.borderRadius).toBe(ghostStyle.button.borderRadius);
 
       expect(solidStyle.button.minHeight).toBe(outlineStyle.button.minHeight);
       expect(solidStyle.button.minHeight).toBe(ghostStyle.button.minHeight);
@@ -308,8 +288,8 @@ describe("createButtonStyle", () => {
     });
 
     it("should not modify token imports", () => {
-      const originalSpacing = { ...SPACING };
-      const originalColors = { ...COLORS };
+      const originalSpacing = {...SPACING};
+      const originalColors = {...COLORS};
 
       createButtonStyle();
 
@@ -341,4 +321,3 @@ describe("createButtonStyle", () => {
     });
   });
 });
-

@@ -24,7 +24,7 @@ jest.mock("react-native", () => ({
 describe("featureFlags", () => {
   beforeEach(() => {
     jest.resetModules();
-    process.env = { ...originalEnv };
+    process.env = {...originalEnv};
   });
 
   afterAll(() => {
@@ -35,7 +35,7 @@ describe("featureFlags", () => {
     it("should be false when env var is not set", () => {
       delete process.env.EXPO_PUBLIC_ENABLE_SHARED_ANIMATION_BACKEND;
 
-      const { featureFlags } = require("../featureFlags");
+      const {featureFlags} = require("../featureFlags");
 
       expect(featureFlags.sharedAnimationBackendExperimental).toBe(false);
     });
@@ -43,7 +43,7 @@ describe("featureFlags", () => {
     it('should be true when env var is "true"', () => {
       process.env.EXPO_PUBLIC_ENABLE_SHARED_ANIMATION_BACKEND = "true";
 
-      const { featureFlags } = require("../featureFlags");
+      const {featureFlags} = require("../featureFlags");
 
       expect(featureFlags.sharedAnimationBackendExperimental).toBe(true);
     });
@@ -51,7 +51,7 @@ describe("featureFlags", () => {
     it('should be false when env var is "false"', () => {
       process.env.EXPO_PUBLIC_ENABLE_SHARED_ANIMATION_BACKEND = "false";
 
-      const { featureFlags } = require("../featureFlags");
+      const {featureFlags} = require("../featureFlags");
 
       expect(featureFlags.sharedAnimationBackendExperimental).toBe(false);
     });
@@ -59,7 +59,7 @@ describe("featureFlags", () => {
     it("should be false when env var has other value", () => {
       process.env.EXPO_PUBLIC_ENABLE_SHARED_ANIMATION_BACKEND = "yes";
 
-      const { featureFlags } = require("../featureFlags");
+      const {featureFlags} = require("../featureFlags");
 
       expect(featureFlags.sharedAnimationBackendExperimental).toBe(false);
     });
@@ -67,7 +67,7 @@ describe("featureFlags", () => {
     it("should be false when env var is empty string", () => {
       process.env.EXPO_PUBLIC_ENABLE_SHARED_ANIMATION_BACKEND = "";
 
-      const { featureFlags } = require("../featureFlags");
+      const {featureFlags} = require("../featureFlags");
 
       expect(featureFlags.sharedAnimationBackendExperimental).toBe(false);
     });
@@ -77,7 +77,7 @@ describe("featureFlags", () => {
     it("should return false when flag is not requested", () => {
       delete process.env.EXPO_PUBLIC_ENABLE_SHARED_ANIMATION_BACKEND;
 
-      const { isSharedAnimationBackendFlagRequested } = require("../featureFlags");
+      const {isSharedAnimationBackendFlagRequested} = require("../featureFlags");
 
       expect(isSharedAnimationBackendFlagRequested()).toBe(false);
     });
@@ -85,7 +85,7 @@ describe("featureFlags", () => {
     it("should return true when flag is requested", () => {
       process.env.EXPO_PUBLIC_ENABLE_SHARED_ANIMATION_BACKEND = "true";
 
-      const { isSharedAnimationBackendFlagRequested } = require("../featureFlags");
+      const {isSharedAnimationBackendFlagRequested} = require("../featureFlags");
 
       expect(isSharedAnimationBackendFlagRequested()).toBe(true);
     });
@@ -95,7 +95,7 @@ describe("featureFlags", () => {
     it("should return false when flag is not set", () => {
       delete process.env.EXPO_PUBLIC_ENABLE_SHARED_ANIMATION_BACKEND;
 
-      const { isSharedAnimationBackendEnabled } = require("../featureFlags");
+      const {isSharedAnimationBackendEnabled} = require("../featureFlags");
 
       expect(isSharedAnimationBackendEnabled()).toBe(false);
     });
@@ -104,7 +104,7 @@ describe("featureFlags", () => {
       process.env.EXPO_PUBLIC_ENABLE_SHARED_ANIMATION_BACKEND = "true";
 
       // Reset module with version 0.84.0 already set in mock
-      const { isSharedAnimationBackendEnabled } = require("../featureFlags");
+      const {isSharedAnimationBackendEnabled} = require("../featureFlags");
 
       expect(isSharedAnimationBackendEnabled()).toBe(false);
     });
@@ -128,7 +128,7 @@ describe("featureFlags", () => {
       }));
       process.env.EXPO_PUBLIC_ENABLE_SHARED_ANIMATION_BACKEND = "true";
 
-      const { isSharedAnimationBackendEnabled } = require("../featureFlags");
+      const {isSharedAnimationBackendEnabled} = require("../featureFlags");
 
       expect(isSharedAnimationBackendEnabled()).toBe(true);
     });
@@ -148,7 +148,7 @@ describe("featureFlags", () => {
       }));
       process.env.EXPO_PUBLIC_ENABLE_SHARED_ANIMATION_BACKEND = "true";
 
-      const { isSharedAnimationBackendEnabled } = require("../featureFlags");
+      const {isSharedAnimationBackendEnabled} = require("../featureFlags");
 
       expect(isSharedAnimationBackendEnabled()).toBe(true);
     });
@@ -168,7 +168,7 @@ describe("featureFlags", () => {
       }));
       process.env.EXPO_PUBLIC_ENABLE_SHARED_ANIMATION_BACKEND = "true";
 
-      const { isSharedAnimationBackendEnabled } = require("../featureFlags");
+      const {isSharedAnimationBackendEnabled} = require("../featureFlags");
 
       expect(isSharedAnimationBackendEnabled()).toBe(true);
     });
@@ -188,7 +188,7 @@ describe("featureFlags", () => {
       }));
       process.env.EXPO_PUBLIC_ENABLE_SHARED_ANIMATION_BACKEND = "true";
 
-      const { isSharedAnimationBackendEnabled } = require("../featureFlags");
+      const {isSharedAnimationBackendEnabled} = require("../featureFlags");
 
       expect(isSharedAnimationBackendEnabled()).toBe(true);
     });
@@ -208,7 +208,7 @@ describe("featureFlags", () => {
       }));
       process.env.EXPO_PUBLIC_ENABLE_SHARED_ANIMATION_BACKEND = "true";
 
-      const { isSharedAnimationBackendEnabled } = require("../featureFlags");
+      const {isSharedAnimationBackendEnabled} = require("../featureFlags");
 
       expect(isSharedAnimationBackendEnabled()).toBe(false);
     });
@@ -228,7 +228,7 @@ describe("featureFlags", () => {
       }));
       process.env.EXPO_PUBLIC_ENABLE_SHARED_ANIMATION_BACKEND = "true";
 
-      const { isSharedAnimationBackendEnabled } = require("../featureFlags");
+      const {isSharedAnimationBackendEnabled} = require("../featureFlags");
 
       expect(isSharedAnimationBackendEnabled()).toBe(false);
     });
@@ -242,7 +242,7 @@ describe("featureFlags", () => {
       }));
       process.env.EXPO_PUBLIC_ENABLE_SHARED_ANIMATION_BACKEND = "true";
 
-      const { isSharedAnimationBackendEnabled } = require("../featureFlags");
+      const {isSharedAnimationBackendEnabled} = require("../featureFlags");
 
       expect(isSharedAnimationBackendEnabled()).toBe(false);
     });
@@ -254,7 +254,7 @@ describe("featureFlags", () => {
       }));
       process.env.EXPO_PUBLIC_ENABLE_SHARED_ANIMATION_BACKEND = "true";
 
-      const { isSharedAnimationBackendEnabled } = require("../featureFlags");
+      const {isSharedAnimationBackendEnabled} = require("../featureFlags");
 
       expect(isSharedAnimationBackendEnabled()).toBe(false);
     });
@@ -273,7 +273,7 @@ describe("featureFlags", () => {
       }));
       process.env.EXPO_PUBLIC_ENABLE_SHARED_ANIMATION_BACKEND = "true";
 
-      const { isSharedAnimationBackendEnabled } = require("../featureFlags");
+      const {isSharedAnimationBackendEnabled} = require("../featureFlags");
 
       expect(isSharedAnimationBackendEnabled()).toBe(false);
     });
@@ -293,7 +293,7 @@ describe("featureFlags", () => {
       }));
       process.env.EXPO_PUBLIC_ENABLE_SHARED_ANIMATION_BACKEND = "true";
 
-      const { isSharedAnimationBackendEnabled } = require("../featureFlags");
+      const {isSharedAnimationBackendEnabled} = require("../featureFlags");
 
       expect(isSharedAnimationBackendEnabled()).toBe(false);
     });
@@ -315,7 +315,7 @@ describe("featureFlags", () => {
       }));
       delete process.env.EXPO_PUBLIC_ENABLE_SHARED_ANIMATION_BACKEND;
 
-      const { isSharedAnimationBackendEnabled } = require("../featureFlags");
+      const {isSharedAnimationBackendEnabled} = require("../featureFlags");
 
       expect(isSharedAnimationBackendEnabled()).toBe(false);
     });
@@ -335,7 +335,7 @@ describe("featureFlags", () => {
       }));
       process.env.EXPO_PUBLIC_ENABLE_SHARED_ANIMATION_BACKEND = "true";
 
-      const { isSharedAnimationBackendEnabled } = require("../featureFlags");
+      const {isSharedAnimationBackendEnabled} = require("../featureFlags");
 
       expect(isSharedAnimationBackendEnabled()).toBe(false);
     });
@@ -355,7 +355,7 @@ describe("featureFlags", () => {
       }));
       process.env.EXPO_PUBLIC_ENABLE_SHARED_ANIMATION_BACKEND = "true";
 
-      const { isSharedAnimationBackendEnabled } = require("../featureFlags");
+      const {isSharedAnimationBackendEnabled} = require("../featureFlags");
 
       expect(isSharedAnimationBackendEnabled()).toBe(true);
     });
@@ -363,31 +363,29 @@ describe("featureFlags", () => {
 
   describe("featureFlags object structure", () => {
     it("should export featureFlags as an object", () => {
-      const { featureFlags } = require("../featureFlags");
+      const {featureFlags} = require("../featureFlags");
 
       expect(typeof featureFlags).toBe("object");
       expect(featureFlags).not.toBeNull();
     });
 
     it("should have sharedAnimationBackendExperimental property", () => {
-      const { featureFlags } = require("../featureFlags");
+      const {featureFlags} = require("../featureFlags");
 
       expect(featureFlags).toHaveProperty("sharedAnimationBackendExperimental");
-      expect(typeof featureFlags.sharedAnimationBackendExperimental).toBe(
-        "boolean"
-      );
+      expect(typeof featureFlags.sharedAnimationBackendExperimental).toBe("boolean");
     });
   });
 
   describe("exported functions", () => {
     it("should export isSharedAnimationBackendEnabled as a function", () => {
-      const { isSharedAnimationBackendEnabled } = require("../featureFlags");
+      const {isSharedAnimationBackendEnabled} = require("../featureFlags");
 
       expect(typeof isSharedAnimationBackendEnabled).toBe("function");
     });
 
     it("should export isSharedAnimationBackendFlagRequested as a function", () => {
-      const { isSharedAnimationBackendFlagRequested } = require("../featureFlags");
+      const {isSharedAnimationBackendFlagRequested} = require("../featureFlags");
 
       expect(typeof isSharedAnimationBackendFlagRequested).toBe("function");
     });

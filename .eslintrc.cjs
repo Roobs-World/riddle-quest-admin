@@ -16,13 +16,7 @@ module.exports = {
     },
   },
 
-  plugins: [
-    "react",
-    "react-native",
-    "@typescript-eslint",
-    "react-hooks",
-    "@react-three",
-  ],
+  plugins: ["react", "react-native", "@typescript-eslint", "react-hooks", "@react-three"],
 
   extends: [
     "eslint:recommended",
@@ -72,10 +66,7 @@ module.exports = {
       files: ["firebase-functions/src/**/*"],
       rules: {
         "@typescript-eslint/no-explicit-any": "error",
-        "@typescript-eslint/no-unused-vars": [
-          "error",
-          { argsIgnorePattern: "^_" },
-        ],
+        "@typescript-eslint/no-unused-vars": ["error", {argsIgnorePattern: "^_"}],
       },
     },
   ],

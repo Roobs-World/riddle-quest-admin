@@ -56,7 +56,7 @@
 - **Server**: `firebase-functions/src/achievements.ts` — rules for first_win, wins_5/25, streak_3/7, classic_10, daily_completed, perfect_guess, tutorial_started, hint_user, first_purchase. Evaluation runs after submitGuess, getHint, and validatePurchase (NO_ADS). `appendUnlockedAchievements` in firestoreService.
 - **Client**: Achievements modal (registry + FullProfileDetailsModal entry), `src/constants/achievements.ts` for UI definitions and progress; submitGuess response `newlyUnlockedAchievementIds` passed through useGameLogic.
 - **Tests**: achievements.test.ts (unit), AchievementsModal.test.tsx, submitGuessLogic/firestoreService/iapValidation tests updated.
-- **Firestore mock fix**: `firestoreService.test.ts` — `admin.firestore.FieldValue.arrayUnion` was undefined because the mock exposed `FieldValue` on the firestore *instance* instead of on the `firestore` function. Fixed by using `Object.assign(() => mockFirestore, { FieldValue: { arrayUnion: (...args) => args } })` as the firestore export so `appendUnlockedAchievements` tests pass. Full pre-commit (lint + RN + Functions) passes.
+- **Firestore mock fix**: `firestoreService.test.ts` — `admin.firestore.FieldValue.arrayUnion` was undefined because the mock exposed `FieldValue` on the firestore _instance_ instead of on the `firestore` function. Fixed by using `Object.assign(() => mockFirestore, { FieldValue: { arrayUnion: (...args) => args } })` as the firestore export so `appendUnlockedAchievements` tests pass. Full pre-commit (lint + RN + Functions) passes.
 
 ---
 
@@ -137,22 +137,26 @@
 ### Major Test Infrastructure Fixes (March 2026)
 
 #### jest.config.js: Switched to react-native preset
+
 - Changed from `preset: null, testEnvironment: "jsdom"` to `preset: "react-native"`
 - The react-native preset provides proper test environment (`react-native-env.js`), resolver, and host component mappings
 - Fixed `getByPlaceholderText`, `getByDisplayValue`, and other RNTL queries that depend on proper host component resolution
 
 #### jest.setup.js: Fixed TurboModuleRegistry for RN 0.84.1
+
 - Added `DeviceInfo` module mock with `getConstants()` returning proper Dimensions data
 - Added `PlatformConstants` and `SourceCode` module mocks
 - This fixes the `Cannot read properties of undefined (reading 'getConstants')` crash that occurred when `react-native` index.js lazy property getters fired
 
 #### Eliminated `jest.mock("react-native", ...)` anti-pattern
+
 - Removed all `jest.mock("react-native", () => ({ ...jest.requireActual("react-native"), ... }))` patterns
 - This pattern caused circular loading crashes in RN 0.84.1 due to lazy property getters
 - Replaced with targeted `jest.spyOn(Alert, "alert")` for Alert mocking
 - Added proper component-level mocks (responsive, styles, ModalBg, WideButton, CloseButton)
 
 #### Test assertion fixes across 22 suites
+
 - Fixed button text mismatches ("Save Changes" → "Save", "Cancel" → removed)
 - Fixed testID references ("modal" → "mock-modal")
 - Fixed `typeof` checks for React.memo components ("function" → "object")
@@ -209,32 +213,42 @@ Successfully updated all npm packages to latest versions with full compatibility
 ### ✅ All Medium Priority Tasks Completed (March 2026)
 
 #### 1. Terms & Privacy Policy Navigation ✓
+
 #### 2. Admin Authorization Check ✓
+
 #### 3. IAP Product ID Configuration ✓
+
 #### 4. IAP Environment Variables ✓
+
 #### 5. Ad Client Callback Correlation ✓
+
 #### 6. validatePurchase Placeholder Removed ✓
 
 #### 7. Console.log Cleanup — COMPLETE ✅
+
 - **All production files migrated** to logger utility (RN + Firebase Functions)
 - **Zero raw `console.log/warn`** remaining in `src/` production code
 - **errorUtils.ts** now uses `logger.error` instead of `console.error`
 
 #### 8. Test Coverage Improvement — COMPLETE ✅
+
 - **Overall**: 56.24% → **61.65%** (424 tests), 11 files at 100%
 - **dailyChallenge.ts**: 56.77% → **100%**
 - **firestoreService.ts**: 61.87% → **100%**
 - **riddleGeneration.ts**: 53.59% → **91.71%** (target 70%+ met); console → logger (firebase-functions/v2) March 2026
 
 #### 9. Failing Tests Resolution — COMPLETE ✅
+
 - **All 2497 tests passing** (2111 RN + 386 Firebase Functions)
 - **0 failing tests** across all suites
 
 #### 10. User Statistics Accuracy — COMPLETE ✅
+
 - **Fixed**: `gamesPlayed` was incrementing per guess; now increments per game (`gameOver` only)
 - **Fixed**: `winRate` calculation was using inflated `gamesPlayed` count
 
 #### 11. Hint Tracking — COMPLETE ✅
+
 - **Added**: `totalHintsUsed` field to `PlayerStatsSchema`
 - **Implemented**: `getHint` function now calls `updateUserStats` to track `totalHintsUsed`
 
@@ -250,16 +264,19 @@ Successfully updated all npm packages to latest versions with full compatibility
 ## 🚀 Feature Roadmap (What's Left to Build)
 
 ### High Priority Features
+
 1. **Advanced Analytics** — User behavior tracking and game metrics
 2. **Offline Mode** — Local game state and sync capabilities
 3. **Tutorial Flow polish** — Tutorial-specific UI (step indicator, "Tutorial" in header) ✅; optional gating on tutorial riddle availability ✅. First slice done.
 
 ### Medium Priority Features
+
 4. **Social Features** — Friend systems and social sharing
 5. **Achievement System** — ✅ Implemented (unlock rules, modal, submitGuess/getHint/IAP evaluation, tests)
 6. **Performance Optimization** — Asset loading and memory management
 
 ### Low Priority Features
+
 7. **Advanced Animations** — More sophisticated visual effects
 8. **Customization Options** — Themes and personalization
 9. **Advanced Statistics** — Detailed player analytics dashboard
@@ -276,18 +293,21 @@ Successfully updated all npm packages to latest versions with full compatibility
 ## Important Patterns
 
 ### Proper Style Imports
+
 ```typescript
-import { COLORS, SPACING, BORDER_RADIUS, SHADOWS } from "../styles";
+import {COLORS, SPACING, BORDER_RADIUS, SHADOWS} from "../styles";
 ```
 
 ### Firebase Modular API (Post-Migration)
+
 ```typescript
-import { getFirestore } from "@react-native-firebase/firestore";
-import { getApp } from "@react-native-firebase/app";
+import {getFirestore} from "@react-native-firebase/firestore";
+import {getApp} from "@react-native-firebase/app";
 getFirestore(getApp()).collection("users").doc(userId);
 ```
 
 ### Modal Style Usage
+
 ```typescript
 const styles = StyleSheet.create({
   modalContainer: {

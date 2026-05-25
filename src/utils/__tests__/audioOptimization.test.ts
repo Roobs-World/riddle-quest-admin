@@ -8,7 +8,7 @@ import {
   validateAudioQuality,
   applyAudioEnhancements,
 } from "../audioOptimization";
-import type { AudioPlayer } from "expo-audio";
+import type {AudioPlayer} from "expo-audio";
 
 // Mock expo-audio
 const mockSetAudioModeAsync = jest.fn().mockResolvedValue(undefined);
@@ -35,7 +35,7 @@ jest.mock("../sentry", () => ({
 }));
 
 // Mutable Platform mock - override Platform in react-native for this test file
-const platformMock: { OS: string; Version?: number } = {
+const platformMock: {OS: string; Version?: number} = {
   OS: "ios",
   Version: 30,
 };
@@ -53,7 +53,7 @@ describe("audioOptimization utility", () => {
     platformMock.Version = 30;
     // Restore process.env
     delete process.env.EXPO_PRESERVE_AUDIO_QUALITY;
-    Object.defineProperty(global, "__DEV__", { value: originalDev });
+    Object.defineProperty(global, "__DEV__", {value: originalDev});
   });
 
   describe("AUDIO_QUALITY_PRESETS", () => {
@@ -142,7 +142,7 @@ describe("audioOptimization utility", () => {
   describe("getOptimalAudioConfig", () => {
     it("should return ULTRA_HIGH for production builds", () => {
       process.env.EXPO_PRESERVE_AUDIO_QUALITY = "1";
-      Object.defineProperty(global, "__DEV__", { value: false });
+      Object.defineProperty(global, "__DEV__", {value: false});
 
       const config = getOptimalAudioConfig();
       expect(config).toEqual(AUDIO_QUALITY_PRESETS.ULTRA_HIGH);
@@ -217,13 +217,9 @@ describe("audioOptimization utility", () => {
       expect(getOptimalAudioConfig()).toEqual(AUDIO_QUALITY_PRESETS.STANDARD);
 
       platformMock.Version = 28;
-      expect(getOptimalAudioConfig()).toEqual(
-        AUDIO_QUALITY_PRESETS.ADAPTIVE_SMOOTH
-      );
+      expect(getOptimalAudioConfig()).toEqual(AUDIO_QUALITY_PRESETS.ADAPTIVE_SMOOTH);
       platformMock.Version = 29;
-      expect(getOptimalAudioConfig()).toEqual(
-        AUDIO_QUALITY_PRESETS.ADAPTIVE_SMOOTH
-      );
+      expect(getOptimalAudioConfig()).toEqual(AUDIO_QUALITY_PRESETS.ADAPTIVE_SMOOTH);
       platformMock.Version = 30;
       expect(getOptimalAudioConfig()).toEqual(AUDIO_QUALITY_PRESETS.HIGH);
     });
@@ -244,7 +240,7 @@ describe("audioOptimization utility", () => {
       const config = getOptimalAudioConfig();
       expect(config).toEqual(AUDIO_QUALITY_PRESETS.ADAPTIVE_SMOOTH);
 
-      Object.defineProperty(platformMock, "OS", { value: origOS, configurable: true });
+      Object.defineProperty(platformMock, "OS", {value: origOS, configurable: true});
       loggerSpy.mockRestore();
     });
 
@@ -342,7 +338,7 @@ describe("audioOptimization utility", () => {
     });
 
     it("should capture exception when setAudioModeAsync fails", async () => {
-      const { captureException } = require("../sentry");
+      const {captureException} = require("../sentry");
       const error = new Error("Audio mode error");
       mockSetAudioModeAsync.mockRejectedValueOnce(error);
 
@@ -372,7 +368,7 @@ describe("audioOptimization utility", () => {
     });
 
     it("should create audio player with source", async () => {
-      const source = { uri: "test.mp3" };
+      const source = {uri: "test.mp3"};
       const result = await createHighQualitySound(source);
 
       expect(mockCreateAudioPlayer).toHaveBeenCalledWith(source);
@@ -380,24 +376,24 @@ describe("audioOptimization utility", () => {
     });
 
     it("should set loop option when provided", async () => {
-      const source = { uri: "test.mp3" };
-      await createHighQualitySound(source, { loop: true });
+      const source = {uri: "test.mp3"};
+      await createHighQualitySound(source, {loop: true});
 
       expect(mockPlayer.loop).toBe(true);
     });
 
     it("should set volume option when provided", async () => {
-      const source = { uri: "test.mp3" };
-      await createHighQualitySound(source, { volume: 0.5 });
+      const source = {uri: "test.mp3"};
+      await createHighQualitySound(source, {volume: 0.5});
 
       expect(mockPlayer.volume).toBe(0.5);
     });
 
     it("should use default values when options not provided", async () => {
-      const freshPlayer = { loop: false, volume: 1.0 };
+      const freshPlayer = {loop: false, volume: 1.0};
       mockCreateAudioPlayer.mockReturnValue(freshPlayer);
 
-      await createHighQualitySound({ uri: "test.mp3" });
+      await createHighQualitySound({uri: "test.mp3"});
 
       expect(freshPlayer.loop).toBe(false);
       expect(freshPlayer.volume).toBe(1.0);
@@ -409,20 +405,18 @@ describe("audioOptimization utility", () => {
         throw error;
       });
 
-      await expect(createHighQualitySound({ uri: "test.mp3" })).rejects.toThrow(
-        "Player creation error"
-      );
+      await expect(createHighQualitySound({uri: "test.mp3"})).rejects.toThrow("Player creation error");
     });
 
     it("should capture exception when createAudioPlayer fails", async () => {
-      const { captureException } = require("../sentry");
+      const {captureException} = require("../sentry");
       const error = new Error("Player creation error");
       mockCreateAudioPlayer.mockImplementationOnce(() => {
         throw error;
       });
 
       try {
-        await createHighQualitySound({ uri: "test.mp3" });
+        await createHighQualitySound({uri: "test.mp3"});
       } catch {
         // Expected
       }
@@ -482,7 +476,7 @@ describe("audioOptimization utility", () => {
     });
 
     it("should return false and capture exception on error", async () => {
-      const { captureException } = require("../sentry");
+      const {captureException} = require("../sentry");
       const mockSound = {
         get isLoaded() {
           throw new Error("Access error");
@@ -517,7 +511,7 @@ describe("audioOptimization utility", () => {
     });
 
     it("should capture exception on error", async () => {
-      const { captureException } = require("../sentry");
+      const {captureException} = require("../sentry");
       const mockSound = {
         set volume(_: number) {
           throw new Error("Volume error");
@@ -530,4 +524,3 @@ describe("audioOptimization utility", () => {
     });
   });
 });
-

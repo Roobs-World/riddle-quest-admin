@@ -9,7 +9,13 @@ import {TYPOGRAPHY} from "../../../styles";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
 import WideButton from "src/components/buttons/WideButton";
-import {MODAL_WIDTH, MODAL_HEIGHT, CLOSE_BUTTON_SIZE, MODAL_CLOSE_BUTTON_POSITION, MODAL_MAX_HEIGHT} from "../../../constants/layout";
+import {
+  MODAL_WIDTH,
+  MODAL_HEIGHT,
+  CLOSE_BUTTON_SIZE,
+  MODAL_CLOSE_BUTTON_POSITION,
+  MODAL_MAX_HEIGHT,
+} from "../../../constants/layout";
 import {SPACING} from "../../../styles";
 import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";

@@ -1,6 +1,6 @@
 import * as RNIap from "react-native-iap";
-import { ProductPricing } from "../services/ProductPricingService";
-import { SupportedLanguage } from "../constants/AppStrings";
+import {ProductPricing} from "../services/ProductPricingService";
+import {SupportedLanguage} from "../constants/AppStrings";
 
 // Base modal interface that all modals must implement
 export interface BaseModalProps {
@@ -36,11 +36,7 @@ export type ModalRegistry = {
 // Modal context state
 export interface ModalContextState {
   modals: ModalInstance[];
-  openModal: <T extends ModalData>(
-    type: string,
-    data?: T,
-    options?: ModalOptions
-  ) => string;
+  openModal: <T extends ModalData>(type: string, data?: T, options?: ModalOptions) => string;
   closeModal: (id: string) => void;
   closeModalByType: (type: string) => void;
   closeAllModals: () => void;
@@ -255,11 +251,11 @@ export type ModalDataType<T extends keyof GameModalTypes> = GameModalTypes[T];
 
 // Modal action types for reducer
 export type ModalAction =
-  | { type: "OPEN_MODAL"; payload: ModalInstance }
-  | { type: "CLOSE_MODAL"; payload: string }
-  | { type: "CLOSE_MODAL_BY_TYPE"; payload: string }
-  | { type: "CLOSE_ALL_MODALS" }
+  | {type: "OPEN_MODAL"; payload: ModalInstance}
+  | {type: "CLOSE_MODAL"; payload: string}
+  | {type: "CLOSE_MODAL_BY_TYPE"; payload: string}
+  | {type: "CLOSE_ALL_MODALS"}
   | {
       type: "UPDATE_MODAL_DATA";
-      payload: { id: string; data: Partial<ModalData> };
+      payload: {id: string; data: Partial<ModalData>};
     };

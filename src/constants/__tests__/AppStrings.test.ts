@@ -1,4 +1,4 @@
-import { AppStrings } from "../AppStrings";
+import {AppStrings} from "../AppStrings";
 
 describe("AppStrings", () => {
   describe("structure", () => {
@@ -62,41 +62,25 @@ describe("AppStrings", () => {
     it("should contain login form strings", () => {
       expect(AppStrings.AuthStrings.Login).toHaveProperty("TITLE");
       expect(AppStrings.AuthStrings.Login).toHaveProperty("EMAIL_PLACEHOLDER");
-      expect(AppStrings.AuthStrings.Login).toHaveProperty(
-        "PASSWORD_PLACEHOLDER"
-      );
+      expect(AppStrings.AuthStrings.Login).toHaveProperty("PASSWORD_PLACEHOLDER");
       expect(AppStrings.AuthStrings.Login).toHaveProperty("LOGIN_BUTTON");
 
       expect(typeof AppStrings.AuthStrings.Login.TITLE).toBe("string");
-      expect(typeof AppStrings.AuthStrings.Login.EMAIL_PLACEHOLDER).toBe(
-        "string"
-      );
-      expect(typeof AppStrings.AuthStrings.Login.PASSWORD_PLACEHOLDER).toBe(
-        "string"
-      );
+      expect(typeof AppStrings.AuthStrings.Login.EMAIL_PLACEHOLDER).toBe("string");
+      expect(typeof AppStrings.AuthStrings.Login.PASSWORD_PLACEHOLDER).toBe("string");
       expect(typeof AppStrings.AuthStrings.Login.LOGIN_BUTTON).toBe("string");
     });
 
     it("should contain signup form strings", () => {
       expect(AppStrings.AuthStrings.SignUp).toHaveProperty("TITLE");
-      expect(AppStrings.AuthStrings.SignUp).toHaveProperty(
-        "USERNAME_PLACEHOLDER"
-      );
+      expect(AppStrings.AuthStrings.SignUp).toHaveProperty("USERNAME_PLACEHOLDER");
       expect(AppStrings.AuthStrings.SignUp).toHaveProperty("EMAIL_PLACEHOLDER");
-      expect(AppStrings.AuthStrings.SignUp).toHaveProperty(
-        "PASSWORD_PLACEHOLDER"
-      );
+      expect(AppStrings.AuthStrings.SignUp).toHaveProperty("PASSWORD_PLACEHOLDER");
 
       expect(typeof AppStrings.AuthStrings.SignUp.TITLE).toBe("string");
-      expect(typeof AppStrings.AuthStrings.SignUp.USERNAME_PLACEHOLDER).toBe(
-        "string"
-      );
-      expect(typeof AppStrings.AuthStrings.SignUp.EMAIL_PLACEHOLDER).toBe(
-        "string"
-      );
-      expect(typeof AppStrings.AuthStrings.SignUp.PASSWORD_PLACEHOLDER).toBe(
-        "string"
-      );
+      expect(typeof AppStrings.AuthStrings.SignUp.USERNAME_PLACEHOLDER).toBe("string");
+      expect(typeof AppStrings.AuthStrings.SignUp.EMAIL_PLACEHOLDER).toBe("string");
+      expect(typeof AppStrings.AuthStrings.SignUp.PASSWORD_PLACEHOLDER).toBe("string");
     });
   });
 
@@ -185,9 +169,7 @@ describe("AppStrings", () => {
   describe("ErrorMessages section", () => {
     it("should contain error messages", () => {
       expect(AppStrings.ErrorMessages).toHaveProperty("UNABLE_TO_LOAD_RIDDLES");
-      expect(typeof AppStrings.ErrorMessages.UNABLE_TO_LOAD_RIDDLES).toBe(
-        "string"
-      );
+      expect(typeof AppStrings.ErrorMessages.UNABLE_TO_LOAD_RIDDLES).toBe("string");
     });
   });
 
@@ -289,19 +271,11 @@ describe("AppStrings", () => {
   describe("AuthStrings", () => {
     describe("Landing", () => {
       it("should have all required landing strings", () => {
-        expect(AppStrings.AuthStrings.Landing.TAGLINE_1).toBe(
-          "Join millions of people to play Riddle Quest."
-        );
-        expect(AppStrings.AuthStrings.Landing.TAGLINE_2).toBe(
-          "Ready to have fun while training your mind?"
-        );
+        expect(AppStrings.AuthStrings.Landing.TAGLINE_1).toBe("Join millions of people to play Riddle Quest.");
+        expect(AppStrings.AuthStrings.Landing.TAGLINE_2).toBe("Ready to have fun while training your mind?");
         expect(AppStrings.AuthStrings.Landing.SIGN_IN_BUTTON).toBe("Sign in");
-        expect(AppStrings.AuthStrings.Landing.OR_SIGN_IN_WITH).toBe(
-          "or Sign in with"
-        );
-        expect(AppStrings.AuthStrings.Landing.NO_ACCOUNT_PROMPT).toBe(
-          "Don't have an account? "
-        );
+        expect(AppStrings.AuthStrings.Landing.OR_SIGN_IN_WITH).toBe("or Sign in with");
+        expect(AppStrings.AuthStrings.Landing.NO_ACCOUNT_PROMPT).toBe("Don't have an account? ");
       });
 
       it("should have all strings as non-empty values", () => {
@@ -316,44 +290,24 @@ describe("AppStrings", () => {
       it("should have all required login strings", () => {
         expect(AppStrings.AuthStrings.Login.TITLE).toBe("Log in");
         expect(AppStrings.AuthStrings.Login.EMAIL_LABEL).toBe("Email");
-        expect(AppStrings.AuthStrings.Login.EMAIL_PLACEHOLDER).toBe(
-          "Enter your email"
-        );
+        expect(AppStrings.AuthStrings.Login.EMAIL_PLACEHOLDER).toBe("Enter your email");
         expect(AppStrings.AuthStrings.Login.PASSWORD_LABEL).toBe("Password");
-        expect(AppStrings.AuthStrings.Login.PASSWORD_PLACEHOLDER).toBe(
-          "Enter your password"
-        );
-        expect(AppStrings.AuthStrings.Login.FORGOT_PASSWORD).toBe(
-          "Forgot password?"
-        );
+        expect(AppStrings.AuthStrings.Login.PASSWORD_PLACEHOLDER).toBe("Enter your password");
+        expect(AppStrings.AuthStrings.Login.FORGOT_PASSWORD).toBe("Forgot password?");
         expect(AppStrings.AuthStrings.Login.LOGIN_BUTTON).toBe("Log In");
       });
 
       it("should have social login strings", () => {
-        expect(AppStrings.AuthStrings.Login.CONTINUE_WITH_GOOGLE).toBe(
-          "Continue with Google"
-        );
-        expect(AppStrings.AuthStrings.Login.CONTINUE_WITH_FACEBOOK).toBe(
-          "Continue with Facebook"
-        );
-        expect(AppStrings.AuthStrings.Login.OR_LOGIN_WITH).toBe(
-          "Or login with"
-        );
+        expect(AppStrings.AuthStrings.Login.CONTINUE_WITH_GOOGLE).toBe("Continue with Google");
+        expect(AppStrings.AuthStrings.Login.CONTINUE_WITH_FACEBOOK).toBe("Continue with Facebook");
+        expect(AppStrings.AuthStrings.Login.OR_LOGIN_WITH).toBe("Or login with");
       });
 
       it("should have error messages", () => {
-        expect(AppStrings.AuthStrings.Login.INVALID_EMAIL_FORMAT_ERROR).toBe(
-          "Invalid email format ✗"
-        );
-        expect(AppStrings.AuthStrings.Login.USER_NOT_FOUND_ERROR).toBe(
-          "User not found. Please check your email."
-        );
-        expect(AppStrings.AuthStrings.Login.WRONG_PASSWORD_ERROR).toBe(
-          "Incorrect password. Please try again."
-        );
-        expect(AppStrings.AuthStrings.Login.USER_DISABLED_ERROR).toBe(
-          "This account has been disabled."
-        );
+        expect(AppStrings.AuthStrings.Login.INVALID_EMAIL_FORMAT_ERROR).toBe("Invalid email format ✗");
+        expect(AppStrings.AuthStrings.Login.USER_NOT_FOUND_ERROR).toBe("User not found. Please check your email.");
+        expect(AppStrings.AuthStrings.Login.WRONG_PASSWORD_ERROR).toBe("Incorrect password. Please try again.");
+        expect(AppStrings.AuthStrings.Login.USER_DISABLED_ERROR).toBe("This account has been disabled.");
       });
 
       it("should have all strings as non-empty values", () => {
@@ -370,36 +324,20 @@ describe("AppStrings", () => {
         expect(AppStrings.AuthStrings.SignUp.USERNAME_LABEL).toBe("Username");
         expect(AppStrings.AuthStrings.SignUp.EMAIL_LABEL).toBe("Email");
         expect(AppStrings.AuthStrings.SignUp.PASSWORD_LABEL).toBe("Password");
-        expect(AppStrings.AuthStrings.SignUp.CONFIRM_PASSWORD_LABEL).toBe(
-          "Confirm Password"
-        );
+        expect(AppStrings.AuthStrings.SignUp.CONFIRM_PASSWORD_LABEL).toBe("Confirm Password");
       });
 
       it("should have validation messages", () => {
-        expect(AppStrings.AuthStrings.SignUp.PASSWORD_DOES_NOT_MATCH).toBe(
-          "Passwords do not match ✗"
-        );
-        expect(
-          AppStrings.AuthStrings.SignUp.PASSWORD_DOES_NOT_LONG_ENOUGH
-        ).toBe("Password is too short ✗");
-        expect(AppStrings.AuthStrings.SignUp.PASSWORD_VALIDATION_GOOD).toBe(
-          "Passwords match ✓"
-        );
+        expect(AppStrings.AuthStrings.SignUp.PASSWORD_DOES_NOT_MATCH).toBe("Passwords do not match ✗");
+        expect(AppStrings.AuthStrings.SignUp.PASSWORD_DOES_NOT_LONG_ENOUGH).toBe("Password is too short ✗");
+        expect(AppStrings.AuthStrings.SignUp.PASSWORD_VALIDATION_GOOD).toBe("Passwords match ✓");
       });
 
       it("should have terms agreement strings", () => {
-        expect(AppStrings.AuthStrings.SignUp.TERMS_AGREEMENT_PART1).toBe(
-          "I agree to the "
-        );
-        expect(AppStrings.AuthStrings.SignUp.TERMS_USER_AGREEMENT).toBe(
-          "user agreement"
-        );
-        expect(AppStrings.AuthStrings.SignUp.TERMS_AGREEMENT_PART2).toBe(
-          " and "
-        );
-        expect(AppStrings.AuthStrings.SignUp.TERMS_PRIVACY_POLICY).toBe(
-          "privacy policy"
-        );
+        expect(AppStrings.AuthStrings.SignUp.TERMS_AGREEMENT_PART1).toBe("I agree to the ");
+        expect(AppStrings.AuthStrings.SignUp.TERMS_USER_AGREEMENT).toBe("user agreement");
+        expect(AppStrings.AuthStrings.SignUp.TERMS_AGREEMENT_PART2).toBe(" and ");
+        expect(AppStrings.AuthStrings.SignUp.TERMS_PRIVACY_POLICY).toBe("privacy policy");
       });
 
       it("should have all strings as non-empty values", () => {
@@ -412,18 +350,12 @@ describe("AppStrings", () => {
 
     describe("NewPassword", () => {
       it("should have all required new password strings", () => {
-        expect(AppStrings.AuthStrings.NewPassword.TITLE).toBe(
-          "Set New Password"
+        expect(AppStrings.AuthStrings.NewPassword.TITLE).toBe("Set New Password");
+        expect(AppStrings.AuthStrings.NewPassword.NEW_PASSWORD_DESCRIPTION).toBe(
+          "Reset your password to recovery & login to your account.",
         );
-        expect(
-          AppStrings.AuthStrings.NewPassword.NEW_PASSWORD_DESCRIPTION
-        ).toBe("Reset your password to recovery & login to your account.");
-        expect(AppStrings.AuthStrings.NewPassword.NEW_PASSWORD_LABEL).toBe(
-          "New Password"
-        );
-        expect(AppStrings.AuthStrings.NewPassword.SET_PASSWORD_BUTTON).toBe(
-          "Confirm"
-        );
+        expect(AppStrings.AuthStrings.NewPassword.NEW_PASSWORD_LABEL).toBe("New Password");
+        expect(AppStrings.AuthStrings.NewPassword.SET_PASSWORD_BUTTON).toBe("Confirm");
       });
 
       it("should have all strings as non-empty values", () => {
@@ -464,15 +396,11 @@ describe("AppStrings", () => {
 
   describe("NavigationMessages", () => {
     it("should have error and informational messages", () => {
-      expect(AppStrings.NavigationMessages.NO_CLASSIC_RIDDLE_FOUND).toBe(
-        "⚠️ No classic riddle found at index "
-      );
+      expect(AppStrings.NavigationMessages.NO_CLASSIC_RIDDLE_FOUND).toBe("⚠️ No classic riddle found at index ");
       expect(AppStrings.NavigationMessages.SERVER_GENERATES_RIDDLES).toBe(
-        ". Server will generate new riddles automatically when you submit guesses."
+        ". Server will generate new riddles automatically when you submit guesses.",
       );
-      expect(AppStrings.NavigationMessages.ERROR_LOADING_NEXT_RIDDLE).toBe(
-        "Error loading next classic riddle:"
-      );
+      expect(AppStrings.NavigationMessages.ERROR_LOADING_NEXT_RIDDLE).toBe("Error loading next classic riddle:");
     });
 
     it("should have all strings as non-empty values", () => {
@@ -512,12 +440,10 @@ describe("AppStrings", () => {
   describe("Credits", () => {
     it("should have credits screen strings", () => {
       expect(AppStrings.Credits.TITLE).toBe("Credits");
-      expect(AppStrings.Credits.SUBTITLE).toBe(
-        "Meet the amazing team behind Riddle Quest"
-      );
+      expect(AppStrings.Credits.SUBTITLE).toBe("Meet the amazing team behind Riddle Quest");
       expect(AppStrings.Credits.THANK_YOU_TITLE).toBe("Thank You!");
       expect(AppStrings.Credits.THANK_YOU_TEXT).toBe(
-        "Special thanks to all our contributors who made Riddle Quest possible. Your creativity, dedication, and passion brought this project to life."
+        "Special thanks to all our contributors who made Riddle Quest possible. Your creativity, dedication, and passion brought this project to life.",
       );
     });
 
@@ -535,9 +461,7 @@ describe("AppStrings", () => {
       expect(AppStrings.Profile.USERNAME_LABEL).toBe("Username:");
       expect(AppStrings.Profile.SAVE_BUTTON).toBe("Save");
       expect(AppStrings.Profile.EDIT_BUTTON).toBe("Edit");
-      expect(AppStrings.Profile.LOADING_MESSAGE).toBe(
-        "Loading profile data..."
-      );
+      expect(AppStrings.Profile.LOADING_MESSAGE).toBe("Loading profile data...");
     });
 
     it("should have stats strings", () => {
@@ -551,15 +475,9 @@ describe("AppStrings", () => {
 
     it("should have avatar functionality strings", () => {
       expect(AppStrings.Profile.CHANGE_AVATAR_TITLE).toBe("Change Avatar");
-      expect(AppStrings.Profile.SELECT_PRELOADED_AVATAR_SUBTITLE).toBe(
-        "Select a Preloaded Avatar:"
-      );
-      expect(AppStrings.Profile.UPLOAD_CUSTOM_AVATAR_SUBTITLE).toBe(
-        "Or Upload Your Own:"
-      );
-      expect(AppStrings.Profile.CHOOSE_FROM_GALLERY_BUTTON).toBe(
-        "Choose from Gallery"
-      );
+      expect(AppStrings.Profile.SELECT_PRELOADED_AVATAR_SUBTITLE).toBe("Select a Preloaded Avatar:");
+      expect(AppStrings.Profile.UPLOAD_CUSTOM_AVATAR_SUBTITLE).toBe("Or Upload Your Own:");
+      expect(AppStrings.Profile.CHOOSE_FROM_GALLERY_BUTTON).toBe("Choose from Gallery");
     });
 
     it("should have all strings as non-empty values", () => {
@@ -586,7 +504,7 @@ describe("AppStrings", () => {
   describe("RewardedAdPrompts", () => {
     it("should have rewarded ad strings", () => {
       expect(AppStrings.RewardedAdPrompts.OUT_OF_GUESSES_PROMPT).toBe(
-        "You're out of guesses! Watch an ad to earn some coins?"
+        "You're out of guesses! Watch an ad to earn some coins?",
       );
       expect(AppStrings.RewardedAdPrompts.WATCH_AD_BUTTON).toBe("Watch Ad");
       expect(AppStrings.RewardedAdPrompts.NO_THANKS_BUTTON).toBe("No Thanks");
@@ -603,7 +521,7 @@ describe("AppStrings", () => {
   describe("ErrorMessages", () => {
     it("should have error messages", () => {
       expect(AppStrings.ErrorMessages.UNABLE_TO_LOAD_RIDDLES).toBe(
-        "Unable to load any riddles. Please check your connection and try again."
+        "Unable to load any riddles. Please check your connection and try again.",
       );
     });
 
@@ -621,13 +539,9 @@ describe("AppStrings", () => {
       expect(AppStrings.GameMessages.IN_MODE).toBe(" in ");
       expect(AppStrings.GameMessages.MODE_SUFFIX).toBe(" mode.");
       expect(AppStrings.GameMessages.COINS_EARNED).toBe("Coins Earned: ");
-      expect(AppStrings.GameMessages.GAME_LOST).toBe(
-        "Game Lost: Correct Answer - "
-      );
+      expect(AppStrings.GameMessages.GAME_LOST).toBe("Game Lost: Correct Answer - ");
       expect(AppStrings.GameMessages.HINT_USED).toBe("Hint Used: Cost - ");
-      expect(AppStrings.GameMessages.RETRY_BUTTON_PRESSED).toBe(
-        "Retry button pressed"
-      );
+      expect(AppStrings.GameMessages.RETRY_BUTTON_PRESSED).toBe("Retry button pressed");
     });
 
     it("should have all strings as non-empty values", () => {
@@ -641,19 +555,15 @@ describe("AppStrings", () => {
   describe("LogMessages", () => {
     it("should have log messages", () => {
       expect(AppStrings.LogMessages.SHOWING_LOADING_SPINNER_USER_DATA).toBe(
-        "⏳ Showing loading spinner - Loading user data..."
+        "⏳ Showing loading spinner - Loading user data...",
       );
       expect(AppStrings.LogMessages.TIMESTAMP).toBe("timestamp:");
       expect(AppStrings.LogMessages.SHOWING_LOADING_SPINNER_AUTH).toBe(
-        "⏳ Showing loading spinner - authentication state being determined"
+        "⏳ Showing loading spinner - authentication state being determined",
       );
-      expect(AppStrings.LogMessages.NAVIGATION_RENDERING).toBe(
-        "🧭 Navigation rendering - isAuthenticated:"
-      );
+      expect(AppStrings.LogMessages.NAVIGATION_RENDERING).toBe("🧭 Navigation rendering - isAuthenticated:");
       expect(AppStrings.LogMessages.IS_LOADING).toBe("isLoading:");
-      expect(AppStrings.LogMessages.SHOWING_NAVIGATION_STACK).toBe(
-        "🎯 Showing navigation stack - initialRoute:"
-      );
+      expect(AppStrings.LogMessages.SHOWING_NAVIGATION_STACK).toBe("🎯 Showing navigation stack - initialRoute:");
     });
 
     it("should have all strings as non-empty values", () => {
@@ -666,18 +576,10 @@ describe("AppStrings", () => {
 
   describe("GameScreenAlerts", () => {
     it("should have game screen alert strings", () => {
-      expect(AppStrings.GameScreenAlerts.SUBMIT_GUESS_ERROR_TITLE).toBe(
-        "Error"
-      );
-      expect(AppStrings.GameScreenAlerts.SUBMIT_GUESS_ERROR_MESSAGE).toBe(
-        "Could not submit guess. Please try again."
-      );
-      expect(AppStrings.GameScreenAlerts.NOT_ENOUGH_COINS_TITLE).toBe(
-        "Not enough coins"
-      );
-      expect(AppStrings.GameScreenAlerts.NOT_ENOUGH_COINS_MESSAGE).toBe(
-        "You need more coins to use a hint."
-      );
+      expect(AppStrings.GameScreenAlerts.SUBMIT_GUESS_ERROR_TITLE).toBe("Error");
+      expect(AppStrings.GameScreenAlerts.SUBMIT_GUESS_ERROR_MESSAGE).toBe("Could not submit guess. Please try again.");
+      expect(AppStrings.GameScreenAlerts.NOT_ENOUGH_COINS_TITLE).toBe("Not enough coins");
+      expect(AppStrings.GameScreenAlerts.NOT_ENOUGH_COINS_MESSAGE).toBe("You need more coins to use a hint.");
       expect(AppStrings.GameScreenAlerts.HINT_ERROR_TITLE).toBe("Error");
     });
 
@@ -718,4 +620,3 @@ describe("AppStrings", () => {
     });
   });
 });
-

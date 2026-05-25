@@ -1,7 +1,7 @@
 /**
  * @fileoverview French (fr) locale overrides.
  */
-import type { LocaleOverrides } from "./types";
+import type {LocaleOverrides} from "./types";
 
 export const frOverrides: LocaleOverrides = {
   AuthStrings: {
@@ -34,10 +34,8 @@ export const frOverrides: LocaleOverrides = {
       USER_NOT_FOUND_ERROR: "Utilisateur introuvable. Verifiez votre email.",
       WRONG_PASSWORD_ERROR: "Mot de passe incorrect. Reessayez.",
       USER_DISABLED_ERROR: "Ce compte est desactive.",
-      ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL:
-        "Un compte existe deja avec un autre mode de connexion.",
-      OPERATION_NOT_SUPPORTED_ERROR:
-        "Operation non prise en charge dans cet environnement.",
+      ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL: "Un compte existe deja avec un autre mode de connexion.",
+      OPERATION_NOT_SUPPORTED_ERROR: "Operation non prise en charge dans cet environnement.",
       LOGIN_FAILED_GENERIC: "Echec de connexion. Verifiez vos identifiants.",
     },
     SignUp: {
@@ -66,8 +64,7 @@ export const frOverrides: LocaleOverrides = {
       USERNAME_CANNOT_BE_EMPTY: "Le nom d utilisateur ne peut pas etre vide",
       EMAIL_ALREADY_IN_USE_ERROR: "Cet email est deja utilise.",
       INVALID_EMAIL_ERROR: "Adresse email invalide.",
-      OPERATION_NOT_ALLOWED_ERROR:
-        "Inscription email et mot de passe non activee.",
+      OPERATION_NOT_ALLOWED_ERROR: "Inscription email et mot de passe non activee.",
       WEAK_PASSWORD_ERROR: "Mot de passe trop faible.",
       SIGNUP_UNEXPECTED_ERROR: "Une erreur inattendue s est produite lors de l inscription.",
     },
@@ -75,16 +72,13 @@ export const frOverrides: LocaleOverrides = {
       TITLE: "Reinitialiser le mot de passe",
       BUTTON_TEXT: "Reinitialiser le mot de passe",
       SUCCESS_MESSAGE: "Email de reinitialisation envoye! Verifiez votre boite de reception.",
-      USER_NOT_FOUND_ERROR:
-        "Aucun compte trouve avec cet email. Verifiez ou creez un nouveau compte.",
-      GENERIC_ERROR:
-        "Une erreur s est produite lors de l envoi de l email. Reessayez.",
+      USER_NOT_FOUND_ERROR: "Aucun compte trouve avec cet email. Verifiez ou creez un nouveau compte.",
+      GENERIC_ERROR: "Une erreur s est produite lors de l envoi de l email. Reessayez.",
       BACK_TO_LOGIN: "Retour a la connexion",
     },
     NewPassword: {
       TITLE: "Definir un nouveau mot de passe",
-      NEW_PASSWORD_DESCRIPTION:
-        "Reinitialisez votre mot de passe pour recuperer votre compte.",
+      NEW_PASSWORD_DESCRIPTION: "Reinitialisez votre mot de passe pour recuperer votre compte.",
       NEW_PASSWORD_LABEL: "Nouveau mot de passe",
       NEW_PASSWORD_PLACEHOLDER: "Entrez votre nouveau mot de passe",
       CONFIRM_PASSWORD_LABEL: "Confirmer le nouveau mot de passe",
@@ -142,10 +136,8 @@ export const frOverrides: LocaleOverrides = {
     ALERT_ERROR_TITLE: "Erreur",
     ALERT_SUCCESS_TITLE: "Succes",
     ALERT_USERNAME_EMPTY: "Le nom d utilisateur ne peut pas etre vide.",
-    ALERT_USERNAME_UPDATE_SUCCESS:
-      "Le nom d utilisateur a ete mis a jour avec succes!",
-    ALERT_USERNAME_UPDATE_FAIL:
-      "Echec de mise a jour du nom d utilisateur. Reessayez.",
+    ALERT_USERNAME_UPDATE_SUCCESS: "Le nom d utilisateur a ete mis a jour avec succes!",
+    ALERT_USERNAME_UPDATE_FAIL: "Echec de mise a jour du nom d utilisateur. Reessayez.",
     CHANGE_AVATAR_TITLE: "Changer d avatar",
     SELECT_PRELOADED_AVATAR_SUBTITLE: "Selectionnez un avatar precharge:",
     UPLOAD_CUSTOM_AVATAR_SUBTITLE: "Ou telechargez le votre:",
@@ -153,8 +145,7 @@ export const frOverrides: LocaleOverrides = {
     CANCEL_BUTTON: "Annuler",
     ALERT_AVATAR_SELECT_FAIL: "Impossible de selectionner l avatar.",
     ALERT_AVATAR_UPDATE_SUCCESS: "Avatar mis a jour avec succes!",
-    ALERT_PRELOADED_AVATAR_SELECT_FAIL:
-      "Echec de selection de l avatar precharge.",
+    ALERT_PRELOADED_AVATAR_SELECT_FAIL: "Echec de selection de l avatar precharge.",
     ALERT_AVATAR_UPDATE_FACEBOOK_SUCCESS: "Avatar mis a jour avec la photo Facebook!",
     ALERT_USERNAME_TOO_SHORT: "Le nom d utilisateur doit comporter au moins 3 caracteres.",
     ALERT_PASSWORD_FIELDS_EMPTY: "Veuillez remplir tous les champs du mot de passe.",
@@ -192,14 +183,12 @@ export const frOverrides: LocaleOverrides = {
     GUEST_USERNAME: "Invite",
   },
   RewardedAdPrompts: {
-    OUT_OF_GUESSES_PROMPT:
-      "Plus d essais! Regarder une pub pour gagner des pieces?",
+    OUT_OF_GUESSES_PROMPT: "Plus d essais! Regarder une pub pour gagner des pieces?",
     WATCH_AD_BUTTON: "Regarder la pub",
     NO_THANKS_BUTTON: "Non merci",
   },
   ErrorMessages: {
-    UNABLE_TO_LOAD_RIDDLES:
-      "Impossible de charger les enigmes. Verifiez votre connexion.",
+    UNABLE_TO_LOAD_RIDDLES: "Impossible de charger les enigmes. Verifiez votre connexion.",
     FAILED_TO_LOAD_PRODUCTS: "Echec du chargement des produits",
     FAILED_TO_LOAD_SHOP_PRODUCTS: "Echec du chargement des produits de la boutique",
   },
@@ -210,7 +199,8 @@ export const frOverrides: LocaleOverrides = {
     NOT_ENOUGH_COINS_MESSAGE: "Vous avez besoin de plus de pieces.",
     HINT_ERROR_TITLE: "Erreur",
     GUEST_MODE_NOTICE_TITLE: "Avis sur le mode invite",
-    GUEST_MODE_NOTICE_MESSAGE: "Votre progression peut etre perdue en mode invite et certaines fonctions comme le classement sont indisponibles.",
+    GUEST_MODE_NOTICE_MESSAGE:
+      "Votre progression peut etre perdue en mode invite et certaines fonctions comme le classement sont indisponibles.",
     AD_NOT_READY_TITLE: "Publicite non disponible",
     AD_NOT_READY_MESSAGE: "La pub n a pas pu etre diffusee pour l instant. Reessayez dans un moment.",
     SPEND_COINS_ERROR_MESSAGE: "Impossible d utiliser les pieces. Reessayez.",
@@ -297,14 +287,12 @@ export const frOverrides: LocaleOverrides = {
     LETS_PLAY: "A nous de jouer",
     SOLVE_RIDDLES_TEXT:
       "Resolvez des enigmes en devinant la reponse lettre par lettre. Utilisez les indices de couleur pour guider chaque tentative.",
-    EARN_COINS_TEXT:
-      "Gagnez des pieces, relevez des defis quotidiens et grimpez au classement.",
+    EARN_COINS_TEXT: "Gagnez des pieces, relevez des defis quotidiens et grimpez au classement.",
   },
   Instructions: {
     TITLE: "Comment Jouer",
     GOAL_TITLE: "L Objectif",
-    GOAL_DESCRIPTION:
-      "Devinez l enigme cache en 3 essais avec les indices de couleur.",
+    GOAL_DESCRIPTION: "Devinez l enigme cache en 3 essais avec les indices de couleur.",
     COLOR_CLUES_TITLE: "Indices de Couleur",
     COLOR_CORRECT: "La lettre est correcte et bien placee",
     COLOR_MISPLACED: "La lettre est dans le mot mais mal placee",
@@ -385,21 +373,25 @@ export const frOverrides: LocaleOverrides = {
     HINT_AFTER_WRONG_TITLE: "Besoin d'un indice?",
     HINT_AFTER_WRONG_BODY: "Cet essai a echoue. Touchez Indice pour reveler une lettre utile et continuer.",
     SHOP_OUT_OF_COINS_TITLE: "Obtenez plus de pieces",
-    SHOP_OUT_OF_COINS_BODY: "Vous n'avez plus assez de pieces pour cette action. Ouvrez la boutique pour en acheter ou en gagner.",
+    SHOP_OUT_OF_COINS_BODY:
+      "Vous n'avez plus assez de pieces pour cette action. Ouvrez la boutique pour en acheter ou en gagner.",
     ACHIEVEMENT_EARNED_TITLE: "Succes debloque",
     ACHIEVEMENT_EARNED_BODY: "Ouvrez votre profil pour voir vos succes et suivre votre progression.",
     LEADERBOARD_FIFTH_CORRECT_TITLE: "Grimpez au classement",
     LEADERBOARD_FIFTH_CORRECT_BODY: "Cinq bonnes reponses! Ouvrez votre profil pour voir votre rang.",
     CLASSIC_FROM_DAILY_TITLE: "Mode Classique",
-    CLASSIC_FROM_DAILY_BODY: "Defi quotidien termine. Le mode Classique vous permet de continuer les enigmes a votre rythme.",
+    CLASSIC_FROM_DAILY_BODY:
+      "Defi quotidien termine. Le mode Classique vous permet de continuer les enigmes a votre rythme.",
     PROFILE_IDENTITY_TITLE: "Profil",
     PROFILE_IDENTITY_BODY: "Votre avatar, nom d'utilisateur, niveau d'XP et progression de niveau sont ici.",
     PROFILE_DAILY_PUZZLES_TITLE: "Enigmes quotidiennes",
     PROFILE_DAILY_PUZZLES_BODY: "Cette zone indique combien de defis quotidiens vous avez termines.",
     PROFILE_STATS_TITLE: "Apercu des stats",
-    PROFILE_STATS_BODY: "Ces cartes resument votre serie, les mots devines, le taux de victoire et la moyenne d'essais.",
+    PROFILE_STATS_BODY:
+      "Ces cartes resument votre serie, les mots devines, le taux de victoire et la moyenne d'essais.",
     PROFILE_COINS_TITLE: "Coffre au tresor",
-    PROFILE_COINS_BODY: "Votre solde de pieces apparait ici. Depensez-les pour des indices, des sauts et des chances bonus.",
+    PROFILE_COINS_BODY:
+      "Votre solde de pieces apparait ici. Depensez-les pour des indices, des sauts et des chances bonus.",
     PROFILE_ACHIEVEMENTS_TITLE: "Succes",
     PROFILE_ACHIEVEMENTS_BODY: "Ouvrez cette section pour voir tous les succes debloques.",
     PROFILE_STATISTICS_TITLE: "Statistiques",

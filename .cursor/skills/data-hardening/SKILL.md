@@ -18,6 +18,7 @@ description: Harden the data layer by normalizing API responses, separating DTOs
 ## Output format
 
 For each issue:
+
 - **File**: path
 - **Type**: `unnormalized-response` | `dto-leak` | `missing-validation` | `untyped-fetch` | `swallowed-error`
 - **Detail**: what was found

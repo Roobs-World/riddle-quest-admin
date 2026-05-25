@@ -6,13 +6,13 @@ Last updated: 2026-05-23
 
 Prioritize micro-creators with engaged audiences over broad gaming channels.
 
-| Segment | Audience Signal | Best Content Ask |
-| --- | --- | --- |
-| Puzzle solvers | Wordle, crosswords, riddles, logic puzzles | Solve today's riddle on camera |
-| Brain teaser creators | Daily questions, quiz posts, "can you solve" hooks | Challenge audience before answer reveal |
-| Language creators | Vocabulary, translation, language learning | Show the same riddle in multiple languages |
-| Cozy/mobile game creators | Casual games, daily routines | "My new daily puzzle habit" |
-| Teachers/education creators | Classroom riddles, vocabulary games | Brain warmup or bell-ringer style post |
+| Segment                     | Audience Signal                                    | Best Content Ask                           |
+| --------------------------- | -------------------------------------------------- | ------------------------------------------ |
+| Puzzle solvers              | Wordle, crosswords, riddles, logic puzzles         | Solve today's riddle on camera             |
+| Brain teaser creators       | Daily questions, quiz posts, "can you solve" hooks | Challenge audience before answer reveal    |
+| Language creators           | Vocabulary, translation, language learning         | Show the same riddle in multiple languages |
+| Cozy/mobile game creators   | Casual games, daily routines                       | "My new daily puzzle habit"                |
+| Teachers/education creators | Classroom riddles, vocabulary games                | Brain warmup or bell-ringer style post     |
 
 ## Outreach Targets
 
@@ -82,4 +82,3 @@ Thanks,
 ## DM Template
 
 Hi [Name], quick creator question. We are launching Riddle Quest, a mobile game where riddles meet Wordle-style clues. Your puzzle content feels like a great fit. Are you open to a paid short-form video test for a 7-Day Riddle Quest Challenge?
-

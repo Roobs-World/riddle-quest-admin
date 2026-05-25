@@ -45,11 +45,14 @@ const mockDb = {
 
 jest.mock("firebase-admin", () => ({
   initializeApp: jest.fn(),
-  firestore: Object.assign(jest.fn(() => mockDb), {
-    FieldValue: {
-      serverTimestamp: jest.fn(() => "MOCK_SERVER_TIMESTAMP"),
+  firestore: Object.assign(
+    jest.fn(() => mockDb),
+    {
+      FieldValue: {
+        serverTimestamp: jest.fn(() => "MOCK_SERVER_TIMESTAMP"),
+      },
     },
-  }),
+  ),
 }));
 
 jest.mock("firebase-functions/v2", () => {
@@ -67,14 +70,10 @@ jest.mock("firebase-functions/v2", () => {
 });
 
 jest.mock("firebase-functions/v2/https", () => {
-  const actual = jest.requireActual(
-    "firebase-functions/v2/https",
-  ) as typeof import("firebase-functions/v2/https");
+  const actual = jest.requireActual("firebase-functions/v2/https") as typeof import("firebase-functions/v2/https");
   return {
     ...actual,
-    onCall: jest.fn((optionsOrHandler: unknown, maybeHandler?: unknown) =>
-      maybeHandler ?? optionsOrHandler,
-    ),
+    onCall: jest.fn((optionsOrHandler: unknown, maybeHandler?: unknown) => maybeHandler ?? optionsOrHandler),
   };
 });
 
@@ -105,10 +104,7 @@ const awardedAdCallback = originalAwardedAdCallback as unknown as (
   request: CallableRequest<AwardedAdRequestData>,
 ) => Promise<AwardedAdResponse>;
 
-const createRequest = (
-  data: AwardedAdRequestData,
-  uid = "user-123",
-): CallableRequest<AwardedAdRequestData> =>
+const createRequest = (data: AwardedAdRequestData, uid = "user-123"): CallableRequest<AwardedAdRequestData> =>
   ({
     auth: uid ? {uid, token: {uid}} : undefined,
     data,
@@ -126,9 +122,7 @@ describe("awardedAdCallback", () => {
     docs.clear();
     docs.set("users/user-123", {coins: 100});
     mockDb.collection.mockClear();
-    mockTransactionGet.mockImplementation(async (ref: MockDocRef) =>
-      createSnapshot(ref.path),
-    );
+    mockTransactionGet.mockImplementation(async (ref: MockDocRef) => createSnapshot(ref.path));
     mockTransactionUpdate.mockImplementation((ref: MockDocRef, data: Record<string, unknown>) => {
       docs.set(ref.path, {...(docs.get(ref.path) ?? {}), ...data});
     });
@@ -136,11 +130,13 @@ describe("awardedAdCallback", () => {
       docs.set(ref.path, data);
     });
     mockRunTransaction.mockImplementation(async (callback: unknown) =>
-      (callback as (transaction: {
-        get: typeof mockTransactionGet;
-        update: typeof mockTransactionUpdate;
-        set: typeof mockTransactionSet;
-      }) => Promise<unknown>)({
+      (
+        callback as (transaction: {
+          get: typeof mockTransactionGet;
+          update: typeof mockTransactionUpdate;
+          set: typeof mockTransactionSet;
+        }) => Promise<unknown>
+      )({
         get: mockTransactionGet,
         update: mockTransactionUpdate,
         set: mockTransactionSet,
@@ -171,9 +167,7 @@ describe("awardedAdCallback", () => {
   });
 
   it("rejects unsupported placements", async () => {
-    await expect(
-      awardedAdCallback(createRequest({userId: "user-123", placement: "banner"})),
-    ).rejects.toMatchObject({
+    await expect(awardedAdCallback(createRequest({userId: "user-123", placement: "banner"}))).rejects.toMatchObject({
       code: "invalid-argument",
       message: "Invalid rewarded ad placement.",
     });
@@ -198,10 +192,7 @@ describe("awardedAdCallback", () => {
       alreadyProcessed: false,
       message: "Rewarded ad reward applied.",
     });
-    expect(mockTransactionUpdate).toHaveBeenCalledWith(
-      expect.objectContaining({path: "users/user-123"}),
-      {coins: 125},
-    );
+    expect(mockTransactionUpdate).toHaveBeenCalledWith(expect.objectContaining({path: "users/user-123"}), {coins: 125});
     expect(docs.get("users/user-123/processedAdCallbacks/reward-abc")).toMatchObject({
       userId: "user-123",
       placement: "loss_continue",
@@ -301,9 +292,6 @@ describe("awardedAdCallback", () => {
       message: "An error occurred while processing the rewarded ad callback.",
     });
     expect(mockCaptureException).toHaveBeenCalledWith(error);
-    expect(mockLoggerError).toHaveBeenCalledWith(
-      "Unexpected error processing rewarded ad callback:",
-      error,
-    );
+    expect(mockLoggerError).toHaveBeenCalledWith("Unexpected error processing rewarded ad callback:", error);
   });
 });

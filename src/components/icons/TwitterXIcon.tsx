@@ -6,9 +6,8 @@ interface TwitterXIconProps {
   height?: number | string;
 }
 
-const TwitterXIcon = ({ width, height }: TwitterXIconProps) => {
+const TwitterXIcon = ({width, height}: TwitterXIconProps) => {
   return <TwitterXSvg width={width} height={height} />;
 };
 
 export default TwitterXIcon;
-

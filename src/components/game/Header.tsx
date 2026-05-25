@@ -5,13 +5,13 @@
  * This header is used at the top of the main `GameScreen` and is responsible
  * for providing quick access to the coin shop and surfacing current mode context.
  */
-import React, { useMemo, useState } from "react";
-import { LayoutChangeEvent, View, TouchableOpacity, Text } from "react-native";
+import React, {useMemo, useState} from "react";
+import {LayoutChangeEvent, View, TouchableOpacity, Text} from "react-native";
 import CoinsDisplay from "./CoinsDisplay";
 import LogoIcon from "../icons/LogoIcon";
-import { TYPOGRAPHY, SPACING } from "../../styles";
-import { GAME_HEADER_SLOT_HEIGHT, HEADER_LOGO_SIZE } from "../../constants/layout";
-import { AppStrings } from "../../constants/AppStrings";
+import {TYPOGRAPHY, SPACING} from "../../styles";
+import {GAME_HEADER_SLOT_HEIGHT, HEADER_LOGO_SIZE} from "../../constants/layout";
+import {AppStrings} from "../../constants/AppStrings";
 
 /**
  * Props for the Header component.
@@ -52,8 +52,8 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
   const showModeLabel = !!modeLabel;
   const [headerWidth, setHeaderWidth] = useState(0);
-  const [leftAnchor, setLeftAnchor] = useState({ x: SPACING.md, width: HEADER_LOGO_SIZE });
-  const [rightAnchor, setRightAnchor] = useState({ x: 0, width: 0 });
+  const [leftAnchor, setLeftAnchor] = useState({x: SPACING.md, width: HEADER_LOGO_SIZE});
+  const [rightAnchor, setRightAnchor] = useState({x: 0, width: 0});
 
   const modeLabelContainerStyle = useMemo(() => {
     const leftBoundary = leftAnchor.x + leftAnchor.width;
@@ -62,35 +62,29 @@ const Header: React.FC<HeaderProps> = ({
 
     // Center the label within the live space between logo and coins so it never overlaps either side.
     if (headerWidth > 0 && rightBoundary > leftBoundary) {
-      return { top: 0, bottom: 0, left: leftBoundary, right: rightInset, transform: [{ translateY: 4 }] };
+      return {top: 0, bottom: 0, left: leftBoundary, right: rightInset, transform: [{translateY: 4}]};
     }
 
     // Safe fallback before first layout pass.
-    return { top: 0, bottom: 0, left: SPACING.xl, right: SPACING.xl, transform: [{ translateY: 4 }] };
+    return {top: 0, bottom: 0, left: SPACING.xl, right: SPACING.xl, transform: [{translateY: 4}]};
   }, [headerWidth, leftAnchor, rightAnchor]);
 
   const handleHeaderLayout = (event: LayoutChangeEvent) => {
-    const { width } = event.nativeEvent.layout;
-    setHeaderWidth((previousWidth) =>
-      previousWidth === width ? previousWidth : width
-    );
+    const {width} = event.nativeEvent.layout;
+    setHeaderWidth((previousWidth) => (previousWidth === width ? previousWidth : width));
   };
 
   const handleLeftAnchorLayout = (event: LayoutChangeEvent) => {
-    const { x, width } = event.nativeEvent.layout;
+    const {x, width} = event.nativeEvent.layout;
     setLeftAnchor((previousAnchor) =>
-      previousAnchor.x === x && previousAnchor.width === width
-        ? previousAnchor
-        : { x, width }
+      previousAnchor.x === x && previousAnchor.width === width ? previousAnchor : {x, width},
     );
   };
 
   const handleRightAnchorLayout = (event: LayoutChangeEvent) => {
-    const { x, width } = event.nativeEvent.layout;
+    const {x, width} = event.nativeEvent.layout;
     setRightAnchor((previousAnchor) =>
-      previousAnchor.x === x && previousAnchor.width === width
-        ? previousAnchor
-        : { x, width }
+      previousAnchor.x === x && previousAnchor.width === width ? previousAnchor : {x, width},
     );
   };
 
@@ -111,7 +105,7 @@ const Header: React.FC<HeaderProps> = ({
     >
       {/* Logo Icon in top-left corner - positioned absolutely like CloseButton */}
       <View
-        style={{ position: "absolute", top: SPACING.md, left: SPACING.md, zIndex: 10 }}
+        style={{position: "absolute", top: SPACING.md, left: SPACING.md, zIndex: 10}}
         testID="header-left-side"
         onLayout={handleLeftAnchorLayout}
       >
@@ -149,15 +143,11 @@ const Header: React.FC<HeaderProps> = ({
       {/* Right side: Coins */}
       <View
         ref={coinsButtonRef}
-        style={{ position: "absolute", top: SPACING.md, right: SPACING.md, zIndex: 10 }}
+        style={{position: "absolute", top: SPACING.md, right: SPACING.md, zIndex: 10}}
         testID="header-right-side"
         onLayout={handleRightAnchorLayout}
       >
-        <CoinsDisplay
-          coins={userCoins}
-          onPress={onCoinsPress}
-          shouldAnimateIncreases={shouldAnimateCoins}
-        />
+        <CoinsDisplay coins={userCoins} onPress={onCoinsPress} shouldAnimateIncreases={shouldAnimateCoins} />
       </View>
     </View>
   );

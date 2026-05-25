@@ -1,7 +1,7 @@
 /**
  * @fileoverview Shared types for locale overrides.
  */
-import type { AppStringsSchema } from "../constants/AppStrings";
+import type {AppStringsSchema} from "../constants/AppStrings";
 
 /**
  * Recursive partial used for sparse locale override trees.

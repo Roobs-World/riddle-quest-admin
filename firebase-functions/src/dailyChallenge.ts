@@ -38,14 +38,18 @@ function toUtcDateString(value: unknown): string | null {
     }
 
     const secondsValue =
-      typeof timestampLike.seconds === "number" ? timestampLike.seconds :
-      typeof timestampLike._seconds === "number" ? timestampLike._seconds :
-      undefined;
+      typeof timestampLike.seconds === "number"
+        ? timestampLike.seconds
+        : typeof timestampLike._seconds === "number"
+          ? timestampLike._seconds
+          : undefined;
     if (typeof secondsValue === "number") {
       const nanosValue =
-        typeof timestampLike.nanoseconds === "number" ? timestampLike.nanoseconds :
-        typeof timestampLike._nanoseconds === "number" ? timestampLike._nanoseconds :
-        0;
+        typeof timestampLike.nanoseconds === "number"
+          ? timestampLike.nanoseconds
+          : typeof timestampLike._nanoseconds === "number"
+            ? timestampLike._nanoseconds
+            : 0;
       const millis = secondsValue * 1000 + Math.floor(nanosValue / 1_000_000);
       const date = new Date(millis);
       return Number.isNaN(date.getTime()) ? null : date.toISOString().split("T")[0];
@@ -93,7 +97,8 @@ async function getFreshDailyChallengeDoc(): Promise<{
     challengeDate = Number.isNaN(parsed.getTime()) ? null : parsed.toISOString().split("T")[0];
   }
 
-  const isChallengeUsable = dailyChallengeDoc.exists &&
+  const isChallengeUsable =
+    dailyChallengeDoc.exists &&
     challengeDate === todayDateString &&
     typeof challengeData?.text === "string" &&
     challengeData.text.length > 0 &&
@@ -101,9 +106,7 @@ async function getFreshDailyChallengeDoc(): Promise<{
     challengeData.answer.length > 0;
 
   if (!isChallengeUsable) {
-    functions.logger.warn(
-      `Daily challenge is missing/stale for ${todayDateString}. Attempting regeneration.`,
-    );
+    functions.logger.warn(`Daily challenge is missing/stale for ${todayDateString}. Attempting regeneration.`);
     try {
       await generateTodaysDailyChallenge(false);
     } catch (error) {
@@ -242,11 +245,13 @@ export const getCurrentDailyChallenge = onCall(
 
       const challengeData: DailyChallengeData = {
         date: challengeDate,
-        questions: [{
-          riddleId: allData.riddleId || CURRENT_DAILY_RIDDLE_DOC_ID,
-          text: allData.text,
-          questionNumber: 1,
-        }],
+        questions: [
+          {
+            riddleId: allData.riddleId || CURRENT_DAILY_RIDDLE_DOC_ID,
+            text: allData.text,
+            questionNumber: 1,
+          },
+        ],
         totalQuestions: DAILY_CHALLENGE_QUESTION_COUNT,
       };
 

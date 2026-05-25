@@ -18,6 +18,7 @@ description: Extract framework-agnostic shared logic from app code into packages
 ## Output format
 
 For each extraction:
+
 - **Source file**: where the logic lives now
 - **Target**: `packages/core/<module-name>`
 - **Logic description**: what is being extracted

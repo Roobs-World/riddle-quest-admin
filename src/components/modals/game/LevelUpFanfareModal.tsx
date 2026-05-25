@@ -45,8 +45,7 @@ const LevelUpFanfareModal: React.FC<LevelUpFanfareModalProps> = ({
   onContinue,
   onClose,
 }) => {
-  const continueButtonText =
-    sequenceProgress?.primaryActionText ?? AppStrings.LevelUpFanfare.CONTINUE_BUTTON;
+  const continueButtonText = sequenceProgress?.primaryActionText ?? AppStrings.LevelUpFanfare.CONTINUE_BUTTON;
   const handleContinue = () => {
     onContinue?.();
     onClose();

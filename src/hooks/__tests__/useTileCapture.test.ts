@@ -5,21 +5,21 @@
  * and tile measurement.
  */
 
-import { renderHook, act } from "@testing-library/react-native";
-import { useTileCapture } from "../useTileCapture";
-import type { SubmittedGuess, Feedback } from "../types";
+import {renderHook, act} from "@testing-library/react-native";
+import {useTileCapture} from "../useTileCapture";
+import type {SubmittedGuess, Feedback} from "../types";
 
 describe("useTileCapture", () => {
   describe("hook initialization", () => {
     it("should return setTileRef and captureTiles functions", () => {
-      const { result } = renderHook(() => useTileCapture());
+      const {result} = renderHook(() => useTileCapture());
 
       expect(typeof result.current.setTileRef).toBe("function");
       expect(typeof result.current.captureTiles).toBe("function");
     });
 
     it("should maintain stable function references", () => {
-      const { result, rerender } = renderHook(() => useTileCapture());
+      const {result, rerender} = renderHook(() => useTileCapture());
 
       const initialSetTileRef = result.current.setTileRef;
       const initialCaptureTiles = result.current.captureTiles;
@@ -33,7 +33,7 @@ describe("useTileCapture", () => {
 
   describe("setTileRef", () => {
     it("should accept row and cell indices with a ref", () => {
-      const { result } = renderHook(() => useTileCapture());
+      const {result} = renderHook(() => useTileCapture());
 
       const mockRef = createMockTileRef();
 
@@ -45,7 +45,7 @@ describe("useTileCapture", () => {
     });
 
     it("should handle null ref (removal)", () => {
-      const { result } = renderHook(() => useTileCapture());
+      const {result} = renderHook(() => useTileCapture());
 
       expect(() => {
         act(() => {
@@ -55,7 +55,7 @@ describe("useTileCapture", () => {
     });
 
     it("should handle multiple refs at different positions", () => {
-      const { result } = renderHook(() => useTileCapture());
+      const {result} = renderHook(() => useTileCapture());
 
       const mockRef1 = createMockTileRef();
       const mockRef2 = createMockTileRef();
@@ -71,7 +71,7 @@ describe("useTileCapture", () => {
     });
 
     it("should replace existing ref at same position", () => {
-      const { result } = renderHook(() => useTileCapture());
+      const {result} = renderHook(() => useTileCapture());
 
       const mockRef1 = createMockTileRef();
       const mockRef2 = createMockTileRef();
@@ -86,7 +86,7 @@ describe("useTileCapture", () => {
     });
 
     it("should handle large indices", () => {
-      const { result } = renderHook(() => useTileCapture());
+      const {result} = renderHook(() => useTileCapture());
 
       const mockRef = createMockTileRef();
 
@@ -100,7 +100,7 @@ describe("useTileCapture", () => {
 
   describe("captureTiles", () => {
     it("should return a promise", () => {
-      const { result } = renderHook(() => useTileCapture());
+      const {result} = renderHook(() => useTileCapture());
 
       const guesses: SubmittedGuess[] = [];
 
@@ -110,7 +110,7 @@ describe("useTileCapture", () => {
     });
 
     it("should resolve with empty array when no guesses", async () => {
-      const { result } = renderHook(() => useTileCapture());
+      const {result} = renderHook(() => useTileCapture());
 
       const tiles = await result.current.captureTiles([], 5);
 
@@ -118,7 +118,7 @@ describe("useTileCapture", () => {
     });
 
     it("should capture tiles from submitted guesses", async () => {
-      const { result } = renderHook(() => useTileCapture());
+      const {result} = renderHook(() => useTileCapture());
 
       // Set up refs with measurement mocks
       const mockRef = createMockTileRef(100, 200);
@@ -141,7 +141,7 @@ describe("useTileCapture", () => {
     });
 
     it("should handle guesses with green feedback", async () => {
-      const { result } = renderHook(() => useTileCapture());
+      const {result} = renderHook(() => useTileCapture());
 
       const mockRef = createMockTileRef(50, 100);
       act(() => {
@@ -162,7 +162,7 @@ describe("useTileCapture", () => {
     });
 
     it("should handle guesses with yellow feedback", async () => {
-      const { result } = renderHook(() => useTileCapture());
+      const {result} = renderHook(() => useTileCapture());
 
       const mockRef = createMockTileRef(50, 100);
       act(() => {
@@ -183,7 +183,7 @@ describe("useTileCapture", () => {
     });
 
     it("should handle guesses with red feedback", async () => {
-      const { result } = renderHook(() => useTileCapture());
+      const {result} = renderHook(() => useTileCapture());
 
       const mockRef = createMockTileRef(50, 100);
       act(() => {
@@ -204,7 +204,7 @@ describe("useTileCapture", () => {
     });
 
     it("should include correct tile data structure", async () => {
-      const { result } = renderHook(() => useTileCapture());
+      const {result} = renderHook(() => useTileCapture());
 
       const mockRef = createMockTileRef(100, 200);
       act(() => {
@@ -229,7 +229,7 @@ describe("useTileCapture", () => {
     });
 
     it("should capture position from measure callback", async () => {
-      const { result } = renderHook(() => useTileCapture());
+      const {result} = renderHook(() => useTileCapture());
 
       const mockRef = createMockTileRef(150, 250);
       act(() => {
@@ -250,7 +250,7 @@ describe("useTileCapture", () => {
     });
 
     it("should handle multiple rows of guesses", async () => {
-      const { result } = renderHook(() => useTileCapture());
+      const {result} = renderHook(() => useTileCapture());
 
       // Set up refs for multiple positions
       for (let row = 0; row < 3; row++) {
@@ -261,9 +261,9 @@ describe("useTileCapture", () => {
       }
 
       const guesses: SubmittedGuess[] = [
-        { guess: ["A"], feedback: ["green"] },
-        { guess: ["B"], feedback: ["yellow"] },
-        { guess: ["C"], feedback: ["red"] },
+        {guess: ["A"], feedback: ["green"]},
+        {guess: ["B"], feedback: ["yellow"]},
+        {guess: ["C"], feedback: ["red"]},
       ];
 
       const tiles = await result.current.captureTiles(guesses, 1);
@@ -272,7 +272,7 @@ describe("useTileCapture", () => {
     });
 
     it("should skip tiles without registered refs", async () => {
-      const { result } = renderHook(() => useTileCapture());
+      const {result} = renderHook(() => useTileCapture());
 
       // Only register ref for first position
       const mockRef = createMockTileRef(50, 100);
@@ -295,7 +295,7 @@ describe("useTileCapture", () => {
     });
 
     it("should handle empty guess letters (null)", async () => {
-      const { result } = renderHook(() => useTileCapture());
+      const {result} = renderHook(() => useTileCapture());
 
       const mockRef = createMockTileRef(50, 100);
       act(() => {
@@ -311,12 +311,10 @@ describe("useTileCapture", () => {
     });
 
     it("should pad display rows to minimum of 3", async () => {
-      const { result } = renderHook(() => useTileCapture());
+      const {result} = renderHook(() => useTileCapture());
 
       // Only one guess but 3 rows should be created
-      const guesses: SubmittedGuess[] = [
-        { guess: ["A"], feedback: ["green"] },
-      ];
+      const guesses: SubmittedGuess[] = [{guess: ["A"], feedback: ["green"]}];
 
       // The internal logic pads to 3 rows but only tiles with letters are captured
       const tiles = await result.current.captureTiles(guesses, 1);
@@ -326,7 +324,7 @@ describe("useTileCapture", () => {
     });
 
     it("should handle answer length correctly", async () => {
-      const { result } = renderHook(() => useTileCapture());
+      const {result} = renderHook(() => useTileCapture());
 
       // Set up refs for a 7-letter word
       for (let i = 0; i < 7; i++) {
@@ -351,106 +349,82 @@ describe("useTileCapture", () => {
 
   describe("color mapping", () => {
     it("should return correct background colors for each feedback type", async () => {
-      const { result } = renderHook(() => useTileCapture());
+      const {result} = renderHook(() => useTileCapture());
 
       // Test green
       let mockRef = createMockTileRef(0, 0);
       act(() => result.current.setTileRef(0, 0, mockRef));
 
-      let tiles = await result.current.captureTiles(
-        [{ guess: ["A"], feedback: ["green"] }],
-        1
-      );
+      let tiles = await result.current.captureTiles([{guess: ["A"], feedback: ["green"]}], 1);
       expect(tiles[0].backgroundColor).toBe("bg-green-500");
 
       // Reset and test yellow
       mockRef = createMockTileRef(0, 0);
       act(() => result.current.setTileRef(0, 0, mockRef));
 
-      tiles = await result.current.captureTiles(
-        [{ guess: ["A"], feedback: ["yellow"] }],
-        1
-      );
+      tiles = await result.current.captureTiles([{guess: ["A"], feedback: ["yellow"]}], 1);
       expect(tiles[0].backgroundColor).toBe("bg-primary-orange");
 
       // Reset and test red
       mockRef = createMockTileRef(0, 0);
       act(() => result.current.setTileRef(0, 0, mockRef));
 
-      tiles = await result.current.captureTiles(
-        [{ guess: ["A"], feedback: ["red"] }],
-        1
-      );
+      tiles = await result.current.captureTiles([{guess: ["A"], feedback: ["red"]}], 1);
       expect(tiles[0].backgroundColor).toBe("bg-red-500");
     });
 
     it("should return transparent border when feedback exists", async () => {
-      const { result } = renderHook(() => useTileCapture());
+      const {result} = renderHook(() => useTileCapture());
 
       const mockRef = createMockTileRef(0, 0);
       act(() => result.current.setTileRef(0, 0, mockRef));
 
-      const tiles = await result.current.captureTiles(
-        [{ guess: ["A"], feedback: ["green"] }],
-        1
-      );
+      const tiles = await result.current.captureTiles([{guess: ["A"], feedback: ["green"]}], 1);
 
       expect(tiles[0].borderColor).toBe("border-transparent");
     });
 
     it("should return white text color when feedback exists", async () => {
-      const { result } = renderHook(() => useTileCapture());
+      const {result} = renderHook(() => useTileCapture());
 
       const mockRef = createMockTileRef(0, 0);
       act(() => result.current.setTileRef(0, 0, mockRef));
 
-      const tiles = await result.current.captureTiles(
-        [{ guess: ["A"], feedback: ["green"] }],
-        1
-      );
+      const tiles = await result.current.captureTiles([{guess: ["A"], feedback: ["green"]}], 1);
 
       expect(tiles[0].textColor).toBe("text-white");
     });
 
     it("should return transparent background for null feedback", async () => {
-      const { result } = renderHook(() => useTileCapture());
+      const {result} = renderHook(() => useTileCapture());
 
       const mockRef = createMockTileRef(0, 0);
       act(() => result.current.setTileRef(0, 0, mockRef));
 
       // Use null feedback to test the default case
-      const tiles = await result.current.captureTiles(
-        [{ guess: ["A"], feedback: [null as unknown as Feedback] }],
-        1
-      );
+      const tiles = await result.current.captureTiles([{guess: ["A"], feedback: [null as unknown as Feedback]}], 1);
 
       expect(tiles[0].backgroundColor).toBe("bg-transparent");
     });
 
     it("should return gray border when feedback is null", async () => {
-      const { result } = renderHook(() => useTileCapture());
+      const {result} = renderHook(() => useTileCapture());
 
       const mockRef = createMockTileRef(0, 0);
       act(() => result.current.setTileRef(0, 0, mockRef));
 
-      const tiles = await result.current.captureTiles(
-        [{ guess: ["A"], feedback: [null as unknown as Feedback] }],
-        1
-      );
+      const tiles = await result.current.captureTiles([{guess: ["A"], feedback: [null as unknown as Feedback]}], 1);
 
       expect(tiles[0].borderColor).toBe("border-gray-400");
     });
 
     it("should return gray text when feedback is null but letter exists", async () => {
-      const { result } = renderHook(() => useTileCapture());
+      const {result} = renderHook(() => useTileCapture());
 
       const mockRef = createMockTileRef(0, 0);
       act(() => result.current.setTileRef(0, 0, mockRef));
 
-      const tiles = await result.current.captureTiles(
-        [{ guess: ["A"], feedback: [null as unknown as Feedback] }],
-        1
-      );
+      const tiles = await result.current.captureTiles([{guess: ["A"], feedback: [null as unknown as Feedback]}], 1);
 
       expect(tiles[0].textColor).toBe("text-gray-800");
     });
@@ -458,7 +432,7 @@ describe("useTileCapture", () => {
 
   describe("edge cases", () => {
     it("should handle rapid ref setting and removal", async () => {
-      const { result } = renderHook(() => useTileCapture());
+      const {result} = renderHook(() => useTileCapture());
 
       const mockRef = createMockTileRef(0, 0);
 
@@ -468,23 +442,18 @@ describe("useTileCapture", () => {
         result.current.setTileRef(0, 0, mockRef);
       });
 
-      const tiles = await result.current.captureTiles(
-        [{ guess: ["A"], feedback: ["green"] }],
-        1
-      );
+      const tiles = await result.current.captureTiles([{guess: ["A"], feedback: ["green"]}], 1);
 
       expect(tiles.length).toBe(1);
     });
 
     it("should handle concurrent capture calls", async () => {
-      const { result } = renderHook(() => useTileCapture());
+      const {result} = renderHook(() => useTileCapture());
 
       const mockRef = createMockTileRef(0, 0);
       act(() => result.current.setTileRef(0, 0, mockRef));
 
-      const guesses: SubmittedGuess[] = [
-        { guess: ["A"], feedback: ["green"] },
-      ];
+      const guesses: SubmittedGuess[] = [{guess: ["A"], feedback: ["green"]}];
 
       const [tiles1, tiles2, tiles3] = await Promise.all([
         result.current.captureTiles(guesses, 1),
@@ -498,7 +467,7 @@ describe("useTileCapture", () => {
     });
 
     it("should handle very large grids", async () => {
-      const { result } = renderHook(() => useTileCapture());
+      const {result} = renderHook(() => useTileCapture());
 
       // Set up a 10x10 grid
       for (let row = 0; row < 10; row++) {
@@ -524,7 +493,7 @@ describe("useTileCapture", () => {
     });
 
     it("should preserve letter value in captured tiles", async () => {
-      const { result } = renderHook(() => useTileCapture());
+      const {result} = renderHook(() => useTileCapture());
 
       for (let i = 0; i < 5; i++) {
         const mockRef = createMockTileRef(i * 10, 0);

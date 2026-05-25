@@ -13,4 +13,3 @@ Typical examples include:
 - Services SHOULD avoid importing React and remain usable from both components and tests.
 - Prefer passing dependencies in (or using the existing `serviceRegistry`) rather than hard-coding global state where possible.
 - When adding a new service, document its exported API with TSDoc and add a short bullet here explaining its responsibility.
-

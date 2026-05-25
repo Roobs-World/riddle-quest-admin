@@ -1,16 +1,15 @@
-import { Platform } from "react-native";
+import {Platform} from "react-native";
 
 export const featureFlags = {
   /**
    * Shared Animation Backend requires RN 0.85.1+ with experimental release channel.
    * Keep disabled by default; enable only for targeted experimental builds.
    */
-  sharedAnimationBackendExperimental:
-    process.env.EXPO_PUBLIC_ENABLE_SHARED_ANIMATION_BACKEND === "true",
+  sharedAnimationBackendExperimental: process.env.EXPO_PUBLIC_ENABLE_SHARED_ANIMATION_BACKEND === "true",
 };
 
-const getReactNativeVersion = (): { major: number; minor: number; patch: number } => {
-  const fallback = { major: 0, minor: 0, patch: 0 };
+const getReactNativeVersion = (): {major: number; minor: number; patch: number} => {
+  const fallback = {major: 0, minor: 0, patch: 0};
   const version = Platform.constants?.reactNativeVersion;
   if (!version) {
     return fallback;
@@ -32,5 +31,4 @@ const isRn0851OrHigher = (): boolean => {
 export const isSharedAnimationBackendEnabled = (): boolean =>
   featureFlags.sharedAnimationBackendExperimental && isRn0851OrHigher();
 
-export const isSharedAnimationBackendFlagRequested = (): boolean =>
-  featureFlags.sharedAnimationBackendExperimental;
+export const isSharedAnimationBackendFlagRequested = (): boolean => featureFlags.sharedAnimationBackendExperimental;

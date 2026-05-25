@@ -28,8 +28,13 @@
         background: var(--bg);
         color: var(--text);
         font-family:
-          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-          "Segoe UI", sans-serif;
+          Inter,
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
       }
 
       main {
@@ -153,7 +158,11 @@
         Release-blocking checklist for Firestore write controls, callable function protection, dependency audit cleanup,
         and app-store/legal disclosure readiness.
       </p>
-      <p class="meta">Last updated: 2026-05-25. Status: app links are wired and local legal/support page evidence exists; live <code>www.roobsworld.com</code> legal/support routes remain blocked by production deployment/reachability, and the production dependency audit is clean.</p>
+      <p class="meta">
+        Last updated: 2026-05-25. Status: app links are wired and local legal/support page evidence exists; live
+        <code>www.roobsworld.com</code> legal/support routes remain blocked by production deployment/reachability, and
+        the production dependency audit is clean.
+      </p>
 
       <div class="grid">
         <section>
@@ -165,11 +174,16 @@
             </li>
             <li>
               <input type="checkbox" checked />
-              <span>Review Firestore rules for all client-writable economy/progress/stats paths and deny direct client writes.</span>
+              <span
+                >Review Firestore rules for all client-writable economy/progress/stats paths and deny direct client
+                writes.</span
+              >
             </li>
             <li>
               <input type="checkbox" checked />
-              <span>Confirm Cloud Functions use server-side validation and trusted user ids from auth context only.</span>
+              <span
+                >Confirm Cloud Functions use server-side validation and trusted user ids from auth context only.</span
+              >
             </li>
           </ul>
         </section>
@@ -209,7 +223,10 @@
             </li>
             <li>
               <input type="checkbox" checked />
-              <span>Rerun <code>pnpm audit --prod</code> and record the remaining findings, if any. Latest rerun on 2026-05-25 reported no known vulnerabilities.</span>
+              <span
+                >Rerun <code>pnpm audit --prod</code> and record the remaining findings, if any. Latest rerun on
+                2026-05-25 reported no known vulnerabilities.</span
+              >
             </li>
           </ul>
         </section>
@@ -220,23 +237,39 @@
           <ul>
             <li>
               <input type="checkbox" checked />
-              <span>Expose hosted legal URLs in the app: Sign Up links Terms and Privacy, and Settings -> About / Legal links Website, Privacy Policy, Terms, Account Deletion, Data Export, Third-Party Licenses, and Support.</span>
+              <span
+                >Expose hosted legal URLs in the app: Sign Up links Terms and Privacy, and Settings -> About / Legal
+                links Website, Privacy Policy, Terms, Account Deletion, Data Export, Third-Party Licenses, and
+                Support.</span
+              >
             </li>
             <li>
               <input type="checkbox" checked />
-              <span>Verify the full local URL matrix at <code>http://localhost:3000/riddle-quest/{language}</code>: 17 languages x 7 page types returned 2xx/3xx.</span>
+              <span
+                >Verify the full local URL matrix at <code>http://localhost:3000/riddle-quest/{language}</code>: 17
+                languages x 7 page types returned 2xx/3xx.</span
+              >
             </li>
             <li>
               <input type="checkbox" checked />
-              <span>Remove local Markdown legal-page copies from this app repo; hosted website pages are the source of truth.</span>
+              <span
+                >Remove local Markdown legal-page copies from this app repo; hosted website pages are the source of
+                truth.</span
+              >
             </li>
             <li>
               <input type="checkbox" checked />
-              <span>Create <code>legal-deploy-pages-prompt.txt</code> for deploying the verified local legal pages to <code>www.roobsworld.com</code>.</span>
+              <span
+                >Create <code>legal-deploy-pages-prompt.txt</code> for deploying the verified local legal pages to
+                <code>www.roobsworld.com</code>.</span
+              >
             </li>
             <li>
               <input type="checkbox" checked />
-              <span>Accept local verification as release-planning evidence for now because live deployment is unavailable.</span>
+              <span
+                >Accept local verification as release-planning evidence for now because live deployment is
+                unavailable.</span
+              >
             </li>
             <li>
               <input type="checkbox" checked />
@@ -248,19 +281,32 @@
           <ul>
             <li>
               <input type="checkbox" checked />
-              <span>Defer live deployment until Vercel access/billing is available; assume <code>www.roobsworld.com</code> links will work because the identical local routes pass.</span>
+              <span
+                >Defer live deployment until Vercel access/billing is available; assume
+                <code>www.roobsworld.com</code> links will work because the identical local routes pass.</span
+              >
             </li>
             <li>
               <input type="checkbox" checked />
-              <span>Defer live 119-URL matrix pass criteria until deployment is repaired; the latest production matrix evidence from 2026-05-25 returned 404 for all 119 required routes while local route evidence remains the current acceptance evidence.</span>
+              <span
+                >Defer live 119-URL matrix pass criteria until deployment is repaired; the latest production matrix
+                evidence from 2026-05-25 returned 404 for all 119 required routes while local route evidence remains the
+                current acceptance evidence.</span
+              >
             </li>
             <li>
               <input type="checkbox" checked />
-              <span>Defer live on-device link verification until deployment is available; app code uses the same path matrix that passed locally.</span>
+              <span
+                >Defer live on-device link verification until deployment is available; app code uses the same path
+                matrix that passed locally.</span
+              >
             </li>
             <li>
               <input type="checkbox" />
-              <span class="pending">Enter final Apple App Privacy and Google Play Data Safety disclosures in the store consoles using the live privacy-policy URL.</span>
+              <span class="pending"
+                >Enter final Apple App Privacy and Google Play Data Safety disclosures in the store consoles using the
+                live privacy-policy URL.</span
+              >
             </li>
           </ul>
         </section>
@@ -271,23 +317,34 @@
         <ul>
           <li>
             <input type="checkbox" checked />
-            <span>2026-05-25: Reread all 52 files under <code>docs/</code> before acting via a docs-wide digest covering 8,398 lines / 629,046 characters. Outstanding local-verifiable task selected from this file: refresh the production dependency audit evidence.</span>
+            <span
+              >2026-05-25: Reread all 52 files under <code>docs/</code> before acting via a docs-wide digest covering
+              8,398 lines / 629,046 characters. Outstanding local-verifiable task selected from this file: refresh the
+              production dependency audit evidence.</span
+            >
           </li>
           <li>
             <input type="checkbox" checked />
-            <span>2026-05-25: Ran <code>pnpm audit --prod</code>; result was <code>No known vulnerabilities found</code>. No dependency or lockfile changes were required.</span>
+            <span
+              >2026-05-25: Ran <code>pnpm audit --prod</code>; result was <code>No known vulnerabilities found</code>.
+              No dependency or lockfile changes were required.</span
+            >
           </li>
           <li>
             <input type="checkbox" checked />
-            <span>2026-05-25: Expo MCP tools were checked through <code>tool_search</code> because the repo guidance asks for Expo MCP on Expo/React Native tasks; no Expo tools were available, and this audit-only task did not require simulator verification.</span>
+            <span
+              >2026-05-25: Expo MCP tools were checked through <code>tool_search</code> because the repo guidance asks
+              for Expo MCP on Expo/React Native tasks; no Expo tools were available, and this audit-only task did not
+              require simulator verification.</span
+            >
           </li>
         </ul>
       </section>
 
       <p class="note">
         Evidence: Functions build passed, app TypeScript check passed, generation/admin function tests passed, and
-        <code>pnpm audit --prod</code> reported no known vulnerabilities again on 2026-05-25. App code generates the intended localized
-        <code>www.roobsworld.com/riddle-quest/{language}</code> links. The 119 local URLs at
+        <code>pnpm audit --prod</code> reported no known vulnerabilities again on 2026-05-25. App code generates the
+        intended localized <code>www.roobsworld.com/riddle-quest/{language}</code> links. The 119 local URLs at
         <code>localhost:3000/riddle-quest/{language}</code> returned 2xx/3xx on 2026-05-23. Production evidence from
         2026-05-25 still shows the live <code>www.roobsworld.com</code> legal/support routes returning 404, so live
         reachability remains deployment-blocked rather than app-side URL construction complete. Store-console disclosure

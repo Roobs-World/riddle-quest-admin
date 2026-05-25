@@ -1,4 +1,4 @@
-import { signUpSchema, loginSchema } from "../authSchemas";
+import {signUpSchema, loginSchema} from "../authSchemas";
 
 describe("Auth Validation Schemas", () => {
   describe("signUpSchema", () => {
@@ -127,4 +127,3 @@ describe("Auth Validation Schemas", () => {
     });
   });
 });
-

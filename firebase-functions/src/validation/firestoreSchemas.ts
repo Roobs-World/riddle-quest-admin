@@ -56,10 +56,7 @@ const coerceTimestampToMillis = (value: unknown): unknown => {
       return timestampLike.toDate().getTime();
     }
     if (typeof timestampLike.seconds === "number") {
-      const nanos =
-        typeof timestampLike.nanoseconds === "number"
-          ? timestampLike.nanoseconds
-          : 0;
+      const nanos = typeof timestampLike.nanoseconds === "number" ? timestampLike.nanoseconds : 0;
       return timestampLike.seconds * 1000 + Math.floor(nanos / 1_000_000);
     }
   }

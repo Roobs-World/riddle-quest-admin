@@ -1,4 +1,4 @@
-import { BORDER_RADIUS } from "../borderRadius";
+import {BORDER_RADIUS} from "../borderRadius";
 
 describe("BORDER_RADIUS", () => {
   describe("Structure", () => {

@@ -14,8 +14,8 @@ import {
   SphereGeometry,
   Texture,
 } from "three";
-import { logger } from "../../utils/logger";
-import { captureException } from "../../utils/sentry";
+import {logger} from "../../utils/logger";
+import {captureException} from "../../utils/sentry";
 
 /** Result of base scene + camera initialization. */
 export interface SceneSetup {
@@ -34,11 +34,9 @@ export const createSceneSetup = (): SceneSetup => {
   camera.position.set(90, 60, 90);
   camera.lookAt(0, 0, 0);
 
-  logger.debug(
-    "Camera positioned at (90, 60, 90) looking at center (0, 0, 0) for compact solar system view"
-  );
+  logger.debug("Camera positioned at (90, 60, 90) looking at center (0, 0, 0) for compact solar system view");
 
-  return { scene, camera };
+  return {scene, camera};
 };
 
 /**
@@ -47,10 +45,7 @@ export const createSceneSetup = (): SceneSetup => {
  * @param scene Scene to mutate.
  * @param lights Target list that collects created lights.
  */
-export const addEnhancedLights = (
-  scene: Scene,
-  lights: (DirectionalLight | AmbientLight | PointLight)[]
-): void => {
+export const addEnhancedLights = (scene: Scene, lights: (DirectionalLight | AmbientLight | PointLight)[]): void => {
   const ambientLight = new AmbientLight(0x404080, 1.2);
   scene.add(ambientLight);
   lights.push(ambientLight);
@@ -84,7 +79,7 @@ export const addEnhancedLights = (
   lights.push(rimLight2);
 
   logger.debug(
-    "Enhanced lighting setup for MeshPhongMaterial: Ambient(1.2), Sun Directional(4.0), Sun Point(5.0), Rim Lights(0.8, 0.6)"
+    "Enhanced lighting setup for MeshPhongMaterial: Ambient(1.2), Sun Directional(4.0), Sun Point(5.0), Rim Lights(0.8, 0.6)",
   );
 };
 
@@ -100,7 +95,7 @@ export const addSunMeshes = (
   scene: Scene,
   geometries: Map<string, SphereGeometry | RingGeometry>,
   textures: Map<string, Texture | null>,
-  meshes: Mesh[]
+  meshes: Mesh[],
 ): void => {
   const sunGeometry = geometries.get("sun");
   const sunGlowTextures = [
@@ -128,7 +123,7 @@ export const addSunMeshes = (
         const sunMesh = new Mesh(sunGeometry, sunMaterial);
         sunMesh.position.set(0, 0, 0);
         sunMesh.scale.setScalar(sunScales[i]);
-        sunMesh.userData = { isSun: true, sunLayer: i };
+        sunMesh.userData = {isSun: true, sunLayer: i};
         scene.add(sunMesh);
         meshes.push(sunMesh);
         sunMeshes.push(sunMesh);
@@ -136,12 +131,9 @@ export const addSunMeshes = (
       logger.debug("Sun (multi-layered glow) added to scene.");
     } else {
       logger.error("Sun geometry missing! Using fallback sphere.");
-      const fallbackSun = new Mesh(
-        new SphereGeometry(20.0, 16, 16),
-        new MeshBasicMaterial({ color: 0xffff00 })
-      );
+      const fallbackSun = new Mesh(new SphereGeometry(20.0, 16, 16), new MeshBasicMaterial({color: 0xffff00}));
       fallbackSun.position.set(0, 0, 0);
-      fallbackSun.userData = { isSun: true, isFallback: true };
+      fallbackSun.userData = {isSun: true, isFallback: true};
       scene.add(fallbackSun);
       meshes.push(fallbackSun);
       sunMeshes.push(fallbackSun);
@@ -150,12 +142,9 @@ export const addSunMeshes = (
   } catch (err) {
     logger.error("Exception while creating sun mesh:", err);
     captureException(err);
-    const fallbackSun = new Mesh(
-      new SphereGeometry(20.0, 16, 16),
-      new MeshBasicMaterial({ color: 0xffff00 })
-    );
+    const fallbackSun = new Mesh(new SphereGeometry(20.0, 16, 16), new MeshBasicMaterial({color: 0xffff00}));
     fallbackSun.position.set(0, 0, 0);
-    fallbackSun.userData = { isSun: true, isFallback: true };
+    fallbackSun.userData = {isSun: true, isFallback: true};
     scene.add(fallbackSun);
     meshes.push(fallbackSun);
     sunMeshes.push(fallbackSun);

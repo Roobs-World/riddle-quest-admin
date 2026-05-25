@@ -1,5 +1,5 @@
-import { createResponsivePadding } from "../createResponsivePadding";
-import { SPACING } from "../../tokens/spacing";
+import {createResponsivePadding} from "../createResponsivePadding";
+import {SPACING} from "../../tokens/spacing";
 
 describe("createResponsivePadding", () => {
   describe("default behavior", () => {
@@ -221,4 +221,3 @@ describe("createResponsivePadding", () => {
     });
   });
 });
-

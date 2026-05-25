@@ -1,8 +1,5 @@
-import { Texture } from "three";
-import {
-  createTextureCache,
-  disposeAndClearTextureCache,
-} from "../textureCache";
+import {Texture} from "three";
+import {createTextureCache, disposeAndClearTextureCache} from "../textureCache";
 
 describe("textureCache", () => {
   it("creates an empty texture cache", () => {

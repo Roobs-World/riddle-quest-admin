@@ -38,7 +38,7 @@ const openExternalUrl = async (label: string, url: string) => {
   } catch {
     Alert.alert(
       AppStrings.CommonAlerts.UNABLE_TO_OPEN_TITLE,
-      `${AppStrings.CommonAlerts.COULD_NOT_OPEN_PREFIX}${label}${AppStrings.CommonAlerts.COULD_NOT_OPEN_TRY_AGAIN}`
+      `${AppStrings.CommonAlerts.COULD_NOT_OPEN_PREFIX}${label}${AppStrings.CommonAlerts.COULD_NOT_OPEN_TRY_AGAIN}`,
     );
   }
 };

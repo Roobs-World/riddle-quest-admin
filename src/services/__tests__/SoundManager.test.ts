@@ -1,5 +1,5 @@
-import { AppState, AppStateStatus } from "react-native";
-import { SoundManager } from "../SoundManager";
+import {AppState, AppStateStatus} from "react-native";
+import {SoundManager} from "../SoundManager";
 import * as audioOptimization from "../../utils/audioOptimization";
 
 // Mock audioOptimization utilities
@@ -33,7 +33,7 @@ jest.mock("react-native", () => ({
     currentState: "active",
     addEventListener: jest.fn((event: string, handler: (state: AppStateStatus) => void) => {
       appStateChangeHandler = handler;
-      return { remove: mockRemoveSubscription };
+      return {remove: mockRemoveSubscription};
     }),
   },
 }));
@@ -75,7 +75,7 @@ describe("SoundManager", () => {
     mockCreateHighQualitySound = audioOptimization.createHighQualitySound as jest.Mock;
     mockConfigureSession = audioOptimization.configureHighQualityAudioSession as jest.Mock;
 
-    mockCreateHighQualitySound.mockResolvedValue({ sound: mockPlayer });
+    mockCreateHighQualitySound.mockResolvedValue({sound: mockPlayer});
     mockConfigureSession.mockResolvedValue(undefined);
 
     // Reset state
@@ -83,7 +83,7 @@ describe("SoundManager", () => {
     mockRemoveSubscription.mockClear();
 
     // Reset app state mock to active
-    (AppState as { currentState: AppStateStatus }).currentState = "active";
+    (AppState as {currentState: AppStateStatus}).currentState = "active";
 
     // Clean up any previous state - must be done before each test
     await SoundManager.unload();
@@ -142,10 +142,7 @@ describe("SoundManager", () => {
     it("should create sound instance with loop and volume options", async () => {
       await SoundManager.init();
 
-      expect(mockCreateHighQualitySound).toHaveBeenCalledWith(
-        expect.anything(),
-        { loop: true, volume: 1.0 }
-      );
+      expect(mockCreateHighQualitySound).toHaveBeenCalledWith(expect.anything(), {loop: true, volume: 1.0});
     });
 
     it("should monitor audio quality", async () => {
@@ -170,7 +167,7 @@ describe("SoundManager", () => {
     });
 
     it("should handle failed sound creation (null sound)", async () => {
-      mockCreateHighQualitySound.mockResolvedValueOnce({ sound: null });
+      mockCreateHighQualitySound.mockResolvedValueOnce({sound: null});
 
       await SoundManager.init();
 
@@ -180,7 +177,7 @@ describe("SoundManager", () => {
     it("should remove existing subscription on re-init", async () => {
       await SoundManager.init();
       jest.clearAllMocks();
-      mockCreateHighQualitySound.mockResolvedValue({ sound: mockPlayer });
+      mockCreateHighQualitySound.mockResolvedValue({sound: mockPlayer});
 
       await SoundManager.init();
 
@@ -432,10 +429,11 @@ describe("SoundManager", () => {
       await SoundManager.init();
       mockPlayer.playing = false;
 
-      const fadePromise = SoundManager.fadeIn(
-        mockPlayer as unknown as import("expo-audio").AudioPlayer,
-        { curve: "exponential", steps: 2, duration: 100 }
-      );
+      const fadePromise = SoundManager.fadeIn(mockPlayer as unknown as import("expo-audio").AudioPlayer, {
+        curve: "exponential",
+        steps: 2,
+        duration: 100,
+      });
 
       await jest.runAllTimersAsync();
       await fadePromise;
@@ -451,7 +449,9 @@ describe("SoundManager", () => {
       // Create a player that throws on volume set
       const errorPlayer = {
         ...mockPlayer,
-        get volume() { return volumeValue; },
+        get volume() {
+          return volumeValue;
+        },
         set volume(v: number) {
           volumeValue = v;
           throw new Error("Volume error");
@@ -460,9 +460,7 @@ describe("SoundManager", () => {
         playing: false,
       };
 
-      const fadePromise = SoundManager.fadeIn(
-        errorPlayer as unknown as import("expo-audio").AudioPlayer
-      );
+      const fadePromise = SoundManager.fadeIn(errorPlayer as unknown as import("expo-audio").AudioPlayer);
       await jest.runAllTimersAsync();
       await expect(fadePromise).resolves.toBeUndefined();
     });
@@ -510,10 +508,10 @@ describe("SoundManager", () => {
       mockPlayer.playing = true;
       mockPlayer.volume = 0.5;
 
-      const fadePromise = SoundManager.fadeOut(
-        mockPlayer as unknown as import("expo-audio").AudioPlayer,
-        { steps: 2, duration: 100 }
-      );
+      const fadePromise = SoundManager.fadeOut(mockPlayer as unknown as import("expo-audio").AudioPlayer, {
+        steps: 2,
+        duration: 100,
+      });
 
       await jest.runAllTimersAsync();
       await fadePromise;
@@ -527,7 +525,9 @@ describe("SoundManager", () => {
       let volumeValue = 1;
       const errorPlayer = {
         ...mockPlayer,
-        get volume() { return volumeValue; },
+        get volume() {
+          return volumeValue;
+        },
         set volume(v: number) {
           volumeValue = v;
           throw new Error("Volume error");
@@ -536,9 +536,7 @@ describe("SoundManager", () => {
         playing: true,
       };
 
-      const fadePromise = SoundManager.fadeOut(
-        errorPlayer as unknown as import("expo-audio").AudioPlayer
-      );
+      const fadePromise = SoundManager.fadeOut(errorPlayer as unknown as import("expo-audio").AudioPlayer);
       await jest.runAllTimersAsync();
       await expect(fadePromise).resolves.toBeUndefined();
     });
@@ -550,7 +548,7 @@ describe("SoundManager", () => {
       SoundManager.setSoundEnabled(true);
       mockPlayer.playing = false;
 
-      const fadePromise = SoundManager.fadeInBackgroundMusic({ duration: 100, steps: 2 });
+      const fadePromise = SoundManager.fadeInBackgroundMusic({duration: 100, steps: 2});
 
       await jest.runAllTimersAsync();
       await fadePromise;
@@ -571,7 +569,7 @@ describe("SoundManager", () => {
       await SoundManager.init();
       mockPlayer.playing = true;
 
-      const fadePromise = SoundManager.fadeOutBackgroundMusic({ duration: 100, steps: 2 });
+      const fadePromise = SoundManager.fadeOutBackgroundMusic({duration: 100, steps: 2});
 
       await jest.runAllTimersAsync();
       await fadePromise;
@@ -594,7 +592,7 @@ describe("SoundManager", () => {
       mockPlayer.playing = true;
       mockPlayer.volume = 1;
 
-      const promise = SoundManager.playNegativeWithFadeIn({ duration: 100, steps: 2 });
+      const promise = SoundManager.playNegativeWithFadeIn({duration: 100, steps: 2});
 
       await jest.runAllTimersAsync();
       await promise;
@@ -617,13 +615,13 @@ describe("SoundManager", () => {
     it("should fade out from sound and fade in to sound simultaneously", async () => {
       await SoundManager.init();
 
-      const fromPlayer = createMockPlayer({ playing: true, volume: 1 });
-      const toPlayer = createMockPlayer({ playing: false, volume: 0 });
+      const fromPlayer = createMockPlayer({playing: true, volume: 1});
+      const toPlayer = createMockPlayer({playing: false, volume: 0});
 
       const promise = SoundManager.crossfade(
         fromPlayer as unknown as import("expo-audio").AudioPlayer,
         toPlayer as unknown as import("expo-audio").AudioPlayer,
-        { duration: 100, steps: 2 }
+        {duration: 100, steps: 2},
       );
 
       await jest.runAllTimersAsync();
@@ -641,10 +639,10 @@ describe("SoundManager", () => {
       mockPlayer.volume = 0;
 
       // Start fade with many steps
-      const fadePromise = SoundManager.fadeIn(
-        mockPlayer as unknown as import("expo-audio").AudioPlayer,
-        { duration: 1000, steps: 100 }
-      );
+      const fadePromise = SoundManager.fadeIn(mockPlayer as unknown as import("expo-audio").AudioPlayer, {
+        duration: 1000,
+        steps: 100,
+      });
 
       // Advance a bit then cancel
       await jest.advanceTimersByTimeAsync(50);
@@ -681,10 +679,7 @@ describe("SoundManager", () => {
       await SoundManager.init();
 
       // Start a fade
-      SoundManager.fadeIn(
-        mockPlayer as unknown as import("expo-audio").AudioPlayer,
-        { duration: 1000 }
-      );
+      SoundManager.fadeIn(mockPlayer as unknown as import("expo-audio").AudioPlayer, {duration: 1000});
 
       // Unload should clear fades
       await SoundManager.unload();
@@ -793,10 +788,10 @@ describe("SoundManager", () => {
         playing: true,
       });
 
-      const fadePromise = SoundManager.fadeOut(
-        player as unknown as import("expo-audio").AudioPlayer,
-        { steps: 2, duration: 100 }
-      );
+      const fadePromise = SoundManager.fadeOut(player as unknown as import("expo-audio").AudioPlayer, {
+        steps: 2,
+        duration: 100,
+      });
 
       await jest.runAllTimersAsync();
       await fadePromise;
@@ -809,10 +804,11 @@ describe("SoundManager", () => {
       await SoundManager.init();
       mockPlayer.playing = false;
 
-      const fadePromise = SoundManager.fadeIn(
-        mockPlayer as unknown as import("expo-audio").AudioPlayer,
-        { duration: 500, steps: 5, curve: "linear" }
-      );
+      const fadePromise = SoundManager.fadeIn(mockPlayer as unknown as import("expo-audio").AudioPlayer, {
+        duration: 500,
+        steps: 5,
+        curve: "linear",
+      });
 
       await jest.runAllTimersAsync();
       await fadePromise;

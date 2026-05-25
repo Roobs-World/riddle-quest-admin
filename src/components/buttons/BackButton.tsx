@@ -12,12 +12,12 @@
  */
 
 import React from "react";
-import { TouchableOpacity } from "react-native";
+import {TouchableOpacity} from "react-native";
 import BackIcon from "@images/back-icon.svg";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { styles, SPACING } from "../../styles";
-import { BACK_ICON_SIZE } from "../../constants/layout";
-import { AppStrings } from "../../constants/AppStrings";
+import {NativeStackNavigationProp} from "@react-navigation/native-stack";
+import {styles, SPACING} from "../../styles";
+import {BACK_ICON_SIZE} from "../../constants/layout";
+import {AppStrings} from "../../constants/AppStrings";
 
 /**
  * Props interface for the BackButton component.
@@ -29,9 +29,7 @@ import { AppStrings } from "../../constants/AppStrings";
  * @property {NativeStackNavigationProp<RootStackParamList>} navigation - React Navigation prop for screen navigation
  * @property {keyof RootStackParamList} [targetScreen] - Optional specific screen to navigate to instead of going back
  */
-interface BackButtonProps<
-  RootStackParamList extends Record<string, object | undefined>
-> {
+interface BackButtonProps<RootStackParamList extends Record<string, object | undefined>> {
   /** React Navigation prop providing navigation methods and state */
   navigation: NativeStackNavigationProp<RootStackParamList>;
 
@@ -68,9 +66,7 @@ interface BackButtonProps<
  * @param {BackButtonProps<RootStackParamList>} props - Component props
  * @returns {JSX.Element} Rendered back button component
  */
-const BackButton = <
-  RootStackParamList extends Record<string, object | undefined>
->({
+const BackButton = <RootStackParamList extends Record<string, object | undefined>>({
   navigation,
   targetScreen,
 }: BackButtonProps<RootStackParamList>) => {
@@ -94,10 +90,12 @@ const BackButton = <
   return (
     <TouchableOpacity
       onPress={handlePress}
-      style={[styles.backButton, { padding: SPACING.xs }]}
+      style={[styles.backButton, {padding: SPACING.xs}]}
       accessibilityRole="button"
       accessibilityLabel={
-        targetScreen ? `${AppStrings.Accessibility.NAVIGATE_TO_PREFIX}${String(targetScreen)}` : AppStrings.Accessibility.GO_BACK
+        targetScreen
+          ? `${AppStrings.Accessibility.NAVIGATE_TO_PREFIX}${String(targetScreen)}`
+          : AppStrings.Accessibility.GO_BACK
       }
       accessibilityHint={AppStrings.Accessibility.BACK_BUTTON_HINT}
     >
@@ -107,4 +105,3 @@ const BackButton = <
 };
 
 export default BackButton;
-

@@ -29,9 +29,7 @@ export type GameModalActions = ReturnType<typeof createGameModalActions>;
  * @param modal Modal API returned from `useModal`.
  * @returns A set of convenience actions for common game modal scenarios.
  */
-export const createGameModalActions = (
-  modal: ReturnType<typeof useModal>
-): GameModalActionSet => ({
+export const createGameModalActions = (modal: ReturnType<typeof useModal>): GameModalActionSet => ({
   showSpendCoinsError: () =>
     modal.showInfoModal({
       title: "Error",
@@ -47,8 +45,7 @@ export const createGameModalActions = (
   showAdNotReady: () =>
     modal.showInfoModal({
       title: "Ad Not Ready",
-      message:
-        "The rewarded ad couldn't be loaded at this time. Please try again later.",
+      message: "The rewarded ad couldn't be loaded at this time. Please try again later.",
     }),
 
   showAdError: () =>

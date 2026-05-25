@@ -1,13 +1,13 @@
-import type { AudioPlayer } from "expo-audio";
-import { AppState, AppStateStatus } from "react-native";
+import type {AudioPlayer} from "expo-audio";
+import {AppState, AppStateStatus} from "react-native";
 import {
   configureHighQualityAudioSession,
   createHighQualitySound,
   getOptimalAudioConfig,
   monitorAudioQuality,
 } from "../utils/audioOptimization";
-import { logger } from "../utils/logger";
-import { captureException } from "../utils/sentry";
+import {logger} from "../utils/logger";
+import {captureException} from "../utils/sentry";
 
 import musicWav from "../../assets/audio/music.wav";
 
@@ -16,7 +16,7 @@ let music: AudioPlayer | null = null;
 let isInitialized = false;
 let globalSoundEnabled = true;
 let appState: AppStateStatus = AppState.currentState;
-let appStateSubscription: { remove: () => void } | null = null;
+let appStateSubscription: {remove: () => void} | null = null;
 
 interface FadeOptions {
   duration?: number;
@@ -32,10 +32,7 @@ const DEFAULT_FADE_OPTIONS: Required<FadeOptions> = {
 
 const activeFades = new Set<AudioPlayer>();
 
-const calculateFadeValue = (
-  progress: number,
-  curve: "linear" | "exponential"
-): number => {
+const calculateFadeValue = (progress: number, curve: "linear" | "exponential"): number => {
   if (curve === "exponential") return Math.pow(progress, 2);
   return progress;
 };
@@ -47,9 +44,7 @@ const safeDelay = (ms: number): Promise<void> => {
 export const SoundManager = {
   setSoundEnabled: (enabled: boolean) => {
     globalSoundEnabled = enabled;
-    logger.debug(
-      `SoundManager: Sound globally ${enabled ? "enabled" : "disabled"}`
-    );
+    logger.debug(`SoundManager: Sound globally ${enabled ? "enabled" : "disabled"}`);
     if (!enabled) SoundManager.pauseAllMusic();
   },
 
@@ -76,10 +71,7 @@ export const SoundManager = {
         appStateSubscription.remove();
         appStateSubscription = null;
       }
-      appStateSubscription = AppState.addEventListener(
-        "change",
-        handleAppStateChange
-      );
+      appStateSubscription = AppState.addEventListener("change", handleAppStateChange);
 
       await configureHighQualityAudioSession();
 
@@ -151,15 +143,12 @@ export const SoundManager = {
 
   playNegativeWithFadeIn: async (options: FadeOptions = {}): Promise<void> => {
     if (!music) return;
-    await SoundManager.fadeOut(music, { duration: 150, steps: 6, curve: "linear" });
+    await SoundManager.fadeOut(music, {duration: 150, steps: 6, curve: "linear"});
     await SoundManager.fadeIn(music, options);
   },
 
-  fadeIn: async (
-    sound: AudioPlayer,
-    options: FadeOptions = {}
-  ): Promise<void> => {
-    const config = { ...DEFAULT_FADE_OPTIONS, ...options };
+  fadeIn: async (sound: AudioPlayer, options: FadeOptions = {}): Promise<void> => {
+    const config = {...DEFAULT_FADE_OPTIONS, ...options};
     if (activeFades.has(sound) || appState !== "active") return;
 
     try {
@@ -186,11 +175,8 @@ export const SoundManager = {
     }
   },
 
-  fadeOut: async (
-    sound: AudioPlayer,
-    options: FadeOptions = {}
-  ): Promise<void> => {
-    const config = { ...DEFAULT_FADE_OPTIONS, ...options };
+  fadeOut: async (sound: AudioPlayer, options: FadeOptions = {}): Promise<void> => {
+    const config = {...DEFAULT_FADE_OPTIONS, ...options};
     if (activeFades.has(sound)) return;
 
     try {
@@ -215,15 +201,8 @@ export const SoundManager = {
     }
   },
 
-  crossfade: async (
-    fromSound: AudioPlayer,
-    toSound: AudioPlayer,
-    options: FadeOptions = {}
-  ): Promise<void> => {
-    await Promise.all([
-      SoundManager.fadeOut(fromSound, options),
-      SoundManager.fadeIn(toSound, options),
-    ]);
+  crossfade: async (fromSound: AudioPlayer, toSound: AudioPlayer, options: FadeOptions = {}): Promise<void> => {
+    await Promise.all([SoundManager.fadeOut(fromSound, options), SoundManager.fadeIn(toSound, options)]);
   },
 
   cancelFade: (sound: AudioPlayer): void => {

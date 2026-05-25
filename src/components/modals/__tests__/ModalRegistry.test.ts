@@ -37,14 +37,10 @@ jest.mock("../../../utils/logger", () => ({
   },
 }));
 
-const {
-  modalRegistry,
-  getModalComponent,
-  isModalRegistered,
-} = require("../ModalRegistry");
-const { MODAL_REGISTRY_TYPES } = require("../modalTypes");
+const {modalRegistry, getModalComponent, isModalRegistered} = require("../ModalRegistry");
+const {MODAL_REGISTRY_TYPES} = require("../modalTypes");
 
-const { logger } = require("../../../utils/logger");
+const {logger} = require("../../../utils/logger");
 
 describe("ModalRegistry", () => {
   beforeEach(() => {
@@ -55,9 +51,7 @@ describe("ModalRegistry", () => {
     const requiredModalTypes = [...MODAL_REGISTRY_TYPES];
 
     it("keeps the exported modal type inventory in sync with the registry", () => {
-      expect(Object.keys(modalRegistry).sort()).toEqual(
-        [...requiredModalTypes].sort()
-      );
+      expect(Object.keys(modalRegistry).sort()).toEqual([...requiredModalTypes].sort());
     });
 
     it("should register all required modal types", () => {
@@ -83,19 +77,16 @@ describe("ModalRegistry", () => {
       });
     });
 
-    it.each(requiredModalTypes)(
-      "should map minimum QA props without throwing for %s",
-      (type) => {
-        const ModalComponent = getModalComponent(type);
+    it.each(requiredModalTypes)("should map minimum QA props without throwing for %s", (type) => {
+      const ModalComponent = getModalComponent(type);
 
-        expect(() =>
-          ModalComponent({
-            isVisible: true,
-            onClose: jest.fn(),
-          })
-        ).not.toThrow();
-      }
-    );
+      expect(() =>
+        ModalComponent({
+          isVisible: true,
+          onClose: jest.fn(),
+        }),
+      ).not.toThrow();
+    });
   });
 
   describe("getModalComponent", () => {
@@ -112,9 +103,7 @@ describe("ModalRegistry", () => {
 
     it("should log warning for unknown modal type", () => {
       getModalComponent("unknown-modal-type");
-      expect(logger.warn).toHaveBeenCalledWith(
-        expect.stringContaining("unknown-modal-type")
-      );
+      expect(logger.warn).toHaveBeenCalledWith(expect.stringContaining("unknown-modal-type"));
     });
 
     it("should not log warning for valid modal type", () => {
@@ -297,7 +286,7 @@ describe("ModalRegistry", () => {
         const FullProfileDetailsModal = getModalComponent("fullProfileDetails");
         const props = {
           ...createBaseProps(),
-          playerData: { userId: "123", username: "test" },
+          playerData: {userId: "123", username: "test"},
         };
 
         expect(() => FullProfileDetailsModal(props)).not.toThrow();
@@ -309,7 +298,7 @@ describe("ModalRegistry", () => {
         const StatsModal = getModalComponent("stats");
         const props = {
           ...createBaseProps(),
-          playerData: { userId: "123", stats: { wins: 10 } },
+          playerData: {userId: "123", stats: {wins: 10}},
         };
 
         expect(() => StatsModal(props)).not.toThrow();
@@ -319,7 +308,7 @@ describe("ModalRegistry", () => {
         const AchievementsModal = getModalComponent("achievements");
         const props = {
           ...createBaseProps(),
-          playerData: { userId: "123", achievements: [] },
+          playerData: {userId: "123", achievements: []},
         };
 
         expect(() => AchievementsModal(props)).not.toThrow();
@@ -386,9 +375,7 @@ describe("ModalRegistry", () => {
       });
 
       it("should map props correctly for achievementUnlockFanfare modal", () => {
-        const AchievementUnlockFanfareModal = getModalComponent(
-          "achievementUnlockFanfare"
-        );
+        const AchievementUnlockFanfareModal = getModalComponent("achievementUnlockFanfare");
         const props = {
           ...createBaseProps(),
           achievementNames: ["First Victory"],
@@ -438,9 +425,7 @@ describe("ModalRegistry", () => {
     });
 
     it("should have display names for all modals", () => {
-      const displayNames = Object.values(modalRegistry).map(
-        (modal: any) => modal.displayName
-      );
+      const displayNames = Object.values(modalRegistry).map((modal: any) => modal.displayName);
       // Each modal wrapper should have a displayName
       displayNames.forEach((name) => {
         expect(name).toBeDefined();
@@ -453,9 +438,7 @@ describe("ModalRegistry", () => {
   describe("Edge Cases", () => {
     it("should handle null props gracefully", () => {
       const VictoryModal = getModalComponent("victory");
-      expect(() =>
-        VictoryModal({ isVisible: false, onClose: () => {} })
-      ).not.toThrow();
+      expect(() => VictoryModal({isVisible: false, onClose: () => {}})).not.toThrow();
     });
 
     it("should handle undefined callbacks", () => {

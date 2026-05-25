@@ -1,5 +1,5 @@
 import React from "react";
-import { Image } from "react-native";
+import {Image} from "react-native";
 import xLogo from "../../../assets/images/x-logo.png";
 
 interface XIconProps {
@@ -7,7 +7,7 @@ interface XIconProps {
   tintColor?: string;
 }
 
-const XIcon = ({ width, tintColor }: XIconProps) => {
+const XIcon = ({width, tintColor}: XIconProps) => {
   const iconSize = typeof width === "string" ? parseInt(width) : width || 24;
 
   return (
@@ -17,11 +17,10 @@ const XIcon = ({ width, tintColor }: XIconProps) => {
         width: iconSize,
         height: iconSize,
         resizeMode: "contain",
-        ...(tintColor ? { tintColor } : {}),
+        ...(tintColor ? {tintColor} : {}),
       }}
     />
   );
 };
 
 export default XIcon;
-

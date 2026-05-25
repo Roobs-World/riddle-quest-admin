@@ -4,7 +4,13 @@ import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
 import {TYPOGRAPHY} from "../../../styles";
 import {AchievementUnlockFanfareItem} from "../../../types/ModalTypes";
-import {MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, MODAL_BUTTON_SPACER, MODAL_MAX_HEIGHT} from "../../../constants/layout";
+import {
+  MODAL_WIDTH,
+  MODAL_HEIGHT,
+  MODAL_CONTENT_PADDING,
+  MODAL_BUTTON_SPACER,
+  MODAL_MAX_HEIGHT,
+} from "../../../constants/layout";
 import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {NewCoins} from "@/components/shared/NewCoins";
@@ -42,8 +48,7 @@ const AchievementUnlockFanfareModal: React.FC<AchievementUnlockFanfareModalProps
     achievements[0]?.name ?? achievementNames[0] ?? AppStrings.Achievements.NEW_ACHIEVEMENT;
   const primaryAchievementDescription = achievements[0]?.description ?? "";
   const primaryAchievementIcon = achievements[0]?.icon ?? "";
-  const continueButtonText =
-    sequenceProgress?.primaryActionText ?? AppStrings.Achievements.NICE_BUTTON;
+  const continueButtonText = sequenceProgress?.primaryActionText ?? AppStrings.Achievements.NICE_BUTTON;
   const handleContinue = () => {
     onContinue?.();
     onClose();

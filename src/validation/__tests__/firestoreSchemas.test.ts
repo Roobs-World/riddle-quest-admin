@@ -1,9 +1,4 @@
-import {
-  PlayerSchema,
-  FirestoreRiddleSchema,
-  loginSchema,
-  signUpSchema,
-} from "../firestoreSchemas";
+import {PlayerSchema, FirestoreRiddleSchema, loginSchema, signUpSchema} from "../firestoreSchemas";
 
 describe("firestoreSchemas", () => {
   describe("loginSchema", () => {
@@ -287,4 +282,3 @@ describe("firestoreSchemas", () => {
     });
   });
 });
-

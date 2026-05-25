@@ -2,12 +2,12 @@
  * Unit tests for useSettings hook.
  * Mocks AsyncStorage, SoundManager, safeDelay, and logger.
  */
-import { renderHook, act, waitFor } from "@testing-library/react-native";
+import {renderHook, act, waitFor} from "@testing-library/react-native";
 
 const mockGetItem = jest.fn();
 const mockSetItem = jest.fn();
 // Use a simple object to hold mutable state that can be changed by tests
-const setItemConfig = { shouldFail: false };
+const setItemConfig = {shouldFail: false};
 jest.mock("@react-native-async-storage/async-storage", () => ({
   getItem: (...args: unknown[]) => mockGetItem(...args),
   setItem: (...args: unknown[]) => {
@@ -28,8 +28,7 @@ jest.mock("../../services/SoundManager", () => ({
   SoundManager: {
     setSoundEnabled: (...args: unknown[]) => mockSetSoundEnabled(...args),
     playBackgroundMusic: (...args: unknown[]) => mockPlayBackgroundMusic(...args),
-    pauseBackgroundMusic: (...args: unknown[]) =>
-      mockPauseBackgroundMusic(...args),
+    pauseBackgroundMusic: (...args: unknown[]) => mockPauseBackgroundMusic(...args),
   },
 }));
 
@@ -39,7 +38,7 @@ jest.mock("../../utils/timing", () => ({
 
 const mockLoggerError = jest.fn();
 jest.mock("../../utils/logger", () => ({
-  logger: { error: (...args: unknown[]) => mockLoggerError(...args) },
+  logger: {error: (...args: unknown[]) => mockLoggerError(...args)},
 }));
 
 const mockCaptureException = jest.fn();
@@ -47,7 +46,7 @@ jest.mock("../../utils/sentry", () => ({
   captureException: (...args: unknown[]) => mockCaptureException(...args),
 }));
 
-import { useSettings } from "../useSettings";
+import {useSettings} from "../useSettings";
 
 describe("useSettings", () => {
   beforeEach(() => {
@@ -56,7 +55,7 @@ describe("useSettings", () => {
   });
 
   it("should return API with isSoundEnabled, isHapticsEnabled and toggles", () => {
-    const { result } = renderHook(() => useSettings());
+    const {result} = renderHook(() => useSettings());
     expect(result.current).toHaveProperty("isSoundEnabled");
     expect(result.current).toHaveProperty("isHapticsEnabled");
     expect(result.current).toHaveProperty("toggleSoundEnabled");
@@ -67,7 +66,7 @@ describe("useSettings", () => {
 
   it("should default to sound and haptics enabled when storage is empty", async () => {
     mockGetItem.mockResolvedValue(null);
-    const { result } = renderHook(() => useSettings());
+    const {result} = renderHook(() => useSettings());
     await waitFor(() => {
       expect(result.current.isSoundEnabled).toBe(true);
       expect(result.current.isHapticsEnabled).toBe(true);
@@ -76,10 +75,8 @@ describe("useSettings", () => {
   });
 
   it("should load persisted sound setting from AsyncStorage", async () => {
-    mockGetItem
-      .mockResolvedValueOnce(JSON.stringify(false))
-      .mockResolvedValueOnce(null);
-    const { result } = renderHook(() => useSettings());
+    mockGetItem.mockResolvedValueOnce(JSON.stringify(false)).mockResolvedValueOnce(null);
+    const {result} = renderHook(() => useSettings());
     await waitFor(() => {
       expect(result.current.isSoundEnabled).toBe(false);
     });
@@ -87,27 +84,20 @@ describe("useSettings", () => {
   });
 
   it("does not overwrite persisted muted state during initial load", async () => {
-    mockGetItem
-      .mockResolvedValueOnce(JSON.stringify(false))
-      .mockResolvedValueOnce(null);
+    mockGetItem.mockResolvedValueOnce(JSON.stringify(false)).mockResolvedValueOnce(null);
 
-    const { result } = renderHook(() => useSettings());
+    const {result} = renderHook(() => useSettings());
 
     await waitFor(() => {
       expect(result.current.isSoundEnabled).toBe(false);
     });
 
-    expect(mockSetItem).not.toHaveBeenCalledWith(
-      "isSoundEnabled",
-      JSON.stringify(true)
-    );
+    expect(mockSetItem).not.toHaveBeenCalledWith("isSoundEnabled", JSON.stringify(true));
   });
 
   it("should load persisted haptics setting from AsyncStorage", async () => {
-    mockGetItem
-      .mockResolvedValueOnce(null)
-      .mockResolvedValueOnce(JSON.stringify(false));
-    const { result } = renderHook(() => useSettings());
+    mockGetItem.mockResolvedValueOnce(null).mockResolvedValueOnce(JSON.stringify(false));
+    const {result} = renderHook(() => useSettings());
     await waitFor(() => {
       expect(result.current.isHapticsEnabled).toBe(false);
     });
@@ -115,7 +105,7 @@ describe("useSettings", () => {
 
   it("should persist and apply sound when toggling sound off", async () => {
     mockGetItem.mockResolvedValue(null);
-    const { result } = renderHook(() => useSettings());
+    const {result} = renderHook(() => useSettings());
     await waitFor(() => expect(result.current.isSoundEnabled).toBe(true));
 
     act(() => {
@@ -123,17 +113,14 @@ describe("useSettings", () => {
     });
 
     expect(result.current.isSoundEnabled).toBe(false);
-    expect(mockSetItem).toHaveBeenCalledWith(
-      "isSoundEnabled",
-      JSON.stringify(false)
-    );
+    expect(mockSetItem).toHaveBeenCalledWith("isSoundEnabled", JSON.stringify(false));
     expect(mockSetSoundEnabled).toHaveBeenCalledWith(false);
     expect(mockPauseBackgroundMusic).toHaveBeenCalled();
   });
 
   it("should persist and apply sound when toggling sound on", async () => {
     mockGetItem.mockResolvedValue(null);
-    const { result } = renderHook(() => useSettings());
+    const {result} = renderHook(() => useSettings());
     await waitFor(() => expect(result.current.isSoundEnabled).toBe(true));
 
     act(() => {
@@ -145,10 +132,7 @@ describe("useSettings", () => {
       result.current.toggleSoundEnabled(true);
     });
     expect(result.current.isSoundEnabled).toBe(true);
-    expect(mockSetItem).toHaveBeenCalledWith(
-      "isSoundEnabled",
-      JSON.stringify(true)
-    );
+    expect(mockSetItem).toHaveBeenCalledWith("isSoundEnabled", JSON.stringify(true));
     expect(mockSetSoundEnabled).toHaveBeenCalledWith(true);
     await waitFor(() => {
       expect(mockPlayBackgroundMusic).toHaveBeenCalled();
@@ -157,7 +141,7 @@ describe("useSettings", () => {
 
   it("should persist haptics when toggling haptics off", async () => {
     mockGetItem.mockResolvedValue(null);
-    const { result } = renderHook(() => useSettings());
+    const {result} = renderHook(() => useSettings());
     await waitFor(() => expect(result.current.isHapticsEnabled).toBe(true));
 
     act(() => {
@@ -165,20 +149,14 @@ describe("useSettings", () => {
     });
 
     expect(result.current.isHapticsEnabled).toBe(false);
-    expect(mockSetItem).toHaveBeenCalledWith(
-      "isHapticsEnabled",
-      JSON.stringify(false)
-    );
+    expect(mockSetItem).toHaveBeenCalledWith("isHapticsEnabled", JSON.stringify(false));
   });
 
   it("should call logger.error when loading settings fails", async () => {
     mockGetItem.mockRejectedValue(new Error("Storage error"));
     renderHook(() => useSettings());
     await waitFor(() => {
-      expect(mockLoggerError).toHaveBeenCalledWith(
-        "Error loading settings from AsyncStorage:",
-        expect.any(Error)
-      );
+      expect(mockLoggerError).toHaveBeenCalledWith("Error loading settings from AsyncStorage:", expect.any(Error));
     });
   });
 
@@ -193,7 +171,7 @@ describe("useSettings", () => {
 
     it("should log error and capture exception when sound setting fails to save", async () => {
       mockGetItem.mockResolvedValue(null);
-      const { result } = renderHook(() => useSettings());
+      const {result} = renderHook(() => useSettings());
       await waitFor(() => expect(result.current.isSoundEnabled).toBe(true));
 
       act(() => {
@@ -201,17 +179,14 @@ describe("useSettings", () => {
       });
 
       await waitFor(() => {
-        expect(mockLoggerError).toHaveBeenCalledWith(
-          "Error saving sound setting:",
-          expect.any(Error)
-        );
+        expect(mockLoggerError).toHaveBeenCalledWith("Error saving sound setting:", expect.any(Error));
         expect(mockCaptureException).toHaveBeenCalled();
       });
     });
 
     it("should log error and capture exception when haptics setting fails to save", async () => {
       mockGetItem.mockResolvedValue(null);
-      const { result } = renderHook(() => useSettings());
+      const {result} = renderHook(() => useSettings());
       await waitFor(() => expect(result.current.isHapticsEnabled).toBe(true));
 
       act(() => {
@@ -219,13 +194,9 @@ describe("useSettings", () => {
       });
 
       await waitFor(() => {
-        expect(mockLoggerError).toHaveBeenCalledWith(
-          "Error saving haptics setting:",
-          expect.any(Error)
-        );
+        expect(mockLoggerError).toHaveBeenCalledWith("Error saving haptics setting:", expect.any(Error));
         expect(mockCaptureException).toHaveBeenCalled();
       });
     });
   });
 });
-

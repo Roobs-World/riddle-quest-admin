@@ -11,12 +11,12 @@
  */
 
 import React from "react";
-import { TouchableOpacity, TouchableOpacityProps } from "react-native";
+import {TouchableOpacity, TouchableOpacityProps} from "react-native";
 import CloseIcon from "../icons/CloseIcon";
 import CloseIconWhite from "../icons/CloseIconWhite";
-import { SPACING } from "../../styles";
-import { CLOSE_BUTTON_SIZE_LG } from "../../constants/layout";
-import { AppStrings } from "../../constants/AppStrings";
+import {SPACING} from "../../styles";
+import {CLOSE_BUTTON_SIZE_LG} from "../../constants/layout";
+import {AppStrings} from "../../constants/AppStrings";
 
 /**
  * Props interface for the CloseButton component.
@@ -114,7 +114,7 @@ const CloseButton = ({
         },
         style,
       ]}
-      hitSlop={{ top: 8, right: 8, bottom: 8, left: 8 }}
+      hitSlop={{top: 8, right: 8, bottom: 8, left: 8}}
       accessibilityLabel={AppStrings.CommonAlerts.CLOSE_BUTTON}
       accessibilityRole="button"
       {...props}
@@ -125,4 +125,3 @@ const CloseButton = ({
 };
 
 export default CloseButton;
-

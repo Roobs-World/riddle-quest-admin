@@ -6,9 +6,8 @@ interface GoogleIconProps {
   height?: number | string;
 }
 
-const GoogleIcon = ({ width, height }: GoogleIconProps) => {
+const GoogleIcon = ({width, height}: GoogleIconProps) => {
   return <GoogleSvg width={width} height={height} />;
 };
 
 export default GoogleIcon;
-

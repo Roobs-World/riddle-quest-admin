@@ -1,14 +1,6 @@
-import {
-  AmbientLight,
-  DirectionalLight,
-  Mesh,
-  RingGeometry,
-  Scene,
-  SphereGeometry,
-  Texture,
-} from "three";
-import { addEnhancedLights, addSunMeshes, createSceneSetup } from "../sceneFactory";
-import { captureException } from "../../../utils/sentry";
+import {AmbientLight, DirectionalLight, Mesh, RingGeometry, Scene, SphereGeometry, Texture} from "three";
+import {addEnhancedLights, addSunMeshes, createSceneSetup} from "../sceneFactory";
+import {captureException} from "../../../utils/sentry";
 
 jest.mock("../../../utils/sentry", () => ({
   captureException: jest.fn(),
@@ -16,7 +8,7 @@ jest.mock("../../../utils/sentry", () => ({
 
 describe("sceneFactory", () => {
   it("creates scene setup with expected camera defaults", () => {
-    const { scene, camera } = createSceneSetup();
+    const {scene, camera} = createSceneSetup();
 
     expect(scene).toBeInstanceOf(Scene);
     expect(camera.position.x).toBe(90);
@@ -37,9 +29,7 @@ describe("sceneFactory", () => {
 
   it("adds layered sun meshes when sun geometry is available", () => {
     const scene = new Scene();
-    const geometries = new Map<string, SphereGeometry | RingGeometry>([
-      ["sun", new SphereGeometry(10, 8, 8)],
-    ]);
+    const geometries = new Map<string, SphereGeometry | RingGeometry>([["sun", new SphereGeometry(10, 8, 8)]]);
     const textures = new Map<string, Texture | null>([
       ["sun", new Texture()],
       ["glow_sun", new Texture()],
@@ -76,9 +66,7 @@ describe("sceneFactory", () => {
         }
       }),
     } as unknown as Scene;
-    const geometries = new Map<string, SphereGeometry | RingGeometry>([
-      ["sun", new SphereGeometry(10, 8, 8)],
-    ]);
+    const geometries = new Map<string, SphereGeometry | RingGeometry>([["sun", new SphereGeometry(10, 8, 8)]]);
     const textures = new Map<string, Texture | null>([["glow_sun", new Texture()]]);
     const meshes: Mesh[] = [];
 

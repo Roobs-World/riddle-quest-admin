@@ -1,7 +1,7 @@
 /**
  * @fileoverview Spanish (es) locale overrides.
  */
-import type { LocaleOverrides } from "./types";
+import type {LocaleOverrides} from "./types";
 
 export const esOverrides: LocaleOverrides = {
   AuthStrings: {
@@ -81,10 +81,8 @@ export const esOverrides: LocaleOverrides = {
       TITLE: "Restablecer contrasena",
       BUTTON_TEXT: "Restablecer contrasena",
       SUCCESS_MESSAGE: "Correo de restablecimiento enviado. Revisa tu bandeja de entrada.",
-      USER_NOT_FOUND_ERROR:
-        "No se encontro cuenta con este correo. Verifique su email o cree una nueva cuenta.",
-      GENERIC_ERROR:
-        "Ocurrio un error al enviar el correo. Intente de nuevo.",
+      USER_NOT_FOUND_ERROR: "No se encontro cuenta con este correo. Verifique su email o cree una nueva cuenta.",
+      GENERIC_ERROR: "Ocurrio un error al enviar el correo. Intente de nuevo.",
       BACK_TO_LOGIN: "Volver al inicio de sesion",
     },
     NewPassword: {
@@ -183,14 +181,12 @@ export const esOverrides: LocaleOverrides = {
     LETS_PLAY: "A Jugar",
     SOLVE_RIDDLES_TEXT:
       "Resuelve acertijos adivinando la respuesta letra por letra. Usa las pistas de color para guiar cada intento.",
-    EARN_COINS_TEXT:
-      "Gana monedas, supera desafios diarios y sube en el marcador.",
+    EARN_COINS_TEXT: "Gana monedas, supera desafios diarios y sube en el marcador.",
   },
   Instructions: {
     TITLE: "Como jugar",
     GOAL_TITLE: "El objetivo",
-    GOAL_DESCRIPTION:
-      "Adivina el acertijo oculto en 3 intentos usando las pistas de color.",
+    GOAL_DESCRIPTION: "Adivina el acertijo oculto en 3 intentos usando las pistas de color.",
     COLOR_CLUES_TITLE: "Pistas de color",
     COLOR_CORRECT: "La letra es correcta y esta en la posicion correcta",
     COLOR_MISPLACED: "La letra esta en la palabra pero en la posicion incorrecta",
@@ -207,7 +203,8 @@ export const esOverrides: LocaleOverrides = {
     NOT_ENOUGH_COINS_MESSAGE: "Necesitas mas monedas para usar una pista.",
     HINT_ERROR_TITLE: "Error",
     GUEST_MODE_NOTICE_TITLE: "Aviso de modo invitado",
-    GUEST_MODE_NOTICE_MESSAGE: "Tu progreso podria perderse en modo invitado y algunas funciones como el marcador no estan disponibles.",
+    GUEST_MODE_NOTICE_MESSAGE:
+      "Tu progreso podria perderse en modo invitado y algunas funciones como el marcador no estan disponibles.",
     AD_NOT_READY_TITLE: "Anuncio no disponible",
     AD_NOT_READY_MESSAGE: "El anuncio no pudo mostrarse en este momento. Intenta de nuevo en breve.",
     SPEND_COINS_ERROR_MESSAGE: "No se pudieron gastar las monedas. Intenta de nuevo.",
@@ -366,13 +363,15 @@ export const esOverrides: LocaleOverrides = {
     LEADERBOARD_FIFTH_CORRECT_TITLE: "Sube en la clasificacion",
     LEADERBOARD_FIFTH_CORRECT_BODY: "Cinco respuestas correctas! Abre tu perfil para ver tu posicion.",
     CLASSIC_FROM_DAILY_TITLE: "Modo Clasico",
-    CLASSIC_FROM_DAILY_BODY: "Desafio diario completado. El modo Clasico te permite seguir resolviendo acertijos a tu ritmo.",
+    CLASSIC_FROM_DAILY_BODY:
+      "Desafio diario completado. El modo Clasico te permite seguir resolviendo acertijos a tu ritmo.",
     PROFILE_IDENTITY_TITLE: "Perfil",
     PROFILE_IDENTITY_BODY: "Aqui estan tu avatar, nombre de usuario, nivel de XP y progreso de nivel.",
     PROFILE_DAILY_PUZZLES_TITLE: "Acertijos diarios",
     PROFILE_DAILY_PUZZLES_BODY: "Esto muestra cuantos desafios diarios has completado.",
     PROFILE_STATS_TITLE: "Resumen de estadisticas",
-    PROFILE_STATS_BODY: "Estas tarjetas resumen tu racha, palabras adivinadas, porcentaje de victoria y promedio de intentos.",
+    PROFILE_STATS_BODY:
+      "Estas tarjetas resumen tu racha, palabras adivinadas, porcentaje de victoria y promedio de intentos.",
     PROFILE_COINS_TITLE: "Cofre del tesoro",
     PROFILE_COINS_BODY: "Aqui se muestra tu saldo de monedas. Gastalas en pistas, saltos y oportunidades extra.",
     PROFILE_ACHIEVEMENTS_TITLE: "Logros",

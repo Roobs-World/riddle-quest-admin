@@ -1,22 +1,22 @@
 import React from "react";
-import { renderHook, act, waitFor } from "@testing-library/react-native";
+import {renderHook, act, waitFor} from "@testing-library/react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Player, FirestoreRiddle } from "../../validation/firestoreSchemas";
+import {Player, FirestoreRiddle} from "../../validation/firestoreSchemas";
 
 // Mock Firestore before any module imports it
 jest.mock("@react-native-firebase/firestore", () => {
   const mockCollection = jest.fn(() => ({
     doc: jest.fn(() => ({
-      get: jest.fn(() => Promise.resolve({ exists: false, data: () => null })),
+      get: jest.fn(() => Promise.resolve({exists: false, data: () => null})),
       set: jest.fn(() => Promise.resolve()),
       update: jest.fn(() => Promise.resolve()),
     })),
     where: jest.fn(() => ({
       limit: jest.fn(() => ({
-        get: jest.fn(() => Promise.resolve({ empty: true, docs: [] })),
+        get: jest.fn(() => Promise.resolve({empty: true, docs: []})),
       })),
     })),
-    get: jest.fn(() => Promise.resolve({ empty: true, docs: [] })),
+    get: jest.fn(() => Promise.resolve({empty: true, docs: []})),
   }));
   return {
     __esModule: true,
@@ -62,15 +62,13 @@ import {
   updateUserDocumentInFirestore,
   createUserDocumentInFirestore,
 } from "../../services/FirestoreService";
-import { RiddleInitializationService } from "../../services/RiddleInitializationService";
+import {RiddleInitializationService} from "../../services/RiddleInitializationService";
 
 // Import AuthContext after all mocks are set up
-import { AuthProvider, useAuth } from "../AuthContext";
+import {AuthProvider, useAuth} from "../AuthContext";
 
 // Setup mocks
-(
-  RiddleInitializationService.checkAndInitializeRiddles as jest.Mock
-).mockResolvedValue(undefined);
+(RiddleInitializationService.checkAndInitializeRiddles as jest.Mock).mockResolvedValue(undefined);
 
 describe("AuthContext", () => {
   // Define test data
@@ -133,9 +131,7 @@ describe("AuthContext", () => {
     category: "general",
   };
 
-  const wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-    <AuthProvider>{children}</AuthProvider>
-  );
+  const wrapper: React.FC<{children: React.ReactNode}> = ({children}) => <AuthProvider>{children}</AuthProvider>;
 
   beforeEach(async () => {
     jest.clearAllMocks();
@@ -148,15 +144,13 @@ describe("AuthContext", () => {
 
   it("initial state when not authenticated", async () => {
     // Mock auth state as not authenticated
-    mockAuthInstance.onAuthStateChanged.mockImplementation(
-      (callback: (user: any) => void) => {
-        // Call with null user immediately
-        callback(null);
-        return jest.fn(); // unsubscribe function
-      }
-    );
+    mockAuthInstance.onAuthStateChanged.mockImplementation((callback: (user: any) => void) => {
+      // Call with null user immediately
+      callback(null);
+      return jest.fn(); // unsubscribe function
+    });
 
-    const { result } = renderHook(() => useAuth(), { wrapper });
+    const {result} = renderHook(() => useAuth(), {wrapper});
 
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false);
@@ -195,35 +189,26 @@ describe("AuthContext", () => {
           totalGuessesInWins: 0,
           totalHintsUsed: 0,
         },
-        unlockedAchievements: [
-          { achievementId: "daily_completed", unlockedAt: 1710000000000 },
-        ],
+        unlockedAchievements: [{achievementId: "daily_completed", unlockedAt: 1710000000000}],
         hasPurchasedApp: true,
         lastDailyChallengeCompletedAt: 1710000000000,
       };
 
-      await AsyncStorage.setItem(
-        "@guest_player_progress_v1",
-        JSON.stringify(guestStoredPayload)
-      );
+      await AsyncStorage.setItem("@guest_player_progress_v1", JSON.stringify(guestStoredPayload));
 
-      (fetchClassicRiddleFromFirestore as jest.Mock).mockResolvedValue(
-        mockClassicRiddle
-      );
+      (fetchClassicRiddleFromFirestore as jest.Mock).mockResolvedValue(mockClassicRiddle);
 
-      mockAuthInstance.onAuthStateChanged.mockImplementation(
-        (callback: (user: any) => void) => {
-          callback({
-            uid: guestUid,
-            isAnonymous: true,
-            email: null,
-            displayName: null,
-          } as any);
-          return jest.fn();
-        }
-      );
+      mockAuthInstance.onAuthStateChanged.mockImplementation((callback: (user: any) => void) => {
+        callback({
+          uid: guestUid,
+          isAnonymous: true,
+          email: null,
+          displayName: null,
+        } as any);
+        return jest.fn();
+      });
 
-      const { result } = renderHook(() => useAuth(), { wrapper });
+      const {result} = renderHook(() => useAuth(), {wrapper});
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
@@ -235,7 +220,7 @@ describe("AuthContext", () => {
       expect(result.current.playerData?.stats.xp).toBe(321);
       expect(result.current.playerData?.stats.dailyPuzzlesCompleted).toBe(8);
       expect(result.current.playerData?.unlockedAchievements).toEqual([
-        { achievementId: "daily_completed", unlockedAt: 1710000000000 },
+        {achievementId: "daily_completed", unlockedAt: 1710000000000},
       ]);
       expect(result.current.playerData?.hasPurchasedApp).toBe(true);
     });
@@ -243,23 +228,19 @@ describe("AuthContext", () => {
     it("starts a fresh guest session with 300 coins", async () => {
       const guestUid = "guest-fresh-1";
 
-      (fetchDailyRiddleFromFirestore as jest.Mock).mockResolvedValue(
-        mockDailyRiddle
-      );
+      (fetchDailyRiddleFromFirestore as jest.Mock).mockResolvedValue(mockDailyRiddle);
 
-      mockAuthInstance.onAuthStateChanged.mockImplementation(
-        (callback: (user: any) => void) => {
-          callback({
-            uid: guestUid,
-            isAnonymous: true,
-            email: null,
-            displayName: null,
-          } as any);
-          return jest.fn();
-        }
-      );
+      mockAuthInstance.onAuthStateChanged.mockImplementation((callback: (user: any) => void) => {
+        callback({
+          uid: guestUid,
+          isAnonymous: true,
+          email: null,
+          displayName: null,
+        } as any);
+        return jest.fn();
+      });
 
-      const { result } = renderHook(() => useAuth(), { wrapper });
+      const {result} = renderHook(() => useAuth(), {wrapper});
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
@@ -287,7 +268,7 @@ describe("AuthContext", () => {
             dailyChallengeCurrentQuestion: 0,
           },
           stats: mockPlayer.stats,
-        })
+        }),
       );
       await AsyncStorage.setItem(
         "@active_game_session_v1",
@@ -299,30 +280,24 @@ describe("AuthContext", () => {
           classicIndex: 3,
           savedAt: Date.now(),
           savedUtcDate: new Date().toISOString().slice(0, 10),
-        })
+        }),
       );
 
-      (fetchDailyRiddleFromFirestore as jest.Mock).mockResolvedValue(
-        mockDailyRiddle
-      );
-      (fetchClassicRiddleFromFirestore as jest.Mock).mockResolvedValue(
-        storedClassicRiddle
-      );
+      (fetchDailyRiddleFromFirestore as jest.Mock).mockResolvedValue(mockDailyRiddle);
+      (fetchClassicRiddleFromFirestore as jest.Mock).mockResolvedValue(storedClassicRiddle);
 
-      mockAuthInstance.onAuthStateChanged.mockImplementation(
-        (callback: (user: any) => void) => {
-          mockAuthInstance.currentUser = {
-            uid: guestUid,
-            isAnonymous: true,
-            email: null,
-            displayName: null,
-          } as any;
-          callback(mockAuthInstance.currentUser);
-          return jest.fn();
-        }
-      );
+      mockAuthInstance.onAuthStateChanged.mockImplementation((callback: (user: any) => void) => {
+        mockAuthInstance.currentUser = {
+          uid: guestUid,
+          isAnonymous: true,
+          email: null,
+          displayName: null,
+        } as any;
+        callback(mockAuthInstance.currentUser);
+        return jest.fn();
+      });
 
-      const { result } = renderHook(() => useAuth(), { wrapper });
+      const {result} = renderHook(() => useAuth(), {wrapper});
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
@@ -343,39 +318,33 @@ describe("AuthContext", () => {
         userId: upgradedUid,
       });
       (updateUserDocumentInFirestore as jest.Mock).mockResolvedValue(undefined);
-      (fetchDailyRiddleFromFirestore as jest.Mock).mockResolvedValue(
-        mockDailyRiddle
-      );
+      (fetchDailyRiddleFromFirestore as jest.Mock).mockResolvedValue(mockDailyRiddle);
 
-      mockAuthInstance.onAuthStateChanged.mockImplementation(
-        (callback: (user: any) => void) => {
-          callback({
-            uid: upgradedUid,
-            isAnonymous: true,
-            email: null,
-            displayName: null,
-            providerData: [],
-          } as any);
-          callback({
-            uid: upgradedUid,
-            isAnonymous: false,
-            email: "upgraded@example.com",
-            displayName: "Upgraded User",
-            providerData: [{ providerId: "google.com" }],
-          } as any);
-          return jest.fn();
-        }
-      );
+      mockAuthInstance.onAuthStateChanged.mockImplementation((callback: (user: any) => void) => {
+        callback({
+          uid: upgradedUid,
+          isAnonymous: true,
+          email: null,
+          displayName: null,
+          providerData: [],
+        } as any);
+        callback({
+          uid: upgradedUid,
+          isAnonymous: false,
+          email: "upgraded@example.com",
+          displayName: "Upgraded User",
+          providerData: [{providerId: "google.com"}],
+        } as any);
+        return jest.fn();
+      });
 
-      renderHook(() => useAuth(), { wrapper });
+      renderHook(() => useAuth(), {wrapper});
 
       await waitFor(() => {
         expect(createUserDocumentInFirestore).toHaveBeenCalledTimes(1);
       });
 
-      const [uidArg, emailArg, displayNameArg, avatarArg] = (
-        createUserDocumentInFirestore as jest.Mock
-      ).mock.calls[0];
+      const [uidArg, emailArg, displayNameArg, avatarArg] = (createUserDocumentInFirestore as jest.Mock).mock.calls[0];
       expect(uidArg).toBe(upgradedUid);
       expect(emailArg).toBe("upgraded@example.com");
       expect(displayNameArg).toBe("Upgraded User");
@@ -388,30 +357,24 @@ describe("AuthContext", () => {
             userId: upgradedUid,
             username: "Upgraded User",
             email: "test@example.com",
-          })
+          }),
         );
       });
     });
 
     it("handles user login", async () => {
       // Mock the services
-      (loadUserProgressFromFirestore as jest.Mock).mockResolvedValue(
-        mockPlayer
-      );
-      (fetchDailyRiddleFromFirestore as jest.Mock).mockResolvedValue(
-        mockDailyRiddle
-      );
+      (loadUserProgressFromFirestore as jest.Mock).mockResolvedValue(mockPlayer);
+      (fetchDailyRiddleFromFirestore as jest.Mock).mockResolvedValue(mockDailyRiddle);
 
       // Mock auth state change
-      mockAuthInstance.onAuthStateChanged.mockImplementation(
-        (callback: (user: any) => void) => {
-          // Call immediately instead of using setTimeout
-          callback(mockUser as any);
-          return jest.fn();
-        }
-      );
+      mockAuthInstance.onAuthStateChanged.mockImplementation((callback: (user: any) => void) => {
+        // Call immediately instead of using setTimeout
+        callback(mockUser as any);
+        return jest.fn();
+      });
 
-      const { result } = renderHook(() => useAuth(), { wrapper });
+      const {result} = renderHook(() => useAuth(), {wrapper});
 
       // Wait for auth state to update and loading to complete
       await waitFor(() => {
@@ -421,9 +384,7 @@ describe("AuthContext", () => {
 
       expect(result.current.playerData).toEqual(mockPlayer);
       expect(result.current.currentRiddle).toEqual(mockDailyRiddle);
-      expect(
-        RiddleInitializationService.checkAndInitializeRiddles
-      ).toHaveBeenCalled();
+      expect(RiddleInitializationService.checkAndInitializeRiddles).toHaveBeenCalled();
     });
 
     it("does not restart provider bootstrap for delayed duplicate same-user auth events", async () => {
@@ -438,45 +399,33 @@ describe("AuthContext", () => {
       const loadUserProgressPromise = new Promise<Player | null>((resolve) => {
         resolveLoadUserProgress = resolve;
       });
-      (loadUserProgressFromFirestore as jest.Mock).mockReturnValue(
-        loadUserProgressPromise
-      );
-      (fetchDailyRiddleFromFirestore as jest.Mock).mockResolvedValue(
-        mockDailyRiddle
-      );
+      (loadUserProgressFromFirestore as jest.Mock).mockReturnValue(loadUserProgressPromise);
+      (fetchDailyRiddleFromFirestore as jest.Mock).mockResolvedValue(mockDailyRiddle);
       const functionsModule = require("@react-native-firebase/functions");
-      const dailyStatusCallable = jest.fn(() =>
-        Promise.resolve({ data: { hasCompletedToday: false } })
-      );
-      (functionsModule.httpsCallable as jest.Mock).mockReturnValue(
-        dailyStatusCallable
-      );
+      const dailyStatusCallable = jest.fn(() => Promise.resolve({data: {hasCompletedToday: false}}));
+      (functionsModule.httpsCallable as jest.Mock).mockReturnValue(dailyStatusCallable);
 
       const providerUser = {
         ...mockUser,
         isAnonymous: false,
         emailVerified: true,
         photoURL: null,
-        providerData: [{ providerId: "google.com" }],
+        providerData: [{providerId: "google.com"}],
       };
 
       try {
-        mockAuthInstance.onAuthStateChanged.mockImplementation(
-          (callback: (user: any) => void) => {
-            callback(providerUser as any);
-            callback(providerUser as any);
-            return jest.fn();
-          }
-        );
+        mockAuthInstance.onAuthStateChanged.mockImplementation((callback: (user: any) => void) => {
+          callback(providerUser as any);
+          callback(providerUser as any);
+          return jest.fn();
+        });
 
-        const { result } = renderHook(() => useAuth(), { wrapper });
+        const {result} = renderHook(() => useAuth(), {wrapper});
 
         await waitFor(() => {
           expect(loadUserProgressFromFirestore).toHaveBeenCalledTimes(1);
         });
-        expect(
-          RiddleInitializationService.checkAndInitializeRiddles
-        ).toHaveBeenCalledTimes(1);
+        expect(RiddleInitializationService.checkAndInitializeRiddles).toHaveBeenCalledTimes(1);
         expect(fetchDailyRiddleFromFirestore).not.toHaveBeenCalled();
 
         await act(async () => {
@@ -489,9 +438,7 @@ describe("AuthContext", () => {
         });
 
         expect(loadUserProgressFromFirestore).toHaveBeenCalledTimes(1);
-        expect(
-          RiddleInitializationService.checkAndInitializeRiddles
-        ).toHaveBeenCalledTimes(1);
+        expect(RiddleInitializationService.checkAndInitializeRiddles).toHaveBeenCalledTimes(1);
         expect(dailyStatusCallable).toHaveBeenCalledTimes(1);
         expect(fetchDailyRiddleFromFirestore).toHaveBeenCalledTimes(1);
         expect(result.current.currentRiddle).toEqual(mockDailyRiddle);
@@ -502,26 +449,20 @@ describe("AuthContext", () => {
 
     it("handles user logout", async () => {
       // First set up authenticated state
-      (loadUserProgressFromFirestore as jest.Mock).mockResolvedValue(
-        mockPlayer
-      );
-      (fetchDailyRiddleFromFirestore as jest.Mock).mockResolvedValue(
-        mockDailyRiddle
-      );
+      (loadUserProgressFromFirestore as jest.Mock).mockResolvedValue(mockPlayer);
+      (fetchDailyRiddleFromFirestore as jest.Mock).mockResolvedValue(mockDailyRiddle);
 
       let authCallback: (user: any) => void;
-      mockAuthInstance.onAuthStateChanged.mockImplementation(
-        (callback: (user: any) => void) => {
-          authCallback = callback;
-          // Start with authenticated user
-          mockAuthInstance.currentUser = mockUser as any;
-          callback(mockUser as any);
-          return jest.fn();
-        }
-      );
+      mockAuthInstance.onAuthStateChanged.mockImplementation((callback: (user: any) => void) => {
+        authCallback = callback;
+        // Start with authenticated user
+        mockAuthInstance.currentUser = mockUser as any;
+        callback(mockUser as any);
+        return jest.fn();
+      });
       mockAuthInstance.signOut.mockResolvedValue(undefined);
 
-      const { result } = renderHook(() => useAuth(), { wrapper });
+      const {result} = renderHook(() => useAuth(), {wrapper});
 
       // Wait for initial auth
       await waitFor(() => {
@@ -556,16 +497,14 @@ describe("AuthContext", () => {
       };
       (fetchDailyRiddleFromFirestore as jest.Mock).mockResolvedValue(mockDailyRiddle);
 
-      mockAuthInstance.onAuthStateChanged.mockImplementation(
-        (callback: (user: any) => void) => {
-          mockAuthInstance.currentUser = guestUser as any;
-          callback(guestUser as any);
-          return jest.fn();
-        }
-      );
+      mockAuthInstance.onAuthStateChanged.mockImplementation((callback: (user: any) => void) => {
+        mockAuthInstance.currentUser = guestUser as any;
+        callback(guestUser as any);
+        return jest.fn();
+      });
       mockAuthInstance.signOut.mockResolvedValue(undefined);
 
-      const { result } = renderHook(() => useAuth(), { wrapper });
+      const {result} = renderHook(() => useAuth(), {wrapper});
 
       await waitFor(() => {
         expect(result.current.isAuthenticated).toBe(true);
@@ -585,24 +524,16 @@ describe("AuthContext", () => {
   describe("Game Mode and Riddle Fetching", () => {
     it("fetches classic riddle when game mode changes to classic", async () => {
       // Set up mocks
-      (loadUserProgressFromFirestore as jest.Mock).mockResolvedValue(
-        mockPlayer
-      );
-      (fetchDailyRiddleFromFirestore as jest.Mock).mockResolvedValue(
-        mockDailyRiddle
-      );
-      (fetchClassicRiddleFromFirestore as jest.Mock).mockResolvedValue(
-        mockClassicRiddle
-      );
+      (loadUserProgressFromFirestore as jest.Mock).mockResolvedValue(mockPlayer);
+      (fetchDailyRiddleFromFirestore as jest.Mock).mockResolvedValue(mockDailyRiddle);
+      (fetchClassicRiddleFromFirestore as jest.Mock).mockResolvedValue(mockClassicRiddle);
 
-      mockAuthInstance.onAuthStateChanged.mockImplementation(
-        (callback: (user: any) => void) => {
-          callback(mockUser as any);
-          return jest.fn();
-        }
-      );
+      mockAuthInstance.onAuthStateChanged.mockImplementation((callback: (user: any) => void) => {
+        callback(mockUser as any);
+        return jest.fn();
+      });
 
-      const { result } = renderHook(() => useAuth(), { wrapper });
+      const {result} = renderHook(() => useAuth(), {wrapper});
 
       // Wait for initial load
       await waitFor(() => {
@@ -633,22 +564,16 @@ describe("AuthContext", () => {
         lastDailyChallengeCompletedAt: Date.now(), // Today
       };
 
-      (loadUserProgressFromFirestore as jest.Mock).mockResolvedValue(
-        playerWithCompletedDaily
-      );
+      (loadUserProgressFromFirestore as jest.Mock).mockResolvedValue(playerWithCompletedDaily);
       (fetchDailyRiddleFromFirestore as jest.Mock).mockResolvedValue(null);
-      (fetchClassicRiddleFromFirestore as jest.Mock).mockResolvedValue(
-        mockClassicRiddle
-      );
+      (fetchClassicRiddleFromFirestore as jest.Mock).mockResolvedValue(mockClassicRiddle);
 
-      mockAuthInstance.onAuthStateChanged.mockImplementation(
-        (callback: (user: any) => void) => {
-          callback(mockUser as any);
-          return jest.fn();
-        }
-      );
+      mockAuthInstance.onAuthStateChanged.mockImplementation((callback: (user: any) => void) => {
+        callback(mockUser as any);
+        return jest.fn();
+      });
 
-      const { result } = renderHook(() => useAuth(), { wrapper });
+      const {result} = renderHook(() => useAuth(), {wrapper});
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
@@ -663,26 +588,18 @@ describe("AuthContext", () => {
   describe("Player Data Updates", () => {
     it("updatePlayerClassicIndex updates Firestore and refetches riddle", async () => {
       // Set up initial authenticated state with a fresh player object
-      const initialPlayer = { ...mockPlayer };
-      (loadUserProgressFromFirestore as jest.Mock).mockResolvedValue(
-        initialPlayer
-      );
-      (fetchDailyRiddleFromFirestore as jest.Mock).mockResolvedValue(
-        mockDailyRiddle
-      );
-      (fetchClassicRiddleFromFirestore as jest.Mock).mockResolvedValue(
-        mockClassicRiddle
-      );
+      const initialPlayer = {...mockPlayer};
+      (loadUserProgressFromFirestore as jest.Mock).mockResolvedValue(initialPlayer);
+      (fetchDailyRiddleFromFirestore as jest.Mock).mockResolvedValue(mockDailyRiddle);
+      (fetchClassicRiddleFromFirestore as jest.Mock).mockResolvedValue(mockClassicRiddle);
       (updateClassicIndexInFirestore as jest.Mock).mockResolvedValue(undefined);
 
-      mockAuthInstance.onAuthStateChanged.mockImplementation(
-        (callback: (user: any) => void) => {
-          callback(mockUser as any);
-          return jest.fn();
-        }
-      );
+      mockAuthInstance.onAuthStateChanged.mockImplementation((callback: (user: any) => void) => {
+        callback(mockUser as any);
+        return jest.fn();
+      });
 
-      const { result } = renderHook(() => useAuth(), { wrapper });
+      const {result} = renderHook(() => useAuth(), {wrapper});
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
@@ -704,37 +621,26 @@ describe("AuthContext", () => {
       });
 
       // Check that Firestore was updated with the correct index
-      expect(updateClassicIndexInFirestore).toHaveBeenCalledWith(
-        "testUser123",
-        newClassicIndex
-      );
+      expect(updateClassicIndexInFirestore).toHaveBeenCalledWith("testUser123", newClassicIndex);
 
       // Check that the fetch was called with the new index
-      expect(fetchClassicRiddleFromFirestore).toHaveBeenCalledWith(
-        newClassicIndex
-      );
+      expect(fetchClassicRiddleFromFirestore).toHaveBeenCalledWith(newClassicIndex);
 
       // The state update is verified implicitly by the fact that the fetch was called with the new index
     });
 
     it("updatePlayerData updates Firestore and local state", async () => {
       // Set up initial authenticated state
-      (loadUserProgressFromFirestore as jest.Mock).mockResolvedValue(
-        mockPlayer
-      );
-      (fetchDailyRiddleFromFirestore as jest.Mock).mockResolvedValue(
-        mockDailyRiddle
-      );
+      (loadUserProgressFromFirestore as jest.Mock).mockResolvedValue(mockPlayer);
+      (fetchDailyRiddleFromFirestore as jest.Mock).mockResolvedValue(mockDailyRiddle);
       (updateUserDocumentInFirestore as jest.Mock).mockResolvedValue(undefined);
 
-      mockAuthInstance.onAuthStateChanged.mockImplementation(
-        (callback: (user: any) => void) => {
-          callback(mockUser as any);
-          return jest.fn();
-        }
-      );
+      mockAuthInstance.onAuthStateChanged.mockImplementation((callback: (user: any) => void) => {
+        callback(mockUser as any);
+        return jest.fn();
+      });
 
-      const { result } = renderHook(() => useAuth(), { wrapper });
+      const {result} = renderHook(() => useAuth(), {wrapper});
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
@@ -756,36 +662,30 @@ describe("AuthContext", () => {
           username: "TestUser",
           email: "test@example.com",
           displayName: "Updated Name",
-        })
+        }),
       );
       expect(result.current.playerData?.coins).toBe(150);
       expect(result.current.playerData?.displayName).toBe("Updated Name");
     });
 
     it("updatePlayerDataLocally syncs authenticated updates to Firestore", async () => {
-      (loadUserProgressFromFirestore as jest.Mock).mockResolvedValue(
-        mockPlayer
-      );
-      (fetchDailyRiddleFromFirestore as jest.Mock).mockResolvedValue(
-        mockDailyRiddle
-      );
+      (loadUserProgressFromFirestore as jest.Mock).mockResolvedValue(mockPlayer);
+      (fetchDailyRiddleFromFirestore as jest.Mock).mockResolvedValue(mockDailyRiddle);
       (updateUserDocumentInFirestore as jest.Mock).mockResolvedValue(undefined);
 
-      mockAuthInstance.onAuthStateChanged.mockImplementation(
-        (callback: (user: any) => void) => {
-          callback(mockUser as any);
-          return jest.fn();
-        }
-      );
+      mockAuthInstance.onAuthStateChanged.mockImplementation((callback: (user: any) => void) => {
+        callback(mockUser as any);
+        return jest.fn();
+      });
 
-      const { result } = renderHook(() => useAuth(), { wrapper });
+      const {result} = renderHook(() => useAuth(), {wrapper});
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
       });
 
       act(() => {
-        result.current.updatePlayerDataLocally({ coins: 175 });
+        result.current.updatePlayerDataLocally({coins: 175});
       });
 
       await waitFor(() =>
@@ -795,8 +695,8 @@ describe("AuthContext", () => {
             userId: "testUser123",
             username: "TestUser",
             email: "test@example.com",
-          })
-        )
+          }),
+        ),
       );
       expect(result.current.playerData?.coins).toBe(175);
     });
@@ -814,23 +714,17 @@ describe("AuthContext", () => {
         riddleId: "classicRiddle03",
       };
 
-      (fetchDailyRiddleFromFirestore as jest.Mock).mockResolvedValue(
-        mockDailyRiddle
-      );
-      (fetchClassicRiddleFromFirestore as jest.Mock).mockResolvedValue(
-        guestClassicRiddle
-      );
+      (fetchDailyRiddleFromFirestore as jest.Mock).mockResolvedValue(mockDailyRiddle);
+      (fetchClassicRiddleFromFirestore as jest.Mock).mockResolvedValue(guestClassicRiddle);
       (updateClassicIndexInFirestore as jest.Mock).mockResolvedValue(undefined);
 
-      mockAuthInstance.onAuthStateChanged.mockImplementation(
-        (callback: (user: any) => void) => {
-          mockAuthInstance.currentUser = guestUser as any;
-          callback(guestUser as any);
-          return jest.fn();
-        }
-      );
+      mockAuthInstance.onAuthStateChanged.mockImplementation((callback: (user: any) => void) => {
+        mockAuthInstance.currentUser = guestUser as any;
+        callback(guestUser as any);
+        return jest.fn();
+      });
 
-      const { result } = renderHook(() => useAuth(), { wrapper });
+      const {result} = renderHook(() => useAuth(), {wrapper});
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
@@ -853,18 +747,14 @@ describe("AuthContext", () => {
   it("setCurrentRiddle updates the current riddle state directly", async () => {
     // Set up initial authenticated state
     (loadUserProgressFromFirestore as jest.Mock).mockResolvedValue(mockPlayer);
-    (fetchDailyRiddleFromFirestore as jest.Mock).mockResolvedValue(
-      mockDailyRiddle
-    );
+    (fetchDailyRiddleFromFirestore as jest.Mock).mockResolvedValue(mockDailyRiddle);
 
-    mockAuthInstance.onAuthStateChanged.mockImplementation(
-      (callback: (user: any) => void) => {
-        callback(mockUser as any);
-        return jest.fn();
-      }
-    );
+    mockAuthInstance.onAuthStateChanged.mockImplementation((callback: (user: any) => void) => {
+      callback(mockUser as any);
+      return jest.fn();
+    });
 
-    const { result } = renderHook(() => useAuth(), { wrapper });
+    const {result} = renderHook(() => useAuth(), {wrapper});
 
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false);
@@ -883,4 +773,3 @@ describe("AuthContext", () => {
     expect(result.current.currentRiddle).toEqual(newRiddle);
   });
 });
-

@@ -1,14 +1,10 @@
-import type {
-  IAudioFeedbackService,
-  FeedbackType,
-  FeedbackConfig,
-} from "../IAudioFeedbackService";
+import type {IAudioFeedbackService, FeedbackType, FeedbackConfig} from "../IAudioFeedbackService";
 
 describe("IAudioFeedbackService", () => {
   it("should be importable as TypeScript types", () => {
     // Test that the types can be imported and used
     const feedbackType: FeedbackType = "neutral";
-    const config: FeedbackConfig = { playSound: true, playHaptic: false };
+    const config: FeedbackConfig = {playSound: true, playHaptic: false};
 
     expect(feedbackType).toBe("neutral");
     expect(config.playSound).toBe(true);
@@ -16,12 +12,7 @@ describe("IAudioFeedbackService", () => {
   });
 
   it("should define all FeedbackType values", () => {
-    const validTypes: FeedbackType[] = [
-      "neutral",
-      "success",
-      "error",
-      "wrongGuess",
-    ];
+    const validTypes: FeedbackType[] = ["neutral", "success", "error", "wrongGuess"];
 
     validTypes.forEach((type) => {
       const feedbackType: FeedbackType = type;
@@ -31,8 +22,8 @@ describe("IAudioFeedbackService", () => {
 
   it("should define FeedbackConfig interface with optional properties", () => {
     const config1: FeedbackConfig = {};
-    const config2: FeedbackConfig = { playSound: true };
-    const config3: FeedbackConfig = { playHaptic: false, fadeInDuration: 500 };
+    const config2: FeedbackConfig = {playSound: true};
+    const config3: FeedbackConfig = {playHaptic: false, fadeInDuration: 500};
     const config4: FeedbackConfig = {
       playSound: true,
       playHaptic: true,
@@ -51,10 +42,7 @@ describe("IAudioFeedbackService", () => {
       async playSuccessFeedback(config?: FeedbackConfig): Promise<void> {}
       async playErrorFeedback(config?: FeedbackConfig): Promise<void> {}
       async playWrongGuessFeedback(config?: FeedbackConfig): Promise<void> {}
-      async playFeedback(
-        type: FeedbackType,
-        config?: FeedbackConfig
-      ): Promise<void> {}
+      async playFeedback(type: FeedbackType, config?: FeedbackConfig): Promise<void> {}
     }
 
     const service = new TestAudioService();
@@ -82,4 +70,3 @@ describe("IAudioFeedbackService", () => {
     await expect(mockService.playFeedback("neutral")).resolves.toBeUndefined();
   });
 });
-

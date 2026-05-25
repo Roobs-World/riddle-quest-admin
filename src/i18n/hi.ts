@@ -1,7 +1,7 @@
 /**
  * @fileoverview Hindi (hi-IN) locale overrides.
  */
-import type { LocaleOverrides } from "./types";
+import type {LocaleOverrides} from "./types";
 
 export const hiOverrides: LocaleOverrides = {
   AuthStrings: {
@@ -40,7 +40,8 @@ export const hiOverrides: LocaleOverrides = {
       LOGIN_FAILED_GENERIC: "लॉगिन विफल रहा। कृपया अपनी जानकारी जांचें।",
       GOOGLE_UNEXPECTED_ERROR: "Google लॉगिन के दौरान अनपेक्षित त्रुटि हुई।",
       TWITTER_UNEXPECTED_ERROR: "X लॉगिन के दौरान अनपेक्षित त्रुटि हुई।",
-      FACEBOOK_CONFIG_ERROR: "Facebook लॉगिन कॉन्फ़िगरेशन में समस्या है। कृपया फिर कोशिश करें या सहायता से संपर्क करें।",
+      FACEBOOK_CONFIG_ERROR:
+        "Facebook लॉगिन कॉन्फ़िगरेशन में समस्या है। कृपया फिर कोशिश करें या सहायता से संपर्क करें।",
       FACEBOOK_TIMEOUT_ERROR: "Facebook लॉगिन का समय समाप्त हो गया। कृपया फिर कोशिश करें।",
       FACEBOOK_SDK_ERROR: "Facebook लॉगिन ठीक से कॉन्फ़िगर नहीं है। ऐप फिर खोलकर कोशिश करें।",
       FACEBOOK_NETWORK_ERROR: "Facebook लॉगिन के दौरान नेटवर्क त्रुटि हुई। कृपया कनेक्शन जांचें।",
@@ -90,8 +91,7 @@ export const hiOverrides: LocaleOverrides = {
       TITLE: "पासवर्ड रीसेट करें",
       BUTTON_TEXT: "पासवर्ड रीसेट करें",
       SUCCESS_MESSAGE: "पासवर्ड रीसेट ईमेल भेज दिया गया है। अपना इनबॉक्स देखें।",
-      USER_NOT_FOUND_ERROR:
-        "इस ईमेल पते से कोई खाता नहीं मिला। कृपया ईमेल जांचें या नया खाता बनाएं।",
+      USER_NOT_FOUND_ERROR: "इस ईमेल पते से कोई खाता नहीं मिला। कृपया ईमेल जांचें या नया खाता बनाएं।",
       GENERIC_ERROR: "रीसेट ईमेल भेजते समय त्रुटि हुई। कृपया फिर कोशिश करें।",
       BACK_TO_LOGIN: "लॉगिन पर वापस जाएं",
     },
@@ -357,8 +357,7 @@ export const hiOverrides: LocaleOverrides = {
     UNABLE_TO_LOAD_RIDDLES: "पहेलियां लोड नहीं हो सकीं। कृपया अपना इंटरनेट जांचें और फिर कोशिश करें।",
     FAILED_TO_LOAD_PRODUCTS: "उत्पाद लोड नहीं हो सके",
     FAILED_TO_LOAD_SHOP_PRODUCTS: "दुकान उत्पाद लोड नहीं हो सके",
-    FAILED_TO_INITIALIZE_RIDDLE_DATABASE:
-      "पहेली डेटाबेस शुरू नहीं हो सका। शायद आप पहली बार ऐप इस्तेमाल कर रहे हैं।",
+    FAILED_TO_INITIALIZE_RIDDLE_DATABASE: "पहेली डेटाबेस शुरू नहीं हो सका। शायद आप पहली बार ऐप इस्तेमाल कर रहे हैं।",
     CHECK_INTERNET_AND_TRY_AGAIN: "अपना इंटरनेट कनेक्शन जांचें और फिर कोशिश करें।",
   },
   CommonButtons: {

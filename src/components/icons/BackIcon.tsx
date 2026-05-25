@@ -11,7 +11,7 @@
  */
 
 import React from "react";
-import { Text } from "react-native";
+import {Text} from "react-native";
 
 /**
  * BackIcon Component
@@ -40,9 +40,6 @@ import { Text } from "react-native";
  *
  * @returns {JSX.Element} Text-based back arrow icon
  */
-const BackIcon = () => (
-  <Text className="text-gray-700 text-5xl font-poppins-light">{"<"}</Text>
-);
+const BackIcon = () => <Text className="text-gray-700 text-5xl font-poppins-light">{"<"}</Text>;
 
 export default BackIcon;
-

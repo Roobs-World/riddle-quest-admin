@@ -8,14 +8,8 @@ interface SettingsIconProps {
   testID?: string;
 }
 
-const SettingsIcon: React.FC<SettingsIconProps> = ({
-  width = 24,
-  height = 24,
-  color,
-  testID = "settings-icon",
-}) => {
+const SettingsIcon: React.FC<SettingsIconProps> = ({width = 24, height = 24, color, testID = "settings-icon"}) => {
   return <SettingsSvg width={width} height={height} color={color} testID={testID} />;
 };
 
 export default SettingsIcon;
-

@@ -69,21 +69,21 @@ interface GetLeaderboardResult {
   requestingUserId?: string;
 }
 
+interface RequestingUserState {
+  currentUserId: string | null;
+  requestingUserId: string | null;
+}
+
 const isUnauthenticatedLeaderboardError = (error: unknown): boolean => {
   if (!error || typeof error !== "object") {
     return false;
   }
 
-  const maybeError = error as { code?: unknown; message?: unknown };
+  const maybeError = error as {code?: unknown; message?: unknown};
   const code = typeof maybeError.code === "string" ? maybeError.code.toLowerCase() : "";
-  const message =
-    typeof maybeError.message === "string" ? maybeError.message.toLowerCase() : "";
+  const message = typeof maybeError.message === "string" ? maybeError.message.toLowerCase() : "";
 
-  return (
-    code === "unauthenticated" ||
-    code === "functions/unauthenticated" ||
-    message.includes("unauthenticated")
-  );
+  return code === "unauthenticated" || code === "functions/unauthenticated" || message.includes("unauthenticated");
 };
 
 const normalizeUserId = (value: string | null | undefined): string | null => {
@@ -213,14 +213,10 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({isVisible, onClose, 
   const shouldUseAuthUserIdFallback = normalizedCurrentUserId != null;
   const [activeTab, setActiveTab] = useState<LeaderboardType>("xp");
   const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
-  const [requestingUserId, setRequestingUserId] = useState<string | null>(normalizedCurrentUserId);
-  const [isLoading, setIsLoading] = useState(false);
+  const [requestingUserState, setRequestingUserState] = useState<RequestingUserState | null>(null);
+  const [isLoading, setIsLoading] = useState(isVisible);
   const [error, setError] = useState<string | null>(null);
   const [isGuestUnavailable, setIsGuestUnavailable] = useState(false);
-
-  useEffect(() => {
-    setRequestingUserId(normalizedCurrentUserId);
-  }, [normalizedCurrentUserId]);
 
   const fetchLeaderboard = useCallback(
     async (type: LeaderboardType) => {
@@ -230,7 +226,10 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({isVisible, onClose, 
       try {
         if (!authUserId) {
           setEntries([]);
-          setRequestingUserId(normalizedCurrentUserId);
+          setRequestingUserState({
+            currentUserId: normalizedCurrentUserId,
+            requestingUserId: normalizedCurrentUserId,
+          });
           setIsGuestUnavailable(true);
           return;
         }
@@ -239,15 +238,20 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({isVisible, onClose, 
         const result = await callable({type, limit: 50});
         const data = result.data as GetLeaderboardResult;
         setEntries(data.entries ?? []);
-        setRequestingUserId(
-          normalizeUserId(data.requestingUserId) ??
+        setRequestingUserState({
+          currentUserId: normalizedCurrentUserId,
+          requestingUserId:
+            normalizeUserId(data.requestingUserId) ??
             (shouldUseAuthUserIdFallback ? authUserId : null) ??
             normalizedCurrentUserId,
-        );
+        });
       } catch (err) {
         if (isUnauthenticatedLeaderboardError(err)) {
           setEntries([]);
-          setRequestingUserId(normalizedCurrentUserId);
+          setRequestingUserState({
+            currentUserId: normalizedCurrentUserId,
+            requestingUserId: normalizedCurrentUserId,
+          });
           setIsGuestUnavailable(true);
           return;
         }
@@ -263,12 +267,28 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({isVisible, onClose, 
   );
 
   useEffect(() => {
-    if (isVisible) {
-      void fetchLeaderboard(activeTab);
+    if (!isVisible) {
+      return undefined;
     }
+
+    let isCancelled = false;
+    void Promise.resolve().then(() => {
+      if (isCancelled) {
+        return;
+      }
+      void fetchLeaderboard(activeTab);
+    });
+
+    return () => {
+      isCancelled = true;
+    };
   }, [isVisible, activeTab, fetchLeaderboard]);
 
   const activeTabConfig = TABS.find((t) => t.type === activeTab)!;
+  const requestingUserId =
+    requestingUserState?.currentUserId === normalizedCurrentUserId
+      ? requestingUserState.requestingUserId
+      : normalizedCurrentUserId;
   const currentUserIdCandidates = buildUserIdCandidates([
     requestingUserId,
     normalizedCurrentUserId,

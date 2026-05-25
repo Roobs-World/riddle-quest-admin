@@ -3,7 +3,7 @@
  * Creates responsive padding based on device type
  */
 
-import { SPACING } from "../tokens/spacing";
+import {SPACING} from "../tokens/spacing";
 
 export const createResponsivePadding = (basePadding: number = SPACING.md) => ({
   paddingHorizontal: basePadding,

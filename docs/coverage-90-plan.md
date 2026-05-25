@@ -1,26 +1,31 @@
 # 90% Project Coverage Plan
 
 ## Goal
+
 - Reach and sustain **>90% total project statements and lines** covered by `test:coverage:project`.
 
 ## Current Baseline (2026-04-11)
+
 - `pnpm run test:coverage:project`
 - Statements: **96.70%**
 - Lines: **97.14%**
 - Test suites: **162 passed / 162 total**
 
 ## Definition of Done
+
 - [x] `pnpm run test:coverage:project` exits `0`
 - [x] Total project statements and lines are over 90%
 - [x] New/updated tests are deterministic and pass with `--runInBand`
 - [x] This plan file is updated with completed items and final results
 
 ## Working Commands
+
 - Full tests: `pnpm exec jest --watchAll=false --runInBand`
 - Full coverage + project gate: `pnpm run test:coverage:project`
 - Game-only coverage gate: `pnpm run test:coverage:game`
 
 ## Execution Strategy
+
 1. Raise the lowest files first (0%-40%) to remove biggest blockers quickly.
 2. Raise mid-tier files (40%-79%) by focused branch/edge-case tests.
 3. Finish near-threshold files (80%-89%) with surgical tests.
@@ -29,6 +34,7 @@
 ## Phase Checklist
 
 ### Phase 1 - Zero Coverage Files
+
 - [x] `src/components/background/SolarSystem3D.tsx` - `src/components/background/__tests__/SolarSystem3D.test.tsx`
 - [x] `src/components/background/SolarSystemConfig.ts` - `src/components/background/__tests__/SolarSystemConfig.test.ts`
 - [x] `src/components/buttons/CloseButtonWhite.tsx` - `src/components/buttons/__tests__/CloseButtonWhite.test.tsx`
@@ -41,6 +47,7 @@
 - [x] `src/services/TextureDebugger.ts` - `src/services/__tests__/TextureDebugger.test.ts`
 
 ### Phase 2 - Critical Low Coverage (<40%)
+
 - [x] `src/components/background/StarryBackground.tsx` - `src/components/background/__tests__/StarryBackground.test.tsx`
 - [x] `src/components/shop/CoinShopModal.tsx` - `src/components/shop/__tests__/CoinShopModal.test.tsx`
 - [x] `src/navigation/NavigationStack.tsx` - `src/navigation/__tests__/NavigationStack.test.tsx`
@@ -50,6 +57,7 @@
 - [x] `src/utils/sentry.ts` - `src/utils/__tests__/sentry.test.ts`
 
 ### Phase 3 - Mid Coverage (40%-79%)
+
 - [x] `src/components/icons/CloseIconWhite.tsx` - `src/components/icons/__tests__/CloseIconWhite.test.tsx`
 - [x] `src/components/buttons/WideButton.tsx` - `src/components/buttons/__tests__/WideButton.test.tsx` (100% statements/lines)
 - [x] `src/contexts/AuthContext.tsx`
@@ -65,6 +73,7 @@
 - [x] `src/components/modals/help/WelcomeModal.tsx` - `src/components/modals/help/__tests__/WelcomeModal.test.tsx`
 
 ### Phase 4 - Near Threshold (80%-89%)
+
 - [x] `src/utils/responsive.ts` - `src/utils/__tests__/responsive.test.ts`
 - [x] `src/components/modals/settings/FullProfileDetailsModal.tsx` - `src/components/modals/settings/__tests__/FullProfileDetailsModal.test.tsx` (94.59% lines)
 - [x] `src/services/NotificationService.ts` - `src/services/__tests__/NotificationService.test.ts`
@@ -77,11 +86,13 @@
 - [x] `src/components/modals/settings/SettingsModal.tsx` - `src/components/modals/settings/__tests__/SettingsModal.test.tsx` (92.59% lines)
 
 ### Phase 5 - Final Hardening
+
 - [x] Run `pnpm run test:coverage:project`
 - [x] Fix any newly surfaced files under 90%
 - [x] Re-run and confirm stable pass twice
 
 ## Progress Log
+
 - [x] 2026-04-11: Created plan and tracking file.
 - [x] 2026-04-11: Completed 8/10 Phase 1 files to >=90% (remaining: `SolarSystem3D.tsx`, `ModalTogglePanel.tsx`).
 - [x] 2026-04-11: Improved strict project coverage from 70.88%/71.28% to 77.12%/77.44%.
@@ -105,6 +116,7 @@
 - [x] 2026-05-23: Updated the project gate to enforce total project statements and lines over 90%, matching the requested project coverage target.
 
 ## Notes
+
 - Mark completed items by changing `[ ]` to `[x]`.
 - Add test file links next to each completed item for traceability.
 - If a file is intentionally excluded, document the reason and update the gate script accordingly.

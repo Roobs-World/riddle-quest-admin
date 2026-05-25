@@ -7,9 +7,9 @@
  * modal system. It is responsible for coordinating audio, haptics, riddle
  * progression across modes, and user settings such as sound and haptics.
  */
-import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
-import { KeyboardAvoidingView, Platform, View, Linking } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import React, {useState, useEffect, useCallback, useMemo, useRef} from "react";
+import {KeyboardAvoidingView, Platform, View, Linking} from "react-native";
+import {SafeAreaView} from "react-native-safe-area-context";
 import * as RNIap from "react-native-iap";
 import * as Haptics from "expo-haptics";
 import NetInfo from "@react-native-community/netinfo";
@@ -19,14 +19,14 @@ import Header from "../../components/game/Header";
 import Controls from "../../components/game/Controls";
 import BottomNavigationBar from "../../components/game/BottomNavigationBar";
 import GameBoard from "../../components/game/GameBoard";
-import { SoundManager } from "../../services/SoundManager";
+import {SoundManager} from "../../services/SoundManager";
 import useGameLogic from "../../hooks/useGameLogic";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { getFunctions, httpsCallable } from "@react-native-firebase/functions";
-import { getApp } from "@react-native-firebase/app";
-import { GameMode } from "../../contexts/AuthContext";
+import {getFunctions, httpsCallable} from "@react-native-firebase/functions";
+import {getApp} from "@react-native-firebase/app";
+import {GameMode} from "../../contexts/AuthContext";
 
-import { useAuth } from "../../contexts/AuthContext";
+import {useAuth} from "../../contexts/AuthContext";
 import {
   APP_LANGUAGE_STORAGE_KEY,
   AppStrings,
@@ -35,8 +35,8 @@ import {
   isSupportedLanguage,
   setAppLanguage,
 } from "../../constants/AppStrings";
-import { isTablet, isLargeTablet, isDesktop } from "../../utils/responsive";
-import { safeDelay } from "../../utils/timing";
+import {isTablet, isLargeTablet, isDesktop} from "../../utils/responsive";
+import {safeDelay} from "../../utils/timing";
 import PulsingSpinner from "../../components/loading/PulsingSpinner";
 import {
   SKIP_COST_CLASSIC,
@@ -49,49 +49,39 @@ import {
   SOUND_RESUME_DELAY_MS,
   getXpLevel,
 } from "../../constants/game";
-import {
-  LOADING_SPINNER_OPACITY,
-  LOADING_SPINNER_SIZE,
-} from "../../constants/loading";
-import { styles } from "../../styles";
-import { GameInput } from "../../components/game/GameInput";
-import { useModal } from "../../hooks/useModal";
-import { ModalProvider } from "../../components/modals/ModalProvider";
-import { IapService } from "../../services/IapService";
-import {
-  ProductPricing,
-  ProductPricingService,
-} from "../../services/ProductPricingService";
+import {LOADING_SPINNER_OPACITY, LOADING_SPINNER_SIZE} from "../../constants/loading";
+import {styles} from "../../styles";
+import {GameInput} from "../../components/game/GameInput";
+import {useModal} from "../../hooks/useModal";
+import {ModalProvider} from "../../components/modals/ModalProvider";
+import {IapService} from "../../services/IapService";
+import {ProductPricing, ProductPricingService} from "../../services/ProductPricingService";
 import ModalTogglePanel from "../../components/development/ModalTogglePanel";
 import StarryBackground from "../../components/background/StarryBackground";
 import GlobalMuteOverlay from "../../components/overlays/GlobalMuteOverlay";
-import { logger } from "../../utils/logger";
-import { captureException } from "../../utils/sentry";
-import { computeLetterStates } from "../../utils/letterStates";
-import { ACHIEVEMENT_DEFINITIONS } from "../../constants/achievements";
-import { useGameSessionController } from "../../features/game-session/useGameSessionController";
-import { createGameModalActions } from "../../features/game-session/gameModalActions";
-import { isGuestPlayer } from "../../features/auth/sessionBootstrap";
-import { loadUserProgressFromFirestore } from "../../services/FirestoreService";
+import {logger} from "../../utils/logger";
+import {captureException} from "../../utils/sentry";
+import {computeLetterStates} from "../../utils/letterStates";
+import {ACHIEVEMENT_DEFINITIONS} from "../../constants/achievements";
+import {useGameSessionController} from "../../features/game-session/useGameSessionController";
+import {createGameModalActions} from "../../features/game-session/gameModalActions";
+import {isGuestPlayer} from "../../features/auth/sessionBootstrap";
+import {loadUserProgressFromFirestore} from "../../services/FirestoreService";
 import UpgradeAccountModal from "../../components/modals/settings/UpgradeAccountModal";
-import type { Player } from "../../validation/firestoreSchemas";
+import type {Player} from "../../validation/firestoreSchemas";
 import {
   SOUND_ENABLED_STORAGE_KEY,
   HAPTICS_ENABLED_STORAGE_KEY,
   readBooleanSetting,
   writeBooleanSetting,
 } from "../../utils/settingsStorage";
-import type { Feedback } from "../../hooks/types";
-import type { ModalSequenceProgress } from "../../types/ModalTypes";
+import type {Feedback} from "../../hooks/types";
+import type {ModalSequenceProgress} from "../../types/ModalTypes";
 import OfflineBlockingModal from "../../components/modals/system/OfflineBlockingModal";
-import { useTooltip } from "../../contexts/TooltipContext";
-import type { TooltipId, TooltipTargetRef } from "../../components/tooltips/types";
-import {
-  resolveBackspaceGuessSlot,
-  resolveEditableGuessSlot,
-  resolveNextActiveGuessSlot,
-} from "../../utils/guessSlots";
-import { resolvePlayableRiddleText } from "../../utils/riddleClues";
+import {useTooltip} from "../../contexts/TooltipContext";
+import type {TooltipId, TooltipTargetRef} from "../../components/tooltips/types";
+import {resolveBackspaceGuessSlot, resolveEditableGuessSlot, resolveNextActiveGuessSlot} from "../../utils/guessSlots";
+import {resolvePlayableRiddleText} from "../../utils/riddleClues";
 
 interface GuessResult {
   outcome: "win" | "loss" | "continue" | "attemptLimitReached";
@@ -118,7 +108,7 @@ interface GameScreenProps {
     coinsEarned: number,
     scoreEarned: number,
     dailyStreakAfterWin?: number,
-    bonusCoinsAwarded?: number
+    bonusCoinsAwarded?: number,
   ) => void;
   onGameLoss: (correctAnswer: string, attempts: number) => void;
   onHintUsed: (cost: number) => void | string[] | Promise<void | string[]>;
@@ -210,7 +200,7 @@ const parseCoinBalance = (value: unknown): number | null => {
   }
 
   if (typeof value === "object" && value !== null) {
-    const maybeValueOf = (value as { valueOf?: () => unknown }).valueOf;
+    const maybeValueOf = (value as {valueOf?: () => unknown}).valueOf;
     if (typeof maybeValueOf === "function") {
       const fromValueOf = maybeValueOf.call(value);
       if (fromValueOf !== value) {
@@ -221,7 +211,7 @@ const parseCoinBalance = (value: unknown): number | null => {
       }
     }
 
-    const maybeToString = (value as { toString?: () => string }).toString;
+    const maybeToString = (value as {toString?: () => string}).toString;
     if (typeof maybeToString === "function") {
       const asString = maybeToString.call(value);
       if (typeof asString === "string" && asString !== "[object Object]") {
@@ -247,53 +237,42 @@ const LETTER_STATE_PRIORITY: Record<Feedback, number> = {
 
 const mergeLetterStates = (
   existing: Record<string, Feedback>,
-  incoming: Record<string, Feedback>
+  incoming: Record<string, Feedback>,
 ): Record<string, Feedback> => {
   if (Object.keys(existing).length === 0) {
-    return { ...incoming };
+    return {...incoming};
   }
   if (Object.keys(incoming).length === 0) {
-    return { ...existing };
+    return {...existing};
   }
 
-  const merged = { ...existing };
+  const merged = {...existing};
   for (const [letter, feedback] of Object.entries(incoming)) {
     const currentFeedback = merged[letter];
-    if (
-      !currentFeedback ||
-      LETTER_STATE_PRIORITY[feedback] > LETTER_STATE_PRIORITY[currentFeedback]
-    ) {
+    if (!currentFeedback || LETTER_STATE_PRIORITY[feedback] > LETTER_STATE_PRIORITY[currentFeedback]) {
       merged[letter] = feedback;
     }
   }
   return merged;
 };
 
-const resolveProfileSnapshot = (
-  localPlayer: Player | null,
-  refreshedPlayer: Player
-): Player => {
+const resolveProfileSnapshot = (localPlayer: Player | null, refreshedPlayer: Player): Player => {
   if (!localPlayer) {
     return refreshedPlayer;
   }
 
   const localHighestLevelClassic = Math.max(
     toNonNegativeStatValue(localPlayer.stats?.highestLevelClassic),
-    toNonNegativeStatValue(localPlayer.progress?.classicIndex)
+    toNonNegativeStatValue(localPlayer.progress?.classicIndex),
   );
   const refreshedHighestLevelClassic = Math.max(
     toNonNegativeStatValue(refreshedPlayer.stats?.highestLevelClassic),
-    toNonNegativeStatValue(refreshedPlayer.progress?.classicIndex)
+    toNonNegativeStatValue(refreshedPlayer.progress?.classicIndex),
   );
-  const mergedHighestLevelClassic = Math.max(
-    localHighestLevelClassic,
-    refreshedHighestLevelClassic
-  );
+  const mergedHighestLevelClassic = Math.max(localHighestLevelClassic, refreshedHighestLevelClassic);
 
   const localGamesPlayed = toNonNegativeStatValue(localPlayer.stats?.gamesPlayed);
-  const refreshedGamesPlayed = toNonNegativeStatValue(
-    refreshedPlayer.stats?.gamesPlayed
-  );
+  const refreshedGamesPlayed = toNonNegativeStatValue(refreshedPlayer.stats?.gamesPlayed);
 
   // Prefer in-session local stats when they are ahead of a stale server refresh.
   if (localGamesPlayed > refreshedGamesPlayed) {
@@ -320,7 +299,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   riddleId,
   riddleText,
   answer,
-  answerLength,
   userCoins,
   hintCost,
   onGameWin,
@@ -331,21 +309,10 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   gameMode,
   suppressOnboarding = false,
 }) => {
-  const {
-    playerData,
-    logout,
-    updatePlayerDataLocally,
-    pendingStreakBreak,
-    consumePendingStreakBreak,
-  } = useAuth();
+  const {playerData, logout, updatePlayerDataLocally, pendingStreakBreak, consumePendingStreakBreak} = useAuth();
   const modal = useModal();
   const tooltip = useTooltip();
-  const {
-    showWelcomeModal,
-    showWelcomeBackModal,
-    showInstructionsModal,
-    showInfoModal,
-  } = modal;
+  const {showWelcomeModal, showWelcomeBackModal, showInstructionsModal, showInfoModal} = modal;
   const isGuestMode = isGuestPlayer(playerData);
 
   const [lastGuessResult, setLastGuessResult] = useState<GuessResult | null>(null);
@@ -353,26 +320,22 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const [isSoundEnabled, setIsSoundEnabled] = useState(true);
   const [isHapticsEnabled, setIsHapticsEnabled] = useState(true);
   const [hasLoadedSettings, setHasLoadedSettings] = useState(false);
-  const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguage>(
-    getAppLanguage()
-  );
+  const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguage>(getAppLanguage());
   const [activeSlotIndex, setActiveSlotIndex] = useState(0);
   const activeSlotIndexRef = useRef(0);
-  const { isLoading, runWithServerLoading } = useGameSessionController();
+  const {isLoading, runWithServerLoading} = useGameSessionController();
   const modalActions = useMemo(() => createGameModalActions(modal), [modal]);
   const [isProfileModalLoading, setIsProfileModalLoading] = useState(false);
   const [isUpgradeModalVisible, setIsUpgradeModalVisible] = useState(false);
-  const [isTransitioningToNextLevel, setIsTransitioningToNextLevel] =
-    useState(false);
-  const isRunningUnderJest =
-    typeof process !== "undefined" && Boolean(process.env.JEST_WORKER_ID);
+  const [isTransitioningToNextLevel, setIsTransitioningToNextLevel] = useState(false);
+  const isRunningUnderJest = typeof process !== "undefined" && Boolean(process.env.JEST_WORKER_ID);
   const shouldUseFullFirestoreCatalog = !isRunningUnderJest;
   const currentTooltipUserId = playerData?.userId ?? null;
   const playableAnswer = useMemo(() => answer.trim(), [answer]);
   const playableAnswerLength = playableAnswer.length;
   const playableRiddleText = useMemo(
     () => resolvePlayableRiddleText(riddleText, playableAnswer),
-    [riddleText, playableAnswer]
+    [riddleText, playableAnswer],
   );
 
   const showTooltipOnce = useCallback(
@@ -383,7 +346,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         content: getTooltipContent(id),
         userId: currentTooltipUserId,
       }),
-    [currentTooltipUserId, tooltip]
+    [currentTooltipUserId, tooltip],
   );
 
   const gameOverHandledRef = useRef(false);
@@ -397,9 +360,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const profileButtonRef = useRef<View>(null);
   const previousGameModeRef = useRef<GameMode>(gameMode);
   const openShopFromLossRef = useRef<() => void>(() => {});
-  const coinAnimationSettleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
-    null
-  );
+  const coinAnimationSettleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -427,38 +388,17 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const [firestoreProducts, setFirestoreProducts] = useState<ProductPricing[]>([]);
   const [productPricingLoading, setProductPricingLoading] = useState(false);
   const [productPricingError, setProductPricingError] = useState<string | null>(null);
-  const [preservedLetterStates, setPreservedLetterStates] = useState<
-    Record<string, Feedback>
-  >({});
-  const {
-    isRewardedAdReady,
-    loadRewardedAd,
-    showRewardedAd,
-    recordRewardedAdCompletion,
-  } = useRewardedAds();
-  const setActiveSlotIndexSynced = useCallback(
-    (value: React.SetStateAction<number>) => {
-      setActiveSlotIndex((prev) => {
-        const resolved =
-          typeof value === "function"
-            ? (value as (previous: number) => number)(prev)
-            : value;
-        activeSlotIndexRef.current = resolved;
-        return resolved;
-      });
-    },
-    []
-  );
+  const [preservedLetterStates, setPreservedLetterStates] = useState<Record<string, Feedback>>({});
+  const {isRewardedAdReady, loadRewardedAd, showRewardedAd, recordRewardedAdCompletion} = useRewardedAds();
+  const setActiveSlotIndexSynced = useCallback((value: React.SetStateAction<number>) => {
+    setActiveSlotIndex((prev) => {
+      const resolved = typeof value === "function" ? (value as (previous: number) => number)(prev) : value;
+      activeSlotIndexRef.current = resolved;
+      return resolved;
+    });
+  }, []);
 
-  const {
-    guesses,
-    currentGuess,
-    gameOver,
-    setCurrentGuess,
-    processGuess,
-    continueGame,
-    resetGame,
-  } = useGameLogic({
+  const {guesses, currentGuess, gameOver, setCurrentGuess, processGuess, continueGame, resetGame} = useGameLogic({
     riddleId,
     answer: playableAnswer,
     gameMode: gameMode === "daily" ? "challenge" : "classic",
@@ -479,26 +419,26 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     return 0;
   }, [playerData?.coins, userCoins]);
 
+  const [hintRevealedIndices, setHintRevealedIndices] = useState<number[]>([]);
   const hintRevealedIndicesRef = useRef<number[]>([]);
+  const setHintRevealedIndicesSynced = useCallback((value: React.SetStateAction<number[]>) => {
+    setHintRevealedIndices((previous) => {
+      const resolved = typeof value === "function" ? (value as (currentValue: number[]) => number[])(previous) : value;
+      hintRevealedIndicesRef.current = resolved;
+      return resolved;
+    });
+  }, []);
   const preserveKeyboardLetterStates = useCallback(() => {
-    setPreservedLetterStates((existing) =>
-      mergeLetterStates(existing, computeLetterStates(guesses))
-    );
+    setPreservedLetterStates((existing) => mergeLetterStates(existing, computeLetterStates(guesses)));
   }, [guesses]);
   const resetRoundState = useCallback(() => {
     setPreservedLetterStates({});
+    setHintRevealedIndicesSynced([]);
     resetGame();
-  }, [resetGame]);
+  }, [resetGame, setHintRevealedIndicesSynced]);
 
   useEffect(() => {
-    hintRevealedIndicesRef.current = [];
-  }, [riddleId, gameMode]);
-
-  useEffect(() => {
-    const updateConnectivity = (nextState: {
-      isConnected: boolean | null;
-      isInternetReachable: boolean | null;
-    }) => {
+    const updateConnectivity = (nextState: {isConnected: boolean | null; isInternetReachable: boolean | null}) => {
       const disconnected = nextState.isConnected === false;
       const internetUnavailable = nextState.isInternetReachable === false;
       setIsOffline(disconnected || internetUnavailable);
@@ -508,10 +448,12 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       updateConnectivity(state);
     });
 
-    void NetInfo.fetch().then(updateConnectivity).catch(() => {
-      // If initial reachability check fails, treat as offline to protect game state.
-      setIsOffline(true);
-    });
+    void NetInfo.fetch()
+      .then(updateConnectivity)
+      .catch(() => {
+        // If initial reachability check fails, treat as offline to protect game state.
+        setIsOffline(true);
+      });
 
     return () => {
       unsubscribe();
@@ -523,26 +465,27 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   }, [loadRewardedAd]);
 
   useEffect(() => {
-    logger.debug(
-      `Game session context changed (mode=${gameMode}, riddleId=${riddleId}). Resetting local game state.`
-    );
-    resetRoundState();
+    logger.debug(`Game session context changed (mode=${gameMode}, riddleId=${riddleId}). Resetting local game state.`);
+    let isCancelled = false;
+    void Promise.resolve().then(() => {
+      if (!isCancelled) {
+        resetRoundState();
+      }
+    });
+
+    return () => {
+      isCancelled = true;
+    };
   }, [gameMode, riddleId, answer, resetRoundState]);
 
   const isAnyModalVisible = modal.modals.length > 0;
   const isInteractionBlocked = isAnyModalVisible || isOffline;
-  const [canAnimateCoinIncreases, setCanAnimateCoinIncreases] = useState(
-    !isAnyModalVisible
-  );
-  const [isAwaitingPostSubmitModalClose, setIsAwaitingPostSubmitModalClose] =
-    useState(false);
-  const currentRoundLetterStates = useMemo(
-    () => computeLetterStates(guesses),
-    [guesses]
-  );
+  const [canAnimateCoinIncreases, setCanAnimateCoinIncreases] = useState(!isAnyModalVisible);
+  const [isAwaitingPostSubmitModalClose, setIsAwaitingPostSubmitModalClose] = useState(false);
+  const currentRoundLetterStates = useMemo(() => computeLetterStates(guesses), [guesses]);
   const letterStates = useMemo(
     () => mergeLetterStates(preservedLetterStates, currentRoundLetterStates),
-    [preservedLetterStates, currentRoundLetterStates]
+    [preservedLetterStates, currentRoundLetterStates],
   );
 
   useEffect(() => {
@@ -554,31 +497,44 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   }, []);
 
   useEffect(() => {
+    let isCancelled = false;
+    const scheduleCanAnimateCoinIncreases = (value: React.SetStateAction<boolean>) => {
+      void Promise.resolve().then(() => {
+        if (!isCancelled) {
+          setCanAnimateCoinIncreases(value);
+        }
+      });
+    };
+
     if (coinAnimationSettleTimeoutRef.current) {
       clearTimeout(coinAnimationSettleTimeoutRef.current);
       coinAnimationSettleTimeoutRef.current = null;
     }
 
     if (isAwaitingPostSubmitModalClose) {
-      setCanAnimateCoinIncreases((previous) => (previous ? false : previous));
+      scheduleCanAnimateCoinIncreases((previous) => (previous ? false : previous));
 
       if (isAnyModalVisible) {
-        return;
+        return () => {
+          isCancelled = true;
+        };
       }
 
       coinAnimationSettleTimeoutRef.current = setTimeout(() => {
         setCanAnimateCoinIncreases((previous) => (previous ? previous : true));
-        setIsAwaitingPostSubmitModalClose((previous) =>
-          previous ? false : previous
-        );
+        setIsAwaitingPostSubmitModalClose((previous) => (previous ? false : previous));
         coinAnimationSettleTimeoutRef.current = null;
       }, MODAL_CLOSE_DELAY_MS);
-      return;
+      return () => {
+        isCancelled = true;
+      };
     }
 
     if (isAnyModalVisible) {
-      setCanAnimateCoinIncreases((previous) => (previous ? false : previous));
-      return;
+      scheduleCanAnimateCoinIncreases((previous) => (previous ? false : previous));
+      return () => {
+        isCancelled = true;
+      };
     }
 
     // Wait for modal transitions/next queued modal to settle before allowing
@@ -587,6 +543,10 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       setCanAnimateCoinIncreases((previous) => (previous ? previous : true));
       coinAnimationSettleTimeoutRef.current = null;
     }, MODAL_CLOSE_DELAY_MS);
+
+    return () => {
+      isCancelled = true;
+    };
   }, [isAnyModalVisible, isAwaitingPostSubmitModalClose]);
 
   const loadIapProducts = useCallback(async () => {
@@ -613,8 +573,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     } catch (error) {
       logger.error("Error loading IAP products:", error);
       captureException(error);
-      const message =
-        error instanceof Error ? error.message : "Failed to load products";
+      const message = error instanceof Error ? error.message : "Failed to load products";
       setIapError(message);
       return {
         products: [] as RNIap.Product[],
@@ -639,8 +598,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     } catch (error) {
       logger.error("Error loading Firestore product pricing:", error);
       captureException(error);
-      const message =
-        error instanceof Error ? error.message : "Failed to load shop products";
+      const message = error instanceof Error ? error.message : "Failed to load shop products";
       setProductPricingError(message);
       return {
         products: [] as ProductPricing[],
@@ -665,24 +623,14 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       };
     }
 
-    const [iapResult, firestoreResult] = await Promise.all([
-      loadIapProducts(),
-      loadFirestoreProducts(),
-    ]);
+    const [iapResult, firestoreResult] = await Promise.all([loadIapProducts(), loadFirestoreProducts()]);
 
     if (!iapResult.error && !firestoreResult.error) {
       hasLoadedShopCatalogRef.current = true;
     }
 
-    return { iapResult, firestoreResult };
-  }, [
-    iapProducts,
-    iapError,
-    firestoreProducts,
-    productPricingError,
-    loadIapProducts,
-    loadFirestoreProducts,
-  ]);
+    return {iapResult, firestoreResult};
+  }, [iapProducts, iapError, firestoreProducts, productPricingError, loadIapProducts, loadFirestoreProducts]);
 
   const firstTimeCheckDone = useRef(false);
   const streakBreakModalShownRef = useRef(false);
@@ -700,16 +648,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     yesterdayUtc.setUTCHours(0, 0, 0, 0);
     yesterdayUtc.setUTCDate(yesterdayUtc.getUTCDate() - 1);
 
-    return lastCompletedDate.getTime() === yesterdayUtc.getTime()
-      ? currentStreak + 1
-      : 1;
+    return lastCompletedDate.getTime() === yesterdayUtc.getTime() ? currentStreak + 1 : 1;
   }, [playerData]);
-
-  useEffect(() => {
-    if (!isGuestMode) {
-      setIsUpgradeModalVisible(false);
-    }
-  }, [isGuestMode]);
 
   useEffect(() => {
     if (suppressOnboarding || firstTimeCheckDone.current || !playerData) return;
@@ -726,21 +666,18 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         // modal when they enter the game.
         if (!isGuestMode) {
           const username = playerData?.username?.trim() || "";
-          showWelcomeBackModal({ username });
+          showWelcomeBackModal({username});
           return;
         }
 
-        const onboardingSeenStorageKey = getOnboardingSeenStorageKey(
-          playerData?.userId
-        );
-        const hasSeenOnboarding =
-          (await AsyncStorage.getItem(onboardingSeenStorageKey)) === "true";
+        const onboardingSeenStorageKey = getOnboardingSeenStorageKey(playerData?.userId);
+        const hasSeenOnboarding = (await AsyncStorage.getItem(onboardingSeenStorageKey)) === "true";
         if (isCancelled || hasSeenOnboarding) {
           return;
         }
 
         showWelcomeModal({
-          onboardingProgress: { current: 1, total: ONBOARDING_PROGRESS_TOTAL },
+          onboardingProgress: {current: 1, total: ONBOARDING_PROGRESS_TOTAL},
           onDismiss: () => {
             if (isGuestMode) {
               showInfoModal({
@@ -777,12 +714,10 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           },
         });
 
-        AsyncStorage.setItem(onboardingSeenStorageKey, "true").catch(
-          (error: unknown) => {
-            logger.error("Error saving onboarding seen state:", error);
-            captureException(error);
-          }
-        );
+        AsyncStorage.setItem(onboardingSeenStorageKey, "true").catch((error: unknown) => {
+          logger.error("Error saving onboarding seen state:", error);
+          captureException(error);
+        });
       } catch (error) {
         logger.error("Error running onboarding flow:", error);
         captureException(error);
@@ -806,12 +741,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   ]);
 
   useEffect(() => {
-    if (
-      suppressOnboarding ||
-      !pendingStreakBreak ||
-      streakBreakModalShownRef.current ||
-      isAnyModalVisible
-    ) {
+    if (suppressOnboarding || !pendingStreakBreak || streakBreakModalShownRef.current || isAnyModalVisible) {
       return;
     }
 
@@ -874,12 +804,10 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       return;
     }
 
-    writeBooleanSetting(SOUND_ENABLED_STORAGE_KEY, isSoundEnabled).catch(
-      (error: unknown) => {
-        logger.error("Error saving sound setting to AsyncStorage:", error);
-        captureException(error);
-      }
-    );
+    writeBooleanSetting(SOUND_ENABLED_STORAGE_KEY, isSoundEnabled).catch((error: unknown) => {
+      logger.error("Error saving sound setting to AsyncStorage:", error);
+      captureException(error);
+    });
   }, [hasLoadedSettings, isSoundEnabled]);
 
   useEffect(() => {
@@ -887,21 +815,17 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       return;
     }
 
-    writeBooleanSetting(HAPTICS_ENABLED_STORAGE_KEY, isHapticsEnabled).catch(
-      (error: unknown) => {
-        logger.error("Error saving haptics setting to AsyncStorage:", error);
-        captureException(error);
-      }
-    );
+    writeBooleanSetting(HAPTICS_ENABLED_STORAGE_KEY, isHapticsEnabled).catch((error: unknown) => {
+      logger.error("Error saving haptics setting to AsyncStorage:", error);
+      captureException(error);
+    });
   }, [hasLoadedSettings, isHapticsEnabled]);
 
   useEffect(() => {
-    AsyncStorage.setItem(APP_LANGUAGE_STORAGE_KEY, currentLanguage).catch(
-      (error: unknown) => {
-        logger.error("Error saving language setting to AsyncStorage:", error);
-        captureException(error);
-      }
-    );
+    AsyncStorage.setItem(APP_LANGUAGE_STORAGE_KEY, currentLanguage).catch((error: unknown) => {
+      logger.error("Error saving language setting to AsyncStorage:", error);
+      captureException(error);
+    });
   }, [currentLanguage]);
 
   useEffect(() => {
@@ -975,13 +899,12 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       }
 
       const maybeCode =
-        "code" in error && typeof (error as { code?: unknown }).code === "string"
-          ? ((error as { code: string }).code || "").toLowerCase()
+        "code" in error && typeof (error as {code?: unknown}).code === "string"
+          ? ((error as {code: string}).code || "").toLowerCase()
           : "";
       const maybeMessage =
-        "message" in error &&
-        typeof (error as { message?: unknown }).message === "string"
-          ? ((error as { message: string }).message || "").toLowerCase()
+        "message" in error && typeof (error as {message?: unknown}).message === "string"
+          ? ((error as {message: string}).message || "").toLowerCase()
           : "";
 
       return (
@@ -1002,10 +925,13 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     try {
       if (!isGuestMode) {
         await runWithServerLoading(() =>
-          httpsCallable(getFunctions(getApp()), "spendCoins")({
+          httpsCallable(
+            getFunctions(getApp()),
+            "spendCoins",
+          )({
             amount: CONTINUE_COST_COINS,
             reason: "continue",
-          })
+          }),
         );
       }
 
@@ -1052,10 +978,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       if (!isGuestMode) {
         const rewardResult = await recordRewardedAdCompletion(placement);
         if (playerData) {
-          updatePlayerDataLocally(
-            { coins: rewardResult.newCoins },
-            { syncToFirestore: false }
-          );
+          updatePlayerDataLocally({coins: rewardResult.newCoins}, {syncToFirestore: false});
         }
         return {
           rewardCoins: rewardResult.rewardCoins,
@@ -1074,19 +997,13 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         totalCoins,
       };
     },
-    [
-      currentUserCoins,
-      isGuestMode,
-      playerData,
-      recordRewardedAdCompletion,
-      updatePlayerDataLocally,
-    ]
+    [currentUserCoins, isGuestMode, playerData, recordRewardedAdCompletion, updatePlayerDataLocally],
   );
 
   const runRewardedAdContinueFlow = useCallback(async () => {
     const didCompleteRewardedAd = await showRewardedAd();
     if (didCompleteRewardedAd) {
-      let rewardResult: { rewardCoins: number; totalCoins: number };
+      let rewardResult: {rewardCoins: number; totalCoins: number};
       try {
         rewardResult = await confirmRewardedAdReward("loss_continue");
       } catch (error) {
@@ -1111,14 +1028,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       message: AppStrings.GameScreenAlerts.AD_NOT_READY_MESSAGE,
     });
     return false;
-  }, [
-    showRewardedAd,
-    confirmRewardedAdReward,
-    continueGame,
-    preserveKeyboardLetterStates,
-    modal,
-    modalActions,
-  ]);
+  }, [showRewardedAd, confirmRewardedAdReward, continueGame, preserveKeyboardLetterStates, modal, modalActions]);
 
   const handlePurchaseProduct = useCallback(
     async (productId: string) => {
@@ -1138,14 +1048,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           logger.debug("Purchase completed successfully:", purchaseResult);
           const mappedCoinsForProduct = IapService.getCoinsForProduct(productId) ?? 0;
           const resolvedNewCoins = parseCoinBalance(purchaseResult.newCoins);
-          const balanceDeltaCoins =
-            resolvedNewCoins !== null
-              ? Math.max(resolvedNewCoins - currentUserCoins, 0)
-              : null;
-          const coinsPurchased =
-            mappedCoinsForProduct > 0
-              ? mappedCoinsForProduct
-              : balanceDeltaCoins ?? 0;
+          const balanceDeltaCoins = resolvedNewCoins !== null ? Math.max(resolvedNewCoins - currentUserCoins, 0) : null;
+          const coinsPurchased = mappedCoinsForProduct > 0 ? mappedCoinsForProduct : (balanceDeltaCoins ?? 0);
           if (coinsPurchased <= 0) {
             logger.warn("Purchase result did not resolve to a positive coin award.", {
               productId,
@@ -1155,47 +1059,29 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
             });
             throw new Error(AppStrings.GameScreenAlerts.PURCHASE_FAILED_MESSAGE);
           }
-          const backendUnlockedAchievementIds = Array.isArray(
-            purchaseResult.newlyUnlockedAchievementIds
-          )
-            ? purchaseResult.newlyUnlockedAchievementIds ?? []
+          const backendUnlockedAchievementIds = Array.isArray(purchaseResult.newlyUnlockedAchievementIds)
+            ? (purchaseResult.newlyUnlockedAchievementIds ?? [])
             : [];
           const isAlreadySupporter = Boolean(
-            playerData?.unlockedAchievements?.some(
-              (achievement) => achievement.achievementId === "first_purchase"
-            )
+            playerData?.unlockedAchievements?.some((achievement) => achievement.achievementId === "first_purchase"),
           );
           // Fallback: if backend hasn't returned first_purchase yet, unlock it client-side once
           // after the first successful shop purchase.
           const unlockedAchievementIds = isAlreadySupporter
             ? backendUnlockedAchievementIds
-            : Array.from(
-                new Set([...backendUnlockedAchievementIds, "first_purchase"])
-              );
+            : Array.from(new Set([...backendUnlockedAchievementIds, "first_purchase"]));
           const unlockedAchievements = unlockedAchievementIds
-            .map((achievementId) =>
-              ACHIEVEMENT_DEFINITIONS.find((achievement) => achievement.id === achievementId)
-            )
-            .filter(
-              (
-                achievement
-              ): achievement is (typeof ACHIEVEMENT_DEFINITIONS)[number] => Boolean(achievement)
-            );
-          const totalCoinsAfterPurchase =
-            resolvedNewCoins ?? currentUserCoins + coinsPurchased;
+            .map((achievementId) => ACHIEVEMENT_DEFINITIONS.find((achievement) => achievement.id === achievementId))
+            .filter((achievement): achievement is (typeof ACHIEVEMENT_DEFINITIONS)[number] => Boolean(achievement));
+          const totalCoinsAfterPurchase = resolvedNewCoins ?? currentUserCoins + coinsPurchased;
           const isLocalDevPurchase =
-            typeof purchaseResult.transactionId === "string" &&
-            purchaseResult.transactionId.startsWith("dev-local-");
+            typeof purchaseResult.transactionId === "string" && purchaseResult.transactionId.startsWith("dev-local-");
 
           if (playerData) {
-            const existingUnlockedAchievements = Array.isArray(
-              playerData.unlockedAchievements
-            )
+            const existingUnlockedAchievements = Array.isArray(playerData.unlockedAchievements)
               ? playerData.unlockedAchievements
               : [];
-            const existingAchievementIds = new Set(
-              existingUnlockedAchievements.map((entry) => entry.achievementId)
-            );
+            const existingAchievementIds = new Set(existingUnlockedAchievements.map((entry) => entry.achievementId));
             const unlockedAt = Date.now();
             const newlyUnlockedEntries = unlockedAchievements
               .filter((achievement) => !existingAchievementIds.has(achievement.id))
@@ -1211,10 +1097,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
               nextPlayerUpdates.coins = (playerData.coins ?? 0) + coinsPurchased;
             }
             if (newlyUnlockedEntries.length > 0) {
-              nextPlayerUpdates.unlockedAchievements = [
-                ...existingUnlockedAchievements,
-                ...newlyUnlockedEntries,
-              ];
+              nextPlayerUpdates.unlockedAchievements = [...existingUnlockedAchievements, ...newlyUnlockedEntries];
             }
             if (playerData.hasPurchasedApp !== true) {
               nextPlayerUpdates.hasPurchasedApp = true;
@@ -1263,9 +1146,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         logger.error("Purchase failed:", error);
         captureException(error);
         const errorMessage =
-          error instanceof Error
-            ? error.message
-            : AppStrings.GameScreenAlerts.PURCHASE_FAILED_MESSAGE;
+          error instanceof Error ? error.message : AppStrings.GameScreenAlerts.PURCHASE_FAILED_MESSAGE;
         modal.showInfoModal({
           title: AppStrings.GameScreenAlerts.PURCHASE_FAILED_TITLE,
           message: errorMessage,
@@ -1275,15 +1156,13 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         setIsPurchaseInProgress(false);
       }
     },
-    [isPurchaseInProgress, modal, playerData, updatePlayerDataLocally, currentUserCoins]
+    [isPurchaseInProgress, modal, playerData, updatePlayerDataLocally, currentUserCoins],
   );
 
   const handlePayAndPlay = useCallback(() => {
     logger.debug("Pay and play button pressed");
 
-    const cheapestProduct = [...iapProducts].sort(
-      (a, b) => (a.price ?? 0) - (b.price ?? 0)
-    )[0];
+    const cheapestProduct = [...iapProducts].sort((a, b) => (a.price ?? 0) - (b.price ?? 0))[0];
 
     if (cheapestProduct) {
       handlePurchaseProduct(cheapestProduct.id);
@@ -1317,46 +1196,26 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   }, [modal, showRewardedAd, confirmRewardedAdReward, modalActions]);
 
   useEffect(() => {
-    if (
-      gameOver &&
-      lastGuessResult &&
-      lastGuessResult.outcome !== "continue" &&
-      !gameOverHandledRef.current
-    ) {
+    if (gameOver && lastGuessResult && lastGuessResult.outcome !== "continue" && !gameOverHandledRef.current) {
       gameOverHandledRef.current = true;
       const result = lastGuessResult;
 
       if (result.outcome === "win") {
         const resolvedAttempts = lastSubmittedAttemptRef.current ?? guesses.length;
         const unlockedAchievements = (result.newlyUnlockedAchievementIds ?? [])
-          .map((achievementId) =>
-            ACHIEVEMENT_DEFINITIONS.find((d) => d.id === achievementId)
-          )
-          .filter(
-            (
-              achievement
-            ): achievement is (typeof ACHIEVEMENT_DEFINITIONS)[number] =>
-              Boolean(achievement)
-          );
+          .map((achievementId) => ACHIEVEMENT_DEFINITIONS.find((d) => d.id === achievementId))
+          .filter((achievement): achievement is (typeof ACHIEVEMENT_DEFINITIONS)[number] => Boolean(achievement));
 
-        const unlockedAchievementNames = unlockedAchievements.map(
-          (achievement) => achievement.name
-        );
+        const unlockedAchievementNames = unlockedAchievements.map((achievement) => achievement.name);
 
         if (playerData && unlockedAchievements.length > 0) {
-          const existingUnlockedAchievements = Array.isArray(
-            playerData.unlockedAchievements
-          )
+          const existingUnlockedAchievements = Array.isArray(playerData.unlockedAchievements)
             ? playerData.unlockedAchievements
             : [];
-          const existingAchievementIds = new Set(
-            existingUnlockedAchievements.map((entry) => entry.achievementId)
-          );
+          const existingAchievementIds = new Set(existingUnlockedAchievements.map((entry) => entry.achievementId));
           const unlockedAt = Date.now();
           const newlyUnlockedEntries = unlockedAchievements
-            .filter(
-              (achievement) => !existingAchievementIds.has(achievement.id)
-            )
+            .filter((achievement) => !existingAchievementIds.has(achievement.id))
             .map((achievement) => ({
               achievementId: achievement.id,
               unlockedAt,
@@ -1365,12 +1224,9 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           if (newlyUnlockedEntries.length > 0) {
             updatePlayerDataLocally(
               {
-                unlockedAchievements: [
-                  ...existingUnlockedAchievements,
-                  ...newlyUnlockedEntries,
-                ],
+                unlockedAchievements: [...existingUnlockedAchievements, ...newlyUnlockedEntries],
               },
-              { syncToFirestore: false }
+              {syncToFirestore: false},
             );
           }
         }
@@ -1382,16 +1238,14 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           }
         }
 
-        const unlockedAchievementFanfareItems = unlockedAchievements.map(
-          (achievement) => ({
-            name: achievement.name,
-            description: achievement.description,
-            icon: achievement.icon,
-          })
-        );
+        const unlockedAchievementFanfareItems = unlockedAchievements.map((achievement) => ({
+          name: achievement.name,
+          description: achievement.description,
+          icon: achievement.icon,
+        }));
         const existingCorrectAnswers = Math.max(
           toNonNegativeStatValue(playerData?.stats?.totalWins),
-          toNonNegativeStatValue(playerData?.stats?.challengeWins)
+          toNonNegativeStatValue(playerData?.stats?.challengeWins),
         );
         const correctAnswersAfterWin = existingCorrectAnswers + 1;
 
@@ -1399,7 +1253,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         const totalScoreValue = Number(playerData?.stats?.totalScore ?? 0);
         const currentXp = Math.max(
           Number.isFinite(xpValue) ? xpValue : 0,
-          Number.isFinite(totalScoreValue) ? totalScoreValue : 0
+          Number.isFinite(totalScoreValue) ? totalScoreValue : 0,
         );
         const earnedXp = Math.max(0, Number(result.scoreEarned || 0));
         const previousLevel = getXpLevel(currentXp).level;
@@ -1407,21 +1261,12 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         const didLevelUp = earnedXp > 0 && nextLevel > previousLevel;
         const levelUpBonusCoins = didLevelUp ? LEVEL_UP_COIN_BONUS : 0;
         const resolvedDailyStreak =
-          gameMode === "daily"
-            ? (result.newWinStreak ?? deriveDailyStreakAfterWin())
-            : undefined;
-        const dailyChallengeBonusCoins =
-          gameMode === "daily" && resolvedDailyStreak
-            ? DAILY_CHALLENGE_COIN_REWARD
-            : 0;
+          gameMode === "daily" ? (result.newWinStreak ?? deriveDailyStreakAfterWin()) : undefined;
+        const dailyChallengeBonusCoins = gameMode === "daily" && resolvedDailyStreak ? DAILY_CHALLENGE_COIN_REWARD : 0;
         const totalBonusCoinsAwarded = levelUpBonusCoins + dailyChallengeBonusCoins;
-        const totalCoinsAfterWin =
-          currentUserCoins + (result.coinsEarned || 0) + totalBonusCoinsAwarded;
-        const totalCoinsToAnimate =
-          (result.coinsEarned || 0) + totalBonusCoinsAwarded;
-        const coinCountUpDurationMs =
-          Math.min(2500, 400 + Math.sqrt(Math.max(0, totalCoinsToAnimate)) * 180) +
-          500;
+        const totalCoinsAfterWin = currentUserCoins + (result.coinsEarned || 0) + totalBonusCoinsAwarded;
+        const totalCoinsToAnimate = (result.coinsEarned || 0) + totalBonusCoinsAwarded;
+        const coinCountUpDurationMs = Math.min(2500, 400 + Math.sqrt(Math.max(0, totalCoinsToAnimate)) * 180) + 500;
 
         const playDeferredCoinAnimation = async () => {
           if (totalCoinsToAnimate <= 0) {
@@ -1454,18 +1299,12 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         };
 
         type CompletionPopup = {
-          open: (
-            sequenceProgress: ModalSequenceProgress,
-            onContinue: () => void | Promise<void>
-          ) => void;
+          open: (sequenceProgress: ModalSequenceProgress, onContinue: () => void | Promise<void>) => void;
         };
 
         const completionPopupSequence: CompletionPopup[] = [
           ...unlockedAchievementFanfareItems.map((achievement, index) => ({
-            open: (
-              sequenceProgress: ModalSequenceProgress,
-              onContinue: () => void | Promise<void>
-            ) => {
+            open: (sequenceProgress: ModalSequenceProgress, onContinue: () => void | Promise<void>) => {
               modal.showAchievementUnlockFanfareModal({
                 coinsEarned: index === 0 ? result.coinsEarned || 0 : 0,
                 totalCoins: totalCoinsAfterWin,
@@ -1479,10 +1318,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           ...(gameMode === "daily" && resolvedDailyStreak
             ? [
                 {
-                  open: (
-                    sequenceProgress: ModalSequenceProgress,
-                    onContinue: () => void | Promise<void>
-                  ) => {
+                  open: (sequenceProgress: ModalSequenceProgress, onContinue: () => void | Promise<void>) => {
                     modal.showStreakIncreaseFanfareModal({
                       streakValue: resolvedDailyStreak,
                       coinsAwarded: DAILY_CHALLENGE_COIN_REWARD,
@@ -1495,10 +1331,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
               ]
             : []),
           {
-            open: (
-              sequenceProgress: ModalSequenceProgress,
-              onContinue: () => void | Promise<void>
-            ) => {
+            open: (sequenceProgress: ModalSequenceProgress, onContinue: () => void | Promise<void>) => {
               modal.showVictoryModal({
                 attempts: resolvedAttempts,
                 coinsEarned: result.coinsEarned || 0,
@@ -1516,10 +1349,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           ...(didLevelUp
             ? [
                 {
-                  open: (
-                    sequenceProgress: ModalSequenceProgress,
-                    onContinue: () => void | Promise<void>
-                  ) => {
+                  open: (sequenceProgress: ModalSequenceProgress, onContinue: () => void | Promise<void>) => {
                     modal.showLevelUpFanfareModal({
                       newLevel: nextLevel,
                       coinsAwarded: LEVEL_UP_COIN_BONUS,
@@ -1544,9 +1374,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
             currentPopupIndex: index + 1,
             totalPopups: completionPopupSequence.length,
             hasNextPopup,
-            primaryActionText: hasNextPopup
-              ? AppStrings.GameScreenAlerts.NEXT_BUTTON ?? "Next"
-              : undefined,
+            primaryActionText: hasNextPopup ? (AppStrings.GameScreenAlerts.NEXT_BUTTON ?? "Next") : undefined,
           };
 
           popup.open(sequenceProgress, () => {
@@ -1575,19 +1403,17 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
         onGameWin(
           resolvedAttempts,
-          (result.coinsEarned || 0),
+          result.coinsEarned || 0,
           result.scoreEarned || 0,
           resolvedDailyStreak,
-          totalBonusCoinsAwarded
+          totalBonusCoinsAwarded,
         );
       } else if (result.outcome === "attemptLimitReached") {
         const canAffordCoinContinue = currentUserCoins >= CONTINUE_COST_COINS;
         const skipLevelCost = SKIP_COST_CLASSIC;
         // Cache keyboard hints as soon as the loss modal opens so they survive
         // any continue/close timing differences while the grid resets.
-        setPreservedLetterStates((existing) =>
-          mergeLetterStates(existing, computeLetterStates(guesses))
-        );
+        setPreservedLetterStates((existing) => mergeLetterStates(existing, computeLetterStates(guesses)));
 
         void safeDelay(RESULT_MODAL_REVEAL_DELAY_MS).then(() => {
           if (!isMountedRef.current || latestResultRef.current !== result) {
@@ -1604,9 +1430,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
                   return true;
                 }
               : undefined,
-            onCoinContinue: result.canOfferCoinContinue
-              ? handleCoinContinue
-              : undefined,
+            onCoinContinue: result.canOfferCoinContinue ? handleCoinContinue : undefined,
             coinContinueCost: CONTINUE_COST_COINS,
             skipLevelCost,
             canWatchAd: isRewardedAdReady,
@@ -1705,9 +1529,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     tooltip.dismissTooltip("submitAnswer");
     const isGuessComplete =
       currentGuess.length === playableAnswerLength &&
-      currentGuess.every(
-        (letter) => typeof letter === "string" && letter.length > 0
-      );
+      currentGuess.every((letter) => typeof letter === "string" && letter.length > 0);
 
     if (isGuessComplete) {
       try {
@@ -1718,9 +1540,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         // Pause header coin count-up immediately so modal-driven result flows
         // can decide exactly when deferred animations should resume.
         setCanAnimateCoinIncreases(false);
-        const result = (await runWithServerLoading(() =>
-          processGuess(currentGuess)
-        )) as GuessResult;
+        const result = (await runWithServerLoading(() => processGuess(currentGuess))) as GuessResult;
         setLastGuessResult(result);
         if (result.outcome === "continue") {
           void showTooltipOnce("hintAfterWrongGuess", hintButtonRef);
@@ -1762,7 +1582,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       const targetIndex = resolveEditableGuessSlot(
         activeSlotIndexRef.current,
         playableAnswerLength,
-        hintRevealedIndicesRef.current
+        hintRevealedIndicesRef.current,
       );
       if (targetIndex === null) return;
 
@@ -1779,14 +1599,10 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       });
 
       setActiveSlotIndexSynced(
-        resolveNextActiveGuessSlot(
-          targetIndex,
-          playableAnswerLength,
-          hintRevealedIndicesRef.current
-        )
+        resolveNextActiveGuessSlot(targetIndex, playableAnswerLength, hintRevealedIndicesRef.current),
       );
     },
-    [playableAnswerLength, setCurrentGuess, setActiveSlotIndexSynced]
+    [playableAnswerLength, setCurrentGuess, setActiveSlotIndexSynced],
   );
 
   const handleBackspace = useCallback(() => {
@@ -1795,7 +1611,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       activeSlotIndexRef.current,
       currentGuess,
       playableAnswerLength,
-      hintRevealedIndicesRef.current
+      hintRevealedIndicesRef.current,
     );
     if (targetIndex === null) return;
 
@@ -1818,12 +1634,12 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       const editableSlotIndex = resolveEditableGuessSlot(
         slotIndex,
         playableAnswerLength,
-        hintRevealedIndicesRef.current
+        hintRevealedIndicesRef.current,
       );
       if (editableSlotIndex === null) return;
       setActiveSlotIndexSynced(editableSlotIndex);
     },
-    [playableAnswerLength, setActiveSlotIndexSynced]
+    [playableAnswerLength, setActiveSlotIndexSynced],
   );
 
   const handleShowHint = useCallback(async () => {
@@ -1842,9 +1658,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       onOpenShop: () => openShopFromLossRef.current(),
       onShowHint: () => {
         const answerLetters = playableAnswer.toLowerCase().split("");
-        const revealIndex = answerLetters.findIndex(
-          (_, i) => !hintRevealedIndicesRef.current.includes(i)
-        );
+        const revealIndex = answerLetters.findIndex((_, i) => !hintRevealedIndicesRef.current.includes(i));
 
         if (revealIndex === -1) {
           modal.showInfoModal({
@@ -1855,11 +1669,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         }
 
         const totalCoinsAfterHint = Math.max(0, currentUserCoins - hintCost);
-        const nextHintRevealedIndices = [
-          ...hintRevealedIndicesRef.current,
-          revealIndex,
-        ];
-        hintRevealedIndicesRef.current = nextHintRevealedIndices;
+        const nextHintRevealedIndices = [...hintRevealedIndicesRef.current, revealIndex];
+        setHintRevealedIndicesSynced(nextHintRevealedIndices);
 
         setCurrentGuess((prev: string[]) => {
           const newGuess = [...prev];
@@ -1870,11 +1681,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           return newGuess;
         });
         setActiveSlotIndexSynced(
-          resolveEditableGuessSlot(
-            activeSlotIndexRef.current,
-            playableAnswerLength,
-            nextHintRevealedIndices
-          ) ?? Math.max(0, Math.min(playableAnswerLength - 1, activeSlotIndexRef.current))
+          resolveEditableGuessSlot(activeSlotIndexRef.current, playableAnswerLength, nextHintRevealedIndices) ??
+            Math.max(0, Math.min(playableAnswerLength - 1, activeSlotIndexRef.current)),
         );
 
         Promise.resolve(onHintUsed(hintCost))
@@ -1884,14 +1692,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
             }
 
             const unlockedAchievements = newlyUnlockedAchievementIds
-              .map((achievementId) =>
-                ACHIEVEMENT_DEFINITIONS.find((definition) => definition.id === achievementId)
-              )
-              .filter(
-                (
-                  achievement
-                ): achievement is (typeof ACHIEVEMENT_DEFINITIONS)[number] => Boolean(achievement)
-              );
+              .map((achievementId) => ACHIEVEMENT_DEFINITIONS.find((definition) => definition.id === achievementId))
+              .filter((achievement): achievement is (typeof ACHIEVEMENT_DEFINITIONS)[number] => Boolean(achievement));
 
             if (unlockedAchievements.length === 0) {
               return;
@@ -1940,6 +1742,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     playableAnswerLength,
     setCurrentGuess,
     setActiveSlotIndexSynced,
+    setHintRevealedIndicesSynced,
     onHintUsed,
     showTooltipOnce,
     tooltip,
@@ -1951,21 +1754,19 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     let firestoreProductsForModal = firestoreProducts;
 
     if (!hasLoadedShopCatalogRef.current) {
-      const { iapResult, firestoreResult } = await ensureShopCatalogLoaded();
+      const {iapResult, firestoreResult} = await ensureShopCatalogLoaded();
       productsForModal = iapResult.products;
       firestoreProductsForModal = firestoreResult.products;
     }
 
     const availableStoreProductIds = new Set(
       productsForModal
-        .map((product) => product.id ?? (product as { productId?: string }).productId)
-        .filter((productId): productId is string => typeof productId === "string")
+        .map((product) => product.id ?? (product as {productId?: string}).productId)
+        .filter((productId): productId is string => typeof productId === "string"),
     );
     const purchasableFirestoreProducts = shouldUseFullFirestoreCatalog
       ? firestoreProductsForModal
-      : firestoreProductsForModal.filter((product) =>
-          availableStoreProductIds.has(product.productId)
-        );
+      : firestoreProductsForModal.filter((product) => availableStoreProductIds.has(product.productId));
 
     if (__DEV__) {
       logger.debug("Opening coin shop modal with:", {
@@ -2020,8 +1821,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     tooltip.dismissTooltip("classicFromDaily");
     logger.debug("Next button pressed - opening skip modal");
 
-    const skipCost =
-      gameMode === "daily" ? SKIP_COST_DAILY : SKIP_COST_CLASSIC;
+    const skipCost = gameMode === "daily" ? SKIP_COST_DAILY : SKIP_COST_CLASSIC;
 
     modal.showSkipModal({
       userCoins: currentUserCoins,
@@ -2032,10 +1832,13 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         try {
           if (!isGuestMode) {
             await runWithServerLoading(() =>
-              httpsCallable(getFunctions(getApp()), "spendCoins")({
+              httpsCallable(
+                getFunctions(getApp()),
+                "spendCoins",
+              )({
                 amount: skipCost,
                 reason: "skip",
-              })
+              }),
             );
           }
 
@@ -2081,18 +1884,14 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         });
       },
       onPressCredits: () => {
-        logger.debug(
-          "Credits button pressed - closing settings and opening credits modal"
-        );
+        logger.debug("Credits button pressed - closing settings and opening credits modal");
         modal.closeModalByType("settings");
         setTimeout(() => {
           modal.showCreditsModal();
         }, MODAL_CLOSE_DELAY_MS);
       },
       onPressAbout: () => {
-        logger.debug(
-          "About button pressed - closing settings and opening about/legal modal"
-        );
+        logger.debug("About button pressed - closing settings and opening about/legal modal");
         modal.closeModalByType("settings");
         setTimeout(() => {
           modal.showAboutLegalModal();
@@ -2126,15 +1925,10 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     try {
       if (!isGuestMode && playerData?.userId) {
         try {
-          const refreshedProfile = await runWithServerLoading(() =>
-            loadUserProgressFromFirestore(playerData.userId)
-          );
+          const refreshedProfile = await runWithServerLoading(() => loadUserProgressFromFirestore(playerData.userId));
 
           if (refreshedProfile) {
-            const resolvedProfile = resolveProfileSnapshot(
-              playerData,
-              refreshedProfile
-            );
+            const resolvedProfile = resolveProfileSnapshot(playerData, refreshedProfile);
             latestPlayerData = resolvedProfile;
             updatePlayerDataLocally(resolvedProfile, {
               syncToFirestore: false,
@@ -2158,17 +1952,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     } finally {
       setIsProfileModalLoading(false);
     }
-  }, [
-    modal,
-    playerData,
-    isGuestMode,
-    runWithServerLoading,
-    updatePlayerDataLocally,
-    isProfileModalLoading,
-    tooltip,
-  ]);
-
-
+  }, [modal, playerData, isGuestMode, runWithServerLoading, updatePlayerDataLocally, isProfileModalLoading, tooltip]);
 
   useEffect(() => {
     openShopFromLossRef.current = handleCoinsPress;
@@ -2185,19 +1969,17 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const handleDebugGenerateDailyChallenge = useCallback(async () => {
     try {
       const response = await runWithServerLoading(() =>
-        httpsCallable<
-          { forceGenerate: boolean },
-          { success: boolean; message: string; questionsGenerated: number }
-        >(getFunctions(getApp()), "generateTodaysDailyChallengeFunction")({
+        httpsCallable<{forceGenerate: boolean}, {success: boolean; message: string; questionsGenerated: number}>(
+          getFunctions(getApp()),
+          "generateTodaysDailyChallengeFunction",
+        )({
           forceGenerate: true,
-        })
+        }),
       );
 
       modal.showInfoModal({
         title: "Daily Challenge Generated",
-        message:
-          response.data?.message ??
-          "Successfully generated a new daily challenge in dailyRiddles/current.",
+        message: response.data?.message ?? "Successfully generated a new daily challenge in dailyRiddles/current.",
       });
     } catch (error) {
       logger.error("Error generating daily challenge from debug panel:", error);
@@ -2214,16 +1996,13 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           : typeof errorWithDetails.details === "object" &&
               errorWithDetails.details &&
               "message" in errorWithDetails.details &&
-              typeof (errorWithDetails.details as {message?: unknown}).message ===
-                "string"
+              typeof (errorWithDetails.details as {message?: unknown}).message === "string"
             ? (errorWithDetails.details as {message: string}).message
             : null;
 
       modal.showInfoModal({
         title: "Daily Challenge Error",
-        message: detailsMessage ??
-          errorWithDetails.message ??
-          "Failed to generate a new daily challenge.",
+        message: detailsMessage ?? errorWithDetails.message ?? "Failed to generate a new daily challenge.",
       });
     }
   }, [runWithServerLoading, modal]);
@@ -2245,10 +2024,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const isSubmitDisabled = useMemo(
     () =>
       currentGuess.length !== playableAnswerLength ||
-      currentGuess.some(
-        (letter) => typeof letter !== "string" || letter.length === 0
-      ),
-    [currentGuess, playableAnswerLength]
+      currentGuess.some((letter) => typeof letter !== "string" || letter.length === 0),
+    [currentGuess, playableAnswerLength],
   );
 
   const headerModeLabel =
@@ -2256,12 +2033,10 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       ? AppStrings.GameScreenAlerts.DAILY_CHALLENGE_LABEL
       : AppStrings.GameScreenAlerts.CLASSIC_LABEL;
   const spinnerSize = isTransitioningToNextLevel ? 120 : LOADING_SPINNER_SIZE;
-  const spinnerOpacity = isTransitioningToNextLevel
-    ? 0.8
-    : LOADING_SPINNER_OPACITY;
+  const spinnerOpacity = isTransitioningToNextLevel ? 0.8 : LOADING_SPINNER_OPACITY;
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{flex: 1}}>
       <StarryBackground />
       <SafeAreaView className="flex-1">
         <KeyboardAvoidingView
@@ -2291,7 +2066,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
             handleBackspace={handleBackspace}
             isAnyOverlayVisible={isInteractionBlocked}
             letterStates={letterStates}
-            hintRevealedIndices={hintRevealedIndicesRef.current}
+            hintRevealedIndices={hintRevealedIndices}
             activeSlotIndex={activeSlotIndex}
             onSelectCurrentGuessSlot={handleSelectCurrentGuessSlot}
           />
@@ -2314,20 +2089,12 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           />
 
           {process.env.NODE_ENV !== "test" && (
-            <GlobalMuteOverlay
-              isSoundEnabled={isSoundEnabled}
-              onToggleSound={toggleSoundEnabled}
-            />
+            <GlobalMuteOverlay isSoundEnabled={isSoundEnabled} onToggleSound={toggleSoundEnabled} />
           )}
         </KeyboardAvoidingView>
 
         <PulsingSpinner
-          visible={
-            isLoading ||
-            isProfileModalLoading ||
-            isPurchaseInProgress ||
-            isTransitioningToNextLevel
-          }
+          visible={isLoading || isProfileModalLoading || isPurchaseInProgress || isTransitioningToNextLevel}
           size={spinnerSize}
           opacity={spinnerOpacity}
         />
@@ -2336,15 +2103,12 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         <OfflineBlockingModal isVisible={isOffline} />
         {isGuestMode ? (
           <UpgradeAccountModal
-            isVisible={isUpgradeModalVisible}
+            isVisible={isGuestMode && isUpgradeModalVisible}
             onClose={() => setIsUpgradeModalVisible(false)}
           />
         ) : null}
 
-        <Controls
-          onNextPress={handleOverlayNext}
-          isWin={gameOver && lastGuessResult?.outcome === "win"}
-        />
+        <Controls onNextPress={handleOverlayNext} isWin={gameOver && lastGuessResult?.outcome === "win"} />
 
         {__DEV__ && (
           <ModalTogglePanel

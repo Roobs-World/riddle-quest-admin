@@ -17,8 +17,8 @@
 
 import "./global.css";
 import * as Sentry from "@sentry/react-native";
-import { captureException } from "./src/utils/sentry";
-import { logger } from "./src/utils/logger";
+import {captureException} from "./src/utils/sentry";
+import {logger} from "./src/utils/logger";
 
 if (process.env.EXPO_PUBLIC_SENTRY_DSN) {
   Sentry.init({
@@ -27,40 +27,34 @@ if (process.env.EXPO_PUBLIC_SENTRY_DSN) {
   });
 }
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import { View } from "react-native";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import { loadFonts } from "./src/utils/fontLoader";
-import { SoundManager } from "./src/services/SoundManager";
+import React, {useCallback, useEffect, useRef, useState} from "react";
+import {NavigationContainer} from "@react-navigation/native";
+import {View} from "react-native";
+import {SafeAreaProvider} from "react-native-safe-area-context";
+import {loadFonts} from "./src/utils/fontLoader";
+import {SoundManager} from "./src/services/SoundManager";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Constants from "expo-constants";
-import { Settings } from "react-native-fbsdk-next";
-import { GoogleSignin } from "@react-native-google-signin/google-signin";
-import { AuthProvider } from "./src/contexts/AuthContext";
-import { TooltipProvider } from "./src/contexts/TooltipContext";
-import { Navigation } from "./src/navigation/NavigationStack";
+import {Settings} from "react-native-fbsdk-next";
+import {GoogleSignin} from "@react-native-google-signin/google-signin";
+import {AuthProvider} from "./src/contexts/AuthContext";
+import {TooltipProvider} from "./src/contexts/TooltipContext";
+import {Navigation} from "./src/navigation/NavigationStack";
 import PulsingSpinner from "@/components/loading/PulsingSpinner";
-import { SolarSystemPreloader } from "./src/services/SolarSystemPreloader";
-import { preloadShopCatalog } from "./src/services/ShopCatalogPreloader";
-import { initializeRewardedAds } from "./src/services/RewardedAdService";
-import { getCrashlytics } from "@react-native-firebase/crashlytics";
-import { ModalProvider } from "./src/contexts/ModalContext";
-import { QASurfaceGate } from "./src/qa/QASurfaceHarness";
+import {SolarSystemPreloader} from "./src/services/SolarSystemPreloader";
+import {preloadShopCatalog} from "./src/services/ShopCatalogPreloader";
+import {initializeRewardedAds} from "./src/services/RewardedAdService";
+import {getCrashlytics} from "@react-native-firebase/crashlytics";
+import {ModalProvider} from "./src/contexts/ModalContext";
+import {QASurfaceGate} from "./src/qa/QASurfaceHarness";
 import {
   APP_LANGUAGE_STORAGE_KEY,
   isSupportedLanguage,
   setAppLanguage,
   detectDeviceLanguage,
 } from "./src/constants/AppStrings";
-import {
-  isSharedAnimationBackendEnabled,
-  isSharedAnimationBackendFlagRequested,
-} from "./src/config/featureFlags";
-import {
-  SOUND_ENABLED_STORAGE_KEY,
-  readBooleanSetting,
-} from "./src/utils/settingsStorage";
+import {isSharedAnimationBackendEnabled, isSharedAnimationBackendFlagRequested} from "./src/config/featureFlags";
+import {SOUND_ENABLED_STORAGE_KEY, readBooleanSetting} from "./src/utils/settingsStorage";
 
 const SOLAR_PRELOAD_TIMEOUT_MS = 15000;
 
@@ -70,10 +64,7 @@ const withTimeout = async <T,>(promise: Promise<T>, timeoutMs: number) => {
     return await Promise.race([
       promise,
       new Promise<never>((_, reject) => {
-        timeoutId = setTimeout(
-          () => reject(new Error(`Operation timed out after ${timeoutMs}ms`)),
-          timeoutMs
-        );
+        timeoutId = setTimeout(() => reject(new Error(`Operation timed out after ${timeoutMs}ms`)), timeoutMs);
       }),
     ]);
   } finally {
@@ -94,13 +85,8 @@ const initializeSoundInBackground = async (): Promise<void> => {
 
 const configureGoogleSignIn = (): void => {
   const googleWebClientId = Constants.expoConfig?.extra?.GOOGLE_WEB_CLIENT_ID;
-  if (
-    !googleWebClientId ||
-    googleWebClientId === "YOUR_GOOGLE_WEB_CLIENT_ID"
-  ) {
-    logger.warn(
-      "Google Web Client ID not configured. Google Sign-In may not work."
-    );
+  if (!googleWebClientId || googleWebClientId === "YOUR_GOOGLE_WEB_CLIENT_ID") {
+    logger.warn("Google Web Client ID not configured. Google Sign-In may not work.");
   }
 
   GoogleSignin.configure({
@@ -120,10 +106,7 @@ const initializeFacebookSdkInBackground = async (): Promise<void> => {
   }
 
   Settings.setAppID(facebookAppId);
-  if (
-    facebookClientToken &&
-    facebookClientToken !== "YOUR_FACEBOOK_CLIENT_TOKEN"
-  ) {
+  if (facebookClientToken && facebookClientToken !== "YOUR_FACEBOOK_CLIENT_TOKEN") {
     Settings.setClientToken(facebookClientToken);
   }
   Settings.initializeSDK();
@@ -157,10 +140,7 @@ export default Sentry.wrap(function App() {
     void (async () => {
       const tasks = [
         initializeSoundInBackground(),
-        withTimeout(
-          SolarSystemPreloader.preloadSolarSystem(),
-          SOLAR_PRELOAD_TIMEOUT_MS
-        ),
+        withTimeout(SolarSystemPreloader.preloadSolarSystem(), SOLAR_PRELOAD_TIMEOUT_MS),
         preloadShopCatalog(),
         initializeRewardedAds(),
         initializeFacebookSdkInBackground(),
@@ -170,7 +150,7 @@ export default Sentry.wrap(function App() {
       results.forEach((result, index) => {
         if (result.status === "rejected") {
           logger.warn(`Background startup task ${index + 1} failed`, result.reason);
-          captureException(result.reason, { context: "App.backgroundInit" });
+          captureException(result.reason, {context: "App.backgroundInit"});
         }
       });
     })();
@@ -189,12 +169,10 @@ export default Sentry.wrap(function App() {
       try {
         logger.info("Starting app initialization");
         if (isSharedAnimationBackendEnabled()) {
-          logger.info(
-            "Shared Animation Backend is active (RN 0.85.1+ requirement satisfied)."
-          );
+          logger.info("Shared Animation Backend is active (RN 0.85.1+ requirement satisfied).");
         } else if (isSharedAnimationBackendFlagRequested()) {
           logger.warn(
-            "Shared Animation Backend flag requested but current RN version does not satisfy 0.85.1+ requirement."
+            "Shared Animation Backend flag requested but current RN version does not satisfy 0.85.1+ requirement.",
           );
         }
         getCrashlytics().log("App initialization started");
@@ -208,7 +186,7 @@ export default Sentry.wrap(function App() {
         configureGoogleSignIn();
       } catch (error: unknown) {
         logger.error("Critical app initialization error:", error);
-        captureException(error, { context: "App.criticalInit" });
+        captureException(error, {context: "App.criticalInit"});
       } finally {
         if (isMounted) {
           setIsInitialized(true);
@@ -227,13 +205,13 @@ export default Sentry.wrap(function App() {
   return (
     <Sentry.ErrorBoundary
       fallback={<PulsingSpinner visible={true} size={120} opacity={0.8} />}
-      onError={(error) => captureException(error, { context: "App.ErrorBoundary" })}
+      onError={(error) => captureException(error, {context: "App.ErrorBoundary"})}
     >
       <SafeAreaProvider>
         <ModalProvider>
           <AuthProvider>
             <TooltipProvider>
-              <View style={{ flex: 1 }}>
+              <View style={{flex: 1}}>
                 <QASurfaceGate>
                   <NavigationContainer>
                     <Navigation />

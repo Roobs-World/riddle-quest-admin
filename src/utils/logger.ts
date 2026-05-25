@@ -4,12 +4,9 @@
  * Error logs always emit for Crashlytics and debugging, and are automatically
  * forwarded to Sentry when an Error object is present in the arguments.
  */
-import { captureException } from "./sentry";
+import {captureException} from "./sentry";
 
-const isDev =
-  typeof __DEV__ !== "undefined"
-    ? __DEV__
-    : process.env.NODE_ENV !== "production";
+const isDev = typeof __DEV__ !== "undefined" ? __DEV__ : process.env.NODE_ENV !== "production";
 
 export const logger = {
   debug: (...args: unknown[]): void => {
@@ -37,4 +34,3 @@ export const logger = {
     }
   },
 };
-

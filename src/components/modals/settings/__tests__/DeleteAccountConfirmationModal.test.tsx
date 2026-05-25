@@ -1,8 +1,8 @@
 import React from "react";
-import { fireEvent, render } from "@testing-library/react-native";
-import { Modal } from "react-native";
+import {fireEvent, render} from "@testing-library/react-native";
+import {Modal} from "react-native";
 import DeleteAccountConfirmationModal from "../DeleteAccountConfirmationModal";
-import { AppStrings } from "../../../../constants/AppStrings";
+import {AppStrings} from "../../../../constants/AppStrings";
 
 describe("DeleteAccountConfirmationModal", () => {
   const mockOnCancel = jest.fn();
@@ -13,13 +13,8 @@ describe("DeleteAccountConfirmationModal", () => {
   });
 
   it("renders the destructive warning and actions", () => {
-    const { getByText, getByTestId } = render(
-      <DeleteAccountConfirmationModal
-        isVisible
-        isDeleting={false}
-        onCancel={mockOnCancel}
-        onConfirm={mockOnConfirm}
-      />,
+    const {getByText, getByTestId} = render(
+      <DeleteAccountConfirmationModal isVisible isDeleting={false} onCancel={mockOnCancel} onConfirm={mockOnConfirm} />,
     );
 
     expect(getByText(AppStrings.Profile.DELETE_ACCOUNT_CONFIRM_TITLE)).toBeTruthy();
@@ -29,13 +24,8 @@ describe("DeleteAccountConfirmationModal", () => {
   });
 
   it("fires confirm and cancel actions when not deleting", () => {
-    const { getByTestId } = render(
-      <DeleteAccountConfirmationModal
-        isVisible
-        isDeleting={false}
-        onCancel={mockOnCancel}
-        onConfirm={mockOnConfirm}
-      />,
+    const {getByTestId} = render(
+      <DeleteAccountConfirmationModal isVisible isDeleting={false} onCancel={mockOnCancel} onConfirm={mockOnConfirm} />,
     );
 
     fireEvent.press(getByTestId("delete-account-confirm-button"));
@@ -46,37 +36,20 @@ describe("DeleteAccountConfirmationModal", () => {
   });
 
   it("uses cancel for Android back only while not deleting", () => {
-    const { UNSAFE_getByType, rerender } = render(
-      <DeleteAccountConfirmationModal
-        isVisible
-        isDeleting={false}
-        onCancel={mockOnCancel}
-        onConfirm={mockOnConfirm}
-      />,
+    const {UNSAFE_getByType, rerender} = render(
+      <DeleteAccountConfirmationModal isVisible isDeleting={false} onCancel={mockOnCancel} onConfirm={mockOnConfirm} />,
     );
 
     expect(UNSAFE_getByType(Modal).props.onRequestClose).toBe(mockOnCancel);
 
-    rerender(
-      <DeleteAccountConfirmationModal
-        isVisible
-        isDeleting
-        onCancel={mockOnCancel}
-        onConfirm={mockOnConfirm}
-      />,
-    );
+    rerender(<DeleteAccountConfirmationModal isVisible isDeleting onCancel={mockOnCancel} onConfirm={mockOnConfirm} />);
 
     expect(UNSAFE_getByType(Modal).props.onRequestClose).toBeUndefined();
   });
 
   it("shows a loading state while deletion is in progress", () => {
-    const { getByText } = render(
-      <DeleteAccountConfirmationModal
-        isVisible
-        isDeleting
-        onCancel={mockOnCancel}
-        onConfirm={mockOnConfirm}
-      />,
+    const {getByText} = render(
+      <DeleteAccountConfirmationModal isVisible isDeleting onCancel={mockOnCancel} onConfirm={mockOnConfirm} />,
     );
 
     expect(getByText(AppStrings.Profile.DELETE_ACCOUNT_LOADING)).toBeTruthy();

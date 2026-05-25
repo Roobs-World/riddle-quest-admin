@@ -1,5 +1,5 @@
-import { createShadow } from "../createShadow";
-import { COLORS } from "../../tokens/colors";
+import {createShadow} from "../createShadow";
+import {COLORS} from "../../tokens/colors";
 
 describe("createShadow", () => {
   describe("default behavior", () => {
@@ -8,7 +8,7 @@ describe("createShadow", () => {
 
       expect(shadow).toEqual({
         shadowColor: COLORS.shadowColor,
-        shadowOffset: { width: 0, height: 2.5 },
+        shadowOffset: {width: 0, height: 2.5},
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 5,
@@ -134,7 +134,7 @@ describe("createShadow", () => {
 
       expect(shadow).toEqual({
         shadowColor: color,
-        shadowOffset: { width: 0, height: 4 },
+        shadowOffset: {width: 0, height: 4},
         shadowOpacity: opacity,
         shadowRadius: radius,
         elevation: elevation,
@@ -155,13 +155,13 @@ describe("createShadow", () => {
 
     it("should calculate height as elevation / 2", () => {
       const testCases = [
-        { elevation: 2, expectedHeight: 1 },
-        { elevation: 4, expectedHeight: 2 },
-        { elevation: 10, expectedHeight: 5 },
-        { elevation: 15, expectedHeight: 7.5 },
+        {elevation: 2, expectedHeight: 1},
+        {elevation: 4, expectedHeight: 2},
+        {elevation: 10, expectedHeight: 5},
+        {elevation: 15, expectedHeight: 7.5},
       ];
 
-      testCases.forEach(({ elevation, expectedHeight }) => {
+      testCases.forEach(({elevation, expectedHeight}) => {
         const shadow = createShadow(elevation);
         expect(shadow.shadowOffset.height).toBe(expectedHeight);
       });
@@ -188,12 +188,7 @@ describe("createShadow", () => {
       const originalRadius = 4;
       const originalColor = "#000000";
 
-      createShadow(
-        originalElevation,
-        originalOpacity,
-        originalRadius,
-        originalColor
-      );
+      createShadow(originalElevation, originalOpacity, originalRadius, originalColor);
 
       // Parameters should remain unchanged
       expect(originalElevation).toBe(5);
@@ -203,4 +198,3 @@ describe("createShadow", () => {
     });
   });
 });
-

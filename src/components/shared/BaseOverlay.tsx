@@ -1,8 +1,8 @@
 import React from "react";
-import { View, Modal, TouchableOpacity } from "react-native";
+import {View, Modal, TouchableOpacity} from "react-native";
 import CloseButton from "../buttons/CloseButton";
-import { styles } from "../../styles";
-import { CLOSE_BUTTON_SIZE } from "../../constants/layout";
+import {styles} from "../../styles";
+import {CLOSE_BUTTON_SIZE} from "../../constants/layout";
 import SlideInModalContent from "./SlideInModalContent";
 
 /**
@@ -41,33 +41,16 @@ const BaseOverlay: React.FC<BaseOverlayProps> = ({
   contentStyle,
 }) => {
   return (
-    <Modal
-      animationType="none"
-      transparent={true}
-      visible={visible}
-      onRequestClose={onClose}
-    >
-      <TouchableOpacity
-        style={[styles.overlay, { backgroundColor }, overlayStyle]}
-        activeOpacity={1}
-        onPress={onClose}
-      >
-        <SlideInModalContent
-          isVisible={visible}
-          style={{ width: "100%", alignItems: "center" }}
-        >
+    <Modal animationType="none" transparent={true} visible={visible} onRequestClose={onClose}>
+      <TouchableOpacity style={[styles.overlay, {backgroundColor}, overlayStyle]} activeOpacity={1} onPress={onClose}>
+        <SlideInModalContent isVisible={visible} style={{width: "100%", alignItems: "center"}}>
           <TouchableOpacity
             style={[styles.content, contentStyle]}
             activeOpacity={1}
             onPress={(e) => e.stopPropagation()}
           >
             {showCloseButton && (
-              <View
-                style={[
-                  styles.baseOverlayCloseButtonContainer,
-                  styles.topRight,
-                ]}
-              >
+              <View style={[styles.baseOverlayCloseButtonContainer, styles.topRight]}>
                 <CloseButton onPress={onClose} size={CLOSE_BUTTON_SIZE} />
               </View>
             )}

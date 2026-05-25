@@ -1,7 +1,7 @@
 /**
  * @fileoverview Russian (ru) locale overrides.
  */
-import type { LocaleOverrides } from "./types";
+import type {LocaleOverrides} from "./types";
 
 export const ruOverrides: LocaleOverrides = {
   AuthStrings: {
@@ -41,7 +41,8 @@ export const ruOverrides: LocaleOverrides = {
       TWITTER_UNEXPECTED_ERROR: "Nepredvidenaya oshibka pri vhode cherez X.",
       FACEBOOK_CONFIG_ERROR: "Problema konfiguracii Facebook. Poparobujte eshche raz ili svyazhites s podderzhkoy.",
       FACEBOOK_TIMEOUT_ERROR: "Vhod cherez Facebook istekl. Poparobujte eshche raz.",
-      FACEBOOK_SDK_ERROR: "Vhod cherez Facebook nastroyen nepravilno. Perezapustite prilozhenie i poparobujte eshche raz.",
+      FACEBOOK_SDK_ERROR:
+        "Vhod cherez Facebook nastroyen nepravilno. Perezapustite prilozhenie i poparobujte eshche raz.",
       FACEBOOK_NETWORK_ERROR: "Oshibka seti pri vhode cherez Facebook. Proverte soedinenie i poparobujte eshche raz.",
       FACEBOOK_INVALID_CREDENTIAL_ERROR: "Nepravilnyye uchetnyye dannyye Facebook. Poparobujte eshche raz.",
       FACEBOOK_UNEXPECTED_ERROR: "Nepredvidenaya oshibka pri vhode cherez Facebook.",
@@ -89,10 +90,8 @@ export const ruOverrides: LocaleOverrides = {
       TITLE: "Sbros parolya",
       BUTTON_TEXT: "Sbros parolya",
       SUCCESS_MESSAGE: "Pismo dlya sbrosa parolya otpravleno! Proverte vhodyashchie.",
-      USER_NOT_FOUND_ERROR:
-        "Akkаunt s etim adresom ne nayden. Proverite email ili zaregistriruytes.",
-      GENERIC_ERROR:
-        "Oshibka pri otpravke pisma. Poparobujte eshche raz.",
+      USER_NOT_FOUND_ERROR: "Akkаunt s etim adresom ne nayden. Proverite email ili zaregistriruytes.",
+      GENERIC_ERROR: "Oshibka pri otpravke pisma. Poparobujte eshche raz.",
       BACK_TO_LOGIN: "Vernutsya k vhodu",
     },
   },
@@ -188,21 +187,18 @@ export const ruOverrides: LocaleOverrides = {
     LETS_PLAY: "Igrat",
     SOLVE_RIDDLES_TEXT:
       "Reshayte zagadki, ugadyvaya otvet bukva za bukvoy. Ispolzuyte tsvetovye podskazki dlya kazhdoy popytki.",
-    EARN_COINS_TEXT:
-      "Zarabatyvayte monety, prohodite ezhednevnye vyzovy i podnimaytes v reytinge.",
+    EARN_COINS_TEXT: "Zarabatyvayte monety, prohodite ezhednevnye vyzovy i podnimaytes v reytinge.",
   },
   Instructions: {
     TITLE: "Kak igrat",
     GOAL_TITLE: "Tsel igry",
-    GOAL_DESCRIPTION:
-      "Ugadayte skrytuyu zagadku za 3 popytki, ispolzuya tsvetovye podskazki.",
+    GOAL_DESCRIPTION: "Ugadayte skrytuyu zagadku za 3 popytki, ispolzuya tsvetovye podskazki.",
     COLOR_CLUES_TITLE: "Tsvetovye podskazki",
     COLOR_CORRECT: "Bukva pravilnaya i na pravilnoy pozitsii",
     COLOR_MISPLACED: "Bukva est v slove, no na nepravilnoy pozitsii",
     COLOR_WRONG: "Bukvyi net v slove",
     TIPS_TITLE: "Sovety",
-    TIPS_DESCRIPTION:
-      "Nachinayte s chastykh bukv i ispolzuyte tsvetovuyu obratnuyu svyaz. Pomnite: tolko 3 popytki!",
+    TIPS_DESCRIPTION: "Nachinayte s chastykh bukv i ispolzuyte tsvetovuyu obratnuyu svyaz. Pomnite: tolko 3 popytki!",
     GOT_IT_BUTTON: "Ponyatno!",
   },
   VictoryModal: {
@@ -268,8 +264,7 @@ export const ruOverrides: LocaleOverrides = {
     HINTS_USED: "Ispolzovano podskazok",
   },
   ErrorMessages: {
-    UNABLE_TO_LOAD_RIDDLES:
-      "Ne udalos zagruzit zagadki. Proverte soedinenie.",
+    UNABLE_TO_LOAD_RIDDLES: "Ne udalos zagruzit zagadki. Proverte soedinenie.",
     FAILED_TO_LOAD_PRODUCTS: "Ne udalos zagruzit produkty",
     FAILED_TO_LOAD_SHOP_PRODUCTS: "Ne udalos zagruzit produkty magazina",
   },
@@ -280,7 +275,8 @@ export const ruOverrides: LocaleOverrides = {
     NOT_ENOUGH_COINS_MESSAGE: "Vam nuzhno bolshe monet dlya ispolzovaniya podskazki.",
     HINT_ERROR_TITLE: "Oshibka",
     GUEST_MODE_NOTICE_TITLE: "Rezhim gostya",
-    GUEST_MODE_NOTICE_MESSAGE: "V rezhime gostya progress mozhet byt uteryat, a nekotorye funktsii, naprimer reytinig, nedostupny.",
+    GUEST_MODE_NOTICE_MESSAGE:
+      "V rezhime gostya progress mozhet byt uteryat, a nekotorye funktsii, naprimer reytinig, nedostupny.",
     AD_NOT_READY_TITLE: "Reklama ne gotova",
     AD_NOT_READY_MESSAGE: "Reklamu ne udalos pokazat. Poparobujte eshche raz cherez mgnoveniye.",
     SPEND_COINS_ERROR_MESSAGE: "Ne udalos potratit monety. Poparobujte eshche raz.",
@@ -362,13 +358,15 @@ export const ruOverrides: LocaleOverrides = {
     HINT_AFTER_WRONG_TITLE: "Nuzhna podskazka?",
     HINT_AFTER_WRONG_BODY: "Eta dogadka ne podoshla. Nazhmite Podskazka, chtoby otkryt poleznuyu bukvu.",
     SHOP_OUT_OF_COINS_TITLE: "Poluchite bolshe monet",
-    SHOP_OUT_OF_COINS_BODY: "Dlya etogo deystviya ne khvataet monet. Otkroyte magazin, chtoby kupit ili zarabotat eshche.",
+    SHOP_OUT_OF_COINS_BODY:
+      "Dlya etogo deystviya ne khvataet monet. Otkroyte magazin, chtoby kupit ili zarabotat eshche.",
     ACHIEVEMENT_EARNED_TITLE: "Dostizhenie otkryto",
     ACHIEVEMENT_EARNED_BODY: "Otkroyte profil, chtoby posmotret dostizheniya i progress.",
     LEADERBOARD_FIFTH_CORRECT_TITLE: "Podnimaytes v reytinge",
     LEADERBOARD_FIFTH_CORRECT_BODY: "Pyat pravilnykh otvetov! Otkroyte profil, chtoby uvidet svoe mesto.",
     CLASSIC_FROM_DAILY_TITLE: "Klassicheskiy rezhim",
-    CLASSIC_FROM_DAILY_BODY: "Ezhednevnoe ispytanie zaversheno. V klassicheskom rezhime mozhno reshat zagadki v svoem tempe.",
+    CLASSIC_FROM_DAILY_BODY:
+      "Ezhednevnoe ispytanie zaversheno. V klassicheskom rezhime mozhno reshat zagadki v svoem tempe.",
     PROFILE_IDENTITY_TITLE: "Profil",
     PROFILE_IDENTITY_BODY: "Zdes nakhodyatsya avatar, imya, uroven XP i progress urovnya.",
     PROFILE_DAILY_PUZZLES_TITLE: "Ezhednevnye zagadki",

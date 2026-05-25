@@ -1,9 +1,9 @@
 import React from "react";
-import { View, Text } from "react-native";
-import { AppStrings } from "../../constants/AppStrings";
+import {View, Text} from "react-native";
+import {AppStrings} from "../../constants/AppStrings";
 import ReusableTextInput from "../shared/ReusableTextInput";
 import Error from "../text/Error";
-import { styles, SPACING } from "../../styles";
+import {styles, SPACING} from "../../styles";
 
 interface UserEmailInputProps {
   email: string;
@@ -11,17 +11,10 @@ interface UserEmailInputProps {
   errorMessage?: string | null;
 }
 
-const UserEmailInput: React.FC<UserEmailInputProps> = ({
-  email,
-  setEmail,
-  errorMessage,
-}) => {
+const UserEmailInput: React.FC<UserEmailInputProps> = ({email, setEmail, errorMessage}) => {
   return (
     <View className="w-full">
-      <Text
-        className="text-gray-600 text-left"
-        style={[styles.labelText, { marginBottom: SPACING.sm }]}
-      >
+      <Text className="text-gray-600 text-left" style={[styles.labelText, {marginBottom: SPACING.sm}]}>
         {AppStrings.AuthStrings.Login.EMAIL_LABEL}
       </Text>
       <View className="flex-row items-center bg-input-background rounded-lg border border-gray-300">
@@ -39,4 +32,3 @@ const UserEmailInput: React.FC<UserEmailInputProps> = ({
 };
 
 export default UserEmailInput;
-

@@ -6,13 +6,7 @@ const path = require("path");
 const rootDir = path.resolve(__dirname, "..");
 const rootsToScan = ["App.tsx", "src", "firebase-functions/src"];
 const extensions = new Set([".ts", ".tsx"]);
-const ignoredPathParts = new Set([
-  "node_modules",
-  "lib",
-  "coverage",
-  "__mocks__",
-  "__tests__",
-]);
+const ignoredPathParts = new Set(["node_modules", "lib", "coverage", "__mocks__", "__tests__"]);
 
 const explicitAnyPatterns = [
   /:\s*any\b/g,
@@ -59,13 +53,11 @@ function collectFiles(targetPath) {
     return shouldScan(absolutePath) ? [absolutePath] : [];
   }
 
-  return fs.readdirSync(absolutePath, { withFileTypes: true }).flatMap((entry) => {
+  return fs.readdirSync(absolutePath, {withFileTypes: true}).flatMap((entry) => {
     const entryPath = path.join(absolutePath, entry.name);
 
     if (entry.isDirectory()) {
-      return ignoredPathParts.has(entry.name)
-        ? []
-        : collectFiles(path.relative(rootDir, entryPath));
+      return ignoredPathParts.has(entry.name) ? [] : collectFiles(path.relative(rootDir, entryPath));
     }
 
     return shouldScan(entryPath) ? [entryPath] : [];
@@ -83,30 +75,28 @@ function lineAndColumnFor(source, index) {
 }
 
 function main() {
-  const violations = rootsToScan
-    .flatMap(collectFiles)
-    .flatMap((filePath) => {
-      const source = fs.readFileSync(filePath, "utf8");
-      const searchableSource = blankOutNonCode(source);
+  const violations = rootsToScan.flatMap(collectFiles).flatMap((filePath) => {
+    const source = fs.readFileSync(filePath, "utf8");
+    const searchableSource = blankOutNonCode(source);
 
-      return explicitAnyPatterns.flatMap((pattern) => {
-        const matches = [];
-        let match;
+    return explicitAnyPatterns.flatMap((pattern) => {
+      const matches = [];
+      let match;
 
-        while ((match = pattern.exec(searchableSource)) !== null) {
-          const location = lineAndColumnFor(source, match.index);
-          matches.push({
-            filePath,
-            line: location.line,
-            column: location.column,
-            text: source.slice(match.index, match.index + match[0].length).trim(),
-          });
-        }
+      while ((match = pattern.exec(searchableSource)) !== null) {
+        const location = lineAndColumnFor(source, match.index);
+        matches.push({
+          filePath,
+          line: location.line,
+          column: location.column,
+          text: source.slice(match.index, match.index + match[0].length).trim(),
+        });
+      }
 
-        pattern.lastIndex = 0;
-        return matches;
-      });
+      pattern.lastIndex = 0;
+      return matches;
     });
+  });
 
   if (violations.length === 0) {
     console.log("No explicit any types found.");
@@ -116,9 +106,7 @@ function main() {
   console.error("Explicit any types are not allowed. Use a precise type or unknown.");
   for (const violation of violations) {
     const relativePath = path.relative(rootDir, violation.filePath);
-    console.error(
-      `${relativePath}:${violation.line}:${violation.column} ${violation.text}`,
-    );
+    console.error(`${relativePath}:${violation.line}:${violation.column} ${violation.text}`);
   }
 
   process.exit(1);

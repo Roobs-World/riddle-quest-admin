@@ -1,23 +1,23 @@
 import React from "react";
-import { render, fireEvent } from "@testing-library/react-native";
-import { View, Text, StyleSheet } from "react-native";
+import {render, fireEvent} from "@testing-library/react-native";
+import {View, Text, StyleSheet} from "react-native";
 import BaseOverlay from "../BaseOverlay";
 
 // Mock CloseButton - using function declaration to avoid scope issues
 jest.mock("../../buttons/CloseButton", () => {
-  return function MockCloseButton({ onPress, size = 24, ...props }: any) {
+  return function MockCloseButton({onPress, size = 24, ...props}: any) {
     const React = require("react");
-    const { TouchableOpacity, View } = require("react-native");
+    const {TouchableOpacity, View} = require("react-native");
 
     return React.createElement(
       TouchableOpacity,
       {
         testID: "close-button",
         onPress: onPress,
-        style: { width: size, height: size },
+        style: {width: size, height: size},
         ...props,
       },
-      React.createElement(View, null, "Close")
+      React.createElement(View, null, "Close"),
     );
   };
 });
@@ -41,7 +41,7 @@ describe("BaseOverlay", () => {
 
   describe("Rendering", () => {
     it("renders when visible is true", () => {
-      const { UNSAFE_getByType } = render(<BaseOverlay {...defaultProps} />);
+      const {UNSAFE_getByType} = render(<BaseOverlay {...defaultProps} />);
 
       const Modal = require("react-native").Modal;
       const modal = UNSAFE_getByType(Modal);
@@ -49,9 +49,7 @@ describe("BaseOverlay", () => {
     });
 
     it("does not render when visible is false", () => {
-      const { UNSAFE_queryByType } = render(
-        <BaseOverlay {...defaultProps} visible={false} />
-      );
+      const {UNSAFE_queryByType} = render(<BaseOverlay {...defaultProps} visible={false} />);
 
       const Modal = require("react-native").Modal;
       const modal = UNSAFE_queryByType(Modal);
@@ -59,9 +57,7 @@ describe("BaseOverlay", () => {
     });
 
     it("renders with custom content styling", () => {
-      const { UNSAFE_getAllByType } = render(
-        <BaseOverlay {...defaultProps} contentStyle={testStyles.testPadding} />
-      );
+      const {UNSAFE_getAllByType} = render(<BaseOverlay {...defaultProps} contentStyle={testStyles.testPadding} />);
 
       const TouchableOpacity = require("react-native").TouchableOpacity;
       const touchables = UNSAFE_getAllByType(TouchableOpacity);
@@ -69,7 +65,7 @@ describe("BaseOverlay", () => {
     });
 
     it("renders children correctly", () => {
-      const { getByTestId, getByText } = render(
+      const {getByTestId, getByText} = render(
         <BaseOverlay {...defaultProps}>
           <View testID="child-1">
             <Text>Child 1</Text>
@@ -77,7 +73,7 @@ describe("BaseOverlay", () => {
           <View testID="child-2">
             <Text>Child 2</Text>
           </View>
-        </BaseOverlay>
+        </BaseOverlay>,
       );
 
       expect(getByTestId("child-1")).toBeTruthy();
@@ -87,42 +83,36 @@ describe("BaseOverlay", () => {
     });
 
     it("renders close button by default", () => {
-      const { getByTestId } = render(<BaseOverlay {...defaultProps} />);
+      const {getByTestId} = render(<BaseOverlay {...defaultProps} />);
 
       expect(getByTestId("close-button")).toBeTruthy();
     });
 
     it("hides close button when showCloseButton is false", () => {
-      const { queryByTestId } = render(
-        <BaseOverlay {...defaultProps} showCloseButton={false} />
-      );
+      const {queryByTestId} = render(<BaseOverlay {...defaultProps} showCloseButton={false} />);
 
       expect(queryByTestId("close-button")).toBeNull();
     });
 
     it("renders close button in the standard top-right position", () => {
-      const { getByTestId } = render(<BaseOverlay {...defaultProps} />);
+      const {getByTestId} = render(<BaseOverlay {...defaultProps} />);
       expect(getByTestId("close-button")).toBeTruthy();
     });
 
     it("renders with custom background color", () => {
-      const { UNSAFE_getAllByType } = render(
-        <BaseOverlay {...defaultProps} backgroundColor="rgba(255, 0, 0, 0.5)" />
-      );
+      const {UNSAFE_getAllByType} = render(<BaseOverlay {...defaultProps} backgroundColor="rgba(255, 0, 0, 0.5)" />);
 
       const TouchableOpacity = require("react-native").TouchableOpacity;
       const overlay = UNSAFE_getAllByType(TouchableOpacity)[0];
       expect(overlay.props.style).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({ backgroundColor: "rgba(255, 0, 0, 0.5)" }),
-        ])
+        expect.arrayContaining([expect.objectContaining({backgroundColor: "rgba(255, 0, 0, 0.5)"})]),
       );
     });
   });
 
   describe("Interactions", () => {
     it("calls onClose when backdrop is pressed", () => {
-      const { UNSAFE_getAllByType } = render(<BaseOverlay {...defaultProps} />);
+      const {UNSAFE_getAllByType} = render(<BaseOverlay {...defaultProps} />);
 
       const TouchableOpacity = require("react-native").TouchableOpacity;
       const backdrop = UNSAFE_getAllByType(TouchableOpacity)[0];
@@ -132,7 +122,7 @@ describe("BaseOverlay", () => {
     });
 
     it("does not call onClose when content is pressed", () => {
-      const { UNSAFE_getAllByType } = render(<BaseOverlay {...defaultProps} />);
+      const {UNSAFE_getAllByType} = render(<BaseOverlay {...defaultProps} />);
 
       const TouchableOpacity = require("react-native").TouchableOpacity;
       const content = UNSAFE_getAllByType(TouchableOpacity)[1];
@@ -152,7 +142,7 @@ describe("BaseOverlay", () => {
     });
 
     it("calls onClose when close button is pressed", () => {
-      const { getByTestId } = render(<BaseOverlay {...defaultProps} />);
+      const {getByTestId} = render(<BaseOverlay {...defaultProps} />);
 
       const closeButton = getByTestId("close-button");
       fireEvent.press(closeButton);
@@ -161,10 +151,10 @@ describe("BaseOverlay", () => {
     });
 
     it("handles undefined onClose gracefully", () => {
-      const { UNSAFE_getAllByType } = render(
+      const {UNSAFE_getAllByType} = render(
         <BaseOverlay visible={true} onClose={undefined as any}>
           <Text>Content</Text>
-        </BaseOverlay>
+        </BaseOverlay>,
       );
 
       const TouchableOpacity = require("react-native").TouchableOpacity;
@@ -174,12 +164,12 @@ describe("BaseOverlay", () => {
     });
 
     it("stops propagation when content is pressed", () => {
-      const { UNSAFE_getAllByType } = render(<BaseOverlay {...defaultProps} />);
+      const {UNSAFE_getAllByType} = render(<BaseOverlay {...defaultProps} />);
 
       const TouchableOpacity = require("react-native").TouchableOpacity;
       const content = UNSAFE_getAllByType(TouchableOpacity)[1];
 
-      const mockEvent = { stopPropagation: jest.fn() };
+      const mockEvent = {stopPropagation: jest.fn()};
       content.props.onPress(mockEvent);
 
       expect(mockEvent.stopPropagation).toHaveBeenCalled();
@@ -188,7 +178,7 @@ describe("BaseOverlay", () => {
 
   describe("Modal Properties", () => {
     it("sets correct modal properties", () => {
-      const { UNSAFE_getByType } = render(<BaseOverlay {...defaultProps} />);
+      const {UNSAFE_getByType} = render(<BaseOverlay {...defaultProps} />);
 
       const Modal = require("react-native").Modal;
       const modal = UNSAFE_getByType(Modal);
@@ -200,9 +190,7 @@ describe("BaseOverlay", () => {
     });
 
     it("passes visible prop to modal", () => {
-      const { UNSAFE_getByType, rerender } = render(
-        <BaseOverlay {...defaultProps} />
-      );
+      const {UNSAFE_getByType, rerender} = render(<BaseOverlay {...defaultProps} />);
 
       const Modal = require("react-native").Modal;
       let modal = UNSAFE_getByType(Modal);
@@ -216,7 +204,7 @@ describe("BaseOverlay", () => {
 
   describe("Edge Cases", () => {
     it("handles rapid visibility changes", () => {
-      const { rerender } = render(<BaseOverlay {...defaultProps} />);
+      const {rerender} = render(<BaseOverlay {...defaultProps} />);
 
       for (let i = 0; i < 10; i++) {
         rerender(<BaseOverlay {...defaultProps} visible={i % 2 === 0} />);
@@ -227,7 +215,7 @@ describe("BaseOverlay", () => {
     });
 
     it("handles multiple children types", () => {
-      const { getByText } = render(
+      const {getByText} = render(
         <BaseOverlay {...defaultProps}>
           <Text>Text Child</Text>
           <View>
@@ -236,7 +224,7 @@ describe("BaseOverlay", () => {
           {null}
           {undefined}
           {false}
-        </BaseOverlay>
+        </BaseOverlay>,
       );
 
       expect(getByText("Text Child")).toBeTruthy();
@@ -244,9 +232,7 @@ describe("BaseOverlay", () => {
     });
 
     it("handles empty children", () => {
-      const { UNSAFE_getByType } = render(
-        <BaseOverlay {...defaultProps}>{null}</BaseOverlay>
-      );
+      const {UNSAFE_getByType} = render(<BaseOverlay {...defaultProps}>{null}</BaseOverlay>);
 
       const Modal = require("react-native").Modal;
       const modal = UNSAFE_getByType(Modal);
@@ -256,10 +242,8 @@ describe("BaseOverlay", () => {
 
   describe("Style Merging", () => {
     it("merges overlay styles correctly", () => {
-      const customOverlayStyle = { zIndex: 100 };
-      const { UNSAFE_getAllByType } = render(
-        <BaseOverlay {...defaultProps} overlayStyle={customOverlayStyle} />
-      );
+      const customOverlayStyle = {zIndex: 100};
+      const {UNSAFE_getAllByType} = render(<BaseOverlay {...defaultProps} overlayStyle={customOverlayStyle} />);
 
       const TouchableOpacity = require("react-native").TouchableOpacity;
       const overlay = UNSAFE_getAllByType(TouchableOpacity)[0];
@@ -267,30 +251,26 @@ describe("BaseOverlay", () => {
       expect(overlay.props.style).toEqual(
         expect.arrayContaining([
           expect.any(Object),
-          expect.objectContaining({ backgroundColor: "rgba(0, 0, 0, 0.8)" }),
+          expect.objectContaining({backgroundColor: "rgba(0, 0, 0, 0.8)"}),
           customOverlayStyle,
-        ])
+        ]),
       );
     });
 
     it("merges content styles correctly", () => {
-      const customContentStyle = { maxWidth: 400 };
-      const { UNSAFE_getAllByType } = render(
-        <BaseOverlay {...defaultProps} contentStyle={customContentStyle} />
-      );
+      const customContentStyle = {maxWidth: 400};
+      const {UNSAFE_getAllByType} = render(<BaseOverlay {...defaultProps} contentStyle={customContentStyle} />);
 
       const TouchableOpacity = require("react-native").TouchableOpacity;
       const content = UNSAFE_getAllByType(TouchableOpacity)[1];
 
-      expect(content.props.style).toEqual(
-        expect.arrayContaining([expect.any(Object), customContentStyle])
-      );
+      expect(content.props.style).toEqual(expect.arrayContaining([expect.any(Object), customContentStyle]));
     });
   });
 
   describe("Close Button Integration", () => {
     it("passes correct props to close button", () => {
-      const { getByTestId } = render(<BaseOverlay {...defaultProps} />);
+      const {getByTestId} = render(<BaseOverlay {...defaultProps} />);
 
       const closeButton = getByTestId("close-button");
       expect(closeButton.props.style).toMatchObject({
@@ -300,9 +280,8 @@ describe("BaseOverlay", () => {
     });
 
     it("renders close button in a consistent position", () => {
-      const { getByTestId } = render(<BaseOverlay {...defaultProps} />);
+      const {getByTestId} = render(<BaseOverlay {...defaultProps} />);
       expect(getByTestId("close-button")).toBeTruthy();
     });
   });
 });
-

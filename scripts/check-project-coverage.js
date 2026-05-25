@@ -1,4 +1,4 @@
-const { spawnSync } = require("child_process");
+const {spawnSync} = require("child_process");
 const fs = require("fs");
 const path = require("path");
 
@@ -23,7 +23,7 @@ const run = spawnSync(
     cwd: root,
     stdio: "inherit",
     shell: process.platform === "win32",
-  }
+  },
 );
 
 if (run.error) {
@@ -45,14 +45,10 @@ const totalStatements = summary.total?.statements?.pct ?? 0;
 const totalLines = summary.total?.lines?.pct ?? 0;
 
 if (totalStatements <= threshold || totalLines <= threshold) {
-  console.error(
-    `Project coverage check failed. Required > ${threshold}% total statements and lines.`
-  );
+  console.error(`Project coverage check failed. Required > ${threshold}% total statements and lines.`);
   console.error(`statements: ${totalStatements}%`);
   console.error(`lines: ${totalLines}%`);
   process.exit(1);
 }
 
-console.log(
-  `Project coverage check passed. Total statements and lines are > ${threshold}%.`
-);
+console.log(`Project coverage check passed. Total statements and lines are > ${threshold}%.`);

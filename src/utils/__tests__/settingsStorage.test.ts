@@ -6,11 +6,7 @@ jest.mock("@react-native-async-storage/async-storage", () => ({
   setItem: (...args: unknown[]) => mockSetItem(...args),
 }));
 
-import {
-  readBooleanSetting,
-  writeBooleanSetting,
-  SOUND_ENABLED_STORAGE_KEY,
-} from "../settingsStorage";
+import {readBooleanSetting, writeBooleanSetting, SOUND_ENABLED_STORAGE_KEY} from "../settingsStorage";
 
 type LocalStorageMock = {
   getItem: jest.Mock;
@@ -18,17 +14,14 @@ type LocalStorageMock = {
 };
 
 describe("settingsStorage", () => {
-  const originalLocalStorage = Object.getOwnPropertyDescriptor(
-    globalThis,
-    "localStorage"
-  );
+  const originalLocalStorage = Object.getOwnPropertyDescriptor(globalThis, "localStorage");
 
   afterEach(() => {
     jest.clearAllMocks();
     if (originalLocalStorage) {
       Object.defineProperty(globalThis, "localStorage", originalLocalStorage);
     } else {
-      delete (globalThis as { localStorage?: unknown }).localStorage;
+      delete (globalThis as {localStorage?: unknown}).localStorage;
     }
   });
 
@@ -78,13 +71,7 @@ describe("settingsStorage", () => {
 
     await writeBooleanSetting(SOUND_ENABLED_STORAGE_KEY, false);
 
-    expect(localStorageMock.setItem).toHaveBeenCalledWith(
-      SOUND_ENABLED_STORAGE_KEY,
-      JSON.stringify(false)
-    );
-    expect(mockSetItem).toHaveBeenCalledWith(
-      SOUND_ENABLED_STORAGE_KEY,
-      JSON.stringify(false)
-    );
+    expect(localStorageMock.setItem).toHaveBeenCalledWith(SOUND_ENABLED_STORAGE_KEY, JSON.stringify(false));
+    expect(mockSetItem).toHaveBeenCalledWith(SOUND_ENABLED_STORAGE_KEY, JSON.stringify(false));
   });
 });

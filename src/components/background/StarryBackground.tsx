@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect, useMemo, useState } from "react";
-import { View, StyleSheet } from "react-native";
+import React, {useEffect, useMemo, useState} from "react";
+import {View, StyleSheet} from "react-native";
 import Animated, {
   cancelAnimation,
   useSharedValue,
@@ -10,13 +10,13 @@ import Animated, {
   withSequence,
   Easing,
 } from "react-native-reanimated";
-import Svg, { Defs, LinearGradient, Stop, Rect, Circle } from "react-native-svg";
-import { COLORS } from "../../styles";
-import { dimensions } from "../../utils/responsive";
+import Svg, {Defs, LinearGradient, Stop, Rect, Circle} from "react-native-svg";
+import {COLORS} from "../../styles";
+import {dimensions} from "../../utils/responsive";
 import SolarSystem3D from "./SolarSystem3D";
-import { isQASurfaceRuntimeActive } from "../../qa/qaRuntime";
+import {isQASurfaceRuntimeActive} from "../../qa/qaRuntime";
 
-const { screenWidth: SCREEN_WIDTH, screenHeight: SCREEN_HEIGHT } = dimensions;
+const {screenWidth: SCREEN_WIDTH, screenHeight: SCREEN_HEIGHT} = dimensions;
 
 const STAR_COUNT = 80;
 const SHOOTING_STAR_COUNT = 4;
@@ -52,15 +52,7 @@ export const __generateStarsForTests = (
   count: number = STAR_COUNT,
 ): Star[] => {
   const generatedStars: Star[] = [];
-  const starColors = [
-    "#FFFFFF",
-    "#FFFFFF",
-    "#FFD700",
-    "#FFF8DC",
-    "#FFFFE0",
-    "#E8F4FF",
-    "#FFE135",
-  ];
+  const starColors = ["#FFFFFF", "#FFFFFF", "#FFD700", "#FFF8DC", "#FFFFE0", "#E8F4FF", "#FFE135"];
 
   for (let i = 0; i < count; i++) {
     generatedStars.push({
@@ -101,7 +93,7 @@ export const __generateShootingStarsForTests = (
   return configs;
 };
 
-const AnimatedStar: React.FC<{ star: Star }> = React.memo(({ star }) => {
+const AnimatedStar: React.FC<{star: Star}> = React.memo(({star}) => {
   const opacity = useSharedValue(star.opacity);
   const scale = useSharedValue(1);
 
@@ -122,10 +114,10 @@ const AnimatedStar: React.FC<{ star: Star }> = React.memo(({ star }) => {
           withTiming(star.opacity, {
             duration: 4000 + Math.random() * 4000,
             easing: Easing.inOut(Easing.quad),
-          })
+          }),
         ),
         -1,
-        true
+        true,
       );
 
       scale.value = withRepeat(
@@ -137,10 +129,10 @@ const AnimatedStar: React.FC<{ star: Star }> = React.memo(({ star }) => {
           withTiming(0.9, {
             duration: 6000 + Math.random() * 3000,
             easing: Easing.inOut(Easing.sin),
-          })
+          }),
         ),
         -1,
-        true
+        true,
       );
     }, star.animationDelay);
 
@@ -152,7 +144,7 @@ const AnimatedStar: React.FC<{ star: Star }> = React.memo(({ star }) => {
   }, [star, opacity, scale]);
 
   const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
+    transform: [{scale: scale.value}],
     opacity: opacity.value,
   }));
 
@@ -166,139 +158,121 @@ const AnimatedStar: React.FC<{ star: Star }> = React.memo(({ star }) => {
       borderRadius: star.size / 2,
       backgroundColor: star.color,
       shadowColor: star.color,
-      shadowOffset: { width: 0, height: 0 },
+      shadowOffset: {width: 0, height: 0},
       shadowOpacity: 0.9,
       shadowRadius: star.size * 3,
       elevation: 6,
     }),
-    [star]
+    [star],
   );
 
-  return (
-    <Animated.View
-      testID={`star-${star.id}`}
-      style={[styles.star, staticStyle, animatedStyle]}
-    />
-  );
+  return <Animated.View testID={`star-${star.id}`} style={[styles.star, staticStyle, animatedStyle]} />;
 });
 
 AnimatedStar.displayName = "AnimatedStar";
 
-const ShootingStar: React.FC<{ config: ShootingStarConfig }> = React.memo(
-  ({ config }) => {
-    const translateX = useSharedValue(0);
-    const translateY = useSharedValue(0);
-    const opacity = useSharedValue(0);
+const ShootingStar: React.FC<{config: ShootingStarConfig}> = React.memo(({config}) => {
+  const translateX = useSharedValue(0);
+  const translateY = useSharedValue(0);
+  const opacity = useSharedValue(0);
 
-    const angleRad = (config.angle * Math.PI) / 180;
-    const dx = Math.cos(angleRad) * config.distance;
-    const dy = Math.sin(angleRad) * config.distance;
+  const angleRad = (config.angle * Math.PI) / 180;
+  const dx = Math.cos(angleRad) * config.distance;
+  const dy = Math.sin(angleRad) * config.distance;
 
-    useEffect(() => {
-      if (isQASurfaceRuntimeActive()) {
-        translateX.value = 0;
-        translateY.value = 0;
-        opacity.value = 0;
-        return;
-      }
+  useEffect(() => {
+    if (isQASurfaceRuntimeActive()) {
+      translateX.value = 0;
+      translateY.value = 0;
+      opacity.value = 0;
+      return;
+    }
 
-      const { duration, repeatInterval } = config;
+    const {duration, repeatInterval} = config;
 
-      const timeoutId = setTimeout(() => {
-        translateX.value = withRepeat(
-          withSequence(
-            withTiming(dx, { duration, easing: Easing.linear }),
-            withTiming(0, { duration: 1 }),
-            withTiming(0, { duration: repeatInterval })
-          ),
-          -1,
-          false
-        );
+    const timeoutId = setTimeout(() => {
+      translateX.value = withRepeat(
+        withSequence(
+          withTiming(dx, {duration, easing: Easing.linear}),
+          withTiming(0, {duration: 1}),
+          withTiming(0, {duration: repeatInterval}),
+        ),
+        -1,
+        false,
+      );
 
-        translateY.value = withRepeat(
-          withSequence(
-            withTiming(dy, { duration, easing: Easing.linear }),
-            withTiming(0, { duration: 1 }),
-            withTiming(0, { duration: repeatInterval })
-          ),
-          -1,
-          false
-        );
+      translateY.value = withRepeat(
+        withSequence(
+          withTiming(dy, {duration, easing: Easing.linear}),
+          withTiming(0, {duration: 1}),
+          withTiming(0, {duration: repeatInterval}),
+        ),
+        -1,
+        false,
+      );
 
-        opacity.value = withRepeat(
-          withSequence(
-            withTiming(1, {
-              duration: duration * 0.1,
-              easing: Easing.out(Easing.quad),
-            }),
-            withTiming(0.85, { duration: duration * 0.6, easing: Easing.linear }),
-            withTiming(0, {
-              duration: duration * 0.3,
-              easing: Easing.in(Easing.quad),
-            }),
-            withTiming(0, { duration: repeatInterval + 1 })
-          ),
-          -1,
-          false
-        );
-      }, config.delay);
+      opacity.value = withRepeat(
+        withSequence(
+          withTiming(1, {
+            duration: duration * 0.1,
+            easing: Easing.out(Easing.quad),
+          }),
+          withTiming(0.85, {duration: duration * 0.6, easing: Easing.linear}),
+          withTiming(0, {
+            duration: duration * 0.3,
+            easing: Easing.in(Easing.quad),
+          }),
+          withTiming(0, {duration: repeatInterval + 1}),
+        ),
+        -1,
+        false,
+      );
+    }, config.delay);
 
-      return () => {
-        clearTimeout(timeoutId);
-        cancelAnimation(translateX);
-        cancelAnimation(translateY);
-        cancelAnimation(opacity);
-      };
-    }, [config, translateX, translateY, opacity, dx, dy]);
+    return () => {
+      clearTimeout(timeoutId);
+      cancelAnimation(translateX);
+      cancelAnimation(translateY);
+      cancelAnimation(opacity);
+    };
+  }, [config, translateX, translateY, opacity, dx, dy]);
 
-    const animatedStyle = useAnimatedStyle(() => ({
-      transform: [
-        { translateX: translateX.value },
-        { translateY: translateY.value },
-        { rotate: `${config.angle}deg` },
-      ],
-      opacity: opacity.value,
-    }));
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{translateX: translateX.value}, {translateY: translateY.value}, {rotate: `${config.angle}deg`}],
+    opacity: opacity.value,
+  }));
 
-    const svgWidth = config.length + 4;
-    const svgHeight = 5;
-    const cy = svgHeight / 2;
+  const svgWidth = config.length + 4;
+  const svgHeight = 5;
+  const cy = svgHeight / 2;
 
-    return (
-      <Animated.View
-        testID={`shooting-star-${config.id}`}
-        style={[
-          {
-            position: "absolute" as const,
-            left: config.startX,
-            top: config.startY - cy,
-          },
-          animatedStyle,
-        ]}
-      >
-        <Svg width={svgWidth} height={svgHeight}>
-          <Defs>
-            <LinearGradient id={`sg${config.id}`} x1="0" y1="0" x2="1" y2="0">
-              <Stop offset="0" stopColor="white" stopOpacity={0} />
-              <Stop offset="0.5" stopColor="white" stopOpacity={0.05} />
-              <Stop offset="0.82" stopColor="white" stopOpacity={0.5} />
-              <Stop offset="1" stopColor="white" stopOpacity={1} />
-            </LinearGradient>
-          </Defs>
-          <Rect
-            x={0}
-            y={cy - 0.5}
-            width={config.length}
-            height={1}
-            rx={0.5}
-            fill={`url(#sg${config.id})`}
-          />
-          <Circle cx={config.length + 1.5} cy={cy} r={1.5} fill="white" fillOpacity={1} />
-        </Svg>
-      </Animated.View>
-    );
-  }
-);
+  return (
+    <Animated.View
+      testID={`shooting-star-${config.id}`}
+      style={[
+        {
+          position: "absolute" as const,
+          left: config.startX,
+          top: config.startY - cy,
+        },
+        animatedStyle,
+      ]}
+    >
+      <Svg width={svgWidth} height={svgHeight}>
+        <Defs>
+          <LinearGradient id={`sg${config.id}`} x1="0" y1="0" x2="1" y2="0">
+            <Stop offset="0" stopColor="white" stopOpacity={0} />
+            <Stop offset="0.5" stopColor="white" stopOpacity={0.05} />
+            <Stop offset="0.82" stopColor="white" stopOpacity={0.5} />
+            <Stop offset="1" stopColor="white" stopOpacity={1} />
+          </LinearGradient>
+        </Defs>
+        <Rect x={0} y={cy - 0.5} width={config.length} height={1} rx={0.5} fill={`url(#sg${config.id})`} />
+        <Circle cx={config.length + 1.5} cy={cy} r={1.5} fill="white" fillOpacity={1} />
+      </Svg>
+    </Animated.View>
+  );
+});
 
 ShootingStar.displayName = "ShootingStar";
 
@@ -327,7 +301,7 @@ const styles = StyleSheet.create({
     elevation: 6,
     position: "absolute",
     shadowColor: COLORS.white,
-    shadowOffset: { width: 0, height: 0 },
+    shadowOffset: {width: 0, height: 0},
     shadowOpacity: 0.9,
   },
   starsContainer: {
@@ -341,25 +315,17 @@ const styles = StyleSheet.create({
 });
 
 const StarryBackground: React.FC = () => {
-  const [stars] = useState<Star[]>(() =>
-    __generateStarsForTests(SCREEN_WIDTH, SCREEN_HEIGHT),
-  );
+  const [stars] = useState<Star[]>(() => __generateStarsForTests(SCREEN_WIDTH, SCREEN_HEIGHT));
 
   const [shootingStars] = useState<ShootingStarConfig[]>(() =>
     __generateShootingStarsForTests(SCREEN_WIDTH, SCREEN_HEIGHT),
   );
 
-  const starComponents = useMemo(
-    () => stars.map((star) => <AnimatedStar key={star.id} star={star} />),
-    [stars]
-  );
+  const starComponents = useMemo(() => stars.map((star) => <AnimatedStar key={star.id} star={star} />), [stars]);
 
   const shootingStarComponents = useMemo(
-    () =>
-      shootingStars.map((config) => (
-        <ShootingStar key={config.id} config={config} />
-      )),
-    [shootingStars]
+    () => shootingStars.map((config) => <ShootingStar key={config.id} config={config} />),
+    [shootingStars],
   );
 
   return (

@@ -11,17 +11,10 @@
  * @since 2024
  */
 
-import React, { useState, useCallback, useRef } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  LayoutChangeEvent,
-  Animated,
-  Easing,
-} from "react-native";
+import React, {useState, useCallback, useRef} from "react";
+import {View, Text, TouchableOpacity, LayoutChangeEvent, Animated, Easing} from "react-native";
 import BackspaceIcon from "../icons/BackspaceIcon";
-import { gameStyles, TYPOGRAPHY } from "../../styles";
+import {gameStyles, TYPOGRAPHY} from "../../styles";
 import {
   KEYBOARD_KEY_HEIGHT,
   KEYBOARD_KEY_MARGIN,
@@ -30,9 +23,9 @@ import {
   KEYBOARD_ROW_SPACER,
   KEYBOARD_BOTTOM_OFFSET,
 } from "../../constants/layout";
-import { dimensions } from "../../utils/responsive";
-import type { Feedback } from "../../hooks/types";
-import { AppStrings } from "../../constants/AppStrings";
+import {dimensions} from "../../utils/responsive";
+import type {Feedback} from "../../hooks/types";
+import {AppStrings} from "../../constants/AppStrings";
 
 /** QWERTY keyboard layout — defined at module scope so they are never reallocated */
 const TOP_ROW = ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"];
@@ -68,18 +61,16 @@ interface KeyboardProps {
 }
 
 /** Returns background/text colours for a keyboard key based on its feedback state. */
-const getKeyColors = (
-  state: Feedback | undefined
-): { bg: string; text: string } => {
+const getKeyColors = (state: Feedback | undefined): {bg: string; text: string} => {
   switch (state) {
     case "green":
-      return { bg: "#22C55E", text: "#FFFFFF" };
+      return {bg: "#22C55E", text: "#FFFFFF"};
     case "yellow":
-      return { bg: "#EAB308", text: "#FFFFFF" };
+      return {bg: "#EAB308", text: "#FFFFFF"};
     case "red":
-      return { bg: "#EF4444", text: "#FFFFFF" };
+      return {bg: "#EF4444", text: "#FFFFFF"};
     default:
-      return { bg: "transparent", text: "#FFFFFF" };
+      return {bg: "transparent", text: "#FFFFFF"};
   }
 };
 
@@ -93,64 +84,55 @@ interface KeyboardLetterKeyProps {
   triggerBounce: (scaleValue: Animated.Value) => void;
 }
 
-const KeyboardLetterKey: React.FC<KeyboardLetterKeyProps> = React.memo(
-  function KeyboardLetterKey({
-    keyLabel,
-    keyWidth,
-    fontSize,
-    state,
-    onPress,
-    createScaleValueForKey,
-    triggerBounce,
-  }) {
-    const scale = createScaleValueForKey(keyLabel);
-    const { bg, text } = getKeyColors(state);
+const KeyboardLetterKey: React.FC<KeyboardLetterKeyProps> = React.memo(function KeyboardLetterKey({
+  keyLabel,
+  keyWidth,
+  fontSize,
+  state,
+  onPress,
+  createScaleValueForKey,
+  triggerBounce,
+}) {
+  const scale = createScaleValueForKey(keyLabel);
+  const {bg, text} = getKeyColors(state);
 
-    return (
-      <Animated.View style={{ transform: [{ scale }] }}>
-        <TouchableOpacity
-          style={[
-            gameStyles.keyButton,
-            {
-              borderRadius: KEYBOARD_KEY_BORDER_RADIUS,
-              height: KEYBOARD_KEY_HEIGHT,
-              width: keyWidth,
-              margin: KEYBOARD_KEY_MARGIN,
-            },
-          ]}
-          onPressIn={() => {
-            onPress(keyLabel);
-            triggerBounce(scale);
+  return (
+    <Animated.View style={{transform: [{scale}]}}>
+      <TouchableOpacity
+        style={[
+          gameStyles.keyButton,
+          {
+            borderRadius: KEYBOARD_KEY_BORDER_RADIUS,
+            height: KEYBOARD_KEY_HEIGHT,
+            width: keyWidth,
+            margin: KEYBOARD_KEY_MARGIN,
+          },
+        ]}
+        onPressIn={() => {
+          onPress(keyLabel);
+          triggerBounce(scale);
+        }}
+        activeOpacity={0.7}
+        accessibilityRole="button"
+        accessibilityLabel={`${AppStrings.Accessibility.LETTER_PREFIX}${keyLabel.toUpperCase()}`}
+      >
+        <Animated.View
+          pointerEvents="none"
+          style={{
+            position: "absolute",
+            top: 0,
+            right: 0,
+            bottom: 0,
+            left: 0,
+            borderRadius: KEYBOARD_KEY_BORDER_RADIUS,
+            backgroundColor: bg,
           }}
-          activeOpacity={0.7}
-          accessibilityRole="button"
-          accessibilityLabel={`${AppStrings.Accessibility.LETTER_PREFIX}${keyLabel.toUpperCase()}`}
-        >
-          <Animated.View
-            pointerEvents="none"
-            style={{
-              position: "absolute",
-              top: 0,
-              right: 0,
-              bottom: 0,
-              left: 0,
-              borderRadius: KEYBOARD_KEY_BORDER_RADIUS,
-              backgroundColor: bg,
-            }}
-          />
-          <Text
-            style={[
-              gameStyles.keyText,
-              { fontSize, color: text },
-            ]}
-          >
-            {keyLabel}
-          </Text>
-        </TouchableOpacity>
-      </Animated.View>
-    );
-  }
-);
+        />
+        <Text style={[gameStyles.keyText, {fontSize, color: text}]}>{keyLabel}</Text>
+      </TouchableOpacity>
+    </Animated.View>
+  );
+});
 
 /**
  * Keyboard Component
@@ -229,15 +211,10 @@ const Keyboard: React.FC<KeyboardProps> = React.memo(function Keyboard({
 
   // Track the actual rendered container width so keys never overflow the x axis.
   const [containerWidth, setContainerWidth] = useState(dimensions.screenWidth);
-  const onContainerLayout = useCallback(
-    (e: LayoutChangeEvent) => setContainerWidth(e.nativeEvent.layout.width),
-    []
-  );
+  const onContainerLayout = useCallback((e: LayoutChangeEvent) => setContainerWidth(e.nativeEvent.layout.width), []);
 
   // Key width derived from container width so the top row (10 keys) always fits.
-  const keyWidth = Math.floor(
-    containerWidth / TOP_ROW_KEY_COUNT - 2 * KEYBOARD_KEY_MARGIN
-  );
+  const keyWidth = Math.floor(containerWidth / TOP_ROW_KEY_COUNT - 2 * KEYBOARD_KEY_MARGIN);
 
   // Use onKeyPress as a fallback if submitKeyPress is not provided
   const keyPressHandler = submitKeyPress || onKeyPress || (() => {});
@@ -291,9 +268,7 @@ const Keyboard: React.FC<KeyboardProps> = React.memo(function Keyboard({
       {/* Main keyboard layout container */}
       <View style={gameStyles.keyboardLayer}>
         {/* Top Row - QWERTYUIOP */}
-        <View style={gameStyles.keyboardRow}>
-          {TOP_ROW.map(renderKey)}
-        </View>
+        <View style={gameStyles.keyboardRow}>{TOP_ROW.map(renderKey)}</View>
 
         {/* Middle Row - ASDFGHJKL with traditional QWERTY offset */}
         <View
@@ -305,20 +280,20 @@ const Keyboard: React.FC<KeyboardProps> = React.memo(function Keyboard({
           ]}
         >
           {/* Left spacing for QWERTY offset */}
-          <View style={{ width: KEYBOARD_ROW_SPACER }} />
+          <View style={{width: KEYBOARD_ROW_SPACER}} />
           {MID_ROW.map(renderKey)}
           {/* Right spacing for QWERTY balance */}
-          <View style={{ width: KEYBOARD_ROW_SPACER }} />
+          <View style={{width: KEYBOARD_ROW_SPACER}} />
         </View>
 
         {/* Bottom Row - ZXCVBNM + Backspace Key */}
         <View style={gameStyles.keyboardRow}>
           {/* Left spacing to center the shorter bottom row */}
-          <View style={{ width: KEYBOARD_BOTTOM_OFFSET }} />
+          <View style={{width: KEYBOARD_BOTTOM_OFFSET}} />
           {BOTTOM_ROW.map(renderKey)}
 
           {/* Backspace Key with Icon */}
-          <Animated.View style={{ transform: [{ scale: backspaceScale }] }}>
+          <Animated.View style={{transform: [{scale: backspaceScale}]}}>
             <TouchableOpacity
               key="delete"
               style={[
@@ -348,4 +323,3 @@ const Keyboard: React.FC<KeyboardProps> = React.memo(function Keyboard({
 });
 
 export default Keyboard;
-

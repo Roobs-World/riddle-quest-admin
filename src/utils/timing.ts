@@ -43,4 +43,3 @@ export const safeTimeout = (callback: () => void, ms: number): (() => void) => {
     cancelled = true;
   };
 };
-

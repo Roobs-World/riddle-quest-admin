@@ -1,6 +1,6 @@
 import React from "react";
-import { render } from "@testing-library/react-native";
-import { Animated } from "react-native";
+import {render} from "@testing-library/react-native";
+import {Animated} from "react-native";
 import PulsingSpinner from "../PulsingSpinner";
 
 describe("PulsingSpinner", () => {
@@ -11,7 +11,7 @@ describe("PulsingSpinner", () => {
     jest.clearAllMocks();
     start = jest.fn();
     stop = jest.fn();
-    const animationMock = { start, stop } as any;
+    const animationMock = {start, stop} as any;
 
     jest.spyOn(Animated, "timing").mockReturnValue(animationMock);
     jest.spyOn(Animated, "stagger").mockReturnValue(animationMock);
@@ -26,7 +26,7 @@ describe("PulsingSpinner", () => {
   });
 
   it("renders inline spinner by default", () => {
-    const { getByLabelText, getByTestId, getAllByTestId } = render(<PulsingSpinner />);
+    const {getByLabelText, getByTestId, getAllByTestId} = render(<PulsingSpinner />);
 
     expect(getByLabelText("Loading")).toBeTruthy();
     expect(getByTestId("spinner-ring")).toBeTruthy();
@@ -35,28 +35,24 @@ describe("PulsingSpinner", () => {
   });
 
   it("supports custom dot count and size", () => {
-    const { getByTestId, getAllByTestId } = render(<PulsingSpinner size={120} dotCount={5} />);
+    const {getByTestId, getAllByTestId} = render(<PulsingSpinner size={120} dotCount={5} />);
 
     const ring = getByTestId("spinner-ring");
-    const flattenedStyle = Array.isArray(ring.props.style)
-      ? Object.assign({}, ...ring.props.style)
-      : ring.props.style;
+    const flattenedStyle = Array.isArray(ring.props.style) ? Object.assign({}, ...ring.props.style) : ring.props.style;
     expect(flattenedStyle.width).toBe(120);
     expect(flattenedStyle.height).toBe(120);
     expect(getAllByTestId("spinner-dot")).toHaveLength(5);
   });
 
   it("returns null when overlay mode is hidden", () => {
-    const { toJSON } = render(<PulsingSpinner visible={false} />);
+    const {toJSON} = render(<PulsingSpinner visible={false} />);
     expect(toJSON()).toBeNull();
     expect(start).not.toHaveBeenCalled();
     expect(Animated.loop).not.toHaveBeenCalled();
   });
 
   it("renders overlay mode when visible", () => {
-    const { getByTestId, getByLabelText } = render(
-      <PulsingSpinner visible={true} opacity={0.8} />
-    );
+    const {getByTestId, getByLabelText} = render(<PulsingSpinner visible={true} opacity={0.8} />);
 
     const modal = getByTestId("mock-modal");
     expect(modal.props["data-modal-visible"]).toBe(true);
@@ -64,7 +60,7 @@ describe("PulsingSpinner", () => {
   });
 
   it("stops animation loop on unmount", () => {
-    const { unmount } = render(<PulsingSpinner duration={2000} />);
+    const {unmount} = render(<PulsingSpinner duration={2000} />);
     unmount();
     expect(stop).toHaveBeenCalledTimes(1);
   });

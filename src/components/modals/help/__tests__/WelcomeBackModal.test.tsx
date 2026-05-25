@@ -1,9 +1,9 @@
 import React from "react";
-import { fireEvent, render } from "@testing-library/react-native";
+import {fireEvent, render} from "@testing-library/react-native";
 import WelcomeBackModal from "../WelcomeBackModal";
-import { AppStrings } from "../../../../constants/AppStrings";
+import {AppStrings} from "../../../../constants/AppStrings";
 
-let mockPlayerData: { avatarUrl?: string | null } | null = null;
+let mockPlayerData: {avatarUrl?: string | null} | null = null;
 
 jest.mock("../../../../../assets/images/modal-bg.svg", () => "ModalBgSvg");
 jest.mock("../../../../../assets/images/home-bg.svg", () => "HomeBgSvg");
@@ -24,13 +24,8 @@ describe("WelcomeBackModal", () => {
   });
 
   it("renders the welcome-back copy and username", () => {
-    const { getByText, getByTestId } = render(
-      <WelcomeBackModal
-        isVisible
-        onClose={mockOnClose}
-        onDismiss={mockOnDismiss}
-        username="Craig"
-      />,
+    const {getByText, getByTestId} = render(
+      <WelcomeBackModal isVisible onClose={mockOnClose} onDismiss={mockOnDismiss} username="Craig" />,
     );
 
     expect(getByText(AppStrings.WelcomeBackModal.TITLE)).toBeTruthy();
@@ -40,31 +35,22 @@ describe("WelcomeBackModal", () => {
   });
 
   it("falls back to the guest username when no username is supplied", () => {
-    const { getByText } = render(
-      <WelcomeBackModal isVisible onClose={mockOnClose} username="" />,
-    );
+    const {getByText} = render(<WelcomeBackModal isVisible onClose={mockOnClose} username="" />);
 
     expect(getByText(AppStrings.Profile.GUEST_USERNAME)).toBeTruthy();
   });
 
   it("renders an avatar image when the auth profile has one", () => {
-    mockPlayerData = { avatarUrl: "https://example.com/avatar.png" };
+    mockPlayerData = {avatarUrl: "https://example.com/avatar.png"};
 
-    const { getByTestId } = render(
-      <WelcomeBackModal isVisible onClose={mockOnClose} username="Craig" />,
-    );
+    const {getByTestId} = render(<WelcomeBackModal isVisible onClose={mockOnClose} username="Craig" />);
 
     expect(getByTestId("welcome-back-avatar-image")).toBeTruthy();
   });
 
   it("fires close and dismiss callbacks when tapped", () => {
-    const { getByTestId } = render(
-      <WelcomeBackModal
-        isVisible
-        onClose={mockOnClose}
-        onDismiss={mockOnDismiss}
-        username="Craig"
-      />,
+    const {getByTestId} = render(
+      <WelcomeBackModal isVisible onClose={mockOnClose} onDismiss={mockOnDismiss} username="Craig" />,
     );
 
     fireEvent.press(getByTestId("welcome-back-modal-touch-target"));

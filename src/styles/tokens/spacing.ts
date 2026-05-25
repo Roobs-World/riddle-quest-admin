@@ -3,7 +3,7 @@
  * Consistent spacing values using responsive utilities
  */
 
-import { responsiveSizes } from "../../utils/responsive";
+import {responsiveSizes} from "../../utils/responsive";
 
 export const SPACING = {
   xs: responsiveSizes.spacingXs,

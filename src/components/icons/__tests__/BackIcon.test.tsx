@@ -1,23 +1,23 @@
 import React from "react";
-import { render } from "@testing-library/react-native";
+import {render} from "@testing-library/react-native";
 import BackIcon from "../BackIcon";
 
 describe("BackIcon", () => {
   describe("Rendering", () => {
     it("renders correctly", () => {
-      const { getByText } = render(<BackIcon />);
+      const {getByText} = render(<BackIcon />);
 
       expect(getByText("<")).toBeTruthy();
     });
 
     it("renders as Text component", () => {
-      const { UNSAFE_getByType } = render(<BackIcon />);
+      const {UNSAFE_getByType} = render(<BackIcon />);
       const Text = require("react-native").Text;
       expect(UNSAFE_getByType(Text)).toBeTruthy();
     });
 
     it("displays correct arrow character", () => {
-      const { getByText } = render(<BackIcon />);
+      const {getByText} = render(<BackIcon />);
       const backIcon = getByText("<");
 
       expect(backIcon.props.children).toBe("<");
@@ -26,7 +26,7 @@ describe("BackIcon", () => {
 
   describe("Styling", () => {
     it("has correct CSS classes applied", () => {
-      const { getByText } = render(<BackIcon />);
+      const {getByText} = render(<BackIcon />);
       const backIcon = getByText("<");
 
       expect(backIcon.props.className).toContain("text-gray-700");
@@ -35,7 +35,7 @@ describe("BackIcon", () => {
     });
 
     it("applies all required styles", () => {
-      const { getByText } = render(<BackIcon />);
+      const {getByText} = render(<BackIcon />);
       const backIcon = getByText("<");
 
       const className = backIcon.props.className;
@@ -46,7 +46,7 @@ describe("BackIcon", () => {
 
   describe("Accessibility", () => {
     it("provides accessible text content", () => {
-      const { getByText } = render(<BackIcon />);
+      const {getByText} = render(<BackIcon />);
       const backIcon = getByText("<");
 
       expect(backIcon).toBeTruthy();
@@ -54,7 +54,7 @@ describe("BackIcon", () => {
     });
 
     it("maintains text semantics for screen readers", () => {
-      const { UNSAFE_getByType } = render(<BackIcon />);
+      const {UNSAFE_getByType} = render(<BackIcon />);
       const Text = require("react-native").Text;
       const textElement = UNSAFE_getByType(Text);
 
@@ -64,7 +64,7 @@ describe("BackIcon", () => {
 
   describe("Component Structure", () => {
     it("renders single Text element", () => {
-      const { UNSAFE_getAllByType } = render(<BackIcon />);
+      const {UNSAFE_getAllByType} = render(<BackIcon />);
       const Text = require("react-native").Text;
       const textElements = UNSAFE_getAllByType(Text);
 
@@ -72,7 +72,7 @@ describe("BackIcon", () => {
     });
 
     it("has no children elements", () => {
-      const { getByText } = render(<BackIcon />);
+      const {getByText} = render(<BackIcon />);
       const backIcon = getByText("<");
 
       // Should only contain the arrow character
@@ -82,12 +82,12 @@ describe("BackIcon", () => {
 
   describe("Performance", () => {
     it("renders consistently across multiple instances", () => {
-      const { getAllByText } = render(
+      const {getAllByText} = render(
         <>
           <BackIcon />
           <BackIcon />
           <BackIcon />
-        </>
+        </>,
       );
 
       const backIcons = getAllByText("<");
@@ -99,7 +99,7 @@ describe("BackIcon", () => {
     });
 
     it("handles rapid re-renders", () => {
-      const { rerender } = render(<BackIcon />);
+      const {rerender} = render(<BackIcon />);
 
       // Rapid re-renders should not throw errors
       for (let i = 0; i < 10; i++) {
@@ -112,7 +112,7 @@ describe("BackIcon", () => {
 
   describe("Visual Consistency", () => {
     it("maintains consistent styling", () => {
-      const { getByText } = render(<BackIcon />);
+      const {getByText} = render(<BackIcon />);
       const backIcon = getByText("<");
 
       const className = backIcon.props.className;
@@ -122,21 +122,21 @@ describe("BackIcon", () => {
     });
 
     it("uses expected font styling", () => {
-      const { getByText } = render(<BackIcon />);
+      const {getByText} = render(<BackIcon />);
       const backIcon = getByText("<");
 
       expect(backIcon.props.className).toContain("font-poppins-light");
     });
 
     it("uses expected text size", () => {
-      const { getByText } = render(<BackIcon />);
+      const {getByText} = render(<BackIcon />);
       const backIcon = getByText("<");
 
       expect(backIcon.props.className).toContain("text-5xl");
     });
 
     it("uses expected text color", () => {
-      const { getByText } = render(<BackIcon />);
+      const {getByText} = render(<BackIcon />);
       const backIcon = getByText("<");
 
       expect(backIcon.props.className).toContain("text-gray-700");
@@ -145,13 +145,13 @@ describe("BackIcon", () => {
 
   describe("Content Validation", () => {
     it("renders exact arrow character", () => {
-      const { getByText } = render(<BackIcon />);
+      const {getByText} = render(<BackIcon />);
 
       expect(getByText("<")).toBeTruthy();
     });
 
     it("does not render other characters", () => {
-      const { queryByText } = render(<BackIcon />);
+      const {queryByText} = render(<BackIcon />);
 
       expect(queryByText(">")).toBeNull();
       expect(queryByText("←")).toBeNull();

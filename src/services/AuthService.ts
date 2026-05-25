@@ -7,14 +7,14 @@ import {
   FacebookAuthProvider,
   OAuthProvider,
 } from "@react-native-firebase/auth";
-import { getApp } from "@react-native-firebase/app";
-import { GoogleSignin } from "@react-native-google-signin/google-signin";
-import { AccessToken, LoginManager } from "react-native-fbsdk-next";
-import { InteractionManager, AppState } from "react-native";
+import {getApp} from "@react-native-firebase/app";
+import {GoogleSignin} from "@react-native-google-signin/google-signin";
+import {AccessToken, LoginManager} from "react-native-fbsdk-next";
+import {InteractionManager, AppState} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { safeTimeout } from "../utils/timing";
-import { logger } from "../utils/logger";
-import { captureException } from "../utils/sentry";
+import {safeTimeout} from "../utils/timing";
+import {logger} from "../utils/logger";
+import {captureException} from "../utils/sentry";
 
 /**
  * Ensures the function runs on the main thread to avoid threading issues with Google Play Services
@@ -42,10 +42,7 @@ const clearLocalAuthData = async (reason: string): Promise<void> => {
   }
 };
 
-const FACEBOOK_CANCELLATION_CODES = new Set([
-  "auth/auth-popup-closed-by-user",
-  "auth/cancelled-popup-request",
-]);
+const FACEBOOK_CANCELLATION_CODES = new Set(["auth/auth-popup-closed-by-user", "auth/cancelled-popup-request"]);
 
 const FACEBOOK_CANCELLATION_MESSAGES = [
   "User cancelled the login process",
@@ -60,9 +57,7 @@ export const isFacebookLoginCancellation = (error: unknown): boolean => {
   }
 
   if (error instanceof Error) {
-    return FACEBOOK_CANCELLATION_MESSAGES.some((message) =>
-      error.message.includes(message)
-    );
+    return FACEBOOK_CANCELLATION_MESSAGES.some((message) => error.message.includes(message));
   }
 
   if (typeof error !== "object") {
@@ -79,10 +74,7 @@ export const isFacebookLoginCancellation = (error: unknown): boolean => {
     return true;
   }
 
-  if (
-    typeof maybeError.code === "string" &&
-    FACEBOOK_CANCELLATION_CODES.has(maybeError.code)
-  ) {
+  if (typeof maybeError.code === "string" && FACEBOOK_CANCELLATION_CODES.has(maybeError.code)) {
     return true;
   }
 
@@ -91,9 +83,7 @@ export const isFacebookLoginCancellation = (error: unknown): boolean => {
   }
 
   const errorMessage = maybeError.message;
-  return FACEBOOK_CANCELLATION_MESSAGES.some((message) =>
-    errorMessage.includes(message)
-  );
+  return FACEBOOK_CANCELLATION_MESSAGES.some((message) => errorMessage.includes(message));
 };
 
 export const AuthService = {
@@ -129,9 +119,7 @@ export const AuthService = {
         }
 
         if (!googleEmail) {
-          throw new Error(
-            "Email address not provided by Google. Please use an account with a valid email."
-          );
+          throw new Error("Email address not provided by Google. Please use an account with a valid email.");
         }
 
         const googleCredential = GoogleAuthProvider.credential(idToken);
@@ -169,10 +157,7 @@ export const AuthService = {
         throw new Error("Only anonymous users can be upgraded via linking.");
       }
 
-      const loginResult = await LoginManager.logInWithPermissions([
-        "public_profile",
-        "email",
-      ]);
+      const loginResult = await LoginManager.logInWithPermissions(["public_profile", "email"]);
 
       if (loginResult.isCancelled) {
         return null;
@@ -183,9 +168,7 @@ export const AuthService = {
         throw new Error("No Facebook access token available.");
       }
 
-      const facebookCredential = FacebookAuthProvider.credential(
-        tokenData.accessToken
-      );
+      const facebookCredential = FacebookAuthProvider.credential(tokenData.accessToken);
       const userCredential = await user.linkWithCredential(facebookCredential);
       if (typeof userCredential.user.reload === "function") {
         await userCredential.user.reload();
@@ -219,14 +202,9 @@ export const AuthService = {
    * @param password The user's password.
    * @returns A Promise resolving to the UserCredential.
    */
-  async signUpWithEmail(
-    email: string,
-    password: string
-  ): Promise<FirebaseAuthTypes.UserCredential> {
+  async signUpWithEmail(email: string, password: string): Promise<FirebaseAuthTypes.UserCredential> {
     try {
-      const userCredential = await getAuth(
-        getApp()
-      ).createUserWithEmailAndPassword(email, password);
+      const userCredential = await getAuth(getApp()).createUserWithEmailAndPassword(email, password);
       return userCredential;
     } catch (error) {
       logger.error("Error signing up with email:", error);
@@ -242,15 +220,9 @@ export const AuthService = {
    * @param password The user's password.
    * @returns A Promise resolving to the UserCredential.
    */
-  async loginWithEmail(
-    email: string,
-    password: string
-  ): Promise<FirebaseAuthTypes.UserCredential> {
+  async loginWithEmail(email: string, password: string): Promise<FirebaseAuthTypes.UserCredential> {
     try {
-      const userCredential = await getAuth(getApp()).signInWithEmailAndPassword(
-        email,
-        password
-      );
+      const userCredential = await getAuth(getApp()).signInWithEmailAndPassword(email, password);
       return userCredential;
     } catch (error) {
       logger.error("Error logging in with email:", error);
@@ -306,16 +278,12 @@ export const AuthService = {
         }
 
         if (!googleEmail) {
-          throw new Error(
-            "Email address not provided by Google. Please use an account with a valid email."
-          );
+          throw new Error("Email address not provided by Google. Please use an account with a valid email.");
         }
 
         const googleCredential = GoogleAuthProvider.credential(idToken);
 
-        const userCredential = await getAuth(getApp()).signInWithCredential(
-          googleCredential
-        );
+        const userCredential = await getAuth(getApp()).signInWithCredential(googleCredential);
 
         logger.debug("✅ Google authentication successful:", {
           uid: userCredential.user?.uid,
@@ -368,7 +336,7 @@ export const AuthService = {
    * @returns A Promise resolving to the UserCredential.
    */
   async signInWithFacebook(): Promise<FirebaseAuthTypes.UserCredential | null> {
-    let appStateListener: { remove: () => void } | null = null;
+    let appStateListener: {remove: () => void} | null = null;
     const cleanupAppStateListener = () => {
       appStateListener?.remove();
       appStateListener = null;
@@ -392,9 +360,7 @@ export const AuthService = {
       } catch (sdkError) {
         logger.error("❌ Facebook SDK initialization issue:", sdkError);
         captureException(sdkError);
-        throw new Error(
-          "Facebook SDK not properly initialized. Please restart the app."
-        );
+        throw new Error("Facebook SDK not properly initialized. Please restart the app.");
       }
 
       // Clear any existing Facebook session to avoid account conflicts
@@ -411,26 +377,17 @@ export const AuthService = {
       logger.debug("⏰ Setting 30-second timeout for permission request...");
 
       // Add AppState monitoring to track background/foreground transitions
-      appStateListener = AppState.addEventListener(
-        "change",
-        (nextAppState) => {
-          logger.debug(`🔄 App state changed to: ${nextAppState}`);
-          if (nextAppState === "background") {
-            logger.debug("📱 Facebook login likely opened external app/browser");
-            logger.debug(
-              "🔑 CRITICAL: If app doesn't return, missing Android Key Hash is likely cause"
-            );
-            logger.debug("📋 Required Key Hash: Xo8WBi6jzSxKDVR4drqm84yr9iU=");
-            logger.debug(
-              "🏠 Add to Facebook Developer Console → Settings → Basic → Android Platform"
-            );
-          } else if (nextAppState === "active") {
-            logger.debug(
-              "🔙 App returned to foreground - checking Facebook login result"
-            );
-          }
+      appStateListener = AppState.addEventListener("change", (nextAppState) => {
+        logger.debug(`🔄 App state changed to: ${nextAppState}`);
+        if (nextAppState === "background") {
+          logger.debug("📱 Facebook login likely opened external app/browser");
+          logger.debug("🔑 CRITICAL: If app doesn't return, missing Android Key Hash is likely cause");
+          logger.debug("📋 Required Key Hash: Xo8WBi6jzSxKDVR4drqm84yr9iU=");
+          logger.debug("🏠 Add to Facebook Developer Console → Settings → Basic → Android Platform");
+        } else if (nextAppState === "active") {
+          logger.debug("🔙 App returned to foreground - checking Facebook login result");
         }
-      );
+      });
 
       // Create a timeout promise
       const timeoutPromise = new Promise((_, reject) => {
@@ -445,24 +402,19 @@ export const AuthService = {
                 "2. Facebook app not in Development mode\n" +
                 "3. Package name mismatch (com.roobsworld.riddlequest)\n" +
                 "4. App restrictions in Facebook Developer Console\n" +
-                "5. Firebase project not configured for Facebook auth"
-            )
+                "5. Firebase project not configured for Facebook auth",
+            ),
           );
         }, 30000);
       });
 
       // Race between permission request and timeout
-      logger.debug(
-        "🚀 Starting Promise.race between Facebook login and timeout..."
-      );
+      logger.debug("🚀 Starting Promise.race between Facebook login and timeout...");
 
       const result = (await Promise.race([
         LoginManager.logInWithPermissions(["public_profile", "email"])
           .then((res) => {
-            logger.debug(
-              "✅ LoginManager.logInWithPermissions resolved with:",
-              res
-            );
+            logger.debug("✅ LoginManager.logInWithPermissions resolved with:", res);
             return res;
           })
           .catch((err) => {
@@ -470,10 +422,7 @@ export const AuthService = {
               throw err;
             }
 
-            logger.error(
-              "❌ LoginManager.logInWithPermissions rejected:",
-              err
-            );
+            logger.error("❌ LoginManager.logInWithPermissions rejected:", err);
             throw err;
           }),
         timeoutPromise,
@@ -505,10 +454,7 @@ export const AuthService = {
       }
 
       if (result.declinedPermissions && result.declinedPermissions.length > 0) {
-        logger.warn(
-          "❌ Some permissions were declined:",
-          result.declinedPermissions
-        );
+        logger.warn("❌ Some permissions were declined:", result.declinedPermissions);
       }
 
       if (result.isCancelled) {
@@ -525,22 +471,12 @@ export const AuthService = {
         logger.error("- Facebook login completed successfully");
         logger.error("- User did not cancel");
         logger.error("- AccessToken.getCurrentAccessToken() returned null");
-        logger.error(
-          "- This typically means Facebook rejected the access token"
-        );
-        logger.error(
-          "- MOST LIKELY CAUSE: Missing Facebook Key Hash in Developer Console"
-        );
+        logger.error("- This typically means Facebook rejected the access token");
+        logger.error("- MOST LIKELY CAUSE: Missing Facebook Key Hash in Developer Console");
         logger.error("- Required Key Hash: Xo8WBi6jzSxKDVR4drqm84yr9iU=");
-        logger.error(
-          "- Add this to Facebook Developer Console → Settings → Basic → Android Platform"
-        );
-        logger.error(
-          "- Alternative: Check if Facebook app is in Development mode"
-        );
-        logger.error(
-          "- Alternative: Verify App ID and Client Token are correct"
-        );
+        logger.error("- Add this to Facebook Developer Console → Settings → Basic → Android Platform");
+        logger.error("- Alternative: Check if Facebook app is in Development mode");
+        logger.error("- Alternative: Verify App ID and Client Token are correct");
         throw new Error("Something went wrong obtaining access token");
       }
 
@@ -556,69 +492,32 @@ export const AuthService = {
       logger.debug("- Token Prefix:", data.accessToken.substring(0, 10));
       logger.debug(
         "- Token Type:",
-        data.accessToken.startsWith("GG|")
-          ? "App Access Token (WRONG)"
-          : "User Access Token (CORRECT)"
+        data.accessToken.startsWith("GG|") ? "App Access Token (WRONG)" : "User Access Token (CORRECT)",
       );
       logger.debug("- Permissions Granted:", data.permissions);
-      logger.debug(
-        "- Declined Permissions:",
-        data.declinedPermissions || "None"
-      );
-      logger.debug(
-        "- Token Expiry:",
-        new Date(data.expirationTime || 0).toISOString()
-      );
+      logger.debug("- Declined Permissions:", data.declinedPermissions || "None");
+      logger.debug("- Token Expiry:", new Date(data.expirationTime || 0).toISOString());
       logger.debug("- User ID:", data.userID || "Not Available");
-      logger.debug(
-        "- App ID from token:",
-        data.applicationID || "Not Available"
-      );
+      logger.debug("- App ID from token:", data.applicationID || "Not Available");
       logger.debug("- Gaming App Token Format Check:");
-      logger.debug(
-        "  - Is Gaming Token:",
-        data.accessToken.includes("gaming") ||
-          data.accessToken.startsWith("GAT_")
-      );
-      logger.debug(
-        "  - Raw Token Sample:",
-        data.accessToken.substring(0, 50) + "..."
-      );
+      logger.debug("  - Is Gaming Token:", data.accessToken.includes("gaming") || data.accessToken.startsWith("GAT_"));
+      logger.debug("  - Raw Token Sample:", data.accessToken.substring(0, 50) + "...");
 
       // Check if we got the wrong token type
       if (data.accessToken.startsWith("GG|")) {
-        logger.error(
-          "❌ CRITICAL ERROR: Received App Access Token instead of User Access Token"
-        );
-        logger.error(
-          "- App Access Tokens start with 'GG|' and are for server-to-server calls"
-        );
-        logger.error(
-          "- User Access Tokens are long alphanumeric strings for user authentication"
-        );
+        logger.error("❌ CRITICAL ERROR: Received App Access Token instead of User Access Token");
+        logger.error("- App Access Tokens start with 'GG|' and are for server-to-server calls");
+        logger.error("- User Access Tokens are long alphanumeric strings for user authentication");
         logger.error("- This indicates a Facebook SDK configuration issue");
-        logger.error(
-          "- SOLUTION: Check Facebook Developer Console App Mode and OAuth settings"
-        );
-        throw new Error(
-          "Invalid token type: received App Access Token instead of User Access Token"
-        );
+        logger.error("- SOLUTION: Check Facebook Developer Console App Mode and OAuth settings");
+        throw new Error("Invalid token type: received App Access Token instead of User Access Token");
       }
 
       // Enhanced consumer app token validation
       logger.debug("🏢 CONSUMER APP SPECIFIC CHECKS:");
-      logger.debug(
-        "- Token appears to be for consumer app:",
-        data.applicationID === "1249521063516632"
-      );
-      logger.debug(
-        "- Public profile permission present:",
-        data.permissions?.includes("public_profile")
-      );
-      logger.debug(
-        "- Email permission present:",
-        data.permissions?.includes("email")
-      );
+      logger.debug("- Token appears to be for consumer app:", data.applicationID === "1249521063516632");
+      logger.debug("- Public profile permission present:", data.permissions?.includes("public_profile"));
+      logger.debug("- Email permission present:", data.permissions?.includes("email"));
 
       // Check if email permission was granted
       if (!data.permissions?.includes("email")) {
@@ -629,22 +528,18 @@ export const AuthService = {
         logger.error("- Permissions declined:", data.declinedPermissions);
         logger.error("- User may have declined email permission during login");
         logger.error("- SOLUTION: Clear Facebook app cache and retry login");
-        logger.error(
-          "- SOLUTION: In Facebook app settings, revoke Riddle Quest permissions and retry"
-        );
+        logger.error("- SOLUTION: In Facebook app settings, revoke Riddle Quest permissions and retry");
 
         // Force logout to clear any cached permissions
         try {
           LoginManager.logOut();
-          logger.debug(
-            "🧹 Cleared Facebook session due to missing email permission"
-          );
+          logger.debug("🧹 Cleared Facebook session due to missing email permission");
         } catch (e) {
           logger.warn("⚠️ Could not clear Facebook session:", e);
         }
 
         throw new Error(
-          "Email permission not granted. Please clear Facebook app cache and try again, ensuring you approve email access when prompted."
+          "Email permission not granted. Please clear Facebook app cache and try again, ensuring you approve email access when prompted.",
         );
       }
 
@@ -652,15 +547,11 @@ export const AuthService = {
 
       // Create Firebase credential
       logger.debug("🔗 Creating Firebase credential...");
-      const facebookCredential = FacebookAuthProvider.credential(
-        data.accessToken
-      );
+      const facebookCredential = FacebookAuthProvider.credential(data.accessToken);
 
       // Sign in with Firebase
       logger.debug("🔥 Signing in with Firebase...");
-      const userCredential = await getAuth(getApp()).signInWithCredential(
-        facebookCredential
-      );
+      const userCredential = await getAuth(getApp()).signInWithCredential(facebookCredential);
 
       logger.debug("✅ Firebase authentication successful:", {
         uid: userCredential.user?.uid,
@@ -683,13 +574,11 @@ export const AuthService = {
           uid: provider.uid,
           email: provider.email,
           displayName: provider.displayName,
-        }))
+        })),
       );
 
       // Reload user to ensure all provider data is populated
-      logger.debug(
-        "🔄 Reloading Firebase user to populate all provider data..."
-      );
+      logger.debug("🔄 Reloading Firebase user to populate all provider data...");
       await userCredential.user.reload();
       const reloadedUser = getAuth(getApp()).currentUser;
 
@@ -707,34 +596,28 @@ export const AuthService = {
           uid: provider.uid,
           email: provider.email,
           displayName: provider.displayName,
-        }))
+        })),
       );
 
       // If Firebase didn't provide email, try fetching it directly from Facebook Graph API
       if (!reloadedUser?.email) {
-        logger.debug(
-          "⚠️ Firebase didn't provide email, attempting direct Facebook Graph API call..."
-        );
+        logger.debug("⚠️ Firebase didn't provide email, attempting direct Facebook Graph API call...");
         try {
           logger.debug("🌐 Making Facebook Graph API request for user email...");
 
           // Get current access token
           const currentToken = await AccessToken.getCurrentAccessToken();
           if (!currentToken) {
-            throw new Error(
-              "No Facebook access token available for Graph API call"
-            );
+            throw new Error("No Facebook access token available for Graph API call");
           }
 
           // Call Facebook Graph API to get user info including email
           const graphResponse = await fetch(
-            `https://graph.facebook.com/me?fields=id,name,email&access_token=${currentToken.accessToken}`
+            `https://graph.facebook.com/me?fields=id,name,email&access_token=${currentToken.accessToken}`,
           );
 
           if (!graphResponse.ok) {
-            throw new Error(
-              `Facebook Graph API error: ${graphResponse.status} ${graphResponse.statusText}`
-            );
+            throw new Error(`Facebook Graph API error: ${graphResponse.status} ${graphResponse.statusText}`);
           }
 
           const userData = await graphResponse.json();
@@ -746,31 +629,22 @@ export const AuthService = {
           });
 
           if (userData.email) {
-            logger.debug(
-              "✅ Successfully retrieved email from Facebook Graph API:",
-              userData.email
-            );
+            logger.debug("✅ Successfully retrieved email from Facebook Graph API:", userData.email);
             // Store the email in a way that can be accessed by AuthContext
             // We'll need to modify the userCredential or find another way to pass this
             logger.debug("🔧 Email retrieved, will be handled in AuthContext");
           } else {
-            logger.warn(
-              "⚠️ Facebook Graph API also didn't provide email address"
-            );
+            logger.warn("⚠️ Facebook Graph API also didn't provide email address");
             logger.warn("🔍 Possible reasons:");
             logger.warn("  - User's Facebook account has no email address");
             logger.warn("  - Email is not verified on Facebook");
             logger.warn("  - Facebook privacy settings prevent email sharing");
-            logger.warn(
-              "  - App needs to be in Live mode for email permission"
-            );
+            logger.warn("  - App needs to be in Live mode for email permission");
           }
         } catch (graphError) {
           logger.error("❌ Facebook Graph API call failed:", graphError);
           captureException(graphError);
-          logger.error(
-            "🔧 Continuing with normal flow, AuthContext will handle missing email"
-          );
+          logger.error("🔧 Continuing with normal flow, AuthContext will handle missing email");
         }
       }
 
@@ -805,8 +679,7 @@ export const AuthService = {
       }
 
       if (error && typeof error === "object" && "code" in error) {
-        const firebaseError =
-          error as FirebaseAuthTypes.NativeFirebaseAuthError;
+        const firebaseError = error as FirebaseAuthTypes.NativeFirebaseAuthError;
         logger.error("🔥 Firebase error code:", firebaseError.code);
 
         switch (firebaseError.code) {
@@ -819,46 +692,30 @@ export const AuthService = {
 
             try {
               // Get the current Facebook access token
-              const currentFacebookToken =
-                await AccessToken.getCurrentAccessToken();
+              const currentFacebookToken = await AccessToken.getCurrentAccessToken();
               if (!currentFacebookToken) {
-                throw new Error(
-                  "No Facebook access token available for linking"
-                );
+                throw new Error("No Facebook access token available for linking");
               }
 
               // Get the Facebook credential that caused the conflict
-              const facebookCredential = FacebookAuthProvider.credential(
-                currentFacebookToken.accessToken
-              );
+              const facebookCredential = FacebookAuthProvider.credential(currentFacebookToken.accessToken);
 
               // Get existing sign-in methods for the email
               logger.debug("📧 Checking existing sign-in methods for email...");
-              signInMethods = await getAuth(
-                getApp()
-              ).fetchSignInMethodsForEmail("craigbeswetherick@gmail.com");
+              signInMethods = await getAuth(getApp()).fetchSignInMethodsForEmail("craigbeswetherick@gmail.com");
               logger.debug("🔍 Existing sign-in methods:", signInMethods);
 
               // If fetchSignInMethodsForEmail returns empty but we have a conflict,
               // it's likely a Google account that's signed out. Try Google linking first.
               if (signInMethods.length === 0) {
-                logger.debug(
-                  "⚠️ No sign-in methods found, but conflict exists. Trying Google linking..."
-                );
-                logger.debug(
-                  "🔗 Assuming Google account and attempting automatic linking..."
-                );
+                logger.debug("⚠️ No sign-in methods found, but conflict exists. Trying Google linking...");
+                logger.debug("🔗 Assuming Google account and attempting automatic linking...");
               }
 
               // If the account exists with Google, or if we have an empty array (likely Google),
               // sign in with Google first, then link Facebook
-              if (
-                signInMethods.includes("google.com") ||
-                signInMethods.length === 0
-              ) {
-                logger.debug(
-                  "🔗 Account exists with Google, attempting automatic linking..."
-                );
+              if (signInMethods.includes("google.com") || signInMethods.length === 0) {
+                logger.debug("🔗 Account exists with Google, attempting automatic linking...");
 
                 // Sign in with Google first
                 logger.debug("🔐 Signing in with Google to link Facebook...");
@@ -872,31 +729,19 @@ export const AuthService = {
                   throw new Error("Failed to get Google ID token for linking");
                 }
 
-                const googleCredential =
-                  GoogleAuthProvider.credential(googleIdToken);
-                const googleUserCredential = await getAuth(
-                  getApp()
-                ).signInWithCredential(googleCredential);
+                const googleCredential = GoogleAuthProvider.credential(googleIdToken);
+                const googleUserCredential = await getAuth(getApp()).signInWithCredential(googleCredential);
 
-                logger.debug(
-                  "✅ Signed in with Google, now linking Facebook..."
-                );
+                logger.debug("✅ Signed in with Google, now linking Facebook...");
 
                 // Link the Facebook credential to the existing Google account
-                const linkedUser =
-                  await googleUserCredential.user.linkWithCredential(
-                    facebookCredential
-                  );
+                const linkedUser = await googleUserCredential.user.linkWithCredential(facebookCredential);
 
-                logger.debug(
-                  "🎉 Successfully linked Facebook to existing Google account!"
-                );
+                logger.debug("🎉 Successfully linked Facebook to existing Google account!");
                 logger.debug("✅ Account linking successful:", {
                   uid: linkedUser.user?.uid,
                   email: linkedUser.user?.email,
-                  providers: linkedUser.user?.providerData?.map(
-                    (p) => p.providerId
-                  ),
+                  providers: linkedUser.user?.providerData?.map((p) => p.providerId),
                 });
 
                 return linkedUser;
@@ -906,14 +751,14 @@ export const AuthService = {
               if (signInMethods.includes("password")) {
                 throw new Error(
                   "Account exists with email/password. Please sign in with your email and password first, " +
-                    "then you can link Facebook in account settings."
+                    "then you can link Facebook in account settings.",
                 );
               }
 
               // Unknown sign-in method
               throw new Error(
                 `Account exists with: ${signInMethods.join(", ")}. ` +
-                  "Please sign in with that method first to link Facebook."
+                  "Please sign in with that method first to link Facebook.",
               );
             } catch (linkError) {
               if (isFacebookLoginCancellation(linkError)) {
@@ -923,29 +768,22 @@ export const AuthService = {
               logger.error("❌ Account linking failed:", linkError);
               captureException(linkError);
 
-              if (
-                linkError instanceof Error &&
-                linkError.message.includes("User cancelled")
-              ) {
+              if (linkError instanceof Error && linkError.message.includes("User cancelled")) {
                 throw new Error("Account linking cancelled by user.");
               }
 
-              if (
-                linkError instanceof Error &&
-                linkError.message.includes("email/password")
-              ) {
+              if (linkError instanceof Error && linkError.message.includes("email/password")) {
                 throw linkError; // Re-throw email/password message as-is
               }
 
               // Provide more specific guidance based on the error
               if (
                 linkError instanceof Error &&
-                (linkError.message.includes("Google") ||
-                  linkError.message.includes("google"))
+                (linkError.message.includes("Google") || linkError.message.includes("google"))
               ) {
                 throw new Error(
                   "Google sign-in failed during account linking. " +
-                    "Please try signing in with Google first, then link Facebook in account settings."
+                    "Please try signing in with Google first, then link Facebook in account settings.",
                 );
               }
 
@@ -955,13 +793,13 @@ export const AuthService = {
                 throw new Error(
                   "Account conflict detected but couldn't determine sign-in method. " +
                     "Please try signing in with Google or email/password first, " +
-                    "then link Facebook in account settings."
+                    "then link Facebook in account settings.",
                 );
               }
 
               throw new Error(
                 "Failed to automatically link accounts. Please sign in with your original method " +
-                  "(Google or email/password) and link Facebook in account settings."
+                  "(Google or email/password) and link Facebook in account settings.",
               );
             }
           }
@@ -969,17 +807,11 @@ export const AuthService = {
             logger.debug("👤 Facebook auth popup closed by user.");
             throw new Error("Facebook login cancelled.");
           case "auth/operation-not-supported-in-this-environment":
-            logger.error(
-              "🚫 Facebook login not supported in this environment"
-            );
-            throw new Error(
-              "Facebook login is not supported in this environment."
-            );
+            logger.error("🚫 Facebook login not supported in this environment");
+            throw new Error("Facebook login is not supported in this environment.");
           case "auth/network-request-failed":
             logger.error("🌐 Network request failed during Facebook login");
-            throw new Error(
-              "Network error during Facebook login. Please check your connection."
-            );
+            throw new Error("Network error during Facebook login. Please check your connection.");
           case "auth/invalid-credential":
             logger.error("🔐 Invalid Facebook credential");
             throw new Error("Invalid Facebook credentials. Please try again.");
@@ -997,9 +829,7 @@ export const AuthService = {
         }
         if (error.message.includes("access token")) {
           logger.error("🔑 Access token issue");
-          logger.error(
-            "🚨 LIKELY SOLUTION: Add Facebook Key Hash to Developer Console"
-          );
+          logger.error("🚨 LIKELY SOLUTION: Add Facebook Key Hash to Developer Console");
           logger.error("📋 Key Hash needed: Xo8WBi6jzSxKDVR4drqm84yr9iU=");
           throw new Error("Facebook access token error. Please try again.");
         }
@@ -1063,9 +893,7 @@ export const AuthService = {
       // Check if Facebook SDK is available
       if (!LoginManager || !AccessToken) {
         issues.push("Facebook SDK not properly imported");
-        recommendations.push(
-          "Ensure react-native-fbsdk-next is properly installed"
-        );
+        recommendations.push("Ensure react-native-fbsdk-next is properly installed");
       } else {
         logger.debug("✅ Facebook SDK imported successfully");
       }
@@ -1078,17 +906,12 @@ export const AuthService = {
         // Check if we can access LoginManager methods
         if (typeof LoginManager.logInWithPermissions !== "function") {
           issues.push("Facebook LoginManager not properly configured");
-          recommendations.push(
-            "Check Facebook app configuration in app.config.js"
-          );
+          recommendations.push("Check Facebook app configuration in app.config.js");
         }
 
         logger.debug("✅ Facebook LoginManager available");
       } catch (error) {
-        issues.push(
-          "Facebook LoginManager test failed: " +
-            (error instanceof Error ? error.message : String(error))
-        );
+        issues.push("Facebook LoginManager test failed: " + (error instanceof Error ? error.message : String(error)));
         recommendations.push("Check Facebook SDK setup and app configuration");
       }
 
@@ -1100,10 +923,7 @@ export const AuthService = {
     } catch (error) {
       logger.error("❌ Facebook diagnostic failed:", error);
       captureException(error);
-      issues.push(
-        "Diagnostic failed: " +
-          (error instanceof Error ? error.message : String(error))
-      );
+      issues.push("Diagnostic failed: " + (error instanceof Error ? error.message : String(error)));
       recommendations.push("Check Facebook SDK installation and setup");
 
       return {
@@ -1168,9 +988,7 @@ export const AuthService = {
     let configurationStatus = "Unknown";
     try {
       const diagnostic = await this.diagnoseFacebookSetup();
-      configurationStatus = diagnostic.isConfigured
-        ? "✅ SDK Configured"
-        : "❌ Configuration Issues";
+      configurationStatus = diagnostic.isConfigured ? "✅ SDK Configured" : "❌ Configuration Issues";
     } catch {
       configurationStatus = "❌ Diagnostic Failed";
     }
@@ -1183,6 +1001,3 @@ export const AuthService = {
     };
   },
 };
-
-
-

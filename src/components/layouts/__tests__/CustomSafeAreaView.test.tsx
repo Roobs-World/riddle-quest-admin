@@ -1,6 +1,6 @@
 import React from "react";
-import { render } from "@testing-library/react-native";
-import { Text } from "react-native";
+import {render} from "@testing-library/react-native";
+import {Text} from "react-native";
 import CustomSafeAreaView from "../CustomSafeAreaView";
 
 // Mock React Native components
@@ -19,23 +19,19 @@ describe("CustomSafeAreaView", () => {
         render(
           <CustomSafeAreaView>
             <Text>Test Content</Text>
-          </CustomSafeAreaView>
-        )
+          </CustomSafeAreaView>,
+        ),
       ).not.toThrow();
     });
 
     it("should render without crashing with all props", () => {
-      const mockStyle = { padding: 10 };
+      const mockStyle = {padding: 10};
       expect(() =>
         render(
-          <CustomSafeAreaView
-            className="custom-class"
-            style={mockStyle}
-            testID="custom-safe-area"
-          >
+          <CustomSafeAreaView className="custom-class" style={mockStyle} testID="custom-safe-area">
             <Text>Test Content</Text>
-          </CustomSafeAreaView>
-        )
+          </CustomSafeAreaView>,
+        ),
       ).not.toThrow();
     });
   });
@@ -45,7 +41,7 @@ describe("CustomSafeAreaView", () => {
       render(
         <CustomSafeAreaView>
           <Text>Single Child</Text>
-        </CustomSafeAreaView>
+        </CustomSafeAreaView>,
       );
       // Component should render with single child
       expect(true).toBe(true);
@@ -56,7 +52,7 @@ describe("CustomSafeAreaView", () => {
         <CustomSafeAreaView>
           <Text>First Child</Text>
           <Text>Second Child</Text>
-        </CustomSafeAreaView>
+        </CustomSafeAreaView>,
       );
       // Component should render with multiple children
       expect(true).toBe(true);
@@ -68,7 +64,7 @@ describe("CustomSafeAreaView", () => {
       render(
         <CustomSafeAreaView className="test-class">
           <Text>Test Content</Text>
-        </CustomSafeAreaView>
+        </CustomSafeAreaView>,
       );
       // Component should apply custom className
       expect(true).toBe(true);
@@ -78,18 +74,18 @@ describe("CustomSafeAreaView", () => {
       render(
         <CustomSafeAreaView>
           <Text>Test Content</Text>
-        </CustomSafeAreaView>
+        </CustomSafeAreaView>,
       );
       // Component should handle undefined className gracefully
       expect(true).toBe(true);
     });
 
     it("should handle style prop correctly", () => {
-      const customStyle = { backgroundColor: "red", padding: 20 };
+      const customStyle = {backgroundColor: "red", padding: 20};
       render(
         <CustomSafeAreaView style={customStyle}>
           <Text>Test Content</Text>
-        </CustomSafeAreaView>
+        </CustomSafeAreaView>,
       );
       // Component should apply custom style
       expect(true).toBe(true);
@@ -97,12 +93,9 @@ describe("CustomSafeAreaView", () => {
 
     it("should handle additional ViewProps", () => {
       render(
-        <CustomSafeAreaView
-          testID="test-safe-area"
-          accessibilityLabel="Custom Safe Area"
-        >
+        <CustomSafeAreaView testID="test-safe-area" accessibilityLabel="Custom Safe Area">
           <Text>Test Content</Text>
-        </CustomSafeAreaView>
+        </CustomSafeAreaView>,
       );
       // Component should handle additional props from ViewProps
       expect(true).toBe(true);
@@ -111,11 +104,11 @@ describe("CustomSafeAreaView", () => {
 
   describe("Combined Props", () => {
     it("should handle combined className and style props", () => {
-      const customStyle = { margin: 15 };
+      const customStyle = {margin: 15};
       render(
         <CustomSafeAreaView className="combined-class" style={customStyle}>
           <Text>Combined Props Test</Text>
-        </CustomSafeAreaView>
+        </CustomSafeAreaView>,
       );
       // Component should handle both className and style props together
       expect(true).toBe(true);
@@ -125,7 +118,7 @@ describe("CustomSafeAreaView", () => {
       render(
         <CustomSafeAreaView className="additional-class">
           <Text>ClassName Combination Test</Text>
-        </CustomSafeAreaView>
+        </CustomSafeAreaView>,
       );
       // Component should combine default classes with custom className
       expect(true).toBe(true);

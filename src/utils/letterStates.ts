@@ -10,9 +10,9 @@
  * - This mirrors the convention used by Wordle and similar games.
  */
 
-import type { SubmittedGuess, Feedback } from "../hooks/types";
+import type {SubmittedGuess, Feedback} from "../hooks/types";
 
-const PRIORITY: Record<Feedback, number> = { green: 3, yellow: 2, red: 1 };
+const PRIORITY: Record<Feedback, number> = {green: 3, yellow: 2, red: 1};
 
 /**
  * Derives the highest-priority feedback state for every letter that appears
@@ -22,12 +22,10 @@ const PRIORITY: Record<Feedback, number> = { green: 3, yellow: 2, red: 1 };
  * @returns  A map from lowercase letter → its best Feedback state.
  *           Letters that have never been guessed are not present in the map.
  */
-export function computeLetterStates(
-  guesses: SubmittedGuess[]
-): Record<string, Feedback> {
+export function computeLetterStates(guesses: SubmittedGuess[]): Record<string, Feedback> {
   const states: Record<string, Feedback> = {};
 
-  for (const { guess, feedback } of guesses) {
+  for (const {guess, feedback} of guesses) {
     for (let i = 0; i < guess.length; i++) {
       const letter = guess[i].toLowerCase();
       const incoming = feedback[i];
@@ -41,4 +39,3 @@ export function computeLetterStates(
 
   return states;
 }
-

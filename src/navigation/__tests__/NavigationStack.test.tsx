@@ -1,12 +1,12 @@
 import React from "react";
-import { fireEvent, render, waitFor } from "@testing-library/react-native";
+import {fireEvent, render, waitFor} from "@testing-library/react-native";
 
-import { Navigation } from "../NavigationStack";
-import { useAuth } from "../../contexts/AuthContext";
-import { RiddleInitializationService } from "../../services/RiddleInitializationService";
-import { captureException } from "../../utils/sentry";
-import { analyticsService } from "../../services/AnalyticsService";
-import { logger } from "../../utils/logger";
+import {Navigation} from "../NavigationStack";
+import {useAuth} from "../../contexts/AuthContext";
+import {RiddleInitializationService} from "../../services/RiddleInitializationService";
+import {captureException} from "../../utils/sentry";
+import {analyticsService} from "../../services/AnalyticsService";
+import {logger} from "../../utils/logger";
 
 let mockDailyCallable = jest.fn();
 
@@ -27,7 +27,7 @@ jest.mock("../../services/RiddleInitializationService", () => ({
   RiddleInitializationService: {
     resetInitializationFlags: jest.fn(),
     checkAndInitializeRiddles: jest.fn().mockResolvedValue(undefined),
-    getInitializationStatus: jest.fn(() => ({ initializationFailed: false })),
+    getInitializationStatus: jest.fn(() => ({initializationFailed: false})),
   },
 }));
 
@@ -54,12 +54,12 @@ jest.mock("../../utils/logger", () => ({
 
 jest.mock("../../constants/game", () => ({
   HINT_COST_COINS: 25,
-  getXpLevel: jest.fn(() => ({ level: 2 })),
+  getXpLevel: jest.fn(() => ({level: 2})),
 }));
 
 jest.mock("../../screens/LandingScreen", () => {
   const React = require("react");
-  const { View } = require("react-native");
+  const {View} = require("react-native");
   return function MockLandingScreen() {
     return <View testID="landing-screen" />;
   };
@@ -67,7 +67,7 @@ jest.mock("../../screens/LandingScreen", () => {
 
 jest.mock("../../screens/auth/LoginScreen", () => {
   const React = require("react");
-  const { View } = require("react-native");
+  const {View} = require("react-native");
   return function MockLoginScreen() {
     return <View testID="login-screen" />;
   };
@@ -75,7 +75,7 @@ jest.mock("../../screens/auth/LoginScreen", () => {
 
 jest.mock("../../screens/auth/SignUpScreen", () => {
   const React = require("react");
-  const { View } = require("react-native");
+  const {View} = require("react-native");
   return function MockSignUpScreen() {
     return <View testID="signup-screen" />;
   };
@@ -83,7 +83,7 @@ jest.mock("../../screens/auth/SignUpScreen", () => {
 
 jest.mock("../../screens/auth/ForgotPasswordScreen", () => {
   const React = require("react");
-  const { View } = require("react-native");
+  const {View} = require("react-native");
   return function MockForgotPasswordScreen() {
     return <View testID="forgot-password-screen" />;
   };
@@ -91,7 +91,7 @@ jest.mock("../../screens/auth/ForgotPasswordScreen", () => {
 
 jest.mock("../../screens/auth/NewPasswordScreen", () => {
   const React = require("react");
-  const { View } = require("react-native");
+  const {View} = require("react-native");
   return function MockNewPasswordScreen() {
     return <View testID="new-password-screen" />;
   };
@@ -100,7 +100,7 @@ jest.mock("../../screens/auth/NewPasswordScreen", () => {
 let latestGameScreenProps: any = null;
 jest.mock("../../screens/game/GameScreen", () => {
   const React = require("react");
-  const { Pressable, Text, View } = require("react-native");
+  const {Pressable, Text, View} = require("react-native");
   return function MockGameScreen(props: any) {
     latestGameScreenProps = props;
     return (
@@ -108,28 +108,16 @@ jest.mock("../../screens/game/GameScreen", () => {
         <Pressable testID="trigger-next-level" onPress={() => props.onNextLevel?.()}>
           <Text>Next</Text>
         </Pressable>
-        <Pressable
-          testID="trigger-win"
-          onPress={() => props.onGameWin?.(3, 20, 15)}
-        >
+        <Pressable testID="trigger-win" onPress={() => props.onGameWin?.(3, 20, 15)}>
           <Text>Win</Text>
         </Pressable>
-        <Pressable
-          testID="trigger-hint"
-          onPress={() => props.onHintUsed?.(5)}
-        >
+        <Pressable testID="trigger-hint" onPress={() => props.onHintUsed?.(5)}>
           <Text>Hint</Text>
         </Pressable>
-        <Pressable
-          testID="trigger-skip"
-          onPress={() => props.onSkipUsed?.(7)}
-        >
+        <Pressable testID="trigger-skip" onPress={() => props.onSkipUsed?.(7)}>
           <Text>Skip</Text>
         </Pressable>
-        <Pressable
-          testID="trigger-loss"
-          onPress={() => props.onGameLoss?.("ANSWER", 2)}
-        >
+        <Pressable testID="trigger-loss" onPress={() => props.onGameLoss?.("ANSWER", 2)}>
           <Text>Loss</Text>
         </Pressable>
       </View>
@@ -139,7 +127,7 @@ jest.mock("../../screens/game/GameScreen", () => {
 
 jest.mock("../../components/loading/PulsingSpinner", () => {
   const React = require("react");
-  const { View } = require("react-native");
+  const {View} = require("react-native");
   return function MockPulsingSpinner() {
     return <View testID="pulsing-spinner" />;
   };
@@ -147,9 +135,9 @@ jest.mock("../../components/loading/PulsingSpinner", () => {
 
 jest.mock("../../components/modals", () => {
   const React = require("react");
-  const { Pressable, Text, View } = require("react-native");
+  const {Pressable, Text, View} = require("react-native");
   return {
-    VictoryModal: ({ isVisible, onNextLevel, onClose }: any) =>
+    VictoryModal: ({isVisible, onNextLevel, onClose}: any) =>
       isVisible ? (
         <View testID="victory-modal">
           <Pressable testID="victory-next" onPress={onNextLevel}>
@@ -166,7 +154,7 @@ jest.mock("../../components/modals", () => {
 jest.mock("@react-navigation/native-stack", () => ({
   createNativeStackNavigator: () => {
     const React = require("react");
-    const { View } = require("react-native");
+    const {View} = require("react-native");
 
     const renderScreens = (nodes: any): any[] =>
       React.Children.toArray(nodes).flatMap((child: any) => {
@@ -178,12 +166,12 @@ jest.mock("@react-navigation/native-stack", () => ({
       });
 
     return {
-      Navigator: ({ children, screenListeners }: any) => {
+      Navigator: ({children, screenListeners}: any) => {
         const screens = renderScreens(children);
 
         React.useEffect(() => {
           const firstName = String(screens?.[0]?.props?.name ?? "Unknown");
-          screenListeners?.focus?.({ target: `${firstName}-1` });
+          screenListeners?.focus?.({target: `${firstName}-1`});
         }, [screenListeners, screens]);
 
         return (
@@ -201,19 +189,14 @@ jest.mock("@react-navigation/native-stack", () => ({
           </View>
         );
       },
-      Screen: ({ name, component, options }: any) =>
-        React.createElement("mock-screen", { name, component, options }),
+      Screen: ({name, component, options}: any) => React.createElement("mock-screen", {name, component, options}),
     };
   },
 }));
 
 const mockedUseAuth = useAuth as jest.MockedFunction<typeof useAuth>;
-const mockedRiddleInitService = RiddleInitializationService as jest.Mocked<
-  typeof RiddleInitializationService
->;
-const mockedCaptureException = captureException as jest.MockedFunction<
-  typeof captureException
->;
+const mockedRiddleInitService = RiddleInitializationService as jest.Mocked<typeof RiddleInitializationService>;
+const mockedCaptureException = captureException as jest.MockedFunction<typeof captureException>;
 const mockedAnalytics = analyticsService as jest.Mocked<typeof analyticsService>;
 const mockedLogger = logger as jest.Mocked<typeof logger>;
 
@@ -240,9 +223,7 @@ describe("NavigationStack", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     latestGameScreenProps = null;
-    mockDailyCallable = jest
-      .fn()
-      .mockResolvedValue({ data: { hasCompletedToday: false } });
+    mockDailyCallable = jest.fn().mockResolvedValue({data: {hasCompletedToday: false}});
     mockedRiddleInitService.getInitializationStatus.mockReturnValue({
       isInitializing: false,
       hasInitialized: true,
@@ -251,14 +232,14 @@ describe("NavigationStack", () => {
   });
 
   it("shows loading overlay while auth state is loading", () => {
-    mockedUseAuth.mockReturnValue(createAuthState({ isLoading: true }) as any);
-    const { getByTestId } = render(<Navigation />);
+    mockedUseAuth.mockReturnValue(createAuthState({isLoading: true}) as any);
+    const {getByTestId} = render(<Navigation />);
     expect(getByTestId("pulsing-spinner")).toBeTruthy();
   });
 
   it("renders unauthenticated stack screens", () => {
     mockedUseAuth.mockReturnValue(createAuthState() as any);
-    const { getByTestId, queryByTestId } = render(<Navigation />);
+    const {getByTestId, queryByTestId} = render(<Navigation />);
 
     expect(getByTestId("stack-screen-landing")).toBeTruthy();
     expect(getByTestId("stack-screen-login")).toBeTruthy();
@@ -269,38 +250,36 @@ describe("NavigationStack", () => {
   });
 
   it("renders authenticated game flow and fetches riddle on mount", async () => {
-    const playerData = { userId: "u1", coins: 100, stats: { level: 1, xp: 0 } };
+    const playerData = {userId: "u1", coins: 100, stats: {level: 1, xp: 0}};
     const fetchCurrentRiddle = jest.fn().mockResolvedValue(undefined);
     mockedUseAuth.mockReturnValue(
       createAuthState({
         isAuthenticated: true,
         playerData,
-        currentRiddle: { riddleId: "r1", text: "R", answer: "WORD" },
+        currentRiddle: {riddleId: "r1", text: "R", answer: "WORD"},
         gameMode: "classic",
         fetchCurrentRiddle,
-      }) as any
+      }) as any,
     );
 
-    const { getByTestId } = render(<Navigation />);
+    const {getByTestId} = render(<Navigation />);
     expect(getByTestId("stack-screen-game")).toBeTruthy();
     expect(getByTestId("game-screen")).toBeTruthy();
 
-    await waitFor(() =>
-      expect(fetchCurrentRiddle).toHaveBeenCalledWith(playerData, "classic")
-    );
+    await waitFor(() => expect(fetchCurrentRiddle).toHaveBeenCalledWith(playerData, "classic"));
     expect(mockedAnalytics.logScreenView).toHaveBeenCalled();
   });
 
   it("suppresses onboarding on remount after first game screen mount in-session", () => {
     let authState = createAuthState({
       isAuthenticated: true,
-      playerData: { userId: "u-onboarding", coins: 100, stats: { level: 1, xp: 0 } },
-      currentRiddle: { riddleId: "r1", text: "R1", answer: "WORD" },
+      playerData: {userId: "u-onboarding", coins: 100, stats: {level: 1, xp: 0}},
+      currentRiddle: {riddleId: "r1", text: "R1", answer: "WORD"},
       gameMode: "classic",
     });
     mockedUseAuth.mockImplementation(() => authState as any);
 
-    const { rerender } = render(<Navigation />);
+    const {rerender} = render(<Navigation />);
     expect(latestGameScreenProps?.suppressOnboarding).toBe(false);
 
     authState = createAuthState({
@@ -311,7 +290,7 @@ describe("NavigationStack", () => {
 
     authState = createAuthState({
       ...authState,
-      currentRiddle: { riddleId: "r2", text: "R2", answer: "WORDS" },
+      currentRiddle: {riddleId: "r2", text: "R2", answer: "WORDS"},
     });
     rerender(<Navigation />);
 
@@ -324,9 +303,9 @@ describe("NavigationStack", () => {
         isAuthenticated: true,
         playerData: null,
         currentRiddle: null,
-      }) as any
+      }) as any,
     );
-    const { getByTestId } = render(<Navigation />);
+    const {getByTestId} = render(<Navigation />);
     expect(getByTestId("pulsing-spinner")).toBeTruthy();
   });
 
@@ -335,15 +314,15 @@ describe("NavigationStack", () => {
       createAuthState({
         isAuthenticated: true,
         isRiddlesInitializing: true,
-        playerData: { userId: "u-init", stats: { level: 1, xp: 0 } },
-      }) as any
+        playerData: {userId: "u-init", stats: {level: 1, xp: 0}},
+      }) as any,
     );
-    const { getByTestId } = render(<Navigation />);
+    const {getByTestId} = render(<Navigation />);
     expect(getByTestId("pulsing-spinner")).toBeTruthy();
   });
 
   it("shows initialization error and retries when retry is pressed", async () => {
-    const playerData = { userId: "u2", coins: 10, stats: { level: 1, xp: 0 } };
+    const playerData = {userId: "u2", coins: 10, stats: {level: 1, xp: 0}};
     const fetchCurrentRiddle = jest.fn().mockResolvedValue(undefined);
     mockedRiddleInitService.getInitializationStatus.mockReturnValue({
       isInitializing: false,
@@ -356,15 +335,13 @@ describe("NavigationStack", () => {
         playerData,
         currentRiddle: null,
         fetchCurrentRiddle,
-      }) as any
+      }) as any,
     );
 
-    const { getByText } = render(<Navigation />);
+    const {getByText} = render(<Navigation />);
     fireEvent.press(getByText("Retry"));
 
-    await waitFor(() =>
-      expect(mockedRiddleInitService.resetInitializationFlags).toHaveBeenCalled()
-    );
+    await waitFor(() => expect(mockedRiddleInitService.resetInitializationFlags).toHaveBeenCalled());
     expect(mockedRiddleInitService.checkAndInitializeRiddles).toHaveBeenCalled();
     expect(fetchCurrentRiddle).toHaveBeenCalledWith(playerData, "daily");
   });
@@ -378,31 +355,31 @@ describe("NavigationStack", () => {
     mockedUseAuth.mockReturnValue(
       createAuthState({
         isAuthenticated: true,
-        playerData: { userId: "u3", stats: { level: 1, xp: 0 } },
+        playerData: {userId: "u3", stats: {level: 1, xp: 0}},
         currentRiddle: null,
-      }) as any
+      }) as any,
     );
-    const { getByTestId } = render(<Navigation />);
+    const {getByTestId} = render(<Navigation />);
     expect(getByTestId("pulsing-spinner")).toBeTruthy();
   });
 
   it("handles next level in daily mode when challenge completed", async () => {
-    const playerData = { userId: "u4", progress: {}, coins: 30, stats: { xp: 0, level: 1 } };
+    const playerData = {userId: "u4", progress: {}, coins: 30, stats: {xp: 0, level: 1}};
     const setGameMode = jest.fn();
     const fetchCurrentRiddle = jest.fn().mockResolvedValue(undefined);
-    mockDailyCallable.mockResolvedValue({ data: { hasCompletedToday: true } });
+    mockDailyCallable.mockResolvedValue({data: {hasCompletedToday: true}});
     mockedUseAuth.mockReturnValue(
       createAuthState({
         isAuthenticated: true,
         gameMode: "daily",
         playerData,
-        currentRiddle: { riddleId: "r2", text: "R", answer: "WORD" },
+        currentRiddle: {riddleId: "r2", text: "R", answer: "WORD"},
         setGameMode,
         fetchCurrentRiddle,
-      }) as any
+      }) as any,
     );
 
-    const { getByTestId } = render(<Navigation />);
+    const {getByTestId} = render(<Navigation />);
     fireEvent.press(getByTestId("trigger-next-level"));
 
     await waitFor(() => expect(setGameMode).toHaveBeenCalledWith("classic"));
@@ -410,22 +387,22 @@ describe("NavigationStack", () => {
   });
 
   it("handles next level in daily mode when challenge is not completed", async () => {
-    const playerData = { userId: "u4b", progress: {}, coins: 30, stats: { xp: 0, level: 1 } };
+    const playerData = {userId: "u4b", progress: {}, coins: 30, stats: {xp: 0, level: 1}};
     const setGameMode = jest.fn();
     const fetchCurrentRiddle = jest.fn().mockResolvedValue(undefined);
-    mockDailyCallable.mockResolvedValue({ data: { hasCompletedToday: false } });
+    mockDailyCallable.mockResolvedValue({data: {hasCompletedToday: false}});
     mockedUseAuth.mockReturnValue(
       createAuthState({
         isAuthenticated: true,
         gameMode: "daily",
         playerData,
-        currentRiddle: { riddleId: "r2", text: "R", answer: "WORD" },
+        currentRiddle: {riddleId: "r2", text: "R", answer: "WORD"},
         setGameMode,
         fetchCurrentRiddle,
-      }) as any
+      }) as any,
     );
 
-    const { getByTestId } = render(<Navigation />);
+    const {getByTestId} = render(<Navigation />);
     fireEvent.press(getByTestId("trigger-next-level"));
 
     await waitFor(() => expect(fetchCurrentRiddle).toHaveBeenCalledWith(playerData, "daily"));
@@ -440,24 +417,24 @@ describe("NavigationStack", () => {
       userId: "u4b-local",
       progress: {},
       coins: 30,
-      stats: { xp: 0, level: 1 },
+      stats: {xp: 0, level: 1},
       lastDailyChallengeCompletedAt: Date.now(),
     };
     const setGameMode = jest.fn();
     const fetchCurrentRiddle = jest.fn().mockResolvedValue(undefined);
-    mockDailyCallable.mockResolvedValue({ data: { hasCompletedToday: false } });
+    mockDailyCallable.mockResolvedValue({data: {hasCompletedToday: false}});
     mockedUseAuth.mockReturnValue(
       createAuthState({
         isAuthenticated: true,
         gameMode: "daily",
         playerData,
-        currentRiddle: { riddleId: "r2", text: "R", answer: "WORD" },
+        currentRiddle: {riddleId: "r2", text: "R", answer: "WORD"},
         setGameMode,
         fetchCurrentRiddle,
-      }) as any
+      }) as any,
     );
 
-    const { getByTestId } = render(<Navigation />);
+    const {getByTestId} = render(<Navigation />);
     fireEvent.press(getByTestId("trigger-next-level"));
 
     await waitFor(() => expect(fetchCurrentRiddle).toHaveBeenCalledWith(playerData, "daily"));
@@ -466,7 +443,7 @@ describe("NavigationStack", () => {
   });
 
   it("falls back safely when checking daily completion throws", async () => {
-    const playerData = { userId: "u4c", progress: {}, coins: 30, stats: { xp: 0, level: 1 } };
+    const playerData = {userId: "u4c", progress: {}, coins: 30, stats: {xp: 0, level: 1}};
     const fetchCurrentRiddle = jest.fn().mockResolvedValue(undefined);
     mockDailyCallable.mockRejectedValue(new Error("daily-call-failed"));
     mockedUseAuth.mockReturnValue(
@@ -474,12 +451,12 @@ describe("NavigationStack", () => {
         isAuthenticated: true,
         gameMode: "daily",
         playerData,
-        currentRiddle: { riddleId: "r2", text: "R", answer: "WORD" },
+        currentRiddle: {riddleId: "r2", text: "R", answer: "WORD"},
         fetchCurrentRiddle,
-      }) as any
+      }) as any,
     );
 
-    const { getByTestId } = render(<Navigation />);
+    const {getByTestId} = render(<Navigation />);
     fireEvent.press(getByTestId("trigger-next-level"));
 
     await waitFor(() => expect(mockedCaptureException).toHaveBeenCalled());
@@ -489,9 +466,9 @@ describe("NavigationStack", () => {
   it("handles next level in classic mode with a next riddle", async () => {
     const playerData = {
       userId: "u6a",
-      progress: { classicIndex: 2 },
+      progress: {classicIndex: 2},
       coins: 30,
-      stats: { xp: 0, level: 1 },
+      stats: {xp: 0, level: 1},
     };
     const updatePlayerClassicIndex = jest.fn().mockResolvedValue(undefined);
     mockedUseAuth.mockReturnValue(
@@ -499,12 +476,12 @@ describe("NavigationStack", () => {
         isAuthenticated: true,
         gameMode: "classic",
         playerData,
-        currentRiddle: { riddleId: "classic-2", text: "C2", answer: "WORD" },
+        currentRiddle: {riddleId: "classic-2", text: "C2", answer: "WORD"},
         updatePlayerClassicIndex,
-      }) as any
+      }) as any,
     );
 
-    const { getByTestId } = render(<Navigation />);
+    const {getByTestId} = render(<Navigation />);
     fireEvent.press(getByTestId("trigger-next-level"));
 
     await waitFor(() => expect(updatePlayerClassicIndex).toHaveBeenCalledWith(3));
@@ -513,26 +490,24 @@ describe("NavigationStack", () => {
   it("sets current riddle to null when classic progression update fails", async () => {
     const playerData = {
       userId: "u6b",
-      progress: { classicIndex: 2 },
+      progress: {classicIndex: 2},
       coins: 30,
-      stats: { xp: 0, level: 1 },
+      stats: {xp: 0, level: 1},
     };
     const setCurrentRiddle = jest.fn();
-    const updatePlayerClassicIndex = jest
-      .fn()
-      .mockRejectedValue(new Error("classic-progression-failed"));
+    const updatePlayerClassicIndex = jest.fn().mockRejectedValue(new Error("classic-progression-failed"));
     mockedUseAuth.mockReturnValue(
       createAuthState({
         isAuthenticated: true,
         gameMode: "classic",
         playerData,
-        currentRiddle: { riddleId: "classic-2", text: "C2", answer: "WORD" },
+        currentRiddle: {riddleId: "classic-2", text: "C2", answer: "WORD"},
         setCurrentRiddle,
         updatePlayerClassicIndex,
-      }) as any
+      }) as any,
     );
 
-    const { getByTestId } = render(<Navigation />);
+    const {getByTestId} = render(<Navigation />);
     fireEvent.press(getByTestId("trigger-next-level"));
 
     await waitFor(() => expect(updatePlayerClassicIndex).toHaveBeenCalledWith(3));
@@ -542,26 +517,24 @@ describe("NavigationStack", () => {
   it("handles next level in classic mode and captures update errors", async () => {
     const playerData = {
       userId: "u6",
-      progress: { classicIndex: 2 },
+      progress: {classicIndex: 2},
       coins: 30,
-      stats: { xp: 0, level: 1 },
+      stats: {xp: 0, level: 1},
     };
     const setCurrentRiddle = jest.fn();
-    const updatePlayerClassicIndex = jest
-      .fn()
-      .mockRejectedValue(new Error("classic-failure"));
+    const updatePlayerClassicIndex = jest.fn().mockRejectedValue(new Error("classic-failure"));
     mockedUseAuth.mockReturnValue(
       createAuthState({
         isAuthenticated: true,
         gameMode: "classic",
         playerData,
-        currentRiddle: { riddleId: "classic-2", text: "C2", answer: "WORD" },
+        currentRiddle: {riddleId: "classic-2", text: "C2", answer: "WORD"},
         setCurrentRiddle,
         updatePlayerClassicIndex,
-      }) as any
+      }) as any,
     );
 
-    const { getByTestId } = render(<Navigation />);
+    const {getByTestId} = render(<Navigation />);
     fireEvent.press(getByTestId("trigger-next-level"));
 
     await waitFor(() => expect(updatePlayerClassicIndex).toHaveBeenCalledWith(3));
@@ -574,27 +547,27 @@ describe("NavigationStack", () => {
       userId: "u7",
       progress: {},
       coins: 100,
-      stats: { xp: 10, totalScore: 10, level: 1, wins: 0, totalWins: 0 },
+      stats: {xp: 10, totalScore: 10, level: 1, wins: 0, totalWins: 0},
     };
     const updatePlayerDataLocally = jest.fn();
     const updatePlayerData = jest.fn().mockResolvedValue(undefined);
     const setGameMode = jest.fn();
     const fetchCurrentRiddle = jest.fn().mockResolvedValue(undefined);
-    mockDailyCallable.mockResolvedValue({ data: { hasCompletedToday: true } });
+    mockDailyCallable.mockResolvedValue({data: {hasCompletedToday: true}});
     mockedUseAuth.mockReturnValue(
       createAuthState({
         isAuthenticated: true,
         gameMode: "daily",
         playerData,
-        currentRiddle: { riddleId: "daily-1", text: "D1", answer: "WORD" },
+        currentRiddle: {riddleId: "daily-1", text: "D1", answer: "WORD"},
         updatePlayerData,
         updatePlayerDataLocally,
         setGameMode,
         fetchCurrentRiddle,
-      }) as any
+      }) as any,
     );
 
-    const { getByTestId, queryByTestId } = render(<Navigation />);
+    const {getByTestId, queryByTestId} = render(<Navigation />);
 
     fireEvent.press(getByTestId("trigger-hint"));
     fireEvent.press(getByTestId("trigger-skip"));
@@ -606,24 +579,21 @@ describe("NavigationStack", () => {
       expect.objectContaining({
         coins: 120,
       }),
-      "classic"
+      "classic",
     );
     expect(queryByTestId("victory-modal")).toBeNull();
-    expect(updatePlayerData).toHaveBeenCalledWith(
-      expect.objectContaining({ coins: 95 })
-    );
+    expect(updatePlayerData).toHaveBeenCalledWith(expect.objectContaining({coins: 95}));
     expect(updatePlayerData).toHaveBeenCalledWith(
       expect.objectContaining({
         stats: expect.objectContaining({
           totalHintsUsed: 1,
         }),
-      })
+      }),
     );
-    expect(updatePlayerData).toHaveBeenCalledWith({ coins: 93 });
-    expect(updatePlayerDataLocally).toHaveBeenCalledWith(
-      expect.objectContaining({ coins: 120 }),
-      { syncToFirestore: false }
-    );
+    expect(updatePlayerData).toHaveBeenCalledWith({coins: 93});
+    expect(updatePlayerDataLocally).toHaveBeenCalledWith(expect.objectContaining({coins: 120}), {
+      syncToFirestore: false,
+    });
   });
 
   it("keeps daily win streak unchanged on loss for authenticated users", async () => {
@@ -652,12 +622,12 @@ describe("NavigationStack", () => {
         isAuthenticated: true,
         gameMode: "daily",
         playerData,
-        currentRiddle: { riddleId: "daily-loss", text: "D", answer: "WORD" },
+        currentRiddle: {riddleId: "daily-loss", text: "D", answer: "WORD"},
         updatePlayerDataLocally,
-      }) as any
+      }) as any,
     );
 
-    const { getByTestId } = render(<Navigation />);
+    const {getByTestId} = render(<Navigation />);
     fireEvent.press(getByTestId("trigger-loss"));
 
     await waitFor(() =>
@@ -671,15 +641,15 @@ describe("NavigationStack", () => {
             dailyPuzzlesCompleted: 3,
           }),
         }),
-        { syncToFirestore: false }
-      )
+        {syncToFirestore: false},
+      ),
     );
   });
 
   it("increments best streak after a classic win", async () => {
     const playerData = {
       userId: "u-classic-win",
-      progress: { classicIndex: 4 },
+      progress: {classicIndex: 4},
       coins: 40,
       stats: {
         xp: 70,
@@ -702,12 +672,12 @@ describe("NavigationStack", () => {
         isAuthenticated: true,
         gameMode: "classic",
         playerData,
-        currentRiddle: { riddleId: "classic-win", text: "R", answer: "WORD" },
+        currentRiddle: {riddleId: "classic-win", text: "R", answer: "WORD"},
         updatePlayerDataLocally,
-      }) as any
+      }) as any,
     );
 
-    const { getByTestId } = render(<Navigation />);
+    const {getByTestId} = render(<Navigation />);
     fireEvent.press(getByTestId("trigger-win"));
 
     await waitFor(() =>
@@ -717,15 +687,15 @@ describe("NavigationStack", () => {
             bestStreak: 2,
           }),
         }),
-        { syncToFirestore: false }
-      )
+        {syncToFirestore: false},
+      ),
     );
   });
 
   it("increments challenge wins in challenge mode", async () => {
     const playerData = {
       userId: "u-challenge-win",
-      progress: { dailyChallengeIndex: 10, classicIndex: 4 },
+      progress: {dailyChallengeIndex: 10, classicIndex: 4},
       coins: 40,
       stats: {
         xp: 70,
@@ -748,12 +718,12 @@ describe("NavigationStack", () => {
         isAuthenticated: true,
         gameMode: "challenge",
         playerData,
-        currentRiddle: { riddleId: "challenge-win", text: "R", answer: "WORD" },
+        currentRiddle: {riddleId: "challenge-win", text: "R", answer: "WORD"},
         updatePlayerDataLocally,
-      }) as any
+      }) as any,
     );
 
-    const { getByTestId } = render(<Navigation />);
+    const {getByTestId} = render(<Navigation />);
     fireEvent.press(getByTestId("trigger-win"));
 
     await waitFor(() =>
@@ -764,8 +734,8 @@ describe("NavigationStack", () => {
             dailyPuzzlesCompleted: 2,
           }),
         }),
-        { syncToFirestore: false }
-      )
+        {syncToFirestore: false},
+      ),
     );
   });
 
@@ -774,7 +744,7 @@ describe("NavigationStack", () => {
       userId: "guest-1",
       email: "guest_1@guest.Riddle Quest.com",
       username: "Guest",
-      progress: { dailyChallengeIndex: 4, classicIndex: 2 },
+      progress: {dailyChallengeIndex: 4, classicIndex: 2},
       coins: 100,
       stats: {
         xp: 10,
@@ -793,14 +763,14 @@ describe("NavigationStack", () => {
         isAuthenticated: true,
         gameMode: "daily",
         playerData,
-        currentRiddle: { riddleId: "daily-guest", text: "D1", answer: "WORD" },
+        currentRiddle: {riddleId: "daily-guest", text: "D1", answer: "WORD"},
         updatePlayerDataLocally,
         setGameMode,
         fetchCurrentRiddle,
-      }) as any
+      }) as any,
     );
 
-    const { getByTestId } = render(<Navigation />);
+    const {getByTestId} = render(<Navigation />);
     fireEvent.press(getByTestId("trigger-win"));
 
     await waitFor(() => expect(setGameMode).toHaveBeenCalledWith("classic"));
@@ -810,7 +780,7 @@ describe("NavigationStack", () => {
           classicIndex: 2,
         }),
       }),
-      "classic"
+      "classic",
     );
     expect(mockDailyCallable).not.toHaveBeenCalled();
     expect(updatePlayerDataLocally).toHaveBeenCalledWith(
@@ -822,7 +792,7 @@ describe("NavigationStack", () => {
           dailyPuzzlesCompleted: 3,
         }),
         lastDailyChallengeCompletedAt: expect.any(Number),
-      })
+      }),
     );
   });
 
@@ -831,9 +801,9 @@ describe("NavigationStack", () => {
       userId: "guest-2",
       email: "guest_2@guest.Riddle Quest.com",
       username: "Guest",
-      progress: { dailyChallengeIndex: 9, classicIndex: 3 },
+      progress: {dailyChallengeIndex: 9, classicIndex: 3},
       coins: 30,
-      stats: { xp: 0, level: 1, dailyPuzzlesCompleted: 0 },
+      stats: {xp: 0, level: 1, dailyPuzzlesCompleted: 0},
       lastDailyChallengeCompletedAt: Date.now(),
     };
     const updatePlayerDataLocally = jest.fn();
@@ -844,14 +814,14 @@ describe("NavigationStack", () => {
         isAuthenticated: true,
         gameMode: "daily",
         playerData,
-        currentRiddle: { riddleId: "daily-2", text: "R", answer: "WORD" },
+        currentRiddle: {riddleId: "daily-2", text: "R", answer: "WORD"},
         updatePlayerDataLocally,
         setGameMode,
         fetchCurrentRiddle,
-      }) as any
+      }) as any,
     );
 
-    const { getByTestId } = render(<Navigation />);
+    const {getByTestId} = render(<Navigation />);
     fireEvent.press(getByTestId("trigger-next-level"));
 
     await waitFor(() => expect(setGameMode).toHaveBeenCalledWith("classic"));
@@ -861,19 +831,19 @@ describe("NavigationStack", () => {
           classicIndex: 3,
         }),
       }),
-      "classic"
+      "classic",
     );
     expect(updatePlayerDataLocally).not.toHaveBeenCalledWith(
       expect.objectContaining({
         progress: expect.objectContaining({
           dailyChallengeIndex: 10,
         }),
-      })
+      }),
     );
   });
 
   it("does not refetch riddle when mode is unchanged and current riddle already exists", async () => {
-    const playerData = { userId: "u9", progress: {}, coins: 1, stats: { xp: 0, level: 1 } };
+    const playerData = {userId: "u9", progress: {}, coins: 1, stats: {xp: 0, level: 1}};
     const fetchCurrentRiddle = jest.fn().mockResolvedValue(undefined);
     mockedUseAuth.mockReturnValue(
       createAuthState({
@@ -881,15 +851,13 @@ describe("NavigationStack", () => {
         gameMode: "classic",
         isDailyChallengeAvailable: false,
         playerData,
-        currentRiddle: { riddleId: "classic", text: "R", answer: "WORD" },
+        currentRiddle: {riddleId: "classic", text: "R", answer: "WORD"},
         fetchCurrentRiddle,
-      }) as any
+      }) as any,
     );
 
-    const { rerender } = render(<Navigation />);
-    await waitFor(() =>
-      expect(fetchCurrentRiddle).toHaveBeenCalledWith(playerData, "classic")
-    );
+    const {rerender} = render(<Navigation />);
+    await waitFor(() => expect(fetchCurrentRiddle).toHaveBeenCalledWith(playerData, "classic"));
     expect(fetchCurrentRiddle).toHaveBeenCalledTimes(1);
 
     mockedUseAuth.mockReturnValue(
@@ -898,9 +866,9 @@ describe("NavigationStack", () => {
         gameMode: "classic",
         isDailyChallengeAvailable: true,
         playerData,
-        currentRiddle: { riddleId: "classic", text: "R", answer: "WORD" },
+        currentRiddle: {riddleId: "classic", text: "R", answer: "WORD"},
         fetchCurrentRiddle,
-      }) as any
+      }) as any,
     );
     rerender(<Navigation />);
     await waitFor(() => expect(fetchCurrentRiddle).toHaveBeenCalledTimes(1));

@@ -18,6 +18,7 @@ description: Audit Server/Client component boundaries in a Next.js app. Detects 
 ## Output format
 
 For each violation:
+
 - **File**: path to the offending file
 - **Type**: one of `unnecessary-use-client` | `server-leak` | `hydration-risk` | `cache-misuse` | `boundary-violation`
 - **Detail**: what was found

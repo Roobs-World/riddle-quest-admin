@@ -94,18 +94,16 @@ This document details the technologies, development setup, technical constraints
 ## Tool Usage Patterns:
 
 - **Development Commands**:
-
   - `pnpm exec expo start --dev-client` - Start the development server
   - `pnpm exec expo start --dev-client --clear --port 8081` - Start with cache clearing on the matrix default port
   - `pnpm install` - Install dependencies
   - `npx expo customize metro.config.js` - Generate/customize Metro config
 
 - **Testing Commands**:
-
   - `pnpm run test` - Run Jest tests for React Native app (src/ only)
   - `pnpm run test:precommit` - Full pre-commit suite: lint + RN tests + Firebase Functions tests
   - `pnpm run lint` - ESLint code quality checks
-  - `cd firebase-functions && pnpm run test` - Firebase Functions unit tests (excludes *.it.test.ts)
+  - `cd firebase-functions && pnpm run test` - Firebase Functions unit tests (excludes \*.it.test.ts)
   - **Pre-commit**: Husky runs `test:precommit` before every commit; use `git commit --no-verify` to bypass
   - **PRE_COMMIT_SKIP_LINT=1**: Skips lint step (e.g. for quick test-only runs)
 

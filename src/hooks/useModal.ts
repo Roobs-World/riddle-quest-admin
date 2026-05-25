@@ -9,15 +9,10 @@
  * It does not render any UI itself; instead it delegates to the underlying
  * `ModalProvider` and `ModalRegistry` to render appropriate components.
  */
-import { useCallback } from "react";
-import { useModalContext } from "../contexts/ModalContext";
-import {
-  ModalData,
-  ModalOptions,
-  GameModalTypes,
-  ModalDataType,
-} from "../types/ModalTypes";
-import { logger } from "../utils/logger";
+import {useCallback} from "react";
+import {useModalContext} from "../contexts/ModalContext";
+import {ModalData, ModalOptions, GameModalTypes, ModalDataType} from "../types/ModalTypes";
+import {logger} from "../utils/logger";
 
 /**
  * Custom hook that wraps `ModalContext` with a typed, ergonomic interface
@@ -31,13 +26,9 @@ export const useModal = () => {
 
   // Type-safe modal opening for game modals
   const openGameModal = useCallback(
-    <T extends keyof GameModalTypes>(
-      type: T,
-      data: ModalDataType<T>,
-      options?: ModalOptions
-    ): string => {
+    <T extends keyof GameModalTypes>(type: T, data: ModalDataType<T>, options?: ModalOptions): string => {
       if (__DEV__) {
-        logger.debug(`Opening modal of type: ${type}`, { data, options });
+        logger.debug(`Opening modal of type: ${type}`, {data, options});
       }
       const modalId = context.openModal(type, data, options);
       if (__DEV__) {
@@ -45,19 +36,15 @@ export const useModal = () => {
       }
       return modalId;
     },
-    [context]
+    [context],
   );
 
   // Generic modal opening
   const openModal = useCallback(
-    <T extends ModalData>(
-      type: string,
-      data?: T,
-      options?: ModalOptions
-    ): string => {
+    <T extends ModalData>(type: string, data?: T, options?: ModalOptions): string => {
       return context.openModal(type, data, options);
     },
-    [context]
+    [context],
   );
 
   // Close modal by ID
@@ -65,7 +52,7 @@ export const useModal = () => {
     (id: string): void => {
       context.closeModal(id);
     },
-    [context]
+    [context],
   );
 
   // Close modal by type (closes the first modal of that type)
@@ -76,7 +63,7 @@ export const useModal = () => {
       }
       context.closeModalByType(type);
     },
-    [context]
+    [context],
   );
 
   // Close all modals
@@ -89,7 +76,7 @@ export const useModal = () => {
     (type: string): boolean => {
       return context.isModalOpen(type);
     },
-    [context]
+    [context],
   );
 
   // Get modal data
@@ -97,7 +84,7 @@ export const useModal = () => {
     <T extends ModalData>(type: string): T | null => {
       return context.getModalData<T>(type);
     },
-    [context]
+    [context],
   );
 
   // Update modal data
@@ -105,7 +92,7 @@ export const useModal = () => {
     <T extends ModalData>(id: string, data: Partial<T>): void => {
       context.updateModalData(id, data);
     },
-    [context]
+    [context],
   );
 
   // Convenience methods for common modal operations
@@ -113,66 +100,55 @@ export const useModal = () => {
     (data: ModalDataType<"victory">, options?: ModalOptions): string => {
       return openGameModal("victory", data, options);
     },
-    [openGameModal]
+    [openGameModal],
   );
 
   const showLossModal = useCallback(
     (data: ModalDataType<"loss">, options?: ModalOptions): string => {
       return openGameModal("loss", data, options);
     },
-    [openGameModal]
+    [openGameModal],
   );
 
   const showSettingsModal = useCallback(
     (data: ModalDataType<"settings">, options?: ModalOptions): string => {
       return openGameModal("settings", data, options);
     },
-    [openGameModal]
+    [openGameModal],
   );
 
   const showHintModal = useCallback(
     (data: ModalDataType<"hint">, options?: ModalOptions): string => {
       return openGameModal("hint", data, options);
     },
-    [openGameModal]
+    [openGameModal],
   );
 
   const showSkipModal = useCallback(
     (data: ModalDataType<"skip">, options?: ModalOptions): string => {
       return openGameModal("skip", data, options);
     },
-    [openGameModal]
+    [openGameModal],
   );
 
   const showWelcomeModal = useCallback(
     (data: ModalDataType<"welcome"> = {}, options?: ModalOptions): string => {
       return openGameModal("welcome", data, options);
     },
-    [openGameModal]
+    [openGameModal],
   );
 
   const showWelcomeBackModal = useCallback(
-    (
-      data: ModalDataType<"welcomeBack">,
-      options?: ModalOptions
-    ): string => {
+    (data: ModalDataType<"welcomeBack">, options?: ModalOptions): string => {
       return openGameModal("welcomeBack", data, options);
     },
-    [openGameModal]
+    [openGameModal],
   );
 
   const showInstructionsModal = useCallback(
-    (
-      data: ModalDataType<"instructions"> = {},
-      options?: ModalOptions
-    ): string => {
+    (data: ModalDataType<"instructions"> = {}, options?: ModalOptions): string => {
       if (__DEV__) {
-        logger.debug(
-          "showInstructionsModal called with data:",
-          data,
-          "options:",
-          options
-        );
+        logger.debug("showInstructionsModal called with data:", data, "options:", options);
       }
       const modalId = openGameModal("instructions", data, options);
       if (__DEV__) {
@@ -180,113 +156,98 @@ export const useModal = () => {
       }
       return modalId;
     },
-    [openGameModal]
+    [openGameModal],
   );
 
   const showCreditsModal = useCallback(
     (data: ModalDataType<"credits"> = {}, options?: ModalOptions): string => {
       return openGameModal("credits", data, options);
     },
-    [openGameModal]
+    [openGameModal],
   );
 
   const showAboutLegalModal = useCallback(
     (data: ModalDataType<"aboutLegal"> = {}, options?: ModalOptions): string => {
       return openGameModal("aboutLegal", data, options);
     },
-    [openGameModal]
+    [openGameModal],
   );
 
   const showCoinShop = useCallback(
     (data: ModalDataType<"coinShop">, options?: ModalOptions): string => {
       return openGameModal("coinShop", data, options);
     },
-    [openGameModal]
+    [openGameModal],
   );
 
   const showCoinPurchaseFanfareModal = useCallback(
-    (
-      data: ModalDataType<"coinPurchaseFanfare">,
-      options?: ModalOptions
-    ): string => {
+    (data: ModalDataType<"coinPurchaseFanfare">, options?: ModalOptions): string => {
       return openGameModal("coinPurchaseFanfare", data, options);
     },
-    [openGameModal]
+    [openGameModal],
   );
 
   const showAchievementUnlockFanfareModal = useCallback(
-    (
-      data: ModalDataType<"achievementUnlockFanfare">,
-      options?: ModalOptions
-    ): string => {
+    (data: ModalDataType<"achievementUnlockFanfare">, options?: ModalOptions): string => {
       return openGameModal("achievementUnlockFanfare", data, options);
     },
-    [openGameModal]
+    [openGameModal],
   );
 
   const showStreakIncreaseFanfareModal = useCallback(
-    (
-      data: ModalDataType<"streakIncreaseFanfare">,
-      options?: ModalOptions
-    ): string => {
+    (data: ModalDataType<"streakIncreaseFanfare">, options?: ModalOptions): string => {
       return openGameModal("streakIncreaseFanfare", data, options);
     },
-    [openGameModal]
+    [openGameModal],
   );
 
   const showLevelUpFanfareModal = useCallback(
     (data: ModalDataType<"levelUpFanfare">, options?: ModalOptions): string => {
       return openGameModal("levelUpFanfare", data, options);
     },
-    [openGameModal]
+    [openGameModal],
   );
 
   const showFullProfileDetailsModal = useCallback(
-    (
-      data: ModalDataType<"fullProfileDetails">,
-      options?: ModalOptions
-    ): string => {
+    (data: ModalDataType<"fullProfileDetails">, options?: ModalOptions): string => {
       return openGameModal("fullProfileDetails", data, options);
     },
-    [openGameModal]
+    [openGameModal],
   );
 
   const showChangePasswordModal = useCallback(
     (data: ModalDataType<"changePassword">, options?: ModalOptions): string => {
       return openGameModal("changePassword", data, options);
     },
-    [openGameModal]
+    [openGameModal],
   );
 
   const showUpdateUsernameModal = useCallback(
     (data: ModalDataType<"updateUsername">, options?: ModalOptions): string => {
       return openGameModal("updateUsername", data, options);
     },
-    [openGameModal]
+    [openGameModal],
   );
 
   const showAvatarOptionsModal = useCallback(
     (data: ModalDataType<"avatarOptions">, options?: ModalOptions): string => {
       return openGameModal("avatarOptions", data, options);
     },
-    [openGameModal]
+    [openGameModal],
   );
 
   const showPreloadedAvatarsModal = useCallback(
-    (
-      data: ModalDataType<"preloadedAvatars">,
-      options?: ModalOptions
-    ): string => {
+    (data: ModalDataType<"preloadedAvatars">, options?: ModalOptions): string => {
       return openGameModal("preloadedAvatars", data, options);
     },
-    [openGameModal]
+    [openGameModal],
   );
 
   const showInfoModal = useCallback(
     (data: ModalDataType<"info">, options?: ModalOptions): string => {
       return openGameModal("info", data, options);
     },
-    [openGameModal]
+    [openGameModal],
   );
 
   return {

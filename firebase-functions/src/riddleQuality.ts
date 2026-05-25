@@ -1,8 +1,6 @@
-const escapeRegExp = (value: string): string =>
-  value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const escapeRegExp = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-const normalizeForComparison = (value: string): string =>
-  value.toLowerCase().replace(/[^a-z0-9]/g, "");
+const normalizeForComparison = (value: string): string => value.toLowerCase().replace(/[^a-z0-9]/g, "");
 
 export function clueContainsLiteralAnswer(question: string, answer: string): boolean {
   const normalizedQuestion = normalizeForComparison(question);
@@ -16,9 +14,6 @@ export function clueContainsLiteralAnswer(question: string, answer: string): boo
     return true;
   }
 
-  const answerPattern = new RegExp(
-    `(^|[^a-z0-9])${escapeRegExp(answer.toLowerCase())}([^a-z0-9]|$)`,
-    "i",
-  );
+  const answerPattern = new RegExp(`(^|[^a-z0-9])${escapeRegExp(answer.toLowerCase())}([^a-z0-9]|$)`, "i");
   return answerPattern.test(question);
 }

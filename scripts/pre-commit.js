@@ -5,7 +5,7 @@
  * Emergency bypass: git commit --no-verify (use sparingly)
  */
 
-const { spawnSync } = require("child_process");
+const {spawnSync} = require("child_process");
 const path = require("path");
 
 const rootDir = path.resolve(__dirname, "..");

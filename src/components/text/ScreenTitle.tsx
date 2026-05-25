@@ -11,8 +11,8 @@
  */
 
 import React from "react";
-import { Text } from "react-native";
-import { styles, SPACING } from "../../styles";
+import {Text} from "react-native";
+import {styles, SPACING} from "../../styles";
 
 /**
  * Props interface for the ScreenTitle component.
@@ -67,10 +67,10 @@ interface ScreenTitleProps {
  * @param {ScreenTitleProps} props - Component props
  * @returns {JSX.Element} Rendered title text with consistent styling
  */
-const ScreenTitle = ({ title, className }: ScreenTitleProps) => (
+const ScreenTitle = ({title, className}: ScreenTitleProps) => (
   <Text
     className={`text-center font-bold text-white ${className || ""}`}
-    style={[styles.screenTitle, { marginBottom: SPACING.sm }]}
+    style={[styles.screenTitle, {marginBottom: SPACING.sm}]}
     accessibilityRole="header"
   >
     {title}
@@ -78,4 +78,3 @@ const ScreenTitle = ({ title, className }: ScreenTitleProps) => (
 );
 
 export default ScreenTitle;
-

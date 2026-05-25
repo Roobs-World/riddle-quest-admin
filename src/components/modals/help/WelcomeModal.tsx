@@ -22,12 +22,7 @@ interface WelcomeModalProps {
   onboardingProgress?: OnboardingProgress;
 }
 
-const WelcomeModal: React.FC<WelcomeModalProps> = ({
-  isVisible,
-  onClose,
-  onDismiss,
-  onboardingProgress,
-}) => {
+const WelcomeModal: React.FC<WelcomeModalProps> = ({isVisible, onClose, onDismiss, onboardingProgress}) => {
   const modalHeight = Math.min(MODAL_HEIGHT, MODAL_MAX_HEIGHT ?? MODAL_HEIGHT);
   const handleDismiss = () => {
     onClose();
@@ -70,9 +65,7 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({
                 height={modalHeight * 1.1}
                 style={{position: "absolute", top: -modalHeight * 0.05, left: -MODAL_WIDTH * 0.05}}
               />
-              {onboardingProgress ? (
-                <OnboardingProgressBadge {...onboardingProgress} />
-              ) : null}
+              {onboardingProgress ? <OnboardingProgressBadge {...onboardingProgress} /> : null}
 
               {/* Content */}
               <View

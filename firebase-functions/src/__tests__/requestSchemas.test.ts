@@ -145,12 +145,7 @@ describe("Request Schemas", () => {
     });
 
     test("should handle various riddle ID formats", () => {
-      const riddleIds = [
-        "daily_2024-01-15",
-        "classic_level_1",
-        "custom_riddle_abc123",
-        "riddle_12345",
-      ];
+      const riddleIds = ["daily_2024-01-15", "classic_level_1", "custom_riddle_abc123", "riddle_12345"];
 
       riddleIds.forEach((riddleId) => {
         const request: SubmitGuessRequestData = {

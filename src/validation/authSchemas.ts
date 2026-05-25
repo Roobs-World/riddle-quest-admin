@@ -1,5 +1,5 @@
-import { z } from "zod";
-import { validateUsernameForProfanity } from "../utils/profanityFilter";
+import {z} from "zod";
+import {validateUsernameForProfanity} from "../utils/profanityFilter";
 
 export const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -17,9 +17,8 @@ export const signUpSchema = z
           return profanityError === "";
         },
         {
-          message:
-            "Username contains inappropriate language. Please choose a different username.",
-        }
+          message: "Username contains inappropriate language. Please choose a different username.",
+        },
       ),
     email: z.string().email("Invalid email address"),
     password: z.string().min(6, "Password must be at least 6 characters long"),
@@ -32,4 +31,3 @@ export const signUpSchema = z
 
 export type LoginFormData = z.infer<typeof loginSchema>;
 export type SignUpFormData = z.infer<typeof signUpSchema>;
-

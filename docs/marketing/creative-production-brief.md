@@ -14,16 +14,16 @@ Last updated: 2026-05-23
 
 Produce 5-8 screenshots per listing.
 
-| Order | Scene | Overlay Copy |
-| ---: | --- | --- |
-| 1 | Riddle with partially filled answer grid | Solve riddles, not random words |
-| 2 | Guess feedback with green/yellow/red tiles | Use clues to crack the answer |
-| 3 | Daily Challenge selector or header | A fresh puzzle every day |
-| 4 | Classic Mode progression or victory | Keep solving through new levels |
-| 5 | Hint or coin moment | Stuck? Spend coins for a hint |
-| 6 | Achievement or level-up fanfare | Unlock achievements as you play |
-| 7 | Leaderboard or stats | Track streaks, wins, and progress |
-| 8 | Multilingual settings | Play in your language |
+| Order | Scene                                      | Overlay Copy                      |
+| ----: | ------------------------------------------ | --------------------------------- |
+|     1 | Riddle with partially filled answer grid   | Solve riddles, not random words   |
+|     2 | Guess feedback with green/yellow/red tiles | Use clues to crack the answer     |
+|     3 | Daily Challenge selector or header         | A fresh puzzle every day          |
+|     4 | Classic Mode progression or victory        | Keep solving through new levels   |
+|     5 | Hint or coin moment                        | Stuck? Spend coins for a hint     |
+|     6 | Achievement or level-up fanfare            | Unlock achievements as you play   |
+|     7 | Leaderboard or stats                       | Track streaks, wins, and progress |
+|     8 | Multilingual settings                      | Play in your language             |
 
 ## App Preview Video
 
@@ -41,18 +41,18 @@ Structure:
 
 Create at least 10 vertical videos for TikTok, Reels, and Shorts.
 
-| # | Hook | Visual |
-| ---: | --- | --- |
-| 1 | Can you solve this riddle in 5 guesses? | Riddle text, timer, guess grid |
-| 2 | This answer looks obvious until guess 3 | Failed guesses, color reveal |
-| 3 | Word puzzle players, try this | Fast gameplay montage |
-| 4 | The clue is doing half the work | Highlight riddle keywords |
-| 5 | I used one hint and still panicked | Hint reveal, near-loss solve |
-| 6 | Daily puzzle streak starts here | Daily Challenge and streak result |
-| 7 | Green, yellow, red: solve the mystery | Tile feedback explanation through gameplay |
-| 8 | One riddle, eleven languages | Localized UI montage |
-| 9 | Beat this before the answer reveal | Pause before final answer |
-| 10 | Classic Mode keeps going after the daily | Level progression montage |
+|   # | Hook                                     | Visual                                     |
+| --: | ---------------------------------------- | ------------------------------------------ |
+|   1 | Can you solve this riddle in 5 guesses?  | Riddle text, timer, guess grid             |
+|   2 | This answer looks obvious until guess 3  | Failed guesses, color reveal               |
+|   3 | Word puzzle players, try this            | Fast gameplay montage                      |
+|   4 | The clue is doing half the work          | Highlight riddle keywords                  |
+|   5 | I used one hint and still panicked       | Hint reveal, near-loss solve               |
+|   6 | Daily puzzle streak starts here          | Daily Challenge and streak result          |
+|   7 | Green, yellow, red: solve the mystery    | Tile feedback explanation through gameplay |
+|   8 | One riddle, eleven languages             | Localized UI montage                       |
+|   9 | Beat this before the answer reveal       | Pause before final answer                  |
+|  10 | Classic Mode keeps going after the daily | Level progression montage                  |
 
 ## Static Puzzle Posts
 
@@ -96,4 +96,3 @@ Post bank:
 - Show the riddle by second 2 in video.
 - End every asset with one clear CTA: "Play Riddle Quest" or "Join the 7-Day Challenge."
 - Localized assets must use real translated UI and store copy, not only translated captions.
-

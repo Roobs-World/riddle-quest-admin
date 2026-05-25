@@ -1,8 +1,5 @@
-import { modalStyles } from "../modals";
-import {
-  AUTH_CONTENT_MAX_WIDTH,
-  MODAL_MAX_HEIGHT,
-} from "../../../constants/layout";
+import {modalStyles} from "../modals";
+import {AUTH_CONTENT_MAX_WIDTH, MODAL_MAX_HEIGHT} from "../../../constants/layout";
 
 describe("modalStyles", () => {
   describe("Structure", () => {
@@ -222,11 +219,7 @@ describe("modalStyles", () => {
 
     it("maintains design system integration", () => {
       // Styles should reference design tokens properly
-      const stylesWithSpacing = [
-        modalStyles.content,
-        modalStyles.modalContainer,
-        modalStyles.overlayContent,
-      ];
+      const stylesWithSpacing = [modalStyles.content, modalStyles.modalContainer, modalStyles.overlayContent];
 
       stylesWithSpacing.forEach((style) => {
         expect(style.padding).toBeDefined();
@@ -235,4 +228,3 @@ describe("modalStyles", () => {
     });
   });
 });
-

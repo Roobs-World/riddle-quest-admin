@@ -1,9 +1,9 @@
-import { IUserDataService } from "./interfaces/IUserDataService";
-import { IRiddleDataService } from "./interfaces/IRiddleDataService";
-import { IAudioFeedbackService } from "./interfaces/IAudioFeedbackService";
-import { UserDataService } from "./UserDataService";
-import { RiddleDataService } from "./RiddleDataService";
-import { AudioFeedbackManager } from "./AudioFeedbackManager";
+import {IUserDataService} from "./interfaces/IUserDataService";
+import {IRiddleDataService} from "./interfaces/IRiddleDataService";
+import {IAudioFeedbackService} from "./interfaces/IAudioFeedbackService";
+import {UserDataService} from "./UserDataService";
+import {RiddleDataService} from "./RiddleDataService";
+import {AudioFeedbackManager} from "./AudioFeedbackManager";
 
 /**
  * Service registry for dependency injection
@@ -35,14 +35,8 @@ export class ServiceRegistry {
   private registerDefaults(): void {
     // Register default implementations
     this.register<IUserDataService>("UserDataService", new UserDataService());
-    this.register<IRiddleDataService>(
-      "RiddleDataService",
-      new RiddleDataService()
-    );
-    this.register<IAudioFeedbackService>(
-      "AudioFeedbackService",
-      new AudioFeedbackManager()
-    );
+    this.register<IRiddleDataService>("RiddleDataService", new RiddleDataService());
+    this.register<IAudioFeedbackService>("AudioFeedbackService", new AudioFeedbackManager());
   }
 
   /**
@@ -109,4 +103,3 @@ export class ServiceRegistry {
 
 // Export a singleton instance for convenience
 export const serviceRegistry = ServiceRegistry.getInstance();
-

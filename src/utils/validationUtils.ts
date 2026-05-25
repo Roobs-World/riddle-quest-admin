@@ -1,4 +1,4 @@
-import { ZodError } from "zod";
+import {ZodError} from "zod";
 
 /**
  * Utility functions for data validation
@@ -15,9 +15,7 @@ export class ValidationUtils {
    * Formats Zod validation errors into a readable string
    */
   static formatZodError(error: ZodError): string {
-    return error.issues
-      .map((issue) => `${issue.path.join(".")}: ${issue.message}`)
-      .join(", ");
+    return error.issues.map((issue) => `${issue.path.join(".")}: ${issue.message}`).join(", ");
   }
 
   /**
@@ -80,12 +78,7 @@ export class ValidationUtils {
 
     // Domain must have at least one dot after @
     const [, domain] = email.split("@");
-    if (
-      !domain ||
-      !domain.includes(".") ||
-      domain.startsWith(".") ||
-      domain.endsWith(".")
-    ) {
+    if (!domain || !domain.includes(".") || domain.startsWith(".") || domain.endsWith(".")) {
       return false;
     }
 
@@ -193,11 +186,7 @@ export class ValidationUtils {
     const date = new Date(year, month - 1, day); // month is 0-indexed in Date constructor
 
     // Check if the date is valid and matches the input
-    if (
-      date.getFullYear() !== year ||
-      date.getMonth() !== month - 1 ||
-      date.getDate() !== day
-    ) {
+    if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
       return false;
     }
 
@@ -207,12 +196,7 @@ export class ValidationUtils {
   /**
    * Validates that a game mode is valid
    */
-  static isValidGameMode(
-    mode: unknown
-  ): mode is "daily" | "classic" {
-    return (
-      typeof mode === "string" &&
-      ["daily", "classic"].includes(mode)
-    );
+  static isValidGameMode(mode: unknown): mode is "daily" | "classic" {
+    return typeof mode === "string" && ["daily", "classic"].includes(mode);
   }
 }

@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 // Import the validation utilities to test
-import { ValidationUtils } from "../validationUtils";
-import { z } from "zod";
-import { ZodError } from "zod";
+import {ValidationUtils} from "../validationUtils";
+import {z} from "zod";
+import {ZodError} from "zod";
 
 describe("ValidationUtils", () => {
   describe("Zod Error Handling", () => {
@@ -18,9 +18,7 @@ describe("ValidationUtils", () => {
       });
 
       it("should return false for non-ZodError instances", () => {
-        expect(ValidationUtils.isZodError(new Error("Regular error"))).toBe(
-          false
-        );
+        expect(ValidationUtils.isZodError(new Error("Regular error"))).toBe(false);
         expect(ValidationUtils.isZodError("string")).toBe(false);
         expect(ValidationUtils.isZodError(null)).toBe(false);
         expect(ValidationUtils.isZodError(undefined)).toBe(false);
@@ -29,9 +27,9 @@ describe("ValidationUtils", () => {
 
     describe("formatZodError", () => {
       it("should format ZodError with single issue", () => {
-        const schema = z.object({ name: z.string() });
+        const schema = z.object({name: z.string()});
         try {
-          schema.parse({ name: 123 });
+          schema.parse({name: 123});
         } catch (error) {
           if (error instanceof ZodError) {
             const formatted = ValidationUtils.formatZodError(error);
@@ -47,7 +45,7 @@ describe("ValidationUtils", () => {
           age: z.number(),
         });
         try {
-          schema.parse({ name: 123, age: "invalid" });
+          schema.parse({name: 123, age: "invalid"});
         } catch (error) {
           if (error instanceof ZodError) {
             const formatted = ValidationUtils.formatZodError(error);
@@ -86,13 +84,9 @@ describe("ValidationUtils", () => {
     describe("isValidEmail", () => {
       it("should return true for valid email addresses", () => {
         expect(ValidationUtils.isValidEmail("test@example.com")).toBe(true);
-        expect(ValidationUtils.isValidEmail("user.name+tag@domain.co.uk")).toBe(
-          true
-        );
+        expect(ValidationUtils.isValidEmail("user.name+tag@domain.co.uk")).toBe(true);
         expect(ValidationUtils.isValidEmail("simple@test.io")).toBe(true);
-        expect(
-          ValidationUtils.isValidEmail("user123@subdomain.example.org")
-        ).toBe(true);
+        expect(ValidationUtils.isValidEmail("user123@subdomain.example.org")).toBe(true);
       });
 
       it("should return false for invalid email formats", () => {
@@ -103,9 +97,7 @@ describe("ValidationUtils", () => {
       });
 
       it("should return false for emails with consecutive dots", () => {
-        expect(ValidationUtils.isValidEmail("test..email@example.com")).toBe(
-          false
-        );
+        expect(ValidationUtils.isValidEmail("test..email@example.com")).toBe(false);
         expect(ValidationUtils.isValidEmail(".test@example.com")).toBe(false);
         expect(ValidationUtils.isValidEmail("test@example.com.")).toBe(false);
       });
@@ -120,13 +112,7 @@ describe("ValidationUtils", () => {
 
     describe("isValidPassword", () => {
       test("should return true for passwords meeting minimum length", () => {
-        const validPasswords = [
-          "password",
-          "123456",
-          "simple",
-          "longerpassword",
-          "Password123!",
-        ];
+        const validPasswords = ["password", "123456", "simple", "longerpassword", "Password123!"];
 
         validPasswords.forEach((password) => {
           expect(ValidationUtils.isValidPassword(password)).toBe(true);
@@ -181,9 +167,7 @@ describe("ValidationUtils", () => {
       it("should return true for valid user IDs", () => {
         expect(ValidationUtils.isValidUserId("user123")).toBe(true);
         expect(ValidationUtils.isValidUserId("a")).toBe(true);
-        expect(ValidationUtils.isValidUserId("very-long-user-id-12345")).toBe(
-          true
-        );
+        expect(ValidationUtils.isValidUserId("very-long-user-id-12345")).toBe(true);
       });
 
       it("should return false for invalid user IDs", () => {
@@ -199,9 +183,7 @@ describe("ValidationUtils", () => {
       it("should return true for valid riddle IDs", () => {
         expect(ValidationUtils.isValidRiddleId("riddle123")).toBe(true);
         expect(ValidationUtils.isValidRiddleId("a")).toBe(true);
-        expect(
-          ValidationUtils.isValidRiddleId("very-long-riddle-id-12345")
-        ).toBe(true);
+        expect(ValidationUtils.isValidRiddleId("very-long-riddle-id-12345")).toBe(true);
       });
 
       it("should return false for invalid riddle IDs", () => {
@@ -362,14 +344,14 @@ describe("ValidationUtils", () => {
   describe("JSON Validation", () => {
     describe("safeJsonParse", () => {
       it("should parse valid JSON", () => {
-        const obj = { test: "value", number: 123 };
+        const obj = {test: "value", number: 123};
         const json = JSON.stringify(obj);
         const result = ValidationUtils.safeJsonParse(json, {});
         expect(result).toEqual(obj);
       });
 
       it("should return fallback for invalid JSON", () => {
-        const fallback = { default: "value" };
+        const fallback = {default: "value"};
         const result = ValidationUtils.safeJsonParse("invalid json", fallback);
         expect(result).toEqual(fallback);
       });
@@ -445,27 +427,18 @@ describe("ValidationUtils", () => {
     test("should handle JSON parsing in validation flow", () => {
       const validJsonString = '{"userId": "test123", "score": 85}';
       const invalidJsonString = '{"userId": "test123", "score": }';
-      const fallback = { userId: "", score: 0 };
+      const fallback = {userId: "", score: 0};
 
-      const validParsed = ValidationUtils.safeJsonParse(
-        validJsonString,
-        fallback
-      );
-      const invalidParsed = ValidationUtils.safeJsonParse(
-        invalidJsonString,
-        fallback
-      );
+      const validParsed = ValidationUtils.safeJsonParse(validJsonString, fallback);
+      const invalidParsed = ValidationUtils.safeJsonParse(invalidJsonString, fallback);
 
       expect(validParsed).not.toBe(fallback);
       expect(ValidationUtils.isNonEmptyString(validParsed.userId)).toBe(true);
       expect(ValidationUtils.isPositiveNumber(validParsed.score)).toBe(true);
 
       expect(invalidParsed).toBe(fallback);
-      expect(ValidationUtils.isNonEmptyString(invalidParsed.userId)).toBe(
-        false
-      );
+      expect(ValidationUtils.isNonEmptyString(invalidParsed.userId)).toBe(false);
       expect(ValidationUtils.isPositiveNumber(invalidParsed.score)).toBe(false);
     });
   });
 });
-

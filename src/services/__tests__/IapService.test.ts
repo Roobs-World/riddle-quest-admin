@@ -11,7 +11,7 @@ jest.mock("react-native-iap", () => ({
 
 // Mock react-native Platform
 jest.mock("react-native", () => ({
-  Platform: { OS: "ios" },
+  Platform: {OS: "ios"},
 }));
 
 // Create properly structured Firebase Functions mock
@@ -21,10 +21,10 @@ const mockHttpsCallable = jest.fn(() => mockCallableFunction);
 // Functions uses getFunctions(getApp()).httpsCallable - modular API
 jest.mock("@react-native-firebase/functions", () => ({
   __esModule: true,
-  getFunctions: jest.fn(() => ({ httpsCallable: mockHttpsCallable })),
+  getFunctions: jest.fn(() => ({httpsCallable: mockHttpsCallable})),
   // Standalone modular API: httpsCallable(functionsInstance, name) returns a callable
   httpsCallable: jest.fn((_instance: unknown, _name: string) => mockCallableFunction),
-  default: jest.fn(() => ({ httpsCallable: mockHttpsCallable })),
+  default: jest.fn(() => ({httpsCallable: mockHttpsCallable})),
 }));
 
 jest.mock("@react-native-firebase/app", () => ({
@@ -47,42 +47,29 @@ jest.mock("../AnalyticsService", () => ({
   },
 }));
 
-import { IapService, COIN_PRODUCT_DETAILS } from "../IapService";
+import {IapService, COIN_PRODUCT_DETAILS} from "../IapService";
 import * as RNIap from "react-native-iap";
-import { Platform } from "react-native";
-import { getFunctions, httpsCallable } from "@react-native-firebase/functions";
-import { analyticsService } from "../AnalyticsService";
+import {Platform} from "react-native";
+import {getFunctions, httpsCallable} from "@react-native-firebase/functions";
+import {analyticsService} from "../AnalyticsService";
 
 // Get the mocked functions for better type safety
-const mockInitConnection = RNIap.initConnection as jest.MockedFunction<
-  typeof RNIap.initConnection
+const mockInitConnection = RNIap.initConnection as jest.MockedFunction<typeof RNIap.initConnection>;
+const mockGetPurchaseHistory = RNIap.getAvailablePurchases as jest.MockedFunction<typeof RNIap.getAvailablePurchases>;
+const mockFinishTransaction = RNIap.finishTransaction as jest.MockedFunction<typeof RNIap.finishTransaction>;
+const mockGetProducts = RNIap.fetchProducts as jest.MockedFunction<typeof RNIap.fetchProducts>;
+const mockRequestPurchase = RNIap.requestPurchase as jest.MockedFunction<typeof RNIap.requestPurchase>;
+const mockPurchaseUpdatedListener = RNIap.purchaseUpdatedListener as jest.MockedFunction<
+  typeof RNIap.purchaseUpdatedListener
 >;
-const mockGetPurchaseHistory = RNIap.getAvailablePurchases as jest.MockedFunction<
-  typeof RNIap.getAvailablePurchases
+const mockPurchaseErrorListener = RNIap.purchaseErrorListener as jest.MockedFunction<
+  typeof RNIap.purchaseErrorListener
 >;
-const mockFinishTransaction = RNIap.finishTransaction as jest.MockedFunction<
-  typeof RNIap.finishTransaction
+const mockLogCoinPackPurchased = analyticsService.logCoinPackPurchased as jest.MockedFunction<
+  typeof analyticsService.logCoinPackPurchased
 >;
-const mockGetProducts = RNIap.fetchProducts as jest.MockedFunction<
-  typeof RNIap.fetchProducts
->;
-const mockRequestPurchase = RNIap.requestPurchase as jest.MockedFunction<
-  typeof RNIap.requestPurchase
->;
-const mockPurchaseUpdatedListener =
-  RNIap.purchaseUpdatedListener as jest.MockedFunction<
-    typeof RNIap.purchaseUpdatedListener
-  >;
-const mockPurchaseErrorListener =
-  RNIap.purchaseErrorListener as jest.MockedFunction<
-    typeof RNIap.purchaseErrorListener
-  >;
-const mockLogCoinPackPurchased =
-  analyticsService.logCoinPackPurchased as jest.MockedFunction<
-    typeof analyticsService.logCoinPackPurchased
-  >;
 
-const mockPlatform = Platform as { OS: string };
+const mockPlatform = Platform as {OS: string};
 
 // Mock console methods to reduce noise
 jest.spyOn(console, "log").mockImplementation(() => {});
@@ -116,15 +103,15 @@ describe("IapService", () => {
     }));
 
     // Setup default successful Firebase function response
-    mockCallableFunction.mockResolvedValue({ data: { success: true } });
+    mockCallableFunction.mockResolvedValue({data: {success: true}});
 
     // Ensure mockHttpsCallable returns our mockCallableFunction
     mockHttpsCallable.mockReturnValue(mockCallableFunction);
 
     // Ensure getFunctions returns our mock object
-    (getFunctions as jest.MockedFunction<typeof getFunctions>).mockReturnValue(
-      { httpsCallable: mockHttpsCallable } as any
-    );
+    (getFunctions as jest.MockedFunction<typeof getFunctions>).mockReturnValue({
+      httpsCallable: mockHttpsCallable,
+    } as any);
   });
 
   describe("COIN_PRODUCT_DETAILS", () => {
@@ -182,9 +169,7 @@ describe("IapService", () => {
     });
 
     it("should have progressively larger coin amounts", () => {
-      const coinAmounts = Object.values(COIN_PRODUCT_DETAILS).map(
-        (p) => p.coins
-      );
+      const coinAmounts = Object.values(COIN_PRODUCT_DETAILS).map((p) => p.coins);
       const sortedAmounts = [...coinAmounts].sort((a, b) => a - b);
       expect(coinAmounts).toEqual(expect.arrayContaining(sortedAmounts));
     });
@@ -298,10 +283,8 @@ describe("IapService", () => {
       const error = new Error("Connection failed");
       mockInitConnection.mockRejectedValue(error);
 
-      await expect(IapService.getProducts()).rejects.toThrow(
-        "Connection failed"
-      );
-      const { logger } = require("../../utils/logger");
+      await expect(IapService.getProducts()).rejects.toThrow("Connection failed");
+      const {logger} = require("../../utils/logger");
       expect(logger.error).toHaveBeenCalledWith("Error fetching products:", error);
       expect(mockGetProducts).not.toHaveBeenCalled();
     });
@@ -311,10 +294,8 @@ describe("IapService", () => {
       const historyError = new Error("Purchase history failed");
       mockGetPurchaseHistory.mockRejectedValue(historyError);
 
-      await expect(IapService.getProducts()).rejects.toThrow(
-        "Purchase history failed"
-      );
-      const { logger } = require("../../utils/logger");
+      await expect(IapService.getProducts()).rejects.toThrow("Purchase history failed");
+      const {logger} = require("../../utils/logger");
       expect(logger.error).toHaveBeenCalledWith("Error fetching products:", historyError);
     });
 
@@ -322,10 +303,8 @@ describe("IapService", () => {
       const error = new Error("Failed to fetch products");
       mockGetProducts.mockRejectedValue(error);
 
-      await expect(IapService.getProducts()).rejects.toThrow(
-        "Failed to fetch products"
-      );
-      const { logger } = require("../../utils/logger");
+      await expect(IapService.getProducts()).rejects.toThrow("Failed to fetch products");
+      const {logger} = require("../../utils/logger");
       expect(logger.error).toHaveBeenCalledWith("Error fetching products:", error);
     });
 
@@ -341,19 +320,13 @@ describe("IapService", () => {
   describe("validatePurchase", () => {
     it("should successfully validate purchase", async () => {
       mockCallableFunction.mockResolvedValue({
-        data: { success: true, newCoins: 100 },
+        data: {success: true, newCoins: 100},
       });
 
-      const result = await IapService.validatePurchase(
-        "test-token",
-        "com.roobsworld.riddlequest.coins100"
-      );
+      const result = await IapService.validatePurchase("test-token", "com.roobsworld.riddlequest.coins100");
 
       // Modular API: httpsCallable(functionsInstance, "validatePurchase")
-      expect(httpsCallable).toHaveBeenCalledWith(
-        expect.anything(),
-        "validatePurchase"
-      );
+      expect(httpsCallable).toHaveBeenCalledWith(expect.anything(), "validatePurchase");
       expect(mockCallableFunction).toHaveBeenCalledWith({
         purchaseToken: "test-token",
         productId: "com.roobsworld.riddlequest.coins100",
@@ -368,13 +341,10 @@ describe("IapService", () => {
 
     it("should handle validation failure", async () => {
       mockCallableFunction.mockResolvedValue({
-        data: { success: false, error: "Invalid receipt" },
+        data: {success: false, error: "Invalid receipt"},
       });
 
-      const result = await IapService.validatePurchase(
-        "invalid-token",
-        "com.roobsworld.riddlequest.coins100"
-      );
+      const result = await IapService.validatePurchase("invalid-token", "com.roobsworld.riddlequest.coins100");
 
       expect(result).toEqual({
         success: false,
@@ -387,27 +357,21 @@ describe("IapService", () => {
       const error = new Error("Network error");
       mockCallableFunction.mockRejectedValue(error);
 
-      await expect(
-        IapService.validatePurchase("test-token", "com.roobsworld.riddlequest.coins100")
-      ).rejects.toThrow("Network error");
-
-      const { logger } = require("../../utils/logger");
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error calling validatePurchase Firebase Function:",
-        error
+      await expect(IapService.validatePurchase("test-token", "com.roobsworld.riddlequest.coins100")).rejects.toThrow(
+        "Network error",
       );
+
+      const {logger} = require("../../utils/logger");
+      expect(logger.error).toHaveBeenCalledWith("Error calling validatePurchase Firebase Function:", error);
     });
 
     it("should validate with Android platform", async () => {
       mockPlatform.OS = "android";
       mockCallableFunction.mockResolvedValue({
-        data: { success: true },
+        data: {success: true},
       });
 
-      await IapService.validatePurchase(
-        "android-token",
-        "com.roobsworld.riddlequest.coins250"
-      );
+      await IapService.validatePurchase("android-token", "com.roobsworld.riddlequest.coins250");
 
       expect(mockCallableFunction).toHaveBeenCalledWith({
         purchaseToken: "android-token",
@@ -418,7 +382,7 @@ describe("IapService", () => {
 
     it("should handle null or undefined tokens", async () => {
       mockCallableFunction.mockResolvedValue({
-        data: { success: false },
+        data: {success: false},
       });
 
       await IapService.validatePurchase("", "com.roobsworld.riddlequest.coins100");
@@ -432,7 +396,7 @@ describe("IapService", () => {
 
   describe("grantDevCoinsFallback", () => {
     it("should call backend fallback even when local coin mapping is missing", async () => {
-      mockCallableFunction.mockResolvedValue({ data: { success: true } });
+      mockCallableFunction.mockResolvedValue({data: {success: true}});
       const unknownProductId = "com.roobsworld.riddlequest.coinpack999";
 
       const result = await IapService.grantDevCoinsFallback(unknownProductId);
@@ -443,16 +407,13 @@ describe("IapService", () => {
         coinsAwarded: 0,
         newlyUnlockedAchievementIds: [],
       });
-      expect(httpsCallable).toHaveBeenCalledWith(
-        expect.anything(),
-        "grantDevCoinsForPurchase"
-      );
+      expect(httpsCallable).toHaveBeenCalledWith(expect.anything(), "grantDevCoinsForPurchase");
       expect(mockCallableFunction).toHaveBeenCalledWith({
         productId: unknownProductId,
       });
-      const { logger } = require("../../utils/logger");
+      const {logger} = require("../../utils/logger");
       expect(logger.warn).toHaveBeenCalledWith(
-        `No local coin mapping found for dev fallback product: ${unknownProductId}; attempting backend fallback anyway.`
+        `No local coin mapping found for dev fallback product: ${unknownProductId}; attempting backend fallback anyway.`,
       );
     });
 
@@ -484,12 +445,12 @@ describe("IapService", () => {
       mockPlatform.OS = "ios";
       mockRequestPurchase.mockResolvedValue(mockPurchase);
       mockCallableFunction.mockResolvedValue({
-        data: { success: true, newCoins: 100 },
+        data: {success: true, newCoins: 100},
       });
 
-      await expect(
-        IapService.purchaseProduct("com.roobsworld.riddlequest.coins100")
-      ).resolves.toEqual(expect.objectContaining({ ...mockPurchase }));
+      await expect(IapService.purchaseProduct("com.roobsworld.riddlequest.coins100")).resolves.toEqual(
+        expect.objectContaining({...mockPurchase}),
+      );
       expect(mockLogCoinPackPurchased).toHaveBeenCalledWith({
         productId: "com.roobsworld.riddlequest.coins100",
         coins: 0,
@@ -501,39 +462,37 @@ describe("IapService", () => {
       mockPlatform.OS = "android";
       mockRequestPurchase.mockResolvedValue(mockPurchase);
       mockCallableFunction.mockResolvedValue({
-        data: { success: true, newCoins: 100 },
+        data: {success: true, newCoins: 100},
       });
 
-      await expect(
-        IapService.purchaseProduct("com.roobsworld.riddlequest.coins100")
-      ).resolves.toEqual(expect.objectContaining({ ...mockPurchase }));
+      await expect(IapService.purchaseProduct("com.roobsworld.riddlequest.coins100")).resolves.toEqual(
+        expect.objectContaining({...mockPurchase}),
+      );
     });
 
     it("should handle array response from requestPurchase", async () => {
       mockRequestPurchase.mockResolvedValue([mockPurchase] as any);
-      mockCallableFunction.mockResolvedValue({ data: { success: true } });
+      mockCallableFunction.mockResolvedValue({data: {success: true}});
 
-      await expect(
-        IapService.purchaseProduct("com.roobsworld.riddlequest.coins100")
-      ).resolves.toEqual(expect.objectContaining({ ...mockPurchase }));
+      await expect(IapService.purchaseProduct("com.roobsworld.riddlequest.coins100")).resolves.toEqual(
+        expect.objectContaining({...mockPurchase}),
+      );
     });
 
     it("should resolve purchase from purchaseUpdatedListener when requestPurchase returns null", async () => {
       mockRequestPurchase.mockResolvedValue(null as any);
-      mockCallableFunction.mockResolvedValue({ data: { success: true } });
+      mockCallableFunction.mockResolvedValue({data: {success: true}});
 
       mockPurchaseUpdatedListener.mockImplementation((listener: (purchase: RNIap.Purchase) => void) => {
         listener({
           ...mockPurchase,
           productId: "com.roobsworld.riddlequest.coins100",
         } as RNIap.Purchase);
-        return { remove: jest.fn() };
+        return {remove: jest.fn()};
       });
 
-      await expect(
-        IapService.purchaseProduct("com.roobsworld.riddlequest.coins100")
-      ).resolves.toEqual(
-        expect.objectContaining({ productId: "com.roobsworld.riddlequest.coins100" })
+      await expect(IapService.purchaseProduct("com.roobsworld.riddlequest.coins100")).resolves.toEqual(
+        expect.objectContaining({productId: "com.roobsworld.riddlequest.coins100"}),
       );
     });
 
@@ -543,10 +502,8 @@ describe("IapService", () => {
       const result = await IapService.purchaseProduct("com.roobsworld.riddlequest.coins100");
 
       expect(result).toBe(null);
-      const { logger } = require("../../utils/logger");
-      expect(logger.debug).toHaveBeenCalledWith(
-        "Purchase request did not return a purchase object."
-      );
+      const {logger} = require("../../utils/logger");
+      expect(logger.debug).toHaveBeenCalledWith("Purchase request did not return a purchase object.");
       expect(mockFinishTransaction).not.toHaveBeenCalled();
     });
 
@@ -556,15 +513,11 @@ describe("IapService", () => {
       mockCallableFunction.mockRejectedValueOnce(new Error("Unauthenticated"));
 
       try {
-        await expect(
-          IapService.purchaseProduct("com.qwordly.coinpack1")
-        ).resolves.toEqual(
+        await expect(IapService.purchaseProduct("com.qwordly.coinpack1")).resolves.toEqual(
           expect.objectContaining({
             productId: "com.roobsworld.riddlequest.coinpack1",
-            transactionId: expect.stringContaining(
-              "dev-local-com.roobsworld.riddlequest.coinpack1"
-            ),
-          })
+            transactionId: expect.stringContaining("dev-local-com.roobsworld.riddlequest.coinpack1"),
+          }),
         );
         expect(mockRequestPurchase).not.toHaveBeenCalled();
         expect(mockCallableFunction).toHaveBeenCalledWith({
@@ -586,9 +539,9 @@ describe("IapService", () => {
       mockCallableFunction.mockRejectedValueOnce(new Error("Unauthenticated"));
 
       try {
-        await expect(
-          IapService.purchaseProduct("com.qwordly.coinpack999")
-        ).rejects.toThrow("This item is currently unavailable.");
+        await expect(IapService.purchaseProduct("com.qwordly.coinpack999")).rejects.toThrow(
+          "This item is currently unavailable.",
+        );
         expect(mockRequestPurchase).not.toHaveBeenCalled();
       } finally {
         if (originalWorkerId === undefined) {
@@ -616,10 +569,8 @@ describe("IapService", () => {
       };
       mockRequestPurchase.mockResolvedValue(purchaseWithoutToken as any);
 
-      await expect(
-        IapService.purchaseProduct("com.roobsworld.riddlequest.coins100")
-      ).rejects.toThrow(
-        "Could not process purchase token. Please try purchasing again."
+      await expect(IapService.purchaseProduct("com.roobsworld.riddlequest.coins100")).rejects.toThrow(
+        "Could not process purchase token. Please try purchasing again.",
       );
 
       expect(mockFinishTransaction).not.toHaveBeenCalled();
@@ -627,24 +578,20 @@ describe("IapService", () => {
 
     it("should handle missing purchase token on Android", async () => {
       mockPlatform.OS = "android";
-      const purchaseWithoutToken = { ...mockPurchase, purchaseToken: null };
+      const purchaseWithoutToken = {...mockPurchase, purchaseToken: null};
       mockRequestPurchase.mockResolvedValue(purchaseWithoutToken as any);
 
-      await expect(
-        IapService.purchaseProduct("com.roobsworld.riddlequest.coins100")
-      ).rejects.toThrow(
-        "Could not process purchase token. Please try purchasing again."
+      await expect(IapService.purchaseProduct("com.roobsworld.riddlequest.coins100")).rejects.toThrow(
+        "Could not process purchase token. Please try purchasing again.",
       );
     });
 
     it("should handle validation failure", async () => {
       mockRequestPurchase.mockResolvedValue(mockPurchase);
-      mockCallableFunction.mockResolvedValue({ data: { success: false } });
+      mockCallableFunction.mockResolvedValue({data: {success: false}});
 
-      await expect(
-        IapService.purchaseProduct("com.roobsworld.riddlequest.coins100")
-      ).rejects.toThrow(
-        "A network error occurred during purchase validation. Please check your internet connection."
+      await expect(IapService.purchaseProduct("com.roobsworld.riddlequest.coins100")).rejects.toThrow(
+        "A network error occurred during purchase validation. Please check your internet connection.",
       );
 
       expect(mockFinishTransaction).not.toHaveBeenCalled();
@@ -654,10 +601,8 @@ describe("IapService", () => {
       mockRequestPurchase.mockResolvedValue(mockPurchase);
       mockCallableFunction.mockRejectedValue(new Error("Network error"));
 
-      await expect(
-        IapService.purchaseProduct("com.roobsworld.riddlequest.coins100")
-      ).rejects.toThrow(
-        "A network error occurred during purchase validation. Please check your internet connection."
+      await expect(IapService.purchaseProduct("com.roobsworld.riddlequest.coins100")).rejects.toThrow(
+        "A network error occurred during purchase validation. Please check your internet connection.",
       );
 
       expect(mockFinishTransaction).not.toHaveBeenCalled();
@@ -669,11 +614,11 @@ describe("IapService", () => {
         error.code = "E_USER_CANCELLED";
         mockRequestPurchase.mockRejectedValue(error);
 
-        await expect(
-          IapService.purchaseProduct("com.roobsworld.riddlequest.coins100")
-        ).rejects.toThrow("Purchase cancelled.");
+        await expect(IapService.purchaseProduct("com.roobsworld.riddlequest.coins100")).rejects.toThrow(
+          "Purchase cancelled.",
+        );
 
-        const { logger } = require("../../utils/logger");
+        const {logger} = require("../../utils/logger");
         expect(logger.debug).toHaveBeenCalledWith("Purchase cancelled by user.");
       });
 
@@ -682,11 +627,11 @@ describe("IapService", () => {
         error.code = "E_ALREADY_OWNED";
         mockRequestPurchase.mockRejectedValue(error);
 
-        await expect(
-          IapService.purchaseProduct("com.roobsworld.riddlequest.coins100")
-        ).rejects.toThrow("You already own this item.");
+        await expect(IapService.purchaseProduct("com.roobsworld.riddlequest.coins100")).rejects.toThrow(
+          "You already own this item.",
+        );
 
-        const { logger } = require("../../utils/logger");
+        const {logger} = require("../../utils/logger");
         expect(logger.debug).toHaveBeenCalledWith("Item already owned.");
       });
 
@@ -695,13 +640,11 @@ describe("IapService", () => {
         error.code = "E_DEVELOPER_ERROR";
         mockRequestPurchase.mockRejectedValue(error);
 
-        await expect(
-          IapService.purchaseProduct("com.roobsworld.riddlequest.coins100")
-        ).rejects.toThrow(
-          "A system error occurred. Please contact support if this persists."
+        await expect(IapService.purchaseProduct("com.roobsworld.riddlequest.coins100")).rejects.toThrow(
+          "A system error occurred. Please contact support if this persists.",
         );
 
-        const { logger } = require("../../utils/logger");
+        const {logger} = require("../../utils/logger");
         expect(logger.debug).toHaveBeenCalledWith("Developer error.");
       });
 
@@ -710,11 +653,11 @@ describe("IapService", () => {
         error.code = "E_ITEM_UNAVAILABLE";
         mockRequestPurchase.mockRejectedValue(error);
 
-        await expect(
-          IapService.purchaseProduct("com.roobsworld.riddlequest.coins100")
-        ).rejects.toThrow("This item is currently unavailable.");
+        await expect(IapService.purchaseProduct("com.roobsworld.riddlequest.coins100")).rejects.toThrow(
+          "This item is currently unavailable.",
+        );
 
-        const { logger } = require("../../utils/logger");
+        const {logger} = require("../../utils/logger");
         expect(logger.debug).toHaveBeenCalledWith("Item unavailable.");
       });
 
@@ -723,14 +666,12 @@ describe("IapService", () => {
         error.code = "sku-not-found";
         mockRequestPurchase.mockRejectedValue(error);
 
-        await expect(
-          IapService.purchaseProduct("com.roobsworld.riddlequest.coins100")
-        ).rejects.toThrow("This item is currently unavailable.");
-
-        const { logger } = require("../../utils/logger");
-        expect(logger.debug).toHaveBeenCalledWith(
-          "SKU not found for current store account."
+        await expect(IapService.purchaseProduct("com.roobsworld.riddlequest.coins100")).rejects.toThrow(
+          "This item is currently unavailable.",
         );
+
+        const {logger} = require("../../utils/logger");
+        expect(logger.debug).toHaveBeenCalledWith("SKU not found for current store account.");
       });
 
       it("should handle E_NETWORK_ERROR error", async () => {
@@ -738,46 +679,35 @@ describe("IapService", () => {
         error.code = "E_NETWORK_ERROR";
         mockRequestPurchase.mockRejectedValue(error);
 
-        await expect(
-          IapService.purchaseProduct("com.roobsworld.riddlequest.coins100")
-        ).rejects.toThrow(
-          "Network error. Please check your connection and try again."
+        await expect(IapService.purchaseProduct("com.roobsworld.riddlequest.coins100")).rejects.toThrow(
+          "Network error. Please check your connection and try again.",
         );
 
-        const { logger } = require("../../utils/logger");
-        expect(logger.debug).toHaveBeenCalledWith(
-          "Network error during purchase."
-        );
+        const {logger} = require("../../utils/logger");
+        expect(logger.debug).toHaveBeenCalledWith("Network error during purchase.");
       });
 
       it("should handle unknown errors", async () => {
         const error = new Error("Unknown error");
         mockRequestPurchase.mockRejectedValue(error);
 
-        await expect(
-          IapService.purchaseProduct("com.roobsworld.riddlequest.coins100")
-        ).rejects.toThrow(
-          "An unexpected error occurred during the purchase process. Please try again."
+        await expect(IapService.purchaseProduct("com.roobsworld.riddlequest.coins100")).rejects.toThrow(
+          "An unexpected error occurred during the purchase process. Please try again.",
         );
 
-        const { logger } = require("../../utils/logger");
-        expect(logger.error).toHaveBeenCalledWith(
-          "Error purchasing product:",
-          error
-        );
+        const {logger} = require("../../utils/logger");
+        expect(logger.error).toHaveBeenCalledWith("Error purchasing product:", error);
       });
 
       it("should preserve custom validation error messages", async () => {
         mockRequestPurchase.mockResolvedValue(mockPurchase);
         const validationError = new Error(
-          "A network error occurred during purchase validation. Please check your internet connection."
+          "A network error occurred during purchase validation. Please check your internet connection.",
         );
         mockCallableFunction.mockRejectedValue(validationError);
 
-        await expect(
-          IapService.purchaseProduct("com.roobsworld.riddlequest.coins100")
-        ).rejects.toThrow(
-          "A network error occurred during purchase validation. Please check your internet connection."
+        await expect(IapService.purchaseProduct("com.roobsworld.riddlequest.coins100")).rejects.toThrow(
+          "A network error occurred during purchase validation. Please check your internet connection.",
         );
       });
     });
@@ -803,9 +733,7 @@ describe("IapService", () => {
     });
 
     it("should return undefined for invalid product ID", () => {
-      expect(
-        IapService.getCoinsForProduct("com.yourgame.invalid")
-      ).toBeUndefined();
+      expect(IapService.getCoinsForProduct("com.yourgame.invalid")).toBeUndefined();
       expect(IapService.getCoinsForProduct("")).toBeUndefined();
       expect(IapService.getCoinsForProduct("random_string")).toBeUndefined();
     });
@@ -816,36 +744,20 @@ describe("IapService", () => {
     });
 
     it("should handle case sensitivity", () => {
-      expect(
-        IapService.getCoinsForProduct("COM.YOURGAME.COINPACK1")
-      ).toBeUndefined();
-      expect(
-        IapService.getCoinsForProduct("com.yourgame.COINPACK1")
-      ).toBeUndefined();
+      expect(IapService.getCoinsForProduct("COM.YOURGAME.COINPACK1")).toBeUndefined();
+      expect(IapService.getCoinsForProduct("com.yourgame.COINPACK1")).toBeUndefined();
     });
 
     it("should handle partial matches", () => {
-      expect(
-        IapService.getCoinsForProduct("com.yourgame.coinpack")
-      ).toBeUndefined();
-      expect(
-        IapService.getCoinsForProduct("yourgame.coinpack1")
-      ).toBeUndefined();
-      expect(
-        IapService.getCoinsForProduct("com.roobsworld.riddlequest.coins100.extra")
-      ).toBeUndefined();
+      expect(IapService.getCoinsForProduct("com.yourgame.coinpack")).toBeUndefined();
+      expect(IapService.getCoinsForProduct("yourgame.coinpack1")).toBeUndefined();
+      expect(IapService.getCoinsForProduct("com.roobsworld.riddlequest.coins100.extra")).toBeUndefined();
     });
 
     it("should handle special characters", () => {
-      expect(
-        IapService.getCoinsForProduct("com.roobsworld.riddlequest.coins100!")
-      ).toBeUndefined();
-      expect(
-        IapService.getCoinsForProduct("com.roobsworld.riddlequest.coins100 ")
-      ).toBeUndefined();
-      expect(
-        IapService.getCoinsForProduct(" com.roobsworld.riddlequest.coins100")
-      ).toBeUndefined();
+      expect(IapService.getCoinsForProduct("com.roobsworld.riddlequest.coins100!")).toBeUndefined();
+      expect(IapService.getCoinsForProduct("com.roobsworld.riddlequest.coins100 ")).toBeUndefined();
+      expect(IapService.getCoinsForProduct(" com.roobsworld.riddlequest.coins100")).toBeUndefined();
     });
   });
 
@@ -862,13 +774,11 @@ describe("IapService", () => {
       mockInitConnection.mockResolvedValue(true as any);
       mockGetProducts.mockResolvedValue([]);
       mockRequestPurchase.mockResolvedValue(null as any);
-      mockCallableFunction.mockResolvedValue({ data: { success: true } });
+      mockCallableFunction.mockResolvedValue({data: {success: true}});
 
       expect(IapService.getProducts()).toBeInstanceOf(Promise);
       expect(IapService.purchaseProduct("test")).toBeInstanceOf(Promise);
-      expect(IapService.validatePurchase("test", "test")).toBeInstanceOf(
-        Promise
-      );
+      expect(IapService.validatePurchase("test", "test")).toBeInstanceOf(Promise);
     });
 
     it("should handle method calls without parameters", async () => {
@@ -882,21 +792,19 @@ describe("IapService", () => {
     it("should handle complete purchase flow", async () => {
       mockRequestPurchase.mockResolvedValue(mockPurchase);
       mockCallableFunction.mockResolvedValue({
-        data: { success: true, newCoins: 100 },
+        data: {success: true, newCoins: 100},
       });
 
-      await expect(
-        IapService.purchaseProduct("com.roobsworld.riddlequest.coins100")
-      ).resolves.toEqual(expect.objectContaining({ ...mockPurchase }));
+      await expect(IapService.purchaseProduct("com.roobsworld.riddlequest.coins100")).resolves.toEqual(
+        expect.objectContaining({...mockPurchase}),
+      );
     });
 
     it("should handle product lookup and purchase", async () => {
-      const products: RNIap.Product[] = [
-        { id: "com.roobsworld.riddlequest.coinpack2", price: "$0.99" } as any,
-      ];
+      const products: RNIap.Product[] = [{id: "com.roobsworld.riddlequest.coinpack2", price: "$0.99"} as any];
       mockGetProducts.mockResolvedValue(products);
       mockRequestPurchase.mockResolvedValue(mockPurchase);
-      mockCallableFunction.mockResolvedValue({ data: { success: true } });
+      mockCallableFunction.mockResolvedValue({data: {success: true}});
 
       const fetchedProducts = await IapService.getProducts();
       const coins = IapService.getCoinsForProduct(fetchedProducts[0].id);
@@ -904,11 +812,9 @@ describe("IapService", () => {
       expect(fetchedProducts).toEqual(products);
       expect(coins).toBe(100);
 
-      await expect(
-        IapService.purchaseProduct(fetchedProducts[0].id)
-      ).resolves.toEqual(expect.objectContaining({ ...mockPurchase }));
+      await expect(IapService.purchaseProduct(fetchedProducts[0].id)).resolves.toEqual(
+        expect.objectContaining({...mockPurchase}),
+      );
     });
   });
 });
-
-

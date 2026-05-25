@@ -3,12 +3,12 @@
  * Input fields, form elements, and form-related styling
  */
 
-import { StyleSheet, TextStyle, ViewStyle } from "react-native";
-import { SPACING } from "../tokens/spacing";
-import { verticalScale } from "../../utils/responsive";
-import { BORDER_RADIUS } from "../tokens/borderRadius";
-import { COLORS } from "../tokens/colors";
-import { TYPOGRAPHY } from "../tokens/typography";
+import {StyleSheet, TextStyle, ViewStyle} from "react-native";
+import {SPACING} from "../tokens/spacing";
+import {verticalScale} from "../../utils/responsive";
+import {BORDER_RADIUS} from "../tokens/borderRadius";
+import {COLORS} from "../tokens/colors";
+import {TYPOGRAPHY} from "../tokens/typography";
 
 export const formStyles = StyleSheet.create({
   debugContainer: {

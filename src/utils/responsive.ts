@@ -27,23 +27,23 @@
  * call these functions directly.
  */
 
-import { Dimensions } from "react-native";
-import { logger } from "./logger";
+import {Dimensions} from "react-native";
+import {logger} from "./logger";
 
 // ---------------------------------------------------------------------------
 // Snapshot screen dimensions once at module load
 // (safe: StyleSheet values are computed once; orientation is locked to portrait)
 // ---------------------------------------------------------------------------
 
-let _dims: { width: number; height: number } = { width: 390, height: 844 };
+let _dims: {width: number; height: number} = {width: 390, height: 844};
 try {
   const _got = Dimensions.get("window");
   if (_got && typeof _got.width === "number") _dims = _got;
 } catch {
-  logger.error('dimensions not found');
+  logger.error("dimensions not found");
 }
 
-const { width: screenWidth, height: screenHeight } = _dims;
+const {width: screenWidth, height: screenHeight} = _dims;
 
 // ---------------------------------------------------------------------------
 // Reference device — iPhone 14
@@ -143,8 +143,7 @@ export const moderateScale = (size: number, factor = 0.5): number => {
  * @example
  * clamp(moderateScale(32), 28, 40) // never below 28 or above 40
  */
-export const clamp = (value: number, min: number, max: number): number =>
-  Math.min(max, Math.max(min, value));
+export const clamp = (value: number, min: number, max: number): number => Math.min(max, Math.max(min, value));
 
 // ---------------------------------------------------------------------------
 // Device-tier value selector
@@ -157,16 +156,10 @@ export const clamp = (value: number, min: number, max: number): number =>
  * @example
  * const padding = responsiveValue({ phone: 16, tablet: 24, desktop: 32 });
  */
-export const responsiveValue = <T>(values: {
-  phone: T;
-  tablet?: T;
-  largeTablet?: T;
-  desktop?: T;
-}): T => {
+export const responsiveValue = <T>(values: {phone: T; tablet?: T; largeTablet?: T; desktop?: T}): T => {
   const tier = getDeviceType();
   if (tier === "desktop" && values.desktop !== undefined) return values.desktop;
-  if ((tier === "desktop" || tier === "largeTablet") && values.largeTablet !== undefined)
-    return values.largeTablet;
+  if ((tier === "desktop" || tier === "largeTablet") && values.largeTablet !== undefined) return values.largeTablet;
   if (tier !== "phone" && values.tablet !== undefined) return values.tablet;
   return values.phone;
 };
@@ -253,4 +246,3 @@ export const addOrientationChangeListener = (callback: () => void): (() => void)
   const subscription = Dimensions.addEventListener("change", callback);
   return () => subscription?.remove();
 };
-

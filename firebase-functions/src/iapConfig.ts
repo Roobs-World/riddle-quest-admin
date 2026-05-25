@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { captureException } from "./sentry";
+import {captureException} from "./sentry";
 
 let appleSharedSecret: string | undefined;
 let finalGoogleServiceAccountForIap: Record<string, unknown> | undefined; // This will be populated from process.env
@@ -98,9 +98,7 @@ export function initializeIapConfig(): void {
     }
   } else if (isJestEnvironment && !serviceAccountPathFromEnv) {
     // Jest unit tests can use placeholder credentials.
-    console.log(
-      "[iapConfig Jest Unit Test] GOOGLE_SERVICE_ACCOUNT_JSON_PATH not set. This is okay for unit tests.",
-    ); // Changed to console.log
+    console.log("[iapConfig Jest Unit Test] GOOGLE_SERVICE_ACCOUNT_JSON_PATH not set. This is okay for unit tests."); // Changed to console.log
     finalGoogleServiceAccountForIap = {privateKey: "JEST_UNIT_TEST_PLACEHOLDER_KEY"};
   }
 
@@ -158,12 +156,12 @@ export const NO_ADS_PRODUCT_ID = "com.roobsworld.riddlequest.no_ads";
 export const BACKEND_COIN_PRODUCT_DETAILS: {
   [key: string]: {id: string; coins: number};
 } = {
-  COIN_PACK_TINY:  {id: "com.roobsworld.riddlequest.coinpack1", coins: 50},
+  COIN_PACK_TINY: {id: "com.roobsworld.riddlequest.coinpack1", coins: 50},
   COIN_PACK_SMALL: {id: "com.roobsworld.riddlequest.coinpack2", coins: 100},
-  COIN_PACK_MID:   {id: "com.roobsworld.riddlequest.coinpack3", coins: 250},
+  COIN_PACK_MID: {id: "com.roobsworld.riddlequest.coinpack3", coins: 250},
   COIN_PACK_LARGE: {id: "com.roobsworld.riddlequest.coinpack4", coins: 500},
-  COIN_PACK_HUGE:  {id: "com.roobsworld.riddlequest.coinpack5", coins: 1000},
-  COIN_PACK_MEGA:  {id: "com.roobsworld.riddlequest.coinpack6", coins: 2000},
+  COIN_PACK_HUGE: {id: "com.roobsworld.riddlequest.coinpack5", coins: 1000},
+  COIN_PACK_MEGA: {id: "com.roobsworld.riddlequest.coinpack6", coins: 2000},
 };
 
 // Automatically initialize if not in a Jest test environment
@@ -172,9 +170,7 @@ if (process.env.JEST_WORKER_ID === undefined) {
   initializeIapConfig();
 } else {
   // For Jest, initialization is expected to be called explicitly by test setup if needed.
-  console.log(
-    "[iapConfig] In Jest environment, explicit initializeIapConfig() call needed by tests.",
-  ); // Changed to console.log
+  console.log("[iapConfig] In Jest environment, explicit initializeIapConfig() call needed by tests."); // Changed to console.log
 }
 
 // Export a getter for iapGoogleCredentials if other modules need it after init

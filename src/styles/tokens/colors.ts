@@ -69,4 +69,3 @@ export const COLORS = {
   // Text shadow colors
   textShadowDark: "rgba(0, 0, 0, 0.75)",
 } as const;
-

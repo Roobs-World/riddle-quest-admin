@@ -1,15 +1,10 @@
 const ANSWER_TOKEN_PATTERN = /[a-z0-9]+/gi;
 
-const escapeRegExp = (value: string): string =>
-  value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const escapeRegExp = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-const normalizeForComparison = (value: string): string =>
-  value.toLowerCase().replace(/[^a-z0-9]/g, "");
+const normalizeForComparison = (value: string): string => value.toLowerCase().replace(/[^a-z0-9]/g, "");
 
-export const clueContainsLiteralAnswer = (
-  clue: string,
-  answer: string
-): boolean => {
+export const clueContainsLiteralAnswer = (clue: string, answer: string): boolean => {
   const normalizedAnswer = normalizeForComparison(answer);
   const normalizedClue = normalizeForComparison(clue);
 
@@ -21,10 +16,7 @@ export const clueContainsLiteralAnswer = (
     return true;
   }
 
-  const answerPattern = new RegExp(
-    `(^|[^a-z0-9])${escapeRegExp(answer.toLowerCase())}([^a-z0-9]|$)`,
-    "i"
-  );
+  const answerPattern = new RegExp(`(^|[^a-z0-9])${escapeRegExp(answer.toLowerCase())}([^a-z0-9]|$)`, "i");
   return answerPattern.test(clue);
 };
 
@@ -36,10 +28,7 @@ export const buildFallbackClue = (answer: string): string => {
   return `Solve this ${answerLength}-letter word.`;
 };
 
-export const resolvePlayableRiddleText = (
-  riddleText: string,
-  answer: string
-): string => {
+export const resolvePlayableRiddleText = (riddleText: string, answer: string): string => {
   if (!clueContainsLiteralAnswer(riddleText, answer)) {
     return riddleText;
   }
@@ -47,5 +36,4 @@ export const resolvePlayableRiddleText = (
   return buildFallbackClue(answer);
 };
 
-export const getAnswerTokens = (answer: string): string[] =>
-  answer.match(ANSWER_TOKEN_PATTERN) ?? [];
+export const getAnswerTokens = (answer: string): string[] => answer.match(ANSWER_TOKEN_PATTERN) ?? [];

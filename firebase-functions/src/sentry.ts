@@ -22,10 +22,7 @@ if (dsn) {
  * @param error   - Any caught value (Error, string, unknown).
  * @param context - Optional key/value pairs attached as extra context.
  */
-export function captureException(
-  error: unknown,
-  context?: Record<string, unknown>
-): void {
+export function captureException(error: unknown, context?: Record<string, unknown>): void {
   if (!dsn) return;
   if (context) {
     Sentry.withScope((scope) => {
@@ -43,10 +40,7 @@ export function captureException(
  * @param message - Human-readable message.
  * @param level   - Sentry severity level (defaults to "info").
  */
-export function captureMessage(
-  message: string,
-  level: "info" | "warning" | "error" = "info"
-): void {
+export function captureMessage(message: string, level: "info" | "warning" | "error" = "info"): void {
   if (!dsn) return;
   Sentry.captureMessage(message, level);
 }

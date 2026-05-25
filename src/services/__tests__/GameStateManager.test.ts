@@ -1,9 +1,9 @@
-import { GameStateManager, useGameStateManager } from "../GameStateManager";
-import { GameMode } from "../../contexts/AuthContext";
-import { RiddleService } from "../RiddleService";
-import { serviceRegistry } from "../ServiceRegistry";
-import { IAudioFeedbackService } from "../interfaces/IAudioFeedbackService";
-import { renderHook, act } from "@testing-library/react-native";
+import {GameStateManager, useGameStateManager} from "../GameStateManager";
+import {GameMode} from "../../contexts/AuthContext";
+import {RiddleService} from "../RiddleService";
+import {serviceRegistry} from "../ServiceRegistry";
+import {IAudioFeedbackService} from "../interfaces/IAudioFeedbackService";
+import {renderHook, act} from "@testing-library/react-native";
 
 // Mock dependencies
 jest.mock("../RiddleService", () => ({
@@ -29,9 +29,7 @@ const mockAudioFeedback: jest.Mocked<IAudioFeedbackService> = {
 
 describe("GameStateManager", () => {
   let gameStateManager: GameStateManager;
-  let mockOnGameComplete: jest.MockedFunction<
-    (result: { won: boolean; coinsEarned?: number }) => void
-  >;
+  let mockOnGameComplete: jest.MockedFunction<(result: {won: boolean; coinsEarned?: number}) => void>;
   let mockOnError: jest.MockedFunction<(error: string) => void>;
 
   const defaultConfig = {
@@ -44,9 +42,7 @@ describe("GameStateManager", () => {
     jest.clearAllMocks();
 
     // Setup service registry mock
-    (serviceRegistry.getAudioFeedbackService as jest.Mock).mockReturnValue(
-      mockAudioFeedback
-    );
+    (serviceRegistry.getAudioFeedbackService as jest.Mock).mockReturnValue(mockAudioFeedback);
 
     // Setup callback mocks
     mockOnGameComplete = jest.fn();
@@ -187,7 +183,7 @@ describe("GameStateManager", () => {
     it("should not add letter when game is not playing", () => {
       // Force game to won state
       gameStateManager.resetGame();
-      (gameStateManager as any).setState({ gameStatus: "won" });
+      (gameStateManager as any).setState({gameStatus: "won"});
 
       gameStateManager.addLetter("A");
 
@@ -258,7 +254,7 @@ describe("GameStateManager", () => {
     });
 
     it("should not submit when game is not playing", async () => {
-      (gameStateManager as any).setState({ gameStatus: "won" });
+      (gameStateManager as any).setState({gameStatus: "won"});
 
       await gameStateManager.submitGuess();
 
@@ -305,11 +301,11 @@ describe("GameStateManager", () => {
     it("should handle successful guess (correct answer)", async () => {
       const mockResult = {
         feedback: [
-          { letter: "h", status: "green" as const },
-          { letter: "e", status: "green" as const },
-          { letter: "l", status: "green" as const },
-          { letter: "l", status: "green" as const },
-          { letter: "o", status: "green" as const },
+          {letter: "h", status: "green" as const},
+          {letter: "e", status: "green" as const},
+          {letter: "l", status: "green" as const},
+          {letter: "l", status: "green" as const},
+          {letter: "o", status: "green" as const},
         ],
         isCorrect: true,
         coinsEarned: 50,
@@ -338,11 +334,11 @@ describe("GameStateManager", () => {
     it("should handle wrong guess that ends game", async () => {
       const mockResult = {
         feedback: [
-          { letter: "h", status: "red" as const },
-          { letter: "e", status: "red" as const },
-          { letter: "l", status: "red" as const },
-          { letter: "l", status: "red" as const },
-          { letter: "o", status: "red" as const },
+          {letter: "h", status: "red" as const},
+          {letter: "e", status: "red" as const},
+          {letter: "l", status: "red" as const},
+          {letter: "l", status: "red" as const},
+          {letter: "o", status: "red" as const},
         ],
         isCorrect: false,
         gameOver: true,
@@ -368,11 +364,11 @@ describe("GameStateManager", () => {
     it("should handle wrong guess that continues game", async () => {
       const mockResult = {
         feedback: [
-          { letter: "h", status: "yellow" as const },
-          { letter: "e", status: "red" as const },
-          { letter: "l", status: "green" as const },
-          { letter: "l", status: "red" as const },
-          { letter: "o", status: "yellow" as const },
+          {letter: "h", status: "yellow" as const},
+          {letter: "e", status: "red" as const},
+          {letter: "l", status: "green" as const},
+          {letter: "l", status: "red" as const},
+          {letter: "o", status: "yellow" as const},
         ],
         isCorrect: false,
         gameOver: false,
@@ -408,11 +404,11 @@ describe("GameStateManager", () => {
 
       const mockResult = {
         feedback: [
-          { letter: "h", status: "red" as const },
-          { letter: "e", status: "red" as const },
-          { letter: "l", status: "red" as const },
-          { letter: "l", status: "red" as const },
-          { letter: "o", status: "red" as const },
+          {letter: "h", status: "red" as const},
+          {letter: "e", status: "red" as const},
+          {letter: "l", status: "red" as const},
+          {letter: "l", status: "red" as const},
+          {letter: "o", status: "red" as const},
         ],
         isCorrect: false,
         gameOver: false, // Service doesn't indicate game over, but we've reached max guesses
@@ -444,9 +440,7 @@ describe("GameStateManager", () => {
     });
 
     it("should handle non-Error objects in catch", async () => {
-      (RiddleService.submitGuess as jest.Mock).mockRejectedValue(
-        "String error"
-      );
+      (RiddleService.submitGuess as jest.Mock).mockRejectedValue("String error");
 
       await gameStateManager.submitGuess();
 
@@ -514,7 +508,7 @@ describe("GameStateManager", () => {
         gameStatus: "won",
         coinsEarned: 100,
         guesses: ["hello"],
-        feedback: [[{ letter: "h", status: "green" }]],
+        feedback: [[{letter: "h", status: "green"}]],
       });
 
       gameStateManager.resetGame();
@@ -574,7 +568,7 @@ describe("GameStateManager", () => {
       gameStateManager.addLetter("L");
       gameStateManager.addLetter("O");
 
-      (gameStateManager as any).setState({ gameStatus: "won" });
+      (gameStateManager as any).setState({gameStatus: "won"});
 
       expect(gameStateManager.canSubmitGuess()).toBe(false);
     });
@@ -586,7 +580,7 @@ describe("GameStateManager", () => {
       gameStateManager.addLetter("L");
       gameStateManager.addLetter("O");
 
-      (gameStateManager as any).setState({ isLoading: true });
+      (gameStateManager as any).setState({isLoading: true});
 
       expect(gameStateManager.canSubmitGuess()).toBe(false);
     });
@@ -645,11 +639,11 @@ describe("GameStateManager", () => {
       // Mock a wrong guess
       const mockResult = {
         feedback: [
-          { letter: "h", status: "yellow" as const },
-          { letter: "e", status: "red" as const },
-          { letter: "l", status: "green" as const },
-          { letter: "l", status: "red" as const },
-          { letter: "o", status: "yellow" as const },
+          {letter: "h", status: "yellow" as const},
+          {letter: "e", status: "red" as const},
+          {letter: "l", status: "green" as const},
+          {letter: "l", status: "red" as const},
+          {letter: "o", status: "yellow" as const},
         ],
         isCorrect: false,
         gameOver: false,
@@ -676,7 +670,7 @@ describe("GameStateManager", () => {
 
       // Should not throw error when completing game without callbacks
       expect(() => {
-        (managerWithoutCallbacks as any).setState({ gameStatus: "won" });
+        (managerWithoutCallbacks as any).setState({gameStatus: "won"});
         (managerWithoutCallbacks as any).config.onGameComplete?.({
           won: true,
           coinsEarned: 50,
@@ -699,7 +693,7 @@ describe("useGameStateManager hook", () => {
   });
 
   it("should return gameState, actions, and utils", () => {
-    const { result } = renderHook(() => useGameStateManager(defaultConfig));
+    const {result} = renderHook(() => useGameStateManager(defaultConfig));
 
     expect(result.current).toHaveProperty("gameState");
     expect(result.current).toHaveProperty("actions");
@@ -707,7 +701,7 @@ describe("useGameStateManager hook", () => {
   });
 
   it("should return initial gameState with playing status", () => {
-    const { result } = renderHook(() => useGameStateManager(defaultConfig));
+    const {result} = renderHook(() => useGameStateManager(defaultConfig));
 
     expect(result.current.gameState.gameStatus).toBe("playing");
     expect(result.current.gameState.currentGuess).toBe("");
@@ -715,7 +709,7 @@ describe("useGameStateManager hook", () => {
   });
 
   it("should expose addLetter action", () => {
-    const { result } = renderHook(() => useGameStateManager(defaultConfig));
+    const {result} = renderHook(() => useGameStateManager(defaultConfig));
 
     act(() => {
       result.current.actions.addLetter("A");
@@ -725,7 +719,7 @@ describe("useGameStateManager hook", () => {
   });
 
   it("should expose removeLetter action", () => {
-    const { result } = renderHook(() => useGameStateManager(defaultConfig));
+    const {result} = renderHook(() => useGameStateManager(defaultConfig));
 
     act(() => {
       result.current.actions.addLetter("A");
@@ -737,7 +731,7 @@ describe("useGameStateManager hook", () => {
   });
 
   it("should expose resetGame action", () => {
-    const { result } = renderHook(() => useGameStateManager(defaultConfig));
+    const {result} = renderHook(() => useGameStateManager(defaultConfig));
 
     act(() => {
       result.current.actions.addLetter("A");
@@ -749,7 +743,7 @@ describe("useGameStateManager hook", () => {
   });
 
   it("should expose canSubmitGuess utility", () => {
-    const { result } = renderHook(() => useGameStateManager(defaultConfig));
+    const {result} = renderHook(() => useGameStateManager(defaultConfig));
 
     // Initially cannot submit (no letters)
     expect(result.current.utils.canSubmitGuess()).toBe(false);
@@ -768,21 +762,19 @@ describe("useGameStateManager hook", () => {
   });
 
   it("should expose getCurrentRow utility", () => {
-    const { result } = renderHook(() => useGameStateManager(defaultConfig));
+    const {result} = renderHook(() => useGameStateManager(defaultConfig));
 
     expect(result.current.utils.getCurrentRow()).toBe(0);
   });
 
   it("should expose getRemainingGuesses utility", () => {
-    const { result } = renderHook(() => useGameStateManager(defaultConfig));
+    const {result} = renderHook(() => useGameStateManager(defaultConfig));
 
     expect(result.current.utils.getRemainingGuesses()).toBe(6);
   });
 
   it("should maintain stable GameStateManager across re-renders", () => {
-    const { result, rerender } = renderHook(() =>
-      useGameStateManager(defaultConfig)
-    );
+    const {result, rerender} = renderHook(() => useGameStateManager(defaultConfig));
 
     const initialGameStatus = result.current.gameState.gameStatus;
 
@@ -792,4 +784,3 @@ describe("useGameStateManager hook", () => {
     expect(result.current.gameState.gameStatus).toBe(initialGameStatus);
   });
 });
-

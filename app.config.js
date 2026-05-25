@@ -25,18 +25,14 @@ const sentryOrg = process.env.SENTRY_ORG || process.env.SENTRY_ORGANIZATION;
 const sentryProject = process.env.SENTRY_PROJECT;
 const sentryUrl = process.env.SENTRY_URL || "https://sentry.io/";
 const useSentryExpoPlugin = Boolean(sentryOrg && sentryProject);
-const GOOGLE_MOBILE_ADS_ANDROID_TEST_APP_ID =
-  "ca-app-pub-3940256099942544~3347511713";
-const GOOGLE_MOBILE_ADS_IOS_TEST_APP_ID =
-  "ca-app-pub-3940256099942544~1458002511";
+const GOOGLE_MOBILE_ADS_ANDROID_TEST_APP_ID = "ca-app-pub-3940256099942544~3347511713";
+const GOOGLE_MOBILE_ADS_IOS_TEST_APP_ID = "ca-app-pub-3940256099942544~1458002511";
 const googleMobileAdsAndroidAppId =
   process.env.GOOGLE_MOBILE_ADS_ANDROID_APP_ID ||
   process.env.ADMOB_ANDROID_APP_ID ||
   GOOGLE_MOBILE_ADS_ANDROID_TEST_APP_ID;
 const googleMobileAdsIosAppId =
-  process.env.GOOGLE_MOBILE_ADS_IOS_APP_ID ||
-  process.env.ADMOB_IOS_APP_ID ||
-  GOOGLE_MOBILE_ADS_IOS_TEST_APP_ID;
+  process.env.GOOGLE_MOBILE_ADS_IOS_APP_ID || process.env.ADMOB_IOS_APP_ID || GOOGLE_MOBILE_ADS_IOS_TEST_APP_ID;
 const getGoogleWebClientId = () => {
   if (process.env.GOOGLE_WEB_CLIENT_ID) {
     return process.env.GOOGLE_WEB_CLIENT_ID;
@@ -46,12 +42,8 @@ const getGoogleWebClientId = () => {
   }
 
   try {
-    const googleServices = JSON.parse(
-      fs.readFileSync("./google-services.json", "utf8")
-    );
-    const oauthClients = googleServices.client?.flatMap(
-      (client) => client.oauth_client || []
-    );
+    const googleServices = JSON.parse(fs.readFileSync("./google-services.json", "utf8"));
+    const oauthClients = googleServices.client?.flatMap((client) => client.oauth_client || []);
     const webClient = oauthClients?.find((client) => client.client_type === 3);
     if (webClient?.client_id) {
       return webClient.client_id;
@@ -125,16 +117,13 @@ module.exports = {
      */
     infoPlist: {
       /** Ad tracking permission description */
-      NSUserTrackingUsageDescription:
-        "This identifier will be used to deliver personalized ads to you.",
+      NSUserTrackingUsageDescription: "This identifier will be used to deliver personalized ads to you.",
 
       /** Camera access permission for profile photos */
-      NSCameraUsageDescription:
-        "This app needs access to camera to capture profile photos.",
+      NSCameraUsageDescription: "This app needs access to camera to capture profile photos.",
 
       /** Photo library access permission for profile photos */
-      NSPhotoLibraryUsageDescription:
-        "This app needs access to photo library to select profile photos.",
+      NSPhotoLibraryUsageDescription: "This app needs access to photo library to select profile photos.",
 
       /**
        * Enhanced Audio Session Configuration
@@ -181,10 +170,7 @@ module.exports = {
      * Permissions required for optimal audio performance and
      * quality on Android devices.
      */
-    permissions: [
-      "android.permission.MODIFY_AUDIO_SETTINGS",
-      "android.permission.WRITE_EXTERNAL_STORAGE",
-    ],
+    permissions: ["android.permission.MODIFY_AUDIO_SETTINGS", "android.permission.WRITE_EXTERNAL_STORAGE"],
 
     /** Disable automatic backup for game data security */
     allowBackup: false,
@@ -207,7 +193,7 @@ module.exports = {
    * Includes Firebase, authentication, ads, and build optimization plugins.
    */
   plugins: [
-     /** Firebase Crashlytics for error tracking */
+    /** Firebase Crashlytics for error tracking */
     "./plugins/withReactNativeFirebaseCrashlytics.js",
     "expo-asset",
     ...(useSentryExpoPlugin
@@ -247,8 +233,7 @@ module.exports = {
       "react-native-fbsdk-next",
       {
         appID: process.env.FACEBOOK_APP_ID || "YOUR_FACEBOOK_APP_ID",
-        clientToken:
-          process.env.FACEBOOK_CLIENT_TOKEN || "YOUR_FACEBOOK_CLIENT_TOKEN",
+        clientToken: process.env.FACEBOOK_CLIENT_TOKEN || "YOUR_FACEBOOK_CLIENT_TOKEN",
         displayName: "Riddle Quest",
         scheme: `fb${process.env.FACEBOOK_APP_ID || "YOUR_FACEBOOK_APP_ID"}`,
         advertiserIDCollectionEnabled: false,
@@ -321,8 +306,7 @@ module.exports = {
     [
       "expo-audio",
       {
-        microphonePermission:
-          "Allow $(PRODUCT_NAME) to access your microphone for enhanced audio features.",
+        microphonePermission: "Allow $(PRODUCT_NAME) to access your microphone for enhanced audio features.",
         enableBackgroundPlayback: false,
         enableBackgroundRecording: false,
       },
@@ -339,14 +323,12 @@ module.exports = {
   extra: {
     /** EAS (Expo Application Services) project identifier */
     eas: {
-      projectId:
-        process.env.EAS_PROJECT_ID || "c564618a-a464-435d-847c-9c51fc695145",
+      projectId: process.env.EAS_PROJECT_ID || "c564618a-a464-435d-847c-9c51fc695145",
     },
 
     /** Development and testing flags */
     ENABLE_CRASH_TESTING: process.env.ENABLE_CRASH_TESTING || "false",
-    EXPO_PUBLIC_ENABLE_SHARED_ANIMATION_BACKEND:
-      process.env.EXPO_PUBLIC_ENABLE_SHARED_ANIMATION_BACKEND || "false",
+    EXPO_PUBLIC_ENABLE_SHARED_ANIMATION_BACKEND: process.env.EXPO_PUBLIC_ENABLE_SHARED_ANIMATION_BACKEND || "false",
 
     /**
      * Firebase Configuration Variables
@@ -356,15 +338,10 @@ module.exports = {
      */
     FIREBASE_API_KEY: process.env.FIREBASE_API_KEY || "YOUR_FIREBASE_API_KEY",
     FIREBASE_APP_ID: process.env.FIREBASE_APP_ID || "YOUR_FIREBASE_APP_ID",
-    FIREBASE_AUTH_DOMAIN:
-      process.env.FIREBASE_AUTH_DOMAIN || "YOUR_FIREBASE_AUTH_DOMAIN",
-    FIREBASE_MESSAGING_SENDER_ID:
-      process.env.FIREBASE_MESSAGING_SENDER_ID ||
-      "YOUR_FIREBASE_MESSAGING_SENDER_ID",
-    FIREBASE_PROJECT_ID:
-      process.env.FIREBASE_PROJECT_ID || "YOUR_FIREBASE_PROJECT_ID",
-    FIREBASE_STORAGE_BUCKET:
-      process.env.FIREBASE_STORAGE_BUCKET || "YOUR_FIREBASE_STORAGE_BUCKET",
+    FIREBASE_AUTH_DOMAIN: process.env.FIREBASE_AUTH_DOMAIN || "YOUR_FIREBASE_AUTH_DOMAIN",
+    FIREBASE_MESSAGING_SENDER_ID: process.env.FIREBASE_MESSAGING_SENDER_ID || "YOUR_FIREBASE_MESSAGING_SENDER_ID",
+    FIREBASE_PROJECT_ID: process.env.FIREBASE_PROJECT_ID || "YOUR_FIREBASE_PROJECT_ID",
+    FIREBASE_STORAGE_BUCKET: process.env.FIREBASE_STORAGE_BUCKET || "YOUR_FIREBASE_STORAGE_BUCKET",
 
     /**
      * Google Authentication Configuration
@@ -380,8 +357,7 @@ module.exports = {
      * All values loaded from environment variables for security.
      */
     FACEBOOK_APP_ID: process.env.FACEBOOK_APP_ID || "YOUR_FACEBOOK_APP_ID",
-    FACEBOOK_CLIENT_TOKEN:
-      process.env.FACEBOOK_CLIENT_TOKEN || "YOUR_FACEBOOK_CLIENT_TOKEN",
+    FACEBOOK_CLIENT_TOKEN: process.env.FACEBOOK_CLIENT_TOKEN || "YOUR_FACEBOOK_CLIENT_TOKEN",
   },
 
   /**
@@ -393,6 +369,3 @@ module.exports = {
    */
   assetBundlePatterns: ["**/*"],
 };
-
-
-

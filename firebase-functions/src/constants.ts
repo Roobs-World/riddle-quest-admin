@@ -49,11 +49,8 @@ export const XP_LEVEL_THRESHOLDS = {
 export function getXpThresholdForLevel(level: number): number {
   if (level <= 1) return 0;
   const completedLevelUps = level - 1;
-  const { basePerLevel, growthPerLevel } = XP_LEVEL_THRESHOLDS;
-  return (
-    completedLevelUps * basePerLevel +
-    ((completedLevelUps - 1) * completedLevelUps * growthPerLevel) / 2
-  );
+  const {basePerLevel, growthPerLevel} = XP_LEVEL_THRESHOLDS;
+  return completedLevelUps * basePerLevel + ((completedLevelUps - 1) * completedLevelUps * growthPerLevel) / 2;
 }
 
 /**
@@ -61,7 +58,7 @@ export function getXpThresholdForLevel(level: number): number {
  */
 export function getLevelFromXp(totalXp: number): number {
   const xp = Math.max(totalXp, 0);
-  const { basePerLevel, growthPerLevel } = XP_LEVEL_THRESHOLDS;
+  const {basePerLevel, growthPerLevel} = XP_LEVEL_THRESHOLDS;
   const a = growthPerLevel / 2;
   const b = basePerLevel - growthPerLevel / 2;
   const discriminant = b * b + 4 * a * xp;

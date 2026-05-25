@@ -1,11 +1,11 @@
 const React = require("react");
-import { render, fireEvent } from "@testing-library/react-native";
+import {render, fireEvent} from "@testing-library/react-native";
 import SkipModal from "../SkipModal";
 
 // Mock child components
 jest.mock("../../../buttons/CloseButton", () => {
-  const { TouchableOpacity, Text } = require("react-native");
-  return function MockCloseButton({ onPress }: { onPress: () => void }) {
+  const {TouchableOpacity, Text} = require("react-native");
+  return function MockCloseButton({onPress}: {onPress: () => void}) {
     return (
       <TouchableOpacity testID="close-button" onPress={onPress}>
         <Text>Close</Text>
@@ -15,7 +15,7 @@ jest.mock("../../../buttons/CloseButton", () => {
 });
 
 jest.mock("src/components/buttons/WideButton", () => {
-  const { TouchableOpacity, Text } = require("react-native");
+  const {TouchableOpacity, Text} = require("react-native");
   return function MockWideButton({
     buttonText,
     onPress,
@@ -61,74 +61,62 @@ describe("<SkipModal />", () => {
     });
 
     it("should render without crashing when not visible", () => {
-      expect(() =>
-        render(<SkipModal {...defaultProps} isVisible={false} />)
-      ).not.toThrow();
+      expect(() => render(<SkipModal {...defaultProps} isVisible={false} />)).not.toThrow();
     });
 
     it("should render title text", () => {
-      const { getByText } = render(<SkipModal {...defaultProps} />);
+      const {getByText} = render(<SkipModal {...defaultProps} />);
       expect(getByText("Skip the level?")).toBeTruthy();
     });
 
     it("should render cost information", () => {
-      const { getByText } = render(<SkipModal {...defaultProps} />);
+      const {getByText} = render(<SkipModal {...defaultProps} />);
       expect(getByText(/Cost:\s*50/)).toBeTruthy();
       expect(getByText("Total Coins:")).toBeTruthy();
       expect(getByText("100")).toBeTruthy();
     });
 
     it("should render SKIP LEVEL button", () => {
-      const { getByText } = render(<SkipModal {...defaultProps} />);
+      const {getByText} = render(<SkipModal {...defaultProps} />);
       expect(getByText("SKIP LEVEL")).toBeTruthy();
     });
 
     it("should render CLOSE button", () => {
-      const { getByTestId } = render(<SkipModal {...defaultProps} />);
+      const {getByTestId} = render(<SkipModal {...defaultProps} />);
       expect(getByTestId("close-button")).toBeTruthy();
     });
 
     it("should render close button in header", () => {
-      const { getByTestId } = render(<SkipModal {...defaultProps} />);
+      const {getByTestId} = render(<SkipModal {...defaultProps} />);
       expect(getByTestId("close-button")).toBeTruthy();
     });
   });
 
   describe("Affordability Logic", () => {
     it("should not show insufficient funds message when user can afford skip", () => {
-      const { queryByText } = render(
-        <SkipModal {...defaultProps} userCoins={100} skipCost={50} />
-      );
+      const {queryByText} = render(<SkipModal {...defaultProps} userCoins={100} skipCost={50} />);
       expect(queryByText("You do not have enough coins to skip a level.")).toBeNull();
     });
 
     it("should show insufficient funds message when user cannot afford skip", () => {
-      const { getByText } = render(
-        <SkipModal {...defaultProps} userCoins={30} skipCost={50} />
-      );
+      const {getByText} = render(<SkipModal {...defaultProps} userCoins={30} skipCost={50} />);
       expect(getByText("You do not have enough coins to skip a level.")).toBeTruthy();
     });
 
     it("should allow skip when user has exact amount of coins", () => {
-      const { queryByText, getByTestId } = render(
-        <SkipModal {...defaultProps} userCoins={50} skipCost={50} />
-      );
+      const {queryByText, getByTestId} = render(<SkipModal {...defaultProps} userCoins={50} skipCost={50} />);
       expect(queryByText("You do not have enough coins to skip a level.")).toBeNull();
       const skipButton = getByTestId("wide-button-skip-level");
       expect(skipButton.props.accessibilityState?.disabled).toBeFalsy();
     });
 
     it("should show buy coins button when user cannot afford", () => {
-      const { getByTestId } = render(
-        <SkipModal {...defaultProps} userCoins={10} skipCost={50} />
-      );
+      const {getByTestId} = render(<SkipModal {...defaultProps} userCoins={10} skipCost={50} />);
       expect(getByTestId("wide-button-buy-coins")).toBeTruthy();
     });
 
     it("should enable skip button when user can afford", () => {
-      const { getByTestId } = render(
-        <SkipModal {...defaultProps} userCoins={100} skipCost={50} />
-      );
+      const {getByTestId} = render(<SkipModal {...defaultProps} userCoins={100} skipCost={50} />);
       const skipButton = getByTestId("wide-button-skip-level");
       expect(skipButton.props.accessibilityState?.disabled).toBeFalsy();
     });
@@ -138,14 +126,8 @@ describe("<SkipModal />", () => {
     it("should call onClose and onSkipLevel when SKIP LEVEL button is pressed", () => {
       const onSkipLevel = jest.fn();
       const onClose = jest.fn();
-      const { getByTestId } = render(
-        <SkipModal
-          {...defaultProps}
-          onSkipLevel={onSkipLevel}
-          onClose={onClose}
-          userCoins={100}
-          skipCost={50}
-        />
+      const {getByTestId} = render(
+        <SkipModal {...defaultProps} onSkipLevel={onSkipLevel} onClose={onClose} userCoins={100} skipCost={50} />,
       );
 
       fireEvent.press(getByTestId("wide-button-skip-level"));
@@ -155,9 +137,7 @@ describe("<SkipModal />", () => {
 
     it("should call onClose when CLOSE button is pressed", () => {
       const onClose = jest.fn();
-      const { getByTestId } = render(
-        <SkipModal {...defaultProps} onClose={onClose} />
-      );
+      const {getByTestId} = render(<SkipModal {...defaultProps} onClose={onClose} />);
 
       fireEvent.press(getByTestId("close-button"));
       expect(onClose).toHaveBeenCalledTimes(1);
@@ -165,9 +145,7 @@ describe("<SkipModal />", () => {
 
     it("should call onClose when header close button is pressed", () => {
       const onClose = jest.fn();
-      const { getByTestId } = render(
-        <SkipModal {...defaultProps} onClose={onClose} />
-      );
+      const {getByTestId} = render(<SkipModal {...defaultProps} onClose={onClose} />);
 
       fireEvent.press(getByTestId("close-button"));
       expect(onClose).toHaveBeenCalledTimes(1);
@@ -177,7 +155,7 @@ describe("<SkipModal />", () => {
       const onSkipLevel = jest.fn();
       const onOpenShop = jest.fn();
       const onClose = jest.fn();
-      const { getByTestId } = render(
+      const {getByTestId} = render(
         <SkipModal
           {...defaultProps}
           onSkipLevel={onSkipLevel}
@@ -185,7 +163,7 @@ describe("<SkipModal />", () => {
           onClose={onClose}
           userCoins={10}
           skipCost={50}
-        />
+        />,
       );
 
       fireEvent.press(getByTestId("wide-button-buy-coins"));
@@ -197,18 +175,14 @@ describe("<SkipModal />", () => {
 
   describe("Dynamic Content", () => {
     it("should display different coin amounts", () => {
-      const { getByText } = render(
-        <SkipModal {...defaultProps} userCoins={250} totalCoins={250} skipCost={75} />
-      );
+      const {getByText} = render(<SkipModal {...defaultProps} userCoins={250} totalCoins={250} skipCost={75} />);
       expect(getByText(/Cost:\s*75/)).toBeTruthy();
       expect(getByText("Total Coins:")).toBeTruthy();
       expect(getByText("250")).toBeTruthy();
     });
 
     it("should display zero coins correctly", () => {
-      const { getByText } = render(
-        <SkipModal {...defaultProps} userCoins={0} totalCoins={0} skipCost={100} />
-      );
+      const {getByText} = render(<SkipModal {...defaultProps} userCoins={0} totalCoins={0} skipCost={100} />);
       expect(getByText(/Cost:\s*100/)).toBeTruthy();
       expect(getByText("Total Coins:")).toBeTruthy();
       expect(getByText("0")).toBeTruthy();
@@ -217,16 +191,12 @@ describe("<SkipModal />", () => {
 
   describe("Visibility Behavior", () => {
     it("should render when visible", () => {
-      const { getByText } = render(
-        <SkipModal {...defaultProps} isVisible={true} />
-      );
+      const {getByText} = render(<SkipModal {...defaultProps} isVisible={true} />);
       expect(getByText("Skip the level?")).toBeTruthy();
     });
 
     it("should handle invisible state", () => {
-      expect(() =>
-        render(<SkipModal {...defaultProps} isVisible={false} />)
-      ).not.toThrow();
+      expect(() => render(<SkipModal {...defaultProps} isVisible={false} />)).not.toThrow();
     });
   });
 
@@ -242,16 +212,14 @@ describe("<SkipModal />", () => {
     });
 
     it("should handle unmount correctly", () => {
-      const { unmount } = render(<SkipModal {...defaultProps} />);
+      const {unmount} = render(<SkipModal {...defaultProps} />);
       expect(() => unmount()).not.toThrow();
     });
   });
 
   describe("Edge Cases", () => {
     it("should handle zero coins scenario", () => {
-      const { getByText } = render(
-        <SkipModal {...defaultProps} userCoins={0} totalCoins={0} skipCost={50} />
-      );
+      const {getByText} = render(<SkipModal {...defaultProps} userCoins={0} totalCoins={0} skipCost={50} />);
       expect(getByText(/Cost:\s*50/)).toBeTruthy();
       expect(getByText("Total Coins:")).toBeTruthy();
       expect(getByText("0")).toBeTruthy();
@@ -259,8 +227,8 @@ describe("<SkipModal />", () => {
     });
 
     it("should handle zero skip cost scenario", () => {
-      const { getByText, queryByText } = render(
-        <SkipModal {...defaultProps} userCoins={0} totalCoins={0} skipCost={0} />
+      const {getByText, queryByText} = render(
+        <SkipModal {...defaultProps} userCoins={0} totalCoins={0} skipCost={0} />,
       );
       expect(getByText("Total Coins:")).toBeTruthy();
       expect(getByText("0")).toBeTruthy();
@@ -269,8 +237,8 @@ describe("<SkipModal />", () => {
     });
 
     it("should handle large coin amounts", () => {
-      const { getByText } = render(
-        <SkipModal {...defaultProps} userCoins={999999} totalCoins={999999} skipCost={1000} />
+      const {getByText} = render(
+        <SkipModal {...defaultProps} userCoins={999999} totalCoins={999999} skipCost={1000} />,
       );
       expect(getByText(/Cost:\s*1000/)).toBeTruthy();
       expect(getByText("Total Coins:")).toBeTruthy();
@@ -278,17 +246,13 @@ describe("<SkipModal />", () => {
     });
 
     it("should handle coin amount exactly one less than skip cost", () => {
-      const { getByText, getByTestId } = render(
-        <SkipModal {...defaultProps} userCoins={49} skipCost={50} />
-      );
+      const {getByText, getByTestId} = render(<SkipModal {...defaultProps} userCoins={49} skipCost={50} />);
       expect(getByText("You do not have enough coins to skip a level.")).toBeTruthy();
       expect(getByTestId("wide-button-buy-coins")).toBeTruthy();
     });
 
     it("should handle coin amount exactly one more than skip cost", () => {
-      const { queryByText, getByTestId } = render(
-        <SkipModal {...defaultProps} userCoins={51} skipCost={50} />
-      );
+      const {queryByText, getByTestId} = render(<SkipModal {...defaultProps} userCoins={51} skipCost={50} />);
       expect(queryByText("You do not have enough coins to skip a level.")).toBeNull();
       const skipButton = getByTestId("wide-button-skip-level");
       expect(skipButton.props.accessibilityState?.disabled).toBeFalsy();
@@ -301,14 +265,8 @@ describe("<SkipModal />", () => {
       const onClose = jest.fn(() => callOrder.push("close"));
       const onSkipLevel = jest.fn(() => callOrder.push("skip"));
 
-      const { getByTestId } = render(
-        <SkipModal
-          {...defaultProps}
-          onClose={onClose}
-          onSkipLevel={onSkipLevel}
-          userCoins={100}
-          skipCost={50}
-        />
+      const {getByTestId} = render(
+        <SkipModal {...defaultProps} onClose={onClose} onSkipLevel={onSkipLevel} userCoins={100} skipCost={50} />,
       );
 
       fireEvent.press(getByTestId("wide-button-skip-level"));

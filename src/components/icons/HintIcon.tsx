@@ -7,11 +7,7 @@ interface HintIconProps {
   color?: string;
 }
 
-const HintIcon: React.FC<HintIconProps> = ({
-  width = 24,
-  height = 24,
-  color = "#fcfaf4",
-}) => {
+const HintIcon: React.FC<HintIconProps> = ({width = 24, height = 24, color = "#fcfaf4"}) => {
   return <HintSvg testID="hint-icon" width={width} height={height} fill={color} />;
 };
 

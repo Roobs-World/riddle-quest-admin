@@ -18,6 +18,7 @@ description: Review codebase for scalability concerns including N+1 query risks,
 ## Output format
 
 For each issue:
+
 - **File**: path
 - **Type**: `n-plus-one` | `over-fetching` | `cache-gap` | `memory-risk` | `pagination-missing`
 - **Severity**: `high` | `medium` | `low`

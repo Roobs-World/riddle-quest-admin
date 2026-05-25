@@ -21,10 +21,7 @@ export interface AchievementContext {
 }
 
 /** Rule: (user, context) => true if achievement should be unlocked. */
-type AchievementRule = (
-  user: Player,
-  context: AchievementContext,
-) => boolean;
+type AchievementRule = (user: Player, context: AchievementContext) => boolean;
 
 /** Achievement ID and its unlock rule. Server does not store name/description; client has definitions. */
 const ACHIEVEMENT_RULES: Array<{id: string; rule: AchievementRule}> = [
@@ -50,15 +47,11 @@ const ACHIEVEMENT_RULES: Array<{id: string; rule: AchievementRule}> = [
   },
   {
     id: "win_rate_80",
-    rule: (user) =>
-      (user.stats?.gamesPlayed ?? 0) >= 10 &&
-      (user.stats?.winRate ?? 0) >= 80,
+    rule: (user) => (user.stats?.gamesPlayed ?? 0) >= 10 && (user.stats?.winRate ?? 0) >= 80,
   },
   {
     id: "efficient_10",
-    rule: (user) =>
-      (user.stats?.totalWins ?? 0) >= 10 &&
-      (user.stats?.averageGuesses ?? Number.POSITIVE_INFINITY) <= 3,
+    rule: (user) => (user.stats?.totalWins ?? 0) >= 10 && (user.stats?.averageGuesses ?? Number.POSITIVE_INFINITY) <= 3,
   },
   {
     id: "games_25",
@@ -134,39 +127,26 @@ const ACHIEVEMENT_RULES: Array<{id: string; rule: AchievementRule}> = [
   },
   {
     id: "classic_perfect",
-    rule: (user, ctx) =>
-      ctx.gameMode === "classic" &&
-      ctx.isCorrect &&
-      ctx.attempts === 1,
+    rule: (user, ctx) => ctx.gameMode === "classic" && ctx.isCorrect && ctx.attempts === 1,
   },
   {
     id: "challenge_perfect",
-    rule: (user, ctx) =>
-      ctx.gameMode === "challenge" &&
-      ctx.isCorrect &&
-      ctx.attempts === 1,
+    rule: (user, ctx) => ctx.gameMode === "challenge" && ctx.isCorrect && ctx.attempts === 1,
   },
   {
     id: "last_chance",
     rule: (user, ctx) => {
-      const maxAttempts =
-        ctx.gameMode === "challenge" ? MAX_ATTEMPTS_CHALLENGE : MAX_ATTEMPTS_CLASSIC;
+      const maxAttempts = ctx.gameMode === "challenge" ? MAX_ATTEMPTS_CHALLENGE : MAX_ATTEMPTS_CLASSIC;
       return ctx.isCorrect && ctx.attempts === maxAttempts;
     },
   },
   {
     id: "classic_last_chance",
-    rule: (user, ctx) =>
-      ctx.gameMode === "classic" &&
-      ctx.isCorrect &&
-      ctx.attempts === MAX_ATTEMPTS_CLASSIC,
+    rule: (user, ctx) => ctx.gameMode === "classic" && ctx.isCorrect && ctx.attempts === MAX_ATTEMPTS_CLASSIC,
   },
   {
     id: "challenge_last_chance",
-    rule: (user, ctx) =>
-      ctx.gameMode === "challenge" &&
-      ctx.isCorrect &&
-      ctx.attempts === MAX_ATTEMPTS_CHALLENGE,
+    rule: (user, ctx) => ctx.gameMode === "challenge" && ctx.isCorrect && ctx.attempts === MAX_ATTEMPTS_CHALLENGE,
   },
   {
     id: "lesson_learned",
@@ -226,10 +206,7 @@ const ACHIEVEMENT_RULES: Array<{id: string; rule: AchievementRule}> = [
  * @param context - Game context (gameMode, isCorrect, attempts, gameOver).
  * @returns List of achievement IDs that were newly unlocked (may be empty).
  */
-export async function evaluateAchievements(
-  userId: string,
-  context: AchievementContext,
-): Promise<string[]> {
+export async function evaluateAchievements(userId: string, context: AchievementContext): Promise<string[]> {
   try {
     const user = await getUser(userId);
     if (!user) {
@@ -237,9 +214,7 @@ export async function evaluateAchievements(
       return [];
     }
 
-    const existingIds = new Set(
-      (user.unlockedAchievements ?? []).map((e) => e.achievementId),
-    );
+    const existingIds = new Set((user.unlockedAchievements ?? []).map((e) => e.achievementId));
     const now = Date.now();
     const newEntries: UnlockedAchievement[] = [];
 

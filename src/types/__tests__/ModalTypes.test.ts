@@ -55,7 +55,7 @@ describe("ModalTypes", () => {
       const data: ModalData = {
         foo: "bar",
         count: 42,
-        nested: { a: 1 },
+        nested: {a: 1},
         array: [1, 2, 3],
       };
 
@@ -89,11 +89,11 @@ describe("ModalTypes", () => {
 
       const config: ModalConfig = {
         component: MockComponent as any,
-        defaultProps: { someDefault: true },
+        defaultProps: {someDefault: true},
       };
 
       expect(config.component).toBe(MockComponent);
-      expect(config.defaultProps).toEqual({ someDefault: true });
+      expect(config.defaultProps).toEqual({someDefault: true});
     });
 
     it("should allow config without defaultProps", () => {
@@ -116,7 +116,7 @@ describe("ModalTypes", () => {
 
       const config: ModalConfig<CustomData> = {
         component: MockComponent as any,
-        defaultProps: { customField: "default" },
+        defaultProps: {customField: "default"},
       };
 
       expect(config.defaultProps?.customField).toBe("default");
@@ -171,7 +171,7 @@ describe("ModalTypes", () => {
       const instance: ModalInstance<VictoryData> = {
         id: "victory-1",
         type: "victory",
-        data: { attempts: 3, coinsEarned: 50 },
+        data: {attempts: 3, coinsEarned: 50},
         priority: 100,
       };
 
@@ -185,9 +185,9 @@ describe("ModalTypes", () => {
       const MockComponent = () => null;
 
       const registry: ModalRegistry = {
-        settings: { component: MockComponent as any },
-        victory: { component: MockComponent as any },
-        loss: { component: MockComponent as any },
+        settings: {component: MockComponent as any},
+        victory: {component: MockComponent as any},
+        loss: {component: MockComponent as any},
       };
 
       expect(Object.keys(registry)).toContain("settings");
@@ -239,9 +239,9 @@ describe("ModalTypes", () => {
         updateModalData: jest.fn(),
       };
 
-      const id = state.openModal("settings", { theme: "dark" });
+      const id = state.openModal("settings", {theme: "dark"});
 
-      expect(openModal).toHaveBeenCalledWith("settings", { theme: "dark" });
+      expect(openModal).toHaveBeenCalledWith("settings", {theme: "dark"});
       expect(id).toBe("modal-123");
     });
 
@@ -273,8 +273,8 @@ describe("ModalTypes", () => {
     it("should allow modals array to contain ModalInstance objects", () => {
       const state: ModalContextState = {
         modals: [
-          { id: "1", type: "settings", data: {}, priority: 1 },
-          { id: "2", type: "victory", data: {}, priority: 10 },
+          {id: "1", type: "settings", data: {}, priority: 1},
+          {id: "2", type: "victory", data: {}, priority: 10},
         ],
         openModal: jest.fn(() => "id"),
         closeModal: jest.fn(),
@@ -657,21 +657,21 @@ describe("ModalTypes", () => {
         type: "UPDATE_MODAL_DATA",
         payload: {
           id: "modal-123",
-          data: { newField: "value" },
+          data: {newField: "value"},
         },
       };
 
       expect(action.type).toBe("UPDATE_MODAL_DATA");
       expect(action.payload.id).toBe("modal-123");
-      expect(action.payload.data).toEqual({ newField: "value" });
+      expect(action.payload.data).toEqual({newField: "value"});
     });
   });
 
   describe("type compatibility", () => {
     it("should allow ModalInstance to be used in modals array", () => {
       const instances: ModalInstance[] = [
-        { id: "1", type: "victory", data: {}, priority: 1 },
-        { id: "2", type: "loss", data: {}, priority: 2, persistent: true },
+        {id: "1", type: "victory", data: {}, priority: 1},
+        {id: "2", type: "loss", data: {}, priority: 2, persistent: true},
       ];
 
       expect(instances).toHaveLength(2);
@@ -699,11 +699,7 @@ describe("ModalTypes", () => {
       };
 
       // Simulating the function signature
-      const mockOpenModal = (
-        type: string,
-        data: ModalData,
-        opts?: ModalOptions
-      ): string => {
+      const mockOpenModal = (type: string, data: ModalData, opts?: ModalOptions): string => {
         return `${type}-${opts?.priority || 0}`;
       };
 

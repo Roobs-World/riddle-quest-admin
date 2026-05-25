@@ -1,5 +1,5 @@
 import React from "react";
-import { fireEvent, render } from "@testing-library/react-native";
+import {fireEvent, render} from "@testing-library/react-native";
 import TooltipOverlay from "../TooltipOverlay";
 
 describe("TooltipOverlay", () => {
@@ -10,13 +10,13 @@ describe("TooltipOverlay", () => {
   };
 
   it("renders backdrop segments and a target cutout when target rect is available", () => {
-    const { getByTestId, getByText } = render(
+    const {getByTestId, getByText} = render(
       <TooltipOverlay
         visible={true}
-        targetRect={{ x: 20, y: 80, width: 120, height: 48 }}
+        targetRect={{x: 20, y: 80, width: 120, height: 48}}
         content={content}
         onDismiss={jest.fn()}
-      />
+      />,
     );
 
     expect(getByTestId("tooltip-overlay")).toBeTruthy();
@@ -26,13 +26,8 @@ describe("TooltipOverlay", () => {
   });
 
   it("renders a full backdrop when no target is available", () => {
-    const { getByTestId } = render(
-      <TooltipOverlay
-        visible={true}
-        targetRect={null}
-        content={content}
-        onDismiss={jest.fn()}
-      />
+    const {getByTestId} = render(
+      <TooltipOverlay visible={true} targetRect={null} content={content} onDismiss={jest.fn()} />,
     );
 
     expect(getByTestId("tooltip-backdrop")).toBeTruthy();
@@ -40,13 +35,8 @@ describe("TooltipOverlay", () => {
 
   it("calls onDismiss from the action button", () => {
     const onDismiss = jest.fn();
-    const { getByTestId } = render(
-      <TooltipOverlay
-        visible={true}
-        targetRect={null}
-        content={content}
-        onDismiss={onDismiss}
-      />
+    const {getByTestId} = render(
+      <TooltipOverlay visible={true} targetRect={null} content={content} onDismiss={onDismiss} />,
     );
 
     fireEvent.press(getByTestId("tooltip-dismiss-button"));

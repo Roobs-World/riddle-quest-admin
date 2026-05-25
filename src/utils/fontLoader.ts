@@ -1,5 +1,5 @@
 import * as Font from "expo-font";
-import { logger } from "./logger";
+import {logger} from "./logger";
 
 import PoetsenOne from "../../assets/fonts/PoetsenOne-Regular.ttf";
 import Poppins from "../../assets/fonts/Poppins-Regular.ttf";

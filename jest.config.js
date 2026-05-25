@@ -4,7 +4,7 @@ module.exports = {
   testPathIgnorePatterns: ["/node_modules/", "/firebase-functions/"],
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
   transform: {
-    '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { configFile: './babel.config.jest.js' }],
+    "^.+\\.(js|jsx|ts|tsx)$": ["babel-jest", {configFile: "./babel.config.jest.js"}],
   },
   transformIgnorePatterns: [
     "/node_modules/(?!(.pnpm|react-native|@react-native|@react-native-community|expo|@expo|@react-navigation|react-native-svg|react-native-reanimated|react-native-fbsdk-next|@react-native/js-polyfills))",
@@ -17,17 +17,11 @@ module.exports = {
     "^@/(.*)$": "<rootDir>/src/$1",
     "^@images/(.*)$": "<rootDir>/assets/images/$1",
     "^@fonts/(.*)$": "<rootDir>/assets/fonts/$1",
-    "react-native-fbsdk-next":
-      "<rootDir>/src/__mocks__/react-native-fbsdk-next.js",
-    "react-native-reanimated":
-      "<rootDir>/src/__mocks__/react-native-reanimated.js",
-    "@react-native-firebase/messaging":
-      "<rootDir>/src/__mocks__/@react-native-firebase/messaging.js",
+    "react-native-fbsdk-next": "<rootDir>/src/__mocks__/react-native-fbsdk-next.js",
+    "react-native-reanimated": "<rootDir>/src/__mocks__/react-native-reanimated.js",
+    "@react-native-firebase/messaging": "<rootDir>/src/__mocks__/@react-native-firebase/messaging.js",
   },
-  testMatch: [
-    "**/__tests__/**/*.(test|spec).(js|jsx|ts|tsx)",
-    "**/*.(test|spec).(js|jsx|ts|tsx)",
-  ],
+  testMatch: ["**/__tests__/**/*.(test|spec).(js|jsx|ts|tsx)", "**/*.(test|spec).(js|jsx|ts|tsx)"],
   collectCoverageFrom: [
     "src/**/*.{js,jsx,ts,tsx}",
     "!src/**/*.d.ts",

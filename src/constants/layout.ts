@@ -7,13 +7,8 @@
  * rather than repeating the calculation inline.
  */
 
-import type { DimensionValue } from "react-native";
-import {
-  scale,
-  verticalScale,
-  moderateScale,
-  dimensions,
-} from "../utils/responsive";
+import type {DimensionValue} from "react-native";
+import {scale, verticalScale, moderateScale, dimensions} from "../utils/responsive";
 
 const viewport = dimensions ?? {
   screenWidth: 390,
@@ -37,10 +32,7 @@ export const MODAL_BASE_HEIGHT = 423;
 export const MODAL_MAX_SCREEN_FRACTION = 0.9;
 
 /** Responsive modal width — use this in every modal container. */
-export const MODAL_WIDTH = Math.min(
-  moderateScale(MODAL_BASE_WIDTH),
-  viewport.screenWidth * MODAL_MAX_SCREEN_FRACTION,
-);
+export const MODAL_WIDTH = Math.min(moderateScale(MODAL_BASE_WIDTH), viewport.screenWidth * MODAL_MAX_SCREEN_FRACTION);
 
 /** Responsive modal height — preserves the exact SVG aspect ratio. */
 export const MODAL_HEIGHT = MODAL_WIDTH * (MODAL_BASE_HEIGHT / MODAL_BASE_WIDTH);
@@ -49,8 +41,7 @@ export const MODAL_HEIGHT = MODAL_WIDTH * (MODAL_BASE_HEIGHT / MODAL_BASE_WIDTH)
 export const MODAL_MAX_SCREEN_HEIGHT_FRACTION = 0.88;
 
 /** Maximum modal height in logical pixels for the current screen. */
-export const MODAL_MAX_HEIGHT =
-  viewport.screenHeight * MODAL_MAX_SCREEN_HEIGHT_FRACTION;
+export const MODAL_MAX_HEIGHT = viewport.screenHeight * MODAL_MAX_SCREEN_HEIGHT_FRACTION;
 
 /** Returns a modal height scaled from MODAL_HEIGHT but clamped to the viewport. */
 export const getResponsiveModalHeight = (
@@ -185,11 +176,7 @@ export const MAX_CONTENT_WIDTH = 560;
 export const AUTH_CONTENT_MAX_WIDTH = 430;
 
 /** Responsive logo width for the unauthenticated landing screen. */
-export const LANDING_LOGO_WIDTH = Math.min(
-  moderateScale(320),
-  viewport.screenWidth * 0.82,
-  AUTH_CONTENT_MAX_WIDTH,
-);
+export const LANDING_LOGO_WIDTH = Math.min(moderateScale(320), viewport.screenWidth * 0.82, AUTH_CONTENT_MAX_WIDTH);
 
 /** Responsive logo height preserving the source image aspect ratio. */
 export const LANDING_LOGO_HEIGHT = LANDING_LOGO_WIDTH * (150 / 320);
@@ -260,8 +247,7 @@ export const RIDDLE_TEXT_MAX_WIDTH_FRACTION = 0.8;
  * On large screens the game column is capped at MAX_CONTENT_WIDTH, so the
  * riddle text must not exceed that cap × the width fraction.
  */
-export const RIDDLE_TEXT_MAX_WIDTH =
-  Math.min(viewport.screenWidth, MAX_CONTENT_WIDTH) * RIDDLE_TEXT_MAX_WIDTH_FRACTION;
+export const RIDDLE_TEXT_MAX_WIDTH = Math.min(viewport.screenWidth, MAX_CONTENT_WIDTH) * RIDDLE_TEXT_MAX_WIDTH_FRACTION;
 
 // ---------------------------------------------------------------------------
 // Game Input Bar

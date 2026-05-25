@@ -72,8 +72,7 @@ jest.mock("firebase-admin", () => ({
   messaging: mockMessaging,
 }));
 
-(require("firebase-admin").firestore as unknown as {FieldValue: typeof mockFieldValue}).FieldValue =
-  mockFieldValue;
+(require("firebase-admin").firestore as unknown as {FieldValue: typeof mockFieldValue}).FieldValue = mockFieldValue;
 
 // ── firebase-functions/v2/scheduler mock ────────────────────────────────────
 
@@ -83,11 +82,7 @@ jest.mock("firebase-functions/v2/scheduler", () => ({
 
 // ── Import under test (after mocks) ─────────────────────────────────────────
 
-import {
-  buildStreakReminderCopy,
-  sendStreakReminders,
-  streakReminderHandler,
-} from "../streakNotifications";
+import {buildStreakReminderCopy, sendStreakReminders, streakReminderHandler} from "../streakNotifications";
 
 // ────────────────────────────────────────────────────────────────────────────
 // Helpers
@@ -370,7 +365,9 @@ describe("streakReminderHandler", () => {
     mockGet.mockResolvedValueOnce(makeSnapshot([]));
 
     await expect(
-      streakReminderHandler({scheduleTime: TODAY} as unknown as import("firebase-functions/v2/scheduler").ScheduledEvent),
+      streakReminderHandler({
+        scheduleTime: TODAY,
+      } as unknown as import("firebase-functions/v2/scheduler").ScheduledEvent),
     ).resolves.toBeUndefined();
   });
 
@@ -378,7 +375,9 @@ describe("streakReminderHandler", () => {
     mockGet.mockRejectedValueOnce(new Error("Firestore error"));
 
     await expect(
-      streakReminderHandler({scheduleTime: TODAY} as unknown as import("firebase-functions/v2/scheduler").ScheduledEvent),
+      streakReminderHandler({
+        scheduleTime: TODAY,
+      } as unknown as import("firebase-functions/v2/scheduler").ScheduledEvent),
     ).rejects.toThrow("Firestore error");
 
     expect(mockLoggerError).toHaveBeenCalled();
@@ -387,9 +386,9 @@ describe("streakReminderHandler", () => {
   it("logs start and finish messages", async () => {
     mockGet.mockResolvedValueOnce(makeSnapshot([]));
 
-    await streakReminderHandler(
-      {scheduleTime: TODAY} as unknown as import("firebase-functions/v2/scheduler").ScheduledEvent,
-    );
+    await streakReminderHandler({
+      scheduleTime: TODAY,
+    } as unknown as import("firebase-functions/v2/scheduler").ScheduledEvent);
 
     expect(mockLoggerInfo).toHaveBeenCalledWith(expect.stringContaining("Starting"));
     expect(mockLoggerInfo).toHaveBeenCalledWith(expect.stringContaining("Finished"));

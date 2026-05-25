@@ -25,28 +25,21 @@
  * @since 2024
  */
 
-import React, { useCallback, useState } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Switch,
-  ScrollView,
-  StyleSheet,
-} from "react-native";
-import { modalRegistry, getModalComponent } from "../modals/ModalRegistry";
-import { ModalData } from "../../types/ModalTypes";
-import { SubmittedGuess } from "../../hooks/types";
-import { Player } from "../../validation/firestoreSchemas";
-import { useAuth } from "../../contexts/AuthContext";
+import React, {useCallback, useState} from "react";
+import {View, Text, TouchableOpacity, Switch, ScrollView, StyleSheet} from "react-native";
+import {modalRegistry, getModalComponent} from "../modals/ModalRegistry";
+import {ModalData} from "../../types/ModalTypes";
+import {SubmittedGuess} from "../../hooks/types";
+import {Player} from "../../validation/firestoreSchemas";
+import {useAuth} from "../../contexts/AuthContext";
 import * as RNIap from "react-native-iap";
-import type { ProductPricing } from "../../services/ProductPricingService";
-import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY } from "../../styles";
-import { scale, verticalScale } from "../../utils/responsive";
-import { logger } from "../../utils/logger";
-import { AppStrings, getAppLanguage, SupportedLanguage } from "../../constants/AppStrings";
-import { HINT_COST_COINS, LEVEL_UP_COIN_BONUS } from "../../constants/game";
-import { loadRewardedAd, showRewardedAd } from "../../services/RewardedAdService";
+import type {ProductPricing} from "../../services/ProductPricingService";
+import {COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY} from "../../styles";
+import {scale, verticalScale} from "../../utils/responsive";
+import {logger} from "../../utils/logger";
+import {AppStrings, getAppLanguage, SupportedLanguage} from "../../constants/AppStrings";
+import {HINT_COST_COINS, LEVEL_UP_COIN_BONUS} from "../../constants/game";
+import {loadRewardedAd, showRewardedAd} from "../../services/RewardedAdService";
 
 /**
  * Type for the updateModalData function
@@ -73,7 +66,7 @@ export const generateMockData = (
   modalType: string,
   closeModalFn?: (type: string) => void,
   livePlayerData?: Player | null,
-  onDebugSpendCoins?: (amount: number) => boolean
+  onDebugSpendCoins?: (amount: number) => boolean,
 ): ExtendedModalData => {
   const mockPlayer: Player = {
     userId: "test-user-123",
@@ -199,9 +192,7 @@ export const generateMockData = (
 
   const resolvedPlayer = livePlayerData ?? mockPlayer;
   const currentCoins =
-    typeof resolvedPlayer.coins === "number" && Number.isFinite(resolvedPlayer.coins)
-      ? resolvedPlayer.coins
-      : 0;
+    typeof resolvedPlayer.coins === "number" && Number.isFinite(resolvedPlayer.coins) ? resolvedPlayer.coins : 0;
 
   switch (modalType) {
     case "victory":
@@ -217,9 +208,7 @@ export const generateMockData = (
           if (closeModalFn) closeModalFn("victory");
 
           // Simulate navigation to next level - in debug mode, this just logs the action
-          logger.debug(
-            "[VictoryModal Debug] Would navigate to next level in real app"
-          );
+          logger.debug("[VictoryModal Debug] Would navigate to next level in real app");
 
           // You could add additional logic here to actually load the next level
           // For example, if you have access to the navigation context:
@@ -241,9 +230,7 @@ export const generateMockData = (
           loadRewardedAd();
           const didCompleteRewardedAd = await showRewardedAd();
           if (!didCompleteRewardedAd) {
-            logger.warn(
-              "[LossModal Debug] Rewarded ad did not complete or was not ready"
-            );
+            logger.warn("[LossModal Debug] Rewarded ad did not complete or was not ready");
             return false;
           }
 
@@ -274,9 +261,7 @@ export const generateMockData = (
           if (closeModalFn) closeModalFn("loss");
 
           // Simulate navigation to next level - in debug mode, this just logs the action
-          logger.debug(
-            "[LossModal Debug] Would navigate to next level in real app"
-          );
+          logger.debug("[LossModal Debug] Would navigate to next level in real app");
         },
         onHome: () => {
           logger.debug("[LossModal Debug] Home button pressed");
@@ -297,8 +282,7 @@ export const generateMockData = (
         currentLanguage: getAppLanguage(),
         onToggleSound: (enabled: boolean) => logger.debug("Sound:", enabled),
         onToggleHaptics: (enabled: boolean) => logger.debug("Haptics:", enabled),
-        onChangeLanguage: (language: SupportedLanguage) =>
-          logger.debug("Language:", language),
+        onChangeLanguage: (language: SupportedLanguage) => logger.debug("Language:", language),
         onPressLogout: () => logger.debug("Logout pressed"),
         onPressHelp: () => logger.debug("Help pressed"),
         onPressAbout: () => logger.debug("About pressed"),
@@ -306,22 +290,21 @@ export const generateMockData = (
         playerData: resolvedPlayer,
       };
     case "fullProfileDetails":
-      return { playerData: resolvedPlayer };
+      return {playerData: resolvedPlayer};
     case "upgradeAccount":
       return {};
     case "achievements":
-      return { playerData: resolvedPlayer };
+      return {playerData: resolvedPlayer};
     case "stats":
-      return { playerData: resolvedPlayer };
+      return {playerData: resolvedPlayer};
     case "leaderboard":
-      return { currentUserId: resolvedPlayer.userId };
+      return {currentUserId: resolvedPlayer.userId};
     case "changePassword":
-      return { onPasswordChanged: () => logger.debug("Password changed") };
+      return {onPasswordChanged: () => logger.debug("Password changed")};
     case "updateUsername":
       return {
         currentUsername: "TestPlayer",
-        onUsernameUpdated: (username: string) =>
-          logger.debug("Username:", username),
+        onUsernameUpdated: (username: string) => logger.debug("Username:", username),
       };
     case "avatarOptions":
       return {
@@ -331,8 +314,7 @@ export const generateMockData = (
       };
     case "preloadedAvatars":
       return {
-        onAvatarSelected: (url: string) =>
-          logger.debug("Preloaded avatar:", url),
+        onAvatarSelected: (url: string) => logger.debug("Preloaded avatar:", url),
         onCloseAvatarOptions: () => logger.debug("Close avatar options"),
       };
     case "hint":
@@ -373,8 +355,7 @@ export const generateMockData = (
         products: mockProducts,
         firestoreProducts: mockFirestoreProducts,
         currentCoins,
-        onPurchaseProduct: (productId: string) =>
-          logger.debug("Purchase:", productId),
+        onPurchaseProduct: (productId: string) => logger.debug("Purchase:", productId),
         loading: false,
         error: null,
         onWatchVideo: () => logger.debug("Watch video pressed"),
@@ -416,7 +397,7 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
   onGenerateDailyChallenge,
   onClearLocalData,
 }) => {
-  const { playerData, updatePlayerDataLocally } = useAuth();
+  const {playerData, updatePlayerDataLocally} = useAuth();
   const [isExpanded, setIsExpanded] = useState(false);
   const [modalToggles, setModalToggles] = useState<{
     [key: string]: boolean | Record<string, unknown>;
@@ -430,9 +411,7 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
       }
 
       const currentCoins =
-        typeof playerData.coins === "number" && Number.isFinite(playerData.coins)
-          ? playerData.coins
-          : 0;
+        typeof playerData.coins === "number" && Number.isFinite(playerData.coins) ? playerData.coins : 0;
 
       if (currentCoins < amount) {
         return false;
@@ -442,11 +421,11 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
         {
           coins: Math.max(0, currentCoins - amount),
         },
-        { syncToFirestore: false }
+        {syncToFirestore: false},
       );
       return true;
     },
-    [playerData, updatePlayerDataLocally]
+    [playerData, updatePlayerDataLocally],
   );
 
   // CRITICAL: Only render in development builds
@@ -460,7 +439,7 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
    */
   const toggleModal = (modalType: string, isVisible: boolean) => {
     setModalToggles((prev) => {
-      const updatedToggles = { ...prev };
+      const updatedToggles = {...prev};
       updatedToggles[modalType] = isVisible;
       return updatedToggles;
     });
@@ -471,7 +450,7 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
    */
   const closeModal = (modalType: string) => {
     setModalToggles((prev) => {
-      const updatedToggles = { ...prev };
+      const updatedToggles = {...prev};
       updatedToggles[modalType] = false;
       return updatedToggles;
     });
@@ -487,24 +466,16 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
       const ModalComponent = getModalComponent(modalType);
       if (!ModalComponent) return null;
 
-      const mockData = generateMockData(
-        modalType,
-        closeModal,
-        playerData,
-        spendDebugCoins
-      );
+      const mockData = generateMockData(modalType, closeModal, playerData, spendDebugCoins);
 
       // Check if this modal needs to fetch server data
-      if (
-        mockData.__fetchServerData &&
-        typeof mockData.__fetchServerData === "function"
-      ) {
+      if (mockData.__fetchServerData && typeof mockData.__fetchServerData === "function") {
         // Create a function to update modal data
         const updateModalData: UpdateModalDataFn = (newData) => {
           logger.debug(`Updating modal data for ${modalType}:`, newData);
           // Re-render the modal with updated data
           setModalToggles((prev) => {
-            const updatedToggles = { ...prev };
+            const updatedToggles = {...prev};
             updatedToggles[modalType] = false; // First close the modal
             return updatedToggles;
           });
@@ -512,7 +483,7 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
           // Then re-open it with updated data
           setTimeout(() => {
             setModalToggles((prev) => {
-              const updatedToggles = { ...prev };
+              const updatedToggles = {...prev};
               updatedToggles[modalType] = true; // Re-open the modal
               updatedToggles[`${modalType}_data`] = newData; // Store the updated data
               return updatedToggles;
@@ -528,22 +499,13 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
       }
 
       // Check if we have stored updated data for this modal
-      const updatedData = modalToggles[`${modalType}_data`] as
-        | Record<string, unknown>
-        | undefined;
+      const updatedData = modalToggles[`${modalType}_data`] as Record<string, unknown> | undefined;
       if (updatedData) {
         // Merge the updated data with the mock data
         Object.assign(mockData, updatedData);
       }
 
-      return (
-        <ModalComponent
-          key={modalType}
-          isVisible={true}
-          onClose={() => closeModal(modalType)}
-          {...mockData}
-        />
-      );
+      return <ModalComponent key={modalType} isVisible={true} onClose={() => closeModal(modalType)} {...mockData} />;
     });
   };
 
@@ -552,13 +514,11 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
    */
   const renderToggleSwitch = (modalType: string) => (
     <View key={modalType} style={styles.toggleRow}>
-      <Text style={styles.toggleLabel}>
-        {modalType.charAt(0).toUpperCase() + modalType.slice(1)}
-      </Text>
+      <Text style={styles.toggleLabel}>{modalType.charAt(0).toUpperCase() + modalType.slice(1)}</Text>
       <Switch
         value={Boolean(modalToggles[modalType])}
         onValueChange={(value) => toggleModal(modalType, value)}
-        trackColor={{ false: COLORS.gray300, true: COLORS.primaryOrange }}
+        trackColor={{false: COLORS.gray300, true: COLORS.primaryOrange}}
         thumbColor={modalToggles[modalType] ? COLORS.white : COLORS.gray400}
       />
     </View>
@@ -568,20 +528,14 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
     <>
       {/* Floating Toggle Panel */}
       <View style={styles.container}>
-        <TouchableOpacity
-          style={styles.header}
-          onPress={() => setIsExpanded(!isExpanded)}
-        >
+        <TouchableOpacity style={styles.header} onPress={() => setIsExpanded(!isExpanded)}>
           <Text style={styles.headerTitle}>
             {AppStrings.DevTools.MODAL_TESTING_HEADER} {isExpanded ? "▼" : "▶"}
           </Text>
         </TouchableOpacity>
 
         {isExpanded && (
-          <ScrollView
-            style={styles.content}
-            showsVerticalScrollIndicator={false}
-          >
+          <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
             {modalTypes.map(renderToggleSwitch)}
 
             {onCompleteRiddle ? (
@@ -591,9 +545,7 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
                   void onCompleteRiddle();
                 }}
               >
-                <Text style={styles.completeButtonText}>
-                  {AppStrings.DevTools.COMPLETE_RIDDLE_BUTTON}
-                </Text>
+                <Text style={styles.completeButtonText}>{AppStrings.DevTools.COMPLETE_RIDDLE_BUTTON}</Text>
               </TouchableOpacity>
             ) : null}
 
@@ -604,9 +556,7 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
                   void onGenerateDailyChallenge();
                 }}
               >
-                <Text style={styles.completeButtonText}>
-                  {AppStrings.DevTools.GENERATE_DAILY_CHALLENGE_BUTTON}
-                </Text>
+                <Text style={styles.completeButtonText}>{AppStrings.DevTools.GENERATE_DAILY_CHALLENGE_BUTTON}</Text>
               </TouchableOpacity>
             ) : null}
 
@@ -617,19 +567,12 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
                   void onClearLocalData();
                 }}
               >
-                <Text style={styles.completeButtonText}>
-                  {AppStrings.DevTools.CLEAR_LOCAL_DATA_BUTTON}
-                </Text>
+                <Text style={styles.completeButtonText}>{AppStrings.DevTools.CLEAR_LOCAL_DATA_BUTTON}</Text>
               </TouchableOpacity>
             ) : null}
 
-            <TouchableOpacity
-              style={styles.clearButton}
-              onPress={() => setModalToggles({})}
-            >
-              <Text style={styles.clearButtonText}>
-                {AppStrings.DevTools.CLEAR_ALL_BUTTON}
-              </Text>
+            <TouchableOpacity style={styles.clearButton} onPress={() => setModalToggles({})}>
+              <Text style={styles.clearButtonText}>{AppStrings.DevTools.CLEAR_ALL_BUTTON}</Text>
             </TouchableOpacity>
           </ScrollView>
         )}

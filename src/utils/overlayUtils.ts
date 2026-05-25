@@ -15,7 +15,7 @@ export const checkAnyOverlayVisible = (
   isCoinShopVisible: boolean,
   isWatchAdModalVisible: boolean,
   isWelcomeOverlayVisible: boolean,
-  additionalOverlay: boolean = false
+  additionalOverlay: boolean = false,
 ): boolean => {
   return (
     isInstructionsVisible ||

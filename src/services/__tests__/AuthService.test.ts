@@ -112,17 +112,13 @@ jest.mock("@react-native-firebase/auth", () => ({
 }));
 
 // Now import after mocks are set up
-import { GoogleSignin } from "@react-native-google-signin/google-signin";
-import { AccessToken, LoginManager } from "react-native-fbsdk-next";
-import {
-  GoogleAuthProvider,
-  FacebookAuthProvider,
-  signInWithPopup,
-} from "@react-native-firebase/auth";
-import { InteractionManager, AppState } from "react-native";
-import { AuthService } from "../AuthService";
-import { logger } from "../../utils/logger";
-import { captureException } from "../../utils/sentry";
+import {GoogleSignin} from "@react-native-google-signin/google-signin";
+import {AccessToken, LoginManager} from "react-native-fbsdk-next";
+import {GoogleAuthProvider, FacebookAuthProvider, signInWithPopup} from "@react-native-firebase/auth";
+import {InteractionManager, AppState} from "react-native";
+import {AuthService} from "../AuthService";
+import {logger} from "../../utils/logger";
+import {captureException} from "../../utils/sentry";
 
 describe("AuthService", () => {
   const mockEmail = "test@example.com";
@@ -134,7 +130,7 @@ describe("AuthService", () => {
       displayName: "Test User",
       emailVerified: true,
       photoURL: "https://example.com/photo.jpg",
-      providerData: [{ providerId: "password", email: mockEmail }],
+      providerData: [{providerId: "password", email: mockEmail}],
       reload: jest.fn().mockResolvedValue(undefined),
     },
   } as any;
@@ -143,12 +139,8 @@ describe("AuthService", () => {
     jest.clearAllMocks();
 
     // Setup default successful responses
-    mockAuthInstance.createUserWithEmailAndPassword.mockResolvedValue(
-      mockUserCredential
-    );
-    mockAuthInstance.signInWithEmailAndPassword.mockResolvedValue(
-      mockUserCredential
-    );
+    mockAuthInstance.createUserWithEmailAndPassword.mockResolvedValue(mockUserCredential);
+    mockAuthInstance.signInWithEmailAndPassword.mockResolvedValue(mockUserCredential);
     mockAuthInstance.sendPasswordResetEmail.mockResolvedValue(undefined);
     mockAuthInstance.signOut.mockResolvedValue(undefined);
     mockAuthInstance.signInWithCredential.mockResolvedValue(mockUserCredential);
@@ -162,7 +154,7 @@ describe("AuthService", () => {
       type: "success",
       data: {
         idToken: "mockGoogleIdToken",
-        user: { email: "user@google.com", name: "Test Google User" },
+        user: {email: "user@google.com", name: "Test Google User"},
       },
     });
 
@@ -180,11 +172,9 @@ describe("AuthService", () => {
     });
 
     // Setup InteractionManager default
-    (InteractionManager.runAfterInteractions as jest.Mock).mockImplementation(
-      (callback) => {
-        return Promise.resolve().then(callback);
-      }
-    );
+    (InteractionManager.runAfterInteractions as jest.Mock).mockImplementation((callback) => {
+      return Promise.resolve().then(callback);
+    });
 
     // Setup AppState mock
     (AppState.addEventListener as jest.Mock).mockReturnValue({
@@ -219,9 +209,7 @@ describe("AuthService", () => {
     it("should successfully create user with email and password", async () => {
       const result = await AuthService.signUpWithEmail(mockEmail, mockPassword);
 
-      expect(
-        mockAuthInstance.createUserWithEmailAndPassword
-      ).toHaveBeenCalledWith(mockEmail, mockPassword);
+      expect(mockAuthInstance.createUserWithEmailAndPassword).toHaveBeenCalledWith(mockEmail, mockPassword);
       expect(result).toEqual(mockUserCredential);
     });
 
@@ -230,17 +218,10 @@ describe("AuthService", () => {
         code: "auth/email-already-in-use",
         message: "The email address is already in use by another account.",
       };
-      mockAuthInstance.createUserWithEmailAndPassword.mockRejectedValueOnce(
-        firebaseError
-      );
+      mockAuthInstance.createUserWithEmailAndPassword.mockRejectedValueOnce(firebaseError);
 
-      await expect(
-        AuthService.signUpWithEmail(mockEmail, mockPassword)
-      ).rejects.toEqual(firebaseError);
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error signing up with email:",
-        firebaseError
-      );
+      await expect(AuthService.signUpWithEmail(mockEmail, mockPassword)).rejects.toEqual(firebaseError);
+      expect(logger.error).toHaveBeenCalledWith("Error signing up with email:", firebaseError);
       expect(captureException).toHaveBeenCalledWith(firebaseError);
     });
 
@@ -249,17 +230,10 @@ describe("AuthService", () => {
         code: "auth/weak-password",
         message: "The password is too weak.",
       };
-      mockAuthInstance.createUserWithEmailAndPassword.mockRejectedValueOnce(
-        firebaseError
-      );
+      mockAuthInstance.createUserWithEmailAndPassword.mockRejectedValueOnce(firebaseError);
 
-      await expect(
-        AuthService.signUpWithEmail(mockEmail, mockPassword)
-      ).rejects.toEqual(firebaseError);
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error signing up with email:",
-        firebaseError
-      );
+      await expect(AuthService.signUpWithEmail(mockEmail, mockPassword)).rejects.toEqual(firebaseError);
+      expect(logger.error).toHaveBeenCalledWith("Error signing up with email:", firebaseError);
     });
 
     it("should handle Firebase auth/invalid-email error", async () => {
@@ -267,28 +241,17 @@ describe("AuthService", () => {
         code: "auth/invalid-email",
         message: "The email address is not valid.",
       };
-      mockAuthInstance.createUserWithEmailAndPassword.mockRejectedValueOnce(
-        firebaseError
-      );
+      mockAuthInstance.createUserWithEmailAndPassword.mockRejectedValueOnce(firebaseError);
 
-      await expect(
-        AuthService.signUpWithEmail("invalid-email", mockPassword)
-      ).rejects.toEqual(firebaseError);
+      await expect(AuthService.signUpWithEmail("invalid-email", mockPassword)).rejects.toEqual(firebaseError);
     });
 
     it("should handle network errors", async () => {
       const networkError = new Error("Network request failed");
-      mockAuthInstance.createUserWithEmailAndPassword.mockRejectedValueOnce(
-        networkError
-      );
+      mockAuthInstance.createUserWithEmailAndPassword.mockRejectedValueOnce(networkError);
 
-      await expect(
-        AuthService.signUpWithEmail(mockEmail, mockPassword)
-      ).rejects.toThrow("Network request failed");
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error signing up with email:",
-        networkError
-      );
+      await expect(AuthService.signUpWithEmail(mockEmail, mockPassword)).rejects.toThrow("Network request failed");
+      expect(logger.error).toHaveBeenCalledWith("Error signing up with email:", networkError);
     });
 
     it("should handle empty email", async () => {
@@ -296,13 +259,9 @@ describe("AuthService", () => {
         code: "auth/invalid-email",
         message: "The email address is not valid.",
       };
-      mockAuthInstance.createUserWithEmailAndPassword.mockRejectedValueOnce(
-        emptyEmailError
-      );
+      mockAuthInstance.createUserWithEmailAndPassword.mockRejectedValueOnce(emptyEmailError);
 
-      await expect(
-        AuthService.signUpWithEmail("", mockPassword)
-      ).rejects.toEqual(emptyEmailError);
+      await expect(AuthService.signUpWithEmail("", mockPassword)).rejects.toEqual(emptyEmailError);
     });
 
     it("should handle empty password", async () => {
@@ -310,13 +269,9 @@ describe("AuthService", () => {
         code: "auth/missing-password",
         message: "Password is required.",
       };
-      mockAuthInstance.createUserWithEmailAndPassword.mockRejectedValueOnce(
-        emptyPasswordError
-      );
+      mockAuthInstance.createUserWithEmailAndPassword.mockRejectedValueOnce(emptyPasswordError);
 
-      await expect(AuthService.signUpWithEmail(mockEmail, "")).rejects.toEqual(
-        emptyPasswordError
-      );
+      await expect(AuthService.signUpWithEmail(mockEmail, "")).rejects.toEqual(emptyPasswordError);
     });
   });
 
@@ -324,10 +279,7 @@ describe("AuthService", () => {
     it("should successfully sign in with email and password", async () => {
       const result = await AuthService.loginWithEmail(mockEmail, mockPassword);
 
-      expect(mockAuthInstance.signInWithEmailAndPassword).toHaveBeenCalledWith(
-        mockEmail,
-        mockPassword
-      );
+      expect(mockAuthInstance.signInWithEmailAndPassword).toHaveBeenCalledWith(mockEmail, mockPassword);
       expect(result).toEqual(mockUserCredential);
     });
 
@@ -336,17 +288,10 @@ describe("AuthService", () => {
         code: "auth/user-not-found",
         message: "There is no user record corresponding to this identifier.",
       };
-      mockAuthInstance.signInWithEmailAndPassword.mockRejectedValueOnce(
-        firebaseError
-      );
+      mockAuthInstance.signInWithEmailAndPassword.mockRejectedValueOnce(firebaseError);
 
-      await expect(
-        AuthService.loginWithEmail(mockEmail, mockPassword)
-      ).rejects.toEqual(firebaseError);
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error logging in with email:",
-        firebaseError
-      );
+      await expect(AuthService.loginWithEmail(mockEmail, mockPassword)).rejects.toEqual(firebaseError);
+      expect(logger.error).toHaveBeenCalledWith("Error logging in with email:", firebaseError);
       expect(captureException).toHaveBeenCalledWith(firebaseError);
     });
 
@@ -355,13 +300,9 @@ describe("AuthService", () => {
         code: "auth/wrong-password",
         message: "The password is invalid.",
       };
-      mockAuthInstance.signInWithEmailAndPassword.mockRejectedValueOnce(
-        firebaseError
-      );
+      mockAuthInstance.signInWithEmailAndPassword.mockRejectedValueOnce(firebaseError);
 
-      await expect(
-        AuthService.loginWithEmail(mockEmail, "wrongpassword")
-      ).rejects.toEqual(firebaseError);
+      await expect(AuthService.loginWithEmail(mockEmail, "wrongpassword")).rejects.toEqual(firebaseError);
     });
 
     it("should handle Firebase auth/invalid-email error", async () => {
@@ -369,13 +310,9 @@ describe("AuthService", () => {
         code: "auth/invalid-email",
         message: "The email address is not valid.",
       };
-      mockAuthInstance.signInWithEmailAndPassword.mockRejectedValueOnce(
-        firebaseError
-      );
+      mockAuthInstance.signInWithEmailAndPassword.mockRejectedValueOnce(firebaseError);
 
-      await expect(
-        AuthService.loginWithEmail("invalid-email", mockPassword)
-      ).rejects.toEqual(firebaseError);
+      await expect(AuthService.loginWithEmail("invalid-email", mockPassword)).rejects.toEqual(firebaseError);
     });
 
     it("should handle Firebase auth/user-disabled error", async () => {
@@ -383,28 +320,19 @@ describe("AuthService", () => {
         code: "auth/user-disabled",
         message: "The user account has been disabled by an administrator.",
       };
-      mockAuthInstance.signInWithEmailAndPassword.mockRejectedValueOnce(
-        firebaseError
-      );
+      mockAuthInstance.signInWithEmailAndPassword.mockRejectedValueOnce(firebaseError);
 
-      await expect(
-        AuthService.loginWithEmail(mockEmail, mockPassword)
-      ).rejects.toEqual(firebaseError);
+      await expect(AuthService.loginWithEmail(mockEmail, mockPassword)).rejects.toEqual(firebaseError);
     });
 
     it("should handle too-many-requests error", async () => {
       const firebaseError = {
         code: "auth/too-many-requests",
-        message:
-          "Too many unsuccessful login attempts. Please try again later.",
+        message: "Too many unsuccessful login attempts. Please try again later.",
       };
-      mockAuthInstance.signInWithEmailAndPassword.mockRejectedValueOnce(
-        firebaseError
-      );
+      mockAuthInstance.signInWithEmailAndPassword.mockRejectedValueOnce(firebaseError);
 
-      await expect(
-        AuthService.loginWithEmail(mockEmail, mockPassword)
-      ).rejects.toEqual(firebaseError);
+      await expect(AuthService.loginWithEmail(mockEmail, mockPassword)).rejects.toEqual(firebaseError);
     });
 
     it("should handle operation-not-allowed error", async () => {
@@ -412,13 +340,9 @@ describe("AuthService", () => {
         code: "auth/operation-not-allowed",
         message: "Email/password accounts are not enabled.",
       };
-      mockAuthInstance.signInWithEmailAndPassword.mockRejectedValueOnce(
-        firebaseError
-      );
+      mockAuthInstance.signInWithEmailAndPassword.mockRejectedValueOnce(firebaseError);
 
-      await expect(
-        AuthService.loginWithEmail(mockEmail, mockPassword)
-      ).rejects.toEqual(firebaseError);
+      await expect(AuthService.loginWithEmail(mockEmail, mockPassword)).rejects.toEqual(firebaseError);
     });
   });
 
@@ -426,12 +350,8 @@ describe("AuthService", () => {
     it("should successfully send password reset email", async () => {
       await AuthService.sendPasswordResetEmail(mockEmail);
 
-      expect(mockAuthInstance.sendPasswordResetEmail).toHaveBeenCalledWith(
-        mockEmail
-      );
-      expect(logger.debug).toHaveBeenCalledWith(
-        "Password reset email sent successfully."
-      );
+      expect(mockAuthInstance.sendPasswordResetEmail).toHaveBeenCalledWith(mockEmail);
+      expect(logger.debug).toHaveBeenCalledWith("Password reset email sent successfully.");
     });
 
     it("should handle Firebase auth/user-not-found error", async () => {
@@ -439,17 +359,10 @@ describe("AuthService", () => {
         code: "auth/user-not-found",
         message: "There is no user record corresponding to this identifier.",
       };
-      mockAuthInstance.sendPasswordResetEmail.mockRejectedValueOnce(
-        firebaseError
-      );
+      mockAuthInstance.sendPasswordResetEmail.mockRejectedValueOnce(firebaseError);
 
-      await expect(
-        AuthService.sendPasswordResetEmail(mockEmail)
-      ).rejects.toEqual(firebaseError);
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error sending password reset email:",
-        firebaseError
-      );
+      await expect(AuthService.sendPasswordResetEmail(mockEmail)).rejects.toEqual(firebaseError);
+      expect(logger.error).toHaveBeenCalledWith("Error sending password reset email:", firebaseError);
       expect(captureException).toHaveBeenCalledWith(firebaseError);
     });
 
@@ -458,13 +371,9 @@ describe("AuthService", () => {
         code: "auth/invalid-email",
         message: "The email address is not valid.",
       };
-      mockAuthInstance.sendPasswordResetEmail.mockRejectedValueOnce(
-        firebaseError
-      );
+      mockAuthInstance.sendPasswordResetEmail.mockRejectedValueOnce(firebaseError);
 
-      await expect(
-        AuthService.sendPasswordResetEmail("invalid-email")
-      ).rejects.toEqual(firebaseError);
+      await expect(AuthService.sendPasswordResetEmail("invalid-email")).rejects.toEqual(firebaseError);
     });
 
     it("should handle Firebase auth/too-many-requests error", async () => {
@@ -472,28 +381,17 @@ describe("AuthService", () => {
         code: "auth/too-many-requests",
         message: "Too many requests. Try again later.",
       };
-      mockAuthInstance.sendPasswordResetEmail.mockRejectedValueOnce(
-        firebaseError
-      );
+      mockAuthInstance.sendPasswordResetEmail.mockRejectedValueOnce(firebaseError);
 
-      await expect(
-        AuthService.sendPasswordResetEmail(mockEmail)
-      ).rejects.toEqual(firebaseError);
+      await expect(AuthService.sendPasswordResetEmail(mockEmail)).rejects.toEqual(firebaseError);
     });
 
     it("should handle network errors", async () => {
       const networkError = new Error("Network request failed");
-      mockAuthInstance.sendPasswordResetEmail.mockRejectedValueOnce(
-        networkError
-      );
+      mockAuthInstance.sendPasswordResetEmail.mockRejectedValueOnce(networkError);
 
-      await expect(
-        AuthService.sendPasswordResetEmail(mockEmail)
-      ).rejects.toThrow("Network request failed");
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error sending password reset email:",
-        networkError
-      );
+      await expect(AuthService.sendPasswordResetEmail(mockEmail)).rejects.toThrow("Network request failed");
+      expect(logger.error).toHaveBeenCalledWith("Error sending password reset email:", networkError);
     });
   });
 
@@ -506,9 +404,7 @@ describe("AuthService", () => {
         showPlayServicesUpdateDialog: true,
       });
       expect(GoogleSignin.signIn).toHaveBeenCalled();
-      expect(GoogleAuthProvider.credential).toHaveBeenCalledWith(
-        "mockGoogleIdToken"
-      );
+      expect(GoogleAuthProvider.credential).toHaveBeenCalledWith("mockGoogleIdToken");
       expect(mockAuthInstance.signInWithCredential).toHaveBeenCalled();
       expect(result).toEqual(mockUserCredential);
     });
@@ -518,17 +414,10 @@ describe("AuthService", () => {
         code: "PLAY_SERVICES_NOT_AVAILABLE",
         message: "Google Play Services not available",
       };
-      (GoogleSignin.hasPlayServices as jest.Mock).mockRejectedValueOnce(
-        playServicesError
-      );
+      (GoogleSignin.hasPlayServices as jest.Mock).mockRejectedValueOnce(playServicesError);
 
-      await expect(AuthService.signInWithGoogle()).rejects.toEqual(
-        playServicesError
-      );
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error signing in with Google:",
-        playServicesError
-      );
+      await expect(AuthService.signInWithGoogle()).rejects.toEqual(playServicesError);
+      expect(logger.error).toHaveBeenCalledWith("Error signing in with Google:", playServicesError);
       expect(captureException).toHaveBeenCalledWith(playServicesError);
     });
 
@@ -537,9 +426,7 @@ describe("AuthService", () => {
         type: "cancelled",
       });
 
-      await expect(AuthService.signInWithGoogle()).rejects.toThrow(
-        "Google sign-in cancelled by user."
-      );
+      await expect(AuthService.signInWithGoogle()).rejects.toThrow("Google sign-in cancelled by user.");
     });
 
     it("should handle Google sign-in cancellation error with correct code", async () => {
@@ -561,9 +448,7 @@ describe("AuthService", () => {
       };
       (GoogleSignin.signIn as jest.Mock).mockRejectedValueOnce(cancelledError);
 
-      await expect(AuthService.signInWithGoogle()).rejects.toEqual(
-        cancelledError
-      );
+      await expect(AuthService.signInWithGoogle()).rejects.toEqual(cancelledError);
     });
 
     it("should handle Google sign-in in progress error", async () => {
@@ -573,24 +458,17 @@ describe("AuthService", () => {
       };
       (GoogleSignin.signIn as jest.Mock).mockRejectedValueOnce(inProgressError);
 
-      await expect(AuthService.signInWithGoogle()).rejects.toEqual(
-        inProgressError
-      );
+      await expect(AuthService.signInWithGoogle()).rejects.toEqual(inProgressError);
     });
 
     it("should handle missing ID token from Google", async () => {
       (GoogleSignin.signIn as jest.Mock).mockResolvedValueOnce({
         type: "success",
-        data: { idToken: null, user: { email: "user@google.com" } },
+        data: {idToken: null, user: {email: "user@google.com"}},
       });
 
-      await expect(AuthService.signInWithGoogle()).rejects.toThrow(
-        "No ID token received from Google Sign-In"
-      );
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error signing in with Google:",
-        expect.any(Error)
-      );
+      await expect(AuthService.signInWithGoogle()).rejects.toThrow("No ID token received from Google Sign-In");
+      expect(logger.error).toHaveBeenCalledWith("Error signing in with Google:", expect.any(Error));
     });
 
     it("should handle missing data object from Google", async () => {
@@ -599,42 +477,34 @@ describe("AuthService", () => {
         data: null,
       });
 
-      await expect(AuthService.signInWithGoogle()).rejects.toThrow(
-        "No ID token received from Google Sign-In"
-      );
+      await expect(AuthService.signInWithGoogle()).rejects.toThrow("No ID token received from Google Sign-In");
     });
 
     it("should handle undefined idToken in data object", async () => {
       (GoogleSignin.signIn as jest.Mock).mockResolvedValueOnce({
         type: "success",
-        data: { idToken: undefined, user: { email: "user@google.com" } },
+        data: {idToken: undefined, user: {email: "user@google.com"}},
       });
 
-      await expect(AuthService.signInWithGoogle()).rejects.toThrow(
-        "No ID token received from Google Sign-In"
-      );
+      await expect(AuthService.signInWithGoogle()).rejects.toThrow("No ID token received from Google Sign-In");
     });
 
     it("should handle missing email from Google sign-in", async () => {
       (GoogleSignin.signIn as jest.Mock).mockResolvedValueOnce({
         type: "success",
-        data: { idToken: "mockGoogleIdToken", user: { email: null } },
+        data: {idToken: "mockGoogleIdToken", user: {email: null}},
       });
 
-      await expect(AuthService.signInWithGoogle()).rejects.toThrow(
-        "Email address not provided by Google"
-      );
+      await expect(AuthService.signInWithGoogle()).rejects.toThrow("Email address not provided by Google");
     });
 
     it("should handle missing user object from Google sign-in", async () => {
       (GoogleSignin.signIn as jest.Mock).mockResolvedValueOnce({
         type: "success",
-        data: { idToken: "mockGoogleIdToken", user: null },
+        data: {idToken: "mockGoogleIdToken", user: null},
       });
 
-      await expect(AuthService.signInWithGoogle()).rejects.toThrow(
-        "Email address not provided by Google"
-      );
+      await expect(AuthService.signInWithGoogle()).rejects.toThrow("Email address not provided by Google");
     });
 
     it("should handle Firebase credential sign-in failure", async () => {
@@ -642,17 +512,10 @@ describe("AuthService", () => {
         code: "auth/invalid-credential",
         message: "The supplied auth credential is invalid.",
       };
-      mockAuthInstance.signInWithCredential.mockRejectedValueOnce(
-        firebaseError
-      );
+      mockAuthInstance.signInWithCredential.mockRejectedValueOnce(firebaseError);
 
-      await expect(AuthService.signInWithGoogle()).rejects.toEqual(
-        firebaseError
-      );
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error signing in with Google:",
-        firebaseError
-      );
+      await expect(AuthService.signInWithGoogle()).rejects.toEqual(firebaseError);
+      expect(logger.error).toHaveBeenCalledWith("Error signing in with Google:", firebaseError);
     });
 
     it("should log successful authentication details", async () => {
@@ -664,7 +527,7 @@ describe("AuthService", () => {
           uid: "test-uid",
           email: mockEmail,
           displayName: "Test User",
-        })
+        }),
       );
     });
   });
@@ -679,7 +542,7 @@ describe("AuthService", () => {
         "✅ Twitter/X authentication successful:",
         expect.objectContaining({
           uid: "test-uid",
-        })
+        }),
       );
     });
 
@@ -687,13 +550,8 @@ describe("AuthService", () => {
       const twitterError = new Error("Twitter sign-in failed");
       (signInWithPopup as jest.Mock).mockRejectedValueOnce(twitterError);
 
-      await expect(AuthService.signInWithTwitter()).rejects.toThrow(
-        "Twitter sign-in failed"
-      );
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error signing in with Twitter/X:",
-        twitterError
-      );
+      await expect(AuthService.signInWithTwitter()).rejects.toThrow("Twitter sign-in failed");
+      expect(logger.error).toHaveBeenCalledWith("Error signing in with Twitter/X:", twitterError);
       expect(captureException).toHaveBeenCalledWith(twitterError);
     });
 
@@ -704,9 +562,7 @@ describe("AuthService", () => {
       };
       (signInWithPopup as jest.Mock).mockRejectedValueOnce(popupClosedError);
 
-      await expect(AuthService.signInWithTwitter()).rejects.toEqual(
-        popupClosedError
-      );
+      await expect(AuthService.signInWithTwitter()).rejects.toEqual(popupClosedError);
     });
 
     it("should handle network errors during Twitter sign-in", async () => {
@@ -716,9 +572,7 @@ describe("AuthService", () => {
       };
       (signInWithPopup as jest.Mock).mockRejectedValueOnce(networkError);
 
-      await expect(AuthService.signInWithTwitter()).rejects.toEqual(
-        networkError
-      );
+      await expect(AuthService.signInWithTwitter()).rejects.toEqual(networkError);
     });
   });
 
@@ -726,14 +580,9 @@ describe("AuthService", () => {
     it("should successfully sign in with Facebook", async () => {
       const result = await AuthService.signInWithFacebook();
 
-      expect(LoginManager.logInWithPermissions).toHaveBeenCalledWith([
-        "public_profile",
-        "email",
-      ]);
+      expect(LoginManager.logInWithPermissions).toHaveBeenCalledWith(["public_profile", "email"]);
       expect(AccessToken.getCurrentAccessToken).toHaveBeenCalled();
-      expect(FacebookAuthProvider.credential).toHaveBeenCalledWith(
-        "mockFbAccessToken"
-      );
+      expect(FacebookAuthProvider.credential).toHaveBeenCalledWith("mockFbAccessToken");
       expect(mockAuthInstance.signInWithCredential).toHaveBeenCalled();
       expect(result).toEqual(mockUserCredential);
     });
@@ -751,7 +600,7 @@ describe("AuthService", () => {
 
     it("should handle Facebook login cancellation via rejection", async () => {
       (LoginManager.logInWithPermissions as jest.Mock).mockRejectedValueOnce(
-        new Error("User cancelled the login process")
+        new Error("User cancelled the login process"),
       );
 
       await expect(AuthService.signInWithFacebook()).resolves.toBeNull();
@@ -760,13 +609,9 @@ describe("AuthService", () => {
     });
 
     it("should handle Facebook access token retrieval failure", async () => {
-      (AccessToken.getCurrentAccessToken as jest.Mock).mockResolvedValueOnce(
-        null
-      );
+      (AccessToken.getCurrentAccessToken as jest.Mock).mockResolvedValueOnce(null);
 
-      await expect(AuthService.signInWithFacebook()).rejects.toThrow(
-        "Facebook access token error. Please try again."
-      );
+      await expect(AuthService.signInWithFacebook()).rejects.toThrow("Facebook access token error. Please try again.");
     });
 
     it("should handle Facebook SDK not properly configured", async () => {
@@ -774,9 +619,7 @@ describe("AuthService", () => {
       // Temporarily override to simulate SDK issue
       (LoginManager as any).logInWithPermissions = undefined;
 
-      await expect(AuthService.signInWithFacebook()).rejects.toThrow(
-        "Facebook SDK not properly initialized"
-      );
+      await expect(AuthService.signInWithFacebook()).rejects.toThrow("Facebook SDK not properly initialized");
 
       // Restore
       (LoginManager as any).logInWithPermissions = originalLogInWithPermissions;
@@ -789,9 +632,7 @@ describe("AuthService", () => {
         userID: "123456",
       });
 
-      await expect(AuthService.signInWithFacebook()).rejects.toThrow(
-        "Email permission not granted"
-      );
+      await expect(AuthService.signInWithFacebook()).rejects.toThrow("Email permission not granted");
       expect(LoginManager.logOut).toHaveBeenCalled();
     });
 
@@ -803,7 +644,7 @@ describe("AuthService", () => {
       });
 
       await expect(AuthService.signInWithFacebook()).rejects.toThrow(
-        "Invalid token type: received App Access Token instead of User Access Token"
+        "Invalid token type: received App Access Token instead of User Access Token",
       );
     });
 
@@ -813,17 +654,13 @@ describe("AuthService", () => {
         message: "Account exists with different credential",
         email: "test@example.com",
       };
-      mockAuthInstance.signInWithCredential.mockRejectedValueOnce(
-        firebaseError
-      );
-      mockAuthInstance.fetchSignInMethodsForEmail.mockResolvedValueOnce([
-        "google.com",
-      ]);
+      mockAuthInstance.signInWithCredential.mockRejectedValueOnce(firebaseError);
+      mockAuthInstance.fetchSignInMethodsForEmail.mockResolvedValueOnce(["google.com"]);
 
       // Mock successful Google sign-in for linking
       (GoogleSignin.signIn as jest.Mock).mockResolvedValueOnce({
         type: "success",
-        data: { idToken: "mockGoogleIdToken", user: { email: "test@example.com" } },
+        data: {idToken: "mockGoogleIdToken", user: {email: "test@example.com"}},
       });
 
       const linkedUserCredential = {
@@ -832,9 +669,7 @@ describe("AuthService", () => {
           linkWithCredential: jest.fn().mockResolvedValue(mockUserCredential),
         },
       };
-      mockAuthInstance.signInWithCredential.mockResolvedValueOnce(
-        linkedUserCredential
-      );
+      mockAuthInstance.signInWithCredential.mockResolvedValueOnce(linkedUserCredential);
 
       const result = await AuthService.signInWithFacebook();
       expect(result).toEqual(mockUserCredential);
@@ -845,16 +680,10 @@ describe("AuthService", () => {
         code: "auth/account-exists-with-different-credential",
         message: "Account exists with different credential",
       };
-      mockAuthInstance.signInWithCredential.mockRejectedValueOnce(
-        firebaseError
-      );
-      mockAuthInstance.fetchSignInMethodsForEmail.mockResolvedValueOnce([
-        "password",
-      ]);
+      mockAuthInstance.signInWithCredential.mockRejectedValueOnce(firebaseError);
+      mockAuthInstance.fetchSignInMethodsForEmail.mockResolvedValueOnce(["password"]);
 
-      await expect(AuthService.signInWithFacebook()).rejects.toThrow(
-        "Account exists with email/password"
-      );
+      await expect(AuthService.signInWithFacebook()).rejects.toThrow("Account exists with email/password");
     });
 
     it("should handle auth/auth-popup-closed-by-user error as a quiet cancellation", async () => {
@@ -862,9 +691,7 @@ describe("AuthService", () => {
         code: "auth/auth-popup-closed-by-user",
         message: "User closed popup",
       };
-      mockAuthInstance.signInWithCredential.mockRejectedValueOnce(
-        firebaseError
-      );
+      mockAuthInstance.signInWithCredential.mockRejectedValueOnce(firebaseError);
 
       await expect(AuthService.signInWithFacebook()).resolves.toBeNull();
       expect(logger.error).not.toHaveBeenCalled();
@@ -876,12 +703,10 @@ describe("AuthService", () => {
         code: "auth/operation-not-supported-in-this-environment",
         message: "Operation not supported",
       };
-      mockAuthInstance.signInWithCredential.mockRejectedValueOnce(
-        firebaseError
-      );
+      mockAuthInstance.signInWithCredential.mockRejectedValueOnce(firebaseError);
 
       await expect(AuthService.signInWithFacebook()).rejects.toThrow(
-        "Facebook login is not supported in this environment."
+        "Facebook login is not supported in this environment.",
       );
     });
 
@@ -890,13 +715,9 @@ describe("AuthService", () => {
         code: "auth/network-request-failed",
         message: "Network request failed",
       };
-      mockAuthInstance.signInWithCredential.mockRejectedValueOnce(
-        firebaseError
-      );
+      mockAuthInstance.signInWithCredential.mockRejectedValueOnce(firebaseError);
 
-      await expect(AuthService.signInWithFacebook()).rejects.toThrow(
-        "Network error during Facebook login"
-      );
+      await expect(AuthService.signInWithFacebook()).rejects.toThrow("Network error during Facebook login");
     });
 
     it("should handle auth/invalid-credential error", async () => {
@@ -904,13 +725,9 @@ describe("AuthService", () => {
         code: "auth/invalid-credential",
         message: "Invalid credential",
       };
-      mockAuthInstance.signInWithCredential.mockRejectedValueOnce(
-        firebaseError
-      );
+      mockAuthInstance.signInWithCredential.mockRejectedValueOnce(firebaseError);
 
-      await expect(AuthService.signInWithFacebook()).rejects.toThrow(
-        "Invalid Facebook credentials. Please try again."
-      );
+      await expect(AuthService.signInWithFacebook()).rejects.toThrow("Invalid Facebook credentials. Please try again.");
     });
 
     it("should handle unknown Firebase errors by rethrowing", async () => {
@@ -918,24 +735,16 @@ describe("AuthService", () => {
         code: "auth/unknown-error",
         message: "Unknown error occurred",
       };
-      mockAuthInstance.signInWithCredential.mockRejectedValueOnce(
-        firebaseError
-      );
+      mockAuthInstance.signInWithCredential.mockRejectedValueOnce(firebaseError);
 
-      await expect(AuthService.signInWithFacebook()).rejects.toEqual(
-        firebaseError
-      );
+      await expect(AuthService.signInWithFacebook()).rejects.toEqual(firebaseError);
     });
 
     it("should handle non-Firebase errors by rethrowing", async () => {
       const networkError = new Error("Network connection failed");
-      (LoginManager.logInWithPermissions as jest.Mock).mockRejectedValueOnce(
-        networkError
-      );
+      (LoginManager.logInWithPermissions as jest.Mock).mockRejectedValueOnce(networkError);
 
-      await expect(AuthService.signInWithFacebook()).rejects.toThrow(
-        "Network connection failed"
-      );
+      await expect(AuthService.signInWithFacebook()).rejects.toThrow("Network connection failed");
     });
 
     it("should proceed with sign-in when LoginManager.logOut throws during session clear", async () => {
@@ -946,10 +755,7 @@ describe("AuthService", () => {
       const result = await AuthService.signInWithFacebook();
 
       expect(result).toEqual(mockUserCredential);
-      expect(logger.warn).toHaveBeenCalledWith(
-        "⚠️ Facebook logout warning:",
-        expect.any(Error)
-      );
+      expect(logger.warn).toHaveBeenCalledWith("⚠️ Facebook logout warning:", expect.any(Error));
     });
 
     it("should log permission warnings when no permissions granted", async () => {
@@ -967,9 +773,7 @@ describe("AuthService", () => {
       });
 
       await AuthService.signInWithFacebook();
-      expect(logger.warn).toHaveBeenCalledWith(
-        "⚠️ No permissions granted by Facebook"
-      );
+      expect(logger.warn).toHaveBeenCalledWith("⚠️ No permissions granted by Facebook");
     });
 
     it("should log declined permissions warning", async () => {
@@ -987,10 +791,7 @@ describe("AuthService", () => {
       });
 
       await AuthService.signInWithFacebook();
-      expect(logger.warn).toHaveBeenCalledWith(
-        "❌ Some permissions were declined:",
-        ["email"]
-      );
+      expect(logger.warn).toHaveBeenCalledWith("❌ Some permissions were declined:", ["email"]);
     });
 
     it("should attempt Facebook Graph API when Firebase user has no email", async () => {
@@ -1004,16 +805,12 @@ describe("AuthService", () => {
           reload: jest.fn().mockResolvedValue(undefined),
         },
       };
-      mockAuthInstance.signInWithCredential.mockResolvedValueOnce(
-        userCredentialNoEmail
-      );
-      mockAuthInstance.currentUser = { ...userCredentialNoEmail.user, email: null };
+      mockAuthInstance.signInWithCredential.mockResolvedValueOnce(userCredentialNoEmail);
+      mockAuthInstance.currentUser = {...userCredentialNoEmail.user, email: null};
 
       await AuthService.signInWithFacebook();
 
-      expect(global.fetch).toHaveBeenCalledWith(
-        expect.stringContaining("https://graph.facebook.com/me")
-      );
+      expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining("https://graph.facebook.com/me"));
     });
 
     it("should handle Facebook Graph API error gracefully", async () => {
@@ -1025,10 +822,8 @@ describe("AuthService", () => {
           reload: jest.fn().mockResolvedValue(undefined),
         },
       };
-      mockAuthInstance.signInWithCredential.mockResolvedValueOnce(
-        userCredentialNoEmail
-      );
-      mockAuthInstance.currentUser = { ...userCredentialNoEmail.user, email: null };
+      mockAuthInstance.signInWithCredential.mockResolvedValueOnce(userCredentialNoEmail);
+      mockAuthInstance.currentUser = {...userCredentialNoEmail.user, email: null};
 
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: false,
@@ -1039,10 +834,7 @@ describe("AuthService", () => {
       // Should not throw, just log the error
       const result = await AuthService.signInWithFacebook();
       expect(result).toEqual(userCredentialNoEmail);
-      expect(logger.error).toHaveBeenCalledWith(
-        "❌ Facebook Graph API call failed:",
-        expect.any(Error)
-      );
+      expect(logger.error).toHaveBeenCalledWith("❌ Facebook Graph API call failed:", expect.any(Error));
     });
 
     it("should handle Facebook Graph API returning no email", async () => {
@@ -1054,10 +846,8 @@ describe("AuthService", () => {
           reload: jest.fn().mockResolvedValue(undefined),
         },
       };
-      mockAuthInstance.signInWithCredential.mockResolvedValueOnce(
-        userCredentialNoEmail
-      );
-      mockAuthInstance.currentUser = { ...userCredentialNoEmail.user, email: null };
+      mockAuthInstance.signInWithCredential.mockResolvedValueOnce(userCredentialNoEmail);
+      mockAuthInstance.currentUser = {...userCredentialNoEmail.user, email: null};
 
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
@@ -1069,9 +859,7 @@ describe("AuthService", () => {
       });
 
       await AuthService.signInWithFacebook();
-      expect(logger.warn).toHaveBeenCalledWith(
-        "⚠️ Facebook Graph API also didn't provide email address"
-      );
+      expect(logger.warn).toHaveBeenCalledWith("⚠️ Facebook Graph API also didn't provide email address");
     });
 
     it("should handle account linking cancellation by user", async () => {
@@ -1079,15 +867,11 @@ describe("AuthService", () => {
         code: "auth/account-exists-with-different-credential",
         message: "Account exists with different credential",
       };
-      mockAuthInstance.signInWithCredential.mockRejectedValueOnce(
-        firebaseError
-      );
+      mockAuthInstance.signInWithCredential.mockRejectedValueOnce(firebaseError);
       mockAuthInstance.fetchSignInMethodsForEmail.mockResolvedValueOnce([]);
 
       // User cancels Google sign-in during linking
-      (GoogleSignin.signIn as jest.Mock).mockRejectedValueOnce(
-        new Error("User cancelled the login flow")
-      );
+      (GoogleSignin.signIn as jest.Mock).mockRejectedValueOnce(new Error("User cancelled the login flow"));
 
       await expect(AuthService.signInWithFacebook()).resolves.toBeNull();
     });
@@ -1101,18 +885,13 @@ describe("AuthService", () => {
           isAnonymous: true,
         },
       };
-      mockAuthInstance.signInAnonymously.mockResolvedValueOnce(
-        anonymousUserCredential
-      );
+      mockAuthInstance.signInAnonymously.mockResolvedValueOnce(anonymousUserCredential);
 
       const result = await AuthService.signInAnonymously();
 
       expect(mockAuthInstance.signInAnonymously).toHaveBeenCalled();
       expect(result).toEqual(anonymousUserCredential);
-      expect(logger.debug).toHaveBeenCalledWith(
-        "✅ Anonymous sign-in successful:",
-        "anonymous-uid"
-      );
+      expect(logger.debug).toHaveBeenCalledWith("✅ Anonymous sign-in successful:", "anonymous-uid");
     });
 
     it("should handle anonymous sign-in errors", async () => {
@@ -1122,13 +901,8 @@ describe("AuthService", () => {
       };
       mockAuthInstance.signInAnonymously.mockRejectedValueOnce(signInError);
 
-      await expect(AuthService.signInAnonymously()).rejects.toEqual(
-        signInError
-      );
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error signing in anonymously:",
-        signInError
-      );
+      await expect(AuthService.signInAnonymously()).rejects.toEqual(signInError);
+      expect(logger.error).toHaveBeenCalledWith("Error signing in anonymously:", signInError);
       expect(captureException).toHaveBeenCalledWith(signInError);
     });
 
@@ -1136,9 +910,7 @@ describe("AuthService", () => {
       const networkError = new Error("Network request failed");
       mockAuthInstance.signInAnonymously.mockRejectedValueOnce(networkError);
 
-      await expect(AuthService.signInAnonymously()).rejects.toThrow(
-        "Network request failed"
-      );
+      await expect(AuthService.signInAnonymously()).rejects.toThrow("Network request failed");
     });
 
     it("should handle too-many-requests error during anonymous sign-in", async () => {
@@ -1148,9 +920,7 @@ describe("AuthService", () => {
       };
       mockAuthInstance.signInAnonymously.mockRejectedValueOnce(rateLimitError);
 
-      await expect(AuthService.signInAnonymously()).rejects.toEqual(
-        rateLimitError
-      );
+      await expect(AuthService.signInAnonymously()).rejects.toEqual(rateLimitError);
     });
   });
 
@@ -1170,10 +940,7 @@ describe("AuthService", () => {
       mockAuthInstance.signOut.mockRejectedValueOnce(signOutError);
 
       await expect(AuthService.logout()).rejects.toEqual(signOutError);
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error signing out:",
-        signOutError
-      );
+      expect(logger.error).toHaveBeenCalledWith("Error signing out:", signOutError);
       expect(captureException).toHaveBeenCalledWith(signOutError);
     });
 
@@ -1181,13 +948,8 @@ describe("AuthService", () => {
       const unknownError = new Error("Unknown error during logout");
       mockAuthInstance.signOut.mockRejectedValueOnce(unknownError);
 
-      await expect(AuthService.logout()).rejects.toThrow(
-        "Unknown error during logout"
-      );
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error signing out:",
-        unknownError
-      );
+      await expect(AuthService.logout()).rejects.toThrow("Unknown error during logout");
+      expect(logger.error).toHaveBeenCalledWith("Error signing out:", unknownError);
     });
   });
 
@@ -1198,9 +960,7 @@ describe("AuthService", () => {
       expect(result.isConfigured).toBe(true);
       expect(result.issues).toHaveLength(0);
       expect(result.recommendations).toHaveLength(0);
-      expect(logger.debug).toHaveBeenCalledWith(
-        "🔍 Running Facebook SDK diagnostic..."
-      );
+      expect(logger.debug).toHaveBeenCalledWith("🔍 Running Facebook SDK diagnostic...");
     });
 
     it("should detect missing LoginManager", async () => {
@@ -1211,12 +971,8 @@ describe("AuthService", () => {
       const result = await AuthService.diagnoseFacebookSetup();
 
       expect(result.isConfigured).toBe(false);
-      expect(result.issues).toContain(
-        "Facebook LoginManager not properly configured"
-      );
-      expect(result.recommendations).toContain(
-        "Check Facebook app configuration in app.config.js"
-      );
+      expect(result.issues).toContain("Facebook LoginManager not properly configured");
+      expect(result.recommendations).toContain("Check Facebook app configuration in app.config.js");
 
       // Restore
       (LoginManager as any).logInWithPermissions = originalLoginManager;
@@ -1225,20 +981,12 @@ describe("AuthService", () => {
     it("should handle diagnostic failure gracefully", async () => {
       // Force an error by making the diagnostic throw
       const originalLoginManager = LoginManager;
-      jest.replaceProperty(
-        require("react-native-fbsdk-next"),
-        "LoginManager",
-        null
-      );
+      jest.replaceProperty(require("react-native-fbsdk-next"), "LoginManager", null);
 
       const result = await AuthService.diagnoseFacebookSetup();
 
       // Restore
-      jest.replaceProperty(
-        require("react-native-fbsdk-next"),
-        "LoginManager",
-        originalLoginManager
-      );
+      jest.replaceProperty(require("react-native-fbsdk-next"), "LoginManager", originalLoginManager);
 
       // Should still return a valid result object
       expect(result).toHaveProperty("isConfigured");
@@ -1275,23 +1023,15 @@ describe("AuthService", () => {
     it("should list common Facebook integration issues", async () => {
       const result = await AuthService.troubleshootFacebookLogin();
 
-      expect(result.commonIssues).toContainEqual(
-        expect.stringContaining("Missing Android Key Hash")
-      );
-      expect(result.commonIssues).toContainEqual(
-        expect.stringContaining("Development mode")
-      );
+      expect(result.commonIssues).toContainEqual(expect.stringContaining("Missing Android Key Hash"));
+      expect(result.commonIssues).toContainEqual(expect.stringContaining("Development mode"));
     });
 
     it("should provide step-by-step troubleshooting guidance", async () => {
       const result = await AuthService.troubleshootFacebookLogin();
 
-      expect(result.troubleshootingSteps).toContainEqual(
-        expect.stringContaining("Verify Facebook app")
-      );
-      expect(result.troubleshootingSteps).toContainEqual(
-        expect.stringContaining("Add Android Key Hash")
-      );
+      expect(result.troubleshootingSteps).toContainEqual(expect.stringContaining("Verify Facebook app"));
+      expect(result.troubleshootingSteps).toContainEqual(expect.stringContaining("Add Android Key Hash"));
     });
 
     it("should handle diagnostic failure in troubleshooting", async () => {
@@ -1320,18 +1060,14 @@ describe("AuthService", () => {
       const callbackError = new Error("Callback failed");
       (GoogleSignin.signIn as jest.Mock).mockRejectedValueOnce(callbackError);
 
-      await expect(AuthService.signInWithGoogle()).rejects.toEqual(
-        callbackError
-      );
+      await expect(AuthService.signInWithGoogle()).rejects.toEqual(callbackError);
     });
 
     it("should propagate callback results in runOnMainThread", async () => {
       const customUserCredential = {
-        user: { uid: "custom-uid", email: "custom@test.com" },
+        user: {uid: "custom-uid", email: "custom@test.com"},
       } as any;
-      mockAuthInstance.signInWithCredential.mockResolvedValueOnce(
-        customUserCredential
-      );
+      mockAuthInstance.signInWithCredential.mockResolvedValueOnce(customUserCredential);
 
       const result = await AuthService.signInWithGoogle();
       expect(result).toEqual(customUserCredential);
@@ -1344,13 +1080,9 @@ describe("AuthService", () => {
         code: "auth/invalid-email",
         message: "Email is required",
       };
-      mockAuthInstance.signInWithEmailAndPassword.mockRejectedValueOnce(
-        nullEmailError
-      );
+      mockAuthInstance.signInWithEmailAndPassword.mockRejectedValueOnce(nullEmailError);
 
-      await expect(
-        AuthService.loginWithEmail(null as any, mockPassword)
-      ).rejects.toEqual(nullEmailError);
+      await expect(AuthService.loginWithEmail(null as any, mockPassword)).rejects.toEqual(nullEmailError);
     });
 
     it("should handle null/undefined password gracefully", async () => {
@@ -1358,13 +1090,9 @@ describe("AuthService", () => {
         code: "auth/missing-password",
         message: "Password is required",
       };
-      mockAuthInstance.signInWithEmailAndPassword.mockRejectedValueOnce(
-        nullPasswordError
-      );
+      mockAuthInstance.signInWithEmailAndPassword.mockRejectedValueOnce(nullPasswordError);
 
-      await expect(
-        AuthService.loginWithEmail(mockEmail, null as any)
-      ).rejects.toEqual(nullPasswordError);
+      await expect(AuthService.loginWithEmail(mockEmail, null as any)).rejects.toEqual(nullPasswordError);
     });
 
     it("should handle simultaneous authentication attempts", async () => {
@@ -1385,20 +1113,14 @@ describe("AuthService", () => {
       const longEmail = "a".repeat(300) + "@example.com";
 
       await AuthService.loginWithEmail(longEmail, mockPassword);
-      expect(mockAuthInstance.signInWithEmailAndPassword).toHaveBeenCalledWith(
-        longEmail,
-        mockPassword
-      );
+      expect(mockAuthInstance.signInWithEmailAndPassword).toHaveBeenCalledWith(longEmail, mockPassword);
     });
 
     it("should handle special characters in passwords", async () => {
       const specialPassword = "p@ssw0rd!#$%^&*()_+-=[]{}|;:,.<>?";
 
       await AuthService.loginWithEmail(mockEmail, specialPassword);
-      expect(mockAuthInstance.signInWithEmailAndPassword).toHaveBeenCalledWith(
-        mockEmail,
-        specialPassword
-      );
+      expect(mockAuthInstance.signInWithEmailAndPassword).toHaveBeenCalledWith(mockEmail, specialPassword);
     });
 
     it("should handle empty string inputs", async () => {
@@ -1406,13 +1128,9 @@ describe("AuthService", () => {
         code: "auth/invalid-email",
         message: "The email address is not valid.",
       };
-      mockAuthInstance.signInWithEmailAndPassword.mockRejectedValueOnce(
-        emptyStringError
-      );
+      mockAuthInstance.signInWithEmailAndPassword.mockRejectedValueOnce(emptyStringError);
 
-      await expect(AuthService.loginWithEmail("", "")).rejects.toEqual(
-        emptyStringError
-      );
+      await expect(AuthService.loginWithEmail("", "")).rejects.toEqual(emptyStringError);
     });
 
     it("should handle unicode characters in credentials", async () => {
@@ -1420,10 +1138,7 @@ describe("AuthService", () => {
       const unicodePassword = "密码123!";
 
       await AuthService.loginWithEmail(unicodeEmail, unicodePassword);
-      expect(mockAuthInstance.signInWithEmailAndPassword).toHaveBeenCalledWith(
-        unicodeEmail,
-        unicodePassword
-      );
+      expect(mockAuthInstance.signInWithEmailAndPassword).toHaveBeenCalledWith(unicodeEmail, unicodePassword);
     });
   });
 
@@ -1431,16 +1146,11 @@ describe("AuthService", () => {
     it("should handle complete sign-up to sign-in flow", async () => {
       // First sign up
       await AuthService.signUpWithEmail(mockEmail, mockPassword);
-      expect(
-        mockAuthInstance.createUserWithEmailAndPassword
-      ).toHaveBeenCalledWith(mockEmail, mockPassword);
+      expect(mockAuthInstance.createUserWithEmailAndPassword).toHaveBeenCalledWith(mockEmail, mockPassword);
 
       // Then sign in
       await AuthService.loginWithEmail(mockEmail, mockPassword);
-      expect(mockAuthInstance.signInWithEmailAndPassword).toHaveBeenCalledWith(
-        mockEmail,
-        mockPassword
-      );
+      expect(mockAuthInstance.signInWithEmailAndPassword).toHaveBeenCalledWith(mockEmail, mockPassword);
 
       // Then logout
       await AuthService.logout();
@@ -1453,19 +1163,13 @@ describe("AuthService", () => {
         code: "auth/wrong-password",
         message: "The password is invalid.",
       };
-      mockAuthInstance.signInWithEmailAndPassword.mockRejectedValueOnce(
-        wrongPasswordError
-      );
+      mockAuthInstance.signInWithEmailAndPassword.mockRejectedValueOnce(wrongPasswordError);
 
-      await expect(
-        AuthService.loginWithEmail(mockEmail, "wrongpassword")
-      ).rejects.toEqual(wrongPasswordError);
+      await expect(AuthService.loginWithEmail(mockEmail, "wrongpassword")).rejects.toEqual(wrongPasswordError);
 
       // Request password reset
       await AuthService.sendPasswordResetEmail(mockEmail);
-      expect(mockAuthInstance.sendPasswordResetEmail).toHaveBeenCalledWith(
-        mockEmail
-      );
+      expect(mockAuthInstance.sendPasswordResetEmail).toHaveBeenCalledWith(mockEmail);
     });
 
     it("should handle social login fallback to email", async () => {
@@ -1477,29 +1181,22 @@ describe("AuthService", () => {
 
       // Fallback to email login
       await AuthService.loginWithEmail(mockEmail, mockPassword);
-      expect(mockAuthInstance.signInWithEmailAndPassword).toHaveBeenCalledWith(
-        mockEmail,
-        mockPassword
-      );
+      expect(mockAuthInstance.signInWithEmailAndPassword).toHaveBeenCalledWith(mockEmail, mockPassword);
     });
 
     it("should handle anonymous to authenticated user upgrade flow", async () => {
       // Start as anonymous
       const anonymousCredential = {
-        user: { uid: "anon-uid", isAnonymous: true },
+        user: {uid: "anon-uid", isAnonymous: true},
       };
-      mockAuthInstance.signInAnonymously.mockResolvedValueOnce(
-        anonymousCredential
-      );
+      mockAuthInstance.signInAnonymously.mockResolvedValueOnce(anonymousCredential);
 
       await AuthService.signInAnonymously();
       expect(mockAuthInstance.signInAnonymously).toHaveBeenCalled();
 
       // Then sign up with email
       await AuthService.signUpWithEmail(mockEmail, mockPassword);
-      expect(
-        mockAuthInstance.createUserWithEmailAndPassword
-      ).toHaveBeenCalledWith(mockEmail, mockPassword);
+      expect(mockAuthInstance.createUserWithEmailAndPassword).toHaveBeenCalledWith(mockEmail, mockPassword);
     });
 
     it("should handle multiple social provider attempts", async () => {
@@ -1507,19 +1204,13 @@ describe("AuthService", () => {
       const googleError = new Error("Google sign-in failed");
       (GoogleSignin.signIn as jest.Mock).mockRejectedValueOnce(googleError);
 
-      await expect(AuthService.signInWithGoogle()).rejects.toThrow(
-        "Google sign-in failed"
-      );
+      await expect(AuthService.signInWithGoogle()).rejects.toThrow("Google sign-in failed");
 
       // Try Facebook next - fails
       const facebookError = new Error("Facebook sign-in failed");
-      (LoginManager.logInWithPermissions as jest.Mock).mockRejectedValueOnce(
-        facebookError
-      );
+      (LoginManager.logInWithPermissions as jest.Mock).mockRejectedValueOnce(facebookError);
 
-      await expect(AuthService.signInWithFacebook()).rejects.toThrow(
-        "Facebook sign-in failed"
-      );
+      await expect(AuthService.signInWithFacebook()).rejects.toThrow("Facebook sign-in failed");
 
       // Try Twitter - succeeds
       const result = await AuthService.signInWithTwitter();
@@ -1529,7 +1220,7 @@ describe("AuthService", () => {
 
   describe("linkAnonymousWithGoogle", () => {
     it("links the current anonymous user with Google credentials", async () => {
-      const linkedCredential = { user: { uid: "linked-uid" } };
+      const linkedCredential = {user: {uid: "linked-uid"}};
       const linkWithCredential = jest.fn().mockResolvedValue(linkedCredential);
 
       mockAuthInstance.currentUser = {
@@ -1540,7 +1231,7 @@ describe("AuthService", () => {
       (GoogleSignin.hasPlayServices as jest.Mock).mockResolvedValueOnce(true);
       (GoogleSignin.signIn as jest.Mock).mockResolvedValueOnce({
         type: "success",
-        data: { idToken: "GOOGLE_ID_TOKEN", user: { email: "a@b.com" } },
+        data: {idToken: "GOOGLE_ID_TOKEN", user: {email: "a@b.com"}},
       });
 
       const result = await AuthService.linkAnonymousWithGoogle();

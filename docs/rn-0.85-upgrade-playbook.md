@@ -1,6 +1,7 @@
 # React Native 0.85 Upgrade Playbook
 
 ## Current State
+
 - Runtime aligned to `react-native@0.85.1` on Expo SDK 56 canary.
 - Node policy is `>=20.19.4` (`.nvmrc` and `package.json` engines).
 - Jest preset migrated to `@react-native/jest-preset`.
@@ -8,6 +9,7 @@
 - Metro updated to `0.84.x`.
 
 ## Plan Completion Status
+
 - Baseline + branch: complete (baseline template added, upgrade branch active).
 - Core version alignment: complete.
 - Breaking changes sweep: complete.
@@ -22,6 +24,7 @@
 ## New Features Adoption
 
 ### 1. Shared Animation Backend
+
 - Status: version gate complete; runtime is now on `react-native@0.85.1`.
 - Keep `EXPO_PUBLIC_ENABLE_SHARED_ANIMATION_BACKEND=false` by default.
 - Action for targeted experimental test builds:
@@ -30,6 +33,7 @@
   3. Validate layout animations with native driver on key screens.
 
 ### 2. Metro TLS
+
 - TLS support is now wired in `metro.config.js`.
 - Set env vars before running Metro:
   - `METRO_TLS_CERT_PATH`
@@ -38,6 +42,7 @@
 - This enables HTTPS + WSS Fast Refresh for secure local API testing.
 
 ### 3. DevTools Multi-Connection Workflow
+
 - Use multiple CDP clients in parallel:
   - React Native DevTools
   - VS Code debugger
@@ -45,6 +50,7 @@
 - Keep one profiling session focused on render/frames and another on network.
 
 ## Validation Commands
+
 - `pnpm run check:rn-upgrade`
 - `pnpm run lint`
 - `pnpm run test:rn -- --runInBand`
@@ -77,6 +83,7 @@
 - Note for future agents: the full RN suite still prints expected console noise from tests that intentionally exercise error paths and from async SolarSystem3D texture updates, but Jest exits 0 with all suites passing.
 
 ## Baseline + Rollout
+
 - Generate baseline template: `pnpm run baseline:report`
 - Fill `docs/memory-bank/rn-0.85-baseline.md` with measured device metrics.
 - Rollout recommendation:

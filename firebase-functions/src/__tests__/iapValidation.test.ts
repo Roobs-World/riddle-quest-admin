@@ -38,9 +38,8 @@ const mockUpdateUserCoins = jest.fn<(...args: unknown[]) => Promise<void>>();
 const mockUpdateUserProfile = jest.fn<(...args: unknown[]) => Promise<void>>();
 const mockMarkPurchaseTokenAsProcessed = jest.fn<(...args: unknown[]) => Promise<void>>();
 const mockIsPurchaseTokenAlreadyProcessed = jest.fn<(...args: unknown[]) => Promise<boolean>>();
-const mockPerformPlatformValidation = jest.fn<
-  (...args: unknown[]) => Promise<{isValid: boolean; productId: string; transactionId: string}>
->();
+const mockPerformPlatformValidation =
+  jest.fn<(...args: unknown[]) => Promise<{isValid: boolean; productId: string; transactionId: string}>>();
 const mockEvaluateAchievements = jest.fn<(...args: unknown[]) => Promise<string[]>>();
 
 const mockLoggerInfo = jest.fn<(...args: unknown[]) => void>();
@@ -401,10 +400,10 @@ describe("validatePurchase - Unit Tests", () => {
     await expect(validatePurchase(request)).rejects.toThrow(
       new functions.https.HttpsError("already-exists", "This purchase has already been processed."),
     );
-    expect(mockLoggerWarn).toHaveBeenCalledWith(
-      "IAP purchase token already processed.",
-      {userId: testUserId, productId: "test_product"},
-    );
+    expect(mockLoggerWarn).toHaveBeenCalledWith("IAP purchase token already processed.", {
+      userId: testUserId,
+      productId: "test_product",
+    });
   });
 
   it("should throw failed-precondition if platform validation does not return a product", async () => {

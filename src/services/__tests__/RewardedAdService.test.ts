@@ -6,12 +6,10 @@ const flushPromises = async () => {
 };
 
 const setupRewardedAdService = async (
-  showBehavior: (emit: (eventType: string, payload?: unknown) => void) => void = (
-    emit
-  ) => {
-    emit("earned_reward", { amount: 1, type: "coin" });
+  showBehavior: (emit: (eventType: string, payload?: unknown) => void) => void = (emit) => {
+    emit("earned_reward", {amount: 1, type: "coin"});
     emit("closed");
-  }
+  },
 ) => {
   jest.resetModules();
 
@@ -22,17 +20,15 @@ const setupRewardedAdService = async (
     handlers?.forEach((handler) => handler(payload));
   };
 
-  const addAdEventListener = jest.fn(
-    (eventType: string, listener: AdListener) => {
-      const eventListeners = listeners.get(eventType) ?? new Set<AdListener>();
-      eventListeners.add(listener);
-      listeners.set(eventType, eventListeners);
+  const addAdEventListener = jest.fn((eventType: string, listener: AdListener) => {
+    const eventListeners = listeners.get(eventType) ?? new Set<AdListener>();
+    eventListeners.add(listener);
+    listeners.set(eventType, eventListeners);
 
-      return () => {
-        listeners.get(eventType)?.delete(listener);
-      };
-    }
-  );
+    return () => {
+      listeners.get(eventType)?.delete(listener);
+    };
+  });
 
   const load = jest.fn(() => {
     emit("loaded");
@@ -41,7 +37,7 @@ const setupRewardedAdService = async (
     showBehavior(emit);
   });
   const initialize = jest.fn(() => Promise.resolve({}));
-  const mobileAdsFactory = jest.fn(() => ({ initialize }));
+  const mobileAdsFactory = jest.fn(() => ({initialize}));
   const createForAdRequest = jest.fn(() => ({
     addAdEventListener,
     load,
@@ -86,8 +82,7 @@ describe("RewardedAdService", () => {
   });
 
   it("removes temporary reward listeners after repeated rewarded-ad shows", async () => {
-    const { service, listeners, createForAdRequest, show } =
-      await setupRewardedAdService();
+    const {service, listeners, createForAdRequest, show} = await setupRewardedAdService();
 
     await service.initializeRewardedAds();
     await flushPromises();
@@ -111,7 +106,7 @@ describe("RewardedAdService", () => {
   });
 
   it("returns false and still removes temporary listeners when the ad closes without a reward", async () => {
-    const { service, listeners } = await setupRewardedAdService((emit) => {
+    const {service, listeners} = await setupRewardedAdService((emit) => {
       emit("closed");
     });
 

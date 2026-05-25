@@ -1,19 +1,11 @@
-import { SOLAR_SYSTEM_CONFIG } from "../SolarSystemConfig";
+import {SOLAR_SYSTEM_CONFIG} from "../SolarSystemConfig";
 
 describe("SolarSystemConfig", () => {
   it("defines expected planet entries", () => {
     expect(SOLAR_SYSTEM_CONFIG.length).toBe(7);
 
     const names = SOLAR_SYSTEM_CONFIG.map((p) => p.name);
-    expect(names).toEqual([
-      "Mercury",
-      "Venus",
-      "Earth",
-      "Mars",
-      "Jupiter",
-      "Saturn",
-      "Uranus",
-    ]);
+    expect(names).toEqual(["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus"]);
   });
 
   it("contains valid numeric orbital and size values", () => {

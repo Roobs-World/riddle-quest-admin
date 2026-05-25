@@ -89,11 +89,7 @@ export const updateUsername = onCall({enforceAppCheck: true}, async (request: Ca
   }
 
   // Check uniqueness (exclude the current user)
-  const existing = await admin.firestore()
-    .collection("users")
-    .where("username", "==", trimmed)
-    .limit(1)
-    .get();
+  const existing = await admin.firestore().collection("users").where("username", "==", trimmed).limit(1).get();
 
   if (!existing.empty && existing.docs[0].id !== userId) {
     throw new HttpsError("already-exists", "Username already taken.");

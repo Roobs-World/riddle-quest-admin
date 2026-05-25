@@ -1,7 +1,7 @@
 /**
  * @fileoverview Helpers for managing disposable Three.js texture caches.
  */
-import { Texture } from "three";
+import {Texture} from "three";
 
 /** Cache shape for keyed texture instances (or missing texture null sentinels). */
 export type TextureCache = Map<string, Texture | null>;

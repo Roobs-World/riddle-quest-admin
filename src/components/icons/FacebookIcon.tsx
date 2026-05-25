@@ -6,9 +6,8 @@ interface FacebookIconProps {
   height?: number | string;
 }
 
-const FacebookIcon = ({ width, height }: FacebookIconProps) => {
+const FacebookIcon = ({width, height}: FacebookIconProps) => {
   return <FacebookSvg width={width} height={height} />;
 };
 
 export default FacebookIcon;
-

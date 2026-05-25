@@ -1,5 +1,5 @@
 import React from "react";
-import { render } from "@testing-library/react-native";
+import {render} from "@testing-library/react-native";
 import StaticTitle from "../StaticTitle";
 
 // Mock the style dependencies
@@ -58,7 +58,7 @@ describe("StaticTitle", () => {
     });
 
     it("should display the provided title text", () => {
-      const { getByText } = render(<StaticTitle title="Riddle Quest" />);
+      const {getByText} = render(<StaticTitle title="Riddle Quest" />);
 
       expect(getByText("Riddle Quest")).toBeTruthy();
     });
@@ -71,14 +71,14 @@ describe("StaticTitle", () => {
 
     it("should render with special characters in title", () => {
       const specialTitle = "Test! @#$%";
-      const { getByText } = render(<StaticTitle title={specialTitle} />);
+      const {getByText} = render(<StaticTitle title={specialTitle} />);
 
       expect(getByText(specialTitle)).toBeTruthy();
     });
 
     it("should render with unicode characters", () => {
       const unicodeTitle = "Hello \u2764";
-      const { getByText } = render(<StaticTitle title={unicodeTitle} />);
+      const {getByText} = render(<StaticTitle title={unicodeTitle} />);
 
       expect(getByText(unicodeTitle)).toBeTruthy();
     });
@@ -91,7 +91,7 @@ describe("StaticTitle", () => {
     });
 
     it("should create a valid React element", () => {
-      const element = React.createElement(StaticTitle, { title: "Test" });
+      const element = React.createElement(StaticTitle, {title: "Test"});
 
       expect(element).toBeTruthy();
       expect(element.props.title).toBe("Test");
@@ -101,19 +101,19 @@ describe("StaticTitle", () => {
   describe("Props Handling", () => {
     it("should handle long title text", () => {
       const longTitle = "A".repeat(100);
-      const { getByText } = render(<StaticTitle title={longTitle} />);
+      const {getByText} = render(<StaticTitle title={longTitle} />);
 
       expect(getByText(longTitle)).toBeTruthy();
     });
 
     it("should handle whitespace in title", () => {
-      const { getByText } = render(<StaticTitle title="  Spaced Title  " />);
+      const {getByText} = render(<StaticTitle title="  Spaced Title  " />);
 
       expect(getByText("  Spaced Title  ")).toBeTruthy();
     });
 
     it("should handle numeric string title", () => {
-      const { getByText } = render(<StaticTitle title="12345" />);
+      const {getByText} = render(<StaticTitle title="12345" />);
 
       expect(getByText("12345")).toBeTruthy();
     });
@@ -121,9 +121,7 @@ describe("StaticTitle", () => {
 
   describe("Re-rendering", () => {
     it("should update when title prop changes", () => {
-      const { getByText, rerender, queryByText } = render(
-        <StaticTitle title="Initial Title" />
-      );
+      const {getByText, rerender, queryByText} = render(<StaticTitle title="Initial Title" />);
 
       expect(getByText("Initial Title")).toBeTruthy();
 
@@ -134,9 +132,7 @@ describe("StaticTitle", () => {
     });
 
     it("should handle multiple re-renders efficiently", () => {
-      const { rerender, getByText } = render(
-        <StaticTitle title="Title 1" />
-      );
+      const {rerender, getByText} = render(<StaticTitle title="Title 1" />);
 
       for (let i = 2; i <= 5; i++) {
         rerender(<StaticTitle title={`Title ${i}`} />);
@@ -159,11 +155,11 @@ describe("StaticTitle", () => {
     });
 
     it("should render consistently across multiple instances", () => {
-      const { getAllByText } = render(
+      const {getAllByText} = render(
         <>
           <StaticTitle title="Same Title" />
           <StaticTitle title="Same Title" />
-        </>
+        </>,
       );
 
       expect(getAllByText("Same Title")).toHaveLength(2);
@@ -172,7 +168,7 @@ describe("StaticTitle", () => {
 
   describe("Component Lifecycle", () => {
     it("should unmount without errors", () => {
-      const { unmount } = render(<StaticTitle title="Test" />);
+      const {unmount} = render(<StaticTitle title="Test" />);
 
       expect(() => {
         unmount();
@@ -181,7 +177,7 @@ describe("StaticTitle", () => {
 
     it("should handle rapid mount/unmount cycles", () => {
       for (let i = 0; i < 5; i++) {
-        const { unmount } = render(<StaticTitle title={`Test ${i}`} />);
+        const {unmount} = render(<StaticTitle title={`Test ${i}`} />);
         unmount();
       }
 

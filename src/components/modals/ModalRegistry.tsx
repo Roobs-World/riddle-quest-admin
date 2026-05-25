@@ -45,15 +45,12 @@ import {
   ModalSequenceProgress,
   OnboardingProgress,
 } from "../../types/ModalTypes";
-import { SubmittedGuess } from "../../hooks/types";
-import { Player } from "../../validation/firestoreSchemas";
+import {SubmittedGuess} from "../../hooks/types";
+import {Player} from "../../validation/firestoreSchemas";
 import * as RNIap from "react-native-iap";
-import { logger } from "../../utils/logger";
-import { ProductPricing } from "../../services/ProductPricingService";
-import {
-  SupportedLanguage,
-  getAppLanguage,
-} from "../../constants/AppStrings";
+import {logger} from "../../utils/logger";
+import {ProductPricing} from "../../services/ProductPricingService";
+import {SupportedLanguage, getAppLanguage} from "../../constants/AppStrings";
 
 // Import all modal components
 import VictoryModal from "./game/VictoryModal";
@@ -117,15 +114,13 @@ import LevelUpFanfareModal from "./game/LevelUpFanfareModal";
  */
 const createModalWrapper = <TProps extends Record<string, unknown>>(
   ModalComponent: React.ComponentType<TProps>,
-  propsMapper: (props: BaseModalProps & ModalData) => TProps
+  propsMapper: (props: BaseModalProps & ModalData) => TProps,
 ) => {
   const ModalWrapper = (props: BaseModalProps & ModalData) => {
     const mappedProps = propsMapper(props);
     return <ModalComponent {...mappedProps} />;
   };
-  ModalWrapper.displayName = `ModalWrapper(${
-    ModalComponent.displayName || ModalComponent.name || "Component"
-  })`;
+  ModalWrapper.displayName = `ModalWrapper(${ModalComponent.displayName || ModalComponent.name || "Component"})`;
   return ModalWrapper;
 };
 
@@ -192,24 +187,18 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
    *
    * Modals related to game progression, outcomes, and player decisions.
    */
-  victory: createModalWrapper(
-    VictoryModal,
-    (props: BaseModalProps & ModalData) => ({
-      isVisible: props.isVisible,
-      attempts: (props.attempts as number) || 0,
-      coinsEarned: (props.coinsEarned as number) || 0,
-      totalCoins: props.totalCoins as number | undefined,
-      unlockedAchievementNames:
-        (props.unlockedAchievementNames as string[] | undefined) ?? [],
-      onNextLevel: (props.onNext as () => void) || (() => {}),
-      onHome: (props.onHome as () => void) || (() => {}),
-      guesses: (props.guesses as SubmittedGuess[]) || [],
-      sequenceProgress: props.sequenceProgress as
-        | ModalSequenceProgress
-        | undefined,
-      onClose: props.onClose,
-    })
-  ),
+  victory: createModalWrapper(VictoryModal, (props: BaseModalProps & ModalData) => ({
+    isVisible: props.isVisible,
+    attempts: (props.attempts as number) || 0,
+    coinsEarned: (props.coinsEarned as number) || 0,
+    totalCoins: props.totalCoins as number | undefined,
+    unlockedAchievementNames: (props.unlockedAchievementNames as string[] | undefined) ?? [],
+    onNextLevel: (props.onNext as () => void) || (() => {}),
+    onHome: (props.onHome as () => void) || (() => {}),
+    guesses: (props.guesses as SubmittedGuess[]) || [],
+    sequenceProgress: props.sequenceProgress as ModalSequenceProgress | undefined,
+    onClose: props.onClose,
+  })),
 
   loss: createModalWrapper(LossModal, (props: BaseModalProps & ModalData) => ({
     isVisible: props.isVisible,
@@ -232,83 +221,56 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
    *
    * Modals for user preferences, account management, and profile customization.
    */
-  settings: createModalWrapper(
-    SettingsModal,
-    (props: BaseModalProps & ModalData) => ({
-      isVisible: props.isVisible,
-      onClose: props.onClose,
-      isSoundEnabled: (props.isSoundEnabled as boolean) || false,
-      isHapticsEnabled: (props.isHapticsEnabled as boolean) || false,
-      currentLanguage:
-        (props.currentLanguage as SupportedLanguage) ?? getAppLanguage(),
-      onToggleSound:
-        (props.onToggleSound as (enabled: boolean) => void) || (() => {}),
-      onToggleHaptics:
-        (props.onToggleHaptics as (enabled: boolean) => void) || (() => {}),
-      onChangeLanguage:
-        (props.onChangeLanguage as (language: SupportedLanguage) => void) ||
-        (() => {}),
-      onPressLogout: (props.onPressLogout as () => void) || (() => {}),
-      onPressHelp: (props.onPressHelp as () => void) || (() => {}),
-      onPressAbout: (props.onPressAbout as () => void) || (() => {}),
-      onPressCredits: (props.onPressCredits as () => void) || (() => {}),
-    })
-  ),
+  settings: createModalWrapper(SettingsModal, (props: BaseModalProps & ModalData) => ({
+    isVisible: props.isVisible,
+    onClose: props.onClose,
+    isSoundEnabled: (props.isSoundEnabled as boolean) || false,
+    isHapticsEnabled: (props.isHapticsEnabled as boolean) || false,
+    currentLanguage: (props.currentLanguage as SupportedLanguage) ?? getAppLanguage(),
+    onToggleSound: (props.onToggleSound as (enabled: boolean) => void) || (() => {}),
+    onToggleHaptics: (props.onToggleHaptics as (enabled: boolean) => void) || (() => {}),
+    onChangeLanguage: (props.onChangeLanguage as (language: SupportedLanguage) => void) || (() => {}),
+    onPressLogout: (props.onPressLogout as () => void) || (() => {}),
+    onPressHelp: (props.onPressHelp as () => void) || (() => {}),
+    onPressAbout: (props.onPressAbout as () => void) || (() => {}),
+    onPressCredits: (props.onPressCredits as () => void) || (() => {}),
+  })),
 
-  fullProfileDetails: createModalWrapper(
-    FullProfileDetailsModal,
-    (props: BaseModalProps & ModalData) => ({
-      isVisible: props.isVisible,
-      onClose: props.onClose,
-      playerData: (props.playerData as Player | null) ?? null,
-    })
-  ),
+  fullProfileDetails: createModalWrapper(FullProfileDetailsModal, (props: BaseModalProps & ModalData) => ({
+    isVisible: props.isVisible,
+    onClose: props.onClose,
+    playerData: (props.playerData as Player | null) ?? null,
+  })),
 
-  upgradeAccount: createModalWrapper(
-    UpgradeAccountModal,
-    (props: BaseModalProps & ModalData) => ({
-      isVisible: props.isVisible,
-      onClose: props.onClose,
-    })
-  ),
+  upgradeAccount: createModalWrapper(UpgradeAccountModal, (props: BaseModalProps & ModalData) => ({
+    isVisible: props.isVisible,
+    onClose: props.onClose,
+  })),
 
-  achievements: createModalWrapper(
-    AchievementsModal,
-    (props: BaseModalProps & ModalData) => ({
-      isVisible: props.isVisible,
-      onClose: props.onClose,
-      playerData: (props.playerData as Player) ?? null,
-    })
-  ),
+  achievements: createModalWrapper(AchievementsModal, (props: BaseModalProps & ModalData) => ({
+    isVisible: props.isVisible,
+    onClose: props.onClose,
+    playerData: (props.playerData as Player) ?? null,
+  })),
 
-  stats: createModalWrapper(
-    StatsModal,
-    (props: BaseModalProps & ModalData) => ({
-      isVisible: props.isVisible,
-      onClose: props.onClose,
-      playerData: (props.playerData as Player) ?? null,
-    })
-  ),
+  stats: createModalWrapper(StatsModal, (props: BaseModalProps & ModalData) => ({
+    isVisible: props.isVisible,
+    onClose: props.onClose,
+    playerData: (props.playerData as Player) ?? null,
+  })),
 
-  leaderboard: createModalWrapper(
-    LeaderboardModal,
-    (props: BaseModalProps & ModalData) => ({
-      isVisible: props.isVisible,
-      onClose: props.onClose,
-      currentUserId: (props.currentUserId as string | null) ?? null,
-    })
-  ),
+  leaderboard: createModalWrapper(LeaderboardModal, (props: BaseModalProps & ModalData) => ({
+    isVisible: props.isVisible,
+    onClose: props.onClose,
+    currentUserId: (props.currentUserId as string | null) ?? null,
+  })),
 
-  updateUsername: createModalWrapper(
-    UpdateUsernameModal,
-    (props: BaseModalProps & ModalData) => ({
-      isVisible: props.isVisible,
-      onClose: props.onClose,
-      currentUsername: (props.currentUsername as string) || "",
-      onUsernameUpdated:
-        (props.onUsernameUpdated as (username: string) => void) || (() => {}),
-    })
-  ),
+  updateUsername: createModalWrapper(UpdateUsernameModal, (props: BaseModalProps & ModalData) => ({
+    isVisible: props.isVisible,
+    onClose: props.onClose,
+    currentUsername: (props.currentUsername as string) || "",
+    onUsernameUpdated: (props.onUsernameUpdated as (username: string) => void) || (() => {}),
+  })),
 
   /**
    * Help Modals
@@ -322,9 +284,7 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
     actionButtonText: props.actionButtonText as string | undefined,
     onAction: (props.onAction as (() => void) | undefined) ?? undefined,
     onConfirm: (props.onConfirm as (() => void) | undefined) ?? undefined,
-    onboardingProgress: props.onboardingProgress as
-      | OnboardingProgress
-      | undefined,
+    onboardingProgress: props.onboardingProgress as OnboardingProgress | undefined,
     onClose: props.onClose,
   })),
 
@@ -341,145 +301,99 @@ export const modalRegistry: Record<string, ModalRegistryEntry> = {
     isVisible: props.isVisible,
     onClose: props.onClose,
     userCoins: (props.userCoins as number) || 0,
-    totalCoins:
-      (props.totalCoins as number | undefined) ??
-      ((props.userCoins as number) || 0),
+    totalCoins: (props.totalCoins as number | undefined) ?? ((props.userCoins as number) || 0),
     skipCost: (props.skipCost as number) || 0,
     onSkipLevel: (props.onSkipLevel as () => void) || (() => {}),
     onOpenShop: (props.onOpenShop as () => void) || (() => {}),
   })),
 
-  welcome: createModalWrapper(
-    WelcomeModal,
-    (props: BaseModalProps & ModalData) => ({
-      isVisible: props.isVisible,
-      onClose: props.onClose,
-      onDismiss: (props as { onDismiss?: () => void }).onDismiss,
-      onboardingProgress: props.onboardingProgress as
-        | OnboardingProgress
-        | undefined,
-    })
-  ),
+  welcome: createModalWrapper(WelcomeModal, (props: BaseModalProps & ModalData) => ({
+    isVisible: props.isVisible,
+    onClose: props.onClose,
+    onDismiss: (props as {onDismiss?: () => void}).onDismiss,
+    onboardingProgress: props.onboardingProgress as OnboardingProgress | undefined,
+  })),
 
-  welcomeBack: createModalWrapper(
-    WelcomeBackModal,
-    (props: BaseModalProps & ModalData) => ({
-      isVisible: props.isVisible,
-      onClose: props.onClose,
-      username: (props.username as string) || "",
-      onDismiss: (props as { onDismiss?: () => void }).onDismiss,
-    })
-  ),
+  welcomeBack: createModalWrapper(WelcomeBackModal, (props: BaseModalProps & ModalData) => ({
+    isVisible: props.isVisible,
+    onClose: props.onClose,
+    username: (props.username as string) || "",
+    onDismiss: (props as {onDismiss?: () => void}).onDismiss,
+  })),
 
-  instructions: createModalWrapper(
-    InstructionsModal,
-    (props: BaseModalProps & ModalData) => ({
-      isVisible: props.isVisible,
-      onClose: props.onClose,
-      onboardingProgress: props.onboardingProgress as
-        | OnboardingProgress
-        | undefined,
-    })
-  ),
+  instructions: createModalWrapper(InstructionsModal, (props: BaseModalProps & ModalData) => ({
+    isVisible: props.isVisible,
+    onClose: props.onClose,
+    onboardingProgress: props.onboardingProgress as OnboardingProgress | undefined,
+  })),
 
-  credits: createModalWrapper(
-    CreditsModal,
-    (props: BaseModalProps & ModalData) => ({
-      isVisible: props.isVisible,
-      onClose: props.onClose,
-    })
-  ),
+  credits: createModalWrapper(CreditsModal, (props: BaseModalProps & ModalData) => ({
+    isVisible: props.isVisible,
+    onClose: props.onClose,
+  })),
 
-  aboutLegal: createModalWrapper(
-    AboutLegalModal,
-    (props: BaseModalProps & ModalData) => ({
-      isVisible: props.isVisible,
-      onClose: props.onClose,
-    })
-  ),
+  aboutLegal: createModalWrapper(AboutLegalModal, (props: BaseModalProps & ModalData) => ({
+    isVisible: props.isVisible,
+    onClose: props.onClose,
+  })),
 
   /**
    * Shop Modals
    *
    * Modals for in-app purchases and monetization features.
    */
-  coinShop: createModalWrapper(
-    CoinShopModal,
-    (props: BaseModalProps & ModalData) => ({
-      isVisible: props.isVisible,
-      onClose: props.onClose,
-      products: (props.products as RNIap.Product[]) || [],
-      firestoreProducts:
-        (props.firestoreProducts as ProductPricing[] | undefined) || [],
-      currentCoins: (props.currentCoins as number | undefined) ?? 0,
-      onPurchaseProduct:
-        (props.onPurchaseProduct as (productId: string) => void) || (() => {}),
-      loading: (props.loading as boolean) || false,
-      error: (props.error as string | null) || null,
-      onFirstPaint: (props.onFirstPaint as (() => void) | undefined) || undefined,
-      onWatchVideo: (props.onWatchVideo as () => void) || undefined,
-      onPayAndPlay: (props.onPayAndPlay as () => void) || undefined,
-    })
-  ),
+  coinShop: createModalWrapper(CoinShopModal, (props: BaseModalProps & ModalData) => ({
+    isVisible: props.isVisible,
+    onClose: props.onClose,
+    products: (props.products as RNIap.Product[]) || [],
+    firestoreProducts: (props.firestoreProducts as ProductPricing[] | undefined) || [],
+    currentCoins: (props.currentCoins as number | undefined) ?? 0,
+    onPurchaseProduct: (props.onPurchaseProduct as (productId: string) => void) || (() => {}),
+    loading: (props.loading as boolean) || false,
+    error: (props.error as string | null) || null,
+    onFirstPaint: (props.onFirstPaint as (() => void) | undefined) || undefined,
+    onWatchVideo: (props.onWatchVideo as () => void) || undefined,
+    onPayAndPlay: (props.onPayAndPlay as () => void) || undefined,
+  })),
 
-  coinPurchaseFanfare: createModalWrapper(
-    CoinPurchaseFanfareModal,
-    (props: BaseModalProps & ModalData) => ({
-      isVisible: props.isVisible,
-      onConfirm: (props.onConfirm as (() => void) | undefined) ?? undefined,
-      onClose: props.onClose,
-      coinsPurchased: (props.coinsPurchased as number) || 0,
-      totalCoins: (props.totalCoins as number) || 0,
-    })
-  ),
+  coinPurchaseFanfare: createModalWrapper(CoinPurchaseFanfareModal, (props: BaseModalProps & ModalData) => ({
+    isVisible: props.isVisible,
+    onConfirm: (props.onConfirm as (() => void) | undefined) ?? undefined,
+    onClose: props.onClose,
+    coinsPurchased: (props.coinsPurchased as number) || 0,
+    totalCoins: (props.totalCoins as number) || 0,
+  })),
 
-  achievementUnlockFanfare: createModalWrapper(
-    AchievementUnlockFanfareModal,
-    (props: BaseModalProps & ModalData) => ({
-      isVisible: props.isVisible,
-      onClose: props.onClose,
-      onContinue: (props.onContinue as (() => void) | undefined) ?? undefined,
-      coinsEarned: (props.coinsEarned as number) || 0,
-      totalCoins: (props.totalCoins as number) || 0,
-      achievementNames: (props.achievementNames as string[] | undefined) ?? [],
-      achievements:
-        (props.achievements as AchievementUnlockFanfareItem[] | undefined) ??
-        [],
-      sequenceProgress: props.sequenceProgress as
-        | ModalSequenceProgress
-        | undefined,
-    })
-  ),
+  achievementUnlockFanfare: createModalWrapper(AchievementUnlockFanfareModal, (props: BaseModalProps & ModalData) => ({
+    isVisible: props.isVisible,
+    onClose: props.onClose,
+    onContinue: (props.onContinue as (() => void) | undefined) ?? undefined,
+    coinsEarned: (props.coinsEarned as number) || 0,
+    totalCoins: (props.totalCoins as number) || 0,
+    achievementNames: (props.achievementNames as string[] | undefined) ?? [],
+    achievements: (props.achievements as AchievementUnlockFanfareItem[] | undefined) ?? [],
+    sequenceProgress: props.sequenceProgress as ModalSequenceProgress | undefined,
+  })),
 
-  streakIncreaseFanfare: createModalWrapper(
-    StreakIncreaseFanfareModal,
-    (props: BaseModalProps & ModalData) => ({
-      isVisible: props.isVisible,
-      streakValue: (props.streakValue as number) || 0,
-      coinsAwarded: (props.coinsAwarded as number) || 0,
-      totalCoins: (props.totalCoins as number) || 0,
-      sequenceProgress: props.sequenceProgress as
-        | ModalSequenceProgress
-        | undefined,
-      onContinue: (props.onContinue as (() => void) | undefined) ?? undefined,
-      onClose: props.onClose,
-    })
-  ),
+  streakIncreaseFanfare: createModalWrapper(StreakIncreaseFanfareModal, (props: BaseModalProps & ModalData) => ({
+    isVisible: props.isVisible,
+    streakValue: (props.streakValue as number) || 0,
+    coinsAwarded: (props.coinsAwarded as number) || 0,
+    totalCoins: (props.totalCoins as number) || 0,
+    sequenceProgress: props.sequenceProgress as ModalSequenceProgress | undefined,
+    onContinue: (props.onContinue as (() => void) | undefined) ?? undefined,
+    onClose: props.onClose,
+  })),
 
-  levelUpFanfare: createModalWrapper(
-    LevelUpFanfareModal,
-    (props: BaseModalProps & ModalData) => ({
-      isVisible: props.isVisible,
-      newLevel: (props.newLevel as number) || 1,
-      coinsAwarded: (props.coinsAwarded as number) || 0,
-      totalCoins: (props.totalCoins as number) || 0,
-      sequenceProgress: props.sequenceProgress as
-        | ModalSequenceProgress
-        | undefined,
-      onContinue: (props.onContinue as (() => void) | undefined) ?? undefined,
-      onClose: props.onClose,
-    })
-  ),
+  levelUpFanfare: createModalWrapper(LevelUpFanfareModal, (props: BaseModalProps & ModalData) => ({
+    isVisible: props.isVisible,
+    newLevel: (props.newLevel as number) || 1,
+    coinsAwarded: (props.coinsAwarded as number) || 0,
+    totalCoins: (props.totalCoins as number) || 0,
+    sequenceProgress: props.sequenceProgress as ModalSequenceProgress | undefined,
+    onContinue: (props.onContinue as (() => void) | undefined) ?? undefined,
+    onClose: props.onClose,
+  })),
 };
 
 /**

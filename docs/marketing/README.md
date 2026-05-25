@@ -25,13 +25,13 @@ Short pitch: Riddle Quest blends riddle solving with Wordle-style letter feedbac
 
 First 90 days assumes a monthly budget of USD 1,000-5,000:
 
-| Category | Share | Use |
-| --- | ---: | --- |
-| Paid UA tests | 35% | Apple Search Ads, Google App Campaigns, Meta/TikTok creative validation |
-| Creator campaigns | 25% | Micro-creator tests and usage rights |
-| Creative/localization | 20% | Video edits, screenshot exports, translated store assets |
-| ASO/tools/assets | 10% | Store screenshots, keyword support, design tooling |
-| Contingency | 10% | Shift to the best-performing channel |
+| Category              | Share | Use                                                                     |
+| --------------------- | ----: | ----------------------------------------------------------------------- |
+| Paid UA tests         |   35% | Apple Search Ads, Google App Campaigns, Meta/TikTok creative validation |
+| Creator campaigns     |   25% | Micro-creator tests and usage rights                                    |
+| Creative/localization |   20% | Video edits, screenshot exports, translated store assets                |
+| ASO/tools/assets      |   10% | Store screenshots, keyword support, design tooling                      |
+| Contingency           |   10% | Shift to the best-performing channel                                    |
 
 ## Launch Defaults
 
@@ -40,4 +40,3 @@ First 90 days assumes a monthly budget of USD 1,000-5,000:
 - Initial market posture: multilingual, with English assets finished first.
 - Priority language groups: English, Spanish, Portuguese, French, German, Japanese, Korean, Chinese, Hindi, Russian, Turkish.
 - Main campaign theme: **7-Day Riddle Quest Challenge**.
-

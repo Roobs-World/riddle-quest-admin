@@ -1,5 +1,5 @@
 import React from "react";
-import { render, fireEvent } from "@testing-library/react-native";
+import {render, fireEvent} from "@testing-library/react-native";
 import SignUpButton from "../SignUpButton";
 
 // Mock styles
@@ -7,7 +7,7 @@ jest.mock("../../../styles", () => ({
   styles: {
     signUpButtonText: {},
   },
-  SPACING: { xs: 4, sm: 8, md: 16, lg: 24, xl: 32, "2xl": 48 },
+  SPACING: {xs: 4, sm: 8, md: 16, lg: 24, xl: 32, "2xl": 48},
 }));
 
 describe("SignUpButton", () => {
@@ -19,21 +19,19 @@ describe("SignUpButton", () => {
 
   describe("Rendering", () => {
     it("renders correctly with required props", () => {
-      const { getByText } = render(<SignUpButton onPress={mockOnPress} />);
+      const {getByText} = render(<SignUpButton onPress={mockOnPress} />);
 
       expect(getByText("Sign up")).toBeTruthy();
     });
 
     it("renders as TouchableOpacity", () => {
-      const { UNSAFE_getByType } = render(
-        <SignUpButton onPress={mockOnPress} />
-      );
+      const {UNSAFE_getByType} = render(<SignUpButton onPress={mockOnPress} />);
       const TouchableOpacity = require("react-native").TouchableOpacity;
       expect(UNSAFE_getByType(TouchableOpacity)).toBeTruthy();
     });
 
     it("displays correct button text", () => {
-      const { getByText } = render(<SignUpButton onPress={mockOnPress} />);
+      const {getByText} = render(<SignUpButton onPress={mockOnPress} />);
 
       const buttonText = getByText("Sign up");
       expect(buttonText.props.children).toBe("Sign up");
@@ -42,9 +40,7 @@ describe("SignUpButton", () => {
 
   describe("Styling", () => {
     it("applies correct button styling", () => {
-      const { UNSAFE_getByType } = render(
-        <SignUpButton onPress={mockOnPress} />
-      );
+      const {UNSAFE_getByType} = render(<SignUpButton onPress={mockOnPress} />);
       const TouchableOpacity = require("react-native").TouchableOpacity;
       const button = UNSAFE_getByType(TouchableOpacity);
 
@@ -56,7 +52,7 @@ describe("SignUpButton", () => {
     });
 
     it("applies correct text styling", () => {
-      const { getByText } = render(<SignUpButton onPress={mockOnPress} />);
+      const {getByText} = render(<SignUpButton onPress={mockOnPress} />);
 
       const buttonText = getByText("Sign up");
       expect(buttonText.props.className).toContain("text-white");
@@ -66,9 +62,7 @@ describe("SignUpButton", () => {
 
   describe("Interaction", () => {
     it("calls onPress when button is pressed", () => {
-      const { UNSAFE_getByType } = render(
-        <SignUpButton onPress={mockOnPress} />
-      );
+      const {UNSAFE_getByType} = render(<SignUpButton onPress={mockOnPress} />);
       const TouchableOpacity = require("react-native").TouchableOpacity;
       const button = UNSAFE_getByType(TouchableOpacity);
 
@@ -78,7 +72,7 @@ describe("SignUpButton", () => {
     });
 
     it("calls onPress when text is pressed", () => {
-      const { getByText } = render(<SignUpButton onPress={mockOnPress} />);
+      const {getByText} = render(<SignUpButton onPress={mockOnPress} />);
       const buttonText = getByText("Sign up");
 
       fireEvent.press(buttonText);
@@ -87,9 +81,7 @@ describe("SignUpButton", () => {
     });
 
     it("handles multiple presses", () => {
-      const { UNSAFE_getByType } = render(
-        <SignUpButton onPress={mockOnPress} />
-      );
+      const {UNSAFE_getByType} = render(<SignUpButton onPress={mockOnPress} />);
       const TouchableOpacity = require("react-native").TouchableOpacity;
       const button = UNSAFE_getByType(TouchableOpacity);
 
@@ -101,9 +93,7 @@ describe("SignUpButton", () => {
     });
 
     it("handles onPress callback changes", () => {
-      const { rerender, UNSAFE_getByType } = render(
-        <SignUpButton onPress={mockOnPress} />
-      );
+      const {rerender, UNSAFE_getByType} = render(<SignUpButton onPress={mockOnPress} />);
       const TouchableOpacity = require("react-native").TouchableOpacity;
 
       let button = UNSAFE_getByType(TouchableOpacity);
@@ -129,9 +119,7 @@ describe("SignUpButton", () => {
 
     it("works with different onPress functions", () => {
       const customOnPress = jest.fn();
-      const { UNSAFE_getByType } = render(
-        <SignUpButton onPress={customOnPress} />
-      );
+      const {UNSAFE_getByType} = render(<SignUpButton onPress={customOnPress} />);
       const TouchableOpacity = require("react-native").TouchableOpacity;
       const button = UNSAFE_getByType(TouchableOpacity);
 
@@ -144,9 +132,7 @@ describe("SignUpButton", () => {
 
   describe("Component Structure", () => {
     it("has correct component hierarchy", () => {
-      const { UNSAFE_getByType, getByText } = render(
-        <SignUpButton onPress={mockOnPress} />
-      );
+      const {UNSAFE_getByType, getByText} = render(<SignUpButton onPress={mockOnPress} />);
       const TouchableOpacity = require("react-native").TouchableOpacity;
 
       expect(UNSAFE_getByType(TouchableOpacity)).toBeTruthy();
@@ -154,9 +140,7 @@ describe("SignUpButton", () => {
     });
 
     it("renders container with correct styling", () => {
-      const { UNSAFE_getAllByType } = render(
-        <SignUpButton onPress={mockOnPress} />
-      );
+      const {UNSAFE_getAllByType} = render(<SignUpButton onPress={mockOnPress} />);
       const View = require("react-native").View;
       const views = UNSAFE_getAllByType(View);
 
@@ -168,9 +152,7 @@ describe("SignUpButton", () => {
     });
 
     it("contains TouchableOpacity within View", () => {
-      const { UNSAFE_getAllByType, UNSAFE_getByType } = render(
-        <SignUpButton onPress={mockOnPress} />
-      );
+      const {UNSAFE_getAllByType, UNSAFE_getByType} = render(<SignUpButton onPress={mockOnPress} />);
       const View = require("react-native").View;
       const TouchableOpacity = require("react-native").TouchableOpacity;
 
@@ -181,9 +163,7 @@ describe("SignUpButton", () => {
 
   describe("Performance", () => {
     it("re-renders correctly when props change", () => {
-      const { rerender, getByText } = render(
-        <SignUpButton onPress={mockOnPress} />
-      );
+      const {rerender, getByText} = render(<SignUpButton onPress={mockOnPress} />);
 
       expect(getByText("Sign up")).toBeTruthy();
 
@@ -194,9 +174,7 @@ describe("SignUpButton", () => {
     });
 
     it("maintains event handler consistency", () => {
-      const { UNSAFE_getByType } = render(
-        <SignUpButton onPress={mockOnPress} />
-      );
+      const {UNSAFE_getByType} = render(<SignUpButton onPress={mockOnPress} />);
       const TouchableOpacity = require("react-native").TouchableOpacity;
       const button = UNSAFE_getByType(TouchableOpacity);
 
@@ -210,16 +188,14 @@ describe("SignUpButton", () => {
 
   describe("Accessibility", () => {
     it("provides accessible text content", () => {
-      const { getByText } = render(<SignUpButton onPress={mockOnPress} />);
+      const {getByText} = render(<SignUpButton onPress={mockOnPress} />);
 
       const buttonText = getByText("Sign up");
       expect(buttonText).toBeTruthy();
     });
 
     it("is touchable for accessibility", () => {
-      const { UNSAFE_getByType } = render(
-        <SignUpButton onPress={mockOnPress} />
-      );
+      const {UNSAFE_getByType} = render(<SignUpButton onPress={mockOnPress} />);
       const TouchableOpacity = require("react-native").TouchableOpacity;
       expect(UNSAFE_getByType(TouchableOpacity)).toBeTruthy();
     });
@@ -227,15 +203,13 @@ describe("SignUpButton", () => {
 
   describe("Edge Cases", () => {
     it("maintains consistent text content", () => {
-      const { getByText } = render(<SignUpButton onPress={mockOnPress} />);
+      const {getByText} = render(<SignUpButton onPress={mockOnPress} />);
 
       expect(getByText("Sign up")).toBeTruthy();
     });
 
     it("maintains styling consistency", () => {
-      const { UNSAFE_getByType } = render(
-        <SignUpButton onPress={mockOnPress} />
-      );
+      const {UNSAFE_getByType} = render(<SignUpButton onPress={mockOnPress} />);
       const TouchableOpacity = require("react-native").TouchableOpacity;
       const button = UNSAFE_getByType(TouchableOpacity);
 
@@ -245,9 +219,7 @@ describe("SignUpButton", () => {
     });
 
     it("handles rapid successive presses", () => {
-      const { UNSAFE_getByType } = render(
-        <SignUpButton onPress={mockOnPress} />
-      );
+      const {UNSAFE_getByType} = render(<SignUpButton onPress={mockOnPress} />);
       const TouchableOpacity = require("react-native").TouchableOpacity;
       const button = UNSAFE_getByType(TouchableOpacity);
 
@@ -264,9 +236,7 @@ describe("SignUpButton", () => {
         throw new Error("Test error");
       });
 
-      const { UNSAFE_getByType } = render(
-        <SignUpButton onPress={throwingOnPress} />
-      );
+      const {UNSAFE_getByType} = render(<SignUpButton onPress={throwingOnPress} />);
       const TouchableOpacity = require("react-native").TouchableOpacity;
       const button = UNSAFE_getByType(TouchableOpacity);
 
@@ -280,7 +250,7 @@ describe("SignUpButton", () => {
 
   describe("Styling Integration", () => {
     it("applies styles prop to text element", () => {
-      const { getByText } = render(<SignUpButton onPress={mockOnPress} />);
+      const {getByText} = render(<SignUpButton onPress={mockOnPress} />);
       const buttonText = getByText("Sign up");
 
       // Should have the style prop from styles.signUpButtonText
@@ -288,7 +258,7 @@ describe("SignUpButton", () => {
     });
 
     it("combines className and style props correctly", () => {
-      const { getByText } = render(<SignUpButton onPress={mockOnPress} />);
+      const {getByText} = render(<SignUpButton onPress={mockOnPress} />);
       const buttonText = getByText("Sign up");
 
       expect(buttonText.props.style).toBeDefined();

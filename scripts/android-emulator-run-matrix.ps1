@@ -24,41 +24,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-$QASurfaceIds = @(
-  "page-app-loading",
-  "page-landing",
-  "page-login",
-  "page-sign-up",
-  "page-forgot-password",
-  "page-new-password",
-  "page-riddle-loading",
-  "page-initialization-error",
-  "page-game",
-  "modal-welcome",
-  "modal-welcome-back",
-  "modal-instructions",
-  "modal-info",
-  "modal-hint",
-  "modal-skip",
-  "modal-victory",
-  "modal-loss",
-  "modal-coin-shop",
-  "modal-coin-purchase-fanfare",
-  "modal-achievement-unlock-fanfare",
-  "modal-streak-increase-fanfare",
-  "modal-level-up-fanfare",
-  "modal-settings",
-  "modal-full-profile-details",
-  "modal-upgrade-account",
-  "modal-update-username",
-  "modal-achievements",
-  "modal-stats",
-  "modal-leaderboard",
-  "modal-credits",
-  "modal-about-legal",
-  "modal-delete-account-confirmation",
-  "modal-offline-blocking"
-)
+$QASurfaceIds = @()
 
 $AndroidPackageName = "com.roobsworld.riddlequest"
 $AndroidMainActivity = "$AndroidPackageName/.MainActivity"
@@ -96,12 +62,81 @@ $QASurfaceExpectedTexts = @{
   "modal-leaderboard" = @("Leaderboard")
   "modal-credits" = @("Credits", "Close")
   "modal-about-legal" = @("About / Legal", "Privacy Policy")
+  "modal-welcome-onboarding-progress" = @("Welcome to Riddle Quest!", "1/3")
+  "modal-instructions-onboarding-progress" = @("How to Play", "3/3", "Got It!")
+  "modal-info-onboarding-upgrade-action" = @("Guest Mode Notice", "Upgrade Account", "2/3", "OK")
+  "modal-hint-insufficient-coins" = @("Use a Hint?", "You do not have enough coins for a hint.", "Buy coins")
+  "modal-skip-insufficient-coins" = @("Skip the level?", "You do not have enough coins to skip a level.", "Buy coins")
+  "modal-loss-no-continue-options" = @("So close!", "Out of attempts.", "Answer: HIDDEN", "Next Level")
+  "modal-loss-coin-continue" = @("So close!", "3 Extra Guesses - 25 Coins", "Skip Puzzle")
+  "modal-coin-shop-loading" = @("Loading shop...")
+  "modal-coin-shop-error" = @("COIN SHOP", "Failed to load shop products")
+  "modal-coin-shop-empty" = @("COIN SHOP", "No coin packs are available right now.", "PURCHASE")
+  "modal-victory-sequence" = @("NICE JOB!", "Popup 1 of 4")
+  "modal-achievement-unlock-fanfare-sequence" = @("Achievement Unlocked!", "Popup 1 of 4")
+  "modal-streak-increase-fanfare-sequence" = @("Streak Increased!", "Popup 1 of 4")
+  "modal-level-up-fanfare-sequence" = @("Level Up!", "Popup 1 of 4")
+  "modal-settings-language-picker" = @("Language", "English", "Selected", "Close")
+  "modal-upgrade-account-existing-account" = @("Account already exists", "Cancel", "Logout")
   "modal-delete-account-confirmation" = @("Delete Account", "Cancel")
   "modal-offline-blocking" = @("No Internet Connection", "Please reconnect")
+  "popup-tooltip-submit-answer" = @("Submit your answer", "Got it")
+  "popup-global-mute-overlay" = @("Mute sound")
 }
 
 function Fail($message) {
   throw "[android-emulator-run-matrix] $message"
+}
+
+function Get-QASurfaceIdsFromSource {
+  $nodeCommand = Get-Command node -ErrorAction Stop
+  $previousErrorActionPreference = $ErrorActionPreference
+  $ErrorActionPreference = "Continue"
+  try {
+    $output = & $nodeCommand.Source "scripts/verify-android-matrix-coverage.js" "--ids" 2>&1
+    $exitCode = $LASTEXITCODE
+  } finally {
+    $ErrorActionPreference = $previousErrorActionPreference
+  }
+
+  if ($exitCode -ne 0) {
+    Fail "Failed to read QA surface ids from src/qa/qaSurfaces.ts. node output: $($output -join "`n")"
+  }
+
+  try {
+    return @($output | ConvertFrom-Json)
+  } catch {
+    Fail "Failed to parse QA surface ids emitted by scripts/verify-android-matrix-coverage.js. node output: $($output -join "`n")"
+  }
+}
+
+function Assert-QASurfaceExpectedTextCoverage([string[]]$surfaceIds) {
+  $missingExpectedText = @(
+    $surfaceIds |
+      Where-Object { -not $QASurfaceExpectedTexts.ContainsKey($_) }
+  )
+  if ($missingExpectedText.Count -gt 0) {
+    Fail "Missing expected text checks for QA surface(s): $($missingExpectedText -join ', ')."
+  }
+
+  $unknownExpectedText = @(
+    $QASurfaceExpectedTexts.Keys |
+      Where-Object { $surfaceIds -notcontains $_ } |
+      Sort-Object
+  )
+  if ($unknownExpectedText.Count -gt 0) {
+    Fail "Expected text checks reference unknown QA surface(s): $($unknownExpectedText -join ', ')."
+  }
+}
+
+function Initialize-QASurfaceInventory {
+  $script:QASurfaceIds = @(Get-QASurfaceIdsFromSource)
+  if ($script:QASurfaceIds.Count -eq 0) {
+    Fail "QA surface inventory is empty."
+  }
+
+  Assert-QASurfaceExpectedTextCoverage $script:QASurfaceIds
+  Write-Host "INFO: Android matrix screenshot inventory contains $($script:QASurfaceIds.Count) QA surfaces across $($AvdNames.Count) AVDs."
 }
 
 function Stop-ProcessTree($processId) {
@@ -1093,7 +1128,7 @@ function Capture-QASurfaceMatrixEvidence($adb, $serial, $avdName) {
     Capture-QASurfaceEvidence $adb $serial $avdName $surfacesToCapture[$i] ($i + 1)
   }
 
-  Write-Host "PASS: Captured $($surfacesToCapture.Count) QA screen/modal surfaces for $avdName."
+  Write-Host "PASS: Captured $($surfacesToCapture.Count) QA screen/modal/popup surfaces for $avdName."
 }
 
 function Invoke-ExpoRunAndroid($adb, $serial, $avdName, [string[]]$expoArgs, [int]$Attempt = 1) {
@@ -1466,6 +1501,8 @@ try {
   Write-Host "Using Android emulator host-alias Expo dev-client URLs for emulator QA:"
   Write-Host "  REACT_NATIVE_PACKAGER_HOSTNAME=$env:REACT_NATIVE_PACKAGER_HOSTNAME"
   Write-Host "  EXPO_PACKAGER_PROXY_URL=$env:EXPO_PACKAGER_PROXY_URL"
+
+  Initialize-QASurfaceInventory
 
   $metroProcess = Ensure-MetroServer
 

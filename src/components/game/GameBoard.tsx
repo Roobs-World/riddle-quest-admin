@@ -12,14 +12,14 @@
  */
 
 import React from "react";
-import { View, type DimensionValue } from "react-native";
+import {View, type DimensionValue} from "react-native";
 import RiddleText from "./RiddleText";
 import GuessGrid from "./GuessGrid";
 import Keyboard from "./Keyboard";
-import { isTablet, isLargeTablet } from "../../utils/responsive";
-import { styles } from "../../styles";
+import {isTablet, isLargeTablet} from "../../utils/responsive";
+import {styles} from "../../styles";
 import QuestionsSvg from "../../../assets/images/questions.svg";
-import type { Feedback } from "../../hooks/types";
+import type {Feedback} from "../../hooks/types";
 
 const RIDDLE_BACKGROUND_HEIGHT = "118%";
 const RIDDLE_BACKGROUND_TOP = "-9%";
@@ -165,11 +165,7 @@ const GameBoard: React.FC<GameBoardProps> = ({
 }) => {
   // Use onKeyPress as a fallback if handleKeyPress is not provided
   const keyPressHandler = handleKeyPress || onKeyPress || (() => {});
-  const riddleContainerSlotHeight: DimensionValue = isLargeTablet
-    ? "26%"
-    : isTablet
-      ? "24%"
-      : "20%";
+  const riddleContainerSlotHeight: DimensionValue = isLargeTablet ? "26%" : isTablet ? "24%" : "20%";
 
   return (
     <>

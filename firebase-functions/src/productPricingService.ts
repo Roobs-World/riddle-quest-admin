@@ -103,11 +103,13 @@ export async function getCoinsForProduct(
  */
 export async function logPurchaseAnalytic(record: PurchaseAnalyticRecord): Promise<void> {
   try {
-    await getDb().collection("purchaseAnalytics").add({
-      ...record,
-      purchaseDate: admin.firestore.FieldValue.serverTimestamp(),
-      createdAt: new Date().toISOString(),
-    });
+    await getDb()
+      .collection("purchaseAnalytics")
+      .add({
+        ...record,
+        purchaseDate: admin.firestore.FieldValue.serverTimestamp(),
+        createdAt: new Date().toISOString(),
+      });
     functions.logger.info(`Purchase analytic logged for user ${record.userId}, product ${record.productId}`);
   } catch (err) {
     functions.logger.error("Failed to log purchaseAnalytic:", err);
@@ -120,11 +122,7 @@ export async function logPurchaseAnalytic(record: PurchaseAnalyticRecord): Promi
  * Uses a transaction to safely increment aggregates.
  * Non-critical — failures are logged but do not affect purchase flow.
  */
-export async function updateRegionalSpendingStats(
-  region: string,
-  currency: string,
-  amountPaid: number,
-): Promise<void> {
+export async function updateRegionalSpendingStats(region: string, currency: string, amountPaid: number): Promise<void> {
   try {
     const ref = getDb().collection("regionalSpendingStats").doc(region);
     await getDb().runTransaction(async (tx) => {

@@ -3,7 +3,7 @@ import path from "path";
 
 const root = process.cwd();
 const testFiles = (directory: string): string[] => {
-  const entries = fs.readdirSync(directory, { withFileTypes: true });
+  const entries = fs.readdirSync(directory, {withFileTypes: true});
   return entries.flatMap((entry) => {
     const fullPath = path.join(directory, entry.name);
     if (entry.isDirectory()) return testFiles(fullPath);
@@ -19,10 +19,13 @@ describe("responsive test mocks", () => {
         relativePath: path.relative(root, filePath).replace(/\\/g, "/"),
         source: fs.readFileSync(filePath, "utf8"),
       }))
-      .filter(({ source }) => source.includes("utils/responsive"))
-      .filter(({ source }) => /jest\.mock\(["'](?:src\/)?(?:\.\.\/)*utils\/responsive/.test(source))
-      .filter(({ source }) => !/dimensions:\s*\{[\s\S]*?isPhone[\s\S]*?isTablet[\s\S]*?isLargeTablet[\s\S]*?isDesktop/.test(source));
+      .filter(({source}) => source.includes("utils/responsive"))
+      .filter(({source}) => /jest\.mock\(["'](?:src\/)?(?:\.\.\/)*utils\/responsive/.test(source))
+      .filter(
+        ({source}) =>
+          !/dimensions:\s*\{[\s\S]*?isPhone[\s\S]*?isTablet[\s\S]*?isLargeTablet[\s\S]*?isDesktop/.test(source),
+      );
 
-    expect(offenders.map(({ relativePath }) => relativePath)).toEqual([]);
+    expect(offenders.map(({relativePath}) => relativePath)).toEqual([]);
   });
 });

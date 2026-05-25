@@ -202,19 +202,13 @@ export const grantDevCoinsForPurchase = onCall(
     newlyUnlockedAchievementIds?: string[];
   }> => {
     if (!request.auth) {
-      throw new functions.https.HttpsError(
-        "unauthenticated",
-        "The function must be called while authenticated.",
-      );
+      throw new functions.https.HttpsError("unauthenticated", "The function must be called while authenticated.");
     }
 
     const isEmulator = process.env.FUNCTIONS_EMULATOR === "true";
     const explicitBypass = process.env.ALLOW_DEV_IAP_BYPASS === "true";
     if (!isEmulator && !explicitBypass) {
-      throw new functions.https.HttpsError(
-        "permission-denied",
-        "Dev purchase bypass is disabled.",
-      );
+      throw new functions.https.HttpsError("permission-denied", "Dev purchase bypass is disabled.");
     }
 
     const productId = request.data?.productId;
@@ -239,9 +233,7 @@ export const grantDevCoinsForPurchase = onCall(
     });
     const updatedUser = await getUser(userId);
 
-    functions.logger.info(
-      `Dev bypass awarded ${coinsToAward} coins to user ${userId} for ${productId}.`,
-    );
+    functions.logger.info(`Dev bypass awarded ${coinsToAward} coins to user ${userId} for ${productId}.`);
 
     return {
       success: true,

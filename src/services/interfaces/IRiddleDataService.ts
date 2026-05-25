@@ -1,4 +1,4 @@
-import { FirestoreRiddle } from "../../validation/firestoreSchemas";
+import {FirestoreRiddle} from "../../validation/firestoreSchemas";
 
 /**
  * Interface for riddle data operations
@@ -33,5 +33,4 @@ export interface IRiddleDataService {
    * @returns Number of classic riddles.
    */
   getClassicRiddleCount(): Promise<number>;
-
 }

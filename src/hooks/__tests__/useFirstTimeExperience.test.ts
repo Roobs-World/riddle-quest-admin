@@ -4,14 +4,14 @@
  * Tests that the hook shows the welcome modal on mount.
  */
 
-import { renderHook } from "@testing-library/react-native";
+import {renderHook} from "@testing-library/react-native";
 import React from "react";
-import { useFirstTimeExperience } from "../useFirstTimeExperience";
-import { ModalProvider } from "../../contexts/ModalContext";
+import {useFirstTimeExperience} from "../useFirstTimeExperience";
+import {ModalProvider} from "../../contexts/ModalContext";
 
 // Create a wrapper component that provides the modal context
 const createWrapper = () => {
-  const Wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const Wrapper: React.FC<{children: React.ReactNode}> = ({children}) => {
     return React.createElement(ModalProvider, null, children);
   };
   return Wrapper;
@@ -47,7 +47,7 @@ describe("useFirstTimeExperience", () => {
   });
 
   it("should only call showWelcomeModal once even on re-render", () => {
-    const { rerender } = renderHook(() => useFirstTimeExperience(), {
+    const {rerender} = renderHook(() => useFirstTimeExperience(), {
       wrapper: createWrapper(),
     });
 

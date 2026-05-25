@@ -64,4 +64,3 @@ Existing repo assets to review:
 - The game is free-to-play with optional purchases and rewarded ads.
 - No purchase should be required to solve normal puzzles.
 - Reviewers should receive the beta build, press kit, and 5 sample riddles.
-

@@ -1,15 +1,15 @@
 import React from "react";
-import { render, fireEvent } from "@testing-library/react-native";
+import {render, fireEvent} from "@testing-library/react-native";
 import BackButton from "../BackButton";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import {NativeStackNavigationProp} from "@react-navigation/native-stack";
 
 // Mock the BackIcon SVG
 jest.mock("@images/back-icon.svg", () => {
   const React = require("react");
-  const { View } = require("react-native");
+  const {View} = require("react-native");
 
-  const MockBackIconSvg = ({ width, height, ...props }: any) => (
-    <View testID="back-icon" style={{ width, height }} {...props} />
+  const MockBackIconSvg = ({width, height, ...props}: any) => (
+    <View testID="back-icon" style={{width, height}} {...props} />
   );
 
   MockBackIconSvg.displayName = "MockBackIconSvg";
@@ -21,7 +21,7 @@ jest.mock("../../../styles", () => ({
   styles: {
     backButton: {},
   },
-  SPACING: { xs: 4, sm: 8, md: 16, lg: 24, xl: 32, "2xl": 48 },
+  SPACING: {xs: 4, sm: 8, md: 16, lg: 24, xl: 32, "2xl": 48},
 }));
 
 type RootStackParamList = Record<string, object | undefined>;
@@ -38,17 +38,13 @@ describe("BackButton", () => {
 
   describe("Rendering", () => {
     it("renders correctly with navigation prop", () => {
-      const { getByTestId } = render(
-        <BackButton navigation={mockNavigation} />
-      );
+      const {getByTestId} = render(<BackButton navigation={mockNavigation} />);
 
       expect(getByTestId("back-icon")).toBeTruthy();
     });
 
     it("renders BackIcon with correct dimensions", () => {
-      const { getByTestId } = render(
-        <BackButton navigation={mockNavigation} />
-      );
+      const {getByTestId} = render(<BackButton navigation={mockNavigation} />);
       const icon = getByTestId("back-icon");
 
       expect(icon.props.style).toMatchObject({
@@ -58,24 +54,18 @@ describe("BackButton", () => {
     });
 
     it("applies correct styling", () => {
-      const { UNSAFE_getByType } = render(
-        <BackButton navigation={mockNavigation} />
-      );
+      const {UNSAFE_getByType} = render(<BackButton navigation={mockNavigation} />);
       const TouchableOpacity = require("react-native").TouchableOpacity;
       const button = UNSAFE_getByType(TouchableOpacity);
 
-      const style = Array.isArray(button.props.style)
-        ? Object.assign({}, ...button.props.style)
-        : button.props.style;
+      const style = Array.isArray(button.props.style) ? Object.assign({}, ...button.props.style) : button.props.style;
       expect(style.padding).toBeDefined();
     });
   });
 
   describe("Navigation Behavior", () => {
     it("calls navigation.goBack when no targetScreen is provided", () => {
-      const { UNSAFE_getByType } = render(
-        <BackButton navigation={mockNavigation} />
-      );
+      const {UNSAFE_getByType} = render(<BackButton navigation={mockNavigation} />);
       const TouchableOpacity = require("react-native").TouchableOpacity;
       const button = UNSAFE_getByType(TouchableOpacity);
 
@@ -87,9 +77,7 @@ describe("BackButton", () => {
 
     it("calls navigation.navigate when targetScreen is provided", () => {
       const targetScreen = "HomeScreen";
-      const { UNSAFE_getByType } = render(
-        <BackButton navigation={mockNavigation} targetScreen={targetScreen} />
-      );
+      const {UNSAFE_getByType} = render(<BackButton navigation={mockNavigation} targetScreen={targetScreen} />);
       const TouchableOpacity = require("react-native").TouchableOpacity;
       const button = UNSAFE_getByType(TouchableOpacity);
 
@@ -105,9 +93,7 @@ describe("BackButton", () => {
 
       screens.forEach((screen) => {
         jest.clearAllMocks();
-        const { UNSAFE_getByType } = render(
-          <BackButton navigation={mockNavigation} targetScreen={screen} />
-        );
+        const {UNSAFE_getByType} = render(<BackButton navigation={mockNavigation} targetScreen={screen} />);
         const TouchableOpacity = require("react-native").TouchableOpacity;
         const button = UNSAFE_getByType(TouchableOpacity);
 
@@ -120,17 +106,13 @@ describe("BackButton", () => {
 
   describe("Component Structure", () => {
     it("renders as TouchableOpacity", () => {
-      const { UNSAFE_getByType } = render(
-        <BackButton navigation={mockNavigation} />
-      );
+      const {UNSAFE_getByType} = render(<BackButton navigation={mockNavigation} />);
       const TouchableOpacity = require("react-native").TouchableOpacity;
       expect(UNSAFE_getByType(TouchableOpacity)).toBeTruthy();
     });
 
     it("contains BackIcon as child", () => {
-      const { getByTestId } = render(
-        <BackButton navigation={mockNavigation} />
-      );
+      const {getByTestId} = render(<BackButton navigation={mockNavigation} />);
       expect(getByTestId("back-icon")).toBeTruthy();
     });
   });
@@ -144,18 +126,14 @@ describe("BackButton", () => {
 
     it("works with targetScreen prop", () => {
       expect(() => {
-        render(
-          <BackButton navigation={mockNavigation} targetScreen="HomeScreen" />
-        );
+        render(<BackButton navigation={mockNavigation} targetScreen="HomeScreen" />);
       }).not.toThrow();
     });
   });
 
   describe("Interactions", () => {
     it("handles multiple presses correctly", () => {
-      const { UNSAFE_getByType } = render(
-        <BackButton navigation={mockNavigation} />
-      );
+      const {UNSAFE_getByType} = render(<BackButton navigation={mockNavigation} />);
       const TouchableOpacity = require("react-native").TouchableOpacity;
       const button = UNSAFE_getByType(TouchableOpacity);
 
@@ -167,9 +145,7 @@ describe("BackButton", () => {
     });
 
     it("handles rapid presses", () => {
-      const { UNSAFE_getByType } = render(
-        <BackButton navigation={mockNavigation} />
-      );
+      const {UNSAFE_getByType} = render(<BackButton navigation={mockNavigation} />);
       const TouchableOpacity = require("react-native").TouchableOpacity;
       const button = UNSAFE_getByType(TouchableOpacity);
 
@@ -188,9 +164,7 @@ describe("BackButton", () => {
         goBack: jest.fn(),
       } as any as NativeStackNavigationProp<RootStackParamList>;
 
-      const { rerender, UNSAFE_getByType } = render(
-        <BackButton navigation={mockNavigation} />
-      );
+      const {rerender, UNSAFE_getByType} = render(<BackButton navigation={mockNavigation} />);
 
       rerender(<BackButton navigation={newNavigation} />);
 
@@ -203,13 +177,9 @@ describe("BackButton", () => {
     });
 
     it("re-renders correctly when targetScreen changes", () => {
-      const { rerender, UNSAFE_getByType } = render(
-        <BackButton navigation={mockNavigation} targetScreen="HomeScreen" />
-      );
+      const {rerender, UNSAFE_getByType} = render(<BackButton navigation={mockNavigation} targetScreen="HomeScreen" />);
 
-      rerender(
-        <BackButton navigation={mockNavigation} targetScreen="ProfileScreen" />
-      );
+      rerender(<BackButton navigation={mockNavigation} targetScreen="ProfileScreen" />);
 
       const TouchableOpacity = require("react-native").TouchableOpacity;
       const button = UNSAFE_getByType(TouchableOpacity);
@@ -228,9 +198,7 @@ describe("BackButton", () => {
         goBack: jest.fn(),
       } as any as NativeStackNavigationProp<RootStackParamList>;
 
-      const { UNSAFE_getByType } = render(
-        <BackButton navigation={errorNavigation} targetScreen="Home" />
-      );
+      const {UNSAFE_getByType} = render(<BackButton navigation={errorNavigation} targetScreen="Home" />);
       const TouchableOpacity = require("react-native").TouchableOpacity;
       const button = UNSAFE_getByType(TouchableOpacity);
 
@@ -243,9 +211,7 @@ describe("BackButton", () => {
     });
 
     it("handles undefined targetScreen correctly", () => {
-      const { UNSAFE_getByType } = render(
-        <BackButton navigation={mockNavigation} targetScreen={undefined} />
-      );
+      const {UNSAFE_getByType} = render(<BackButton navigation={mockNavigation} targetScreen={undefined} />);
       const TouchableOpacity = require("react-native").TouchableOpacity;
       const button = UNSAFE_getByType(TouchableOpacity);
 
@@ -258,9 +224,7 @@ describe("BackButton", () => {
 
   describe("Visual Consistency", () => {
     it("maintains consistent icon size", () => {
-      const { getByTestId } = render(
-        <BackButton navigation={mockNavigation} />
-      );
+      const {getByTestId} = render(<BackButton navigation={mockNavigation} />);
       const icon = getByTestId("back-icon");
 
       expect(icon.props.style).toMatchObject({
@@ -270,17 +234,12 @@ describe("BackButton", () => {
     });
 
     it("applies consistent padding", () => {
-      const { UNSAFE_getByType } = render(
-        <BackButton navigation={mockNavigation} />
-      );
+      const {UNSAFE_getByType} = render(<BackButton navigation={mockNavigation} />);
       const TouchableOpacity = require("react-native").TouchableOpacity;
       const button = UNSAFE_getByType(TouchableOpacity);
 
-      const style = Array.isArray(button.props.style)
-        ? Object.assign({}, ...button.props.style)
-        : button.props.style;
+      const style = Array.isArray(button.props.style) ? Object.assign({}, ...button.props.style) : button.props.style;
       expect(style.padding).toBeDefined();
     });
   });
 });
-

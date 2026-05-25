@@ -65,12 +65,8 @@ const VictoryModal: React.FC<VictoryModalProps> = ({
   sequenceProgress,
   onClose,
 }) => {
-  const modalHeight = getResponsiveModalHeight(
-    VICTORY_MODAL_HEIGHT_MULTIPLIER,
-    MODAL_MAX_SCREEN_HEIGHT_FRACTION,
-  );
-  const nextButtonText =
-    sequenceProgress?.primaryActionText ?? AppStrings.VictoryModal.NEXT_LEVEL_BUTTON;
+  const modalHeight = getResponsiveModalHeight(VICTORY_MODAL_HEIGHT_MULTIPLIER, MODAL_MAX_SCREEN_HEIGHT_FRACTION);
+  const nextButtonText = sequenceProgress?.primaryActionText ?? AppStrings.VictoryModal.NEXT_LEVEL_BUTTON;
 
   /**
    * Advances to the next level and closes the modal afterward.

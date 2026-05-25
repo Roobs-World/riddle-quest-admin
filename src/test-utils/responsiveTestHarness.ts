@@ -104,19 +104,12 @@ export const createResponsiveMockForProfile = (profile: ResponsiveTestProfile) =
   const heightScale = Math.min(profile.screenHeight / 844, getVerticalScaleCap(profile));
   const scale = (size: number): number => Math.round(size * widthScale);
   const verticalScale = (size: number): number => Math.round(size * heightScale);
-  const moderateScale = (size: number, factor = 0.5): number =>
-    Math.round(size + (scale(size) - size) * factor);
+  const moderateScale = (size: number, factor = 0.5): number => Math.round(size + (scale(size) - size) * factor);
   const getDeviceType = (): ResponsiveDeviceTier => getDeviceTypeForProfile(profile);
-  const responsiveValue = <T>(values: {
-    phone: T;
-    tablet?: T;
-    largeTablet?: T;
-    desktop?: T;
-  }): T => {
+  const responsiveValue = <T>(values: {phone: T; tablet?: T; largeTablet?: T; desktop?: T}): T => {
     const tier = getDeviceType();
     if (tier === "desktop" && values.desktop !== undefined) return values.desktop;
-    if ((tier === "desktop" || tier === "largeTablet") && values.largeTablet !== undefined)
-      return values.largeTablet;
+    if ((tier === "desktop" || tier === "largeTablet") && values.largeTablet !== undefined) return values.largeTablet;
     if (tier !== "phone" && values.tablet !== undefined) return values.tablet;
     return values.phone;
   };
@@ -167,10 +160,7 @@ export const createResponsiveMockForProfile = (profile: ResponsiveTestProfile) =
   };
 };
 
-export const withResponsiveProfile = <T>(
-  profile: ResponsiveTestProfile,
-  loadModule: () => T,
-): T => {
+export const withResponsiveProfile = <T>(profile: ResponsiveTestProfile, loadModule: () => T): T => {
   let result: T | undefined;
 
   jest.isolateModules(() => {

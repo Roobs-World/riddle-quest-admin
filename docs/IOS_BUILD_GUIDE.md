@@ -5,7 +5,6 @@ This guide explains how to build and test your Riddle Quest iOS app from Windows
 ## Prerequisites
 
 1. **Apple Developer Account** (Required for device testing)
-
    - Sign up at https://developer.apple.com ($99/year)
    - You'll need this for:
      - Creating provisioning profiles
@@ -13,7 +12,6 @@ This guide explains how to build and test your Riddle Quest iOS app from Windows
      - Publishing to App Store
 
 2. **EAS CLI** (Already installed ✓)
-
    - You're logged in as: craigbeswetherick
 
 3. **Expo Account** (Already set up ✓)
@@ -58,12 +56,10 @@ eas build --profile production --platform ios
 When you run your first iOS build, EAS will:
 
 1. **Ask for Apple Developer credentials**
-
    - Apple ID (email)
    - App-specific password (generate at appleid.apple.com)
 
 2. **Create necessary certificates and profiles**
-
    - EAS handles all certificate management
    - No need for a Mac!
 
@@ -235,12 +231,10 @@ eas submit --platform ios
    ```
 
 2. **Test on multiple iOS versions**:
-
    - Use TestFlight for broader testing
    - Consider different iPhone models
 
 3. **Automate with GitHub Actions**:
-
    - Set up CI/CD for automatic builds
    - Trigger builds on push to main
 
@@ -256,5 +250,3 @@ eas submit --platform ios
 - **Missing features**: Some features need development builds
 
 Remember: EAS Build handles all the complex iOS certificate and provisioning profile management, making it possible to build iOS apps without a Mac!
-
-

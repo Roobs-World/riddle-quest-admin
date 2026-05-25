@@ -1,14 +1,8 @@
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-} from "react";
-import type { TooltipId, TooltipRequest, TargetRect } from "../components/tooltips/types";
+import React, {createContext, useCallback, useContext, useMemo, useState} from "react";
+import type {TooltipId, TooltipRequest, TargetRect} from "../components/tooltips/types";
 import TooltipOverlay from "../components/tooltips/TooltipOverlay";
-import { hasSeenTooltip, markTooltipSeen } from "../components/tooltips/tooltipStorage";
-import { logger } from "../utils/logger";
+import {hasSeenTooltip, markTooltipSeen} from "../components/tooltips/tooltipStorage";
+import {logger} from "../utils/logger";
 
 interface TooltipContextValue {
   activeTooltipId: TooltipId | null;
@@ -28,7 +22,7 @@ const measureTarget = (request: TooltipRequest): Promise<TargetRect | null> => {
   return new Promise((resolve) => {
     target.measureInWindow((x, y, width, height) => {
       if ([x, y, width, height].every((value) => Number.isFinite(value))) {
-        resolve({ x, y, width, height });
+        resolve({x, y, width, height});
         return;
       }
 
@@ -37,9 +31,7 @@ const measureTarget = (request: TooltipRequest): Promise<TargetRect | null> => {
   });
 };
 
-export const TooltipProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const TooltipProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
   const [activeRequest, setActiveRequest] = useState<TooltipRequest | null>(null);
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
   const [targetRect, setTargetRect] = useState<TargetRect | null>(null);
@@ -60,7 +52,7 @@ export const TooltipProvider: React.FC<{ children: React.ReactNode }> = ({
         }
 
         await markTooltipSeen(request.id, request.userId);
-        await showTooltip({ ...request, persist: true });
+        await showTooltip({...request, persist: true});
         return true;
       } catch (error) {
         logger.warn("Tooltip persistence failed; showing tooltip without storage.", error);
@@ -68,25 +60,28 @@ export const TooltipProvider: React.FC<{ children: React.ReactNode }> = ({
         return true;
       }
     },
-    [showTooltip]
+    [showTooltip],
   );
 
-  const dismissTooltip = useCallback((id?: TooltipId): void => {
-    if (id && activeRequest?.id !== id) {
-      return;
-    }
+  const dismissTooltip = useCallback(
+    (id?: TooltipId): void => {
+      if (id && activeRequest?.id !== id) {
+        return;
+      }
 
-    setIsTooltipVisible(false);
-  }, [activeRequest?.id]);
+      setIsTooltipVisible(false);
+    },
+    [activeRequest?.id],
+  );
 
   const contextValue = useMemo(
     () => ({
-      activeTooltipId: isTooltipVisible ? activeRequest?.id ?? null : null,
+      activeTooltipId: isTooltipVisible ? (activeRequest?.id ?? null) : null,
       showTooltip,
       showTooltipOnce,
       dismissTooltip,
     }),
-    [activeRequest?.id, dismissTooltip, isTooltipVisible, showTooltip, showTooltipOnce]
+    [activeRequest?.id, dismissTooltip, isTooltipVisible, showTooltip, showTooltipOnce],
   );
 
   return (

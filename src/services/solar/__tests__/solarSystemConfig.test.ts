@@ -15,7 +15,7 @@ jest.mock("../../../../assets/3d/tex_gradient_circle_i.png", () => "tex_gradient
 jest.mock("../../../../assets/3d/tex_gradient_circle_sun_i.png", () => "tex_gradient_circle_sun_i.png");
 jest.mock("../../../../assets/3d/tex_sun_spots_02.png", () => "tex_sun_spots_02.png");
 
-import { SOLAR_SYSTEM_CONFIG, SOLAR_TEXTURE_MAPPING } from "../solarSystemConfig";
+import {SOLAR_SYSTEM_CONFIG, SOLAR_TEXTURE_MAPPING} from "../solarSystemConfig";
 
 describe("solarSystemConfig", () => {
   it("has unique texture keys", () => {

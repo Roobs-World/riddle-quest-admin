@@ -23,24 +23,19 @@ jest.mock("../../utils/sentry", () => ({
   captureException: jest.fn(),
 }));
 
-import { preloadShopCatalog } from "../ShopCatalogPreloader";
-import { IapService } from "../IapService";
-import { ProductPricingService } from "../ProductPricingService";
-import { logger } from "../../utils/logger";
-import { captureException } from "../../utils/sentry";
+import {preloadShopCatalog} from "../ShopCatalogPreloader";
+import {IapService} from "../IapService";
+import {ProductPricingService} from "../ProductPricingService";
+import {logger} from "../../utils/logger";
+import {captureException} from "../../utils/sentry";
 
-const mockIapGetProducts = IapService.getProducts as jest.MockedFunction<
-  typeof IapService.getProducts
+const mockIapGetProducts = IapService.getProducts as jest.MockedFunction<typeof IapService.getProducts>;
+const mockGetActiveProducts = ProductPricingService.getActiveProducts as jest.MockedFunction<
+  typeof ProductPricingService.getActiveProducts
 >;
-const mockGetActiveProducts =
-  ProductPricingService.getActiveProducts as jest.MockedFunction<
-    typeof ProductPricingService.getActiveProducts
-  >;
 const mockedLogger = logger as jest.Mocked<typeof logger>;
-const mockCaptureException = captureException as jest.MockedFunction<
-  typeof captureException
->;
-const devGlobal = globalThis as typeof globalThis & { __DEV__?: boolean };
+const mockCaptureException = captureException as jest.MockedFunction<typeof captureException>;
+const devGlobal = globalThis as typeof globalThis & {__DEV__?: boolean};
 
 describe("preloadShopCatalog", () => {
   const originalDev = devGlobal.__DEV__;
@@ -82,10 +77,7 @@ describe("preloadShopCatalog", () => {
     await preloadShopCatalog();
 
     expect(mockGetActiveProducts).toHaveBeenCalledTimes(1);
-    expect(mockedLogger.warn).toHaveBeenCalledWith(
-      "Shop catalog preload: failed to preload IAP products",
-      iapError
-    );
+    expect(mockedLogger.warn).toHaveBeenCalledWith("Shop catalog preload: failed to preload IAP products", iapError);
     expect(mockCaptureException).toHaveBeenCalledWith(iapError, {
       context: "ShopCatalogPreloader.iap",
     });

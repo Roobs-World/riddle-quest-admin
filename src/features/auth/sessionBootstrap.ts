@@ -1,12 +1,12 @@
 /**
  * @fileoverview Auth bootstrap helpers for guest profiles and provider email resolution.
  */
-import { AccessToken } from "react-native-fbsdk-next";
-import type { FirebaseAuthTypes } from "@react-native-firebase/auth";
-import { Player } from "../../validation/firestoreSchemas";
-import { captureException } from "../../utils/sentry";
-import { logger } from "../../utils/logger";
-import { INITIAL_COINS } from "@/constants/game";
+import {AccessToken} from "react-native-fbsdk-next";
+import type {FirebaseAuthTypes} from "@react-native-firebase/auth";
+import {Player} from "../../validation/firestoreSchemas";
+import {captureException} from "../../utils/sentry";
+import {logger} from "../../utils/logger";
+import {INITIAL_COINS} from "@/constants/game";
 
 export type RestorableGameMode = "daily" | "classic" | "challenge";
 
@@ -23,15 +23,10 @@ export type ActiveGameSessionSnapshot = {
   dailyIndex?: number;
 };
 
-export const getUtcDateKey = (date: Date = new Date()): string =>
-  date.toISOString().slice(0, 10);
+export const getUtcDateKey = (date: Date = new Date()): string => date.toISOString().slice(0, 10);
 
-export const normalizeRestorableGameMode = (
-  value: unknown
-): RestorableGameMode | null =>
-  value === "daily" || value === "classic" || value === "challenge"
-    ? value
-    : null;
+export const normalizeRestorableGameMode = (value: unknown): RestorableGameMode | null =>
+  value === "daily" || value === "classic" || value === "challenge" ? value : null;
 
 /**
  * Resolves initial gameplay mode after auth bootstrap.
@@ -39,9 +34,8 @@ export const normalizeRestorableGameMode = (
  * @param hasCompletedToday Whether daily challenge was already completed.
  * @returns `"classic"` when completed; otherwise `"daily"`.
  */
-export const resolveInitialGameMode = (
-  hasCompletedToday: boolean
-): "classic" | "daily" => (hasCompletedToday ? "classic" : "daily");
+export const resolveInitialGameMode = (hasCompletedToday: boolean): "classic" | "daily" =>
+  hasCompletedToday ? "classic" : "daily";
 
 export const resolveLaunchGameMode = ({
   defaultMode,
@@ -104,15 +98,9 @@ export const createGuestPlayer = (uid: string): Player => ({
 /**
  * True when a player profile represents guest mode.
  */
-export const isGuestPlayer = (
-  player: Pick<Player, "email" | "username"> | null | undefined
-): boolean => {
-  const email =
-    typeof player?.email === "string" ? player.email.trim().toLowerCase() : "";
-  const username =
-    typeof player?.username === "string"
-      ? player.username.trim().toLowerCase()
-      : "";
+export const isGuestPlayer = (player: Pick<Player, "email" | "username"> | null | undefined): boolean => {
+  const email = typeof player?.email === "string" ? player.email.trim().toLowerCase() : "";
+  const username = typeof player?.username === "string" ? player.username.trim().toLowerCase() : "";
 
   // Support legacy guest emails that were stored with mixed-case domain text.
   if (email.endsWith("@guest.riddle quest.com")) {
@@ -134,48 +122,35 @@ export const isGuestPlayer = (
  * @returns Resolved email address.
  * @throws When no email can be resolved.
  */
-export const resolveUserEmail = async (
-  user: FirebaseAuthTypes.User
-): Promise<string> => {
+export const resolveUserEmail = async (user: FirebaseAuthTypes.User): Promise<string> => {
   const userEmail = user.email ?? "";
 
   if (userEmail.trim() !== "") {
     return userEmail;
   }
 
-  const providerWithEmail = user.providerData?.find(
-    (provider) => provider.email && provider.email.trim() !== ""
-  );
+  const providerWithEmail = user.providerData?.find((provider) => provider.email && provider.email.trim() !== "");
 
   if (providerWithEmail?.email) {
-    logger.debug(
-      `Found email in providerData (${providerWithEmail.providerId}):`,
-      providerWithEmail.email
-    );
+    logger.debug(`Found email in providerData (${providerWithEmail.providerId}):`, providerWithEmail.email);
     return providerWithEmail.email;
   }
 
-  const facebookProvider = user.providerData?.find(
-    (provider) => provider.providerId === "facebook.com"
-  );
+  const facebookProvider = user.providerData?.find((provider) => provider.providerId === "facebook.com");
 
   if (facebookProvider) {
     try {
       const currentToken = await AccessToken.getCurrentAccessToken();
       if (!currentToken) {
-        throw new Error(
-          "No Facebook access token available for Graph API call"
-        );
+        throw new Error("No Facebook access token available for Graph API call");
       }
 
       const graphResponse = await fetch(
-        `https://graph.facebook.com/me?fields=id,name,email&access_token=${currentToken.accessToken}`
+        `https://graph.facebook.com/me?fields=id,name,email&access_token=${currentToken.accessToken}`,
       );
 
       if (!graphResponse.ok) {
-        throw new Error(
-          `Facebook Graph API error: ${graphResponse.status} ${graphResponse.statusText}`
-        );
+        throw new Error(`Facebook Graph API error: ${graphResponse.status} ${graphResponse.statusText}`);
       }
 
       const userData = await graphResponse.json();
@@ -190,7 +165,7 @@ export const resolveUserEmail = async (
   }
 
   throw new Error(
-    "Email is required but not provided by authentication provider. Please ensure email permission is granted."
+    "Email is required but not provided by authentication provider. Please ensure email permission is granted.",
   );
 };
 
@@ -210,25 +185,19 @@ const isValidAvatarUrl = (value: string | null | undefined): value is string => 
  * @param user Firebase auth user.
  * @returns A valid avatar URL when available.
  */
-export const resolveProviderAvatarUrl = async (
-  user: FirebaseAuthTypes.User
-): Promise<string | undefined> => {
-  const hasFacebookProvider = Boolean(
-    user.providerData?.some((provider) => provider.providerId === "facebook.com")
-  );
+export const resolveProviderAvatarUrl = async (user: FirebaseAuthTypes.User): Promise<string | undefined> => {
+  const hasFacebookProvider = Boolean(user.providerData?.some((provider) => provider.providerId === "facebook.com"));
 
   if (hasFacebookProvider) {
     try {
       const currentToken = await AccessToken.getCurrentAccessToken();
       if (currentToken?.accessToken) {
         const graphResponse = await fetch(
-          `https://graph.facebook.com/me/picture?type=large&redirect=false&access_token=${currentToken.accessToken}`
+          `https://graph.facebook.com/me/picture?type=large&redirect=false&access_token=${currentToken.accessToken}`,
         );
 
         if (!graphResponse.ok) {
-          throw new Error(
-            `Facebook avatar Graph API error: ${graphResponse.status} ${graphResponse.statusText}`
-          );
+          throw new Error(`Facebook avatar Graph API error: ${graphResponse.status} ${graphResponse.statusText}`);
         }
 
         const avatarData = await graphResponse.json();
@@ -245,9 +214,7 @@ export const resolveProviderAvatarUrl = async (
     }
   }
 
-  const hasGoogleProvider = Boolean(
-    user.providerData?.some((provider) => provider.providerId === "google.com")
-  );
+  const hasGoogleProvider = Boolean(user.providerData?.some((provider) => provider.providerId === "google.com"));
 
   if (hasGoogleProvider && isValidAvatarUrl(user.photoURL)) {
     return user.photoURL;
@@ -276,19 +243,14 @@ export const resolveProviderAvatarUrl = async (
  *
  * Returns `undefined` when no provider username is available.
  */
-export const resolveProviderUsername = (
-  user: FirebaseAuthTypes.User
-): string | undefined => {
-  const displayName =
-    typeof user.displayName === "string" ? user.displayName.trim() : "";
+export const resolveProviderUsername = (user: FirebaseAuthTypes.User): string | undefined => {
+  const displayName = typeof user.displayName === "string" ? user.displayName.trim() : "";
   if (displayName !== "") {
     return displayName;
   }
 
   const providerDisplayName = user.providerData?.find(
-    (provider) =>
-      typeof provider.displayName === "string" &&
-      provider.displayName.trim() !== ""
+    (provider) => typeof provider.displayName === "string" && provider.displayName.trim() !== "",
   )?.displayName;
 
   if (typeof providerDisplayName === "string") {

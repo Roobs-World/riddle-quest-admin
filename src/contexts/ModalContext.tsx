@@ -1,39 +1,18 @@
-import React, {
-  createContext,
-  useContext,
-  useReducer,
-  useCallback,
-  useMemo,
-} from "react";
-import {
-  ModalContextState,
-  ModalInstance,
-  ModalData,
-  ModalOptions,
-  ModalAction,
-} from "../types/ModalTypes";
-import { logger } from "src/utils/logger";
+import React, {createContext, useContext, useReducer, useCallback, useMemo} from "react";
+import {ModalContextState, ModalInstance, ModalData, ModalOptions, ModalAction} from "../types/ModalTypes";
+import {logger} from "src/utils/logger";
 
 // Initial state
 const initialState: ModalInstance[] = [];
 
 // Modal reducer
-const modalReducer = (
-  state: ModalInstance[],
-  action: ModalAction
-): ModalInstance[] => {
+const modalReducer = (state: ModalInstance[], action: ModalAction): ModalInstance[] => {
   switch (action.type) {
     case "OPEN_MODAL": {
       // If replace option is true, close all modals of the same type
       const needsSort = action.payload.priority !== 0 || state.some((m) => m.priority !== 0);
-      if (
-        action.payload.data &&
-        "replace" in action.payload.data &&
-        action.payload.data.replace
-      ) {
-        const filteredState = state.filter(
-          (modal) => modal.type !== action.payload.type
-        );
+      if (action.payload.data && "replace" in action.payload.data && action.payload.data.replace) {
+        const filteredState = state.filter((modal) => modal.type !== action.payload.type);
         const next = [...filteredState, action.payload];
         return needsSort ? next.sort((a, b) => a.priority - b.priority) : next;
       }
@@ -57,13 +36,11 @@ const modalReducer = (
 
     case "UPDATE_MODAL_DATA":
       return state.map((modal) =>
-        modal.id === action.payload.id
-          ? { ...modal, data: { ...modal.data, ...action.payload.data } }
-          : modal
+        modal.id === action.payload.id ? {...modal, data: {...modal.data, ...action.payload.data}} : modal,
       );
 
     default:
-      logger.warn("modal reducer unsure of action: " + action)
+      logger.warn("modal reducer unsure of action: " + action);
       return state;
   }
 };
@@ -77,48 +54,39 @@ const generateModalId = (): string => {
 };
 
 // Modal Provider component
-export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const ModalProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
   const [modals, dispatch] = useReducer(modalReducer, initialState);
 
   // Open modal function
-  const openModal = useCallback(
-    <T extends ModalData>(
-      type: string,
-      data?: T,
-      options?: ModalOptions
-    ): string => {
-      const id = generateModalId();
-      const priority = options?.priority ?? 0;
-      const persistent = options?.persistent ?? false;
+  const openModal = useCallback(<T extends ModalData>(type: string, data?: T, options?: ModalOptions): string => {
+    const id = generateModalId();
+    const priority = options?.priority ?? 0;
+    const persistent = options?.persistent ?? false;
 
-      const modalInstance: ModalInstance<T> = {
-        id,
-        type,
-        data: data || ({} as T),
-        priority,
-        persistent,
-      };
+    const modalInstance: ModalInstance<T> = {
+      id,
+      type,
+      data: data || ({} as T),
+      priority,
+      persistent,
+    };
 
-      dispatch({ type: "OPEN_MODAL", payload: modalInstance });
-      return id;
-    },
-    []
-  );
+    dispatch({type: "OPEN_MODAL", payload: modalInstance});
+    return id;
+  }, []);
 
   // Close modal function
   const closeModal = useCallback((id: string): void => {
-    dispatch({ type: "CLOSE_MODAL", payload: id });
+    dispatch({type: "CLOSE_MODAL", payload: id});
   }, []);
 
   const closeModalByType = useCallback((type: string): void => {
-    dispatch({ type: "CLOSE_MODAL_BY_TYPE", payload: type });
+    dispatch({type: "CLOSE_MODAL_BY_TYPE", payload: type});
   }, []);
 
   // Close all modals function
   const closeAllModals = useCallback((): void => {
-    dispatch({ type: "CLOSE_ALL_MODALS" });
+    dispatch({type: "CLOSE_ALL_MODALS"});
   }, []);
 
   // Check if modal is open
@@ -126,7 +94,7 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({
     (type: string): boolean => {
       return modals.some((modal) => modal.type === type);
     },
-    [modals]
+    [modals],
   );
 
   // Get modal data
@@ -135,16 +103,13 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({
       const modal = modals.find((modal) => modal.type === type);
       return modal ? (modal.data as T) : null;
     },
-    [modals]
+    [modals],
   );
 
   // Update modal data
-  const updateModalData = useCallback(
-    <T extends ModalData>(id: string, data: Partial<T>): void => {
-      dispatch({ type: "UPDATE_MODAL_DATA", payload: { id, data } });
-    },
-    []
-  );
+  const updateModalData = useCallback(<T extends ModalData>(id: string, data: Partial<T>): void => {
+    dispatch({type: "UPDATE_MODAL_DATA", payload: {id, data}});
+  }, []);
 
   // Memoize the context value to prevent unnecessary re-renders
   const contextValue = useMemo(
@@ -158,23 +123,10 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({
       getModalData,
       updateModalData,
     }),
-    [
-      modals,
-      openModal,
-      closeModal,
-      closeModalByType,
-      closeAllModals,
-      isModalOpen,
-      getModalData,
-      updateModalData,
-    ]
+    [modals, openModal, closeModal, closeModalByType, closeAllModals, isModalOpen, getModalData, updateModalData],
   );
 
-  return (
-    <ModalContext.Provider value={contextValue}>
-      {children}
-    </ModalContext.Provider>
-  );
+  return <ModalContext.Provider value={contextValue}>{children}</ModalContext.Provider>;
 };
 
 // Custom hook to use modal context
@@ -185,4 +137,3 @@ export const useModalContext = (): ModalContextState => {
   }
   return context;
 };
-

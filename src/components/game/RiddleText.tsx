@@ -1,7 +1,7 @@
 import React from "react";
-import { Text, View, StyleSheet } from "react-native";
-import { RIDDLE_TEXT_MAX_WIDTH } from "../../constants/layout";
-import { TYPOGRAPHY, SPACING } from "../../styles";
+import {Text, View, StyleSheet} from "react-native";
+import {RIDDLE_TEXT_MAX_WIDTH} from "../../constants/layout";
+import {TYPOGRAPHY, SPACING} from "../../styles";
 
 /**
  * Define the props for the RiddleText component.
@@ -28,9 +28,9 @@ const styles = StyleSheet.create({
  * @param {RiddleTextProps} props - The props for the component.
  * @returns {JSX.Element} The rendered riddle text wrapper.
  */
-const RiddleText: React.FC<RiddleTextProps> = ({ riddleText }) => {
+const RiddleText: React.FC<RiddleTextProps> = ({riddleText}) => {
   return (
-    <View className="items-center z-10" style={{ paddingHorizontal: SPACING.lg }}>
+    <View className="items-center z-10" style={{paddingHorizontal: SPACING.lg}}>
       <Text
         className="text-center text-black"
         style={styles.riddleText}

@@ -1,4 +1,4 @@
-import { createGameModalActions } from "../gameModalActions";
+import {createGameModalActions} from "../gameModalActions";
 
 describe("createGameModalActions", () => {
   const createModalMock = () => ({
@@ -31,8 +31,7 @@ describe("createGameModalActions", () => {
     });
     expect(modal.showInfoModal).toHaveBeenNthCalledWith(2, {
       title: "Ad Not Ready",
-      message:
-        "The rewarded ad couldn't be loaded at this time. Please try again later.",
+      message: "The rewarded ad couldn't be loaded at this time. Please try again later.",
     });
     expect(modal.showInfoModal).toHaveBeenNthCalledWith(3, {
       title: "Ad Error",

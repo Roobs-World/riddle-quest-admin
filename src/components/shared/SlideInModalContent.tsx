@@ -1,12 +1,7 @@
-import React, { useEffect, useState } from "react";
-import {
-  Animated,
-  Easing,
-  StyleProp,
-  ViewStyle,
-} from "react-native";
-import { dimensions } from "../../utils/responsive";
-import { isQASurfaceRuntimeActive } from "../../qa/qaRuntime";
+import React, {useEffect, useState} from "react";
+import {Animated, Easing, StyleProp, ViewStyle} from "react-native";
+import {dimensions} from "../../utils/responsive";
+import {isQASurfaceRuntimeActive} from "../../qa/qaRuntime";
 
 interface SlideInModalContentProps {
   isVisible: boolean;
@@ -18,11 +13,7 @@ const ENTRY_OFFSET = 72;
 const ENTRY_DURATION_MS = 420;
 const OFFSCREEN_TRANSLATE_Y = (dimensions?.screenHeight ?? 800) + ENTRY_OFFSET;
 
-const SlideInModalContent: React.FC<SlideInModalContentProps> = ({
-  isVisible,
-  children,
-  style,
-}) => {
+const SlideInModalContent: React.FC<SlideInModalContentProps> = ({isVisible, children, style}) => {
   const [translateY] = useState(() => new Animated.Value(OFFSCREEN_TRANSLATE_Y));
   const [opacity] = useState(() => new Animated.Value(0));
 
@@ -84,7 +75,7 @@ const SlideInModalContent: React.FC<SlideInModalContentProps> = ({
       style={[
         style,
         {
-          transform: [{ translateY }],
+          transform: [{translateY}],
           opacity,
         },
       ]}

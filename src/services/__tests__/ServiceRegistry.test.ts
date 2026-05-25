@@ -1,4 +1,4 @@
-import { ServiceRegistry, serviceRegistry } from "../ServiceRegistry";
+import {ServiceRegistry, serviceRegistry} from "../ServiceRegistry";
 
 // Mock the service implementations
 jest.mock("../UserDataService", () => ({
@@ -66,7 +66,7 @@ describe("ServiceRegistry", () => {
 
   describe("Service Registration", () => {
     it("should register a service", () => {
-      const mockService = { test: "service" };
+      const mockService = {test: "service"};
       registry.register("TestService", mockService);
 
       expect(registry.has("TestService")).toBe(true);
@@ -74,9 +74,9 @@ describe("ServiceRegistry", () => {
     });
 
     it("should register multiple services", () => {
-      const service1 = { name: "service1" };
-      const service2 = { name: "service2" };
-      const service3 = { name: "service3" };
+      const service1 = {name: "service1"};
+      const service2 = {name: "service2"};
+      const service3 = {name: "service3"};
 
       registry.register("Service1", service1);
       registry.register("Service2", service2);
@@ -91,8 +91,8 @@ describe("ServiceRegistry", () => {
     });
 
     it("should overwrite existing service with same key", () => {
-      const originalService = { version: "original" };
-      const newService = { version: "new" };
+      const originalService = {version: "original"};
+      const newService = {version: "new"};
 
       registry.register("TestService", originalService);
       expect(registry.get("TestService")).toBe(originalService);
@@ -105,7 +105,7 @@ describe("ServiceRegistry", () => {
 
   describe("Service Retrieval", () => {
     it("should retrieve registered service", () => {
-      const mockService = { getData: jest.fn() };
+      const mockService = {getData: jest.fn()};
       registry.register("DataService", mockService);
 
       const retrieved = registry.get("DataService");
@@ -113,9 +113,7 @@ describe("ServiceRegistry", () => {
     });
 
     it("should throw error for non-existent service", () => {
-      expect(() => registry.get("NonExistentService")).toThrow(
-        "Service not found: NonExistentService"
-      );
+      expect(() => registry.get("NonExistentService")).toThrow("Service not found: NonExistentService");
     });
 
     it("should handle empty key", () => {
@@ -140,7 +138,7 @@ describe("ServiceRegistry", () => {
 
   describe("Service Existence Checking", () => {
     it("should return true for existing services", () => {
-      const mockService = { test: true };
+      const mockService = {test: true};
       registry.register("ExistingService", mockService);
 
       expect(registry.has("ExistingService")).toBe(true);
@@ -153,8 +151,8 @@ describe("ServiceRegistry", () => {
     });
 
     it("should handle multiple checks correctly", () => {
-      registry.register("Service1", { name: "one" });
-      registry.register("Service2", { name: "two" });
+      registry.register("Service1", {name: "one"});
+      registry.register("Service2", {name: "two"});
 
       expect(registry.has("Service1")).toBe(true);
       expect(registry.has("Service2")).toBe(true);
@@ -165,9 +163,9 @@ describe("ServiceRegistry", () => {
 
   describe("Service Clearing", () => {
     it("should clear all services", () => {
-      registry.register("Service1", { name: "one" });
-      registry.register("Service2", { name: "two" });
-      registry.register("Service3", { name: "three" });
+      registry.register("Service1", {name: "one"});
+      registry.register("Service2", {name: "two"});
+      registry.register("Service3", {name: "three"});
 
       expect(registry.has("Service1")).toBe(true);
       expect(registry.has("Service2")).toBe(true);
@@ -186,15 +184,15 @@ describe("ServiceRegistry", () => {
     });
 
     it("should allow re-registration after clearing", () => {
-      registry.register("TestService", { version: "v1" });
+      registry.register("TestService", {version: "v1"});
       expect(registry.has("TestService")).toBe(true);
 
       registry.clear();
       expect(registry.has("TestService")).toBe(false);
 
-      registry.register("TestService", { version: "v2" });
+      registry.register("TestService", {version: "v2"});
       expect(registry.has("TestService")).toBe(true);
-      expect(registry.get("TestService")).toEqual({ version: "v2" });
+      expect(registry.get("TestService")).toEqual({version: "v2"});
     });
   });
 
@@ -208,7 +206,7 @@ describe("ServiceRegistry", () => {
     });
 
     it("should replace existing services on reset", () => {
-      const customService = { custom: true };
+      const customService = {custom: true};
       registry.register("UserDataService", customService);
       expect(registry.get("UserDataService")).toBe(customService);
 
@@ -220,7 +218,7 @@ describe("ServiceRegistry", () => {
     });
 
     it("should clear and then register defaults on reset", () => {
-      registry.register("CustomService", { test: true });
+      registry.register("CustomService", {test: true});
       expect(registry.has("CustomService")).toBe(true);
 
       registry.reset();
@@ -274,21 +272,15 @@ describe("ServiceRegistry", () => {
     it("should handle service registration errors gracefully", () => {
       // This should not throw as registration accepts any value
       expect(() => registry.register("NullService", null)).not.toThrow();
-      expect(() =>
-        registry.register("UndefinedService", undefined)
-      ).not.toThrow();
+      expect(() => registry.register("UndefinedService", undefined)).not.toThrow();
 
       // Services are registered, so has() should return true
       expect(registry.has("NullService")).toBe(true);
       expect(registry.has("UndefinedService")).toBe(true);
 
       // Getting falsy services should throw errors (ServiceRegistry design)
-      expect(() => registry.get("NullService")).toThrow(
-        "Service not found: NullService"
-      );
-      expect(() => registry.get("UndefinedService")).toThrow(
-        "Service not found: UndefinedService"
-      );
+      expect(() => registry.get("NullService")).toThrow("Service not found: NullService");
+      expect(() => registry.get("UndefinedService")).toThrow("Service not found: UndefinedService");
     });
 
     it("should handle multiple error scenarios", () => {
@@ -297,17 +289,17 @@ describe("ServiceRegistry", () => {
       expect(() => registry.get("NonExistent3")).toThrow();
 
       // Registry should still work after errors
-      registry.register("ValidService", { valid: true });
-      expect(registry.get("ValidService")).toEqual({ valid: true });
+      registry.register("ValidService", {valid: true});
+      expect(registry.get("ValidService")).toEqual({valid: true});
     });
   });
 
   describe("Integration Tests", () => {
     it("should work with complex service workflows", () => {
       // Register multiple services
-      const userService = { getCurrentUser: jest.fn() };
-      const dataService = { fetchData: jest.fn() };
-      const logService = { log: jest.fn() };
+      const userService = {getCurrentUser: jest.fn()};
+      const dataService = {fetchData: jest.fn()};
+      const logService = {log: jest.fn()};
 
       registry.register("UserService", userService);
       registry.register("DataService", dataService);
@@ -351,7 +343,7 @@ describe("ServiceRegistry", () => {
     });
 
     it("should handle service dependencies through registry", () => {
-      const loggerService = { log: jest.fn() };
+      const loggerService = {log: jest.fn()};
       const userService = {
         logger: null as any,
         login: function (username: string) {
@@ -371,4 +363,3 @@ describe("ServiceRegistry", () => {
     });
   });
 });
-

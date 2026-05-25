@@ -1,5 +1,5 @@
 import React from "react";
-import { render } from "@testing-library/react-native";
+import {render} from "@testing-library/react-native";
 import Subtitle from "../Subtitle";
 
 // Mock styles
@@ -7,14 +7,14 @@ jest.mock("../../../styles", () => ({
   styles: {
     subtitle: {},
   },
-  SPACING: { xs: 4, sm: 8, md: 16, lg: 24, xl: 32, "2xl": 48 },
+  SPACING: {xs: 4, sm: 8, md: 16, lg: 24, xl: 32, "2xl": 48},
 }));
 
 describe("Subtitle", () => {
   describe("Rendering", () => {
     it("renders correctly with subtitle text", () => {
       const subtitleText = "This is a subtitle";
-      const { getByText } = render(<Subtitle text={subtitleText} />);
+      const {getByText} = render(<Subtitle text={subtitleText} />);
 
       expect(getByText(subtitleText)).toBeTruthy();
     });
@@ -29,38 +29,38 @@ describe("Subtitle", () => {
       ];
 
       subtitles.forEach((subtitle) => {
-        const { getByText } = render(<Subtitle text={subtitle} />);
+        const {getByText} = render(<Subtitle text={subtitle} />);
         expect(getByText(subtitle)).toBeTruthy();
       });
     });
 
     it("renders with empty text", () => {
-      const { getByText } = render(<Subtitle text="" />);
+      const {getByText} = render(<Subtitle text="" />);
       expect(getByText("")).toBeTruthy();
     });
 
     it("renders with special characters", () => {
       const specialText = "Welcome! Ready to start? Let's go @#$%";
-      const { getByText } = render(<Subtitle text={specialText} />);
+      const {getByText} = render(<Subtitle text={specialText} />);
       expect(getByText(specialText)).toBeTruthy();
     });
 
     it("renders with multiline content", () => {
       const multilineText = "Line 1\nLine 2\nLine 3";
-      const { getByText } = render(<Subtitle text={multilineText} />);
+      const {getByText} = render(<Subtitle text={multilineText} />);
       expect(getByText(multilineText)).toBeTruthy();
     });
   });
 
   describe("Text Properties", () => {
     it("renders as Text component", () => {
-      const { UNSAFE_getByType } = render(<Subtitle text="Test subtitle" />);
+      const {UNSAFE_getByType} = render(<Subtitle text="Test subtitle" />);
       const Text = require("react-native").Text;
       expect(UNSAFE_getByType(Text)).toBeTruthy();
     });
 
     it("applies correct CSS classes", () => {
-      const { getByText } = render(<Subtitle text="Test subtitle" />);
+      const {getByText} = render(<Subtitle text="Test subtitle" />);
       const subtitleText = getByText("Test subtitle");
 
       // Check if the component applies the correct style classes
@@ -69,7 +69,7 @@ describe("Subtitle", () => {
     });
 
     it("applies custom styles correctly", () => {
-      const { getByText } = render(<Subtitle text="Styled subtitle" />);
+      const {getByText} = render(<Subtitle text="Styled subtitle" />);
       const subtitleElement = getByText("Styled subtitle");
 
       // Should have the style prop applied
@@ -80,7 +80,7 @@ describe("Subtitle", () => {
   describe("Content Handling", () => {
     it("renders exact text content", () => {
       const testText = "Exact content validation";
-      const { getByText } = render(<Subtitle text={testText} />);
+      const {getByText} = render(<Subtitle text={testText} />);
 
       const subtitleElement = getByText(testText);
       expect(subtitleElement.props.children).toBe(testText);
@@ -89,21 +89,21 @@ describe("Subtitle", () => {
     it("handles long subtitle text", () => {
       const longText =
         "This is a very long subtitle that might span multiple lines and should still be rendered correctly without any issues in the component.";
-      const { getByText } = render(<Subtitle text={longText} />);
+      const {getByText} = render(<Subtitle text={longText} />);
 
       expect(getByText(longText)).toBeTruthy();
     });
 
     it("handles short subtitle text", () => {
       const shortText = "Hi";
-      const { getByText } = render(<Subtitle text={shortText} />);
+      const {getByText} = render(<Subtitle text={shortText} />);
 
       expect(getByText(shortText)).toBeTruthy();
     });
 
     it("handles single character text", () => {
       const singleChar = "X";
-      const { getByText } = render(<Subtitle text={singleChar} />);
+      const {getByText} = render(<Subtitle text={singleChar} />);
 
       expect(getByText(singleChar)).toBeTruthy();
     });
@@ -112,7 +112,7 @@ describe("Subtitle", () => {
   describe("Accessibility", () => {
     it("provides accessible text for screen readers", () => {
       const subtitleText = "Accessible subtitle";
-      const { getByText } = render(<Subtitle text={subtitleText} />);
+      const {getByText} = render(<Subtitle text={subtitleText} />);
       const subtitleElement = getByText(subtitleText);
 
       // Subtitle text should be accessible
@@ -121,7 +121,7 @@ describe("Subtitle", () => {
     });
 
     it("maintains text semantics for assistive technology", () => {
-      const { UNSAFE_getByType } = render(<Subtitle text="Subtitle text" />);
+      const {UNSAFE_getByType} = render(<Subtitle text="Subtitle text" />);
       const Text = require("react-native").Text;
       const textElement = UNSAFE_getByType(Text);
 
@@ -132,9 +132,7 @@ describe("Subtitle", () => {
 
   describe("Performance", () => {
     it("re-renders correctly when text prop changes", () => {
-      const { rerender, getByText } = render(
-        <Subtitle text="Initial subtitle" />
-      );
+      const {rerender, getByText} = render(<Subtitle text="Initial subtitle" />);
 
       expect(getByText("Initial subtitle")).toBeTruthy();
 
@@ -143,7 +141,7 @@ describe("Subtitle", () => {
     });
 
     it("handles rapid text updates", () => {
-      const { rerender } = render(<Subtitle text="Subtitle 1" />);
+      const {rerender} = render(<Subtitle text="Subtitle 1" />);
 
       // Rapid updates should not throw errors
       for (let i = 2; i <= 10; i++) {
@@ -156,7 +154,7 @@ describe("Subtitle", () => {
 
   describe("Component Structure", () => {
     it("maintains consistent component structure", () => {
-      const { getByText } = render(<Subtitle text="Test" />);
+      const {getByText} = render(<Subtitle text="Test" />);
       const subtitleElement = getByText("Test");
 
       // Should be a single Text element (RCTText in React Native test env)
@@ -167,7 +165,7 @@ describe("Subtitle", () => {
 
   describe("Styling", () => {
     it("has consistent text styling", () => {
-      const { getByText } = render(<Subtitle text="Styled text" />);
+      const {getByText} = render(<Subtitle text="Styled text" />);
       const element = getByText("Styled text");
 
       expect(element.props.className).toBeDefined();
@@ -175,14 +173,14 @@ describe("Subtitle", () => {
     });
 
     it("maintains center alignment", () => {
-      const { getByText } = render(<Subtitle text="Centered text" />);
+      const {getByText} = render(<Subtitle text="Centered text" />);
       const element = getByText("Centered text");
 
       expect(element.props.className).toContain("text-center");
     });
 
     it("maintains bottom margin", () => {
-      const { getByText } = render(<Subtitle text="Spaced text" />);
+      const {getByText} = render(<Subtitle text="Spaced text" />);
       const element = getByText("Spaced text");
 
       const style = Array.isArray(element.props.style)
@@ -195,24 +193,23 @@ describe("Subtitle", () => {
   describe("Edge Cases", () => {
     it("handles text with numbers", () => {
       const numberedText = "Step 1 of 5";
-      const { getByText } = render(<Subtitle text={numberedText} />);
+      const {getByText} = render(<Subtitle text={numberedText} />);
 
       expect(getByText(numberedText)).toBeTruthy();
     });
 
     it("handles text with punctuation", () => {
       const punctuatedText = "Hello, world! How are you?";
-      const { getByText } = render(<Subtitle text={punctuatedText} />);
+      const {getByText} = render(<Subtitle text={punctuatedText} />);
 
       expect(getByText(punctuatedText)).toBeTruthy();
     });
 
     it("handles text with unicode characters", () => {
       const unicodeText = "Hello 👋 World 🌍";
-      const { getByText } = render(<Subtitle text={unicodeText} />);
+      const {getByText} = render(<Subtitle text={unicodeText} />);
 
       expect(getByText(unicodeText)).toBeTruthy();
     });
   });
 });
-

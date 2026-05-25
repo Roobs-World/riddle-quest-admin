@@ -1,24 +1,15 @@
 import React from "react";
-import { render, fireEvent } from "@testing-library/react-native";
+import {render, fireEvent} from "@testing-library/react-native";
 import UserUsernameInput from "../UserUsernameInput";
 
 // Mock the shared components
 jest.mock("../../shared/ReusableTextInput", () => {
   const React = require("react");
-  const { View, Text } = require("react-native");
+  const {View, Text} = require("react-native");
 
-  const MockReusableTextInput = ({
-    value,
-    onChangeText,
-    placeholder,
-    autoCapitalize,
-    ...props
-  }: any) => (
+  const MockReusableTextInput = ({value, onChangeText, placeholder, autoCapitalize, ...props}: any) => (
     <View testID="username-input-container">
-      <Text
-        testID="username-input"
-        onPress={() => onChangeText && onChangeText(value)}
-      >
+      <Text testID="username-input" onPress={() => onChangeText && onChangeText(value)}>
         {value || placeholder}
       </Text>
     </View>
@@ -30,10 +21,9 @@ jest.mock("../../shared/ReusableTextInput", () => {
 
 jest.mock("../../text/Error", () => {
   const React = require("react");
-  const { Text } = require("react-native");
+  const {Text} = require("react-native");
 
-  const MockError = ({ message }: any) =>
-    message ? <Text testID="error-message">{message}</Text> : null;
+  const MockError = ({message}: any) => (message ? <Text testID="error-message">{message}</Text> : null);
 
   MockError.displayName = "MockError";
   return MockError;
@@ -60,7 +50,7 @@ jest.mock("../../../styles", () => ({
   styles: {
     labelText: {},
   },
-  SPACING: { xs: 4, sm: 8, md: 16, lg: 24, xl: 32, "2xl": 48 },
+  SPACING: {xs: 4, sm: 8, md: 16, lg: 24, xl: 32, "2xl": 48},
 }));
 
 describe("UserUsernameInput", () => {
@@ -72,38 +62,27 @@ describe("UserUsernameInput", () => {
 
   describe("Rendering", () => {
     it("renders correctly with required props", () => {
-      const { getByText, getByTestId } = render(
-        <UserUsernameInput username="" setUsername={mockSetUsername} />
-      );
+      const {getByText, getByTestId} = render(<UserUsernameInput username="" setUsername={mockSetUsername} />);
 
       expect(getByText("Username")).toBeTruthy();
       expect(getByTestId("username-input-container")).toBeTruthy();
     });
 
     it("displays the correct label text", () => {
-      const { getByText } = render(
-        <UserUsernameInput username="" setUsername={mockSetUsername} />
-      );
+      const {getByText} = render(<UserUsernameInput username="" setUsername={mockSetUsername} />);
 
       expect(getByText("Username")).toBeTruthy();
     });
 
     it("displays current username value", () => {
       const testUsername = "johndoe123";
-      const { getByText } = render(
-        <UserUsernameInput
-          username={testUsername}
-          setUsername={mockSetUsername}
-        />
-      );
+      const {getByText} = render(<UserUsernameInput username={testUsername} setUsername={mockSetUsername} />);
 
       expect(getByText(testUsername)).toBeTruthy();
     });
 
     it("displays placeholder when username is empty", () => {
-      const { getByText } = render(
-        <UserUsernameInput username="" setUsername={mockSetUsername} />
-      );
+      const {getByText} = render(<UserUsernameInput username="" setUsername={mockSetUsername} />);
 
       expect(getByText("Enter your username")).toBeTruthy();
     });
@@ -111,20 +90,14 @@ describe("UserUsernameInput", () => {
 
   describe("Error Handling", () => {
     it("does not show error when errorMessage is not provided", () => {
-      const { queryByTestId } = render(
-        <UserUsernameInput username="" setUsername={mockSetUsername} />
-      );
+      const {queryByTestId} = render(<UserUsernameInput username="" setUsername={mockSetUsername} />);
 
       expect(queryByTestId("error-message")).toBeNull();
     });
 
     it("does not show error when errorMessage is null", () => {
-      const { queryByTestId } = render(
-        <UserUsernameInput
-          username=""
-          setUsername={mockSetUsername}
-          errorMessage={null}
-        />
+      const {queryByTestId} = render(
+        <UserUsernameInput username="" setUsername={mockSetUsername} errorMessage={null} />,
       );
 
       expect(queryByTestId("error-message")).toBeNull();
@@ -132,12 +105,8 @@ describe("UserUsernameInput", () => {
 
     it("shows error when errorMessage is provided", () => {
       const errorMessage = "Username too short";
-      const { getByTestId } = render(
-        <UserUsernameInput
-          username=""
-          setUsername={mockSetUsername}
-          errorMessage={errorMessage}
-        />
+      const {getByTestId} = render(
+        <UserUsernameInput username="" setUsername={mockSetUsername} errorMessage={errorMessage} />,
       );
 
       const errorElement = getByTestId("error-message");
@@ -154,12 +123,8 @@ describe("UserUsernameInput", () => {
       ];
 
       errors.forEach((error) => {
-        const { getByTestId } = render(
-          <UserUsernameInput
-            username=""
-            setUsername={mockSetUsername}
-            errorMessage={error}
-          />
+        const {getByTestId} = render(
+          <UserUsernameInput username="" setUsername={mockSetUsername} errorMessage={error} />,
         );
 
         const errorElement = getByTestId("error-message");
@@ -170,9 +135,7 @@ describe("UserUsernameInput", () => {
 
   describe("User Interactions", () => {
     it("calls setUsername when input is interacted with", () => {
-      const { getByTestId } = render(
-        <UserUsernameInput username="" setUsername={mockSetUsername} />
-      );
+      const {getByTestId} = render(<UserUsernameInput username="" setUsername={mockSetUsername} />);
 
       const input = getByTestId("username-input");
       fireEvent.press(input);
@@ -183,9 +146,7 @@ describe("UserUsernameInput", () => {
 
   describe("Component Structure", () => {
     it("renders main container", () => {
-      const { UNSAFE_getAllByType } = render(
-        <UserUsernameInput username="" setUsername={mockSetUsername} />
-      );
+      const {UNSAFE_getAllByType} = render(<UserUsernameInput username="" setUsername={mockSetUsername} />);
 
       const View = require("react-native").View;
       const views = UNSAFE_getAllByType(View);
@@ -193,17 +154,13 @@ describe("UserUsernameInput", () => {
     });
 
     it("renders label text", () => {
-      const { getByText } = render(
-        <UserUsernameInput username="" setUsername={mockSetUsername} />
-      );
+      const {getByText} = render(<UserUsernameInput username="" setUsername={mockSetUsername} />);
 
       expect(getByText("Username")).toBeTruthy();
     });
 
     it("renders ReusableTextInput component", () => {
-      const { getByTestId } = render(
-        <UserUsernameInput username="" setUsername={mockSetUsername} />
-      );
+      const {getByTestId} = render(<UserUsernameInput username="" setUsername={mockSetUsername} />);
 
       expect(getByTestId("username-input-container")).toBeTruthy();
     });
@@ -211,46 +168,33 @@ describe("UserUsernameInput", () => {
 
   describe("Performance", () => {
     it("re-renders correctly when username prop changes", () => {
-      const { rerender, queryByText, getByText } = render(
-        <UserUsernameInput username="" setUsername={mockSetUsername} />
+      const {rerender, queryByText, getByText} = render(
+        <UserUsernameInput username="" setUsername={mockSetUsername} />,
       );
 
       expect(getByText("Enter your username")).toBeTruthy();
 
-      rerender(
-        <UserUsernameInput
-          username="newusername"
-          setUsername={mockSetUsername}
-        />
-      );
+      rerender(<UserUsernameInput username="newusername" setUsername={mockSetUsername} />);
 
       expect(getByText("newusername")).toBeTruthy();
       expect(queryByText("Enter your username")).toBeNull();
     });
 
     it("re-renders correctly when errorMessage changes", () => {
-      const { rerender, queryByTestId, getByTestId } = render(
-        <UserUsernameInput username="" setUsername={mockSetUsername} />
+      const {rerender, queryByTestId, getByTestId} = render(
+        <UserUsernameInput username="" setUsername={mockSetUsername} />,
       );
 
       expect(queryByTestId("error-message")).toBeNull();
 
-      rerender(
-        <UserUsernameInput
-          username=""
-          setUsername={mockSetUsername}
-          errorMessage="New error"
-        />
-      );
+      rerender(<UserUsernameInput username="" setUsername={mockSetUsername} errorMessage="New error" />);
 
       const errorElement = getByTestId("error-message");
       expect(errorElement.props.children).toBe("New error");
     });
 
     it("handles rapid prop updates", () => {
-      const { rerender } = render(
-        <UserUsernameInput username="" setUsername={mockSetUsername} />
-      );
+      const {rerender} = render(<UserUsernameInput username="" setUsername={mockSetUsername} />);
 
       // Rapid updates
       for (let i = 0; i < 10; i++) {
@@ -259,7 +203,7 @@ describe("UserUsernameInput", () => {
             username={`username${i}`}
             setUsername={mockSetUsername}
             errorMessage={i % 2 === 0 ? `Error ${i}` : undefined}
-          />
+          />,
         );
       }
 
@@ -269,57 +213,35 @@ describe("UserUsernameInput", () => {
 
   describe("Edge Cases", () => {
     it("handles empty username string", () => {
-      const { getByText } = render(
-        <UserUsernameInput username="" setUsername={mockSetUsername} />
-      );
+      const {getByText} = render(<UserUsernameInput username="" setUsername={mockSetUsername} />);
 
       expect(getByText("Enter your username")).toBeTruthy();
     });
 
     it("handles long usernames", () => {
       const longUsername = "verylongusernamethatmightbetoolong123456789";
-      const { getByText } = render(
-        <UserUsernameInput
-          username={longUsername}
-          setUsername={mockSetUsername}
-        />
-      );
+      const {getByText} = render(<UserUsernameInput username={longUsername} setUsername={mockSetUsername} />);
 
       expect(getByText(longUsername)).toBeTruthy();
     });
 
     it("handles special characters in username", () => {
       const specialUsername = "user_name-123";
-      const { getByText } = render(
-        <UserUsernameInput
-          username={specialUsername}
-          setUsername={mockSetUsername}
-        />
-      );
+      const {getByText} = render(<UserUsernameInput username={specialUsername} setUsername={mockSetUsername} />);
 
       expect(getByText(specialUsername)).toBeTruthy();
     });
 
     it("handles empty error message string", () => {
-      const { queryByTestId } = render(
-        <UserUsernameInput
-          username=""
-          setUsername={mockSetUsername}
-          errorMessage=""
-        />
-      );
+      const {queryByTestId} = render(<UserUsernameInput username="" setUsername={mockSetUsername} errorMessage="" />);
 
       // Empty string should not show error component
       expect(queryByTestId("error-message")).toBeNull();
     });
 
     it("handles undefined error message", () => {
-      const { queryByTestId } = render(
-        <UserUsernameInput
-          username=""
-          setUsername={mockSetUsername}
-          errorMessage={undefined}
-        />
+      const {queryByTestId} = render(
+        <UserUsernameInput username="" setUsername={mockSetUsername} errorMessage={undefined} />,
       );
 
       expect(queryByTestId("error-message")).toBeNull();
@@ -335,15 +257,8 @@ describe("UserUsernameInput", () => {
 
     it("works with optional errorMessage prop", () => {
       expect(() => {
-        render(
-          <UserUsernameInput
-            username=""
-            setUsername={mockSetUsername}
-            errorMessage="Test error"
-          />
-        );
+        render(<UserUsernameInput username="" setUsername={mockSetUsername} errorMessage="Test error" />);
       }).not.toThrow();
     });
   });
 });
-

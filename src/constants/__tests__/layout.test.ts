@@ -392,9 +392,7 @@ describe("layout constants", () => {
     });
 
     it("should be approximately 1.2x the modal diagonal", () => {
-      const expectedSize = Math.ceil(
-        Math.sqrt(MODAL_WIDTH ** 2 + MODAL_HEIGHT ** 2) * 1.2
-      );
+      const expectedSize = Math.ceil(Math.sqrt(MODAL_WIDTH ** 2 + MODAL_HEIGHT ** 2) * 1.2);
       expect(wheelSize).toBe(expectedSize);
     });
   });

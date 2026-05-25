@@ -1,21 +1,9 @@
-import {
-  getFirestore,
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  where,
-  limit,
-} from "@react-native-firebase/firestore";
-import {
-  FirestoreRiddle,
-  FirestoreRiddleSchema,
-} from "../validation/firestoreSchemas";
-import { ZodError } from "zod";
-import { IRiddleDataService } from "./interfaces/IRiddleDataService";
-import { logger } from "../utils/logger";
-import { captureException } from "../utils/sentry";
+import {getFirestore, collection, doc, getDoc, getDocs, query, where, limit} from "@react-native-firebase/firestore";
+import {FirestoreRiddle, FirestoreRiddleSchema} from "../validation/firestoreSchemas";
+import {ZodError} from "zod";
+import {IRiddleDataService} from "./interfaces/IRiddleDataService";
+import {logger} from "../utils/logger";
+import {captureException} from "../utils/sentry";
 
 /**
  * Service for managing riddle data in Firestore
@@ -36,18 +24,12 @@ export class RiddleDataService implements IRiddleDataService {
           collection(getFirestore(), RiddleDataService.RIDDLES_COLLECTION),
           where("category", "==", "daily"),
           where("date", "==", new Date().toISOString().split("T")[0]),
-          limit(1)
-        )
+          limit(1),
+        ),
       );
 
       const currentSnapshot = snapshot.empty
-        ? await getDocs(
-            query(
-              collection(getFirestore(), "dailyRiddles"),
-              where("riddleId", "==", "current"),
-              limit(1)
-            )
-          )
+        ? await getDocs(query(collection(getFirestore(), "dailyRiddles"), where("riddleId", "==", "current"), limit(1)))
         : snapshot;
 
       if (!currentSnapshot.empty) {
@@ -86,7 +68,11 @@ export class RiddleDataService implements IRiddleDataService {
 
     try {
       const snapshot = await getDocs(
-        query(collection(getFirestore(), RiddleDataService.RIDDLES_COLLECTION), where("classicIndex", "==", level), limit(1))
+        query(
+          collection(getFirestore(), RiddleDataService.RIDDLES_COLLECTION),
+          where("classicIndex", "==", level),
+          limit(1),
+        ),
       );
 
       if (!snapshot.empty) {
@@ -102,15 +88,12 @@ export class RiddleDataService implements IRiddleDataService {
           logger.debug(`Classic riddle found for level: ${level}`);
           return validatedRiddle;
         } else {
-          logger.error(
-            `Riddle data or answer missing for level: ${level}. Data:`,
-            riddleData
-          );
+          logger.error(`Riddle data or answer missing for level: ${level}. Data:`, riddleData);
           return null;
         }
       } else {
         logger.debug(
-          `No classic riddle found for level: ${level}. Riddles will be generated automatically on the server when needed.`
+          `No classic riddle found for level: ${level}. Riddles will be generated automatically on the server when needed.`,
         );
         return null;
       }
@@ -147,10 +130,7 @@ export class RiddleDataService implements IRiddleDataService {
 
       const riddleData = riddleDoc.data();
       if (!riddleData) {
-        logger.warn(
-          "Riddle document exists but has no data for ID:",
-          riddleId
-        );
+        logger.warn("Riddle document exists but has no data for ID:", riddleId);
         return null;
       }
 
@@ -181,7 +161,7 @@ export class RiddleDataService implements IRiddleDataService {
   async getClassicRiddleCount(): Promise<number> {
     try {
       const snapshot = await getDocs(
-        query(collection(getFirestore(), RiddleDataService.RIDDLES_COLLECTION), where("category", "==", "classic"))
+        query(collection(getFirestore(), RiddleDataService.RIDDLES_COLLECTION), where("category", "==", "classic")),
       );
 
       return snapshot.size;
@@ -191,5 +171,4 @@ export class RiddleDataService implements IRiddleDataService {
       throw error;
     }
   }
-
 }

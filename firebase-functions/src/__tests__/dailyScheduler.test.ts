@@ -36,11 +36,7 @@ const mockRiddleDocSet = jest.fn().mockResolvedValue(undefined);
 jest.mock("firebase-admin", () => {
   const mockFirestore = jest.fn(() => ({
     collection: jest.fn((collectionPath: string) => {
-      if (
-        collectionPath === "riddles" ||
-        collectionPath === "dailyRiddles" ||
-        collectionPath === "users"
-      ) {
+      if (collectionPath === "riddles" || collectionPath === "dailyRiddles" || collectionPath === "users") {
         return {
           get: mockCollectionGet,
           doc: jest.fn((docPath?: string) => {
@@ -82,9 +78,7 @@ jest.mock("firebase-admin", () => {
 jest.mock("../riddleGeneration", () => ({
   generateTodaysDailyChallenge: jest.fn(),
 }));
-const mockGenerateTodaysDailyChallenge = jest.mocked(
-  require("../riddleGeneration").generateTodaysDailyChallenge,
-);
+const mockGenerateTodaysDailyChallenge = jest.mocked(require("../riddleGeneration").generateTodaysDailyChallenge);
 
 // Mock firebase-functions/v2/scheduler (partially, we are testing the handler function directly)
 // The main utility of onSchedule is to wrap the function and define schedule/retry config.
@@ -176,7 +170,9 @@ describe("dailyChallengeScheduler", () => {
 
       expect(mockLogger.info).toHaveBeenCalledWith("Daily scheduler started (target: dailyRiddles/current).");
       expect(mockGenerateTodaysDailyChallenge).toHaveBeenCalledWith(false);
-      expect(mockLogger.info).toHaveBeenCalledWith("Daily scheduler finished successfully (dailyRiddles/current updated).");
+      expect(mockLogger.info).toHaveBeenCalledWith(
+        "Daily scheduler finished successfully (dailyRiddles/current updated).",
+      );
       expect(mockLogger.error).not.toHaveBeenCalled();
     });
 
@@ -188,16 +184,16 @@ describe("dailyChallengeScheduler", () => {
       expect(mockLogger.info).toHaveBeenCalledWith("Daily scheduler started (target: dailyRiddles/current).");
       expect(mockGenerateTodaysDailyChallenge).toHaveBeenCalledWith(false);
       expect(mockLogger.error).not.toHaveBeenCalled();
-      expect(mockLogger.info).toHaveBeenCalledWith("Daily scheduler finished successfully (dailyRiddles/current updated).");
+      expect(mockLogger.info).toHaveBeenCalledWith(
+        "Daily scheduler finished successfully (dailyRiddles/current updated).",
+      );
     });
   });
 
   describe("Input and Configuration Issues", () => {
     test("should handle missing OPENAI_API_KEY gracefully", async () => {
       delete process.env.OPENAI_API_KEY;
-      mockGenerateTodaysDailyChallenge.mockRejectedValue(
-        new Error("OPENAI_API_KEY environment variable is required"),
-      );
+      mockGenerateTodaysDailyChallenge.mockRejectedValue(new Error("OPENAI_API_KEY environment variable is required"));
 
       await expect(scheduledTaskHandler(mockScheduledEvent())).rejects.toThrow(
         "OPENAI_API_KEY environment variable is required",
@@ -205,7 +201,9 @@ describe("dailyChallengeScheduler", () => {
 
       expect(mockGenerateTodaysDailyChallenge).toHaveBeenCalledWith(false);
       expect(mockLogger.info).toHaveBeenCalledWith("Daily scheduler started (target: dailyRiddles/current).");
-      expect(mockLogger.info).not.toHaveBeenCalledWith("Daily scheduler finished successfully (dailyRiddles/current updated).");
+      expect(mockLogger.info).not.toHaveBeenCalledWith(
+        "Daily scheduler finished successfully (dailyRiddles/current updated).",
+      );
     });
 
     test("should log an error and return if riddle generation fails", async () => {
@@ -215,7 +213,9 @@ describe("dailyChallengeScheduler", () => {
       await expect(scheduledTaskHandler(mockScheduledEvent())).rejects.toThrow("Riddle generation failed");
 
       expect(mockGenerateTodaysDailyChallenge).toHaveBeenCalled();
-      expect(mockLogger.info).not.toHaveBeenCalledWith("Daily scheduler finished successfully (dailyRiddles/current updated).");
+      expect(mockLogger.info).not.toHaveBeenCalledWith(
+        "Daily scheduler finished successfully (dailyRiddles/current updated).",
+      );
     });
   });
 
@@ -231,7 +231,9 @@ describe("dailyChallengeScheduler", () => {
 
       expect(mockGenerateTodaysDailyChallenge).toHaveBeenCalled();
       expect(mockLogger.info).toHaveBeenCalledWith("Daily scheduler started (target: dailyRiddles/current).");
-      expect(mockLogger.info).not.toHaveBeenCalledWith("Daily scheduler finished successfully (dailyRiddles/current updated).");
+      expect(mockLogger.info).not.toHaveBeenCalledWith(
+        "Daily scheduler finished successfully (dailyRiddles/current updated).",
+      );
     });
 
     test("should log an error if Firestore 'set' operation fails", async () => {
@@ -241,7 +243,9 @@ describe("dailyChallengeScheduler", () => {
 
       expect(mockGenerateTodaysDailyChallenge).toHaveBeenCalled();
       expect(mockLogger.info).toHaveBeenCalledWith("Daily scheduler started (target: dailyRiddles/current).");
-      expect(mockLogger.info).not.toHaveBeenCalledWith("Daily scheduler finished successfully (dailyRiddles/current updated).");
+      expect(mockLogger.info).not.toHaveBeenCalledWith(
+        "Daily scheduler finished successfully (dailyRiddles/current updated).",
+      );
     });
   });
 });

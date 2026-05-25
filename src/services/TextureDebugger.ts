@@ -8,7 +8,7 @@
  * render anything; instead it logs detailed diagnostics that help track
  * down asset pipeline issues when running on device or simulator.
  */
-import { Asset } from "expo-asset";
+import {Asset} from "expo-asset";
 
 // Import all textures to test
 import texPlanetR from "../../assets/3d/tex_planet_r.png";
@@ -30,30 +30,30 @@ import texGradientCircle from "../../assets/3d/tex_gradient_circle.png";
 import texGradientCircleSun from "../../assets/3d/tex_gradient_circle_sun.png";
 import texGradientCircleI from "../../assets/3d/tex_gradient_circle_i.png";
 import texGradientCircleSunI from "../../assets/3d/tex_gradient_circle_sun_i.png";
-import { logger } from "../utils/logger";
-import { captureException } from "../utils/sentry";
+import {logger} from "../utils/logger";
+import {captureException} from "../utils/sentry";
 
 /**
  * Static helper class for batch or single-asset texture verification.
  */
 export class TextureDebugger {
   private static readonly textureAssets = [
-    { name: "planet_r", asset: texPlanetR },
-    { name: "planet_v", asset: texPlanetV },
-    { name: "planet_a", asset: texPlanetA },
-    { name: "planet_d", asset: texPlanetD },
-    { name: "planet_k", asset: texPlanetK },
-    { name: "moon_h", asset: texMoonH },
-    { name: "moon_f", asset: texMoonF },
-    { name: "moon_g", asset: texMoonG },
-    { name: "moon_c", asset: texMoonC },
-    { name: "moon_d", asset: texMoonD },
-    { name: "ring_a", asset: texRingA },
-    { name: "ring_b", asset: texRingB },
-    { name: "gradient_circle", asset: texGradientCircle },
-    { name: "gradient_circle_sun", asset: texGradientCircleSun },
-    { name: "gradient_circle_i", asset: texGradientCircleI },
-    { name: "gradient_circle_sun_i", asset: texGradientCircleSunI },
+    {name: "planet_r", asset: texPlanetR},
+    {name: "planet_v", asset: texPlanetV},
+    {name: "planet_a", asset: texPlanetA},
+    {name: "planet_d", asset: texPlanetD},
+    {name: "planet_k", asset: texPlanetK},
+    {name: "moon_h", asset: texMoonH},
+    {name: "moon_f", asset: texMoonF},
+    {name: "moon_g", asset: texMoonG},
+    {name: "moon_c", asset: texMoonC},
+    {name: "moon_d", asset: texMoonD},
+    {name: "ring_a", asset: texRingA},
+    {name: "ring_b", asset: texRingB},
+    {name: "gradient_circle", asset: texGradientCircle},
+    {name: "gradient_circle_sun", asset: texGradientCircleSun},
+    {name: "gradient_circle_i", asset: texGradientCircleI},
+    {name: "gradient_circle_sun_i", asset: texGradientCircleSunI},
   ];
 
   /**
@@ -69,7 +69,7 @@ export class TextureDebugger {
       errors: [] as string[],
     };
 
-    for (const { name, asset } of this.textureAssets) {
+    for (const {name, asset} of this.textureAssets) {
       try {
         logger.debug(`🔍 Testing asset: ${name}`);
 
@@ -109,9 +109,7 @@ export class TextureDebugger {
     }
 
     logger.debug("\n🔍 TextureDebugger: Test Results Summary");
-    logger.debug(
-      `✅ Successful: ${results.success}/${this.textureAssets.length}`
-    );
+    logger.debug(`✅ Successful: ${results.success}/${this.textureAssets.length}`);
     logger.debug(`❌ Failed: ${results.failed}/${this.textureAssets.length}`);
 
     if (results.errors.length > 0) {
@@ -135,10 +133,7 @@ export class TextureDebugger {
    * @returns `true` if the asset could be downloaded and validated,
    * otherwise `false`.
    */
-  static async testSingleAsset(
-    assetPath: string | number,
-    name: string
-  ): Promise<boolean> {
+  static async testSingleAsset(assetPath: string | number, name: string): Promise<boolean> {
     try {
       logger.debug(`🔍 Testing single asset: ${name}`);
 
@@ -158,4 +153,3 @@ export class TextureDebugger {
     }
   }
 }
-

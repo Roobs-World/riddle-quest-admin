@@ -5,14 +5,14 @@
  * and querying modal state.
  */
 
-import { renderHook, act } from "@testing-library/react-native";
+import {renderHook, act} from "@testing-library/react-native";
 import React from "react";
-import { useModal } from "../useModal";
-import { ModalProvider } from "../../contexts/ModalContext";
+import {useModal} from "../useModal";
+import {ModalProvider} from "../../contexts/ModalContext";
 
 // Create a wrapper component that provides the modal context
 const createWrapper = () => {
-  const Wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const Wrapper: React.FC<{children: React.ReactNode}> = ({children}) => {
     return React.createElement(ModalProvider, null, children);
   };
   return Wrapper;
@@ -21,7 +21,7 @@ const createWrapper = () => {
 describe("useModal", () => {
   describe("openModal", () => {
     it("should return a modal ID when opening a modal", () => {
-      const { result } = renderHook(() => useModal(), {
+      const {result} = renderHook(() => useModal(), {
         wrapper: createWrapper(),
       });
 
@@ -35,7 +35,7 @@ describe("useModal", () => {
     });
 
     it("should add modal to the modals array", () => {
-      const { result } = renderHook(() => useModal(), {
+      const {result} = renderHook(() => useModal(), {
         wrapper: createWrapper(),
       });
 
@@ -49,7 +49,7 @@ describe("useModal", () => {
     });
 
     it("should open multiple modals", () => {
-      const { result } = renderHook(() => useModal(), {
+      const {result} = renderHook(() => useModal(), {
         wrapper: createWrapper(),
       });
 
@@ -65,7 +65,7 @@ describe("useModal", () => {
 
   describe("closeModal", () => {
     it("should close a modal by ID", () => {
-      const { result } = renderHook(() => useModal(), {
+      const {result} = renderHook(() => useModal(), {
         wrapper: createWrapper(),
       });
 
@@ -84,7 +84,7 @@ describe("useModal", () => {
     });
 
     it("should not throw when closing non-existent modal", () => {
-      const { result } = renderHook(() => useModal(), {
+      const {result} = renderHook(() => useModal(), {
         wrapper: createWrapper(),
       });
 
@@ -96,7 +96,7 @@ describe("useModal", () => {
     });
 
     it("should only close the specified modal", () => {
-      const { result } = renderHook(() => useModal(), {
+      const {result} = renderHook(() => useModal(), {
         wrapper: createWrapper(),
       });
 
@@ -120,7 +120,7 @@ describe("useModal", () => {
 
   describe("closeModalByType", () => {
     it("should close a modal by type", () => {
-      const { result } = renderHook(() => useModal(), {
+      const {result} = renderHook(() => useModal(), {
         wrapper: createWrapper(),
       });
 
@@ -138,7 +138,7 @@ describe("useModal", () => {
     });
 
     it("should not throw when closing non-existent type", () => {
-      const { result } = renderHook(() => useModal(), {
+      const {result} = renderHook(() => useModal(), {
         wrapper: createWrapper(),
       });
 
@@ -150,13 +150,13 @@ describe("useModal", () => {
     });
 
     it("should only close the first modal of the specified type", () => {
-      const { result } = renderHook(() => useModal(), {
+      const {result} = renderHook(() => useModal(), {
         wrapper: createWrapper(),
       });
 
       act(() => {
-        result.current.openModal("duplicate", { index: 1 });
-        result.current.openModal("duplicate", { index: 2 });
+        result.current.openModal("duplicate", {index: 1});
+        result.current.openModal("duplicate", {index: 2});
       });
 
       expect(result.current.modals).toHaveLength(2);
@@ -169,7 +169,7 @@ describe("useModal", () => {
     });
 
     it("should close a modal from a callback captured before that modal opened", () => {
-      const { result } = renderHook(() => useModal(), {
+      const {result} = renderHook(() => useModal(), {
         wrapper: createWrapper(),
       });
 
@@ -191,7 +191,7 @@ describe("useModal", () => {
 
   describe("closeAllModals", () => {
     it("should close all open modals", () => {
-      const { result } = renderHook(() => useModal(), {
+      const {result} = renderHook(() => useModal(), {
         wrapper: createWrapper(),
       });
 
@@ -211,7 +211,7 @@ describe("useModal", () => {
     });
 
     it("should not throw when no modals are open", () => {
-      const { result } = renderHook(() => useModal(), {
+      const {result} = renderHook(() => useModal(), {
         wrapper: createWrapper(),
       });
 
@@ -225,7 +225,7 @@ describe("useModal", () => {
 
   describe("isModalOpen", () => {
     it("should return true when modal type is open", () => {
-      const { result } = renderHook(() => useModal(), {
+      const {result} = renderHook(() => useModal(), {
         wrapper: createWrapper(),
       });
 
@@ -237,7 +237,7 @@ describe("useModal", () => {
     });
 
     it("should return false when modal type is not open", () => {
-      const { result } = renderHook(() => useModal(), {
+      const {result} = renderHook(() => useModal(), {
         wrapper: createWrapper(),
       });
 
@@ -245,7 +245,7 @@ describe("useModal", () => {
     });
 
     it("should return false after modal is closed", () => {
-      const { result } = renderHook(() => useModal(), {
+      const {result} = renderHook(() => useModal(), {
         wrapper: createWrapper(),
       });
 
@@ -266,11 +266,11 @@ describe("useModal", () => {
 
   describe("getModalData", () => {
     it("should return modal data when modal is open", () => {
-      const { result } = renderHook(() => useModal(), {
+      const {result} = renderHook(() => useModal(), {
         wrapper: createWrapper(),
       });
 
-      const testData = { foo: "bar", count: 42 };
+      const testData = {foo: "bar", count: 42};
       act(() => {
         result.current.openModal("test", testData);
       });
@@ -280,7 +280,7 @@ describe("useModal", () => {
     });
 
     it("should return null when modal is not open", () => {
-      const { result } = renderHook(() => useModal(), {
+      const {result} = renderHook(() => useModal(), {
         wrapper: createWrapper(),
       });
 
@@ -291,31 +291,31 @@ describe("useModal", () => {
 
   describe("updateModalData", () => {
     it("should update modal data", () => {
-      const { result } = renderHook(() => useModal(), {
+      const {result} = renderHook(() => useModal(), {
         wrapper: createWrapper(),
       });
 
       let modalId: string;
       act(() => {
-        modalId = result.current.openModal("test", { count: 0 });
+        modalId = result.current.openModal("test", {count: 0});
       });
 
       act(() => {
-        result.current.updateModalData(modalId!, { count: 10 });
+        result.current.updateModalData(modalId!, {count: 10});
       });
 
-      const data = result.current.getModalData<{ count: number }>("test");
+      const data = result.current.getModalData<{count: number}>("test");
       expect(data?.count).toBe(10);
     });
 
     it("should not throw when updating non-existent modal", () => {
-      const { result } = renderHook(() => useModal(), {
+      const {result} = renderHook(() => useModal(), {
         wrapper: createWrapper(),
       });
 
       expect(() => {
         act(() => {
-          result.current.updateModalData("non-existent", { foo: "bar" });
+          result.current.updateModalData("non-existent", {foo: "bar"});
         });
       }).not.toThrow();
     });
@@ -323,7 +323,7 @@ describe("useModal", () => {
 
   describe("convenience methods", () => {
     it("should have showVictoryModal method", () => {
-      const { result } = renderHook(() => useModal(), {
+      const {result} = renderHook(() => useModal(), {
         wrapper: createWrapper(),
       });
 
@@ -331,7 +331,7 @@ describe("useModal", () => {
     });
 
     it("should have showLossModal method", () => {
-      const { result } = renderHook(() => useModal(), {
+      const {result} = renderHook(() => useModal(), {
         wrapper: createWrapper(),
       });
 
@@ -339,7 +339,7 @@ describe("useModal", () => {
     });
 
     it("should have showSettingsModal method", () => {
-      const { result } = renderHook(() => useModal(), {
+      const {result} = renderHook(() => useModal(), {
         wrapper: createWrapper(),
       });
 
@@ -347,7 +347,7 @@ describe("useModal", () => {
     });
 
     it("should have showHintModal method", () => {
-      const { result } = renderHook(() => useModal(), {
+      const {result} = renderHook(() => useModal(), {
         wrapper: createWrapper(),
       });
 
@@ -355,7 +355,7 @@ describe("useModal", () => {
     });
 
     it("should have showWelcomeModal method", () => {
-      const { result } = renderHook(() => useModal(), {
+      const {result} = renderHook(() => useModal(), {
         wrapper: createWrapper(),
       });
 
@@ -363,7 +363,7 @@ describe("useModal", () => {
     });
 
     it("should have showInstructionsModal method", () => {
-      const { result } = renderHook(() => useModal(), {
+      const {result} = renderHook(() => useModal(), {
         wrapper: createWrapper(),
       });
 
@@ -371,7 +371,7 @@ describe("useModal", () => {
     });
 
     it("should have showCreditsModal method", () => {
-      const { result } = renderHook(() => useModal(), {
+      const {result} = renderHook(() => useModal(), {
         wrapper: createWrapper(),
       });
 
@@ -379,7 +379,7 @@ describe("useModal", () => {
     });
 
     it("should have showAboutLegalModal method", () => {
-      const { result } = renderHook(() => useModal(), {
+      const {result} = renderHook(() => useModal(), {
         wrapper: createWrapper(),
       });
 
@@ -387,7 +387,7 @@ describe("useModal", () => {
     });
 
     it("should have showCoinShopModal method", () => {
-      const { result } = renderHook(() => useModal(), {
+      const {result} = renderHook(() => useModal(), {
         wrapper: createWrapper(),
       });
 
@@ -395,17 +395,15 @@ describe("useModal", () => {
     });
 
     it("should have showAchievementUnlockFanfareModal method", () => {
-      const { result } = renderHook(() => useModal(), {
+      const {result} = renderHook(() => useModal(), {
         wrapper: createWrapper(),
       });
 
-      expect(typeof result.current.showAchievementUnlockFanfareModal).toBe(
-        "function"
-      );
+      expect(typeof result.current.showAchievementUnlockFanfareModal).toBe("function");
     });
 
     it("should have showInfoModal method", () => {
-      const { result } = renderHook(() => useModal(), {
+      const {result} = renderHook(() => useModal(), {
         wrapper: createWrapper(),
       });
 
@@ -413,7 +411,7 @@ describe("useModal", () => {
     });
 
     it("should open modals through all convenience wrapper methods", () => {
-      const { result } = renderHook(() => useModal(), {
+      const {result} = renderHook(() => useModal(), {
         wrapper: createWrapper(),
       });
 
@@ -462,7 +460,7 @@ describe("useModal", () => {
 
   describe("openGameModal", () => {
     it("should open a game modal with correct type", () => {
-      const { result } = renderHook(() => useModal(), {
+      const {result} = renderHook(() => useModal(), {
         wrapper: createWrapper(),
       });
 
@@ -479,7 +477,7 @@ describe("useModal", () => {
     });
 
     it("should return a modal ID", () => {
-      const { result } = renderHook(() => useModal(), {
+      const {result} = renderHook(() => useModal(), {
         wrapper: createWrapper(),
       });
 
@@ -506,7 +504,7 @@ describe("useModal", () => {
 
   describe("modals array", () => {
     it("should be initially empty", () => {
-      const { result } = renderHook(() => useModal(), {
+      const {result} = renderHook(() => useModal(), {
         wrapper: createWrapper(),
       });
 
@@ -514,7 +512,7 @@ describe("useModal", () => {
     });
 
     it("should contain modal objects with id and type", () => {
-      const { result } = renderHook(() => useModal(), {
+      const {result} = renderHook(() => useModal(), {
         wrapper: createWrapper(),
       });
 

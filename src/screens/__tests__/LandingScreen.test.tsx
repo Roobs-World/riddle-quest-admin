@@ -1,13 +1,13 @@
 import React from "react";
-import { render, fireEvent, waitFor } from "@testing-library/react-native";
-import { Linking } from "react-native";
+import {render, fireEvent, waitFor} from "@testing-library/react-native";
+import {Linking} from "react-native";
 import LandingScreen from "../LandingScreen";
 jest.unmock("../LandingScreen"); // Explicitly unmock to ensure coverage
-import { AuthService } from "../../services/AuthService";
-import { useAuth } from "../../contexts/AuthContext";
-import { ModalProvider } from "../../contexts/ModalContext";
-import { logger } from "../../utils/logger";
-import { captureException } from "../../utils/sentry";
+import {AuthService} from "../../services/AuthService";
+import {useAuth} from "../../contexts/AuthContext";
+import {ModalProvider} from "../../contexts/ModalContext";
+import {logger} from "../../utils/logger";
+import {captureException} from "../../utils/sentry";
 
 // Mock AuthService
 jest.mock("../../services/AuthService", () => ({
@@ -19,12 +19,11 @@ jest.mock("../../services/AuthService", () => ({
   },
   isFacebookLoginCancellation: jest.fn(
     (error: unknown) =>
-      (error instanceof Error &&
-        error.message === "User cancelled the login process") ||
+      (error instanceof Error && error.message === "User cancelled the login process") ||
       (typeof error === "object" &&
         error !== null &&
         "code" in error &&
-        error.code === "auth/auth-popup-closed-by-user")
+        error.code === "auth/auth-popup-closed-by-user"),
   ),
 }));
 
@@ -51,18 +50,14 @@ jest.mock("../../contexts/AuthContext", () => ({
 // Mock components
 jest.mock("../../components/layouts/CustomSafeAreaView", () => {
   const React = require("react");
-  return function MockCustomSafeAreaView({ children }: any) {
-    return React.createElement(
-      "View",
-      { testID: "custom-safe-area-view" },
-      children
-    );
+  return function MockCustomSafeAreaView({children}: any) {
+    return React.createElement("View", {testID: "custom-safe-area-view"}, children);
   };
 });
 
 jest.mock("../../components/buttons/GoogleSignInButton", () => {
   const React = require("react");
-  return function MockGoogleSignInButton({ onPress, disabled }: any) {
+  return function MockGoogleSignInButton({onPress, disabled}: any) {
     return React.createElement("View", {
       testID: "google-signin-button",
       onPress: disabled ? undefined : onPress,
@@ -73,7 +68,7 @@ jest.mock("../../components/buttons/GoogleSignInButton", () => {
 
 jest.mock("../../components/buttons/FacebookSignInButton", () => {
   const React = require("react");
-  return function MockFacebookSignInButton({ onPress, disabled }: any) {
+  return function MockFacebookSignInButton({onPress, disabled}: any) {
     return React.createElement("View", {
       testID: "facebook-signin-button",
       onPress: disabled ? undefined : onPress,
@@ -84,7 +79,7 @@ jest.mock("../../components/buttons/FacebookSignInButton", () => {
 
 jest.mock("../../components/buttons/WideButton", () => {
   const React = require("react");
-  return function MockWideButton({ buttonText, onPress, disabled }: any) {
+  return function MockWideButton({buttonText, onPress, disabled}: any) {
     return React.createElement("View", {
       testID: "wide-button",
       onPress: disabled ? undefined : onPress,
@@ -96,7 +91,7 @@ jest.mock("../../components/buttons/WideButton", () => {
 
 jest.mock("../../components/buttons/SignUpButton", () => {
   const React = require("react");
-  return function MockSignUpButton({ onPress }: any) {
+  return function MockSignUpButton({onPress}: any) {
     return React.createElement("View", {
       testID: "sign-up-button",
       onPress: onPress,
@@ -106,7 +101,7 @@ jest.mock("../../components/buttons/SignUpButton", () => {
 
 jest.mock("../../components/loading/PulsingSpinner", () => {
   const React = require("react");
-  return function MockPulsingSpinner({ visible, size }: any) {
+  return function MockPulsingSpinner({visible, size}: any) {
     return React.createElement("View", {
       testID: "pulsing-spinner",
       "data-visible": visible,
@@ -117,7 +112,7 @@ jest.mock("../../components/loading/PulsingSpinner", () => {
 
 jest.mock("../../components/text/Subtitle", () => {
   const React = require("react");
-  return function MockSubtitle({ text }: any) {
+  return function MockSubtitle({text}: any) {
     return React.createElement("View", {
       testID: "subtitle",
       "data-text": text,
@@ -127,7 +122,7 @@ jest.mock("../../components/text/Subtitle", () => {
 
 jest.mock("../../components/text/Error", () => {
   const React = require("react");
-  return function MockError({ message }: any) {
+  return function MockError({message}: any) {
     return React.createElement("View", {
       testID: "error-message",
       "data-message": message,
@@ -138,13 +133,13 @@ jest.mock("../../components/text/Error", () => {
 jest.mock("../../components/background/StarryBackground", () => {
   const React = require("react");
   return function MockStarryBackground() {
-    return React.createElement("View", { testID: "starry-background" });
+    return React.createElement("View", {testID: "starry-background"});
   };
 });
 
 jest.mock("../../components/modals/help/CreditsModal", () => {
   const React = require("react");
-  return function MockCreditsModal({ isVisible, onClose }: any) {
+  return function MockCreditsModal({isVisible, onClose}: any) {
     return React.createElement(
       "View",
       {
@@ -154,7 +149,7 @@ jest.mock("../../components/modals/help/CreditsModal", () => {
       React.createElement("View", {
         testID: "credits-modal-close",
         onPress: onClose,
-      })
+      }),
     );
   };
 });
@@ -188,19 +183,14 @@ jest.mock("../../constants/AppStrings", () => ({
       Login: {
         ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL:
           "Account exists with different credential. Please use a different login method.",
-        GOOGLE_UNEXPECTED_ERROR:
-          "An unexpected error occurred during Google login.",
+        GOOGLE_UNEXPECTED_ERROR: "An unexpected error occurred during Google login.",
         FACEBOOK_CONFIG_ERROR: "Facebook is not configured correctly.",
         FACEBOOK_TIMEOUT_ERROR: "Facebook login timed out.",
         FACEBOOK_SDK_ERROR: "Facebook SDK error occurred.",
-        OPERATION_NOT_SUPPORTED_ERROR:
-          "Facebook login is not supported in this environment.",
-        FACEBOOK_NETWORK_ERROR:
-          "Network error during Facebook login. Please check your connection and try again.",
-        FACEBOOK_INVALID_CREDENTIAL_ERROR:
-          "Invalid Facebook credentials. Please try again.",
-        FACEBOOK_UNEXPECTED_ERROR:
-          "An unexpected error occurred during Facebook login.",
+        OPERATION_NOT_SUPPORTED_ERROR: "Facebook login is not supported in this environment.",
+        FACEBOOK_NETWORK_ERROR: "Network error during Facebook login. Please check your connection and try again.",
+        FACEBOOK_INVALID_CREDENTIAL_ERROR: "Invalid Facebook credentials. Please try again.",
+        FACEBOOK_UNEXPECTED_ERROR: "An unexpected error occurred during Facebook login.",
       },
     },
     Navigation: {
@@ -214,28 +204,22 @@ jest.mock("../../constants/AppStrings", () => ({
 // Mock styles
 jest.mock("../../styles", () => ({
   styles: {
-    backgroundImage: { position: "absolute" },
-    title: { fontSize: 24 },
-    separatorText: { fontSize: 14 },
-    creditsLink: { fontSize: 12 },
+    backgroundImage: {position: "absolute"},
+    title: {fontSize: 24},
+    separatorText: {fontSize: 14},
+    creditsLink: {fontSize: 12},
   },
-  COLORS: { black: "#000000", white: "#FFFFFF" },
+  COLORS: {black: "#000000", white: "#FFFFFF"},
   TYPOGRAPHY: {
     fontPrimary: "System",
     fontSecondary: "System",
     fontSecondaryBold: "System-Bold",
-    fontSize: { sm: 14, base: 16, lg: 18, title: 24 },
+    fontSize: {sm: 14, base: 16, lg: 18, title: 24},
   },
-  SPACING: { xs: 4, sm: 8, md: 16, lg: 24, xl: 32, "2xl": 48 },
+  SPACING: {xs: 4, sm: 8, md: 16, lg: 24, xl: 32, "2xl": 48},
 }));
 
-const TestWrapper = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => (
-  <ModalProvider>{children}</ModalProvider>
-);
+const TestWrapper = ({children}: {children: React.ReactNode}) => <ModalProvider>{children}</ModalProvider>;
 
 const renderWithProviders = (ui: React.ReactElement) =>
   render(ui, {
@@ -254,9 +238,7 @@ describe("LandingScreen", () => {
 
   describe("Component Rendering", () => {
     it("should render all main components", () => {
-      const { getAllByTestId, getByTestId, getByText } = renderWithProviders(
-        <LandingScreen />
-      );
+      const {getAllByTestId, getByTestId, getByText} = renderWithProviders(<LandingScreen />);
 
       expect(getByTestId("custom-safe-area-view")).toBeTruthy();
       expect(getAllByTestId("wide-button").length).toBeGreaterThanOrEqual(1);
@@ -267,26 +249,18 @@ describe("LandingScreen", () => {
     });
 
     it("should render the guest button and Roobs World text link", () => {
-      const { getAllByTestId, getByTestId } = renderWithProviders(
-        <LandingScreen />
-      );
+      const {getAllByTestId, getByTestId} = renderWithProviders(<LandingScreen />);
 
       const wideButtons = getAllByTestId("wide-button");
-      const guestButton = wideButtons.find(
-        (btn: any) => btn.props["data-text"] === "Play as Guest"
-      );
+      const guestButton = wideButtons.find((btn: any) => btn.props["data-text"] === "Play as Guest");
       expect(guestButton).toBeTruthy();
       expect(guestButton!.props["data-disabled"]).toBe(false);
       expect(getByTestId("roobs-world-link")).toBeTruthy();
-      expect(
-        wideButtons.some((btn: any) => btn.props["data-text"] === "Made by Roobs World")
-      ).toBe(false);
+      expect(wideButtons.some((btn: any) => btn.props["data-text"] === "Made by Roobs World")).toBe(false);
     });
 
     it("should render spinner as not visible initially", () => {
-      const { getByTestId } = renderWithProviders(
-        <LandingScreen />
-      );
+      const {getByTestId} = renderWithProviders(<LandingScreen />);
 
       const spinner = getByTestId("pulsing-spinner");
       expect(spinner.props["data-visible"]).toBe(false);
@@ -296,21 +270,15 @@ describe("LandingScreen", () => {
 
   describe("Modal Triggers", () => {
     it("should not render an email sign in button on the landing screen", () => {
-      const { getAllByTestId } = renderWithProviders(
-        <LandingScreen />
-      );
+      const {getAllByTestId} = renderWithProviders(<LandingScreen />);
 
-      const signInButton = getAllByTestId("wide-button").find(
-        (btn: any) => btn.props["data-text"] === "Sign In"
-      );
+      const signInButton = getAllByTestId("wide-button").find((btn: any) => btn.props["data-text"] === "Sign In");
 
       expect(signInButton).toBeFalsy();
     });
 
     it("should not render a sign up button on the landing screen", () => {
-      const { queryByText } = renderWithProviders(
-        <LandingScreen />
-      );
+      const {queryByText} = renderWithProviders(<LandingScreen />);
 
       expect(queryByText("No account?")).toBeNull();
       expect(queryByText("Sign up")).toBeNull();
@@ -318,16 +286,12 @@ describe("LandingScreen", () => {
 
     it("should sign in anonymously when guest button is pressed", async () => {
       (AuthService.signInAnonymously as jest.Mock).mockResolvedValue({
-        user: { uid: "guest-1" },
+        user: {uid: "guest-1"},
       });
-      const { getAllByTestId } = renderWithProviders(
-        <LandingScreen />
-      );
+      const {getAllByTestId} = renderWithProviders(<LandingScreen />);
 
       const wideButtons = getAllByTestId("wide-button");
-      const guestButton = wideButtons.find(
-        (btn: any) => btn.props["data-text"] === "Play as Guest"
-      );
+      const guestButton = wideButtons.find((btn: any) => btn.props["data-text"] === "Play as Guest");
       fireEvent.press(guestButton!);
 
       await waitFor(() => {
@@ -337,7 +301,7 @@ describe("LandingScreen", () => {
 
     it("should open Roobs World website when the text link is pressed", () => {
       const openUrlSpy = jest.spyOn(Linking, "openURL").mockResolvedValue(undefined);
-      const { getByTestId } = renderWithProviders(<LandingScreen />);
+      const {getByTestId} = renderWithProviders(<LandingScreen />);
 
       fireEvent.press(getByTestId("roobs-world-link"));
 
@@ -348,22 +312,18 @@ describe("LandingScreen", () => {
 
   describe("Google Sign In", () => {
     beforeEach(() => {
-      (useAuth as jest.Mock).mockReturnValue({ login: mockLogin, isAuthenticated: false, setGameMode: mockSetGameMode });
+      (useAuth as jest.Mock).mockReturnValue({login: mockLogin, isAuthenticated: false, setGameMode: mockSetGameMode});
       mockSignInWithGoogle.mockClear();
       mockLogin.mockClear();
     });
 
     it("should call Google sign in and login on success", async () => {
       const mockUserCredential = {
-        user: { uid: "test-uid" },
+        user: {uid: "test-uid"},
       };
-      (AuthService.signInWithGoogle as jest.Mock).mockResolvedValue(
-        mockUserCredential
-      );
+      (AuthService.signInWithGoogle as jest.Mock).mockResolvedValue(mockUserCredential);
 
-      const { getByTestId } = renderWithProviders(
-        <LandingScreen />
-      );
+      const {getByTestId} = renderWithProviders(<LandingScreen />);
 
       const googleButton = getByTestId("google-signin-button");
       fireEvent.press(googleButton);
@@ -376,12 +336,10 @@ describe("LandingScreen", () => {
 
     it("should show loading spinner during Google sign in", async () => {
       (AuthService.signInWithGoogle as jest.Mock).mockImplementation(
-        () => new Promise(() => {}) // stays pending; no timer leak
+        () => new Promise(() => {}), // stays pending; no timer leak
       );
 
-      const { getByTestId } = renderWithProviders(
-        <LandingScreen />
-      );
+      const {getByTestId} = renderWithProviders(<LandingScreen />);
 
       const googleButton = getByTestId("google-signin-button");
       fireEvent.press(googleButton);
@@ -398,9 +356,7 @@ describe("LandingScreen", () => {
       };
       (AuthService.signInWithGoogle as jest.Mock).mockRejectedValue(error);
 
-      const { getByTestId } = renderWithProviders(
-        <LandingScreen />
-      );
+      const {getByTestId} = renderWithProviders(<LandingScreen />);
 
       const googleButton = getByTestId("google-signin-button");
       fireEvent.press(googleButton);
@@ -408,7 +364,7 @@ describe("LandingScreen", () => {
       await waitFor(() => {
         const errorMessage = getByTestId("error-message");
         expect(errorMessage.props["data-message"]).toBe(
-          "Account exists with different credential. Please use a different login method."
+          "Account exists with different credential. Please use a different login method.",
         );
       });
     });
@@ -420,9 +376,7 @@ describe("LandingScreen", () => {
       };
       (AuthService.signInWithGoogle as jest.Mock).mockRejectedValue(error);
 
-      const { getByTestId, queryByTestId } = renderWithProviders(
-        <LandingScreen />
-      );
+      const {getByTestId, queryByTestId} = renderWithProviders(<LandingScreen />);
 
       const googleButton = getByTestId("google-signin-button");
       fireEvent.press(googleButton);
@@ -440,40 +394,32 @@ describe("LandingScreen", () => {
       };
       (AuthService.signInWithGoogle as jest.Mock).mockRejectedValue(error);
 
-      const { getByTestId } = renderWithProviders(
-        <LandingScreen />
-      );
+      const {getByTestId} = renderWithProviders(<LandingScreen />);
 
       const googleButton = getByTestId("google-signin-button");
       fireEvent.press(googleButton);
 
       await waitFor(() => {
         const errorMessage = getByTestId("error-message");
-        expect(errorMessage.props["data-message"]).toBe(
-          "Unknown error occurred"
-        );
+        expect(errorMessage.props["data-message"]).toBe("Unknown error occurred");
       });
     });
   });
 
   describe("Facebook Sign In", () => {
     beforeEach(() => {
-      (useAuth as jest.Mock).mockReturnValue({ login: mockLogin, isAuthenticated: false, setGameMode: mockSetGameMode });
+      (useAuth as jest.Mock).mockReturnValue({login: mockLogin, isAuthenticated: false, setGameMode: mockSetGameMode});
       mockSignInWithFacebook.mockClear();
       mockLogin.mockClear();
     });
 
     it("should call Facebook sign in and login on success", async () => {
       const mockUserCredential = {
-        user: { uid: "test-uid" },
+        user: {uid: "test-uid"},
       };
-      (AuthService.signInWithFacebook as jest.Mock).mockResolvedValue(
-        mockUserCredential
-      );
+      (AuthService.signInWithFacebook as jest.Mock).mockResolvedValue(mockUserCredential);
 
-      const { getByTestId } = renderWithProviders(
-        <LandingScreen />
-      );
+      const {getByTestId} = renderWithProviders(<LandingScreen />);
 
       const facebookButton = getByTestId("facebook-signin-button");
       fireEvent.press(facebookButton);
@@ -486,12 +432,10 @@ describe("LandingScreen", () => {
 
     it("should show loading spinner during Facebook sign in", async () => {
       (AuthService.signInWithFacebook as jest.Mock).mockImplementation(
-        () => new Promise(() => {}) // stays pending; no timer leak
+        () => new Promise(() => {}), // stays pending; no timer leak
       );
 
-      const { getByTestId } = renderWithProviders(
-        <LandingScreen />
-      );
+      const {getByTestId} = renderWithProviders(<LandingScreen />);
 
       const facebookButton = getByTestId("facebook-signin-button");
       fireEvent.press(facebookButton);
@@ -508,9 +452,7 @@ describe("LandingScreen", () => {
       };
       (AuthService.signInWithFacebook as jest.Mock).mockRejectedValue(error);
 
-      const { getByTestId } = renderWithProviders(
-        <LandingScreen />
-      );
+      const {getByTestId} = renderWithProviders(<LandingScreen />);
 
       const facebookButton = getByTestId("facebook-signin-button");
       fireEvent.press(facebookButton);
@@ -518,7 +460,7 @@ describe("LandingScreen", () => {
       await waitFor(() => {
         const errorMessage = getByTestId("error-message");
         expect(errorMessage.props["data-message"]).toBe(
-          "Account exists with different credential. Please use a different login method."
+          "Account exists with different credential. Please use a different login method.",
         );
       });
     });
@@ -530,30 +472,21 @@ describe("LandingScreen", () => {
       };
       (AuthService.signInWithFacebook as jest.Mock).mockRejectedValue(error);
 
-      const { getByTestId } = renderWithProviders(
-        <LandingScreen />
-      );
+      const {getByTestId} = renderWithProviders(<LandingScreen />);
 
       const facebookButton = getByTestId("facebook-signin-button");
       fireEvent.press(facebookButton);
 
       await waitFor(() => {
         const errorMessage = getByTestId("error-message");
-        expect(errorMessage.props["data-message"]).toBe(
-          "Facebook login is not supported in this environment."
-        );
+        expect(errorMessage.props["data-message"]).toBe("Facebook login is not supported in this environment.");
       });
     });
 
     it("should handle Facebook sign-in failure with generic error", async () => {
-      const errorMessage =
-        "An unexpected error occurred during Facebook login.";
-      (AuthService.signInWithFacebook as jest.Mock).mockRejectedValueOnce(
-        new Error(errorMessage)
-      );
-      const { getByTestId, findByTestId } = renderWithProviders(
-        <LandingScreen />
-      );
+      const errorMessage = "An unexpected error occurred during Facebook login.";
+      (AuthService.signInWithFacebook as jest.Mock).mockRejectedValueOnce(new Error(errorMessage));
+      const {getByTestId, findByTestId} = renderWithProviders(<LandingScreen />);
 
       fireEvent.press(getByTestId("facebook-signin-button"));
 
@@ -571,20 +504,16 @@ describe("LandingScreen", () => {
   describe("Loading States", () => {
     it("should disable buttons when loading", async () => {
       (AuthService.signInWithGoogle as jest.Mock).mockImplementation(
-        () => new Promise(() => {}) // stays pending; no timer leak
+        () => new Promise(() => {}), // stays pending; no timer leak
       );
 
-      const { getAllByTestId, getByTestId } = renderWithProviders(
-        <LandingScreen />
-      );
+      const {getAllByTestId, getByTestId} = renderWithProviders(<LandingScreen />);
 
       const googleButton = getByTestId("google-signin-button");
       fireEvent.press(googleButton);
 
       const wideButtons = getAllByTestId("wide-button");
-      const guestButton = wideButtons.find(
-        (btn: any) => btn.props["data-text"] === "Play as Guest"
-      );
+      const guestButton = wideButtons.find((btn: any) => btn.props["data-text"] === "Play as Guest");
       const facebookButton = getByTestId("facebook-signin-button");
 
       expect(guestButton!.props["data-disabled"]).toBe(true);
@@ -594,15 +523,11 @@ describe("LandingScreen", () => {
 
     it("should hide spinner after successful authentication", async () => {
       const mockUserCredential = {
-        user: { uid: "test-uid" },
+        user: {uid: "test-uid"},
       };
-      (AuthService.signInWithGoogle as jest.Mock).mockResolvedValue(
-        mockUserCredential
-      );
+      (AuthService.signInWithGoogle as jest.Mock).mockResolvedValue(mockUserCredential);
 
-      const { getByTestId } = renderWithProviders(
-        <LandingScreen />
-      );
+      const {getByTestId} = renderWithProviders(<LandingScreen />);
 
       const googleButton = getByTestId("google-signin-button");
       fireEvent.press(googleButton);
@@ -620,9 +545,7 @@ describe("LandingScreen", () => {
       };
       (AuthService.signInWithGoogle as jest.Mock).mockRejectedValue(error);
 
-      const { getByTestId } = renderWithProviders(
-        <LandingScreen />
-      );
+      const {getByTestId} = renderWithProviders(<LandingScreen />);
 
       const googleButton = getByTestId("google-signin-button");
       fireEvent.press(googleButton);
@@ -643,9 +566,7 @@ describe("LandingScreen", () => {
       };
       (AuthService.signInWithGoogle as jest.Mock).mockRejectedValue(error);
 
-      const { getByTestId } = renderWithProviders(
-        <LandingScreen />
-      );
+      const {getByTestId} = renderWithProviders(<LandingScreen />);
 
       const googleButton = getByTestId("google-signin-button");
       fireEvent.press(googleButton);
@@ -657,7 +578,7 @@ describe("LandingScreen", () => {
 
       // Now try Facebook sign in - should clear the error
       (AuthService.signInWithFacebook as jest.Mock).mockImplementation(
-        () => new Promise(() => {}) // stays pending; no timer leak
+        () => new Promise(() => {}), // stays pending; no timer leak
       );
 
       const facebookButton = getByTestId("facebook-signin-button");
@@ -668,9 +589,7 @@ describe("LandingScreen", () => {
     });
 
     it("should not show error message when no error exists", () => {
-      const { queryByTestId } = renderWithProviders(
-        <LandingScreen />
-      );
+      const {queryByTestId} = renderWithProviders(<LandingScreen />);
 
       expect(queryByTestId("error-message")).toBeFalsy();
     });
@@ -679,15 +598,11 @@ describe("LandingScreen", () => {
   describe("State Management", () => {
     it("should handle authentication without uid", async () => {
       const mockUserCredential = {
-        user: { uid: null },
+        user: {uid: null},
       };
-      (AuthService.signInWithGoogle as jest.Mock).mockResolvedValue(
-        mockUserCredential
-      );
+      (AuthService.signInWithGoogle as jest.Mock).mockResolvedValue(mockUserCredential);
 
-      const { getByTestId } = renderWithProviders(
-        <LandingScreen />
-      );
+      const {getByTestId} = renderWithProviders(<LandingScreen />);
 
       const googleButton = getByTestId("google-signin-button");
       fireEvent.press(googleButton);
@@ -699,21 +614,15 @@ describe("LandingScreen", () => {
     });
 
     it("should handle useAuth hook correctly", () => {
-      expect(() =>
-        renderWithProviders(<LandingScreen />)
-      ).not.toThrow();
+      expect(() => renderWithProviders(<LandingScreen />)).not.toThrow();
       expect(useAuth).toHaveBeenCalled();
     });
   });
 
   describe("Text Content", () => {
     it("should not display email auth navigation or provider separator text", () => {
-      const { getAllByTestId, queryByText } = renderWithProviders(
-        <LandingScreen />
-      );
-      const signInButton = getAllByTestId("wide-button").find(
-        (btn: any) => btn.props["data-text"] === "Sign In"
-      );
+      const {getAllByTestId, queryByText} = renderWithProviders(<LandingScreen />);
+      const signInButton = getAllByTestId("wide-button").find((btn: any) => btn.props["data-text"] === "Sign In");
 
       expect(signInButton).toBeFalsy();
       expect(queryByText("Or sign in with")).toBeNull();
@@ -722,9 +631,7 @@ describe("LandingScreen", () => {
     });
 
     it("should display taglines from constants", () => {
-      const { getByText } = renderWithProviders(
-        <LandingScreen />
-      );
+      const {getByText} = renderWithProviders(<LandingScreen />);
 
       expect(getByText("Test Tagline 1")).toBeTruthy();
     });
@@ -732,9 +639,7 @@ describe("LandingScreen", () => {
 
   describe("Component Integration", () => {
     it("should pass correct props to all components", () => {
-      const { getByTestId } = renderWithProviders(
-        <LandingScreen />
-      );
+      const {getByTestId} = renderWithProviders(<LandingScreen />);
 
       // Check spinner props
       const spinner = getByTestId("pulsing-spinner");
@@ -745,29 +650,23 @@ describe("LandingScreen", () => {
 });
 
 // Typed mocks for AuthService methods
-const mockSignInWithGoogle =
-  AuthService.signInWithGoogle as jest.MockedFunction<
-    typeof AuthService.signInWithGoogle
-  >;
-const mockSignInWithFacebook =
-  AuthService.signInWithFacebook as jest.MockedFunction<
-    typeof AuthService.signInWithFacebook
-  >;
+const mockSignInWithGoogle = AuthService.signInWithGoogle as jest.MockedFunction<typeof AuthService.signInWithGoogle>;
+const mockSignInWithFacebook = AuthService.signInWithFacebook as jest.MockedFunction<
+  typeof AuthService.signInWithFacebook
+>;
 
 describe("Google Sign-In", () => {
   beforeEach(() => {
-    (useAuth as jest.Mock).mockReturnValue({ login: mockLogin, isAuthenticated: false, setGameMode: mockSetGameMode });
+    (useAuth as jest.Mock).mockReturnValue({login: mockLogin, isAuthenticated: false, setGameMode: mockSetGameMode});
     mockSignInWithGoogle.mockClear();
     mockLogin.mockClear();
   });
 
   it("should handle successful Google sign-in", async () => {
     mockSignInWithGoogle.mockResolvedValueOnce({
-      user: { uid: "test-uid" },
+      user: {uid: "test-uid"},
     } as any);
-    const { getByTestId } = renderWithProviders(
-      <LandingScreen />
-    );
+    const {getByTestId} = renderWithProviders(<LandingScreen />);
 
     const googleButton = getByTestId("google-signin-button");
     fireEvent.press(googleButton);
@@ -781,17 +680,13 @@ describe("Google Sign-In", () => {
     });
 
     expect(getByTestId("pulsing-spinner").props["data-visible"]).toBe(false);
-    expect(getByTestId("google-signin-button").props["data-disabled"]).toBe(
-      false
-    );
+    expect(getByTestId("google-signin-button").props["data-disabled"]).toBe(false);
   });
 
   it("should handle Google sign-in failure with generic error", async () => {
     const errorMessage = "Network error";
     mockSignInWithGoogle.mockRejectedValueOnce(new Error(errorMessage));
-    const { getByTestId, findByTestId } = renderWithProviders(
-      <LandingScreen />
-    );
+    const {getByTestId, findByTestId} = renderWithProviders(<LandingScreen />);
 
     fireEvent.press(getByTestId("google-signin-button"));
 
@@ -809,9 +704,7 @@ describe("Google Sign-In", () => {
     mockSignInWithGoogle.mockRejectedValueOnce({
       code: "auth/account-exists-with-different-credential",
     });
-    const { getByTestId, findByTestId } = renderWithProviders(
-      <LandingScreen />
-    );
+    const {getByTestId, findByTestId} = renderWithProviders(<LandingScreen />);
 
     fireEvent.press(getByTestId("google-signin-button"));
 
@@ -819,7 +712,7 @@ describe("Google Sign-In", () => {
 
     const errorComponent = await findByTestId("error-message");
     expect(errorComponent.props["data-message"]).toBe(
-      "Account exists with different credential. Please use a different login method."
+      "Account exists with different credential. Please use a different login method.",
     );
   });
 
@@ -828,9 +721,7 @@ describe("Google Sign-In", () => {
       code: "auth/auth-popup-closed-by-user",
     });
 
-    const { getByTestId, queryByTestId } = renderWithProviders(
-      <LandingScreen />
-    );
+    const {getByTestId, queryByTestId} = renderWithProviders(<LandingScreen />);
 
     fireEvent.press(getByTestId("google-signin-button"));
 
@@ -843,16 +734,14 @@ describe("Google Sign-In", () => {
 describe("Facebook Sign-In", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    (useAuth as jest.Mock).mockReturnValue({ login: mockLogin, isAuthenticated: false, setGameMode: mockSetGameMode });
+    (useAuth as jest.Mock).mockReturnValue({login: mockLogin, isAuthenticated: false, setGameMode: mockSetGameMode});
   });
 
   it("should handle successful Facebook sign-in", async () => {
     mockSignInWithFacebook.mockResolvedValueOnce({
-      user: { uid: "test-uid" },
+      user: {uid: "test-uid"},
     } as any);
-    const { getByTestId } = renderWithProviders(
-      <LandingScreen />
-    );
+    const {getByTestId} = renderWithProviders(<LandingScreen />);
 
     const facebookButton = getByTestId("facebook-signin-button");
     fireEvent.press(facebookButton);
@@ -866,17 +755,13 @@ describe("Facebook Sign-In", () => {
     });
 
     expect(getByTestId("pulsing-spinner").props["data-visible"]).toBe(false);
-    expect(getByTestId("facebook-signin-button").props["data-disabled"]).toBe(
-      false
-    );
+    expect(getByTestId("facebook-signin-button").props["data-disabled"]).toBe(false);
   });
 
   it("should handle Facebook sign-in failure with generic error", async () => {
     const errorMessage = "An unexpected error occurred during Facebook login.";
     mockSignInWithFacebook.mockRejectedValueOnce(new Error(errorMessage));
-    const { getByTestId, findByTestId } = renderWithProviders(
-      <LandingScreen />
-    );
+    const {getByTestId, findByTestId} = renderWithProviders(<LandingScreen />);
 
     fireEvent.press(getByTestId("facebook-signin-button"));
 
@@ -894,19 +779,15 @@ describe("Facebook Sign-In", () => {
     mockSignInWithFacebook.mockRejectedValueOnce({
       code: "auth/account-exists-with-different-credential",
     });
-    const { getByTestId, findByTestId } = renderWithProviders(
-      <LandingScreen />
-    );
+    const {getByTestId, findByTestId} = renderWithProviders(<LandingScreen />);
 
     fireEvent.press(getByTestId("facebook-signin-button"));
 
-    await waitFor(() =>
-      expect(mockSignInWithFacebook).toHaveBeenCalledTimes(1)
-    );
+    await waitFor(() => expect(mockSignInWithFacebook).toHaveBeenCalledTimes(1));
 
     const errorComponent = await findByTestId("error-message");
     expect(errorComponent.props["data-message"]).toBe(
-      "Account exists with different credential. Please use a different login method."
+      "Account exists with different credential. Please use a different login method.",
     );
   });
 
@@ -914,15 +795,11 @@ describe("Facebook Sign-In", () => {
     mockSignInWithFacebook.mockRejectedValueOnce({
       code: "auth/auth-popup-closed-by-user",
     });
-    const { getByTestId, queryByTestId } = renderWithProviders(
-      <LandingScreen />
-    );
+    const {getByTestId, queryByTestId} = renderWithProviders(<LandingScreen />);
 
     fireEvent.press(getByTestId("facebook-signin-button"));
 
-    await waitFor(() =>
-      expect(mockSignInWithFacebook).toHaveBeenCalledTimes(1)
-    );
+    await waitFor(() => expect(mockSignInWithFacebook).toHaveBeenCalledTimes(1));
 
     expect(queryByTestId("error-message")).toBeNull();
     expect(logger.error).not.toHaveBeenCalled();
@@ -933,45 +810,33 @@ describe("Facebook Sign-In", () => {
     mockSignInWithFacebook.mockRejectedValueOnce({
       code: "auth/operation-not-supported-in-this-environment",
     });
-    const { getByTestId, findByTestId } = renderWithProviders(
-      <LandingScreen />
-    );
+    const {getByTestId, findByTestId} = renderWithProviders(<LandingScreen />);
 
     fireEvent.press(getByTestId("facebook-signin-button"));
 
-    await waitFor(() =>
-      expect(mockSignInWithFacebook).toHaveBeenCalledTimes(1)
-    );
+    await waitFor(() => expect(mockSignInWithFacebook).toHaveBeenCalledTimes(1));
 
     const errorComponent = await findByTestId("error-message");
-    expect(errorComponent.props["data-message"]).toBe(
-      "Facebook login is not supported in this environment."
-    );
+    expect(errorComponent.props["data-message"]).toBe("Facebook login is not supported in this environment.");
   });
 });
 
 describe("Loading States and Button Disabling", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    (useAuth as jest.Mock).mockReturnValue({ login: mockLogin, isAuthenticated: false, setGameMode: mockSetGameMode });
+    (useAuth as jest.Mock).mockReturnValue({login: mockLogin, isAuthenticated: false, setGameMode: mockSetGameMode});
   });
 
   it("should disable all relevant buttons when Google sign-in is loading", async () => {
     let resolveGooglePromise: (value: any) => void;
-    mockSignInWithGoogle.mockImplementationOnce(
-      () => new Promise((resolve) => (resolveGooglePromise = resolve))
-    );
+    mockSignInWithGoogle.mockImplementationOnce(() => new Promise((resolve) => (resolveGooglePromise = resolve)));
 
-    const { getAllByTestId, getByTestId } = renderWithProviders(
-      <LandingScreen />
-    );
+    const {getAllByTestId, getByTestId} = renderWithProviders(<LandingScreen />);
 
     const googleButton = getByTestId("google-signin-button");
     const facebookButton = getByTestId("facebook-signin-button");
     const wideButtons = getAllByTestId("wide-button");
-    const guestButton = wideButtons.find(
-      (btn: any) => btn.props["data-text"] === "Play as Guest"
-    );
+    const guestButton = wideButtons.find((btn: any) => btn.props["data-text"] === "Play as Guest");
 
     fireEvent.press(googleButton);
 
@@ -984,7 +849,7 @@ describe("Loading States and Button Disabling", () => {
     expect(guestButton!.props["data-disabled"]).toBe(true);
 
     // Resolve the promise to allow cleanup
-    resolveGooglePromise!({ user: { uid: "test-uid" } } as any);
+    resolveGooglePromise!({user: {uid: "test-uid"}} as any);
     await waitFor(() => {
       expect(getByTestId("pulsing-spinner").props["data-visible"]).toBe(false);
     });
@@ -992,20 +857,14 @@ describe("Loading States and Button Disabling", () => {
 
   it("should disable all relevant buttons when Facebook sign-in is loading", async () => {
     let resolveFacebookPromise: (value: any) => void;
-    mockSignInWithFacebook.mockImplementationOnce(
-      () => new Promise((resolve) => (resolveFacebookPromise = resolve))
-    );
+    mockSignInWithFacebook.mockImplementationOnce(() => new Promise((resolve) => (resolveFacebookPromise = resolve)));
 
-    const { getAllByTestId, getByTestId } = renderWithProviders(
-      <LandingScreen />
-    );
+    const {getAllByTestId, getByTestId} = renderWithProviders(<LandingScreen />);
 
     const googleButton = getByTestId("google-signin-button");
     const facebookButton = getByTestId("facebook-signin-button");
     const wideButtons = getAllByTestId("wide-button");
-    const guestButton = wideButtons.find(
-      (btn: any) => btn.props["data-text"] === "Play as Guest"
-    );
+    const guestButton = wideButtons.find((btn: any) => btn.props["data-text"] === "Play as Guest");
 
     fireEvent.press(facebookButton);
 
@@ -1018,7 +877,7 @@ describe("Loading States and Button Disabling", () => {
     expect(guestButton!.props["data-disabled"]).toBe(true);
 
     // Resolve the promise to allow cleanup
-    resolveFacebookPromise!({ user: { uid: "test-uid" } } as any);
+    resolveFacebookPromise!({user: {uid: "test-uid"}} as any);
     await waitFor(() => {
       expect(getByTestId("pulsing-spinner").props["data-visible"]).toBe(false);
     });
@@ -1040,9 +899,7 @@ describe("Facebook Sign-In Edge Cases", () => {
     const error = new Error("Error getting access token from Facebook");
     (AuthService.signInWithFacebook as jest.Mock).mockRejectedValue(error);
 
-    const { getByTestId, findByTestId } = renderWithProviders(
-      <LandingScreen />
-    );
+    const {getByTestId, findByTestId} = renderWithProviders(<LandingScreen />);
 
     fireEvent.press(getByTestId("facebook-signin-button"));
 
@@ -1056,9 +913,7 @@ describe("Facebook Sign-In Edge Cases", () => {
     const error = new Error("Facebook permission request timed out waiting");
     (AuthService.signInWithFacebook as jest.Mock).mockRejectedValue(error);
 
-    const { getByTestId, findByTestId } = renderWithProviders(
-      <LandingScreen />
-    );
+    const {getByTestId, findByTestId} = renderWithProviders(<LandingScreen />);
 
     fireEvent.press(getByTestId("facebook-signin-button"));
 
@@ -1072,9 +927,7 @@ describe("Facebook Sign-In Edge Cases", () => {
     const error = new Error("Facebook SDK not properly initialized error");
     (AuthService.signInWithFacebook as jest.Mock).mockRejectedValue(error);
 
-    const { getByTestId, findByTestId } = renderWithProviders(
-      <LandingScreen />
-    );
+    const {getByTestId, findByTestId} = renderWithProviders(<LandingScreen />);
 
     fireEvent.press(getByTestId("facebook-signin-button"));
 
@@ -1090,15 +943,13 @@ describe("Facebook Sign-In Edge Cases", () => {
     };
     (AuthService.signInWithFacebook as jest.Mock).mockRejectedValue(error);
 
-    const { getByTestId, findByTestId } = renderWithProviders(
-      <LandingScreen />
-    );
+    const {getByTestId, findByTestId} = renderWithProviders(<LandingScreen />);
 
     fireEvent.press(getByTestId("facebook-signin-button"));
 
     const errorComponent = await findByTestId("error-message");
     expect(errorComponent.props["data-message"]).toBe(
-      "Network error during Facebook login. Please check your connection and try again."
+      "Network error during Facebook login. Please check your connection and try again.",
     );
   });
 
@@ -1109,32 +960,24 @@ describe("Facebook Sign-In Edge Cases", () => {
     };
     (AuthService.signInWithFacebook as jest.Mock).mockRejectedValue(error);
 
-    const { getByTestId, findByTestId } = renderWithProviders(
-      <LandingScreen />
-    );
+    const {getByTestId, findByTestId} = renderWithProviders(<LandingScreen />);
 
     fireEvent.press(getByTestId("facebook-signin-button"));
 
     const errorComponent = await findByTestId("error-message");
-    expect(errorComponent.props["data-message"]).toBe(
-      "Invalid Facebook credentials. Please try again."
-    );
+    expect(errorComponent.props["data-message"]).toBe("Invalid Facebook credentials. Please try again.");
   });
 
   it("should handle non-Error object rejection", async () => {
     const error = "String error message";
     (AuthService.signInWithFacebook as jest.Mock).mockRejectedValue(error);
 
-    const { getByTestId, findByTestId } = renderWithProviders(
-      <LandingScreen />
-    );
+    const {getByTestId, findByTestId} = renderWithProviders(<LandingScreen />);
 
     fireEvent.press(getByTestId("facebook-signin-button"));
 
     const errorComponent = await findByTestId("error-message");
-    expect(errorComponent.props["data-message"]).toBe(
-      "An unexpected error occurred during Facebook login."
-    );
+    expect(errorComponent.props["data-message"]).toBe("An unexpected error occurred during Facebook login.");
   });
 });
 
@@ -1150,28 +993,22 @@ describe("Google Sign-In Edge Cases", () => {
   });
 
   it("should handle error without message property", async () => {
-    const error = { code: "auth/unknown-error" };
+    const error = {code: "auth/unknown-error"};
     (AuthService.signInWithGoogle as jest.Mock).mockRejectedValue(error);
 
-    const { getByTestId, findByTestId } = renderWithProviders(
-      <LandingScreen />
-    );
+    const {getByTestId, findByTestId} = renderWithProviders(<LandingScreen />);
 
     fireEvent.press(getByTestId("google-signin-button"));
 
     const errorComponent = await findByTestId("error-message");
-    expect(errorComponent.props["data-message"]).toBe(
-      "An unexpected error occurred during Google login."
-    );
+    expect(errorComponent.props["data-message"]).toBe("An unexpected error occurred during Google login.");
   });
 
   it("should not call login if user uid is missing", async () => {
-    const mockUserCredential = { user: {} };
-    (AuthService.signInWithGoogle as jest.Mock).mockResolvedValue(
-      mockUserCredential
-    );
+    const mockUserCredential = {user: {}};
+    (AuthService.signInWithGoogle as jest.Mock).mockResolvedValue(mockUserCredential);
 
-    const { getByTestId } = renderWithProviders(<LandingScreen />);
+    const {getByTestId} = renderWithProviders(<LandingScreen />);
 
     fireEvent.press(getByTestId("google-signin-button"));
 
@@ -1183,12 +1020,10 @@ describe("Google Sign-In Edge Cases", () => {
   });
 
   it("should not call login if user object is null", async () => {
-    const mockUserCredential = { user: null };
-    (AuthService.signInWithGoogle as jest.Mock).mockResolvedValue(
-      mockUserCredential
-    );
+    const mockUserCredential = {user: null};
+    (AuthService.signInWithGoogle as jest.Mock).mockResolvedValue(mockUserCredential);
 
-    const { getByTestId } = renderWithProviders(<LandingScreen />);
+    const {getByTestId} = renderWithProviders(<LandingScreen />);
 
     fireEvent.press(getByTestId("google-signin-button"));
 
@@ -1210,7 +1045,7 @@ describe("Starry Background", () => {
   });
 
   it("should render StarryBackground component", () => {
-    const { getByTestId } = renderWithProviders(<LandingScreen />);
+    const {getByTestId} = renderWithProviders(<LandingScreen />);
 
     expect(getByTestId("starry-background")).toBeTruthy();
   });
@@ -1226,9 +1061,7 @@ describe("Component Accessibility", () => {
   });
 
   it("should render all buttons in enabled state initially", () => {
-    const { getByTestId, getAllByTestId } = renderWithProviders(
-      <LandingScreen />
-    );
+    const {getByTestId, getAllByTestId} = renderWithProviders(<LandingScreen />);
 
     const googleButton = getByTestId("google-signin-button");
     const facebookButton = getByTestId("facebook-signin-button");
@@ -1237,18 +1070,14 @@ describe("Component Accessibility", () => {
     expect(googleButton.props["data-disabled"]).toBe(false);
     expect(facebookButton.props["data-disabled"]).toBe(false);
     // Check that Play as Guest renders as a button and Roobs World does not.
-    const guestButton = wideButtons.find(
-      (btn: any) => btn.props["data-text"] === "Play as Guest"
-    );
-    const roobsWorldButton = wideButtons.find(
-      (btn: any) => btn.props["data-text"] === "Made by Roobs World"
-    );
+    const guestButton = wideButtons.find((btn: any) => btn.props["data-text"] === "Play as Guest");
+    const roobsWorldButton = wideButtons.find((btn: any) => btn.props["data-text"] === "Made by Roobs World");
     expect(guestButton!.props["data-disabled"]).toBe(false);
     expect(roobsWorldButton).toBeFalsy();
   });
 
   it("should have proper button text content", () => {
-    const { getAllByTestId, getByText } = renderWithProviders(<LandingScreen />);
+    const {getAllByTestId, getByText} = renderWithProviders(<LandingScreen />);
 
     const wideButtons = getAllByTestId("wide-button");
     const buttonTexts = wideButtons.map((btn: any) => btn.props["data-text"]);
@@ -1269,17 +1098,15 @@ describe("Modal Integration", () => {
   });
 
   it("signs in anonymously for guest play", async () => {
-    (AuthService.signInAnonymously as jest.Mock).mockResolvedValue({ user: { uid: "guest-1" } });
+    (AuthService.signInAnonymously as jest.Mock).mockResolvedValue({user: {uid: "guest-1"}});
     (useAuth as jest.Mock).mockReturnValue({
       login: mockLogin,
       isAuthenticated: false,
       setGameMode: mockSetGameMode,
     });
 
-    const { getByTestId, getAllByTestId } = renderWithProviders(<LandingScreen />);
-    const guestButton = getAllByTestId("wide-button").find(
-      (btn: any) => btn.props["data-text"] === "Play as Guest"
-    );
+    const {getByTestId, getAllByTestId} = renderWithProviders(<LandingScreen />);
+    const guestButton = getAllByTestId("wide-button").find((btn: any) => btn.props["data-text"] === "Play as Guest");
     fireEvent.press(guestButton!);
 
     await waitFor(() => {
@@ -1290,7 +1117,7 @@ describe("Modal Integration", () => {
   });
 
   it("logs out before guest sign in when already authenticated", async () => {
-    (AuthService.signInAnonymously as jest.Mock).mockResolvedValue({ user: { uid: "guest-1" } });
+    (AuthService.signInAnonymously as jest.Mock).mockResolvedValue({user: {uid: "guest-1"}});
     (AuthService.logout as jest.Mock).mockResolvedValue(undefined);
     (useAuth as jest.Mock).mockReturnValue({
       login: mockLogin,
@@ -1298,10 +1125,8 @@ describe("Modal Integration", () => {
       setGameMode: mockSetGameMode,
     });
 
-    const { getByTestId, getAllByTestId } = renderWithProviders(<LandingScreen />);
-    const guestButton = getAllByTestId("wide-button").find(
-      (btn: any) => btn.props["data-text"] === "Play as Guest"
-    );
+    const {getByTestId, getAllByTestId} = renderWithProviders(<LandingScreen />);
+    const guestButton = getAllByTestId("wide-button").find((btn: any) => btn.props["data-text"] === "Play as Guest");
     fireEvent.press(guestButton!);
 
     await waitFor(() => {
@@ -1325,11 +1150,9 @@ describe("Concurrent Operations", () => {
 
   it("should prevent double-tapping on sign-in buttons", async () => {
     let resolvePromise: (value: any) => void;
-    mockSignInWithGoogle.mockImplementationOnce(
-      () => new Promise((resolve) => (resolvePromise = resolve))
-    );
+    mockSignInWithGoogle.mockImplementationOnce(() => new Promise((resolve) => (resolvePromise = resolve)));
 
-    const { getByTestId } = renderWithProviders(<LandingScreen />);
+    const {getByTestId} = renderWithProviders(<LandingScreen />);
 
     const googleButton = getByTestId("google-signin-button");
 
@@ -1344,7 +1167,7 @@ describe("Concurrent Operations", () => {
     expect(googleButton.props["data-disabled"]).toBe(true);
 
     // Cleanup
-    resolvePromise!({ user: { uid: "test-uid" } } as any);
+    resolvePromise!({user: {uid: "test-uid"}} as any);
     await waitFor(() => {
       expect(getByTestId("pulsing-spinner").props["data-visible"]).toBe(false);
     });

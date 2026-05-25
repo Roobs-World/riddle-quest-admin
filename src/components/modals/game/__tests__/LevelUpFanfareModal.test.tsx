@@ -1,13 +1,7 @@
 import React from "react";
 import {fireEvent, render} from "@testing-library/react-native";
-import LevelUpFanfareModal, {
-  LEVEL_UP_FANFARE_MODAL_HEIGHT_MULTIPLIER,
-} from "../LevelUpFanfareModal";
-import {
-  MODAL_MAX_SCREEN_HEIGHT_FRACTION,
-  MODAL_WIDTH,
-  getResponsiveModalHeight,
-} from "../../../../constants/layout";
+import LevelUpFanfareModal, {LEVEL_UP_FANFARE_MODAL_HEIGHT_MULTIPLIER} from "../LevelUpFanfareModal";
+import {MODAL_MAX_SCREEN_HEIGHT_FRACTION, MODAL_WIDTH, getResponsiveModalHeight} from "../../../../constants/layout";
 
 jest.mock("react-native/Libraries/Animated/Animated", () => {
   const {View} = require("react-native");
@@ -55,13 +49,7 @@ jest.mock("react-native/Libraries/Modal/Modal", () => {
   const React = require("react");
   return {
     __esModule: true,
-    default: function MockModal({
-      children,
-      visible,
-    }: {
-      children: React.ReactNode;
-      visible: boolean;
-    }) {
+    default: function MockModal({children, visible}: {children: React.ReactNode; visible: boolean}) {
       if (!visible) return null;
       return React.createElement("View", null, children);
     },
@@ -74,13 +62,7 @@ jest.mock("../../../../assets/images/wheel-bg.svg", () => "WheelBgSvg");
 describe("LevelUpFanfareModal", () => {
   it("renders level and coin reward values without sequence progress by default", () => {
     const {getByText, queryByTestId} = render(
-      <LevelUpFanfareModal
-        isVisible={true}
-        newLevel={4}
-        coinsAwarded={50}
-        totalCoins={250}
-        onClose={jest.fn()}
-      />,
+      <LevelUpFanfareModal isVisible={true} newLevel={4} coinsAwarded={50} totalCoins={250} onClose={jest.fn()} />,
     );
 
     expect(getByText("Level Up!")).toBeTruthy();
@@ -91,13 +73,7 @@ describe("LevelUpFanfareModal", () => {
 
   it("uses the taller DSI-035 decorative background frame", () => {
     const {getByTestId} = render(
-      <LevelUpFanfareModal
-        isVisible={true}
-        newLevel={4}
-        coinsAwarded={50}
-        totalCoins={250}
-        onClose={jest.fn()}
-      />,
+      <LevelUpFanfareModal isVisible={true} newLevel={4} coinsAwarded={50} totalCoins={250} onClose={jest.fn()} />,
     );
     const expectedHeight = getResponsiveModalHeight(
       LEVEL_UP_FANFARE_MODAL_HEIGHT_MULTIPLIER,

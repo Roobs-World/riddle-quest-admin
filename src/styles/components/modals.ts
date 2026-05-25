@@ -20,16 +20,13 @@
  * @since 2024
  */
 
-import { StyleSheet, ViewStyle, TextStyle } from "react-native";
-import { SPACING } from "../tokens/spacing";
-import { BORDER_RADIUS } from "../tokens/borderRadius";
-import { COLORS } from "../tokens/colors";
-import { SHADOWS } from "../tokens/shadows";
-import { TYPOGRAPHY } from "../tokens/typography";
-import {
-  AUTH_CONTENT_MAX_WIDTH,
-  MODAL_MAX_HEIGHT,
-} from "../../constants/layout";
+import {StyleSheet, ViewStyle, TextStyle} from "react-native";
+import {SPACING} from "../tokens/spacing";
+import {BORDER_RADIUS} from "../tokens/borderRadius";
+import {COLORS} from "../tokens/colors";
+import {SHADOWS} from "../tokens/shadows";
+import {TYPOGRAPHY} from "../tokens/typography";
+import {AUTH_CONTENT_MAX_WIDTH, MODAL_MAX_HEIGHT} from "../../constants/layout";
 
 /**
  * Modal Styles Configuration
@@ -568,7 +565,7 @@ export const modalStyles = StyleSheet.create({
    * used in conjunction with animation libraries.
    */
   scaleIn: {
-    transform: [{ scale: 1 }],
+    transform: [{scale: 1}],
   } as ViewStyle,
 
   /**
@@ -577,7 +574,7 @@ export const modalStyles = StyleSheet.create({
    * used in conjunction with animation libraries.
    */
   scaleOut: {
-    transform: [{ scale: 0.9 }],
+    transform: [{scale: 0.9}],
   } as ViewStyle,
 
   /**
@@ -593,8 +590,8 @@ export const modalStyles = StyleSheet.create({
    * (e.g., success, error, warning) with appropriate dimensions.
    */
   statusIndicator: {
-    width: SPACING.sm + SPACING.xs,   // 12 px at base
-    height: SPACING.sm + SPACING.xs,  // 12 px at base
+    width: SPACING.sm + SPACING.xs, // 12 px at base
+    height: SPACING.sm + SPACING.xs, // 12 px at base
     borderRadius: (SPACING.sm + SPACING.xs) / 2,
     marginRight: SPACING.xs,
   } as ViewStyle,

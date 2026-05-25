@@ -1,25 +1,19 @@
 /**
  * @fileoverview Texture loading utilities for Expo assets -> Three.js textures.
  */
-import { Asset } from "expo-asset";
-import { LinearFilter, Texture } from "three";
-import { captureException } from "../../utils/sentry";
-import { logger } from "../../utils/logger";
+import {Asset} from "expo-asset";
+import {LinearFilter, Texture} from "three";
+import {captureException} from "../../utils/sentry";
+import {logger} from "../../utils/logger";
 
-type AssetModuleReference =
-  | string
-  | number
-  | { default?: string | number; uri?: string };
+type AssetModuleReference = string | number | {default?: string | number; uri?: string};
 
 const resolveAssetModule = (assetPath: AssetModuleReference): string | number => {
   if (typeof assetPath === "number" || typeof assetPath === "string") {
     return assetPath;
   }
 
-  if (
-    assetPath &&
-    (typeof assetPath.default === "number" || typeof assetPath.default === "string")
-  ) {
+  if (assetPath && (typeof assetPath.default === "number" || typeof assetPath.default === "string")) {
     return assetPath.default;
   }
 
@@ -43,7 +37,7 @@ export const createTextureFromAsset = (asset: Asset): Texture => {
     height: asset.height ?? 1,
   };
   texture.needsUpdate = true;
-  (texture as unknown as { isDataTexture: boolean }).isDataTexture = true;
+  (texture as unknown as {isDataTexture: boolean}).isDataTexture = true;
   texture.minFilter = LinearFilter;
   return texture;
 };
@@ -56,10 +50,7 @@ export const createTextureFromAsset = (asset: Asset): Texture => {
  * @returns Loaded texture.
  * @throws When asset fetch/download/texture creation fails.
  */
-export const loadTextureFromAsset = async (
-  assetPath: AssetModuleReference,
-  cacheKey: string
-): Promise<Texture> => {
+export const loadTextureFromAsset = async (assetPath: AssetModuleReference, cacheKey: string): Promise<Texture> => {
   try {
     const resolvedAssetModule = resolveAssetModule(assetPath);
     const [imageAsset] = await Asset.loadAsync(resolvedAssetModule);

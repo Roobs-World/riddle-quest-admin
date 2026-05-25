@@ -134,10 +134,7 @@ describe("riddleGeneration", () => {
     mockFirestoreDoc.mockImplementation((documentPath?: string) => ({
       id: documentPath ?? "test-riddle-id",
       set: mockSet,
-      get:
-        documentPath === "current"
-          ? mockGet
-          : jest.fn().mockResolvedValue({exists: false, data: () => undefined}),
+      get: documentPath === "current" ? mockGet : jest.fn().mockResolvedValue({exists: false, data: () => undefined}),
     }));
   });
 
@@ -200,7 +197,7 @@ describe("riddleGeneration", () => {
           get: jest.fn().mockResolvedValue(dailyChallengeSnapshot),
           doc: jest.fn(),
           where: jest.fn(),
-        } as any)
+        } as any);
 
       // Call private function through a public function that uses it
       await expect(riddleGeneration.generateAndAppendRiddles(1)).rejects.toThrow();
@@ -899,9 +896,7 @@ describe("riddleGeneration", () => {
         }),
       });
 
-      const result = await riddleGeneration.generateTodaysDailyChallengeFunction(
-        adminCallableRequest,
-      );
+      const result = await riddleGeneration.generateTodaysDailyChallengeFunction(adminCallableRequest);
 
       expect(result.success).toBe(true);
       expect(result.questionsGenerated).toBe(1);
@@ -914,9 +909,7 @@ describe("riddleGeneration", () => {
         }),
       } as any);
 
-      await expect(
-        riddleGeneration.generateTodaysDailyChallengeFunction(adminCallableRequest),
-      ).rejects.toThrow();
+      await expect(riddleGeneration.generateTodaysDailyChallengeFunction(adminCallableRequest)).rejects.toThrow();
     });
   });
 

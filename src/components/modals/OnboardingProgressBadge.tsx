@@ -1,17 +1,14 @@
 import React from "react";
-import { Text, View } from "react-native";
-import { TYPOGRAPHY } from "../../styles";
-import { moderateScale, verticalScale } from "../../utils/responsive";
+import {Text, View} from "react-native";
+import {TYPOGRAPHY} from "../../styles";
+import {moderateScale, verticalScale} from "../../utils/responsive";
 
 interface OnboardingProgressBadgeProps {
   current: number;
   total: number;
 }
 
-const OnboardingProgressBadge: React.FC<OnboardingProgressBadgeProps> = ({
-  current,
-  total,
-}) => {
+const OnboardingProgressBadge: React.FC<OnboardingProgressBadgeProps> = ({current, total}) => {
   if (total <= 0 || current <= 0 || current > total) {
     return null;
   }
@@ -54,7 +51,7 @@ const OnboardingProgressBadge: React.FC<OnboardingProgressBadgeProps> = ({
           marginTop: verticalScale(3),
         }}
       >
-        {Array.from({ length: total }, (_, index) => {
+        {Array.from({length: total}, (_, index) => {
           const isActive = index + 1 <= current;
           return (
             <View

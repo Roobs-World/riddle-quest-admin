@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
-import { AppStrings } from "../../constants/AppStrings";
+import React, {useState} from "react";
+import {View, Text, TouchableOpacity} from "react-native";
+import {AppStrings} from "../../constants/AppStrings";
 import ReusableTextInput from "../shared/ReusableTextInput";
 import PasswordVisibilityIcon from "../icons/PasswordVisibilityIcon";
 import Error from "../text/Error";
-import { styles, SPACING } from "../../styles";
-import { scale } from "../../utils/responsive";
+import {styles, SPACING} from "../../styles";
+import {scale} from "../../utils/responsive";
 
 interface UserPasswordInputProps {
   password: string;
@@ -29,15 +29,11 @@ const UserPasswordInput: React.FC<UserPasswordInputProps> = ({
   };
 
   const passwordLabel = label || AppStrings.AuthStrings.Login.PASSWORD_LABEL;
-  const passwordPlaceholder =
-    placeholder || AppStrings.AuthStrings.Login.PASSWORD_PLACEHOLDER;
+  const passwordPlaceholder = placeholder || AppStrings.AuthStrings.Login.PASSWORD_PLACEHOLDER;
 
   return (
     <View className="w-full">
-      <Text
-        className="text-gray-600 text-left"
-        style={[styles.labelText, { marginBottom: SPACING.sm }]}
-      >
+      <Text className="text-gray-600 text-left" style={[styles.labelText, {marginBottom: SPACING.sm}]}>
         {passwordLabel}
       </Text>
       <View className="flex-row items-center bg-input-background rounded-lg border border-gray-300">
@@ -47,7 +43,7 @@ const UserPasswordInput: React.FC<UserPasswordInputProps> = ({
           placeholder={passwordPlaceholder}
           secureTextEntry={!isPasswordVisible}
         />
-        <TouchableOpacity onPress={togglePasswordVisibility} style={{ padding: scale(12) }}>
+        <TouchableOpacity onPress={togglePasswordVisibility} style={{padding: scale(12)}}>
           <PasswordVisibilityIcon visible={isPasswordVisible} />
         </TouchableOpacity>
       </View>
@@ -57,4 +53,3 @@ const UserPasswordInput: React.FC<UserPasswordInputProps> = ({
 };
 
 export default UserPasswordInput;
-

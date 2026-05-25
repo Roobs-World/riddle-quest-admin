@@ -9,18 +9,14 @@ export const SOUND_ENABLED_STORAGE_KEY = "isSoundEnabled";
 export const HAPTICS_ENABLED_STORAGE_KEY = "isHapticsEnabled";
 
 const getLocalStorage = (): LocalStorageLike | null => {
-  const candidate = (globalThis as { localStorage?: LocalStorageLike })
-    .localStorage;
+  const candidate = (globalThis as {localStorage?: LocalStorageLike}).localStorage;
   if (!candidate) {
     return null;
   }
   return candidate;
 };
 
-const parseBooleanSetting = (
-  rawValue: string | null,
-  defaultValue: boolean
-): boolean => {
+const parseBooleanSetting = (rawValue: string | null, defaultValue: boolean): boolean => {
   if (rawValue === null) return defaultValue;
   try {
     const parsed = JSON.parse(rawValue);
@@ -30,10 +26,7 @@ const parseBooleanSetting = (
   }
 };
 
-export const readBooleanSetting = async (
-  key: string,
-  defaultValue: boolean
-): Promise<boolean> => {
+export const readBooleanSetting = async (key: string, defaultValue: boolean): Promise<boolean> => {
   const localStorageApi = getLocalStorage();
 
   if (localStorageApi) {
@@ -51,10 +44,7 @@ export const readBooleanSetting = async (
   return parseBooleanSetting(asyncValue, defaultValue);
 };
 
-export const writeBooleanSetting = async (
-  key: string,
-  value: boolean
-): Promise<void> => {
+export const writeBooleanSetting = async (key: string, value: boolean): Promise<void> => {
   const serialized = JSON.stringify(value);
   const localStorageApi = getLocalStorage();
 

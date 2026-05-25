@@ -1,8 +1,7 @@
 module.exports = function (api) {
   api.cache(true);
 
-  const isFirebaseFunctionsTest =
-    process.env.IS_FIREBASE_FUNCTIONS_TEST === "true";
+  const isFirebaseFunctionsTest = process.env.IS_FIREBASE_FUNCTIONS_TEST === "true";
 
   if (isFirebaseFunctionsTest) {
     return {
@@ -12,10 +11,7 @@ module.exports = function (api) {
   }
 
   return {
-    presets: [
-      ["babel-preset-expo", { jsxImportSource: "nativewind" }],
-      "nativewind/babel",
-    ],
+    presets: [["babel-preset-expo", {jsxImportSource: "nativewind"}], "nativewind/babel"],
     plugins: [
       [
         "module-resolver",

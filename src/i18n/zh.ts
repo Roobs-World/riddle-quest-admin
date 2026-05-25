@@ -1,7 +1,7 @@
 /**
  * @fileoverview Chinese (zh) locale overrides.
  */
-import type { LocaleOverrides } from "./types";
+import type {LocaleOverrides} from "./types";
 
 export const zhOverrides: LocaleOverrides = {
   AuthStrings: {
@@ -33,8 +33,7 @@ export const zhOverrides: LocaleOverrides = {
       USER_NOT_FOUND_ERROR: "未找到该用户，请检查您的邮箱。",
       WRONG_PASSWORD_ERROR: "密码错误，请重试。",
       USER_DISABLED_ERROR: "该账号已被禁用。",
-      ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL:
-        "该账号已通过其他方式注册，请使用其他登录方式。",
+      ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL: "该账号已通过其他方式注册，请使用其他登录方式。",
       OPERATION_NOT_SUPPORTED_ERROR: "此环境不支持该操作。",
       LOGIN_FAILED_GENERIC: "登录失败，请检查您的凭据。",
       GOOGLE_UNEXPECTED_ERROR: "Google登录时发生意外错误。",
@@ -89,10 +88,8 @@ export const zhOverrides: LocaleOverrides = {
       TITLE: "重置密码",
       BUTTON_TEXT: "重置密码",
       SUCCESS_MESSAGE: "密码重置邮件已发送！请查看您的收件箱。",
-      USER_NOT_FOUND_ERROR:
-        "未找到使用此邮箱的账号。请检查邮箱或注册新账号。",
-      GENERIC_ERROR:
-        "发送重置邮件时出现错误，请重试。",
+      USER_NOT_FOUND_ERROR: "未找到使用此邮箱的账号。请检查邮箱或注册新账号。",
+      GENERIC_ERROR: "发送重置邮件时出现错误，请重试。",
       BACK_TO_LOGIN: "返回登录",
     },
   },
@@ -121,8 +118,7 @@ export const zhOverrides: LocaleOverrides = {
     TITLE: "制作名单",
     SUBTITLE: "认识Riddle Quest背后的精彩团队",
     THANK_YOU_TITLE: "感谢！",
-    THANK_YOU_TEXT:
-      "特别感谢所有让Riddle Quest成为可能的贡献者，你们的创造力、热情和奉献精神使这个项目得以实现。",
+    THANK_YOU_TEXT: "特别感谢所有让Riddle Quest成为可能的贡献者，你们的创造力、热情和奉献精神使这个项目得以实现。",
   },
   Profile: {
     LOADING_MESSAGE: "正在加载个人资料...",
@@ -186,23 +182,19 @@ export const zhOverrides: LocaleOverrides = {
   WelcomeModal: {
     WELCOME_TITLE: "欢迎来到\nRiddle Quest！",
     LETS_PLAY: "开始游戏",
-    SOLVE_RIDDLES_TEXT:
-      "逐个猜测字母来解答谜题。利用颜色提示引导每次尝试。",
-    EARN_COINS_TEXT:
-      "赢取金币，完成每日挑战，登上排行榜。",
+    SOLVE_RIDDLES_TEXT: "逐个猜测字母来解答谜题。利用颜色提示引导每次尝试。",
+    EARN_COINS_TEXT: "赢取金币，完成每日挑战，登上排行榜。",
   },
   Instructions: {
     TITLE: "玩法介绍",
     GOAL_TITLE: "目标",
-    GOAL_DESCRIPTION:
-      "利用颜色提示，在3次尝试内猜出隐藏的谜题。",
+    GOAL_DESCRIPTION: "利用颜色提示，在3次尝试内猜出隐藏的谜题。",
     COLOR_CLUES_TITLE: "颜色提示",
     COLOR_CORRECT: "字母正确且位置正确",
     COLOR_MISPLACED: "字母在单词中但位置不对",
     COLOR_WRONG: "字母不在单词中",
     TIPS_TITLE: "技巧",
-    TIPS_DESCRIPTION:
-      "从常用字母开始，利用颜色反馈缩小范围。记住，只有3次机会！",
+    TIPS_DESCRIPTION: "从常用字母开始，利用颜色反馈缩小范围。记住，只有3次机会！",
     GOT_IT_BUTTON: "明白了！",
   },
   VictoryModal: {
@@ -245,8 +237,7 @@ export const zhOverrides: LocaleOverrides = {
     NO_THANKS_BUTTON: "不了谢谢",
   },
   ErrorMessages: {
-    UNABLE_TO_LOAD_RIDDLES:
-      "无法加载谜题，请检查网络连接后重试。",
+    UNABLE_TO_LOAD_RIDDLES: "无法加载谜题，请检查网络连接后重试。",
     FAILED_TO_LOAD_PRODUCTS: "加载商品失败",
     FAILED_TO_LOAD_SHOP_PRODUCTS: "加载商店商品失败",
   },

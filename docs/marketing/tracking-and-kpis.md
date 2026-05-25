@@ -6,13 +6,13 @@ Last updated: 2026-05-23
 
 Use consistent campaign parameters on every public link.
 
-| Parameter | Example | Notes |
-| --- | --- | --- |
-| source | tiktok, apple_search_ads, creator_handle | Where traffic came from |
-| medium | organic, paid, creator, pr, community | Channel type |
-| campaign | prelaunch, beta, seven_day_challenge | Campaign name |
-| content | riddle_hook_01, screenshot_test_a | Creative or post identifier |
-| language | en, es, pt, fr, de, ja, ko, zh, hi, ru, tr | Language intent |
+| Parameter | Example                                    | Notes                       |
+| --------- | ------------------------------------------ | --------------------------- |
+| source    | tiktok, apple_search_ads, creator_handle   | Where traffic came from     |
+| medium    | organic, paid, creator, pr, community      | Channel type                |
+| campaign  | prelaunch, beta, seven_day_challenge       | Campaign name               |
+| content   | riddle_hook_01, screenshot_test_a          | Creative or post identifier |
+| language  | en, es, pt, fr, de, ja, ko, zh, hi, ru, tr | Language intent             |
 
 Example:
 
@@ -36,28 +36,28 @@ Track weekly:
 
 Use exact, stable event names where possible.
 
-| Event | Trigger |
-| --- | --- |
-| `first_session_started` | First app open after install |
-| `tutorial_started` | User starts tutorial |
-| `tutorial_skipped` | User skips tutorial |
-| `first_riddle_started` | First playable riddle loads |
-| `guess_submitted` | User submits a guess |
-| `first_riddle_solved` | User solves first riddle |
-| `first_riddle_failed` | User fails first riddle |
-| `hint_used` | User spends coins or reward for hint |
-| `daily_challenge_started` | Daily challenge begins |
-| `daily_challenge_completed` | Daily challenge ends |
-| `classic_level_completed` | Classic level ends in win |
-| `achievement_unlocked` | Achievement fanfare appears |
-| `leaderboard_opened` | User opens leaderboard |
-| `share_tapped` | User taps share |
-| `rewarded_ad_started` | Rewarded ad begins |
-| `rewarded_ad_completed` | Rewarded ad grants reward |
-| `shop_opened` | Coin shop opens |
-| `purchase_started` | IAP flow begins |
-| `purchase_completed` | IAP validation succeeds |
-| `review_prompt_shown` | Rating prompt appears |
+| Event                       | Trigger                              |
+| --------------------------- | ------------------------------------ |
+| `first_session_started`     | First app open after install         |
+| `tutorial_started`          | User starts tutorial                 |
+| `tutorial_skipped`          | User skips tutorial                  |
+| `first_riddle_started`      | First playable riddle loads          |
+| `guess_submitted`           | User submits a guess                 |
+| `first_riddle_solved`       | User solves first riddle             |
+| `first_riddle_failed`       | User fails first riddle              |
+| `hint_used`                 | User spends coins or reward for hint |
+| `daily_challenge_started`   | Daily challenge begins               |
+| `daily_challenge_completed` | Daily challenge ends                 |
+| `classic_level_completed`   | Classic level ends in win            |
+| `achievement_unlocked`      | Achievement fanfare appears          |
+| `leaderboard_opened`        | User opens leaderboard               |
+| `share_tapped`              | User taps share                      |
+| `rewarded_ad_started`       | Rewarded ad begins                   |
+| `rewarded_ad_completed`     | Rewarded ad grants reward            |
+| `shop_opened`               | Coin shop opens                      |
+| `purchase_started`          | IAP flow begins                      |
+| `purchase_completed`        | IAP validation succeeds              |
+| `review_prompt_shown`       | Rating prompt appears                |
 
 ## Acceptance Criteria
 
@@ -93,4 +93,3 @@ Topline:
 - Best creative:
 - Worst channel:
 - Action for next week:
-

@@ -1,7 +1,4 @@
-import type {
-  GameScreenOverlayState,
-  GameScreenOverlayActions,
-} from "../OverlayTypes";
+import type {GameScreenOverlayState, GameScreenOverlayActions} from "../OverlayTypes";
 
 describe("OverlayTypes", () => {
   it("should define GameScreenOverlayState interface correctly", () => {
@@ -125,17 +122,9 @@ describe("OverlayTypes", () => {
       isSettingsOverlayVisible: true,
     };
 
-    expect(
-      Object.values(allVisibleState).every((value) => value === true)
-    ).toBe(true);
-    expect(
-      Object.values(allHiddenState).every((value) => value === false)
-    ).toBe(true);
-    expect(Object.values(mixedState).some((value) => value === true)).toBe(
-      true
-    );
-    expect(Object.values(mixedState).some((value) => value === false)).toBe(
-      true
-    );
+    expect(Object.values(allVisibleState).every((value) => value === true)).toBe(true);
+    expect(Object.values(allHiddenState).every((value) => value === false)).toBe(true);
+    expect(Object.values(mixedState).some((value) => value === true)).toBe(true);
+    expect(Object.values(mixedState).some((value) => value === false)).toBe(true);
   });
 });

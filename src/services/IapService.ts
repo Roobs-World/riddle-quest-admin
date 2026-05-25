@@ -1,11 +1,11 @@
 import * as RNIap from "react-native-iap";
-import { Platform } from "react-native";
-import { getFunctions, httpsCallable } from "@react-native-firebase/functions";
-import { getApp } from "@react-native-firebase/app";
-import { PurchaseValidationResponse } from "../types/Player";
-import { logger } from "../utils/logger";
-import { captureException, addBreadcrumb, startTransaction } from "../utils/sentry";
-import { analyticsService } from "./AnalyticsService";
+import {Platform} from "react-native";
+import {getFunctions, httpsCallable} from "@react-native-firebase/functions";
+import {getApp} from "@react-native-firebase/app";
+import {PurchaseValidationResponse} from "../types/Player";
+import {logger} from "../utils/logger";
+import {captureException, addBreadcrumb, startTransaction} from "../utils/sentry";
+import {analyticsService} from "./AnalyticsService";
 
 // Interface for IAP error objects that have error codes
 interface IapError extends Error {
@@ -45,14 +45,14 @@ const coinProductIds = [
  * These values must match the backend configuration in firebase-functions/src/iapConfig.ts
  */
 export const COIN_PRODUCT_DETAILS: {
-  [key: string]: { id: string; coins: number };
+  [key: string]: {id: string; coins: number};
 } = {
-  COIN_PACK_TINY:  { id: "com.roobsworld.riddlequest.coinpack1", coins: 50 },
-  COIN_PACK_SMALL: { id: "com.roobsworld.riddlequest.coinpack2", coins: 100 },
-  COIN_PACK_MID:   { id: "com.roobsworld.riddlequest.coinpack3", coins: 250 },
-  COIN_PACK_LARGE: { id: "com.roobsworld.riddlequest.coinpack4", coins: 500 },
-  COIN_PACK_HUGE:  { id: "com.roobsworld.riddlequest.coinpack5", coins: 1000 },
-  COIN_PACK_MEGA:  { id: "com.roobsworld.riddlequest.coinpack6", coins: 2000 },
+  COIN_PACK_TINY: {id: "com.roobsworld.riddlequest.coinpack1", coins: 50},
+  COIN_PACK_SMALL: {id: "com.roobsworld.riddlequest.coinpack2", coins: 100},
+  COIN_PACK_MID: {id: "com.roobsworld.riddlequest.coinpack3", coins: 250},
+  COIN_PACK_LARGE: {id: "com.roobsworld.riddlequest.coinpack4", coins: 500},
+  COIN_PACK_HUGE: {id: "com.roobsworld.riddlequest.coinpack5", coins: 1000},
+  COIN_PACK_MEGA: {id: "com.roobsworld.riddlequest.coinpack6", coins: 2000},
 };
 
 const COIN_PRODUCT_ALIASES: Record<string, string> = {
@@ -77,9 +77,7 @@ let cacheTimestamp = 0;
 const PRODUCT_CACHE_TTL_MS = 5 * 60 * 1000;
 
 export const IapService = {
-  async requestPurchaseWithListenerFallback(
-    productId: string
-  ): Promise<RNIap.Purchase | null> {
+  async requestPurchaseWithListenerFallback(productId: string): Promise<RNIap.Purchase | null> {
     let timeoutHandle: ReturnType<typeof setTimeout> | null = null;
     let isSettled = false;
     let purchaseUpdatedSubscription: RNIap.EventSubscription | null = null;
@@ -129,14 +127,12 @@ export const IapService = {
       const purchaseResult = await RNIap.requestPurchase({
         type: "in-app",
         request: {
-          apple: { sku: productId },
-          google: { skus: [productId] },
+          apple: {sku: productId},
+          google: {skus: [productId]},
         },
       });
 
-      const directPurchase = Array.isArray(purchaseResult)
-        ? purchaseResult[0] ?? null
-        : purchaseResult;
+      const directPurchase = Array.isArray(purchaseResult) ? (purchaseResult[0] ?? null) : purchaseResult;
       if (directPurchase) {
         isSettled = true;
         cleanup();
@@ -151,9 +147,7 @@ export const IapService = {
     }
   },
 
-  async grantDevCoinsFallback(
-    productId: string
-  ): Promise<{
+  async grantDevCoinsFallback(productId: string): Promise<{
     success: boolean;
     newCoins: number;
     coinsAwarded: number;
@@ -163,19 +157,22 @@ export const IapService = {
     const coins = this.getCoinsForProduct(storeProductId);
     if (!coins || coins <= 0) {
       logger.warn(
-        `No local coin mapping found for dev fallback product: ${productId}; attempting backend fallback anyway.`
+        `No local coin mapping found for dev fallback product: ${productId}; attempting backend fallback anyway.`,
       );
     }
 
     const result = await httpsCallable<
-      { productId: string },
+      {productId: string},
       {
         success: boolean;
         newCoins: number;
         coinsAwarded: number;
         newlyUnlockedAchievementIds?: string[];
       }
-    >(getFunctions(getApp()), "grantDevCoinsForPurchase")({
+    >(
+      getFunctions(getApp()),
+      "grantDevCoinsForPurchase",
+    )({
       productId: storeProductId,
     });
 
@@ -183,8 +180,7 @@ export const IapService = {
       success: result.data?.success === true,
       newCoins: result.data?.newCoins ?? 0,
       coinsAwarded: result.data?.coinsAwarded ?? 0,
-      newlyUnlockedAchievementIds:
-        result.data?.newlyUnlockedAchievementIds ?? [],
+      newlyUnlockedAchievementIds: result.data?.newlyUnlockedAchievementIds ?? [],
     };
   },
 
@@ -205,13 +201,13 @@ export const IapService = {
       if (Platform.OS === "android") {
         const availablePurchases = await RNIap.getAvailablePurchases();
         for (const purchase of availablePurchases) {
-          await RNIap.finishTransaction({ purchase: purchase });
+          await RNIap.finishTransaction({purchase: purchase});
         }
       }
 
-      const products = await RNIap.fetchProducts({
+      const products = (await RNIap.fetchProducts({
         skus: coinProductIds,
-      }) as RNIap.Product[];
+      })) as RNIap.Product[];
       logger.debug("Fetched products:", products);
       cachedProducts = products;
       cacheTimestamp = Date.now();
@@ -228,17 +224,14 @@ export const IapService = {
    * @param productId - The ID of the product to purchase.
    * @returns A Promise resolving to the purchase result (likely ProductPurchase).
    */
-  async purchaseProduct(
-    productId: string
-  ): Promise<PurchaseResult | null> {
+  async purchaseProduct(productId: string): Promise<PurchaseResult | null> {
     const storeProductId = this.getStoreProductId(productId) ?? productId;
     addBreadcrumb("iap", "Purchase initiated", {
       productId: storeProductId,
       selectedProductId: productId,
     });
-    void analyticsService.logPurchaseEvent("initiated", { product_id: storeProductId });
-    const isRunningUnderJest =
-      typeof process !== "undefined" && Boolean(process.env.JEST_WORKER_ID);
+    void analyticsService.logPurchaseEvent("initiated", {product_id: storeProductId});
+    const isRunningUnderJest = typeof process !== "undefined" && Boolean(process.env.JEST_WORKER_ID);
     const shouldUseDevFallback = __DEV__ && !isRunningUnderJest;
     try {
       if (shouldUseDevFallback) {
@@ -246,7 +239,7 @@ export const IapService = {
         try {
           const fallbackResult = await this.grantDevCoinsFallback(storeProductId);
           if (fallbackResult.success) {
-            addBreadcrumb("iap", "Dev purchase fallback succeeded", { productId: storeProductId });
+            addBreadcrumb("iap", "Dev purchase fallback succeeded", {productId: storeProductId});
             void analyticsService.logPurchaseEvent("completed", {
               product_id: storeProductId,
               coins: this.getCoinsForProduct(storeProductId) ?? 0,
@@ -262,8 +255,7 @@ export const IapService = {
               productId: storeProductId,
               transactionId: `dev-${storeProductId}-${Date.now()}`,
               newCoins: fallbackResult.newCoins,
-              newlyUnlockedAchievementIds:
-                fallbackResult.newlyUnlockedAchievementIds ?? [],
+              newlyUnlockedAchievementIds: fallbackResult.newlyUnlockedAchievementIds ?? [],
             } as PurchaseResult;
           }
 
@@ -273,7 +265,7 @@ export const IapService = {
           const localFallbackCoins = this.getCoinsForProduct(storeProductId);
           if (!localFallbackCoins || localFallbackCoins <= 0) {
             const unavailableError = new Error(
-              `The selected product (${productId}) is not currently available.`
+              `The selected product (${productId}) is not currently available.`,
             ) as IapError;
             unavailableError.code = "E_ITEM_UNAVAILABLE";
             throw unavailableError;
@@ -298,15 +290,12 @@ export const IapService = {
           }
           logger.warn("Dev purchase fallback callable failed.", {
             productId: storeProductId,
-            error:
-              fallbackError instanceof Error
-                ? fallbackError.message
-                : String(fallbackError),
+            error: fallbackError instanceof Error ? fallbackError.message : String(fallbackError),
           });
           const localFallbackCoins = this.getCoinsForProduct(storeProductId);
           if (!localFallbackCoins || localFallbackCoins <= 0) {
             const unavailableError = new Error(
-              `The selected product (${productId}) is not currently available.`
+              `The selected product (${productId}) is not currently available.`,
             ) as IapError;
             unavailableError.code = "E_ITEM_UNAVAILABLE";
             throw unavailableError;
@@ -331,8 +320,8 @@ export const IapService = {
       const availableProducts = await this.getProducts();
       const availableProductIds = new Set(
         availableProducts
-          .map((product) => product.id ?? (product as { productId?: string }).productId)
-          .filter((id): id is string => typeof id === "string" && id.length > 0)
+          .map((product) => product.id ?? (product as {productId?: string}).productId)
+          .filter((id): id is string => typeof id === "string" && id.length > 0),
       );
       if (availableProducts.length > 0 && !availableProductIds.has(storeProductId)) {
         logger.warn("Requested IAP product is not available on this device/account.", {
@@ -340,7 +329,7 @@ export const IapService = {
           availableProductIds: Array.from(availableProductIds),
         });
         const unavailableError = new Error(
-          `The selected product (${productId}) is not currently available.`
+          `The selected product (${productId}) is not currently available.`,
         ) as IapError;
         unavailableError.code = "E_ITEM_UNAVAILABLE";
         throw unavailableError;
@@ -360,20 +349,15 @@ export const IapService = {
       if (purchaseToken) {
         const iapTxn = startTransaction("validatePurchase", "http.client");
         try {
-          const validationResult = await this.validatePurchase(
-            purchaseToken,
-            storeProductId
-          );
+          const validationResult = await this.validatePurchase(purchaseToken, storeProductId);
           const isValid = validationResult.success === true;
 
           if (isValid) {
-            logger.debug(
-              "Server validation successful. Coins awarded (handled server-side)."
-            );
-            addBreadcrumb("iap", "Purchase validated", { productId: storeProductId });
-            void analyticsService.logPurchaseEvent("validated", { product_id: storeProductId });
-            await RNIap.finishTransaction({ purchase: purchase });
-            addBreadcrumb("iap", "Purchase completed", { productId: storeProductId });
+            logger.debug("Server validation successful. Coins awarded (handled server-side).");
+            addBreadcrumb("iap", "Purchase validated", {productId: storeProductId});
+            void analyticsService.logPurchaseEvent("validated", {product_id: storeProductId});
+            await RNIap.finishTransaction({purchase: purchase});
+            addBreadcrumb("iap", "Purchase completed", {productId: storeProductId});
             void analyticsService.logPurchaseEvent("completed", {
               product_id: storeProductId,
               coins: this.getCoinsForProduct(storeProductId) ?? 0,
@@ -386,45 +370,37 @@ export const IapService = {
             return {
               ...purchase,
               newCoins: validationResult.newCoins,
-              newlyUnlockedAchievementIds:
-                validationResult.newlyUnlockedAchievementIds ?? [],
+              newlyUnlockedAchievementIds: validationResult.newlyUnlockedAchievementIds ?? [],
             }; // Return purchase details plus validation metadata.
           } else {
             logger.warn("Purchase validation failed for product:", storeProductId);
             // Do NOT finish the transaction if validation fails.
-            throw new Error(
-              "Your purchase could not be validated. Please try again or contact support."
-            );
+            throw new Error("Your purchase could not be validated. Please try again or contact support.");
           }
         } catch (validationError) {
           logger.error("Error during server validation:", validationError);
           captureException(validationError);
           // Do NOT finish the transaction if validation call fails.
           throw new Error(
-            "A network error occurred during purchase validation. Please check your internet connection."
+            "A network error occurred during purchase validation. Please check your internet connection.",
           );
         } finally {
           iapTxn.finish();
         }
       } else {
-        logger.error(
-          "Purchase token is missing. Cannot proceed with validation."
-        );
-        throw new Error(
-          "Could not process purchase token. Please try purchasing again."
-        );
+        logger.error("Purchase token is missing. Cannot proceed with validation.");
+        throw new Error("Could not process purchase token. Please try purchasing again.");
       }
     } catch (error: unknown) {
       logger.error("Error purchasing product:", error);
       captureException(error);
-      addBreadcrumb("iap", "Purchase failed", { productId: storeProductId }, "error");
+      addBreadcrumb("iap", "Purchase failed", {productId: storeProductId}, "error");
       void analyticsService.logPurchaseEvent("failed", {
         product_id: storeProductId,
-        error_code: (error as { code?: string }).code ?? "unknown",
+        error_code: (error as {code?: string}).code ?? "unknown",
       });
       // Refer to RNIap documentation for error codes.
-      let userFriendlyMessage =
-        "An unexpected error occurred during the purchase process. Please try again.";
+      let userFriendlyMessage = "An unexpected error occurred during the purchase process. Please try again.";
 
       if ((error as IapError).code === "E_USER_CANCELLED") {
         logger.debug("Purchase cancelled by user.");
@@ -434,8 +410,7 @@ export const IapService = {
         userFriendlyMessage = "You already own this item.";
       } else if ((error as IapError).code === "E_DEVELOPER_ERROR") {
         logger.debug("Developer error.");
-        userFriendlyMessage =
-          "A system error occurred. Please contact support if this persists.";
+        userFriendlyMessage = "A system error occurred. Please contact support if this persists.";
       } else if ((error as IapError).code === "E_ITEM_UNAVAILABLE") {
         logger.debug("Item unavailable.");
         userFriendlyMessage = "This item is currently unavailable.";
@@ -444,11 +419,9 @@ export const IapService = {
         userFriendlyMessage = "This item is currently unavailable.";
       } else if ((error as IapError).code === "E_NETWORK_ERROR") {
         logger.debug("Network error during purchase.");
-        userFriendlyMessage =
-          "Network error. Please check your connection and try again.";
+        userFriendlyMessage = "Network error. Please check your connection and try again.";
       } else if (
-        (error as Error).message ===
-        "Your purchase could not be validated. Please try again or contact support."
+        (error as Error).message === "Your purchase could not be validated. Please try again or contact support."
       ) {
         // This is an error from the validation catch block, re-thrown.
         userFriendlyMessage = (error as Error).message;
@@ -458,10 +431,7 @@ export const IapService = {
       ) {
         // This is an error from the validation catch block, re-thrown.
         userFriendlyMessage = (error as Error).message;
-      } else if (
-        (error as Error).message ===
-        "Could not process purchase token. Please try purchasing again."
-      ) {
+      } else if ((error as Error).message === "Could not process purchase token. Please try purchasing again.") {
         // This is an error from the missing purchase token catch block, re-thrown.
         userFriendlyMessage = (error as Error).message;
       }
@@ -481,17 +451,17 @@ export const IapService = {
    * @returns Promise resolving to true if validation succeeded, false otherwise
    * @throws Error if the validation request fails
    */
-  async validatePurchase(
-    purchaseToken: string,
-    productId: string
-  ): Promise<PurchaseValidationResult> {
+  async validatePurchase(purchaseToken: string, productId: string): Promise<PurchaseValidationResult> {
     // Call the Firebase Cloud Function for server-side validation
     // The server validates with App Store/Google Play and awards coins
     try {
       const result = await httpsCallable<
-        { purchaseToken: string; productId: string; platform: string },
+        {purchaseToken: string; productId: string; platform: string},
         PurchaseValidationResponse
-      >(getFunctions(getApp()), "validatePurchase")({
+      >(
+        getFunctions(getApp()),
+        "validatePurchase",
+      )({
         purchaseToken,
         productId,
         platform: Platform.OS,
@@ -500,8 +470,7 @@ export const IapService = {
       return {
         success: result.data.success === true,
         newCoins: result.data.newCoins,
-        newlyUnlockedAchievementIds:
-          result.data.newlyUnlockedAchievementIds ?? [],
+        newlyUnlockedAchievementIds: result.data.newlyUnlockedAchievementIds ?? [],
       };
     } catch (error) {
       logger.error("Error calling validatePurchase Firebase Function:", error);
@@ -520,9 +489,7 @@ export const IapService = {
     if (!storeProductId) {
       return undefined;
     }
-    const productDetail = Object.values(COIN_PRODUCT_DETAILS).find(
-      (detail) => detail.id === storeProductId
-    );
+    const productDetail = Object.values(COIN_PRODUCT_DETAILS).find((detail) => detail.id === storeProductId);
     return productDetail?.coins;
   },
 

@@ -12,8 +12,8 @@
  */
 
 import React from "react";
-import { Text } from "react-native";
-import { styles, SPACING } from "../../styles";
+import {Text} from "react-native";
+import {styles, SPACING} from "../../styles";
 
 /**
  * Props interface for the Error component.
@@ -68,10 +68,10 @@ interface ErrorProps {
  * @param {ErrorProps} props - Component props
  * @returns {JSX.Element} Rendered error message text
  */
-const Error = ({ message }: ErrorProps) => (
+const Error = ({message}: ErrorProps) => (
   <Text
     className="text-red-500 text-center"
-    style={[styles.errorText, { marginBottom: SPACING.md }]}
+    style={[styles.errorText, {marginBottom: SPACING.md}]}
     accessibilityRole="alert"
   >
     {message}
@@ -79,4 +79,3 @@ const Error = ({ message }: ErrorProps) => (
 );
 
 export default Error;
-

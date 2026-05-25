@@ -7,16 +7,16 @@
  * Cloud Function) is called exactly once when the game truly ends — win or final
  * loss — to award coins, update stats, advance progress, and evaluate achievements.
  */
-import { useState, useCallback, useEffect, useMemo, useRef } from "react";
-import type { SubmittedGuess } from "./types";
-import { getFunctions, httpsCallable } from "@react-native-firebase/functions";
-import { getApp } from "@react-native-firebase/app";
-import { logger } from "../utils/logger";
-import { captureException, addBreadcrumb, startTransaction } from "../utils/sentry";
-import { gameEventBus } from "../services/GameEventBus";
+import {useState, useCallback, useEffect, useMemo, useRef} from "react";
+import type {SubmittedGuess} from "./types";
+import {getFunctions, httpsCallable} from "@react-native-firebase/functions";
+import {getApp} from "@react-native-firebase/app";
+import {logger} from "../utils/logger";
+import {captureException, addBreadcrumb, startTransaction} from "../utils/sentry";
+import {gameEventBus} from "../services/GameEventBus";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { CLASSIC_RIDDLE_COIN_REWARD, DAILY_CHALLENGE_COIN_REWARD } from "../constants/game";
-import { NUM_GUESSES } from "../utils/constants";
+import {CLASSIC_RIDDLE_COIN_REWARD, DAILY_CHALLENGE_COIN_REWARD} from "../constants/game";
+import {NUM_GUESSES} from "../utils/constants";
 
 export type Feedback = "green" | "yellow" | "red";
 
@@ -50,12 +50,12 @@ const GUEST_GAME_SESSION_STORAGE_KEY = "@guest_game_session_v1";
 const INITIAL_ATTEMPTS = NUM_GUESSES;
 const CONTINUE_ATTEMPTS = 3;
 
-function getLocalRewards(gameMode: "challenge" | "classic", attempts: number): { coins: number; score: number } {
+function getLocalRewards(gameMode: "challenge" | "classic", attempts: number): {coins: number; score: number} {
   const scoreMaxAttempts = 5;
   const baseScore = gameMode === "challenge" ? 100 : 50;
   const attemptsBonus = Math.max(0, (scoreMaxAttempts - attempts + 1) * 10);
   const coins = gameMode === "challenge" ? DAILY_CHALLENGE_COIN_REWARD : CLASSIC_RIDDLE_COIN_REWARD;
-  return { coins, score: baseScore + attemptsBonus };
+  return {coins, score: baseScore + attemptsBonus};
 }
 
 type GuestGameSessionSnapshot = {
@@ -116,7 +116,7 @@ function computeFeedback(guess: string, answer: string): Feedback[] {
  * @param props Riddle identity, answer cache, and backend game mode key.
  * @returns Gameplay state plus actions used by `GameScreen`.
  */
-const useGameLogic = ({ riddleId, answer, gameMode, isGuestMode = false }: UseGameLogicProps) => {
+const useGameLogic = ({riddleId, answer, gameMode, isGuestMode = false}: UseGameLogicProps) => {
   const [guesses, setGuesses] = useState<SubmittedGuess[]>([]);
   const [currentGuess, setCurrentGuess] = useState<string[]>([]);
   const [gameOver, setGameOver] = useState(false);
@@ -124,10 +124,7 @@ const useGameLogic = ({ riddleId, answer, gameMode, isGuestMode = false }: UseGa
   const [hasUsedContinue, setHasUsedContinue] = useState(false);
   const lastPersistedGuestSnapshotRef = useRef<string | null>(null);
   const normalizedAnswer = useMemo(() => answer.toLowerCase(), [answer]);
-  const completeGame = useMemo(
-    () => httpsCallable(getFunctions(getApp()), "completeGame"),
-    []
-  );
+  const completeGame = useMemo(() => httpsCallable(getFunctions(getApp()), "completeGame"), []);
 
   const clearGuestSession = useCallback(async (): Promise<void> => {
     if (!isGuestMode) return;
@@ -191,10 +188,7 @@ const useGameLogic = ({ riddleId, answer, gameMode, isGuestMode = false }: UseGa
       return;
     }
 
-    void AsyncStorage.setItem(
-      GUEST_GAME_SESSION_STORAGE_KEY,
-      snapshotRaw
-    )
+    void AsyncStorage.setItem(GUEST_GAME_SESSION_STORAGE_KEY, snapshotRaw)
       .then(() => {
         lastPersistedGuestSnapshotRef.current = snapshotRaw;
       })
@@ -214,12 +208,10 @@ const useGameLogic = ({ riddleId, answer, gameMode, isGuestMode = false }: UseGa
     async (guess: string[]) => {
       const guessString = guess.join("");
       const normalizedGuess = guessString.toLowerCase();
-      const maxAttempts = hasUsedContinue
-        ? INITIAL_ATTEMPTS + CONTINUE_ATTEMPTS
-        : INITIAL_ATTEMPTS;
+      const maxAttempts = hasUsedContinue ? INITIAL_ATTEMPTS + CONTINUE_ATTEMPTS : INITIAL_ATTEMPTS;
       const currentAttempt = attemptsUsed + 1;
 
-      addBreadcrumb("game", "Guess submitted", { guess: guessString, attempt: currentAttempt, riddleId, gameMode });
+      addBreadcrumb("game", "Guess submitted", {guess: guessString, attempt: currentAttempt, riddleId, gameMode});
       gameEventBus.emit<import("../services/GameEventBus").GuessSubmittedEvent>({
         type: "GUESS_SUBMITTED",
         guess: guessString,
@@ -230,7 +222,7 @@ const useGameLogic = ({ riddleId, answer, gameMode, isGuestMode = false }: UseGa
       const feedback = computeFeedback(normalizedGuess, normalizedAnswer);
       const isCorrect = normalizedGuess === normalizedAnswer;
 
-      const newSubmittedGuess: SubmittedGuess = { guess, feedback };
+      const newSubmittedGuess: SubmittedGuess = {guess, feedback};
       setGuesses((prev) => [...prev, newSubmittedGuess]);
       setCurrentGuess([]);
       setAttemptsUsed(currentAttempt);
@@ -238,7 +230,7 @@ const useGameLogic = ({ riddleId, answer, gameMode, isGuestMode = false }: UseGa
       gameEventBus.emit<import("../services/GameEventBus").GuessValidatedEvent>({
         type: "GUESS_VALIDATED",
         guess: guessString,
-        feedback: guess.map((letter, i) => ({ letter, status: feedback[i] })),
+        feedback: guess.map((letter, i) => ({letter, status: feedback[i]})),
         isCorrect,
       });
 
@@ -246,7 +238,7 @@ const useGameLogic = ({ riddleId, answer, gameMode, isGuestMode = false }: UseGa
       if (isCorrect) {
         logger.debug("Correct guess!");
         setGameOver(true);
-        addBreadcrumb("game", "Game won", { attempts: currentAttempt, riddleId, gameMode });
+        addBreadcrumb("game", "Game won", {attempts: currentAttempt, riddleId, gameMode});
         void clearGuestSession();
 
         gameEventBus.emit<import("../services/GameEventBus").GameCompletedEvent>({
@@ -311,7 +303,7 @@ const useGameLogic = ({ riddleId, answer, gameMode, isGuestMode = false }: UseGa
 
         if (hasUsedContinue) {
           // Final loss — notify server (except guest/local-only mode).
-          addBreadcrumb("game", "Game lost", { attempts: currentAttempt, riddleId, gameMode });
+          addBreadcrumb("game", "Game lost", {attempts: currentAttempt, riddleId, gameMode});
           gameEventBus.emit<import("../services/GameEventBus").GameCompletedEvent>({
             type: "GAME_COMPLETED",
             outcome: "lost",
@@ -371,7 +363,7 @@ const useGameLogic = ({ riddleId, answer, gameMode, isGuestMode = false }: UseGa
       isGuestMode,
       clearGuestSession,
       completeGame,
-    ]
+    ],
   );
 
   /**
@@ -398,9 +390,7 @@ const useGameLogic = ({ riddleId, answer, gameMode, isGuestMode = false }: UseGa
     void clearGuestSession();
   }, [clearGuestSession]);
 
-  const maxAttempts = hasUsedContinue
-    ? INITIAL_ATTEMPTS + CONTINUE_ATTEMPTS
-    : INITIAL_ATTEMPTS;
+  const maxAttempts = hasUsedContinue ? INITIAL_ATTEMPTS + CONTINUE_ATTEMPTS : INITIAL_ATTEMPTS;
   const attemptsRemaining = maxAttempts - attemptsUsed;
 
   return {

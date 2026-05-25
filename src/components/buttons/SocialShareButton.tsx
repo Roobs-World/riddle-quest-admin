@@ -11,20 +11,20 @@
  */
 
 import React from "react";
-import { TouchableOpacity, Text, ViewStyle } from "react-native";
+import {TouchableOpacity, Text, ViewStyle} from "react-native";
 import FacebookIcon from "../icons/FacebookIcon";
 import XIcon from "../icons/XIcon";
-import { COLORS } from "../../styles/tokens/colors";
-import { SPACING } from "../../styles/tokens/spacing";
-import { BORDER_RADIUS } from "../../styles/tokens/borderRadius";
-import { TYPOGRAPHY } from "../../styles/tokens/typography";
-import { moderateScale } from "../../utils/responsive";
+import {COLORS} from "../../styles/tokens/colors";
+import {SPACING} from "../../styles/tokens/spacing";
+import {BORDER_RADIUS} from "../../styles/tokens/borderRadius";
+import {TYPOGRAPHY} from "../../styles/tokens/typography";
+import {moderateScale} from "../../utils/responsive";
 import {
   SOCIAL_BUTTON_MIN_WIDTH_SM,
   SOCIAL_BUTTON_MIN_WIDTH_MD,
   SOCIAL_BUTTON_MIN_WIDTH_LG,
 } from "../../constants/layout";
-import { AppStrings } from "../../constants/AppStrings";
+import {AppStrings} from "../../constants/AppStrings";
 
 interface SocialShareButtonProps {
   platform: "facebook" | "x" | "system";
@@ -56,9 +56,9 @@ const SocialShareButton: React.FC<SocialShareButtonProps> = ({
 
   const getButtonStyle = (): ViewStyle => {
     const sizeStyles = {
-      small: { paddingHorizontal: SPACING.sm, paddingVertical: SPACING.xs, minWidth: SOCIAL_BUTTON_MIN_WIDTH_SM },
-      medium: { paddingHorizontal: SPACING.md, paddingVertical: SPACING.sm, minWidth: SOCIAL_BUTTON_MIN_WIDTH_MD },
-      large: { paddingHorizontal: SPACING.lg, paddingVertical: SPACING.md, minWidth: SOCIAL_BUTTON_MIN_WIDTH_LG },
+      small: {paddingHorizontal: SPACING.sm, paddingVertical: SPACING.xs, minWidth: SOCIAL_BUTTON_MIN_WIDTH_SM},
+      medium: {paddingHorizontal: SPACING.md, paddingVertical: SPACING.sm, minWidth: SOCIAL_BUTTON_MIN_WIDTH_MD},
+      large: {paddingHorizontal: SPACING.lg, paddingVertical: SPACING.md, minWidth: SOCIAL_BUTTON_MIN_WIDTH_LG},
     };
 
     const platformBg = {
@@ -73,12 +73,12 @@ const SocialShareButton: React.FC<SocialShareButtonProps> = ({
       justifyContent: "center",
       borderRadius: BORDER_RADIUS.lg,
       shadowColor: COLORS.shadowColor,
-      shadowOffset: { width: 0, height: moderateScale(2) },
+      shadowOffset: {width: 0, height: moderateScale(2)},
       shadowOpacity: 0.1,
       shadowRadius: moderateScale(4),
       elevation: 3,
       backgroundColor: platformBg[platform],
-      ...(fullWidth ? { width: "100%" } : {}),
+      ...(fullWidth ? {width: "100%"} : {}),
       ...sizeStyles[size],
     };
   };
@@ -89,15 +89,18 @@ const SocialShareButton: React.FC<SocialShareButtonProps> = ({
     fontWeight: "600" as const,
     marginLeft: platform === "facebook" ? SPACING.xs : 0,
     color: textColor,
-    fontSize: size === "small" ? TYPOGRAPHY.fontSize.xs : size === "medium" ? TYPOGRAPHY.fontSize.sm : TYPOGRAPHY.fontSize.base,
+    fontSize:
+      size === "small" ? TYPOGRAPHY.fontSize.xs : size === "medium" ? TYPOGRAPHY.fontSize.sm : TYPOGRAPHY.fontSize.base,
   };
 
-  const platformLabel = platform === "facebook" ? "Facebook" : platform === "x" ? "X" : AppStrings.Accessibility.SHARE_SYSTEM;
-  const accessibilityLabel = platform === "facebook"
-    ? AppStrings.Accessibility.SHARE_TO_FACEBOOK
-    : platform === "x"
-    ? AppStrings.Accessibility.SHARE_TO_X
-    : AppStrings.Accessibility.SHARE_SYSTEM;
+  const platformLabel =
+    platform === "facebook" ? "Facebook" : platform === "x" ? "X" : AppStrings.Accessibility.SHARE_SYSTEM;
+  const accessibilityLabel =
+    platform === "facebook"
+      ? AppStrings.Accessibility.SHARE_TO_FACEBOOK
+      : platform === "x"
+        ? AppStrings.Accessibility.SHARE_TO_X
+        : AppStrings.Accessibility.SHARE_SYSTEM;
 
   return (
     <TouchableOpacity
@@ -115,4 +118,3 @@ const SocialShareButton: React.FC<SocialShareButtonProps> = ({
 };
 
 export default SocialShareButton;
-

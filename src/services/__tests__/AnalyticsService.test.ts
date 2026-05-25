@@ -5,13 +5,8 @@
  * GameEventBus, and forwards the expected events to the analytics SDK.
  */
 
-import { AnalyticsService } from "../AnalyticsService";
-import {
-  gameEventBus,
-  GuessSubmittedEvent,
-  GuessValidatedEvent,
-  GameCompletedEvent,
-} from "../GameEventBus";
+import {AnalyticsService} from "../AnalyticsService";
+import {gameEventBus, GuessSubmittedEvent, GuessValidatedEvent, GameCompletedEvent} from "../GameEventBus";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Mocks
@@ -37,21 +32,19 @@ jest.mock("@react-native-firebase/analytics", () => ({
   getAnalytics: jest.fn(() => mockAnalyticsInstance),
   setUserId: jest.fn((instance: typeof mockAnalyticsInstance, id: string | null) => instance.setUserId(id)),
   setAnalyticsCollectionEnabled: jest.fn((instance: typeof mockAnalyticsInstance, v: boolean) =>
-    instance.setAnalyticsCollectionEnabled(v)
+    instance.setAnalyticsCollectionEnabled(v),
   ),
   logEvent: jest.fn((instance: typeof mockAnalyticsInstance, name: string, params: unknown) =>
-    instance.logEvent(name, params)
+    instance.logEvent(name, params),
   ),
-  logShare: jest.fn((instance: typeof mockAnalyticsInstance, opts: unknown) =>
-    instance.logShare(opts)
-  ),
+  logShare: jest.fn((instance: typeof mockAnalyticsInstance, opts: unknown) => instance.logShare(opts)),
   setUserProperty: jest.fn((instance: typeof mockAnalyticsInstance, name: string, value: string) =>
-    instance.setUserProperty(name, value)
+    instance.setUserProperty(name, value),
   ),
 }));
 
 jest.mock("../../utils/logger", () => ({
-  logger: { debug: jest.fn(), info: jest.fn(), warn: jest.fn(), error: jest.fn() },
+  logger: {debug: jest.fn(), info: jest.fn(), warn: jest.fn(), error: jest.fn()},
 }));
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -65,8 +58,7 @@ function createService(): AnalyticsService {
 }
 
 /** Flush multiple microtask queues to let chained async handlers settle. */
-const flushPromises = () =>
-  new Promise<void>((resolve) => setTimeout(resolve, 0));
+const flushPromises = () => new Promise<void>((resolve) => setTimeout(resolve, 0));
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Tests
@@ -124,7 +116,7 @@ describe("AnalyticsService", () => {
 
   describe("logCoinSpend", () => {
     it("logs a coin_spend event", async () => {
-      await service.logCoinSpend({ action: "hint", amount: 50, gameMode: "classic" });
+      await service.logCoinSpend({action: "hint", amount: 50, gameMode: "classic"});
       expect(mockLogEvent).toHaveBeenCalledWith("coin_spend", {
         action: "hint",
         amount: 50,
@@ -144,7 +136,7 @@ describe("AnalyticsService", () => {
 
   describe("logShare", () => {
     it("calls analytics logShare with platform and game mode", async () => {
-      await service.logShare({ platform: "x", gameMode: "daily" });
+      await service.logShare({platform: "x", gameMode: "daily"});
       expect(mockLogShare).toHaveBeenCalledWith({
         content_type: "game_result",
         item_id: "daily",
@@ -169,7 +161,7 @@ describe("AnalyticsService", () => {
     });
 
     it("logs guess_submitted when GUESS_SUBMITTED fires", async () => {
-      gameEventBus.emit<GuessSubmittedEvent>({ type: "GUESS_SUBMITTED", guess: "APPLE", attemptNumber: 1 });
+      gameEventBus.emit<GuessSubmittedEvent>({type: "GUESS_SUBMITTED", guess: "APPLE", attemptNumber: 1});
       await flushPromises();
       expect(mockLogEvent).toHaveBeenCalledWith("guess_submitted", {
         attempt_number: 1,
@@ -181,11 +173,11 @@ describe("AnalyticsService", () => {
         type: "GUESS_VALIDATED",
         guess: "APPLE",
         feedback: [
-          { letter: "A", status: "green" },
-          { letter: "P", status: "yellow" },
-          { letter: "P", status: "red" },
-          { letter: "L", status: "green" },
-          { letter: "E", status: "red" },
+          {letter: "A", status: "green"},
+          {letter: "P", status: "yellow"},
+          {letter: "P", status: "red"},
+          {letter: "L", status: "green"},
+          {letter: "E", status: "red"},
         ],
         isCorrect: false,
       });
@@ -228,16 +220,13 @@ describe("AnalyticsService", () => {
         attempts: 6,
         coins_earned: 0,
       });
-      expect(mockLogEvent).not.toHaveBeenCalledWith(
-        "level_end",
-        expect.any(Object)
-      );
+      expect(mockLogEvent).not.toHaveBeenCalledWith("level_end", expect.any(Object));
     });
 
     it("stops forwarding events after reset", async () => {
       await service.reset();
       jest.clearAllMocks();
-      gameEventBus.emit<GuessSubmittedEvent>({ type: "GUESS_SUBMITTED", guess: "APPLE", attemptNumber: 2 });
+      gameEventBus.emit<GuessSubmittedEvent>({type: "GUESS_SUBMITTED", guess: "APPLE", attemptNumber: 2});
       await flushPromises();
       expect(mockLogEvent).not.toHaveBeenCalled();
     });
@@ -262,21 +251,21 @@ describe("AnalyticsService", () => {
     });
 
     it("includes extra params when provided", async () => {
-      await service.logAuthEvent("login", { method: "google" });
-      expect(mockLogEvent).toHaveBeenCalledWith("auth_login", { method: "google" });
+      await service.logAuthEvent("login", {method: "google"});
+      expect(mockLogEvent).toHaveBeenCalledWith("auth_login", {method: "google"});
     });
   });
 
   describe("logPurchaseEvent", () => {
     it("logs iap_purchase_initiated event", async () => {
-      await service.logPurchaseEvent("initiated", { product_id: "com.roobsworld.riddlequest.coinpack1" });
+      await service.logPurchaseEvent("initiated", {product_id: "com.roobsworld.riddlequest.coinpack1"});
       expect(mockLogEvent).toHaveBeenCalledWith("iap_purchase_initiated", {
         product_id: "com.roobsworld.riddlequest.coinpack1",
       });
     });
 
     it("logs iap_purchase_validated event", async () => {
-      await service.logPurchaseEvent("validated", { product_id: "com.roobsworld.riddlequest.coinpack1" });
+      await service.logPurchaseEvent("validated", {product_id: "com.roobsworld.riddlequest.coinpack1"});
       expect(mockLogEvent).toHaveBeenCalledWith("iap_purchase_validated", {
         product_id: "com.roobsworld.riddlequest.coinpack1",
       });
@@ -336,28 +325,28 @@ describe("AnalyticsService", () => {
 
   describe("logAdEvent", () => {
     it("logs rewarded_ad_loaded event", async () => {
-      await service.logAdEvent("loaded", { network_name: "TestNetwork" });
+      await service.logAdEvent("loaded", {network_name: "TestNetwork"});
       expect(mockLogEvent).toHaveBeenCalledWith("rewarded_ad_loaded", {
         network_name: "TestNetwork",
       });
     });
 
     it("logs rewarded_ad_load_failed event", async () => {
-      await service.logAdEvent("load_failed", { error_code: 204 });
+      await service.logAdEvent("load_failed", {error_code: 204});
       expect(mockLogEvent).toHaveBeenCalledWith("rewarded_ad_load_failed", {
         error_code: 204,
       });
     });
 
     it("logs rewarded_ad_displayed event", async () => {
-      await service.logAdEvent("displayed", { network_name: "TestNetwork" });
+      await service.logAdEvent("displayed", {network_name: "TestNetwork"});
       expect(mockLogEvent).toHaveBeenCalledWith("rewarded_ad_displayed", {
         network_name: "TestNetwork",
       });
     });
 
     it("logs rewarded_ad_completed with reward info", async () => {
-      await service.logAdEvent("completed", { reward_amount: 50, reward_label: "coins" });
+      await service.logAdEvent("completed", {reward_amount: 50, reward_label: "coins"});
       expect(mockLogEvent).toHaveBeenCalledWith("rewarded_ad_completed", {
         reward_amount: 50,
         reward_label: "coins",
@@ -365,7 +354,7 @@ describe("AnalyticsService", () => {
     });
 
     it("logs rewarded_ad_display_failed event", async () => {
-      await service.logAdEvent("display_failed", { error_code: 503 });
+      await service.logAdEvent("display_failed", {error_code: 503});
       expect(mockLogEvent).toHaveBeenCalledWith("rewarded_ad_display_failed", {
         error_code: 503,
       });
@@ -429,9 +418,7 @@ describe("AnalyticsService", () => {
 
     it("does not throw when analytics SDK throws during logEvent", async () => {
       mockLogEvent.mockRejectedValueOnce(new Error("SDK error"));
-      await expect(
-        service.logCoinSpend({ action: "skip", amount: 100, gameMode: "classic" })
-      ).resolves.not.toThrow();
+      await expect(service.logCoinSpend({action: "skip", amount: 100, gameMode: "classic"})).resolves.not.toThrow();
     });
 
     it("does not throw when initialize fails", async () => {
@@ -447,22 +434,16 @@ describe("AnalyticsService", () => {
 
     it("does not throw when logShare fails", async () => {
       mockLogShare.mockRejectedValueOnce(new Error("Share error"));
-      await expect(
-        service.logShare({ platform: "x", gameMode: "classic" })
-      ).resolves.not.toThrow();
+      await expect(service.logShare({platform: "x", gameMode: "classic"})).resolves.not.toThrow();
     });
 
     it("does not throw when setUserProperty fails", async () => {
       mockSetUserProperty.mockRejectedValueOnce(new Error("Property error"));
-      await expect(
-        service.setUserProperty("test_prop", "test_value")
-      ).resolves.not.toThrow();
+      await expect(service.setUserProperty("test_prop", "test_value")).resolves.not.toThrow();
     });
 
     it("does not throw when level_end event logging fails in game completed handler", async () => {
-      mockLogEvent
-        .mockResolvedValueOnce(undefined)
-        .mockRejectedValueOnce(new Error("LevelEnd error"));
+      mockLogEvent.mockResolvedValueOnce(undefined).mockRejectedValueOnce(new Error("LevelEnd error"));
 
       const event: GameCompletedEvent = {
         type: "GAME_COMPLETED",
@@ -484,7 +465,7 @@ describe("AnalyticsService", () => {
 
   describe("logGameStart", () => {
     it("logs game_start event with params", async () => {
-      await service.logGameStart({ gameMode: "daily", riddleId: "riddle-456" });
+      await service.logGameStart({gameMode: "daily", riddleId: "riddle-456"});
 
       expect(mockLogEvent).toHaveBeenCalledWith("game_start", {
         gameMode: "daily",

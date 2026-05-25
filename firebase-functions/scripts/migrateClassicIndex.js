@@ -10,10 +10,7 @@ const db = admin.firestore();
 async function migrate() {
   console.log("Querying users with classicIndex: 0...");
 
-  const snapshot = await db
-    .collection("users")
-    .where("progress.classicIndex", "==", 0)
-    .get();
+  const snapshot = await db.collection("users").where("progress.classicIndex", "==", 0).get();
 
   if (snapshot.empty) {
     console.log("No users with classicIndex: 0 found. Nothing to migrate.");
@@ -24,7 +21,7 @@ async function migrate() {
 
   const batch = db.batch();
   snapshot.docs.forEach((doc) => {
-    batch.update(doc.ref, { "progress.classicIndex": 1 });
+    batch.update(doc.ref, {"progress.classicIndex": 1});
   });
 
   await batch.commit();

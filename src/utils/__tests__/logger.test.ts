@@ -1,4 +1,4 @@
-import { logger } from "../logger";
+import {logger} from "../logger";
 
 describe("logger", () => {
   let consoleLogSpy: jest.SpyInstance;
@@ -18,8 +18,8 @@ describe("logger", () => {
   });
 
   it("error always logs to console.error", () => {
-    logger.error("test error", { code: "ERR" });
-    expect(consoleErrorSpy).toHaveBeenCalledWith("test error", { code: "ERR" });
+    logger.error("test error", {code: "ERR"});
+    expect(consoleErrorSpy).toHaveBeenCalledWith("test error", {code: "ERR"});
   });
 
   it("debug logs to console.log when in dev", () => {
@@ -37,4 +37,3 @@ describe("logger", () => {
     expect(consoleWarnSpy).toHaveBeenCalledWith("test warn");
   });
 });
-

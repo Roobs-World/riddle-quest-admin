@@ -12,9 +12,9 @@
  */
 
 import React from "react";
-import { ViewProps } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { SPACING } from "../../styles/tokens/spacing";
+import {ViewProps} from "react-native";
+import {SafeAreaView} from "react-native-safe-area-context";
+import {SPACING} from "../../styles/tokens/spacing";
 
 /**
  * Props interface for the CustomSafeAreaView component.
@@ -79,31 +79,19 @@ interface CustomSafeAreaViewProps extends ViewProps {
  * @param {CustomSafeAreaViewProps} props - Component props
  * @returns {JSX.Element} Rendered SafeAreaView with consistent styling
  */
-const CustomSafeAreaView: React.FC<CustomSafeAreaViewProps> = ({
-  children,
-  style,
-  className,
-  ...rest
-}) => {
+const CustomSafeAreaView: React.FC<CustomSafeAreaViewProps> = ({children, style, className, ...rest}) => {
   /**
    * Combines default styling classes with optional custom className.
    * The default classes provide the app's standard safe area appearance,
    * while custom classes can override or extend this styling.
    */
-  const combinedClassName = `bg-transparent flex-1 justify-center items-center ${
-    className || ""
-  }`;
+  const combinedClassName = `bg-transparent flex-1 justify-center items-center ${className || ""}`;
 
   return (
-    <SafeAreaView
-      className={combinedClassName}
-      style={[{ padding: SPACING.lg }, style]}
-      {...rest}
-    >
+    <SafeAreaView className={combinedClassName} style={[{padding: SPACING.lg}, style]} {...rest}>
       {children}
     </SafeAreaView>
   );
 };
 
 export default CustomSafeAreaView;
-

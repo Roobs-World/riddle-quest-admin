@@ -1,25 +1,20 @@
 import React from "react";
-import { render } from "@testing-library/react-native";
+import {render} from "@testing-library/react-native";
 import CloseButtonWhite from "../CloseButtonWhite";
 
 jest.mock("../CloseButton", () => {
   const React = require("react");
-  const { View } = require("react-native");
+  const {View} = require("react-native");
   return function MockCloseButton(props: any) {
-    return React.createElement(View, { testID: "close-button-proxy", ...props });
+    return React.createElement(View, {testID: "close-button-proxy", ...props});
   };
 });
 
 describe("CloseButtonWhite", () => {
   it("forces white icon color while forwarding props", () => {
     const onPress = jest.fn();
-    const { getByTestId } = render(
-      <CloseButtonWhite
-        onPress={onPress}
-        size={30}
-        className="my-class"
-        testID="close-white"
-      />
+    const {getByTestId} = render(
+      <CloseButtonWhite onPress={onPress} size={30} className="my-class" testID="close-white" />,
     );
 
     const button = getByTestId("close-white");
@@ -31,8 +26,7 @@ describe("CloseButtonWhite", () => {
   });
 
   it("defaults className to empty string", () => {
-    const { getByTestId } = render(<CloseButtonWhite onPress={jest.fn()} />);
+    const {getByTestId} = render(<CloseButtonWhite onPress={jest.fn()} />);
     expect(getByTestId("close-button-proxy").props.className).toBe("");
   });
 });
-

@@ -1,4 +1,4 @@
-import { Player } from "../../validation/firestoreSchemas";
+import {Player} from "../../validation/firestoreSchemas";
 
 /**
  * Interface for user data operations

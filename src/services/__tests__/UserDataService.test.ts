@@ -1,7 +1,7 @@
-import { ZodError } from "zod";
-import { logger } from "../../utils/logger";
-import { Player, PlayerSchema } from "../../validation/firestoreSchemas";
-import { UserDataService } from "../UserDataService";
+import {ZodError} from "zod";
+import {logger} from "../../utils/logger";
+import {Player, PlayerSchema} from "../../validation/firestoreSchemas";
+import {UserDataService} from "../UserDataService";
 
 // Mock refs assigned in jest.mock factory (must use let for hoisting)
 let mockGetDoc: jest.Mock;
@@ -125,43 +125,35 @@ describe("UserDataService", () => {
       expect(mockSetDoc).not.toHaveBeenCalled();
       expect(logger.warn).toHaveBeenCalledWith(
         "Skipping direct client progress write; player progress is persisted by Cloud Functions.",
-        { userId: mockUserId, progress: mockProgress }
+        {userId: mockUserId, progress: mockProgress},
       );
     });
 
     it("should handle empty userId gracefully", async () => {
       await userDataService.saveUserProgress("", mockProgress);
 
-      expect(logger.warn).toHaveBeenCalledWith(
-        "Attempted to save progress to Firestore without a userId."
-      );
+      expect(logger.warn).toHaveBeenCalledWith("Attempted to save progress to Firestore without a userId.");
       expect(mockSetDoc).not.toHaveBeenCalled();
     });
 
     it("should handle null userId gracefully", async () => {
       await userDataService.saveUserProgress(null as any, mockProgress);
 
-      expect(logger.warn).toHaveBeenCalledWith(
-        "Attempted to save progress to Firestore without a userId."
-      );
+      expect(logger.warn).toHaveBeenCalledWith("Attempted to save progress to Firestore without a userId.");
       expect(mockSetDoc).not.toHaveBeenCalled();
     });
 
     it("should handle undefined userId gracefully", async () => {
       await userDataService.saveUserProgress(undefined as any, mockProgress);
 
-      expect(logger.warn).toHaveBeenCalledWith(
-        "Attempted to save progress to Firestore without a userId."
-      );
+      expect(logger.warn).toHaveBeenCalledWith("Attempted to save progress to Firestore without a userId.");
       expect(mockSetDoc).not.toHaveBeenCalled();
     });
 
     it("should handle whitespace-only userId gracefully", async () => {
       await userDataService.saveUserProgress("   ", mockProgress);
 
-      expect(logger.warn).toHaveBeenCalledWith(
-        "Attempted to save progress to Firestore without a userId."
-      );
+      expect(logger.warn).toHaveBeenCalledWith("Attempted to save progress to Firestore without a userId.");
       expect(mockSetDoc).not.toHaveBeenCalled();
     });
 
@@ -177,7 +169,7 @@ describe("UserDataService", () => {
       expect(mockSetDoc).not.toHaveBeenCalled();
       expect(logger.warn).toHaveBeenCalledWith(
         "Skipping direct client progress write; player progress is persisted by Cloud Functions.",
-        { userId: mockUserId, progress: zeroProgress }
+        {userId: mockUserId, progress: zeroProgress},
       );
     });
 
@@ -193,7 +185,7 @@ describe("UserDataService", () => {
       expect(mockSetDoc).not.toHaveBeenCalled();
       expect(logger.warn).toHaveBeenCalledWith(
         "Skipping direct client progress write; player progress is persisted by Cloud Functions.",
-        { userId: mockUserId, progress: largeProgress }
+        {userId: mockUserId, progress: largeProgress},
       );
     });
 
@@ -201,9 +193,7 @@ describe("UserDataService", () => {
       const error = new Error("Firestore error");
       mockSetDoc.mockRejectedValue(error);
 
-      await expect(
-        userDataService.saveUserProgress(mockUserId, mockProgress)
-      ).resolves.toBeUndefined();
+      await expect(userDataService.saveUserProgress(mockUserId, mockProgress)).resolves.toBeUndefined();
 
       expect(mockSetDoc).not.toHaveBeenCalled();
       expect(logger.error).not.toHaveBeenCalled();
@@ -213,9 +203,7 @@ describe("UserDataService", () => {
       const permissionError = new Error("Permission denied");
       mockSetDoc.mockRejectedValue(permissionError);
 
-      await expect(
-        userDataService.saveUserProgress(mockUserId, mockProgress)
-      ).resolves.toBeUndefined();
+      await expect(userDataService.saveUserProgress(mockUserId, mockProgress)).resolves.toBeUndefined();
 
       expect(mockSetDoc).not.toHaveBeenCalled();
       expect(logger.error).not.toHaveBeenCalled();
@@ -225,9 +213,7 @@ describe("UserDataService", () => {
       const networkError = new Error("Network unavailable");
       mockSetDoc.mockRejectedValue(networkError);
 
-      await expect(
-        userDataService.saveUserProgress(mockUserId, mockProgress)
-      ).resolves.toBeUndefined();
+      await expect(userDataService.saveUserProgress(mockUserId, mockProgress)).resolves.toBeUndefined();
 
       expect(mockSetDoc).not.toHaveBeenCalled();
       expect(logger.error).not.toHaveBeenCalled();
@@ -257,7 +243,7 @@ describe("UserDataService", () => {
       progress: {
         classicIndex: 5,
         dailyChallengeIndex: 2,
-      dailyChallengeCurrentQuestion: 0,
+        dailyChallengeCurrentQuestion: 0,
       },
       preferences: {
         soundEnabled: true,
@@ -281,18 +267,13 @@ describe("UserDataService", () => {
       expect(mockGetDoc).toHaveBeenCalled();
       expect(PlayerSchema.parse).toHaveBeenCalledWith(mockUserData);
       expect(result).toEqual(mockUserData);
-      expect(logger.info).toHaveBeenCalledWith(
-        "User progress loaded successfully for user:",
-        mockUserId
-      );
+      expect(logger.info).toHaveBeenCalledWith("User progress loaded successfully for user:", mockUserId);
     });
 
     it("should handle empty userId gracefully", async () => {
       const result = await userDataService.loadUserProgress("");
 
-      expect(logger.warn).toHaveBeenCalledWith(
-        "Attempted to load progress from Firestore without a userId."
-      );
+      expect(logger.warn).toHaveBeenCalledWith("Attempted to load progress from Firestore without a userId.");
       expect(result).toBeNull();
       expect(mockGetDoc).not.toHaveBeenCalled();
     });
@@ -300,9 +281,7 @@ describe("UserDataService", () => {
     it("should handle null userId gracefully", async () => {
       const result = await userDataService.loadUserProgress(null as any);
 
-      expect(logger.warn).toHaveBeenCalledWith(
-        "Attempted to load progress from Firestore without a userId."
-      );
+      expect(logger.warn).toHaveBeenCalledWith("Attempted to load progress from Firestore without a userId.");
       expect(result).toBeNull();
       expect(mockGetDoc).not.toHaveBeenCalled();
     });
@@ -310,9 +289,7 @@ describe("UserDataService", () => {
     it("should handle undefined userId gracefully", async () => {
       const result = await userDataService.loadUserProgress(undefined as any);
 
-      expect(logger.warn).toHaveBeenCalledWith(
-        "Attempted to load progress from Firestore without a userId."
-      );
+      expect(logger.warn).toHaveBeenCalledWith("Attempted to load progress from Firestore without a userId.");
       expect(result).toBeNull();
       expect(mockGetDoc).not.toHaveBeenCalled();
     });
@@ -320,9 +297,7 @@ describe("UserDataService", () => {
     it("should handle whitespace-only userId gracefully", async () => {
       const result = await userDataService.loadUserProgress("   ");
 
-      expect(logger.warn).toHaveBeenCalledWith(
-        "Attempted to load progress from Firestore without a userId."
-      );
+      expect(logger.warn).toHaveBeenCalledWith("Attempted to load progress from Firestore without a userId.");
       expect(result).toBeNull();
       expect(mockGetDoc).not.toHaveBeenCalled();
     });
@@ -334,10 +309,7 @@ describe("UserDataService", () => {
 
       const result = await userDataService.loadUserProgress(mockUserId);
 
-      expect(logger.info).toHaveBeenCalledWith(
-        "No user document found for userId:",
-        mockUserId
-      );
+      expect(logger.info).toHaveBeenCalledWith("No user document found for userId:", mockUserId);
       expect(result).toBeNull();
     });
 
@@ -349,10 +321,7 @@ describe("UserDataService", () => {
 
       const result = await userDataService.loadUserProgress(mockUserId);
 
-      expect(logger.warn).toHaveBeenCalledWith(
-        "User document exists but has no data for userId:",
-        mockUserId
-      );
+      expect(logger.warn).toHaveBeenCalledWith("User document exists but has no data for userId:", mockUserId);
       expect(result).toBeNull();
     });
 
@@ -364,10 +333,7 @@ describe("UserDataService", () => {
 
       const result = await userDataService.loadUserProgress(mockUserId);
 
-      expect(logger.warn).toHaveBeenCalledWith(
-        "User document exists but has no data for userId:",
-        mockUserId
-      );
+      expect(logger.warn).toHaveBeenCalledWith("User document exists but has no data for userId:", mockUserId);
       expect(result).toBeNull();
     });
 
@@ -390,14 +356,11 @@ describe("UserDataService", () => {
         throw zodError;
       });
 
-      await expect(
-        userDataService.loadUserProgress(mockUserId)
-      ).rejects.toThrow("Invalid user data structure in Firestore");
-
-      expect(logger.error).toHaveBeenCalledWith(
-        "User data validation failed:",
-        zodError.issues
+      await expect(userDataService.loadUserProgress(mockUserId)).rejects.toThrow(
+        "Invalid user data structure in Firestore",
       );
+
+      expect(logger.error).toHaveBeenCalledWith("User data validation failed:", zodError.issues);
     });
 
     it("should handle Zod validation errors", async () => {
@@ -418,14 +381,11 @@ describe("UserDataService", () => {
         throw zodError;
       });
 
-      await expect(
-        userDataService.loadUserProgress(mockUserId)
-      ).rejects.toThrow("Invalid user data structure in Firestore");
-
-      expect(logger.error).toHaveBeenCalledWith(
-        "User data validation failed:",
-        zodError.issues
+      await expect(userDataService.loadUserProgress(mockUserId)).rejects.toThrow(
+        "Invalid user data structure in Firestore",
       );
+
+      expect(logger.error).toHaveBeenCalledWith("User data validation failed:", zodError.issues);
     });
 
     it("should handle complex Zod validation errors", async () => {
@@ -455,56 +415,38 @@ describe("UserDataService", () => {
         throw complexZodError;
       });
 
-      await expect(
-        userDataService.loadUserProgress(mockUserId)
-      ).rejects.toThrow("Invalid user data structure in Firestore");
-
-      expect(logger.error).toHaveBeenCalledWith(
-        "User data validation failed:",
-        complexZodError.issues
+      await expect(userDataService.loadUserProgress(mockUserId)).rejects.toThrow(
+        "Invalid user data structure in Firestore",
       );
+
+      expect(logger.error).toHaveBeenCalledWith("User data validation failed:", complexZodError.issues);
     });
 
     it("should handle Firestore errors", async () => {
       const error = new Error("Firestore error");
       mockGetDoc.mockRejectedValue(error);
 
-      await expect(
-        userDataService.loadUserProgress(mockUserId)
-      ).rejects.toThrow("Firestore error");
+      await expect(userDataService.loadUserProgress(mockUserId)).rejects.toThrow("Firestore error");
 
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error loading user progress from Firestore:",
-        error
-      );
+      expect(logger.error).toHaveBeenCalledWith("Error loading user progress from Firestore:", error);
     });
 
     it("should handle Firestore permission errors", async () => {
       const permissionError = new Error("Permission denied");
       mockGetDoc.mockRejectedValue(permissionError);
 
-      await expect(
-        userDataService.loadUserProgress(mockUserId)
-      ).rejects.toThrow("Permission denied");
+      await expect(userDataService.loadUserProgress(mockUserId)).rejects.toThrow("Permission denied");
 
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error loading user progress from Firestore:",
-        permissionError
-      );
+      expect(logger.error).toHaveBeenCalledWith("Error loading user progress from Firestore:", permissionError);
     });
 
     it("should handle Firestore network errors", async () => {
       const networkError = new Error("Network unavailable");
       mockGetDoc.mockRejectedValue(networkError);
 
-      await expect(
-        userDataService.loadUserProgress(mockUserId)
-      ).rejects.toThrow("Network unavailable");
+      await expect(userDataService.loadUserProgress(mockUserId)).rejects.toThrow("Network unavailable");
 
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error loading user progress from Firestore:",
-        networkError
-      );
+      expect(logger.error).toHaveBeenCalledWith("Error loading user progress from Firestore:", networkError);
     });
   });
 
@@ -531,7 +473,7 @@ describe("UserDataService", () => {
       progress: {
         classicIndex: 0,
         dailyChallengeIndex: 0,
-      dailyChallengeCurrentQuestion: 0,
+        dailyChallengeCurrentQuestion: 0,
       },
       preferences: {
         soundEnabled: true,
@@ -544,7 +486,7 @@ describe("UserDataService", () => {
 
     it("should create user document through the initialization callable", async () => {
       (PlayerSchema.parse as jest.Mock).mockReturnValue(mockUserData);
-      mockCallableFunction.mockResolvedValue({ data: { success: true } });
+      mockCallableFunction.mockResolvedValue({data: {success: true}});
 
       await userDataService.createUserDocument(mockUserId, mockUserData);
 
@@ -560,38 +502,38 @@ describe("UserDataService", () => {
       expect(mockSetDoc).not.toHaveBeenCalled();
       expect(logger.info).toHaveBeenCalledWith(
         "User document created successfully via Cloud Function for user:",
-        mockUserId
+        mockUserId,
       );
     });
 
     it("should throw error for empty userId", async () => {
-      await expect(
-        userDataService.createUserDocument("", mockUserData)
-      ).rejects.toThrow("User ID is required to create user document");
+      await expect(userDataService.createUserDocument("", mockUserData)).rejects.toThrow(
+        "User ID is required to create user document",
+      );
 
       expect(mockSetDoc).not.toHaveBeenCalled();
     });
 
     it("should throw error for null userId", async () => {
-      await expect(
-        userDataService.createUserDocument(null as any, mockUserData)
-      ).rejects.toThrow("User ID is required to create user document");
+      await expect(userDataService.createUserDocument(null as any, mockUserData)).rejects.toThrow(
+        "User ID is required to create user document",
+      );
 
       expect(mockSetDoc).not.toHaveBeenCalled();
     });
 
     it("should throw error for undefined userId", async () => {
-      await expect(
-        userDataService.createUserDocument(undefined as any, mockUserData)
-      ).rejects.toThrow("User ID is required to create user document");
+      await expect(userDataService.createUserDocument(undefined as any, mockUserData)).rejects.toThrow(
+        "User ID is required to create user document",
+      );
 
       expect(mockSetDoc).not.toHaveBeenCalled();
     });
 
     it("should throw error for whitespace-only userId", async () => {
-      await expect(
-        userDataService.createUserDocument("   ", mockUserData)
-      ).rejects.toThrow("User ID is required to create user document");
+      await expect(userDataService.createUserDocument("   ", mockUserData)).rejects.toThrow(
+        "User ID is required to create user document",
+      );
 
       expect(mockSetDoc).not.toHaveBeenCalled();
     });
@@ -610,14 +552,11 @@ describe("UserDataService", () => {
         throw zodError;
       });
 
-      await expect(
-        userDataService.createUserDocument(mockUserId, mockUserData)
-      ).rejects.toThrow("Invalid user data provided for creation");
-
-      expect(logger.error).toHaveBeenCalledWith(
-        "User data validation failed during creation:",
-        zodError.issues
+      await expect(userDataService.createUserDocument(mockUserId, mockUserData)).rejects.toThrow(
+        "Invalid user data provided for creation",
       );
+
+      expect(logger.error).toHaveBeenCalledWith("User data validation failed during creation:", zodError.issues);
       expect(mockSetDoc).not.toHaveBeenCalled();
     });
 
@@ -644,14 +583,11 @@ describe("UserDataService", () => {
         throw complexZodError;
       });
 
-      await expect(
-        userDataService.createUserDocument(mockUserId, mockUserData)
-      ).rejects.toThrow("Invalid user data provided for creation");
-
-      expect(logger.error).toHaveBeenCalledWith(
-        "User data validation failed during creation:",
-        complexZodError.issues
+      await expect(userDataService.createUserDocument(mockUserId, mockUserData)).rejects.toThrow(
+        "Invalid user data provided for creation",
       );
+
+      expect(logger.error).toHaveBeenCalledWith("User data validation failed during creation:", complexZodError.issues);
       expect(mockSetDoc).not.toHaveBeenCalled();
     });
 
@@ -660,14 +596,9 @@ describe("UserDataService", () => {
       (PlayerSchema.parse as jest.Mock).mockReturnValue(mockUserData);
       mockCallableFunction.mockRejectedValue(error);
 
-      await expect(
-        userDataService.createUserDocument(mockUserId, mockUserData)
-      ).rejects.toThrow("Callable error");
+      await expect(userDataService.createUserDocument(mockUserId, mockUserData)).rejects.toThrow("Callable error");
 
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error creating user document:",
-        error
-      );
+      expect(logger.error).toHaveBeenCalledWith("Error creating user document:", error);
     });
 
     it("should handle callable permission errors during creation", async () => {
@@ -675,14 +606,9 @@ describe("UserDataService", () => {
       (PlayerSchema.parse as jest.Mock).mockReturnValue(mockUserData);
       mockCallableFunction.mockRejectedValue(permissionError);
 
-      await expect(
-        userDataService.createUserDocument(mockUserId, mockUserData)
-      ).rejects.toThrow("Permission denied");
+      await expect(userDataService.createUserDocument(mockUserId, mockUserData)).rejects.toThrow("Permission denied");
 
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error creating user document:",
-        permissionError
-      );
+      expect(logger.error).toHaveBeenCalledWith("Error creating user document:", permissionError);
     });
 
     it("should handle callable network errors during creation", async () => {
@@ -690,14 +616,9 @@ describe("UserDataService", () => {
       (PlayerSchema.parse as jest.Mock).mockReturnValue(mockUserData);
       mockCallableFunction.mockRejectedValue(networkError);
 
-      await expect(
-        userDataService.createUserDocument(mockUserId, mockUserData)
-      ).rejects.toThrow("Network unavailable");
+      await expect(userDataService.createUserDocument(mockUserId, mockUserData)).rejects.toThrow("Network unavailable");
 
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error creating user document:",
-        networkError
-      );
+      expect(logger.error).toHaveBeenCalledWith("Error creating user document:", networkError);
     });
   });
 
@@ -708,7 +629,7 @@ describe("UserDataService", () => {
       progress: {
         classicIndex: 10,
         dailyChallengeIndex: 3,
-      dailyChallengeCurrentQuestion: 0,
+        dailyChallengeCurrentQuestion: 0,
       },
     };
 
@@ -721,40 +642,37 @@ describe("UserDataService", () => {
       expect(mockUpdateDoc).toHaveBeenCalledWith(expect.any(Object), {
         displayName: "Updated Name",
       });
-      expect(logger.info).toHaveBeenCalledWith(
-        "User document updated successfully for user:",
-        mockUserId
-      );
+      expect(logger.info).toHaveBeenCalledWith("User document updated successfully for user:", mockUserId);
     });
 
     it("should throw error for empty userId", async () => {
-      await expect(
-        userDataService.updateUserDocument("", mockUpdates)
-      ).rejects.toThrow("User ID is required to update user document");
+      await expect(userDataService.updateUserDocument("", mockUpdates)).rejects.toThrow(
+        "User ID is required to update user document",
+      );
 
       expect(mockUpdateDoc).not.toHaveBeenCalled();
     });
 
     it("should throw error for null userId", async () => {
-      await expect(
-        userDataService.updateUserDocument(null as any, mockUpdates)
-      ).rejects.toThrow("User ID is required to update user document");
+      await expect(userDataService.updateUserDocument(null as any, mockUpdates)).rejects.toThrow(
+        "User ID is required to update user document",
+      );
 
       expect(mockUpdateDoc).not.toHaveBeenCalled();
     });
 
     it("should throw error for undefined userId", async () => {
-      await expect(
-        userDataService.updateUserDocument(undefined as any, mockUpdates)
-      ).rejects.toThrow("User ID is required to update user document");
+      await expect(userDataService.updateUserDocument(undefined as any, mockUpdates)).rejects.toThrow(
+        "User ID is required to update user document",
+      );
 
       expect(mockUpdateDoc).not.toHaveBeenCalled();
     });
 
     it("should throw error for whitespace-only userId", async () => {
-      await expect(
-        userDataService.updateUserDocument("   ", mockUpdates)
-      ).rejects.toThrow("User ID is required to update user document");
+      await expect(userDataService.updateUserDocument("   ", mockUpdates)).rejects.toThrow(
+        "User ID is required to update user document",
+      );
 
       expect(mockUpdateDoc).not.toHaveBeenCalled();
     });
@@ -767,20 +685,20 @@ describe("UserDataService", () => {
       expect(mockUpdateDoc).not.toHaveBeenCalled();
       expect(logger.warn).toHaveBeenCalledWith(
         "Skipping user document update because it only contained server-managed fields.",
-        { userId: mockUserId }
+        {userId: mockUserId},
       );
     });
 
     it("should skip single server-managed field updates", async () => {
       mockUpdateDoc.mockResolvedValue(undefined);
-      const singleUpdate = { coins: 150 };
+      const singleUpdate = {coins: 150};
 
       await userDataService.updateUserDocument(mockUserId, singleUpdate);
 
       expect(mockUpdateDoc).not.toHaveBeenCalled();
       expect(logger.warn).toHaveBeenCalledWith(
         "Skipping user document update because it only contained server-managed fields.",
-        { userId: mockUserId }
+        {userId: mockUserId},
       );
     });
 
@@ -818,56 +736,36 @@ describe("UserDataService", () => {
       const error = new Error("Firestore error");
       mockUpdateDoc.mockRejectedValue(error);
 
-      await expect(
-        userDataService.updateUserDocument(mockUserId, mockUpdates)
-      ).rejects.toThrow("Firestore error");
+      await expect(userDataService.updateUserDocument(mockUserId, mockUpdates)).rejects.toThrow("Firestore error");
 
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error updating user document:",
-        error
-      );
+      expect(logger.error).toHaveBeenCalledWith("Error updating user document:", error);
     });
 
     it("should handle Firestore permission errors during update", async () => {
       const permissionError = new Error("Permission denied");
       mockUpdateDoc.mockRejectedValue(permissionError);
 
-      await expect(
-        userDataService.updateUserDocument(mockUserId, mockUpdates)
-      ).rejects.toThrow("Permission denied");
+      await expect(userDataService.updateUserDocument(mockUserId, mockUpdates)).rejects.toThrow("Permission denied");
 
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error updating user document:",
-        permissionError
-      );
+      expect(logger.error).toHaveBeenCalledWith("Error updating user document:", permissionError);
     });
 
     it("should handle Firestore network errors during update", async () => {
       const networkError = new Error("Network unavailable");
       mockUpdateDoc.mockRejectedValue(networkError);
 
-      await expect(
-        userDataService.updateUserDocument(mockUserId, mockUpdates)
-      ).rejects.toThrow("Network unavailable");
+      await expect(userDataService.updateUserDocument(mockUserId, mockUpdates)).rejects.toThrow("Network unavailable");
 
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error updating user document:",
-        networkError
-      );
+      expect(logger.error).toHaveBeenCalledWith("Error updating user document:", networkError);
     });
 
     it("should handle document not found errors", async () => {
       const notFoundError = new Error("Document not found");
       mockUpdateDoc.mockRejectedValue(notFoundError);
 
-      await expect(
-        userDataService.updateUserDocument(mockUserId, mockUpdates)
-      ).rejects.toThrow("Document not found");
+      await expect(userDataService.updateUserDocument(mockUserId, mockUpdates)).rejects.toThrow("Document not found");
 
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error updating user document:",
-        notFoundError
-      );
+      expect(logger.error).toHaveBeenCalledWith("Error updating user document:", notFoundError);
     });
   });
 
@@ -884,30 +782,30 @@ describe("UserDataService", () => {
       expect(mockUpdateDoc).not.toHaveBeenCalled();
       expect(logger.warn).toHaveBeenCalledWith(
         "Skipping direct client classic progress write; classic progress is persisted by Cloud Functions.",
-        { userId: mockUserId, newIndex }
+        {userId: mockUserId, newIndex},
       );
     });
 
     it("should throw error for empty userId", async () => {
-      await expect(
-        userDataService.updateClassicIndex("", newIndex)
-      ).rejects.toThrow("User ID is required to update classic index");
+      await expect(userDataService.updateClassicIndex("", newIndex)).rejects.toThrow(
+        "User ID is required to update classic index",
+      );
 
       expect(mockUpdateDoc).not.toHaveBeenCalled();
     });
 
     it("should throw error for null userId", async () => {
-      await expect(
-        userDataService.updateClassicIndex(null as any, newIndex)
-      ).rejects.toThrow("User ID is required to update classic index");
+      await expect(userDataService.updateClassicIndex(null as any, newIndex)).rejects.toThrow(
+        "User ID is required to update classic index",
+      );
 
       expect(mockUpdateDoc).not.toHaveBeenCalled();
     });
 
     it("should throw error for undefined userId", async () => {
-      await expect(
-        userDataService.updateClassicIndex(undefined as any, newIndex)
-      ).rejects.toThrow("User ID is required to update classic index");
+      await expect(userDataService.updateClassicIndex(undefined as any, newIndex)).rejects.toThrow(
+        "User ID is required to update classic index",
+      );
 
       expect(mockUpdateDoc).not.toHaveBeenCalled();
     });
@@ -920,7 +818,7 @@ describe("UserDataService", () => {
       expect(mockUpdateDoc).not.toHaveBeenCalled();
       expect(logger.warn).toHaveBeenCalledWith(
         "Skipping direct client classic progress write; classic progress is persisted by Cloud Functions.",
-        { userId: mockUserId, newIndex: 0 }
+        {userId: mockUserId, newIndex: 0},
       );
     });
 
@@ -933,7 +831,7 @@ describe("UserDataService", () => {
       expect(mockUpdateDoc).not.toHaveBeenCalled();
       expect(logger.warn).toHaveBeenCalledWith(
         "Skipping direct client classic progress write; classic progress is persisted by Cloud Functions.",
-        { userId: mockUserId, newIndex: largeIndex }
+        {userId: mockUserId, newIndex: largeIndex},
       );
     });
 
@@ -946,7 +844,7 @@ describe("UserDataService", () => {
       expect(mockUpdateDoc).not.toHaveBeenCalled();
       expect(logger.warn).toHaveBeenCalledWith(
         "Skipping direct client classic progress write; classic progress is persisted by Cloud Functions.",
-        { userId: mockUserId, newIndex: negativeIndex }
+        {userId: mockUserId, newIndex: negativeIndex},
       );
     });
 
@@ -954,9 +852,7 @@ describe("UserDataService", () => {
       const error = new Error("Firestore error");
       mockUpdateDoc.mockRejectedValue(error);
 
-      await expect(
-        userDataService.updateClassicIndex(mockUserId, newIndex)
-      ).resolves.toBeUndefined();
+      await expect(userDataService.updateClassicIndex(mockUserId, newIndex)).resolves.toBeUndefined();
 
       expect(mockUpdateDoc).not.toHaveBeenCalled();
       expect(logger.error).not.toHaveBeenCalled();
@@ -966,9 +862,7 @@ describe("UserDataService", () => {
       const permissionError = new Error("Permission denied");
       mockUpdateDoc.mockRejectedValue(permissionError);
 
-      await expect(
-        userDataService.updateClassicIndex(mockUserId, newIndex)
-      ).resolves.toBeUndefined();
+      await expect(userDataService.updateClassicIndex(mockUserId, newIndex)).resolves.toBeUndefined();
 
       expect(mockUpdateDoc).not.toHaveBeenCalled();
       expect(logger.error).not.toHaveBeenCalled();
@@ -978,9 +872,7 @@ describe("UserDataService", () => {
       const networkError = new Error("Network unavailable");
       mockUpdateDoc.mockRejectedValue(networkError);
 
-      await expect(
-        userDataService.updateClassicIndex(mockUserId, newIndex)
-      ).resolves.toBeUndefined();
+      await expect(userDataService.updateClassicIndex(mockUserId, newIndex)).resolves.toBeUndefined();
 
       expect(mockUpdateDoc).not.toHaveBeenCalled();
       expect(logger.error).not.toHaveBeenCalled();
@@ -1000,38 +892,36 @@ describe("UserDataService", () => {
       expect(mockUpdateDoc).not.toHaveBeenCalled();
       expect(logger.warn).toHaveBeenCalledWith(
         "Skipping direct client coin write; economy changes are persisted by Cloud Functions.",
-        { userId: mockUserId, newCoinAmount }
+        {userId: mockUserId, newCoinAmount},
       );
     });
 
     it("should throw error for empty userId", async () => {
-      await expect(
-        userDataService.updateUserCoins("", newCoinAmount)
-      ).rejects.toThrow("User ID is required to update coins");
+      await expect(userDataService.updateUserCoins("", newCoinAmount)).rejects.toThrow(
+        "User ID is required to update coins",
+      );
 
       expect(mockUpdateDoc).not.toHaveBeenCalled();
     });
 
     it("should throw error for null userId", async () => {
-      await expect(
-        userDataService.updateUserCoins(null as any, newCoinAmount)
-      ).rejects.toThrow("User ID is required to update coins");
+      await expect(userDataService.updateUserCoins(null as any, newCoinAmount)).rejects.toThrow(
+        "User ID is required to update coins",
+      );
 
       expect(mockUpdateDoc).not.toHaveBeenCalled();
     });
 
     it("should throw error for undefined userId", async () => {
-      await expect(
-        userDataService.updateUserCoins(undefined as any, newCoinAmount)
-      ).rejects.toThrow("User ID is required to update coins");
+      await expect(userDataService.updateUserCoins(undefined as any, newCoinAmount)).rejects.toThrow(
+        "User ID is required to update coins",
+      );
 
       expect(mockUpdateDoc).not.toHaveBeenCalled();
     });
 
     it("should throw error for negative coin amount", async () => {
-      await expect(
-        userDataService.updateUserCoins(mockUserId, -10)
-      ).rejects.toThrow("Coin amount cannot be negative");
+      await expect(userDataService.updateUserCoins(mockUserId, -10)).rejects.toThrow("Coin amount cannot be negative");
 
       expect(mockUpdateDoc).not.toHaveBeenCalled();
     });
@@ -1044,7 +934,7 @@ describe("UserDataService", () => {
       expect(mockUpdateDoc).not.toHaveBeenCalled();
       expect(logger.warn).toHaveBeenCalledWith(
         "Skipping direct client coin write; economy changes are persisted by Cloud Functions.",
-        { userId: mockUserId, newCoinAmount: 0 }
+        {userId: mockUserId, newCoinAmount: 0},
       );
     });
 
@@ -1057,7 +947,7 @@ describe("UserDataService", () => {
       expect(mockUpdateDoc).not.toHaveBeenCalled();
       expect(logger.warn).toHaveBeenCalledWith(
         "Skipping direct client coin write; economy changes are persisted by Cloud Functions.",
-        { userId: mockUserId, newCoinAmount: largeCoinAmount }
+        {userId: mockUserId, newCoinAmount: largeCoinAmount},
       );
     });
 
@@ -1065,9 +955,7 @@ describe("UserDataService", () => {
       const error = new Error("Firestore error");
       mockUpdateDoc.mockRejectedValue(error);
 
-      await expect(
-        userDataService.updateUserCoins(mockUserId, newCoinAmount)
-      ).resolves.toBeUndefined();
+      await expect(userDataService.updateUserCoins(mockUserId, newCoinAmount)).resolves.toBeUndefined();
 
       expect(mockUpdateDoc).not.toHaveBeenCalled();
       expect(logger.error).not.toHaveBeenCalled();
@@ -1077,9 +965,7 @@ describe("UserDataService", () => {
       const permissionError = new Error("Permission denied");
       mockUpdateDoc.mockRejectedValue(permissionError);
 
-      await expect(
-        userDataService.updateUserCoins(mockUserId, newCoinAmount)
-      ).resolves.toBeUndefined();
+      await expect(userDataService.updateUserCoins(mockUserId, newCoinAmount)).resolves.toBeUndefined();
 
       expect(mockUpdateDoc).not.toHaveBeenCalled();
       expect(logger.error).not.toHaveBeenCalled();
@@ -1089,9 +975,7 @@ describe("UserDataService", () => {
       const networkError = new Error("Network unavailable");
       mockUpdateDoc.mockRejectedValue(networkError);
 
-      await expect(
-        userDataService.updateUserCoins(mockUserId, newCoinAmount)
-      ).resolves.toBeUndefined();
+      await expect(userDataService.updateUserCoins(mockUserId, newCoinAmount)).resolves.toBeUndefined();
 
       expect(mockUpdateDoc).not.toHaveBeenCalled();
       expect(logger.error).not.toHaveBeenCalled();
@@ -1157,10 +1041,7 @@ describe("UserDataService", () => {
 
       const result = await userDataService.userExists(mockUserId);
 
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error checking if user exists:",
-        error
-      );
+      expect(logger.error).toHaveBeenCalledWith("Error checking if user exists:", error);
       expect(result).toBe(false);
     });
 
@@ -1170,10 +1051,7 @@ describe("UserDataService", () => {
 
       const result = await userDataService.userExists(mockUserId);
 
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error checking if user exists:",
-        permissionError
-      );
+      expect(logger.error).toHaveBeenCalledWith("Error checking if user exists:", permissionError);
       expect(result).toBe(false);
     });
 
@@ -1183,10 +1061,7 @@ describe("UserDataService", () => {
 
       const result = await userDataService.userExists(mockUserId);
 
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error checking if user exists:",
-        networkError
-      );
+      expect(logger.error).toHaveBeenCalledWith("Error checking if user exists:", networkError);
       expect(result).toBe(false);
     });
 
@@ -1196,10 +1071,7 @@ describe("UserDataService", () => {
 
       const result = await userDataService.userExists(mockUserId);
 
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error checking if user exists:",
-        notFoundError
-      );
+      expect(logger.error).toHaveBeenCalledWith("Error checking if user exists:", notFoundError);
       expect(result).toBe(false);
     });
 
@@ -1212,10 +1084,7 @@ describe("UserDataService", () => {
 
       const result = await userDataService.userExists(mockUserId);
 
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error checking if user exists:",
-        expect.any(Error)
-      );
+      expect(logger.error).toHaveBeenCalledWith("Error checking if user exists:", expect.any(Error));
       expect(result).toBe(false);
     });
   });
@@ -1243,10 +1112,7 @@ describe("UserDataService", () => {
       expect(mockHttpsCallable).toHaveBeenCalledWith(expect.any(Object), "initializeUser");
       expect(mockCallableFunction).toHaveBeenCalledWith(mockUserData);
       expect(result).toEqual(mockResponse.data);
-      expect(logger.info).toHaveBeenCalledWith(
-        "User initialized successfully:",
-        mockResponse.data
-      );
+      expect(logger.info).toHaveBeenCalledWith("User initialized successfully:", mockResponse.data);
     });
 
     it("should initialize user with minimal data", async () => {
@@ -1273,56 +1139,44 @@ describe("UserDataService", () => {
       const error = new Error("Firebase function error");
       mockCallableFunction.mockRejectedValue(error);
 
-      await expect(
-        userDataService.initializeNewUser(mockUserData)
-      ).rejects.toThrow("Failed to initialize new user account");
-
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error initializing new user:",
-        error
+      await expect(userDataService.initializeNewUser(mockUserData)).rejects.toThrow(
+        "Failed to initialize new user account",
       );
+
+      expect(logger.error).toHaveBeenCalledWith("Error initializing new user:", error);
     });
 
     it("should handle network errors", async () => {
       const networkError = new Error("Network unavailable");
       mockCallableFunction.mockRejectedValue(networkError);
 
-      await expect(
-        userDataService.initializeNewUser(mockUserData)
-      ).rejects.toThrow("Failed to initialize new user account");
-
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error initializing new user:",
-        networkError
+      await expect(userDataService.initializeNewUser(mockUserData)).rejects.toThrow(
+        "Failed to initialize new user account",
       );
+
+      expect(logger.error).toHaveBeenCalledWith("Error initializing new user:", networkError);
     });
 
     it("should handle permission errors", async () => {
       const permissionError = new Error("Permission denied");
       mockCallableFunction.mockRejectedValue(permissionError);
 
-      await expect(
-        userDataService.initializeNewUser(mockUserData)
-      ).rejects.toThrow("Failed to initialize new user account");
-
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error initializing new user:",
-        permissionError
+      await expect(userDataService.initializeNewUser(mockUserData)).rejects.toThrow(
+        "Failed to initialize new user account",
       );
+
+      expect(logger.error).toHaveBeenCalledWith("Error initializing new user:", permissionError);
     });
 
     it("should handle unauthenticated errors", async () => {
       const unauthError = new Error("User is not authenticated");
       mockCallableFunction.mockRejectedValue(unauthError);
 
-      await expect(
-        userDataService.initializeNewUser(mockUserData)
-      ).rejects.toThrow("Failed to initialize new user account");
-
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error initializing new user:",
-        unauthError
+      await expect(userDataService.initializeNewUser(mockUserData)).rejects.toThrow(
+        "Failed to initialize new user account",
       );
+
+      expect(logger.error).toHaveBeenCalledWith("Error initializing new user:", unauthError);
     });
 
     it("should pass optional displayName correctly", async () => {
@@ -1381,10 +1235,7 @@ describe("UserDataService", () => {
       expect(mockHttpsCallable).toHaveBeenCalledWith(expect.any(Object), "ensureUserComplete");
       expect(mockCallableFunction).toHaveBeenCalledWith({});
       expect(result).toEqual(mockResponse.data);
-      expect(logger.info).toHaveBeenCalledWith(
-        "User document completeness ensured:",
-        mockResponse.data
-      );
+      expect(logger.info).toHaveBeenCalledWith("User document completeness ensured:", mockResponse.data);
     });
 
     it("should handle successful fix of missing fields", async () => {
@@ -1406,70 +1257,55 @@ describe("UserDataService", () => {
       const error = new Error("Firebase function error");
       mockCallableFunction.mockRejectedValue(error);
 
-      await expect(
-        userDataService.ensureUserDocumentComplete()
-      ).rejects.toThrow("Failed to ensure user document completeness");
-
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error ensuring user document completeness:",
-        error
+      await expect(userDataService.ensureUserDocumentComplete()).rejects.toThrow(
+        "Failed to ensure user document completeness",
       );
+
+      expect(logger.error).toHaveBeenCalledWith("Error ensuring user document completeness:", error);
     });
 
     it("should handle network errors", async () => {
       const networkError = new Error("Network unavailable");
       mockCallableFunction.mockRejectedValue(networkError);
 
-      await expect(
-        userDataService.ensureUserDocumentComplete()
-      ).rejects.toThrow("Failed to ensure user document completeness");
-
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error ensuring user document completeness:",
-        networkError
+      await expect(userDataService.ensureUserDocumentComplete()).rejects.toThrow(
+        "Failed to ensure user document completeness",
       );
+
+      expect(logger.error).toHaveBeenCalledWith("Error ensuring user document completeness:", networkError);
     });
 
     it("should handle permission errors", async () => {
       const permissionError = new Error("Permission denied");
       mockCallableFunction.mockRejectedValue(permissionError);
 
-      await expect(
-        userDataService.ensureUserDocumentComplete()
-      ).rejects.toThrow("Failed to ensure user document completeness");
-
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error ensuring user document completeness:",
-        permissionError
+      await expect(userDataService.ensureUserDocumentComplete()).rejects.toThrow(
+        "Failed to ensure user document completeness",
       );
+
+      expect(logger.error).toHaveBeenCalledWith("Error ensuring user document completeness:", permissionError);
     });
 
     it("should handle unauthenticated errors", async () => {
       const unauthError = new Error("User is not authenticated");
       mockCallableFunction.mockRejectedValue(unauthError);
 
-      await expect(
-        userDataService.ensureUserDocumentComplete()
-      ).rejects.toThrow("Failed to ensure user document completeness");
-
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error ensuring user document completeness:",
-        unauthError
+      await expect(userDataService.ensureUserDocumentComplete()).rejects.toThrow(
+        "Failed to ensure user document completeness",
       );
+
+      expect(logger.error).toHaveBeenCalledWith("Error ensuring user document completeness:", unauthError);
     });
 
     it("should handle timeout errors", async () => {
       const timeoutError = new Error("Request timeout");
       mockCallableFunction.mockRejectedValue(timeoutError);
 
-      await expect(
-        userDataService.ensureUserDocumentComplete()
-      ).rejects.toThrow("Failed to ensure user document completeness");
-
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error ensuring user document completeness:",
-        timeoutError
+      await expect(userDataService.ensureUserDocumentComplete()).rejects.toThrow(
+        "Failed to ensure user document completeness",
       );
+
+      expect(logger.error).toHaveBeenCalledWith("Error ensuring user document completeness:", timeoutError);
     });
   });
 
@@ -1501,14 +1337,11 @@ describe("UserDataService", () => {
         statsUpdate: mockStatsUpdate,
       });
       expect(result).toEqual(mockResponse.data);
-      expect(logger.info).toHaveBeenCalledWith(
-        "User stats updated successfully:",
-        mockResponse.data
-      );
+      expect(logger.info).toHaveBeenCalledWith("User stats updated successfully:", mockResponse.data);
     });
 
     it("should update single stat field", async () => {
-      const singleStatUpdate = { gamesPlayed: 25 };
+      const singleStatUpdate = {gamesPlayed: 25};
       const mockResponse = {
         data: {
           success: true,
@@ -1582,70 +1415,55 @@ describe("UserDataService", () => {
       const error = new Error("Firebase function error");
       mockCallableFunction.mockRejectedValue(error);
 
-      await expect(
-        userDataService.updateUserStats(mockTargetUserId, mockStatsUpdate)
-      ).rejects.toThrow("Failed to update user stats");
-
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error updating user stats:",
-        error
+      await expect(userDataService.updateUserStats(mockTargetUserId, mockStatsUpdate)).rejects.toThrow(
+        "Failed to update user stats",
       );
+
+      expect(logger.error).toHaveBeenCalledWith("Error updating user stats:", error);
     });
 
     it("should handle network errors", async () => {
       const networkError = new Error("Network unavailable");
       mockCallableFunction.mockRejectedValue(networkError);
 
-      await expect(
-        userDataService.updateUserStats(mockTargetUserId, mockStatsUpdate)
-      ).rejects.toThrow("Failed to update user stats");
-
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error updating user stats:",
-        networkError
+      await expect(userDataService.updateUserStats(mockTargetUserId, mockStatsUpdate)).rejects.toThrow(
+        "Failed to update user stats",
       );
+
+      expect(logger.error).toHaveBeenCalledWith("Error updating user stats:", networkError);
     });
 
     it("should handle permission errors", async () => {
       const permissionError = new Error("Permission denied");
       mockCallableFunction.mockRejectedValue(permissionError);
 
-      await expect(
-        userDataService.updateUserStats(mockTargetUserId, mockStatsUpdate)
-      ).rejects.toThrow("Failed to update user stats");
-
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error updating user stats:",
-        permissionError
+      await expect(userDataService.updateUserStats(mockTargetUserId, mockStatsUpdate)).rejects.toThrow(
+        "Failed to update user stats",
       );
+
+      expect(logger.error).toHaveBeenCalledWith("Error updating user stats:", permissionError);
     });
 
     it("should handle user not found errors", async () => {
       const notFoundError = new Error("Target user not found");
       mockCallableFunction.mockRejectedValue(notFoundError);
 
-      await expect(
-        userDataService.updateUserStats(mockTargetUserId, mockStatsUpdate)
-      ).rejects.toThrow("Failed to update user stats");
-
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error updating user stats:",
-        notFoundError
+      await expect(userDataService.updateUserStats(mockTargetUserId, mockStatsUpdate)).rejects.toThrow(
+        "Failed to update user stats",
       );
+
+      expect(logger.error).toHaveBeenCalledWith("Error updating user stats:", notFoundError);
     });
 
     it("should handle unauthenticated errors", async () => {
       const unauthError = new Error("User is not authenticated");
       mockCallableFunction.mockRejectedValue(unauthError);
 
-      await expect(
-        userDataService.updateUserStats(mockTargetUserId, mockStatsUpdate)
-      ).rejects.toThrow("Failed to update user stats");
-
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error updating user stats:",
-        unauthError
+      await expect(userDataService.updateUserStats(mockTargetUserId, mockStatsUpdate)).rejects.toThrow(
+        "Failed to update user stats",
       );
+
+      expect(logger.error).toHaveBeenCalledWith("Error updating user stats:", unauthError);
     });
 
     it("should handle invalid stats values gracefully", async () => {
@@ -1710,7 +1528,7 @@ describe("UserDataService", () => {
 
     it("should maintain consistent collection reference across methods", async () => {
       mockSetDoc.mockResolvedValue(undefined);
-      mockGetDoc.mockResolvedValue({ exists: () => false });
+      mockGetDoc.mockResolvedValue({exists: () => false});
       mockUpdateDoc.mockResolvedValue(undefined);
 
       // Direct client progress writes are skipped; reads still use the users collection.
@@ -1729,7 +1547,7 @@ describe("UserDataService", () => {
 
     it("should handle Firebase app connection consistently", async () => {
       mockSetDoc.mockResolvedValue(undefined);
-      mockGetDoc.mockResolvedValue({ exists: () => true });
+      mockGetDoc.mockResolvedValue({exists: () => true});
 
       // Direct progress writes are skipped; reads still use Firestore.
       await userDataService.saveUserProgress("user1", {
@@ -1779,11 +1597,11 @@ describe("UserDataService", () => {
       expect(mockUpdateDoc).not.toHaveBeenCalled();
       expect(logger.warn).toHaveBeenCalledWith(
         "Skipping direct client coin write; economy changes are persisted by Cloud Functions.",
-        { userId: "test-user", newCoinAmount: 150 }
+        {userId: "test-user", newCoinAmount: 150},
       );
       expect(logger.warn).toHaveBeenCalledWith(
         "Skipping direct client classic progress write; classic progress is persisted by Cloud Functions.",
-        { userId: "test-user", newIndex: 10 }
+        {userId: "test-user", newIndex: 10},
       );
     });
 
@@ -1810,13 +1628,9 @@ describe("UserDataService", () => {
       // Second operation succeeds
       mockUpdateDoc.mockResolvedValueOnce(undefined);
 
-      await expect(
-        userDataService.updateUserCoins("user1", 100)
-      ).resolves.toBeUndefined();
+      await expect(userDataService.updateUserCoins("user1", 100)).resolves.toBeUndefined();
 
-      await expect(
-        userDataService.updateUserCoins("user2", 200)
-      ).resolves.toBeUndefined();
+      await expect(userDataService.updateUserCoins("user2", 200)).resolves.toBeUndefined();
 
       expect(mockUpdateDoc).not.toHaveBeenCalled();
     });
@@ -1824,7 +1638,7 @@ describe("UserDataService", () => {
     it("should handle mixed Firestore and Firebase Functions operations", async () => {
       mockUpdateDoc.mockResolvedValue(undefined);
       mockCallableFunction.mockResolvedValue({
-        data: { success: true, message: "Done" },
+        data: {success: true, message: "Done"},
       });
 
       // Execute both Firestore and Functions operations

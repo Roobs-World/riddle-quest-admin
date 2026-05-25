@@ -24,15 +24,9 @@ import {
   setAnalyticsCollectionEnabled,
   setUserProperty,
 } from "@react-native-firebase/analytics";
-import { logger } from "../utils/logger";
-import { captureException } from "../utils/sentry";
-import {
-  gameEventBus,
-  AnyGameEvent,
-  GameCompletedEvent,
-  GuessSubmittedEvent,
-  GuessValidatedEvent,
-} from "./GameEventBus";
+import {logger} from "../utils/logger";
+import {captureException} from "../utils/sentry";
+import {gameEventBus, AnyGameEvent, GameCompletedEvent, GuessSubmittedEvent, GuessValidatedEvent} from "./GameEventBus";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Service
@@ -118,21 +112,14 @@ export class AnalyticsService {
   /**
    * Log when the user starts a new game (any mode).
    */
-  async logGameStart(params: {
-    gameMode: "daily" | "classic";
-    riddleId: string;
-  }): Promise<void> {
+  async logGameStart(params: {gameMode: "daily" | "classic"; riddleId: string}): Promise<void> {
     await this.logEvent("game_start", params);
   }
 
   /**
    * Log a purchase or coin spend event.
    */
-  async logCoinSpend(params: {
-    action: "hint" | "skip" | "continue";
-    amount: number;
-    gameMode: string;
-  }): Promise<void> {
+  async logCoinSpend(params: {action: "hint" | "skip" | "continue"; amount: number; gameMode: string}): Promise<void> {
     await this.logEvent("coin_spend", params);
   }
 
@@ -148,10 +135,7 @@ export class AnalyticsService {
   /**
    * Log a share action from the victory modal.
    */
-  async logShare(params: {
-    platform: "facebook" | "x" | "system";
-    gameMode: string;
-  }): Promise<void> {
+  async logShare(params: {platform: "facebook" | "x" | "system"; gameMode: string}): Promise<void> {
     try {
       await logShare(getAnalytics(), {
         content_type: "game_result",
@@ -176,7 +160,7 @@ export class AnalyticsService {
    */
   async logAuthEvent(
     event: "signup" | "login" | "logout",
-    params: Record<string, string | number | boolean> = {}
+    params: Record<string, string | number | boolean> = {},
   ): Promise<void> {
     await this.logEvent(`auth_${event}`, params);
   }
@@ -189,7 +173,7 @@ export class AnalyticsService {
    */
   async logPurchaseEvent(
     event: "initiated" | "validated" | "completed" | "failed",
-    params: Record<string, string | number | boolean> = {}
+    params: Record<string, string | number | boolean> = {},
   ): Promise<void> {
     await this.logEvent(`iap_purchase_${event}`, params);
   }
@@ -198,11 +182,7 @@ export class AnalyticsService {
    * Log a successful coin-pack purchase.
    * Firebase can aggregate this event count per pack to show total purchases.
    */
-  async logCoinPackPurchased(params: {
-    productId: string;
-    coins: number;
-    purchaseCount?: number;
-  }): Promise<void> {
+  async logCoinPackPurchased(params: {productId: string; coins: number; purchaseCount?: number}): Promise<void> {
     await this.logEvent("coin_pack_purchased", {
       product_id: params.productId,
       coins: params.coins,
@@ -218,7 +198,7 @@ export class AnalyticsService {
    */
   async logAdEvent(
     event: "loaded" | "load_failed" | "displayed" | "completed" | "display_failed",
-    params: Record<string, string | number | boolean> = {}
+    params: Record<string, string | number | boolean> = {},
   ): Promise<void> {
     await this.logEvent(`rewarded_ad_${event}`, params);
   }
@@ -340,10 +320,7 @@ export class AnalyticsService {
   // Internal helpers
   // ───────────────────────────────────────────────────────────────────────────
 
-  private async logEvent(
-    name: string,
-    params: Record<string, string | number | boolean> = {}
-  ): Promise<void> {
+  private async logEvent(name: string, params: Record<string, string | number | boolean> = {}): Promise<void> {
     try {
       await logEvent(getAnalytics(), name, params);
     } catch (error) {

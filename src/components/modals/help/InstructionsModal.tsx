@@ -34,11 +34,7 @@ interface InstructionsModalProps {
 
 const INSTRUCTIONS_MODAL_HEIGHT = Math.min(MODAL_HEIGHT * 1.5, MODAL_MAX_HEIGHT ?? MODAL_HEIGHT * 1.5);
 
-const InstructionsModal: React.FC<InstructionsModalProps> = ({
-  isVisible,
-  onClose,
-  onboardingProgress,
-}) => {
+const InstructionsModal: React.FC<InstructionsModalProps> = ({isVisible, onClose, onboardingProgress}) => {
   return (
     <Modal animationType="none" transparent={true} visible={isVisible} onRequestClose={onClose}>
       <View
@@ -70,9 +66,7 @@ const InstructionsModal: React.FC<InstructionsModalProps> = ({
               height={INSTRUCTIONS_MODAL_HEIGHT * 1.05}
               style={{position: "absolute", top: -INSTRUCTIONS_MODAL_HEIGHT * 0.05, left: -MODAL_WIDTH * 0.05}}
             />
-            {onboardingProgress ? (
-              <OnboardingProgressBadge {...onboardingProgress} />
-            ) : null}
+            {onboardingProgress ? <OnboardingProgressBadge {...onboardingProgress} /> : null}
             <View
               style={{
                 flex: 1,

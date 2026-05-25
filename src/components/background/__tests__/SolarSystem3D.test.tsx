@@ -1,6 +1,6 @@
-import { render, waitFor } from "@testing-library/react-native";
+import {render, waitFor} from "@testing-library/react-native";
 import React from "react";
-import { ColorManagement } from "three";
+import {ColorManagement} from "three";
 
 const mockSetClearColor = jest.fn();
 const mockLookAt = jest.fn();
@@ -14,18 +14,18 @@ const frameCallbacks: Array<() => void> = [];
 
 jest.mock("@react-three/fiber", () => {
   const React = require("react");
-  const { View } = require("react-native");
+  const {View} = require("react-native");
 
   return {
-    Canvas: ({ children, onCreated, ...props }: any) => {
+    Canvas: ({children, onCreated, ...props}: any) => {
       if (onCreated) {
         onCreated({
-          gl: { getContext: mockGetContext, setClearColor: mockSetClearColor },
-          camera: { lookAt: mockLookAt },
+          gl: {getContext: mockGetContext, setClearColor: mockSetClearColor},
+          camera: {lookAt: mockLookAt},
         });
       }
 
-      return React.createElement(View, { testID: "mock-canvas", ...props }, children);
+      return React.createElement(View, {testID: "mock-canvas", ...props}, children);
     },
     useFrame: (cb: () => void) => {
       frameCallbacks.push(cb);
@@ -66,8 +66,8 @@ describe("SolarSystem3D", () => {
     mockLoadAsync.mockResolvedValue([
       {
         localUri: "file:///mock-texture.png",
-      width: 64,
-      height: 64,
+        width: 64,
+        height: 64,
       },
     ]);
   });
@@ -97,16 +97,12 @@ describe("SolarSystem3D", () => {
     render(<SolarSystem3D />);
 
     await waitFor(() => {
-      expect(mockNativeDownloadAsync).toHaveBeenCalledWith(
-        "assets_3d_tex_planet_a",
-        "asset-hash",
-        "png"
-      );
+      expect(mockNativeDownloadAsync).toHaveBeenCalledWith("assets_3d_tex_planet_a", "asset-hash", "png");
     });
   });
 
   it("renders canvas with configured camera and GL setup", () => {
-    const { getByTestId } = render(<SolarSystem3D />);
+    const {getByTestId} = render(<SolarSystem3D />);
 
     const canvas = getByTestId("mock-canvas");
     expect(canvas.props.camera).toMatchObject({
@@ -128,7 +124,7 @@ describe("SolarSystem3D", () => {
   });
 
   it("uses the sun texture for both diffuse and emissive material channels", () => {
-    const texture = { isTexture: true };
+    const texture = {isTexture: true};
     const material = __createSunMaterialForTests(texture);
 
     expect(material.map).toBe(texture);
@@ -145,10 +141,7 @@ describe("SolarSystem3D", () => {
     expect(() => render(<SolarSystem3D />)).not.toThrow();
 
     await waitFor(() => {
-      expect(warnSpy).toHaveBeenCalledWith(
-        "Failed to load texture:",
-        expect.any(Error)
-      );
+      expect(warnSpy).toHaveBeenCalledWith("Failed to load texture:", expect.any(Error));
     });
 
     warnSpy.mockRestore();
@@ -168,14 +161,14 @@ describe("SolarSystem3D", () => {
   });
 
   it("applies sun, moon, and planet frame updates through helper functions", () => {
-    const sun = { rotation: { x: 0, y: 0 } };
+    const sun = {rotation: {x: 0, y: 0}};
     __applySunFrameUpdateForTests(sun);
     expect(sun.rotation.x).toBeCloseTo(0.002);
     expect(sun.rotation.y).toBeCloseTo(0.008);
     expect(() => __applySunFrameUpdateForTests(null)).not.toThrow();
 
     const moonPositionSet = jest.fn();
-    const moon = { position: { set: moonPositionSet }, rotation: { y: 0 } };
+    const moon = {position: {set: moonPositionSet}, rotation: {y: 0}};
     const moonConfig = {
       size: 1,
       distance: 10,
@@ -191,8 +184,8 @@ describe("SolarSystem3D", () => {
     expect(__applyMoonFrameUpdateForTests(null, 0, moonConfig)).toBeCloseTo(0.2);
 
     const groupPositionSet = jest.fn();
-    const planetGroup = { position: { set: groupPositionSet } };
-    const planetMesh = { rotation: { y: 0 } };
+    const planetGroup = {position: {set: groupPositionSet}};
+    const planetMesh = {rotation: {y: 0}};
     const planetConfig = {
       name: "test",
       size: 1,
@@ -204,17 +197,10 @@ describe("SolarSystem3D", () => {
       startAngle: 0,
       moons: [],
     };
-    const nextPlanetOrbit = __applyPlanetFrameUpdateForTests(
-      planetGroup,
-      planetMesh,
-      0,
-      planetConfig
-    );
+    const nextPlanetOrbit = __applyPlanetFrameUpdateForTests(planetGroup, planetMesh, 0, planetConfig);
     expect(nextPlanetOrbit).toBeCloseTo(0.1);
     expect(groupPositionSet).toHaveBeenCalled();
     expect(planetMesh.rotation.y).toBeCloseTo(0.03);
-    expect(
-      __applyPlanetFrameUpdateForTests(null, null, 0, planetConfig)
-    ).toBeCloseTo(0.1);
+    expect(__applyPlanetFrameUpdateForTests(null, null, 0, planetConfig)).toBeCloseTo(0.1);
   });
 });

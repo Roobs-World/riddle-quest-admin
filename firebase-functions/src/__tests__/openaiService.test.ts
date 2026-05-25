@@ -66,7 +66,9 @@ describe("OpenAI Service", () => {
           expect.objectContaining({role: "user"}),
         ]),
       });
-      expect(mockLogger.info).toHaveBeenCalledWith('Generated valid riddle: "What flies without wings?" → "time" (4 chars)');
+      expect(mockLogger.info).toHaveBeenCalledWith(
+        'Generated valid riddle: "What flies without wings?" → "time" (4 chars)',
+      );
     });
 
     test("should include riddle rules and broad pub quiz guidance in the OpenAI prompt", async () => {
@@ -165,7 +167,9 @@ describe("OpenAI Service", () => {
       const result = await generateUniqueRiddle();
 
       expect(result).toBeNull();
-      expect(mockLogger.warn).toHaveBeenCalledWith('Answer too long: "verylongword" (12 characters). Must be 7 or fewer.');
+      expect(mockLogger.warn).toHaveBeenCalledWith(
+        'Answer too long: "verylongword" (12 characters). Must be 7 or fewer.',
+      );
     });
 
     test("should reject answer with invalid characters (uppercase)", async () => {
@@ -355,10 +359,7 @@ describe("OpenAI Service", () => {
       const result = await generateUniqueRiddle();
 
       expect(result).toBeNull();
-      expect(mockLogger.error).toHaveBeenCalledWith(
-        "Error generating riddle with OpenAI (model: gpt-5.5):",
-        apiError,
-      );
+      expect(mockLogger.error).toHaveBeenCalledWith("Error generating riddle with OpenAI (model: gpt-5.5):", apiError);
     });
 
     test("should throw error when OPENAI_API_KEY is missing", async () => {

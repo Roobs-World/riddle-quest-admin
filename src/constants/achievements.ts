@@ -11,7 +11,7 @@
  * only requires one place to change.
  */
 
-import type { PlayerStats, PlayerProgress } from "../validation/firestoreSchemas";
+import type {PlayerStats, PlayerProgress} from "../validation/firestoreSchemas";
 
 export type AchievementCriteriaType =
   | "first_win"
@@ -477,9 +477,9 @@ export function getAchievementProgress(
   criteriaType: AchievementCriteriaType,
   stats: PlayerStats | undefined | null,
   progress: PlayerProgress | undefined | null,
-  hasPurchasedApp?: boolean | null
+  hasPurchasedApp?: boolean | null,
 ): number {
   const def = ACHIEVEMENT_DEFINITIONS.find((d) => d.criteriaType === criteriaType);
   if (!def) return 0;
-  return def.getProgress({ stats, progress, hasPurchasedApp });
+  return def.getProgress({stats, progress, hasPurchasedApp});
 }

@@ -1,4 +1,4 @@
-import type { AudioSource } from "expo-audio";
+import type {AudioSource} from "expo-audio";
 
 declare module "*.wav" {
   const src: AudioSource;

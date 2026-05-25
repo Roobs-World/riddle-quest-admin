@@ -1,8 +1,8 @@
 import React from "react";
-import { TouchableOpacity, TouchableOpacityProps } from "react-native";
+import {TouchableOpacity, TouchableOpacityProps} from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { SPACING } from "../../styles";
-import { AppStrings } from "../../constants/AppStrings";
+import {SPACING} from "../../styles";
+import {AppStrings} from "../../constants/AppStrings";
 
 interface MuteButtonProps extends Omit<TouchableOpacityProps, "onPress"> {
   isMuted: boolean;
@@ -11,14 +11,7 @@ interface MuteButtonProps extends Omit<TouchableOpacityProps, "onPress"> {
   iconColor?: string;
 }
 
-const MuteButton = ({
-  isMuted,
-  onToggle,
-  iconSize = 22,
-  iconColor = "#FFFFFF",
-  style,
-  ...props
-}: MuteButtonProps) => {
+const MuteButton = ({isMuted, onToggle, iconSize = 22, iconColor = "#FFFFFF", style, ...props}: MuteButtonProps) => {
   const iconName = isMuted ? "volume-off" : "volume-high";
 
   return (
@@ -43,11 +36,7 @@ const MuteButton = ({
       ]}
       {...props}
     >
-      <MaterialCommunityIcons
-        name={iconName}
-        size={iconSize}
-        color={iconColor}
-      />
+      <MaterialCommunityIcons name={iconName} size={iconSize} color={iconColor} />
     </TouchableOpacity>
   );
 };

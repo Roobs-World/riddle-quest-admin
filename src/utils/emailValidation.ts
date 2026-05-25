@@ -1,4 +1,4 @@
-import { AppStrings } from "../constants/AppStrings";
+import {AppStrings} from "../constants/AppStrings";
 
 export const validateEmail = (email: string): string => {
   if (!email) {
@@ -10,4 +10,3 @@ export const validateEmail = (email: string): string => {
   }
   return "";
 };
-

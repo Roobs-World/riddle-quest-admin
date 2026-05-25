@@ -15,7 +15,7 @@ global.nativeModuleProxy = {
     lazilyLoadView: () => null,
   },
 };
-global.__fbBatchedBridgeConfig = { remoteModuleConfig: [] };
+global.__fbBatchedBridgeConfig = {remoteModuleConfig: []};
 
 if (typeof global.ResizeObserver === "undefined") {
   global.ResizeObserver = class ResizeObserver {
@@ -33,8 +33,8 @@ jest.mock("react-native/Libraries/TurboModule/TurboModuleRegistry", () => ({
       return {
         getConstants: () => ({
           Dimensions: {
-            window: { width: 375, height: 812, scale: 2, fontScale: 1 },
-            screen: { width: 375, height: 812, scale: 2, fontScale: 1 },
+            window: {width: 375, height: 812, scale: 2, fontScale: 1},
+            screen: {width: 375, height: 812, scale: 2, fontScale: 1},
           },
         }),
       };
@@ -55,8 +55,8 @@ jest.mock("react-native/Libraries/TurboModule/TurboModuleRegistry", () => ({
       return {
         getConstants: () => ({
           Dimensions: {
-            window: { width: 375, height: 812, scale: 2, fontScale: 1 },
-            screen: { width: 375, height: 812, scale: 2, fontScale: 1 },
+            window: {width: 375, height: 812, scale: 2, fontScale: 1},
+            screen: {width: 375, height: 812, scale: 2, fontScale: 1},
           },
         }),
       };
@@ -65,13 +65,13 @@ jest.mock("react-native/Libraries/TurboModule/TurboModuleRegistry", () => ({
       return {
         getConstants: () => ({
           isTesting: true,
-          reactNativeVersion: { major: 0, minor: 84, patch: 1 },
+          reactNativeVersion: {major: 0, minor: 84, patch: 1},
         }),
       };
     }
     if (name === "SourceCode") {
       return {
-        getConstants: () => ({ scriptURL: "http://localhost:8081/index.bundle" }),
+        getConstants: () => ({scriptURL: "http://localhost:8081/index.bundle"}),
       };
     }
     return {};
@@ -107,7 +107,7 @@ jest.mock("expo-audio", () => ({
 
 // Mock Dimensions - react-native requires .default with .get() (avoids getConstants error)
 const mockDimensions = {
-  get: () => ({ width: 375, height: 812, scale: 2, fontScale: 1 }),
+  get: () => ({width: 375, height: 812, scale: 2, fontScale: 1}),
   addEventListener: jest.fn(),
   removeEventListener: jest.fn(),
 };
@@ -131,7 +131,7 @@ jest.mock("react-native/Libraries/Utilities/PixelRatio", () => ({
 jest.mock("react-native/Libraries/Linking/NativeLinkingManager", () => ({
   __esModule: true,
   default: {
-    addListener: jest.fn(() => ({ remove: jest.fn() })),
+    addListener: jest.fn(() => ({remove: jest.fn()})),
   },
 }));
 
@@ -139,8 +139,8 @@ jest.mock("react-native/Libraries/Linking/NativeLinkingManager", () => ({
 jest.mock("react-native/Libraries/AppState/AppState", () => ({
   __esModule: true,
   default: {
-    getConstants: () => ({ initialAppState: "active" }),
-    addEventListener: jest.fn(() => ({ remove: jest.fn() })),
+    getConstants: () => ({initialAppState: "active"}),
+    addEventListener: jest.fn(() => ({remove: jest.fn()})),
     removeEventListener: jest.fn(),
     currentState: "active",
   },
@@ -157,7 +157,7 @@ jest.mock("react-native/Libraries/Utilities/Platform", () => ({
 
 // Mock NativeEventEmitter to avoid "requires a non-null argument" (iOS) and AggregateError
 jest.mock("react-native/Libraries/EventEmitter/NativeEventEmitter", () => {
-  const { EventEmitter } = require("events");
+  const {EventEmitter} = require("events");
   class MockNativeEventEmitter extends EventEmitter {
     constructor() {
       super();
@@ -175,7 +175,7 @@ jest.mock("react-native/Libraries/EventEmitter/NativeEventEmitter", () => {
     }
   }
 
-  return { __esModule: true, default: MockNativeEventEmitter };
+  return {__esModule: true, default: MockNativeEventEmitter};
 });
 
 // Mock NativeAnimatedModule to avoid "Native animated module is not available" (ScrollView/Animated)
@@ -207,7 +207,7 @@ jest.mock("react-native/Libraries/Animated/NativeAnimatedModule", () => {
     "queueAndExecuteBatchedOperations",
   ];
   const mock = Object.fromEntries(methods.map((m) => [m, jest.fn()]));
-  return { __esModule: true, default: mock, ...mock };
+  return {__esModule: true, default: mock, ...mock};
 });
 
 // Mock Keyboard to avoid AggregateError (ScrollView calls Keyboard.metrics in componentDidMount)
@@ -215,10 +215,10 @@ jest.mock("react-native/Libraries/Animated/NativeAnimatedModule", () => {
 jest.mock("react-native/Libraries/Components/Keyboard/Keyboard", () => ({
   __esModule: true,
   default: {
-    addListener: jest.fn(() => ({ remove: jest.fn() })),
+    addListener: jest.fn(() => ({remove: jest.fn()})),
     removeListener: jest.fn(),
     dismiss: jest.fn(),
-    metrics: jest.fn(() => ({ height: 0, screenY: 0 })),
+    metrics: jest.fn(() => ({height: 0, screenY: 0})),
     isVisible: jest.fn(() => false),
   },
 }));
@@ -234,15 +234,15 @@ jest.mock("react-native/Libraries/Modal/Modal", () => {
       // Always render so UNSAFE_getByType(Modal) can find it; only show children when visible
       return React.createElement(
         View,
-        { testID: props.testID ?? "mock-modal", "data-modal-visible": props.visible },
-        props.visible ? props.children : null
+        {testID: props.testID ?? "mock-modal", "data-modal-visible": props.visible},
+        props.visible ? props.children : null,
       );
     },
   };
 });
 
 jest.mock("@react-native-firebase/functions", () => {
-  const mockCallable = jest.fn(() => Promise.resolve({ data: {} }));
+  const mockCallable = jest.fn(() => Promise.resolve({data: {}}));
   return {
     __esModule: true,
     getFunctions: jest.fn(() => ({})),
@@ -250,9 +250,8 @@ jest.mock("@react-native-firebase/functions", () => {
   };
 });
 
-jest.mock(
-  "@react-native-async-storage/async-storage",
-  () => require("@react-native-async-storage/async-storage/jest/async-storage-mock")
+jest.mock("@react-native-async-storage/async-storage", () =>
+  require("@react-native-async-storage/async-storage/jest/async-storage-mock"),
 );
 
 jest.mock("@react-native-firebase/analytics", () => {
@@ -283,7 +282,7 @@ jest.mock("@sentry/react-native", () => ({
   __esModule: true,
   init: jest.fn(),
   withScope: jest.fn((cb) => {
-    cb?.({ setExtras: jest.fn() });
+    cb?.({setExtras: jest.fn()});
   }),
   captureException: jest.fn(),
   captureMessage: jest.fn(),
@@ -340,7 +339,7 @@ jest.mock("@react-native-firebase/firestore", () => ({
   query: jest.fn(),
   where: jest.fn(),
   limit: jest.fn(),
-  serverTimestamp: jest.fn(() => ({ __type: "serverTimestamp" })),
+  serverTimestamp: jest.fn(() => ({__type: "serverTimestamp"})),
   FirebaseFirestoreTypes: {},
 }));
 
@@ -368,14 +367,14 @@ jest.mock("react-native-google-mobile-ads", () => {
         emit("loaded");
       }),
       show: jest.fn(async () => {
-        emit("earned_reward", { amount: 1, type: "coin" });
+        emit("earned_reward", {amount: 1, type: "coin"});
         emit("closed");
       }),
     };
   };
 
   const initialize = jest.fn(() => Promise.resolve({}));
-  const mobileAdsFactory = jest.fn(() => ({ initialize }));
+  const mobileAdsFactory = jest.fn(() => ({initialize}));
 
   return {
     __esModule: true,
@@ -399,8 +398,6 @@ jest.mock("@react-native-community/netinfo", () => ({
   __esModule: true,
   default: {
     addEventListener: jest.fn(() => jest.fn()),
-    fetch: jest.fn(() =>
-      Promise.resolve({ isConnected: true, isInternetReachable: true })
-    ),
+    fetch: jest.fn(() => Promise.resolve({isConnected: true, isInternetReachable: true})),
   },
 }));

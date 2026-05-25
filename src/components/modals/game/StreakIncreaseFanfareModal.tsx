@@ -3,7 +3,13 @@ import {View, Text, Modal, TouchableOpacity} from "react-native";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
 import {TYPOGRAPHY} from "../../../styles";
-import {MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, MODAL_BUTTON_SPACER, MODAL_MAX_HEIGHT} from "../../../constants/layout";
+import {
+  MODAL_WIDTH,
+  MODAL_HEIGHT,
+  MODAL_CONTENT_PADDING,
+  MODAL_BUTTON_SPACER,
+  MODAL_MAX_HEIGHT,
+} from "../../../constants/layout";
 import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {NewCoins} from "@/components/shared/NewCoins";
@@ -32,8 +38,7 @@ const StreakIncreaseFanfareModal: React.FC<StreakIncreaseFanfareModalProps> = ({
   onClose,
 }) => {
   const streakModalHeight = Math.min(MODAL_HEIGHT * 1.4, MODAL_MAX_HEIGHT ?? MODAL_HEIGHT * 1.4);
-  const continueButtonText =
-    sequenceProgress?.primaryActionText ?? AppStrings.StreakFanfare.CONTINUE_BUTTON;
+  const continueButtonText = sequenceProgress?.primaryActionText ?? AppStrings.StreakFanfare.CONTINUE_BUTTON;
   const handleContinue = () => {
     onContinue?.();
     onClose();

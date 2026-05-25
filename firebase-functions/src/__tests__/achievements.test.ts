@@ -92,7 +92,9 @@ describe("evaluateAchievements", () => {
   });
 
   it("returns [] when user has no new achievements to unlock", async () => {
-    const user = makeUser({stats: {totalWins: 0, bestStreak: 0, highestLevelClassic: 0, dailyPuzzlesCompleted: 0, totalHintsUsed: 0} as any});
+    const user = makeUser({
+      stats: {totalWins: 0, bestStreak: 0, highestLevelClassic: 0, dailyPuzzlesCompleted: 0, totalHintsUsed: 0} as any,
+    });
     mockGetUser.mockResolvedValue(user);
     const result = await evaluateAchievements("user-1", baseContext);
     expect(result).toEqual([]);

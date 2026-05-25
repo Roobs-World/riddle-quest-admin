@@ -40,24 +40,24 @@ src/styles/
 
 ```typescript
 // Existing imports continue to work unchanged
-import { styles, COLORS } from "../../styles/styles";
-import { styles, COLORS } from "../styles/styles";
+import {styles, COLORS} from "../../styles/styles";
+import {styles, COLORS} from "../styles/styles";
 ```
 
 ### Modern Modular Imports (Recommended for New Code)
 
 ```typescript
 // Import specific design tokens
-import { COLORS, TYPOGRAPHY, SPACING } from "../styles";
+import {COLORS, TYPOGRAPHY, SPACING} from "../styles";
 
 // Import specific component styles
-import { layoutStyles, buttonStyles, textStyles } from "../styles";
+import {layoutStyles, buttonStyles, textStyles} from "../styles";
 
 // Import utility functions
-import { createButtonStyle, createShadow } from "../styles";
+import {createButtonStyle, createShadow} from "../styles";
 
 // Import everything (for comprehensive usage)
-import { styles, COLORS, TYPOGRAPHY, createButtonStyle } from "../styles";
+import {styles, COLORS, TYPOGRAPHY, createButtonStyle} from "../styles";
 ```
 
 ## Design Tokens
@@ -153,4 +153,3 @@ The modular structure maintains 100% backward compatibility:
 - ✅ 520/520 React Native tests passing
 - ✅ 738/738 total tests passing
 - ✅ All existing components work unchanged
-

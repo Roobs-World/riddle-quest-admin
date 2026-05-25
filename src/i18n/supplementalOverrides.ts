@@ -2,7 +2,7 @@
  * @fileoverview Locale supplements for keys that were added after the first
  * translation pass.
  */
-import type { LocaleOverrides } from "./types";
+import type {LocaleOverrides} from "./types";
 
 type ReleaseReadinessLanguage =
   | "es"
@@ -45,9 +45,7 @@ type ReleaseReadinessCopy = {
   leaderboardGuestUnavailable: string;
 };
 
-const buildReleaseReadinessSupplement = (
-  copy: ReleaseReadinessCopy
-): LocaleOverrides => ({
+const buildReleaseReadinessSupplement = (copy: ReleaseReadinessCopy): LocaleOverrides => ({
   Settings: {
     ABOUT_BUTTON: copy.aboutButton,
   },
@@ -78,10 +76,7 @@ const buildReleaseReadinessSupplement = (
   },
 });
 
-export const releaseReadinessSupplementalOverrides: Record<
-  ReleaseReadinessLanguage,
-  LocaleOverrides
-> = {
+export const releaseReadinessSupplementalOverrides: Record<ReleaseReadinessLanguage, LocaleOverrides> = {
   es: buildReleaseReadinessSupplement({
     aboutButton: "Acerca de",
     aboutTitle: "Acerca de / Legal",
@@ -103,8 +98,7 @@ export const releaseReadinessSupplementalOverrides: Record<
     deleteAccountSuccessMessage: "Tu cuenta ha sido eliminada.",
     deleteAccountErrorTitle: "No se pudo eliminar la cuenta",
     deleteAccountErrorMessage: "Revisa tu conexion e intenta de nuevo.",
-    leaderboardGuestUnavailable:
-      "Inicia sesion para comparar XP, victorias y rachas en la clasificacion.",
+    leaderboardGuestUnavailable: "Inicia sesion para comparar XP, victorias y rachas en la clasificacion.",
   }),
   pt: buildReleaseReadinessSupplement({
     aboutButton: "Sobre",
@@ -127,8 +121,7 @@ export const releaseReadinessSupplementalOverrides: Record<
     deleteAccountSuccessMessage: "Sua conta foi excluida.",
     deleteAccountErrorTitle: "Nao foi possivel excluir a conta",
     deleteAccountErrorMessage: "Verifique sua conexao e tente novamente.",
-    leaderboardGuestUnavailable:
-      "Entre para comparar XP, vitorias e sequencias no ranking.",
+    leaderboardGuestUnavailable: "Entre para comparar XP, vitorias e sequencias no ranking.",
   }),
   fr: buildReleaseReadinessSupplement({
     aboutButton: "A propos",
@@ -151,8 +144,7 @@ export const releaseReadinessSupplementalOverrides: Record<
     deleteAccountSuccessMessage: "Votre compte a ete supprime.",
     deleteAccountErrorTitle: "Impossible de supprimer le compte",
     deleteAccountErrorMessage: "Verifiez votre connexion et reessayez.",
-    leaderboardGuestUnavailable:
-      "Connectez-vous pour comparer XP, victoires et series dans le classement.",
+    leaderboardGuestUnavailable: "Connectez-vous pour comparer XP, victoires et series dans le classement.",
   }),
   de: buildReleaseReadinessSupplement({
     aboutButton: "Info",
@@ -175,8 +167,7 @@ export const releaseReadinessSupplementalOverrides: Record<
     deleteAccountSuccessMessage: "Ihr Konto wurde geloescht.",
     deleteAccountErrorTitle: "Konto konnte nicht geloescht werden",
     deleteAccountErrorMessage: "Pruefen Sie die Verbindung und versuchen Sie es erneut.",
-    leaderboardGuestUnavailable:
-      "Melden Sie sich an, um XP, Siege und Serien in der Rangliste zu vergleichen.",
+    leaderboardGuestUnavailable: "Melden Sie sich an, um XP, Siege und Serien in der Rangliste zu vergleichen.",
   }),
   ja: buildReleaseReadinessSupplement({
     aboutButton: "About",
@@ -199,8 +190,7 @@ export const releaseReadinessSupplementalOverrides: Record<
     deleteAccountSuccessMessage: "Your account has been deleted.",
     deleteAccountErrorTitle: "Could not delete account",
     deleteAccountErrorMessage: "Please check your connection and try again.",
-    leaderboardGuestUnavailable:
-      "Sign in to compare XP, wins, and streaks on the leaderboard.",
+    leaderboardGuestUnavailable: "Sign in to compare XP, wins, and streaks on the leaderboard.",
   }),
   ko: buildReleaseReadinessSupplement({
     aboutButton: "About",
@@ -223,8 +213,7 @@ export const releaseReadinessSupplementalOverrides: Record<
     deleteAccountSuccessMessage: "Your account has been deleted.",
     deleteAccountErrorTitle: "Could not delete account",
     deleteAccountErrorMessage: "Please check your connection and try again.",
-    leaderboardGuestUnavailable:
-      "Sign in to compare XP, wins, and streaks on the leaderboard.",
+    leaderboardGuestUnavailable: "Sign in to compare XP, wins, and streaks on the leaderboard.",
   }),
   zh: buildReleaseReadinessSupplement({
     aboutButton: "About",
@@ -247,8 +236,7 @@ export const releaseReadinessSupplementalOverrides: Record<
     deleteAccountSuccessMessage: "Your account has been deleted.",
     deleteAccountErrorTitle: "Could not delete account",
     deleteAccountErrorMessage: "Please check your connection and try again.",
-    leaderboardGuestUnavailable:
-      "Sign in to compare XP, wins, and streaks on the leaderboard.",
+    leaderboardGuestUnavailable: "Sign in to compare XP, wins, and streaks on the leaderboard.",
   }),
   hi: buildReleaseReadinessSupplement({
     aboutButton: "About",
@@ -271,8 +259,7 @@ export const releaseReadinessSupplementalOverrides: Record<
     deleteAccountSuccessMessage: "Your account has been deleted.",
     deleteAccountErrorTitle: "Could not delete account",
     deleteAccountErrorMessage: "Please check your connection and try again.",
-    leaderboardGuestUnavailable:
-      "Sign in to compare XP, wins, and streaks on the leaderboard.",
+    leaderboardGuestUnavailable: "Sign in to compare XP, wins, and streaks on the leaderboard.",
   }),
   ru: buildReleaseReadinessSupplement({
     aboutButton: "O prilozhenii",
@@ -295,8 +282,7 @@ export const releaseReadinessSupplementalOverrides: Record<
     deleteAccountSuccessMessage: "Vash akkaunt udalen.",
     deleteAccountErrorTitle: "Ne udalos udalit akkaunt",
     deleteAccountErrorMessage: "Proverte podklyuchenie i povtorite popytku.",
-    leaderboardGuestUnavailable:
-      "Voidite, chtoby sravnit XP, pobedy i serii v tablitse liderov.",
+    leaderboardGuestUnavailable: "Voidite, chtoby sravnit XP, pobedy i serii v tablitse liderov.",
   }),
   tr: buildReleaseReadinessSupplement({
     aboutButton: "Hakkinda",
@@ -319,8 +305,7 @@ export const releaseReadinessSupplementalOverrides: Record<
     deleteAccountSuccessMessage: "Hesabin silindi.",
     deleteAccountErrorTitle: "Hesap silinemedi",
     deleteAccountErrorMessage: "Baglantini kontrol edip tekrar dene.",
-    leaderboardGuestUnavailable:
-      "Liderlik tablosunda XP, galibiyet ve serileri karsilastirmak icin giris yap.",
+    leaderboardGuestUnavailable: "Liderlik tablosunda XP, galibiyet ve serileri karsilastirmak icin giris yap.",
   }),
   ar: buildReleaseReadinessSupplement({
     aboutButton: "About",
@@ -343,8 +328,7 @@ export const releaseReadinessSupplementalOverrides: Record<
     deleteAccountSuccessMessage: "Your account has been deleted.",
     deleteAccountErrorTitle: "Could not delete account",
     deleteAccountErrorMessage: "Please check your connection and try again.",
-    leaderboardGuestUnavailable:
-      "Sign in to compare XP, wins, and streaks on the leaderboard.",
+    leaderboardGuestUnavailable: "Sign in to compare XP, wins, and streaks on the leaderboard.",
   }),
   id: buildReleaseReadinessSupplement({
     aboutButton: "Tentang",
@@ -367,8 +351,7 @@ export const releaseReadinessSupplementalOverrides: Record<
     deleteAccountSuccessMessage: "Akun Anda telah dihapus.",
     deleteAccountErrorTitle: "Tidak dapat menghapus akun",
     deleteAccountErrorMessage: "Periksa koneksi Anda dan coba lagi.",
-    leaderboardGuestUnavailable:
-      "Masuk untuk membandingkan XP, kemenangan, dan streak di papan peringkat.",
+    leaderboardGuestUnavailable: "Masuk untuk membandingkan XP, kemenangan, dan streak di papan peringkat.",
   }),
   it: buildReleaseReadinessSupplement({
     aboutButton: "Informazioni",
@@ -391,8 +374,7 @@ export const releaseReadinessSupplementalOverrides: Record<
     deleteAccountSuccessMessage: "Il tuo account e stato eliminato.",
     deleteAccountErrorTitle: "Impossibile eliminare account",
     deleteAccountErrorMessage: "Controlla la connessione e riprova.",
-    leaderboardGuestUnavailable:
-      "Accedi per confrontare XP, vittorie e serie nella classifica.",
+    leaderboardGuestUnavailable: "Accedi per confrontare XP, vittorie e serie nella classifica.",
   }),
   nl: buildReleaseReadinessSupplement({
     aboutButton: "Over",
@@ -415,8 +397,7 @@ export const releaseReadinessSupplementalOverrides: Record<
     deleteAccountSuccessMessage: "Je account is verwijderd.",
     deleteAccountErrorTitle: "Kon account niet verwijderen",
     deleteAccountErrorMessage: "Controleer je verbinding en probeer opnieuw.",
-    leaderboardGuestUnavailable:
-      "Log in om XP, overwinningen en reeksen op het scorebord te vergelijken.",
+    leaderboardGuestUnavailable: "Log in om XP, overwinningen en reeksen op het scorebord te vergelijken.",
   }),
   pl: buildReleaseReadinessSupplement({
     aboutButton: "O aplikacji",
@@ -439,8 +420,7 @@ export const releaseReadinessSupplementalOverrides: Record<
     deleteAccountSuccessMessage: "Twoje konto zostalo usuniete.",
     deleteAccountErrorTitle: "Nie mozna usunac konta",
     deleteAccountErrorMessage: "Sprawdz polaczenie i sprobuj ponownie.",
-    leaderboardGuestUnavailable:
-      "Zaloguj sie, aby porownac XP, zwyciestwa i serie w rankingu.",
+    leaderboardGuestUnavailable: "Zaloguj sie, aby porownac XP, zwyciestwa i serie w rankingu.",
   }),
   vi: buildReleaseReadinessSupplement({
     aboutButton: "Gioi thieu",
@@ -463,8 +443,7 @@ export const releaseReadinessSupplementalOverrides: Record<
     deleteAccountSuccessMessage: "Tai khoan cua ban da duoc xoa.",
     deleteAccountErrorTitle: "Khong the xoa tai khoan",
     deleteAccountErrorMessage: "Kiem tra ket noi va thu lai.",
-    leaderboardGuestUnavailable:
-      "Dang nhap de so sanh XP, chien thang va chuoi tren bang xep hang.",
+    leaderboardGuestUnavailable: "Dang nhap de so sanh XP, chien thang va chuoi tren bang xep hang.",
   }),
 };
 
@@ -515,7 +494,8 @@ export const esSupplementalOverrides: LocaleOverrides = {
     GAMES_PLAYED_STAT: "Partidas jugadas",
     TOTAL_WINS_STAT: "Victorias totales",
     GUEST_MODE_TITLE: "Jugando como invitado",
-    GUEST_MODE_DESCRIPTION: "Mejora a una cuenta con proveedor para conservar tu progreso y acceder a todas las funciones.",
+    GUEST_MODE_DESCRIPTION:
+      "Mejora a una cuenta con proveedor para conservar tu progreso y acceder a todas las funciones.",
     UPGRADE_ACCOUNT_BUTTON: "Mejorar cuenta",
     UPGRADE_ACCOUNT_TITLE: "Mejora tu cuenta",
     UPGRADE_ACCOUNT_DESCRIPTION:
@@ -524,8 +504,7 @@ export const esSupplementalOverrides: LocaleOverrides = {
     UPGRADE_ACCOUNT_ERROR: "No se pudo mejorar tu cuenta. Intenta de nuevo.",
     UPGRADE_ACCOUNT_PROVIDER_IN_USE: "Esa cuenta de proveedor ya esta en uso. Elige otro proveedor.",
     UPGRADE_ACCOUNT_EXISTING_ACCOUNT_TITLE: "La cuenta ya existe",
-    UPGRADE_ACCOUNT_EXISTING_ACCOUNT_DESCRIPTION:
-      "Esa cuenta ya existe. Quieres cerrar sesion e iniciar con ella?",
+    UPGRADE_ACCOUNT_EXISTING_ACCOUNT_DESCRIPTION: "Esa cuenta ya existe. Quieres cerrar sesion e iniciar con ella?",
   },
   TestStrings: {MOCK_SVG_TEXT: "Texto SVG simulado"},
   ErrorMessages: {
@@ -600,7 +579,8 @@ export const ptSupplementalOverrides: LocaleOverrides = {
   WelcomeBackModal: {TITLE: "Bem-vindo de volta", TAP_TO_CONTINUE: "Toque para continuar"},
   Profile: {
     GUEST_MODE_TITLE: "Jogando como convidado",
-    GUEST_MODE_DESCRIPTION: "Atualize para uma conta com provedor para manter seu progresso e acessar todos os recursos.",
+    GUEST_MODE_DESCRIPTION:
+      "Atualize para uma conta com provedor para manter seu progresso e acessar todos os recursos.",
     UPGRADE_ACCOUNT_BUTTON: "Atualizar conta",
     UPGRADE_ACCOUNT_TITLE: "Atualize sua conta",
     UPGRADE_ACCOUNT_DESCRIPTION:
@@ -609,8 +589,7 @@ export const ptSupplementalOverrides: LocaleOverrides = {
     UPGRADE_ACCOUNT_ERROR: "Nao foi possivel atualizar sua conta. Tente novamente.",
     UPGRADE_ACCOUNT_PROVIDER_IN_USE: "Essa conta de provedor ja esta em uso. Escolha outro provedor.",
     UPGRADE_ACCOUNT_EXISTING_ACCOUNT_TITLE: "Conta ja existe",
-    UPGRADE_ACCOUNT_EXISTING_ACCOUNT_DESCRIPTION:
-      "Essa conta ja existe. Deseja sair e entrar com ela?",
+    UPGRADE_ACCOUNT_EXISTING_ACCOUNT_DESCRIPTION: "Essa conta ja existe. Deseja sair e entrar com ela?",
   },
   TestStrings: {MOCK_SVG_TEXT: "Texto SVG simulado"},
   ErrorMessages: {
@@ -640,8 +619,18 @@ export const ptSupplementalOverrides: LocaleOverrides = {
     EXTRA_GUESSES_SUFFIX: " moedas",
   },
   Achievements: {COINS_SUFFIX: " moedas"},
-  StreakFanfare: {TITLE: "Sequencia aumentada!", STREAK_SUFFIX: " dias de sequencia", COINS_SUFFIX: " moedas", CONTINUE_BUTTON: "Continuar"},
-  LevelUpFanfare: {TITLE: "Subiu de nivel!", LEVEL_PREFIX: "Nivel ", COINS_SUFFIX: " moedas", CONTINUE_BUTTON: "Excelente"},
+  StreakFanfare: {
+    TITLE: "Sequencia aumentada!",
+    STREAK_SUFFIX: " dias de sequencia",
+    COINS_SUFFIX: " moedas",
+    CONTINUE_BUTTON: "Continuar",
+  },
+  LevelUpFanfare: {
+    TITLE: "Subiu de nivel!",
+    LEVEL_PREFIX: "Nivel ",
+    COINS_SUFFIX: " moedas",
+    CONTINUE_BUTTON: "Excelente",
+  },
 };
 
 export const frSupplementalOverrides: LocaleOverrides = {
@@ -669,7 +658,8 @@ export const frSupplementalOverrides: LocaleOverrides = {
   },
   NavigationMessages: {
     NO_CLASSIC_RIDDLE_FOUND: "Aucune enigme classique trouvee a l index ",
-    SERVER_GENERATES_RIDDLES: ". Le serveur generera automatiquement de nouvelles enigmes lorsque vous soumettrez des reponses.",
+    SERVER_GENERATES_RIDDLES:
+      ". Le serveur generera automatiquement de nouvelles enigmes lorsque vous soumettrez des reponses.",
     ERROR_LOADING_NEXT_RIDDLE: "Erreur lors du chargement de l enigme classique suivante:",
   },
   Settings: {
@@ -687,7 +677,8 @@ export const frSupplementalOverrides: LocaleOverrides = {
   WelcomeBackModal: {TITLE: "Bon retour", TAP_TO_CONTINUE: "Touchez pour continuer"},
   Profile: {
     GUEST_MODE_TITLE: "Jeu en mode invite",
-    GUEST_MODE_DESCRIPTION: "Passez a un compte avec fournisseur pour conserver votre progression et acceder a toutes les fonctions.",
+    GUEST_MODE_DESCRIPTION:
+      "Passez a un compte avec fournisseur pour conserver votre progression et acceder a toutes les fonctions.",
     UPGRADE_ACCOUNT_BUTTON: "Mettre a niveau",
     UPGRADE_ACCOUNT_TITLE: "Mettre votre compte a niveau",
     UPGRADE_ACCOUNT_DESCRIPTION:
@@ -696,8 +687,7 @@ export const frSupplementalOverrides: LocaleOverrides = {
     UPGRADE_ACCOUNT_ERROR: "Impossible de mettre le compte a niveau. Reessayez.",
     UPGRADE_ACCOUNT_PROVIDER_IN_USE: "Ce compte fournisseur est deja utilise. Choisissez un autre fournisseur.",
     UPGRADE_ACCOUNT_EXISTING_ACCOUNT_TITLE: "Le compte existe deja",
-    UPGRADE_ACCOUNT_EXISTING_ACCOUNT_DESCRIPTION:
-      "Ce compte existe deja. Voulez-vous vous deconnecter et l utiliser?",
+    UPGRADE_ACCOUNT_EXISTING_ACCOUNT_DESCRIPTION: "Ce compte existe deja. Voulez-vous vous deconnecter et l utiliser?",
   },
   TestStrings: {MOCK_SVG_TEXT: "Texte SVG simule"},
   ErrorMessages: {
@@ -727,8 +717,18 @@ export const frSupplementalOverrides: LocaleOverrides = {
     EXTRA_GUESSES_SUFFIX: " pieces",
   },
   Achievements: {COINS_SUFFIX: " pieces"},
-  StreakFanfare: {TITLE: "Serie augmentee!", STREAK_SUFFIX: " jours de serie", COINS_SUFFIX: " pieces", CONTINUE_BUTTON: "Continuer"},
-  LevelUpFanfare: {TITLE: "Niveau superieur!", LEVEL_PREFIX: "Niveau ", COINS_SUFFIX: " pieces", CONTINUE_BUTTON: "Super"},
+  StreakFanfare: {
+    TITLE: "Serie augmentee!",
+    STREAK_SUFFIX: " jours de serie",
+    COINS_SUFFIX: " pieces",
+    CONTINUE_BUTTON: "Continuer",
+  },
+  LevelUpFanfare: {
+    TITLE: "Niveau superieur!",
+    LEVEL_PREFIX: "Niveau ",
+    COINS_SUFFIX: " pieces",
+    CONTINUE_BUTTON: "Super",
+  },
 };
 
 export const deSupplementalOverrides: LocaleOverrides = {
@@ -778,14 +778,16 @@ export const deSupplementalOverrides: LocaleOverrides = {
     GAMES_PLAYED_STAT: "Gespielte Partien",
     TOTAL_WINS_STAT: "Gesamtsiege",
     GUEST_MODE_TITLE: "Als Gast spielen",
-    GUEST_MODE_DESCRIPTION: "Aktualisieren Sie auf ein Konto mit Anbieter, um Fortschritt zu behalten und alle Funktionen zu nutzen.",
+    GUEST_MODE_DESCRIPTION:
+      "Aktualisieren Sie auf ein Konto mit Anbieter, um Fortschritt zu behalten und alle Funktionen zu nutzen.",
     UPGRADE_ACCOUNT_BUTTON: "Konto aktualisieren",
     UPGRADE_ACCOUNT_TITLE: "Konto aktualisieren",
     UPGRADE_ACCOUNT_DESCRIPTION:
       "Waehlen Sie einen Anbieter, um diese Gastsitzung zu verknuepfen. Ihr Fortschritt bleibt auf diesem Geraet und wird im Konto gespeichert.",
     UPGRADE_ACCOUNT_SUCCESS: "Konto erfolgreich aktualisiert!",
     UPGRADE_ACCOUNT_ERROR: "Konto konnte nicht aktualisiert werden. Erneut versuchen.",
-    UPGRADE_ACCOUNT_PROVIDER_IN_USE: "Dieses Anbieter-Konto wird bereits verwendet. Waehlen Sie einen anderen Anbieter.",
+    UPGRADE_ACCOUNT_PROVIDER_IN_USE:
+      "Dieses Anbieter-Konto wird bereits verwendet. Waehlen Sie einen anderen Anbieter.",
     UPGRADE_ACCOUNT_EXISTING_ACCOUNT_TITLE: "Konto existiert bereits",
     UPGRADE_ACCOUNT_EXISTING_ACCOUNT_DESCRIPTION:
       "Dieses Konto existiert bereits. Moechten Sie sich abmelden und damit anmelden?",
@@ -827,25 +829,113 @@ export const deSupplementalOverrides: LocaleOverrides = {
     EXTRA_GUESSES_SUFFIX: " Muenzen",
   },
   Achievements: {COINS_SUFFIX: " Muenzen"},
-  StreakFanfare: {TITLE: "Serie erhoeht!", STREAK_SUFFIX: " Tage Serie", COINS_SUFFIX: " Muenzen", CONTINUE_BUTTON: "Weiter"},
-  LevelUpFanfare: {TITLE: "Level aufgestiegen!", LEVEL_PREFIX: "Level ", COINS_SUFFIX: " Muenzen", CONTINUE_BUTTON: "Toll"},
+  StreakFanfare: {
+    TITLE: "Serie erhoeht!",
+    STREAK_SUFFIX: " Tage Serie",
+    COINS_SUFFIX: " Muenzen",
+    CONTINUE_BUTTON: "Weiter",
+  },
+  LevelUpFanfare: {
+    TITLE: "Level aufgestiegen!",
+    LEVEL_PREFIX: "Level ",
+    COINS_SUFFIX: " Muenzen",
+    CONTINUE_BUTTON: "Toll",
+  },
 };
 
 export const jaSupplementalOverrides: LocaleOverrides = {
-  AuthStrings: {Login: {NO_ACCOUNT_PROMPT: "アカウントをお持ちでないですか？ "}, SignUp: {TERMS_AGREEMENT_PART1: "同意します: "}},
-  Navigation: {LOGIN: "ログイン", SIGN_UP: "登録", LANDING: "開始", FORGOT_PASSWORD: "パスワード再設定", NEW_PASSWORD: "新しいパスワード", GAME: "ゲーム", CREDITS: "クレジット", BUY_COINS_BUTTON: "コイン購入"},
-  NavigationMessages: {NO_CLASSIC_RIDDLE_FOUND: "クラシックなぞなぞが見つかりません。インデックス: ", SERVER_GENERATES_RIDDLES: "。回答を送信するとサーバーが新しいなぞなぞを自動生成します。", ERROR_LOADING_NEXT_RIDDLE: "次のクラシックなぞなぞの読み込みエラー:"},
-  Settings: {PRIVACY_POLICY_BUTTON: "プライバシーポリシー", TERMS_BUTTON: "利用規約", LICENSES_BUTTON: "ライセンス", ACCOUNT_DELETION_BUTTON: "アカウント削除", DATA_EXPORT_BUTTON: "データをエクスポート", TEST_CRASH_BUTTON: "クラッシュテスト", TEST_CRASH_ALERT_TITLE: "クラッシュテスト", TEST_CRASH_ALERT_MESSAGE: "Firebase Crashlyticsのテストのためアプリをクラッシュさせます。続行しますか？", TEST_CRASH_ALERT_CANCEL: "キャンセル", TEST_CRASH_ALERT_CRASH: "クラッシュ"},
+  AuthStrings: {
+    Login: {NO_ACCOUNT_PROMPT: "アカウントをお持ちでないですか？ "},
+    SignUp: {TERMS_AGREEMENT_PART1: "同意します: "},
+  },
+  Navigation: {
+    LOGIN: "ログイン",
+    SIGN_UP: "登録",
+    LANDING: "開始",
+    FORGOT_PASSWORD: "パスワード再設定",
+    NEW_PASSWORD: "新しいパスワード",
+    GAME: "ゲーム",
+    CREDITS: "クレジット",
+    BUY_COINS_BUTTON: "コイン購入",
+  },
+  NavigationMessages: {
+    NO_CLASSIC_RIDDLE_FOUND: "クラシックなぞなぞが見つかりません。インデックス: ",
+    SERVER_GENERATES_RIDDLES: "。回答を送信するとサーバーが新しいなぞなぞを自動生成します。",
+    ERROR_LOADING_NEXT_RIDDLE: "次のクラシックなぞなぞの読み込みエラー:",
+  },
+  Settings: {
+    PRIVACY_POLICY_BUTTON: "プライバシーポリシー",
+    TERMS_BUTTON: "利用規約",
+    LICENSES_BUTTON: "ライセンス",
+    ACCOUNT_DELETION_BUTTON: "アカウント削除",
+    DATA_EXPORT_BUTTON: "データをエクスポート",
+    TEST_CRASH_BUTTON: "クラッシュテスト",
+    TEST_CRASH_ALERT_TITLE: "クラッシュテスト",
+    TEST_CRASH_ALERT_MESSAGE: "Firebase Crashlyticsのテストのためアプリをクラッシュさせます。続行しますか？",
+    TEST_CRASH_ALERT_CANCEL: "キャンセル",
+    TEST_CRASH_ALERT_CRASH: "クラッシュ",
+  },
   WelcomeBackModal: {TITLE: "おかえりなさい", TAP_TO_CONTINUE: "タップして続行"},
-  Profile: {DAILY_PUZZLES_STAT: "デイリーパズル", BEST_STREAK_STAT: "最高連勝", WORDS_GUESSED_STAT: "推測した単語", WIN_RATE_STAT: "勝率", AVG_GUESSES_STAT: "平均推測", TOTAL_SCORE_STAT: "総スコア", HIGHEST_CLASSIC_LEVEL_STAT: "最高クラシックレベル", GAMES_PLAYED_STAT: "プレイ回数", TOTAL_WINS_STAT: "総勝利", GUEST_MODE_TITLE: "ゲストとしてプレイ中", GUEST_MODE_DESCRIPTION: "プロバイダー付きアカウントにアップグレードすると進行状況を保持し、すべての機能を利用できます。", UPGRADE_ACCOUNT_BUTTON: "アカウントをアップグレード", UPGRADE_ACCOUNT_TITLE: "アカウントをアップグレード", UPGRADE_ACCOUNT_DESCRIPTION: "このゲストセッションに連携するプロバイダーを選択してください。進行状況はこの端末に残り、アカウントに保存されます。", UPGRADE_ACCOUNT_SUCCESS: "アカウントをアップグレードしました！", UPGRADE_ACCOUNT_ERROR: "アカウントをアップグレードできませんでした。再試行してください。", UPGRADE_ACCOUNT_PROVIDER_IN_USE: "そのプロバイダーアカウントは既に使用中です。別のプロバイダーを選んでください。", UPGRADE_ACCOUNT_EXISTING_ACCOUNT_TITLE: "アカウントは既に存在します", UPGRADE_ACCOUNT_EXISTING_ACCOUNT_DESCRIPTION: "そのアカウントは既に存在します。ログアウトしてそのアカウントでログインしますか？"},
+  Profile: {
+    DAILY_PUZZLES_STAT: "デイリーパズル",
+    BEST_STREAK_STAT: "最高連勝",
+    WORDS_GUESSED_STAT: "推測した単語",
+    WIN_RATE_STAT: "勝率",
+    AVG_GUESSES_STAT: "平均推測",
+    TOTAL_SCORE_STAT: "総スコア",
+    HIGHEST_CLASSIC_LEVEL_STAT: "最高クラシックレベル",
+    GAMES_PLAYED_STAT: "プレイ回数",
+    TOTAL_WINS_STAT: "総勝利",
+    GUEST_MODE_TITLE: "ゲストとしてプレイ中",
+    GUEST_MODE_DESCRIPTION:
+      "プロバイダー付きアカウントにアップグレードすると進行状況を保持し、すべての機能を利用できます。",
+    UPGRADE_ACCOUNT_BUTTON: "アカウントをアップグレード",
+    UPGRADE_ACCOUNT_TITLE: "アカウントをアップグレード",
+    UPGRADE_ACCOUNT_DESCRIPTION:
+      "このゲストセッションに連携するプロバイダーを選択してください。進行状況はこの端末に残り、アカウントに保存されます。",
+    UPGRADE_ACCOUNT_SUCCESS: "アカウントをアップグレードしました！",
+    UPGRADE_ACCOUNT_ERROR: "アカウントをアップグレードできませんでした。再試行してください。",
+    UPGRADE_ACCOUNT_PROVIDER_IN_USE: "そのプロバイダーアカウントは既に使用中です。別のプロバイダーを選んでください。",
+    UPGRADE_ACCOUNT_EXISTING_ACCOUNT_TITLE: "アカウントは既に存在します",
+    UPGRADE_ACCOUNT_EXISTING_ACCOUNT_DESCRIPTION:
+      "そのアカウントは既に存在します。ログアウトしてそのアカウントでログインしますか？",
+  },
   TestStrings: {MOCK_SVG_TEXT: "模擬SVGテキスト"},
-  ErrorMessages: {UNABLE_TO_LOAD_RIDDLES: "なぞなぞを読み込めませんでした。接続を確認して再試行してください。", FAILED_TO_INITIALIZE_RIDDLE_DATABASE: "なぞなぞデータベースの初期化に失敗しました。初めてのご利用かもしれません。", CHECK_INTERNET_AND_TRY_AGAIN: "インターネット接続を確認して、もう一度お試しください。", FAILED_TO_LOAD_PRODUCTS: "商品を読み込めませんでした", FAILED_TO_LOAD_SHOP_PRODUCTS: "ショップ商品を読み込めませんでした"},
+  ErrorMessages: {
+    UNABLE_TO_LOAD_RIDDLES: "なぞなぞを読み込めませんでした。接続を確認して再試行してください。",
+    FAILED_TO_INITIALIZE_RIDDLE_DATABASE: "なぞなぞデータベースの初期化に失敗しました。初めてのご利用かもしれません。",
+    CHECK_INTERNET_AND_TRY_AGAIN: "インターネット接続を確認して、もう一度お試しください。",
+    FAILED_TO_LOAD_PRODUCTS: "商品を読み込めませんでした",
+    FAILED_TO_LOAD_SHOP_PRODUCTS: "ショップ商品を読み込めませんでした",
+  },
   DevTools: {CLEAR_LOCAL_DATA_BUTTON: "ローカルデータを消去"},
-  GameMessages: {GAME_WON: "ゲーム勝利: 挑戦 - ", IN_MODE: " / ", MODE_SUFFIX: "モード。", COINS_EARNED: "獲得コイン: ", GAME_LOST: "ゲーム敗北: 正解 - ", HINT_USED: "ヒント使用: コスト - ", RETRY_BUTTON_PRESSED: "再試行ボタンが押されました"},
-  LogMessages: {SHOWING_LOADING_SPINNER_USER_DATA: "読み込み表示: ユーザーデータを読み込み中...", TIMESTAMP: "タイムスタンプ:", SHOWING_LOADING_SPINNER_AUTH: "読み込み表示: 認証状態を確認中", NAVIGATION_RENDERING: "ナビゲーション描画中 - 認証済み:", IS_LOADING: "読み込み中:", SHOWING_NAVIGATION_STACK: "ナビゲーションスタック表示 - 初期ルート:"},
+  GameMessages: {
+    GAME_WON: "ゲーム勝利: 挑戦 - ",
+    IN_MODE: " / ",
+    MODE_SUFFIX: "モード。",
+    COINS_EARNED: "獲得コイン: ",
+    GAME_LOST: "ゲーム敗北: 正解 - ",
+    HINT_USED: "ヒント使用: コスト - ",
+    RETRY_BUTTON_PRESSED: "再試行ボタンが押されました",
+  },
+  LogMessages: {
+    SHOWING_LOADING_SPINNER_USER_DATA: "読み込み表示: ユーザーデータを読み込み中...",
+    TIMESTAMP: "タイムスタンプ:",
+    SHOWING_LOADING_SPINNER_AUTH: "読み込み表示: 認証状態を確認中",
+    NAVIGATION_RENDERING: "ナビゲーション描画中 - 認証済み:",
+    IS_LOADING: "読み込み中:",
+    SHOWING_NAVIGATION_STACK: "ナビゲーションスタック表示 - 初期ルート:",
+  },
   GameScreenAlerts: {CONTINUE_NOT_ENOUGH_COINS_MESSAGE: "続行するにはコインが足りません。"},
   VictoryModal: {TOTAL_COINS_LABEL: "合計コイン"},
-  LossModal: {EXTRA_GUESSES_PROMPT: "挑戦回数がなくなりました。3回追加するか、このパズルをスキップできます。", SKIP_PUZZLE_BUTTON: "パズルをスキップ", ANSWER_PREFIX: "答え: ", USE_COINS_PREFIX: "使用: ", EXTRA_GUESSES_PREFIX: "追加3回 - ", EXTRA_GUESSES_SUFFIX: "コイン"},
+  LossModal: {
+    EXTRA_GUESSES_PROMPT: "挑戦回数がなくなりました。3回追加するか、このパズルをスキップできます。",
+    SKIP_PUZZLE_BUTTON: "パズルをスキップ",
+    ANSWER_PREFIX: "答え: ",
+    USE_COINS_PREFIX: "使用: ",
+    EXTRA_GUESSES_PREFIX: "追加3回 - ",
+    EXTRA_GUESSES_SUFFIX: "コイン",
+  },
   Achievements: {COINS_SUFFIX: "コイン"},
   StreakFanfare: {TITLE: "連勝更新！", STREAK_SUFFIX: "日連勝", COINS_SUFFIX: "コイン", CONTINUE_BUTTON: "続ける"},
   LevelUpFanfare: {TITLE: "レベルアップ！", LEVEL_PREFIX: "レベル ", COINS_SUFFIX: "コイン", CONTINUE_BUTTON: "すごい"},
@@ -853,20 +943,98 @@ export const jaSupplementalOverrides: LocaleOverrides = {
 
 export const koSupplementalOverrides: LocaleOverrides = {
   AuthStrings: {Login: {NO_ACCOUNT_PROMPT: "계정이 없으신가요? "}, SignUp: {TERMS_AGREEMENT_PART1: "동의합니다: "}},
-  Navigation: {LOGIN: "로그인", SIGN_UP: "가입", LANDING: "시작", FORGOT_PASSWORD: "비밀번호 찾기", NEW_PASSWORD: "새 비밀번호", GAME: "게임", CREDITS: "크레딧", BUY_COINS_BUTTON: "코인 구매"},
-  NavigationMessages: {NO_CLASSIC_RIDDLE_FOUND: "해당 인덱스에 클래식 수수께끼가 없습니다: ", SERVER_GENERATES_RIDDLES: ". 답을 제출하면 서버가 새 수수께끼를 자동으로 생성합니다.", ERROR_LOADING_NEXT_RIDDLE: "다음 클래식 수수께끼 로드 오류:"},
-  Settings: {PRIVACY_POLICY_BUTTON: "개인정보 처리방침", TERMS_BUTTON: "이용약관", LICENSES_BUTTON: "라이선스", ACCOUNT_DELETION_BUTTON: "계정 삭제", DATA_EXPORT_BUTTON: "내 데이터 내보내기", TEST_CRASH_BUTTON: "충돌 테스트", TEST_CRASH_ALERT_TITLE: "충돌 테스트", TEST_CRASH_ALERT_MESSAGE: "Firebase Crashlytics 테스트를 위해 앱을 충돌시킵니다. 계속할까요?", TEST_CRASH_ALERT_CANCEL: "취소", TEST_CRASH_ALERT_CRASH: "충돌"},
+  Navigation: {
+    LOGIN: "로그인",
+    SIGN_UP: "가입",
+    LANDING: "시작",
+    FORGOT_PASSWORD: "비밀번호 찾기",
+    NEW_PASSWORD: "새 비밀번호",
+    GAME: "게임",
+    CREDITS: "크레딧",
+    BUY_COINS_BUTTON: "코인 구매",
+  },
+  NavigationMessages: {
+    NO_CLASSIC_RIDDLE_FOUND: "해당 인덱스에 클래식 수수께끼가 없습니다: ",
+    SERVER_GENERATES_RIDDLES: ". 답을 제출하면 서버가 새 수수께끼를 자동으로 생성합니다.",
+    ERROR_LOADING_NEXT_RIDDLE: "다음 클래식 수수께끼 로드 오류:",
+  },
+  Settings: {
+    PRIVACY_POLICY_BUTTON: "개인정보 처리방침",
+    TERMS_BUTTON: "이용약관",
+    LICENSES_BUTTON: "라이선스",
+    ACCOUNT_DELETION_BUTTON: "계정 삭제",
+    DATA_EXPORT_BUTTON: "내 데이터 내보내기",
+    TEST_CRASH_BUTTON: "충돌 테스트",
+    TEST_CRASH_ALERT_TITLE: "충돌 테스트",
+    TEST_CRASH_ALERT_MESSAGE: "Firebase Crashlytics 테스트를 위해 앱을 충돌시킵니다. 계속할까요?",
+    TEST_CRASH_ALERT_CANCEL: "취소",
+    TEST_CRASH_ALERT_CRASH: "충돌",
+  },
   WelcomeBackModal: {TITLE: "다시 오신 것을 환영합니다", TAP_TO_CONTINUE: "탭하여 계속"},
-  Profile: {DAILY_PUZZLES_STAT: "일일 퍼즐", BEST_STREAK_STAT: "최고 연승", WORDS_GUESSED_STAT: "맞힌 단어", WIN_RATE_STAT: "승률", AVG_GUESSES_STAT: "평균 추측", TOTAL_SCORE_STAT: "총 점수", HIGHEST_CLASSIC_LEVEL_STAT: "최고 클래식 레벨", GAMES_PLAYED_STAT: "플레이한 게임", TOTAL_WINS_STAT: "총 승리", GUEST_MODE_TITLE: "게스트로 플레이 중", GUEST_MODE_DESCRIPTION: "제공자 계정으로 업그레이드하면 진행 상황을 보존하고 모든 기능을 이용할 수 있습니다.", UPGRADE_ACCOUNT_BUTTON: "계정 업그레이드", UPGRADE_ACCOUNT_TITLE: "계정 업그레이드", UPGRADE_ACCOUNT_DESCRIPTION: "이 게스트 세션에 연결할 제공자를 선택하세요. 진행 상황은 이 기기에 유지되고 계정에 저장됩니다.", UPGRADE_ACCOUNT_SUCCESS: "계정이 업그레이드되었습니다!", UPGRADE_ACCOUNT_ERROR: "계정을 업그레이드할 수 없습니다. 다시 시도해 주세요.", UPGRADE_ACCOUNT_PROVIDER_IN_USE: "해당 제공자 계정은 이미 사용 중입니다. 다른 제공자를 선택하세요.", UPGRADE_ACCOUNT_EXISTING_ACCOUNT_TITLE: "계정이 이미 있습니다", UPGRADE_ACCOUNT_EXISTING_ACCOUNT_DESCRIPTION: "해당 계정이 이미 있습니다. 로그아웃하고 그 계정으로 로그인할까요?"},
+  Profile: {
+    DAILY_PUZZLES_STAT: "일일 퍼즐",
+    BEST_STREAK_STAT: "최고 연승",
+    WORDS_GUESSED_STAT: "맞힌 단어",
+    WIN_RATE_STAT: "승률",
+    AVG_GUESSES_STAT: "평균 추측",
+    TOTAL_SCORE_STAT: "총 점수",
+    HIGHEST_CLASSIC_LEVEL_STAT: "최고 클래식 레벨",
+    GAMES_PLAYED_STAT: "플레이한 게임",
+    TOTAL_WINS_STAT: "총 승리",
+    GUEST_MODE_TITLE: "게스트로 플레이 중",
+    GUEST_MODE_DESCRIPTION: "제공자 계정으로 업그레이드하면 진행 상황을 보존하고 모든 기능을 이용할 수 있습니다.",
+    UPGRADE_ACCOUNT_BUTTON: "계정 업그레이드",
+    UPGRADE_ACCOUNT_TITLE: "계정 업그레이드",
+    UPGRADE_ACCOUNT_DESCRIPTION:
+      "이 게스트 세션에 연결할 제공자를 선택하세요. 진행 상황은 이 기기에 유지되고 계정에 저장됩니다.",
+    UPGRADE_ACCOUNT_SUCCESS: "계정이 업그레이드되었습니다!",
+    UPGRADE_ACCOUNT_ERROR: "계정을 업그레이드할 수 없습니다. 다시 시도해 주세요.",
+    UPGRADE_ACCOUNT_PROVIDER_IN_USE: "해당 제공자 계정은 이미 사용 중입니다. 다른 제공자를 선택하세요.",
+    UPGRADE_ACCOUNT_EXISTING_ACCOUNT_TITLE: "계정이 이미 있습니다",
+    UPGRADE_ACCOUNT_EXISTING_ACCOUNT_DESCRIPTION: "해당 계정이 이미 있습니다. 로그아웃하고 그 계정으로 로그인할까요?",
+  },
   TestStrings: {MOCK_SVG_TEXT: "모의 SVG 텍스트"},
-  RewardedAdPrompts: {OUT_OF_GUESSES_PROMPT: "시도 횟수가 없습니다! 광고를 보고 코인을 얻을까요?", WATCH_AD_BUTTON: "광고 보기", NO_THANKS_BUTTON: "괜찮아요"},
-  ErrorMessages: {UNABLE_TO_LOAD_RIDDLES: "수수께끼를 불러올 수 없습니다. 연결을 확인하고 다시 시도해 주세요.", FAILED_TO_INITIALIZE_RIDDLE_DATABASE: "수수께끼 데이터베이스를 초기화하지 못했습니다. 앱을 처음 사용하는 것일 수 있습니다.", CHECK_INTERNET_AND_TRY_AGAIN: "인터넷 연결을 확인하고 다시 시도하세요.", FAILED_TO_LOAD_PRODUCTS: "상품을 불러올 수 없습니다", FAILED_TO_LOAD_SHOP_PRODUCTS: "상점 상품을 불러올 수 없습니다"},
+  RewardedAdPrompts: {
+    OUT_OF_GUESSES_PROMPT: "시도 횟수가 없습니다! 광고를 보고 코인을 얻을까요?",
+    WATCH_AD_BUTTON: "광고 보기",
+    NO_THANKS_BUTTON: "괜찮아요",
+  },
+  ErrorMessages: {
+    UNABLE_TO_LOAD_RIDDLES: "수수께끼를 불러올 수 없습니다. 연결을 확인하고 다시 시도해 주세요.",
+    FAILED_TO_INITIALIZE_RIDDLE_DATABASE:
+      "수수께끼 데이터베이스를 초기화하지 못했습니다. 앱을 처음 사용하는 것일 수 있습니다.",
+    CHECK_INTERNET_AND_TRY_AGAIN: "인터넷 연결을 확인하고 다시 시도하세요.",
+    FAILED_TO_LOAD_PRODUCTS: "상품을 불러올 수 없습니다",
+    FAILED_TO_LOAD_SHOP_PRODUCTS: "상점 상품을 불러올 수 없습니다",
+  },
   DevTools: {CLEAR_LOCAL_DATA_BUTTON: "로컬 데이터 지우기"},
-  GameMessages: {GAME_WON: "게임 승리: 시도 - ", IN_MODE: " / ", MODE_SUFFIX: " 모드.", COINS_EARNED: "획득 코인: ", GAME_LOST: "게임 패배: 정답 - ", HINT_USED: "힌트 사용: 비용 - ", RETRY_BUTTON_PRESSED: "재시도 버튼을 눌렀습니다"},
-  LogMessages: {SHOWING_LOADING_SPINNER_USER_DATA: "로딩 표시: 사용자 데이터 로딩 중...", TIMESTAMP: "타임스탬프:", SHOWING_LOADING_SPINNER_AUTH: "로딩 표시: 인증 상태 확인 중", NAVIGATION_RENDERING: "내비게이션 렌더링 - 인증됨:", IS_LOADING: "로딩 중:", SHOWING_NAVIGATION_STACK: "내비게이션 스택 표시 - 초기 경로:"},
+  GameMessages: {
+    GAME_WON: "게임 승리: 시도 - ",
+    IN_MODE: " / ",
+    MODE_SUFFIX: " 모드.",
+    COINS_EARNED: "획득 코인: ",
+    GAME_LOST: "게임 패배: 정답 - ",
+    HINT_USED: "힌트 사용: 비용 - ",
+    RETRY_BUTTON_PRESSED: "재시도 버튼을 눌렀습니다",
+  },
+  LogMessages: {
+    SHOWING_LOADING_SPINNER_USER_DATA: "로딩 표시: 사용자 데이터 로딩 중...",
+    TIMESTAMP: "타임스탬프:",
+    SHOWING_LOADING_SPINNER_AUTH: "로딩 표시: 인증 상태 확인 중",
+    NAVIGATION_RENDERING: "내비게이션 렌더링 - 인증됨:",
+    IS_LOADING: "로딩 중:",
+    SHOWING_NAVIGATION_STACK: "내비게이션 스택 표시 - 초기 경로:",
+  },
   GameScreenAlerts: {CONTINUE_NOT_ENOUGH_COINS_MESSAGE: "계속하려면 코인이 부족합니다."},
   VictoryModal: {TOTAL_COINS_LABEL: "총 코인"},
-  LossModal: {EXTRA_GUESSES_PROMPT: "시도 횟수가 없습니다. 추가 시도 3회를 얻거나 이 퍼즐을 건너뛰세요.", SKIP_PUZZLE_BUTTON: "퍼즐 건너뛰기", ANSWER_PREFIX: "정답: ", USE_COINS_PREFIX: "사용: ", EXTRA_GUESSES_PREFIX: "추가 시도 3회 - ", EXTRA_GUESSES_SUFFIX: "코인"},
+  LossModal: {
+    EXTRA_GUESSES_PROMPT: "시도 횟수가 없습니다. 추가 시도 3회를 얻거나 이 퍼즐을 건너뛰세요.",
+    SKIP_PUZZLE_BUTTON: "퍼즐 건너뛰기",
+    ANSWER_PREFIX: "정답: ",
+    USE_COINS_PREFIX: "사용: ",
+    EXTRA_GUESSES_PREFIX: "추가 시도 3회 - ",
+    EXTRA_GUESSES_SUFFIX: "코인",
+  },
   Achievements: {COINS_SUFFIX: "코인"},
   StreakFanfare: {TITLE: "연승 증가!", STREAK_SUFFIX: "일 연승", COINS_SUFFIX: "코인", CONTINUE_BUTTON: "계속"},
   LevelUpFanfare: {TITLE: "레벨 업!", LEVEL_PREFIX: "레벨 ", COINS_SUFFIX: "코인", CONTINUE_BUTTON: "훌륭해요"},
@@ -874,28 +1042,116 @@ export const koSupplementalOverrides: LocaleOverrides = {
 
 export const zhSupplementalOverrides: LocaleOverrides = {
   AuthStrings: {Login: {NO_ACCOUNT_PROMPT: "还没有账号？ "}},
-  Navigation: {LOGIN: "登录", SIGN_UP: "注册", LANDING: "开始", FORGOT_PASSWORD: "忘记密码", NEW_PASSWORD: "新密码", GAME: "游戏", CREDITS: "制作名单", BUY_COINS_BUTTON: "购买金币"},
-  NavigationMessages: {NO_CLASSIC_RIDDLE_FOUND: "未在索引找到经典谜题 ", SERVER_GENERATES_RIDDLES: "。当你提交猜测时，服务器会自动生成新谜题。", ERROR_LOADING_NEXT_RIDDLE: "加载下一个经典谜题时出错:"},
-  Settings: {PRIVACY_POLICY_BUTTON: "隐私政策", TERMS_BUTTON: "使用条款", LICENSES_BUTTON: "许可证", ACCOUNT_DELETION_BUTTON: "删除账号", DATA_EXPORT_BUTTON: "导出我的数据", TEST_CRASH_BUTTON: "测试崩溃", TEST_CRASH_ALERT_TITLE: "测试崩溃", TEST_CRASH_ALERT_MESSAGE: "这将使应用崩溃以测试 Firebase Crashlytics。继续？", TEST_CRASH_ALERT_CANCEL: "取消", TEST_CRASH_ALERT_CRASH: "崩溃"},
+  Navigation: {
+    LOGIN: "登录",
+    SIGN_UP: "注册",
+    LANDING: "开始",
+    FORGOT_PASSWORD: "忘记密码",
+    NEW_PASSWORD: "新密码",
+    GAME: "游戏",
+    CREDITS: "制作名单",
+    BUY_COINS_BUTTON: "购买金币",
+  },
+  NavigationMessages: {
+    NO_CLASSIC_RIDDLE_FOUND: "未在索引找到经典谜题 ",
+    SERVER_GENERATES_RIDDLES: "。当你提交猜测时，服务器会自动生成新谜题。",
+    ERROR_LOADING_NEXT_RIDDLE: "加载下一个经典谜题时出错:",
+  },
+  Settings: {
+    PRIVACY_POLICY_BUTTON: "隐私政策",
+    TERMS_BUTTON: "使用条款",
+    LICENSES_BUTTON: "许可证",
+    ACCOUNT_DELETION_BUTTON: "删除账号",
+    DATA_EXPORT_BUTTON: "导出我的数据",
+    TEST_CRASH_BUTTON: "测试崩溃",
+    TEST_CRASH_ALERT_TITLE: "测试崩溃",
+    TEST_CRASH_ALERT_MESSAGE: "这将使应用崩溃以测试 Firebase Crashlytics。继续？",
+    TEST_CRASH_ALERT_CANCEL: "取消",
+    TEST_CRASH_ALERT_CRASH: "崩溃",
+  },
   WelcomeBackModal: {TITLE: "欢迎回来", TAP_TO_CONTINUE: "点击继续"},
-  Profile: {DAILY_PUZZLES_STAT: "每日谜题", BEST_STREAK_STAT: "最佳连胜", WORDS_GUESSED_STAT: "猜中单词", WIN_RATE_STAT: "胜率", AVG_GUESSES_STAT: "平均猜测", TOTAL_SCORE_STAT: "总分", HIGHEST_CLASSIC_LEVEL_STAT: "最高经典关卡", GAMES_PLAYED_STAT: "已玩局数", TOTAL_WINS_STAT: "总胜利", GUEST_MODE_TITLE: "正在以访客身份游玩", GUEST_MODE_DESCRIPTION: "升级为带提供商的账号，以保留进度并访问所有功能。", UPGRADE_ACCOUNT_BUTTON: "升级账号", UPGRADE_ACCOUNT_TITLE: "升级你的账号", UPGRADE_ACCOUNT_DESCRIPTION: "选择一个提供商关联此访客会话。你的进度会保留在此设备并保存到账户。", UPGRADE_ACCOUNT_SUCCESS: "账号升级成功！", UPGRADE_ACCOUNT_ERROR: "无法升级账号，请重试。", UPGRADE_ACCOUNT_PROVIDER_IN_USE: "该提供商账号已被使用，请选择其他提供商。", UPGRADE_ACCOUNT_EXISTING_ACCOUNT_TITLE: "账号已存在", UPGRADE_ACCOUNT_EXISTING_ACCOUNT_DESCRIPTION: "该账号已存在。是否退出并使用它登录？"},
+  Profile: {
+    DAILY_PUZZLES_STAT: "每日谜题",
+    BEST_STREAK_STAT: "最佳连胜",
+    WORDS_GUESSED_STAT: "猜中单词",
+    WIN_RATE_STAT: "胜率",
+    AVG_GUESSES_STAT: "平均猜测",
+    TOTAL_SCORE_STAT: "总分",
+    HIGHEST_CLASSIC_LEVEL_STAT: "最高经典关卡",
+    GAMES_PLAYED_STAT: "已玩局数",
+    TOTAL_WINS_STAT: "总胜利",
+    GUEST_MODE_TITLE: "正在以访客身份游玩",
+    GUEST_MODE_DESCRIPTION: "升级为带提供商的账号，以保留进度并访问所有功能。",
+    UPGRADE_ACCOUNT_BUTTON: "升级账号",
+    UPGRADE_ACCOUNT_TITLE: "升级你的账号",
+    UPGRADE_ACCOUNT_DESCRIPTION: "选择一个提供商关联此访客会话。你的进度会保留在此设备并保存到账户。",
+    UPGRADE_ACCOUNT_SUCCESS: "账号升级成功！",
+    UPGRADE_ACCOUNT_ERROR: "无法升级账号，请重试。",
+    UPGRADE_ACCOUNT_PROVIDER_IN_USE: "该提供商账号已被使用，请选择其他提供商。",
+    UPGRADE_ACCOUNT_EXISTING_ACCOUNT_TITLE: "账号已存在",
+    UPGRADE_ACCOUNT_EXISTING_ACCOUNT_DESCRIPTION: "该账号已存在。是否退出并使用它登录？",
+  },
   TestStrings: {MOCK_SVG_TEXT: "模拟 SVG 文本"},
-  ErrorMessages: {UNABLE_TO_LOAD_RIDDLES: "无法加载谜题，请检查连接后重试。", FAILED_TO_INITIALIZE_RIDDLE_DATABASE: "初始化谜题数据库失败。这可能是你第一次使用该应用。", CHECK_INTERNET_AND_TRY_AGAIN: "请检查你的网络连接并重试。", FAILED_TO_LOAD_PRODUCTS: "加载商品失败", FAILED_TO_LOAD_SHOP_PRODUCTS: "加载商店商品失败"},
+  ErrorMessages: {
+    UNABLE_TO_LOAD_RIDDLES: "无法加载谜题，请检查连接后重试。",
+    FAILED_TO_INITIALIZE_RIDDLE_DATABASE: "初始化谜题数据库失败。这可能是你第一次使用该应用。",
+    CHECK_INTERNET_AND_TRY_AGAIN: "请检查你的网络连接并重试。",
+    FAILED_TO_LOAD_PRODUCTS: "加载商品失败",
+    FAILED_TO_LOAD_SHOP_PRODUCTS: "加载商店商品失败",
+  },
   DevTools: {CLEAR_LOCAL_DATA_BUTTON: "清除本地数据"},
-  GameMessages: {GAME_WON: "游戏胜利：尝试 - ", IN_MODE: "，模式：", MODE_SUFFIX: "。", COINS_EARNED: "获得金币：", GAME_LOST: "游戏失败：正确答案 - ", HINT_USED: "已用提示：花费 - ", RETRY_BUTTON_PRESSED: "已按下重试按钮"},
-  LogMessages: {SHOWING_LOADING_SPINNER_USER_DATA: "显示加载：正在加载用户数据...", TIMESTAMP: "时间戳:", SHOWING_LOADING_SPINNER_AUTH: "显示加载：正在确定认证状态", NAVIGATION_RENDERING: "正在渲染导航 - 已认证:", IS_LOADING: "正在加载:", SHOWING_NAVIGATION_STACK: "显示导航堆栈 - 初始路由:"},
+  GameMessages: {
+    GAME_WON: "游戏胜利：尝试 - ",
+    IN_MODE: "，模式：",
+    MODE_SUFFIX: "。",
+    COINS_EARNED: "获得金币：",
+    GAME_LOST: "游戏失败：正确答案 - ",
+    HINT_USED: "已用提示：花费 - ",
+    RETRY_BUTTON_PRESSED: "已按下重试按钮",
+  },
+  LogMessages: {
+    SHOWING_LOADING_SPINNER_USER_DATA: "显示加载：正在加载用户数据...",
+    TIMESTAMP: "时间戳:",
+    SHOWING_LOADING_SPINNER_AUTH: "显示加载：正在确定认证状态",
+    NAVIGATION_RENDERING: "正在渲染导航 - 已认证:",
+    IS_LOADING: "正在加载:",
+    SHOWING_NAVIGATION_STACK: "显示导航堆栈 - 初始路由:",
+  },
   GameScreenAlerts: {CONTINUE_NOT_ENOUGH_COINS_MESSAGE: "你的金币不足，无法继续。"},
   VictoryModal: {TOTAL_COINS_LABEL: "金币总数"},
-  LossModal: {EXTRA_GUESSES_PROMPT: "尝试次数已用完。获得3次额外猜测或跳过此谜题。", SKIP_PUZZLE_BUTTON: "跳过谜题", ANSWER_PREFIX: "答案：", EXTRA_GUESSES_PREFIX: "3次额外猜测 - ", EXTRA_GUESSES_SUFFIX: "金币"},
+  LossModal: {
+    EXTRA_GUESSES_PROMPT: "尝试次数已用完。获得3次额外猜测或跳过此谜题。",
+    SKIP_PUZZLE_BUTTON: "跳过谜题",
+    ANSWER_PREFIX: "答案：",
+    EXTRA_GUESSES_PREFIX: "3次额外猜测 - ",
+    EXTRA_GUESSES_SUFFIX: "金币",
+  },
   Achievements: {COINS_SUFFIX: "金币"},
   StreakFanfare: {TITLE: "连胜增加！", STREAK_SUFFIX: "天连胜", COINS_SUFFIX: "金币", CONTINUE_BUTTON: "继续"},
   LevelUpFanfare: {TITLE: "升级！", LEVEL_PREFIX: "等级 ", COINS_SUFFIX: "金币", CONTINUE_BUTTON: "太好了"},
 };
 
 export const hiSupplementalOverrides: LocaleOverrides = {
-  Navigation: {LOGIN: "लॉग इन", SIGN_UP: "साइन अप", LANDING: "आरंभ", FORGOT_PASSWORD: "पासवर्ड भूल गए", NEW_PASSWORD: "नया पासवर्ड", GAME: "गेम", CREDITS: "श्रेय"},
-  NavigationMessages: {NO_CLASSIC_RIDDLE_FOUND: "इस इंडेक्स पर कोई क्लासिक पहेली नहीं मिली ", SERVER_GENERATES_RIDDLES: "। जब आप अनुमान भेजेंगे तो सर्वर नई पहेलियां अपने आप बनाएगा।", ERROR_LOADING_NEXT_RIDDLE: "अगली क्लासिक पहेली लोड करने में त्रुटि:"},
-  Settings: {TEST_CRASH_ALERT_TITLE: "क्रैश टेस्ट", TEST_CRASH_ALERT_MESSAGE: "यह Firebase Crashlytics टेस्ट करने के लिए ऐप क्रैश करेगा। जारी रखें?", TEST_CRASH_ALERT_CANCEL: "रद्द करें", TEST_CRASH_ALERT_CRASH: "क्रैश"},
+  Navigation: {
+    LOGIN: "लॉग इन",
+    SIGN_UP: "साइन अप",
+    LANDING: "आरंभ",
+    FORGOT_PASSWORD: "पासवर्ड भूल गए",
+    NEW_PASSWORD: "नया पासवर्ड",
+    GAME: "गेम",
+    CREDITS: "श्रेय",
+  },
+  NavigationMessages: {
+    NO_CLASSIC_RIDDLE_FOUND: "इस इंडेक्स पर कोई क्लासिक पहेली नहीं मिली ",
+    SERVER_GENERATES_RIDDLES: "। जब आप अनुमान भेजेंगे तो सर्वर नई पहेलियां अपने आप बनाएगा।",
+    ERROR_LOADING_NEXT_RIDDLE: "अगली क्लासिक पहेली लोड करने में त्रुटि:",
+  },
+  Settings: {
+    TEST_CRASH_ALERT_TITLE: "क्रैश टेस्ट",
+    TEST_CRASH_ALERT_MESSAGE: "यह Firebase Crashlytics टेस्ट करने के लिए ऐप क्रैश करेगा। जारी रखें?",
+    TEST_CRASH_ALERT_CANCEL: "रद्द करें",
+    TEST_CRASH_ALERT_CRASH: "क्रैश",
+  },
   WelcomeBackModal: {TITLE: "वापसी पर स्वागत है", TAP_TO_CONTINUE: "जारी रखने के लिए टैप करें"},
   Profile: {
     ALERT_PRELOADED_AVATAR_SELECT_FAIL: "पहले से दिए गए अवतार को चुनने में विफल। फिर कोशिश करें।",
@@ -912,65 +1168,260 @@ export const hiSupplementalOverrides: LocaleOverrides = {
     ALERT_FACEBOOK_AVATAR_SET_FAIL: "Facebook अवतार सेट नहीं हो सका। फिर कोशिश करें।",
     ALERT_NO_FACEBOOK_PHOTO: "कोई Facebook फोटो उपलब्ध नहीं। पहले अपना Facebook खाता जोड़ें।",
     GUEST_MODE_TITLE: "मेहमान के रूप में खेल रहे हैं",
-    GUEST_MODE_DESCRIPTION: "अपनी प्रगति बनाए रखने और सभी सुविधाओं तक पहुंचने के लिए प्रदाता वाले खाते में अपग्रेड करें।",
+    GUEST_MODE_DESCRIPTION:
+      "अपनी प्रगति बनाए रखने और सभी सुविधाओं तक पहुंचने के लिए प्रदाता वाले खाते में अपग्रेड करें।",
     UPGRADE_ACCOUNT_BUTTON: "खाता अपग्रेड करें",
     UPGRADE_ACCOUNT_TITLE: "अपना खाता अपग्रेड करें",
-    UPGRADE_ACCOUNT_DESCRIPTION: "इस मेहमान सत्र से जोड़ने के लिए प्रदाता चुनें। आपकी प्रगति इस डिवाइस पर रहेगी और खाते में सहेजी जाएगी।",
+    UPGRADE_ACCOUNT_DESCRIPTION:
+      "इस मेहमान सत्र से जोड़ने के लिए प्रदाता चुनें। आपकी प्रगति इस डिवाइस पर रहेगी और खाते में सहेजी जाएगी।",
     UPGRADE_ACCOUNT_SUCCESS: "खाता सफलतापूर्वक अपग्रेड हुआ!",
     UPGRADE_ACCOUNT_ERROR: "खाता अपग्रेड नहीं हो सका। फिर कोशिश करें।",
     UPGRADE_ACCOUNT_PROVIDER_IN_USE: "यह प्रदाता खाता पहले से उपयोग में है। कृपया दूसरा प्रदाता चुनें।",
     UPGRADE_ACCOUNT_EXISTING_ACCOUNT_TITLE: "खाता पहले से मौजूद है",
-    UPGRADE_ACCOUNT_EXISTING_ACCOUNT_DESCRIPTION: "यह खाता पहले से मौजूद है। क्या आप लॉग आउट करके उससे साइन इन करना चाहेंगे?",
+    UPGRADE_ACCOUNT_EXISTING_ACCOUNT_DESCRIPTION:
+      "यह खाता पहले से मौजूद है। क्या आप लॉग आउट करके उससे साइन इन करना चाहेंगे?",
   },
   TestStrings: {MOCK_SVG_TEXT: "मॉक SVG टेक्स्ट"},
   DevTools: {CLEAR_LOCAL_DATA_BUTTON: "स्थानीय डेटा साफ करें"},
-  GameMessages: {GAME_WON: "गेम जीता: प्रयास - ", IN_MODE: " में ", MODE_SUFFIX: " मोड।", COINS_EARNED: "कमाए सिक्के: ", GAME_LOST: "गेम हारा: सही उत्तर - ", HINT_USED: "हिंट इस्तेमाल: लागत - ", RETRY_BUTTON_PRESSED: "रीट्राई बटन दबाया गया"},
-  LogMessages: {SHOWING_LOADING_SPINNER_USER_DATA: "लोडिंग दिखा रहे हैं: उपयोगकर्ता डेटा लोड हो रहा है...", TIMESTAMP: "टाइमस्टैम्प:", SHOWING_LOADING_SPINNER_AUTH: "लोडिंग दिखा रहे हैं: प्रमाणीकरण स्थिति तय हो रही है", NAVIGATION_RENDERING: "नेविगेशन रेंडर हो रहा है - प्रमाणित:", IS_LOADING: "लोड हो रहा है:", SHOWING_NAVIGATION_STACK: "नेविगेशन स्टैक दिखा रहे हैं - प्रारंभिक रूट:"},
+  GameMessages: {
+    GAME_WON: "गेम जीता: प्रयास - ",
+    IN_MODE: " में ",
+    MODE_SUFFIX: " मोड।",
+    COINS_EARNED: "कमाए सिक्के: ",
+    GAME_LOST: "गेम हारा: सही उत्तर - ",
+    HINT_USED: "हिंट इस्तेमाल: लागत - ",
+    RETRY_BUTTON_PRESSED: "रीट्राई बटन दबाया गया",
+  },
+  LogMessages: {
+    SHOWING_LOADING_SPINNER_USER_DATA: "लोडिंग दिखा रहे हैं: उपयोगकर्ता डेटा लोड हो रहा है...",
+    TIMESTAMP: "टाइमस्टैम्प:",
+    SHOWING_LOADING_SPINNER_AUTH: "लोडिंग दिखा रहे हैं: प्रमाणीकरण स्थिति तय हो रही है",
+    NAVIGATION_RENDERING: "नेविगेशन रेंडर हो रहा है - प्रमाणित:",
+    IS_LOADING: "लोड हो रहा है:",
+    SHOWING_NAVIGATION_STACK: "नेविगेशन स्टैक दिखा रहे हैं - प्रारंभिक रूट:",
+  },
   GameScreenAlerts: {CONTINUE_NOT_ENOUGH_COINS_MESSAGE: "जारी रखने के लिए आपके पास पर्याप्त सिक्के नहीं हैं।"},
   VictoryModal: {TOTAL_COINS_LABEL: "कुल सिक्के"},
-  LossModal: {EXTRA_GUESSES_PROMPT: "प्रयास समाप्त। 3 अतिरिक्त अनुमान लें या इस पहेली को छोड़ें।", SKIP_PUZZLE_BUTTON: "पहेली छोड़ें", ANSWER_PREFIX: "उत्तर: ", EXTRA_GUESSES_PREFIX: "3 अतिरिक्त अनुमान - ", EXTRA_GUESSES_SUFFIX: " सिक्के"},
+  LossModal: {
+    EXTRA_GUESSES_PROMPT: "प्रयास समाप्त। 3 अतिरिक्त अनुमान लें या इस पहेली को छोड़ें।",
+    SKIP_PUZZLE_BUTTON: "पहेली छोड़ें",
+    ANSWER_PREFIX: "उत्तर: ",
+    EXTRA_GUESSES_PREFIX: "3 अतिरिक्त अनुमान - ",
+    EXTRA_GUESSES_SUFFIX: " सिक्के",
+  },
   Achievements: {COINS_SUFFIX: " सिक्के"},
-  StreakFanfare: {TITLE: "स्ट्रीक बढ़ी!", STREAK_SUFFIX: " दिन की स्ट्रीक", COINS_SUFFIX: " सिक्के", CONTINUE_BUTTON: "जारी रखें"},
+  StreakFanfare: {
+    TITLE: "स्ट्रीक बढ़ी!",
+    STREAK_SUFFIX: " दिन की स्ट्रीक",
+    COINS_SUFFIX: " सिक्के",
+    CONTINUE_BUTTON: "जारी रखें",
+  },
   LevelUpFanfare: {TITLE: "लेवल अप!", LEVEL_PREFIX: "लेवल ", COINS_SUFFIX: " सिक्के", CONTINUE_BUTTON: "शानदार"},
 };
 
 export const ruSupplementalOverrides: LocaleOverrides = {
   AuthStrings: {Login: {NO_ACCOUNT_PROMPT: "Нет аккаунта? "}},
-  Navigation: {LOGIN: "Вход", SIGN_UP: "Регистрация", LANDING: "Старт", FORGOT_PASSWORD: "Забыли пароль", NEW_PASSWORD: "Новый пароль", GAME: "Игра", CREDITS: "Авторы", BUY_COINS_BUTTON: "Купить монеты"},
-  NavigationMessages: {NO_CLASSIC_RIDDLE_FOUND: "Классическая загадка не найдена по индексу ", SERVER_GENERATES_RIDDLES: ". Сервер автоматически создаст новые загадки, когда вы отправите ответы.", ERROR_LOADING_NEXT_RIDDLE: "Ошибка загрузки следующей классической загадки:"},
-  Settings: {PRIVACY_POLICY_BUTTON: "Политика конфиденциальности", TERMS_BUTTON: "Условия использования", LICENSES_BUTTON: "Лицензии", ACCOUNT_DELETION_BUTTON: "Удалить аккаунт", DATA_EXPORT_BUTTON: "Экспорт моих данных", TEST_CRASH_BUTTON: "Тест сбоя", TEST_CRASH_ALERT_TITLE: "Тест сбоя", TEST_CRASH_ALERT_MESSAGE: "Это приведет к сбою приложения для проверки Firebase Crashlytics. Продолжить?", TEST_CRASH_ALERT_CANCEL: "Отмена", TEST_CRASH_ALERT_CRASH: "Сбой"},
+  Navigation: {
+    LOGIN: "Вход",
+    SIGN_UP: "Регистрация",
+    LANDING: "Старт",
+    FORGOT_PASSWORD: "Забыли пароль",
+    NEW_PASSWORD: "Новый пароль",
+    GAME: "Игра",
+    CREDITS: "Авторы",
+    BUY_COINS_BUTTON: "Купить монеты",
+  },
+  NavigationMessages: {
+    NO_CLASSIC_RIDDLE_FOUND: "Классическая загадка не найдена по индексу ",
+    SERVER_GENERATES_RIDDLES: ". Сервер автоматически создаст новые загадки, когда вы отправите ответы.",
+    ERROR_LOADING_NEXT_RIDDLE: "Ошибка загрузки следующей классической загадки:",
+  },
+  Settings: {
+    PRIVACY_POLICY_BUTTON: "Политика конфиденциальности",
+    TERMS_BUTTON: "Условия использования",
+    LICENSES_BUTTON: "Лицензии",
+    ACCOUNT_DELETION_BUTTON: "Удалить аккаунт",
+    DATA_EXPORT_BUTTON: "Экспорт моих данных",
+    TEST_CRASH_BUTTON: "Тест сбоя",
+    TEST_CRASH_ALERT_TITLE: "Тест сбоя",
+    TEST_CRASH_ALERT_MESSAGE: "Это приведет к сбою приложения для проверки Firebase Crashlytics. Продолжить?",
+    TEST_CRASH_ALERT_CANCEL: "Отмена",
+    TEST_CRASH_ALERT_CRASH: "Сбой",
+  },
   WelcomeBackModal: {TITLE: "С возвращением", TAP_TO_CONTINUE: "Нажмите, чтобы продолжить"},
-  Profile: {DAILY_PUZZLES_STAT: "Ежедневные загадки", BEST_STREAK_STAT: "Лучшая серия", WORDS_GUESSED_STAT: "Угаданные слова", WIN_RATE_STAT: "Процент побед", AVG_GUESSES_STAT: "Сред. попыток", TOTAL_SCORE_STAT: "Общий счет", HIGHEST_CLASSIC_LEVEL_STAT: "Макс. классический уровень", GAMES_PLAYED_STAT: "Игр сыграно", TOTAL_WINS_STAT: "Всего побед", GUEST_MODE_TITLE: "Игра в гостевом режиме", GUEST_MODE_DESCRIPTION: "Перейдите на аккаунт с провайдером, чтобы сохранить прогресс и получить все функции.", UPGRADE_ACCOUNT_BUTTON: "Улучшить аккаунт", UPGRADE_ACCOUNT_TITLE: "Улучшите аккаунт", UPGRADE_ACCOUNT_DESCRIPTION: "Выберите провайдера для привязки к этой гостевой сессии. Прогресс останется на устройстве и будет сохранен в аккаунте.", UPGRADE_ACCOUNT_SUCCESS: "Аккаунт успешно улучшен!", UPGRADE_ACCOUNT_ERROR: "Не удалось улучшить аккаунт. Попробуйте снова.", UPGRADE_ACCOUNT_PROVIDER_IN_USE: "Этот аккаунт провайдера уже используется. Выберите другого провайдера.", UPGRADE_ACCOUNT_EXISTING_ACCOUNT_TITLE: "Аккаунт уже существует", UPGRADE_ACCOUNT_EXISTING_ACCOUNT_DESCRIPTION: "Этот аккаунт уже существует. Хотите выйти и войти с ним?"},
+  Profile: {
+    DAILY_PUZZLES_STAT: "Ежедневные загадки",
+    BEST_STREAK_STAT: "Лучшая серия",
+    WORDS_GUESSED_STAT: "Угаданные слова",
+    WIN_RATE_STAT: "Процент побед",
+    AVG_GUESSES_STAT: "Сред. попыток",
+    TOTAL_SCORE_STAT: "Общий счет",
+    HIGHEST_CLASSIC_LEVEL_STAT: "Макс. классический уровень",
+    GAMES_PLAYED_STAT: "Игр сыграно",
+    TOTAL_WINS_STAT: "Всего побед",
+    GUEST_MODE_TITLE: "Игра в гостевом режиме",
+    GUEST_MODE_DESCRIPTION: "Перейдите на аккаунт с провайдером, чтобы сохранить прогресс и получить все функции.",
+    UPGRADE_ACCOUNT_BUTTON: "Улучшить аккаунт",
+    UPGRADE_ACCOUNT_TITLE: "Улучшите аккаунт",
+    UPGRADE_ACCOUNT_DESCRIPTION:
+      "Выберите провайдера для привязки к этой гостевой сессии. Прогресс останется на устройстве и будет сохранен в аккаунте.",
+    UPGRADE_ACCOUNT_SUCCESS: "Аккаунт успешно улучшен!",
+    UPGRADE_ACCOUNT_ERROR: "Не удалось улучшить аккаунт. Попробуйте снова.",
+    UPGRADE_ACCOUNT_PROVIDER_IN_USE: "Этот аккаунт провайдера уже используется. Выберите другого провайдера.",
+    UPGRADE_ACCOUNT_EXISTING_ACCOUNT_TITLE: "Аккаунт уже существует",
+    UPGRADE_ACCOUNT_EXISTING_ACCOUNT_DESCRIPTION: "Этот аккаунт уже существует. Хотите выйти и войти с ним?",
+  },
   TestStrings: {MOCK_SVG_TEXT: "Тестовый SVG-текст"},
-  RewardedAdPrompts: {OUT_OF_GUESSES_PROMPT: "Попытки закончились! Посмотреть рекламу, чтобы получить монеты?", WATCH_AD_BUTTON: "Смотреть рекламу", NO_THANKS_BUTTON: "Нет, спасибо"},
-  ErrorMessages: {UNABLE_TO_LOAD_RIDDLES: "Не удалось загрузить загадки. Проверьте подключение и попробуйте снова.", FAILED_TO_INITIALIZE_RIDDLE_DATABASE: "Не удалось инициализировать базу загадок. Возможно, вы впервые используете приложение.", CHECK_INTERNET_AND_TRY_AGAIN: "Проверьте подключение к интернету и попробуйте снова.", FAILED_TO_LOAD_PRODUCTS: "Не удалось загрузить товары", FAILED_TO_LOAD_SHOP_PRODUCTS: "Не удалось загрузить товары магазина"},
+  RewardedAdPrompts: {
+    OUT_OF_GUESSES_PROMPT: "Попытки закончились! Посмотреть рекламу, чтобы получить монеты?",
+    WATCH_AD_BUTTON: "Смотреть рекламу",
+    NO_THANKS_BUTTON: "Нет, спасибо",
+  },
+  ErrorMessages: {
+    UNABLE_TO_LOAD_RIDDLES: "Не удалось загрузить загадки. Проверьте подключение и попробуйте снова.",
+    FAILED_TO_INITIALIZE_RIDDLE_DATABASE:
+      "Не удалось инициализировать базу загадок. Возможно, вы впервые используете приложение.",
+    CHECK_INTERNET_AND_TRY_AGAIN: "Проверьте подключение к интернету и попробуйте снова.",
+    FAILED_TO_LOAD_PRODUCTS: "Не удалось загрузить товары",
+    FAILED_TO_LOAD_SHOP_PRODUCTS: "Не удалось загрузить товары магазина",
+  },
   DevTools: {CLEAR_LOCAL_DATA_BUTTON: "Очистить локальные данные"},
-  GameMessages: {GAME_WON: "Игра выиграна: попытки - ", IN_MODE: " в режиме ", MODE_SUFFIX: ".", COINS_EARNED: "Монет получено: ", GAME_LOST: "Игра проиграна: правильный ответ - ", HINT_USED: "Подсказка использована: стоимость - ", RETRY_BUTTON_PRESSED: "Нажата кнопка повтора"},
-  LogMessages: {SHOWING_LOADING_SPINNER_USER_DATA: "Показ загрузки: загружаются данные пользователя...", TIMESTAMP: "метка времени:", SHOWING_LOADING_SPINNER_AUTH: "Показ загрузки: определяется состояние авторизации", NAVIGATION_RENDERING: "Отрисовка навигации - авторизован:", IS_LOADING: "загружается:", SHOWING_NAVIGATION_STACK: "Показ стека навигации - начальный маршрут:"},
+  GameMessages: {
+    GAME_WON: "Игра выиграна: попытки - ",
+    IN_MODE: " в режиме ",
+    MODE_SUFFIX: ".",
+    COINS_EARNED: "Монет получено: ",
+    GAME_LOST: "Игра проиграна: правильный ответ - ",
+    HINT_USED: "Подсказка использована: стоимость - ",
+    RETRY_BUTTON_PRESSED: "Нажата кнопка повтора",
+  },
+  LogMessages: {
+    SHOWING_LOADING_SPINNER_USER_DATA: "Показ загрузки: загружаются данные пользователя...",
+    TIMESTAMP: "метка времени:",
+    SHOWING_LOADING_SPINNER_AUTH: "Показ загрузки: определяется состояние авторизации",
+    NAVIGATION_RENDERING: "Отрисовка навигации - авторизован:",
+    IS_LOADING: "загружается:",
+    SHOWING_NAVIGATION_STACK: "Показ стека навигации - начальный маршрут:",
+  },
   GameScreenAlerts: {CONTINUE_NOT_ENOUGH_COINS_MESSAGE: "У вас недостаточно монет, чтобы продолжить."},
   VictoryModal: {TOTAL_COINS_LABEL: "Всего монет"},
-  LossModal: {EXTRA_GUESSES_PROMPT: "Попытки закончились. Получите 3 дополнительные попытки или пропустите эту загадку.", SKIP_PUZZLE_BUTTON: "Пропустить загадку", ANSWER_PREFIX: "Ответ: ", EXTRA_GUESSES_PREFIX: "3 дополнительные попытки - ", EXTRA_GUESSES_SUFFIX: " монет"},
+  LossModal: {
+    EXTRA_GUESSES_PROMPT: "Попытки закончились. Получите 3 дополнительные попытки или пропустите эту загадку.",
+    SKIP_PUZZLE_BUTTON: "Пропустить загадку",
+    ANSWER_PREFIX: "Ответ: ",
+    EXTRA_GUESSES_PREFIX: "3 дополнительные попытки - ",
+    EXTRA_GUESSES_SUFFIX: " монет",
+  },
   Achievements: {COINS_SUFFIX: " монет"},
-  StreakFanfare: {TITLE: "Серия увеличена!", STREAK_SUFFIX: " дней серии", COINS_SUFFIX: " монет", CONTINUE_BUTTON: "Продолжить"},
-  LevelUpFanfare: {TITLE: "Новый уровень!", LEVEL_PREFIX: "Уровень ", COINS_SUFFIX: " монет", CONTINUE_BUTTON: "Отлично"},
+  StreakFanfare: {
+    TITLE: "Серия увеличена!",
+    STREAK_SUFFIX: " дней серии",
+    COINS_SUFFIX: " монет",
+    CONTINUE_BUTTON: "Продолжить",
+  },
+  LevelUpFanfare: {
+    TITLE: "Новый уровень!",
+    LEVEL_PREFIX: "Уровень ",
+    COINS_SUFFIX: " монет",
+    CONTINUE_BUTTON: "Отлично",
+  },
 };
 
 export const trSupplementalOverrides: LocaleOverrides = {
   AuthStrings: {SignUp: {TERMS_AGREEMENT_PART1: "Kabul ediyorum: "}},
-  Navigation: {LOGIN: "Giris", SIGN_UP: "Kayit", LANDING: "Baslangic", FORGOT_PASSWORD: "Sifremi Unuttum", NEW_PASSWORD: "Yeni Sifre", GAME: "Oyun", CREDITS: "Emeği Gecenler", BUY_COINS_BUTTON: "Jeton satin al"},
-  NavigationMessages: {NO_CLASSIC_RIDDLE_FOUND: "Bu dizinde klasik bilmece bulunamadi: ", SERVER_GENERATES_RIDDLES: ". Tahmin gonderdiginde sunucu otomatik olarak yeni bilmeceler uretir.", ERROR_LOADING_NEXT_RIDDLE: "Sonraki klasik bilmece yuklenirken hata:"},
-  Settings: {PRIVACY_POLICY_BUTTON: "Gizlilik Politikasi", TERMS_BUTTON: "Kullanim Sartlari", LICENSES_BUTTON: "Lisanslar", ACCOUNT_DELETION_BUTTON: "Hesabi Sil", DATA_EXPORT_BUTTON: "Verilerimi Disa Aktar", TEST_CRASH_BUTTON: "Cokme Testi", TEST_CRASH_ALERT_TITLE: "Cokme Testi", TEST_CRASH_ALERT_MESSAGE: "Bu, Firebase Crashlytics testi icin uygulamayi cokertir. Devam?", TEST_CRASH_ALERT_CANCEL: "Iptal", TEST_CRASH_ALERT_CRASH: "Cokert"},
+  Navigation: {
+    LOGIN: "Giris",
+    SIGN_UP: "Kayit",
+    LANDING: "Baslangic",
+    FORGOT_PASSWORD: "Sifremi Unuttum",
+    NEW_PASSWORD: "Yeni Sifre",
+    GAME: "Oyun",
+    CREDITS: "Emeği Gecenler",
+    BUY_COINS_BUTTON: "Jeton satin al",
+  },
+  NavigationMessages: {
+    NO_CLASSIC_RIDDLE_FOUND: "Bu dizinde klasik bilmece bulunamadi: ",
+    SERVER_GENERATES_RIDDLES: ". Tahmin gonderdiginde sunucu otomatik olarak yeni bilmeceler uretir.",
+    ERROR_LOADING_NEXT_RIDDLE: "Sonraki klasik bilmece yuklenirken hata:",
+  },
+  Settings: {
+    PRIVACY_POLICY_BUTTON: "Gizlilik Politikasi",
+    TERMS_BUTTON: "Kullanim Sartlari",
+    LICENSES_BUTTON: "Lisanslar",
+    ACCOUNT_DELETION_BUTTON: "Hesabi Sil",
+    DATA_EXPORT_BUTTON: "Verilerimi Disa Aktar",
+    TEST_CRASH_BUTTON: "Cokme Testi",
+    TEST_CRASH_ALERT_TITLE: "Cokme Testi",
+    TEST_CRASH_ALERT_MESSAGE: "Bu, Firebase Crashlytics testi icin uygulamayi cokertir. Devam?",
+    TEST_CRASH_ALERT_CANCEL: "Iptal",
+    TEST_CRASH_ALERT_CRASH: "Cokert",
+  },
   WelcomeBackModal: {TITLE: "Tekrar hos geldin", TAP_TO_CONTINUE: "Devam etmek icin dokun"},
-  Profile: {DAILY_PUZZLES_STAT: "Gunluk bulmacalar", BEST_STREAK_STAT: "En iyi seri", WORDS_GUESSED_STAT: "Tahmin edilen kelimeler", WIN_RATE_STAT: "Kazanma orani", AVG_GUESSES_STAT: "Ort. tahmin", TOTAL_SCORE_STAT: "Toplam puan", HIGHEST_CLASSIC_LEVEL_STAT: "En yuksek klasik seviye", GAMES_PLAYED_STAT: "Oynanan oyunlar", TOTAL_WINS_STAT: "Toplam galibiyet", GUEST_MODE_TITLE: "Misafir olarak oynuyorsun", GUEST_MODE_DESCRIPTION: "Ilerlemeni korumak ve tum ozelliklere erismek icin saglayicili bir hesaba yukselt.", UPGRADE_ACCOUNT_BUTTON: "Hesabi yukselt", UPGRADE_ACCOUNT_TITLE: "Hesabini yukselt", UPGRADE_ACCOUNT_DESCRIPTION: "Bu misafir oturumuna baglamak icin bir saglayici sec. Ilerlemen bu cihazda kalir ve hesabina kaydedilir.", UPGRADE_ACCOUNT_SUCCESS: "Hesap basariyla yukseltildi!", UPGRADE_ACCOUNT_ERROR: "Hesap yukseltilemedi. Tekrar dene.", UPGRADE_ACCOUNT_PROVIDER_IN_USE: "Bu saglayici hesabi zaten kullaniliyor. Baska bir saglayici sec.", UPGRADE_ACCOUNT_EXISTING_ACCOUNT_TITLE: "Hesap zaten var", UPGRADE_ACCOUNT_EXISTING_ACCOUNT_DESCRIPTION: "Bu hesap zaten var. Cikis yapip onunla oturum acmak ister misin?"},
+  Profile: {
+    DAILY_PUZZLES_STAT: "Gunluk bulmacalar",
+    BEST_STREAK_STAT: "En iyi seri",
+    WORDS_GUESSED_STAT: "Tahmin edilen kelimeler",
+    WIN_RATE_STAT: "Kazanma orani",
+    AVG_GUESSES_STAT: "Ort. tahmin",
+    TOTAL_SCORE_STAT: "Toplam puan",
+    HIGHEST_CLASSIC_LEVEL_STAT: "En yuksek klasik seviye",
+    GAMES_PLAYED_STAT: "Oynanan oyunlar",
+    TOTAL_WINS_STAT: "Toplam galibiyet",
+    GUEST_MODE_TITLE: "Misafir olarak oynuyorsun",
+    GUEST_MODE_DESCRIPTION: "Ilerlemeni korumak ve tum ozelliklere erismek icin saglayicili bir hesaba yukselt.",
+    UPGRADE_ACCOUNT_BUTTON: "Hesabi yukselt",
+    UPGRADE_ACCOUNT_TITLE: "Hesabini yukselt",
+    UPGRADE_ACCOUNT_DESCRIPTION:
+      "Bu misafir oturumuna baglamak icin bir saglayici sec. Ilerlemen bu cihazda kalir ve hesabina kaydedilir.",
+    UPGRADE_ACCOUNT_SUCCESS: "Hesap basariyla yukseltildi!",
+    UPGRADE_ACCOUNT_ERROR: "Hesap yukseltilemedi. Tekrar dene.",
+    UPGRADE_ACCOUNT_PROVIDER_IN_USE: "Bu saglayici hesabi zaten kullaniliyor. Baska bir saglayici sec.",
+    UPGRADE_ACCOUNT_EXISTING_ACCOUNT_TITLE: "Hesap zaten var",
+    UPGRADE_ACCOUNT_EXISTING_ACCOUNT_DESCRIPTION: "Bu hesap zaten var. Cikis yapip onunla oturum acmak ister misin?",
+  },
   TestStrings: {MOCK_SVG_TEXT: "Sahte SVG metni"},
-  ErrorMessages: {UNABLE_TO_LOAD_RIDDLES: "Bilmeceler yuklenemedi. Baglantini kontrol edip tekrar dene.", FAILED_TO_INITIALIZE_RIDDLE_DATABASE: "Bilmece veritabani baslatilamadi. Uygulamayi ilk kez kullaniyor olabilirsin.", CHECK_INTERNET_AND_TRY_AGAIN: "Internet baglantini kontrol edip tekrar dene.", FAILED_TO_LOAD_PRODUCTS: "Urunler yuklenemedi", FAILED_TO_LOAD_SHOP_PRODUCTS: "Magaza urunleri yuklenemedi"},
+  ErrorMessages: {
+    UNABLE_TO_LOAD_RIDDLES: "Bilmeceler yuklenemedi. Baglantini kontrol edip tekrar dene.",
+    FAILED_TO_INITIALIZE_RIDDLE_DATABASE:
+      "Bilmece veritabani baslatilamadi. Uygulamayi ilk kez kullaniyor olabilirsin.",
+    CHECK_INTERNET_AND_TRY_AGAIN: "Internet baglantini kontrol edip tekrar dene.",
+    FAILED_TO_LOAD_PRODUCTS: "Urunler yuklenemedi",
+    FAILED_TO_LOAD_SHOP_PRODUCTS: "Magaza urunleri yuklenemedi",
+  },
   DevTools: {CLEAR_LOCAL_DATA_BUTTON: "Yerel verileri temizle"},
-  GameMessages: {GAME_WON: "Oyun kazanildi: Deneme - ", IN_MODE: " mod: ", MODE_SUFFIX: " modunda.", COINS_EARNED: "Kazanilan jeton: ", GAME_LOST: "Oyun kaybedildi: Dogru cevap - ", HINT_USED: "Ipucu kullanildi: Maliyet - ", RETRY_BUTTON_PRESSED: "Tekrar dene dugmesine basildi"},
-  LogMessages: {SHOWING_LOADING_SPINNER_USER_DATA: "Yukleme gosteriliyor: kullanici verileri yukleniyor...", TIMESTAMP: "zaman damgasi:", SHOWING_LOADING_SPINNER_AUTH: "Yukleme gosteriliyor: kimlik durumu belirleniyor", NAVIGATION_RENDERING: "Gezinme olusturuluyor - kimlikli:", IS_LOADING: "yukleniyor:", SHOWING_NAVIGATION_STACK: "Gezinme yigini gosteriliyor - ilk rota:"},
+  GameMessages: {
+    GAME_WON: "Oyun kazanildi: Deneme - ",
+    IN_MODE: " mod: ",
+    MODE_SUFFIX: " modunda.",
+    COINS_EARNED: "Kazanilan jeton: ",
+    GAME_LOST: "Oyun kaybedildi: Dogru cevap - ",
+    HINT_USED: "Ipucu kullanildi: Maliyet - ",
+    RETRY_BUTTON_PRESSED: "Tekrar dene dugmesine basildi",
+  },
+  LogMessages: {
+    SHOWING_LOADING_SPINNER_USER_DATA: "Yukleme gosteriliyor: kullanici verileri yukleniyor...",
+    TIMESTAMP: "zaman damgasi:",
+    SHOWING_LOADING_SPINNER_AUTH: "Yukleme gosteriliyor: kimlik durumu belirleniyor",
+    NAVIGATION_RENDERING: "Gezinme olusturuluyor - kimlikli:",
+    IS_LOADING: "yukleniyor:",
+    SHOWING_NAVIGATION_STACK: "Gezinme yigini gosteriliyor - ilk rota:",
+  },
   GameScreenAlerts: {CONTINUE_NOT_ENOUGH_COINS_MESSAGE: "Devam etmek icin yeterli jetonun yok."},
   VictoryModal: {TOTAL_COINS_LABEL: "Toplam jeton"},
-  LossModal: {EXTRA_GUESSES_PROMPT: "Deneme hakkin bitti. 3 ekstra tahmin al veya bu bulmacayi atla.", SKIP_PUZZLE_BUTTON: "Bulmacayi atla", ANSWER_PREFIX: "Cevap: ", USE_COINS_PREFIX: "Kullan: ", EXTRA_GUESSES_PREFIX: "3 ekstra tahmin - ", EXTRA_GUESSES_SUFFIX: " jeton"},
+  LossModal: {
+    EXTRA_GUESSES_PROMPT: "Deneme hakkin bitti. 3 ekstra tahmin al veya bu bulmacayi atla.",
+    SKIP_PUZZLE_BUTTON: "Bulmacayi atla",
+    ANSWER_PREFIX: "Cevap: ",
+    USE_COINS_PREFIX: "Kullan: ",
+    EXTRA_GUESSES_PREFIX: "3 ekstra tahmin - ",
+    EXTRA_GUESSES_SUFFIX: " jeton",
+  },
   Achievements: {COINS_SUFFIX: " jeton"},
-  StreakFanfare: {TITLE: "Seri Artti!", STREAK_SUFFIX: " gunluk seri", COINS_SUFFIX: " jeton", CONTINUE_BUTTON: "Devam et"},
+  StreakFanfare: {
+    TITLE: "Seri Artti!",
+    STREAK_SUFFIX: " gunluk seri",
+    COINS_SUFFIX: " jeton",
+    CONTINUE_BUTTON: "Devam et",
+  },
   LevelUpFanfare: {TITLE: "Seviye Atladi!", LEVEL_PREFIX: "Seviye ", COINS_SUFFIX: " jeton", CONTINUE_BUTTON: "Harika"},
 };

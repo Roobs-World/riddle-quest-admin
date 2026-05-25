@@ -1,5 +1,5 @@
 import * as Font from "expo-font";
-import { loadFonts } from "../fontLoader";
+import {loadFonts} from "../fontLoader";
 
 // Mock expo-font
 jest.mock("expo-font", () => ({
@@ -75,9 +75,7 @@ describe("loadFonts", () => {
       await expect(loadFonts()).rejects.toThrow("Failed to load font");
       expect(mockLoadAsync).toHaveBeenCalledTimes(1);
       expect(console.log).toHaveBeenCalledWith("Attempting to load fonts...");
-      expect(console.log).not.toHaveBeenCalledWith(
-        "Fonts loaded successfully!"
-      );
+      expect(console.log).not.toHaveBeenCalledWith("Fonts loaded successfully!");
     });
 
     it("should throw error on network errors", async () => {

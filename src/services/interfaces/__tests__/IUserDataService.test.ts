@@ -1,5 +1,5 @@
-import type { IUserDataService } from "../IUserDataService";
-import type { Player } from "../../../validation/firestoreSchemas";
+import type {IUserDataService} from "../IUserDataService";
+import type {Player} from "../../../validation/firestoreSchemas";
 
 describe("IUserDataService", () => {
   const mockPlayer: Player = {
@@ -36,29 +36,14 @@ describe("IUserDataService", () => {
 
   it("should allow implementing the interface", () => {
     class TestUserDataService implements IUserDataService {
-      async saveUserProgress(
-        userId: string,
-        progress: Player["progress"]
-      ): Promise<void> {}
+      async saveUserProgress(userId: string, progress: Player["progress"]): Promise<void> {}
       async loadUserProgress(userId: string): Promise<Player | null> {
         return null;
       }
-      async createUserDocument(
-        userId: string,
-        userData: Player
-      ): Promise<void> {}
-      async updateUserDocument(
-        userId: string,
-        updates: Partial<Player>
-      ): Promise<void> {}
-      async updateClassicIndex(
-        userId: string,
-        newIndex: number
-      ): Promise<void> {}
-      async updateUserCoins(
-        userId: string,
-        newCoinAmount: number
-      ): Promise<void> {}
+      async createUserDocument(userId: string, userData: Player): Promise<void> {}
+      async updateUserDocument(userId: string, updates: Partial<Player>): Promise<void> {}
+      async updateClassicIndex(userId: string, newIndex: number): Promise<void> {}
+      async updateUserCoins(userId: string, newCoinAmount: number): Promise<void> {}
       async userExists(userId: string): Promise<boolean> {
         return false;
       }
@@ -86,24 +71,12 @@ describe("IUserDataService", () => {
       userExists: jest.fn().mockResolvedValue(true),
     };
 
-    await expect(
-      mockService.saveUserProgress("user123", mockPlayer.progress)
-    ).resolves.toBeUndefined();
-    await expect(mockService.loadUserProgress("user123")).resolves.toEqual(
-      mockPlayer
-    );
-    await expect(
-      mockService.createUserDocument("user123", mockPlayer)
-    ).resolves.toBeUndefined();
-    await expect(
-      mockService.updateUserDocument("user123", { coins: 100 })
-    ).resolves.toBeUndefined();
-    await expect(
-      mockService.updateClassicIndex("user123", 10)
-    ).resolves.toBeUndefined();
-    await expect(
-      mockService.updateUserCoins("user123", 200)
-    ).resolves.toBeUndefined();
+    await expect(mockService.saveUserProgress("user123", mockPlayer.progress)).resolves.toBeUndefined();
+    await expect(mockService.loadUserProgress("user123")).resolves.toEqual(mockPlayer);
+    await expect(mockService.createUserDocument("user123", mockPlayer)).resolves.toBeUndefined();
+    await expect(mockService.updateUserDocument("user123", {coins: 100})).resolves.toBeUndefined();
+    await expect(mockService.updateClassicIndex("user123", 10)).resolves.toBeUndefined();
+    await expect(mockService.updateUserCoins("user123", 200)).resolves.toBeUndefined();
     await expect(mockService.userExists("user123")).resolves.toBe(true);
   });
 
@@ -123,7 +96,7 @@ describe("IUserDataService", () => {
       dailyChallengeIndex: 3,
       dailyChallengeCurrentQuestion: 0,
     };
-    const updates = { coins: 150 };
+    const updates = {coins: 150};
 
     mockService.saveUserProgress("user123", progress);
     mockService.loadUserProgress("user456");
@@ -133,19 +106,10 @@ describe("IUserDataService", () => {
     mockService.updateUserCoins("user123", 300);
     mockService.userExists("user123");
 
-    expect(mockService.saveUserProgress).toHaveBeenCalledWith(
-      "user123",
-      progress
-    );
+    expect(mockService.saveUserProgress).toHaveBeenCalledWith("user123", progress);
     expect(mockService.loadUserProgress).toHaveBeenCalledWith("user456");
-    expect(mockService.createUserDocument).toHaveBeenCalledWith(
-      "user789",
-      mockPlayer
-    );
-    expect(mockService.updateUserDocument).toHaveBeenCalledWith(
-      "user123",
-      updates
-    );
+    expect(mockService.createUserDocument).toHaveBeenCalledWith("user789", mockPlayer);
+    expect(mockService.updateUserDocument).toHaveBeenCalledWith("user123", updates);
     expect(mockService.updateClassicIndex).toHaveBeenCalledWith("user123", 15);
     expect(mockService.updateUserCoins).toHaveBeenCalledWith("user123", 300);
     expect(mockService.userExists).toHaveBeenCalledWith("user123");
@@ -162,9 +126,7 @@ describe("IUserDataService", () => {
       userExists: jest.fn().mockResolvedValue(false),
     };
 
-    await expect(
-      mockService.loadUserProgress("nonexistent")
-    ).resolves.toBeNull();
+    await expect(mockService.loadUserProgress("nonexistent")).resolves.toBeNull();
     await expect(mockService.userExists("nonexistent")).resolves.toBe(false);
   });
 
@@ -181,9 +143,9 @@ describe("IUserDataService", () => {
 
     // Test various partial updates
     const partialUpdates: Partial<Player>[] = [
-      { coins: 100 },
-      { username: "newusername" },
-      { coins: 200 },
+      {coins: 100},
+      {username: "newusername"},
+      {coins: 200},
       {
         stats: {
           xp: 0,
@@ -208,7 +170,7 @@ describe("IUserDataService", () => {
         progress: {
           classicIndex: 8,
           dailyChallengeIndex: 0,
-      dailyChallengeCurrentQuestion: 0,
+          dailyChallengeCurrentQuestion: 0,
         },
       },
     ];
@@ -217,10 +179,6 @@ describe("IUserDataService", () => {
       mockService.updateUserDocument("user123", update);
     }
 
-    expect(mockService.updateUserDocument).toHaveBeenCalledTimes(
-      partialUpdates.length
-    );
+    expect(mockService.updateUserDocument).toHaveBeenCalledTimes(partialUpdates.length);
   });
 });
-
-

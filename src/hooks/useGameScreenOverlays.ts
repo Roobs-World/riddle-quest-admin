@@ -1,24 +1,19 @@
-import { useState } from "react";
-import {
-  GameScreenOverlayState,
-  GameScreenOverlayActions,
-} from "../types/OverlayTypes";
+import {useState} from "react";
+import {GameScreenOverlayState, GameScreenOverlayActions} from "../types/OverlayTypes";
 
 /**
  * Centralized state hook for all gameplay overlay visibility flags.
  *
  * @returns Overlay visibility state plus typed setter actions.
  */
-const useGameScreenOverlays = (): GameScreenOverlayState &
-  GameScreenOverlayActions => {
+const useGameScreenOverlays = (): GameScreenOverlayState & GameScreenOverlayActions => {
   const [isVictoryModalVisible, setIsVictoryModalVisible] = useState(false);
   const [isLossModalVisible, setIsLossModalVisible] = useState(false);
   const [isHintOverlayVisible, setIsHintOverlayVisible] = useState(false);
   const [isHomeOverlayVisible, setIsHomeOverlayVisible] = useState(false);
   const [isPlayOverlayVisible, setIsPlayOverlayVisible] = useState(false);
   const [isProfileOverlayVisible, setIsProfileOverlayVisible] = useState(false);
-  const [isSettingsOverlayVisible, setIsSettingsOverlayVisible] =
-    useState(false);
+  const [isSettingsOverlayVisible, setIsSettingsOverlayVisible] = useState(false);
 
   return {
     isVictoryModalVisible,

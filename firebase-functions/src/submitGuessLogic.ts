@@ -141,10 +141,7 @@ function getYesterdayUtcDayString(): string {
   return yesterday.toISOString().split("T")[0];
 }
 
-function computeNextDailyWinStreak(
-  currentWinStreak: number,
-  lastDailyChallengeCompletedAt: unknown,
-): number {
+function computeNextDailyWinStreak(currentWinStreak: number, lastDailyChallengeCompletedAt: unknown): number {
   const lastCompletedDay = getUtcDayString(lastDailyChallengeCompletedAt);
   const yesterdayUtcDay = getYesterdayUtcDayString();
   return lastCompletedDay === yesterdayUtcDay ? currentWinStreak + 1 : 1;
@@ -156,11 +153,7 @@ function computeNextDailyWinStreak(
  */
 async function triggerClassicRiddleGenerationIfNeeded(userId: string, currentClassicIndex: number): Promise<void> {
   try {
-    const classicRiddlesSnapshot = await admin
-      .firestore()
-      .collection("riddles")
-      .where("classicIndex", ">=", 0)
-      .get();
+    const classicRiddlesSnapshot = await admin.firestore().collection("riddles").where("classicIndex", ">=", 0).get();
 
     const totalClassicRiddles = classicRiddlesSnapshot.size;
     const remainingClassicRiddles = totalClassicRiddles - currentClassicIndex;
@@ -278,8 +271,7 @@ export async function handleGuessLogic(
 
     const isCorrect = guessClean === correctAnswerClean;
     let coinsEarned = 0;
-    const maxAttempts =
-      gameMode === "challenge" ? MAX_ATTEMPTS_CHALLENGE : MAX_ATTEMPTS_CLASSIC;
+    const maxAttempts = gameMode === "challenge" ? MAX_ATTEMPTS_CHALLENGE : MAX_ATTEMPTS_CLASSIC;
     const gameOver = isCorrect || attempts >= maxAttempts;
 
     const user = await getUser(userId);
@@ -365,7 +357,7 @@ export async function handleGuessLogic(
       const bestStreakCandidate =
         gameMode === "challenge"
           ? (updatedDailyWinStreak ?? (currentStats.winStreak || 0))
-          : (currentStats.bestStreak || 0);
+          : currentStats.bestStreak || 0;
       if (bestStreakCandidate > (currentStats.bestStreak || 0)) {
         statsUpdate.bestStreak = bestStreakCandidate;
       }
@@ -377,9 +369,7 @@ export async function handleGuessLogic(
           const newTotalWins = (currentStats.totalWins ?? 0) + 1;
           const newBestStreak = Math.max(
             currentStats.bestStreak ?? 0,
-            gameMode === "challenge"
-              ? (updatedDailyWinStreak ?? 0)
-              : (currentStats.bestStreak ?? 0),
+            gameMode === "challenge" ? (updatedDailyWinStreak ?? 0) : (currentStats.bestStreak ?? 0),
           );
           await updateLeaderboardEntry(
             userId,
@@ -441,8 +431,7 @@ export async function handleGuessLogic(
       });
 
       if (isCorrect && newlyUnlockedAchievementIds.length > 0) {
-        const achievementBonusCoins =
-          newlyUnlockedAchievementIds.length * ACHIEVEMENT_UNLOCK_COIN_REWARD;
+        const achievementBonusCoins = newlyUnlockedAchievementIds.length * ACHIEVEMENT_UNLOCK_COIN_REWARD;
         await updateUserCoins(userId, achievementBonusCoins);
         coinsEarned += achievementBonusCoins;
       }
@@ -586,8 +575,7 @@ export async function handleCompleteGameLogic(
 
       const playerProfileUpdate: PlayerTopLevelUpdate = {};
 
-      const maxAttempts =
-        gameMode === "challenge" ? MAX_ATTEMPTS_CHALLENGE : MAX_ATTEMPTS_CLASSIC;
+      const maxAttempts = gameMode === "challenge" ? MAX_ATTEMPTS_CHALLENGE : MAX_ATTEMPTS_CLASSIC;
 
       if (gameMode === "challenge") {
         updatedDailyWinStreak = computeNextDailyWinStreak(
@@ -600,17 +588,20 @@ export async function handleCompleteGameLogic(
         coinsEarned = COINS_REWARD_CHALLENGE;
         playerProfileUpdate.lastDailyChallengeCompletedAt = admin.firestore.FieldValue.serverTimestamp();
 
-        await admin.firestore().collection("users").doc(userId).update({
-          "progress.dailyChallengeIndex": admin.firestore.FieldValue.increment(1),
-        });
+        await admin
+          .firestore()
+          .collection("users")
+          .doc(userId)
+          .update({
+            "progress.dailyChallengeIndex": admin.firestore.FieldValue.increment(1),
+          });
         functions.logger.info(`User ${userId} completed daily challenge. Incremented dailyChallengeIndex.`);
       } else {
         // classic
         coinsEarned = COINS_REWARD_CLASSIC;
       }
 
-      const baseScore =
-        gameMode === "challenge" ? BASE_SCORE_CHALLENGE : BASE_SCORE_CLASSIC;
+      const baseScore = gameMode === "challenge" ? BASE_SCORE_CHALLENGE : BASE_SCORE_CLASSIC;
       const attemptsBonus = Math.max(0, (maxAttempts - attempts + 1) * 10);
       xpEarned = baseScore + attemptsBonus;
       statsUpdate.xp = admin.firestore.FieldValue.increment(xpEarned);
@@ -631,7 +622,7 @@ export async function handleCompleteGameLogic(
       const bestStreakCandidate =
         gameMode === "challenge"
           ? (updatedDailyWinStreak ?? (currentStats.winStreak || 0))
-          : (currentStats.bestStreak || 0);
+          : currentStats.bestStreak || 0;
       if (bestStreakCandidate > (currentStats.bestStreak || 0)) {
         statsUpdate.bestStreak = bestStreakCandidate;
       }
@@ -644,9 +635,7 @@ export async function handleCompleteGameLogic(
           const newTotalWins = (currentStats.totalWins ?? 0) + 1;
           const newBestStreak = Math.max(
             currentStats.bestStreak ?? 0,
-            gameMode === "challenge"
-              ? (updatedDailyWinStreak ?? 0)
-              : (currentStats.bestStreak ?? 0),
+            gameMode === "challenge" ? (updatedDailyWinStreak ?? 0) : (currentStats.bestStreak ?? 0),
           );
           await updateLeaderboardEntry(
             userId,
@@ -700,8 +689,7 @@ export async function handleCompleteGameLogic(
       });
 
       if (isCorrect && newlyUnlockedAchievementIds.length > 0) {
-        const achievementBonusCoins =
-          newlyUnlockedAchievementIds.length * ACHIEVEMENT_UNLOCK_COIN_REWARD;
+        const achievementBonusCoins = newlyUnlockedAchievementIds.length * ACHIEVEMENT_UNLOCK_COIN_REWARD;
         await updateUserCoins(userId, achievementBonusCoins);
         coinsEarned += achievementBonusCoins;
       }

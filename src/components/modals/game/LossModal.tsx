@@ -343,10 +343,7 @@ const LossModal: React.FC<LossModalProps> = ({
                         <View style={{height: MODAL_BUTTON_SPACER}} />
                       </>
                     )}
-                    <WideButton
-                      onPress={handleNextLevel}
-                      buttonText={AppStrings.LossModal.SKIP_PUZZLE_BUTTON}
-                    />
+                    <WideButton onPress={handleNextLevel} buttonText={AppStrings.LossModal.SKIP_PUZZLE_BUTTON} />
                   </View>
                 </>
               ) : (

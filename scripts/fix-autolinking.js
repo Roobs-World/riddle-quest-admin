@@ -15,17 +15,14 @@ const autolinkingFile = path.join(
   "com",
   "facebook",
   "react",
-  "PackageList.java"
+  "PackageList.java",
 );
 
 if (fs.existsSync(autolinkingFile)) {
   let content = fs.readFileSync(autolinkingFile, "utf8");
 
   // Replace the incorrect import
-  content = content.replace(
-    "import expo.core.ExpoModulesPackage;",
-    "import expo.modules.core.ExpoModulesPackage;"
-  );
+  content = content.replace("import expo.core.ExpoModulesPackage;", "import expo.modules.core.ExpoModulesPackage;");
 
   fs.writeFileSync(autolinkingFile, content);
   console.log("Fixed autolinking import for ExpoModulesPackage");

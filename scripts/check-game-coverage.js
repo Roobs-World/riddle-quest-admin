@@ -1,4 +1,4 @@
-const { spawnSync } = require("child_process");
+const {spawnSync} = require("child_process");
 const fs = require("fs");
 const path = require("path");
 
@@ -69,9 +69,7 @@ for (const [filePath, metrics] of gameFileEntries) {
 if (failures.length > 0) {
   console.error(`Game coverage check failed. Required >= ${threshold}% statements and lines per file.`);
   failures.forEach((failure) => {
-    console.error(
-      `${failure.filePath}\n  statements: ${failure.statementsPct}%\n  lines: ${failure.linesPct}%`
-    );
+    console.error(`${failure.filePath}\n  statements: ${failure.statementsPct}%\n  lines: ${failure.linesPct}%`);
   });
   process.exit(1);
 }

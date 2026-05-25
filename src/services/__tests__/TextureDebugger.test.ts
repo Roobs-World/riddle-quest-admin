@@ -1,4 +1,4 @@
-import { TextureDebugger } from "../TextureDebugger";
+import {TextureDebugger} from "../TextureDebugger";
 
 jest.mock("expo-asset", () => ({
   Asset: {
@@ -17,9 +17,9 @@ jest.mock("../../utils/sentry", () => ({
   captureException: jest.fn(),
 }));
 
-const { Asset } = require("expo-asset");
-const { logger } = require("../../utils/logger");
-const { captureException } = require("../../utils/sentry");
+const {Asset} = require("expo-asset");
+const {logger} = require("../../utils/logger");
+const {captureException} = require("../../utils/sentry");
 
 describe("TextureDebugger", () => {
   beforeEach(() => {
@@ -35,9 +35,7 @@ describe("TextureDebugger", () => {
     const result = await TextureDebugger.testSingleAsset(123, "single");
 
     expect(result).toBe(true);
-    expect(logger.debug).toHaveBeenCalledWith(
-      expect.stringContaining("single")
-    );
+    expect(logger.debug).toHaveBeenCalledWith(expect.stringContaining("single"));
   });
 
   it("returns false and reports when single asset load fails", async () => {
@@ -67,9 +65,7 @@ describe("TextureDebugger", () => {
 
     expect(Asset.fromModule).toHaveBeenCalled();
     expect(captureException).toHaveBeenCalledTimes(1);
-    expect(logger.error).toHaveBeenCalledWith(
-      expect.stringContaining("first fail")
-    );
+    expect(logger.error).toHaveBeenCalledWith(expect.stringContaining("first fail"));
   });
 
   it("handles localUri validation failures in bulk run", async () => {
@@ -94,9 +90,7 @@ describe("TextureDebugger", () => {
 
     await TextureDebugger.testAllAssets();
 
-    expect(logger.debug).toHaveBeenCalledWith(
-      expect.stringContaining("All texture assets loaded successfully")
-    );
+    expect(logger.debug).toHaveBeenCalledWith(expect.stringContaining("All texture assets loaded successfully"));
   });
 
   it("returns false for single asset when localUri is missing", async () => {

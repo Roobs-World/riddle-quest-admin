@@ -25,6 +25,7 @@ interface SettingsModalProps {
   onPressAbout: () => void;
   onPressLogout: () => void;
   onPressCredits: () => void;
+  initialLanguagePickerOpen?: boolean;
 }
 
 const SegmentedToggle = ({value, onChange}: {value: boolean; onChange: (v: boolean) => void}) => (
@@ -128,19 +129,9 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
   onPressAbout,
   onPressLogout,
   onPressCredits,
+  initialLanguagePickerOpen = false,
 }) => {
-  const [isLanguagePickerOpen, setIsLanguagePickerOpen] = React.useState(false);
-  const [selectedLanguage, setSelectedLanguage] = React.useState<SupportedLanguage>(currentLanguage);
-  const [selectedSoundEnabled, setSelectedSoundEnabled] = React.useState<boolean>(isSoundEnabled);
-  const [selectedHapticsEnabled, setSelectedHapticsEnabled] = React.useState<boolean>(isHapticsEnabled);
-
-  React.useEffect(() => {
-    if (isVisible) {
-      setSelectedLanguage(currentLanguage);
-      setSelectedSoundEnabled(isSoundEnabled);
-      setSelectedHapticsEnabled(isHapticsEnabled);
-    }
-  }, [isVisible, currentLanguage, isSoundEnabled, isHapticsEnabled]);
+  const [isLanguagePickerOpen, setIsLanguagePickerOpen] = React.useState(initialLanguagePickerOpen);
 
   return (
     <Modal visible={isVisible} transparent={true} animationType="none" onRequestClose={onClose}>
@@ -214,9 +205,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                   {AppStrings.Settings.SOUND_TOGGLE}
                 </Text>
                 <SegmentedToggle
-                  value={selectedSoundEnabled}
+                  value={isSoundEnabled}
                   onChange={(enabled) => {
-                    setSelectedSoundEnabled(enabled);
                     onToggleSound(enabled);
                   }}
                 />
@@ -242,9 +232,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                   {AppStrings.Settings.HAPTICS_TOGGLE}
                 </Text>
                 <SegmentedToggle
-                  value={selectedHapticsEnabled}
+                  value={isHapticsEnabled}
                   onChange={(enabled) => {
-                    setSelectedHapticsEnabled(enabled);
                     onToggleHaptics(enabled);
                   }}
                 />
@@ -254,7 +243,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
 
               <ArrowRow
                 label={AppStrings.Settings.LANGUAGE_LABEL}
-                value={getLanguageLabel(selectedLanguage)}
+                value={getLanguageLabel(currentLanguage)}
                 onPress={() => setIsLanguagePickerOpen(true)}
               />
 
@@ -339,12 +328,11 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
 
               <ScrollView>
                 {LANGUAGE_OPTIONS.map((option) => {
-                  const isSelected = option.code === selectedLanguage;
+                  const isSelected = option.code === currentLanguage;
                   return (
                     <TouchableOpacity
                       key={option.code}
                       onPress={() => {
-                        setSelectedLanguage(option.code);
                         onChangeLanguage(option.code);
                         setIsLanguagePickerOpen(false);
                       }}

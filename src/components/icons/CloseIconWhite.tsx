@@ -6,9 +6,8 @@ interface CloseIconProps {
   height?: number | string;
 }
 
-const CloseIconWhite = ({ width = 18, height = 18 }: CloseIconProps) => {
+const CloseIconWhite = ({width = 18, height = 18}: CloseIconProps) => {
   return <CloseSvg width={width} height={height} />;
 };
 
 export default CloseIconWhite;
-

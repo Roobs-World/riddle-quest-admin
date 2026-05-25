@@ -12,14 +12,14 @@
  * The exported `useGameStateManager` hook provides a React-friendly wrapper
  * around this class for components that want an imperative-but-typed game API.
  */
-import { useState, useCallback } from "react";
-import { GameMode } from "../contexts/AuthContext";
-import { RiddleService } from "./RiddleService";
-import { SubmitGuessInput } from "../validation/cloudFunctionsSchemas";
-import { IAudioFeedbackService } from "./interfaces/IAudioFeedbackService";
-import { serviceRegistry } from "./ServiceRegistry";
-import { logger } from "../utils/logger";
-import { captureException } from "../utils/sentry";
+import {useState, useCallback} from "react";
+import {GameMode} from "../contexts/AuthContext";
+import {RiddleService} from "./RiddleService";
+import {SubmitGuessInput} from "../validation/cloudFunctionsSchemas";
+import {IAudioFeedbackService} from "./interfaces/IAudioFeedbackService";
+import {serviceRegistry} from "./ServiceRegistry";
+import {logger} from "../utils/logger";
+import {captureException} from "../utils/sentry";
 
 /**
  * Internal snapshot of the current game state for a single riddle.
@@ -30,7 +30,7 @@ interface GameState {
   /** Previously submitted guesses in order. */
   guesses: string[];
   /** Feedback rows aligned to `guesses`. */
-  feedback: { letter: string; status: "green" | "yellow" | "red" }[][];
+  feedback: {letter: string; status: "green" | "yellow" | "red"}[][];
   /** Current lifecycle state of this riddle session. */
   gameStatus: "playing" | "won" | "lost";
   /** True while a guess submit request is in flight. */
@@ -54,7 +54,7 @@ interface GameConfig {
   /** Optional riddle id required for server-backed submit flow. */
   riddleId?: string;
   /** Callback fired when the game reaches win/loss terminal state. */
-  onGameComplete?: (result: { won: boolean; coinsEarned?: number }) => void;
+  onGameComplete?: (result: {won: boolean; coinsEarned?: number}) => void;
   /** Callback fired when submit/validation flow fails. */
   onError?: (error: string) => void;
 }
@@ -94,9 +94,7 @@ export class GameStateManager {
    */
   constructor(config: GameConfig) {
     this.config = config;
-    logger.warn(
-      "[DEPRECATED] GameStateManager is legacy. Migrate callers to useGameLogic/controller hooks."
-    );
+    logger.warn("[DEPRECATED] GameStateManager is legacy. Migrate callers to useGameLogic/controller hooks.");
     // Get audio feedback service from registry
     this.audioFeedback = serviceRegistry.getAudioFeedbackService();
   }
@@ -118,7 +116,7 @@ export class GameStateManager {
    * @returns Current game state snapshot.
    */
   getState(): GameState {
-    return { ...this.state };
+    return {...this.state};
   }
 
   /**
@@ -134,7 +132,7 @@ export class GameStateManager {
    * @param updates Partial state fields to update.
    */
   private setState(updates: Partial<GameState>): void {
-    this.state = { ...this.state, ...updates };
+    this.state = {...this.state, ...updates};
     this.notifyListeners();
   }
 
@@ -144,10 +142,7 @@ export class GameStateManager {
    * @param letter Letter to append to the current guess.
    */
   addLetter = (letter: string): void => {
-    if (
-      this.state.currentGuess.length < this.getAnswerLength() &&
-      this.state.gameStatus === "playing"
-    ) {
+    if (this.state.currentGuess.length < this.getAnswerLength() && this.state.gameStatus === "playing") {
       this.setState({
         currentGuess: this.state.currentGuess + letter.toLowerCase(),
       });
@@ -185,7 +180,7 @@ export class GameStateManager {
       return;
     }
 
-    this.setState({ isLoading: true });
+    this.setState({isLoading: true});
 
     try {
       const guessData: SubmitGuessInput = {
@@ -209,14 +204,11 @@ export class GameStateManager {
 
         // Play success feedback using injected service
         this.audioFeedback.playSuccessFeedback();
-      } else if (
-        newGuesses.length >= this.config.maxGuesses ||
-        result.gameOver
-      ) {
+      } else if (newGuesses.length >= this.config.maxGuesses || result.gameOver) {
         gameStatus = "lost";
 
         // Play error feedback with dramatic fade-in using injected service
-        this.audioFeedback.playErrorFeedback({ fadeInDuration: 1500 });
+        this.audioFeedback.playErrorFeedback({fadeInDuration: 1500});
       } else {
         // Wrong guess but game continues
         this.audioFeedback.playWrongGuessFeedback();
@@ -239,10 +231,9 @@ export class GameStateManager {
         });
       }
     } catch (error) {
-      this.setState({ isLoading: false });
+      this.setState({isLoading: false});
 
-      const errorMessage =
-        error instanceof Error ? error.message : "An error occurred";
+      const errorMessage = error instanceof Error ? error.message : "An error occurred";
       if (this.config.onError) {
         this.config.onError(errorMessage);
       }
@@ -271,7 +262,7 @@ export class GameStateManager {
    * Toggles hint visibility to true.
    */
   showHint = (): void => {
-    this.setState({ showHint: true });
+    this.setState({showHint: true});
   };
 
   /**

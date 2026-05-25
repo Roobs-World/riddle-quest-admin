@@ -1,5 +1,5 @@
 import React from "react";
-import { render } from "@testing-library/react-native";
+import {render} from "@testing-library/react-native";
 import ScreenTitle from "../ScreenTitle";
 
 // Mock styles
@@ -7,54 +7,48 @@ jest.mock("../../../styles", () => ({
   styles: {
     screenTitle: {},
   },
-  SPACING: { xs: 4, sm: 8, md: 16, lg: 24, xl: 32, "2xl": 48 },
+  SPACING: {xs: 4, sm: 8, md: 16, lg: 24, xl: 32, "2xl": 48},
 }));
 
 describe("ScreenTitle", () => {
   describe("Rendering", () => {
     it("renders correctly with title", () => {
       const title = "Welcome";
-      const { getByText } = render(<ScreenTitle title={title} />);
+      const {getByText} = render(<ScreenTitle title={title} />);
 
       expect(getByText(title)).toBeTruthy();
     });
 
     it("renders different titles", () => {
-      const titles = [
-        "Sign In",
-        "Sign Up",
-        "Forgot Password",
-        "Profile Settings",
-        "Game Statistics",
-      ];
+      const titles = ["Sign In", "Sign Up", "Forgot Password", "Profile Settings", "Game Statistics"];
 
       titles.forEach((title) => {
-        const { getByText } = render(<ScreenTitle title={title} />);
+        const {getByText} = render(<ScreenTitle title={title} />);
         expect(getByText(title)).toBeTruthy();
       });
     });
 
     it("renders with empty title", () => {
-      const { getByText } = render(<ScreenTitle title="" />);
+      const {getByText} = render(<ScreenTitle title="" />);
       expect(getByText("")).toBeTruthy();
     });
 
     it("renders with special characters", () => {
       const specialTitle = "Welcome! Ready to play? Let's go @#$%";
-      const { getByText } = render(<ScreenTitle title={specialTitle} />);
+      const {getByText} = render(<ScreenTitle title={specialTitle} />);
       expect(getByText(specialTitle)).toBeTruthy();
     });
 
     it("renders with numbers", () => {
       const numberTitle = "Level 1 - Stage 5";
-      const { getByText } = render(<ScreenTitle title={numberTitle} />);
+      const {getByText} = render(<ScreenTitle title={numberTitle} />);
       expect(getByText(numberTitle)).toBeTruthy();
     });
   });
 
   describe("Styling", () => {
     it("applies default CSS classes", () => {
-      const { getByText } = render(<ScreenTitle title="Test Title" />);
+      const {getByText} = render(<ScreenTitle title="Test Title" />);
       const titleElement = getByText("Test Title");
 
       expect(titleElement.props.className).toContain("text-center");
@@ -68,9 +62,7 @@ describe("ScreenTitle", () => {
 
     it("applies custom className when provided", () => {
       const customClass = "text-blue-500 mt-4";
-      const { getByText } = render(
-        <ScreenTitle title="Custom Title" className={customClass} />
-      );
+      const {getByText} = render(<ScreenTitle title="Custom Title" className={customClass} />);
       const titleElement = getByText("Custom Title");
 
       expect(titleElement.props.className).toContain(customClass);
@@ -78,7 +70,7 @@ describe("ScreenTitle", () => {
     });
 
     it("handles className being undefined", () => {
-      const { getByText } = render(<ScreenTitle title="No Class" />);
+      const {getByText} = render(<ScreenTitle title="No Class" />);
       const titleElement = getByText("No Class");
 
       expect(titleElement.props.className).toBeDefined();
@@ -86,7 +78,7 @@ describe("ScreenTitle", () => {
     });
 
     it("applies style prop correctly", () => {
-      const { getByText } = render(<ScreenTitle title="Styled Title" />);
+      const {getByText} = render(<ScreenTitle title="Styled Title" />);
       const titleElement = getByText("Styled Title");
 
       expect(titleElement.props.style).toBeDefined();
@@ -96,7 +88,7 @@ describe("ScreenTitle", () => {
   describe("Props Handling", () => {
     it("displays exact title content", () => {
       const testTitle = "Exact Title Content";
-      const { getByText } = render(<ScreenTitle title={testTitle} />);
+      const {getByText} = render(<ScreenTitle title={testTitle} />);
       const titleElement = getByText(testTitle);
 
       expect(titleElement.props.children).toBe(testTitle);
@@ -105,21 +97,21 @@ describe("ScreenTitle", () => {
     it("handles long titles", () => {
       const longTitle =
         "This is a very long title that might wrap to multiple lines and should still be rendered correctly without issues";
-      const { getByText } = render(<ScreenTitle title={longTitle} />);
+      const {getByText} = render(<ScreenTitle title={longTitle} />);
 
       expect(getByText(longTitle)).toBeTruthy();
     });
 
     it("handles short titles", () => {
       const shortTitle = "Hi";
-      const { getByText } = render(<ScreenTitle title={shortTitle} />);
+      const {getByText} = render(<ScreenTitle title={shortTitle} />);
 
       expect(getByText(shortTitle)).toBeTruthy();
     });
 
     it("handles single character titles", () => {
       const singleChar = "X";
-      const { getByText } = render(<ScreenTitle title={singleChar} />);
+      const {getByText} = render(<ScreenTitle title={singleChar} />);
 
       expect(getByText(singleChar)).toBeTruthy();
     });
@@ -128,9 +120,7 @@ describe("ScreenTitle", () => {
   describe("className Combinations", () => {
     it("merges custom className with default classes", () => {
       const customClass = "text-red-500";
-      const { getByText } = render(
-        <ScreenTitle title="Merged Classes" className={customClass} />
-      );
+      const {getByText} = render(<ScreenTitle title="Merged Classes" className={customClass} />);
       const titleElement = getByText("Merged Classes");
 
       // Should have both default and custom classes
@@ -140,9 +130,7 @@ describe("ScreenTitle", () => {
 
     it("handles multiple custom classes", () => {
       const multipleClasses = "text-blue-500 mt-8 border-b";
-      const { getByText } = render(
-        <ScreenTitle title="Multiple Classes" className={multipleClasses} />
-      );
+      const {getByText} = render(<ScreenTitle title="Multiple Classes" className={multipleClasses} />);
       const titleElement = getByText("Multiple Classes");
 
       expect(titleElement.props.className).toContain("text-blue-500");
@@ -151,9 +139,7 @@ describe("ScreenTitle", () => {
     });
 
     it("handles empty string className", () => {
-      const { getByText } = render(
-        <ScreenTitle title="Empty Class" className="" />
-      );
+      const {getByText} = render(<ScreenTitle title="Empty Class" className="" />);
       const titleElement = getByText("Empty Class");
 
       expect(titleElement.props.className).toContain("text-center");
@@ -162,17 +148,13 @@ describe("ScreenTitle", () => {
 
   describe("Component Structure", () => {
     it("renders as Text component", () => {
-      const { UNSAFE_getByType } = render(
-        <ScreenTitle title="Structure Test" />
-      );
+      const {UNSAFE_getByType} = render(<ScreenTitle title="Structure Test" />);
       const Text = require("react-native").Text;
       expect(UNSAFE_getByType(Text)).toBeTruthy();
     });
 
     it("renders single text element", () => {
-      const { UNSAFE_getAllByType } = render(
-        <ScreenTitle title="Single Element" />
-      );
+      const {UNSAFE_getAllByType} = render(<ScreenTitle title="Single Element" />);
       const Text = require("react-native").Text;
       const textElements = UNSAFE_getAllByType(Text);
 
@@ -182,9 +164,7 @@ describe("ScreenTitle", () => {
 
   describe("Performance", () => {
     it("re-renders correctly when title changes", () => {
-      const { rerender, getByText } = render(
-        <ScreenTitle title="Initial Title" />
-      );
+      const {rerender, getByText} = render(<ScreenTitle title="Initial Title" />);
 
       expect(getByText("Initial Title")).toBeTruthy();
 
@@ -193,9 +173,7 @@ describe("ScreenTitle", () => {
     });
 
     it("re-renders correctly when className changes", () => {
-      const { rerender, getByText } = render(
-        <ScreenTitle title="Same Title" className="initial-class" />
-      );
+      const {rerender, getByText} = render(<ScreenTitle title="Same Title" className="initial-class" />);
 
       let titleElement = getByText("Same Title");
       expect(titleElement.props.className).toContain("initial-class");
@@ -206,7 +184,7 @@ describe("ScreenTitle", () => {
     });
 
     it("handles rapid prop updates", () => {
-      const { rerender } = render(<ScreenTitle title="Title 1" />);
+      const {rerender} = render(<ScreenTitle title="Title 1" />);
 
       // Rapid updates
       for (let i = 2; i <= 10; i++) {
@@ -220,7 +198,7 @@ describe("ScreenTitle", () => {
   describe("Accessibility", () => {
     it("provides accessible text for screen readers", () => {
       const title = "Accessible Title";
-      const { getByText } = render(<ScreenTitle title={title} />);
+      const {getByText} = render(<ScreenTitle title={title} />);
       const titleElement = getByText(title);
 
       expect(titleElement).toBeTruthy();
@@ -228,9 +206,7 @@ describe("ScreenTitle", () => {
     });
 
     it("maintains text semantics", () => {
-      const { UNSAFE_getByType } = render(
-        <ScreenTitle title="Semantic Title" />
-      );
+      const {UNSAFE_getByType} = render(<ScreenTitle title="Semantic Title" />);
       const Text = require("react-native").Text;
       expect(UNSAFE_getByType(Text)).toBeTruthy();
     });
@@ -239,21 +215,21 @@ describe("ScreenTitle", () => {
   describe("Edge Cases", () => {
     it("handles title with line breaks", () => {
       const multilineTitle = "Line 1\nLine 2";
-      const { getByText } = render(<ScreenTitle title={multilineTitle} />);
+      const {getByText} = render(<ScreenTitle title={multilineTitle} />);
 
       expect(getByText(multilineTitle)).toBeTruthy();
     });
 
     it("handles title with unicode characters", () => {
       const unicodeTitle = "Welcome 👋 to Riddle Quest 🎮";
-      const { getByText } = render(<ScreenTitle title={unicodeTitle} />);
+      const {getByText} = render(<ScreenTitle title={unicodeTitle} />);
 
       expect(getByText(unicodeTitle)).toBeTruthy();
     });
 
     it("handles title with HTML entities", () => {
       const entityTitle = "A & B > C < D";
-      const { getByText } = render(<ScreenTitle title={entityTitle} />);
+      const {getByText} = render(<ScreenTitle title={entityTitle} />);
 
       expect(getByText(entityTitle)).toBeTruthy();
     });

@@ -1,19 +1,17 @@
 import React from "react";
-import { render } from "@testing-library/react-native";
+import {render} from "@testing-library/react-native";
 import CheckboxIcon from "../CheckboxIcon";
 
 describe("CheckboxIcon", () => {
   describe("Rendering", () => {
     it("renders correctly when checked", () => {
-      const { getByText } = render(<CheckboxIcon checked={true} />);
+      const {getByText} = render(<CheckboxIcon checked={true} />);
 
       expect(getByText("✓")).toBeTruthy();
     });
 
     it("renders correctly when unchecked", () => {
-      const { queryByText, UNSAFE_getByType } = render(
-        <CheckboxIcon checked={false} />
-      );
+      const {queryByText, UNSAFE_getByType} = render(<CheckboxIcon checked={false} />);
 
       expect(queryByText("✓")).toBeNull();
       const View = require("react-native").View;
@@ -21,20 +19,20 @@ describe("CheckboxIcon", () => {
     });
 
     it("renders as View component", () => {
-      const { UNSAFE_getByType } = render(<CheckboxIcon checked={true} />);
+      const {UNSAFE_getByType} = render(<CheckboxIcon checked={true} />);
       const View = require("react-native").View;
       expect(UNSAFE_getByType(View)).toBeTruthy();
     });
 
     it("displays checkmark when checked", () => {
-      const { getByText } = render(<CheckboxIcon checked={true} />);
+      const {getByText} = render(<CheckboxIcon checked={true} />);
       const checkmark = getByText("✓");
 
       expect(checkmark.props.children).toBe("✓");
     });
 
     it("does not display checkmark when unchecked", () => {
-      const { queryByText } = render(<CheckboxIcon checked={false} />);
+      const {queryByText} = render(<CheckboxIcon checked={false} />);
 
       expect(queryByText("✓")).toBeNull();
     });
@@ -42,7 +40,7 @@ describe("CheckboxIcon", () => {
 
   describe("Styling", () => {
     it("applies checked styling when checked", () => {
-      const { UNSAFE_getByType } = render(<CheckboxIcon checked={true} />);
+      const {UNSAFE_getByType} = render(<CheckboxIcon checked={true} />);
       const View = require("react-native").View;
       const container = UNSAFE_getByType(View);
 
@@ -51,7 +49,7 @@ describe("CheckboxIcon", () => {
     });
 
     it("applies unchecked styling when unchecked", () => {
-      const { UNSAFE_getByType } = render(<CheckboxIcon checked={false} />);
+      const {UNSAFE_getByType} = render(<CheckboxIcon checked={false} />);
       const View = require("react-native").View;
       const container = UNSAFE_getByType(View);
 
@@ -60,7 +58,7 @@ describe("CheckboxIcon", () => {
     });
 
     it("applies consistent base styling", () => {
-      const { UNSAFE_getByType } = render(<CheckboxIcon checked={true} />);
+      const {UNSAFE_getByType} = render(<CheckboxIcon checked={true} />);
       const View = require("react-native").View;
       const container = UNSAFE_getByType(View);
 
@@ -75,7 +73,7 @@ describe("CheckboxIcon", () => {
     });
 
     it("applies correct text styling when checked", () => {
-      const { getByText } = render(<CheckboxIcon checked={true} />);
+      const {getByText} = render(<CheckboxIcon checked={true} />);
       const checkmark = getByText("✓");
 
       expect(checkmark.props.className).toContain("text-white");
@@ -85,7 +83,7 @@ describe("CheckboxIcon", () => {
 
   describe("Component Structure", () => {
     it("renders container View", () => {
-      const { UNSAFE_getAllByType } = render(<CheckboxIcon checked={true} />);
+      const {UNSAFE_getAllByType} = render(<CheckboxIcon checked={true} />);
       const View = require("react-native").View;
       const views = UNSAFE_getAllByType(View);
 
@@ -93,13 +91,13 @@ describe("CheckboxIcon", () => {
     });
 
     it("renders Text component when checked", () => {
-      const { UNSAFE_getByType } = render(<CheckboxIcon checked={true} />);
+      const {UNSAFE_getByType} = render(<CheckboxIcon checked={true} />);
       const Text = require("react-native").Text;
       expect(UNSAFE_getByType(Text)).toBeTruthy();
     });
 
     it("does not render Text component when unchecked", () => {
-      const { UNSAFE_queryByType } = render(<CheckboxIcon checked={false} />);
+      const {UNSAFE_queryByType} = render(<CheckboxIcon checked={false} />);
       const Text = require("react-native").Text;
       expect(UNSAFE_queryByType(Text)).toBeNull();
     });
@@ -107,21 +105,19 @@ describe("CheckboxIcon", () => {
 
   describe("Checked State", () => {
     it("shows checkmark when checked is true", () => {
-      const { getByText } = render(<CheckboxIcon checked={true} />);
+      const {getByText} = render(<CheckboxIcon checked={true} />);
 
       expect(getByText("✓")).toBeTruthy();
     });
 
     it("hides checkmark when checked is false", () => {
-      const { queryByText } = render(<CheckboxIcon checked={false} />);
+      const {queryByText} = render(<CheckboxIcon checked={false} />);
 
       expect(queryByText("✓")).toBeNull();
     });
 
     it("toggles display correctly", () => {
-      const { rerender, getByText, queryByText } = render(
-        <CheckboxIcon checked={false} />
-      );
+      const {rerender, getByText, queryByText} = render(<CheckboxIcon checked={false} />);
 
       expect(queryByText("✓")).toBeNull();
 
@@ -135,12 +131,12 @@ describe("CheckboxIcon", () => {
 
   describe("Performance", () => {
     it("renders consistently with same props", () => {
-      const { getAllByText } = render(
+      const {getAllByText} = render(
         <>
           <CheckboxIcon checked={true} />
           <CheckboxIcon checked={true} />
           <CheckboxIcon checked={true} />
-        </>
+        </>,
       );
 
       const checkmarks = getAllByText("✓");
@@ -148,7 +144,7 @@ describe("CheckboxIcon", () => {
     });
 
     it("handles rapid state changes", () => {
-      const { rerender } = render(<CheckboxIcon checked={false} />);
+      const {rerender} = render(<CheckboxIcon checked={false} />);
 
       // Rapid state changes
       for (let i = 0; i < 10; i++) {
@@ -161,13 +157,13 @@ describe("CheckboxIcon", () => {
 
   describe("Accessibility", () => {
     it("maintains structure for screen readers when checked", () => {
-      const { UNSAFE_getByType } = render(<CheckboxIcon checked={true} />);
+      const {UNSAFE_getByType} = render(<CheckboxIcon checked={true} />);
       const View = require("react-native").View;
       expect(UNSAFE_getByType(View)).toBeTruthy();
     });
 
     it("maintains structure for screen readers when unchecked", () => {
-      const { UNSAFE_getByType } = render(<CheckboxIcon checked={false} />);
+      const {UNSAFE_getByType} = render(<CheckboxIcon checked={false} />);
       const View = require("react-native").View;
       expect(UNSAFE_getByType(View)).toBeTruthy();
     });
@@ -187,7 +183,7 @@ describe("CheckboxIcon", () => {
 
   describe("Edge Cases", () => {
     it("maintains checkmark character integrity", () => {
-      const { getByText } = render(<CheckboxIcon checked={true} />);
+      const {getByText} = render(<CheckboxIcon checked={true} />);
       const checkmark = getByText("✓");
 
       expect(typeof checkmark.props.children).toBe("string");
@@ -195,9 +191,7 @@ describe("CheckboxIcon", () => {
     });
 
     it("handles re-renders with prop changes", () => {
-      const { rerender, getByText, queryByText } = render(
-        <CheckboxIcon checked={true} />
-      );
+      const {rerender, getByText, queryByText} = render(<CheckboxIcon checked={true} />);
 
       expect(getByText("✓")).toBeTruthy();
 

@@ -58,24 +58,24 @@ If you like Wordle, crosswords, riddles, brain teasers, or quick daily puzzle ga
 
 Apple custom product pages should align screenshots and copy with campaign intent.
 
-| Theme | Audience | Hero Message | Screenshot Priority |
-| --- | --- | --- | --- |
-| Daily Word Puzzle | Wordle and daily puzzle players | A fresh riddle every day | Daily Challenge, streak, share result |
-| Riddle Game | Riddle and brain teaser fans | Solve the clue before you run out of guesses | Riddle text, guess grid, hint |
-| Brain Training | Casual cognitive game players | Train your mind in five minutes | Stats, achievements, daily habit |
-| Classic Progression | Players who like levels | Keep solving after the daily puzzle | Classic Mode, level up, coins |
-| Multilingual | Non-English launch tests | Riddles in your language | Localized clue, localized UI, store copy |
+| Theme               | Audience                        | Hero Message                                 | Screenshot Priority                      |
+| ------------------- | ------------------------------- | -------------------------------------------- | ---------------------------------------- |
+| Daily Word Puzzle   | Wordle and daily puzzle players | A fresh riddle every day                     | Daily Challenge, streak, share result    |
+| Riddle Game         | Riddle and brain teaser fans    | Solve the clue before you run out of guesses | Riddle text, guess grid, hint            |
+| Brain Training      | Casual cognitive game players   | Train your mind in five minutes              | Stats, achievements, daily habit         |
+| Classic Progression | Players who like levels         | Keep solving after the daily puzzle          | Classic Mode, level up, coins            |
+| Multilingual        | Non-English launch tests        | Riddles in your language                     | Localized clue, localized UI, store copy |
 
 ## Google Play Listing Experiments
 
 Test one variable at a time.
 
-| Test | Control | Variant | Success Metric |
-| --- | --- | --- | --- |
-| First screenshot | Game board screenshot | Riddle plus color feedback screenshot | Store conversion rate and D1 retention |
-| Short description | "Daily riddles meet word puzzles." | "Solve clever riddles in 5 guesses." | Store conversion rate |
-| Icon | Current icon | Higher-contrast icon with riddle/quest signal | Store conversion rate |
-| Preview video | No video or default video | 15-20 second solve loop | Conversion and install quality |
+| Test              | Control                            | Variant                                       | Success Metric                         |
+| ----------------- | ---------------------------------- | --------------------------------------------- | -------------------------------------- |
+| First screenshot  | Game board screenshot              | Riddle plus color feedback screenshot         | Store conversion rate and D1 retention |
+| Short description | "Daily riddles meet word puzzles." | "Solve clever riddles in 5 guesses."          | Store conversion rate                  |
+| Icon              | Current icon                       | Higher-contrast icon with riddle/quest signal | Store conversion rate                  |
+| Preview video     | No video or default video          | 15-20 second solve loop                       | Conversion and install quality         |
 
 Run each test for at least one full week when traffic allows.
 
@@ -108,4 +108,3 @@ For each language, localize:
 - Use "Wordle-style" only where store policy and review judgment allow; keep primary copy centered on Riddle Quest.
 - Avoid claiming "millions of players" until verified.
 - Keep privacy, ads, IAP, and tracking claims aligned with `docs/app-store-privacy-disclosures.md` and `docs/google-play-data-safety.md`.
-

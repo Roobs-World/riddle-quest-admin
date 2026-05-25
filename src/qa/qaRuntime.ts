@@ -8,5 +8,4 @@ export const setQASurfaceRuntimeActive = (isActive: boolean) => {
   (globalThis as QAGlobal)[QA_SURFACE_RUNTIME_KEY] = isActive;
 };
 
-export const isQASurfaceRuntimeActive = () =>
-  (globalThis as QAGlobal)[QA_SURFACE_RUNTIME_KEY] === true;
+export const isQASurfaceRuntimeActive = () => (globalThis as QAGlobal)[QA_SURFACE_RUNTIME_KEY] === true;

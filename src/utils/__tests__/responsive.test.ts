@@ -141,36 +141,36 @@ describe("responsive utilities", () => {
 
   describe("responsiveValue", () => {
     it("should always return the phone value when only phone is provided", () => {
-      const result = responsiveValue({ phone: "phone-value" });
+      const result = responsiveValue({phone: "phone-value"});
       expect(result).toBe("phone-value");
     });
 
     it("should return phone value for phone devices when tablet value exists", () => {
-      const values = { phone: "phone", tablet: "tablet" };
+      const values = {phone: "phone", tablet: "tablet"};
       const result = responsiveValue(values);
       // Result depends on current device type, but should be one of the values
       expect(["phone", "tablet"]).toContain(result);
     });
 
     it("should handle numeric values", () => {
-      const result = responsiveValue({ phone: 16, tablet: 24, desktop: 32 });
+      const result = responsiveValue({phone: 16, tablet: 24, desktop: 32});
       expect(typeof result).toBe("number");
       expect([16, 24, 32]).toContain(result);
     });
 
     it("should handle object values", () => {
-      const phoneConfig = { size: "small" };
-      const tabletConfig = { size: "large" };
-      const result = responsiveValue({ phone: phoneConfig, tablet: tabletConfig });
+      const phoneConfig = {size: "small"};
+      const tabletConfig = {size: "large"};
+      const result = responsiveValue({phone: phoneConfig, tablet: tabletConfig});
       expect([phoneConfig, tabletConfig]).toContain(result);
     });
 
     it("should fallback from desktop to largeTablet to tablet to phone", () => {
       // When only phone is provided, should use phone
-      expect(responsiveValue({ phone: "p" })).toBe("p");
+      expect(responsiveValue({phone: "p"})).toBe("p");
 
       // When desktop is missing but largeTablet exists
-      const values = { phone: "p", tablet: "t", largeTablet: "lt" };
+      const values = {phone: "p", tablet: "t", largeTablet: "lt"};
       const result = responsiveValue(values);
       expect(["p", "t", "lt"]).toContain(result);
     });
@@ -181,14 +181,14 @@ describe("responsive utilities", () => {
       jest.isolateModules(() => {
         const mockError = jest.fn();
         jest.doMock("../logger", () => ({
-          logger: { error: mockError, warn: jest.fn(), info: jest.fn(), debug: jest.fn() },
+          logger: {error: mockError, warn: jest.fn(), info: jest.fn(), debug: jest.fn()},
         }));
         jest.doMock("react-native", () => ({
           Dimensions: {
             get: () => {
               throw new Error("no dimensions");
             },
-            addEventListener: jest.fn(() => ({ remove: jest.fn() })),
+            addEventListener: jest.fn(() => ({remove: jest.fn()})),
           },
         }));
 
@@ -200,12 +200,12 @@ describe("responsive utilities", () => {
     it("returns largeTablet fallback on desktop when desktop value is missing", () => {
       jest.isolateModules(() => {
         jest.doMock("../logger", () => ({
-          logger: { error: jest.fn(), warn: jest.fn(), info: jest.fn(), debug: jest.fn() },
+          logger: {error: jest.fn(), warn: jest.fn(), info: jest.fn(), debug: jest.fn()},
         }));
         jest.doMock("react-native", () => ({
           Dimensions: {
-            get: () => ({ width: 1280, height: 900 }),
-            addEventListener: jest.fn(() => ({ remove: jest.fn() })),
+            get: () => ({width: 1280, height: 900}),
+            addEventListener: jest.fn(() => ({remove: jest.fn()})),
           },
         }));
 
@@ -215,7 +215,7 @@ describe("responsive utilities", () => {
             phone: "phone",
             tablet: "tablet",
             largeTablet: "large-tablet",
-          })
+          }),
         ).toBe("large-tablet");
       });
     });
@@ -224,12 +224,12 @@ describe("responsive utilities", () => {
       const remove = jest.fn();
       jest.isolateModules(() => {
         jest.doMock("../logger", () => ({
-          logger: { error: jest.fn(), warn: jest.fn(), info: jest.fn(), debug: jest.fn() },
+          logger: {error: jest.fn(), warn: jest.fn(), info: jest.fn(), debug: jest.fn()},
         }));
         jest.doMock("react-native", () => ({
           Dimensions: {
-            get: () => ({ width: 390, height: 844 }),
-            addEventListener: jest.fn(() => ({ remove })),
+            get: () => ({width: 390, height: 844}),
+            addEventListener: jest.fn(() => ({remove})),
           },
         }));
 

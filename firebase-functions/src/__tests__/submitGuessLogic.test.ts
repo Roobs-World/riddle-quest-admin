@@ -896,10 +896,7 @@ describe("handleGuessLogic", () => {
     });
 
     test("adds achievement bonus coins to balance and response on win", async () => {
-      (achievements.evaluateAchievements as jest.Mock).mockResolvedValueOnce([
-        "first_win",
-        "perfect_guess",
-      ]);
+      (achievements.evaluateAchievements as jest.Mock).mockResolvedValueOnce(["first_win", "perfect_guess"]);
       const requestData = {
         riddleId: "riddle-123",
         gameMode: "classic" as const,
@@ -909,21 +906,10 @@ describe("handleGuessLogic", () => {
 
       const result = await handleCompleteGameLogic(requestData, authContext);
 
-      expect(result.newlyUnlockedAchievementIds).toEqual([
-        "first_win",
-        "perfect_guess",
-      ]);
+      expect(result.newlyUnlockedAchievementIds).toEqual(["first_win", "perfect_guess"]);
       expect(result.coinsEarned).toBe(65);
-      expect(firestoreService.updateUserCoins).toHaveBeenNthCalledWith(
-        1,
-        authContext.uid,
-        15,
-      );
-      expect(firestoreService.updateUserCoins).toHaveBeenNthCalledWith(
-        2,
-        authContext.uid,
-        50,
-      );
+      expect(firestoreService.updateUserCoins).toHaveBeenNthCalledWith(1, authContext.uid, 15);
+      expect(firestoreService.updateUserCoins).toHaveBeenNthCalledWith(2, authContext.uid, 50);
     });
 
     test("should update leaderboard entry when game is won", async () => {

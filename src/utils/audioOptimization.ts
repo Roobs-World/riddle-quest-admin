@@ -1,12 +1,7 @@
-import {
-  createAudioPlayer,
-  setAudioModeAsync,
-  type AudioPlayer,
-  type AudioSource,
-} from "expo-audio";
-import { Platform } from "react-native";
-import { logger } from "./logger";
-import { captureException } from "./sentry";
+import {createAudioPlayer, setAudioModeAsync, type AudioPlayer, type AudioSource} from "expo-audio";
+import {Platform} from "react-native";
+import {logger} from "./logger";
+import {captureException} from "./sentry";
 
 /**
  * Audio Quality Optimization Utility
@@ -58,9 +53,7 @@ export const AUDIO_QUALITY_PRESETS = {
  */
 export const configureHighQualityAudioSession = async (): Promise<void> => {
   try {
-    logger.debug(
-      "AudioOptimization: Configuring high-quality audio session..."
-    );
+    logger.debug("AudioOptimization: Configuring high-quality audio session...");
 
     await setAudioModeAsync({
       playsInSilentMode: true,
@@ -68,14 +61,9 @@ export const configureHighQualityAudioSession = async (): Promise<void> => {
       interruptionMode: "doNotMix",
     });
 
-    logger.debug(
-      "AudioOptimization: High-quality audio session configured successfully"
-    );
+    logger.debug("AudioOptimization: High-quality audio session configured successfully");
   } catch (error) {
-    logger.error(
-      "AudioOptimization: Failed to configure audio session:",
-      error
-    );
+    logger.error("AudioOptimization: Failed to configure audio session:", error);
     captureException(error);
     throw error;
   }
@@ -86,8 +74,8 @@ export const configureHighQualityAudioSession = async (): Promise<void> => {
  */
 export const createHighQualitySound = async (
   source: AudioSource,
-  options: { loop?: boolean; volume?: number } = {}
-): Promise<{ sound: AudioPlayer }> => {
+  options: {loop?: boolean; volume?: number} = {},
+): Promise<{sound: AudioPlayer}> => {
   try {
     const initialConfig = getOptimalAudioConfig();
 
@@ -95,25 +83,20 @@ export const createHighQualitySound = async (
     player.loop = options.loop ?? false;
     player.volume = options.volume ?? 1.0;
 
-    logger.debug(
-      "AudioOptimization: Created audio player with config:",
-      { ...options, qualityLevel: getQualityLevelFromConfig(initialConfig) }
-    );
+    logger.debug("AudioOptimization: Created audio player with config:", {
+      ...options,
+      qualityLevel: getQualityLevelFromConfig(initialConfig),
+    });
 
-    return { sound: player };
+    return {sound: player};
   } catch (error) {
-    logger.error(
-      "AudioOptimization: Failed to create audio player:",
-      error
-    );
+    logger.error("AudioOptimization: Failed to create audio player:", error);
     captureException(error);
     throw error;
   }
 };
 
-const getQualityLevelFromConfig = (
-  config: AudioQualityConfig
-): keyof typeof AUDIO_QUALITY_PRESETS => {
+const getQualityLevelFromConfig = (config: AudioQualityConfig): keyof typeof AUDIO_QUALITY_PRESETS => {
   const presets = Object.entries(AUDIO_QUALITY_PRESETS);
   for (const [key, preset] of presets) {
     if (
@@ -132,7 +115,7 @@ const getQualityLevelFromConfig = (
  * expo-audio handles buffering internally; player.isBuffering available if needed
  */
 export const monitorAudioQuality = (
-  _sound: AudioPlayer // eslint-disable-line @typescript-eslint/no-unused-vars -- API compatibility
+  _sound: AudioPlayer, // eslint-disable-line @typescript-eslint/no-unused-vars -- API compatibility
 ): void => {
   // No-op: expo-audio manages quality internally
   // SoundManager compatibility - previously set status callbacks
@@ -143,13 +126,10 @@ export const monitorAudioQuality = (
  */
 export const getOptimalAudioConfig = (): AudioQualityConfig => {
   try {
-    const isProductionBuild =
-      !__DEV__ && process.env.EXPO_PRESERVE_AUDIO_QUALITY === "1";
+    const isProductionBuild = !__DEV__ && process.env.EXPO_PRESERVE_AUDIO_QUALITY === "1";
 
     if (isProductionBuild) {
-      logger.debug(
-        "AudioOptimization: Production build - using ULTRA_HIGH quality"
-      );
+      logger.debug("AudioOptimization: Production build - using ULTRA_HIGH quality");
       return AUDIO_QUALITY_PRESETS.ULTRA_HIGH;
     }
 
@@ -167,10 +147,7 @@ export const getOptimalAudioConfig = (): AudioQualityConfig => {
       return AUDIO_QUALITY_PRESETS.ADAPTIVE_SMOOTH;
     }
   } catch (error) {
-    logger.error(
-      "AudioOptimization: Failed to determine optimal config:",
-      error
-    );
+    logger.error("AudioOptimization: Failed to determine optimal config:", error);
     captureException(error);
     return AUDIO_QUALITY_PRESETS.ADAPTIVE_SMOOTH;
   }
@@ -179,9 +156,7 @@ export const getOptimalAudioConfig = (): AudioQualityConfig => {
 /**
  * Validate audio file quality
  */
-export const validateAudioQuality = async (
-  sound: AudioPlayer
-): Promise<boolean> => {
+export const validateAudioQuality = async (sound: AudioPlayer): Promise<boolean> => {
   try {
     if (!sound.isLoaded) {
       logger.warn("AudioOptimization: Audio not loaded properly");
@@ -196,10 +171,7 @@ export const validateAudioQuality = async (
     const isValid = Object.values(qualityChecks).every((check) => check === true);
 
     if (!isValid) {
-      logger.warn(
-        "AudioOptimization: Audio quality validation failed:",
-        qualityChecks
-      );
+      logger.warn("AudioOptimization: Audio quality validation failed:", qualityChecks);
     } else {
       logger.debug("AudioOptimization: Audio quality validation passed");
     }
@@ -215,17 +187,12 @@ export const validateAudioQuality = async (
 /**
  * Apply audio enhancement filters (simplified for expo-audio)
  */
-export const applyAudioEnhancements = async (
-  sound: AudioPlayer
-): Promise<void> => {
+export const applyAudioEnhancements = async (sound: AudioPlayer): Promise<void> => {
   try {
     sound.volume = 1.0;
     sound.playbackRate = 1.0;
   } catch (error) {
-    logger.error(
-      "AudioOptimization: Failed to apply audio enhancements:",
-      error
-    );
+    logger.error("AudioOptimization: Failed to apply audio enhancements:", error);
     captureException(error);
   }
 };
@@ -239,4 +206,3 @@ export default {
   applyAudioEnhancements,
   AUDIO_QUALITY_PRESETS,
 };
-

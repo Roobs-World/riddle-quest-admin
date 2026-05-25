@@ -1,7 +1,7 @@
 /**
  * @fileoverview Turkish (tr) locale overrides.
  */
-import type { LocaleOverrides } from "./types";
+import type {LocaleOverrides} from "./types";
 
 export const trOverrides: LocaleOverrides = {
   AuthStrings: {
@@ -53,8 +53,7 @@ export const trOverrides: LocaleOverrides = {
       SUCCESS_MESSAGE: "Sifre sifirlama emaili gonderildi! Gelen kutunuzu kontrol edin.",
       USER_NOT_FOUND_ERROR:
         "Bu email adresiyle kayitli hesap bulunamadi. Emailinizi kontrol edin veya yeni hesap olusturun.",
-      GENERIC_ERROR:
-        "Sifirlama emaili gonderilirken hata olustu. Tekrar deneyin.",
+      GENERIC_ERROR: "Sifirlama emaili gonderilirken hata olustu. Tekrar deneyin.",
       BACK_TO_LOGIN: "Girisa don",
     },
     SignUp: {
@@ -189,14 +188,12 @@ export const trOverrides: LocaleOverrides = {
     LETS_PLAY: "Oynayalim",
     SOLVE_RIDDLES_TEXT:
       "Cevabi harf harf tahmin ederek bilmeceleri cozun. Renk ipuclari her tahmininize rehberlik eder.",
-    EARN_COINS_TEXT:
-      "Para kazanin, gunluk gorevleri tamamlayin ve siralama listesine yukselin.",
+    EARN_COINS_TEXT: "Para kazanin, gunluk gorevleri tamamlayin ve siralama listesine yukselin.",
   },
   Instructions: {
     TITLE: "Nasil Oynanir",
     GOAL_TITLE: "Amac",
-    GOAL_DESCRIPTION:
-      "Renk ipuclarini kullanarak 3 denemede gizli bilmecenin yanitini bulun.",
+    GOAL_DESCRIPTION: "Renk ipuclarini kullanarak 3 denemede gizli bilmecenin yanitini bulun.",
     COLOR_CLUES_TITLE: "Renk Ipuclari",
     COLOR_CORRECT: "Harf dogru ve dogru konumda",
     COLOR_MISPLACED: "Harf kelimede var ama yanlis konumda",
@@ -241,8 +238,7 @@ export const trOverrides: LocaleOverrides = {
     NEW_ACHIEVEMENT: "Yeni basari",
   },
   ErrorMessages: {
-    UNABLE_TO_LOAD_RIDDLES:
-      "Bilmeceler yuklenemedi. Lutfen baglantinizi kontrol edip tekrar deneyin.",
+    UNABLE_TO_LOAD_RIDDLES: "Bilmeceler yuklenemedi. Lutfen baglantinizi kontrol edip tekrar deneyin.",
     FAILED_TO_LOAD_PRODUCTS: "Urunler yuklenemedi",
     FAILED_TO_LOAD_SHOP_PRODUCTS: "Magaza urunleri yuklenemedi",
   },
@@ -275,8 +271,7 @@ export const trOverrides: LocaleOverrides = {
     HINTS_USED: "Kullanilan ipuclari",
   },
   RewardedAdPrompts: {
-    OUT_OF_GUESSES_PROMPT:
-      "Tahmin hakkin bitti! Para kazanmak icin reklam izler misin?",
+    OUT_OF_GUESSES_PROMPT: "Tahmin hakkin bitti! Para kazanmak icin reklam izler misin?",
     WATCH_AD_BUTTON: "Reklam izle",
     NO_THANKS_BUTTON: "Hayir tesekkurler",
   },
@@ -287,7 +282,8 @@ export const trOverrides: LocaleOverrides = {
     NOT_ENOUGH_COINS_MESSAGE: "Ipucu kullanmak icin daha fazla paraya ihtiyaciniz var.",
     HINT_ERROR_TITLE: "Hata",
     GUEST_MODE_NOTICE_TITLE: "Misafir Modu Bildirimi",
-    GUEST_MODE_NOTICE_MESSAGE: "Misafir modunda ilerlemeniz kaybolabilir ve siralama gibi bazi ozellikler kullanilamaz.",
+    GUEST_MODE_NOTICE_MESSAGE:
+      "Misafir modunda ilerlemeniz kaybolabilir ve siralama gibi bazi ozellikler kullanilamaz.",
     AD_NOT_READY_TITLE: "Reklam Hazir Degil",
     AD_NOT_READY_MESSAGE: "Odullu reklam su an gosterilemiyor. Lutfen kisa sure sonra tekrar deneyin.",
     SPEND_COINS_ERROR_MESSAGE: "Para harcanamadi. Lutfen tekrar deneyin.",
@@ -375,7 +371,8 @@ export const trOverrides: LocaleOverrides = {
     LEADERBOARD_FIFTH_CORRECT_TITLE: "Lider tablosunda yuksel",
     LEADERBOARD_FIFTH_CORRECT_BODY: "Bes dogru cevap! Siralamani gormek icin profilini ac.",
     CLASSIC_FROM_DAILY_TITLE: "Klasik mod",
-    CLASSIC_FROM_DAILY_BODY: "Gunluk meydan okuma tamamlandi. Klasik mod bilmeceleri kendi hizinda cozmeye devam etmeni saglar.",
+    CLASSIC_FROM_DAILY_BODY:
+      "Gunluk meydan okuma tamamlandi. Klasik mod bilmeceleri kendi hizinda cozmeye devam etmeni saglar.",
     PROFILE_IDENTITY_TITLE: "Profil",
     PROFILE_IDENTITY_BODY: "Avatarin, kullanici adin, XP seviyen ve seviye ilerlemen burada.",
     PROFILE_DAILY_PUZZLES_TITLE: "Gunluk bilmeceler",

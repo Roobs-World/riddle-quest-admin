@@ -3,11 +3,11 @@
  * Animation, loading, and special effect styling
  */
 
-import { StyleSheet, ViewStyle, TextStyle } from "react-native";
-import { SHADOWS } from "../tokens/shadows";
-import { COLORS } from "../tokens/colors";
-import { TYPOGRAPHY } from "../tokens/typography";
-import { SIZING } from "../tokens/sizing";
+import {StyleSheet, ViewStyle, TextStyle} from "react-native";
+import {SHADOWS} from "../tokens/shadows";
+import {COLORS} from "../tokens/colors";
+import {TYPOGRAPHY} from "../tokens/typography";
+import {SIZING} from "../tokens/sizing";
 
 export const animationStyles = StyleSheet.create({
   overlay: {

@@ -1,5 +1,5 @@
 import * as functions from "firebase-functions";
-import { captureException } from "./sentry";
+import {captureException} from "./sentry";
 import {google} from "googleapis";
 import {getAppleSharedSecret, getIapGoogleCredentials, initializeIapConfig} from "./iapConfig";
 
@@ -91,7 +91,10 @@ export async function performPlatformValidation(
 
       const purchase = findApplePurchase(response, productId);
       if (!purchase) {
-        throw new functions.https.HttpsError("failed-precondition", "Purchase validation failed or product ID mismatch.");
+        throw new functions.https.HttpsError(
+          "failed-precondition",
+          "Purchase validation failed or product ID mismatch.",
+        );
       }
 
       return {
@@ -105,7 +108,10 @@ export async function performPlatformValidation(
     } else if (platform === "android") {
       const response = await verifyGooglePurchase(purchaseToken, productId);
       if (response.purchaseState !== 0) {
-        throw new functions.https.HttpsError("failed-precondition", "Purchase validation failed or product ID mismatch.");
+        throw new functions.https.HttpsError(
+          "failed-precondition",
+          "Purchase validation failed or product ID mismatch.",
+        );
       }
 
       return {

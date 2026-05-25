@@ -11,8 +11,8 @@
  */
 
 import React from "react";
-import { TextInput, TextInputProps } from "react-native";
-import { styles } from "../../styles";
+import {TextInput, TextInputProps} from "react-native";
+import {styles} from "../../styles";
 
 /**
  * Props interface for the ReusableTextInput component.
@@ -94,12 +94,8 @@ interface ReusableTextInputProps extends TextInputProps {
  * @param {ReusableTextInputProps} props - Component props including all TextInput props
  * @returns {JSX.Element} Rendered text input with consistent styling
  */
-const ReusableTextInput: React.FC<ReusableTextInputProps> = ({
-  className,
-  ...props
-}) => {
+const ReusableTextInput: React.FC<ReusableTextInputProps> = ({className, ...props}) => {
   return <TextInput style={styles.input} className={className} {...props} />;
 };
 
 export default ReusableTextInput;
-

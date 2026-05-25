@@ -6,12 +6,12 @@
  * coordinates those values with `SoundManager`, and exposes a minimal
  * API for components to read and update the current settings.
  */
-import { useState, useEffect, useCallback } from "react";
-import { SoundManager } from "../services/SoundManager";
-import { safeDelay } from "../utils/timing";
-import { logger } from "../utils/logger";
-import { captureException } from "../utils/sentry";
-import { SOUND_RESUME_DELAY_MS } from "../constants/game";
+import {useState, useEffect, useCallback} from "react";
+import {SoundManager} from "../services/SoundManager";
+import {safeDelay} from "../utils/timing";
+import {logger} from "../utils/logger";
+import {captureException} from "../utils/sentry";
+import {SOUND_RESUME_DELAY_MS} from "../constants/game";
 import {
   SOUND_ENABLED_STORAGE_KEY,
   HAPTICS_ENABLED_STORAGE_KEY,
@@ -37,17 +37,11 @@ export const useSettings = () => {
   useEffect(() => {
     const loadSettings = async () => {
       try {
-        const soundEnabled = await readBooleanSetting(
-          SOUND_ENABLED_STORAGE_KEY,
-          true
-        );
+        const soundEnabled = await readBooleanSetting(SOUND_ENABLED_STORAGE_KEY, true);
         setIsSoundEnabled(soundEnabled);
         SoundManager.setSoundEnabled(soundEnabled);
 
-        const hapticsEnabled = await readBooleanSetting(
-          HAPTICS_ENABLED_STORAGE_KEY,
-          true
-        );
+        const hapticsEnabled = await readBooleanSetting(HAPTICS_ENABLED_STORAGE_KEY, true);
         setIsHapticsEnabled(hapticsEnabled);
       } catch (error) {
         logger.error("Error loading settings from AsyncStorage:", error);
@@ -65,18 +59,14 @@ export const useSettings = () => {
       return;
     }
 
-    writeBooleanSetting(SOUND_ENABLED_STORAGE_KEY, isSoundEnabled).catch(
-      (error: unknown) => {
-        logger.error("Error saving sound setting:", error);
-        captureException(error);
-      }
-    );
+    writeBooleanSetting(SOUND_ENABLED_STORAGE_KEY, isSoundEnabled).catch((error: unknown) => {
+      logger.error("Error saving sound setting:", error);
+      captureException(error);
+    });
 
     SoundManager.setSoundEnabled(isSoundEnabled);
     if (isSoundEnabled) {
-      safeDelay(SOUND_RESUME_DELAY_MS).then(() =>
-        SoundManager.playBackgroundMusic()
-      );
+      safeDelay(SOUND_RESUME_DELAY_MS).then(() => SoundManager.playBackgroundMusic());
     } else {
       SoundManager.pauseBackgroundMusic();
     }
@@ -87,12 +77,10 @@ export const useSettings = () => {
       return;
     }
 
-    writeBooleanSetting(HAPTICS_ENABLED_STORAGE_KEY, isHapticsEnabled).catch(
-      (error: unknown) => {
-        logger.error("Error saving haptics setting:", error);
-        captureException(error);
-      }
-    );
+    writeBooleanSetting(HAPTICS_ENABLED_STORAGE_KEY, isHapticsEnabled).catch((error: unknown) => {
+      logger.error("Error saving haptics setting:", error);
+      captureException(error);
+    });
   }, [hasLoadedSettings, isHapticsEnabled]);
 
   const toggleSoundEnabled = useCallback((enabled: boolean) => {
@@ -110,4 +98,3 @@ export const useSettings = () => {
     toggleHapticsEnabled,
   };
 };
-

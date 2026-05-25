@@ -1,15 +1,13 @@
 const fs = require("fs");
 const path = require("path");
-const { execSync } = require("child_process");
+const {execSync} = require("child_process");
 
 const root = path.resolve(__dirname, "..");
-const packageJson = JSON.parse(
-  fs.readFileSync(path.join(root, "package.json"), "utf8")
-);
+const packageJson = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8"));
 
 function safeExec(cmd) {
   try {
-    return execSync(cmd, { cwd: root, stdio: ["ignore", "pipe", "ignore"] })
+    return execSync(cmd, {cwd: root, stdio: ["ignore", "pipe", "ignore"]})
       .toString()
       .trim();
   } catch {
@@ -49,6 +47,6 @@ const report = [
   "",
 ].join("\n");
 
-fs.mkdirSync(path.dirname(reportPath), { recursive: true });
+fs.mkdirSync(path.dirname(reportPath), {recursive: true});
 fs.writeFileSync(reportPath, report, "utf8");
 console.log(`Wrote baseline report template to ${reportPath}`);

@@ -13,16 +13,9 @@ describe("layout constants across responsive device profiles", () => {
   it.each(responsiveTestProfileList)("%s keeps modal dimensions inside the viewport", (profile) => {
     const layout = loadLayoutForProfile(profile);
 
-    expect(layout.MODAL_WIDTH).toBeLessThanOrEqual(
-      profile.screenWidth * layout.MODAL_MAX_SCREEN_FRACTION,
-    );
-    expect(layout.MODAL_HEIGHT / layout.MODAL_WIDTH).toBeCloseTo(
-      layout.MODAL_BASE_HEIGHT / layout.MODAL_BASE_WIDTH,
-      5,
-    );
-    expect(layout.MODAL_MAX_HEIGHT).toBeCloseTo(
-      profile.screenHeight * layout.MODAL_MAX_SCREEN_HEIGHT_FRACTION,
-    );
+    expect(layout.MODAL_WIDTH).toBeLessThanOrEqual(profile.screenWidth * layout.MODAL_MAX_SCREEN_FRACTION);
+    expect(layout.MODAL_HEIGHT / layout.MODAL_WIDTH).toBeCloseTo(layout.MODAL_BASE_HEIGHT / layout.MODAL_BASE_WIDTH, 5);
+    expect(layout.MODAL_MAX_HEIGHT).toBeCloseTo(profile.screenHeight * layout.MODAL_MAX_SCREEN_HEIGHT_FRACTION);
     expect(layout.getResponsiveModalHeight(10)).toBeLessThanOrEqual(layout.MODAL_MAX_HEIGHT);
   });
 

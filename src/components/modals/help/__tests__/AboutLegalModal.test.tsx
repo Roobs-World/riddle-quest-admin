@@ -110,10 +110,7 @@ describe("<AboutLegalModal />", () => {
     expect(() => fireEvent.press(getByText("Support"))).not.toThrow();
 
     await waitFor(() => {
-      expect(Alert.alert).toHaveBeenCalledWith(
-        "Unable to Open",
-        "Could not open Support. Please try again later."
-      );
+      expect(Alert.alert).toHaveBeenCalledWith("Unable to Open", "Could not open Support. Please try again later.");
     });
   });
 });

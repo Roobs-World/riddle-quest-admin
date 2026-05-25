@@ -1,18 +1,14 @@
 import React from "react";
-import { render, fireEvent } from "@testing-library/react-native";
-import { View, TouchableOpacity } from "react-native";
-import { GameInputButton } from "../GameInputButton";
-import { GAME_INPUT_BUTTON_HEIGHT } from "../../../constants/layout";
-import { SPACING } from "../../../styles";
+import {render, fireEvent} from "@testing-library/react-native";
+import {View, TouchableOpacity} from "react-native";
+import {GameInputButton} from "../GameInputButton";
+import {GAME_INPUT_BUTTON_HEIGHT} from "../../../constants/layout";
+import {SPACING} from "../../../styles";
 
 describe("GameInputButton", () => {
   it("renders icon and text", () => {
-    const { getByText, getByTestId } = render(
-      <GameInputButton
-        text="Hint"
-        icon={<View testID="button-icon" />}
-        callback={jest.fn()}
-      />
+    const {getByText, getByTestId} = render(
+      <GameInputButton text="Hint" icon={<View testID="button-icon" />} callback={jest.fn()} />,
     );
 
     expect(getByTestId("button-icon")).toBeTruthy();
@@ -21,12 +17,8 @@ describe("GameInputButton", () => {
 
   it("invokes callback when pressed", () => {
     const callback = jest.fn();
-    const { getByText } = render(
-      <GameInputButton
-        text="Skip"
-        icon={<View testID="button-icon" />}
-        callback={callback}
-      />
+    const {getByText} = render(
+      <GameInputButton text="Skip" icon={<View testID="button-icon" />} callback={callback} />,
     );
 
     fireEvent.press(getByText("Skip"));
@@ -34,12 +26,8 @@ describe("GameInputButton", () => {
   });
 
   it("applies expected container styling", () => {
-    const { UNSAFE_getByType } = render(
-      <GameInputButton
-        text="Next"
-        icon={<View testID="button-icon" />}
-        callback={jest.fn()}
-      />
+    const {UNSAFE_getByType} = render(
+      <GameInputButton text="Next" icon={<View testID="button-icon" />} callback={jest.fn()} />,
     );
 
     const button = UNSAFE_getByType(TouchableOpacity);

@@ -24,4 +24,3 @@ export const MODAL_REGISTRY_TYPES = [
 ] as const;
 
 export type ModalRegistryType = (typeof MODAL_REGISTRY_TYPES)[number];
-

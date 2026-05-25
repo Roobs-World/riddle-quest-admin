@@ -209,9 +209,7 @@ export async function initializeNewUser(
   try {
     const seed = userData.seed ?? {};
     const seedCoins =
-      typeof seed.coins === "number" && Number.isInteger(seed.coins) && seed.coins >= 0
-        ? seed.coins
-        : INITIAL_COINS;
+      typeof seed.coins === "number" && Number.isInteger(seed.coins) && seed.coins >= 0 ? seed.coins : INITIAL_COINS;
     const seedStats = seed.stats && typeof seed.stats === "object" ? seed.stats : {};
     const seedProgress = seed.progress && typeof seed.progress === "object" ? seed.progress : {};
     const seedAchievements = Array.isArray(seed.unlockedAchievements) ? seed.unlockedAchievements : [];

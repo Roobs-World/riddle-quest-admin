@@ -1,5 +1,5 @@
 import React from "react";
-import { render, fireEvent, waitFor } from "@testing-library/react-native";
+import {render, fireEvent, waitFor} from "@testing-library/react-native";
 import WideButton from "../WideButton";
 
 // Mock the logger
@@ -28,12 +28,12 @@ describe("<WideButton />", () => {
   });
 
   it("renders the button text correctly", () => {
-    const { getByText } = render(<WideButton {...defaultProps} />);
+    const {getByText} = render(<WideButton {...defaultProps} />);
     expect(getByText("Test Button")).toBeTruthy();
   });
 
   it("calls onPress handler when clicked", () => {
-    const { getByText } = render(<WideButton {...defaultProps} />);
+    const {getByText} = render(<WideButton {...defaultProps} />);
     // Press the button text
     const buttonText = getByText("Test Button");
     fireEvent.press(buttonText);
@@ -41,7 +41,7 @@ describe("<WideButton />", () => {
   });
 
   it("does not call onPress handler when disabled and clicked", () => {
-    const { getByText } = render(<WideButton {...defaultProps} disabled />);
+    const {getByText} = render(<WideButton {...defaultProps} disabled />);
     const buttonText = getByText("Test Button");
     // In React Native Testing Library, pressing text inside a disabled TouchableOpacity
     // might still trigger the event. Let's check if the TouchableOpacity is disabled instead.
@@ -51,41 +51,41 @@ describe("<WideButton />", () => {
   });
 
   it("applies disabled prop to TouchableOpacity", () => {
-    const { getByText } = render(<WideButton {...defaultProps} disabled />);
+    const {getByText} = render(<WideButton {...defaultProps} disabled />);
     // Since we can't directly check the disabled prop in the test environment,
     // we'll just verify the button renders correctly
     expect(getByText("Test Button")).toBeTruthy();
   });
 
   it("renders with correct structure", () => {
-    const { getByText } = render(<WideButton {...defaultProps} />);
+    const {getByText} = render(<WideButton {...defaultProps} />);
     // Check that the button text is rendered correctly
     expect(getByText("Test Button")).toBeTruthy();
   });
 
   it("renders with correct disabled styling", () => {
-    const { getByText } = render(<WideButton {...defaultProps} disabled />);
+    const {getByText} = render(<WideButton {...defaultProps} disabled />);
     // NativeWind className is applied but not directly accessible in test environment
     // Instead, check that the component renders correctly
     expect(getByText("Test Button")).toBeTruthy();
   });
 
   it("renders with correct enabled styling", () => {
-    const { getByText } = render(<WideButton {...defaultProps} />);
+    const {getByText} = render(<WideButton {...defaultProps} />);
     // NativeWind className is applied but not directly accessible in test environment
     // Instead, check that the component renders correctly
     expect(getByText("Test Button")).toBeTruthy();
   });
 
   it("renders text with correct styling based on disabled state", () => {
-    const { getByText } = render(<WideButton {...defaultProps} disabled />);
+    const {getByText} = render(<WideButton {...defaultProps} disabled />);
     const textElement = getByText("Test Button");
     // Check that the text element renders correctly
     expect(textElement).toBeTruthy();
   });
 
   it("renders text with correct enabled styling", () => {
-    const { getByText } = render(<WideButton {...defaultProps} />);
+    const {getByText} = render(<WideButton {...defaultProps} />);
     const textElement = getByText("Test Button");
     // Check that the text element renders correctly
     expect(textElement).toBeTruthy();
@@ -96,9 +96,7 @@ describe("<WideButton />", () => {
       const errorOnPress = jest.fn(() => {
         throw new Error("Test error");
       });
-      const { getByText } = render(
-        <WideButton buttonText="Error Button" onPress={errorOnPress} />
-      );
+      const {getByText} = render(<WideButton buttonText="Error Button" onPress={errorOnPress} />);
 
       fireEvent.press(getByText("Error Button"));
 
@@ -106,7 +104,7 @@ describe("<WideButton />", () => {
         expect(errorOnPress).toHaveBeenCalled();
       });
 
-      const { captureException } = require("../../../utils/sentry");
+      const {captureException} = require("../../../utils/sentry");
       expect(captureException).toHaveBeenCalled();
     });
 
@@ -114,9 +112,7 @@ describe("<WideButton />", () => {
       const asyncErrorOnPress = jest.fn(async () => {
         throw new Error("Async test error");
       });
-      const { getByText } = render(
-        <WideButton buttonText="Async Error Button" onPress={asyncErrorOnPress} />
-      );
+      const {getByText} = render(<WideButton buttonText="Async Error Button" onPress={asyncErrorOnPress} />);
 
       fireEvent.press(getByText("Async Error Button"));
 
@@ -124,15 +120,13 @@ describe("<WideButton />", () => {
         expect(asyncErrorOnPress).toHaveBeenCalled();
       });
 
-      const { captureException } = require("../../../utils/sentry");
+      const {captureException} = require("../../../utils/sentry");
       expect(captureException).toHaveBeenCalled();
     });
 
     it("handles async onPress that rejects", async () => {
       const rejectingOnPress = jest.fn(() => Promise.reject(new Error("Rejected")));
-      const { getByText } = render(
-        <WideButton buttonText="Reject Button" onPress={rejectingOnPress} />
-      );
+      const {getByText} = render(<WideButton buttonText="Reject Button" onPress={rejectingOnPress} />);
 
       fireEvent.press(getByText("Reject Button"));
 
@@ -143,28 +137,22 @@ describe("<WideButton />", () => {
 
     it("handles non-function onPress gracefully", async () => {
       // TypeScript would normally prevent this, but we test runtime behavior
-      const { getByText } = render(
-        <WideButton buttonText="Bad Button" onPress={undefined as any} />
-      );
+      const {getByText} = render(<WideButton buttonText="Bad Button" onPress={undefined as any} />);
 
       fireEvent.press(getByText("Bad Button"));
 
-      const { logger } = require("../../../utils/logger");
+      const {logger} = require("../../../utils/logger");
       await waitFor(() => {
-        expect(logger.warn).toHaveBeenCalledWith(
-          "Bad Button onPress is not a function or is undefined"
-        );
+        expect(logger.warn).toHaveBeenCalledWith("Bad Button onPress is not a function or is undefined");
       });
     });
 
     it("handles null onPress gracefully", async () => {
-      const { getByText } = render(
-        <WideButton buttonText="Null Button" onPress={null as any} />
-      );
+      const {getByText} = render(<WideButton buttonText="Null Button" onPress={null as any} />);
 
       fireEvent.press(getByText("Null Button"));
 
-      const { logger } = require("../../../utils/logger");
+      const {logger} = require("../../../utils/logger");
       await waitFor(() => {
         expect(logger.warn).toHaveBeenCalled();
       });
@@ -173,27 +161,17 @@ describe("<WideButton />", () => {
 
   describe("Custom Colors", () => {
     it("renders with custom button color", () => {
-      const { getByText } = render(
-        <WideButton {...defaultProps} buttonColor="bg-blue-500" />
-      );
+      const {getByText} = render(<WideButton {...defaultProps} buttonColor="bg-blue-500" />);
       expect(getByText("Test Button")).toBeTruthy();
     });
 
     it("renders with custom text color", () => {
-      const { getByText } = render(
-        <WideButton {...defaultProps} textColor="text-black" />
-      );
+      const {getByText} = render(<WideButton {...defaultProps} textColor="text-black" />);
       expect(getByText("Test Button")).toBeTruthy();
     });
 
     it("renders with both custom colors", () => {
-      const { getByText } = render(
-        <WideButton
-          {...defaultProps}
-          buttonColor="bg-green-500"
-          textColor="text-white"
-        />
-      );
+      const {getByText} = render(<WideButton {...defaultProps} buttonColor="bg-green-500" textColor="text-white" />);
       expect(getByText("Test Button")).toBeTruthy();
     });
   });
@@ -203,9 +181,7 @@ describe("<WideButton />", () => {
       const asyncOnPress = jest.fn(async () => {
         return "success";
       });
-      const { getByText } = render(
-        <WideButton buttonText="Async Button" onPress={asyncOnPress} />
-      );
+      const {getByText} = render(<WideButton buttonText="Async Button" onPress={asyncOnPress} />);
 
       fireEvent.press(getByText("Async Button"));
 
@@ -213,10 +189,8 @@ describe("<WideButton />", () => {
         expect(asyncOnPress).toHaveBeenCalled();
       });
 
-      const { logger } = require("../../../utils/logger");
-      expect(logger.debug).toHaveBeenCalledWith(
-        "Async Button onPress handler executed successfully"
-      );
+      const {logger} = require("../../../utils/logger");
+      expect(logger.debug).toHaveBeenCalledWith("Async Button onPress handler executed successfully");
     });
   });
 });

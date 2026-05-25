@@ -17,14 +17,20 @@
  *   ]}
  */
 
-import { StyleSheet, ViewStyle, ImageStyle } from "react-native";
-import { SPACING } from "../tokens/spacing";
-import { COLORS } from "../tokens/colors";
-import { AUTH_CONTENT_MAX_WIDTH, MAX_CONTENT_WIDTH } from "../../constants/layout";
+import {StyleSheet, ViewStyle, ImageStyle} from "react-native";
+import {SPACING} from "../tokens/spacing";
+import {COLORS} from "../tokens/colors";
+import {AUTH_CONTENT_MAX_WIDTH, MAX_CONTENT_WIDTH} from "../../constants/layout";
 
 export const layoutStyles = StyleSheet.create({
   activityIndicator: {
     position: "absolute",
+  } as ViewStyle,
+
+  authContentContainer: {
+    alignSelf: "center",
+    maxWidth: AUTH_CONTENT_MAX_WIDTH,
+    width: "100%",
   } as ViewStyle,
 
   backgroundImage: {
@@ -51,12 +57,6 @@ export const layoutStyles = StyleSheet.create({
     width: "100%",
   } as ViewStyle,
 
-  authContentContainer: {
-    alignSelf: "center",
-    maxWidth: AUTH_CONTENT_MAX_WIDTH,
-    width: "100%",
-  } as ViewStyle,
-
   centeredView: {
     alignItems: "center",
     flex: 1,
@@ -78,11 +78,10 @@ export const layoutStyles = StyleSheet.create({
     justifyContent: "space-between",
   } as ViewStyle,
 
-
-    /**
- * Desktop (≥ 1024 px): same centring approach with slightly more padding
- * for a comfortable click/keyboard target feel.
- */
+  /**
+   * Desktop (≥ 1024 px): same centring approach with slightly more padding
+   * for a comfortable click/keyboard target feel.
+   */
   gameContainerDesktop: {
     paddingHorizontal: SPACING.xl,
     maxWidth: MAX_CONTENT_WIDTH,
@@ -90,7 +89,7 @@ export const layoutStyles = StyleSheet.create({
     width: "100%",
   } as ViewStyle,
 
-    /**
+  /**
    * Large tablet / iPad (768–1023 px): caps and centres the game column so
    * it doesn't stretch uncomfortably across the full iPad width.
    */
@@ -100,9 +99,6 @@ export const layoutStyles = StyleSheet.create({
     alignSelf: "center",
     width: "100%",
   } as ViewStyle,
-
-
-
 
   /** Small tablet (600–767 px): adds a touch of horizontal breathing room. */
   gameContainerTablet: {
@@ -128,7 +124,7 @@ export const layoutStyles = StyleSheet.create({
     minHeight: "20%",
   } as ViewStyle,
 
-   /** Large tablet / desktop: more padding and a taller minimum slot. */
+  /** Large tablet / desktop: more padding and a taller minimum slot. */
   riddleContainerLargeTablet: {
     paddingHorizontal: SPACING.lg,
     minHeight: "30%",
@@ -139,8 +135,6 @@ export const layoutStyles = StyleSheet.create({
     paddingHorizontal: SPACING.md,
     minHeight: "25%",
   } as ViewStyle,
-
- 
 
   scrollViewContent: {
     paddingBottom: SPACING.xl,
@@ -176,4 +170,3 @@ export const layoutStyles = StyleSheet.create({
     right: SPACING.sm,
   } as ViewStyle,
 });
-

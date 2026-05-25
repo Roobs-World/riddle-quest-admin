@@ -48,13 +48,7 @@ jest.mock("react-native/Libraries/Modal/Modal", () => {
   const React = require("react");
   return {
     __esModule: true,
-    default: function MockModal({
-      children,
-      visible,
-    }: {
-      children: React.ReactNode;
-      visible: boolean;
-    }) {
+    default: function MockModal({children, visible}: {children: React.ReactNode; visible: boolean}) {
       if (!visible) return null;
       return React.createElement("View", null, children);
     },

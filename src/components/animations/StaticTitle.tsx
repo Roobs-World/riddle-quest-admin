@@ -1,16 +1,16 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
-import { COLORS } from "../../styles/tokens/colors";
-import { TYPOGRAPHY } from "../../styles/tokens/typography";
-import { BORDER_RADIUS } from "../../styles/tokens/borderRadius";
-import { STATIC_TITLE_PADDING_H, STATIC_TITLE_PADDING_V } from "../../constants/layout";
-import { moderateScale } from "../../utils/responsive";
+import {View, Text, StyleSheet} from "react-native";
+import {COLORS} from "../../styles/tokens/colors";
+import {TYPOGRAPHY} from "../../styles/tokens/typography";
+import {BORDER_RADIUS} from "../../styles/tokens/borderRadius";
+import {STATIC_TITLE_PADDING_H, STATIC_TITLE_PADDING_V} from "../../constants/layout";
+import {moderateScale} from "../../utils/responsive";
 
 interface StaticTitleProps {
   title: string;
 }
 
-const StaticTitle: React.FC<StaticTitleProps> = ({ title }) => {
+const StaticTitle: React.FC<StaticTitleProps> = ({title}) => {
   return (
     <View style={styles.container}>
       <View style={styles.titleContainer}>
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     textAlign: "center",
     textShadowColor: "rgba(0, 0, 0, 0.75)",
-    textShadowOffset: { width: moderateScale(1), height: moderateScale(1) },
+    textShadowOffset: {width: moderateScale(1), height: moderateScale(1)},
     textShadowRadius: moderateScale(2),
   },
   titleContainer: {
@@ -50,4 +50,3 @@ const styles = StyleSheet.create({
 });
 
 export default StaticTitle;
-

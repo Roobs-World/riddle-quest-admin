@@ -1,5 +1,5 @@
 import React from "react";
-import { render } from "@testing-library/react-native";
+import {render} from "@testing-library/react-native";
 
 const mockCloseSvg = jest.fn((_props: any) => null);
 
@@ -17,16 +17,12 @@ describe("CloseIconWhite", () => {
   it("renders default size", () => {
     render(<CloseIconWhite />);
 
-    expect(mockCloseSvg).toHaveBeenCalledWith(
-      expect.objectContaining({ width: 18, height: 18 }),
-    );
+    expect(mockCloseSvg).toHaveBeenCalledWith(expect.objectContaining({width: 18, height: 18}));
   });
 
   it("renders custom width and height", () => {
     render(<CloseIconWhite width="24" height={30} />);
 
-    expect(mockCloseSvg).toHaveBeenCalledWith(
-      expect.objectContaining({ width: "24", height: 30 }),
-    );
+    expect(mockCloseSvg).toHaveBeenCalledWith(expect.objectContaining({width: "24", height: 30}));
   });
 });

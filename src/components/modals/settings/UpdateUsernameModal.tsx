@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {View, Text, Modal, TextInput} from "react-native";
 import {getFunctions, httpsCallable} from "@react-native-firebase/functions";
 import {getApp} from "@react-native-firebase/app";
@@ -42,9 +42,16 @@ const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({isVisible, onC
   const [newUsername, setNewUsername] = useState(currentUsername || "");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [usernameError, setUsernameError] = useState("");
+  const previousVisibleRef = useRef(isVisible);
+  const previousUsernameRef = useRef(currentUsername);
 
   useEffect(() => {
-    if (isVisible) {
+    const didOpen = isVisible && !previousVisibleRef.current;
+    const usernameChanged = currentUsername !== previousUsernameRef.current;
+    previousVisibleRef.current = isVisible;
+    previousUsernameRef.current = currentUsername;
+
+    if (isVisible && (didOpen || usernameChanged)) {
       setNewUsername(currentUsername || "");
       setUsernameError("");
     }

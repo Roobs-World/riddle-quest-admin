@@ -9,15 +9,11 @@
  * It respects per-call overrides while applying a default configuration
  * that keeps behavior consistent across the app.
  */
-import { SoundManager } from "./SoundManager";
+import {SoundManager} from "./SoundManager";
 import * as Haptics from "expo-haptics";
-import {
-  IAudioFeedbackService,
-  FeedbackType,
-  FeedbackConfig,
-} from "./interfaces/IAudioFeedbackService";
-import { logger } from "../utils/logger";
-import { captureException } from "../utils/sentry";
+import {IAudioFeedbackService, FeedbackType, FeedbackConfig} from "./interfaces/IAudioFeedbackService";
+import {logger} from "../utils/logger";
+import {captureException} from "../utils/sentry";
 
 /**
  * Default implementation of `IAudioFeedbackService` for Riddle Quest.
@@ -33,7 +29,7 @@ export class AudioFeedbackManager implements IAudioFeedbackService {
    * Play neutral feedback for letter input/removal
    */
   async playNeutralFeedback(config: FeedbackConfig = {}): Promise<void> {
-    const finalConfig = { ...this.defaultConfig, ...config };
+    const finalConfig = {...this.defaultConfig, ...config};
 
     try {
       if (finalConfig.playSound) {
@@ -53,7 +49,7 @@ export class AudioFeedbackManager implements IAudioFeedbackService {
    * Play success feedback for correct guesses/wins
    */
   async playSuccessFeedback(config: FeedbackConfig = {}): Promise<void> {
-    const finalConfig = { ...this.defaultConfig, ...config };
+    const finalConfig = {...this.defaultConfig, ...config};
 
     try {
       if (finalConfig.playSound) {
@@ -73,7 +69,7 @@ export class AudioFeedbackManager implements IAudioFeedbackService {
    * Play error feedback for game loss
    */
   async playErrorFeedback(config: FeedbackConfig = {}): Promise<void> {
-    const finalConfig = { ...this.defaultConfig, ...config };
+    const finalConfig = {...this.defaultConfig, ...config};
 
     try {
       if (finalConfig.playSound) {
@@ -96,7 +92,7 @@ export class AudioFeedbackManager implements IAudioFeedbackService {
    * Play wrong guess feedback (less dramatic than error)
    */
   async playWrongGuessFeedback(config: FeedbackConfig = {}): Promise<void> {
-    const finalConfig = { ...this.defaultConfig, ...config };
+    const finalConfig = {...this.defaultConfig, ...config};
 
     try {
       if (finalConfig.playSound) {
@@ -118,10 +114,7 @@ export class AudioFeedbackManager implements IAudioFeedbackService {
   /**
    * Unified feedback method
    */
-  async playFeedback(
-    type: FeedbackType,
-    config: FeedbackConfig = {}
-  ): Promise<void> {
+  async playFeedback(type: FeedbackType, config: FeedbackConfig = {}): Promise<void> {
     switch (type) {
       case "neutral":
         return this.playNeutralFeedback(config);
@@ -136,4 +129,3 @@ export class AudioFeedbackManager implements IAudioFeedbackService {
     }
   }
 }
-

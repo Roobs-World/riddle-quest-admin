@@ -1,5 +1,5 @@
-import type { IRiddleDataService } from "../IRiddleDataService";
-import type { FirestoreRiddle } from "../../../validation/firestoreSchemas";
+import type {IRiddleDataService} from "../IRiddleDataService";
+import type {FirestoreRiddle} from "../../../validation/firestoreSchemas";
 
 describe("IRiddleDataService", () => {
   it("should allow implementing the interface", () => {
@@ -46,13 +46,9 @@ describe("IRiddleDataService", () => {
     };
 
     await expect(mockService.fetchDailyRiddle()).resolves.toEqual(mockRiddle);
-    await expect(mockService.fetchClassicRiddle(1)).resolves.toEqual(
-      mockRiddle
-    );
+    await expect(mockService.fetchClassicRiddle(1)).resolves.toEqual(mockRiddle);
 
-    await expect(mockService.fetchRiddleById("test")).resolves.toEqual(
-      mockRiddle
-    );
+    await expect(mockService.fetchRiddleById("test")).resolves.toEqual(mockRiddle);
     await expect(mockService.getClassicRiddleCount()).resolves.toBe(100);
   });
 
@@ -85,10 +81,7 @@ describe("IRiddleDataService", () => {
 
     await expect(mockService.fetchDailyRiddle()).resolves.toBeNull();
     await expect(mockService.fetchClassicRiddle(1)).resolves.toBeNull();
-    await expect(
-      mockService.fetchRiddleById("nonexistent")
-    ).resolves.toBeNull();
+    await expect(mockService.fetchRiddleById("nonexistent")).resolves.toBeNull();
     await expect(mockService.getClassicRiddleCount()).resolves.toBe(0);
   });
 });
-

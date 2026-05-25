@@ -12,15 +12,7 @@
  * it through this context via the `useAuth` hook rather than talking to
  * Firebase directly.
  */
-import React, {
-  createContext,
-  useState,
-  useEffect,
-  useContext,
-  useCallback,
-  useMemo,
-  useRef,
-} from "react";
+import React, {createContext, useState, useEffect, useContext, useCallback, useMemo, useRef} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   loadUserProgressFromFirestore,
@@ -30,15 +22,15 @@ import {
   updateUserDocumentInFirestore,
   createUserDocumentInFirestore,
 } from "../services/FirestoreService";
-import { Player, FirestoreRiddle } from "../validation/firestoreSchemas";
-import { getAuth, signOut, type FirebaseAuthTypes } from "@react-native-firebase/auth";
-import { getApp } from "@react-native-firebase/app";
-import { getFunctions, httpsCallable } from "@react-native-firebase/functions";
-import { RiddleInitializationService } from "../services/RiddleInitializationService";
-import { logger } from "../utils/logger";
-import { captureException, setUser as sentrySetUser, clearUser as sentryClearUser, addBreadcrumb } from "../utils/sentry";
-import { analyticsService } from "../services/AnalyticsService";
-import { offlineQueue } from "../services/OfflineQueueService";
+import {Player, FirestoreRiddle} from "../validation/firestoreSchemas";
+import {getAuth, signOut, type FirebaseAuthTypes} from "@react-native-firebase/auth";
+import {getApp} from "@react-native-firebase/app";
+import {getFunctions, httpsCallable} from "@react-native-firebase/functions";
+import {RiddleInitializationService} from "../services/RiddleInitializationService";
+import {logger} from "../utils/logger";
+import {captureException, setUser as sentrySetUser, clearUser as sentryClearUser, addBreadcrumb} from "../utils/sentry";
+import {analyticsService} from "../services/AnalyticsService";
+import {offlineQueue} from "../services/OfflineQueueService";
 import {
   ACTIVE_GAME_SESSION_STORAGE_KEY,
   type ActiveGameSessionSnapshot,
@@ -51,7 +43,7 @@ import {
   resolveProviderUsername,
   resolveUserEmail,
 } from "../features/auth/sessionBootstrap";
-import { isGuestPlayer } from "../features/auth/sessionBootstrap";
+import {isGuestPlayer} from "../features/auth/sessionBootstrap";
 
 const GUEST_PROGRESS_STORAGE_KEY = "@guest_player_progress_v1";
 
@@ -69,7 +61,7 @@ interface AuthContextType {
   isDailyChallengeAvailable: boolean | undefined;
   gameMode: GameMode; // Add state for current game mode
   setGameMode: (mode: GameMode) => void; // Add function to change game mode
-  pendingStreakBreak: { previousStreak: number } | null;
+  pendingStreakBreak: {previousStreak: number} | null;
   consumePendingStreakBreak: () => void;
   login: () => Promise<void>;
   logout: () => Promise<void>;
@@ -77,25 +69,13 @@ interface AuthContextType {
   // updatePlayerCoins: (newCoins: number) => Promise<void>;
   updatePlayerClassicIndex: (newIndex: number) => Promise<void>;
   updatePlayerData: (updates: Partial<Player>) => Promise<void>;
-  updatePlayerDataLocally: (
-    updates: Partial<Player>,
-    options?: { syncToFirestore?: boolean }
-  ) => void;
+  updatePlayerDataLocally: (updates: Partial<Player>, options?: {syncToFirestore?: boolean}) => void;
   // Add setCurrentRiddle to the interface
-  setCurrentRiddle: React.Dispatch<
-    React.SetStateAction<FirestoreRiddle | null>
-  >; // Expose the state setter
-  fetchCurrentRiddle: (
-    player: Player | null,
-    mode: GameMode,
-    completedDailyOverride?: boolean
-  ) => Promise<void>; // Expose fetchCurrentRiddle
+  setCurrentRiddle: React.Dispatch<React.SetStateAction<FirestoreRiddle | null>>; // Expose the state setter
+  fetchCurrentRiddle: (player: Player | null, mode: GameMode, completedDailyOverride?: boolean) => Promise<void>; // Expose fetchCurrentRiddle
 }
 
-type AuthSessionContextType = Pick<
-  AuthContextType,
-  "isAuthenticated" | "isLoading" | "login" | "logout"
->;
+type AuthSessionContextType = Pick<AuthContextType, "isAuthenticated" | "isLoading" | "login" | "logout">;
 type PlayerContextType = Pick<
   AuthContextType,
   | "playerData"
@@ -117,37 +97,27 @@ type RiddleContextType = Pick<
 >;
 
 const sanitizePlayerUpdates = (updates: Partial<Player>): Partial<Player> =>
-  Object.fromEntries(
-    Object.entries(updates).filter(([, value]) => value !== undefined)
-  ) as Partial<Player>;
+  Object.fromEntries(Object.entries(updates).filter(([, value]) => value !== undefined)) as Partial<Player>;
 
-const isAnonymousAuthSession = (): boolean =>
-  getAuth(getApp()).currentUser?.isAnonymous === true;
+const isAnonymousAuthSession = (): boolean => getAuth(getApp()).currentUser?.isAnonymous === true;
 
-const buildFirestoreUserUpdates = (
-  basePlayer: Player,
-  updates: Partial<Player>
-): Partial<Player> => {
+const buildFirestoreUserUpdates = (basePlayer: Player, updates: Partial<Player>): Partial<Player> => {
   const sanitizedUpdates = sanitizePlayerUpdates(updates);
   const resolvedUsername =
-    typeof sanitizedUpdates.username === "string" &&
-    sanitizedUpdates.username.trim() !== ""
+    typeof sanitizedUpdates.username === "string" && sanitizedUpdates.username.trim() !== ""
       ? sanitizedUpdates.username
       : basePlayer.username;
   const resolvedEmail =
-    typeof sanitizedUpdates.email === "string" &&
-    sanitizedUpdates.email.trim() !== ""
+    typeof sanitizedUpdates.email === "string" && sanitizedUpdates.email.trim() !== ""
       ? sanitizedUpdates.email
       : basePlayer.email;
-  const {
-    coins: _coins,
-    progress: _progress,
-    stats: _stats,
-    hasPurchasedApp: _hasPurchasedApp,
-    unlockedAchievements: _unlockedAchievements,
-    lastDailyChallengeCompletedAt: _lastDailyChallengeCompletedAt,
-    ...clientEditableUpdates
-  } = sanitizedUpdates;
+  const clientEditableUpdates = {...sanitizedUpdates};
+  delete clientEditableUpdates.coins;
+  delete clientEditableUpdates.progress;
+  delete clientEditableUpdates.stats;
+  delete clientEditableUpdates.hasPurchasedApp;
+  delete clientEditableUpdates.unlockedAchievements;
+  delete clientEditableUpdates.lastDailyChallengeCompletedAt;
 
   return {
     ...clientEditableUpdates,
@@ -159,9 +129,7 @@ const buildFirestoreUserUpdates = (
 
 // Legacy merged context for compatibility.
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-const AuthSessionContext = createContext<AuthSessionContextType | undefined>(
-  undefined
-);
+const AuthSessionContext = createContext<AuthSessionContextType | undefined>(undefined);
 const PlayerContext = createContext<PlayerContextType | undefined>(undefined);
 const RiddleContext = createContext<RiddleContextType | undefined>(undefined);
 
@@ -176,9 +144,7 @@ const RiddleContext = createContext<RiddleContextType | undefined>(undefined);
  * @param children React element tree that should have access to authentication
  * and player state.
  */
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const AuthProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [playerData, setPlayerData] = useState<Player | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -225,19 +191,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           ? parsed.unlockedAchievements
           : guestBase.unlockedAchievements,
         hasPurchasedApp:
-          typeof parsed.hasPurchasedApp === "boolean"
-            ? parsed.hasPurchasedApp
-            : guestBase.hasPurchasedApp,
-        avatarUrl:
-          typeof parsed.avatarUrl === "string" ? parsed.avatarUrl : guestBase.avatarUrl,
-        displayName:
-          typeof parsed.displayName === "string"
-            ? parsed.displayName
-            : guestBase.displayName,
+          typeof parsed.hasPurchasedApp === "boolean" ? parsed.hasPurchasedApp : guestBase.hasPurchasedApp,
+        avatarUrl: typeof parsed.avatarUrl === "string" ? parsed.avatarUrl : guestBase.avatarUrl,
+        displayName: typeof parsed.displayName === "string" ? parsed.displayName : guestBase.displayName,
         lastDailyChallengeCompletedAt:
-          typeof parsed.lastDailyChallengeCompletedAt === "number"
-            ? parsed.lastDailyChallengeCompletedAt
-            : undefined,
+          typeof parsed.lastDailyChallengeCompletedAt === "number" ? parsed.lastDailyChallengeCompletedAt : undefined,
       };
     } catch (error) {
       logger.error("Error loading guest progress locally:", error);
@@ -270,50 +228,38 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, []);
 
-  const loadActiveGameSessionFromLocal = useCallback(
-    async (uid: string): Promise<ActiveGameSessionSnapshot | null> => {
-      try {
-        const raw = await AsyncStorage.getItem(ACTIVE_GAME_SESSION_STORAGE_KEY);
-        if (!raw) return null;
+  const loadActiveGameSessionFromLocal = useCallback(async (uid: string): Promise<ActiveGameSessionSnapshot | null> => {
+    try {
+      const raw = await AsyncStorage.getItem(ACTIVE_GAME_SESSION_STORAGE_KEY);
+      if (!raw) return null;
 
-        const parsed = JSON.parse(raw) as Partial<ActiveGameSessionSnapshot>;
-        if (parsed.version !== 1) return null;
-        if (parsed.userId !== uid) return null;
-        if (parsed.savedUtcDate !== getUtcDateKey()) return null;
+      const parsed = JSON.parse(raw) as Partial<ActiveGameSessionSnapshot>;
+      if (parsed.version !== 1) return null;
+      if (parsed.userId !== uid) return null;
+      if (parsed.savedUtcDate !== getUtcDateKey()) return null;
 
-        const gameMode = normalizeRestorableGameMode(parsed.gameMode);
-        if (!gameMode) return null;
+      const gameMode = normalizeRestorableGameMode(parsed.gameMode);
+      if (!gameMode) return null;
 
-        return {
-          version: 1,
-          userId: uid,
-          gameMode,
-          savedAt: typeof parsed.savedAt === "number" ? parsed.savedAt : 0,
-          savedUtcDate: parsed.savedUtcDate,
-          riddleId:
-            typeof parsed.riddleId === "string" ? parsed.riddleId : undefined,
-          classicIndex:
-            typeof parsed.classicIndex === "number"
-              ? parsed.classicIndex
-              : undefined,
-          dailyIndex:
-            typeof parsed.dailyIndex === "number" ? parsed.dailyIndex : undefined,
-        };
-      } catch (error) {
-        logger.warn("Error loading active game session locally:", error);
-        captureException(error);
-        return null;
-      }
-    },
-    []
-  );
+      return {
+        version: 1,
+        userId: uid,
+        gameMode,
+        savedAt: typeof parsed.savedAt === "number" ? parsed.savedAt : 0,
+        savedUtcDate: parsed.savedUtcDate,
+        riddleId: typeof parsed.riddleId === "string" ? parsed.riddleId : undefined,
+        classicIndex: typeof parsed.classicIndex === "number" ? parsed.classicIndex : undefined,
+        dailyIndex: typeof parsed.dailyIndex === "number" ? parsed.dailyIndex : undefined,
+      };
+    } catch (error) {
+      logger.warn("Error loading active game session locally:", error);
+      captureException(error);
+      return null;
+    }
+  }, []);
 
   const saveActiveGameSessionToLocal = useCallback(
-    async (
-      player: Player,
-      mode: GameMode,
-      riddle: FirestoreRiddle
-    ): Promise<void> => {
+    async (player: Player, mode: GameMode, riddle: FirestoreRiddle): Promise<void> => {
       try {
         const snapshot: ActiveGameSessionSnapshot = {
           version: 1,
@@ -322,25 +268,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           savedAt: Date.now(),
           savedUtcDate: getUtcDateKey(),
           riddleId: riddle.riddleId,
-          classicIndex:
-            typeof riddle.classicIndex === "number"
-              ? riddle.classicIndex
-              : player.progress?.classicIndex,
-          dailyIndex:
-            typeof riddle.dailyIndex === "number"
-              ? riddle.dailyIndex
-              : player.progress?.dailyChallengeIndex,
+          classicIndex: typeof riddle.classicIndex === "number" ? riddle.classicIndex : player.progress?.classicIndex,
+          dailyIndex: typeof riddle.dailyIndex === "number" ? riddle.dailyIndex : player.progress?.dailyChallengeIndex,
         };
-        await AsyncStorage.setItem(
-          ACTIVE_GAME_SESSION_STORAGE_KEY,
-          JSON.stringify(snapshot)
-        );
+        await AsyncStorage.setItem(ACTIVE_GAME_SESSION_STORAGE_KEY, JSON.stringify(snapshot));
       } catch (error) {
         logger.warn("Error saving active game session locally:", error);
         captureException(error);
       }
     },
-    []
+    [],
   );
 
   useEffect(() => {
@@ -350,8 +287,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // Ref keeps the current gameMode accessible inside the auth listener without
   // making it a dependency (which would re-subscribe on every mode change).
-  const gameModeRef = useRef<GameMode>("daily");
-  gameModeRef.current = gameMode;
+  const gameModeRef = useRef<GameMode>(gameMode);
+  useEffect(() => {
+    gameModeRef.current = gameMode;
+  }, [gameMode]);
 
   // Tracks the FCM token-refresh unsubscriber so it can be torn down on sign-out.
   const notifUnsubRef = useRef<(() => void) | null>(null);
@@ -370,44 +309,38 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const previousAuthSnapshotRef = useRef<{
     uid: string | null;
     isAnonymous: boolean | null;
-  }>({ uid: null, isAnonymous: null });
+  }>({uid: null, isAnonymous: null});
   // Prevent delayed duplicate auth callbacks from restarting the same expensive
   // provider/guest bootstrap while the first pass is still loading data.
   const activeAuthBootstrapKeysRef = useRef<Set<string>>(new Set());
 
-  const hasCompletedDailyChallengeToday = useCallback(
-    async (player: Player | null): Promise<boolean> => {
-      if (!player) return false;
-      if (isGuestPlayer(player)) {
-        const lastCompletedDate = player.lastDailyChallengeCompletedAt
-          ? new Date(player.lastDailyChallengeCompletedAt)
-          : null;
-        if (!lastCompletedDate) return false;
-        const todayUtc = new Date();
-        todayUtc.setUTCHours(0, 0, 0, 0);
-        const lastCompletedUtc = new Date(lastCompletedDate);
-        lastCompletedUtc.setUTCHours(0, 0, 0, 0);
-        return todayUtc.getTime() <= lastCompletedUtc.getTime();
-      }
+  const hasCompletedDailyChallengeToday = useCallback(async (player: Player | null): Promise<boolean> => {
+    if (!player) return false;
+    if (isGuestPlayer(player)) {
+      const lastCompletedDate = player.lastDailyChallengeCompletedAt
+        ? new Date(player.lastDailyChallengeCompletedAt)
+        : null;
+      if (!lastCompletedDate) return false;
+      const todayUtc = new Date();
+      todayUtc.setUTCHours(0, 0, 0, 0);
+      const lastCompletedUtc = new Date(lastCompletedDate);
+      lastCompletedUtc.setUTCHours(0, 0, 0, 0);
+      return todayUtc.getTime() <= lastCompletedUtc.getTime();
+    }
 
-      try {
-        const getCurrentDailyChallengeCallable = httpsCallable(
-          getFunctions(getApp()),
-          "getCurrentDailyChallenge"
-        );
-        const result = await getCurrentDailyChallengeCallable();
-        const data = result.data as { hasCompletedToday?: boolean };
-        return data.hasCompletedToday === true;
-      } catch (error) {
-        logger.warn(
-          "Unable to resolve daily completion from Firebase function for provider-auth user. Defaulting to not completed.",
-          error
-        );
-        return false;
-      }
-    },
-    []
-  );
+    try {
+      const getCurrentDailyChallengeCallable = httpsCallable(getFunctions(getApp()), "getCurrentDailyChallenge");
+      const result = await getCurrentDailyChallengeCallable();
+      const data = result.data as {hasCompletedToday?: boolean};
+      return data.hasCompletedToday === true;
+    } catch (error) {
+      logger.warn(
+        "Unable to resolve daily completion from Firebase function for provider-auth user. Defaulting to not completed.",
+        error,
+      );
+      return false;
+    }
+  }, []);
 
   const getBrokenDailyStreakValue = useCallback((player: Player | null): number => {
     if (!player) return 0;
@@ -437,11 +370,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // Function to fetch riddle based on current game mode and player data
   const fetchCurrentRiddle = useCallback(
-    async (
-      player: Player | null,
-      mode: GameMode,
-      completedDailyOverride?: boolean
-    ) => {
+    async (player: Player | null, mode: GameMode, completedDailyOverride?: boolean) => {
       const requestId = ++latestRiddleFetchRequestRef.current;
       const isStaleRequest = () => requestId !== latestRiddleFetchRequestRef.current;
 
@@ -459,13 +388,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
       // Resolve daily challenge availability from backend status so we don't rely
       // on stale local timestamps after a completion in the same session.
-      const completedToday =
-        completedDailyOverride ?? (await hasCompletedDailyChallengeToday(player));
+      const completedToday = completedDailyOverride ?? (await hasCompletedDailyChallengeToday(player));
       const dailyAvailable = !completedToday;
       if (isStaleRequest()) {
-        logger.debug(
-          "Skipping stale fetchCurrentRiddle request before applying availability."
-        );
+        logger.debug("Skipping stale fetchCurrentRiddle request before applying availability.");
         return;
       }
       setIsDailyChallengeAvailable(dailyAvailable); // Update availability state
@@ -477,42 +403,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             // If daily challenge is available and index is defined, fetch it
             // Access dailyChallengeIndex from the nested progress object
             if (player.progress?.dailyChallengeIndex !== undefined) {
-              fetchedRiddle = await fetchDailyRiddleFromFirestore(
-                player.progress.dailyChallengeIndex
-              );
+              fetchedRiddle = await fetchDailyRiddleFromFirestore(player.progress.dailyChallengeIndex);
             } else {
               // Handle case where dailyIndex is undefined for daily mode (shouldn't happen if user data is initialized correctly)
-              logger.warn(
-                "Daily challenge index is undefined for daily mode."
-              );
+              logger.warn("Daily challenge index is undefined for daily mode.");
             }
           }
 
           // If no daily riddle available (completed or failed to fetch), fall back to classic mode
           if (!fetchedRiddle) {
-            logger.debug(
-              "No daily riddle available, falling back to classic mode riddle."
-            );
+            logger.debug("No daily riddle available, falling back to classic mode riddle.");
             if (player.progress?.classicIndex !== undefined) {
-              fetchedRiddle = await fetchClassicRiddleFromFirestore(
-                player.progress.classicIndex
-              );
+              fetchedRiddle = await fetchClassicRiddleFromFirestore(player.progress.classicIndex);
               if (!isStaleRequest()) {
                 setGameMode("classic");
               }
             } else {
-              logger.warn(
-                "Classic index is undefined, cannot load fallback riddle."
-              );
+              logger.warn("Classic index is undefined, cannot load fallback riddle.");
             }
           }
         } else if (mode === "classic") {
           // For classic mode, fetch the riddle based on classicIndex
           // Access classicIndex from the nested progress object
           if (player.progress?.classicIndex !== undefined) {
-            fetchedRiddle = await fetchClassicRiddleFromFirestore(
-              player.progress.classicIndex
-            );
+            fetchedRiddle = await fetchClassicRiddleFromFirestore(player.progress.classicIndex);
           } else {
             // Handle case where classicIndex is undefined for classic mode
             logger.warn("Classic index is undefined for classic mode.");
@@ -521,21 +435,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           // For challenge mode, try to fetch daily riddle first
           if (dailyAvailable) {
             if (player.progress?.dailyChallengeIndex !== undefined) {
-              fetchedRiddle = await fetchDailyRiddleFromFirestore(
-                player.progress.dailyChallengeIndex
-              );
+              fetchedRiddle = await fetchDailyRiddleFromFirestore(player.progress.dailyChallengeIndex);
             }
           }
 
           // If no daily riddle available, fall back to classic mode
           if (!fetchedRiddle) {
-            logger.debug(
-              "No daily challenge riddle available, falling back to classic mode riddle."
-            );
+            logger.debug("No daily challenge riddle available, falling back to classic mode riddle.");
             if (player.progress?.classicIndex !== undefined) {
-              fetchedRiddle = await fetchClassicRiddleFromFirestore(
-                player.progress.classicIndex
-              );
+              fetchedRiddle = await fetchClassicRiddleFromFirestore(player.progress.classicIndex);
               if (!isStaleRequest()) {
                 setGameMode("classic");
               }
@@ -551,28 +459,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
       // If no riddle found and riddles might still be initializing, poll for riddles
       if (!fetchedRiddle) {
-        const initStatus =
-          RiddleInitializationService.getInitializationStatus();
+        const initStatus = RiddleInitializationService.getInitializationStatus();
 
         // Only poll if initialization hasn't failed
         if (!initStatus.initializationFailed) {
-          logger.debug(
-            "📊 No riddle found, checking if riddles are still being generated..."
-          );
+          logger.debug("📊 No riddle found, checking if riddles are still being generated...");
           setIsRiddlesInitializing(true);
 
           // Poll for riddles
           while (!fetchedRiddle && attemptCount < maxAttempts) {
             if (isStaleRequest()) {
-              logger.debug(
-                "Stopping stale fetchCurrentRiddle polling loop."
-              );
+              logger.debug("Stopping stale fetchCurrentRiddle polling loop.");
               break;
             }
             attemptCount++;
-            logger.debug(
-              `🔄 Polling for riddles... Attempt ${attemptCount}/${maxAttempts}`
-            );
+            logger.debug(`🔄 Polling for riddles... Attempt ${attemptCount}/${maxAttempts}`);
 
             // Wait 3 seconds before next attempt
             await new Promise((resolve) => setTimeout(resolve, 3000));
@@ -580,19 +481,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             // Try fetching again
             fetchedRiddle = await attemptFetchRiddle();
             if (isStaleRequest()) {
-              logger.debug(
-                "Stopping stale fetchCurrentRiddle request after poll attempt."
-              );
+              logger.debug("Stopping stale fetchCurrentRiddle request after poll attempt.");
               break;
             }
 
             // Check if initialization completed or failed
-            const currentStatus =
-              RiddleInitializationService.getInitializationStatus();
-            if (
-              currentStatus.initializationFailed ||
-              currentStatus.hasInitialized
-            ) {
+            const currentStatus = RiddleInitializationService.getInitializationStatus();
+            if (currentStatus.initializationFailed || currentStatus.hasInitialized) {
               break;
             }
           }
@@ -602,9 +497,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       }
 
       if (isStaleRequest()) {
-        logger.debug(
-          "Skipping stale fetchCurrentRiddle request before applying current riddle."
-        );
+        logger.debug("Skipping stale fetchCurrentRiddle request before applying current riddle.");
         return;
       }
       setCurrentRiddle(fetchedRiddle);
@@ -613,7 +506,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         logger.error("❌ Failed to load any riddle after all attempts");
       }
     },
-    [setIsRiddlesInitializing, setGameMode, hasCompletedDailyChallengeToday]
+    [setIsRiddlesInitializing, setGameMode, hasCompletedDailyChallengeToday],
   );
 
   // Initialize offline queue once on mount
@@ -627,22 +520,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const auth = getAuth(getApp());
     const authHandler = async (user: FirebaseAuthTypes.User | null) => {
-      logger.debug(
-        "🔔 Firebase auth state changed. User:",
-        user ? user.uid : "null"
-      );
+      logger.debug("🔔 Firebase auth state changed. User:", user ? user.uid : "null");
 
       if (user) {
         isGuestSignOutInProgressRef.current = false;
-        const authBootstrapKey = `${user.uid}:${
-          user.isAnonymous ? "anonymous" : "authenticated"
-        }`;
+        const authBootstrapKey = `${user.uid}:${user.isAnonymous ? "anonymous" : "authenticated"}`;
         const previousAuth = previousAuthSnapshotRef.current;
         const previousImmediateAuthEvent = lastAuthEventRef.current;
         const upgradedFromAnonymous =
-          (previousAuth.uid === user.uid &&
-            previousAuth.isAnonymous === true &&
-            user.isAnonymous === false) ||
+          (previousAuth.uid === user.uid && previousAuth.isAnonymous === true && user.isAnonymous === false) ||
           (previousImmediateAuthEvent.uid === user.uid &&
             previousImmediateAuthEvent.isAnonymous === true &&
             user.isAnonymous === false);
@@ -653,10 +539,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           lastAuthEventRef.current.isAnonymous === user.isAnonymous &&
           now - lastAuthEventRef.current.at < 1500;
         if (isDuplicateImmediateAuthEvent) {
-          logger.debug(
-            "Skipping duplicate immediate auth event for user:",
-            user.uid
-          );
+          logger.debug("Skipping duplicate immediate auth event for user:", user.uid);
           return;
         }
         lastAuthEventRef.current = {
@@ -665,10 +548,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           at: now,
         };
         if (activeAuthBootstrapKeysRef.current.has(authBootstrapKey)) {
-          logger.debug(
-            "Skipping duplicate in-flight auth bootstrap for user:",
-            user.uid
-          );
+          logger.debug("Skipping duplicate in-flight auth bootstrap for user:", user.uid);
           return;
         }
         activeAuthBootstrapKeysRef.current.add(authBootstrapKey);
@@ -678,7 +558,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         setIsAuthenticated(true);
         currentUserIdRef.current = user.uid;
         sentrySetUser(user.uid, user.email, user.displayName);
-        addBreadcrumb("auth", "User signed in", { uid: user.uid });
+        addBreadcrumb("auth", "User signed in", {uid: user.uid});
         void analyticsService.initialize(user.uid);
         void analyticsService.logAuthEvent("login");
 
@@ -689,8 +569,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             setIsRiddlesInitializing(true);
             await RiddleInitializationService.checkAndInitializeRiddles();
             setIsRiddlesInitializing(false);
-            const guestPlayerRaw: Player =
-              (await loadGuestProfileFromLocal(user.uid)) ?? createGuestPlayer(user.uid);
+            const guestPlayerRaw: Player = (await loadGuestProfileFromLocal(user.uid)) ?? createGuestPlayer(user.uid);
             const brokenGuestStreak = getBrokenDailyStreakValue(guestPlayerRaw);
             const guestPlayer =
               brokenGuestStreak > 0
@@ -702,20 +581,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
                     },
                   }
                 : guestPlayerRaw;
-            setPendingStreakBreak(
-              brokenGuestStreak > 0
-                ? { previousStreak: brokenGuestStreak }
-                : null
-            );
+            setPendingStreakBreak(brokenGuestStreak > 0 ? {previousStreak: brokenGuestStreak} : null);
             setPlayerData(guestPlayer);
             await saveGuestProfileToLocal(guestPlayer);
 
-            const guestCompletedToday =
-              await hasCompletedDailyChallengeToday(guestPlayer);
+            const guestCompletedToday = await hasCompletedDailyChallengeToday(guestPlayer);
             const guestDefaultMode = resolveInitialGameMode(guestCompletedToday);
-            const guestStoredSession = await loadActiveGameSessionFromLocal(
-              user.uid
-            );
+            const guestStoredSession = await loadActiveGameSessionFromLocal(user.uid);
             const guestInitialMode = resolveLaunchGameMode({
               defaultMode: guestDefaultMode,
               restoredMode: guestStoredSession?.gameMode,
@@ -723,13 +595,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             }) as GameMode;
 
             setGameMode(guestInitialMode);
-            await fetchCurrentRiddle(
-              guestPlayer,
-              guestInitialMode,
-              guestCompletedToday
-            );
+            await fetchCurrentRiddle(guestPlayer, guestInitialMode, guestCompletedToday);
             setIsLoading(false);
-          return;
+            return;
           }
 
           // Run riddle initialization and user data load in parallel —
@@ -749,20 +617,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           // If no user document exists, create one (new user signup)
           if (!data) {
             void analyticsService.logAuthEvent("signup");
-            logger.debug(
-              "🆕 No user document found, creating new user document for:",
-              user.uid
-            );
-            logger.debug(
-              "📧 Firebase user email:",
-              user.email || "(null/empty)"
-            );
+            logger.debug("🆕 No user document found, creating new user document for:", user.uid);
+            logger.debug("📧 Firebase user email:", user.email || "(null/empty)");
             logger.debug("📧 Email type:", typeof user.email);
             logger.debug("📧 Email length:", user.email ? user.email.length : 0);
-            logger.debug(
-              "👤 Using display name:",
-              user.displayName || "undefined"
-            );
+            logger.debug("👤 Using display name:", user.displayName || "undefined");
             logger.debug("🔍 Full user object debug:", {
               uid: user.uid,
               email: user.email,
@@ -787,13 +646,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
                 userEmail,
                 user.displayName || undefined,
                 providerAvatarUrl,
-                shouldSeedFromGuest ? guestSeed ?? undefined : undefined
+                shouldSeedFromGuest ? (guestSeed ?? undefined) : undefined,
               );
               logger.debug("✅ New user document created successfully");
-              logger.debug(
-                "📄 Created user data:",
-                JSON.stringify(data, null, 2)
-              );
+              logger.debug("📄 Created user data:", JSON.stringify(data, null, 2));
 
               if (shouldSeedFromGuest) {
                 await clearGuestProfileFromLocal();
@@ -814,8 +670,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             userDocUpdates.avatarUrl = providerAvatarUrl;
           }
 
-          const shouldSyncProviderUsername =
-            upgradedFromAnonymous || (!user.isAnonymous && isGuestPlayer(data));
+          const shouldSyncProviderUsername = upgradedFromAnonymous || (!user.isAnonymous && isGuestPlayer(data));
           if (shouldSyncProviderUsername) {
             const providerUsername = resolveProviderUsername(user);
             if (providerUsername && data.username !== providerUsername) {
@@ -831,20 +686,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
                 userDocUpdates.email = providerEmail;
               }
             } catch (emailError) {
-              logger.warn(
-                "Could not resolve provider email while reconciling upgraded profile.",
-                emailError
-              );
+              logger.warn("Could not resolve provider email while reconciling upgraded profile.", emailError);
             }
           }
 
           if (Object.keys(userDocUpdates).length > 0) {
-            const safeProviderUpdates = buildFirestoreUserUpdates(
-              data,
-              userDocUpdates
-            );
+            const safeProviderUpdates = buildFirestoreUserUpdates(data, userDocUpdates);
             await updateUserDocumentInFirestore(user.uid, safeProviderUpdates);
-            data = { ...data, ...userDocUpdates };
+            data = {...data, ...userDocUpdates};
             logger.debug("👤 Synced provider profile fields:", userDocUpdates);
           }
 
@@ -869,9 +718,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             });
             await updateUserDocumentInFirestore(user.uid, safeStreakResetUpdates);
           }
-          setPendingStreakBreak(
-            brokenStreak > 0 ? { previousStreak: brokenStreak } : null
-          );
+          setPendingStreakBreak(brokenStreak > 0 ? {previousStreak: brokenStreak} : null);
           setPlayerData(normalizedData);
 
           const completedToday = await hasCompletedDailyChallengeToday(normalizedData);
@@ -892,9 +739,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           logger.debug("✅ Riddle loading completed");
 
           // Only set loading to false after everything is complete
-          logger.debug(
-            "🏁 Setting isLoading to false - initialization complete"
-          );
+          logger.debug("🏁 Setting isLoading to false - initialization complete");
           if (upgradedFromAnonymous) {
             await clearAllLocalData();
           }
@@ -903,10 +748,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           logger.error("❌ Error loading user data or riddle:", error);
           logger.error("❌ Error details:", {
             code:
-              typeof error === "object" &&
-              error !== null &&
-              "code" in error
-                ? (error as { code?: unknown }).code
+              typeof error === "object" && error !== null && "code" in error
+                ? (error as {code?: unknown}).code
                 : undefined,
             message: error instanceof Error ? error.message : String(error),
             stack: error instanceof Error ? error.stack : undefined,
@@ -928,7 +771,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         }
       } else {
         activeAuthBootstrapKeysRef.current.clear();
-        lastAuthEventRef.current = { uid: null, isAnonymous: null, at: Date.now() };
+        lastAuthEventRef.current = {uid: null, isAnonymous: null, at: Date.now()};
         // User is signed out - no need to load riddles
         logger.debug("🚪 User signed out, clearing data");
         sentryClearUser();
@@ -947,7 +790,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         setIsDailyChallengeAvailable(undefined);
         setIsRiddlesInitializing(false);
         await clearAllLocalData();
-        previousAuthSnapshotRef.current = { uid: null, isAnonymous: null };
+        previousAuthSnapshotRef.current = {uid: null, isAnonymous: null};
         logger.debug("🏁 Setting isLoading to false");
         setIsLoading(false);
       }
@@ -956,9 +799,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     };
 
     const authWithUserChanged = auth as typeof auth & {
-      onUserChanged?: (
-        listener: (user: FirebaseAuthTypes.User | null) => void
-      ) => () => void;
+      onUserChanged?: (listener: (user: FirebaseAuthTypes.User | null) => void) => () => void;
     };
 
     const subscriber =
@@ -998,7 +839,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           if (!prevData) return null;
           const nextPlayer = {
             ...prevData,
-            progress: { ...prevData.progress, classicIndex: newIndex },
+            progress: {...prevData.progress, classicIndex: newIndex},
           };
           nextPlayerSnapshot = nextPlayer;
           return nextPlayer;
@@ -1010,9 +851,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         await fetchCurrentRiddle(
           nextPlayerSnapshot ?? {
             ...playerData,
-            progress: { ...playerData.progress, classicIndex: newIndex },
+            progress: {...playerData.progress, classicIndex: newIndex},
           },
-          "classic"
+          "classic",
         );
       } catch (error) {
         logger.error("AuthContext: Error updating player classic index:", error);
@@ -1020,7 +861,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         throw error;
       }
     },
-    [playerData, fetchCurrentRiddle, saveGuestProfileToLocal]
+    [playerData, fetchCurrentRiddle, saveGuestProfileToLocal],
   );
 
   const updatePlayerData = useCallback(
@@ -1041,23 +882,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           if (authUid && authUid !== playerData.userId) {
             logger.warn(
               "AuthContext: Detected auth/userId mismatch during player update. Using auth uid for Firestore write.",
-              { authUid, playerUserId: playerData.userId }
+              {authUid, playerUserId: playerData.userId},
             );
           }
-          const safeUpdates = buildFirestoreUserUpdates(
-            playerData,
-            sanitizedUpdates
-          );
+          const safeUpdates = buildFirestoreUserUpdates(playerData, sanitizedUpdates);
           await updateUserDocumentInFirestore(targetUserId, safeUpdates);
           setPlayerData((prevData: Player | null) =>
-            prevData
-              ? { ...prevData, ...sanitizedUpdates, userId: targetUserId }
-              : null
+            prevData ? {...prevData, ...sanitizedUpdates, userId: targetUserId} : null,
           );
           logger.debug("AuthContext: Player data updated locally and in Firestore.");
           return;
         }
-        const nextPlayer = { ...playerData, ...sanitizedUpdates };
+        const nextPlayer = {...playerData, ...sanitizedUpdates};
         setPlayerData(nextPlayer);
         await saveGuestProfileToLocal(nextPlayer);
         logger.debug("AuthContext: Guest player data updated locally.");
@@ -1067,14 +903,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         throw error;
       }
     },
-    [playerData, saveGuestProfileToLocal]
+    [playerData, saveGuestProfileToLocal],
   );
 
   const updatePlayerDataLocally = useCallback(
-    (
-      updates: Partial<Player>,
-      options?: { syncToFirestore?: boolean }
-    ): void => {
+    (updates: Partial<Player>, options?: {syncToFirestore?: boolean}): void => {
       const shouldSyncToFirestore = options?.syncToFirestore ?? true;
       const sanitizedUpdates = sanitizePlayerUpdates(updates);
       if (Object.keys(sanitizedUpdates).length === 0) {
@@ -1082,36 +915,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       }
       setPlayerData((prevData: Player | null) => {
         if (!prevData) return null;
-        const nextPlayer = { ...prevData, ...sanitizedUpdates };
+        const nextPlayer = {...prevData, ...sanitizedUpdates};
         if (isAnonymousAuthSession()) {
           void saveGuestProfileToLocal(nextPlayer);
         } else if (shouldSyncToFirestore) {
           const authUid = getAuth(getApp()).currentUser?.uid;
           if (authUid && authUid !== prevData.userId) {
-            logger.warn(
-              "AuthContext: Skipping Firestore sync for local player update due to auth/user mismatch.",
-              { authUid, playerUserId: prevData.userId }
-            );
+            logger.warn("AuthContext: Skipping Firestore sync for local player update due to auth/user mismatch.", {
+              authUid,
+              playerUserId: prevData.userId,
+            });
             return nextPlayer;
           }
-          const safeUpdates = buildFirestoreUserUpdates(
-            prevData,
-            sanitizedUpdates
-          );
-          void updateUserDocumentInFirestore(prevData.userId, safeUpdates).catch(
-            (error) => {
-              logger.error(
-                "AuthContext: Error syncing local player update to Firestore:",
-                error
-              );
-              captureException(error);
-            }
-          );
+          const safeUpdates = buildFirestoreUserUpdates(prevData, sanitizedUpdates);
+          void updateUserDocumentInFirestore(prevData.userId, safeUpdates).catch((error) => {
+            logger.error("AuthContext: Error syncing local player update to Firestore:", error);
+            captureException(error);
+          });
         }
         return nextPlayer;
       });
     },
-    [saveGuestProfileToLocal]
+    [saveGuestProfileToLocal],
   );
 
   // Placeholder login function (keep for now, onAuthStateChanged listener handles state)
@@ -1130,8 +955,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       notifUnsubRef.current = null;
       const auth = getAuth(getApp());
       const isGuestSignOut =
-        auth.currentUser?.isAnonymous === true ||
-        previousAuthSnapshotRef.current.isAnonymous === true;
+        auth.currentUser?.isAnonymous === true || previousAuthSnapshotRef.current.isAnonymous === true;
       if (isGuestSignOut) {
         isGuestSignOutInProgressRef.current = true;
         await clearAllLocalData();
@@ -1161,8 +985,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   // riddleValue   changes only when riddle / game-mode state changes.
   // The merged contextValue is kept for backward-compat via useAuth().
   const sessionValue = useMemo(
-    () => ({ isAuthenticated, isLoading, login, logout }),
-    [isAuthenticated, isLoading, login, logout]
+    () => ({isAuthenticated, isLoading, login, logout}),
+    [isAuthenticated, isLoading, login, logout],
   );
 
   const playerValue = useMemo(
@@ -1181,7 +1005,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       updatePlayerDataLocally,
       pendingStreakBreak,
       consumePendingStreakBreak,
-    ]
+    ],
   );
 
   const riddleValue = useMemo(
@@ -1202,15 +1026,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       gameMode,
       setGameMode,
       isRiddlesInitializing,
-    ]
+    ],
   );
 
   // Merged value for useAuth() — consumers that call useAuth() still re-render
   // when any slice changes, but targeted hooks (useAuthSession / usePlayer /
   // useRiddle) can be adopted incrementally for finer-grained subscriptions.
   const contextValue = useMemo(
-    () => ({ ...sessionValue, ...playerValue, ...riddleValue }),
-    [sessionValue, playerValue, riddleValue]
+    () => ({...sessionValue, ...playerValue, ...riddleValue}),
+    [sessionValue, playerValue, riddleValue],
   );
 
   return (

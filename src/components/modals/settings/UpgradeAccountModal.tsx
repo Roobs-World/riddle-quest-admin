@@ -1,41 +1,38 @@
-import React, { useState } from "react";
-import { Alert, Modal, Text, TouchableOpacity, View } from "react-native";
-import { AppStrings } from "@/constants/AppStrings";
-import { AuthService, isFacebookLoginCancellation } from "@/services/AuthService";
-import { useModal } from "@/hooks/useModal";
+import React, {useState} from "react";
+import {Alert, Modal, Text, TouchableOpacity, View} from "react-native";
+import {AppStrings} from "@/constants/AppStrings";
+import {AuthService, isFacebookLoginCancellation} from "@/services/AuthService";
+import {useModal} from "@/hooks/useModal";
 import CloseButton from "@/components/buttons/CloseButton";
 import GoogleSignInButton from "@/components/buttons/GoogleSignInButton";
 import FacebookSignInButton from "@/components/buttons/FacebookSignInButton";
 import PulsingSpinner from "@/components/loading/PulsingSpinner";
-import { LOADING_SPINNER_SIZE } from "@/constants/loading";
-import {
-  AUTH_CONTENT_MAX_WIDTH,
-  MODAL_CONTENT_PADDING,
-} from "@/constants/layout";
-import { SPACING, TYPOGRAPHY, COLORS } from "@/styles";
-import { captureException } from "@/utils/sentry";
-import { logger } from "@/utils/logger";
-import { type FirebaseAuthTypes } from "@react-native-firebase/auth";
+import {LOADING_SPINNER_SIZE} from "@/constants/loading";
+import {AUTH_CONTENT_MAX_WIDTH, MODAL_CONTENT_PADDING} from "@/constants/layout";
+import {SPACING, TYPOGRAPHY, COLORS} from "@/styles";
+import {captureException} from "@/utils/sentry";
+import {logger} from "@/utils/logger";
+import {type FirebaseAuthTypes} from "@react-native-firebase/auth";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 
 interface UpgradeAccountModalProps {
   isVisible: boolean;
   onClose: () => void;
+  initialExistingAccountPromptVisible?: boolean;
 }
 
 const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
   isVisible,
   onClose,
+  initialExistingAccountPromptVisible = false,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [isExistingAccountModalVisible, setIsExistingAccountModalVisible] =
-    useState(false);
-  const { showInfoModal } = useModal();
+  const [isExistingAccountModalVisible, setIsExistingAccountModalVisible] = useState(
+    initialExistingAccountPromptVisible,
+  );
+  const {showInfoModal} = useModal();
 
-  const isAccountAlreadyInUseError = (
-    code: string,
-    message: string
-  ): boolean => {
+  const isAccountAlreadyInUseError = (code: string, message: string): boolean => {
     const normalizedCode = code.toLowerCase();
     const normalizedMessage = message.toLowerCase();
 
@@ -50,9 +47,7 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
     return (
       normalizedMessage.includes("auth/credential-already-in-use") ||
       normalizedMessage.includes("auth/email-already-in-use") ||
-      normalizedMessage.includes(
-        "auth/account-exists-with-different-credential"
-      ) ||
+      normalizedMessage.includes("auth/account-exists-with-different-credential") ||
       normalizedMessage.includes("credential is already associated")
     );
   };
@@ -60,8 +55,7 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
   const handleAuthError = (error: unknown) => {
     const firebaseError = error as FirebaseAuthTypes.NativeFirebaseAuthError;
     const code = typeof firebaseError?.code === "string" ? firebaseError.code : "";
-    const message =
-      typeof firebaseError?.message === "string" ? firebaseError.message : "";
+    const message = typeof firebaseError?.message === "string" ? firebaseError.message : "";
 
     if (code === "auth/auth-popup-closed-by-user") {
       return;
@@ -74,7 +68,7 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
 
     Alert.alert(
       AppStrings.CommonAlerts.ERROR_TITLE,
-      firebaseError?.message || AppStrings.Profile.UPGRADE_ACCOUNT_ERROR
+      firebaseError?.message || AppStrings.Profile.UPGRADE_ACCOUNT_ERROR,
     );
   };
 
@@ -137,22 +131,14 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
     } catch (error) {
       logger.error("Upgrade account existing-account logout error:", error);
       captureException(error);
-      Alert.alert(
-        AppStrings.Settings.LOGOUT_ERROR_TITLE,
-        AppStrings.Settings.LOGOUT_ERROR_MESSAGE
-      );
+      Alert.alert(AppStrings.Settings.LOGOUT_ERROR_TITLE, AppStrings.Settings.LOGOUT_ERROR_MESSAGE);
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <Modal
-      visible={isVisible}
-      transparent={true}
-      animationType="none"
-      onRequestClose={onClose}
-    >
+    <Modal visible={isVisible} transparent={true} animationType="none" onRequestClose={onClose}>
       <View
         style={{
           flex: 1,
@@ -162,10 +148,7 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
           padding: SPACING.lg,
         }}
       >
-        <SlideInModalContent
-          isVisible={isVisible}
-          style={{ width: "100%", maxWidth: AUTH_CONTENT_MAX_WIDTH }}
-        >
+        <SlideInModalContent isVisible={isVisible} style={{width: "100%", maxWidth: AUTH_CONTENT_MAX_WIDTH}}>
           <View
             style={{
               backgroundColor: COLORS.white,
@@ -173,42 +156,42 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
               padding: SPACING.lg,
             }}
           >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: SPACING.md,
-            }}
-          >
-            <Text
+            <View
               style={{
-                fontFamily: TYPOGRAPHY.fontPrimary,
-                fontSize: TYPOGRAPHY.fontSize["2xl"],
-                color: COLORS.black,
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginBottom: SPACING.md,
               }}
             >
-              {AppStrings.Profile.UPGRADE_ACCOUNT_TITLE}
+              <Text
+                style={{
+                  fontFamily: TYPOGRAPHY.fontPrimary,
+                  fontSize: TYPOGRAPHY.fontSize["2xl"],
+                  color: COLORS.black,
+                }}
+              >
+                {AppStrings.Profile.UPGRADE_ACCOUNT_TITLE}
+              </Text>
+              <CloseButton onPress={onClose} size={24} color="black" />
+            </View>
+
+            <Text
+              style={{
+                fontFamily: TYPOGRAPHY.fontSecondary,
+                fontSize: TYPOGRAPHY.fontSize.lg,
+                color: "#333333",
+                marginBottom: SPACING.lg,
+                lineHeight: TYPOGRAPHY.fontSize.lg * TYPOGRAPHY.lineHeight.normal,
+              }}
+            >
+              {AppStrings.Profile.UPGRADE_ACCOUNT_DESCRIPTION}
             </Text>
-            <CloseButton onPress={onClose} size={24} color="black" />
-          </View>
 
-          <Text
-            style={{
-              fontFamily: TYPOGRAPHY.fontSecondary,
-              fontSize: TYPOGRAPHY.fontSize.lg,
-              color: "#333333",
-              marginBottom: SPACING.lg,
-              lineHeight: TYPOGRAPHY.fontSize.lg * TYPOGRAPHY.lineHeight.normal,
-            }}
-          >
-            {AppStrings.Profile.UPGRADE_ACCOUNT_DESCRIPTION}
-          </Text>
-
-          <View style={{ gap: SPACING.md }}>
-            <GoogleSignInButton onPress={linkWithGoogle} disabled={isLoading} />
-            <FacebookSignInButton onPress={linkWithFacebook} disabled={isLoading} />
-          </View>
+            <View style={{gap: SPACING.md}}>
+              <GoogleSignInButton onPress={linkWithGoogle} disabled={isLoading} />
+              <FacebookSignInButton onPress={linkWithFacebook} disabled={isLoading} />
+            </View>
           </View>
         </SlideInModalContent>
 

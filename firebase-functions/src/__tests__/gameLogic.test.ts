@@ -1,10 +1,7 @@
 import {beforeEach, describe, expect, it, jest, beforeAll, afterAll} from "@jest/globals";
 import {HttpsError as HttpsErrorV2, CallableRequest as CallableRequestV2} from "firebase-functions/v2/https"; // Specifically for onCall v2 HttpsError
 import {logger} from "firebase-functions";
-import {
-  spendCoins as spendCoinsOriginal,
-  skipRiddle as skipRiddleOriginal,
-} from "../gameLogic";
+import {spendCoins as spendCoinsOriginal, skipRiddle as skipRiddleOriginal} from "../gameLogic";
 import {updateUserCoins, getUser, getRiddleByGameMode} from "../firestoreService";
 import {DecodedIdToken} from "firebase-admin/auth";
 
@@ -207,7 +204,6 @@ describe("Game Logic Functions", () => {
 
     // Default getRiddleByGameMode mock for classic riddles
     (getRiddleByGameMode as ReturnType<typeof jest.fn>).mockResolvedValue({answer: "apple"});
-
   });
 
   // Cleanup that runs once after all tests
@@ -395,10 +391,7 @@ describe("Game Logic Functions", () => {
     const riddleId = "riddle-classic-1";
 
     it("should throw unauthenticated if user is not authenticated", async () => {
-      const request = createMockCallableRequest(
-        {riddleId, gameMode: "classic" as const},
-        undefined,
-      );
+      const request = createMockCallableRequest({riddleId, gameMode: "classic" as const}, undefined);
       try {
         await skipRiddle(request);
         throw new Error("Test failed: Expected HttpsErrorV2 to be thrown.");
@@ -432,10 +425,7 @@ describe("Game Logic Functions", () => {
 
     it("should throw not-found if user data not found", async () => {
       (getUser as ReturnType<typeof jest.fn>).mockResolvedValueOnce(null);
-      const request = createMockCallableRequest(
-        {riddleId, gameMode: "classic" as const},
-        createMockAuth(mockUserId),
-      );
+      const request = createMockCallableRequest({riddleId, gameMode: "classic" as const}, createMockAuth(mockUserId));
       try {
         await skipRiddle(request);
         throw new Error("Test failed: Expected HttpsErrorV2 to be thrown.");
@@ -455,10 +445,7 @@ describe("Game Logic Functions", () => {
       const gameStateDoc: MockDocumentSnapshot = {exists: true, data: () => ({isCompleted: false})};
       mockFirestoreGet.mockResolvedValueOnce(gameStateDoc);
 
-      const request = createMockCallableRequest(
-        {riddleId, gameMode: "classic" as const},
-        createMockAuth(mockUserId),
-      );
+      const request = createMockCallableRequest({riddleId, gameMode: "classic" as const}, createMockAuth(mockUserId));
       try {
         await skipRiddle(request);
         throw new Error("Test failed: Expected HttpsErrorV2 to be thrown.");
@@ -476,10 +463,7 @@ describe("Game Logic Functions", () => {
     it("should throw not-found if riddle does not exist", async () => {
       (getRiddleByGameMode as jest.Mock).mockReset();
       (getRiddleByGameMode as jest.Mock).mockResolvedValue(undefined);
-      const request = createMockCallableRequest(
-        {riddleId, gameMode: "classic" as const},
-        createMockAuth(mockUserId),
-      );
+      const request = createMockCallableRequest({riddleId, gameMode: "classic" as const}, createMockAuth(mockUserId));
       try {
         await skipRiddle(request);
         throw new Error("Test failed: Expected HttpsErrorV2 to be thrown.");
@@ -499,10 +483,7 @@ describe("Game Logic Functions", () => {
       mockFirestoreGet.mockReset();
       mockFirestoreGet.mockResolvedValueOnce(gameStateDoc);
 
-      const request = createMockCallableRequest(
-        {riddleId, gameMode: "classic" as const},
-        createMockAuth(mockUserId),
-      );
+      const request = createMockCallableRequest({riddleId, gameMode: "classic" as const}, createMockAuth(mockUserId));
       try {
         await skipRiddle(request);
         throw new Error("Test failed: Expected HttpsErrorV2 to be thrown.");
@@ -528,10 +509,7 @@ describe("Game Logic Functions", () => {
       mockFirestoreSet.mockResolvedValueOnce(undefined);
       mockFirestoreUpdate.mockResolvedValueOnce(undefined).mockResolvedValueOnce(undefined);
 
-      const request = createMockCallableRequest(
-        {riddleId, gameMode: "classic" as const},
-        createMockAuth(mockUserId),
-      );
+      const request = createMockCallableRequest({riddleId, gameMode: "classic" as const}, createMockAuth(mockUserId));
 
       const result = await skipRiddle(request);
 
@@ -540,13 +518,10 @@ describe("Game Logic Functions", () => {
       expect(result.newProgress).toEqual({classicIndex: 3});
       expect(result.message).toContain("Riddle skipped successfully");
       expect(updateUserCoins).toHaveBeenCalledWith(mockUserId, -100);
-      expect(mockFirestoreSet).toHaveBeenCalledWith(
-        expect.objectContaining({isCompleted: true, isSkipped: true}),
-        {merge: true},
-      );
-      expect(mockFirestoreUpdate).toHaveBeenCalledWith(
-        expect.objectContaining({"progress.classicIndex": 3}),
-      );
+      expect(mockFirestoreSet).toHaveBeenCalledWith(expect.objectContaining({isCompleted: true, isSkipped: true}), {
+        merge: true,
+      });
+      expect(mockFirestoreUpdate).toHaveBeenCalledWith(expect.objectContaining({"progress.classicIndex": 3}));
       expect(mockFirestoreUpdate).toHaveBeenCalledWith(
         expect.objectContaining({"stats.classicSkipped": expect.anything()}),
       );
@@ -564,10 +539,7 @@ describe("Game Logic Functions", () => {
       mockFirestoreSet.mockResolvedValueOnce(undefined);
       mockFirestoreUpdate.mockResolvedValueOnce(undefined).mockResolvedValueOnce(undefined);
 
-      const request = createMockCallableRequest(
-        {riddleId, gameMode: "challenge" as const},
-        createMockAuth(mockUserId),
-      );
+      const request = createMockCallableRequest({riddleId, gameMode: "challenge" as const}, createMockAuth(mockUserId));
 
       const result = await skipRiddle(request);
 
@@ -589,10 +561,7 @@ describe("Game Logic Functions", () => {
       };
       mockFirestoreGet.mockResolvedValueOnce(gameStateDoc).mockResolvedValueOnce(userDoc);
 
-      const request = createMockCallableRequest(
-        {riddleId, gameMode: "challenge" as const},
-        createMockAuth(mockUserId),
-      );
+      const request = createMockCallableRequest({riddleId, gameMode: "challenge" as const}, createMockAuth(mockUserId));
       try {
         await skipRiddle(request);
         throw new Error("Test failed: Expected HttpsErrorV2 to be thrown.");
@@ -608,10 +577,7 @@ describe("Game Logic Functions", () => {
 
     it("should handle unexpected errors and throw internal HttpsError", async () => {
       (getRiddleByGameMode as ReturnType<typeof jest.fn>).mockRejectedValueOnce(new Error("Firestore error"));
-      const request = createMockCallableRequest(
-        {riddleId, gameMode: "classic" as const},
-        createMockAuth(mockUserId),
-      );
+      const request = createMockCallableRequest({riddleId, gameMode: "classic" as const}, createMockAuth(mockUserId));
       try {
         await skipRiddle(request);
         throw new Error("Test failed: Expected HttpsErrorV2 to be thrown.");
@@ -645,6 +611,5 @@ describe("Game Logic Functions", () => {
         }
       }
     });
-
   });
 });

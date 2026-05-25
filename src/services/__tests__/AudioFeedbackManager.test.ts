@@ -1,10 +1,7 @@
-import { AudioFeedbackManager } from "../AudioFeedbackManager";
-import { SoundManager } from "../SoundManager";
+import {AudioFeedbackManager} from "../AudioFeedbackManager";
+import {SoundManager} from "../SoundManager";
 import * as Haptics from "expo-haptics";
-import {
-  FeedbackConfig,
-  FeedbackType,
-} from "../interfaces/IAudioFeedbackService";
+import {FeedbackConfig, FeedbackType} from "../interfaces/IAudioFeedbackService";
 
 // Mock SoundManager
 jest.mock("../SoundManager", () => ({
@@ -36,16 +33,10 @@ jest.mock("expo-haptics", () => {
 
 describe("AudioFeedbackManager", () => {
   let audioFeedbackManager: AudioFeedbackManager;
-  let mockPlayBackgroundMusic: jest.MockedFunction<
-    typeof SoundManager.playBackgroundMusic
-  >;
+  let mockPlayBackgroundMusic: jest.MockedFunction<typeof SoundManager.playBackgroundMusic>;
   let mockPlaySuccess: jest.MockedFunction<typeof SoundManager.playSuccess>;
-  let mockPlayNegativeWithFadeIn: jest.MockedFunction<
-    typeof SoundManager.playNegativeWithFadeIn
-  >;
-  let mockHapticTrigger: jest.MockedFunction<
-    typeof Haptics.impactAsync
-  >;
+  let mockPlayNegativeWithFadeIn: jest.MockedFunction<typeof SoundManager.playNegativeWithFadeIn>;
+  let mockHapticTrigger: jest.MockedFunction<typeof Haptics.impactAsync>;
   let consoleErrorSpy: jest.SpyInstance;
   let consoleWarnSpy: jest.SpyInstance;
 
@@ -56,21 +47,14 @@ describe("AudioFeedbackManager", () => {
     jest.clearAllMocks();
 
     // Get typed mock references
-    mockPlayBackgroundMusic =
-      SoundManager.playBackgroundMusic as jest.MockedFunction<
-        typeof SoundManager.playBackgroundMusic
-      >;
-    mockPlaySuccess = SoundManager.playSuccess as jest.MockedFunction<
-      typeof SoundManager.playSuccess
+    mockPlayBackgroundMusic = SoundManager.playBackgroundMusic as jest.MockedFunction<
+      typeof SoundManager.playBackgroundMusic
     >;
-    mockPlayNegativeWithFadeIn =
-      SoundManager.playNegativeWithFadeIn as jest.MockedFunction<
-        typeof SoundManager.playNegativeWithFadeIn
-      >;
-    mockHapticTrigger =
-      Haptics.impactAsync as jest.MockedFunction<
-        typeof Haptics.impactAsync
-      >;
+    mockPlaySuccess = SoundManager.playSuccess as jest.MockedFunction<typeof SoundManager.playSuccess>;
+    mockPlayNegativeWithFadeIn = SoundManager.playNegativeWithFadeIn as jest.MockedFunction<
+      typeof SoundManager.playNegativeWithFadeIn
+    >;
+    mockHapticTrigger = Haptics.impactAsync as jest.MockedFunction<typeof Haptics.impactAsync>;
 
     // Set up default mock implementations
     mockPlayBackgroundMusic.mockResolvedValue(undefined);
@@ -96,7 +80,7 @@ describe("AudioFeedbackManager", () => {
     });
 
     it("should respect custom config to disable sound", async () => {
-      const config: FeedbackConfig = { playSound: false };
+      const config: FeedbackConfig = {playSound: false};
 
       await audioFeedbackManager.playNeutralFeedback(config);
 
@@ -105,7 +89,7 @@ describe("AudioFeedbackManager", () => {
     });
 
     it("should respect custom config to disable haptic", async () => {
-      const config: FeedbackConfig = { playHaptic: false };
+      const config: FeedbackConfig = {playHaptic: false};
 
       await audioFeedbackManager.playNeutralFeedback(config);
 
@@ -114,7 +98,7 @@ describe("AudioFeedbackManager", () => {
     });
 
     it("should respect custom config to disable both sound and haptic", async () => {
-      const config: FeedbackConfig = { playSound: false, playHaptic: false };
+      const config: FeedbackConfig = {playSound: false, playHaptic: false};
 
       await audioFeedbackManager.playNeutralFeedback(config);
 
@@ -128,10 +112,7 @@ describe("AudioFeedbackManager", () => {
 
       await audioFeedbackManager.playNeutralFeedback();
 
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        "Error playing neutral feedback:",
-        expect.any(Error)
-      );
+      expect(consoleErrorSpy).toHaveBeenCalledWith("Error playing neutral feedback:", expect.any(Error));
       // Don't expect haptic to be called when sound fails due to try/catch structure
     });
 
@@ -143,10 +124,7 @@ describe("AudioFeedbackManager", () => {
 
       await audioFeedbackManager.playNeutralFeedback();
 
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        "Error playing neutral feedback:",
-        expect.any(Error)
-      );
+      expect(consoleErrorSpy).toHaveBeenCalledWith("Error playing neutral feedback:", expect.any(Error));
       expect(mockPlayBackgroundMusic).toHaveBeenCalledTimes(1);
     });
   });
@@ -160,7 +138,7 @@ describe("AudioFeedbackManager", () => {
     });
 
     it("should respect custom config to disable sound", async () => {
-      const config: FeedbackConfig = { playSound: false };
+      const config: FeedbackConfig = {playSound: false};
 
       await audioFeedbackManager.playSuccessFeedback(config);
 
@@ -169,7 +147,7 @@ describe("AudioFeedbackManager", () => {
     });
 
     it("should respect custom config to disable haptic", async () => {
-      const config: FeedbackConfig = { playHaptic: false };
+      const config: FeedbackConfig = {playHaptic: false};
 
       await audioFeedbackManager.playSuccessFeedback(config);
 
@@ -183,10 +161,7 @@ describe("AudioFeedbackManager", () => {
 
       await audioFeedbackManager.playSuccessFeedback();
 
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        "Error playing success feedback:",
-        expect.any(Error)
-      );
+      expect(consoleErrorSpy).toHaveBeenCalledWith("Error playing success feedback:", expect.any(Error));
     });
   });
 
@@ -202,7 +177,7 @@ describe("AudioFeedbackManager", () => {
     });
 
     it("should use custom fade duration", async () => {
-      const config: FeedbackConfig = { fadeInDuration: 2000 };
+      const config: FeedbackConfig = {fadeInDuration: 2000};
 
       await audioFeedbackManager.playErrorFeedback(config);
 
@@ -214,7 +189,7 @@ describe("AudioFeedbackManager", () => {
     });
 
     it("should respect custom config to disable sound", async () => {
-      const config: FeedbackConfig = { playSound: false };
+      const config: FeedbackConfig = {playSound: false};
 
       await audioFeedbackManager.playErrorFeedback(config);
 
@@ -223,7 +198,7 @@ describe("AudioFeedbackManager", () => {
     });
 
     it("should respect custom config to disable haptic", async () => {
-      const config: FeedbackConfig = { playHaptic: false };
+      const config: FeedbackConfig = {playHaptic: false};
 
       await audioFeedbackManager.playErrorFeedback(config);
 
@@ -240,10 +215,7 @@ describe("AudioFeedbackManager", () => {
 
       await audioFeedbackManager.playErrorFeedback();
 
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        "Error playing error feedback:",
-        expect.any(Error)
-      );
+      expect(consoleErrorSpy).toHaveBeenCalledWith("Error playing error feedback:", expect.any(Error));
     });
   });
 
@@ -259,7 +231,7 @@ describe("AudioFeedbackManager", () => {
     });
 
     it("should calculate correct fade duration based on custom fadeInDuration", async () => {
-      const config: FeedbackConfig = { fadeInDuration: 2000 };
+      const config: FeedbackConfig = {fadeInDuration: 2000};
 
       await audioFeedbackManager.playWrongGuessFeedback(config);
 
@@ -271,7 +243,7 @@ describe("AudioFeedbackManager", () => {
     });
 
     it("should respect custom config to disable sound", async () => {
-      const config: FeedbackConfig = { playSound: false };
+      const config: FeedbackConfig = {playSound: false};
 
       await audioFeedbackManager.playWrongGuessFeedback(config);
 
@@ -280,7 +252,7 @@ describe("AudioFeedbackManager", () => {
     });
 
     it("should respect custom config to disable haptic", async () => {
-      const config: FeedbackConfig = { playHaptic: false };
+      const config: FeedbackConfig = {playHaptic: false};
 
       await audioFeedbackManager.playWrongGuessFeedback(config);
 
@@ -297,19 +269,14 @@ describe("AudioFeedbackManager", () => {
 
       await audioFeedbackManager.playWrongGuessFeedback();
 
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        "Error playing wrong guess feedback:",
-        expect.any(Error)
-      );
+      expect(consoleErrorSpy).toHaveBeenCalledWith("Error playing wrong guess feedback:", expect.any(Error));
     });
   });
 
   describe("playFeedback", () => {
     it("should call playNeutralFeedback for neutral type", async () => {
-      const spy = jest
-        .spyOn(audioFeedbackManager, "playNeutralFeedback")
-        .mockResolvedValue();
-      const config: FeedbackConfig = { playSound: false };
+      const spy = jest.spyOn(audioFeedbackManager, "playNeutralFeedback").mockResolvedValue();
+      const config: FeedbackConfig = {playSound: false};
 
       await audioFeedbackManager.playFeedback("neutral", config);
 
@@ -319,10 +286,8 @@ describe("AudioFeedbackManager", () => {
     });
 
     it("should call playSuccessFeedback for success type", async () => {
-      const spy = jest
-        .spyOn(audioFeedbackManager, "playSuccessFeedback")
-        .mockResolvedValue();
-      const config: FeedbackConfig = { playHaptic: false };
+      const spy = jest.spyOn(audioFeedbackManager, "playSuccessFeedback").mockResolvedValue();
+      const config: FeedbackConfig = {playHaptic: false};
 
       await audioFeedbackManager.playFeedback("success", config);
 
@@ -332,10 +297,8 @@ describe("AudioFeedbackManager", () => {
     });
 
     it("should call playErrorFeedback for error type", async () => {
-      const spy = jest
-        .spyOn(audioFeedbackManager, "playErrorFeedback")
-        .mockResolvedValue();
-      const config: FeedbackConfig = { fadeInDuration: 1500 };
+      const spy = jest.spyOn(audioFeedbackManager, "playErrorFeedback").mockResolvedValue();
+      const config: FeedbackConfig = {fadeInDuration: 1500};
 
       await audioFeedbackManager.playFeedback("error", config);
 
@@ -345,10 +308,8 @@ describe("AudioFeedbackManager", () => {
     });
 
     it("should call playWrongGuessFeedback for wrongGuess type", async () => {
-      const spy = jest
-        .spyOn(audioFeedbackManager, "playWrongGuessFeedback")
-        .mockResolvedValue();
-      const config: FeedbackConfig = { playSound: true, playHaptic: true };
+      const spy = jest.spyOn(audioFeedbackManager, "playWrongGuessFeedback").mockResolvedValue();
+      const config: FeedbackConfig = {playSound: true, playHaptic: true};
 
       await audioFeedbackManager.playFeedback("wrongGuess", config);
 
@@ -359,24 +320,16 @@ describe("AudioFeedbackManager", () => {
 
     it("should handle unknown feedback types gracefully", async () => {
       const unknownType = "unknown_type" as FeedbackType;
-      const spy = jest
-        .spyOn(audioFeedbackManager, "playNeutralFeedback")
-        .mockImplementation(async () => {});
-      const successSpy = jest
-        .spyOn(audioFeedbackManager, "playSuccessFeedback")
-        .mockImplementation(async () => {});
-      const errorSpy = jest
-        .spyOn(audioFeedbackManager, "playErrorFeedback")
-        .mockImplementation(async () => {});
+      const spy = jest.spyOn(audioFeedbackManager, "playNeutralFeedback").mockImplementation(async () => {});
+      const successSpy = jest.spyOn(audioFeedbackManager, "playSuccessFeedback").mockImplementation(async () => {});
+      const errorSpy = jest.spyOn(audioFeedbackManager, "playErrorFeedback").mockImplementation(async () => {});
       const wrongGuessSpy = jest
         .spyOn(audioFeedbackManager, "playWrongGuessFeedback")
         .mockImplementation(async () => {});
 
       await audioFeedbackManager.playFeedback(unknownType, {});
 
-      expect(consoleWarnSpy).toHaveBeenCalledWith(
-        `Unknown feedback type: ${unknownType}`
-      );
+      expect(consoleWarnSpy).toHaveBeenCalledWith(`Unknown feedback type: ${unknownType}`);
       expect(spy).not.toHaveBeenCalled();
       expect(successSpy).not.toHaveBeenCalled();
       expect(errorSpy).not.toHaveBeenCalled();
@@ -389,9 +342,7 @@ describe("AudioFeedbackManager", () => {
     });
 
     it("should work with empty config", async () => {
-      const spy = jest
-        .spyOn(audioFeedbackManager, "playNeutralFeedback")
-        .mockResolvedValue();
+      const spy = jest.spyOn(audioFeedbackManager, "playNeutralFeedback").mockResolvedValue();
 
       await audioFeedbackManager.playFeedback("neutral");
 
@@ -403,7 +354,7 @@ describe("AudioFeedbackManager", () => {
 
   describe("Default Configuration", () => {
     it("should merge custom config with default values", async () => {
-      const config: FeedbackConfig = { playSound: false }; // Only override playSound
+      const config: FeedbackConfig = {playSound: false}; // Only override playSound
 
       await audioFeedbackManager.playNeutralFeedback(config);
 
@@ -436,9 +387,7 @@ describe("AudioFeedbackManager", () => {
       expect(typeof audioFeedbackManager.playNeutralFeedback).toBe("function");
       expect(typeof audioFeedbackManager.playSuccessFeedback).toBe("function");
       expect(typeof audioFeedbackManager.playErrorFeedback).toBe("function");
-      expect(typeof audioFeedbackManager.playWrongGuessFeedback).toBe(
-        "function"
-      );
+      expect(typeof audioFeedbackManager.playWrongGuessFeedback).toBe("function");
       expect(typeof audioFeedbackManager.playFeedback).toBe("function");
     });
 
@@ -456,14 +405,7 @@ describe("AudioFeedbackManager", () => {
       expect(unifiedPromise).toBeInstanceOf(Promise);
 
       // Cleanup
-      return Promise.all([
-        neutralPromise,
-        successPromise,
-        errorPromise,
-        wrongGuessPromise,
-        unifiedPromise,
-      ]);
+      return Promise.all([neutralPromise, successPromise, errorPromise, wrongGuessPromise, unifiedPromise]);
     });
   });
 });
-

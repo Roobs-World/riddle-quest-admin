@@ -1,7 +1,7 @@
 /**
  * @fileoverview Japanese (ja) locale overrides.
  */
-import type { LocaleOverrides } from "./types";
+import type {LocaleOverrides} from "./types";
 
 export const jaOverrides: LocaleOverrides = {
   AuthStrings: {
@@ -42,7 +42,8 @@ export const jaOverrides: LocaleOverrides = {
       FACEBOOK_CONFIG_ERROR: "Facebookログインの設定に問題があります。再試行するかサポートにお問い合わせください。",
       FACEBOOK_TIMEOUT_ERROR: "Facebookログインがタイムアウトしました。再試行してください。",
       FACEBOOK_SDK_ERROR: "Facebookログインが正しく設定されていません。アプリを再起動して再試行してください。",
-      FACEBOOK_NETWORK_ERROR: "Facebookログイン中にネットワークエラーが発生しました。接続を確認して再試行してください。",
+      FACEBOOK_NETWORK_ERROR:
+        "Facebookログイン中にネットワークエラーが発生しました。接続を確認して再試行してください。",
       FACEBOOK_INVALID_CREDENTIAL_ERROR: "Facebook認証情報が無効です。再試行してください。",
       FACEBOOK_UNEXPECTED_ERROR: "Facebookログイン中に予期せぬエラーが発生しました。",
     },
@@ -91,8 +92,7 @@ export const jaOverrides: LocaleOverrides = {
       SUCCESS_MESSAGE: "パスワードリセットメールを送信しました！受信トレイを確認してください。",
       USER_NOT_FOUND_ERROR:
         "このメールアドレスのアカウントが見つかりません。メールを確認するか、新規登録してください。",
-      GENERIC_ERROR:
-        "リセットメール送信中にエラーが発生しました。再試行してください。",
+      GENERIC_ERROR: "リセットメール送信中にエラーが発生しました。再試行してください。",
       BACK_TO_LOGIN: "ログインに戻る",
     },
   },
@@ -121,8 +121,7 @@ export const jaOverrides: LocaleOverrides = {
     TITLE: "クレジット",
     SUBTITLE: "Riddle Questを支えた素晴らしいチームをご紹介します",
     THANK_YOU_TITLE: "ありがとうございます！",
-    THANK_YOU_TEXT:
-      "Riddle Questを実現してくれたすべての貢献者の皆様に特別な感謝を申し上げます。",
+    THANK_YOU_TEXT: "Riddle Questを実現してくれたすべての貢献者の皆様に特別な感謝を申し上げます。",
   },
   Profile: {
     LOADING_MESSAGE: "プロフィールデータを読み込み中...",
@@ -186,23 +185,19 @@ export const jaOverrides: LocaleOverrides = {
   WelcomeModal: {
     WELCOME_TITLE: "Riddle Questへ\nようこそ！",
     LETS_PLAY: "プレイ開始",
-    SOLVE_RIDDLES_TEXT:
-      "文字ごとに答えを推測してなぞなぞを解きましょう。色のヒントで各ターンをガイドします。",
-    EARN_COINS_TEXT:
-      "コインを獲得し、デイリーチャレンジを制覇してランキングを上りましょう。",
+    SOLVE_RIDDLES_TEXT: "文字ごとに答えを推測してなぞなぞを解きましょう。色のヒントで各ターンをガイドします。",
+    EARN_COINS_TEXT: "コインを獲得し、デイリーチャレンジを制覇してランキングを上りましょう。",
   },
   Instructions: {
     TITLE: "遊び方",
     GOAL_TITLE: "目標",
-    GOAL_DESCRIPTION:
-      "色のヒントを使って3回の挑戦で隠れたなぞなぞを当てましょう。",
+    GOAL_DESCRIPTION: "色のヒントを使って3回の挑戦で隠れたなぞなぞを当てましょう。",
     COLOR_CLUES_TITLE: "色のヒント",
     COLOR_CORRECT: "文字は正しく、正しい位置にあります",
     COLOR_MISPLACED: "文字は単語内にありますが位置が違います",
     COLOR_WRONG: "文字は単語にありません",
     TIPS_TITLE: "コツ",
-    TIPS_DESCRIPTION:
-      "よく使われる文字から始めて、色のフィードバックで絞り込みましょう。チャンスは3回だけです！",
+    TIPS_DESCRIPTION: "よく使われる文字から始めて、色のフィードバックで絞り込みましょう。チャンスは3回だけです！",
     GOT_IT_BUTTON: "わかった！",
   },
   VictoryModal: {
@@ -240,8 +235,7 @@ export const jaOverrides: LocaleOverrides = {
     NEW_ACHIEVEMENT: "新しい実績",
   },
   ErrorMessages: {
-    UNABLE_TO_LOAD_RIDDLES:
-      "なぞなぞを読み込めませんでした。接続を確認して再試行してください。",
+    UNABLE_TO_LOAD_RIDDLES: "なぞなぞを読み込めませんでした。接続を確認して再試行してください。",
     FAILED_TO_LOAD_PRODUCTS: "商品を読み込めませんでした",
     FAILED_TO_LOAD_SHOP_PRODUCTS: "ショップ商品を読み込めませんでした",
   },
@@ -274,8 +268,7 @@ export const jaOverrides: LocaleOverrides = {
     HINTS_USED: "使用したヒント",
   },
   RewardedAdPrompts: {
-    OUT_OF_GUESSES_PROMPT:
-      "推測回数がなくなりました。広告を見てコインを獲得しますか？",
+    OUT_OF_GUESSES_PROMPT: "推測回数がなくなりました。広告を見てコインを獲得しますか？",
     WATCH_AD_BUTTON: "広告を見る",
     NO_THANKS_BUTTON: "結構です",
   },

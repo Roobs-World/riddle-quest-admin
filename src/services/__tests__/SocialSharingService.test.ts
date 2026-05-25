@@ -39,11 +39,11 @@ jest.mock("../../utils/sentry", () => ({
   captureException: jest.fn(),
 }));
 
-import { Share, Linking } from "react-native";
-import { ShareDialog } from "react-native-fbsdk-next";
-import { SocialSharingService, ShareContent } from "../SocialSharingService";
-import { logger } from "../../utils/logger";
-import { captureException } from "../../utils/sentry";
+import {Share, Linking} from "react-native";
+import {ShareDialog} from "react-native-fbsdk-next";
+import {SocialSharingService, ShareContent} from "../SocialSharingService";
+import {logger} from "../../utils/logger";
+import {captureException} from "../../utils/sentry";
 
 describe("SocialSharingService", () => {
   const mockShareContent: ShareContent = {
@@ -189,10 +189,7 @@ describe("SocialSharingService", () => {
       const result = await SocialSharingService.shareViaSystem(mockShareContent);
 
       expect(result).toBe(false);
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error sharing via system:",
-        error
-      );
+      expect(logger.error).toHaveBeenCalledWith("Error sharing via system:", error);
       expect(captureException).toHaveBeenCalledWith(error);
     });
 
@@ -259,10 +256,7 @@ describe("SocialSharingService", () => {
       const result = await SocialSharingService.shareToFacebook(mockShareContent);
 
       expect(result).toBe(true);
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error sharing to Facebook:",
-        error
-      );
+      expect(logger.error).toHaveBeenCalledWith("Error sharing to Facebook:", error);
       expect(captureException).toHaveBeenCalledWith(error);
     });
 
@@ -277,10 +271,7 @@ describe("SocialSharingService", () => {
       const result = await SocialSharingService.shareToFacebook(mockShareContent);
 
       expect(result).toBe(true);
-      expect(logger.error).toHaveBeenCalledWith(
-        "Error sharing to Facebook:",
-        error
-      );
+      expect(logger.error).toHaveBeenCalledWith("Error sharing to Facebook:", error);
     });
   });
 
@@ -292,12 +283,8 @@ describe("SocialSharingService", () => {
       const result = await SocialSharingService.shareToX(mockShareContent);
 
       expect(result).toBe(true);
-      expect(Linking.canOpenURL).toHaveBeenCalledWith(
-        expect.stringContaining("twitter://post")
-      );
-      expect(Linking.openURL).toHaveBeenCalledWith(
-        expect.stringContaining("twitter://post")
-      );
+      expect(Linking.canOpenURL).toHaveBeenCalledWith(expect.stringContaining("twitter://post"));
+      expect(Linking.openURL).toHaveBeenCalledWith(expect.stringContaining("twitter://post"));
     });
 
     it("should fallback to X web when app not available", async () => {
@@ -309,9 +296,7 @@ describe("SocialSharingService", () => {
       const result = await SocialSharingService.shareToX(mockShareContent);
 
       expect(result).toBe(true);
-      expect(Linking.openURL).toHaveBeenCalledWith(
-        expect.stringContaining("https://twitter.com/intent/tweet")
-      );
+      expect(Linking.openURL).toHaveBeenCalledWith(expect.stringContaining("https://twitter.com/intent/tweet"));
     });
 
     it("should fallback to system share when X web not available", async () => {
@@ -407,10 +392,7 @@ describe("SocialSharingService", () => {
       });
 
       // Cast to any to test the default case
-      const result = await SocialSharingService.share(
-        "unknown" as any,
-        mockShareContent
-      );
+      const result = await SocialSharingService.share("unknown" as any, mockShareContent);
 
       expect(result).toBe(true);
       expect(Share.share).toHaveBeenCalled();
@@ -461,9 +443,7 @@ describe("SocialSharingService", () => {
         action: Share.sharedAction,
       });
 
-      const result = await SocialSharingService.shareViaSystem(
-        contentWithSpecialChars
-      );
+      const result = await SocialSharingService.shareViaSystem(contentWithSpecialChars);
 
       expect(result).toBe(true);
     });

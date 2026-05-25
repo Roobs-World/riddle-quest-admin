@@ -11,11 +11,11 @@
  * @since 2024
  */
 
-import React, { useEffect, useRef, useState } from "react";
-import { Text, TouchableOpacity, Animated, Easing } from "react-native";
-import { SvgXml } from "react-native-svg";
-import { COIN_DISPLAY_ICON_SIZE } from "../../constants/layout";
-import { TYPOGRAPHY, SPACING } from "../../styles";
+import React, {useEffect, useRef, useState} from "react";
+import {Text, TouchableOpacity, Animated, Easing} from "react-native";
+import {SvgXml} from "react-native-svg";
+import {COIN_DISPLAY_ICON_SIZE} from "../../constants/layout";
+import {TYPOGRAPHY, SPACING} from "../../styles";
 
 /**
  * Embedded SVG icon for the coin display.
@@ -54,12 +54,7 @@ const coinSvg = `<svg width="24" height="24" viewBox="0 0 120 120" fill="none" x
 </svg>`;
 
 const CoinIcon = React.memo(() => (
-  <SvgXml
-    xml={coinSvg}
-    width={COIN_DISPLAY_ICON_SIZE}
-    height={COIN_DISPLAY_ICON_SIZE}
-    testID="coin-icon"
-  />
+  <SvgXml xml={coinSvg} width={COIN_DISPLAY_ICON_SIZE} height={COIN_DISPLAY_ICON_SIZE} testID="coin-icon" />
 ));
 
 CoinIcon.displayName = "CoinIcon";
@@ -133,15 +128,9 @@ interface CoinsDisplayProps {
  * @param {CoinsDisplayProps} props - Component props
  * @returns {JSX.Element} Rendered coin display component
  */
-const CoinsDisplay: React.FC<CoinsDisplayProps> = ({
-  coins,
-  onPress,
-  shouldAnimateIncreases = true,
-}) => {
+const CoinsDisplay: React.FC<CoinsDisplayProps> = ({coins, onPress, shouldAnimateIncreases = true}) => {
   const normalizedCoins = typeof coins === "number" && Number.isFinite(coins) ? coins : 0;
-  const [displayedCoinsAnimatedValue] = useState(
-    () => new Animated.Value(normalizedCoins)
-  );
+  const [displayedCoinsAnimatedValue] = useState(() => new Animated.Value(normalizedCoins));
   const [scaleAnimatedValue] = useState(() => new Animated.Value(1));
   const previousCoinsRef = useRef(normalizedCoins);
   const displayedCoinsRef = useRef(normalizedCoins);
@@ -150,7 +139,7 @@ const CoinsDisplay: React.FC<CoinsDisplayProps> = ({
   const [displayedCoins, setDisplayedCoins] = useState(normalizedCoins);
 
   useEffect(() => {
-    const listenerId = displayedCoinsAnimatedValue.addListener(({ value }) => {
+    const listenerId = displayedCoinsAnimatedValue.addListener(({value}) => {
       const roundedValue = Math.round(value);
       if (roundedValue === displayedCoinsRef.current) {
         return;
@@ -216,7 +205,7 @@ const CoinsDisplay: React.FC<CoinsDisplayProps> = ({
       duration: coinCountUpDurationMs,
       easing: Easing.out(Easing.cubic),
       useNativeDriver: false,
-    }).start(({ finished }) => {
+    }).start(({finished}) => {
       isCountUpAnimationRunningRef.current = false;
 
       if (!finished) {
@@ -241,12 +230,7 @@ const CoinsDisplay: React.FC<CoinsDisplayProps> = ({
         }),
       ]).start();
     });
-  }, [
-    normalizedCoins,
-    shouldAnimateIncreases,
-    displayedCoinsAnimatedValue,
-    scaleAnimatedValue,
-  ]);
+  }, [normalizedCoins, shouldAnimateIncreases, displayedCoinsAnimatedValue, scaleAnimatedValue]);
 
   /** Generate appropriate text for singular/plural coin count */
   const coinText = normalizedCoins === 1 ? "coin" : "coins";
@@ -267,9 +251,16 @@ const CoinsDisplay: React.FC<CoinsDisplayProps> = ({
       testID="coins-display"
       accessible={true}
       accessibilityLabel={accessibilityLabel}
-      style={{ transform: [{ scale: scaleAnimatedValue }] }}
+      style={{transform: [{scale: scaleAnimatedValue}]}}
     >
-      <Text style={{ fontFamily: TYPOGRAPHY.fontPrimary, color: "#ffffff", fontSize: TYPOGRAPHY.fontSize.lg, marginRight: SPACING.xs }}>
+      <Text
+        style={{
+          fontFamily: TYPOGRAPHY.fontPrimary,
+          color: "#ffffff",
+          fontSize: TYPOGRAPHY.fontSize.lg,
+          marginRight: SPACING.xs,
+        }}
+      >
         {String(displayedCoins)}
       </Text>
       <CoinIcon />
@@ -307,4 +298,3 @@ const CoinsDisplay: React.FC<CoinsDisplayProps> = ({
 };
 
 export default CoinsDisplay;
-

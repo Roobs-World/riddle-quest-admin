@@ -93,9 +93,7 @@ describe("AppStrings i18n support", () => {
   it("falls back to English for untranslated Spanish keys", () => {
     setAppLanguage("es");
 
-    expect(AppStrings.Achievements.UNLOCKED_ALERT_TITLE).toBe(
-      "Logro(s) desbloqueado(s)!"
-    );
+    expect(AppStrings.Achievements.UNLOCKED_ALERT_TITLE).toBe("Logro(s) desbloqueado(s)!");
   });
 
   it("normalizes locale values when using device language", () => {
@@ -210,9 +208,7 @@ describe("AppStrings i18n support", () => {
   });
 
   it("implements tooltip strings for every supported language", () => {
-    const tooltipKeys = Object.keys(AppStrings.Tooltips) as Array<
-      keyof typeof AppStrings.Tooltips
-    >;
+    const tooltipKeys = Object.keys(AppStrings.Tooltips) as Array<keyof typeof AppStrings.Tooltips>;
     const englishSubmitTitle = AppStrings.Tooltips.SUBMIT_ANSWER_TITLE;
     const englishGotItButton = AppStrings.Tooltips.GOT_IT_BUTTON;
 
@@ -225,9 +221,7 @@ describe("AppStrings i18n support", () => {
       }
 
       if (language !== "en") {
-        expect(AppStrings.Tooltips.SUBMIT_ANSWER_TITLE).not.toBe(
-          englishSubmitTitle
-        );
+        expect(AppStrings.Tooltips.SUBMIT_ANSWER_TITLE).not.toBe(englishSubmitTitle);
         expect(AppStrings.Tooltips.GOT_IT_BUTTON).not.toBe(englishGotItButton);
       }
     }
@@ -246,5 +240,4 @@ describe("AppStrings i18n support", () => {
       expect({language, missingPaths}).toEqual({language, missingPaths: []});
     });
   });
-
 });

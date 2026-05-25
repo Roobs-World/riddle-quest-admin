@@ -1,6 +1,6 @@
 import React from "react";
-import { render, fireEvent, screen } from "@testing-library/react-native";
-import { Linking } from "react-native";
+import {render, fireEvent, screen} from "@testing-library/react-native";
+import {Linking} from "react-native";
 import CreditsModal from "../CreditsModal";
 
 // Mock SVG component
@@ -25,9 +25,7 @@ describe("CreditsModal", () => {
     expect(screen.getByText("Craig Beswetherick")).toBeTruthy();
     expect(screen.getByText("Lead Developer & Game Design")).toBeTruthy();
     expect(screen.getByText("Mike Hawkyard")).toBeTruthy();
-    expect(
-      screen.getByText("Game Designer, Publisher, Overall Hero")
-    ).toBeTruthy();
+    expect(screen.getByText("Game Designer, Publisher, Overall Hero")).toBeTruthy();
     expect(screen.getByText("Close")).toBeTruthy();
   });
 
@@ -92,4 +90,3 @@ describe("CreditsModal", () => {
     expect(mockOpenURL).toHaveBeenCalledWith("https://www.roobsworld.com");
   });
 });
-

@@ -1,10 +1,5 @@
-import { MODAL_REGISTRY_TYPES } from "../../components/modals/modalTypes";
-import {
-  QA_MODAL_SURFACE_TO_REGISTRY_TYPE,
-  QA_MODAL_SURFACES,
-  QA_PAGE_SURFACES,
-  QA_SURFACES,
-} from "../qaSurfaces";
+import {MODAL_REGISTRY_TYPES} from "../../components/modals/modalTypes";
+import {QA_MODAL_SURFACE_TO_REGISTRY_TYPE, QA_MODAL_SURFACES, QA_PAGE_SURFACES, QA_SURFACES} from "../qaSurfaces";
 
 describe("QA Android screenshot surfaces", () => {
   it("keeps every app page in the screenshot inventory", () => {
@@ -31,7 +26,7 @@ describe("QA Android screenshot surfaces", () => {
         ...Object.keys(QA_MODAL_SURFACE_TO_REGISTRY_TYPE),
         "modal-delete-account-confirmation",
         "modal-offline-blocking",
-      ])
+      ]),
     );
   });
 

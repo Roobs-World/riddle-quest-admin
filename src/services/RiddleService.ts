@@ -1,25 +1,13 @@
-import {
-  getFirestore,
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  where,
-  limit,
-} from "@react-native-firebase/firestore";
-import { getAuth } from "@react-native-firebase/auth";
-import { getFunctions, httpsCallable } from "@react-native-firebase/functions";
-import { getApp } from "@react-native-firebase/app";
-import { z, ZodError } from "zod";
-import {
-  SubmitGuessInputSchema,
-  SubmitGuessOutputSchema,
-} from "../validation/cloudFunctionsSchemas";
+import {getFirestore, collection, doc, getDoc, getDocs, query, where, limit} from "@react-native-firebase/firestore";
+import {getAuth} from "@react-native-firebase/auth";
+import {getFunctions, httpsCallable} from "@react-native-firebase/functions";
+import {getApp} from "@react-native-firebase/app";
+import {z, ZodError} from "zod";
+import {SubmitGuessInputSchema, SubmitGuessOutputSchema} from "../validation/cloudFunctionsSchemas";
 
-import { safeDelay } from "../utils/timing";
-import { logger } from "../utils/logger";
-import { captureException } from "../utils/sentry";
+import {safeDelay} from "../utils/timing";
+import {logger} from "../utils/logger";
+import {captureException} from "../utils/sentry";
 
 /**
  * Shared helper for testable async timing in riddle service flows.
@@ -55,19 +43,14 @@ export const RiddleService = {
       if (userDoc.exists()) {
         const userData = userDoc.data();
         if (userData) {
-          const lastCompletedDateStr =
-            userData.lastDailyChallengeCompletedAt as string | undefined;
+          const lastCompletedDateStr = userData.lastDailyChallengeCompletedAt as string | undefined;
           if (lastCompletedDateStr) {
             const lastCompletedDate = new Date(lastCompletedDateStr);
-            const lastCompletedDateUTC = lastCompletedDate
-              .toISOString()
-              .slice(0, 10);
+            const lastCompletedDateUTC = lastCompletedDate.toISOString().slice(0, 10);
 
             if (lastCompletedDateUTC === today) {
-              logger.debug(
-                `User ${userId} has already completed the daily challenge for today (${today}).`
-              );
-              return { completedToday: true };
+              logger.debug(`User ${userId} has already completed the daily challenge for today (${today}).`);
+              return {completedToday: true};
             }
           }
         }
@@ -75,9 +58,7 @@ export const RiddleService = {
 
       const currentDailyDoc = await getDoc(doc(getFirestore(), "dailyRiddles", "current"));
       const hasCurrentDocApi =
-        !!currentDailyDoc &&
-        typeof currentDailyDoc.exists === "function" &&
-        typeof currentDailyDoc.data === "function";
+        !!currentDailyDoc && typeof currentDailyDoc.exists === "function" && typeof currentDailyDoc.data === "function";
 
       if (!hasCurrentDocApi || !currentDailyDoc.exists()) {
         logger.debug(`No current daily challenge found (docId: current) for date: ${today}`);
@@ -114,7 +95,7 @@ export const RiddleService = {
 
     try {
       const snapshot = await getDocs(
-        query(collection(getFirestore(), "riddles"), where("classicIndex", "==", level), limit(1))
+        query(collection(getFirestore(), "riddles"), where("classicIndex", "==", level), limit(1)),
       );
 
       if (!snapshot.empty) {
@@ -127,15 +108,12 @@ export const RiddleService = {
             answerLength: riddleData.answer.length,
           };
         } else {
-          logger.error(
-            `Riddle data or answer missing for level: ${level}. Data:`,
-            riddleData
-          );
+          logger.error(`Riddle data or answer missing for level: ${level}. Data:`, riddleData);
           return null;
         }
       } else {
         logger.debug(
-          `No classic riddle found for level: ${level}. Riddles will be generated automatically on the server when needed.`
+          `No classic riddle found for level: ${level}. Riddles will be generated automatically on the server when needed.`,
         );
         return null;
       }
@@ -160,17 +138,11 @@ export const RiddleService = {
       const result = await submitGuessCallable(guessData);
 
       const validatedResult = SubmitGuessOutputSchema.parse(result.data);
-      logger.debug(
-        "Guess validation result received and validated:",
-        validatedResult
-      );
+      logger.debug("Guess validation result received and validated:", validatedResult);
       return validatedResult;
     } catch (error) {
       if (error instanceof ZodError) {
-        logger.error(
-          "Zod validation error for guess submission:",
-          error.issues
-        );
+        logger.error("Zod validation error for guess submission:", error.issues);
         captureException(error);
         throw new Error("Invalid guess data provided.");
       } else {

@@ -163,10 +163,10 @@ For true 3D rendering with FBX models:
 2. **Create WebGL Context**
 
    ```typescript
-   import { GLView } from "expo-gl";
-   import { Renderer } from "expo-three";
+   import {GLView} from "expo-gl";
+   import {Renderer} from "expo-three";
    import * as THREE from "three";
-   import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
+   import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader";
    ```
 
 3. **Load FBX Models**
@@ -255,13 +255,11 @@ const Enhanced3DPlanet: React.FC<{ planet: Planet }> = ({ planet }) => {
 ## Testing Strategy
 
 1. **Visual Testing**
-
    - Compare texture quality vs. current gradients
    - Test on different screen densities
    - Verify proper circular masking
 
 2. **Performance Testing**
-
    - Monitor memory usage with large textures
    - Test animation smoothness
    - Measure startup time impact

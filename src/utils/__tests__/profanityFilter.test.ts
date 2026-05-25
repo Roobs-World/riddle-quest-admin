@@ -1,7 +1,4 @@
-import {
-  containsProfanity,
-  validateUsernameForProfanity,
-} from "../profanityFilter";
+import {containsProfanity, validateUsernameForProfanity} from "../profanityFilter";
 
 describe("profanityFilter", () => {
   describe("containsProfanity", () => {
@@ -31,16 +28,7 @@ describe("profanityFilter", () => {
 
     it("should return true for usernames containing profanity", () => {
       // Testing with some mild words from the filter list
-      const profaneUsernames = [
-        "damn",
-        "hell",
-        "crap",
-        "cunt",
-        "badword",
-        "adult",
-        "kill",
-        "die",
-      ];
+      const profaneUsernames = ["damn", "hell", "crap", "cunt", "badword", "adult", "kill", "die"];
 
       profaneUsernames.forEach((username) => {
         expect(containsProfanity(username)).toBe(true);
@@ -56,13 +44,7 @@ describe("profanityFilter", () => {
     });
 
     it("should detect profanity as substrings", () => {
-      const substringUsernames = [
-        "userdamn123",
-        "helluser",
-        "mycrapname",
-        "adultgamer",
-        "badwordtest",
-      ];
+      const substringUsernames = ["userdamn123", "helluser", "mycrapname", "adultgamer", "badwordtest"];
 
       substringUsernames.forEach((username) => {
         expect(containsProfanity(username)).toBe(true);
@@ -126,15 +108,7 @@ describe("profanityFilter", () => {
 
   describe("validateUsernameForProfanity", () => {
     it("should return empty string for clean usernames", () => {
-      const cleanUsernames = [
-        "john",
-        "mary",
-        "player123",
-        "cooluser",
-        "gamer2023",
-        "username",
-        "test",
-      ];
+      const cleanUsernames = ["john", "mary", "player123", "cooluser", "gamer2023", "username", "test"];
 
       cleanUsernames.forEach((username) => {
         expect(validateUsernameForProfanity(username)).toBe("");
@@ -144,8 +118,7 @@ describe("profanityFilter", () => {
     it("should return error message for profane usernames", () => {
       const profaneUsernames = ["damn", "hell", "crap", "cunt", "badword", "adult"];
 
-      const expectedMessage =
-        "Username contains inappropriate language. Please choose a different username.";
+      const expectedMessage = "Username contains inappropriate language. Please choose a different username.";
 
       profaneUsernames.forEach((username) => {
         expect(validateUsernameForProfanity(username)).toBe(expectedMessage);
@@ -155,8 +128,7 @@ describe("profanityFilter", () => {
     it("should return error message for profane usernames with mixed case", () => {
       const mixedCaseUsernames = ["DAMN", "Hell", "CrAp", "CunT", "BADWORD"];
 
-      const expectedMessage =
-        "Username contains inappropriate language. Please choose a different username.";
+      const expectedMessage = "Username contains inappropriate language. Please choose a different username.";
 
       mixedCaseUsernames.forEach((username) => {
         expect(validateUsernameForProfanity(username)).toBe(expectedMessage);
@@ -164,15 +136,9 @@ describe("profanityFilter", () => {
     });
 
     it("should return error message for usernames with profanity as substrings", () => {
-      const substringUsernames = [
-        "userdamn123",
-        "helluser",
-        "mycrapname",
-        "adultgamer",
-      ];
+      const substringUsernames = ["userdamn123", "helluser", "mycrapname", "adultgamer"];
 
-      const expectedMessage =
-        "Username contains inappropriate language. Please choose a different username.";
+      const expectedMessage = "Username contains inappropriate language. Please choose a different username.";
 
       substringUsernames.forEach((username) => {
         expect(validateUsernameForProfanity(username)).toBe(expectedMessage);
@@ -190,8 +156,7 @@ describe("profanityFilter", () => {
     it("should handle usernames with whitespace", () => {
       expect(validateUsernameForProfanity("  cleanuser  ")).toBe("");
 
-      const expectedMessage =
-        "Username contains inappropriate language. Please choose a different username.";
+      const expectedMessage = "Username contains inappropriate language. Please choose a different username.";
       expect(validateUsernameForProfanity("  damn  ")).toBe(expectedMessage);
       expect(validateUsernameForProfanity("\tcrap\n")).toBe(expectedMessage);
     });
@@ -200,26 +165,24 @@ describe("profanityFilter", () => {
   describe("Integration tests", () => {
     it("should work together consistently", () => {
       const testCases = [
-        { username: "cleanuser", shouldHaveProfanity: false },
-        { username: "damn", shouldHaveProfanity: true },
-        { username: "cunt", shouldHaveProfanity: true },
-        { username: "hell", shouldHaveProfanity: true },
-        { username: "gooduser123", shouldHaveProfanity: false },
-        { username: "usercrap", shouldHaveProfanity: true },
-        { username: "", shouldHaveProfanity: false },
-        { username: "   ", shouldHaveProfanity: false },
+        {username: "cleanuser", shouldHaveProfanity: false},
+        {username: "damn", shouldHaveProfanity: true},
+        {username: "cunt", shouldHaveProfanity: true},
+        {username: "hell", shouldHaveProfanity: true},
+        {username: "gooduser123", shouldHaveProfanity: false},
+        {username: "usercrap", shouldHaveProfanity: true},
+        {username: "", shouldHaveProfanity: false},
+        {username: "   ", shouldHaveProfanity: false},
       ];
 
-      testCases.forEach(({ username, shouldHaveProfanity }) => {
+      testCases.forEach(({username, shouldHaveProfanity}) => {
         const containsResult = containsProfanity(username);
         const validateResult = validateUsernameForProfanity(username);
 
         expect(containsResult).toBe(shouldHaveProfanity);
 
         if (shouldHaveProfanity) {
-          expect(validateResult).toBe(
-            "Username contains inappropriate language. Please choose a different username."
-          );
+          expect(validateResult).toBe("Username contains inappropriate language. Please choose a different username.");
         } else {
           expect(validateResult).toBe("");
         }
@@ -243,4 +206,3 @@ describe("profanityFilter", () => {
     });
   });
 });
-

@@ -18,11 +18,11 @@
  */
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { AppState, AppStateStatus } from "react-native";
-import { getFunctions, httpsCallable } from "@react-native-firebase/functions";
-import { getApp } from "@react-native-firebase/app";
-import { logger } from "../utils/logger";
-import { captureException } from "../utils/sentry";
+import {AppState, AppStateStatus} from "react-native";
+import {getFunctions, httpsCallable} from "@react-native-firebase/functions";
+import {getApp} from "@react-native-firebase/app";
+import {logger} from "../utils/logger";
+import {captureException} from "../utils/sentry";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -36,7 +36,7 @@ export interface QueuedCall {
   attempts: number;
 }
 
-export type NetworkError = Error & { code?: string };
+export type NetworkError = Error & {code?: string};
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Constants
@@ -106,14 +106,11 @@ export class OfflineQueueService {
    */
   initialize(): void {
     // Drain on foreground resume
-    this.appStateSubscription = AppState.addEventListener(
-      "change",
-      (nextState: AppStateStatus) => {
-        if (nextState === "active") {
-          void this.drain();
-        }
+    this.appStateSubscription = AppState.addEventListener("change", (nextState: AppStateStatus) => {
+      if (nextState === "active") {
+        void this.drain();
       }
-    );
+    });
 
     // Try to drain immediately (in case there are leftover items from last session)
     void this.drain();
@@ -143,10 +140,7 @@ export class OfflineQueueService {
    * @returns             The function result data, or `null` if the call was
    *                      queued (offline).
    */
-  async call<T = unknown>(
-    functionName: string,
-    payload: unknown
-  ): Promise<T | null> {
+  async call<T = unknown>(functionName: string, payload: unknown): Promise<T | null> {
     try {
       const callable = httpsCallable(getFunctions(getApp()), functionName);
       const result = await callable(payload);
@@ -155,9 +149,7 @@ export class OfflineQueueService {
       return result.data as T;
     } catch (error) {
       if (isNetworkError(error)) {
-        logger.warn(
-          `[OfflineQueue] Network error calling ${functionName}. Queuing for retry.`
-        );
+        logger.warn(`[OfflineQueue] Network error calling ${functionName}. Queuing for retry.`);
         await this.enqueue(functionName, payload);
         return null;
       }
@@ -232,33 +224,23 @@ export class OfflineQueueService {
 
       for (const item of queue) {
         // Discard stale or exhausted items
-        if (
-          item.attempts >= MAX_ATTEMPTS ||
-          now - item.enqueuedAt > MAX_AGE_MS
-        ) {
-          logger.warn(
-            `[OfflineQueue] Discarding stale call ${item.functionName} (attempts: ${item.attempts})`
-          );
+        if (item.attempts >= MAX_ATTEMPTS || now - item.enqueuedAt > MAX_AGE_MS) {
+          logger.warn(`[OfflineQueue] Discarding stale call ${item.functionName} (attempts: ${item.attempts})`);
           continue;
         }
 
         try {
           const callable = httpsCallable(getFunctions(getApp()), item.functionName);
           await callable(item.payload);
-          logger.info(
-            `[OfflineQueue] Successfully replayed ${item.functionName} (id: ${item.id})`
-          );
+          logger.info(`[OfflineQueue] Successfully replayed ${item.functionName} (id: ${item.id})`);
           // Do NOT push back — it was successful
         } catch (error) {
           if (isNetworkError(error)) {
             // Still offline — keep in queue with incremented attempt count
-            remaining.push({ ...item, attempts: item.attempts + 1 });
+            remaining.push({...item, attempts: item.attempts + 1});
           } else {
             // Non-network error — discard (e.g. auth error, bad payload)
-            logger.warn(
-              `[OfflineQueue] Discarding ${item.functionName} due to non-network error`,
-              error
-            );
+            logger.warn(`[OfflineQueue] Discarding ${item.functionName} due to non-network error`, error);
           }
         }
       }
@@ -267,7 +249,7 @@ export class OfflineQueueService {
 
       if (remaining.length < queue.length) {
         logger.info(
-          `[OfflineQueue] Drain complete. ${queue.length - remaining.length} calls replayed, ${remaining.length} still queued.`
+          `[OfflineQueue] Drain complete. ${queue.length - remaining.length} calls replayed, ${remaining.length} still queued.`,
         );
       }
     } catch (error) {
@@ -298,4 +280,3 @@ export class OfflineQueueService {
 
 /** Singleton export for convenience. */
 export const offlineQueue = OfflineQueueService.getInstance();
-

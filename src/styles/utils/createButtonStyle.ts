@@ -3,19 +3,19 @@
  * Creates button styles with consistent theming
  */
 
-import { ViewStyle, TextStyle } from "react-native";
-import { COLORS } from "../tokens/colors";
-import { TYPOGRAPHY } from "../tokens/typography";
-import { SPACING } from "../tokens/spacing";
-import { BORDER_RADIUS } from "../tokens/borderRadius";
-import { SIZING } from "../tokens/sizing";
-import { SHADOWS } from "../tokens/shadows";
-import { moderateScale } from "../../utils/responsive";
+import {ViewStyle, TextStyle} from "react-native";
+import {COLORS} from "../tokens/colors";
+import {TYPOGRAPHY} from "../tokens/typography";
+import {SPACING} from "../tokens/spacing";
+import {BORDER_RADIUS} from "../tokens/borderRadius";
+import {SIZING} from "../tokens/sizing";
+import {SHADOWS} from "../tokens/shadows";
+import {moderateScale} from "../../utils/responsive";
 
 export const createButtonStyle = (
   backgroundColor: string = COLORS.primaryOrange,
   textColor: string = COLORS.white,
-  variant: "solid" | "outline" | "ghost" = "solid"
+  variant: "solid" | "outline" | "ghost" = "solid",
 ) => {
   const baseButton: ViewStyle = {
     alignItems: "center",
@@ -71,4 +71,3 @@ export const createButtonStyle = (
       };
   }
 };
-

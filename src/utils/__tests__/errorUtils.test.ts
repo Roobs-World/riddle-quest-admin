@@ -12,7 +12,7 @@ import {
 } from "../errorUtils";
 
 // Import ZodError for testing
-import { z } from "zod";
+import {z} from "zod";
 
 describe("Error Utils", () => {
   describe("Custom Error Classes", () => {
@@ -161,11 +161,9 @@ describe("Error Utils", () => {
       });
 
       it("should return false for non-Firebase errors", () => {
-        expect(ErrorUtils.isFirebaseError(new Error("Regular error"))).toBe(
-          false
-        );
-        expect(ErrorUtils.isFirebaseError({ message: "No code" })).toBe(false);
-        expect(ErrorUtils.isFirebaseError({ code: "No message" })).toBe(false);
+        expect(ErrorUtils.isFirebaseError(new Error("Regular error"))).toBe(false);
+        expect(ErrorUtils.isFirebaseError({message: "No code"})).toBe(false);
+        expect(ErrorUtils.isFirebaseError({code: "No message"})).toBe(false);
         expect(ErrorUtils.isFirebaseError(null)).toBe(false);
         expect(ErrorUtils.isFirebaseError(undefined)).toBe(false);
         expect(ErrorUtils.isFirebaseError("string")).toBe(false);
@@ -174,24 +172,18 @@ describe("Error Utils", () => {
 
       it("should handle edge cases", () => {
         expect(ErrorUtils.isFirebaseError({})).toBe(false);
-        expect(
-          ErrorUtils.isFirebaseError({ code: null, message: "test" })
-        ).toBe(false);
-        expect(
-          ErrorUtils.isFirebaseError({ code: "test", message: null })
-        ).toBe(false);
-        expect(ErrorUtils.isFirebaseError({ code: "", message: "" })).toBe(
-          true
-        ); // Empty strings are truthy for typeof check
+        expect(ErrorUtils.isFirebaseError({code: null, message: "test"})).toBe(false);
+        expect(ErrorUtils.isFirebaseError({code: "test", message: null})).toBe(false);
+        expect(ErrorUtils.isFirebaseError({code: "", message: ""})).toBe(true); // Empty strings are truthy for typeof check
       });
     });
 
     describe("isZodError", () => {
       test("should detect ZodError instances", () => {
-        const schema = z.object({ email: z.string().email() });
+        const schema = z.object({email: z.string().email()});
 
         try {
-          schema.parse({ email: "invalid-email" });
+          schema.parse({email: "invalid-email"});
         } catch (error) {
           expect(ErrorUtils.isZodError(error)).toBe(true);
           expect(isZodError(error)).toBe(true);
@@ -202,7 +194,7 @@ describe("Error Utils", () => {
         const nonZodErrors = [
           new Error("Regular error"),
           new AppError("App error", "APP_ERROR"),
-          { message: "Object error" },
+          {message: "Object error"},
           "string error",
           null,
           undefined,
@@ -223,9 +215,9 @@ describe("Error Utils", () => {
 
       test("should detect Firebase network errors", () => {
         const firebaseNetworkErrors = [
-          { code: "auth/network-request-failed", message: "Network failed" },
-          { code: "firestore/timeout", message: "Timeout occurred" },
-          { code: "functions/network-error", message: "Network error" },
+          {code: "auth/network-request-failed", message: "Network failed"},
+          {code: "firestore/timeout", message: "Timeout occurred"},
+          {code: "functions/network-error", message: "Network error"},
         ];
 
         firebaseNetworkErrors.forEach((error) => {
@@ -236,7 +228,7 @@ describe("Error Utils", () => {
       test("should not detect non-network errors", () => {
         const nonNetworkErrors = [
           new AppError("App error", "APP_ERROR"),
-          { code: "auth/user-not-found", message: "User not found" },
+          {code: "auth/user-not-found", message: "User not found"},
           new Error("Regular error"),
           "string error",
         ];
@@ -256,9 +248,9 @@ describe("Error Utils", () => {
 
       test("should detect Firebase auth errors", () => {
         const firebaseAuthErrors = [
-          { code: "auth/user-not-found", message: "User not found" },
-          { code: "firestore/permission-denied", message: "Permission denied" },
-          { code: "functions/unauthenticated", message: "Unauthenticated" },
+          {code: "auth/user-not-found", message: "User not found"},
+          {code: "firestore/permission-denied", message: "Permission denied"},
+          {code: "functions/unauthenticated", message: "Unauthenticated"},
         ];
 
         firebaseAuthErrors.forEach((error) => {
@@ -269,7 +261,7 @@ describe("Error Utils", () => {
       test("should not detect non-auth errors", () => {
         const nonAuthErrors = [
           new NetworkError("Network failed"),
-          { code: "validation/invalid-format", message: "Invalid format" },
+          {code: "validation/invalid-format", message: "Invalid format"},
           new Error("Regular error"),
           "string error",
         ];
@@ -284,16 +276,14 @@ describe("Error Utils", () => {
       test("should return AppError message", () => {
         const error = new AppError("Custom app error", "APP_ERROR");
 
-        expect(ErrorUtils.getUserFriendlyMessage(error)).toBe(
-          "Custom app error"
-        );
+        expect(ErrorUtils.getUserFriendlyMessage(error)).toBe("Custom app error");
       });
 
       test("should return Zod error message", () => {
-        const schema = z.object({ email: z.string().email() });
+        const schema = z.object({email: z.string().email()});
 
         try {
-          schema.parse({ email: "invalid" });
+          schema.parse({email: "invalid"});
         } catch (error) {
           const message = ErrorUtils.getUserFriendlyMessage(error);
           expect(message).toBe("Invalid data format. Please check your input.");
@@ -319,8 +309,8 @@ describe("Error Utils", () => {
           },
         ];
 
-        firebaseErrors.forEach(({ code, message, expected }) => {
-          const error = { code, message };
+        firebaseErrors.forEach(({code, message, expected}) => {
+          const error = {code, message};
           expect(ErrorUtils.getUserFriendlyMessage(error)).toBe(expected);
         });
       });
@@ -328,18 +318,14 @@ describe("Error Utils", () => {
       test("should return standard Error message", () => {
         const error = new Error("Standard error message");
 
-        expect(ErrorUtils.getUserFriendlyMessage(error)).toBe(
-          "Standard error message"
-        );
+        expect(ErrorUtils.getUserFriendlyMessage(error)).toBe("Standard error message");
       });
 
       test("should return default message for unknown errors", () => {
         const unknownErrors = ["string error", 123, null, undefined, {}];
 
         unknownErrors.forEach((error) => {
-          expect(ErrorUtils.getUserFriendlyMessage(error)).toBe(
-            "An unexpected error occurred. Please try again."
-          );
+          expect(ErrorUtils.getUserFriendlyMessage(error)).toBe("An unexpected error occurred. Please try again.");
         });
       });
     });
@@ -394,7 +380,7 @@ describe("Error Utils", () => {
             name: "Error",
             message: "Standard error",
             stack: expect.any(String),
-          })
+          }),
         );
       });
 
@@ -403,10 +389,7 @@ describe("Error Utils", () => {
 
         ErrorUtils.logError(error);
 
-        expect(console.error).toHaveBeenCalledWith(
-          " Unknown Error:",
-          "string error"
-        );
+        expect(console.error).toHaveBeenCalledWith(" Unknown Error:", "string error");
       });
     });
 
@@ -456,17 +439,15 @@ describe("Error Utils", () => {
       });
 
       test("should create error response for Zod error", () => {
-        const schema = z.object({ email: z.string().email() });
+        const schema = z.object({email: z.string().email()});
 
         try {
-          schema.parse({ email: "invalid" });
+          schema.parse({email: "invalid"});
         } catch (zodError) {
           const response = ErrorUtils.createErrorResponse(zodError);
 
           expect(response.success).toBe(false);
-          expect(response.error.message).toBe(
-            "Invalid data format. Please check your input."
-          );
+          expect(response.error.message).toBe("Invalid data format. Please check your input.");
           expect(response.error.details).toBeDefined();
         }
       });
@@ -492,10 +473,7 @@ describe("Error Utils", () => {
           const failingFunction = async () => {
             throw new AppError("Async error", "ASYNC_ERROR");
           };
-          const result = await ErrorUtils.withErrorHandling(
-            failingFunction,
-            "ASYNC_CONTEXT"
-          );
+          const result = await ErrorUtils.withErrorHandling(failingFunction, "ASYNC_CONTEXT");
 
           expect(result.success).toBe(false);
           if (!result.success) {
@@ -512,9 +490,7 @@ describe("Error Utils", () => {
 
   describe("Integration Tests", () => {
     test("should work together in error handling flow", () => {
-      const originalError = new ValidationError("Invalid email format", [
-        "email must be valid",
-      ]);
+      const originalError = new ValidationError("Invalid email format", ["email must be valid"]);
 
       // Test error detection
       expect(ErrorUtils.isNetworkError(originalError)).toBe(false);
@@ -538,10 +514,7 @@ describe("Error Utils", () => {
 
       // Test user-friendly message
       const friendlyMessage = ErrorUtils.getUserFriendlyMessage(firebaseError);
-      expect(friendlyMessage).toBe(
-        "You do not have permission to perform this action."
-      );
+      expect(friendlyMessage).toBe("You do not have permission to perform this action.");
     });
   });
 });
-

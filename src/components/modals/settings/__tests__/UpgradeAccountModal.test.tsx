@@ -1,8 +1,8 @@
 import React from "react";
-import { fireEvent, render, waitFor } from "@testing-library/react-native";
+import {fireEvent, render, waitFor} from "@testing-library/react-native";
 import UpgradeAccountModal from "../UpgradeAccountModal";
-import { logger } from "@/utils/logger";
-import { captureException } from "@/utils/sentry";
+import {logger} from "@/utils/logger";
+import {captureException} from "@/utils/sentry";
 
 const mockShowInfoModal = jest.fn();
 const mockLinkAnonymousWithGoogle = jest.fn();
@@ -17,10 +17,8 @@ jest.mock("@/hooks/useModal", () => ({
 
 jest.mock("@/services/AuthService", () => ({
   AuthService: {
-    linkAnonymousWithGoogle: (...args: unknown[]) =>
-      mockLinkAnonymousWithGoogle(...args),
-    linkAnonymousWithFacebook: (...args: unknown[]) =>
-      mockLinkAnonymousWithFacebook(...args),
+    linkAnonymousWithGoogle: (...args: unknown[]) => mockLinkAnonymousWithGoogle(...args),
+    linkAnonymousWithFacebook: (...args: unknown[]) => mockLinkAnonymousWithFacebook(...args),
     logout: (...args: unknown[]) => mockLogout(...args),
   },
   isFacebookLoginCancellation: (error: unknown) =>
@@ -28,8 +26,7 @@ jest.mock("@/services/AuthService", () => ({
       error !== null &&
       "code" in error &&
       error.code === "auth/auth-popup-closed-by-user") ||
-    (error instanceof Error &&
-      error.message === "User cancelled the login process"),
+    (error instanceof Error && error.message === "User cancelled the login process"),
 }));
 
 jest.mock("@/utils/logger", () => ({
@@ -44,14 +41,8 @@ jest.mock("@/utils/sentry", () => ({
 
 jest.mock("@/components/buttons/GoogleSignInButton", () => {
   const React = require("react");
-  const { TouchableOpacity, Text } = require("react-native");
-  return function MockGoogleSignInButton({
-    onPress,
-    disabled,
-  }: {
-    onPress: () => void;
-    disabled?: boolean;
-  }) {
+  const {TouchableOpacity, Text} = require("react-native");
+  return function MockGoogleSignInButton({onPress, disabled}: {onPress: () => void; disabled?: boolean}) {
     return (
       <TouchableOpacity onPress={onPress} disabled={disabled}>
         <Text>Continue with Google</Text>
@@ -62,14 +53,8 @@ jest.mock("@/components/buttons/GoogleSignInButton", () => {
 
 jest.mock("@/components/buttons/FacebookSignInButton", () => {
   const React = require("react");
-  const { TouchableOpacity, Text } = require("react-native");
-  return function MockFacebookSignInButton({
-    onPress,
-    disabled,
-  }: {
-    onPress: () => void;
-    disabled?: boolean;
-  }) {
+  const {TouchableOpacity, Text} = require("react-native");
+  return function MockFacebookSignInButton({onPress, disabled}: {onPress: () => void; disabled?: boolean}) {
     return (
       <TouchableOpacity onPress={onPress} disabled={disabled}>
         <Text>Continue with Facebook</Text>
@@ -80,8 +65,8 @@ jest.mock("@/components/buttons/FacebookSignInButton", () => {
 
 jest.mock("@/components/buttons/CloseButton", () => {
   const React = require("react");
-  const { TouchableOpacity, Text } = require("react-native");
-  return function MockCloseButton({ onPress }: { onPress: () => void }) {
+  const {TouchableOpacity, Text} = require("react-native");
+  return function MockCloseButton({onPress}: {onPress: () => void}) {
     return (
       <TouchableOpacity onPress={onPress}>
         <Text>Close</Text>
@@ -99,12 +84,8 @@ jest.mock("@/components/loading/PulsingSpinner", () => {
 
 jest.mock("@/components/shared/SlideInModalContent", () => {
   const React = require("react");
-  const { View } = require("react-native");
-  return function MockSlideInModalContent({
-    children,
-  }: {
-    children: React.ReactNode;
-  }) {
+  const {View} = require("react-native");
+  return function MockSlideInModalContent({children}: {children: React.ReactNode}) {
     return <View>{children}</View>;
   };
 });
@@ -128,16 +109,14 @@ describe("<UpgradeAccountModal />", () => {
       message: "credential already in use",
     });
 
-    const { getByText } = render(<UpgradeAccountModal {...defaultProps} />);
+    const {getByText} = render(<UpgradeAccountModal {...defaultProps} />);
 
     fireEvent.press(getByText("Continue with Google"));
 
     await waitFor(() => {
       expect(getByText("Account already exists")).toBeTruthy();
       expect(
-        getByText(
-          "That account already exists. Would you like to log out and sign in with it instead?"
-        )
+        getByText("That account already exists. Would you like to log out and sign in with it instead?"),
       ).toBeTruthy();
     });
   });
@@ -148,16 +127,14 @@ describe("<UpgradeAccountModal />", () => {
       message: "credential already in use",
     });
 
-    const { getByText } = render(<UpgradeAccountModal {...defaultProps} />);
+    const {getByText} = render(<UpgradeAccountModal {...defaultProps} />);
 
     fireEvent.press(getByText("Continue with Facebook"));
 
     await waitFor(() => {
       expect(getByText("Account already exists")).toBeTruthy();
       expect(
-        getByText(
-          "That account already exists. Would you like to log out and sign in with it instead?"
-        )
+        getByText("That account already exists. Would you like to log out and sign in with it instead?"),
       ).toBeTruthy();
     });
   });
@@ -169,9 +146,7 @@ describe("<UpgradeAccountModal />", () => {
     });
 
     const onClose = jest.fn();
-    const { getByText, queryByText } = render(
-      <UpgradeAccountModal {...defaultProps} onClose={onClose} />
-    );
+    const {getByText, queryByText} = render(<UpgradeAccountModal {...defaultProps} onClose={onClose} />);
 
     fireEvent.press(getByText("Continue with Facebook"));
 
@@ -188,11 +163,10 @@ describe("<UpgradeAccountModal />", () => {
 
   it("shows existing-account logout modal when only message contains bracketed auth code", async () => {
     mockLinkAnonymousWithGoogle.mockRejectedValue({
-      message:
-        "[auth/credential-already-in-use] This credential is already associated with a different user account.",
+      message: "[auth/credential-already-in-use] This credential is already associated with a different user account.",
     });
 
-    const { getByText } = render(<UpgradeAccountModal {...defaultProps} />);
+    const {getByText} = render(<UpgradeAccountModal {...defaultProps} />);
 
     fireEvent.press(getByText("Continue with Google"));
 
@@ -208,9 +182,7 @@ describe("<UpgradeAccountModal />", () => {
     });
 
     const onClose = jest.fn();
-    const { getByText } = render(
-      <UpgradeAccountModal {...defaultProps} onClose={onClose} />
-    );
+    const {getByText} = render(<UpgradeAccountModal {...defaultProps} onClose={onClose} />);
 
     fireEvent.press(getByText("Continue with Google"));
 
@@ -232,9 +204,7 @@ describe("<UpgradeAccountModal />", () => {
       message: "credential already in use",
     });
 
-    const { getByText, queryByText } = render(
-      <UpgradeAccountModal {...defaultProps} />
-    );
+    const {getByText, queryByText} = render(<UpgradeAccountModal {...defaultProps} />);
 
     fireEvent.press(getByText("Continue with Google"));
 

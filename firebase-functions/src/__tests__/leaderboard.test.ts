@@ -88,14 +88,8 @@ class MockHttpsError extends Error {
 const mockOnCall = jest.fn();
 
 jest.mock("firebase-functions/v2/https", () => ({
-  onCall: (
-    optionsOrHandler: unknown,
-    maybeHandler?: (req: unknown) => unknown,
-  ) => {
-    const handler =
-      typeof optionsOrHandler === "function"
-        ? optionsOrHandler
-        : maybeHandler;
+  onCall: (optionsOrHandler: unknown, maybeHandler?: (req: unknown) => unknown) => {
+    const handler = typeof optionsOrHandler === "function" ? optionsOrHandler : maybeHandler;
     if (!handler) {
       throw new Error("onCall mock requires a handler");
     }
@@ -168,10 +162,9 @@ describe("updateLeaderboardEntry", () => {
       "https://example.com/avatar.jpg",
     );
 
-    expect(mockSet).toHaveBeenCalledWith(
-      expect.objectContaining({avatarUrl: "https://example.com/avatar.jpg"}),
-      {merge: true},
-    );
+    expect(mockSet).toHaveBeenCalledWith(expect.objectContaining({avatarUrl: "https://example.com/avatar.jpg"}), {
+      merge: true,
+    });
   });
 
   it("omits avatarUrl when null", async () => {
@@ -235,9 +228,7 @@ describe("getLeaderboard callable", () => {
   });
 
   it("throws invalid-argument for an unknown type", async () => {
-    await expect(
-      callGetLeaderboard({uid: "u1"}, {type: "unknown"}),
-    ).rejects.toMatchObject({code: "invalid-argument"});
+    await expect(callGetLeaderboard({uid: "u1"}, {type: "unknown"})).rejects.toMatchObject({code: "invalid-argument"});
   });
 
   it("returns entries sorted by level + xp progression score", async () => {
@@ -398,5 +389,3 @@ describe("getLeaderboard callable", () => {
     expect(typedResult.entries.find((entry) => entry.username === "Me")?.userId).toBe("u1");
   });
 });
-
-

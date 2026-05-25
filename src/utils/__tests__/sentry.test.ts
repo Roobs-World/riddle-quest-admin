@@ -52,7 +52,7 @@ describe("utils/sentry", () => {
       expect.objectContaining({
         dsn: "https://example-dsn@sentry.io/123",
         tracesSampleRate: 1,
-      })
+      }),
     );
   });
 
@@ -63,7 +63,7 @@ describe("utils/sentry", () => {
 
   it("captureException is a no-op without DSN", () => {
     const sentry = loadSentryUtils(undefined);
-    sentry.captureException(new Error("no-op"), { source: "test" });
+    sentry.captureException(new Error("no-op"), {source: "test"});
     expect(mockWithScope).not.toHaveBeenCalled();
     expect(mockCaptureException).not.toHaveBeenCalled();
   });
@@ -76,17 +76,17 @@ describe("utils/sentry", () => {
   });
 
   it("captureException uses withScope and extras when context is provided", () => {
-    const scope = { setExtras: jest.fn() };
-    mockWithScope.mockImplementation((cb: (s: { setExtras: (v: unknown) => void }) => void) => {
+    const scope = {setExtras: jest.fn()};
+    mockWithScope.mockImplementation((cb: (s: {setExtras: (v: unknown) => void}) => void) => {
       cb(scope);
     });
 
     const sentry = loadSentryUtils("dsn");
     const error = new Error("context-error");
-    sentry.captureException(error, { area: "navigation", attempt: 1 });
+    sentry.captureException(error, {area: "navigation", attempt: 1});
 
     expect(mockWithScope).toHaveBeenCalledTimes(1);
-    expect(scope.setExtras).toHaveBeenCalledWith({ area: "navigation", attempt: 1 });
+    expect(scope.setExtras).toHaveBeenCalledWith({area: "navigation", attempt: 1});
     expect(mockCaptureException).toHaveBeenCalledWith(error);
   });
 
@@ -116,22 +116,22 @@ describe("utils/sentry", () => {
         id: "u2",
         email: "u2@example.com",
         username: "U2",
-      })
+      }),
     );
     expect(mockSetUser).toHaveBeenNthCalledWith(2, null);
   });
 
   it("addBreadcrumb is a no-op without DSN and forwards payload with DSN", () => {
     const sentryNoDsn = loadSentryUtils(undefined);
-    sentryNoDsn.addBreadcrumb("auth", "login clicked", { method: "email" }, "info");
+    sentryNoDsn.addBreadcrumb("auth", "login clicked", {method: "email"}, "info");
     expect(mockAddBreadcrumb).not.toHaveBeenCalled();
 
     const sentry = loadSentryUtils("dsn");
-    sentry.addBreadcrumb("game", "guess submitted", { guess: "APPLE" }, "debug");
+    sentry.addBreadcrumb("game", "guess submitted", {guess: "APPLE"}, "debug");
     expect(mockAddBreadcrumb).toHaveBeenCalledWith({
       category: "game",
       message: "guess submitted",
-      data: { guess: "APPLE" },
+      data: {guess: "APPLE"},
       level: "debug",
     });
   });
@@ -145,7 +145,7 @@ describe("utils/sentry", () => {
 
   it("startTransaction returns finish that ends span when DSN is set", () => {
     const end = jest.fn();
-    mockStartInactiveSpan.mockReturnValue({ end });
+    mockStartInactiveSpan.mockReturnValue({end});
 
     const sentry = loadSentryUtils("dsn");
     const transaction = sentry.startTransaction("guess-submit", "ui.action");

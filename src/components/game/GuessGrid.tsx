@@ -7,10 +7,10 @@
  * animation-free for performance and focuses solely on layout and visual
  * feedback based on server-provided guess results.
  */
-import React, { memo, useMemo } from "react";
-import { View, Text, Pressable } from "react-native";
+import React, {memo, useMemo} from "react";
+import {View, Text, Pressable} from "react-native";
 
-import type { SubmittedGuess, Feedback } from "../../hooks/types"; // Import Feedback type from types.ts
+import type {SubmittedGuess, Feedback} from "../../hooks/types"; // Import Feedback type from types.ts
 import {
   GUESS_TILE_MAX_SIZE,
   GUESS_GRID_H_PADDING,
@@ -19,8 +19,8 @@ import {
   GUESS_GRID_EFFECTIVE_WIDTH,
   GUESS_GRID_SLOT_HEIGHT,
 } from "../../constants/layout";
-import { TYPOGRAPHY } from "../../styles/tokens/typography";
-import { NUM_GUESSES } from "../../utils/constants";
+import {TYPOGRAPHY} from "../../styles/tokens/typography";
+import {NUM_GUESSES} from "../../utils/constants";
 
 /**
  * Returns background + text colour for a tile.
@@ -30,21 +30,18 @@ import { NUM_GUESSES } from "../../utils/constants";
  *
  * Defined at module level so it is not recreated on every render.
  */
-const getCellColors = (
-  feedback: Feedback | null,
-  hasLetter: boolean
-): { bg: string; text: string; border: string } => {
+const getCellColors = (feedback: Feedback | null, hasLetter: boolean): {bg: string; text: string; border: string} => {
   switch (feedback) {
     case "green":
-      return { bg: "#22C55E", text: "#FFFFFF", border: "#22C55E" };
+      return {bg: "#22C55E", text: "#FFFFFF", border: "#22C55E"};
     case "yellow":
-      return { bg: "#EAB308", text: "#FFFFFF", border: "#EAB308" };
+      return {bg: "#EAB308", text: "#FFFFFF", border: "#EAB308"};
     case "red":
-      return { bg: "#EF4444", text: "#FFFFFF", border: "#EF4444" };
+      return {bg: "#EF4444", text: "#FFFFFF", border: "#EF4444"};
     default:
       return hasLetter
-        ? { bg: "rgba(252,250,244,0.88)", text: "#401F40", border: "#401F40" }
-        : { bg: "transparent", text: "#FFFFFF", border: "rgba(252,250,244,0.45)" };
+        ? {bg: "rgba(252,250,244,0.88)", text: "#401F40", border: "#401F40"}
+        : {bg: "transparent", text: "#FFFFFF", border: "rgba(252,250,244,0.45)"};
   }
 };
 
@@ -90,7 +87,7 @@ const GuessGrid: React.FC<GuessGridProps> = memo(function GuessGrid({
 }) {
   const slotCount = Math.max(0, answerLength);
   // Tile sizing — only recalculate when answerLength changes.
-  const { TILE_SIZE, ROW_HEIGHT } = useMemo(() => {
+  const {TILE_SIZE, ROW_HEIGHT} = useMemo(() => {
     if (slotCount <= 0) {
       return {
         TILE_SIZE: 0,
@@ -114,21 +111,17 @@ const GuessGrid: React.FC<GuessGridProps> = memo(function GuessGrid({
       while (row.length < slotCount) row.push(filler);
       return row;
     };
-    const rows: { letters: (string | null)[]; feedback: (Feedback | null)[] }[] =
-      guesses.map((sg: SubmittedGuess) => ({
-        letters: buildFixedLengthRow<string | null>(sg.guess, null),
-        feedback: buildFixedLengthRow<Feedback | null>(sg.feedback, null),
-      }));
+    const rows: {letters: (string | null)[]; feedback: (Feedback | null)[]}[] = guesses.map((sg: SubmittedGuess) => ({
+      letters: buildFixedLengthRow<string | null>(sg.guess, null),
+      feedback: buildFixedLengthRow<Feedback | null>(sg.feedback, null),
+    }));
 
     if (rows.length < NUM_GUESSES && currentGuess.length > 0) {
-      const currentGuessRow = buildFixedLengthRow<string | null>(
-        currentGuess,
-        null
-      );
+      const currentGuessRow = buildFixedLengthRow<string | null>(currentGuess, null);
       const currentGuessFeedback: (Feedback | null)[] = Array(slotCount)
         .fill(null)
         .map((_, i) => (hintRevealedIndices.includes(i) ? "green" : null));
-      rows.push({ letters: currentGuessRow, feedback: currentGuessFeedback });
+      rows.push({letters: currentGuessRow, feedback: currentGuessFeedback});
     }
 
     while (rows.length < NUM_GUESSES) {
@@ -153,22 +146,14 @@ const GuessGrid: React.FC<GuessGridProps> = memo(function GuessGrid({
       {/* Container for the grid rows with proper vertical alignment */}
       <View className="w-full items-center">
         {displayRows.map((row, rowIndex) => (
-          <View
-            key={rowIndex}
-            className="flex-row justify-center items-center"
-            style={{ height: ROW_HEIGHT }}
-          >
+          <View key={rowIndex} className="flex-row justify-center items-center" style={{height: ROW_HEIGHT}}>
             {row.letters.map((letter, cellIndex) => {
               const feedback = row.feedback[cellIndex];
-              const { bg, text, border } = getCellColors(feedback, !!letter);
-              const isCurrentGuessRow =
-                rowIndex === guesses.length && rowIndex < NUM_GUESSES;
-              const isSelectable =
-                isCurrentGuessRow && typeof onSelectCurrentGuessSlot === "function";
-              const tileBorderColor =
-                isSelectable && cellIndex === activeSlotIndex ? "#FCFAF4" : border;
-              const tileBorderWidth =
-                isSelectable && cellIndex === activeSlotIndex ? 3 : 2;
+              const {bg, text, border} = getCellColors(feedback, !!letter);
+              const isCurrentGuessRow = rowIndex === guesses.length && rowIndex < NUM_GUESSES;
+              const isSelectable = isCurrentGuessRow && typeof onSelectCurrentGuessSlot === "function";
+              const tileBorderColor = isSelectable && cellIndex === activeSlotIndex ? "#FCFAF4" : border;
+              const tileBorderWidth = isSelectable && cellIndex === activeSlotIndex ? 3 : 2;
 
               if (isSelectable) {
                 return (
@@ -185,11 +170,7 @@ const GuessGrid: React.FC<GuessGridProps> = memo(function GuessGrid({
                       borderColor: tileBorderColor,
                     }}
                     onPress={() => onSelectCurrentGuessSlot(cellIndex)}
-                    ref={
-                      setTileRef
-                        ? (ref) => setTileRef(rowIndex, cellIndex, ref)
-                        : undefined
-                    }
+                    ref={setTileRef ? (ref) => setTileRef(rowIndex, cellIndex, ref) : undefined}
                   >
                     <Text
                       className="font-bold uppercase"
@@ -218,11 +199,7 @@ const GuessGrid: React.FC<GuessGridProps> = memo(function GuessGrid({
                     borderWidth: tileBorderWidth,
                     borderColor: tileBorderColor,
                   }}
-                  ref={
-                    setTileRef
-                      ? (ref) => setTileRef(rowIndex, cellIndex, ref)
-                      : undefined
-                  }
+                  ref={setTileRef ? (ref) => setTileRef(rowIndex, cellIndex, ref) : undefined}
                 >
                   <Text
                     className="font-bold uppercase"

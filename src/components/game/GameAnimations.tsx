@@ -1,6 +1,6 @@
 import React from "react";
 import StaticTitle from "../animations/StaticTitle";
-import { AppStrings } from "../../constants/AppStrings";
+import {AppStrings} from "../../constants/AppStrings";
 
 /**
  * Props controlling conditional game animation rendering.
@@ -16,7 +16,7 @@ interface GameAnimationsProps {
  * @param props Animation trigger flags.
  * @returns Win title animation when the player has won; otherwise `null`.
  */
-const GameAnimations: React.FC<GameAnimationsProps> = ({ isWin }) => {
+const GameAnimations: React.FC<GameAnimationsProps> = ({isWin}) => {
   if (!isWin) return null;
 
   return (

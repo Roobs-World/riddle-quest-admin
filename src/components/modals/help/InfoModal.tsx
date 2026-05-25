@@ -68,9 +68,7 @@ const InfoModal: React.FC<InfoModalProps> = ({
               height={modalHeight * 1.1}
               style={{position: "absolute", top: -modalHeight * 0.05, left: -MODAL_WIDTH * 0.05}}
             />
-            {onboardingProgress ? (
-              <OnboardingProgressBadge {...onboardingProgress} />
-            ) : null}
+            {onboardingProgress ? <OnboardingProgressBadge {...onboardingProgress} /> : null}
 
             <View
               style={{
@@ -107,11 +105,7 @@ const InfoModal: React.FC<InfoModalProps> = ({
                     <WideButton buttonText={actionButtonText} onPress={handleAction} disabled={false} />
                   </View>
                 ) : null}
-                <WideButton
-                  buttonText={AppStrings.CommonAlerts.OK_BUTTON}
-                  onPress={handleConfirm}
-                  disabled={false}
-                />
+                <WideButton buttonText={AppStrings.CommonAlerts.OK_BUTTON} onPress={handleConfirm} disabled={false} />
               </View>
             </View>
           </View>

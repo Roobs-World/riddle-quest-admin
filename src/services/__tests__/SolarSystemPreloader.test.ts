@@ -1,4 +1,4 @@
-import { SolarSystemPreloader } from "../SolarSystemPreloader";
+import {SolarSystemPreloader} from "../SolarSystemPreloader";
 
 jest.mock("../../utils/logger", () => ({
   logger: {
@@ -14,11 +14,11 @@ jest.mock("../../utils/sentry", () => ({
 
 jest.mock("../solar/solarSystemConfig", () => ({
   SOLAR_TEXTURE_MAPPING: [
-    { key: "sun", path: "sun.png" },
-    { key: "planet_a", path: "a.png" },
-    { key: "moon_a_h", path: "h.png" },
-    { key: "ring_planet_v", path: "r.png" },
-    { key: "glow_sun", path: "g.png" },
+    {key: "sun", path: "sun.png"},
+    {key: "planet_a", path: "a.png"},
+    {key: "moon_a_h", path: "h.png"},
+    {key: "ring_planet_v", path: "r.png"},
+    {key: "glow_sun", path: "g.png"},
   ],
   SOLAR_SYSTEM_CONFIG: [
     {
@@ -29,8 +29,8 @@ jest.mock("../solar/solarSystemConfig", () => ({
       rotationSpeed: 0.01,
       radius: 2,
       materialType: "phong",
-      moons: [{ texture: "h.png", orbitRadius: 5, orbitSpeed: 0.2, radius: 1 }],
-      rings: { texture: "r.png", innerRadius: 3, outerRadius: 5 },
+      moons: [{texture: "h.png", orbitRadius: 5, orbitSpeed: 0.2, radius: 1}],
+      rings: {texture: "r.png", innerRadius: 3, outerRadius: 5},
     },
     {
       id: "planet_v",
@@ -40,13 +40,13 @@ jest.mock("../solar/solarSystemConfig", () => ({
       rotationSpeed: 0.02,
       radius: 3,
       materialType: "phong",
-      rings: { texture: "r.png", innerRadius: 4, outerRadius: 7 },
+      rings: {texture: "r.png", innerRadius: 4, outerRadius: 7},
     },
   ],
 }));
 
 jest.mock("../solar/textureLoader", () => ({
-  loadTextureFromAsset: jest.fn(async () => ({ isMockTexture: true })),
+  loadTextureFromAsset: jest.fn(async () => ({isMockTexture: true})),
 }));
 
 jest.mock("../solar/textureCache", () => ({
@@ -56,45 +56,43 @@ jest.mock("../solar/textureCache", () => ({
 
 jest.mock("../solar/sceneFactory", () => ({
   createSceneSetup: jest.fn(() => {
-    const { Scene, PerspectiveCamera } = require("three");
+    const {Scene, PerspectiveCamera} = require("three");
     return {
       scene: new Scene(),
       camera: new PerspectiveCamera(60, 1, 0.1, 1000),
     };
   }),
   addEnhancedLights: jest.fn((scene, lights) => {
-    const { AmbientLight } = require("three");
+    const {AmbientLight} = require("three");
     const light = new AmbientLight(0xffffff, 1);
     scene.add(light);
     lights.push(light);
   }),
   addSunMeshes: jest.fn((scene, geometries, _textures, meshes) => {
-    const { Mesh, MeshBasicMaterial, SphereGeometry } = require("three");
+    const {Mesh, MeshBasicMaterial, SphereGeometry} = require("three");
     const sunGeo = geometries.get("sun") || new SphereGeometry(1, 8, 8);
-    const sun = new Mesh(sunGeo, new MeshBasicMaterial({ color: 0xffff00 }));
+    const sun = new Mesh(sunGeo, new MeshBasicMaterial({color: 0xffff00}));
     scene.add(sun);
     meshes.push(sun);
   }),
 }));
 
-const { loadTextureFromAsset } = require("../solar/textureLoader");
-const { captureException } = require("../../utils/sentry");
-const { disposeAndClearTextureCache } = require("../solar/textureCache");
-const { logger } = require("../../utils/logger");
-const { createSceneSetup } = require("../solar/sceneFactory");
-const { Scene, PerspectiveCamera, Group, SphereGeometry } = require("three");
+const {loadTextureFromAsset} = require("../solar/textureLoader");
+const {captureException} = require("../../utils/sentry");
+const {disposeAndClearTextureCache} = require("../solar/textureCache");
+const {logger} = require("../../utils/logger");
+const {createSceneSetup} = require("../solar/sceneFactory");
+const {Scene, PerspectiveCamera, Group, SphereGeometry} = require("three");
 
 describe("SolarSystemPreloader", () => {
   let setTimeoutSpy: jest.SpyInstance;
 
   beforeEach(() => {
     jest.clearAllMocks();
-    setTimeoutSpy = jest
-      .spyOn(global, "setTimeout")
-      .mockImplementation((fn: any) => {
-        fn();
-        return 0 as any;
-      });
+    setTimeoutSpy = jest.spyOn(global, "setTimeout").mockImplementation((fn: any) => {
+      fn();
+      return 0 as any;
+    });
     SolarSystemPreloader.clearCache();
   });
 
@@ -135,11 +133,11 @@ describe("SolarSystemPreloader", () => {
   });
 
   it("returns cached textures immediately when preloadTextures has cache", async () => {
-    (SolarSystemPreloader as any).textureCache.set("already", { mock: true });
+    (SolarSystemPreloader as any).textureCache.set("already", {mock: true});
 
     const textures = await (SolarSystemPreloader as any).preloadTextures();
 
-    expect(textures.get("already")).toEqual({ mock: true });
+    expect(textures.get("already")).toEqual({mock: true});
   });
 
   it("returns preloaded system when another preload finishes while waiting", async () => {
@@ -190,7 +188,7 @@ describe("SolarSystemPreloader", () => {
       if (key === "planet_a") {
         throw new Error("texture fail");
       }
-      return { isMockTexture: true };
+      return {isMockTexture: true};
     });
 
     const system = await SolarSystemPreloader.preloadSolarSystem();
@@ -218,23 +216,17 @@ describe("SolarSystemPreloader", () => {
     });
 
     await expect(SolarSystemPreloader.preloadSolarSystem()).rejects.toThrow(
-      "Solar system preloading failed: scene fail"
+      "Solar system preloading failed: scene fail",
     );
     expect(captureException).toHaveBeenCalled();
   });
 
   it("covers fallback path when planet geometry/material are missing", async () => {
-    const geometries = new Map<string, any>([
-      ["sun", new SphereGeometry(1, 8, 8)],
-    ]);
+    const geometries = new Map<string, any>([["sun", new SphereGeometry(1, 8, 8)]]);
     const materials = new Map<string, any>();
     const textures = new Map<string, any>();
 
-    const result = await (SolarSystemPreloader as any).createCompleteScene(
-      geometries,
-      materials,
-      textures
-    );
+    const result = await (SolarSystemPreloader as any).createCompleteScene(geometries, materials, textures);
 
     expect(result.planetsGroup.children.length).toBeGreaterThan(0);
     expect(logger.error).toHaveBeenCalled();

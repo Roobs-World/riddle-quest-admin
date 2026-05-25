@@ -1,26 +1,19 @@
-import {
-  getFirestore,
-  doc,
-  getDoc,
-  updateDoc,
-} from "@react-native-firebase/firestore";
-import { Player, PlayerSchema } from "../validation/firestoreSchemas";
-import { ZodError } from "zod";
-import { IUserDataService } from "./interfaces/IUserDataService";
-import { logger } from "../utils/logger";
-import { captureException } from "../utils/sentry";
-import { getCallableFunction } from "../utils/firebaseFunctions";
+import {getFirestore, doc, getDoc, updateDoc} from "@react-native-firebase/firestore";
+import {Player, PlayerSchema} from "../validation/firestoreSchemas";
+import {ZodError} from "zod";
+import {IUserDataService} from "./interfaces/IUserDataService";
+import {logger} from "../utils/logger";
+import {captureException} from "../utils/sentry";
+import {getCallableFunction} from "../utils/firebaseFunctions";
 
 const stripServerManagedUserFields = (updates: Partial<Player>): Partial<Player> => {
-  const {
-    coins: _coins,
-    progress: _progress,
-    stats: _stats,
-    hasPurchasedApp: _hasPurchasedApp,
-    unlockedAchievements: _unlockedAchievements,
-    lastDailyChallengeCompletedAt: _lastDailyChallengeCompletedAt,
-    ...clientEditableUpdates
-  } = updates;
+  const clientEditableUpdates = {...updates};
+  delete clientEditableUpdates.coins;
+  delete clientEditableUpdates.progress;
+  delete clientEditableUpdates.stats;
+  delete clientEditableUpdates.hasPurchasedApp;
+  delete clientEditableUpdates.unlockedAchievements;
+  delete clientEditableUpdates.lastDailyChallengeCompletedAt;
 
   return clientEditableUpdates;
 };
@@ -34,20 +27,17 @@ export class UserDataService implements IUserDataService {
   /**
    * Saves the user's progress to Firestore.
    */
-  async saveUserProgress(
-    userId: string,
-    progress: Player["progress"]
-  ): Promise<void> {
+  async saveUserProgress(userId: string, progress: Player["progress"]): Promise<void> {
     if (!userId || !userId.trim()) {
       logger.warn("Attempted to save progress to Firestore without a userId.");
       return;
     }
 
     try {
-      logger.warn(
-        "Skipping direct client progress write; player progress is persisted by Cloud Functions.",
-        { userId, progress }
-      );
+      logger.warn("Skipping direct client progress write; player progress is persisted by Cloud Functions.", {
+        userId,
+        progress,
+      });
     } catch (error) {
       logger.error("Error saving player progress to Firestore:", error);
       captureException(error);
@@ -60,9 +50,7 @@ export class UserDataService implements IUserDataService {
    */
   async loadUserProgress(userId: string): Promise<Player | null> {
     if (!userId || !userId.trim()) {
-      logger.warn(
-        "Attempted to load progress from Firestore without a userId."
-      );
+      logger.warn("Attempted to load progress from Firestore without a userId.");
       return null;
     }
 
@@ -76,10 +64,7 @@ export class UserDataService implements IUserDataService {
 
       const userData = userDoc.data();
       if (!userData) {
-        logger.warn(
-          "User document exists but has no data for userId:",
-          userId
-        );
+        logger.warn("User document exists but has no data for userId:", userId);
         return null;
       }
 
@@ -123,10 +108,7 @@ export class UserDataService implements IUserDataService {
       logger.info("User document created successfully via Cloud Function for user:", userId);
     } catch (error) {
       if (error instanceof ZodError) {
-        logger.error(
-          "User data validation failed during creation:",
-          error.issues
-        );
+        logger.error("User data validation failed during creation:", error.issues);
         captureException(error);
         throw new Error("Invalid user data provided for creation");
       }
@@ -139,10 +121,7 @@ export class UserDataService implements IUserDataService {
   /**
    * Updates user document in Firestore.
    */
-  async updateUserDocument(
-    userId: string,
-    updates: Partial<Player>
-  ): Promise<void> {
+  async updateUserDocument(userId: string, updates: Partial<Player>): Promise<void> {
     if (!userId || !userId.trim()) {
       throw new Error("User ID is required to update user document");
     }
@@ -150,10 +129,7 @@ export class UserDataService implements IUserDataService {
     try {
       const clientEditableUpdates = stripServerManagedUserFields(updates);
       if (Object.keys(clientEditableUpdates).length === 0) {
-        logger.warn(
-          "Skipping user document update because it only contained server-managed fields.",
-          { userId }
-        );
+        logger.warn("Skipping user document update because it only contained server-managed fields.", {userId});
         return;
       }
       await updateDoc(doc(getFirestore(), UserDataService.USERS_COLLECTION, userId), clientEditableUpdates);
@@ -175,10 +151,10 @@ export class UserDataService implements IUserDataService {
     }
 
     try {
-      logger.warn(
-        "Skipping direct client classic progress write; classic progress is persisted by Cloud Functions.",
-        { userId, newIndex }
-      );
+      logger.warn("Skipping direct client classic progress write; classic progress is persisted by Cloud Functions.", {
+        userId,
+        newIndex,
+      });
     } catch (error) {
       logger.error("Error updating classic index:", error);
       captureException(error);
@@ -199,10 +175,10 @@ export class UserDataService implements IUserDataService {
     }
 
     try {
-      logger.warn(
-        "Skipping direct client coin write; economy changes are persisted by Cloud Functions.",
-        { userId, newCoinAmount }
-      );
+      logger.warn("Skipping direct client coin write; economy changes are persisted by Cloud Functions.", {
+        userId,
+        newCoinAmount,
+      });
     } catch (error) {
       logger.error("Error updating user coins:", error);
       captureException(error);
@@ -238,7 +214,7 @@ export class UserDataService implements IUserDataService {
     username: string;
     displayName?: string;
     avatarUrl?: string;
-  }): Promise<{ success: boolean; message: string; userId: string }> {
+  }): Promise<{success: boolean; message: string; userId: string}> {
     try {
       const initializeUserCallable = getCallableFunction("initializeUser");
       const result = await initializeUserCallable(userData);
@@ -269,7 +245,7 @@ export class UserDataService implements IUserDataService {
       const result = await ensureUserCompleteCallable({});
 
       logger.info("User document completeness ensured:", result.data);
-      return result.data as { success: boolean; message: string };
+      return result.data as {success: boolean; message: string};
     } catch (error) {
       logger.error("Error ensuring user document completeness:", error);
       captureException(error);
@@ -297,8 +273,8 @@ export class UserDataService implements IUserDataService {
       winStreak?: number;
       totalWins?: number;
       totalGuessesInWins?: number;
-    }
-  ): Promise<{ success: boolean; message: string }> {
+    },
+  ): Promise<{success: boolean; message: string}> {
     try {
       const updateUserStatsCallable = getCallableFunction("updateUserStats");
       const result = await updateUserStatsCallable({
@@ -307,7 +283,7 @@ export class UserDataService implements IUserDataService {
       });
 
       logger.info("User stats updated successfully:", result.data);
-      return result.data as { success: boolean; message: string };
+      return result.data as {success: boolean; message: string};
     } catch (error) {
       logger.error("Error updating user stats:", error);
       captureException(error);
@@ -315,4 +291,3 @@ export class UserDataService implements IUserDataService {
     }
   }
 }
-

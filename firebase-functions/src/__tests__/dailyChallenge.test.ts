@@ -415,9 +415,7 @@ describe("Daily Challenge Functions", () => {
 
       expect(result.challenge).toEqual({
         date: "2023-01-01",
-        questions: [
-          {riddleId: "current", text: "Question 1?", questionNumber: 1},
-        ],
+        questions: [{riddleId: "current", text: "Question 1?", questionNumber: 1}],
         totalQuestions: 1,
       });
       expect(result.hasCompletedToday).toBe(false); // Player has no lastDailyChallengeCompletedAt
@@ -450,9 +448,7 @@ describe("Daily Challenge Functions", () => {
 
       expect(result.challenge).toEqual({
         date: "2023-01-01",
-        questions: [
-          {riddleId: "current", text: "Question 1?", questionNumber: 1},
-        ],
+        questions: [{riddleId: "current", text: "Question 1?", questionNumber: 1}],
         totalQuestions: 1,
       });
       expect(result.hasCompletedToday).toBe(true); // Player completed today
@@ -518,9 +514,7 @@ describe("Daily Challenge Functions", () => {
 
       expect(result.challenge).toEqual({
         date: "2023-01-01",
-        questions: [
-          {riddleId: "current", text: "Question 1?", questionNumber: 1},
-        ],
+        questions: [{riddleId: "current", text: "Question 1?", questionNumber: 1}],
         totalQuestions: 1,
       });
       expect(result.hasCompletedToday).toBeUndefined(); // Not authenticated means no completion status
@@ -546,9 +540,7 @@ describe("Daily Challenge Functions", () => {
 
       expect(result.challenge).toEqual({
         date: "2023-01-02",
-        questions: [
-          {riddleId: "current", text: "Question 1?", questionNumber: 1},
-        ],
+        questions: [{riddleId: "current", text: "Question 1?", questionNumber: 1}],
         totalQuestions: 1,
       });
       expect(result.hasCompletedToday).toBe(false); // Challenge is not for today
@@ -751,15 +743,14 @@ describe("Daily Challenge Functions", () => {
       await expect(advanceDailyChallengeProgress(mockRequest)).rejects.toThrow(
         new HttpsError("internal", "An error occurred while advancing progress."),
       );
-      expect(mockLogger.error).toHaveBeenCalledWith(
-        "Error advancing daily challenge progress:",
-        dbError,
-      );
+      expect(mockLogger.error).toHaveBeenCalledWith("Error advancing daily challenge progress:", dbError);
     });
 
     it("should re-throw HttpsError without wrapping", async () => {
       const mockUserId = "errorUser";
-      const {HttpsError: CurrentHttpsError} = jest.requireMock("firebase-functions/v2/https") as {HttpsError: typeof HttpsError};
+      const {HttpsError: CurrentHttpsError} = jest.requireMock("firebase-functions/v2/https") as {
+        HttpsError: typeof HttpsError;
+      };
       const httpsError = new CurrentHttpsError("permission-denied", "Custom error");
       mockGetUser.mockRejectedValue(httpsError);
 
@@ -774,4 +765,3 @@ describe("Daily Challenge Functions", () => {
 //   data,
 //   auth,
 // });
-

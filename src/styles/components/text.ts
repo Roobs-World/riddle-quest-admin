@@ -3,9 +3,9 @@
  * Typography and text-related styling
  */
 
-import { StyleSheet, TextStyle } from "react-native";
-import { COLORS } from "../tokens/colors";
-import { TYPOGRAPHY } from "../tokens/typography";
+import {StyleSheet, TextStyle} from "react-native";
+import {COLORS} from "../tokens/colors";
+import {TYPOGRAPHY} from "../tokens/typography";
 
 export const textStyles = StyleSheet.create({
   creditsLink: {
@@ -114,4 +114,3 @@ export const textStyles = StyleSheet.create({
     lineHeight: TYPOGRAPHY.fontSize["2xl"] * TYPOGRAPHY.lineHeight.tight,
   } as TextStyle,
 });
-

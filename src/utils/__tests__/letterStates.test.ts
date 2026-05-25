@@ -1,11 +1,8 @@
-import { computeLetterStates } from "../letterStates";
-import type { SubmittedGuess } from "../../hooks/types";
+import {computeLetterStates} from "../letterStates";
+import type {SubmittedGuess} from "../../hooks/types";
 
-function makeGuess(
-  word: string,
-  feedbacks: ("green" | "yellow" | "red")[]
-): SubmittedGuess {
-  return { guess: word.split(""), feedback: feedbacks };
+function makeGuess(word: string, feedbacks: ("green" | "yellow" | "red")[]): SubmittedGuess {
+  return {guess: word.split(""), feedback: feedbacks};
 }
 
 describe("computeLetterStates", () => {
@@ -32,14 +29,14 @@ describe("computeLetterStates", () => {
   it("green beats yellow and red", () => {
     const guesses = [
       makeGuess("apple", ["yellow", "red", "red", "red", "red"]), // a=yellow
-      makeGuess("avail", ["green", "red", "red", "red", "red"]),  // a=green
+      makeGuess("avail", ["green", "red", "red", "red", "red"]), // a=green
     ];
     expect(computeLetterStates(guesses)["a"]).toBe("green");
   });
 
   it("yellow beats red", () => {
     const guesses = [
-      makeGuess("apple", ["red", "red", "red", "red", "red"]),  // p=red
+      makeGuess("apple", ["red", "red", "red", "red", "red"]), // p=red
       makeGuess("opera", ["red", "yellow", "red", "red", "red"]), // p=yellow
     ];
     expect(computeLetterStates(guesses)["p"]).toBe("yellow");
@@ -49,7 +46,7 @@ describe("computeLetterStates", () => {
     const guesses = [
       makeGuess("apple", ["green", "red", "red", "red", "red"]), // a=green
       makeGuess("arrow", ["yellow", "red", "red", "red", "red"]), // a=yellow
-      makeGuess("axe12", ["red", "red", "red", "red", "red"]),   // a=red (fake word for test)
+      makeGuess("axe12", ["red", "red", "red", "red", "red"]), // a=red (fake word for test)
     ];
     expect(computeLetterStates(guesses)["a"]).toBe("green");
   });
@@ -60,11 +57,11 @@ describe("computeLetterStates", () => {
       makeGuess("light", ["yellow", "red", "green", "red", "red"]),
     ];
     const states = computeLetterStates(guesses);
-    expect(states["a"]).toBe("green");  // from 'crane' index 2
+    expect(states["a"]).toBe("green"); // from 'crane' index 2
     expect(states["n"]).toBe("yellow"); // from 'crane' index 3
     expect(states["l"]).toBe("yellow"); // from 'light' index 0
-    expect(states["g"]).toBe("green");  // from 'light' index 2
-    expect(states["i"]).toBe("red");    // from 'light' index 1
+    expect(states["g"]).toBe("green"); // from 'light' index 2
+    expect(states["i"]).toBe("red"); // from 'light' index 1
   });
 
   it("handles duplicate letters — keeps highest priority across all occurrences", () => {
@@ -74,13 +71,10 @@ describe("computeLetterStates", () => {
   });
 
   it("handles a full game scenario — only tracks letters present in guesses", () => {
-    const guesses = [
-      makeGuess("crane", ["red", "red", "green", "yellow", "red"]),
-    ];
+    const guesses = [makeGuess("crane", ["red", "red", "green", "yellow", "red"])];
     const states = computeLetterStates(guesses);
     // Letters not in any guess should not be in the map
     expect(states["b"]).toBeUndefined();
     expect(states["z"]).toBeUndefined();
   });
 });
-

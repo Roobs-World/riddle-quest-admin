@@ -1,11 +1,7 @@
 import * as admin from "firebase-admin";
 import {logger} from "firebase-functions/v2";
 import {CallableRequest, HttpsError, onCall} from "firebase-functions/v2/https";
-import {
-  REWARDED_AD_COIN_REWARD,
-  REWARDED_AD_IDEMPOTENCY_WINDOW_MS,
-  REWARDED_AD_REWARD_COOLDOWN_MS,
-} from "./constants";
+import {REWARDED_AD_COIN_REWARD, REWARDED_AD_IDEMPOTENCY_WINDOW_MS, REWARDED_AD_REWARD_COOLDOWN_MS} from "./constants";
 import {captureException} from "./sentry";
 
 const REWARDED_AD_PLACEMENTS = ["loss_continue", "coin_shop"] as const;
@@ -29,8 +25,7 @@ type AwardedAdCallbackResponse = {
 };
 
 const isRewardedAdPlacement = (value: unknown): value is RewardedAdPlacement =>
-  typeof value === "string" &&
-  REWARDED_AD_PLACEMENTS.includes(value as RewardedAdPlacement);
+  typeof value === "string" && REWARDED_AD_PLACEMENTS.includes(value as RewardedAdPlacement);
 
 const sanitizeDocIdSegment = (value: string): string =>
   value.replace(/[^A-Za-z0-9_.:-]/g, "_").slice(0, 120) || "unknown";
@@ -67,15 +62,10 @@ const resolveProvider = (provider: unknown): string | undefined => {
  */
 export const awardedAdCallback = onCall(
   {enforceAppCheck: true},
-  async (
-    request: CallableRequest<AwardedAdCallbackData>,
-  ): Promise<AwardedAdCallbackResponse> => {
+  async (request: CallableRequest<AwardedAdCallbackData>): Promise<AwardedAdCallbackResponse> => {
     try {
       if (!request.auth) {
-        throw new HttpsError(
-          "unauthenticated",
-          "The function must be called while authenticated.",
-        );
+        throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
       }
 
       const userId = request.data?.userId;
@@ -97,22 +87,13 @@ export const awardedAdCallback = onCall(
       }
 
       const nowMs = Date.now();
-      const callbackId = resolveCallbackId(
-        userId,
-        placement,
-        request.data?.callbackId,
-        nowMs,
-      );
+      const callbackId = resolveCallbackId(userId, placement, request.data?.callbackId, nowMs);
       const provider = resolveProvider(request.data?.provider);
 
       const db = admin.firestore();
       const userRef = db.collection("users").doc(userId);
-      const callbackRef = userRef
-        .collection("processedAdCallbacks")
-        .doc(callbackId);
-      const cooldownRef = userRef
-        .collection("pendingAdCompletions")
-        .doc(placement);
+      const callbackRef = userRef.collection("processedAdCallbacks").doc(callbackId);
+      const cooldownRef = userRef.collection("pendingAdCompletions").doc(placement);
       const interactionRef = db.collection("adInteractions").doc();
 
       const response = await db.runTransaction(async (transaction) => {
@@ -124,19 +105,13 @@ export const awardedAdCallback = onCall(
         }
 
         const userData = userDoc.data() ?? {};
-        const currentCoins =
-          typeof userData.coins === "number" ? userData.coins : 0;
+        const currentCoins = typeof userData.coins === "number" ? userData.coins : 0;
 
         if (callbackDoc.exists) {
           const callbackData = callbackDoc.data() ?? {};
-          const processedNewCoins =
-            typeof callbackData.newCoins === "number"
-              ? callbackData.newCoins
-              : currentCoins;
+          const processedNewCoins = typeof callbackData.newCoins === "number" ? callbackData.newCoins : currentCoins;
           const processedRewardCoins =
-            typeof callbackData.rewardCoins === "number"
-              ? callbackData.rewardCoins
-              : REWARDED_AD_COIN_REWARD;
+            typeof callbackData.rewardCoins === "number" ? callbackData.rewardCoins : REWARDED_AD_COIN_REWARD;
 
           return {
             success: true,
@@ -151,16 +126,10 @@ export const awardedAdCallback = onCall(
 
         const cooldownDoc = await transaction.get(cooldownRef);
         const cooldownData = cooldownDoc.data() ?? {};
-        const cooldownUntilMs =
-          typeof cooldownData.cooldownUntilMs === "number"
-            ? cooldownData.cooldownUntilMs
-            : 0;
+        const cooldownUntilMs = typeof cooldownData.cooldownUntilMs === "number" ? cooldownData.cooldownUntilMs : 0;
 
         if (cooldownUntilMs > nowMs) {
-          throw new HttpsError(
-            "resource-exhausted",
-            "Rewarded ad reward is on cooldown for this placement.",
-          );
+          throw new HttpsError("resource-exhausted", "Rewarded ad reward is on cooldown for this placement.");
         }
 
         const newCoins = currentCoins + REWARDED_AD_COIN_REWARD;
@@ -218,10 +187,7 @@ export const awardedAdCallback = onCall(
 
       logger.error("Unexpected error processing rewarded ad callback:", error);
       captureException(error);
-      throw new HttpsError(
-        "internal",
-        "An error occurred while processing the rewarded ad callback.",
-      );
+      throw new HttpsError("internal", "An error occurred while processing the rewarded ad callback.");
     }
   },
 );

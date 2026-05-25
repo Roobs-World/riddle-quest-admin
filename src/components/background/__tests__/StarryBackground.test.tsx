@@ -1,17 +1,13 @@
 import React from "react";
-import { render, act } from "@testing-library/react-native";
-import {
-  withRepeat,
-  withTiming,
-  cancelAnimation,
-} from "react-native-reanimated";
+import {render, act} from "@testing-library/react-native";
+import {withRepeat, withTiming, cancelAnimation} from "react-native-reanimated";
 
 jest.mock("../SolarSystem3D", () => {
   const React = require("react");
-  const { View } = require("react-native");
+  const {View} = require("react-native");
   return {
     __esModule: true,
-    default: () => React.createElement(View, { testID: "solar-system-3d" }),
+    default: () => React.createElement(View, {testID: "solar-system-3d"}),
   };
 });
 
@@ -48,9 +44,7 @@ describe("StarryBackground", () => {
       animationDelay: 5000,
     });
     expect(stars[1].id).toBe(1);
-    expect(["#FFFFFF", "#FFD700", "#FFF8DC", "#FFFFE0", "#E8F4FF", "#FFE135"]).toContain(
-      stars[0].color,
-    );
+    expect(["#FFFFFF", "#FFD700", "#FFF8DC", "#FFFFE0", "#E8F4FF", "#FFE135"]).toContain(stars[0].color);
 
     randomSpy.mockRestore();
   });
@@ -78,19 +72,17 @@ describe("StarryBackground", () => {
   });
 
   it("renders stars, shooting stars, and solar system", () => {
-    const { getByTestId } = render(<StarryBackground />);
+    const {getByTestId} = render(<StarryBackground />);
 
     expect(getByTestId("solar-system-3d")).toBeTruthy();
     expect(getByTestId("star-0")).toBeTruthy();
     expect(getByTestId(`star-${__STAR_COUNT_FOR_TESTS - 1}`)).toBeTruthy();
     expect(getByTestId("shooting-star-0")).toBeTruthy();
-    expect(
-      getByTestId(`shooting-star-${__SHOOTING_STAR_COUNT_FOR_TESTS - 1}`),
-    ).toBeTruthy();
+    expect(getByTestId(`shooting-star-${__SHOOTING_STAR_COUNT_FOR_TESTS - 1}`)).toBeTruthy();
   });
 
   it("starts animation sequences after timeout and cancels on unmount", () => {
-    const { unmount } = render(<StarryBackground />);
+    const {unmount} = render(<StarryBackground />);
 
     act(() => {
       jest.runOnlyPendingTimers();

@@ -1,4 +1,4 @@
-import { styles, COLORS } from "../index";
+import {styles, COLORS} from "../index";
 
 describe("styles index", () => {
   describe("styles object", () => {
@@ -115,10 +115,7 @@ describe("styles index", () => {
     });
 
     it("should maintain object references", () => {
-      const {
-        styles: importedStyles,
-        COLORS: importedColors,
-      } = require("../index");
+      const {styles: importedStyles, COLORS: importedColors} = require("../index");
       expect(importedStyles).toBe(styles);
       expect(importedColors).toBe(COLORS);
     });
@@ -127,11 +124,7 @@ describe("styles index", () => {
   describe("style consistency", () => {
     it("should use consistent spacing values", () => {
       // Check that spacing values are reasonable numbers
-      const spacingStyles = [
-        styles.gameContainer,
-        styles.riddleContainer,
-        styles.modalContainer,
-      ];
+      const spacingStyles = [styles.gameContainer, styles.riddleContainer, styles.modalContainer];
 
       spacingStyles.forEach((style) => {
         if (style && typeof style === "object") {
@@ -157,4 +150,3 @@ describe("styles index", () => {
     });
   });
 });
-

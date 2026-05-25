@@ -67,22 +67,22 @@ export interface TextureMappingEntry {
  * Canonical texture mapping used by preload and material builders.
  */
 export const SOLAR_TEXTURE_MAPPING: TextureMappingEntry[] = [
-  { key: "sun", path: texSunSpots },
-  { key: "planet_a", path: texPlanetA },
-  { key: "planet_d", path: texPlanetD },
-  { key: "planet_v", path: texPlanetV },
-  { key: "planet_k", path: texPlanetK },
-  { key: "ring_planet_v", path: texRingA },
-  { key: "ring_planet_k", path: texRingB },
-  { key: "moon_a_h", path: texMoonH },
-  { key: "moon_d_f", path: texMoonF },
-  { key: "moon_d_g", path: texMoonG },
-  { key: "moon_k_c", path: texMoonC },
-  { key: "moon_k_d", path: texMoonD },
-  { key: "glow_planet", path: texGradientCircle },
-  { key: "glow_sun", path: texGradientCircleSun },
-  { key: "glow_planet_intense", path: texGradientCircleI },
-  { key: "glow_sun_intense", path: texGradientCircleSunI },
+  {key: "sun", path: texSunSpots},
+  {key: "planet_a", path: texPlanetA},
+  {key: "planet_d", path: texPlanetD},
+  {key: "planet_v", path: texPlanetV},
+  {key: "planet_k", path: texPlanetK},
+  {key: "ring_planet_v", path: texRingA},
+  {key: "ring_planet_k", path: texRingB},
+  {key: "moon_a_h", path: texMoonH},
+  {key: "moon_d_f", path: texMoonF},
+  {key: "moon_d_g", path: texMoonG},
+  {key: "moon_k_c", path: texMoonC},
+  {key: "moon_k_d", path: texMoonD},
+  {key: "glow_planet", path: texGradientCircle},
+  {key: "glow_sun", path: texGradientCircleSun},
+  {key: "glow_planet_intense", path: texGradientCircleI},
+  {key: "glow_sun_intense", path: texGradientCircleSunI},
 ];
 
 /**

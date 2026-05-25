@@ -7,8 +7,8 @@ import {
   orderBy,
   FirebaseFirestoreTypes,
 } from "@react-native-firebase/firestore";
-import { logger } from "../utils/logger";
-import { captureException } from "../utils/sentry";
+import {logger} from "../utils/logger";
+import {captureException} from "../utils/sentry";
 
 export interface RegionalPrice {
   amount: number;
@@ -59,12 +59,11 @@ export const ProductPricingService = {
 
     try {
       const snapshot = await getDocs(
-        query(collection(getFirestore(), "productPricing"), where("isActive", "==", true), orderBy("sortOrder"))
+        query(collection(getFirestore(), "productPricing"), where("isActive", "==", true), orderBy("sortOrder")),
       );
 
       const products = snapshot.docs.map(
-        (doc: FirebaseFirestoreTypes.QueryDocumentSnapshot) =>
-          doc.data() as ProductPricing
+        (doc: FirebaseFirestoreTypes.QueryDocumentSnapshot) => doc.data() as ProductPricing,
       );
       cachedProducts = products;
       cacheTimestamp = now;

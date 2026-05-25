@@ -1,7 +1,6 @@
 // Mock for react-native-reanimated
 const React = require("react");
-const MockAnimatedView = (props) =>
-  React.createElement("View", props, props.children);
+const MockAnimatedView = (props) => React.createElement("View", props, props.children);
 
 export const useSharedValue = jest.fn((initial) => ({
   value: initial,

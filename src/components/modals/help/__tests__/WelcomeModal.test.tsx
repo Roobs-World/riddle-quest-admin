@@ -25,11 +25,7 @@ describe("WelcomeModal", () => {
 
   it("renders onboarding progress when provided", () => {
     const {getByText, getByTestId} = render(
-      <WelcomeModal
-        isVisible={true}
-        onClose={mockOnClose}
-        onboardingProgress={{current: 1, total: 3}}
-      />,
+      <WelcomeModal isVisible={true} onClose={mockOnClose} onboardingProgress={{current: 1, total: 3}} />,
     );
 
     expect(getByTestId("onboarding-progress-badge")).toBeTruthy();
@@ -44,9 +40,7 @@ describe("WelcomeModal", () => {
 
   it("fires dismiss callbacks when the welcome modal is tapped", () => {
     const mockOnDismiss = jest.fn();
-    const {getByTestId} = render(
-      <WelcomeModal isVisible={true} onClose={mockOnClose} onDismiss={mockOnDismiss} />,
-    );
+    const {getByTestId} = render(<WelcomeModal isVisible={true} onClose={mockOnClose} onDismiss={mockOnDismiss} />);
 
     fireEvent.press(getByTestId("welcome-modal-touch-target"));
 

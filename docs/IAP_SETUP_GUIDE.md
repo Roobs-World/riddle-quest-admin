@@ -6,14 +6,14 @@ This guide matches the current code in `src/services/IapService.ts` and Firebase
 
 This repo is configured to sell 6 coin packs (consumable, one-time purchases):
 
-| Pack | Coins | Product ID |
-| ---- | ----- | ---------- |
-| Tiny | 50 | `com.roobsworld.riddlequest.coinpack1` |
-| Small | 100 | `com.roobsworld.riddlequest.coinpack2` |
-| Mid | 250 | `com.roobsworld.riddlequest.coinpack3` |
-| Large | 500 | `com.roobsworld.riddlequest.coinpack4` |
-| Huge | 1000 | `com.roobsworld.riddlequest.coinpack5` |
-| Mega | 2000 | `com.roobsworld.riddlequest.coinpack6` |
+| Pack  | Coins | Product ID                             |
+| ----- | ----- | -------------------------------------- |
+| Tiny  | 50    | `com.roobsworld.riddlequest.coinpack1` |
+| Small | 100   | `com.roobsworld.riddlequest.coinpack2` |
+| Mid   | 250   | `com.roobsworld.riddlequest.coinpack3` |
+| Large | 500   | `com.roobsworld.riddlequest.coinpack4` |
+| Huge  | 1000  | `com.roobsworld.riddlequest.coinpack5` |
+| Mega  | 2000  | `com.roobsworld.riddlequest.coinpack6` |
 
 App identifiers:
 
@@ -85,5 +85,3 @@ Product IDs and coin mapping:
 - Open coin shop -> products display with prices
 - Tap a pack -> Google purchase sheet opens
 - Complete purchase -> app shows success + coins increase (after server validation)
-
-

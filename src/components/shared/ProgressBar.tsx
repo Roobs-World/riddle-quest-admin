@@ -11,9 +11,9 @@
  */
 
 import React from "react";
-import { View } from "react-native";
-import { SPACING } from "../../styles";
-import { scale, verticalScale } from "../../utils/responsive";
+import {View} from "react-native";
+import {SPACING} from "../../styles";
+import {scale, verticalScale} from "../../utils/responsive";
 
 /**
  * Props interface for the ProgressBar component.
@@ -81,26 +81,20 @@ interface ProgressBarProps {
  * @param {ProgressBarProps} props - Component props
  * @returns {JSX.Element} Rendered progress bar with step indicators
  */
-const ProgressBar = ({
-  activeStep,
-  totalSteps,
-  stepColors,
-}: ProgressBarProps) => (
-  <View className="flex-row items-center mx-auto" style={{ marginBottom: SPACING.xl }}>
-    {Array.from({ length: totalSteps }).map((_, index) => (
+const ProgressBar = ({activeStep, totalSteps, stepColors}: ProgressBarProps) => (
+  <View className="flex-row items-center mx-auto" style={{marginBottom: SPACING.xl}}>
+    {Array.from({length: totalSteps}).map((_, index) => (
       <View
         key={index}
         className={`rounded-full ${
           stepColors && stepColors[index]
             ? stepColors[index]
             : index <= activeStep - 1
-            ? "bg-primary-orange"
-            : "bg-gray-300"
+              ? "bg-primary-orange"
+              : "bg-gray-300"
         }`}
-        style={{ height: verticalScale(8), width: scale(64), marginHorizontal: SPACING.sm }}
-        accessibilityLabel={`Step ${index + 1} of ${totalSteps}${
-          index <= activeStep - 1 ? " completed" : " pending"
-        }`}
+        style={{height: verticalScale(8), width: scale(64), marginHorizontal: SPACING.sm}}
+        accessibilityLabel={`Step ${index + 1} of ${totalSteps}${index <= activeStep - 1 ? " completed" : " pending"}`}
       />
     ))}
   </View>

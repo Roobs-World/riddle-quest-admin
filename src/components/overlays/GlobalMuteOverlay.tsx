@@ -1,7 +1,7 @@
-import React, { useCallback } from "react";
-import { StyleSheet, View } from "react-native";
+import React, {useCallback} from "react";
+import {StyleSheet, View} from "react-native";
 import MuteButton from "../buttons/MuteButton";
-import { verticalScale } from "@/utils/responsive";
+import {verticalScale} from "@/utils/responsive";
 
 const OVERLAY_TOP_OFFSET = verticalScale(64);
 const OVERLAY_RIGHT_OFFSET = 16;
@@ -11,16 +11,13 @@ interface GlobalMuteOverlayProps {
   onToggleSound: (isEnabled: boolean) => void;
 }
 
-const GlobalMuteOverlay: React.FC<GlobalMuteOverlayProps> = ({
-  isSoundEnabled,
-  onToggleSound,
-}) => {
+const GlobalMuteOverlay: React.FC<GlobalMuteOverlayProps> = ({isSoundEnabled, onToggleSound}) => {
   const handleToggleMute = useCallback(() => {
     onToggleSound(!isSoundEnabled);
   }, [isSoundEnabled, onToggleSound]);
 
   return (
-    <View style={[styles.buttonContainer, { top: OVERLAY_TOP_OFFSET, right: OVERLAY_RIGHT_OFFSET }]}>
+    <View style={[styles.buttonContainer, {top: OVERLAY_TOP_OFFSET, right: OVERLAY_RIGHT_OFFSET}]}>
       <MuteButton isMuted={!isSoundEnabled} onToggle={handleToggleMute} />
     </View>
   );

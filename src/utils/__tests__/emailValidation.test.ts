@@ -1,10 +1,9 @@
-import { validateEmail } from "../emailValidation";
-import { AppStrings } from "../../constants/AppStrings";
+import {validateEmail} from "../emailValidation";
+import {AppStrings} from "../../constants/AppStrings";
 
 describe("emailValidation", () => {
   describe("validateEmail", () => {
-    const expectedErrorMessage =
-      AppStrings.AuthStrings.Login.INVALID_EMAIL_FORMAT_ERROR;
+    const expectedErrorMessage = AppStrings.AuthStrings.Login.INVALID_EMAIL_FORMAT_ERROR;
 
     it("should return empty string for valid email addresses", () => {
       const validEmails = [
@@ -143,9 +142,7 @@ describe("emailValidation", () => {
     it("should validate email regex pattern comprehensively", () => {
       // Test that the regex works as expected for boundary cases
       expect(validateEmail("a@b.co")).toBe(""); // Minimum valid email
-      expect(validateEmail("test-user_name123@sub-domain123.example.com")).toBe(
-        ""
-      ); // Complex valid email
+      expect(validateEmail("test-user_name123@sub-domain123.example.com")).toBe(""); // Complex valid email
 
       // Test exact boundary conditions for TLD length
       expect(validateEmail("test@domain.ab")).toBe(""); // 2-char TLD (minimum)
@@ -180,4 +177,3 @@ describe("emailValidation", () => {
     });
   });
 });
-

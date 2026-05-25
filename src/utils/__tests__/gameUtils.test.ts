@@ -1,5 +1,5 @@
-import { generateFeedbackEmojiGrid } from "../gameUtils";
-import type { SubmittedGuess } from "../../hooks/types";
+import {generateFeedbackEmojiGrid} from "../gameUtils";
+import type {SubmittedGuess} from "../../hooks/types";
 
 describe("gameUtils", () => {
   describe("generateFeedbackEmojiGrid", () => {
@@ -96,13 +96,7 @@ describe("gameUtils", () => {
       const guesses: SubmittedGuess[] = [
         {
           guess: ["A", "P", "P", "L", "E"],
-          feedback: [
-            "green",
-            "unknown" as any,
-            "invalid" as any,
-            "yellow",
-            "red",
-          ],
+          feedback: ["green", "unknown" as any, "invalid" as any, "yellow", "red"],
         },
       ];
 
@@ -118,16 +112,7 @@ describe("gameUtils", () => {
         },
         {
           guess: ["E", "L", "E", "P", "H", "A", "N", "T"],
-          feedback: [
-            "green",
-            "green",
-            "yellow",
-            "yellow",
-            "red",
-            "red",
-            "green",
-            "yellow",
-          ],
+          feedback: ["green", "green", "yellow", "yellow", "red", "red", "green", "yellow"],
         },
       ];
 
@@ -198,17 +183,17 @@ describe("gameUtils", () => {
     it("should test all feedback switch cases", () => {
       // Test each feedback type individually to ensure all switch cases are covered
       const testCases = [
-        { feedback: "green", expected: "🟩" },
-        { feedback: "yellow", expected: "🟨" },
-        { feedback: "red", expected: "⬜️" },
-        { feedback: null, expected: "⬜️" },
-        { feedback: undefined, expected: "⬜️" },
-        { feedback: "", expected: "⬜️" },
-        { feedback: "blue", expected: "⬜️" },
-        { feedback: 123, expected: "⬜️" },
+        {feedback: "green", expected: "🟩"},
+        {feedback: "yellow", expected: "🟨"},
+        {feedback: "red", expected: "⬜️"},
+        {feedback: null, expected: "⬜️"},
+        {feedback: undefined, expected: "⬜️"},
+        {feedback: "", expected: "⬜️"},
+        {feedback: "blue", expected: "⬜️"},
+        {feedback: 123, expected: "⬜️"},
       ];
 
-      testCases.forEach(({ feedback, expected }) => {
+      testCases.forEach(({feedback, expected}) => {
         const guesses: SubmittedGuess[] = [
           {
             guess: ["A"],
@@ -239,4 +224,3 @@ describe("gameUtils", () => {
     });
   });
 });
-

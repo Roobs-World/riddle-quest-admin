@@ -100,10 +100,7 @@ function asFiniteNumber(value: unknown, fallback: number): number {
  * @param fallbackUserId Firestore document id used when userId is missing.
  * @returns Sanitized leaderboard entry.
  */
-function toSafeLeaderboardEntry(
-  raw: Partial<LeaderboardEntry>,
-  fallbackUserId: string,
-): LeaderboardEntry {
+function toSafeLeaderboardEntry(raw: Partial<LeaderboardEntry>, fallbackUserId: string): LeaderboardEntry {
   const userId = normalizeKey(raw.userId) ?? fallbackUserId;
   const username = normalizeKey(raw.username) ?? DEFAULT_USERNAME;
   const level = Math.max(1, asFiniteNumber(raw.level, 1));
@@ -247,7 +244,8 @@ function preferEntry(
 ): LeaderboardEntry {
   const normalizedRequestingUserId = normalizeKey(requestingUserId);
   const currentIsRequestingUser = normalizedRequestingUserId != null && current.userId === normalizedRequestingUserId;
-  const candidateIsRequestingUser = normalizedRequestingUserId != null && candidate.userId === normalizedRequestingUserId;
+  const candidateIsRequestingUser =
+    normalizedRequestingUserId != null && candidate.userId === normalizedRequestingUserId;
 
   if (currentIsRequestingUser !== candidateIsRequestingUser) {
     return candidateIsRequestingUser ? candidate : current;
@@ -319,11 +317,8 @@ function dedupeEntries(
     }
 
     const usernameMatches =
-      requestingUsernameKey != null &&
-      normalizeUsernameKey(entry.username) === requestingUsernameKey;
-    const avatarMatches =
-      requestingAvatarKey != null &&
-      normalizeKey(entry.avatarUrl) === requestingAvatarKey;
+      requestingUsernameKey != null && normalizeUsernameKey(entry.username) === requestingUsernameKey;
+    const avatarMatches = requestingAvatarKey != null && normalizeKey(entry.avatarUrl) === requestingAvatarKey;
 
     if (!usernameMatches && !avatarMatches) {
       continue;
@@ -501,13 +496,7 @@ export const getLeaderboard = onCall({enforceAppCheck: true}, async (request) =>
       }
     }
 
-    const dedupedEntries = dedupeEntries(
-      entries,
-      type,
-      requestingUserId,
-      requestingUsername,
-      requestingAvatarUrl,
-    );
+    const dedupedEntries = dedupeEntries(entries, type, requestingUserId, requestingUsername, requestingAvatarUrl);
     if (dedupedEntries.length !== entries.length) {
       functions.logger.info(
         `[Leaderboard] Deduped ${entries.length - dedupedEntries.length} duplicate entries for user ${requestingUserId}.`,

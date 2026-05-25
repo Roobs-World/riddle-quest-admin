@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const { spawn, exec } = require("child_process");
+const {spawn, exec} = require("child_process");
 const os = require("os");
 
 // Colors for console output
@@ -88,10 +88,7 @@ function startEmulators() {
     // Give emulators time to start (fallback if "All emulators ready" is not detected)
     setTimeout(() => {
       if (!emulatorStarted) {
-        log(
-          "⏰ Emulator startup timeout reached, proceeding anyway...",
-          colors.yellow
-        );
+        log("⏰ Emulator startup timeout reached, proceeding anyway...", colors.yellow);
         resolve();
       }
     }, 15000);
@@ -194,10 +191,7 @@ function initializeFirestore() {
       if (code === 0) {
         log("✅ Firestore initialized with test data!", colors.green);
       } else {
-        log(
-          "⚠️ Firestore initialization completed with warnings",
-          colors.yellow
-        );
+        log("⚠️ Firestore initialization completed with warnings", colors.yellow);
       }
       resolve();
     });
@@ -211,61 +205,41 @@ function runAllTests() {
     // First run Firebase Functions tests
     log("📦 Running Firebase Functions tests...", colors.cyan);
 
-    const functionsTestProcess = spawn(
-      isWindows ? "pnpm.cmd" : "pnpm",
-      ["test"],
-      {
-        stdio: "inherit",
-        env: {
-          ...process.env,
-          FIRESTORE_EMULATOR_HOST: "127.0.0.1:8099",
-          NODE_OPTIONS: "--experimental-vm-modules",
-        },
-        cwd: "./firebase-functions",
-        shell: isWindows,
-      }
-    );
+    const functionsTestProcess = spawn(isWindows ? "pnpm.cmd" : "pnpm", ["test"], {
+      stdio: "inherit",
+      env: {
+        ...process.env,
+        FIRESTORE_EMULATOR_HOST: "127.0.0.1:8099",
+        NODE_OPTIONS: "--experimental-vm-modules",
+      },
+      cwd: "./firebase-functions",
+      shell: isWindows,
+    });
 
     functionsTestProcess.on("close", (functionsCode) => {
       if (functionsCode !== 0) {
-        log(
-          `⚠️ Firebase Functions tests failed with exit code ${functionsCode}`,
-          colors.yellow
-        );
+        log(`⚠️ Firebase Functions tests failed with exit code ${functionsCode}`, colors.yellow);
       } else {
-        log(
-          "✅ Firebase Functions tests completed successfully!",
-          colors.green
-        );
+        log("✅ Firebase Functions tests completed successfully!", colors.green);
       }
 
       // Then run React Native tests
       log("📱 Running React Native tests...", colors.cyan);
 
-      const rnTestProcess = spawn(
-        isWindows ? "npm.cmd" : "npm",
-        ["run", "test:rn"],
-        {
-          stdio: "inherit",
-          env: {
-            ...process.env,
-            FIRESTORE_EMULATOR_HOST: "127.0.0.1:8099",
-          },
-          cwd: process.cwd(),
-          shell: isWindows,
-        }
-      );
+      const rnTestProcess = spawn(isWindows ? "npm.cmd" : "npm", ["run", "test:rn"], {
+        stdio: "inherit",
+        env: {
+          ...process.env,
+          FIRESTORE_EMULATOR_HOST: "127.0.0.1:8099",
+        },
+        cwd: process.cwd(),
+        shell: isWindows,
+      });
 
       rnTestProcess.on("close", (rnCode) => {
         if (rnCode !== 0) {
-          log(
-            `⚠️ React Native tests failed with exit code ${rnCode}`,
-            colors.yellow
-          );
-          log(
-            "Note: React Native tests may fail due to transformation issues",
-            colors.yellow
-          );
+          log(`⚠️ React Native tests failed with exit code ${rnCode}`, colors.yellow);
+          log("Note: React Native tests may fail due to transformation issues", colors.yellow);
         } else {
           log("✅ React Native tests completed successfully!", colors.green);
         }
@@ -279,10 +253,7 @@ function runAllTests() {
     });
 
     functionsTestProcess.on("error", (error) => {
-      log(
-        `❌ Firebase Functions test process error: ${error.message}`,
-        colors.red
-      );
+      log(`❌ Firebase Functions test process error: ${error.message}`, colors.red);
       resolve();
     });
   });
@@ -321,14 +292,8 @@ function stopEmulators() {
 
 async function main() {
   try {
-    log(
-      "🎯 Starting unified test suite with Firestore initialization...",
-      colors.bright
-    );
-    log(
-      "This will start emulators, initialize Firestore, and run all tests",
-      colors.cyan
-    );
+    log("🎯 Starting unified test suite with Firestore initialization...", colors.bright);
+    log("This will start emulators, initialize Firestore, and run all tests", colors.cyan);
 
     // Start emulators
     await startEmulators();

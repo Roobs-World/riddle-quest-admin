@@ -2,12 +2,12 @@
  * @fileoverview PulsingSpinner component - loading indicator with pulsing dot animation.
  */
 
-import React, { useEffect, useMemo, useState } from "react";
-import { Animated, Easing, Modal, StyleSheet, View } from "react-native";
-import { styles, COLORS } from "../../styles";
-import { AppStrings } from "../../constants/AppStrings";
+import React, {useEffect, useMemo, useState} from "react";
+import {Animated, Easing, Modal, StyleSheet, View} from "react-native";
+import {styles, COLORS} from "../../styles";
+import {AppStrings} from "../../constants/AppStrings";
 import SlideInModalContent from "../shared/SlideInModalContent";
-import { isQASurfaceRuntimeActive } from "../../qa/qaRuntime";
+import {isQASurfaceRuntimeActive} from "../../qa/qaRuntime";
 
 interface PulsingSpinnerProps {
   size?: number;
@@ -32,14 +32,12 @@ const PulsingSpinner = React.memo(function PulsingSpinner({
   visible,
   opacity = 0.5,
 }: PulsingSpinnerProps) {
-  const [animValues] = useState(() =>
-    Array.from({ length: dotCount }, () => new Animated.Value(0))
-  );
+  const [animValues] = useState(() => Array.from({length: dotCount}, () => new Animated.Value(0)));
 
   const calculations = useMemo(() => {
     const center = size / 2;
     const ringRadius = center - dotRadius;
-    const dotPositions = Array.from({ length: dotCount }, (_, i) => {
+    const dotPositions = Array.from({length: dotCount}, (_, i) => {
       const angle = (2 * Math.PI * i) / dotCount - Math.PI / 2;
       return {
         left: center + ringRadius * Math.cos(angle) - dotRadius,
@@ -47,7 +45,7 @@ const PulsingSpinner = React.memo(function PulsingSpinner({
       };
     });
 
-    return { dotPositions };
+    return {dotPositions};
   }, [size, dotCount, dotRadius]);
 
   const interpolatedValues = useMemo(
@@ -62,7 +60,7 @@ const PulsingSpinner = React.memo(function PulsingSpinner({
           outputRange: [1, 0.2],
         }),
       })),
-    [animValues]
+    [animValues],
   );
   const shouldAnimate = visible !== false && !isQASurfaceRuntimeActive();
 
@@ -87,17 +85,14 @@ const PulsingSpinner = React.memo(function PulsingSpinner({
           duration: 0,
           useNativeDriver: true,
         }),
-      ])
+      ]),
     );
 
     const totalPulseTime = staggerDelay * (dotCount - 1) + dotAnimationDuration;
     const tailDelay = Math.max(0, duration - totalPulseTime);
 
     const loopAnimation = Animated.loop(
-      Animated.sequence([
-        Animated.stagger(staggerDelay, pulseSequences),
-        Animated.delay(tailDelay),
-      ])
+      Animated.sequence([Animated.stagger(staggerDelay, pulseSequences), Animated.delay(tailDelay)]),
     );
 
     loopAnimation.start();
@@ -121,10 +116,7 @@ const PulsingSpinner = React.memo(function PulsingSpinner({
         accessibilityLabel={AppStrings.Accessibility.LOADING}
         accessibilityRole="progressbar"
       >
-        <View
-          testID="spinner-ring"
-          style={[styles.svgContainer, { width: size, height: size }]}
-        >
+        <View testID="spinner-ring" style={[styles.svgContainer, {width: size, height: size}]}>
           {calculations.dotPositions.map((position, i) => (
             <Animated.View
               key={i}
@@ -139,7 +131,7 @@ const PulsingSpinner = React.memo(function PulsingSpinner({
                   left: position.left,
                   top: position.top,
                   opacity: interpolatedValues[i].opacity,
-                  transform: [{ scale: interpolatedValues[i].scale }],
+                  transform: [{scale: interpolatedValues[i].scale}],
                 },
               ]}
             />
@@ -147,7 +139,7 @@ const PulsingSpinner = React.memo(function PulsingSpinner({
         </View>
       </View>
     ),
-    [size, calculations.dotPositions, dotRadius, interpolatedValues]
+    [size, calculations.dotPositions, dotRadius, interpolatedValues],
   );
 
   if (visible !== undefined) {

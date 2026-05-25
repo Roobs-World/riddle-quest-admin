@@ -33,19 +33,19 @@
 
 ### Coverage Improvements (March 2026)
 
-| File | Before | After | Notes |
-|------|--------|-------|-------|
-| dailyChallenge.ts | 56.77% | **100%** | +20 tests, all functions covered |
-| firestoreService.ts | 61.87% | **100%** | +26 tests, partial progress merge edge case |
-| Overall Firebase Functions | 56.24% | **61.65%** | +45 tests |
+| File                       | Before | After      | Notes                                       |
+| -------------------------- | ------ | ---------- | ------------------------------------------- |
+| dailyChallenge.ts          | 56.77% | **100%**   | +20 tests, all functions covered            |
+| firestoreService.ts        | 61.87% | **100%**   | +26 tests, partial progress merge edge case |
+| Overall Firebase Functions | 56.24% | **61.65%** | +45 tests                                   |
 
 ### Bug Fixes (March 2026)
 
-| Bug | File | Fix |
-|-----|------|-----|
-| `gamesPlayed` incrementing per guess | submitGuessLogic.ts | Now only increments when `gameOver = true` |
-| `winRate` inflated by per-guess counting | submitGuessLogic.ts | Fixed by correcting `newGamesPlayed` calculation |
-| No hint usage tracking | gameLogic.ts + firestoreSchemas.ts | Added `totalHintsUsed` to stats; `getHint` now calls `updateUserStats` |
+| Bug                                      | File                               | Fix                                                                    |
+| ---------------------------------------- | ---------------------------------- | ---------------------------------------------------------------------- |
+| `gamesPlayed` incrementing per guess     | submitGuessLogic.ts                | Now only increments when `gameOver = true`                             |
+| `winRate` inflated by per-guess counting | submitGuessLogic.ts                | Fixed by correcting `newGamesPlayed` calculation                       |
+| No hint usage tracking                   | gameLogic.ts + firestoreSchemas.ts | Added `totalHintsUsed` to stats; `getHint` now calls `updateUserStats` |
 
 ### Console.log Cleanup (March 2026)
 
@@ -121,8 +121,8 @@ profanityFilter.ts, firestoreSchemas.ts, openaiService.ts, profile.ts, iapReceip
 ### Constants & hint cost fix (March 2026) ✅
 
 - **Hint cost**: NavigationStack previously passed `hintCost={10}`; backend and product spec use 50 coins. Added `HINT_COST_COINS = 50` to `src/constants/game.ts`; NavigationStack now uses it. Hint cost is correct and single-sourced.
-- **Game timing**: `src/constants/game.ts` extended with SOUND_RESUME_DELAY_MS, WIN_* and LOSS_* duration/delay constants. GameScreen and useSettings use these for sound and win/loss animation timing (no magic numbers).
-- **Backend constants**: `firebase-functions/src/constants.ts` added with HINT_COST_COINS, SKIP_COST_*; gameLogic getHint/skipRiddle use them. profile.ts migrated from console to Firebase logger; profile tests assert on logger mock.
+- **Game timing**: `src/constants/game.ts` extended with SOUND*RESUME_DELAY_MS, WIN*\_ and LOSS\_\_ duration/delay constants. GameScreen and useSettings use these for sound and win/loss animation timing (no magic numbers).
+- **Backend constants**: `firebase-functions/src/constants.ts` added with HINT*COST_COINS, SKIP_COST*\*; gameLogic getHint/skipRiddle use them. profile.ts migrated from console to Firebase logger; profile tests assert on logger mock.
 
 ### useSettings hook tests (March 2026) ✅
 
@@ -166,13 +166,13 @@ profanityFilter.ts, firestoreSchemas.ts, openaiService.ts, profile.ts, iapReceip
 
 ### Testing Roadmap
 
-| File | Current | Target | Notes |
-|------|---------|--------|-------|
-| riddleGeneration.ts | **91.71%** | 70%+ ✅ | +tests: tutorial (generateAndAppend, getNextIndex, store), daily/tutorial store errors, generateTodaysDailyChallenge + callable, getNextDailyIndex error; FieldValue mock for daily challenge |
-| submitGuessLogic.ts | 94.65% | ~95% | Remaining lines are dead code |
-| iapConfig.ts | 97.82% | ~98% | Lines 185-186 structurally unreachable |
-| iapPlatformValidator.ts | 97.72% | ~98% | Line 141 is dead code |
-| firestoreService.ts | **100%** | ✅ Done | Added test for partial progress merge (lines 338–347) |
+| File                    | Current    | Target  | Notes                                                                                                                                                                                         |
+| ----------------------- | ---------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| riddleGeneration.ts     | **91.71%** | 70%+ ✅ | +tests: tutorial (generateAndAppend, getNextIndex, store), daily/tutorial store errors, generateTodaysDailyChallenge + callable, getNextDailyIndex error; FieldValue mock for daily challenge |
+| submitGuessLogic.ts     | 94.65%     | ~95%    | Remaining lines are dead code                                                                                                                                                                 |
+| iapConfig.ts            | 97.82%     | ~98%    | Lines 185-186 structurally unreachable                                                                                                                                                        |
+| iapPlatformValidator.ts | 97.72%     | ~98%    | Line 141 is dead code                                                                                                                                                                         |
+| firestoreService.ts     | **100%**   | ✅ Done | Added test for partial progress merge (lines 338–347)                                                                                                                                         |
 
 ---
 
@@ -208,18 +208,18 @@ profanityFilter.ts, firestoreSchemas.ts, openaiService.ts, profile.ts, iapReceip
 
 ## Milestone History
 
-| Date | Milestone |
-|------|-----------|
+| Date     | Milestone                                                                                                                         |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------- |
 | Mar 2026 | Performance: useCallback(processGuess), AuthContext/GameScreen memoization, Firestore riddle session cache, GameScreen React.memo |
-| Mar 2026 | Tutorial flow first slice: tutorial mode in AuthContext/NavigationStack, WelcomeModal Start Tutorial, 2,497 tests passing |
-| Mar 2026 | All memory bank tasks completed; 2,497 tests, 0 failures; 10 files at 100% coverage |
-| Mar 2026 | All 2,111 RN tests fixed (jest.config.js preset, TurboModule mocks, 22 suites fixed) |
-| Mar 2025 | Expo SDK 55 upgrade (expo-av → expo-audio, New Architecture mandatory) |
-| Mar 2025 | Logger infrastructure (`src/utils/logger.ts`) preventing JSI crashes |
-| Jan 2025 | Major package update (RN 0.83.1, React 19, Firebase v23, Jest 30) |
-| Jan 2025 | Firebase v22→v23 modular API migration (16+ files, 50+ function calls) |
-| — | 3D solar system upgraded to 11 individual GLB models |
-| — | Modal architecture reorganized (game/, settings/, help/ categories) |
-| — | Hint functionality wired to bottom navigation bar |
-| — | Critical JSI crash bug fixed (SoundManager status callback removed) |
-| — | Test coverage milestone: 52.48% → 62.27% (+275 tests) |
+| Mar 2026 | Tutorial flow first slice: tutorial mode in AuthContext/NavigationStack, WelcomeModal Start Tutorial, 2,497 tests passing         |
+| Mar 2026 | All memory bank tasks completed; 2,497 tests, 0 failures; 10 files at 100% coverage                                               |
+| Mar 2026 | All 2,111 RN tests fixed (jest.config.js preset, TurboModule mocks, 22 suites fixed)                                              |
+| Mar 2025 | Expo SDK 55 upgrade (expo-av → expo-audio, New Architecture mandatory)                                                            |
+| Mar 2025 | Logger infrastructure (`src/utils/logger.ts`) preventing JSI crashes                                                              |
+| Jan 2025 | Major package update (RN 0.83.1, React 19, Firebase v23, Jest 30)                                                                 |
+| Jan 2025 | Firebase v22→v23 modular API migration (16+ files, 50+ function calls)                                                            |
+| —        | 3D solar system upgraded to 11 individual GLB models                                                                              |
+| —        | Modal architecture reorganized (game/, settings/, help/ categories)                                                               |
+| —        | Hint functionality wired to bottom navigation bar                                                                                 |
+| —        | Critical JSI crash bug fixed (SoundManager status callback removed)                                                               |
+| —        | Test coverage milestone: 52.48% → 62.27% (+275 tests)                                                                             |

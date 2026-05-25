@@ -1,14 +1,14 @@
 import React from "react";
-import { render } from "@testing-library/react-native";
+import {render} from "@testing-library/react-native";
 import GoogleIcon from "../GoogleIcon";
 
 // Mock the Google SVG import
 jest.mock("@images/google.svg", () => {
   const React = require("react");
-  const { View } = require("react-native");
+  const {View} = require("react-native");
 
-  const MockGoogleSvg = ({ width, height, ...props }: any) => (
-    <View testID="google-icon" style={{ width, height }} {...props} />
+  const MockGoogleSvg = ({width, height, ...props}: any) => (
+    <View testID="google-icon" style={{width, height}} {...props} />
   );
 
   MockGoogleSvg.displayName = "MockGoogleSvg";
@@ -18,13 +18,13 @@ jest.mock("@images/google.svg", () => {
 describe("GoogleIcon", () => {
   describe("Rendering", () => {
     it("renders correctly without props", () => {
-      const { getByTestId } = render(<GoogleIcon />);
+      const {getByTestId} = render(<GoogleIcon />);
 
       expect(getByTestId("google-icon")).toBeTruthy();
     });
 
     it("renders with custom dimensions", () => {
-      const { getByTestId } = render(<GoogleIcon width={32} height={32} />);
+      const {getByTestId} = render(<GoogleIcon width={32} height={32} />);
 
       const icon = getByTestId("google-icon");
       expect(icon.props.style).toMatchObject({
@@ -34,7 +34,7 @@ describe("GoogleIcon", () => {
     });
 
     it("renders with string dimensions", () => {
-      const { getByTestId } = render(<GoogleIcon width="48" height="48" />);
+      const {getByTestId} = render(<GoogleIcon width="48" height="48" />);
 
       const icon = getByTestId("google-icon");
       expect(icon.props.style).toMatchObject({
@@ -44,7 +44,7 @@ describe("GoogleIcon", () => {
     });
 
     it("renders with percentage dimensions", () => {
-      const { getByTestId } = render(<GoogleIcon width="100%" height="100%" />);
+      const {getByTestId} = render(<GoogleIcon width="100%" height="100%" />);
 
       const icon = getByTestId("google-icon");
       expect(icon.props.style).toMatchObject({
@@ -56,7 +56,7 @@ describe("GoogleIcon", () => {
 
   describe("Props Handling", () => {
     it("handles undefined width and height", () => {
-      const { getByTestId } = render(<GoogleIcon />);
+      const {getByTestId} = render(<GoogleIcon />);
       const icon = getByTestId("google-icon");
 
       expect(icon.props.style).toMatchObject({
@@ -66,7 +66,7 @@ describe("GoogleIcon", () => {
     });
 
     it("handles only width provided", () => {
-      const { getByTestId } = render(<GoogleIcon width={24} />);
+      const {getByTestId} = render(<GoogleIcon width={24} />);
       const icon = getByTestId("google-icon");
 
       expect(icon.props.style).toMatchObject({
@@ -76,7 +76,7 @@ describe("GoogleIcon", () => {
     });
 
     it("handles only height provided", () => {
-      const { getByTestId } = render(<GoogleIcon height={24} />);
+      const {getByTestId} = render(<GoogleIcon height={24} />);
       const icon = getByTestId("google-icon");
 
       expect(icon.props.style).toMatchObject({
@@ -86,7 +86,7 @@ describe("GoogleIcon", () => {
     });
 
     it("handles zero dimensions", () => {
-      const { getByTestId } = render(<GoogleIcon width={0} height={0} />);
+      const {getByTestId} = render(<GoogleIcon width={0} height={0} />);
       const icon = getByTestId("google-icon");
 
       expect(icon.props.style).toMatchObject({
@@ -96,7 +96,7 @@ describe("GoogleIcon", () => {
     });
 
     it("handles large dimensions", () => {
-      const { getByTestId } = render(<GoogleIcon width={200} height={200} />);
+      const {getByTestId} = render(<GoogleIcon width={200} height={200} />);
       const icon = getByTestId("google-icon");
 
       expect(icon.props.style).toMatchObject({
@@ -106,7 +106,7 @@ describe("GoogleIcon", () => {
     });
 
     it("handles decimal dimensions", () => {
-      const { getByTestId } = render(<GoogleIcon width={24.5} height={24.7} />);
+      const {getByTestId} = render(<GoogleIcon width={24.5} height={24.7} />);
       const icon = getByTestId("google-icon");
 
       expect(icon.props.style).toMatchObject({
@@ -118,16 +118,14 @@ describe("GoogleIcon", () => {
 
   describe("Component Structure", () => {
     it("renders SVG component", () => {
-      const { getByTestId } = render(<GoogleIcon />);
+      const {getByTestId} = render(<GoogleIcon />);
       expect(getByTestId("google-icon")).toBeTruthy();
     });
   });
 
   describe("Performance", () => {
     it("re-renders correctly with prop changes", () => {
-      const { rerender, getByTestId } = render(
-        <GoogleIcon width={24} height={24} />
-      );
+      const {rerender, getByTestId} = render(<GoogleIcon width={24} height={24} />);
 
       const icon1 = getByTestId("google-icon");
       expect(icon1.props.style).toMatchObject({
@@ -145,7 +143,7 @@ describe("GoogleIcon", () => {
     });
 
     it("handles rapid prop updates", () => {
-      const { rerender } = render(<GoogleIcon width={24} height={24} />);
+      const {rerender} = render(<GoogleIcon width={24} height={24} />);
 
       // Rapid updates
       for (let i = 0; i < 10; i++) {
@@ -156,12 +154,12 @@ describe("GoogleIcon", () => {
     });
 
     it("renders consistently across multiple instances", () => {
-      const { getAllByTestId } = render(
+      const {getAllByTestId} = render(
         <>
           <GoogleIcon width={24} height={24} />
           <GoogleIcon width={32} height={32} />
           <GoogleIcon width={48} height={48} />
-        </>
+        </>,
       );
 
       const icons = getAllByTestId("google-icon");
@@ -171,7 +169,7 @@ describe("GoogleIcon", () => {
 
   describe("Edge Cases", () => {
     it("handles negative dimensions", () => {
-      const { getByTestId } = render(<GoogleIcon width={-10} height={-10} />);
+      const {getByTestId} = render(<GoogleIcon width={-10} height={-10} />);
       const icon = getByTestId("google-icon");
 
       expect(icon.props.style).toMatchObject({
@@ -181,7 +179,7 @@ describe("GoogleIcon", () => {
     });
 
     it("handles mixed dimension types", () => {
-      const { getByTestId } = render(<GoogleIcon width={24} height="32px" />);
+      const {getByTestId} = render(<GoogleIcon width={24} height="32px" />);
       const icon = getByTestId("google-icon");
 
       expect(icon.props.style).toMatchObject({
@@ -193,9 +191,7 @@ describe("GoogleIcon", () => {
     it("maintains props integrity", () => {
       const testWidth = 42;
       const testHeight = "56px";
-      const { getByTestId } = render(
-        <GoogleIcon width={testWidth} height={testHeight} />
-      );
+      const {getByTestId} = render(<GoogleIcon width={testWidth} height={testHeight} />);
       const icon = getByTestId("google-icon");
 
       expect(icon.props.style.width).toBe(testWidth);
@@ -223,4 +219,3 @@ describe("GoogleIcon", () => {
     });
   });
 });
-

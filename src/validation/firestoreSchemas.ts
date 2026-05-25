@@ -1,5 +1,5 @@
-import { z } from "zod";
-import { validateUsernameForProfanity } from "../utils/profanityFilter";
+import {z} from "zod";
+import {validateUsernameForProfanity} from "../utils/profanityFilter";
 
 export const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -17,9 +17,8 @@ export const signUpSchema = z
           return profanityError === "";
         },
         {
-          message:
-            "Username contains inappropriate language. Please choose a different username.",
-        }
+          message: "Username contains inappropriate language. Please choose a different username.",
+        },
       ),
     email: z.string().email("Invalid email address"),
     password: z.string().min(6, "Password must be at least 6 characters long"),
@@ -56,10 +55,7 @@ const coerceTimestampToMillis = (value: unknown): unknown => {
       return timestampLike.toDate().getTime();
     }
     if (typeof timestampLike.seconds === "number") {
-      const nanos =
-        typeof timestampLike.nanoseconds === "number"
-          ? timestampLike.nanoseconds
-          : 0;
+      const nanos = typeof timestampLike.nanoseconds === "number" ? timestampLike.nanoseconds : 0;
       return timestampLike.seconds * 1000 + Math.floor(nanos / 1_000_000);
     }
   }
@@ -111,9 +107,8 @@ export const PlayerSchema = z.object({
       return profanityError === "";
     },
     {
-      message:
-        "Username contains inappropriate language. Please choose a different username.",
-    }
+      message: "Username contains inappropriate language. Please choose a different username.",
+    },
   ),
   displayName: z.string().optional(),
   avatarUrl: z.string().url().optional(),

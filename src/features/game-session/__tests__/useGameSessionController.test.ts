@@ -1,5 +1,5 @@
-import { renderHook, act } from "@testing-library/react-native";
-import { useGameSessionController } from "../useGameSessionController";
+import {renderHook, act} from "@testing-library/react-native";
+import {useGameSessionController} from "../useGameSessionController";
 
 describe("useGameSessionController", () => {
   it("tracks loading state while async work runs", async () => {
@@ -8,7 +8,7 @@ describe("useGameSessionController", () => {
       resolveWork = resolve;
     });
 
-    const { result } = renderHook(() => useGameSessionController());
+    const {result} = renderHook(() => useGameSessionController());
 
     let runnerPromise: Promise<void> | undefined;
     await act(async () => {
@@ -26,14 +26,14 @@ describe("useGameSessionController", () => {
   });
 
   it("resets loading state when work throws", async () => {
-    const { result } = renderHook(() => useGameSessionController());
+    const {result} = renderHook(() => useGameSessionController());
 
     await expect(
       act(async () => {
         await result.current.runWithServerLoading(() => {
           throw new Error("boom");
         });
-      })
+      }),
     ).rejects.toThrow("boom");
 
     expect(result.current.isLoading).toBe(false);

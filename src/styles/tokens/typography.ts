@@ -3,7 +3,7 @@
  * Font families, sizes, and text styling for the Riddle Quest app
  */
 
-import { responsiveSizes, moderateScale } from "../../utils/responsive";
+import {responsiveSizes, moderateScale} from "../../utils/responsive";
 
 export const TYPOGRAPHY = {
   // Font families

@@ -32,14 +32,12 @@ const bannedPatterns = [
 function assertVersion(map, fieldName, pkg, expected) {
   const actual = map[pkg];
   if (actual !== expected) {
-    throw new Error(
-      `${fieldName}.${pkg} is "${actual ?? "missing"}", expected "${expected}".`
-    );
+    throw new Error(`${fieldName}.${pkg} is "${actual ?? "missing"}", expected "${expected}".`);
   }
 }
 
 function walk(dir, out) {
-  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  const entries = fs.readdirSync(dir, {withFileTypes: true});
   for (const entry of entries) {
     if (entry.name === "node_modules" || entry.name === ".git") continue;
     const fullPath = path.join(dir, entry.name);

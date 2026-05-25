@@ -4,7 +4,13 @@ import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
 import {AppStrings} from "../../../constants/AppStrings";
 import {TYPOGRAPHY, SPACING} from "../../../styles";
-import {AVATAR_SIZE_LARGE, MODAL_CONTENT_PADDING, MODAL_WIDTH, MODAL_HEIGHT, MODAL_MAX_HEIGHT} from "../../../constants/layout";
+import {
+  AVATAR_SIZE_LARGE,
+  MODAL_CONTENT_PADDING,
+  MODAL_WIDTH,
+  MODAL_HEIGHT,
+  MODAL_MAX_HEIGHT,
+} from "../../../constants/layout";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {moderateScale, verticalScale} from "../../../utils/responsive";
 import RotatingWheelBackground from "@/components/shared/RotatingWheelBackground";

@@ -129,9 +129,9 @@ describe("cloudFunctionsSchemas", () => {
     it("should validate valid submit guess output", () => {
       const validOutput = {
         feedback: [
-          { letter: "t", status: "green" },
-          { letter: "a", status: "yellow" },
-          { letter: "b", status: "red" },
+          {letter: "t", status: "green"},
+          {letter: "a", status: "yellow"},
+          {letter: "b", status: "red"},
         ],
         isCorrect: true,
         gameOver: true,
@@ -145,7 +145,7 @@ describe("cloudFunctionsSchemas", () => {
 
     it("should validate output without optional fields", () => {
       const validOutput = {
-        feedback: [{ letter: "t", status: "green" }],
+        feedback: [{letter: "t", status: "green"}],
         isCorrect: false,
         gameOver: false,
       };
@@ -156,7 +156,7 @@ describe("cloudFunctionsSchemas", () => {
 
     it("should reject invalid feedback status", () => {
       const invalidOutput = {
-        feedback: [{ letter: "t", status: "invalid" }],
+        feedback: [{letter: "t", status: "invalid"}],
         isCorrect: true,
         gameOver: true,
       };
@@ -208,8 +208,7 @@ describe("cloudFunctionsSchemas", () => {
         success: true,
       };
 
-      const result =
-        GenerateClassicRiddlesOutputSchema.safeParse(incompleteOutput);
+      const result = GenerateClassicRiddlesOutputSchema.safeParse(incompleteOutput);
       expect(result.success).toBe(false);
     });
   });
@@ -284,9 +283,7 @@ describe("cloudFunctionsSchemas", () => {
       const requestSchemas = [GetQuestionInputSchema, SubmitGuessInputSchema];
 
       requestSchemas.forEach((schema) => {
-        expect(schema.safeParse({})).toEqual(
-          expect.objectContaining({ success: false })
-        );
+        expect(schema.safeParse({})).toEqual(expect.objectContaining({success: false}));
       });
     });
 
@@ -300,7 +297,7 @@ describe("cloudFunctionsSchemas", () => {
       ];
 
       responseSchemas.forEach((schema) => {
-        const validResponse = { success: true };
+        const validResponse = {success: true};
         const result = schema.safeParse(validResponse);
         // Should at least not fail immediately on success field
         expect(result).toBeDefined();
@@ -344,10 +341,7 @@ describe("cloudFunctionsSchemas", () => {
       });
 
       // Some schemas explicitly allow null values
-      const schemasAllowingNull = [
-        GetQuestionOutputSchema,
-        GetHintOutputSchema,
-      ];
+      const schemasAllowingNull = [GetQuestionOutputSchema, GetHintOutputSchema];
 
       schemasAllowingNull.forEach((schema) => {
         const result = schema.safeParse(null);
@@ -375,4 +369,3 @@ describe("cloudFunctionsSchemas", () => {
     });
   });
 });
-

@@ -3,7 +3,7 @@
  * Consistent border radius values using responsive utilities
  */
 
-import { responsiveSizes } from "../../utils/responsive";
+import {responsiveSizes} from "../../utils/responsive";
 
 export const BORDER_RADIUS = {
   none: 0,

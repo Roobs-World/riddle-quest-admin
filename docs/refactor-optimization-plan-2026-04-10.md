@@ -1,6 +1,7 @@
 # Refactor and Optimization Plan (2026-04-10)
 
 ## Progress (updated 2026-04-10)
+
 - [x] Phase 0.1 Align alias config between TS and Babel direction (`@/*` -> `src/*`).
 - [x] Phase 0.2 Add architecture decision record for modal single-source-of-truth.
 - [x] Phase 0.3 Mark legacy `GameStateManager` as deprecated.
@@ -20,6 +21,7 @@
 - [x] Phase 4.3 Add localization parity + startup smoke tests for the new i18n loading path.
 
 ### Validation run
+
 - `pnpm exec jest src/features/game-session/__tests__/useGameSessionController.test.ts src/features/auth/__tests__/sessionBootstrap.test.ts src/components/modals/__tests__/ModalRegistry.test.ts src/contexts/__tests__/AuthContext.test.tsx --runInBand`
   - Result: pass (4 suites / 17 tests).
   - Note: existing console noise in `AuthContext` tests from `NotificationService` mocked Firestore shape mismatch.
@@ -31,11 +33,13 @@
   - Purpose: verify new-file unit-test coverage after TSDoc/test hardening pass.
 
 ## Scope and approach
+
 This plan is based on a codebase scan focused on architecture depth, coupling seams, and optimization opportunities with low migration risk.
 
 ## Key opportunities
 
 ### 1) Decompose `GameScreen` into a deep gameplay orchestration module
+
 - Evidence:
   - `src/screens/game/GameScreen.tsx` is ~1,029 lines and currently coordinates gameplay, ads, IAP, settings persistence, modal orchestration, and server-loading state.
   - The file has a high concentration of hook/state orchestration and callback churn (`runWithServerLoading` is used across many independent concerns).
@@ -58,6 +62,7 @@ This plan is based on a codebase scan focused on architecture depth, coupling se
   - Reduce large UI integration tests in `GameScreen` in favor of controller tests.
 
 ### 2) Extract Auth bootstrap flow out of `AuthContext`
+
 - Evidence:
   - `src/contexts/AuthContext.tsx` combines auth-state subscription, user bootstrap, riddle initialization/polling, notification token registration, analytics, and profile hydration.
   - File includes comments about split context values, but still exposes one merged context object, so most consumers still re-render on broad state changes.
@@ -78,6 +83,7 @@ This plan is based on a codebase scan focused on architecture depth, coupling se
   - Add focused tests for bootstrap transitions (anonymous user, new social user without email, returning user, failure paths).
 
 ### 3) Consolidate modal architecture to one source of truth
+
 - Evidence:
   - There are two parallel modal mapping systems:
     - `src/components/modals/ModalProvider.tsx` (switch-based renderer)
@@ -95,6 +101,7 @@ This plan is based on a codebase scan focused on architecture depth, coupling se
   - Add a contract test ensuring each modal type resolves and receives required props.
 
 ### 4) Split `SolarSystemPreloader` into loader + builder + cache layers
+
 - Evidence:
   - `src/services/SolarSystemPreloader.ts` is very large (~41KB) and mixes:
     - static config data
@@ -117,6 +124,7 @@ This plan is based on a codebase scan focused on architecture depth, coupling se
   - Smoke test for factory output shape (scene, camera, mesh count).
 
 ### 5) Normalize path aliasing and tighten TypeScript boundaries
+
 - Evidence:
   - `tsconfig.json` maps `@/*` to `assets/*`, while `babel.config.js` maps `@` to `./src`.
 - Why this matters:
@@ -131,6 +139,7 @@ This plan is based on a codebase scan focused on architecture depth, coupling se
   - Run typecheck and import-resolution smoke checks in CI.
 
 ### 6) Modularize large string catalog and add lazy language loading
+
 - Evidence:
   - `src/constants/AppStrings.ts` is very large and includes multiple locales in one module.
 - Why this matters:
@@ -144,6 +153,7 @@ This plan is based on a codebase scan focused on architecture depth, coupling se
   - Keep key-parity tests across locales; add language fallback tests.
 
 ### 7) Remove or quarantine dead/legacy game-state abstractions
+
 - Evidence:
   - `useGameStateManager` has no production call sites and `GameStateManager` appears legacy relative to `useGameLogic`.
 - Why this matters:
@@ -159,31 +169,37 @@ This plan is based on a codebase scan focused on architecture depth, coupling se
 ## Prioritized execution plan
 
 ### Phase 0 (Quick wins, 1-2 days)
+
 1. Align alias config between TS and Babel.
 2. Add architecture decision note for modal single-source-of-truth direction.
 3. Identify and flag dead modules (`GameStateManager`) with deprecation comments.
 
 ### Phase 1 (Low risk, high leverage, 3-5 days)
+
 1. Extract `useGameSessionController` from `GameScreen` without behavior changes.
 2. Move game modal action builders into dedicated module.
 3. Add controller boundary tests and keep existing screen tests green.
 
 ### Phase 2 (Medium risk, highest architectural payoff, 4-7 days)
+
 1. Extract auth bootstrap flow from `AuthContext` into dedicated service/state machine.
 2. Introduce real segmented contexts and migrate highest-traffic consumers first.
 3. Add auth bootstrap scenario tests (social/new/guest/retry/failure).
 
 ### Phase 3 (Medium risk, cleanup and performance, 3-5 days)
+
 1. Consolidate modal definitions and remove duplicate mapping logic.
 2. Split `SolarSystemPreloader` into focused modules with unchanged public API.
 3. Add simple perf instrumentation around preload phases.
 
 ### Phase 4 (Optional optimization, 3-4 days)
+
 1. Move monolithic `AppStrings` to modular `i18n` files.
 2. Add lazy loading and fallback behavior.
 3. Run localization parity tests and startup smoke checks.
 
 ## Success criteria
+
 - `GameScreen.tsx` reduced from ~1,000 lines to <= 350 lines.
 - `AuthContext.tsx` reduced by moving bootstrap logic and splitting consumer subscriptions.
 - Single modal definition path used by runtime and dev tooling.
@@ -191,6 +207,7 @@ This plan is based on a codebase scan focused on architecture depth, coupling se
 - Startup and navigation remain stable; no increase in crash/error rate after rollout.
 
 ## Rollout and risk management
+
 1. Ship in small PRs per phase, each with no behavior change unless explicitly scoped.
 2. Add feature flags for high-risk refactors (auth bootstrap split, i18n loader) if needed.
 3. Keep old wrappers temporarily (`useAuth` compatibility) and migrate callers incrementally.

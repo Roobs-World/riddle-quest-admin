@@ -1,7 +1,7 @@
 /**
  * @fileoverview German (de) locale overrides.
  */
-import type { LocaleOverrides } from "./types";
+import type {LocaleOverrides} from "./types";
 
 export const deOverrides: LocaleOverrides = {
   AuthStrings: {
@@ -53,8 +53,7 @@ export const deOverrides: LocaleOverrides = {
       SUCCESS_MESSAGE: "Email zum Zuruecksetzen des Passworts gesendet! Pruefen Sie Ihren Posteingang.",
       USER_NOT_FOUND_ERROR:
         "Kein Konto mit dieser Email-Adresse gefunden. Pruefen Sie Ihre Email oder registrieren Sie sich.",
-      GENERIC_ERROR:
-        "Beim Senden der Email ist ein Fehler aufgetreten. Bitte erneut versuchen.",
+      GENERIC_ERROR: "Beim Senden der Email ist ein Fehler aufgetreten. Bitte erneut versuchen.",
       BACK_TO_LOGIN: "Zurueck zum Login",
     },
     SignUp: {
@@ -188,8 +187,7 @@ export const deOverrides: LocaleOverrides = {
   Instructions: {
     TITLE: "Wie man spielt",
     GOAL_TITLE: "Das Ziel",
-    GOAL_DESCRIPTION:
-      "Erraten Sie das versteckte Raetsel in 3 Versuchen mithilfe der Farbhinweise.",
+    GOAL_DESCRIPTION: "Erraten Sie das versteckte Raetsel in 3 Versuchen mithilfe der Farbhinweise.",
     COLOR_CLUES_TITLE: "Farbhinweise",
     COLOR_CORRECT: "Der Buchstabe ist korrekt und an der richtigen Position",
     COLOR_MISPLACED: "Der Buchstabe ist im Wort, aber an der falschen Position",
@@ -267,20 +265,19 @@ export const deOverrides: LocaleOverrides = {
     HINTS_USED: "Verwendete Hinweise",
   },
   ErrorMessages: {
-    UNABLE_TO_LOAD_RIDDLES:
-      "Raetsel konnten nicht geladen werden. Verbindung pruefen.",
+    UNABLE_TO_LOAD_RIDDLES: "Raetsel konnten nicht geladen werden. Verbindung pruefen.",
     FAILED_TO_LOAD_PRODUCTS: "Produkte konnten nicht geladen werden",
     FAILED_TO_LOAD_SHOP_PRODUCTS: "Shop-Produkte konnten nicht geladen werden",
   },
   GameScreenAlerts: {
     SUBMIT_GUESS_ERROR_TITLE: "Fehler",
-    SUBMIT_GUESS_ERROR_MESSAGE:
-      "Tipp konnte nicht gesendet werden. Bitte erneut versuchen.",
+    SUBMIT_GUESS_ERROR_MESSAGE: "Tipp konnte nicht gesendet werden. Bitte erneut versuchen.",
     NOT_ENOUGH_COINS_TITLE: "Nicht genug Muenzen",
     NOT_ENOUGH_COINS_MESSAGE: "Sie brauchen mehr Muenzen fuer einen Hinweis.",
     HINT_ERROR_TITLE: "Fehler",
     GUEST_MODE_NOTICE_TITLE: "Gastmodus-Hinweis",
-    GUEST_MODE_NOTICE_MESSAGE: "Ihr Fortschritt kann im Gastmodus verloren gehen und einige Funktionen wie die Bestenliste sind nicht verfuegbar.",
+    GUEST_MODE_NOTICE_MESSAGE:
+      "Ihr Fortschritt kann im Gastmodus verloren gehen und einige Funktionen wie die Bestenliste sind nicht verfuegbar.",
     AD_NOT_READY_TITLE: "Werbung nicht bereit",
     AD_NOT_READY_MESSAGE: "Die Werbung konnte gerade nicht angezeigt werden. Bitte kurz warten und erneut versuchen.",
     SPEND_COINS_ERROR_MESSAGE: "Muenzen konnten nicht ausgegeben werden. Erneut versuchen.",
@@ -362,13 +359,15 @@ export const deOverrides: LocaleOverrides = {
     HINT_AFTER_WRONG_TITLE: "Brauchst du einen Hinweis?",
     HINT_AFTER_WRONG_BODY: "Dieser Tipp war falsch. Tippe auf Hinweis, um einen hilfreichen Buchstaben aufzudecken.",
     SHOP_OUT_OF_COINS_TITLE: "Mehr Muenzen holen",
-    SHOP_OUT_OF_COINS_BODY: "Du hast fuer diese Aktion nicht genug Muenzen. Oeffne den Shop, um mehr zu kaufen oder zu verdienen.",
+    SHOP_OUT_OF_COINS_BODY:
+      "Du hast fuer diese Aktion nicht genug Muenzen. Oeffne den Shop, um mehr zu kaufen oder zu verdienen.",
     ACHIEVEMENT_EARNED_TITLE: "Erfolg freigeschaltet",
     ACHIEVEMENT_EARNED_BODY: "Oeffne dein Profil, um deine Erfolge und deinen Fortschritt anzusehen.",
     LEADERBOARD_FIFTH_CORRECT_TITLE: "Steig in der Bestenliste auf",
     LEADERBOARD_FIFTH_CORRECT_BODY: "Fuenf richtige Antworten! Oeffne dein Profil, um deinen Rang zu sehen.",
     CLASSIC_FROM_DAILY_TITLE: "Klassischer Modus",
-    CLASSIC_FROM_DAILY_BODY: "Taegliche Herausforderung abgeschlossen. Im klassischen Modus kannst du in deinem Tempo weiterspielen.",
+    CLASSIC_FROM_DAILY_BODY:
+      "Taegliche Herausforderung abgeschlossen. Im klassischen Modus kannst du in deinem Tempo weiterspielen.",
     PROFILE_IDENTITY_TITLE: "Profil",
     PROFILE_IDENTITY_BODY: "Hier findest du Avatar, Benutzername, XP-Level und Level-Fortschritt.",
     PROFILE_DAILY_PUZZLES_TITLE: "Taegliche Raetsel",
@@ -376,7 +375,8 @@ export const deOverrides: LocaleOverrides = {
     PROFILE_STATS_TITLE: "Statistikuebersicht",
     PROFILE_STATS_BODY: "Diese Karten zeigen Serie, geratene Woerter, Gewinnrate und durchschnittliche Versuche.",
     PROFILE_COINS_TITLE: "Schatztruhe",
-    PROFILE_COINS_BODY: "Hier siehst du deinen Muenzenstand. Nutze Muenzen fuer Hinweise, Ueberspringen und Extra-Chancen.",
+    PROFILE_COINS_BODY:
+      "Hier siehst du deinen Muenzenstand. Nutze Muenzen fuer Hinweise, Ueberspringen und Extra-Chancen.",
     PROFILE_ACHIEVEMENTS_TITLE: "Erfolge",
     PROFILE_ACHIEVEMENTS_BODY: "Oeffne diesen Bereich, um alle freigeschalteten Erfolge zu sehen.",
     PROFILE_STATISTICS_TITLE: "Statistiken",

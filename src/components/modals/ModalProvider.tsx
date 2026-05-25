@@ -5,10 +5,10 @@
  * to `ModalRegistry`, making the registry the single source of truth.
  */
 import React from "react";
-import { useModalContext } from "../../contexts/ModalContext";
-import { getModalComponent } from "./ModalRegistry";
-import { logger } from "../../utils/logger";
-import { ModalInstance } from "../../types/ModalTypes";
+import {useModalContext} from "../../contexts/ModalContext";
+import {getModalComponent} from "./ModalRegistry";
+import {logger} from "../../utils/logger";
+import {ModalInstance} from "../../types/ModalTypes";
 
 interface RenderedModalProps {
   modal: ModalInstance;
@@ -16,7 +16,7 @@ interface RenderedModalProps {
 }
 
 const RenderedModal = React.memo(
-  ({ modal, closeModal }: RenderedModalProps) => {
+  ({modal, closeModal}: RenderedModalProps) => {
     const modalComponent = getModalComponent(modal.type);
     if (!modalComponent) {
       logger.warn(`Skipping unknown modal type "${modal.type}"`);
@@ -29,15 +29,13 @@ const RenderedModal = React.memo(
       ...modal.data,
     });
   },
-  (prevProps, nextProps) =>
-    prevProps.modal === nextProps.modal &&
-    prevProps.closeModal === nextProps.closeModal
+  (prevProps, nextProps) => prevProps.modal === nextProps.modal && prevProps.closeModal === nextProps.closeModal,
 );
 
 RenderedModal.displayName = "RenderedModal";
 
 export const ModalProvider: React.FC = () => {
-  const { modals, closeModal } = useModalContext();
+  const {modals, closeModal} = useModalContext();
 
   return (
     <>

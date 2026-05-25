@@ -1,11 +1,7 @@
-import { z } from "zod";
+import {z} from "zod";
 
 // Define valid game modes
-export const GameModeSchema = z.union([
-  z.literal("daily"),
-  z.literal("classic"),
-  z.literal("challenge"),
-]);
+export const GameModeSchema = z.union([z.literal("daily"), z.literal("classic"), z.literal("challenge")]);
 
 // Schemas for functions identified in firebase-functions/index.ts
 
@@ -78,11 +74,7 @@ export const GetHintOutputSchema = z
   .nullable();
 
 // Define a schema for guess feedback (green, yellow, red)
-export const GuessFeedbackSchema = z.union([
-  z.literal("green"),
-  z.literal("yellow"),
-  z.literal("red"),
-]);
+export const GuessFeedbackSchema = z.union([z.literal("green"), z.literal("yellow"), z.literal("red")]);
 
 // submitGuess
 export const SubmitGuessInputSchema = z.object({
@@ -97,7 +89,7 @@ export const SubmitGuessOutputSchema = z.object({
     z.object({
       letter: z.string(),
       status: z.enum(["green", "yellow", "red"]),
-    })
+    }),
   ),
   isCorrect: z.boolean(),
   gameOver: z.boolean(),

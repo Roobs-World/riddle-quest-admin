@@ -29,9 +29,9 @@ jest.mock("../../../utils/logger", () => ({
 const mockFetch = jest.fn();
 global.fetch = mockFetch;
 
-import { AccessToken } from "react-native-fbsdk-next";
-import { captureException } from "../../../utils/sentry";
-import { logger } from "../../../utils/logger";
+import {AccessToken} from "react-native-fbsdk-next";
+import {captureException} from "../../../utils/sentry";
+import {logger} from "../../../utils/logger";
 import {
   createGuestPlayer,
   isGuestPlayer,
@@ -41,7 +41,7 @@ import {
   resolveProviderUsername,
   resolveUserEmail,
 } from "../sessionBootstrap";
-import type { FirebaseAuthTypes } from "@react-native-firebase/auth";
+import type {FirebaseAuthTypes} from "@react-native-firebase/auth";
 
 describe("sessionBootstrap", () => {
   beforeEach(() => {
@@ -77,7 +77,7 @@ describe("sessionBootstrap", () => {
           defaultMode: "daily",
           restoredMode: null,
           dailyAvailable: true,
-        })
+        }),
       ).toBe("daily");
     });
 
@@ -87,7 +87,7 @@ describe("sessionBootstrap", () => {
           defaultMode: "daily",
           restoredMode: "classic",
           dailyAvailable: true,
-        })
+        }),
       ).toBe("classic");
     });
 
@@ -97,7 +97,7 @@ describe("sessionBootstrap", () => {
           defaultMode: "daily",
           restoredMode: "daily",
           dailyAvailable: false,
-        })
+        }),
       ).toBe("classic");
     });
   });
@@ -150,7 +150,6 @@ describe("sessionBootstrap", () => {
         const player = createGuestPlayer(testUid);
         expect(player.progress.dailyChallengeCurrentQuestion).toBe(0);
       });
-
     });
 
     describe("stats initialization", () => {
@@ -268,7 +267,7 @@ describe("sessionBootstrap", () => {
         isGuestPlayer({
           email: "guest_abc123@guest.Riddle Quest.com",
           username: "Whatever",
-        })
+        }),
       ).toBe(true);
     });
 
@@ -277,7 +276,7 @@ describe("sessionBootstrap", () => {
         isGuestPlayer({
           email: "player@example.com",
           username: "Guest",
-        })
+        }),
       ).toBe(false);
     });
 
@@ -286,7 +285,7 @@ describe("sessionBootstrap", () => {
         isGuestPlayer({
           email: "",
           username: "Guest",
-        })
+        }),
       ).toBe(true);
     });
   });
@@ -317,9 +316,7 @@ describe("sessionBootstrap", () => {
       it("does not use providerData when user.email is valid", async () => {
         const user = {
           email: "direct@example.com",
-          providerData: [
-            { email: "provider@example.com", providerId: "google.com" },
-          ],
+          providerData: [{email: "provider@example.com", providerId: "google.com"}],
         } as unknown as FirebaseAuthTypes.User;
 
         const result = await resolveUserEmail(user);
@@ -331,25 +328,21 @@ describe("sessionBootstrap", () => {
       it("falls back to providerData email when user.email is null", async () => {
         const user = {
           email: null,
-          providerData: [
-            { email: "provider@example.com", providerId: "google.com" },
-          ],
+          providerData: [{email: "provider@example.com", providerId: "google.com"}],
         } as unknown as FirebaseAuthTypes.User;
 
         const result = await resolveUserEmail(user);
         expect(result).toBe("provider@example.com");
         expect(logger.debug).toHaveBeenCalledWith(
           expect.stringContaining("Found email in providerData"),
-          "provider@example.com"
+          "provider@example.com",
         );
       });
 
       it("falls back to providerData email when user.email is empty string", async () => {
         const user = {
           email: "",
-          providerData: [
-            { email: "provider@example.com", providerId: "apple.com" },
-          ],
+          providerData: [{email: "provider@example.com", providerId: "apple.com"}],
         } as unknown as FirebaseAuthTypes.User;
 
         const result = await resolveUserEmail(user);
@@ -359,9 +352,7 @@ describe("sessionBootstrap", () => {
       it("falls back to providerData email when user.email is whitespace only", async () => {
         const user = {
           email: "   ",
-          providerData: [
-            { email: "provider@example.com", providerId: "twitter.com" },
-          ],
+          providerData: [{email: "provider@example.com", providerId: "twitter.com"}],
         } as unknown as FirebaseAuthTypes.User;
 
         const result = await resolveUserEmail(user);
@@ -372,9 +363,9 @@ describe("sessionBootstrap", () => {
         const user = {
           email: "",
           providerData: [
-            { email: "", providerId: "facebook.com" },
-            { email: "second@example.com", providerId: "google.com" },
-            { email: "third@example.com", providerId: "apple.com" },
+            {email: "", providerId: "facebook.com"},
+            {email: "second@example.com", providerId: "google.com"},
+            {email: "third@example.com", providerId: "apple.com"},
           ],
         } as unknown as FirebaseAuthTypes.User;
 
@@ -386,8 +377,8 @@ describe("sessionBootstrap", () => {
         const user = {
           email: "",
           providerData: [
-            { email: null, providerId: "facebook.com" },
-            { email: "valid@example.com", providerId: "google.com" },
+            {email: null, providerId: "facebook.com"},
+            {email: "valid@example.com", providerId: "google.com"},
           ],
         } as unknown as FirebaseAuthTypes.User;
 
@@ -399,8 +390,8 @@ describe("sessionBootstrap", () => {
         const user = {
           email: "",
           providerData: [
-            { email: "   ", providerId: "facebook.com" },
-            { email: "valid@example.com", providerId: "google.com" },
+            {email: "   ", providerId: "facebook.com"},
+            {email: "valid@example.com", providerId: "google.com"},
           ],
         } as unknown as FirebaseAuthTypes.User;
 
@@ -413,7 +404,7 @@ describe("sessionBootstrap", () => {
       it("fetches email from Facebook Graph API when no other email is available", async () => {
         const user = {
           email: "",
-          providerData: [{ email: "", providerId: "facebook.com" }],
+          providerData: [{email: "", providerId: "facebook.com"}],
         } as unknown as FirebaseAuthTypes.User;
 
         (AccessToken.getCurrentAccessToken as jest.Mock).mockResolvedValue({
@@ -422,21 +413,21 @@ describe("sessionBootstrap", () => {
 
         mockFetch.mockResolvedValue({
           ok: true,
-          json: () => Promise.resolve({ email: "facebook@example.com" }),
+          json: () => Promise.resolve({email: "facebook@example.com"}),
         });
 
         const result = await resolveUserEmail(user);
         expect(result).toBe("facebook@example.com");
         expect(logger.debug).toHaveBeenCalledWith(
           "Successfully retrieved email from Facebook Graph API:",
-          "facebook@example.com"
+          "facebook@example.com",
         );
       });
 
       it("constructs correct Graph API URL with access token", async () => {
         const user = {
           email: "",
-          providerData: [{ email: null, providerId: "facebook.com" }],
+          providerData: [{email: null, providerId: "facebook.com"}],
         } as unknown as FirebaseAuthTypes.User;
 
         (AccessToken.getCurrentAccessToken as jest.Mock).mockResolvedValue({
@@ -445,40 +436,35 @@ describe("sessionBootstrap", () => {
 
         mockFetch.mockResolvedValue({
           ok: true,
-          json: () => Promise.resolve({ email: "fb@example.com" }),
+          json: () => Promise.resolve({email: "fb@example.com"}),
         });
 
         await resolveUserEmail(user);
 
         expect(mockFetch).toHaveBeenCalledWith(
-          "https://graph.facebook.com/me?fields=id,name,email&access_token=test-token-123"
+          "https://graph.facebook.com/me?fields=id,name,email&access_token=test-token-123",
         );
       });
 
       it("throws when Facebook access token is not available", async () => {
         const user = {
           email: "",
-          providerData: [{ email: "", providerId: "facebook.com" }],
+          providerData: [{email: "", providerId: "facebook.com"}],
         } as unknown as FirebaseAuthTypes.User;
 
-        (AccessToken.getCurrentAccessToken as jest.Mock).mockResolvedValue(
-          null
-        );
+        (AccessToken.getCurrentAccessToken as jest.Mock).mockResolvedValue(null);
 
         await expect(resolveUserEmail(user)).rejects.toThrow(
-          "Email is required but not provided by authentication provider"
+          "Email is required but not provided by authentication provider",
         );
-        expect(logger.error).toHaveBeenCalledWith(
-          "Facebook Graph API call failed:",
-          expect.any(Error)
-        );
+        expect(logger.error).toHaveBeenCalledWith("Facebook Graph API call failed:", expect.any(Error));
         expect(captureException).toHaveBeenCalled();
       });
 
       it("throws when Facebook Graph API returns non-ok response", async () => {
         const user = {
           email: "",
-          providerData: [{ email: "", providerId: "facebook.com" }],
+          providerData: [{email: "", providerId: "facebook.com"}],
         } as unknown as FirebaseAuthTypes.User;
 
         (AccessToken.getCurrentAccessToken as jest.Mock).mockResolvedValue({
@@ -492,19 +478,16 @@ describe("sessionBootstrap", () => {
         });
 
         await expect(resolveUserEmail(user)).rejects.toThrow(
-          "Email is required but not provided by authentication provider"
+          "Email is required but not provided by authentication provider",
         );
-        expect(logger.error).toHaveBeenCalledWith(
-          "Facebook Graph API call failed:",
-          expect.any(Error)
-        );
+        expect(logger.error).toHaveBeenCalledWith("Facebook Graph API call failed:", expect.any(Error));
         expect(captureException).toHaveBeenCalled();
       });
 
       it("throws when Facebook Graph API response does not include email", async () => {
         const user = {
           email: "",
-          providerData: [{ email: "", providerId: "facebook.com" }],
+          providerData: [{email: "", providerId: "facebook.com"}],
         } as unknown as FirebaseAuthTypes.User;
 
         (AccessToken.getCurrentAccessToken as jest.Mock).mockResolvedValue({
@@ -513,18 +496,18 @@ describe("sessionBootstrap", () => {
 
         mockFetch.mockResolvedValue({
           ok: true,
-          json: () => Promise.resolve({ id: "123", name: "Test User" }), // No email
+          json: () => Promise.resolve({id: "123", name: "Test User"}), // No email
         });
 
         await expect(resolveUserEmail(user)).rejects.toThrow(
-          "Email is required but not provided by authentication provider"
+          "Email is required but not provided by authentication provider",
         );
       });
 
       it("handles fetch network errors gracefully", async () => {
         const user = {
           email: "",
-          providerData: [{ email: "", providerId: "facebook.com" }],
+          providerData: [{email: "", providerId: "facebook.com"}],
         } as unknown as FirebaseAuthTypes.User;
 
         (AccessToken.getCurrentAccessToken as jest.Mock).mockResolvedValue({
@@ -535,19 +518,16 @@ describe("sessionBootstrap", () => {
         mockFetch.mockRejectedValue(networkError);
 
         await expect(resolveUserEmail(user)).rejects.toThrow(
-          "Email is required but not provided by authentication provider"
+          "Email is required but not provided by authentication provider",
         );
-        expect(logger.error).toHaveBeenCalledWith(
-          "Facebook Graph API call failed:",
-          networkError
-        );
+        expect(logger.error).toHaveBeenCalledWith("Facebook Graph API call failed:", networkError);
         expect(captureException).toHaveBeenCalledWith(networkError);
       });
 
       it("handles JSON parsing errors gracefully", async () => {
         const user = {
           email: "",
-          providerData: [{ email: "", providerId: "facebook.com" }],
+          providerData: [{email: "", providerId: "facebook.com"}],
         } as unknown as FirebaseAuthTypes.User;
 
         (AccessToken.getCurrentAccessToken as jest.Mock).mockResolvedValue({
@@ -561,7 +541,7 @@ describe("sessionBootstrap", () => {
         });
 
         await expect(resolveUserEmail(user)).rejects.toThrow(
-          "Email is required but not provided by authentication provider"
+          "Email is required but not provided by authentication provider",
         );
         expect(captureException).toHaveBeenCalledWith(jsonError);
       });
@@ -575,7 +555,7 @@ describe("sessionBootstrap", () => {
         } as unknown as FirebaseAuthTypes.User;
 
         await expect(resolveUserEmail(user)).rejects.toThrow(
-          "Email is required but not provided by authentication provider"
+          "Email is required but not provided by authentication provider",
         );
       });
 
@@ -586,7 +566,7 @@ describe("sessionBootstrap", () => {
         } as unknown as FirebaseAuthTypes.User;
 
         await expect(resolveUserEmail(user)).rejects.toThrow(
-          "Email is required but not provided by authentication provider. Please ensure email permission is granted."
+          "Email is required but not provided by authentication provider. Please ensure email permission is granted.",
         );
       });
 
@@ -596,22 +576,20 @@ describe("sessionBootstrap", () => {
           providerData: undefined,
         } as unknown as FirebaseAuthTypes.User;
 
-        await expect(resolveUserEmail(user)).rejects.toThrow(
-          "Email is required"
-        );
+        await expect(resolveUserEmail(user)).rejects.toThrow("Email is required");
       });
 
       it("throws when all providers have empty emails and no Facebook provider", async () => {
         const user = {
           email: "",
           providerData: [
-            { email: "", providerId: "google.com" },
-            { email: null, providerId: "apple.com" },
+            {email: "", providerId: "google.com"},
+            {email: null, providerId: "apple.com"},
           ],
         } as unknown as FirebaseAuthTypes.User;
 
         await expect(resolveUserEmail(user)).rejects.toThrow(
-          "Email is required but not provided by authentication provider"
+          "Email is required but not provided by authentication provider",
         );
       });
     });
@@ -621,8 +599,8 @@ describe("sessionBootstrap", () => {
         const user = {
           email: "",
           providerData: [
-            { email: "provider@example.com", providerId: "google.com" },
-            { email: "", providerId: "facebook.com" },
+            {email: "provider@example.com", providerId: "google.com"},
+            {email: "", providerId: "facebook.com"},
           ],
         } as unknown as FirebaseAuthTypes.User;
 
@@ -635,9 +613,7 @@ describe("sessionBootstrap", () => {
       it("skips Facebook Graph API when Facebook provider exists but email is in providerData", async () => {
         const user = {
           email: "",
-          providerData: [
-            { email: "fb@example.com", providerId: "facebook.com" },
-          ],
+          providerData: [{email: "fb@example.com", providerId: "facebook.com"}],
         } as unknown as FirebaseAuthTypes.User;
 
         const result = await resolveUserEmail(user);
@@ -659,9 +635,7 @@ describe("sessionBootstrap", () => {
         ],
       } as unknown as FirebaseAuthTypes.User;
 
-      await expect(resolveProviderAvatarUrl(user)).resolves.toBe(
-        "https://lh3.googleusercontent.com/avatar-main"
-      );
+      await expect(resolveProviderAvatarUrl(user)).resolves.toBe("https://lh3.googleusercontent.com/avatar-main");
     });
 
     it("falls back to Google provider photoURL when user.photoURL is missing", async () => {
@@ -675,9 +649,7 @@ describe("sessionBootstrap", () => {
         ],
       } as unknown as FirebaseAuthTypes.User;
 
-      await expect(resolveProviderAvatarUrl(user)).resolves.toBe(
-        "https://lh3.googleusercontent.com/avatar-provider"
-      );
+      await expect(resolveProviderAvatarUrl(user)).resolves.toBe("https://lh3.googleusercontent.com/avatar-provider");
     });
 
     it("fetches current Facebook avatar from Graph API", async () => {
@@ -706,14 +678,14 @@ describe("sessionBootstrap", () => {
       });
 
       await expect(resolveProviderAvatarUrl(user)).resolves.toBe(
-        "https://platform-lookaside.fbsbx.com/current-avatar.jpg"
+        "https://platform-lookaside.fbsbx.com/current-avatar.jpg",
       );
     });
 
     it("returns undefined for Facebook silhouette avatar", async () => {
       const user = {
         photoURL: "https://platform-lookaside.fbsbx.com/profile.jpg",
-        providerData: [{ providerId: "facebook.com", photoURL: null }],
+        providerData: [{providerId: "facebook.com", photoURL: null}],
       } as unknown as FirebaseAuthTypes.User;
 
       (AccessToken.getCurrentAccessToken as jest.Mock).mockResolvedValue({
@@ -750,7 +722,7 @@ describe("sessionBootstrap", () => {
     it("handles Facebook Graph API failures gracefully", async () => {
       const user = {
         photoURL: null,
-        providerData: [{ providerId: "facebook.com", photoURL: null }],
+        providerData: [{providerId: "facebook.com", photoURL: null}],
       } as unknown as FirebaseAuthTypes.User;
 
       const graphError = new Error("Graph unavailable");
@@ -768,7 +740,7 @@ describe("sessionBootstrap", () => {
     it("returns user.displayName when present", () => {
       const user = {
         displayName: "Provider Name",
-        providerData: [{ providerId: "google.com", displayName: "Fallback Name" }],
+        providerData: [{providerId: "google.com", displayName: "Fallback Name"}],
       } as unknown as FirebaseAuthTypes.User;
 
       expect(resolveProviderUsername(user)).toBe("Provider Name");
@@ -777,7 +749,7 @@ describe("sessionBootstrap", () => {
     it("falls back to providerData displayName when user.displayName is missing", () => {
       const user = {
         displayName: null,
-        providerData: [{ providerId: "google.com", displayName: "Google Name" }],
+        providerData: [{providerId: "google.com", displayName: "Google Name"}],
       } as unknown as FirebaseAuthTypes.User;
 
       expect(resolveProviderUsername(user)).toBe("Google Name");
@@ -786,7 +758,7 @@ describe("sessionBootstrap", () => {
     it("returns undefined when no provider display name exists", () => {
       const user = {
         displayName: "   ",
-        providerData: [{ providerId: "google.com", displayName: "   " }],
+        providerData: [{providerId: "google.com", displayName: "   "}],
       } as unknown as FirebaseAuthTypes.User;
 
       expect(resolveProviderUsername(user)).toBeUndefined();

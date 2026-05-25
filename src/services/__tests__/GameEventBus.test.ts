@@ -177,11 +177,11 @@ describe("GameEventBus", () => {
         type: "GUESS_VALIDATED",
         guess: "HELLO",
         feedback: [
-          { letter: "H", status: "green" },
-          { letter: "E", status: "yellow" },
-          { letter: "L", status: "red" },
-          { letter: "L", status: "red" },
-          { letter: "O", status: "green" },
+          {letter: "H", status: "green"},
+          {letter: "E", status: "yellow"},
+          {letter: "L", status: "red"},
+          {letter: "L", status: "red"},
+          {letter: "O", status: "green"},
         ],
         isCorrect: false,
       };
@@ -205,11 +205,11 @@ describe("GameEventBus", () => {
         type: "GUESS_VALIDATED",
         guess: "WORLD",
         feedback: [
-          { letter: "W", status: "green" },
-          { letter: "O", status: "green" },
-          { letter: "R", status: "green" },
-          { letter: "L", status: "green" },
-          { letter: "D", status: "green" },
+          {letter: "W", status: "green"},
+          {letter: "O", status: "green"},
+          {letter: "R", status: "green"},
+          {letter: "L", status: "green"},
+          {letter: "D", status: "green"},
         ],
         isCorrect: true,
       };
@@ -218,7 +218,7 @@ describe("GameEventBus", () => {
 
       const emittedEvent = mockGuessValidatedListener.mock.calls[0][0];
       expect(emittedEvent.isCorrect).toBe(true);
-      expect(emittedEvent.feedback.every((f: { status: string }) => f.status === "green")).toBe(true);
+      expect(emittedEvent.feedback.every((f: {status: string}) => f.status === "green")).toBe(true);
     });
 
     it("should emit GAME_COMPLETED events correctly", () => {
@@ -369,9 +369,9 @@ describe("GameEventBus", () => {
       const letterAddedListener = jest.fn();
       eventBus.on("LETTER_ADDED", letterAddedListener);
 
-      eventBus.emit({ type: "LETTER_ADDED", letter: "H", position: 0 } as Omit<LetterAddedEvent, "timestamp">);
-      eventBus.emit({ type: "LETTER_ADDED", letter: "E", position: 1 } as Omit<LetterAddedEvent, "timestamp">);
-      eventBus.emit({ type: "LETTER_ADDED", letter: "L", position: 2 } as Omit<LetterAddedEvent, "timestamp">);
+      eventBus.emit({type: "LETTER_ADDED", letter: "H", position: 0} as Omit<LetterAddedEvent, "timestamp">);
+      eventBus.emit({type: "LETTER_ADDED", letter: "E", position: 1} as Omit<LetterAddedEvent, "timestamp">);
+      eventBus.emit({type: "LETTER_ADDED", letter: "L", position: 2} as Omit<LetterAddedEvent, "timestamp">);
 
       expect(letterAddedListener).toHaveBeenCalledTimes(3);
       expect(letterAddedListener.mock.calls[0][0].letter).toBe("H");
@@ -425,24 +425,24 @@ describe("GameEventBus", () => {
     it("should not receive events after unsubscribing", () => {
       const unsubscribe = eventBus.on("LETTER_ADDED", mockListener);
 
-      eventBus.emit({ type: "LETTER_ADDED", letter: "A", position: 0 } as Omit<LetterAddedEvent, "timestamp">);
+      eventBus.emit({type: "LETTER_ADDED", letter: "A", position: 0} as Omit<LetterAddedEvent, "timestamp">);
       expect(mockListener).toHaveBeenCalledTimes(1);
 
       unsubscribe();
 
-      eventBus.emit({ type: "LETTER_ADDED", letter: "B", position: 1 } as Omit<LetterAddedEvent, "timestamp">);
+      eventBus.emit({type: "LETTER_ADDED", letter: "B", position: 1} as Omit<LetterAddedEvent, "timestamp">);
       expect(mockListener).toHaveBeenCalledTimes(1);
     });
 
     it("should not receive global events after unsubscribing", () => {
       const unsubscribe = eventBus.onAll(mockGlobalListener);
 
-      eventBus.emit({ type: "LETTER_ADDED", letter: "A", position: 0 } as Omit<LetterAddedEvent, "timestamp">);
+      eventBus.emit({type: "LETTER_ADDED", letter: "A", position: 0} as Omit<LetterAddedEvent, "timestamp">);
       expect(mockGlobalListener).toHaveBeenCalledTimes(1);
 
       unsubscribe();
 
-      eventBus.emit({ type: "LETTER_REMOVED", position: 0 } as Omit<LetterRemovedEvent, "timestamp">);
+      eventBus.emit({type: "LETTER_REMOVED", position: 0} as Omit<LetterRemovedEvent, "timestamp">);
       expect(mockGlobalListener).toHaveBeenCalledTimes(1);
     });
 
@@ -457,7 +457,7 @@ describe("GameEventBus", () => {
 
       unsubscribe2();
 
-      eventBus.emit({ type: "LETTER_ADDED", letter: "A", position: 0 } as Omit<LetterAddedEvent, "timestamp">);
+      eventBus.emit({type: "LETTER_ADDED", letter: "A", position: 0} as Omit<LetterAddedEvent, "timestamp">);
 
       expect(listener1).toHaveBeenCalledTimes(1);
       expect(listener2).not.toHaveBeenCalled();
@@ -514,7 +514,7 @@ describe("GameEventBus", () => {
 
       eventBus.clearListeners();
 
-      eventBus.emit({ type: "LETTER_ADDED", letter: "A", position: 0 } as Omit<LetterAddedEvent, "timestamp">);
+      eventBus.emit({type: "LETTER_ADDED", letter: "A", position: 0} as Omit<LetterAddedEvent, "timestamp">);
 
       expect(mockListener).not.toHaveBeenCalled();
       expect(mockGlobalListener).not.toHaveBeenCalled();
@@ -525,7 +525,7 @@ describe("GameEventBus", () => {
       eventBus.clearListeners();
       eventBus.on("LETTER_ADDED", mockListener);
 
-      eventBus.emit({ type: "LETTER_ADDED", letter: "A", position: 0 } as Omit<LetterAddedEvent, "timestamp">);
+      eventBus.emit({type: "LETTER_ADDED", letter: "A", position: 0} as Omit<LetterAddedEvent, "timestamp">);
 
       expect(mockListener).toHaveBeenCalledTimes(1);
     });
@@ -591,7 +591,7 @@ describe("GameEventBus", () => {
     it("should handle emitting with only global listeners and no specific listeners", () => {
       eventBus.onAll(mockGlobalListener);
 
-      eventBus.emit({ type: "LETTER_ADDED", letter: "A", position: 0 } as Omit<LetterAddedEvent, "timestamp">);
+      eventBus.emit({type: "LETTER_ADDED", letter: "A", position: 0} as Omit<LetterAddedEvent, "timestamp">);
 
       expect(mockGlobalListener).toHaveBeenCalledTimes(1);
       expect(mockGlobalListener.mock.calls[0][0].type).toBe("LETTER_ADDED");
@@ -604,7 +604,7 @@ describe("GameEventBus", () => {
       // Sets prevent duplicates
       expect(eventBus.getListenerCount()).toBe(1);
 
-      eventBus.emit({ type: "LETTER_ADDED", letter: "A", position: 0 } as Omit<LetterAddedEvent, "timestamp">);
+      eventBus.emit({type: "LETTER_ADDED", letter: "A", position: 0} as Omit<LetterAddedEvent, "timestamp">);
 
       expect(mockGlobalListener).toHaveBeenCalledTimes(1);
     });
@@ -613,8 +613,8 @@ describe("GameEventBus", () => {
       const listener = jest.fn();
       eventBus.on("LETTER_ADDED", listener);
 
-      eventBus.emit({ type: "LETTER_ADDED", letter: "A", position: 0 } as Omit<LetterAddedEvent, "timestamp">);
-      eventBus.emit({ type: "LETTER_ADDED", letter: "Z", position: 4 } as Omit<LetterAddedEvent, "timestamp">);
+      eventBus.emit({type: "LETTER_ADDED", letter: "A", position: 0} as Omit<LetterAddedEvent, "timestamp">);
+      eventBus.emit({type: "LETTER_ADDED", letter: "Z", position: 4} as Omit<LetterAddedEvent, "timestamp">);
 
       expect(listener).toHaveBeenCalledTimes(2);
       expect(listener.mock.calls[0][0].position).toBe(0);
@@ -625,7 +625,7 @@ describe("GameEventBus", () => {
       const listener = jest.fn();
       eventBus.on("LETTER_ADDED", listener);
 
-      eventBus.emit({ type: "LETTER_ADDED", letter: "a", position: 0 } as Omit<LetterAddedEvent, "timestamp">);
+      eventBus.emit({type: "LETTER_ADDED", letter: "a", position: 0} as Omit<LetterAddedEvent, "timestamp">);
 
       expect(listener.mock.calls[0][0].letter).toBe("a");
     });
@@ -676,7 +676,7 @@ describe("GameEventBus", () => {
           letter: "A",
           position: 0,
           timestamp: expect.any(Number),
-        })
+        }),
       );
     });
 
@@ -686,14 +686,8 @@ describe("GameEventBus", () => {
       eventBus.onAll(globalListener);
 
       // Emit different types of events
-      eventBus.emit({ type: "LETTER_ADDED", letter: "A", position: 0 } as Omit<
-        LetterAddedEvent,
-        "timestamp"
-      >);
-      eventBus.emit({ type: "LETTER_REMOVED", position: 1 } as Omit<
-        LetterRemovedEvent,
-        "timestamp"
-      >);
+      eventBus.emit({type: "LETTER_ADDED", letter: "A", position: 0} as Omit<LetterAddedEvent, "timestamp">);
+      eventBus.emit({type: "LETTER_REMOVED", position: 1} as Omit<LetterRemovedEvent, "timestamp">);
       eventBus.emit({
         type: "GUESS_SUBMITTED",
         guess: "HELLO",
@@ -708,17 +702,20 @@ describe("GameEventBus", () => {
       eventBus.onAll(globalListener);
 
       // Emit all event types
-      eventBus.emit({ type: "LETTER_ADDED", letter: "A", position: 0 } as Omit<LetterAddedEvent, "timestamp">);
-      eventBus.emit({ type: "LETTER_REMOVED", position: 0 } as Omit<LetterRemovedEvent, "timestamp">);
-      eventBus.emit({ type: "GUESS_SUBMITTED", guess: "HELLO", attemptNumber: 1 } as Omit<GuessSubmittedEvent, "timestamp">);
+      eventBus.emit({type: "LETTER_ADDED", letter: "A", position: 0} as Omit<LetterAddedEvent, "timestamp">);
+      eventBus.emit({type: "LETTER_REMOVED", position: 0} as Omit<LetterRemovedEvent, "timestamp">);
+      eventBus.emit({type: "GUESS_SUBMITTED", guess: "HELLO", attemptNumber: 1} as Omit<
+        GuessSubmittedEvent,
+        "timestamp"
+      >);
       eventBus.emit({
         type: "GUESS_VALIDATED",
         guess: "HELLO",
-        feedback: [{ letter: "H", status: "green" }],
+        feedback: [{letter: "H", status: "green"}],
         isCorrect: false,
       } as Omit<GuessValidatedEvent, "timestamp">);
-      eventBus.emit({ type: "GAME_COMPLETED", outcome: "won", attempts: 3 } as Omit<GameCompletedEvent, "timestamp">);
-      eventBus.emit({ type: "HINT_REQUESTED", hintType: "letter" } as Omit<HintRequestedEvent, "timestamp">);
+      eventBus.emit({type: "GAME_COMPLETED", outcome: "won", attempts: 3} as Omit<GameCompletedEvent, "timestamp">);
+      eventBus.emit({type: "HINT_REQUESTED", hintType: "letter"} as Omit<HintRequestedEvent, "timestamp">);
 
       expect(globalListener).toHaveBeenCalledTimes(6);
 
@@ -735,14 +732,14 @@ describe("GameEventBus", () => {
       const typedListener: GameEventListener<LetterRemovedEvent> = jest.fn();
       eventBus.on("LETTER_REMOVED", typedListener);
 
-      eventBus.emit({ type: "LETTER_REMOVED", position: 3 } as Omit<LetterRemovedEvent, "timestamp">);
+      eventBus.emit({type: "LETTER_REMOVED", position: 3} as Omit<LetterRemovedEvent, "timestamp">);
 
       expect(typedListener).toHaveBeenCalledWith(
         expect.objectContaining({
           type: "LETTER_REMOVED",
           position: 3,
           timestamp: expect.any(Number),
-        })
+        }),
       );
     });
 
@@ -762,7 +759,7 @@ describe("GameEventBus", () => {
           guess: "WORLD",
           attemptNumber: 2,
           timestamp: expect.any(Number),
-        })
+        }),
       );
     });
 
@@ -771,11 +768,11 @@ describe("GameEventBus", () => {
       eventBus.on("GUESS_VALIDATED", typedListener);
 
       const feedback = [
-        { letter: "T", status: "green" as const },
-        { letter: "E", status: "yellow" as const },
-        { letter: "S", status: "red" as const },
-        { letter: "T", status: "green" as const },
-        { letter: "S", status: "red" as const },
+        {letter: "T", status: "green" as const},
+        {letter: "E", status: "yellow" as const},
+        {letter: "S", status: "red" as const},
+        {letter: "T", status: "green" as const},
+        {letter: "S", status: "red" as const},
       ];
 
       eventBus.emit({
@@ -792,7 +789,7 @@ describe("GameEventBus", () => {
           feedback,
           isCorrect: false,
           timestamp: expect.any(Number),
-        })
+        }),
       );
     });
 
@@ -812,7 +809,7 @@ describe("GameEventBus", () => {
           outcome: "lost",
           attempts: 6,
           timestamp: expect.any(Number),
-        })
+        }),
       );
     });
 
@@ -830,7 +827,7 @@ describe("GameEventBus", () => {
           type: "HINT_REQUESTED",
           hintType: "position",
           timestamp: expect.any(Number),
-        })
+        }),
       );
     });
   });
@@ -842,7 +839,7 @@ describe("GameEventBus", () => {
         letter: "A",
         position: 0,
       };
-      const originalCopy = { ...originalEvent };
+      const originalCopy = {...originalEvent};
 
       eventBus.emit(originalEvent);
 
@@ -859,7 +856,7 @@ describe("GameEventBus", () => {
       eventBus.on("LETTER_ADDED", listener2);
       eventBus.onAll(globalListener);
 
-      eventBus.emit({ type: "LETTER_ADDED", letter: "A", position: 0 } as Omit<LetterAddedEvent, "timestamp">);
+      eventBus.emit({type: "LETTER_ADDED", letter: "A", position: 0} as Omit<LetterAddedEvent, "timestamp">);
 
       const event1 = listener1.mock.calls[0][0];
       const event2 = listener2.mock.calls[0][0];
@@ -873,8 +870,8 @@ describe("GameEventBus", () => {
       const listener = jest.fn();
       eventBus.on("LETTER_ADDED", listener);
 
-      eventBus.emit({ type: "LETTER_ADDED", letter: "A", position: 0 } as Omit<LetterAddedEvent, "timestamp">);
-      eventBus.emit({ type: "LETTER_ADDED", letter: "B", position: 1 } as Omit<LetterAddedEvent, "timestamp">);
+      eventBus.emit({type: "LETTER_ADDED", letter: "A", position: 0} as Omit<LetterAddedEvent, "timestamp">);
+      eventBus.emit({type: "LETTER_ADDED", letter: "B", position: 1} as Omit<LetterAddedEvent, "timestamp">);
 
       const timestamp1 = listener.mock.calls[0][0].timestamp;
       const timestamp2 = listener.mock.calls[1][0].timestamp;
@@ -904,7 +901,7 @@ describe("GameEventBus", () => {
 
       for (let i = 0; i < 10; i++) {
         const unsubscribe = eventBus.on("LETTER_ADDED", listener);
-        eventBus.emit({ type: "LETTER_ADDED", letter: "A", position: 0 } as Omit<LetterAddedEvent, "timestamp">);
+        eventBus.emit({type: "LETTER_ADDED", letter: "A", position: 0} as Omit<LetterAddedEvent, "timestamp">);
         unsubscribe();
       }
 

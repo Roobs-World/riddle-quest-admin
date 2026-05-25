@@ -1,7 +1,7 @@
 /**
  * @fileoverview Korean (ko) locale overrides.
  */
-import type { LocaleOverrides } from "./types";
+import type {LocaleOverrides} from "./types";
 
 export const koOverrides: LocaleOverrides = {
   AuthStrings: {
@@ -89,10 +89,8 @@ export const koOverrides: LocaleOverrides = {
       TITLE: "비밀번호 재설정",
       BUTTON_TEXT: "비밀번호 재설정",
       SUCCESS_MESSAGE: "비밀번호 재설정 이메일이 전송되었습니다! 받은 편지함을 확인하세요.",
-      USER_NOT_FOUND_ERROR:
-        "이 이메일 주소로 등록된 계정이 없습니다. 이메일을 확인하거나 새 계정을 만드세요.",
-      GENERIC_ERROR:
-        "재설정 이메일 전송 중 오류가 발생했습니다. 다시 시도하세요.",
+      USER_NOT_FOUND_ERROR: "이 이메일 주소로 등록된 계정이 없습니다. 이메일을 확인하거나 새 계정을 만드세요.",
+      GENERIC_ERROR: "재설정 이메일 전송 중 오류가 발생했습니다. 다시 시도하세요.",
       BACK_TO_LOGIN: "로그인으로 돌아가기",
     },
   },
@@ -121,8 +119,7 @@ export const koOverrides: LocaleOverrides = {
     TITLE: "크레딧",
     SUBTITLE: "Riddle Quest를 만든 놀라운 팀을 소개합니다",
     THANK_YOU_TITLE: "감사합니다!",
-    THANK_YOU_TEXT:
-      "Riddle Quest를 가능하게 해준 모든 기여자 여러분께 특별한 감사를 드립니다.",
+    THANK_YOU_TEXT: "Riddle Quest를 가능하게 해준 모든 기여자 여러분께 특별한 감사를 드립니다.",
   },
   Profile: {
     LOADING_MESSAGE: "프로필 데이터를 불러오는 중...",
@@ -186,23 +183,19 @@ export const koOverrides: LocaleOverrides = {
   WelcomeModal: {
     WELCOME_TITLE: "Riddle Quest에\n오신 것을 환영합니다!",
     LETS_PLAY: "시작하기",
-    SOLVE_RIDDLES_TEXT:
-      "글자 하나씩 답을 추측하며 수수께끼를 풀어보세요. 색깔 힌트로 각 시도를 안내받으세요.",
-    EARN_COINS_TEXT:
-      "코인을 모으고 일일 챌린지를 완료하며 순위를 올려보세요.",
+    SOLVE_RIDDLES_TEXT: "글자 하나씩 답을 추측하며 수수께끼를 풀어보세요. 색깔 힌트로 각 시도를 안내받으세요.",
+    EARN_COINS_TEXT: "코인을 모으고 일일 챌린지를 완료하며 순위를 올려보세요.",
   },
   Instructions: {
     TITLE: "플레이 방법",
     GOAL_TITLE: "목표",
-    GOAL_DESCRIPTION:
-      "색깔 힌트를 사용해 3번의 시도로 숨겨진 수수께끼를 맞춰보세요.",
+    GOAL_DESCRIPTION: "색깔 힌트를 사용해 3번의 시도로 숨겨진 수수께끼를 맞춰보세요.",
     COLOR_CLUES_TITLE: "색깔 힌트",
     COLOR_CORRECT: "글자가 올바르고 올바른 위치에 있습니다",
     COLOR_MISPLACED: "글자가 단어에 있지만 위치가 다릅니다",
     COLOR_WRONG: "글자가 단어에 없습니다",
     TIPS_TITLE: "팁",
-    TIPS_DESCRIPTION:
-      "자주 사용되는 글자부터 시작하고 색깔 피드백을 활용하세요. 시도는 3번뿐입니다!",
+    TIPS_DESCRIPTION: "자주 사용되는 글자부터 시작하고 색깔 피드백을 활용하세요. 시도는 3번뿐입니다!",
     GOT_IT_BUTTON: "알겠어요!",
   },
   VictoryModal: {
@@ -240,8 +233,7 @@ export const koOverrides: LocaleOverrides = {
     NEW_ACHIEVEMENT: "새로운 업적",
   },
   ErrorMessages: {
-    UNABLE_TO_LOAD_RIDDLES:
-      "수수께끼를 불러올 수 없습니다. 연결을 확인하고 다시 시도해 주세요.",
+    UNABLE_TO_LOAD_RIDDLES: "수수께끼를 불러올 수 없습니다. 연결을 확인하고 다시 시도해 주세요.",
     FAILED_TO_LOAD_PRODUCTS: "상품을 불러올 수 없습니다",
     FAILED_TO_LOAD_SHOP_PRODUCTS: "상점 상품을 불러올 수 없습니다",
   },
@@ -280,7 +272,8 @@ export const koOverrides: LocaleOverrides = {
     NOT_ENOUGH_COINS_MESSAGE: "힌트를 사용하려면 더 많은 코인이 필요합니다.",
     HINT_ERROR_TITLE: "오류",
     GUEST_MODE_NOTICE_TITLE: "게스트 모드 안내",
-    GUEST_MODE_NOTICE_MESSAGE: "게스트 모드에서는 진행 상황이 손실될 수 있으며 순위표 등 일부 기능을 사용할 수 없습니다.",
+    GUEST_MODE_NOTICE_MESSAGE:
+      "게스트 모드에서는 진행 상황이 손실될 수 있으며 순위표 등 일부 기능을 사용할 수 없습니다.",
     AD_NOT_READY_TITLE: "광고 준비 중",
     AD_NOT_READY_MESSAGE: "지금은 보상형 광고를 표시할 수 없습니다. 잠시 후 다시 시도해 주세요.",
     SPEND_COINS_ERROR_MESSAGE: "코인을 사용할 수 없습니다. 다시 시도해 주세요.",

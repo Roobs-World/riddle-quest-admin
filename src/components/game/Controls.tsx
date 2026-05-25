@@ -11,10 +11,10 @@ m * @author Riddle Quest Development Team
  */
 
 import React from "react";
-import { View, TouchableOpacity, Text } from "react-native";
-import { SPACING, TYPOGRAPHY } from "../../styles";
-import { scale } from "../../utils/responsive";
-import { AppStrings } from "../../constants/AppStrings";
+import {View, TouchableOpacity, Text} from "react-native";
+import {SPACING, TYPOGRAPHY} from "../../styles";
+import {scale} from "../../utils/responsive";
+import {AppStrings} from "../../constants/AppStrings";
 
 /**
  * Props interface for the Controls component.
@@ -74,23 +74,25 @@ interface ControlsProps {
  * @param {ControlsProps} props - Component props
  * @returns {JSX.Element} Rendered controls container with context-appropriate buttons
  */
-const Controls: React.FC<ControlsProps> = ({ onNextPress, isWin }) => {
+const Controls: React.FC<ControlsProps> = ({onNextPress, isWin}) => {
   /** Determine if the next button should be visible based on win state */
   const isNextVisible = isWin;
 
   return (
-    <View className="flex-row justify-center w-full" style={{ marginTop: SPACING.md }}>
+    <View className="flex-row justify-center w-full" style={{marginTop: SPACING.md}}>
       {/* Next Level Button - Only visible after winning */}
       {isNextVisible && (
         <TouchableOpacity
           className="bg-green-500 rounded-lg"
-          style={{ padding: scale(12) }}
+          style={{padding: scale(12)}}
           onPress={onNextPress}
           accessibilityRole="button"
           accessibilityLabel={AppStrings.VictoryModal.NEXT_LEVEL_BUTTON}
           accessibilityHint={AppStrings.Accessibility.NEXT_LEVEL_HINT}
         >
-          <Text style={{ color: "white", fontFamily: TYPOGRAPHY.fontPrimary }}>{AppStrings.VictoryModal.NEXT_LEVEL_BUTTON}</Text>
+          <Text style={{color: "white", fontFamily: TYPOGRAPHY.fontPrimary}}>
+            {AppStrings.VictoryModal.NEXT_LEVEL_BUTTON}
+          </Text>
         </TouchableOpacity>
       )}
     </View>
@@ -98,4 +100,3 @@ const Controls: React.FC<ControlsProps> = ({ onNextPress, isWin }) => {
 };
 
 export default React.memo(Controls);
-

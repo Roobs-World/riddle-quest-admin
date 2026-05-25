@@ -27,8 +27,8 @@
 
 /* eslint-disable react/prop-types */
 /* eslint-disable react/no-unknown-property */
-import React, { useRef, useMemo, useState, useEffect } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import React, {useRef, useMemo, useState, useEffect} from "react";
+import {Canvas, useFrame} from "@react-three/fiber";
 import {
   Mesh,
   Group,
@@ -39,9 +39,9 @@ import {
   LinearFilter,
   ClampToEdgeWrapping,
 } from "three";
-import { View, StyleSheet } from "react-native";
-import { Asset } from "expo-asset";
-import { requireNativeModule } from "expo-modules-core";
+import {View, StyleSheet} from "react-native";
+import {Asset} from "expo-asset";
+import {requireNativeModule} from "expo-modules-core";
 
 // Expo's EXGL doesn't support UNPACK_COLORSPACE_CONVERSION_WEBGL which Three.js
 // r152+ tries to set when color management is enabled.
@@ -52,8 +52,8 @@ const EXGL_UNSUPPORTED_PIXEL_STORE_PARAMETERS = new Set<number>([
   0x9241, // UNPACK_PREMULTIPLY_ALPHA_WEBGL
   0x9243, // UNPACK_COLORSPACE_CONVERSION_WEBGL
 ]);
-import { SOLAR_SYSTEM_CONFIG } from "./SolarSystemConfig";
-import { dimensions } from "../../utils/responsive";
+import {SOLAR_SYSTEM_CONFIG} from "./SolarSystemConfig";
+import {dimensions} from "../../utils/responsive";
 // Import texture assets
 import sunTextureModule from "../../../assets/3d/tex_sun_spots_02.png";
 
@@ -62,27 +62,15 @@ const textureCache = new Map<string | number, Texture>();
 const sphereGeometryCache = new Map<string, SphereGeometry>();
 let texturedPhongMaterialCache = new WeakMap<Texture, MeshPhongMaterial>();
 let fallbackPhongMaterial: MeshPhongMaterial | null = null;
-type AssetModuleReference =
-  | string
-  | number
-  | { default?: string | number; uri?: string };
+type AssetModuleReference = string | number | {default?: string | number; uri?: string};
 
-const isTextureDebugEnabled =
-  process.env.EXPO_PUBLIC_TEXTURE_DEBUG === "1";
+const isTextureDebugEnabled = process.env.EXPO_PUBLIC_TEXTURE_DEBUG === "1";
 
 const ExpoAssetModule = requireNativeModule("ExpoAsset") as {
-  downloadAsync: (
-    uri: string,
-    md5Hash: string | null,
-    type: string
-  ) => Promise<string>;
+  downloadAsync: (uri: string, md5Hash: string | null, type: string) => Promise<string>;
 };
 
-const textureDebugLog = (
-  level: "log" | "warn" | "error",
-  message: string,
-  details?: Record<string, unknown>
-): void => {
+const textureDebugLog = (level: "log" | "warn" | "error", message: string, details?: Record<string, unknown>): void => {
   if (!isTextureDebugEnabled) {
     return;
   }
@@ -107,11 +95,7 @@ const ensureFileUriAsset = async (asset: Asset): Promise<Asset> => {
     return asset;
   }
 
-  const copiedUri = await ExpoAssetModule.downloadAsync(
-    asset.uri,
-    asset.hash,
-    asset.type
-  );
+  const copiedUri = await ExpoAssetModule.downloadAsync(asset.uri, asset.hash, asset.type);
   asset.localUri = copiedUri;
   return asset;
 };
@@ -121,11 +105,7 @@ const resolveAssetModule = (assetModule: AssetModuleReference): string | number 
     return assetModule;
   }
 
-  if (
-    assetModule &&
-    (typeof assetModule.default === "number" ||
-      typeof assetModule.default === "string")
-  ) {
+  if (assetModule && (typeof assetModule.default === "number" || typeof assetModule.default === "string")) {
     return assetModule.default;
   }
 
@@ -140,11 +120,7 @@ export const __resetSolarSystem3DTextureCacheForTests = (): void => {
   fallbackPhongMaterial = null;
 };
 
-const getSphereGeometry = (
-  radius: number,
-  widthSegments: number,
-  heightSegments: number
-): SphereGeometry => {
+const getSphereGeometry = (radius: number, widthSegments: number, heightSegments: number): SphereGeometry => {
   const key = `${radius}:${widthSegments}:${heightSegments}`;
   const cached = sphereGeometryCache.get(key);
   if (cached) {
@@ -156,9 +132,7 @@ const getSphereGeometry = (
   return geometry;
 };
 
-const getSharedTexturedPhongMaterial = (
-  texture: Texture | null
-): MeshPhongMaterial => {
+const getSharedTexturedPhongMaterial = (texture: Texture | null): MeshPhongMaterial => {
   if (!texture) {
     if (!fallbackPhongMaterial) {
       fallbackPhongMaterial = new MeshPhongMaterial();
@@ -171,7 +145,7 @@ const getSharedTexturedPhongMaterial = (
     return cached;
   }
 
-  const material = new MeshPhongMaterial({ map: texture });
+  const material = new MeshPhongMaterial({map: texture});
   texturedPhongMaterialCache.set(texture, material);
   return material;
 };
@@ -195,9 +169,7 @@ export const __createSunMaterialForTests = createSunMaterial;
 function createTextureFromAsset(asset: Asset): Texture {
   const uri = asset.localUri ?? null;
   if (!uri?.startsWith("file://")) {
-    throw new Error(
-      `Texture asset ${asset.name || "unknown"} did not resolve to a file:// localUri`
-    );
+    throw new Error(`Texture asset ${asset.name || "unknown"} did not resolve to a file:// localUri`);
   }
 
   const image = {
@@ -216,7 +188,7 @@ function createTextureFromAsset(asset: Asset): Texture {
     ...image,
   };
   texture.needsUpdate = true;
-  (texture as unknown as { isDataTexture: boolean }).isDataTexture = true;
+  (texture as unknown as {isDataTexture: boolean}).isDataTexture = true;
   // LinearFilter handles non-power-of-two textures.
   texture.generateMipmaps = false;
   texture.minFilter = LinearFilter;
@@ -233,10 +205,7 @@ function createTextureFromAsset(asset: Asset): Texture {
  * Avoids expo-three's problematic loader imports.
  */
 function useExpoTexture(assetModule: AssetModuleReference): Texture | null {
-  const resolvedModule = useMemo(
-    () => resolveAssetModule(assetModule),
-    [assetModule]
-  );
+  const resolvedModule = useMemo(() => resolveAssetModule(assetModule), [assetModule]);
 
   const [texture, setTexture] = useState<Texture | null>(() => {
     return textureCache.get(resolvedModule) || null;
@@ -297,7 +266,7 @@ function useExpoTexture(assetModule: AssetModuleReference): Texture | null {
   return texture;
 }
 
-const { screenWidth: SCREEN_WIDTH, screenHeight: SCREEN_HEIGHT } = dimensions;
+const {screenWidth: SCREEN_WIDTH, screenHeight: SCREEN_HEIGHT} = dimensions;
 
 // Pre-defined shared geometries — lower segment counts are fine for a background
 const sunGeometry = getSphereGeometry(12.0, 48, 48);
@@ -315,9 +284,7 @@ const Sun: React.FC = React.memo(() => {
   const sunMaterial = useMemo(() => createSunMaterial(sunTexture), [sunTexture]);
 
   useFrame(() => {
-    __applySunFrameUpdateForTests(
-      sunRef.current as unknown as { rotation: { x: number; y: number } } | null
-    );
+    __applySunFrameUpdateForTests(sunRef.current as unknown as {rotation: {x: number; y: number}} | null);
   });
 
   return (
@@ -349,9 +316,7 @@ interface MoonProps {
   };
 }
 
-export const __applySunFrameUpdateForTests = (
-  sun: { rotation: { x: number; y: number } } | null
-): void => {
+export const __applySunFrameUpdateForTests = (sun: {rotation: {x: number; y: number}} | null): void => {
   if (sun) {
     sun.rotation.y += 0.008;
     sun.rotation.x += 0.002;
@@ -360,11 +325,11 @@ export const __applySunFrameUpdateForTests = (
 
 export const __applyMoonFrameUpdateForTests = (
   moon: {
-    position: { set: (x: number, y: number, z: number) => void };
-    rotation: { y: number };
+    position: {set: (x: number, y: number, z: number) => void};
+    rotation: {y: number};
   } | null,
   orbit: number,
-  moonConfig: MoonProps["moonConfig"]
+  moonConfig: MoonProps["moonConfig"],
 ): number => {
   const nextOrbit = orbit + moonConfig.orbitSpeed;
 
@@ -386,28 +351,22 @@ export const __applyMoonFrameUpdateForTests = (
  * @param {MoonProps} props - Configuration properties for the moon
  * @returns {JSX.Element} Rendered moon mesh with orbital motion
  */
-const Moon: React.FC<MoonProps> = React.memo(({ moonConfig }) => {
+const Moon: React.FC<MoonProps> = React.memo(({moonConfig}) => {
   const moonRef = useRef<Mesh>(null);
   const orbitTime = useRef(moonConfig.startAngle);
   const texture = useExpoTexture(moonConfig.textureModule);
 
-  const moonGeometry = useMemo(
-    () => getSphereGeometry(moonConfig.size * 1.4, 16, 16),
-    [moonConfig.size]
-  );
-  const moonMaterial = useMemo(
-    () => getSharedTexturedPhongMaterial(texture),
-    [texture]
-  );
+  const moonGeometry = useMemo(() => getSphereGeometry(moonConfig.size * 1.4, 16, 16), [moonConfig.size]);
+  const moonMaterial = useMemo(() => getSharedTexturedPhongMaterial(texture), [texture]);
 
   useFrame(() => {
     orbitTime.current = __applyMoonFrameUpdateForTests(
       moonRef.current as unknown as {
-        position: { set: (x: number, y: number, z: number) => void };
-        rotation: { y: number };
+        position: {set: (x: number, y: number, z: number) => void};
+        rotation: {y: number};
       } | null,
       orbitTime.current,
-      moonConfig
+      moonConfig,
     );
   });
 
@@ -425,10 +384,10 @@ interface PlanetProps {
 }
 
 export const __applyPlanetFrameUpdateForTests = (
-  group: { position: { set: (x: number, y: number, z: number) => void } } | null,
-  mesh: { rotation: { y: number } } | null,
+  group: {position: {set: (x: number, y: number, z: number) => void}} | null,
+  mesh: {rotation: {y: number}} | null,
   orbit: number,
-  config: PlanetProps["config"]
+  config: PlanetProps["config"],
 ): number => {
   const nextOrbit = orbit + config.orbitSpeed;
 
@@ -452,29 +411,23 @@ export const __applyPlanetFrameUpdateForTests = (
  * @param {PlanetProps} props - Configuration properties for the planet
  * @returns {JSX.Element} Rendered planet group with orbital motion and moons
  */
-const Planet: React.FC<PlanetProps> = React.memo(({ config }) => {
+const Planet: React.FC<PlanetProps> = React.memo(({config}) => {
   const groupRef = useRef<Group>(null);
   const meshRef = useRef<Mesh>(null);
   const orbitTime = useRef(config.startAngle);
   const planetTexture = useExpoTexture(config.textureModule);
 
-  const planetGeometry = useMemo(
-    () => getSphereGeometry(config.size, 32, 32),
-    [config.size]
-  );
-  const planetMaterial = useMemo(
-    () => getSharedTexturedPhongMaterial(planetTexture),
-    [planetTexture]
-  );
+  const planetGeometry = useMemo(() => getSphereGeometry(config.size, 32, 32), [config.size]);
+  const planetMaterial = useMemo(() => getSharedTexturedPhongMaterial(planetTexture), [planetTexture]);
 
   useFrame(() => {
     orbitTime.current = __applyPlanetFrameUpdateForTests(
       groupRef.current as unknown as {
-        position: { set: (x: number, y: number, z: number) => void };
+        position: {set: (x: number, y: number, z: number) => void};
       } | null,
-      meshRef.current as unknown as { rotation: { y: number } } | null,
+      meshRef.current as unknown as {rotation: {y: number}} | null,
       orbitTime.current,
-      config
+      config,
     );
   });
 
@@ -499,12 +452,7 @@ const SolarSystemScene: React.FC = () => {
   return (
     <>
       <ambientLight intensity={0.35} />
-      <pointLight
-        position={[0, 30, 0]}
-        intensity={3.0}
-        color={0xffa500}
-        distance={250}
-      />
+      <pointLight position={[0, 30, 0]} intensity={3.0} color={0xffa500} distance={250} />
 
       <Sun />
 
@@ -531,7 +479,7 @@ const SolarSystem3D: React.FC = () => {
       left: 0,
       zIndex: 1,
     }),
-    []
+    [],
   );
 
   const cameraConfig = useMemo(
@@ -541,7 +489,7 @@ const SolarSystem3D: React.FC = () => {
       near: 0.1,
       far: 1700,
     }),
-    []
+    [],
   );
 
   return (
@@ -550,8 +498,8 @@ const SolarSystem3D: React.FC = () => {
         style={canvasStyle}
         camera={cameraConfig}
         dpr={[1, 1.5]}
-        gl={{ alpha: true, pixelRatio: 1 }}
-        onCreated={({ gl, camera }) => {
+        gl={{alpha: true, pixelRatio: 1}}
+        onCreated={({gl, camera}) => {
           const webglContext = gl.getContext();
           const originalPixelStorei = webglContext.pixelStorei.bind(webglContext);
           if (originalPixelStorei) {
@@ -586,4 +534,3 @@ const styles = StyleSheet.create({
 });
 
 export default React.memo(SolarSystem3D);
-

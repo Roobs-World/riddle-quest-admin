@@ -1,9 +1,9 @@
 import React from "react";
-import { TouchableOpacity, Text } from "react-native";
-import { styles, SPACING, TYPOGRAPHY } from "../../styles";
-import { verticalScale } from "../../utils/responsive";
-import { logger } from "../../utils/logger";
-import { captureException } from "../../utils/sentry";
+import {TouchableOpacity, Text} from "react-native";
+import {styles, SPACING, TYPOGRAPHY} from "../../styles";
+import {verticalScale} from "../../utils/responsive";
+import {logger} from "../../utils/logger";
+import {captureException} from "../../utils/sentry";
 
 interface WideButtonProps {
   buttonText: string;
@@ -44,24 +44,16 @@ const WideButton: React.FC<WideButtonProps> = ({
       } catch (error) {
         logger.error(`Error in ${buttonText} onPress handler:`, error);
         captureException(error);
-        logger.debug(
-          `${buttonText} button press failed to execute callback properly`
-        );
+        logger.debug(`${buttonText} button press failed to execute callback properly`);
       }
     } else {
       logger.warn(`${buttonText} onPress is not a function or is undefined`);
-      logger.debug(
-        `${buttonText} button pressed but no action will be taken (missing callback)`
-      );
+      logger.debug(`${buttonText} button pressed but no action will be taken (missing callback)`);
 
       // In debug mode, provide more helpful information
       if (__DEV__) {
-        logger.debug(
-          `DEBUG INFO: ${buttonText} button needs an onPress function to work properly`
-        );
-        logger.debug(
-          `Check how this button is being rendered and ensure onPress is provided correctly`
-        );
+        logger.debug(`DEBUG INFO: ${buttonText} button needs an onPress function to work properly`);
+        logger.debug(`Check how this button is being rendered and ensure onPress is provided correctly`);
       }
     }
   };
@@ -72,11 +64,11 @@ const WideButton: React.FC<WideButtonProps> = ({
       onPress={handlePress}
       disabled={disabled}
       testID={testID}
-      style={[styles.buttonOpacity, { paddingVertical: verticalScale(12), paddingHorizontal: SPACING.lg }]}
+      style={[styles.buttonOpacity, {paddingVertical: verticalScale(12), paddingHorizontal: SPACING.lg}]}
     >
       <Text
-        className={`text-center ${disabled ? "text-gray-500" : (textColor || "text-white")}`}
-        style={[styles.buttonText, { fontFamily: TYPOGRAPHY.fontSecondaryBold }]}
+        className={`text-center ${disabled ? "text-gray-500" : textColor || "text-white"}`}
+        style={[styles.buttonText, {fontFamily: TYPOGRAPHY.fontSecondaryBold}]}
       >
         {buttonText}
       </Text>
@@ -85,4 +77,3 @@ const WideButton: React.FC<WideButtonProps> = ({
 };
 
 export default WideButton;
-

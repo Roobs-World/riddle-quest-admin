@@ -1,14 +1,10 @@
-import { Platform } from "react-native";
-import mobileAds, {
-  AdEventType,
-  RewardedAd,
-  RewardedAdEventType,
-} from "react-native-google-mobile-ads";
-import { getApp } from "@react-native-firebase/app";
-import { getAuth } from "@react-native-firebase/auth";
-import { getFunctions, httpsCallable } from "@react-native-firebase/functions";
-import { logger } from "../utils/logger";
-import { captureException } from "../utils/sentry";
+import {Platform} from "react-native";
+import mobileAds, {AdEventType, RewardedAd, RewardedAdEventType} from "react-native-google-mobile-ads";
+import {getApp} from "@react-native-firebase/app";
+import {getAuth} from "@react-native-firebase/auth";
+import {getFunctions, httpsCallable} from "@react-native-firebase/functions";
+import {logger} from "../utils/logger";
+import {captureException} from "../utils/sentry";
 
 const REWARDED_AD_TEST_UNIT_ID = "ca-app-pub-3940256099942544/5224354917";
 const MAX_LOAD_RETRY_ATTEMPTS = 3;
@@ -38,8 +34,7 @@ let loadRetryTimeout: ReturnType<typeof setTimeout> | null = null;
 
 const readinessSubscribers = new Set<(isReady: boolean) => void>();
 
-const isSupportedPlatform = (): boolean =>
-  Platform.OS === "android" || Platform.OS === "ios";
+const isSupportedPlatform = (): boolean => Platform.OS === "android" || Platform.OS === "ios";
 
 const publishReadiness = (): void => {
   readinessSubscribers.forEach((subscriber) => {
@@ -66,7 +61,7 @@ const scheduleLoadRetry = (): void => {
   }
   if (loadRetryAttemptCount >= MAX_LOAD_RETRY_ATTEMPTS) {
     logger.warn(
-      `Rewarded ad load retry limit reached (${MAX_LOAD_RETRY_ATTEMPTS}). Waiting for next manual load trigger.`
+      `Rewarded ad load retry limit reached (${MAX_LOAD_RETRY_ATTEMPTS}). Waiting for next manual load trigger.`,
     );
     return;
   }
@@ -218,14 +213,11 @@ export const showRewardedAd = async (): Promise<boolean> => {
     resolveRewardConfirmation = null;
   }, REWARD_CONFIRMATION_TIMEOUT_MS);
 
-  const unsubscribeReward = rewardedAd.addAdEventListener(
-    RewardedAdEventType.EARNED_REWARD,
-    () => {
-      didEarnReward = true;
-      resolveRewardConfirmation?.(true);
-      resolveRewardConfirmation = null;
-    }
-  );
+  const unsubscribeReward = rewardedAd.addAdEventListener(RewardedAdEventType.EARNED_REWARD, () => {
+    didEarnReward = true;
+    resolveRewardConfirmation?.(true);
+    resolveRewardConfirmation = null;
+  });
 
   const unsubscribeClosed = rewardedAd.addAdEventListener(AdEventType.CLOSED, () => {
     resolveRewardConfirmation?.(didEarnReward);
@@ -248,9 +240,7 @@ export const showRewardedAd = async (): Promise<boolean> => {
   }
 };
 
-export const subscribeToRewardedAdReadiness = (
-  subscriber: (isReady: boolean) => void
-): (() => void) => {
+export const subscribeToRewardedAdReadiness = (subscriber: (isReady: boolean) => void): (() => void) => {
   readinessSubscribers.add(subscriber);
   subscriber(isRewardedAdReady);
 
@@ -261,14 +251,12 @@ export const subscribeToRewardedAdReadiness = (
 
 export const getRewardedAdReadiness = (): boolean => isRewardedAdReady;
 
-export const createRewardedAdCallbackId = (
-  placement: RewardedAdPlacement
-): string =>
+export const createRewardedAdCallbackId = (placement: RewardedAdPlacement): string =>
   `${placement}-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
 
 export const recordRewardedAdCompletion = async (
   placement: RewardedAdPlacement,
-  callbackId = createRewardedAdCallbackId(placement)
+  callbackId = createRewardedAdCallbackId(placement),
 ): Promise<AwardedAdCallbackResponse> => {
   const userId = getAuth(getApp()).currentUser?.uid;
   if (!userId) {
@@ -283,7 +271,10 @@ export const recordRewardedAdCompletion = async (
       provider: string;
     },
     AwardedAdCallbackResponse
-  >(getFunctions(getApp()), "awardedAdCallback")({
+  >(
+    getFunctions(getApp()),
+    "awardedAdCallback",
+  )({
     userId,
     placement,
     callbackId,

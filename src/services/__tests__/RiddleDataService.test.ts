@@ -1,7 +1,7 @@
-import { getFirestore } from "@react-native-firebase/firestore";
-import { ZodError } from "zod";
-import { FirestoreRiddleSchema } from "../../validation/firestoreSchemas";
-import { RiddleDataService } from "../RiddleDataService";
+import {getFirestore} from "@react-native-firebase/firestore";
+import {ZodError} from "zod";
+import {FirestoreRiddleSchema} from "../../validation/firestoreSchemas";
+import {RiddleDataService} from "../RiddleDataService";
 
 // Standalone modular mock function references (assigned in jest.mock factories)
 let mockGetDocs: jest.Mock;
@@ -100,9 +100,7 @@ describe("RiddleDataService", () => {
 
     beforeEach(() => {
       // Mock Date to return consistent date
-      jest
-        .spyOn(Date.prototype, "toISOString")
-        .mockReturnValue("2023-12-01T10:00:00.000Z");
+      jest.spyOn(Date.prototype, "toISOString").mockReturnValue("2023-12-01T10:00:00.000Z");
     });
 
     afterEach(() => {
@@ -121,9 +119,7 @@ describe("RiddleDataService", () => {
       };
 
       mockGet.mockResolvedValue(mockSnapshot);
-      (FirestoreRiddleSchema.parse as jest.Mock).mockReturnValue(
-        mockValidatedRiddle
-      );
+      (FirestoreRiddleSchema.parse as jest.Mock).mockReturnValue(mockValidatedRiddle);
 
       const result = await riddleDataService.fetchDailyRiddle();
 
@@ -135,7 +131,7 @@ describe("RiddleDataService", () => {
         expect.objectContaining({
           ...mockRiddleData,
           riddleId: "daily-riddle-123",
-        })
+        }),
       );
       expect(result).toEqual(mockValidatedRiddle);
     });
@@ -178,36 +174,28 @@ describe("RiddleDataService", () => {
         throw zodError;
       });
 
-      await expect(riddleDataService.fetchDailyRiddle()).rejects.toThrow(
-        "Invalid daily riddle data structure"
-      );
+      await expect(riddleDataService.fetchDailyRiddle()).rejects.toThrow("Invalid daily riddle data structure");
     });
 
     it("should handle Firestore errors", async () => {
       const error = new Error("Firestore connection failed");
       mockGet.mockRejectedValue(error);
 
-      await expect(riddleDataService.fetchDailyRiddle()).rejects.toThrow(
-        "Firestore connection failed"
-      );
+      await expect(riddleDataService.fetchDailyRiddle()).rejects.toThrow("Firestore connection failed");
     });
 
     it("should handle network errors", async () => {
       const networkError = new Error("Network unavailable");
       mockGet.mockRejectedValue(networkError);
 
-      await expect(riddleDataService.fetchDailyRiddle()).rejects.toThrow(
-        "Network unavailable"
-      );
+      await expect(riddleDataService.fetchDailyRiddle()).rejects.toThrow("Network unavailable");
     });
 
     it("should handle permission errors", async () => {
       const permissionError = new Error("Permission denied");
       mockGet.mockRejectedValue(permissionError);
 
-      await expect(riddleDataService.fetchDailyRiddle()).rejects.toThrow(
-        "Permission denied"
-      );
+      await expect(riddleDataService.fetchDailyRiddle()).rejects.toThrow("Permission denied");
     });
   });
 
@@ -239,9 +227,7 @@ describe("RiddleDataService", () => {
       };
 
       mockGet.mockResolvedValue(mockSnapshot);
-      (FirestoreRiddleSchema.parse as jest.Mock).mockReturnValue(
-        mockValidatedRiddle
-      );
+      (FirestoreRiddleSchema.parse as jest.Mock).mockReturnValue(mockValidatedRiddle);
 
       const result = await riddleDataService.fetchClassicRiddle(level);
 
@@ -354,11 +340,7 @@ describe("RiddleDataService", () => {
 
       const result = await riddleDataService.fetchClassicRiddle(negativeLevel);
 
-      expect(mockWhere).toHaveBeenCalledWith(
-        "classicIndex",
-        "==",
-        negativeLevel
-      );
+      expect(mockWhere).toHaveBeenCalledWith("classicIndex", "==", negativeLevel);
       expect(result).toBeNull();
     });
 
@@ -388,7 +370,7 @@ describe("RiddleDataService", () => {
       });
 
       await expect(riddleDataService.fetchClassicRiddle(level)).rejects.toThrow(
-        "Invalid classic riddle data structure"
+        "Invalid classic riddle data structure",
       );
     });
 
@@ -396,9 +378,7 @@ describe("RiddleDataService", () => {
       const error = new Error("Database unavailable");
       mockGet.mockRejectedValue(error);
 
-      await expect(riddleDataService.fetchClassicRiddle(level)).rejects.toThrow(
-        "Database unavailable"
-      );
+      await expect(riddleDataService.fetchClassicRiddle(level)).rejects.toThrow("Database unavailable");
     });
   });
 
@@ -424,9 +404,7 @@ describe("RiddleDataService", () => {
       };
 
       mockGetDoc.mockResolvedValue(mockDocumentSnapshot);
-      (FirestoreRiddleSchema.parse as jest.Mock).mockReturnValue(
-        mockValidatedRiddle
-      );
+      (FirestoreRiddleSchema.parse as jest.Mock).mockReturnValue(mockValidatedRiddle);
 
       const result = await riddleDataService.fetchRiddleById(riddleId);
 
@@ -439,21 +417,15 @@ describe("RiddleDataService", () => {
     });
 
     it("should throw error for empty riddleId", async () => {
-      await expect(riddleDataService.fetchRiddleById("")).rejects.toThrow(
-        "Riddle ID is required"
-      );
+      await expect(riddleDataService.fetchRiddleById("")).rejects.toThrow("Riddle ID is required");
     });
 
     it("should throw error for null riddleId", async () => {
-      await expect(
-        riddleDataService.fetchRiddleById(null as any)
-      ).rejects.toThrow("Riddle ID is required");
+      await expect(riddleDataService.fetchRiddleById(null as any)).rejects.toThrow("Riddle ID is required");
     });
 
     it("should throw error for undefined riddleId", async () => {
-      await expect(
-        riddleDataService.fetchRiddleById(undefined as any)
-      ).rejects.toThrow("Riddle ID is required");
+      await expect(riddleDataService.fetchRiddleById(undefined as any)).rejects.toThrow("Riddle ID is required");
     });
 
     it("should return null when riddle document does not exist", async () => {
@@ -519,24 +491,18 @@ describe("RiddleDataService", () => {
         throw zodError;
       });
 
-      await expect(riddleDataService.fetchRiddleById(riddleId)).rejects.toThrow(
-        "Invalid riddle data structure"
-      );
+      await expect(riddleDataService.fetchRiddleById(riddleId)).rejects.toThrow("Invalid riddle data structure");
     });
 
     it("should handle Firestore errors", async () => {
       const error = new Error("Document read failed");
       mockGetDoc.mockRejectedValue(error);
 
-      await expect(riddleDataService.fetchRiddleById(riddleId)).rejects.toThrow(
-        "Document read failed"
-      );
+      await expect(riddleDataService.fetchRiddleById(riddleId)).rejects.toThrow("Document read failed");
     });
 
     it("should handle whitespace-only riddleId", async () => {
-      await expect(riddleDataService.fetchRiddleById("   ")).rejects.toThrow(
-        "Riddle ID is required"
-      );
+      await expect(riddleDataService.fetchRiddleById("   ")).rejects.toThrow("Riddle ID is required");
     });
   });
 
@@ -583,27 +549,21 @@ describe("RiddleDataService", () => {
       const error = new Error("Query failed");
       mockGet.mockRejectedValue(error);
 
-      await expect(riddleDataService.getClassicRiddleCount()).rejects.toThrow(
-        "Query failed"
-      );
+      await expect(riddleDataService.getClassicRiddleCount()).rejects.toThrow("Query failed");
     });
 
     it("should handle permission errors", async () => {
       const permissionError = new Error("Permission denied");
       mockGet.mockRejectedValue(permissionError);
 
-      await expect(riddleDataService.getClassicRiddleCount()).rejects.toThrow(
-        "Permission denied"
-      );
+      await expect(riddleDataService.getClassicRiddleCount()).rejects.toThrow("Permission denied");
     });
 
     it("should handle network errors", async () => {
       const networkError = new Error("Network error");
       mockGet.mockRejectedValue(networkError);
 
-      await expect(riddleDataService.getClassicRiddleCount()).rejects.toThrow(
-        "Network error"
-      );
+      await expect(riddleDataService.getClassicRiddleCount()).rejects.toThrow("Network error");
     });
   });
 
@@ -621,7 +581,7 @@ describe("RiddleDataService", () => {
     });
 
     it("should use correct Firebase app instance", async () => {
-      mockGet.mockResolvedValue({ size: 0 });
+      mockGet.mockResolvedValue({size: 0});
 
       await riddleDataService.getClassicRiddleCount();
 
@@ -635,7 +595,7 @@ describe("RiddleDataService", () => {
     });
 
     it("should maintain consistent collection reference across methods", async () => {
-      mockGet.mockResolvedValue({ size: 0, empty: true, docs: [] });
+      mockGet.mockResolvedValue({size: 0, empty: true, docs: []});
 
       // Test multiple methods use same collection
       await riddleDataService.getClassicRiddleCount();
@@ -647,7 +607,7 @@ describe("RiddleDataService", () => {
     });
 
     it("should handle concurrent operations gracefully", async () => {
-      mockGet.mockResolvedValue({ size: 5 });
+      mockGet.mockResolvedValue({size: 5});
 
       // Simulate concurrent operations
       const operations = [riddleDataService.getClassicRiddleCount(), riddleDataService.getClassicRiddleCount()];
@@ -663,12 +623,10 @@ describe("RiddleDataService", () => {
       mockGet.mockRejectedValueOnce(new Error("Temporary failure"));
 
       // Second operation succeeds
-      mockGet.mockResolvedValueOnce({ size: 10 });
+      mockGet.mockResolvedValueOnce({size: 10});
 
       // First call should fail
-      await expect(riddleDataService.getClassicRiddleCount()).rejects.toThrow(
-        "Temporary failure"
-      );
+      await expect(riddleDataService.getClassicRiddleCount()).rejects.toThrow("Temporary failure");
 
       // Service should still work for subsequent calls
       const result = await riddleDataService.getClassicRiddleCount();

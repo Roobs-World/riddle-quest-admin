@@ -1,11 +1,11 @@
 import React from "react";
-import { render } from "@testing-library/react-native";
-import { Image } from "react-native";
+import {render} from "@testing-library/react-native";
+import {Image} from "react-native";
 import XIcon from "../XIcon";
 
 describe("XIcon", () => {
   it("renders with default size", () => {
-    const { UNSAFE_getByType } = render(<XIcon />);
+    const {UNSAFE_getByType} = render(<XIcon />);
     const image = UNSAFE_getByType(Image);
 
     expect(image.props.style).toMatchObject({
@@ -16,7 +16,7 @@ describe("XIcon", () => {
   });
 
   it("renders with numeric width", () => {
-    const { UNSAFE_getByType } = render(<XIcon width={32} />);
+    const {UNSAFE_getByType} = render(<XIcon width={32} />);
     const image = UNSAFE_getByType(Image);
 
     expect(image.props.style).toMatchObject({
@@ -26,7 +26,7 @@ describe("XIcon", () => {
   });
 
   it("parses string width and applies tint color", () => {
-    const { UNSAFE_getByType } = render(<XIcon width="40" tintColor="#fff" />);
+    const {UNSAFE_getByType} = render(<XIcon width="40" tintColor="#fff" />);
     const image = UNSAFE_getByType(Image);
 
     expect(image.props.style).toMatchObject({

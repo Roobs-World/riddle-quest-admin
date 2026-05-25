@@ -116,7 +116,9 @@ export async function generateUniqueRiddle(): Promise<[string, string] | null> {
 
     // Validate answer length (critical requirement)
     if (answer.length > MAX_RIDDLE_ANSWER_CHARACTERS) {
-      functions.logger.warn(`Answer too long: "${answer}" (${answer.length} characters). Must be ${MAX_RIDDLE_ANSWER_CHARACTERS} or fewer.`);
+      functions.logger.warn(
+        `Answer too long: "${answer}" (${answer.length} characters). Must be ${MAX_RIDDLE_ANSWER_CHARACTERS} or fewer.`,
+      );
       return null;
     }
 

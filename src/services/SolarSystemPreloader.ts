@@ -25,23 +25,12 @@ import {
   DoubleSide,
   Texture,
 } from "three";
-import { logger } from "../utils/logger";
-import { captureException } from "../utils/sentry";
-import {
-  PlanetConfig,
-  SOLAR_SYSTEM_CONFIG,
-  SOLAR_TEXTURE_MAPPING,
-} from "./solar/solarSystemConfig";
-import { loadTextureFromAsset } from "./solar/textureLoader";
-import {
-  createTextureCache,
-  disposeAndClearTextureCache,
-} from "./solar/textureCache";
-import {
-  addEnhancedLights,
-  addSunMeshes,
-  createSceneSetup,
-} from "./solar/sceneFactory";
+import {logger} from "../utils/logger";
+import {captureException} from "../utils/sentry";
+import {PlanetConfig, SOLAR_SYSTEM_CONFIG, SOLAR_TEXTURE_MAPPING} from "./solar/solarSystemConfig";
+import {loadTextureFromAsset} from "./solar/textureLoader";
+import {createTextureCache, disposeAndClearTextureCache} from "./solar/textureCache";
+import {addEnhancedLights, addSunMeshes, createSceneSetup} from "./solar/sceneFactory";
 
 /**
  * Solar System Preloader Service - v2.4.0 EXPO ASSET SYSTEM
@@ -94,18 +83,14 @@ export class SolarSystemPreloader {
    * Preload all solar system textures - WITH FALLBACKS for system stability
    */
   private static async preloadTextures(
-    onProgress?: (progress: TexturePreloadProgress) => void
+    onProgress?: (progress: TexturePreloadProgress) => void,
   ): Promise<Map<string, Texture | null>> {
     if (this.textureCache.size > 0) {
-      logger.debug(
-        "SolarSystemPreloader: Textures already preloaded, returning cache"
-      );
+      logger.debug("SolarSystemPreloader: Textures already preloaded, returning cache");
       return this.textureCache;
     }
 
-    logger.debug(
-      "SolarSystemPreloader: Loading textures with fallback support..."
-    );
+    logger.debug("SolarSystemPreloader: Loading textures with fallback support...");
 
     const pendingTextures = [...this.textureMapping];
     const total = this.textureMapping.length;
@@ -119,14 +104,11 @@ export class SolarSystemPreloader {
           return;
         }
 
-        const { key, path } = nextTexture;
+        const {key, path} = nextTexture;
         try {
           const texturePromise = loadTextureFromAsset(path, key);
           const timeoutPromise = new Promise<never>((_, reject) => {
-            setTimeout(
-              () => reject(new Error(`Texture ${key} timeout after 3 seconds`)),
-              3000
-            );
+            setTimeout(() => reject(new Error(`Texture ${key} timeout after 3 seconds`)), 3000);
           });
 
           const texture = await Promise.race([texturePromise, timeoutPromise]);
@@ -151,16 +133,13 @@ export class SolarSystemPreloader {
       }
     };
 
-    const workers = Array.from(
-      { length: Math.min(this.texturePreloadConcurrency, total) },
-      () => loadNextTexture()
-    );
+    const workers = Array.from({length: Math.min(this.texturePreloadConcurrency, total)}, () => loadNextTexture());
     await Promise.all(workers);
 
     logger.debug(
       `SolarSystemPreloader: Texture loading completed - ${successfullyLoaded}/${total} loaded successfully, ${
         total - successfullyLoaded
-      } will use fallback colors`
+      } will use fallback colors`,
     );
     return this.textureCache;
   }
@@ -169,19 +148,15 @@ export class SolarSystemPreloader {
    * Preload solar system with textures
    */
   static async preloadSolarSystem(
-    onProgress?: (progress: SolarSystemPreloadProgress) => void
+    onProgress?: (progress: SolarSystemPreloadProgress) => void,
   ): Promise<PreloadedSolarSystem> {
     if (this.isPreloaded && this.preloadedSystem) {
-      logger.debug(
-        "SolarSystemPreloader: System already preloaded, returning cached version"
-      );
+      logger.debug("SolarSystemPreloader: System already preloaded, returning cached version");
       return this.preloadedSystem;
     }
 
     if (this.isPreloading) {
-      logger.debug(
-        "SolarSystemPreloader: System is currently preloading, waiting..."
-      );
+      logger.debug("SolarSystemPreloader: System is currently preloading, waiting...");
       // Add timeout to prevent infinite waiting
       let waitTime = 0;
       const maxWaitTime = 10000; // 10 seconds max wait
@@ -190,9 +165,7 @@ export class SolarSystemPreloader {
         waitTime += 100;
       }
       if (waitTime >= maxWaitTime) {
-        logger.warn(
-          "SolarSystemPreloader: Wait timeout, creating new instance"
-        );
+        logger.warn("SolarSystemPreloader: Wait timeout, creating new instance");
         this.isPreloading = false; // Reset the flag
       } else if (this.preloadedSystem) {
         return this.preloadedSystem;
@@ -221,42 +194,35 @@ export class SolarSystemPreloader {
         }
       });
 
-      logger.debug(
-        "SolarSystemPreloader: ✅ Texture loading completed with fallback support"
-      );
+      logger.debug("SolarSystemPreloader: ✅ Texture loading completed with fallback support");
 
       // Phase 2: Create geometries (15% of progress)
       logger.debug("SolarSystemPreloader: Phase 2 - Creating geometries...");
-      const geometries = await this.createGeometries(
-        (loaded, total, current) => {
-          if (onProgress) {
-            onProgress({
-              phase: "geometries",
-              loaded,
-              total,
-              currentItem: current,
-              percentage: 30 + Math.round((loaded / total) * 15),
-            });
-          }
+      const geometries = await this.createGeometries((loaded, total, current) => {
+        if (onProgress) {
+          onProgress({
+            phase: "geometries",
+            loaded,
+            total,
+            currentItem: current,
+            percentage: 30 + Math.round((loaded / total) * 15),
+          });
         }
-      );
+      });
 
       // Phase 3: Create materials (15% of progress)
       logger.debug("SolarSystemPreloader: Phase 3 - Creating materials...");
-      const materials = await this.createMaterials(
-        textures,
-        (loaded, total, current) => {
-          if (onProgress) {
-            onProgress({
-              phase: "materials",
-              loaded,
-              total,
-              currentItem: current,
-              percentage: 45 + Math.round((loaded / total) * 15),
-            });
-          }
+      const materials = await this.createMaterials(textures, (loaded, total, current) => {
+        if (onProgress) {
+          onProgress({
+            phase: "materials",
+            loaded,
+            total,
+            currentItem: current,
+            percentage: 45 + Math.round((loaded / total) * 15),
+          });
         }
-      );
+      });
 
       // Phase 4: Create scene (40% of progress)
       logger.debug("SolarSystemPreloader: Phase 4 - Creating scene...");
@@ -274,7 +240,7 @@ export class SolarSystemPreloader {
               percentage: 60 + Math.round((loaded / total) * 40),
             });
           }
-        }
+        },
       );
 
       console.timeEnd("SolarSystemPreloader: Total preload time");
@@ -292,22 +258,16 @@ export class SolarSystemPreloader {
       }
 
       logger.debug("🌌 SolarSystemPreloader: PRELOADING COMPLETE");
-      logger.debug(
-        `✅ Solar system ready with ${this.preloadedSystem.meshes.length} meshes`
-      );
+      logger.debug(`✅ Solar system ready with ${this.preloadedSystem.meshes.length} meshes`);
 
       return this.preloadedSystem;
     } catch (error) {
-      logger.error(
-        "SolarSystemPreloader: Critical error during preloading:",
-        error
-      );
+      logger.error("SolarSystemPreloader: Critical error during preloading:", error);
       captureException(error);
       this.isPreloading = false;
 
       // Re-throw the error as the system should still work with fallback colors
-      const errorMessage =
-        error instanceof Error ? error.message : String(error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
       throw new Error(`Solar system preloading failed: ${errorMessage}`);
     }
   }
@@ -316,7 +276,7 @@ export class SolarSystemPreloader {
    * Create enhanced geometries with high polygon counts for GLB-like quality
    */
   private static async createGeometries(
-    onProgress?: (loaded: number, total: number, current: string) => void
+    onProgress?: (loaded: number, total: number, current: string) => void,
   ): Promise<Map<string, SphereGeometry | RingGeometry>> {
     const geometries = new Map<string, SphereGeometry | RingGeometry>();
 
@@ -325,7 +285,7 @@ export class SolarSystemPreloader {
       create: () => SphereGeometry | RingGeometry;
     }> = [
       // High-quality sun geometry for beautiful appearance
-      { key: "sun", create: () => new SphereGeometry(20.0, 48, 48) },
+      {key: "sun", create: () => new SphereGeometry(20.0, 48, 48)},
     ];
 
     // Use high-quality spheres for beautiful appearance
@@ -354,7 +314,7 @@ export class SolarSystemPreloader {
             new RingGeometry(
               planet.rings!.innerRadius,
               planet.rings!.outerRadius,
-              64 // High segment count for smooth rings
+              64, // High segment count for smooth rings
             ),
         });
       }
@@ -380,7 +340,7 @@ export class SolarSystemPreloader {
    */
   private static async createMaterials(
     textures: Map<string, Texture | null>,
-    onProgress?: (loaded: number, total: number, current: string) => void
+    onProgress?: (loaded: number, total: number, current: string) => void,
   ): Promise<Map<string, MeshPhongMaterial | MeshBasicMaterial>> {
     const materials = new Map<string, MeshPhongMaterial | MeshBasicMaterial>();
 
@@ -428,14 +388,8 @@ export class SolarSystemPreloader {
               specular: 0x111111,
             });
           } else {
-            const fallbackColor =
-              fallbackColors[planet.id as keyof typeof fallbackColors] ||
-              0x888888;
-            logger.debug(
-              `🪐 Planet ${
-                planet.id
-              } using fallback color: ${fallbackColor.toString(16)}`
-            );
+            const fallbackColor = fallbackColors[planet.id as keyof typeof fallbackColors] || 0x888888;
+            logger.debug(`🪐 Planet ${planet.id} using fallback color: ${fallbackColor.toString(16)}`);
             return new MeshPhongMaterial({
               color: fallbackColor,
               shininess: 30,
@@ -450,10 +404,8 @@ export class SolarSystemPreloader {
         // Determine moon texture key
         let moonTextureKey = "";
         if (planet.id === "planet_a") moonTextureKey = "moon_a_h";
-        else if (planet.id === "planet_d")
-          moonTextureKey = i === 0 ? "moon_d_f" : "moon_d_g";
-        else if (planet.id === "planet_k")
-          moonTextureKey = i === 0 ? "moon_k_c" : "moon_k_d";
+        else if (planet.id === "planet_d") moonTextureKey = i === 0 ? "moon_d_f" : "moon_d_g";
+        else if (planet.id === "planet_k") moonTextureKey = i === 0 ? "moon_k_c" : "moon_k_d";
 
         const moonTexture = textures.get(moonTextureKey);
         materialSpecs.push({
@@ -468,9 +420,7 @@ export class SolarSystemPreloader {
                 specular: 0x080808,
               });
             } else {
-              logger.debug(
-                `🌙 Moon ${planet.id}_${i} using fallback color: gray`
-              );
+              logger.debug(`🌙 Moon ${planet.id}_${i} using fallback color: gray`);
               return new MeshPhongMaterial({
                 color: 0xbbbbbb, // Gray fallback for moons
                 shininess: 10,
@@ -510,15 +460,8 @@ export class SolarSystemPreloader {
                 side: DoubleSide,
               });
             } else {
-              const fallbackColor =
-                fallbackRingColors[
-                  planet.id as keyof typeof fallbackRingColors
-                ] || 0x999999;
-              logger.debug(
-                `💍 Ring ${
-                  planet.id
-                } using fallback color: ${fallbackColor.toString(16)}`
-              );
+              const fallbackColor = fallbackRingColors[planet.id as keyof typeof fallbackRingColors] || 0x999999;
+              logger.debug(`💍 Ring ${planet.id} using fallback color: ${fallbackColor.toString(16)}`);
               return new MeshPhongMaterial({
                 color: fallbackColor,
                 shininess: 5,
@@ -552,9 +495,9 @@ export class SolarSystemPreloader {
     geometries: Map<string, SphereGeometry | RingGeometry>,
     materials: Map<string, MeshPhongMaterial | MeshBasicMaterial>,
     textures: Map<string, Texture | null>,
-    onProgress?: (loaded: number, total: number, current: string) => void
+    onProgress?: (loaded: number, total: number, current: string) => void,
   ): Promise<PreloadedSolarSystem> {
-    const { scene, camera } = createSceneSetup();
+    const {scene, camera} = createSceneSetup();
 
     const meshes: Mesh[] = [];
     const lights: (DirectionalLight | AmbientLight | PointLight)[] = [];
@@ -591,14 +534,10 @@ export class SolarSystemPreloader {
         const planetMaterial = materials.get(`planet_${planetConfig.id}`);
 
         if (!planetGeometry) {
-          throw new Error(
-            `CRITICAL: Missing geometry for planet ${planetConfig.id} - NO FALLBACKS ALLOWED`
-          );
+          throw new Error(`CRITICAL: Missing geometry for planet ${planetConfig.id} - NO FALLBACKS ALLOWED`);
         }
         if (!planetMaterial) {
-          throw new Error(
-            `CRITICAL: Missing material for planet ${planetConfig.id} - NO FALLBACKS ALLOWED`
-          );
+          throw new Error(`CRITICAL: Missing material for planet ${planetConfig.id} - NO FALLBACKS ALLOWED`);
         }
 
         planet = new Mesh(planetGeometry, planetMaterial);
@@ -611,14 +550,9 @@ export class SolarSystemPreloader {
         };
         planetGroup.add(planet);
         if (planet instanceof Mesh) meshes.push(planet);
-        logger.debug(
-          `🪐 Planet ${planetConfig.id} added with REQUIRED texture ${planetTextureKey}.`
-        );
+        logger.debug(`🪐 Planet ${planetConfig.id} added with REQUIRED texture ${planetTextureKey}.`);
       } catch (err) {
-        logger.error(
-          `❌ Exception while creating planet ${planetConfig.id}:`,
-          err
-        );
+        logger.error(`❌ Exception while creating planet ${planetConfig.id}:`, err);
         captureException(err);
       }
 
@@ -626,7 +560,7 @@ export class SolarSystemPreloader {
       if (planetConfig.moons) {
         if (!planet) {
           logger.warn(
-            `⚠️ Skipping ${planetConfig.moons.length} moon(s) for ${planetConfig.id} because planet failed to create - no orphaned moons allowed.`
+            `⚠️ Skipping ${planetConfig.moons.length} moon(s) for ${planetConfig.id} because planet failed to create - no orphaned moons allowed.`,
           );
         } else {
           // Validate planet is actually in the scene before adding moons
@@ -634,29 +568,21 @@ export class SolarSystemPreloader {
 
           if (!isPlanetInGroup) {
             logger.warn(
-              `⚠️ Skipping ${planetConfig.moons.length} moon(s) for ${planetConfig.id} because planet is not in the scene group - no orphaned moons allowed.`
+              `⚠️ Skipping ${planetConfig.moons.length} moon(s) for ${planetConfig.id} because planet is not in the scene group - no orphaned moons allowed.`,
             );
           } else {
             for (let i = 0; i < planetConfig.moons.length; i++) {
               const moonConfig = planetConfig.moons[i];
               let moon: Mesh | null = null;
               try {
-                const moonGeometry = geometries.get(
-                  `moon_${planetConfig.id}_${i}`
-                );
-                const moonMaterial = materials.get(
-                  `moon_${planetConfig.id}_${i}`
-                );
+                const moonGeometry = geometries.get(`moon_${planetConfig.id}_${i}`);
+                const moonMaterial = materials.get(`moon_${planetConfig.id}_${i}`);
 
                 if (!moonGeometry) {
-                  logger.error(
-                    `❌ Missing geometry for moon ${planetConfig.id}_${i}, using fallback sphere.`
-                  );
+                  logger.error(`❌ Missing geometry for moon ${planetConfig.id}_${i}, using fallback sphere.`);
                 }
                 if (!moonMaterial) {
-                  logger.error(
-                    `❌ Missing material for moon ${planetConfig.id}_${i}, using fallback material.`
-                  );
+                  logger.error(`❌ Missing material for moon ${planetConfig.id}_${i}, using fallback material.`);
                 }
 
                 moon = new Mesh(
@@ -666,12 +592,12 @@ export class SolarSystemPreloader {
                       color: 0xbbbbbb,
                       shininess: 10,
                       specular: 0x080808,
-                    })
+                    }),
                 );
                 moon.position.set(
                   Math.cos(i * Math.PI) * moonConfig.orbitRadius,
                   0,
-                  Math.sin(i * Math.PI) * moonConfig.orbitRadius
+                  Math.sin(i * Math.PI) * moonConfig.orbitRadius,
                 );
                 moon.userData = {
                   isMoon: true,
@@ -684,14 +610,9 @@ export class SolarSystemPreloader {
                 };
                 planetGroup.add(moon);
                 if (moon instanceof Mesh) meshes.push(moon);
-                logger.debug(
-                  `🌙 Moon ${planetConfig.id}_${i} added with correct texture (planet validated).`
-                );
+                logger.debug(`🌙 Moon ${planetConfig.id}_${i} added with correct texture (planet validated).`);
               } catch (err) {
-                logger.error(
-                  `❌ Exception while creating moon ${planetConfig.id}_${i}:`,
-                  err
-                );
+                logger.error(`❌ Exception while creating moon ${planetConfig.id}_${i}:`, err);
                 captureException(err);
               }
             }
@@ -703,13 +624,12 @@ export class SolarSystemPreloader {
       if (planetConfig.rings) {
         if (!planet) {
           logger.warn(
-            `⚠️ Skipping ring for ${planetConfig.id} because planet failed to create - no standalone rings allowed.`
+            `⚠️ Skipping ring for ${planetConfig.id} because planet failed to create - no standalone rings allowed.`,
           );
         } else {
           let ringTextureKey = "";
           if (planetConfig.id === "planet_v") ringTextureKey = "ring_planet_v";
-          else if (planetConfig.id === "planet_k")
-            ringTextureKey = "ring_planet_k";
+          else if (planetConfig.id === "planet_k") ringTextureKey = "ring_planet_k";
           const ringTexture = textures.get(ringTextureKey);
           const ringGeometry = geometries.get(`ring_${planetConfig.id}`);
           const ringMaterial = materials.get(`ring_mat_${planetConfig.id}`);
@@ -719,16 +639,12 @@ export class SolarSystemPreloader {
 
           if (!isPlanetInGroup) {
             logger.warn(
-              `⚠️ Skipping ring for ${planetConfig.id} because planet is not in the scene group - no orphaned rings allowed.`
+              `⚠️ Skipping ring for ${planetConfig.id} because planet is not in the scene group - no orphaned rings allowed.`,
             );
           } else if (!ringGeometry) {
-            logger.error(
-              `❌ Missing geometry for ring ${planetConfig.id}, skipping ring.`
-            );
+            logger.error(`❌ Missing geometry for ring ${planetConfig.id}, skipping ring.`);
           } else if (!ringMaterial) {
-            logger.error(
-              `❌ Missing material for ring ${planetConfig.id}, using fallback material.`
-            );
+            logger.error(`❌ Missing material for ring ${planetConfig.id}, using fallback material.`);
             // Only create ring with validated geometry and confirmed planet presence
             const fallbackRingMaterial = new MeshPhongMaterial({
               map: ringTexture || undefined,
@@ -750,9 +666,7 @@ export class SolarSystemPreloader {
             };
             planetGroup.add(ring);
             if (ring instanceof Mesh) meshes.push(ring);
-            logger.debug(
-              `💍 Ring for planet ${planetConfig.id} added with fallback material (planet validated).`
-            );
+            logger.debug(`💍 Ring for planet ${planetConfig.id} added with fallback material (planet validated).`);
           } else {
             // Only create ring with validated geometry and confirmed planet presence
             const ring = new Mesh(ringGeometry, ringMaterial);
@@ -765,21 +679,17 @@ export class SolarSystemPreloader {
             };
             planetGroup.add(ring);
             if (ring instanceof Mesh) meshes.push(ring);
-            logger.debug(
-              `💍 Ring for planet ${planetConfig.id} added with correct material (planet validated).`
-            );
+            logger.debug(`💍 Ring for planet ${planetConfig.id} added with correct material (planet validated).`);
           }
         }
       }
       planetsGroup.add(planetGroup);
     }
-    logger.debug(
-      `🪐 Planets group has ${planetsGroup.children.length} children.`
-    );
+    logger.debug(`🪐 Planets group has ${planetsGroup.children.length} children.`);
     setTimeout(() => {
       logger.debug(
         "🔎 Scene children:",
-        scene.children.map((c) => c.userData)
+        scene.children.map((c) => c.userData),
       );
     }, 1000);
 
@@ -837,5 +747,3 @@ export class SolarSystemPreloader {
     logger.debug("SolarSystemPreloader: All caches cleared successfully");
   }
 }
-
-

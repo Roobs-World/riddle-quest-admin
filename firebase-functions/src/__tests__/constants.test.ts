@@ -1,8 +1,4 @@
-import {
-  XP_LEVEL_THRESHOLDS,
-  getLevelFromXp,
-  getXpThresholdForLevel,
-} from "../constants";
+import {XP_LEVEL_THRESHOLDS, getLevelFromXp, getXpThresholdForLevel} from "../constants";
 
 describe("server XP curve", () => {
   it("uses an object config instead of threshold array", () => {
@@ -13,14 +9,10 @@ describe("server XP curve", () => {
 
   it("adds a slight increase to each next level requirement", () => {
     for (let level = 2; level < 10; level++) {
-      const previousDelta =
-        getXpThresholdForLevel(level) - getXpThresholdForLevel(level - 1);
-      const currentDelta =
-        getXpThresholdForLevel(level + 1) - getXpThresholdForLevel(level);
+      const previousDelta = getXpThresholdForLevel(level) - getXpThresholdForLevel(level - 1);
+      const currentDelta = getXpThresholdForLevel(level + 1) - getXpThresholdForLevel(level);
 
-      expect(currentDelta - previousDelta).toBe(
-        XP_LEVEL_THRESHOLDS.growthPerLevel
-      );
+      expect(currentDelta - previousDelta).toBe(XP_LEVEL_THRESHOLDS.growthPerLevel);
     }
   });
 

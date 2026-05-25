@@ -1,7 +1,7 @@
 /**
  * @fileoverview Lightweight game-session controller for shared async loading state.
  */
-import { useCallback, useState } from "react";
+import {useCallback, useState} from "react";
 
 /**
  * Public controller contract for server-backed game operations.
@@ -21,7 +21,7 @@ export interface GameSessionController {
 export const useGameSessionController = (): GameSessionController => {
   const [activeServerRequests, setActiveServerRequests] = useState(0);
 
-  const runWithServerLoading = useCallback(async <T,>(work: () => Promise<T> | T) => {
+  const runWithServerLoading = useCallback(async <T>(work: () => Promise<T> | T) => {
     setActiveServerRequests((count) => count + 1);
     try {
       return await Promise.resolve(work());
