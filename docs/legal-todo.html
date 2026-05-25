@@ -153,7 +153,7 @@
         Release-blocking checklist for Firestore write controls, callable function protection, dependency audit cleanup,
         and app-store/legal disclosure readiness.
       </p>
-      <p class="meta">Last updated: 2026-05-23. Status: app links are wired and all local legal/support pages pass at localhost:3000; live links are assumed valid once deployment is available.</p>
+      <p class="meta">Last updated: 2026-05-25. Status: app links are wired and local legal/support page evidence exists; live <code>www.roobsworld.com</code> legal/support routes remain blocked by production deployment/reachability, and the production dependency audit is clean.</p>
 
       <div class="grid">
         <section>
@@ -209,7 +209,7 @@
             </li>
             <li>
               <input type="checkbox" checked />
-              <span>Rerun <code>pnpm audit --prod</code> and record the remaining findings, if any.</span>
+              <span>Rerun <code>pnpm audit --prod</code> and record the remaining findings, if any. Latest rerun on 2026-05-25 reported no known vulnerabilities.</span>
             </li>
           </ul>
         </section>
@@ -252,7 +252,7 @@
             </li>
             <li>
               <input type="checkbox" checked />
-              <span>Defer live 119-URL matrix verification until deployment is available; local 119-URL matrix is the current acceptance evidence.</span>
+              <span>Defer live 119-URL matrix pass criteria until deployment is repaired; the latest production matrix evidence from 2026-05-25 returned 404 for all 119 required routes while local route evidence remains the current acceptance evidence.</span>
             </li>
             <li>
               <input type="checkbox" checked />
@@ -266,13 +266,32 @@
         </section>
       </div>
 
+      <section>
+        <h2>Latest Agent Notes</h2>
+        <ul>
+          <li>
+            <input type="checkbox" checked />
+            <span>2026-05-25: Reread all 52 files under <code>docs/</code> before acting via a docs-wide digest covering 8,398 lines / 629,046 characters. Outstanding local-verifiable task selected from this file: refresh the production dependency audit evidence.</span>
+          </li>
+          <li>
+            <input type="checkbox" checked />
+            <span>2026-05-25: Ran <code>pnpm audit --prod</code>; result was <code>No known vulnerabilities found</code>. No dependency or lockfile changes were required.</span>
+          </li>
+          <li>
+            <input type="checkbox" checked />
+            <span>2026-05-25: Expo MCP tools were checked through <code>tool_search</code> because the repo guidance asks for Expo MCP on Expo/React Native tasks; no Expo tools were available, and this audit-only task did not require simulator verification.</span>
+          </li>
+        </ul>
+      </section>
+
       <p class="note">
         Evidence: Functions build passed, app TypeScript check passed, generation/admin function tests passed, and
-        <code>pnpm audit --prod</code> reported no known vulnerabilities. App code generates the intended localized
+        <code>pnpm audit --prod</code> reported no known vulnerabilities again on 2026-05-25. App code generates the intended localized
         <code>www.roobsworld.com/riddle-quest/{language}</code> links. The 119 local URLs at
-        <code>localhost:3000/riddle-quest/{language}</code> returned 2xx/3xx on 2026-05-23. Live deployment is unavailable
-        for now, so the live <code>www.roobsworld.com</code> links are assumed valid once the verified local site can be
-        deployed. Store-console disclosure entry remains the only active legal/store checklist item.
+        <code>localhost:3000/riddle-quest/{language}</code> returned 2xx/3xx on 2026-05-23. Production evidence from
+        2026-05-25 still shows the live <code>www.roobsworld.com</code> legal/support routes returning 404, so live
+        reachability remains deployment-blocked rather than app-side URL construction complete. Store-console disclosure
+        entry remains the only active store-console checklist item.
       </p>
     </main>
   </body>

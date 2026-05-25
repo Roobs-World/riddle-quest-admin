@@ -4,26 +4,26 @@ This document details the technologies, development setup, technical constraints
 
 ## Technologies Used:
 
-- **React Native**: 0.84.1 - Core mobile framework for iOS and Android
-- **Expo**: SDK 55 - Development platform and toolchain
+- **React Native**: 0.85.1 - Core mobile framework for iOS and Android
+- **Expo**: SDK 56 canary (`56.0.0-canary-20260409-6fc2991`) - Development platform and toolchain
 - **TypeScript**: 5.9.3 - Type-safe JavaScript development
-- **React**: 19.2.4 - JavaScript library for building user interfaces
-- **NativeWind**: 4.2.2 - Tailwind CSS for React Native styling
+- **React**: 19.2.3 - JavaScript library for building user interfaces
+- **NativeWind**: 4.2.4 - Tailwind CSS for React Native styling
 
 ### Bundling & Development
 
-- **Metro**: 0.84.2 - React Native bundler for JavaScript transformation and bundling
-- **Expo CLI**: 55.x - Command-line tool for Expo development
-- **PNPM**: 10.11.0 - Fast, disk space efficient package manager
+- **Metro**: 0.84.4 - React Native bundler for JavaScript transformation and bundling
+- **Expo CLI**: 56.0.0 canary - Command-line tool for Expo development
+- **PNPM**: 10.33.0 - Fast, disk space efficient package manager
 
 ### Animation & UI
 
-- **React Native Reanimated**: 4.2.2 - High-performance animations
-- **React Native Gesture Handler**: 2.30.0 - Touch gesture management
+- **React Native Reanimated**: 4.3.0 - High-performance animations
+- **React Native Gesture Handler**: 2.30.1 - Touch gesture management
 - **Matter.js**: 0.20.0 - 2D physics engine for animations
-- **React Native SVG**: 15.15.3 - SVG support for React Native
-- **Three.js**: 0.183.2 - 3D rendering for solar system visualization
-- **@react-three/fiber**: 9.5.0 - React renderer for Three.js
+- **React Native SVG**: 15.15.4 - SVG support for React Native
+- **Three.js**: 0.167.1 - 3D rendering for solar system visualization
+- **@react-three/fiber**: 9.6.1 - React renderer for Three.js
 - **@react-three/drei**: 10.7.7 - Helpers for react-three-fiber
 
 ### Backend Technologies
@@ -31,40 +31,40 @@ This document details the technologies, development setup, technical constraints
 - **Firebase**: Authentication, Firestore, Cloud Functions (v2, using `process.env` for configuration), Storage
 - **Node.js**: Runtime for Firebase Functions
 - **TypeScript**: Type-safe server-side development
-- **Firebase Admin SDK**: 13.7.0 - Server-side Firebase operations
-- **OpenAI**: 6.25.0 - AI/ML integration for riddle generation with enhanced validation
+- **Firebase Admin SDK**: 13.10.0 - Server-side Firebase operations
+- **OpenAI**: 6.39.0 - AI/ML integration for riddle generation with enhanced validation
 
 ### Testing & Quality
 
-- **Jest**: 30.2.0 - JavaScript testing framework
-- **ts-jest**: 29.4.6 - TypeScript support for Jest
+- **Jest**: 29.7.0 - JavaScript testing framework
+- **ts-jest**: 29.4.11 - TypeScript support for Jest
 - **@testing-library/react-native**: 13.3.3 - React Native component testing
-- **ESLint**: 9.16.0 - Code linting and quality enforcement
+- **ESLint**: 8.57.1 - Code linting and quality enforcement
 - **Husky**: 9.1.7 - Git hooks for pre-commit test enforcement
 - **Test Coverage**: 2,497 passing tests (2,111 RN + 386 Firebase Functions), 0 failures
 
 ### Data Validation & Quality
 
-- **Zod**: 4.3.6 - TypeScript-first schema validation
+- **Zod**: 4.4.3 - TypeScript-first schema validation
 - **Answer Validation**: Strict regex validation (`/^[a-z]+$/`) ensuring only lowercase letters in riddle answers
 - **Punctuation Prevention**: Enhanced OpenAI prompts and server-side validation preventing all punctuation marks
 - **Content Quality**: 7-character maximum answer length with comprehensive validation rules
 
 ### Native Integrations
 
-- **React Native Firebase**: 23.8.6 - Native Firebase SDK integration (modular API)
+- **React Native Firebase**: 23.8.8 - Native Firebase SDK integration (modular API)
 - **Google Sign-In**: 16.1.2 - Google authentication
 - **Facebook SDK**: 13.4.3 - Facebook integration
-- **React Native IAP**: 14.7.12 - In-app purchases
+- **React Native IAP**: 14.7.20 - In-app purchases
 
 ### Additional Libraries
 
-- **Axios**: 1.13.6 - HTTP client for API requests
+- **Axios**: 1.16.1 - HTTP client for API requests
 
 ### Sound & Haptics
 
-- **Sound:** expo-audio (SDK 55; migrated from expo-av; supports audio fading)
-- **Haptics:** react-native-haptic-feedback
+- **Sound:** expo-audio (SDK 56 canary; migrated from expo-av; supports audio fading)
+- **Haptics:** expo-haptics
 
 ## Development Setup:
 
@@ -77,10 +77,10 @@ This document details the technologies, development setup, technical constraints
 
 ## Technical Constraints:
 
-- **Expo SDK 55**: New Architecture mandatory; expo-av removed (use expo-audio)
+- **Expo SDK 56 canary**: New Architecture mandatory; expo-av removed (use expo-audio)
 - **Metro Bundler**: Module resolution changes requiring compatibility adjustments
 - **Firebase Platform**: Function execution time and Firestore query limitations. Firebase Functions v2 requires configuration via environment variables (`process.env`) instead of `functions.config()`.
-- **React Native 0.84.1**: New Architecture (Fabric/TurboModules) mandatory
+- **React Native 0.85.1**: New Architecture (Fabric/TurboModules) mandatory
 - **iOS 16+/Android 10+**: Minimum platform version requirements
 - **Android Edge-to-Edge**: Enabled for future Android 16+ compatibility (targetSdkVersion 36+)
 - **TypeScript Module Resolution**: Using "bundler" resolution for Metro compatibility
@@ -95,8 +95,8 @@ This document details the technologies, development setup, technical constraints
 
 - **Development Commands**:
 
-  - `npx expo start` - Start development server (currently blocked by Metro issue)
-  - `npx expo start --clear` - Start with cache clearing
+  - `pnpm exec expo start --dev-client` - Start the development server
+  - `pnpm exec expo start --dev-client --clear --port 8081` - Start with cache clearing on the matrix default port
   - `pnpm install` - Install dependencies
   - `npx expo customize metro.config.js` - Generate/customize Metro config
 
@@ -110,8 +110,9 @@ This document details the technologies, development setup, technical constraints
   - **PRE_COMMIT_SKIP_LINT=1**: Skips lint step (e.g. for quick test-only runs)
 
 - **Build & Deploy Commands**:
-  - `npx expo build:android` - Build Android APK
-  - `npx expo build:ios` - Build iOS app
+  - `pnpm exec expo run:android` - Build/install Android development app
+  - `pnpm exec expo run:ios` - Build/install iOS development app
+  - `pnpm run android:assemble:emulator` - Build the emulator-compatible Android debug APK
   - `npm run deploy` - Deploy Firebase Functions (in firebase-functions directory)
 
 ## Configuration Files:

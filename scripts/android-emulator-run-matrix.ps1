@@ -282,6 +282,26 @@ function Invoke-AdbText($adb, [string[]]$arguments) {
   }
 }
 
+function Wait-ForAdbDeviceOnline($adb, $serial, $timeoutSeconds = 30) {
+  $deadline = (Get-Date).AddSeconds($timeoutSeconds)
+
+  do {
+    $result = Invoke-AdbText $adb @("devices")
+    $deviceLine = @(
+      $result.Text -split "`n" |
+        Where-Object { $_ -match "^$([regex]::Escape($serial))\s+device\b" }
+    )
+
+    if ($result.ExitCode -eq 0 -and $deviceLine.Count -gt 0) {
+      return $true
+    }
+
+    Start-Sleep -Seconds 2
+  } while ((Get-Date) -lt $deadline)
+
+  return $false
+}
+
 function Test-AndroidPackageInstalled($adb, $serial, $packageName) {
   $result = Invoke-AdbText $adb @("-s", $serial, "shell", "pm", "path", $packageName)
   return $result.ExitCode -eq 0 -and -not [string]::IsNullOrWhiteSpace($result.Text)
@@ -551,6 +571,81 @@ function Assert-PngFile($path) {
   }
 }
 
+function Test-NormalizedPngFile($path) {
+  try {
+    if (-not (Test-Path $path)) {
+      return [pscustomobject]@{ Ok = $false; Error = "$path was not created." }
+    }
+
+    $length = (Get-Item $path).Length
+    if ($length -lt 8) {
+      return [pscustomobject]@{ Ok = $false; Error = "$path is too small to be a PNG ($length bytes)." }
+    }
+
+    Normalize-PngFile $path
+    Assert-PngFile $path
+    return [pscustomobject]@{ Ok = $true; Error = "" }
+  } catch {
+    return [pscustomobject]@{ Ok = $false; Error = $_.Exception.Message }
+  }
+}
+
+function Repair-AdbTransportForRetry($adb, $serial, $context) {
+  Write-Host "WARN: Recovering ADB transport after $context screenshot capture problem."
+
+  $startResult = Invoke-AdbText $adb @("start-server")
+  if ($startResult.ExitCode -ne 0) {
+    Write-Host "WARN: adb start-server failed while recovering $context capture: $($startResult.Text)"
+  }
+
+  if (-not (Wait-ForAdbDeviceOnline $adb $serial 30)) {
+    Write-Host "WARN: $serial did not report as an online ADB device within 30s while recovering $context capture."
+  }
+
+  Start-Sleep -Seconds 2
+}
+
+function Capture-AndroidScreenshot($adb, $serial, $path, $context, $requiredForegroundPackage = $null, [int]$maxAttempts = 3) {
+  $lastError = ""
+
+  for ($attempt = 1; $attempt -le $maxAttempts; $attempt++) {
+    Remove-Item $path -Force -ErrorAction SilentlyContinue
+
+    if ($requiredForegroundPackage) {
+      if (-not (Wait-ForAndroidPackageInForeground $adb $serial $requiredForegroundPackage 15)) {
+        $lastError = "$requiredForegroundPackage was not foreground before screenshot attempt $attempt."
+        Write-Host "WARN: $lastError"
+        if ($attempt -lt $maxAttempts) {
+          Repair-AdbTransportForRetry $adb $serial $context
+        }
+        continue
+      }
+    }
+
+    try {
+      Invoke-AdbBinaryToFile $adb @("-s", $serial, "exec-out", "screencap", "-p") $path
+      $pngResult = Test-NormalizedPngFile $path
+      if ($pngResult.Ok) {
+        if ($attempt -gt 1) {
+          Write-Host "INFO: Screenshot capture recovered for $context on attempt $attempt."
+        }
+        return
+      }
+
+      $lastError = $pngResult.Error
+    } catch {
+      $lastError = $_.Exception.Message
+    }
+
+    Write-Host "WARN: Screenshot capture attempt $attempt/$maxAttempts failed for ${context}: $lastError"
+    if ($attempt -lt $maxAttempts) {
+      Repair-AdbTransportForRetry $adb $serial $context
+    }
+  }
+
+  Fail "Could not capture a valid PNG for $context at $path after $maxAttempts attempt(s). Last error: $lastError"
+}
+
 function Get-UiTreeDump($adb, $serial) {
   $previousErrorActionPreference = $ErrorActionPreference
   $ErrorActionPreference = "Continue"
@@ -567,7 +662,40 @@ function Get-UiTreeDump($adb, $serial) {
   }
 }
 
-function Test-AndroidPackageInForeground($adb, $serial, $packageName) {
+function Test-AndroidPackageInForeground($adb, $serial, $packageName, [bool]$UseUiTreeFallback = $true) {
+  $previousErrorActionPreference = $ErrorActionPreference
+  $ErrorActionPreference = "Continue"
+  try {
+    $windowDump = & $adb -s $serial shell dumpsys window 2>&1
+    $exitCode = $LASTEXITCODE
+  } finally {
+    $ErrorActionPreference = $previousErrorActionPreference
+  }
+
+  if ($exitCode -eq 0) {
+    $foregroundLines = @(
+      $windowDump |
+        Where-Object { $_ -match "mCurrentFocus|mFocusedApp|mFocusedWindow|topResumedActivity|mTopResumedActivity" }
+    )
+
+    if (($foregroundLines -join "`n") -match [regex]::Escape($packageName)) {
+      return $true
+    }
+  }
+
+  $taskResult = Invoke-AdbText $adb @("-s", $serial, "shell", "am", "stack", "list")
+  if (
+    $taskResult.ExitCode -eq 0 -and
+    $taskResult.Text -match [regex]::Escape($packageName) -and
+    $taskResult.Text -match "visible=true"
+  ) {
+    return $true
+  }
+
+  if (-not $UseUiTreeFallback) {
+    return $false
+  }
+
   $uiDump = Get-UiTreeDump $adb $serial
   if ($uiDump.ExitCode -ne 0) {
     return $false
@@ -580,14 +708,109 @@ function Wait-ForAndroidPackageInForeground($adb, $serial, $packageName, $timeou
   $deadline = (Get-Date).AddSeconds($timeoutSeconds)
 
   do {
-    if (Test-AndroidPackageInForeground $adb $serial $packageName) {
+    if (Test-AndroidPackageInForeground $adb $serial $packageName $false) {
       return $true
     }
 
-    Start-Sleep -Milliseconds 500
+    Start-Sleep -Seconds 1
   } while ((Get-Date) -lt $deadline)
 
   return $false
+}
+
+function Get-DevClientLaunchUri {
+  return "exp+riddle-quest://expo-development-client/?url=http%3A%2F%2F${EmulatorHost}%3A$Port"
+}
+
+function Get-AndroidForegroundDiagnostics($adb, $serial) {
+  $windowResult = Invoke-AdbText $adb @("-s", $serial, "shell", "dumpsys", "window")
+  $taskResult = Invoke-AdbText $adb @("-s", $serial, "shell", "am", "stack", "list")
+  $pidResult = Invoke-AdbText $adb @("-s", $serial, "shell", "pidof", "-s", $AndroidPackageName)
+
+  $windowFocus = @(
+    $windowResult.Text -split "`n" |
+      Where-Object { $_ -match "mCurrentFocus|mFocusedApp|mFocusedWindow|topResumedActivity|mTopResumedActivity" }
+  ) -join "`n"
+
+  $taskLines = @(
+    $taskResult.Text -split "`n" |
+      Where-Object { $_ -match [regex]::Escape($AndroidPackageName) -or $_ -match "launcher|Task" }
+  ) -join "`n"
+
+  return @"
+pidof ${AndroidPackageName}: $($pidResult.Text.Trim())
+
+window focus:
+$windowFocus
+
+activity stacks:
+$taskLines
+"@
+}
+
+function Save-AppLaunchFailureEvidence($adb, $serial, $avdName, $context) {
+  $root = (Resolve-Path ".").Path
+  $imageDir = Join-Path $root "emulator-tests\images\$avdName"
+  $logDir = Join-Path $root "emulator-tests\logs\$avdName"
+  New-Item -ItemType Directory -Path $imageDir, $logDir -Force | Out-Null
+
+  $safeContext = $context -replace "[^A-Za-z0-9_-]", "-"
+  $screenshot = Join-Path $imageDir "launch-failure-$safeContext.png"
+  $uiTree = Join-Path $logDir "launch-failure-$safeContext.xml"
+  $logcat = Join-Path $logDir "launch-failure-$safeContext-logcat.txt"
+  $diagnostics = Join-Path $logDir "launch-failure-$safeContext-diagnostics.txt"
+
+  Get-AndroidForegroundDiagnostics $adb $serial | Out-File -FilePath $diagnostics -Encoding utf8
+
+  $uiDump = Get-UiTreeDump $adb $serial
+  $uiDump.Text | Out-File -FilePath $uiTree -Encoding utf8
+
+  try {
+    Capture-AndroidScreenshot $adb $serial $screenshot "launch failure $context" $null 2
+  } catch {
+    Write-Host "WARN: Failed to capture launch failure screenshot for $avdName ($context): $($_.Exception.Message)"
+  }
+
+  & $adb -s $serial logcat -d | Out-File -FilePath $logcat -Encoding utf8
+  Write-Host "FAIL-EVIDENCE: Saved app launch failure evidence for ${avdName}: screenshot=$screenshot; ui=$uiTree; diagnostics=$diagnostics; logcat=$logcat"
+}
+
+function Invoke-DevClientLaunch($adb, $serial, $avdName, [int]$Attempt) {
+  $devClientUri = Get-DevClientLaunchUri
+  Write-Host "INFO: Explicit dev-client launch attempt $Attempt for ${avdName}: $devClientUri"
+
+  $previousErrorActionPreference = $ErrorActionPreference
+  $ErrorActionPreference = "Continue"
+  try {
+    $output = & $adb -s $serial shell am start -S -W -n $AndroidMainActivity -a android.intent.action.VIEW -d $devClientUri 2>&1
+    $exitCode = $LASTEXITCODE
+  } finally {
+    $ErrorActionPreference = $previousErrorActionPreference
+  }
+
+  if ($exitCode -ne 0) {
+    Fail "Explicit dev-client launch attempt $Attempt failed for $avdName ($serial). adb output: $($output -join "`n")"
+  }
+
+  Write-Host "INFO: Explicit dev-client launch attempt $Attempt returned for ${avdName}. adb output: $($output -join "`n")"
+}
+
+function Ensure-DevClientForeground($adb, $serial, $avdName) {
+  if (Wait-ForAndroidPackageInForeground $adb $serial $AndroidPackageName 30) {
+    return
+  }
+
+  Write-Host "WARN: $AndroidPackageName was not foreground after Expo's launch marker for $avdName. Retrying with an explicit adb dev-client deep link after package replacement settles."
+  for ($attempt = 1; $attempt -le 2; $attempt++) {
+    Invoke-DevClientLaunch $adb $serial $avdName $attempt
+    if (Wait-ForAndroidPackageInForeground $adb $serial $AndroidPackageName 90) {
+      return
+    }
+  }
+
+  Save-AppLaunchFailureEvidence $adb $serial $avdName "dev-client-foreground"
+  $diagnostics = Get-AndroidForegroundDiagnostics $adb $serial
+  Fail "$avdName did not bring $AndroidPackageName to the foreground after Expo launch plus explicit dev-client relaunch attempts.`n$diagnostics"
 }
 
 function Get-FirstNodeCenterByText($uiText, $text) {
@@ -652,11 +875,16 @@ function Capture-AppEvidence($adb, $serial, $avdName) {
     Start-Sleep -Seconds $AppScreenshotDelaySeconds
   }
 
+  Ensure-DevClientForeground $adb $serial $avdName
+
   Dismiss-ExpoDeveloperMenuIfPresent $adb $serial $avdName
 
-  Invoke-AdbBinaryToFile $adb @("-s", $serial, "exec-out", "screencap", "-p") $screenshot
-  Normalize-PngFile $screenshot
-  Assert-PngFile $screenshot
+  try {
+    Capture-AndroidScreenshot $adb $serial $screenshot "post-launch app evidence for $avdName" $AndroidPackageName 3
+  } catch {
+    Save-AppLaunchFailureEvidence $adb $serial $avdName "app-screenshot"
+    throw
+  }
 
   $uiDump = Get-UiTreeDump $adb $serial
   $uiDump.Text | Out-File -FilePath $uiTree -Encoding utf8
@@ -692,7 +920,19 @@ function Open-QASurface($adb, $serial, $surfaceId) {
   }
 
   Write-Host "WARN: QA surface $surfaceId start returned successfully on $serial, but $AndroidPackageName was not foreground. Retrying launch with a cold launcher handoff. adb output: $($output -join "`n")"
-  & $adb -s $serial shell monkey -p $AndroidPackageName -c android.intent.category.LAUNCHER 1 2>&1 | Out-Null
+  $previousErrorActionPreference = $ErrorActionPreference
+  $ErrorActionPreference = "Continue"
+  try {
+    $monkeyOutput = & $adb -s $serial shell monkey -p $AndroidPackageName -c android.intent.category.LAUNCHER 1 2>&1
+    $monkeyExitCode = $LASTEXITCODE
+  } finally {
+    $ErrorActionPreference = $previousErrorActionPreference
+  }
+
+  if ($monkeyExitCode -ne 0) {
+    Fail "Cold launcher handoff failed for QA surface $surfaceId on $serial. adb output: $($monkeyOutput -join "`n")"
+  }
+
   Start-Sleep -Seconds 2
 
   $previousErrorActionPreference = $ErrorActionPreference
@@ -807,9 +1047,7 @@ function Save-QASurfaceFailureEvidence($adb, $serial, $avdName, $surfaceId, $fil
   $failureDump = Get-UiTreeDump $adb $serial
   $failureDump.Text | Out-File -FilePath $failureUiTree -Encoding utf8
 
-  Invoke-AdbBinaryToFile $adb @("-s", $serial, "exec-out", "screencap", "-p") $failureScreenshot
-  Normalize-PngFile $failureScreenshot
-  Assert-PngFile $failureScreenshot
+  Capture-AndroidScreenshot $adb $serial $failureScreenshot "QA surface failure $surfaceId" $null 2
   & $adb -s $serial logcat -d | Out-File -FilePath $failureLogcat -Encoding utf8
 
   Write-Host "FAIL-EVIDENCE: Saved QA surface failure evidence for ${surfaceId}: screenshot=$failureScreenshot; ui=$failureUiTree; logcat=$failureLogcat"
@@ -843,9 +1081,7 @@ function Capture-QASurfaceEvidence($adb, $serial, $avdName, $surfaceId, $index) 
   }
   $uiDump.Text | Out-File -FilePath $uiTree -Encoding utf8
 
-  Invoke-AdbBinaryToFile $adb @("-s", $serial, "exec-out", "screencap", "-p") $screenshot
-  Normalize-PngFile $screenshot
-  Assert-PngFile $screenshot
+  Capture-AndroidScreenshot $adb $serial $screenshot "QA surface $surfaceId for $avdName" $AndroidPackageName 3
   & $adb -s $serial logcat -d | Out-File -FilePath $logcat -Encoding utf8
 
   Write-Host "PASS: Captured QA surface $surfaceId for ${avdName}: screenshot=$screenshot; ui=$uiTree; logcat=$logcat"

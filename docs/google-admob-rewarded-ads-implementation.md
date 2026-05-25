@@ -61,6 +61,13 @@ After a rewarded ad completes for a signed-in user:
 - The existing coin reward fanfare uses the confirmed backend reward amount and balance.
 - The loss-continue action is visible in the loss modal; the `coin_shop` placement is wired through the existing handler but is not surfaced by the current Coin Shop UI.
 
+### Source-Level Fallback And Listener Coverage
+
+- `GameScreen` source tests verify the Coin Shop watch-video handler shows the ad-not-ready fallback when a rewarded ad does not grant a reward, without recording a backend callback or showing the coin fanfare.
+- `GameScreen` source tests verify the loss-modal watch-ad continue path closes the loss modal, shows the ad-not-ready fallback, and does not continue gameplay or record a backend callback when no reward is granted.
+- `RewardedAdService` source tests verify temporary `EARNED_REWARD` / `CLOSED` listeners are removed after repeated rewarded-ad shows and after an ad closes without granting a reward.
+- `pnpm run test:android:matrix:unit` now includes `src/services/__tests__/RewardedAdService.test.ts` so rewarded-ad listener cleanup stays in the Android QA preflight.
+
 ## Remaining Work
 
 ### 1. Set Real Environment Values
@@ -86,8 +93,8 @@ Keep these configured for:
 - Backend callback awards authenticated rewards exactly once.
 - Duplicate callback ids do not duplicate coins.
 - Cooldown/rate-limit behavior rejects rapid replay attempts.
-- No duplicate listener behavior after navigating away and back.
-- No-fill/not-ready failures show user-friendly fallback modals.
+- No duplicate listener behavior after navigating away and back; source-unit listener cleanup is covered, but live navigation replay remains open.
+- No-fill/not-ready failures show user-friendly fallback modals; source-unit no-reward fallbacks are covered, but live no-fill/not-ready emulator evidence remains open.
 
 ## Progress Log
 
@@ -106,11 +113,16 @@ Keep these configured for:
 - 2026-05-25: Issue encountered: a quick PowerShell env-presence check repeated the parser error `An empty pipe element is not allowed` by piping directly from a `foreach` block. Resolution: collect rows into `$rows` before piping to `Format-Table`.
 - 2026-05-25: Issue encountered: an exploratory `rg` command used Windows-incompatible bare glob arguments such as `*.js` / `*.ts`, causing path errors. Resolution: reran narrower searches with explicit paths and repo globs.
 - 2026-05-25: Issue encountered: `pnpm exec eslint --no-ignore app.config.js src/config/__tests__/appConfig.test.js --ext .js` forced ESLint through files the repo intentionally ignores; it then reported existing CJS `require()` and Jest-global errors. Resolution: treated that as a non-gate diagnostic, used the normal ignored-file behavior for lint scope, and verified the change with focused Jest, TypeScript, and redacted Expo config resolution.
+- 2026-05-25: Current agent read all 52 files under `docs/` via a docs-wide digest before continuing, covering 8,342 lines / 582,328 characters in the current tree. Issue encountered: an `rg` search using a lookahead for unchecked HTML checkboxes failed because the default regex engine does not support that lookahead syntax. Resolution: split the unchecked Markdown and HTML searches and used PowerShell `Select-String` for the HTML checkbox shape.
+- 2026-05-25: Completed source-level rewarded-ad fallback/listener verification. Added `src/services/__tests__/RewardedAdService.test.ts`, added GameScreen tests for no-reward Coin Shop and loss-modal fallback paths, and added the service test to `pnpm run test:android:matrix:unit`. Verification passed: `pnpm exec jest src/services/__tests__/RewardedAdService.test.ts src/screens/game/__tests__/GameScreen.test.tsx --runInBand` (2 suites / 113 tests), `pnpm exec tsc --noEmit --pretty false`, and `pnpm run test:android:matrix:unit` (49 suites / 991 tests). The matrix-unit run still prints existing expected `console.error` output from negative-path tests in ForgotPasswordScreen, useGameLogic, and GameStateManager, but all suites passed.
+- 2026-05-25: Issue encountered: the first `RewardedAdService` test helper used dynamic `import("../RewardedAdService")`, which failed in this Jest runtime with `A dynamic import callback was invoked without --experimental-vm-modules`. Resolution: switched the helper to the repo's existing `require` pattern after `jest.doMock`; the focused Jest run then passed.
+- 2026-05-25: Current continuation reread all 52 files under `docs/` before acting (8,363 lines / 599,249 characters) and rechecked this source-unit rewarded-ad slice. Verification passed again: `pnpm exec jest src/services/__tests__/RewardedAdService.test.ts src/screens/game/__tests__/GameScreen.test.tsx --runInBand` (2 suites / 113 tests), `pnpm exec tsc --noEmit --pretty false`, and `pnpm run test:android:matrix:unit` (49 suites / 991 tests). Expo MCP remains unavailable through `tool_search`, so local repo commands were used. No new source errors were found; live provider-auth ad replay, no-fill/not-ready emulator evidence, duplicate/cooldown proof, real app IDs, callable deployment, and Firebase deltas remain open.
 
 ## Quick Verification Commands
 
 ```bash
 pnpm test -- src/screens/game/__tests__/GameScreen.test.tsx
+pnpm exec jest src/services/__tests__/RewardedAdService.test.ts --runInBand
 pnpm test -- src/services/__tests__/AnalyticsService.test.ts
 pnpm exec expo config --type public
 ```

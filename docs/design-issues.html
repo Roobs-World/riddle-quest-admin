@@ -262,7 +262,7 @@
 
         <div class="summary-grid" aria-label="Issue summary">
           <div class="summary-card">
-            <strong>3</strong>
+            <strong>2</strong>
             <span>open defects, blockers, or unreachable paths</span>
           </div>
           <div class="summary-card">
@@ -270,8 +270,8 @@
             <span>legal, store, or navigation blockers</span>
           </div>
           <div class="summary-card">
-            <strong>29</strong>
-            <span>fixed source or infrastructure defects needing regression awareness</span>
+            <strong>30</strong>
+            <span>fixed, resolved, or watch-listed source/infrastructure defects needing regression awareness</span>
           </div>
           <div class="summary-card">
             <strong>30+</strong>
@@ -312,7 +312,11 @@
                 <code>176-signup-privacy-link-after-load.png</code>, and
                 matching logcat with captured production URLs. Localhost
                 119-route matrix and the LAN <code>localhost:3000</code> server
-                checks pass.
+                checks pass. A fresh production matrix on 2026-05-25 still
+                returned <code>404</code> for all <code>119 / 119</code>
+                required URLs; evidence is in
+                <code>emulator-tests/logs/live-roobsworld-legal-matrix-20260525-154524.txt</code>,
+                <code>.csv</code>, and <code>.json</code>.
               </td>
               <td data-label="Next Action">
                 Deploy or repair the production legal pages, then rerun the
@@ -338,43 +342,6 @@
                 Provide App Store Connect and Play Console disclosure entries
                 or drafts, then compare them against observed guest/provider
                 behavior and Firebase deltas.
-              </td>
-            </tr>
-
-            <tr>
-              <td data-label="ID"><code>DSI-032</code></td>
-              <td data-label="Status"><span class="badge todo">Needs Fresh Repro</span></td>
-              <td data-label="Priority" class="priority">P1</td>
-              <td data-label="Issue">
-                Sentry reported a development fatal error on 2026-05-24:
-                <code>Requiring unknown module "react-native"</code>. This is
-                not currently reproducible locally, but it remains open until a
-                fresh Metro/logcat/Sentry trace proves whether it was a stale
-                Metro cache, dependency resolution race, missing install, or a
-                repeatable app startup path.
-              </td>
-              <td data-label="Evidence">
-                User-provided Sentry issue
-                <code>285f837464cd4952acbe45701b115647</code>. Local
-                2026-05-25 checks did not reproduce it:
-                <code>emulator-tests/logs/metro-react-native-module-check-20260525.txt</code>
-                records Metro <code>packager-status:running</code>, Android
-                bundle HTTP 200 with <code>21077490</code> bytes, and the then-installed
-                <code>react-native@0.85.0</code>. The runtime was later
-                advanced to <code>react-native@0.85.1</code>, so any recurrence
-                needs fresh bundle/version evidence. The complete guarded
-                <code>pnpm run test:android:matrix</code> replay also passed on
-                all eight configured AVDs with per-device Metro asset and
-                websocket probes, and
-                <code>emulator-tests/logs/test-android-matrix-full-dsi034-20260525.stdout.txt</code>
-                contains no <code>Requiring unknown module "react-native"</code>
-                signature.
-              </td>
-              <td data-label="Next Action">
-                If the fatal recurs, capture the exact Metro output, emulator
-                logcat, and Sentry stack for the same launch. Do not silence it;
-                compare the failing bundle URL and module map against the
-                passing local bundle check above.
               </td>
             </tr>
 
@@ -1377,8 +1344,11 @@
                 Keep the AuthContext delayed duplicate-provider callback
                 regression in the unit preflight and preserve the timed
                 provider-auth replay evidence as the current device baseline.
-                Keep initialization retry/error plus offline blocking states
-                open until they have deterministic trigger screenshots/logs.
+                Initialization retry/error now has deterministic source,
+                trigger, screenshot, XML, and logcat evidence through the
+                <code>page-initialization-error</code> QA surface. Offline
+                blocking/recovery now has source coverage and Pixel 4a natural
+                network-toggle evidence.
               </td>
             </tr>
 
@@ -1577,6 +1547,41 @@
             </tr>
 
             <tr>
+              <td data-label="ID"><code>DSI-032</code></td>
+              <td data-label="Status"><span class="badge fixed">No Local Repro / Watch</span></td>
+              <td data-label="Issue">
+                Sentry reported a development fatal error on 2026-05-24:
+                <code>Requiring unknown module "react-native"</code>. The
+                fresh RN 0.85.1 Metro, bundle, matrix probe, and focused
+                landing replay evidence did not reproduce the runtime failure.
+              </td>
+              <td data-label="Fix / Verification">
+                Evidence:
+                <code>emulator-tests/logs/metro-react-native-module-check-rn0851-20260525.txt</code>
+                records Metro HTTP 200 and Android bundle HTTP 200 with
+                installed <code>react-native@0.85.1</code>;
+                <code>pnpm run test:android:matrix:run -- -ProbeOnly</code>
+                passed host/emulator Metro asset and websocket probes; and
+                <code>emulator-tests/logs/test-android-matrix-dsi032-page-landing-freshboot-20260525.txt</code>
+                passed after the stale AVD was killed and cold-booted. The
+                focused logcat contains no runtime
+                <code>Requiring unknown module "react-native"</code> signature.
+                The separate launcher/splash/ANR states were resolved by
+                matrix-runner foreground, relaunch, monkey-output, and
+                screenshot-retry hardening.
+              </td>
+              <td data-label="Regression Need">
+                Keep this as a watch item. If the fatal recurs, capture the
+                exact Metro output, emulator logcat, and Sentry stack for the
+                same launch, then compare the failing bundle URL and module map
+                against the passing local bundle checks above. If
+                <code>rq_pixel_4a_api_36_1</code> shows startup ANR after
+                repeated failed runs, kill the stale emulator and let the matrix
+                runner cold-boot it before collecting surface evidence.
+              </td>
+            </tr>
+
+            <tr>
               <td data-label="ID"><code>DSI-033</code></td>
               <td data-label="Status"><span class="badge fixed">Fixed / Full Matrix Passed</span></td>
               <td data-label="Issue">
@@ -1723,13 +1728,14 @@
           <li>Guest logout is now covered: <code>400-settings-open-for-guest-logout.png</code>/<code>.xml</code> show the Settings <code>Logout</code> row, <code>401-guest-logout-result.png</code>/<code>.xml</code> show unauthenticated Landing after logout, <code>401-guest-logout-result-logcat.txt</code> records <code>FirebaseAuth</code> sign-out and navigation changing to unauthenticated, and <code>403-guest-logout-after-restart-settled.png</code>/<code>.xml</code> plus <code>404-guest-logout-after-restart-app-pid-idle-logcat.txt</code> prove force-stop/relaunch stays on Landing without app-PID errors. Provider-auth logout is now covered at the UI/session level by <code>421</code>/<code>422</code>/<code>426</code>/<code>427</code>; Auth/backend cleanup remains under account-deletion TODOs.</li>
           <li>Guest account deletion confirm path, cleanup proof, restart proof, and failure path.</li>
           <li>Auth-provider account deletion confirm path, Auth cleanup, Firestore cleanup, storage-prefix check, and re-sign-in proof.</li>
-          <li>Riddle loading, initialization retry/error state, and offline blocking state. Provider-auth relaunch loading is fixed in source and closed under <code>DSI-027</code> after root-causing delayed duplicate same-user auth bootstraps and verifying a timed Google provider-auth replay from LAN bundle selection to first non-loading app screen in <code>14.24s</code>. Initialization retry/error and offline blocking trigger evidence remain open.</li>
-          <li>Metro startup fatal <code>Requiring unknown module "react-native"</code> is tracked as <code>DSI-032</code>. Current local Metro and Android bundle checks pass, and the latest full matrix passed all eight AVDs with per-device Metro probes and no unknown-module signature; a fresh failure trace is required before a source-level fix can be made.</li>
+          <li>Riddle loading, initialization retry/error, and offline blocking/recovery are now covered for the local-verifiable paths. Provider-auth relaunch loading is fixed in source and closed under <code>DSI-027</code> after root-causing delayed duplicate same-user auth bootstraps and verifying a timed Google provider-auth replay from LAN bundle selection to first non-loading app screen in <code>14.24s</code>. Initialization retry/error source coverage verifies the wrapper failure message and Retry action, while focused Pixel 4a QA-surface replay captured <code>page-initialization-error</code> with <code>Riddle database unavailable</code> and <code>Retry</code>; evidence: <code>emulator-tests/images/rq_pixel_4a_api_36_1/surfaces/06-01-page-initialization-error.png</code>, matching XML, and logcat. Offline blocking/recovery has source-level <code>GameScreen</code> coverage for initial offline reachability, live NetInfo offline/online events, board overlay blocking, and listener cleanup, plus Pixel 4a natural emulator evidence: <code>emulator-tests/images/offline-toggle-natural/20260525-164352-02-online-game-ready.png</code>, <code>20260525-164352-03-offline-blocking-visible.png</code>, <code>20260525-164352-04-online-recovered-game.png</code>, and <code>emulator-tests/logs/offline-toggle-natural/offline-toggle-natural-screenshot-20260525-164352.txt</code>.</li>
+          <li>Metro startup fatal <code>Requiring unknown module "react-native"</code> is now a <code>DSI-032</code> watch item, not an open blocker. Current local Metro and Android bundle checks pass, the latest full matrix passed all eight AVDs with per-device Metro probes and no unknown-module signature, and the fresh-boot focused <code>page-landing</code> replay passed on <code>rq_pixel_4a_api_36_1</code>; a fresh failure trace is required before a source-level fix can be made.</li>
           <li>Guest Classic solve/reward is now covered by <code>DSI-025</code>; Daily fallback to Classic and provider-auth replay for Classic reward, incorrect, duplicate-letter, loss, ad continue, and continue behavior remain open. Guest loss trigger, visible continue offer, disabled coin-continue low-balance state, sufficient-balance coin continue, loss-modal <code>Skip Puzzle</code>, low-balance loss rewarded-ad playback/reward/continue, final-loss after ad-continue exhaustion, final-loss Open Shop/close/Next Level, restart persistence after Next Level, the DSI-020 stacked-modal fix, and the DSI-021 Android Back terminal-loss fix are covered by source/unit/matrix plus fresh emulator evidence.</li>
           <li>Skip provider-auth coverage and backend deltas remain open; guest skip open/cancel/confirm, local coin deduction, Classic transition, insufficient-coins messaging, low-balance Coin Shop handoff, loss low-balance gating, and DSI-019 guest mode/riddle restart persistence are covered by source/unit/matrix plus fresh emulator evidence.</li>
           <li>Hint persistence and provider-auth backend deltas remain open. Guest Statistics post-restart values are fixed and covered by <code>DSI-026</code>; post-fix evidence <code>381-statistics-postfix-open.png</code>/<code>.xml</code> verifies persisted <code>Games Played: 4</code> and <code>Total Words Guessed: 9</code>.</li>
           <li>Provider-auth replay for keyboard backspace, answer-slot tapping, and submit gating remains open; the answer-length mismatch, overlong-entry, and literal-answer clue regressions are fixed in source and covered by <code>DSI-028</code> matrix-unit tests. The seven-letter <code>page-game</code> riddle background fit issue is fixed under <code>DSI-033</code> with Pixel 4a, all-device focused matrix, and full DSI-034 matrix evidence; the runner/harness blockers found during that replay are fixed under <code>DSI-034</code> and verified by the complete guarded matrix.</li>
-          <li>Coin Shop purchase attempt has emulator evidence, a fixed source regression, and a post-fix guest replay for the zero-coin success bug (<code>DSI-024</code>); pay/play behavior, production-like billing, loading/error edge states, provider-auth states, and backend/Firebase deltas remain open. Rewarded-ad playback is a separate low-balance loss-modal check; guest now passes, and authenticated client/backend source coverage now confirms <code>awardedAdCallback</code> is used for <code>loss_continue</code> and the existing <code>coin_shop</code> handler/dev/future UI entry. The current Coin Shop UI intentionally does not render a watch-ad action. Live provider-auth emulator replay and Firebase delta proof remain TODO. The loss modal should show both <code>Watch Ad for 3 Extra Guesses</code> and <code>Open Shop</code> when the user has fewer than <code>100</code> coins.</li>
+          <li>Coin Shop purchase attempt has emulator evidence, a fixed source regression, and a post-fix guest replay for the zero-coin success bug (<code>DSI-024</code>); pay/play behavior, production-like billing, loading/error edge states, provider-auth states, and backend/Firebase deltas remain open. Rewarded-ad playback is a separate low-balance loss-modal check; guest now passes, and authenticated client/backend source coverage now confirms <code>awardedAdCallback</code> is used for <code>loss_continue</code> and the existing <code>coin_shop</code> handler/dev/future UI entry. Source-unit coverage now also verifies no-reward fallbacks for Coin Shop and loss-modal rewarded ads, plus cleanup of temporary Google Mobile Ads reward/close listeners across repeated shows; <code>pnpm run test:android:matrix:unit</code> includes this coverage and passed 49 suites / 991 tests on 2026-05-25. The current Coin Shop UI intentionally does not render a watch-ad action. Live provider-auth emulator replay, live no-fill/not-ready evidence, and Firebase delta proof remain TODO. The loss modal should show both <code>Watch Ad for 3 Extra Guesses</code> and <code>Open Shop</code> when the user has fewer than <code>100</code> coins.</li>
+          <li>Current rewarded-ad recheck: after rereading all 52 docs files, focused rewarded-ad Jest passed 2 suites / 113 tests, TypeScript passed with no output, and <code>pnpm run test:android:matrix:unit</code> passed 49 suites / 991 tests. Expo MCP remained unavailable through <code>tool_search</code>, so local repo commands were used. No new source failures were found; live provider-auth ad replay, no-fill/not-ready emulator evidence, duplicate callback/cooldown proof, real Mobile Ads IDs, deployed callable proof, and Firebase deltas remain open.</li>
           <li>Coin purchase fanfare and level-up fanfare guest dev-panel open/dismiss/Back behavior now have emulator evidence; real guest purchase-trigger coin state now passes through DSI-024 with <code>+50 Coins</code>, <code>Total Coins: 125</code>, and restart persistence. The coin-purchase fanfare background-framing defect is fixed under <code>DSI-029</code> with focused Pixel 4a/fold-outer screenshots and full 8-device matrix fanfare screenshots. The fold-unfolded landing failure from the latest full matrix attempt is fixed separately under <code>DSI-030</code> as a Play Store / Google Play Services update interruption, not as a removed UI check, and the complete rerun passed. Natural guest XP/level-up now passes through DSI-025 with <code>+50 Coins</code> and final balance <code>115</code>. The "Nice job" victory and level-up fanfare background-fit defect is fixed under <code>DSI-035</code> with taller frames, matrix-unit coverage, TypeScript, and focused all-device <code>modal-victory</code>/<code>modal-level-up-fanfare</code> screenshots. Provider-auth/backend deltas, provider-auth persistence proof, production billing replay, and the victory-total UX clarification remain open.</li>
           <li>Welcome-back modal and standalone info modal guest dev-panel open/primary-action/Back behavior now have emulator evidence; natural provider-auth welcome-back replay is covered by <code>410</code>/<code>411</code>. Non-debug info trigger paths remain open. The DSI-020 loss-triggered info/loss modal recovery fix and DSI-021 terminal loss hardware-Back fix have source, unit, matrix, and guest emulator replay evidence.</li>
           <li>Modal infrastructure coverage drift is fixed under <code>DSI-031</code>: registry, provider, debug panel, breadcrumb, focused screen/modal/component tests, coin shop modal, and QA surface inventory tests now run in <code>test:android:matrix:unit</code>. Remaining modal TODOs are natural/persona/backend trigger coverage, not missing registry, unit, or screenshot inventory checks.</li>
@@ -1740,7 +1746,7 @@
           <li>Guest Statistics modal post-restart source mismatch is fixed and covered by <code>DSI-026</code>; provider-auth statistics state and backend/Firebase deltas remain open.</li>
           <li>Provider-auth leaderboard backend state and tab coverage.</li>
           <li>Guest Credits external website handoff now has emulator evidence: <code>395-credits-open-for-website-retry.png</code>/<code>.xml</code> show the accessible <code>Craig Beswetherick website</code> row, <code>396-credits-website-craig-tap-retry.png</code> shows Chrome on <code>roobsworld.com</code>, <code>396-credits-website-craig-tap-retry-logcat.txt</code> records the <code>android.intent.action.VIEW</code> handoff to <code>https://www.roobsworld.com/...</code>, and <code>399-after-credits-return-15s-idle-logcat.txt</code> proves the app resumed cleanly after a cleared idle window.</li>
-          <li>Guest Settings Help support-email handoff now has emulator evidence: <code>385-support-email-after-help-tap.png</code>/<code>.xml</code> show Gmail receiving the handoff, <code>385-support-email-after-help-tap-logcat.txt</code> records the <code>mailto:</code> intent to <code>com.google.android.gm/.ComposeActivityGmailExternal</code>, and <code>386</code>/<code>387</code> prove the app resumes cleanly after the external Gmail screen. Provider-auth Support behavior remains open.</li>
+          <li>Guest and provider-auth Settings Help support-email handoff now have emulator evidence. Guest: <code>385-support-email-after-help-tap.png</code>/<code>.xml</code> show Gmail receiving the handoff, <code>385-support-email-after-help-tap-logcat.txt</code> records the <code>mailto:</code> intent to <code>com.google.android.gm/.ComposeActivityGmailExternal</code>, and <code>386</code>/<code>387</code> prove the app resumes cleanly after the external Gmail screen. Provider-auth: <code>emulator-tests/images/provider-auth-support/20260525-171147-04-provider-settings-open.png</code> shows Settings with <code>Help</code>, <code>20260525-171221-05-provider-support-mailto-handoff.png</code>/<code>.xml</code> show Gmail compose with <code>support@adspeq.com</code>, <code>20260525-171221-05-provider-support-mailto-handoff-logcat.txt</code> records the Qwordly-to-Gmail mailto handoff, and <code>20260525-171257-07-provider-app-resume-second-back.png</code> plus <code>20260525-171358-08-provider-settings-idle-after-resume-logcat.txt</code> prove Settings resumed cleanly after a cleared idle window.</li>
           <li>Provider-auth About/Legal coverage and language spot checks.</li>
           <li>Account Deletion, Data Export, Third-Party Licenses, and Support fulfillment beyond row discoverability.</li>
           <li>App restart persistence has guest coverage for DSI-019 skip/mode restore, final-loss <code>Next Level</code> restore, Settings sound/haptics persistence, Profile bottom-scroll refresh, Achievements/Statistics post-restart checks, and explicit logout-to-Landing restart proof. Provider-auth UI/session restart is covered by <code>414</code>/<code>416</code>/<code>417</code>, provider-auth Sound/Haptics restart persistence is covered by <code>516</code>/<code>521</code>, provider-auth post-logout restart is covered by <code>424</code>/<code>426</code>/<code>427</code>, and the DSI-027 slow Loading replay is covered by <code>512</code>/<code>513</code>/<code>514</code> with Google provider-auth logcat. Firestore-backed provider snapshots/deltas remain open.</li>

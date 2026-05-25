@@ -10,4 +10,3 @@ This folder contains React context providers and hooks that expose shared applic
 - Always consume context via the exported hooks (e.g. `useAuth`, `useModalContext`) rather than accessing providers directly.
 - Contexts should remain orchestration layers; heavy domain logic should live in services or hooks.
 - New contexts should clearly document their value shape and any invariants (for example, when fields may be `null` vs. guaranteed).
-*** End Patch

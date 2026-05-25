@@ -251,6 +251,18 @@ jest.mock("../../../components/modals/settings/UpgradeAccountModal", () => {
   };
 });
 
+const mockOfflineBlockingModal = jest.fn();
+jest.mock("../../../components/modals/system/OfflineBlockingModal", () => {
+  const React = require("react");
+  const { Text } = require("react-native");
+  return function MockOfflineBlockingModal(props: any) {
+    mockOfflineBlockingModal(props);
+    return props.isVisible
+      ? React.createElement(Text, null, "Offline Blocking Modal Visible")
+      : null;
+  };
+});
+
 // Mock game components
 const mockHeader = jest.fn();
 jest.mock("../../../components/game/Header", () => {
@@ -542,6 +554,7 @@ describe("GameScreen", () => {
     mockShowTooltipOnce.mockClear();
     mockShowTooltip.mockClear();
     mockDismissTooltip.mockClear();
+    mockOfflineBlockingModal.mockClear();
     mockIsRewardedAdReady = true;
   });
 
@@ -916,6 +929,69 @@ describe("GameScreen", () => {
     });
   });
 
+  describe("Connectivity Blocking", () => {
+    it("shows the offline blocking modal when initial reachability is offline", async () => {
+      (NetInfo.fetch as jest.Mock).mockResolvedValueOnce({
+        isConnected: false,
+        isInternetReachable: true,
+      });
+
+      const { queryByText } = render(<GameScreen {...defaultProps} />);
+
+      await waitFor(() => {
+        expect(getLatestMockProps(mockOfflineBlockingModal).isVisible).toBe(
+          true
+        );
+      });
+      expect(queryByText("Offline Blocking Modal Visible")).toBeTruthy();
+      expect(getLatestMockProps(mockGameBoard).isAnyOverlayVisible).toBe(true);
+    });
+
+    it("updates offline blocking state from NetInfo events and unsubscribes on unmount", async () => {
+      const unsubscribe = jest.fn();
+      (NetInfo.addEventListener as jest.Mock).mockReturnValueOnce(unsubscribe);
+      (NetInfo.fetch as jest.Mock).mockResolvedValueOnce({
+        isConnected: true,
+        isInternetReachable: true,
+      });
+
+      const { unmount, queryByText } = render(<GameScreen {...defaultProps} />);
+
+      await waitFor(() => {
+        expect(getLatestMockProps(mockOfflineBlockingModal).isVisible).toBe(
+          false
+        );
+      });
+
+      const listener = (NetInfo.addEventListener as jest.Mock).mock.calls[0][0];
+
+      act(() => {
+        listener({ isConnected: true, isInternetReachable: false });
+      });
+
+      await waitFor(() => {
+        expect(getLatestMockProps(mockOfflineBlockingModal).isVisible).toBe(
+          true
+        );
+      });
+      expect(queryByText("Offline Blocking Modal Visible")).toBeTruthy();
+
+      act(() => {
+        listener({ isConnected: true, isInternetReachable: true });
+      });
+
+      await waitFor(() => {
+        expect(getLatestMockProps(mockOfflineBlockingModal).isVisible).toBe(
+          false
+        );
+      });
+      expect(queryByText("Offline Blocking Modal Visible")).toBeNull();
+
+      unmount();
+      expect(unsubscribe).toHaveBeenCalledTimes(1);
+    });
+  });
+
   describe("Error Handling", () => {
     it("should handle IAP product loading error", async () => {
       const { IapService } = require("../../../services/IapService");
@@ -1220,6 +1296,25 @@ describe("GameScreen", () => {
           totalCoins: 150,
         })
       );
+    });
+
+    it("shows the coin-shop ad fallback when a rewarded ad does not grant a reward", async () => {
+      mockShowRewardedAd.mockResolvedValueOnce(false);
+
+      render(<GameScreen {...defaultProps} />);
+      const headerProps = getLatestProps(mockHeader);
+      await act(async () => {
+        await headerProps.onCoinsPress();
+      });
+      const config =
+        mockShowCoinShopModal.mock.calls[mockShowCoinShopModal.mock.calls.length - 1][0];
+
+      await invokeGameAction(() => config.onWatchVideo());
+
+      expect(mockCloseModalByType).toHaveBeenCalledWith("coinShop");
+      expect(mockShowAdNotReady).toHaveBeenCalled();
+      expect(mockRecordRewardedAdCompletion).not.toHaveBeenCalled();
+      expect(mockShowCoinPurchaseFanfareModal).not.toHaveBeenCalled();
     });
 
     it("submits a completed guess and stores the result", async () => {
@@ -1745,6 +1840,45 @@ describe("GameScreen", () => {
         { coins: 125 },
         { syncToFirestore: false }
       );
+    });
+
+    it("shows the loss-modal ad fallback when a rewarded ad does not grant a reward", async () => {
+      mockShowRewardedAd.mockResolvedValueOnce(false);
+      mockUseGameLogic.currentGuess = ["K", "E", "Y", "B", "O", "A", "R", "D"];
+      mockUseGameLogic.processGuess.mockResolvedValueOnce({
+        outcome: "attemptLimitReached",
+        correctAnswer: "ANSWER",
+        canOfferRewardedAd: true,
+      });
+
+      const { rerender } = render(<GameScreen {...defaultProps} userCoins={5} />);
+      const inputProps = getLatestProps(mockGameInput);
+      await act(async () => {
+        await inputProps.handleSubmit();
+      });
+      mockUseGameLogic.gameOver = true;
+      rerender(<GameScreen {...defaultProps} userCoins={5} />);
+
+      await waitFor(() => {
+        expect(mockShowLossModal).toHaveBeenCalled();
+      });
+      const config = mockShowLossModal.mock.calls[mockShowLossModal.mock.calls.length - 1][0];
+
+      const shouldClose = config.onWatchAdContinue();
+
+      expect(shouldClose).toBe(true);
+      expect(mockCloseModalByType).toHaveBeenCalledWith("loss");
+      await waitFor(() => {
+        expect(mockShowInfoModal).toHaveBeenCalledWith(
+          expect.objectContaining({
+            title: "Ad Not Ready",
+            message: "Please try again soon.",
+          })
+        );
+      });
+      expect(mockRecordRewardedAdCompletion).not.toHaveBeenCalled();
+      expect(mockUseGameLogic.continueGame).not.toHaveBeenCalled();
+      expect(mockShowCoinPurchaseFanfareModal).not.toHaveBeenCalled();
     });
 
     it("keeps rewarded-ad continue local-only for guest players", async () => {
