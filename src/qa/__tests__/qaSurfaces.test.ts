@@ -1,5 +1,14 @@
-import {MODAL_REGISTRY_TYPES} from "../../components/modals/modalTypes";
-import {QA_MODAL_SURFACE_TO_REGISTRY_TYPE, QA_MODAL_SURFACES, QA_PAGE_SURFACES, QA_SURFACES} from "../qaSurfaces";
+import { MODAL_REGISTRY_TYPES } from "../../components/modals/modalTypes";
+import {
+  QA_MODAL_SURFACE_TO_REGISTRY_TYPE,
+  QA_MODAL_SURFACES,
+  QA_MODAL_VARIANT_SURFACES,
+  QA_PAGE_SURFACES,
+  QA_POPUP_SURFACES,
+  QA_REGISTRY_MODAL_SURFACES,
+  QA_STANDALONE_MODAL_SURFACES,
+  QA_SURFACES,
+} from "../qaSurfaces";
 
 describe("QA Android screenshot surfaces", () => {
   it("keeps every app page in the screenshot inventory", () => {
@@ -16,18 +25,50 @@ describe("QA Android screenshot surfaces", () => {
     ]);
   });
 
-  it("includes every registered modal plus the two standalone modals", () => {
-    const registeredModalTypes = [...MODAL_REGISTRY_TYPES].sort();
-    const mappedModalTypes = Object.values(QA_MODAL_SURFACE_TO_REGISTRY_TYPE).sort();
+  it("includes every registered modal plus standalone modal surfaces", () => {
+    const registeredModalTypes = new Set(MODAL_REGISTRY_TYPES);
+    const mappedRegistryModalTypes = new Set(
+      QA_REGISTRY_MODAL_SURFACES.map(
+        (surface) =>
+          QA_MODAL_SURFACE_TO_REGISTRY_TYPE[
+            surface.id as keyof typeof QA_MODAL_SURFACE_TO_REGISTRY_TYPE
+          ]
+      )
+    );
 
-    expect(mappedModalTypes).toEqual(registeredModalTypes);
+    expect(mappedRegistryModalTypes).toEqual(registeredModalTypes);
     expect(QA_MODAL_SURFACES.map((surface) => surface.id)).toEqual(
       expect.arrayContaining([
-        ...Object.keys(QA_MODAL_SURFACE_TO_REGISTRY_TYPE),
-        "modal-delete-account-confirmation",
-        "modal-offline-blocking",
-      ]),
+        ...QA_REGISTRY_MODAL_SURFACES.map((surface) => surface.id),
+        ...QA_STANDALONE_MODAL_SURFACES.map((surface) => surface.id),
+      ])
     );
+  });
+
+  it("captures important modal state variants that are easy to miss", () => {
+    expect(QA_MODAL_VARIANT_SURFACES.map((surface) => surface.id)).toEqual(
+      expect.arrayContaining([
+        "modal-welcome-onboarding-progress",
+        "modal-info-onboarding-upgrade-action",
+        "modal-hint-insufficient-coins",
+        "modal-skip-insufficient-coins",
+        "modal-loss-no-continue-options",
+        "modal-loss-coin-continue",
+        "modal-coin-shop-loading",
+        "modal-coin-shop-error",
+        "modal-coin-shop-empty",
+        "modal-victory-sequence",
+        "modal-settings-language-picker",
+        "modal-upgrade-account-existing-account",
+      ])
+    );
+  });
+
+  it("captures non-modal popups and overlays", () => {
+    expect(QA_POPUP_SURFACES.map((surface) => surface.id)).toEqual([
+      "popup-tooltip-submit-answer",
+      "popup-global-mute-overlay",
+    ]);
   });
 
   it("does not duplicate screenshot surface ids", () => {
