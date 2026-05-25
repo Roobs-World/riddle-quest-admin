@@ -9,6 +9,7 @@ import Animated, {
 } from "react-native-reanimated";
 import WheelBg from "../../../assets/images/wheel-bg.svg";
 import {dimensions} from "../../utils/responsive";
+import {isQASurfaceRuntimeActive} from "../../qa/qaRuntime";
 
 interface RotatingWheelBackgroundProps {
   isVisible: boolean;
@@ -27,7 +28,7 @@ const RotatingWheelBackground: React.FC<RotatingWheelBackgroundProps> = ({
   const rotation = useSharedValue(0);
 
   useEffect(() => {
-    if (isVisible) {
+    if (isVisible && !isQASurfaceRuntimeActive()) {
       rotation.value = withRepeat(
         withTiming(1, {
           duration: durationMs,
@@ -38,10 +39,12 @@ const RotatingWheelBackground: React.FC<RotatingWheelBackgroundProps> = ({
       );
     } else {
       cancelAnimation(rotation);
+      rotation.value = 0;
     }
 
     return () => {
       cancelAnimation(rotation);
+      rotation.value = 0;
     };
   }, [durationMs, isVisible, rotation]);
 

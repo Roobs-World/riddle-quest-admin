@@ -21,6 +21,9 @@ import { styles } from "../../styles";
 import QuestionsSvg from "../../../assets/images/questions.svg";
 import type { Feedback } from "../../hooks/types";
 
+const RIDDLE_BACKGROUND_HEIGHT = "118%";
+const RIDDLE_BACKGROUND_TOP = "-9%";
+
 /**
  * Structure representing a submitted guess with feedback.
  *
@@ -188,12 +191,13 @@ const GameBoard: React.FC<GameBoardProps> = ({
       >
         {/* Decorative Background SVG */}
         <QuestionsSvg
+          testID="riddle-background"
           width="90%"
-          height="100%"
+          height={RIDDLE_BACKGROUND_HEIGHT}
           preserveAspectRatio="none"
           style={{
             position: "absolute",
-            top: "0%",
+            top: RIDDLE_BACKGROUND_TOP,
             zIndex: 0,
           }}
         />

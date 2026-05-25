@@ -30,6 +30,7 @@ if (process.env.EXPO_PUBLIC_SENTRY_DSN) {
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { View } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { loadFonts } from "./src/utils/fontLoader";
 import { SoundManager } from "./src/services/SoundManager";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -45,6 +46,7 @@ import { preloadShopCatalog } from "./src/services/ShopCatalogPreloader";
 import { initializeRewardedAds } from "./src/services/RewardedAdService";
 import { getCrashlytics } from "@react-native-firebase/crashlytics";
 import { ModalProvider } from "./src/contexts/ModalContext";
+import { QASurfaceGate } from "./src/qa/QASurfaceHarness";
 import {
   APP_LANGUAGE_STORAGE_KEY,
   isSupportedLanguage,
@@ -227,17 +229,21 @@ export default Sentry.wrap(function App() {
       fallback={<PulsingSpinner visible={true} size={120} opacity={0.8} />}
       onError={(error) => captureException(error, { context: "App.ErrorBoundary" })}
     >
-      <ModalProvider>
-        <AuthProvider>
-          <TooltipProvider>
-            <View style={{ flex: 1 }}>
-              <NavigationContainer>
-                <Navigation />
-              </NavigationContainer>
-            </View>
-          </TooltipProvider>
-        </AuthProvider>
-      </ModalProvider>
+      <SafeAreaProvider>
+        <ModalProvider>
+          <AuthProvider>
+            <TooltipProvider>
+              <View style={{ flex: 1 }}>
+                <QASurfaceGate>
+                  <NavigationContainer>
+                    <Navigation />
+                  </NavigationContainer>
+                </QASurfaceGate>
+              </View>
+            </TooltipProvider>
+          </AuthProvider>
+        </ModalProvider>
+      </SafeAreaProvider>
     </Sentry.ErrorBoundary>
   );
 });

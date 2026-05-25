@@ -48,6 +48,6 @@ describe("responsive screen and modal coverage", () => {
     const source = read(relativePath);
 
     expect(source).toContain("SlideInModalContent");
-    expect(source).toMatch(/MODAL_MAX_HEIGHT|AUTH_CONTENT_MAX_WIDTH/);
+    expect(source).toMatch(/MODAL_MAX_HEIGHT|getResponsiveModalHeight|AUTH_CONTENT_MAX_WIDTH/);
   });
 });

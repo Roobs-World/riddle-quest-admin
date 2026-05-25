@@ -52,7 +52,7 @@
 
 ## Baseline + Rollout
 - Generate baseline template: `pnpm run baseline:report`
-- Fill `memory-bank/rn-0.85-baseline.md` with measured device metrics.
+- Fill `docs/memory-bank/rn-0.85-baseline.md` with measured device metrics.
 - Rollout recommendation:
   1. Internal QA/dev-client
   2. Limited beta users

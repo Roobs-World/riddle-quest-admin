@@ -1,5 +1,5 @@
 import React from "react";
-import { render } from "@testing-library/react-native";
+import { fireEvent, render } from "@testing-library/react-native";
 import CoinPurchaseFanfareModal from "../CoinPurchaseFanfareModal";
 
 jest.mock("react-native/Libraries/Modal/Modal", () => {
@@ -46,6 +46,7 @@ describe("CoinPurchaseFanfareModal", () => {
     expect(getByText("+100 Coins")).toBeTruthy();
     expect(getByText("Total Coins:")).toBeTruthy();
     expect(getByText("1000")).toBeTruthy();
+    expect(getByText("Awesome")).toBeTruthy();
   });
 
   it("does not render content when hidden", () => {
@@ -62,6 +63,18 @@ describe("CoinPurchaseFanfareModal", () => {
     );
 
     getByTestId("modal").props.onRequestClose();
+    expect(onConfirm).toHaveBeenCalledTimes(1);
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it("calls onConfirm before onClose when the visible action is pressed", () => {
+    const onConfirm = jest.fn();
+    const onClose = jest.fn();
+    const { getByTestId } = render(
+      <CoinPurchaseFanfareModal {...defaultProps} onConfirm={onConfirm} onClose={onClose} />
+    );
+
+    fireEvent.press(getByTestId("coin-purchase-fanfare-confirm-button"));
     expect(onConfirm).toHaveBeenCalledTimes(1);
     expect(onClose).toHaveBeenCalledTimes(1);
   });

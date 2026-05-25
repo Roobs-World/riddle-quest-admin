@@ -257,12 +257,12 @@
           removing checks from the full QA plan.
         </p>
         <p class="meta">
-          Last updated: 2026-05-24. Workspace: <code>E:\qwordly</code>.
+          Last updated: 2026-05-25. Workspace: <code>E:\qwordly</code>.
         </p>
 
         <div class="summary-grid" aria-label="Issue summary">
           <div class="summary-card">
-            <strong>2</strong>
+            <strong>3</strong>
             <span>open defects, blockers, or unreachable paths</span>
           </div>
           <div class="summary-card">
@@ -270,7 +270,7 @@
             <span>legal, store, or navigation blockers</span>
           </div>
           <div class="summary-card">
-            <strong>23</strong>
+            <strong>29</strong>
             <span>fixed source or infrastructure defects needing regression awareness</span>
           </div>
           <div class="summary-card">
@@ -338,6 +338,41 @@
                 Provide App Store Connect and Play Console disclosure entries
                 or drafts, then compare them against observed guest/provider
                 behavior and Firebase deltas.
+              </td>
+            </tr>
+
+            <tr>
+              <td data-label="ID"><code>DSI-032</code></td>
+              <td data-label="Status"><span class="badge todo">Needs Fresh Repro</span></td>
+              <td data-label="Priority" class="priority">P1</td>
+              <td data-label="Issue">
+                Sentry reported a development fatal error on 2026-05-24:
+                <code>Requiring unknown module "react-native"</code>. This is
+                not currently reproducible locally, but it remains open until a
+                fresh Metro/logcat/Sentry trace proves whether it was a stale
+                Metro cache, dependency resolution race, missing install, or a
+                repeatable app startup path.
+              </td>
+              <td data-label="Evidence">
+                User-provided Sentry issue
+                <code>285f837464cd4952acbe45701b115647</code>. Local
+                2026-05-25 checks did not reproduce it:
+                <code>emulator-tests/logs/metro-react-native-module-check-20260525.txt</code>
+                records Metro <code>packager-status:running</code>, Android
+                bundle HTTP 200 with <code>21077490</code> bytes, and installed
+                <code>react-native@0.85.0</code>. The complete guarded
+                <code>pnpm run test:android:matrix</code> replay also passed on
+                all eight configured AVDs with per-device Metro asset and
+                websocket probes, and
+                <code>emulator-tests/logs/test-android-matrix-full-dsi034-20260525.stdout.txt</code>
+                contains no <code>Requiring unknown module "react-native"</code>
+                signature.
+              </td>
+              <td data-label="Next Action">
+                If the fatal recurs, capture the exact Metro output, emulator
+                logcat, and Sentry stack for the same launch. Do not silence it;
+                compare the failing bundle URL and module map against the
+                passing local bundle check above.
               </td>
             </tr>
 
@@ -1267,7 +1302,7 @@
 
             <tr>
               <td data-label="ID"><code>DSI-027</code></td>
-              <td data-label="Status"><span class="badge todo">Open / Investigating</span></td>
+              <td data-label="Status"><span class="badge fixed">Fixed In Source / Matrix Unit Passed / Provider Replay Passed</span></td>
               <td data-label="Issue">
                 Selecting the Expo dev-client LAN bundle after a force-stop can
                 leave Qwordly on the app <code>Loading</code> screen for roughly
@@ -1287,18 +1322,58 @@
                 Metro was reachable and JavaScript started:
                 <code>isMetroRunning(): Async result = true</code>,
                 <code>loadJSBundleFromMetro()</code>, and
-                <code>Running "main"</code>. That narrows the current
-                investigation to app/dev-client initialization after JS start
-                rather than a simple dead Metro server.
+                <code>Running "main"</code>. Root cause found in the same
+                relaunch log: Firebase emitted the same provider-auth user more
+                than 1.5 seconds apart while the first bootstrap was still in
+                flight, so the old immediate-event dedupe missed it. That
+                restarted <code>RiddleInitializationService.checkAndInitializeRiddles()</code>,
+                <code>loadUserProgressFromFirestore()</code>, daily-completion
+                checks, and riddle fetches; the stale first riddle request then
+                delayed the first real app screen. Fix:
+                <code>AuthContext</code> now keeps an in-flight bootstrap guard
+                keyed by UID plus anonymous/provider state, skips delayed
+                duplicate same-user bootstraps until the first pass completes,
+                and clears riddle-initialization state on auth errors/sign-out
+                so loading gates cannot remain set after failure. Verification:
+                <code>pnpm exec jest src/contexts/__tests__/AuthContext.test.tsx --runInBand</code>
+                passed 16 tests, including a regression that fires a duplicate
+                same-user provider callback after the old 1.5-second dedupe
+                window while Firestore loading is unresolved. Broader
+                verification also passed:
+                <code>pnpm exec tsc --noEmit --pretty false</code> and the
+                latest expanded <code>pnpm run test:android:matrix:unit</code>
+                passed 46 suites / 960 tests with evidence in
+                <code>emulator-tests/logs/test-android-matrix-unit-expanded-modal-screens-20260525.txt</code>.
+                A 2026-05-25 Pixel 4a force-stop/relaunch check settled in
+                <code>21.46s</code> with evidence
+                <code>emulator-tests/images/rq_pixel_4a_api_36_1/500-20260525-dsi027-provider-replay-launch-3s.png</code>,
+                <code>501-20260525-dsi027-provider-replay-settled.png</code>,
+                and <code>emulator-tests/logs/rq_pixel_4a_api_36_1/501-20260525-dsi027-provider-replay-logcat.txt</code>,
+                but logcat showed <code>isAnonymous:true</code> and
+                <code>providerData:[]</code>. That replay is therefore useful
+                anonymous recovery evidence only. The provider-auth replay was
+                then rerun from the Expo dev-client LAN bundle selection after
+                cached Google sign-in for
+                <code>craigbeswetherick@gmail.com</code>. Evidence
+                <code>emulator-tests/images/rq_pixel_4a_api_36_1/512-20260525-dsi027-provider-bundle-open-3s.png</code>,
+                <code>513-20260525-dsi027-provider-bundle-poll-14s.png</code>,
+                and <code>514-20260525-dsi027-provider-bundle-settled.png</code>
+                shows the first non-loading app screen at <code>14.24s</code>
+                and the settled authenticated app without a stuck
+                <code>Loading</code> screen. Logcat
+                <code>emulator-tests/logs/rq_pixel_4a_api_36_1/514-20260525-dsi027-provider-bundle-logcat.txt</code>
+                confirms <code>isAnonymous:false</code>, Google
+                <code>providerData</code>, the provider email, duplicate
+                same-user callbacks skipped by the in-flight guard, riddle
+                loading completed, and navigation reaching
+                <code>isLoading:false</code> at <code>07:24:51.770</code>.
               </td>
               <td data-label="Regression Need">
-                Add a timed cold-start/dev-client-reopen measurement from
-                bundle selection to first real app screen. Capture auth
-                hydration, profile fetch, riddle fetch, preloader, and
-                render-gate milestones so the root cause is fixed rather than
-                hidden behind longer waits or quieter output. Restart-related
-                QA stays open until the loading phase is bounded and has
-                deterministic failure/error UI.
+                Keep the AuthContext delayed duplicate-provider callback
+                regression in the unit preflight and preserve the timed
+                provider-auth replay evidence as the current device baseline.
+                Keep initialization retry/error plus offline blocking states
+                open until they have deterministic trigger screenshots/logs.
               </td>
             </tr>
 
@@ -1351,6 +1426,276 @@
                 content.
               </td>
             </tr>
+
+            <tr>
+              <td data-label="ID"><code>DSI-029</code></td>
+              <td data-label="Status"><span class="badge fixed">Fixed / Full Matrix Passed</span></td>
+              <td data-label="Issue">
+                The coin-purchase fanfare content could extend outside the
+                decorative modal background after the responsive modal updates.
+                The visible issue was that the background frame was too short
+                for the title, coin art, total balance chest, and confirmation
+                action.
+              </td>
+              <td data-label="Fix / Verification">
+                <code>CoinPurchaseFanfareModal</code> now uses a taller
+                responsive background height and a visible
+                <code>Awesome</code> button instead of relying on a hidden
+                full-overlay tap target. Focused unit coverage passed, and
+                focused Android captures passed on both
+                <code>rq_pixel_4a_api_36_1</code> and
+                <code>rq_pixel_fold_outer_api_36_1</code>. Evidence:
+                <code>emulator-tests/images/rq_pixel_4a_api_36_1/surfaces/06-01-modal-coin-purchase-fanfare.png</code>
+                and
+                <code>emulator-tests/images/rq_pixel_fold_outer_api_36_1/surfaces/06-01-modal-coin-purchase-fanfare.png</code>.
+                Logs:
+                <code>emulator-tests/logs/qa-coin-fanfare-background-pixel4a-20260524-192742.stdout.txt</code>
+                and
+                <code>emulator-tests/logs/qa-coin-fanfare-background-foldouter-20260524-192926.stdout.txt</code>.
+                The focused modal unit test is also included in
+                <code>test:android:matrix:unit</code>, so
+                <code>pnpm run test:android:matrix</code> exercises the visible
+                action and confirm/close behavior before launching emulators.
+                Full matrix verification then passed across 8 Android profiles
+                with 33 screen/modal surfaces per profile. Evidence:
+                <code>emulator-tests/logs/test-android-matrix-full-dsi030-20260524-214654.stdout.txt</code>,
+                <code>emulator-tests/logs/test-android-matrix-full-dsi030-20260524-214654.stderr.txt</code>,
+                and fanfare screenshots
+                <code>emulator-tests/images/rq_pixel_4a_api_36_1/surfaces/06-19-modal-coin-purchase-fanfare.png</code>,
+                <code>emulator-tests/images/rq_pixel_7_api_36_1/surfaces/06-19-modal-coin-purchase-fanfare.png</code>,
+                <code>emulator-tests/images/rq_pixel_8_pro_api_36_1/surfaces/06-19-modal-coin-purchase-fanfare.png</code>,
+                <code>emulator-tests/images/rq_pixel_fold_outer_api_36_1/surfaces/06-19-modal-coin-purchase-fanfare.png</code>,
+                <code>emulator-tests/images/rq_pixel_fold_unfolded_api_36_1/surfaces/06-19-modal-coin-purchase-fanfare.png</code>,
+                <code>emulator-tests/images/rq_small_tablet_api_36_1/surfaces/06-19-modal-coin-purchase-fanfare.png</code>,
+                <code>emulator-tests/images/rq_large_tablet_api_36_1/surfaces/06-19-modal-coin-purchase-fanfare.png</code>,
+                and
+                <code>emulator-tests/images/rq_low_density_tablet_api_36_1/surfaces/06-19-modal-coin-purchase-fanfare.png</code>.
+              </td>
+              <td data-label="Regression Need">
+                Keep this modal in the full Android QA-surface matrix and
+                retain <code>CoinPurchaseFanfareModal.test.tsx</code> so the
+                visible action and confirm/close behavior stay covered. The
+                all-device visual signoff passed in the complete
+                <code>pnpm run test:android:matrix</code> run on
+                2026-05-24.
+              </td>
+            </tr>
+
+            <tr>
+              <td data-label="ID"><code>DSI-030</code></td>
+              <td data-label="Status"><span class="badge fixed">Fixed / Full Matrix Passed</span></td>
+              <td data-label="Issue">
+                The full matrix fold-unfolded <code>page-landing</code> failure
+                was not a responsive layout crash and was not a cleanup log to
+                hide. The emulator returned to the Android launcher because the
+                Play Store installed or updated <code>com.google.android.gms</code>
+                during the run, and Android killed the foreground Qwordly
+                process while stopping Google Play Services.
+              </td>
+              <td data-label="Fix / Verification">
+                Failure evidence:
+                <code>emulator-tests/logs/test-android-matrix-full-postfix-20260524-193346.stdout.txt</code>,
+                <code>emulator-tests/logs/test-android-matrix-full-postfix-20260524-193346.stderr.txt</code>,
+                <code>emulator-tests/images/rq_pixel_fold_unfolded_api_36_1/surfaces/06-02-page-landing-failure.png</code>,
+                and matching logcat line
+                <code>Killing ... com.roobsworld.riddlequest ... stop com.google.android.gms due to installPackageLI</code>.
+                Fix: <code>scripts/android-emulator-run-matrix.ps1</code> now
+                temporarily disables Play Store background updates per emulator
+                target, restores Play Store afterward, and offers
+                <code>-KeepPlayStoreEnabled</code> for dedicated Play
+                Store/IAP checks. Focused replay passed on
+                <code>rq_pixel_fold_unfolded_api_36_1</code> for
+                <code>page-app-loading,page-landing</code> with evidence in
+                <code>emulator-tests/logs/qa-fold-unfolded-playstore-guard-20260524-203000.stdout.txt</code>
+                and
+                <code>emulator-tests/images/rq_pixel_fold_unfolded_api_36_1/surfaces/06-02-page-landing.png</code>.
+                The complete rerun passed afterward: all 8 matrix devices
+                captured 33 screen/modal surfaces, including
+                <code>page-landing</code> on the unfolded Fold and
+                <code>modal-coin-purchase-fanfare</code> on every device.
+                Evidence:
+                <code>emulator-tests/logs/test-android-matrix-full-dsi030-20260524-214654.stdout.txt</code>,
+                <code>emulator-tests/logs/test-android-matrix-full-dsi030-20260524-214654.stderr.txt</code>,
+                and
+                <code>emulator-tests/logs/test-android-matrix-full-dsi030-20260524-214654.exit.txt</code>.
+              </td>
+              <td data-label="Regression Need">
+                Keep the Play Store guard in the matrix runner so
+                <code>pnpm run test:android:matrix</code> exercises app
+                functionality instead of being interrupted by background
+                Google Play Services package installs. Dedicated
+                billing/provider-auth checks can use
+                <code>-KeepPlayStoreEnabled</code> when Play Store interaction
+                itself is the subject under test.
+              </td>
+            </tr>
+
+            <tr>
+              <td data-label="ID"><code>DSI-031</code></td>
+              <td data-label="Status"><span class="badge fixed">Fixed / Matrix Unit Expanded</span></td>
+              <td data-label="Issue">
+                The Android matrix unit preflight did not directly prove that
+                the modal registry, provider, developer modal panel, modal
+                sequence breadcrumb, fanfare modals, and QA surface inventory
+                stayed in sync. That left room for registered modal routes to
+                drift from the checklist even while screenshots existed.
+              </td>
+              <td data-label="Fix / Verification">
+                <code>ModalRegistry.test.ts</code> now compares
+                <code>modalRegistry</code> against
+                <code>MODAL_REGISTRY_TYPES</code> and verifies every registered
+                modal accepts minimum QA props. <code>ModalTogglePanel.test.tsx</code>
+                now derives its inventory from the same modal type list instead
+                of stale hard-coded entries. <code>package.json</code> expands
+                <code>test:android:matrix:unit</code> to include all focused
+                screen/modal/component tests for the current checklist:
+                <code>ModalRegistry</code>, <code>ModalProvider</code>,
+                <code>ModalTogglePanel</code>, <code>ModalSequenceBreadcrumb</code>,
+                help/settings/game/shop/system modal tests,
+                <code>OnboardingProgressBadge</code>,
+                <code>TreasureChest</code>,
+                <code>DeleteAccountConfirmationModal</code>,
+                <code>CoinShopModal</code>, and <code>qaSurfaces</code>.
+                Evidence:
+                <code>emulator-tests/logs/test-android-matrix-unit-expanded-modal-screens-20260525.txt</code>
+                passed 46 suites / 960 tests, and
+                <code>emulator-tests/logs/typescript-check-expanded-modal-screens-20260525.txt</code>
+                records a clean TypeScript pass.
+              </td>
+              <td data-label="Regression Need">
+                Keep these modal infrastructure tests in
+                <code>test:android:matrix:unit</code> so
+                <code>pnpm run test:android:matrix</code> fails before emulator
+                launch if a modal is added, renamed, removed, or dropped from
+                the QA surface matrix without an intentional test update.
+              </td>
+            </tr>
+
+            <tr>
+              <td data-label="ID"><code>DSI-033</code></td>
+              <td data-label="Status"><span class="badge fixed">Fixed / Full Matrix Passed</span></td>
+              <td data-label="Issue">
+                The <code>page-game</code> riddle/question background could be
+                too short after the responsive layout changes. On the seven
+                letter answer QA surface, the riddle content appeared too close
+                to the decorative frame edge and could read as if it was outside
+                the background.
+              </td>
+              <td data-label="Fix / Verification">
+                <code>GameBoard</code> now renders the
+                <code>QuestionsSvg</code> riddle background taller than the text
+                slot (<code>118%</code> height with <code>top:-9%</code>) while
+                preserving the existing slot sizing for the board. Focused
+                <code>GameBoard.test.tsx</code> coverage asserts the taller
+                background props, and that test is included in
+                <code>test:android:matrix:unit</code> so
+                <code>pnpm run test:android:matrix</code> checks it before
+                launching emulators. Verification: focused Jest passed 20 tests,
+                the latest matrix unit preflight passed 48 suites / 982 tests
+                with evidence
+                <code>emulator-tests/logs/test-android-matrix-unit-dsi034-20260525.txt</code>,
+                the focused all-device <code>page-game</code> matrix passed on
+                all eight configured AVDs, and the complete guarded
+                <code>pnpm run test:android:matrix</code> replay passed with
+                eight completed devices and 33 QA screen/modal surfaces per
+                device. Focused evidence summary:
+                <code>emulator-tests/logs/test-android-matrix-page-game-dsi033-all-devices-20260525.txt</code>.
+                Full-matrix evidence:
+                <code>emulator-tests/logs/test-android-matrix-full-dsi034-20260525.stdout.txt</code>.
+                Full-matrix seven-letter screenshots for every device are saved
+                at
+                <code>emulator-tests/images/&lt;device&gt;/surfaces/06-09-page-game.png</code>;
+                the earlier focused replay screenshots are saved at
+                <code>emulator-tests/images/&lt;device&gt;/surfaces/06-01-page-game.png</code>
+                with matching XML under
+                <code>emulator-tests/logs/&lt;device&gt;/surfaces/06-01-page-game.xml</code>.
+              </td>
+              <td data-label="Regression Need">
+                Keep <code>src/components/game/__tests__/GameBoard.test.tsx</code>
+                in <code>test:android:matrix:unit</code>. Future game-board or
+                responsive layout changes should rerun the focused
+                <code>page-game</code> matrix at minimum, and the full
+                all-surface matrix when the change can affect other screens or
+                modals.
+              </td>
+            </tr>
+
+            <tr>
+              <td data-label="ID"><code>DSI-034</code></td>
+              <td data-label="Status"><span class="badge fixed">Fixed / Full Matrix Passed</span></td>
+              <td data-label="Issue">
+                The DSI-033 all-device replay exposed real automation blockers,
+                not harmless output: a rebuilt fat debug APK could exceed
+                emulator storage, <code>expo run:android</code> could stay
+                attached to Metro logs until timeout, Windows sometimes returned
+                no numeric Expo exit code after a successful dev-client launch,
+                and existing modal state could cover a requested QA surface.
+                A streak-break entry modal also opened over <code>page-game</code>
+                even when the QA surface had onboarding suppressed.
+              </td>
+              <td data-label="Fix / Verification">
+                The matrix runner now resolves <code>pnpm</code>, starts or
+                reuses Metro separately, launches Expo with
+                <code>--no-bundler</code>, uses the prebuilt
+                <code>android/app/build/outputs/apk/debug/app-debug.apk</code>
+                via <code>--binary</code> when present, and only treats a missing
+                Windows exit code as success when Expo output contains the
+                explicit development-client launch marker. The QA harness clears
+                the modal stack before activating linked surfaces, and
+                <code>GameScreen</code> suppresses the streak-break entry modal
+                when <code>suppressOnboarding</code> is enabled. Verification:
+                <code>QASurfaceHarness.test.tsx</code> and the new
+                <code>GameScreen.test.tsx</code> regression are included in
+                <code>test:android:matrix:unit</code>; the latest preflight
+                passed 48 suites / 982 tests, TypeScript passed, the runner
+                syntax check passed, the all-device focused
+                <code>page-game</code> matrix completed successfully, and the
+                complete guarded <code>pnpm run test:android:matrix</code>
+                replay passed with eight devices and 33 screen/modal QA surfaces
+                per device. The full stdout evidence is
+                <code>emulator-tests/logs/test-android-matrix-full-dsi034-20260525.stdout.txt</code>;
+                it has no <code>unexpected-stream</code>, no
+                <code>Requiring unknown module "react-native"</code>, and no
+                cleanup <code>process not found</code> signature.
+              </td>
+              <td data-label="Regression Need">
+                Keep the runner launch-marker guard, Metro probe, modal-stack
+                cleanup, and streak-modal suppression tests in the matrix path.
+                Do not quiet future cleanup or launch races without first
+                proving whether they are process-lifecycle noise or a real app,
+                Metro, APK, or surface-state failure.
+              </td>
+            </tr>
+
+            <tr>
+              <td data-label="ID"><code>DSI-035</code></td>
+              <td data-label="Status"><span class="badge todo">TODO / Modal Background Fit</span></td>
+              <td data-label="Issue">
+                The <code>victory</code> / "Nice job" modal and
+                <code>levelUpFanfare</code> modal backgrounds are still too
+                short for their content on at least one tested viewport. The
+                content appears to push outside the decorative background, so
+                the previous screenshot coverage proves reachability but not
+                acceptable layout fit for these two modals.
+              </td>
+              <td data-label="Next Action">
+                Next agent should start here. Make the <code>VictoryModal</code> and
+                <code>LevelUpFanfareModal</code> background frames taller without
+                breaking the existing centered content, breadcrumb, and CTA
+                positions. Add or update focused modal layout/unit coverage,
+                then rerun focused Android captures for
+                <code>modal-victory</code> and
+                <code>modal-level-up-fanfare</code> across the full AVD matrix.
+                If the fix touches shared modal frame/layout code, rerun the
+                complete guarded <code>pnpm run test:android:matrix</code>.
+              </td>
+              <td data-label="Regression Need">
+                Keep the existing full matrix screenshot inventory, but do not
+                close this item until the "Nice job" and level-up screenshots
+                show all modal content contained inside the taller backgrounds on
+                every configured Android device.
+              </td>
+            </tr>
           </tbody>
         </table>
       </section>
@@ -1370,15 +1715,17 @@
           <li>Guest logout is now covered: <code>400-settings-open-for-guest-logout.png</code>/<code>.xml</code> show the Settings <code>Logout</code> row, <code>401-guest-logout-result.png</code>/<code>.xml</code> show unauthenticated Landing after logout, <code>401-guest-logout-result-logcat.txt</code> records <code>FirebaseAuth</code> sign-out and navigation changing to unauthenticated, and <code>403-guest-logout-after-restart-settled.png</code>/<code>.xml</code> plus <code>404-guest-logout-after-restart-app-pid-idle-logcat.txt</code> prove force-stop/relaunch stays on Landing without app-PID errors. Provider-auth logout is now covered at the UI/session level by <code>421</code>/<code>422</code>/<code>426</code>/<code>427</code>; Auth/backend cleanup remains under account-deletion TODOs.</li>
           <li>Guest account deletion confirm path, cleanup proof, restart proof, and failure path.</li>
           <li>Auth-provider account deletion confirm path, Auth cleanup, Firestore cleanup, storage-prefix check, and re-sign-in proof.</li>
-          <li>Riddle loading, initialization retry/error state, and offline blocking state. Provider-auth relaunch loading is an open investigation under <code>DSI-027</code> because <code>415</code> and <code>425</code> stayed on <code>Loading</code> far longer than expected even though Metro was reachable and JS had started.</li>
+          <li>Riddle loading, initialization retry/error state, and offline blocking state. Provider-auth relaunch loading is fixed in source and closed under <code>DSI-027</code> after root-causing delayed duplicate same-user auth bootstraps and verifying a timed Google provider-auth replay from LAN bundle selection to first non-loading app screen in <code>14.24s</code>. Initialization retry/error and offline blocking trigger evidence remain open.</li>
+          <li>Metro startup fatal <code>Requiring unknown module "react-native"</code> is tracked as <code>DSI-032</code>. Current local Metro and Android bundle checks pass, and the latest full matrix passed all eight AVDs with per-device Metro probes and no unknown-module signature; a fresh failure trace is required before a source-level fix can be made.</li>
           <li>Guest Classic solve/reward is now covered by <code>DSI-025</code>; Daily fallback to Classic and provider-auth replay for Classic reward, incorrect, duplicate-letter, loss, ad continue, and continue behavior remain open. Guest loss trigger, visible continue offer, disabled coin-continue low-balance state, sufficient-balance coin continue, loss-modal <code>Skip Puzzle</code>, low-balance loss rewarded-ad playback/reward/continue, final-loss after ad-continue exhaustion, final-loss Open Shop/close/Next Level, restart persistence after Next Level, the DSI-020 stacked-modal fix, and the DSI-021 Android Back terminal-loss fix are covered by source/unit/matrix plus fresh emulator evidence.</li>
           <li>Skip provider-auth coverage and backend deltas remain open; guest skip open/cancel/confirm, local coin deduction, Classic transition, insufficient-coins messaging, low-balance Coin Shop handoff, loss low-balance gating, and DSI-019 guest mode/riddle restart persistence are covered by source/unit/matrix plus fresh emulator evidence.</li>
           <li>Hint persistence and provider-auth backend deltas remain open. Guest Statistics post-restart values are fixed and covered by <code>DSI-026</code>; post-fix evidence <code>381-statistics-postfix-open.png</code>/<code>.xml</code> verifies persisted <code>Games Played: 4</code> and <code>Total Words Guessed: 9</code>.</li>
-          <li>Provider-auth replay for keyboard backspace, answer-slot tapping, and submit gating remains open; the answer-length mismatch, overlong-entry, and literal-answer clue regressions are fixed in source and covered by <code>DSI-028</code> matrix-unit tests.</li>
+          <li>Provider-auth replay for keyboard backspace, answer-slot tapping, and submit gating remains open; the answer-length mismatch, overlong-entry, and literal-answer clue regressions are fixed in source and covered by <code>DSI-028</code> matrix-unit tests. The seven-letter <code>page-game</code> riddle background fit issue is fixed under <code>DSI-033</code> with Pixel 4a, all-device focused matrix, and full DSI-034 matrix evidence; the runner/harness blockers found during that replay are fixed under <code>DSI-034</code> and verified by the complete guarded matrix.</li>
           <li>Coin Shop purchase attempt has emulator evidence, a fixed source regression, and a post-fix guest replay for the zero-coin success bug (<code>DSI-024</code>); pay/play behavior, production-like billing, loading/error edge states, provider-auth states, and backend/Firebase deltas remain open. Rewarded-ad playback is a separate low-balance loss-modal check; guest now passes, and provider-auth remains TODO. The loss modal should show both <code>Watch Ad for 3 Extra Guesses</code> and <code>Open Shop</code> when the user has fewer than <code>100</code> coins.</li>
-          <li>Coin purchase fanfare and level-up fanfare guest dev-panel open/dismiss/Back behavior now have emulator evidence; real guest purchase-trigger coin state now passes through DSI-024 with <code>+50 Coins</code>, <code>Total Coins: 125</code>, and restart persistence. Natural guest XP/level-up now passes through DSI-025 with <code>+50 Coins</code> and final balance <code>115</code>. Provider-auth/backend deltas, provider-auth persistence proof, production billing replay, and the victory-total UX clarification remain open.</li>
+          <li>Coin purchase fanfare and level-up fanfare guest dev-panel open/dismiss/Back behavior now have emulator evidence; real guest purchase-trigger coin state now passes through DSI-024 with <code>+50 Coins</code>, <code>Total Coins: 125</code>, and restart persistence. The coin-purchase fanfare background-framing defect is fixed under <code>DSI-029</code> with focused Pixel 4a/fold-outer screenshots and full 8-device matrix fanfare screenshots. The fold-unfolded landing failure from the latest full matrix attempt is fixed separately under <code>DSI-030</code> as a Play Store / Google Play Services update interruption, not as a removed UI check, and the complete rerun passed. Natural guest XP/level-up now passes through DSI-025 with <code>+50 Coins</code> and final balance <code>115</code>. New layout defect <code>DSI-035</code> remains open because the "Nice job" victory and level-up fanfare backgrounds need to be taller so their content fits inside the frame. Provider-auth/backend deltas, provider-auth persistence proof, production billing replay, and the victory-total UX clarification remain open.</li>
           <li>Welcome-back modal and standalone info modal guest dev-panel open/primary-action/Back behavior now have emulator evidence; natural provider-auth welcome-back replay is covered by <code>410</code>/<code>411</code>. Non-debug info trigger paths remain open. The DSI-020 loss-triggered info/loss modal recovery fix and DSI-021 terminal loss hardware-Back fix have source, unit, matrix, and guest emulator replay evidence.</li>
-          <li>Guest Settings sound/haptics preference persistence after force-stop/relaunch now has emulator evidence; provider-auth Settings surface reachability is covered by <code>421</code>. Provider-auth settings toggle persistence, language persistence, and backend-backed settings behavior remain open.</li>
+          <li>Modal infrastructure coverage drift is fixed under <code>DSI-031</code>: registry, provider, debug panel, breadcrumb, focused screen/modal/component tests, coin shop modal, and QA surface inventory tests now run in <code>test:android:matrix:unit</code>. Remaining modal TODOs are natural/persona/backend trigger coverage, not missing registry, unit, or screenshot inventory checks.</li>
+          <li>Guest Settings sound/haptics preference persistence after force-stop/relaunch now has emulator evidence; provider-auth Settings surface reachability is covered by <code>421</code>, and provider-auth Sound/Haptics persistence now passes with <code>516</code>/<code>521</code> screenshot, XML, and logcat evidence for <code>craigbeswetherick@gmail.com</code>. Provider-auth language persistence and backend-backed settings deltas remain open.</li>
           <li>Guest profile top-state and bottom-scroll persistence after force-stop/relaunch now has emulator evidence; provider-auth profile surface data is covered by screenshot evidence <code>419</code>. Backend/Firebase profile refresh and delta proof remain open.</li>
           <li>Update username source validation, modal open path, and fresh-bundle emulator invalid-input validation replay are covered; successful save, persistence, and Firebase evidence remain open.</li>
           <li>Guest Achievements modal content after restart is covered; provider-auth achievement state and provider-auth persistence remain open.</li>
@@ -1388,8 +1735,8 @@
           <li>Guest Settings Help support-email handoff now has emulator evidence: <code>385-support-email-after-help-tap.png</code>/<code>.xml</code> show Gmail receiving the handoff, <code>385-support-email-after-help-tap-logcat.txt</code> records the <code>mailto:</code> intent to <code>com.google.android.gm/.ComposeActivityGmailExternal</code>, and <code>386</code>/<code>387</code> prove the app resumes cleanly after the external Gmail screen. Provider-auth Support behavior remains open.</li>
           <li>Provider-auth About/Legal coverage and language spot checks.</li>
           <li>Account Deletion, Data Export, Third-Party Licenses, and Support fulfillment beyond row discoverability.</li>
-          <li>App restart persistence has guest coverage for DSI-019 skip/mode restore, final-loss <code>Next Level</code> restore, Settings sound/haptics persistence, Profile bottom-scroll refresh, Achievements/Statistics post-restart checks, and explicit logout-to-Landing restart proof. Provider-auth UI/session restart is covered by <code>414</code>/<code>416</code>/<code>417</code>, and provider-auth post-logout restart is covered by <code>424</code>/<code>426</code>/<code>427</code>. Firestore-backed provider snapshots/deltas and the slow-loading root cause from <code>DSI-027</code> remain open.</li>
-          <li>Full UI rerun after the Metro host-alias fix to confirm clean asset/font logs. Fresh Credits/browser-return evidence confirms the transient websocket abort is tied to backgrounding/resume rather than a dead Metro server, but broader UI rerun coverage remains open.</li>
+          <li>App restart persistence has guest coverage for DSI-019 skip/mode restore, final-loss <code>Next Level</code> restore, Settings sound/haptics persistence, Profile bottom-scroll refresh, Achievements/Statistics post-restart checks, and explicit logout-to-Landing restart proof. Provider-auth UI/session restart is covered by <code>414</code>/<code>416</code>/<code>417</code>, provider-auth Sound/Haptics restart persistence is covered by <code>516</code>/<code>521</code>, provider-auth post-logout restart is covered by <code>424</code>/<code>426</code>/<code>427</code>, and the DSI-027 slow Loading replay is covered by <code>512</code>/<code>513</code>/<code>514</code> with Google provider-auth logcat. Firestore-backed provider snapshots/deltas remain open.</li>
+          <li>Full UI rerun after the Metro host-alias and DSI-034 runner fixes now passes on all eight AVDs with 33 screen/modal QA surfaces per device. Fresh Credits/browser-return evidence still explains the older transient websocket abort as backgrounding/resume behavior, and the latest full matrix contains no <code>unexpected-stream</code> signature.</li>
           <li>Full legal evidence completeness audit after provider-auth, production reachability, and disclosure comparison artifacts are available.</li>
         </ul>
       </section>
@@ -1432,6 +1779,15 @@
             Play Services forced a measurement module restart. Relaunch
             recovered successfully, so this is tracked as runtime evidence
             rather than a Qwordly crash.
+          </li>
+          <li>
+            Google Play / Play Store background package installs can terminate
+            the app during matrix runs when they stop
+            <code>com.google.android.gms</code>. The matrix runner now guards
+            this by disabling <code>com.android.vending</code> only for the
+            duration of each emulator target and restoring it afterward; do not
+            treat a launcher screenshot after <code>installPackageLI</code> as
+            a passed or ignored UI check.
           </li>
           <li>
             App smoke log exposed a non-fatal Expo dev launcher entry for

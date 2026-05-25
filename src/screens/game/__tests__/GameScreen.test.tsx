@@ -1487,6 +1487,23 @@ describe("GameScreen", () => {
       expect(mockConsumePendingStreakBreak).toHaveBeenCalled();
     });
 
+    it("does not show streak break entry modal when onboarding is suppressed", async () => {
+      mockPendingStreakBreak = { previousStreak: 7 };
+      render(<GameScreen {...defaultProps} suppressOnboarding={true} />);
+
+      await act(async () => {
+        await Promise.resolve();
+        await Promise.resolve();
+      });
+
+      expect(mockShowInfoModal).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          title: "Streak Broken",
+        })
+      );
+      expect(mockConsumePendingStreakBreak).not.toHaveBeenCalled();
+    });
+
     it("shows daily streak fanfare before victory when challenge streak increases", async () => {
       mockUseGameLogic.currentGuess = ["K", "E", "Y", "B", "O", "A", "R", "D"];
       mockUseGameLogic.processGuess.mockResolvedValueOnce({

@@ -85,7 +85,7 @@ describe("StreakIncreaseFanfareModal", () => {
   });
 
   it("shows sequence progress and Next text for an intermediate popup", () => {
-    const {getByTestId, getByText} = render(
+    const {getByTestId, getByText, queryByText} = render(
       <StreakIncreaseFanfareModal
         isVisible={true}
         streakValue={4}
@@ -102,7 +102,7 @@ describe("StreakIncreaseFanfareModal", () => {
     );
 
     expect(getByTestId("modal-sequence-breadcrumb")).toBeTruthy();
-    expect(getByText("2/4")).toBeTruthy();
+    expect(queryByText("2/4")).toBeNull();
     expect(getByText("Next")).toBeTruthy();
   });
 

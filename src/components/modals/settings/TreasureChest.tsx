@@ -5,12 +5,17 @@ import TreasureChestSvg from "../../../../assets/images/chest.svg";
 import {TYPOGRAPHY, SPACING} from "../../../styles";
 import {verticalScale} from "../../../utils/responsive";
 import {AppStrings} from "../../../constants/AppStrings";
+import {isQASurfaceRuntimeActive} from "../../../qa/qaRuntime";
 
 export default function TreasureChest({coins}: {coins: number}) {
   const [rotationAnim] = useState(() => new Animated.Value(0));
 
   useEffect(() => {
     rotationAnim.setValue(0);
+    if (isQASurfaceRuntimeActive()) {
+      return;
+    }
+
     const animation = Animated.loop(
       Animated.timing(rotationAnim, {
         toValue: 1,

@@ -46,6 +46,7 @@ import {
 import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {NewCoins} from "@/components/shared/NewCoins";
+import {isQASurfaceRuntimeActive} from "../../../qa/qaRuntime";
 
 /**
  * Props interface for the LossModal component.
@@ -129,7 +130,7 @@ const LossModal: React.FC<LossModalProps> = ({
   useEffect(() => {
     let animation: Animated.CompositeAnimation | null = null;
 
-    if (isVisible) {
+    if (isVisible && !isQASurfaceRuntimeActive()) {
       rotationAnim.setValue(0);
       animation = Animated.loop(
         Animated.timing(rotationAnim, {

@@ -249,6 +249,20 @@ describe("GameBoard", () => {
       // Component should render without throwing, indicating styles are applied correctly
       expect(getByTestId("riddle-text")).toBeTruthy();
     });
+
+    it("should render a taller riddle background behind the text", () => {
+      const { getByTestId } = render(<GameBoard {...defaultProps} />);
+
+      const background = getByTestId("riddle-background");
+
+      expect(background.props.height).toBe("118%");
+      expect(background.props.style).toEqual(
+        expect.objectContaining({
+          position: "absolute",
+          top: "-9%",
+        })
+      );
+    });
   });
 
   describe("Edge Cases", () => {

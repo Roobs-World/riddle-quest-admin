@@ -4,11 +4,18 @@ import {View, Text, Modal} from "react-native";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
 import {TYPOGRAPHY} from "../../../styles";
-import {MODAL_WIDTH, MODAL_HEIGHT, MODAL_CONTENT_PADDING, MODAL_BUTTON_SPACER, MODAL_MAX_HEIGHT} from "../../../constants/layout";
+import {
+  MODAL_WIDTH,
+  MODAL_CONTENT_PADDING,
+  MODAL_BUTTON_SPACER,
+  MODAL_MAX_SCREEN_HEIGHT_FRACTION,
+  getResponsiveModalHeight,
+} from "../../../constants/layout";
 import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {NewCoins} from "@/components/shared/NewCoins";
 import RotatingWheelBackground from "@/components/shared/RotatingWheelBackground";
+import WideButton from "../../buttons/WideButton";
 
 interface CoinPurchaseFanfareModalProps {
   isVisible: boolean;
@@ -25,7 +32,7 @@ const CoinPurchaseFanfareModal: React.FC<CoinPurchaseFanfareModalProps> = ({
   onConfirm,
   onClose,
 }) => {
-  const modalHeight = Math.min(MODAL_HEIGHT * 1.2, MODAL_MAX_HEIGHT ?? MODAL_HEIGHT * 1.2);
+  const modalHeight = getResponsiveModalHeight(1.45, MODAL_MAX_SCREEN_HEIGHT_FRACTION);
   const handleConfirm = () => {
     onConfirm?.();
     onClose();
@@ -40,7 +47,6 @@ const CoinPurchaseFanfareModal: React.FC<CoinPurchaseFanfareModalProps> = ({
           alignItems: "center",
           backgroundColor: "rgba(0,0,0,0.5)",
         }}
-        onTouchEnd={handleConfirm}
       >
         <RotatingWheelBackground isVisible={isVisible} />
         <SlideInModalContent isVisible={isVisible} style={{alignItems: "center"}}>
@@ -87,6 +93,14 @@ const CoinPurchaseFanfareModal: React.FC<CoinPurchaseFanfareModalProps> = ({
               </Text>
 
               <NewCoins coinsEarned={coinsPurchased} totalCoins={totalCoins} />
+
+              <View style={{width: "100%"}}>
+                <WideButton
+                  buttonText={AppStrings.CoinPurchase.AWESOME_BUTTON}
+                  onPress={handleConfirm}
+                  testID="coin-purchase-fanfare-confirm-button"
+                />
+              </View>
             </View>
           </View>
         </SlideInModalContent>

@@ -1,5 +1,16 @@
 # Project Progress
 
+## Current Status: Android QA Handoff (May 2026)
+
+- Canonical current tracker: `docs/android-emulator-firebase-qa-plan.html`.
+- Supporting tracker docs: `docs/design-issues.html` and `docs/responsive-todo-list.html`.
+- Documentation files have been moved under `docs/`, preserving subfolders; root `readme.md` and `AGENTS.md` remain at repository root.
+- Latest full guarded Android matrix passed: `emulator-tests/logs/test-android-matrix-full-dsi034-20260525.stdout.txt` shows eight configured `rq_*` AVDs, 33 screen/modal surfaces per device, no `unexpected-stream`, no unknown `react-native` module, and no cleanup `process not found` signature.
+- Current top open issue: `DSI-035`. `VictoryModal` / "Nice job" and `LevelUpFanfareModal` need taller decorative backgrounds and fresh all-device captures for `modal-victory` and `modal-level-up-fanfare`.
+- Do not close or remove remaining functionality checks without evidence. Provider-auth Firebase snapshots/deltas, account deletion cleanup, billing/ad production behavior, email/password and non-Google provider flows, offline/init failure states, legal production/disclosure checks, and other persona/backend TODOs remain open.
+
+---
+
 ## Current Status: Achievement System Implemented (March 2026)
 
 ### Test Results

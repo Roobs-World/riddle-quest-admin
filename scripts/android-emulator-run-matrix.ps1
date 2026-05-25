@@ -12,14 +12,143 @@ param(
   [int]$Port = 8081,
   [string]$EmulatorHost = "10.0.2.2",
   [int]$WebSocketHoldSeconds = 10,
+  [int]$AppScreenshotDelaySeconds = 20,
+  [int]$ExpoLaunchTimeoutSeconds = 600,
+  [int]$QASurfaceScreenshotDelaySeconds = 4,
+  [string[]]$QASurfaceFilter = @(),
   [switch]$SkipMetroAssetProbe,
+  [switch]$SkipQASurfaceScreenshots,
+  [switch]$KeepPlayStoreEnabled,
   [switch]$ProbeOnly
 )
 
 $ErrorActionPreference = "Stop"
 
+$QASurfaceIds = @(
+  "page-app-loading",
+  "page-landing",
+  "page-login",
+  "page-sign-up",
+  "page-forgot-password",
+  "page-new-password",
+  "page-riddle-loading",
+  "page-initialization-error",
+  "page-game",
+  "modal-welcome",
+  "modal-welcome-back",
+  "modal-instructions",
+  "modal-info",
+  "modal-hint",
+  "modal-skip",
+  "modal-victory",
+  "modal-loss",
+  "modal-coin-shop",
+  "modal-coin-purchase-fanfare",
+  "modal-achievement-unlock-fanfare",
+  "modal-streak-increase-fanfare",
+  "modal-level-up-fanfare",
+  "modal-settings",
+  "modal-full-profile-details",
+  "modal-upgrade-account",
+  "modal-update-username",
+  "modal-achievements",
+  "modal-stats",
+  "modal-leaderboard",
+  "modal-credits",
+  "modal-about-legal",
+  "modal-delete-account-confirmation",
+  "modal-offline-blocking"
+)
+
+$AndroidPackageName = "com.roobsworld.riddlequest"
+$AndroidMainActivity = "$AndroidPackageName/.MainActivity"
+$PlayStorePackageName = "com.android.vending"
+
+$QASurfaceExpectedTexts = @{
+  "page-app-loading" = @("Loading")
+  "page-landing" = @("Play as Guest", "Made by Roobs World")
+  "page-login" = @("Log in", "Log In", "Forgot password?")
+  "page-sign-up" = @("Create your account", "Username", "Next")
+  "page-forgot-password" = @("Reset Password")
+  "page-new-password" = @("Set New Password", "Confirm")
+  "page-riddle-loading" = @("Loading")
+  "page-initialization-error" = @("Riddle database unavailable", "Retry")
+  "page-game" = @("I grow in rows", "Hint", "SUBMIT", "Next")
+  "modal-welcome" = @("Welcome to Riddle Quest!", "Solve engaging riddles")
+  "modal-welcome-back" = @("Welcome back", "Tap to continue")
+  "modal-instructions" = @("How to Play", "Got It!")
+  "modal-info" = @("Debug Info", "OK")
+  "modal-hint" = @("Use a Hint?", "SHOW HINT")
+  "modal-skip" = @("Skip the level?", "SKIP LEVEL")
+  "modal-victory" = @("NICE JOB!", "Next Level")
+  "modal-loss" = @("So close!", "Watch Ad for 3 Extra Guesses", "Open Shop")
+  "modal-coin-shop" = @("COIN SHOP", "Your balance", "PURCHASE")
+  "modal-coin-purchase-fanfare" = @("Coins Added!", "Awesome")
+  "modal-achievement-unlock-fanfare" = @("Achievement Unlocked!", "Nice")
+  "modal-streak-increase-fanfare" = @("Streak Increased!", "Keep Going")
+  "modal-level-up-fanfare" = @("Level Up!", "Awesome")
+  "modal-settings" = @("Settings", "Sound", "Logout")
+  "modal-full-profile-details" = @("PROFILE", "Daily puzzles completed")
+  "modal-upgrade-account" = @("Upgrade your account", "Continue with Google", "Continue with Facebook")
+  "modal-update-username" = @("Update Username", "Save")
+  "modal-achievements" = @("Achievements")
+  "modal-stats" = @("Statistics", "Games Played")
+  "modal-leaderboard" = @("Leaderboard")
+  "modal-credits" = @("Credits", "Close")
+  "modal-about-legal" = @("About / Legal", "Privacy Policy")
+  "modal-delete-account-confirmation" = @("Delete Account", "Cancel")
+  "modal-offline-blocking" = @("No Internet Connection", "Please reconnect")
+}
+
 function Fail($message) {
   throw "[android-emulator-run-matrix] $message"
+}
+
+function Stop-ProcessTree($processId) {
+  $process = Get-Process -Id $processId -ErrorAction SilentlyContinue
+  if (-not $process) {
+    return
+  }
+
+  $allProcesses = Get-CimInstance Win32_Process
+  $descendants = New-Object System.Collections.Generic.HashSet[int]
+  $queue = New-Object System.Collections.Generic.Queue[int]
+  [void]$queue.Enqueue([int]$processId)
+  [void]$descendants.Add([int]$processId)
+
+  while ($queue.Count -gt 0) {
+    $parentId = $queue.Dequeue()
+    $children = @($allProcesses | Where-Object { $_.ParentProcessId -eq $parentId })
+    foreach ($child in $children) {
+      if ($descendants.Add([int]$child.ProcessId)) {
+        $queue.Enqueue([int]$child.ProcessId)
+      }
+    }
+  }
+
+  foreach ($id in @($descendants | Sort-Object -Descending)) {
+    Stop-Process -Id $id -Force -ErrorAction SilentlyContinue
+  }
+}
+
+function Get-TextFileTail($path, $lineCount = 40) {
+  if (-not (Test-Path $path)) {
+    return ""
+  }
+
+  return ((Get-Content -Path $path -Tail $lineCount -ErrorAction SilentlyContinue) -join "`n")
+}
+
+function Resolve-PnpmCommand {
+  $pnpmCommand = Get-Command pnpm.cmd -ErrorAction SilentlyContinue
+  if (-not $pnpmCommand) {
+    $pnpmCommand = Get-Command pnpm.exe -ErrorAction SilentlyContinue
+  }
+  if (-not $pnpmCommand) {
+    $pnpmCommand = Get-Command pnpm -ErrorAction Stop
+  }
+
+  return $pnpmCommand.Source
 }
 
 function Restore-EnvVar($name, $value) {
@@ -135,6 +264,96 @@ function Wait-ForEmulatorBoot($adb, $serial, $timeoutSeconds = 300) {
   } while ((Get-Date) -lt $deadline)
 
   return $false
+}
+
+function Invoke-AdbText($adb, [string[]]$arguments) {
+  $previousErrorActionPreference = $ErrorActionPreference
+  $ErrorActionPreference = "Continue"
+  try {
+    $output = & $adb @arguments 2>&1
+    $exitCode = $LASTEXITCODE
+  } finally {
+    $ErrorActionPreference = $previousErrorActionPreference
+  }
+
+  return [pscustomobject]@{
+    Text = ($output -join "`n")
+    ExitCode = $exitCode
+  }
+}
+
+function Test-AndroidPackageInstalled($adb, $serial, $packageName) {
+  $result = Invoke-AdbText $adb @("-s", $serial, "shell", "pm", "path", $packageName)
+  return $result.ExitCode -eq 0 -and -not [string]::IsNullOrWhiteSpace($result.Text)
+}
+
+function Test-AndroidPackageDisabled($adb, $serial, $packageName) {
+  $result = Invoke-AdbText $adb @("-s", $serial, "shell", "pm", "list", "packages", "-d")
+  if ($result.ExitCode -ne 0) {
+    Fail "Failed to list disabled Android packages on $serial. adb output: $($result.Text)"
+  }
+
+  return $result.Text -match "(?m)^package:$([regex]::Escape($packageName))$"
+}
+
+function Suspend-PlayStoreBackgroundUpdates($adb, $serial, $avdName) {
+  if ($KeepPlayStoreEnabled) {
+    Write-Host "INFO: Keeping Play Store enabled for $avdName because -KeepPlayStoreEnabled was passed."
+    return [pscustomobject]@{
+      PackageName = $PlayStorePackageName
+      Installed = $false
+      WasDisabled = $false
+      Changed = $false
+    }
+  }
+
+  if (-not (Test-AndroidPackageInstalled $adb $serial $PlayStorePackageName)) {
+    Write-Host "INFO: Play Store is not installed on $avdName; no background update guard needed."
+    return [pscustomobject]@{
+      PackageName = $PlayStorePackageName
+      Installed = $false
+      WasDisabled = $false
+      Changed = $false
+    }
+  }
+
+  $wasDisabled = Test-AndroidPackageDisabled $adb $serial $PlayStorePackageName
+  if ($wasDisabled) {
+    Write-Host "INFO: Play Store was already disabled on $avdName; leaving it disabled during matrix run."
+    return [pscustomobject]@{
+      PackageName = $PlayStorePackageName
+      Installed = $true
+      WasDisabled = $true
+      Changed = $false
+    }
+  }
+
+  $disableResult = Invoke-AdbText $adb @("-s", $serial, "shell", "pm", "disable-user", "--user", "0", $PlayStorePackageName)
+  if ($disableResult.ExitCode -ne 0) {
+    Fail "Failed to disable Play Store on $avdName before matrix run. This guard prevents Play Store background Google Play Services updates from killing the app mid-test. adb output: $($disableResult.Text)"
+  }
+
+  Write-Host "INFO: Temporarily disabled Play Store on $avdName to prevent background Google Play Services package updates from terminating $AndroidPackageName during QA capture."
+  return [pscustomobject]@{
+    PackageName = $PlayStorePackageName
+    Installed = $true
+    WasDisabled = $false
+    Changed = $true
+  }
+}
+
+function Restore-PlayStoreBackgroundUpdates($adb, $serial, $state, $avdName) {
+  if (-not $state -or -not $state.Installed -or -not $state.Changed) {
+    return
+  }
+
+  $enableResult = Invoke-AdbText $adb @("-s", $serial, "shell", "pm", "enable", $state.PackageName)
+  if ($enableResult.ExitCode -ne 0) {
+    Write-Host "WARN: Failed to restore Play Store on $avdName after matrix run. adb output: $($enableResult.Text)"
+    return
+  }
+
+  Write-Host "INFO: Restored Play Store on $avdName after matrix run."
 }
 
 function Stop-MatrixProcessIfRunning($process, $context) {
@@ -259,6 +478,469 @@ function Convert-ResponseContentToText($content) {
   return [string]$content
 }
 
+function Invoke-AdbBinaryToFile($adb, [string[]]$arguments, $outputPath) {
+  $psi = [System.Diagnostics.ProcessStartInfo]::new()
+  $psi.FileName = $adb
+  $psi.Arguments = ($arguments | ForEach-Object {
+    if ($_ -match '[\s"]') {
+      '"' + ($_ -replace '"', '\"') + '"'
+    } else {
+      $_
+    }
+  }) -join " "
+  $psi.RedirectStandardOutput = $true
+  $psi.RedirectStandardError = $true
+  $psi.UseShellExecute = $false
+
+  $process = [System.Diagnostics.Process]::Start($psi)
+  $fileStream = [System.IO.File]::Open($outputPath, [System.IO.FileMode]::Create, [System.IO.FileAccess]::Write)
+  try {
+    $buffer = New-Object byte[] 81920
+    while (($read = $process.StandardOutput.BaseStream.Read($buffer, 0, $buffer.Length)) -gt 0) {
+      $fileStream.Write($buffer, 0, $read)
+    }
+    $process.WaitForExit()
+    if ($process.ExitCode -ne 0) {
+      $errorText = $process.StandardError.ReadToEnd()
+      Fail "adb binary capture failed with exit code $($process.ExitCode): $errorText"
+    }
+  } finally {
+    $fileStream.Dispose()
+    $process.Dispose()
+  }
+}
+
+function Normalize-PngFile($path) {
+  $bytes = [System.IO.File]::ReadAllBytes($path)
+  $pngHeader = [byte[]](137, 80, 78, 71, 13, 10, 26, 10)
+  $pngOffset = -1
+
+  for ($i = 0; $i -le $bytes.Length - $pngHeader.Length; $i++) {
+    $matchesHeader = $true
+    for ($j = 0; $j -lt $pngHeader.Length; $j++) {
+      if ($bytes[$i + $j] -ne $pngHeader[$j]) {
+        $matchesHeader = $false
+        break
+      }
+    }
+
+    if ($matchesHeader) {
+      $pngOffset = $i
+      break
+    }
+  }
+
+  if ($pngOffset -lt 0) {
+    Fail "$path does not contain a PNG header."
+  }
+
+  if ($pngOffset -gt 0) {
+    $trimmed = New-Object byte[] ($bytes.Length - $pngOffset)
+    [Array]::Copy($bytes, $pngOffset, $trimmed, 0, $trimmed.Length)
+    [System.IO.File]::WriteAllBytes($path, $trimmed)
+  }
+}
+
+function Assert-PngFile($path) {
+  $pngHeader = [System.IO.File]::ReadAllBytes($path)[0..7]
+  $expectedPngHeader = [byte[]](137, 80, 78, 71, 13, 10, 26, 10)
+  for ($i = 0; $i -lt $expectedPngHeader.Length; $i++) {
+    if ($pngHeader[$i] -ne $expectedPngHeader[$i]) {
+      Fail "$path is not a valid PNG."
+    }
+  }
+}
+
+function Get-UiTreeDump($adb, $serial) {
+  $previousErrorActionPreference = $ErrorActionPreference
+  $ErrorActionPreference = "Continue"
+  try {
+    $output = & $adb -s $serial exec-out uiautomator dump /dev/tty 2>&1
+    $exitCode = $LASTEXITCODE
+  } finally {
+    $ErrorActionPreference = $previousErrorActionPreference
+  }
+
+  return [pscustomobject]@{
+    Text = ($output -join "`n")
+    ExitCode = $exitCode
+  }
+}
+
+function Test-AndroidPackageInForeground($adb, $serial, $packageName) {
+  $uiDump = Get-UiTreeDump $adb $serial
+  if ($uiDump.ExitCode -ne 0) {
+    return $false
+  }
+
+  return $uiDump.Text -match [regex]::Escape("package=`"$packageName`"")
+}
+
+function Wait-ForAndroidPackageInForeground($adb, $serial, $packageName, $timeoutSeconds = 8) {
+  $deadline = (Get-Date).AddSeconds($timeoutSeconds)
+
+  do {
+    if (Test-AndroidPackageInForeground $adb $serial $packageName) {
+      return $true
+    }
+
+    Start-Sleep -Milliseconds 500
+  } while ((Get-Date) -lt $deadline)
+
+  return $false
+}
+
+function Get-FirstNodeCenterByText($uiText, $text) {
+  $escapedText = [regex]::Escape($text)
+  $match = [regex]::Match($uiText, "text=""$escapedText"".{0,800}?bounds=""\[(\d+),(\d+)\]\[(\d+),(\d+)\]""", [Text.RegularExpressions.RegexOptions]::Singleline)
+  if (-not $match.Success) {
+    return $null
+  }
+
+  $left = [int]$match.Groups[1].Value
+  $top = [int]$match.Groups[2].Value
+  $right = [int]$match.Groups[3].Value
+  $bottom = [int]$match.Groups[4].Value
+
+  return [pscustomobject]@{
+    X = [int](($left + $right) / 2)
+    Y = [int](($top + $bottom) / 2)
+  }
+}
+
+function Dismiss-ExpoDeveloperMenuIfPresent($adb, $serial, $avdName) {
+  for ($attempt = 1; $attempt -le 2; $attempt++) {
+    $uiDump = Get-UiTreeDump $adb $serial
+    if ($uiDump.ExitCode -ne 0) {
+      Write-Host "WARN: pre-screenshot UI tree capture failed for $avdName; cannot check Expo developer menu on attempt $attempt."
+      return
+    }
+
+    if ($uiDump.Text -notmatch "developer menu") {
+      return
+    }
+
+    $continueCenter = Get-FirstNodeCenterByText $uiDump.Text "Continue"
+    if (-not $continueCenter) {
+      Fail "$avdName is showing the Expo developer menu, but the Continue control was not found in the UI tree."
+    }
+
+    Write-Host "INFO: Dismissing Expo developer menu for $avdName at $($continueCenter.X),$($continueCenter.Y) before screenshot capture."
+    & $adb -s $serial shell input tap $continueCenter.X $continueCenter.Y | Out-Null
+    Start-Sleep -Seconds 10
+  }
+
+  $finalUiDump = Get-UiTreeDump $adb $serial
+  if ($finalUiDump.Text -match "developer menu") {
+    Fail "$avdName still shows the Expo developer menu after dismiss attempts; refusing to capture this as app evidence."
+  }
+}
+
+function Capture-AppEvidence($adb, $serial, $avdName) {
+  $root = (Resolve-Path ".").Path
+  $imageDir = Join-Path $root "emulator-tests\images\$avdName"
+  $logDir = Join-Path $root "emulator-tests\logs\$avdName"
+  New-Item -ItemType Directory -Path $imageDir, $logDir -Force | Out-Null
+
+  $screenshot = Join-Path $imageDir "05-matrix-app-post-launch.png"
+  $uiTree = Join-Path $logDir "05-matrix-app-post-launch.xml"
+  $logcat = Join-Path $logDir "05-matrix-app-post-launch-logcat.txt"
+
+  Remove-Item $screenshot, $uiTree, $logcat -Force -ErrorAction SilentlyContinue
+
+  if ($AppScreenshotDelaySeconds -gt 0) {
+    Start-Sleep -Seconds $AppScreenshotDelaySeconds
+  }
+
+  Dismiss-ExpoDeveloperMenuIfPresent $adb $serial $avdName
+
+  Invoke-AdbBinaryToFile $adb @("-s", $serial, "exec-out", "screencap", "-p") $screenshot
+  Normalize-PngFile $screenshot
+  Assert-PngFile $screenshot
+
+  $uiDump = Get-UiTreeDump $adb $serial
+  $uiDump.Text | Out-File -FilePath $uiTree -Encoding utf8
+  if ($uiDump.ExitCode -ne 0) {
+    Write-Host "WARN: UI tree capture failed for $avdName ($serial); screenshot and logcat were still captured."
+  } elseif ($uiDump.Text -match "developer menu") {
+    Fail "$avdName final UI tree still shows the Expo developer menu; screenshot is not valid app evidence."
+  }
+
+  & $adb -s $serial logcat -d | Out-File -FilePath $logcat -Encoding utf8
+
+  Write-Host "PASS: Captured app evidence for ${avdName}: screenshot=$screenshot; ui=$uiTree; logcat=$logcat"
+}
+
+function Open-QASurface($adb, $serial, $surfaceId) {
+  $encodedSurfaceId = [Uri]::EscapeDataString($surfaceId)
+  $uri = "exp+riddle-quest://qa?surface=$encodedSurfaceId"
+  $previousErrorActionPreference = $ErrorActionPreference
+  $ErrorActionPreference = "Continue"
+  try {
+    $output = & $adb -s $serial shell am start -W -n $AndroidMainActivity -a android.intent.action.VIEW -d $uri 2>&1
+    $exitCode = $LASTEXITCODE
+  } finally {
+    $ErrorActionPreference = $previousErrorActionPreference
+  }
+
+  if ($exitCode -ne 0) {
+    Fail "Failed to open QA surface $surfaceId on $serial. adb output: $($output -join "`n")"
+  }
+
+  if (Wait-ForAndroidPackageInForeground $adb $serial $AndroidPackageName) {
+    return
+  }
+
+  Write-Host "WARN: QA surface $surfaceId start returned successfully on $serial, but $AndroidPackageName was not foreground. Retrying launch with a cold launcher handoff. adb output: $($output -join "`n")"
+  & $adb -s $serial shell monkey -p $AndroidPackageName -c android.intent.category.LAUNCHER 1 2>&1 | Out-Null
+  Start-Sleep -Seconds 2
+
+  $previousErrorActionPreference = $ErrorActionPreference
+  $ErrorActionPreference = "Continue"
+  try {
+    $retryOutput = & $adb -s $serial shell am start -W -n $AndroidMainActivity -a android.intent.action.VIEW -d $uri 2>&1
+    $retryExitCode = $LASTEXITCODE
+  } finally {
+    $ErrorActionPreference = $previousErrorActionPreference
+  }
+
+  if ($retryExitCode -ne 0) {
+    Fail "Failed to retry QA surface $surfaceId on $serial after foreground verification failed. adb output: $($retryOutput -join "`n")"
+  }
+
+  if (-not (Wait-ForAndroidPackageInForeground $adb $serial $AndroidPackageName)) {
+    Fail "QA surface $surfaceId start command succeeded on $serial, but $AndroidPackageName never reached the foreground. Initial adb output: $($output -join "`n") Retry adb output: $($retryOutput -join "`n")"
+  }
+}
+
+function Test-QASurfaceFunctionalText($surfaceId, $uiText) {
+  if (-not $QASurfaceExpectedTexts.ContainsKey($surfaceId)) {
+    return $true
+  }
+
+  foreach ($expectedText in $QASurfaceExpectedTexts[$surfaceId]) {
+    if ($uiText -notmatch [regex]::Escape($expectedText)) {
+      return $false
+    }
+  }
+
+  return $true
+}
+
+function Wait-ForQASurfaceReady($adb, $serial, $surfaceId, $timeoutSeconds = 25) {
+  $deadline = (Get-Date).AddSeconds($timeoutSeconds)
+  $expectedMarker = [regex]::Escape("qa-surface:$surfaceId")
+  $hasExpectedFunctionalText = $QASurfaceExpectedTexts.ContainsKey($surfaceId)
+  $lastDump = $null
+
+  do {
+    $dump = Get-UiTreeDump $adb $serial
+    $lastDump = $dump
+    if ($dump.ExitCode -eq 0 -and $dump.Text -match $expectedMarker) {
+      return $dump
+    }
+
+    if ($hasExpectedFunctionalText -and $dump.ExitCode -eq 0 -and (Test-QASurfaceFunctionalText $surfaceId $dump.Text)) {
+      return $dump
+    }
+
+    Start-Sleep -Seconds 1
+  } while ((Get-Date) -lt $deadline)
+
+  if ($lastDump -and $lastDump.Text -match "developer menu") {
+    Fail "$serial is showing the Expo developer menu while waiting for QA surface $surfaceId."
+  }
+
+  $snippet = if ($lastDump) { $lastDump.Text.Substring(0, [Math]::Min(1000, $lastDump.Text.Length)) } else { "" }
+  Fail "QA surface $surfaceId did not render its marker or required functional text within ${timeoutSeconds}s on $serial. UI snippet: $snippet"
+}
+
+function Assert-QASurfaceFunctionalText($surfaceId, $uiText, $serial) {
+  if (-not $QASurfaceExpectedTexts.ContainsKey($surfaceId)) {
+    return
+  }
+
+  foreach ($expectedText in $QASurfaceExpectedTexts[$surfaceId]) {
+    if ($uiText -notmatch [regex]::Escape($expectedText)) {
+      Fail "QA surface $surfaceId rendered on $serial, but expected functional text/control '$expectedText' was not present in the UI tree."
+    }
+  }
+}
+
+function Get-QASurfacesToCapture {
+  $normalizedFilter = @(
+    $QASurfaceFilter |
+      ForEach-Object { $_ -split "," } |
+      ForEach-Object { $_.Trim() } |
+      Where-Object { $_ }
+  )
+
+  if (-not $normalizedFilter -or $normalizedFilter.Count -eq 0) {
+    return @($QASurfaceIds)
+  }
+
+  $unknownSurfaces = @(
+    $normalizedFilter |
+      Where-Object { $QASurfaceIds -notcontains $_ }
+  )
+
+  if ($unknownSurfaces.Count -gt 0) {
+    Fail "Unknown QA surface filter value(s): $($unknownSurfaces -join ', ')."
+  }
+
+  return @(
+    $QASurfaceIds |
+      Where-Object { $normalizedFilter -contains $_ }
+  )
+}
+
+function Save-QASurfaceFailureEvidence($adb, $serial, $avdName, $surfaceId, $fileStem) {
+  $root = (Resolve-Path ".").Path
+  $imageDir = Join-Path $root "emulator-tests\images\$avdName\surfaces"
+  $logDir = Join-Path $root "emulator-tests\logs\$avdName\surfaces"
+  New-Item -ItemType Directory -Path $imageDir, $logDir -Force | Out-Null
+
+  $failureScreenshot = Join-Path $imageDir "$fileStem-failure.png"
+  $failureUiTree = Join-Path $logDir "$fileStem-failure.xml"
+  $failureLogcat = Join-Path $logDir "$fileStem-failure-logcat.txt"
+
+  $failureDump = Get-UiTreeDump $adb $serial
+  $failureDump.Text | Out-File -FilePath $failureUiTree -Encoding utf8
+
+  Invoke-AdbBinaryToFile $adb @("-s", $serial, "exec-out", "screencap", "-p") $failureScreenshot
+  Normalize-PngFile $failureScreenshot
+  Assert-PngFile $failureScreenshot
+  & $adb -s $serial logcat -d | Out-File -FilePath $failureLogcat -Encoding utf8
+
+  Write-Host "FAIL-EVIDENCE: Saved QA surface failure evidence for ${surfaceId}: screenshot=$failureScreenshot; ui=$failureUiTree; logcat=$failureLogcat"
+}
+
+function Capture-QASurfaceEvidence($adb, $serial, $avdName, $surfaceId, $index) {
+  $root = (Resolve-Path ".").Path
+  $imageDir = Join-Path $root "emulator-tests\images\$avdName\surfaces"
+  $logDir = Join-Path $root "emulator-tests\logs\$avdName\surfaces"
+  New-Item -ItemType Directory -Path $imageDir, $logDir -Force | Out-Null
+
+  $ordinal = "{0:D2}" -f $index
+  $fileStem = "06-$ordinal-$surfaceId"
+  $screenshot = Join-Path $imageDir "$fileStem.png"
+  $uiTree = Join-Path $logDir "$fileStem.xml"
+  $logcat = Join-Path $logDir "$fileStem-logcat.txt"
+
+  Remove-Item $screenshot, $uiTree, $logcat -Force -ErrorAction SilentlyContinue
+
+  try {
+    Open-QASurface $adb $serial $surfaceId
+    if ($QASurfaceScreenshotDelaySeconds -gt 0) {
+      Start-Sleep -Seconds $QASurfaceScreenshotDelaySeconds
+    }
+    Dismiss-ExpoDeveloperMenuIfPresent $adb $serial $avdName
+    $uiDump = Wait-ForQASurfaceReady $adb $serial $surfaceId
+    Assert-QASurfaceFunctionalText $surfaceId $uiDump.Text $serial
+  } catch {
+    Save-QASurfaceFailureEvidence $adb $serial $avdName $surfaceId $fileStem
+    throw
+  }
+  $uiDump.Text | Out-File -FilePath $uiTree -Encoding utf8
+
+  Invoke-AdbBinaryToFile $adb @("-s", $serial, "exec-out", "screencap", "-p") $screenshot
+  Normalize-PngFile $screenshot
+  Assert-PngFile $screenshot
+  & $adb -s $serial logcat -d | Out-File -FilePath $logcat -Encoding utf8
+
+  Write-Host "PASS: Captured QA surface $surfaceId for ${avdName}: screenshot=$screenshot; ui=$uiTree; logcat=$logcat"
+}
+
+function Capture-QASurfaceMatrixEvidence($adb, $serial, $avdName) {
+  $surfacesToCapture = @(Get-QASurfacesToCapture)
+  for ($i = 0; $i -lt $surfacesToCapture.Count; $i++) {
+    Capture-QASurfaceEvidence $adb $serial $avdName $surfacesToCapture[$i] ($i + 1)
+  }
+
+  Write-Host "PASS: Captured $($surfacesToCapture.Count) QA screen/modal surfaces for $avdName."
+}
+
+function Invoke-ExpoRunAndroid($adb, $serial, $avdName, [string[]]$expoArgs, [int]$Attempt = 1) {
+  $pnpm = Resolve-PnpmCommand
+  $logDir = Join-Path "emulator-tests\logs" $avdName
+  New-Item -ItemType Directory -Path $logDir -Force | Out-Null
+  $logStem = if ($Attempt -eq 1) { "04-expo-run-android" } else { "04-expo-run-android-attempt$Attempt" }
+  $stdoutFile = Join-Path $logDir "$logStem.stdout.txt"
+  $stderrFile = Join-Path $logDir "$logStem.stderr.txt"
+  $gradleStopFile = Join-Path $logDir "$logStem-gradle-stop.txt"
+  Remove-Item -LiteralPath $stdoutFile, $stderrFile, $gradleStopFile -ErrorAction SilentlyContinue
+
+  $process = Start-Process `
+    -FilePath $pnpm `
+    -ArgumentList $expoArgs `
+    -WorkingDirectory (Resolve-Path ".").Path `
+    -RedirectStandardOutput $stdoutFile `
+    -RedirectStandardError $stderrFile `
+    -WindowStyle Hidden `
+    -PassThru
+  $deadline = (Get-Date).AddSeconds($ExpoLaunchTimeoutSeconds)
+  $nextDeveloperMenuCheck = (Get-Date).AddSeconds(8)
+
+  while (-not $process.HasExited) {
+    Start-Sleep -Seconds 2
+
+    if ((Get-Date) -gt $deadline) {
+      Stop-ProcessTree $process.Id
+      try {
+        & .\android\gradlew.bat --stop *>&1 | Out-File -FilePath $gradleStopFile -Encoding utf8
+      } catch {
+        $_ | Out-File -FilePath $gradleStopFile -Encoding utf8
+      }
+
+      $stdoutTail = Get-TextFileTail $stdoutFile
+      $stderrTail = Get-TextFileTail $stderrFile
+      Fail "expo run:android timed out after $ExpoLaunchTimeoutSeconds seconds for $avdName ($serial). stdout=$stdoutFile stderr=$stderrFile gradleStop=$gradleStopFile`nstdout tail:`n$stdoutTail`nstderr tail:`n$stderrTail"
+    }
+
+    if ((Get-Date) -lt $nextDeveloperMenuCheck) {
+      continue
+    }
+
+    $nextDeveloperMenuCheck = (Get-Date).AddSeconds(5)
+    $uiDump = Get-UiTreeDump $adb $serial
+    if ($uiDump.ExitCode -eq 0 -and $uiDump.Text -match "developer menu") {
+      Write-Host "INFO: Expo developer menu appeared before expo run:android returned for $avdName; dismissing it so launch can complete."
+      Dismiss-ExpoDeveloperMenuIfPresent $adb $serial $avdName
+    }
+  }
+
+  $process.WaitForExit()
+  $process.Refresh()
+  $exitCode = $process.ExitCode
+  $process.Dispose()
+
+  if ($null -eq $exitCode) {
+    $stdoutTail = Get-TextFileTail $stdoutFile 80
+    $stderrTail = Get-TextFileTail $stderrFile 80
+    if ($stdoutTail -match "Opening exp\+.*expo-development-client") {
+      Write-Host "INFO: expo run:android returned without a numeric exit code after opening the dev client for $avdName; treating the explicit launch marker as success. stdout=$stdoutFile stderr=$stderrFile"
+      return
+    }
+
+    Fail "expo run:android exited without a numeric exit code for $avdName ($serial), and no dev-client launch marker was found. stdout=$stdoutFile stderr=$stderrFile`nstdout tail:`n$stdoutTail`nstderr tail:`n$stderrTail"
+  }
+
+  if ($exitCode -ne 0) {
+    $stdoutTail = Get-TextFileTail $stdoutFile
+    $stderrTail = Get-TextFileTail $stderrFile
+    $combinedTail = "$stdoutTail`n$stderrTail"
+    if ($Attempt -eq 1 -and $combinedTail -match "INSTALL_FAILED_INSUFFICIENT_STORAGE") {
+      Write-Host "WARN: expo run:android hit INSTALL_FAILED_INSUFFICIENT_STORAGE for $avdName. Trimming caches, uninstalling the previous app package, and retrying once."
+      & $adb -s $serial shell pm trim-caches 4096M | Out-Null
+      & $adb -s $serial uninstall $AndroidPackageName | Out-Null
+      Invoke-ExpoRunAndroid $adb $serial $avdName $expoArgs 2
+      return
+    }
+
+    Fail "expo run:android failed for $avdName ($serial) with exit code $exitCode. stdout=$stdoutFile stderr=$stderrFile`nstdout tail:`n$stdoutTail`nstderr tail:`n$stderrTail"
+  }
+}
+
 function Test-MetroPackagerRunning {
   try {
     $response = Invoke-WebRequest -Uri "http://localhost:$Port/status" -UseBasicParsing -TimeoutSec 5
@@ -279,6 +961,62 @@ function Assert-PortAvailableOrMetro {
   }
 
   return $false
+}
+
+function Start-MetroServer {
+  $pnpm = Resolve-PnpmCommand
+  $logDir = "emulator-tests\logs"
+  New-Item -ItemType Directory -Path $logDir -Force | Out-Null
+  $stdoutFile = Join-Path $logDir "00-metro.stdout.txt"
+  $stderrFile = Join-Path $logDir "00-metro.stderr.txt"
+  Remove-Item -LiteralPath $stdoutFile, $stderrFile -ErrorAction SilentlyContinue
+
+  Write-Host "Starting Metro server on localhost:$Port for Android matrix run."
+  $process = Start-Process `
+    -FilePath $pnpm `
+    -ArgumentList @("exec", "expo", "start", "--dev-client", "--host", "lan", "--port", "$Port") `
+    -WorkingDirectory (Resolve-Path ".").Path `
+    -RedirectStandardOutput $stdoutFile `
+    -RedirectStandardError $stderrFile `
+    -WindowStyle Hidden `
+    -PassThru
+
+  $deadline = (Get-Date).AddSeconds(120)
+  while ((Get-Date) -lt $deadline) {
+    if ($process.HasExited) {
+      $process.Refresh()
+      $exitCode = $process.ExitCode
+      $process.Dispose()
+      $stdoutTail = Get-TextFileTail $stdoutFile
+      $stderrTail = Get-TextFileTail $stderrFile
+      Fail "Metro exited before becoming ready with exit code $exitCode. stdout=$stdoutFile stderr=$stderrFile`nstdout tail:`n$stdoutTail`nstderr tail:`n$stderrTail"
+    }
+
+    if (Test-MetroPackagerRunning) {
+      Write-Host "Metro server is running on localhost:$Port. stdout=$stdoutFile stderr=$stderrFile"
+      return $process
+    }
+
+    Start-Sleep -Seconds 2
+  }
+
+  Stop-ProcessTree $process.Id
+  $stdoutTail = Get-TextFileTail $stdoutFile
+  $stderrTail = Get-TextFileTail $stderrFile
+  Fail "Metro did not become ready within 120 seconds. stdout=$stdoutFile stderr=$stderrFile`nstdout tail:`n$stdoutTail`nstderr tail:`n$stderrTail"
+}
+
+function Ensure-MetroServer {
+  if (Test-MetroPackagerRunning) {
+    Write-Host "Reusing existing Metro server on localhost:$Port for Android matrix run."
+    return $null
+  }
+
+  if (Test-HostPortListening) {
+    Fail "Port $Port is already in use, but http://localhost:$Port/status is not a running Metro packager. Stop that process or pass an unused -Port."
+  }
+
+  return Start-MetroServer
 }
 
 function Get-AssetProbePath {
@@ -469,6 +1207,7 @@ function Test-MetroAssetPath($adb, $serial = $null) {
 $previousReactNativePackagerHostname = $env:REACT_NATIVE_PACKAGER_HOSTNAME
 $previousExpoPackagerProxyUrl = $env:EXPO_PACKAGER_PROXY_URL
 $previousGradleUserHome = $env:GRADLE_USER_HOME
+$metroProcess = $null
 
 try {
   $sdkRoot = Resolve-AndroidSdk
@@ -492,6 +1231,8 @@ try {
   Write-Host "  REACT_NATIVE_PACKAGER_HOSTNAME=$env:REACT_NATIVE_PACKAGER_HOSTNAME"
   Write-Host "  EXPO_PACKAGER_PROXY_URL=$env:EXPO_PACKAGER_PROXY_URL"
 
+  $metroProcess = Ensure-MetroServer
+
   if ($ProbeOnly) {
     Test-MetroAssetPath $adb
     return
@@ -500,32 +1241,43 @@ try {
   foreach ($avd in $AvdNames) {
     Write-Host "Running Android matrix target $avd..."
     $target = Start-MatrixAvd $adb $emulator $avd
+    $playStoreState = $null
 
     try {
-      $reuseExistingMetro = Assert-PortAvailableOrMetro
+      $playStoreState = Suspend-PlayStoreBackgroundUpdates $adb $target.Serial $avd
+
+      Assert-PortAvailableOrMetro | Out-Null
       $expoArgs = @("exec", "expo", "run:android", "--device", $avd)
-      if ($reuseExistingMetro) {
-        Write-Host "Reusing existing Metro server on localhost:$Port for $avd."
-        $expoArgs += "--no-bundler"
-      } else {
-        $expoArgs += @("--port", "$Port")
+      $debugApk = Join-Path (Resolve-Path ".").Path "android\app\build\outputs\apk\debug\app-debug.apk"
+      if (Test-Path $debugApk) {
+        Write-Host "Using prebuilt debug APK for ${avd}: $debugApk"
+        $expoArgs += @("--binary", $debugApk)
       }
 
-      & pnpm @expoArgs
-      if ($LASTEXITCODE -ne 0) {
-        Fail "expo run:android failed for $avd ($($target.Serial)) with exit code $LASTEXITCODE."
-      }
+      Write-Host "Using Metro server on localhost:$Port for $avd."
+      $expoArgs += "--no-bundler"
+
+      Invoke-ExpoRunAndroid $adb $target.Serial $avd $expoArgs
 
       if (-not $SkipMetroAssetProbe) {
         Test-MetroAssetPath $adb $target.Serial
       }
+
+      Capture-AppEvidence $adb $target.Serial $avd
+      if (-not $SkipQASurfaceScreenshots) {
+        Capture-QASurfaceMatrixEvidence $adb $target.Serial $avd
+      }
     } finally {
+      Restore-PlayStoreBackgroundUpdates $adb $target.Serial $playStoreState $avd
       Stop-MatrixAvd $adb $target
     }
   }
 
   Write-Host "PASS: Android emulator run matrix completed."
 } finally {
+  if ($metroProcess) {
+    Stop-ProcessTree $metroProcess.Id
+  }
   Restore-EnvVar "REACT_NATIVE_PACKAGER_HOSTNAME" $previousReactNativePackagerHostname
   Restore-EnvVar "EXPO_PACKAGER_PROXY_URL" $previousExpoPackagerProxyUrl
   Restore-EnvVar "GRADLE_USER_HOME" $previousGradleUserHome

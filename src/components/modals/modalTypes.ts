@@ -1,0 +1,27 @@
+export const MODAL_REGISTRY_TYPES = [
+  "victory",
+  "loss",
+  "settings",
+  "fullProfileDetails",
+  "upgradeAccount",
+  "achievements",
+  "stats",
+  "leaderboard",
+  "updateUsername",
+  "info",
+  "hint",
+  "skip",
+  "welcome",
+  "welcomeBack",
+  "instructions",
+  "credits",
+  "aboutLegal",
+  "coinShop",
+  "coinPurchaseFanfare",
+  "achievementUnlockFanfare",
+  "streakIncreaseFanfare",
+  "levelUpFanfare",
+] as const;
+
+export type ModalRegistryType = (typeof MODAL_REGISTRY_TYPES)[number];
+

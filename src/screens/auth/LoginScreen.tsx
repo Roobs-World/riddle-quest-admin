@@ -7,7 +7,7 @@
  * navigation to password reset and registration flows.
  */
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import CustomSafeAreaView from "../../components/layouts/CustomSafeAreaView";
 import { AppStrings } from "../../constants/AppStrings";
 import ScreenTitle from "../../components/text/ScreenTitle";
@@ -33,7 +33,7 @@ import StarryBackground from "../../components/background/StarryBackground";
 import { loginSchema, LoginFormData } from "../../validation/authSchemas";
 import { ZodError, ZodFormattedError } from "zod";
 import { styles, SPACING, TYPOGRAPHY } from "../../styles";
-import { verticalScale } from "../../utils/responsive";
+import { dimensions, verticalScale } from "../../utils/responsive";
 import { logger } from "../../utils/logger";
 import { captureException } from "../../utils/sentry";
 
@@ -72,6 +72,13 @@ const LoginScreen = ({
 
   const [authError, setAuthError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const isWideAuthLayout =
+    dimensions.screenWidth >= 760 &&
+    dimensions.screenWidth > dimensions.screenHeight;
+  const wideAuthLayoutMaxWidth = Math.min(
+    dimensions.screenWidth - SPACING.lg * 2,
+    760
+  );
 
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
@@ -299,87 +306,132 @@ const LoginScreen = ({
     <CustomSafeAreaView>
       <StarryBackground />
 
-      <AuthLayout>
-        <View className="relative w-full" style={{ marginBottom: SPACING.xl }}>
-          <BackButton navigation={navigation} />
-          <View style={{ marginTop: verticalScale(28) }}>
-            <ScreenTitle title={AppStrings.AuthStrings.Login.TITLE} />
-          </View>
-        </View>
-
-        <UserEmailInput
-          email={email}
-          setEmail={(text) => {
-            setEmail(text);
-            setEmailError("");
+      <AuthLayout
+        style={isWideAuthLayout ? { maxWidth: wideAuthLayoutMaxWidth } : undefined}
+      >
+        <ScrollView
+          className="w-full"
+          contentContainerStyle={{
+            alignItems: "center",
+            paddingBottom: isWideAuthLayout ? SPACING.md : SPACING.xl,
+            paddingHorizontal: SPACING.md,
           }}
-          errorMessage={emailError}
-        />
-
-        <UserPasswordInput
-          password={password}
-          setPassword={(text) => {
-            setPassword(text);
-            setPasswordError("");
-          }}
-          errorMessage={passwordError}
-        />
-
-        <TouchableOpacity
-          className="self-center"
-          onPress={() =>
-            navigation.navigate(AppStrings.Navigation.FORGOT_PASSWORD)
-          }
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
         >
-          <Text
-            className="text-white"
-            style={styles.forgotPasswordText}
+          <View
+            className="relative w-full"
+            style={{ marginBottom: isWideAuthLayout ? SPACING.lg : SPACING.xl }}
           >
-            {AppStrings.AuthStrings.Login.FORGOT_PASSWORD}
-          </Text>
-        </TouchableOpacity>
+            <BackButton navigation={navigation} />
+            <View style={{ marginTop: verticalScale(28) }}>
+              <ScreenTitle title={AppStrings.AuthStrings.Login.TITLE} />
+            </View>
+          </View>
+
+          <View
+            className="w-full"
+            style={
+              isWideAuthLayout
+                ? { flexDirection: "row", alignItems: "flex-start" }
+                : undefined
+            }
+          >
+            <View
+              className="w-full"
+              style={
+                isWideAuthLayout
+                  ? { flex: 1, marginRight: SPACING.lg }
+                  : undefined
+              }
+            >
+              <View className="w-full" style={{ marginBottom: SPACING.md }}>
+                <UserEmailInput
+                  email={email}
+                  setEmail={(text) => {
+                    setEmail(text);
+                    setEmailError("");
+                  }}
+                  errorMessage={emailError}
+                />
+              </View>
+
+              <View className="w-full" style={{ marginBottom: SPACING.sm }}>
+                <UserPasswordInput
+                  password={password}
+                  setPassword={(text) => {
+                    setPassword(text);
+                    setPasswordError("");
+                  }}
+                  errorMessage={passwordError}
+                />
+              </View>
+
+              <TouchableOpacity
+                className="self-center"
+                onPress={() =>
+                  navigation.navigate(AppStrings.Navigation.FORGOT_PASSWORD)
+                }
+                style={{ marginBottom: SPACING.md }}
+              >
+                <Text
+                  className="text-white"
+                  style={styles.forgotPasswordText}
+                >
+                  {AppStrings.AuthStrings.Login.FORGOT_PASSWORD}
+                </Text>
+              </TouchableOpacity>
+
+              <View className="w-full" style={{ marginBottom: SPACING.md }}>
+                <WideButton
+                  buttonText={AppStrings.AuthStrings.Login.LOGIN_BUTTON}
+                  onPress={handleLogin}
+                  disabled={isLoading}
+                />
+              </View>
+
+              {authError && <Error message={authError} />}
+            </View>
+
+            <View
+              className="w-full items-center"
+              style={
+                isWideAuthLayout
+                  ? { flex: 1 }
+                  : { marginTop: SPACING.lg }
+              }
+            >
+              <Text className="text-center text-white" style={{ marginBottom: SPACING.md }}>
+                {AppStrings.AuthStrings.Login.OR_LOGIN_WITH}
+              </Text>
+              <View className="w-full" style={{ marginBottom: SPACING.md }}>
+                <GoogleSignInButton onPress={handleGoogleSignIn} disabled={isLoading} />
+              </View>
+              <TwitterSignInButton onPress={handleTwitterSignIn} disabled={isLoading} />
+              <FacebookSignInButton
+                onPress={handleFacebookSignIn}
+                disabled={isLoading}
+              />
+
+              <View
+                className="flex-row items-center justify-center"
+                style={{ marginTop: SPACING.lg }}
+              >
+                <Text className="text-white" style={{ fontSize: TYPOGRAPHY.fontSize.sm }}>
+                  {AppStrings.AuthStrings.Login.NO_ACCOUNT_PROMPT}
+                </Text>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate(AppStrings.Navigation.SIGN_UP)}
+                >
+                  <Text className="text-blue-300 font-semibold" style={{ fontSize: TYPOGRAPHY.fontSize.sm }}>
+                    {AppStrings.AuthStrings.Login.REGISTER_NOW}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </ScrollView>
       </AuthLayout>
-
-      <View style={styles.authContentContainer}>
-        <WideButton
-          buttonText={AppStrings.AuthStrings.Login.LOGIN_BUTTON}
-          onPress={handleLogin}
-          disabled={isLoading}
-        />
-
-        {authError && <Error message={authError} />}
-      </View>
-
-      <View
-        className="w-full items-center"
-        style={[styles.authContentContainer, { marginTop: SPACING.xl }]}
-      >
-        <Text className="text-center text-white" style={{ marginBottom: SPACING.md }}>
-          {AppStrings.AuthStrings.Login.OR_LOGIN_WITH}
-        </Text>
-        <GoogleSignInButton onPress={handleGoogleSignIn} disabled={isLoading} />
-        <TwitterSignInButton onPress={handleTwitterSignIn} disabled={isLoading} />
-        <FacebookSignInButton
-          onPress={handleFacebookSignIn}
-          disabled={isLoading}
-        />
-      </View>
-
-      <View
-        className="flex-row items-center justify-center"
-        style={[styles.authContentContainer, { marginTop: SPACING.lg }]}
-      >
-        <Text className="text-white" style={{ fontSize: TYPOGRAPHY.fontSize.sm }}>
-          {AppStrings.AuthStrings.Login.NO_ACCOUNT_PROMPT}
-        </Text>
-        <TouchableOpacity
-          onPress={() => navigation.navigate(AppStrings.Navigation.SIGN_UP)}
-        >
-          <Text className="text-blue-300 font-semibold" style={{ fontSize: TYPOGRAPHY.fontSize.sm }}>
-            {AppStrings.AuthStrings.Login.REGISTER_NOW}
-          </Text>
-        </TouchableOpacity>
-      </View>
 
       <PulsingSpinner visible={isLoading} size={LOADING_SPINNER_SIZE} />
     </CustomSafeAreaView>

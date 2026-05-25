@@ -7,6 +7,7 @@ import { Animated, Easing, Modal, StyleSheet, View } from "react-native";
 import { styles, COLORS } from "../../styles";
 import { AppStrings } from "../../constants/AppStrings";
 import SlideInModalContent from "../shared/SlideInModalContent";
+import { isQASurfaceRuntimeActive } from "../../qa/qaRuntime";
 
 interface PulsingSpinnerProps {
   size?: number;
@@ -63,7 +64,7 @@ const PulsingSpinner = React.memo(function PulsingSpinner({
       })),
     [animValues]
   );
-  const shouldAnimate = visible !== false;
+  const shouldAnimate = visible !== false && !isQASurfaceRuntimeActive();
 
   useEffect(() => {
     if (!shouldAnimate) {

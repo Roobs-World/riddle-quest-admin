@@ -1,5 +1,19 @@
 # Active Context - Riddle Quest Development
 
+## Current Work Focus: Android QA Handoff (May 2026)
+
+### Latest Handoff For Next Agent
+
+- The canonical progress tracker is `docs/android-emulator-firebase-qa-plan.html`. Keep that file updated first, then mirror short status changes into `docs/design-issues.html` and `docs/responsive-todo-list.html`.
+- Documentation files have been moved under `docs/`, preserving subfolders. Root `readme.md` and `AGENTS.md` remain in the repository root. Hidden agent/tooling docs and generated coverage HTML intentionally remain in place.
+- Latest guarded Android matrix evidence: `emulator-tests/logs/test-android-matrix-full-dsi034-20260525.stdout.txt` passed on all eight configured `rq_*` AVDs, captured 33 screen/modal surfaces per device, and had no `unexpected-stream`, unknown `react-native` module, or cleanup `process not found` signature.
+- Current top open blocker: `DSI-035`. `VictoryModal` / "Nice job" and `LevelUpFanfareModal` need taller decorative backgrounds because content is not fully contained inside the frame on at least one Android viewport. Existing screenshots count for reachability only, not final layout signoff.
+- Next agent should fix `DSI-035`, add/update focused regression tests, recapture `modal-victory` and `modal-level-up-fanfare` on every configured Android device, and update the three tracker docs with evidence before closing the item. If shared modal/layout code changes, rerun the complete guarded `pnpm run test:android:matrix`.
+- Keep all remaining functional TODOs open until evidenced. Do not remove checks just because the latest surface matrix passed; provider-auth Firebase snapshots/deltas, backend proof, production billing/ad behavior, email/password and non-Google provider flows, account deletion cleanup, offline/init failure states, and legal production/disclosure comparisons remain separate open verification work.
+- Provider-auth test email is `craigbeswetherick@gmail.com`; the agent may type that email exactly and pause for the user to enter password/2FA. Never record the password.
+
+---
+
 ## Current Work Focus: Constants & Correctness (March 2026)
 
 ### Recent Improvements ✅
@@ -38,13 +52,13 @@
 
 ### Documentation Pass Completed ✅
 
-- **Standards**: Added a “Code Documentation Standards” section to `memory-bank/systemPatterns.md`, defining TSDoc expectations, `@fileoverview` usage, and when to add folder-level READMEs.
+- **Standards**: Added a “Code Documentation Standards” section to `docs/memory-bank/systemPatterns.md`, defining TSDoc expectations, `@fileoverview` usage, and when to add folder-level READMEs.
 - **Hooks**: Documented `useGameLogic`, `useModal`, `useSettings`, and `useFirstTimeExperience` with file overviews and TSDoc describing inputs, outputs, and side effects.
 - **Contexts & Navigation**: Added file-level overviews and hook docs for `AuthContext`/`useAuth` and `NavigationStack`, clarifying their orchestration roles.
-- **Services**: Topped up documentation for `GameStateManager`, `AudioFeedbackManager`, `SolarSystemPreloader`, and `TextureDebugger`, and added a `src/services/README.md` describing service responsibilities.
+- **Services**: Topped up documentation for `GameStateManager`, `AudioFeedbackManager`, `SolarSystemPreloader`, and `TextureDebugger`, and added `docs/src/services/README.md` describing service responsibilities.
 - **Components & Screens**: Ensured key game UI components and auth screens (`Header`, `GuessGrid`, `Keyboard`, `BottomNavigationBar`, `CoinsDisplay`, `LandingScreen`, `LoginScreen`, `SignUpScreen`, `ForgotPasswordScreen`, `GameScreen`) have clear file overviews and/or TSDoc summaries.
 - **Firebase Functions**: Added an entrypoint-level `@fileoverview` in `firebase-functions/src/index.ts` explaining how Cloud Functions are exported from feature modules.
-- **Folder READMEs**: Added concise `README.md` files to `src/hooks/`, `src/contexts/`, and `src/services/` to document how these layers are intended to be used together.
+- **Folder READMEs**: Added concise `README.md` files under `docs/src/hooks/`, `docs/src/contexts/`, and `docs/src/services/` to document how these layers are intended to be used together.
 
 ---
 

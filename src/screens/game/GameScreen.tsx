@@ -801,7 +801,12 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   ]);
 
   useEffect(() => {
-    if (!pendingStreakBreak || streakBreakModalShownRef.current || isAnyModalVisible) {
+    if (
+      suppressOnboarding ||
+      !pendingStreakBreak ||
+      streakBreakModalShownRef.current ||
+      isAnyModalVisible
+    ) {
       return;
     }
 
@@ -828,6 +833,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     modal.modals.length,
     showInfoModal,
     consumePendingStreakBreak,
+    suppressOnboarding,
   ]);
 
   useEffect(() => {

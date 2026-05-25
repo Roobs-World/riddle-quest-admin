@@ -14,6 +14,7 @@ import Svg, { Defs, LinearGradient, Stop, Rect, Circle } from "react-native-svg"
 import { COLORS } from "../../styles";
 import { dimensions } from "../../utils/responsive";
 import SolarSystem3D from "./SolarSystem3D";
+import { isQASurfaceRuntimeActive } from "../../qa/qaRuntime";
 
 const { screenWidth: SCREEN_WIDTH, screenHeight: SCREEN_HEIGHT } = dimensions;
 
@@ -105,6 +106,12 @@ const AnimatedStar: React.FC<{ star: Star }> = React.memo(({ star }) => {
   const scale = useSharedValue(1);
 
   useEffect(() => {
+    if (isQASurfaceRuntimeActive()) {
+      opacity.value = star.opacity;
+      scale.value = 1;
+      return;
+    }
+
     const timeoutId = setTimeout(() => {
       opacity.value = withRepeat(
         withSequence(
@@ -188,6 +195,13 @@ const ShootingStar: React.FC<{ config: ShootingStarConfig }> = React.memo(
     const dy = Math.sin(angleRad) * config.distance;
 
     useEffect(() => {
+      if (isQASurfaceRuntimeActive()) {
+        translateX.value = 0;
+        translateY.value = 0;
+        opacity.value = 0;
+        return;
+      }
+
       const { duration, repeatInterval } = config;
 
       const timeoutId = setTimeout(() => {

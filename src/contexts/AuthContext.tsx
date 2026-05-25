@@ -85,7 +85,11 @@ interface AuthContextType {
   setCurrentRiddle: React.Dispatch<
     React.SetStateAction<FirestoreRiddle | null>
   >; // Expose the state setter
-  fetchCurrentRiddle: (player: Player | null, mode: GameMode) => Promise<void>; // Expose fetchCurrentRiddle
+  fetchCurrentRiddle: (
+    player: Player | null,
+    mode: GameMode,
+    completedDailyOverride?: boolean
+  ) => Promise<void>; // Expose fetchCurrentRiddle
 }
 
 type AuthSessionContextType = Pick<
@@ -367,6 +371,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     uid: string | null;
     isAnonymous: boolean | null;
   }>({ uid: null, isAnonymous: null });
+  // Prevent delayed duplicate auth callbacks from restarting the same expensive
+  // provider/guest bootstrap while the first pass is still loading data.
+  const activeAuthBootstrapKeysRef = useRef<Set<string>>(new Set());
 
   const hasCompletedDailyChallengeToday = useCallback(
     async (player: Player | null): Promise<boolean> => {
@@ -430,7 +437,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // Function to fetch riddle based on current game mode and player data
   const fetchCurrentRiddle = useCallback(
-    async (player: Player | null, mode: GameMode) => {
+    async (
+      player: Player | null,
+      mode: GameMode,
+      completedDailyOverride?: boolean
+    ) => {
       const requestId = ++latestRiddleFetchRequestRef.current;
       const isStaleRequest = () => requestId !== latestRiddleFetchRequestRef.current;
 
@@ -448,7 +459,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
       // Resolve daily challenge availability from backend status so we don't rely
       // on stale local timestamps after a completion in the same session.
-      const completedToday = await hasCompletedDailyChallengeToday(player);
+      const completedToday =
+        completedDailyOverride ?? (await hasCompletedDailyChallengeToday(player));
       const dailyAvailable = !completedToday;
       if (isStaleRequest()) {
         logger.debug(
@@ -622,6 +634,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
       if (user) {
         isGuestSignOutInProgressRef.current = false;
+        const authBootstrapKey = `${user.uid}:${
+          user.isAnonymous ? "anonymous" : "authenticated"
+        }`;
         const previousAuth = previousAuthSnapshotRef.current;
         const previousImmediateAuthEvent = lastAuthEventRef.current;
         const upgradedFromAnonymous =
@@ -649,6 +664,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           isAnonymous: user.isAnonymous,
           at: now,
         };
+        if (activeAuthBootstrapKeysRef.current.has(authBootstrapKey)) {
+          logger.debug(
+            "Skipping duplicate in-flight auth bootstrap for user:",
+            user.uid
+          );
+          return;
+        }
+        activeAuthBootstrapKeysRef.current.add(authBootstrapKey);
 
         // User is signed in
         logger.debug("🔐 User authenticated, loading user data...");
@@ -700,7 +723,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             }) as GameMode;
 
             setGameMode(guestInitialMode);
-            await fetchCurrentRiddle(guestPlayer, guestInitialMode);
+            await fetchCurrentRiddle(
+              guestPlayer,
+              guestInitialMode,
+              guestCompletedToday
+            );
             setIsLoading(false);
           return;
           }
@@ -861,7 +888,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           // Fetch riddle based on Firebase-backed completion status at launch:
           // daily by default, classic only when today's daily is already complete.
           logger.debug("🧩 Loading riddle for initial game mode:", initialMode);
-          await fetchCurrentRiddle(normalizedData, initialMode);
+          await fetchCurrentRiddle(normalizedData, initialMode, completedToday);
           logger.debug("✅ Riddle loading completed");
 
           // Only set loading to false after everything is complete
@@ -889,15 +916,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           setPendingStreakBreak(null);
           setCurrentRiddle(null);
           setIsDailyChallengeAvailable(undefined);
+          setIsRiddlesInitializing(false);
           // Set loading to false even on error so user isn't stuck
           setIsLoading(false);
         } finally {
+          activeAuthBootstrapKeysRef.current.delete(authBootstrapKey);
           previousAuthSnapshotRef.current = {
             uid: user.uid,
             isAnonymous: user.isAnonymous,
           };
         }
       } else {
+        activeAuthBootstrapKeysRef.current.clear();
         lastAuthEventRef.current = { uid: null, isAnonymous: null, at: Date.now() };
         // User is signed out - no need to load riddles
         logger.debug("🚪 User signed out, clearing data");
@@ -915,6 +945,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         setPendingStreakBreak(null);
         setCurrentRiddle(null);
         setIsDailyChallengeAvailable(undefined);
+        setIsRiddlesInitializing(false);
         await clearAllLocalData();
         previousAuthSnapshotRef.current = { uid: null, isAnonymous: null };
         logger.debug("🏁 Setting isLoading to false");

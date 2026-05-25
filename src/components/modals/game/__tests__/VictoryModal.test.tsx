@@ -59,7 +59,7 @@ describe("VictoryModal", () => {
   });
 
   it("shows sequence progress and Next text for an intermediate popup", () => {
-    const { getByTestId, getByText } = render(
+    const { getByTestId, getByText, queryByText } = render(
       <VictoryModal
         {...defaultProps}
         sequenceProgress={{
@@ -72,7 +72,7 @@ describe("VictoryModal", () => {
     );
 
     expect(getByTestId("modal-sequence-breadcrumb")).toBeTruthy();
-    expect(getByText("2/3")).toBeTruthy();
+    expect(queryByText("2/3")).toBeNull();
     expect(getByText("Next")).toBeTruthy();
   });
 

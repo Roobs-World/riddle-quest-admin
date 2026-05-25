@@ -23,6 +23,7 @@ jest.mock("../help/WelcomeModal", () => MockModal);
 jest.mock("../help/WelcomeBackModal", () => MockModal);
 jest.mock("../help/InstructionsModal", () => MockModal);
 jest.mock("../help/CreditsModal", () => MockModal);
+jest.mock("../help/AboutLegalModal", () => MockModal);
 jest.mock("../../shop/CoinShop", () => MockModal);
 jest.mock("../shop/CoinPurchaseFanfareModal", () => MockModal);
 
@@ -41,6 +42,7 @@ const {
   getModalComponent,
   isModalRegistered,
 } = require("../ModalRegistry");
+const { MODAL_REGISTRY_TYPES } = require("../modalTypes");
 
 const { logger } = require("../../../utils/logger");
 
@@ -50,29 +52,13 @@ describe("ModalRegistry", () => {
   });
 
   describe("Modal Registration", () => {
-    const requiredModalTypes = [
-      "victory",
-      "loss",
-      "settings",
-      "fullProfileDetails",
-      "upgradeAccount",
-      "achievements",
-      "stats",
-      "leaderboard",
-      "updateUsername",
-      "info",
-      "hint",
-      "skip",
-      "welcome",
-      "welcomeBack",
-      "instructions",
-      "credits",
-      "coinShop",
-      "coinPurchaseFanfare",
-      "achievementUnlockFanfare",
-      "streakIncreaseFanfare",
-      "levelUpFanfare",
-    ];
+    const requiredModalTypes = [...MODAL_REGISTRY_TYPES];
+
+    it("keeps the exported modal type inventory in sync with the registry", () => {
+      expect(Object.keys(modalRegistry).sort()).toEqual(
+        [...requiredModalTypes].sort()
+      );
+    });
 
     it("should register all required modal types", () => {
       requiredModalTypes.forEach((type) => {
@@ -96,6 +82,20 @@ describe("ModalRegistry", () => {
         expect(component.displayName).toContain("ModalWrapper");
       });
     });
+
+    it.each(requiredModalTypes)(
+      "should map minimum QA props without throwing for %s",
+      (type) => {
+        const ModalComponent = getModalComponent(type);
+
+        expect(() =>
+          ModalComponent({
+            isVisible: true,
+            onClose: jest.fn(),
+          })
+        ).not.toThrow();
+      }
+    );
   });
 
   describe("getModalComponent", () => {
@@ -416,15 +416,21 @@ describe("ModalRegistry", () => {
       // Settings modals
       expect(modalRegistry.settings).toBeDefined();
       expect(modalRegistry.fullProfileDetails).toBeDefined();
+      expect(modalRegistry.upgradeAccount).toBeDefined();
       expect(modalRegistry.updateUsername).toBeDefined();
+      expect(modalRegistry.achievements).toBeDefined();
+      expect(modalRegistry.stats).toBeDefined();
+      expect(modalRegistry.leaderboard).toBeDefined();
 
       // Help modals
       expect(modalRegistry.hint).toBeDefined();
       expect(modalRegistry.info).toBeDefined();
       expect(modalRegistry.skip).toBeDefined();
       expect(modalRegistry.welcome).toBeDefined();
+      expect(modalRegistry.welcomeBack).toBeDefined();
       expect(modalRegistry.instructions).toBeDefined();
       expect(modalRegistry.credits).toBeDefined();
+      expect(modalRegistry.aboutLegal).toBeDefined();
 
       // Shop modals
       expect(modalRegistry.coinShop).toBeDefined();

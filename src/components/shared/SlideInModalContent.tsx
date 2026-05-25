@@ -6,6 +6,7 @@ import {
   ViewStyle,
 } from "react-native";
 import { dimensions } from "../../utils/responsive";
+import { isQASurfaceRuntimeActive } from "../../qa/qaRuntime";
 
 interface SlideInModalContentProps {
   isVisible: boolean;
@@ -29,6 +30,12 @@ const SlideInModalContent: React.FC<SlideInModalContentProps> = ({
     const toValue = isVisible ? 0 : OFFSCREEN_TRANSLATE_Y;
     const opacityTarget = isVisible ? 1 : 0;
     const easing = isVisible ? Easing.out(Easing.cubic) : Easing.in(Easing.cubic);
+
+    if (isQASurfaceRuntimeActive()) {
+      translateY.setValue(toValue);
+      opacity.setValue(opacityTarget);
+      return;
+    }
 
     if (isVisible) {
       translateY.setValue(OFFSCREEN_TRANSLATE_Y);

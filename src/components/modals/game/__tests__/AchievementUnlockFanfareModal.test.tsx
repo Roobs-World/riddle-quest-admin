@@ -91,7 +91,7 @@ describe("AchievementUnlockFanfareModal", () => {
   });
 
   it("shows sequence progress and Next text for an intermediate popup", () => {
-    const {getByTestId, getByText} = render(
+    const {getByTestId, getByText, queryByText} = render(
       <AchievementUnlockFanfareModal
         isVisible={true}
         coinsEarned={25}
@@ -114,7 +114,7 @@ describe("AchievementUnlockFanfareModal", () => {
     );
 
     expect(getByTestId("modal-sequence-breadcrumb")).toBeTruthy();
-    expect(getByText("1/2")).toBeTruthy();
+    expect(queryByText("1/2")).toBeNull();
     expect(getByText("Next")).toBeTruthy();
   });
 

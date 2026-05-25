@@ -83,7 +83,7 @@ describe("LevelUpFanfareModal", () => {
   });
 
   it("shows sequence progress and final action text", () => {
-    const {getByTestId, getByText} = render(
+    const {getByTestId, getByText, queryByText} = render(
       <LevelUpFanfareModal
         isVisible={true}
         newLevel={4}
@@ -99,7 +99,7 @@ describe("LevelUpFanfareModal", () => {
     );
 
     expect(getByTestId("modal-sequence-breadcrumb")).toBeTruthy();
-    expect(getByText("4/4")).toBeTruthy();
+    expect(queryByText("4/4")).toBeNull();
     expect(getByText("Awesome")).toBeTruthy();
   });
 

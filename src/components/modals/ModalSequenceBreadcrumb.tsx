@@ -1,6 +1,5 @@
 import React from "react";
-import { Text, View } from "react-native";
-import { TYPOGRAPHY } from "../../styles";
+import { View } from "react-native";
 import type { ModalSequenceProgress } from "../../types/ModalTypes";
 import { moderateScale, verticalScale } from "../../utils/responsive";
 
@@ -15,52 +14,43 @@ const ModalSequenceBreadcrumb: React.FC<ModalSequenceBreadcrumbProps> = ({
     return null;
   }
 
-  const current = Math.max(1, sequenceProgress.currentPopupIndex);
-  const total = Math.max(current, sequenceProgress.totalPopups);
+  const total = sequenceProgress.totalPopups;
+  const current = Math.min(
+    Math.max(1, sequenceProgress.currentPopupIndex),
+    total
+  );
 
   return (
     <View
       accessibilityLabel={`Popup ${current} of ${total}`}
       testID="modal-sequence-breadcrumb"
       style={{
+        alignSelf: "stretch",
         alignItems: "center",
+        flexDirection: "row",
         justifyContent: "center",
         marginBottom: verticalScale(8),
-        minHeight: verticalScale(30),
+        minHeight: verticalScale(18),
+        gap: moderateScale(6),
       }}
     >
-      <Text
-        style={{
-          fontFamily: TYPOGRAPHY.fontSecondaryBold,
-          fontSize: TYPOGRAPHY.fontSize.sm,
-          color: "black",
-          textAlign: "center",
-        }}
-      >
-        {current}/{total}
-      </Text>
-      <View
-        style={{
-          flexDirection: "row",
-          gap: moderateScale(4),
-          marginTop: verticalScale(4),
-        }}
-      >
-        {Array.from({ length: total }, (_, index) => {
-          const isActive = index + 1 <= current;
-          return (
-            <View
-              key={index}
-              style={{
-                width: moderateScale(6),
-                height: moderateScale(6),
-                borderRadius: moderateScale(3),
-                backgroundColor: isActive ? "#111111" : "rgba(0, 0, 0, 0.2)",
-              }}
-            />
-          );
-        })}
-      </View>
+      {Array.from({ length: total }, (_, index) => {
+        const isActive = index + 1 === current;
+        return (
+          <View
+            key={index}
+            testID={`modal-sequence-breadcrumb-dot-${index + 1}`}
+            style={{
+              width: moderateScale(8),
+              height: moderateScale(8),
+              borderRadius: moderateScale(4),
+              borderWidth: moderateScale(1),
+              borderColor: "#111111",
+              backgroundColor: isActive ? "#111111" : "transparent",
+            }}
+          />
+        );
+      })}
     </View>
   );
 };

@@ -426,6 +426,80 @@ describe("AuthContext", () => {
       ).toHaveBeenCalled();
     });
 
+    it("does not restart provider bootstrap for delayed duplicate same-user auth events", async () => {
+      const realDateNow = Date.now.bind(Date);
+      const dateNowSpy = jest
+        .spyOn(Date, "now")
+        .mockImplementationOnce(() => 1000)
+        .mockImplementationOnce(() => 3000)
+        .mockImplementation(() => realDateNow());
+
+      let resolveLoadUserProgress: (value: Player | null) => void = () => {};
+      const loadUserProgressPromise = new Promise<Player | null>((resolve) => {
+        resolveLoadUserProgress = resolve;
+      });
+      (loadUserProgressFromFirestore as jest.Mock).mockReturnValue(
+        loadUserProgressPromise
+      );
+      (fetchDailyRiddleFromFirestore as jest.Mock).mockResolvedValue(
+        mockDailyRiddle
+      );
+      const functionsModule = require("@react-native-firebase/functions");
+      const dailyStatusCallable = jest.fn(() =>
+        Promise.resolve({ data: { hasCompletedToday: false } })
+      );
+      (functionsModule.httpsCallable as jest.Mock).mockReturnValue(
+        dailyStatusCallable
+      );
+
+      const providerUser = {
+        ...mockUser,
+        isAnonymous: false,
+        emailVerified: true,
+        photoURL: null,
+        providerData: [{ providerId: "google.com" }],
+      };
+
+      try {
+        mockAuthInstance.onAuthStateChanged.mockImplementation(
+          (callback: (user: any) => void) => {
+            callback(providerUser as any);
+            callback(providerUser as any);
+            return jest.fn();
+          }
+        );
+
+        const { result } = renderHook(() => useAuth(), { wrapper });
+
+        await waitFor(() => {
+          expect(loadUserProgressFromFirestore).toHaveBeenCalledTimes(1);
+        });
+        expect(
+          RiddleInitializationService.checkAndInitializeRiddles
+        ).toHaveBeenCalledTimes(1);
+        expect(fetchDailyRiddleFromFirestore).not.toHaveBeenCalled();
+
+        await act(async () => {
+          resolveLoadUserProgress(mockPlayer);
+          await loadUserProgressPromise;
+        });
+
+        await waitFor(() => {
+          expect(result.current.isLoading).toBe(false);
+        });
+
+        expect(loadUserProgressFromFirestore).toHaveBeenCalledTimes(1);
+        expect(
+          RiddleInitializationService.checkAndInitializeRiddles
+        ).toHaveBeenCalledTimes(1);
+        expect(dailyStatusCallable).toHaveBeenCalledTimes(1);
+        expect(fetchDailyRiddleFromFirestore).toHaveBeenCalledTimes(1);
+        expect(result.current.currentRiddle).toEqual(mockDailyRiddle);
+      } finally {
+        dateNowSpy.mockRestore();
+      }
+    });
+
     it("handles user logout", async () => {
       // First set up authenticated state
       (loadUserProgressFromFirestore as jest.Mock).mockResolvedValue(

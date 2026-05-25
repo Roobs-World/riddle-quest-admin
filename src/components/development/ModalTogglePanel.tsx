@@ -40,6 +40,7 @@ import { SubmittedGuess } from "../../hooks/types";
 import { Player } from "../../validation/firestoreSchemas";
 import { useAuth } from "../../contexts/AuthContext";
 import * as RNIap from "react-native-iap";
+import type { ProductPricing } from "../../services/ProductPricingService";
 import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY } from "../../styles";
 import { scale, verticalScale } from "../../utils/responsive";
 import { logger } from "../../utils/logger";
@@ -68,7 +69,7 @@ interface ExtendedModalData extends ModalData {
 /**
  * Generate Mock Data for Modal Testing
  */
-const generateMockData = (
+export const generateMockData = (
   modalType: string,
   closeModalFn?: (type: string) => void,
   livePlayerData?: Player | null,
@@ -136,6 +137,64 @@ const generateMockData = (
       description: "100 coins for hints and power-ups",
       type: "in-app",
     } as RNIap.ProductAndroid,
+  ];
+
+  const mockFirestoreProducts: ProductPricing[] = [
+    {
+      productId: "coin_pack_small",
+      productKey: "small",
+      name: "Small Coin Pack",
+      description: "A quick refill for a couple of hints.",
+      coins: 100,
+      isActive: true,
+      sortOrder: 1,
+      featuredOrder: 1,
+      featuredBadge: "STARTER",
+      regionalPrices: [
+        {
+          amount: 0.99,
+          currency: "USD",
+          displayPrice: "$0.99",
+          symbol: "$",
+        },
+      ],
+    },
+    {
+      productId: "coin_pack_medium",
+      productKey: "medium",
+      name: "Medium Coin Pack",
+      description: "Enough coins for a longer play session.",
+      coins: 550,
+      isActive: true,
+      sortOrder: 2,
+      featuredOrder: 2,
+      featuredBadge: "BEST DEAL",
+      regionalPrices: [
+        {
+          amount: 3.99,
+          currency: "USD",
+          displayPrice: "$3.99",
+          symbol: "$",
+        },
+      ],
+    },
+    {
+      productId: "coin_pack_large",
+      productKey: "large",
+      name: "Large Coin Pack",
+      description: "A bank of coins for hints and continues.",
+      coins: 1200,
+      isActive: true,
+      sortOrder: 3,
+      regionalPrices: [
+        {
+          amount: 7.99,
+          currency: "USD",
+          displayPrice: "$7.99",
+          symbol: "$",
+        },
+      ],
+    },
   ];
 
   const resolvedPlayer = livePlayerData ?? mockPlayer;
@@ -300,6 +359,11 @@ const generateMockData = (
       return {
         onDismiss: () => logger.debug("Welcome dismissed"),
       };
+    case "welcomeBack":
+      return {
+        username: resolvedPlayer.username,
+        onDismiss: () => logger.debug("Welcome back dismissed"),
+      };
     case "instructions":
       return {};
     case "credits":
@@ -307,10 +371,14 @@ const generateMockData = (
     case "coinShop":
       return {
         products: mockProducts,
+        firestoreProducts: mockFirestoreProducts,
+        currentCoins,
         onPurchaseProduct: (productId: string) =>
           logger.debug("Purchase:", productId),
         loading: false,
         error: null,
+        onWatchVideo: () => logger.debug("Watch video pressed"),
+        onPayAndPlay: () => logger.debug("Pay and play pressed"),
       };
     case "coinPurchaseFanfare":
       return {

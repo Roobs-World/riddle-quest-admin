@@ -2,63 +2,23 @@ import React from "react";
 import { render, fireEvent, waitFor, act } from "@testing-library/react-native";
 import { Switch } from "react-native";
 import ModalTogglePanel from "../ModalTogglePanel";
+import { MODAL_REGISTRY_TYPES } from "../../modals/modalTypes";
 
 const mockDebug = jest.fn();
 const mockWarn = jest.fn();
 const mockGetModalComponent = jest.fn();
 
-const expectedModalTypes = [
-  "victory",
-  "loss",
-  "settings",
-  "fullProfileDetails",
-  "upgradeAccount",
-  "achievements",
-  "stats",
-  "leaderboard",
-  "changePassword",
-  "updateUsername",
-  "avatarOptions",
-  "preloadedAvatars",
-  "info",
-  "hint",
-  "skip",
-  "welcome",
-  "instructions",
-  "credits",
-  "coinShop",
-  "coinPurchaseFanfare",
-  "achievementUnlockFanfare",
-  "streakIncreaseFanfare",
-];
+const expectedModalTypes = [...MODAL_REGISTRY_TYPES];
 
-jest.mock("../../modals/ModalRegistry", () => ({
-  modalRegistry: {
-    victory: {},
-    loss: {},
-    settings: {},
-    fullProfileDetails: {},
-    upgradeAccount: {},
-    achievements: {},
-    stats: {},
-    leaderboard: {},
-    changePassword: {},
-    updateUsername: {},
-    avatarOptions: {},
-    preloadedAvatars: {},
-    info: {},
-    hint: {},
-    skip: {},
-    welcome: {},
-    instructions: {},
-    credits: {},
-    coinShop: {},
-    coinPurchaseFanfare: {},
-    achievementUnlockFanfare: {},
-    streakIncreaseFanfare: {},
-  },
-  getModalComponent: (...args: any[]) => mockGetModalComponent(...args),
-}));
+jest.mock("../../modals/ModalRegistry", () => {
+  const { MODAL_REGISTRY_TYPES } = jest.requireActual("../../modals/modalTypes");
+  return {
+    modalRegistry: Object.fromEntries(
+      MODAL_REGISTRY_TYPES.map((modalType: string) => [modalType, {}])
+    ),
+    getModalComponent: (...args: any[]) => mockGetModalComponent(...args),
+  };
+});
 
 jest.mock("react-native-iap", () => ({}));
 
@@ -153,18 +113,15 @@ describe("ModalTogglePanel", () => {
       fireEvent(item, "valueChange", true);
     }
 
-    expect(queryByTestId("active-victory")).toBeTruthy();
-    expect(queryByTestId("active-loss")).toBeTruthy();
-    expect(queryByTestId("active-settings")).toBeTruthy();
-    expect(queryByTestId("active-info")).toBeTruthy();
-    expect(queryByTestId("active-coinShop")).toBeTruthy();
-    expect(queryByTestId("active-coinPurchaseFanfare")).toBeTruthy();
-    expect(queryByTestId("active-achievementUnlockFanfare")).toBeTruthy();
+    for (const modalType of expectedModalTypes) {
+      expect(queryByTestId(`active-${modalType}`)).toBeTruthy();
+    }
 
     fireEvent.press(getByText("Clear All"));
 
-    expect(queryByTestId("active-victory")).toBeNull();
-    expect(queryByTestId("active-loss")).toBeNull();
+    for (const modalType of expectedModalTypes) {
+      expect(queryByTestId(`active-${modalType}`)).toBeNull();
+    }
   });
 
   it("closes an active modal via onClose callback", () => {
@@ -194,19 +151,9 @@ describe("ModalTogglePanel", () => {
       fireEvent(item, "valueChange", true);
     }
 
-    fireEvent.press(getByTestId("invoke-settings"));
-    fireEvent.press(getByTestId("invoke-victory"));
-    fireEvent.press(getByTestId("invoke-updateUsername"));
-    fireEvent.press(getByTestId("invoke-avatarOptions"));
-    fireEvent.press(getByTestId("invoke-preloadedAvatars"));
-    fireEvent.press(getByTestId("invoke-info"));
-    fireEvent.press(getByTestId("invoke-hint"));
-    fireEvent.press(getByTestId("invoke-skip"));
-    fireEvent.press(getByTestId("invoke-welcome"));
-    fireEvent.press(getByTestId("invoke-coinShop"));
-    fireEvent.press(getByTestId("invoke-coinPurchaseFanfare"));
-    fireEvent.press(getByTestId("invoke-achievementUnlockFanfare"));
-    fireEvent.press(getByTestId("invoke-loss"));
+    for (const modalType of expectedModalTypes) {
+      fireEvent.press(getByTestId(`invoke-${modalType}`));
+    }
 
     expect(mockGetModalComponent).toHaveBeenCalled();
   });
