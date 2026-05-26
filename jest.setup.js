@@ -105,6 +105,30 @@ jest.mock("expo-audio", () => ({
   setAudioModeAsync: jest.fn(),
 }));
 
+jest.mock("@expo/vector-icons", () => {
+  const React = require("react");
+  const View = require("react-native/Libraries/Components/View/View").default;
+
+  const createMockIcon = (family) => {
+    const MockIcon = ({name, size, color, testID}) =>
+      React.createElement(View, {
+        testID: testID ?? `${family}-icon`,
+        "data-icon-family": family,
+        "data-icon-name": name,
+        "data-icon-size": size,
+        "data-icon-color": color,
+      });
+
+    MockIcon.displayName = `Mock${family}`;
+    return MockIcon;
+  };
+
+  return {
+    __esModule: true,
+    MaterialCommunityIcons: createMockIcon("MaterialCommunityIcons"),
+  };
+});
+
 // Mock Dimensions - react-native requires .default with .get() (avoids getConstants error)
 const mockDimensions = {
   get: () => ({width: 375, height: 812, scale: 2, fontScale: 1}),

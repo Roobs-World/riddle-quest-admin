@@ -15,6 +15,8 @@ use firebase functions:config:get to return the config settings used
 
 to create a preview build for distribution run:
 pnpm exec eas build --platform android --profile preview
+or
+eas build --platform android --profile preview
 
 adb install path/to/app.apk
 
@@ -267,37 +269,37 @@ npm run android
 
 Run these commands with `pnpm run <script>`, except `start`, `android`, `ios`, and `web`, which can also be run as `pnpm <script>`.
 
-| Script | Description |
-| --- | --- |
-| `start` | Starts the Expo development server for the custom dev client. |
-| `start:android:emulator` | Starts the Expo dev-client server for Android emulator testing, using emulator-friendly host/proxy settings on port `8081` and clearing the Metro cache. |
-| `start:debug` | Starts the Expo dev-client server with `EXPO_DEBUG=true`, clears the Metro cache, and uses port `8081`. |
-| `android` | Builds and runs the Android app through Expo with `GRADLE_USER_HOME` set to the local `.gradle-local` directory. |
-| `android:debug` | Builds and runs the Android app with Expo debug logging enabled and the local Gradle home. |
-| `android:assemble:emulator` | Runs the Android emulator compatibility script in build mode with a 600-second timeout. |
-| `qa:android:compat` | Runs the Android emulator compatibility QA script. |
-| `qa:android:emulators` | Runs Android emulator health checks, including lock cleanup, with a 300-second timeout. |
-| `ios` | Builds and runs the iOS app through Expo. |
-| `web` | Starts the Expo web development server. |
-| `lint` | Runs ESLint across JavaScript and TypeScript files using the legacy ESLint config mode, applying automatic fixes. |
-| `test` | Runs the Jest test suite with `NODE_ENV=test`. |
-| `test:rn` | Runs Jest against tests under `src`. |
-| `test:watch` | Runs Jest in watch mode. |
-| `test:coverage` | Runs Jest and collects coverage. |
-| `test:coverage:game` | Runs the game coverage check script. |
-| `test:coverage:project` | Runs the project coverage check script. |
-| `setup:tests` | Runs the full test setup command. |
-| `test:setup:all` | Installs dependencies with the frozen lockfile and prebuilds the Android native project. |
-| `test:android:matrix` | Runs Android matrix coverage checks, unit tests, emulator assembly, emulator health checks, and the emulator matrix run. |
-| `test:android:matrix:coverage` | Verifies that the Android emulator matrix coverage configuration is complete. |
-| `test:android:matrix:unit` | Runs the React Native Jest tests serially for the Android matrix. |
-| `test:android:matrix:run` | Executes the Android emulator matrix runner script. |
-| `check:no-any` | Checks the codebase for disallowed TypeScript `any` usage. |
-| `test:precommit` | Runs the pre-commit validation script. |
-| `check:rn-upgrade` | Runs React Native upgrade guardrail checks. |
-| `baseline:report` | Generates the baseline report used during upgrade validation. |
-| `validate:upgrade` | Runs React Native upgrade checks, linting, and React Native tests serially. |
-| `prepare` | Installs Husky git hooks during package installation. |
+| Script                         | Description                                                                                                                                              |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `start`                        | Starts the Expo development server for the custom dev client.                                                                                            |
+| `start:android:emulator`       | Starts the Expo dev-client server for Android emulator testing, using emulator-friendly host/proxy settings on port `8081` and clearing the Metro cache. |
+| `start:debug`                  | Starts the Expo dev-client server with `EXPO_DEBUG=true`, clears the Metro cache, and uses port `8081`.                                                  |
+| `android`                      | Builds and runs the Android app through Expo with `GRADLE_USER_HOME` set to the local `.gradle-local` directory.                                         |
+| `android:debug`                | Builds and runs the Android app with Expo debug logging enabled and the local Gradle home.                                                               |
+| `android:assemble:emulator`    | Runs the Android emulator compatibility script in build mode with a 600-second timeout.                                                                  |
+| `qa:android:compat`            | Runs the Android emulator compatibility QA script.                                                                                                       |
+| `qa:android:emulators`         | Runs Android emulator health checks, including lock cleanup, with a 300-second timeout.                                                                  |
+| `ios`                          | Builds and runs the iOS app through Expo.                                                                                                                |
+| `web`                          | Starts the Expo web development server.                                                                                                                  |
+| `lint`                         | Runs ESLint across JavaScript and TypeScript files using the legacy ESLint config mode, applying automatic fixes.                                        |
+| `test`                         | Runs the Jest test suite with `NODE_ENV=test`.                                                                                                           |
+| `test:rn`                      | Runs Jest against tests under `src`.                                                                                                                     |
+| `test:watch`                   | Runs Jest in watch mode.                                                                                                                                 |
+| `test:coverage`                | Runs Jest and collects coverage.                                                                                                                         |
+| `test:coverage:game`           | Runs the game coverage check script.                                                                                                                     |
+| `test:coverage:project`        | Runs the project coverage check script.                                                                                                                  |
+| `setup:tests`                  | Runs the full test setup command.                                                                                                                        |
+| `test:setup:all`               | Installs dependencies with the frozen lockfile and prebuilds the Android native project.                                                                 |
+| `test:android:matrix`          | Runs Android matrix coverage checks, unit tests, emulator assembly, emulator health checks, and the emulator matrix run.                                 |
+| `test:android:matrix:coverage` | Verifies that the Android emulator matrix coverage configuration is complete.                                                                            |
+| `test:android:matrix:unit`     | Runs the React Native Jest tests serially for the Android matrix.                                                                                        |
+| `test:android:matrix:run`      | Executes the Android emulator matrix runner script.                                                                                                      |
+| `check:no-any`                 | Checks the codebase for disallowed TypeScript `any` usage.                                                                                               |
+| `test:precommit`               | Runs the pre-commit validation script.                                                                                                                   |
+| `check:rn-upgrade`             | Runs React Native upgrade guardrail checks.                                                                                                              |
+| `baseline:report`              | Generates the baseline report used during upgrade validation.                                                                                            |
+| `validate:upgrade`             | Runs React Native upgrade checks, linting, and React Native tests serially.                                                                              |
+| `prepare`                      | Installs Husky git hooks during package installation.                                                                                                    |
 
 ### Android Emulator Test Matrix
 

@@ -7,6 +7,9 @@
     "development": {
       "developmentClient": true,
       "distribution": "internal",
+      "env": {
+        "EXPO_DOCTOR_SKIP_DEPENDENCY_VERSION_CHECK": "1"
+      },
       "ios": {
         "simulator": true
       }
@@ -18,6 +21,7 @@
         "buildType": "apk"
       },
       "env": {
+        "EXPO_DOCTOR_SKIP_DEPENDENCY_VERSION_CHECK": "1",
         "EXPO_NO_AUDIO_COMPRESSION": "1",
         "EXPO_PRESERVE_AUDIO_QUALITY": "1",
         "GOOGLE_WEB_CLIENT_ID": "26666910831-20c5akqranakimukl895h7bpdc9pf5c5.apps.googleusercontent.com"
@@ -29,6 +33,7 @@
     "production": {
       "autoIncrement": true,
       "env": {
+        "EXPO_DOCTOR_SKIP_DEPENDENCY_VERSION_CHECK": "1",
         "EXPO_NO_AUDIO_COMPRESSION": "1",
         "EXPO_PRESERVE_AUDIO_QUALITY": "1",
         "GOOGLE_WEB_CLIENT_ID": "26666910831-20c5akqranakimukl895h7bpdc9pf5c5.apps.googleusercontent.com"
@@ -38,6 +43,9 @@
       }
     },
     "simulator": {
+      "env": {
+        "EXPO_DOCTOR_SKIP_DEPENDENCY_VERSION_CHECK": "1"
+      },
       "ios": {
         "simulator": true,
         "buildConfiguration": "Debug"

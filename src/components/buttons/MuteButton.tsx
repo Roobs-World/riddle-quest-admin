@@ -1,6 +1,6 @@
 import React from "react";
 import {TouchableOpacity, TouchableOpacityProps} from "react-native";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import {MaterialCommunityIcons} from "@expo/vector-icons";
 import {SPACING} from "../../styles";
 import {AppStrings} from "../../constants/AppStrings";
 

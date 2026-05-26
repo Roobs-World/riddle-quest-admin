@@ -2,7 +2,7 @@ import React from "react";
 import {fireEvent, render} from "@testing-library/react-native";
 import MuteButton from "../MuteButton";
 
-jest.mock("react-native-vector-icons/MaterialCommunityIcons", () => {
+jest.mock("@expo/vector-icons", () => {
   const React = require("react");
   const {View} = require("react-native");
 
@@ -11,7 +11,7 @@ jest.mock("react-native-vector-icons/MaterialCommunityIcons", () => {
   );
 
   MockMaterialCommunityIcons.displayName = "MockMaterialCommunityIcons";
-  return MockMaterialCommunityIcons;
+  return {MaterialCommunityIcons: MockMaterialCommunityIcons};
 });
 
 describe("MuteButton", () => {
