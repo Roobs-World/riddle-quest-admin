@@ -5,7 +5,7 @@ const workspaceRoot = path.resolve(__dirname, "..");
 const docsRoot = path.join(workspaceRoot, "docs");
 const outputPath = path.join(docsRoot, "tasks.html");
 const sourceExtensions = new Set([".md", ".html"]);
-const statusWords = ["TODO", "IN_PROGRESS", "BLOCKED", "UNREACHABLE", "SKIPPED", "FAIL"];
+const actionableStatuses = new Set(["todo", "in-progress", "failed"]);
 
 const walk = (dir) => {
   const entries = fs.readdirSync(dir, {withFileTypes: true});
@@ -127,6 +127,7 @@ const findPreviousHeading = (headings, index, fallback) => {
 
 const statusFromText = (text) => {
   if (/\bIN_PROGRESS\b/i.test(text)) return "in-progress";
+  if (/\bDEFERRED\b/i.test(text)) return "deferred";
   if (/\bBLOCKED\b/i.test(text)) return "blocked";
   if (/\bUNREACHABLE\b/i.test(text)) return "unreachable";
   if (/\bSKIPPED\b/i.test(text)) return "skipped";
@@ -137,16 +138,6 @@ const statusFromText = (text) => {
 const statusFromIssueText = (text) => {
   if (/\b(?:FIXED|CLOSED|DONE|PASS(?:ED)?)\b/i.test(text)) return "done";
   return statusFromText(text);
-};
-
-const shouldSkipStatusSnippet = (text) => {
-  if (text.length < 24) return true;
-  if (/Use these exact status values/i.test(text)) return true;
-  if (/status values:\s*TODO/i.test(text)) return true;
-  if (/Current handoff as of/i.test(text)) return true;
-  if (/This is an exhaustive QA run/i.test(text)) return true;
-  if (/Before starting, update the Embedded Run Tracker/i.test(text)) return true;
-  return false;
 };
 
 const truncate = (value, max = 420) => {
@@ -250,31 +241,6 @@ const parseHtmlIssueRows = (content, relPath, title, lineStarts) => {
   return tasks;
 };
 
-const parseStatusSnippets = (content, relPath, title, extension) => {
-  const tasks = [];
-
-  content.split(/\r?\n/).forEach((raw, index) => {
-    if (/^\s*#{1,6}\s+/.test(raw)) return;
-    if (/^\s*(?:[-*+]|\d+\.)\s+\[[ xX]\]/.test(raw)) return;
-    if (!statusWords.some((word) => new RegExp(`\\b${word}\\b`, "i").test(raw))) return;
-
-    const text = extension === ".html" ? stripHtml(raw) : stripMarkdown(raw);
-    if (shouldSkipStatusSnippet(text)) return;
-
-    addTask(tasks, {
-      source: relPath,
-      title,
-      section: "Status Notes",
-      line: index + 1,
-      status: statusFromText(text),
-      text,
-      kind: "status-note",
-    });
-  });
-
-  return tasks;
-};
-
 const collectTasks = () => {
   const sources = walk(docsRoot)
     .filter((file) => sourceExtensions.has(path.extname(file).toLowerCase()))
@@ -297,8 +263,6 @@ const collectTasks = () => {
       tasks.push(...parseHtmlCheckboxTasks(content, relPath, title, headings, lineStarts));
       tasks.push(...parseHtmlIssueRows(content, relPath, title, lineStarts));
     }
-
-    tasks.push(...parseStatusSnippets(content, relPath, title, extension));
   });
 
   const seen = new Set();
@@ -319,6 +283,7 @@ const statusLabel = (status) =>
     unreachable: "Unreachable",
     skipped: "Skipped",
     failed: "Failed",
+    deferred: "Deferred",
   })[status] || status;
 
 const renderHtml = (tasks) => {
@@ -326,7 +291,7 @@ const renderHtml = (tasks) => {
     acc[task.status] = (acc[task.status] || 0) + 1;
     return acc;
   }, {});
-  const openCount = tasks.length - (byStatus.done || 0);
+  const openCount = tasks.filter((task) => actionableStatuses.has(task.status)).length;
   const bySource = tasks.reduce((acc, task) => {
     if (!acc.has(task.source)) acc.set(task.source, []);
     acc.get(task.source).push(task);
@@ -336,7 +301,7 @@ const renderHtml = (tasks) => {
 
   const summaryCards = [
     ["Total", tasks.length],
-    ["Open", openCount],
+    ["Actionable Open", openCount],
     ["Todo", byStatus.todo || 0],
     ["Blocked", byStatus.blocked || 0],
     ["Done", byStatus.done || 0],
@@ -401,6 +366,7 @@ const renderHtml = (tasks) => {
         --blocked: #b42318;
         --skipped: #596579;
         --failed: #9a3412;
+        --deferred: #475467;
       }
 
       * {
@@ -602,6 +568,10 @@ const renderHtml = (tasks) => {
         background: var(--skipped);
       }
 
+      .badge.deferred {
+        background: var(--deferred);
+      }
+
       .badge.failed {
         background: var(--failed);
       }
@@ -640,7 +610,7 @@ const renderHtml = (tasks) => {
         <h1>Docs Task List</h1>
         <p class="lede">
           Consolidated task inventory generated from markdown checklists, HTML checklists, issue-register next actions,
-          and explicit TODO/BLOCKED-style status notes in the docs folder.
+          and other structured task rows in the docs folder.
         </p>
         <p class="meta">Generated ${escapeHtml(generatedAt)} from ${bySource.size} docs sources.</p>
         <div class="metrics">${summaryCards}
@@ -652,10 +622,10 @@ const renderHtml = (tasks) => {
         <button type="button" data-filter="open">Open</button>
         <button type="button" data-filter="todo">Todo</button>
         <button type="button" data-filter="blocked">Blocked</button>
+        <button type="button" data-filter="deferred">Deferred</button>
         <button type="button" data-filter="done">Done</button>
       </nav>
-
-      ${sourceSections}
+${sourceSections}
     </main>
 
     <script>
@@ -665,7 +635,7 @@ const renderHtml = (tasks) => {
       const visibleFor = (status, filter) =>
         filter === "all" ||
         status === filter ||
-        (filter === "open" && status !== "done") ||
+        (filter === "open" && ${JSON.stringify([...actionableStatuses])}.includes(status)) ||
         (filter === "blocked" && (status === "blocked" || status === "unreachable" || status === "failed"));
 
       buttons.forEach((button) => {

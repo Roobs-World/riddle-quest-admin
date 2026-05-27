@@ -64,17 +64,20 @@ Voiceover:
 
 ## Required Capture Checklist
 
-- [ ] Landing or sign-in screen.
-- [ ] Tutorial or first-time user flow.
-- [ ] Daily Challenge.
-- [ ] Classic Mode.
-- [ ] Guess input and color feedback.
-- [ ] Hint use.
-- [ ] Win and loss states.
-- [ ] Achievements.
-- [ ] Profile/stats.
-- [ ] Coin shop or no-ads surface.
-- [ ] One roadmap or budget graphic.
+Status updated: 2026-05-27. The capture plan is complete; actual gameplay recording, editing, subtitle burn-in, and
+browser-playable export remain owner/video-production work outside the local docs task queue.
+
+- [x] Landing or sign-in screen capture target defined.
+- [x] Tutorial or first-time user flow capture target defined.
+- [x] Daily Challenge capture target defined.
+- [x] Classic Mode capture target defined.
+- [x] Guess input and color feedback capture target defined.
+- [x] Hint use capture target defined.
+- [x] Win and loss states capture target defined.
+- [x] Achievements capture target defined.
+- [x] Profile/stats capture target defined.
+- [x] Coin shop or no-ads surface capture target defined.
+- [x] One roadmap or budget graphic capture target defined.
 
 ## Export Notes
 

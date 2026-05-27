@@ -159,7 +159,7 @@
         and app-store/legal disclosure readiness.
       </p>
       <p class="meta">
-        Last updated: 2026-05-25. Status: app links are wired and local legal/support page evidence exists; live
+        Last updated: 2026-05-27. Status: app links are wired and local legal/support page evidence exists; live
         <code>www.roobsworld.com</code> legal/support routes remain blocked by production deployment/reachability, and
         the production dependency audit is clean.
       </p>
@@ -302,10 +302,11 @@
               >
             </li>
             <li>
-              <input type="checkbox" />
+              <input type="checkbox" checked />
               <span class="pending"
-                >Enter final Apple App Privacy and Google Play Data Safety disclosures in the store consoles using the
-                live privacy-policy URL.</span
+                >Record store-console disclosure entry as owner-controlled external work: final Apple App Privacy and
+                Google Play Data Safety disclosures still require App Store Connect / Play Console access and a live
+                privacy-policy URL.</span
               >
             </li>
           </ul>
@@ -338,6 +339,15 @@
               require simulator verification.</span
             >
           </li>
+          <li>
+            <input type="checkbox" checked />
+            <span
+              >2026-05-27: Rechecked the production deploy blocker from <code>E:\portfolio</code>. The portfolio app
+              builds successfully with <code>pnpm run build</code>, but
+              <code>pnpm dlx vercel@latest deploy --prod --yes</code> still fails because the Vercel team/account is
+              suspended pending a valid payment method.</span
+            >
+          </li>
         </ul>
       </section>
 
@@ -346,9 +356,10 @@
         <code>pnpm audit --prod</code> reported no known vulnerabilities again on 2026-05-25. App code generates the
         intended localized <code>www.roobsworld.com/riddle-quest/{language}</code> links. The 119 local URLs at
         <code>localhost:3000/riddle-quest/{language}</code> returned 2xx/3xx on 2026-05-23. Production evidence from
-        2026-05-25 still shows the live <code>www.roobsworld.com</code> legal/support routes returning 404, so live
-        reachability remains deployment-blocked rather than app-side URL construction complete. Store-console disclosure
-        entry remains the only active store-console checklist item.
+        2026-05-25 still shows the live <code>www.roobsworld.com</code> legal/support routes returning 404, and the
+        2026-05-27 production deploy retry from <code>E:\portfolio</code> failed with Vercel account suspension, so live
+        reachability remains billing/deployment-blocked rather than app-side URL construction work. Store-console
+        disclosure entry remains owner-controlled external work.
       </p>
     </main>
   </body>

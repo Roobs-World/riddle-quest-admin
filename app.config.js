@@ -200,6 +200,7 @@ module.exports = {
     "@react-native-firebase/messaging",
     "expo-asset",
     "expo-font",
+    "expo-splash-screen",
     "expo-status-bar",
     ...(useSentryExpoPlugin
       ? [

@@ -22,6 +22,15 @@ pnpm dlx vercel@latest deploy --prod --yes
 
 Vercel rejected the deploy because the craig-beswethericks-projects team/account is suspended pending a valid payment method. Reactivate billing before retrying deployment.
 
+On 2026-05-27, the deployment blocker was rechecked. E:\portfolio built successfully with:
+pnpm run build
+
+The production deploy was retried with:
+pnpm dlx vercel@latest deploy --prod --yes
+
+Vercel still rejected the deploy with:
+Your account has been suspended. To reactivate your subscription, add a valid payment method.
+
 Task:
 After Vercel billing is reactivated, deploy the existing local pages from E:\portfolio / http://localhost:3000 to https://www.roobsworld.com and make every URL in the matrix publicly reachable without authentication, using 200 responses after redirects. Preserve the exact paths above because they are already wired into the app.
 

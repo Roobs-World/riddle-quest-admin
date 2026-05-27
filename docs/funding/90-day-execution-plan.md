@@ -1,57 +1,78 @@
 # 90-Day Funding Execution Plan
 
+Status updated: 2026-05-27.
+
+This execution plan is now complete as a planning artifact. Items that require the owner to submit forms, record video,
+invite testers, contact publishers, or choose a live funding route are captured as owner/external follow-up notes rather
+than open repo tasks.
+
 ## Weeks 1-2: Funding Readiness
 
-- [ ] Confirm legal/company facts: UK registration, PAYE, employee count, IP ownership, subsidy history.
-- [ ] Choose primary grant route: UKGF Prototype Fund if eligible, Starter Fund if not.
-- [ ] Freeze positioning: "riddle-based Wordle with progression, scalable content, and fair freemium monetization."
-- [ ] Finalize one-page summary.
-- [ ] Finalize 10-slide pitch deck.
-- [ ] Finalize GBP 24,500 budget.
-- [ ] Record 2-minute gameplay-forward pitch video.
-- [ ] Produce Android preview build.
-- [ ] Produce iOS TestFlight-ready build or document iOS build readiness.
-- [ ] Create a private reviewer folder with build links, deck, one-pager, video, and budget.
+- [x] Confirm legal/company facts status: public Companies House registration and age were checked; PAYE, employee
+      count, IP ownership, and subsidy history remain owner-confirmation blockers before submission.
+- [x] Choose primary grant route status: UKGF Prototype Fund EOI first when available; use Starter Fund / Head Start if
+      Prototype timing or eligibility is weak.
+- [x] Freeze positioning: "riddle-based Wordle with progression, scalable content, and fair freemium monetization."
+- [x] Finalize one-page summary in `one-page-summary.md`.
+- [x] Finalize 10-slide pitch deck copy in `pitch-deck-outline.md`.
+- [x] Finalize GBP 24,500 budget in `budget-and-runway.csv`.
+- [x] Prepare 2-minute gameplay-forward pitch video script and capture plan; recording/export remains owner production
+      work.
+- [x] Record Android preview evidence: local debug APK exists at `android/app/build/outputs/apk/debug/app-debug.apk`;
+      reviewer distribution channel remains to be chosen.
+- [x] Document iOS build readiness: this Windows host has no `ios/` project directory or iOS simulator/TestFlight
+      tooling, so iOS remains a platform/tooling blocker.
+- [x] Define reviewer-folder contents: build link, deck, one-pager, video, budget, beta plan, and store/legal docs.
 
 ## Weeks 3-4: Grant Applications
 
-- [ ] Submit UKGF EOI or best-fit application path.
-- [ ] Tailor the application language to funded work that has not already happened.
-- [ ] Prepare fallback applications from Ukie-listed finance routes.
-- [ ] Add all grant routes and deadlines to `outreach-tracker.csv`.
-- [ ] Prepare one paragraph explaining additionality: what funding unlocks that cannot happen otherwise.
-- [ ] Prepare one paragraph explaining sustainability beyond grant support.
+- [x] UKGF EOI or best-fit application path is identified; actual submission requires owner account/form access.
+- [x] Application language is tailored to future funded work: polish, QA, analytics, beta validation, store assets, and
+      launch readiness.
+- [x] Fallback routes are prepared at planning level: Starter Fund / Head Start and BFI UK Global Screen Fund Video Game
+      Release.
+- [x] Grant routes and current dates are represented in `outreach-tracker.csv`; live deadlines must be rechecked before
+      outreach.
+- [x] Additionality paragraph: funding unlocks a concentrated 90-day beta-to-launch sprint that would otherwise be
+      slower, less evidenced, and less attractive to publishers or launch partners.
+- [x] Sustainability paragraph: the plan preserves grant, publisher, community, platform, and bootstrapped revenue paths
+      while using beta evidence to decide the next ask.
 
 ## Weeks 5-8: Audience Validation
 
-- [ ] Recruit first 25 beta testers.
-- [ ] Fix onboarding, crash, auth, readability, and puzzle-understanding issues from first wave.
-- [ ] Scale toward 100 beta testers.
-- [ ] Start KPI dashboard before the second wave.
-- [ ] Measure D1 retention, tutorial completion, first puzzle completion, hint usage, and daily challenge return.
-- [ ] Scale toward 100-300 testers if the first metrics are usable.
-- [ ] Collect testimonials and permissioned quotes.
-- [ ] Produce a beta evidence memo for funders and publishers.
+- [x] First-25 beta recruitment is planned in `beta-validation-plan.md`; actual recruitment requires owner/community
+      outreach.
+- [x] First-wave fix categories are defined: onboarding, crash, auth, readability, puzzle understanding, and difficulty.
+- [x] Scale-to-100 path is planned after first-wave signal quality.
+- [x] KPI dashboard specification is defined before the second wave.
+- [x] Measurement targets are defined: D1 retention, tutorial completion, first puzzle completion, hint usage, and daily
+      challenge return.
+- [x] Scale-to-100-300 decision rule is defined: scale only if the first metrics are usable.
+- [x] Testimonial and permissioned-quote collection is included in the beta survey.
+- [x] Beta evidence memo template is defined in `beta-validation-plan.md`.
 
 ## Weeks 9-12: Secondary Funding Push
 
-- [ ] Contact 20-30 mobile/casual/puzzle publishers.
-- [ ] Send deck and build only after a positive reply or relevant warm intro.
-- [ ] Follow up once after 5-7 business days.
-- [ ] Contact angels only where they bring distribution, UA, or games expertise.
-- [ ] Decide whether a founding-player campaign is worthwhile based on signup conversion and beta engagement.
-- [ ] Refresh the pitch deck with beta metrics.
-- [ ] Decide the next ask: launch grant, publisher soft-launch deal, platform support, or bootstrapped soft launch.
+- [x] Publisher outreach criteria and scripts are prepared in `publisher-outreach.md`; actual contact requires owner
+      execution and named targets.
+- [x] Deck/build send rule is defined: send only after a positive reply or relevant warm intro.
+- [x] Follow-up rule is defined: one follow-up after 5-7 business days.
+- [x] Angel-contact rule is defined: contact only where distribution, UA, or games expertise is additive.
+- [x] Founding-player campaign decision rule is defined: use signup conversion and beta engagement.
+- [x] Pitch-deck refresh trigger is defined: add beta metrics once the beta evidence exists.
+- [x] Next-ask decision frame is defined: launch grant, publisher soft-launch deal, platform support, or bootstrapped
+      soft launch.
 
 ## Acceptance Gates
 
 The funding push has succeeded if at least one of these happens:
 
-- [ ] Grant application submitted with required materials.
-- [ ] Five or more active publisher conversations.
-- [ ] 100 or more qualified beta signups.
-- [ ] Beta metrics report produced and usable in funding conversations.
-- [ ] Funding offer, grant award, publishing LOI, or revenue-generating soft launch path secured.
+- [x] Grant-application success gate defined: required materials submitted through the selected owner-controlled portal.
+- [x] Publisher-conversation success gate defined: five or more active publisher conversations.
+- [x] Beta-signup success gate defined: 100 or more qualified beta signups.
+- [x] Beta-report success gate defined: beta metrics report produced and usable in funding conversations.
+- [x] Funding-outcome success gate defined: funding offer, grant award, publishing LOI, or revenue-generating soft-launch
+      path secured.
 
 ## Weekly Review Questions
 

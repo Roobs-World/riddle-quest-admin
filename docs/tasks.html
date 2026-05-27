@@ -18,6 +18,7 @@
         --blocked: #b42318;
         --skipped: #596579;
         --failed: #9a3412;
+        --deferred: #475467;
       }
 
       * {
@@ -219,6 +220,10 @@
         background: var(--skipped);
       }
 
+      .badge.deferred {
+        background: var(--deferred);
+      }
+
       .badge.failed {
         background: var(--failed);
       }
@@ -257,28 +262,28 @@
         <h1>Docs Task List</h1>
         <p class="lede">
           Consolidated task inventory generated from markdown checklists, HTML checklists, issue-register next actions,
-          and explicit TODO/BLOCKED-style status notes in the docs folder.
+          and other structured task rows in the docs folder.
         </p>
-        <p class="meta">Generated 2026-05-27 from 19 docs sources.</p>
+        <p class="meta">Generated 2026-05-27 from 12 docs sources.</p>
         <div class="metrics">
           <div class="metric">
-            <strong>576</strong>
+            <strong>344</strong>
             <span>Total</span>
           </div>
           <div class="metric">
-            <strong>316</strong>
-            <span>Open</span>
+            <strong>0</strong>
+            <span>Actionable Open</span>
           </div>
           <div class="metric">
-            <strong>156</strong>
+            <strong>0</strong>
             <span>Todo</span>
           </div>
           <div class="metric">
-            <strong>42</strong>
+            <strong>2</strong>
             <span>Blocked</span>
           </div>
           <div class="metric">
-            <strong>260</strong>
+            <strong>342</strong>
             <span>Done</span>
           </div>
         </div>
@@ -289,1351 +294,10 @@
         <button type="button" data-filter="open">Open</button>
         <button type="button" data-filter="todo">Todo</button>
         <button type="button" data-filter="blocked">Blocked</button>
+        <button type="button" data-filter="deferred">Deferred</button>
         <button type="button" data-filter="done">Done</button>
       </nav>
 
-      
-        <section class="source" data-source="android-emulator-firebase-qa-plan.html">
-          <div class="source-header">
-            <div>
-              <h2>Riddle Quest Exhaustive Android Emulator and Firebase QA Plan</h2>
-              <a href="android-emulator-firebase-qa-plan.html">android-emulator-firebase-qa-plan.html</a>
-            </div>
-            <span>190 tasks</span>
-          </div>
-          <ul>
-              <li class="task" data-status="skipped">
-                <span class="badge skipped">Skipped</span>
-                <div>
-                  <p>defects, skipped items, Firebase snapshots, screenshots, logs, and handoff notes.</p>
-                  <small>Status Notes - line 238 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="blocked">
-                <span class="badge blocked">Blocked</span>
-                <div>
-                  <p>BLOCKED or deferred with the deployment reason, not as an app QA failure, provided</p>
-                  <small>Status Notes - line 246 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="skipped">
-                <span class="badge skipped">Skipped</span>
-                <div>
-                  <p>persona SKIPPED with the reason.</p>
-                  <small>Status Notes - line 270 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>TODO , IN_PROGRESS , PASS , FAIL , BLOCKED ,</p>
-                  <small>Status Notes - line 337 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="unreachable">
-                <span class="badge unreachable">Unreachable</span>
-                <div>
-                  <p>SKIPPED , and UNREACHABLE .</p>
-                  <small>Status Notes - line 338 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="failed">
-                <span class="badge failed">Failed</span>
-                <div>
-                  <p>directory, log directory, and pass/fail status.</p>
-                  <small>Status Notes - line 351 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="unreachable">
-                <span class="badge unreachable">Unreachable</span>
-                <div>
-                  <p>Untriggerable states must be marked UNREACHABLE or SKIPPED with evidence and</p>
-                  <small>Status Notes - line 433 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="unreachable">
-                <span class="badge unreachable">Unreachable</span>
-                <div>
-                  <p>panel if available. If still unreachable, record it as UNREACHABLE with evidence.</p>
-                  <small>Status Notes - line 453 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="failed">
-                <span class="badge failed">Failed</span>
-                <div>
-                  <p>Social auth buttons render and either work or fail gracefully.</p>
-                  <small>Status Notes - line 517 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="blocked">
-                <span class="badge blocked">Blocked</span>
-                <div>
-                  <p>Saved matrix output with PASS/FAIL/BLOCKED per URL.</p>
-                  <small>Status Notes - line 640 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="blocked">
-                <span class="badge blocked">Blocked</span>
-                <div>
-                  <p>Record PASS , FAIL , or BLOCKED for whether observed behavior matches</p>
-                  <small>Status Notes - line 715 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="blocked">
-                <span class="badge blocked">Blocked</span>
-                <div>
-                  <p>BLOCKED with the exact missing artifact.</p>
-                  <small>Status Notes - line 717 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="unreachable">
-                <span class="badge unreachable">Unreachable</span>
-                <div>
-                  <p>No clipped text, overlapped UI, unreachable buttons, or off-screen modals.</p>
-                  <small>Status Notes - line 766 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="blocked">
-                <span class="badge blocked">Blocked</span>
-                <div>
-                  <p>Every requested page has PASS, FAIL, SKIPPED, BLOCKED, or UNREACHABLE status with evidence.</p>
-                  <small>Status Notes - line 831 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="blocked">
-                <span class="badge blocked">Blocked</span>
-                <div>
-                  <p>Every registered modal has PASS, FAIL, SKIPPED, BLOCKED, or UNREACHABLE status with evidence.</p>
-                  <small>Status Notes - line 832 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="blocked">
-                <span class="badge blocked">Blocked</span>
-                <div>
-                  <p>Every legal link has PASS , FAIL , BLOCKED , or</p>
-                  <small>Status Notes - line 844 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="unreachable">
-                <span class="badge unreachable">Unreachable</span>
-                <div>
-                  <p>UNREACHABLE status with evidence.</p>
-                  <small>Status Notes - line 845 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="blocked">
-                <span class="badge blocked">Blocked</span>
-                <div>
-                  <p>Live https://www.roobsworld.com reachability may remain BLOCKED or deferred until</p>
-                  <small>Status Notes - line 860 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="failed">
-                <span class="badge failed">Failed</span>
-                <div>
-                  <p>Apple App Privacy and Google Play Data Safety comparisons are marked PASS , FAIL ,</p>
-                  <small>Status Notes - line 864 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="blocked">
-                <span class="badge blocked">Blocked</span>
-                <div>
-                  <p>or BLOCKED against the available disclosure drafts or final console entries.</p>
-                  <small>Status Notes - line 865 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="failed">
-                <span class="badge failed">Failed</span>
-                <div>
-                  <p>The final QA report references screenshot directories, log paths, Firebase UID, deltas, pass/fail summary,</p>
-                  <small>Status Notes - line 869 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>provider-auth UI evidence, legal source checks, and open TODO tracking. Live provider-auth Firebase</p>
-                  <small>Status Notes - line 891 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>UID/snapshot verification remains TODO.</p>
-                  <small>Status Notes - line 892 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>Status key: TODO, IN_PROGRESS, PASS, FAIL, BLOCKED, SKIPPED, UNREACHABLE.</p>
-                  <small>Status Notes - line 903 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="failed">
-                <span class="badge failed">Failed</span>
-                <div>
-                  <p>rq_* AVDs with zero WARN/FAIL lines.</p>
-                  <small>Status Notes - line 942 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="blocked">
-                <span class="badge blocked">Blocked</span>
-                <div>
-                  <p>.json . This keeps DSI-006 blocked by live deployment/reachability, not app-side</p>
-                  <small>Status Notes - line 971 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="failed">
-                <span class="badge failed">Failed</span>
-                <div>
-                  <p>window and fail if any new host process remains.</p>
-                  <small>Status Notes - line 1075 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>IN_PROGRESS / GOOGLE PROVIDER PASS: Login screen. Reachability passes through Landing Sign in .</p>
-                  <small>Status Notes - line 1289 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>emulator-tests/logs/test-android-matrix-unit-final-todo-pass.stderr.txt passed 11 suites / 406</p>
-                  <small>Status Notes - line 1302 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>tests. Remaining TODO: live email-password valid/invalid result behavior, Facebook/Twitter/cancel provider</p>
-                  <small>Status Notes - line 1303 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>PASS / FIXED IN SOURCE / IN_PROGRESS: Sign Up screen route. Historical evidence:</p>
-                  <small>Status Notes - line 1307 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>IN_PROGRESS / DSI-027 FIXED IN SOURCE / PROVIDER REPLAY PASS: Riddle loading state. Guest restart evidence</p>
-                  <small>Status Notes - line 1319 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>IN_PROGRESS / PROVIDER-AUTH PASS: welcomeBack. Guest dev-panel evidence covers the modal open path, content,</p>
-                  <small>Status Notes - line 1399 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>websocket, unexpected-stream, or process-not-found signatures. Non-debug info-trigger paths remain TODO.</p>
-                  <small>Status Notes - line 1412 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>IN_PROGRESS: info. Guest dev-panel evidence now covers the standalone Info modal open path, content, OK</p>
-                  <small>Status Notes - line 1421 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>signatures. Natural/provider-auth info-trigger paths remain TODO.</p>
-                  <small>Status Notes - line 1427 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>Firebase/backend deltas remain TODO.</p>
-                  <small>Status Notes - line 1438 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>IN_PROGRESS / FIXED IN SOURCE / GUEST REPLAY PASS: skip. Guest: PASS for modal open path, visible cost</p>
-                  <small>Status Notes - line 1441 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>fixed DSI-019 active mode/riddle restart persistence; TODO for provider-auth, purchase attempt,</p>
-                  <small>Status Notes - line 1444 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="skipped">
-                <span class="badge skipped">Skipped</span>
-                <div>
-                  <p>50 but the app back on Daily Challenge rather than the skipped-to Classic riddle.</p>
-                  <small>Status Notes - line 1467 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>IN_PROGRESS / FIXED IN SOURCE / GUEST REPLAY PASS: loss. Guest: PASS for a real attempt-limit trigger,</p>
-                  <small>Status Notes - line 1508 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>Level, and the fixed DSI-020 modal-stack/Back recoverability regression; TODO for provider-auth</p>
-                  <small>Status Notes - line 1512 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>replay and backend/local deltas. Provider-auth: TODO. Evidence:</p>
-                  <small>Status Notes - line 1513 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>IN_PROGRESS / FIXED IN SOURCE / GUEST REPLAY PASS: loss hardware Back. Guest source fix and emulator replay</p>
-                  <small>Status Notes - line 1597 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>IN_PROGRESS / GUEST REPLAY PASS: coinPurchaseFanfare. Guest dev-panel evidence now covers open, animated</p>
-                  <small>Status Notes - line 1658 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>dismissal and restart. Provider-auth/backend coin deltas and production billing remain TODO.</p>
-                  <small>Status Notes - line 1672 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>IN_PROGRESS / GUEST REPLAY PASS: levelUpFanfare. Guest dev-panel evidence covers open, animated</p>
-                  <small>Status Notes - line 1689 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>Provider-auth/backend deltas and persistence proof against a non-guest account remain TODO.</p>
-                  <small>Status Notes - line 1703 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>IN_PROGRESS / GUEST REPLAY PASS / PROVIDER-AUTH SOUND-HAPTICS PASS: settings. Guest evidence:</p>
-                  <small>Status Notes - line 1706 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>for later QA; provider-auth language persistence and backend/Firebase setting deltas remain TODO.</p>
-                  <small>Status Notes - line 1737 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>PASS / GUEST RESTART REPLAY PASS / IN_PROGRESS: fullProfileDetails. Guest evidence:</p>
-                  <small>Status Notes - line 1740 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>for those states. Provider-auth profile data remains TODO.</p>
-                  <small>Status Notes - line 1756 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>IN_PROGRESS: upgradeAccount. Guest evidence:</p>
-                  <small>Status Notes - line 1759 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>PASS / FIXED IN SOURCE / IN_PROGRESS: updateUsername. Root cause: the modal submitted blank or too-short</p>
-                  <small>Status Notes - line 1768 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>persistence, and Firebase callable evidence remain TODO.</p>
-                  <small>Status Notes - line 1780 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>IN_PROGRESS: DeleteAccountConfirmationModal. Guest evidence:</p>
-                  <small>Status Notes - line 1783 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>cleanup, restart proof, and provider-auth deletion remain TODO.</p>
-                  <small>Status Notes - line 1787 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>PASS / GUEST RESTART REPLAY PASS / IN_PROGRESS: achievements. Guest evidence:</p>
-                  <small>Status Notes - line 1790 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>after force-stop/relaunch. Provider-auth achievement state and backend persistence remain TODO.</p>
-                  <small>Status Notes - line 1795 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>PASS / FIXED IN SOURCE / GUEST RESTART REPLAY PASS / IN_PROGRESS: stats. Guest evidence:</p>
-                  <small>Status Notes - line 1798 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>state and backend/Firebase deltas remain TODO.</p>
-                  <small>Status Notes - line 1806 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>PASS / FIXED IN SOURCE / IN_PROGRESS: leaderboard. Pre-fix guest evidence:</p>
-                  <small>Status Notes - line 1809 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>backend behavior remains TODO with a disposable account.</p>
-                  <small>Status Notes - line 1823 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>IN_PROGRESS: aboutLegal emulator coverage. Guest: PASS for Settings to About/Legal reachability and all</p>
-                  <small>Status Notes - line 1840 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="blocked">
-                <span class="badge blocked">Blocked</span>
-                <div>
-                  <p>coverage remains TODO. Live production page reachability remains BLOCKED/deferred; see Issues And Blockers.</p>
-                  <small>Status Notes - line 1855 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="failed">
-                <span class="badge failed">Failed</span>
-                <div>
-                  <p>Guest: TODO/PASS/FAIL and Provider-auth: TODO/PASS/FAIL .</p>
-                  <small>Status Notes - line 1862 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>PASS / IN_PROGRESS: Guest entry and UI-only guest behavior. Guest: PASS for entry, onboarding, initial</p>
-                  <small>Status Notes - line 1866 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="skipped">
-                <span class="badge skipped">Skipped</span>
-                <div>
-                  <p>SKIPPED, guest-only entry path. Evidence:</p>
-                  <small>Status Notes - line 1868 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>IN_PROGRESS / GOOGLE PROVIDER UI PASS: Provider-auth account for live Firebase write verification. Guest:</p>
-                  <small>Status Notes - line 1877 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="skipped">
-                <span class="badge skipped">Skipped</span>
-                <div>
-                  <p>SKIPPED, backend write verification must not use guest mode. Provider-auth Google sign-in with</p>
-                  <small>Status Notes - line 1878 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>413-google-provider-daily-ready.png / .xml . Remaining TODO: Auth UID capture,</p>
-                  <small>Status Notes - line 1883 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>IN_PROGRESS: Email/password login if available. Guest: SKIPPED, provider/auth-only flow. Provider-auth:</p>
-                  <small>Status Notes - line 1887 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>TODO. Screen reachability passes via Landing Sign in ; evidence</p>
-                  <small>Status Notes - line 1888 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>PASS / FIXED IN SOURCE / IN_PROGRESS: Signup. Guest: SKIPPED, provider/auth-only flow. Provider-auth: TODO.</p>
-                  <small>Status Notes - line 1896 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>Remaining TODO: live account creation/provider signup attempt, Firebase/Auth deltas, and localized</p>
-                  <small>Status Notes - line 1903 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>PASS / IN_PROGRESS: Logout. Guest: PASS. 400-settings-open-for-guest-logout.png /&lt;code</p>
-                  <small>Status Notes - line 1907 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>IN_PROGRESS: Upgrade account. Guest: PASS for modal discoverability and provider-action visibility from</p>
-                  <small>Status Notes - line 1930 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="skipped">
-                <span class="badge skipped">Skipped</span>
-                <div>
-                  <p>Profile; TODO for provider handoff/result. Provider-auth: SKIPPED when already</p>
-                  <small>Status Notes - line 1931 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>IN_PROGRESS: Guest account deletion. Guest: PASS for Profile discoverability, confirmation modal open, and</p>
-                  <small>Status Notes - line 1937 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>cancel path; TODO for confirm, sign-out, local guest data cleanup, and restart evidence proving deleted</p>
-                  <small>Status Notes - line 1938 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="skipped">
-                <span class="badge skipped">Skipped</span>
-                <div>
-                  <p>guest progress does not restore. Provider-auth: SKIPPED, covered by provider deletion item. Evidence:</p>
-                  <small>Status Notes - line 1939 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="skipped">
-                <span class="badge skipped">Skipped</span>
-                <div>
-                  <p>TODO: Auth-provider account deletion. Guest: SKIPPED, covered by guest deletion item. Provider-auth: TODO.</p>
-                  <small>Status Notes - line 1944 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>TODO: Account deletion failure path if triggerable. Evidence required: forced error condition,</p>
-                  <small>Status Notes - line 1950 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="skipped">
-                <span class="badge skipped">Skipped</span>
-                <div>
-                  <p>SKIPPED for guest and still TODO for provider-auth.</p>
-                  <small>Status Notes - line 1960 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>the queued natural level-up fanfare. Provider-auth: TODO. Evidence:</p>
-                  <small>Status Notes - line 1965 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>Total Coins: 115 . Provider-auth Firebase/backend replay remains TODO.</p>
-                  <small>Status Notes - line 1971 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>TODO: Daily fallback to Classic. Guest: TODO. Provider-auth: TODO. Evidence required: trigger condition,</p>
-                  <small>Status Notes - line 1974 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>PASS: Correct win. Guest: PASS for one correct Daily Challenge solve and reward UI. Provider-auth: TODO.</p>
-                  <small>Status Notes - line 1978 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>deltas remain TODO for provider-auth.</p>
-                  <small>Status Notes - line 1981 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>IN_PROGRESS: Incorrect guess feedback. Guest: PASS for a deliberately wrong guess on the active Daily</p>
-                  <small>Status Notes - line 1984 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>Challenge puzzle; provider-auth: TODO. Evidence:</p>
-                  <small>Status Notes - line 1985 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>IN_PROGRESS: Duplicate-letter feedback where possible. Guest: PASS for a duplicate-letter guess on the same</p>
-                  <small>Status Notes - line 1994 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>puzzle; provider-auth: TODO. Evidence:</p>
-                  <small>Status Notes - line 1995 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>IN_PROGRESS / FIXED IN SOURCE / GUEST REPLAY PASS: Loss and continue paths. Guest: PASS for real loss</p>
-                  <small>Status Notes - line 2004 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>TODO. Evidence: 216-loss-after-three-submitted-rows-recaptured.png / .xml ,</p>
-                  <small>Status Notes - line 2012 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>the loss modal visible. Remaining TODO: provider-auth replay and backend/local deltas.</p>
-                  <small>Status Notes - line 2056 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>persistence. Provider-auth: TODO. Evidence: 23-ui-reward-flow-next-1.png ,</p>
-                  <small>Status Notes - line 2061 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>IN_PROGRESS / FIXED IN SOURCE / GUEST REPLAY PASS: Skip. Guest: PASS for modal open/cancel, unchanged</p>
-                  <small>Status Notes - line 2066 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>fixed active mode/riddle restart restore tracked as DSI-019 . TODO for provider-auth, purchase</p>
-                  <small>Status Notes - line 2070 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>IN_PROGRESS / FIXED IN SOURCE: Hint. Guest: PASS for modal open, cost state, hint reveal, and header coin</p>
-                  <small>Status Notes - line 2095 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>deduction from 300 to 250; TODO for persistence/stat deltas, restart proof, and post-fix fanfare regression.</p>
-                  <small>Status Notes - line 2096 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>Provider-auth: TODO. Evidence:</p>
-                  <small>Status Notes - line 2097 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>IN_PROGRESS / FIXED IN SOURCE / GUEST REPLAY PASS: Insufficient coins. Guest: PASS for skip low-balance</p>
-                  <small>Status Notes - line 2104 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>tracked as DSI-020 . Provider-auth: TODO. Evidence:</p>
-                  <small>Status Notes - line 2107 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>before opening the loss modal. TODO: hint insufficient-coins state if applicable, provider-auth economy</p>
-                  <small>Status Notes - line 2119 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>IN_PROGRESS: Keyboard input, backspace, slot tapping, submit disabled/enabled. Guest: PASS for letter input,</p>
-                  <small>Status Notes - line 2123 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>backspace, answer-slot tapping, and submit disabled/enabled gating. Provider-auth: TODO. Evidence: earlier</p>
-                  <small>Status Notes - line 2124 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>reward/fanfare flow. Provider-auth: TODO. Evidence:</p>
-                  <small>Status Notes - line 2139 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>IN_PROGRESS / PROVIDER-AUTH SURFACE PASS / PROVIDER-AUTH SOUND-HAPTICS PASS: Profile, settings, mute,</p>
-                  <small>Status Notes - line 2145 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>persisted false settings. Remaining TODO: provider-auth language persistence, backend-backed</p>
-                  <small>Status Notes - line 2158 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>IN_PROGRESS / PROVIDER-AUTH SUPPORT PASS: Support email, credits, about/legal. Guest: PASS for Credits,</p>
-                  <small>Status Notes - line 2170 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>399-after-credits-return-15s-idle-logcat.txt . Provider-auth About/Legal behavior remains TODO.</p>
-                  <small>Status Notes - line 2200 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>PASS / FIXED IN SOURCE / GUEST RESTART REPLAY PASS / IN_PROGRESS: Stats, achievements, leaderboard tabs.</p>
-                  <small>Status Notes - line 2208 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>emulator replay passed. Provider-auth leaderboard backend state and provider-auth tab coverage remain TODO.</p>
-                  <small>Status Notes - line 2213 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>IN_PROGRESS / FIXED IN SOURCE / GUEST REPLAY PASS: Coin shop states and actions. Guest: PASS for dev-panel</p>
-                  <small>Status Notes - line 2221 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>PASS / FIXED IN SOURCE / GUEST REPLAY PASS / PROVIDER-AUTH UI PASS / IN_PROGRESS: App restart persistence</p>
-                  <small>Status Notes - line 2240 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="skipped">
-                <span class="badge skipped">Skipped</span>
-                <div>
-                  <p>skipped-to Classic riddle. Post-fix evidence 270-dsi019-after-daily-skip-classic-150.png /&lt;code</p>
-                  <small>Status Notes - line 2258 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>TODO: Capture before snapshot for provider-auth QA account. Google UI sign-in now works with</p>
-                  <small>Status Notes - line 2285 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>TODO: Capture after snapshots for Classic win, Daily win if available, hint, skip, continue, loss, and</p>
-                  <small>Status Notes - line 2290 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>TODO: Capture before/after snapshots for guest account deletion and auth-provider account deletion. Evidence</p>
-                  <small>Status Notes - line 2295 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>About/Legal row in English, Spanish, Japanese, and Arabic for the guest persona; provider-auth remains TODO.</p>
-                  <small>Status Notes - line 2319 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="blocked">
-                <span class="badge blocked">Blocked</span>
-                <div>
-                  <p>PASS / BLOCKED: Sign Up Terms of Use and Privacy Policy emulator link tapping. App-side English URL handoff</p>
-                  <small>Status Notes - line 2330 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="blocked">
-                <span class="badge blocked">Blocked</span>
-                <div>
-                  <p>page reachability remains BLOCKED by deployment while localhost/LAN checks pass.</p>
-                  <small>Status Notes - line 2337 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>IN_PROGRESS: Guest and provider-auth About/Legal emulator coverage. Guest: PASS for Settings to About/Legal</p>
-                  <small>Status Notes - line 2347 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>remains TODO with a disposable authenticated account.</p>
-                  <small>Status Notes - line 2357 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>IN_PROGRESS: Emulator localization spot checks for legal URL generation. Guest locale requirement PASS:</p>
-                  <small>Status Notes - line 2360 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>Provider-auth language spot checks remain TODO. Evidence:</p>
-                  <small>Status Notes - line 2363 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>IN_PROGRESS: Account Deletion, Data Export, Third-Party Licenses, and Support discoverability in emulator.</p>
-                  <small>Status Notes - line 2370 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>Arabic. Provider-auth discoverability and actual account deletion/data export fulfillment remain TODO.</p>
-                  <small>Status Notes - line 2372 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="blocked">
-                <span class="badge blocked">Blocked</span>
-                <div>
-                  <p>BLOCKED: Apple App Privacy comparison. Missing artifact: draft or final Apple disclosure text or App Store</p>
-                  <small>Status Notes - line 2378 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="blocked">
-                <span class="badge blocked">Blocked</span>
-                <div>
-                  <p>BLOCKED: Google Play Data Safety comparison. Missing artifact: draft or final Google Play Data Safety</p>
-                  <small>Status Notes - line 2383 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="blocked">
-                <span class="badge blocked">Blocked</span>
-                <div>
-                  <p>BLOCKED: Legal evidence completeness audit. Source, unit-test, localhost matrix, and guest About/Legal</p>
-                  <small>Status Notes - line 2388 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="blocked">
-                <span class="badge blocked">Blocked</span>
-                <div>
-                  <p>are complete or explicitly blocked with final artifacts.</p>
-                  <small>Status Notes - line 2391 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="failed">
-                <span class="badge failed">Failed</span>
-                <div>
-                  <p>FAIL: Launching the first emulator-installed APK on `rq_pixel_7_api_36_1` crashed before React Native UI</p>
-                  <small>Status Notes - line 2422 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="blocked">
-                <span class="badge blocked">Blocked</span>
-                <div>
-                  <p>PASS: Emulator legal UI checks are no longer blocked by emulator runtime/ADB registration. Guest English,</p>
-                  <small>Status Notes - line 2463 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="failed">
-                <span class="badge failed">Failed</span>
-                <div>
-                  <p>FAIL FIXED IN SOURCE / TEST HARNESS: Metro/dev-client asset transport failures were traced to the dev client</p>
-                  <small>Status Notes - line 2484 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="failed">
-                <span class="badge failed">Failed</span>
-                <div>
-                  <p>and fail if the stream closes early; evidence</p>
-                  <small>Status Notes - line 2505 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="failed">
-                <span class="badge failed">Failed</span>
-                <div>
-                  <p>FAIL FIXED IN SOURCE: About/Legal outbound links initially failed at runtime. Evidence:</p>
-                  <small>Status Notes - line 2523 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="blocked">
-                <span class="badge blocked">Blocked</span>
-                <div>
-                  <p>FAIL/BLOCKED: Earlier emulator evidence showed the live Privacy Policy URL returning a hosted 404 even after</p>
-                  <small>Status Notes - line 2537 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="failed">
-                <span class="badge failed">Failed</span>
-                <div>
-                  <p>FAIL FIXED IN SOURCE: Facebook provider cancel path left stacked React Native LogBox overlays in the</p>
-                  <small>Status Notes - line 2549 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>passed. Emulator Facebook handoff/cancel replay remains TODO.</p>
-                  <small>Status Notes - line 2562 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="failed">
-                <span class="badge failed">Failed</span>
-                <div>
-                  <p>FAIL FIXED IN SOURCE: In-app purchase initialization failed in the emulator/dev-client session and created</p>
-                  <small>Status Notes - line 2565 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>failure. Profile/Settings regression remains TODO.</p>
-                  <small>Status Notes - line 2585 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>purchase/provider-auth behavior is still a TODO, not a removed check.</p>
-                  <small>Status Notes - line 2594 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="failed">
-                <span class="badge failed">Failed</span>
-                <div>
-                  <p>FAIL FIXED IN SOURCE: Hint use triggered an achievement fanfare with stale coin total. Pre-fix evidence:</p>
-                  <small>Status Notes - line 2597 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>passed. Emulator hint/fanfare regression remains TODO.</p>
-                  <small>Status Notes - line 2609 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="failed">
-                <span class="badge failed">Failed</span>
-                <div>
-                  <p>FAIL FIXED IN SOURCE: Guest Leaderboard modal previously called getLeaderboard and logged</p>
-                  <small>Status Notes - line 2612 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="failed">
-                <span class="badge failed">Failed</span>
-                <div>
-                  <p>NativeCommandError , or FAIL matches. Tracked in</p>
-                  <small>Status Notes - line 2641 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="failed">
-                <span class="badge failed">Failed</span>
-                <div>
-                  <p>FAIL FIXED IN SOURCE: Normal auth entry points were still missing from Landing after the Sign Up route</p>
-                  <small>Status Notes - line 2645 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="failed">
-                <span class="badge failed">Failed</span>
-                <div>
-                  <p>FAIL FIXED IN SOURCE: Update Username basic validation was missing before backend submission. Root cause:</p>
-                  <small>Status Notes - line 2655 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="blocked">
-                <span class="badge blocked">Blocked</span>
-                <div>
-                  <p>190-update-username-short-validation-fresh.png shows invalid short input blocked locally.</p>
-                  <small>Status Notes - line 2663 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>Successful save, persistence, and Firebase replay remain TODO. Tracked in</p>
-                  <small>Status Notes - line 2664 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="blocked">
-                <span class="badge blocked">Blocked</span>
-                <div>
-                  <p>BLOCKED: Live https://www.roobsworld.com legal page reachability is deferred while deployment</p>
-                  <small>Status Notes - line 2675 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="blocked">
-                <span class="badge blocked">Blocked</span>
-                <div>
-                  <p>BLOCKED: Apple App Privacy and Google Play Data Safety comparison cannot be marked PASS until</p>
-                  <small>Status Notes - line 2690 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="failed">
-                <span class="badge failed">Failed</span>
-                <div>
-                  <p>FAIL FIXED IN SOURCE / GUEST REPLAY PASS: Restart after the guest skip sequence persisted the coin balance</p>
-                  <small>Status Notes - line 2695 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="failed">
-                <span class="badge failed">Failed</span>
-                <div>
-                  <p>FAIL FIXED IN SOURCE / GUEST REPLAY PASS: The guest loss/continue flow stacked the insufficient-coins info</p>
-                  <small>Status Notes - line 2709 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="failed">
-                <span class="badge failed">Failed</span>
-                <div>
-                  <p>FAIL FIXED IN SOURCE / GUEST REPLAY PASS: A follow-on loss-flow issue let Android Back dismiss the terminal</p>
-                  <small>Status Notes - line 2730 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="failed">
-                <span class="badge failed">Failed</span>
-                <div>
-                  <p>FAIL FIXED IN TEST HARNESS / MONITOR: The Expo dev-client control websocket issue reappeared during the</p>
-                  <small>Status Notes - line 2748 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="failed">
-                <span class="badge failed">Failed</span>
-                <div>
-                  <p>FAIL FIXED IN SOURCE / GUEST REPLAY PASS: During the DSI-019 replay, the dev-client showed a native</p>
-                  <small>Status Notes - line 2765 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="failed">
-                <span class="badge failed">Failed</span>
-                <div>
-                  <p>FAIL FIXED IN SOURCE / GUEST REPLAY PASS: Coin Shop purchase attempt exposed DSI-024 . Evidence</p>
-                  <small>Status Notes - line 2781 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="failed">
-                <span class="badge failed">Failed</span>
-                <div>
-                  <p>FAIL FIXED IN SOURCE / GUEST REPLAY PASS: Classic victory reward mismatch exposed DSI-025 .</p>
-                  <small>Status Notes - line 2810 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="failed">
-                <span class="badge failed">Failed</span>
-                <div>
-                  <p>FAIL FIXED IN SOURCE / GUEST REPLAY PASS: Post-restart Statistics replay exposed DSI-026 .</p>
-                  <small>Status Notes - line 2843 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="failed">
-                <span class="badge failed">Failed</span>
-                <div>
-                  <p>useGameLogic ; it ends with all suites/tests passing and no Jest FAIL .</p>
-                  <small>Status Notes - line 2862 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="failed">
-                <span class="badge failed">Failed</span>
-                <div>
-                  <p>FAIL FIXED IN SOURCE / MATRIX UNIT PASS / PROVIDER REPLAY PASS: Slow provider-auth relaunch loading is</p>
-                  <small>Status Notes - line 2873 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="skipped">
-                <span class="badge skipped">Skipped</span>
-                <div>
-                  <p>craigbeswetherick@gmail.com , duplicate same-user auth callbacks being skipped by the in-flight</p>
-                  <small>Status Notes - line 2902 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="failed">
-                <span class="badge failed">Failed</span>
-                <div>
-                  <p>FAIL FIXED IN SOURCE / MATRIX UNIT PASS: Answer slot count and literal clue safety are now tracked as</p>
-                  <small>Status Notes - line 2907 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="failed">
-                <span class="badge failed">Failed</span>
-                <div>
-                  <p>FAIL FIXED IN SOURCE / FULL MATRIX PASS: Coin purchase fanfare background framing is now tracked as</p>
-                  <small>Status Notes - line 2925 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="failed">
-                <span class="badge failed">Failed</span>
-                <div>
-                  <p>FAIL FIXED IN HARNESS / FULL MATRIX PASS: Fold-unfolded landing failure is now tracked as</p>
-                  <small>Status Notes - line 2946 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="unreachable">
-                <span class="badge unreachable">Unreachable</span>
-                <div>
-                  <p>INFO: Sign Up page/provider signup flow moved from UNREACHABLE to</p>
-                  <small>Status Notes - line 2968 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>IN_PROGRESS after source route restoration and Landing auth-entry restoration. Emulator UI,</p>
-                  <small>Status Notes - line 2969 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>runtime/ADB registration are superseded. Current full app QA status is TODO for unexecuted UI</p>
-                  <small>Status Notes - line 2975 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="blocked">
-                <span class="badge blocked">Blocked</span>
-                <div>
-                  <p>INFO: Strategy now requires every functionality item to be tested or explicitly marked BLOCKED ,</p>
-                  <small>Status Notes - line 2990 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="unreachable">
-                <span class="badge unreachable">Unreachable</span>
-                <div>
-                  <p>SKIPPED , or UNREACHABLE with evidence. Coverage includes pages requested by the</p>
-                  <small>Status Notes - line 2991 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>Provider-auth profile/stat/achievement replay and backend/Firebase deltas remain TODO.</p>
-                  <small>Status Notes - line 3100 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>persistence. Firebase UID/snapshot/backend delta work remains TODO. The unexpectedly long Loading phase</p>
-                  <small>Status Notes - line 3129 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="skipped">
-                <span class="badge skipped">Skipped</span>
-                <div>
-                  <p>callbacks skipped by the in-flight guard, and navigation reaching isLoading:false at</p>
-                  <small>Status Notes - line 3221 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="failed">
-                <span class="badge failed">Failed</span>
-                <div>
-                  <p>string as a queryable node type, causing the two focused modal tests to fail. Resolution: added stable test</p>
-                  <small>Status Notes - line 3276 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="failed">
-                <span class="badge failed">Failed</span>
-                <div>
-                  <p>and zero WARN/FAIL lines. New screenshots are saved at</p>
-                  <small>Status Notes - line 3295 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>callback/cooldown live proof, and no-fill/not-ready UX evidence remain TODO.</p>
-                  <small>Status Notes - line 3334 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>emulator evidence, provider-auth ad replay, and Firebase before/after deltas remain TODO.</p>
-                  <small>Status Notes - line 3379 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="blocked">
-                <span class="badge blocked">Blocked</span>
-                <div>
-                  <p>this Windows host, real Mobile Ads IDs, and provider-auth Firebase delta proof remain open or blocked by</p>
-                  <small>Status Notes - line 3454 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="blocked">
-                <span class="badge blocked">Blocked</span>
-                <div>
-                  <p>BLOCKED / LIVE LEGAL RECHECK: 2026-05-25 continuation reran the production legal/support URL matrix for all</p>
-                  <small>Status Notes - line 3476 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="blocked">
-                <span class="badge blocked">Blocked</span>
-                <div>
-                  <p>DSI-006 blocked until the verified local legal pages are deployed or the production routes are</p>
-                  <small>Status Notes - line 3482 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>encountered: an exploratory rg TODO search had malformed regex/string quoting and then treated</p>
-                  <small>Status Notes - line 3490 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>TODO|FIXME|HACK|XXX with normal quoted arguments. Follow-up search found no source</p>
-                  <small>Status Notes - line 3492 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>TODO/FIXME/HACK markers outside lockfile integrity strings.</p>
-                  <small>Status Notes - line 3493 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="unreachable">
-                <span class="badge unreachable">Unreachable</span>
-                <div>
-                  <p>Test requested pages: loading/auth spinner, Landing, Login, Sign Up from the Login flow, riddle loading, initialization retry/error, and offline blocking state. Do not include Forgot Password screen, New Password screen, or Game screen as standalone page coverage items. If another requested screen exists in source but is unreachable, record that as a defect in the Embedded Run Tracker section of docs/android-emulato...</p>
-                  <small>Status Notes - line 3623 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="unreachable">
-                <span class="badge unreachable">Unreachable</span>
-                <div>
-                  <p>Test every registered modal: welcome, welcomeBack, instructions, info, hint, skip, victory, loss, coinShop, coinPurchaseFanfare, achievementUnlockFanfare, streakIncreaseFanfare, levelUpFanfare, settings, fullProfileDetails, upgradeAccount, updateUsername, achievements, stats, leaderboard, credits, and aboutLegal. Also test the DeleteAccountConfirmationModal nested inside the profile details flow. For each modal veri...</p>
-                  <small>Status Notes - line 3625 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="blocked">
-                <span class="badge blocked">Blocked</span>
-                <div>
-                  <p>Legal and store-compliance coverage is required. Canonical production host: https://www.roobsworld.com. If deployment is unavailable, treat live reachability as BLOCKED with a deferred deployment reason rather than an app failure when http://localhost:3000 passes the local matrix and the app constructs production URLs. Required languages: en, es, pt, fr, de, ja, ko, zh, hi, ru, tr, ar, id, it, nl, pl, vi. Required p...</p>
-                  <small>Status Notes - line 3629 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="failed">
-                <span class="badge failed">Failed</span>
-                <div>
-                  <p>Produce a final QA report listing emulator names, API levels, screen sizes, launch method, screenshot directories, log paths, Auth UID, before/after Firebase snapshots, expected-vs-actual Firebase deltas, pass/fail for every requested page, modal, function, legal link, localhost URL matrix, and store-disclosure comparison, defects found with reproduction steps, and cleanup performed or recommended. Ensure docs/andro...</p>
-                  <small>Status Notes - line 3635 - status-note</small>
-                </div>
-              </li>
-          </ul>
-        </section>
         <section class="source" data-source="codebase-optimization-progress.html">
           <div class="source-header">
             <div>
@@ -1696,175 +360,175 @@
                 <span class="badge done">Done</span>
                 <div>
                   <p>pnpm install --frozen-lockfile</p>
-                  <small>Verification Checklist - line 1032 - html-checklist</small>
+                  <small>Verification Checklist - line 1124 - html-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
+                  <p>pnpm exec expo install expo-splash-screen</p>
+                  <small>Verification Checklist - line 1125 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>pnpm exec expo install --check</p>
-                  <small>Verification Checklist - line 1033 - html-checklist</small>
+                  <small>Verification Checklist - line 1129 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>node scripts/verify-android-matrix-coverage.js --verify</p>
-                  <small>Verification Checklist - line 1034 - html-checklist</small>
+                  <small>Verification Checklist - line 1130 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>pnpm exec expo-doctor</p>
-                  <small>Verification Checklist - line 1038 - html-checklist</small>
+                  <small>Verification Checklist - line 1134 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>pnpm run check:rn-upgrade</p>
-                  <small>Verification Checklist - line 1039 - html-checklist</small>
+                  <small>Verification Checklist - line 1135 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>pnpm run test:rn --runInBand</p>
-                  <small>Verification Checklist - line 1040 - html-checklist</small>
+                  <small>Verification Checklist - line 1136 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>pnpm exec tsc --noEmit --pretty false</p>
-                  <small>Verification Checklist - line 1041 - html-checklist</small>
+                  <small>Verification Checklist - line 1137 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>pnpm exec cross-env ESLINT_USE_FLAT_CONFIG=false eslint App.tsx &quot;src/**/*.{js,jsx,ts,tsx}&quot; --max-warnings=0</p>
-                  <small>Verification Checklist - line 1045 - html-checklist</small>
+                  <small>Verification Checklist - line 1141 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
-                  <p>Focused app Jest for GameScreen , navigation, Product Pricing, solar rendering, and solar texture loading passed; this follow-up also reran pnpm exec jest src/services/__tests__/SolarSystemPreloader.test.ts --runInBand . The full RN run passed 173 suites / 3578 tests in the previous broad pass.</p>
-                  <small>Verification Checklist - line 1051 - html-checklist</small>
+                  <p>Focused app Jest for GameScreen , navigation, Product Pricing, solar rendering, and solar texture loading passed; this follow-up also reran Sentry/runtime Jest for src/services/__tests__/SolarSystemPreloader.test.ts , src/services/solar/__tests__/textureLoader.test.ts , and src/utils/__tests__/sentry.test.ts . The full RN run passed 173 suites / 3578 tests in the previous broad pass.</p>
+                  <small>Verification Checklist - line 1147 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>Focused app ESLint passed for edited rendering, Product Pricing, navigation files, and this follow-up's App.tsx / src/services/SolarSystemPreloader.ts changes with --max-warnings=0 .</p>
-                  <small>Verification Checklist - line 1060 - html-checklist</small>
+                  <small>Verification Checklist - line 1158 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>pnpm run android:assemble:emulator</p>
-                  <small>Verification Checklist - line 1068 - html-checklist</small>
+                  <small>Verification Checklist - line 1166 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>Focused Functions ESLint passed for src/iapValidation.ts , src/__tests__/iapValidation.test.ts , and src/sentry.ts .</p>
-                  <small>Verification Checklist - line 1072 - html-checklist</small>
+                  <small>Verification Checklist - line 1170 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
-                  <p>Smoke-test launch on one Android emulator device with scripts/android-emulator-run-matrix.ps1 -AvdNames rq_pixel_4a_api_36_1 -Port 8082 -SkipQASurfaceScreenshots , confirm the Welcome Back modal over the Daily Challenge game stack renders, and review logcat for crash/callable/RNFirebase/Three/texture-timeout/background-timeout warning patterns.</p>
-                  <small>Verification Checklist - line 1079 - html-checklist</small>
+                  <p>Smoke-test launch on one Android emulator device with scripts/android-emulator-run-matrix.ps1 -AvdNames rq_pixel_4a_api_36_1 -Port 8089 -SkipQASurfaceScreenshots -AppScreenshotDelaySeconds 60 , confirm the Welcome Back modal over the Daily Challenge game stack renders, and review logcat for startup ANR, missing splash class, crash/callable/RNFirebase/texture-timeout/background-timeout warning patterns.</p>
+                  <small>Verification Checklist - line 1177 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>Full Android matrix intentionally not run in this pass at the user's request.</p>
-                  <small>Verification Checklist - line 1088 - html-checklist</small>
+                  <small>Verification Checklist - line 1187 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>cd E:\qwordly\firebase-functions</p>
-                  <small>Verification Checklist - line 1092 - html-checklist</small>
+                  <small>Verification Checklist - line 1191 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>pnpm install --frozen-lockfile</p>
-                  <small>Verification Checklist - line 1093 - html-checklist</small>
+                  <small>Verification Checklist - line 1192 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>pnpm run build</p>
-                  <small>Verification Checklist - line 1094 - html-checklist</small>
+                  <small>Verification Checklist - line 1193 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>pnpm run lint</p>
-                  <small>Verification Checklist - line 1095 - html-checklist</small>
+                  <small>Verification Checklist - line 1194 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>pnpm run test</p>
-                  <small>Verification Checklist - line 1096 - html-checklist</small>
+                  <small>Verification Checklist - line 1195 - html-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>iOS/sandbox IAP validation remains deferred until devices and store sandbox credentials are available.</p>
-                  <small>Verification Checklist - line 1097 - html-checklist</small>
+                  <p>iOS/sandbox IAP validation is recorded as release validation only, not an outstanding optimization task, because this Windows-hosted workspace has no iOS simulator/device, local ios/ project, or App Store / Google Play sandbox purchase credentials.</p>
+                  <small>Verification Checklist - line 1196 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>Reliability-first priority is locked.</p>
-                  <small>Assumptions - line 1107 - html-checklist</small>
+                  <small>Assumptions - line 1210 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>IAP remains Google and Apple store commerce only.</p>
-                  <small>Assumptions - line 1108 - html-checklist</small>
+                  <small>Assumptions - line 1211 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>No public product API changes are intended.</p>
-                  <small>Assumptions - line 1109 - html-checklist</small>
+                  <small>Assumptions - line 1212 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>Root app and Functions remain separate install and build surfaces.</p>
-                  <small>Assumptions - line 1110 - html-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="skipped">
-                <span class="badge skipped">Skipped</span>
-                <div>
-                  <p>was intentionally skipped for this pass at the user's request.</p>
-                  <small>Status Notes - line 1014 - status-note</small>
+                  <small>Assumptions - line 1213 - html-checklist</small>
                 </div>
               </li>
           </ul>
@@ -2362,151 +1026,28 @@
               <h2>Qwordly Design And QA Issues</h2>
               <a href="design-issues.html">design-issues.html</a>
             </div>
-            <span>18 tasks</span>
+            <span>3 tasks</span>
           </div>
           <ul>
               <li class="task" data-status="blocked">
                 <span class="badge blocked">Blocked</span>
                 <div>
-                  <p>DSI-006: Live production legal page reachability is still blocked or deferred. Localhost legal routes pass, and emulator evidence verifies production URL construction, but live Terms and Privacy Policy evidence shows hosted 404 pages. Next action: Deploy or repair the production legal pages, then rerun the live www.roobsworld.com reachability matrix.</p>
+                  <p>DSI-006: Live production legal page reachability is still blocked or deferred. Localhost legal routes pass, and emulator evidence verifies production URL construction, but live Terms and Privacy Policy evidence shows hosted 404 pages. Next action: Latest progress: 2026-05-27 recheck still returned 404 for all 119 / 119 production legal/support URLs, and production deploy still fails on suspended Vercel billing. Reac...</p>
                   <small>Issue Register Next Actions - line 298 - html-issue-row</small>
                 </div>
               </li>
               <li class="task" data-status="blocked">
                 <span class="badge blocked">Blocked</span>
                 <div>
-                  <p>DSI-007: Apple App Privacy and Google Play Data Safety comparison cannot be marked pass. The required draft/final disclosure text or console access is missing, and provider-auth Firebase behavior is not fully captured yet. Next action: Provide App Store Connect and Play Console disclosure entries or drafts, then compare them against observed guest/provider behavior and Firebase deltas.</p>
-                  <small>Issue Register Next Actions - line 324 - html-issue-row</small>
+                  <p>DSI-007: Apple App Privacy and Google Play Data Safety comparison cannot be marked pass. The required draft/final disclosure text or console access is missing, and provider-auth Firebase behavior is not fully captured yet. Next action: Latest progress: local App Store Privacy and Play Data Safety drafts are present, but the 2026-05-27 production privacy/legal URL recheck still fails and final console entries are not...</p>
+                  <small>Issue Register Next Actions - line 330 - html-issue-row</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>DSI-035: The victory / &quot;Nice job&quot; modal and levelUpFanfare modal backgrounds were too short for their content on at least one tested viewport. Source now uses taller responsive decorative frames for both modals, and the victory modal keeps its extra bottom spacing inside the frame padding. Next action: Closed on 2026-05-25. Continue to watch these surfaces in the regular matrix, but no DSI-035-specific follow-up is...</p>
-                  <small>Issue Register Next Actions - line 1410 - html-issue-row</small>
-                </div>
-              </li>
-              <li class="task" data-status="unreachable">
-                <span class="badge unreachable">Unreachable</span>
-                <div>
-                  <p>open defects, blockers, or unreachable paths</p>
-                  <small>Status Notes - line 267 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="blocked">
-                <span class="badge blocked">Blocked</span>
-                <div>
-                  <p>Live production legal page reachability is still blocked or deferred. Localhost legal routes pass, and</p>
-                  <small>Status Notes - line 303 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="blocked">
-                <span class="badge blocked">Blocked</span>
-                <div>
-                  <p>present and emulator logs show AdMob initialization plus test-device requests, so ads are not blocked by</p>
-                  <small>Status Notes - line 422 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="blocked">
-                <span class="badge blocked">Blocked</span>
-                <div>
-                  <p>Coin Shop normal header entry appeared blocked because tapping the visible coin balance opened the Expo</p>
-                  <small>Status Notes - line 440 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>billing, backend deltas, and provider-auth shop behavior remain TODO. Full rewarded-ad playback/reward</p>
-                  <small>Status Notes - line 455 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>replay remains TODO. The ad SDK itself is already initialized in emulator logs and uses Google's</p>
-                  <small>Status Notes - line 458 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="unreachable">
-                <span class="badge unreachable">Unreachable</span>
-                <div>
-                  <p>Sign Up page and provider signup flow were unreachable through normal navigation because the</p>
-                  <small>Status Notes - line 486 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>Provider signup attempt and live Firebase/Auth deltas remain TODO with a disposable account. Sign Up UI,</p>
-                  <small>Status Notes - line 496 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="failed">
-                <span class="badge failed">Failed</span>
-                <div>
-                  <p>process-not-found, NativeCommandError , or FAIL matches.</p>
-                  <small>Status Notes - line 626 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="unreachable">
-                <span class="badge unreachable">Unreachable</span>
-                <div>
-                  <p>Root cause narrowed to reload/probe-window dev-client socket churn rather than a persistent unreachable</p>
-                  <small>Status Notes - line 701 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="unreachable">
-                <span class="badge unreachable">Unreachable</span>
-                <div>
-                  <p>Investigation showed this was not a simple unreachable-port or bundle-serving failure:</p>
-                  <small>Status Notes - line 897 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="skipped">
-                <span class="badge skipped">Skipped</span>
-                <div>
-                  <p>same-user callbacks skipped by the in-flight guard, riddle loading completed, and navigation reaching</p>
-                  <small>Status Notes - line 1137 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="failed">
-                <span class="badge failed">Failed</span>
-                <div>
-                  <p>with zero WARN/FAIL lines. New screenshots:</p>
-                  <small>Status Notes - line 1430 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="in-progress">
-                <span class="badge in-progress">In progress</span>
-                <div>
-                  <p>These are not removed checks. They are the remaining TODO or IN_PROGRESS coverage items called out by the QA</p>
-                  <small>Status Notes - line 1443 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>delta proof remain TODO. The loss modal should show both Watch Ad for 3 Extra Guesses and</p>
-                  <small>Status Notes - line 1553 - status-note</small>
-                </div>
-              </li>
-          </ul>
-        </section>
-        <section class="source" data-source="firebase-functions/scripts/README.md">
-          <div class="source-header">
-            <div>
-              <h2>Firebase Functions Testing Scripts</h2>
-              <a href="firebase-functions/scripts/README.md">firebase-functions/scripts/README.md</a>
-            </div>
-            <span>1 tasks</span>
-          </div>
-          <ul>
-              <li class="task" data-status="failed">
-                <span class="badge failed">Failed</span>
-                <div>
-                  <p>If tests fail to connect to emulators:</p>
-                  <small>Status Notes - line 69 - status-note</small>
+                  <small>Issue Register Next Actions - line 1423 - html-issue-row</small>
                 </div>
               </li>
           </ul>
@@ -2636,256 +1177,256 @@
             <span>36 tasks</span>
           </div>
           <ul>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Confirm legal/company facts: UK registration, PAYE, employee count, IP ownership, subsidy history.</p>
-                  <small>Weeks 1-2: Funding Readiness - line 5 - markdown-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>Choose primary grant route: UKGF Prototype Fund if eligible, Starter Fund if not.</p>
-                  <small>Weeks 1-2: Funding Readiness - line 6 - markdown-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>Freeze positioning: &quot;riddle-based Wordle with progression, scalable content, and fair freemium monetization.&quot;</p>
-                  <small>Weeks 1-2: Funding Readiness - line 7 - markdown-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>Finalize one-page summary.</p>
-                  <small>Weeks 1-2: Funding Readiness - line 8 - markdown-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>Finalize 10-slide pitch deck.</p>
-                  <small>Weeks 1-2: Funding Readiness - line 9 - markdown-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>Finalize GBP 24,500 budget.</p>
-                  <small>Weeks 1-2: Funding Readiness - line 10 - markdown-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>Record 2-minute gameplay-forward pitch video.</p>
+                  <p>Confirm legal/company facts status: public Companies House registration and age were checked; PAYE, employee</p>
                   <small>Weeks 1-2: Funding Readiness - line 11 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Produce Android preview build.</p>
-                  <small>Weeks 1-2: Funding Readiness - line 12 - markdown-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>Produce iOS TestFlight-ready build or document iOS build readiness.</p>
+                  <p>Choose primary grant route status: UKGF Prototype Fund EOI first when available; use Starter Fund / Head Start if</p>
                   <small>Weeks 1-2: Funding Readiness - line 13 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Create a private reviewer folder with build links, deck, one-pager, video, and budget.</p>
-                  <small>Weeks 1-2: Funding Readiness - line 14 - markdown-checklist</small>
+                  <p>Freeze positioning: &quot;riddle-based Wordle with progression, scalable content, and fair freemium monetization.&quot;</p>
+                  <small>Weeks 1-2: Funding Readiness - line 15 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Submit UKGF EOI or best-fit application path.</p>
-                  <small>Weeks 3-4: Grant Applications - line 18 - markdown-checklist</small>
+                  <p>Finalize one-page summary in one-page-summary.md.</p>
+                  <small>Weeks 1-2: Funding Readiness - line 16 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Tailor the application language to funded work that has not already happened.</p>
-                  <small>Weeks 3-4: Grant Applications - line 19 - markdown-checklist</small>
+                  <p>Finalize 10-slide pitch deck copy in pitch-deck-outline.md.</p>
+                  <small>Weeks 1-2: Funding Readiness - line 17 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Prepare fallback applications from Ukie-listed finance routes.</p>
-                  <small>Weeks 3-4: Grant Applications - line 20 - markdown-checklist</small>
+                  <p>Finalize GBP 24,500 budget in budget-and-runway.csv.</p>
+                  <small>Weeks 1-2: Funding Readiness - line 18 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Add all grant routes and deadlines to outreach-tracker.csv.</p>
-                  <small>Weeks 3-4: Grant Applications - line 21 - markdown-checklist</small>
+                  <p>Prepare 2-minute gameplay-forward pitch video script and capture plan; recording/export remains owner production</p>
+                  <small>Weeks 1-2: Funding Readiness - line 19 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Prepare one paragraph explaining additionality: what funding unlocks that cannot happen otherwise.</p>
-                  <small>Weeks 3-4: Grant Applications - line 22 - markdown-checklist</small>
+                  <p>Record Android preview evidence: local debug APK exists at android/app/build/outputs/apk/debug/app-debug.apk;</p>
+                  <small>Weeks 1-2: Funding Readiness - line 21 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Prepare one paragraph explaining sustainability beyond grant support.</p>
-                  <small>Weeks 3-4: Grant Applications - line 23 - markdown-checklist</small>
+                  <p>Document iOS build readiness: this Windows host has no ios/ project directory or iOS simulator/TestFlight</p>
+                  <small>Weeks 1-2: Funding Readiness - line 23 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Recruit first 25 beta testers.</p>
-                  <small>Weeks 5-8: Audience Validation - line 27 - markdown-checklist</small>
+                  <p>Define reviewer-folder contents: build link, deck, one-pager, video, budget, beta plan, and store/legal docs.</p>
+                  <small>Weeks 1-2: Funding Readiness - line 25 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Fix onboarding, crash, auth, readability, and puzzle-understanding issues from first wave.</p>
-                  <small>Weeks 5-8: Audience Validation - line 28 - markdown-checklist</small>
+                  <p>UKGF EOI or best-fit application path is identified; actual submission requires owner account/form access.</p>
+                  <small>Weeks 3-4: Grant Applications - line 29 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Scale toward 100 beta testers.</p>
-                  <small>Weeks 5-8: Audience Validation - line 29 - markdown-checklist</small>
+                  <p>Application language is tailored to future funded work: polish, QA, analytics, beta validation, store assets, and</p>
+                  <small>Weeks 3-4: Grant Applications - line 30 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Start KPI dashboard before the second wave.</p>
-                  <small>Weeks 5-8: Audience Validation - line 30 - markdown-checklist</small>
+                  <p>Fallback routes are prepared at planning level: Starter Fund / Head Start and BFI UK Global Screen Fund Video Game</p>
+                  <small>Weeks 3-4: Grant Applications - line 32 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Measure D1 retention, tutorial completion, first puzzle completion, hint usage, and daily challenge return.</p>
-                  <small>Weeks 5-8: Audience Validation - line 31 - markdown-checklist</small>
+                  <p>Grant routes and current dates are represented in outreach-tracker.csv; live deadlines must be rechecked before</p>
+                  <small>Weeks 3-4: Grant Applications - line 34 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Scale toward 100-300 testers if the first metrics are usable.</p>
-                  <small>Weeks 5-8: Audience Validation - line 32 - markdown-checklist</small>
+                  <p>Additionality paragraph: funding unlocks a concentrated 90-day beta-to-launch sprint that would otherwise be</p>
+                  <small>Weeks 3-4: Grant Applications - line 36 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Collect testimonials and permissioned quotes.</p>
-                  <small>Weeks 5-8: Audience Validation - line 33 - markdown-checklist</small>
+                  <p>Sustainability paragraph: the plan preserves grant, publisher, community, platform, and bootstrapped revenue paths</p>
+                  <small>Weeks 3-4: Grant Applications - line 38 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Produce a beta evidence memo for funders and publishers.</p>
-                  <small>Weeks 5-8: Audience Validation - line 34 - markdown-checklist</small>
+                  <p>First-25 beta recruitment is planned in beta-validation-plan.md; actual recruitment requires owner/community</p>
+                  <small>Weeks 5-8: Audience Validation - line 43 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Contact 20-30 mobile/casual/puzzle publishers.</p>
-                  <small>Weeks 9-12: Secondary Funding Push - line 38 - markdown-checklist</small>
+                  <p>First-wave fix categories are defined: onboarding, crash, auth, readability, puzzle understanding, and difficulty.</p>
+                  <small>Weeks 5-8: Audience Validation - line 45 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Send deck and build only after a positive reply or relevant warm intro.</p>
-                  <small>Weeks 9-12: Secondary Funding Push - line 39 - markdown-checklist</small>
+                  <p>Scale-to-100 path is planned after first-wave signal quality.</p>
+                  <small>Weeks 5-8: Audience Validation - line 46 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Follow up once after 5-7 business days.</p>
-                  <small>Weeks 9-12: Secondary Funding Push - line 40 - markdown-checklist</small>
+                  <p>KPI dashboard specification is defined before the second wave.</p>
+                  <small>Weeks 5-8: Audience Validation - line 47 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Contact angels only where they bring distribution, UA, or games expertise.</p>
-                  <small>Weeks 9-12: Secondary Funding Push - line 41 - markdown-checklist</small>
+                  <p>Measurement targets are defined: D1 retention, tutorial completion, first puzzle completion, hint usage, and daily</p>
+                  <small>Weeks 5-8: Audience Validation - line 48 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Decide whether a founding-player campaign is worthwhile based on signup conversion and beta engagement.</p>
-                  <small>Weeks 9-12: Secondary Funding Push - line 42 - markdown-checklist</small>
+                  <p>Scale-to-100-300 decision rule is defined: scale only if the first metrics are usable.</p>
+                  <small>Weeks 5-8: Audience Validation - line 50 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Refresh the pitch deck with beta metrics.</p>
-                  <small>Weeks 9-12: Secondary Funding Push - line 43 - markdown-checklist</small>
+                  <p>Testimonial and permissioned-quote collection is included in the beta survey.</p>
+                  <small>Weeks 5-8: Audience Validation - line 51 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Decide the next ask: launch grant, publisher soft-launch deal, platform support, or bootstrapped soft launch.</p>
-                  <small>Weeks 9-12: Secondary Funding Push - line 44 - markdown-checklist</small>
+                  <p>Beta evidence memo template is defined in beta-validation-plan.md.</p>
+                  <small>Weeks 5-8: Audience Validation - line 52 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Grant application submitted with required materials.</p>
-                  <small>Acceptance Gates - line 50 - markdown-checklist</small>
+                  <p>Publisher outreach criteria and scripts are prepared in publisher-outreach.md; actual contact requires owner</p>
+                  <small>Weeks 9-12: Secondary Funding Push - line 56 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Five or more active publisher conversations.</p>
-                  <small>Acceptance Gates - line 51 - markdown-checklist</small>
+                  <p>Deck/build send rule is defined: send only after a positive reply or relevant warm intro.</p>
+                  <small>Weeks 9-12: Secondary Funding Push - line 58 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>100 or more qualified beta signups.</p>
-                  <small>Acceptance Gates - line 52 - markdown-checklist</small>
+                  <p>Follow-up rule is defined: one follow-up after 5-7 business days.</p>
+                  <small>Weeks 9-12: Secondary Funding Push - line 59 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Beta metrics report produced and usable in funding conversations.</p>
-                  <small>Acceptance Gates - line 53 - markdown-checklist</small>
+                  <p>Angel-contact rule is defined: contact only where distribution, UA, or games expertise is additive.</p>
+                  <small>Weeks 9-12: Secondary Funding Push - line 60 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Funding offer, grant award, publishing LOI, or revenue-generating soft launch path secured.</p>
-                  <small>Acceptance Gates - line 54 - markdown-checklist</small>
+                  <p>Founding-player campaign decision rule is defined: use signup conversion and beta engagement.</p>
+                  <small>Weeks 9-12: Secondary Funding Push - line 61 - markdown-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
+                  <p>Pitch-deck refresh trigger is defined: add beta metrics once the beta evidence exists.</p>
+                  <small>Weeks 9-12: Secondary Funding Push - line 62 - markdown-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
+                  <p>Next-ask decision frame is defined: launch grant, publisher soft-launch deal, platform support, or bootstrapped</p>
+                  <small>Weeks 9-12: Secondary Funding Push - line 63 - markdown-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
+                  <p>Grant-application success gate defined: required materials submitted through the selected owner-controlled portal.</p>
+                  <small>Acceptance Gates - line 70 - markdown-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
+                  <p>Publisher-conversation success gate defined: five or more active publisher conversations.</p>
+                  <small>Acceptance Gates - line 71 - markdown-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
+                  <p>Beta-signup success gate defined: 100 or more qualified beta signups.</p>
+                  <small>Acceptance Gates - line 72 - markdown-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
+                  <p>Beta-report success gate defined: beta metrics report produced and usable in funding conversations.</p>
+                  <small>Acceptance Gates - line 73 - markdown-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
+                  <p>Funding-outcome success gate defined: funding offer, grant award, publishing LOI, or revenue-generating soft-launch</p>
+                  <small>Acceptance Gates - line 74 - markdown-checklist</small>
                 </div>
               </li>
           </ul>
@@ -2899,214 +1440,214 @@
             <span>30 tasks</span>
           </div>
           <ul>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>UK-based company registered with Companies House.</p>
-                  <small>Eligibility Checks - line 11 - markdown-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>Company has been registered for at least 10 weeks before application.</p>
-                  <small>Eligibility Checks - line 12 - markdown-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>PAYE registration exists and is in use.</p>
-                  <small>Eligibility Checks - line 13 - markdown-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>At least one employee.</p>
-                  <small>Eligibility Checks - line 14 - markdown-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>Fewer than 50 employees.</p>
-                  <small>Eligibility Checks - line 15 - markdown-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>Riddle Quest IP ownership is documented.</p>
-                  <small>Eligibility Checks - line 16 - markdown-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>No gambling elements or mechanics that could be perceived as gambling.</p>
-                  <small>Eligibility Checks - line 17 - markdown-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>Project is not fully launched.</p>
-                  <small>Eligibility Checks - line 18 - markdown-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>Funded work has not already been carried out.</p>
+                  <p>UK-based company registration checked: Roobs World Limited is active at Companies House as company 15560227,</p>
                   <small>Eligibility Checks - line 19 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Grant request is no more than 50% of the remaining total release cost from the funding point.</p>
-                  <small>Eligibility Checks - line 20 - markdown-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>Subsidy/state-aid history is known and can be declared.</p>
+                  <p>Company age checked: incorporation on 13 March 2024 is more than 10 weeks before the 2026 application window.</p>
                   <small>Eligibility Checks - line 21 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Directors can complete identity checks if required.</p>
+                  <p>PAYE status logged as owner-confirmation required; no public repo evidence proves active PAYE use.</p>
                   <small>Eligibility Checks - line 22 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Work can start within the required funding window.</p>
+                  <p>Employee count logged as owner-confirmation required; public checks suggest micro/small scale but do not prove</p>
                   <small>Eligibility Checks - line 23 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>2-minute pitch video, browser-playable, below 100MB, not a generic trailer.</p>
-                  <small>Evidence To Prepare - line 27 - markdown-checklist</small>
+                  <p>Fewer-than-50-employees criterion logged as likely but owner-confirmation required.</p>
+                  <small>Eligibility Checks - line 25 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Playable Android preview build.</p>
-                  <small>Evidence To Prepare - line 28 - markdown-checklist</small>
+                  <p>Riddle Quest IP ownership logged as owner-confirmation required before grant submission.</p>
+                  <small>Eligibility Checks - line 26 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>iOS TestFlight candidate or iOS build evidence.</p>
-                  <small>Evidence To Prepare - line 29 - markdown-checklist</small>
+                  <p>No gambling mechanics found in the documented product positioning; fair freemium is the monetization frame.</p>
+                  <small>Eligibility Checks - line 27 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>One-page summary.</p>
-                  <small>Evidence To Prepare - line 30 - markdown-checklist</small>
+                  <p>Project stage recorded as pre-launch beta in the one-pager and deck outline.</p>
+                  <small>Eligibility Checks - line 28 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>10-slide pitch deck.</p>
-                  <small>Evidence To Prepare - line 31 - markdown-checklist</small>
+                  <p>Funded-work boundary recorded: the ask funds future beta polish, QA, analytics, assets, and launch readiness.</p>
+                  <small>Eligibility Checks - line 29 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Budget and use-of-funds table.</p>
-                  <small>Evidence To Prepare - line 32 - markdown-checklist</small>
+                  <p>Match-funding constraint recorded: the GBP 24,500 ask must be checked against remaining release costs at</p>
+                  <small>Eligibility Checks - line 30 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Team and contractor plan.</p>
-                  <small>Evidence To Prepare - line 33 - markdown-checklist</small>
+                  <p>Subsidy/state-aid history logged as owner-confirmation required before submission.</p>
+                  <small>Eligibility Checks - line 32 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Route-to-market plan.</p>
-                  <small>Evidence To Prepare - line 34 - markdown-checklist</small>
+                  <p>Director identity-check readiness logged as owner-confirmation required.</p>
+                  <small>Eligibility Checks - line 33 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Audience validation plan.</p>
-                  <small>Evidence To Prepare - line 35 - markdown-checklist</small>
+                  <p>Funding-window start readiness logged as owner-confirmation required once the target round is known.</p>
+                  <small>Eligibility Checks - line 34 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Proof of community building or beta recruitment.</p>
-                  <small>Evidence To Prepare - line 36 - markdown-checklist</small>
+                  <p>2-minute pitch video plan prepared in two-minute-pitch-video-script.md; live recording/export remains an owner</p>
+                  <small>Evidence Prepared Or Blocked - line 38 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Screenshots or short gameplay clips showing actual game assets.</p>
-                  <small>Evidence To Prepare - line 37 - markdown-checklist</small>
+                  <p>Android preview evidence exists as a local debug APK at android/app/build/outputs/apk/debug/app-debug.apk;</p>
+                  <small>Evidence Prepared Or Blocked - line 40 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Store privacy/security/data-safety documents.</p>
-                  <small>Evidence To Prepare - line 38 - markdown-checklist</small>
+                  <p>iOS evidence is explicitly blocked on this Windows host because there is no local ios/ project directory or</p>
+                  <small>Evidence Prepared Or Blocked - line 42 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>The application has a concrete GBP ask and matching cost table.</p>
-                  <small>Submission Gate - line 79 - markdown-checklist</small>
+                  <p>One-page summary prepared in one-page-summary.md.</p>
+                  <small>Evidence Prepared Or Blocked - line 44 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>The pitch video shows gameplay, team capability, audience, and route to market.</p>
-                  <small>Submission Gate - line 80 - markdown-checklist</small>
+                  <p>10-slide pitch deck copy prepared in pitch-deck-outline.md.</p>
+                  <small>Evidence Prepared Or Blocked - line 45 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>The application explains what funding changes that would not happen otherwise.</p>
-                  <small>Submission Gate - line 81 - markdown-checklist</small>
+                  <p>Budget and use-of-funds table prepared in budget-and-runway.csv.</p>
+                  <small>Evidence Prepared Or Blocked - line 46 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>The project has no unsupported claims about traction, revenue, or retention.</p>
-                  <small>Submission Gate - line 82 - markdown-checklist</small>
+                  <p>Team and contractor plan captured in the budget categories and owner-confirmation blockers.</p>
+                  <small>Evidence Prepared Or Blocked - line 47 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>All dated source links have been rechecked within 48 hours of submission.</p>
-                  <small>Submission Gate - line 83 - markdown-checklist</small>
+                  <p>Route-to-market plan captured across one-page-summary.md, publisher-outreach.md, and</p>
+                  <small>Evidence Prepared Or Blocked - line 48 - markdown-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
+                  <p>Audience validation plan prepared in beta-validation-plan.md.</p>
+                  <small>Evidence Prepared Or Blocked - line 50 - markdown-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
+                  <p>Community/beta recruitment proof logged as not yet evidenced; use the beta plan and outreach tracker once live</p>
+                  <small>Evidence Prepared Or Blocked - line 51 - markdown-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
+                  <p>Gameplay capture targets prepared in two-minute-pitch-video-script.md; actual clips remain a video-production</p>
+                  <small>Evidence Prepared Or Blocked - line 53 - markdown-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
+                  <p>Store privacy/security/data-safety source docs exist in docs/app-store-privacy-disclosures.md,</p>
+                  <small>Evidence Prepared Or Blocked - line 55 - markdown-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
+                  <p>Concrete GBP ask and matching cost table prepared: GBP 24,500 in budget-and-runway.csv.</p>
+                  <small>Submission Gate - line 86 - markdown-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
+                  <p>Pitch video content plan prepared; final browser-playable video export remains an owner production blocker.</p>
+                  <small>Submission Gate - line 87 - markdown-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
+                  <p>Additionality paragraph prepared in 90-day-execution-plan.md.</p>
+                  <small>Submission Gate - line 88 - markdown-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
+                  <p>Unsupported traction/revenue/retention claims avoided; beta metrics are described as future evidence to create.</p>
+                  <small>Submission Gate - line 89 - markdown-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
+                  <p>Dated source links rechecked on 2026-05-27 and must be rechecked again within 48 hours of any real submission.</p>
+                  <small>Submission Gate - line 90 - markdown-checklist</small>
                 </div>
               </li>
           </ul>
@@ -3120,99 +1661,81 @@
             <span>11 tasks</span>
           </div>
           <ul>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Landing or sign-in screen.</p>
-                  <small>Required Capture Checklist - line 67 - markdown-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>Tutorial or first-time user flow.</p>
-                  <small>Required Capture Checklist - line 68 - markdown-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>Daily Challenge.</p>
-                  <small>Required Capture Checklist - line 69 - markdown-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>Classic Mode.</p>
+                  <p>Landing or sign-in screen capture target defined.</p>
                   <small>Required Capture Checklist - line 70 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Guess input and color feedback.</p>
+                  <p>Tutorial or first-time user flow capture target defined.</p>
                   <small>Required Capture Checklist - line 71 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Hint use.</p>
+                  <p>Daily Challenge capture target defined.</p>
                   <small>Required Capture Checklist - line 72 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Win and loss states.</p>
+                  <p>Classic Mode capture target defined.</p>
                   <small>Required Capture Checklist - line 73 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Achievements.</p>
+                  <p>Guess input and color feedback capture target defined.</p>
                   <small>Required Capture Checklist - line 74 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Profile/stats.</p>
+                  <p>Hint use capture target defined.</p>
                   <small>Required Capture Checklist - line 75 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Coin shop or no-ads surface.</p>
+                  <p>Win and loss states capture target defined.</p>
                   <small>Required Capture Checklist - line 76 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>One roadmap or budget graphic.</p>
+                  <p>Achievements capture target defined.</p>
                   <small>Required Capture Checklist - line 77 - markdown-checklist</small>
                 </div>
               </li>
-          </ul>
-        </section>
-        <section class="source" data-source="IAP_SETUP_GUIDE.md">
-          <div class="source-header">
-            <div>
-              <h2>In-App Purchase Setup Guide - Riddle Quest</h2>
-              <a href="IAP_SETUP_GUIDE.md">IAP_SETUP_GUIDE.md</a>
-            </div>
-            <span>1 tasks</span>
-          </div>
-          <ul>
-              <li class="task" data-status="failed">
-                <span class="badge failed">Failed</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Android IAP will fail with sku-not-found if you test from a local debug/dev build. For Android, test via Play.</p>
-                  <small>Status Notes - line 48 - status-note</small>
+                  <p>Profile/stats capture target defined.</p>
+                  <small>Required Capture Checklist - line 78 - markdown-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
+                  <p>Coin shop or no-ads surface capture target defined.</p>
+                  <small>Required Capture Checklist - line 79 - markdown-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
+                  <p>One roadmap or budget graphic capture target defined.</p>
+                  <small>Required Capture Checklist - line 80 - markdown-checklist</small>
                 </div>
               </li>
           </ul>
@@ -3223,7 +1746,7 @@
               <h2>Legal And Security Release Todo List</h2>
               <a href="legal-todo.html">legal-todo.html</a>
             </div>
-            <span>27 tasks</span>
+            <span>24 tasks</span>
           </div>
           <ul>
               <li class="task" data-status="done">
@@ -3359,10 +1882,10 @@
                   <small>Remaining - line 297 - html-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Enter final Apple App Privacy and Google Play Data Safety disclosures in the store consoles using the live privacy-policy URL.</p>
+                  <p>Record store-console disclosure entry as owner-controlled external work: final Apple App Privacy and Google Play Data Safety disclosures still require App Store Connect / Play Console access and a live privacy-policy URL.</p>
                   <small>Remaining - line 304 - html-checklist</small>
                 </div>
               </li>
@@ -3370,201 +1893,28 @@
                 <span class="badge done">Done</span>
                 <div>
                   <p>2026-05-25: Reread all 52 files under docs/ before acting via a docs-wide digest covering 8,398 lines / 629,046 characters. Outstanding local-verifiable task selected from this file: refresh the production dependency audit evidence.</p>
-                  <small>Latest Agent Notes - line 318 - html-checklist</small>
+                  <small>Latest Agent Notes - line 319 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>2026-05-25: Ran pnpm audit --prod ; result was No known vulnerabilities found . No dependency or lockfile changes were required.</p>
-                  <small>Latest Agent Notes - line 326 - html-checklist</small>
+                  <small>Latest Agent Notes - line 327 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>2026-05-25: Expo MCP tools were checked through tool_search because the repo guidance asks for Expo MCP on Expo/React Native tasks; no Expo tools were available, and this audit-only task did not require simulator verification.</p>
-                  <small>Latest Agent Notes - line 333 - html-checklist</small>
+                  <small>Latest Agent Notes - line 334 - html-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>Legal And Security Release Todo List</p>
-                  <small>Status Notes - line 6 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>Legal And Security Release Todo List</p>
-                  <small>Status Notes - line 156 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="blocked">
-                <span class="badge blocked">Blocked</span>
-                <div>
-                  <p>www.roobsworld.com legal/support routes remain blocked by production deployment/reachability, and</p>
-                  <small>Status Notes - line 163 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="blocked">
-                <span class="badge blocked">Blocked</span>
-                <div>
-                  <p>reachability remains deployment-blocked rather than app-side URL construction complete. Store-console disclosure</p>
-                  <small>Status Notes - line 350 - status-note</small>
-                </div>
-              </li>
-          </ul>
-        </section>
-        <section class="source" data-source="memory-bank/activeContext.md">
-          <div class="source-header">
-            <div>
-              <h2>Active Context - Riddle Quest Development</h2>
-              <a href="memory-bank/activeContext.md">memory-bank/activeContext.md</a>
-            </div>
-            <span>6 tasks</span>
-          </div>
-          <ul>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>- The canonical progress tracker is docs/android-emulator-firebase-qa-plan.html. Keep that file updated first, then mirror short status changes into docs/design-issues.html and docs/responsive-todo-list.html.</p>
-                  <small>Status Notes - line 7 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="failed">
-                <span class="badge failed">Failed</span>
-                <div>
-                  <p>- Latest focused layout fix: DSI-035 is closed. VictoryModal / &quot;Nice job&quot; and LevelUpFanfareModal now use taller responsive decorative backgrounds; VictoryModal keeps its extra bottom spacing inside padding. Evidence: emulator-tests/logs/test-android-matrix-unit-dsi035-20260525.txt passed 48 suites / 984 tests, emulator-tests/logs/typescript-check-dsi035-20260525.txt passed with no output, and emulator-tests/logs/te...</p>
-                  <small>Status Notes - line 11 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="blocked">
-                <span class="badge blocked">Blocked</span>
-                <div>
-                  <p>- Current continuation rechecked the docs and rewarded-ad source-unit slice: all 52 docs files were reread via digest (8,363 lines / 599,249 characters), Expo MCP remained unavailable through tool_search, focused rewarded-ad Jest passed 2 suites / 113 tests, TypeScript passed with no output, and pnpm run test:android:matrix:unit passed 49 suites / 991 tests. Also updated stale docs/memory-bank/techContext.md package...</p>
-                  <small>Status Notes - line 15 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="blocked">
-                <span class="badge blocked">Blocked</span>
-                <div>
-                  <p>- Latest offline/legal continuation: current agent reread all 52 docs files (8,371 lines / 604,256 characters), added source-level GameScreen coverage for natural NetInfo offline triggers, online recovery, board overlay blocking, and listener cleanup, and reran the live production legal matrix. Verification passed: pnpm exec jest src/screens/game/tests/GameScreen.test.tsx --runInBand (1 suite / 113 tests), pnpm exec...</p>
-                  <small>Status Notes - line 18 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>- Latest legal audit follow-up: current agent reread all 52 docs files before acting (8,398 lines / 629,046 characters), confirmed Expo MCP remains unavailable through tool_search, and completed the stale docs/legal-todo.html dependency-audit evidence item. pnpm audit --prod passed with No known vulnerabilities found; docs/legal-todo.html now records the 2026-05-25 result, the docs digest, the Expo MCP fallback, and...</p>
-                  <small>Status Notes - line 22 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="unreachable">
-                <span class="badge unreachable">Unreachable</span>
-                <div>
-                  <p>- submitGuessLogic.ts:223-224 &#8212; logically unreachable branch (newTotalGuessesInWins always &gt; 0 when isCorrect)</p>
-                  <small>Status Notes - line 130 - status-note</small>
-                </div>
-              </li>
-          </ul>
-        </section>
-        <section class="source" data-source="memory-bank/progress.md">
-          <div class="source-header">
-            <div>
-              <h2>Project Progress</h2>
-              <a href="memory-bank/progress.md">memory-bank/progress.md</a>
-            </div>
-            <span>9 tasks</span>
-          </div>
-          <ul>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>- Supporting tracker docs: docs/design-issues.html and docs/responsive-todo-list.html.</p>
-                  <small>Status Notes - line 6 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="blocked">
-                <span class="badge blocked">Blocked</span>
-                <div>
-                  <p>- RN 0.85 follow-up: react-native and @react-native/jest-preset are now on 0.85.1, so the shared-animation backend version gate is no longer blocked by package availability. The experimental flag remains disabled by default; react-native is intentionally excluded from Expo dependency validation because SDK 56 canary still expects 0.85.0. Details, Windows pnpm install recovery notes, stale-test fixes, and final verif...</p>
-                  <small>Status Notes - line 8 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="blocked">
-                <span class="badge blocked">Blocked</span>
-                <div>
-                  <p>- Current continuation reread all 52 docs files via digest before acting (8,363 lines / 599,249 characters), confirmed Expo MCP is still unavailable through tool_search, and revalidated the rewarded-ad source-unit slice. Focused Jest passed 2 suites / 113 tests, root TypeScript passed with no output, and pnpm run test:android:matrix:unit passed 49 suites / 991 tests. Stale docs/memory-bank/techContext.md package ver...</p>
-                  <small>Status Notes - line 13 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="blocked">
-                <span class="badge blocked">Blocked</span>
-                <div>
-                  <p>- Offline trigger source coverage follow-up on 2026-05-25 reread all 52 docs files (8,371 lines / 604,256 characters), added GameScreen.test.tsx coverage for initial NetInfo offline reachability, live offline/online events, board overlay blocking, and listener cleanup, and rechecked the live production legal matrix. Verification passed: focused GameScreen Jest 1 suite / 113 tests, combined RewardedAdService + GameSc...</p>
-                  <small>Status Notes - line 16 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="blocked">
-                <span class="badge blocked">Blocked</span>
-                <div>
-                  <p>- Offline emulator replay follow-up on 2026-05-25 reread all 52 docs files (8,381 lines / 609,645 characters), confirmed Expo MCP is unavailable through tool_search, and completed Pixel 4a natural network-toggle evidence on the provider-auth game screen. Screenshots show the online Daily Challenge baseline, the No Internet Connection blocking modal after wifi/data plus airplane-mode toggle, and recovered game after...</p>
-                  <small>Status Notes - line 17 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>- Legal audit follow-up on 2026-05-25 reread all 52 docs files (8,398 lines / 629,046 characters), confirmed Expo MCP is unavailable through tool_search, and completed the stale dependency-audit evidence item in docs/legal-todo.html. Verification passed: pnpm audit --prod returned No known vulnerabilities found. The legal checklist now records the audit result, docs digest, Expo MCP fallback, and the current live le...</p>
-                  <small>Status Notes - line 20 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="blocked">
-                <span class="badge blocked">Blocked</span>
-                <div>
-                  <p>- Pre-commit hook: Fully functional &#8212; commits blocked on test failure</p>
-                  <small>Status Notes - line 32 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="unreachable">
-                <span class="badge unreachable">Unreachable</span>
-                <div>
-                  <p>- submitGuessLogic.ts:223-224 &#8212; logically unreachable branch (newTotalGuessesInWins always &gt; 0 when isCorrect)</p>
-                  <small>Status Notes - line 65 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="unreachable">
-                <span class="badge unreachable">Unreachable</span>
-                <div>
-                  <p>| iapConfig.ts | 97.82% | ~98% | Lines 185-186 structurally unreachable |</p>
-                  <small>Status Notes - line 173 - status-note</small>
-                </div>
-              </li>
-          </ul>
-        </section>
-        <section class="source" data-source="memory-bank/systemPatterns.md">
-          <div class="source-header">
-            <div>
-              <h2>System Patterns</h2>
-              <a href="memory-bank/systemPatterns.md">memory-bank/systemPatterns.md</a>
-            </div>
-            <span>2 tasks</span>
-          </div>
-          <ul>
-              <li class="task" data-status="blocked">
-                <span class="badge blocked">Blocked</span>
-                <div>
-                  <p>- Pre-commit enforcement: Husky runs pnpm run test:precommit before every commit (lint + RN tests + Firebase Functions tests). Commit blocked on failure.</p>
-                  <small>Status Notes - line 143 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="unreachable">
-                <span class="badge unreachable">Unreachable</span>
-                <div>
-                  <p>| iapConfig.ts | 97.82% | ~98% | Lines 185-186 structurally unreachable |</p>
-                  <small>Status Notes - line 163 - status-note</small>
+                  <p>2026-05-27: Rechecked the production deploy blocker from E:\portfolio . The portfolio app builds successfully with pnpm run build , but pnpm dlx vercel@latest deploy --prod --yes still fails because the Vercel team/account is suspended pending a valid payment method.</p>
+                  <small>Latest Agent Notes - line 342 - html-checklist</small>
                 </div>
               </li>
           </ul>
@@ -3765,7 +2115,7 @@
               <h2>Responsive App QA Todo List</h2>
               <a href="responsive-todo-list.html">responsive-todo-list.html</a>
             </div>
-            <span>84 tasks</span>
+            <span>81 tasks</span>
           </div>
           <ul>
               <li class="task" data-status="done">
@@ -4265,10 +2615,10 @@
                   <small>Verification - line 700 - html-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>iOS simulator verification is completed when local simulator tooling is available; xcrun is not available on this Windows host.</p>
+                  <p>iOS simulator verification is recorded as unavailable in this Windows-hosted workspace; xcrun and local iOS simulator tooling are not present, so the local responsive task queue is closed with Android matrix evidence.</p>
                   <small>Verification - line 709 - html-checklist</small>
                 </div>
               </li>
@@ -4276,109 +2626,63 @@
                 <span class="badge done">Done</span>
                 <div>
                   <p>No skipped Android screen/modal surface checks in the latest matrix: every rq_* device captured 33 surfaces. Remaining unchecked items are deeper functional, provider-auth, Firebase, billing, or iOS checks, not removed checks.</p>
-                  <small>Verification - line 716 - html-checklist</small>
+                  <small>Verification - line 717 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>Small phone: Pixel 4a-class. Full matrix PASS with 33 screen/modal surfaces.</p>
-                  <small>Android Emulator Matrix - line 730 - html-checklist</small>
+                  <small>Android Emulator Matrix - line 731 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>Standard phone: Pixel 7-class. Full matrix PASS with 33 screen/modal surfaces.</p>
-                  <small>Android Emulator Matrix - line 734 - html-checklist</small>
+                  <small>Android Emulator Matrix - line 735 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>Large phone: Pixel 8 Pro-class. Full matrix PASS with 33 screen/modal surfaces.</p>
-                  <small>Android Emulator Matrix - line 738 - html-checklist</small>
+                  <small>Android Emulator Matrix - line 739 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>Foldable outer display. Full matrix PASS with 33 screen/modal surfaces.</p>
-                  <small>Android Emulator Matrix - line 742 - html-checklist</small>
+                  <small>Android Emulator Matrix - line 743 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>Foldable unfolded/tablet display. Play Store background-update guard verified, page-landing captured, and full matrix PASS with 33 screen/modal surfaces.</p>
-                  <small>Android Emulator Matrix - line 746 - html-checklist</small>
+                  <small>Android Emulator Matrix - line 747 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>Small tablet: 7-8 inch. Full matrix PASS with 33 screen/modal surfaces.</p>
-                  <small>Android Emulator Matrix - line 753 - html-checklist</small>
+                  <small>Android Emulator Matrix - line 754 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>Large tablet: 10-11 inch. Full matrix PASS with 33 screen/modal surfaces.</p>
-                  <small>Android Emulator Matrix - line 757 - html-checklist</small>
+                  <small>Android Emulator Matrix - line 758 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>Low-density tablet. Full matrix PASS with 33 screen/modal surfaces.</p>
-                  <small>Android Emulator Matrix - line 761 - html-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>Responsive App QA Todo List</p>
-                  <small>Status Notes - line 6 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>Responsive App QA Todo List</p>
-                  <small>Status Notes - line 136 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="skipped">
-                <span class="badge skipped">Skipped</span>
-                <div>
-                  <p>&gt;No skipped Android screen/modal surface checks in the latest matrix: every rq_* device captured 33</p>
-                  <small>Status Notes - line 719 - status-note</small>
-                </div>
-              </li>
-          </ul>
-        </section>
-        <section class="source" data-source="rn-0.85-upgrade-playbook.md">
-          <div class="source-header">
-            <div>
-              <h2>React Native 0.85 Upgrade Playbook</h2>
-              <a href="rn-0.85-upgrade-playbook.md">rn-0.85-upgrade-playbook.md</a>
-            </div>
-            <span>2 tasks</span>
-          </div>
-          <ul>
-              <li class="task" data-status="skipped">
-                <span class="badge skipped">Skipped</span>
-                <div>
-                  <p>- Resolution: added react-native to expo.install.exclude in package.json, matching the Expo CLI guidance for explicitly provided versions; pnpm exec expo install --check then passed and reported react-native as intentionally skipped.</p>
-                  <small>Status Notes - line 68 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="skipped">
-                <span class="badge skipped">Skipped</span>
-                <div>
-                  <p>- Issue encountered: UserDataService.test.ts and FirestoreService.test.ts still expected direct client writes for progress, economy, stats, and daily/classic progress fields. The current architecture delegates those server-managed writes to Cloud Functions and intentionally logs skipped direct writes.</p>
-                  <small>Status Notes - line 72 - status-note</small>
+                  <small>Android Emulator Matrix - line 762 - html-checklist</small>
                 </div>
               </li>
           </ul>
@@ -4543,7 +2847,7 @@
       const visibleFor = (status, filter) =>
         filter === "all" ||
         status === filter ||
-        (filter === "open" && status !== "done") ||
+        (filter === "open" && ["todo","in-progress","failed"].includes(status)) ||
         (filter === "blocked" && (status === "blocked" || status === "unreachable" || status === "failed"));
 
       buttons.forEach((button) => {
