@@ -25,6 +25,14 @@ jest.mock("../../services/AuthService", () => ({
         "code" in error &&
         error.code === "auth/auth-popup-closed-by-user"),
   ),
+  isGoogleSignInCancellation: jest.fn(
+    (error: unknown) =>
+      (error instanceof Error && error.message === "Google sign-in cancelled by user.") ||
+      (typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        error.code === "auth/auth-popup-closed-by-user"),
+  ),
 }));
 
 jest.mock("../../utils/logger", () => ({

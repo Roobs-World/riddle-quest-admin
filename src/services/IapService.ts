@@ -452,6 +452,9 @@ export const IapService = {
       } else if ((error as IapError).code === "sku-not-found") {
         logger.debug("SKU not found for current store account.");
         userFriendlyMessage = "This item is currently unavailable.";
+      } else if (getIapErrorMessage(error).toLowerCase().includes("failed to initialize connection")) {
+        logger.debug("IAP store connection unavailable.");
+        userFriendlyMessage = "Store purchases are currently unavailable. Please try again later.";
       } else if ((error as IapError).code === "E_NETWORK_ERROR") {
         logger.debug("Network error during purchase.");
         userFriendlyMessage = "Network error. Please check your connection and try again.";

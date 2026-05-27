@@ -320,11 +320,11 @@
 
       <section class="summary-grid" aria-label="Progress summary">
         <div class="metric">
-          <strong>23</strong>
+          <strong>25</strong>
           <span>Completed implementation tasks</span>
         </div>
         <div class="metric">
-          <strong>4</strong>
+          <strong>5</strong>
           <span>Tracking/docs tasks completed</span>
         </div>
         <div class="metric">
@@ -522,6 +522,14 @@
               <td class="notes" data-label="Notes">
                 Marked completed phases, refreshed handoff guidance, and recorded the latest focused and broad
                 verification evidence.
+              </td>
+            </tr>
+            <tr>
+              <td class="task" data-label="Task">Update tracker after focused runtime validation follow-up</td>
+              <td data-label="Status"><span class="status status-done">Done</span></td>
+              <td class="notes" data-label="Notes">
+                Recorded Expo MCP availability, single-device Android smoke evidence, compile/build checks, and the
+                intentionally deferred full-matrix and iOS/sandbox IAP follow-ups.
               </td>
             </tr>
           </tbody>
@@ -886,7 +894,8 @@
               <td class="notes" data-label="Handoff Notes">
                 All tracked implementation phases are now complete: callable contracts, app callable centralization,
                 Firestore converters, IAP source-of-truth checks, backend IAP spans, solar rendering cleanup, root
-                navigation static API migration, and tooling cleanup. Current verification evidence is below.
+                navigation static API migration, tooling cleanup, and focused runtime stabilization for cold Android
+                solar preloading. Current verification evidence is below.
               </td>
             </tr>
             <tr>
@@ -900,11 +909,11 @@
             </tr>
             <tr>
               <td class="task" data-label="Topic">Recommended next implementation slice</td>
-              <td data-label="Status"><span class="status status-done">No tracked blocker</span></td>
+              <td data-label="Status"><span class="status status-done">Runtime follow-up complete</span></td>
               <td class="notes" data-label="Handoff Notes">
-                The next useful follow-up is runtime validation rather than more tracker work: rerun the Android smoke,
-                add an iOS/sandbox IAP validation pass when credentials/devices are available, and consider a full
-                emulator matrix before release.
+                The requested focused Android runtime pass is complete on one emulator device. Remaining release-facing
+                checks are an iOS/sandbox IAP validation pass when credentials/devices are available and, only when
+                wanted before release, the broader emulator matrix that was intentionally not run in this pass.
               </td>
             </tr>
             <tr>
@@ -926,12 +935,11 @@
             </tr>
             <tr>
               <td class="task" data-label="Topic">Environment note</td>
-              <td data-label="Status"><span class="status status-active">Check first</span></td>
+              <td data-label="Status"><span class="status status-done">Checked</span></td>
               <td class="notes" data-label="Handoff Notes">
-                Expo MCP tools were requested by <code>AGENTS.md</code> but were not exposed in the previous session.
-                Prefer Expo MCP if available; otherwise the prior verification used local Expo CLI plus ADB on
-                <code>emulator-5554</code>. There are broad package-update working-tree changes; do not revert unrelated
-                dirty files.
+                Expo MCP tools were requested by <code>AGENTS.md</code>, but no MCP resources or templates were exposed
+                in this session. Verification therefore used the local Expo CLI plus ADB fallback on
+                <code>emulator-5554</code>. Prefer Expo MCP again if it becomes available in a future session.
               </td>
             </tr>
           </tbody>
@@ -959,40 +967,59 @@
               <td class="task" data-label="Area">Root app dependency and Expo checks</td>
               <td data-label="Status"><span class="status status-done">Passed</span></td>
               <td class="notes" data-label="Evidence">
-                <code>pnpm install --frozen-lockfile</code>, <code>pnpm exec expo install --check</code>,
-                <code>pnpm exec expo-doctor</code>, and <code>pnpm run check:rn-upgrade</code> completed successfully.
+                Previous broad checks remain recorded for <code>pnpm install --frozen-lockfile</code>,
+                <code>pnpm exec expo-doctor</code>, and <code>pnpm run check:rn-upgrade</code>. This focused follow-up
+                reran <code>pnpm exec expo install --check</code> and
+                <code>node scripts/verify-android-matrix-coverage.js --verify</code> successfully.
               </td>
             </tr>
             <tr>
               <td class="task" data-label="Area">Root app tests and lint</td>
               <td data-label="Status"><span class="status status-done">Passed</span></td>
               <td class="notes" data-label="Evidence">
-                <code>pnpm run test:rn --runInBand</code> passed <code>173</code> suites / <code>3578</code> tests.
-                Focused Jest also passed for <code>GameScreen</code>, navigation, solar texture/rendering, and Product
-                Pricing coverage. Focused ESLint passed for the edited app files, <code>pnpm run check:rn-upgrade</code>
-                passed, and root <code>pnpm exec tsc --noEmit --pretty false</code> passed.
+                Previous full RN evidence remains <code>173</code> suites / <code>3578</code> tests. This focused
+                follow-up passed <code>pnpm exec jest src/services/__tests__/SolarSystemPreloader.test.ts --runInBand</code>,
+                focused ESLint for <code>App.tsx</code> and <code>src/services/SolarSystemPreloader.ts</code> with
+                <code>--max-warnings=0</code>, and root <code>pnpm exec tsc --noEmit --pretty false</code>.
               </td>
             </tr>
             <tr>
               <td class="task" data-label="Area">Firebase Functions</td>
               <td data-label="Status"><span class="status status-done">Passed</span></td>
               <td class="notes" data-label="Evidence">
-                Functions <code>pnpm run build</code> and <code>pnpm run lint</code> passed, focused ESLint passed for
-                the edited IAP/Sentry files, focused IAP validation Jest passed <code>13</code> tests, and the full
-                Functions Jest run passed
-                <code>22</code> suites / <code>447</code> tests.
+                Functions <code>pnpm run build</code> passed in this focused follow-up. Previous evidence remains for
+                Functions lint, focused IAP validation Jest, and the full Functions Jest run.
+              </td>
+            </tr>
+            <tr>
+              <td class="task" data-label="Area">Android debug build</td>
+              <td data-label="Status"><span class="status status-done">Passed</span></td>
+              <td class="notes" data-label="Evidence">
+                <code>pnpm run android:assemble:emulator</code> passed after the runtime timeout changes and produced
+                <code>android/app/build/outputs/apk/debug/app-debug.apk</code> for
+                <code>com.roobsworld.riddlequest</code>.
               </td>
             </tr>
             <tr>
               <td class="task" data-label="Area">Android one-device smoke</td>
               <td data-label="Status"><span class="status status-done">Passed</span></td>
               <td class="notes" data-label="Evidence">
-                Booted <code>rq_pixel_4a_api_36_1</code> as <code>emulator-5554</code>, installed the debug APK,
-                launched the Expo dev client against Metro on <code>8081</code>, reached the Daily Challenge game
-                screen, opened the Coin Shop, and found no crash-buffer entries, fatal React Native errors, callable
-                validation failures, RNFirebase namespaced warnings, or Three <code>map</code>/<code>emissiveMap</code>
-                material warnings. Screenshot artifact: <code>docs/android-smoke-current.png</code>. Full matrix was
-                intentionally skipped for this pass.
+                Ran <code>scripts/android-emulator-run-matrix.ps1 -AvdNames rq_pixel_4a_api_36_1 -Port 8082 -SkipQASurfaceScreenshots</code>
+                against <code>emulator-5554</code> with the prebuilt debug APK. Metro asset and websocket probes passed
+                on host and emulator, and a delayed recapture reached the Welcome Back modal over the Daily Challenge
+                game stack. Final current-process evidence showed no crash-buffer entries, fatal React Native errors,
+                callable validation failures, RNFirebase namespaced warnings, Three <code>map</code>/<code>emissiveMap</code>
+                material warnings, texture-timeout warnings, or background-startup timeout errors. Screenshot artifact:
+                <code>emulator-tests/images/rq_pixel_4a_api_36_1/manual-after-8082-smoke-wait.png</code>. Full matrix
+                was intentionally skipped for this pass at the user's request.
+              </td>
+            </tr>
+            <tr>
+              <td class="task" data-label="Area">iOS and sandbox IAP</td>
+              <td data-label="Status"><span class="status status-active">Deferred</span></td>
+              <td class="notes" data-label="Evidence">
+                Not run in this Windows-hosted session because no iOS simulator/device and no App Store/Google Play
+                sandbox purchase credentials were available.
               </td>
             </tr>
           </tbody>
@@ -1004,6 +1031,10 @@
         <ul class="checklist">
           <li><input type="checkbox" checked disabled /> <span><code>pnpm install --frozen-lockfile</code></span></li>
           <li><input type="checkbox" checked disabled /> <span><code>pnpm exec expo install --check</code></span></li>
+          <li>
+            <input type="checkbox" checked disabled />
+            <span><code>node scripts/verify-android-matrix-coverage.js --verify</code></span>
+          </li>
           <li><input type="checkbox" checked disabled /> <span><code>pnpm exec expo-doctor</code></span></li>
           <li><input type="checkbox" checked disabled /> <span><code>pnpm run check:rn-upgrade</code></span></li>
           <li><input type="checkbox" checked disabled /> <span><code>pnpm run test:rn --runInBand</code></span></li>
@@ -1021,15 +1052,22 @@
             <input type="checkbox" checked disabled />
             <span>
               Focused app Jest for <code>GameScreen</code>, navigation, Product Pricing, solar rendering, and solar
-              texture loading passed; the full RN run passed <code>173</code> suites / <code>3578</code> tests.
+              texture loading passed; this follow-up also reran
+              <code>pnpm exec jest src/services/__tests__/SolarSystemPreloader.test.ts --runInBand</code>. The full RN
+              run passed <code>173</code> suites / <code>3578</code> tests in the previous broad pass.
             </span>
           </li>
           <li>
             <input type="checkbox" checked disabled />
             <span>
-              Focused app ESLint passed for edited rendering, Product Pricing, and navigation files with
+              Focused app ESLint passed for edited rendering, Product Pricing, navigation files, and this follow-up's
+              <code>App.tsx</code>/<code>src/services/SolarSystemPreloader.ts</code> changes with
               <code>--max-warnings=0</code>.
             </span>
+          </li>
+          <li>
+            <input type="checkbox" checked disabled />
+            <span><code>pnpm run android:assemble:emulator</code></span>
           </li>
           <li>
             <input type="checkbox" checked disabled />
@@ -1041,15 +1079,25 @@
           <li>
             <input type="checkbox" checked disabled />
             <span>
-              Smoke-test launch on one Android emulator device, confirm the Daily Challenge game screen renders, open
-              the Coin Shop, and review logcat for crash/callable/RNFirebase/Three warning patterns.
+              Smoke-test launch on one Android emulator device with
+              <code>scripts/android-emulator-run-matrix.ps1 -AvdNames rq_pixel_4a_api_36_1 -Port 8082 -SkipQASurfaceScreenshots</code>,
+              confirm the Welcome Back modal over the Daily Challenge game stack renders, and review logcat for
+              crash/callable/RNFirebase/Three/texture-timeout/background-timeout warning patterns.
             </span>
+          </li>
+          <li>
+            <input type="checkbox" checked disabled />
+            <span>Full Android matrix intentionally not run in this pass at the user's request.</span>
           </li>
           <li><input type="checkbox" checked disabled /> <span><code>cd E:\qwordly\firebase-functions</code></span></li>
           <li><input type="checkbox" checked disabled /> <span><code>pnpm install --frozen-lockfile</code></span></li>
           <li><input type="checkbox" checked disabled /> <span><code>pnpm run build</code></span></li>
           <li><input type="checkbox" checked disabled /> <span><code>pnpm run lint</code></span></li>
           <li><input type="checkbox" checked disabled /> <span><code>pnpm run test</code></span></li>
+          <li>
+            <input type="checkbox" disabled />
+            <span>iOS/sandbox IAP validation remains deferred until devices and store sandbox credentials are available.</span>
+          </li>
         </ul>
       </section>
 

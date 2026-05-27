@@ -96,6 +96,15 @@ const isExpectedSentryNoise = (text: string, isDevelopment: boolean): boolean =>
     return true;
   }
 
+  if (
+    lowerText.includes("functions/unauthenticated") ||
+    lowerText.includes("code unauthenticated") ||
+    lowerText === "error unauthenticated" ||
+    lowerText.includes(" error unauthenticated")
+  ) {
+    return true;
+  }
+
   if (!isDevelopment) {
     return false;
   }

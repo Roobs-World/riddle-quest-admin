@@ -13,6 +13,19 @@ const setupRewardedAdService = async (
 ) => {
   jest.resetModules();
 
+  const captureException = jest.fn();
+  const logger = {
+    debug: jest.fn(),
+    error: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+  };
+
+  jest.doMock("../../utils/logger", () => ({logger}));
+  jest.doMock("../../utils/sentry", () => ({
+    captureException,
+  }));
+
   const listeners = new Map<string, Set<AdListener>>();
 
   const emit = (eventType: string, payload?: unknown) => {
@@ -68,6 +81,8 @@ const setupRewardedAdService = async (
     listeners,
     addAdEventListener,
     createForAdRequest,
+    captureException,
+    logger,
     initialize,
     load,
     show,
@@ -76,9 +91,13 @@ const setupRewardedAdService = async (
 
 describe("RewardedAdService", () => {
   afterEach(() => {
+    jest.clearAllTimers();
+    jest.useRealTimers();
     jest.resetModules();
     jest.clearAllMocks();
     jest.dontMock("react-native-google-mobile-ads");
+    jest.dontMock("../../utils/logger");
+    jest.dontMock("../../utils/sentry");
   });
 
   it("removes temporary reward listeners after repeated rewarded-ad shows", async () => {
@@ -118,5 +137,29 @@ describe("RewardedAdService", () => {
 
     expect(listeners.get("earned_reward")?.size ?? 0).toBe(0);
     expect(listeners.get("closed")?.size).toBe(1);
+  });
+
+  it("does not capture expected Google Mobile Ads no-fill events", async () => {
+    jest.useFakeTimers();
+    const {service, listeners, captureException, logger} = await setupRewardedAdService();
+
+    await service.initializeRewardedAds();
+    await flushPromises();
+
+    listeners.get("error")?.forEach((handler) =>
+      handler({
+        code: "googleMobileAds/no-fill",
+        message: "No fill.",
+      }),
+    );
+
+    await flushPromises();
+
+    expect(logger.warn).toHaveBeenCalledWith(
+      "Rewarded ad failed to load or show",
+      expect.objectContaining({code: "googleMobileAds/no-fill"}),
+    );
+    expect(captureException).not.toHaveBeenCalled();
+    jest.clearAllTimers();
   });
 });

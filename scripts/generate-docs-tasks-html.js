@@ -134,6 +134,11 @@ const statusFromText = (text) => {
   return "todo";
 };
 
+const statusFromIssueText = (text) => {
+  if (/\b(?:FIXED|CLOSED|DONE|PASS(?:ED)?)\b/i.test(text)) return "done";
+  return statusFromText(text);
+};
+
 const shouldSkipStatusSnippet = (text) => {
   if (text.length < 24) return true;
   if (/Use these exact status values/i.test(text)) return true;
@@ -227,7 +232,7 @@ const parseHtmlIssueRows = (content, relPath, title, lineStarts) => {
 
     const action = cells["Next Action"];
     if (!action) continue;
-    const status = statusFromText(cells.Status || action);
+    const status = statusFromIssueText(cells.Status || action);
     const id = cells.ID ? `${cells.ID}: ` : "";
     const issue = cells.Issue ? `${cells.Issue} ` : "";
 
@@ -249,6 +254,7 @@ const parseStatusSnippets = (content, relPath, title, extension) => {
   const tasks = [];
 
   content.split(/\r?\n/).forEach((raw, index) => {
+    if (/^\s*#{1,6}\s+/.test(raw)) return;
     if (/^\s*(?:[-*+]|\d+\.)\s+\[[ xX]\]/.test(raw)) return;
     if (!statusWords.some((word) => new RegExp(`\\b${word}\\b`, "i").test(raw))) return;
 

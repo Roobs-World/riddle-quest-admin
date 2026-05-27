@@ -47,11 +47,18 @@ jest.mock("../AnalyticsService", () => ({
   },
 }));
 
+jest.mock("../../utils/sentry", () => ({
+  addBreadcrumb: jest.fn(),
+  captureException: jest.fn(),
+  withSentrySpan: jest.fn((_: string, __: string, callback: () => unknown) => callback()),
+}));
+
 import {IapService, COIN_PRODUCT_DETAILS} from "../IapService";
 import * as RNIap from "react-native-iap";
 import {Platform} from "react-native";
 import {getFunctions, httpsCallable} from "@react-native-firebase/functions";
 import {analyticsService} from "../AnalyticsService";
+import {captureException} from "../../utils/sentry";
 
 // Get the mocked functions for better type safety
 const mockInitConnection = RNIap.initConnection as jest.MockedFunction<typeof RNIap.initConnection>;
@@ -68,6 +75,7 @@ const mockPurchaseErrorListener = RNIap.purchaseErrorListener as jest.MockedFunc
 const mockLogCoinPackPurchased = analyticsService.logCoinPackPurchased as jest.MockedFunction<
   typeof analyticsService.logCoinPackPurchased
 >;
+const mockedCaptureException = captureException as jest.MockedFunction<typeof captureException>;
 
 const mockPlatform = Platform as {OS: string};
 
@@ -666,6 +674,20 @@ describe("IapService", () => {
 
         const {logger} = require("../../utils/logger");
         expect(logger.debug).toHaveBeenCalledWith("SKU not found for current store account.");
+      });
+
+      it("should classify store connection initialization failures without Sentry capture", async () => {
+        const error = new Error("[react-native-iap]: PurchaseError: Failed to initialize connection");
+        mockInitConnection.mockRejectedValue(error);
+
+        await expect(IapService.purchaseProduct("com.roobsworld.riddlequest.coins100")).rejects.toThrow(
+          "Store purchases are currently unavailable. Please try again later.",
+        );
+
+        const {logger} = require("../../utils/logger");
+        expect(logger.warn).toHaveBeenCalledWith("Expected IAP purchase interruption:", error);
+        expect(logger.debug).toHaveBeenCalledWith("IAP store connection unavailable.");
+        expect(mockedCaptureException).not.toHaveBeenCalled();
       });
 
       it("should handle E_NETWORK_ERROR error", async () => {

@@ -82,12 +82,12 @@ describe("textureLoader", () => {
     expect((texture.image as any).localUri).toBe("file:///mock-copied-texture.png");
   });
 
-  it("throws and reports when load fails", async () => {
+  it("throws without capturing expected asset transport failures", async () => {
     Asset.loadAsync.mockRejectedValue(new Error("boom"));
 
     await expect(loadTextureFromAsset("path", "cache-key")).rejects.toThrow("Texture loading failed for cache-key");
 
     expect(logger.error).toHaveBeenCalled();
-    expect(captureException).toHaveBeenCalled();
+    expect(captureException).not.toHaveBeenCalled();
   });
 });

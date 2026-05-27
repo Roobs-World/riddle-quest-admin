@@ -116,7 +116,7 @@ import {GoogleSignin} from "@react-native-google-signin/google-signin";
 import {AccessToken, LoginManager} from "react-native-fbsdk-next";
 import {GoogleAuthProvider, FacebookAuthProvider, signInWithPopup} from "@react-native-firebase/auth";
 import {InteractionManager, AppState} from "react-native";
-import {AuthService} from "../AuthService";
+import {AuthService, isGoogleSignInCancellation} from "../AuthService";
 import {logger} from "../../utils/logger";
 import {captureException} from "../../utils/sentry";
 
@@ -396,6 +396,10 @@ describe("AuthService", () => {
   });
 
   describe("signInWithGoogle", () => {
+    it("recognizes raw Google cancelled results as expected cancellation", () => {
+      expect(isGoogleSignInCancellation({type: "cancelled"})).toBe(true);
+    });
+
     it("should successfully sign in with Google", async () => {
       const result = await AuthService.signInWithGoogle();
 
@@ -427,6 +431,8 @@ describe("AuthService", () => {
       });
 
       await expect(AuthService.signInWithGoogle()).rejects.toThrow("Google sign-in cancelled by user.");
+      expect(logger.error).not.toHaveBeenCalled();
+      expect(captureException).not.toHaveBeenCalled();
     });
 
     it("should handle Google sign-in cancellation error with correct code", async () => {
@@ -449,6 +455,8 @@ describe("AuthService", () => {
       (GoogleSignin.signIn as jest.Mock).mockRejectedValueOnce(cancelledError);
 
       await expect(AuthService.signInWithGoogle()).rejects.toEqual(cancelledError);
+      expect(logger.error).not.toHaveBeenCalled();
+      expect(captureException).not.toHaveBeenCalled();
     });
 
     it("should handle Google sign-in in progress error", async () => {
@@ -1239,6 +1247,24 @@ describe("AuthService", () => {
       expect(GoogleAuthProvider.credential).toHaveBeenCalledWith("GOOGLE_ID_TOKEN");
       expect(linkWithCredential).toHaveBeenCalled();
       expect(result).toEqual(linkedCredential);
+    });
+
+    it("does not report when Google linking is cancelled", async () => {
+      const linkWithCredential = jest.fn();
+
+      mockAuthInstance.currentUser = {
+        isAnonymous: true,
+        linkWithCredential,
+      };
+
+      (GoogleSignin.signIn as jest.Mock).mockResolvedValueOnce({
+        type: "cancelled",
+      });
+
+      await expect(AuthService.linkAnonymousWithGoogle()).rejects.toThrow("Google sign-in cancelled by user.");
+      expect(linkWithCredential).not.toHaveBeenCalled();
+      expect(logger.error).not.toHaveBeenCalled();
+      expect(captureException).not.toHaveBeenCalled();
     });
   });
 

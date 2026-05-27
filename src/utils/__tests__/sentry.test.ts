@@ -83,8 +83,12 @@ describe("utils/sentry", () => {
     const sentry = loadSentryUtils("dsn");
 
     sentry.captureException(new Error("Google sign-in cancelled by user."));
+    sentry.captureException({code: "SIGN_IN_CANCELLED", message: "User cancelled the login flow"});
     sentry.captureException({code: "googleMobileAds/no-fill", message: "No fill."});
+    sentry.captureException(new Error("ExpoAsset.downloadAsync Unable to download asset from URL: http://10.0.2.2:8081"));
     sentry.captureException({name: "PurchaseError", message: "Failed to initialize connection"});
+    sentry.captureException({code: "functions/unauthenticated", message: "Unauthenticated"});
+    sentry.captureException(new Error("Unauthenticated"));
 
     expect(mockCaptureException).not.toHaveBeenCalled();
   });
@@ -96,6 +100,18 @@ describe("utils/sentry", () => {
     };
 
     expect(initOptions.beforeSend({message: "Operation timed out after 15000ms", environment: "development"})).toBeNull();
+    expect(
+      initOptions.beforeSend({
+        message: "Tried to register two views with the same name RNSScreenContentWrapper",
+        environment: "development",
+      }),
+    ).toBeNull();
+    expect(
+      initOptions.beforeSend({
+        message: 'Requiring unknown module "react-native"',
+        environment: "development",
+      }),
+    ).toBeNull();
     expect(initOptions.beforeSend({message: "Real production error", environment: "production"})).toEqual({
       message: "Real production error",
       environment: "production",

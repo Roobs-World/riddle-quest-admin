@@ -42,6 +42,19 @@ const clearLocalAuthData = async (reason: string): Promise<void> => {
   }
 };
 
+const GOOGLE_CANCELLATION_CODES = new Set([
+  "auth/auth-popup-closed-by-user",
+  "auth/cancelled-popup-request",
+  "SIGN_IN_CANCELLED",
+  "sign_in_cancelled",
+]);
+
+const GOOGLE_CANCELLATION_MESSAGES = [
+  "Google sign-in cancelled by user",
+  "User cancelled the login flow",
+  "User cancelled the login process",
+];
+
 const FACEBOOK_CANCELLATION_CODES = new Set(["auth/auth-popup-closed-by-user", "auth/cancelled-popup-request"]);
 
 const FACEBOOK_CANCELLATION_MESSAGES = [
@@ -91,6 +104,29 @@ export const isFacebookLoginCancellation = (error: unknown): boolean => {
   }
 
   return false;
+};
+
+export const isGoogleSignInCancellation = (error: unknown): boolean => {
+  if (!error) {
+    return false;
+  }
+
+  const errorMessage = getAuthErrorMessage(error);
+  if (errorMessage && GOOGLE_CANCELLATION_MESSAGES.some((message) => errorMessage.includes(message))) {
+    return true;
+  }
+
+  if (typeof error !== "object") {
+    return false;
+  }
+
+  const maybeError = error as {code?: unknown; isCancelled?: unknown; type?: unknown};
+
+  if (maybeError.isCancelled === true || maybeError.type === "cancelled") {
+    return true;
+  }
+
+  return typeof maybeError.code === "string" && GOOGLE_CANCELLATION_CODES.has(maybeError.code);
 };
 
 export const AuthService = {
@@ -146,6 +182,11 @@ export const AuthService = {
 
         return userCredential;
       } catch (error) {
+        if (isGoogleSignInCancellation(error)) {
+          logger.debug("Google account linking cancelled by user.");
+          throw error;
+        }
+
         logger.error("Error linking anonymous account with Google:", error);
         captureException(error);
         throw error;
@@ -301,6 +342,11 @@ export const AuthService = {
 
         return userCredential;
       } catch (error) {
+        if (isGoogleSignInCancellation(error)) {
+          logger.debug("Google sign-in cancelled by user.");
+          throw error;
+        }
+
         logger.error("Error signing in with Google:", error);
         captureException(error);
         throw error;

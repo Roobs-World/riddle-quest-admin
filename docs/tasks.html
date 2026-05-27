@@ -262,15 +262,15 @@
         <p class="meta">Generated 2026-05-27 from 19 docs sources.</p>
         <div class="metrics">
           <div class="metric">
-            <strong>575</strong>
+            <strong>576</strong>
             <span>Total</span>
           </div>
           <div class="metric">
-            <strong>339</strong>
+            <strong>316</strong>
             <span>Open</span>
           </div>
           <div class="metric">
-            <strong>177</strong>
+            <strong>156</strong>
             <span>Todo</span>
           </div>
           <div class="metric">
@@ -278,7 +278,7 @@
             <span>Blocked</span>
           </div>
           <div class="metric">
-            <strong>236</strong>
+            <strong>260</strong>
             <span>Done</span>
           </div>
         </div>
@@ -1640,7 +1640,7 @@
               <h2>Codebase Optimization Progress</h2>
               <a href="codebase-optimization-progress.html">codebase-optimization-progress.html</a>
             </div>
-            <span>28 tasks</span>
+            <span>32 tasks</span>
           </div>
           <ul>
               <li class="task" data-status="done">
@@ -1696,147 +1696,175 @@
                 <span class="badge done">Done</span>
                 <div>
                   <p>pnpm install --frozen-lockfile</p>
-                  <small>Verification Checklist - line 1005 - html-checklist</small>
+                  <small>Verification Checklist - line 1032 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>pnpm exec expo install --check</p>
-                  <small>Verification Checklist - line 1006 - html-checklist</small>
+                  <small>Verification Checklist - line 1033 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
-                  <p>pnpm exec expo-doctor</p>
-                  <small>Verification Checklist - line 1007 - html-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="done">
-                <span class="badge done">Done</span>
-                <div>
-                  <p>pnpm run check:rn-upgrade</p>
-                  <small>Verification Checklist - line 1008 - html-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="done">
-                <span class="badge done">Done</span>
-                <div>
-                  <p>pnpm run test:rn --runInBand</p>
-                  <small>Verification Checklist - line 1009 - html-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="done">
-                <span class="badge done">Done</span>
-                <div>
-                  <p>pnpm exec tsc --noEmit --pretty false</p>
-                  <small>Verification Checklist - line 1010 - html-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="done">
-                <span class="badge done">Done</span>
-                <div>
-                  <p>pnpm exec cross-env ESLINT_USE_FLAT_CONFIG=false eslint App.tsx &quot;src/**/*.{js,jsx,ts,tsx}&quot; --max-warnings=0</p>
-                  <small>Verification Checklist - line 1014 - html-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="done">
-                <span class="badge done">Done</span>
-                <div>
-                  <p>Focused app Jest for GameScreen , navigation, Product Pricing, solar rendering, and solar texture loading passed; the full RN run passed 173 suites / 3578 tests.</p>
-                  <small>Verification Checklist - line 1020 - html-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="done">
-                <span class="badge done">Done</span>
-                <div>
-                  <p>Focused app ESLint passed for edited rendering, Product Pricing, and navigation files with --max-warnings=0 .</p>
-                  <small>Verification Checklist - line 1027 - html-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="done">
-                <span class="badge done">Done</span>
-                <div>
-                  <p>Focused Functions ESLint passed for src/iapValidation.ts , src/__tests__/iapValidation.test.ts , and src/sentry.ts .</p>
+                  <p>node scripts/verify-android-matrix-coverage.js --verify</p>
                   <small>Verification Checklist - line 1034 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
-                  <p>Smoke-test launch on one Android emulator device, confirm the Daily Challenge game screen renders, open the Coin Shop, and review logcat for crash/callable/RNFirebase/Three warning patterns.</p>
+                  <p>pnpm exec expo-doctor</p>
+                  <small>Verification Checklist - line 1038 - html-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
+                  <p>pnpm run check:rn-upgrade</p>
+                  <small>Verification Checklist - line 1039 - html-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
+                  <p>pnpm run test:rn --runInBand</p>
+                  <small>Verification Checklist - line 1040 - html-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
+                  <p>pnpm exec tsc --noEmit --pretty false</p>
                   <small>Verification Checklist - line 1041 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
-                  <p>cd E:\qwordly\firebase-functions</p>
-                  <small>Verification Checklist - line 1048 - html-checklist</small>
+                  <p>pnpm exec cross-env ESLINT_USE_FLAT_CONFIG=false eslint App.tsx &quot;src/**/*.{js,jsx,ts,tsx}&quot; --max-warnings=0</p>
+                  <small>Verification Checklist - line 1045 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
-                  <p>pnpm install --frozen-lockfile</p>
-                  <small>Verification Checklist - line 1049 - html-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="done">
-                <span class="badge done">Done</span>
-                <div>
-                  <p>pnpm run build</p>
-                  <small>Verification Checklist - line 1050 - html-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="done">
-                <span class="badge done">Done</span>
-                <div>
-                  <p>pnpm run lint</p>
+                  <p>Focused app Jest for GameScreen , navigation, Product Pricing, solar rendering, and solar texture loading passed; this follow-up also reran pnpm exec jest src/services/__tests__/SolarSystemPreloader.test.ts --runInBand . The full RN run passed 173 suites / 3578 tests in the previous broad pass.</p>
                   <small>Verification Checklist - line 1051 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
+                  <p>Focused app ESLint passed for edited rendering, Product Pricing, navigation files, and this follow-up's App.tsx / src/services/SolarSystemPreloader.ts changes with --max-warnings=0 .</p>
+                  <small>Verification Checklist - line 1060 - html-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
+                  <p>pnpm run android:assemble:emulator</p>
+                  <small>Verification Checklist - line 1068 - html-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
+                  <p>Focused Functions ESLint passed for src/iapValidation.ts , src/__tests__/iapValidation.test.ts , and src/sentry.ts .</p>
+                  <small>Verification Checklist - line 1072 - html-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
+                  <p>Smoke-test launch on one Android emulator device with scripts/android-emulator-run-matrix.ps1 -AvdNames rq_pixel_4a_api_36_1 -Port 8082 -SkipQASurfaceScreenshots , confirm the Welcome Back modal over the Daily Challenge game stack renders, and review logcat for crash/callable/RNFirebase/Three/texture-timeout/background-timeout warning patterns.</p>
+                  <small>Verification Checklist - line 1079 - html-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
+                  <p>Full Android matrix intentionally not run in this pass at the user's request.</p>
+                  <small>Verification Checklist - line 1088 - html-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
+                  <p>cd E:\qwordly\firebase-functions</p>
+                  <small>Verification Checklist - line 1092 - html-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
+                  <p>pnpm install --frozen-lockfile</p>
+                  <small>Verification Checklist - line 1093 - html-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
+                  <p>pnpm run build</p>
+                  <small>Verification Checklist - line 1094 - html-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
+                  <p>pnpm run lint</p>
+                  <small>Verification Checklist - line 1095 - html-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
                   <p>pnpm run test</p>
-                  <small>Verification Checklist - line 1052 - html-checklist</small>
+                  <small>Verification Checklist - line 1096 - html-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="todo">
+                <span class="badge todo">Todo</span>
+                <div>
+                  <p>iOS/sandbox IAP validation remains deferred until devices and store sandbox credentials are available.</p>
+                  <small>Verification Checklist - line 1097 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>Reliability-first priority is locked.</p>
-                  <small>Assumptions - line 1059 - html-checklist</small>
+                  <small>Assumptions - line 1107 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>IAP remains Google and Apple store commerce only.</p>
-                  <small>Assumptions - line 1060 - html-checklist</small>
+                  <small>Assumptions - line 1108 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>No public product API changes are intended.</p>
-                  <small>Assumptions - line 1061 - html-checklist</small>
+                  <small>Assumptions - line 1109 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>Root app and Functions remain separate install and build surfaces.</p>
-                  <small>Assumptions - line 1062 - html-checklist</small>
+                  <small>Assumptions - line 1110 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="skipped">
                 <span class="badge skipped">Skipped</span>
                 <div>
-                  <p>intentionally skipped for this pass.</p>
-                  <small>Status Notes - line 995 - status-note</small>
+                  <p>was intentionally skipped for this pass at the user's request.</p>
+                  <small>Status Notes - line 1014 - status-note</small>
                 </div>
               </li>
           </ul>
@@ -2351,8 +2379,8 @@
                   <small>Issue Register Next Actions - line 324 - html-issue-row</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
                   <p>DSI-035: The victory / &quot;Nice job&quot; modal and levelUpFanfare modal backgrounds were too short for their content on at least one tested viewport. Source now uses taller responsive decorative frames for both modals, and the victory modal keeps its extra bottom spacing inside the frame padding. Next action: Closed on 2026-05-25. Continue to watch these surfaces in the regular matrix, but no DSI-035-specific follow-up is...</p>
                   <small>Issue Register Next Actions - line 1410 - html-issue-row</small>
@@ -3395,7 +3423,7 @@
               <h2>Active Context - Riddle Quest Development</h2>
               <a href="memory-bank/activeContext.md">memory-bank/activeContext.md</a>
             </div>
-            <span>7 tasks</span>
+            <span>6 tasks</span>
           </div>
           <ul>
               <li class="task" data-status="todo">
@@ -3436,13 +3464,6 @@
               <li class="task" data-status="unreachable">
                 <span class="badge unreachable">Unreachable</span>
                 <div>
-                  <p>### Structurally Unreachable Lines Documented</p>
-                  <small>Status Notes - line 125 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="unreachable">
-                <span class="badge unreachable">Unreachable</span>
-                <div>
                   <p>- submitGuessLogic.ts:223-224 &#8212; logically unreachable branch (newTotalGuessesInWins always &gt; 0 when isCorrect)</p>
                   <small>Status Notes - line 130 - status-note</small>
                 </div>
@@ -3455,7 +3476,7 @@
               <h2>Project Progress</h2>
               <a href="memory-bank/progress.md">memory-bank/progress.md</a>
             </div>
-            <span>10 tasks</span>
+            <span>9 tasks</span>
           </div>
           <ul>
               <li class="task" data-status="todo">
@@ -3510,13 +3531,6 @@
               <li class="task" data-status="unreachable">
                 <span class="badge unreachable">Unreachable</span>
                 <div>
-                  <p>### Structurally Unreachable Lines (Documented)</p>
-                  <small>Status Notes - line 60 - status-note</small>
-                </div>
-              </li>
-              <li class="task" data-status="unreachable">
-                <span class="badge unreachable">Unreachable</span>
-                <div>
                   <p>- submitGuessLogic.ts:223-224 &#8212; logically unreachable branch (newTotalGuessesInWins always &gt; 0 when isCorrect)</p>
                   <small>Status Notes - line 65 - status-note</small>
                 </div>
@@ -3561,7 +3575,7 @@
               <h2>Performance Optimization TODO</h2>
               <a href="performance-optimizations-todo.md">performance-optimizations-todo.md</a>
             </div>
-            <span>8 tasks</span>
+            <span>7 tasks</span>
           </div>
           <ul>
               <li class="task" data-status="done">
@@ -3611,13 +3625,6 @@
                 <div>
                   <p>Add production logging guardrails in frequently-hit handlers</p>
                   <small>Performance Optimization TODO - line 9 - markdown-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p># Performance Optimization TODO</p>
-                  <small>Status Notes - line 1 - status-note</small>
                 </div>
               </li>
           </ul>
@@ -4385,144 +4392,144 @@
             <span>20 tasks</span>
           </div>
           <ul>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
                   <p>QWORDLY-2S (fatal, last seen 2026-05-27T01:03:25Z, count 2, users 1): Fix duplicate native view registration for RNSTabsHostAndroid. Culprit: invariant(E:\qwordly\node_modules\invariant\browser.js). Sentry: https://roobs-world-limited.sentry.io/issues/122926172/</p>
-                  <small>Startup, Navigation, And Native Registration - line 12 - markdown-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>QWORDLY-2P (fatal, last seen 2026-05-27T01:03:25Z, count 1, users 1): Fix duplicate native view registration for RNSFullWindowOverlay. Culprit: invariant(E:\qwordly\node_modules\invariant\browser.js). Sentry: https://roobs-world-limited.sentry.io/issues/122926162/</p>
-                  <small>Startup, Navigation, And Native Registration - line 13 - markdown-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>QWORDLY-2R (fatal, last seen 2026-05-27T01:03:25Z, count 1, users 1): Fix duplicate native view registration for RNSScreenFooter. Culprit: invariant(E:\qwordly\node_modules\invariant\browser.js). Sentry: https://roobs-world-limited.sentry.io/issues/122926165/</p>
-                  <small>Startup, Navigation, And Native Registration - line 14 - markdown-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>QWORDLY-2K (fatal, last seen 2026-05-27T01:03:25Z, count 5, users 1): Fix duplicate native view registration for RNSScreenContentWrapper. Culprit: invariant(E:\qwordly\node_modules\invariant\browser.js). Sentry: https://roobs-world-limited.sentry.io/issues/122926146/</p>
-                  <small>Startup, Navigation, And Native Registration - line 15 - markdown-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>QWORDLY-2N (fatal, last seen 2026-05-27T01:03:25Z, count 1, users 1): Fix duplicate native view registration for RNSSearchBar. Culprit: invariant(E:\qwordly\node_modules\invariant\browser.js). Sentry: https://roobs-world-limited.sentry.io/issues/122926150/</p>
-                  <small>Startup, Navigation, And Native Registration - line 16 - markdown-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>QWORDLY-2Q (fatal, last seen 2026-05-27T01:03:25Z, count 1, users 1): Fix duplicate native view registration for RNSModalScreen. Culprit: invariant(E:\qwordly\node_modules\invariant\browser.js). Sentry: https://roobs-world-limited.sentry.io/issues/122926164/</p>
-                  <small>Startup, Navigation, And Native Registration - line 17 - markdown-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
-                <div>
-                  <p>QWORDLY-2M (fatal, last seen 2026-05-27T01:03:25Z, count 2, users 1): Fix duplicate native view registration for RNSScreenStackHeaderConfig. Culprit: invariant(E:\qwordly\node_modules\invariant\browser.js). Sentry: https://roobs-world-limited.sentry.io/issues/122926147/</p>
                   <small>Startup, Navigation, And Native Registration - line 18 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>QWORDLY-2J (error, last seen 2026-05-27T01:02:56Z, count 1, users 1): Fix ReferenceError: Property 'Stack' doesn't exist in src/navigation/NavigationStack.tsx. Culprit: Navigation(E:\qwordly\src\navigation\NavigationStack.tsx). Sentry: https://roobs-world-limited.sentry.io/issues/122926085/</p>
+                  <p>QWORDLY-2P (fatal, last seen 2026-05-27T01:03:25Z, count 1, users 1): Fix duplicate native view registration for RNSFullWindowOverlay. Culprit: invariant(E:\qwordly\node_modules\invariant\browser.js). Sentry: https://roobs-world-limited.sentry.io/issues/122926162/</p>
                   <small>Startup, Navigation, And Native Registration - line 19 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>QWORDLY-2H (error, last seen 2026-05-24T15:24:31Z, count 1, users 1): Fix missing safe-area provider context for Coin Shop (No safe area value available). Culprit: CoinShop(E:\qwordly\src\components\shop\CoinShop.tsx). Sentry: https://roobs-world-limited.sentry.io/issues/122317845/</p>
+                  <p>QWORDLY-2R (fatal, last seen 2026-05-27T01:03:25Z, count 1, users 1): Fix duplicate native view registration for RNSScreenFooter. Culprit: invariant(E:\qwordly\node_modules\invariant\browser.js). Sentry: https://roobs-world-limited.sentry.io/issues/122926165/</p>
                   <small>Startup, Navigation, And Native Registration - line 20 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
-                  <p>QWORDLY-2E (fatal, last seen 2026-05-24T12:20:34Z, count 4, users 1): Fix or document Metro/runtime Error: Requiring unknown module &quot;react-native&quot; failure. Culprit: unknownModuleError(E:\qwordly\node_modules\@expo\cli\build\metro-require\require.js). Sentry: https://roobs-world-limited.sentry.io/issues/122288853/</p>
+                  <p>QWORDLY-2K (fatal, last seen 2026-05-27T01:03:25Z, count 5, users 1): Fix duplicate native view registration for RNSScreenContentWrapper. Culprit: invariant(E:\qwordly\node_modules\invariant\browser.js). Sentry: https://roobs-world-limited.sentry.io/issues/122926146/</p>
                   <small>Startup, Navigation, And Native Registration - line 21 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
+                  <p>QWORDLY-2N (fatal, last seen 2026-05-27T01:03:25Z, count 1, users 1): Fix duplicate native view registration for RNSSearchBar. Culprit: invariant(E:\qwordly\node_modules\invariant\browser.js). Sentry: https://roobs-world-limited.sentry.io/issues/122926150/</p>
+                  <small>Startup, Navigation, And Native Registration - line 22 - markdown-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
+                  <p>QWORDLY-2Q (fatal, last seen 2026-05-27T01:03:25Z, count 1, users 1): Fix duplicate native view registration for RNSModalScreen. Culprit: invariant(E:\qwordly\node_modules\invariant\browser.js). Sentry: https://roobs-world-limited.sentry.io/issues/122926164/</p>
+                  <small>Startup, Navigation, And Native Registration - line 23 - markdown-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
+                  <p>QWORDLY-2M (fatal, last seen 2026-05-27T01:03:25Z, count 2, users 1): Fix duplicate native view registration for RNSScreenStackHeaderConfig. Culprit: invariant(E:\qwordly\node_modules\invariant\browser.js). Sentry: https://roobs-world-limited.sentry.io/issues/122926147/</p>
+                  <small>Startup, Navigation, And Native Registration - line 24 - markdown-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
+                  <p>QWORDLY-2J (error, last seen 2026-05-27T01:02:56Z, count 1, users 1): Fix ReferenceError: Property 'Stack' doesn't exist in src/navigation/NavigationStack.tsx. Culprit: Navigation(E:\qwordly\src\navigation\NavigationStack.tsx). Sentry: https://roobs-world-limited.sentry.io/issues/122926085/</p>
+                  <small>Startup, Navigation, And Native Registration - line 25 - markdown-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
+                  <p>QWORDLY-2H (error, last seen 2026-05-24T15:24:31Z, count 1, users 1): Fix missing safe-area provider context for Coin Shop (No safe area value available). Culprit: CoinShop(E:\qwordly\src\components\shop\CoinShop.tsx). Sentry: https://roobs-world-limited.sentry.io/issues/122317845/</p>
+                  <small>Startup, Navigation, And Native Registration - line 26 - markdown-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
+                  <p>QWORDLY-2E (fatal, last seen 2026-05-24T12:20:34Z, count 4, users 1): Fix or document Metro/runtime Error: Requiring unknown module &quot;react-native&quot; failure. Culprit: unknownModuleError(E:\qwordly\node_modules\@expo\cli\build\metro-require\require.js). Sentry: https://roobs-world-limited.sentry.io/issues/122288853/</p>
+                  <small>Startup, Navigation, And Native Registration - line 27 - markdown-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
                   <p>QWORDLY-21 (error, last seen 2026-05-27T01:35:27Z, count 6, users 4): Fix or classify startup Error: Operation timed out after 15000ms from App.tsx. Culprit: setTimeout$argument_0(E:\qwordly\App.tsx). Sentry: https://roobs-world-limited.sentry.io/issues/115080012/</p>
-                  <small>Initialization, Assets, And Timeouts - line 25 - markdown-checklist</small>
+                  <small>Initialization, Assets, And Timeouts - line 31 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
                   <p>QWORDLY-20 (error, last seen 2026-05-24T13:09:14Z, count 21, users 2): Fix asset preloading/download handling for ExpoAsset.downloadAsync rejection. Culprit: constructor(E:\qwordly\node_modules\expo-modules-core\src\errors\CodedError.ts). Sentry: https://roobs-world-limited.sentry.io/issues/115080009/</p>
-                  <small>Initialization, Assets, And Timeouts - line 26 - markdown-checklist</small>
+                  <small>Initialization, Assets, And Timeouts - line 32 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
                   <p>QWORDLY-2F (error, last seen 2026-05-24T13:09:08Z, count 1, users 1): Fix or classify Error: Operation timed out after 15000ms from bundled Android runtime. Culprit: anonymous(index.android). Sentry: https://roobs-world-limited.sentry.io/issues/122297151/</p>
-                  <small>Initialization, Assets, And Timeouts - line 27 - markdown-checklist</small>
+                  <small>Initialization, Assets, And Timeouts - line 33 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
                   <p>QWORDLY-2G (error, last seen 2026-05-24T13:45:23Z, count 8, users 0): Stop reporting expected Google Mobile Ads no-fill events as Sentry errors, or add user-visible fallback handling if this indicates broken ad readiness. Culprit: handleAdEvent(E:\qwordly\nodemodules\react-native-google-mobile-ads\src\ads\MobileAd.ts). Sentry: https://roobs-world-limited.sentry.io/issues/122297226/</p>
-                  <small>Ads, Purchases, Auth, And Provider Flows - line 31 - markdown-checklist</small>
+                  <small>Ads, Purchases, Auth, And Provider Flows - line 37 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
                   <p>QWORDLY-15 (error, last seen 2026-05-23T23:20:27Z, count 4, users 2): Fix or gracefully classify [react-native-iap]: PurchaseError: Failed to initialize connection. Culprit: createPurchaseError(E:\qwordly\node_modules\react-native-iap\lib\module\utils\errorMapping.js). Sentry: https://roobs-world-limited.sentry.io/issues/111777529/</p>
-                  <small>Ads, Purchases, Auth, And Provider Flows - line 32 - markdown-checklist</small>
+                  <small>Ads, Purchases, Auth, And Provider Flows - line 38 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
                   <p>QWORDLY-2B (error, last seen 2026-05-23T21:36:28Z, count 1, users 1): Fix or gracefully classify bundled Android [react-native-iap]: PurchaseError: Failed to initialize connection. Culprit: createPurchaseError(index.android). Sentry: https://roobs-world-limited.sentry.io/issues/122184857/</p>
-                  <small>Ads, Purchases, Auth, And Provider Flows - line 33 - markdown-checklist</small>
+                  <small>Ads, Purchases, Auth, And Provider Flows - line 39 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
                   <p>QWORDLY-2D (error, last seen 2026-05-23T23:01:27Z, count 1, users 1): Fix callable auth handling for Error: Unauthenticated, or suppress/report as expected only when triggered by an anonymous/expired session UX path. Culprit: &lt;anonymous&gt;(E:\qwordly\node_modules\@react-native-firebase\functions\dist\module\namespaced.js). Sentry: https://roobs-world-limited.sentry.io/issues/122192132/</p>
-                  <small>Ads, Purchases, Auth, And Provider Flows - line 34 - markdown-checklist</small>
+                  <small>Ads, Purchases, Auth, And Provider Flows - line 40 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
                   <p>QWORDLY-29 (error, last seen 2026-05-23T22:16:58Z, count 1, users 0): Fix Facebook login TypeError: function's '.prototype' is not an object in 'instanceof'. Culprit: handleFacebookSignIn(E:\qwordly\src\screens\LandingScreen.tsx). Sentry: https://roobs-world-limited.sentry.io/issues/115286392/</p>
-                  <small>Ads, Purchases, Auth, And Provider Flows - line 35 - markdown-checklist</small>
+                  <small>Ads, Purchases, Auth, And Provider Flows - line 41 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
                   <p>QWORDLY-2A (error, last seen 2026-05-23T22:16:57Z, count 1, users 0): Stop reporting user-cancelled Facebook login as an error, or classify it below issue-alerting severity. Culprit: signInWithFacebook(E:\qwordly\src\services\AuthService.ts). Sentry: https://roobs-world-limited.sentry.io/issues/115286393/</p>
-                  <small>Ads, Purchases, Auth, And Provider Flows - line 36 - markdown-checklist</small>
+                  <small>Ads, Purchases, Auth, And Provider Flows - line 42 - markdown-checklist</small>
                 </div>
               </li>
-              <li class="task" data-status="todo">
-                <span class="badge todo">Todo</span>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
                 <div>
                   <p>QWORDLY-2C (error, last seen 2026-05-23T22:14:37Z, count 1, users 0): Stop reporting user-cancelled Google sign-in as an error, or classify it below issue-alerting severity. Culprit: runOnMainThread$argument_0(E:\qwordly\src\services\AuthService.ts). Sentry: https://roobs-world-limited.sentry.io/issues/122188414/</p>
-                  <small>Ads, Purchases, Auth, And Provider Flows - line 37 - markdown-checklist</small>
+                  <small>Ads, Purchases, Auth, And Provider Flows - line 43 - markdown-checklist</small>
                 </div>
               </li>
           </ul>

@@ -16,7 +16,7 @@ import StarryBackground from "../components/background/StarryBackground";
 import PulsingSpinner from "../components/loading/PulsingSpinner";
 import {AppStrings} from "../constants/AppStrings";
 import {LOADING_SPINNER_SIZE} from "../constants/loading";
-import {AuthService, isFacebookLoginCancellation} from "../services/AuthService";
+import {AuthService, isFacebookLoginCancellation, isGoogleSignInCancellation} from "../services/AuthService";
 import {useAuth} from "../contexts/AuthContext";
 import Error from "../components/text/Error";
 import {type FirebaseAuthTypes} from "@react-native-firebase/auth";
@@ -41,10 +41,6 @@ const getAuthErrorMessage = (error: unknown): string | undefined => {
   const message = (error as {message?: unknown}).message;
   return typeof message === "string" ? message : undefined;
 };
-
-const isGoogleSignInCancellation = (error: unknown): boolean =>
-  getAuthErrorCode(error) === "auth/auth-popup-closed-by-user" ||
-  getAuthErrorMessage(error)?.includes("Google sign-in cancelled by user") === true;
 
 /**
  * Landing screen component used at the root of the auth stack.
