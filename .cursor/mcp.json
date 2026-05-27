@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "browserstack": {
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "scripts\\browserstack-mcp.ps1"
+      ]
+    }
+  }
+}

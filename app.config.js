@@ -161,6 +161,9 @@ module.exports = {
     /** Unique Android package name for Google Play Store */
     package: "com.roobsworld.riddlequest",
 
+    /** Android build number; must increase for installs over existing builds. */
+    versionCode: 4,
+
     /** Firebase configuration file for Android */
     googleServicesFile: "./google-services.json",
 

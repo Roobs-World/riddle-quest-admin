@@ -368,7 +368,7 @@ jest.mock("@react-native-firebase/firestore", () => ({
 }));
 
 jest.mock("react-native-google-mobile-ads", () => {
-  const createRewardedAdMock = () => {
+  const createFullScreenAdMock = ({emitReward = false} = {}) => {
     const listeners = new Map();
     const addAdEventListener = jest.fn((eventType, listener) => {
       const existing = listeners.get(eventType) ?? new Set();
@@ -391,7 +391,9 @@ jest.mock("react-native-google-mobile-ads", () => {
         emit("loaded");
       }),
       show: jest.fn(async () => {
-        emit("earned_reward", {amount: 1, type: "coin"});
+        if (emitReward) {
+          emit("earned_reward", {amount: 1, type: "coin"});
+        }
         emit("closed");
       }),
     };
@@ -404,8 +406,15 @@ jest.mock("react-native-google-mobile-ads", () => {
     __esModule: true,
     default: mobileAdsFactory,
     mobileAds: mobileAdsFactory,
+    InterstitialAd: {
+      createForAdRequest: jest.fn(() => createFullScreenAdMock()),
+    },
     RewardedAd: {
-      createForAdRequest: jest.fn(() => createRewardedAdMock()),
+      createForAdRequest: jest.fn(() => createFullScreenAdMock({emitReward: true})),
+    },
+    TestIds: {
+      INTERSTITIAL: "ca-app-pub-3940256099942544/1033173712",
+      REWARDED: "ca-app-pub-3940256099942544/5224354917",
     },
     RewardedAdEventType: {
       LOADED: "loaded",

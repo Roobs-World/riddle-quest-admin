@@ -97,6 +97,7 @@ const mockPlayerData = {
   username: "testuser",
   email: "test@test.com",
   coins: 100,
+  hasPurchasedApp: false,
   unlockedAchievements: [] as Array<{achievementId: string; unlockedAt: number}>,
   progress: {
     classicIndex: 0,
@@ -207,6 +208,18 @@ jest.mock("../../../hooks/useRewardedAds", () => ({
     loadRewardedAd: mockLoadRewardedAd,
     showRewardedAd: mockShowRewardedAd,
     recordRewardedAdCompletion: mockRecordRewardedAdCompletion,
+  }),
+}));
+
+const mockLoadInterstitialAd = jest.fn();
+const mockShowInterstitialAd = jest.fn(() => Promise.resolve(false));
+let mockIsInterstitialAdReady = true;
+jest.mock("../../../hooks/useInterstitialAds", () => ({
+  __esModule: true,
+  default: () => ({
+    isInterstitialAdReady: mockIsInterstitialAdReady,
+    loadInterstitialAd: mockLoadInterstitialAd,
+    showInterstitialAd: mockShowInterstitialAd,
   }),
 }));
 
@@ -523,6 +536,7 @@ describe("GameScreen", () => {
     mockPlayerData.email = "test@test.com";
     mockPlayerData.username = "testuser";
     mockPlayerData.coins = 100;
+    mockPlayerData.hasPurchasedApp = false;
     mockPlayerData.unlockedAchievements = [];
     mockLoadUserProgressFromFirestore.mockResolvedValue(mockPlayerData);
     mockUseGameLogic.guesses = [];
@@ -545,11 +559,15 @@ describe("GameScreen", () => {
       alreadyProcessed: false,
       message: "Rewarded ad reward applied.",
     });
+    mockLoadInterstitialAd.mockReset();
+    mockShowInterstitialAd.mockReset();
+    mockShowInterstitialAd.mockResolvedValue(false);
     mockShowTooltipOnce.mockClear();
     mockShowTooltip.mockClear();
     mockDismissTooltip.mockClear();
     mockOfflineBlockingModal.mockClear();
     mockIsRewardedAdReady = true;
+    mockIsInterstitialAdReady = true;
   });
 
   afterEach(async () => {
@@ -1481,6 +1499,66 @@ describe("GameScreen", () => {
           expect.objectContaining({coinsAwarded: LEVEL_UP_COIN_BONUS}),
         );
       });
+    });
+
+    it("shows a non-rewarded interstitial only after the victory modal is dismissed", async () => {
+      mockShowInterstitialAd.mockResolvedValueOnce(true);
+      mockUseGameLogic.currentGuess = ["K", "E", "Y", "B", "O", "A", "R", "D"];
+      mockUseGameLogic.processGuess.mockResolvedValueOnce({
+        outcome: "win",
+        coinsEarned: 0,
+        scoreEarned: 0,
+      });
+
+      const {rerender} = render(<GameScreen {...defaultProps} />);
+      const inputProps = getLatestProps(mockGameInput);
+      await act(async () => {
+        await inputProps.handleSubmit();
+      });
+      mockUseGameLogic.gameOver = true;
+      rerender(<GameScreen {...defaultProps} />);
+
+      await waitFor(() => {
+        expect(mockShowVictoryModal).toHaveBeenCalled();
+      });
+      expect(mockShowInterstitialAd).not.toHaveBeenCalled();
+
+      const victoryConfig = mockShowVictoryModal.mock.calls[mockShowVictoryModal.mock.calls.length - 1][0];
+      await invokeGameAction(() => victoryConfig.onNext());
+
+      expect(mockCloseModalByType).toHaveBeenCalledWith("victory");
+      expect(mockShowInterstitialAd).toHaveBeenCalledWith("post_victory");
+      expect(mockRecordRewardedAdCompletion).not.toHaveBeenCalled();
+      expect(mockShowCoinPurchaseFanfareModal).not.toHaveBeenCalled();
+      expect(mockUpdatePlayerDataLocally).not.toHaveBeenCalledWith(expect.objectContaining({coins: expect.any(Number)}));
+    });
+
+    it("skips the post-victory interstitial for players with no-ads entitlement", async () => {
+      mockPlayerData.hasPurchasedApp = true;
+      mockUseGameLogic.currentGuess = ["K", "E", "Y", "B", "O", "A", "R", "D"];
+      mockUseGameLogic.processGuess.mockResolvedValueOnce({
+        outcome: "win",
+        coinsEarned: 0,
+        scoreEarned: 0,
+      });
+
+      const {rerender} = render(<GameScreen {...defaultProps} />);
+      const inputProps = getLatestProps(mockGameInput);
+      await act(async () => {
+        await inputProps.handleSubmit();
+      });
+      mockUseGameLogic.gameOver = true;
+      rerender(<GameScreen {...defaultProps} />);
+
+      await waitFor(() => {
+        expect(mockShowVictoryModal).toHaveBeenCalled();
+      });
+
+      const victoryConfig = mockShowVictoryModal.mock.calls[mockShowVictoryModal.mock.calls.length - 1][0];
+      await invokeGameAction(() => victoryConfig.onNext());
+
+      expect(mockLoadInterstitialAd).not.toHaveBeenCalled();
+      expect(mockShowInterstitialAd).not.toHaveBeenCalled();
     });
 
     it("does not show level-up fanfare when earned XP does not increase level", async () => {

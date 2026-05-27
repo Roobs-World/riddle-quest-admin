@@ -14,6 +14,7 @@ import * as RNIap from "react-native-iap";
 import * as Haptics from "expo-haptics";
 import NetInfo from "@react-native-community/netinfo";
 import useRewardedAds from "../../hooks/useRewardedAds";
+import useInterstitialAds from "../../hooks/useInterstitialAds";
 
 import Header from "../../components/game/Header";
 import Controls from "../../components/game/Controls";
@@ -395,6 +396,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const [productPricingError, setProductPricingError] = useState<string | null>(null);
   const [preservedLetterStates, setPreservedLetterStates] = useState<Record<string, Feedback>>({});
   const {isRewardedAdReady, loadRewardedAd, showRewardedAd, recordRewardedAdCompletion} = useRewardedAds();
+  const {loadInterstitialAd, showInterstitialAd} = useInterstitialAds();
   const setActiveSlotIndexSynced = useCallback((value: React.SetStateAction<number>) => {
     setActiveSlotIndex((prev) => {
       const resolved = typeof value === "function" ? (value as (previous: number) => number)(prev) : value;
@@ -468,6 +470,14 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   useEffect(() => {
     loadRewardedAd();
   }, [loadRewardedAd]);
+
+  useEffect(() => {
+    if (playerData?.hasPurchasedApp === true) {
+      return;
+    }
+
+    loadInterstitialAd();
+  }, [loadInterstitialAd, playerData?.hasPurchasedApp]);
 
   useEffect(() => {
     logger.debug(`Game session context changed (mode=${gameMode}, riddleId=${riddleId}). Resetting local game state.`);
@@ -1202,6 +1212,20 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     }
   }, [modal, showRewardedAd, confirmRewardedAdReward, modalActions]);
 
+  const showPostVictoryInterstitialAd = useCallback(async () => {
+    if (playerData?.hasPurchasedApp === true) {
+      return false;
+    }
+
+    try {
+      return await showInterstitialAd("post_victory");
+    } catch (error) {
+      logger.error("Error showing post-victory interstitial ad:", error);
+      captureException(error);
+      return false;
+    }
+  }, [playerData?.hasPurchasedApp, showInterstitialAd]);
+
   useEffect(() => {
     if (gameOver && lastGuessResult && lastGuessResult.outcome !== "continue" && !gameOverHandledRef.current) {
       gameOverHandledRef.current = true;
@@ -1348,6 +1372,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
                 sequenceProgress,
                 onNext: async () => {
                   modal.closeModalByType("victory");
+                  await safeDelay(MODAL_CLOSE_DELAY_MS);
+                  await showPostVictoryInterstitialAd();
                   await Promise.resolve(onContinue());
                 },
               });
@@ -1501,6 +1527,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     resetRoundState,
     deriveDailyStreakAfterWin,
     runRewardedAdContinueFlow,
+    showPostVictoryInterstitialAd,
     handleCoinContinue,
     isRewardedAdReady,
     runWithServerLoading,

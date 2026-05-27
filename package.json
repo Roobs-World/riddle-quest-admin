@@ -137,6 +137,7 @@
     "babel-plugin-module-resolver": "^5.0.3",
     "cross-env": "^10.1.0",
     "expo-doctor": "^1.19.8",
+    "expo-mcp": "~0.2.4",
     "firebase-admin": "^13.10.0",
     "globals": "^17.6.0",
     "husky": "^9.1.7",
@@ -195,10 +196,9 @@
     "onlyBuiltDependencies": [
       "@firebase/util",
       "@sentry/cli",
-      "@sentry-internal/node-cpu-profiler",
-      "dtrace-provider",
-      "esbuild",
-      "protobufjs"
+      "msgpackr-extract",
+      "protobufjs",
+      "unrs-resolver"
     ]
   },
   "packageManager": "pnpm@10.33.0"
