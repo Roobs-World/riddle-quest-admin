@@ -301,6 +301,18 @@ Run these commands with `pnpm run <script>`, except `start`, `android`, `ios`, a
 | `validate:upgrade`             | Runs React Native upgrade checks, linting, and React Native tests serially.                                                                              |
 | `prepare`                      | Installs Husky git hooks during package installation.                                                                                                    |
 
+### Docs Task List Generator
+
+Use `scripts/generate-docs-tasks-html.js` to rebuild the consolidated docs task index:
+
+```bash
+node scripts/generate-docs-tasks-html.js
+```
+
+The script scans the `docs/` folder and writes `docs/tasks.html`. It extracts markdown checklist items, HTML checkbox lists, issue-register next actions, and explicit status notes such as `TODO`, `IN_PROGRESS`, `BLOCKED`, `UNREACHABLE`, `SKIPPED`, and `FAIL`. The generated HTML groups tasks by source document, links back to each source, and includes filters for all, open, todo, blocked, and done tasks.
+
+Run it after editing task-bearing docs so `docs/tasks.html` stays current. The generated file intentionally excludes itself from the scan.
+
 ### Android Emulator Test Matrix
 
 Use the Android matrix command to run the on-emulator suite across the supported AVDs one by one:

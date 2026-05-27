@@ -37,6 +37,18 @@ const readinessSubscribers = new Set<(isReady: boolean) => void>();
 
 const isSupportedPlatform = (): boolean => Platform.OS === "android" || Platform.OS === "ios";
 
+const isExpectedAdNoFillError = (error: unknown): boolean => {
+  if (!error || typeof error !== "object") {
+    return false;
+  }
+
+  const maybeError = error as {code?: unknown; message?: unknown};
+  return (
+    maybeError.code === "googleMobileAds/no-fill" ||
+    (typeof maybeError.message === "string" && maybeError.message.toLowerCase().includes("no fill"))
+  );
+};
+
 const publishReadiness = (): void => {
   readinessSubscribers.forEach((subscriber) => {
     try {
@@ -110,7 +122,9 @@ const ensureRewardedAdInstance = (): void => {
     isRewardedAdLoading = false;
     setReadyState(false);
     logger.warn("Rewarded ad failed to load or show", error);
-    captureException(error);
+    if (!isExpectedAdNoFillError(error)) {
+      captureException(error);
+    }
     scheduleLoadRetry();
   });
 };
@@ -230,7 +244,9 @@ export const showRewardedAd = async (): Promise<boolean> => {
     return await rewardConfirmation;
   } catch (error) {
     logger.error("Failed to show rewarded ad", error);
-    captureException(error);
+    if (!isExpectedAdNoFillError(error)) {
+      captureException(error);
+    }
     return false;
   } finally {
     clearTimeout(rewardConfirmationTimeout);

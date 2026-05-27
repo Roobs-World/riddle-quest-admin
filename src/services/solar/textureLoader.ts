@@ -4,7 +4,6 @@
 import {Asset} from "expo-asset";
 import {requireNativeModule} from "expo-modules-core";
 import {ClampToEdgeWrapping, LinearFilter, Texture} from "three";
-import {captureException} from "../../utils/sentry";
 import {logger} from "../../utils/logger";
 
 export type AssetModuleReference = string | number | {default?: string | number; uri?: string};
@@ -103,7 +102,6 @@ export const loadTextureFromAsset = async (assetPath: AssetModuleReference, cach
     return createTextureFromAsset(fileAsset);
   } catch (error) {
     logger.error(`Texture loading failed for ${cacheKey}:`, error);
-    captureException(error);
     throw new Error(`Texture loading failed for ${cacheKey}: ${error}`);
   }
 };

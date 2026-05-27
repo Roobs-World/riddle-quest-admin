@@ -1,6 +1,6 @@
-import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
+import React, {useCallback, useContext, useEffect, useMemo, useRef, useState} from "react";
 import {View, Text, Modal, TouchableOpacity, StyleSheet, ActivityIndicator} from "react-native";
-import {useSafeAreaInsets} from "react-native-safe-area-context";
+import {SafeAreaInsetsContext} from "react-native-safe-area-context";
 import * as RNIap from "react-native-iap";
 import {ProductPricing} from "../../services/ProductPricingService";
 import {COLORS, TYPOGRAPHY, BORDER_RADIUS} from "../../styles";
@@ -23,6 +23,7 @@ const GRID_CARD_HEIGHT = verticalScale(144);
 const LIST_COIN_ICON_SIZE = moderateScale(34);
 const COIN_SHOP_MODAL_SIDE_INSET = scale(28);
 const COIN_SHOP_SAFE_EDGE_GAP = scale(12);
+const FALLBACK_SAFE_AREA_INSETS = {top: 0, right: 0, bottom: 0, left: 0};
 
 interface CoinShopProps {
   isVisible: boolean;
@@ -49,7 +50,7 @@ const CoinShop: React.FC<CoinShopProps> = ({
   firestoreProducts = [],
   currentCoins = 0,
 }) => {
-  const insets = useSafeAreaInsets();
+  const insets = useContext(SafeAreaInsetsContext) ?? FALLBACK_SAFE_AREA_INSETS;
   const availableHeight = screenHeight - insets.top - insets.bottom;
   const hasPaintedForCurrentOpenRef = useRef(false);
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);

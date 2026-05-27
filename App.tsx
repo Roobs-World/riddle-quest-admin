@@ -20,13 +20,6 @@ import * as Sentry from "@sentry/react-native";
 import {captureException} from "./src/utils/sentry";
 import {logger} from "./src/utils/logger";
 
-if (process.env.EXPO_PUBLIC_SENTRY_DSN) {
-  Sentry.init({
-    dsn: process.env.EXPO_PUBLIC_SENTRY_DSN,
-    tracesSampleRate: 1.0,
-  });
-}
-
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import {NavigationContainer} from "@react-navigation/native";
 import {View} from "react-native";
@@ -56,9 +49,9 @@ import {
 import {isSharedAnimationBackendEnabled, isSharedAnimationBackendFlagRequested} from "./src/config/featureFlags";
 import {SOUND_ENABLED_STORAGE_KEY, readBooleanSetting} from "./src/utils/settingsStorage";
 
-const SOLAR_PRELOAD_TIMEOUT_MS = 15000;
+const SOLAR_PRELOAD_TIMEOUT_MS = 60000;
 
-const withTimeout = async <T,>(promise: Promise<T>, timeoutMs: number) => {
+const withTimeout = async <T,>(promise: Promise<T>, timeoutMs: number): Promise<T> => {
   let timeoutId: ReturnType<typeof setTimeout> | null = null;
   try {
     return await Promise.race([

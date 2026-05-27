@@ -44,9 +44,6 @@ const toNonNegativeNumber = (value: unknown, fallback = 0): number => {
 
 const roundToTwo = (value: number): number => Math.round((value + Number.EPSILON) * 100) / 100;
 
-const useIsAuthenticatedNavigationGroup = (): boolean => useAuth().isAuthenticated;
-const useIsUnauthenticatedNavigationGroup = (): boolean => !useAuth().isAuthenticated;
-
 const screenListeners = {
   focus: (e: {target?: string}) => {
     const screenName = e.target?.split("-")[0] ?? "Unknown";
@@ -610,30 +607,7 @@ const GameScreenWrapper = () => {
   return <View style={styles.errorContainer} />;
 };
 
-const RootStack = createNativeStackNavigator({
-  screenOptions: {headerShown: false},
-  screenListeners,
-  groups: {
-    App: {
-      if: useIsAuthenticatedNavigationGroup,
-      screens: {
-        [AppStrings.Navigation.GAME]: GameScreenWrapper,
-      },
-    },
-    Auth: {
-      if: useIsUnauthenticatedNavigationGroup,
-      screens: {
-        [AppStrings.Navigation.LANDING]: LandingScreen,
-        [AppStrings.Navigation.LOGIN]: LoginScreen,
-        [AppStrings.Navigation.SIGN_UP]: SignUpScreen,
-        [AppStrings.Navigation.FORGOT_PASSWORD]: ForgotPasswordScreen,
-        [AppStrings.Navigation.NEW_PASSWORD]: NewPasswordScreen,
-      },
-    },
-  },
-});
-
-const StaticRootStack = RootStack.getComponent();
+const Stack = createNativeStackNavigator();
 
 /**
  * Root navigation component that declares the main authentication and app
@@ -657,7 +631,7 @@ export const Navigation = () => {
 
   // Show loading overlay only while the initial authentication state is being determined.
   // isRiddlesInitializing is intentionally excluded — GameScreenWrapper handles that
-  // spinner internally, so we never unmount the static root stack mid-flow (which would
+  // spinner internally, so we never unmount the root stack mid-flow (which would
   // reset the navigation stack back to Landing).
   if (isLoading) {
     logger.debug(
@@ -677,10 +651,21 @@ export const Navigation = () => {
     new Date().toISOString(),
   );
 
-  // Use React Navigation's static auth-conditioned group pattern.
-  // When isAuthenticated changes the correct screen is shown automatically —
-  // no explicit navigation.navigate() calls are needed after sign-in or sign-out.
-  return <StaticRootStack />;
+  return (
+    <Stack.Navigator screenOptions={{headerShown: false}} screenListeners={screenListeners}>
+      {isAuthenticated ? (
+        <Stack.Screen name={AppStrings.Navigation.GAME} component={GameScreenWrapper} />
+      ) : (
+        <>
+          <Stack.Screen name={AppStrings.Navigation.LANDING} component={LandingScreen} />
+          <Stack.Screen name={AppStrings.Navigation.LOGIN} component={LoginScreen} />
+          <Stack.Screen name={AppStrings.Navigation.SIGN_UP} component={SignUpScreen} />
+          <Stack.Screen name={AppStrings.Navigation.FORGOT_PASSWORD} component={ForgotPasswordScreen} />
+          <Stack.Screen name={AppStrings.Navigation.NEW_PASSWORD} component={NewPasswordScreen} />
+        </>
+      )}
+    </Stack.Navigator>
+  );
 };
 
 export default Navigation;

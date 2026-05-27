@@ -6,15 +6,124 @@
  * when the DSN is absent.
  */
 import * as Sentry from "@sentry/react-native";
+import type {Event, EventHint} from "@sentry/core";
 
 const dsn = process.env.EXPO_PUBLIC_SENTRY_DSN;
 type SpanAttributes = Record<string, string | number | boolean | undefined>;
 
+const isDevelopmentRuntime = (): boolean => {
+  if (typeof __DEV__ !== "undefined") {
+    return __DEV__;
+  }
+  return process.env.NODE_ENV !== "production";
+};
+
+const normalizeUnknownText = (value: unknown): string => {
+  if (value === null || value === undefined) {
+    return "";
+  }
+
+  if (typeof value === "string") {
+    return value;
+  }
+
+  if (typeof value !== "object") {
+    return String(value);
+  }
+
+  const maybeError = value as Record<string, unknown>;
+  const parts = ["name", "code", "message", "type", "value"]
+    .map((key) => maybeError[key])
+    .filter((entry): entry is string => typeof entry === "string" && entry.length > 0);
+
+  if (maybeError.cause) {
+    parts.push(normalizeUnknownText(maybeError.cause));
+  }
+
+  return parts.length > 0 ? parts.join(" ") : String(value);
+};
+
+const eventToText = (event: Event): string => {
+  const exceptionValues = event.exception?.values ?? [];
+  const exceptionText = exceptionValues
+    .flatMap((exception) => [exception.type, exception.value])
+    .filter((entry): entry is string => typeof entry === "string" && entry.length > 0);
+
+  return [
+    event.message,
+    event.logentry?.message,
+    event.environment,
+    event.transaction,
+    ...exceptionText,
+  ]
+    .filter((entry): entry is string => typeof entry === "string" && entry.length > 0)
+    .join(" ");
+};
+
+const isExpectedSentryNoise = (text: string, isDevelopment: boolean): boolean => {
+  const lowerText = text.toLowerCase();
+
+  if (!lowerText.trim()) {
+    return false;
+  }
+
+  if (
+    lowerText.includes("google sign-in cancelled by user") ||
+    lowerText.includes("sign_in_cancelled") ||
+    lowerText.includes("user cancelled the login process") ||
+    lowerText.includes("user cancelled the login flow") ||
+    lowerText.includes("facebook login cancelled") ||
+    lowerText.includes("auth/auth-popup-closed-by-user")
+  ) {
+    return true;
+  }
+
+  if (lowerText.includes("googlemobileads/no-fill") || lowerText.includes("[googlemobileads/no-fill]")) {
+    return true;
+  }
+
+  if (
+    lowerText.includes("expoasset.downloadasync") ||
+    lowerText.includes("unable to download asset from url: http://10.0.2.2:8081")
+  ) {
+    return true;
+  }
+
+  if (
+    lowerText.includes("failed to initialize connection") &&
+    (lowerText.includes("purchaseerror") || lowerText.includes("react-native-iap"))
+  ) {
+    return true;
+  }
+
+  if (!isDevelopment) {
+    return false;
+  }
+
+  return (
+    lowerText.includes("tried to register two views with the same name") ||
+    lowerText.includes('requiring unknown module "react-native"') ||
+    lowerText.includes("operation timed out after 15000ms")
+  );
+};
+
+export const shouldDropSentryEvent = (event: Event, hint?: EventHint): boolean => {
+  const eventText = eventToText(event);
+  const hintText = normalizeUnknownText(hint?.originalException);
+  const isDevelopmentEvent = event.environment === "development" || isDevelopmentRuntime();
+  return isExpectedSentryNoise(`${eventText} ${hintText}`, isDevelopmentEvent);
+};
+
+export const shouldDropCapturedException = (error: unknown): boolean =>
+  isExpectedSentryNoise(normalizeUnknownText(error), isDevelopmentRuntime());
+
 if (dsn) {
   Sentry.init({
     dsn,
+    environment: isDevelopmentRuntime() ? "development" : "production",
     // Capture 100 % of transactions in dev; tune in production.
     tracesSampleRate: 1.0,
+    beforeSend: (event, hint) => (shouldDropSentryEvent(event, hint) ? null : event),
   });
 }
 
@@ -26,6 +135,7 @@ if (dsn) {
  */
 export function captureException(error: unknown, context?: Record<string, unknown>): void {
   if (!dsn) return;
+  if (shouldDropCapturedException(error)) return;
   if (context) {
     Sentry.withScope((scope) => {
       scope.setExtras(context);

@@ -76,6 +76,34 @@ const toStoreProductId = (productId: unknown): string | undefined => {
   return COIN_PRODUCT_ALIASES[productId] ?? productId;
 };
 
+const getIapErrorCode = (error: unknown): string | undefined => {
+  if (!error || typeof error !== "object") {
+    return undefined;
+  }
+  const code = (error as {code?: unknown}).code;
+  return typeof code === "string" ? code : undefined;
+};
+
+const getIapErrorMessage = (error: unknown): string => {
+  if (!error || typeof error !== "object") {
+    return typeof error === "string" ? error : "";
+  }
+  const message = (error as {message?: unknown}).message;
+  return typeof message === "string" ? message : "";
+};
+
+export const isExpectedIapInterruption = (error: unknown): boolean => {
+  const code = getIapErrorCode(error);
+  const message = getIapErrorMessage(error).toLowerCase();
+
+  return (
+    code === "E_USER_CANCELLED" ||
+    code === "E_ITEM_UNAVAILABLE" ||
+    code === "sku-not-found" ||
+    message.includes("failed to initialize connection")
+  );
+};
+
 /** Cached product list with a 5-minute TTL to avoid redundant store round-trips. */
 let cachedProducts: RNIap.Product[] | null = null;
 let cacheTimestamp = 0;
@@ -210,8 +238,12 @@ export const IapService = {
       cacheTimestamp = Date.now();
       return products;
     } catch (error) {
-      logger.error("Error fetching products:", error);
-      captureException(error);
+      if (isExpectedIapInterruption(error)) {
+        logger.warn("IAP products are unavailable in the current runtime:", error);
+      } else {
+        logger.error("Error fetching products:", error);
+        captureException(error);
+      }
       throw error; // Rethrow the error for handling in the component
     }
   },
@@ -391,8 +423,12 @@ export const IapService = {
         throw new Error("Could not process purchase token. Please try purchasing again.");
       }
     } catch (error: unknown) {
-      logger.error("Error purchasing product:", error);
-      captureException(error);
+      if (isExpectedIapInterruption(error)) {
+        logger.warn("Expected IAP purchase interruption:", error);
+      } else {
+        logger.error("Error purchasing product:", error);
+        captureException(error);
+      }
       addBreadcrumb("iap", "Purchase failed", {productId: storeProductId}, "error");
       void analyticsService.logPurchaseEvent("failed", {
         product_id: storeProductId,

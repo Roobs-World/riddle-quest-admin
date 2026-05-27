@@ -76,6 +76,7 @@ export class SolarSystemPreloader {
   private static isPreloaded = false;
   private static textureCache = createTextureCache();
   private static readonly texturePreloadConcurrency = 4;
+  private static readonly textureLoadTimeoutMs = 15000;
 
   private static readonly textureMapping = SOLAR_TEXTURE_MAPPING;
   private static readonly solarSystemConfig: PlanetConfig[] = SOLAR_SYSTEM_CONFIG;
@@ -109,7 +110,10 @@ export class SolarSystemPreloader {
         try {
           const texturePromise = loadTextureFromAsset(path, key);
           const timeoutPromise = new Promise<never>((_, reject) => {
-            setTimeout(() => reject(new Error(`Texture ${key} timeout after 3 seconds`)), 3000);
+            setTimeout(
+              () => reject(new Error(`Texture ${key} timeout after ${this.textureLoadTimeoutMs}ms`)),
+              this.textureLoadTimeoutMs,
+            );
           });
 
           const texture = await Promise.race([texturePromise, timeoutPromise]);

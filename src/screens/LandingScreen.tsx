@@ -26,6 +26,26 @@ import {captureException} from "../utils/sentry";
 import MainLogoPng from "../../assets/images/logo.png";
 import {LANDING_LOGO_HEIGHT, LANDING_LOGO_WIDTH} from "../constants/layout";
 
+const getAuthErrorCode = (error: unknown): string | undefined => {
+  if (!error || typeof error !== "object") {
+    return undefined;
+  }
+  const code = (error as {code?: unknown}).code;
+  return typeof code === "string" ? code : undefined;
+};
+
+const getAuthErrorMessage = (error: unknown): string | undefined => {
+  if (!error || typeof error !== "object") {
+    return undefined;
+  }
+  const message = (error as {message?: unknown}).message;
+  return typeof message === "string" ? message : undefined;
+};
+
+const isGoogleSignInCancellation = (error: unknown): boolean =>
+  getAuthErrorCode(error) === "auth/auth-popup-closed-by-user" ||
+  getAuthErrorMessage(error)?.includes("Google sign-in cancelled by user") === true;
+
 /**
  * Landing screen component used at the root of the auth stack.
  *
@@ -48,18 +68,22 @@ const LandingScreen = () => {
         login();
       }
     } catch (error) {
-      const firebaseError = error as FirebaseAuthTypes.NativeFirebaseAuthError;
-      logger.error("Google login error:", firebaseError);
+      const errorCode = getAuthErrorCode(error);
+      const errorMessage = getAuthErrorMessage(error);
+
+      if (isGoogleSignInCancellation(error)) {
+        logger.debug("Auth popup closed by user.");
+        return;
+      }
+
+      logger.error("Google login error:", error);
       captureException(error);
-      switch (firebaseError.code) {
+      switch (errorCode) {
         case "auth/account-exists-with-different-credential":
           setAuthError(AppStrings.AuthStrings.Login.ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL);
           break;
-        case "auth/auth-popup-closed-by-user":
-          logger.debug("Auth popup closed by user.");
-          break;
         default:
-          setAuthError(firebaseError.message || AppStrings.AuthStrings.Login.GOOGLE_UNEXPECTED_ERROR);
+          setAuthError(errorMessage || AppStrings.AuthStrings.Login.GOOGLE_UNEXPECTED_ERROR);
       }
     } finally {
       setIsLoading(false);
@@ -85,9 +109,8 @@ const LandingScreen = () => {
       logger.error("Facebook login error:", error);
       captureException(error);
 
-      if (error instanceof Error) {
-        const errorMessage = (error as Error).message;
-
+      const errorMessage = getAuthErrorMessage(error);
+      if (errorMessage) {
         // Handle specific Facebook SDK errors
         if (errorMessage.includes("access token")) {
           logger.error("Facebook access token error detected");
@@ -109,7 +132,7 @@ const LandingScreen = () => {
 
         // For generic Error objects that don't match specific patterns, use the actual error message
         // This fixes the issue where "FB Network error" was being replaced with generic message
-        if (!("code" in error)) {
+        if (!(error && typeof error === "object" && "code" in error)) {
           setAuthError(errorMessage);
           return;
         }
@@ -139,11 +162,10 @@ const LandingScreen = () => {
         }
       } else {
         // Handle other types of errors with better fallback
-        const errorMessage =
-          error instanceof Error ? (error as Error).message : AppStrings.AuthStrings.Login.FACEBOOK_UNEXPECTED_ERROR;
+        const fallbackErrorMessage = errorMessage ?? AppStrings.AuthStrings.Login.FACEBOOK_UNEXPECTED_ERROR;
 
-        logger.error("Non-Firebase Facebook error:", errorMessage);
-        setAuthError(errorMessage);
+        logger.error("Non-Firebase Facebook error:", fallbackErrorMessage);
+        setAuthError(fallbackErrorMessage);
       }
     } finally {
       setIsLoading(false);

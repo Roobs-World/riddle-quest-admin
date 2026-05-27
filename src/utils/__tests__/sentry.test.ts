@@ -53,7 +53,9 @@ describe("utils/sentry", () => {
     expect(mockInit).toHaveBeenCalledWith(
       expect.objectContaining({
         dsn: "https://example-dsn@sentry.io/123",
+        environment: "development",
         tracesSampleRate: 1,
+        beforeSend: expect.any(Function),
       }),
     );
   });
@@ -75,6 +77,29 @@ describe("utils/sentry", () => {
     const error = new Error("boom");
     sentry.captureException(error);
     expect(mockCaptureException).toHaveBeenCalledWith(error);
+  });
+
+  it("captureException skips expected user and provider noise", () => {
+    const sentry = loadSentryUtils("dsn");
+
+    sentry.captureException(new Error("Google sign-in cancelled by user."));
+    sentry.captureException({code: "googleMobileAds/no-fill", message: "No fill."});
+    sentry.captureException({name: "PurchaseError", message: "Failed to initialize connection"});
+
+    expect(mockCaptureException).not.toHaveBeenCalled();
+  });
+
+  it("beforeSend drops expected development-only events", () => {
+    loadSentryUtils("dsn");
+    const initOptions = mockInit.mock.calls[0]?.[0] as {
+      beforeSend: (event: {message?: string; environment?: string}, hint?: {originalException?: unknown}) => unknown;
+    };
+
+    expect(initOptions.beforeSend({message: "Operation timed out after 15000ms", environment: "development"})).toBeNull();
+    expect(initOptions.beforeSend({message: "Real production error", environment: "production"})).toEqual({
+      message: "Real production error",
+      environment: "production",
+    });
   });
 
   it("captureException uses withScope and extras when context is provided", () => {

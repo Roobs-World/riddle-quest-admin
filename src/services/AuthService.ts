@@ -51,13 +51,25 @@ const FACEBOOK_CANCELLATION_MESSAGES = [
   "Account linking cancelled by user",
 ];
 
+const getAuthErrorMessage = (error: unknown): string | undefined => {
+  if (typeof error === "string") {
+    return error;
+  }
+  if (!error || typeof error !== "object") {
+    return undefined;
+  }
+  const message = (error as {message?: unknown}).message;
+  return typeof message === "string" ? message : undefined;
+};
+
 export const isFacebookLoginCancellation = (error: unknown): boolean => {
   if (!error) {
     return false;
   }
 
-  if (error instanceof Error) {
-    return FACEBOOK_CANCELLATION_MESSAGES.some((message) => error.message.includes(message));
+  const errorMessage = getAuthErrorMessage(error);
+  if (errorMessage && FACEBOOK_CANCELLATION_MESSAGES.some((message) => errorMessage.includes(message))) {
+    return true;
   }
 
   if (typeof error !== "object") {
@@ -78,12 +90,7 @@ export const isFacebookLoginCancellation = (error: unknown): boolean => {
     return true;
   }
 
-  if (typeof maybeError.message !== "string") {
-    return false;
-  }
-
-  const errorMessage = maybeError.message;
-  return FACEBOOK_CANCELLATION_MESSAGES.some((message) => errorMessage.includes(message));
+  return false;
 };
 
 export const AuthService = {
