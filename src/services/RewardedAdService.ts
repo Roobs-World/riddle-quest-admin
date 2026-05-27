@@ -2,9 +2,10 @@ import {Platform} from "react-native";
 import mobileAds, {AdEventType, RewardedAd, RewardedAdEventType} from "react-native-google-mobile-ads";
 import {getApp} from "@react-native-firebase/app";
 import {getAuth} from "@react-native-firebase/auth";
-import {getFunctions, httpsCallable} from "@react-native-firebase/functions";
 import {logger} from "../utils/logger";
 import {captureException} from "../utils/sentry";
+import {callValidatedFunction} from "../utils/firebaseFunctions";
+import {AwardedAdCallbackInputSchema, AwardedAdCallbackOutputSchema} from "../validation/cloudFunctionsSchemas";
 
 const REWARDED_AD_TEST_UNIT_ID = "ca-app-pub-3940256099942544/5224354917";
 const MAX_LOAD_RETRY_ATTEMPTS = 3;
@@ -263,23 +264,15 @@ export const recordRewardedAdCompletion = async (
     throw new Error("Cannot record rewarded ad completion without an authenticated user.");
   }
 
-  const result = await httpsCallable<
-    {
-      userId: string;
-      placement: RewardedAdPlacement;
-      callbackId: string;
-      provider: string;
-    },
-    AwardedAdCallbackResponse
-  >(
-    getFunctions(getApp()),
+  return callValidatedFunction(
     "awardedAdCallback",
-  )({
-    userId,
-    placement,
-    callbackId,
-    provider: "google-mobile-ads",
-  });
-
-  return result.data;
+    {
+      userId,
+      placement,
+      callbackId,
+      provider: "google-mobile-ads",
+    },
+    AwardedAdCallbackInputSchema,
+    AwardedAdCallbackOutputSchema,
+  );
 };

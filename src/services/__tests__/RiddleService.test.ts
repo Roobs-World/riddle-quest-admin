@@ -93,6 +93,7 @@ jest.mock("../../validation/cloudFunctionsSchemas", () => ({
 // Mock sentry to avoid actual error reporting during tests
 jest.mock("../../utils/sentry", () => ({
   captureException: jest.fn(),
+  withSentrySpan: jest.fn((_: string, __: string, callback: () => unknown) => callback()),
 }));
 
 // Get the mocked captureException for assertions

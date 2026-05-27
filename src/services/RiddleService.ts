@@ -1,13 +1,45 @@
 import {getFirestore, collection, doc, getDoc, getDocs, query, where, limit} from "@react-native-firebase/firestore";
 import {getAuth} from "@react-native-firebase/auth";
-import {getFunctions, httpsCallable} from "@react-native-firebase/functions";
 import {getApp} from "@react-native-firebase/app";
 import {z, ZodError} from "zod";
 import {SubmitGuessInputSchema, SubmitGuessOutputSchema} from "../validation/cloudFunctionsSchemas";
+import {FirestoreRiddleSchema, PlayerSchema} from "../validation/firestoreSchemas";
+import {FirebaseCallableValidationError, callValidatedFunction} from "../utils/firebaseFunctions";
 
 import {safeDelay} from "../utils/timing";
 import {logger} from "../utils/logger";
 import {captureException} from "../utils/sentry";
+import {
+  playerFirestoreConverter,
+  riddleFirestoreConverter,
+  withConverterIfAvailable,
+} from "./firestoreConverters";
+
+const DailyCompletionUserSchema = PlayerSchema.pick({lastDailyChallengeCompletedAt: true}).partial().passthrough();
+
+const readDailyCompletionData = (data: unknown) => {
+  const result = DailyCompletionUserSchema.safeParse(data);
+  if (!result.success) {
+    logger.warn("Ignoring malformed daily completion user data:", result.error.issues);
+    return null;
+  }
+  return result.data;
+};
+
+const readRiddleData = (data: unknown, fallbackRiddleId: string) => {
+  const rawData = typeof data === "object" && data !== null ? (data as {riddleId?: unknown}) : {};
+  const riddleId = typeof rawData.riddleId === "string" && rawData.riddleId.length > 0 ? rawData.riddleId : fallbackRiddleId;
+  const result = FirestoreRiddleSchema.safeParse({
+    ...rawData,
+    riddleId,
+  });
+
+  if (!result.success) {
+    return null;
+  }
+
+  return result.data;
+};
 
 /**
  * Shared helper for testable async timing in riddle service flows.
@@ -38,14 +70,25 @@ export const RiddleService = {
     const today = new Date().toISOString().slice(0, 10);
 
     try {
-      const userDoc = await getDoc(doc(getFirestore(), "users", userId));
+      const userDoc = await getDoc(
+        withConverterIfAvailable(doc(getFirestore(), "users", userId), playerFirestoreConverter),
+      );
 
       if (userDoc.exists()) {
-        const userData = userDoc.data();
+        let userData: ReturnType<typeof readDailyCompletionData> = null;
+        try {
+          userData = readDailyCompletionData(userDoc.data());
+        } catch (error) {
+          if (error instanceof ZodError) {
+            logger.warn("Ignoring malformed daily completion user data:", error.issues);
+          } else {
+            throw error;
+          }
+        }
         if (userData) {
-          const lastCompletedDateStr = userData.lastDailyChallengeCompletedAt as string | undefined;
-          if (lastCompletedDateStr) {
-            const lastCompletedDate = new Date(lastCompletedDateStr);
+          const lastCompletedAt = userData.lastDailyChallengeCompletedAt;
+          if (lastCompletedAt) {
+            const lastCompletedDate = new Date(lastCompletedAt);
             const lastCompletedDateUTC = lastCompletedDate.toISOString().slice(0, 10);
 
             if (lastCompletedDateUTC === today) {
@@ -56,7 +99,9 @@ export const RiddleService = {
         }
       }
 
-      const currentDailyDoc = await getDoc(doc(getFirestore(), "dailyRiddles", "current"));
+      const currentDailyDoc = await getDoc(
+        withConverterIfAvailable(doc(getFirestore(), "dailyRiddles", "current"), riddleFirestoreConverter),
+      );
       const hasCurrentDocApi =
         !!currentDailyDoc && typeof currentDailyDoc.exists === "function" && typeof currentDailyDoc.data === "function";
 
@@ -64,9 +109,23 @@ export const RiddleService = {
         logger.debug(`No current daily challenge found (docId: current) for date: ${today}`);
         return null;
       }
-      const currentDailyData = currentDailyDoc.data();
-      if (!currentDailyData || currentDailyData.answer === undefined) {
-        logger.error("Current daily riddle data or answer missing:", currentDailyData);
+      let currentDailyData: ReturnType<typeof readRiddleData> = null;
+      let currentDailyRawData: unknown;
+      try {
+        currentDailyRawData = currentDailyDoc.data();
+        currentDailyData = readRiddleData(
+          currentDailyRawData,
+          typeof currentDailyDoc.id === "string" ? currentDailyDoc.id : "current",
+        );
+      } catch (error) {
+        if (error instanceof ZodError) {
+          logger.error("Current daily riddle data failed validation:", error.issues);
+          return null;
+        }
+        throw error;
+      }
+      if (!currentDailyData) {
+        logger.error("Current daily riddle data or answer missing:", currentDailyRawData);
         return null;
       }
 
@@ -95,20 +154,38 @@ export const RiddleService = {
 
     try {
       const snapshot = await getDocs(
-        query(collection(getFirestore(), "riddles"), where("classicIndex", "==", level), limit(1)),
+        query(
+          withConverterIfAvailable(collection(getFirestore(), "riddles"), riddleFirestoreConverter),
+          where("classicIndex", "==", level),
+          limit(1),
+        ),
       );
 
       if (!snapshot.empty) {
         logger.debug(`Classic riddle found for level: ${level}`);
-        const riddleData = snapshot.docs[0].data();
-        if (riddleData && riddleData.answer !== undefined) {
+        let riddleData: ReturnType<typeof readRiddleData> = null;
+        let rawRiddleData: unknown;
+        try {
+          rawRiddleData = snapshot.docs[0].data();
+          riddleData = readRiddleData(
+            rawRiddleData,
+            typeof snapshot.docs[0].id === "string" ? snapshot.docs[0].id : "",
+          );
+        } catch (error) {
+          if (error instanceof ZodError) {
+            logger.error(`Classic riddle data failed validation for level: ${level}.`, error.issues);
+            return null;
+          }
+          throw error;
+        }
+        if (riddleData) {
           return {
             ...riddleData,
             riddleId: snapshot.docs[0].id,
             answerLength: riddleData.answer.length,
           };
         } else {
-          logger.error(`Riddle data or answer missing for level: ${level}. Data:`, riddleData);
+          logger.error(`Riddle data or answer missing for level: ${level}. Data:`, rawRiddleData);
           return null;
         }
       } else {
@@ -132,17 +209,18 @@ export const RiddleService = {
   async submitGuess(guessData: z.infer<typeof SubmitGuessInputSchema>) {
     logger.debug("Submitting guess for validation:", guessData);
     try {
-      SubmitGuessInputSchema.parse(guessData);
-
-      const submitGuessCallable = httpsCallable(getFunctions(getApp()), "submitGuess");
-      const result = await submitGuessCallable(guessData);
-
-      const validatedResult = SubmitGuessOutputSchema.parse(result.data);
+      const validatedResult = await callValidatedFunction(
+        "submitGuess",
+        guessData,
+        SubmitGuessInputSchema,
+        SubmitGuessOutputSchema,
+      );
       logger.debug("Guess validation result received and validated:", validatedResult);
       return validatedResult;
     } catch (error) {
-      if (error instanceof ZodError) {
-        logger.error("Zod validation error for guess submission:", error.issues);
+      if (error instanceof ZodError || error instanceof FirebaseCallableValidationError) {
+        const issues = error instanceof FirebaseCallableValidationError ? error.issues : error.issues;
+        logger.error("Zod validation error for guess submission:", issues);
         captureException(error);
         throw new Error("Invalid guess data provided.");
       } else {

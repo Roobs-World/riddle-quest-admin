@@ -1,4 +1,10 @@
-import {getFirebaseFunctions, getCallableFunction} from "../firebaseFunctions";
+import {z} from "zod";
+import {
+  FirebaseCallableValidationError,
+  getFirebaseFunctions,
+  getCallableFunction,
+  getValidatedCallableFunction,
+} from "../firebaseFunctions";
 
 // Mock Firebase modules
 jest.mock("@react-native-firebase/functions", () => ({
@@ -126,6 +132,61 @@ describe("firebaseFunctions", () => {
       expect(mockHttpsCallable).toHaveBeenCalledTimes(2);
       expect(result1).toBe(mockCallable1);
       expect(result2).toBe(mockCallable2);
+    });
+  });
+
+  describe("getValidatedCallableFunction", () => {
+    it("should validate request data before calling Firebase and response data after receipt", async () => {
+      const mockApp = {name: "test-app"};
+      const mockFunctions = {};
+      const mockCallable = jest.fn().mockResolvedValue({data: {ok: true}});
+
+      mockGetApp.mockReturnValue(mockApp);
+      mockGetFunctions.mockReturnValue(mockFunctions);
+      mockHttpsCallable.mockReturnValue(mockCallable);
+
+      const callable = getValidatedCallableFunction(
+        "testFunction",
+        z.object({name: z.string().min(1)}),
+        z.object({ok: z.boolean()}),
+      );
+
+      await expect(callable({name: "Qwordly"})).resolves.toEqual({ok: true});
+      expect(mockCallable).toHaveBeenCalledWith({name: "Qwordly"});
+    });
+
+    it("should reject invalid request data without calling Firebase", async () => {
+      const mockCallable = jest.fn().mockResolvedValue({data: {ok: true}});
+
+      mockGetApp.mockReturnValue({name: "test-app"});
+      mockGetFunctions.mockReturnValue({});
+      mockHttpsCallable.mockReturnValue(mockCallable);
+
+      const callable = getValidatedCallableFunction(
+        "testFunction",
+        z.object({name: z.string().min(1)}),
+        z.object({ok: z.boolean()}),
+      );
+
+      await expect(callable({name: ""})).rejects.toBeInstanceOf(FirebaseCallableValidationError);
+      expect(mockCallable).not.toHaveBeenCalled();
+    });
+
+    it("should reject invalid response data", async () => {
+      const mockCallable = jest.fn().mockResolvedValue({data: {ok: "yes"}});
+
+      mockGetApp.mockReturnValue({name: "test-app"});
+      mockGetFunctions.mockReturnValue({});
+      mockHttpsCallable.mockReturnValue(mockCallable);
+
+      const callable = getValidatedCallableFunction(
+        "testFunction",
+        z.object({name: z.string().min(1)}),
+        z.object({ok: z.boolean()}),
+      );
+
+      await expect(callable({name: "Qwordly"})).rejects.toBeInstanceOf(FirebaseCallableValidationError);
+      expect(mockCallable).toHaveBeenCalledWith({name: "Qwordly"});
     });
   });
 

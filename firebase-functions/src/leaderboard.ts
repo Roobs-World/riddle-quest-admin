@@ -15,33 +15,19 @@ import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
 import {onCall, HttpsError} from "firebase-functions/v2/https";
 import {captureException} from "./sentry";
+import {
+  GetLeaderboardRequest,
+  GetLeaderboardRequestSchema,
+  GetLeaderboardResponse,
+  GetLeaderboardResponseSchema,
+  LeaderboardEntry,
+  LeaderboardType,
+} from "./validation/requestSchemas";
+import {validateCallableRequest, validateCallableResponse} from "./validation/callableValidation";
 
 //
 // Types
 //
-
-export type LeaderboardType = "xp" | "totalWins" | "bestStreak";
-
-export interface LeaderboardEntry {
-  /** User document id / Firebase UID. */
-  userId: string;
-  /** Public display name for leaderboard row. */
-  username: string;
-  /** Optional avatar image URL. */
-  avatarUrl?: string;
-  /** Current player level. */
-  level: number;
-  /** Current player XP. */
-  xp: number;
-  /** Combined progression rank key derived from level + xp. */
-  progressScore: number;
-  /** Lifetime wins across modes. */
-  totalWins: number;
-  /** Best historical win streak. */
-  bestStreak: number;
-  /** Epoch milliseconds when row was last updated. */
-  updatedAt: number;
-}
 
 const LEVEL_WEIGHT = 1_000_000_000;
 const DEFAULT_USERNAME = "Player";
@@ -125,20 +111,6 @@ function toSafeLeaderboardEntry(raw: Partial<LeaderboardEntry>, fallbackUserId: 
   }
 
   return entry;
-}
-
-interface GetLeaderboardRequest {
-  /** Requested leaderboard ranking type. */
-  type: LeaderboardType;
-  /** Optional maximum number of rows to return. */
-  limit?: number;
-}
-
-export interface GetLeaderboardResponse {
-  /** Ranked leaderboard rows for the requested type. */
-  entries: LeaderboardEntry[];
-  /** The UID of the requesting user so the client can highlight their row. */
-  requestingUserId: string;
 }
 
 interface UserDocForLeaderboard {
@@ -435,9 +407,13 @@ export const getLeaderboard = onCall({enforceAppCheck: true}, async (request) =>
   }
   const requestingUserId = request.auth.uid;
 
-  const data = request.data as GetLeaderboardRequest;
-  const type: LeaderboardType = data?.type ?? "xp";
-  const limit = Math.min(data?.limit ?? 50, 100);
+  const data: GetLeaderboardRequest = validateCallableRequest(
+    GetLeaderboardRequestSchema,
+    request.data,
+    "getLeaderboard",
+  );
+  const type: LeaderboardType = data.type;
+  const limit = Math.min(data.limit ?? 50, 100);
 
   const validTypes: LeaderboardType[] = ["xp", "totalWins", "bestStreak"];
   if (!validTypes.includes(type)) {
@@ -510,7 +486,7 @@ export const getLeaderboard = onCall({enforceAppCheck: true}, async (request) =>
       entries,
       requestingUserId,
     };
-    return response;
+    return validateCallableResponse(GetLeaderboardResponseSchema, response, "getLeaderboard");
   } catch (error) {
     functions.logger.error("[Leaderboard] Failed to fetch leaderboard:", error);
     captureException(error, {type, limit, userId: requestingUserId});

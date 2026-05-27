@@ -44,7 +44,7 @@ import PulsingSpinner from "@/components/loading/PulsingSpinner";
 import {SolarSystemPreloader} from "./src/services/SolarSystemPreloader";
 import {preloadShopCatalog} from "./src/services/ShopCatalogPreloader";
 import {initializeRewardedAds} from "./src/services/RewardedAdService";
-import {getCrashlytics} from "@react-native-firebase/crashlytics";
+import {getCrashlytics, log as logCrashlyticsMessage} from "@react-native-firebase/crashlytics";
 import {ModalProvider} from "./src/contexts/ModalContext";
 import {QASurfaceGate} from "./src/qa/QASurfaceHarness";
 import {
@@ -175,7 +175,7 @@ export default Sentry.wrap(function App() {
             "Shared Animation Backend flag requested but current RN version does not satisfy 0.85.1+ requirement.",
           );
         }
-        getCrashlytics().log("App initialization started");
+        logCrashlyticsMessage(getCrashlytics(), "App initialization started");
         const savedLanguage = await AsyncStorage.getItem(APP_LANGUAGE_STORAGE_KEY);
         if (savedLanguage && isSupportedLanguage(savedLanguage)) {
           setAppLanguage(savedLanguage);

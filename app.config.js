@@ -18,7 +18,7 @@
  */
 
 // Load environment variables
-require("dotenv").config();
+require("dotenv").config({ quiet: true });
 const fs = require("fs");
 
 const sentryOrg = process.env.SENTRY_ORG || process.env.SENTRY_ORGANIZATION;
@@ -193,9 +193,14 @@ module.exports = {
    * Includes Firebase, authentication, ads, and build optimization plugins.
    */
   plugins: [
+    "@react-native-firebase/app",
+    "@react-native-firebase/auth",
     /** Firebase Crashlytics for error tracking */
     "./plugins/withReactNativeFirebaseCrashlytics.js",
+    "@react-native-firebase/messaging",
     "expo-asset",
+    "expo-font",
+    "expo-status-bar",
     ...(useSentryExpoPlugin
       ? [
           [
@@ -241,6 +246,7 @@ module.exports = {
         isAutoInitEnabled: true,
       },
     ],
+    "react-native-iap",
     /** Custom plugin for Android IAP store selection */
     "./plugins/withAndroidIapStoreSelection.js",
 
@@ -265,7 +271,7 @@ module.exports = {
           compileSdkVersion: 36,
           targetSdkVersion: 36,
           buildToolsVersion: "36.0.0",
-          kotlinVersion: "2.0.21",
+          kotlinVersion: "2.1.20",
 
           /** Audio quality preservation settings */
           proguardMinifyEnabled: false, // Disable minification to preserve audio quality

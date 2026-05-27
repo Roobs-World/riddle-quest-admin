@@ -32,8 +32,11 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
 
   useEffect(() => {
     if (!isVisible) {
-      setIsExistingAccountModalVisible(false);
-      return;
+      const closePrompt = setTimeout(() => {
+        setIsExistingAccountModalVisible(false);
+      }, 0);
+
+      return () => clearTimeout(closePrompt);
     }
 
     if (!initialExistingAccountPromptVisible) {

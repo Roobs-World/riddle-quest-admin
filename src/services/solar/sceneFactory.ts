@@ -14,6 +14,7 @@ import {
   SphereGeometry,
   Texture,
 } from "three";
+import type {MeshPhongMaterialParameters} from "three";
 import {logger} from "../../utils/logger";
 import {captureException} from "../../utils/sentry";
 
@@ -110,8 +111,7 @@ export const addSunMeshes = (
     if (sunGeometry) {
       const sunScales = [1.0, 1.1, 1.2, 1.3];
       for (let i = 0; i < sunGlowTextures.length; i++) {
-        const sunMaterial = new MeshPhongMaterial({
-          map: sunGlowTextures[i] || undefined,
+        const sunMaterialParameters: MeshPhongMaterialParameters = {
           color: 0xffff00,
           emissive: 0xffff00,
           emissiveIntensity: 1.5,
@@ -119,7 +119,14 @@ export const addSunMeshes = (
           transparent: true,
           opacity: 0.7 - i * 0.15,
           depthWrite: false,
-        });
+        };
+
+        const sunGlowTexture = sunGlowTextures[i];
+        if (sunGlowTexture) {
+          sunMaterialParameters.map = sunGlowTexture;
+        }
+
+        const sunMaterial = new MeshPhongMaterial(sunMaterialParameters);
         const sunMesh = new Mesh(sunGeometry, sunMaterial);
         sunMesh.position.set(0, 0, 0);
         sunMesh.scale.setScalar(sunScales[i]);

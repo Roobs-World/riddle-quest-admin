@@ -4,6 +4,12 @@ import {logger} from "firebase-functions/v2";
 import {updateUserProfile} from "./firestoreService";
 import {validateUsernameForProfanity} from "./utils/profanityFilter";
 import {captureException} from "./sentry";
+import {
+  BasicSuccessMessageResponseSchema,
+  UpdateAvatarRequestSchema,
+  UpdateUsernameRequestSchema,
+} from "./validation/requestSchemas";
+import {validateCallableRequest, validateCallableResponse} from "./validation/callableValidation";
 
 async function syncLeaderboardProfileFields(
   userId: string,
@@ -39,17 +45,18 @@ async function syncLeaderboardProfileFields(
  * @param data - The request data containing the new avatar URL.
  * @param data.avatarUrl - The new URL of the user's avatar in Firebase Storage.
  */
-export const updateAvatar = onCall({enforceAppCheck: true}, async (request: CallableRequest<{avatarUrl: string}>) => {
+export const updateAvatar = onCall({enforceAppCheck: true}, async (request: CallableRequest<unknown>) => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
   }
 
   const userId = request.auth.uid;
-  const {avatarUrl} = request.data;
-
-  if (!avatarUrl || typeof avatarUrl !== "string") {
-    throw new HttpsError("invalid-argument", "Invalid or missing avatar URL.");
-  }
+  const {avatarUrl} = validateCallableRequest(
+    UpdateAvatarRequestSchema,
+    request.data,
+    "updateAvatar",
+    "Invalid or missing avatar URL.",
+  );
 
   logger.info(`Updating avatar URL for user: ${userId} with ${avatarUrl}`);
 
@@ -57,7 +64,11 @@ export const updateAvatar = onCall({enforceAppCheck: true}, async (request: Call
     await updateUserProfile(userId, {avatarUrl: avatarUrl});
     await syncLeaderboardProfileFields(userId, {avatarUrl});
     logger.info(`User ${userId} avatar URL updated successfully.`);
-    return {success: true, message: "Avatar URL updated successfully."};
+    return validateCallableResponse(
+      BasicSuccessMessageResponseSchema,
+      {success: true, message: "Avatar URL updated successfully."},
+      "updateAvatar",
+    );
   } catch (error) {
     logger.error(`Error updating avatar URL for user ${userId}:`, error);
     captureException(error);
@@ -69,17 +80,13 @@ export const updateAvatar = onCall({enforceAppCheck: true}, async (request: Call
  * Updates the authenticated user's username in Firestore.
  * Validates for profanity and uniqueness before saving.
  */
-export const updateUsername = onCall({enforceAppCheck: true}, async (request: CallableRequest<{username: string}>) => {
+export const updateUsername = onCall({enforceAppCheck: true}, async (request: CallableRequest<unknown>) => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
   }
 
   const userId = request.auth.uid;
-  const {username} = request.data;
-
-  if (!username || typeof username !== "string" || username.trim().length < 3) {
-    throw new HttpsError("invalid-argument", "Username must be at least 3 characters long.");
-  }
+  const {username} = validateCallableRequest(UpdateUsernameRequestSchema, request.data, "updateUsername");
 
   const trimmed = username.trim();
 
@@ -99,7 +106,11 @@ export const updateUsername = onCall({enforceAppCheck: true}, async (request: Ca
     await updateUserProfile(userId, {username: trimmed});
     await syncLeaderboardProfileFields(userId, {username: trimmed});
     logger.info(`User ${userId} username updated to: ${trimmed}`);
-    return {success: true, message: "Username updated successfully."};
+    return validateCallableResponse(
+      BasicSuccessMessageResponseSchema,
+      {success: true, message: "Username updated successfully."},
+      "updateUsername",
+    );
   } catch (error) {
     logger.error(`Error updating username for user ${userId}:`, error);
     captureException(error);

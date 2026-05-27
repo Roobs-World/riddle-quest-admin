@@ -9,11 +9,25 @@ import {
   ensureUserDocumentComplete,
 } from "./firestoreService";
 import {PlayerStats, PlayerStatsUpdate} from "./validation/firestoreSchemas";
-import type {FeedbackItem} from "./validation/requestSchemas";
+import {
+  CompleteGameRequestDataSchema,
+  CompleteGameResponseDataSchema,
+  SubmitGuessRequestDataSchema,
+  SubmitGuessResponseDataSchema,
+} from "./validation/requestSchemas";
+import type {
+  CompleteGameRequestData,
+  CompleteGameResponseData,
+  FeedbackItem,
+  SubmitGuessAuthContext,
+  SubmitGuessRequestData,
+  SubmitGuessResponseData,
+} from "./validation/requestSchemas";
 import {generateAndAppendRiddles, initializeRiddleDatabaseIfEmpty} from "./riddleGeneration";
 import {evaluateAchievements} from "./achievements";
 import {updateLeaderboardEntry} from "./leaderboard";
 import {captureException} from "./sentry";
+import {validateCallableRequest, validateCallableResponse} from "./validation/callableValidation";
 import {
   MAX_ATTEMPTS_CLASSIC,
   MAX_ATTEMPTS_CHALLENGE,
@@ -33,44 +47,6 @@ type PlayerTopLevelUpdate = {
   lastDailyChallengeCompletedAt?: number | admin.firestore.FieldValue;
   // Add other top-level fields here if they are updated similarly
 };
-
-// Type for feedback
-export type FeedbackColor = "green" | "yellow" | "red";
-
-interface SubmitGuessRequestData {
-  /** Guess text submitted by the client. */
-  guess: string;
-  /** Active riddle id being solved. */
-  riddleId: string;
-  /** Game mode controlling scoring/progression rules. */
-  gameMode: "challenge" | "classic";
-  /** One-based attempt number for this submission. */
-  attempts: number;
-}
-
-interface SubmitGuessAuthContext {
-  /** Authenticated Firebase UID. */
-  uid: string;
-  /** True when this session uses Firebase anonymous auth (guest). */
-  isAnonymous?: boolean;
-}
-
-interface SubmitGuessResponseData {
-  /** Per-letter feedback produced by server validation logic. */
-  feedback: FeedbackItem[];
-  /** True when the submitted guess is correct. */
-  isCorrect: boolean;
-  /** True when the game reached a terminal state. */
-  gameOver: boolean;
-  /** Correct answer revealed only when game is over. */
-  correctAnswer?: string;
-  /** Coins awarded for a successful solve. */
-  coinsEarned?: number;
-  /** Achievement IDs newly unlocked by this guess (server-authoritative). */
-  newlyUnlockedAchievementIds?: string[];
-  /** Updated daily streak value after a successful challenge completion. */
-  newWinStreak?: number;
-}
 
 type TimestampLike = {
   toDate?: () => Date;
@@ -467,10 +443,12 @@ export const submitGuess = onCall<SubmitGuessRequestData, Promise<SubmitGuessRes
     if (!request.auth) {
       throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
     }
-    return handleGuessLogic(request.data, {
+    const data = validateCallableRequest(SubmitGuessRequestDataSchema, request.data, "submitGuess");
+    const response = await handleGuessLogic(data, {
       uid: request.auth.uid,
       isAnonymous: request.auth.token?.firebase?.sign_in_provider === "anonymous",
     });
+    return validateCallableResponse(SubmitGuessResponseDataSchema, response, "submitGuess");
   },
 );
 
@@ -479,36 +457,6 @@ export const submitGuess = onCall<SubmitGuessRequestData, Promise<SubmitGuessRes
 // Feedback is computed client-side; this function handles all server-side
 // side-effects: coins, stats, progress advancement, and achievements.
 // ---------------------------------------------------------------------------
-
-interface CompleteGameRequestData {
-  /** Active riddle id being finalized. */
-  riddleId: string;
-  /** Game mode controlling reward/progression rules. */
-  gameMode: "challenge" | "classic";
-  /** Total number of guesses made during the game. */
-  attempts: number;
-  /** Whether the player solved the riddle. */
-  isCorrect: boolean;
-}
-
-interface CompleteGameResponseData {
-  /** Coins awarded for this game completion. */
-  coinsEarned: number;
-  /** IDs of achievements unlocked by this completion. */
-  newlyUnlockedAchievementIds: string[];
-  /** Score value awarded for this completion. */
-  scoreEarned: number;
-  /** XP awarded for this completion. */
-  xpEarned: number;
-  /** Player XP total after applying reward. */
-  newXp: number;
-  /** Player level after applying reward. */
-  newLevel: number;
-  /** Indicates whether the completion triggered level-up. */
-  leveledUp: boolean;
-  /** Updated daily streak value after a successful challenge completion. */
-  newWinStreak?: number;
-}
 
 /**
  * Finalizes server-side game side effects for a completed win/loss.
@@ -726,9 +674,11 @@ export const completeGame = onCall<CompleteGameRequestData, Promise<CompleteGame
     if (!request.auth) {
       throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
     }
-    return handleCompleteGameLogic(request.data, {
+    const data = validateCallableRequest(CompleteGameRequestDataSchema, request.data, "completeGame");
+    const response = await handleCompleteGameLogic(data, {
       uid: request.auth.uid,
       isAnonymous: request.auth.token?.firebase?.sign_in_provider === "anonymous",
     });
+    return validateCallableResponse(CompleteGameResponseDataSchema, response, "completeGame");
   },
 );

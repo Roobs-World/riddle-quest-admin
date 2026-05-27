@@ -2,6 +2,8 @@ import {z} from "zod";
 
 // Define valid game modes
 export const GameModeSchema = z.union([z.literal("daily"), z.literal("classic"), z.literal("challenge")]);
+export const BackendGameModeSchema = z.enum(["challenge", "classic"]);
+export const EmptyInputSchema = z.object({}).strict();
 
 // Schemas for functions identified in firebase-functions/index.ts
 
@@ -101,6 +103,28 @@ export const SubmitGuessOutputSchema = z.object({
 export type SubmitGuessInput = z.infer<typeof SubmitGuessInputSchema>;
 export type SubmitGuessOutput = z.infer<typeof SubmitGuessOutputSchema>;
 
+// completeGame
+export const CompleteGameInputSchema = z.object({
+  riddleId: z.string().min(1, "Riddle ID is required"),
+  gameMode: BackendGameModeSchema,
+  attempts: z.number().int().positive("Attempts must be a positive integer"),
+  isCorrect: z.boolean(),
+});
+
+export const CompleteGameOutputSchema = z.object({
+  coinsEarned: z.number().nonnegative(),
+  newlyUnlockedAchievementIds: z.array(z.string()),
+  scoreEarned: z.number().nonnegative().optional(),
+  xpEarned: z.number().nonnegative().optional(),
+  newXp: z.number().nonnegative().optional(),
+  newLevel: z.number().int().positive().optional(),
+  leveledUp: z.boolean().optional(),
+  newWinStreak: z.number().int().nonnegative().optional(),
+});
+
+export type CompleteGameInput = z.infer<typeof CompleteGameInputSchema>;
+export type CompleteGameOutput = z.infer<typeof CompleteGameOutputSchema>;
+
 // skipRiddle
 export const SkipRiddleInputSchema = z.object({
   riddleId: z.string().min(1, "Riddle ID is required"),
@@ -117,7 +141,7 @@ export const SkipRiddleOutputSchema = z.object({
 // spendCoins
 export const SpendCoinsInputSchema = z.object({
   amount: z.number().positive("Amount must be a positive number"),
-  reason: z.enum(["hint", "skip"]),
+  reason: z.enum(["hint", "skip", "continue"]),
 });
 
 export const SpendCoinsOutputSchema = z.object({
@@ -130,4 +154,85 @@ export const InitializeRiddleDatabaseOutputSchema = z.object({
   success: z.boolean(),
   message: z.string(),
   riddlesGenerated: z.number().int().nonnegative(),
+});
+
+export const DailyChallengeQuestionSchema = z.object({
+  riddleId: z.string(),
+  text: z.string(),
+  questionNumber: z.number().int().positive(),
+});
+
+export const CurrentDailyChallengeOutputSchema = z.object({
+  challenge: z
+    .object({
+      date: z.string().optional(),
+      questions: z.array(DailyChallengeQuestionSchema),
+      totalQuestions: z.number().int().positive(),
+    })
+    .optional(),
+  currentQuestion: z.number().int().nonnegative().optional(),
+  hasCompletedToday: z.boolean().optional(),
+  questionsCompleted: z.number().int().nonnegative().optional(),
+  error: z.string().optional(),
+});
+
+export const UpdateUsernameInputSchema = z.object({
+  username: z.string().trim().min(3),
+});
+
+export const BasicSuccessMessageOutputSchema = z.object({
+  success: z.boolean(),
+  message: z.string(),
+});
+
+export const GenerateTodaysDailyChallengeInputSchema = z.object({
+  forceGenerate: z.boolean(),
+});
+
+export const GenerateTodaysDailyChallengeOutputSchema = z.object({
+  success: z.boolean(),
+  message: z.string(),
+  questionsGenerated: z.number().int().nonnegative(),
+});
+
+export const RewardedAdPlacementSchema = z.enum(["loss_continue", "coin_shop"]);
+
+export const AwardedAdCallbackInputSchema = z.object({
+  userId: z.string().min(1),
+  placement: RewardedAdPlacementSchema,
+  callbackId: z.string().min(1),
+  provider: z.string().min(1),
+});
+
+export const AwardedAdCallbackOutputSchema = z.object({
+  success: z.boolean(),
+  placement: RewardedAdPlacementSchema,
+  callbackId: z.string(),
+  rewardCoins: z.number().nonnegative(),
+  newCoins: z.number().nonnegative(),
+  alreadyProcessed: z.boolean(),
+  message: z.string(),
+});
+
+export const ValidatePurchaseInputSchema = z.object({
+  purchaseToken: z.string().min(1),
+  productId: z.string().min(1),
+  platform: z.enum(["ios", "android"]),
+});
+
+export const ValidatePurchaseOutputSchema = z.object({
+  success: z.boolean(),
+  newCoins: z.number().nonnegative().optional(),
+  newlyUnlockedAchievementIds: z.array(z.string()).optional(),
+});
+
+export const GrantDevCoinsForPurchaseInputSchema = z.object({
+  productId: z.string().min(1),
+});
+
+export const GrantDevCoinsForPurchaseOutputSchema = z.object({
+  success: z.boolean(),
+  newCoins: z.number().nonnegative(),
+  coinsAwarded: z.number().nonnegative(),
+  newlyUnlockedAchievementIds: z.array(z.string()).optional(),
 });

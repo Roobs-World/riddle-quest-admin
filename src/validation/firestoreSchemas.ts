@@ -43,6 +43,10 @@ const coerceTimestampToMillis = (value: unknown): unknown => {
   if (value == null || typeof value === "number") {
     return value;
   }
+  if (typeof value === "string") {
+    const parsed = new Date(value);
+    return Number.isNaN(parsed.getTime()) ? value : parsed.getTime();
+  }
   if (value instanceof Date) {
     return value.getTime();
   }
@@ -157,6 +161,46 @@ export const FirestoreRiddleSchema = z.object({
 });
 
 export type FirestoreRiddle = z.infer<typeof FirestoreRiddleSchema>;
+
+export const RegionalPriceSchema = z
+  .object({
+    amount: z.number().nonnegative(),
+    currency: z.string().min(1),
+    displayPrice: z.string().min(1),
+    symbol: z.string().min(1),
+  })
+  .passthrough();
+
+export const SpecialOfferSchema = z
+  .object({
+    badgeText: z.string().min(1),
+    description: z.string().min(1),
+    discountPercentage: z.number().nonnegative(),
+    isActive: z.boolean(),
+    validFrom: z.number(),
+    validTo: z.number(),
+  })
+  .passthrough();
+
+export const ProductPricingSchema = z
+  .object({
+    productId: z.string().min(1),
+    productKey: z.string().min(1),
+    name: z.string().min(1),
+    description: z.string(),
+    coins: z.number().int().nonnegative(),
+    isActive: z.boolean(),
+    sortOrder: z.number(),
+    regionalPrices: z.array(RegionalPriceSchema).default([]),
+    specialOffer: SpecialOfferSchema.optional(),
+    featuredOrder: z.number().optional(),
+    featuredBadge: z.string().optional(),
+  })
+  .passthrough();
+
+export type RegionalPrice = z.infer<typeof RegionalPriceSchema>;
+export type SpecialOffer = z.infer<typeof SpecialOfferSchema>;
+export type ProductPricing = z.infer<typeof ProductPricingSchema>;
 
 export type PlayerProgress = z.infer<typeof PlayerProgressSchema>;
 export type PlayerStats = z.infer<typeof PlayerStatsSchema>;

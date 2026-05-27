@@ -3,6 +3,7 @@ const mockCaptureException = jest.fn();
 const mockCaptureMessage = jest.fn();
 const mockSetUser = jest.fn();
 const mockAddBreadcrumb = jest.fn();
+const mockStartSpan = jest.fn();
 const mockStartInactiveSpan = jest.fn();
 const mockWithScope = jest.fn();
 
@@ -12,6 +13,7 @@ jest.mock("@sentry/react-native", () => ({
   captureMessage: (...args: unknown[]) => mockCaptureMessage(...args),
   setUser: (...args: unknown[]) => mockSetUser(...args),
   addBreadcrumb: (...args: unknown[]) => mockAddBreadcrumb(...args),
+  startSpan: (...args: unknown[]) => mockStartSpan(...args),
   startInactiveSpan: (...args: unknown[]) => mockStartInactiveSpan(...args),
   withScope: (...args: unknown[]) => mockWithScope(...args),
 }));
@@ -141,6 +143,31 @@ describe("utils/sentry", () => {
     const transaction = sentry.startTransaction("tx", "op");
     expect(() => transaction.finish()).not.toThrow();
     expect(mockStartInactiveSpan).not.toHaveBeenCalled();
+  });
+
+  it("withSentrySpan runs callback directly without DSN", () => {
+    const sentry = loadSentryUtils(undefined);
+    const callback = jest.fn(() => "ok");
+    expect(sentry.withSentrySpan("span", "op", callback)).toBe("ok");
+    expect(callback).toHaveBeenCalledTimes(1);
+    expect(mockStartSpan).not.toHaveBeenCalled();
+  });
+
+  it("withSentrySpan delegates to Sentry startSpan when DSN is set", () => {
+    mockStartSpan.mockImplementation((_options, callback: () => string) => callback());
+
+    const sentry = loadSentryUtils("dsn");
+    const callback = jest.fn(() => "ok");
+    expect(sentry.withSentrySpan("span", "op", callback, {thing: "value"})).toBe("ok");
+
+    expect(mockStartSpan).toHaveBeenCalledWith(
+      {
+        name: "span",
+        op: "op",
+        attributes: {thing: "value"},
+      },
+      callback,
+    );
   });
 
   it("startTransaction returns finish that ends span when DSN is set", () => {

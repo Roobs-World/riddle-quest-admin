@@ -8,6 +8,7 @@
 import * as Sentry from "@sentry/node";
 
 const dsn = process.env.SENTRY_DSN;
+type SpanAttributes = Record<string, string | number | boolean | undefined>;
 
 if (dsn) {
   Sentry.init({
@@ -43,4 +44,14 @@ export function captureException(error: unknown, context?: Record<string, unknow
 export function captureMessage(message: string, level: "info" | "warning" | "error" = "info"): void {
   if (!dsn) return;
   Sentry.captureMessage(message, level);
+}
+
+export function withSentrySpan<T>(
+  name: string,
+  op: string,
+  callback: () => T,
+  attributes?: SpanAttributes,
+): T {
+  if (!dsn) return callback();
+  return Sentry.startSpan({name, op, attributes}, callback);
 }

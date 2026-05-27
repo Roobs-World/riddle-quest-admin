@@ -4,32 +4,18 @@ import {onCall, HttpsError} from "firebase-functions/v2/https";
 import {initializeNewUser, ensureUserDocumentComplete} from "./firestoreService";
 import {captureException} from "./sentry";
 import type {Player} from "./validation/firestoreSchemas";
-
-/**
- * Request data for initializing a new user
- */
-interface InitializeUserRequestData {
-  email: string;
-  username: string;
-  displayName?: string;
-  avatarUrl?: string;
-  seed?: Partial<Player>;
-}
-
-/**
- * Response data for user initialization
- */
-interface InitializeUserResponseData {
-  success: boolean;
-  message: string;
-  userId: string;
-  player: Player;
-}
-
-interface DeleteAccountResponseData {
-  success: boolean;
-  message: string;
-}
+import {
+  BasicSuccessMessageResponseSchema,
+  DeleteAccountResponseData,
+  DeleteAccountResponseDataSchema,
+  InitializeUserRequestData,
+  InitializeUserRequestDataSchema,
+  InitializeUserResponseData,
+  InitializeUserResponseDataSchema,
+  UpdateUserStatsRequestData,
+  UpdateUserStatsRequestDataSchema,
+} from "./validation/requestSchemas";
+import {validateCallableRequest, validateCallableResponse} from "./validation/callableValidation";
 
 const USER_ID_FIELD_COLLECTIONS = ["purchaseAnalytics", "notificationHistory"] as const;
 const USER_STORAGE_PREFIXES = ["avatars", "exports"] as const;
@@ -114,12 +100,11 @@ export const initializeUser = onCall<InitializeUserRequestData, Promise<Initiali
       }
 
       const userId = request.auth.uid;
-      const {email, username, displayName, avatarUrl} = request.data;
-
-      // Validate required fields
-      if (!email || !username) {
-        throw new HttpsError("invalid-argument", "Email and username are required.");
-      }
+      const {email, username, displayName, avatarUrl, seed} = validateCallableRequest(
+        InitializeUserRequestDataSchema,
+        request.data,
+        "initializeUser",
+      );
 
       // Initialize the user document with default stats and progress
       await initializeNewUser(userId, {
@@ -127,7 +112,7 @@ export const initializeUser = onCall<InitializeUserRequestData, Promise<Initiali
         username,
         displayName,
         avatarUrl,
-        seed: request.data.seed,
+        seed,
       });
 
       const userDoc = await admin.firestore().collection("users").doc(userId).get();
@@ -138,12 +123,12 @@ export const initializeUser = onCall<InitializeUserRequestData, Promise<Initiali
 
       functions.logger.info(`Successfully initialized user document for ${userId}`);
 
-      return {
+      return validateCallableResponse(InitializeUserResponseDataSchema, {
         success: true,
         message: "User document initialized successfully with default stats and progress.",
         userId,
         player,
-      };
+      }, "initializeUser");
     } catch (error: unknown) {
       functions.logger.error("Error in initializeUser:", error);
       captureException(error);
@@ -177,10 +162,14 @@ export const ensureUserComplete = onCall<object, Promise<{success: boolean; mess
 
       functions.logger.info(`Successfully ensured user document completeness for ${userId}`);
 
-      return {
-        success: true,
-        message: "User document verified/updated with all required fields.",
-      };
+      return validateCallableResponse(
+        BasicSuccessMessageResponseSchema,
+        {
+          success: true,
+          message: "User document verified/updated with all required fields.",
+        },
+        "ensureUserComplete",
+      );
     } catch (error: unknown) {
       functions.logger.error("Error in ensureUserComplete:", error);
       captureException(error);
@@ -205,10 +194,10 @@ export const deleteAccount = onCall<object, Promise<DeleteAccountResponseData>>(
 
       functions.logger.info(`Successfully deleted account for ${userId}.`);
 
-      return {
+      return validateCallableResponse(DeleteAccountResponseDataSchema, {
         success: true,
         message: "Account deleted successfully.",
-      };
+      }, "deleteAccount");
     } catch (error: unknown) {
       functions.logger.error("Error in deleteAccount:", error);
       captureException(error);
@@ -219,28 +208,6 @@ export const deleteAccount = onCall<object, Promise<DeleteAccountResponseData>>(
     }
   },
 );
-
-/**
- * Request data for updating user stats (admin function)
- */
-interface UpdateUserStatsRequestData {
-  targetUserId: string;
-  statsUpdate: {
-    dailyPuzzlesCompleted?: number;
-    bestStreak?: number;
-    totalWordsGuessed?: number;
-    winRate?: number;
-    averageGuesses?: number;
-    totalScore?: number;
-    highestLevelClassic?: number;
-    gamesPlayed?: number;
-    wins?: number;
-    challengeWins?: number;
-    winStreak?: number;
-    totalWins?: number;
-    totalGuessesInWins?: number;
-  };
-}
 
 /**
  * Checks if the authenticated user has admin privileges.
@@ -289,11 +256,11 @@ export const updateUserStats = onCall<UpdateUserStatsRequestData, Promise<{succe
         throw new HttpsError("permission-denied", "This operation requires admin privileges.");
       }
 
-      const {targetUserId, statsUpdate} = request.data;
-
-      if (!targetUserId || !statsUpdate) {
-        throw new HttpsError("invalid-argument", "targetUserId and statsUpdate are required.");
-      }
+      const {targetUserId, statsUpdate} = validateCallableRequest(
+        UpdateUserStatsRequestDataSchema,
+        request.data,
+        "updateUserStats",
+      );
 
       // Validate that the stats update contains valid fields
       const allowedStatFields = [
@@ -329,10 +296,10 @@ export const updateUserStats = onCall<UpdateUserStatsRequestData, Promise<{succe
 
       functions.logger.info(`Successfully updated stats for user ${targetUserId}:`, statsUpdate);
 
-      return {
+      return validateCallableResponse(BasicSuccessMessageResponseSchema, {
         success: true,
         message: `User stats updated successfully for ${targetUserId}.`,
-      };
+      }, "updateUserStats");
     } catch (error: unknown) {
       functions.logger.error("Error in updateUserStats:", error);
       captureException(error);

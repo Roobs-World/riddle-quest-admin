@@ -1,11 +1,16 @@
 import * as RNIap from "react-native-iap";
 import {Platform} from "react-native";
-import {getFunctions, httpsCallable} from "@react-native-firebase/functions";
-import {getApp} from "@react-native-firebase/app";
 import {PurchaseValidationResponse} from "../types/Player";
 import {logger} from "../utils/logger";
-import {captureException, addBreadcrumb, startTransaction} from "../utils/sentry";
+import {captureException, addBreadcrumb, withSentrySpan} from "../utils/sentry";
 import {analyticsService} from "./AnalyticsService";
+import {callValidatedFunction} from "../utils/firebaseFunctions";
+import {
+  GrantDevCoinsForPurchaseInputSchema,
+  GrantDevCoinsForPurchaseOutputSchema,
+  ValidatePurchaseInputSchema,
+  ValidatePurchaseOutputSchema,
+} from "../validation/cloudFunctionsSchemas";
 
 // Interface for IAP error objects that have error codes
 interface IapError extends Error {
@@ -161,26 +166,18 @@ export const IapService = {
       );
     }
 
-    const result = await httpsCallable<
-      {productId: string},
-      {
-        success: boolean;
-        newCoins: number;
-        coinsAwarded: number;
-        newlyUnlockedAchievementIds?: string[];
-      }
-    >(
-      getFunctions(getApp()),
+    const result = await callValidatedFunction(
       "grantDevCoinsForPurchase",
-    )({
-      productId: storeProductId,
-    });
+      {productId: storeProductId},
+      GrantDevCoinsForPurchaseInputSchema,
+      GrantDevCoinsForPurchaseOutputSchema,
+    );
 
     return {
-      success: result.data?.success === true,
-      newCoins: result.data?.newCoins ?? 0,
-      coinsAwarded: result.data?.coinsAwarded ?? 0,
-      newlyUnlockedAchievementIds: result.data?.newlyUnlockedAchievementIds ?? [],
+      success: result.success === true,
+      newCoins: result.newCoins ?? 0,
+      coinsAwarded: result.coinsAwarded ?? 0,
+      newlyUnlockedAchievementIds: result.newlyUnlockedAchievementIds ?? [],
     };
   },
 
@@ -347,9 +344,13 @@ export const IapService = {
       const purchaseToken = purchase.purchaseToken;
 
       if (purchaseToken) {
-        const iapTxn = startTransaction("validatePurchase", "http.client");
         try {
-          const validationResult = await this.validatePurchase(purchaseToken, storeProductId);
+          const validationResult = await withSentrySpan(
+            "iap.validateAndFinishPurchase",
+            "iap.validation",
+            () => this.validatePurchase(purchaseToken, storeProductId),
+            {productId: storeProductId},
+          );
           const isValid = validationResult.success === true;
 
           if (isValid) {
@@ -384,8 +385,6 @@ export const IapService = {
           throw new Error(
             "A network error occurred during purchase validation. Please check your internet connection.",
           );
-        } finally {
-          iapTxn.finish();
         }
       } else {
         logger.error("Purchase token is missing. Cannot proceed with validation.");
@@ -455,22 +454,22 @@ export const IapService = {
     // Call the Firebase Cloud Function for server-side validation
     // The server validates with App Store/Google Play and awards coins
     try {
-      const result = await httpsCallable<
-        {purchaseToken: string; productId: string; platform: string},
-        PurchaseValidationResponse
-      >(
-        getFunctions(getApp()),
+      const purchasePlatform = Platform.OS === "ios" ? "ios" : "android";
+      const result = await callValidatedFunction(
         "validatePurchase",
-      )({
-        purchaseToken,
-        productId,
-        platform: Platform.OS,
-      });
+        {
+          purchaseToken,
+          productId,
+          platform: purchasePlatform,
+        },
+        ValidatePurchaseInputSchema,
+        ValidatePurchaseOutputSchema,
+      );
 
       return {
-        success: result.data.success === true,
-        newCoins: result.data.newCoins,
-        newlyUnlockedAchievementIds: result.data.newlyUnlockedAchievementIds ?? [],
+        success: result.success === true,
+        newCoins: result.newCoins,
+        newlyUnlockedAchievementIds: result.newlyUnlockedAchievementIds ?? [],
       };
     } catch (error) {
       logger.error("Error calling validatePurchase Firebase Function:", error);

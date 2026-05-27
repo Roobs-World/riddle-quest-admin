@@ -19,10 +19,9 @@
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {AppState, AppStateStatus} from "react-native";
-import {getFunctions, httpsCallable} from "@react-native-firebase/functions";
-import {getApp} from "@react-native-firebase/app";
 import {logger} from "../utils/logger";
 import {captureException} from "../utils/sentry";
+import {getCallableFunction} from "../utils/firebaseFunctions";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -142,7 +141,7 @@ export class OfflineQueueService {
    */
   async call<T = unknown>(functionName: string, payload: unknown): Promise<T | null> {
     try {
-      const callable = httpsCallable(getFunctions(getApp()), functionName);
+      const callable = getCallableFunction(functionName);
       const result = await callable(payload);
       // Successful call — try to drain any previously queued items
       void this.drain();
@@ -230,7 +229,7 @@ export class OfflineQueueService {
         }
 
         try {
-          const callable = httpsCallable(getFunctions(getApp()), item.functionName);
+          const callable = getCallableFunction(item.functionName);
           await callable(item.payload);
           logger.info(`[OfflineQueue] Successfully replayed ${item.functionName} (id: ${item.id})`);
           // Do NOT push back — it was successful

@@ -14,8 +14,13 @@ import {Player, PlayerSchema} from "../validation/firestoreSchemas";
 import {FirestoreRiddle, FirestoreRiddleSchema} from "../validation/firestoreSchemas";
 import {ZodError} from "zod";
 import {logger} from "../utils/logger";
-import {captureException} from "../utils/sentry";
+import {captureException, withSentrySpan} from "../utils/sentry";
 import {getCallableFunction} from "../utils/firebaseFunctions";
+import {
+  playerFirestoreConverter,
+  riddleFirestoreConverter,
+  withConverterIfAvailable,
+} from "./firestoreConverters";
 
 /** Session cache for riddle fetches to avoid repeated Firestore reads (e.g. mode switch). */
 const RIDDLE_CACHE_MAX_SIZE = 50;
@@ -113,30 +118,37 @@ const isRetryableFirestoreReadError = (error: unknown): boolean => {
 };
 
 async function withFirestoreReadRetry<T>(operationName: string, operation: () => Promise<T>): Promise<T> {
-  let lastError: unknown = null;
+  return withSentrySpan(
+    `firestore.read.${operationName}`,
+    "db.firestore",
+    async () => {
+      let lastError: unknown = null;
 
-  for (let attempt = 1; attempt <= MAX_READ_RETRY_ATTEMPTS; attempt++) {
-    try {
-      return await operation();
-    } catch (error) {
-      lastError = error;
-      const shouldRetry = attempt < MAX_READ_RETRY_ATTEMPTS && isRetryableFirestoreReadError(error);
+      for (let attempt = 1; attempt <= MAX_READ_RETRY_ATTEMPTS; attempt++) {
+        try {
+          return await operation();
+        } catch (error) {
+          lastError = error;
+          const shouldRetry = attempt < MAX_READ_RETRY_ATTEMPTS && isRetryableFirestoreReadError(error);
 
-      if (!shouldRetry) {
-        throw error;
+          if (!shouldRetry) {
+            throw error;
+          }
+
+          const delay = BASE_RETRY_DELAY_MS * 2 ** (attempt - 1) + Math.floor(Math.random() * 120);
+          logger.warn(`${operationName} transient Firestore error. Retrying...`, {
+            attempt,
+            nextDelayMs: delay,
+            errorCode: normalizeFirestoreErrorCode(error),
+          });
+          await wait(delay);
+        }
       }
 
-      const delay = BASE_RETRY_DELAY_MS * 2 ** (attempt - 1) + Math.floor(Math.random() * 120);
-      logger.warn(`${operationName} transient Firestore error. Retrying...`, {
-        attempt,
-        nextDelayMs: delay,
-        errorCode: normalizeFirestoreErrorCode(error),
-      });
-      await wait(delay);
-    }
-  }
-
-  throw lastError;
+      throw lastError;
+    },
+    {operationName},
+  );
 }
 
 /** Clears the riddle cache (for tests or when cache must be invalidated). */
@@ -168,7 +180,7 @@ export const loadUserProgressFromFirestore = async (userId: string): Promise<Pla
   }
   try {
     const userDoc = await withFirestoreReadRetry("loadUserProgressFromFirestore", () =>
-      getDoc(doc(getFirestore(), "users", userId)),
+      getDoc(withConverterIfAvailable(doc(getFirestore(), "users", userId), playerFirestoreConverter)),
     );
     if (userDoc.exists()) {
       const userData = userDoc.data();
@@ -212,7 +224,12 @@ export const fetchDailyRiddleFromFirestore = async (dailyIndex: number): Promise
 
   try {
     const currentDailyDoc = await withFirestoreReadRetry("fetchDailyRiddleFromFirestore.current", () =>
-      getDoc(doc(getFirestore(), "dailyRiddles", DAILY_RIDDLE_DOC_ID)),
+      getDoc(
+        withConverterIfAvailable(
+          doc(getFirestore(), "dailyRiddles", DAILY_RIDDLE_DOC_ID),
+          riddleFirestoreConverter,
+        ),
+      ),
     );
 
     if (currentDailyDoc.exists()) {
@@ -265,7 +282,13 @@ export const fetchClassicRiddleFromFirestore = async (classicIndex: number): Pro
 
   try {
     const riddleQuerySnapshot = await withFirestoreReadRetry("fetchClassicRiddleFromFirestore", () =>
-      getDocs(query(collection(getFirestore(), "riddles"), where("classicIndex", "==", classicIndex), limit(1))),
+      getDocs(
+        query(
+          withConverterIfAvailable(collection(getFirestore(), "riddles"), riddleFirestoreConverter),
+          where("classicIndex", "==", classicIndex),
+          limit(1),
+        ),
+      ),
     );
 
     if (!riddleQuerySnapshot.empty) {
@@ -309,7 +332,13 @@ export const fetchDailyRiddleForDate = async (dateString: string): Promise<Fires
     // Assuming daily riddles are stored in a subcollection or have a field referencing the date
     // For now, let's assume they are in the 'riddles' collection with a 'date' field.
     const riddleQuerySnapshot = await withFirestoreReadRetry("fetchDailyRiddleForDate", () =>
-      getDocs(query(collection(getFirestore(), "riddles"), where("date", "==", dateString), limit(1))),
+      getDocs(
+        query(
+          withConverterIfAvailable(collection(getFirestore(), "riddles"), riddleFirestoreConverter),
+          where("date", "==", dateString),
+          limit(1),
+        ),
+      ),
     );
 
     if (!riddleQuerySnapshot.empty) {

@@ -6,16 +6,16 @@ const packageJsonPath = path.join(projectRoot, "package.json");
 const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
 
 const requiredDeps = {
-  "react-native": "0.85.1",
-  expo: "56.0.0-canary-20260409-6fc2991",
-  "@expo/metro-runtime": "56.0.0-canary-20260409-6fc2991",
-  "react-native-reanimated": "4.3.0",
-  "react-native-worklets": "0.8.1",
+  "react-native": "0.85.3",
+  expo: "56.0.5",
+  "@expo/metro-runtime": "56.0.13",
+  "react-native-reanimated": "4.3.1",
+  "react-native-worklets": "0.8.3",
 };
 
 const requiredDevDeps = {
-  "@react-native/jest-preset": "0.85.1",
-  "jest-expo": "56.0.0-canary-20260409-6fc2991",
+  "@react-native/jest-preset": "0.85.3",
+  "jest-expo": "56.0.4",
 };
 
 const bannedPatterns = [

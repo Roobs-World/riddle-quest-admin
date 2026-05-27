@@ -24,16 +24,15 @@ import {View, Text, TouchableOpacity} from "react-native";
 import {styles, TYPOGRAPHY, SPACING} from "../styles";
 import {scale} from "../utils/responsive";
 import {RiddleInitializationService} from "../services/RiddleInitializationService";
-import {getFunctions, httpsCallable} from "@react-native-firebase/functions";
-import {getApp} from "@react-native-firebase/app";
 import {logger} from "../utils/logger";
 import {captureException, addBreadcrumb} from "../utils/sentry";
 import {analyticsService} from "../services/AnalyticsService";
 import {isGuestPlayer} from "../features/auth/sessionBootstrap";
 import {loadUserProgressFromFirestore} from "../services/FirestoreService";
 import {Player} from "../validation/firestoreSchemas";
+import {callValidatedFunction} from "../utils/firebaseFunctions";
+import {CurrentDailyChallengeOutputSchema, EmptyInputSchema} from "../validation/cloudFunctionsSchemas";
 
-const Stack = createNativeStackNavigator();
 const GUEST_CLASSIC_START_INDEX = 1;
 
 const toNonNegativeNumber = (value: unknown, fallback = 0): number => {
@@ -44,6 +43,17 @@ const toNonNegativeNumber = (value: unknown, fallback = 0): number => {
 };
 
 const roundToTwo = (value: number): number => Math.round((value + Number.EPSILON) * 100) / 100;
+
+const useIsAuthenticatedNavigationGroup = (): boolean => useAuth().isAuthenticated;
+const useIsUnauthenticatedNavigationGroup = (): boolean => !useAuth().isAuthenticated;
+
+const screenListeners = {
+  focus: (e: {target?: string}) => {
+    const screenName = e.target?.split("-")[0] ?? "Unknown";
+    addBreadcrumb("navigation", `Screen focused: ${screenName}`, {screen: screenName});
+    void analyticsService.logScreenView(screenName);
+  },
+};
 
 /**
  * Wrapper component that connects `GameScreen` to authentication and riddle
@@ -134,11 +144,13 @@ const GameScreenWrapper = () => {
     }
 
     try {
-      const getCurrentDailyChallengeCallable = httpsCallable(getFunctions(getApp()), "getCurrentDailyChallenge");
-      const result = await getCurrentDailyChallengeCallable();
-      const data = result.data as {hasCompletedToday: boolean};
-      const {hasCompletedToday} = data;
-      return hasCompletedToday;
+      const data = await callValidatedFunction(
+        "getCurrentDailyChallenge",
+        {},
+        EmptyInputSchema,
+        CurrentDailyChallengeOutputSchema,
+      );
+      return data.hasCompletedToday === true;
     } catch (error) {
       logger.error("Error checking daily challenge completion:", error);
       captureException(error);
@@ -598,6 +610,31 @@ const GameScreenWrapper = () => {
   return <View style={styles.errorContainer} />;
 };
 
+const RootStack = createNativeStackNavigator({
+  screenOptions: {headerShown: false},
+  screenListeners,
+  groups: {
+    App: {
+      if: useIsAuthenticatedNavigationGroup,
+      screens: {
+        [AppStrings.Navigation.GAME]: GameScreenWrapper,
+      },
+    },
+    Auth: {
+      if: useIsUnauthenticatedNavigationGroup,
+      screens: {
+        [AppStrings.Navigation.LANDING]: LandingScreen,
+        [AppStrings.Navigation.LOGIN]: LoginScreen,
+        [AppStrings.Navigation.SIGN_UP]: SignUpScreen,
+        [AppStrings.Navigation.FORGOT_PASSWORD]: ForgotPasswordScreen,
+        [AppStrings.Navigation.NEW_PASSWORD]: NewPasswordScreen,
+      },
+    },
+  },
+});
+
+const StaticRootStack = RootStack.getComponent();
+
 /**
  * Root navigation component that declares the main authentication and app
  * stacks for Riddle Quest.
@@ -620,7 +657,7 @@ export const Navigation = () => {
 
   // Show loading overlay only while the initial authentication state is being determined.
   // isRiddlesInitializing is intentionally excluded — GameScreenWrapper handles that
-  // spinner internally, so we never unmount the Stack.Navigator mid-flow (which would
+  // spinner internally, so we never unmount the static root stack mid-flow (which would
   // reset the navigation stack back to Landing).
   if (isLoading) {
     logger.debug(
@@ -640,33 +677,10 @@ export const Navigation = () => {
     new Date().toISOString(),
   );
 
-  // Use React Navigation's auth-conditioned stack pattern.
+  // Use React Navigation's static auth-conditioned group pattern.
   // When isAuthenticated changes the correct screen is shown automatically —
   // no explicit navigation.navigate() calls are needed after sign-in or sign-out.
-  return (
-    <Stack.Navigator
-      screenOptions={{headerShown: false}}
-      screenListeners={{
-        focus: (e) => {
-          const screenName = e.target?.split("-")[0] ?? "Unknown";
-          addBreadcrumb("navigation", `Screen focused: ${screenName}`, {screen: screenName});
-          void analyticsService.logScreenView(screenName);
-        },
-      }}
-    >
-      {isAuthenticated ? (
-        <Stack.Screen name={AppStrings.Navigation.GAME} component={GameScreenWrapper} />
-      ) : (
-        <>
-          <Stack.Screen name={AppStrings.Navigation.LANDING} component={LandingScreen} />
-          <Stack.Screen name={AppStrings.Navigation.LOGIN} component={LoginScreen} />
-          <Stack.Screen name={AppStrings.Navigation.SIGN_UP} component={SignUpScreen} />
-          <Stack.Screen name={AppStrings.Navigation.FORGOT_PASSWORD} component={ForgotPasswordScreen} />
-          <Stack.Screen name={AppStrings.Navigation.NEW_PASSWORD} component={NewPasswordScreen} />
-        </>
-      )}
-    </Stack.Navigator>
-  );
+  return <StaticRootStack />;
 };
 
 export default Navigation;

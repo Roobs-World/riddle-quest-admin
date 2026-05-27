@@ -49,6 +49,7 @@ const {
   default: SolarSystem3D,
   __resetSolarSystem3DTextureCacheForTests,
   __createSunMaterialForTests,
+  __getSolarCanvasFrameloopForTests,
   __applySunFrameUpdateForTests,
   __applyMoonFrameUpdateForTests,
   __applyPlanetFrameUpdateForTests,
@@ -116,6 +117,14 @@ describe("SolarSystem3D", () => {
     expect(mockSetClearColor).toHaveBeenCalledWith(0x000000, 0);
     expect(mockGetContext).toHaveBeenCalled();
     expect(mockLookAt).toHaveBeenCalledWith(0, 0, 0);
+  });
+
+  it("pauses the canvas frame loop when the background is hidden", () => {
+    const {getByTestId} = render(<SolarSystem3D visible={false} />);
+
+    expect(getByTestId("mock-canvas").props.frameloop).toBe("never");
+    expect(__getSolarCanvasFrameloopForTests(false)).toBe("never");
+    expect(__getSolarCanvasFrameloopForTests(true)).toBe("always");
   });
 
   it("disables Three color management for expo-gl compatibility", () => {

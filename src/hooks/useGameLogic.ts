@@ -9,14 +9,18 @@
  */
 import {useState, useCallback, useEffect, useMemo, useRef} from "react";
 import type {SubmittedGuess} from "./types";
-import {getFunctions, httpsCallable} from "@react-native-firebase/functions";
-import {getApp} from "@react-native-firebase/app";
 import {logger} from "../utils/logger";
-import {captureException, addBreadcrumb, startTransaction} from "../utils/sentry";
+import {captureException, addBreadcrumb} from "../utils/sentry";
 import {gameEventBus} from "../services/GameEventBus";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {CLASSIC_RIDDLE_COIN_REWARD, DAILY_CHALLENGE_COIN_REWARD} from "../constants/game";
 import {NUM_GUESSES} from "../utils/constants";
+import {getValidatedCallableFunction} from "../utils/firebaseFunctions";
+import {
+  CompleteGameInputSchema,
+  CompleteGameOutputSchema,
+  type CompleteGameOutput,
+} from "../validation/cloudFunctionsSchemas";
 
 export type Feedback = "green" | "yellow" | "red";
 
@@ -36,14 +40,6 @@ interface UseGameLogicProps {
   gameMode: "challenge" | "classic";
   /** True when this game session is running in guest mode (local-only progress). */
   isGuestMode?: boolean;
-}
-
-interface CompleteGameResponseData {
-  coinsEarned: number;
-  newlyUnlockedAchievementIds: string[];
-  scoreEarned?: number;
-  xpEarned?: number;
-  newWinStreak?: number;
 }
 
 const GUEST_GAME_SESSION_STORAGE_KEY = "@guest_game_session_v1";
@@ -124,7 +120,10 @@ const useGameLogic = ({riddleId, answer, gameMode, isGuestMode = false}: UseGame
   const [hasUsedContinue, setHasUsedContinue] = useState(false);
   const lastPersistedGuestSnapshotRef = useRef<string | null>(null);
   const normalizedAnswer = useMemo(() => answer.toLowerCase(), [answer]);
-  const completeGame = useMemo(() => httpsCallable(getFunctions(getApp()), "completeGame"), []);
+  const completeGame = useMemo(
+    () => getValidatedCallableFunction("completeGame", CompleteGameInputSchema, CompleteGameOutputSchema),
+    [],
+  );
 
   const clearGuestSession = useCallback(async (): Promise<void> => {
     if (!isGuestMode) return;
@@ -257,15 +256,13 @@ const useGameLogic = ({riddleId, answer, gameMode, isGuestMode = false}: UseGame
           scoreEarned = rewards.score;
         } else {
           // Notify server once.
-          const txn = startTransaction("completeGame", "http.client");
           try {
-            const result = await completeGame({
+            const data: CompleteGameOutput = await completeGame({
               riddleId,
               gameMode,
               attempts: currentAttempt,
               isCorrect: true,
             });
-            const data = result.data as CompleteGameResponseData;
             coinsEarned = data.coinsEarned ?? 0;
             // Some backend builds return xp as `xpEarned` only.
             scoreEarned = data.scoreEarned ?? data.xpEarned ?? 0;
@@ -280,8 +277,6 @@ const useGameLogic = ({riddleId, answer, gameMode, isGuestMode = false}: UseGame
           } catch (err) {
             logger.error("Error calling completeGame on win:", err);
             captureException(err);
-          } finally {
-            txn.finish();
           }
         }
 

@@ -11,13 +11,16 @@ import {
 import {generateAndAppendRiddles} from "./riddleGeneration";
 import {captureException} from "./sentry";
 import type {PlayerProgress} from "./validation/firestoreSchemas";
-
-type SkipRiddleResponse = {
-  success: boolean;
-  newProgress?: PlayerProgress | null;
-  message: string;
-  costDeducted: number;
-};
+import {
+  SkipRiddleRequest,
+  SkipRiddleRequestSchema,
+  SkipRiddleResponse,
+  SkipRiddleResponseSchema,
+  SpendCoinsRequest,
+  SpendCoinsRequestSchema,
+  SpendCoinsResponseSchema,
+} from "./validation/requestSchemas";
+import {validateCallableRequest, validateCallableResponse} from "./validation/callableValidation";
 
 /**
  * Skips the current riddle by marking it as completed and advancing to the next level/question.
@@ -29,21 +32,22 @@ type SkipRiddleResponse = {
  */
 export const skipRiddle = onCall(
   {enforceAppCheck: true},
-  async (
-    request: CallableRequest<{riddleId: string; gameMode: "classic" | "challenge"}>,
-  ): Promise<SkipRiddleResponse> => {
+  async (request: CallableRequest<SkipRiddleRequest>): Promise<SkipRiddleResponse> => {
     try {
       if (!request.auth) {
         throw new HttpsError("unauthenticated", "The user must be authenticated to skip a riddle.");
       }
 
       const currentUserId = request.auth.uid;
-      const {riddleId, gameMode} = request.data;
-
-      // Validate game mode
-      if (!["classic", "challenge"].includes(gameMode)) {
-        throw new HttpsError("invalid-argument", "Invalid game mode specified.");
-      }
+      const {riddleId, gameMode} = validateCallableRequest(
+        SkipRiddleRequestSchema,
+        request.data,
+        "skipRiddle",
+        (error) =>
+          error.issues.some((issue) => issue.path[0] === "gameMode")
+            ? "Invalid game mode specified."
+            : "Invalid request payload for skipRiddle.",
+      );
 
       // Check if user has enough coins (different costs for different modes)
       const user = await getUser(currentUserId);
@@ -194,12 +198,16 @@ export const skipRiddle = onCall(
         `User ${currentUserId} skipped riddle ${riddleId} in ${gameMode} mode for ${skipCost} coins. ${progressMessage}`,
       );
 
-      return {
-        success: true,
-        newProgress,
-        message: `Riddle skipped successfully. ${skipCost} coins deducted. ${progressMessage}`,
-        costDeducted: skipCost,
-      };
+      return validateCallableResponse(
+        SkipRiddleResponseSchema,
+        {
+          success: true,
+          newProgress,
+          message: `Riddle skipped successfully. ${skipCost} coins deducted. ${progressMessage}`,
+          costDeducted: skipCost,
+        },
+        "skipRiddle",
+      );
     } catch (error) {
       if (error instanceof HttpsError) {
         throw error;
@@ -222,21 +230,21 @@ export const skipRiddle = onCall(
  */
 export const spendCoins = onCall(
   {enforceAppCheck: true},
-  async (request: CallableRequest<{amount: number; reason: string}>): Promise<{newCoins: number}> => {
+  async (request: CallableRequest<SpendCoinsRequest>): Promise<{newCoins: number}> => {
     if (!request.auth) {
       throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
     }
 
-    const {amount, reason} = request.data;
+    const {amount, reason} = validateCallableRequest(
+      SpendCoinsRequestSchema,
+      request.data,
+      "spendCoins",
+      (error) =>
+        error.issues.some((issue) => issue.path[0] === "reason")
+          ? "Invalid reason specified. Must be 'hint', 'skip', or 'continue'."
+          : "Invalid amount specified.",
+    );
     const userId = request.auth.uid;
-
-    if (typeof amount !== "number" || amount <= 0) {
-      throw new HttpsError("invalid-argument", "Invalid amount specified.");
-    }
-
-    if (!["hint", "skip", "continue"].includes(reason)) {
-      throw new HttpsError("invalid-argument", "Invalid reason specified. Must be 'hint', 'skip', or 'continue'.");
-    }
 
     try {
       // Check if user exists first
@@ -258,7 +266,7 @@ export const spendCoins = onCall(
       }
 
       logger.info(`User ${userId} spent ${amount} coins for reason: ${reason}. New balance: ${updatedUser.coins}.`);
-      return {newCoins: updatedUser.coins};
+      return validateCallableResponse(SpendCoinsResponseSchema, {newCoins: updatedUser.coins}, "spendCoins");
     } catch (error: unknown) {
       // Only log unexpected errors, not expected business logic errors
       if (error instanceof HttpsError) {

@@ -13,7 +13,15 @@ import {
   logPurchaseAnalytic,
   updateRegionalSpendingStats,
 } from "./productPricingService";
-import {captureException} from "./sentry";
+import {captureException, withSentrySpan} from "./sentry";
+import {
+  GrantDevCoinsForPurchaseRequestSchema,
+  GrantDevCoinsForPurchaseResponseSchema,
+  ValidatePurchaseRequest,
+  ValidatePurchaseRequestSchema,
+  ValidatePurchaseResponseSchema,
+} from "./validation/requestSchemas";
+import {validateCallableRequest, validateCallableResponse} from "./validation/callableValidation";
 
 /**
  * IAP Validation Module
@@ -41,35 +49,32 @@ import {captureException} from "./sentry";
 export const validatePurchase = onCall(
   {enforceAppCheck: true},
   async (
-    request: functions.https.CallableRequest<{
-      purchaseToken: string;
-      productId: string;
-      platform: string;
-    }>,
+    request: functions.https.CallableRequest<ValidatePurchaseRequest>,
   ): Promise<{
     success: boolean;
-    newCoins: number | undefined;
+    newCoins?: number;
     newlyUnlockedAchievementIds?: string[];
   }> => {
     if (!request.auth) {
       throw new functions.https.HttpsError("unauthenticated", "The function must be called while authenticated.");
     }
 
-    if (!request.data) {
-      throw new functions.https.HttpsError("invalid-argument", "Invalid purchase token, product ID, or platform.");
+    let purchaseRequest: ValidatePurchaseRequest;
+    try {
+      purchaseRequest = validateCallableRequest(
+        ValidatePurchaseRequestSchema,
+        request.data,
+        "validatePurchase",
+        "Invalid purchase token, product ID, or platform.",
+      );
+    } catch (error) {
+      if ((error as {code?: string}).code === "invalid-argument") {
+        throw new functions.https.HttpsError("invalid-argument", "Invalid purchase token, product ID, or platform.");
+      }
+      throw error;
     }
-
-    const {purchaseToken, productId, platform} = request.data;
+    const {purchaseToken, productId, platform} = purchaseRequest;
     const userId = request.auth.uid;
-
-    if (
-      typeof purchaseToken !== "string" ||
-      typeof productId !== "string" ||
-      typeof platform !== "string" ||
-      (platform !== "ios" && platform !== "android")
-    ) {
-      throw new functions.https.HttpsError("invalid-argument", "Invalid purchase token, product ID, or platform.");
-    }
 
     functions.logger.info("Attempting to validate purchase.", {
       userId,
@@ -78,13 +83,23 @@ export const validatePurchase = onCall(
     });
 
     try {
-      const alreadyProcessed = await isPurchaseTokenAlreadyProcessed(userId, purchaseToken);
+      const alreadyProcessed = await withSentrySpan(
+        "iap.validatePurchase.checkProcessed",
+        "iap.receipt.check_processed",
+        () => isPurchaseTokenAlreadyProcessed(userId, purchaseToken),
+        {platform, productId},
+      );
       if (alreadyProcessed) {
         functions.logger.warn("IAP purchase token already processed.", {userId, productId});
         throw new functions.https.HttpsError("already-exists", "This purchase has already been processed.");
       }
 
-      const validationResponse = await performPlatformValidation(platform, purchaseToken, productId);
+      const validationResponse = await withSentrySpan(
+        "iap.validatePurchase.platformValidation",
+        "iap.platform_validation",
+        () => performPlatformValidation(platform, purchaseToken, productId),
+        {platform, productId},
+      );
 
       const isPurchaseValid = validationResponse.isValid === true;
       const validatedProductIdFromReceipt = validationResponse.productId;
@@ -96,13 +111,25 @@ export const validatePurchase = onCall(
         let newlyUnlockedAchievementIds: string[] = [];
 
         if (validatedProductIdFromReceipt === NO_ADS_PRODUCT_ID) {
-          await updateUserProfile(userId, {hasPurchasedApp: true});
+          await withSentrySpan(
+            "iap.validatePurchase.grantEntitlement",
+            "iap.entitlement.grant",
+            async () => {
+              await updateUserProfile(userId, {hasPurchasedApp: true});
+            },
+            {platform, productId: validatedProductIdFromReceipt, entitlement: "no_ads"},
+          );
           functions.logger.info(`User ${userId} has purchased ad removal.`);
           const updatedUser = await getUser(userId);
           awardedCoins = updatedUser?.coins;
         } else {
           // Look up coin amount from Firestore productPricing first, fall back to hardcoded config
-          awardedCoins = await getCoinsForProduct(validatedProductIdFromReceipt!, BACKEND_COIN_PRODUCT_DETAILS);
+          awardedCoins = await withSentrySpan(
+            "iap.validatePurchase.resolveCoins",
+            "iap.pricing",
+            () => getCoinsForProduct(validatedProductIdFromReceipt!, BACKEND_COIN_PRODUCT_DETAILS),
+            {platform, productId: validatedProductIdFromReceipt},
+          );
 
           if (awardedCoins === undefined) {
             functions.logger.error(
@@ -111,57 +138,91 @@ export const validatePurchase = onCall(
             );
             throw new functions.https.HttpsError("internal", "Product configuration error on backend.");
           }
+          const resolvedAwardedCoins = awardedCoins;
 
-          await updateUserCoins(userId, awardedCoins);
-          await incrementCoinPackPurchaseCount(validatedProductIdFromReceipt!);
+          await withSentrySpan(
+            "iap.validatePurchase.grantEntitlement",
+            "iap.entitlement.grant",
+            async () => {
+              await updateUserCoins(userId, resolvedAwardedCoins);
+              await incrementCoinPackPurchaseCount(validatedProductIdFromReceipt!);
+              await updateUserProfile(userId, {hasPurchasedApp: true});
+            },
+            {
+              platform,
+              productId: validatedProductIdFromReceipt,
+              entitlement: "coins",
+              coins: resolvedAwardedCoins,
+            },
+          );
 
           const updatedUserForLog = await getUser(userId);
           functions.logger.info(
-            `Awarded ${awardedCoins} coins to user ${userId}. ` + `New balance: ${updatedUserForLog?.coins}`,
+            `Awarded ${resolvedAwardedCoins} coins to user ${userId}. ` + `New balance: ${updatedUserForLog?.coins}`,
           );
 
           // Log purchase analytics (non-critical — errors don't fail the purchase)
-          await logPurchaseAnalytic({
-            userId,
-            productId: validatedProductIdFromReceipt!,
-            coinsReceived: awardedCoins,
-            amountPaid: 0, // actual amount not available from receipt validation
-            currency: "USD",
-            platform,
-            country: "US", // country not available from receipt validation
-            transactionId: purchaseToken,
-            wasSpecialOffer: false,
-          });
+          await withSentrySpan(
+            "iap.validatePurchase.analytics",
+            "iap.analytics",
+            async () => {
+              // Non-critical analytics helpers log and swallow their own failures.
+              await logPurchaseAnalytic({
+                userId,
+                productId: validatedProductIdFromReceipt!,
+                coinsReceived: resolvedAwardedCoins,
+                amountPaid: 0, // actual amount not available from receipt validation
+                currency: "USD",
+                platform,
+                country: "US", // country not available from receipt validation
+                transactionId: purchaseToken,
+                wasSpecialOffer: false,
+              });
 
-          // Update regional spending stats (non-critical)
-          await updateRegionalSpendingStats("US", "USD", 0);
-
-          // Mark as purchaser for first-purchase achievement semantics.
-          await updateUserProfile(userId, {hasPurchasedApp: true});
+              await updateRegionalSpendingStats("US", "USD", 0);
+            },
+            {
+              platform,
+              productId: validatedProductIdFromReceipt,
+              coins: resolvedAwardedCoins,
+              currency: "USD",
+            },
+          );
         }
 
         try {
-          newlyUnlockedAchievementIds = await evaluateAchievements(userId, {
-            gameMode: "classic",
-            isCorrect: false,
-            attempts: 0,
-            gameOver: false,
-          });
+          newlyUnlockedAchievementIds = await withSentrySpan(
+            "iap.validatePurchase.evaluateAchievements",
+            "achievement.evaluate",
+            () =>
+              evaluateAchievements(userId, {
+                gameMode: "classic",
+                isCorrect: false,
+                attempts: 0,
+                gameOver: false,
+              }),
+            {platform, productId: validatedProductIdFromReceipt},
+          );
         } catch (err) {
           functions.logger.error("Error evaluating achievements after purchase:", err);
           captureException(err);
         }
 
-        await markPurchaseTokenAsProcessed(userId, purchaseToken, validatedProductIdFromReceipt);
+        await withSentrySpan(
+          "iap.validatePurchase.markProcessed",
+          "iap.receipt.mark_processed",
+          () => markPurchaseTokenAsProcessed(userId, purchaseToken, validatedProductIdFromReceipt),
+          {platform, productId: validatedProductIdFromReceipt},
+        );
 
         const finalUser = await getUser(userId);
         const finalNewCoins = finalUser ? finalUser.coins : undefined;
 
-        return {
+        return validateCallableResponse(ValidatePurchaseResponseSchema, {
           success: true,
           newCoins: finalNewCoins,
           newlyUnlockedAchievementIds,
-        };
+        }, "validatePurchase");
       } else {
         functions.logger.error(
           `Purchase validation failed or product ID mismatch for user ${userId}. ` +
@@ -192,9 +253,7 @@ export const validatePurchase = onCall(
 export const grantDevCoinsForPurchase = onCall(
   {enforceAppCheck: true},
   async (
-    request: functions.https.CallableRequest<{
-      productId: string;
-    }>,
+    request: functions.https.CallableRequest<unknown>,
   ): Promise<{
     success: boolean;
     newCoins: number;
@@ -211,35 +270,54 @@ export const grantDevCoinsForPurchase = onCall(
       throw new functions.https.HttpsError("permission-denied", "Dev purchase bypass is disabled.");
     }
 
-    const productId = request.data?.productId;
-    if (typeof productId !== "string" || productId.length === 0) {
-      throw new functions.https.HttpsError("invalid-argument", "Invalid product ID.");
-    }
+    const {productId} = validateCallableRequest(
+      GrantDevCoinsForPurchaseRequestSchema,
+      request.data,
+      "grantDevCoinsForPurchase",
+    );
 
     const userId = request.auth.uid;
-    const coinsToAward = await getCoinsForProduct(productId, BACKEND_COIN_PRODUCT_DETAILS);
+    const coinsToAward = await withSentrySpan(
+      "iap.grantDevCoinsForPurchase.resolveCoins",
+      "iap.pricing",
+      () => getCoinsForProduct(productId, BACKEND_COIN_PRODUCT_DETAILS),
+      {productId, devBypass: true},
+    );
     if (coinsToAward === undefined) {
       throw new functions.https.HttpsError("invalid-argument", "Unknown product ID.");
     }
 
-    await updateUserCoins(userId, coinsToAward);
-    await incrementCoinPackPurchaseCount(productId);
-    await updateUserProfile(userId, {hasPurchasedApp: true});
-    const newlyUnlockedAchievementIds = await evaluateAchievements(userId, {
-      gameMode: "classic",
-      isCorrect: false,
-      attempts: 0,
-      gameOver: false,
-    });
+    await withSentrySpan(
+      "iap.grantDevCoinsForPurchase.grantEntitlement",
+      "iap.entitlement.grant",
+      async () => {
+        await updateUserCoins(userId, coinsToAward);
+        await incrementCoinPackPurchaseCount(productId);
+        await updateUserProfile(userId, {hasPurchasedApp: true});
+      },
+      {productId, coins: coinsToAward, entitlement: "coins", devBypass: true},
+    );
+    const newlyUnlockedAchievementIds = await withSentrySpan(
+      "iap.grantDevCoinsForPurchase.evaluateAchievements",
+      "achievement.evaluate",
+      () =>
+        evaluateAchievements(userId, {
+          gameMode: "classic",
+          isCorrect: false,
+          attempts: 0,
+          gameOver: false,
+        }),
+      {productId, devBypass: true},
+    );
     const updatedUser = await getUser(userId);
 
     functions.logger.info(`Dev bypass awarded ${coinsToAward} coins to user ${userId} for ${productId}.`);
 
-    return {
+    return validateCallableResponse(GrantDevCoinsForPurchaseResponseSchema, {
       success: true,
       newCoins: updatedUser?.coins ?? 0,
       coinsAwarded: coinsToAward,
       newlyUnlockedAchievementIds,
-    };
+    }, "grantDevCoinsForPurchase");
   },
 );

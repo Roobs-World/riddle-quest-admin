@@ -3,29 +3,14 @@ import {logger} from "firebase-functions/v2";
 import {CallableRequest, HttpsError, onCall} from "firebase-functions/v2/https";
 import {REWARDED_AD_COIN_REWARD, REWARDED_AD_IDEMPOTENCY_WINDOW_MS, REWARDED_AD_REWARD_COOLDOWN_MS} from "./constants";
 import {captureException} from "./sentry";
-
-const REWARDED_AD_PLACEMENTS = ["loss_continue", "coin_shop"] as const;
-type RewardedAdPlacement = (typeof REWARDED_AD_PLACEMENTS)[number];
-
-type AwardedAdCallbackData = {
-  userId?: unknown;
-  placement?: unknown;
-  callbackId?: unknown;
-  provider?: unknown;
-};
-
-type AwardedAdCallbackResponse = {
-  success: boolean;
-  placement: RewardedAdPlacement;
-  callbackId: string;
-  rewardCoins: number;
-  newCoins: number;
-  alreadyProcessed: boolean;
-  message: string;
-};
-
-const isRewardedAdPlacement = (value: unknown): value is RewardedAdPlacement =>
-  typeof value === "string" && REWARDED_AD_PLACEMENTS.includes(value as RewardedAdPlacement);
+import {
+  AwardedAdCallbackRequest,
+  AwardedAdCallbackRequestSchema,
+  AwardedAdCallbackResponse,
+  AwardedAdCallbackResponseSchema,
+  RewardedAdPlacement,
+} from "./validation/requestSchemas";
+import {validateCallableRequest, validateCallableResponse} from "./validation/callableValidation";
 
 const sanitizeDocIdSegment = (value: string): string =>
   value.replace(/[^A-Za-z0-9_.:-]/g, "_").slice(0, 120) || "unknown";
@@ -62,18 +47,19 @@ const resolveProvider = (provider: unknown): string | undefined => {
  */
 export const awardedAdCallback = onCall(
   {enforceAppCheck: true},
-  async (request: CallableRequest<AwardedAdCallbackData>): Promise<AwardedAdCallbackResponse> => {
+  async (request: CallableRequest<AwardedAdCallbackRequest>): Promise<AwardedAdCallbackResponse> => {
     try {
       if (!request.auth) {
         throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
       }
 
-      const userId = request.data?.userId;
-      const placement = request.data?.placement;
-
-      if (typeof userId !== "string" || userId.length === 0) {
-        throw new HttpsError("invalid-argument", "A valid userId is required.");
-      }
+      const data = validateCallableRequest(
+        AwardedAdCallbackRequestSchema,
+        request.data,
+        "awardedAdCallback",
+        "Invalid rewarded ad placement.",
+      );
+      const {userId, placement} = data;
 
       if (userId !== request.auth.uid) {
         throw new HttpsError(
@@ -82,13 +68,9 @@ export const awardedAdCallback = onCall(
         );
       }
 
-      if (!isRewardedAdPlacement(placement)) {
-        throw new HttpsError("invalid-argument", "Invalid rewarded ad placement.");
-      }
-
       const nowMs = Date.now();
-      const callbackId = resolveCallbackId(userId, placement, request.data?.callbackId, nowMs);
-      const provider = resolveProvider(request.data?.provider);
+      const callbackId = resolveCallbackId(userId, placement, data.callbackId, nowMs);
+      const provider = resolveProvider(data.provider);
 
       const db = admin.firestore();
       const userRef = db.collection("users").doc(userId);
@@ -179,7 +161,7 @@ export const awardedAdCallback = onCall(
         rewardCoins: response.rewardCoins,
       });
 
-      return response;
+      return validateCallableResponse(AwardedAdCallbackResponseSchema, response, "awardedAdCallback");
     } catch (error) {
       if (error instanceof HttpsError) {
         throw error;

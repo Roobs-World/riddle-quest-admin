@@ -1,7 +1,5 @@
 import React, {useEffect, useRef, useState} from "react";
 import {View, Text, Modal, TextInput} from "react-native";
-import {getFunctions, httpsCallable} from "@react-native-firebase/functions";
-import {getApp} from "@react-native-firebase/app";
 import {useAuth} from "../../../contexts/AuthContext";
 import CloseButton from "../../buttons/CloseButton";
 import WideButton from "src/components/buttons/WideButton";
@@ -22,6 +20,8 @@ import {
 import {SPACING} from "../../../styles";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {verticalScale} from "@/utils/responsive";
+import {callValidatedFunction} from "../../../utils/firebaseFunctions";
+import {BasicSuccessMessageOutputSchema, UpdateUsernameInputSchema} from "../../../validation/cloudFunctionsSchemas";
 
 interface FirebaseError {
   code: string;
@@ -93,12 +93,14 @@ const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({isVisible, onC
     setIsSubmitting(true);
 
     try {
-      const processFormSubmissionCallable = httpsCallable(getFunctions(getApp()), "updateUsername");
-      const result = await processFormSubmissionCallable({
-        username: trimmedUsername,
-      });
-
-      const responseData = result.data as {success: boolean; message: string};
+      const responseData = await callValidatedFunction(
+        "updateUsername",
+        {
+          username: trimmedUsername,
+        },
+        UpdateUsernameInputSchema,
+        BasicSuccessMessageOutputSchema,
+      );
 
       if (responseData.success) {
         await updatePlayerData({username: trimmedUsername});

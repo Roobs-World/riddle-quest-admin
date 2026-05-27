@@ -1,6 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {describe, expect, test} from "@jest/globals";
 
+import {
+  CompleteGameRequestDataSchema,
+  CompleteGameResponseDataSchema,
+  SubmitGuessRequestDataSchema,
+  SubmitGuessResponseDataSchema,
+} from "../validation/requestSchemas";
+
 // Import types and interfaces to test
 import type {
   FeedbackColorValue,
@@ -11,6 +18,102 @@ import type {
 } from "../validation/requestSchemas";
 
 describe("Request Schemas", () => {
+  describe("Zod callable contracts", () => {
+    test("validates submitGuess request and response payloads", () => {
+      expect(
+        SubmitGuessRequestDataSchema.parse({
+          guess: "HELLO",
+          riddleId: "classic_level_1",
+          gameMode: "classic",
+          attempts: 2,
+        }),
+      ).toEqual({
+        guess: "HELLO",
+        riddleId: "classic_level_1",
+        gameMode: "classic",
+        attempts: 2,
+      });
+
+      expect(
+        SubmitGuessResponseDataSchema.parse({
+          feedback: [
+            {letter: "h", status: "green"},
+            {letter: "i", status: "red"},
+          ],
+          isCorrect: false,
+          gameOver: false,
+          coinsEarned: 0,
+          newlyUnlockedAchievementIds: [],
+        }),
+      ).toEqual({
+        feedback: [
+          {letter: "h", status: "green"},
+          {letter: "i", status: "red"},
+        ],
+        isCorrect: false,
+        gameOver: false,
+        coinsEarned: 0,
+        newlyUnlockedAchievementIds: [],
+      });
+    });
+
+    test("rejects malformed submitGuess payloads", () => {
+      expect(() =>
+        SubmitGuessRequestDataSchema.parse({
+          guess: "",
+          riddleId: "classic_level_1",
+          gameMode: "classic",
+          attempts: 2,
+        }),
+      ).toThrow();
+      expect(() =>
+        SubmitGuessResponseDataSchema.parse({
+          feedback: [{letter: "ab", status: "green"}],
+          isCorrect: false,
+          gameOver: false,
+        }),
+      ).toThrow();
+    });
+
+    test("validates completeGame request and response payloads", () => {
+      expect(
+        CompleteGameRequestDataSchema.parse({
+          riddleId: "daily_2026-05-27",
+          gameMode: "challenge",
+          attempts: 3,
+          isCorrect: true,
+        }),
+      ).toEqual({
+        riddleId: "daily_2026-05-27",
+        gameMode: "challenge",
+        attempts: 3,
+        isCorrect: true,
+      });
+
+      expect(
+        CompleteGameResponseDataSchema.parse({
+          coinsEarned: 20,
+          newlyUnlockedAchievementIds: ["first_win"],
+          scoreEarned: 80,
+          xpEarned: 80,
+          newXp: 180,
+          newLevel: 2,
+          leveledUp: true,
+          newWinStreak: 1,
+        }),
+      ).toEqual({
+        coinsEarned: 20,
+        newlyUnlockedAchievementIds: ["first_win"],
+        scoreEarned: 80,
+        xpEarned: 80,
+        newXp: 180,
+        newLevel: 2,
+        leveledUp: true,
+        newWinStreak: 1,
+      });
+    });
+  });
+
   describe("FeedbackColorValue", () => {
     test("should accept valid color values", () => {
       const validColors: FeedbackColorValue[] = ["green", "yellow", "red"];

@@ -457,6 +457,7 @@ jest.mock("../../../utils/logger", () => ({
 
 jest.mock("../../../utils/sentry", () => ({
   captureException: jest.fn(),
+  withSentrySpan: jest.fn((_name, _op, callback) => callback()),
 }));
 
 jest.mock("../../../utils/letterStates", () => ({
@@ -1374,7 +1375,7 @@ describe("GameScreen", () => {
 
     it("opens skip modal and spends coins when confirmed", async () => {
       const {httpsCallable} = require("@react-native-firebase/functions");
-      const spendCoins = jest.fn(() => Promise.resolve({data: {}}));
+      const spendCoins = jest.fn(() => Promise.resolve({data: {newCoins: 0}}));
       httpsCallable.mockReturnValue(spendCoins);
 
       render(<GameScreen {...defaultProps} gameMode="classic" />);
@@ -1626,7 +1627,7 @@ describe("GameScreen", () => {
 
     it("opens loss modal for attempt limit using live auth coin balance and handles continue actions", async () => {
       const {httpsCallable} = require("@react-native-firebase/functions");
-      const spendCoins = jest.fn(() => Promise.resolve({data: {}}));
+      const spendCoins = jest.fn(() => Promise.resolve({data: {newCoins: 280}}));
       httpsCallable.mockReturnValue(spendCoins);
       (mockPlayerData as {coins: unknown}).coins = {
         toString: () => "300",
@@ -1857,7 +1858,7 @@ describe("GameScreen", () => {
 
     it("does not re-open loss modal after coin continue clears game-over state", async () => {
       const {httpsCallable} = require("@react-native-firebase/functions");
-      const spendCoins = jest.fn(() => Promise.resolve({data: {}}));
+      const spendCoins = jest.fn(() => Promise.resolve({data: {newCoins: 0}}));
       httpsCallable.mockReturnValue(spendCoins);
       mockUseGameLogic.currentGuess = ["K", "E", "Y", "B", "O", "A", "R", "D"];
       mockUseGameLogic.processGuess.mockResolvedValueOnce({
@@ -1891,7 +1892,7 @@ describe("GameScreen", () => {
 
     it("shows victory instead of a stale loss after a successful post-continue guess", async () => {
       const {httpsCallable} = require("@react-native-firebase/functions");
-      const spendCoins = jest.fn(() => Promise.resolve({data: {}}));
+      const spendCoins = jest.fn(() => Promise.resolve({data: {newCoins: 0}}));
       httpsCallable.mockReturnValue(spendCoins);
       mockUseGameLogic.currentGuess = ["K", "E", "Y", "B", "O", "A", "R", "D"];
       mockUseGameLogic.processGuess

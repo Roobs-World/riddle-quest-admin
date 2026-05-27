@@ -15,8 +15,9 @@ export default {
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
-    project: ["./tsconfig.json", "./tsconfig.dev.json"],
+    projectService: true,
     sourceType: "module",
+    tsconfigRootDir: import.meta.dirname,
   },
   ignorePatterns: [
     "/lib/**/*", // Ignore built files.

@@ -2,13 +2,27 @@
  * @fileoverview Texture loading utilities for Expo assets -> Three.js textures.
  */
 import {Asset} from "expo-asset";
-import {LinearFilter, Texture} from "three";
+import {requireNativeModule} from "expo-modules-core";
+import {ClampToEdgeWrapping, LinearFilter, Texture} from "three";
 import {captureException} from "../../utils/sentry";
 import {logger} from "../../utils/logger";
 
-type AssetModuleReference = string | number | {default?: string | number; uri?: string};
+export type AssetModuleReference = string | number | {default?: string | number; uri?: string};
 
-const resolveAssetModule = (assetPath: AssetModuleReference): string | number => {
+interface ExpoAssetModule {
+  downloadAsync: (uri: string, md5Hash: string | null, type: string) => Promise<string>;
+}
+
+let expoAssetModule: ExpoAssetModule | null = null;
+
+const getExpoAssetModule = (): ExpoAssetModule => {
+  if (!expoAssetModule) {
+    expoAssetModule = requireNativeModule("ExpoAsset") as ExpoAssetModule;
+  }
+  return expoAssetModule;
+};
+
+export const resolveAssetModule = (assetPath: AssetModuleReference): string | number => {
   if (typeof assetPath === "number" || typeof assetPath === "string") {
     return assetPath;
   }
@@ -20,6 +34,16 @@ const resolveAssetModule = (assetPath: AssetModuleReference): string | number =>
   throw new Error("Unsupported texture asset module reference");
 };
 
+export const ensureFileUriAsset = async (asset: Asset): Promise<Asset> => {
+  if (asset.localUri?.startsWith("file://")) {
+    return asset;
+  }
+
+  const copiedUri = await getExpoAssetModule().downloadAsync(asset.uri, asset.hash, asset.type);
+  asset.localUri = copiedUri;
+  return asset;
+};
+
 /**
  * Builds a Three.js texture from an already-resolved Expo asset object.
  *
@@ -28,17 +52,34 @@ const resolveAssetModule = (assetPath: AssetModuleReference): string | number =>
  */
 export const createTextureFromAsset = (asset: Asset): Texture => {
   const uri = asset.localUri ?? asset.uri ?? null;
-  const texture = new Texture();
-  (texture.image as unknown) = {
-    data: asset,
+  if (uri && !uri.startsWith("file://")) {
+    throw new Error(`Texture asset ${asset.name || "unknown"} did not resolve to a file:// localUri`);
+  }
+
+  const image = {
     localUri: uri,
     uri,
     width: asset.width ?? 1,
     height: asset.height ?? 1,
   };
+
+  const texture = new Texture();
+  // Expo GL's native Android image loader reads `localUri` from the object
+  // passed to texImage2D. Keep this as a plain object so JSI can read it
+  // consistently from embedded release assets.
+  (texture.image as unknown) = {
+    data: image,
+    ...image,
+  };
   texture.needsUpdate = true;
   (texture as unknown as {isDataTexture: boolean}).isDataTexture = true;
+  texture.generateMipmaps = false;
   texture.minFilter = LinearFilter;
+  texture.magFilter = LinearFilter;
+  texture.wrapS = ClampToEdgeWrapping;
+  texture.wrapT = ClampToEdgeWrapping;
+  texture.flipY = false;
+  texture.unpackAlignment = 1;
   return texture;
 };
 
@@ -58,7 +99,8 @@ export const loadTextureFromAsset = async (assetPath: AssetModuleReference, cach
       throw new Error("Asset.loadAsync returned no asset");
     }
 
-    return createTextureFromAsset(imageAsset);
+    const fileAsset = await ensureFileUriAsset(imageAsset);
+    return createTextureFromAsset(fileAsset);
   } catch (error) {
     logger.error(`Texture loading failed for ${cacheKey}:`, error);
     captureException(error);

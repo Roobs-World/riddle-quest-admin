@@ -8,6 +8,7 @@
 import * as Sentry from "@sentry/react-native";
 
 const dsn = process.env.EXPO_PUBLIC_SENTRY_DSN;
+type SpanAttributes = Record<string, string | number | boolean | undefined>;
 
 if (dsn) {
   Sentry.init({
@@ -95,6 +96,16 @@ export function addBreadcrumb(
 ): void {
   if (!dsn) return;
   Sentry.addBreadcrumb({category, message, data, level});
+}
+
+export function withSentrySpan<T>(
+  name: string,
+  op: string,
+  callback: () => T,
+  attributes?: SpanAttributes,
+): T {
+  if (!dsn) return callback();
+  return Sentry.startSpan({name, op, attributes}, callback);
 }
 
 /**

@@ -380,23 +380,17 @@ describe("IapService", () => {
       });
     });
 
-    it("should handle null or undefined tokens", async () => {
-      mockCallableFunction.mockResolvedValue({
-        data: {success: false},
-      });
-
-      await IapService.validatePurchase("", "com.roobsworld.riddlequest.coins100");
-      expect(mockCallableFunction).toHaveBeenCalledWith({
-        purchaseToken: "",
-        productId: "com.roobsworld.riddlequest.coins100",
-        platform: "ios",
-      });
+    it("should reject empty purchase tokens before calling backend validation", async () => {
+      await expect(IapService.validatePurchase("", "com.roobsworld.riddlequest.coins100")).rejects.toThrow(
+        "Invalid request payload for validatePurchase",
+      );
+      expect(mockCallableFunction).not.toHaveBeenCalled();
     });
   });
 
   describe("grantDevCoinsFallback", () => {
     it("should call backend fallback even when local coin mapping is missing", async () => {
-      mockCallableFunction.mockResolvedValue({data: {success: true}});
+      mockCallableFunction.mockResolvedValue({data: {success: true, newCoins: 0, coinsAwarded: 0}});
       const unknownProductId = "com.roobsworld.riddlequest.coinpack999";
 
       const result = await IapService.grantDevCoinsFallback(unknownProductId);

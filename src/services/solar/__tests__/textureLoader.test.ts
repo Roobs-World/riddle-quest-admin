@@ -7,6 +7,13 @@ jest.mock("expo-asset", () => ({
   },
 }));
 
+const mockNativeDownloadAsync = jest.fn();
+jest.mock("expo-modules-core", () => ({
+  requireNativeModule: () => ({
+    downloadAsync: (...args: unknown[]) => mockNativeDownloadAsync(...args),
+  }),
+}));
+
 jest.mock("../../../utils/logger", () => ({
   logger: {
     error: jest.fn(),
@@ -24,6 +31,7 @@ const {captureException} = require("../../../utils/sentry");
 describe("textureLoader", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockNativeDownloadAsync.mockResolvedValue("file:///mock-copied-texture.png");
   });
 
   it("creates a texture from resolved asset metadata", () => {
@@ -52,6 +60,26 @@ describe("textureLoader", () => {
 
     expect(Asset.loadAsync).toHaveBeenCalledWith("path");
     expect(texture).toBeDefined();
+  });
+
+  it("copies embedded assets to file uris before creating textures", async () => {
+    Asset.loadAsync.mockResolvedValue([
+      {
+        downloaded: true,
+        hash: "asset-hash",
+        localUri: "assets_3d_tex_planet_a",
+        name: "tex_planet_a",
+        type: "png",
+        uri: "assets_3d_tex_planet_a",
+        width: 10,
+        height: 10,
+      },
+    ]);
+
+    const texture = await loadTextureFromAsset("path", "cache-key");
+
+    expect(mockNativeDownloadAsync).toHaveBeenCalledWith("assets_3d_tex_planet_a", "asset-hash", "png");
+    expect((texture.image as any).localUri).toBe("file:///mock-copied-texture.png");
   });
 
   it("throws and reports when load fails", async () => {

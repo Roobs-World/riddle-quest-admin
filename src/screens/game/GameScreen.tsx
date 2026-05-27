@@ -22,8 +22,6 @@ import GameBoard from "../../components/game/GameBoard";
 import {SoundManager} from "../../services/SoundManager";
 import useGameLogic from "../../hooks/useGameLogic";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {getFunctions, httpsCallable} from "@react-native-firebase/functions";
-import {getApp} from "@react-native-firebase/app";
 import {GameMode} from "../../contexts/AuthContext";
 
 import {useAuth} from "../../contexts/AuthContext";
@@ -82,6 +80,13 @@ import {useTooltip} from "../../contexts/TooltipContext";
 import type {TooltipId, TooltipTargetRef} from "../../components/tooltips/types";
 import {resolveBackspaceGuessSlot, resolveEditableGuessSlot, resolveNextActiveGuessSlot} from "../../utils/guessSlots";
 import {resolvePlayableRiddleText} from "../../utils/riddleClues";
+import {callValidatedFunction} from "../../utils/firebaseFunctions";
+import {
+  GenerateTodaysDailyChallengeInputSchema,
+  GenerateTodaysDailyChallengeOutputSchema,
+  SpendCoinsInputSchema,
+  SpendCoinsOutputSchema,
+} from "../../validation/cloudFunctionsSchemas";
 
 interface GuessResult {
   outcome: "win" | "loss" | "continue" | "attemptLimitReached";
@@ -922,18 +927,20 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       return false;
     }
 
-    try {
-      if (!isGuestMode) {
-        await runWithServerLoading(() =>
-          httpsCallable(
-            getFunctions(getApp()),
-            "spendCoins",
-          )({
-            amount: CONTINUE_COST_COINS,
-            reason: "continue",
-          }),
-        );
-      }
+      try {
+        if (!isGuestMode) {
+          await runWithServerLoading(() =>
+            callValidatedFunction(
+              "spendCoins",
+              {
+                amount: CONTINUE_COST_COINS,
+                reason: "continue",
+              },
+              SpendCoinsInputSchema,
+              SpendCoinsOutputSchema,
+            ),
+          );
+        }
 
       if (playerData) {
         updatePlayerDataLocally({
@@ -1832,13 +1839,15 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         try {
           if (!isGuestMode) {
             await runWithServerLoading(() =>
-              httpsCallable(
-                getFunctions(getApp()),
+              callValidatedFunction(
                 "spendCoins",
-              )({
-                amount: skipCost,
-                reason: "skip",
-              }),
+                {
+                  amount: skipCost,
+                  reason: "skip",
+                },
+                SpendCoinsInputSchema,
+                SpendCoinsOutputSchema,
+              ),
             );
           }
 
@@ -1969,17 +1978,19 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const handleDebugGenerateDailyChallenge = useCallback(async () => {
     try {
       const response = await runWithServerLoading(() =>
-        httpsCallable<{forceGenerate: boolean}, {success: boolean; message: string; questionsGenerated: number}>(
-          getFunctions(getApp()),
+        callValidatedFunction(
           "generateTodaysDailyChallengeFunction",
-        )({
-          forceGenerate: true,
-        }),
+          {
+            forceGenerate: true,
+          },
+          GenerateTodaysDailyChallengeInputSchema,
+          GenerateTodaysDailyChallengeOutputSchema,
+        ),
       );
 
       modal.showInfoModal({
         title: "Daily Challenge Generated",
-        message: response.data?.message ?? "Successfully generated a new daily challenge in dailyRiddles/current.",
+        message: response.message ?? "Successfully generated a new daily challenge in dailyRiddles/current.",
       });
     } catch (error) {
       logger.error("Error generating daily challenge from debug panel:", error);

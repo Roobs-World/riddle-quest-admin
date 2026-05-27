@@ -45,6 +45,8 @@ const mockEvaluateAchievements = jest.fn<(...args: unknown[]) => Promise<string[
 const mockLoggerInfo = jest.fn<(...args: unknown[]) => void>();
 const mockLoggerWarn = jest.fn<(...args: unknown[]) => void>();
 const mockLoggerError = jest.fn<(...args: unknown[]) => void>();
+const mockCaptureException = jest.fn<(...args: unknown[]) => void>();
+const mockWithSentrySpan = jest.fn<(...args: unknown[]) => unknown>();
 
 // Firestore Mocks - Refactored
 const mockFsUpdate = jest.fn<(...args: unknown[]) => Promise<void>>();
@@ -173,6 +175,11 @@ jest.mock("../productPricingService", () => ({
   updateRegionalSpendingStats: (...args: unknown[]) => mockUpdateRegionalSpendingStats(...args),
 }));
 
+jest.mock("../sentry", () => ({
+  captureException: (...args: unknown[]) => mockCaptureException(...args),
+  withSentrySpan: (...args: unknown[]) => mockWithSentrySpan(...args),
+}));
+
 jest.mock("firebase-admin", () => ({
   initializeApp: jest.fn(),
   firestore: Object.assign(
@@ -204,6 +211,22 @@ const iapController = {
 const validatePurchase = originalValidatePurchase as unknown as (
   request: CallableRequest<ValidatePurchaseData>,
 ) => Promise<{success: boolean; newCoins?: number; newlyUnlockedAchievementIds?: string[]}>;
+
+const runSentrySpanCallback = (...args: unknown[]): unknown => {
+  const callback = args[2] as () => unknown;
+  return callback();
+};
+
+const getSpanAttributes = (name: string): Record<string, unknown> | undefined => {
+  const call = mockWithSentrySpan.mock.calls.find(([spanName]) => spanName === name);
+  return call?.[3] as Record<string, unknown> | undefined;
+};
+
+const expectNoRawPurchaseTokenInSpanAttributes = (): void => {
+  for (const call of mockWithSentrySpan.mock.calls) {
+    expect(JSON.stringify(call[3] ?? {})).not.toContain("token_");
+  }
+};
 
 describe("validatePurchase - Unit Tests", () => {
   const testUserId = "testUser123";
@@ -240,6 +263,9 @@ describe("validatePurchase - Unit Tests", () => {
     mockLoggerInfo.mockReset();
     mockLoggerWarn.mockReset();
     mockLoggerError.mockReset();
+    mockCaptureException.mockReset();
+    mockWithSentrySpan.mockReset();
+    mockWithSentrySpan.mockImplementation(runSentrySpanCallback);
 
     mockGetCoinsForProduct.mockReset();
     mockIncrementCoinPackPurchaseCount.mockReset();
@@ -323,6 +349,20 @@ describe("validatePurchase - Unit Tests", () => {
       `Purchase validated and product ID matched for user ${testUserId}: ${NO_ADS_PRODUCT_ID}`,
     );
     expect(mockLoggerInfo).toHaveBeenCalledWith(`User ${testUserId} has purchased ad removal.`);
+    expect(getSpanAttributes("iap.validatePurchase.platformValidation")).toEqual({
+      platform: "ios",
+      productId: NO_ADS_PRODUCT_ID,
+    });
+    expect(getSpanAttributes("iap.validatePurchase.grantEntitlement")).toEqual({
+      platform: "ios",
+      productId: NO_ADS_PRODUCT_ID,
+      entitlement: "no_ads",
+    });
+    expect(getSpanAttributes("iap.validatePurchase.markProcessed")).toEqual({
+      platform: "ios",
+      productId: NO_ADS_PRODUCT_ID,
+    });
+    expectNoRawPurchaseTokenInSpanAttributes();
   });
 
   it("should handle successful coin pack purchase", async () => {
@@ -373,6 +413,31 @@ describe("validatePurchase - Unit Tests", () => {
     expect(mockLoggerInfo).toHaveBeenCalledWith(
       `Awarded ${coinsToAward} coins to user ${testUserId}. New balance: ${initialUserCoins + coinsToAward}`,
     );
+    expect(getSpanAttributes("iap.validatePurchase.platformValidation")).toEqual({
+      platform: "android",
+      productId: coinProductId,
+    });
+    expect(getSpanAttributes("iap.validatePurchase.grantEntitlement")).toEqual({
+      platform: "android",
+      productId: coinProductId,
+      entitlement: "coins",
+      coins: coinsToAward,
+    });
+    expect(getSpanAttributes("iap.validatePurchase.analytics")).toEqual({
+      platform: "android",
+      productId: coinProductId,
+      coins: coinsToAward,
+      currency: "USD",
+    });
+    expect(getSpanAttributes("iap.validatePurchase.evaluateAchievements")).toEqual({
+      platform: "android",
+      productId: coinProductId,
+    });
+    expect(getSpanAttributes("iap.validatePurchase.markProcessed")).toEqual({
+      platform: "android",
+      productId: coinProductId,
+    });
+    expectNoRawPurchaseTokenInSpanAttributes();
   });
 
   // New tests to cover missing lines

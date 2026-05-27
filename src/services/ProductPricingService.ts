@@ -5,42 +5,19 @@ import {
   query,
   where,
   orderBy,
-  FirebaseFirestoreTypes,
 } from "@react-native-firebase/firestore";
 import {logger} from "../utils/logger";
 import {captureException} from "../utils/sentry";
+import {
+  ProductPricingSchema,
+  type ProductPricing,
+  type RegionalPrice,
+  type SpecialOffer,
+} from "../validation/firestoreSchemas";
+import {productPricingFirestoreConverter, withConverterIfAvailable} from "./firestoreConverters";
+import {withSentrySpan} from "../utils/sentry";
 
-export interface RegionalPrice {
-  amount: number;
-  currency: string;
-  displayPrice: string;
-  symbol: string;
-}
-
-export interface SpecialOffer {
-  badgeText: string;
-  description: string;
-  discountPercentage: number;
-  isActive: boolean;
-  validFrom: number;
-  validTo: number;
-}
-
-export interface ProductPricing {
-  productId: string;
-  productKey: string;
-  name: string;
-  description: string;
-  coins: number;
-  isActive: boolean;
-  sortOrder: number;
-  regionalPrices: RegionalPrice[];
-  specialOffer?: SpecialOffer;
-  /** If set, this product appears in the featured hero slots at the top of the shop. */
-  featuredOrder?: number;
-  /** Badge text shown in the featured slot (e.g. "BEST DEAL"). */
-  featuredBadge?: string;
-}
+export type {ProductPricing, RegionalPrice, SpecialOffer};
 
 let cachedProducts: ProductPricing[] | null = null;
 let cacheTimestamp = 0;
@@ -58,17 +35,26 @@ export const ProductPricingService = {
     }
 
     try {
-      const snapshot = await getDocs(
-        query(collection(getFirestore(), "productPricing"), where("isActive", "==", true), orderBy("sortOrder")),
-      );
+      return await withSentrySpan(
+        "firestore.read.productPricing",
+        "db.firestore",
+        async () => {
+          const snapshot = await getDocs(
+            query(
+              withConverterIfAvailable(collection(getFirestore(), "productPricing"), productPricingFirestoreConverter),
+              where("isActive", "==", true),
+              orderBy("sortOrder"),
+            ),
+          );
 
-      const products = snapshot.docs.map(
-        (doc: FirebaseFirestoreTypes.QueryDocumentSnapshot) => doc.data() as ProductPricing,
+          const products = snapshot.docs.map((doc) => ProductPricingSchema.parse(doc.data()));
+          cachedProducts = products;
+          cacheTimestamp = now;
+          logger.debug(`Fetched ${products.length} active products from Firestore`);
+          return products;
+        },
+        {operationName: "ProductPricingService.getActiveProducts"},
       );
-      cachedProducts = products;
-      cacheTimestamp = now;
-      logger.debug(`Fetched ${products.length} active products from Firestore`);
-      return products;
     } catch (err) {
       logger.error("Failed to fetch productPricing from Firestore:", err);
       captureException(err);

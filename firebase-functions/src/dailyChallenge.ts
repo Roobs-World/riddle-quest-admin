@@ -4,6 +4,15 @@ import {onCall, HttpsError, CallableRequest} from "firebase-functions/v2/https";
 import {updateUserLastCompletedDailyChallengeDate, getUser} from "./firestoreService";
 import {generateTodaysDailyChallenge} from "./riddleGeneration";
 import {captureException} from "./sentry";
+import {
+  AdvanceDailyChallengeProgressResponseSchema,
+  BooleanResponseSchema,
+  GetCurrentDailyChallengeResponse,
+  GetCurrentDailyChallengeResponseSchema,
+  HasCompletedDailyChallengeRequestSchema,
+  MessageResponseSchema,
+} from "./validation/requestSchemas";
+import {validateCallableRequest, validateCallableResponse} from "./validation/callableValidation";
 
 const DAILY_CHALLENGE_QUESTION_COUNT = 1;
 const CURRENT_DAILY_RIDDLE_DOC_ID = "current";
@@ -141,9 +150,13 @@ export const setCompletedDailyChallenge = onCall(
 
       await updateUserLastCompletedDailyChallengeDate(currentUserId, currentDate);
 
-      return {
-        message: "Last completed daily challenge date set successfully.",
-      };
+      return validateCallableResponse(
+        MessageResponseSchema,
+        {
+          message: "Last completed daily challenge date set successfully.",
+        },
+        "setCompletedDailyChallenge",
+      );
     } catch (error) {
       // Re-throw HttpsError instances directly
       if (error instanceof HttpsError) {
@@ -167,12 +180,23 @@ export const hasCompletedDailyChallenge = onCall(
   {enforceAppCheck: true},
   async (request: CallableRequest<{id: string}>): Promise<boolean> => {
     try {
-      const {id: currentUserId} = request.data;
+      const {id: currentUserId} = validateCallableRequest(
+        HasCompletedDailyChallengeRequestSchema,
+        request.data,
+        "hasCompletedDailyChallenge",
+      );
 
       const user = await getUser(currentUserId);
 
-      return isCompletedToday(user?.lastDailyChallengeCompletedAt);
+      return validateCallableResponse(
+        BooleanResponseSchema,
+        isCompletedToday(user?.lastDailyChallengeCompletedAt),
+        "hasCompletedDailyChallenge",
+      );
     } catch (error) {
+      if (error instanceof HttpsError) {
+        throw error;
+      }
       functions.logger.error("Error checking daily challenge status:", error);
       captureException(error, {
         functionName: "hasCompletedDailyChallenge",
@@ -181,37 +205,6 @@ export const hasCompletedDailyChallenge = onCall(
     }
   },
 );
-
-interface DailyChallengeQuestion {
-  /** Riddle document id for this question. */
-  riddleId: string;
-  /** Prompt text shown to the user. */
-  text: string;
-  /** One-based ordinal number in the daily challenge. */
-  questionNumber: number;
-}
-
-interface DailyChallengeData {
-  /** UTC date string (`YYYY-MM-DD`) derived from the challenge timestamp. */
-  date?: string;
-  /** Ordered list of questions for the day. */
-  questions: DailyChallengeQuestion[];
-  /** Total number of daily challenge questions. */
-  totalQuestions: number;
-}
-
-interface GetCurrentDailyChallengeResponse {
-  /** Daily challenge payload for today, when available. */
-  challenge?: DailyChallengeData;
-  /** User's current question progress index. */
-  currentQuestion?: number;
-  /** True when the user already completed today's challenge. */
-  hasCompletedToday?: boolean;
-  /** Number of questions completed today. */
-  questionsCompleted?: number;
-  /** Error message when challenge retrieval fails. */
-  error?: string;
-}
 
 /**
  * Gets the current daily challenge data (single question, excluding answer).
@@ -229,13 +222,21 @@ export const getCurrentDailyChallenge = onCall(
 
       if (!dailyChallengeDoc.exists) {
         functions.logger.warn("No daily challenge document found.");
-        return {error: "No daily challenge available at the moment."};
+        return validateCallableResponse(
+          GetCurrentDailyChallengeResponseSchema,
+          {error: "No daily challenge available at the moment."},
+          "getCurrentDailyChallenge",
+        );
       }
 
       const allData = dailyChallengeDoc.data();
       if (!allData || typeof allData.text !== "string" || allData.text.length === 0) {
         functions.logger.error("Daily challenge document is missing required question data.", allData);
-        return {error: "Daily challenge data is incomplete. Expected 1 question."};
+        return validateCallableResponse(
+          GetCurrentDailyChallengeResponseSchema,
+          {error: "Daily challenge data is incomplete. Expected 1 question."},
+          "getCurrentDailyChallenge",
+        );
       }
 
       let challengeDate: string | undefined = todayDateString;
@@ -243,7 +244,7 @@ export const getCurrentDailyChallenge = onCall(
         challengeDate = allData.timestamp.toDate().toISOString().split("T")[0];
       }
 
-      const challengeData: DailyChallengeData = {
+      const challengeData = {
         date: challengeDate,
         questions: [
           {
@@ -277,19 +278,27 @@ export const getCurrentDailyChallenge = onCall(
       functions.logger.info(
         `Returning daily challenge for ${challengeData.date}: ${DAILY_CHALLENGE_QUESTION_COUNT} question, user progress: ${questionsCompleted}/${DAILY_CHALLENGE_QUESTION_COUNT}`,
       );
-      return {
-        challenge: challengeData,
-        currentQuestion,
-        hasCompletedToday,
-        questionsCompleted,
-      };
+      return validateCallableResponse(
+        GetCurrentDailyChallengeResponseSchema,
+        {
+          challenge: challengeData,
+          currentQuestion,
+          hasCompletedToday,
+          questionsCompleted,
+        },
+        "getCurrentDailyChallenge",
+      );
     } catch (error) {
       functions.logger.error("Error getting current daily challenge:", error);
       captureException(error, {
         functionName: "getCurrentDailyChallenge",
         isAuthenticated: !!request.auth,
       });
-      return {error: "An error occurred while fetching the daily challenge."};
+      return validateCallableResponse(
+        GetCurrentDailyChallengeResponseSchema,
+        {error: "An error occurred while fetching the daily challenge."},
+        "getCurrentDailyChallenge",
+      );
     }
   },
 );
@@ -323,11 +332,15 @@ export const advanceDailyChallengeProgress = onCall(
       const completedToday = isCompletedToday(user.lastDailyChallengeCompletedAt);
 
       if (completedToday || currentQuestionIndex >= DAILY_CHALLENGE_QUESTION_COUNT) {
-        return {
-          newQuestionIndex: DAILY_CHALLENGE_QUESTION_COUNT,
-          isFullyCompleted: true,
-          message: "Daily challenge already completed.",
-        };
+        return validateCallableResponse(
+          AdvanceDailyChallengeProgressResponseSchema,
+          {
+            newQuestionIndex: DAILY_CHALLENGE_QUESTION_COUNT,
+            isFullyCompleted: true,
+            message: "Daily challenge already completed.",
+          },
+          "advanceDailyChallengeProgress",
+        );
       }
 
       const newQuestionIndex = DAILY_CHALLENGE_QUESTION_COUNT;
@@ -350,11 +363,15 @@ export const advanceDailyChallengeProgress = onCall(
         `User ${userId} marked daily challenge complete (${newQuestionIndex}/${DAILY_CHALLENGE_QUESTION_COUNT})`,
       );
 
-      return {
-        newQuestionIndex,
-        isFullyCompleted,
-        message: "Daily challenge completed! 1 riddle finished.",
-      };
+      return validateCallableResponse(
+        AdvanceDailyChallengeProgressResponseSchema,
+        {
+          newQuestionIndex,
+          isFullyCompleted,
+          message: "Daily challenge completed! 1 riddle finished.",
+        },
+        "advanceDailyChallengeProgress",
+      );
     } catch (error) {
       if (error instanceof HttpsError) {
         throw error;

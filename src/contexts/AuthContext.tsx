@@ -25,7 +25,6 @@ import {
 import {Player, FirestoreRiddle} from "../validation/firestoreSchemas";
 import {getAuth, signOut, type FirebaseAuthTypes} from "@react-native-firebase/auth";
 import {getApp} from "@react-native-firebase/app";
-import {getFunctions, httpsCallable} from "@react-native-firebase/functions";
 import {RiddleInitializationService} from "../services/RiddleInitializationService";
 import {logger} from "../utils/logger";
 import {captureException, setUser as sentrySetUser, clearUser as sentryClearUser, addBreadcrumb} from "../utils/sentry";
@@ -44,6 +43,8 @@ import {
   resolveUserEmail,
 } from "../features/auth/sessionBootstrap";
 import {isGuestPlayer} from "../features/auth/sessionBootstrap";
+import {callValidatedFunction} from "../utils/firebaseFunctions";
+import {CurrentDailyChallengeOutputSchema, EmptyInputSchema} from "../validation/cloudFunctionsSchemas";
 
 const GUEST_PROGRESS_STORAGE_KEY = "@guest_player_progress_v1";
 
@@ -329,9 +330,12 @@ export const AuthProvider: React.FC<{children: React.ReactNode}> = ({children}) 
     }
 
     try {
-      const getCurrentDailyChallengeCallable = httpsCallable(getFunctions(getApp()), "getCurrentDailyChallenge");
-      const result = await getCurrentDailyChallengeCallable();
-      const data = result.data as {hasCompletedToday?: boolean};
+      const data = await callValidatedFunction(
+        "getCurrentDailyChallenge",
+        {},
+        EmptyInputSchema,
+        CurrentDailyChallengeOutputSchema,
+      );
       return data.hasCompletedToday === true;
     } catch (error) {
       logger.warn(

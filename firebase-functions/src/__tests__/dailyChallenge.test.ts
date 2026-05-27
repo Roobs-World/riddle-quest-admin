@@ -263,9 +263,10 @@ describe("Daily Challenge Functions", () => {
   describe("setCompletedDailyChallenge (v2)", () => {
     it("should throw HttpsError if not authenticated", async () => {
       const mockRequest = {auth: undefined, data: {}} as CallableRequest<MockSetCompletedDailyChallengeData>;
-      await expect(setCompletedDailyChallenge(mockRequest)).rejects.toThrow(
-        new HttpsError("unauthenticated", "The user must be authenticated to set completed daily challenge."),
-      );
+      await expect(setCompletedDailyChallenge(mockRequest)).rejects.toMatchObject({
+        code: "unauthenticated",
+        message: "The user must be authenticated to set completed daily challenge.",
+      });
       expect(mockUpdateUserLastCompletedDailyChallengeDate).not.toHaveBeenCalled();
     });
 
@@ -285,9 +286,10 @@ describe("Daily Challenge Functions", () => {
       const dbError = new Error("Database update failed");
       mockUpdateUserLastCompletedDailyChallengeDate.mockRejectedValue(dbError);
 
-      await expect(setCompletedDailyChallenge(mockRequest)).rejects.toThrow(
-        new HttpsError("internal", "An error occurred while setting completed daily challenge."),
-      );
+      await expect(setCompletedDailyChallenge(mockRequest)).rejects.toMatchObject({
+        code: "internal",
+        message: "An error occurred while setting completed daily challenge.",
+      });
       expect(mockFirebaseFunctionsV1.logger.error).toHaveBeenCalledWith(
         "Error setting completed daily challenge:",
         dbError,
@@ -370,9 +372,10 @@ describe("Daily Challenge Functions", () => {
       mockGetUser.mockRejectedValue(dbError);
       const mockRequest = {data: {id: mockUserId}} as CallableRequest<MockHasCompletedDailyChallengeData>;
 
-      await expect(hasCompletedDailyChallenge(mockRequest)).rejects.toThrow(
-        new HttpsError("internal", "An error occurred while checking daily challenge status."),
-      );
+      await expect(hasCompletedDailyChallenge(mockRequest)).rejects.toMatchObject({
+        code: "internal",
+        message: "An error occurred while checking daily challenge status.",
+      });
     });
   });
 
@@ -629,17 +632,19 @@ describe("Daily Challenge Functions", () => {
 
     it("should throw HttpsError unauthenticated if not authenticated", async () => {
       const mockRequest = {auth: undefined, data: {}} as CallableRequest<unknown>;
-      await expect(advanceDailyChallengeProgress(mockRequest)).rejects.toThrow(
-        new HttpsError("unauthenticated", "User must be authenticated to advance progress."),
-      );
+      await expect(advanceDailyChallengeProgress(mockRequest)).rejects.toMatchObject({
+        code: "unauthenticated",
+        message: "User must be authenticated to advance progress.",
+      });
     });
 
     it("should throw HttpsError not-found if user data not found", async () => {
       mockGetUser.mockResolvedValue(undefined);
       const mockRequest = {auth: {uid: "unknownUser"}, data: {}} as CallableRequest<unknown>;
-      await expect(advanceDailyChallengeProgress(mockRequest)).rejects.toThrow(
-        new HttpsError("not-found", "User data not found."),
-      );
+      await expect(advanceDailyChallengeProgress(mockRequest)).rejects.toMatchObject({
+        code: "not-found",
+        message: "User data not found.",
+      });
     });
 
     it("should return already completed when currentQuestionIndex >= 1", async () => {
@@ -740,9 +745,10 @@ describe("Daily Challenge Functions", () => {
       mockGetUser.mockRejectedValue(dbError);
 
       const mockRequest = {auth: {uid: mockUserId}, data: {}} as CallableRequest<unknown>;
-      await expect(advanceDailyChallengeProgress(mockRequest)).rejects.toThrow(
-        new HttpsError("internal", "An error occurred while advancing progress."),
-      );
+      await expect(advanceDailyChallengeProgress(mockRequest)).rejects.toMatchObject({
+        code: "internal",
+        message: "An error occurred while advancing progress.",
+      });
       expect(mockLogger.error).toHaveBeenCalledWith("Error advancing daily challenge progress:", dbError);
     });
 

@@ -5,6 +5,8 @@ declare module "*.svg" {
   export default content;
 }
 
+declare module "*.css" {}
+
 declare module "*.wav" {
   const content: number;
   export default content;

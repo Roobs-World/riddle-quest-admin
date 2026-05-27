@@ -41,6 +41,7 @@ jest.mock("../../services/AnalyticsService", () => ({
 jest.mock("../../utils/sentry", () => ({
   addBreadcrumb: jest.fn(),
   captureException: jest.fn(),
+  withSentrySpan: jest.fn((_: string, __: string, callback: () => unknown) => callback()),
 }));
 
 jest.mock("../../utils/logger", () => ({
@@ -152,7 +153,7 @@ jest.mock("../../components/modals", () => {
 });
 
 jest.mock("@react-navigation/native-stack", () => ({
-  createNativeStackNavigator: () => {
+  createNativeStackNavigator: (config?: any) => {
     const React = require("react");
     const {View} = require("react-native");
 
@@ -165,31 +166,52 @@ jest.mock("@react-navigation/native-stack", () => ({
         return [child];
       });
 
+    const toScreenElement = ([name, entry]: [string, any]) => {
+      const component = typeof entry === "function" ? entry : entry.screen ?? entry.component;
+      return React.createElement("mock-screen", {name, component});
+    };
+
+    const renderStaticScreens = (): any[] => {
+      if (!config?.groups) return [];
+
+      return Object.values(config.groups).flatMap((group: any) => {
+        if (typeof group.if === "function" && !group.if()) {
+          return [];
+        }
+
+        return Object.entries(group.screens ?? {}).map(toScreenElement);
+      });
+    };
+
+    const Navigator = ({children, screenListeners}: any) => {
+      const screens = config ? renderStaticScreens() : renderScreens(children);
+      const effectiveScreenListeners = config?.screenListeners ?? screenListeners;
+
+      React.useEffect(() => {
+        const firstName = String(screens?.[0]?.props?.name ?? "Unknown");
+        effectiveScreenListeners?.focus?.({target: `${firstName}-1`});
+      }, [effectiveScreenListeners, screens]);
+
+      return (
+        <View testID="stack-navigator">
+          {screens.map((screen: any) => {
+            const Component = screen.props.component;
+            const key = String(screen.props.name);
+            const slug = key.toLowerCase().replace(/[^a-z0-9]/g, "");
+            return (
+              <View key={key} testID={`stack-screen-${slug}`}>
+                <Component />
+              </View>
+            );
+          })}
+        </View>
+      );
+    };
+
     return {
-      Navigator: ({children, screenListeners}: any) => {
-        const screens = renderScreens(children);
-
-        React.useEffect(() => {
-          const firstName = String(screens?.[0]?.props?.name ?? "Unknown");
-          screenListeners?.focus?.({target: `${firstName}-1`});
-        }, [screenListeners, screens]);
-
-        return (
-          <View testID="stack-navigator">
-            {screens.map((screen: any) => {
-              const Component = screen.props.component;
-              const key = String(screen.props.name);
-              const slug = key.toLowerCase().replace(/[^a-z0-9]/g, "");
-              return (
-                <View key={key} testID={`stack-screen-${slug}`}>
-                  <Component />
-                </View>
-              );
-            })}
-          </View>
-        );
-      },
+      Navigator,
       Screen: ({name, component, options}: any) => React.createElement("mock-screen", {name, component, options}),
+      getComponent: () => Navigator,
     };
   },
 }));

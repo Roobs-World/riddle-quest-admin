@@ -25,6 +25,7 @@ import {
   DoubleSide,
   Texture,
 } from "three";
+import type {MeshBasicMaterialParameters, MeshPhongMaterialParameters} from "three";
 import {logger} from "../utils/logger";
 import {captureException} from "../utils/sentry";
 import {PlanetConfig, SOLAR_SYSTEM_CONFIG, SOLAR_TEXTURE_MAPPING} from "./solar/solarSystemConfig";
@@ -353,11 +354,16 @@ export class SolarSystemPreloader {
         key: "sun",
         create: () => {
           const sunTexture = textures.get("sun") ?? textures.get("glow_sun");
-          return new MeshBasicMaterial({
-            map: sunTexture || undefined,
+          const sunMaterialParameters: MeshBasicMaterialParameters = {
             color: 0xffff00,
             transparent: false,
-          });
+          };
+
+          if (sunTexture) {
+            sunMaterialParameters.map = sunTexture;
+          }
+
+          return new MeshBasicMaterial(sunMaterialParameters);
         },
       },
     ];
@@ -646,8 +652,7 @@ export class SolarSystemPreloader {
           } else if (!ringMaterial) {
             logger.error(`❌ Missing material for ring ${planetConfig.id}, using fallback material.`);
             // Only create ring with validated geometry and confirmed planet presence
-            const fallbackRingMaterial = new MeshPhongMaterial({
-              map: ringTexture || undefined,
+            const fallbackRingMaterialParameters: MeshPhongMaterialParameters = {
               color: ringTexture ? 0xffffff : 0x8888ff,
               shininess: 5,
               specular: 0x050505,
@@ -655,7 +660,13 @@ export class SolarSystemPreloader {
               opacity: 0.8,
               alphaTest: 0.1,
               side: DoubleSide,
-            });
+            };
+
+            if (ringTexture) {
+              fallbackRingMaterialParameters.map = ringTexture;
+            }
+
+            const fallbackRingMaterial = new MeshPhongMaterial(fallbackRingMaterialParameters);
             const ring = new Mesh(ringGeometry, fallbackRingMaterial);
             ring.position.set(0, 0, 0);
             ring.rotation.x = Math.PI / 2;

@@ -312,7 +312,9 @@ describe("UpdateUsernameModal", () => {
         expect(getByTestId("username-update-spinner")).toBeTruthy();
       });
 
-      resolvePromise?.({data: {success: true, message: "Username updated successfully!"}});
+      await act(async () => {
+        resolvePromise?.({data: {success: true, message: "Username updated successfully!"}});
+      });
 
       await waitFor(() => {
         expect(queryByTestId("username-update-spinner")).toBeNull();

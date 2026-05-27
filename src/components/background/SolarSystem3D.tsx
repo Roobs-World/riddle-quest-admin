@@ -36,12 +36,9 @@ import {
   MeshPhongMaterial,
   ColorManagement,
   Texture,
-  LinearFilter,
-  ClampToEdgeWrapping,
 } from "three";
-import {View, StyleSheet} from "react-native";
-import {Asset} from "expo-asset";
-import {requireNativeModule} from "expo-modules-core";
+import type {MeshPhongMaterialParameters} from "three";
+import {AppState, StyleSheet, View} from "react-native";
 
 // Expo's EXGL doesn't support UNPACK_COLORSPACE_CONVERSION_WEBGL which Three.js
 // r152+ tries to set when color management is enabled.
@@ -54,6 +51,8 @@ const EXGL_UNSUPPORTED_PIXEL_STORE_PARAMETERS = new Set<number>([
 ]);
 import {SOLAR_SYSTEM_CONFIG} from "./SolarSystemConfig";
 import {dimensions} from "../../utils/responsive";
+import {loadTextureFromAsset, resolveAssetModule} from "../../services/solar/textureLoader";
+import type {AssetModuleReference} from "../../services/solar/textureLoader";
 // Import texture assets
 import sunTextureModule from "../../../assets/3d/tex_sun_spots_02.png";
 
@@ -62,13 +61,8 @@ const textureCache = new Map<string | number, Texture>();
 const sphereGeometryCache = new Map<string, SphereGeometry>();
 let texturedPhongMaterialCache = new WeakMap<Texture, MeshPhongMaterial>();
 let fallbackPhongMaterial: MeshPhongMaterial | null = null;
-type AssetModuleReference = string | number | {default?: string | number; uri?: string};
 
 const isTextureDebugEnabled = process.env.EXPO_PUBLIC_TEXTURE_DEBUG === "1";
-
-const ExpoAssetModule = requireNativeModule("ExpoAsset") as {
-  downloadAsync: (uri: string, md5Hash: string | null, type: string) => Promise<string>;
-};
 
 const textureDebugLog = (level: "log" | "warn" | "error", message: string, details?: Record<string, unknown>): void => {
   if (!isTextureDebugEnabled) {
@@ -77,39 +71,6 @@ const textureDebugLog = (level: "log" | "warn" | "error", message: string, detai
 
   const payload = details ? ` ${JSON.stringify(details)}` : "";
   console[level](`[SolarTexture] ${message}${payload}`);
-};
-
-const describeAsset = (asset: Asset): Record<string, unknown> => ({
-  downloaded: asset.downloaded,
-  hash: asset.hash,
-  height: asset.height,
-  localUri: asset.localUri,
-  name: asset.name,
-  type: asset.type,
-  uri: asset.uri,
-  width: asset.width,
-});
-
-const ensureFileUriAsset = async (asset: Asset): Promise<Asset> => {
-  if (asset.localUri?.startsWith("file://")) {
-    return asset;
-  }
-
-  const copiedUri = await ExpoAssetModule.downloadAsync(asset.uri, asset.hash, asset.type);
-  asset.localUri = copiedUri;
-  return asset;
-};
-
-const resolveAssetModule = (assetModule: AssetModuleReference): string | number => {
-  if (typeof assetModule === "number" || typeof assetModule === "string") {
-    return assetModule;
-  }
-
-  if (assetModule && (typeof assetModule.default === "number" || typeof assetModule.default === "string")) {
-    return assetModule.default;
-  }
-
-  throw new Error("Unsupported texture asset module reference");
 };
 
 // Test-only helper to clear module cache between unit tests.
@@ -150,55 +111,23 @@ const getSharedTexturedPhongMaterial = (texture: Texture | null): MeshPhongMater
   return material;
 };
 
-const createSunMaterial = (texture: Texture | null): MeshPhongMaterial =>
-  new MeshPhongMaterial({
-    map: texture || undefined,
-    emissiveMap: texture || undefined,
+const createSunMaterial = (texture: Texture | null): MeshPhongMaterial => {
+  const materialParameters: MeshPhongMaterialParameters = {
     color: 0xffffff,
     emissive: 0xffa500,
     emissiveIntensity: texture ? 0.95 : 0.75,
     shininess: 0,
-  });
+  };
 
-export const __createSunMaterialForTests = createSunMaterial;
-
-/**
- * Creates a Three.js texture from an expo-asset that works with expo-gl.
- * This mimics expo-three's parseTexture but without the problematic imports.
- */
-function createTextureFromAsset(asset: Asset): Texture {
-  const uri = asset.localUri ?? null;
-  if (!uri?.startsWith("file://")) {
-    throw new Error(`Texture asset ${asset.name || "unknown"} did not resolve to a file:// localUri`);
+  if (texture) {
+    materialParameters.map = texture;
+    materialParameters.emissiveMap = texture;
   }
 
-  const image = {
-    localUri: uri,
-    uri,
-    width: asset.width ?? 1,
-    height: asset.height ?? 1,
-  };
+  return new MeshPhongMaterial(materialParameters);
+};
 
-  const texture = new Texture();
-  // Expo GL's native Android image loader reads `localUri` from the object
-  // passed to texImage2D. Keep this as a plain object so JSI can read it
-  // consistently from embedded release assets.
-  (texture.image as unknown) = {
-    data: image,
-    ...image,
-  };
-  texture.needsUpdate = true;
-  (texture as unknown as {isDataTexture: boolean}).isDataTexture = true;
-  // LinearFilter handles non-power-of-two textures.
-  texture.generateMipmaps = false;
-  texture.minFilter = LinearFilter;
-  texture.magFilter = LinearFilter;
-  texture.wrapS = ClampToEdgeWrapping;
-  texture.wrapT = ClampToEdgeWrapping;
-  texture.flipY = false;
-  texture.unpackAlignment = 1;
-  return texture;
-}
+export const __createSunMaterialForTests = createSunMaterial;
 
 /**
  * Custom hook to load textures for React Native using expo-asset directly.
@@ -223,19 +152,7 @@ function useExpoTexture(assetModule: AssetModuleReference): Texture | null {
           return;
         }
 
-        const [asset] = await Asset.loadAsync(resolvedModule);
-        if (!asset) {
-          throw new Error("Asset.loadAsync returned no asset");
-        }
-
-        const fileAsset = await ensureFileUriAsset(asset);
-
-        textureDebugLog("log", "asset loaded", {
-          module: resolvedModule,
-          asset: describeAsset(fileAsset),
-        });
-
-        const loaded = createTextureFromAsset(fileAsset);
+        const loaded = await loadTextureFromAsset(resolvedModule, String(resolvedModule));
         textureCache.set(resolvedModule, loaded);
 
         textureDebugLog("log", "three texture created", {
@@ -463,13 +380,38 @@ const SolarSystemScene: React.FC = () => {
   );
 };
 
+interface SolarSystem3DProps {
+  visible?: boolean;
+}
+
+const isVisibleAppState = (state: string | null | undefined): boolean => state !== "background" && state !== "inactive";
+
+export const __getSolarCanvasFrameloopForTests = (isVisible: boolean): "always" | "never" =>
+  isVisible ? "always" : "never";
+
 /**
  * Main SolarSystem3D component that renders the 3D solar system.
  * Creates a full-screen canvas with the solar system scene and proper camera positioning.
  *
  * @returns {JSX.Element} Rendered solar system component
  */
-const SolarSystem3D: React.FC = () => {
+const SolarSystem3D: React.FC<SolarSystem3DProps> = ({visible = true}) => {
+  const [isAppActive, setIsAppActive] = useState(() => isVisibleAppState(AppState.currentState));
+
+  useEffect(() => {
+    if (typeof AppState.addEventListener !== "function") {
+      return undefined;
+    }
+
+    const subscription = AppState.addEventListener("change", (nextState) => {
+      setIsAppActive(isVisibleAppState(nextState));
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
   const canvasStyle = useMemo(
     () => ({
       width: SCREEN_WIDTH,
@@ -491,6 +433,7 @@ const SolarSystem3D: React.FC = () => {
     }),
     [],
   );
+  const frameloop = useMemo(() => __getSolarCanvasFrameloopForTests(visible && isAppActive), [visible, isAppActive]);
 
   return (
     <View style={styles.container}>
@@ -498,7 +441,7 @@ const SolarSystem3D: React.FC = () => {
         style={canvasStyle}
         camera={cameraConfig}
         dpr={[1, 1.5]}
-        gl={{alpha: true, pixelRatio: 1}}
+        gl={{alpha: true}}
         onCreated={({gl, camera}) => {
           const webglContext = gl.getContext();
           const originalPixelStorei = webglContext.pixelStorei.bind(webglContext);
@@ -514,7 +457,7 @@ const SolarSystem3D: React.FC = () => {
           gl.setClearColor(0x000000, 0);
           camera.lookAt(0, 0, 0);
         }}
-        frameloop="always"
+        frameloop={frameloop}
       >
         <SolarSystemScene />
       </Canvas>

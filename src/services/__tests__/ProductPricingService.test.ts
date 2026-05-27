@@ -21,6 +21,7 @@ jest.mock("@react-native-firebase/firestore", () => ({
 
 jest.mock("../../utils/sentry", () => ({
   captureException: jest.fn(),
+  withSentrySpan: jest.fn((_: string, __: string, callback: () => unknown) => callback()),
 }));
 
 describe("ProductPricingService", () => {

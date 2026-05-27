@@ -7,6 +7,13 @@ import {captureException} from "./sentry";
 import type {ClassicRiddle, DailyRiddle} from "./validation/firestoreSchemas";
 import {RiddleCollections} from "./validation/firestoreSchemas";
 import {clueContainsLiteralAnswer} from "./riddleQuality";
+import {
+  GenerateRiddlesResponseSchema,
+  GenerateTodaysDailyChallengeRequestSchema,
+  GenerateTodaysDailyChallengeResponseSchema,
+  InitializeRiddleDatabaseResponseSchema,
+} from "./validation/requestSchemas";
+import {validateCallableRequest, validateCallableResponse} from "./validation/callableValidation";
 
 /**
  * Checks if a riddle already exists in the provided lists of questions and
@@ -450,10 +457,10 @@ export const generateClassicRiddles = onCall(
       logger.info("Starting riddle generation process with 10 riddles...");
       await generateAndAppendRiddles(10);
       logger.info("Classic Mode riddles generated and stored in Firestore successfully.");
-      return {
+      return validateCallableResponse(GenerateRiddlesResponseSchema, {
         success: true,
         message: "New Classic Mode riddles generated and added to Firestore.",
-      };
+      }, "generateClassicRiddles");
     } catch (error) {
       logger.error("Error generating Classic Mode riddles:", error);
       captureException(error);
@@ -497,11 +504,11 @@ export const initializeRiddleDatabase = onCall(
 
       if (!existingRiddlesSnapshot.empty) {
         logger.info("Riddle database already initialized - classic riddles exist.");
-        return {
+        return validateCallableResponse(InitializeRiddleDatabaseResponseSchema, {
           success: true,
           message: "Riddle database already initialized.",
           riddlesGenerated: 0,
-        };
+        }, "initializeRiddleDatabase");
       }
 
       // Generate initial batch of riddles for new database
@@ -510,11 +517,11 @@ export const initializeRiddleDatabase = onCall(
       await generateAndAppendRiddles(initialRiddleCount);
       logger.info(`Riddle database initialized with ${initialRiddleCount} classic riddles.`);
 
-      return {
+      return validateCallableResponse(InitializeRiddleDatabaseResponseSchema, {
         success: true,
         message: `Riddle database initialized with ${initialRiddleCount} classic riddles.`,
         riddlesGenerated: initialRiddleCount,
-      };
+      }, "initializeRiddleDatabase");
     } catch (error) {
       logger.error("Error initializing riddle database:", error);
       captureException(error);
@@ -550,10 +557,10 @@ export const generateDailyRiddles = onCall(
       logger.info("Starting daily riddle generation process with 10 riddles...");
       await generateAndAppendDailyRiddles(10);
       logger.info("Daily Mode riddles generated and stored in Firestore successfully.");
-      return {
+      return validateCallableResponse(GenerateRiddlesResponseSchema, {
         success: true,
         message: "New Daily Mode riddles generated and added to Firestore.",
-      };
+      }, "generateDailyRiddles");
     } catch (error) {
       logger.error("Error generating Daily Mode riddles:", error);
       captureException(error);
@@ -750,7 +757,11 @@ export const generateTodaysDailyChallengeFunction = onCall(
 
     try {
       await requireAdmin(request);
-      const {forceGenerate = false} = request.data || {};
+      const {forceGenerate = false} = validateCallableRequest(
+        GenerateTodaysDailyChallengeRequestSchema,
+        request.data,
+        "generateTodaysDailyChallengeFunction",
+      );
 
       const today = new Date();
       const todayDateString = today.toISOString().split("T")[0];
@@ -762,11 +773,11 @@ export const generateTodaysDailyChallengeFunction = onCall(
       const questionsGenerated = challengeDoc.exists ? 1 : 0;
 
       logger.info(`Daily challenge generated successfully with ${questionsGenerated} questions.`);
-      return {
+      return validateCallableResponse(GenerateTodaysDailyChallengeResponseSchema, {
         success: true,
         message: `Today's daily challenge generated successfully with ${questionsGenerated} questions.`,
         questionsGenerated,
-      };
+      }, "generateTodaysDailyChallengeFunction");
     } catch (error) {
       logger.error("Error generating today's daily challenge:", error);
       captureException(error);

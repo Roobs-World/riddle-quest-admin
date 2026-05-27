@@ -1,0 +1,1067 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Codebase Optimization Progress</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f5f7fb;
+        --surface: #ffffff;
+        --surface-muted: #eef3f8;
+        --text: #182232;
+        --muted: #5d6b7d;
+        --border: #d9e1eb;
+        --planned: #64748b;
+        --active: #0f766e;
+        --blocked: #b45309;
+        --done: #15803d;
+        --accent: #2563eb;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        line-height: 1.5;
+      }
+
+      main {
+        width: min(1120px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 40px 0 64px;
+      }
+
+      header {
+        display: grid;
+        gap: 14px;
+        margin-bottom: 28px;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        line-height: 1;
+        letter-spacing: 0;
+      }
+
+      h2 {
+        font-size: 1.35rem;
+        margin-bottom: 14px;
+      }
+
+      h3 {
+        font-size: 1rem;
+      }
+
+      .intro {
+        max-width: 760px;
+        color: var(--muted);
+        font-size: 1.05rem;
+      }
+
+      .meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .pill,
+      .status {
+        display: inline-flex;
+        align-items: center;
+        min-height: 28px;
+        border-radius: 999px;
+        padding: 4px 10px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      .pill {
+        background: var(--surface-muted);
+        color: var(--muted);
+      }
+
+      .status {
+        border: 1px solid currentColor;
+        background: #ffffff;
+      }
+
+      .status-planned {
+        color: var(--planned);
+      }
+
+      .status-active {
+        color: var(--active);
+      }
+
+      .status-blocked {
+        color: var(--blocked);
+      }
+
+      .status-done {
+        color: var(--done);
+      }
+
+      .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+        margin-bottom: 28px;
+      }
+
+      .metric,
+      .section {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+      }
+
+      .metric {
+        padding: 18px;
+      }
+
+      .metric strong {
+        display: block;
+        font-size: 1.8rem;
+        line-height: 1;
+      }
+
+      .metric span {
+        display: block;
+        color: var(--muted);
+        font-size: 0.85rem;
+        margin-top: 8px;
+      }
+
+      .section {
+        padding: 22px;
+        margin-bottom: 16px;
+      }
+
+      .phase-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 14px;
+        margin-bottom: 16px;
+      }
+
+      .phase-title {
+        display: grid;
+        gap: 5px;
+      }
+
+      .phase-title p {
+        color: var(--muted);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        border-top: 1px solid var(--border);
+        padding: 12px 10px;
+        text-align: left;
+        vertical-align: top;
+      }
+
+      th {
+        color: var(--muted);
+        font-size: 0.78rem;
+        text-transform: uppercase;
+      }
+
+      td:first-child,
+      th:first-child {
+        padding-left: 0;
+      }
+
+      td:last-child,
+      th:last-child {
+        padding-right: 0;
+      }
+
+      .task {
+        font-weight: 700;
+      }
+
+      .notes {
+        color: var(--muted);
+      }
+
+      .checklist {
+        display: grid;
+        gap: 10px;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+      }
+
+      .checklist li {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+      }
+
+      .reference-list {
+        display: grid;
+        gap: 9px;
+        padding-left: 18px;
+        margin: 0;
+      }
+
+      .reference-list a {
+        color: var(--accent);
+        font-weight: 700;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 3px;
+      }
+
+      .checklist input {
+        margin-top: 5px;
+        accent-color: var(--accent);
+      }
+
+      code {
+        display: inline-block;
+        border-radius: 6px;
+        background: var(--surface-muted);
+        color: #0f172a;
+        padding: 1px 6px;
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+        font-size: 0.9em;
+      }
+
+      @media (max-width: 820px) {
+        main {
+          width: min(100% - 20px, 1120px);
+          padding-top: 26px;
+        }
+
+        .summary-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .phase-header {
+          display: grid;
+        }
+
+        table,
+        tbody,
+        tr,
+        td {
+          display: block;
+        }
+
+        thead {
+          display: none;
+        }
+
+        tr {
+          border-top: 1px solid var(--border);
+          padding: 12px 0;
+        }
+
+        td {
+          border-top: 0;
+          padding: 4px 0;
+        }
+
+        td::before {
+          content: attr(data-label);
+          display: block;
+          color: var(--muted);
+          font-size: 0.75rem;
+          font-weight: 700;
+          text-transform: uppercase;
+        }
+      }
+
+      @media (max-width: 520px) {
+        .summary-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <div class="meta">
+          <span class="pill">Last updated: 2026-05-27</span>
+          <span class="pill">Priority: reliability first</span>
+          <span class="pill">Commerce: Google Play and Apple StoreKit</span>
+        </div>
+        <h1>Codebase Optimization Progress</h1>
+        <p class="intro">
+          Tracker for the post-package-update optimization work. The current priority is reliability first:
+          make contracts, validation, Firebase usage, IAP validation, observability, rendering, navigation, and
+          tooling safer before taking on broader runtime rewrites.
+        </p>
+      </header>
+
+      <section class="summary-grid" aria-label="Progress summary">
+        <div class="metric">
+          <strong>23</strong>
+          <span>Completed implementation tasks</span>
+        </div>
+        <div class="metric">
+          <strong>4</strong>
+          <span>Tracking/docs tasks completed</span>
+        </div>
+        <div class="metric">
+          <strong>7</strong>
+          <span>Implementation phases tracked</span>
+        </div>
+        <div class="metric">
+          <strong>0</strong>
+          <span>Blocked phases</span>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="phase-header">
+          <div class="phase-title">
+            <h2>Key Findings</h2>
+            <p>Important package-update follow-up findings to carry into implementation.</p>
+          </div>
+          <span class="status status-done">Captured</span>
+        </div>
+        <ul class="checklist">
+          <li>
+            <input type="checkbox" checked disabled />
+            <span>Reliability-first optimization is the selected priority for this pass.</span>
+          </li>
+          <li>
+            <input type="checkbox" checked disabled />
+            <span>
+              Firebase Functions riddle generation still has a fragile text/regex parse path; move it to OpenAI
+              structured output with a Zod schema for <code>{question, answer}</code>.
+            </span>
+          </li>
+          <li>
+            <input type="checkbox" checked disabled />
+            <span>
+              Zod 4 should become the contract layer for callable request/response validation and OpenAI response
+              validation; keep schemas local to app/Functions for this pass.
+            </span>
+          </li>
+          <li>
+            <input type="checkbox" checked disabled />
+            <span>
+              RNFirebase v24 makes modular API cleanup important; remaining namespaced-style calls and direct callable
+              scatter should be centralized.
+            </span>
+          </li>
+          <li>
+            <input type="checkbox" checked disabled />
+            <span>
+              IAP remains Google and Apple store commerce only: Google Play Billing and Apple StoreKit/App Store own
+              purchase state, pricing, refunds, and entitlements.
+            </span>
+          </li>
+          <li>
+            <input type="checkbox" checked disabled />
+            <span>
+              Sentry spans should cover callables, OpenAI generation, IAP validation, Firestore-heavy flows, and daily
+              challenge flows; Functions profiling stays behind an explicit environment flag.
+            </span>
+          </li>
+          <li>
+            <input type="checkbox" checked disabled />
+            <span>
+              Three rendering follow-up should consolidate solar texture loading, avoid undefined material params, and
+              reduce background render work when hidden.
+            </span>
+          </li>
+        </ul>
+      </section>
+
+      <section class="section">
+        <div class="phase-header">
+          <div class="phase-title">
+            <h2>Validation Baseline</h2>
+            <p>Known green checks from the package update before this optimization plan begins.</p>
+          </div>
+          <span class="status status-done">Green</span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Area</th>
+              <th>Status</th>
+              <th>Evidence</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="task" data-label="Area">Root app dependency and Expo checks</td>
+              <td data-label="Status"><span class="status status-done">Passed</span></td>
+              <td class="notes" data-label="Evidence">
+                <code>pnpm install --frozen-lockfile</code>, <code>pnpm exec expo install --check</code>,
+                <code>pnpm exec expo-doctor</code>, and <code>pnpm run check:rn-upgrade</code>.
+              </td>
+            </tr>
+            <tr>
+              <td class="task" data-label="Area">Root app tests and lint</td>
+              <td data-label="Status"><span class="status status-done">Passed</span></td>
+              <td class="notes" data-label="Evidence">
+                React Native Jest passed <code>173</code> suites / <code>3571</code> tests, followed by the root ESLint
+                gate with <code>--max-warnings=0</code>.
+              </td>
+            </tr>
+            <tr>
+              <td class="task" data-label="Area">Native build and smoke test</td>
+              <td data-label="Status"><span class="status status-done">Passed</span></td>
+              <td class="notes" data-label="Evidence">
+                <code>pnpm run android:assemble:emulator</code> passed, followed by an emulator smoke test for the
+                package-update/Three path.
+              </td>
+            </tr>
+            <tr>
+              <td class="task" data-label="Area">Firebase Functions</td>
+              <td data-label="Status"><span class="status status-done">Passed</span></td>
+              <td class="notes" data-label="Evidence">
+                Functions install, build, lint, and Jest passed with <code>22</code> suites / <code>454</code> tests.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <div class="phase-header">
+          <div class="phase-title">
+            <h2>Official References</h2>
+            <p>Primary package/API references used to shape this tracker.</p>
+          </div>
+          <span class="status status-done">Captured</span>
+        </div>
+        <ul class="reference-list">
+          <li>
+            <a href="https://developers.openai.com/api/docs/guides/structured-outputs">OpenAI Structured Outputs</a>
+          </li>
+          <li><a href="https://zod.dev/v4">Zod 4 release notes</a></li>
+          <li><a href="https://rnfirebase.io/migrating-to-v24">React Native Firebase v24 migration</a></li>
+          <li><a href="https://www.openiap.dev/docs/setup/react-native">OpenIAP React Native setup</a></li>
+          <li>
+            <a href="https://docs.sentry.io/platforms/javascript/guides/tanstackstart-react/migration/v7-to-v8/v8-new-performance-api">
+              Sentry JavaScript tracing APIs
+            </a>
+          </li>
+          <li>
+            <a href="https://docs.sentry.io/platforms/javascript/guides/gcp-functions/profiling/">
+              Sentry Google Cloud Functions profiling
+            </a>
+          </li>
+          <li>
+            <a href="https://reactnavigation.org/blog/2024/03/25/introducing-static-api/">
+              React Navigation static API
+            </a>
+          </li>
+          <li><a href="https://jestjs.io/docs/upgrading-to-jest30">Jest 30 upgrade guide</a></li>
+          <li>
+            <a href="https://www.typescriptlang.org/docs/handbook/release-notes/typescript-6-0.html">
+              TypeScript 6.0 release notes
+            </a>
+          </li>
+          <li><a href="https://typescript-eslint.io/blog/project-service/">typescript-eslint Project Service</a></li>
+        </ul>
+      </section>
+
+      <section class="section">
+        <div class="phase-header">
+          <div class="phase-title">
+            <h2>Progress Tracking</h2>
+            <p>Set up the artifact used to track the optimization work.</p>
+          </div>
+          <span class="status status-done">Done</span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Task</th>
+              <th>Status</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="task" data-label="Task">Create HTML progress tracker in <code>docs</code></td>
+              <td data-label="Status"><span class="status status-done">Done</span></td>
+              <td class="notes" data-label="Notes">Initial tracker created for follow-up implementation passes.</td>
+            </tr>
+            <tr>
+              <td class="task" data-label="Task">Capture package-update findings and validation baseline</td>
+              <td data-label="Status"><span class="status status-done">Done</span></td>
+              <td class="notes" data-label="Notes">
+                Added key findings, official references, IAP source-of-truth guidance, and green validation evidence.
+              </td>
+            </tr>
+            <tr>
+              <td class="task" data-label="Task">Update tracker after reliability/rendering/navigation/tooling pass</td>
+              <td data-label="Status"><span class="status status-done">Done</span></td>
+              <td class="notes" data-label="Notes">
+                Marked completed phases, refreshed handoff guidance, and recorded the latest focused and broad
+                verification evidence.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <div class="phase-header">
+          <div class="phase-title">
+            <h2>Phase 1: Contracts and OpenAI Output</h2>
+            <p>Modernize Functions contracts and remove fragile OpenAI regex parsing.</p>
+          </div>
+          <span class="status status-done">Done</span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Task</th>
+              <th>Status</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="task" data-label="Task">Add Zod schema for generated riddles: <code>{question, answer}</code></td>
+              <td data-label="Status"><span class="status status-done">Done</span></td>
+              <td class="notes" data-label="Notes">
+                Added local Functions <code>GeneratedRiddleSchema</code> for structured OpenAI output.
+              </td>
+            </tr>
+            <tr>
+              <td class="task" data-label="Task">Use OpenAI structured output for riddle generation</td>
+              <td data-label="Status"><span class="status status-done">Done</span></td>
+              <td class="notes" data-label="Notes">
+                Uses <code>chat.completions.parse</code> with <code>zodResponseFormat</code>; targeted tests pass.
+              </td>
+            </tr>
+            <tr>
+              <td class="task" data-label="Task">Convert Functions request and response interfaces to Zod schemas</td>
+              <td data-label="Status"><span class="status status-done">Done</span></td>
+              <td class="notes" data-label="Notes">
+                Added local Functions schemas and boundary validation for callable requests/responses across daily
+                challenge, game logic, rewarded ads, profile, leaderboard, riddle generation, IAP validation, and user
+                management while preserving legacy client-visible errors.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <div class="phase-header">
+          <div class="phase-title">
+            <h2>Phase 2: Firebase Callable Reliability</h2>
+            <p>Centralize callable usage and validate requests and responses at app boundaries.</p>
+          </div>
+          <span class="status status-done">Done</span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Task</th>
+              <th>Status</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="task" data-label="Task">Create one typed callable client around <code>httpsCallable(getFunctions(getApp()), ...)</code></td>
+              <td data-label="Status"><span class="status status-done">Done</span></td>
+              <td class="notes" data-label="Notes">
+                Added <code>getValidatedCallableFunction</code> and <code>callValidatedFunction</code> with Zod
+                request/response validation and direct unit coverage.
+              </td>
+            </tr>
+            <tr>
+              <td class="task" data-label="Task">Migrate app callable sites onto the typed client</td>
+              <td data-label="Status"><span class="status status-done">Done</span></td>
+              <td class="notes" data-label="Notes">
+                Migrated known production callable sites for daily challenge status, game completion, spending coins,
+                rewarded ads, IAP validation/dev fallback, username updates, and riddle submission.
+              </td>
+            </tr>
+            <tr>
+              <td class="task" data-label="Task">Replace remaining RNFirebase namespaced-style calls</td>
+              <td data-label="Status"><span class="status status-done">Done</span></td>
+              <td class="notes" data-label="Notes">
+                Replaced app bootstrap Crashlytics logging with the modular
+                <code>log(getCrashlytics(), message)</code> helper; focused lint and tests pass.
+              </td>
+            </tr>
+            <tr>
+              <td class="task" data-label="Task">Add Firestore <code>withConverter</code> reads for Player, Riddle, and Pricing</td>
+              <td data-label="Status"><span class="status status-done">Done</span></td>
+              <td class="notes" data-label="Notes">
+                Added Player, Riddle, and Product Pricing converters with Zod parsing while keeping defensive validation
+                at the service boundary for handled partial/malformed data paths.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <div class="phase-header">
+          <div class="phase-title">
+            <h2>Phase 3: IAP Source of Truth</h2>
+            <p>Keep purchases owned by Google Play Billing and Apple StoreKit with mandatory backend validation.</p>
+          </div>
+          <span class="status status-done">Done</span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Task</th>
+              <th>Status</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="task" data-label="Task">Confirm product IDs, pricing, entitlements, refunds, and transaction state alignment</td>
+              <td data-label="Status"><span class="status status-done">Done</span></td>
+              <td class="notes" data-label="Notes">
+                Confirmed the app/backend product IDs and pricing schema stay aligned while Google Play Console and
+                App Store Connect remain authoritative for live products, pricing, purchase state, refunds, and
+                entitlements.
+              </td>
+            </tr>
+            <tr>
+              <td class="task" data-label="Task">Keep RN IAP as native bridge only</td>
+              <td data-label="Status"><span class="status status-done">Done</span></td>
+              <td class="notes" data-label="Notes">
+                Kept <code>react-native-iap</code> as the native bridge to Google Play Billing and Apple StoreKit/App
+                Store APIs; no third-party commerce provider switch was introduced.
+              </td>
+            </tr>
+            <tr>
+              <td class="task" data-label="Task">Validate Android tokens with Google APIs and iOS transactions or receipts with Apple APIs</td>
+              <td data-label="Status"><span class="status status-done">Done</span></td>
+              <td class="notes" data-label="Notes">
+                Backend validation remains the required gate before granting coins or no-ads entitlements; app callable
+                contracts now validate the request and response shape.
+              </td>
+            </tr>
+            <tr>
+              <td class="task" data-label="Task">Finish or acknowledge transactions only after validation and entitlement grant</td>
+              <td data-label="Status"><span class="status status-done">Done</span></td>
+              <td class="notes" data-label="Notes">
+                Confirmed the app validation flow only finishes transactions after successful backend validation and
+                entitlement handling; cancellation and failed-validation paths stay ungranted.
+              </td>
+            </tr>
+            <tr>
+              <td class="task" data-label="Task">Run <code>react-native-iap</code> v15 and Expo compatibility spike before rewrite work</td>
+              <td data-label="Status"><span class="status status-done">Done</span></td>
+              <td class="notes" data-label="Notes">
+                Kept dependency versions fixed; TypeScript, focused IAP/service tests, RN tests, and the Expo/RN upgrade
+                check stayed green.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <div class="phase-header">
+          <div class="phase-title">
+            <h2>Phase 4: Observability</h2>
+            <p>Replace local wrappers with Sentry span helpers around high-value flows.</p>
+          </div>
+          <span class="status status-done">Done</span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Task</th>
+              <th>Status</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="task" data-label="Task">Add spans around callables and OpenAI generation</td>
+              <td data-label="Status"><span class="status status-done">Done</span></td>
+              <td class="notes" data-label="Notes">
+                Added <code>withSentrySpan</code> helpers and wrapped the centralized callable client plus OpenAI
+                structured riddle generation.
+              </td>
+            </tr>
+            <tr>
+              <td class="task" data-label="Task">Add spans around IAP validation and entitlement grant flow</td>
+              <td data-label="Status"><span class="status status-done">Done</span></td>
+              <td class="notes" data-label="Notes">
+                Added backend spans around duplicate-token checks, platform validation, entitlement grants,
+                analytics/stat updates, achievement evaluation, token marking, and dev-bypass grant paths. Purchase
+                tokens are intentionally omitted from span attributes and logs.
+              </td>
+            </tr>
+            <tr>
+              <td class="task" data-label="Task">Add spans around Firestore-heavy and daily challenge flows</td>
+              <td data-label="Status"><span class="status status-done">Done</span></td>
+              <td class="notes" data-label="Notes">
+                Wrapped shared Firestore retry reads and product pricing fetches; daily challenge callable flows now
+                inherit centralized callable span coverage.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <div class="phase-header">
+          <div class="phase-title">
+            <h2>Phase 5: Rendering</h2>
+            <p>Clean up solar texture loading and reduce background render work.</p>
+          </div>
+          <span class="status status-done">Done</span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Task</th>
+              <th>Status</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="task" data-label="Task">Consolidate solar texture loading</td>
+              <td data-label="Status"><span class="status status-done">Done</span></td>
+              <td class="notes" data-label="Notes">
+                Moved Expo asset resolution and embedded-asset file URI handling into
+                <code>src/services/solar/textureLoader.ts</code>, and made <code>SolarSystem3D</code> use that shared
+                loader.
+              </td>
+            </tr>
+            <tr>
+              <td class="task" data-label="Task">Avoid undefined material params</td>
+              <td data-label="Status"><span class="status status-done">Done</span></td>
+              <td class="notes" data-label="Notes">
+                Updated solar material construction so optional <code>map</code> and <code>emissiveMap</code> fields are
+                omitted unless a texture exists.
+              </td>
+            </tr>
+            <tr>
+              <td class="task" data-label="Task">Reduce render work when the background is hidden</td>
+              <td data-label="Status"><span class="status status-done">Done</span></td>
+              <td class="notes" data-label="Notes">
+                Added a <code>visible</code> prop plus AppState awareness so the background canvas uses
+                <code>frameloop="never"</code> when hidden or inactive, with focused component coverage.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <div class="phase-header">
+          <div class="phase-title">
+            <h2>Phase 6: Navigation</h2>
+            <p>Move React Navigation toward the v7 static API after callable centralization.</p>
+          </div>
+          <span class="status status-done">Done</span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Task</th>
+              <th>Status</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="task" data-label="Task">Assess current navigator shape after callable work lands</td>
+              <td data-label="Status"><span class="status status-done">Done</span></td>
+              <td class="notes" data-label="Notes">
+                Reviewed the auth-conditioned root navigator and kept the migration scoped to the root stack so route
+                names and container ownership stayed stable.
+              </td>
+            </tr>
+            <tr>
+              <td class="task" data-label="Task">Incrementally migrate toward v7 static API</td>
+              <td data-label="Status"><span class="status status-done">Done</span></td>
+              <td class="notes" data-label="Notes">
+                Migrated the root native stack to static <code>createNativeStackNavigator({groups})</code> with
+                authenticated and unauthenticated groups while preserving route contracts and existing analytics
+                listeners.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <div class="phase-header">
+          <div class="phase-title">
+            <h2>Phase 7: Tooling</h2>
+            <p>Adopt Project Service where it stays green and clean up Jest 30 leftovers.</p>
+          </div>
+          <span class="status status-done">Done</span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Task</th>
+              <th>Status</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="task" data-label="Task">Try typescript-eslint Project Service</td>
+              <td data-label="Status"><span class="status status-done">Done</span></td>
+              <td class="notes" data-label="Notes">
+                Functions ESLint now uses <code>parserOptions.projectService: true</code> with focused lint staying
+                green.
+              </td>
+            </tr>
+            <tr>
+              <td class="task" data-label="Task">Clean up Jest 30 leftovers</td>
+              <td data-label="Status"><span class="status status-done">Done</span></td>
+              <td class="notes" data-label="Notes">
+                Confirmed the root RN test script already uses the Jest 30-compatible
+                <code>--testPathPatterns</code> form; full RN Jest passed after updating local Sentry test doubles for
+                the callable span helper.
+              </td>
+            </tr>
+            <tr>
+              <td class="task" data-label="Task">Clear TypeScript 6 and typed boundary leftovers</td>
+              <td data-label="Status"><span class="status status-done">Done</span></td>
+              <td class="notes" data-label="Notes">
+                Added the TS6 deprecation acknowledgement, CSS side-effect module declaration, and a Product Pricing
+                service type cleanup so root <code>tsc --noEmit</code> passes.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <div class="phase-header">
+          <div class="phase-title">
+            <h2>Next Agent Handoff</h2>
+            <p>Latest status snapshot and recommended continuation path after the current optimization pass.</p>
+          </div>
+          <span class="status status-done">Updated</span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Topic</th>
+              <th>Status</th>
+              <th>Handoff Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="task" data-label="Topic">Last completed tranche</td>
+              <td data-label="Status"><span class="status status-done">Green</span></td>
+              <td class="notes" data-label="Handoff Notes">
+                All tracked implementation phases are now complete: callable contracts, app callable centralization,
+                Firestore converters, IAP source-of-truth checks, backend IAP spans, solar rendering cleanup, root
+                navigation static API migration, and tooling cleanup. Current verification evidence is below.
+              </td>
+            </tr>
+            <tr>
+              <td class="task" data-label="Topic">IAP observability slice</td>
+              <td data-label="Status"><span class="status status-done">Done</span></td>
+              <td class="notes" data-label="Handoff Notes">
+                Backend validation now has Sentry span coverage for duplicate-token checks, platform validation,
+                entitlement grant, analytics/stat updates, achievement evaluation, and token marking. Tests assert span
+                attributes do not contain raw purchase tokens.
+              </td>
+            </tr>
+            <tr>
+              <td class="task" data-label="Topic">Recommended next implementation slice</td>
+              <td data-label="Status"><span class="status status-done">No tracked blocker</span></td>
+              <td class="notes" data-label="Handoff Notes">
+                The next useful follow-up is runtime validation rather than more tracker work: rerun the Android smoke,
+                add an iOS/sandbox IAP validation pass when credentials/devices are available, and consider a full
+                emulator matrix before release.
+              </td>
+            </tr>
+            <tr>
+              <td class="task" data-label="Topic">Rendering follow-up</td>
+              <td data-label="Status"><span class="status status-done">Done</span></td>
+              <td class="notes" data-label="Handoff Notes">
+                <code>SolarSystem3D</code> now uses the shared solar texture loader and pauses its canvas frameloop when
+                hidden or when the app is inactive.
+              </td>
+            </tr>
+            <tr>
+              <td class="task" data-label="Topic">Navigation/tooling caution</td>
+              <td data-label="Status"><span class="status status-done">Done</span></td>
+              <td class="notes" data-label="Handoff Notes">
+                Root navigation now uses the React Navigation v7 static stack shape, and Functions ESLint uses
+                typescript-eslint Project Service. Keep future navigation changes small because the auth groups are now
+                config-driven.
+              </td>
+            </tr>
+            <tr>
+              <td class="task" data-label="Topic">Environment note</td>
+              <td data-label="Status"><span class="status status-active">Check first</span></td>
+              <td class="notes" data-label="Handoff Notes">
+                Expo MCP tools were requested by <code>AGENTS.md</code> but were not exposed in the previous session.
+                Prefer Expo MCP if available; otherwise the prior verification used local Expo CLI plus ADB on
+                <code>emulator-5554</code>. There are broad package-update working-tree changes; do not revert unrelated
+                dirty files.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <div class="phase-header">
+          <div class="phase-title">
+            <h2>Current Verification</h2>
+            <p>Validation evidence for the completed optimization pass.</p>
+          </div>
+          <span class="status status-done">Passed</span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Area</th>
+              <th>Status</th>
+              <th>Evidence</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="task" data-label="Area">Root app dependency and Expo checks</td>
+              <td data-label="Status"><span class="status status-done">Passed</span></td>
+              <td class="notes" data-label="Evidence">
+                <code>pnpm install --frozen-lockfile</code>, <code>pnpm exec expo install --check</code>,
+                <code>pnpm exec expo-doctor</code>, and <code>pnpm run check:rn-upgrade</code> completed successfully.
+              </td>
+            </tr>
+            <tr>
+              <td class="task" data-label="Area">Root app tests and lint</td>
+              <td data-label="Status"><span class="status status-done">Passed</span></td>
+              <td class="notes" data-label="Evidence">
+                <code>pnpm run test:rn --runInBand</code> passed <code>173</code> suites / <code>3578</code> tests.
+                Focused Jest also passed for <code>GameScreen</code>, navigation, solar texture/rendering, and Product
+                Pricing coverage. Focused ESLint passed for the edited app files, <code>pnpm run check:rn-upgrade</code>
+                passed, and root <code>pnpm exec tsc --noEmit --pretty false</code> passed.
+              </td>
+            </tr>
+            <tr>
+              <td class="task" data-label="Area">Firebase Functions</td>
+              <td data-label="Status"><span class="status status-done">Passed</span></td>
+              <td class="notes" data-label="Evidence">
+                Functions <code>pnpm run build</code> and <code>pnpm run lint</code> passed, focused ESLint passed for
+                the edited IAP/Sentry files, focused IAP validation Jest passed <code>13</code> tests, and the full
+                Functions Jest run passed
+                <code>22</code> suites / <code>447</code> tests.
+              </td>
+            </tr>
+            <tr>
+              <td class="task" data-label="Area">Android one-device smoke</td>
+              <td data-label="Status"><span class="status status-done">Passed</span></td>
+              <td class="notes" data-label="Evidence">
+                Booted <code>rq_pixel_4a_api_36_1</code> as <code>emulator-5554</code>, installed the debug APK,
+                launched the Expo dev client against Metro on <code>8081</code>, reached the Daily Challenge game
+                screen, opened the Coin Shop, and found no crash-buffer entries, fatal React Native errors, callable
+                validation failures, RNFirebase namespaced warnings, or Three <code>map</code>/<code>emissiveMap</code>
+                material warnings. Screenshot artifact: <code>docs/android-smoke-current.png</code>. Full matrix was
+                intentionally skipped for this pass.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <h2>Verification Checklist</h2>
+        <ul class="checklist">
+          <li><input type="checkbox" checked disabled /> <span><code>pnpm install --frozen-lockfile</code></span></li>
+          <li><input type="checkbox" checked disabled /> <span><code>pnpm exec expo install --check</code></span></li>
+          <li><input type="checkbox" checked disabled /> <span><code>pnpm exec expo-doctor</code></span></li>
+          <li><input type="checkbox" checked disabled /> <span><code>pnpm run check:rn-upgrade</code></span></li>
+          <li><input type="checkbox" checked disabled /> <span><code>pnpm run test:rn --runInBand</code></span></li>
+          <li>
+            <input type="checkbox" checked disabled />
+            <span><code>pnpm exec tsc --noEmit --pretty false</code></span>
+          </li>
+          <li>
+            <input type="checkbox" checked disabled />
+            <span>
+              <code>pnpm exec cross-env ESLINT_USE_FLAT_CONFIG=false eslint App.tsx "src/**/*.{js,jsx,ts,tsx}" --max-warnings=0</code>
+            </span>
+          </li>
+          <li>
+            <input type="checkbox" checked disabled />
+            <span>
+              Focused app Jest for <code>GameScreen</code>, navigation, Product Pricing, solar rendering, and solar
+              texture loading passed; the full RN run passed <code>173</code> suites / <code>3578</code> tests.
+            </span>
+          </li>
+          <li>
+            <input type="checkbox" checked disabled />
+            <span>
+              Focused app ESLint passed for edited rendering, Product Pricing, and navigation files with
+              <code>--max-warnings=0</code>.
+            </span>
+          </li>
+          <li>
+            <input type="checkbox" checked disabled />
+            <span>
+              Focused Functions ESLint passed for <code>src/iapValidation.ts</code>,
+              <code>src/__tests__/iapValidation.test.ts</code>, and <code>src/sentry.ts</code>.
+            </span>
+          </li>
+          <li>
+            <input type="checkbox" checked disabled />
+            <span>
+              Smoke-test launch on one Android emulator device, confirm the Daily Challenge game screen renders, open
+              the Coin Shop, and review logcat for crash/callable/RNFirebase/Three warning patterns.
+            </span>
+          </li>
+          <li><input type="checkbox" checked disabled /> <span><code>cd E:\qwordly\firebase-functions</code></span></li>
+          <li><input type="checkbox" checked disabled /> <span><code>pnpm install --frozen-lockfile</code></span></li>
+          <li><input type="checkbox" checked disabled /> <span><code>pnpm run build</code></span></li>
+          <li><input type="checkbox" checked disabled /> <span><code>pnpm run lint</code></span></li>
+          <li><input type="checkbox" checked disabled /> <span><code>pnpm run test</code></span></li>
+        </ul>
+      </section>
+
+      <section class="section">
+        <h2>Assumptions</h2>
+        <ul class="checklist">
+          <li><input type="checkbox" checked disabled /> <span>Reliability-first priority is locked.</span></li>
+          <li><input type="checkbox" checked disabled /> <span>IAP remains Google and Apple store commerce only.</span></li>
+          <li><input type="checkbox" checked disabled /> <span>No public product API changes are intended.</span></li>
+          <li><input type="checkbox" checked disabled /> <span>Root app and Functions remain separate install and build surfaces.</span></li>
+        </ul>
+      </section>
+    </main>
+  </body>
+</html>
