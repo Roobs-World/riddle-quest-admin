@@ -80,13 +80,15 @@ export const HINT_COST_COINS = 50;
 /** Bonus coins awarded whenever a player levels up. */
 export const LEVEL_UP_COIN_BONUS = 50;
 /** Coins awarded for completing a Daily Challenge. */
-export const DAILY_CHALLENGE_COIN_REWARD = 50;
+export const DAILY_CHALLENGE_COIN_REWARD = 75;
+/** Bonus coins awarded for completing Daily Challenge with active streak. */
+export const DAILY_COMPLETION_BONUS = 25;
 /** Coins awarded for completing a Classic riddle. */
-export const CLASSIC_RIDDLE_COIN_REWARD = 15;
+export const CLASSIC_RIDDLE_COIN_REWARD = 25;
 /** Coin cost to continue after exhausting initial attempts. */
 export const CONTINUE_COST_COINS = 100;
 /** Coins awarded after a fully watched rewarded ad from the loss flow. */
-export const CONTINUE_REWARDED_AD_COIN_REWARD = 25;
+export const CONTINUE_REWARDED_AD_COIN_REWARD = 50;
 /** Delay (ms) before resuming background music after sound is enabled. */
 export const SOUND_RESUME_DELAY_MS = 500;
 /** Win flow: fade-out duration for background music (ms). */

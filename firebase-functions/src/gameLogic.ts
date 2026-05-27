@@ -5,6 +5,8 @@ import {updateUserCoins, getUser, getRiddleByGameMode} from "./firestoreService"
 import {
   SKIP_COST_CLASSIC,
   SKIP_COST_DAILY,
+  HINT_COST_COINS,
+  CONTINUE_COST_COINS,
   RIDDLE_GENERATION_THRESHOLD,
   RIDDLE_GENERATION_BATCH_SIZE,
 } from "./constants";
@@ -220,13 +222,14 @@ export const skipRiddle = onCall(
 );
 
 /**
- * Callable function to handle spending user coins.
+ * Callable function to handle spending user coins in a server-authoritative manner.
+ * Resolves expected costs by reason and optional gameMode.
  * @param data - The request data.
- * @param data.amount - The amount of coins to spend.
- * @param reason - The reason for spending coins.
+ * @param data.reason - The reason for spending coins ('hint', 'skip', 'continue').
+ * @param data.gameMode - Optional game mode ('classic', 'challenge').
+ * @param data.amount - Optional legacy amount; validated against calculated cost.
  * @param context - The CallableContext object.
- * @return {Promise<{ newCoins: number }>} A Promise resolving to the new coin
- * balance.
+ * @return {Promise<{ newCoins: number }>} A Promise resolving to the new coin balance.
  */
 export const spendCoins = onCall(
   {enforceAppCheck: true},
@@ -235,46 +238,77 @@ export const spendCoins = onCall(
       throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
     }
 
-    const {amount, reason} = validateCallableRequest(
+    const {reason, gameMode, amount} = validateCallableRequest(
       SpendCoinsRequestSchema,
       request.data,
       "spendCoins",
-      (error) =>
-        error.issues.some((issue) => issue.path[0] === "reason")
-          ? "Invalid reason specified. Must be 'hint', 'skip', or 'continue'."
-          : "Invalid amount specified.",
+      (error) => {
+        if (error.issues.some((issue) => issue.path[0] === "reason")) {
+          return "Invalid reason specified. Must be 'hint', 'skip', or 'continue'.";
+        }
+        return "Invalid request payload for spendCoins.";
+      },
     );
     const userId = request.auth.uid;
 
     try {
-      // Check if user exists first
+      // Check if user exists
       const user = await getUser(userId);
       if (!user) {
         throw new HttpsError("not-found", "User data not found.");
       }
 
-      if (user.coins < amount) {
-        throw new HttpsError("failed-precondition", "Insufficient coins to spend.");
+      // Calculate expected cost based on reason and optional gameMode
+      let expectedCost: number;
+      switch (reason) {
+        case "hint":
+          expectedCost = HINT_COST_COINS;
+          break;
+        case "skip":
+          // Default to classic if gameMode not specified
+          expectedCost = gameMode === "challenge" ? SKIP_COST_DAILY : SKIP_COST_CLASSIC;
+          break;
+        case "continue":
+          expectedCost = CONTINUE_COST_COINS;
+          break;
+        default:
+          throw new HttpsError("invalid-argument", "Invalid reason specified.");
       }
 
-      await updateUserCoins(userId, -amount);
+      // Validate legacy amount if provided
+      if (amount !== undefined && amount !== expectedCost) {
+        throw new HttpsError(
+          "invalid-argument",
+          `Supplied amount (${amount}) does not match expected cost (${expectedCost}) for ${reason}.`,
+        );
+      }
+
+      // Check if user has enough coins
+      if (user.coins < expectedCost) {
+        throw new HttpsError(
+          "failed-precondition",
+          `Insufficient coins to spend. Required: ${expectedCost}, Available: ${user.coins}`,
+        );
+      }
+
+      // Deduct coins
+      await updateUserCoins(userId, -expectedCost);
 
       const updatedUser = await getUser(userId);
-
       if (!updatedUser) {
         throw new HttpsError("internal", "Could not retrieve updated user data after spending coins.");
       }
 
-      logger.info(`User ${userId} spent ${amount} coins for reason: ${reason}. New balance: ${updatedUser.coins}.`);
+      logger.info(
+        `User ${userId} spent ${expectedCost} coins for reason: ${reason}${gameMode ? ` (${gameMode})` : ''}. New balance: ${updatedUser.coins}.`,
+      );
       return validateCallableResponse(SpendCoinsResponseSchema, {newCoins: updatedUser.coins}, "spendCoins");
     } catch (error: unknown) {
       // Only log unexpected errors, not expected business logic errors
       if (error instanceof HttpsError) {
-        // These are expected errors (authentication, validation, business logic)
-        // Don't log them as errors since they're part of normal operation
         throw error;
       }
-      // Log unexpected errors (system errors, database errors, etc.)
+      // Log unexpected errors
       logger.error("Unexpected error spending coins:", error);
       captureException(error);
       throw new HttpsError("internal", "An error occurred while spending coins.", error);

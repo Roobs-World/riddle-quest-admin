@@ -9,6 +9,12 @@ export const SKIP_COST_CLASSIC = 100;
 /** Coin cost to skip a level in Daily Challenge mode. */
 export const SKIP_COST_DAILY = 150;
 
+/** Coin cost to reveal one hint letter. */
+export const HINT_COST_COINS = 50;
+
+/** Coin cost to continue after exhausting attempts. */
+export const CONTINUE_COST_COINS = 100;
+
 /** Maximum guesses allowed in Classic mode. */
 export const MAX_ATTEMPTS_CLASSIC = 5;
 
@@ -16,13 +22,17 @@ export const MAX_ATTEMPTS_CLASSIC = 5;
 export const MAX_ATTEMPTS_CHALLENGE = 5;
 
 /** Coins earned for solving a Classic riddle. */
-export const COINS_REWARD_CLASSIC = 15;
+export const COINS_REWARD_CLASSIC = 25;
 /** Coins earned for solving a Daily Challenge riddle. */
-export const COINS_REWARD_CHALLENGE = 50;
+export const COINS_REWARD_CHALLENGE = 75;
+/** Bonus coins awarded for daily streak completion. */
+export const DAILY_COMPLETION_BONUS = 25;
+/** Bonus coins awarded per level-up. */
+export const LEVEL_UP_COIN_BONUS = 50;
 /** Bonus coins awarded per newly unlocked achievement. */
 export const ACHIEVEMENT_UNLOCK_COIN_REWARD = 25;
 /** Coins awarded after a completed rewarded ad. Must match client src/constants/game.ts. */
-export const REWARDED_AD_COIN_REWARD = 25;
+export const REWARDED_AD_COIN_REWARD = 50;
 /** Minimum time between rewarded-ad coin grants for the same user and placement. */
 export const REWARDED_AD_REWARD_COOLDOWN_MS = 30_000;
 /** Fallback idempotency window when an older client omits a callback id. */

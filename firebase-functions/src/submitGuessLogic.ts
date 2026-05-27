@@ -33,7 +33,9 @@ import {
   MAX_ATTEMPTS_CHALLENGE,
   COINS_REWARD_CLASSIC,
   COINS_REWARD_CHALLENGE,
+  DAILY_COMPLETION_BONUS,
   ACHIEVEMENT_UNLOCK_COIN_REWARD,
+  LEVEL_UP_COIN_BONUS,
   BASE_SCORE_CLASSIC,
   BASE_SCORE_CHALLENGE,
   getLevelFromXp,
@@ -508,6 +510,10 @@ export async function handleCompleteGameLogic(
       gamesPlayed: admin.firestore.FieldValue.increment(1),
     };
 
+    let baseWinCoins = 0;
+    let levelUpBonus = 0;
+    let dailyStreakBonus = 0;
+    let achievementBonus = 0;
     let coinsEarned = 0;
     let xpEarned = 0;
     let newXp = currentStats.xp ?? 0;
@@ -533,7 +539,13 @@ export async function handleCompleteGameLogic(
         statsUpdate.winStreak = updatedDailyWinStreak;
         statsUpdate.challengeWins = admin.firestore.FieldValue.increment(1);
         statsUpdate.dailyPuzzlesCompleted = admin.firestore.FieldValue.increment(1);
-        coinsEarned = COINS_REWARD_CHALLENGE;
+        baseWinCoins = COINS_REWARD_CHALLENGE;
+
+        // Award daily streak bonus when streak is active (> 0)
+        if (updatedDailyWinStreak && updatedDailyWinStreak > 0) {
+          dailyStreakBonus = DAILY_COMPLETION_BONUS;
+        }
+
         playerProfileUpdate.lastDailyChallengeCompletedAt = admin.firestore.FieldValue.serverTimestamp();
 
         await admin
@@ -546,7 +558,7 @@ export async function handleCompleteGameLogic(
         functions.logger.info(`User ${userId} completed daily challenge. Incremented dailyChallengeIndex.`);
       } else {
         // classic
-        coinsEarned = COINS_REWARD_CLASSIC;
+        baseWinCoins = COINS_REWARD_CLASSIC;
       }
 
       const baseScore = gameMode === "challenge" ? BASE_SCORE_CHALLENGE : BASE_SCORE_CLASSIC;
@@ -561,7 +573,22 @@ export async function handleCompleteGameLogic(
         statsUpdate.level = newLevel;
       }
 
-      await updateUserCoins(userId, coinsEarned);
+      // Award base win coins
+      await updateUserCoins(userId, baseWinCoins);
+      coinsEarned = baseWinCoins;
+
+      // Award daily streak bonus if applicable
+      if (dailyStreakBonus > 0) {
+        await updateUserCoins(userId, dailyStreakBonus);
+        coinsEarned += dailyStreakBonus;
+      }
+
+      // Award level-up bonus if applicable
+      if (leveledUp) {
+        levelUpBonus = LEVEL_UP_COIN_BONUS;
+        await updateUserCoins(userId, levelUpBonus);
+        coinsEarned += levelUpBonus;
+      }
 
       if (Object.keys(playerProfileUpdate).length > 0) {
         await admin.firestore().collection("users").doc(userId).update(playerProfileUpdate);
@@ -637,9 +664,9 @@ export async function handleCompleteGameLogic(
       });
 
       if (isCorrect && newlyUnlockedAchievementIds.length > 0) {
-        const achievementBonusCoins = newlyUnlockedAchievementIds.length * ACHIEVEMENT_UNLOCK_COIN_REWARD;
-        await updateUserCoins(userId, achievementBonusCoins);
-        coinsEarned += achievementBonusCoins;
+        achievementBonus = newlyUnlockedAchievementIds.length * ACHIEVEMENT_UNLOCK_COIN_REWARD;
+        await updateUserCoins(userId, achievementBonus);
+        coinsEarned += achievementBonus;
       }
     } catch (error) {
       functions.logger.error("Error evaluating achievements:", error);
@@ -647,6 +674,11 @@ export async function handleCompleteGameLogic(
     }
 
     const scoreEarned = xpEarned;
+
+    // Get final user balance for reward breakdown
+    const finalUser = await getUser(userId);
+    const newBalance = finalUser?.coins ?? 0;
+    const totalAwarded = isCorrect ? coinsEarned : 0;
 
     return {
       coinsEarned,
@@ -657,6 +689,16 @@ export async function handleCompleteGameLogic(
       newLevel,
       leveledUp,
       newWinStreak: updatedDailyWinStreak,
+      rewardBreakdown: isCorrect
+        ? {
+            baseWinCoins,
+            levelUpBonus,
+            dailyStreakBonus,
+            achievementBonus,
+            totalAwarded,
+            newBalance,
+          }
+        : undefined,
     };
   } catch (error: unknown) {
     functions.logger.error("Error in handleCompleteGameLogic:", error);

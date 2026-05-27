@@ -82,6 +82,17 @@ export const CompleteGameResponseDataSchema = z
     newLevel: z.number().int().positive(),
     leveledUp: z.boolean(),
     newWinStreak: z.number().int().nonnegative().optional(),
+    // Reward breakdown for UI display
+    rewardBreakdown: z
+      .object({
+        baseWinCoins: z.number().nonnegative(),
+        levelUpBonus: z.number().nonnegative(),
+        dailyStreakBonus: z.number().nonnegative(),
+        achievementBonus: z.number().nonnegative(),
+        totalAwarded: z.number().nonnegative(),
+        newBalance: z.number().nonnegative(),
+      })
+      .optional(),
   })
   .strict();
 export type CompleteGameResponseData = z.infer<typeof CompleteGameResponseDataSchema>;
@@ -156,8 +167,9 @@ export type SkipRiddleResponse = z.infer<typeof SkipRiddleResponseSchema>;
 
 export const SpendCoinsRequestSchema = z
   .object({
-    amount: z.number().positive(),
     reason: z.enum(["hint", "skip", "continue"]),
+    gameMode: GameModeSchema.optional(),
+    amount: z.number().positive().optional(), // Legacy: validated against calculated cost server-side
   })
   .strict();
 export type SpendCoinsRequest = z.infer<typeof SpendCoinsRequestSchema>;
@@ -301,9 +313,9 @@ export const InitializeUserRequestDataSchema = z
     displayName: z.string().optional(),
     avatarUrl: z.string().optional(),
     seed: z
-      .custom<Partial<Player>>(
-        (value) => value === undefined || (typeof value === "object" && value !== null && !Array.isArray(value)),
-      )
+      .custom<
+        Partial<Player>
+      >((value) => value === undefined || (typeof value === "object" && value !== null && !Array.isArray(value)))
       .optional(),
   })
   .strict();
