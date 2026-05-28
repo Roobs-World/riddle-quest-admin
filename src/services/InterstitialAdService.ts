@@ -21,10 +21,27 @@ let loadRetryTimeout: ReturnType<typeof setTimeout> | null = null;
 
 const readinessSubscribers = new Set<(isReady: boolean) => void>();
 
-const getInterstitialAdUnitId = (): string =>
-  process.env.EXPO_PUBLIC_GOOGLE_MOBILE_ADS_INTERSTITIAL_AD_UNIT_ID ||
-  process.env.EXPO_PUBLIC_ADMOB_INTERSTITIAL_AD_UNIT_ID ||
-  TestIds.INTERSTITIAL;
+const getInterstitialAdUnitId = (): string => {
+  // Prefer platform-specific production IDs, then generic GOOGLE_MOBILE_ADS vars,
+  // then any EXPO_PUBLIC_* fallbacks (exposed at build/runtime), then test IDs.
+  if (Platform.OS === "android") {
+    return (
+      process.env.ANDROID_INTERSTITIAL_ID ||
+      process.env.GOOGLE_MOBILE_ADS_ANDROID_INTERSTITIAL_ID ||
+      process.env.EXPO_PUBLIC_GOOGLE_MOBILE_ADS_INTERSTITIAL_AD_UNIT_ID ||
+      process.env.EXPO_PUBLIC_ADMOB_INTERSTITIAL_AD_UNIT_ID ||
+      TestIds.INTERSTITIAL
+    );
+  }
+
+  return (
+    process.env.IOS_INTERSTITIAL_ID ||
+    process.env.GOOGLE_MOBILE_ADS_IOS_INTERSTITIAL_ID ||
+    process.env.EXPO_PUBLIC_GOOGLE_MOBILE_ADS_INTERSTITIAL_AD_UNIT_ID ||
+    process.env.EXPO_PUBLIC_ADMOB_INTERSTITIAL_AD_UNIT_ID ||
+    TestIds.INTERSTITIAL
+  );
+};
 
 const isSupportedPlatform = (): boolean => Platform.OS === "android" || Platform.OS === "ios";
 

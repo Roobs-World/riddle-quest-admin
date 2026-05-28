@@ -76,10 +76,16 @@ const TooltipOverlay: React.FC<TooltipOverlayProps> = ({visible, targetRect, con
       };
     }
 
+    // Slightly reduce the vertical offset so the panel sits closer to
+    // bottom-anchored targets (eg. the hint button). This moves the
+    // tooltip panel down the screen when it would otherwise appear too
+    // far above the target.
+    const PANEL_VERTICAL_OFFSET = 140;
+
     const preferredAbove = targetRect.y > height * 0.45;
     const panelTop = preferredAbove
-      ? Math.max(SCREEN_PADDING, targetRect.y - 190)
-      : Math.min(height - 190, targetRect.y + targetRect.height + 28);
+      ? Math.max(SCREEN_PADDING, targetRect.y - PANEL_VERTICAL_OFFSET)
+      : Math.min(height - PANEL_VERTICAL_OFFSET, targetRect.y + targetRect.height + 28);
     const targetCenter = targetRect.x + targetRect.width / 2;
     const panelLeft = Math.min(
       width - PANEL_WIDTH - SCREEN_PADDING,

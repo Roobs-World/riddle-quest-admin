@@ -163,54 +163,10 @@ const useGameLogic = ({riddleId, answer, gameMode, isGuestMode = false}: UseGame
     };
 
     void restore();
-          try {
-            const data: CompleteGameOutput = await completeGame({
-              riddleId,
-              gameMode,
-              attempts: currentAttempt,
-              isCorrect: true,
-            });
-            coinsEarned = data.coinsEarned ?? 0;
-            // Some backend builds return xp as `xpEarned` only.
-            scoreEarned = data.scoreEarned ?? data.xpEarned ?? 0;
-            newlyUnlockedAchievementIds = data.newlyUnlockedAchievementIds ?? [];
-            newWinStreak = data.newWinStreak;
-            // Propagate server-side reward breakdown (when present) so callers
-            // can render authoritative fanfare and coin animations.
-            const rewardBreakdown = (data as any).rewardBreakdown;
-            gameEventBus.emit<import("../services/GameEventBus").GameCompletedEvent>({
-              type: "GAME_COMPLETED",
-              outcome: "won",
-              attempts: currentAttempt,
-              coinsEarned,
-            });
-
-            return {
-              outcome: "win",
-              feedback,
-              coinsEarned,
-              scoreEarned,
-              correctAnswer: answer,
-              newlyUnlockedAchievementIds,
-              newWinStreak,
-              rewardBreakdown,
-            } as const;
-          } catch (err) {
-            logger.error("Error calling completeGame on win:", err);
-            captureException(err);
-          }
-
-        // If we reach here without an early return above, fall through to
-        // return a best-effort win result (e.g., in error cases).
-        return {
-          outcome: "win",
-          feedback,
-          coinsEarned,
-          scoreEarned,
-          correctAnswer: answer,
-          newlyUnlockedAchievementIds,
-          newWinStreak,
-        };
+    return () => {
+      cancelled = true;
+    };
+  }, [isGuestMode, riddleId, gameMode]);
 
   /**
    * Processes one guess:

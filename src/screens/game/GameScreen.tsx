@@ -89,6 +89,7 @@ import {
   SpendCoinsOutputSchema,
   GetHintInputSchema,
   GetHintOutputSchema,
+  GetHintOutput,
 } from "../../validation/cloudFunctionsSchemas";
 
 interface GuessResult {
@@ -1794,8 +1795,14 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
             const newlyUnlocked = data.newlyUnlockedAchievementIds ?? [];
             if (newlyUnlocked.length > 0) {
               const unlockedAchievements = newlyUnlocked
-                .map((achievementId) => ACHIEVEMENT_DEFINITIONS.find((definition) => definition.id === achievementId))
-                .filter((achievement): achievement is (typeof ACHIEVEMENT_DEFINITIONS)[number] => Boolean(achievement));
+                .map((achievementId: string) =>
+                  ACHIEVEMENT_DEFINITIONS.find((definition) => definition.id === achievementId),
+                )
+                .filter(
+                  (
+                    achievement: (typeof ACHIEVEMENT_DEFINITIONS)[number] | undefined,
+                  ): achievement is (typeof ACHIEVEMENT_DEFINITIONS)[number] => Boolean(achievement),
+                );
 
               const totalCoinsAfterHint = data.newCoins ?? currentUserCoins - hintCost;
               const showAchievementFanfareAtIndex = (index: number) => {
@@ -1830,7 +1837,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
             captureException(err);
             modal.showInfoModal({
               title: AppStrings.GameScreenAlerts.HINT_ERROR_TITLE,
-              message: AppStrings.GameScreenAlerts.HINT_ERROR_MESSAGE,
+              message: AppStrings.GameScreenAlerts.SUBMIT_GUESS_ERROR_MESSAGE,
             });
           }
         })();

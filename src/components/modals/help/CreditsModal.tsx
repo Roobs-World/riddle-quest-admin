@@ -41,10 +41,10 @@ interface TeamMember {
 const TEAM_MEMBERS: TeamMember[] = [
   {name: "Craig Beswetherick", role: "Lead Developer & Game Design", website: "https://www.roobsworld.com"},
   {name: "Reuben Beswetherick", role: "Inspiration", website: "https://www.roobsworld.com"},
-  {name: "Mike Hawkyard", role: "Game Designer, Publisher, Overall Hero"},
-  {name: "Gavin Harrison", role: "Sound Design"},
+  {name: "Mike Hawkyard", role: "Game Designer, Publisher, Overall Hero", website: "https://www.acehighsports.com/"},
+  {name: "Gavin Harrison", role: "Sound Design", website: "https://www.gavinharrisonsounds.com/"},
   {name: "Nathalia", role: "Design"},
-  {name: "Mr Ben", role: "Design"},
+  {name: "Mr Ben", role: "Design", website: "https://www.biscuitlocker.com/"},
 ];
 
 const renderTeamMember = ({item}: {item: TeamMember}) => <TeamMemberCard member={item} />;

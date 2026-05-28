@@ -96,12 +96,32 @@ const setReadyState = (isReady: boolean): void => {
   publishReadiness();
 };
 
+const getRewardedAdUnitId = (): string => {
+  if (Platform.OS === "android") {
+    return (
+      process.env.ANDROID_REWARD_ID ||
+      process.env.GOOGLE_MOBILE_ADS_ANDROID_REWARD_ID ||
+      process.env.EXPO_PUBLIC_GOOGLE_MOBILE_ADS_REWARD_AD_UNIT_ID ||
+      process.env.EXPO_PUBLIC_ADMOB_REWARD_AD_UNIT_ID ||
+      REWARDED_AD_TEST_UNIT_ID
+    );
+  }
+
+  return (
+    process.env.IOS_REWARD_ID ||
+    process.env.GOOGLE_MOBILE_ADS_IOS_REWARD_ID ||
+    process.env.EXPO_PUBLIC_GOOGLE_MOBILE_ADS_REWARD_AD_UNIT_ID ||
+    process.env.EXPO_PUBLIC_ADMOB_REWARD_AD_UNIT_ID ||
+    REWARDED_AD_TEST_UNIT_ID
+  );
+};
+
 const ensureRewardedAdInstance = (): void => {
   if (rewardedAd || !isSupportedPlatform()) {
     return;
   }
 
-  rewardedAd = RewardedAd.createForAdRequest(REWARDED_AD_TEST_UNIT_ID, {
+  rewardedAd = RewardedAd.createForAdRequest(getRewardedAdUnitId(), {
     requestNonPersonalizedAdsOnly: true,
   });
 

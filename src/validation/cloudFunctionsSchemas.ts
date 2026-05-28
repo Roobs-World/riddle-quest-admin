@@ -72,8 +72,13 @@ export const GetHintOutputSchema = z
     revealedLetter: z.string().length(1),
     index: z.number().int().nonnegative(),
     coinsCost: z.number().int().nonnegative(),
+    // Optional server-provided fields: total coins after hint and any unlocked achievements
+    newCoins: z.number().nonnegative().optional(),
+    newlyUnlockedAchievementIds: z.array(z.string()).optional(),
   })
   .nullable();
+
+export type GetHintOutput = z.infer<typeof GetHintOutputSchema>;
 
 // Define a schema for guess feedback (green, yellow, red)
 export const GuessFeedbackSchema = z.union([z.literal("green"), z.literal("yellow"), z.literal("red")]);

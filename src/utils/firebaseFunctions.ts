@@ -1,6 +1,6 @@
 import {getFunctions, httpsCallable} from "@react-native-firebase/functions";
 import {getApp} from "@react-native-firebase/app";
-import {ZodError, type ZodType} from "zod";
+import {ZodError, type ZodType, type ZodTypeAny, z} from "zod";
 import {withSentrySpan} from "./sentry";
 
 /**
@@ -50,27 +50,22 @@ export class FirebaseCallableValidationError extends Error {
   }
 }
 
-const parseWithSchema = <T>(schema: ZodType<T>, data: unknown): T => {
-  if (typeof schema.safeParse === "function") {
-    const validation = schema.safeParse(data);
-    if (!validation.success) {
-      throw validation.error;
-    }
-    return validation.data;
+const parseWithSchema = <S extends ZodTypeAny>(schema: S, data: unknown): z.infer<S> => {
+  const validation = schema.safeParse(data);
+  if (!validation.success) {
+    throw validation.error;
   }
-
-  return schema.parse(data);
+  return validation.data as z.infer<S>;
 };
-
-export const getValidatedCallableFunction = <Input, Output>(
+export const getValidatedCallableFunction = <IS extends ZodTypeAny, OS extends ZodTypeAny>(
   functionName: string,
-  inputSchema: ZodType<Input>,
-  outputSchema: ZodType<Output>,
+  inputSchema: IS,
+  outputSchema: OS,
 ) => {
   const callable = getCallableFunction(functionName);
 
-  return async (input: Input): Promise<Output> => {
-    let validatedInput: Input;
+  return async (input: z.infer<IS>): Promise<z.infer<OS>> => {
+    let validatedInput: z.infer<IS>;
     try {
       validatedInput = parseWithSchema(inputSchema, input);
     } catch (error) {
@@ -84,7 +79,7 @@ export const getValidatedCallableFunction = <Input, Output>(
       `firebase.callable.${functionName}`,
       "firebase.callable",
       async () => {
-        const result = await callable(validatedInput);
+        const result = await callable(validatedInput as any);
         try {
           return parseWithSchema(outputSchema, result.data);
         } catch (error) {
@@ -99,9 +94,9 @@ export const getValidatedCallableFunction = <Input, Output>(
   };
 };
 
-export const callValidatedFunction = <Input, Output>(
+export const callValidatedFunction = <IS extends ZodTypeAny, OS extends ZodTypeAny>(
   functionName: string,
-  input: Input,
-  inputSchema: ZodType<Input>,
-  outputSchema: ZodType<Output>,
-): Promise<Output> => getValidatedCallableFunction(functionName, inputSchema, outputSchema)(input);
+  input: z.infer<IS>,
+  inputSchema: IS,
+  outputSchema: OS,
+): Promise<z.infer<OS>> => getValidatedCallableFunction(functionName, inputSchema, outputSchema)(input);

@@ -347,15 +347,6 @@ This project utilizes a `memory-bank` directory containing detailed documentatio
 
 Funding materials for the pre-launch beta are maintained in `docs/funding/`. This pack implements the under-GBP 30k funding plan for Riddle Quest/Qwordly, including the one-page summary, pitch deck outline, GBP 24,500 budget, UKGF grant checklist, beta validation plan, publisher/investor outreach scripts, pitch video script, outreach tracker, and 90-day execution plan. Start with `docs/funding/README.md`.
 
-## TODO
-
-- [ ] Update team member website links in the Credits screen (`src/screens/CreditsScreen.tsx`)
-  - Craig Beswetherick - Lead Developer & Game Design
-  - Reuben Beswetherick - Inspiration
-  - Gavin Harrison - Sound Design
-  - Nathalia - Design
-  - Poppy
-
 ## Contributing
 
 (Contribution guidelines to be added later)
