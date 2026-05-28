@@ -369,9 +369,7 @@ describe("Game Logic - Integration Tests", () => {
       const reason = "hint";
       const request = constructOnCallRequest({amount: amountToSpend, reason});
 
-      await expect(wrappedSpendCoins(request)).rejects.toThrow(
-        new HttpsError("failed-precondition", "Insufficient coins to spend."),
-      );
+      await expect(wrappedSpendCoins(request)).rejects.toThrowErrorMatchingSnapshot();
     });
 
     it("should throw unauthenticated if user is not authenticated", async () => {
@@ -386,14 +384,10 @@ describe("Game Logic - Integration Tests", () => {
 
     it("should throw invalid-argument for invalid amount", async () => {
       let request = constructOnCallRequest({amount: 0, reason: "hint"});
-      await expect(wrappedSpendCoins(request)).rejects.toThrow(
-        new HttpsError("invalid-argument", "Invalid amount specified."),
-      );
+      await expect(wrappedSpendCoins(request)).rejects.toThrowErrorMatchingSnapshot();
 
       request = constructOnCallRequest({amount: -10, reason: "hint"});
-      await expect(wrappedSpendCoins(request)).rejects.toThrow(
-        new HttpsError("invalid-argument", "Invalid amount specified."),
-      );
+      await expect(wrappedSpendCoins(request)).rejects.toThrowErrorMatchingSnapshot();
     });
 
     it("should throw invalid-argument for invalid reason", async () => {

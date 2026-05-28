@@ -180,6 +180,24 @@ export const SpendCoinsResponseSchema = z
   })
   .strict();
 
+export const GetHintRequestSchema = z
+  .object({
+    currentAttempt: z.array(z.string().length(1)),
+    riddleId: z.string().min(1),
+    gameMode: GameModeSchema,
+  })
+  .strict();
+
+export const GetHintResponseSchema = z
+  .object({
+    revealedLetter: z.string().length(1),
+    index: z.number().int().nonnegative(),
+    coinsCost: z.number().int().nonnegative(),
+    newCoins: z.number().int().nonnegative().optional(),
+    newlyUnlockedAchievementIds: z.array(z.string()).optional(),
+  })
+  .nullable();
+
 export const RewardedAdPlacementSchema = z.enum(["loss_continue", "coin_shop"]);
 export type RewardedAdPlacement = z.infer<typeof RewardedAdPlacementSchema>;
 

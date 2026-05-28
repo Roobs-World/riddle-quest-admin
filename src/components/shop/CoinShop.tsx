@@ -12,6 +12,7 @@ import LargeCoinStackSvg from "../../../assets/images/large-coin-stack.svg";
 import ModalBg from "../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../assets/images/home-bg.svg";
 import {logger} from "../../utils/logger";
+import {analyticsService} from "../../services/AnalyticsService";
 import CloseButton from "../buttons/CloseButton";
 import WideButton from "../buttons/WideButton";
 import {AppStrings} from "../../constants/AppStrings";
@@ -128,6 +129,17 @@ const CoinShop: React.FC<CoinShopProps> = ({
   const effectiveSelectedProductId = selectedProductStillAvailable ? selectedProductId : null;
 
   useEffect(() => {
+    if (!isVisible) return;
+    if (!error && sortedProducts.length === 0) {
+      // Firestore product catalog appears empty — record telemetry for investigation.
+      void analyticsService
+        .logShopCatalogMissing({reason: "empty_firestore_catalog", productCount: 0})
+        .catch((e) => logger.warn("Failed to log shop_catalog_missing analytic:", e));
+      logger.warn("Coin shop opened with empty product catalog");
+    }
+  }, [isVisible, error, sortedProducts]);
+
+  useEffect(() => {
     if (isVisible || selectedProductId === null) {
       return;
     }
@@ -221,6 +233,7 @@ const CoinShop: React.FC<CoinShopProps> = ({
                         {featuredProducts.map((product) => {
                           const displayPrice = getDisplayPrice(product);
                           const isSelected = effectiveSelectedProductId === product.productId;
+                          const badgeText = product.featuredBadge;
                           return (
                             <TouchableOpacity
                               key={product.productId}
@@ -229,9 +242,9 @@ const CoinShop: React.FC<CoinShopProps> = ({
                               activeOpacity={0.8}
                               testID={`pack-card-${product.productId}`}
                             >
-                              {product.featuredBadge && (
+                              {badgeText && (
                                 <View style={styles.badge}>
-                                  <Text style={styles.badgeText}>{product.featuredBadge}</Text>
+                                  <Text style={styles.badgeText}>{badgeText}</Text>
                                 </View>
                               )}
 
@@ -285,7 +298,10 @@ const CoinShop: React.FC<CoinShopProps> = ({
                 )}
 
                 {!error && sortedProducts.length === 0 && (
-                  <Text style={styles.errorText}>{AppStrings.CoinShop.NO_PACKS_AVAILABLE}</Text>
+                  <View style={styles.emptyContainer}>
+                    <Text style={styles.errorText}>{AppStrings.CoinShop.NO_PACKS_AVAILABLE}</Text>
+                    <Text style={styles.emptySubText}>{AppStrings.ErrorMessages.FAILED_TO_LOAD_SHOP_PRODUCTS}</Text>
+                  </View>
                 )}
               </View>
 
@@ -517,6 +533,17 @@ const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.fontSize["2xl"],
     letterSpacing: 1,
     textAlign: "center",
+  },
+  emptyContainer: {
+    alignItems: "center",
+    marginTop: verticalScale(12),
+  },
+  emptySubText: {
+    color: COLORS.gray600,
+    fontFamily: TYPOGRAPHY.fontPrimary,
+    fontSize: TYPOGRAPHY.fontSize.sm,
+    textAlign: "center",
+    marginTop: verticalScale(6),
   },
 });
 

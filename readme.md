@@ -398,6 +398,29 @@ Before running the Riddle Quest app, you need to configure the environment varia
 
 - `GOOGLE_WEB_CLIENT_ID` - Google Sign-In Web Client ID from Firebase Console
 
+## Seeding In-App Purchase Product Pricing
+
+This repo includes a helper script to seed the Firestore `productPricing` collection with the canonical coin-pack catalog used by the client and backend.
+
+Prerequisites:
+
+- A Google service account JSON with Firestore write permissions. Recommended IAM role: `roles/datastore.user` (Cloud Datastore User). For convenience or broader access use `roles/datastore.owner` or `roles/firebase.admin`.
+- Set the environment variable `GOOGLE_APPLICATION_CREDENTIALS` to point at the service account JSON.
+
+From the repository root run:
+
+```powershell
+$env:GOOGLE_APPLICATION_CREDENTIALS="e:\path\to\your-service-account.json"
+node scripts/seedProductPricing.js
+```
+
+What it does:
+
+- Upserts documents under `productPricing/{productId}` for the 6 coin packs (`com.roobsworld.riddlequest.coinpack1` ... `coinpack6`).
+- Each document contains `coins`, `productKey`, `sortOrder`, `featuredOrder`, and `regionalPrices` values used by the app and backend.
+
+Use this when preparing a QA or staging project so the client `CoinShop` can read server-side pricing instead of falling back to a local list.
+
 #### Facebook Authentication
 
 - `FACEBOOK_APP_ID` - Facebook App ID from Facebook Developers Console

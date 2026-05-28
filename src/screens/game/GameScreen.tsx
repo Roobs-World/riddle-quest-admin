@@ -87,6 +87,8 @@ import {
   GenerateTodaysDailyChallengeOutputSchema,
   SpendCoinsInputSchema,
   SpendCoinsOutputSchema,
+  GetHintInputSchema,
+  GetHintOutputSchema,
 } from "../../validation/cloudFunctionsSchemas";
 
 interface GuessResult {
@@ -937,20 +939,20 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       return false;
     }
 
-      try {
-        if (!isGuestMode) {
-          await runWithServerLoading(() =>
-            callValidatedFunction(
-              "spendCoins",
-              {
-                amount: CONTINUE_COST_COINS,
-                reason: "continue",
-              },
-              SpendCoinsInputSchema,
-              SpendCoinsOutputSchema,
-            ),
-          );
-        }
+    try {
+      if (!isGuestMode) {
+        await runWithServerLoading(() =>
+          callValidatedFunction(
+            "spendCoins",
+            {
+              amount: CONTINUE_COST_COINS,
+              reason: "continue",
+            },
+            SpendCoinsInputSchema,
+            SpendCoinsOutputSchema,
+          ),
+        );
+      }
 
       if (playerData) {
         updatePlayerDataLocally({
@@ -1290,12 +1292,29 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         const previousLevel = getXpLevel(currentXp).level;
         const nextLevel = getXpLevel(currentXp + earnedXp).level;
         const didLevelUp = earnedXp > 0 && nextLevel > previousLevel;
-        const levelUpBonusCoins = didLevelUp ? LEVEL_UP_COIN_BONUS : 0;
+        // Prefer server-provided breakdown when available; fall back to
+        // client-side constants for older deployments or error cases.
+        const rewardBreakdown = (result as any)?.rewardBreakdown as
+          | {
+              baseWinCoins?: number;
+              levelUpBonus?: number;
+              dailyStreakBonus?: number;
+              achievementBonus?: number;
+              totalAwarded?: number;
+              newBalance?: number;
+            }
+          | undefined;
+
+        const levelUpBonusCoins = rewardBreakdown?.levelUpBonus ?? (didLevelUp ? LEVEL_UP_COIN_BONUS : 0);
         const resolvedDailyStreak =
           gameMode === "daily" ? (result.newWinStreak ?? deriveDailyStreakAfterWin()) : undefined;
-        const dailyChallengeBonusCoins = gameMode === "daily" && resolvedDailyStreak ? DAILY_CHALLENGE_COIN_REWARD : 0;
-        const totalBonusCoinsAwarded = levelUpBonusCoins + dailyChallengeBonusCoins;
-        const totalCoinsAfterWin = currentUserCoins + (result.coinsEarned || 0) + totalBonusCoinsAwarded;
+        const dailyChallengeBonusCoins =
+          rewardBreakdown?.dailyStreakBonus ??
+          (gameMode === "daily" && resolvedDailyStreak ? DAILY_CHALLENGE_COIN_REWARD : 0);
+        const achievementBonusCoins = rewardBreakdown?.achievementBonus ?? 0;
+        const totalBonusCoinsAwarded = levelUpBonusCoins + dailyChallengeBonusCoins + achievementBonusCoins;
+        const totalCoinsAfterWin =
+          rewardBreakdown?.newBalance ?? currentUserCoins + (result.coinsEarned || 0) + totalBonusCoinsAwarded;
         const totalCoinsToAnimate = (result.coinsEarned || 0) + totalBonusCoinsAwarded;
         const coinCountUpDurationMs = Math.min(2500, 400 + Math.sqrt(Math.max(0, totalCoinsToAnimate)) * 180) + 500;
 
@@ -1337,7 +1356,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           ...unlockedAchievementFanfareItems.map((achievement, index) => ({
             open: (sequenceProgress: ModalSequenceProgress, onContinue: () => void | Promise<void>) => {
               modal.showAchievementUnlockFanfareModal({
-                coinsEarned: index === 0 ? result.coinsEarned || 0 : 0,
+                coinsEarned: index === 0 ? achievementBonusCoins || result.coinsEarned || 0 : 0,
                 totalCoins: totalCoinsAfterWin,
                 achievementNames: [achievement.name],
                 achievements: [achievement],
@@ -1352,7 +1371,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
                   open: (sequenceProgress: ModalSequenceProgress, onContinue: () => void | Promise<void>) => {
                     modal.showStreakIncreaseFanfareModal({
                       streakValue: resolvedDailyStreak,
-                      coinsAwarded: DAILY_CHALLENGE_COIN_REWARD,
+                      coinsAwarded: dailyChallengeBonusCoins,
                       totalCoins: totalCoinsAfterWin,
                       sequenceProgress,
                       onContinue,
@@ -1365,7 +1384,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
             open: (sequenceProgress: ModalSequenceProgress, onContinue: () => void | Promise<void>) => {
               modal.showVictoryModal({
                 attempts: resolvedAttempts,
-                coinsEarned: result.coinsEarned || 0,
+                coinsEarned: (rewardBreakdown?.totalAwarded as number) ?? result.coinsEarned ?? 0,
                 totalCoins: totalCoinsAfterWin,
                 unlockedAchievementNames,
                 guesses,
@@ -1385,7 +1404,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
                   open: (sequenceProgress: ModalSequenceProgress, onContinue: () => void | Promise<void>) => {
                     modal.showLevelUpFanfareModal({
                       newLevel: nextLevel,
-                      coinsAwarded: LEVEL_UP_COIN_BONUS,
+                      coinsAwarded: levelUpBonusCoins,
                       totalCoins: totalCoinsAfterWin,
                       sequenceProgress,
                       onContinue,
@@ -1691,79 +1710,130 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       hintCost,
       onOpenShop: () => openShopFromLossRef.current(),
       onShowHint: () => {
-        const answerLetters = playableAnswer.toLowerCase().split("");
-        const revealIndex = answerLetters.findIndex((_, i) => !hintRevealedIndicesRef.current.includes(i));
+        (async () => {
+          // Guest/local flow: reveal locally and call onHintUsed to persist via
+          // the surrounding navigation stack.
+          if (isGuestMode || !playerData?.userId) {
+            const answerLetters = playableAnswer.toLowerCase().split("");
+            const revealIndex = answerLetters.findIndex((_, i) => !hintRevealedIndicesRef.current.includes(i));
 
-        if (revealIndex === -1) {
-          modal.showInfoModal({
-            title: AppStrings.GameScreenAlerts.HINT_NOT_AVAILABLE_TITLE,
-            message: AppStrings.GameScreenAlerts.HINT_NOT_AVAILABLE_MESSAGE,
-          });
-          return;
-        }
-
-        const totalCoinsAfterHint = Math.max(0, currentUserCoins - hintCost);
-        const nextHintRevealedIndices = [...hintRevealedIndicesRef.current, revealIndex];
-        setHintRevealedIndicesSynced(nextHintRevealedIndices);
-
-        setCurrentGuess((prev: string[]) => {
-          const newGuess = [...prev];
-          while (newGuess.length <= revealIndex) {
-            newGuess.push("");
-          }
-          newGuess[revealIndex] = answerLetters[revealIndex];
-          return newGuess;
-        });
-        setActiveSlotIndexSynced(
-          resolveEditableGuessSlot(activeSlotIndexRef.current, playableAnswerLength, nextHintRevealedIndices) ??
-            Math.max(0, Math.min(playableAnswerLength - 1, activeSlotIndexRef.current)),
-        );
-
-        Promise.resolve(onHintUsed(hintCost))
-          .then((newlyUnlockedAchievementIds) => {
-            if (!Array.isArray(newlyUnlockedAchievementIds)) {
-              return;
-            }
-
-            const unlockedAchievements = newlyUnlockedAchievementIds
-              .map((achievementId) => ACHIEVEMENT_DEFINITIONS.find((definition) => definition.id === achievementId))
-              .filter((achievement): achievement is (typeof ACHIEVEMENT_DEFINITIONS)[number] => Boolean(achievement));
-
-            if (unlockedAchievements.length === 0) {
-              return;
-            }
-
-            const showAchievementFanfareAtIndex = (index: number) => {
-              if (index >= unlockedAchievements.length) {
-                return;
-              }
-
-              const achievement = unlockedAchievements[index];
-              modal.showAchievementUnlockFanfareModal({
-                coinsEarned: 0,
-                totalCoins: totalCoinsAfterHint,
-                achievementNames: [achievement.name],
-                achievements: [
-                  {
-                    name: achievement.name,
-                    description: achievement.description,
-                    icon: achievement.icon,
-                  },
-                ],
-                onContinue: () => {
-                  void safeDelay(MODAL_CLOSE_DELAY_MS).then(() => {
-                    showAchievementFanfareAtIndex(index + 1);
-                  });
-                },
+            if (revealIndex === -1) {
+              modal.showInfoModal({
+                title: AppStrings.GameScreenAlerts.HINT_NOT_AVAILABLE_TITLE,
+                message: AppStrings.GameScreenAlerts.HINT_NOT_AVAILABLE_MESSAGE,
               });
-            };
+              return;
+            }
 
-            showAchievementFanfareAtIndex(0);
-          })
-          .catch((error: unknown) => {
-            logger.error("Error handling hint achievement unlock fanfare:", error);
-            captureException(error);
-          });
+            const totalCoinsAfterHint = Math.max(0, currentUserCoins - hintCost);
+            const nextHintRevealedIndices = [...hintRevealedIndicesRef.current, revealIndex];
+            setHintRevealedIndicesSynced(nextHintRevealedIndices);
+
+            setCurrentGuess((prev: string[]) => {
+              const newGuess = [...prev];
+              while (newGuess.length <= revealIndex) {
+                newGuess.push("");
+              }
+              newGuess[revealIndex] = answerLetters[revealIndex];
+              return newGuess;
+            });
+            setActiveSlotIndexSynced(
+              resolveEditableGuessSlot(activeSlotIndexRef.current, playableAnswerLength, nextHintRevealedIndices) ??
+                Math.max(0, Math.min(playableAnswerLength - 1, activeSlotIndexRef.current)),
+            );
+
+            Promise.resolve(onHintUsed(hintCost)).catch((e) => logger.error("onHintUsed error:", e));
+            return;
+          }
+
+          // Authenticated flow: ask server for authoritative hint.
+          try {
+            const backendGameMode = gameMode === "daily" ? "challenge" : "classic";
+            const fullAttempt = Array.from({length: playableAnswerLength}, (_, i) =>
+              (currentGuess[i] ?? "").slice(0, 1),
+            );
+            const data = await callValidatedFunction(
+              "getHint",
+              {currentAttempt: fullAttempt, riddleId, gameMode: backendGameMode},
+              GetHintInputSchema,
+              GetHintOutputSchema,
+            );
+
+            if (!data) {
+              modal.showInfoModal({
+                title: AppStrings.GameScreenAlerts.HINT_NOT_AVAILABLE_TITLE,
+                message: AppStrings.GameScreenAlerts.HINT_NOT_AVAILABLE_MESSAGE,
+              });
+              return;
+            }
+
+            const revealIndex = data.index;
+            const revealedLetter = (data.revealedLetter || "").toUpperCase();
+
+            const nextHintRevealedIndices = [...hintRevealedIndicesRef.current, revealIndex];
+            setHintRevealedIndicesSynced(nextHintRevealedIndices);
+
+            setCurrentGuess((prev: string[]) => {
+              const newGuess = [...prev];
+              while (newGuess.length <= revealIndex) {
+                newGuess.push("");
+              }
+              newGuess[revealIndex] = revealedLetter;
+              return newGuess;
+            });
+
+            setActiveSlotIndexSynced(
+              resolveEditableGuessSlot(activeSlotIndexRef.current, playableAnswerLength, nextHintRevealedIndices) ??
+                Math.max(0, Math.min(playableAnswerLength - 1, activeSlotIndexRef.current)),
+            );
+
+            if (typeof updatePlayerDataLocally === "function" && data.newCoins !== undefined) {
+              updatePlayerDataLocally({coins: data.newCoins}, {syncToFirestore: false});
+            }
+
+            const newlyUnlocked = data.newlyUnlockedAchievementIds ?? [];
+            if (newlyUnlocked.length > 0) {
+              const unlockedAchievements = newlyUnlocked
+                .map((achievementId) => ACHIEVEMENT_DEFINITIONS.find((definition) => definition.id === achievementId))
+                .filter((achievement): achievement is (typeof ACHIEVEMENT_DEFINITIONS)[number] => Boolean(achievement));
+
+              const totalCoinsAfterHint = data.newCoins ?? currentUserCoins - hintCost;
+              const showAchievementFanfareAtIndex = (index: number) => {
+                if (index >= unlockedAchievements.length) {
+                  return;
+                }
+
+                const achievement = unlockedAchievements[index];
+                modal.showAchievementUnlockFanfareModal({
+                  coinsEarned: 0,
+                  totalCoins: totalCoinsAfterHint,
+                  achievementNames: [achievement.name],
+                  achievements: [
+                    {
+                      name: achievement.name,
+                      description: achievement.description,
+                      icon: achievement.icon,
+                    },
+                  ],
+                  onContinue: () => {
+                    void safeDelay(MODAL_CLOSE_DELAY_MS).then(() => {
+                      showAchievementFanfareAtIndex(index + 1);
+                    });
+                  },
+                });
+              };
+
+              showAchievementFanfareAtIndex(0);
+            }
+          } catch (err) {
+            logger.error("Error requesting hint from server:", err);
+            captureException(err);
+            modal.showInfoModal({
+              title: AppStrings.GameScreenAlerts.HINT_ERROR_TITLE,
+              message: AppStrings.GameScreenAlerts.HINT_ERROR_MESSAGE,
+            });
+          }
+        })();
       },
     });
   }, [

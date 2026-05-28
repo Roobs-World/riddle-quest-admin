@@ -1,7 +1,7 @@
 import {logger} from "firebase-functions/v2";
 import * as admin from "firebase-admin";
 import {onCall, HttpsError, CallableRequest} from "firebase-functions/v2/https";
-import {updateUserCoins, getUser, getRiddleByGameMode} from "./firestoreService";
+import {updateUserCoins, getUser, getRiddleByGameMode, updateUserStats} from "./firestoreService";
 import {
   SKIP_COST_CLASSIC,
   SKIP_COST_DAILY,
@@ -13,6 +13,7 @@ import {
 import {generateAndAppendRiddles} from "./riddleGeneration";
 import {captureException} from "./sentry";
 import type {PlayerProgress} from "./validation/firestoreSchemas";
+import {z} from "zod";
 import {
   SkipRiddleRequest,
   SkipRiddleRequestSchema,
@@ -21,7 +22,11 @@ import {
   SpendCoinsRequest,
   SpendCoinsRequestSchema,
   SpendCoinsResponseSchema,
+  GetHintRequestSchema,
+  GetHintResponseSchema,
 } from "./validation/requestSchemas";
+import {evaluateAchievements} from "./achievements";
+import {ACHIEVEMENT_UNLOCK_COIN_REWARD} from "./constants";
 import {validateCallableRequest, validateCallableResponse} from "./validation/callableValidation";
 
 /**
@@ -300,7 +305,7 @@ export const spendCoins = onCall(
       }
 
       logger.info(
-        `User ${userId} spent ${expectedCost} coins for reason: ${reason}${gameMode ? ` (${gameMode})` : ''}. New balance: ${updatedUser.coins}.`,
+        `User ${userId} spent ${expectedCost} coins for reason: ${reason}${gameMode ? ` (${gameMode})` : ""}. New balance: ${updatedUser.coins}.`,
       );
       return validateCallableResponse(SpendCoinsResponseSchema, {newCoins: updatedUser.coins}, "spendCoins");
     } catch (error: unknown) {
@@ -312,6 +317,146 @@ export const spendCoins = onCall(
       logger.error("Unexpected error spending coins:", error);
       captureException(error);
       throw new HttpsError("internal", "An error occurred while spending coins.", error);
+    }
+  },
+);
+
+/**
+ * Callable function to reveal a single hint letter for an active riddle.
+ * Charges `HINT_COST_COINS`, updates riddle state, increments `stats.totalHintsUsed`,
+ * evaluates hint-related achievements, and returns the revealed letter index and costs.
+ */
+export const getHint = onCall(
+  {enforceAppCheck: true},
+  async (request: CallableRequest<z.infer<typeof SpendCoinsRequestSchema> & any>) => {
+    try {
+      if (!request.auth) {
+        throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
+      }
+
+      const data = validateCallableRequest(GetHintRequestSchema, request.data, "getHint");
+      const {riddleId, gameMode, currentAttempt} = data;
+      const currentUserId = request.auth.uid;
+
+      const riddleData = await getRiddleByGameMode(riddleId, gameMode);
+      if (!riddleData) {
+        throw new HttpsError("not-found", `${gameMode} riddle with ID ${riddleId} not found.`);
+      }
+      if (!riddleData.answer) {
+        throw new HttpsError("internal", `Answer not found for ${gameMode} riddle ID ${riddleId}.`);
+      }
+
+      const answer: string = riddleData.answer.toLowerCase();
+      const coinsCost = HINT_COST_COINS;
+
+      const user = await getUser(currentUserId);
+      if (!user) {
+        throw new HttpsError("not-found", "User data not found.");
+      }
+      if (user.coins < coinsCost) {
+        throw new HttpsError("failed-precondition", "Insufficient coins to get a hint.");
+      }
+
+      const gameStateRef = admin
+        .firestore()
+        .collection("users")
+        .doc(currentUserId)
+        .collection("riddleStates")
+        .doc(riddleId);
+      const gameStateDoc = await gameStateRef.get();
+      const gameState = gameStateDoc.data();
+      const hintRevealedIndices: number[] = (gameState?.hintRevealedIndices as number[]) || [];
+      const isGameCompleted = gameState?.isCompleted === true;
+
+      if (isGameCompleted) {
+        logger.warn(`User ${currentUserId} requested hint for completed ${gameMode} riddle ${riddleId}.`);
+        throw new HttpsError("failed-precondition", "Game is already completed.");
+      }
+
+      const guessedLetters: string[] = Array.isArray(currentAttempt)
+        ? currentAttempt.map((letter: string) => String(letter).toLowerCase())
+        : [];
+
+      let revealedLetter: string | null = null;
+      let index: number | null = null;
+
+      for (let i = 0; i < answer.length; i++) {
+        const answerLetter: string = answer[i];
+        const guessedLetter: string = guessedLetters[i] ?? "";
+
+        if (guessedLetter !== answerLetter && !hintRevealedIndices.includes(i)) {
+          revealedLetter = answerLetter;
+          index = i;
+          break;
+        }
+      }
+
+      if (revealedLetter === null || index === null) {
+        logger.warn(
+          `No hint available for user ${currentUserId}, ${gameMode} riddle ${riddleId}. All letters revealed or guessed correctly.`,
+        );
+        return validateCallableResponse(GetHintResponseSchema, null, "getHint");
+      }
+
+      // Deduct coins
+      await updateUserCoins(currentUserId, -coinsCost);
+
+      // Mark hint revealed
+      await gameStateRef.set(
+        {
+          hintRevealedIndices: [...hintRevealedIndices, index],
+        },
+        {merge: true},
+      );
+
+      // Increment totalHintsUsed stat
+      try {
+        await updateUserStats(currentUserId, {totalHintsUsed: admin.firestore.FieldValue.increment(1) as any});
+      } catch (err) {
+        logger.error("Error updating totalHintsUsed stat:", err);
+      }
+
+      // Evaluate achievements after stat update
+      let newlyUnlockedAchievementIds: string[] = [];
+      try {
+        newlyUnlockedAchievementIds = await evaluateAchievements(currentUserId, {
+          gameMode,
+          isCorrect: false,
+          attempts: 0,
+          gameOver: false,
+        });
+
+        if (newlyUnlockedAchievementIds.length > 0) {
+          const achievementBonus = newlyUnlockedAchievementIds.length * ACHIEVEMENT_UNLOCK_COIN_REWARD;
+          await updateUserCoins(currentUserId, achievementBonus);
+        }
+      } catch (error) {
+        logger.error("Error evaluating/awarding hint achievements:", error);
+        captureException(error);
+      }
+
+      const finalUser = await getUser(currentUserId);
+
+      logger.info(
+        `User ${currentUserId} used a hint for ${gameMode} riddle ${riddleId}, revealing letter ${revealedLetter.toUpperCase()} at index ${index}.`,
+      );
+
+      return validateCallableResponse(
+        GetHintResponseSchema,
+        {
+          revealedLetter: revealedLetter.toUpperCase(),
+          index,
+          coinsCost,
+          newCoins: finalUser?.coins,
+          newlyUnlockedAchievementIds: newlyUnlockedAchievementIds.length ? newlyUnlockedAchievementIds : undefined,
+        },
+        "getHint",
+      );
+    } catch (error: unknown) {
+      if (error instanceof HttpsError) throw error;
+      logger.error("Unexpected error in getHint:", error);
+      captureException(error);
+      throw new HttpsError("internal", "An unexpected error occurred in getHint.", error);
     }
   },
 );

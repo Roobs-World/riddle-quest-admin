@@ -414,9 +414,9 @@ jest.mock("../../../constants/game", () => ({
   SKIP_COST_CLASSIC: 10,
   SKIP_COST_DAILY: 15,
   LEVEL_UP_COIN_BONUS: 50,
-  DAILY_CHALLENGE_COIN_REWARD: 50,
-  CONTINUE_COST_COINS: 20,
-  CONTINUE_REWARDED_AD_COIN_REWARD: 25,
+  DAILY_CHALLENGE_COIN_REWARD: 75,
+  CONTINUE_COST_COINS: 100,
+  CONTINUE_REWARDED_AD_COIN_REWARD: 50,
   MODAL_CLOSE_DELAY_MS: 300,
   SOUND_RESUME_DELAY_MS: 100,
   getXpLevel: (totalScore: number) => ({
@@ -1530,7 +1530,9 @@ describe("GameScreen", () => {
       expect(mockShowInterstitialAd).toHaveBeenCalledWith("post_victory");
       expect(mockRecordRewardedAdCompletion).not.toHaveBeenCalled();
       expect(mockShowCoinPurchaseFanfareModal).not.toHaveBeenCalled();
-      expect(mockUpdatePlayerDataLocally).not.toHaveBeenCalledWith(expect.objectContaining({coins: expect.any(Number)}));
+      expect(mockUpdatePlayerDataLocally).not.toHaveBeenCalledWith(
+        expect.objectContaining({coins: expect.any(Number)}),
+      );
     });
 
     it("skips the post-victory interstitial for players with no-ads entitlement", async () => {

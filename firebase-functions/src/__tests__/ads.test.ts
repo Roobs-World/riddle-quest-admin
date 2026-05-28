@@ -187,18 +187,18 @@ describe("awardedAdCallback", () => {
       success: true,
       placement: "loss_continue",
       callbackId: "reward-abc",
-      rewardCoins: 25,
-      newCoins: 125,
+      rewardCoins: 50,
+      newCoins: 150,
       alreadyProcessed: false,
       message: "Rewarded ad reward applied.",
     });
-    expect(mockTransactionUpdate).toHaveBeenCalledWith(expect.objectContaining({path: "users/user-123"}), {coins: 125});
+    expect(mockTransactionUpdate).toHaveBeenCalledWith(expect.objectContaining({path: "users/user-123"}), {coins: 150});
     expect(docs.get("users/user-123/processedAdCallbacks/reward-abc")).toMatchObject({
       userId: "user-123",
       placement: "loss_continue",
       provider: "google-mobile-ads",
-      rewardCoins: 25,
-      newCoins: 125,
+      rewardCoins: 50,
+      newCoins: 150,
       status: "processed",
     });
     expect(docs.get("users/user-123/pendingAdCompletions/loss_continue")).toMatchObject({
@@ -209,15 +209,15 @@ describe("awardedAdCallback", () => {
       eventType: "rewarded_ad_completed",
       userId: "user-123",
       placement: "loss_continue",
-      rewardCoins: 25,
-      newCoins: 125,
+      rewardCoins: 50,
+      newCoins: 150,
     });
   });
 
   it("returns an idempotent response for a duplicate callback id without awarding twice", async () => {
     docs.set("users/user-123/processedAdCallbacks/reward-abc", {
-      rewardCoins: 25,
-      newCoins: 125,
+      rewardCoins: 50,
+      newCoins: 150,
     });
 
     const result = await awardedAdCallback(
@@ -231,8 +231,8 @@ describe("awardedAdCallback", () => {
     expect(result).toMatchObject({
       success: true,
       callbackId: "reward-abc",
-      rewardCoins: 25,
-      newCoins: 125,
+      rewardCoins: 50,
+      newCoins: 150,
       alreadyProcessed: true,
     });
     expect(mockTransactionUpdate).not.toHaveBeenCalled();

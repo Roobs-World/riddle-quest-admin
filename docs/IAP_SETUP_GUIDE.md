@@ -8,12 +8,12 @@ This repo is configured to sell 6 coin packs (consumable, one-time purchases):
 
 | Pack  | Coins | Product ID                             |
 | ----- | ----- | -------------------------------------- |
-| Tiny  | 50    | `com.roobsworld.riddlequest.coinpack1` |
-| Small | 100   | `com.roobsworld.riddlequest.coinpack2` |
-| Mid   | 250   | `com.roobsworld.riddlequest.coinpack3` |
-| Large | 500   | `com.roobsworld.riddlequest.coinpack4` |
-| Huge  | 1000  | `com.roobsworld.riddlequest.coinpack5` |
-| Mega  | 2000  | `com.roobsworld.riddlequest.coinpack6` |
+| Tiny  | 250   | `com.roobsworld.riddlequest.coinpack1` |
+| Small | 550   | `com.roobsworld.riddlequest.coinpack2` |
+| Mid   | 900   | `com.roobsworld.riddlequest.coinpack3` |
+| Large | 1600  | `com.roobsworld.riddlequest.coinpack4` |
+| Huge  | 3400  | `com.roobsworld.riddlequest.coinpack5` |
+| Mega  | 7000  | `com.roobsworld.riddlequest.coinpack6` |
 
 App identifiers:
 
@@ -85,3 +85,30 @@ Product IDs and coin mapping:
 - Open coin shop -> products display with prices
 - Tap a pack -> Google purchase sheet opens
 - Complete purchase -> app shows success + coins increase (after server validation)
+
+## Seeding Backend Catalog
+
+The backend and client expect a `productPricing` collection in Firestore containing the canonical coin pack entries. For QA and staging you can seed this using the included script `scripts/seedProductPricing.js`.
+
+Prerequisites:
+
+- A Google service account JSON with Firestore write permissions. Recommended IAM role: `roles/datastore.user` (Cloud Datastore User). Alternatives: `roles/datastore.owner` or `roles/firebase.admin`.
+- Set `GOOGLE_APPLICATION_CREDENTIALS` to point at the service account JSON.
+
+From the repository root run:
+
+```powershell
+$env:GOOGLE_APPLICATION_CREDENTIALS="e:\path\to\your-service-account.json"
+node scripts/seedProductPricing.js
+```
+
+The script upserts the following documents under `productPricing/{productId}`:
+
+- `com.roobsworld.riddlequest.coinpack1` (250 coins)
+- `com.roobsworld.riddlequest.coinpack2` (550 coins)
+- `com.roobsworld.riddlequest.coinpack3` (900 coins)
+- `com.roobsworld.riddlequest.coinpack4` (1600 coins)
+- `com.roobsworld.riddlequest.coinpack5` (3400 coins)
+- `com.roobsworld.riddlequest.coinpack6` (7000 coins)
+
+After seeding, verify the CoinShop in the app shows the server-provided catalog and pricing.

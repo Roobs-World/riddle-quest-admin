@@ -243,7 +243,7 @@ describe("Game Logic Functions", () => {
         if (e instanceof HttpsErrorV2) {
           expect(e).toBeInstanceOf(HttpsErrorV2);
           expect(e.code).toBe("invalid-argument");
-          expect(e.message).toBe("Invalid amount specified.");
+          expect(e.message).toBe("Invalid request payload for spendCoins.");
         } else {
           throw e;
         }
@@ -258,7 +258,7 @@ describe("Game Logic Functions", () => {
         if (e instanceof HttpsErrorV2) {
           expect(e).toBeInstanceOf(HttpsErrorV2);
           expect(e.code).toBe("invalid-argument");
-          expect(e.message).toBe("Invalid amount specified.");
+          expect(e.message).toBe("Invalid request payload for spendCoins.");
         } else {
           throw e;
         }
@@ -298,7 +298,7 @@ describe("Game Logic Functions", () => {
         if (e instanceof HttpsErrorV2) {
           expect(e).toBeInstanceOf(HttpsErrorV2);
           expect(e.code).toBe("failed-precondition");
-          expect(e.message).toBe("Insufficient coins to spend.");
+          expect(e.message).toMatch(/Insufficient coins to spend/);
         } else {
           throw e;
         }
@@ -355,7 +355,7 @@ describe("Game Logic Functions", () => {
         if (e instanceof HttpsErrorV2) {
           expect(e).toBeInstanceOf(HttpsErrorV2);
           expect(e.code).toBe("invalid-argument");
-          expect(e.message).toBe("Invalid amount specified.");
+          expect(e.message).toBe("Invalid request payload for spendCoins.");
         } else {
           throw e;
         }

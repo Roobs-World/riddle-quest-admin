@@ -154,14 +154,14 @@ export function initializeIapConfig(): void {
 // Product Definitions (these are fine as top-level exports)
 export const NO_ADS_PRODUCT_ID = "com.roobsworld.riddlequest.no_ads";
 export const BACKEND_COIN_PRODUCT_DETAILS: {
-  [key: string]: {id: string; coins: number};
+  [key: string]: {id: string; coins: number; label?: string};
 } = {
-  COIN_PACK_TINY: {id: "com.roobsworld.riddlequest.coinpack1", coins: 250},
+  COIN_PACK_TINY: {id: "com.roobsworld.riddlequest.coinpack1", coins: 250, label: "STARTER"},
   COIN_PACK_SMALL: {id: "com.roobsworld.riddlequest.coinpack2", coins: 550},
   COIN_PACK_MID: {id: "com.roobsworld.riddlequest.coinpack3", coins: 900},
-  COIN_PACK_LARGE: {id: "com.roobsworld.riddlequest.coinpack4", coins: 1600},
+  COIN_PACK_LARGE: {id: "com.roobsworld.riddlequest.coinpack4", coins: 1600, label: "POPULAR"},
   COIN_PACK_HUGE: {id: "com.roobsworld.riddlequest.coinpack5", coins: 3400},
-  COIN_PACK_MEGA: {id: "com.roobsworld.riddlequest.coinpack6", coins: 7000},
+  COIN_PACK_MEGA: {id: "com.roobsworld.riddlequest.coinpack6", coins: 7000, label: "BEST VALUE"},
 };
 
 // Automatically initialize if not in a Jest test environment

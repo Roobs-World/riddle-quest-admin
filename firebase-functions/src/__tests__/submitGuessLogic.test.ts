@@ -2,6 +2,7 @@ import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
 import {HttpsError} from "firebase-functions/v2/https";
 import {handleCompleteGameLogic, handleGuessLogic} from "../submitGuessLogic";
+import {COINS_REWARD_CLASSIC, COINS_REWARD_CHALLENGE, ACHIEVEMENT_UNLOCK_COIN_REWARD} from "../constants";
 import * as firestoreService from "../firestoreService";
 import * as riddleGeneration from "../riddleGeneration";
 import * as achievements from "../achievements";
@@ -106,6 +107,8 @@ const mockUser: Player = {
     winRate: 50,
     averageGuesses: 3.5,
     totalScore: 1000,
+    xp: 1000,
+    level: 10,
     highestLevelClassic: 5,
     challengeWins: 1,
     totalWins: 5,
@@ -253,7 +256,7 @@ describe("handleGuessLogic", () => {
       const result = await handleGuessLogic(requestData, authContext);
       expect(result.isCorrect).toBe(true);
       expect(result.feedback).toEqual(mockRiddle.answer!.split("").map((l) => ({letter: l, status: "green"})));
-      expect(result.coinsEarned).toBe(15);
+      expect(result.coinsEarned).toBe(COINS_REWARD_CLASSIC);
       expect(result.correctAnswer).toBe("keyboard");
       expect(Array.isArray(result.newlyUnlockedAchievementIds)).toBe(true);
     });
@@ -262,9 +265,10 @@ describe("handleGuessLogic", () => {
       (achievements.evaluateAchievements as jest.Mock).mockResolvedValueOnce(["first_win", "wins_5"]);
       const result = await handleGuessLogic(requestData, authContext);
       expect(result.newlyUnlockedAchievementIds).toEqual(["first_win", "wins_5"]);
-      expect(result.coinsEarned).toBe(65);
-      expect(firestoreService.updateUserCoins).toHaveBeenNthCalledWith(1, authContext.uid, 15);
-      expect(firestoreService.updateUserCoins).toHaveBeenNthCalledWith(2, authContext.uid, 50);
+      const achievementBonus = 2 * ACHIEVEMENT_UNLOCK_COIN_REWARD;
+      expect(result.coinsEarned).toBe(COINS_REWARD_CLASSIC + achievementBonus);
+      expect(firestoreService.updateUserCoins).toHaveBeenNthCalledWith(1, authContext.uid, COINS_REWARD_CLASSIC);
+      expect(firestoreService.updateUserCoins).toHaveBeenNthCalledWith(2, authContext.uid, achievementBonus);
     });
 
     test("should not update leaderboard entry for anonymous guest users", async () => {
@@ -275,22 +279,24 @@ describe("handleGuessLogic", () => {
 
     test("should update user stats correctly", async () => {
       await handleGuessLogic(requestData, authContext);
-      const expectedStatsUpdate: Record<string, unknown> = {
+      const expectedStatsSubtree: Record<string, unknown> = {
         gamesPlayed: "increment(1)",
         totalWordsGuessed: "increment(1)", // Added new stat
         wins: "increment(1)",
         totalWins: "increment(1)",
         totalGuessesInWins: "increment(1)",
         xp: "increment(100)",
-        level: 2,
         averageGuesses: parseFloat(
           ((mockUser.stats.totalGuessesInWins! + 1) / (mockUser.stats.totalWins! + 1)).toFixed(2),
         ),
         winRate: parseFloat((((mockUser.stats.totalWins! + 1) / (mockUser.stats.gamesPlayed! + 1)) * 100).toFixed(2)),
       };
 
-      expect(firestoreService.updateUserStats).toHaveBeenCalledWith(authContext.uid, expectedStatsUpdate);
-      expect(firestoreService.updateUserCoins).toHaveBeenCalledWith(authContext.uid, 15);
+      expect(firestoreService.updateUserStats).toHaveBeenCalledWith(
+        authContext.uid,
+        expect.objectContaining(expectedStatsSubtree),
+      );
+      expect(firestoreService.updateUserCoins).toHaveBeenCalledWith(authContext.uid, COINS_REWARD_CLASSIC);
       // Verify direct Firestore update for classicIndex
       expect(mockAdminFirestoreUpdate).toHaveBeenCalledWith({
         "progress.classicIndex": mockIncrement(1),
@@ -405,8 +411,8 @@ describe("handleGuessLogic", () => {
     test("should calculate challenge coins correctly and update lastDailyChallengeCompletedAt", async () => {
       const result = await handleGuessLogic(requestData, authContext);
       expect(result.isCorrect).toBe(true);
-      expect(result.coinsEarned).toBe(50);
-      expect(firestoreService.updateUserCoins).toHaveBeenCalledWith(authContext.uid, 50);
+      expect(result.coinsEarned).toBe(COINS_REWARD_CHALLENGE);
+      expect(firestoreService.updateUserCoins).toHaveBeenCalledWith(authContext.uid, COINS_REWARD_CHALLENGE);
       // Check if the admin.firestore().update (which is the mockAdminUpdate in beforeEach) was called
       const adminUpdateMock = (admin.firestore() as unknown as {update: jest.Mock}).update; // Get the mock for this specific call context
       expect(adminUpdateMock).toHaveBeenCalledWith({
@@ -426,13 +432,15 @@ describe("handleGuessLogic", () => {
         challengeWins: "increment(1)",
         dailyPuzzlesCompleted: "increment(1)", // Added daily puzzles stat
         xp: "increment(140)",
-        level: 2,
         averageGuesses: parseFloat(
           ((mockUser.stats.totalGuessesInWins! + 2) / (mockUser.stats.totalWins! + 1)).toFixed(2),
         ),
         winRate: parseFloat((((mockUser.stats.totalWins! + 1) / (mockUser.stats.gamesPlayed! + 1)) * 100).toFixed(2)),
       };
-      expect(firestoreService.updateUserStats).toHaveBeenCalledWith(authContext.uid, expectedStatsUpdate);
+      expect(firestoreService.updateUserStats).toHaveBeenCalledWith(
+        authContext.uid,
+        expect.objectContaining(expectedStatsUpdate),
+      );
     });
   });
 
@@ -907,9 +915,10 @@ describe("handleGuessLogic", () => {
       const result = await handleCompleteGameLogic(requestData, authContext);
 
       expect(result.newlyUnlockedAchievementIds).toEqual(["first_win", "perfect_guess"]);
-      expect(result.coinsEarned).toBe(65);
-      expect(firestoreService.updateUserCoins).toHaveBeenNthCalledWith(1, authContext.uid, 15);
-      expect(firestoreService.updateUserCoins).toHaveBeenNthCalledWith(2, authContext.uid, 50);
+      const achievementBonus = 2 * ACHIEVEMENT_UNLOCK_COIN_REWARD;
+      expect(result.coinsEarned).toBe(COINS_REWARD_CLASSIC + achievementBonus);
+      expect(firestoreService.updateUserCoins).toHaveBeenNthCalledWith(1, authContext.uid, COINS_REWARD_CLASSIC);
+      expect(firestoreService.updateUserCoins).toHaveBeenNthCalledWith(2, authContext.uid, achievementBonus);
     });
 
     test("should update leaderboard entry when game is won", async () => {

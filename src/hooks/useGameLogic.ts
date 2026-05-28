@@ -163,38 +163,54 @@ const useGameLogic = ({riddleId, answer, gameMode, isGuestMode = false}: UseGame
     };
 
     void restore();
-    return () => {
-      cancelled = true;
-    };
-  }, [isGuestMode, riddleId, gameMode]);
+          try {
+            const data: CompleteGameOutput = await completeGame({
+              riddleId,
+              gameMode,
+              attempts: currentAttempt,
+              isCorrect: true,
+            });
+            coinsEarned = data.coinsEarned ?? 0;
+            // Some backend builds return xp as `xpEarned` only.
+            scoreEarned = data.scoreEarned ?? data.xpEarned ?? 0;
+            newlyUnlockedAchievementIds = data.newlyUnlockedAchievementIds ?? [];
+            newWinStreak = data.newWinStreak;
+            // Propagate server-side reward breakdown (when present) so callers
+            // can render authoritative fanfare and coin animations.
+            const rewardBreakdown = (data as any).rewardBreakdown;
+            gameEventBus.emit<import("../services/GameEventBus").GameCompletedEvent>({
+              type: "GAME_COMPLETED",
+              outcome: "won",
+              attempts: currentAttempt,
+              coinsEarned,
+            });
 
-  // Guest-only: persist in-progress session (so a force-close doesn't lose a run).
-  useEffect(() => {
-    if (!isGuestMode) return;
-    if (gameOver) return;
+            return {
+              outcome: "win",
+              feedback,
+              coinsEarned,
+              scoreEarned,
+              correctAnswer: answer,
+              newlyUnlockedAchievementIds,
+              newWinStreak,
+              rewardBreakdown,
+            } as const;
+          } catch (err) {
+            logger.error("Error calling completeGame on win:", err);
+            captureException(err);
+          }
 
-    const snapshot: GuestGameSessionSnapshot = {
-      version: 2,
-      riddleId,
-      gameMode,
-      guesses,
-      attemptsUsed,
-      hasUsedContinue,
-      gameOver,
-    };
-    const snapshotRaw = JSON.stringify(snapshot);
-    if (lastPersistedGuestSnapshotRef.current === snapshotRaw) {
-      return;
-    }
-
-    void AsyncStorage.setItem(GUEST_GAME_SESSION_STORAGE_KEY, snapshotRaw)
-      .then(() => {
-        lastPersistedGuestSnapshotRef.current = snapshotRaw;
-      })
-      .catch((error) => {
-        logger.warn("Guest session persist failed; progress may be lost.", error);
-      });
-  }, [isGuestMode, riddleId, gameMode, guesses, attemptsUsed, hasUsedContinue, gameOver]);
+        // If we reach here without an early return above, fall through to
+        // return a best-effort win result (e.g., in error cases).
+        return {
+          outcome: "win",
+          feedback,
+          coinsEarned,
+          scoreEarned,
+          correctAnswer: answer,
+          newlyUnlockedAchievementIds,
+          newWinStreak,
+        };
 
   /**
    * Processes one guess:

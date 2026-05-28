@@ -204,6 +204,14 @@ export class AnalyticsService {
   }
 
   /**
+   * Log when the shop product catalog is missing or empty.
+   * Useful to detect misconfiguration or Firestore issues.
+   */
+  async logShopCatalogMissing(params: {reason?: string; productCount?: number} = {}): Promise<void> {
+    await this.logEvent("shop_catalog_missing", params);
+  }
+
+  /**
    * Log when a shop pack is shown in the coin-shop grid.
    */
   async logShopPackImpression(params: {
