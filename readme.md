@@ -354,6 +354,7 @@ Funding materials for the pre-launch beta are maintained in `docs/funding/`. Thi
   - Reuben Beswetherick - Inspiration
   - Gavin Harrison - Sound Design
   - Nathalia - Design
+  - Poppy
 
 ## Contributing
 
