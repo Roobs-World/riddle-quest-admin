@@ -1,17 +1,9 @@
-/**
- * Represents a guess that was submitted and scored by the game engine.
- */
-export interface SubmittedGuess {
-  /** Guess letters in their submitted order. */
-  guess: string[];
-  /** Per-letter feedback aligned by index with `guess`. */
-  feedback: Feedback[];
-}
+import type {Feedback as CoreFeedback, ScoredGuess} from "@qwordly/core";
 
-/**
- * Per-letter evaluation produced after a submitted guess.
- */
-export type Feedback = "green" | "yellow" | "red";
+export type Feedback = CoreFeedback;
+
+/** Represents a guess that was submitted and scored by the game engine. */
+export type SubmittedGuess = ScoredGuess;
 
 /**
  * High-level game result for the current riddle.

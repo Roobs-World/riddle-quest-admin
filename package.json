@@ -31,12 +31,14 @@
     "check:rn-upgrade": "node scripts/check-rn-upgrade.js",
     "baseline:report": "node scripts/baseline-report.js",
     "validate:upgrade": "pnpm run check:rn-upgrade && pnpm run lint && pnpm run test:rn --runInBand",
+    "test:core": "pnpm --filter @qwordly/core test",
     "prepare": "husky"
   },
   "engines": {
     "node": ">=20.19.4"
   },
   "dependencies": {
+    "@qwordly/core": "workspace:*",
     "@expo/cli": "56.1.12",
     "@expo/config": "56.0.9",
     "@expo/dom-webview": "56.0.5",

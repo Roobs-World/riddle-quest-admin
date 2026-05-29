@@ -1,6 +1,6 @@
 module.exports = {
   preset: "@react-native/jest-preset",
-  roots: ["<rootDir>/src"],
+  roots: ["<rootDir>/src", "<rootDir>/packages/core/src"],
   testPathIgnorePatterns: ["/node_modules/", "/firebase-functions/"],
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
   transform: {
@@ -15,6 +15,8 @@ module.exports = {
     "\\.(ttf|otf|woff|woff2)$": "<rootDir>/src/__mocks__/fileMock.js",
     "\\.(png|jpg|jpeg|gif|webp|bmp)$": "<rootDir>/src/__mocks__/fileMock.js",
     "^@/(.*)$": "<rootDir>/src/$1",
+    "^@qwordly/core$": "<rootDir>/packages/core/src/index.ts",
+    "^@qwordly/core/(.*)$": "<rootDir>/packages/core/src/$1",
     "^@images/(.*)$": "<rootDir>/assets/images/$1",
     "^@fonts/(.*)$": "<rootDir>/assets/fonts/$1",
     "react-native-fbsdk-next": "<rootDir>/src/__mocks__/react-native-fbsdk-next.js",

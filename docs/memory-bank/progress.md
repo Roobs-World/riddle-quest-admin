@@ -1,6 +1,15 @@
 # Project Progress
 
-## Current Status: Android QA Handoff (May 2026)
+## Current Status: Design Patterns Refactor Started (May 2026)
+
+- Epic branch: `refactor/design-patterns` (off `main`).
+- Completed: PR 1–4 scope — `packages/core`, service ports, `GameEngine`, `useGameLogic` facade.
+- Verification: `pnpm run test:core` (16 tests), `pnpm exec tsc --noEmit`, `useGameLogic` suite (33 tests).
+- Remaining: PR 5–15 per `docs/design-patterns-refactor-plan.html`.
+
+---
+
+## Previous Status: Android QA Handoff (May 2026)
 
 - Canonical current tracker: `docs/android-emulator-firebase-qa-plan.html`.
 - Supporting tracker docs: `docs/design-issues.html` and `docs/responsive-todo-list.html`.

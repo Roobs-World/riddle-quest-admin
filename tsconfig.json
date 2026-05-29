@@ -16,10 +16,20 @@
     "baseUrl": "./",
     "paths": {
       "@/*": ["src/*"],
+      "@qwordly/core": ["packages/core/src/index.ts"],
+      "@qwordly/core/*": ["packages/core/src/*"],
       "@assets/*": ["assets/*"],
       "@assets/3d/*": ["assets/3d/*"]
     }
   },
-  "include": ["src/**/*", "src/types/**/*", "App.tsx", "global.css", "nativewind-env.d.ts", "global.d.ts"],
+  "include": [
+    "src/**/*",
+    "src/types/**/*",
+    "packages/core/src/**/*",
+    "App.tsx",
+    "global.css",
+    "nativewind-env.d.ts",
+    "global.d.ts"
+  ],
   "exclude": ["node_modules", "babel.config.js", "metro.config.js", "jest.setup.js", "firebase-functions"]
 }

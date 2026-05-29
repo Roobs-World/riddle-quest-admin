@@ -1,3 +1,4 @@
+import {isValidGuess as isValidGuessCore} from "@qwordly/core";
 import {ZodError} from "zod";
 
 /**
@@ -97,18 +98,7 @@ export class ValidationUtils {
    * Validates that a guess is the correct length and format
    */
   static isValidGuess(guess: string, expectedLength: number = 5): boolean {
-    if (!this.isNonEmptyString(guess)) {
-      return false;
-    }
-
-    // Check length
-    if (guess.length !== expectedLength) {
-      return false;
-    }
-
-    // Check that it only contains letters
-    const letterRegex = /^[a-zA-Z]+$/;
-    return letterRegex.test(guess);
+    return isValidGuessCore(guess, expectedLength);
   }
 
   /**

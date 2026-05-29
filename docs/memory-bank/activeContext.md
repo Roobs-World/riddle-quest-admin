@@ -1,6 +1,20 @@
 # Active Context - Riddle Quest Development
 
-## Current Work Focus: Android QA Handoff (May 2026)
+## Current Work Focus: Design Patterns Refactor (May 2026)
+
+### Design patterns epic (branch `refactor/design-patterns`)
+
+- Tracker: `docs/design-patterns-refactor-plan.html` (15 PRs, 8 phases).
+- **Done on epic branch:** Phase 0 (PR 1–2) + Phase 1 (PR 3–4) foundation:
+  - `packages/core` with `computeFeedback`, `isValidGuess`, `computeLetterStates`, `GameEngine`, `computeGuestCompletionRewards` + 16 unit tests (`pnpm run test:core`).
+  - Path alias `@qwordly/core` in tsconfig, babel, jest.
+  - `src/services/ports/` + `SERVICE_KEYS`; `ServiceRegistry` expanded with optional `IGameCompletionPort`.
+  - `useGameLogic` refactored to facade over `GameEngine`; guest session persist to AsyncStorage added.
+- **Next:** Phase 2 PR 5–6 (`AuthSessionFacade`, slim `AuthProvider`), then modal command bus (Phase 3), `GameScreen` decomposition (Phase 4).
+
+---
+
+## Previous Focus: Android QA Handoff (May 2026)
 
 ### Latest Handoff For Next Agent
 

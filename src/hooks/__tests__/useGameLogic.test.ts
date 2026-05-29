@@ -19,6 +19,9 @@ describe("useGameLogic", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
+    (AsyncStorage.setItem as jest.Mock).mockResolvedValue(undefined);
+    (AsyncStorage.removeItem as jest.Mock).mockResolvedValue(undefined);
 
     // Route httpsCallable(functions, "completeGame") to mockCompleteGameCallable
     mockHttpsCallable.mockImplementation((_functions: any, functionName: string) => {
@@ -310,7 +313,7 @@ describe("useGameLogic", () => {
       expect(processResult).toMatchObject({
         outcome: "win",
         feedback: ["green", "green", "green", "green", "green"],
-        coinsEarned: 15,
+        coinsEarned: 25,
         scoreEarned: 100,
         correctAnswer: "GUESS",
         newlyUnlockedAchievementIds: [],
@@ -706,7 +709,7 @@ describe("useGameLogic", () => {
 
       expect(mockCompleteGameCallable).not.toHaveBeenCalled();
       expect((processResult as {outcome: string}).outcome).toBe("win");
-      expect((processResult as {coinsEarned: number}).coinsEarned).toBe(50);
+      expect((processResult as {coinsEarned: number}).coinsEarned).toBe(75);
     });
   });
 });

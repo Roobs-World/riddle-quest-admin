@@ -19,6 +19,7 @@ module.exports = function (api) {
           root: ["./"],
           alias: {
             "@": "./src",
+            "@qwordly/core": "./packages/core/src",
             "@images": "./assets/images",
             "@fonts": "./assets/fonts",
           },

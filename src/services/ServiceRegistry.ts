@@ -1,9 +1,13 @@
-import {IUserDataService} from "./interfaces/IUserDataService";
-import {IRiddleDataService} from "./interfaces/IRiddleDataService";
-import {IAudioFeedbackService} from "./interfaces/IAudioFeedbackService";
+import type {IUserDataService} from "./ports/IUserDataService";
+import type {IRiddleDataService} from "./ports/IRiddleDataService";
+import type {IAudioFeedbackService} from "./ports/IAudioFeedbackService";
+import type {IGameCompletionPort} from "./ports/IGameCompletionPort";
+import {SERVICE_KEYS, type ServiceKey} from "./ports/serviceKeys";
 import {UserDataService} from "./UserDataService";
 import {RiddleDataService} from "./RiddleDataService";
 import {AudioFeedbackManager} from "./AudioFeedbackManager";
+
+export {SERVICE_KEYS, type ServiceKey};
 
 /**
  * Service registry for dependency injection
@@ -33,10 +37,9 @@ export class ServiceRegistry {
    * Register default service implementations
    */
   private registerDefaults(): void {
-    // Register default implementations
-    this.register<IUserDataService>("UserDataService", new UserDataService());
-    this.register<IRiddleDataService>("RiddleDataService", new RiddleDataService());
-    this.register<IAudioFeedbackService>("AudioFeedbackService", new AudioFeedbackManager());
+    this.register<IUserDataService>(SERVICE_KEYS.userData, new UserDataService());
+    this.register<IRiddleDataService>(SERVICE_KEYS.riddleData, new RiddleDataService());
+    this.register<IAudioFeedbackService>(SERVICE_KEYS.audioFeedback, new AudioFeedbackManager());
   }
 
   /**
@@ -79,25 +82,31 @@ export class ServiceRegistry {
     this.registerDefaults();
   }
 
-  /**
-   * Get user data service
-   */
   getUserDataService(): IUserDataService {
-    return this.get<IUserDataService>("UserDataService");
+    return this.get<IUserDataService>(SERVICE_KEYS.userData);
   }
 
-  /**
-   * Get riddle data service
-   */
   getRiddleDataService(): IRiddleDataService {
-    return this.get<IRiddleDataService>("RiddleDataService");
+    return this.get<IRiddleDataService>(SERVICE_KEYS.riddleData);
+  }
+
+  getAudioFeedbackService(): IAudioFeedbackService {
+    return this.get<IAudioFeedbackService>(SERVICE_KEYS.audioFeedback);
   }
 
   /**
-   * Get audio feedback service
+   * Optional port — register a Firebase adapter before use (PR 4+).
    */
-  getAudioFeedbackService(): IAudioFeedbackService {
-    return this.get<IAudioFeedbackService>("AudioFeedbackService");
+  getGameCompletionPort(): IGameCompletionPort {
+    return this.get<IGameCompletionPort>(SERVICE_KEYS.gameCompletion);
+  }
+
+  hasGameCompletionPort(): boolean {
+    return this.has(SERVICE_KEYS.gameCompletion);
+  }
+
+  registerGameCompletionPort(port: IGameCompletionPort): void {
+    this.register<IGameCompletionPort>(SERVICE_KEYS.gameCompletion, port);
   }
 }
 
