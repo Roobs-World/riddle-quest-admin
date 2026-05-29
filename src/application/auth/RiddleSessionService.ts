@@ -9,9 +9,13 @@ import type {GameMode} from "./authTypes";
 import {authSessionFacade, type AuthSessionFacade} from "./AuthSessionFacade";
 
 export interface RiddleSessionSink {
+  /** Sets the current riddle shown to the player. */
   setCurrentRiddle: (riddle: FirestoreRiddle | null) => void;
+  /** Updates whether the current player can access the daily challenge. */
   setIsDailyChallengeAvailable: (available: boolean | undefined) => void;
+  /** Updates the active game mode after fallbacks or restores. */
   setGameMode: (mode: GameMode) => void;
+  /** Flags whether riddle initialization is still in progress. */
   setIsRiddlesInitializing: (initializing: boolean) => void;
 }
 
@@ -32,8 +36,21 @@ export interface RiddleSessionSink {
  * - Sink updates happen only after stale-request checks pass.
  */
 export class RiddleSessionService {
-  constructor(private readonly sessionFacade: AuthSessionFacade) {}
+  /** Facade used to resolve daily-completion and active-session policies. */
+  private readonly sessionFacade: AuthSessionFacade;
 
+  constructor(sessionFacade: AuthSessionFacade) {
+    this.sessionFacade = sessionFacade;
+  }
+
+  /**
+   * Resolves and loads the current riddle for the active game mode.
+   *
+   * @param player - Current player document, or `null` when unauthenticated.
+   * @param mode - Requested game mode to resolve.
+   * @param sink - State sink that receives riddle, mode, and loading updates.
+   * @param options - Stale-request guard and optional completion override.
+   */
   async fetchCurrentRiddle(
     player: Player | null,
     mode: GameMode,

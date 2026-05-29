@@ -32,6 +32,12 @@ import type {GameMode} from "./authTypes";
  *   still match the current request.
  */
 export class AuthSessionFacade {
+  /**
+   * Resolves whether the player has already completed today's daily challenge.
+   *
+   * @param player - Current player document, or `null` when unauthenticated.
+   * @returns `true` when the daily challenge is already complete for today.
+   */
   async hasCompletedDailyChallengeToday(player: Player | null): Promise<boolean> {
     if (!player) return false;
     if (isGuestPlayer(player)) {
@@ -63,6 +69,12 @@ export class AuthSessionFacade {
     }
   }
 
+  /**
+   * Returns the streak value that should be restored after a broken daily run.
+   *
+   * @param player - Current player document, or `null` when unauthenticated.
+   * @returns The streak value to restore, or `0` when no streak should be restored.
+   */
   getBrokenDailyStreakValue(player: Player | null): number {
     if (!player) return 0;
     const currentWinStreak = player.stats?.winStreak ?? 0;
@@ -85,6 +97,12 @@ export class AuthSessionFacade {
     return lastCompletedDate.getTime() < yesterdayUtcStart ? currentWinStreak : 0;
   }
 
+  /**
+   * Loads a restorable active game session from local storage.
+   *
+   * @param uid - Authenticated user identifier used to validate the snapshot.
+   * @returns The active session snapshot when it is still valid for this user and day.
+   */
   async loadActiveGameSession(uid: string): Promise<ActiveGameSessionSnapshot | null> {
     try {
       const raw = await AsyncStorage.getItem(ACTIVE_GAME_SESSION_STORAGE_KEY);
@@ -114,6 +132,13 @@ export class AuthSessionFacade {
     }
   }
 
+  /**
+   * Persists the active game session snapshot for the current player.
+   *
+   * @param player - Current player document that owns the session snapshot.
+   * @param mode - Active game mode to persist.
+   * @param riddle - Active riddle whose identifiers should be preserved locally.
+   */
   async saveActiveGameSession(player: Player, mode: GameMode, riddle: FirestoreRiddle): Promise<void> {
     try {
       const snapshot: ActiveGameSessionSnapshot = {

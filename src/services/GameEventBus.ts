@@ -92,7 +92,9 @@ export type AnyGameEvent =
   | HintRequestedEvent;
 
 /**
- * Event listener type
+ * Event listener callback for a specific game-event shape.
+ *
+ * @param event - Concrete event payload emitted from the bus.
  */
 export type GameEventListener<T extends GameEvent = AnyGameEvent> = (event: T) => void;
 
@@ -109,10 +111,13 @@ export class GameEventBus {
   /** Global listeners invoked for every emitted event. */
   private globalListeners = new Set<GameEventListener<AnyGameEvent>>();
 
+  /** Creates the singleton event bus. Use {@link getInstance} instead. */
   private constructor() {}
 
   /**
-   * Get singleton instance
+   * Gets the singleton event bus instance.
+   *
+   * @returns The shared game-event bus.
    */
   static getInstance(): GameEventBus {
     if (!GameEventBus.instance) {
@@ -212,5 +217,5 @@ export class GameEventBus {
   }
 }
 
-// Export singleton instance
+/** Shared singleton event-bus instance used throughout the app. */
 export const gameEventBus = GameEventBus.getInstance();

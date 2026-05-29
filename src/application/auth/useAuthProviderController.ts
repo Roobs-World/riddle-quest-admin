@@ -33,29 +33,50 @@ import {buildFirestoreUserUpdates, isAnonymousAuthSession, sanitizePlayerUpdates
 import type {GameMode} from "./authTypes";
 
 export interface AuthProviderControllerValue {
+  /** Auth session state and login/logout actions exposed to the provider. */
   sessionValue: {
+    /** True when the current user session is authenticated. */
     isAuthenticated: boolean;
+    /** True while the controller is still hydrating user and riddle state. */
     isLoading: boolean;
+    /** Starts the login flow and rehydrates the controller. */
     login: () => Promise<void>;
+    /** Signs the current user out and clears local session state. */
     logout: () => Promise<void>;
   };
+  /** Player document state and mutation helpers for profile/progress updates. */
   playerValue: {
+    /** Current player document or `null` when unauthenticated. */
     playerData: Player | null;
+    /** Persists the classic index change to the back end. */
     updatePlayerClassicIndex: (newIndex: number) => Promise<void>;
+    /** Applies a partial player update through the repository boundary. */
     updatePlayerData: (updates: Partial<Player>) => Promise<void>;
+    /** Applies a local-only player update, optionally mirroring to Firestore. */
     updatePlayerDataLocally: (updates: Partial<Player>, options?: {syncToFirestore?: boolean}) => void;
+    /** Pending streak-reset info captured during auth/session transitions. */
     pendingStreakBreak: {previousStreak: number} | null;
+    /** Clears the pending streak-reset marker after the UI consumes it. */
     consumePendingStreakBreak: () => void;
   };
+  /** Riddle and mode state used by gameplay and initialization screens. */
   riddleValue: {
+    /** Current riddle shown in the active game mode. */
     currentRiddle: FirestoreRiddle | null;
+    /** Sets the current riddle directly, usually from the controller flow. */
     setCurrentRiddle: React.Dispatch<React.SetStateAction<FirestoreRiddle | null>>;
+    /** Fetches the riddle for the requested player and mode. */
     fetchCurrentRiddle: (player: Player | null, mode: GameMode, completedDailyOverride?: boolean) => Promise<void>;
+    /** Whether the daily challenge is currently available to the player. */
     isDailyChallengeAvailable: boolean | undefined;
+    /** The active game mode after bootstrap and fallback resolution. */
     gameMode: GameMode;
+    /** Updates the active game mode. */
     setGameMode: (mode: GameMode) => void;
+    /** True while riddle generation or initialization work is still running. */
     isRiddlesInitializing: boolean;
   };
+  /** Backward-compatible merged controller value for `useAuth()` consumers. */
   contextValue: AuthProviderControllerValue["sessionValue"] &
     AuthProviderControllerValue["playerValue"] &
     AuthProviderControllerValue["riddleValue"];
@@ -703,4 +724,3 @@ export function useAuthProviderController(): AuthProviderControllerValue {
 
   return {sessionValue, playerValue, riddleValue, contextValue};
 }
-

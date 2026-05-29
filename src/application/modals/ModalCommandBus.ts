@@ -4,9 +4,13 @@ import type {GameModalTypes, ModalData, ModalDataType, ModalOptions} from "../..
  * Typed command variant for game-modal registry entries.
  */
 export type GameModalCommandFor<TModalType extends keyof GameModalTypes> = {
+  /** Discriminant identifying the command as a typed game-modal dispatch. */
   type: "game";
+  /** Registry key for the modal to open. */
   modalType: TModalType;
+  /** Payload for the selected modal type. */
   data: ModalDataType<TModalType>;
+  /** Optional modal presentation options. */
   options?: ModalOptions;
 };
 
@@ -26,6 +30,14 @@ export type ModalCommand =
   | {type: "open"; modalType: string; data?: ModalData; options?: ModalOptions}
   | GameModalCommand;
 
+/**
+ * Raw modal-opening function supplied by the modal context layer.
+ *
+ * @param type - Registry key or modal type to open.
+ * @param data - Modal payload for the selected type.
+ * @param options - Optional presentation options for the modal surface.
+ * @returns The created modal identifier.
+ */
 export type OpenModalFn = <T extends ModalData>(type: string, data?: T, options?: ModalOptions) => string;
 
 /**
@@ -45,7 +57,12 @@ export type OpenModalFn = <T extends ModalData>(type: string, data?: T, options?
  *   offline surface is fully migrated behind the registry.
  */
 export class ModalCommandBus {
-  constructor(private readonly openModal: OpenModalFn) {}
+  /** Raw modal-opening function provided by the modal context layer. */
+  private readonly openModal: OpenModalFn;
+
+  constructor(openModal: OpenModalFn) {
+    this.openModal = openModal;
+  }
 
   /**
    * Opens the modal represented by a command and returns the created modal id.
@@ -92,6 +109,7 @@ export function createModalCommandBus(openModal: OpenModalFn): ModalCommandBus {
  * while the factory owns the command shape consumed by {@link ModalCommandBus}.
  */
 export const modalCommands = {
+  /** Builds a standard informational modal command. */
   info: (title: string, message: string, actionButtonText?: string, onAction?: () => void): ModalCommand => ({
     type: "info",
     title,
@@ -100,12 +118,14 @@ export const modalCommands = {
     onAction,
   }),
 
+  /** Builds the shared offline-fallback modal command. */
   offline: (title?: string, message?: string): ModalCommand => ({
     type: "offline",
     title,
     message,
   }),
 
+  /** Builds a raw registry-open command. */
   open: (modalType: string, data?: ModalData, options?: ModalOptions): ModalCommand => ({
     type: "open",
     modalType,
@@ -113,6 +133,7 @@ export const modalCommands = {
     options,
   }),
 
+  /** Builds a typed game-modal command. */
   game: <TModalType extends keyof GameModalTypes>(
     modalType: TModalType,
     data: ModalDataType<TModalType>,

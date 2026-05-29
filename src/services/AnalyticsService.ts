@@ -36,11 +36,19 @@ import {gameEventBus, AnyGameEvent, GameCompletedEvent, GuessSubmittedEvent, Gue
  * Singleton analytics service backed by Google Analytics / Firebase Analytics.
  */
 export class AnalyticsService {
+  /** Singleton instance backing `getInstance()`. */
   private static instance: AnalyticsService;
+  /** Current event-bus subscription, if analytics is actively wired up. */
   private unsubscribe: (() => void) | null = null;
 
+  /** Creates the singleton analytics service. Use {@link getInstance} instead. */
   private constructor() {}
 
+  /**
+   * Returns the shared analytics service instance.
+   *
+   * @returns The singleton analytics service.
+   */
   static getInstance(): AnalyticsService {
     if (!AnalyticsService.instance) {
       AnalyticsService.instance = new AnalyticsService();
@@ -269,6 +277,12 @@ export class AnalyticsService {
   // Event bus wiring (automatic game event forwarding)
   // ───────────────────────────────────────────────────────────────────────────
 
+  /**
+   * Connects the analytics service to the shared game-event bus.
+   *
+   * The latest subscription is replaced so repeated initialization stays
+   * idempotent.
+   */
   private subscribeToEventBus(): void {
     this.unsubscribe?.();
     this.unsubscribe = gameEventBus.onAll((event: AnyGameEvent) => {
@@ -276,6 +290,11 @@ export class AnalyticsService {
     });
   }
 
+  /**
+   * Routes a game event to the matching analytics helper.
+   *
+   * @param event - Concrete game event emitted from the shared bus.
+   */
   private handleGameEvent(event: AnyGameEvent): void {
     switch (event.type) {
       case "GUESS_SUBMITTED":
@@ -292,12 +311,22 @@ export class AnalyticsService {
     }
   }
 
+  /**
+   * Logs the guess-submitted funnel step for analytics.
+   *
+   * @param event - Guess-submitted event payload from the game bus.
+   */
   private async onGuessSubmitted(event: GuessSubmittedEvent): Promise<void> {
     await this.logEvent("guess_submitted", {
       attempt_number: event.attemptNumber,
     });
   }
 
+  /**
+   * Logs guess-validation outcomes for analytics.
+   *
+   * @param event - Guess-validated event payload from the game bus.
+   */
   private async onGuessValidated(event: GuessValidatedEvent): Promise<void> {
     const greenCount = event.feedback.filter((f) => f.status === "green").length;
     const yellowCount = event.feedback.filter((f) => f.status === "yellow").length;
@@ -308,6 +337,11 @@ export class AnalyticsService {
     });
   }
 
+  /**
+   * Logs game-completion outcomes and derived level-end data.
+   *
+   * @param event - Game-completed event payload from the game bus.
+   */
   private async onGameCompleted(event: GameCompletedEvent): Promise<void> {
     await this.logEvent("game_completed", {
       outcome: event.outcome,
@@ -328,6 +362,12 @@ export class AnalyticsService {
   // Internal helpers
   // ───────────────────────────────────────────────────────────────────────────
 
+  /**
+   * Sends a raw analytics event with the provided payload.
+   *
+   * @param name - Firebase Analytics event name.
+   * @param params - Event parameters forwarded to the analytics SDK.
+   */
   private async logEvent(name: string, params: Record<string, string | number | boolean> = {}): Promise<void> {
     try {
       await logEvent(getAnalytics(), name, params);

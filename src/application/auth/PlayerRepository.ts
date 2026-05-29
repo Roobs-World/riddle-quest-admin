@@ -28,6 +28,12 @@ import {buildFirestoreUserUpdates, GUEST_PROGRESS_STORAGE_KEY} from "./playerPer
  * - Clearing local data is best-effort and never throws into UI code.
  */
 export class PlayerRepository {
+  /**
+   * Loads the guest profile snapshot from local storage and merges it with a fresh guest baseline.
+   *
+   * @param uid - Guest user identifier used to seed the baseline document.
+   * @returns The merged guest profile, or `null` when no guest snapshot exists.
+   */
   async loadGuestProfile(uid: string): Promise<Player | null> {
     try {
       const raw = await AsyncStorage.getItem(GUEST_PROGRESS_STORAGE_KEY);
@@ -56,6 +62,11 @@ export class PlayerRepository {
     }
   }
 
+  /**
+   * Persists the guest player snapshot to local storage.
+   *
+   * @param player - Guest player document to save locally.
+   */
   async saveGuestProfile(player: Player): Promise<void> {
     try {
       await AsyncStorage.setItem(GUEST_PROGRESS_STORAGE_KEY, JSON.stringify(player));
@@ -65,6 +76,9 @@ export class PlayerRepository {
     }
   }
 
+  /**
+   * Removes the guest player snapshot from local storage.
+   */
   async clearGuestProfile(): Promise<void> {
     try {
       await AsyncStorage.removeItem(GUEST_PROGRESS_STORAGE_KEY);
@@ -74,6 +88,9 @@ export class PlayerRepository {
     }
   }
 
+  /**
+   * Clears all local persistence used by the app.
+   */
   async clearAllLocalData(): Promise<void> {
     try {
       await AsyncStorage.clear();
@@ -84,10 +101,26 @@ export class PlayerRepository {
     }
   }
 
+  /**
+   * Loads the canonical player document from Firestore.
+   *
+   * @param userId - Authenticated user identifier.
+   * @returns The stored player document, or `null` when no record exists.
+   */
   loadUserProgress(userId: string): Promise<Player | null> {
     return loadUserProgressFromFirestore(userId);
   }
 
+  /**
+   * Creates the canonical user document in Firestore.
+   *
+   * @param userId - Authenticated user identifier.
+   * @param email - Email address used by the backend.
+   * @param displayName - Optional display name from the auth provider.
+   * @param avatarUrl - Optional avatar URL from the auth provider.
+   * @param guestSeed - Optional guest profile used to seed the new account.
+   * @returns The created player document.
+   */
   createUserDocument(
     userId: string,
     email: string,
@@ -98,11 +131,24 @@ export class PlayerRepository {
     return createUserDocumentInFirestore(userId, email, displayName, avatarUrl ?? undefined, guestSeed);
   }
 
+  /**
+   * Applies a sanitized partial update to the canonical Firestore player document.
+   *
+   * @param userId - Authenticated user identifier.
+   * @param basePlayer - Current player document used to validate updates.
+   * @param updates - Partial player payload to sanitize and persist.
+   */
   async updateUserDocument(userId: string, basePlayer: Player, updates: Partial<Player>): Promise<void> {
     const safeUpdates = buildFirestoreUserUpdates(basePlayer, updates);
     await updateUserDocumentInFirestore(userId, safeUpdates);
   }
 
+  /**
+   * Updates only the player's classic progress index in Firestore.
+   *
+   * @param userId - Authenticated user identifier.
+   * @param newIndex - New classic-riddle index to persist.
+   */
   updateClassicIndex(userId: string, newIndex: number): Promise<void> {
     return updateClassicIndexInFirestore(userId, newIndex);
   }

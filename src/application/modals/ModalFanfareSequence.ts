@@ -61,10 +61,15 @@ export interface ModalFanfareSequenceOptions {
  * - The final step calls `onComplete` exactly once per continuation.
  */
 export class ModalFanfareSequence {
-  constructor(
-    private readonly steps: readonly ModalSequenceStep[],
-    private readonly options: ModalFanfareSequenceOptions,
-  ) {}
+  /** Ordered popup steps that make up the fanfare chain. */
+  private readonly steps: readonly ModalSequenceStep[];
+  /** Timing and completion callbacks used while advancing the chain. */
+  private readonly options: ModalFanfareSequenceOptions;
+
+  constructor(steps: readonly ModalSequenceStep[], options: ModalFanfareSequenceOptions) {
+    this.steps = steps;
+    this.options = options;
+  }
 
   /**
    * Opens the first popup in the chain, or completes immediately for an empty
@@ -79,6 +84,11 @@ export class ModalFanfareSequence {
     this.openAt(0);
   }
 
+  /**
+   * Opens the popup at the given sequence index.
+   *
+   * @param index - Zero-based position inside the fanfare chain.
+   */
   private openAt(index: number): void {
     const step = this.steps[index];
     if (!step) {
@@ -97,6 +107,11 @@ export class ModalFanfareSequence {
     );
   }
 
+  /**
+   * Advances the sequence after the current popup continues.
+   *
+   * @param index - Zero-based position of the popup that just continued.
+   */
   private continueFrom(index: number): void {
     if (index < this.steps.length - 1) {
       void this.options.delay(this.options.closeDelayMs).then(() => this.openAt(index + 1));
