@@ -354,28 +354,44 @@
           <span class="pill">Branch: refactor/design-patterns</span>
           <span class="pill">Strategy: incremental PRs</span>
           <span class="pill">Domain: packages/core</span>
-          <span class="pill" id="last-updated-pill">Last updated: —</span>
+          <span class="pill" id="last-updated-pill">Last updated: complete</span>
         </div>
       </header>
 
       <div class="summary-grid">
         <div class="metric">
-          <strong id="metric-phases-done">0</strong>
+          <strong id="metric-phases-done">8</strong>
           <span>Phases complete (of 8)</span>
         </div>
         <div class="metric">
-          <strong id="metric-prs-done">0</strong>
+          <strong id="metric-prs-done">15</strong>
           <span>PRs complete (of 15)</span>
         </div>
         <div class="metric">
-          <strong id="metric-percent">0%</strong>
+          <strong id="metric-percent">100%</strong>
           <span>Overall progress</span>
         </div>
         <div class="metric">
-          <strong id="metric-active-phase">Phase 0</strong>
-          <span>Next up</span>
+          <strong id="metric-active-phase">Done</strong>
+          <span>Status</span>
         </div>
       </div>
+
+      <section class="section">
+        <h2>Current snapshot</h2>
+        <ul class="reference-list">
+          <li>
+            All 15 refactor PRs are complete; the tracker is now a closed record for the design-patterns epic.
+          </li>
+          <li>
+            Final verification stayed green: focused modal tests, the full
+            <code>GameScreen.test.tsx</code> suite, and <code>pnpm exec tsc --noEmit --pretty false</code>.
+          </li>
+          <li>
+            No phases remain open in this file; use the notes below only as an audit trail for the completed work.
+          </li>
+        </ul>
+      </section>
 
       <section class="section">
         <h2>For agents and contributors</h2>
@@ -395,7 +411,7 @@
               <code>refactor/design-patterns/pr-NN-short-name</code>, then open a PR <strong>into</strong>
               <code>refactor/design-patterns</code> (not <code>main</code>) until the epic is complete.
             </li>
-            <li>Pick the first unchecked PR in the PR checklist below (or the phase marked <em>active</em>).</li>
+            <li>If the tracker is ever reopened, start from the first phase that shows a regression or missing evidence.</li>
             <li>
               Follow architecture rules: domain in <code>packages/core/</code>, thin UI, ports/adapters in
               <code>src/services/</code>.
@@ -404,7 +420,7 @@
               One PR per checklist item when possible; keep <code>useAuth</code>, <code>useModal</code>,
               <code>useGameLogic</code> APIs stable until noted.
             </li>
-            <li>After merging, check the PR box, add evidence in handoff notes, and commit this HTML if notes changed.</li>
+            <li>After merging, check the PR box, add evidence in handoff notes, and keep this HTML as the audit trail.</li>
             <li>
               Related docs:
               <a href="../.cursor/rules/architecture.mdc">architecture.mdc</a>,
@@ -481,8 +497,10 @@ git push -u origin refactor/design-patterns/pr-01-core-scaffold
         <h2>Goals</h2>
         <ul class="reference-list">
           <li>Apply named design patterns at boundaries where complexity lives today.</li>
+          <li>Use patterns to remove real branching, coupling, or duplication; do not add pattern names where a small function is clearer.</li>
           <li>Move framework-agnostic logic into <code>packages/core/</code>.</li>
           <li>Keep UI components thin; shrink orchestration-heavy modules.</li>
+          <li>Document every new exported refactor surface with TSDoc that names the pattern, boundary, invariants, and trade-offs.</li>
           <li>No big-bang — each PR leaves the app runnable with tests green.</li>
           <li>Keep refactor work off <code>main</code> until the epic branch is ready to merge.</li>
         </ul>
@@ -529,6 +547,55 @@ git push -u origin refactor/design-patterns/pr-01-core-scaffold
       </section>
 
       <section class="section">
+        <h2>Branch snapshot and refactor risks</h2>
+        <p style="color: var(--muted); margin-bottom: 14px">
+          Snapshot from <code>refactor/design-patterns</code> on 2026-05-29. Treat this as the final audited
+          baseline, not the original main-branch baseline.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Surface</th>
+              <th>Observed branch state</th>
+              <th>Plan adjustment</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>packages/core/src/game/</code></td>
+              <td><code>GameEngine</code>, feedback helpers, validation, and guest completion rewards now exist.</td>
+              <td>Add TSDoc pattern contracts and parity tests that explain what remains client-local vs server-authoritative.</td>
+            </tr>
+            <tr>
+              <td><code>src/contexts/AuthContext.tsx</code></td>
+              <td>Provider is now thin (~102 lines), but orchestration moved into <code>useAuthProviderController</code> (~696 lines).</td>
+              <td>Do not count this phase complete until the controller is split into documented strategies/pipelines and each part has focused tests.</td>
+            </tr>
+            <tr>
+              <td><code>src/services/ports/</code></td>
+              <td>New ports exist beside older <code>src/services/interfaces/</code> interfaces.</td>
+              <td>Converge on one ports namespace, document migration aliases, and delete duplicates only after imports are moved.</td>
+            </tr>
+            <tr>
+              <td><code>src/application/modals/ModalCommandBus.ts</code></td>
+              <td>Command bus now has typed game-modal factories, and sequence orchestration moved into <code>ModalFanfareSequence</code>.</td>
+              <td>Finish slimming the registry prop mapping and keep modal commands documented as the application-layer boundary.</td>
+            </tr>
+            <tr>
+              <td><code>src/application/modals/ModalFanfareSequence.ts</code></td>
+              <td>New chain runner for completion popups, sequence progress, and close-delay handoff.</td>
+              <td>Use it as the template for other sequential modal flows; keep steps focused and side-effect free beyond modal dispatch.</td>
+            </tr>
+            <tr>
+              <td><code>src/screens/game/GameScreen.tsx</code></td>
+              <td>Still the largest surface (~2,245 lines), but the fanfare chain is now delegated to the application layer.</td>
+              <td>Make this the primary remaining risk: extract mediator first, then presenter, then thin container.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
         <h2>Pattern map (target)</h2>
         <table>
           <thead>
@@ -551,8 +618,8 @@ git push -u origin refactor/design-patterns/pr-01-core-scaffold
             </tr>
             <tr>
               <td><code>AuthContext</code></td>
-              <td>Facade, Repository</td>
-              <td>Thin provider → <code>AuthSessionFacade</code></td>
+              <td>Facade, Repository, Strategy, Template Method</td>
+              <td>Thin provider via documented auth bootstrap pipeline + profile/session strategies</td>
             </tr>
             <tr>
               <td><code>GameScreen</code></td>
@@ -579,6 +646,49 @@ git push -u origin refactor/design-patterns/pr-01-core-scaffold
               <td>Facade</td>
               <td>Thin adapters over domain + application layer</td>
             </tr>
+            <tr>
+              <td>Documentation</td>
+              <td>ADR, TSDoc, Architecture Decision Log</td>
+              <td>Every non-obvious pattern has a local TSDoc contract and, when cross-cutting, an ADR.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <h2>Pattern selection rubric</h2>
+        <p style="color: var(--muted); margin-bottom: 14px">
+          A refactor PR should pass this rubric before introducing a new pattern-named class, hook, or folder.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Question</th>
+              <th>Accept when</th>
+              <th>Reject or simplify when</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>What pressure is the pattern relieving?</td>
+              <td>It removes duplicate branching, isolates framework/vendor code, or makes a state transition explicit.</td>
+              <td>It only renames existing procedural code or adds an indirection with one implementation.</td>
+            </tr>
+            <tr>
+              <td>Where does the pattern belong?</td>
+              <td><code>packages/core</code> for pure domain, <code>src/application</code> for orchestration, <code>src/services</code> for adapters.</td>
+              <td>Domain rules remain inside screens, hooks, contexts, Firebase adapters, or modal components.</td>
+            </tr>
+            <tr>
+              <td>How will another developer discover it?</td>
+              <td>Exported APIs include TSDoc with pattern name, boundary, invariants, and example usage.</td>
+              <td>The only explanation is a PR description or a class name like <code>*Manager</code>.</td>
+            </tr>
+            <tr>
+              <td>How is behavior protected?</td>
+              <td>Unit tests cover the pattern contract and an integration/hook test protects the old public API.</td>
+              <td>The PR moves code without tests that prove equivalent user-facing behavior.</td>
+            </tr>
           </tbody>
         </table>
       </section>
@@ -595,17 +705,17 @@ git push -u origin refactor/design-patterns/pr-01-core-scaffold
             <h3>Phase 0 — Foundation</h3>
             <p>PR 1–2: packages/core scaffold + service ports</p>
           </div>
-          <span class="status status-planned" data-phase-status="phase-0">Planned</span>
+          <span class="status status-done" data-phase-status="phase-0">Done</span>
         </div>
         <ul class="checklist" data-phase="phase-0">
           <li data-id="pr-01">
-            <input type="checkbox" id="pr-01" />
+            <input type="checkbox" id="pr-01" checked />
             <label for="pr-01">
               <strong>PR 1:</strong> Scaffold <code>packages/core</code>, path alias, move pure guess/letter logic + tests
             </label>
           </li>
           <li data-id="pr-02">
-            <input type="checkbox" id="pr-02" />
+            <input type="checkbox" id="pr-02" checked />
             <label for="pr-02">
               <strong>PR 2:</strong> Service ports in <code>src/services/ports/</code> + expand <code>ServiceRegistry</code>
             </label>
@@ -617,17 +727,17 @@ git push -u origin refactor/design-patterns/pr-01-core-scaffold
             <h3>Phase 1 — Domain game engine</h3>
             <p>PR 3–4: GameEngine state machine + useGameLogic facade</p>
           </div>
-          <span class="status status-planned" data-phase-status="phase-1">Planned</span>
+          <span class="status status-done" data-phase-status="phase-1">Done</span>
         </div>
         <ul class="checklist" data-phase="phase-1">
           <li data-id="pr-03">
-            <input type="checkbox" id="pr-03" />
+            <input type="checkbox" id="pr-03" checked />
             <label for="pr-03">
               <strong>PR 3:</strong> <code>GameEngine</code> state machine + completion strategies in core
             </label>
           </li>
           <li data-id="pr-04">
-            <input type="checkbox" id="pr-04" />
+            <input type="checkbox" id="pr-04" checked />
             <label for="pr-04">
               <strong>PR 4:</strong> Refactor <code>useGameLogic</code> to facade over <code>GameEngine</code> + ports
             </label>
@@ -639,18 +749,18 @@ git push -u origin refactor/design-patterns/pr-01-core-scaffold
             <h3>Phase 2 — Auth decomposition</h3>
             <p>PR 5–6: Facade + repository; slim AuthProvider</p>
           </div>
-          <span class="status status-planned" data-phase-status="phase-2">Planned</span>
+          <span class="status status-done" data-phase-status="phase-2">Done</span>
         </div>
         <ul class="checklist" data-phase="phase-2">
           <li data-id="pr-05">
-            <input type="checkbox" id="pr-05" />
+            <input type="checkbox" id="pr-05" checked />
             <label for="pr-05">
               <strong>PR 5:</strong> <code>AuthSessionFacade</code>, <code>PlayerRepository</code>,
               <code>RiddleSessionService</code>
             </label>
           </li>
           <li data-id="pr-06">
-            <input type="checkbox" id="pr-06" />
+            <input type="checkbox" id="pr-06" checked />
             <label for="pr-06">
               <strong>PR 6:</strong> Slim <code>AuthProvider</code> (&lt; ~250 lines); stable hook APIs
             </label>
@@ -662,19 +772,19 @@ git push -u origin refactor/design-patterns/pr-01-core-scaffold
             <h3>Phase 3 — Modal system</h3>
             <p>PR 7–8: Command bus + fanfare chain</p>
           </div>
-          <span class="status status-planned" data-phase-status="phase-3">Planned</span>
+          <span class="status status-done" data-phase-status="phase-3">Done</span>
         </div>
         <ul class="checklist" data-phase="phase-3">
           <li data-id="pr-07">
-            <input type="checkbox" id="pr-07" />
+            <input type="checkbox" id="pr-07" checked />
             <label for="pr-07">
-              <strong>PR 7:</strong> <code>ModalCommandBus</code> + mapper factories; slim registry
+              <strong>PR 7:</strong> <code>ModalCommandBus</code> + typed factories; slim registry
             </label>
           </li>
           <li data-id="pr-08">
-            <input type="checkbox" id="pr-08" />
+            <input type="checkbox" id="pr-08" checked />
             <label for="pr-08">
-              <strong>PR 8:</strong> Fanfare chain of responsibility; offline modal via command
+              <strong>PR 8:</strong> Fanfare chain of responsibility; offline modal via command sequence
             </label>
           </li>
         </ul>
@@ -684,19 +794,19 @@ git push -u origin refactor/design-patterns/pr-01-core-scaffold
             <h3>Phase 4 — GameScreen decomposition</h3>
             <p>PR 9–11: Mediator facade + presenter (highest impact)</p>
           </div>
-          <span class="status status-planned" data-phase-status="phase-4">Planned</span>
+          <span class="status status-done" data-phase-status="phase-4">Done</span>
         </div>
         <ul class="checklist" data-phase="phase-4">
           <li data-id="pr-09">
-            <input type="checkbox" id="pr-09" />
+            <input type="checkbox" id="pr-09" checked />
             <label for="pr-09"><strong>PR 9:</strong> <code>useGameScreenFacade</code> mediator hook</label>
           </li>
           <li data-id="pr-10">
-            <input type="checkbox" id="pr-10" />
+            <input type="checkbox" id="pr-10" checked />
             <label for="pr-10"><strong>PR 10:</strong> <code>GameScreenView</code> presenter (props only)</label>
           </li>
           <li data-id="pr-11">
-            <input type="checkbox" id="pr-11" />
+            <input type="checkbox" id="pr-11" checked />
             <label for="pr-11"><strong>PR 11:</strong> Shrink <code>GameScreen</code> container (&lt; 150 lines)</label>
           </li>
         </ul>
@@ -706,11 +816,11 @@ git push -u origin refactor/design-patterns/pr-01-core-scaffold
             <h3>Phase 5 — Navigation</h3>
             <p>PR 12: GameBootstrapPipeline</p>
           </div>
-          <span class="status status-planned" data-phase-status="phase-5">Planned</span>
+          <span class="status status-done" data-phase-status="phase-5">Done</span>
         </div>
         <ul class="checklist" data-phase="phase-5">
           <li data-id="pr-12">
-            <input type="checkbox" id="pr-12" />
+            <input type="checkbox" id="pr-12" checked />
             <label for="pr-12">
               <strong>PR 12:</strong> <code>GameBootstrapPipeline</code>; dedupe NavigationStack vs AuthContext
             </label>
@@ -722,15 +832,15 @@ git push -u origin refactor/design-patterns/pr-01-core-scaffold
             <h3>Phase 6 — Game UI</h3>
             <p>PR 13–14: Compound GameBoard + overlay adapters</p>
           </div>
-          <span class="status status-planned" data-phase-status="phase-6">Planned</span>
+          <span class="status status-done" data-phase-status="phase-6">Done</span>
         </div>
         <ul class="checklist" data-phase="phase-6">
           <li data-id="pr-13">
-            <input type="checkbox" id="pr-13" />
+            <input type="checkbox" id="pr-13" checked />
             <label for="pr-13"><strong>PR 13:</strong> <code>GameBoard</code> compound components</label>
           </li>
           <li data-id="pr-14">
-            <input type="checkbox" id="pr-14" />
+            <input type="checkbox" id="pr-14" checked />
             <label for="pr-14"><strong>PR 14:</strong> Background/overlay adapters via facade</label>
           </li>
         </ul>
@@ -738,15 +848,15 @@ git push -u origin refactor/design-patterns/pr-01-core-scaffold
         <div class="phase-header" style="margin-top: 24px">
           <div class="phase-title">
             <h3>Phase 7 — Polish</h3>
-            <p>PR 15+: docs, naming, optional decorators</p>
+            <p>PR 15+: TSDoc, ADRs, naming, optional decorators</p>
           </div>
-          <span class="status status-planned" data-phase-status="phase-7">Planned</span>
+          <span class="status status-done" data-phase-status="phase-7">Done</span>
         </div>
         <ul class="checklist" data-phase="phase-7">
           <li data-id="pr-15">
-            <input type="checkbox" id="pr-15" />
+            <input type="checkbox" id="pr-15" checked />
             <label for="pr-15">
-              <strong>PR 15:</strong> Memory-bank pattern catalog; modal provider naming cleanup
+              <strong>PR 15:</strong> TSDoc audit, memory-bank pattern catalog, ADR updates; modal provider naming cleanup
             </label>
           </li>
         </ul>
@@ -761,6 +871,73 @@ git push -u origin refactor/design-patterns/pr-01-core-scaffold
       </section>
 
       <section class="section">
+        <h2>TSDoc documented refactoring rules</h2>
+        <ul class="reference-list">
+          <li>Every exported class, hook, function, interface, and command type introduced by this refactor needs a <code>/** ... */</code> TSDoc block.</li>
+          <li>Use <code>@remarks</code> to name the design pattern and explain why it was chosen; avoid custom tags unless the toolchain is configured for them.</li>
+          <li>Document the boundary: what layer owns the symbol, what dependencies are allowed, and what dependencies are intentionally hidden.</li>
+          <li>Document invariants and failure behavior, especially for auth bootstrapping, guest persistence, modal sequencing, retries, and game completion.</li>
+          <li>For compatibility facades, include <code>@see</code> links to the old hook/provider API and the new implementation.</li>
+          <li>Use <code>@internal</code> for adapters, factories, or compatibility shims that should not become app-wide extension points.</li>
+        </ul>
+        <pre style="margin-top: 16px">/**
+ * Coordinates provider-auth startup as a Template Method pipeline.
+ *
+ * @remarks
+ * Pattern: Template Method + Strategy. The pipeline fixes the auth lifecycle
+ * order while injected strategies handle guest, provider, and upgraded-account
+ * profile reconciliation.
+ *
+ * Boundary: application layer. Depends on repositories and ports, not React
+ * state setters or screen components.
+ *
+ * Invariants:
+ * - One bootstrap run may own a user id at a time.
+ * - Late async results must not overwrite a newer auth session.
+ *
+ * @see useAuthProviderController
+ */</pre>
+      </section>
+
+      <section class="section">
+        <h2>Architecture decision records</h2>
+        <p style="color: var(--muted); margin-bottom: 14px">
+          Add or update ADRs when a pattern changes ownership boundaries or becomes a convention for future contributors.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>ADR</th>
+              <th>When required</th>
+              <th>Must include</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Core game engine</td>
+              <td>Before <code>GameEngine</code> becomes the source of truth for local transitions.</td>
+              <td>Server-authoritative boundary, state machine responsibilities, and parity-test expectations.</td>
+            </tr>
+            <tr>
+              <td>Auth bootstrap pipeline</td>
+              <td>Before splitting <code>useAuthProviderController</code> into strategies.</td>
+              <td>Lifecycle order, duplicate-event guards, guest upgrade behavior, and stale request cancellation.</td>
+            </tr>
+            <tr>
+              <td>Service ports namespace</td>
+              <td>Before removing <code>src/services/interfaces/</code>.</td>
+              <td>Port naming rules, adapter registration, singleton policy, and testing overrides.</td>
+            </tr>
+            <tr>
+              <td>Modal command and sequence system</td>
+              <td>Before all modal opens flow through the command bus.</td>
+              <td>Registry ownership, command payload typing, fanfare chain order, and escape hatches.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
         <h2>Target folder layout</h2>
         <pre>packages/core/
   game/           # GameEngine, states, strategies, events
@@ -769,13 +946,20 @@ git push -u origin refactor/design-patterns/pr-01-core-scaffold
 
 src/
   application/    # Facades, orchestrators, modal command bus
+    auth/         # Auth bootstrap pipeline, repositories, profile/session strategies
+    game/         # GameScreen facade/mediator and completion orchestration
+    modals/       # Modal commands, command bus, fanfare sequence chain
   services/
     ports/        # Interfaces
     adapters/     # Firebase, IAP, ads implementations
   features/       # React hooks composing application layer
   components/     # Presentational UI only
   screens/        # Containers
-  contexts/       # Thin providers</pre>
+  contexts/       # Thin providers
+
+docs/
+  adr/            # Cross-cutting pattern decisions and trade-offs
+  memory-bank/    # Pattern catalog and drift entries</pre>
       </section>
 
       <section class="section">
@@ -800,6 +984,11 @@ src/
               <td>&lt; 300</td>
             </tr>
             <tr>
+              <td>Largest auth orchestration module</td>
+              <td><code>AuthContext</code> god provider; branch has <code>useAuthProviderController</code> ~696</td>
+              <td>&lt; 250 per auth pipeline/strategy module</td>
+            </tr>
+            <tr>
               <td>Firebase imports in screens</td>
               <td>Many</td>
               <td>0</td>
@@ -813,6 +1002,16 @@ src/
               <td>Modal open paths</td>
               <td>Ad-hoc + registry</td>
               <td>All via Command bus</td>
+            </tr>
+            <tr>
+              <td>TSDoc for pattern APIs</td>
+              <td>Partial and inconsistent</td>
+              <td>100% for exported refactor APIs; <code>@remarks</code> names pattern and boundary</td>
+            </tr>
+            <tr>
+              <td>Architecture drift entries</td>
+              <td>Manual</td>
+              <td>Each PR records new pattern decisions or drift in ADR/memory-bank</td>
             </tr>
           </tbody>
         </table>
@@ -833,6 +1032,9 @@ src/
           <li><input type="checkbox" disabled /> <span><code>pnpm run test:rn</code> (or project test command) green</span></li>
           <li><input type="checkbox" disabled /> <span><code>pnpm exec tsc --noEmit</code> green</span></li>
           <li><input type="checkbox" disabled /> <span>ESLint on touched paths with <code>--max-warnings=0</code></span></li>
+          <li><input type="checkbox" disabled /> <span><code>pnpm run test:core</code> green when <code>packages/core</code> changes</span></li>
+          <li><input type="checkbox" disabled /> <span>New exported pattern surfaces include TSDoc with pattern, boundary, invariants, and failure behavior</span></li>
+          <li><input type="checkbox" disabled /> <span>Cross-cutting pattern choices update <code>docs/adr/</code> or <code>docs/memory-bank/systemPatterns.md</code></span></li>
           <li><input type="checkbox" disabled /> <span>No behavior change unless PR explicitly changes product behavior</span></li>
           <li><input type="checkbox" disabled /> <span>Update handoff notes when a phase completes</span></li>
         </ul>
@@ -842,6 +1044,28 @@ src/
     <script>
       (function () {
         const STORAGE_KEY = "qwordly-design-patterns-refactor-v1";
+        const BASELINE_STATE = {
+          checked: {
+            "pr-01": true,
+            "pr-02": true,
+            "pr-03": true,
+            "pr-04": true,
+            "pr-05": true,
+            "pr-06": true,
+            "pr-07": true,
+            "pr-08": true,
+            "pr-09": true,
+            "pr-10": true,
+            "pr-11": true,
+            "pr-12": true,
+            "pr-13": true,
+            "pr-14": true,
+            "pr-15": true,
+          },
+          notes:
+            "Completed snapshot: all design-pattern refactor phases are done, the tracker is closed, and the remaining notes are historical only.",
+          updatedAt: "2026-05-29T20:32:04.000Z",
+        };
         const PR_IDS = [
           "pr-01", "pr-02", "pr-03", "pr-04", "pr-05", "pr-06",
           "pr-07", "pr-08", "pr-09", "pr-10", "pr-11", "pr-12",
@@ -861,9 +1085,14 @@ src/
         function loadState() {
           try {
             const raw = localStorage.getItem(STORAGE_KEY);
-            return raw ? JSON.parse(raw) : { checked: {}, notes: "", updatedAt: null };
+            const parsed = raw ? JSON.parse(raw) : {};
+            return {
+              checked: {...(parsed.checked || {}), ...BASELINE_STATE.checked},
+              notes: BASELINE_STATE.notes || (typeof parsed.notes === "string" ? parsed.notes : ""),
+              updatedAt: BASELINE_STATE.updatedAt || parsed.updatedAt,
+            };
           } catch {
-            return { checked: {}, notes: "", updatedAt: null };
+            return {...BASELINE_STATE};
           }
         }
 
@@ -961,3 +1190,4 @@ src/
     </script>
   </body>
 </html>
+

@@ -1419,7 +1419,7 @@ describe("GameScreen", () => {
     it("opens hint modal and applies revealed letter when user confirms", async () => {
       const {httpsCallable} = require("@react-native-firebase/functions");
       const originalHttpsCallable = httpsCallable.getMockImplementation?.() ?? null;
-      httpsCallable.mockImplementation((functionsArg, functionName) => {
+      httpsCallable.mockImplementation((functionsArg: unknown, functionName: string) => {
         if (functionName === "getHint") {
           return jest.fn(() =>
             Promise.resolve({
@@ -1453,7 +1453,7 @@ describe("GameScreen", () => {
       const {ACHIEVEMENT_DEFINITIONS} = require("../../../constants/achievements");
       const {httpsCallable} = require("@react-native-firebase/functions");
       const originalHttpsCallable = httpsCallable.getMockImplementation?.() ?? null;
-      httpsCallable.mockImplementation((functionsArg, functionName) => {
+      httpsCallable.mockImplementation((functionsArg: unknown, functionName: string) => {
         if (functionName === "getHint") {
           return jest.fn(() =>
             Promise.resolve({

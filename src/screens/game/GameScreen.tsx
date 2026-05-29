@@ -76,6 +76,7 @@ import {
 } from "../../utils/settingsStorage";
 import type {Feedback} from "../../hooks/types";
 import type {ModalSequenceProgress} from "../../types/ModalTypes";
+import {runModalFanfareSequence, type ModalSequenceStep} from "../../application/modals/ModalFanfareSequence";
 import OfflineBlockingModal from "../../components/modals/system/OfflineBlockingModal";
 import {useTooltip} from "../../contexts/TooltipContext";
 import type {TooltipId, TooltipTargetRef} from "../../components/tooltips/types";
@@ -89,7 +90,6 @@ import {
   SpendCoinsOutputSchema,
   GetHintInputSchema,
   GetHintOutputSchema,
-  GetHintOutput,
 } from "../../validation/cloudFunctionsSchemas";
 
 interface GuessResult {
@@ -1351,12 +1351,9 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           }
         };
 
-        type CompletionPopup = {
-          open: (sequenceProgress: ModalSequenceProgress, onContinue: () => void | Promise<void>) => void;
-        };
-
-        const completionPopupSequence: CompletionPopup[] = [
+        const completionPopupSequence: ModalSequenceStep[] = [
           ...unlockedAchievementFanfareItems.map((achievement, index) => ({
+            name: `achievement-${achievement.name}`,
             open: (sequenceProgress: ModalSequenceProgress, onContinue: () => void | Promise<void>) => {
               modal.showAchievementUnlockFanfareModal({
                 coinsEarned: index === 0 ? achievementBonusCoins || result.coinsEarned || 0 : 0,
@@ -1371,6 +1368,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           ...(gameMode === "daily" && resolvedDailyStreak
             ? [
                 {
+                  name: "daily-streak",
                   open: (sequenceProgress: ModalSequenceProgress, onContinue: () => void | Promise<void>) => {
                     modal.showStreakIncreaseFanfareModal({
                       streakValue: resolvedDailyStreak,
@@ -1384,6 +1382,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
               ]
             : []),
           {
+            name: "victory",
             open: (sequenceProgress: ModalSequenceProgress, onContinue: () => void | Promise<void>) => {
               modal.showVictoryModal({
                 attempts: resolvedAttempts,
@@ -1404,6 +1403,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           ...(didLevelUp
             ? [
                 {
+                  name: "level-up",
                   open: (sequenceProgress: ModalSequenceProgress, onContinue: () => void | Promise<void>) => {
                     modal.showLevelUpFanfareModal({
                       newLevel: nextLevel,
@@ -1418,43 +1418,22 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
             : []),
         ];
 
-        const showCompletionPopupAtIndex = (index: number): void => {
-          const popup = completionPopupSequence[index];
-          if (!popup) {
-            return;
-          }
-
-          const hasNextPopup = index < completionPopupSequence.length - 1;
-          const sequenceProgress: ModalSequenceProgress = {
-            currentPopupIndex: index + 1,
-            totalPopups: completionPopupSequence.length,
-            hasNextPopup,
-            primaryActionText: hasNextPopup ? (AppStrings.GameScreenAlerts.NEXT_BUTTON ?? "Next") : undefined,
-          };
-
-          popup.open(sequenceProgress, () => {
-            if (hasNextPopup) {
-              void safeDelay(MODAL_CLOSE_DELAY_MS).then(() => {
-                showCompletionPopupAtIndex(index + 1);
-              });
-              return;
+        runModalFanfareSequence(completionPopupSequence, {
+          closeDelayMs: MODAL_CLOSE_DELAY_MS,
+          delay: safeDelay,
+          nextActionText: AppStrings.GameScreenAlerts.NEXT_BUTTON ?? "Next",
+          onComplete: async () => {
+            setIsTransitioningToNextLevel(true);
+            void playDeferredCoinAnimation();
+            await continueToNextLevel();
+            if (unlockedAchievementFanfareItems.length > 0) {
+              void showTooltipOnce("achievementEarned", profileButtonRef);
             }
-
-            void (async () => {
-              setIsTransitioningToNextLevel(true);
-              void playDeferredCoinAnimation();
-              await continueToNextLevel();
-              if (unlockedAchievementFanfareItems.length > 0) {
-                void showTooltipOnce("achievementEarned", profileButtonRef);
-              }
-              if (correctAnswersAfterWin >= FIFTH_CORRECT_ANSWER_COUNT) {
-                void showTooltipOnce("leaderboardFifthCorrectAnswer", profileButtonRef);
-              }
-            })();
-          });
-        };
-
-        showCompletionPopupAtIndex(0);
+            if (correctAnswersAfterWin >= FIFTH_CORRECT_ANSWER_COUNT) {
+              void showTooltipOnce("leaderboardFifthCorrectAnswer", profileButtonRef);
+            }
+          },
+        });
 
         const baseWinCoins = rewardBreakdown?.baseWinCoins ?? (result.coinsEarned || 0);
 
@@ -1730,7 +1709,6 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
               return;
             }
 
-            const totalCoinsAfterHint = Math.max(0, currentUserCoins - hintCost);
             const nextHintRevealedIndices = [...hintRevealedIndicesRef.current, revealIndex];
             setHintRevealedIndicesSynced(nextHintRevealedIndices);
 
