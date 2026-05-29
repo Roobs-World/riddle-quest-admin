@@ -220,24 +220,30 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
               backgroundColor: CREAM,
               borderTopLeftRadius: 24,
               borderTopRightRadius: 24,
-              flex: 1,
-              maxHeight: MODAL_MAX_HEIGHT,
+              height: "100%",
               overflow: "hidden",
               flexDirection: "column",
             }}
           >
-            <View
-              style={{
-                backgroundColor: PURPLE,
-                borderTopLeftRadius: 24,
-                borderTopRightRadius: 24,
-                paddingBottom: SPACING.xl,
-                flexShrink: 0,
-                overflow: "hidden",
-                position: "relative",
-              }}
-              testID="profile-modal-header"
+            <ScrollView
+              testID="profile-modal-scroll"
+              style={{flex: 1, backgroundColor: CREAM}}
+              contentContainerStyle={{paddingHorizontal: SPACING.lg, paddingTop: 0, paddingBottom: SPACING.lg}}
+              showsVerticalScrollIndicator={false}
+              alwaysBounceVertical={true}
+              bounces={true}
             >
+              <View
+                style={{
+                  backgroundColor: PURPLE,
+                  borderTopLeftRadius: 24,
+                  borderTopRightRadius: 24,
+                  paddingBottom: SPACING.xl,
+                  overflow: "hidden",
+                  position: "relative",
+                }}
+                testID="profile-modal-header"
+              >
               {[0, 1, 2, 3, 4].map((i) => (
                 <View
                   key={i}
@@ -401,29 +407,10 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
                   </Text>
                 </View>
               </View>
-            </View>
+              </View>
 
-            <View
-              testID="profile-modal-body"
-              style={{
-                flex: 1,
-                backgroundColor: CREAM,
-                overflow: "hidden",
-                position: "relative",
-              }}
-            >
-              <ScrollView
-                testID="profile-modal-body-scroll"
-                style={{flex: 1}}
-                contentContainerStyle={{
-                  paddingHorizontal: SPACING.lg,
-                  paddingTop: SPACING.xl,
-                  paddingBottom: SPACING.lg,
-                }}
-                showsVerticalScrollIndicator={false}
-                alwaysBounceVertical={true}
-                bounces={true}
-              >
+              {/* Body content follows inside same ScrollView so header scrolls with content */}
+              <View testID="profile-modal-body" style={{backgroundColor: CREAM, position: "relative"}}>
                 {!hasProfileData ? (
                   <View
                     style={{
@@ -658,8 +645,8 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
                 </TouchableOpacity>
 
                 <View style={{height: SPACING.xl, marginBottom: verticalScale(24)}} />
-              </ScrollView>
-            </View>
+              </View>
+            </ScrollView>
           </View>
         </SlideInModalContent>
       </View>

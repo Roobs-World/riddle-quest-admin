@@ -1,4 +1,5 @@
 import React, {createContext, useCallback, useContext, useMemo, useState} from "react";
+import {View} from "react-native";
 import type {TooltipId, TooltipRequest, TargetRect} from "../components/tooltips/types";
 import TooltipOverlay from "../components/tooltips/TooltipOverlay";
 import {hasSeenTooltip, markTooltipSeen} from "../components/tooltips/tooltipStorage";
@@ -37,11 +38,26 @@ export const TooltipProvider: React.FC<{children: React.ReactNode}> = ({children
   const [targetRect, setTargetRect] = useState<TargetRect | null>(null);
 
   const showTooltip = useCallback(async (request: TooltipRequest): Promise<void> => {
-    const measuredTarget = await measureTarget(request);
-    setTargetRect(measuredTarget);
-    setActiveRequest(request);
-    setIsTooltipVisible(true);
+    try {
+      const measuredTarget = await measureTarget(request);
+      setTargetRect(measuredTarget);
+      setActiveRequest(request);
+      setIsTooltipVisible(true);
+    } catch (err) {
+      logger.warn("showTooltip failed", err);
+    }
   }, []);
+
+  const dismissTooltip = useCallback(
+    (id?: TooltipId) => {
+      if (id && activeRequest?.id !== id) {
+        return;
+      }
+
+      setIsTooltipVisible(false);
+    },
+    [activeRequest?.id],
+  );
 
   const showTooltipOnce = useCallback(
     async (request: TooltipRequest): Promise<boolean> => {
@@ -51,27 +67,25 @@ export const TooltipProvider: React.FC<{children: React.ReactNode}> = ({children
           return false;
         }
 
-        await markTooltipSeen(request.id, request.userId);
-        await showTooltip({...request, persist: true});
-        return true;
-      } catch (error) {
-        logger.warn("Tooltip persistence failed; showing tooltip without storage.", error);
         await showTooltip(request);
+
+        // If the tooltip is meant to persist (eg. should not be tracked as seen),
+        // skip marking it. Otherwise mark it as seen so it won't show again.
+        if (!request.persist) {
+          try {
+            await markTooltipSeen(request.id, request.userId);
+          } catch (err) {
+            logger.warn("markTooltipSeen failed", err);
+          }
+        }
+
         return true;
+      } catch (err) {
+        logger.warn("showTooltipOnce failed", err);
+        return false;
       }
     },
     [showTooltip],
-  );
-
-  const dismissTooltip = useCallback(
-    (id?: TooltipId): void => {
-      if (id && activeRequest?.id !== id) {
-        return;
-      }
-
-      setIsTooltipVisible(false);
-    },
-    [activeRequest?.id],
   );
 
   const contextValue = useMemo(
@@ -86,19 +100,21 @@ export const TooltipProvider: React.FC<{children: React.ReactNode}> = ({children
 
   return (
     <TooltipContext.Provider value={contextValue}>
-      {children}
-      {activeRequest ? (
-        <TooltipOverlay
-          visible={isTooltipVisible}
-          targetRect={targetRect}
-          content={activeRequest.content}
-          onDismiss={() => dismissTooltip(activeRequest.id)}
-          onExited={() => {
-            setActiveRequest(null);
-            setTargetRect(null);
-          }}
-        />
-      ) : null}
+      <View style={{flex: 1}}>
+        {children}
+        {activeRequest ? (
+          <TooltipOverlay
+            visible={isTooltipVisible}
+            targetRect={targetRect}
+            content={activeRequest.content}
+            onDismiss={() => dismissTooltip(activeRequest.id)}
+            onExited={() => {
+              setActiveRequest(null);
+              setTargetRect(null);
+            }}
+          />
+        ) : null}
+      </View>
     </TooltipContext.Provider>
   );
 };

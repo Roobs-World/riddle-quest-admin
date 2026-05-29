@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from "react";
+import React, {useEffect, useMemo, useState, useRef} from "react";
 import {Animated, Dimensions, Easing, Pressable, Text, View} from "react-native";
 import {AppStrings} from "../../constants/AppStrings";
 import {COLORS, SPACING, TYPOGRAPHY} from "../../styles";
@@ -16,10 +16,16 @@ const SCREEN_PADDING = 18;
 const TARGET_PADDING = 8;
 const PANEL_WIDTH = Math.min(Dimensions.get("window").width - SCREEN_PADDING * 2, 340);
 const ANIMATION_DURATION_MS = 360;
+const BUTTON_BOUNCE_SCALE = 1.06;
+const BUTTON_BOUNCE_HALF_MS = 175; // half of the total 350ms bounce
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 const TooltipOverlay: React.FC<TooltipOverlayProps> = ({visible, targetRect, content, onDismiss, onExited}) => {
   const [translateY] = useState(() => new Animated.Value(Dimensions.get("window").height + 80));
   const [opacity] = useState(() => new Animated.Value(0));
+  const [buttonScale] = useState(() => new Animated.Value(1));
+  const animationRef = useRef<Animated.CompositeAnimation | null>(null);
 
   useEffect(() => {
     const height = Dimensions.get("window").height;
@@ -45,6 +51,36 @@ const TooltipOverlay: React.FC<TooltipOverlayProps> = ({visible, targetRect, con
       }
     });
   }, [onExited, opacity, translateY, visible]);
+
+  useEffect(() => {
+    if (visible) {
+      const pulse = Animated.sequence([
+        Animated.timing(buttonScale, {
+          toValue: BUTTON_BOUNCE_SCALE,
+          duration: BUTTON_BOUNCE_HALF_MS,
+          easing: Easing.out(Easing.quad),
+          useNativeDriver: true,
+        }),
+        Animated.timing(buttonScale, {
+          toValue: 1,
+          duration: BUTTON_BOUNCE_HALF_MS,
+          easing: Easing.in(Easing.quad),
+          useNativeDriver: true,
+        }),
+      ]);
+
+      animationRef.current = Animated.loop(pulse);
+      animationRef.current.start();
+    } else {
+      // stop any running pulse and reset scale
+      animationRef.current?.stop();
+      Animated.timing(buttonScale, {toValue: 1, duration: 120, useNativeDriver: true}).start();
+    }
+
+    return () => {
+      animationRef.current?.stop();
+    };
+  }, [visible, buttonScale]);
 
   const cutout = useMemo(() => {
     const {width, height} = Dimensions.get("window");
@@ -235,18 +271,21 @@ const TooltipOverlay: React.FC<TooltipOverlayProps> = ({visible, targetRect, con
         >
           {content.body}
         </Text>
-        <Pressable
+        <AnimatedPressable
           onPress={onDismiss}
           accessibilityRole="button"
           accessibilityLabel={content.action}
-          style={{
-            alignSelf: "flex-end",
-            backgroundColor: COLORS.figmaGold,
-            borderRadius: 12,
-            paddingHorizontal: SPACING.md,
-            paddingVertical: SPACING.sm,
-            marginTop: SPACING.md,
-          }}
+          style={[
+            {transform: [{scale: buttonScale}]},
+            {
+              alignSelf: "flex-end",
+              backgroundColor: COLORS.figmaGold,
+              borderRadius: 12,
+              paddingHorizontal: SPACING.md,
+              paddingVertical: SPACING.sm,
+              marginTop: SPACING.md,
+            },
+          ]}
           testID="tooltip-dismiss-button"
         >
           <Text
@@ -258,7 +297,7 @@ const TooltipOverlay: React.FC<TooltipOverlayProps> = ({visible, targetRect, con
           >
             {content.action || AppStrings.CommonAlerts.OK_BUTTON}
           </Text>
-        </Pressable>
+        </AnimatedPressable>
       </Animated.View>
     </View>
   );

@@ -47,11 +47,11 @@ export const createSceneSetup = (): SceneSetup => {
  * @param lights Target list that collects created lights.
  */
 export const addEnhancedLights = (scene: Scene, lights: (DirectionalLight | AmbientLight | PointLight)[]): void => {
-  const ambientLight = new AmbientLight(0x404080, 1.2);
+  const ambientLight = new AmbientLight(0x404080, 2.4);
   scene.add(ambientLight);
   lights.push(ambientLight);
 
-  const sunLight = new DirectionalLight(0xffffff, 4.0);
+  const sunLight = new DirectionalLight(0xffffff, 10.0);
   sunLight.position.set(10, 5, 10);
   sunLight.target.position.set(0, 0, 0);
   sunLight.castShadow = false;
@@ -59,20 +59,20 @@ export const addEnhancedLights = (scene: Scene, lights: (DirectionalLight | Ambi
   scene.add(sunLight.target);
   lights.push(sunLight);
 
-  const sunPointLight = new PointLight(0xffffff, 5.0, 300);
+  const sunPointLight = new PointLight(0xffffff, 14.0, 300);
   sunPointLight.position.set(0, 0, 0);
   sunPointLight.castShadow = false;
   scene.add(sunPointLight);
   lights.push(sunPointLight);
 
-  const rimLight1 = new DirectionalLight(0x8888ff, 0.8);
+  const rimLight1 = new DirectionalLight(0x8888ff, 2.0);
   rimLight1.position.set(-20, 10, -20);
   rimLight1.target.position.set(0, 0, 0);
   scene.add(rimLight1);
   scene.add(rimLight1.target);
   lights.push(rimLight1);
 
-  const rimLight2 = new DirectionalLight(0xff8888, 0.6);
+  const rimLight2 = new DirectionalLight(0xff8888, 1.6);
   rimLight2.position.set(20, -10, 20);
   rimLight2.target.position.set(0, 0, 0);
   scene.add(rimLight2);
@@ -80,7 +80,7 @@ export const addEnhancedLights = (scene: Scene, lights: (DirectionalLight | Ambi
   lights.push(rimLight2);
 
   logger.debug(
-    "Enhanced lighting setup for MeshPhongMaterial: Ambient(1.2), Sun Directional(4.0), Sun Point(5.0), Rim Lights(0.8, 0.6)",
+    "Enhanced lighting setup for MeshPhongMaterial: Ambient(2.4), Sun Directional(10.0), Sun Point(14.0), Rim Lights(2.0, 1.6)",
   );
 };
 
@@ -109,15 +109,15 @@ export const addSunMeshes = (
   const sunMeshes: Mesh[] = [];
   try {
     if (sunGeometry) {
-      const sunScales = [1.0, 1.1, 1.2, 1.3];
+      const sunScales = [1.0, 1.25, 1.5, 1.8];
       for (let i = 0; i < sunGlowTextures.length; i++) {
         const sunMaterialParameters: MeshPhongMaterialParameters = {
           color: 0xffff00,
           emissive: 0xffff00,
-          emissiveIntensity: 1.5,
-          shininess: 100,
+          emissiveIntensity: 5.0,
+          shininess: 150,
           transparent: true,
-          opacity: 0.7 - i * 0.15,
+          opacity: 0.95 - i * 0.2,
           depthWrite: false,
         };
 

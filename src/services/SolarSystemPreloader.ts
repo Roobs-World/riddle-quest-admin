@@ -394,16 +394,20 @@ export class SolarSystemPreloader {
             return new MeshPhongMaterial({
               map: planetTexture,
               color: 0xffffff, // White to show texture properly
-              shininess: 30,
-              specular: 0x111111,
+              shininess: 40,
+              specular: 0x222222,
+              emissive: 0x444444,
+              emissiveIntensity: 1.6,
             });
           } else {
             const fallbackColor = fallbackColors[planet.id as keyof typeof fallbackColors] || 0x888888;
             logger.debug(`🪐 Planet ${planet.id} using fallback color: ${fallbackColor.toString(16)}`);
             return new MeshPhongMaterial({
               color: fallbackColor,
-              shininess: 30,
-              specular: 0x111111,
+              shininess: 40,
+              specular: 0x222222,
+              emissive: 0x333333,
+              emissiveIntensity: 1.0,
             });
           }
         },
@@ -426,15 +430,19 @@ export class SolarSystemPreloader {
               return new MeshPhongMaterial({
                 map: moonTexture,
                 color: 0xffffff, // White to show texture properly
-                shininess: 10,
-                specular: 0x080808,
+                shininess: 12,
+                specular: 0x111111,
+                emissive: 0x222222,
+                emissiveIntensity: 0.6,
               });
             } else {
               logger.debug(`🌙 Moon ${planet.id}_${i} using fallback color: gray`);
               return new MeshPhongMaterial({
                 color: 0xbbbbbb, // Gray fallback for moons
-                shininess: 10,
-                specular: 0x080808,
+                shininess: 12,
+                specular: 0x111111,
+                emissive: 0x111111,
+                emissiveIntensity: 0.4,
               });
             }
           },
@@ -462,23 +470,27 @@ export class SolarSystemPreloader {
               return new MeshPhongMaterial({
                 map: ringTexture,
                 color: 0xffffff, // White to show texture properly
-                shininess: 5,
-                specular: 0x050505,
+                shininess: 8,
+                specular: 0x111111,
                 transparent: true,
-                opacity: 0.8,
-                alphaTest: 0.1,
+                opacity: 0.95,
+                alphaTest: 0.05,
                 side: DoubleSide,
+                emissive: 0x333333,
+                emissiveIntensity: 0.9,
               });
             } else {
               const fallbackColor = fallbackRingColors[planet.id as keyof typeof fallbackRingColors] || 0x999999;
               logger.debug(`💍 Ring ${planet.id} using fallback color: ${fallbackColor.toString(16)}`);
               return new MeshPhongMaterial({
                 color: fallbackColor,
-                shininess: 5,
-                specular: 0x050505,
+                shininess: 8,
+                specular: 0x111111,
                 transparent: true,
-                opacity: 0.6,
+                opacity: 0.85,
                 side: DoubleSide,
+                emissive: 0x222222,
+                emissiveIntensity: 0.6,
               });
             }
           },
