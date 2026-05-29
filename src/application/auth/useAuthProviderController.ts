@@ -1,4 +1,14 @@
-﻿import React, {useState, useEffect, useCallback, useMemo, useRef} from "react";
+/**
+ * @fileoverview Auth bootstrap controller for the provider-auth and guest
+ * session lifecycle.
+ *
+ * The hook coordinates the auth listener, guest persistence, active game
+ * session snapshots, riddle fetching, and player updates through application-
+ * layer facades and repositories. It intentionally keeps React state at the
+ * edge while hiding the orchestration rules that govern stale requests,
+ * duplicate auth events, and local-storage cleanup.
+ */
+import React, {useState, useEffect, useCallback, useMemo, useRef} from "react";
 import {getAuth, signOut, type FirebaseAuthTypes} from "@react-native-firebase/auth";
 import {getApp} from "@react-native-firebase/app";
 import {Player, FirestoreRiddle} from "../../validation/firestoreSchemas";
@@ -174,11 +184,11 @@ export function useAuthProviderController(): AuthProviderControllerValue {
 
   // Effect to set up Firebase auth state listener
   useEffect(() => {
-    logger.debug("ðŸ”§ Setting up Firebase auth listener...");
+    logger.debug("Setting up Firebase auth listener...");
 
     const auth = getAuth(getApp());
     const authHandler = async (user: FirebaseAuthTypes.User | null) => {
-      logger.debug("ðŸ”” Firebase auth state changed. User:", user ? user.uid : "null");
+      logger.debug("Firebase auth state changed. User:", user ? user.uid : "null");
 
       if (user) {
         isGuestSignOutInProgressRef.current = false;
@@ -212,7 +222,7 @@ export function useAuthProviderController(): AuthProviderControllerValue {
         activeAuthBootstrapKeysRef.current.add(authBootstrapKey);
 
         // User is signed in
-        logger.debug("ðŸ” User authenticated, loading user data...");
+        logger.debug("User authenticated, loading user data...");
         setIsAuthenticated(true);
         currentUserIdRef.current = user.uid;
         sentrySetUser(user.uid, user.email, user.displayName);
@@ -221,9 +231,9 @@ export function useAuthProviderController(): AuthProviderControllerValue {
         void analyticsService.logAuthEvent("login");
 
         try {
-          // Anonymous (guest) users get a minimal in-memory player â€” no Firestore read/write needed.
+          // Anonymous (guest) users get a minimal in-memory player - no Firestore read/write needed.
           if (user.isAnonymous) {
-            logger.debug("ðŸ‘¤ Anonymous guest user detected, creating in-memory player data");
+            logger.debug("Anonymous guest user detected, creating in-memory player data");
             setIsRiddlesInitializing(true);
             await RiddleInitializationService.checkAndInitializeRiddles();
             setIsRiddlesInitializing(false);
@@ -258,9 +268,9 @@ export function useAuthProviderController(): AuthProviderControllerValue {
             return;
           }
 
-          // Run riddle initialization and user data load in parallel â€”
+          // Run riddle initialization and user data load in parallel -
           // they are independent and both can start immediately after sign-in.
-          logger.debug("ðŸŽ² Checking riddle database & loading user data in parallel...");
+          logger.debug("Checking riddle database & loading user data in parallel...");
           setIsRiddlesInitializing(true);
           const [, loadedData] = await Promise.all([
             RiddleInitializationService.checkAndInitializeRiddles(),
@@ -268,19 +278,19 @@ export function useAuthProviderController(): AuthProviderControllerValue {
           ]);
           setIsRiddlesInitializing(false);
 
-          logger.debug("ðŸ” Checking for existing user document...");
+          logger.debug("Checking for existing user document...");
           let data = loadedData;
           const providerAvatarUrl = await resolveProviderAvatarUrl(user);
 
           // If no user document exists, create one (new user signup)
           if (!data) {
             void analyticsService.logAuthEvent("signup");
-            logger.debug("ðŸ†• No user document found, creating new user document for:", user.uid);
-            logger.debug("ðŸ“§ Firebase user email:", user.email || "(null/empty)");
-            logger.debug("ðŸ“§ Email type:", typeof user.email);
-            logger.debug("ðŸ“§ Email length:", user.email ? user.email.length : 0);
-            logger.debug("ðŸ‘¤ Using display name:", user.displayName || "undefined");
-            logger.debug("ðŸ” Full user object debug:", {
+            logger.debug("No user document found, creating new user document for:", user.uid);
+            logger.debug("Firebase user email:", user.email || "(null/empty)");
+            logger.debug("Email type:", typeof user.email);
+            logger.debug("Email length:", user.email ? user.email.length : 0);
+            logger.debug("Using display name:", user.displayName || "undefined");
+            logger.debug("Full user object debug:", {
               uid: user.uid,
               email: user.email,
               emailVerified: user.emailVerified,
@@ -306,20 +316,20 @@ export function useAuthProviderController(): AuthProviderControllerValue {
                 providerAvatarUrl,
                 shouldSeedFromGuest ? (guestSeed ?? undefined) : undefined,
               );
-              logger.debug("âœ… New user document created successfully");
-              logger.debug("ðŸ“„ Created user data:", JSON.stringify(data, null, 2));
+              logger.debug("New user document created successfully");
+              logger.debug("Created user data:", JSON.stringify(data, null, 2));
 
               if (shouldSeedFromGuest) {
                 await clearGuestProfileFromLocal();
-                logger.debug("ðŸ§³ Migrated guest progress into new account document");
+                logger.debug("Migrated guest progress into new account document");
               }
             } catch (createError) {
-              logger.error("âŒ Error creating user document:", createError);
+              logger.error("Error creating user document:", createError);
               captureException(createError);
               throw createError;
             }
           } else {
-            logger.debug("âœ… Existing user document found");
+            logger.debug("Existing user document found");
           }
 
           const userDocUpdates: Partial<Player> = {};
@@ -351,10 +361,10 @@ export function useAuthProviderController(): AuthProviderControllerValue {
           if (Object.keys(userDocUpdates).length > 0) {
             await playerRepository.updateUserDocument(user.uid, data, userDocUpdates);
             data = {...data, ...userDocUpdates};
-            logger.debug("ðŸ‘¤ Synced provider profile fields:", userDocUpdates);
+            logger.debug("Synced provider profile fields:", userDocUpdates);
           }
 
-          logger.debug("ðŸ“Š User data loaded successfully:", !!data);
+          logger.debug("User data loaded successfully:", !!data);
           const brokenStreak = getBrokenDailyStreakValue(data);
           const normalizedData =
             brokenStreak > 0
@@ -390,19 +400,19 @@ export function useAuthProviderController(): AuthProviderControllerValue {
 
           // Fetch riddle based on Firebase-backed completion status at launch:
           // daily by default, classic only when today's daily is already complete.
-          logger.debug("ðŸ§© Loading riddle for initial game mode:", initialMode);
+          logger.debug("Loading riddle for initial game mode:", initialMode);
           await fetchCurrentRiddle(normalizedData, initialMode, completedToday);
-          logger.debug("âœ… Riddle loading completed");
+          logger.debug("Riddle loading completed");
 
           // Only set loading to false after everything is complete
-          logger.debug("ðŸ Setting isLoading to false - initialization complete");
+          logger.debug("Setting isLoading to false - initialization complete");
           if (upgradedFromAnonymous) {
             await clearAllLocalData();
           }
           setIsLoading(false);
         } catch (error) {
-          logger.error("âŒ Error loading user data or riddle:", error);
-          logger.error("âŒ Error details:", {
+          logger.error("Error loading user data or riddle:", error);
+          logger.error("Error details:", {
             code:
               typeof error === "object" && error !== null && "code" in error
                 ? (error as {code?: unknown}).code
@@ -429,7 +439,7 @@ export function useAuthProviderController(): AuthProviderControllerValue {
         activeAuthBootstrapKeysRef.current.clear();
         lastAuthEventRef.current = {uid: null, isAnonymous: null, at: Date.now()};
         // User is signed out - no need to load riddles
-        logger.debug("ðŸšª User signed out, clearing data");
+        logger.debug("User signed out, clearing data");
         sentryClearUser();
         addBreadcrumb("auth", "User signed out");
         void analyticsService.logAuthEvent("logout");
@@ -447,11 +457,11 @@ export function useAuthProviderController(): AuthProviderControllerValue {
         setIsRiddlesInitializing(false);
         await clearAllLocalData();
         previousAuthSnapshotRef.current = {uid: null, isAnonymous: null};
-        logger.debug("ðŸ Setting isLoading to false");
+        logger.debug("Setting isLoading to false");
         setIsLoading(false);
       }
 
-      logger.debug("âœ… Auth state processing completed");
+      logger.debug("Auth state processing completed");
     };
 
     const authWithUserChanged = auth as typeof auth & {
@@ -463,7 +473,7 @@ export function useAuthProviderController(): AuthProviderControllerValue {
         ? authWithUserChanged.onUserChanged(authHandler)
         : auth.onAuthStateChanged(authHandler);
 
-    logger.debug("ðŸŽ¯ Firebase auth listener set up successfully");
+    logger.debug("Firebase auth listener set up successfully");
 
     // Unsubscribe on unmount
     return subscriber;
@@ -633,7 +643,7 @@ export function useAuthProviderController(): AuthProviderControllerValue {
     }
   }, [clearAllLocalData]);
 
-  // Three narrow memos â€” each slice only re-triggers consumers that depend on it.
+  // Three narrow memos - each slice only re-triggers consumers that depend on it.
   // sessionValue  changes only on auth state / loading changes.
   // playerValue   changes only when player data or its updaters change.
   // riddleValue   changes only when riddle / game-mode state changes.
@@ -683,7 +693,7 @@ export function useAuthProviderController(): AuthProviderControllerValue {
     ],
   );
 
-  // Merged value for useAuth() â€” consumers that call useAuth() still re-render
+  // Merged value for useAuth() - consumers that call useAuth() still re-render
   // when any slice changes, but targeted hooks (useAuthSession / usePlayer /
   // useRiddle) can be adopted incrementally for finer-grained subscriptions.
   const contextValue = useMemo(

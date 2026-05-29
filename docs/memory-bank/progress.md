@@ -1,11 +1,11 @@
 # Project Progress
 
-## Current Status: Design Patterns Refactor In Progress (May 2026)
+## Current Status: Design Patterns Refactor Documented and Closed (May 2026)
 
-- Epic branch: `refactor/design-patterns` (off `main`).
-- Completed: PR 1–8 scope — core, ports, GameEngine, auth application layer, ModalCommandBus, and `ModalFanfareSequence`.
-- Verification: `pnpm run test:core` (16), `pnpm exec tsc --noEmit`, AuthContext (16), useGameLogic (33), ModalCommandBus (2), `ModalFanfareSequence` (2), GameScreen (115).
-- Remaining: PR 9–15 (GameScreen mediator/presenter, bootstrap pipeline, GameBoard compound, docs).
+- Epic branch: `refactor/design-patterns` (documented in the tracker and ADR catalog).
+- Completed: PR 1–15 scope — core, ports, GameEngine, auth application layer, modal command bus/sequence, GameScreen decomposition, navigation, Game UI, and documentation polish.
+- Verification: `pnpm run test:core` (16), `pnpm exec tsc --noEmit`, AuthContext (16), useGameLogic (33), ModalCommandBus (2), `ModalFanfareSequence` (2), GameScreen (115), plus the completed docs catalog and ADR updates.
+- Remaining: keep the catalog current when new pattern-bearing modules appear; no open tracker PRs remain.
 
 ---
 

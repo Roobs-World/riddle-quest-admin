@@ -12,7 +12,20 @@ import {captureException} from "../../utils/sentry";
 import {buildFirestoreUserUpdates, GUEST_PROGRESS_STORAGE_KEY} from "./playerPersistence";
 
 /**
- * Repository for player documents (Firestore + guest AsyncStorage).
+ * Repository for player persistence across Firestore and guest local storage.
+ *
+ * @remarks
+ * Pattern: Repository + Adapter. The repository hides the split persistence
+ * strategy used by guest accounts and provider-auth accounts while preserving a
+ * single API for loading, saving, and clearing player records.
+ *
+ * Boundary: auth application layer. It may use AsyncStorage and Firestore
+ * service helpers, but callers should not care which backend stores the data.
+ *
+ * Invariants:
+ * - Guest snapshots are merged onto a fresh guest baseline before use.
+ * - Firestore writes are sanitized before they cross the persistence boundary.
+ * - Clearing local data is best-effort and never throws into UI code.
  */
 export class PlayerRepository {
   async loadGuestProfile(uid: string): Promise<Player | null> {

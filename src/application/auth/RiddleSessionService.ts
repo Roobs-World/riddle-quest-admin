@@ -17,6 +17,19 @@ export interface RiddleSessionSink {
 
 /**
  * Loads riddles for the active game mode with polling while initialization runs.
+ *
+ * @remarks
+ * Pattern: Strategy + polling orchestrator. The service chooses the riddle
+ * source based on the current mode and completion policy while delegating the
+ * availability rule to {@link AuthSessionFacade}.
+ *
+ * Boundary: application auth layer. It may call Firestore loaders and mutate a
+ * sink interface, but it should not reach into screen state or modal logic.
+ *
+ * Invariants:
+ * - Stale requests never win over newer auth state.
+ * - Daily mode falls back to classic mode when no daily riddle is available.
+ * - Sink updates happen only after stale-request checks pass.
  */
 export class RiddleSessionService {
   constructor(private readonly sessionFacade: AuthSessionFacade) {}

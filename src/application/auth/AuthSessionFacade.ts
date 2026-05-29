@@ -13,7 +13,23 @@ import {logger} from "../../utils/logger";
 import type {GameMode} from "./authTypes";
 
 /**
- * Facade for auth-session policies: daily completion, streak breaks, active session snapshots.
+ * Auth-session facade for guest and provider bootstrap policies.
+ *
+ * @remarks
+ * Pattern: Facade. This module concentrates the daily-completion lookup,
+ * streak-break calculation, and active-session snapshot persistence behind a
+ * single application-layer API so callers do not need to know which parts are
+ * local storage and which parts come from Firebase.
+ *
+ * Boundary: application auth layer. The facade may depend on AsyncStorage,
+ * Firebase call helpers, and session-bootstrap utilities, but it must not
+ * reach into React state or screen-level UI concerns.
+ *
+ * Invariants:
+ * - Guest completion checks stay local and deterministic.
+ * - Provider completion checks are read-only and fail closed.
+ * - Active session snapshots only hydrate when the stored user and UTC date
+ *   still match the current request.
  */
 export class AuthSessionFacade {
   async hasCompletedDailyChallengeToday(player: Player | null): Promise<boolean> {

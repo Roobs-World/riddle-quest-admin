@@ -199,3 +199,24 @@ profanityFilter.ts, firestoreSchemas.ts, openaiService.ts, profile.ts, iapReceip
 - **Signal over noise**
   - Comments MUST focus on intent, behavior, invariants, and external contracts rather than restating obvious implementation details.
   - Documentation-only changes MUST NOT alter runtime behavior and do not require new tests, but any behavioral code changes MUST follow the usual TDD workflow.
+
+## Current Pattern Catalog
+
+The repo’s current pattern-heavy modules are documented in:
+
+- `docs/adr/0002-pattern-catalog-and-documentation-contract.md`
+- `src/application/auth/AuthSessionFacade.ts`
+- `src/application/auth/PlayerRepository.ts`
+- `src/application/auth/RiddleSessionService.ts`
+- `src/application/auth/useAuthProviderController.ts`
+- `src/application/modals/ModalCommandBus.ts`
+- `src/application/modals/ModalFanfareSequence.ts`
+- `src/services/AnalyticsService.ts`
+- `src/services/GameEventBus.ts`
+
+### Documentation rule of thumb
+
+- If the module coordinates multiple collaborators, give it `@fileoverview`.
+- If the symbol is part of a pattern boundary, document the pattern, boundary, invariants, and failure behavior.
+- If a pattern changes shared ownership, record the change in `docs/adr/`.
+- If a folder accumulates multiple related modules, add a short README or memory-bank note so the pattern is visible without source spelunking.

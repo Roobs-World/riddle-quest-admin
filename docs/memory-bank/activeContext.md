@@ -4,12 +4,13 @@
 
 ### Design patterns epic (branch `refactor/design-patterns`)
 
-- Tracker: `docs/design-patterns-refactor-plan.html` (15 PRs, 8 phases).
-- **Done on epic branch:** Phases 0–3 (PR 1–8 partial):
-  - Phase 0–1: `packages/core`, service ports, `GameEngine`, `useGameLogic` facade.
-  - Phase 2: `AuthSessionFacade`, `PlayerRepository`, `RiddleSessionService`; `AuthContext.tsx` slim provider (~100 lines) + `useAuthProviderController`.
-  - Phase 3 (started): `ModalCommandBus` + `gameModalActions` wired through command bus; offline via `info` command.
-- **Next:** Phase 3 PR 8 fanfare chain; Phase 4 `GameScreen` decomposition (PR 9–11); Phase 5+ navigation/UI polish.
+- Tracker: `docs/design-patterns-refactor-plan.html` (closed, all 15 PRs checked).
+- Canonical pattern catalog: `docs/adr/0002-pattern-catalog-and-documentation-contract.md`.
+- Documented pattern modules:
+  - `AuthSessionFacade`, `PlayerRepository`, `RiddleSessionService`, and `useAuthProviderController`.
+  - `ModalCommandBus` and `ModalFanfareSequence`.
+  - `AnalyticsService` and `GameEventBus`.
+- Current focus: keep the catalog and module docs synchronized whenever a new pattern-bearing surface lands.
 
 ---
 
