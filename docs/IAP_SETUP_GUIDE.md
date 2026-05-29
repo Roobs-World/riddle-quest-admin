@@ -15,6 +15,17 @@ This repo is configured to sell 6 coin packs (consumable, one-time purchases):
 | Huge  | 3400  | `com.roobsworld.riddlequest.coinpack5` |
 | Mega  | 7000  | `com.roobsworld.riddlequest.coinpack6` |
 
+Recommended USD ladder for App Store Connect and Google Play Console:
+
+| Pack  | USD  |
+| ----- | ---- |
+| Tiny  | $0.99 |
+| Small | $1.99 |
+| Mid   | $2.99 |
+| Large | $4.99 |
+| Huge  | $9.99 |
+| Mega  | $19.99 |
+
 App identifiers:
 
 - Android package name: `com.roobsworld.riddlequest` (from `app.config.js`)
@@ -110,5 +121,6 @@ The script upserts the following documents under `productPricing/{productId}`:
 - `com.roobsworld.riddlequest.coinpack4` (1600 coins)
 - `com.roobsworld.riddlequest.coinpack5` (3400 coins)
 - `com.roobsworld.riddlequest.coinpack6` (7000 coins)
+- Firestore `regionalPrices` should mirror the USD ladder above for fallback display.
 
 After seeding, verify the CoinShop in the app shows the server-provided catalog and pricing.

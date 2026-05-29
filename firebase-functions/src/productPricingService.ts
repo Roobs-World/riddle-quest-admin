@@ -34,6 +34,8 @@ export interface ProductPricing {
   sortOrder: number;
   regionalPrices: RegionalPrice[];
   specialOffer?: SpecialOffer;
+  featuredOrder?: number;
+  featuredBadge?: string;
 }
 
 export interface PurchaseAnalyticRecord {
@@ -49,18 +51,94 @@ export interface PurchaseAnalyticRecord {
   discountApplied?: number;
 }
 
+const DEFAULT_PRODUCT_PRICING: ProductPricing[] = [
+  {
+    productId: "com.roobsworld.riddlequest.coinpack1",
+    productKey: "COIN_PACK_TINY",
+    name: "Starter Pack",
+    description: "A small refill for a quick hint or two.",
+    coins: 250,
+    isActive: true,
+    sortOrder: 1,
+    regionalPrices: [{amount: 0.99, currency: "USD", displayPrice: "$0.99", symbol: "$"}],
+  },
+  {
+    productId: "com.roobsworld.riddlequest.coinpack2",
+    productKey: "COIN_PACK_SMALL",
+    name: "Small Pack",
+    description: "A balanced refill for regular play.",
+    coins: 550,
+    isActive: true,
+    sortOrder: 2,
+    regionalPrices: [{amount: 1.99, currency: "USD", displayPrice: "$1.99", symbol: "$"}],
+  },
+  {
+    productId: "com.roobsworld.riddlequest.coinpack3",
+    productKey: "COIN_PACK_MID",
+    name: "Mid Pack",
+    description: "A solid boost for a longer session.",
+    coins: 900,
+    isActive: true,
+    sortOrder: 3,
+    regionalPrices: [{amount: 2.99, currency: "USD", displayPrice: "$2.99", symbol: "$"}],
+  },
+  {
+    productId: "com.roobsworld.riddlequest.coinpack4",
+    productKey: "COIN_PACK_LARGE",
+    name: "Large Pack",
+    description: "A popular option for extra flexibility.",
+    coins: 1600,
+    isActive: true,
+    sortOrder: 4,
+    featuredOrder: 2,
+    featuredBadge: "POPULAR",
+    regionalPrices: [{amount: 4.99, currency: "USD", displayPrice: "$4.99", symbol: "$"}],
+  },
+  {
+    productId: "com.roobsworld.riddlequest.coinpack5",
+    productKey: "COIN_PACK_HUGE",
+    name: "Huge Pack",
+    description: "Strong value for players who keep coming back.",
+    coins: 3400,
+    isActive: true,
+    sortOrder: 5,
+    regionalPrices: [{amount: 9.99, currency: "USD", displayPrice: "$9.99", symbol: "$"}],
+  },
+  {
+    productId: "com.roobsworld.riddlequest.coinpack6",
+    productKey: "COIN_PACK_MEGA",
+    name: "Mega Pack",
+    description: "The best-value bundle for the long haul.",
+    coins: 7000,
+    isActive: true,
+    sortOrder: 6,
+    featuredOrder: 3,
+    featuredBadge: "BEST VALUE",
+    regionalPrices: [{amount: 19.99, currency: "USD", displayPrice: "$19.99", symbol: "$"}],
+  },
+];
+
+function cloneDefaultProducts(): ProductPricing[] {
+  return DEFAULT_PRODUCT_PRICING.map((product) => ({
+    ...product,
+    regionalPrices: product.regionalPrices.map((price) => ({...price})),
+  }));
+}
+
 /**
  * Fetches a single product's pricing config from Firestore.
  */
 export async function getProductPricing(productId: string): Promise<ProductPricing | undefined> {
   try {
     const doc = await getDb().collection("productPricing").doc(productId).get();
-    if (!doc.exists) return undefined;
+    if (!doc.exists) {
+      return DEFAULT_PRODUCT_PRICING.find((product) => product.productId === productId);
+    }
     return doc.data() as ProductPricing;
   } catch (err) {
     functions.logger.error(`Failed to fetch productPricing for ${productId}:`, err);
     captureException(err);
-    return undefined;
+    return DEFAULT_PRODUCT_PRICING.find((product) => product.productId === productId);
   }
 }
 
@@ -74,11 +152,12 @@ export async function getAllActiveProducts(): Promise<ProductPricing[]> {
       .where("isActive", "==", true)
       .orderBy("sortOrder")
       .get();
-    return snapshot.docs.map((doc) => doc.data() as ProductPricing);
+    const products = snapshot.docs.map((doc) => doc.data() as ProductPricing);
+    return products.length > 0 ? products : cloneDefaultProducts();
   } catch (err) {
     functions.logger.error("Failed to fetch active products:", err);
     captureException(err);
-    return [];
+    return cloneDefaultProducts();
   }
 }
 

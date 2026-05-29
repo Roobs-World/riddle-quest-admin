@@ -54,7 +54,7 @@ jest.mock("../../utils/logger", () => ({
 }));
 
 jest.mock("../../constants/game", () => ({
-  HINT_COST_COINS: 25,
+  HINT_COST_COINS: 50,
   getXpLevel: jest.fn(() => ({level: 2})),
 }));
 

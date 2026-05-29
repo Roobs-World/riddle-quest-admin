@@ -57,10 +57,33 @@ async function run() {
       return false;
     });
 
+    const expectedUsdPrices = {
+      "com.roobsworld.riddlequest.coinpack1": "$0.99",
+      "com.roobsworld.riddlequest.coinpack2": "$1.99",
+      "com.roobsworld.riddlequest.coinpack3": "$2.99",
+      "com.roobsworld.riddlequest.coinpack4": "$4.99",
+      "com.roobsworld.riddlequest.coinpack5": "$9.99",
+      "com.roobsworld.riddlequest.coinpack6": "$19.99",
+    };
+
+    const invalidPrices = docs.filter((d) => {
+      const usdPrice = Array.isArray(d.data?.regionalPrices)
+        ? d.data.regionalPrices.find((price) => price.currency === "USD")
+        : undefined;
+      return usdPrice?.displayPrice !== expectedUsdPrices[d.id];
+    });
+
     if (invalid.length) {
       console.error(
         "Some docs failed basic schema checks:",
         invalid.map((d) => d.id),
+      );
+      ok = false;
+    }
+    if (invalidPrices.length) {
+      console.error(
+        "Some docs have unexpected USD fallback prices:",
+        invalidPrices.map((d) => d.id),
       );
       ok = false;
     }
@@ -70,6 +93,7 @@ async function run() {
     console.log("  missing:", missing.length ? missing : "none");
     console.log("  extra:", extra.length ? extra : "none");
     console.log("  invalidDocs:", invalid.length ? invalid.map((d) => d.id) : "none");
+    console.log("  invalidPriceDocs:", invalidPrices.length ? invalidPrices.map((d) => d.id) : "none");
 
     process.exit(ok ? 0 : 2);
   } catch (err) {

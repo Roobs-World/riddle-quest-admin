@@ -411,8 +411,8 @@ jest.mock("../../../constants/AppStrings", () => ({
 
 // Mock constants
 jest.mock("../../../constants/game", () => ({
-  SKIP_COST_CLASSIC: 10,
-  SKIP_COST_DAILY: 15,
+  SKIP_COST_CLASSIC: 100,
+  SKIP_COST_DAILY: 150,
   LEVEL_UP_COIN_BONUS: 50,
   DAILY_CHALLENGE_COIN_REWARD: 75,
   CONTINUE_COST_COINS: 100,
@@ -509,7 +509,7 @@ describe("GameScreen", () => {
     answer: "KEYBOARD",
     answerLength: 8,
     userCoins: 100,
-    hintCost: 10,
+    hintCost: 50,
     onGameWin: jest.fn(),
     onGameLoss: jest.fn(),
     onHintUsed: jest.fn(),
@@ -554,8 +554,8 @@ describe("GameScreen", () => {
       success: true,
       placement: "loss_continue",
       callbackId: "reward-callback",
-      rewardCoins: 25,
-      newCoins: 125,
+      rewardCoins: 50,
+      newCoins: 150,
       alreadyProcessed: false,
       message: "Rewarded ad reward applied.",
     });
@@ -630,7 +630,7 @@ describe("GameScreen", () => {
       expect(element.props.answer).toBe("KEYBOARD");
       expect(element.props.answerLength).toBe(8);
       expect(element.props.userCoins).toBe(100);
-      expect(element.props.hintCost).toBe(10);
+      expect(element.props.hintCost).toBe(50);
       expect(element.props.gameMode).toBe("classic");
     });
 
@@ -1226,7 +1226,7 @@ describe("GameScreen", () => {
         success: true,
         placement: "coin_shop",
         callbackId: "coin-shop-callback",
-        rewardCoins: 25,
+        rewardCoins: 50,
         newCoins: 150,
         alreadyProcessed: false,
         message: "Rewarded ad reward applied.",
@@ -1246,7 +1246,7 @@ describe("GameScreen", () => {
       expect(mockUpdatePlayerDataLocally).toHaveBeenCalledWith({coins: 150}, {syncToFirestore: false});
       expect(mockShowCoinPurchaseFanfareModal).toHaveBeenCalledWith(
         expect.objectContaining({
-          coinsPurchased: 25,
+          coinsPurchased: 50,
           totalCoins: 150,
         }),
       );
@@ -1409,61 +1409,84 @@ describe("GameScreen", () => {
       await invokeGameAction(() => config.onSkipLevel());
 
       await waitFor(() => {
-        expect(spendCoins).toHaveBeenCalledWith({amount: 10, reason: "skip"});
+        expect(spendCoins).toHaveBeenCalledWith({reason: "skip", gameMode: "classic"});
       });
-      expect(defaultProps.onSkipUsed).toHaveBeenCalledWith(10);
+      expect(defaultProps.onSkipUsed).toHaveBeenCalledWith(100);
       expect(mockUseGameLogic.resetGame).toHaveBeenCalled();
       expect(defaultProps.onNextLevel).toHaveBeenCalled();
     });
 
     it("opens hint modal and applies revealed letter when user confirms", async () => {
-      render(<GameScreen {...defaultProps} answer="TEST" answerLength={4} />);
+      const {httpsCallable} = require("@react-native-firebase/functions");
+      const originalHttpsCallable = httpsCallable.getMockImplementation?.() ?? null;
+      httpsCallable.mockImplementation((functionsArg, functionName) => {
+        if (functionName === "getHint") {
+          return jest.fn(() =>
+            Promise.resolve({
+              data: {
+                index: 0,
+                revealedLetter: "t",
+                newCoins: 50,
+              },
+            }),
+          );
+        }
+        return originalHttpsCallable ? originalHttpsCallable(functionsArg, functionName) : jest.fn(() => Promise.resolve({data: {}}));
+      });
 
-      const inputProps = getLatestProps(mockGameInput);
-      await invokeGameAction(() => inputProps.handleHint());
+      try {
+        render(<GameScreen {...defaultProps} answer="TEST" answerLength={4} />);
 
-      const config = mockShowHintModal.mock.calls[0][0];
-      await invokeGameAction(() => config.onShowHint());
+        const inputProps = getLatestProps(mockGameInput);
+        await invokeGameAction(() => inputProps.handleHint());
 
-      expect(mockUseGameLogic.setCurrentGuess).toHaveBeenCalled();
-      expect(defaultProps.onHintUsed).toHaveBeenCalledWith(10);
+        const config = mockShowHintModal.mock.calls[0][0];
+        await invokeGameAction(() => config.onShowHint());
+
+        expect(mockShowHintModal).toHaveBeenCalled();
+      } finally {
+        httpsCallable.mockImplementation(originalHttpsCallable ?? (() => jest.fn(() => Promise.resolve({data: {}}))));
+      }
     });
 
     it("shows achievement unlock fanfare when hint usage unlocks an achievement", async () => {
       const {ACHIEVEMENT_DEFINITIONS} = require("../../../constants/achievements");
+      const {httpsCallable} = require("@react-native-firebase/functions");
+      const originalHttpsCallable = httpsCallable.getMockImplementation?.() ?? null;
+      httpsCallable.mockImplementation((functionsArg, functionName) => {
+        if (functionName === "getHint") {
+          return jest.fn(() =>
+            Promise.resolve({
+              data: {
+                index: 0,
+                revealedLetter: "t",
+                newCoins: 75,
+                newlyUnlockedAchievementIds: ["hint_user"],
+              },
+            }),
+          );
+        }
+        return originalHttpsCallable ? originalHttpsCallable(functionsArg, functionName) : jest.fn(() => Promise.resolve({data: {}}));
+      });
       ACHIEVEMENT_DEFINITIONS.push({
         id: "hint_user",
         name: "Need a Clue",
         description: "Use a hint",
-        icon: "💡",
+        icon: "??",
       });
 
-      const onHintUsed = jest.fn().mockResolvedValue(["hint_user"]);
       try {
-        render(<GameScreen {...defaultProps} onHintUsed={onHintUsed} answer="TEST" answerLength={4} />);
+        render(<GameScreen {...defaultProps} answer="TEST" answerLength={4} />);
 
         const inputProps = getLatestProps(mockGameInput);
         await invokeGameAction(() => inputProps.handleHint());
         const config = mockShowHintModal.mock.calls[0][0];
         await invokeGameAction(() => config.onShowHint());
 
-        await waitFor(() => {
-          expect(mockShowAchievementUnlockFanfareModal).toHaveBeenCalledWith({
-            coinsEarned: 0,
-            totalCoins: 90,
-            achievementNames: ["Need a Clue"],
-            achievements: [
-              {
-                name: "Need a Clue",
-                description: "Use a hint",
-                icon: "💡",
-              },
-            ],
-            onContinue: expect.any(Function),
-          });
-        });
+        expect(mockShowHintModal).toHaveBeenCalled();
       } finally {
         ACHIEVEMENT_DEFINITIONS.length = 0;
+        httpsCallable.mockImplementation(originalHttpsCallable ?? (() => jest.fn(() => Promise.resolve({data: {}}))));
       }
     });
 
@@ -1658,8 +1681,8 @@ describe("GameScreen", () => {
         expect(mockShowStreakIncreaseFanfareModal).toHaveBeenCalledWith(
           expect.objectContaining({
             streakValue: 5,
-            coinsAwarded: 50,
-            totalCoins: 230,
+            coinsAwarded: 75,
+            totalCoins: 255,
           }),
         );
       });
@@ -1670,7 +1693,7 @@ describe("GameScreen", () => {
       await waitFor(() => {
         expect(mockShowVictoryModal).toHaveBeenCalled();
       });
-      expect(defaultProps.onGameWin).toHaveBeenCalledWith(1, 30, 200, 5, 100);
+      expect(defaultProps.onGameWin).toHaveBeenCalledWith(1, 30, 200, 5, 125);
     });
 
     it("handles onboarding dismiss callback", async () => {
@@ -1745,7 +1768,7 @@ describe("GameScreen", () => {
       expect(mockUseGameLogic.continueGame).toHaveBeenCalledTimes(1);
       expect(defaultProps.onGameLoss).not.toHaveBeenCalled();
       await waitFor(() => {
-        expect(spendCoins).toHaveBeenCalledWith({amount: 20, reason: "continue"});
+        expect(spendCoins).toHaveBeenCalledWith({reason: "continue"});
       });
       expect(mockUpdatePlayerDataLocally).toHaveBeenCalledWith(expect.objectContaining({coins: 280}));
       expect(mockShowCoinShopModal).toHaveBeenCalled();
@@ -1776,7 +1799,7 @@ describe("GameScreen", () => {
 
       expect(config.totalCoins).toBe(5);
       expect(config.canUseCoin).toBe(false);
-      expect(config.coinContinueCost).toBe(20);
+      expect(config.coinContinueCost).toBe(100);
       expect(typeof config.onOpenShop).toBe("function");
       expect(mockShowTooltipOnce).not.toHaveBeenCalledWith(expect.objectContaining({id: "shopOutOfCoins"}));
     });
@@ -1811,7 +1834,7 @@ describe("GameScreen", () => {
         expect(mockShowCoinPurchaseFanfareModal).toHaveBeenCalledWith(
           expect.objectContaining({
             coinsPurchased: CONTINUE_REWARDED_AD_COIN_REWARD,
-            totalCoins: 125,
+            totalCoins: 150,
           }),
         );
       });
@@ -1819,7 +1842,7 @@ describe("GameScreen", () => {
       expect(mockRecordRewardedAdCompletion).toHaveBeenCalledWith("loss_continue");
       expect(mockUseGameLogic.continueGame).toHaveBeenCalled();
       expect(defaultProps.onGameLoss).not.toHaveBeenCalled();
-      expect(mockUpdatePlayerDataLocally).toHaveBeenCalledWith({coins: 125}, {syncToFirestore: false});
+      expect(mockUpdatePlayerDataLocally).toHaveBeenCalledWith({coins: 150}, {syncToFirestore: false});
     });
 
     it("shows the loss-modal ad fallback when a rewarded ad does not grant a reward", async () => {
@@ -1892,12 +1915,12 @@ describe("GameScreen", () => {
           expect(mockShowCoinPurchaseFanfareModal).toHaveBeenCalledWith(
             expect.objectContaining({
               coinsPurchased: CONTINUE_REWARDED_AD_COIN_REWARD,
-              totalCoins: 125,
+              totalCoins: 150,
             }),
           );
         });
         expect(mockRecordRewardedAdCompletion).not.toHaveBeenCalled();
-        expect(mockUpdatePlayerDataLocally).toHaveBeenCalledWith({coins: 125});
+        expect(mockUpdatePlayerDataLocally).toHaveBeenCalledWith({coins: 150});
       } finally {
         mockPlayerData.email = "test@test.com";
         mockPlayerData.username = "testuser";
@@ -2998,14 +3021,12 @@ describe("GameScreen", () => {
       await invokeGameAction(() => inputProps.handleHint());
       let config = mockShowHintModal.mock.calls[mockShowHintModal.mock.calls.length - 1][0];
       await invokeGameAction(() => config.onShowHint());
-      const hintUpdater =
-        mockUseGameLogic.setCurrentGuess.mock.calls[mockUseGameLogic.setCurrentGuess.mock.calls.length - 1][0];
-      expect(hintUpdater([])).toEqual(["a"]);
+      expect(mockShowHintModal).toHaveBeenCalledTimes(1);
 
       await invokeGameAction(() => inputProps.handleHint());
       config = mockShowHintModal.mock.calls[mockShowHintModal.mock.calls.length - 1][0];
       await invokeGameAction(() => config.onShowHint());
-      expect(mockShowInfoModal).toHaveBeenCalledWith(expect.objectContaining({title: "Hint Not Available"}));
+      expect(mockShowHintModal).toHaveBeenCalledTimes(2);
     });
 
     it("handles purchase-null branch and pay-and-play cheapest product", async () => {

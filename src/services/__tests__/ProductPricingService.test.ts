@@ -333,12 +333,13 @@ describe("ProductPricingService", () => {
       nowSpy.mockRestore();
     });
 
-    it("returns empty array on first fetch failure with no cache", async () => {
+    it("returns the default catalog on first fetch failure with no cache", async () => {
       const err = new Error("first fetch failed");
       (getDocs as jest.Mock).mockRejectedValueOnce(err);
 
       const result = await ProductPricingService.getActiveProducts();
-      expect(result).toEqual([]);
+      expect(result).toHaveLength(6);
+      expect(result[0].productId).toBe("com.roobsworld.riddlequest.coinpack1");
     });
   });
 });

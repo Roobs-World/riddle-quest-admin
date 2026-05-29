@@ -125,6 +125,16 @@ export const CompleteGameOutputSchema = z.object({
   newLevel: z.number().int().positive().optional(),
   leveledUp: z.boolean().optional(),
   newWinStreak: z.number().int().nonnegative().optional(),
+  rewardBreakdown: z
+    .object({
+      baseWinCoins: z.number().nonnegative(),
+      levelUpBonus: z.number().nonnegative(),
+      dailyStreakBonus: z.number().nonnegative(),
+      achievementBonus: z.number().nonnegative(),
+      totalAwarded: z.number().nonnegative(),
+      newBalance: z.number().nonnegative(),
+    })
+    .optional(),
 });
 
 export type CompleteGameInput = z.infer<typeof CompleteGameInputSchema>;
@@ -145,8 +155,9 @@ export const SkipRiddleOutputSchema = z.object({
 
 // spendCoins
 export const SpendCoinsInputSchema = z.object({
-  amount: z.number().positive("Amount must be a positive number"),
   reason: z.enum(["hint", "skip", "continue"]),
+  gameMode: z.enum(["classic", "challenge"]).optional(),
+  amount: z.number().positive("Amount must be a positive number").optional(),
 });
 
 export const SpendCoinsOutputSchema = z.object({

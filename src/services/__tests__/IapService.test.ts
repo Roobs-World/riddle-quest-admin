@@ -146,27 +146,30 @@ describe("IapService", () => {
     it("should have correct product details", () => {
       expect(COIN_PRODUCT_DETAILS.COIN_PACK_TINY).toEqual({
         id: "com.roobsworld.riddlequest.coinpack1",
-        coins: 50,
+        coins: 250,
+        label: "STARTER",
       });
       expect(COIN_PRODUCT_DETAILS.COIN_PACK_SMALL).toEqual({
         id: "com.roobsworld.riddlequest.coinpack2",
-        coins: 100,
+        coins: 550,
       });
       expect(COIN_PRODUCT_DETAILS.COIN_PACK_MID).toEqual({
         id: "com.roobsworld.riddlequest.coinpack3",
-        coins: 250,
+        coins: 900,
       });
       expect(COIN_PRODUCT_DETAILS.COIN_PACK_LARGE).toEqual({
         id: "com.roobsworld.riddlequest.coinpack4",
-        coins: 500,
+        coins: 1600,
+        label: "POPULAR",
       });
       expect(COIN_PRODUCT_DETAILS.COIN_PACK_HUGE).toEqual({
         id: "com.roobsworld.riddlequest.coinpack5",
-        coins: 1000,
+        coins: 3400,
       });
       expect(COIN_PRODUCT_DETAILS.COIN_PACK_MEGA).toEqual({
         id: "com.roobsworld.riddlequest.coinpack6",
-        coins: 2000,
+        coins: 7000,
+        label: "BEST VALUE",
       });
     });
 
@@ -731,21 +734,21 @@ describe("IapService", () => {
 
   describe("getCoinsForProduct", () => {
     it("should return correct coins for valid product ID", () => {
-      expect(IapService.getCoinsForProduct("com.roobsworld.riddlequest.coinpack1")).toBe(50);
-      expect(IapService.getCoinsForProduct("com.roobsworld.riddlequest.coinpack2")).toBe(100);
-      expect(IapService.getCoinsForProduct("com.roobsworld.riddlequest.coinpack3")).toBe(250);
-      expect(IapService.getCoinsForProduct("com.roobsworld.riddlequest.coinpack4")).toBe(500);
-      expect(IapService.getCoinsForProduct("com.roobsworld.riddlequest.coinpack5")).toBe(1000);
-      expect(IapService.getCoinsForProduct("com.roobsworld.riddlequest.coinpack6")).toBe(2000);
+      expect(IapService.getCoinsForProduct("com.roobsworld.riddlequest.coinpack1")).toBe(250);
+      expect(IapService.getCoinsForProduct("com.roobsworld.riddlequest.coinpack2")).toBe(550);
+      expect(IapService.getCoinsForProduct("com.roobsworld.riddlequest.coinpack3")).toBe(900);
+      expect(IapService.getCoinsForProduct("com.roobsworld.riddlequest.coinpack4")).toBe(1600);
+      expect(IapService.getCoinsForProduct("com.roobsworld.riddlequest.coinpack5")).toBe(3400);
+      expect(IapService.getCoinsForProduct("com.roobsworld.riddlequest.coinpack6")).toBe(7000);
     });
 
     it("should return coins for live Firestore coin pack aliases", () => {
-      expect(IapService.getCoinsForProduct("com.qwordly.coinpack1")).toBe(50);
-      expect(IapService.getCoinsForProduct("com.qwordly.coinpack2")).toBe(100);
-      expect(IapService.getCoinsForProduct("com.qwordly.coinpack3")).toBe(250);
-      expect(IapService.getCoinsForProduct("com.qwordly.coinpack4")).toBe(500);
-      expect(IapService.getCoinsForProduct("com.qwordly.coinpack5")).toBe(1000);
-      expect(IapService.getCoinsForProduct("com.qwordly.coinpack6")).toBe(2000);
+      expect(IapService.getCoinsForProduct("com.qwordly.coinpack1")).toBe(250);
+      expect(IapService.getCoinsForProduct("com.qwordly.coinpack2")).toBe(550);
+      expect(IapService.getCoinsForProduct("com.qwordly.coinpack3")).toBe(900);
+      expect(IapService.getCoinsForProduct("com.qwordly.coinpack4")).toBe(1600);
+      expect(IapService.getCoinsForProduct("com.qwordly.coinpack5")).toBe(3400);
+      expect(IapService.getCoinsForProduct("com.qwordly.coinpack6")).toBe(7000);
     });
 
     it("should return undefined for invalid product ID", () => {
@@ -817,7 +820,7 @@ describe("IapService", () => {
     });
 
     it("should handle product lookup and purchase", async () => {
-      const products: RNIap.Product[] = [{id: "com.roobsworld.riddlequest.coinpack2", price: "$0.99"} as any];
+      const products: RNIap.Product[] = [{id: "com.roobsworld.riddlequest.coinpack2", price: "$1.99"} as any];
       mockGetProducts.mockResolvedValue(products);
       mockRequestPurchase.mockResolvedValue(mockPurchase);
       mockCallableFunction.mockResolvedValue({data: {success: true}});
@@ -826,7 +829,7 @@ describe("IapService", () => {
       const coins = IapService.getCoinsForProduct(fetchedProducts[0].id);
 
       expect(fetchedProducts).toEqual(products);
-      expect(coins).toBe(100);
+      expect(coins).toBe(550);
 
       await expect(IapService.purchaseProduct(fetchedProducts[0].id)).resolves.toEqual(
         expect.objectContaining({...mockPurchase}),

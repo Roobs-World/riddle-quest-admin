@@ -209,6 +209,7 @@ const useGameLogic = ({riddleId, answer, gameMode, isGuestMode = false}: UseGame
         let scoreEarned = 0;
         let newlyUnlockedAchievementIds: string[] = [];
         let newWinStreak: number | undefined;
+        let rewardBreakdown: CompleteGameOutput["rewardBreakdown"];
         if (isGuestMode) {
           const rewards = computeGuestCompletionRewards(gameMode, engineOutcome.attempts, {
             challengeCoinReward: DAILY_CHALLENGE_COIN_REWARD,
@@ -228,6 +229,7 @@ const useGameLogic = ({riddleId, answer, gameMode, isGuestMode = false}: UseGame
             scoreEarned = data.scoreEarned ?? data.xpEarned ?? 0;
             newlyUnlockedAchievementIds = data.newlyUnlockedAchievementIds ?? [];
             newWinStreak = data.newWinStreak;
+            rewardBreakdown = data.rewardBreakdown;
             gameEventBus.emit<import("../services/GameEventBus").GameCompletedEvent>({
               type: "GAME_COMPLETED",
               outcome: "won",
@@ -248,6 +250,7 @@ const useGameLogic = ({riddleId, answer, gameMode, isGuestMode = false}: UseGame
           correctAnswer: answer,
           newlyUnlockedAchievementIds,
           newWinStreak,
+          ...(rewardBreakdown ? {rewardBreakdown} : {}),
         };
       }
 

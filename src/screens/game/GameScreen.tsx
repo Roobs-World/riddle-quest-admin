@@ -98,6 +98,14 @@ interface GuessResult {
   correctAnswer?: string;
   coinsEarned?: number;
   scoreEarned?: number;
+  rewardBreakdown?: {
+    baseWinCoins?: number;
+    levelUpBonus?: number;
+    dailyStreakBonus?: number;
+    achievementBonus?: number;
+    totalAwarded?: number;
+    newBalance?: number;
+  };
   canOfferRewardedAd?: boolean;
   canOfferCoinContinue?: boolean;
   attemptsRemaining?: number;
@@ -942,20 +950,23 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
     try {
       if (!isGuestMode) {
-        await runWithServerLoading(() =>
+        const spendResult = await runWithServerLoading(() =>
           callValidatedFunction(
             "spendCoins",
             {
-              amount: CONTINUE_COST_COINS,
               reason: "continue",
             },
             SpendCoinsInputSchema,
             SpendCoinsOutputSchema,
           ),
         );
-      }
 
-      if (playerData) {
+        if (playerData) {
+          updatePlayerDataLocally({
+            coins: spendResult.newCoins,
+          });
+        }
+      } else if (playerData) {
         updatePlayerDataLocally({
           coins: Math.max(0, (playerData.coins ?? 0) - CONTINUE_COST_COINS),
         });
@@ -1295,16 +1306,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
         const didLevelUp = earnedXp > 0 && nextLevel > previousLevel;
         // Prefer server-provided breakdown when available; fall back to
         // client-side constants for older deployments or error cases.
-        const rewardBreakdown = (result as any)?.rewardBreakdown as
-          | {
-              baseWinCoins?: number;
-              levelUpBonus?: number;
-              dailyStreakBonus?: number;
-              achievementBonus?: number;
-              totalAwarded?: number;
-              newBalance?: number;
-            }
-          | undefined;
+        const rewardBreakdown = result.rewardBreakdown;
 
         const levelUpBonusCoins = rewardBreakdown?.levelUpBonus ?? (didLevelUp ? LEVEL_UP_COIN_BONUS : 0);
         const resolvedDailyStreak =
@@ -1454,9 +1456,11 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
 
         showCompletionPopupAtIndex(0);
 
+        const baseWinCoins = rewardBreakdown?.baseWinCoins ?? (result.coinsEarned || 0);
+
         onGameWin(
           resolvedAttempts,
-          result.coinsEarned || 0,
+          baseWinCoins,
           result.scoreEarned || 0,
           resolvedDailyStreak,
           totalBonusCoinsAwarded,
@@ -1946,8 +1950,8 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
               callValidatedFunction(
                 "spendCoins",
                 {
-                  amount: skipCost,
                   reason: "skip",
+                  gameMode: gameMode === "daily" ? "challenge" : "classic",
                 },
                 SpendCoinsInputSchema,
                 SpendCoinsOutputSchema,
