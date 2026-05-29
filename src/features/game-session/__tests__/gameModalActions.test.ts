@@ -2,7 +2,7 @@ import {createGameModalActions} from "../gameModalActions";
 
 describe("createGameModalActions", () => {
   const createModalMock = () => ({
-    showInfoModal: jest.fn(),
+    openModal: jest.fn(() => "modal-id"),
   });
 
   it("shows spend coins error modal", () => {
@@ -11,7 +11,7 @@ describe("createGameModalActions", () => {
 
     actions.showSpendCoinsError();
 
-    expect(modal.showInfoModal).toHaveBeenCalledWith({
+    expect(modal.openModal).toHaveBeenCalledWith("info", {
       title: "Error",
       message: "Could not spend coins. Please try again.",
     });
@@ -25,15 +25,15 @@ describe("createGameModalActions", () => {
     actions.showAdNotReady();
     actions.showAdError();
 
-    expect(modal.showInfoModal).toHaveBeenNthCalledWith(1, {
+    expect(modal.openModal).toHaveBeenNthCalledWith(1, "info", {
       title: "No Products Available",
       message: "Please try again later.",
     });
-    expect(modal.showInfoModal).toHaveBeenNthCalledWith(2, {
+    expect(modal.openModal).toHaveBeenNthCalledWith(2, "info", {
       title: "Ad Not Ready",
       message: "The rewarded ad couldn't be loaded at this time. Please try again later.",
     });
-    expect(modal.showInfoModal).toHaveBeenNthCalledWith(3, {
+    expect(modal.openModal).toHaveBeenNthCalledWith(3, "info", {
       title: "Ad Error",
       message: "An error occurred while trying to show the rewarded ad.",
     });

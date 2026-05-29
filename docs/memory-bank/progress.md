@@ -3,9 +3,9 @@
 ## Current Status: Design Patterns Refactor Started (May 2026)
 
 - Epic branch: `refactor/design-patterns` (off `main`).
-- Completed: PR 1–4 scope — `packages/core`, service ports, `GameEngine`, `useGameLogic` facade.
-- Verification: `pnpm run test:core` (16 tests), `pnpm exec tsc --noEmit`, `useGameLogic` suite (33 tests).
-- Remaining: PR 5–15 per `docs/design-patterns-refactor-plan.html`.
+- Completed: PR 1–7 scope — core, ports, GameEngine, auth application layer, ModalCommandBus.
+- Verification: `pnpm run test:core` (16), `pnpm exec tsc --noEmit`, AuthContext (16), useGameLogic (33), ModalCommandBus (2).
+- Remaining: PR 8–15 (fanfare chain, GameScreen split, bootstrap pipeline, GameBoard compound, docs).
 
 ---
 

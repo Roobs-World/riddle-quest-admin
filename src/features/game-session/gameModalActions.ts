@@ -2,6 +2,7 @@
  * @fileoverview Centralized modal action creators used by game-session flows.
  */
 import useModal from "../../hooks/useModal";
+import {createModalCommandBus} from "../../application/modals/ModalCommandBus";
 
 /**
  * Action creators for common modal scenarios in gameplay orchestration.
@@ -29,30 +30,38 @@ export type GameModalActions = ReturnType<typeof createGameModalActions>;
  * @param modal Modal API returned from `useModal`.
  * @returns A set of convenience actions for common game modal scenarios.
  */
-export const createGameModalActions = (modal: ReturnType<typeof useModal>): GameModalActionSet => ({
-  showSpendCoinsError: () =>
-    modal.showInfoModal({
-      title: "Error",
-      message: "Could not spend coins. Please try again.",
-    }),
+export const createGameModalActions = (modal: ReturnType<typeof useModal>): GameModalActionSet => {
+  const commandBus = createModalCommandBus(modal.openModal);
 
-  showNoProductsAvailable: () =>
-    modal.showInfoModal({
-      title: "No Products Available",
-      message: "Please try again later.",
-    }),
+  return {
+    showSpendCoinsError: () =>
+      commandBus.dispatch({
+        type: "info",
+        title: "Error",
+        message: "Could not spend coins. Please try again.",
+      }),
 
-  showAdNotReady: () =>
-    modal.showInfoModal({
-      title: "Ad Not Ready",
-      message: "The rewarded ad couldn't be loaded at this time. Please try again later.",
-    }),
+    showNoProductsAvailable: () =>
+      commandBus.dispatch({
+        type: "info",
+        title: "No Products Available",
+        message: "Please try again later.",
+      }),
 
-  showAdError: () =>
-    modal.showInfoModal({
-      title: "Ad Error",
-      message: "An error occurred while trying to show the rewarded ad.",
-    }),
-});
+    showAdNotReady: () =>
+      commandBus.dispatch({
+        type: "info",
+        title: "Ad Not Ready",
+        message: "The rewarded ad couldn't be loaded at this time. Please try again later.",
+      }),
+
+    showAdError: () =>
+      commandBus.dispatch({
+        type: "info",
+        title: "Ad Error",
+        message: "An error occurred while trying to show the rewarded ad.",
+      }),
+  };
+};
 
 export default createGameModalActions;
