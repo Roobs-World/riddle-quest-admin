@@ -4,10 +4,10 @@ Source: [docs/design-issues.html](docs/design-issues.html)
 
 Workstream status: in progress and owned by the current docs backlog pass on 2026-05-30. Keep this file and the generated task index synchronized with the latest evidence notes.
 
-- Current ownership note: this issue doc remains locked to the current Codex thread until the tracker refresh lands.
+- Current ownership note: this issue doc is actively worked by the current Codex thread. It remains open for coordination; sync before parallel edits so tracker notes stay consistent.
 - 2026-05-30 refresh: the design follow-ups remain open. No new emulator evidence was captured in this pass; the next live work is still the loss-modal replay, rewarded-ad validation, Android gating checks, and Coin Purchase UX confirmation.
-- Work-in-progress lock: this file remains in the active docs pass and should not be parallel-edited until the tracker refresh lands.
-- 2026-05-30 continuation: the current thread is still actively working this file, so the in-progress lock should remain visible to other agents.
+- Work-in-progress marker: this file remains in the active docs pass and should be coordinated before parallel edits until the tracker refresh lands.
+- 2026-05-30 continuation: the current thread is still actively working this file, so the in-progress ownership marker should remain visible to other agents.
 - 2026-05-30 tracker refresh: the loss-modal stranded-board / Next-action defect is already documented as fixed in DSI-021, the Coin Purchase UX surface is already covered by the responsive and matrix trackers, and the Android gating/back-flow proof is already evidenced by DSI-020/021/024. The remaining open work in this issue is the rewarded-ad provider-auth replay.
 
 Checklist:

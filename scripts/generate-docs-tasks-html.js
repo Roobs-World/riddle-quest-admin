@@ -627,9 +627,9 @@ const renderHtml = (tasks) => {
           and other structured task rows in the docs folder.
         </p>
         <p class="meta">
-          <strong>Work-in-progress ownership marker:</strong> current docs backlog pass owns the open issue files and generated task
-          index. Please avoid parallel edits to the files listed in <code>docs/memory-bank/activeContext.md</code>
-          until the refresh lands.
+          <strong>Work-in-progress ownership marker:</strong> current docs backlog pass is actively updating the open issue files
+          and generated task index. Coordinate before parallel edits to the files listed in
+          <code>docs/memory-bank/activeContext.md</code> so progress notes stay consistent.
         </p>
         <p class="meta">
           Active work files:

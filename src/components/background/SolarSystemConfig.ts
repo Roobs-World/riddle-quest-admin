@@ -34,6 +34,8 @@ import moonDTexture from "../../../assets/3d/tex_moon_d.png";
 import moonFTexture from "../../../assets/3d/tex_moon_f.png";
 import moonGTexture from "../../../assets/3d/tex_moon_g.png";
 import moonHTexture from "../../../assets/3d/tex_moon_h.png";
+import ringATexture from "../../../assets/3d/tex_ring_a.png";
+import ringBTexture from "../../../assets/3d/tex_ring_b.png";
 
 /**
  * Moon configuration interface defining properties for moons
@@ -56,6 +58,22 @@ interface MoonConfig {
 }
 
 /**
+ * Ring configuration interface defining properties for textured rings
+ * that render around selected planets.
+ *
+ * @property {number} innerRadius - Inner radius of the ring geometry
+ * @property {number} outerRadius - Outer radius of the ring geometry
+ * @property {number} textureModule - Asset module for the ring texture
+ * @property {number} tiltRadians - X-axis tilt applied to the ring plane
+ */
+interface RingConfig {
+  innerRadius: number;
+  outerRadius: number;
+  textureModule: number;
+  tiltRadians: number;
+}
+
+/**
  * Planet configuration interface defining properties for planets
  * that orbit the sun in the solar system.
  *
@@ -69,6 +87,7 @@ interface MoonConfig {
  * @property {number} startAngle - Initial orbital position in radians
  * @property {number} yPosition - Y-axis position for 3D depth effect
  * @property {MoonConfig[]} moons - Array of moons orbiting this planet
+ * @property {RingConfig} ring - Optional textured ring rendered around this planet
  */
 interface PlanetConfig {
   name: string;
@@ -82,6 +101,7 @@ interface PlanetConfig {
   startAngle: number;
   yPosition: number;
   moons: MoonConfig[];
+  ring?: RingConfig;
 }
 
 /**
@@ -147,6 +167,12 @@ export const SOLAR_SYSTEM_CONFIG: PlanetConfig[] = [
         startAngle: 0,
       },
     ],
+    ring: {
+      innerRadius: 4.5,
+      outerRadius: 6.1,
+      textureModule: ringATexture,
+      tiltRadians: Math.PI / 2.45,
+    },
   },
   {
     name: "Mars",
@@ -169,6 +195,12 @@ export const SOLAR_SYSTEM_CONFIG: PlanetConfig[] = [
         startAngle: 0,
       },
     ],
+    ring: {
+      innerRadius: 11.5,
+      outerRadius: 16.5,
+      textureModule: ringBTexture,
+      tiltRadians: Math.PI / 2.25,
+    },
   },
 
   // Gas giants - increased distances for better spacing

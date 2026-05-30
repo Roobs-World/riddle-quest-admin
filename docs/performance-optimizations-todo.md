@@ -13,10 +13,10 @@
 - Audit complete: 2026-05-30
 - Benchmark owner: Frontend performance
 - Automation owner: CI / RN tooling
-- Current ownership note: this checklist is actively owned by the current docs thread and should not be parallel-edited until the tracker refresh lands.
+- Current ownership note: this checklist is actively worked by the current docs thread. It remains open for coordination; please sync before parallel edits so the tracker remains consistent.
 - 2026-05-30 refresh: the audit is still complete and the remaining benchmark/automation work is now explicitly owned. Real launch and bundle-size measurements were captured in the RN baseline file this pass, and the new bundle smoke gate passed with a 10,726,291-byte Android Hermes bundle and 42,007ms export elapsed time.
 - 2026-05-30 continuation: the RN 0.85 baseline template is now initialized at `docs/memory-bank/rn-0.85-baseline.md` and now includes measured startup and bundle values plus the still-pending memory/render entries.
-- Work-in-progress lock: this checklist remains under the active docs pass until the generated tracker is refreshed.
+- Work-in-progress marker: this checklist remains under the active docs pass until the generated tracker is refreshed.
 
 ## Measurement targets
 

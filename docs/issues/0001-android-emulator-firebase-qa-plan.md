@@ -4,10 +4,10 @@ Description:
 
 - Source: [docs/android-emulator-firebase-qa-plan.html](docs/android-emulator-firebase-qa-plan.html)
 - Goal: Collect the remaining QA evidence and close TODOs listed in the Android emulator QA plan.
-- Workstream status: in progress and owned by the current docs backlog pass on 2026-05-30. Do not parallel-edit this file until the tracker refresh lands.
+- Workstream status: in progress and actively worked by the current docs backlog pass on 2026-05-30. This file remains open for coordination; sync before parallel edits so tracker notes stay consistent.
 - Current ownership note: this issue doc is owned by the current Codex thread while the docs backlog pass is active.
 - 2026-05-30 refresh: no new emulator evidence was added in this pass. The current ownership signal is in `docs/tasks.html` and the memory-bank files; continue provider-auth snapshot, backend delta, billing, ad replay, and account-closure evidence when the required credentials or devices are available.
-- 2026-05-30 continuation: this file remains actively worked by the current thread, so keep the lock in place until the next evidence refresh is published.
+- 2026-05-30 continuation: this file remains actively worked by the current thread; keep the ownership marker visible until the next evidence refresh is published.
 - 2026-05-30 tracker refresh: several sub-slices are already evidenced in companion trackers, including guest logout/restart, support handoff, credits handoff, legal URL reachability, and modal coverage. This plan still keeps the provider-auth snapshots/deltas, billing/ad proof, and account-deletion/provider-legal closure open until they are individually verified.
 - 2026-05-30 tracker refresh: the modal coverage slice is now already evidenced in the companion responsive/matrix trackers, so the remaining open work here is the provider-auth, billing/ad, and account-closure evidence.
 

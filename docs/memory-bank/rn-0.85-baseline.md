@@ -1,13 +1,13 @@
 # RN 0.85 Baseline
 
-Generated: 2026-05-30T15:27:28+01:00
+Generated: 2026-05-30T14:34:50.790Z
 Last measured: 2026-05-30
 
 ## Environment
 - Node: v22.22.2
 - PNPM: 10.33.0
 - Expo CLI: 56.1.12
-- Git commit: e20e4014
+- Git commit: 9620b516
 
 ## Runtime Versions
 - react-native: 0.85.3
@@ -39,4 +39,5 @@ Last measured: 2026-05-30
 - Frame stats came from `emulator-tests/logs/perf-baseline-20260530/framestats.txt`.
 - Android bundle size came from `pnpm run perf:bundle-smoke` and the exported `_expo/static/js/android/*.hbc` artifact.
 - The bundle-size smoke gate is available as `pnpm run perf:bundle-smoke`.
+- The baseline metadata refresh is available as `pnpm run baseline:report`; it preserves measured baseline and notes sections.
 - Keep filling this file with measured values from CI/device profiling runs as new data lands.

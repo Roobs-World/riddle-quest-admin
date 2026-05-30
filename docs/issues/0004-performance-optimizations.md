@@ -6,6 +6,7 @@ Workstream status: complete for this tracker slice on 2026-05-30. The checklist 
 
 - 2026-05-30 refresh: audit remains complete. Live startup, memory, render, and Android bundle-size measurements were captured in this pass, and the bundle smoke gate passed.
 - 2026-05-30 continuation: the RN 0.85 baseline template was updated with current device evidence and the remaining perf work is now documented as complete.
+- 2026-05-30 maintenance: `scripts/baseline-report.js` now preserves the measured baseline, pending profiling list, and notes sections instead of overwriting them with a placeholder template.
 
 Checklist:
 
@@ -25,6 +26,7 @@ Owners and milestones:
 - Automation work owner: CI / RN tooling
 - Baseline template: `docs/memory-bank/rn-0.85-baseline.md`
 - Automated smoke added: `pnpm run perf:bundle-smoke`
+- Baseline report maintenance: `pnpm run baseline:report` can refresh environment/runtime versions without erasing measured values.
 
 Target measurements:
 

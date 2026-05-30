@@ -3,7 +3,7 @@
 ## Current Status: Docs Task Continuation In Progress (May 2026)
 
 - The active docs task slice is now owned by Codex and tracked in `docs/tasks.html`.
-- Work-in-progress ownership marker: the current Codex thread owns the open docs backlog pass, the generated task index, and the issue docs listed in `docs/memory-bank/activeContext.md`. Please avoid parallel edits to the tracked files until the refresh lands.
+- Work-in-progress ownership marker: the current Codex thread is actively working the open docs backlog pass, the generated task index, and the issue docs listed in `docs/memory-bank/activeContext.md`. These files remain open for coordination; sync before parallel edits so progress notes stay consistent.
 - Current owned files for this pass: `docs/issues/0001-android-emulator-firebase-qa-plan.md`, `docs/issues/0002-design-issues.md`, `docs/issues/0004-performance-optimizations.md`, `docs/issues/0006-ads-rewarded-implementation.md`, `docs/design-issues.html`, `docs/legal-todo.html`, `docs/memory-bank/rn-0.85-baseline.md`, and `docs/tasks.html`.
 - The current pass is focused on keeping the coordination docs up to date while working through the remaining open issue-register items and verification gaps.
 - 2026-05-30 pass status: still active. The ownership marker remains in place, and the open docs backlog should be treated as in progress until the next tracker refresh lands.
@@ -12,16 +12,18 @@
 - Progress updates should land in this file and `docs/memory-bank/activeContext.md` first so other agents can see the latest state before touching the task sources.
 - 2026-05-30 refresh: no new evidence was added in this pass. The open backlog remains owned by this thread, and the next live verification steps are still gated by credentials, production-like IDs, or runner access.
 - 2026-05-30 tracker refresh: the docs task index has now been regenerated from the current docs sources so the open count matches the latest issue and checklist state.
-- Current continuation on 2026-05-30 is also tightening the 3D integration guidance docs so their next-step sections carry explicit owners, blockers, and not-to-parallel-edit notes before the dashboard is regenerated again.
+- Current continuation on 2026-05-30 is also tightening the 3D integration guidance docs so their next-step sections carry explicit owners, blockers, and coordination notes before the dashboard is regenerated again.
 - Current continuation on 2026-05-30 also initialized the RN 0.85 baseline template at `docs/memory-bank/rn-0.85-baseline.md`, added an ownership marker to the file itself, and left pending measurement placeholders for the remaining performance work.
 - Current continuation on 2026-05-30 also added the `perf:bundle-smoke` automated bundle-size gate, verified it passes, and filled the RN baseline with measured cold/warm launch waits plus the Android Hermes bundle size (`10,726,291` bytes) and bundle-smoke export time (`42,007ms`); memory and render-jank profiling are still pending.
 - Current continuation on 2026-05-30 also validated the current design-pattern source slice with `pnpm exec tsc --noEmit --pretty false` plus targeted Jest coverage for `ModalFanfareSequence`, `Keyboard`, `ModalSequenceBreadcrumb`, `FullProfileDetailsModal`, `LeaderboardModal`, `SolarSystem3D`, and `sceneFactory` (7 suites / 102 tests). The modal sequencing, keyboard persistence, profile/leaderboard layout, and solar lighting refinements are verified in code.
+- Current continuation on 2026-05-30 also hardened `scripts/baseline-report.js` so `pnpm run baseline:report` refreshes environment/runtime metadata while preserving measured RN 0.85 baseline values, pending profiling items, and evidence notes.
 - Current continuation on 2026-05-30 also reconciled the docs backlog so already-evidenced slices like the loss-modal stranded-board / Next-action fix, Android loss/skip/continue/back gating, Coin Purchase UX, and full registered-modal coverage are reflected as completed in the companion trackers, while provider-auth, billing/ad, and legal evidence items remain open.
 - Current continuation regenerated `docs/tasks.html` after those doc updates; the task index now reports 347 total tasks, 9 open todos, 2 blocked items, and 336 done items, which confirms the new notes did not introduce accidental task drift.
 - Current continuation also added a visible work-in-progress ownership note to `docs/tasks.html` so the tracker itself carries the same ownership state as the memory-bank files.
 - Current continuation also added source-level ownership notes in the open tracker sections of `docs/tasks.html` so the active issue blocks are explicitly marked as in-progress.
 - Current continuation also added visible work-in-progress banners to `docs/design-issues.html` and `docs/legal-todo.html` so the broader trackers show the same ownership state as the memory-bank files.
 - Completed this pass: the iOS next-steps review/owner assignment and the missing-credentials / CI-documentation items are checked off in `docs/issues/0008-ios-build-next-steps.md`, and `docs/tasks.html` was synced so the generated index now reflects that update.
+- Current continuation also completed the locally actionable 3D texture integration slice: `SolarSystem3D` renders textured rings for configured planets using cached Three.js geometry/materials, `SolarSystemConfig` imports the existing `assets/3d` ring assets directly, and verification passed with focused solar Jest coverage (3 suites / 16 tests) plus root TypeScript.
 
 ---
 

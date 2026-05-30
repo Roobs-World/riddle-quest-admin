@@ -9,7 +9,8 @@ This guide explains how to integrate your high-quality 3D planet textures into t
 This guide is part of the current docs backlog pass. Keep the next-step list explicit about ownership and the remaining asset-import work so later agents can continue without re-deriving the plan.
 
 2026-05-30 refresh: the asset-import next steps remain open, but ownership is already explicit in the checklist. No texture import or rendering changes were made in this pass.
-Current ownership note: this guide is actively owned by the current docs thread and should not be parallel-edited until the tracker refresh lands.
+2026-05-30 implementation follow-up: the existing `assets/3d` PNG catalog is now used directly by `src/components/background/SolarSystemConfig.ts`, and `src/components/background/SolarSystem3D.tsx` renders textured rings for configured planets with cached Three.js ring geometry/materials. Focused solar Jest coverage and root TypeScript passed after the change.
+Current ownership note: this guide is actively worked by the current docs thread and remains open for coordination until the tracker refresh lands.
 Reviewed in the 2026-05-30 docs backlog pass; the blocker notes and Next Steps ownership remain documented below.
 
 ## Asset Analysis
@@ -287,18 +288,23 @@ const Enhanced3DPlanet: React.FC<{ planet: Planet }> = ({ planet }) => {
 
 1. Copy texture files to appropriate asset directories
    - Owner: visual systems / frontend
-   - Blocker: confirm the final asset naming and destination folders before bulk import.
+   - Status: complete for the current implementation; the app now imports the existing `assets/3d` files directly rather than duplicating them under `assets/images`.
 2. Update planet data configuration
    - Owner: visual systems / frontend
-   - Keep the texture map and fallback SVG path synchronized.
+   - Status: complete for the React Three Fiber path; planet, moon, and ring texture modules are represented in `SolarSystemConfig.ts`.
 3. Modify rendering components to use Image instead of SVG
    - Owner: visual systems / frontend
-   - Preserve the current animation/orbital behavior while swapping the render primitive.
+   - Status: complete for the active 3D renderer; textured rings were added without changing the existing planet/moon orbital behavior.
 4. Test performance impact
    - Owner: QA / performance
-   - Capture startup, memory, and frame-smoothness regressions after the texture swap.
+   - Status: open; capture startup, memory, and frame-smoothness regressions after the ring texture swap.
 5. Optimize for production deployment
    - Owner: release engineering / frontend
-   - Confirm the final asset bundle size and any Metro config adjustments before release.
+   - Status: open; confirm the final asset bundle size and any Metro config adjustments before release.
+
+## Latest Verification
+
+- 2026-05-30: `pnpm exec jest src/components/background/__tests__/SolarSystem3D.test.tsx src/components/background/__tests__/SolarSystemConfig.test.ts src/services/solar/__tests__/solarSystemConfig.test.ts --runInBand` passed 3 suites / 16 tests.
+- 2026-05-30: `pnpm exec tsc --noEmit --pretty false` passed with no output.
 
 This approach maintains the existing high-performance architecture while significantly enhancing visual quality with your professional 3D textures.

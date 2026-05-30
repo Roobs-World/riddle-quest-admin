@@ -33,9 +33,11 @@ import {
   Mesh,
   Group,
   SphereGeometry,
+  RingGeometry,
   MeshPhongMaterial,
   ColorManagement,
   Texture,
+  DoubleSide,
 } from "three";
 import type {MeshPhongMaterialParameters} from "three";
 import {AppState, StyleSheet, View} from "react-native";
@@ -59,8 +61,11 @@ import sunTextureModule from "../../../assets/3d/tex_sun_spots_02.png";
 // Cache for loaded textures
 const textureCache = new Map<string | number, Texture>();
 const sphereGeometryCache = new Map<string, SphereGeometry>();
+const ringGeometryCache = new Map<string, RingGeometry>();
 let texturedPhongMaterialCache = new WeakMap<Texture, MeshPhongMaterial>();
+let texturedRingMaterialCache = new WeakMap<Texture, MeshPhongMaterial>();
 let fallbackPhongMaterial: MeshPhongMaterial | null = null;
+let fallbackRingMaterial: MeshPhongMaterial | null = null;
 
 const isTextureDebugEnabled = process.env.EXPO_PUBLIC_TEXTURE_DEBUG === "1";
 
@@ -77,8 +82,11 @@ const textureDebugLog = (level: "log" | "warn" | "error", message: string, detai
 export const __resetSolarSystem3DTextureCacheForTests = (): void => {
   textureCache.clear();
   sphereGeometryCache.clear();
+  ringGeometryCache.clear();
   texturedPhongMaterialCache = new WeakMap<Texture, MeshPhongMaterial>();
+  texturedRingMaterialCache = new WeakMap<Texture, MeshPhongMaterial>();
   fallbackPhongMaterial = null;
+  fallbackRingMaterial = null;
 };
 
 const getSphereGeometry = (radius: number, widthSegments: number, heightSegments: number): SphereGeometry => {
@@ -90,6 +98,18 @@ const getSphereGeometry = (radius: number, widthSegments: number, heightSegments
 
   const geometry = new SphereGeometry(radius, widthSegments, heightSegments);
   sphereGeometryCache.set(key, geometry);
+  return geometry;
+};
+
+const getRingGeometry = (innerRadius: number, outerRadius: number): RingGeometry => {
+  const key = `${innerRadius}:${outerRadius}`;
+  const cached = ringGeometryCache.get(key);
+  if (cached) {
+    return cached;
+  }
+
+  const geometry = new RingGeometry(innerRadius, outerRadius, 64);
+  ringGeometryCache.set(key, geometry);
   return geometry;
 };
 
@@ -124,6 +144,39 @@ const getSharedTexturedPhongMaterial = (texture: Texture | null): MeshPhongMater
   return material;
 };
 
+const getSharedRingMaterial = (texture: Texture | null): MeshPhongMaterial => {
+  if (!texture) {
+    if (!fallbackRingMaterial) {
+      fallbackRingMaterial = new MeshPhongMaterial({
+        color: 0xd7c891,
+        emissive: 0x18110a,
+        emissiveIntensity: 0.25,
+        opacity: 0.82,
+        side: DoubleSide,
+        transparent: true,
+      });
+    }
+    return fallbackRingMaterial;
+  }
+
+  const cached = texturedRingMaterialCache.get(texture);
+  if (cached) {
+    return cached;
+  }
+
+  const material = new MeshPhongMaterial({
+    map: texture,
+    color: 0xffffff,
+    emissive: 0x15110a,
+    emissiveIntensity: 0.22,
+    opacity: 0.92,
+    side: DoubleSide,
+    transparent: true,
+  });
+  texturedRingMaterialCache.set(texture, material);
+  return material;
+};
+
 const createSunMaterial = (texture: Texture | null): MeshPhongMaterial => {
   const materialParameters: MeshPhongMaterialParameters = {
     color: 0xffffff,
@@ -146,14 +199,19 @@ export const __createSunMaterialForTests = createSunMaterial;
  * Custom hook to load textures for React Native using expo-asset directly.
  * Avoids expo-three's problematic loader imports.
  */
-function useExpoTexture(assetModule: AssetModuleReference): Texture | null {
-  const resolvedModule = useMemo(() => resolveAssetModule(assetModule), [assetModule]);
+function useExpoTexture(assetModule: AssetModuleReference | null | undefined): Texture | null {
+  const resolvedModule = useMemo(() => (assetModule == null ? null : resolveAssetModule(assetModule)), [assetModule]);
 
   const [texture, setTexture] = useState<Texture | null>(() => {
-    return textureCache.get(resolvedModule) || null;
+    return resolvedModule == null ? null : textureCache.get(resolvedModule) || null;
   });
 
   useEffect(() => {
+    if (resolvedModule == null) {
+      setTexture(null);
+      return undefined;
+    }
+
     let mounted = true;
     const loadTexture = async () => {
       try {
@@ -346,9 +404,18 @@ const Planet: React.FC<PlanetProps> = React.memo(({config}) => {
   const meshRef = useRef<Mesh>(null);
   const orbitTime = useRef(config.startAngle);
   const planetTexture = useExpoTexture(config.textureModule);
+  const ringTexture = useExpoTexture(config.ring?.textureModule);
 
   const planetGeometry = useMemo(() => getSphereGeometry(config.size, 32, 32), [config.size]);
   const planetMaterial = useMemo(() => getSharedTexturedPhongMaterial(planetTexture), [planetTexture]);
+  const ringGeometry = useMemo(
+    () => (config.ring ? getRingGeometry(config.ring.innerRadius, config.ring.outerRadius) : null),
+    [config.ring],
+  );
+  const ringMaterial = useMemo(
+    () => (config.ring ? getSharedRingMaterial(ringTexture) : null),
+    [config.ring, ringTexture],
+  );
 
   useFrame(() => {
     orbitTime.current = __applyPlanetFrameUpdateForTests(
@@ -364,6 +431,9 @@ const Planet: React.FC<PlanetProps> = React.memo(({config}) => {
   return (
     <group ref={groupRef}>
       <mesh ref={meshRef} geometry={planetGeometry} material={planetMaterial} />
+      {config.ring && ringGeometry && ringMaterial ? (
+        <mesh geometry={ringGeometry} material={ringMaterial} rotation={[config.ring.tiltRadians, 0, 0]} />
+      ) : null}
       {config.moons.map((moonConfig, index) => (
         <Moon key={`${config.name}-moon-${index}`} moonConfig={moonConfig} />
       ))}

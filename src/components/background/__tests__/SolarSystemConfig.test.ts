@@ -37,4 +37,17 @@ describe("SolarSystemConfig", () => {
     expect(saturn!.distance).toBeGreaterThan(earth!.distance);
     expect(uranus!.distance).toBeGreaterThan(saturn!.distance);
   });
+
+  it("defines valid textured ring geometry for configured ringed planets", () => {
+    const ringedPlanets = SOLAR_SYSTEM_CONFIG.filter((planet) => planet.ring);
+
+    expect(ringedPlanets.map((planet) => planet.name)).toEqual(["Earth", "Mars"]);
+
+    for (const planet of ringedPlanets) {
+      expect(planet.ring!.innerRadius).toBeGreaterThan(planet.size);
+      expect(planet.ring!.outerRadius).toBeGreaterThan(planet.ring!.innerRadius);
+      expect(planet.ring!.textureModule).toBeTruthy();
+      expect(planet.ring!.tiltRadians).toBeGreaterThan(0);
+    }
+  });
 });

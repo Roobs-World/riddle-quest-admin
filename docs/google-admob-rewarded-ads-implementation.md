@@ -7,8 +7,8 @@ This guide is the current source of truth for rewarded ads in Riddle Quest.
 This guide is part of the 2026-05-30 docs backlog pass. The implementation notes are current, but the remaining live replay evidence and production-like ad IDs are still environmental blockers rather than source-code gaps.
 
 2026-05-30 refresh: no new ad-ID or live replay evidence was gathered in this pass. The current blocker remains production-like IDs plus a provider-auth or guest replay path with callback logs.
-Current ownership note: this guide is actively owned by the current docs thread and should not be parallel-edited until the tracker refresh lands.
-Work-in-progress lock: this guide remains under the active docs pass until the task tracker is refreshed.
+Current ownership note: this guide is actively worked by the current docs thread. It remains open for coordination; sync before parallel edits so tracker notes stay consistent.
+Work-in-progress marker: this guide remains under the active docs pass until the task tracker is refreshed.
 
 ## Provider Decision
 
