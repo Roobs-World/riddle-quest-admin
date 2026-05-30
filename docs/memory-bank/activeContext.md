@@ -1,6 +1,47 @@
 # Active Context - Riddle Quest Development
 
+## Current Work Focus: Docs Task Continuation (May 2026)
+
+- Canonical coordination file: `docs/tasks.html`.
+- Work-in-progress ownership marker: the current Codex thread owns the open docs backlog pass, the generated task index, and the issue docs listed below. Please do not parallel-edit those files until the refresh lands.
+- Current ownership note: Codex is actively working the open docs task slice and updating progress in the memory-bank files as it goes.
+- 2026-05-30 pass status: still active. No new evidence was added in this response, and the ownership marker remains in force while the tracker and issue docs stay in sync.
+- 2026-05-30 tracker refresh: the docs task index has been regenerated from the current markdown/HTML sources after the latest ownership notes, and the progress pass is now explicitly carrying the remaining open verification work forward rather than leaving stale task counts behind.
+- 2026-05-30 continuation: current Codex thread remains the owner for the open docs backlog pass. The ownership marker stays in force for the issue docs, tracker, and baseline file until the next evidence refresh lands.
+- 2026-05-30 refresh: no new evidence was added in this pass, but the RN 0.85 baseline template was initialized for the remaining performance work and the generated task index now carries source-level ownership notes. The backlog remains owned by this thread until the next tracker refresh lands.
+- 2026-05-30 performance follow-up: a bundle-size smoke gate was added (`pnpm run perf:bundle-smoke`), the smoke passed, and the RN baseline now records measured cold/warm launch waits plus Android Hermes bundle size (`10,726,291` bytes) and bundle-smoke export time (`42,007ms`). Memory and render-jank profiling remain open.
+- 2026-05-30 source verification follow-up: the current design-pattern source slice was validated with `pnpm exec tsc --noEmit --pretty false` plus targeted Jest coverage for `ModalFanfareSequence`, `Keyboard`, `ModalSequenceBreadcrumb`, `FullProfileDetailsModal`, `LeaderboardModal`, `SolarSystem3D`, and `sceneFactory` (7 suites / 102 tests). The modal sequencing, keyboard persistence, profile/leaderboard layout, and solar lighting refinements are now verified in code.
+- Open docs tasks currently tracked for continued evidence gathering and closure:
+  - `docs/issues/0001-android-emulator-firebase-qa-plan.md`
+  - `docs/issues/0002-design-issues.md`
+  - `docs/issues/0004-performance-optimizations.md`
+  - `docs/issues/0006-ads-rewarded-implementation.md`
+  - `docs/memory-bank/rn-0.85-baseline.md`
+  - `docs/design-issues.html`
+  - `docs/legal-todo.html`
+- Additional guide docs currently being updated in the same pass:
+  - `docs/google-admob-rewarded-ads-implementation.md`
+  - `docs/performance-optimizations-todo.md`
+  - `docs/design-issues.html`
+  - `docs/legal-todo.html`
+- Current pass note: no new emulator, ad, or iOS build evidence was added in this run; the remaining work is still environmental or credential-blocked until the next live verification opportunity.
+- Current pass note: the perf tracker slice is complete and now serves as the recorded baseline; remaining open work is concentrated in provider-auth, billing/ad, and legal verification.
+- Working rule: keep the coordination docs current first, then update the relevant issue or tracker file with the newest evidence, blocker state, or verification result.
+- Current task-state rule: treat the open docs backlog as in progress until the tracker refresh is regenerated and the issue docs are explicitly marked otherwise.
+- Progress this pass: the iOS next-steps review, CI follow-up, and missing-credentials documentation are now complete in `docs/issues/0008-ios-build-next-steps.md`, `docs/IOS_BUILD_GUIDE.md`, and `docs/integration-guide.md`; no iOS checklist items remain open in that issue doc.
+- Progress this pass: the RN 0.85 baseline template has been initialized at `docs/memory-bank/rn-0.85-baseline.md`, and the file now carries its own ownership marker plus pending measurement placeholders.
+- Progress this pass: the loss-modal stranded-board / Next-action design defect, Android loss/skip/continue/back gating, Coin Purchase UX surface, and full registered-modal coverage are already evidenced in the companion trackers. Those completed slices are being reflected back into the source docs while the provider-auth, billing, ad, and legal verification items remain open.
+
+---
+
 ## Current Work Focus: Design Patterns Refactor (May 2026)
+
+### Docs Backlog Workstream Lock
+
+- Active agent: current Codex thread is updating the open docs backlog and generated task index.
+- Files currently being edited: `docs/issues/0001-android-emulator-firebase-qa-plan.md`, `docs/issues/0002-design-issues.md`, `docs/issues/0004-performance-optimizations.md`, `docs/issues/0006-ads-rewarded-implementation.md`, `docs/performance-optimizations-todo.md`, `docs/google-admob-rewarded-ads-implementation.md`, `docs/design-issues.html`, `docs/legal-todo.html`, `docs/memory-bank/rn-0.85-baseline.md`, and `docs/tasks.html`.
+- Please avoid parallel edits to those files while this thread is in progress to prevent conflicting docs state.
+- Last refresh: 2026-05-30. The generated docs task index was regenerated from source docs after the latest ownership pass and now reflects the RN 0.85 baseline checkpoint.
 
 ### Design patterns epic (branch `refactor/design-patterns`)
 

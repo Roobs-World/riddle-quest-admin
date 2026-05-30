@@ -68,6 +68,13 @@ export interface ModalSequenceProgress {
   totalPopups: number;
   hasNextPopup: boolean;
   primaryActionText?: string;
+  /**
+   * Jump back to a popup earlier in the active sequence.
+   *
+   * The index is one-based so it can be reused directly with the visible
+   * popup numbering in the UI.
+   */
+  onSelectPopup?: (popupIndex: number) => void;
 }
 
 // Game-specific modal types for type safety

@@ -882,7 +882,7 @@
         <h3>Run Metadata</h3>
         <ul>
           <li>Date started: 2026-05-23</li>
-          <li>Latest handoff update: 2026-05-25</li>
+          <li>Latest handoff update: 2026-05-30</li>
           <li>Tester/agent: Codex</li>
           <li>Workspace: <code>E:\qwordly</code></li>
           <li>Firebase project: <code>qwordly-6ba44</code></li>
@@ -890,6 +890,10 @@
             Mode: Emulator setup, guest/dev-client UI slice, settings/profile/legal/hint/shop guest evidence, Google
             provider-auth UI evidence, legal source checks, and open TODO tracking. Live provider-auth Firebase
             UID/snapshot verification remains TODO.
+          </li>
+          <li>
+            2026-05-30 tracker refresh: this docs pass is actively maintaining the run tracker and backlog notes while
+            the remaining open QA items are revalidated. No new emulator evidence was captured in this pass.
           </li>
           <li>
             Tooling note: Android Studio MCP was requested, but no Android Studio MCP tool is exposed in this session.
@@ -3621,7 +3625,7 @@ This is an exhaustive QA run. Leave nothing to chance. Every single piece of fun
 
 Before starting, update the Embedded Run Tracker section in docs/android-emulator-firebase-qa-plan.html. Keep this HTML file updated continuously as the single source of truth for strategy, progress, blockers, defects, skipped items, Firebase snapshots, screenshot paths, log paths, and handoff notes. Use statuses TODO, IN_PROGRESS, PASS, FAIL, BLOCKED, SKIPPED, and UNREACHABLE. Do not delete issue history; append updates so future agents can understand what happened.
 
-Current handoff as of 2026-05-25: all visible project .md and .html docs now live under docs/ except root readme.md and AGENTS.md; hidden tooling docs and generated coverage HTML remain in place. The latest guarded pnpm run test:android:matrix passed on all eight rq_* AVDs with 33 screen/modal surfaces per device and no unexpected-stream, unknown react-native module, or cleanup process-not-found signatures. DSI-035 is now fixed: VictoryModal / "Nice job" and LevelUpFanfareModal backgrounds are taller, focused regression tests passed, TypeScript passed, and the focused all-device Android replay captured modal-victory and modal-level-up-fanfare on all eight configured AVDs. Offline blocking/recovery now has source coverage plus Pixel 4a natural network-toggle evidence. Continue remaining functional/persona/backend TODOs only with evidence; do not remove open provider-auth, Firebase snapshot/delta, billing/ad production, initialization retry/error, account-deletion, or legal-production verification work without fresh proof.
+Current handoff as of 2026-05-30: all visible project .md and .html docs now live under docs/ except root readme.md and AGENTS.md; hidden tooling docs and generated coverage HTML remain in place. The latest guarded pnpm run test:android:matrix passed on all eight rq_* AVDs with 33 screen/modal surfaces per device and no unexpected-stream, unknown react-native module, or cleanup process-not-found signatures. DSI-035 is now fixed: VictoryModal / "Nice job" and LevelUpFanfareModal backgrounds are taller, focused regression tests passed, TypeScript passed, and the focused all-device Android replay captured modal-victory and modal-level-up-fanfare on all eight configured AVDs. Offline blocking/recovery now has source coverage plus Pixel 4a natural network-toggle evidence. This 2026-05-30 docs pass is keeping the tracker current while remaining functional/persona/backend TODOs are revalidated; continue them only with evidence, and do not remove open provider-auth, Firebase snapshot/delta, billing/ad production, initialization retry/error, account-deletion, or legal-production verification work without fresh proof.
 
 Download and set up any missing Android SDK components, Platform Tools, Android Emulator, target SDK 36 platform/build tools, and Google Play/Google APIs system images. Create or reuse a wide Android emulator matrix: small phone, standard phone, large phone, foldable outer display, foldable unfolded/tablet, small tablet, large tablet, and low-density tablet where feasible. At minimum, test small phone, standard phone, large phone, foldable unfolded, small tablet, and large tablet.
 

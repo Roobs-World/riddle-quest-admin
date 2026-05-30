@@ -96,7 +96,13 @@ const getSphereGeometry = (radius: number, widthSegments: number, heightSegments
 const getSharedTexturedPhongMaterial = (texture: Texture | null): MeshPhongMaterial => {
   if (!texture) {
     if (!fallbackPhongMaterial) {
-      fallbackPhongMaterial = new MeshPhongMaterial();
+      fallbackPhongMaterial = new MeshPhongMaterial({
+        color: 0xb8b8b8,
+        emissive: 0x111111,
+        emissiveIntensity: 0.15,
+        shininess: 20,
+        specular: 0x111111,
+      });
     }
     return fallbackPhongMaterial;
   }
@@ -106,7 +112,14 @@ const getSharedTexturedPhongMaterial = (texture: Texture | null): MeshPhongMater
     return cached;
   }
 
-  const material = new MeshPhongMaterial({map: texture});
+  const material = new MeshPhongMaterial({
+    map: texture,
+    color: 0xffffff,
+    emissive: 0x1a1a1a,
+    emissiveIntensity: 0.35,
+    shininess: 22,
+    specular: 0x222222,
+  });
   texturedPhongMaterialCache.set(texture, material);
   return material;
 };
@@ -368,8 +381,10 @@ Planet.displayName = "Planet";
 const SolarSystemScene: React.FC = () => {
   return (
     <>
-      <ambientLight intensity={0.35} />
-      <pointLight position={[0, 30, 0]} intensity={3.0} color={0xffa500} distance={250} />
+      <ambientLight intensity={0.55} />
+      <hemisphereLight intensity={0.7} color={0xbfdcff} groundColor={0x1a1328} />
+      <directionalLight position={[-60, 40, 80]} intensity={1.35} color={0xffffff} />
+      <pointLight position={[0, 30, 0]} intensity={4.75} color={0xffc36a} distance={280} />
 
       <Sun />
 

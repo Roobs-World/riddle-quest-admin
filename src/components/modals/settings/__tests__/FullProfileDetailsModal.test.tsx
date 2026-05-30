@@ -388,21 +388,24 @@ describe("FullProfileDetailsModal", () => {
         position: "relative",
       }),
     );
-    expect(getByTestId("profile-modal-body").props.style).toEqual(
-      expect.objectContaining({
-        flex: 1,
-        backgroundColor: "#FCFAF4",
-        overflow: "hidden",
-      }),
-    );
     expect(getByTestId("profile-modal-body-scroll").props.style).toEqual(
       expect.objectContaining({
         flex: 1,
+        backgroundColor: "#FCFAF4",
       }),
     );
     expect(getByTestId("profile-modal-body-scroll").props.contentContainerStyle).toEqual(
       expect.objectContaining({
-        paddingTop: 32,
+        flexGrow: 1,
+        paddingHorizontal: 24,
+        paddingTop: 0,
+        paddingBottom: 24,
+      }),
+    );
+    expect(getByTestId("profile-modal-body").props.style).toEqual(
+      expect.objectContaining({
+        backgroundColor: "#FCFAF4",
+        position: "relative",
       }),
     );
   });

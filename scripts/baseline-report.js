@@ -15,7 +15,7 @@ function safeExec(cmd) {
   }
 }
 
-const reportPath = path.join(root, "memory-bank", "rn-0.85-baseline.md");
+const reportPath = path.join(root, "docs", "memory-bank", "rn-0.85-baseline.md");
 const now = new Date().toISOString();
 
 const report = [

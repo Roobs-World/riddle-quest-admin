@@ -1,11 +1,14 @@
 import React from "react";
-import {View} from "react-native";
+import {Pressable, View} from "react-native";
 import type {ModalSequenceProgress} from "../../types/ModalTypes";
 import {moderateScale, verticalScale} from "../../utils/responsive";
 
 interface ModalSequenceBreadcrumbProps {
   sequenceProgress?: ModalSequenceProgress;
 }
+
+const DOT_SIZE = moderateScale(8);
+const DOT_RADIUS = moderateScale(4);
 
 const ModalSequenceBreadcrumb: React.FC<ModalSequenceBreadcrumbProps> = ({sequenceProgress}) => {
   if (!sequenceProgress || sequenceProgress.totalPopups <= 1) {
@@ -30,21 +33,33 @@ const ModalSequenceBreadcrumb: React.FC<ModalSequenceBreadcrumbProps> = ({sequen
       }}
     >
       {Array.from({length: total}, (_, index) => {
-        const isActive = index + 1 === current;
-        return (
-          <View
-            key={index}
-            testID={`modal-sequence-breadcrumb-dot-${index + 1}`}
-            style={{
-              width: moderateScale(8),
-              height: moderateScale(8),
-              borderRadius: moderateScale(4),
-              borderWidth: moderateScale(1),
-              borderColor: "#111111",
-              backgroundColor: isActive ? "#111111" : "transparent",
-            }}
-          />
-        );
+        const popupIndex = index + 1;
+        const isActive = popupIndex === current;
+        const isSelectable = popupIndex < current && typeof sequenceProgress.onSelectPopup === "function";
+        const dotStyle = {
+          width: DOT_SIZE,
+          height: DOT_SIZE,
+          borderRadius: DOT_RADIUS,
+          backgroundColor: isActive ? "#111111" : "transparent",
+        };
+
+        if (isSelectable) {
+          return (
+            <Pressable
+              key={index}
+              testID={`modal-sequence-breadcrumb-dot-${popupIndex}`}
+              accessibilityRole="button"
+              accessibilityLabel={`Go to popup ${popupIndex} of ${total}`}
+              accessibilityHint="Jump back to this popup"
+              accessibilityState={{selected: false}}
+              hitSlop={8}
+              onPress={() => sequenceProgress.onSelectPopup?.(popupIndex)}
+              style={dotStyle}
+            />
+          );
+        }
+
+        return <View key={index} testID={`modal-sequence-breadcrumb-dot-${popupIndex}`} style={dotStyle} />;
       })}
     </View>
   );

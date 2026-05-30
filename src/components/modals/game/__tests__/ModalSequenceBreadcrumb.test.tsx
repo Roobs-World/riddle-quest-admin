@@ -1,8 +1,6 @@
 import React from "react";
-import {render} from "@testing-library/react-native";
+import {fireEvent, render} from "@testing-library/react-native";
 import ModalSequenceBreadcrumb from "../../ModalSequenceBreadcrumb";
-
-const filledCircleColor = "#111111";
 
 describe("ModalSequenceBreadcrumb", () => {
   it("stays hidden without sequence progress or with a single popup", () => {
@@ -62,23 +60,40 @@ describe("ModalSequenceBreadcrumb", () => {
 
     expect(getByTestId("modal-sequence-breadcrumb-dot-1").props.style).toMatchObject({
       backgroundColor: "transparent",
-      borderColor: filledCircleColor,
     });
     expect(getByTestId("modal-sequence-breadcrumb-dot-2").props.style).toMatchObject({
       backgroundColor: "transparent",
-      borderColor: filledCircleColor,
     });
     expect(getByTestId("modal-sequence-breadcrumb-dot-3").props.style).toMatchObject({
-      backgroundColor: filledCircleColor,
-      borderColor: filledCircleColor,
+      backgroundColor: "#111111",
     });
     expect(getByTestId("modal-sequence-breadcrumb-dot-4").props.style).toMatchObject({
       backgroundColor: "transparent",
-      borderColor: filledCircleColor,
     });
     expect(getByTestId("modal-sequence-breadcrumb-dot-5").props.style).toMatchObject({
       backgroundColor: "transparent",
-      borderColor: filledCircleColor,
     });
+  });
+
+  it("allows jumping back to previous popups", () => {
+    const onSelectPopup = jest.fn();
+
+    const {getByTestId} = render(
+      <ModalSequenceBreadcrumb
+        sequenceProgress={{
+          currentPopupIndex: 4,
+          totalPopups: 5,
+          hasNextPopup: true,
+          onSelectPopup,
+        }}
+      />,
+    );
+
+    fireEvent.press(getByTestId("modal-sequence-breadcrumb-dot-2"));
+
+    expect(onSelectPopup).toHaveBeenCalledTimes(1);
+    expect(onSelectPopup).toHaveBeenCalledWith(2);
+    expect(getByTestId("modal-sequence-breadcrumb-dot-4").props.onPress).toBeUndefined();
+    expect(getByTestId("modal-sequence-breadcrumb-dot-5").props.onPress).toBeUndefined();
   });
 });

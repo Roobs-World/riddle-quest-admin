@@ -171,6 +171,23 @@ describe("LeaderboardModal", () => {
     });
   });
 
+  it("renders the active tab as a single dot", async () => {
+    mockHttpsCallable.mockResolvedValue({data: {entries: []}});
+
+    const {getByTestId, queryByTestId, getByLabelText} = render(<LeaderboardModal {...defaultProps} />);
+
+    expect(getByTestId("leaderboard-tab-active-dot-xp")).toBeTruthy();
+    expect(queryByTestId("leaderboard-tab-active-dot-totalWins")).toBeNull();
+    expect(queryByTestId("leaderboard-tab-active-dot-bestStreak")).toBeNull();
+
+    await act(async () => {
+      fireEvent.press(getByLabelText("Wins"));
+    });
+
+    expect(getByTestId("leaderboard-tab-active-dot-totalWins")).toBeTruthy();
+    expect(queryByTestId("leaderboard-tab-active-dot-xp")).toBeNull();
+  });
+
   it("displays entries after successful fetch", async () => {
     const entries = [
       makeEntry({userId: "user-1", username: "Alice", xp: 500}),

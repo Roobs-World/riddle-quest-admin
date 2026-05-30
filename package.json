@@ -26,6 +26,7 @@
     "test:android:matrix:coverage": "node scripts/verify-android-matrix-coverage.js --verify",
     "test:android:matrix:unit": "cross-env NODE_ENV=test jest --testPathPatterns=src --runInBand",
     "test:android:matrix:run": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/android-emulator-run-matrix.ps1",
+    "perf:bundle-smoke": "node scripts/check-bundle-size.js",
     "check:no-any": "node scripts/check-no-any.js",
     "test:precommit": "node scripts/pre-commit.js",
     "check:rn-upgrade": "node scripts/check-rn-upgrade.js",

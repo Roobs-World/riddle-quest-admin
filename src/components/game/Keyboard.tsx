@@ -50,7 +50,7 @@ interface KeyboardProps {
   /** Function called when the backspace key is pressed */
   handleBackspace: () => void;
 
-  /** Flag controlling keyboard visibility (currently not used but available for future features) */
+  /** Flag controlling keyboard visibility while preserving layout space. */
   isVisible: boolean;
 
   /** Alternative function for key press (for backward compatibility) */
@@ -246,10 +246,6 @@ const Keyboard: React.FC<KeyboardProps> = React.memo(function Keyboard({
     ]).start();
   }, []);
 
-  if (!isVisible) {
-    return null;
-  }
-
   const renderKey = (key: string) => (
     <KeyboardLetterKey
       key={key}
@@ -264,7 +260,14 @@ const Keyboard: React.FC<KeyboardProps> = React.memo(function Keyboard({
   );
 
   return (
-    <View style={gameStyles.keyboardContainer} onLayout={onContainerLayout}>
+    <View
+      testID="game-keyboard"
+      style={[gameStyles.keyboardContainer, !isVisible && {opacity: 0}]}
+      onLayout={onContainerLayout}
+      pointerEvents={isVisible ? "auto" : "none"}
+      accessibilityElementsHidden={!isVisible}
+      importantForAccessibility={isVisible ? "auto" : "no-hide-descendants"}
+    >
       {/* Main keyboard layout container */}
       <View style={gameStyles.keyboardLayer}>
         {/* Top Row - QWERTYUIOP */}

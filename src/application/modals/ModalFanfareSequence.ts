@@ -102,6 +102,14 @@ export class ModalFanfareSequence {
         totalPopups: this.steps.length,
         hasNextPopup,
         primaryActionText: hasNextPopup ? this.options.nextActionText : undefined,
+        onSelectPopup: (popupIndex: number) => {
+          const targetIndex = popupIndex - 1;
+          if (targetIndex < 0 || targetIndex >= index) {
+            return;
+          }
+
+          void this.options.delay(this.options.closeDelayMs).then(() => this.openAt(targetIndex));
+        },
       },
       () => this.continueFrom(index),
     );

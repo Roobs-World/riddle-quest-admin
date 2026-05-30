@@ -380,6 +380,16 @@ describe("Keyboard", () => {
         rerender(<Keyboard {...defaultProps} isVisible={false} />);
       }).not.toThrow();
     });
+
+    it("should stay mounted when hidden so the layout remains stable", () => {
+      const {UNSAFE_getByProps, rerender} = render(<Keyboard {...defaultProps} />);
+
+      rerender(<Keyboard {...defaultProps} isVisible={false} />);
+
+      expect(UNSAFE_getByProps({testID: "game-keyboard"}).props.style).toEqual(
+        expect.arrayContaining([expect.objectContaining({opacity: 0})]),
+      );
+    });
   });
 
   describe("Performance", () => {

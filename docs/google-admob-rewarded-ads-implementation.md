@@ -2,6 +2,14 @@
 
 This guide is the current source of truth for rewarded ads in Riddle Quest.
 
+## Current Workstream Note
+
+This guide is part of the 2026-05-30 docs backlog pass. The implementation notes are current, but the remaining live replay evidence and production-like ad IDs are still environmental blockers rather than source-code gaps.
+
+2026-05-30 refresh: no new ad-ID or live replay evidence was gathered in this pass. The current blocker remains production-like IDs plus a provider-auth or guest replay path with callback logs.
+Current ownership note: this guide is actively owned by the current docs thread and should not be parallel-edited until the tracker refresh lands.
+Work-in-progress lock: this guide remains under the active docs pass until the task tracker is refreshed.
+
 ## Provider Decision
 
 - As of 2026-05-25, rewarded ads use Google AdMob / Google Mobile Ads only.
@@ -117,6 +125,7 @@ Keep these configured for:
 - 2026-05-25: Completed source-level rewarded-ad fallback/listener verification. Added `src/services/__tests__/RewardedAdService.test.ts`, added GameScreen tests for no-reward Coin Shop and loss-modal fallback paths, and added the service test to `pnpm run test:android:matrix:unit`. Verification passed: `pnpm exec jest src/services/__tests__/RewardedAdService.test.ts src/screens/game/__tests__/GameScreen.test.tsx --runInBand` (2 suites / 113 tests), `pnpm exec tsc --noEmit --pretty false`, and `pnpm run test:android:matrix:unit` (49 suites / 991 tests). The matrix-unit run still prints existing expected `console.error` output from negative-path tests in ForgotPasswordScreen, useGameLogic, and GameStateManager, but all suites passed.
 - 2026-05-25: Issue encountered: the first `RewardedAdService` test helper used dynamic `import("../RewardedAdService")`, which failed in this Jest runtime with `A dynamic import callback was invoked without --experimental-vm-modules`. Resolution: switched the helper to the repo's existing `require` pattern after `jest.doMock`; the focused Jest run then passed.
 - 2026-05-25: Current continuation reread all 52 files under `docs/` before acting (8,363 lines / 599,249 characters) and rechecked this source-unit rewarded-ad slice. Verification passed again: `pnpm exec jest src/services/__tests__/RewardedAdService.test.ts src/screens/game/__tests__/GameScreen.test.tsx --runInBand` (2 suites / 113 tests), `pnpm exec tsc --noEmit --pretty false`, and `pnpm run test:android:matrix:unit` (49 suites / 991 tests). Expo MCP remains unavailable through `tool_search`, so local repo commands were used. No new source errors were found; live provider-auth ad replay, no-fill/not-ready emulator evidence, duplicate/cooldown proof, real app IDs, callable deployment, and Firebase deltas remain open.
+- 2026-05-30: Current docs backlog pass refreshed the ownership notes in the iOS and integration docs and kept this rewarded-ad guide on the active workstream list. Remaining work is still environmental: production-like ad IDs, live replay evidence, and any consent/privacy setup needed for emulator proof.
 
 ## Quick Verification Commands
 

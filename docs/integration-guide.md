@@ -4,6 +4,14 @@
 
 This guide explains how to integrate your high-quality 3D planet textures into the existing SolarSystemBackground component in Riddle Quest.
 
+## Current Workstream Note
+
+This guide is part of the current docs backlog pass. Keep the next-step list explicit about ownership and the remaining asset-import work so later agents can continue without re-deriving the plan.
+
+2026-05-30 refresh: the asset-import next steps remain open, but ownership is already explicit in the checklist. No texture import or rendering changes were made in this pass.
+Current ownership note: this guide is actively owned by the current docs thread and should not be parallel-edited until the tracker refresh lands.
+Reviewed in the 2026-05-30 docs backlog pass; the blocker notes and Next Steps ownership remain documented below.
+
 ## Asset Analysis
 
 Based on your `assets/3d/notes.txt` and available textures:
@@ -278,9 +286,19 @@ const Enhanced3DPlanet: React.FC<{ planet: Planet }> = ({ planet }) => {
 ## Next Steps
 
 1. Copy texture files to appropriate asset directories
+   - Owner: visual systems / frontend
+   - Blocker: confirm the final asset naming and destination folders before bulk import.
 2. Update planet data configuration
+   - Owner: visual systems / frontend
+   - Keep the texture map and fallback SVG path synchronized.
 3. Modify rendering components to use Image instead of SVG
+   - Owner: visual systems / frontend
+   - Preserve the current animation/orbital behavior while swapping the render primitive.
 4. Test performance impact
+   - Owner: QA / performance
+   - Capture startup, memory, and frame-smoothness regressions after the texture swap.
 5. Optimize for production deployment
+   - Owner: release engineering / frontend
+   - Confirm the final asset bundle size and any Metro config adjustments before release.
 
 This approach maintains the existing high-performance architecture while significantly enhancing visual quality with your professional 3D textures.

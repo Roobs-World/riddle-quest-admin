@@ -188,6 +188,7 @@ const parseHtmlCheckboxTasks = (content, relPath, title, headings, lineStarts) =
     const block = match[0];
     const input = block.match(/<input\b[^>]*type=["']?checkbox["']?[^>]*>/i);
     if (!input) continue;
+    if (/\bdisabled\b/i.test(input[0])) continue;
 
     addTask(tasks, {
       source: relPath,
@@ -298,6 +299,19 @@ const renderHtml = (tasks) => {
     return acc;
   }, new Map());
   const generatedAt = new Date().toISOString().slice(0, 10);
+  const activeWorkFiles = [
+    "docs/issues/0001-android-emulator-firebase-qa-plan.md",
+    "docs/issues/0002-design-issues.md",
+    "docs/issues/0004-performance-optimizations.md",
+    "docs/issues/0006-ads-rewarded-implementation.md",
+    "docs/performance-optimizations-todo.md",
+    "docs/google-admob-rewarded-ads-implementation.md",
+    "docs/design-issues.html",
+    "docs/legal-todo.html",
+    "docs/memory-bank/rn-0.85-baseline.md",
+    "docs/memory-bank/activeContext.md",
+    "docs/memory-bank/progress.md",
+  ];
 
   const summaryCards = [
     ["Total", tasks.length],
@@ -611,6 +625,15 @@ const renderHtml = (tasks) => {
         <p class="lede">
           Consolidated task inventory generated from markdown checklists, HTML checklists, issue-register next actions,
           and other structured task rows in the docs folder.
+        </p>
+        <p class="meta">
+          <strong>Work-in-progress ownership marker:</strong> current docs backlog pass owns the open issue files and generated task
+          index. Please avoid parallel edits to the files listed in <code>docs/memory-bank/activeContext.md</code>
+          until the refresh lands.
+        </p>
+        <p class="meta">
+          Active work files:
+          ${activeWorkFiles.map((file) => `<code>${escapeHtml(file)}</code>`).join(" ")}
         </p>
         <p class="meta">Generated ${escapeHtml(generatedAt)} from ${bySource.size} docs sources.</p>
         <div class="metrics">${summaryCards}

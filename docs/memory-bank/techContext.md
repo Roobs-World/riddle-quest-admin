@@ -6,23 +6,23 @@ This document details the technologies, development setup, technical constraints
 
 - **React Native**: 0.85.1 - Core mobile framework for iOS and Android
 - **Expo**: SDK 56 canary (`56.0.0-canary-20260409-6fc2991`) - Development platform and toolchain
-- **TypeScript**: 5.9.3 - Type-safe JavaScript development
+- **TypeScript**: 6.0.3 - Type-safe JavaScript development
 - **React**: 19.2.3 - JavaScript library for building user interfaces
 - **NativeWind**: 4.2.4 - Tailwind CSS for React Native styling
 
 ### Bundling & Development
 
 - **Metro**: 0.84.4 - React Native bundler for JavaScript transformation and bundling
-- **Expo CLI**: 56.0.0 canary - Command-line tool for Expo development
+- **Expo CLI**: 56.1.12 - Command-line tool for Expo development
 - **PNPM**: 10.33.0 - Fast, disk space efficient package manager
 
 ### Animation & UI
 
-- **React Native Reanimated**: 4.3.0 - High-performance animations
-- **React Native Gesture Handler**: 2.30.1 - Touch gesture management
+- **React Native Reanimated**: 4.3.1 - High-performance animations
+- **React Native Gesture Handler**: 2.31.2 - Touch gesture management
 - **Matter.js**: 0.20.0 - 2D physics engine for animations
 - **React Native SVG**: 15.15.4 - SVG support for React Native
-- **Three.js**: 0.167.1 - 3D rendering for solar system visualization
+- **Three.js**: 0.184.0 - 3D rendering for solar system visualization
 - **@react-three/fiber**: 9.6.1 - React renderer for Three.js
 - **@react-three/drei**: 10.7.7 - Helpers for react-three-fiber
 
@@ -36,7 +36,7 @@ This document details the technologies, development setup, technical constraints
 
 ### Testing & Quality
 
-- **Jest**: 29.7.0 - JavaScript testing framework
+- **Jest**: 30.4.2 - JavaScript testing framework
 - **ts-jest**: 29.4.11 - TypeScript support for Jest
 - **@testing-library/react-native**: 13.3.3 - React Native component testing
 - **ESLint**: 8.57.1 - Code linting and quality enforcement
@@ -52,10 +52,10 @@ This document details the technologies, development setup, technical constraints
 
 ### Native Integrations
 
-- **React Native Firebase**: 23.8.8 - Native Firebase SDK integration (modular API)
+- **React Native Firebase**: 24.0.0 - Native Firebase SDK integration (modular API)
 - **Google Sign-In**: 16.1.2 - Google authentication
 - **Facebook SDK**: 13.4.3 - Facebook integration
-- **React Native IAP**: 14.7.20 - In-app purchases
+- **React Native IAP**: 15.3.1 - In-app purchases
 
 ### Additional Libraries
 

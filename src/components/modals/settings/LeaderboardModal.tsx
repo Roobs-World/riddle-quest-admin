@@ -30,7 +30,7 @@ import {logger} from "../../../utils/logger";
 import {captureException} from "../../../utils/sentry";
 import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
-import {scale, verticalScale} from "@/utils/responsive";
+import {scale, verticalScale, moderateScale} from "@/utils/responsive";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -110,6 +110,7 @@ const buildUserIdCandidates = (userIds: Array<string | null | undefined>): strin
 const PURPLE = "#401F40";
 const GOLD = "#FEC880";
 const TAB_INACTIVE = "rgba(0,0,0,0.15)";
+const TAB_ACTIVE_DOT_SIZE = moderateScale(8);
 const HIGHLIGHT_BG = "rgba(254,200,128,0.25)";
 const MAX_ROWS = 10;
 const TOP_ROWS = 9;
@@ -372,10 +373,12 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({isVisible, onClose, 
                     key={tab.type}
                     onPress={() => setActiveTab(tab.type)}
                     style={{
+                      alignItems: "center",
+                      justifyContent: "center",
                       paddingVertical: SPACING.xs,
                       paddingHorizontal: SPACING.md,
                       borderRadius: CARD_BORDER_RADIUS - 2,
-                      backgroundColor: isActive ? PURPLE : "transparent",
+                      backgroundColor: "transparent",
                     }}
                     accessibilityRole="tab"
                     accessibilityState={{selected: isActive}}
@@ -385,11 +388,24 @@ const LeaderboardModal: React.FC<LeaderboardModalProps> = ({isVisible, onClose, 
                       style={{
                         fontSize: TYPOGRAPHY.fontSize.sm,
                         fontFamily: isActive ? TYPOGRAPHY.fontSecondaryBold : TYPOGRAPHY.fontSecondary,
-                        color: isActive ? GOLD : "rgba(0,0,0,0.6)",
+                        color: isActive ? PURPLE : "rgba(0,0,0,0.6)",
                       }}
                     >
                       {getTabLabel(tab.type)}
                     </Text>
+                    {isActive ? (
+                      <View
+                        testID={`leaderboard-tab-active-dot-${tab.type}`}
+                        accessibilityLabel={`${getTabLabel(tab.type)} active tab indicator`}
+                        style={{
+                          width: TAB_ACTIVE_DOT_SIZE,
+                          height: TAB_ACTIVE_DOT_SIZE,
+                          borderRadius: TAB_ACTIVE_DOT_SIZE / 2,
+                          backgroundColor: GOLD,
+                          marginTop: moderateScale(4),
+                        }}
+                      />
+                    ) : null}
                   </TouchableOpacity>
                 );
               })}

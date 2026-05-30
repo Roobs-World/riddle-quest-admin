@@ -2,6 +2,14 @@
 
 This guide explains how to build and test your Riddle Quest iOS app from Windows using EAS Build.
 
+## Current Workstream Note
+
+This guide is part of the 2026-05-30 docs backlog pass. The remaining setup steps are still blocked on Apple credentials and iOS CI runner access, so keep the blocker notes and next-step ownership explicit until those dependencies are available.
+
+2026-05-30 refresh: the owner assignments in the Next Steps section are now explicit, but no iOS build was attempted in this pass. Keep the Apple ID, app-specific password, and runner-access gaps visible until they are resolved.
+Current ownership note: this guide is actively owned by the current docs thread and should not be parallel-edited until the tracker refresh lands.
+Reviewed in the 2026-05-30 docs backlog pass; the blocker notes and Next Steps ownership remain documented below.
+
 ## Prerequisites
 
 1. **Apple Developer Account** (Required for device testing)
@@ -206,21 +214,29 @@ eas submit --platform ios
 
 ## Next Steps
 
-1. **Start with development build**:
+1. **Document missing credentials and assign owners**:
+   - Owner: Release engineering / iOS
+   - Capture Apple ID, app-specific password, and any App Store Connect sign-in gaps before the first build attempt.
+
+2. **Start with development build**:
 
    ```bash
    eas build --profile development --platform ios
    ```
 
-2. **Register your iPhone for testing**:
+3. **Register your iPhone for testing**:
 
    ```bash
    eas device:create
    ```
 
-3. **Monitor build progress**:
+4. **Monitor build progress**:
    - Watch the terminal
    - Or check https://expo.dev/accounts/[YOUR_ACCOUNT]/projects/Riddle Quest/builds
+
+5. **Prepare CI follow-up**:
+   - Owner: CI / release engineering
+   - Document the GitHub Actions path, runner requirements, and any Apple signing handoffs needed for repeatable iOS builds.
 
 ## Tips for Windows iOS Development
 

@@ -217,18 +217,23 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
             style={{
               width: "100%",
               maxWidth: AUTH_CONTENT_MAX_WIDTH,
+              maxHeight: MODAL_MAX_HEIGHT,
               backgroundColor: CREAM,
               borderTopLeftRadius: 24,
               borderTopRightRadius: 24,
-              height: "100%",
               overflow: "hidden",
               flexDirection: "column",
             }}
           >
             <ScrollView
-              testID="profile-modal-scroll"
+              testID="profile-modal-body-scroll"
               style={{flex: 1, backgroundColor: CREAM}}
-              contentContainerStyle={{paddingHorizontal: SPACING.lg, paddingTop: 0, paddingBottom: SPACING.lg}}
+              contentContainerStyle={{
+                flexGrow: 1,
+                paddingHorizontal: SPACING.lg,
+                paddingTop: 0,
+                paddingBottom: SPACING.lg,
+              }}
               showsVerticalScrollIndicator={false}
               alwaysBounceVertical={true}
               bounces={true}
@@ -241,6 +246,7 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
                   paddingBottom: SPACING.xl,
                   overflow: "hidden",
                   position: "relative",
+                  flexShrink: 0,
                 }}
                 testID="profile-modal-header"
               >
