@@ -1250,6 +1250,19 @@ describe("GameScreen", () => {
           totalCoins: 150,
         }),
       );
+
+      const {logger} = require("../../../utils/logger");
+      expect(logger.debug).toHaveBeenCalledWith("Confirming rewarded ad reward with backend callback", {
+        placement: "coin_shop",
+        userId: "test-user-123",
+      });
+      expect(logger.debug).toHaveBeenCalledWith("Rewarded ad backend callback confirmed", {
+        placement: "coin_shop",
+        callbackId: "coin-shop-callback",
+        alreadyProcessed: false,
+        rewardCoins: 50,
+        newCoins: 150,
+      });
     });
 
     it("shows the coin-shop ad fallback when a rewarded ad does not grant a reward", async () => {
@@ -1921,6 +1934,12 @@ describe("GameScreen", () => {
         });
         expect(mockRecordRewardedAdCompletion).not.toHaveBeenCalled();
         expect(mockUpdatePlayerDataLocally).toHaveBeenCalledWith({coins: 150});
+        const {logger} = require("../../../utils/logger");
+        expect(logger.debug).toHaveBeenCalledWith("Rewarded ad guest reward applied locally", {
+          placement: "loss_continue",
+          rewardCoins: CONTINUE_REWARDED_AD_COIN_REWARD,
+          totalCoins: 150,
+        });
       } finally {
         mockPlayerData.email = "test@test.com";
         mockPlayerData.username = "testuser";

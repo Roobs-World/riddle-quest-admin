@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Alert, Modal, Text, TouchableOpacity, View} from "react-native";
 import {AppStrings} from "@/constants/AppStrings";
-import {AuthService, isFacebookLoginCancellation} from "@/services/AuthService";
+import {AuthService} from "@/services/AuthService";
 import {useModal} from "@/hooks/useModal";
 import CloseButton from "@/components/buttons/CloseButton";
 import GoogleSignInButton from "@/components/buttons/GoogleSignInButton";
@@ -12,8 +12,16 @@ import {AUTH_CONTENT_MAX_WIDTH, MODAL_CONTENT_PADDING} from "@/constants/layout"
 import {SPACING, TYPOGRAPHY, COLORS} from "@/styles";
 import {captureException} from "@/utils/sentry";
 import {logger} from "@/utils/logger";
-import {type FirebaseAuthTypes} from "@react-native-firebase/auth";
 import SlideInModalContent from "../../shared/SlideInModalContent";
+import {
+  extractErrorMessage,
+  extractErrorCode,
+} from "../../../utils/errorResolution";
+import {
+  isAccountAlreadyInUseError,
+  isFacebookLoginCancellation,
+  isGoogleSignInCancellation,
+} from "../../../application/auth/authErrorMessages";
 
 interface UpgradeAccountModalProps {
   isVisible: boolean;
@@ -50,43 +58,22 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
     return () => clearTimeout(openPrompt);
   }, [initialExistingAccountPromptVisible, isVisible]);
 
-  const isAccountAlreadyInUseError = (code: string, message: string): boolean => {
-    const normalizedCode = code.toLowerCase();
-    const normalizedMessage = message.toLowerCase();
-
-    if (
-      normalizedCode === "auth/credential-already-in-use" ||
-      normalizedCode === "auth/email-already-in-use" ||
-      normalizedCode === "auth/account-exists-with-different-credential"
-    ) {
-      return true;
-    }
-
-    return (
-      normalizedMessage.includes("auth/credential-already-in-use") ||
-      normalizedMessage.includes("auth/email-already-in-use") ||
-      normalizedMessage.includes("auth/account-exists-with-different-credential") ||
-      normalizedMessage.includes("credential is already associated")
-    );
-  };
-
   const handleAuthError = (error: unknown) => {
-    const firebaseError = error as FirebaseAuthTypes.NativeFirebaseAuthError;
-    const code = typeof firebaseError?.code === "string" ? firebaseError.code : "";
-    const message = typeof firebaseError?.message === "string" ? firebaseError.message : "";
+    const code = extractErrorCode(error) ?? "";
+    const message = extractErrorMessage(error) ?? "";
 
     if (code === "auth/auth-popup-closed-by-user") {
       return;
     }
 
-    if (isAccountAlreadyInUseError(code, message)) {
+    if (isAccountAlreadyInUseError(error)) {
       setIsExistingAccountModalVisible(true);
       return;
     }
 
     Alert.alert(
       AppStrings.CommonAlerts.ERROR_TITLE,
-      firebaseError?.message || AppStrings.Profile.UPGRADE_ACCOUNT_ERROR,
+      message || AppStrings.Profile.UPGRADE_ACCOUNT_ERROR,
     );
   };
 
@@ -100,8 +87,7 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
         message: AppStrings.Profile.UPGRADE_ACCOUNT_SUCCESS,
       });
     } catch (error) {
-      if (isFacebookLoginCancellation(error)) {
-        handleAuthError(error);
+      if (isGoogleSignInCancellation(error)) {
         return;
       }
 
@@ -128,7 +114,6 @@ const UpgradeAccountModal: React.FC<UpgradeAccountModalProps> = ({
       });
     } catch (error) {
       if (isFacebookLoginCancellation(error)) {
-        handleAuthError(error);
         return;
       }
 

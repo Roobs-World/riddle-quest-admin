@@ -205,13 +205,16 @@ const FullProfileDetailsModal: React.FC<FullProfileDetailsModalProps> = ({isVisi
       <View
         style={{
           flex: 1,
-          justifyContent: "flex-end",
+          justifyContent: "center",
+          alignItems: "center",
           backgroundColor: "rgba(0,0,0,0.5)",
+          paddingHorizontal: SPACING.sm,
         }}
+        testID="profile-modal-shell"
       >
         <SlideInModalContent
           isVisible={isVisible}
-          style={{flex: 1, width: "100%", justifyContent: "flex-end", alignItems: "center"}}
+          style={{width: "100%", alignItems: "center"}}
         >
           <View
             style={{

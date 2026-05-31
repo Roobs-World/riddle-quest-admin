@@ -50,6 +50,8 @@ interface ModalTogglePanelProps {
   onCompleteRiddle?: () => void | Promise<void>;
   onGenerateDailyChallenge?: () => void | Promise<void>;
   onClearLocalData?: () => void | Promise<void>;
+  onWatchRewardedAdForCoins?: () => void | Promise<void>;
+  onWatchRewardedAdForLossContinue?: () => void | Promise<void>;
 }
 
 /**
@@ -398,6 +400,8 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
   onCompleteRiddle,
   onGenerateDailyChallenge,
   onClearLocalData,
+  onWatchRewardedAdForCoins,
+  onWatchRewardedAdForLossContinue,
 }) => {
   const {playerData, updatePlayerDataLocally} = useAuth();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -436,12 +440,6 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
     },
     [playerData, updatePlayerDataLocally],
   );
-
-  // CRITICAL: Only render in development builds
-  if (!__DEV__) {
-    logger.warn("ModalTogglePanel should not be used in production builds");
-    return null;
-  }
 
   /**
    * Toggle Modal Visibility
@@ -482,6 +480,12 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
       clearTimeout(profileTimer);
     };
   }, [playerData, toggleModal]);
+
+  // CRITICAL: Only render in development builds
+  if (!__DEV__) {
+    logger.warn("ModalTogglePanel should not be used in production builds");
+    return null;
+  }
 
   /**
    * Render Active Modals
@@ -566,12 +570,43 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
             <TouchableOpacity
               key={action.modalType}
               style={styles.quickActionButton}
+              accessibilityRole="button"
+              accessibilityLabel={action.label}
+              testID={`modal-toggle-${action.modalType}`}
               onPress={() => toggleModal(action.modalType, true)}
             >
               <Text style={styles.quickActionText}>{action.label}</Text>
             </TouchableOpacity>
           ))}
         </View>
+
+        {onWatchRewardedAdForCoins ? (
+          <TouchableOpacity
+            style={styles.dailyChallengeButton}
+            onPress={() => {
+              void onWatchRewardedAdForCoins();
+            }}
+            accessibilityRole="button"
+            accessibilityLabel="Watch Ad (Coins)"
+            testID="modal-toggle-watch-rewarded-ad-coins"
+          >
+            <Text style={styles.completeButtonText}>Watch Ad (Coins)</Text>
+          </TouchableOpacity>
+        ) : null}
+
+        {onWatchRewardedAdForLossContinue ? (
+          <TouchableOpacity
+            style={styles.localDataButton}
+            onPress={() => {
+              void onWatchRewardedAdForLossContinue();
+            }}
+            accessibilityRole="button"
+            accessibilityLabel="Watch Ad (Loss Continue)"
+            testID="modal-toggle-watch-rewarded-ad-loss"
+          >
+            <Text style={styles.completeButtonText}>Watch Ad (Loss Continue)</Text>
+          </TouchableOpacity>
+        ) : null}
 
         {isExpanded && (
           <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
@@ -666,29 +701,6 @@ const styles = StyleSheet.create({
     top: verticalScale(100),
     zIndex: 9999,
   },
-  quickActionButton: {
-    alignItems: "center",
-    backgroundColor: COLORS.gray100,
-    borderColor: COLORS.gray300,
-    borderRadius: BORDER_RADIUS.sm,
-    borderWidth: 1,
-    flex: 1,
-    paddingHorizontal: SPACING.xs,
-    paddingVertical: SPACING.xs,
-  },
-  quickActionText: {
-    color: COLORS.textPrimary,
-    fontFamily: TYPOGRAPHY.fontSecondary,
-    fontSize: TYPOGRAPHY.fontSize.xs,
-    fontWeight: "600",
-    textAlign: "center",
-  },
-  quickActionsRow: {
-    flexDirection: "row",
-    gap: SPACING.xs,
-    paddingHorizontal: SPACING.sm,
-    paddingTop: SPACING.sm,
-  },
   content: {
     maxHeight: verticalScale(300),
     padding: SPACING.sm,
@@ -718,6 +730,29 @@ const styles = StyleSheet.create({
     borderRadius: BORDER_RADIUS.sm,
     marginTop: SPACING.sm,
     padding: SPACING.xs,
+  },
+  quickActionButton: {
+    alignItems: "center",
+    backgroundColor: COLORS.gray100,
+    borderColor: COLORS.gray300,
+    borderRadius: BORDER_RADIUS.sm,
+    borderWidth: 1,
+    flex: 1,
+    paddingHorizontal: SPACING.xs,
+    paddingVertical: SPACING.xs,
+  },
+  quickActionText: {
+    color: COLORS.textPrimary,
+    fontFamily: TYPOGRAPHY.fontSecondary,
+    fontSize: TYPOGRAPHY.fontSize.xs,
+    fontWeight: "600",
+    textAlign: "center",
+  },
+  quickActionsRow: {
+    flexDirection: "row",
+    gap: SPACING.xs,
+    paddingHorizontal: SPACING.sm,
+    paddingTop: SPACING.sm,
   },
   toggleLabel: {
     color: COLORS.textPrimary,

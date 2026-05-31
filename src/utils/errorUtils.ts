@@ -2,6 +2,12 @@ import {ZodError} from "zod";
 import {ValidationUtils} from "./validationUtils";
 import {logger} from "./logger";
 import {captureException} from "./sentry";
+import {
+  ErrorMessageResolver,
+  createCodeMapStrategy,
+  extractErrorCode,
+  extractErrorMessage,
+} from "./errorResolution";
 
 /**
  * Custom error types for the application
@@ -56,14 +62,7 @@ export class ErrorUtils {
    * Checks if an error is a Firebase error
    */
   static isFirebaseError(error: unknown): error is {code: string; message: string} {
-    return (
-      typeof error === "object" &&
-      error !== null &&
-      "code" in error &&
-      "message" in error &&
-      typeof (error as {code: unknown}).code === "string" &&
-      typeof (error as {message: unknown}).message === "string"
-    );
+    return typeof extractErrorCode(error) === "string" && typeof extractErrorMessage(error) === "string";
   }
 
   /**
@@ -107,46 +106,57 @@ export class ErrorUtils {
    * Extracts a user-friendly error message from any error
    */
   static getUserFriendlyMessage(error: unknown): string {
-    if (error instanceof AppError) {
-      return error.message;
-    }
-
-    if (this.isZodError(error)) {
-      return "Invalid data format. Please check your input.";
-    }
-
-    if (this.isFirebaseError(error)) {
-      return this.getFirebaseErrorMessage(error);
-    }
-
-    if (error instanceof Error) {
-      return error.message;
-    }
-
-    return "An unexpected error occurred. Please try again.";
+    return this.errorMessageResolver.resolve(error);
   }
 
-  /**
-   * Gets a user-friendly message for Firebase errors
-   */
-  private static getFirebaseErrorMessage(error: {code: string; message: string}): string {
-    const errorMappings: Record<string, string> = {
-      "auth/user-not-found": "No account found with this email address.",
-      "auth/wrong-password": "Incorrect password. Please try again.",
-      "auth/email-already-in-use": "An account with this email already exists.",
-      "auth/weak-password": "Password should be at least 6 characters long.",
-      "auth/invalid-email": "Please enter a valid email address.",
-      "auth/network-request-failed": "Network error. Please check your connection.",
-      "auth/too-many-requests": "Too many failed attempts. Please try again later.",
-      "firestore/permission-denied": "You do not have permission to perform this action.",
-      "firestore/unavailable": "Service temporarily unavailable. Please try again.",
-      "functions/not-found": "The requested function was not found.",
-      "functions/permission-denied": "You do not have permission to call this function.",
-      "functions/unauthenticated": "Please sign in to continue.",
-    };
-
-    return errorMappings[error.code] || error.message || "An error occurred. Please try again.";
-  }
+  private static readonly errorMessageResolver = new ErrorMessageResolver(
+    [
+      {
+        name: "AppError",
+        matches: (error: unknown): boolean => error instanceof AppError,
+        resolve: (error: unknown): string | null => (error instanceof AppError ? error.message : null),
+      },
+      {
+        name: "ZodError",
+        matches: (error: unknown): boolean => error instanceof ZodError,
+        resolve: () => "Invalid data format. Please check your input.",
+      },
+      createCodeMapStrategy(
+        "FirebaseAuthAndBackend",
+        {
+          "auth/user-not-found": "No account found with this email address.",
+          "auth/wrong-password": "Incorrect password. Please try again.",
+          "auth/email-already-in-use": "An account with this email already exists.",
+          "auth/weak-password": "Password should be at least 6 characters long.",
+          "auth/invalid-email": "Please enter a valid email address.",
+          "auth/network-request-failed": "Network error. Please check your connection.",
+          "auth/too-many-requests": "Too many failed attempts. Please try again later.",
+          "firestore/permission-denied": "You do not have permission to perform this action.",
+          "firestore/unavailable": "Service temporarily unavailable. Please try again.",
+          "functions/not-found": "The requested function was not found.",
+          "functions/permission-denied": "You do not have permission to call this function.",
+          "functions/unauthenticated": "Please sign in to continue.",
+        },
+        {
+          normalizeCode: (code: string) => code.trim().toLowerCase(),
+        },
+      ),
+      {
+        name: "MessageFallback",
+        matches: (error: unknown): boolean =>
+          typeof error === "object" && error !== null && typeof extractErrorMessage(error) === "string",
+        resolve: (error: unknown): string | null => extractErrorMessage(error) ?? null,
+      },
+      {
+        name: "GenericError",
+        matches: (error: unknown): boolean => error instanceof Error,
+        resolve: (error: unknown): string | null => (error instanceof Error ? error.message : null),
+      },
+    ],
+    {
+      fallbackMessage: "An unexpected error occurred. Please try again.",
+    },
+  );
 
   /**
    * Logs an error with appropriate detail level

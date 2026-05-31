@@ -193,6 +193,21 @@
         2026-05-31 source verification follow-up: ModalTogglePanel quick-action coverage also passed, so the debug
         modal surface remains green while the live legal/support routes stay blocked on production reachability.
       </p>
+      <p class="note">
+        2026-05-31 source verification follow-up: the auth/error cleanup is green at the profile and upgrade-account
+        call sites too. Focused Jest passed for `authErrorMessages`, `cloudFunctionErrorMessages`, `AuthService`,
+        `LandingScreen`, `UpdateUsernameModal`, `UpgradeAccountModal`, `FullProfileDetailsModal`, and `errorUtils`,
+        with TypeScript clean. The legal checklist still needs live hosted-route reachability before any remaining
+        blockers can be closed.
+      </p>
+      <p class="note">
+        2026-05-31 source verification refresh: the shared auth/error resolver slice is green across the broader auth
+        and gameplay surfaces too. Focused Jest across `authErrorMessages`, `cloudFunctionErrorMessages`,
+        `AuthService`, `LandingScreen`, `LoginScreen`, `SignUpScreen`, `ForgotPasswordScreen`,
+        `UpdateUsernameModal`, `UpgradeAccountModal`, `FullProfileDetailsModal`, `GameScreen`, and `errorUtils`
+        passed 347 tests in 7 suites, and `pnpm exec tsc --noEmit --pretty false` stayed clean. The legal checklist
+        still needs live hosted-route reachability before any remaining blockers can be closed.
+      </p>
 
       <div class="grid">
         <section>

@@ -1,0 +1,9 @@
+--------- beginning of main
+05-31 21:27:23.486   999   999 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+05-31 21:27:26.163   756   915 I HalDevMgr: bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]
+05-31 21:27:26.859  1143  1272 D SatelliteController: iisInCarrierRoamingNbIotNtn: satellite is disabled
+05-31 21:27:26.859  1143  1272 D SatelliteController: getCarrierRoamingNtnConnectType: Falling back to global carrier config connect type: 0
+05-31 21:27:29.177   756   915 I HalDevMgr: bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]
+05-31 21:27:29.280 22763 22763 W libbinder.BackendUnifiedServiceManager: Thread Pool max thread count is 0. Cannot cache binder as linkToDeath cannot be implemented. serviceName: SurfaceFlingerAIDL
+05-31 21:27:29.282 22763 22763 W libbinder.BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+05-31 21:27:29.282 22763 22763 W libbinder.ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.

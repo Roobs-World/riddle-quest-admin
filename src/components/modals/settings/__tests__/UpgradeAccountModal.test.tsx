@@ -15,18 +15,42 @@ jest.mock("@/hooks/useModal", () => ({
   }),
 }));
 
-jest.mock("@/services/AuthService", () => ({
-  AuthService: {
-    linkAnonymousWithGoogle: (...args: unknown[]) => mockLinkAnonymousWithGoogle(...args),
-    linkAnonymousWithFacebook: (...args: unknown[]) => mockLinkAnonymousWithFacebook(...args),
-    logout: (...args: unknown[]) => mockLogout(...args),
-  },
+jest.mock("../../../../application/auth/authErrorMessages", () => ({
+  isGoogleSignInCancellation: (error: unknown) =>
+    (typeof error === "object" &&
+      error !== null &&
+      "code" in error &&
+      error.code === "auth/auth-popup-closed-by-user") ||
+    (error instanceof Error && error.message === "Google sign-in cancelled by user."),
   isFacebookLoginCancellation: (error: unknown) =>
     (typeof error === "object" &&
       error !== null &&
       "code" in error &&
       error.code === "auth/auth-popup-closed-by-user") ||
     (error instanceof Error && error.message === "User cancelled the login process"),
+  isAccountAlreadyInUseError: (error: unknown) =>
+    (typeof error === "object" &&
+      error !== null &&
+      "code" in error &&
+      typeof error.code === "string" &&
+      [
+        "auth/credential-already-in-use",
+        "auth/email-already-in-use",
+        "auth/account-exists-with-different-credential",
+      ].includes(error.code)) ||
+    (typeof error === "object" &&
+      error !== null &&
+      "message" in error &&
+      typeof error.message === "string" &&
+      error.message.toLowerCase().includes("credential is already associated")),
+}));
+
+jest.mock("@/services/AuthService", () => ({
+  AuthService: {
+    linkAnonymousWithGoogle: (...args: unknown[]) => mockLinkAnonymousWithGoogle(...args),
+    linkAnonymousWithFacebook: (...args: unknown[]) => mockLinkAnonymousWithFacebook(...args),
+    logout: (...args: unknown[]) => mockLogout(...args),
+  },
 }));
 
 jest.mock("@/utils/logger", () => ({
@@ -162,6 +186,28 @@ describe("<UpgradeAccountModal />", () => {
 
     await waitFor(() => {
       expect(mockLinkAnonymousWithFacebook).toHaveBeenCalledTimes(1);
+    });
+
+    expect(queryByText("Account already exists")).toBeNull();
+    expect(onClose).not.toHaveBeenCalled();
+    expect(mockShowInfoModal).not.toHaveBeenCalled();
+    expect(logger.error).not.toHaveBeenCalled();
+    expect(captureException).not.toHaveBeenCalled();
+  });
+
+  it("does not log or alert when Google account linking is cancelled", async () => {
+    mockLinkAnonymousWithGoogle.mockRejectedValue({
+      code: "auth/auth-popup-closed-by-user",
+      message: "Popup closed",
+    });
+
+    const onClose = jest.fn();
+    const {getByText, queryByText} = render(<UpgradeAccountModal {...defaultProps} onClose={onClose} />);
+
+    fireEvent.press(getByText("Continue with Google"));
+
+    await waitFor(() => {
+      expect(mockLinkAnonymousWithGoogle).toHaveBeenCalledTimes(1);
     });
 
     expect(queryByText("Account already exists")).toBeNull();

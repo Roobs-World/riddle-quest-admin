@@ -21,13 +21,8 @@ import {SPACING} from "../../../styles";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import {verticalScale} from "@/utils/responsive";
 import {callValidatedFunction} from "../../../utils/firebaseFunctions";
+import {getUpdateUsernameErrorMessage} from "../../../application/errors/cloudFunctionErrorMessages";
 import {BasicSuccessMessageOutputSchema, UpdateUsernameInputSchema} from "../../../validation/cloudFunctionsSchemas";
-
-interface FirebaseError {
-  code: string;
-  message: string;
-  email?: string;
-}
 
 interface UpdateUsernameModalProps {
   isVisible: boolean;
@@ -56,14 +51,6 @@ const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({isVisible, onC
       setUsernameError("");
     }
   }, [currentUsername, isVisible]);
-
-  const sanitizeErrorMessage = (message?: string): string => {
-    if (!message) {
-      return AppStrings.Profile.ALERT_USERNAME_UPDATE_FAILED;
-    }
-
-    return message.replace(/^\[[^\]]+\]\s*/, "").trim();
-  };
 
   const validateUsername = (username: string): string | null => {
     if (!username) {
@@ -109,16 +96,7 @@ const UpdateUsernameModal: React.FC<UpdateUsernameModalProps> = ({isVisible, onC
         setUsernameError(responseData.message || AppStrings.Profile.ALERT_USERNAME_UPDATE_FAILED);
       }
     } catch (error) {
-      const firebaseError = error as FirebaseError;
-      const normalizedCode = firebaseError.code?.replace(/^functions\//, "");
-      const serverMessage = sanitizeErrorMessage(firebaseError.message);
-      let errorMessage = serverMessage || AppStrings.Profile.ALERT_AN_ERROR_OCCURRED;
-
-      if (normalizedCode === "already-exists") {
-        errorMessage = AppStrings.Profile.ALERT_USERNAME_ALREADY_TAKEN;
-      }
-
-      setUsernameError(errorMessage);
+      setUsernameError(getUpdateUsernameErrorMessage(error));
     } finally {
       setIsSubmitting(false);
     }

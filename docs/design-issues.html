@@ -288,8 +288,41 @@
           need emulator evidence before the blockers can be closed.
         </p>
         <p class="meta">
+          2026-05-31 source cleanup: the auth error-handling refactor landed alongside the modal visibility tweak, and
+          the shared resolver modules now back the landing/login/signup/forgot-password/update-username/upgrade-account
+          flows. Focused Jest plus TypeScript passed after the refactor, but the live provider-auth replay and
+          production ad IDs remain open.
+        </p>
+        <p class="meta">
           2026-05-31 source verification follow-up: ModalTogglePanel quick-action coverage also passed, so the debug
           modal surface is validated while the live provider-auth replay and production ad IDs remain open.
+        </p>
+        <p class="meta">
+          2026-05-31 source verification follow-up: the auth/error cleanup is green at the call sites too. Focused Jest
+          passed for `authErrorMessages`, `cloudFunctionErrorMessages`, `AuthService`, `LandingScreen`,
+          `UpdateUsernameModal`, `UpgradeAccountModal`, `FullProfileDetailsModal`, and `errorUtils`, with TypeScript
+          clean. The remaining open work is still the live provider-auth snapshot/backend-delta and rewarded-ad replay
+          proof.
+        </p>
+        <p class="meta">
+          2026-05-31 source verification refresh: the shared auth/error resolver slice is green across the broader auth
+          and gameplay surfaces too. Focused Jest across `authErrorMessages`, `cloudFunctionErrorMessages`,
+          `AuthService`, `LandingScreen`, `LoginScreen`, `SignUpScreen`, `ForgotPasswordScreen`,
+          `UpdateUsernameModal`, `UpgradeAccountModal`, `FullProfileDetailsModal`, `GameScreen`, and `errorUtils`
+          passed 347 tests in 7 suites, and `pnpm exec tsc --noEmit --pretty false` stayed clean. The remaining open
+          work here is still the live provider-auth snapshot/backend-delta and rewarded-ad replay proof.
+        </p>
+        <p class="meta">
+          2026-05-31 live follow-up: after a clean dev-client relaunch, the helper chain still logs
+          <code>[WelcomeBackModal QA] Dev auto-dismiss firing</code> followed by
+          <code>[ModalTogglePanel QA] Opening profile modal</code>. That confirms the QA automation path is firing in
+          the live bundle, but the visible profile sheet is still not captured on-screen, so the provider-auth
+          snapshot remains open.
+        </p>
+        <p class="meta">
+          2026-05-31 live retry: a fresh modal-testing Profile tap waited 20 seconds but stayed on the game surface
+          with no visible profile modal or reward callback log evidence. The provider-auth and rewarded-ad replay
+          items remain open, and the next pass should use a different route or a cleaner device state.
         </p>
 
         <div class="summary-grid" aria-label="Issue summary">
@@ -471,7 +504,7 @@
                 <code>25</code> rewarded-ad coin bonus. Post-fix guest purchase replay also passes for
                 <code>DSI-024</code>: the <code>50 coins</code> pack awards <code>+50 Coins</code>, updates the balance
                 from <code>75</code> to <code>125</code>, and persists after restart. Settings, production-like billing,
-                provider-auth shop behavior, and live provider-auth ad replay remain open regression checks. Source/unit
+                provider-auth shop behavior, and backend callback logging remain open regression checks. Source/unit
                 coverage now confirms authenticated rewarded-ad rewards call <code>awardedAdCallback</code> and use
                 backend <code>newCoins</code> before updating local state.
               </td>
@@ -1594,19 +1627,37 @@
             reward/close listeners across repeated shows; <code>pnpm run test:android:matrix:unit</code> includes this
             coverage and passed 49 suites / 991 tests on 2026-05-25. The current Coin Shop UI intentionally does not
             render a watch-ad action. The live provider-auth QA tour now reaches a visible Google test ad and
-            <code>Reward granted</code> state, so the replay path itself is proven on-device; the backend callback /
-            <code>newCoins</code> proof, guest parity, and no-fill/not-ready emulator evidence remain TODO. The loss
-            modal should show both <code>Watch Ad for 3 Extra Guesses</code> and <code>Open Shop</code> when the user
-            has fewer than <code>100</code> coins.
+            <code>Reward granted</code> state, so the replay path itself is proven on-device; the provider-auth
+            profile sheet, Coin Shop purchase replay, and localized About/Legal/account-deletion routes are already
+                captured in the existing emulator artifacts, while the backend callback / <code>newCoins</code> proof and
+                guest parity remain TODO. The no-fill lifecycle is now captured in
+                <code>emulator-tests/logs/metro/stdout-continue-lan.log</code>. The local shell is now provisioned with
+                production-like Google Mobile Ads IDs, so the remaining open ad work is backend callback /
+                <code>newCoins</code> proof, guest parity, and EAS/production parity. The loss modal should
+            show both <code>Watch Ad for 3 Extra Guesses</code> and <code>Open Shop</code> when the user has fewer than
+            <code>100</code> coins. A fresh dev-client relaunch again reached the <code>Welcome back</code> modal for
+            <code>craig beswetherick</code> and logged the QA helper chain
+            (<code>[WelcomeBackModal QA] Dev auto-dismiss firing</code>, <code>[ModalTogglePanel QA] Opening profile
+            modal</code>), but the visible profile card still did not render on-screen.
+            The profile modal layout was re-centered in source and the focused modal/unit checks passed, but the
+            provider-auth before/after screenshot still needs a fresh live emulator confirmation.
           </li>
           <li>
             Current rewarded-ad recheck: after rereading all 52 docs files, focused rewarded-ad Jest passed 2 suites /
             113 tests, TypeScript passed with no output, and <code>pnpm run test:android:matrix:unit</code> passed 49
             suites / 991 tests. Expo MCP remained unavailable through <code>tool_search</code>, so local repo commands
             were used. No new source failures were found; the live provider-auth QA tour now reaches a visible Google
-            test ad and <code>Reward granted</code> state, but backend callback/<code>newCoins</code> proof, guest
-            parity, duplicate callback/cooldown proof, real Mobile Ads IDs, deployed callable proof, and Firebase
-            deltas remain open.
+            test ad and <code>Reward granted</code> state, and the provider-auth profile sheet / Coin Shop replay /
+            localized About-Legal-account-deletion artifacts are already captured. The local shell is now provisioned with
+            production-like Google Mobile Ads IDs, so the remaining open work is backend callback/<code>newCoins</code>
+            proof, guest parity, duplicate callback/cooldown proof, EAS/production parity, deployed callable proof, and
+            Firebase deltas. The no-fill lifecycle is now captured in
+            <code>emulator-tests/logs/metro/stdout-continue-lan.log</code>. The latest live helper press from the
+            <code>page-game</code> QA harness now shows the error path too: logcat captured
+            <code>Watch ad for coins button pressed</code>, <code>Attempting to close modal of type: coinShop</code>,
+            and <code>Error showing rewarded ad for coins: Error: Unauthenticated</code>, with the UI falling back to
+            the <code>Ad Error</code> modal and toast. That confirms the helper wiring while keeping the authenticated
+            backend-delta proof open.
           </li>
           <li>
             The latest live replay also logs <code>[WelcomeBackModal QA] Dev auto-dismiss firing</code> followed by

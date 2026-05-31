@@ -382,6 +382,14 @@ describe("FullProfileDetailsModal", () => {
     const {getByTestId, getByText} = renderWithModalProvider(<FullProfileDetailsModal {...defaultProps} />);
 
     expect(getByText("TestUser")).toBeTruthy();
+    expect(getByTestId("profile-modal-shell").props.style).toEqual(
+      expect.objectContaining({
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "rgba(0,0,0,0.5)",
+      }),
+    );
     expect(getByTestId("profile-modal-header").props.style).toEqual(
       expect.objectContaining({
         flexShrink: 0,

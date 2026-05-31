@@ -1,6 +1,5 @@
 import React, {useState} from "react";
 import {Text, TouchableOpacity, View} from "react-native";
-import type {FirebaseAuthTypes} from "@react-native-firebase/auth";
 import AuthLayout from "../../components/layouts/AuthLayout";
 import CustomSafeAreaView from "../../components/layouts/CustomSafeAreaView";
 import StarryBackground from "../../components/background/StarryBackground";
@@ -13,6 +12,7 @@ import {LOADING_SPINNER_SIZE} from "../../constants/loading";
 import {styles, SPACING} from "../../styles";
 import {validateEmail} from "../../utils/emailValidation";
 import {AuthService} from "../../services/AuthService";
+import {getForgotPasswordErrorMessage} from "../../application/auth/authErrorMessages";
 import {logger} from "../../utils/logger";
 import {captureException} from "../../utils/sentry";
 
@@ -22,16 +22,6 @@ type AuthNavigation = {
 
 type ForgotPasswordScreenProps = {
   navigation?: AuthNavigation;
-};
-
-const getForgotPasswordErrorMessage = (error: unknown): string => {
-  const firebaseError = error as FirebaseAuthTypes.NativeFirebaseAuthError;
-
-  if (firebaseError.code === "auth/user-not-found") {
-    return AppStrings.AuthStrings.ForgotPassword.USER_NOT_FOUND_ERROR;
-  }
-
-  return firebaseError.message || AppStrings.AuthStrings.ForgotPassword.GENERIC_ERROR;
 };
 
 const ForgotPasswordScreen = ({navigation}: ForgotPasswordScreenProps) => {

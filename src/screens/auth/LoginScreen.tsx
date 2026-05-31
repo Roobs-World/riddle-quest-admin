@@ -1,6 +1,5 @@
 import React, {useState} from "react";
 import {Text, TouchableOpacity, View} from "react-native";
-import type {FirebaseAuthTypes} from "@react-native-firebase/auth";
 import AuthLayout from "../../components/layouts/AuthLayout";
 import CustomSafeAreaView from "../../components/layouts/CustomSafeAreaView";
 import StarryBackground from "../../components/background/StarryBackground";
@@ -17,6 +16,7 @@ import {isDesktop, isLargeTablet} from "../../utils/responsive";
 import {validateEmail} from "../../utils/emailValidation";
 import {AuthService} from "../../services/AuthService";
 import {useAuth} from "../../contexts/AuthContext";
+import {getLoginErrorMessage} from "../../application/auth/authErrorMessages";
 import {logger} from "../../utils/logger";
 import {captureException} from "../../utils/sentry";
 
@@ -26,24 +26,6 @@ type AuthNavigation = {
 
 type LoginScreenProps = {
   navigation?: AuthNavigation;
-};
-
-const getLoginErrorMessage = (error: unknown): string => {
-  const firebaseError = error as FirebaseAuthTypes.NativeFirebaseAuthError;
-
-  switch (firebaseError.code) {
-    case "auth/invalid-email":
-      return AppStrings.AuthStrings.Login.INVALID_EMAIL_FORMAT_ERROR;
-    case "auth/user-not-found":
-      return AppStrings.AuthStrings.Login.USER_NOT_FOUND_ERROR;
-    case "auth/wrong-password":
-    case "auth/invalid-credential":
-      return AppStrings.AuthStrings.Login.WRONG_PASSWORD_ERROR;
-    case "auth/user-disabled":
-      return AppStrings.AuthStrings.Login.USER_DISABLED_ERROR;
-    default:
-      return firebaseError.message || AppStrings.AuthStrings.Login.LOGIN_FAILED_GENERIC;
-  }
 };
 
 const LoginScreen = ({navigation}: LoginScreenProps) => {

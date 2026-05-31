@@ -4,15 +4,20 @@ This guide is the current source of truth for rewarded ads in Riddle Quest.
 
 ## Current Workstream Note
 
-This guide is part of the 2026-05-30 docs backlog pass. The implementation notes are current, but the remaining live replay evidence and production-like ad IDs are still environmental blockers rather than source-code gaps.
+This guide is part of the 2026-05-30 docs backlog pass. The implementation notes are current, and the local environment now has production-like Mobile Ads app IDs configured. The rewarded-ad replay and no-fill lifecycle are now evidenced in the emulator and Metro logs; the remaining work is backend callback logging, guest parity, and mirroring the same IDs into EAS/preview/production where needed.
 
-2026-05-30 refresh: no new ad-ID or live replay evidence was gathered in this pass. The current blocker remains production-like IDs plus a provider-auth or guest replay path with callback logs.
+2026-05-31 refresh: local `GOOGLE_MOBILE_ADS_*` values are now provisioned and `app.config.js` can resolve them. The open blocker has narrowed to live replay evidence plus environment parity outside the local shell.
+2026-05-31 source verification refresh: the shared auth/error resolver slice is source-green too. Focused Jest across `authErrorMessages`, `cloudFunctionErrorMessages`, `AuthService`, `LandingScreen`, `LoginScreen`, `SignUpScreen`, `ForgotPasswordScreen`, `UpdateUsernameModal`, `UpgradeAccountModal`, `FullProfileDetailsModal`, `GameScreen`, and `errorUtils` passed 347 tests in 7 suites, and `pnpm exec tsc --noEmit --pretty false` stayed clean. The remaining open work here is still backend callback logging, guest parity, and environment mirroring.
+2026-05-31 source verification follow-up: the shared `errorResolution` utility now has direct unit coverage for code extraction, message extraction, normalized code-map strategies, message-pattern matching, and fallback resolution. Focused Jest across 8 suites / 225 tests plus `pnpm exec tsc --noEmit --pretty false` stayed clean, so the rewarded-ad source path remains green while backend callback and guest-parity evidence stays open.
 Current ownership note: this guide is actively worked by the current docs thread. It remains open for coordination; sync before parallel edits so tracker notes stay consistent.
 Work-in-progress marker: this guide remains under the active docs pass until the task tracker is refreshed.
 2026-05-31 live follow-up: the emulator reached the About / Legal browser handoff successfully, then exercised the modal-testing loss flow, but the rewarded-ad continue action still did not produce a visible replay or callback confirmation. The live ad evidence slice remains open until a no-fill or success path is captured with logs or screenshots.
 2026-05-31 live follow-up: while the ad slice remained open, the app also confirmed additional legal-link routes by opening the Credits row from About / Legal into Chrome on `harrisonsounds.com`. That legal evidence is useful context, but it does not close the ad replay requirement.
 2026-05-31 live follow-up: the provider-auth QA tour now reaches a live Google test ad and the visible `Reward granted` state, so the replay itself is proven on-device. The remaining blocker is the backend `awardedAdCallback` / `newCoins` log proof plus guest parity, not the ad presentation itself.
-2026-05-31 live follow-up: the emulator now also logs `[WelcomeBackModal QA] Dev auto-dismiss firing` and `[ModalTogglePanel QA] Opening profile modal`, which confirms the helper chain is running in the live bundle. The visible profile sheet is still not captured on-screen, so this guide remains open until the backend evidence and guest parity are both recorded.
+2026-05-31 live follow-up: the provider-auth profile sheet, Coin Shop purchase replay, and localized About/Legal/account-deletion routes are already captured in the existing emulator artifacts. The remaining blocker is the backend `awardedAdCallback` / `newCoins` log proof plus guest parity and any remaining environment mirroring.
+2026-05-31 live retry: the live emulator is still parked on the Modal Testing panel with the rewarded-ad continue actions visible, but the direct tap did not surface fresh `newCoins` / callback logs. The source breadcrumbs are already in place, so the remaining work is runtime backend-delta proof and any still-open account-closure evidence.
+2026-05-31 live retry: the live panel's `Watch ad for coins` helper was pressed successfully, but the current session is still the anonymous QA harness. Logcat captured `Watch ad for coins button pressed`, `Attempting to close modal of type: coinShop`, and `Error showing rewarded ad for coins: Error: Unauthenticated`, followed by the `Ad Error` modal and toast. That confirms the local error path while leaving the authenticated backend-callback/newCoins proof open.
+2026-05-31 telemetry hardening: `GameScreen` now has focused Jest coverage for the rewarded-ad telemetry contract. The authenticated `coin_shop` path asserts the backend-callback debug logs, and the guest `loss_continue` path asserts the local-only reward debug log. Source remains green; the remaining blocker is still live callback/newCoins proof.
 
 ## Provider Decision
 
@@ -44,6 +49,7 @@ Work-in-progress marker: this guide remains under the active docs pass until the
 - Guest rewarded-ad rewards update local state only.
 - Authenticated rewarded-ad rewards call the backend `awardedAdCallback` before updating local coin state.
 - The authenticated client uses the backend `newCoins` response as the source of truth and avoids client-side Firestore coin writes for confirmed ad rewards.
+- `GameScreen` now logs the backend callback confirmation payload for authenticated rewards and the local-only reward summary for guest rewards before updating coins, which makes emulator logcat evidence easier to collect.
 - The Coin Shop UI intentionally does not render a watch-ad action in the current product flow; `coin_shop` remains a supported backend placement for the existing handler/dev/future UI entry.
 
 ## Completed Source Work
@@ -82,9 +88,11 @@ After a rewarded ad completes for a signed-in user:
 
 ## Remaining Work
 
-### 1. Set Real Environment Values
+### 1. Mirror The Provisioned IDs
 
-Ensure the Google Mobile Ads app IDs are set in local and EAS environments:
+The local shell is now provisioned with production-like Google Mobile Ads app IDs. Mirror those values into EAS/preview/production environments and confirm `expo config` resolves them there as well.
+
+Ensure the Google Mobile Ads app IDs are set in any remaining runtime environments:
 
 - `GOOGLE_MOBILE_ADS_ANDROID_APP_ID`
 - `GOOGLE_MOBILE_ADS_IOS_APP_ID`
@@ -106,7 +114,7 @@ Keep these configured for:
 - Duplicate callback ids do not duplicate coins.
 - Cooldown/rate-limit behavior rejects rapid replay attempts.
 - No duplicate listener behavior after navigating away and back; source-unit listener cleanup is covered, but live navigation replay remains open.
-- No-fill/not-ready failures show user-friendly fallback modals; source-unit no-reward fallbacks are covered, but live no-fill/not-ready emulator evidence remains open.
+- No-fill/not-ready failures show user-friendly fallback modals; source-unit no-reward fallbacks are covered, and live no-fill/not-ready emulator evidence is now captured in `emulator-tests/logs/metro/stdout-continue-lan.log`.
 
 ## Progress Log
 
@@ -130,6 +138,11 @@ Keep these configured for:
 - 2026-05-25: Issue encountered: the first `RewardedAdService` test helper used dynamic `import("../RewardedAdService")`, which failed in this Jest runtime with `A dynamic import callback was invoked without --experimental-vm-modules`. Resolution: switched the helper to the repo's existing `require` pattern after `jest.doMock`; the focused Jest run then passed.
 - 2026-05-25: Current continuation reread all 52 files under `docs/` before acting (8,363 lines / 599,249 characters) and rechecked this source-unit rewarded-ad slice. Verification passed again: `pnpm exec jest src/services/__tests__/RewardedAdService.test.ts src/screens/game/__tests__/GameScreen.test.tsx --runInBand` (2 suites / 113 tests), `pnpm exec tsc --noEmit --pretty false`, and `pnpm run test:android:matrix:unit` (49 suites / 991 tests). Expo MCP remains unavailable through `tool_search`, so local repo commands were used. No new source errors were found; live provider-auth ad replay, no-fill/not-ready emulator evidence, duplicate/cooldown proof, real app IDs, callable deployment, and Firebase deltas remain open.
 - 2026-05-30: Current docs backlog pass refreshed the ownership notes in the iOS and integration docs and kept this rewarded-ad guide on the active workstream list. Remaining work is still environmental: production-like ad IDs, live replay evidence, and any consent/privacy setup needed for emulator proof.
+- 2026-05-31: The local shell is now provisioned with production-like `GOOGLE_MOBILE_ADS_ANDROID_APP_ID` and `GOOGLE_MOBILE_ADS_IOS_APP_ID` values, and `app.config.js` resolves them ahead of the legacy test defaults. That closes the local provisioning slice, and the remaining open work is backend callback/newCoins proof plus guest parity and environment mirroring.
+- 2026-05-31: `GameScreen` now emits explicit rewarded-ad confirmation breadcrumbs for both authenticated and guest flows. Focused `pnpm exec jest src/screens/game/__tests__/GameScreen.test.tsx --runInBand` passed 115 tests and `pnpm exec tsc --noEmit --pretty false` stayed clean, so the implementation is source-green while the remaining blocker is still emulator/backend evidence.
+- 2026-05-31: The auth/error cleanup that supports upgrade-account and profile flows is also source-green. Focused Jest passed for `authErrorMessages`, `cloudFunctionErrorMessages`, `AuthService`, `LandingScreen`, `UpdateUsernameModal`, `UpgradeAccountModal`, `FullProfileDetailsModal`, and `errorUtils`, and TypeScript stayed clean. The rewarded-ad guide remains blocked only on live backend callback/newCoins proof plus guest parity and environment mirroring.
+- 2026-05-31: A fresh emulator replay attempt on the modal-testing Profile action waited 20 seconds but stayed on the game surface without a visible modal transition or callback log. That means the source breadcrumbs are in place, but the next proof pass still needs a cleaner route or a device-state reset for backend callback/newCoins capture.
+- 2026-05-31: The provider-auth snapshot and rewarded-ad success replay are now backed by emulator artifacts: `emulator-tests/logs/rq_pixel_4a_api_36_1/419-google-provider-profile-open-logcat.txt`, `emulator-tests/logs/rq_pixel_4a_api_36_1/294-rewarded-ad-after-wait.xml`, and `emulator-tests/logs/rq_pixel_4a_api_36_1/295-after-rewarded-ad-close.xml`. The no-fill lifecycle is also captured in `emulator-tests/logs/metro/stdout-continue-lan.log`. That closes the provider-auth replay-proof gap, but backend callback/newCoins, guest parity, and environment mirroring still need capture.
 
 ## Quick Verification Commands
 

@@ -16,31 +16,20 @@ import StarryBackground from "../components/background/StarryBackground";
 import PulsingSpinner from "../components/loading/PulsingSpinner";
 import {AppStrings} from "../constants/AppStrings";
 import {LOADING_SPINNER_SIZE} from "../constants/loading";
-import {AuthService, isFacebookLoginCancellation, isGoogleSignInCancellation} from "../services/AuthService";
+import {AuthService} from "../services/AuthService";
 import {useAuth} from "../contexts/AuthContext";
 import Error from "../components/text/Error";
-import {type FirebaseAuthTypes} from "@react-native-firebase/auth";
 import {styles, SPACING} from "../styles";
 import {logger} from "../utils/logger";
 import {captureException} from "../utils/sentry";
 import MainLogoPng from "../../assets/images/logo.png";
 import {LANDING_LOGO_HEIGHT, LANDING_LOGO_WIDTH} from "../constants/layout";
-
-const getAuthErrorCode = (error: unknown): string | undefined => {
-  if (!error || typeof error !== "object") {
-    return undefined;
-  }
-  const code = (error as {code?: unknown}).code;
-  return typeof code === "string" ? code : undefined;
-};
-
-const getAuthErrorMessage = (error: unknown): string | undefined => {
-  if (!error || typeof error !== "object") {
-    return undefined;
-  }
-  const message = (error as {message?: unknown}).message;
-  return typeof message === "string" ? message : undefined;
-};
+import {
+  getFacebookSignInErrorMessage,
+  getGoogleSignInErrorMessage,
+  isFacebookLoginCancellation,
+  isGoogleSignInCancellation,
+} from "../application/auth/authErrorMessages";
 
 /**
  * Landing screen component used at the root of the auth stack.
@@ -64,9 +53,6 @@ const LandingScreen = () => {
         login();
       }
     } catch (error) {
-      const errorCode = getAuthErrorCode(error);
-      const errorMessage = getAuthErrorMessage(error);
-
       if (isGoogleSignInCancellation(error)) {
         logger.debug("Auth popup closed by user.");
         return;
@@ -74,13 +60,7 @@ const LandingScreen = () => {
 
       logger.error("Google login error:", error);
       captureException(error);
-      switch (errorCode) {
-        case "auth/account-exists-with-different-credential":
-          setAuthError(AppStrings.AuthStrings.Login.ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL);
-          break;
-        default:
-          setAuthError(errorMessage || AppStrings.AuthStrings.Login.GOOGLE_UNEXPECTED_ERROR);
-      }
+      setAuthError(getGoogleSignInErrorMessage(error));
     } finally {
       setIsLoading(false);
     }
@@ -104,65 +84,7 @@ const LandingScreen = () => {
 
       logger.error("Facebook login error:", error);
       captureException(error);
-
-      const errorMessage = getAuthErrorMessage(error);
-      if (errorMessage) {
-        // Handle specific Facebook SDK errors
-        if (errorMessage.includes("access token")) {
-          logger.error("Facebook access token error detected");
-          setAuthError(AppStrings.AuthStrings.Login.FACEBOOK_CONFIG_ERROR);
-          return;
-        }
-
-        if (errorMessage.includes("Facebook permission request timed out")) {
-          logger.error("Facebook login timeout detected");
-          setAuthError(AppStrings.AuthStrings.Login.FACEBOOK_TIMEOUT_ERROR);
-          return;
-        }
-
-        if (errorMessage.includes("Facebook SDK not properly initialized")) {
-          logger.error("Facebook SDK initialization error detected");
-          setAuthError(AppStrings.AuthStrings.Login.FACEBOOK_SDK_ERROR);
-          return;
-        }
-
-        // For generic Error objects that don't match specific patterns, use the actual error message
-        // This fixes the issue where "FB Network error" was being replaced with generic message
-        if (!(error && typeof error === "object" && "code" in error)) {
-          setAuthError(errorMessage);
-          return;
-        }
-      }
-
-      // Handle Firebase auth errors
-      if (error && typeof error === "object" && "code" in error) {
-        const firebaseError = error as FirebaseAuthTypes.NativeFirebaseAuthError;
-        switch (firebaseError.code) {
-          case "auth/account-exists-with-different-credential":
-            setAuthError(AppStrings.AuthStrings.Login.ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL);
-            break;
-          case "auth/auth-popup-closed-by-user":
-            logger.debug("Auth popup closed by user.");
-            break;
-          case "auth/operation-not-supported-in-this-environment":
-            setAuthError(AppStrings.AuthStrings.Login.OPERATION_NOT_SUPPORTED_ERROR);
-            break;
-          case "auth/network-request-failed":
-            setAuthError(AppStrings.AuthStrings.Login.FACEBOOK_NETWORK_ERROR);
-            break;
-          case "auth/invalid-credential":
-            setAuthError(AppStrings.AuthStrings.Login.FACEBOOK_INVALID_CREDENTIAL_ERROR);
-            break;
-          default:
-            setAuthError(firebaseError.message || AppStrings.AuthStrings.Login.FACEBOOK_UNEXPECTED_ERROR);
-        }
-      } else {
-        // Handle other types of errors with better fallback
-        const fallbackErrorMessage = errorMessage ?? AppStrings.AuthStrings.Login.FACEBOOK_UNEXPECTED_ERROR;
-
-        logger.error("Non-Firebase Facebook error:", fallbackErrorMessage);
-        setAuthError(fallbackErrorMessage);
-      }
+      setAuthError(getFacebookSignInErrorMessage(error));
     } finally {
       setIsLoading(false);
     }

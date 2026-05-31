@@ -1007,10 +1007,21 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
   const confirmRewardedAdReward = useCallback(
     async (placement: "loss_continue" | "coin_shop") => {
       if (!isGuestMode) {
+        logger.debug("Confirming rewarded ad reward with backend callback", {
+          placement,
+          userId: playerData?.userId,
+        });
         const rewardResult = await recordRewardedAdCompletion(placement);
         if (playerData) {
           updatePlayerDataLocally({coins: rewardResult.newCoins}, {syncToFirestore: false});
         }
+        logger.debug("Rewarded ad backend callback confirmed", {
+          placement,
+          callbackId: rewardResult.callbackId,
+          alreadyProcessed: rewardResult.alreadyProcessed,
+          rewardCoins: rewardResult.rewardCoins,
+          newCoins: rewardResult.newCoins,
+        });
         return {
           rewardCoins: rewardResult.rewardCoins,
           totalCoins: rewardResult.newCoins,
@@ -1023,6 +1034,11 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
           coins: totalCoins,
         });
       }
+      logger.debug("Rewarded ad guest reward applied locally", {
+        placement,
+        rewardCoins: CONTINUE_REWARDED_AD_COIN_REWARD,
+        totalCoins,
+      });
       return {
         rewardCoins: CONTINUE_REWARDED_AD_COIN_REWARD,
         totalCoins,
@@ -1826,6 +1842,9 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
       },
     });
   }, [
+    currentGuess,
+    gameMode,
+    isGuestMode,
     playerData?.userId,
     riddleId,
     modal,
@@ -1836,6 +1855,7 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
     setCurrentGuess,
     setActiveSlotIndexSynced,
     setHintRevealedIndicesSynced,
+    updatePlayerDataLocally,
     onHintUsed,
     showTooltipOnce,
     tooltip,
@@ -2212,6 +2232,12 @@ const GameScreenInner: React.FC<GameScreenProps> = ({
             onCompleteRiddle={handleDebugCompleteRiddle}
             onGenerateDailyChallenge={handleDebugGenerateDailyChallenge}
             onClearLocalData={handleDebugClearLocalData}
+            onWatchRewardedAdForCoins={() => {
+              void handleWatchAdForCoins();
+            }}
+            onWatchRewardedAdForLossContinue={() => {
+              void runRewardedAdContinueFlow();
+            }}
           />
         )}
       </SafeAreaView>

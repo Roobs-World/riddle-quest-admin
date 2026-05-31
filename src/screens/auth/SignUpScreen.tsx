@@ -1,6 +1,5 @@
 import React, {useMemo, useState} from "react";
 import {Linking, Text, TouchableOpacity, View} from "react-native";
-import type {FirebaseAuthTypes} from "@react-native-firebase/auth";
 import AuthLayout from "../../components/layouts/AuthLayout";
 import CustomSafeAreaView from "../../components/layouts/CustomSafeAreaView";
 import StarryBackground from "../../components/background/StarryBackground";
@@ -15,6 +14,7 @@ import {LOADING_SPINNER_SIZE} from "../../constants/loading";
 import {styles, SPACING} from "../../styles";
 import {AuthService} from "../../services/AuthService";
 import {useAuth} from "../../contexts/AuthContext";
+import {getSignUpErrorMessage} from "../../application/auth/authErrorMessages";
 import {signUpSchema} from "../../validation/authSchemas";
 import {logger} from "../../utils/logger";
 import {captureException} from "../../utils/sentry";
@@ -25,23 +25,6 @@ type AuthNavigation = {
 
 type SignUpScreenProps = {
   navigation?: AuthNavigation;
-};
-
-const getSignUpErrorMessage = (error: unknown): string => {
-  const firebaseError = error as FirebaseAuthTypes.NativeFirebaseAuthError;
-
-  switch (firebaseError.code) {
-    case "auth/email-already-in-use":
-      return AppStrings.AuthStrings.SignUp.EMAIL_ALREADY_IN_USE_ERROR;
-    case "auth/invalid-email":
-      return AppStrings.AuthStrings.SignUp.INVALID_EMAIL_ERROR;
-    case "auth/operation-not-allowed":
-      return AppStrings.AuthStrings.SignUp.OPERATION_NOT_ALLOWED_ERROR;
-    case "auth/weak-password":
-      return AppStrings.AuthStrings.SignUp.WEAK_PASSWORD_ERROR;
-    default:
-      return firebaseError.message || AppStrings.AuthStrings.SignUp.SIGNUP_UNEXPECTED_ERROR;
-  }
 };
 
 const SignUpScreen = ({navigation}: SignUpScreenProps) => {

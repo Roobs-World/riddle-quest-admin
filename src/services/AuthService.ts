@@ -15,6 +15,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {safeTimeout} from "../utils/timing";
 import {logger} from "../utils/logger";
 import {captureException} from "../utils/sentry";
+import {
+  isFacebookLoginCancellation,
+  isGoogleSignInCancellation,
+} from "../application/auth/authErrorMessages";
 
 /**
  * Ensures the function runs on the main thread to avoid threading issues with Google Play Services
@@ -42,92 +46,7 @@ const clearLocalAuthData = async (reason: string): Promise<void> => {
   }
 };
 
-const GOOGLE_CANCELLATION_CODES = new Set([
-  "auth/auth-popup-closed-by-user",
-  "auth/cancelled-popup-request",
-  "SIGN_IN_CANCELLED",
-  "sign_in_cancelled",
-]);
-
-const GOOGLE_CANCELLATION_MESSAGES = [
-  "Google sign-in cancelled by user",
-  "User cancelled the login flow",
-  "User cancelled the login process",
-];
-
-const FACEBOOK_CANCELLATION_CODES = new Set(["auth/auth-popup-closed-by-user", "auth/cancelled-popup-request"]);
-
-const FACEBOOK_CANCELLATION_MESSAGES = [
-  "User cancelled the login process",
-  "Facebook login cancelled.",
-  "User cancelled the login flow",
-  "Account linking cancelled by user",
-];
-
-const getAuthErrorMessage = (error: unknown): string | undefined => {
-  if (typeof error === "string") {
-    return error;
-  }
-  if (!error || typeof error !== "object") {
-    return undefined;
-  }
-  const message = (error as {message?: unknown}).message;
-  return typeof message === "string" ? message : undefined;
-};
-
-export const isFacebookLoginCancellation = (error: unknown): boolean => {
-  if (!error) {
-    return false;
-  }
-
-  const errorMessage = getAuthErrorMessage(error);
-  if (errorMessage && FACEBOOK_CANCELLATION_MESSAGES.some((message) => errorMessage.includes(message))) {
-    return true;
-  }
-
-  if (typeof error !== "object") {
-    return false;
-  }
-
-  const maybeError = error as {
-    code?: unknown;
-    isCancelled?: unknown;
-    message?: unknown;
-  };
-
-  if (maybeError.isCancelled === true) {
-    return true;
-  }
-
-  if (typeof maybeError.code === "string" && FACEBOOK_CANCELLATION_CODES.has(maybeError.code)) {
-    return true;
-  }
-
-  return false;
-};
-
-export const isGoogleSignInCancellation = (error: unknown): boolean => {
-  if (!error) {
-    return false;
-  }
-
-  const errorMessage = getAuthErrorMessage(error);
-  if (errorMessage && GOOGLE_CANCELLATION_MESSAGES.some((message) => errorMessage.includes(message))) {
-    return true;
-  }
-
-  if (typeof error !== "object") {
-    return false;
-  }
-
-  const maybeError = error as {code?: unknown; isCancelled?: unknown; type?: unknown};
-
-  if (maybeError.isCancelled === true || maybeError.type === "cancelled") {
-    return true;
-  }
-
-  return typeof maybeError.code === "string" && GOOGLE_CANCELLATION_CODES.has(maybeError.code);
-};
+export {isFacebookLoginCancellation, isGoogleSignInCancellation} from "../application/auth/authErrorMessages";
 
 export const AuthService = {
   async linkAnonymousWithGoogle(): Promise<FirebaseAuthTypes.UserCredential> {
