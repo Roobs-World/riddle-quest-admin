@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useCallback, useEffect} from "react";
 import {Image, Modal, Pressable, Text, View} from "react-native";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
 import HomeBg from "../../../../assets/images/home-bg.svg";
@@ -15,6 +15,7 @@ import SlideInModalContent from "../../shared/SlideInModalContent";
 import {moderateScale, verticalScale} from "../../../utils/responsive";
 import RotatingWheelBackground from "@/components/shared/RotatingWheelBackground";
 import {useAuth} from "@/contexts/AuthContext";
+import {logger} from "@/utils/logger";
 
 interface WelcomeBackModalProps {
   isVisible: boolean;
@@ -30,10 +31,24 @@ const WelcomeBackModal: React.FC<WelcomeBackModalProps> = ({isVisible, onClose, 
   const avatarRadius = AVATAR_SIZE_LARGE / 2;
   const initial = (username || AppStrings.Profile.GUEST_USERNAME).charAt(0).toUpperCase();
 
-  const handleDismiss = () => {
+  const handleDismiss = useCallback(() => {
     onClose();
     onDismiss?.();
-  };
+  }, [onClose, onDismiss]);
+
+  useEffect(() => {
+    if (!__DEV__ || !isVisible) {
+      return;
+    }
+
+    logger.debug("[WelcomeBackModal QA] Scheduling dev auto-dismiss");
+    const timer = setTimeout(() => {
+      logger.debug("[WelcomeBackModal QA] Dev auto-dismiss firing");
+      handleDismiss();
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, [handleDismiss, isVisible]);
 
   return (
     <Modal animationType="none" transparent={true} visible={isVisible} onRequestClose={handleDismiss}>

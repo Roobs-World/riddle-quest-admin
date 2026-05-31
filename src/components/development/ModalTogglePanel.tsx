@@ -25,7 +25,7 @@
  * @since 2024
  */
 
-import React, {useCallback, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import {View, Text, TouchableOpacity, Switch, ScrollView, StyleSheet} from "react-native";
 import {modalRegistry, getModalComponent} from "../modals/ModalRegistry";
 import {ModalData} from "../../types/ModalTypes";
@@ -405,6 +405,13 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
     [key: string]: boolean | Record<string, unknown>;
   }>({});
   const modalTypes = Object.keys(modalRegistry);
+  const quickActions = [
+    {label: "Profile", modalType: "fullProfileDetails"},
+    {label: "Loss", modalType: "loss"},
+    {label: "Coin Shop", modalType: "coinShop"},
+    {label: "Settings", modalType: "settings"},
+  ] as const;
+  const qaTourStartedRef = useRef(false);
 
   const spendDebugCoins = useCallback(
     (amount: number): boolean => {
@@ -439,24 +446,42 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
   /**
    * Toggle Modal Visibility
    */
-  const toggleModal = (modalType: string, isVisible: boolean) => {
+  const toggleModal = useCallback((modalType: string, isVisible: boolean) => {
     setModalToggles((prev) => {
       const updatedToggles = {...prev};
       updatedToggles[modalType] = isVisible;
       return updatedToggles;
     });
-  };
+  }, []);
 
   /**
    * Close Modal
    */
-  const closeModal = (modalType: string) => {
+  const closeModal = useCallback((modalType: string) => {
     setModalToggles((prev) => {
       const updatedToggles = {...prev};
       updatedToggles[modalType] = false;
       return updatedToggles;
     });
-  };
+  }, []);
+
+  useEffect(() => {
+    if (!__DEV__ || qaTourStartedRef.current || !playerData) {
+      return;
+    }
+
+    qaTourStartedRef.current = true;
+    logger.debug("[ModalTogglePanel QA] Scheduling profile auto-open");
+
+    const profileTimer = setTimeout(() => {
+      logger.debug("[ModalTogglePanel QA] Opening profile modal");
+      toggleModal("fullProfileDetails", true);
+    }, 1800);
+
+    return () => {
+      clearTimeout(profileTimer);
+    };
+  }, [playerData, toggleModal]);
 
   /**
    * Render Active Modals
@@ -535,6 +560,18 @@ const ModalTogglePanel: React.FC<ModalTogglePanelProps> = ({
             {AppStrings.DevTools.MODAL_TESTING_HEADER} {isExpanded ? "▼" : "▶"}
           </Text>
         </TouchableOpacity>
+
+        <View style={styles.quickActionsRow}>
+          {quickActions.map((action) => (
+            <TouchableOpacity
+              key={action.modalType}
+              style={styles.quickActionButton}
+              onPress={() => toggleModal(action.modalType, true)}
+            >
+              <Text style={styles.quickActionText}>{action.label}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
 
         {isExpanded && (
           <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
@@ -628,6 +665,29 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: verticalScale(100),
     zIndex: 9999,
+  },
+  quickActionButton: {
+    alignItems: "center",
+    backgroundColor: COLORS.gray100,
+    borderColor: COLORS.gray300,
+    borderRadius: BORDER_RADIUS.sm,
+    borderWidth: 1,
+    flex: 1,
+    paddingHorizontal: SPACING.xs,
+    paddingVertical: SPACING.xs,
+  },
+  quickActionText: {
+    color: COLORS.textPrimary,
+    fontFamily: TYPOGRAPHY.fontSecondary,
+    fontSize: TYPOGRAPHY.fontSize.xs,
+    fontWeight: "600",
+    textAlign: "center",
+  },
+  quickActionsRow: {
+    flexDirection: "row",
+    gap: SPACING.xs,
+    paddingHorizontal: SPACING.sm,
+    paddingTop: SPACING.sm,
   },
   content: {
     maxHeight: verticalScale(300),

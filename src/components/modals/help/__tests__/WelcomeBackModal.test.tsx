@@ -1,5 +1,5 @@
 import React from "react";
-import {fireEvent, render} from "@testing-library/react-native";
+import {act, fireEvent, render} from "@testing-library/react-native";
 import WelcomeBackModal from "../WelcomeBackModal";
 import {AppStrings} from "../../../../constants/AppStrings";
 
@@ -17,6 +17,14 @@ jest.mock("@/contexts/AuthContext", () => ({
 describe("WelcomeBackModal", () => {
   const mockOnClose = jest.fn();
   const mockOnDismiss = jest.fn();
+
+  beforeAll(() => {
+    jest.useFakeTimers();
+  });
+
+  afterAll(() => {
+    jest.useRealTimers();
+  });
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -54,6 +62,17 @@ describe("WelcomeBackModal", () => {
     );
 
     fireEvent.press(getByTestId("welcome-back-modal-touch-target"));
+
+    expect(mockOnClose).toHaveBeenCalledTimes(1);
+    expect(mockOnDismiss).toHaveBeenCalledTimes(1);
+  });
+
+  it("auto-dismisses when shown in development mode", async () => {
+    render(<WelcomeBackModal isVisible onClose={mockOnClose} onDismiss={mockOnDismiss} username="Craig" />);
+
+    await act(async () => {
+      jest.advanceTimersByTime(1500);
+    });
 
     expect(mockOnClose).toHaveBeenCalledTimes(1);
     expect(mockOnDismiss).toHaveBeenCalledTimes(1);

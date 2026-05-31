@@ -9,6 +9,10 @@ This guide is part of the 2026-05-30 docs backlog pass. The implementation notes
 2026-05-30 refresh: no new ad-ID or live replay evidence was gathered in this pass. The current blocker remains production-like IDs plus a provider-auth or guest replay path with callback logs.
 Current ownership note: this guide is actively worked by the current docs thread. It remains open for coordination; sync before parallel edits so tracker notes stay consistent.
 Work-in-progress marker: this guide remains under the active docs pass until the task tracker is refreshed.
+2026-05-31 live follow-up: the emulator reached the About / Legal browser handoff successfully, then exercised the modal-testing loss flow, but the rewarded-ad continue action still did not produce a visible replay or callback confirmation. The live ad evidence slice remains open until a no-fill or success path is captured with logs or screenshots.
+2026-05-31 live follow-up: while the ad slice remained open, the app also confirmed additional legal-link routes by opening the Credits row from About / Legal into Chrome on `harrisonsounds.com`. That legal evidence is useful context, but it does not close the ad replay requirement.
+2026-05-31 live follow-up: the provider-auth QA tour now reaches a live Google test ad and the visible `Reward granted` state, so the replay itself is proven on-device. The remaining blocker is the backend `awardedAdCallback` / `newCoins` log proof plus guest parity, not the ad presentation itself.
+2026-05-31 live follow-up: the emulator now also logs `[WelcomeBackModal QA] Dev auto-dismiss firing` and `[ModalTogglePanel QA] Opening profile modal`, which confirms the helper chain is running in the live bundle. The visible profile sheet is still not captured on-screen, so this guide remains open until the backend evidence and guest parity are both recorded.
 
 ## Provider Decision
 

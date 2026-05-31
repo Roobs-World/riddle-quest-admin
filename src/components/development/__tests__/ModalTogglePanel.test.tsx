@@ -7,6 +7,7 @@ import {MODAL_REGISTRY_TYPES} from "../../modals/modalTypes";
 const mockDebug = jest.fn();
 const mockWarn = jest.fn();
 const mockGetModalComponent = jest.fn();
+let mockPlayerData: Record<string, unknown> | null = null;
 
 const expectedModalTypes = [...MODAL_REGISTRY_TYPES];
 
@@ -22,7 +23,7 @@ jest.mock("react-native-iap", () => ({}));
 
 jest.mock("../../../contexts/AuthContext", () => ({
   useAuth: () => ({
-    playerData: null,
+    playerData: mockPlayerData,
   }),
 }));
 
@@ -44,6 +45,7 @@ describe("ModalTogglePanel", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockPlayerData = null;
 
     mockGetModalComponent.mockImplementation((modalType: string) => {
       return ({onClose, ...props}: any) => {
@@ -147,6 +149,55 @@ describe("ModalTogglePanel", () => {
     }
 
     expect(mockGetModalComponent).toHaveBeenCalled();
+  });
+
+  it("opens the quick action modals from the debug shortcut row", () => {
+    const {getByText, queryByTestId} = render(<ModalTogglePanel />);
+
+    fireEvent.press(getByText("Profile"));
+    expect(queryByTestId("active-fullProfileDetails")).toBeTruthy();
+
+    fireEvent.press(getByText("Loss"));
+    expect(queryByTestId("active-loss")).toBeTruthy();
+
+    fireEvent.press(getByText("Coin Shop"));
+    expect(queryByTestId("active-coinShop")).toBeTruthy();
+
+    fireEvent.press(getByText("Settings"));
+    expect(queryByTestId("active-settings")).toBeTruthy();
+  });
+
+  it("auto-opens the profile modal once player data is available", async () => {
+    mockPlayerData = {userId: "user-123"};
+
+    const {queryByTestId} = render(<ModalTogglePanel />);
+
+    expect(queryByTestId("active-fullProfileDetails")).toBeNull();
+
+    await act(async () => {
+      jest.advanceTimersByTime(1800);
+    });
+
+    expect(queryByTestId("active-fullProfileDetails")).toBeTruthy();
+  });
+
+  it("does not auto-open the profile modal outside development", async () => {
+    const originalDev = (global as any).__DEV__;
+    (global as any).__DEV__ = false;
+
+    try {
+      mockPlayerData = {userId: "user-123"};
+
+      const {queryByTestId} = render(<ModalTogglePanel />);
+
+      await act(async () => {
+        jest.advanceTimersByTime(1800);
+      });
+
+      expect(queryByTestId("active-fullProfileDetails")).toBeNull();
+    } finally {
+      (global as any).__DEV__ = originalDev;
+    }
   });
 
   it("handles __fetchServerData modal data updates and merges updated payload", async () => {

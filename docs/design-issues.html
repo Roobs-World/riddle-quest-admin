@@ -259,9 +259,9 @@
           <a href="./android-emulator-firebase-qa-plan.html">android-emulator-firebase-qa-plan.html</a>. This file keeps
           defects and open verification gaps visible without removing checks from the full QA plan.
         </p>
-        <p class="meta">Last updated: 2026-05-30. Workspace: <code>E:\qwordly</code>.</p>
+        <p class="meta">Last updated: 2026-05-31. Workspace: <code>E:\qwordly</code>.</p>
         <p class="meta">
-          Current workstream note: this issue register is part of the 2026-05-30 docs backlog pass. Keep the tracker
+          Current workstream note: this issue register is part of the 2026-05-31 docs backlog pass. Keep the tracker
           synchronized with the latest evidence notes and avoid parallel edits while the active docs slice is in
           flight.
         </p>
@@ -280,6 +280,16 @@
         <p class="meta">
           2026-05-30 tracker refresh: this issue register is actively owned by the current docs thread while remaining
           QA gaps are revalidated. No new defect evidence was added in this pass.
+        </p>
+        <p class="meta">
+          2026-05-31 source verification: focused Jest passed for the rewarded-ad service and GameScreen reward branches,
+          including authenticated callback processing, guest local-only fallback, and no-fill handling. That confirms the
+          source implementation behind DSI-006 and DSI-007, but the live provider-auth replay and production ad IDs still
+          need emulator evidence before the blockers can be closed.
+        </p>
+        <p class="meta">
+          2026-05-31 source verification follow-up: ModalTogglePanel quick-action coverage also passed, so the debug
+          modal surface is validated while the live provider-auth replay and production ad IDs remain open.
         </p>
 
         <div class="summary-grid" aria-label="Issue summary">
@@ -1583,17 +1593,26 @@
             fallbacks for Coin Shop and loss-modal rewarded ads, plus cleanup of temporary Google Mobile Ads
             reward/close listeners across repeated shows; <code>pnpm run test:android:matrix:unit</code> includes this
             coverage and passed 49 suites / 991 tests on 2026-05-25. The current Coin Shop UI intentionally does not
-            render a watch-ad action. Live provider-auth emulator replay, live no-fill/not-ready evidence, and Firebase
-            delta proof remain TODO. The loss modal should show both <code>Watch Ad for 3 Extra Guesses</code> and
-            <code>Open Shop</code> when the user has fewer than <code>100</code> coins.
+            render a watch-ad action. The live provider-auth QA tour now reaches a visible Google test ad and
+            <code>Reward granted</code> state, so the replay path itself is proven on-device; the backend callback /
+            <code>newCoins</code> proof, guest parity, and no-fill/not-ready emulator evidence remain TODO. The loss
+            modal should show both <code>Watch Ad for 3 Extra Guesses</code> and <code>Open Shop</code> when the user
+            has fewer than <code>100</code> coins.
           </li>
           <li>
             Current rewarded-ad recheck: after rereading all 52 docs files, focused rewarded-ad Jest passed 2 suites /
             113 tests, TypeScript passed with no output, and <code>pnpm run test:android:matrix:unit</code> passed 49
             suites / 991 tests. Expo MCP remained unavailable through <code>tool_search</code>, so local repo commands
-            were used. No new source failures were found; live provider-auth ad replay, no-fill/not-ready emulator
-            evidence, duplicate callback/cooldown proof, real Mobile Ads IDs, deployed callable proof, and Firebase
+            were used. No new source failures were found; the live provider-auth QA tour now reaches a visible Google
+            test ad and <code>Reward granted</code> state, but backend callback/<code>newCoins</code> proof, guest
+            parity, duplicate callback/cooldown proof, real Mobile Ads IDs, deployed callable proof, and Firebase
             deltas remain open.
+          </li>
+          <li>
+            The latest live replay also logs <code>[WelcomeBackModal QA] Dev auto-dismiss firing</code> followed by
+            <code>[ModalTogglePanel QA] Opening profile modal</code>, which confirms the helper chain is running in the
+            live bundle. The screenshot still only shows the game surface and debug panel, so the visible provider-auth
+            profile sheet remains open.
           </li>
           <li>
             Coin purchase fanfare and level-up fanfare guest dev-panel open/dismiss/Back behavior now have emulator
