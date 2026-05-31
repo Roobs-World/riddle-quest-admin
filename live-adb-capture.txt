@@ -44582,3 +44582,39 @@
 06-01 00:17:07.098 D/SatelliteController( 1143): getCarrierRoamingNtnConnectType: Falling back to global carrier config connect type: 0
 06-01 00:17:08.703 I/wpa_supplicant(  999): wlan0: CTRL-EVENT-BEACON-LOSS 
 06-01 00:17:09.950 I/HalDevMgr(  756): bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]
+06-01 00:17:12.966 I/HalDevMgr(  756): bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]
+06-01 00:17:14.067 D/ActivityManager(  756): freezing 2909 com.google.android.apps.safetyhub
+06-01 00:17:14.070 D/InetDiagMessage(  756): Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+06-01 00:17:14.070 D/InetDiagMessage(  756): Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+06-01 00:17:14.070 D/InetDiagMessage(  756): Destroyed live tcp sockets for uids={10156} in 1ms
+06-01 00:17:15.973 I/HalDevMgr(  756): bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]
+06-01 00:17:16.637 I/wpa_supplicant(  999): wlan0: CTRL-EVENT-BEACON-LOSS 
+06-01 00:17:17.097 D/SatelliteController( 1143): iisInCarrierRoamingNbIotNtn: satellite is disabled
+06-01 00:17:17.100 D/SatelliteController( 1143): getCarrierRoamingNtnConnectType: Falling back to global carrier config connect type: 0
+06-01 00:17:19.044 I/HalDevMgr(  756): bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]
+06-01 00:17:22.052 I/HalDevMgr(  756): bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]
+06-01 00:17:24.446 D/WifiNl80211Manager(  756): Scan result ready event
+06-01 00:17:24.446 D/WifiNative(  756): Scan result ready event
+06-01 00:17:24.453 I/WifiScanner( 1315): onFullResults
+06-01 00:17:24.458 I/WifiScanner( 1315): onFullResults
+06-01 00:17:24.463 I/HalDevMgr(  756): bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]
+06-01 00:17:25.059 I/HalDevMgr(  756): bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]
+06-01 00:17:27.099 D/SatelliteController( 1143): iisInCarrierRoamingNbIotNtn: satellite is disabled
+06-01 00:17:27.099 D/SatelliteController( 1143): getCarrierRoamingNtnConnectType: Falling back to global carrier config connect type: 0
+06-01 00:17:28.065 I/HalDevMgr(  756): bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]
+06-01 00:17:31.072 I/HalDevMgr(  756): bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]
+06-01 00:17:32.253 D/BoundBrokerSvc( 1315): onRebind: Intent { act=com.google.android.gms.common.telemetry.service.START dat=chimera-action:/... xflg=0x4 cmp=com.google.android.gms/.chimera.PersistentApiService }
+06-01 00:17:32.261 I/AlarmManager( 1315): setExactAndAllowWhileIdle [name: GCM_HB_ALARM type: 2 triggerAtMillis: 58081577]
+06-01 00:17:32.263 I/AlarmManager( 1315): setExactAndAllowWhileIdle [name: GCM_HB_ALARM type: 2 triggerAtMillis: 58081578]
+06-01 00:17:32.509 I/wpa_supplicant(  999): wlan0: CTRL-EVENT-BEACON-LOSS 
+06-01 00:17:34.078 I/HalDevMgr(  756): bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]
+06-01 00:17:37.086 I/HalDevMgr(  756): bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]
+06-01 00:17:37.097 D/SatelliteController( 1143): iisInCarrierRoamingNbIotNtn: satellite is disabled
+06-01 00:17:37.100 D/SatelliteController( 1143): getCarrierRoamingNtnConnectType: Falling back to global carrier config connect type: 0
+06-01 00:17:37.302 D/BoundBrokerSvc( 1315): onUnbind: Intent { act=com.google.android.gms.common.telemetry.service.START dat=chimera-action:/... xflg=0x4 cmp=com.google.android.gms/.chimera.PersistentApiService }
+06-01 00:17:40.094 I/HalDevMgr(  756): bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]
+06-01 00:17:40.702 I/wpa_supplicant(  999): wlan0: CTRL-EVENT-BEACON-LOSS 
+06-01 00:17:43.104 I/HalDevMgr(  756): bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]
+06-01 00:17:46.112 I/HalDevMgr(  756): bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]
+06-01 00:17:47.097 D/SatelliteController( 1143): iisInCarrierRoamingNbIotNtn: satellite is disabled
+06-01 00:17:47.098 D/SatelliteController( 1143): getCarrierRoamingNtnConnectType: Falling back to global carrier config connect type: 0
