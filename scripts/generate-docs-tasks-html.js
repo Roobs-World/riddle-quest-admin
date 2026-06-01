@@ -300,17 +300,10 @@ const renderHtml = (tasks) => {
   }, new Map());
   const generatedAt = new Date().toISOString().slice(0, 10);
   const activeWorkFiles = [
-    "docs/issues/0001-android-emulator-firebase-qa-plan.md",
-    "docs/issues/0002-design-issues.md",
-    "docs/issues/0004-performance-optimizations.md",
-    "docs/issues/0006-ads-rewarded-implementation.md",
-    "docs/performance-optimizations-todo.md",
-    "docs/google-admob-rewarded-ads-implementation.md",
-    "docs/design-issues.html",
     "docs/legal-todo.html",
-    "docs/memory-bank/rn-0.85-baseline.md",
     "docs/memory-bank/activeContext.md",
     "docs/memory-bank/progress.md",
+    "docs/tasks.html",
   ];
 
   const summaryCards = [
@@ -627,8 +620,8 @@ const renderHtml = (tasks) => {
           and other structured task rows in the docs folder.
         </p>
         <p class="meta">
-          <strong>Work-in-progress ownership marker:</strong> current docs backlog pass is actively updating the open issue files
-          and generated task index. Coordinate before parallel edits to the files listed in
+          <strong>Work-in-progress ownership marker:</strong> current docs backlog pass is actively updating the DSI-006
+          blocker notes and generated task index. Coordinate before parallel edits to the files listed in
           <code>docs/memory-bank/activeContext.md</code> so progress notes stay consistent.
         </p>
         <p class="meta">

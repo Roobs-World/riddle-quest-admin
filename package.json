@@ -4,7 +4,8 @@
   "main": "index.ts",
   "scripts": {
     "start": "pnpm exec expo start --dev-client",
-    "start:android:emulator": "cross-env REACT_NATIVE_PACKAGER_HOSTNAME=10.0.2.2 EXPO_PACKAGER_PROXY_URL=http://10.0.2.2:8081 pnpm exec expo start --dev-client --host lan --port 8081 --clear",
+    "start:android:emulator": "cross-env REACT_NATIVE_PACKAGER_HOSTNAME=127.0.0.1 EXPO_PACKAGER_PROXY_URL=http://127.0.0.1:8081 pnpm exec expo start --dev-client --host localhost --port 8081 --clear",
+    "start:android:emulator:launch": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/open-android-dev-client.ps1",
     "start:debug": "cross-env EXPO_DEBUG=true pnpm exec expo start --dev-client --clear --port 8081",
     "android": "cross-env GRADLE_USER_HOME=.gradle-local pnpm exec expo run:android",
     "android:debug": "cross-env EXPO_DEBUG=true GRADLE_USER_HOME=.gradle-local pnpm exec expo run:android",

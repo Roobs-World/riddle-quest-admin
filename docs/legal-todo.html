@@ -159,26 +159,43 @@
         and app-store/legal disclosure readiness.
       </p>
       <p class="meta">
-        Last updated: 2026-05-31. Status: app links are wired and local legal/support page evidence exists; live
+        Last updated: 2026-06-01. Status: app links are wired and local legal/support page evidence exists; live
         <code>www.roobsworld.com</code> legal/support routes remain blocked by production deployment/reachability, and
-        the production dependency audit is clean.
+        the production dependency audit is clean. Vercel project access currently returns <code>403 Forbidden</code>
+        and requires re-authentication to the <code>craig-beswethericks-projects</code> scope before deployment can
+        continue. The connected Vercel MCP account currently exposes zero accessible teams, so there is no alternate
+        project path from this workspace. Source-side legal metadata is now wired to the registered company name,
+        public office address, and repo contact email.
       </p>
       <p class="note">
-        Current workstream note: this page is part of the 2026-05-31 docs backlog pass. Keep the legal and security
-        blockers visible, coordinate before parallel edits while the tracker refresh is in progress, and only close items when
-        fresh deployment or evidence proves the routes are actually live.
+        2026-06-01 Vercel MCP recheck: the linked project metadata in <code>E:\portfolio\.vercel\project.json</code>
+        resolves to <code>prj_ePBIvzdYBmEXARehORy9MExKUlRQ</code> under
+        <code>team_vAXlm6zrxxYVKlhz90UrbIig</code>, but both project and deployment listing calls still fail with
+        <code>403 Forbidden</code> for the <code>craig-beswethericks-projects</code> scope. That keeps the remaining
+        blocker squarely in external Vercel auth/billing territory.
+      </p>
+      <p class="note">
+        2026-06-01 Cloudflare path check: the repo’s production workflow already targets Cloudflare Pages in
+        <code>.github/workflows/deploy.yml</code>, but there are still no local <code>CF_*</code> or
+        <code>VERCEL_*</code> credentials and no cached wrangler session available from this workspace, so there is
+        no repo-side deployment bypass to close the live-reachability blocker.
+      </p>
+      <p class="note">
+        Current workstream note: this page is part of the 2026-06-01 DSI-006 blocker pass. Keep the legal and security
+        blocker visible, coordinate before parallel edits while the tracker refresh is in progress, and only close the
+        remaining item when fresh deployment or evidence proves the routes are actually live.
       </p>
       <p class="note">
         Current ownership note: this release checklist is actively worked by the current Codex thread and remains open
-        for coordination until the tracker refresh lands.
+        for coordination until the DSI-006 blocker is resolved.
       </p>
       <p class="note">
         2026-05-30 refresh: no new legal or security evidence was added in this pass. The remaining release blockers
         stay open until the production routes, disclosures, and dependency evidence are rechecked.
       </p>
       <p class="note">
-        Work-in-progress ownership marker: this release checklist remains under the active docs pass until the tracker refresh
-        lands.
+        Work-in-progress ownership marker: this release checklist remains under the active DSI-006 blocker pass until
+        the tracker refresh lands.
       </p>
       <p class="note">
         2026-05-30 tracker refresh: this checklist is actively owned by the current docs thread while the remaining
@@ -402,9 +419,12 @@
         intended localized <code>www.roobsworld.com/riddle-quest/{language}</code> links. The 119 local URLs at
         <code>localhost:3000/riddle-quest/{language}</code> returned 2xx/3xx on 2026-05-23. Production evidence from
         2026-05-25 still shows the live <code>www.roobsworld.com</code> legal/support routes returning 404, and the
-        2026-05-27 production deploy retry from <code>E:\portfolio</code> failed with Vercel account suspension, so live
-        reachability remains billing/deployment-blocked rather than app-side URL construction work. Store-console
-        disclosure entry remains owner-controlled external work.
+        2026-06-01 Vercel project access check returned <code>403 Forbidden</code> and requires re-authentication to
+        the <code>craig-beswethericks-projects</code> scope. The 2026-06-01 deploy retry from
+        <code>E:\portfolio</code> also failed with <code>Your account has been suspended. To reactivate your
+        subscription, add a valid payment method.</code> Live reachability therefore remains
+        access/deployment-blocked rather than app-side URL construction work. Store-console disclosure entry remains
+        owner-controlled external work.
       </p>
     </main>
   </body>

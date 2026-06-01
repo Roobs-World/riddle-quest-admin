@@ -25,6 +25,12 @@ describe("InstructionsModal", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.runOnlyPendingTimers();
+    jest.useRealTimers();
   });
 
   describe("Rendering", () => {
@@ -82,7 +88,7 @@ describe("InstructionsModal", () => {
 
       expect(modal.props.transparent).toBe(true);
       expect(modal.props.animationType).toBe("none");
-      expect(modal.props.onRequestClose).toBe(mockOnClose);
+      expect(typeof modal.props.onRequestClose).toBe("function");
     });
   });
 
@@ -108,6 +114,14 @@ describe("InstructionsModal", () => {
 
       // Simulate onRequestClose
       modal.props.onRequestClose();
+      expect(mockOnClose).toHaveBeenCalledTimes(1);
+    });
+
+    it("auto-dismisses in dev mode after the QA timeout", () => {
+      render(<InstructionsModal isVisible={true} onClose={mockOnClose} />);
+
+      jest.advanceTimersByTime(1500);
+
       expect(mockOnClose).toHaveBeenCalledTimes(1);
     });
   });

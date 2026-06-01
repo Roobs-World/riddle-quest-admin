@@ -1,14 +1,42 @@
-import {getFunctions, httpsCallable} from "@react-native-firebase/functions";
+import {
+  connectFunctionsEmulator,
+  getFunctions,
+  httpsCallable,
+  type Functions,
+} from "@react-native-firebase/functions";
 import {getApp} from "@react-native-firebase/app";
 import {ZodError, type ZodType, type ZodTypeAny, z} from "zod";
 import {withSentrySpan} from "./sentry";
+
+const getFunctionsEmulatorMarker = (): string | null => {
+  const host = process.env.EXPO_PUBLIC_FIREBASE_FUNCTIONS_EMULATOR_HOST?.trim();
+  const parsedPort = Number(process.env.EXPO_PUBLIC_FIREBASE_FUNCTIONS_EMULATOR_PORT ?? "5001");
+
+  if (!host) {
+    return null;
+  }
+
+  const port = Number.isFinite(parsedPort) && parsedPort > 0 ? parsedPort : 5001;
+
+  return `${host}:${port}`;
+};
 
 /**
  * Get Firebase Functions instance configured for the correct region.
  * All our functions are deployed to us-central1.
  */
 export const getFirebaseFunctions = () => {
-  return getFunctions(getApp(), "us-central1");
+  const functions = getFunctions(getApp(), "us-central1") as Functions & {__connectedEmulatorMarker?: string};
+  const emulatorMarker = getFunctionsEmulatorMarker();
+
+  if (emulatorMarker && functions.__connectedEmulatorMarker !== emulatorMarker) {
+    const [host, portString] = emulatorMarker.split(":");
+    const port = Number(portString);
+    connectFunctionsEmulator(functions, host, port);
+    functions.__connectedEmulatorMarker = emulatorMarker;
+  }
+
+  return functions;
 };
 
 /**

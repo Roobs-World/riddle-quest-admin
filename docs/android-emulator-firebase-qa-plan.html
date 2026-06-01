@@ -1780,8 +1780,14 @@
             Profile username row; fresh-bundle replay evidence <code>189-update-username-open-fresh-retry.png</code> and
             <code>190-update-username-short-validation-fresh.png</code> plus matching XML/logcat show the modal opens
             after JS reload and short input <code>ab</code> produces the inline error
-            <code>Username must be at least 3 characters long.</code> before any backend submission. Successful save,
-            persistence, and Firebase callable evidence remain TODO.
+            <code>Username must be at least 3 characters long.</code> before any backend submission. 2026-06-01 live
+            provider-auth replay reached uid <code>Lnq5dCdR0RVZVSiL0U1vIfb2pui2</code>; a clean Save press now logs
+            <code>Save onPress handler executed successfully</code>, but the modal still stays open and the callable
+            has not returned a success payload yet. Evidence:
+            <code>emulator-tests/logs/rq_pixel_4a_api_36_1/420-update-username-provider-save-attempt.png</code>,
+            <code>emulator-tests/logs/rq_pixel_4a_api_36_1/420-update-username-provider-save-attempt.xml</code>, and
+            <code>emulator-tests/logs/rq_pixel_4a_api_36_1/420-update-username-provider-save-attempt-logcat.txt</code>.
+            Successful save, persistence, and Firebase callable evidence remain TODO.
           </li>
           <li>
             IN_PROGRESS: DeleteAccountConfirmationModal. Guest evidence:

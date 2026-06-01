@@ -72,6 +72,12 @@ describe("InfoModal", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.runOnlyPendingTimers();
+    jest.useRealTimers();
   });
 
   describe("Component Rendering", () => {
@@ -324,6 +330,15 @@ describe("InfoModal", () => {
       getByTestId("modal").props.onRequestClose();
 
       expect(onConfirm).toHaveBeenCalledTimes(1);
+      expect(onClose).toHaveBeenCalledTimes(1);
+    });
+
+    it("auto-dismisses in dev mode after the QA timeout", () => {
+      const onClose = jest.fn();
+      render(<InfoModal {...defaultProps} onClose={onClose} />);
+
+      jest.advanceTimersByTime(1500);
+
       expect(onClose).toHaveBeenCalledTimes(1);
     });
   });

@@ -5,7 +5,15 @@ import {afterEach, beforeEach, describe, expect, it, jest} from "@jest/globals";
 const mockUpdateUserProfile = jest.fn<(userId: string, profileData: Record<string, unknown>) => Promise<void>>();
 const mockAdminFirestoreUpdate = jest.fn<() => Promise<void>>();
 const mockAdminFirestoreDoc = jest.fn((_id?: string) => ({update: mockAdminFirestoreUpdate}));
-const mockAdminFirestoreCollection = jest.fn((_path?: string) => ({doc: mockAdminFirestoreDoc}));
+const mockExistingUsersGet = jest.fn();
+const mockAdminFirestoreCollection = jest.fn((_path?: string) => ({
+  doc: mockAdminFirestoreDoc,
+  where: jest.fn(() => ({
+    limit: jest.fn(() => ({
+      get: mockExistingUsersGet,
+    })),
+  })),
+}));
 
 const mockLoggerInfo = jest.fn<(...args: unknown[]) => void>();
 const mockLoggerError = jest.fn<(...args: unknown[]) => void>();
@@ -55,7 +63,7 @@ jest.mock("firebase-functions/v2/https", () => {
 });
 
 // 4. Import the module under test
-import {updateAvatar} from "../profile";
+import {updateAvatar, updateUsername} from "../profile";
 
 // 5. Describe block
 describe("Profile Cloud Functions", () => {
@@ -134,6 +142,59 @@ describe("Profile Cloud Functions", () => {
         new HttpsError("internal", "An error occurred while updating avatar URL.", serviceError),
       );
       expect(mockLoggerError).toHaveBeenCalledWith(`Error updating avatar URL for user ${mockAuth.uid}:`, serviceError);
+    });
+  });
+
+  describe("updateUsername", () => {
+    const mockAuth = {uid: "testUserId456"};
+    const validUsername = "newplayer";
+
+    beforeEach(() => {
+      mockExistingUsersGet.mockResolvedValue({
+        empty: true,
+        docs: [],
+      });
+    });
+
+    it("should successfully update username", async () => {
+      mockUpdateUserProfile.mockResolvedValue(undefined);
+      const request = {
+        auth: mockAuth,
+        data: {username: validUsername},
+      } as CallableRequest<{username: string}>;
+
+      const result = await (updateUsername as any)(request);
+
+      expect(mockExistingUsersGet).toHaveBeenCalled();
+      expect(mockUpdateUserProfile).toHaveBeenCalledWith(mockAuth.uid, {username: validUsername});
+      expect(result).toEqual({success: true, message: "Username updated successfully."});
+    });
+
+    it("should throw HttpsError if not authenticated", async () => {
+      const request = {
+        auth: undefined,
+        data: {username: validUsername},
+      } as CallableRequest<{username: string}>;
+
+      await expect((updateUsername as any)(request)).rejects.toThrow(
+        new HttpsError("unauthenticated", "The function must be called while authenticated."),
+      );
+    });
+
+    it("should throw HttpsError for a taken username", async () => {
+      mockExistingUsersGet.mockResolvedValue({
+        empty: false,
+        docs: [{id: "another-user"}],
+      });
+
+      const request = {
+        auth: mockAuth,
+        data: {username: validUsername},
+      } as CallableRequest<{username: string}>;
+
+      await expect((updateUsername as any)(request)).rejects.toThrow(
+        new HttpsError("already-exists", "Username already taken."),
+      );
     });
   });
 });

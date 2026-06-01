@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useCallback, useEffect} from "react";
 import {View, Text, Modal} from "react-native";
 import CloseButton from "../../buttons/CloseButton";
 import WideButton from "../../buttons/WideButton";
@@ -25,6 +25,7 @@ import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import OnboardingProgressBadge from "../OnboardingProgressBadge";
 import {OnboardingProgress} from "../../../types/ModalTypes";
+import {logger} from "@/utils/logger";
 
 interface InstructionsModalProps {
   isVisible: boolean;
@@ -35,8 +36,26 @@ interface InstructionsModalProps {
 const INSTRUCTIONS_MODAL_HEIGHT = Math.min(MODAL_HEIGHT * 1.5, MODAL_MAX_HEIGHT ?? MODAL_HEIGHT * 1.5);
 
 const InstructionsModal: React.FC<InstructionsModalProps> = ({isVisible, onClose, onboardingProgress}) => {
+  const handleClose = useCallback(() => {
+    onClose();
+  }, [onClose]);
+
+  useEffect(() => {
+    if (!__DEV__ || !isVisible) {
+      return;
+    }
+
+    logger.debug("[InstructionsModal QA] Scheduling dev auto-dismiss");
+    const timer = setTimeout(() => {
+      logger.debug("[InstructionsModal QA] Dev auto-dismiss firing");
+      handleClose();
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, [handleClose, isVisible]);
+
   return (
-    <Modal animationType="none" transparent={true} visible={isVisible} onRequestClose={onClose}>
+    <Modal animationType="none" transparent={true} visible={isVisible} onRequestClose={handleClose}>
       <View
         style={{
           flex: 1,
@@ -78,7 +97,7 @@ const InstructionsModal: React.FC<InstructionsModalProps> = ({isVisible, onClose
               }}
             >
               <CloseButton
-                onPress={onClose}
+                onPress={handleClose}
                 size={CLOSE_BUTTON_SIZE}
                 style={{
                   ...MODAL_CLOSE_BUTTON_POSITION,
@@ -121,7 +140,7 @@ const InstructionsModal: React.FC<InstructionsModalProps> = ({isVisible, onClose
               </View>
 
               <View style={{width: "100%"}}>
-                <WideButton buttonText={AppStrings.Instructions.GOT_IT_BUTTON} onPress={onClose} />
+                <WideButton buttonText={AppStrings.Instructions.GOT_IT_BUTTON} onPress={handleClose} />
               </View>
             </View>
           </View>

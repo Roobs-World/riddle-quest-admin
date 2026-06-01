@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useCallback, useEffect} from "react";
 import {View, Text, Modal} from "react-native";
 import {TYPOGRAPHY, SPACING} from "../../../styles";
 import ModalBg from "../../../../assets/images/modal-bg.svg";
@@ -9,6 +9,7 @@ import {AppStrings} from "../../../constants/AppStrings";
 import SlideInModalContent from "../../shared/SlideInModalContent";
 import OnboardingProgressBadge from "../OnboardingProgressBadge";
 import {OnboardingProgress} from "../../../types/ModalTypes";
+import {logger} from "@/utils/logger";
 
 interface InfoModalProps {
   isVisible: boolean;
@@ -32,15 +33,29 @@ const InfoModal: React.FC<InfoModalProps> = ({
   onboardingProgress,
 }) => {
   const modalHeight = Math.min(MODAL_HEIGHT, MODAL_MAX_HEIGHT ?? MODAL_HEIGHT);
-  const handleConfirm = () => {
+  const handleConfirm = useCallback(() => {
     onConfirm?.();
     onClose();
-  };
+  }, [onClose, onConfirm]);
 
-  const handleAction = () => {
+  const handleAction = useCallback(() => {
     onAction?.();
     onClose();
-  };
+  }, [onAction, onClose]);
+
+  useEffect(() => {
+    if (!__DEV__ || !isVisible) {
+      return;
+    }
+
+    logger.debug("[InfoModal QA] Scheduling dev auto-dismiss");
+    const timer = setTimeout(() => {
+      logger.debug("[InfoModal QA] Dev auto-dismiss firing");
+      handleConfirm();
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, [handleConfirm, isVisible]);
 
   return (
     <Modal visible={isVisible} transparent={true} animationType="none" onRequestClose={handleConfirm}>

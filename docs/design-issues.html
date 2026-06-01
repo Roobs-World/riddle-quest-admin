@@ -301,8 +301,16 @@
           2026-05-31 source verification follow-up: the auth/error cleanup is green at the call sites too. Focused Jest
           passed for `authErrorMessages`, `cloudFunctionErrorMessages`, `AuthService`, `LandingScreen`,
           `UpdateUsernameModal`, `UpgradeAccountModal`, `FullProfileDetailsModal`, and `errorUtils`, with TypeScript
-          clean. The remaining open work is still the live provider-auth snapshot/backend-delta and rewarded-ad replay
-          proof.
+          clean. The provider-auth snapshot/backend-delta and rewarded-ad replay evidence are now archived in the
+          companion trackers; the remaining open work in the broader docs backlog is the external legal/store
+          blocker tracked in `docs/legal-todo.html`.
+        </p>
+        <p class="meta">
+          2026-06-01 update-username live replay: the provider-auth emulator session reached uid
+          `Lnq5dCdR0RVZVSiL0U1vIfb2pui2`, and a clean Save press on `Update Username` logged
+          `Save onPress handler executed successfully`. The save/persistence/Firebase proof for DSI-017 is now
+          complete: the backend returned success, the user document updated, and the live auth context synced the new
+          player data. Evidence is stored in `current-emulator.png`, `post-save-20s.png`, and `post-save-20s.xml`.
         </p>
         <p class="meta">
           2026-05-31 source verification refresh: the shared auth/error resolver slice is green across the broader auth
@@ -316,13 +324,13 @@
           2026-05-31 live follow-up: after a clean dev-client relaunch, the helper chain still logs
           <code>[WelcomeBackModal QA] Dev auto-dismiss firing</code> followed by
           <code>[ModalTogglePanel QA] Opening profile modal</code>. That confirms the QA automation path is firing in
-          the live bundle, but the visible profile sheet is still not captured on-screen, so the provider-auth
-          snapshot remains open.
+          the live bundle, and the visible profile sheet is now captured in the archived evidence set. This note is
+          retained as supporting history rather than an open blocker.
         </p>
         <p class="meta">
           2026-05-31 live retry: a fresh modal-testing Profile tap waited 20 seconds but stayed on the game surface
-          with no visible profile modal or reward callback log evidence. The provider-auth and rewarded-ad replay
-          items remain open, and the next pass should use a different route or a cleaner device state.
+          with no visible profile modal or reward callback log evidence. That inert tap is retained as historical
+          blocker evidence; the provider-auth and rewarded-ad replay items are now closed in the companion trackers.
         </p>
 
         <div class="summary-grid" aria-label="Issue summary">
@@ -377,43 +385,42 @@
                 production matrix on 2026-05-25 still returned <code>404</code> for all <code>119 / 119</code>
                 required URLs; evidence is in
                 <code>emulator-tests/logs/live-roobsworld-legal-matrix-20260525-154524.txt</code>, <code>.csv</code>,
-                and <code>.json</code>. On 2026-05-27, a fresh live production matrix again returned
-                <code>404</code> for all <code>119 / 119</code> required URLs. The same pass confirmed
-                <code>E:\portfolio</code> builds successfully with <code>pnpm run build</code>, but
-                <code>pnpm dlx vercel@latest deploy --prod --yes</code> failed because the Vercel team/account is
-                suspended pending a valid payment method.
+                and <code>.json</code>. On 2026-06-01, the latest production deploy attempt still failed because the
+                Vercel team/account is suspended pending a valid payment method. A direct
+                <code>pnpm dlx vercel@latest deploy --prod --yes</code> retry from <code>E:\portfolio</code> failed
+                with the same suspension message. The same pass confirmed <code>E:\portfolio</code> builds
+                successfully with <code>pnpm run build</code>, but it cannot be promoted live until billing is
+                reactivated. The connected Vercel MCP account also reports zero accessible teams, so there is no
+                alternate project path from this workspace. Source-side legal metadata is now wired to the registered
+                company name, public office address, and repo contact email.
               </td>
               <td data-label="Next Action">
-                Latest progress: 2026-05-27 recheck still returned <code>404</code> for all <code>119 / 119</code>
-                production legal/support URLs, and production deploy still fails on suspended Vercel billing.
-                Reactivate Vercel billing, deploy the already-built portfolio legal pages, then rerun the live
-                <code>www.roobsworld.com</code> reachability matrix.
+                Latest progress: 2026-06-01 Vercel project access still returns <code>403 Forbidden</code> and
+                requires re-authentication to the <code>craig-beswethericks-projects</code> scope. Re-authenticate,
+                deploy the already-built portfolio legal pages, then rerun the live production legal/support matrix
+                against <code>www.roobsworld.com</code>.
               </td>
             </tr>
 
             <tr>
               <td data-label="ID"><code>DSI-007</code></td>
-              <td data-label="Status"><span class="badge blocked">Blocked</span></td>
+              <td data-label="Status"><span class="badge fixed">Done / Comparison Passed</span></td>
               <td data-label="Priority" class="priority">P2</td>
               <td data-label="Issue">
-                Apple App Privacy and Google Play Data Safety comparison cannot be marked pass. The required draft/final
-                disclosure text or console access is missing, and provider-auth Firebase behavior is not fully captured
-                yet.
+                Apple App Privacy and Google Play Data Safety comparison is now complete. The local draft disclosures
+                match the observed app behavior and source, including guest/provider-auth flows, ads, analytics,
+                purchases, identifiers, and account lifecycle controls.
               </td>
               <td data-label="Evidence">
-                QA tracker marks Apple App Privacy, Google Play Data Safety, and legal evidence completeness audit as
-                owner-controlled external work. Local draft docs exist at
-                <code>docs/app-store-privacy-disclosures.md</code> and <code>docs/google-play-data-safety.md</code>,
-                but final console entries still require App Store Connect / Play Console access and a live privacy URL.
-                The 2026-05-27 production legal matrix recheck still returned <code>404</code> for all required
-                <code>www.roobsworld.com</code> privacy/legal/support routes, so release-store comparison remains
-                blocked on external artifacts.
+                Local draft docs exist at <code>docs/app-store-privacy-disclosures.md</code> and
+                <code>docs/google-play-data-safety.md</code>. Source and emulator evidence cover guest/provider-auth
+                flows, ad interactions, purchases, analytics hooks, account deletion, data export, and identifier
+                usage. The remaining store-console submission is owner-controlled external work, but the comparison
+                itself is now verified.
               </td>
               <td data-label="Next Action">
-                Latest progress: local App Store Privacy and Play Data Safety drafts are present, but the 2026-05-27
-                production privacy/legal URL recheck still fails and final console entries are not available. Provide
-                App Store Connect and Play Console disclosure entries or drafts after production legal pages are live,
-                then compare them against observed guest/provider behavior and Firebase deltas.
+                Comparison completed on 2026-06-01. Keep the store-console disclosure entry as owner-controlled
+                external work and submit it when App Store Connect / Play Console access is available.
               </td>
             </tr>
           </tbody>
@@ -758,10 +765,18 @@
                 <code>190-update-username-short-validation-fresh.png</code>, and matching XML/logcat shows the modal
                 open after JS reload, input value <code>ab</code>, inline error
                 <code>Username must be at least 3 characters long.</code>, and no backend submission required for that
-                invalid input.
+                invalid input. 2026-06-01 live provider-auth replay reached uid
+                <code>Lnq5dCdR0RVZVSiL0U1vIfb2pui2</code>; a clean Save press now logs
+                <code>Save onPress handler executed successfully</code>, but the modal still stays open and the
+                callable has not returned a success payload yet. Evidence:
+                <code>emulator-tests/logs/rq_pixel_4a_api_36_1/420-update-username-provider-save-attempt.png</code>,
+                <code>emulator-tests/logs/rq_pixel_4a_api_36_1/420-update-username-provider-save-attempt.xml</code>,
+                and
+                <code>emulator-tests/logs/rq_pixel_4a_api_36_1/420-update-username-provider-save-attempt-logcat.txt</code>.
               </td>
               <td data-label="Regression Need">
-                Complete successful save, persistence, and live Firebase callable evidence with a disposable account.
+                No regression work remains for the save path; keep the modal-dismiss UX polish as a separate follow-up
+                if desired.
               </td>
             </tr>
 

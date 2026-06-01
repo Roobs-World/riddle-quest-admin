@@ -1,6 +1,6 @@
 # Security and Privacy Remediation Notes
 
-Last updated: 2026-05-23
+Last updated: 2026-06-01
 
 ## Completed in repo
 
@@ -24,7 +24,7 @@ Last updated: 2026-05-23
 - Purge historical secrets from git history using an audited history rewrite such as `git filter-repo`, then force-push according to the repository's release process.
 - Enable Firebase App Check enforcement for the deployed callable functions in Firebase after clients have valid App Check providers configured.
 - Deploy the locally verified legal/support URL matrix from `localhost:3000` to `www.roobsworld.com` when deployment is available; for now, assume the live links will work because the identical local route matrix passed on 2026-05-23.
-- Complete Apple App Privacy and Google Play Data Safety forms from the current data inventory, using the hosted `www.roobsworld.com/riddle-quest/en/privacy-policy` URL where store consoles require one canonical privacy policy URL after it is reachable.
+- Apple App Privacy and Google Play Data Safety comparison is complete against the current data inventory and observed app behavior. The remaining step is owner-controlled console submission in App Store Connect / Play Console, using the hosted `www.roobsworld.com/riddle-quest/en/privacy-policy` URL where those forms require one canonical privacy policy URL after it is reachable.
 - Review ATT consent requirements with the final ad-tracking configuration before release.
 
 ## Data Inventory for Store Disclosures

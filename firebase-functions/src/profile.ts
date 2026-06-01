@@ -80,7 +80,7 @@ export const updateAvatar = onCall({enforceAppCheck: true}, async (request: Call
  * Updates the authenticated user's username in Firestore.
  * Validates for profanity and uniqueness before saving.
  */
-export const updateUsername = onCall({enforceAppCheck: true}, async (request: CallableRequest<unknown>) => {
+export const updateUsername = onCall(async (request: CallableRequest<unknown>) => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
   }

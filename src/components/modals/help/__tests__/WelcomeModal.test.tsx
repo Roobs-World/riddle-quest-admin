@@ -1,4 +1,5 @@
 import React from "react";
+import {act} from "react-test-renderer";
 import {render, fireEvent} from "@testing-library/react-native";
 import WelcomeModal from "../WelcomeModal";
 import {AppStrings} from "../../../../constants/AppStrings";
@@ -13,6 +14,14 @@ describe("WelcomeModal", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+  });
+
+  beforeAll(() => {
+    jest.useFakeTimers();
+  });
+
+  afterAll(() => {
+    jest.useRealTimers();
   });
 
   it("renders welcome content when visible", () => {
@@ -43,6 +52,18 @@ describe("WelcomeModal", () => {
     const {getByTestId} = render(<WelcomeModal isVisible={true} onClose={mockOnClose} onDismiss={mockOnDismiss} />);
 
     fireEvent.press(getByTestId("welcome-modal-touch-target"));
+
+    expect(mockOnClose).toHaveBeenCalledTimes(1);
+    expect(mockOnDismiss).toHaveBeenCalledTimes(1);
+  });
+
+  it("auto-dismisses when shown in development mode", async () => {
+    const mockOnDismiss = jest.fn();
+    render(<WelcomeModal isVisible={true} onClose={mockOnClose} onDismiss={mockOnDismiss} />);
+
+    await act(async () => {
+      jest.advanceTimersByTime(1500);
+    });
 
     expect(mockOnClose).toHaveBeenCalledTimes(1);
     expect(mockOnDismiss).toHaveBeenCalledTimes(1);

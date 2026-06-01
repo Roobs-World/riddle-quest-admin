@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useCallback, useEffect} from "react";
 import {View, Text, Modal, Pressable} from "react-native";
 
 import ModalBg from "../../../../assets/images/modal-bg.svg";
@@ -13,6 +13,7 @@ import SlideInModalContent from "../../shared/SlideInModalContent";
 import RotatingWheelBackground from "../../shared/RotatingWheelBackground";
 import OnboardingProgressBadge from "../OnboardingProgressBadge";
 import {OnboardingProgress} from "../../../types/ModalTypes";
+import {logger} from "@/utils/logger";
 
 interface WelcomeModalProps {
   isVisible: boolean;
@@ -24,10 +25,24 @@ interface WelcomeModalProps {
 
 const WelcomeModal: React.FC<WelcomeModalProps> = ({isVisible, onClose, onDismiss, onboardingProgress}) => {
   const modalHeight = Math.min(MODAL_HEIGHT, MODAL_MAX_HEIGHT ?? MODAL_HEIGHT);
-  const handleDismiss = () => {
+  const handleDismiss = useCallback(() => {
     onClose();
     onDismiss?.();
-  };
+  }, [onClose, onDismiss]);
+
+  useEffect(() => {
+    if (!__DEV__ || !isVisible) {
+      return;
+    }
+
+    logger.debug("[WelcomeModal QA] Scheduling dev auto-dismiss");
+    const timer = setTimeout(() => {
+      logger.debug("[WelcomeModal QA] Dev auto-dismiss firing");
+      handleDismiss();
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, [handleDismiss, isVisible]);
 
   return (
     <Modal animationType="none" transparent={true} visible={isVisible} onRequestClose={handleDismiss}>

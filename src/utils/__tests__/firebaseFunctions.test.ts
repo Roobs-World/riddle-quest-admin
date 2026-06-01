@@ -10,6 +10,7 @@ import {
 jest.mock("@react-native-firebase/functions", () => ({
   getFunctions: jest.fn(),
   httpsCallable: jest.fn(),
+  connectFunctionsEmulator: jest.fn(),
 }));
 
 jest.mock("@react-native-firebase/app", () => ({
@@ -18,11 +19,14 @@ jest.mock("@react-native-firebase/app", () => ({
 
 const mockGetFunctions = require("@react-native-firebase/functions").getFunctions;
 const mockHttpsCallable = require("@react-native-firebase/functions").httpsCallable;
+const mockConnectFunctionsEmulator = require("@react-native-firebase/functions").connectFunctionsEmulator;
 const mockGetApp = require("@react-native-firebase/app").getApp;
 
 describe("firebaseFunctions", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    delete process.env.EXPO_PUBLIC_FIREBASE_FUNCTIONS_EMULATOR_HOST;
+    delete process.env.EXPO_PUBLIC_FIREBASE_FUNCTIONS_EMULATOR_PORT;
   });
 
   describe("getFirebaseFunctions", () => {
@@ -260,6 +264,36 @@ describe("firebaseFunctions", () => {
       expect(mockGetFunctions).toHaveBeenNthCalledWith(2, mockApp2, "us-central1");
       expect(result1).toBe(mockFunctions1);
       expect(result2).toBe(mockFunctions2);
+    });
+
+    it("should connect to the functions emulator when emulator env vars are present", () => {
+      const mockApp = {name: "test-app"};
+      const mockFunctions = {};
+
+      process.env.EXPO_PUBLIC_FIREBASE_FUNCTIONS_EMULATOR_HOST = "10.0.2.2";
+      process.env.EXPO_PUBLIC_FIREBASE_FUNCTIONS_EMULATOR_PORT = "5001";
+      mockGetApp.mockReturnValue(mockApp);
+      mockGetFunctions.mockReturnValue(mockFunctions);
+
+      const result = getFirebaseFunctions();
+
+      expect(mockConnectFunctionsEmulator).toHaveBeenCalledWith(mockFunctions, "10.0.2.2", 5001);
+      expect(result).toBe(mockFunctions);
+    });
+
+    it("should only connect to the functions emulator once per instance", () => {
+      const mockApp = {name: "test-app"};
+      const mockFunctions = {};
+
+      process.env.EXPO_PUBLIC_FIREBASE_FUNCTIONS_EMULATOR_HOST = "10.0.2.2";
+      process.env.EXPO_PUBLIC_FIREBASE_FUNCTIONS_EMULATOR_PORT = "5001";
+      mockGetApp.mockReturnValue(mockApp);
+      mockGetFunctions.mockReturnValue(mockFunctions);
+
+      getFirebaseFunctions();
+      getFirebaseFunctions();
+
+      expect(mockConnectFunctionsEmulator).toHaveBeenCalledTimes(1);
     });
   });
 });
