@@ -633,8 +633,9 @@ const renderHtml = (tasks) => {
           while this pass is running.
         </p>
         <p class="meta">
-          2026-06-01 Vercel MCP recheck: <code>list_teams</code> returned zero teams, so DSI-006 is still externally
-          blocked and this thread remains the active owner of the remaining docs slice.
+          2026-06-02 Vercel MCP recheck: <code>list_teams</code> returned zero teams and <code>_get_project</code>
+          still returns <code>403 Forbidden</code>, so DSI-006 remains externally blocked and this thread remains the
+          active owner of the remaining docs slice.
         </p>
         <p class="meta">
           Active work files:

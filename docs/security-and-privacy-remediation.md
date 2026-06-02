@@ -5,6 +5,8 @@ Last updated: 2026-06-02
 ## Completed in repo
 
 - Removed server-only OpenAI, Apple shared secret, Google service account, and Facebook app secret values from Expo `extra`.
+- Redacted the tracked backup/runtime secret snapshots in `firebase-functions/.env.default.backup`, `firebase-functions/.runtimeconfig.json`, and `firebase-functions/qwordly-admin-sdk.json` so the current tree no longer carries the live values in plain text.
+- Replaced the tracked Jest bootstrap OpenAI token with a non-secret placeholder so tests still get a value without keeping a live key in source.
 - Added ignore rules for Firebase Admin service account JSON, Functions runtime config, and local env files.
 - Hardened Firestore rules so client writes cannot create or delete user documents, cannot change coin balances, stats, progress, purchase flags, achievements, or owned-progress records, and cannot write user progress/attempt collections directly.
 - Restricted avatar profile URLs to Firebase Storage avatar objects under the authenticated user's own path.

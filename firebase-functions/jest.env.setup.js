@@ -23,7 +23,7 @@ if (!process.env.FIRESTORE_EMULATOR_HOST) {
 
 // Set OpenAI API key for tests
 if (!process.env.OPENAI_API_KEY) {
-  process.env.OPENAI_API_KEY = "YnDnl1dSucAApjYEN019-6hGt2ufiedaq4HsP-h7";
+  process.env.OPENAI_API_KEY = "test-openai-api-key";
 }
 
 // Disable OpenTelemetry tracing in tests to avoid Firestore tracing issues

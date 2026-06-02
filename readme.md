@@ -54,6 +54,7 @@ Current ownership note: the current Codex thread is actively working this checkl
 
 - [ ] Rotate exposed credentials
   - Follow [docs/credential-rotation-runbook.md](docs/credential-rotation-runbook.md).
+  - Repo-side copies of `firebase-functions/.env.default.backup`, `firebase-functions/.runtimeconfig.json`, and `firebase-functions/qwordly-admin-sdk.json` are now redacted in the current tree so the live values are no longer sitting in plain text here.
   - In Google Cloud Console, open IAM and Admin > Service Accounts.
   - Find the Firebase Admin SDK service account used by this project.
   - Disable and delete the exposed service account key.

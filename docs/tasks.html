@@ -271,8 +271,9 @@
           while this pass is running.
         </p>
         <p class="meta">
-          2026-06-01 Vercel MCP recheck: <code>list_teams</code> returned zero teams, so DSI-006 is still externally
-          blocked and this thread remains the active owner of the remaining docs slice.
+          2026-06-02 Vercel MCP recheck: <code>list_teams</code> returned zero teams and <code>_get_project</code>
+          still returns <code>403 Forbidden</code>, so DSI-006 remains externally blocked and this thread remains the
+          active owner of the remaining docs slice.
         </p>
         <p class="meta">
           Active work files:
@@ -1843,168 +1844,168 @@
                 <span class="badge done">Done</span>
                 <div>
                   <p>Lock Firestore economy, progress, and stats writes to Cloud Functions only.</p>
-                  <small>Firestore Write Controls - line 264 - html-checklist</small>
+                  <small>Firestore Write Controls - line 272 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>Review Firestore rules for all client-writable economy/progress/stats paths and deny direct client writes.</p>
-                  <small>Firestore Write Controls - line 268 - html-checklist</small>
+                  <small>Firestore Write Controls - line 276 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>Confirm Cloud Functions use server-side validation and trusted user ids from auth context only.</p>
-                  <small>Firestore Write Controls - line 275 - html-checklist</small>
+                  <small>Firestore Write Controls - line 283 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>Add auth/admin checks and App Check to generation and admin callables.</p>
-                  <small>Callable Function Protection - line 287 - html-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="done">
-                <span class="badge done">Done</span>
-                <div>
-                  <p>Require request.auth for user-scoped generation callables.</p>
-                  <small>Callable Function Protection - line 291 - html-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="done">
-                <span class="badge done">Done</span>
-                <div>
-                  <p>Require explicit admin claims for admin-only callables and reject non-admin users.</p>
                   <small>Callable Function Protection - line 295 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
-                  <p>Set enforceAppCheck: true on protected callables where supported.</p>
+                  <p>Require request.auth for user-scoped generation callables.</p>
                   <small>Callable Function Protection - line 299 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
+                  <p>Require explicit admin claims for admin-only callables and reject non-admin users.</p>
+                  <small>Callable Function Protection - line 303 - html-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
+                  <p>Set enforceAppCheck: true on protected callables where supported.</p>
+                  <small>Callable Function Protection - line 307 - html-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
                   <p>Patch or override vulnerable dependencies.</p>
-                  <small>Dependency Audit - line 309 - html-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="done">
-                <span class="badge done">Done</span>
-                <div>
-                  <p>Use the Expo-recommended install flow for Expo package changes.</p>
-                  <small>Dependency Audit - line 313 - html-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="done">
-                <span class="badge done">Done</span>
-                <div>
-                  <p>Rerun pnpm audit --prod and record the remaining findings, if any. Latest rerun on 2026-05-25 reported no known vulnerabilities.</p>
                   <small>Dependency Audit - line 317 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
-                  <p>Expose hosted legal URLs in the app: Sign Up links Terms and Privacy, and Settings -&gt; About / Legal links Website, Privacy Policy, Terms, Account Deletion, Data Export, Third-Party Licenses, and Support.</p>
-                  <small>Completed - line 331 - html-checklist</small>
+                  <p>Use the Expo-recommended install flow for Expo package changes.</p>
+                  <small>Dependency Audit - line 321 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
-                  <p>Verify the full local URL matrix at http://localhost:3000/riddle-quest/{language} : 17 languages x 7 page types returned 2xx/3xx.</p>
+                  <p>Rerun pnpm audit --prod and record the remaining findings, if any. Latest rerun on 2026-05-25 reported no known vulnerabilities.</p>
+                  <small>Dependency Audit - line 325 - html-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
+                  <p>Expose hosted legal URLs in the app: Sign Up links Terms and Privacy, and Settings -&gt; About / Legal links Website, Privacy Policy, Terms, Account Deletion, Data Export, Third-Party Licenses, and Support.</p>
                   <small>Completed - line 339 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
+                  <p>Verify the full local URL matrix at http://localhost:3000/riddle-quest/{language} : 17 languages x 7 page types returned 2xx/3xx.</p>
+                  <small>Completed - line 347 - html-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
                   <p>Remove local Markdown legal-page copies from this app repo; hosted website pages are the source of truth.</p>
-                  <small>Completed - line 346 - html-checklist</small>
+                  <small>Completed - line 354 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>Create legal-deploy-pages-prompt.txt for deploying the verified local legal pages to www.roobsworld.com .</p>
-                  <small>Completed - line 353 - html-checklist</small>
+                  <small>Completed - line 361 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>Accept local verification as release-planning evidence for now because live deployment is unavailable.</p>
-                  <small>Completed - line 360 - html-checklist</small>
+                  <small>Completed - line 368 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>Ensure Apple App Privacy and Google Play Data Safety answers match actual app behavior.</p>
-                  <small>Completed - line 367 - html-checklist</small>
+                  <small>Completed - line 375 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>Defer live deployment until Vercel access/billing is available; assume www.roobsworld.com links will work because the identical local routes pass.</p>
-                  <small>Remaining - line 375 - html-checklist</small>
+                  <small>Remaining - line 383 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>Defer live 119-URL matrix pass criteria until deployment is repaired; the latest production matrix evidence from 2026-05-25 returned 404 for all 119 required routes, while the full local 119-URL matrix passed on 2026-06-01 and remains the current acceptance evidence.</p>
-                  <small>Remaining - line 382 - html-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="done">
-                <span class="badge done">Done</span>
-                <div>
-                  <p>Defer live on-device link verification until deployment is available; app code uses the same path matrix that passed locally.</p>
                   <small>Remaining - line 390 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
+                  <p>Defer live on-device link verification until deployment is available; app code uses the same path matrix that passed locally.</p>
+                  <small>Remaining - line 398 - html-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
                   <p>Record store-console disclosure entry as owner-controlled external work: final Apple App Privacy and Google Play Data Safety disclosures still require App Store Connect / Play Console access and a live privacy-policy URL.</p>
-                  <small>Remaining - line 397 - html-checklist</small>
+                  <small>Remaining - line 405 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>2026-05-25: Reread all 52 files under docs/ before acting via a docs-wide digest covering 8,398 lines / 629,046 characters. Outstanding local-verifiable task selected from this file: refresh the production dependency audit evidence.</p>
-                  <small>Latest Agent Notes - line 412 - html-checklist</small>
-                </div>
-              </li>
-              <li class="task" data-status="done">
-                <span class="badge done">Done</span>
-                <div>
-                  <p>2026-05-25: Ran pnpm audit --prod ; result was No known vulnerabilities found . No dependency or lockfile changes were required.</p>
                   <small>Latest Agent Notes - line 420 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
+                  <p>2026-05-25: Ran pnpm audit --prod ; result was No known vulnerabilities found . No dependency or lockfile changes were required.</p>
+                  <small>Latest Agent Notes - line 428 - html-checklist</small>
+                </div>
+              </li>
+              <li class="task" data-status="done">
+                <span class="badge done">Done</span>
+                <div>
                   <p>2026-05-25: Expo MCP tools were checked through tool_search because the repo guidance asks for Expo MCP on Expo/React Native tasks; no Expo tools were available, and this audit-only task did not require simulator verification.</p>
-                  <small>Latest Agent Notes - line 427 - html-checklist</small>
+                  <small>Latest Agent Notes - line 435 - html-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>2026-05-27: Rechecked the production deploy blocker from E:\portfolio . The portfolio app builds successfully with pnpm run build , but pnpm dlx vercel@latest deploy --prod --yes still fails because the Vercel team/account is suspended pending a valid payment method.</p>
-                  <small>Latest Agent Notes - line 435 - html-checklist</small>
+                  <small>Latest Agent Notes - line 443 - html-checklist</small>
                 </div>
               </li>
           </ul>
@@ -2948,91 +2949,91 @@
                 <span class="badge todo">Todo</span>
                 <div>
                   <p>Set fresh Firebase Functions secrets</p>
-                  <small>Off-repo security tasks - line 65 - markdown-checklist</small>
+                  <small>Off-repo security tasks - line 66 - markdown-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="todo">
                 <span class="badge todo">Todo</span>
                 <div>
                   <p>Purge secrets from git history</p>
-                  <small>Off-repo security tasks - line 84 - markdown-checklist</small>
+                  <small>Off-repo security tasks - line 85 - markdown-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="todo">
                 <span class="badge todo">Todo</span>
                 <div>
                   <p>Enable Firebase App Check enforcement</p>
-                  <small>Off-repo security tasks - line 114 - markdown-checklist</small>
+                  <small>Off-repo security tasks - line 115 - markdown-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>Verify localized legal and support pages locally</p>
-                  <small>Legal and store compliance tasks - line 127 - markdown-checklist</small>
+                  <small>Legal and store compliance tasks - line 128 - markdown-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="todo">
                 <span class="badge todo">Todo</span>
                 <div>
                   <p>Enter final store-console legal/privacy disclosures</p>
-                  <small>Legal and store compliance tasks - line 147 - markdown-checklist</small>
+                  <small>Legal and store compliance tasks - line 148 - markdown-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="todo">
                 <span class="badge todo">Todo</span>
                 <div>
                   <p>Complete Apple App Privacy</p>
-                  <small>Legal and store compliance tasks - line 153 - markdown-checklist</small>
+                  <small>Legal and store compliance tasks - line 154 - markdown-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="todo">
                 <span class="badge todo">Todo</span>
                 <div>
                   <p>Complete Google Play Data Safety</p>
-                  <small>Legal and store compliance tasks - line 160 - markdown-checklist</small>
+                  <small>Legal and store compliance tasks - line 161 - markdown-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>Make the ATT/ad tracking release decision</p>
-                  <small>Legal and store compliance tasks - line 167 - markdown-checklist</small>
+                  <small>Legal and store compliance tasks - line 168 - markdown-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>Add the profile modal delete account entry point</p>
-                  <small>Account deletion implementation tasks - line 177 - markdown-checklist</small>
+                  <small>Account deletion implementation tasks - line 178 - markdown-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>Add the confirmation modal</p>
-                  <small>Account deletion implementation tasks - line 183 - markdown-checklist</small>
+                  <small>Account deletion implementation tasks - line 184 - markdown-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>Add the Firebase deletion Function</p>
-                  <small>Account deletion implementation tasks - line 189 - markdown-checklist</small>
+                  <small>Account deletion implementation tasks - line 190 - markdown-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>Wire the client flow</p>
-                  <small>Account deletion implementation tasks - line 198 - markdown-checklist</small>
+                  <small>Account deletion implementation tasks - line 199 - markdown-checklist</small>
                 </div>
               </li>
               <li class="task" data-status="done">
                 <span class="badge done">Done</span>
                 <div>
                   <p>Verify account deletion end to end</p>
-                  <small>Account deletion implementation tasks - line 204 - markdown-checklist</small>
+                  <small>Account deletion implementation tasks - line 205 - markdown-checklist</small>
                 </div>
               </li>
           </ul>
